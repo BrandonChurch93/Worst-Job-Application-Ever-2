@@ -1,0 +1,297 @@
+{
+  "about": "Every word a visitor can read on the site. It lives here once. Most of it is Brandon's own copy from his 2025 version of this project. Use each string exactly as written. Add no new copy without logging it. No em dashes anywhere.",
+  "site": {
+    "title": "The Worst Job Application Ever",
+    "steps": ["About You", "Personal Details", "Skills Assessment", "Submit", "Decision"]
+  },
+  "marketing": {
+    "nav": {
+      "brand": "Mandatory Optional Overtime",
+      "links": ["Open Positions", "Our Values", "Perks & Benefits"],
+      "cta": "Apply for a Job"
+    },
+    "hero": {
+      "headline": "Where your work-life balance goes to die, beautifully.",
+      "subline": "We've perfected the art of making simple things unnecessarily complicated.",
+      "sublineLong": "We've perfected the art of making simple things unnecessarily complicated, and we're looking for people who appreciate that level of commitment to mediocrity.",
+      "cta": "Apply for a Job",
+      "underCta": "Est. time: 5 minutes · Satisfaction: Not guaranteed"
+    },
+    "perks": {
+      "kicker": "Why Join Us?",
+      "heading": "Benefits That Sound Too Good To Be True",
+      "subline": "Because they probably are. We've included the fine print for free.",
+      "items": [
+        { "title": "Unlimited PTO", "promise": "Take as many days off as you want!", "finePrint": "People who use it tend to get 'restructured' pretty quickly." },
+        { "title": "Competitive Salary", "promise": "Industry-standard compensation package.", "finePrint": "Competitive with unpaid internships from 2003." },
+        { "title": "Flexible Hours", "promise": "Choose your own schedule.", "finePrint": "Start between 8:00-8:15 AM. Leave when your manager leaves. (Never.)" },
+        { "title": "Health Benefits", "promise": "Comprehensive wellness program included.", "finePrint": "Free meditation app. Premium features cost extra." },
+        { "title": "Growth Opportunities", "promise": "Clear path for career advancement.", "finePrint": "Responsibilities grow. Title and pay? We'll circle back." },
+        { "title": "Work-Life Balance", "promise": "We respect your personal time.", "finePrint": "All 'optional' team events are Saturday mornings." },
+        { "title": "Remote Friendly", "promise": "Work from anywhere in the world!", "finePrint": "If you're available 24/7 and reply to messages in 3 min." },
+        { "title": "Amazing Culture", "promise": "We're like a family here.", "finePrint": "The kind that argues at Thanksgiving and avoids real issues." }
+      ],
+      "closing": "Still interested? Either you didn't read the fine print, or you're exactly the kind of team player we're looking for."
+    },
+    "awards": {
+      "heading": "Awards We Definitely Earned",
+      "subline": "Industry recognition that speaks for itself. Quietly. In a room by itself.",
+      "items": [
+        { "title": "Excellence in Synergy", "from": "The Synergy Foundation", "finePrint": "We founded this organization" },
+        { "title": "Best Workplace Culture", "from": "Quarterly Internal Survey", "finePrint": "Survey conducted during mandatory retreat" },
+        { "title": "Innovation in Human Resources", "from": "HR Monthly (Self-Submitted)", "finePrint": "We wrote the nomination ourselves" },
+        { "title": "Top Employer", "from": "Companies We've Heard Of Magazine", "finePrint": "Of companies we compared ourselves to" },
+        { "title": "Most Transparent Company", "from": "Trust Us Weekly", "finePrint": "Transparent about our lack of transparency" }
+      ],
+      "footnote": "All awards verified by our legal team (they said \"technically not false\")"
+    },
+    "testimonials": {
+      "heading": "What They Said",
+      "subline": "Real feedback from real employees.*",
+      "footnote": "(*Employment status: terminated)",
+      "items": [
+        { "role": "Ex-VP of Mandatory Fun", "quote": "I came for the unlimited PTO. I stayed because my badge stopped working and I couldn't leave the building.", "note": "[STATUS: Badge still doesn't work]" },
+        { "role": "Previously: Unpaid Intern (CEO Track)", "quote": "They told me I'd wear many hats. They weren't lying. I was also the hat.", "note": "[NOTE: We still owe them money]" },
+        { "role": "Former Senior Synergy Analyst", "quote": "I learned more in three weeks here than I did in four years of college. Mostly about labor laws and my rights as an employee.", "note": "[EDIT: Testimony given under duress]" },
+        { "role": "Ex-Chief Happiness Officer", "quote": "The culture here is unlike anything I've ever experienced. I say that as both a compliment and a warning.", "note": "[UPDATE: Now in witness protection]" },
+        { "role": "Former Director of Doing More With Less", "quote": "Work-life balance isn't a myth here. It's more of a legend. Something people whisper about but no one's actually seen.", "note": "[ADDENDUM: They found the legend. It was dead.]" },
+        { "role": "No Longer: Meeting Scheduler III", "quote": "This job taught me that 'fast-paced environment' is HR code for 'we haven't hired enough people.' Invaluable insight.", "note": "[REDACTED: Ongoing litigation]" }
+      ]
+    },
+    "comparison": {
+      "heading": "Us vs. Functional Employers",
+      "subline": "A fair and balanced comparison. (We wrote it.)",
+      "columns": ["Mandatory Optional Overtime", "Functional Employers"],
+      "rows": [
+        { "feature": "Unlimited PTO", "us": "Yes*", "them": "Yes" },
+        { "feature": "Actually Unlimited", "us": "No", "them": "Yes" },
+        { "feature": "Remote Work", "us": "\"Flexible\"", "them": "Yes" },
+        { "feature": "Living Wage", "us": "Technically Not Illegal", "them": "Yes" },
+        { "feature": "Health Insurance", "us": "Meditation App (Free Tier)", "them": "Yes" },
+        { "feature": "401(k) Match", "us": "We'll Match Your Energy™", "them": "Yes" },
+        { "feature": "Work-Life Balance", "us": "Error 404", "them": "Yes" },
+        { "feature": "Clear Career Path", "us": "Career Labyrinth", "them": "Yes" },
+        { "feature": "Responds to Applications", "us": "lol", "them": "Yes" }
+      ]
+    },
+    "process": {
+      "heading": "Your Journey to Disappointment™",
+      "subline": "Five simple steps. Endless opportunities for regret.",
+      "items": [
+        { "title": "Find Our Job Posting", "body": "You clicked a link. That was your first mistake. There's no going back now." },
+        { "title": "Question Everything", "body": "Is this real? Should I apply? What is the meaning of work? All valid questions. None will be answered." },
+        { "title": "47 Mandatory Assessments", "body": "Personality, skills, blood type, credit score, childhood trauma. The usual pre-screening." },
+        { "title": "The Waiting Period", "body": "6-8 business months. Your application is very important to us. Please hold." },
+        { "title": "Professional Ghosting", "body": "We'll be in touch.™ (We won't. But the automated rejection email is beautifully designed.)" }
+      ],
+      "waitLabel": "Current wait time:",
+      "waitValue": "6-8 business months",
+      "footnote": "(Results may vary. They won't.)"
+    },
+    "faq": {
+      "heading": "Questions We'd Rather You Not Ask",
+      "subline": "But since you're going to anyway, here are some pre-written deflections.",
+      "items": [
+        { "q": "Is this a real job?", "a": "Define 'real.' Define 'job.' Actually, don't. Just apply and find out. Or don't. We're not your career counselor." },
+        { "q": "What's the salary?", "a": "Competitive.™ We've compared our salaries to unpaid internships in 2003 and adjusted for inflation (downward). You'll be thrilled to learn you'll make money. Some of it." },
+        { "q": "Why should I apply?", "a": "You probably shouldn't. And yet, here you are, reading a FAQ on a satirical job application. That tells us everything we need to know about your decision-making skills. You'll fit right in." },
+        { "q": "Do you offer remote work?", "a": "Absolutely! Work from anywhere in the world, as long as you're available 24/7, respond to messages within 3 minutes, and your 'anywhere' is within a 15-minute commute of the office for 'occasional' in-person syncs." },
+        { "q": "Will my data be collected?", "a": "No. Unlike actual corporations, we have no interest in your data, your browsing habits, or selling your information to third parties. Everything stays in your browser. We couldn't monetize you even if we wanted to. (We don't.)" },
+        { "q": "Is this actually funny?", "a": "That depends entirely on your current employment situation. If you're job hunting, it's either cathartic or triggering. If you're happily employed, it's hilarious. If you're in HR, it's 'concerning.'" }
+      ],
+      "closingQ": "Still have questions?",
+      "closingA": "So do we."
+    },
+    "ticker": [
+      "Ping Pong Table: Decorative Only",
+      "Severance Package: lol",
+      "The Printer: Haunted (Confirmed)",
+      "Work Hours: 9-5 (AM to AM)",
+      "Bathroom Breaks: Tracked (For Your Safety™)",
+      "Coffee Machine Status: Yes (Broken)",
+      "Promotion Timeline: Heat Death of Universe",
+      "Open Door Policy* (*door removed, frame remains)",
+      "Voted #1 by Ourselves™. Three Years Running",
+      "Free Lunch: There Isn't One. Literally.",
+      "Conference Room C: Condemned (Spiritually)",
+      "Unlimited PTO (Usage: 0 hrs | Guilt: ∞)",
+      "\"Revolutionizing Mediocrity Since 2022\"™",
+      "0 Days Without an HR Incident",
+      "Company Retreat: One Survivor"
+    ],
+    "tickerAfterRejection": "Now Hiring: Nobody (Position Filled Internally)",
+    "finalCta": {
+      "heading": "Ready to Waste Some Time?",
+      "body": "You've scrolled this far. Might as well see what all the fuss is about. Zero positions available. Maximum chaos guaranteed.",
+      "cta": "Apply for a Job",
+      "underCta": "5 minutes of your life you'll never get back"
+    },
+    "footer": {
+      "brand": "Mandatory Optional Overtime",
+      "tagline": "Making simple things unnecessarily complicated since 2024.",
+      "notReal": "(Not a real company)",
+      "credit": "Developed by Brandon Church",
+      "bottom": "If you're reading this, you've scrolled to the absolute bottom. Impressive commitment. We'd hire you, but we're not hiring. We're not even a real company. But if we were, you'd definitely be on the shortlist for our \"Professional Footer Reader\" position.",
+      "plotTwist": "Plot twist: This isn't real. It's a portfolio piece disguised as corporate hell. No data collected. No jobs available. No HR department to complain to."
+    }
+  },
+  "transitions": {
+    "step1": "Time to get personal.",
+    "step2": "Let's configure your settings.",
+    "step3": "Before we review your application, we need to assess compatibility. We spent an unreasonable amount of money building this, so you're doing it.",
+    "step4": "One last thing. Prove you're human.",
+    "step5": "Processing your application..."
+  },
+  "step1": {
+    "heading": "Step 1: About You",
+    "subline": "Please provide your details for our comprehensive records.",
+    "fields": {
+      "firstName": { "label": "First name", "helper": "Minimum 3 characters required" },
+      "lastName": { "label": "Last name" },
+      "email": { "label": "Email" }
+    },
+    "keyboardNote": "Physical keyboards are not supported. Please use the keyboard provided.",
+    "emailError": "Invalid email",
+    "emailAccepted": "Email accepted. Reluctantly.",
+    "resume": {
+      "label": "Resume",
+      "prompt": "Drag and drop your resume here",
+      "browse": "Browse files",
+      "paperTitle": "Resume",
+      "received": "Resume received. Please re-enter all information manually."
+    },
+    "continue": "Continue"
+  },
+  "step2": {
+    "heading": "Step 2: Personal Details",
+    "subline": "Blood type, credit score, childhood trauma. The usual pre-screening.",
+    "rows": {
+      "phone": {
+        "label": "Contact number",
+        "helper": "Don't call us. We definitely won't call you.",
+        "panel": "Dial your 10-digit number.",
+        "gaveUp": "Close enough. We were never going to call."
+      },
+      "birth": {
+        "label": "Date of birth",
+        "helper": "Used to calculate your remaining working years.",
+        "panel": "Pull the lever to select your date of birth.",
+        "recorded": "Date of birth recorded. Corrections are not supported."
+      },
+      "volume": {
+        "label": "Audio volume",
+        "helper": "Set to 100%. You will want to hear the Skills Assessment.",
+        "panel": "Rotate the crank clockwise. Target: 100% (10 full rotations).",
+        "done": "Volume set to 100%. You were warned."
+      }
+    },
+    "note": "Also collected automatically: favorite color, breakfast preferences, and the exact coordinates of your childhood home.",
+    "continue": "Continue"
+  },
+  "step3": {
+    "heading": "Step 3: Skills Assessment",
+    "subline": "Toxicity Tolerance Assessment",
+    "table": {
+      "title": "THE DAILY GRIND",
+      "apronCard": "HR is watching. They're always watching.",
+      "buildings": {
+        "hq": "Corporate HQ",
+        "firehouse": "You're Fired",
+        "police": "Background Check",
+        "bank": "Student Loans",
+        "coffee": "Coffee",
+        "outlane": "Mom's Basement",
+        "drain": "Unemployment Office",
+        "beach": "Retirement"
+      },
+      "modes": [
+        { "insert": "Pizza Party", "display": "Pizza Party (In Lieu of Raises). Management's favorite." },
+        { "insert": "Unpaid Overtime", "display": "Unpaid Overtime. You weren't using those evenings anyway." },
+        { "insert": "Multiple Hats", "display": "Wearing Multiple Hats. Also known as 'we're understaffed.'" },
+        { "insert": "Entry-Level", "display": "Entry-Level (5 Years Required). The math checks out. Trust us." },
+        { "insert": "Reply All", "display": "The dreaded Reply-All Company Email. Everyone saw that." },
+        { "insert": "Micromanagement", "display": "Micromanagement. We're watching. Always watching." },
+        { "insert": "Aggressive Deadlines", "display": "Aggressive Deadlines. Due yesterday." },
+        { "insert": "Performance Improvement Plan", "display": "Performance Improvement Plan. This is a warning." },
+        { "insert": "Team Building", "display": "Mandatory Team Building. Fun is now required." }
+      ]
+    },
+    "result": {
+      "title": "ASSESSMENT COMPLETE",
+      "body": "You passed. Don't get excited. So did the last guy, and he's currently restocking vending machines in Building C."
+    }
+  },
+  "step4": {
+    "heading": "Step 4: Submit",
+    "verify": {
+      "title": "Human Verification",
+      "body": "Please confirm that you are a biological life form.",
+      "checkbox": "I am not a robot",
+      "finePrint": "This verification process uses advanced algorithms to distinguish humans from robots, aliens, and other sentient beings.",
+      "confirmedFilm": "Humanity Confirmed",
+      "doubtLive": "That is exactly what a robot would say.",
+      "confirmedLive": "Humanity Confirmed. Provisionally."
+    },
+    "submit": "Submit",
+    "bossHealthLabel": "SUBMIT",
+    "errorSlabs": [
+      "Required field",
+      "Invalid input",
+      "Session expired",
+      "Field cannot be blank",
+      "Please try again later",
+      "Password must contain a special character"
+    ],
+    "popups": [
+      { "title": "Are you sure you want to leave this page?", "buttons": ["Stay", "Leave"] },
+      { "title": "We value your privacy.", "buttons": ["Accept All"] },
+      { "title": "Your session will expire in 5 seconds.", "buttons": ["OK"] }
+    ],
+    "defeated": "Click to submit"
+  },
+  "step5": {
+    "heading": "Step 5: Decision",
+    "wait": {
+      "label": "Current wait time:",
+      "value": "6-8 business months",
+      "body": "Your application is very important to us. Please hold."
+    },
+    "letter": {
+      "title": "Position Filled",
+      "body": "This role has been filled by an AI trained by the CEO's nephew. We appreciate your interest and will keep your resume on file for 0-3 business days.",
+      "closing": "Don't call us. We definitely won't call you.",
+      "stamp": "REJECTED"
+    },
+    "metrics": {
+      "title": "Performance Metrics",
+      "yourTime": "Your Time",
+      "averageTime": "Average Time",
+      "averageTimeValue": "14:32",
+      "targetTime": "Target Time",
+      "targetTimeValue": "02:00",
+      "applicant": "Applicant #420,069"
+    },
+    "accept": "Accept Rejection",
+    "share": "Share Your Achievement",
+    "shareText": "I just completed \"The Worst Job Application Ever\" in {time}. I was rejected.",
+    "closing": "Thank you for experiencing this satirical art project. No actual applications were processed in the making of this experience."
+  },
+  "live": {
+    "skip": "Skip step (Accept Defeat)",
+    "watchFilm": "Watch the film instead",
+    "touchOnly": {
+      "title": "We're sorry.",
+      "body": "This application requires a mouse, a keyboard and considerably more patience than a phone allows.",
+      "link": "See the rest of the work"
+    }
+  },
+  "heldBack": {
+    "why": "These lines from the 2025 version name real companies or products. The film posts from a company account, so they are left out unless Brandon asks for them back.",
+    "lines": [
+      "\"Best Place to Work*\" (*they didn't say this), credited to a real magazine",
+      "Employee Choice Award, credited to a real review site (Pending Approval)",
+      "CEO's Motivational LinkedIn Post. Hustle. Grind. Family.",
+      "The two lines that name a real chat app"
+    ]
+  }
+}

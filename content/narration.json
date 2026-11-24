@@ -1,0 +1,62 @@
+{
+  "about": "The narrator's lines. A nature documentary voice observing the job applicant as if it were wildlife: calm, dry, never excited, never in on the joke. The ElevenLabs voice is named in audio.narratorVoice in config/showcase.json.",
+  "status": "DRAFT. Brandon approves or rewrites every line before any voice is generated.",
+  "rules": [
+    "The narrator never raises its voice and never laughs.",
+    "It calls the hero 'the applicant' and the company 'the employer'.",
+    "Short sentences. Room is left for the sound effects.",
+    "A line never explains a joke that the picture already tells.",
+    "No em dashes."
+  ],
+  "film": {
+    "marketing.stroll": ["Here we observe the job applicant, approaching a careers page for the first time."],
+    "marketing.perks": ["It is drawn to the words unlimited PTO.", "It has not read the fine print. They never do."],
+    "marketing.ticker": ["The warning signs are everywhere. The applicant sees none of them."],
+    "marketing.apply": ["It applies."],
+
+    "step1.keyboard": ["To begin, the applicant must state its name."],
+    "step1.firstName": ["The employer has taken precautions.", "A direct hit. Out here, wounds heal in seconds. The memory does not."],
+    "step1.lastName": ["The keys have moved. The applicant adapts.", "The keys move again."],
+    "step1.email": ["It enters a valid email address. This changes nothing."],
+    "step1.resume": ["And now, the offering. Months of careful work, presented with hope."],
+    "step1.tug": ["The employer is hungry.", "For the first and only time, the applicant reveals its arms."],
+    "step1.shredded": ["The resume is gone. The applicant is asked to type it all again."],
+
+    "step2.open": ["Next, personal details. The employer has built machines to ask."],
+    "step2.dial": ["Don't call us, the form advises. The applicant dials anyway."],
+    "step2.slot": ["Its date of birth is left to chance."],
+    "step2.crank": ["Volume, to one hundred percent. The employer wishes to be heard."],
+    "step2.continue": [],
+
+    "pinball.rise": ["The skills assessment. It has nothing to do with the job. It never does."],
+    "pinball.launch": ["The applicant enters the daily grind."],
+    "pinball.coffee": ["Coffee. The only thing keeping this city running."],
+    "pinball.firehouse": ["The firehouse. Nobody is hired here."],
+    "pinball.highway": ["The commute. Two hours, each way."],
+    "pinball.replyAll": ["Reply all. The most dangerous phrase in corporate life."],
+    "pinball.save": ["A save. Unpaid, naturally."],
+    "pinball.hq": ["Corporate headquarters. So close."],
+    "pinball.drain": ["The unemployment office. It always collects."],
+
+    "boss.verify": ["One final question. Is the applicant a robot.", "It lies."],
+    "boss.unfold": ["The submit button has been waiting for this."],
+    "boss.slabs": ["The applicant has one defense. It clicks."],
+    "boss.popups": ["Are you sure you want to leave this page. It has never been more sure."],
+    "boss.lastStand": ["Session expired. A classic."],
+    "boss.collapse": ["Both of them are exhausted. Only one of them is a button."],
+    "boss.press": ["It submits."],
+
+    "decision.wait": ["Now, the waiting period. Six to eight business months."],
+    "decision.letter": ["Or less.", "The position has been filled. By an AI. Trained by the CEO's nephew."],
+    "decision.metrics": ["The applicant accepts rejection. It has become very good at this."],
+    "decision.reset": ["And somewhere, the page is hiring again."]
+  },
+  "liveOnly": {
+    "idle": ["The applicant hesitates. The employer can wait. The employer has all day."],
+    "hit": ["A direct hit.", "Again.", "It will learn. Eventually."],
+    "tugLost": ["It was never going to win that."],
+    "boss.verify": ["It claims to be human. That is exactly what a robot would say."],
+    "skip": ["It accepts defeat. A valuable workplace skill."],
+    "pinball.flipper": ["The applicant has found the flippers. This will not help."]
+  }
+}

@@ -1,0 +1,126 @@
+{
+  "name": "The Worst Job Application Ever",
+  "slug": "worst-job-application",
+  "status": "planning",
+  "seed": 20261124,
+  "repo": {
+    "url": "https://github.com/BrandonChurch93/Worst-Job-Application-Ever-2",
+    "branch": "main"
+  },
+  "employer": {
+    "name": "Mandatory Optional Overtime"
+  },
+  "table": {
+    "name": "The Daily Grind"
+  },
+  "applicant": {
+    "filmFirstName": "Perplexity",
+    "filmLastName": "Computer",
+    "filmEmail": "applicant@example.com"
+  },
+  "film": {
+    "fps": 30,
+    "hookSeconds": 2,
+    "promptOpeningSeconds": 9,
+    "units": [
+      { "id": "marketing", "seconds": 14 },
+      { "id": "step1", "seconds": 32 },
+      { "id": "step2", "seconds": 21 },
+      { "id": "pinball", "seconds": 40 },
+      { "id": "boss", "seconds": 32 },
+      { "id": "decision", "seconds": 12 }
+    ],
+    "beats": [
+      { "id": "marketing.stroll", "unit": "marketing", "from": 0, "to": 2 },
+      { "id": "marketing.perks", "unit": "marketing", "from": 2, "to": 8 },
+      { "id": "marketing.ticker", "unit": "marketing", "from": 8, "to": 11 },
+      { "id": "marketing.apply", "unit": "marketing", "from": 11, "to": 14 },
+
+      { "id": "step1.keyboard", "unit": "step1", "from": 0, "to": 2 },
+      { "id": "step1.firstName", "unit": "step1", "from": 2, "to": 10 },
+      { "id": "step1.lastName", "unit": "step1", "from": 10, "to": 15 },
+      { "id": "step1.email", "unit": "step1", "from": 15, "to": 20 },
+      { "id": "step1.resume", "unit": "step1", "from": 20, "to": 22 },
+      { "id": "step1.tug", "unit": "step1", "from": 22, "to": 29 },
+      { "id": "step1.shredded", "unit": "step1", "from": 29, "to": 32 },
+
+      { "id": "step2.open", "unit": "step2", "from": 0, "to": 2 },
+      { "id": "step2.dial", "unit": "step2", "from": 2, "to": 8 },
+      { "id": "step2.slot", "unit": "step2", "from": 8, "to": 14 },
+      { "id": "step2.crank", "unit": "step2", "from": 14, "to": 20 },
+      { "id": "step2.continue", "unit": "step2", "from": 20, "to": 21 },
+
+      { "id": "pinball.rise", "unit": "pinball", "from": 0, "to": 6 },
+      { "id": "pinball.launch", "unit": "pinball", "from": 6, "to": 9 },
+      { "id": "pinball.coffee", "unit": "pinball", "from": 9, "to": 14 },
+      { "id": "pinball.firehouse", "unit": "pinball", "from": 14, "to": 18 },
+      { "id": "pinball.highway", "unit": "pinball", "from": 18, "to": 22 },
+      { "id": "pinball.replyAll", "unit": "pinball", "from": 22, "to": 30 },
+      { "id": "pinball.save", "unit": "pinball", "from": 30, "to": 33 },
+      { "id": "pinball.hq", "unit": "pinball", "from": 33, "to": 36 },
+      { "id": "pinball.drain", "unit": "pinball", "from": 36, "to": 40 },
+
+      { "id": "boss.verify", "unit": "boss", "from": 0, "to": 5 },
+      { "id": "boss.unfold", "unit": "boss", "from": 5, "to": 9 },
+      { "id": "boss.slabs", "unit": "boss", "from": 9, "to": 16 },
+      { "id": "boss.popups", "unit": "boss", "from": 16, "to": 22 },
+      { "id": "boss.lastStand", "unit": "boss", "from": 22, "to": 27 },
+      { "id": "boss.collapse", "unit": "boss", "from": 27, "to": 29 },
+      { "id": "boss.press", "unit": "boss", "from": 29, "to": 32 },
+
+      { "id": "decision.wait", "unit": "decision", "from": 0, "to": 2 },
+      { "id": "decision.letter", "unit": "decision", "from": 2, "to": 6 },
+      { "id": "decision.metrics", "unit": "decision", "from": 6, "to": 10 },
+      { "id": "decision.reset", "unit": "decision", "from": 10, "to": 12 }
+    ]
+  },
+  "cursor": {
+    "heightPxAt1080": 70,
+    "damageHealSeconds": 4,
+    "armsOnlyInBeat": "step1.tug"
+  },
+  "live": {
+    "step1": {
+      "minChars": 3,
+      "hitsBeforeTurretsOverheat": 3
+    },
+    "step2": {
+      "dialDigitsBeforeItGivesUp": 3,
+      "crankTurnsBeforeItRunsAway": 3
+    },
+    "pinball": {
+      "sceneSeconds": 45,
+      "extraBallsInReplyAll": 2
+    },
+    "boss": {
+      "phases": 3,
+      "maxSeconds": 45
+    },
+    "skipLinkAfterSeconds": 20,
+    "controlTakenMaxSeconds": 8
+  },
+  "audio": {
+    "narratorVoice": "Worst-Job-Application-Ever",
+    "music": false,
+    "holdMusicSeconds": 2
+  },
+  "deliver": {
+    "cardLoopSeconds": 8,
+    "cuts": ["with-prompt", "without-prompt"]
+  },
+  "links": {
+    "portfolioWork": ""
+  },
+  "references": {
+    "approved": {
+      "pageLook": "references/drafts/round-3/P1-soft-touch-ceramic.png",
+      "cursorArms": "references/drafts/round-3/C1-arms.png",
+      "cursorDamage": "references/drafts/round-3/C4-damage.png",
+      "tugOfWar": "references/drafts/round-3/S1-shredder-tug-of-war.png",
+      "cursorActing": "references/drafts/round-4/E1-cursor-emotions.png",
+      "machines": "references/drafts/round-4/D1-wrong-machines.png",
+      "lighting": "references/drafts/round-4/D1-wrong-machines.png"
+    },
+    "pendingRounds": ["references/drafts/round-5", "references/drafts/round-6"]
+  }
+}
