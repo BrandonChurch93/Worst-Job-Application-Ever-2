@@ -24,11 +24,10 @@ export function drawFire(out: DrawList, view: FireView): void {
   const layout = built
   const over: Record<string, Partial<Shape> | null> = {}
   out.push({ id: 'keyboard-well', part: 'keyboard', kind: 'well', x: DECK.x, y: DECK.y, w: DECK.w, h: DECK.h, z0: WELL, z1: 0, tone: 'dark' })
-  over['keyboard-deck'] = { z0: WELL, z1: DECK_TOP, mechanism: true }
+  over['keyboard-deck'] = { z0: WELL, z1: DECK_TOP }
   for (const side of [0, 1]) over[`hatch-${side}`] = { z0: DECK_TOP, z1: DECK_TOP + 0.6 }
   for (const seat of seats) {
-    if (!view.pressed.includes(seat.name)) continue
-    const top = CAP_TOP - TRAVEL
+    const top = CAP_TOP - (view.pressed.includes(seat.name) ? TRAVEL : 0)
     over[`key-${seat.name}`] = { z1: top, mechanism: true }
     if (seat.name !== 'space') over[`key-${seat.name}-legend`] = { z0: top, z1: top }
   }
