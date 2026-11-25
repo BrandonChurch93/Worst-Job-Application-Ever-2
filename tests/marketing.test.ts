@@ -289,6 +289,26 @@ describe('the careers page', () => {
     expect(s.cursor.pose().damage).toEqual([])
   })
 
+  it('shows a new picture in every second of the film from 6 s to 13 s: the tape has moved and the cursor is somewhere else or in the air', () => {
+    const s = film()
+    const at: { x: number; y: number; z: number; tape: number }[] = []
+    for (let step = 0; step <= seconds(13); step++) {
+      if (step % (stepHz / 10) === 0) {
+        const pose = s.cursor.pose()
+        const run = drawn(s).find((i) => i.id.startsWith('ticker-item-') || /-run$/.test(i.id))
+        at.push({ x: pose.x, y: pose.y, z: pose.z, tape: run ? run.x : Number.NaN })
+      }
+      s.advance(1)
+    }
+    for (let i = 60; i + 10 < at.length; i++) {
+      const a = at[i]!
+      const b = at[i + 10]!
+      const moved = Math.hypot(a.x - b.x, a.y - b.y) + Math.abs(a.z - b.z)
+      expect(moved, `cursor at ${i / 10} s and ${i / 10 + 1} s`).toBeGreaterThan(8)
+      expect(a.tape, `tape at ${i / 10} s and ${i / 10 + 1} s`).not.toBe(b.tape)
+    }
+  })
+
   it('never ends in the rejected variant: the buttons sink and come back', () => {
     const page = makePage()
     let cap: number[] = []
