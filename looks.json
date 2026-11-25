@@ -1,35 +1,35 @@
 {
   "folder": "harness",
-  "pushed": "2026-11-25T09:26:14.225Z",
-  "commit": "a8d14ef0d3c0556dd687bd57c69811e2b7e8195d",
+  "pushed": "2026-11-25T10:44:51.625Z",
+  "commit": "4b46c8fa0bf9bd5e9875007cd87ff43b50e3d35a",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "npm run stress, the boss fight: frame 7290 as rendered, at 20 Mbps and at 5 Mbps, whole frame above and its own pixels below",
-      "time": "2026-11-25T09:26:12.395Z",
+      "caption": "A frame of the film render in progress: pinball, frame 4306 at 1:11.77, draft tier, preview",
+      "time": "2026-11-25T10:07:20.327Z",
       "by": "harness",
-      "from": "out/work/stress/stress-boss-hd-draft.jpg"
+      "from": "out/work/film/looks/pinball-004020-004522-preview-draft-at-4306.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "npm run stress, a page at rest: step 2 at 0:47, as rendered, 20 Mbps and 5 Mbps, with the grain in its own pixels below",
-      "time": "2026-11-25T09:26:12.627Z",
+      "caption": "A frame of the film render in progress: boss, frame 7500 at 2:05.00, draft tier, preview",
+      "time": "2026-11-25T10:17:22.274Z",
       "by": "harness",
-      "from": "out/work/stress/stress-rest-hd-draft.jpg"
+      "from": "out/work/film/looks/boss-007500-007978-preview-draft-at-7500.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "npm run seq --first 7286 --last 7291: one of six numbered frames of the boss fight, draft tier, preview",
-      "time": "2026-11-25T09:26:12.869Z",
+      "caption": "Contact sheet across film A's opening: 12 frames, review tier, preview",
+      "time": "2026-11-25T10:27:31.777Z",
       "by": "harness",
-      "from": "out/work/seq/frame-007288-preview-draft.png"
+      "from": "out/work/sheets/sheet-opening-preview-review.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "npm run sheet --unit boss, sheet 2 of 3: 12 frames from 1:59.97 to 2:10.00, draft tier",
-      "time": "2026-11-25T09:26:13.099Z",
+      "caption": "hostcheck: the first picture of the built site from a clean copy, careers page in live mode, 5.278 MB fetched before it",
+      "time": "2026-11-25T10:44:50.577Z",
       "by": "harness",
-      "from": "out/work/sheets/sheet-unit-boss-2of3-preview-draft.jpg"
+      "from": "out/work/hostcheck/first-picture-1200.jpg"
     }
   ]
 }
