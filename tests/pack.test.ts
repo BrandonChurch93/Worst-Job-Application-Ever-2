@@ -2,7 +2,8 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { BANNED, blockoutGroups, briefFor, fileName, neutral, packPlan, pinballCameras, splitGroups } from '../tools/lib/pack-plan.mjs'
-import { controlWindows, riskyType, windowRound, wrap } from '../tools/lib/pack-build.mjs'
+import { actingWindow, controlWindows, riskyType, windowRound, wrap } from '../tools/lib/pack-build.mjs'
+import { ARROW_BODY, cursorBox } from '../tools/lib/image.mjs'
 
 const root = path.resolve(__dirname, '..')
 const cfg = JSON.parse(fs.readFileSync(path.join(root, 'config/showcase.json'), 'utf8'))
@@ -114,6 +115,22 @@ describe('crops', () => {
     expect(windowRound([10, 10, 20, 10], 696, 187, 1920, 1080)).toEqual([0, 0, 696, 187])
     expect(windowRound([1900, 1070, 20, 10], 696, 187, 1920, 1080)).toEqual([1224, 893, 696, 187])
     expect(windowRound([950, 535, 20, 10], 696, 187, 1920, 1080)).toEqual([612, 447, 696, 187])
+  })
+  it('gives an acting sheet the tile itself for a small arrow and a wider window in the same proportions for a large one', () => {
+    expect(actingWindow(70, 462, 320, 1920, 1080)).toEqual([462, 320])
+    expect(actingWindow(227, 462, 320, 1920, 1080)).toEqual([983, 681])
+    expect(actingWindow(900, 462, 320, 1920, 1080)).toEqual([1559, 1080])
+  })
+  it('puts the cursor box round the arrow, whose body lies below and to the right of its tip', () => {
+    expect(ARROW_BODY[0]).toBeGreaterThan(0)
+    expect(ARROW_BODY[1]).toBeGreaterThan(ARROW_BODY[0])
+    const box = cursorBox({ onPage: true, x: 1000, y: 500, screenHeightPx: 220 }) as number[]
+    expect(box).toEqual([901, 445, 330, 330])
+    expect(box[1]).toBeLessThan(500)
+    expect(box[1] + box[3]).toBeGreaterThan(500 + 220)
+    expect(box[0]).toBeLessThan(1000)
+    expect(box[0] + box[2]).toBeGreaterThan(1000 + 220 * 0.7)
+    expect(cursorBox({ onPage: false, x: 0, y: 0, screenHeightPx: 70 })).toBeNull()
   })
   it('shows the left end of a run wider than the window, with ground before it', () => {
     expect(windowRound([128, 400, 1200, 24], 696, 187, 1920, 1080, true)).toEqual([104, 319, 696, 187])

@@ -91,6 +91,12 @@ export function windowRound(box, w, h, width, height, fromLeft = false) {
   return [x, y, w, h]
 }
 
+// The window of an acting sheet: the tile itself while the arrow is small, and a wider one in the tile's proportions once the arrow would not stand whole in it with room round it.
+export function actingWindow(tall, w, h, width, height, room = 3) {
+  const k = Math.min(Math.max(1, (tall * room) / h), width / w, height / h)
+  return [Math.round(w * k), Math.round(h * k)]
+}
+
 const inside = (box, win) => box[0] + box[2] / 2 >= win[0] && box[0] + box[2] / 2 <= win[0] + win[2] && box[1] + box[3] / 2 >= win[1] && box[1] + box[3] / 2 <= win[1] + win[3]
 
 // The two runs of type most at risk on a page at rest: the smallest, and the one with the least contrast outside the first window.

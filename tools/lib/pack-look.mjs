@@ -5,8 +5,8 @@ import sharp from 'sharp'
 import { at, readJson } from './paths.mjs'
 import { openSession, readCanvas, stillFrom } from './capture.mjs'
 import { around, filmPlan, spread, stepOf, timeLabel } from './film-plan.mjs'
-import { cursorBox } from './image.mjs'
-import { cut, out, riskyType, strip, windowRound } from './pack-build.mjs'
+import { ARROW_BODY, cursorBox } from './image.mjs'
+import { actingWindow, cut, out, riskyType, strip, windowRound } from './pack-build.mjs'
 
 const GROUND = '#1b1b1d'
 const GAP = 8
@@ -492,21 +492,22 @@ export async function buildLook({ cfg, session, files, built, about, tier, log, 
   for (const f of files.filter((x) => x.kind === 'acting-sheet')) {
     const places = await session.page.evaluate((frames) => frames.map((i) => window.showcase.filmState(i).cursor), f.frames)
     const tall = Math.max(...places.map((c) => c.screenHeightPx))
-    const xs = places.map((c) => c.x)
-    const ys = places.map((c) => c.y)
-    const still = Math.max(...xs) - Math.min(...xs) <= actW - tall * 2.4 && Math.max(...ys) - Math.min(...ys) <= ACT.tileH - tall * 2.4
+    const [winW, winH] = actingWindow(tall, actW, ACT.tileH, hd.width, hd.height)
+    const xs = places.map((c) => c.x + c.screenHeightPx * ARROW_BODY[0])
+    const ys = places.map((c) => c.y + c.screenHeightPx * ARROW_BODY[1])
+    const still = Math.max(...xs) - Math.min(...xs) <= winW - tall * 2.4 && Math.max(...ys) - Math.min(...ys) <= winH - tall * 2.4
     const mid = [(Math.max(...xs) + Math.min(...xs)) / 2, (Math.max(...ys) + Math.min(...ys)) / 2]
     const tiles = []
     const windows = []
     for (let i = 0; i < f.frames.length; i++) {
       const png = await frameOf(f.frames[i], hd, 'draft')
-      const c = still ? mid : [places[i].x, places[i].y]
-      const win = windowRound(point(c[0], c[1]), actW, ACT.tileH, hd.width, hd.height)
+      const c = still ? mid : [xs[i], ys[i]]
+      const win = windowRound(point(c[0], c[1]), winW, winH, hd.width, hd.height)
       tiles.push({ png: await cut(png, win), label: '' })
       windows.push(win)
     }
-    built.set(f.name, await sheetOf(tiles, { edge, columns: ACT.columns, tileW: actW, tileH: ACT.tileH, labels: false }))
-    about.set(f.name, { unit: f.unit, state: f.state, frames: f.frames, windows, windowFollowsTheArrow: !still, format: hd.id, tier: 'draft' })
+    built.set(f.name, await sheetOf(tiles, { edge, columns: ACT.columns, tileW: actW, tileH: ACT.tileH, labels: false, exact: winW === actW }))
+    about.set(f.name, { unit: f.unit, state: f.state, frames: f.frames, windows, windowFollowsTheArrow: !still, shownAt: Math.round((actW / winW) * 1000) / 1000, format: hd.id, tier: 'draft' })
     log(`${f.name}: the acting state ${f.state}`)
   }
 
