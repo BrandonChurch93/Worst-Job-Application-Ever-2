@@ -88,6 +88,7 @@ Branch `agent/type`. Looks branch `agent/type-looks`. Part made real: `type`.
 | 28 | `npm run still -- --key step1-fire --tier review --format hd --force` | soft ink for subline and helper, first value: 92 87 80 against 105 100 94, ink 46 45 42 against 56 53 50 |
 | 29 | the same | ink `0x302e2b`, soft `0x67625c`: 50 48 45 and 97 91 85; six crops beside the approved image looked at |
 | 30 | `npm run still -- --key step1-fire --tier review --format hd --force` | numerals on metal as flat matte print: at 8x beside the approved numeral the lit lower wall is gone and the numeral reads as one dark shape |
+| 31 | `npm run still -- --key step1-fire --tier review --format uhd` (53.7 s, 747,688 triangles, 482 draw calls) | at 3840 the helper (18 px), the subline, the value under the glass and the legends are sharp and even; nothing to change |
 Checks that are not tuning looks: `--key tier-corporate` and `--key table-wide` at draft (the signs of the table, flat and standing, are all set by this maker), `--id rest-step1 --diag type`, one draft still in each of the seven beats of step 1, one of each of `--page marketing`, `step2`, `boss`, `decision`.
 
 ## What I learned
@@ -101,10 +102,12 @@ Checks that are not tuning looks: `--key tier-corporate` and `--key table-wide` 
 - `npm run still -- --key step1-fire --format hd --tier draft`: 3.7 s, 155,896 triangles, 305 draw calls. With the stand-in type: 3.2 s, 84,708 triangles, 303 draw calls.
 - `npm run still -- --key step1-fire --format uhd --tier review --force`: 19.6 s, same triangles and draw calls.
 - `npm run still -- --id rest-step1 --diag type`: 2.4 s, 47,401 triangles, 137 draw calls, every run inside its box.
+- With every part real (main at 1d29720 and this branch): `npm run still -- --key step1-fire --format hd --tier review --force` 21.2 s, 747,688 triangles, 482 draw calls for the whole page; the same at uhd 53.7 s; `npm run still -- --id rest-step1 --diag type --tier draft --format hd --force` 2.5 s, 294,995 triangles, 295 draw calls.
 - Textures of the part: none, 0 MB.
 - `npm run measure -- --unit step1` on main 77d4dc7 with this branch: M4 pass, 103 runs, smallest 18 px, least contrast 4.64. M2 and M3 are red there and are not type: M2 counts pixels of a `map`, which type has none of; M3 is the fine detail of the whole key. `npm run gate -- --phase 3 --only G11`: pass.
 - Shimmer: the regions of the title, the subline, the Resume label and the helper line differ by 0 between `--at 0.3` and `--at 0.6` of `step1.firstName` at hd draft.
 
 ## Seen and not mine
 
-- On `step1-fire.png` and `page-look.png` the "Browse files" chip is dark graphite with light type. The layout gives a chip of tone `metal` with type of tone `ink`, so I engrave it dark. If the chip is to be dark, its label needs tone `inkLight` in `src/pages/step1/layout.ts`.
+- The chip: settled. A chip or a button of tone `metal` is the smoked capsule of the surface and its label is set light whatever tone the layout gives.
+- Sizes, MEASURED in the approved images at 1920 (width of a line of dark pixels, ours as the ruler) and sent to the Builder, who owns `TYPE` in `src/shell/parts.ts`: the title is inter-600 at 46 to 48 px there (ours 28), the heading inter-display-600 at 40 to 43 px (ours 60), the chip label about 22 px (ours 18). Labels, subline, value, legends and "Enter" are within 5%.
