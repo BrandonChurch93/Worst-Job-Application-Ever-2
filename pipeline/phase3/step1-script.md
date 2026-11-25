@@ -47,6 +47,8 @@ Times are seconds of the unit. Events are read from a run of the stage in film m
 17. The number row and Backspace show their legends as soon as the well is open, as keyboard_smith reported them blank at 1.76 s.
 18. The film camera in the tug pushes in slowly to the key picture at 25.125 (a window 1051 px wide) and then right in to a window 600 px wide by 26.8, as the sheet gets short. The Builder asked for the cursor as large in frame as approved. MEASURED: with a window 716 px wide at the key picture M3 falls to 0.6134 against 0.8 (fine detail of `key:step1-tug`); at 1051 px it is 0.806. So the key picture keeps the wide window and the push comes after it.
 19. The end: whole at 30.18, a double take, it leans toward the message and freezes (shocked) for 0.4 s, stamps once in anger at 30.8, sags at 31.18 and starts its trudge toward the form as the page turns at 31.5.
+20. The slabs have weight: the keys under a slab go down their full travel and stay down, the slab sinks with them and does not bounce, the deck shakes 4.5 px in its plane for 0.25 s and the caps within 460 px hop up to 15 px, the nearest first.
+21. The form empties for a cause on the page: the focus ring lights on Email, its caret runs back along the line and takes the address a character at a time, then Last name, then First name, 0.28 s each, while the cursor lies in strips. No letter is a shape of its own, so the letters do not drop: that would need the type owner.
 
 ## Agreed with other owners
 
