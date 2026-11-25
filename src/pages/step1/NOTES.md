@@ -21,7 +21,7 @@ The logic, the script of the film and the numbers the makers of the real parts r
 
 - `Turrets` is a class that stands alone: no page state, its own `save()` and `load()`.
 - A hit burns the last letter, knocks the cursor back and calls `hurt('burn')`.
-- The film takes exactly one hit, at "Perpl", at 7.08 s of the unit, after two proud pauses of more than a second each. Between them, at 6.0 s, is the frame of the approved image: two bolts in the air, one 130 px from the cursor, the cursor in the air on its way from W to the 4. The turrets rise `TIMES.turretDelay` (0.72 s) into the first name, in the film and live. The letter burns away 0.2 s after the hit (`SINGE`). It then types the name again to the end.
+- The film takes exactly one hit, at "Perpl", at 7.14 s of the unit, after two proud pauses of more than a second each. Between them, at 6.0 s, is the frame of the approved image: two bolts in the air, one 106 px from the cursor, the cursor in the air on its way from W up and to the right to the 5. The turrets rise `TIMES.turretDelay` (0.72 s) into the first name, in the film and live. The letter burns away 0.2 s after the hit (`SINGE`). It then types the name again to the end.
 - A bolt that lands within 130 px of the cursor makes it flinch, unless it is being proud.
 - For 0.9 s after a hit the cursor cannot be hit again.
 
@@ -69,7 +69,7 @@ The logic, the script of the film and the numbers the makers of the real parts r
 
 - `fire.ts` gives `makeTurrets()` and `drawFire(out, { typed, pressed, turrets })`: the page with the keyboard up, First name holding `typed`, the keys named in `pressed` down, and the given turrets with their bolts and marks. Key names are those of `keyboard.json`.
 - The cursor grabs the paper by its top right corner, clear of the title.
-- The film camera eases from home to a wide frame of the card and the slot (1200 px wide) between 21.1 s and 22.1 s, pushes in for 2.7 s to a 928 px frame (`TUG_CLOSE`: the whole drop zone with 34 px above it, the slot, the hood and the strips under it) and holds it through the key still at 25.125, then eases home between 27.6 s and 28.9 s. The frames are placed from `ZONE` and `SLOT`. No closer: the fine detail against the approved image (M3) is 1.2816 at this frame and falls under the least at about 850 px. `tests/step1-script.test.ts` holds the cursor at least 70 px inside the frame for the whole tug.
+- The film camera eases from home to a wide frame of the card and the slot (1200 px wide) between 21.1 s and 22.1 s, pushes in for 2.7 s to a 928 px frame (`TUG_CLOSE`: the whole drop zone with 34 px above it, the slot, the hood and the strips under it) and holds it through the key still at 25.125, then eases home between 27.6 s and 28.9 s. The frames are placed from `ZONE` and `SLOT`. No closer: the fine detail against the approved image (M3) is 1.0925 at this frame and falls under the least at about 850 px. `tests/step1-script.test.ts` holds the cursor at least 70 px inside the frame for the whole tug.
 - The end (`END`, seconds after the cursor is whole): a double take at 0.06, a lean toward the message with `shocked` from 0.14, a wind-up and a stamp in `angry` at 0.62, then `exhausted` and a trudge of 0.8 s away from the card from 1.0.
 
 ## For the measures

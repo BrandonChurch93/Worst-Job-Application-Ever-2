@@ -29,7 +29,7 @@ export const FIRST = {
   tap: 1.5,
   keys: [[2.18, 2.56], [2.64, 2.97], [3.06, 3.25], [3.86, 4.1], [4.16, 4.3]] as [number, number][],
   notice: 3.42, dodge: 3.86, cocky: [4.44, 4.68] as [number, number], proud: 4.8,
-  stand: 'w', aside: -34, see: 5.72, flee: [5.84, 6.06] as [number, number], fled: '4', smug: 6.34,
+  stand: 'w', aside: -34, see: 5.72, flee: [5.84, 6.06] as [number, number], fled: '5', smug: 6.34,
   thrown: { x: 190, y: 60 }, shock: [7.18, 7.8] as [number, number],
   after: [[7.8, 8.0], [8.06, 8.3], [8.36, 8.54], [8.6, 8.86], [8.92, 9.1], [9.16, 9.32]] as [number, number][],
   enter: [9.4, 9.6] as [number, number]
