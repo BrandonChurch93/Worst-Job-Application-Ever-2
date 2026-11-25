@@ -57,14 +57,14 @@ export const aluOf = (z: Zone, name = 'alu'): THREE.MeshPhysicalMaterial => {
 
 export const paintOf = (z: Zone, name = 'paint'): THREE.MeshPhysicalMaterial => {
   const src = materials().ceramic
-  return own(lit(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.66, metalness: 0, normalMap: src.normalMap, normalScale: new THREE.Vector2(0.085, 0.085), specularIntensity: 0.55 })), z), `frame.${name}.${z.id}`)
+  return own(lit(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.66, metalness: 0, normalMap: src.normalMap, normalScale: new THREE.Vector2(0.035, 0.035), specularIntensity: 0.55 })), z), `frame.${name}.${z.id}`)
 }
 
-export const steelOf = (z: Zone): THREE.MeshPhysicalMaterial => own(lit(studio(new THREE.MeshPhysicalMaterial({ color: 0xc9cdd1, roughness: 0.17, metalness: 1 })), z), `frame.steel.${z.id}`)
+export const steelOf = (z: Zone): THREE.MeshPhysicalMaterial => own(lit(studio(new THREE.MeshPhysicalMaterial({ color: 0xe2e5e8, roughness: 0.2, metalness: 0.55 })), z), `frame.steel.${z.id}`)
 
 export const screwOf = (z: Zone): THREE.MeshPhysicalMaterial => own(lit(studio(new THREE.MeshPhysicalMaterial({ color: 0xaeb2b6, roughness: 0.32, metalness: 1, vertexColors: true })), z), `frame.screw.${z.id}`)
 
-// Clear plastic with no light passed through it: thin where it is seen straight on, bright where it turns away and wherever a lamp shines in it.
+// Clear plastic with no light passed through it: thin where it is seen straight on, bright where it turns away and wherever a lamp shines in it, with the dark line a clear wall shows just inside its edge.
 export const clearOf = (z: Zone, name = 'clear', base = 0.06): THREE.MeshPhysicalMaterial => {
   const m = studio(new THREE.MeshPhysicalMaterial({ color: 0xdfe8ea, roughness: 0.06, metalness: 0, transparent: true, opacity: base, depthWrite: false, specularIntensity: 1, clearcoat: 1, clearcoatRoughness: 0.04 }))
   const room = m.onBeforeCompile
@@ -72,7 +72,7 @@ export const clearOf = (z: Zone, name = 'clear', base = 0.06): THREE.MeshPhysica
     room.call(m, shader, renderer)
     shader.fragmentShader = shader.fragmentShader.replace(
       '#include <tonemapping_fragment>',
-      'float wjfEdge = pow( 1.0 - abs( dot( normalize( vViewPosition ), normalize( normal ) ) ), 1.6 );\ngl_FragColor.a = clamp( diffuseColor.a + wjfEdge * 0.62 + dot( outgoingLight, vec3( 0.3333 ) ) * 0.45, 0.0, 1.0 );\n#include <tonemapping_fragment>'
+      'float wjfTurn = 1.0 - abs( dot( normalize( vViewPosition ), normalize( normal ) ) );\nfloat wjfEdge = pow( wjfTurn, 1.6 );\nfloat wjfDark = smoothstep( 0.6, 0.78, wjfTurn ) * ( 1.0 - smoothstep( 0.86, 0.96, wjfTurn ) );\ngl_FragColor.rgb *= 1.0 - 0.72 * wjfDark;\ngl_FragColor.a = clamp( diffuseColor.a + wjfEdge * 0.62 + wjfDark * 0.22 + dot( outgoingLight, vec3( 0.3333 ) ) * 0.45, 0.0, 1.0 );\n#include <tonemapping_fragment>'
     )
   }
   m.customProgramCacheKey = () => 'wja-studio-frame-clear'

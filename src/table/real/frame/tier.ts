@@ -7,7 +7,7 @@ import { Screws, TONE, aluOf, mesh, paintOf, screwOf, steelOf } from './mats'
 
 // What the walls of a tier are made to, in page pixels.
 const WALL = { height: 60, seg: 56, chamfer: 2.5, strip: [30, 54] as V2, stripOut: 0.9 }
-const RAIL = { chamfer: 3, channel: 17, channelDepth: 3, ledge: 18, ledgeDrop: 7, gap: 1.2, joint: 1.4, screwStep: 1.5, cradle: 62.5, tubeUp: 48 }
+const RAIL = { reveal: 30, revealWide: 4.5, revealDeep: 2, chamfer: 3, channel: 17, channelDepth: 3, ledge: 18, ledgeDrop: 7, gap: 1.2, joint: 1.4, screwStep: 1.5, cradle: 62.5, tubeUp: 48 }
 const CROSS = { lower: 0.3, upper: 0.12, throat: 0.75, mouth: 1.2, tunnel: 122 }
 
 export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
@@ -49,10 +49,15 @@ export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
     const j = Y(joint)
     return joint > v0 && joint < v1 ? [[Y(v1), j - RAIL.joint / 2], [j + RAIL.joint / 2, Y(v0)]] : [[Y(v1), Y(v0)]]
   }
+  // A fine groove runs along the lane side of each rail, a little under its top: the line an extrusion's die leaves.
+  const reveal = (x: number, into: 1 | -1): V2[] => {
+    const y = H - RAIL.reveal
+    return H > RAIL.reveal + 30 ? [[x, y], [x + into * RAIL.revealDeep, y - 1.2], [x + into * RAIL.revealDeep, y - RAIL.revealWide + 1.2], [x, y - RAIL.revealWide]] : []
+  }
   const land0 = xb + c
   const land1 = xa - RAIL.ledge
   const mid = (land0 + land1) / 2
-  const left: V2[] = [[xb, 0], [xb, H - c], [land0, H], [mid - RAIL.channel - 3, H], [mid - RAIL.channel, H - RAIL.channelDepth], [mid + RAIL.channel, H - RAIL.channelDepth], [mid + RAIL.channel + 3, H], [land1, H], [land1, H - RAIL.ledgeDrop], [xa - c, H - RAIL.ledgeDrop], [xa, H - RAIL.ledgeDrop - c], [xa, 0]]
+  const left: V2[] = [[xb, 0], [xb, H - c], [land0, H], [mid - RAIL.channel - 3, H], [mid - RAIL.channel, H - RAIL.channelDepth], [mid + RAIL.channel, H - RAIL.channelDepth], [mid + RAIL.channel + 3, H], [land1, H], [land1, H - RAIL.ledgeDrop], [xa - c, H - RAIL.ledgeDrop], [xa, H - RAIL.ledgeDrop - c], ...reveal(xa, -1), [xa, 0]]
   for (const [y0, y1] of lengths(0, TH, 5.6)) A.prism(left, [0, y0], [0, y1], TONE.alu)
   P.box(xb, xa, Y(5.6) - RAIL.joint / 2, Y(5.6) + RAIL.joint / 2, 0, H - 4, TONE.gap, { along: [0, 1, 0] })
   for (let v = RAIL.screwStep / 2; v < TH; v += RAIL.screwStep) screws.add(mid, Y(v), H - RAIL.channelDepth, 1, turnOf(mid, v))
@@ -63,7 +68,7 @@ export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
   const dive = k === 2 ? feed[4]![1] - TIER_Y[k]! - 0.6 : TH
   const half = Math.sqrt(RAIL.cradle * RAIL.cradle - RAIL.tubeUp * RAIL.tubeUp)
   const t0 = Math.asin(half / RAIL.cradle)
-  const right: V2[] = [[xc, 0], [xc, H - c], [xc + c, H], [xf - half, H]]
+  const right: V2[] = [[xc, 0], ...reveal(xc, 1).reverse(), [xc, H - c], [xc + c, H], [xf - half, H]]
   for (let i = 1; i < 12; i++) {
     const t = -t0 + (2 * t0 * i) / 12
     right.push([xf + RAIL.cradle * Math.sin(t), H + RAIL.tubeUp - RAIL.cradle * Math.cos(t)])
