@@ -40,6 +40,8 @@ export async function filmPlan(c, M) {
   return { source: 'the stage', fps, seconds, events, lines }
 }
 
+const planSha = (plan) => sha(Buffer.from(JSON.stringify([plan.seconds, plan.fps, plan.events, plan.lines])))
+
 export async function makeMix(P, c, M, out, name) {
   const plan = await filmPlan(c, M)
   const { sounds, absent } = keptSounds(P, M)
@@ -52,7 +54,7 @@ export async function makeMix(P, c, M, out, name) {
   fs.writeFileSync(out, bytes)
   const fix = (v) => (Number.isFinite(v) ? Number(v.toFixed(2)) : null)
   const record = {
-    mix: name, file: path.basename(out), source: plan.source, seconds: plan.seconds, frames: Math.round(plan.seconds * plan.fps), fps: plan.fps, sampleRate: c.audio.sampleRate, bits: M.levels.MIX.bitsPerSample,
+    mix: name, file: path.basename(out), source: plan.source, planSha256: planSha(plan), seconds: plan.seconds, frames: Math.round(plan.seconds * plan.fps), fps: plan.fps, sampleRate: c.audio.sampleRate, bits: M.levels.MIX.bitsPerSample,
     samples: result.sound.channels[0].length, silent: result.mastered.silent, lufs: fix(result.mastered.lufs), truePeakDb: fix(result.mastered.truePeakDb), gainDb: fix(result.mastered.gainDb),
     targetLufs: c.audio.filmLoudnessLufs, ceilingDb: c.audio.truePeakDb, duckDb: c.audio.duckDb, bytes: bytes.length, sha256: sha(bytes),
     events: plan.events.length, mappedEvents: plan.events.filter((e) => M.cues.eventCues[e.name]).length, cuesLaid: result.placed.filter((p) => p.kind === 'cue').length, linesLaid: result.placed.filter((p) => p.kind === 'line').length,
@@ -263,6 +265,8 @@ export async function soundChecks(a, P, c, M) {
   else {
     const r = readJson(mixRecord)
     const plan = await filmPlan(c, M)
+    if (r.planSha256 !== planSha(plan)) add('A9', 'not yet', `${rel(mixRecord)} was made from an older list of events than ${plan.source} holds now. Run npm run mix`)
+    else {
     const late = []
     const seen = new Set()
     for (const e of plan.events) {
@@ -294,6 +298,7 @@ export async function soundChecks(a, P, c, M) {
     const where = plan.source === 'cut/CUTLIST.json' ? 'Checked against the frames of cut/CUTLIST.json, the list cut/CUES.md is written from' : 'cut/CUES.md is not written yet: checked against the events of the stage'
     if (late.length || lineProblems.length) add('A9', 'fail', `${[...late.slice(0, 5).map((x) => `no cue within ${c.audio.contactSyncFrames} frame of ${x}`), ...lineProblems.slice(0, 5)].join('; ')}. ${where}`, { lateEvents: late.length, lineProblems: lineProblems.length })
     else add('A9', laid ? 'pass' : 'not yet', laid ? `${r.cuesLaid} cues start on the frame of their event and ${r.linesLaid} of ${timed.length} lines start inside their beat and end ${c.audio.lineGapSeconds} s before the next. ${where}` : `no sound is kept, so the mix lays nothing. ${where}`)
+    }
   }
 
   const lineRecords = records.filter((r) => r.kind === 'line')

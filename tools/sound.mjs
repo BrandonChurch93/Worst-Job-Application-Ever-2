@@ -661,12 +661,20 @@ export async function siteInBrowser(dir = at('dist'), o = {}) {
         }
         return top
       }
+      const changed = async (from) => {
+        let m = await mark()
+        for (let i = 0; i < 40 && m.pressed === from.pressed; i++) {
+          await page.waitForTimeout(100)
+          m = await mark()
+        }
+        await page.waitForTimeout(150)
+        return m
+      }
       const steps = []
       const first = await mark()
       steps.push({ how: 'as found', pressed: first.pressed, level: await loud() })
       await page.mouse.click(first.x, first.y)
-      await page.waitForTimeout(400)
-      const second = await mark()
+      const second = await changed(first)
       steps.push({ how: 'pointer click', pressed: second.pressed, level: await loud() })
       let tabs = 0
       let reached = false
@@ -677,12 +685,10 @@ export async function siteInBrowser(dir = at('dist'), o = {}) {
       }
       if (!reached) await page.focus('[data-sound-check]')
       await page.keyboard.press('Enter')
-      await page.waitForTimeout(400)
-      const third = await mark()
+      const third = await changed(second)
       steps.push({ how: 'Enter key', pressed: third.pressed, level: await loud() })
       await page.keyboard.press('Space')
-      await page.waitForTimeout(400)
-      const fourth = await mark()
+      const fourth = await changed(third)
       steps.push({ how: 'Space key', pressed: fourth.pressed, level: await loud() })
       out.control = {
         name: first.name, width: first.width, height: first.height, reachedByTab: reached, tabs: reached ? tabs : null, steps,
