@@ -1,35 +1,35 @@
 {
   "folder": "marketing",
-  "pushed": "2026-11-25T09:31:34.208Z",
-  "commit": "307fdf799ce6db5fc668b08c819a1088f974e4b5",
+  "pushed": "2026-11-25T10:12:07.799Z",
+  "commit": "57b9edb3853fb99d2cb2fc156e6d8941103801a5",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key marketing-top: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-25T09:27:25.835Z",
+      "caption": "Perk card half open at 2.30 s: one slab turning over about its long axis in its well, the cursor riding the raised edge",
+      "time": "2026-11-25T10:12:05.966Z",
       "by": "marketing",
-      "from": "out/work/compare/compare-marketing-top.jpg"
+      "from": "out/work/stills/slab-0.05-preview-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Still key-marketing-top-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-25T09:29:07.582Z",
+      "caption": "Perk card past half at 2.51 s: the same slab, its back with the fine print coming up",
+      "time": "2026-11-25T10:12:06.211Z",
       "by": "marketing",
-      "from": "out/work/stills/key-marketing-top-hd-draft.png"
+      "from": "out/work/stills/slab-0.085-preview-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Still iface-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-25T09:31:17.468Z",
+      "caption": "Perk card open and at rest at 2.78 s: the layout's own card, as in the key marketing-top",
+      "time": "2026-11-25T10:12:06.440Z",
       "by": "marketing",
-      "from": "out/work/stills/iface-hd-draft.png"
+      "from": "out/work/stills/slab-0.13-preview-draft.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Live first screen with the interface of main 26ad6cc: sound and film link sit above the top bar, clear of the page",
-      "time": "2026-11-25T09:31:33.055Z",
+      "caption": "Film sheet 0 to 6.67 s: the three cards turn over one by one",
+      "time": "2026-11-25T10:12:06.671Z",
       "by": "marketing",
-      "from": "out/work/stills/iface-1200.png"
+      "from": "out/work/sheets/sheet-unit-marketing-1of2-preview-draft.jpg"
     }
   ]
 }
