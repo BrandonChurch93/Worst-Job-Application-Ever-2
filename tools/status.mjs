@@ -5,7 +5,7 @@ import path from 'node:path'
 import { args, at, config, readJson, writeJson } from './lib/paths.mjs'
 import { buildInfo } from './lib/hashes.mjs'
 import { readLooks } from './lib/looks.mjs'
-import { sectionBody } from './lib/progress.mjs'
+import { getStatus, sectionBody } from './lib/progress.mjs'
 import { writeStatus } from './lib/status-core.mjs'
 
 const a = args()
@@ -68,6 +68,19 @@ if (!pictures.length) {
   if (!pictures.length) pictures.push({ file: at('references', 'approved', 'contact-sheet.jpg'), caption: 'The approved images. Nothing new has been rendered since the last status' })
 }
 
+function defaultLinks() {
+  const address = (key) => {
+    try {
+      return (String(getStatus(key)).match(/https?:\/\/\S+/) ?? [null])[0]
+    } catch {
+      return null
+    }
+  }
+  const site = address('Site URL')
+  const review = address('Review page')
+  return [site ? `Site: ${site}` : 'Site: not published yet', review ? `Review page: ${review}` : 'Review page: not published yet']
+}
+
 const numberNow = (() => {
   if (a.number) return Number(a.number)
   const m = sectionBody('Latest pictures').match(/^Status (\d+)/m)
@@ -75,7 +88,8 @@ const numberNow = (() => {
 })()
 const lines = (spec.lines ?? []).map((l) => l.replaceAll('{phaseTime}', phaseTime).replaceAll('{runTime}', runTime))
 if (!lines.some((l) => l.includes(runTime))) lines.push(`Time used: ${runTime}. In this phase: ${phaseTime}.`)
-const out = writeStatus({ number: numberNow, phase: a.phase ?? which.join(' ').replace('--', ''), time, lines, pictures: pictures.slice(0, max), links: spec.links ?? [] })
+const links = spec.links ?? defaultLinks()
+const out = writeStatus({ number: numberNow, phase: a.phase ?? which.join(' ').replace('--', ''), time, lines, pictures: pictures.slice(0, max), links })
 for (const p of pictures.slice(0, max)) shown.add(path.relative(at(), path.resolve(p.file)))
 writeJson(shownFile, [...shown])
 console.log(tick.trim())
@@ -83,6 +97,6 @@ console.log('')
 console.log(`Status ${numberNow}`)
 for (const l of lines) console.log(l)
 for (const s of out.shown) console.log(`picture: out/stills/status/${s.name} (${s.w}x${s.h}) ${s.caption}`)
-for (const l of spec.links ?? []) console.log(l)
+for (const l of links) console.log(l)
 console.log(`gallery: ${out.galleryFile}`)
 if (rendering && !a['no-render']) console.log('status: a render job is running in this VM, so nothing was rendered for this status')

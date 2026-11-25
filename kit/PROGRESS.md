@@ -5,7 +5,7 @@ The Builder's memory. Read it at the start of every task and after every compact
 ## Status
 
 - Build: in progress
-- Phase: 0
+- Phase: 1
 - Review: not reached
 - Review round: none
 - Review round step: none
@@ -25,20 +25,19 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 5, 2026-11-25T07:06Z, Phase 0.
+Status 6, 2026-11-25T07:11Z, Phase 0.
 
-1. `out/stills/status/01-spike-beside-approved.jpg`: The approved page look on the left, the spike on the right at the same framing. The spike is a stand-in that proves the engine, not the look: it is too warm, lit too flat, the orange is pale, the glass has no bright rim and the buttons have no numbers or rail. The look is built in Phase 3.
-2. `out/stills/status/02-review-page-published.jpg`: The published review page, opened from the hosted copy in a fresh browser. It holds the latest status pictures, links into the site, and empty places for the sound board, the films, the card, the comparisons and the motion sheets.
+1. `out/stills/status/01-spike-crops.jpg`: Crops of the spike at native size, as the harness now cuts them for every still: the cursor, the buttons, the field, the smallest type, a contact shadow and a glass edge. Stand-in materials, not the look.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 0, tick 18 at 2026-11-25T07:06:57Z, allowance: build
-time used in this phase: 1.57 h of its box of 3.00 h
-time used under the allowance in force: 1.57 h of 36.00 h allowed
-time used: 1.57 of 36.00 hours before the review
+clock: phase 0, tick 21 at 2026-11-25T07:11:31Z, allowance: build
+time used in this phase: 1.65 h of its box of 3.00 h
+time used under the allowance in force: 1.65 h of 36.00 h allowed
+time used: 1.65 of 36.00 hours before the review
 extra rounds: yes
 half point: reached
 box end: not reached
@@ -50,8 +49,8 @@ minutes since the last status: 0
 
 | Phase | State | Started | Done | Commit | Gate evidence |
 | --- | --- | --- | --- | --- | --- |
-| 0 Ground truth | in progress | 2026-11-25T05:32Z | | | |
-| 1 The rough cut | not started | | | | |
+| 0 Ground truth | done | 2026-11-25T05:32Z | 2026-11-25T07:11Z | f38580d and the gate commit after it | G1, G2, G3, G4, G8, G9, G10 pass on the final build (`out/work/gate/gate-phase-0.json`, 7 of 7). Pushed. Published and opened on the hosted copy (`out/work/hosted/hosted.json`). Records: workspace, tools, voice, pause mark UNKNOWN for lack of credits, prompt screen skill, terms, hosting limits, pinned versions, render budget, inline display, repo is public, polling test, physics between VMs equal, PSNR between three VMs identical. Statuses 1 to 6 |
+| 1 The rough cut | in progress | 2026-11-25T07:11Z |  |  |  |
 | 2 Engine and blockout | not started | | | | |
 | 3 The look lock | not started | | | | |
 | 4 The other pages | not started | | | | |
@@ -248,10 +247,12 @@ One line each: the date, the decision, the reason, and the config key if one was
 - 2026-11-25. Startup validation now also names these keys when one is missing, because code reads them: `budget.afterReviewHours`, `budget.reserveHours`, `budget.reviewRoundHours`, `budget.continueHours`, `budget.extendHours`, `budget.statusMaxGapMinutes`, `export.files`, `film.hookSeconds`, `status.maxPictures`, `status.minGapMinutes`, `scale.sizes`, `scale.grid`, `scale.heights`, `scale.kinds`, `live.quality`, `lookLockUnit`. The list grows with every key the code comes to read.
 - 2026-11-25. The review page is built after the build for the workspace hosting, because the build empties `dist/`. A build for `host.name` is a fresh build without it.
 - 2026-11-25. Shadows: lamps that cast shadows give diffuse light only, and the highlights come from the studio's reflection. Reason: a lamp's own sharp highlight ignores the lamp's size, and the reflection carries the shape of one large soft key. The key is moved over its area per sample and the fill over a half sphere per sample, so both shadows are soft by averaging.
-- 2026-11-25T06:57:23Z. The built files with a hash in their name go to `dist/build/`, not `dist/assets/`, so the long cache lifetime in `vercel.json` covers only them and never the web asset set under `dist/assets/`, whose names carry no hash.
+- 2026-11-25T06:57:23Z. The built files with a hash in their name go to `dist/bundle/`, not `dist/assets/` (and not `dist/build/`, a folder name the workspace hosting does not upload), so the long cache lifetime in `vercel.json` covers only them and never the web asset set under `dist/assets/`, whose names carry no hash.
 - 2026-11-25T06:57:23Z. Hosting here. The workspace's hosting gives a private address that only Brandon can reach, and it is updated in place at every publish. A permanent public address on this hosting can only be made after the visitor picks its name in a form, and this build asks no questions, so none is made: the public home of the site stays `host.name`, as the kit plans. Listed under "For Brandon to decide".
 - 2026-11-25T06:57:23Z. What this hosting does to a site, STATED by its guide and to be MEASURED at the first publish: a script may fetch text files only (JSON, JS, HTML); a binary file fetched by script is redirected and fails, while pictures, video and sound loaded through page elements work. No local storage of any kind. Links out of the site open a new tab. So: geometry and type ship as JSON, textures load through image elements, the physics library is the build with its code inlined, and the sound pack is one that a page element or a text file can carry. This is decided now so no page is built on a loader that works on one host and not the other.
 - 2026-11-25T07:06:40Z. Two addresses, not one. The kit expects the review page at `<url>/review.html`. The workspace hosting opens one entry file for each published folder, so the site is published from `dist/` and the review page from a copy of it with `review.html` as the entry. Every status gives both. `npm run hosted -- --url <address>` is the check that the published copy plays, and it is run after each publish on the tool's own test address.
+- 2026-11-25T07:10:50Z. The gate and the harness. (1) Every capture command first makes sure `dist/` is the build of the source as it stands, and rebuilds it when a file under `src/`, `config/`, `content/` or `public/` changed, so no picture is ever taken from an old build. (2) G3 runs at `formats.preview` and tier `draft` inside the gate, 12 pictures across two fresh loads and two orders, and reuses the report when it is of the build being gated. The same check was also run at `formats.hd` once in Phase 0 and passed. (3) G10 loads the site with the non-portable extensions switched off and with float targets switched off, and counts as expected the one warning the site prints when it falls back to half float. Any other warning or error fails it.
+- 2026-11-25T07:10:50Z. Not polished, by the clock. The half point of Phase 0 was reached at 07:02Z before the spike was compared with the approved page look, so the spike stays as it is: a stand-in to measure with. Its differences from the approved image are listed in Status 5 and belong to Phase 3.
 
 ## Notes from Brandon
 
@@ -273,7 +274,8 @@ none
 
 Each with its unit, its severity, the still, the critic's words, what was tried and what to try next. A part that ended on a fallback is listed here with the step of the chain that ended it.
 
-none
+- Unit `site`, severity medium. The path for a machine with neither float extension (8 bit targets) is written and not tested: no browser here lacks both extensions, and G10 covers the half float path only. Known risk: the sample target is marked sRGB while the renderer writes linear values, so the post pass may decode twice, and the environment prefilter needs half float. To do in Phase 2 with the engine: force the 8 bit path with a switch, render the spike, and compare it with the float picture by PSNR. Until then the site prints a warning on that path.
+- Unit `site`, severity low. Whether a binary file fetched by script loads on the permanent published address is UNKNOWN (only Brandon can open it). The loaders use text files and page elements, which work either way. The probe page in Phase 5 reports it when Brandon opens it.
 
 ## Counts
 

@@ -1,6 +1,5 @@
 # Status pictures
 
-Time: 2026-11-25T07:06Z. Phase 0, status 5.
+Time: 2026-11-25T07:11Z. Phase 0, status 6.
 
-1. `01-spike-beside-approved.jpg`: The approved page look on the left, the spike on the right at the same framing. The spike is a stand-in that proves the engine, not the look: it is too warm, lit too flat, the orange is pale, the glass has no bright rim and the buttons have no numbers or rail. The look is built in Phase 3.
-2. `02-review-page-published.jpg`: The published review page, opened from the hosted copy in a fresh browser. It holds the latest status pictures, links into the site, and empty places for the sound board, the films, the card, the comparisons and the motion sheets.
+1. `01-spike-crops.jpg`: Crops of the spike at native size, as the harness now cuts them for every still: the cursor, the buttons, the field, the smallest type, a contact shadow and a glass edge. Stand-in materials, not the look.
