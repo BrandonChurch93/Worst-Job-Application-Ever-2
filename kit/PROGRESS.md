@@ -25,24 +25,25 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 3, 2026-11-25T06:17Z, Phase 0.
+Status 4, 2026-11-25T06:41Z, Phase 0.
 
-1. `out/stills/status/01-physics-test.jpg`: The physics test: six balls for ten seconds at 240 steps a second, with three bumpers and a flipper. The same hash came back from Node, from the browser and from a second VM.
+1. `out/stills/status/01-spike-first.jpg`: First picture from the engine: the spike scene at 1920 by 1080, 8 samples. Every part of it is a stand-in to measure with, and the look is not tuned yet.
+2. `out/stills/status/02-review-page.jpg`: The review page builder, run on test inputs: the header and latest status, the open it row and the sound board, the cue list, the card. The colour bars are test films.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 0, tick 12 at 2026-11-25T06:35:15Z, allowance: build
-time used in this phase: 1.04 h of its box of 3.00 h
-time used under the allowance in force: 1.04 h of 36.00 h allowed
-time used: 1.04 of 36.00 hours before the review
+clock: phase 0, tick 13 at 2026-11-25T06:41:27Z, allowance: build
+time used in this phase: 1.15 h of its box of 3.00 h
+time used under the allowance in force: 1.15 h of 36.00 h allowed
+time used: 1.15 of 36.00 hours before the review
 extra rounds: yes
 half point: not reached
 box end: not reached
 budget report: not due
-minutes since the last status: 17
+minutes since the last status: 0
 ```
 
 ## Phases
@@ -218,6 +219,11 @@ One line each: the date, the decision, the reason, and the config key if one was
 - 2026-11-25. The ElevenLabs quota is used up (1 credit left of 131000, reset 2026-12-23). Decision: record it, say it in the next status so Brandon can add credits while the build runs, read the quota again at the start of every phase and before sound work, and keep every sound system ready. Sound never blocks. No other voice is picked for the narrator.
 - 2026-11-25. New pictures that feed shipped files are made with the OpenAI image models where they can do the job. Reason: no model's terms clearly allow both uses, and ownership of output is stated most plainly for those models. Nothing approved is swapped or made again.
 - 2026-11-25. `critics.maxImageLongEdgePx` stays 1400. Reason: measured, 1400 px arrives untouched and larger pictures are downscaled to about 1430 px.
+- 2026-11-25. The agent `harness_test_writer` finished inside its limit. Its branch `agent/tests` is merged. Checked by the Builder, not taken from the report: `npx vitest run` gives 198 passing of 198 in four files, and `npx tsc --noEmit` is clean.
+- 2026-11-25. Clock, three edges found by the tests, left as written. (1) In Phase 5, `box end: reached` comes before `budget report: due` only while the earlier phases overran by no more than the Phase 5 reserve. The code follows both written rules, and either line stops polishing, so nothing is changed. (2) Time between the last tick and `--review` or `--continue` is not counted. Reason: `kit/10-KICKOFF.md` says the time counted is working time. (3) `status overdue` switches on whole minutes.
+- 2026-11-25. Startup validation now also names these keys when one is missing, because code reads them: `budget.afterReviewHours`, `budget.reserveHours`, `budget.reviewRoundHours`, `budget.continueHours`, `budget.extendHours`, `budget.statusMaxGapMinutes`, `export.files`, `film.hookSeconds`, `status.maxPictures`, `status.minGapMinutes`, `scale.sizes`, `scale.grid`, `scale.heights`, `scale.kinds`, `live.quality`, `lookLockUnit`. The list grows with every key the code comes to read.
+- 2026-11-25. The review page is built after the build for the workspace hosting, because the build empties `dist/`. A build for `host.name` is a fresh build without it.
+- 2026-11-25. Shadows: lamps that cast shadows give diffuse light only, and the highlights come from the studio's reflection. Reason: a lamp's own sharp highlight ignores the lamp's size, and the reflection carries the shape of one large soft key. The key is moved over its area per sample and the fill over a half sphere per sample, so both shadows are soft by averaging.
 
 ## Notes from Brandon
 
@@ -268,9 +274,7 @@ none
 
 Each with its name, its folders, its branch and its looks branch, when it started, its limit, and what it has pushed.
 
-Each with its name, its folders, its branch and its looks branch, when it started, its limit, and what it has pushed.
-
-- `harness_test_writer`, a build agent in its own sandbox VM. Files: `tests/` and `tools/review.mjs`. Branch `agent/tests`, no looks branch (it returns one look with its report). Started 2026-11-25T06:27Z, limit 35 minutes. Job: the unit tests for the clock and for startup validation, and the review page builder. Pushed so far: nothing.
+none
 
 ## Rounds
 
