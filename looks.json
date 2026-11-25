@@ -1,35 +1,35 @@
 {
   "folder": "step2",
-  "pushed": "2026-11-25T09:04:20.580Z",
-  "commit": "b9c8ec9d6bfabaa0aaf36bdd535515618ab01842",
+  "pushed": "2026-11-25T09:29:49.490Z",
+  "commit": "8c554a694898236881b6dc148b211f0a061d2b23",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "step2 at rest, 1.0 s: three closed rows, note and grey Continue",
-      "time": "2026-11-25T09:04:18.954Z",
-      "by": "step2",
-      "from": "out/work/stills/key-step2-rest-preview-draft.png"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "step2.dial at 3.2 s: the row open, the dial up out of its tray, the cursor on hole 5",
-      "time": "2026-11-25T09:04:19.184Z",
+      "caption": "Key step2-dial at 3.2 s: (555) 01 dialled, cursor at the stop",
+      "time": "2026-11-25T09:29:47.657Z",
       "by": "step2",
       "from": "out/work/stills/key-step2-dial-preview-draft.png"
     },
     {
-      "file": "look-3.jpg",
-      "caption": "step2.slot at 12.2 s: the date recorded, the machine pays out coins at the cursor",
-      "time": "2026-11-25T09:04:19.398Z",
+      "file": "look-2.jpg",
+      "caption": "Key step2-crank at 15.2 s: three turns, three segments lit, the handle starts to run away",
+      "time": "2026-11-25T09:29:47.896Z",
       "by": "step2",
-      "from": "out/work/stills/step2-step2_slot-0p7-preview-draft.png"
+      "from": "out/work/stills/key-step2-crank-preview-draft.png"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Sheet machines: dial, slot with the lever down, crank with the meter above it",
+      "time": "2026-11-25T09:29:48.138Z",
+      "by": "step2",
+      "from": "out/work/stills/sheet-machines-preview-draft.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "step2.crank at 15.2 s: two rows filled, the cursor cranking, the meter at 20 percent",
-      "time": "2026-11-25T09:04:19.619Z",
+      "caption": "Key step2-rest at 1.0 s: three rows at rest",
+      "time": "2026-11-25T09:29:48.368Z",
       "by": "step2",
-      "from": "out/work/stills/key-step2-crank-preview-draft.png"
+      "from": "out/work/stills/key-step2-rest-preview-draft.png"
     }
   ]
 }
