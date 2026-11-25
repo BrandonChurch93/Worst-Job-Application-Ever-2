@@ -1,35 +1,35 @@
 {
   "folder": "lights",
-  "pushed": "2026-11-25T16:31:41.349Z",
-  "commit": "915b3b4a9e6b54603e28b188e7c57346dcb03447",
+  "pushed": "2026-11-25T17:19:48.353Z",
+  "commit": "57bc1ed2d662a76a99f774e002613bc0d3fb2474",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-table-wide-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-25T16:29:02.627Z",
+      "caption": "Key tier-office: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-25T17:19:46.555Z",
       "by": "lights",
-      "from": "out/work/stills/key-table-wide-hd-draft.png"
+      "from": "out/work/compare/compare-tier-office.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Still key-tier-corporate-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-25T16:29:34.011Z",
+      "caption": "Table wide beside the approved image, every owner's part merged: pools at each lamp, coloured tiers, dark surround inside the frame",
+      "time": "2026-11-25T17:19:46.817Z",
       "by": "lights",
-      "from": "out/work/stills/key-tier-corporate-hd-draft.png"
+      "from": "out/work/compare/compare-table-wide.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Key table-wide: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-25T16:31:39.816Z",
+      "caption": "Street beside the approved image: dusk rail lamps, sodium lane lamps, red and blue beacons, lit windows",
+      "time": "2026-11-25T17:19:47.059Z",
       "by": "lights",
-      "from": "out/work/compare/compare-table-wide.jpg"
+      "from": "out/work/compare/compare-tier-street.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Table wide beside the approved image, with the real frame: the steel walls take a scallop of light from each lamp",
-      "time": "2026-11-25T16:31:40.078Z",
+      "caption": "Office beside the approved image: green white rail lamps, bumper lamps, warm lane lamps, clear tube not washed out",
+      "time": "2026-11-25T17:19:47.304Z",
       "by": "lights",
-      "from": "out/work/compare/compare-table-wide.jpg"
+      "from": "out/work/compare/compare-tier-office.jpg"
     }
   ]
 }
