@@ -1,35 +1,35 @@
 {
   "folder": "boss",
-  "pushed": "2026-11-25T09:18:21.354Z",
-  "commit": "fc7d2af7279ed757e08ab3299ab7b8e39d873501",
+  "pushed": "2026-11-25T09:23:47.593Z",
+  "commit": "5ed659c39bc3e8d9ecfe566ff11841fb8e9c5ae0",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Step 4 verify: the card, the ticked box about to be clicked, Submit in its socket",
-      "time": "2026-11-25T09:18:19.508Z",
+      "caption": "Still still-rest-step4-preview-draft: draft tier, preview, view beauty",
+      "time": "2026-11-25T09:19:00.777Z",
       "by": "boss",
-      "from": "out/work/stills/boss-boss_verify-0p74-preview-draft.png"
+      "from": "out/work/stills/still-rest-step4-preview-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Step 4 pop-ups: two pop-ups in one column shield the boss, a slab in flight, health bar under the title",
-      "time": "2026-11-25T09:18:19.751Z",
+      "caption": "Step 4 after the last push: a dart with its trail at 13.5 s, the banner clear above the boss at 22.6 and 23.3 s, the last stand at 25.3 s",
+      "time": "2026-11-25T09:23:45.939Z",
       "by": "boss",
-      "from": "out/work/stills/boss-boss_popups-0p45-preview-draft.png"
+      "from": "out/work/filmD.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Step 4 last stand: the session expired banner over the boss, the cursor hurt and healing",
-      "time": "2026-11-25T09:18:19.989Z",
+      "caption": "Step 4 at 4.7 s: the cursor steps aside so the answer under the rule can be read",
+      "time": "2026-11-25T09:23:46.176Z",
       "by": "boss",
-      "from": "out/work/stills/boss-boss_lastStand-0p2-preview-draft.png"
+      "from": "out/work/stills/boss-boss_verify-0p94-preview-draft.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Step 4 press: the fallen Submit with its line under it and the cursor on it",
-      "time": "2026-11-25T09:18:20.220Z",
+      "caption": "Step 4 at 6.1 s: the cursor goes to press Submit as the button cracks out of its socket",
+      "time": "2026-11-25T09:23:46.417Z",
       "by": "boss",
-      "from": "out/work/stills/boss-boss_press-0p75-preview-draft.png"
+      "from": "out/work/stills/boss-boss_unfold-0p275-preview-draft.png"
     }
   ]
 }
