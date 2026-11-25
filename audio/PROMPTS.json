@@ -1,67 +1,216 @@
 {
   "about": "The prompt of every sound effect, before the line that ends every effect prompt is added to it (audio/RECIPE.md). Each is the cue's row of kit/03-METHOD.md section 12, made concrete: the material, the size, the distance. tools/lib/sound-batch.mjs reads this file, asks each cue at its length in audio.sfx through npm run credits, a variant as its own call with the same prompt, and a loop with the loop setting. The prompt as it was sent is kept beside each take in audio/TAKES.json.",
   "cues": {
-    "room-tone": { "prompt": "The air of a quiet empty carpeted office room at night, a very soft steady hush of air, no hum, no clicks, no events, nothing else", "loop": true },
-    "step": { "prompt": "One soft tap of a small glossy enamel coated metal tip on a glazed ceramic tile, a single light tick, very close microphone" },
-    "card-flip": { "prompt": "A stiff card turning over on a hard surface" },
-    "button-press": { "prompt": "One large glossy plastic push button the size of a palm pressed down and bottoming out with a solid low clunk, a single press, close microphone" },
-    "page-turn": { "prompt": "A heavy ceramic slab the size of a tabletop turning over, a low rush of air, then one solid knock as it seats, close microphone" },
-    "keyboard-rise": { "prompt": "A brushed aluminium deck sliding up out of a slot on smooth rails and stopping with a soft metal stop, close microphone" },
-    "key-press": { "prompt": "One mechanical keyboard key cap pressed down and released, a single crisp plastic click, very close microphone" },
-    "turret-rise": { "prompt": "A small metal hatch flipping open, then a small servo motor lifting a part with a short whirr, close microphone" },
-    "bolt-fire": { "prompt": "One short tight energy bolt shot, a quick dry zap like a small toy laser, small, not a cannon, a single shot" },
-    "bolt-hit": { "prompt": "One hot sharp crack of a small energy bolt striking hard plastic, a single dry snap with a tiny sizzle" },
-    "sizzle": { "prompt": "A small burn hole fizzing out on plastic, a quiet short sizzle that dies away" },
-    "keys-shuffle": { "prompt": "Many plastic keyboard key caps clattering quickly as they change places on a metal tray" },
-    "slab-drop": { "prompt": "One very heavy ceramic block landing flat on a ceramic floor, a single deep hard thud, close microphone" },
-    "paper-slide": { "prompt": "One sheet of paper sliding across a hard smooth desk, a single short soft hiss" },
-    "shredder": { "prompt": "A small office paper shredder running steadily under load, its motor grinding through paper, a constant whirr", "loop": true },
-    "paper-strain": { "prompt": "A sheet of paper pulled tight between two grips, creaking and straining, quiet dry fibrous creaks" },
-    "strips-zip": { "prompt": "Many thin paper strips zipping back together quickly, a fast rising papery zip" },
-    "row-open": { "prompt": "A small drawer mechanism sliding open and stopping with a soft thunk, a single short movement" },
-    "dial-wind": { "prompt": "A rotary telephone dial pulled round by a finger against its spring, a single ratcheting pull" },
-    "dial-return": { "prompt": "A rotary telephone dial let go and running back to rest, a fast mechanical purr ending in a soft stop" },
-    "lever-pull": { "prompt": "A mechanical slot machine lever pulled down and released, a heavy metal ratchet and a spring clunk" },
-    "reels-spin": { "prompt": "Three mechanical slot machine reels spinning with a whirr and stopping one after another with three separate clunks" },
-    "coins": { "prompt": "A burst of metal coins pouring out and scattering on a hard metal tray, bright clinking" },
-    "crank-turn": { "prompt": "One turn of a small geared metal hand crank, ratcheting clicks, a single turn" },
-    "crank-runaway": { "prompt": "A small geared metal hand crank spinning faster and faster out of control, its ratchet clicks speeding up into a rattle" },
-    "flatten": { "prompt": "A short wet flat comic splat, something soft slapped flat on a hard tile, a single splat" },
-    "peel-up": { "prompt": "Something thin and rubbery peeling off a smooth glass surface and popping back to shape, a short peel then a small pop" },
-    "ball-seal": { "prompt": "A short suck of air, then a hard clear plastic shell snapping shut with one firm click" },
-    "tube-run": { "prompt": "A hard plastic ball rolling fast down a hollow plastic tube, a rattling hollow roll" },
-    "lights-down": { "prompt": "The lights of a big room dimming, a low electrical hum falling in pitch and one relay clack" },
-    "power-on": { "prompt": "A pinball machine powering up, relays clacking, a transformer hum rising, then a short start up chime struck on mechanical bells" },
-    "plunger": { "prompt": "A pinball spring plunger pulled back and released, the spring twanging and the rod knocking into a hard plastic ball" },
-    "bumper": { "prompt": "One pinball pop bumper firing, a sharp solenoid thwack with a single bell ding, one hit" },
-    "scoop-kick": { "prompt": "A ball dropping into a hole in a pinball table and kicked out by a solenoid, a clunk then a sharp kick" },
-    "flasher": { "prompt": "One electrical relay click and the snap of a bright flash lamp firing, a single short tick and snap" },
-    "ramp-roll": { "prompt": "A hard plastic ball rolling fast along a steel wire ramp of a pinball table, a ringing metallic roll" },
-    "ball-drop": { "prompt": "One steel ball dropping onto a wooden board, a single hard knock" },
-    "flipper": { "prompt": "One pinball flipper firing, a single sharp solenoid snap and the slap of a plastic bat" },
-    "doors-slam": { "prompt": "Two heavy glass doors slamming shut together, one deep slam with a rattle of glass in metal frames" },
-    "drain": { "prompt": "A pinball rolling down the drain and dropping into the trough with a clunk, with a falling run of mechanical bells" },
-    "tier-fall": { "prompt": "A ball dropping down a short metal chute and landing on a wooden board, a metallic rattle then a knock" },
-    "lift": { "prompt": "A ball sucked up a tube by air, a rising whoosh of air ending in a soft pop at the top" },
-    "spiral": { "prompt": "A hard plastic ball rolling round and round down a plastic spiral ramp, slowing as it goes" },
-    "spinner": { "prompt": "A pinball spinner target hit hard and spinning down, fast metallic ticking that slows" },
-    "drop-target": { "prompt": "One pinball drop target knocked down, a single flat plastic clack" },
-    "sling": { "prompt": "One pinball slingshot firing, a single short rubber snap" },
-    "ball-open": { "prompt": "A hard clear plastic shell cracking open and its two halves rattling on a hard floor" },
-    "checkbox": { "prompt": "A small crisp tick, a tiny plastic switch clicking once" },
-    "button-crack": { "prompt": "Hard plastic and ceramic cracking and splintering as a large button tears loose from its housing" },
-    "unfold": { "prompt": "Metal plates and joints unfolding and locking into place one after another with small servo motors whirring, a machine putting itself together" },
-    "boss-loop": { "prompt": "A short loop of tense, slightly silly fight music, a fast plucked string and staccato bassoon figure over a snare drum march, comic cartoon chase tension, steady tempo", "loop": true },
-    "dart-fire": { "prompt": "One tiny bright pew, almost a click, a very small toy dart launcher firing once" },
-    "dart-hit": { "prompt": "One small dart striking a metal plate, a tiny bright tick with a spark" },
-    "slab-fire": { "prompt": "One heavy stone block launched hard by a machine, a deep pneumatic thump and a short rush of air" },
-    "popup": { "prompt": "A flat rigid plastic panel snapping upright on a spring hinge, a single quick flap and clack" },
-    "power-down": { "prompt": "A machine losing power, its motors winding down in pitch, ending with one last metal clank" },
-    "hold-music": { "prompt": "Bland, tinny telephone hold music heard through a small phone speaker, a simple cheerful electric piano tune, thin and narrow", "loop": true },
-    "letter-drop": { "prompt": "One sheet of paper landing softly on a wooden desk, a single light papery pat" },
-    "stamp": { "prompt": "A big rubber stamp slammed down on paper on a hard wooden desk, a single heavy thump" },
-    "ui-tick": { "prompt": "A small soft tick, a single tiny soft click" },
-    "key-tap": { "prompt": "A single soft tap on a laptop key, quiet and dull" },
-    "ui-send": { "prompt": "A short soft send tone, a single gentle rising pop like a message being sent" }
+    "room-tone": {
+      "prompt": "The air of a quiet empty carpeted office room at night, a very soft steady hush of air, no hum, no clicks, no events, nothing else",
+      "loop": true
+    },
+    "step": {
+      "prompt": "One soft tap of a small glossy enamel coated metal tip on a glazed ceramic tile, a single light tick, very close microphone"
+    },
+    "card-flip": {
+      "prompt": "A stiff card turning over on a hard surface"
+    },
+    "button-press": {
+      "prompt": "One large glossy plastic push button the size of a palm pressed down and bottoming out with a solid low clunk, a single press, close microphone"
+    },
+    "page-turn": {
+      "prompt": "A heavy stone slab the size of a tabletop flipping over on a pivot, a low whoosh of displaced air, then one solid ceramic knock as it seats, close microphone, no body sounds",
+      "earlier": [
+        {
+          "prompt": "A heavy ceramic slab the size of a tabletop turning over, a low rush of air, then one solid knock as it seats, close microphone",
+          "takes": "take 1",
+          "why": "take 1 was heard twice as a person belching"
+        }
+      ]
+    },
+    "keyboard-rise": {
+      "prompt": "A brushed aluminium deck sliding up out of a slot on smooth rails and stopping with a soft metal stop, close microphone"
+    },
+    "key-press": {
+      "prompt": "One mechanical keyboard key cap pressed down and released, a single crisp plastic click, very close microphone"
+    },
+    "turret-rise": {
+      "prompt": "A small metal hatch flipping open, then a small servo motor lifting a part with a short whirr, close microphone"
+    },
+    "bolt-fire": {
+      "prompt": "One short tight energy bolt shot, a quick dry zap like a small toy laser, small, not a cannon, a single shot"
+    },
+    "bolt-hit": {
+      "prompt": "One hot sharp crack of a small energy bolt striking hard plastic, a single dry snap with a tiny sizzle"
+    },
+    "sizzle": {
+      "prompt": "A small burn hole fizzing out on plastic, a quiet short sizzle that dies away"
+    },
+    "keys-shuffle": {
+      "prompt": "Many plastic keyboard key caps clattering quickly as they change places on a metal tray"
+    },
+    "slab-drop": {
+      "prompt": "One very heavy ceramic block landing flat on a ceramic floor, a single deep hard thud, close microphone"
+    },
+    "paper-slide": {
+      "prompt": "One sheet of paper sliding across a hard smooth desk, a single short soft hiss"
+    },
+    "shredder": {
+      "prompt": "A small office paper shredder running steadily under load, its motor grinding through paper, a constant whirr",
+      "loop": true
+    },
+    "paper-strain": {
+      "prompt": "A sheet of paper pulled tight between two grips, creaking and straining, quiet dry fibrous creaks"
+    },
+    "strips-zip": {
+      "prompt": "Many thin paper strips snapping back together side by side in one quick run, a fast rising papery flutter and rustle, paper only, no metal, no zipper",
+      "earlier": [
+        {
+          "prompt": "Many thin paper strips zipping back together quickly, a fast rising papery zip",
+          "takes": "take 1",
+          "why": "take 1 was heard twice as a metal zipper"
+        }
+      ]
+    },
+    "row-open": {
+      "prompt": "A small drawer mechanism sliding open and stopping with a soft thunk, a single short movement"
+    },
+    "dial-wind": {
+      "prompt": "A rotary telephone dial pulled round by a finger against its spring, a single ratcheting pull"
+    },
+    "dial-return": {
+      "prompt": "A rotary telephone dial let go and running back to rest, a fast mechanical purr ending in a soft stop"
+    },
+    "lever-pull": {
+      "prompt": "A mechanical slot machine lever pulled down and released, a heavy metal ratchet and a spring clunk"
+    },
+    "reels-spin": {
+      "prompt": "Three mechanical slot machine reels spinning with a whirr and stopping one after another with three separate clunks"
+    },
+    "coins": {
+      "prompt": "A burst of metal coins pouring out and scattering on a hard metal tray, bright clinking"
+    },
+    "crank-turn": {
+      "prompt": "One turn of a small geared metal hand crank, ratcheting clicks, a single turn"
+    },
+    "crank-runaway": {
+      "prompt": "A small geared metal hand crank spinning faster and faster out of control, its ratchet clicks speeding up into a rattle"
+    },
+    "flatten": {
+      "prompt": "A short wet flat comic splat, something soft slapped flat on a hard tile, a single splat"
+    },
+    "peel-up": {
+      "prompt": "Something thin and rubbery peeling off a smooth glass surface and popping back to shape, a short peel then a small pop"
+    },
+    "ball-seal": {
+      "prompt": "A short suck of air, then a hard clear plastic shell snapping shut with one firm click"
+    },
+    "tube-run": {
+      "prompt": "A hard plastic ball rolling fast down a hollow plastic tube, a rattling hollow roll"
+    },
+    "lights-down": {
+      "prompt": "The lights of a big room dimming, a low electrical hum falling in pitch and one relay clack"
+    },
+    "power-on": {
+      "prompt": "A pinball machine powering up, relays clacking, a transformer hum rising, then a short start up chime struck on mechanical bells"
+    },
+    "plunger": {
+      "prompt": "A pinball spring plunger pulled back and released, the spring twanging and the rod knocking into a hard plastic ball"
+    },
+    "bumper": {
+      "prompt": "One pinball pop bumper firing, a sharp solenoid thwack with a single bell ding, one hit"
+    },
+    "scoop-kick": {
+      "prompt": "A ball dropping into a hole in a pinball table and kicked out by a solenoid, a clunk then a sharp kick"
+    },
+    "flasher": {
+      "prompt": "One electrical relay click and the snap of a bright flash lamp firing, a single short tick and snap"
+    },
+    "ramp-roll": {
+      "prompt": "A hard plastic ball rolling fast along a steel wire ramp of a pinball table, a ringing metallic roll"
+    },
+    "ball-drop": {
+      "prompt": "One steel ball dropping onto a wooden board, a single hard knock"
+    },
+    "flipper": {
+      "prompt": "One pinball flipper firing, a single sharp solenoid snap and the slap of a plastic bat"
+    },
+    "doors-slam": {
+      "prompt": "Two heavy glass doors slamming shut together, one deep slam with a rattle of glass in metal frames"
+    },
+    "drain": {
+      "prompt": "A pinball rolling down the drain and dropping into the trough with a clunk, with a falling run of mechanical bells"
+    },
+    "tier-fall": {
+      "prompt": "A ball dropping down a short metal chute and landing on a wooden board, a metallic rattle then a knock"
+    },
+    "lift": {
+      "prompt": "A ball sucked up a tube by air, a rising whoosh of air ending in a soft pop at the top"
+    },
+    "spiral": {
+      "prompt": "A hard plastic ball rolling round and round down a plastic spiral ramp, slowing as it goes"
+    },
+    "spinner": {
+      "prompt": "A pinball spinner target hit hard and spinning down, fast metallic ticking that slows"
+    },
+    "drop-target": {
+      "prompt": "One pinball drop target knocked down, a single flat plastic clack"
+    },
+    "sling": {
+      "prompt": "One pinball slingshot firing, a single short rubber snap"
+    },
+    "ball-open": {
+      "prompt": "A hard clear plastic shell cracking open and its two halves rattling on a hard floor"
+    },
+    "checkbox": {
+      "prompt": "A small crisp tick, a tiny plastic switch clicking once"
+    },
+    "button-crack": {
+      "prompt": "A thick ceramic plate and hard plastic cracking and breaking apart as a large button is torn out of its housing, sharp cracks then small falling fragments",
+      "earlier": [
+        {
+          "prompt": "Hard plastic and ceramic cracking and splintering as a large button tears loose from its housing",
+          "takes": "take 1",
+          "why": "take 1 was heard as a buckle snapping shut and as velcro"
+        }
+      ]
+    },
+    "unfold": {
+      "prompt": "Metal plates and joints unfolding and locking into place one after another with small servo motors whirring, a machine putting itself together"
+    },
+    "boss-loop": {
+      "prompt": "A short loop of tense, slightly silly fight music, a fast plucked string and staccato bassoon figure over a snare drum march, comic cartoon chase tension, steady tempo",
+      "loop": true
+    },
+    "dart-fire": {
+      "prompt": "One tiny bright pew, almost a click, a very small toy dart launcher firing once"
+    },
+    "dart-hit": {
+      "prompt": "One small dart striking a metal plate, a tiny bright tick with a spark"
+    },
+    "slab-fire": {
+      "prompt": "One heavy stone block launched hard by a machine, a deep pneumatic thump and a short rush of air"
+    },
+    "popup": {
+      "prompt": "A flat rigid plastic panel snapping upright on a spring hinge, a single quick flap and clack"
+    },
+    "power-down": {
+      "prompt": "A machine losing power, its motors winding down in pitch, ending with one last metal clank"
+    },
+    "hold-music": {
+      "prompt": "Bland, tinny telephone hold music heard through a small phone speaker, a simple cheerful electric piano tune, thin and narrow",
+      "loop": true
+    },
+    "letter-drop": {
+      "prompt": "One sheet of paper landing softly on a wooden desk, a single light papery pat"
+    },
+    "stamp": {
+      "prompt": "A big rubber stamp slammed down on paper on a hard wooden desk, a single heavy thump"
+    },
+    "ui-tick": {
+      "prompt": "A small soft tick, a single tiny soft click"
+    },
+    "key-tap": {
+      "prompt": "A single soft tap on a laptop key, quiet and dull"
+    },
+    "ui-send": {
+      "prompt": "A short soft send tone, a single gentle rising pop like a message being sent"
+    }
   }
 }

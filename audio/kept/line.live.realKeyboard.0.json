@@ -1,0 +1,182 @@
+{
+  "id": "line.live.realKeyboard.0",
+  "kind": "live-line",
+  "cue": null,
+  "variant": null,
+  "class": "voice",
+  "loop": false,
+  "beat": null,
+  "liveKey": "realKeyboard",
+  "group": "realKeyboard",
+  "describes": null,
+  "index": 0,
+  "words": "A real keyboard. / How optimistic.",
+  "text": "A real keyboard. / How optimistic.",
+  "prompt": null,
+  "settings": {
+    "speed": 0.7,
+    "stability": 0.75,
+    "breakSeconds": 1.1,
+    "sent": "A real keyboard. <break time=\"1.1s\" /> How optimistic.",
+    "call": 133
+  },
+  "askedSeconds": null,
+  "cost": "19",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "3407c412ca48e92e8bcce044846e7ac88fce3a2fd19633dda7960b54d6102a66",
+    "filed": "2026-11-25T18:30:18.169Z",
+    "measured": {
+      "seconds": 3.808,
+      "start": 0.032,
+      "end": 3.666,
+      "peakDb": -4.14,
+      "rmsDb": -25.01,
+      "lufs": -22.62,
+      "truePeakDb": -3.95,
+      "low": 0.582,
+      "mid": 0.202,
+      "high": 0.216,
+      "tailDb": -22.04,
+      "hits": 4,
+      "hitsAt": [
+        {
+          "start": 0.04,
+          "end": 1.192,
+          "peakDb": -12.19
+        },
+        {
+          "start": 2.462,
+          "end": 2.848,
+          "peakDb": -10.91
+        },
+        {
+          "start": 2.976,
+          "end": 3.512,
+          "peakDb": -4.14
+        },
+        {
+          "start": 3.59,
+          "end": 3.632,
+          "peakDb": -18.59
+        }
+      ]
+    },
+    "line": {
+      "words": 5,
+      "seconds": 3.634,
+      "wordsPerSecond": 1.376,
+      "maxWordsPerSecond": 1.6,
+      "pauseMarks": 1,
+      "pausesFound": 1,
+      "pauses": [
+        1.258
+      ],
+      "paceHolds": true,
+      "pausesHold": true,
+      "room": null,
+      "fits": true
+    }
+  },
+  "chain": {
+    "trimStart": 0.034,
+    "trimEnd": 3.666,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 80,
+    "levelMeasure": "lufs",
+    "levelDb": -18,
+    "gainDb": 4.9,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 3.632,
+    "start": 0,
+    "end": 3.61,
+    "peakDb": 0.71,
+    "rmsDb": -20.9,
+    "lufs": -18,
+    "truePeakDb": 0.94,
+    "low": 0.502,
+    "mid": 0.238,
+    "high": 0.26,
+    "tailDb": -19.67,
+    "hits": 4,
+    "hitsAt": [
+      {
+        "start": 0.006,
+        "end": 0.448,
+        "peakDb": -6.82
+      },
+      {
+        "start": 0.51,
+        "end": 1.16,
+        "peakDb": -7.21
+      },
+      {
+        "start": 2.428,
+        "end": 2.816,
+        "peakDb": -8.19
+      },
+      {
+        "start": 2.942,
+        "end": 3.478,
+        "peakDb": 0.71
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
+    "asks": 6,
+    "whole": 1,
+    "transcript": "A real keyboard. How optimistic.",
+    "transcripts": [
+      "A real keyboard. How optimistic.",
+      "A real keyboard. How optimistic.",
+      "A real keyboard. How optimistic."
+    ],
+    "transcriptAgreed": "3 of 3",
+    "attitudes": [
+      "sarcastic and cynical"
+    ],
+    "accents": [
+      "American"
+    ],
+    "pitches": [
+      "low"
+    ],
+    "whisper": null,
+    "whisperVotes": "0 yes, 1 no",
+    "laugh": null,
+    "laughVotes": "0 yes, 1 no",
+    "warmth": null,
+    "warmthVotes": "0 yes, 1 no",
+    "excitement": null,
+    "excitementVotes": "0 yes, 1 no",
+    "unimpressedAndSmug": null,
+    "unimpressedAndSmugVotes": "1 yes, 0 no",
+    "basis": [
+      "The evaluation is based on the inherently sarcastic and cynical wording of the provided text.",
+      "Since only a text transcript was provided, the vocal characteristics are inferred from the sarcastic and dismissive nature of the words.",
+      "The speaker's low pitch and flat, deadpan delivery convey a distinct lack of warmth and a highly sarcastic tone."
+    ],
+    "heardRaisedByDb": 1.14
+  },
+  "why": "tone not judged: 1 whole answers in 6 asks",
+  "forced": true,
+  "problems": [
+    "the listener left \"whisper\" unanswered",
+    "the listener left \"laugh\" unanswered",
+    "the listener left \"warmth\" unanswered",
+    "the listener left \"excitement\" unanswered",
+    "the listener left \"unimpressedAndSmug\" unanswered"
+  ],
+  "fixture": false,
+  "file": "line.live.realKeyboard.0.wav",
+  "seconds": 3.632,
+  "sha256": "f482603f933d8b1db53b5cad919a8fd6a0358df595d3b4d8b440e64f48e0cac2"
+}

@@ -4,7 +4,7 @@ This build may spend at most 10000 ElevenLabs credits in all, on every call of e
 
 The count is of this build's own calls, never of what the account has left: the account is shared with other builds. Every call goes through `npm run credits`, which writes its row here before it returns and makes no call that would pass the limit. A sound effect is never asked for without its length. `kit/addenda/001-sound-budget-and-narrator.md` sets these rules. This file is written by the tool from `audio/CREDITS.json`.
 
-Running total: 1917 of 10000. Calls: 125.
+Running total: 2524 of 10000. Calls: 160.
 
 ## Rates
 
@@ -140,3 +140,38 @@ Running total: 1917 of 10000. Calls: 125.
 | 123 | 2026-11-25T18:18:28Z | POST /v1/sound-generation | ui-tick take 1 | 0.5 s for a cue of 0.08 s | HTTP 200, 2.3 s | 6 | reported by the response | 1905 |
 | 124 | 2026-11-25T18:18:31Z | POST /v1/sound-generation | key-tap take 1 | 0.5 s for a cue of 0.1 s | HTTP 200, 2.4 s | 6 | reported by the response | 1911 |
 | 125 | 2026-11-25T18:18:34Z | POST /v1/sound-generation | ui-send take 1 | 0.5 s for a cue of 0.3 s | HTTP 200, 2.2 s | 6 | reported by the response | 1917 |
+| 126 | 2026-11-25T18:30:09Z | POST /v1/text-to-speech | line.live.idle.0 take 1, breaks of 1.3 s | 105 characters, stability 0.75, speed 0.7 | HTTP 200, 1.1 s | 37 | reported by the response | 1954 |
+| 127 | 2026-11-25T18:30:10Z | POST /v1/text-to-speech | line.live.idle.1 take 1, breaks of 1.9 s | 58 characters, stability 0.75, speed 0.7 | HTTP 200, 0.9 s | 21 | reported by the response | 1975 |
+| 128 | 2026-11-25T18:30:11Z | POST /v1/text-to-speech | line.live.hit.0 take 1, breaks of 0.0 s | 4 characters, stability 0.75, speed 0.7 | HTTP 200, 0.9 s | 2 | reported by the response | 1977 |
+| 129 | 2026-11-25T18:30:12Z | POST /v1/text-to-speech | line.live.hit.1 take 1, breaks of 0.0 s | 6 characters, stability 0.75, speed 0.7 | HTTP 200, 0.8 s | 3 | reported by the response | 1980 |
+| 130 | 2026-11-25T18:30:13Z | POST /v1/text-to-speech | line.live.hit.2 take 1, breaks of 1.1 s | 49 characters, stability 0.75, speed 0.7 | HTTP 200, 0.9 s | 17 | reported by the response | 1997 |
+| 131 | 2026-11-25T18:30:14Z | POST /v1/text-to-speech | line.live.hit.3 take 1, breaks of 1.0 s | 46 characters, stability 0.75, speed 0.7 | HTTP 200, 0.8 s | 15 | reported by the response | 2012 |
+| 132 | 2026-11-25T18:30:16Z | POST /v1/text-to-speech | line.live.slowTyping.0 take 1, breaks of 1.0 s | 44 characters, stability 0.75, speed 0.7 | HTTP 200, 0.8 s | 15 | reported by the response | 2027 |
+| 133 | 2026-11-25T18:30:17Z | POST /v1/text-to-speech | line.live.realKeyboard.0 take 1, breaks of 1.1 s | 54 characters, stability 0.75, speed 0.7 | HTTP 200, 1.0 s | 19 | reported by the response | 2046 |
+| 134 | 2026-11-25T18:30:18Z | POST /v1/text-to-speech | line.live.tugLost.0 take 1, breaks of 1.1 s | 53 characters, stability 0.75, speed 0.7 | HTTP 200, 0.9 s | 18 | reported by the response | 2064 |
+| 135 | 2026-11-25T18:30:19Z | POST /v1/text-to-speech | line.live.pinball.flipper.0 take 1, breaks of 1.0 s | 92 characters, stability 0.75, speed 0.7 | HTTP 200, 1.1 s | 31 | reported by the response | 2095 |
+| 136 | 2026-11-25T18:30:20Z | POST /v1/text-to-speech | line.live.boss.verify.0 take 1, breaks of 1.4 s | 50 characters, stability 0.75, speed 0.7 | HTTP 200, 0.9 s | 17 | reported by the response | 2112 |
+| 137 | 2026-11-25T18:30:22Z | POST /v1/text-to-speech | line.live.boss.slow.0 take 1, breaks of 1.4 s | 56 characters, stability 0.75, speed 0.7 | HTTP 200, 0.9 s | 20 | reported by the response | 2132 |
+| 138 | 2026-11-25T18:30:23Z | POST /v1/text-to-speech | line.live.skip.0 take 1, breaks of 1.0 s | 88 characters, stability 0.75, speed 0.7 | HTTP 200, 1.0 s | 29 | reported by the response | 2161 |
+| 139 | 2026-11-25T18:30:24Z | POST /v1/text-to-speech | line.live.watchFilm.0 take 1, breaks of 1.1 s | 60 characters, stability 0.75, speed 0.7 | HTTP 200, 0.8 s | 22 | reported by the response | 2183 |
+| 140 | 2026-11-25T18:44:16Z | POST /v1/text-to-speech | line.step1.firstName.1 take 2, breaks of 1.0 s | 79 characters, stability 0.75, speed 0.7 | HTTP 200, 1.0 s | 25 | reported by the response | 2208 |
+| 141 | 2026-11-25T18:44:17Z | POST /v1/text-to-speech | line.step2.crank.0 take 2, breaks of 1.0 s | 88 characters, stability 0.75, speed 0.7 | HTTP 200, 1.0 s | 29 | reported by the response | 2237 |
+| 142 | 2026-11-25T18:44:18Z | POST /v1/text-to-speech | line.live.idle.1 take 2, breaks of 1.9 s | 58 characters, stability 0.75, speed 0.7 | HTTP 200, 1.0 s | 21 | reported by the response | 2258 |
+| 143 | 2026-11-25T18:44:20Z | POST /v1/text-to-speech | line.live.hit.0 take 2, breaks of 0.0 s | 4 characters, stability 0.75, speed 0.7 | HTTP 200, 1.0 s | 2 | reported by the response | 2260 |
+| 144 | 2026-11-25T18:44:21Z | POST /v1/text-to-speech | line.live.boss.slow.0 take 2, breaks of 1.9 s | 56 characters, stability 0.75, speed 0.7 | HTTP 200, 0.9 s | 20 | reported by the response | 2280 |
+| 145 | 2026-11-25T18:44:23Z | POST /v1/sound-generation | page-turn take 2 | 1.2 s | HTTP 200, 2.9 s | 13 | reported by the response | 2293 |
+| 146 | 2026-11-25T18:44:26Z | POST /v1/sound-generation | slab-drop.2 take 2, variant 2 of 3 | 0.8 s | HTTP 200, 1.4 s | 9 | reported by the response | 2302 |
+| 147 | 2026-11-25T18:44:28Z | POST /v1/sound-generation | strips-zip take 2 | 1 s | HTTP 200, 2.5 s | 11 | reported by the response | 2313 |
+| 148 | 2026-11-25T18:44:31Z | POST /v1/sound-generation | button-crack take 2 | 1 s | HTTP 200, 2.9 s | 11 | reported by the response | 2324 |
+| 149 | 2026-11-25T18:44:34Z | POST /v1/sound-generation | dart-hit.4 take 2, variant 4 of 4 | 0.5 s for a cue of 0.2 s | HTTP 200, 2.3 s | 6 | reported by the response | 2330 |
+| 150 | 2026-11-25T18:44:37Z | POST /v1/sound-generation | popup.1 take 2, variant 1 of 3 | 0.5 s for a cue of 0.4 s | HTTP 200, 1.9 s | 6 | reported by the response | 2336 |
+| 151 | 2026-11-25T18:44:39Z | POST /v1/sound-generation | popup.2 take 2, variant 2 of 3 | 0.5 s for a cue of 0.4 s | HTTP 200, 1.5 s | 6 | reported by the response | 2342 |
+| 152 | 2026-11-25T18:44:53Z | POST /v1/text-to-speech | line.step2.crank.0 take 3, breaks of 1.3 s | 88 characters, stability 0.75, speed 0.7 | HTTP 200, 1.1 s | 29 | reported by the response | 2371 |
+| 153 | 2026-11-25T18:44:54Z | POST /v1/text-to-speech | line.live.idle.1 take 3, breaks of 2.4 s | 58 characters, stability 0.75, speed 0.7 | HTTP 200, 1.0 s | 21 | reported by the response | 2392 |
+| 154 | 2026-11-25T18:44:55Z | POST /v1/text-to-speech | line.live.boss.verify.0 take 2, breaks of 1.4 s | 50 characters, stability 0.75, speed 0.7 | HTTP 200, 1.0 s | 17 | reported by the response | 2409 |
+| 155 | 2026-11-25T18:45:54Z | POST /v1/text-to-speech | line.step1.email.0 take 2, breaks of 0.1 s | 125 characters, stability 0.75, speed 0.7 | HTTP 200, 1.0 s | 40 | reported by the response | 2449 |
+| 156 | 2026-11-25T18:46:20Z | POST /v1/text-to-speech | line.step1.email.0 take 3, breaks of 0.1 s | 125 characters, stability 0.75, speed 0.7 | HTTP 200, 1.1 s | 40 | reported by the response | 2489 |
+| 157 | 2026-11-25T18:47:16Z | POST /v1/sound-generation | slab-drop.3 take 2, variant 3 of 3 | 0.8 s | HTTP 200, 1.6 s | 9 | reported by the response | 2498 |
+| 158 | 2026-11-25T19:03:38Z | POST /v1/sound-generation | slab-drop.3 take 3, variant 3 of 3 | 0.8 s | HTTP 200, 1.7 s | 9 | reported by the response | 2507 |
+| 159 | 2026-11-25T19:03:40Z | POST /v1/sound-generation | strips-zip take 3 | 1 s | HTTP 200, 1.7 s | 11 | reported by the response | 2518 |
+| 160 | 2026-11-25T19:03:42Z | POST /v1/sound-generation | dart-hit.4 take 3, variant 4 of 4 | 0.5 s for a cue of 0.2 s | HTTP 200, 1.9 s | 6 | reported by the response | 2524 |

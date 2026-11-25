@@ -1,0 +1,117 @@
+{
+  "id": "lever-pull",
+  "kind": "cue",
+  "cue": "lever-pull",
+  "variant": null,
+  "class": "mechanism",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A slot machine lever pulled and released",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A mechanical slot machine lever pulled down and released, a heavy metal ratchet and a spring clunk, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.7,
+    "loop": false,
+    "influence": null,
+    "call": 66
+  },
+  "askedSeconds": 0.7,
+  "cost": "8",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "5163205369db745c5374f71e01fb85f64029e806c04c29dc0e49e64f51c23b72",
+    "filed": "2026-11-25T18:15:08.627Z",
+    "measured": {
+      "seconds": 0.68,
+      "start": 0,
+      "end": 0.272,
+      "peakDb": -12.11,
+      "rmsDb": -33.22,
+      "lufs": -29.05,
+      "truePeakDb": -11.54,
+      "low": 0.006,
+      "mid": 0.395,
+      "high": 0.599,
+      "tailDb": -52.62,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.224,
+          "peakDb": -12.11
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.272,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 68,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -10,
+    "gainDb": 2.1,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.272,
+    "start": 0,
+    "end": 0.246,
+    "peakDb": -10,
+    "rmsDb": -30.7,
+    "lufs": -28.33,
+    "truePeakDb": -9.54,
+    "low": 0.005,
+    "mid": 0.395,
+    "high": 0.6,
+    "tailDb": -46.31,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0.004,
+        "end": 0.22,
+        "peakDb": -10
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 5 asks, 3 whole, 2 void",
+    "asks": 5,
+    "whole": 3,
+    "heard": "A mechanical lever is pulled and released. / A very brief mechanical click or snap. / A mechanical lever is pulled down and released.",
+    "madeOf": "Metal / Plastic or metal / Metal and plastic",
+    "events": "1 / 1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 1 no",
+    "basis": [
+      "The audio contains the heavy, spring-loaded mechanical clicking and clanking typical of a slot machine lever being operated.",
+      "The recording is only a fraction of a second long and contains a single click, lacking the duration, ratcheting, and spring noises characteristic of a slot machine lever being fully pulled and released.",
+      "The recording contains the distinct ratcheting sound of a heavy mechanical lever being pulled followed by a spring-loaded clunk upon release."
+    ]
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "lever-pull.wav",
+  "seconds": 0.272,
+  "sha256": "8ac580c9de06e56de1ede371ebc6832257a457af4eb6ca1176ff5c2269875eab"
+}

@@ -414,7 +414,7 @@ export interface ChainRecord {
   levelDb: number
   gainDb: number
   channels: number
-  loop: { crossMs: number; seamStepDb: number; seamLevelDb: number; holds: boolean } | null
+  loop: { crossMs: number; seamStepDb: number; seamLevelDb: number; holds: boolean; pulse?: { seconds: number; strength: number; pulses: number; offBy: number } } | null
 }
 
 export function fadeTimes(lengthSeconds: number): { inMs: number; outMs: number } {
@@ -458,6 +458,65 @@ export function seam(x: Float32Array, sampleRate: number): { stepDb: number; lev
   return { stepDb: usual > 0 ? toDb(step / usual) : step > 0 ? Infinity : -Infinity, levelDb: whole > 0 && near > 0 ? toDb(near / whole) : 0 }
 }
 
+// The steady pulse of a piece of music: the period, between the two limits, at which its onsets line up best,
+// and how well they line up from 0 to 1. Found on the rise of the level, in steps of 2 ms.
+export function pulse(x: Float32Array, sampleRate: number): { seconds: number; strength: number } {
+  const hop = Math.max(1, Math.round((CHAIN.pulseStepMs / 1000) * sampleRate))
+  const win = hop * 5
+  const frames = Math.floor((x.length - win) / hop)
+  if (frames < 8) return { seconds: 0, strength: 0 }
+  const env = new Float64Array(frames)
+  for (let f = 0; f < frames; f++) env[f] = rms(x, f * hop, f * hop + win)
+  const rise = new Float64Array(frames)
+  let total = 0
+  for (let f = 1; f < frames; f++) {
+    rise[f] = Math.max(0, env[f]! - env[f - 1]!)
+    total += rise[f]!
+  }
+  if (!(total > 0)) return { seconds: 0, strength: 0 }
+  const at = (period: number): number => {
+    let re = 0
+    let im = 0
+    const w = (2 * Math.PI * hop) / sampleRate / period
+    for (let f = 1; f < frames; f++) {
+      re += rise[f]! * Math.cos(w * f)
+      im += rise[f]! * Math.sin(w * f)
+    }
+    return Math.hypot(re, im) / total
+  }
+  let best = { seconds: 0, strength: 0 }
+  for (let p = CHAIN.pulseMinSeconds; p <= CHAIN.pulseMaxSeconds; p += 0.0005) {
+    const v = at(p)
+    if (v > best.strength) best = { seconds: p, strength: v }
+  }
+  for (let p = best.seconds - 0.0005; p <= best.seconds + 0.0005; p += 0.00002) {
+    const v = at(p)
+    if (v > best.strength) best = { seconds: p, strength: v }
+  }
+  return best
+}
+
+// The level round the seam of a pulsed loop against the level at every other pulse of it, so that a rest between two notes is not read as a dip.
+export function seamAgainstPulse(x: Float32Array, sampleRate: number, pulseSeconds: number): number {
+  const n = x.length
+  const w = Math.round(0.05 * sampleRate)
+  const period = pulseSeconds * sampleRate
+  const count = Math.round(n / period)
+  if (count < 2 || n < 4 * w) return 0
+  const round2 = (k: number): number => {
+    const c = Math.round(k * period)
+    let sum = 0
+    for (let i = -w; i < w; i++) sum += x[(((c + i) % n) + n) % n]! ** 2
+    return sum / (2 * w)
+  }
+  let others = 0
+  for (let k = 1; k < count; k++) others += round2(k)
+  const near = Math.sqrt(round2(0))
+  const usual = Math.sqrt(others / (count - 1))
+  if (!(usual > 0)) return 0
+  return near > 0 ? toDb(near / usual) : -Infinity
+}
+
 // The one chain every kept sound goes through: trim the silence, a short fade in, a fade out, a low cut, then the level of its class.
 export function chain(input: Sound, o: ChainOptions): { sound: Sound; record: ChainRecord } {
   const sr = input.sampleRate
@@ -474,14 +533,42 @@ export function chain(input: Sound, o: ChainOptions): { sound: Sound; record: Ch
     const first = loudSpans(region, sr, CHAIN.trimStartDb, 0, 0)[0]
     const sounding = loudSpans(region, sr, CHAIN.trimEndDb, 0, 0)
     if (first) start = Math.max(0, first.start - Math.round((CHAIN.preRollMs / 1000) * sr))
+    if (o.cls === 'hit' || (o.cls === 'tick' && o.seconds < CHAIN.contactMaxSeconds)) {
+      const heard = highPass(Float32Array.from(region), sr, CHAIN.lowCutHz)
+      const floor = peak(heard) * db(CHAIN.contactStartDb)
+      let onset = start
+      while (onset < heard.length && Math.abs(heard[onset]!) < floor) onset++
+      if (onset < heard.length) start = Math.max(start, onset - Math.round((CHAIN.contactLeadMs / 1000) * sr))
+    }
     if (sounding.length) end = sounding[sounding.length - 1]!.end
   }
-  const crossWanted = o.loop ? loopCross(o.seconds, sr) : 0
-  const most = Math.round(o.seconds * sr) + crossWanted
+  let crossWanted = o.loop ? loopCross(o.seconds, sr) : 0
+  let most = Math.round(o.seconds * sr) + crossWanted
+  let beat: { seconds: number; strength: number; pulses: number; offBy: number } | null = null
+  if (o.loop && o.cls === 'music') {
+    const found = pulse(region.subarray(start, end), sr)
+    if (found.strength >= CHAIN.pulseMinStrength) {
+      const period = found.seconds * sr
+      const room = Math.min(end - start, Math.round(o.seconds * sr)) - period
+      let pulses = Math.floor(room / period)
+      for (const group of CHAIN.pulseGroups) {
+        if (pulses >= group) {
+          pulses -= pulses % group
+          break
+        }
+      }
+      if (pulses >= 1) {
+        const length = Math.round(pulses * period)
+        crossWanted = Math.round(period)
+        most = length + crossWanted
+        beat = { seconds: round(found.seconds, 4), strength: round(found.strength, 2), pulses, offBy: round(Math.abs(length / period - pulses), 3) }
+      }
+    }
+  }
   let cut: number | null = null
   if (end - start > most) {
     end = start + most
-    cut = o.seconds
+    cut = beat ? round(beat.pulses * beat.seconds) : o.seconds
   }
   channels = channels.map((c) => c.slice(from + start, from + end))
 
@@ -498,8 +585,10 @@ export function chain(input: Sound, o: ChainOptions): { sound: Sound; record: Ch
       cross = made.cross
       return made.out
     })
-    const at = seam(toMono({ sampleRate: sr, channels }), sr)
-    loop = { crossMs: round((cross / sr) * 1000, 1), seamStepDb: round(at.stepDb, 2), seamLevelDb: round(at.levelDb, 2), holds: at.stepDb <= CHAIN.loopSeamMaxStepDb && Math.abs(at.levelDb) <= CHAIN.loopSeamMaxLevelDb }
+    const whole = toMono({ sampleRate: sr, channels })
+    const at = seam(whole, sr)
+    const levelDb = beat ? seamAgainstPulse(whole, sr, beat.seconds) : at.levelDb
+    loop = { crossMs: round((cross / sr) * 1000, 1), seamStepDb: round(at.stepDb, 2), seamLevelDb: round(levelDb, 2), holds: at.stepDb <= CHAIN.loopSeamMaxStepDb && Math.abs(levelDb) <= CHAIN.loopSeamMaxLevelDb && (!beat || beat.offBy <= CHAIN.pulseMaxOffBy), ...(beat ? { pulse: beat } : {}) }
   } else {
     const fin = Math.round((fades.inMs / 1000) * sr)
     const fout = Math.round((fades.outMs / 1000) * sr)

@@ -1,0 +1,117 @@
+{
+  "id": "dart-hit.2",
+  "kind": "cue",
+  "cue": "dart-hit",
+  "variant": 2,
+  "class": "tick",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A small spark on metal",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "One small dart striking a metal plate, a tiny bright tick with a spark, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 110
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "6b54f68ac18175633f2e69cce840ee3073bcc42510df32f5c1940c3b273165a3",
+    "filed": "2026-11-25T18:17:58.873Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0,
+      "end": 0.48,
+      "peakDb": -46.86,
+      "rmsDb": -63.49,
+      "lufs": -55.1,
+      "truePeakDb": -42.51,
+      "low": 0.021,
+      "mid": 0.944,
+      "high": 0.035,
+      "tailDb": -38.29,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.396,
+          "peakDb": -46.86
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.2,
+    "cutToSeconds": 0.2,
+    "fadeInMs": 3,
+    "fadeOutMs": 50,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -16,
+    "gainDb": 31.25,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.2,
+    "start": 0,
+    "end": 0.198,
+    "peakDb": -16,
+    "rmsDb": -28.58,
+    "lufs": -26.85,
+    "truePeakDb": -15.93,
+    "low": 0.005,
+    "mid": 0.961,
+    "high": 0.034,
+    "tailDb": -42.13,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.178,
+        "peakDb": -16
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 2 whole, 1 void",
+    "asks": 3,
+    "whole": 2,
+    "heard": "A single, sharp, high-pitched metallic ping or spark. / A sharp, brief metallic clink or snapping sound.",
+    "madeOf": "metal / Metal",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The recording consists of one brief, high-frequency transient sound that resembles a tiny electrical spark or a light strike on a metallic surface.",
+      "The audio consists of a single, high-frequency metallic snap that sounds like a flint striker creating a spark."
+    ],
+    "heardRaisedByDb": 43.86
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "dart-hit.2.wav",
+  "seconds": 0.2,
+  "sha256": "7d1fbd6e819a3aa55ae9f1ef7d8e0c75fd31189f7534f861219cf77ad08bfd43"
+}

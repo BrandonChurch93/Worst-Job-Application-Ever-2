@@ -1,0 +1,184 @@
+{
+  "id": "line.step1.firstName.1",
+  "kind": "line",
+  "cue": null,
+  "variant": null,
+  "class": "voice",
+  "loop": false,
+  "beat": "step1.firstName",
+  "liveKey": null,
+  "group": null,
+  "describes": null,
+  "index": 1,
+  "words": "Hit. / It keeps typing. / It has bills.",
+  "text": "Hit. / It keeps typing. / It has bills.",
+  "prompt": null,
+  "settings": {
+    "speed": 0.7,
+    "stability": 0.75,
+    "breakSeconds": 1,
+    "sent": "Hit. <break time=\"1.0s\" /> It keeps typing. <break time=\"1.0s\" /> It has bills.",
+    "call": 16
+  },
+  "askedSeconds": null,
+  "cost": "25",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "f1b5a90accf865565227964b9725048ee224af18e18bc096d770e1831687cc98",
+    "filed": "2026-11-25T18:05:39.807Z",
+    "measured": {
+      "seconds": 5.387,
+      "start": 0.026,
+      "end": 5.212,
+      "peakDb": -1.96,
+      "rmsDb": -21.68,
+      "lufs": -18.9,
+      "truePeakDb": -1.9,
+      "low": 0.481,
+      "mid": 0.215,
+      "high": 0.305,
+      "tailDb": -16.91,
+      "hits": 4,
+      "hitsAt": [
+        {
+          "start": 0.04,
+          "end": 0.438,
+          "peakDb": -5.84
+        },
+        {
+          "start": 1.656,
+          "end": 2.498,
+          "peakDb": -1.96
+        },
+        {
+          "start": 2.576,
+          "end": 2.838,
+          "peakDb": -13.39
+        },
+        {
+          "start": 4.06,
+          "end": 5.18,
+          "peakDb": -3.17
+        }
+      ]
+    },
+    "line": {
+      "words": 7,
+      "seconds": 5.186,
+      "wordsPerSecond": 1.35,
+      "maxWordsPerSecond": 1.6,
+      "pauseMarks": 2,
+      "pausesFound": 2,
+      "pauses": [
+        1.21,
+        1.202
+      ],
+      "paceHolds": true,
+      "pausesHold": true,
+      "room": 7.9,
+      "fits": true,
+      "beatSeconds": 8
+    }
+  },
+  "chain": {
+    "trimStart": 0.028,
+    "trimEnd": 5.212,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 80,
+    "levelMeasure": "lufs",
+    "levelDb": -18,
+    "gainDb": 1.34,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 5.184,
+    "start": 0,
+    "end": 5.162,
+    "peakDb": -0.64,
+    "rmsDb": -21.08,
+    "lufs": -18,
+    "truePeakDb": -0.54,
+    "low": 0.395,
+    "mid": 0.249,
+    "high": 0.355,
+    "tailDb": -17.53,
+    "hits": 4,
+    "hitsAt": [
+      {
+        "start": 0.012,
+        "end": 0.41,
+        "peakDb": -2.73
+      },
+      {
+        "start": 1.628,
+        "end": 2.472,
+        "peakDb": -0.64
+      },
+      {
+        "start": 2.548,
+        "end": 2.81,
+        "peakDb": -9.49
+      },
+      {
+        "start": 4.032,
+        "end": 5.134,
+        "peakDb": -2.09
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 6 asks, 2 whole, 4 void",
+    "asks": 6,
+    "whole": 2,
+    "transcript": "Hit. It keeps typing. It has bills.",
+    "transcripts": [
+      "Hit. It keeps typing. It has bills.",
+      "Hit. It keeps typing. It has bills.",
+      "Hit It keeps typing It has bills",
+      "Hit It keeps typing It has bills"
+    ],
+    "transcriptAgreed": "4 of 4",
+    "attitudes": [
+      "deadpan and matter-of-fact",
+      "serious and detached"
+    ],
+    "accents": [
+      "American",
+      "American"
+    ],
+    "pitches": [
+      "middle",
+      "low"
+    ],
+    "whisper": false,
+    "whisperVotes": "0 yes, 2 no",
+    "laugh": false,
+    "laughVotes": "0 yes, 2 no",
+    "warmth": false,
+    "warmthVotes": "0 yes, 2 no",
+    "excitement": false,
+    "excitementVotes": "0 yes, 2 no",
+    "unimpressedAndSmug": false,
+    "unimpressedAndSmugVotes": "0 yes, 2 no",
+    "basis": [
+      "The analysis is based on a neutral, steady delivery of the short sentences without noticeable emotional inflection or vocal variation.",
+      "The analysis is based on the speaker's low-pitched, flat delivery which lacks any warmth or excitement.",
+      "The text describes a mundane, reluctant action driven by financial necessity, which inherently implies a flat, unenthusiastic, and slightly cynical tone.",
+      "The speaker delivers the lines with a flat, deadpan intonation completely devoid of warmth or excitement, resulting in an unimpressed and smug tone."
+    ]
+  },
+  "why": "two whole answers heard no whisper, laugh, warmth or excitement and called it deadpan, but did not answer unimpressed and a little smug; the Builder's ruling of 18:46Z: the listener's tone answers are not evidence",
+  "forced": true,
+  "problems": [
+    "the listener did not hear an unimpressed, slightly smug speaker"
+  ],
+  "fixture": false,
+  "file": "line.step1.firstName.1.wav",
+  "seconds": 5.184,
+  "sha256": "973604d17420de637e4d7a4c856ea11bd5682d44f9803eedc35e673e36fe6eb8"
+}

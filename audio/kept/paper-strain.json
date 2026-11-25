@@ -1,0 +1,116 @@
+{
+  "id": "paper-strain",
+  "kind": "cue",
+  "cue": "paper-strain",
+  "variant": null,
+  "class": "tick",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "Paper pulled tight, creaking",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A sheet of paper pulled tight between two grips, creaking and straining, quiet dry fibrous creaks, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 1.5,
+    "loop": false,
+    "influence": null,
+    "call": 61
+  },
+  "askedSeconds": 1.5,
+  "cost": "17",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "8c907a29d1ff83201dda1d0e865d1f9a6b48562fc8b5feb3b12dabf92d320092",
+    "filed": "2026-11-25T18:14:55.379Z",
+    "measured": {
+      "seconds": 1.48,
+      "start": 0,
+      "end": 1.48,
+      "peakDb": -29.79,
+      "rmsDb": -60.72,
+      "lufs": -52.38,
+      "truePeakDb": -29.49,
+      "low": 0.059,
+      "mid": 0.383,
+      "high": 0.558,
+      "tailDb": -48.62,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0.184,
+          "end": 0.834,
+          "peakDb": -29.79
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 1.48,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -16,
+    "gainDb": 13.8,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 1.48,
+    "start": 0.002,
+    "end": 1.406,
+    "peakDb": -16,
+    "rmsDb": -46.87,
+    "lufs": -41.62,
+    "truePeakDb": -15.68,
+    "low": 0.019,
+    "mid": 0.4,
+    "high": 0.582,
+    "tailDb": -47.75,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0.184,
+        "end": 0.834,
+        "peakDb": -16
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+    "asks": 2,
+    "whole": 2,
+    "heard": "A piece of paper creaks sharply as it is pulled tight. / A piece of thick paper is pulled tight, producing a strained, creaking noise.",
+    "madeOf": "paper / paper",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The audio consists of a single, brief, high-pitched fibrous creaking sound typical of paper under tension.",
+      "The distinct dry crinkling and straining noise strongly matches the physical acoustic properties of paper or cardboard being manipulated."
+    ]
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "paper-strain.wav",
+  "seconds": 1.48,
+  "sha256": "0c4ea09b797e609d44919e3fefc418136c56c993da3fca0e22c517f5a9547a55"
+}

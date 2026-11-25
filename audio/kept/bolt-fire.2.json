@@ -1,0 +1,116 @@
+{
+  "id": "bolt-fire.2",
+  "kind": "cue",
+  "cue": "bolt-fire",
+  "variant": 2,
+  "class": "mechanism",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A short, tight energy shot. Small, not a cannon",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "One short tight energy bolt shot, a quick dry zap like a small toy laser, small, not a cannon, a single shot, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 49
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "2f5eea7e16f16051f8abc61361356f4caf00f3f7799bc51b9da28a6f5ad80e5d",
+    "filed": "2026-11-25T18:13:43.528Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0,
+      "end": 0.48,
+      "peakDb": -12.57,
+      "rmsDb": -31.66,
+      "lufs": -26.19,
+      "truePeakDb": -11.67,
+      "low": 0.022,
+      "mid": 0.829,
+      "high": 0.149,
+      "tailDb": -56.45,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.266,
+          "peakDb": -12.57
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.4,
+    "cutToSeconds": 0.4,
+    "fadeInMs": 3,
+    "fadeOutMs": 100,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -10,
+    "gainDb": 2.9,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.4,
+    "start": 0,
+    "end": 0.354,
+    "peakDb": -10,
+    "rmsDb": -27.62,
+    "lufs": -26.61,
+    "truePeakDb": -9.87,
+    "low": 0.022,
+    "mid": 0.848,
+    "high": 0.13,
+    "tailDb": -51.57,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.26,
+        "peakDb": -10
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 5 asks, 2 whole, 3 void",
+    "asks": 5,
+    "whole": 2,
+    "heard": "A short, synthesized retro laser or energy blast sound. / A short, synthesized sound effect resembling a retro sci-fi laser or energy weapon blast.",
+    "madeOf": "electronic circuitry and digital software / digital software and electronics",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The audio consists of a single, brief, rapidly descending synthesized tone that sounds exactly like a classic small sci-fi energy weapon firing.",
+      "The audio consists of a single, synthesized burst with a rapid downward pitch sweep typical of classic arcade laser shot sound effects."
+    ]
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "bolt-fire.2.wav",
+  "seconds": 0.4,
+  "sha256": "929c6e3412121ddfd0a314aef042ff29d6f39b12e267176076cf44269d14ac61"
+}
