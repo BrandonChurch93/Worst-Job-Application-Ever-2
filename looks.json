@@ -1,35 +1,35 @@
 {
   "folder": "surface",
-  "pushed": "2026-11-25T13:53:50.230Z",
-  "commit": "a140728cfaaaf5eff61dfa3a61b42137c6a959e2",
+  "pushed": "2026-11-25T14:44:42.755Z",
+  "commit": "f7e1b3c38701215bdbd88c9bec36cbb29b8c5eaa",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Page look at review tier beside the approved image: real slab, shell controls and the four materials",
-      "time": "2026-11-25T13:53:48.579Z",
+      "caption": "Key step1-tug: approved on the left, this build on the right, review tier",
+      "time": "2026-11-25T14:44:13.972Z",
       "by": "surface",
-      "from": "out/work/report/1-page-look-review.jpg"
+      "from": "out/work/compare/compare-step1-tug.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Field, card, progress buttons and button at twice size: approved on the left, this build on the right",
-      "time": "2026-11-25T13:53:48.807Z",
+      "caption": "Approved page-look above, this build below at review tier, after the lower key: glass card with shaded shoulder, field glass with the wall's soft shade, turned buttons with a fan of light",
+      "time": "2026-11-25T14:44:40.992Z",
       "by": "surface",
-      "from": "out/work/report/2-crops-beside-approved.jpg"
+      "from": "out/work/report/a-page-look.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Both step 1 keys beside their approved images at draft tier",
-      "time": "2026-11-25T13:53:49.033Z",
+      "caption": "Three crops beside the approved image (left approved, right this build): card corner, turned progress button on its rail, card's far corner",
+      "time": "2026-11-25T14:44:41.235Z",
       "by": "surface",
-      "from": "out/work/report/3-keys-beside-approved.jpg"
+      "from": "out/work/report/c-zoom.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "The slab on marketing, step 2, boss, decision and pinball, and the tug key",
-      "time": "2026-11-25T13:53:49.259Z",
+      "caption": "Both keys of step 1 beside their approved images at review tier, no stand-in listed",
+      "time": "2026-11-25T14:44:41.483Z",
       "by": "surface",
-      "from": "out/work/report/4-other-pages.jpg"
+      "from": "out/work/report/b-keys.jpg"
     }
   ]
 }
