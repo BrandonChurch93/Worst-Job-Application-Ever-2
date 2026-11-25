@@ -4,10 +4,10 @@ export const look = {
   background: [0.012, 0.012, 0.014] as [number, number, number],
   key: {
     // Toward the light, from the page: upper left, toward the viewer. It sets where the shadows fall.
-    direction: [-0.62, 0.58, 0.53] as [number, number, number],
+    direction: [-0.65, 0.6, 0.45] as [number, number, number],
     // Half the angle the light's area takes up, seen from the page, in radians. It sets how fast a shadow softens with height.
     radius: 0.2,
-    intensity: 3.9,
+    intensity: 4.55,
     colour: [1.0, 0.975, 0.945] as [number, number, number],
     // Where the light stands over the middle of the view, in page pixels: x right, y up the page, z toward the viewer.
     // It sets how the light falls off across the page, lighter at the upper left.
