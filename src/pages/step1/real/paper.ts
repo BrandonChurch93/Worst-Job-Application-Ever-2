@@ -42,7 +42,7 @@ const WRAP_LEN = 1.12 * (UNIT.r + 0.7 * SIZE)
 
 // The held sheet as a height over its own plane, in px: a ridge from each hand to the mouth where the pull runs, a shorter buckle between them, a dent under each thumb where the arms lay it (the left 4 to 14 px under the top corner, the right 0 to 10), and the free top edge and the two side edges curled up.
 // It is laid on the solved grid along its normals and its slopes turn them, so the light follows the bends.
-const FOLD = { tall: 1.9, wide: 3.1, mid: 1, midWide: 4.2, dent: 1.4, dentWide: 3.6, curl: 2.6, curlWide: 5, side: 1.5, sideWide: 3.4, slack: 0.5, gain: 1.3, raise: 0.4, hand: { u: 0.02, v: [0.1, 0.06] }, foot: [0.35, 0.67] }
+const FOLD = { tall: 1.9, wide: 3.1, mid: 1, midWide: 4.2, dent: 1.4, dentWide: 3.6, curl: 2.6, curlWide: 5, side: 1.5, sideWide: 3.4, slack: 0.5, gain: 0.4, raise: 0.4, shade: 0.75, dark: 0.3, lit: 0.1, old: 0.45, sun: [0.6, 0.8], hand: { u: 0.02, v: [0.1, 0.06] }, foot: [0.35, 0.67] }
 function ridge(x: number, y: number, x0: number, y0: number, x1: number, y1: number, wide: number, sharp: boolean): number {
   const dx = x1 - x0
   const dy = y1 - y0
@@ -72,7 +72,10 @@ function folded(u: number, v: number, foot: number, pull: number, sharp: boolean
   h += FOLD.side * down * (Math.exp(-(PAPER.w - x) / FOLD.sideWide) - 0.7 * Math.exp(-x / FOLD.sideWide))
   return h
 }
+// What the folds do to the light is painted on the sheet with its other shades: the side of a ridge turned to the key is a little lighter, the side turned from it darker, with a clean line on the crest.
+const foldTone = new Float32Array(GRID.nx * GRID.ny)
 function fold(sheet: Sheet, foot: number, pull: number, k: number): void {
+  foldTone.fill(0)
   if (k <= 0.001) return
   const { nx, ny, pos, nor } = sheet
   const e = 0.9
@@ -98,6 +101,9 @@ function fold(sheet: Sheet, foot: number, pull: number, k: number): void {
       if (fade <= 0) continue
       tangent((j * nx + Math.max(0, i - 1)) * 3, (j * nx + Math.min(nx - 1, i + 1)) * 3, 0)
       tangent((Math.max(0, j - 1) * nx + i) * 3, (Math.min(ny - 1, j + 1) * nx + i) * 3, 3)
+      const su = (folded(u + du, v, foot, pull, true) - folded(u - du, v, foot, pull, true)) / (2 * e)
+      const sv = (folded(u, v + dv, foot, pull, true) - folded(u, v - dv, foot, pull, true)) / (2 * e)
+      foldTone[j * nx + i] = clamp((su * FOLD.sun[0]! + sv * FOLD.sun[1]!) * FOLD.shade, -FOLD.dark, FOLD.lit) * fade
       const hu = ((folded(u + du, v, foot, pull, false) - folded(u - du, v, foot, pull, false)) / (2 * e)) * fade * FOLD.gain
       const hv = ((folded(u, v + dv, foot, pull, false) - folded(u, v - dv, foot, pull, false)) / (2 * e)) * fade * FOLD.gain
       const x = nor[o]! - hu * t[0]! - hv * t[3]!
@@ -408,8 +414,8 @@ function shape(rig: Rig, q: SheetIn): void {
     const k = (v / 3) * 2
     const t = (uvs[k + 1]! - top) / (foot - top) + (uvs[k]! - 0.5) * BEND.slant
     const sag = BEND.deep * Math.exp(-Math.pow((t - BEND.at) / BEND.wide, 2)) - BEND.lit * Math.exp(-Math.pow((t - BEND.crown) / BEND.crownWide, 2)) + BEND.grip * Math.exp(-Math.pow(Math.max(0, t) / 0.12, 2))
-    const shade = 1 - bite * (d < 0 ? MOUTH.in : MOUTH.near * Math.exp(-d / MOUTH.nearPx) + MOUTH.bent * below - MOUTH.lit * crown) - hung * (sag + creased(uvs[k]!, uvs[k + 1]!))
-    c[v] = c[v + 1] = c[v + 2] = v < n * 6 ? shade : shade * MOUTH.edge
+    const shade = 1 - bite * (d < 0 ? MOUTH.in : MOUTH.near * Math.exp(-d / MOUTH.nearPx) + MOUTH.bent * below - MOUTH.lit * crown) - hung * (sag + FOLD.old * creased(uvs[k]!, uvs[k + 1]!))
+    c[v] = c[v + 1] = c[v + 2] = v < n * 6 ? shade + foldTone[(v / 3) % n]! : shade * MOUTH.edge
   }
   col.needsUpdate = true
   pos.needsUpdate = true

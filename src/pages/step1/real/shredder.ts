@@ -27,6 +27,13 @@ function cutterSteel(): THREE.MeshPhysicalMaterial {
   return cutterMade
 }
 
+// The plates the machine is fastened through: anodised, darker and duller than the housing, so they belong to the page's hardware and not to the machine.
+let plateMade: THREE.MeshPhysicalMaterial | null = null
+function plateMetal(): THREE.MeshPhysicalMaterial {
+  plateMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x8f939a), roughness: 0.55, metalness: 1 }))
+  return plateMade
+}
+
 let brushedMade: THREE.MeshPhysicalMaterial | null = null
 let brushMap: THREE.DataTexture | null = null
 
@@ -399,7 +406,7 @@ function makeCassette(): THREE.Group {
     const y1 = EAR.north / EAR.k
     const top = EAR.thick / EAR.k
     const seam = EAR.seam / EAR.k
-    add(plate, merge([block(x0, x0 + w, y0, y1, 0.1, top, 0.5)], true), brushed(), false)
+    add(plate, strip(block(x0, x0 + w, y0, y1, 0.1, top, 0.5)), plateMetal(), false)
     const hard = screws([[x0 + w / 2, y0 + 7], [x0 + w / 2, y1 - 7]], top)
     add(plate, hard.heads, steel(), false)
     add(plate, merge([hard.sockets, strip(block(x0 - seam, x0 + w + seam, y0 - seam, y1 + seam, 0.04, 0.16, 0.01))]), shade(), false)
