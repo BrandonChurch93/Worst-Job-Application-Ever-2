@@ -150,20 +150,20 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
   // Crazing: a web of hairline cracks, and each plate between them tipped a hair its own way.
   float crack = uMarks.x * face;
   if ( crack > 0.0 ) {
-    vec3 cell = wjaCells( q / 4.2 + vec2( 0.37, 0.61 ) + ( mid.gb - 0.5 ) * 0.16 + ( wide.gb - 0.5 ) * 0.3 );
-    float thin = 0.0016 + 0.002 * fine.g;
+    vec3 cell = wjaCells( q / 11.0 + vec2( 0.37, 0.61 ) + ( mid.gb - 0.5 ) * 0.16 + ( wide.gb - 0.5 ) * 0.3 );
+    float thin = 0.0007 + 0.0008 * fine.g;
     float line = 1.0 - smoothstep( thin, thin + max( fwidth( cell.x ) * 1.2, 0.002 ), cell.x );
     float plate = cell.y * 6.2832;
-    float near = 1.0 - smoothstep( 0.0, 0.05, cell.x );
-    wjaCoatTilt += crack * vec2( cos( plate ), sin( plate ) ) * 0.05;
+    float near = 1.0 - smoothstep( 0.0, 0.02, cell.x );
+    wjaCoatTilt += crack * vec2( cos( plate ), sin( plate ) ) * 0.012;
     wjaTilt += wjaCoatTilt;
     vec2 across = vec2( dFdx( cell.x ), -dFdy( cell.x ) );
     vec2 toGap = -across / max( length( across ), 1e-6 );
-    float lip = ( 1.0 - smoothstep( thin, thin + 0.014, cell.x ) ) * ( 1.0 - line );
-    wjaTilt += crack * lip * toGap * 0.9;
+    float lip = ( 1.0 - smoothstep( thin, thin + 0.006, cell.x ) ) * ( 1.0 - line );
+    wjaTilt += crack * lip * toGap * 0.5;
     col = mix( col, vec3( 0.80, 0.75, 0.65 ), crack * lip * 0.1 * smoothstep( 0.0, 0.8, dot( toGap, vec2( 0.6, 0.8 ) ) ) );
-    col *= 1.0 - crack * ( 0.5 * line + 0.04 * near );
-    col *= 1.0 - crack * 0.035 * ( cell.z - 0.5 );
+    col *= 1.0 - crack * ( 0.3 * line + 0.02 * near );
+    col *= 1.0 - crack * 0.012 * ( cell.z - 0.5 );
     wjaCoat *= 1.0 - 0.8 * crack * line;
   }
 
@@ -229,7 +229,7 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
     float vein = sin( side * 1.05 + 1.5 * sin( along * 0.42 + 1.0 ) + 0.7 * sin( along * 1.05 + side * 0.7 ) + 0.9 );
     float blot = 0.5 + 0.5 * sin( along * 0.55 + side * 0.3 + 2.2 );
     float streak = smoothstep( 0.05, 0.85, vein ) * smoothstep( 0.25, 1.0, vInset ) * ( 0.55 + 0.45 * blot );
-    col = mix( col, col * vec3( 0.36, 0.31, 0.25 ), streak * melt * 1.5 );
+    col = mix( col, col * vec3( 0.36, 0.31, 0.25 ), streak * melt * 0.8 );
     wjaRough = mix( wjaRough, 0.14, melt );
     wjaCoatRough = mix( wjaCoatRough, 0.04, melt );
   }

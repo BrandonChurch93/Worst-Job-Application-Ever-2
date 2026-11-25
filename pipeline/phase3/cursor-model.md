@@ -144,6 +144,9 @@ Branch `agent/damage`. Owner of this section: the damage fix agent. Every number
 - Cracks, fifth batch (`material.ts`). Cells of 4.2 units where they were larger, each plate tipped a little (coat tilt 0.05, lip tilt 0.9) so the highlight breaks at each crack, a darker gap, a tone per plate.
 - Drops, fifth and sixth batch (`effects.ts`). 26 beads, 0.5 to 1.5 units, 22 percent of them thrown onto the page, more opaque at the rim.
 - Exhausted, sixth batch (`deform.ts`, `material.ts`). 90 percent of the pose's squash is given back while melted (65 before). The tip and the two wing corners are dulled round, the wings droop further, the stem runs longer. Soft brown veins run down the length of the body, written in the material from the body's own coordinates, no texture.
+- Film size, seventh batch, after the R9 cards (the arrow is about 20 px tall there). Mend (`body.ts`, `act/tape.ts`): a strip turns from a loose ribbon into its own slice of the arrow over the way to its place, 64 px out to 12 px (`LOOSE`), where it was 22 to 9; the tapes are 5.6 to 6.8 px wide, paler and brighter (frost 0.44), and go on from 0.30 to 0.44 of the mend. Burn hole (`act/damage.ts`, `material.ts`): radius 1.85 units burnt and 1.9 clean, where it was 1.55 and 1.75; the black crust reaches 1.4 radii and the soot ring is darker.
+- Exhausted, seventh batch (`deform.ts`, `material.ts`). The droop is in the outline: the tip bows over to one side and sinks (`bow`), the body spreads by 16 percent across, and only 35 percent of the pose's squash is given back, so the body is lower. The veins are at half strength.
+- Flattened, seventh batch (`material.ts`), by the Builder's ruling of 20:07Z. Crack cells of 11 units: one or two faint hairlines. Plates barely tip (0.012), so the face keeps one long highlight. The outline stays wavy inside one dark rim.
 - `act/damage.ts`: `seamCount` reads `pose.strips.length`, or `STRIPS` from `src/cursor/body.ts` when there are no strips. The number is written nowhere in my files.
 - `sheets.ts`, `damage()` only: `LIE = 0.6`, every damaged body on the sheet lies on the page, as on the approved sheet. `PILE = { x: 33, y: 62 }` moves the shredded pile so it sits in its own cell, level with the other four.
 
@@ -158,7 +161,9 @@ Branch `agent/damage`. Owner of this section: the damage fix agent. Every number
 25. Loose strips are ribbons lengthened to at least half the longest strip. True slivers of the head are 2 units long and read as crumbs.
 26. A strip near its place is laid along the strips' own axis by `act/damage.ts`, whatever step the pose sends.
 27. Daylight down a bore is an emitter of the body. Two bores make two emitters; with the hot tip and the glowing hole the test in `tests/cursor-model.test.ts` counts 4. The engine's pool is 6.
-28. The flattened outline stays wavy with a thick rim, as on the approved sheet. The critic asked for a crisp outline (R3-1 issue 3); the Builder's point 4 of 19:00Z asked for the wavy puddle. Left for the Builder.
+28. The flattened outline stays wavy with a thick rim, as on the approved sheet. The critic asked for a crisp outline (R3-1 issue 3); the Builder ruled at 20:07Z that the wavy outline stands.
+29. A strip is a slice of the arrow from 64 px out, not 22: at film size a bundle of plain ribbons does not read as the cursor. The shredded pile itself stays ribbons (`ribbon` 1).
+30. Exhausted gives back 35 percent of the squash, not 90: the Builder asked for the droop in the outline, lower and wider.
 
 ### Agreed with the acting fixer
 
@@ -188,7 +193,9 @@ Sixth batch, 19:56Z: `npm test` 77 files, 1201 tests passed. `npm run build`: bu
 - Tape: no lifted geometry. The corner lift is drawn (edges, glint and shadow), the film is flat. The bands are paler and wider than on the approved sheet.
 - Cracks: lips are drawn in the material. The shell is not cut into separate pieces with real gaps, and there are no chips at the outline.
 - Punched hole: the arrow's shadow on the page has no lit gap under the hole (decision 22: the engine's filter averages it away).
-- Exhausted: no long drips off the wings and the stem. The stem's end reads as a short tube.
+- Exhausted: no long drips off the wings and the stem. The stem's end reads as a short tube, and the bowed tip has a small pinched nub.
+- Mend: before 0.18 of its length the strips have not stood and it is a bundle of ribbons; the standing is `gather` in `src/cursor/body.ts`, the acting side's.
+- Fire key: the orange light over the struck key and the cursor is not the body's emitter (MEASURED: with the hole's emitter at power 0 the still is the same). Under it the cursor's face is orange and its hole reads as a pale ring.
 - Scared: matte, no gloss, a little darker than approved.
 - Nervous: fewer and less varied drops than approved; their shadows are the engine's and faint.
 - Scorched: the crust is smoother than approved and the smoke fainter.
