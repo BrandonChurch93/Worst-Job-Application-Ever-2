@@ -153,6 +153,10 @@ function fill(mesh: THREE.Mesh, kept: Kept, carved: Carved): void {
     k += n
   }
   geometry.setDrawRange(0, k)
+  // The same sphere whatever the openings are, so the order things are drawn in never depends on what the buffer held before.
+  const cx = kept.width / 2 - 960
+  const cy = 540 - kept.top - kept.tall / 2
+  geometry.boundingSphere = new THREE.Sphere(new THREE.Vector3(cx, cy, 0), Math.hypot(kept.width, kept.tall) / 2 + 200)
   pos.needsUpdate = true
   nor.needsUpdate = true
   uv.needsUpdate = true

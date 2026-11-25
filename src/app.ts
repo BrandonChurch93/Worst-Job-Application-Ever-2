@@ -20,6 +20,7 @@ import { PageView } from './shell/view'
 import { layoutProblems } from './shell/layout'
 import { FONTS } from './shell/metrics'
 import { loadFont } from './shell/type'
+import type { QualityId } from './core/quality'
 import { homePose, project, toWorld } from './stage/camera'
 import { filmFlow, filmOptions, ScriptDriver, Stage, StillDriver, TURN_HALF, type Frame } from './stage/stage'
 import type { CameraPose, PageLogic, Shape } from './stage/types'
@@ -43,6 +44,8 @@ export class App {
   diagnostic = 'beauty'
   private shown: { frame: Frame; page: PageLogic | null; pose: CameraPose } | null = null
   private marks: ViewEvent[] = []
+  private level: QualityId | null = null
+  private hidFine = false
   readonly view = new PageView()
   readonly rig = new LightRig()
   readonly camera = new THREE.PerspectiveCamera()
@@ -213,6 +216,7 @@ export class App {
 
   put(frame: Frame, page: { width: number; height: number }, pose: CameraPose, size?: { width: number; height: number }): void {
     this.view.apply(frame, size ?? { width: page.width, height: page.height })
+    this.fine()
     this.shown = { frame, page: 'layout' in page ? (page as PageLogic) : null, pose }
     const cy = pose.target[1]
     this.view.focus = -cy
@@ -222,6 +226,29 @@ export class App {
     this.rig.level = website
     this.view.scene.environmentIntensity = look.envIntensity * website
     for (const s of this.view.standIns()) this.seen.add(s)
+  }
+
+  setLevel(level: QualityId | null): void {
+    this.level = level
+    this.rig.setLevel(level)
+  }
+
+  private fine(): void {
+    const hide = this.level === 'low'
+    if (!hide && !this.hidFine) return
+    this.view.scene.traverse((o) => {
+      if (!o.userData.fine) return
+      if (hide) {
+        if (o.visible) {
+          o.visible = false
+          o.userData.fineHidden = true
+        }
+      } else if (o.userData.fineHidden) {
+        o.visible = true
+        o.userData.fineHidden = false
+      }
+    })
+    this.hidFine = hide
   }
 
   shot(pose?: (shutter: number) => void): Shot {
@@ -240,6 +267,7 @@ export class App {
     const height = entry?.height ? Math.round(entry.height * k) : this.format.height
     this.engine.setSize(width, height)
     this.mark(spec.beat && !spec.sheet ? this.film(spec.page) : null, this.momentOf(spec))
+    this.setLevel((spec.live as QualityId | undefined) ?? null)
     this.put(frame, page, pose, size)
     this.setCamera(pose, width, height)
     this.tier = spec.tier
@@ -276,6 +304,7 @@ export class App {
     const { unit, time } = this.filmMoment(frameIndex)
     const open = config.film.shutterDegrees / 360 / config.film.fps
     this.tier = tier
+    this.setLevel(null)
     this.engine.setSize(this.format.width, this.format.height)
     const pose = (s: number) => {
       const f = this.filmFrame(unit, time + s * open)
@@ -301,6 +330,7 @@ export class App {
   async renderPiece(piece: FilmPiece, index: number, tier: string, seed: number): Promise<void> {
     const open = config.film.shutterDegrees / 360
     this.tier = tier
+    this.setLevel(null)
     this.engine.setSize(this.format.width, this.format.height)
     const pose = (s: number) => {
       const i = index + s * open

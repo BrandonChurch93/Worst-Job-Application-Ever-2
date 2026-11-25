@@ -125,7 +125,7 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
   float bare = step( 1.5, vInk );
   float reach = clamp( 3.7 * fwidth( vInset ), 0.5, 0.86 );
   float ink = max( smoothstep( 0.3, 0.7, vInk ), 1.0 - smoothstep( reach - 0.05, reach + 0.03, vInset ) ) * ( 1.0 - bare ) * ( 1.0 - smoothstep( 0.0, 0.55, melt ) );
-  ink *= 1.0 - uShape.x * smoothstep( 0.2, 0.34, vInset );
+  ink *= 1.0 - max( uShape.x * smoothstep( 0.2, 0.34, vInset ), uShape.y * smoothstep( 0.24, 0.34, vInset ) );
   float face = 1.0 - ink;
   vec3 col = mix( enamel, edge * 0.5, ink );
   wjaRough = mix( 0.3, 0.42, ink );
