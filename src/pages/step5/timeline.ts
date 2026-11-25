@@ -10,6 +10,8 @@ export const AT = {
   panel: [0.85, 1.2],
   swoop: [1.6, 2.12],
   slam: [2.12, 2.3],
+  loom: 1.9,
+  pullSeconds: 0.5,
   lift: [2.78, 3.1],
   carry: [3.1, 3.6],
   lower: [3.6, 3.85],

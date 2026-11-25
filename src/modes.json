@@ -1,0 +1,6 @@
+{
+  "modes": ["live", "film", "loop", "capture", "probe"],
+  "lazy": {
+    "src/audio/index.ts": ["live", "film", "loop"]
+  }
+}

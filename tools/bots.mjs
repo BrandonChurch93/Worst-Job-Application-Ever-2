@@ -2,6 +2,7 @@
 // Prints for each run whether it finished, how long each step took, the gags it reached and the longest time its control was ignored.
 import { args, at, config, writeJson } from './lib/paths.mjs'
 import { logic } from './lib/logic.mjs'
+import { buildInfo } from './lib/hashes.mjs'
 
 const a = args()
 const c = config()
@@ -31,7 +32,8 @@ const keen = runs.filter((r) => r.bot === 'keen')
 const missed = keen.length ? gags.filter((g) => !keen.every((r) => r.gags.includes(g))) : []
 if (keen.length) console.log(missed.length ? `keen missed: ${missed.join(', ')}` : `keen reached every one of the ${gags.length} gags on every seed`)
 for (const g of missed) problems.push(`keen never reached the gag of ${g} on some seed`)
-writeJson(at('out', 'work', 'bots.json'), { made: new Date().toISOString(), runs, missed, problems })
+const built = buildInfo(at())
+writeJson(at('out', 'work', 'bots.json'), { made: new Date().toISOString(), engineHash: built.engineHash, pageHashes: built.pageHashes, runs, missed, problems })
 for (const p of problems) console.log(`PROBLEM  ${p}`)
 console.log(problems.length ? `${problems.length} problem${problems.length === 1 ? '' : 's'}` : 'bots: all clear')
 await close()
