@@ -2,8 +2,9 @@ import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
 import { pages } from '../src/pages'
 import { DECK } from '../src/pages/step1/keyboard'
-import { SLOT } from '../src/pages/step1/layout'
-import { FIRST, makePlan, pointerAt } from '../src/pages/step1/script'
+import { FIELD_X, GLYPH, SLOT, ZONE } from '../src/pages/step1/layout'
+import { CAMERA, FIRST, makePlan, pointerAt } from '../src/pages/step1/script'
+import { HEADER } from '../src/shell/parts'
 import { projectPage } from '../src/stage/camera'
 import { filmFlow, filmOptions, ScriptDriver, Stage, type DrawList } from '../src/stage/stage'
 
@@ -179,5 +180,68 @@ describe('step 1: the script of the film', () => {
     expect(seen.has('111')).toBe(true)
     expect(seen.has('110')).toBe(true)
     expect(seen.has('100')).toBe(true)
+  })
+
+  it('hangs strips of paper under the hood from the first bite, never draws one back in, and frames them at the key picture', () => {
+    const s = film()
+    s.advance(at(22.1))
+    const last = new Map<string, number>()
+    for (let i = at(22.1); i < at(27); i++) {
+      s.advance(1)
+      for (const x of drawn(s)) {
+        if (!x.id.startsWith('strip-')) continue
+        expect(x.v![0]!, x.id).toBeGreaterThanOrEqual((last.get(x.id) ?? 0) - 1e-9)
+        last.set(x.id, x.v![0]!)
+      }
+      if (i + 1 !== at(25.125)) continue
+      const hung = drawn(s).filter((x) => x.id.startsWith('strip-'))
+      expect(hung.length).toBeGreaterThanOrEqual(5)
+      const cam = s.page.camera('film', 25.125)!
+      for (const x of hung) {
+        expect(x.v![0]!).toBeGreaterThan(0.15)
+        expect(x.v![0]!).toBeLessThan(0.45)
+        expect(x.v![1]).toBe(0)
+        expect(projectPage(cam, x.x, x.y + x.h, 0).y).toBeLessThan(1080 - 20)
+      }
+      for (const q of [{ x: ZONE.x, y: ZONE.y }, { x: ZONE.x + ZONE.w, y: ZONE.y + ZONE.h }]) {
+        const on = projectPage(cam, q.x, q.y, 0)
+        expect(Math.min(on.x, 1920 - on.x, on.y, 1080 - on.y)).toBeGreaterThan(40)
+      }
+    }
+  })
+
+  it('holds the tug frame clear of the field column, with the label of the drop zone whole', () => {
+    const page = film().page
+    let gutter = Infinity
+    let label = Infinity
+    for (let now = CAMERA.in[1]; now <= CAMERA.out[0]; now += 0.05) {
+      const cam = page.camera('film', now)!
+      for (const y of [ZONE.y, ZONE.y + ZONE.h]) {
+        gutter = Math.min(gutter, projectPage(cam, FIELD_X, y, 0).x - 1920)
+        expect(projectPage(cam, FIELD_X - 6, y, config.scale.heights.card).x, now.toFixed(2)).toBeGreaterThan(1920)
+        expect(projectPage(cam, ZONE.x + ZONE.w, y, 0).x, now.toFixed(2)).toBeLessThan(1920 - 40)
+      }
+      const top = projectPage(cam, ZONE.x, HEADER.contentY, 0).y
+      label = Math.min(label, top)
+      expect(top, now.toFixed(2)).toBeGreaterThan(16)
+    }
+    console.log(`tug frame: the field column starts ${gutter.toFixed(0)} px outside the right edge, the label of the drop zone ${label.toFixed(0)} px under the top edge`)
+  })
+
+  it('draws the upload glyph above the prompt of the drop zone until the resume is received', () => {
+    const s = film()
+    s.advance(at(6))
+    const list = drawn(s)
+    const glyph = list.filter((x) => x.id.startsWith('resume-glyph-'))
+    const prompt = list.find((x) => x.id === 'resume-prompt')!
+    expect(glyph.length).toBe(6)
+    for (const g of glyph) {
+      expect(g.y + g.h).toBeLessThan(prompt.y - 8)
+      expect(g.y).toBeGreaterThan(ZONE.y + 30)
+      expect(Math.abs(g.x + g.w / 2 - (ZONE.x + ZONE.w / 2))).toBeLessThanOrEqual(GLYPH.w / 2 + 1)
+    }
+    s.advance(at(31) - at(6))
+    expect((s.page.save() as { received: boolean }).received).toBe(true)
+    expect(drawn(s).some((x) => x.id.startsWith('resume-glyph-'))).toBe(false)
   })
 })

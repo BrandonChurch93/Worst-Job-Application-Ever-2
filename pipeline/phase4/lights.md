@@ -20,7 +20,7 @@ Branch `agent/lights`. Part `table-lights` and `hook`, both in `src/table/real/l
 - The hook is laid over the material's `onBeforeCompile` and `customProgramCacheKey` as accessors, so `studio()` may run before or after `lit`, and a later wrapper still works.
 - Each lamp of the general lighting is two sources in its group: a tight pool from 26 px over the lens, and a wide soft one from 120 px, so a tier is lit in pools and still nowhere black.
 - A low fill, tied to the general level, lights every surface a little from above in the tier's own tone, so roofs are not lit from nowhere.
-- Reflections: one small picture of the surround per zone (256 by 128, made in code), dark, with the zone's lamps as bright spots and a faint tint of the lit floor below. It is each material's `envMap` unless the material brings its own, and its strength follows the general level. It is one fixed picture per zone, not remade as groups change: remaking it each frame was judged too dear.
+- Reflections: one small picture of the surround per zone (256 by 128, made in code), dark, with the zone's lamps as bright spots and a faint tint of the lit floor below. In it no lamp is nearer than 420 px and none is wider than 0.045 rad, the eye is 20 px over the floor, and inserts, sling lamps and displays are left out: so a glossy floor shows the lamps as rows of small spots at grazing angles and never as a wash (the floor owner measured a cream wash in `lobby-doors` with the first version). It is each material's `envMap` unless the material brings its own, and its strength follows the general level. It is one fixed picture per zone, not remade as groups change: remaking it each frame was judged too dear.
 - Floor reflections: the floor reflects the same surround through its clear coat, so the lamps show in it as soft spots. No second pass that draws the tier upside down: chosen for cost, and because the lamps are what a dark glossy floor shows first. Agreed by message with the floor owner as the starting point.
 - True lights: at most 6, at most 2 with shadows, only in the zone the clear ball is in: the lamps of single groups (inserts, globes, bumper lamps, beacons) within about 5 balls of the ball, a beacon at full level, and the two nearest lamps of the general lighting. The share a true light takes is taken out of the group's picture (for the general lighting: a soft hole round that lamp), so nothing is lit twice.
 - The office has ten groups without a group for its lane lamps, so its four amber lane lamps and the lamps under its slings ride in `office.windows` with the coffee machine: all small warm lamps that follow the general level.
@@ -62,7 +62,9 @@ Insert colours are not mine: `insertColour(n)` and `INSERT_GLOW` of `src/table/r
 
 ## Proof
 
-`node assets-src/table/lights/proof.mjs` (or `--zone corporate`) writes `out/work/lights/sheet-<zone>.jpg`: the tier with every group at its level, then lit by each group alone.
+`node assets-src/table/lights/proof.mjs` (or `--zone corporate`) writes `out/work/lights/sheet-<zone>.jpg`: the tier with every group at its level, then lit by each group alone. With `--keys` it also writes `out/work/lights/sheet-keys.jpg`: `table-wide` and the three tier keys, each beside its approved image.
+
+The lenses of the arrow windows and of the lane lamps are one mesh; a fourth vertex colour channel says which group a lens belongs to, so each lights with its own group.
 
 ## What it costs (MEASURED on this machine, 15:35 to 15:37 UTC, branch at a852226)
 

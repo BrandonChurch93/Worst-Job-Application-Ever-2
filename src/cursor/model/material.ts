@@ -155,7 +155,7 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
     float near = 1.0 - smoothstep( 0.0, 0.05, cell.x );
     wjaCoatTilt += crack * vec2( cos( plate ), sin( plate ) ) * 0.016;
     wjaTilt += wjaCoatTilt;
-    col *= 1.0 - crack * ( 0.74 * line + 0.05 * near );
+    col *= 1.0 - crack * ( 0.45 * line + 0.04 * near );
     wjaCoat *= 1.0 - 0.8 * crack * line;
   }
 
@@ -172,16 +172,16 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
   // Pale: the gloss dies and the body turns to stone, the black edge to grey.
   if ( pale > 0.0 ) {
     float speck = smoothstep( 0.62, 0.78, texture2D( uDetail, q / 0.83 + vec2( 0.31, 0.77 ) ).b );
-    vec3 stone = vec3( 0.63, 0.62, 0.59 ) * ( 0.9 + 0.14 * mid.b + 0.1 * fine.g ) * ( 1.0 - 0.3 * speck );
+    vec3 stone = vec3( 0.58, 0.57, 0.545 ) * ( 0.9 + 0.14 * mid.b + 0.1 * fine.g ) * ( 1.0 - 0.12 * speck );
     col = mix( col, mix( stone, stone * 0.74, ink ), pale );
     wjaRough = mix( wjaRough, 0.94, pale );
     wjaCoat *= 1.0 - pale;
-    wjaTilt += grain * 1.6 * pale;
+    wjaTilt += grain * 0.6 * pale;
   }
 
   // Char: a black blistered crust that grows back from the tip, with a scorched brown fringe.
   if ( charred > 0.0 ) {
-    float front = charred * 4.3;
+    float front = charred * 7.0;
     float ragged = along + ( wide.g - 0.5 ) * 2.0 + ( mid.b - 0.5 ) * 1.6 + ( fine.g - 0.5 ) * 0.6;
     float crust = smoothstep( front + 0.2, front - 0.3, ragged );
     float soot = smoothstep( front + 2.8, front - 0.2, ragged ) * smoothstep( 0.0, 0.12, charred );
@@ -211,7 +211,7 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
 
   // Melt: the enamel runs over its own edge, wet and a little warmer.
   if ( melt > 0.0 ) {
-    col = mix( col, col * vec3( 1.0, 0.975, 0.91 ), melt );
+    col = mix( col, col * vec3( 1.0, 0.962, 0.875 ), melt );
     wjaRough = mix( wjaRough, 0.14, melt );
     wjaCoatRough = mix( wjaCoatRough, 0.04, melt );
   }

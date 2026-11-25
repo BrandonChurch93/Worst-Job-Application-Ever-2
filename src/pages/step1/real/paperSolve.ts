@@ -176,7 +176,7 @@ export function solveSheet(q: SheetIn, into?: Sheet): Sheet {
   const L = q.l
   const bite = smooth(q.bite)
   const abuse = clamp(0.05 + bite * (0.3 + 0.5 * q.amount + 0.2 * q.pull) + (1 - bite) * 0.5 * q.pull * smooth(q.hands), 0, 1)
-  const g0 = 0.5 + 3.4 * abuse
+  const g0 = 0.4 + 1.5 * abuse
   out.abuse = abuse
 
   const cos = Math.cos(q.rot)
@@ -413,11 +413,13 @@ export function solveSheet(q: SheetIn, into?: Sheet): Sheet {
             fed[1] = q.cy + uy * sg + nyn * zz
             fed[2] = crestZ + uz * sg + nzn * zz
           } else {
-            const round = -s * wy
+            // The first row past the crest is set on the crest line itself, so the sheet's last cell before it stays in its plane.
+            const past = Math.max(0, -s - db)
+            const round = past * wy
             // Past the crest the sheet turns straight down into the nip, tighter than the grid can bend: what is drawn of it is a hair.
             const phi = Math.min(round / NIP, Math.PI / 2)
             const more = Math.min(16, Math.max(0, round - NIP * (Math.PI / 2)))
-            fed[0] = q.cx + (a - W / 2) * sec - s * wx
+            fed[0] = q.cx + (a - W / 2) * sec + past * wx
             fed[1] = q.cy + NIP * Math.sin(phi) + more * Math.cos(phi)
             fed[2] = crestZ - NIP + NIP * Math.cos(phi) - more * Math.sin(phi)
           }
@@ -445,12 +447,42 @@ export function solveSheet(q: SheetIn, into?: Sheet): Sheet {
     hold(out, da, db, 3)
     normals(out)
   }
+  level(out, 0.45)
   if (bite > 0) calm(out, crestAt, db, bite)
   return out
 }
 
+// Paper scatters light through its body, so a slow bend barely changes its tone: only a fold does. The grid's normals
+// are drawn toward the sheet's mean, less the more they differ, so the ear and the sharp folds keep their own.
+function level(s: Sheet, k: number): void {
+  const { nor } = s
+  let mx = 0
+  let my = 0
+  let mz = 0
+  for (let o = 0; o < nor.length; o += 3) {
+    mx += nor[o]!
+    my += nor[o + 1]!
+    mz += nor[o + 2]!
+  }
+  const ml = Math.hypot(mx, my, mz) || 1
+  mx /= ml
+  my /= ml
+  mz /= ml
+  for (let o = 0; o < nor.length; o += 3) {
+    const d = nor[o]! * mx + nor[o + 1]! * my + nor[o + 2]! * mz
+    const w = k * smooth((d - 0.5) / 0.3)
+    const x = nor[o]! + (mx - nor[o]!) * w
+    const y = nor[o + 1]! + (my - nor[o + 1]!) * w
+    const z = nor[o + 2]! + (mz - nor[o + 2]!) * w
+    const l = Math.hypot(x, y, z) || 1
+    nor[o] = x / l
+    nor[o + 1] = y / l
+    nor[o + 2] = z / l
+  }
+}
+
 // A sheet fed askew crosses the crest on a slant, and the grid would shade that line in teeth. The rows by the crest
-// and past it take the light as the row a little above them does: what is past the crest is a few pixels under the hood.
+// and past it take the light as the sheet a little above them does on the whole: what is past the crest is a few pixels under the hood.
 function calm(s: Sheet, crestAt: Float32Array, db: number, bite: number): void {
   const { nx, ny, nor } = s
   const before = 2.5 * db
@@ -458,10 +490,21 @@ function calm(s: Sheet, crestAt: Float32Array, db: number, bite: number): void {
     const bc = crestAt[i]!
     if (bc < 0) continue
     const js = Math.max(0, Math.floor((bc - before) / db))
-    const from = (js * nx + i) * 3
-    const sx = nor[from]!
-    const sy = nor[from + 1]!
-    const sz = nor[from + 2]!
+    let sx = 0
+    let sy = 0
+    let sz = 0
+    for (let jj = Math.max(0, js - 3); jj <= js; jj++) {
+      for (let ii = Math.max(0, i - 7); ii <= Math.min(nx - 1, i + 7); ii++) {
+        const from = (jj * nx + ii) * 3
+        sx += nor[from]!
+        sy += nor[from + 1]!
+        sz += nor[from + 2]!
+      }
+    }
+    const sl = Math.hypot(sx, sy, sz) || 1
+    sx /= sl
+    sy /= sl
+    sz /= sl
     for (let j = js + 1; j < ny; j++) {
       const b = j * db
       const w = bite * (b < bc ? smooth((b - (bc - before)) / before) : 1)

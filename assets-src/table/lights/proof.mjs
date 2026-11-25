@@ -1,5 +1,6 @@
 // node assets-src/table/lights/proof.mjs: the contact sheet of each tier lit by each of its groups alone, in out/work/lights/.
 // The names of the groups are read from the page itself, so the sheet cannot fall behind the code.
+// With --keys it then puts each tier key beside its approved image, through `npm run compare`, in one sheet.
 import fs from 'node:fs'
 import path from 'node:path'
 import { execFileSync } from 'node:child_process'
@@ -42,4 +43,14 @@ try {
   }
 } finally {
   await session.close()
+}
+if (process.argv.includes('--keys')) {
+  const pairs = []
+  for (const key of ['table-wide', 'tier-corporate', 'tier-office', 'tier-street']) {
+    execFileSync('npm', ['run', 'compare', '--', '--key', key, '--tier', 'draft', '--format', 'hd'], { cwd: at(), stdio: ['ignore', 'ignore', 'inherit'] })
+    pairs.push(at('out', 'work', 'compare', `compare-${key}.jpg`))
+  }
+  const sheet = path.join(dir, 'sheet-keys.jpg')
+  execFileSync('montage', [...pairs, '-tile', '1x', '-geometry', '+0+6', '-background', '#101012', '-quality', '88', sheet])
+  console.log(`sheet: ${path.relative(at(), sheet)} (approved on the left, this build on the right)`)
 }

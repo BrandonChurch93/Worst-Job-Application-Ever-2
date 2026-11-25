@@ -22,9 +22,9 @@ Looked at `references/approved/step1-tug.png` at full size and in two crops (the
 
 1. The sheet does not stretch. Its free length follows the hands; what is left over goes back into or comes out of the cutters. Slack stands up as an arch (capped at a fifth of the free length); a last pass pulls every edge of the grid back to its paper length, across from the middle and along from the cutters, and that pass is what takes the outline off the rectangle. MEASURED: 11 cases in `tests/slabs.test.ts`, worst edge 2% or less.
 2. A sheet held askew goes into the cutters askew: it turns in its own plane (up to 35 degrees) and the roller's crest cuts it on a slant. This keeps it flat where real paper would be flat.
-3. Creases are fixed in the paper (34 straight folds from the seed plus 8 short ones fanning from the two grips, each with a sharp ridge and soft flanks) and grow with `abuse = 0.05 + bite * (0.3 + 0.5 * amount + 0.2 * pull) + (1 - bite) * 0.5 * pull * hands`, as `0.5 + 3.4 * abuse` px. The grid carries the broad folds, a normal picture baked from the same folds carries the sharp ridges.
+3. Creases are fixed in the paper (34 straight folds from the seed plus 8 short ones fanning from the two grips, each with a sharp ridge and soft flanks) and grow with `abuse = 0.05 + bite * (0.3 + 0.5 * amount + 0.2 * pull) + (1 - bite) * 0.5 * pull * hands`, as `0.4 + 1.5 * abuse` px (3.4 at first: beside the approved sheet the folds were too deep and the rules ran wavy). The grid carries the broad folds, a normal picture baked from the same folds carries the sharp ridges.
 4. The title is set by the paper maker from the font outlines through `TypeRegister.set` with the words key `copy:step1.resume.paperTitle`, and laid on the bent grid point by point. `/root/type_setter` was told. While the page still hands the title to the type maker, the type maker's title shows on the flat sheet and the paper's own shows once the sheet is bitten.
-5. The rules are printed 1.7 px tall inside the layout's 8 px boxes, of seven different lengths, with a finer one (1.15 px) between each two. The approved image has hairline rules; 8 px bars read as a cartoon of a document. The boxes of the layout are not changed.
+5. The rules are printed 1.5 px tall inside the layout's 8 px boxes, of seven different lengths, with one more of the same weight between each two (round 3: two weights read as drawn by hand). The approved image has hairline rules; 8 px bars read as a cartoon of a document. The boxes of the layout are not changed.
 6. The cassette comes up through the slot, so it is no wider than the slot: 296 by 23.2. Two rollers of radius 6.6 across the slot, hooked discs 4.2 wide at a pitch of 8, each turned an eighth of a tooth from the last, of dull ground steel, interleaved, turning toward each other. Its top is at `machineMinTop + 2`, as the shape gives it. A chute hangs down its south wall while it travels, swings out when it is up and then reaches south: the strips leave from under it. The stand-in's housing box south of the slot is where the chute ends up.
 7. Sequence from one number, `open`: panels part 0 to 0.55, cassette rises 0.45 to 1 (it is up at about 0.86, with a 6% overshoot that settles), chute 0.86 to 1.
 8. Red: the slabs keep their own, by the Builder's word (a shared red does not go into `materials()` today; the one that is there, 0xc22a1e, is paler and is not used). For the boss, the numbers of `red()` in `slabs.ts`: colour 0xa00d0b (sRGB), roughness 0.46, metalness 0, specularIntensity 0.4, clearcoat 1, clearcoatRoughness 0.09, clearcoat normal picture `grainNormalMap(256, config.seed + 71, 1.6)` at repeat 1/90 and scale 0.035, passed through `studio()`. The underside is 0x4a0f0c, roughness 0.7. `red()` and `makeSlab(w, h, r, depth)` are exported.
@@ -43,6 +43,20 @@ Looked at `references/approved/step1-tug.png` at full size and in two crops (the
 21. The two panels that close the slot do not go under the page. They come up 4.1 px out of the slot and slide apart to lie on the page north and south of it, 3.6 px thick, so the opened slot reads as opened (the Builder's word at 15:32: the panels drawn apart with their thickness showing). A flush slit is declined, by M9 and "Things come out of the page".
 22. Cutters: steel 0xa2a6ad at roughness 0.32, each disc an eighth of a tooth on from the last. At a turn of 0.618 of a tooth the row read as noise.
 23. Strips hang from the bite on: the director sends `u` from the amount eaten (0.30 to 0.34 at the key still), asked for by me after the Builder's note.
+
+24. The stock is 0xe9eaed, not paper white. MEASURED beside the approved still (mean of the sheet's pixels): approved median 204 with the page at 219; mine was 240 at 0xf1f2f5 and read blown, about 221 at 0xdadbde and read grey; 0xe9eaed with decision 25 is the one kept. Its median was not measured after the last change: UNKNOWN.
+25. The sheet's normals are drawn 45% toward its mean normal where they differ from it by less than about 45 degrees (`level` in `paperSolve.ts`). Paper scatters light through its body, so a slow bend barely changes its tone; without this the folds shaded as smoke. The ear and the sharp folds keep their own normals; the geometry, the outline and the shadows are untouched.
+26. The first row past the crest lies on the crest line itself, so the last cell before the crest stays in the sheet's plane; the rows by the crest take the mean light of the 15 by 4 cells above them, not of one cell. This took the grey teeth off the line where the sheet meets the roller.
+27. Strips are bent, not faceted: each ring takes the mean normal of the two faces that meet on it. What a paper strip keeps of a rule is one pale tick a segment long. A strip leaves the hood at the height the page gives it and its free end comes down to 1.2 px over the page, so its shadow meets it at the tip (round 3, issue 3).
+28. Seat (round 3, issue 2): a dark tile 1.1 px wider than the slot all round lies in the slot's mouth while the cassette is up, and each panel has a dark foot 1.1 px wide where it lies on the page. This is a drawn opening, not a cut one: the well itself is `/root/surface_mason`'s to cut.
+
+## Round 3, what was not reached
+
+- The hood still stands over unbroken page grain south of the slot and throws a broad shadow on it. Not changed: it is the chute the strips leave from, and it must stay above the page (M9). A fix agent could shorten it or cut the page's well under it (surface_mason's file).
+- The dark foot round the panels reads as a drawn outline at the close camera. A real seat is a well in the page with a rolled lip, as in the approved slit.
+- The folds of the sheet are soft shading only; the approved sheet has a few crisp crease lines. The crease normal picture is at `0.06 + 0.22 * abuse`; raising it brought the satin look back, so the crisp lines want a narrower ridge in `creaseMap`, not a higher scale.
+- Strips with the director's push (214288c on `agent/step1-script`, not on main when I stopped) were looked at only in a scratch merge, at the key still. Their shadows were not checked frame by frame.
+- `npm run compare`, `npm run crops` and the four sheets were last run one commit before the round 3 changes (on 5903615), not after.
 
 ## Agreed with other owners
 
@@ -100,4 +114,4 @@ For step 11, the maker's half in full:
 
 ## Tuning looks
 
-Of 40 each: slabs 8, paper 31, shredder 15 (counted by the stills looked at while tuning that part).
+Of 40 each: slabs 9, paper 40, shredder 20 (counted by the stills looked at while tuning that part). The paper's are used up.

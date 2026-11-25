@@ -7,8 +7,8 @@ import { SCREEN_H, TYPE } from '../../shell/parts'
 import { smooth } from '../../stage/camera'
 import type { CameraPose, DrawList, Emit, GagInfo, Hint, Mode, PageContext, PageLogic, Pointer, Shape, StepIo } from '../../stage/types'
 import { CAP_TOP, DECK, DECK_TOP, hatchCentre, homePlaces, keyAt, onDeck, seatIndex, seats, shuffled, TRAVEL, typed } from './keyboard'
-import { buildLayout, FIELDS, PAPER, PAPER_LINES, PAPER_REST, PAPER_TITLE, SLAB, SLOT, ZONE, type FieldName } from './layout'
-import { BITE, filmCamera, HOOD, makePlan, PILE, pointerAt, SHRED, START, TIMES, TUG, tugCurve, tugReach, type Plan } from './script'
+import { buildLayout, FIELDS, PAPER, PAPER_LINES, PAPER_REST, PAPER_TITLE, SLAB, SLOT, uploadGlyph, ZONE, type FieldName } from './layout'
+import { BITE, filmCamera, FRINGE, HOOD, makePlan, PILE, pointerAt, SHRED, START, TIMES, TUG, tugCurve, tugReach, type Plan } from './script'
 import { Turrets, TURRET, type TurretsState } from './turrets'
 
 const live = config.live
@@ -71,7 +71,7 @@ interface State {
   realFired: boolean
   paper: { on: boolean; slide: number; x: number; y: number; held: boolean; dx: number; dy: number; feed: number; fx: number; fy: number; vx: number; vy: number }
   slot: number
-  tug: { t: number; amount: number; cool: number; gx: number; gy: number; reach: number; rate: number; pull: number; vx: number; vy: number; hx: number; hy: number }
+  tug: { t: number; amount: number; most: number; cool: number; gx: number; gy: number; reach: number; rate: number; pull: number; vx: number; vy: number; hx: number; hy: number }
   lost: number
   singe: number
   armed: boolean
@@ -101,6 +101,7 @@ const inside = (b: { x: number; y: number; w: number; h: number }, x: number, y:
 
 export function makePage(): PageLogic {
   const layout = buildLayout()
+  const glyph = uploadGlyph()
   const beats = config.film.beats.filter((b) => b.unit === 'step1')
   const gags: GagInfo[] = beats.map((b) => ({ id: b.id, event: (b as { event?: string }).event ?? null }))
   const pockets = Object.fromEntries(FIELDS.map((f) => [f, boxOf(layout, `${f}-pocket`)])) as Record<FieldName, ReturnType<typeof boxOf>>
@@ -126,7 +127,7 @@ export function makePage(): PageLogic {
   const fresh = (mode: Mode, seed: number): State => ({
     mode, seed, time: 0, phase: 'rest', phaseTime: 0, board: 0, boardUp: false, values: { firstName: '', lastName: '', email: '' }, places: homePlaces(), from: homePlaces(), shuffle: 1, blocks: false,
     rng: stream('step1:shuffle', seed).state(), shuffles: 0, shuffledAt: 0, queue: [], keyDown: {}, drum: 0, shock: 0, slabs: [], slabClear: -1, accepted: false, slow: 0, slowFired: false, realFired: false,
-    paper: { on: false, slide: 0, x: PAPER_REST.x, y: SCREEN_H + 20, held: false, dx: 0, dy: 0, feed: -1, fx: 0, fy: 0, vx: 0, vy: 0 }, slot: 0, tug: { t: 0, amount: 0, cool: 0, gx: SLOT.cx, gy: SLOT.cy - PAPER.h, reach: TUG.reach.rest, rate: 0, pull: 0, vx: 0, vy: 0, hx: SLOT.cx, hy: SLOT.cy - PAPER.h },
+    paper: { on: false, slide: 0, x: PAPER_REST.x, y: SCREEN_H + 20, held: false, dx: 0, dy: 0, feed: -1, fx: 0, fy: 0, vx: 0, vy: 0 }, slot: 0, tug: { t: 0, amount: 0, most: 0, cool: 0, gx: SLOT.cx, gy: SLOT.cy - PAPER.h, reach: TUG.reach.rest, rate: 0, pull: 0, vx: 0, vy: 0, hx: SLOT.cx, hy: SLOT.cy - PAPER.h },
     lost: -1, singe: 0, armed: false, seat: 9, shake: 9, shakeAt: { x: 0, y: 0 }, caret: 9, glow: 9, spin: 0, turn: 0, kept: null,
     shred: 0, received: false, pressed: -1, skipped: false, cleaned: false, done: false, cue: 0, cx: START.x, cy: START.y, acted: null
   })
@@ -364,7 +365,7 @@ export function makePage(): PageLogic {
       p.vy = (p.y - wy) / io.dt
       if (p.feed >= TIMES.bite) {
         enter('tug')
-        s.tug = { t: 0, amount: tugCurve(0), cool: 0.5, gx: SLOT.cx, gy: SLOT.cy - PAPER.h, reach: TUG.reach.rest, rate: 0, pull: 0, vx: 0, vy: 0, hx: SLOT.cx, hy: SLOT.cy - PAPER.h }
+        s.tug = { t: 0, amount: tugCurve(0), most: 0, cool: 0.5, gx: SLOT.cx, gy: SLOT.cy - PAPER.h, reach: TUG.reach.rest, rate: 0, pull: 0, vx: 0, vy: 0, hx: SLOT.cx, hy: SLOT.cy - PAPER.h }
         s.lost = -1
         grip(io)
         io.emit('shredder', SLOT.cx, SLOT.cy, false)
@@ -448,6 +449,7 @@ export function makePage(): PageLogic {
     const was = t.amount
     if (s.mode === 'film') t.amount = tugCurve(t.t)
     else t.amount = clamp(t.amount + (0.11 - 0.2 * pull + Math.max(0, t.t - 5) * 0.2) * io.dt, 0.03, 1)
+    t.most = Math.max(t.most, t.amount)
     t.rate += ((t.amount - was) / io.dt - t.rate) * Math.min(1, io.dt / TUG.rateLag)
     t.reach = tugReach(t.rate)
     t.cool -= io.dt
@@ -538,14 +540,16 @@ export function makePage(): PageLogic {
   }
 
   const strips = (out: DrawList): void => {
-    if (s.phase !== 'shredded' && s.phase !== 'received') return
-    const t = s.phase === 'received' ? SHRED.end + s.phaseTime : s.shred
+    const tug = s.phase === 'tug'
+    if (!tug && s.phase !== 'shredded' && s.phase !== 'received') return
+    const t = tug ? 0 : s.phase === 'received' ? SHRED.end + s.phaseTime : s.shred
     const back = s.phase === 'received' ? smooth(s.phaseTime / TIDY) : 0
     if (back >= 1) return
     for (let i = 0; i < STRIPS; i++) {
       const ink = i % 3 === 1
-      if (ink && t >= SHRED.pile) continue
-      const u = clamp((t - SHRED.strips - i * 0.04) / 0.3, 0, 1)
+      if (ink && (tug || t >= SHRED.pile)) continue
+      const hang = ink ? 0 : clamp((Math.max(s.tug.most, s.tug.amount) - FRINGE.from - ((i * 4) % STRIPS) * 0.6 * FRINGE.step) * FRINGE.rate, 0, FRINGE.most)
+      const u = Math.max(hang, tug ? 0 : clamp((t - SHRED.strips - i * 0.04) / 0.3, 0, 1))
       if (u <= 0) continue
       const len = ink ? 64 : 84
       const out0 = clamp(u / 0.45, 0, 1)
@@ -779,6 +783,7 @@ export function makePage(): PageLogic {
           out.push({ id: 'field-caret', part: 'shell', kind: 'box', x: values[field].x + w + 4, y: p.y + 16 - jump, w: 3, h: p.h - 32, z0: 0.1, z1: 0.5, tone: 'ink', v: [jump] })
         }
       }
+      if (!s.received) for (const [i, g] of glyph.entries()) out.push({ id: `resume-glyph-${i}`, part: 'shell', kind: 'box', x: g.x, y: g.y, w: g.w, h: g.h, z0: heights.card, z1: heights.card + 0.4, r: 1.5, rot: g.rot, tone: 'ink' })
       if (s.board > 0) turrets.draw(out, off)
       if (s.slot > 0) {
         const w = SLOT.w
