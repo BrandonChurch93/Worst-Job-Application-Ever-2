@@ -327,7 +327,7 @@ export function bodyMaterial(uniforms: BodyUniforms): THREE.MeshPhysicalMaterial
       .replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\nroughnessFactor = wjaRough;')
       .replace('#include <normal_fragment_maps>', '#include <normal_fragment_maps>\nnormal = normalize( normal + vAcross * wjaTilt.x + vDown * wjaTilt.y );')
       .replace('#include <clearcoat_normal_fragment_maps>', '#include <clearcoat_normal_fragment_maps>\nclearcoatNormal = normalize( clearcoatNormal + vAcross * wjaCoatTilt.x + vDown * wjaCoatTilt.y );')
-      .replace('#include <lights_physical_fragment>', '#include <lights_physical_fragment>\nmaterial.clearcoat = saturate( wjaCoat );\nmaterial.specularColor *= wjaSpec;\nmaterial.specularF90 *= wjaSpec;\nmaterial.clearcoatRoughness = max( wjaCoatRough, 0.0525 );\ntotalEmissiveRadiance += diffuseColor.rgb * wjaFill * ( 1.0 - dot( normal, normalize( ( viewMatrix * vec4( 0.0, 0.0, 1.0, 0.0 ) ).xyz ) ) );')
+      .replace('#include <lights_physical_fragment>', '#include <lights_physical_fragment>\nmaterial.clearcoat = saturate( wjaCoat );\nmaterial.specularColor *= wjaSpec;\nmaterial.specularF90 *= wjaSpec;\nmaterial.clearcoatRoughness = max( wjaCoatRough, 0.0525 );\n' + FILL_TERM + '')
       .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\ntotalEmissiveRadiance += wjaGlow;')
       .replace('#include <aomap_fragment>', '#include <aomap_fragment>\nvec3 wjaTone = max( diffuseColor.rgb, vec3( 1e-4 ) );\nreflectedLight.directDiffuse = mix( reflectedLight.directDiffuse, wjaTone * vec3( 1.0, 0.975, 0.945 ) * dot( reflectedLight.directDiffuse / wjaTone, vec3( 0.25, 0.6, 0.15 ) ), 0.85 * wjaPlain );')
   }
@@ -338,6 +338,10 @@ export function bodyMaterial(uniforms: BodyUniforms): THREE.MeshPhysicalMaterial
 // The shadow's own material: it lets light through the holes. The light that comes down a bore is let fall on the page under the bore,
 // most of the way back along the light's own slant, so that what is seen through a hole is the page lit and not a disc of shade.
 const BORE_SHARE = 0.5
+const KEY = new THREE.Vector3(...picture.key.direction).normalize()
+// A face tilted away from the lamp gets back this share of the lamp's light it lost by tilting, and a face tilted toward it gets nothing.
+const FILL = (picture.key.intensity / Math.PI) * 0.8
+const FILL_TERM = `totalEmissiveRadiance += diffuseColor.rgb * wjaFill * ${FILL.toFixed(4)} * max( ${KEY.z.toFixed(4)} - max( dot( normal, normalize( ( viewMatrix * vec4( ${KEY.x.toFixed(4)}, ${KEY.y.toFixed(4)}, ${KEY.z.toFixed(4)}, 0.0 ) ).xyz ) ), 0.0 ), 0.0 );`
 export function bodyDepthMaterial(uniforms: BodyUniforms): THREE.MeshDepthMaterial {
   const m = new THREE.MeshDepthMaterial()
   const low = picture.shadowHeights
