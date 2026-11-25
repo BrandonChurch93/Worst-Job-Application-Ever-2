@@ -4,7 +4,7 @@ import { hash01 } from '../../core/random'
 import { UNIT, type BodyLook, type BodyModel, type StripPose } from '../contract'
 import { Deform } from './deform'
 import { MAX_HOLES, bodyDepthMaterial, bodyMaterial, bodyUniforms, charMaterial, type BodyUniforms } from './material'
-import { AXIS, heightAt, inside, solid } from './shape'
+import { AXIS, domeAt, heightAt, inside, softInside, solid } from './shape'
 import { cutBand, stripSet, type StripSet } from './strips'
 
 const HOLE_SEGMENTS = 28
@@ -47,6 +47,7 @@ export class Body implements BodyModel {
     g.setAttribute('aInk', new THREE.BufferAttribute(s.ink, 1))
     g.setIndex(new THREE.BufferAttribute(s.index, 1))
     this.whole = this.mesh(g, this.material)
+    this.whole.receiveShadow = false
     this.cut = this.mesh(new THREE.BufferGeometry(), this.material)
     this.cut.visible = false
     const wall = new THREE.BufferGeometry()
@@ -127,6 +128,40 @@ export class Body implements BodyModel {
     }
     pos.needsUpdate = true
     g.computeVertexNormals()
+    const nor = g.getAttribute('normal') as THREE.BufferAttribute
+    const b = nor.array as Float32Array
+    const e = 0.05
+    const d = this.deform
+    for (let i = 0, n = s.inset.length; i < n; i++) {
+      if (s.ink[i] !== 0) continue
+      const x = s.rest[i * 3]!
+      const y = s.rest[i * 3 + 1]!
+      d.point(x + e, y, domeAt(x + e, y), softInside(x + e, y), p)
+      let tx = p.x
+      let ty = p.y
+      let tz = p.z
+      d.point(x - e, y, domeAt(x - e, y), softInside(x - e, y), p)
+      tx -= p.x
+      ty -= p.y
+      tz -= p.z
+      d.point(x, y + e, domeAt(x, y + e), softInside(x, y + e), p)
+      let ux = p.x
+      let uy = p.y
+      let uz = p.z
+      d.point(x, y - e, domeAt(x, y - e), softInside(x, y - e), p)
+      ux -= p.x
+      uy -= p.y
+      uz -= p.z
+      const nx = uy * tz - uz * ty
+      const ny = uz * tx - ux * tz
+      const nz = ux * ty - uy * tx
+      const len = Math.hypot(nx, ny, nz)
+      if (len < 1e-9) continue
+      b[i * 3] = nx / len
+      b[i * 3 + 1] = ny / len
+      b[i * 3 + 2] = nz / len
+    }
+    nor.needsUpdate = true
   }
 
   private applyStrips(strips: StripPose[]): void {
