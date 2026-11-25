@@ -27,7 +27,6 @@ const RATTLE = { seconds: 0.22, px: 2.4 }
 const JAW = { tug: 14, shred: 30, lag: 0.3 }
 const NEAR = 130
 const SINGE = 0.2
-const HOLD = { inside: 34, least: 24 }
 const EATEN = -30
 const WIPE: FieldName[] = ['email', 'lastName', 'firstName']
 const SLAB_HIGH = 110
@@ -436,8 +435,8 @@ export function makePage(): PageLogic {
     const dx = t.gx - SLOT.cx
     const dy = t.gy - SLOT.cy
     const d = Math.hypot(dx, dy) || 1
-    const rest = Math.max(36, PAPER.h * (1 - t.amount))
-    const strain = Math.max(0, d - rest)
+    const hold = Math.max(TUG.least, PAPER.h * (1 - t.amount) - TUG.inside)
+    const strain = Math.max(0, d - hold)
     if (strain > 0) {
       const a = TUG.stiff * Math.min(strain, 320) * io.dt
       io.cursor.knock((-dx / d) * a, (-dy / d) * a, 0)
@@ -457,9 +456,9 @@ export function makePage(): PageLogic {
     }
     const px = -dy / d
     const py = dx / d
-    const hold = Math.min(d, Math.max(HOLD.least, PAPER.h * (1 - t.amount) - HOLD.inside))
-    t.hx = SLOT.cx + (dx / d) * hold
-    t.hy = SLOT.cy + (dy / d) * hold
+    const held = Math.min(d, hold)
+    t.hx = SLOT.cx + (dx / d) * held
+    t.hy = SLOT.cy + (dy / d) * held
     io.cursor.setArms(true, [{ x: t.hx - px * TUG.hands, y: t.hy - py * TUG.hands, z: LIE + 6 }, { x: t.hx + px * TUG.hands, y: t.hy + py * TUG.hands, z: LIE + 6 }])
     act(io, t.amount > 0.7 ? 'scared' : t.amount > 0.45 ? 'nervous' : 'angry')
     const lost = s.mode === 'film' ? t.t >= TIMES.tugFilm : t.amount >= 0.9 || t.t >= 9
@@ -578,7 +577,7 @@ export function makePage(): PageLogic {
     const reach = armed ? TUG.hands : 0
     const hx = armed ? t.hx : t.gx
     const hy = armed ? t.hy : t.gy
-    const v = [LIE, 1, t.amount, armed ? t.pull : 0, hx + uy * reach, hy - ux * reach, hx - uy * reach, hy + ux * reach, t.vx, t.vy, armed ? 1 : 0]
+    const v = [LIE, 1, t.amount, armed ? t.pull : 0, hx - uy * reach, hy + ux * reach, hx + uy * reach, hy - ux * reach, t.vx, t.vy, armed ? 1 : 0]
     out.push({ id: 'resume-paper', part: 'paper', kind: 'box', x: c.x - PAPER.w / 2, y: c.y - shown / 2, w: PAPER.w, h: shown, z0: LIE, z1: LIE + heights.paper, rot, tone: 'paper', moved: true, v })
     const rest = Math.max(36, PAPER.h * (1 - t.amount))
     const scale = whole / rest

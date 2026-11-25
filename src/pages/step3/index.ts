@@ -90,10 +90,10 @@ function buildLayout(): LayoutNode {
 
 interface State {
   mode: 'live' | 'film'; time: number; t: number; phase: 'wait' | 'pull' | 'sealed' | 'open' | 'result'; pull: number; said: string[]; drops: number; tows: number
-  scroll: number; floor: number; opened: number; result: number; pressed: boolean; hold: number; done: boolean; skipped: boolean; saved: boolean; score: number; shut: boolean
+  scroll: number; floor: number; opened: number; result: number; pressed: boolean; hold: number; done: boolean; skipped: boolean; saved: boolean; score: number; shut: boolean; dim: number
 }
 
-const fresh = (): State => ({ mode: 'live', time: 0, t: 0, phase: 'wait', pull: 0, said: [], drops: 0, tows: 0, scroll: 0, floor: 0, opened: 0, result: 0, pressed: false, hold: 0, done: false, skipped: false, saved: false, score: 0, shut: false })
+const fresh = (): State => ({ mode: 'live', time: 0, t: 0, phase: 'wait', pull: 0, said: [], drops: 0, tows: 0, scroll: 0, floor: 0, opened: 0, result: 0, pressed: false, hold: 0, done: false, skipped: false, saved: false, score: 0, shut: false, dim: 0 })
 
 const flips = (take as unknown as { flips: [string, number, number][] }).flips
 const held = (side: string, time: number): boolean => flips.some((f) => f[0] === side && time >= f[1] && time < f[2])
@@ -125,6 +125,7 @@ const FILM: [number, string][] = [
 const BLEND = 0.6
 const TURN = 1.5707963267948966
 const WAKE = 0.35
+const DUSK = config.table.pageDuskLevel
 const LOW = 2.4
 
 export function makePage(): PageLogic {
@@ -165,6 +166,8 @@ export function makePage(): PageLogic {
     return b.mode === 'hold' && b.hold === 'plunger' && s.t < T.plunger ? Math.max(0, Math.min(1, (s.t - T.atPlunger) / (T.plunger - T.atPlunger - 0.15))) : 0
   }
   const glow = (): boolean[] => [0, 1, 2].map((k) => powered() && s.t >= T.powerOn + k * WAKE)
+  // How bright the website's own light is: full on the page, down to dusk by the time the machine wakes, and up again once the ball leaves by the drain.
+  const website = (): number => 1 - (1 - DUSK) * smooth(s.dim)
   const lit = (): boolean[] => table.inserts.map((n) => (powered() && s.t >= T.powerOn + n.tier * WAKE && s.t < T.powerOn + n.tier * WAKE + 0.6) || MODES.some((x) => x.mode === n.mode && s.t >= x.at && s.phase !== 'wait' && s.phase !== 'pull'))
   const modeOf = (k: number): number | null => {
     let out: number | null = null
@@ -474,6 +477,8 @@ export function makePage(): PageLogic {
           if (s.hold > 0.25) s.done = true
         }
       }
+      const inside = s.phase === 'sealed' && s.t >= T.lightsDown && !(ball().mode === 'rail' && ball().rail === 'drain') && !(ball().mode === 'hold' && ball().hold === 'outlet')
+      s.dim = Math.max(0, Math.min(1, s.dim + (inside ? dt : -dt) / (T.powerOn - T.lightsDown)))
       if (s.phase !== 'sealed') {
         const on = [port, outlet].some((c) => Math.hypot(io.cursor.x + 8 - c.x, io.cursor.y + 14 - c.y) < px(OUTLET.ring) / 2 + 12)
         io.cursor.setGround(on ? PORT_TOP : 0)
@@ -498,7 +503,7 @@ export function makePage(): PageLogic {
       drawLayout(out, layout, { states: activeStates(), runtime: { score: scoreText() }, over: s.pressed ? { ...stood, 'go-cap': { z1: config.scale.heights.button - config.scale.heights.keyTravel } } : stood })
       for (const shape of fixedShapes()) out.push(shape)
       for (const shape of plates) out.push(shape)
-      for (const shape of movingShapes(mc, lit(), false, glow(), drawn(), s.shut)) out.push(shape)
+      for (const shape of movingShapes(mc, lit(), false, glow(), drawn(), s.shut, website())) out.push(shape)
       out.push(hqPlate)
     },
     scroll: () => s.scroll,
@@ -593,7 +598,7 @@ export function makePage(): PageLogic {
         drawLayout(list, layout, { states: ['play', 'on', 'mode0', 'score0', 'score2'], runtime: { score: scoreText() }, over: stood })
         for (const shape of fixedShapes()) list.push(shape)
         for (const shape of plates) list.push(shape)
-        for (const shape of movingShapes(mc, table.inserts.map(() => true), true)) list.push(shape)
+        for (const shape of movingShapes(mc, table.inserts.map(() => true), true, [true, true, true], 0, false, DUSK)) list.push(shape)
         const f = px(floorZ(1))
         const spots: { x: number; y: number; lift: number; pose: Partial<CursorPose> }[] = [
           { x: 7.68, y: Y1 + 8.84, lift: 0, pose: { acting: 'nervous' } },
@@ -611,7 +616,7 @@ export function makePage(): PageLogic {
       for (const shape of plates) list.push(shape)
       const top = px(MARQUEE_Y - 0.3)
       const tall = px(APRON_Y + 2.6 - MARQUEE_Y + 0.3)
-      for (const shape of movingShapes(mc, table.inserts.map(() => true), true)) list.push(shape)
+      for (const shape of movingShapes(mc, table.inserts.map(() => true), true, [true, true, true], 0, false, DUSK)) list.push(shape)
       const inside = list.filter((x) => !x.id.startsWith('rail.') || (x.y >= top && x.y + x.h <= top + tall))
       list.length = 0
       for (const shape of inside) list.push(shape)

@@ -98,7 +98,7 @@ export const GLOW = {
   flash: [9, 3.6, 0.9] as [number, number, number],
   chargeLow: [6, 2.5, 0.6] as [number, number, number],
   chargeHigh: [16, 7, 2] as [number, number, number],
-  hot: [0.55, 0.05, 0.012] as [number, number, number]
+  hot: [0.42, 0.03, 0.006] as [number, number, number]
 }
 
 export const EMIT = {

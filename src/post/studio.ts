@@ -6,7 +6,7 @@ export function studioEnvironment(renderer: THREE.WebGLRenderer): THREE.Texture 
   const scene = new THREE.Scene()
   const room = new THREE.Mesh(new THREE.SphereGeometry(50, 32, 16), new THREE.MeshBasicMaterial({ color: new THREE.Color(0.09, 0.09, 0.095), side: THREE.BackSide }))
   scene.add(room)
-  const d = new THREE.Vector3(...look.key.direction).normalize()
+  const d = new THREE.Vector3(...look.studio.direction).normalize()
   const box = new THREE.Mesh(new THREE.PlaneGeometry(26, 20), new THREE.MeshBasicMaterial({ color: new THREE.Color(7.5, 7.2, 6.9), side: THREE.DoubleSide }))
   box.position.copy(d).multiplyScalar(20)
   box.lookAt(0, 0, 0)
