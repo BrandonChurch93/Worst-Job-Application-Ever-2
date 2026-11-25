@@ -26,6 +26,17 @@ export async function wordsCheck(s) {
   const detail = []
   const drawn = new Map()
   const runtimeTexts = new Map()
+  const strings = []
+  const gather = (v) => {
+    if (typeof v === 'string') strings.push(v)
+    else if (v && typeof v === 'object') for (const x of Object.values(v)) gather(x)
+  }
+  gather(copy)
+  const mask = (t) => t.replace(/\d/g, '#')
+  const masks = new Set(strings.map(mask))
+  const literal = (t) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const filled = strings.filter((t) => /\{[A-Za-z]+\}/.test(t)).map((t) => new RegExp(`^${t.split(/\{[A-Za-z]+\}/).map(literal).join('[\\d:.,\\- ]+')}$`, 'u'))
+  const fromCopy = (t) => masks.has(mask(t)) || filled.some((r) => r.test(t))
   const note = (page, shape) => {
     if (shape.kind !== 'text' || !shape.words) return
     const key = shape.words
@@ -97,7 +108,7 @@ export async function wordsCheck(s) {
       for (let p = parents.get(n); p; p = parents.get(p)) if (p.kind === 'field') inField = true
       if (inField) continue
       const texts = [...(runtimeTexts.get(`${id} ${n.copy}`) ?? [])]
-      const worded = texts.filter((t) => /\p{L}/u.test(t))
+      const worded = texts.filter((t) => /\p{L}/u.test(t) && !fromCopy(t))
       if (worded.length) detail.push(`${id}: the run "${n.copy}" (${n.id}) is made at run time, is not typed input in a field, and showed "${worded[0]}": only typed input, counters and the score display are made at run time`)
     }
   }
