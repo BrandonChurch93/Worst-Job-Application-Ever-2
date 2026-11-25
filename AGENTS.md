@@ -17,7 +17,7 @@ These rules are for build tasks: a task whose prompt starts with `BUILD MODE`. T
   4. A portfolio card: one still, and a seamless loop of `deliver.cardLoop.seconds` seconds that plays when a visitor hovers the card.
   5. The text of the post, as a draft in `deliver/POST.md`.
 - The bar: the viewer believes they are looking at a real object, photographed by a top-budget film crew. Not a web 3D demo, not a toy, not a flat interface with shadows painted on. `kit/04-LOOK.md` defines it in Brandon's words.
-- The pinball machine in step 3, `table.name`, is the main attraction. Brandon's words: it is the biggest showcase in the whole thing, it needs to be ultra detailed, and it must not look generic or quickly put together. It gets the most rounds, the most agents and its own measures.
+- The pinball machine in step 3, `table.name`, is the main attraction. It is three playfields tall, set into the page, and the cursor rides through it sealed in a clear ball. The bar for it is a pinball video game that has shipped. Brandon's words: it is the biggest showcase in the whole thing, it needs to be ultra detailed, and it must not look generic or quickly put together. It gets the most rounds, the most agents and its own measures.
 - The cursor's acting is what makes it funny. It gets the look lock and its own critic.
 - Fidelity comes first. The master films are rendered frame by frame on Brandon's computer, so a computed frame may be as heavy as it needs to be. The live site scales itself down for a visitor's machine and never limits the computed frames.
 - Brandon has approved the images in `references/approved/`. They are the target. `kit/06-ASSETS.md` says how they may be used, and what a settled difference is.
@@ -59,7 +59,7 @@ The budget report comes before all of it. When the report is due you stop, even 
 - A round is counted when it starts. Write its number and the commit it judges into `kit/PROGRESS.md` and push before doing anything else in it, so a restart or a compaction cannot reset the count. `kit/07-QUALITY-BAR.md` says how a round that was interrupted is carried on.
 - Anything you find yourself repeating that is not in that table gets three tries. Then it becomes an open item and you move on.
 - A limit is not permission to stop early. While a severe or major issue is open and both the count and the clock allow another round, run it.
-- No single item may hold up the rest of the build. One page, one machine, one building on the table or one sound never blocks the others.
+- No single item may hold up the rest of the build. One page, one machine, one model on a tier of the pinball machine or one sound never blocks the others.
 
 ### The clock
 
@@ -131,7 +131,7 @@ Stop only for one of these:
    - In Phase 0 you cannot push to the repo, after one retry. Stop with exactly: `BLOCKED: cannot push to the repo.`
 5. `BUILD COMPLETE`, as defined in `kit/08-BUILD-ORDER.md`. A task that starts when "Build" in `kit/PROGRESS.md` says `complete` prints the block under "Last report block" again and builds nothing, unless its prompt contains the line `Extension.`
 
-Nothing else stops the build. Not a plateau, a red check, a failed critic, a full disk, a failed publish, a sound tool that is missing, a voice that cannot be found, or a building that will not come out right.
+Nothing else stops the build. Not a plateau, a red check, a failed critic, a full disk, a failed publish, a sound tool that is missing, a voice that cannot be found, or a model that will not come out right.
 
 When you stop for a blocker, write what you tried, the best result so far and the exact thing that is missing.
 
@@ -185,7 +185,7 @@ Measured in earlier builds in this kind of workspace, November 18 to 23, 2026. M
 
 ## Supporting agents
 
-- Use them freely: the pages, the machines, the buildings and hardware of the pinball table, the boss, sounds, rendering and every critic role. Phase 4 is five units built side by side.
+- Use them freely: the pages, the machines, the models and hardware of the pinball machine, the boss, sounds, rendering and every critic role. Phase 4 is five units built side by side.
 - A default agent shared the Builder's VM. An agent started with sandbox isolation got its own VM with 4 cores and could clone the repo, push a branch and return files. Use sandbox agents to render, to bake and to build in parallel.
 - One owner per folder. An agent edits only the folders it was given. You integrate.
 - An agent that pushes uses its own branch named `agent/<folder>`. Only you write to `repo.branch`.
@@ -225,8 +225,8 @@ Measured in earlier builds in this kind of workspace, November 18 to 23, 2026. M
 - No model names or version strings in the site or the README. The one product named on a page is the applicant's name in `applicant` in the config, which the film types into the form.
 - Page surfaces are never pure black or pure white.
 - No people, no hands, no faces and no animals, in any image you generate or any frame you draw. Testimonials show a badge with the photo blacked out. The boss is a machine.
-- The cursor never has a face, eyes, a mouth, eyebrows, legs, feet or white gloves. Its arms exist only inside the beat named in `cursor.armsOnlyInBeat`. Check G12 tests it.
-- No real brand, logo, slogan or trademark on anything. `employer.name` and `table.name` are invented. The pinball machine copies no real machine: not its name, not its artwork, not its layout. The jokes that name real companies are held back in `copy:heldBack` and stay out.
+- The cursor never has a face, eyes, a mouth, eyebrows, legs, feet or white gloves. In step 3 it is sealed in a clear ball and is still the same arrow. Its arms exist only inside the beat named in `cursor.armsOnlyInBeat`. Check G12 tests it.
+- No real brand, logo, slogan or trademark on anything. `employer.name` and `table.name` are invented. The pinball machine copies no real machine and no pinball video game: not a name, not artwork, not a layout, not a character. Only the format of a table several screens tall is borrowed. The jokes that name real companies are held back in `copy:heldBack` and stay out.
 - No data leaves the browser. Nothing a visitor types is sent or stored anywhere. No analytics, no cookies, no network call after the site's own files have loaded.
 - Python and Blender scripts, if you use them, live under `pipeline/`. They are build-time tools only. Nothing under a GPL or AGPL licence is shipped to the browser.
 
@@ -248,9 +248,9 @@ Sound is part of this build: the narrator, an effect on every contact, and a qui
 - Every file you did not make is listed in `ASSETS.md` with its source URL and license before it is used.
 - Allowed: public domain, CC0, the SIL Open Font License for fonts, or a license that clearly permits commercial use in a published video and on a public website. If the license is unclear, do not use the asset.
 - Nothing extracted from a game, a film or a paid pack.
-- Photographs from the web are references to study. They are never committed and never appear in the site or the films. They live in `references/cache/`, which git ignores. Photographs of real pinball machines are studied for how a machine is built and lit, never for a name, a piece of artwork or a layout.
+- Photographs from the web are references to study. They are never committed and never appear in the site or the films. They live in `references/cache/`, which git ignores. Photographs of real pinball machines and screenshots of shipped pinball video games are studied for how a machine is built, framed and lit, never for a name, a piece of artwork or a layout.
 - Every asset you generate or build has its recipe committed beside it: the tool, the inputs and the exact prompt or command. `kit/06-ASSETS.md` gives the format.
-- Generated stills feed shipped files here: the printed artwork of the playfield, the cabinet and backbox art, building faces, material detail. Phase 0 reads the output terms of each image model it will use and records them in `ASSETS.md`. `kit/06-ASSETS.md` says what to do with what it finds.
+- Generated stills feed shipped files here: the artwork of each tier's floor, the marquee's skyline, the faces of models, material detail. Phase 0 reads the output terms of each image model it will use and records them in `ASSETS.md`. `kit/06-ASSETS.md` says what to do with what it finds.
 
 ## Never
 

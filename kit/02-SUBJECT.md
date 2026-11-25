@@ -29,7 +29,7 @@ The approved image is the sheet `page-look`, at `references.approved.pageLook`.
 
 - One accent color: the orange. Red is kept for things that hurt: error slabs, the stamp, the firehouse flasher.
 - No surface is pure white or pure black.
-- The pinball machine is the one object that does not follow this palette. It is its own world. See "The pinball machine".
+- The playfields of the pinball machine are the one place that does not follow this palette. Each tier is its own world. The machine's frame does follow it: aluminum rails, a ceramic border, orange flippers. See "The pinball machine".
 
 ## Light
 
@@ -44,6 +44,35 @@ The approved image is the sheet `page-look`, at `references.approved.pageLook`.
 - Every step has the same header: the title `copy:site.title` at the left and a five-step progress bar at the right, with the current step's button in orange.
 - Under the header: the step heading and one line of subline.
 - A page is designed at 1920 by 1080 and fills the frame. Nothing is visible around it: no desk, no browser frame, no room.
+- The page of step 3 is the one page taller than the frame. Its width is the same.
+
+### One scale
+
+Brandon's note on the round 5 images: the keyboard went into the page where it should stand out of it, and the same part was drawn at different sizes from one image to the next. The images settle the look and the arrangement. They do not settle size.
+
+- Every size and every height off the page is a number. Shared parts take theirs from `scale.sizes` and `scale.heights`. Everything else takes its size from the page's layout tree and its height from its kind in `scale.heights`.
+- A part of one kind has the same size and the same height on every page: a progress button, a field, a button, a card.
+- No size is measured off an approved image.
+- Shadows follow from the heights and the one light. They are never painted to match an image.
+- Things come out of the page. A mechanism the cursor works stands above the surface, with its working parts at least `scale.heights.machineMinTop` above it. It may rise from a slot or stand in a shallow tray. It is never sunk in a well.
+- The only things below the surface are pockets and sockets: the floor of a field, the gap round a button, the rail of the progress bar, a slot something rises from, a shallow tray.
+
+| Kind in `scale.heights` | Above or below the surface | What it is |
+| --- | --- | --- |
+| `rule` | Above | The header rule |
+| `rail` | Below | The rail the progress buttons sit on |
+| `progressButton`, `progressButtonCurrent` | Above | A step's button. The current step's stands higher |
+| `field` | Below | The floor of a text field's pocket |
+| `buttonSocket`, `button` | Below, above | The gap round a button, and the button's top |
+| `card` | Above | A glass card or panel |
+| `paper` | Above | A sheet of paper lying on the page |
+| `slab` | Above | An error slab lying on the page |
+| `keyboardDeck`, `keycap`, `keyTravel` | Above | The deck the keyboard stands on, the top of a key, and how far a key sinks when pressed |
+| `turretRaised` | Above | The top of a turret when it is up |
+| `machineTray`, `machineMinTop` | Below, above | The floor of a step 2 tray, and the least height of a machine's working parts |
+| `cursorHover` | Above | The gap under the cursor at rest |
+
+Measure M9 in `kit/07-QUALITY-BAR.md` checks it.
 
 ## The cursor
 
@@ -54,6 +83,7 @@ The hero. The only character. The whole project depends on the viewer caring abo
 - A classic arrow cursor as a physical object: a glossy white enamel body with a black edge, real thickness, a soft shadow.
 - On the page it is `cursor.heightPxAt1080` pixels tall at 1920 by 1080. That is larger than a real cursor on purpose. It is the star and it has to be readable.
 - It is one size, always. When a moment needs to be bigger, the camera moves closer.
+- In step 3 it is sealed in a clear ball. It is the same arrow at the same size, and it still acts. See "The clear ball".
 - It has no face, no eyes and no mouth. Ever.
 
 ### How it acts
@@ -138,13 +168,15 @@ Copy: `copy:step1`. Approved images: keys `step1-fire` and `step1-tug`. The roun
 
 **The keyboard**
 
-- A recessed brushed aluminum tray. Off-white keycaps with dark legends, each a real key with travel.
+- It stands out of the page. A brushed aluminum deck rises through a slot along the bottom of the page and stops with its top `scale.heights.keyboardDeck` above the surface. It casts a shadow on the page. The approved image sinks the keyboard in a well. That is a settled difference: the deck wins.
+- Off-white keycaps with dark legends stand on the deck, each a real key with travel.
 - A complete layout: a number row ending in Backspace, Tab and the QWERTY row, Caps Lock and the ASDF row ending in Enter, Shift at both ends of the ZXCV row, and a bottom row with a wide space bar plus "@" and "." keys. The Enter key is orange.
+- All five rows are on the deck. A letter key is the same size wherever it is, and no key is shorter than `scale.sizes.minKeyShortSide` on its short side.
 - The cursor types by landing on a key. The key sinks, the letter appears in the field with the orange focus ring.
 
 **The turrets**
 
-- Two small aluminum turrets rise from round hatches at the left and right ends of the tray.
+- Two small aluminum turrets rise from round hatches in the top of the deck, one at each end.
 - They fire separate bolts: short glowing orange streaks with a bright head, each one a thing that travels and can be dodged. Never a continuous beam.
 - A bolt that hits a key leaves a scorch mark that fades. A bolt that hits the cursor burns a hole in it.
 - They track the cursor with a short delay, so their aim is readable and a dodge is fair.
@@ -204,10 +236,14 @@ Copy: `copy:step2`. Approved images: keys `step2-rest`, `step2-dial` and `step2-
 
 ### Step 3, Skills Assessment · unit `pinball`
 
-Copy: `copy:step3`. Approved images: the eight `table-` keys, from reference round 6. Pending until `references/STATUS.md` says otherwise. See "The pinball machine" below.
+Copy: `copy:step3`. Approved images, from reference round 6: the ten keys of unit `pinball` in the config and the sheets `clear-ball` and `table-map`. See "The pinball machine" below.
 
-- The page shows the heading and `copy:transitions.step3`. Then the page splits and the cabinet rises.
-- When the scene is over the cabinet sinks back into the page and the page shows the result card, `copy:step3.result`.
+- The page of step 3 is tall. Its first screen is an ordinary page of the application: the header, the heading, `copy:step3.subline`, the paragraph `copy:transitions.step3`, and one control at the right, the loader port. Key `loader-page`.
+- Below the first screen the page holds the machine, set into the ceramic: the marquee, then the three tiers, then the apron. Below the machine is a short last screen with the outlet port and the result card.
+- The loader port is a wide brushed aluminum ring set into the ceramic with a dark cup inside it. A clear tube with aluminum collars leaves it and runs down the right side of the page to the machine's plunger.
+- When the cursor comes near the port it is pulled in. The two halves of a clear ball close round it with a click. The ball drops into the tube.
+- When the scene is over the ball rolls out of the outlet port below the machine and splits at its seam. The cursor falls out flat, peels itself off the page and shakes itself.
+- The result card shows `copy:step3.result` and the button `copy:step2.continue`, which turns the page to step 4.
 
 ### Step 4, Submit · unit `boss`
 
@@ -238,72 +274,158 @@ Copy: `copy:step5`. Approved image: key `decision`. The round 4 version was reje
 
 ## The pinball machine
 
-The centerpiece. The part people will remember and the part to spend the most on. It must hold up when the camera is inside it, a hand's width from a bumper.
+The centerpiece. The part people will remember and the part to spend the most on. Brandon's words: it is the biggest showcase in the whole thing, it needs to be ultra detailed, and it must not look generic or quickly put together.
 
 ### The bar
 
-- A real, expensive arcade pinball machine in perfect condition, the kind a person plays in an arcade.
-- Crowded edge to edge. Deep and layered: things above things, ramps over lanes, wire over plastic over print.
-- Themed in every detail. No part is generic.
-- Two earlier tables were rejected for being sparse and generic. They were built out of form parts in the page's minimal style. This machine is the opposite of minimal.
-- The name, the artwork and the layout are original. It copies no real machine.
+- Brandon's words: "actual pinball video games, like ones released on Steam". "That's the quality bar here. It has to look like one of those."
+- So a tier on screen must pass as a screenshot of a pinball video game that has shipped: crowded edge to edge, deep and layered, lit by its own lamps, every part themed.
+- It must also work as pinball. Every path a ball takes is a real path with a way on and a way off. "Ball paths" below is the rule.
+- And it belongs to this website: brushed aluminum rails, a ceramic border, orange flippers, physical parts. No cabinet, no legs, no coin door, no sheet of glass, no room.
+- Three earlier machines were rejected: two for being sparse and generic, and one arcade cabinet for not belonging in a web page. `references/STATUS.md` has the table.
+- The format is borrowed from a line of tall pinball video games whose table is several screens high with one playfield to a screen. Nothing else is borrowed. No layout, artwork, character or name comes from any game or any real machine.
 
-### Anatomy
+### The story
 
-| Area | Parts |
+A career in reverse. The ball is launched to the top, the executive floor, and is knocked down a tier at a time, to the office and then to the street, until it drains into the Unemployment Office.
+
+### The shape
+
+Sheet `table-map` shows where everything is. Key `table-wide` shows the whole machine from the player's end.
+
+- Three playfields, called tiers, stacked in one long frame set into the page. From the top: Tier 3 Corporate, Tier 2 The Office, Tier 1 The Street. `table.tiers` lists them from the top.
+- Above Tier 3 is the marquee: a lit panel with the title `copy:step3.table.title` over a city skyline at dusk, and under it the main display.
+- Below Tier 1 is the apron: two ceramic slabs with the drain between them.
+- Each tier lies a step lower than the tier above it, by `table.tierStepBalls`.
+- The ball is the unit of size. It is `table.ballPx` page pixels across. The machine is as wide as the page, so a tier seen from its tier camera fills the frame at the page's own scale, and the cursor is never rescaled to fit the ball.
+
+| Thing | Size |
 | --- | --- |
-| Cabinet | Side rails, lockdown bar, playfield glass, legs, a backbox with a lit title panel and a score display |
-| Lower playfield | Two flippers, slingshots with rubber rings, inlanes and outlanes with lit inserts, an apron with instruction cards |
-| Shooter | A shooter lane on the right with a spring plunger |
-| Middle | Three pop bumpers, a bank of five drop targets, standup targets, a spinner |
-| Upper playfield | A scoop hole, orbit lanes round the outside, one chrome wireform ramp, one clear plastic ramp |
-| Everywhere | Posts, rubbers, screws, wire guides, lit arrow and circle inserts, flasher domes, general lighting |
-| The printed layer | Playfield artwork under a glossy clear coat covering the whole surface |
+| One tier | `table.tierWidthBalls` wide and `table.tierHeightBalls` tall, so one tier fills one 16:9 screen |
+| A flipper | `table.flipperBalls` long |
+| The gap between the tips of a pair of flippers | `table.flipperGapBalls` |
+| A lane | `table.laneBalls` wide |
+| Any opening a ball passes through | At least `table.minClearanceBalls` |
+| The marquee | `table.marqueeHeightBalls` tall |
+| A tier's display | `table.displayWidthBalls` by `table.displayHeightBalls` |
 
-- The printed artwork is an illustrated map of the city at dusk. Its roads are the paths the ball follows. It is illustration, as on a real machine. Everything standing on it is real.
-- Most of the detail on a real table is that printed artwork. It is made as flat art and laid under the clear coat. Only the parts that stand up are modeled.
+### What every tier has
 
-### The city
+- The frame: a brushed aluminum rail down each side, inside the page's ceramic border.
+- Inside the left rail: the lift tube. Inside the right rail: the launch lane.
+- A top lane that curves across the head of the tier, with arrow lamps set into it.
+- A pair of orange flippers at the bottom centre. Orange is on the flippers, the plunger knob and the doors and elbows of the lift, and on nothing else in the machine.
+- A slingshot above each flipper, an inlane and an outlane on each side, posts with rubber rings, wire guides, lamps.
+- Three large round inserts above the flippers, each a lit picture with no words.
+- A display in the lower right shoulder.
+- Printed artwork under a glossy clear coat over the whole floor. No part of the floor is bare.
+- Its own colour of light, so the three read as three places at a glance.
 
-`table.name` is a miniature city where every building is a joke about working life. The labels are in `copy:step3.table.buildings`.
+### Tier 3 · Corporate
 
-| Where | Building | Table part | The joke |
+Key `tier-corporate`. Floor: midnight blue with thin gold art deco lines. Light: cold white and gold.
+
+| Where | Thing | Table part | The joke |
 | --- | --- | --- | --- |
-| Top center | Corporate HQ, a glass and steel tower, the tallest model | The main ramp runs into its lobby doors | The goal you never reach. The doors shut |
-| Upper left | A firehouse with a red flasher dome | The scoop hole is its garage door | "You're Fired" |
-| Upper right | A police station with a blue flasher dome | Beside the spinner lane | "Background Check" |
-| Middle | A coffee shop | Among the three pop bumpers, whose caps are coffee cup lids | The only thing keeping the city running |
-| Left side | A bank with columns | Behind the five drop targets | "Student Loans" |
-| Right side | A highway overpass and a parking garage | The chrome wireform ramp and the clear plastic spiral ramp | The commute |
-| Lower sides | Rows of small houses | Along both outlanes | The left outlane is "Mom's Basement" |
-| Between the flippers | The drain | | "Unemployment Office" |
-| Upper right corner | A tiny sunny beach with palm trees and a deck chair | Sealed in a clear acrylic box with no way in | "Retirement". Lit, visible and unreachable |
+| Top centre | Corporate HQ, a glass and steel tower, the tallest thing in the machine. Sign `copy:step3.table.buildings.hq` | Brass lobby doors at its foot, a red carpet running down toward the flippers, two globe lamps | The goal you never reach. The doors shut |
+| On the carpet | A revolving door: four clear panels on a brass post | A spinner. It bats the ball as it turns | |
+| Top right | A sunny beach with a palm and a deck chair, sealed in a clear box. Plate `copy:step3.table.buildings.beach` | None. No path leads in | Lit, visible and unreachable |
+| Upper left | A long boardroom table with twelve empty chairs | A row of `table.dropTargetsPerBank` drop targets along its near side | Nobody is there |
+| Left | Three yellow sticky notes | Three standup targets | |
+| Right | The corporate ladder: a steel ladder laid as a ramp | A wire ramp. The ladder's two rails are the track. It climbs, curves round and comes back down to the foot it started from | You climb it and end where you began |
+| Above the flippers | Two white marble wedges | The slingshots | |
+| Inserts | A magnifying glass, an hourglass, a clipboard with a tick | "Micromanagement", "Aggressive Deadlines", "Performance Improvement Plan" | |
 
-### Modes and the display
+### Tier 2 · The Office
 
-- The lit inserts and the score display use Brandon's lines in `copy:step3.table.modes`. When a mode lights, the display shows its line.
-- "Reply All" is the multiball: the moment more balls flood the table.
-- The apron card reads `copy:step3.table.apronCard`.
-- The reference image shows six inserts. The table carries all nine.
+Key `tier-office`. Floor: grey-green carpet tile with a pale walkway. Light: flat fluorescent white.
 
-### The cursor in the machine
+| Where | Thing | Table part | The joke |
+| --- | --- | --- | --- |
+| Top centre | The chute from Tier 3 | It drops the ball straight onto the bumpers | |
+| Under the chute | Three paper coffee cups with white lids | Three pop bumpers. The lids are their caps | The only thing keeping the place running |
+| Top right | An office coffee machine. Sign `copy:step3.table.buildings.coffee` | A standup target | |
+| Upper left | Six cubicles with low walls, each with a desk, a chair and a dark monitor. No people | A column of `table.dropTargetsPerBank` drop targets along their right side | |
+| Right | An inbox tray heaped with envelopes | A scoop at its foot. It holds the ball and the tray pours out steel balls | "Reply All", the multiball |
+| Above the flippers | Two giant red staplers | The slingshots. They snap | |
+| Inserts | A slice of pizza, an envelope with two arrows, a knot in a rope | "Pizza Party", "Reply All", "Team Building" | |
+| The floor | Paper clips, loose sheets and rubber bands, printed and lying about | | |
 
-- It stays an arrow. It is not turned into a ball. As an arrow it can keep acting, and the scene needs its reactions.
-- It tumbles, skids, spins, squashes flat on impact and stretches in flight.
-- Steel balls are the other things on the table. From "Reply All" on they chase it and hit it.
+### Tier 1 · The Street
+
+Key `tier-street`. Floor: dark blue asphalt, a road with a dashed centre line running down the middle, crossings and parking bays. Light: warm dusk with one red beacon and one blue.
+
+| Where | Thing | Table part | The joke |
+| --- | --- | --- | --- |
+| Top centre | The chute from Tier 2 | | |
+| Upper left | A red brick firehouse with a red beacon. Sign `copy:step3.table.buildings.firehouse` | Its garage door is a scoop. It holds the ball, the beacon turns, and it fires the ball out | "You're Fired" |
+| Upper right | A blue police station with a blue beacon. Sign `copy:step3.table.buildings.police` | A spinner beside it | "Background Check" |
+| Left | A bank with columns. Sign `copy:step3.table.buildings.bank` | A column of `table.dropTargetsPerBank` drop targets along its right side | "Student Loans" |
+| Across the middle | The highway: a chrome wire ramp crossing above the road | A wire ramp. On at its left end, off into the garage at its right end | The commute. The camera rides it |
+| Right | A parking garage: a clear spiral inside a round concrete frame | The spiral: `table.spiralTurns` turns down to the right inlane | |
+| Lower sides | Six tiny houses, three on each side | | |
+| Left outlane | One more small house. Sign `copy:step3.table.buildings.outlane`. A cellar hatch in the floor beside it | The hatch swallows the ball and kicks it back into play, `live.pinball.momSavesPerScene` time in a scene. After that it stays shut | "Mom's Basement" |
+| Above the flippers | Two yellow road signs with black chevrons | The slingshots | |
+| Inserts | A ladder, a clock face, three hats stacked | "Entry-Level", "Unpaid Overtime", "Multiple Hats" | |
+| The apron | Two ceramic slabs. Between them the drain, with the plate `copy:step3.table.buildings.drain`. On the left slab, the card `copy:step3.table.apronCard` | The drain | "Unemployment Office" |
+| Lower right corner | The plunger: a steel rod with a spring and an orange knob | Its rod passes through the lower rail. The knob stands outside the rail | |
+
+### Ball paths
+
+Image generation cannot draw a path that works. The blind judges of round 6 named the same faults in almost every image: a lift tube closed at both ends, a ramp with no way on, a spiral too tight for a ball, nothing to carry a ball back up a tier. The build follows these rules. Where an approved image breaks one, the rule wins.
+
+1. In. The loader port on the first screen of the page feeds the clear tube down the right side of the page. The tube ends at the plunger, at the lower right corner of Tier 1. The plunger fires the ball up the launch lane, inside the right rail, past all three tiers and into the top lane of Tier 3.
+2. Down. On Tiers 3 and 2, the gap between the flippers and both outlanes lead into one chute, and the chute opens at the top centre of the tier below. On Tier 1, the gap between the flippers and the right outlane lead to the drain, and the left outlane leads to Mom's hatch.
+3. Up. The lift is one clear tube inside the left rail. It has an orange door on Tier 1 and on Tier 2, and an orange elbow at the top left of Tier 2 and of Tier 3. A ball shot through a door is carried up one tier by air and let out of the elbow above, into that tier's top lane. The tube is open at every door and every elbow.
+4. Wire ramps. A wire ramp is a track: two wires under the ball, two beside it and hoops along it, as in key `rail-cam`. It has a steel flap where the ball rolls on and an open end where the ball drops off. The highway is entered at its left end and ends over the top of the garage spiral. The ladder is entered at its foot and returns to its foot.
+5. Holds. A scoop or a hatch holds a ball and always lets it go: the firehouse, the inbox, Mom's hatch. The lobby doors hold nothing. A ball that reaches them is slammed and rolls back down the carpet.
+6. No way in. Nothing leads into the Retirement box, ever.
+7. Clearance. Every lane, door, chute, tube, ramp and turn of the spiral that a ball uses is at least `table.minClearanceBalls` wide and high.
+8. No dead ends. There is no place on any tier where a ball can come to rest, other than a hold that will let it go.
+9. Arrow lamps along a lane point the way the ball travels.
+
+Measure M10 in `kit/07-QUALITY-BAR.md` checks these.
+
+### The displays, the inserts and the modes
+
+- The main display is under the marquee's title panel. Each tier has a smaller display in its lower right shoulder. All four are amber dot displays and all four show the same thing. The round 6 images have no tier display, and most blind judges gave that as their reason for not calling a tier a game screenshot.
+- At rest the displays show the score in `table.displayDigits` digits. The score only ever counts up, and it means nothing.
+- The nine inserts are Brandon's nine lines in `copy:step3.table.modes`. `table.inserts` says which picture and which mode each insert is. An insert carries a picture and no words. The first time the ball rolls over it, it lights, and the displays show that mode's `insert` and then its `display` line, scrolling.
+- "Reply All" is the multiball. Its insert lights when the inbox takes the ball.
+- At the start of the live scene the displays show a mouse with its two buttons blinking in turn. It is a picture, not words.
+
+### The clear ball
+
+Sheet `clear-ball`. Brandon's idea: the cursor is sealed in a clear ball, so it can be seen the whole time and the machine has room to be a spectacle.
+
+- The ball is thick clear acrylic with a fine seam round its middle and a small aluminum plug. It refracts what is behind it, carries sharp highlights, and casts a light shadow with a bright spot in it. It holds no liquid.
+- The cursor is inside it: the same arrow, a solid object, its length `table.cursorInBallFraction` of the ball's width. It is never printed on the ball and never a reflection.
+- When a tier fills the frame, the cursor in the ball is the size it is on every other page.
+- It behaves like a thing loose in a ball. When the ball is still, it lies against the bottom. When the ball rolls, it tumbles a beat behind. When the ball is hit, it is thrown flat against the inside wall.
+- It still acts. It sweats when a flipper winds up, and the sweat beads on the inside of the ball. It goes rigid before a hit. It sags when it is spared. Everything under "How it acts" applies inside the ball.
+- The other balls in the machine are chrome steel and the same size. From "Reply All" on they chase it and hit it.
+- The ball is opened twice only: when it closes round the cursor at the loader port, and when it splits at the outlet port.
+
+### Light in the machine
+
+- While the camera is on the page, the page is lit by the website's light.
+- When the camera leaves the page for the machine, the website's light is turned down to `table.pageDuskLevel` of its level and the machine is lit by its own lamps: general lighting round the edges of each tier, a lamp under every insert, the beacons, a lamp in each bumper, lit windows in every building, the marquee. Beyond the edge of the page there is darkness.
+- Light spills. An insert lights the post beside it. A beacon throws its colour over everything near it. The clear coat shows sharp reflections of lamps and parts.
+- When the scene ends the website's light comes back up.
 
 ### The scene
 
 - It is choreographed. Every event in `kit/01-FILM.md` happens on cue, in order, every time.
-- The camera goes inside: low, close, following the cursor, cutting between the shots listed there.
-- Lights are part of the choreography: flashers on hits, a wave across the inserts on the launch, the whole table strobing in "Reply All".
+- The camera is free here and nowhere else. Brandon's words: the camera zooms out and shows the entirety of the machine, then zooms in on the part the cursor is at and follows it around, and on a rail the camera attaches above the ball so the cursor is seen inside it.
+- Lights are part of the choreography: a wave down the tiers on the reveal, a flash on every hit, the whole office tier strobing in "Reply All", a slow dim when the ball drains.
 
 **Live mode**
 
-- The visitor has the flippers and they really work.
-- The scene still hits every story beat in order. The table steers the cursor to the next beat. The visitor's flips change the path between beats, not the story.
-- Nobody can lose and nobody has to be good at pinball. It runs about `live.pinball.sceneSeconds` seconds and ends the same way for everyone.
-- The view is a steady play view of the table. The close shots cut in only at the big moments, when the cursor is held or in flight and the flippers are not needed.
+- The visitor has the flippers and they really work. The left mouse button and the left Shift key work every left flipper. The right mouse button and the right Shift key work every right flipper.
+- The view is the tier the ball is on, filling the screen, as in the three tier keys. When the ball changes tier the view travels with it in `live.pinball.tierTravelSeconds`.
+- A close shot cuts in only while the ball is held or riding a ramp, for at most `live.pinball.closeShotMaxSeconds`, and the tier view is back before the flippers are needed.
+- The scene still hits every story beat in order. The table steers the ball to the next beat. The visitor's flips change the path between beats, not the story.
+- Nobody can lose and nobody has to be good at pinball. It runs about `live.pinball.sceneSeconds` seconds and ends the same way for everyone: in the Unemployment Office.
 
 ## The boss
 

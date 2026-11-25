@@ -106,7 +106,7 @@ Steps:
 2. Write the layout tree of all six pages. Draw every part as a flat grey box at its place and height, with its real words from the copy in a plain system face. Create `parts/PARTS.json` with every part as `stand-in`, and record the file hash of each as it stands now.
 3. Give the cursor a stand-in: a flat arrow that follows the pointer with weight and squashes when it stops.
 4. Build every gag as a working state machine on stand-in shapes, with its live way out: the keyboard that types, turrets that fire, keys that shuffle, slabs that drop, the tug of war as one number, the three rows and their machines, the checkbox and the boss with its health and its three phases, the wait, the letter and the stamp. Build the page turn.
-5. Build the pinball table's stand-in: a flat board with the layout of the approved `table-top` image as colliders and plain shapes, the physics library running, the flippers, the director with every beat's entry and deadline. Build `npm run take` and `npm run simcache`, and run the search for a first take, inside `quality.takeSearchMaxRuns`.
+5. Build the pinball machine's stand-in. Write the machine's layout file from sheet `table-map`, the three tier keys and "Ball paths" in `kit/02-SUBJECT.md`. Then three flat boards with that layout as colliders and plain shapes, every rail and hold of "Ball paths" working, the physics library running, all six flippers, the grey ball with the cursor in it, the loader port and the outlet port on the tall page of step 3, the three tier cameras, and the director with every beat's entry and deadline. Build `npm run paths` and run it until it is clean, or for three tries. Build `npm run take` and `npm run simcache`, and run the search for a first take, inside `quality.takeSearchMaxRuns`.
 6. Build the film: a script for every beat that reaches the beat's event on time, the film's cameras with every pinball shot of `kit/01-FILM.md`, the command `npm run cut`, `film` mode, and a stand-in for film A's opening that has the right length. Build `loop` mode with a closed script for the first entry of `deliver.cardLoop.candidates`.
 7. Build the live site: `live` mode, the pointer, the three DOM controls, the message page for touch devices, the offer for reduced motion, the levels of quality and how the site picks one, the menu on the `M` key, and the probe page.
 8. Build `npm run bots` and run it.
@@ -148,7 +148,7 @@ Steps:
    - The slabs, the paper and the shredder.
    - Step 1's script: the acting of its seven beats.
    - Sound: the remaining takes of step 1's cues.
-3. Start the table team now as well, because the pinball machine needs the most time: agents for the playfield artwork, the cabinet and backbox, the hardware, the flippers, bumpers, targets and ramps, the buildings, and the lights. They follow `kit/03-METHOD.md` section 10, beginning with its study step. Their work is Phase 4 work begun early. Its rounds come in Phase 4. If agent slots are short, step 1 comes first until its first round has started, and the table comes first after that.
+3. Start the table team now as well, because the pinball machine needs the most time: agents for the artwork of the three floors; the frame, the marquee and the loader; the hardware and the lift; the flippers, bumpers, targets and ramps; the clear ball; the displays; the models, one agent to each tier; and the lights. They follow `kit/03-METHOD.md` section 10, beginning with its study step. Their work is Phase 4 work begun early. Its rounds come in Phase 4. If agent slots are short, step 1 comes first until its first round has started, and the table comes first after that.
 4. Integrate. Fit the `home` camera and `cameras.home.fovDeg` against `step1-fire`. Set the light, the tone curve and the grade against it and against `page-look`. These become the defaults for everything.
 5. Work the acting. Render a sheet across each of the seven beats and across each acting state and each kind of damage, and look at them as a stranger would. Work on them for at most `quality.gateFixMaxAttempts` cycles of change and look for each. What is still weak after that goes to the round as it is. Publish, so Brandon can play step 1.
 6. Measure the render budget, the texture memory and the counts, and update the table.
@@ -178,7 +178,7 @@ Each agent owns its folders and nothing else. Change the split if the work calls
 
 | Unit | Agents | Each owns |
 | --- | --- | --- |
-| `pinball` | The table team from Phase 3, carried on: the artwork; the cabinet and backbox; the hardware; flippers, bumpers, targets and ramps; one for every two buildings; the lights and the light show. Now also one for the physics and the director, one for the cameras, and one for the page of step 3, the rise, the sinking and the script | Its folder under `src/table/`, or `src/pages/step3/`, and its parts under `public/assets/`, `assets-full/` and `assets-src/` |
+| `pinball` | The table team from Phase 3, carried on: the artwork of the three floors; the frame, the marquee and the loader; the hardware and the lift; flippers, bumpers, targets and ramps; the clear ball; the displays; one for the models of each tier; the lights and the light show. Now also one for the physics and the director, one for the cameras, and one for the page of step 3, the way in, the way out and the script | Its folder under `src/table/`, or `src/pages/step3/`, and its parts under `public/assets/`, `assets-full/` and `assets-src/` |
 | `boss` | One for the card and the health bar, one for the body, one for the transform and the defeat, one for the weapons, the fight and the script | Its part of `src/boss/` or `src/pages/step4/`, and its assets |
 | `step2` | One for the rows, one for each machine, one for the script | Its part of `src/pages/step2/`, and its assets |
 | `marketing` | One for the first screen with its cards, ticker and button, one for the sections below it, one for the script | Its part of `src/pages/marketing/`, and its assets |
@@ -197,8 +197,8 @@ For each unit:
 
 For `pinball`, in addition:
 
-1. Before integration, put the table's parts together on the playfield and render `table-top` and `table-player` beside their approved images. Count the standing parts and run M8. A table that is not yet crowded goes back to the hardware and building agents once, for one more pass inside `budget.buildAgentMaxHours`, while the rest of the unit's work carries on. After that pass the table is integrated as it stands, and a red M8 is a severe issue for its round.
-2. Fit the eight table cameras to their keys.
+1. Before integration, put each tier's parts together on its floor and render the three tier keys, `table-wide` and the sheet `table-map` beside their approved images. Count the standing parts of each tier and run M8, and run `npm run paths` and M10. A tier that is not yet crowded goes back to its hardware and model agents once, for one more pass inside `budget.buildAgentMaxHours`, while the rest of the unit's work carries on. After that pass the tier is integrated as it stands, and a red M8 or M10 is a severe issue for its round.
+2. Fit the cameras `table-wide`, `rail`, `table-lobby`, `table-replyall`, `table-fired` and `table-save` to their keys. The three tier cameras are not fitted: each is `home` moved down the page to its tier.
 3. Once the layout of the colliders is final, run `npm run take`, for at most `quality.takeSearchMaxRuns` searches. A later change to the layout or the physics buys the same number of searches once more.
 4. Write the light show's score against the take's events.
 5. Its rounds judge the scene as film mode plays it and as the live site plays it, with sheets of both.
@@ -368,7 +368,7 @@ Time used: <hours before the review> of <hours allowed>, <hours in review rounds
 Rounds run: <number>
 Units: <for each of the eight: passed, or the limit that ended it>
 Final scores: R1 <lowest key and its score>, R2 <pass or fail, with the failing units>, R3 <lowest>, R4 <lowest, and the pinball scene's own score>, R5 <site>, <film>, R6 <n>, R7 <n>, R8 <lowest>, R9 <lowest, and how many beats did not read>
-Measures: M4 <smallest type in page pixels>, M8 <standing parts, and the bare share>
+Measures: M4 <smallest type in page pixels>, M8 <standing parts and the bare share, for each tier>, M9 <parts off their size or height>, M10 <ball path faults, and what `npm run paths` found>
 Bots: <runs finished of runs made, and the slowest run>
 Size: <megabytes shipped> of <limit>, first load <megabytes> of <limit>
 Open items: <list with the unit and still of each, or "none">

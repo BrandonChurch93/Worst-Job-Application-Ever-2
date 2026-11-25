@@ -75,7 +75,7 @@ A unit is one page of the site. Each unit gets its own critic rounds. Times are 
 | `marketing` | The careers page | Calm before the storm | The cursor strolls through a cheerful careers page, impressed, missing every warning in the fine print | It jumps on "Apply for a Job" |
 | `step1` | Step 1, About You | A struggle | It types its name on a keyboard while turrets shoot at it, fights a keyboard that rearranges itself, has a valid email rejected, then loses a tug of war with a shredder over its resume | It is shredded, reassembles, and is told to re-enter everything |
 | `step2` | Step 2, Personal Details | Contraptions | Three ordinary fields. Each one opens into the wrong machine: a rotary dial, a slot machine, a hand crank | Each machine gets one hit on the cursor. It continues |
-| `pinball` | Step 3, Skills Assessment | The main attraction | A full arcade pinball machine, `table.name`, rises out of the page. The cursor is thrown in and batted around a miniature city | It drains into the Unemployment Office and is spat back onto the page. It passed |
+| `pinball` | Step 3, Skills Assessment | The main attraction | The cursor is sealed in a clear ball and dropped into `table.name`, a pinball machine three screens tall set into the page. It is launched to the top, the executive floor, and knocked down a tier at a time | It drains into the Unemployment Office and is let out onto the page. It passed |
 | `boss` | Step 4, Submit | A boss fight | It ticks "I am not a robot". The Submit button tears loose and becomes a war machine with a health bar. The cursor dodges and shoots | The boss collapses back into a dented button. The cursor presses it |
 | `decision` | Step 5, Decision | The punchline | The wait is announced as months and takes no time. A rejection letter, a stamp, the metrics | It accepts rejection. The page resets to the careers page, still hiring |
 
@@ -118,19 +118,20 @@ A beat is one timed gag inside a unit. Times are in `film.beats`, in seconds fro
 
 ### `pinball`
 
-This is a directed scene with cuts. The camera leaves the screenshot view and goes inside the machine.
+This is a directed scene with cuts. The camera leaves the screenshot view and goes into the machine. The story is a career in reverse: launched to the top, knocked down a tier at a time, drained into the Unemployment Office.
 
 | Beat | What is seen | Camera |
 | --- | --- | --- |
-| `pinball.rise` | The page shows the step 3 transition line. The page splits and a full arcade cabinet rises out of it. It powers on: general lighting, then inserts in a wave, then the backbox title | Starts straight on. Tilts and pulls to a player's-eye view as the cabinet rises |
-| `pinball.launch` | A mechanical arm drops the cursor into the shooter lane. The plunger pulls back. It realizes. It is fired | Low and behind the cursor, riding up the lane |
-| `pinball.coffee` | It is thrown into the three coffee bumpers and rattled between them, squashing flat on each hit | Ball height, close, inside the cluster |
-| `pinball.firehouse` | It drops into the firehouse scoop. The red flasher fires, the sign lights, and it is kicked back out | Tight on the firehouse, then whip to follow |
-| `pinball.highway` | It skids up the chrome highway ramp and round the overpass above the city, steel balls not yet in play, the Retirement box drifting past out of reach | Riding just behind it on the wireform |
-| `pinball.replyAll` | "Reply All" lights. `live.pinball.extraBallsInReplyAll` steel balls drop in. Now they are chasing it and hitting it. The whole table is lit and loud | Wide from above to show the whole table, then quick close cuts on the impacts |
-| `pinball.save` | It falls toward the drain. A flipper catches it at the last instant and sends it back up | Slow motion, low, from just above the flippers |
-| `pinball.hq` | The shot goes up the main ramp to Corporate HQ. The lobby doors are open. They slam shut and it hits them flat | Low, straight up the ramp, HQ towering |
-| `pinball.drain` | It slides down the doors, rolls down the playfield between the flippers and drops into the Unemployment Office. The cabinet sinks back into the page and spits it out. The result card: it passed | Follows it down, then returns to the straight-on page view |
+| `pinball.seal` | The first screen of step 3: the heading, the subline, the paragraph, the loader port. The cursor drifts toward the port and is pulled in. The two halves of a clear ball close round it with a click. It looks at the ball. The ball drops into the tube. Key `loader-page` | `home`, straight on |
+| `pinball.reveal` | The view travels down the page after the ball in its tube. The website's light goes down to dusk. The marquee lights, then the three tiers in a wave from the top, lamp by lamp. The camera pulls back and tilts to the player's end until the whole machine is in frame. Key `table-wide` | From `home`, down the page, to `table-wide` |
+| `pinball.launch` | The ball arrives at the plunger. The plunger draws back. Inside the ball the cursor realizes. It is fired up the launch lane, past the street, past the office, to the top | Low and behind the ball, riding up the lane |
+| `pinball.lobby` | Tier 3. It rolls out of the top lane and down the red carpet. The revolving door bats it round once. It rolls up to the lobby doors of Corporate HQ, which stand open. They slam. The ball hits them and the cursor is pressed flat against the inside of it. It slides back down the carpet and between the flippers. Keys `tier-corporate` and `lobby-doors` | `tier-3` as it arrives, then low on the carpet, the tower above |
+| `pinball.coffee` | Tier 2. The chute drops it straight onto the three coffee bumpers. It is rattled between them, thrown flat on each hit. Key `tier-office` | `tier-2`, then ball height inside the cluster |
+| `pinball.replyAll` | It lands in the inbox scoop. The "Reply All" insert lights. The tray tips and `live.pinball.extraBallsInReplyAll` steel balls pour out. They chase it and hit it. The whole tier strobes. It is knocked between the flippers. Key `reply-all` | Fitted to its key, then quick close cuts on the hits |
+| `pinball.fired` | Tier 1. It rolls down the street and drops into the firehouse garage. The red beacon turns, the sign lights, and it is fired back out across the tier. Keys `tier-street` and `youre-fired` | `tier-1`, then tight on the firehouse, then a whip to follow |
+| `pinball.highway` | The right flipper sends it onto the highway. It rides the wire ramp above the road, the buildings passing below, and drops into the parking garage and round the spiral. Key `rail-cam` | `rail`: fixed above the ball, looking down and a little ahead, the cursor seen inside it |
+| `pinball.save` | It rolls out of the garage and falls toward the gap. A flipper catches it at the last instant and sends it back up. Inside the ball the cursor sags with relief. Key `last-save` | Slow motion, low, from just above the flippers |
+| `pinball.drain` | It comes straight back down, between the flippers and into the Unemployment Office. The machine dims. The website's light comes up. The ball rolls out of the outlet port below the machine and splits. The cursor falls out, peels itself off the page and shakes. The result card: it passed | Follows it down, then `home` on the last screen of the page |
 
 ### `boss`
 
@@ -158,8 +159,9 @@ This is a directed scene with cuts. The camera leaves the screenshot view and go
 - On every page except the pinball scene the view is straight on, like a screenshot. No tilt.
 - In film mode the camera may push in on a big gag and ease back out. The cursor stays one size on the page. The camera gets closer. The cursor never grows.
 - Pushes are eased. The camera has mass.
-- The pinball scene is the one place the camera is free. Its shots are listed above.
+- The pinball scene is the one place the camera is free. Its shots are listed above. Brandon's words for it: the camera zooms out and shows the entirety of the machine, then zooms in on the part the cursor is at and follows it around, and on a rail it attaches above the ball so the cursor is seen inside it.
 - In live mode the view stays on the whole page so the visitor can always see where they are. A short cut-in is allowed only while the page has control of the cursor.
+- In the live pinball scene the view is the tier the ball is on, filling the screen. `kit/02-SUBJECT.md` under "The scene" has the rule.
 
 ## Sound
 
@@ -212,6 +214,8 @@ Each has a default. The default stands unless he changes it.
 | Typing on a real keyboard in step 1, live mode | Ignored, with the note in `copy:step1.keyboardNote`, so the on-screen keyboard is the only way |
 | A skip link on each step, live mode | Shown after `live.skipLinkAfterSeconds` seconds, for a visitor in a hurry |
 | The link on the touch-device message | `links.portfolioWork`, not filled in yet |
+| What stands on each tier of the pinball machine | The picks in `kit/02-SUBJECT.md`: the boardroom, the ladder, the staplers, the inbox and the rest |
+| The flippers, live mode | The two mouse buttons and the two Shift keys |
 
 ## What the Builder may tune
 

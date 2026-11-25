@@ -5,7 +5,42 @@
   "repo": { "url": "https://github.com/BrandonChurch93/Worst-Job-Application-Ever-2", "branch": "main", "expectPrivate": true, "maxFileMb": 95, "maxTreeGb": 2, "maxPushGb": 1 },
   "host": { "name": "Vercel", "maxShippedMb": 95, "maxFileMb": 20, "firstLoadMaxMb": 16, "maxBuildMinutes": 20 },
   "employer": { "name": "Mandatory Optional Overtime" },
-  "table": { "name": "The Daily Grind", "minStandingParts": 60, "maxBareFraction": 0.08, "inserts": 9, "slopeDeg": 6.5, "bareDistanceFraction": 0.02 },
+  "table": {
+    "name": "The Daily Grind",
+    "tiers": ["corporate", "office", "street"],
+    "ballPx": 96,
+    "cursorInBallFraction": 0.73,
+    "tierWidthBalls": 20,
+    "tierHeightBalls": 11.25,
+    "tierStepBalls": 1,
+    "marqueeHeightBalls": 4,
+    "flipperBalls": 3,
+    "flipperGapBalls": 1.5,
+    "laneBalls": 1.5,
+    "minClearanceBalls": 1.25,
+    "spiralTurns": 3,
+    "dropTargetsPerBank": 5,
+    "insertsPerTier": 3,
+    "inserts": [
+      { "tier": "corporate", "picture": "a magnifying glass", "mode": 5 },
+      { "tier": "corporate", "picture": "an hourglass", "mode": 6 },
+      { "tier": "corporate", "picture": "a clipboard with a tick", "mode": 7 },
+      { "tier": "office", "picture": "a slice of pizza", "mode": 0 },
+      { "tier": "office", "picture": "an envelope with two arrows", "mode": 4 },
+      { "tier": "office", "picture": "a knot in a rope", "mode": 8 },
+      { "tier": "street", "picture": "a ladder", "mode": 3 },
+      { "tier": "street", "picture": "a clock face", "mode": 1 },
+      { "tier": "street", "picture": "three hats stacked", "mode": 2 }
+    ],
+    "displayDigits": 6,
+    "displayWidthBalls": 3.2,
+    "displayHeightBalls": 0.75,
+    "minStandingPartsPerTier": 24,
+    "maxBareFraction": 0.08,
+    "bareDistanceFraction": 0.02,
+    "slopeDeg": 6.5,
+    "pageDuskLevel": 0.18
+  },
   "applicant": { "filmFirstName": "Perplexity", "filmLastName": "Computer", "filmEmail": "applicant@example.com" },
   "film": {
     "fps": 60,
@@ -15,12 +50,12 @@
     "unitTuneFraction": 0.2,
     "beatToleranceSeconds": 0.25,
     "maxSeconds": 165,
-    "plannedSeconds": { "marketing": 14, "step1": 32, "step2": 21, "pinball": 40, "boss": 32, "decision": 12 },
+    "plannedSeconds": { "marketing": 14, "step1": 32, "step2": 21, "pinball": 42, "boss": 32, "decision": 12 },
     "units": [
       { "id": "marketing", "seconds": 14 },
       { "id": "step1", "seconds": 32 },
       { "id": "step2", "seconds": 21 },
-      { "id": "pinball", "seconds": 40 },
+      { "id": "pinball", "seconds": 42 },
       { "id": "boss", "seconds": 32 },
       { "id": "decision", "seconds": 12 }
     ],
@@ -41,15 +76,16 @@
       { "id": "step2.slot", "unit": "step2", "from": 8, "to": 14, "event": "coins" },
       { "id": "step2.crank", "unit": "step2", "from": 14, "to": 20, "event": "flatten" },
       { "id": "step2.continue", "unit": "step2", "from": 20, "to": 21, "event": "button-press" },
-      { "id": "pinball.rise", "unit": "pinball", "from": 0, "to": 6, "event": "power-on" },
-      { "id": "pinball.launch", "unit": "pinball", "from": 6, "to": 9, "event": "plunger" },
-      { "id": "pinball.coffee", "unit": "pinball", "from": 9, "to": 14, "event": "bumper" },
-      { "id": "pinball.firehouse", "unit": "pinball", "from": 14, "to": 18, "event": "scoop-kick" },
-      { "id": "pinball.highway", "unit": "pinball", "from": 18, "to": 22, "event": "ramp-roll" },
-      { "id": "pinball.replyAll", "unit": "pinball", "from": 22, "to": 30, "event": "ball-drop" },
-      { "id": "pinball.save", "unit": "pinball", "from": 30, "to": 33, "event": "flipper-save" },
-      { "id": "pinball.hq", "unit": "pinball", "from": 33, "to": 36, "event": "doors-slam" },
-      { "id": "pinball.drain", "unit": "pinball", "from": 36, "to": 40, "event": "drain" },
+      { "id": "pinball.seal", "unit": "pinball", "from": 0, "to": 4, "event": "ball-seal" },
+      { "id": "pinball.reveal", "unit": "pinball", "from": 4, "to": 8, "event": "power-on" },
+      { "id": "pinball.launch", "unit": "pinball", "from": 8, "to": 11, "event": "plunger" },
+      { "id": "pinball.lobby", "unit": "pinball", "from": 11, "to": 15, "event": "doors-slam" },
+      { "id": "pinball.coffee", "unit": "pinball", "from": 15, "to": 19, "event": "bumper" },
+      { "id": "pinball.replyAll", "unit": "pinball", "from": 19, "to": 26, "event": "ball-drop" },
+      { "id": "pinball.fired", "unit": "pinball", "from": 26, "to": 29.5, "event": "scoop-kick" },
+      { "id": "pinball.highway", "unit": "pinball", "from": 29.5, "to": 34, "event": "ramp-roll" },
+      { "id": "pinball.save", "unit": "pinball", "from": 34, "to": 37, "event": "flipper-save" },
+      { "id": "pinball.drain", "unit": "pinball", "from": 37, "to": 42, "event": "drain" },
       { "id": "boss.verify", "unit": "boss", "from": 0, "to": 5, "event": "checkbox" },
       { "id": "boss.unfold", "unit": "boss", "from": 5, "to": 9, "event": "unfold" },
       { "id": "boss.slabs", "unit": "boss", "from": 9, "to": 16, "event": "slab-fire" },
@@ -116,15 +152,16 @@
   "cameras": {
     "home": { "fovDeg": 12, "fovMinDeg": 6, "fovMaxDeg": 20, "note": "the page, straight on, filling the frame" },
     "sheet": { "fovDeg": 12, "note": "straight on and close, for the cursor and boss sheets" },
-    "table-top": { "fovDeg": 20, "note": "the whole playfield from directly above" },
-    "table-player": { "fovDeg": 35, "note": "where a player stands, looking down the playfield" },
-    "table-play": { "fovDeg": 30, "note": "the steady play view of the live site" },
-    "table-backbox": { "fovDeg": 35, "note": "fitted to its approved image" },
-    "table-hq": { "fovDeg": 35, "note": "fitted to its approved image" },
-    "table-firehouse": { "fovDeg": 35, "note": "fitted to its approved image" },
-    "table-coffee": { "fovDeg": 35, "note": "fitted to its approved image" },
-    "table-flippers": { "fovDeg": 35, "note": "fitted to its approved image" },
-    "table-highway": { "fovDeg": 35, "note": "fitted to its approved image" }
+    "table-wide": { "fovDeg": 35, "note": "the whole machine from the player's end, fitted to its approved image" },
+    "table-map": { "fovDeg": 12, "note": "the whole machine from straight above, rendered 1080 wide by 1920 tall" },
+    "tier-3": { "fovDeg": 12, "note": "the home camera moved down the page to the corporate tier: the same lens and distance, the tier filling the frame" },
+    "tier-2": { "fovDeg": 12, "note": "the home camera moved down the page to the office tier: the same lens and distance, the tier filling the frame" },
+    "tier-1": { "fovDeg": 12, "note": "the home camera moved down the page to the street tier: the same lens and distance, the tier filling the frame" },
+    "rail": { "fovDeg": 40, "note": "riding above the ball on a wire ramp, looking down and a little ahead, fitted to its approved image" },
+    "table-lobby": { "fovDeg": 35, "note": "fitted to its approved image" },
+    "table-replyall": { "fovDeg": 30, "note": "fitted to its approved image" },
+    "table-fired": { "fovDeg": 35, "note": "fitted to its approved image" },
+    "table-save": { "fovDeg": 35, "note": "fitted to its approved image" }
   },
   "layout": { "tolerancePx": 2, "minTextPx": 14, "minTextContrast": 4.5 },
   "sim": { "stepHz": 240, "checkpointSeconds": 1 },
@@ -137,7 +174,7 @@
     },
     "step1": { "minChars": 3, "hitsBeforeTurretsOverheat": 3 },
     "step2": { "dialDigitsBeforeItGivesUp": 3, "crankTurnsBeforeItRunsAway": 3 },
-    "pinball": { "sceneSeconds": 45, "extraBallsInReplyAll": 2 },
+    "pinball": { "sceneSeconds": 50, "extraBallsInReplyAll": 3, "tierTravelSeconds": 0.6, "closeShotMaxSeconds": 3, "momSavesPerScene": 1 },
     "boss": { "phases": 3, "maxSeconds": 45 },
     "skipLinkAfterSeconds": 20,
     "controlTakenMaxSeconds": 8,
@@ -174,7 +211,8 @@
     "The cursor's size comes from cursor.heightPxAt1080. Several images draw it larger or smaller.",
     "Every word comes from content/copy.json. Where an image misspells a word or changes punctuation, the copy wins.",
     "The page fills the frame evenly. A darker slab edge along the border of an image is not part of the page.",
-    "The light is clean. A band of window light or shade across an image is not part of the look."
+    "The light is clean. A band of window light or shade across an image is not part of the look.",
+    "Sizes are not taken from any image. A part's size and its height off the page come from scale in the config and from the layout tree. The images draw the same part at different sizes."
   ],
   "keys": [
     { "id": "marketing-top", "unit": "marketing", "beat": "marketing.apply", "at": 0, "camera": "home", "image": "references/approved/marketing-top.png", "settled": [] },
@@ -186,7 +224,9 @@
       "camera": "home",
       "image": "references/approved/step1-fire.png",
       "settled": [
-        "The image cuts the bottom key row off at the tray edge. The build shows all five rows inside the tray, with a lower rim.",
+        "The image sinks the keyboard in a well. In the build the keyboard is a deck that stands scale.heights.keyboardDeck above the page, with the keys on top of it and a shadow on the page.",
+        "The image puts each turret in a well beside the keys. In the build each turret rises from a hatch in the top of the deck, at its end.",
+        "The image cuts the bottom key row off. The build shows all five rows on the deck.",
         "The image shows three bolts in flight. The number in flight is not fixed."
       ]
     },
@@ -222,6 +262,106 @@
       "settled": ["The image leaves the input empty. The build shows the level as a percentage."]
     },
     {
+      "id": "loader-page",
+      "unit": "pinball",
+      "beat": "pinball.seal",
+      "at": 0.7,
+      "camera": "home",
+      "image": "references/approved/loader-page.png",
+      "settled": [
+        "The image draws grey bars where the subline and the paragraph go. The build sets copy:step3.subline and copy:transitions.step3 there.",
+        "The image draws the ball about 126 pixels across. The build uses table.ballPx.",
+        "The image draws the header higher and its buttons smaller than the other pages do. The build uses the shared header.",
+        "The seams across the lower part of the image are not part of the page. In the build the first screen ends where the marquee's frame begins."
+      ]
+    },
+    {
+      "id": "table-wide",
+      "unit": "pinball",
+      "beat": "pinball.reveal",
+      "at": 1,
+      "camera": "table-wide",
+      "image": "references/approved/table-wide.png",
+      "settled": [
+        "The image shows the ball at the plunger with no feed tube. In the build the feed tube from the loader port ends at the plunger.",
+        "The image carries words only on the marquee and the drain plate. The build carries every sign.",
+        "The digits on the display are an example."
+      ]
+    },
+    {
+      "id": "tier-corporate",
+      "unit": "pinball",
+      "beat": "pinball.lobby",
+      "at": 0.25,
+      "camera": "tier-3",
+      "image": "references/approved/tier-corporate.png",
+      "settled": [
+        "The image shows the lobby doors shut. In the build they stand open until the ball reaches them.",
+        "The clipboard insert is drawn with ruled lines. In the build it is a clipboard with one tick."
+      ]
+    },
+    {
+      "id": "lobby-doors",
+      "unit": "pinball",
+      "beat": "pinball.lobby",
+      "at": 0.7,
+      "camera": "table-lobby",
+      "image": "references/approved/lobby-doors.png",
+      "settled": ["The image stands the revolving door beside the carpet. In the build it stands on the carpet in front of the doors, as in tier-corporate."]
+    },
+    {
+      "id": "tier-office",
+      "unit": "pinball",
+      "beat": "pinball.coffee",
+      "at": 0.6,
+      "camera": "tier-2",
+      "image": "references/approved/tier-office.png",
+      "settled": ["The image shows a small blank card in the lower right shoulder. In the build the tier's display is there."]
+    },
+    {
+      "id": "reply-all",
+      "unit": "pinball",
+      "beat": "pinball.replyAll",
+      "at": 0.3,
+      "camera": "table-replyall",
+      "image": "references/approved/reply-all.png",
+      "settled": []
+    },
+    {
+      "id": "tier-street",
+      "unit": "pinball",
+      "beat": "pinball.fired",
+      "at": 0.15,
+      "camera": "tier-1",
+      "image": "references/approved/tier-street.png",
+      "settled": [
+        "The image draws the highway as a handrail on posts. In the build it is the track shown in rail-cam: two wires under the ball, two beside it and hoops along it, with a flap onto it at its left end and a drop into the garage at its right end.",
+        "The image draws the turns of the garage spiral too close for a ball. In the build every turn clears table.minClearanceBalls.",
+        "The image draws the plunger inside the frame. In the build its rod passes through the lower rail and its knob stands outside the rail.",
+        "The third insert is drawn as one hat. In the build it is three hats stacked.",
+        "The clock insert carries no numerals, in the image and in the build."
+      ]
+    },
+    { "id": "youre-fired", "unit": "pinball", "beat": "pinball.fired", "at": 0.5, "camera": "table-fired", "image": "references/approved/youre-fired.png", "settled": [] },
+    {
+      "id": "rail-cam",
+      "unit": "pinball",
+      "beat": "pinball.highway",
+      "at": 0.5,
+      "camera": "rail",
+      "image": "references/approved/rail-cam.png",
+      "settled": ["Which buildings pass below the ramp, and on which side, follows the layout of tier-street and not this image."]
+    },
+    {
+      "id": "last-save",
+      "unit": "pinball",
+      "beat": "pinball.save",
+      "at": 0.5,
+      "camera": "table-save",
+      "image": "references/approved/last-save.png",
+      "settled": ["The far buildings carry no signs in the image. The build carries them."]
+    },
+    {
       "id": "boss-fight",
       "unit": "boss",
       "beat": "boss.slabs",
@@ -250,86 +390,6 @@
         "The image draws the stamp block in a three-quarter view. In the build it is seen straight on like everything else.",
         "The image's cursor is cracked but not flat. In the build it is flattened."
       ]
-    },
-    {
-      "id": "table-top",
-      "unit": "pinball",
-      "beat": "pinball.rise",
-      "at": 1,
-      "camera": "table-top",
-      "image": "references/approved/table-top.png",
-      "settled": [],
-      "pending": true
-    },
-    {
-      "id": "table-player",
-      "unit": "pinball",
-      "beat": "pinball.rise",
-      "at": 1,
-      "camera": "table-player",
-      "image": "references/approved/table-player.png",
-      "settled": [],
-      "pending": true
-    },
-    {
-      "id": "table-backbox",
-      "unit": "pinball",
-      "beat": "pinball.rise",
-      "at": 1,
-      "camera": "table-backbox",
-      "image": "references/approved/table-backbox.png",
-      "settled": [],
-      "pending": true
-    },
-    {
-      "id": "table-coffee",
-      "unit": "pinball",
-      "beat": "pinball.coffee",
-      "at": 0.5,
-      "camera": "table-coffee",
-      "image": "references/approved/table-coffee.png",
-      "settled": [],
-      "pending": true
-    },
-    {
-      "id": "table-firehouse",
-      "unit": "pinball",
-      "beat": "pinball.firehouse",
-      "at": 0.6,
-      "camera": "table-firehouse",
-      "image": "references/approved/table-firehouse.png",
-      "settled": [],
-      "pending": true
-    },
-    {
-      "id": "table-highway",
-      "unit": "pinball",
-      "beat": "pinball.highway",
-      "at": 0.5,
-      "camera": "table-highway",
-      "image": "references/approved/table-highway.png",
-      "settled": [],
-      "pending": true
-    },
-    {
-      "id": "table-flippers",
-      "unit": "pinball",
-      "beat": "pinball.save",
-      "at": 0.5,
-      "camera": "table-flippers",
-      "image": "references/approved/table-flippers.png",
-      "settled": [],
-      "pending": true
-    },
-    {
-      "id": "table-hq",
-      "unit": "pinball",
-      "beat": "pinball.hq",
-      "at": 0.6,
-      "camera": "table-hq",
-      "image": "references/approved/table-hq.png",
-      "settled": [],
-      "pending": true
     }
   ],
   "sheets": [
@@ -371,6 +431,26 @@
       "image": "references/approved/boss-stages.png",
       "shows": "the Submit button becoming the boss, in four stages",
       "settled": ["The image's cannon discs carry no numerals. In the build they are the numbered buttons of the progress bar."]
+    },
+    {
+      "id": "clear-ball",
+      "unit": "pinball",
+      "image": "references/approved/clear-ball.png",
+      "shows": "the clear ball with the cursor in it: at rest on a flipper and sweating, in flight, and pressed flat on a bumper hit",
+      "settled": ["The playfield under the ball in this sheet is not the layout of any tier."]
+    },
+    {
+      "id": "table-map",
+      "unit": "pinball",
+      "image": "references/approved/table-map.png",
+      "shows": "the whole machine from straight above: where every part of every tier is",
+      "settled": [
+        "It is a join of the three tier images with a frame drawn round it. It is the target for where things are, not for finish.",
+        "Every settled line of the three tier keys applies to it."
+      ],
+      "camera": "table-map",
+      "width": 1080,
+      "height": 1920
     }
   ],
   "stills": [
@@ -393,9 +473,11 @@
       "cursorArms": "references/approved/cursor-arms.png",
       "cursorDamage": "references/approved/cursor-damage.png",
       "cursorActing": "references/approved/cursor-acting.png",
-      "tugOfWar": "references/approved/step1-tug.png"
+      "tugOfWar": "references/approved/step1-tug.png",
+      "clearBall": "references/approved/clear-ball.png",
+      "tableMap": "references/approved/table-map.png"
     },
-    "pendingRounds": ["references/drafts/round-6"]
+    "pendingRounds": []
   },
   "detail": { "focusCocPx": 1.5, "minTexelsPerPixel": 1.0, "maxSoftPixelFraction": 0.02, "minSharpnessRatio": 0.8 },
   "assets": { "maxTakesPerAsset": 6, "maxTuningLooksPerPart": 40, "maxStudySources": 12 },
@@ -438,8 +520,9 @@
       { "id": "crank-runaway", "seconds": 2 },
       { "id": "flatten", "seconds": 0.4 },
       { "id": "peel-up", "seconds": 0.6 },
-      { "id": "page-split", "seconds": 2 },
-      { "id": "cabinet-rise", "seconds": 3 },
+      { "id": "ball-seal", "seconds": 1 },
+      { "id": "tube-run", "seconds": 1.5 },
+      { "id": "lights-down", "seconds": 1.5 },
       { "id": "power-on", "seconds": 2.5 },
       { "id": "plunger", "seconds": 0.8 },
       { "id": "bumper", "seconds": 0.3, "variants": 4 },
@@ -450,6 +533,13 @@
       { "id": "flipper", "seconds": 0.2, "variants": 3 },
       { "id": "doors-slam", "seconds": 0.6 },
       { "id": "drain", "seconds": 1.2 },
+      { "id": "tier-fall", "seconds": 0.8 },
+      { "id": "lift", "seconds": 1 },
+      { "id": "spiral", "seconds": 2 },
+      { "id": "spinner", "seconds": 0.8 },
+      { "id": "drop-target", "seconds": 0.3, "variants": 2 },
+      { "id": "sling", "seconds": 0.25, "variants": 2 },
+      { "id": "ball-open", "seconds": 0.7 },
       { "id": "checkbox", "seconds": 0.2 },
       { "id": "button-crack", "seconds": 1 },
       { "id": "unfold", "seconds": 2 },
@@ -528,12 +618,57 @@
       "seconds": 8,
       "fps": 30,
       "scene": "auto",
-      "candidates": ["step1-fire", "table-coffee", "boss-fight"],
+      "candidates": ["step1-fire", "tier-office", "boss-fight"],
       "format": "hd",
       "pickJurors": 5,
       "webWidth": 1280,
       "webBitrateMbps": 3
     }
   },
-  "links": { "portfolioWork": "" }
+  "links": { "portfolioWork": "" },
+  "scale": {
+    "about": "Sizes and heights in page pixels at 1920 by 1080. A height is how far the top of a part stands above the page surface. A negative height is the floor of a pocket. Every part of a kind has the same size and height on every page. No size is taken from an image.",
+    "sizes": {
+      "contentLeft": 128,
+      "contentRight": 1792,
+      "progressButton": 76,
+      "progressPitch": 172,
+      "fieldHeight": 64,
+      "buttonHeight": 72,
+      "heroButtonHeight": 96,
+      "minKeyShortSide": 56,
+      "keyGap": 8
+    },
+    "heights": {
+      "rule": 2,
+      "rail": -3,
+      "progressButton": 10,
+      "progressButtonCurrent": 18,
+      "field": -6,
+      "buttonSocket": -4,
+      "button": 14,
+      "card": 12,
+      "paper": 1,
+      "slab": 16,
+      "keyboardDeck": 24,
+      "keycap": 42,
+      "keyTravel": 6,
+      "turretRaised": 96,
+      "machineTray": -8,
+      "machineMinTop": 30,
+      "cursorHover": 4
+    },
+    "tolerancePx": 2
+  },
+  "settledUnit": {
+    "pinball": [
+      "The ball is table.ballPx page pixels across and the cursor in it keeps its own size, which is table.cursorInBallFraction of the ball's width. The images draw the ball larger and the cursor smaller.",
+      "The lift tube is open at each orange door and at each elbow. The images draw it closed.",
+      "Where the ball is in a tier view or a close view comes from the take. It need not be where the image has it.",
+      "Every tier has a display in its lower right shoulder. The images show none.",
+      "Arrow lamps along a lane point the way the ball travels. Some images point them the other way.",
+      "A sign stands on the front edge of its roof, tilted back so that it reads from above and from the front. Some images lay it flat."
+    ],
+    "step1": ["The keyboard stands above the page on a deck. The image of step1-fire sinks it in a well, with the turrets in wells of their own."]
+  }
 }

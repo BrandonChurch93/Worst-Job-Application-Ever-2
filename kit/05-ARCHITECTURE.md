@@ -6,7 +6,7 @@
 - Vitest for unit tests.
 - A headless browser driver for the harness. Use the one that works with the browser already in this workspace, and pin that browser's version. It must not download a browser when the repo's packages are installed.
 - `ffmpeg` and `ffprobe` for films, loops, sound and checks.
-- One physics library for the pinball table, picked and pinned in Phase 0 as `kit/03-METHOD.md` section 10 says.
+- One physics library for the pinball machine, picked and pinned in Phase 0 as `kit/03-METHOD.md` section 10 says.
 - Optional build-time tools under `pipeline/`: headless Blender and Python, for geometry and baking. Nothing that ships depends on them being installed.
 - three.js: on the day this kit was written, 2026-11-24, the package registry listed 0.184.0 as the latest release, and type definitions for a newer one existed. In Phase 0 take the newest stable release, read its migration notes for `WebGLRenderer`, pin it and record it in `kit/PROGRESS.md`. Pin every other version too.
 - One render path: three.js `WebGLRenderer` on WebGL2, in every mode, on every machine. No WebGPU path and no path tracer. The critics judge pictures rendered in software here, visitors see the site on their own graphics cards, and the masters are rendered on Brandon's. All of them run the same shader code.
@@ -25,7 +25,7 @@ src/
   shell/                 the surface, header, progress bar, layout tree, type, materials, page turn
   cursor/                body, acting, damage, arms, effects
   pages/<page>/          marketing, step1, step2, step3, step4, step5: layout, parts, gags, script
-  table/                 the pinball machine: art, cabinet, hardware, buildings/, lights, physics, director, cameras
+  table/                 the pinball machine: layout, frame, marquee, loader, art, hardware, lift, displays, ball, models/, lights, physics, director, cameras
   boss/                  the boss: body, transform, weapons, the fight
   film/                  the timeline, the film cameras, the opening, the card loop
   audio/                 the sound engine and the table of events to cues
@@ -52,7 +52,7 @@ deliver/                 the card still, the card loop and its web copy, POST.md
 out/                     stills/, clips/, the preview films, roughcut.mp4, committed through the harness. work/ is ignored by git
 ```
 
-One owner per folder. `src/pages/<page>/`, `src/table/` and `src/boss/` are split so the pages can be built side by side. `src/table/buildings/` has one folder per building.
+One owner per folder. `src/pages/<page>/`, `src/table/` and `src/boss/` are split so the pages can be built side by side. `src/table/models/` has one folder per model.
 
 Which folders make up a unit:
 
@@ -87,7 +87,8 @@ This is how one site becomes both the film and the live site, with nothing built
 | --- | --- | --- |
 | `mouse` | `live` mode | The visitor's mouse and clicks |
 | `script` | `film` mode and the computed films | `src/pages/<page>/script.ts`: the pointer's path, its clicks and the acting cues of each beat, as functions of time |
-| `bot` | `npm run bots` | A scripted visitor from `live.bots` |
+| `bot` | `npm run paths` | The ball path test of `kit/03-METHOD.md` section 10: reads the machine's layout and drops seeded balls on every tier without rendering. Prints every opening under `table.minClearanceBalls`, every rail with no entry or exit, every way into the Retirement box, and every ball that came to rest outside a hold, stuck or left the machine. Measure M10 reads it |
+| `npm run bots` | A scripted visitor from `live.bots` |
 | `loop` | `loop` mode and the card loop | The loop's own closed script |
 
 - A gag is a small state machine that belongs to its page. It reads the pointer, the cursor and the simulation, and it does not know which driver is running. The turrets shoot at the cursor whoever is steering.
@@ -108,7 +109,7 @@ A computed picture is a pure function of what it shows, the format, the tier, th
 - All randomness comes from one seeded generator built from `seed`, with a named stream per system.
 - Two kinds of motion exist, and both are deterministic:
   - Closed-form: the film's camera, a page turn, the light show's score, the ticker, a counter. Each is a function of time. Nothing is stepped from an earlier frame.
-  - Stepped: the cursor and its springs, every gag, the paper, the coins, the boss fight, the pinball table. They advance in fixed steps of `sim.stepHz` from a known start, with no dependence on frame rate or wall clock. The same start and the same driver input give the same state at step N, however the steps were grouped into frames.
+  - Stepped: the cursor and its springs, every gag, the paper, the coins, the boss fight, the pinball machine. They advance in fixed steps of `sim.stepHz` from a known start, with no dependence on frame rate or wall clock. The same start and the same driver input give the same state at step N, however the steps were grouped into frames.
 - A film frame is a function of its index: time is the index divided by `film.fps`. The stepped state at that time is reached by replay from a checkpoint. `npm run simcache` writes a checkpoint every `sim.checkpointSeconds` along the film, and one at the start of every page.
 - Every page starts clean. Nothing stepped is carried from one page to the next, so a page's frames can be rendered without the pages before it.
 - A still is a function of a page, a moment and a camera. Its stepped state is reached by replaying that page's script to that moment.
@@ -130,7 +131,7 @@ A computed picture is a pure function of what it shows, the format, the tier, th
 
 - The loader knows every file a page needs, in each asset set, from one generated index.
 - In `capture`, everything a picture needs is in memory before it is rendered. The call resolves when the picture is done, however long loading took.
-- In `live`, the careers page and the cursor load first. Each later page loads while the visitor is on the one before it. The table is the largest and starts loading during step 1.
+- In `live`, the careers page and the cursor load first. Each later page loads while the visitor is on the one before it. The pinball machine is the largest and starts loading during step 1.
 - Only one page's assets need to be on the graphics card at a time, plus the next page's while it loads. A page that has been left is released.
 - Once a texture is uploaded, its decoded source is released.
 - A stand-in is never silent. `parts/PARTS.json` is the register of every part, as `kit/03-METHOD.md` defines it. `info().standIns` is every part that carries the stand-in flag in the code or data now loaded, with its unit.
@@ -153,7 +154,8 @@ interface Showcase {
   renderStill(spec: StillSpec): Promise<void>
   pictureStats(): { invalidValues: number }
   typeRegister(page: string): { key: string; text: string; states: string[]; made: 'copy' | 'config' | 'runtime' }[]
-  stillState(spec: StillSpec): { layout: { id: string; kind: string; planned: number[]; drawn: number[] }[]; type: { key: string; text: string; box: number[]; px: number; contrast: number }[]; cursor: CursorState }
+  stillState(spec: StillSpec): { layout: { id: string; kind: string; planned: number[]; drawn: number[]; plannedHeight: number; height: number }[]; type: { key: string; text: string; box: number[]; px: number; contrast: number }[]; cursor: CursorState }
+  tableState(): { tiers: { id: string; standingParts: number; inserts: number; dropTargets: number; display: { box: number[]; charPx: number } }[]; openings: { id: string; tier: string; clearBalls: number }[]; rails: { id: string; from: string; to: string }[]; holds: { id: string; releases: boolean }[]; sealed: string[] }
   film(): { frameCount: number; units: { id: string; first: number; last: number }[]; beats: { id: string; first: number; last: number }[]; lines: { beat: string; first: number; last: number }[] }
   filmState(frameIndex: number): { unit: string; beat: string; camera: number[]; cursor: CursorState; events: { name: string; x: number; y: number; hitsCursor: boolean }[]; standIns: string[] }
   renderFilmFrame(frameIndex: number, tier: string): Promise<void>
@@ -164,17 +166,20 @@ interface Showcase {
   renderLoopFrame(frameIndex: number, tier: string): Promise<void>
 }
 type StillSpec = { page: string; beat?: string; at?: number; scroll?: number; camera: string; tier: string; sheet?: string; interface?: boolean; touchOnly?: boolean; live?: string }
-type CursorState = { x: number; y: number; heightPx: number; screenHeightPx: number; worldScale: number; acting: string; damage: string[]; arms: boolean; onPage: boolean }
+type CursorState = { x: number; y: number; heightPx: number; screenHeightPx: number; worldScale: number; acting: string; damage: string[]; arms: boolean; onPage: boolean; inBall: boolean; ballScreenPx: number }
 ```
 
 - A still with a `beat` shows film mode at that share of the beat. A still with neither `beat` nor `sheet` shows the page at rest as a visitor first sees it, before any gag, with the cursor at its starting place. Every entry of `stills` in the config is one of these. `scroll` is how far down the careers page the view is, from 0 to 1.
-- A still with `sheet` draws the build's own version of that approved sheet: the same states, in the same arrangement, from the `sheet` camera.
+- A still with `sheet` draws the build's own version of that approved sheet: the same states, in the same arrangement, from the `sheet` camera. A sheet entry that names a `camera`, a `width` and a `height` is drawn from that camera at that size: `table-map` is the whole machine from straight above, taller than it is wide.
 - `live` names a level of `live.quality` and draws the still through the live site's own path, with one sample.
 - `info().counts` and `info().textureMb` have one entry for each page.
 - `stillState` and `filmState` return what the checks need without rendering. `planned` is a part's box in the layout tree and `drawn` is where its edges fall in the picture, both in page pixels. `counts` and `type` come from the scene itself, never from reading a picture.
 - Places are given in picture pixels: `x` and `y` of the cursor and of every event, and the boxes of `loopState`, are positions in the frame at `formats.hd`, whatever camera is in use. `heightPx` is the cursor's height in page pixels at the page surface, which is what measure M6 reads. `screenHeightPx` is its height in the picture, which is what measure M7 reads.
 - An event's `hitsCursor` is true when the thing that happened struck the cursor: a bolt, a slab, a coin, the crank, a bumper, a steel ball, the doors, the stamp.
 - `pictureStats` reports on the picture just rendered, before tone and grade. Measure M1 reads it.
+- In `stillState`, `plannedHeight` is the entry of the part's kind in `scale.heights` and `height` is how far the top of the part as built stands above the page surface, both in page pixels. Measure M9 reads them.
+- `tableState` is read from the machine's layout file and its physics, not from a picture. `openings` lists every lane, door, chute, tube, ramp and turn of the spiral a ball can use, with its clear width in balls. `rails` gives where each rail is entered and where it lets a ball go: a tier, a hold or another rail, by id. `sealed` lists what no rail or opening leads into. Measures M8 and M10 read it.
+- `inBall` is true while the cursor is sealed in the clear ball, and `ballScreenPx` is then the ball's width in the picture.
 - `typeRegister` lists every run of type a page can ever show, with the states that show it and how its text is made. Check G11 reads it.
 - `info().standIns` is read from the stand-in flags in the code and data that are loaded, not from the register. `info().modules` lists the modules under `src/pages/`, `src/table/` and `src/boss/` that each mode loads. Check G18 reads it.
 - `renderLoopFrame` accepts the index one past the last frame. Check G14 uses it.
@@ -231,7 +236,7 @@ Scripts in `tools/`, run through npm.
 | `npm run mix` | The review mix laid on the cut list. `--final` makes the final mixes for film B and for film A |
 | `npm run film -- --which b --tier T --format F` | A film as `out/work/film-<which>-F-T.mp4`, with its sound if there is any. Takes `--first` and `--last`. `--unit ID` renders one page's chunk. `--join` joins the chunks that exist. `--from-hd` makes the `formats.preview` copy by scaling down a `formats.hd` film of the same build. `--review` makes the review cut |
 | `npm run loop -- --tier T --format F` | The card loop, its web copy and the card still under `out/work/loop/`. Takes `--first` and `--last` to render a range, and `--join` to join the ranges that exist, so the loop can be split across sandbox agents |
-| `npm run stress` | For four moments, a page at rest, step 1 under fire, the table in "Reply All" and the boss fight, half a second of film at `formats.hd`, encoded at `export.bitrateMbps` and again at `quality.compressionStressMbps`, with stills from both |
+| `npm run stress` | For four moments, a page at rest, step 1 under fire, the office tier in "Reply All" and the boss fight, half a second of film at `formats.hd`, encoded at `export.bitrateMbps` and again at `quality.compressionStressMbps`, with stills from both |
 | `npm run pack -- --phase N --round R --unit ID` | The critic packs for a round |
 | `npm run look -- --add FILE --caption TEXT --by NAME` | Adds a picture to the look log |
 | `npm run status -- --phase N --unit ID` | The status pictures and the gallery |
@@ -306,7 +311,7 @@ Rules:
 
 - It needs no 3D. It is made from the approved images with `ffmpeg` or a small script.
 - It follows `film.units` and `film.beats`, frame for frame at `film.previewFps`, in `formats.preview`.
-- Each beat shows the approved image nearest to it, with a slow push toward where that beat's gag happens. A beat with no image of its own holds the image of the beat before it. A page turn is a quick dip between two images. The pinball beats use the `table-` images.
+- Each beat shows the approved image nearest to it, with a slow push toward where that beat's gag happens. A beat with no image of its own holds the image of the beat before it. A page turn is a quick dip between two images. The pinball beats use the images of the keys of unit `pinball`, each on the beat its key names.
 - A small label in one corner names the beat. This is the only place a label appears over a picture, and only in the rough cut.
 - It is silent.
 
@@ -330,7 +335,7 @@ What is rendered here are the preview films: film B and film A in `formats.hd` a
 
 `?mode=probe` measures what this workspace cannot: frame rate on a real graphics card.
 
-- It runs each level of `live.quality` for `perf.probeSeconds` on each of four scenes, with a bot driving: the careers page, step 1 under fire, the table in "Reply All", and the boss fight.
+- It runs each level of `live.quality` for `perf.probeSeconds` on each of four scenes, with a bot driving: the careers page, step 1 under fire, the office tier in "Reply All", and the boss fight.
 - It shows, for each level and scene: median frames per second and the slowest one percent. Then the graphics card's name as the browser reports it, the screen size and the level the site would pick.
 - It ends with one block of plain text and a Copy button, so Brandon can paste the numbers into the thread.
 
@@ -376,7 +381,8 @@ Brandon reviews on a tablet and plays the site on his Mac. He needs one link whe
 - The stage: the same start and the same driver input give the same state at step N whether the steps were run one at a time or in groups.
 - Every gag: fed a pointer that never moves, and fed a pointer that does everything wrong, it still reaches its end, and it hands control back inside `live.controlTakenMaxSeconds`.
 - The cursor: its world scale never changes, damage heals inside `cursor.damageHealSeconds`, and arms cannot be made outside `cursor.armsOnlyInBeat`.
-- The director: with flipper input from the seeded random stream, every beat of the table still starts in order and the scene ends.
+- The director: with flipper input from the seeded random stream, every beat of the machine still starts in order, the ball only ever goes down a tier once that tier's beats are done, and the scene ends.
+- The machine's layout: every rail's entry and exit names something that exists, every opening clears `table.minClearanceBalls`, and nothing leads into the Retirement box.
 - Film: the pages fill the film with no gap or overlap, the beats fill each page, and the judged frame list follows its rule.
 - The loop: every period divides the loop length, and the state one loop later equals the state at the start.
 - The clock: `--start` adds nothing, a tick on a new machine boot adds nothing, every other gap is counted in full, `--review` starts the second allowance and a second `--review` changes nothing, a review round's time touches neither allowance, the reserve switches `extra rounds` at the right moment, `--continue` gives the unfinished phases new boxes, and each printed line switches at the right moment.

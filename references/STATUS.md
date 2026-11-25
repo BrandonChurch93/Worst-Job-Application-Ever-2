@@ -6,7 +6,7 @@ Approved images are copied to `references/approved/` under the names the config 
 
 ## Approved
 
-Fifteen images. Brandon approved the first six on November 23 and 24, and the nine from round 5 on November 24. His words on round 5: probably the best we are going to get with image generation.
+Twenty-seven images. Brandon approved the first six on November 23 and 24 and the nine from round 5 on November 24. His words on round 5: probably the best we are going to get with image generation. On a second look that evening he found them still a bit wonky: the keyboard goes into the page where it should stand out of it, and sizes change from image to image. He did not want more images made. Those points are settled in writing below. The twelve from round 6, the pinball machine, came in that night. He left the calls on them to the planning chat, and all twelve are approved as the target for step 3.
 
 A key is a still the build has to match. A sheet is a picture of several states, matched state by state.
 
@@ -27,10 +27,22 @@ A key is a still the build has to match. A sheet is a picture of several states,
 | `boss-fight.png` | round 5, B2 | Key `boss-fight` | The fight: the boss, the health bar, the slabs, the darts |
 | `boss-down.png` | round 5, B3 | Key `boss-down` | The beaten button lying outside its socket |
 | `decision.png` | round 5, R1 | Key `decision` | The two-column rejection page |
+| `loader-page.png` | round 6, G6 | Key `loader-page` | The first screen of step 3: the loader port, the ball in it, the feed tube |
+| `table-wide.png` | round 6, G1 | Key `table-wide` | The whole machine from the player's end: three tiers, the marquee, the frame, the dark round it |
+| `tier-corporate.png` | round 6, G3 | Key `tier-corporate` | Tier 3 as one screen of the game |
+| `tier-office.png` | round 6, G4 | Key `tier-office` | Tier 2 as one screen of the game |
+| `tier-street.png` | round 6, G5 | Key `tier-street` | Tier 1 as one screen of the game |
+| `lobby-doors.png` | round 6, G9 | Key `lobby-doors` | The doors of Corporate HQ, the carpet, the ball |
+| `reply-all.png` | round 6, G10 | Key `reply-all` | Steel balls pouring out of the inbox |
+| `youre-fired.png` | round 6, G11 | Key `youre-fired` | The firehouse scoop and its beacon |
+| `rail-cam.png` | round 6, G8 | Key `rail-cam` | The camera riding above the ball on the highway. Also what a wire ramp is |
+| `last-save.png` | round 6, G12 | Key `last-save` | The bottom flippers, the save and the drain |
+| `clear-ball.png` | round 6, G7 | Sheet | The clear ball with the cursor in it, in three states |
+| `table-map.png` | round 6, G2 | Sheet | The whole machine from straight above: where everything is |
 
 ### Where the build differs from these pictures on purpose
 
-Image generation got some things wrong. Each one is a settled difference: on that point the kit wins and the picture does not. The lines live in the config, under `settledAll`, under each key's `settled`, and under each sheet's `settled`. `kit/06-ASSETS.md` has the rule.
+Image generation got some things wrong. Each one is a settled difference: on that point the kit wins and the picture does not. The lines live in the config, under `settledAll`, under `settledUnit` for a whole unit, under each key's `settled`, and under each sheet's `settled`. `kit/06-ASSETS.md` has the rule.
 
 | Image | What is wrong in it | What the build does |
 | --- | --- | --- |
@@ -38,7 +50,8 @@ Image generation got some things wrong. Each one is a settled difference: on tha
 | All of them | Words are sometimes misspelled or punctuated wrongly. `boss-down.png` reads "I am not a rabot". `marketing-top.png` has mismatched quote marks | Every word comes from `content/copy.json` |
 | `step2-rest.png`, `step2-dial.png`, `step2-crank.png` | A dark slab edge runs along the border of the frame | The page fills the frame evenly |
 | `cursor-acting.png` and two rejected images | Bands of window light | Clean, even light |
-| `step1-fire.png` | The bottom key row is cut off by the tray edge, with no lower rim. Three bolts are in flight | All five rows sit inside the tray. The number of bolts in flight is not fixed |
+| All of them | The same part is drawn at different sizes and heights from image to image | Every size and height is a number in `scale` or in a layout tree. None is taken from an image |
+| `step1-fire.png` | The keyboard is sunk in a well, with each turret in a well of its own. The bottom key row is cut off. Three bolts are in flight | The keyboard stands above the page on a deck, with the turrets rising from the ends of the deck. All five rows are on it. The number of bolts in flight is not fixed |
 | `step1-tug.png` | It shows the round 3 page: old labels, a salary slider, a Submit button, no keyboard | The step 1 page, with the keyboard already slid away |
 | `step2-dial.png` | The dial's numerals are wrong | 1 to 9 and then 0, in order |
 | `step2-crank.png` | The input is empty | The input shows the level as a percentage |
@@ -48,6 +61,17 @@ Image generation got some things wrong. Each one is a settled difference: on tha
 | `decision.png` | The stamp block is drawn in a three-quarter view. The cursor is cracked but not flat | The block is seen straight on. The cursor is flattened |
 | `machines.png` | All three machines are open at once | One row is open at a time |
 | `cursor-arms.png` | Photographed at an angle | It defines the arms, not the camera |
+| Every pinball image | The ball is drawn larger and the cursor in it smaller than they are | The ball is `table.ballPx` across in a tier view and the cursor's length is `table.cursorInBallFraction` of that |
+| Every pinball image with the lift | The lift tube is closed at both ends | It is open at each orange door and each elbow, and it carries a ball up one tier |
+| The tier and close views | No score display anywhere but the marquee | Every tier has a display in its lower right shoulder |
+| The tier and close views | Signs lie flat on roofs in some and stand on the roof edge in others. Some lane arrows point against the ball | A sign stands on the front edge of its roof, tilted back. Arrows point the way the ball travels |
+| `tier-street.png`, `table-map.png` | The highway is a handrail on posts. The garage spiral is too tight for a ball. The plunger is inside the frame. One hat on the third insert | The highway is the track of `rail-cam.png`, with a way on and a way off. Every turn of the spiral clears a ball. The plunger's knob stands outside the rail. Three hats |
+| `tier-corporate.png` | The lobby doors are shut. The clipboard insert has ruled lines | The doors stand open until the ball reaches them. A clipboard with one tick |
+| `tier-office.png` | A blank card in the lower right shoulder | The tier's display is there |
+| `lobby-doors.png` | The revolving door stands beside the carpet | It stands on the carpet, as in the tier view |
+| `rail-cam.png` | The buildings below are not where the tier view has them | The tier view's layout wins |
+| `table-wide.png` | No feed tube at the plunger. Words only on the marquee and the drain plate | The feed tube ends at the plunger. Every sign is there |
+| `loader-page.png` | Grey bars for text. The ball about 126 pixels across. A smaller header. Seams across the lower part | The real text. The ball at `table.ballPx`. The shared header. No seams |
 
 ## Rejected, and why
 
@@ -59,38 +83,31 @@ Read this before generating or building anything. Each of these was tried.
 | 2 | Four looks: tactile modern, paper and ink, dark premium, retro hardware | Modern had the right design and looked flat. Paper and ink looked real and was retro. Dark and retro were not wanted | The modern design, with what made paper and ink real: one strong key light, parts with real height, a surface with grain |
 | 3 | The cursor changing into cursor hands, and a hybrid with a hand on an arm | They came out as white cartoon gloves with cuffs | Arms only, in black rubber, and only for the tug of war. No gloves |
 | 3 | Aluminum and cast resin page surfaces | Aluminum was cold and heavy. Resin was the same as ceramic with less grain | The ceramic surface |
-| 4 | A pinball table built out of the form's own parts, twice | Sparse and generic. Nothing like a machine in an arcade | A real arcade machine, crowded and themed, in its own palette |
+| 4 | A pinball table built out of the form's own parts, twice | Sparse and generic. Nothing like a machine in an arcade | A crowded, themed machine in its own palette |
+| Idea, before round 6 | A real arcade cabinet rising out of the page | Brandon: it looked like something that would not exist within a web application. He was not sold on a second version built into a tall page either | The bar is a pinball video game that has shipped. A three-tier table set into the page, one screen to a tier |
 | 4 | The keyboard page | The keyboard sat in the middle, one field was huge, the others were pushed below. The turrets fired beams. The keyboard had no Backspace or other normal keys | Layout first. A complete keyboard docked at the bottom. Bolts that can be dodged |
 | 4 | All three machines on the page at once | No context for any of them | Plain fields first. Click one and its machine appears. Every field says why it is asking |
 | 4 | The Submit button running away among decoys | Replaced by a better idea | The Submit button becomes a boss with a health bar |
 | 4 | The rejection page: one line of text on a glass slab and a stamp | Empty and unbalanced. Not a good looking page | A full two-column page: the letter, the metrics, one button |
 | 4 | Window light falling across the page in three images | Inconsistent, and it reads less like an interface | Clean, even light |
-| Idea | Turning the cursor into a ball for the pinball scene | A ball cannot act | It stays an arrow and gets batted around as itself |
+| Idea | Turning the cursor into a ball for the pinball scene | A ball cannot act | It stays an arrow. Brandon's later idea keeps that and solves the scale: the arrow is sealed in a clear ball, where it can still be seen and can still act |
 | Idea | Damage that stays on the cursor for the whole film | Brandon wants cartoon rules | Damage heals in seconds |
 | Idea | A face or eyes on the cursor | Brandon said no | It acts with its body |
 | Idea | A lie detector page | Hard to pull off | One checkbox on the Submit page carries the robot joke |
 
+## Round 6, and what its blind judge said
+
+Round 6 made twelve images of the pinball machine from `references/BRIEF-round-6.md`. Its notes are `references/drafts/round-6/NOTES.md`.
+
+- No image passed the round's blind judge, and all twelve are approved anyway. The judge was asked two things: what kind of picture is this, and what in it could not work. Every judge named things a ball could not do: a lift closed at both ends, a ramp with no way on, a spiral too tight, nothing to carry a ball back up. Image generation cannot draw a path that works. The build can, and "Ball paths" in `kit/02-SUBJECT.md` is the rule it follows.
+- Most judges gave the missing score display as their reason for not calling a tier a game screenshot. The build puts a display on every tier.
+- Judges of eight of the twelve used the word miniature. `kit/04-LOOK.md` has a ladder for that.
+- The same picture got different first answers from different fresh judges when only a small patch had changed, so that answer is not a steady measure. The faults they named were steady.
+- For finish, fullness, light and theme, these are the strongest images of the project. That is what they are the target for.
+
 ## Pending
 
-| Round | Folder | Images | Becomes |
-| --- | --- | --- | --- |
-| 6, the pinball machine | `references/drafts/round-6/` | Twelve images, G1 to G12. The brief is `references/BRIEF-round-6.md`. The layout guides are in `references/guides/round-6/` | The keys for step 3, and a sheet for the clear ball |
-
-What changed on November 24, from Brandon. It is in the brief and not yet in the kit:
-
-- The arcade machine is scrapped. The bar is a pinball video game that has shipped. The machine is now a three-tier table, one screen to a tier, each with its own flippers and a centerpiece: Corporate at the top, the Office in the middle, the Street at the bottom. The ball is launched to the top and falls a tier at a time into the Unemployment Office. The format comes from a long line of tall, multi-tier pinball video games. The layout, the art and the theme are our own.
-- The cursor is sealed inside a clear ball, and that ball is the pinball. This replaces the earlier ruling in the table above that it stays a bare arrow: inside a clear ball it can still be seen and can still act.
-- The machine is built into a tall Step 3 page. There is no cabinet. The cursor is taken in at a loader port on the first screen.
-- The camera pulls back to show the whole machine, pushes in on the part where the ball is, follows it, and rides above it on the wire ramp.
-
-After Brandon approves round 6:
-
-1. This file is updated.
-2. `kit/01-FILM.md`, `kit/02-SUBJECT.md`, `kit/03-METHOD.md` and the config are brought into line with the changes above: the beats of step 3, the parts of the table, its cameras and its keys.
-3. The approved images are copied to `references/approved/`, and the keys for step 3 in the config are set to match them and get their settled lines.
-4. `references/approved/contact-sheet.jpg` and `references/approved/MANIFEST.sha256` are made.
-5. `references.pendingRounds` in the config is emptied.
-6. The kit is audited once more and the kickoff prompt is handed over.
+Nothing. Every reference round is closed and `references.pendingRounds` in the config is empty.
 
 ## Not pictures, but still to approve
 

@@ -19,56 +19,114 @@
   ],
   "pauseMark": "/",
   "film": {
-    "marketing.stroll": [{ "at": 0, "text": "Behold. / The applicant." }],
-    "marketing.perks": [{ "at": 0.1, "text": "It sees unlimited PTO / and believes it. / The fine print / goes unread." }],
+    "marketing.stroll": [
+      { "at": 0, "text": "Behold. / The applicant." }
+    ],
+    "marketing.perks": [
+      { "at": 0.1, "text": "It sees unlimited PTO / and believes it. / The fine print / goes unread." }
+    ],
     "marketing.ticker": [],
-    "marketing.apply": [{ "at": 0, "text": "And so / it applies." }],
-
+    "marketing.apply": [
+      { "at": 0, "text": "And so / it applies." }
+    ],
     "step1.keyboard": [],
     "step1.firstName": [
       { "at": 0, "text": "Step one. / Its own name. / Under fire." },
       { "at": 0.6, "text": "Shot. / On field one." }
     ],
-    "step1.lastName": [{ "at": 0, "text": "The keys moved. / It did not notice." }],
-    "step1.email": [{ "at": 0, "text": "A valid email. / Rejected. / As is tradition." }],
-    "step1.resume": [{ "at": 0, "text": "Ah. / The resume." }],
+    "step1.lastName": [
+      { "at": 0, "text": "The keys moved. / It did not notice." }
+    ],
+    "step1.email": [
+      { "at": 0, "text": "A valid email. / Rejected. / As is tradition." }
+    ],
+    "step1.resume": [
+      { "at": 0, "text": "Ah. / The resume." }
+    ],
     "step1.tug": [
       { "at": 0.05, "text": "It grows arms. / Desperate." },
       { "at": 0.55, "text": "The shredder / always wins." }
     ],
-    "step1.shredded": [{ "at": 0, "text": "Now type it again." }],
-
-    "step2.open": [{ "at": 0, "text": "Personal details. / Simple." }],
-    "step2.dial": [{ "at": 0.05, "text": "A phone. / From before it was born." }],
-    "step2.slot": [{ "at": 0, "text": "Its birthday / is now a gamble. / It loses." }],
-    "step2.crank": [{ "at": 0, "text": "Volume. / All the way up. / It will regret that." }],
+    "step1.shredded": [
+      { "at": 0, "text": "Now type it again." }
+    ],
+    "step2.open": [
+      { "at": 0, "text": "Personal details. / Simple." }
+    ],
+    "step2.dial": [
+      { "at": 0.05, "text": "A phone. / From before it was born." }
+    ],
+    "step2.slot": [
+      { "at": 0, "text": "Its birthday / is now a gamble. / It loses." }
+    ],
+    "step2.crank": [
+      { "at": 0, "text": "Volume. / All the way up. / It will regret that." }
+    ],
     "step2.continue": [],
-
-    "pinball.rise": [{ "at": 0.1, "text": "The skills assessment. / It tests / no skills." }],
-    "pinball.launch": [{ "at": 0, "text": "Welcome to the grind." }],
-    "pinball.coffee": [{ "at": 0, "text": "Coffee. / It solves nothing." }],
-    "pinball.firehouse": [{ "at": 0, "text": "The firehouse. / It is fired." }],
-    "pinball.highway": [{ "at": 0, "text": "The commute. / Two hours. / Each way." }],
+    "pinball.seal": [
+      { "at": 0.05, "text": "The skills assessment." }
+    ],
+    "pinball.reveal": [
+      { "at": 0.1, "text": "A career. / In reverse." }
+    ],
+    "pinball.launch": [
+      { "at": 0, "text": "Welcome to the grind." }
+    ],
+    "pinball.lobby": [
+      { "at": 0, "text": "Corporate headquarters. / So close." }
+    ],
+    "pinball.coffee": [
+      { "at": 0, "text": "Coffee. / It solves nothing." }
+    ],
     "pinball.replyAll": [
       { "at": 0.05, "text": "Someone / hit reply all." },
       { "at": 0.55, "text": "Everyone / is now involved." }
     ],
-    "pinball.save": [{ "at": 0, "text": "Saved. / Unpaid, of course." }],
-    "pinball.hq": [{ "at": 0, "text": "Corporate headquarters. / So close." }],
-    "pinball.drain": [{ "at": 0, "text": "The unemployment office. / Where it belongs." }],
-
-    "boss.verify": [{ "at": 0.05, "text": "A robot? / It says no. / It lies." }],
-    "boss.unfold": [{ "at": 0, "text": "The button / has had enough." }],
-    "boss.slabs": [{ "at": 0, "text": "It fights back / the only way it knows. / Clicking." }],
-    "boss.popups": [{ "at": 0, "text": "Pop-ups. / The coward's weapon." }],
-    "boss.lastStand": [{ "at": 0, "text": "Session expired. / A classic." }],
-    "boss.collapse": [{ "at": 0, "text": "It wins. / Barely." }],
-    "boss.press": [{ "at": 0.15, "text": "It may submit." }],
-
-    "decision.wait": [{ "at": 0, "text": "Now we wait." }],
-    "decision.letter": [{ "at": 0.1, "text": "Or not. / Rejected. / Instantly." }],
-    "decision.metrics": [{ "at": 0, "text": "It accepts. / It always does." }],
-    "decision.reset": [{ "at": 0, "text": "Look. / Still hiring." }]
+    "pinball.fired": [
+      { "at": 0, "text": "The firehouse. / It is fired." }
+    ],
+    "pinball.highway": [
+      { "at": 0, "text": "The commute. / Two hours. / Each way." }
+    ],
+    "pinball.save": [
+      { "at": 0, "text": "Saved. / Unpaid, of course." }
+    ],
+    "pinball.drain": [
+      { "at": 0, "text": "The unemployment office. / Where it belongs." }
+    ],
+    "boss.verify": [
+      { "at": 0.05, "text": "A robot? / It says no. / It lies." }
+    ],
+    "boss.unfold": [
+      { "at": 0, "text": "The button / has had enough." }
+    ],
+    "boss.slabs": [
+      { "at": 0, "text": "It fights back / the only way it knows. / Clicking." }
+    ],
+    "boss.popups": [
+      { "at": 0, "text": "Pop-ups. / The coward's weapon." }
+    ],
+    "boss.lastStand": [
+      { "at": 0, "text": "Session expired. / A classic." }
+    ],
+    "boss.collapse": [
+      { "at": 0, "text": "It wins. / Barely." }
+    ],
+    "boss.press": [
+      { "at": 0.15, "text": "It may submit." }
+    ],
+    "decision.wait": [
+      { "at": 0, "text": "Now we wait." }
+    ],
+    "decision.letter": [
+      { "at": 0.1, "text": "Or not. / Rejected. / Instantly." }
+    ],
+    "decision.metrics": [
+      { "at": 0, "text": "It accepts. / It always does." }
+    ],
+    "decision.reset": [
+      { "at": 0, "text": "Look. / Still hiring." }
+    ]
   },
   "liveOnly": {
     "about": "Lines the live site can add. They play when the named thing happens. One of the list is chosen in order, never at random. A live line never interrupts another line, and the gap between two lines is at least audio.liveNarratorMinGapSeconds.",

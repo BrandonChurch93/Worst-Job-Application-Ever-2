@@ -19,10 +19,10 @@ Keys, in `keys`. Each is one still the build has to match.
 | `boss-fight.png` | The fight: the boss, the health bar, the slabs, the darts |
 | `boss-down.png` | The beaten button lying outside its socket |
 | `decision.png` | The rejection page |
-| `table-top.png` | The whole playfield from directly above. The master view of the table |
-| `table-player.png` | The table from where a player stands |
-| `table-backbox.png` | The backbox with its title and display |
-| `table-hq.png`, `table-firehouse.png`, `table-coffee.png`, `table-flippers.png`, `table-highway.png` | Close views inside the machine |
+| `loader-page.png` | The first screen of step 3: the heading, the loader port with the ball in it, the feed tube |
+| `table-wide.png` | The whole machine from the player's end |
+| `tier-corporate.png`, `tier-office.png`, `tier-street.png` | Each tier as one screen, from straight above, with the ball in play. What a visitor sees while playing |
+| `lobby-doors.png`, `reply-all.png`, `youre-fired.png`, `rail-cam.png`, `last-save.png` | Close views inside the machine |
 
 Sheets, in `sheets`. Each shows several states at once. The build renders the same states in the same arrangement and is compared state by state.
 
@@ -34,27 +34,31 @@ Sheets, in `sheets`. Each shows several states at once. The build renders the sa
 | `cursor-arms.png` | The arms |
 | `machines.png` | The dial, the slot machine and the crank |
 | `boss-stages.png` | The Submit button becoming the boss |
+| `clear-ball.png` | The clear ball with the cursor in it: at rest and sweating, in flight, pressed flat on a hit |
+| `table-map.png` | The whole machine from straight above: where every part of every tier is. The build's version is rendered with camera `table-map` |
 
 `contact-sheet.jpg` holds all of them on one sheet. It is used for the first status and is not a target.
 
 What has no picture:
 
 - Motion. No image shows how anything moves. `kit/01-FILM.md` and `kit/02-SUBJECT.md` are the target for that, and critics R4 and R9 judge it.
+- The marquee up close, the tier displays, the lift at work, the outlet port and the last screen of step 3. Each follows the words in `kit/02-SUBJECT.md`.
 - The slot machine open inside its row, the careers page below its first screen, the wait before the letter, and the cursor's confident, shocked and proud states. Each follows the words in `kit/02-SUBJECT.md` and the look of the images nearest to it.
 
 Rules:
 
 - They are never regenerated, replaced, retouched or toned down. Stop condition 1 checks the hashes in every task.
-- No pixel of an approved image is ever drawn in a frame of the site, the films or the loop as it is. An approved image may be the starting point for a texture, as `kit/03-METHOD.md` says for the playfield and the buildings, and for the last resort of the fallback chain, always with its words painted out. The rough cut is the one place they are shown whole.
+- No pixel of an approved image is ever drawn in a frame of the site, the films or the loop as it is. An approved image may be the starting point for a texture, as `kit/03-METHOD.md` says for the floor of each tier and the models, and for the last resort of the fallback chain, always with its words painted out. The rough cut is the one place they are shown whole.
 - `references/drafts/` is the record of every reference round, kept and rejected. Read it, never change it. `references/STATUS.md` says which images were rejected and why.
 
 ### Settled differences
 
 Image generation got some things wrong in every approved image: a misspelled word, a cursor of the wrong size, a key row cut off. The build must not copy those.
 
-- A key or a sheet in the config may carry `settled` lines, and `settledAll` holds lines that apply to every one. Each names one point where the build differs from the approved image on purpose.
+- A key or a sheet in the config may carry `settled` lines. `settledUnit` holds lines that apply to every key and sheet of one unit, and `settledAll` holds lines that apply to every one. Each names one point where the build differs from the approved image on purpose.
+- Three kinds are settled for whole groups of images. Sizes: no size is taken from an image, as "One scale" in `kit/02-SUBJECT.md` says. Ball paths: the pinball images draw paths no ball could use, and "Ball paths" in `kit/02-SUBJECT.md` wins. Words: every word comes from the copy.
 - On that point the kit wins over the image. Everywhere else the image wins.
-- The match critic is given the lines word for word and told not to count them.
+- The match critic is given the lines that apply to a pair, word for word, and told not to count them.
 - Only Brandon adds a settled line, through an addendum or a note in the thread. The lines in the config now come from the faults the reference rounds reported in their own images and from what Brandon agreed in the planning chat. `references/STATUS.md` lists them in a table.
 - If you find a real conflict the kit did not foresee, pick the reading closest to the approved image that keeps the page a real web page, log it under "Decisions made by the Builder", and list it in the `REVIEW` block.
 
@@ -62,7 +66,7 @@ Image generation got some things wrong in every approved image: a misspelled wor
 
 The approved images show each page from one side at one size. Building the parts needs more.
 
-- For a part, generate what its method in `kit/03-METHOD.md` asks for: the playfield artwork, side art, building faces, material detail, extra views.
+- For a part, generate what its method in `kit/03-METHOD.md` asks for: the artwork of a tier's floor, the marquee's skyline, the faces of a model, material detail, extra views.
 - Always pass the part's approved image as a reference, and say what must stay the same.
 - Every prompt for a picture that will ship says: no text, no letters, no numbers, no logos. Look at every result for letters before it is used. A picture with letters in it is not used, however good it is.
 - At most `assets.maxTakesPerAsset` takes per asset. Pick the best, show it inline with a status, and move on.
@@ -94,7 +98,7 @@ Generated pictures end up in shipped files here, as textures.
 - Geometry: binary glTF with mesh compression where it helps, or geometry made in code. One file per part.
 - Textures: the `full` set at the sizes in `assetSets.full` for the films and the judged stills, the `web` set at the sizes in `assetSets.web` for the site, in a compressed GPU format with a fallback every target browser reads.
 - Type is never a texture, except in the named fallback of `kit/03-METHOD.md` section 3.
-- Light pictures for the table's light groups: one set for each group, at a size that holds a lamp's falloff.
+- Light pictures for the machine's light groups: one set for each group, at a size that holds a lamp's falloff.
 - Colour pictures are stored in sRGB. Height, normal, roughness and every data picture are stored linear.
 
 ### Recipes
@@ -119,7 +123,7 @@ Little in this build has to come from outside: the fonts, perhaps an environment
 
 ### Where to look
 
-- Fonts under the SIL Open Font License: one neutral sans for the site, one display face for the pinball table.
+- Fonts under the SIL Open Font License: one neutral sans for the site, one display face for the signs of the pinball machine, and one dot matrix face if the displays fall back to type.
 - Public domain and CC0 collections for anything else.
 - Photographs and video of real pinball machines are for study only, inside `assets.maxStudySources`. None is used in a frame, and no name, artwork or layout is taken from one.
 

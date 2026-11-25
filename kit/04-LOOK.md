@@ -15,7 +15,7 @@ What that means for this piece:
 
 - The motion is cartoon. The picture is real. The cursor sweats, stretches and flattens like a cartoon character, and every frame of it could be a photograph.
 - It is a web page. His words on the first reference round, which failed: it "looks like it's 3-D generated images and not something that would be like an actual application that a user could interact with". A page that reads as a 3D scene is as wrong as a page that reads as a flat interface.
-- The pinball machine is the one place the look changes. There the bar is a real arcade machine filmed from inside by a film crew: crowded, glossy, lit by its own lamps.
+- The pinball machine is the one place the look changes. There the bar is a pinball video game that has shipped, with the finish of a film: crowded, glossy, lit by its own lamps. Brandon's words: "It has to look like one of those."
 - He said of the approved images that they are pretty realistic and will be hard to match. Match them anyway. That is the job.
 
 ## 2. What sells a real page
@@ -35,7 +35,7 @@ What that means for this piece:
 - No window shapes, no bands, no slashes of light or shade. `references/STATUS.md` records that three images had them and that Brandon chose the clean light.
 - The light does not move, flicker or change colour on the pages. Only things on the page add light: a bolt, a hot tip, a dart, a flasher.
 - Shadows may be a little deeper than the page look sheet. That depth is what made the round 5 images read as real.
-- The pinball table is lit by its own lamps, in a dark surround. As the cabinet rises the page's key light dims and the table's light takes over. As it sinks the key comes back.
+- The pinball machine is lit by its own lamps. As the camera leaves the page the website's key light goes down to `table.pageDuskLevel` and the machine's light takes over. When the scene ends the key comes back. Beyond the edge of the page there is darkness.
 
 ## 4. The lens
 
@@ -43,14 +43,14 @@ What that means for this piece:
 - A push in on a page moves the camera closer along the same straight line. Everything stays sharp.
 - The pinball scene: a film camera. A real focal length for each shot, a shallow focus up close with the cursor sharp, a move with weight, a small shake on a hard hit.
 - Motion blur in computed frames comes from the shutter, `film.shutterDegrees`: fast things streak, slow things do not.
-- No lens dirt, no flares, no chromatic fringing on the pages. On the table a soft flare from a flasher is allowed.
+- No lens dirt, no flares, no chromatic fringing on the pages. In the machine a soft flare from a beacon is allowed.
 
 ## 5. Exposure, tone and colour
 
 - The page is a light, warm off-white and must stay that: never blown out, never grey. Set the exposure so the ceramic sits where the approved page look puts it, and so the gloss on the orange and the enamel keeps its shape.
 - One gentle tone curve for all the pages, with a soft shoulder for highlights. One grade. Lock both in the look lock.
 - The orange is the same orange on every page.
-- The table has its own curve and grade: richer, darker, more contrast. The change between the two happens during the rise and the sinking, never as a cut on a page.
+- The machine has its own curve and grade: richer, darker, more contrast. The change between the two happens while the website's light goes down and while it comes back up, never as a cut on a page.
 - Colour pictures are stored in sRGB and worked on in linear light. Data pictures are linear.
 
 ## 6. Glow
@@ -82,11 +82,11 @@ Each is a way to draw any still or frame. The harness reaches them by name.
 | `type` | Only the type, black on white, with each run's box |
 | `texels` | Texels per screen pixel, for measure M2 |
 | `shadow` | The shadow term alone |
-| `height` | Height off the page surface as shades of grey |
+| `height` | Height off the page surface as shades of grey. Measure M9 reads the same data |
 | `ids` | Each part in its own flat colour |
-| `coverage` | On the table from above: every standing part, every insert and every printed line in white, bare playfield in black. Measure M8 reads it |
-| `lights` | The table lit by one light group at a time |
-| `colliders` | The physics shapes of the table and the bodies on it |
+| `coverage` | One tier from above: every standing part, every insert and every printed line in white, bare floor in black. Measure M8 reads it |
+| `lights` | The machine lit by one light group at a time |
+| `colliders` | The physics shapes of a tier, its rails and holds, and the bodies on it. Measure M10 reads the same data |
 | `events` | The events of this frame, as marks where they happen |
 | `beauty` | The finished picture. The default |
 
@@ -98,15 +98,15 @@ A rung that moves a part to its named fallback is not a quiet swap: set that par
 
 ### A still does not match its approved image
 
-1. Fit the layout first: every box where the image has it, checked with the `layout` view.
+1. Fit the layout first: every part in the place the image has it, at the size `scale` and the layout tree give it, checked with the `layout` view. Never resize a part to match an image.
 2. Fit the light: which side is lit, how long and how soft the shadows are, how bright the page is.
-3. Fix the largest wrong thing next: a height, a colour, a material that reads as the wrong one.
+3. Fix the largest wrong thing next: a colour, a material that reads as the wrong one, a height that is not its kind's in `scale.heights`.
 4. Project the approved image onto the part and correct from the difference.
 5. Make new material pictures for that part with the approved image as the reference.
 
 ### The page looks like a flat interface with shadows painted on
 
-1. Give every part more real height and a real bevel. Check the `height` view.
+1. Check every part's height against `scale.heights` in the `height` view, and give every part a real bevel. A mechanism that sits below the surface is wrong: it stands above it.
 2. Deepen and tighten the contact shadows. Add the dark gap round every part that sits in a socket.
 3. Strengthen the grain on the ceramic so the highlight breaks up.
 4. Push the materials apart: more sheen on the glass, more brushing on the aluminum, more gloss on the orange.
@@ -156,26 +156,35 @@ This is the failure of the first reference round.
 3. Make it move like metal: mass, a hard stop, a small ring after.
 4. Make it from the page's own materials only.
 
-### The table looks sparse or generic
+### A tier looks sparse or generic
 
 This is the failure of two earlier tables.
 
-1. Count. Bring the standing parts up to `table.minStandingParts` and the bare playfield down to `table.maxBareFraction`.
+1. Count. Bring the tier's standing parts up to `table.minStandingPartsPerTier` and its bare floor down to `table.maxBareFraction`.
 2. Layer: plastics over wire over print, a ramp crossing above a lane, something behind everything.
 3. Theme what is plain: a post cap, a sign, a tiny car on the highway, a lit window. Nothing on it is a stock part.
-4. Fill the print: more streets, more blocks, more inserts with labels.
+4. Fill the print: more lines, more blocks, more lamps.
 
-### The table looks like a render and not a machine
+### A tier looks like a miniature set and not a game
+
+The blind judges of round 6 used the word miniature for eight of the twelve images.
+
+1. Put the tier's display in frame and lit. A screen with a score reads as a game.
+2. Light it as a table: lamps under inserts, rows of lit arrows, pools of light under plastics. Not as a model railway at night.
+3. Keep the models moulded and glossy, like parts of a machine, with hard edges and one material each. No weathering, no scatter, no scenery.
+4. Make the hardware as loud as the models: posts, rubbers, guides, flippers, slings.
+
+### The machine looks like a render and not a machine
 
 1. Light it from its own lamps only and let the surround go dark.
-2. Add the clear coat: sharp reflections of lamps and parts in the playfield.
+2. Add the clear coat: sharp reflections of lamps and parts in the floor.
 3. Let light bleed: an insert colours the post beside it, a flasher whites out its corner for a frame.
 4. Put a real lens on it: shallow focus up close, highlights that bloom.
 5. Add the smallest wear a well kept machine has: a faint ball trail in the clear coat, dust in a corner. Only here, never on the pages.
 
 ### The pinball scene looks scripted or floaty
 
-1. Check the bodies' speeds against a real table: a ball crosses the playfield in well under a second.
+1. Check the bodies' speeds against a real table: a ball crosses a tier in well under a second.
 2. Make hits hard: a full stop and a new direction in a frame or two, with the lamp, the sound event and the camera shake on the same frame.
 3. Loosen the director: smaller nudges, later deadlines, so the physics shows.
 4. Search for a better take.
@@ -196,7 +205,7 @@ This is the failure of two earlier tables.
 ### The live site would be slow on a visitor's machine
 
 1. Merge and instance: many keys, posts and screws are few draw calls.
-2. Bake more: the still shadows of a page, the table's light groups.
+2. Bake more: the still shadows of a page, the machine's light groups.
 3. Cut what the `low` level draws: fewer small things, plainer glass, no reflections in the clear coat.
 4. Never touch the computed frames to fix this.
 

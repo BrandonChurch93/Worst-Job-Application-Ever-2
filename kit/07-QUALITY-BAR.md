@@ -51,9 +51,11 @@ They put a number on the picture or the motion. They run in every round, for the
 | M3 | Real sharpness. For each key: fine detail, measured as high frequency energy over the still, is at least `detail.minSharpnessRatio` of the same measure on the approved image at the same size | All pages |
 | M4 | Readable type. From `stillState` for each page at rest and for each key: every run of type is at least `layout.minTextPx` tall, counted in page pixels, and its contrast against what lies under it is at least `layout.minTextContrast` | All pages |
 | M5 | Layout. From `stillState` for each page at rest and for each key: every part is drawn within `layout.tolerancePx` of where the layout tree puts it, counted in page pixels at the page surface | All pages |
-| M6 | The cursor's size. In each still from `home` in which the cursor stands at rest, its height is `cursor.heightPxAt1080` page pixels, within `cursor.sizeTolerancePx` | All pages |
+| M6 | The cursor's size. In each still from `home` in which the cursor stands at rest, its height is `cursor.heightPxAt1080` page pixels, within `cursor.sizeTolerancePx`. In each still from a tier camera, the ball is `table.ballPx` across in the picture and the cursor's length in the picture is `table.cursorInBallFraction` of that, both within `cursor.sizeTolerancePx` | All pages |
 | M7 | Contact. From `filmState` for the unit's beats: every event whose `hitsCursor` is true happens within the cursor's own height in the picture of where the cursor is on that frame, and the cursor's damage or acting state changes on that frame or the next | All pages, `film` |
-| M8 | A crowded table. In the `table-top` still: the standing parts counted from the scene are at least `table.minStandingParts`, and, in the `coverage` view of that still, the share of playfield pixels that lie further than `table.bareDistanceFraction` of the playfield's width from any standing part, insert or printed line is at most `table.maxBareFraction` | `pinball` |
+| M8 | Crowded tiers. For each tier, in a still from its tier camera: the standing parts counted from `tableState` are at least `table.minStandingPartsPerTier`, and, in the `coverage` view of that still, the share of floor pixels that lie further than `table.bareDistanceFraction` of the tier's width from any standing part, insert or printed line is at most `table.maxBareFraction` | `pinball` |
+| M9 | One scale. From `stillState` for each page at rest and for each key from `home`: every part whose kind has an entry in `scale.sizes` has that size, every part's height off the surface is its kind's entry in `scale.heights`, both within `scale.tolerancePx`, and every mechanism the cursor works has its working parts at least `scale.heights.machineMinTop` above the surface | All pages |
+| M10 | Ball paths. From `tableState`: every opening a ball uses clears `table.minClearanceBalls`. Every rail has an entry and an exit, and each opens onto a tier, a hold or another rail. The lift is open at both doors and both elbows. No rail or opening leads into the Retirement box. Every hold releases. Each tier has `table.insertsPerTier` inserts and one display whose characters are at least `layout.minTextPx` tall in the tier's still. And `npm run paths` leaves no ball at rest outside a hold, stuck in an opening or outside the machine | `pinball` |
 
 - M2 counts texels, so a texture that was enlarged without gaining detail can pass it. M3 is there to catch that.
 - A red measure is not a blocker. It is a severe issue in that round, beside the critics' issues, and it follows the same round limits.
@@ -106,7 +108,7 @@ They are run with the gates and reported. None can fail a gate. A failing one be
 The fixed list the critics score. It is computed, not chosen.
 
 1. Every entry of `keys`: the page at the key's moment, from its camera, in `formats.hd`.
-2. Every entry of `sheets`: the build's own version of the sheet, from the `sheet` camera.
+2. Every entry of `sheets`: the build's own version of the sheet, from the `sheet` camera, or from the camera and at the size the entry names.
 3. Every entry of `stills`. An entry with `interface` is captured with the controls on.
 4. For `site`: one still of each of the six pages at rest, drawn through the live site's own path at the `high` level, from `home`, in `formats.hd`.
 5. For `film`: frame 0; the frame at `film.hookSeconds`; for every beat, the frame of its event, or its middle frame if it has none; and the last frame. For the opening of film A: one frame in the middle of the typing, one with the reasoning level control open, and one in the middle of the build screen. For the loop: frame 0 and the frames a quarter, a half and three quarters of the way through.
@@ -177,7 +179,7 @@ Every critic uses this scale, so small things are not inflated.
 
 You are comparing pairs of images. In each pair, the file whose name ends in `-a` is the target. The file whose name ends in `-b` has to match it.
 
-- Pack: for each key of the unit, the approved image as `-a` and the key's still as `-b`, at the same size, plus a grid of matching native-size crops of each. For each sheet judged with the unit, the approved sheet as `-a` and the build's version as `-b`. The lines under `settledAll` in the config, and the pair's own `settled` lines, are given with that pair, word for word, under the heading `Settled` and the names of the pair's two files.
+- Pack: for each key of the unit, the approved image as `-a` and the key's still as `-b`, at the same size, plus a grid of matching native-size crops of each. For each sheet judged with the unit, the approved sheet as `-a` and the build's version as `-b`. The lines under `settledAll` in the config, the lines under `settledUnit` for the pair's unit, and the pair's own `settled` lines, are given with that pair, word for word, under the heading `Settled` and the names of the pair's two files.
 - Compare the layout: where every part sits, how large it is, how the page is divided. Compare the materials: the page surface and its grain, the glass, the metal, the coloured plastic, the paper. Compare the light: which side is lit, how long, dark and soft the shadows are, how bright the page is. Compare the arrow: its shape, its gloss, its dark edge, and whatever has been done to it. Compare the objects on the page, part by part. Compare the colour and the mood.
 - For a pair that shows several states side by side, compare state by state.
 - Do not compare the wording of any text. Compare only how the text looks: its size, weight, colour and place.
@@ -192,7 +194,7 @@ One image per call, so no juror can compare images with each other.
 
 - Judged images: up to `quality.jury.stillsPerUnit` of the unit's judged stills with no DOM control in them: its keys first, then the rest in list order. For `site`, the six stills drawn through the live site's path. For `film`, the film's judged frames outside the opening. In the record round, every judged still and frame with no DOM control, outside the opening.
 - Controls: the approved key images of the same unit, resized and encoded exactly like the judged images. For `site` and `film`, the approved key images of all units.
-- A judged image is paired with controls of a like kind: a whole page with whole pages, a close view of the table with close views of the table. A judged image with no control of a like kind is left out of the jury. Log which.
+- A judged image is paired with controls of a like kind: a whole page with whole pages, a tier with whole screens of a game, a close view of the machine with close views of the machine. A judged image with no control of a like kind is left out of the jury. Log which.
 - Each image goes to `quality.jury.jurors` jurors.
 - A control's votes are collected once and reused in later rounds.
 - Each call is a fresh agent that receives one image and exactly this text, nothing else:
@@ -211,11 +213,11 @@ Scoring:
 
 You are told the images are computer generated.
 
-- Pack: the unit's judged stills, and grids of native-size crops of every surface in them. For a page: the page surface where a highlight grazes it, a glass slab at its edge with what lies under it, a metal rim, a coloured button with its socket, the smallest text, the arrow with its edge and its shadow, a shadow where a part meets the page, and every object the page has. For the pinball table: the glossy playfield with its print, a lit insert, a post with its rubber, a bumper, a ramp, a flipper, each building, a lamp and what it lights, the cabinet's rail.
+- Pack: the unit's judged stills, and grids of native-size crops of every surface in them. For a page: the page surface where a highlight grazes it, a glass slab at its edge with what lies under it, a metal rim, a coloured button with its socket, the smallest text, the arrow with its edge and its shadow, a shadow where a part meets the page, and every object the page has. For the pinball machine: the glossy floor of each tier with its print, a lit insert, a post with its rubber, a bumper, a wire ramp, a flipper, each model, a lamp and what it lights, a display, the frame's rail, and the clear ball with the arrow in it.
 - Look for what gives a page away: parts that sit on the surface like stickers, with no thickness, no bevel and no gap; shadows that are one soft blur with no dark line at the contact; a surface that is perfectly smooth and even; glass that is a flat grey panel with nothing showing through; metal with no brushing and no reflection; coloured plastic that is flat colour with no depth; soft, fuzzy or jagged text.
 - Look for what gives the arrow away: a flat white shape with an outline, no thickness, no gloss, a shadow that does not separate when it lifts. Where it is damaged: a hole that is a dark spot and not a hole, cracks that are drawn lines, strips with no thickness.
 - Look for what gives a mechanism away: a toy with no small hardware, parts that pass through each other, detail at the wrong scale, something that stands on the page and is not set into it.
-- Look for what gives the pinball table away: bare empty playfield, stock shapes with no theme, parts all at one height with nothing above anything else, inserts that are flat coloured shapes with no glow, lamps that light nothing, a playfield with no gloss and no reflections, buildings that are plain boxes, print that is blurry.
+- Look for what gives the pinball machine away: bare empty floor, stock shapes with no theme, parts all at one height with nothing above anything else, inserts that are flat coloured shapes with no glow, lamps that light nothing, a floor with no gloss and no reflections, models that are plain boxes, print that is blurry, a tier with no lit display, a ball that is not clearly a clear ball with a solid arrow inside it, and anything that reads as a model railway or a diorama and not as a machine.
 - Look for anything that should not be there: a person, a hand, a face, a logo, a stray object, and any face or eyes on the arrow.
 - Score 10 when every crop holds up at native size and nothing gives away how it was made.
 
@@ -224,13 +226,13 @@ You are told the images are computer generated.
 You are told the images are computer generated. Each sheet is a run of consecutive frames, read left to right, top to bottom.
 
 - Pack for a page: one sheet across each beat of the page, at the `review` tier or higher; one sheet of consecutive frames at each hit; one sheet of the page turn that ends it.
-- Pack for `pinball`, in addition: one sheet of consecutive frames at a bumper hit, at the flipper save and at the doors; one sheet across the rise of the cabinet and one across its sinking.
+- Pack for `pinball`, in addition: one sheet of consecutive frames at a bumper hit, at the flipper save, at the doors and on the rail; one sheet across the way in, from the seal to the whole machine in frame, and one across the way out.
 - Pack for `site`: sheets drawn through the live site's path with a visitor's input: walking the arrow across a page, a hit, a page turn, the moment control is taken and the moment it is given back, the flippers being used.
 - Pack for `film`: sheets across the whole film, one sheet across each page turn, and one across the opening of film A. For the loop: one sheet across it and one across its seam, last frames then first frames.
 - Weight: do things move as if they had mass? A heavy block lands and stops dead. A key goes down and springs back. A machine winds up, runs and rings to a stop. Mark it down for even, soft, floaty or weightless motion.
 - Timing: is there a wind-up before a big action, and a hold after it long enough to see what happened?
 - Contact: on the frame something hits, do both things react, and does the page around them answer?
-- The ball and the balls on the table: do they move at the speed of steel on a slope, change direction in a frame or two on a hit, and never drift or glide? Does the scene look like a ball loose in a machine, or like something being moved by hand?
+- The clear ball and the steel balls in the machine: do they move at the speed of steel on a slope, change direction in a frame or two on a hit, and never drift or glide? Does the scene look like a ball loose in a machine, or like something being moved by hand?
 - The page turn: does the slab have mass, and does the new page settle?
 - The camera: eased, with weight. On the pages it only ever moves straight in and straight out.
 - Clarity: in each sheet, can you tell what happened without a caption? If not, say which sheet and what was unclear.
@@ -294,7 +296,7 @@ You are told nothing about how the images were made. You are judging web page de
 
 ### R9 · Acting
 
-You are told the images are frames from an animation. Each sheet is a run of consecutive frames, read left to right, top to bottom. The character is a white arrow, a mouse cursor. It has no face.
+You are told the images are frames from an animation. Each sheet is a run of consecutive frames, read left to right, top to bottom. The character is a white arrow, a mouse cursor. It has no face. In some sheets it is sealed inside a clear ball, and it is still the character.
 
 - Pack: one sheet for each beat of the unit, with no caption and a neutral name, and one sheet for each acting state the unit shows.
 - First, before anything else, for each sheet write one line in `reads`: what the arrow is feeling, and what has just happened to it or is about to. Use the file name.
@@ -353,7 +355,8 @@ Sound is not part of any pass bar.
   - The order: the careers page, then the five steps as named. Each step a different kind of scene.
   - His own words, exactly, from `content/copy.json`. The jokes that name real companies stay out.
   - Step 1 has a complete keyboard docked at the bottom and turrets that fire bolts, not beams. Step 2 has plain rows that open one at a time, each with a reason.
-  - The pinball machine is a real arcade machine, crowded and themed as a city of job jokes, in its own colours, choreographed and filmed from inside. The cursor stays an arrow.
+  - The pinball machine is three tiers tall and set into the page, at the bar of a pinball video game that has shipped. It is a career in reverse: Corporate, then the Office, then the Street. The cursor rides through it sealed in a clear ball. It is choreographed and filmed from inside. An arcade cabinet rising out of the page was rejected.
+  - Things come out of the page. The keyboard stands above it. No size is taken from an image.
   - Submit is a boss fight with a health bar. Rejection is instant, and everyone is rejected.
   - No music score. A slow, smug narrator who looks down on the applicant.
   - A computer with a mouse only. A touch device gets the message.
@@ -394,14 +397,14 @@ Sound is not part of any pass bar.
 | Takes of one sound effect | per cue in the build, and per cue again in each review round that names it | `audio.maxTakesPerCue` | |
 | Takes of one narrator line | per line in the build, and per line again in each review round that names or rewrites it | `audio.narratorMaxTakesPerLine` | |
 | Low-tier looks rendered while tuning one part | per part, per round, and per phase for parts tuned outside a round | `assets.maxTuningLooksPerPart` | |
-| Searches for the pinball take | each time a take is needed: the first one, after a change to the table's layout or physics, and after a pinball beat's time has moved | `quality.takeSearchMaxRuns` | |
+| Searches for the pinball take | each time a take is needed: the first one, after a change to the machine's layout or physics, and after a pinball beat's time has moved | `quality.takeSearchMaxRuns` | |
 | Moves of `cameras.home.fovDeg` | per build | one | |
-| Returns of the pinball table to its build agents for being too bare, before it is integrated | per build | one | |
+| Returns of a tier of the pinball machine to its build agents for being too bare, before it is integrated | per tier | one | |
 | Working time of one review round | per round Brandon sends | `budget.reviewRoundHours` | |
 | Fixes to a finished unit that a change to a shared system made worse | per unit, per change | one | |
 | Wall-clock time of one build agent | per agent | `budget.buildAgentMaxHours` | |
 | Tries at each step of the fallback chain | per part | three | |
-| Tries of an image-to-3D model | per building, and in all | one, and three failures in all end the idea | |
+| Tries of an image-to-3D model | per model, and in all | one, and three failures in all end the idea | |
 | Tries at looking for a workspace skill, and for the narrator's voice | per thing looked for | three | |
 | Runs of the pick for the card's scene | per build | one | |
 | Tries of a failing tool call | each time | `budget.toolRetryMax` | |

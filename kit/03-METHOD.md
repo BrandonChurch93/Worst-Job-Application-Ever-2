@@ -20,8 +20,8 @@ A stand-in also says so itself, apart from the register: every stand-in asset, s
 | `keyboard`, `turrets`, `slabs`, `paper`, `shredder` | Step 1 | `step1` |
 | `rows`, `dial`, `slot`, `crank` | Step 2 | `step2` |
 | `careers-page`, `perk-cards`, `ticker`, `apply-button` | The careers page | `marketing` |
-| `cabinet`, `playfield-art`, `table-hardware`, `flippers`, `bumpers`, `targets`, `ramps`, `backbox`, `table-lights`, `table-physics`, `director`, `table-cameras` | The pinball table | `pinball` |
-| `building-hq`, `building-firehouse`, `building-police`, `building-coffee`, `building-bank`, `building-garage`, `building-houses`, `building-beach` | Each building of the city | `pinball` |
+| `table-layout`, `table-frame`, `marquee`, `loader`, `tier-art`, `table-hardware`, `flippers`, `bumpers`, `targets`, `ramps`, `lift`, `displays`, `clear-ball`, `table-lights`, `table-physics`, `director`, `table-cameras` | The pinball machine | `pinball` |
+| `model-hq`, `model-revolving-door`, `model-beach`, `model-boardroom`, `model-ladder`, `model-notes`, `model-coffee-machine`, `model-cubicles`, `model-inbox`, `model-staplers`, `model-firehouse`, `model-police`, `model-bank`, `model-garage`, `model-houses`, `model-moms` | Each themed thing that stands on a tier | `pinball` |
 | `verify-card`, `boss-body`, `boss-transform`, `boss-weapons`, `health-bar` | Step 4 | `boss` |
 | `wait`, `letter`, `stamp`, `metrics` | Step 5 | `decision` |
 | `acting-<unit>` | The cursor's scripted performance for the beats of each of the six pages | That page |
@@ -40,14 +40,14 @@ Every part ends in one of three steps, tried in this order, three tries each:
 
 A part that ends on step 2 or 3 is real, is judged in its round like anything else, and is logged as an open item with what was tried.
 
-Some parts are motion, light or code and have no surface to project a picture onto: `type`, `light-engine`, `page-turn`, `cursor-acting`, `cursor-effects`, `table-lights`, `table-physics`, `director`, `table-cameras`, `boss-transform`, every `acting-<unit>`, `pointer`, `sound-engine`, `quality-levels`, `finish-logic`, `interface`, `loop` and `opening`. For these the named fallback is the last step. Each one below is written so that it can always be made.
+Some parts are motion, light or code and have no surface to project a picture onto: `type`, `light-engine`, `page-turn`, `cursor-acting`, `cursor-effects`, `table-layout`, `table-lights`, `table-physics`, `director`, `table-cameras`, `boss-transform`, every `acting-<unit>`, `pointer`, `sound-engine`, `quality-levels`, `finish-logic`, `interface`, `loop` and `opening`. For these the named fallback is the last step. Each one below is written so that it can always be made.
 
 ## 1. Scale and scene
 
 - One page pixel is one world unit. The page surface is the plane z = 0, 1920 units wide and 1080 high, with y up the page. Heights are in the same units: a key cap stands about 10 high, a primary button about 14, a turret about 60, the cursor is about 6 thick.
 - The `home` camera looks straight down the page's normal, with the page filling the frame exactly. It is a real lens, not an orthographic one: `cameras.home.fovDeg`. A long lens keeps the page flat like a screenshot and still lets things that stand up lean a little toward the edges, as the approved images do. The look lock may move that key between `cameras.home.fovMinDeg` and `cameras.home.fovMaxDeg` to match the approved images, once, and logs it.
 - Behind the page there is nothing to see. During a page turn the edge of the slab and a dark, unlit backing show for a moment. Nothing else is ever visible around a page.
-- The pinball table is built at its own scale in its own scene and placed so that the cabinet rises through the page. `kit/02-SUBJECT.md` and section 10 describe it.
+- The pinball machine is built in balls, in its own scene, and set into the tall page of step 3 across the page's whole width, with one ball `table.ballPx` page pixels across. The cursor keeps its world scale inside the ball. `kit/02-SUBJECT.md` and section 10 describe it.
 - Everything that moves is simulated in sim steps, `sim.stepHz` a second. `kit/05-ARCHITECTURE.md` has the rules.
 
 ## 2. The page surface, the shell and the layout tree
@@ -58,6 +58,8 @@ Part: `shell`.
 - Design each page on a grid before building anything on it: columns, a baseline, even gaps. The `layout` view in `kit/04-LOOK.md` draws the tree's boxes over a still so the grid can be checked by eye.
 - The surface is one slab with a real edge and thickness. Its material is matte ceramic: a warm off-white base, a fine eggshell grain as a height and roughness picture that tiles without a visible repeat, and a soft falloff of light across the page from the key light's side.
 - Controls are set into or onto the slab: a field sits in a shallow pocket, a button stands in a socket with a dark gap round it, a card sits proud of the surface.
+- A part's height off the surface is its kind's entry in `scale.heights`, and a shared part's size is its entry in `scale.sizes`. `kit/02-SUBJECT.md` under "One scale" has the rule. A size is set in the layout tree. It is never measured off an approved image.
+- A mechanism the cursor works stands above the surface. It rises through a slot or stands in a shallow tray. It is never sunk in a well.
 - The header, the progress bar, the step heading and the subline are built once and used by all five steps. The progress bar is five round buttons on a recessed rail. The current step's button is orange and stands higher.
 - Named fallback: a flat plane with the grain as a normal picture only, pockets and sockets as painted contact shadows.
 
@@ -165,17 +167,17 @@ Part: `cursor-effects`.
 
 Part: `keyboard`. Approved image: key `step1-fire`.
 
-- A recessed brushed aluminum tray with a rim on all four sides, docked along the bottom across the content width. It slides up out of a slot in the page.
-- The layout is a data file with every key's row, width and legend. Five rows, as `kit/02-SUBJECT.md` lists them. All five sit inside the tray.
+- A brushed aluminum deck, docked along the bottom across the content width. It rises through a slot in the page and stops with its top `scale.heights.keyboardDeck` above the surface, so the whole keyboard stands out of the page and throws a shadow on it. The approved image sinks it in a well. The deck wins.
+- The layout is a data file with every key's row, width and legend. Five rows, as `kit/02-SUBJECT.md` lists them. All five are on the deck, and a key's top is `scale.heights.keycap` above the page.
 - Each key is a real cap with a dished top, a legend set as type and its own travel and spring. The cursor lands on a cap and the cap goes down under it.
 - The shuffle: caps lift, cross over each other in arcs and drop into new seats, legends and all. Which cap goes where comes from the seeded random stream.
-- Named fallback: caps as rounded boxes with printed legends, and a shuffle that slides caps along the tray.
+- Named fallback: caps as rounded boxes with printed legends, and a shuffle that slides caps along the deck.
 
 ### The turrets and their bolts
 
 Part: `turrets`.
 
-- Two small milled aluminum turrets rise from round hatches at the ends of the tray. Each has a body that turns and a short barrel.
+- Two small milled aluminum turrets rise from round hatches in the top of the deck, one at each end, to `scale.heights.turretRaised`. Each has a body that turns and a short barrel.
 - A turret follows the cursor with a short delay and shows a wind-up before each shot, so its aim can be read and a dodge is fair. `kit/02-SUBJECT.md` has the rules for a hit.
 - A bolt is a thing that travels: a short glowing orange streak with a bright head. It lights the caps it passes, leaves a scorch mark where it lands that fades, and burns a hole in the cursor if it hits.
 - Named fallback: turrets as turned cylinders, bolts as bright capsules with a glow.
@@ -257,92 +259,143 @@ Parts: `wait`, `letter`, `stamp`, `metrics`. Approved image: key `decision`.
 - The metrics: a glass panel with three readouts that count up to their values.
 - Named fallback: flat panels with printed type and a red mark that appears.
 
-## 10. The pinball table
+## 10. The pinball machine
 
-The main attraction. `kit/02-SUBJECT.md` under "The pinball machine" is the specification. The approved images are the eight `table-` keys. Build it to hold up with the camera a hand's width from a bumper.
+The main attraction. `kit/02-SUBJECT.md` under "The pinball machine" is the specification. The approved images are the ten keys of unit `pinball` and the sheets `clear-ball` and `table-map`. Build it to hold up with the camera a hand's width from a bumper, and to pass, a tier at a time, as a screenshot of a pinball video game that has shipped.
 
 ### Study first
 
-Before any part is built, study photographs and video of real arcade machines, inside `assets.maxStudySources`: how crowded a playfield is, how plastics sit over wire over print, how inserts glow, how a flasher lights what is near it, how the glass and the clear coat reflect. Study how they are built and lit. Take no name, no artwork and no layout from any of them.
+Before any part is built, study inside `assets.maxStudySources`:
+
+- Screenshots and video of shipped pinball video games: how full a screen is, how a tier is framed round its flippers, how a table is lit by its own lamps, how the ball is found at a glance. `references/drafts/round-6/NOTES.md` under "Study" lists what the reference round looked at and the five things it took. Start there.
+- Photographs of real machines: how a post, a rubber ring, a wire guide, a drop target, a pop bumper and a wire ramp are built and fixed down.
+
+Take the format and the finish. Take no layout, no artwork, no character and no name from any of them.
+
+### The layout
+
+Part: `table-layout`.
+
+- One data file for the machine, in balls, with every tier's parts: each collider, lane, post, lamp, insert, model, door, chute, ramp and display, with its place, its size and its height. It is to the machine what a layout tree is to a page. Geometry, physics, lights and measures M8 and M10 all read this one file.
+- Draw it from sheet `table-map`, the three tier keys and the guides in `references/guides/round-6/`. Where they disagree, the tier key wins on what is there, and "Ball paths" in `kit/02-SUBJECT.md` wins on how a ball gets on and off it.
+- The `layout` view in `kit/04-LOOK.md` draws it over a tier still.
+- Named fallback: none is needed. It is data.
+
+### The frame, the marquee and the loader
+
+Parts: `table-frame`, `marquee`, `loader`.
+
+- The frame: a brushed aluminum rail round the whole machine, set into the page's ceramic with a narrow border of ceramic showing outside it, and a cross rail with the chute in it between one tier and the next. Each tier lies `table.tierStepBalls` lower than the one above.
+- The apron: two ceramic slabs at the foot of Tier 1 with the drain between them, the drain's plate and the apron card, both set as type.
+- The marquee: a lit panel with the title from `copy:step3.table.title` over a city skyline at dusk, and the main display under it. The skyline is generated art with no lettering in it.
+- The loader: the port on the first screen, the clear feed tube with its aluminum collars down the right side of the page, the plunger with its spring and orange knob, and the outlet port on the last screen.
+- Named fallback: extruded rails, flat slabs, a flat lit panel, a plain tube.
 
 ### The printed layer
 
-Part: `playfield-art`.
+Part: `tier-art`.
 
-- The artwork is flat, top down art of the whole playfield: an illustrated city map at dusk whose roads are the paths the ball takes. It lies under a glossy clear coat.
-- Make it with the image tool from the approved `table-top` image: the same playfield with every standing part removed, flat, lit evenly, with no lettering. Ask in sections if one picture cannot hold the detail, and join them. Bring it to `assetSets.<set>.tableArtWidth`.
-- All lettering on the playfield, the building names, the insert labels, the apron card, is set as type over the art from `copy:step3.table`. The table has its own display face, bold and a little retro, chosen like the site's face and recorded the same way.
-- Inserts are cut into the art: clear coloured windows with a moulded pattern inside, lit from below.
-- Named fallback: draw the map with code, roads along the ball paths, blocks, parks and water in the table's colours.
+- Each tier's floor is flat, top down artwork under a glossy clear coat: art deco lines on midnight blue, carpet tile with a walkway, a street map at dusk. Its lines follow the paths a ball takes.
+- Make each with the image tool from that tier's approved key: the same floor with every standing part removed, flat, lit evenly, with no lettering. Ask in sections if one picture cannot hold the detail, and join them. Bring each to `assetSets.<set>.tableArtWidth`.
+- Inserts are cut into the art: clear coloured windows with a moulded picture inside, lit from below. The pictures are in `table.inserts`. They carry no words.
+- No lettering is printed on a floor. Every word in the machine is a sign, a plate, a card or a display, set as type from `copy:step3.table`. The machine has its own display face for signs, a serif with a little weight, chosen like the site's face and recorded the same way.
+- Named fallback: draw each floor with code, in the tier's colours, with lines along the ball paths.
 
-### The cabinet and the backbox
+### What stands on a tier
 
-Parts: `cabinet`, `backbox`.
+Parts: `table-hardware`, `flippers`, `bumpers`, `targets`, `ramps`, `lift`, and one `model-` part for each themed thing.
 
-- A wooden cabinet with printed side art, steel side rails, a lockdown bar, four legs, a coin door, and the playfield glass. The glass shows only a faint reflection, and none once the camera is under it.
-- The backbox holds a lit title panel with the table's name from `copy:step3.table.title` and a score display that shows the lines of `copy:step3.table.modes`.
-- Named fallback: boxes with generated side art.
-
-### What stands on the playfield
-
-Parts: `table-hardware`, `flippers`, `bumpers`, `targets`, `ramps`, and one `building-` part for each building.
-
-- Hardware: posts with rubber rings, star posts, wire guides, lane guides, screws with real heads, lamp sockets, flasher domes, the shooter lane and its plunger, the apron. There is a lot of it, and that is the point. Build each kind once and place many.
-- Flippers: moulded bats with rubber, on shafts, that snap up and fall back. Slingshots kick.
-- Bumpers: three pop bumpers whose caps are coffee cup lids, each with a ring that slams down and a lamp inside.
-- Targets: a bank of five drop targets that fall and reset, standup targets, and a spinner that spins down.
-- Ramps: one chrome wire ramp, the highway, and one clear plastic spiral, the parking garage, both with real supports.
-- Buildings: each is a small detailed model in the style of the approved images, with lit windows and a sign set as type. Corporate HQ has lobby doors that open and slam. The firehouse has a garage door that is the scoop. The beach sits sealed in a clear box with its own warm light.
-- A building may start from a generated picture of its faces laid on simple geometry, then gain depth: recessed windows, ledges, a roof with things on it. An image-to-3D tool may be tried once per building if Phase 0 found one. Three failures in all end that idea.
-- Count the standing parts. Measure M8 holds the table to `table.minStandingParts` and to `table.maxBareFraction`.
+- Hardware: posts with rubber rings, wire guides, lane guides, screws with real heads, lamp sockets, the top lane with its arrow lamps, the inlanes and outlanes. There is a lot of it, and that is the point. Build each kind once and place many.
+- Flippers: moulded orange bats with a black rubber band, on shafts, that snap up and fall back. Six in all. Slingshots kick.
+- Bumpers: three pop bumpers on Tier 2 whose bodies are paper cups and whose caps are coffee lids, each with a ring that slams down and a lamp inside.
+- Targets: three banks of `table.dropTargetsPerBank` drop targets that fall and reset, three standup targets as sticky notes, one standup at the coffee machine, and two spinners: the revolving door and the one by the police station.
+- Ramps: the highway and the ladder, both wire tracks built as rule 4 of "Ball paths" says, on real supports, and the garage spiral in clear plastic with `table.spiralTurns` turns.
+- The lift: one clear tube inside the left rail with aluminum collars, its two orange doors and its two orange elbows, open where rule 3 says.
+- Models: each themed thing is a small detailed model in the style of the approved images, with lit windows where it has windows and a sign set as type. The tower's lobby doors open and slam. The firehouse door is a scoop. The inbox tips. The beach sits sealed in its box with its own warm light. The hatch beside Mom's house opens and shuts.
+- A sign stands on the front edge of its roof, tilted back, so that it reads from straight above and from the front.
+- A model may start from a generated picture of its faces laid on simple geometry, then gain depth: recessed windows, ledges, a roof with things on it. An image-to-3D tool may be tried once per model if Phase 0 found one. Three failures in all end that idea.
+- Count the standing parts of each tier. Measure M8 holds every tier to `table.minStandingPartsPerTier` and to `table.maxBareFraction`.
 - Named fallback for each: the general fallback, plain shapes with generated maps.
+
+### The displays
+
+Part: `displays`.
+
+- Four amber dot displays: the main one under the marquee and one in the lower right shoulder of each tier, `table.displayWidthBalls` by `table.displayHeightBalls`. Each is a grid of real dots behind smoked glass.
+- All four show the same thing, as `kit/02-SUBJECT.md` says: the score, a mode's two lines scrolling, and the mouse picture at the start of the live scene.
+- A character on a tier's display is at least `layout.minTextPx` tall when the tier fills the frame.
+- Named fallback: a lit panel with the same text set in a dot matrix face.
+
+### The clear ball
+
+Part: `clear-ball`. Approved image: sheet `clear-ball`.
+
+- A sphere of clear acrylic with thickness, a seam and a plug. It bends what is behind it, shows sharp highlights from the lamps near it, and throws a light shadow with a bright spot in it.
+- In the live picture, bend the already drawn scene behind the ball through it. In computed frames the bending may be traced properly.
+- The cursor inside is the real cursor: the same mesh, the same material, the same acting rig, at its own size, which is `table.cursorInBallFraction` of the ball's width. It is a small body of its own, loose inside the ball: it lies at the bottom at rest, tumbles a beat behind a rolling ball and is thrown flat against the wall on a hit.
+- Sweat beads on the inside of the ball. A hit that would burn or dent the cursor on a page marks it here too, and it heals as `cursor.damageHealSeconds` says.
+- The close and the split: two half shells that meet at the seam with a click, and part again at the outlet port.
+- Named fallback: a clear shell with a bright rim and a faint bend of what is behind it, and the cursor inside it on a spring.
 
 ### The lights
 
 Part: `table-lights`.
 
-- A real table is lit by many small lamps: general lighting round the edges, a lamp under every insert, flashers, the bumper lamps, the backbox. Group them into light groups.
-- For each group, work out once what the whole table looks like lit by that group alone, and keep it as light pictures for the table's surfaces. A frame is then those pictures mixed by how bright each group is at that moment. This is what lets hundreds of lamps look right and still run on a visitor's machine.
+- The machine is lit by many small lamps: general lighting round the edges of each tier, a lamp under every insert, the two beacons, the bumper lamps, lit windows, the marquee, the displays. Group them into light groups, tier by tier.
+- For each group, work out once what its tier looks like lit by that group alone, and keep it as light pictures for the tier's surfaces. A frame is then those pictures mixed by how bright each group is at that moment. This is what lets hundreds of lamps look right and still run on a visitor's machine.
+- Each tier has its own colour of light: cold white and gold, flat fluorescent white, warm dusk with red and blue.
+- The website's light is one more group. It is at full level while the camera is on the page and at `table.pageDuskLevel` while the camera is in the machine.
 - Computed frames may add true shadows and reflections for the lamps nearest the camera and for anything that moves.
-- The light show is a score of group levels over time, tied to events: a wave across the inserts on the launch, a flasher on each hit, everything strobing in "Reply All", a slow dim when the ball drains.
+- The light show is a score of group levels over time, tied to events: the website's light going down, a wave down the tiers on the reveal, a flash on each hit, the whole office tier strobing in "Reply All", the red beacon in the firehouse beat, a slow dim when the ball drains, the website's light coming back up.
 - Named fallback: glowing inserts and domes, a few real lamps with no shadows, and the same score.
 
 ### The physics
 
 Part: `table-physics`.
 
-- Simulate the playfield in two dimensions on its own plane, with gravity down the slope, `table.slopeDeg`. Posts, rubbers, guides, slings, bumpers, targets and flippers are colliders. Ramps and wire guides are rails: a body that enters one rides along it and leaves at its end. Holes and scoops hold a body and kick it out.
-- The cursor is one round body in the simulation and an arrow in the picture: the arrow tumbles and spins as the body rolls and slides, squashes on a hit and stretches in flight. The steel balls are round bodies drawn as chrome balls.
+- Each tier is simulated in two dimensions on its own plane, with gravity down the page as if the tier sloped by `table.slopeDeg`. Posts, rubbers, guides, slings, bumpers, targets, spinners and flippers are colliders.
+- Everything that carries a ball from one place to another is a rail: the feed tube, the launch lane, a chute, the lift, a wire ramp, the spiral. A body that enters a rail leaves the plane it was on, rides the rail at a speed a ball would have, and enters a plane again at the rail's end. Rules 1 to 4 of "Ball paths" say where every rail starts and ends.
+- A hold takes a body, keeps it for a set time and lets it go with a set push.
+- The clear ball is one round body. The steel balls are round bodies of the same size.
 - Use a physics library that gives the same result on every machine, in fixed sim steps. Phase 0 picks it and pins it. A two dimensional build of Rapier that promises this existed when the kit was written. Feed it only numbers that are the same everywhere: no trigonometry at run time in anything that sets a position or a force.
+- Build a test with the physics: `npm run paths` drops balls from many seeded places on every tier, with and without flips, and fails if one comes to rest outside a hold, leaves the machine or sticks in an opening. It also reads the layout and fails on an opening under `table.minClearanceBalls`, a rail with no entry or no exit, or a way into the Retirement box. Rules 1 to 8 of "Ball paths" are this test.
 - Named fallback: your own small solver for circles against line segments, arcs and rails, in fixed steps.
 
 ### The director
 
 Part: `director`.
 
-The scene hits every story beat in `kit/01-FILM.md` in order, in both modes, and still looks like a ball loose on a table.
+The scene hits every story beat in `kit/01-FILM.md` in order, in both modes, and still looks like a ball loose in a machine.
 
-- Each beat has an entry: a place and a state that starts it. The coffee beat starts when the cursor enters the bumper cluster. The firehouse beat starts when it drops in the scoop.
-- Between beats the physics runs free. The director nudges with things a table really has: a magnet under the playfield, a kicker, a gate, a ball save. A nudge is small and reads as the table's own behaviour.
-- Each beat has a deadline. If the cursor has not reached the next entry by then, the director catches it with the nearest such device and delivers it.
+- Each beat has an entry: a place and a state that starts it. The lobby beat starts when the ball rolls onto the red carpet. The coffee beat starts when the chute drops it on the bumpers. The "Reply All" beat starts when the inbox takes it. The firehouse beat starts when it drops in the garage. The highway beat starts when it rolls onto the flap.
+- Between beats the physics runs free. The director nudges with things a machine really has: a magnet under the floor, a kicker, a gate, a ball save, the lift. A nudge is small and reads as the machine's own behaviour.
+- The story only goes down. Until a tier's beats are done, a ball that falls through that tier's flippers is sent back up by the lift and the chute's gate stays shut. Once they are done, the gate opens and the lift's door on the tier below stays shut.
+- Each beat has a deadline. If the ball has not reached the next entry by then, the director catches it with the nearest such device and delivers it.
 - Film mode uses a take. `npm run take` searches flipper timings and nudges, from the seed, for a run in which every pinball beat's event falls inside its beat in `film.beats`, give or take `film.beatToleranceSeconds`. The inputs of the take it keeps are saved as `cut/TABLE-TAKE.json` and replayed exactly.
 - Live mode has no take. The visitor's flips are real, the same director runs, and the scene ends within a few seconds of `live.pinball.sceneSeconds` for everyone.
-- Named fallback: in film mode, author the cursor's and the balls' paths between beats as curves with speeds a ball would have. In live mode, let the director hold the cursor on such paths between the moments the flippers are needed.
+- Named fallback: in film mode, author the paths of the ball and the steel balls between beats as curves with speeds a ball would have. In live mode, let the director hold the ball on such paths between the moments the flippers are needed.
 
 ### The cameras
 
 Part: `table-cameras`.
 
 - `kit/01-FILM.md` lists a camera for every beat. Each is a real lens with a shallow focus up close, a little shake on impacts, and a move with weight.
-- A camera that follows the cursor follows a smoothed copy of its path, never the raw one.
-- The approved close views fix the lens and the framing for the building or the part each shows.
-- In live mode the play view is `table-play`. A cut to a close view happens only while the cursor is held or in flight, and the play view is back before the flippers are needed.
+- The three tier cameras, `tier-3`, `tier-2` and `tier-1`, are the `home` camera moved down the page to that tier: the same lens and the same distance, so a page pixel is a screen pixel, the tier fills the frame with the page's narrow ceramic border at its two side edges, and things that stand up lean only a very little toward the edges. They are sharp edge to edge.
+- `rail` is fixed above the ball while it rides a wire ramp. It looks down and a little ahead, and the cursor is seen inside the ball the whole way.
+- A camera that follows the ball follows a smoothed copy of its path, never the raw one.
+- The approved close views fix the lens and the framing for the thing each shows.
+- In live mode the view is the tier camera of the tier the ball is on. It travels to the next tier in `live.pinball.tierTravelSeconds`. A cut to a close view happens only while the ball is held or on a ramp, for at most `live.pinball.closeShotMaxSeconds`, and the tier view is back before the flippers are needed.
 - Named fallback: fixed cameras cut on the beats.
 
-### The rise
+### The way in, the way out and the controls
 
-- The page splits along a seam and the two halves slide apart. The cabinet rises through the gap as the camera tilts from the straight on view to the player's view. At the end it sinks back and the page closes over it.
-- This belongs to `cabinet` and `table-cameras`.
+These belong to `loader`, `clear-ball`, `table-cameras` and `director`.
+
+- The page of step 3 does not scroll under the visitor's hand. The scene moves the view: down the page after the ball on the way in, and to the last screen on the way out.
+- The way in: near the port the cursor is pulled off the visitor's mouse and into the cup, the shells close, the ball drops, and the view follows the tube down the page while the website's light goes down.
+- The way out: the ball rolls out of the outlet port, the shells part, the cursor is back on the visitor's mouse, and the result card rises.
+- The flippers: the left mouse button and the left Shift key work every left flipper, the right mouse button and the right Shift key every right one. A flipper moves on the frame after the press. While the scene runs, the browser's own menu on the right button is held back.
+- The plunger fires by itself.
 
 ## 11. The boss
 
@@ -392,7 +445,7 @@ You have no ears. Every choice about sound is made from numbers and from a liste
 | `card-flip` | A stiff card turning over on a hard surface | A perk card |
 | `button-press` | A large plastic button going down and bottoming out | The Apply button, Continue, Submit, Accept Rejection |
 | `page-turn` | A heavy slab turning over with a low rush of air and a knock as it seats | Every page turn |
-| `keyboard-rise` | A metal tray sliding up out of a slot and stopping | The keyboard |
+| `keyboard-rise` | A metal deck sliding up out of a slot and stopping | The keyboard |
 | `key-press` | One mechanical key cap, down and up | Each key |
 | `turret-rise` | A small hatch opening and a servo lifting | Each turret |
 | `bolt-fire` | A short, tight energy shot. Small, not a cannon | Each bolt |
@@ -414,18 +467,26 @@ You have no ears. Every choice about sound is made from numbers and from a liste
 | `crank-runaway` | The same crank spinning up out of control | The runaway |
 | `flatten` | A wet, flat splat, short and comic | The cursor flattened |
 | `peel-up` | Something thin peeling off a smooth surface and popping back to shape | The cursor recovering |
-| `page-split` | A heavy surface parting along a seam, stone sliding on stone | The page opening for the cabinet |
-| `cabinet-rise` | A large machine rising on a lift | The cabinet |
-| `power-on` | A pinball machine powering up: relays, a hum, a start-up chime of mechanical bells | The table lighting |
-| `plunger` | A spring plunger pulled back and released into a steel ball | The launch |
+| `ball-seal` | A short suck of air, then a hard plastic shell snapping shut with a click | The clear ball closing round the cursor |
+| `tube-run` | A hard plastic ball rolling fast down a plastic tube | The feed tube |
+| `lights-down` | A big room's lights dimming: a low falling hum and a relay | The website's light going down |
+| `power-on` | A pinball machine powering up: relays, a hum, a start-up chime of mechanical bells | The machine lighting, tier by tier |
+| `plunger` | A spring plunger pulled back and released into a hard plastic ball | The launch |
 | `bumper` | One pop bumper firing: a solenoid thwack and a bell | Each bumper hit |
 | `scoop-kick` | A ball dropping in a hole and being kicked out by a solenoid | The firehouse |
 | `flasher` | A relay click and the snap of a bright lamp | Each flasher |
-| `ramp-roll` | A steel ball rolling fast along a wire ramp | The highway |
-| `ball-drop` | A steel ball dropping onto wood | Each extra ball |
+| `ramp-roll` | A hard plastic ball rolling fast along a wire ramp | The highway and the ladder |
+| `ball-drop` | A steel ball dropping onto wood | Each steel ball out of the inbox |
 | `flipper` | One flipper firing | Each flip |
 | `doors-slam` | Two heavy glass doors slamming shut | Corporate HQ |
 | `drain` | A ball rolling down the drain and into the trough, with a falling tone of bells | The drain |
+| `tier-fall` | A ball dropping down a short metal chute and landing on wood | The fall from one tier to the next |
+| `lift` | A ball sucked up a tube by air: a rising whoosh and a soft pop at the top | The lift |
+| `spiral` | A hard plastic ball rolling round and down a plastic spiral, slowing | The parking garage |
+| `spinner` | A pinball spinner hit hard and spinning down, ticking | The revolving door and the police spinner |
+| `drop-target` | One pinball drop target knocked down: a flat plastic clack | Each drop target |
+| `sling` | A pinball slingshot firing: a short rubber snap | Each slingshot |
+| `ball-open` | A hard plastic shell cracking open and its two halves rattling on a hard floor | The clear ball splitting at the outlet port |
 | `checkbox` | A small crisp tick | The checkbox |
 | `button-crack` | Plastic and ceramic cracking as something tears loose | The Submit button breaking out |
 | `unfold` | Metal plates and joints unfolding and locking, servos | The boss forming |
@@ -530,7 +591,7 @@ Part: `interface`.
 Part: `finish-logic`.
 
 - `kit/02-SUBJECT.md` under "Rules for the live site" is the specification: every visitor can finish, nobody can get stuck, and control is always handed back.
-- Every gag is a small state machine with a way out that does not depend on skill: the turrets overheat, the dial gives up, the crank runs away, the boss tires, the table's director delivers. The numbers are in `live`.
+- Every gag is a small state machine with a way out that does not depend on skill: the turrets overheat, the dial gives up, the crank runs away, the boss tires, the machine's director delivers. The numbers are in `live`.
 - `npm run bots` proves it. Each bot in `live.bots` plays the whole site as a visitor would, through the same pointer path a mouse uses. Check G17 has the rule.
 - Named fallback: a plain timer on every gag. Once a gag has run for `live.skipLinkAfterSeconds` it plays its own ending, whatever the visitor is doing, and hands control back. This can always be made.
 
@@ -554,8 +615,8 @@ Part: `loop`.
 
 ## 18. Where image generation helps
 
-- The playfield artwork, the cabinet's side art, the backbox art, building faces, signs without words, material detail pictures.
-- Extra views of a building or a machine, always with its approved image passed in.
+- The artwork of each tier's floor, the marquee's skyline, the faces of models, material detail pictures. Never a word.
+- Extra views of a model or a machine, always with its approved image passed in.
 - Every generated picture counts against `assets.maxTakesPerAsset` for its asset, and its prompt is committed beside it.
 - Say "no text, no letters, no numbers" in every prompt for a picture that ships. Then check the result for letters before it is used.
 - The reference rounds found that the image model follows a rough guide picture closely. When a picture has to match a layout, give it a guide drawn from the layout tree.

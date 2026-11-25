@@ -71,13 +71,19 @@ Read `AGENTS.md` at the repo root before this file.
 | Damage | What a hit leaves on the cursor: a burn hole, strips, a flat body, a scorched tip. It heals |
 | Gag | One thing a page does to the cursor: the turrets, the shuffling keys, the slabs, the shredder, each machine, each phase of the boss |
 | Machine | One of the three contraptions of step 2: the dial, the slot machine, the crank |
-| The table | The pinball machine, `table.name` |
-| Playfield | The sloped board of the table, with its printed artwork under a clear coat |
-| Standing part | Anything on the table that rises off the playfield: a bumper, a post, a ramp, a building, a target |
-| Insert | A translucent window set flush in the playfield and lit from below |
-| Light group | A set of the table's lamps that switch together: the general lighting, a flasher, a run of inserts |
+| The machine, the table | The pinball machine, `table.name`. Three tiers in one frame, set into the page of step 3 |
+| Tier | One of the machine's three playfields. One tier fills one screen |
+| Ball | The unit of size in the machine. Also the clear ball the cursor is sealed in. A steel ball is always called a steel ball |
+| Floor | The board of one tier, with its printed artwork under a clear coat |
+| Standing part | Anything on a tier that rises off its floor: a bumper, a post, a ramp, a model, a target |
+| Model | One themed thing that stands on a tier: the tower, the firehouse, the inbox |
+| Insert | A translucent window set flush in a floor and lit from below |
+| Rail | In the physics, anything that carries a ball from one place to another: a tube, a lane, a chute, the lift, a wire ramp, the spiral |
+| Hold | A scoop or a hatch that takes a ball, keeps it and lets it go |
+| Light group | A set of the machine's lamps that switch together: a tier's general lighting, a beacon, a run of inserts |
+| Scale | The sizes and heights in `scale` in the config. No size comes from an image |
 | Director | The code that makes the pinball scene hit its story beats in order, in both modes |
-| Take | For the table: one recorded run of the scene in film mode that hits every beat on time. For a sound or a picture: one generation |
+| Take | For the machine: one recorded run of the scene in film mode that hits every beat on time. For a sound or a picture: one generation |
 | The boss | The Submit button after it tears loose, until it is beaten |
 | Dart | The small glowing cursor the hero fires with each click during the boss fight |
 | Slab | A heavy red block with an error message on it |

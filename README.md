@@ -8,7 +8,7 @@ This repo holds the build kit. Perplexity Computer builds the site, the films an
 
 ## Status
 
-Planning. The kit is written. The last reference round, the pinball machine, is not approved yet, so a build started now stops at once with `BLOCKED: the reference images are not approved.` `references/STATUS.md` says what is approved and what is pending.
+Ready to build. The kit is written and every reference image is approved. `references/STATUS.md` is the record of what was approved, what was rejected and why. `kit/10-KICKOFF.md` has the prompt that starts the build.
 
 ## Where things are
 
