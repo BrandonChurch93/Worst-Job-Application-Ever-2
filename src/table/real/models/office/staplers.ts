@@ -5,17 +5,17 @@ import { localBalls, type Zone } from '../../zone'
 import { hex, Kit, matsOf, meshOf, shade, SURF, type V2, type V3 } from './kit'
 
 const C = {
-  red: hex(0x700c15),
-  plate: hex(0x560b13),
-  steel: hex(0x8f9397),
-  chrome: hex(0xb9bcc0),
+  red: hex(0x5e1219),
+  plate: hex(0x521016),
+  steel: hex(0x7c8187),
+  chrome: hex(0x8d9298),
   rubber: hex(0x222223),
-  staple: hex(0xc9ccd0),
+  staple: hex(0x9fa4a9),
   dark: hex(0x2c2d30)
 }
 
 // The shoulders of the sling posts, from the owner of the hardware: 46 px over the floor, and the plate keeps within the post triangle plus 6 px so the rubber band shows under it.
-export const PLATE = { z: 46, thick: 6, round: 7 }
+export const PLATE = { z: 46, thick: 5, round: 7 }
 const OPEN = 0.27
 const MAG = 0.05
 const PIN = { x: 9, z: 12 }
@@ -80,8 +80,8 @@ function body(k: Kit, f: Frame): void {
     return out
   }
   k.poly(strip(3, L - 3, -2.2), 0, 1.6, C.rubber, SURF.rubber, 0.3)
-  k.poly(strip(0, L, 0), 1.4, 3.2, C.red, SURF.enamel, 1.2)
-  k.poly(strip(18, L - 30, -5), 4.4, 0.7, shade(C.red, 0.8), SURF.enamel, 0.4)
+  k.poly(strip(0, L, 0), 1.4, 3.2, C.steel, SURF.brushed, 1.2)
+  k.poly(strip(18, L - 30, -5), 4.4, 0.7, shade(C.steel, 0.8), SURF.brushed, 0.4)
   k.box(L - 15, 0, 4.4, 20, 20, 1.1, C.chrome, SURF.chrome, 0.4)
   for (const y of [-3.2, 3.2]) k.box(L - 14, y, 5.5, 9, 2.4, 0.25, C.dark, SURF.steel, 0)
   k.cyl(L - 24.5, 0, 5.5, 1.6, 0.6, shade(C.chrome, 0.8), SURF.steel, 8, 0.3)
@@ -107,9 +107,9 @@ function body(k: Kit, f: Frame): void {
 }
 
 function arm(k: Kit, f: Frame): void {
-  const L = f.length - PIN.x
+  const L = f.length - PIN.x - 6
   const section = (x: number, grow: number, wide: number, tall: number, skirt: number): V3[] => {
-    const w = (taper(f, x + PIN.x) - 1.4) * wide * (0.6 + 0.4 * grow)
+    const w = (taper(f, x + PIN.x) - 1.6) * wide * (0.6 + 0.4 * grow)
     const h = (12.5 + (1.5 * Math.max(0, x)) / L) * tall * (0.45 + 0.55 * grow)
     const out: V3[] = [[x, -w, -skirt]]
     const n = 12
@@ -123,7 +123,6 @@ function arm(k: Kit, f: Frame): void {
   }
   const xs: [number, number][] = [[-9.5, 0.5], [-8.6, 0.74], [-6.5, 0.92], [-3, 1], [L * 0.2, 1], [L * 0.45, 1], [L * 0.7, 1], [L - 12, 1], [L - 5, 0.97], [L - 1, 0.86], [L + 1.2, 0.66], [L + 2, 0.42]]
   k.loft(xs.map(([x, g]) => section(x, g, 1, 1, 5 * g)), C.red, SURF.enamel)
-  k.poly([[L - 22, -6], [L - 8, -5.2], [L - 8, 5.2], [L - 22, 6]], 13.9, 0.7, shade(C.red, 0.9), SURF.enamel, 0.5)
   k.box(L - 9, 0, -6.2, 5, 13, 2.4, C.chrome, SURF.chrome, 0.3)
 }
 

@@ -9,7 +9,7 @@ import { hex, Kit, matsOf, meshOf, rrect, shade, SURF, type RGB, type Surf, type
 const C = {
   base: hex(0x232325),
   black: hex(0x1d1d1f),
-  bronze: hex(0x7a5a3c),
+  bronze: hex(0x56473b),
   steel: hex(0x7d848b),
   steelLight: hex(0x959ba1),
   chrome: hex(0xb4b8bc),
@@ -29,7 +29,7 @@ const C = {
   rings: [[0.2, 1, 0.34], [1, 0.9, 0.24], [1, 0.14, 0.12], [0.92, 0.95, 1]] as RGB[]
 }
 
-const BRONZE: Surf = [0.36, 0.75, 0.3]
+const BRONZE: Surf = [0.4, 0.6, 0.3]
 const HEAD = { x: 77, back: 62, deck: -10, lip: -34, low: 100, slope: 138, top: 154 }
 const SLOPE = Math.atan2(HEAD.top - HEAD.slope, HEAD.deck - HEAD.lip)
 
