@@ -7,7 +7,7 @@ const hover = config.scale.heights.cursorHover
 const seed = config.seed
 
 // Each sheet shows its states in the order of its approved image, straight on, with the camera pushed in: the cursor's own size never changes.
-const SHEET = { acting: { step: 66, zoom: 4.5 }, damage: { step: 72, zoom: 4.6 }, arms: { step: 94, zoom: 3.9 }, y: 508 }
+const SHEET = { acting: { step: 66, zoom: 4.5 }, damage: { step: 72, zoom: 5.2 }, arms: { step: 94, zoom: 3.9 }, y: 508 }
 
 const across = (n: number, i: number, step: number): number => 960 + (i - (n - 1) / 2) * step - 22
 

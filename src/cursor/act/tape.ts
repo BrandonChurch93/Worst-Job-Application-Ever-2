@@ -7,12 +7,12 @@ import { OUTLINE, UNIT } from '../contract'
 export const TAPE = {
   along: 30,
   lie: 0.35,
-  thick: 0.3,
+  thick: 1.1,
   on: [0.4, 0.56] as [number, number],
   off: [0.8, 0.97] as [number, number],
   pieces: [
-    { x: 4.3, y: 7.6, turn: 0.2, half: 31, wide: 6.2, cut: 2.2, late: 0 },
-    { x: 6.4, y: 13.2, turn: -0.26, half: 27, wide: 5.4, cut: -1.8, late: 0.05 }
+    { x: 4.3, y: 7.6, turn: 0.2, half: 25, wide: 6, cut: 2.2, late: 0 },
+    { x: 6.4, y: 13.2, turn: -0.26, half: 22, wide: 5.2, cut: -1.8, late: 0.05 }
   ]
 }
 
@@ -51,7 +51,7 @@ export function makeTape(): Tape {
   const geometry = new THREE.BufferGeometry()
   geometry.setAttribute('position', position)
   geometry.setIndex(index)
-  const material = studio(new THREE.MeshPhysicalMaterial({ color: 0xd8cca6, roughness: 0.3, metalness: 0, specularIntensity: 0.7, transparent: true, opacity: 0.5, depthWrite: false, side: THREE.DoubleSide }))
+  const material = studio(new THREE.MeshPhysicalMaterial({ color: 0xe2dbc4, roughness: 0.3, metalness: 0, specularIntensity: 0.7, transparent: true, opacity: 0.44, depthWrite: false, side: THREE.DoubleSide }))
   const mesh = new THREE.Mesh(geometry, material)
   mesh.castShadow = false
   mesh.receiveShadow = true
@@ -83,6 +83,8 @@ export function makeTape(): Tape {
             high[i] = within(x / UNIT, -y / UNIT) ? body.anchor(x / UNIT, -y / UNIT, at).z * 2 + lift + TAPE.thick : TAPE.lie
             position.setXYZ((p * rows + i) * 2 + e, x, y, 0)
           }
+          for (let i = 0; i < rows; i++) soft[i] = Math.max(high[Math.max(0, i - 1)]!, high[i]!, high[Math.min(rows - 1, i + 1)]!)
+          high.set(soft)
           for (let pass = 0; pass < 2; pass++) {
             for (let i = 0; i < rows; i++) soft[i] = Math.max(high[i]!, (high[Math.max(0, i - 1)]! + 2 * high[i]! + high[Math.min(rows - 1, i + 1)]!) / 4)
             high.set(soft)

@@ -502,8 +502,8 @@ const CUTS: { x: number; y: number; half: number }[] = (() => {
   return out
 })()
 
-// Where a strip comes to lie: the pile is a fan of sticks, their top ends pinched together near where the tip was, each strip on its own layer.
-const FAN = { pinch: [5, -5], from: -0.36, to: 0.6, wobble: 0.2, stagger: 9, across: 1.1 }
+// Where a strip comes to lie: the pile is the arrow fanned open, every strip swung about its top end, slid along itself and pushed apart from its neighbours, each on its own layer.
+const FAN = { pinch: [14, -10], pull: 0.18, from: -0.3, to: 0.36, wobble: 0.14, stagger: 12, across: 2.3 }
 
 function lie(i: number, seed: number): Strip {
   const h = (k: number) => hash01(i, k + 40, seed)
@@ -511,11 +511,17 @@ function lie(i: number, seed: number): Strip {
   const rot = FAN.from + ((FAN.to - FAN.from) * i) / (STRIPS - 1) + (h(1) - 0.5) * FAN.wobble
   const c = Math.cos(rot)
   const n = Math.sin(rot)
-  const dx = STRIP_AXIS[0] * c + STRIP_AXIS[1] * n
-  const dy = STRIP_AXIS[0] * n - STRIP_AXIS[1] * c
-  const reach = cut.half + (h(2) - 0.5) * FAN.stagger
+  const ax = STRIP_AXIS[0]
+  const ay = -STRIP_AXIS[1]
+  const dx = ax * c - ay * n
+  const dy = ax * n + ay * c
   const side = (i - (STRIPS - 1) / 2) * FAN.across
-  return { x: FAN.pinch[0]! + side + dx * reach - cut.x, y: FAN.pinch[1]! + dy * reach - cut.y, z: layer(i), rot, tilt: 0 }
+  const slide = (h(2) - 0.5) * FAN.stagger
+  const topX = cut.x - ax * cut.half
+  const topY = cut.y - ay * cut.half
+  const toX = topX + (FAN.pinch[0]! - topX) * FAN.pull - ay * side + ax * slide
+  const toY = topY + (FAN.pinch[1]! - topY) * FAN.pull + ax * side + ay * slide
+  return { x: toX + dx * cut.half - cut.x, y: toY + dy * cut.half - cut.y, z: layer(i), rot, tilt: 0 }
 }
 
 // The strips as they leave the shredder: thrown down the page from above their places, each with its own spin, each bound for its place in the fan.
