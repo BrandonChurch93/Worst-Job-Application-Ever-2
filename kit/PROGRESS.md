@@ -25,24 +25,25 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 1, 2026-11-25T05:40Z, Phase 0.
+Status 2, 2026-11-25T06:00Z, Phase 0.
 
-1. `out/stills/status/01-contact-sheet.jpg`: the approved reference images on one sheet, shown inline to prove the display method. Nothing has been rendered yet.
+1. `out/stills/status/01-reading-test.jpg`: The reading test given to one fresh agent per model family. At 1400 px every family read numerals 5 to 7 px tall, and larger pictures arrived downscaled.
+2. `out/stills/status/02-sound-test-take.jpg`: The one narrator take the quota allowed: the word Behold in the saved voice, 0.60 s. A test, not a kept sound.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 0, tick 3 at 2026-11-25T05:47:49Z, allowance: build
-time used in this phase: 0.25 h of its box of 3.00 h
-time used under the allowance in force: 0.25 h of 36.00 h allowed
-time used: 0.25 of 36.00 hours before the review
+clock: phase 0, tick 6 at 2026-11-25T06:00:57Z, allowance: build
+time used in this phase: 0.47 h of its box of 3.00 h
+time used under the allowance in force: 0.47 h of 36.00 h allowed
+time used: 0.47 of 36.00 hours before the review
 extra rounds: yes
 half point: not reached
 box end: not reached
 budget report: not due
-minutes since the last status: 7
+minutes since the last status: 0
 ```
 
 ## Phases
@@ -82,6 +83,10 @@ All MEASURED on 2026-11-25 unless a line says otherwise.
 - Node v20.20.2, npm 10.8.2. `ffmpeg` and `ffprobe` are present at `/usr/bin` and run (step 6). Python 3 with PIL 13.0.0 and ImageMagick are present.
 - Machine boot id at the start: `df551acd-542a-4cfe-8bc6-11afd76c75c3`.
 - Browser, WebGL2 limits, image limit, agent tests and PSNR: see the lines added below as each is measured.
+- Image limit. MEASURED 2026-11-25T05:50Z to 05:58Z with six test pictures of numbered rows of fine type, long edges 800, 1200, 1400, 1600, 2000 and 2800 px (`pipeline/phase0/image_limit.py`, scored against the truth file by `pipeline/phase0/image_limit_score.py`). The builder sees a 1400 px picture untouched and reads 5 px numerals in it. A 1600, 2000 or 2800 px picture arrives about 1430 px wide, measured from the printed ruler, and its 2 px line pattern turns flat grey from 2000 px up. So 1400 px is the longest edge that arrives untouched, `critics.maxImageLongEdgePx` stays 1400, and detail is shown with crops, never with a bigger picture.
+- Image limit by model family, same pictures given as attachments to fresh sandbox agents. Smallest numeral height read correctly at 1400 px: GPT 5 px, GLM 5 px, Kimi 5 px, Claude 6 px, Grok 7 px. At 2800 px the same agents read only 7 to 12 px, so a larger picture gives a critic less, not more. No agent gave a wrong reading in place of "cannot read". The agent started on Gemini read 5 px.
+- Agents and polling. MEASURED 05:51Z to 05:54Z: starting an agent returns at once, and twelve were started in under a minute. The clock was ticked at 05:51:25Z and 05:53:59Z while they worked, and one agent told to wait two minutes answered at 05:53:32Z after starting at 05:51:22Z. Reports arrive as messages between the builder's own steps. Status 2 was posted while agents were still working. So agents do not block, and the shorter agent time of `AGENTS.md` is not needed.
+- Sandbox agent. MEASURED 05:51Z to 05:52Z with one fresh sandbox agent (commit `0d73b75` on branch `agent/phase0-probe`, file `pipeline/phase0/sandbox-probe.md`). Its VM: 4 cores, 7957 MB memory, 25 GB disk with 18 GB free, the same OS, Node, npm, ffmpeg and browser folders as this VM, its own boot id. It cloned the repo in 2.4 s, pushed a branch without force, and returned a 2 s H.264 video as a message attachment that this VM could open and probe. One thing a committing agent must do first: set git user name and email in its clone, because a fresh VM has none.
 
 ## Tool record
 
@@ -102,8 +107,23 @@ Every line says whether it is MEASURED here, STATED by a tool's own description,
 - Speech endpoint. MEASURED: `POST /v1/text-to-speech/<voice id>` with `output_format=mp3_44100_128`. Models the account lists for speech: `eleven_v4`, `eleven_v4_turbo`, `eleven_v3`, `eleven_v3_conversational`, `eleven_multilingual_v2`, `eleven_flash_v2_5`, `eleven_turbo_v2_5`, `eleven_turbo_v2`, `eleven_flash_v2`. The test call named no model, so it used the endpoint's default. UNKNOWN: which model that default is, and how long a call takes for a full line.
 - Sound effect endpoint. MEASURED: `POST /v1/sound-generation` exists and answered with a quota refusal. UNKNOWN until credits exist: its shortest and longest length, its cost per second and its time per call. STATED by `AGENTS.md` from another build: about two seconds a call, near full level, a little silence in front.
 - Pause mark and slow-read settings. UNKNOWN: the three-way pause test and the speed test need speech calls and could not be made. They are the first thing done when credits exist.
-- Audio evaluation tool. MEASURED: it exists and takes one file of at most 20 MB with a prompt. On the 0.6 s test line it wrote down the word correctly ("Behold") and said it had only a transcript and could not hear tone, so its answers about delivery are UNKNOWN for now. A longer test with a sound that is not speech is to follow.
 - Other speech tool. STATED: a text to speech tool with stock voices exists. It is not the narrator and is not used for it, because Brandon chose the saved voice.
+- Model families for agents. MEASURED by starting one fresh sandbox agent on each: GPT, Gemini, Claude, GLM, Kimi and Grok start. DeepSeek is listed but refused to start, so there are six families.
+- Which families see. MEASURED with the image limit pictures: GPT, Claude, GLM and Kimi read the pictures themselves. Grok answered correctly but said it cannot see pixels itself and reported what a file viewing tool told it, so it is not used as a critic of pictures unless the others run out. The agent started on Gemini read 5 px.
+- Which families hear. MEASURED with a 9 s test file of a spoken line, three knocks and a rising tone: no family hears a sound file directly. Every agent that answered said it cannot take in audio. Listening is done with the audio evaluation tool and with measurements.
+- Terms read on 2026-11-25, each by a supporting agent that kept every quote with its source, and each quote checked by script against the fetched page: `references/terms/images-openai.md`, `images-google.md`, `images-bytedance.md`, `images-perplexity.md`, `sound-elevenlabs.md`, `hosting-vercel.md`, and the table of WebGL extension support `webgl-extensions.json` with its notes in `webgl-extensions.md`. What they say is in `ASSETS.md` under "Generated images" and "Generated sounds".
+- Hosting limits (`host.name`, free plan), STATED by the provider's pages read on 2026-11-25, quotes in `references/terms/hosting-vercel.md`:
+  - What the static file limit counts: the total size of the source files uploaded when deploying with the command line tool, 100 MB on the free plan. It is not a limit on one file and not a limit on the build's output. UNKNOWN: whether it applies to a build made from a Git repository.
+  - No page states a largest size for a build's output or for one served file. Nearby: 10 GB of deployment storage across kept deployments, 64 GB of build disk.
+  - Build: at most 45 minutes, on 2 cores with 8 GB of memory. Build cache at most 5 GB.
+  - Files: 15000 source files for a command line upload, no upper limit on output files.
+  - Data transfer: 100 GB a month and one million requests. Past that the free plan's sites are paused.
+  - Use: the free plan is for personal or non-commercial use. UNKNOWN: whether a portfolio piece shown by a company employee counts.
+  - Cache lifetimes are set in `vercel.json` under `headers`, with a `source` pattern and a `Cache-Control` value.
+  - What this means for `host.maxShippedMb`: nothing found says 95 MB is too high or too low. The key is unchanged.
+
+- Audio evaluation tool. MEASURED 2026-11-25T05:46Z and 05:59Z. It exists and takes one file of at most 20 MB with a prompt. On the 0.6 s test line it wrote the word down correctly. On a 7.9 s test file of a spoken line, three knocks and a rising tone, asked three times: the words were right three times, the direction of the tone was right three times, and it said it heard the sounds that are not speech. It counted the knocks as 4, 3 and 3, and the times and the length it gave were wrong and changed from run to run (it said 9 s and 11 s). So it hears speech and other sounds, it can say what a sound is and which way a pitch moves, and its counts and times are not trusted. Counts, times, lengths and levels are measured by script. A short answer needs a high token limit, or it comes back cut off.
+- Gemini as a critic. MEASURED: the agent started on the Gemini model answered the picture test well (5 px numerals at 1400 px) and named itself as a Claude model. Which model answered is UNKNOWN. A critic's family is recorded as the model it was started on, with this caveat.
 
 ## Pinned versions
 
@@ -151,6 +171,8 @@ One line each: the date, the decision, the reason, and the config key if one was
 
 - 2026-11-25. Sound files are not committed. Reason: the repo was measured public while `repo.expectPrivate` is true, and `AGENTS.md` under "Sound" says what is measured decides.
 - 2026-11-25. The ElevenLabs quota is used up (1 credit left of 131000, reset 2026-12-23). Decision: record it, say it in the next status so Brandon can add credits while the build runs, read the quota again at the start of every phase and before sound work, and keep every sound system ready. Sound never blocks. No other voice is picked for the narrator.
+- 2026-11-25. New pictures that feed shipped files are made with the OpenAI image models where they can do the job. Reason: no model's terms clearly allow both uses, and ownership of output is stated most plainly for those models. Nothing approved is swapped or made again.
+- 2026-11-25. `critics.maxImageLongEdgePx` stays 1400. Reason: measured, 1400 px arrives untouched and larger pictures are downscaled to about 1430 px.
 
 ## Notes from Brandon
 
@@ -188,6 +210,8 @@ none
 ## For Brandon to decide
 
 - The ElevenLabs account has 1 credit left of 131000 until 2026-12-23. The narrator and the effects cannot be made until credits are added. If credits appear while the build runs, sound work starts at once. If they do not, the site and the review cut are silent and the first line of the `REVIEW` block says so.
+- The approved images were made with `seedream_5`. Its maker's terms do not clearly allow outputs in a published video or on a public website, and they do not forbid it. The workspace's list of third-party models has no row for that maker, so which terms reach those pictures is unknown. The build uses the approved images as the kit says. Nothing waits on this. Details: `ASSETS.md`, "Generated images".
+- The free plan of `host.name` is worded for personal or non-commercial use. Whether this portfolio piece fits that is for you to judge before it goes live there. Details: `references/terms/hosting-vercel.md`, section 6.
 
 ## Running jobs
 
@@ -199,13 +223,7 @@ none
 
 Each with its name, its folders, its branch and its looks branch, when it started, its limit, and what it has pushed.
 
-- `waiter_01`. Shared VM. No folder, no branch. Started 2026-11-25T05:52Z. Limit 5 minutes. Job: wait two minutes and answer (the polling test of step 7).
-- `sandbox_probe`. Sandbox VM. Branch `agent/phase0-probe`, file `pipeline/phase0/sandbox-probe.md`. Started 05:52Z. Limit 20 minutes. Job: record its VM, clone the repo, return a video file as an attachment, push its branch.
-- `viewer_01` to `viewer_07`. Sandbox VMs, one per model family (GPT, Gemini, Claude, GLM, Kimi, Grok, DeepSeek). No folder, no branch. Started 05:52Z. Limit 15 minutes each. Job: read the image limit test pictures and the hearing test file, given as attachments only (steps 8 and 9).
-- `terms_images`. Shared VM. Folder `references/terms/` (files `images-*.md`). Started 05:52Z. Limit 30 minutes. Job: the output terms of each image model.
-- `terms_sound`. Shared VM. Folder `references/terms/` (file `sound-elevenlabs.md`). Started 05:52Z. Limit 30 minutes. Job: the sound tool's output terms for the Creator plan, three points.
-- `host_limits`. Shared VM. Folder `references/terms/` (file `hosting-vercel.md`). Started 05:52Z. Limit 30 minutes. Job: the hosting provider's current limits.
-- `webgl_table`. Shared VM. Folder `references/terms/` (files `webgl-extensions.md` and `.json`). Started 05:52Z. Limit 30 minutes. Job: a public table of WebGL extension support by browser.
+none
 
 ## Rounds
 

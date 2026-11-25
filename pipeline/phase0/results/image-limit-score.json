@@ -1,0 +1,751 @@
+{
+  "heights": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    14,
+    16,
+    20
+  ],
+  "viewers": {
+    "builder": {
+      "model": "the builder (Claude family)",
+      "pictures": {
+        "set-A-03": {
+          "longEdge": 1400,
+          "smallestHeightReadPx": 5,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4
+          ],
+          "ruler": "1300",
+          "lines": {
+            "2": "separate lines",
+            "3": "separate lines",
+            "4": "separate lines",
+            "6": "separate lines",
+            "8": "separate lines"
+          }
+        },
+        "set-A-04": {
+          "longEdge": 1600,
+          "smallestHeightReadPx": 5,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4
+          ],
+          "ruler": "1500",
+          "lines": {
+            "2": "separate lines",
+            "3": "separate lines",
+            "4": "separate lines",
+            "6": "separate lines",
+            "8": "separate lines"
+          }
+        },
+        "set-A-05": {
+          "longEdge": 2000,
+          "smallestHeightReadPx": 6,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4,
+            5
+          ],
+          "ruler": "1900",
+          "lines": {
+            "2": "flat grey",
+            "3": "separate lines",
+            "4": "separate lines",
+            "6": "separate lines",
+            "8": "separate lines"
+          }
+        },
+        "set-A-06": {
+          "longEdge": 2800,
+          "smallestHeightReadPx": 6,
+          "wrongHeightsPx": [
+            5
+          ],
+          "unreadHeightsPx": [
+            4
+          ],
+          "ruler": "2700",
+          "lines": {
+            "2": "flat grey",
+            "3": "flat grey",
+            "4": "separate lines",
+            "6": "separate lines",
+            "8": "separate lines"
+          }
+        }
+      },
+      "sound": "not asked",
+      "notes": "set-A-03 arrived at full size; set-A-04, 05 and 06 arrived about 1430 px wide, measured from the ruler against the picture's width."
+    },
+    "viewer_01": {
+      "model": "GPT-6.2 Sol",
+      "pictures": {
+        "set-A-01": {
+          "longEdge": 800,
+          "smallestHeightReadPx": 5,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4
+          ],
+          "ruler": "not visible",
+          "lines": {
+            "2": "not visible",
+            "3": "not visible",
+            "4": "not visible",
+            "6": "not visible",
+            "8": "not visible"
+          }
+        },
+        "set-A-02": {
+          "longEdge": 1200,
+          "smallestHeightReadPx": 5,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4
+          ],
+          "ruler": "1100",
+          "lines": {
+            "2": "separate lines",
+            "3": "separate lines",
+            "4": "separate lines",
+            "6": "separate lines",
+            "8": "separate lines"
+          }
+        },
+        "set-A-03": {
+          "longEdge": 1400,
+          "smallestHeightReadPx": 5,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4
+          ],
+          "ruler": "1300",
+          "lines": {
+            "2": "separate lines",
+            "3": "separate lines",
+            "4": "separate lines",
+            "6": "separate lines",
+            "8": "separate lines"
+          }
+        },
+        "set-A-04": {
+          "longEdge": 1600,
+          "smallestHeightReadPx": 5,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4
+          ],
+          "ruler": "1500",
+          "lines": {
+            "2": "separate lines",
+            "3": "separate lines",
+            "4": "separate lines",
+            "6": "separate lines",
+            "8": "separate lines"
+          }
+        },
+        "set-A-05": {
+          "longEdge": 2000,
+          "smallestHeightReadPx": 6,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4,
+            5
+          ],
+          "ruler": "1900",
+          "lines": {
+            "2": "flat grey",
+            "3": "separate lines",
+            "4": "separate lines",
+            "6": "separate lines",
+            "8": "separate lines"
+          }
+        },
+        "set-A-06": {
+          "longEdge": 2800,
+          "smallestHeightReadPx": 8,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "ruler": "2700",
+          "lines": {
+            "2": "flat grey",
+            "3": "separate lines",
+            "4": "separate lines",
+            "6": "separate lines",
+            "8": "separate lines"
+          }
+        }
+      },
+      "sound": "hear=no | words=N/A | knocks=N/A | tone=N/A",
+      "notes": "All six pictures opened; the displayed set-A-01 ends after row 12, so its ruler and line patterns were not visible. No direct audio playback was available to me."
+    },
+    "viewer_02": {
+      "model": "asked for the Gemini model, says it is Claude Opus 4.6",
+      "pictures": {
+        "set-A-01": {
+          "longEdge": 800,
+          "smallestHeightReadPx": 5,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4
+          ],
+          "ruler": "cannot read",
+          "lines": {
+            "2": "cannot read",
+            "3": "cannot read",
+            "4": "cannot read",
+            "6": "cannot read",
+            "8": "cannot read"
+          }
+        },
+        "set-A-02": {
+          "longEdge": 1200,
+          "smallestHeightReadPx": 5,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4
+          ],
+          "ruler": "1100",
+          "lines": {
+            "2": "separate lines",
+            "3": "separate lines",
+            "4": "separate lines",
+            "6": "separate lines",
+            "8": "separate lines"
+          }
+        },
+        "set-A-03": {
+          "longEdge": 1400,
+          "smallestHeightReadPx": 5,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4
+          ],
+          "ruler": "1300",
+          "lines": {
+            "2": "separate lines",
+            "3": "separate lines",
+            "4": "separate lines",
+            "6": "separate lines",
+            "8": "separate lines"
+          }
+        },
+        "set-A-04": {
+          "longEdge": 1600,
+          "smallestHeightReadPx": 6,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4,
+            5
+          ],
+          "ruler": "1500",
+          "lines": {
+            "2": "separate lines",
+            "3": "separate lines",
+            "4": "separate lines",
+            "6": "separate lines",
+            "8": "separate lines"
+          }
+        },
+        "set-A-05": {
+          "longEdge": 2000,
+          "smallestHeightReadPx": 7,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4,
+            5,
+            6
+          ],
+          "ruler": "1900",
+          "lines": {
+            "2": "flat grey",
+            "3": "separate lines",
+            "4": "separate lines",
+            "6": "separate lines",
+            "8": "separate lines"
+          }
+        },
+        "set-A-06": {
+          "longEdge": 2800,
+          "smallestHeightReadPx": 8,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "ruler": "2700",
+          "lines": {
+            "2": "flat grey",
+            "3": "flat grey",
+            "4": "separate lines",
+            "6": "separate lines",
+            "8": "separate lines"
+          }
+        }
+      },
+      "sound": "hear=no | words=n/a | knocks=n/a | tone=n/a",
+      "notes": "set-A-01.png cuts off right below row 12 so neither the ruler nor the vertical line patterns are present in the image; set-B-01.wav could not be opened directly by the file viewer (binary file error)."
+    },
+    "viewer_03": {
+      "model": "Claude Opus 5.5 (as reported by my session context)",
+      "pictures": {
+        "set-A-01": {
+          "longEdge": 800,
+          "smallestHeightReadPx": 6,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4,
+            5
+          ],
+          "ruler": "cannot read",
+          "lines": {
+            "2": "cannot read",
+            "3": "cannot read",
+            "4": "cannot read",
+            "6": "cannot read",
+            "8": "cannot read"
+          }
+        },
+        "set-A-02": {
+          "longEdge": 1200,
+          "smallestHeightReadPx": 6,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4,
+            5
+          ],
+          "ruler": "1100",
+          "lines": {
+            "2": "separate lines",
+            "3": "separate lines",
+            "4": "separate lines",
+            "6": "separate lines",
+            "8": "separate lines"
+          }
+        },
+        "set-A-03": {
+          "longEdge": 1400,
+          "smallestHeightReadPx": 6,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4,
+            5
+          ],
+          "ruler": "1300",
+          "lines": {
+            "2": "separate lines",
+            "3": "separate lines",
+            "4": "separate lines",
+            "6": "separate lines",
+            "8": "separate lines"
+          }
+        },
+        "set-A-04": {
+          "longEdge": 1600,
+          "smallestHeightReadPx": 7,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4,
+            5,
+            6
+          ],
+          "ruler": "1500",
+          "lines": {
+            "2": "separate lines",
+            "3": "separate lines",
+            "4": "separate lines",
+            "6": "separate lines",
+            "8": "separate lines"
+          }
+        },
+        "set-A-05": {
+          "longEdge": 2000,
+          "smallestHeightReadPx": 8,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "ruler": "1900",
+          "lines": {
+            "2": "flat grey",
+            "3": "separate lines",
+            "4": "separate lines",
+            "6": "separate lines",
+            "8": "separate lines"
+          }
+        },
+        "set-A-06": {
+          "longEdge": 2800,
+          "smallestHeightReadPx": 9,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "ruler": "2700",
+          "lines": {
+            "2": "flat grey",
+            "3": "flat grey",
+            "4": "separate lines",
+            "6": "separate lines",
+            "8": "separate lines"
+          }
+        }
+      },
+      "sound": "hear=no | words=n/a | knocks=n/a | tone=n/a",
+      "notes": "set-A-01 was shown to me as 800x450 and ended right after row 12, so no ruler or line patterns were visible in it; I cannot take in audio directly, so I did not open the wav."
+    },
+    "viewer_04": {
+      "model": "Computer-1",
+      "pictures": {
+        "set-A-01": {
+          "longEdge": 800,
+          "smallestHeightReadPx": 5,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4
+          ],
+          "ruler": "not visible",
+          "lines": {
+            "2": "not visible",
+            "3": "not visible",
+            "4": "not visible",
+            "6": "not visible",
+            "8": "not visible"
+          }
+        },
+        "set-A-02": {
+          "longEdge": 1200,
+          "smallestHeightReadPx": 5,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4
+          ],
+          "ruler": "1100",
+          "lines": {
+            "2": "separate lines",
+            "3": "separate lines",
+            "4": "separate lines",
+            "6": "separate lines",
+            "8": "separate lines"
+          }
+        },
+        "set-A-03": {
+          "longEdge": 1400,
+          "smallestHeightReadPx": 5,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4
+          ],
+          "ruler": "1300",
+          "lines": {
+            "2": "separate lines",
+            "3": "separate lines",
+            "4": "separate lines",
+            "6": "separate lines",
+            "8": "separate lines"
+          }
+        },
+        "set-A-04": {
+          "longEdge": 1600,
+          "smallestHeightReadPx": 5,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4
+          ],
+          "ruler": "1500",
+          "lines": {
+            "2": "separate lines",
+            "3": "separate lines",
+            "4": "separate lines",
+            "6": "separate lines",
+            "8": "separate lines"
+          }
+        },
+        "set-A-05": {
+          "longEdge": 2000,
+          "smallestHeightReadPx": 6,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4,
+            5
+          ],
+          "ruler": "1900",
+          "lines": {
+            "2": "flat grey",
+            "3": "separate lines",
+            "4": "separate lines",
+            "6": "separate lines",
+            "8": "separate lines"
+          }
+        },
+        "set-A-06": {
+          "longEdge": 2800,
+          "smallestHeightReadPx": 8,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "ruler": "2700",
+          "lines": {
+            "2": "flat grey",
+            "3": "flat grey",
+            "4": "separate lines",
+            "6": "separate lines",
+            "8": "separate lines"
+          }
+        }
+      },
+      "sound": "hear=no | words=N/A | knocks=N/A | tone=N/A",
+      "notes": "All six images opened; set-A-01 showed no ruler or line patterns, and the WAV was not directly audible to me."
+    },
+    "viewer_05": {
+      "model": "Kimi K3",
+      "pictures": {
+        "set-A-01": {
+          "longEdge": 800,
+          "smallestHeightReadPx": 5,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4
+          ],
+          "ruler": "cannot read",
+          "lines": {
+            "2": "cannot read",
+            "3": "cannot read",
+            "4": "cannot read",
+            "6": "cannot read",
+            "8": "cannot read"
+          }
+        },
+        "set-A-02": {
+          "longEdge": 1200,
+          "smallestHeightReadPx": 5,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4
+          ],
+          "ruler": "1100",
+          "lines": {
+            "2": "separate lines",
+            "3": "separate lines",
+            "4": "separate lines",
+            "6": "separate lines",
+            "8": "separate lines"
+          }
+        },
+        "set-A-03": {
+          "longEdge": 1400,
+          "smallestHeightReadPx": 5,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4
+          ],
+          "ruler": "1300",
+          "lines": {
+            "2": "separate lines",
+            "3": "separate lines",
+            "4": "separate lines",
+            "6": "separate lines",
+            "8": "separate lines"
+          }
+        },
+        "set-A-04": {
+          "longEdge": 1600,
+          "smallestHeightReadPx": 5,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4
+          ],
+          "ruler": "1500",
+          "lines": {
+            "2": "separate lines",
+            "3": "separate lines",
+            "4": "separate lines",
+            "6": "separate lines",
+            "8": "separate lines"
+          }
+        },
+        "set-A-05": {
+          "longEdge": 2000,
+          "smallestHeightReadPx": 6,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4,
+            5
+          ],
+          "ruler": "1900",
+          "lines": {
+            "2": "flat grey",
+            "3": "separate lines",
+            "4": "separate lines",
+            "6": "separate lines",
+            "8": "separate lines"
+          }
+        },
+        "set-A-06": {
+          "longEdge": 2800,
+          "smallestHeightReadPx": 7,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4,
+            5,
+            6
+          ],
+          "ruler": "2700",
+          "lines": {
+            "2": "flat grey",
+            "3": "flat grey",
+            "4": "separate lines",
+            "6": "separate lines",
+            "8": "separate lines"
+          }
+        }
+      },
+      "sound": "hear=no | words=n/a | knocks=n/a | tone=n/a",
+      "notes": "set-A-01 (800x450) displays only rows 01-12; the ruler and line patterns are not visible anywhere in it. set-B-01.wav cannot be heard directly by me; no playback, spectrogram, or transcription tool was used."
+    },
+    "viewer_06": {
+      "model": "Grok 4.7",
+      "pictures": {
+        "set-A-01": {
+          "longEdge": 800,
+          "smallestHeightReadPx": 5,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4
+          ],
+          "ruler": "cannot read",
+          "lines": {
+            "2": "cannot read",
+            "3": "cannot read",
+            "4": "cannot read",
+            "6": "cannot read",
+            "8": "cannot read"
+          }
+        },
+        "set-A-02": {
+          "longEdge": 1200,
+          "smallestHeightReadPx": 5,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4
+          ],
+          "ruler": "1100",
+          "lines": {
+            "2": "separate lines",
+            "3": "separate lines",
+            "4": "separate lines",
+            "6": "separate lines",
+            "8": "separate lines"
+          }
+        },
+        "set-A-03": {
+          "longEdge": 1400,
+          "smallestHeightReadPx": 7,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4,
+            5,
+            6
+          ],
+          "ruler": "1300",
+          "lines": {
+            "2": "separate lines",
+            "3": "separate lines",
+            "4": "separate lines",
+            "6": "separate lines",
+            "8": "separate lines"
+          }
+        },
+        "set-A-04": {
+          "longEdge": 1600,
+          "smallestHeightReadPx": 6,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4,
+            5
+          ],
+          "ruler": "1500",
+          "lines": {
+            "2": "separate lines",
+            "3": "separate lines",
+            "4": "separate lines",
+            "6": "separate lines",
+            "8": "separate lines"
+          }
+        },
+        "set-A-05": {
+          "longEdge": 2000,
+          "smallestHeightReadPx": 7,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4,
+            5,
+            6
+          ],
+          "ruler": "1900",
+          "lines": {
+            "2": "flat grey",
+            "3": "flat grey",
+            "4": "separate lines",
+            "6": "separate lines",
+            "8": "separate lines"
+          }
+        },
+        "set-A-06": {
+          "longEdge": 2800,
+          "smallestHeightReadPx": 12,
+          "wrongHeightsPx": [],
+          "unreadHeightsPx": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "ruler": "2700",
+          "lines": {
+            "2": "flat grey",
+            "3": "flat grey",
+            "4": "separate lines",
+            "6": "separate lines",
+            "8": "separate lines"
+          }
+        }
+      },
+      "sound": "hear=no | words=cannot hear | knocks=cannot hear | tone=cannot hear",
+      "notes": "I cannot see pixels or hear audio myself; image readings are what the file viewing tool reported, and set-A-01 showed no ruler and no line patterns on two looks. I did not analyze the wav."
+    }
+  }
+}
