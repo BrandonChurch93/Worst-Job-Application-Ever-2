@@ -64,6 +64,8 @@ No sound is kept. `public/audio/index.json` lists nothing, the engine reports `a
 16. Film A. `npm run mix -- --final` writes `audio/final/film-b.wav` and then `audio/final/film-a.wav`: the opening and then film B unchanged, every event and line of film B moved back by the opening's frames. The opening's own sounds come from `opening.events` of `cut/CUTLIST.json` if the cut list ever holds them, and otherwise from the times of `src/film/opening.ts`: a `key-tap` on the frame each letter of the prompt first shows, spaces too, a `ui-tick` when the level control opens, when the level is picked and as each line of the build screen is ticked off, and one `ui-send` on the frame the send control starts to go down. The room tone starts where the opening ends, with a 30 ms fade in. The live site plays no sound over the opening: `src/main.ts` sends the engine nothing before film B starts.
 17. `audio/mix/review.json` carries a sha256 of the list of events and lines it was made from. Check A9 says "not yet, run npm run mix" when the cut list has changed since.
 18. `stop()` stops everything, the room tone too. The tone starts again at the next event, beat or trigger.
+19. A take past the limit is still filed, with a warning, because it was made and paid for and the log must show it. Check A8 then fails. The tool never asks a service for a take, so it cannot refuse the spending, only show it.
+20. While the page is hidden the engine holds: the sound graph is suspended and carries on from the same point when the page is back, so a line is never spoken to a tab nobody looks at. With plain audio elements everything is stopped instead, and the tone starts again at the next event.
 
 ## Where the brief and the kit differ
 

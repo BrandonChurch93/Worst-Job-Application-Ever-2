@@ -44,6 +44,7 @@ class FakeContext {
   closed = false
   constructor() { made.push(this) }
   resume() { this.state = 'running'; return Promise.resolve() }
+  suspend() { this.state = 'suspended'; return Promise.resolve() }
   close() { this.closed = true; return Promise.resolve() }
   createGain() { const g = new Gain(); this.gains.push(g); return g }
   createStereoPanner() { return new Panner() }
@@ -361,6 +362,62 @@ describe('with sound', () => {
     ctx.currentTime = 61
     s.event(hit('button-press'), 'film')
     expect(playsOf(ctx, 'room-tone').length).toBe(2)
+  })
+
+  it('holds its breath while the page is hidden and carries on when it is back', async () => {
+    const page = { visibilityState: 'visible', heard: [] as (() => void)[], addEventListener(name: string, f: () => void) { if (name === 'visibilitychange') this.heard.push(f) } }
+    vi.stubGlobal('document', page)
+    const quietSite = makeSound({ base: './audio/', index: { version: 1, pack: null, sfx: [], loops: [], lines: [] } })
+    await quietSite.unlock()
+    expect(page.heard.length).toBe(0)
+    const { s, ctx } = await ready()
+    expect(page.heard.length).toBe(1)
+    page.visibilityState = 'hidden'
+    page.heard[0]!()
+    expect(ctx.state).toBe('suspended')
+    s.event(hit('button-press'), 'live')
+    expect(ctx.state).toBe('suspended')
+    expect(playsOf(ctx, 'room-tone')[0]!.stopped).toBeNull()
+    page.visibilityState = 'visible'
+    page.heard[0]!()
+    expect(ctx.state).toBe('running')
+  })
+
+  it('with plain audio elements stops what plays when the page is hidden', async () => {
+    const page = { visibilityState: 'visible', heard: [] as (() => void)[], addEventListener(name: string, f: () => void) { if (name === 'visibilitychange') this.heard.push(f) } }
+    vi.stubGlobal('document', page)
+    const playing = new Set<string>()
+    class El {
+      src = ''
+      loop = false
+      volume = 1
+      playbackRate = 1
+      currentTime = 0
+      preload = ''
+      onerror: (() => void) | null = null
+      private ready: (() => void) | null = null
+      set oncanplaythrough(f: () => void) { this.ready = f; queueMicrotask(() => this.ready?.()) }
+      play() { playing.add(this.src); return Promise.resolve() }
+      pause() { playing.delete(this.src) }
+    }
+    let n = 0
+    vi.stubGlobal('window', { setTimeout, clearTimeout })
+    vi.stubGlobal('Audio', El)
+    vi.stubGlobal('URL', { createObjectURL: () => `blob:${n++}`, revokeObjectURL: () => undefined })
+    const site = fixtureSite()
+    serve(site.files)
+    const s = makeSound({ base: './audio/', index: site.index })
+    await s.unlock()
+    expect(s.backend()).toBe('elements')
+    s.event(hit('button-press'), 'live')
+    expect(playing.size).toBe(2)
+    page.visibilityState = 'hidden'
+    page.heard[0]!()
+    expect(playing.size).toBe(0)
+    page.visibilityState = 'visible'
+    page.heard[0]!()
+    s.event(hit('checkbox'), 'film')
+    expect(playing.size).toBe(2)
   })
 })
 
