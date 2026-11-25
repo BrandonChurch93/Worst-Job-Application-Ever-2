@@ -105,6 +105,7 @@ export class PageView {
   private slab = new THREE.Group()
   private slabKey = ''
   private wells: Shape[] = []
+  private bare = new Set<string>()
   private arrows: Arrow[] = []
   private tick = 0
   private pageId = ''
@@ -508,6 +509,7 @@ export class PageView {
     })
     if (!this.realSlab(ctx)) this.ground(f.list, size.width, top, tall)
     this.wells = f.list.filter((s) => s.kind === 'well')
+    this.bare.clear()
     let order = 0
     for (const s of f.list) {
       order++
@@ -516,7 +518,8 @@ export class PageView {
       const hit = realKey(s, ctx)
       if (hit) {
         if (hit.key !== '') this.made(s, hit, order, ctx)
-      } else if (s.kind === 'text') this.text(s, order)
+      } else if (s.kind === 'anchor') this.bare.add(s.part)
+      else if (s.kind === 'text') this.text(s, order)
       else this.solid(s, order)
     }
     for (const [id, e] of this.reals) {
@@ -589,6 +592,7 @@ export class PageView {
       for (const m of this.slab.children) out.add(m.userData.standIn as string)
     }
     for (const c of this.cursors) for (const name of cursorStandIns(c)) out.add(name)
+    for (const name of this.bare) out.add(name)
     for (const e of this.solids.values()) if (e.seen === this.tick) out.add(e.mesh.userData.standIn as string)
     for (const e of this.texts.values()) if (e.seen === this.tick) for (const child of e.group.children) out.add(child.userData.standIn as string)
     return [...out]
