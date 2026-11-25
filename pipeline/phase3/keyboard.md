@@ -143,6 +143,10 @@ Owner: `/root/keys_fixer`, branch `agent/keys`. It answers the round 3 issues R4
 
 18. Deck, caps and turret finish (round 4, R1-1 #4, #5, #6). Deck: roughness 0.46, anisotropy 0.5, brushing bump 0.1 (was 0.22), colour times (0.84, 0.85, 0.875), edge chamfer 3.4 px (was 2.4). Caps: `0xf0e6d3`, roughness 0.62, `SHADE.dark` 0.52 and `SHADE.rest` 11 for deeper lower seams. Enter: the shared orange with roughness 0.3 and a clear coat of 0.6 for a brighter rolloff. Turret: housing and hatch rim at colour times (0.38, 0.39, 0.415), roughness 0.36, anisotropy 0.7 for a directional brushed highlight; barrel times (0.2, 0.205, 0.22); socket `0x4c4a47` (was `0x8a8782`). This goes back on decision 4 of this round (the bright silver deck): round 4 asked for the darker satin metal of the approved image.
 
+19. A bolt on a key is seen to strike (round 4, R4-1 #5 and R4-2 #4; the Builder's note 2 of 19:53Z). The struck cap now goes to the bottom of its travel and springs back (`TAP` 0.2 s, held 0.05 s, depth 1; it was 0.55 of the travel for 0.16 s), and the tray answers with a small jolt round the strike (`TAP.shake` 0.22 of a slab's: about 1.2 px of deck and a hop of up to 3.3 px on the caps near it), unless a larger jolt is still running. The flash at the point of contact is the one of decision 9. The bolts and the muzzle flash are larger and brighter, still streaks and not balls: head 20 by 5.2 px at glow 14, 8.5, 3.6 with a soft star halo of 58 px round it, tail 3.8 px thick with a core of 2.1 px, bolt lamp 0.45 over 150 px, muzzle flash 124 to 184 px across (was 86 to 130) and its lamp 1.2 over 260 px. The number of bolts and the times of the shots are not changed: the acting is timed to them. The place of the strike on the cursor is kept in its own field of the page state (`struckAt`), so a later jolt does not move the flash.
+
+20. A slab lands dead (round 4, R4-2 #1, #2, #3; the Builder's note 1). What was already there since the first fix push and is in the sheets only if they start before the landing: the slab arrives 110 px up, hangs 0.2 s and falls 0.2 s with a cubic acceleration, its shadow from the key light lies about 200 px down and right while it hangs and closes under it as it falls, the deck jolts 5.5 px and dies in 0.25 s, and the caps round it hop. Changed now: the caps under the slab are at the bottom of their travel on the landing frame itself (they took 0.03 s), the slab sinks the key travel in 0.015 s and its 1.2 px bounce is gone. A purpose-made soft shadow that starts wide and tightens was not built.
+
 ### Not reached
 
 - The landing frame of a slab falls between two sheet samples; what shows it afterwards is the pressed keys under the slab only.
@@ -163,4 +167,4 @@ Owner: `/root/keys_fixer`, branch `agent/keys`. It answers the round 3 issues R4
 
 ### Tuning looks
 
-Of 40 each in the fix round: keyboard 25, turrets 16, slabs 4.
+Of 40 each in the fix round: keyboard 25, turrets 17, slabs 5.

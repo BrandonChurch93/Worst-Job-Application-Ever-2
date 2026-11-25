@@ -119,7 +119,7 @@ function scorchPicture(seed: number): THREE.DataTexture {
 }
 
 export const GLOW = {
-  boltHead: [10, 6.5, 3] as [number, number, number],
+  boltHead: [14, 8.5, 3.6] as [number, number, number],
   boltTail: [3.2, 1.0, 0.18] as [number, number, number],
   flash: [9, 3.6, 0.9] as [number, number, number],
   chargeLow: [6, 2.5, 0.6] as [number, number, number],
@@ -128,8 +128,8 @@ export const GLOW = {
 }
 
 export const EMIT = {
-  bolt: { colour: [1, 0.4, 0.09] as [number, number, number], power: 0.3, reach: 110 },
-  flash: { colour: [1, 0.5, 0.15] as [number, number, number], power: 0.9, reach: 220 },
+  bolt: { colour: [1, 0.4, 0.09] as [number, number, number], power: 0.45, reach: 150 },
+  flash: { colour: [1, 0.5, 0.15] as [number, number, number], power: 1.2, reach: 260 },
   charge: { colour: [1, 0.45, 0.12] as [number, number, number], power: 0.3, reach: 110 },
   hot: { colour: [1, 0.12, 0.03] as [number, number, number], power: 0.35, reach: 140 },
   ember: { colour: [1, 0.36, 0.08] as [number, number, number], power: 0.5, reach: 130 },

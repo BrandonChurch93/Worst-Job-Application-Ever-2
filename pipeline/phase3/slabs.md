@@ -147,3 +147,9 @@ Owner: `/root/keys_fixer`, branch `agent/keys`. It answers the round 3 issues R4
 By a walk of the film at 240 Hz that prints each change of the pressed keys, the phase and the count of landed slabs: Enter goes down at 17.496 s and is up again by 17.738 s; the slabs land at 18.304, 18.854 and 19.404 s; the lift starts at about 19.66 s; the phase is `resume` at 19.837 s; the slabs are cleared from the state at 20.117 s. By then each has flown 1900 px; the last one is off the screen at about 20.03 s. The Builder accepted this overlap with the start of the tug fixer's window at 18:45Z: over the deck and its sides only, never over the resume field or the slot.
 
 Looked at as draft stills of `step1.email` at 0.650 (the first slab down on Enter, the keys under it pressed) and 0.940 (three slabs, 14 px apart, every label whole).
+
+### Round 5 (round 4's R4-2 #1, #2, #3 and R4-1 #7)
+
+The landing is decision 20 in the "Fix round" of `pipeline/phase3/keyboard.md`: the caps under a slab bottom out on the landing frame, the slab stops with no bounce, and the fall, the moving shadow and the deck's jolt were already there. Looked at as draft stills of `step1.email` at 0.648 (the slab in the air, larger, its shadow off to the lower right) and 0.668 (down, the caps under it pressed and dark).
+
+Not done: R4-1 #7, the hold of 0.3 s and the pull back before a slab leaves. The time a slab lies (`TIMES.slabLie`, 0.25 s) is in the script and is not mine to move, and the slabs must be off before the resume beat, so the leaving was left as the Builder settled it at 19:17Z.
