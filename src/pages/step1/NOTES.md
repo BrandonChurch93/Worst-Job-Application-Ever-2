@@ -34,7 +34,7 @@ The logic, the script of the film and the numbers the makers of the real parts r
 
 - Three slabs, each aimed at where the cursor is. Each hangs for 0.2 s, then falls for 0.2 s. The film sees each one and dives clear of all three.
 - When a slab lands the deck and its keys shake in the plane of the page by at most 4.5 px for 0.25 s (`SHAKE`), the keys within 460 px hop up to 15 px, the nearest first, the caret jumps and the cursor is jolted.
-- A key under a landed slab is pressed its full travel (6 px) and stays down until the slabs lift. The slab sinks with the keys and does not bounce.
+- A key under a landed slab is pressed its full travel (6 px) and stays down until the slabs lift. The slab sinks with the keys, stops dead and rebounds once by 1.2 px inside 0.06 s.
 - A slab that lands on the cursor flattens it for a moment through `hurt`.
 
 ## Resume and the tug
@@ -48,7 +48,7 @@ The logic, the script of the film and the numbers the makers of the real parts r
 - A line of the sheet that the shredder has eaten is parked at the slot under the page (z -30) with `v = [1]`, so the count of shapes does not change.
 - No control is taken during the tug. The cursor is tethered to the paper by a knock, never held.
 - A live tug is lost at the far end or after 9 s.
-- After the loss the page stays in the tug for 0.3 s (`TIMES.lost`) with the arms off and the cursor taken, so the torn arms of the body can be seen. Then the shredder has it.
+- After the loss the page stays in the tug for 0.3 s (`TIMES.lost`) with the arms off and the cursor taken, so the torn arms of the body can be seen. For that time the body is driven over the card, 6 px above its face and 84 px up the page from the slot, so the plate does not cut it. Then the shredder has it.
 
 ## Last 4 s
 
