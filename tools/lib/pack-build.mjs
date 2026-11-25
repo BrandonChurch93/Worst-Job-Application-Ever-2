@@ -77,13 +77,16 @@ export async function grid(tiles, heading, { edge, columns, tileW, tileH, labelS
   return out(parts, width, height)
 }
 
+const WINDOW_MARGIN = 24
+
 const cut = (png, [x, y, w, h]) => sharp(png).removeAlpha().extract({ left: x, top: y, width: w, height: h }).png().toBuffer()
 
-// A window of a fixed size round a box, kept inside the picture.
-export function windowRound(box, w, h, width, height) {
+// A window of a fixed size round a box, kept inside the picture. With fromLeft, a box wider than the window shows its left end, with ground before it.
+export function windowRound(box, w, h, width, height, fromLeft = false) {
   const cx = box[0] + box[2] / 2
   const cy = box[1] + box[3] / 2
-  const x = Math.round(Math.max(0, Math.min(width - w, cx - w / 2)))
+  const left = fromLeft && box[2] > w - WINDOW_MARGIN * 2 ? box[0] - WINDOW_MARGIN : cx - w / 2
+  const x = Math.round(Math.max(0, Math.min(width - w, left)))
   const y = Math.round(Math.max(0, Math.min(height - h, cy - h / 2)))
   return [x, y, w, h]
 }
@@ -95,10 +98,10 @@ export function riskyType(runs, w, h, width, height) {
   const seen = runs.filter((r) => r.text && r.text.trim() && r.box[2] > 0 && r.box[3] > 0 && inside(r.box, [0, 0, width, height]))
   if (!seen.length) return []
   const small = [...seen].sort((a, b) => a.px - b.px || a.contrast - b.contrast || a.box[1] - b.box[1] || a.box[0] - b.box[0])[0]
-  const first = { run: small, window: windowRound(small.box, w, h, width, height), why: `its smallest type, ${small.px.toFixed(1)} px` }
+  const first = { run: small, window: windowRound(small.box, w, h, width, height, true), why: `its smallest type, ${small.px.toFixed(1)} px` }
   const rest = seen.filter((r) => !inside(r.box, first.window)).sort((a, b) => a.contrast - b.contrast || a.px - b.px || a.box[1] - b.box[1] || a.box[0] - b.box[0])
   if (!rest.length) return [first]
-  return [first, { run: rest[0], window: windowRound(rest[0].box, w, h, width, height), why: `its type with the least contrast, ${rest[0].px.toFixed(1)} px` }]
+  return [first, { run: rest[0], window: windowRound(rest[0].box, w, h, width, height, true), why: `its type with the least contrast, ${rest[0].px.toFixed(1)} px` }]
 }
 
 // The boxes of the controls a visitor can see, read from the page.

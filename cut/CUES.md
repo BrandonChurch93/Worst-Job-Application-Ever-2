@@ -21,7 +21,7 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | `step1.shredded` | 43.000 | 2580 | 2759 | `strips-zip` | 44.362 | 2661 | yes |
 | `step2.open` | 46.000 | 2760 | 2879 | none |  |  |  |
 | `step2.dial` | 48.000 | 2880 | 3239 | `dial-fling` | 51.575 | 3094 | yes |
-| `step2.slot` | 54.000 | 3240 | 3599 | `coins` | 57.521 | 3451 | yes |
+| `step2.slot` | 54.000 | 3240 | 3599 | `coins` | 57.962 | 3477 | yes |
 | `step2.crank` | 60.000 | 3600 | 3959 | `flatten` | 62.796 | 3767 | yes |
 | `step2.continue` | 66.000 | 3960 | 4019 | `button-press` | 66.300 | 3978 | yes |
 | `pinball.seal` | 67.000 | 4020 | 4259 | `ball-seal` | 69.300 | 4158 | yes |
@@ -48,7 +48,7 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 
 ## Events with a cue
 
-677 of the film's 677 events have a cue in the table of events to cues. A cue starts on the frame of its event.
+678 of the film's 678 events have a cue in the table of events to cues. A cue starts on the frame of its event.
 
 | Time s | Frame | Beat | Event | Cue | Hits the cursor |
 | --- | --- | --- | --- | --- | --- |
@@ -400,7 +400,7 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | 38.958 | 2337 | `step1.tug` | `paper-strain` | `paper-strain` | no |
 | 40.571 | 2434 | `step1.tug` | `paper-strain` | `paper-strain` | no |
 | 41.971 | 2518 | `step1.tug` | `paper-strain` | `paper-strain` | no |
-| 44.362 | 2661 | `step1.shredded` | `strips-zip` | `strips-zip` | yes |
+| 44.362 | 2661 | `step1.shredded` | `strips-zip` | `strips-zip` | no |
 | 45.500 | 2730 | `step1.shredded` | `page-turn` | `page-turn` | no |
 | 46.533 | 2792 | `step2.open` | `step` | `step` | no |
 | 46.558 | 2793 | `step2.open` | `step` | `step` | no |
@@ -441,17 +441,18 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | 54.875 | 3292 | `step2.slot` | `step` | `step` | no |
 | 55.367 | 3322 | `step2.slot` | `lever-pull` | `lever-pull` | no |
 | 55.367 | 3322 | `step2.slot` | `reels-spin` | `reels-spin` | no |
-| 57.521 | 3451 | `step2.slot` | `coins` | `coins` | yes |
-| 57.775 | 3466 | `step2.slot` | `step` | `step` | no |
-| 57.846 | 3470 | `step2.slot` | `step` | `step` | no |
-| 57.908 | 3474 | `step2.slot` | `step` | `step` | no |
-| 58.000 | 3480 | `step2.slot` | `step` | `step` | no |
-| 58.204 | 3492 | `step2.slot` | `step` | `step` | no |
-| 58.271 | 3496 | `step2.slot` | `step` | `step` | no |
-| 58.333 | 3500 | `step2.slot` | `step` | `step` | no |
-| 58.392 | 3503 | `step2.slot` | `step` | `step` | no |
-| 58.454 | 3507 | `step2.slot` | `step` | `step` | no |
-| 58.529 | 3511 | `step2.slot` | `step` | `step` | no |
+| 57.962 | 3477 | `step2.slot` | `coins` | `coins` | yes |
+| 58.138 | 3488 | `step2.slot` | `step` | `step` | no |
+| 58.188 | 3491 | `step2.slot` | `step` | `step` | no |
+| 58.242 | 3494 | `step2.slot` | `step` | `step` | no |
+| 58.313 | 3498 | `step2.slot` | `step` | `step` | no |
+| 58.458 | 3507 | `step2.slot` | `step` | `step` | no |
+| 58.521 | 3511 | `step2.slot` | `step` | `step` | no |
+| 58.571 | 3514 | `step2.slot` | `step` | `step` | no |
+| 58.621 | 3517 | `step2.slot` | `step` | `step` | no |
+| 58.671 | 3520 | `step2.slot` | `step` | `step` | no |
+| 58.729 | 3523 | `step2.slot` | `step` | `step` | no |
+| 58.833 | 3530 | `step2.slot` | `step` | `step` | no |
 | 59.617 | 3577 | `step2.slot` | `step` | `step` | no |
 | 59.671 | 3580 | `step2.slot` | `step` | `step` | no |
 | 59.712 | 3582 | `step2.slot` | `step` | `step` | no |
@@ -479,7 +480,7 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | 62.600 | 3756 | `step2.crank` | `step` | `step` | no |
 | 62.667 | 3760 | `step2.crank` | `step` | `step` | no |
 | 62.796 | 3767 | `step2.crank` | `flatten` | `flatten` | yes |
-| 65.796 | 3947 | `step2.crank` | `peel-up` | `peel-up` | yes |
+| 65.796 | 3947 | `step2.crank` | `peel-up` | `peel-up` | no |
 | 66.300 | 3978 | `step2.continue` | `button-press` | `button-press` | no |
 | 66.500 | 3990 | `step2.continue` | `page-turn` | `page-turn` | no |
 | 67.979 | 4078 | `pinball.seal` | `step` | `step` | no |

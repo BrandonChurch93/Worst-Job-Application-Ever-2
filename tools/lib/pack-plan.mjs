@@ -49,7 +49,7 @@ export function blockoutGroups(cfg) {
   const step = stepOf(fps, cfg.film.previewFps)
   const units = plan.units
   const pages = units.map((u, i) => ({ kind: 'page', unit: u.id, heading: `Page ${i + 1} of ${units.length}, at rest` }))
-  const crops = [{ kind: 'type-crops', units: units.map((u) => u.id), heading: `Type at its real size, two pieces of each page: pages 1 to ${units.length}` }]
+  const crops = [{ kind: 'type-crops', units: units.map((u) => u.id), heading: `Type at its real size. Each picture is a window cut out of a page, so the window's edge may cut a line the page shows whole. Two windows of each page: pages 1 to ${units.length}` }]
   const screen = [
     { kind: 'screen', screen: 'live', heading: 'The application as a visitor has it, with its controls' },
     { kind: 'screen', screen: 'film', heading: 'The film as a visitor has it, stopped at its start, with its controls' },
