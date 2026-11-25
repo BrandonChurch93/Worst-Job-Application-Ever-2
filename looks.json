@@ -1,35 +1,35 @@
 {
   "folder": "pinball",
-  "pushed": "2026-11-25T10:12:04.316Z",
-  "commit": "61fc2701c7d4a12d48243ac7663b10fe621cafd0",
+  "pushed": "2026-11-25T10:29:50.768Z",
+  "commit": "f470c639cd0c387ba3478ab4a9543e4dcdc8d369",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still pinball-pinball_drain-0p62-film-preview-draft: draft tier, preview, view beauty",
-      "time": "2026-11-25T10:10:40.356Z",
+      "caption": "Still key-rail-cam-preview-draft: draft tier, preview, view beauty",
+      "time": "2026-11-25T10:27:36.580Z",
       "by": "pinball",
-      "from": "out/work/stills/pinball-pinball_drain-0p62-film-preview-draft.png"
+      "from": "out/work/stills/key-rail-cam-preview-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Key last-save at 35.5 s after the fourth take search: the ball is caught on the right flipper",
-      "time": "2026-11-25T10:12:02.733Z",
+      "caption": "Key lobby-doors: the camera now holds the Corporate HQ sign, the doors, the revolving door and the ball",
+      "time": "2026-11-25T10:29:49.229Z",
       "by": "pinball",
-      "from": "out/work/stills/key-last-save-preview-draft.png"
+      "from": "out/work/stills/key-lobby-doors-preview-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Drain beat at 39.3 s: the cursor lies flattened on the outlet port, now standing on the port and not hidden in it",
-      "time": "2026-11-25T10:12:02.977Z",
+      "caption": "Key rail-cam: whole ball in the frame, heading along the rail",
+      "time": "2026-11-25T10:29:49.503Z",
       "by": "pinball",
-      "from": "out/work/stills/pinball-pinball_drain-0p46-film-preview-draft.png"
+      "from": "out/work/stills/key-rail-cam-preview-draft.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Film sheet 4 of 4, 32.1 s to 42 s: highway, last save with the new take, drain, result card",
-      "time": "2026-11-25T10:12:03.209Z",
+      "caption": "Key tier-corporate: inserts and labels clear of the raised flipper and the revolving door",
+      "time": "2026-11-25T10:29:49.731Z",
       "by": "pinball",
-      "from": "out/work/sheets/sheet-unit-pinball-4of4-preview-draft.jpg"
+      "from": "out/work/stills/key-tier-corporate-preview-draft.png"
     }
   ]
 }
