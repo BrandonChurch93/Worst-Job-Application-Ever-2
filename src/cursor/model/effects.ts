@@ -49,8 +49,8 @@ function dropMaterial(): THREE.MeshPhysicalMaterial {
       float wjaGather = smoothstep( 0.2, 0.75, wjaAway ) * ( 1.0 - smoothstep( 0.82, 0.98, length( wjaSide ) ) );
       float wjaEdge = pow( 1.0 - wjaFacing, 1.7 );
       float wjaGlint = smoothstep( 0.9, 0.965, dot( reflect( -wjaV, wjaN ), wjaL ) );
-      float wjaRim = pow( 1.0 - wjaFacing, 3.0 );
-      diffuseColor.a = 0.03 + 0.6 * wjaRim + 0.26 * smoothstep( 0.05, 0.85, -wjaAway ) * ( 1.0 - wjaRim );
+      float wjaRim = pow( 1.0 - wjaFacing, 5.0 );
+      diffuseColor.a = 0.03 + 0.5 * wjaRim + 0.4 * smoothstep( 0.05, 0.85, -wjaAway ) * ( 1.0 - wjaRim );
       outgoingLight *= 0.12 * ( 1.0 - 0.9 * wjaEdge );
       outgoingLight += vec3( 0.5, 0.5, 0.47 ) * wjaGather + vec3( 2.6, 2.55, 2.45 ) * wjaGlint;
       #include <opaque_fragment>
@@ -320,7 +320,7 @@ class Effects implements EffectsModel {
       TOPS.forEach((t, i) => this.on(surface, t[0], t[1], this.tops[i]!))
       let top = this.tops[0]!
       for (const t of this.tops) if (t.y > top.y) top = t
-      n = this.plume(n, top.x, top.y - 2.2 * UNIT, top.z, steam, look.time, STEAM, 3, 17, 1.9, 0.32, 2.3, 1.0, 1.0, 0.6, 3)
+      n = this.plume(n, top.x, top.y - 2.2 * UNIT, top.z, steam, look.time, STEAM, 3, 17, 1.9, 0.36, 2.9, 1.0, 1.0, 0.82, 3)
     }
     const points = Math.min(SMOKE_POINTS, look.smoke.length)
     for (let k = 0; k < points; k++) {

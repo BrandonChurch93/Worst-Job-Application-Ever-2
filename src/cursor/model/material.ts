@@ -42,7 +42,7 @@ void wjaHoles( vec3 rest ) {
     vec4 h = uHoles[ i ];
     if ( h.z <= 0.0 ) continue;
     vec2 d = rest.xy - h.xy;
-    float r = h.z * wjaRag( d, uBurnt[ i ] ) * ( 0.74 + 0.26 * clamp( rest.z / 2.3, 0.0, 1.0 ) );
+    float r = h.z * wjaRag( d, uBurnt[ i ] ) * ( 0.85 + 0.15 * clamp( rest.z / 2.3, 0.0, 1.0 ) );
     if ( dot( d, d ) < r * r ) discard;
   }
 }
@@ -199,9 +199,9 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
     float burnt = uBurnt[ i ];
     vec2 d = q - hole.xy;
     float r = hole.z * wjaRag( d, burnt );
-    float from = length( d ) / r + ( mid.g - 0.5 ) * 0.3 + ( fine.b - 0.5 ) * 0.2;
-    float soot = ( 1.0 - smoothstep( 1.1, 1.7, from ) ) * burnt;
-    float crust = ( 1.0 - smoothstep( 1.12, 1.3, from ) ) * burnt;
+    float from = length( d ) / r + ( mid.g - 0.5 ) * 0.16 + ( fine.b - 0.5 ) * 0.14;
+    float soot = ( 1.0 - smoothstep( 1.1, 1.62, from ) ) * burnt;
+    float crust = ( 1.0 - smoothstep( 1.14, 1.27, from ) ) * burnt;
     col = mix( col, col * vec3( 0.46, 0.27, 0.12 ), soot * soot * 0.95 );
     col = mix( col, vec3( 0.014, 0.012, 0.010 ) + 0.03 * fine.g * mid.b, crust );
     float chipAt = length( d ) / r + ( fine.g - 0.5 ) * 0.2 + ( mid.b - 0.5 ) * 0.14;
@@ -215,9 +215,10 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
     wjaCoat *= 1.0 - max( max( crust, soot * 0.7 ), chip );
     wjaSpec *= 1.0 - 0.8 * chip;
     wjaTilt += grain * ( 4.0 * crust + 6.0 * chip );
-    float lip = ( 1.0 - smoothstep( 1.0, 1.14, from ) ) * hole.w * burnt;
-    float spark = smoothstep( 0.42, 0.7, fine.b * 0.6 + mid.g * 0.6 - 0.25 * ( 1.0 - hole.w ) );
-    wjaGlow += mix( vec3( 0.85, 0.07, 0.01 ), vec3( 1.2, 0.55, 0.1 ), hole.w * fine.g ) * lip * ( 0.2 + 1.9 * spark );
+    float lip = ( 1.0 - smoothstep( 1.0, 1.16, from ) ) * hole.w * burnt;
+    float spark = smoothstep( 0.46, 0.72, fine.b * 0.6 + mid.g * 0.6 - 0.25 * ( 1.0 - hole.w ) );
+    float lee = 0.25 + 0.75 * smoothstep( -0.5, 0.8, dot( normalize( d ), vec2( -0.5, 0.86 ) ) );
+    wjaGlow += mix( vec3( 0.85, 0.07, 0.01 ), vec3( 1.25, 0.6, 0.12 ), hole.w * fine.g ) * lip * lee * ( 0.07 + 2.2 * spark );
   }
   return col;
 }
