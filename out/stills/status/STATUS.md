@@ -1,8 +1,8 @@
 # Status pictures
 
-Time: 2026-11-25T16:25Z. Phase 3, status 31.
+Time: 2026-11-25T16:46Z. Phase 3, status 32.
 
-1. `01-tug-sheet-against-arrow.jpg`: Left: part of your approved tug of war at its own size. Right: the build as round 3 judged it. Your arrow is taller than the sheet is wide; the build's arrow is a third of the sheet's width. The sheet will shrink to the arrow's scale.
-2. `02-slab-words-cut.jpg`: Four frames one after another from round 3, 0:33.40 to 0:33.50: the rocking red block hides parts of its own words. Found by me and by a motion critic; fixed in e100e0f, not yet drawn again.
-3. `03-arms-beside-approved.jpg`: The arms sheet: yours on the left, the build on the right at the review tier, made by the acting agent on its branch at its last commit (54f933a) before merge 11. Fingers sit together now; the sheet is still three times the arrow.
-4. `04-table-wide-beside-approved.jpg`: The whole machine: yours on the left, the build on the right at the draft tier, made by the frame's agent on its branch (545adbb). Floors, frame and lamps are real; the dark blocks are stand-ins for the models, hardware and playing parts whose makers started at 16:18Z.
+1. `01-fire-key-on-main.jpg`: The key step1-fire on main at the review tier, drawn 16:33Z. MEASURED: 41.6 s, 1,016,487 triangles, 293 draw calls.
+2. `02-arms-beside-approved.jpg`: The arms sheet: yours on the left, main on the right. The sheet is three times the arrow, the hands hang on its top edge, there is no slit. This is what the tug fixer starts from.
+3. `03-floors-final.jpg`: The floor artwork agent's last picture: your three approved tiers on the left, the build's three floors from straight above on the right. The grey blocks are models other agents are making now.
+4. `04-page-beside-approved.jpg`: The page at rest: yours on the left, the build on the right, with crops at their real size underneath. The build's grain is coarser and deeper than yours, its field rims heavier.
