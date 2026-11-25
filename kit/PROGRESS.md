@@ -25,22 +25,22 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 13, 2026-11-25T09:56Z, Phase 2.
+Status 14, 2026-11-25T10:23Z, Phase 2.
 
-1. `out/stills/status/01-blockout-pinball-map.jpg`: Step 3 blockout, the machine from straight above: the marquee THE DAILY GRIND with the score, then the Corporate, Office and Street tiers one below the other, each with its own flippers.
-2. `out/stills/status/02-blockout-pinball-wide.jpg`: Step 3 blockout, the whole machine seen from its foot: three tiers sunk into the tall page, and the Unemployment Office and the message window on the apron.
-3. `out/stills/status/03-blockout-pinball-reply-all.jpg`: Step 3 blockout, the key moment of Reply All on the Office tier: four balls in play among the three bumpers, with the Coffee model at the right.
-4. `out/stills/status/04-site-live-step1-fixed.jpg`: Screenshot of live mode, step 1, after the fix: every key has its letter while both turrets aim and a bolt is in flight.
+1. `out/stills/status/01-blockout-perk-slab.jpg`: Careers page blockout at 2.30 s: the first perk card half way over, one slab turning in its well, with the cursor riding its raised edge.
+2. `out/stills/status/02-blockout-last-save.jpg`: Step 3 blockout, the key moment of the last save: the ball on the right flipper with the cursor in it, the three bumpers above.
+3. `out/stills/status/03-site-film-start.jpg`: Screenshot of the built site in film mode, stopped at its start: the play button, and the bar with play, the position in the film, the time and the way back to the application.
+4. `out/stills/status/04-site-live-careers.jpg`: Screenshot of the built site in live mode, the careers page at rest: the sound sign and the link to the film at the top left, clear of the page's header.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 2, tick 41 at 2026-11-25T09:56:35Z, allowance: build
-time used in this phase: 2.30 h of its box of 6.50 h
-time used under the allowance in force: 4.40 h of 36.00 h allowed
-time used: 4.40 of 36.00 hours before the review
+clock: phase 2, tick 43 at 2026-11-25T10:23:32Z, allowance: build
+time used in this phase: 2.75 h of its box of 6.50 h
+time used under the allowance in force: 4.85 h of 36.00 h allowed
+time used: 4.85 of 36.00 hours before the review
 extra rounds: yes
 half point: not reached
 box end: not reached
@@ -266,7 +266,7 @@ Kept by `npm run judged -- --write`. Check G6 compares its ids with the computed
 | `site:boss` | `site` | step 4 at rest, drawn through the live site's own path at the high level, from home, in hd |  |
 | `site:decision` | `site` | step 5 at rest, drawn through the live site's own path at the high level, from home, in hd |  |
 
-47 frames of the films and the loop. The frame numbers are those of the build of 2026-11-25T10:02:46Z. A judged frame is found again by its id when it is rendered, so a beat's frame follows its event.
+47 frames of the films and the loop. The frame numbers are those of the build of 2026-11-25T10:14:40Z. A judged frame is found again by its id when it is rendered, so a beat's frame follows its event.
 
 | Id | Unit | What | Frame |
 | --- | --- | --- | --- |
@@ -427,16 +427,17 @@ Each with its name, its folders, its branch and its looks branch, when it starte
 
 | Agent | Kind | Owns | Branch | Started | Limit | Last seen |
 | --- | --- | --- | --- | --- | --- | --- |
-| `pinball_builder` | build, sandbox | `src/table/`, `src/pages/step3/`, `tools/paths.mjs`, `tools/take.mjs`, `cut/TABLE-TAKE.json` | `agent/pinball` | 2026-11-25T08:41:30Z | 11:41Z | started |
-| `step1_builder` | build, sandbox | `src/pages/step1/` | `agent/step1` | 2026-11-25T08:41:30Z | 11:41Z | started |
-| `step2_builder` | build, sandbox | `src/pages/step2/` | `agent/step2` | 2026-11-25T08:41:30Z | 11:41Z | started |
-| `boss_builder` | build, sandbox | `src/pages/step4/`, `src/boss/` | `agent/boss` | 2026-11-25T08:41:30Z | 11:41Z | started |
-| `marketing_builder` | build, sandbox | `src/pages/marketing/` | `agent/marketing` | 2026-11-25T08:41:30Z | 11:41Z | started |
-| `step5_builder` | build, sandbox | `src/pages/step5/` | `agent/step5` | 2026-11-25T08:41:30Z | 11:41Z | started |
-| `harness_builder` | build, sandbox | `tools/film.mjs`, `seq.mjs`, `sheet.mjs`, `loop.mjs`, `render-local.mjs`, `stress.mjs` | `agent/harness` | 2026-11-25T08:49:20Z | 11:49Z | started |
-| `film_builder` | build, sandbox | `src/film/`, `tools/cut.mjs`, `cut/CUTLIST.json`, `cut/CUES.md`, `cut/SHOTS.md` | `agent/film` | 2026-11-25T08:49:20Z | 11:49Z | started |
-| `interface_builder` | build, sandbox | `src/ui/`, `src/probe/` | `agent/ui` | 2026-11-25T08:49:20Z | 11:49Z | started |
-| `sound_builder` | build, sandbox | `src/audio/`, `tools/sound.mjs`, `tools/mix.mjs`, `audio/`, `public/audio/` | `agent/audio` | 2026-11-25T08:49:20Z | 11:49Z | started |
+| `pinball_builder` | build, sandbox | `src/table/`, `src/pages/step3/`, `tools/paths.mjs`, `tools/take.mjs`, `cut/TABLE-TAKE.json` | `agent/pinball` | 2026-11-25T08:41:30Z | 11:40Z | 09:52Z push; improving until its limit; fourth take search allowed for the last-save key |
+| `step1_builder` | build, sandbox | `src/pages/step1/` | `agent/step1` | 2026-11-25T08:41:30Z | 11:41Z | released 10:12Z: its part is merged, nothing more asked |
+| `step2_builder` | build, sandbox | `src/pages/step2/` | `agent/step2` | 2026-11-25T08:41:30Z | 11:41Z | released 10:12Z: its part is merged, nothing more asked |
+| `boss_builder` | build, sandbox | `src/pages/step4/`, `src/boss/` | `agent/boss` | 2026-11-25T08:41:30Z | 11:41Z | released 10:12Z: its part is merged, nothing more asked |
+| `marketing_builder` | build, sandbox | `src/pages/marketing/` | `agent/marketing` | 2026-11-25T08:41:30Z | 11:40Z | 10:03Z asked: the perk card as one slab; answer by 11:10Z if it cannot |
+| `step5_builder` | build, sandbox | `src/pages/step5/` | `agent/step5` | 2026-11-25T08:41:30Z | 11:41Z | released 10:12Z: its part is merged, nothing more asked |
+| `harness_builder` | build, sandbox | `tools/film.mjs`, `seq.mjs`, `sheet.mjs`, `loop.mjs`, `render-local.mjs`, `stress.mjs` | `agent/harness` | 2026-11-25T08:49:20Z | 11:49Z | 10:12Z new work: keep --film, parts, simcache, hostcheck |
+| `film_builder` | build, sandbox | `src/film/`, `tools/cut.mjs`, `cut/CUTLIST.json`, `cut/CUES.md`, `cut/SHOTS.md` | `agent/film` | 2026-11-25T08:49:20Z | 11:49Z | released 10:12Z: its part is merged, nothing more asked |
+| `interface_builder` | build, sandbox | `src/ui/`, `src/probe/` | `agent/ui` | 2026-11-25T08:49:20Z | 11:49Z | 10:06Z report 3; cannot push (sign-in from its VM fails), code complete at 68549d0 |
+| `sound_builder` | build, sandbox | `src/audio/`, `tools/sound.mjs`, `tools/mix.mjs`, `audio/`, `public/audio/` | `agent/audio` | 2026-11-25T08:49:20Z | 11:49Z | 10:08Z; start() and stop() merged at b6aea13 |
+| `measure_builder` | build, sandbox | `tools/measure.mjs`, `tools/lib/measure-*.mjs`, `src/diagnostics/` | `agent/measure` | 2026-11-25T10:12:00Z | 13:00Z | started |
 
 Ten build agents, the most the kit allows beside six critic slots. Each brief names the approved images of its part, gives its sections of the kit word for word, and repeats the three rules. First complete versions wanted by 10:45Z to 10:50Z. A build agent silent for 45 minutes is replaced once from its branch. The Builder keeps for itself: `tools/parts.mjs`, `simcache.mjs`, `pack.mjs`, `measure.mjs`, `hostcheck.mjs`, the gate checks, the diagnostic views, `src/main.ts`, `src/app.ts` and the frame interface.
 

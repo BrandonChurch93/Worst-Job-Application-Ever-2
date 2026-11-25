@@ -1,8 +1,8 @@
 # Status pictures
 
-Time: 2026-11-25T09:56Z. Phase 2, status 13.
+Time: 2026-11-25T10:23Z. Phase 2, status 14.
 
-1. `01-blockout-pinball-map.jpg`: Step 3 blockout, the machine from straight above: the marquee THE DAILY GRIND with the score, then the Corporate, Office and Street tiers one below the other, each with its own flippers.
-2. `02-blockout-pinball-wide.jpg`: Step 3 blockout, the whole machine seen from its foot: three tiers sunk into the tall page, and the Unemployment Office and the message window on the apron.
-3. `03-blockout-pinball-reply-all.jpg`: Step 3 blockout, the key moment of Reply All on the Office tier: four balls in play among the three bumpers, with the Coffee model at the right.
-4. `04-site-live-step1-fixed.jpg`: Screenshot of live mode, step 1, after the fix: every key has its letter while both turrets aim and a bolt is in flight.
+1. `01-blockout-perk-slab.jpg`: Careers page blockout at 2.30 s: the first perk card half way over, one slab turning in its well, with the cursor riding its raised edge.
+2. `02-blockout-last-save.jpg`: Step 3 blockout, the key moment of the last save: the ball on the right flipper with the cursor in it, the three bumpers above.
+3. `03-site-film-start.jpg`: Screenshot of the built site in film mode, stopped at its start: the play button, and the bar with play, the position in the film, the time and the way back to the application.
+4. `04-site-live-careers.jpg`: Screenshot of the built site in live mode, the careers page at rest: the sound sign and the link to the film at the top left, clear of the page's header.
