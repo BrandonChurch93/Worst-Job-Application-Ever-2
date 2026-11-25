@@ -4,7 +4,7 @@ This build may spend at most 10000 ElevenLabs credits in all, on every call of e
 
 The count is of this build's own calls, never of what the account has left: the account is shared with other builds. Every call goes through `npm run credits`, which writes its row here before it returns and makes no call that would pass the limit. A sound effect is never asked for without its length. `kit/addenda/001-sound-budget-and-narrator.md` sets these rules. This file is written by the tool from `audio/CREDITS.json`.
 
-Running total: 2659 of 10000. Calls: 177.
+Running total: 2677 of 10000. Calls: 178.
 
 ## Rates
 
@@ -192,3 +192,4 @@ Running total: 2659 of 10000. Calls: 177.
 | 175 | 2026-11-25T19:28:56Z | POST /v1/sound-generation | session-expired take 3 | 0.8 s | HTTP 200, 4.5 s | 9 | reported by the response | 2637 |
 | 176 | 2026-11-25T19:29:01Z | POST /v1/sound-generation | carpet-roll take 2 | 1 s | HTTP 200, 1.6 s | 11 | reported by the response | 2648 |
 | 177 | 2026-11-25T19:30:12Z | POST /v1/sound-generation | carpet-roll take 3 | 1 s | HTTP 200, 2.1 s | 11 | reported by the response | 2659 |
+| 178 | 2026-11-25T20:06:01Z | POST /v1/text-to-speech | line.live.tugLost.0 take 2, breaks of 1.1 s | 53 characters, stability 0.75, speed 0.7 | HTTP 200, 0.8 s | 18 | reported by the response | 2677 |

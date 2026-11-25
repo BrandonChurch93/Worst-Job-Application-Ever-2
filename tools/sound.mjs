@@ -91,7 +91,8 @@ export const musical = (cue) => cue === 'hold-music' || cue === 'boss-loop'
 export const promptLine = (cue) => (musical(cue) ? HOLD_LINE : FAMILY_LINE)
 
 const spokenWords = (text, mark) => text.split(/\s+/).filter((w) => w.length > 0 && w !== mark)
-const plainWords = (text, mark) => spokenWords(text, mark).map((w) => w.toLowerCase().replace(/[^a-z0-9']/g, '')).filter(Boolean)
+export const SAME_WORD = { defense: 'defence' }
+const plainWords = (text, mark) => spokenWords(text, mark).map((w) => w.toLowerCase().replace(/[^a-z0-9']/g, '')).filter(Boolean).map((w) => SAME_WORD[w] ?? w)
 
 // What the numbers say about a narrator line: its pace, its pauses and the room it has in the film.
 export function lineNumbers(t, measured, pauses, c, copy) {

@@ -9,7 +9,7 @@
 import path from 'node:path'
 import { spawnSync } from 'node:child_process'
 import { args, at, config } from './paths.mjs'
-import { places, readLedger, listenerFindings, musical } from '../sound.mjs'
+import { SAME_WORD, places, readLedger, listenerFindings, musical } from '../sound.mjs'
 
 export const QUIET_PEAK_DB = -36
 
@@ -44,8 +44,6 @@ export function judge(take, c) {
   return { verdict: fails.length ? 'fail' : forced.length ? 'force' : 'keep', fails, forced }
 }
 
-// One word, two spellings: the listener writes the American one.
-export const SAME_WORD = { defense: 'defence' }
 const plain = (s) => String(s ?? '').toLowerCase().replace(/[^a-z0-9' ]/g, ' ').split(/\s+/).filter(Boolean).map((w) => SAME_WORD[w] ?? w).join(' ')
 
 export const cliOf = (take) => {

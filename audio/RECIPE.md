@@ -1286,11 +1286,12 @@ Words: A real keyboard. / How optimistic.
 
 ### line.live.tugLost.0
 
-Takes used: 1 of 3.
+Takes used: 2 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | build | 2026-11-25T18:30:19.369Z | 4.226 s | -3.31 dB | -19.26 LUFS | 4 | 18 | yes, as line.live.tugLost.0 | 18 asks brought no whole answer; two answers that were cut off before their end both wrote the transcript The shredder always eats first, word for word, one of them saying it had no audio; pace 1.245 words a second and 1 pause of 1 measured |
+| 2 | build | 2026-11-25T20:06:02.082Z | 4.04 s | -2.86 dB | -18.12 LUFS | 4 | 18 | no |  |
 
 Words: The shredder / always eats first.
 

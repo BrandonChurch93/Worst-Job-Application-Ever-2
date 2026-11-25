@@ -4,14 +4,30 @@ Kept by the sound agent on the branch `agent/sound`. A fact here is MEASURED (th
 
 The second half of this file, from "Every take" on, is written by `node tools/lib/sound-notes.mjs`. It holds every take with its call, its cost, its break N, its numbers, the listener's answers, whether it is kept, and every effect's prompt beside its takes.
 
-## Where things stand (19:36Z, 25 November 2026)
+## Where things stand (20:10Z, 25 November 2026)
 
-- MEASURED, `npm run credits`: 2659 of 10000 credits in 177 calls. All 177 calls answered 200. The limit of this stretch is 8000; extras stop at 3500.
-- MEASURED, `npm run sound`: 139 of 139 sounds kept (73 cues with their variants, the 20 lines of the film, the 14 lines only the live site has). 166 takes filed.
-- MEASURED, `npm run sound -- --pack`: 102 short sounds in one file, 3 loops, 34 narrator lines, 5.42 MB of 14 MB.
+- MEASURED, `npm run credits`: 2677 of 10000 credits in 178 calls. All 178 calls answered 200. The limit of this stretch is 8000; extras are closed at eleven.
+- MEASURED, `npm run sound`: 139 of 139 sounds kept (73 cues with their variants, the 20 lines of the film, the 14 lines only the live site has). 167 takes filed.
+- MEASURED, `npm run sound -- --pack`: 102 short sounds in one file, 3 loops, 34 narrator lines, 5.42 MB of 14 MB. `--pack-check`: pass, 38 files.
 - MEASURED, `npx vitest run tests/audio tests/credits.test.ts`: 170 passed. `npx tsc --noEmit -p .`: clean.
 - Of the 139 kept, 57 are kept by force, each with its reason in `audio/kept/<id>.json` (`why`, `problems`). 29 of the 34 lines are forced, nearly all because the listener gave fewer than two whole answers on tone.
-- `npm run sound -- --check` last ran at 18:34Z: 7 pass, A2 and A5 fail, A6 and A9 not yet (there is no mix). The Builder fixed A2 on main (4324717) and copies the rows for A5. Not run again yet: the Builder asked for none between 19:15Z and 20:00Z.
+- MEASURED, `npm run sound -- --check` at 20:00Z to 20:03Z: 7 pass (A1, A2, A3, A4, A7, A8, A11), 2 fail (A5, A10), 2 not yet (A6, A9: there is no mix). The two failures are under "The checks at 20:03Z".
+
+## The checks at 20:03Z
+
+- A2 passes now: the control is named "Sound", is reached with 4 presses of Tab, and changes at a click, at Enter and at Space.
+- A5 fails: 18 of 139 kept sounds have no row in `ASSETS.md`, which is the Builder's file. They are the eleven extra cues and `dart-hit.4`, `slab-drop.2`, `slab-drop.3`, `strips-zip`, `line.live.hit.2`, `line.live.idle.1`, `line.live.tugLost.0`, all kept after the rows were last copied. `pipeline/sound/NEEDS-assets-rows.md` holds the 23 rows of `audio/ASSETS-ROWS.md` that are not word for word in `ASSETS.md` (the 18, the row of `line.step1.email.0` whose take changed, and 4 rows of the pack).
+- A10 fails on 2 lines. `line.live.idle.0`: the listener wrote "defense" for "defence". The judge already counted the two as one word (decision 4) and the check did not; the check now does (`SAME_WORD` in `tools/sound.mjs`), not run again yet. `line.live.tugLost.0`: the listener has written nothing for it. That one is an honest failure and stays.
+- `line.live.tugLost.0`, "The shredder / always eats first.": the listener gave no whole answer in 24 asks on take 1 (6 of them at 20:05Z). Decided then: one more take, since the line fails a check that needs its words written down (call 178 at 20:06Z, 18 credits, the same break of 1.1). Take 2 measures 3.834 s, 1.304 words a second, 1 pause of 1, and the listener gave no whole answer in 6 asks on it either. The same listener answered whole on `line.live.skip.0` right after (1 of 3 asks), so it is this line it does not hear. Take 1 stays kept by force; what the take says is UNKNOWN by ear. The 18 credits bought nothing.
+- Also measured by the check, not a check: film A on the site played 47 sounds where the mix lays 78 in the opening. The film had only reached 2.7 s of its 11.933 s opening when the check stopped waiting (20 s of wall time, with the machine busy), so the two numbers do not cover the same span and say nothing yet.
+
+## The hit on the arrow after it moved (step 1)
+
+The Builder moved the hit from 7.138 s to 5.746 s of step 1 in merge 19. MEASURED at 19:59Z by running the stage in film mode in Node (`tools/lib/logic.mjs`, no browser): `keyboard-rise` at 15.500 s of the film, `bolt-hit-cursor` and `sizzle` at 19.742 s (5.742 s of step 1).
+
+- `line.step1.firstName.0` ("First name. / Under fire. / Standard onboarding.") runs from 16.000 s to 21.346 s. The hit comes 3.742 s into it. MEASURED with `silencedetect=noise=-35dB:d=0.12` on the kept line: its second pause is from 2.792 s to 3.922 s, so the hit falls inside that pause, 0.180 s before "Standard onboarding" begins. Before the move it fell inside those words.
+- `line.step1.firstName.1` ("Hit. / It keeps typing. / It has bills.") starts at 21.760 s (`at` 0.72), 2.018 s after the hit. It cannot start before 21.646 s (the end of the first line plus 0.3 s), which is `at` 0.706 and gains 0.114 s. To say "Hit." sooner the first line has to be shorter: a new take of it with breaks of 0.1 would be about 3.9 s by estimate (6 words, about 1.5 words a second) and would let "Hit." start about 0.5 s after the hit. Not made: the content and the choice are the Builder's.
+- On the live site the first line is set off by `keyboard-rise` and the second by the hit. The second waits for the first to end and for the gap of 6 s, so it is said late or, past its wait of 10 s, not at all.
 
 ## Decisions
 
@@ -82,9 +98,9 @@ MEASURED at 19:16Z against `content/narration.json` and `config/showcase.json` o
 
 ## The listener
 
-- The listener is the audio evaluation tool. MEASURED over all takes: 797 asks, 259 whole answers. The rest said no audio reached it or were cut off.
+- The listener is the audio evaluation tool. MEASURED over all takes: 809 asks, 259 whole answers. The rest said no audio reached it or were cut off.
 - It was least reliable between 19:02Z and 19:05Z: 1 whole answer in 30 asks.
-- `line.live.tugLost.0` got no whole answer in 18 asks. Two answers that were cut off before their end wrote the line word for word; one of them said it had no audio and worked from text. The take is kept by force on its numbers (4.016 s, 1.245 words a second, 1 pause of 1).
+- `line.live.tugLost.0` got no whole answer in 24 asks on take 1 and none in 6 on take 2. Two answers that were cut off before their end wrote the line word for word; one of them said it had no audio and worked from text. The take is kept by force on its numbers (4.016 s, 1.245 words a second, 1 pause of 1).
 - Tone words the listener used for kept lines include "deadpan", "cynical", "sarcastic", "detached", "ominous and threatening" (crank take 3), "abrupt and commanding" (hit 0). By the Builder's ruling they decide nothing.
 
 ## Moments with no sound
@@ -142,7 +158,7 @@ Eleven cues added on the Builder's ruling of 19:23Z, inside `audio.extraCuesMax`
 
 This part is written by `node tools/lib/sound-notes.mjs` from `audio/TAKES.json` and `audio/kept/`. Do not edit it by hand: edit above it.
 
-166 takes: 25 of the film's lines, 19 of the lines only the live site has, 122 of effects.
+167 takes: 25 of the film's lines, 20 of the lines only the live site has, 122 of effects.
 
 A line is sent with every ` / ` of the script replaced by ` <break time="N.Ns" /> `, N being the number in the column Break N, the same at every mark of the line. Speed 0.7, stability 0.75, the default voice, no model named. The listener's words are STATED by the listener; every number is MEASURED by the chain.
 
@@ -188,7 +204,7 @@ A line is sent with every ` / ` of the script replaced by ` <break time="N.Ns" /
 | `line.live.hit.3` | 1 | 131 | 15 | 1 | 3.164 | 0.948 | 1 of 1 (1.146) | 6 asks, 1 whole; transcript "Resilient or desperate." (1 of 1); whisper 0 yes, 1 no; laugh 0 yes, 1 no; warmth 0 yes, 1 no; excitement 0 yes, 1 no; unimpressed and smug 1 yes, 0 no; attitude cynical and evaluating | yes, by force: tone not judged: 1 whole answers in 6 asks. Forced over: the listener left "whisper" unanswered; the listener left "laugh" unanswered; the listener left "warmth" unanswered; the listener left "excitement" unanswered; the listener left "unimpressedAndSmug" unanswered |
 | `line.live.slowTyping.0` | 1 | 132 | 15 | 1 | 2.766 | 1.446 | 1 of 1 (1.156) | 6 asks, 1 whole; transcript "One letter. Well done." (2 of 2); whisper 0 yes, 1 no; laugh 0 yes, 1 no; warmth 0 yes, 1 no; excitement 0 yes, 1 no; unimpressed and smug 1 yes, 0 no; attitude sarcastic and dismissive | yes, by force: tone not judged: 1 whole answers in 6 asks. Forced over: the listener left "whisper" unanswered; the listener left "laugh" unanswered; the listener left "warmth" unanswered; the listener left "excitement" unanswered; the listener left "unimpressedAndSmug" unanswered |
 | `line.live.realKeyboard.0` | 1 | 133 | 19 | 1.1 | 3.634 | 1.376 | 1 of 1 (1.258) | 6 asks, 1 whole; transcript "A real keyboard. How optimistic." (3 of 3); whisper 0 yes, 1 no; laugh 0 yes, 1 no; warmth 0 yes, 1 no; excitement 0 yes, 1 no; unimpressed and smug 1 yes, 0 no; attitude sarcastic and cynical | yes, by force: tone not judged: 1 whole answers in 6 asks. Forced over: the listener left "whisper" unanswered; the listener left "laugh" unanswered; the listener left "warmth" unanswered; the listener left "excitement" unanswered; the listener left "unimpressedAndSmug" unanswered |
-| `line.live.tugLost.0` | 1 | 134 | 18 | 1.1 | 4.016 | 1.245 | 1 of 1 (1.16) | 18 asks, 0 whole; transcript none; whisper 0 yes, 0 no; laugh 0 yes, 0 no; warmth 0 yes, 0 no; excitement 0 yes, 0 no; unimpressed and smug 0 yes, 0 no; attitude none | yes, by force: 18 asks brought no whole answer; two answers that were cut off before their end both wrote the transcript The shredder always eats first, word for word, one of them saying it had no audio; pace 1.245 words a second and 1 pause of 1 measured. Forced over: the listener wrote "", which is not the line; the listener left "whisper" unanswered; the listener left "laugh" unanswered; the listener left "warmth" unanswered; the listener left "excitement" unanswered; the listener left "unimpressedAndSmug" unanswered |
+| `line.live.tugLost.0` | 1 | 134 | 18 | 1.1 | 4.016 | 1.245 | 1 of 1 (1.16) | 24 asks, 0 whole; transcript none; whisper 0 yes, 0 no; laugh 0 yes, 0 no; warmth 0 yes, 0 no; excitement 0 yes, 0 no; unimpressed and smug 0 yes, 0 no; attitude none | yes, by force: 18 asks brought no whole answer; two answers that were cut off before their end both wrote the transcript The shredder always eats first, word for word, one of them saying it had no audio; pace 1.245 words a second and 1 pause of 1 measured. Forced over: the listener wrote "", which is not the line; the listener left "whisper" unanswered; the listener left "laugh" unanswered; the listener left "warmth" unanswered; the listener left "excitement" unanswered; the listener left "unimpressedAndSmug" unanswered |
 | `line.live.pinball.flipper.0` | 1 | 135 | 31 | 1 | 6.186 | 1.455 | 2 of 2 (1.228, 1.188) | 6 asks, 1 whole; transcript "It found the flippers. Hope is a powerful thing." (2 of 2); whisper 0 yes, 1 no; laugh 0 yes, 1 no; warmth 0 yes, 1 no; excitement 0 yes, 1 no; unimpressed and smug 0 yes, 1 no; attitude solemn and dramatic | yes, by force: tone not judged: 1 whole answers in 6 asks. Forced over: the listener left "whisper" unanswered; the listener left "laugh" unanswered; the listener left "warmth" unanswered; the listener left "excitement" unanswered; the listener left "unimpressedAndSmug" unanswered |
 | `line.live.boss.verify.0` | 1 | 136 | 17 | 1.4 | 3.98 | 1.508 | 0 of 1 () | 6 asks, 0 whole; transcript none; whisper 0 yes, 0 no; laugh 0 yes, 0 no; warmth 0 yes, 0 no; excitement 0 yes, 0 no; unimpressed and smug 0 yes, 0 no; attitude none | no |
 | `line.live.boss.slow.0` | 1 | 137 | 20 | 1.4 | 3.57 | 1.681 | 1 of 1 (1.582) | 6 asks, 3 whole; transcript "The button is winning. The button." (3 of 3); whisper 0 yes, 3 no; laugh 0 yes, 3 no; warmth 0 yes, 3 no; excitement 1 yes, 2 no; unimpressed and smug 2 yes, 1 no; attitude detached and unimpressed / smug and detached / enthusiastic and slightly dramatic | no |
@@ -199,6 +215,7 @@ A line is sent with every ` / ` of the script replaced by ` <break time="N.Ns" /
 | `line.live.boss.slow.0` | 2 | 144 | 20 | 1.9 | 4.192 | 1.431 | 1 of 1 (2.066) | 6 asks, 1 whole; transcript "The button is winning. The button." (1 of 1); whisper 0 yes, 1 no; laugh 0 yes, 1 no; warmth 0 yes, 1 no; excitement 0 yes, 1 no; unimpressed and smug 0 yes, 1 no; attitude deadpan and monotonous | yes, by force: tone not judged: 1 whole answers in 6 asks. Forced over: the listener left "whisper" unanswered; the listener left "laugh" unanswered; the listener left "warmth" unanswered; the listener left "excitement" unanswered; the listener left "unimpressedAndSmug" unanswered |
 | `line.live.idle.1` | 3 | 153 | 21 | 2.4 | 5.162 | 1.55 | 1 of 1 (2.602) | 12 asks, 1 whole; transcript "Take your time. The job is not real." (1 of 1); whisper 0 yes, 1 no; laugh 0 yes, 1 no; warmth 0 yes, 1 no; excitement 0 yes, 1 no; unimpressed and smug 1 yes, 0 no; attitude calm and detached | yes, by force: tone not judged: 1 whole answers in 12 asks. Forced over: the listener left "whisper" unanswered; the listener left "laugh" unanswered; the listener left "warmth" unanswered; the listener left "excitement" unanswered; the listener left "unimpressedAndSmug" unanswered |
 | `line.live.boss.verify.0` | 2 | 154 | 17 | 1.4 | 4.076 | 1.472 | 1 of 1 (1.602) | 6 asks, 1 whole; transcript "It claims to be human. Bold." (2 of 2); whisper 0 yes, 1 no; laugh 0 yes, 1 no; warmth 0 yes, 1 no; excitement 0 yes, 1 no; unimpressed and smug 1 yes, 0 no; attitude cynical and skeptical | yes, by force: tone not judged: 1 whole answers in 6 asks. Forced over: the listener left "whisper" unanswered; the listener left "laugh" unanswered; the listener left "warmth" unanswered; the listener left "excitement" unanswered; the listener left "unimpressedAndSmug" unanswered |
+| `line.live.tugLost.0` | 2 | 178 | 18 | 1.1 | 3.834 | 1.304 | 1 of 1 (1.208) | 6 asks, 0 whole; transcript none; whisper 0 yes, 0 no; laugh 0 yes, 0 no; warmth 0 yes, 0 no; excitement 0 yes, 0 no; unimpressed and smug 0 yes, 0 no; attitude none | no |
 
 ## Every effect: its prompt beside its takes
 
