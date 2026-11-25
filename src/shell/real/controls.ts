@@ -37,14 +37,14 @@ function discUv(g: THREE.BufferGeometry, d: number): THREE.BufferGeometry {
   return g
 }
 
-const RIM = 4.4
+const RIM = 4
 
 // The aluminium sleeve of a pocket: a thin flat rim at the surface and a wall that leans in, down to what lies in the pocket.
 function sleeve(s: Shape, surface: number, lean: number): THREE.BufferGeometry {
   const top = surface - pocketCut(s).lip - 0.2
   const foot = RIM - 0.4 + lean * (top - 0.5)
   const points: ProfilePoint[] = [
-    [0.1, top - 1.4, true], [0.1, top - 0.8, true], ...arc(0.1, top - 0.8, 1, 0.8, 4).slice(1), ...bead(RIM - 1.3, top, 1.3, 0.9, 4).slice(1), [foot, 0, true], [foot, -0.4, true]
+    [0.1, top - 1.4, true], [0.1, top - 0.8, true], ...arc(0.1, top - 0.8, 1.2, 0.8, 4).slice(1), ...bead(RIM - 1.6, top, 1.6, 1.1, 5).slice(1), [foot, 0, true], [foot, -0.4, true]
   ]
   return sweep(outlineOf(s, 0, 12), profile(points), false)
 }
@@ -146,7 +146,7 @@ function field(s: Shape): THREE.Object3D {
   const m = materials()
   const root = new THREE.Group()
   const surface = -s.z0
-  root.add(mesh(shared(`sleeve:${dims(s)}`, () => sleeve(s, surface, 0.22)), m.aluminiumEdge))
+  root.add(mesh(shared(`sleeve:${dims(s)}`, () => sleeve(s, surface, 0.22)), m.aluminiumSatin))
   const glass = mesh(shared(`fieldGlass:${dims(s)}`, () => sunkGlass(s, RIM - 0.6, surface)), m.glassSunk, false)
   root.add(glass)
   return root
