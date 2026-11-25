@@ -120,7 +120,7 @@ export function makePage(): PageLogic {
     s.held = false
   }
 
-  const yourTime = (io: StepIo): number => (s.mode === 'film' ? filmSeconds() : ((io as { elapsed?: number }).elapsed ?? io.time))
+  const yourTime = (io: StepIo): number => (s.mode === 'film' ? filmSeconds() : (io.elapsed ?? io.time))
 
   function stampPose(): { cx: number; cy: number; z: number; rot: number } | null {
     if (s.phase === 'wait') return null
@@ -324,8 +324,7 @@ export function makePage(): PageLogic {
           io.emit('peel-up', cursor.x, cursor.y, true)
         }
       }
-      const stand = (cursor as unknown as { stand?: (z: number) => void }).stand
-      if (stand) stand.call(cursor, groundAt(cursor.x, cursor.y))
+      cursor.setGround(groundAt(cursor.x, cursor.y))
       s.n++
     },
     save: () => ({ ...s }),

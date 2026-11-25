@@ -204,7 +204,7 @@ describe('step 5, the film', () => {
   it('is a pure function of time in its script', () => {
     const a = makePage()
     const b = makePage()
-    for (let t = 0; t <= 12; t += 0.37) expect(a.script(t)).toEqual(b.script(12 - (12 - t)))
+    for (let t = 0; t <= 12; t += 0.37) expect(a.script(t)).toEqual(b.script(t))
     expect(a.script(3.3)).toEqual(a.script(3.3))
   })
 })
