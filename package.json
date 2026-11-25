@@ -41,6 +41,7 @@
     "mix": "node tools/mix.mjs",
     "render:local": "node tools/render-local.mjs",
     "parts": "node tools/parts.mjs",
+    "counts": "node tools/counts.mjs",
     "looks:push": "node tools/looks-push.mjs",
     "looks:fetch": "node tools/looks-fetch.mjs",
     "judged": "node tools/judged.mjs"

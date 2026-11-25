@@ -14,7 +14,9 @@ const THICK = 0.9
 // The film's sheet is `resume-paper`. A sheet of any other frame is `resume-paper:<name>`.
 const isSheet = (id: string): boolean => id === 'resume-paper' || id.startsWith('resume-paper:')
 const CARRY = { from: 21, span: 14 }
-const BAR = { inset: 24, tall: 2.3, pad: 2.85, cells: 44, wide: [0.46, 1, 0.9, 0.62, 1, 0.84, 0.52] }
+const BAR = { inset: 24, tall: 1.7, pad: 3.15, cells: 44, wide: [0.46, 1, 0.9, 0.62, 1, 0.84, 0.52] }
+// Between two of the layout's lines runs a thinner one, so the sheet reads as a page of close text.
+const BETWEEN = { tall: 1.15, wide: [0.94, 0.78, 1, 0.34, 0.88, 0.97, 0.6] }
 const WRAP_LEN = 1.12 * (CASSETTE.roller.r + 0.7)
 
 const clamp = (v: number, lo: number, hi: number): number => Math.min(hi, Math.max(lo, v))
@@ -82,7 +84,23 @@ interface Rig {
   barMarks: Mark[]
   titleMesh: THREE.Mesh
   ring: number[]
+  cast: THREE.MeshDepthMaterial
+  sink: { value: number }
   was: string
+}
+
+// What throws the fed sheet's shadow lies a little under what is seen, so a sheet that leans away from the light
+// does not shade itself in teeth.
+const SINK = 1.6
+function caster(sink: { value: number }): THREE.MeshDepthMaterial {
+  const m = new THREE.MeshDepthMaterial({ side: THREE.DoubleSide })
+  m.onBeforeCompile = (shader) => {
+    shader.uniforms.uSink = sink
+    shader.vertexShader = shader.vertexShader
+      .replace('#include <common>', '#include <common>\nuniform float uSink;\nattribute float aSide;')
+      .replace('#include <begin_vertex>', '#include <begin_vertex>\n  transformed -= normalize(normal) * (aSide * uSink);')
+  }
+  return m
 }
 
 function ringOf(nx: number, ny: number): number[] {
@@ -100,6 +118,10 @@ function bodyGeometry(ring: number[]): THREE.BufferGeometry {
   const m = ring.length
   const count = n * 2 + m * 2
   const g = new THREE.BufferGeometry()
+  const side = new Float32Array(count)
+  side.fill(1, 0, n)
+  side.fill(-1, n, n * 2)
+  g.setAttribute('aSide', new THREE.BufferAttribute(side, 1))
   const uv = new Float32Array(count * 2)
   for (let j = 0; j < ny; j++) {
     for (let i = 0; i < nx; i++) {
@@ -160,18 +182,22 @@ function flat(marks: Mark[], index: number[], colour: THREE.Color): THREE.Buffer
 function barMarks(): { marks: Mark[]; index: number[] } {
   const marks: Mark[] = []
   const index: number[] = []
-  PAPER_LINES.forEach((at, i) => {
-    const w = (PAPER.w - BAR.inset * 2) * (BAR.wide[i] ?? 1)
-    const b0 = PAPER.h * at + BAR.pad
+  const rule = (b0: number, share: number, tall: number): void => {
+    const w = (PAPER.w - BAR.inset * 2) * share
     const base = marks.length
     for (let k = 0; k <= BAR.cells; k++) {
       const a = BAR.inset + (w * k) / BAR.cells
-      marks.push({ u: a / PAPER.w, v: b0 / PAPER.h }, { u: a / PAPER.w, v: (b0 + BAR.tall) / PAPER.h })
+      marks.push({ u: a / PAPER.w, v: b0 / PAPER.h }, { u: a / PAPER.w, v: (b0 + tall) / PAPER.h })
     }
     for (let k = 0; k < BAR.cells; k++) {
       const a = base + k * 2
       index.push(a, a + 1, a + 2, a + 2, a + 1, a + 3)
     }
+  }
+  PAPER_LINES.forEach((at, i) => {
+    const next = PAPER_LINES[i + 1] ?? at + (at - (PAPER_LINES[i - 1] ?? at))
+    rule(PAPER.h * at + BAR.pad, BAR.wide[i] ?? 1, BAR.tall)
+    rule(PAPER.h * (at + next) * 0.5 + BAR.pad, BETWEEN.wide[i] ?? 1, BETWEEN.tall)
   })
   return { marks, index }
 }
@@ -288,6 +314,9 @@ export const paper: PartMaker = {
     const sheetMesh = new THREE.Mesh(body, mat.sheet)
     sheetMesh.castShadow = true
     sheetMesh.receiveShadow = true
+    const sink = { value: 0 }
+    const cast = caster(sink)
+    sheetMesh.customDepthMaterial = cast
     const titleMesh = new THREE.Mesh(title, mat.print)
     titleMesh.receiveShadow = true
     titleMesh.userData.type = TITLE_KEY
@@ -297,7 +326,7 @@ export const paper: PartMaker = {
     for (const c of group.children) c.frustumCulled = false
     const rig: Rig = {
       sheet: { nx: GRID.nx, ny: GRID.ny, pos: new Float32Array(GRID.nx * GRID.ny * 3), nor: new Float32Array(GRID.nx * GRID.ny * 3), abuse: 0, out: 1 },
-      body, title, bars, titleMarks: t.marks, barMarks: b.marks, titleMesh, ring, was: ''
+      body, title, bars, titleMarks: t.marks, barMarks: b.marks, titleMesh, ring, cast, sink, was: ''
     }
     group.userData.rig = rig
     return group
@@ -309,6 +338,7 @@ export const paper: PartMaker = {
     o.rotation.set(0, 0, 0)
     const q = sheetIn(s, ctx)
     shape(rig, q)
+    rig.sink.value = SINK * clamp(q.bite, 0, 1)
     rig.titleMesh.visible = s.id !== 'resume-paper' || ownTitle(ctx, q.bite > 0.5)
   },
   drop(o) {
@@ -316,5 +346,6 @@ export const paper: PartMaker = {
     rig.body.dispose()
     rig.title.dispose()
     rig.bars.dispose()
+    rig.cast.dispose()
   }
 }

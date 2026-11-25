@@ -45,6 +45,11 @@ function unit(h: Float32Array): Float32Array {
   return h
 }
 
+const PIT_FROM = 0.7
+const TOOTH = 0.07
+const GRAIN_PER_PIXEL = 2
+const FROST = 0.022
+
 // The eggshell grain as heights, one number a texel, with a mean of nought and a spread of one. The size is a power of two and the picture tiles.
 export function grainHeights(size: number, seed: number): Float32Array {
   const rnd = new Random(seed, 'grain')
@@ -56,13 +61,16 @@ export function grainHeights(size: number, seed: number): Float32Array {
     for (let i = 0; i < a.length; i++) a[i] = a[i]! - b[i]!
     return unit(a)
   }
-  const fine = band(0.45, 1.1)
-  const coarse = band(0.9, 2.2)
+  // Two texels are one page pixel, so the bands are twice as wide in texels as they are on the page.
+  const fine = band(0.8, 1.8)
+  const coarse = band(2.4, 6)
+  const tooth = band(0.4, 0.9)
   const h = new Float32Array(size * size)
   for (let i = 0; i < h.length; i++) {
-    // Pits read as eggshell: the low side of the fine grain is pressed down, the high side is flattened.
+    // Pits read as eggshell: only the low places of the fine grain are kept as pits, the rest is nearly flat.
+    // The tooth is finer than a page pixel: it shows only when the camera comes close or the picture is larger.
     const f = fine[i]!
-    h[i] = 0.8 * (f < 0 ? f * 1.3 : f * 0.65) + 0.2 * coarse[i]!
+    h[i] = -1.6 * Math.max(0, -f - PIT_FROM) + 0.22 * f + 0.34 * coarse[i]! + TOOTH * tooth[i]!
   }
   return unit(h)
 }
@@ -261,18 +269,22 @@ export interface Materials {
 }
 
 export function makeMaterials(seed: number): Materials {
-  // One texel of grain is one page pixel: the surface's coordinates are page pixels.
-  const grain = grainNormalMap(1024, seed, 0.5)
-  grain.repeat.set(1 / 1024, 1 / 1024)
+  // Two texels of grain are one page pixel: the surface's coordinates are page pixels.
+  const grain = grainNormalMap(1024, seed, 0.5 * GRAIN_PER_PIXEL)
+  grain.repeat.set(GRAIN_PER_PIXEL / 1024, GRAIN_PER_PIXEL / 1024)
+  // The glass reads the same picture again, finer and far weaker: the frost of its face. It shares the picture, so it costs no memory.
+  const frost = grain.clone()
+  frost.repeat.set(5 / 1024, 5 / 1024)
+  const frosted = { normalMap: frost, normalScale: new THREE.Vector2(FROST, FROST) }
   const brushed = dataTexture(normalsOf(brushedHeights(512, seed), 512, 1.4), 512, true)
   brushed.repeat.set(1 / 720, 1 / 420)
   const turned = turnedMaps(256, seed, 2.2)
   const physical = (o: THREE.MeshPhysicalMaterialParameters) => studio(new THREE.MeshPhysicalMaterial(o))
-  const ceramic = grained(physical({ color: srgb(0xecebe6), roughness: 0.74, metalness: 0, normalMap: grain, normalScale: new THREE.Vector2(0.09, 0.09), specularIntensity: 0.6 }), 0.5)
+  const ceramic = grained(physical({ color: srgb(0xecebe6), roughness: 0.74, metalness: 0, normalMap: grain, normalScale: new THREE.Vector2(0.085, 0.085), specularIntensity: 0.6 }), 0.5)
   const pocket = grained(physical({ color: srgb(0xdcdfdc), roughness: 0.8, metalness: 0, normalMap: grain, normalScale: new THREE.Vector2(0.08, 0.08), specularIntensity: 0.4 }), 0.3)
-  const glass = physical({ color: srgb(0xbdc5c2), roughness: 0.44, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8 })
-  const glassSunk = physical({ color: srgb(0xbdc5c2), roughness: 0.44, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8, vertexColors: true })
-  const glassThick = physical({ color: srgb(0x9aa3a4), roughness: 0.48, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8 })
+  const glass = physical({ color: srgb(0xbdc5c2), roughness: 0.44, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8, ...frosted })
+  const glassSunk = physical({ color: srgb(0xbdc5c2), roughness: 0.44, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8, vertexColors: true, ...frosted })
+  const glassThick = physical({ color: srgb(0x9aa3a4), roughness: 0.48, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8, ...frosted })
   const aluminium = physical({
     color: srgb(0xb9bdc1), roughness: 0.3, metalness: 1, normalMap: brushed, normalScale: new THREE.Vector2(0.22, 0.22), anisotropy: 0.72, anisotropyRotation: Math.PI / 2
   })
