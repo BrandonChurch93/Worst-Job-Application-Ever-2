@@ -28,9 +28,9 @@ Frames 840 to 2759.
 | `step1.firstName` | 960 to 1439 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
 | `step1.lastName` | 1440 to 1739 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
 | `step1.email` | 1740 to 2039 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
-| `step1.resume` | 2040 to 2159 | `home`, then `film` | follows, pushes in | x 0, y 0, 1920 by 1080 | x 29.5, y 98.5, 1578.7 by 888 |
-| `step1.tug` | 2160 to 2534 | `film` | follows, pushes in | x 31.7, y 105.6, 1553.9 by 874.1 | x 56.1, y 187.2, 1271.2 by 715.1 |
-| `step1.shredded` | 2535 to 2759 | `film`, then `home` | follows, eases out | x 53.4, y 178, 1303 by 732.9 | x 0, y 0, 1920 by 1080 |
+| `step1.resume` | 2040 to 2159 | `home`, then `film` | follows, pushes in | x 0, y 0, 1920 by 1080 | x 42.7, y 74.2, 1605 by 902.8 |
+| `step1.tug` | 2160 to 2534 | `film` | follows, pushes in | x 45.8, y 79.6, 1582.1 by 889.9 | x 81.1, y 141, 1321.1 by 743.1 |
+| `step1.shredded` | 2535 to 2759 | `film`, then `home` | follows, eases out | x 77.1, y 134.1, 1350.5 by 759.6 | x 0, y 0, 1920 by 1080 |
 
 ## step2
 

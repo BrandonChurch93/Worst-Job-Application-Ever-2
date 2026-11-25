@@ -6,7 +6,7 @@ import { block } from '../../shell/metrics'
 import { SCREEN_H, TYPE } from '../../shell/parts'
 import { smooth } from '../../stage/camera'
 import type { CameraPose, DrawList, GagInfo, Hint, Mode, PageContext, PageLogic, Pointer, Shape, StepIo } from '../../stage/types'
-import { CAP_TOP, DECK, DECK_TOP, HATCH, hatchCentre, homePlaces, keyAt, onDeck, seatIndex, seats, shuffled, TRAVEL, typed } from './keyboard'
+import { CAP_TOP, DECK, DECK_TOP, hatchCentre, homePlaces, keyAt, onDeck, seatIndex, seats, shuffled, TRAVEL, typed } from './keyboard'
 import { buildLayout, FIELDS, PAPER, PAPER_LINES, PAPER_REST, PAPER_TITLE, SLAB, SLOT, ZONE, type FieldName } from './layout'
 import { BITE, filmCamera, makePlan, PILE, pointerAt, START, TIMES, TUG, tugCurve, tugReach, type Plan } from './script'
 import { Turrets, type TurretsState } from './turrets'
@@ -24,6 +24,7 @@ const SHRED = { zip: 1.1, reset: 1.5, end: 1.6 }
 const SLAB_HIGH = 110
 const SLAB_GAP = 8
 const PRESS = 0.24
+const LEGEND_CLEAR = 24
 
 type Phase = 'rest' | 'keyboard' | 'firstName' | 'lastName' | 'email' | 'slabs' | 'resume' | 'tug' | 'shredded' | 'received'
 const GAG: Record<Phase, string> = {
@@ -576,7 +577,7 @@ export function makePage(): PageLogic {
         const mouth = DECK.y + DECK.h - h
         if (h >= 2) out.push({ id: 'keyboard-well', part: 'keyboard', kind: 'well', x: DECK.x, y: mouth, w: DECK.w, h, z0: WELL, z1: 0, tone: 'dark' })
         over['keyboard-deck'] = { z0: WELL, z1: DECK_TOP + off }
-        for (const side of [0, 1]) over[`hatch-${side}`] = DECK_TOP + off > 0 || hatches[side]!.y - HATCH / 2 >= mouth ? { z0: DECK_TOP + off, z1: DECK_TOP + 0.6 + off } : null
+        for (const side of [0, 1]) over[`hatch-${side}`] = { z0: DECK_TOP + off, z1: DECK_TOP + 0.6 + off }
         const u = smooth(s.shuffle)
         seats.forEach((seat, key) => {
           const at = seatOf(key, u)
@@ -585,8 +586,8 @@ export function makePage(): PageLogic {
           const press = (s.keyDown[seat.name] ? TRAVEL : 0) + wave
           const top = CAP_TOP + off + hop - press
           const away = at.moved || s.places[key] !== key
-          const seen = top > 0 || at.y >= mouth
-          over[`key-${seat.name}`] = seen ? { x: at.x, y: at.y, z0: DECK_TOP + off + hop, z1: top, mechanism: top >= heights.machineMinTop, moved: away, ...(s.keyDown[seat.name] ? { tone: 'pocket' as const } : {}) } : null
+          const seen = top > 0 || at.y >= mouth + LEGEND_CLEAR
+          over[`key-${seat.name}`] = { x: at.x, y: at.y, z0: DECK_TOP + off + hop, z1: top, mechanism: top >= heights.machineMinTop, moved: away, ...(s.keyDown[seat.name] ? { tone: 'pocket' as const } : {}) }
           const legend = boxOf(layout, `key-${seat.name}`)
           const label = seat.name === 'space' ? null : boxOf(layout, `key-${seat.name}-legend`)
           if (label) over[`key-${seat.name}-legend`] = !seen ? null : { x: label.x + (at.x - legend.x), y: label.y + (at.y - legend.y), z0: top, z1: top, moved: away }

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
 import { stream } from '../src/core/random'
 import { pages } from '../src/pages'
+import { HANDOFF } from '../src/cursor/body'
 import { makePage } from '../src/pages/step1'
 import { drawFire, makeTurrets } from '../src/pages/step1/fire'
 import { PAPER_REST } from '../src/pages/step1/layout'
@@ -561,7 +562,7 @@ describe('the fixes after round 2 of the blockout', () => {
           expect(key, seat.name).toBeDefined()
           expect(legend.z0).toBe(key!.z1)
         }
-        if (key && key.z1 <= 0) expect(well && key.y >= well.y, seat.name).toBe(true)
+        if (legend && key!.z1 <= 0) expect(well && key!.y >= well.y, seat.name).toBe(true)
       }
       sinking++
     }
@@ -571,7 +572,16 @@ describe('the fixes after round 2 of the blockout', () => {
   it('does not move the cursor of the film before the page has set it down', () => {
     const page = makePage()
     const first = page.script(0)
-    for (let t = 0; t <= 0.6; t += 1 / stepHz) expect(page.script(t)).toEqual(first)
+    expect([first.x, first.y]).toEqual([HANDOFF.x, HANDOFF.y])
+    for (let t = 0; t <= 0.5; t += 1 / stepHz) expect(page.script(t)).toEqual(first)
+    const a = film()
+    let far = 0
+    for (let i = 0; i < at(1.2); i++) {
+      a.advance(1)
+      const pose = a.cursor.pose()
+      if (pose.z > 60) far = Math.max(far, Math.hypot(pose.x - HANDOFF.x, pose.y - HANDOFF.y))
+    }
+    expect(far).toBeLessThan(240)
   })
 })
 

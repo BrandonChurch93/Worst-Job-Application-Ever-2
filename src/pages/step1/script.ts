@@ -1,6 +1,6 @@
 import { config } from '../../config'
 import { stream } from '../../core/random'
-import type { Acting, Reaction } from '../../cursor/body'
+import { HANDOFF, type Acting, type Reaction } from '../../cursor/body'
 import { frame, homePose, mixPose, smooth } from '../../stage/camera'
 import type { CameraPose, Pointer } from '../../stage/types'
 import { homePlaces, seatIndex, seats, shuffled } from './keyboard'
@@ -21,6 +21,7 @@ export const FIRST = {
   after: [[7.44, 7.5, 7.72], [7.9, 7.95, 8.36], [8.5, 8.55, 8.75], [8.85, 8.9, 9.3]] as [number, number, number][],
   dodge: 3.3, duck: 4.4, cocky: 5.5, shock: [6.46, 7.24] as [number, number], thrown: { x: 260, y: -128 }
 }
+export const LAND = { until: 0.5, walk: 0.5 }
 export const SLAB_LEAD = 0.05
 export const DIVE = { start: 0, seconds: 0.14 }
 
@@ -68,9 +69,9 @@ export function makePlan(seed: number, first: string, last: string, email: strin
     click(t)
   }
 
-  hold(0, 0.6, START.x, START.y)
+  hold(0, LAND.until, HANDOFF.x, HANDOFF.y)
   const fieldSpot = { x: FIELD_X + 150, y: FIELD_Y + 36 + config.scale.sizes.field / 2 }
-  hold(1.0, 1.25, fieldSpot.x, fieldSpot.y)
+  hold(LAND.until + LAND.walk, 1.25, fieldSpot.x, fieldSpot.y)
   click(1.08)
   cues.push({ at: 0.55, act: 'confident' }, { at: 1.3, react: 'anticipate' }, { at: 2.35, react: 'doubleTake' })
 
