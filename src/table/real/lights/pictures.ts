@@ -4,7 +4,7 @@ import { localBalls, type Zone } from '../zone'
 import { CHANNELS, groupsOf, type Group, type Source } from './groups'
 
 // The light pictures of a zone: how much light of each group arrives at each place of the zone's floor, seen from straight above.
-// Three textures of four channels: ten groups, and the direction the light of the general lighting comes from.
+// Three textures of four channels: the groups, how far the general lighting leans from straight above (in the last group channel, which the flash leaves free), and the side it comes from.
 export interface Pictures {
   width: number
   height: number
@@ -16,6 +16,7 @@ export interface Pictures {
 export const TEXEL = 6
 // The body of every lamp, as the renderer's true lights have it, so a lamp may change from a picture to a true light and back unseen.
 export const BODY = 20
+export const LEAN = CHANNELS - 1
 
 interface Blocker { kind: 0 | 1 | 2; id: string; a: number; b: number; c: number; d: number; h: number }
 
@@ -175,7 +176,8 @@ function addSource(z: Zone, s: Source, plane: Float32Array, dir: Float32Array[] 
         const d = Math.sqrt(flat + s.z * s.z)
         dir[0]![j * w + i]! += (v * dx) / d
         dir[1]![j * w + i]! += (v * dy) / d
-        dir[2]![j * w + i]! += (v * s.z) / d
+        dir[2]![j * w + i]! += (v * len) / d
+        dir[3]![j * w + i]! += v
       }
     }
   }
@@ -191,23 +193,21 @@ export function picturesOf(z: Zone): Pictures {
   const groups: Group[] = groupsOf(z)
   const planes: Float32Array[] = []
   for (let c = 0; c < CHANNELS + 2; c++) planes.push(new Float32Array(w * h))
-  const dir = [new Float32Array(w * h), new Float32Array(w * h), new Float32Array(w * h)]
+  const dir = [new Float32Array(w * h), new Float32Array(w * h), new Float32Array(w * h), new Float32Array(w * h)]
   const all = blockersOf(z)
   for (const g of groups) {
     const plane = planes[g.index]!
-    if (g.name === 'flash') {
-      const general = planes[0]!
-      for (let i = 0; i < plane.length; i++) plane[i] = 0.34 + 0.5 * Math.min(1.6, general[i]!)
-      continue
-    }
+    if (g.name === 'flash') continue
+    if (g.index === LEAN) throw new Error(`The last channel of "${z.id}" is kept for the lean of the light and "${g.id}" is in it`)
     for (const s of g.sources) addSource(z, s, plane, g.mode === 2 ? dir : null, w, h, all)
     blur(plane, w, h)
   }
   for (const d of dir) blur(d, w, h)
   for (let i = 0; i < w * h; i++) {
-    const len = Math.hypot(dir[0]![i]!, dir[1]![i]!, dir[2]![i]!)
-    planes[CHANNELS]![i] = len > 1e-9 ? dir[0]![i]! / len : 0
-    planes[CHANNELS + 1]![i] = len > 1e-9 ? dir[1]![i]! / len : 0
+    const sum = dir[3]![i]!
+    planes[LEAN]![i] = sum > 1e-9 ? dir[2]![i]! / sum : 0
+    planes[CHANNELS]![i] = sum > 1e-9 ? dir[0]![i]! / sum : 0
+    planes[CHANNELS + 1]![i] = sum > 1e-9 ? dir[1]![i]! / sum : 0
   }
   const textures: THREE.DataTexture[] = []
   for (let t = 0; t < 3; t++) {
