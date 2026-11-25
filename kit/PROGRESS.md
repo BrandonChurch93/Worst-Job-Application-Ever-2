@@ -266,7 +266,7 @@ Kept by `npm run judged -- --write`. Check G6 compares its ids with the computed
 | `site:boss` | `site` | step 4 at rest, drawn through the live site's own path at the high level, from home, in hd |  |
 | `site:decision` | `site` | step 5 at rest, drawn through the live site's own path at the high level, from home, in hd |  |
 
-47 frames of the films and the loop. The frame numbers are those of the build of 2026-11-25T10:14:40Z. A judged frame is found again by its id when it is rendered, so a beat's frame follows its event.
+47 frames of the films and the loop. The frame numbers are those of the build of 2026-11-25T10:36:04Z. A judged frame is found again by its id when it is rendered, so a beat's frame follows its event.
 
 | Id | Unit | What | Frame |
 | --- | --- | --- | --- |
@@ -457,7 +457,7 @@ Ten build agents, the most the kit allows beside six critic slots. Each brief na
 
 One line per round: its number, the unit, the commit it judges, the parts ticked off, the scores, and what changes next.
 
-- Round 1, unit `blockout`, critic R4 blockout, judges commit 0dfc589, started 2026-11-25T10:34:28Z. Parts: machine checks [ ]; measures [ ]; pack [ ]; critics asked [ ]; reviewer-01 in [ ]; reviewer-02 in [ ]; reviewer-03 in [ ]; key released [ ]; issues read [ ]; summary [ ]. Scores: not in yet. What changes next: not known yet.
+- Round 1, unit `blockout`, critic R4 blockout, judges commit 0dfc589, started 2026-11-25T10:34:28Z. Parts: machine checks [x] (type check, 718 tests, build, bots, cut, mix, judged list, G3 G4 G5 G6 G7 G11 G12 G14 G17 G18 all pass); measures [x] (M4 M5 M6 M7 M9 M10 on all six pages and the film: 20 green, 12 red; M1 M2 M3 M8 not built yet); pack [ ]; critics asked [ ]; reviewer-01 in [ ]; reviewer-02 in [ ]; reviewer-03 in [ ]; key released [ ]; issues read [ ]; summary [ ]. Scores: not in yet. What changes next: not known yet.
 
 ## Final scores
 
