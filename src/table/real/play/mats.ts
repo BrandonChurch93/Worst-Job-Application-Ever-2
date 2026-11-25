@@ -37,7 +37,7 @@ function clearOf(z: Zone): THREE.MeshPhysicalMaterial {
     room.call(m, shader, renderer)
     shader.fragmentShader = shader.fragmentShader.replace(
       '#include <tonemapping_fragment>',
-      'float wjpEdge = pow( 1.0 - abs( dot( normalize( vViewPosition ), normalize( normal ) ) ), 2.4 );\ngl_FragColor.a = clamp( diffuseColor.a + wjpEdge * 0.3 + dot( outgoingLight, vec3( 0.3333 ) ) * 0.55, 0.0, 1.0 );\n#include <tonemapping_fragment>'
+      'float wjpEdge = pow( 1.0 - abs( dot( normalize( vViewPosition ), normalize( normal ) ) ), 2.4 );\ngl_FragColor.a = clamp( diffuseColor.a + wjpEdge * 0.3 + min( dot( outgoingLight, vec3( 0.3333 ) ) * 0.34, 0.2 ), 0.0, 1.0 );\n#include <tonemapping_fragment>'
     )
   }
   m.customProgramCacheKey = () => 'wja-studio-play-clear'

@@ -43,11 +43,11 @@ export function batGeometry(): THREE.BufferGeometry {
   const b = new Bag()
   b.add(lathe([[12.5, 0], [12.5, 1.2], [10, 2.4], [10, BAT.floor + 1]], 20), NYLON)
   b.add(lathe([[5, BAT.floor - 0.5], [5, BAT.floor + 2]], 12), SHAFT)
-  b.add(prism(batOutline(BAT.pivot - BAT.band, BAT.tip - BAT.band, len), BAT.floor, BAT.top, 2.6, 3), ORANGE)
-  b.add(prism(batOutline(BAT.pivot, BAT.tip, len), 16.5, 31.5, 1.5, 2), RUBBER)
-  b.add(prism(batOutline(BAT.pivot + 0.4, BAT.tip + 0.4, len, 10), 23.6, 24.4, 0), RUBBER_LINE)
-  const rib: V2[] = [[30, -4.2], [len - 2, -2.6], [len + 3, 0], [len - 2, 2.6], [30, 4.2], [26, 0]]
-  b.add(prism(rib, BAT.top - 0.4, BAT.top + 1.1, 0.7, 2), ORANGE_SOFT)
+  b.add(prism(batOutline(BAT.pivot - BAT.band, BAT.tip - BAT.band, len), BAT.floor, BAT.top, 4.2, 4), ORANGE)
+  b.add(prism(batOutline(BAT.pivot, BAT.tip, len), 14.5, 25.5, 1.5, 2), RUBBER)
+  b.add(prism(batOutline(BAT.pivot + 0.4, BAT.tip + 0.4, len, 10), 19.6, 20.4, 0), RUBBER_LINE)
+  const rib: V2[] = [[52, -3.4], [len - 44, -2.4], [len - 38, 0], [len - 44, 2.4], [52, 3.4], [46, 0]]
+  b.add(prism(rib, BAT.top - 0.4, BAT.top + 0.6, 0.5, 2), ORANGE)
   b.add(lathe([[15.5, BAT.top - 0.5], [15.5, BAT.top + 2.2], [14.2, BAT.top + 3.4], [9, BAT.top + 3.4]], 28), ORANGE)
   b.add(lathe([[9.4, BAT.top + 3], [9.4, BAT.top + 3.9], [8.6, BAT.top + 4.5], [0, BAT.top + 4.5]], 20), SHAFT)
   b.add(lathe([[7.2, BAT.top + 4.4], [7.2, BAT.top + 5.6], [6.4, BAT.top + 7], [4.6, BAT.top + 7.8], [3.6, BAT.top + 7.8]], 20), CHROME)
@@ -61,7 +61,7 @@ export function batGeometry(): THREE.BufferGeometry {
 const flippersOf = (z: Zone) => table.flippers.filter((f) => f.tier === z.tier)
 
 export const flippers = whole('flippers', {
-  version: 'play-flippers-4',
+  version: 'play-flippers-6',
   build(z) {
     const g = new THREE.Group()
     g.name = `play.flippers.${z.id}`

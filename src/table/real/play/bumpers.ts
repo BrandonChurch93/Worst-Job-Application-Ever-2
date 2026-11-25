@@ -10,17 +10,17 @@ import { drop, matsOf, part } from './mats'
 const PLATE = look(0xdde0e3, 0.2, 0.78, 0)
 const PRINT = look(0x20262a, 0.55, 0, 0.4)
 const PRINT_PALE = look(0xd9d4c4, 0.55, 0, 0.4)
-const SKIRT = look(0xeae7df, 0.34, 0, 0.7)
+const SKIRT = look(0xbdbab2, 0.42, 0, 0.5)
 const PAPER = look(0xe6dfd0, 0.86, 0, 0)
-const KRAFT = look(0xb5814b, 0.82, 0, 0)
-const KRAFT_DARK = look(0x8f6038, 0.85, 0, 0)
-const LID = look(0xf0eee8, 0.36, 0, 0.55)
+const KRAFT = look(0x7c4727, 0.82, 0, 0)
+const KRAFT_DARK = look(0x5e351d, 0.85, 0, 0)
+const LID = look(0xe4e1da, 0.34, 0, 0.6)
 const LID_DARK = look(0x2a2826, 0.7, 0, 0)
-const CHROME = look(0xe6e9ec, 0.12, 0.8, 0)
+const CHROME = look(0xf4f6f8, 0.18, 0.32, 1)
 const SCREW = look(0xd2d5d8, 0.26, 0.76, 0)
 
 // The heights of a cup, in page pixels over the floor.
-export const CUP = { foot: 10, footR: 46, rimZ: 90, rimR: 60, sleeve0: 23, sleeve1: 74, ringRest: 83, ringDown: 30, ringIn: 67, ringOut: 76, lidZ: 87, lidR: 74, deck: 100, top: 107, flutes: 60 }
+export const CUP = { foot: 12, footR: 46, rimZ: 88, rimR: 58, sleeve0: 22, sleeve1: 68, ringRest: 89, ringDown: 34, ringIn: 77.5, ringOut: 84.5, lidZ: 86, lidR: 76, deck: 100, top: 108, flutes: 60 }
 const wallR = (z: number): number => CUP.footR + ((CUP.rimR - CUP.footR) * (z - CUP.foot)) / (CUP.rimZ - CUP.foot)
 
 // The corrugated sleeve: a cone whose wall runs in and out in flutes.
@@ -50,8 +50,8 @@ function cup(b: Bag, x: number, y: number, seam: number): void {
   const turn = mat({ x, y, rz: seam })
   b.add(lathe([[97, 0.15], [97, 0.5], [91, 0.5]], 48), PRINT, m)
   b.add(lathe([[90.6, 0.15], [90.6, 0.6], [89.4, 0.6]], 48), PRINT_PALE, m)
-  b.add(lathe([[89, 0], [89, 1.6], [87.6, 2.7], [80, 2.7]], 48), PLATE, m)
-  b.add(lathe([[84.5, 2.6], [84.5, 3.8], [82.4, 5], [70, 10.4], [68.6, 10.4], [67.6, 11.6], [52, 18.6], [50.6, 19.8], [47.4, 20]], 48), SKIRT, m)
+  b.add(lathe([[89, 0], [89, 1.6], [87.6, 2.7], [78.4, 2.7], [77.6, 2.1], [76.4, 2.1], [75.6, 2.7], [70, 2.7]], 48), PLATE, m)
+  b.add(lathe([[74.5, 2.6], [74.5, 4], [72.8, 5], [55, 12.6], [53.4, 13.6], [47.4, 13.8]], 48), SKIRT, m)
   b.add(lathe([[wallR(CUP.foot), CUP.foot], [wallR(CUP.rimZ), CUP.rimZ]], 48), PAPER, m)
   b.add(lathe([[CUP.rimR, CUP.rimZ - 2], [CUP.rimR + 2.6, CUP.rimZ - 1.2], [CUP.rimR + 3.4, CUP.rimZ + 0.8], [CUP.rimR + 2.4, CUP.rimZ + 2.6], [CUP.rimR - 1, CUP.rimZ + 3]], 48, 80), PAPER, m)
   b.add(sleeve(), KRAFT, m)
@@ -70,12 +70,12 @@ function cup(b: Bag, x: number, y: number, seam: number): void {
 // The steel ring and its two rods, round the z axis with the ring's middle at z = 0.
 function ringGeometry(): THREE.BufferGeometry {
   const b = new Bag()
-  const section: V2[] = [[CUP.ringIn, -1.6], [CUP.ringIn + 1.4, -2.6], [CUP.ringOut - 1.4, -2.6], [CUP.ringOut, -1.2], [CUP.ringOut, 1.2], [CUP.ringOut - 1.4, 2.6], [CUP.ringIn + 1.4, 2.6], [CUP.ringIn, 1.6], [CUP.ringIn, -1.6]]
+  const section: V2[] = [[CUP.ringIn, -2.4], [CUP.ringIn + 1.6, -3.6], [CUP.ringOut - 2, -3.6], [CUP.ringOut, -1.8], [CUP.ringOut, 1.8], [CUP.ringOut - 2, 3.6], [CUP.ringIn + 1.6, 3.6], [CUP.ringIn, 2.4], [CUP.ringIn, -2.4]]
   b.add(lathe(section, 56, 50), CHROME)
   for (const side of [-1, 1]) {
     const x = side * (CUP.ringIn + CUP.ringOut) * 0.5
-    b.add(rod([x, 0, -CUP.ringRest - 4], [x, 0, 2.4], 1.9, 8), SCREW)
-    b.add(lathe([[4.2, 2.4], [4.2, 4.6], [3.2, 5.4], [0, 5.4]], 6, 30), SCREW, mat({ x }))
+    b.add(rod([x, 0, -CUP.ringRest - 4], [x, 0, 3.4], 1.9, 8), SCREW)
+    b.add(lathe([[4.2, 3.4], [4.2, 5.6], [3.2, 6.4], [0, 6.4]], 6, 30), SCREW, mat({ x }))
   }
   return b.done()
 }
@@ -85,7 +85,7 @@ const lidProfile = (): V2[] => {
   const d = CUP.deck
   const r = CUP.lidR
   const z = CUP.lidZ
-  return [[r - 3, z - 0.5], [r - 1, z], [r, z + 1.5], [r, z + 7], [r - 1.2, z + 8.6], [r - 4, z + 9.2], [r - 9, z + 9.2], [r - 10.4, z + 10.4], [r - 11.4, t - 1.6], [r - 12.6, t - 0.3], [r - 14.5, t], [r - 18.5, t], [r - 20.2, t - 0.5], [r - 21, t - 2], [r - 21.8, d + 1], [r - 23, d], [40, d], [39.2, d + 0.9], [37.4, d + 0.9], [36.6, d], [0, d]]
+  return [[r - 3, z - 1], [r - 0.8, z - 0.4], [r, z + 1.4], [r, z + 4.6], [r - 1, z + 6], [r - 3, z + 6.6], [r - 8, z + 6.8], [r - 9.4, z + 8], [r - 11, t - 2], [r - 12.2, t - 0.4], [r - 14, t], [r - 19, t], [r - 20.6, t - 0.6], [r - 21.4, t - 2.2], [r - 22.6, d + 1.2], [r - 24, d], [40, d], [39.2, d + 0.9], [37.4, d + 0.9], [36.6, d], [0, d]]
 }
 
 function lidGeometry(): THREE.BufferGeometry {
@@ -110,7 +110,13 @@ function glowGeometry(): THREE.BufferGeometry {
   const c: number[] = []
   const n = 48
   const lid = lidProfile().map((q) => [q[0] + 0.5, q[1] + 0.6] as V2)
-  const shine = (r: number, z: number): number => (z < CUP.lidZ + 6 ? 0.2 : 0.24 + 0.76 * Math.pow(Math.max(0, 1 - r / CUP.lidR), 1.4))
+  const deckR = CUP.lidR - 24
+  const shine = (r: number, z: number): number => {
+    if (z < CUP.lidZ + 5.4) return 0.2
+    if (z < CUP.lidZ + 8) return 0.32
+    if (r > deckR + 0.6) return z > CUP.top ? 0.5 : 0.27
+    return 0.4 + 0.6 * Math.pow(Math.max(0, 1 - r / deckR), 1.1)
+  }
   const band = (r0: number, z0: number, v0: number, r1: number, z1: number, v1: number, tint: [number, number, number] = [1, 1, 1]): void => {
     for (let i = 0; i < n; i++) {
       const a0 = (i / n) * Math.PI * 2
@@ -131,8 +137,8 @@ function glowGeometry(): THREE.BufferGeometry {
       }
     } else band(a[0], a[1], shine(a[0], a[1]), b[0], b[1], shine(b[0], b[1]))
   }
-  band(CUP.rimR + 4.4, CUP.sleeve1 + 1, 0.3, CUP.rimR + 4.4, CUP.lidZ + 1, 0.8)
-  band(wallR(CUP.sleeve0) + 3.2, CUP.sleeve0, 0.05, wallR(CUP.sleeve1) + 3.2, CUP.sleeve1, 0.5, [1, 0.42, 0.14])
+  band(wallR(CUP.sleeve1) + 1, CUP.sleeve1 + 0.6, 0.55, wallR(CUP.lidZ) + 4, CUP.lidZ - 1, 1, [1, 0.74, 0.4])
+  band(wallR(CUP.sleeve0) + 3.2, CUP.sleeve0, 0.02, wallR(CUP.sleeve1) + 3.2, CUP.sleeve1, 0.3, [1, 0.42, 0.14])
   const g = new THREE.BufferGeometry()
   g.setAttribute('position', new THREE.Float32BufferAttribute(p, 3))
   g.setAttribute('color', new THREE.Float32BufferAttribute(c, 3))
@@ -151,7 +157,7 @@ export const ringDown = (t: number): number => (t < 0.03 ? t / 0.03 : 1 - ease(0
 export const lidJump = (t: number): number => (t > 0.7 ? 0 : 4.5 * Math.exp(-7 * t) * Math.abs(Math.sin((Math.PI * t) / 0.14)))
 
 export const bumpers = whole('bumpers', {
-  version: 'play-bumpers-9',
+  version: 'play-bumpers-12',
   build(z) {
     const g = new THREE.Group()
     g.name = `play.bumpers.${z.id}`
@@ -208,7 +214,7 @@ export const bumpers = whole('bumpers', {
       b.lids.setMatrixAt(i, b.m.makeRotationZ(SEAMS[i % SEAMS.length]! + 2.4).setPosition(p[0], p[1], jump))
       const level = (L.byName[`bumper.${i + 1}`] ?? 0) * 1.5
       const glow = b.glows[i]!
-      ;(glow.material as THREE.MeshBasicMaterial).color.setRGB(col[0] * level, col[1] * level * 0.92, col[2] * level * 0.74)
+      ;(glow.material as THREE.MeshBasicMaterial).color.setRGB(col[0] * level, col[1] * level, col[2] * level)
       glow.position.z = jump
       glow.visible = level > 0.004
     })
