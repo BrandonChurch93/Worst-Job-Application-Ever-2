@@ -1,35 +1,35 @@
 {
   "folder": "acting3",
-  "pushed": "2026-11-25T21:45:36.990Z",
-  "commit": "901eae755775d3fec152eb35fd829e68c8c63b2a",
+  "pushed": "2026-11-25T22:09:21.288Z",
+  "commit": "6dd241b76811139eef31d23ed1cc81a7bd2a963c",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "step1.keyboard after a7bb397: hop to the field 1.0 to 1.17 s, wind and strike, reared hold after the keyboard rises",
-      "time": "2026-11-25T21:45:35.179Z",
+      "caption": "Consecutive frames of the hit on the cursor: the event bolt-hit at 0:19.80 in step1.firstName, review tier, preview",
+      "time": "2026-11-25T22:05:43.974Z",
       "by": "acting3",
-      "from": "out/work/sheets/sheet-beat-step1_keyboard-preview-draft.jpg"
+      "from": "out/work/sheets/sheet-motion-hit-preview-review.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "step1.firstName after a7bb397: held recoil on the struck key at 6.0 s, held poses between the dashes",
-      "time": "2026-11-25T21:45:35.434Z",
+      "caption": "Sheet cursor-acting: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-25T22:09:19.802Z",
       "by": "acting3",
-      "from": "out/work/sheets/sheet-beat-step1_firstName-preview-draft.jpg"
+      "from": "out/work/compare/compare-cursor-acting.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "step1.shredded after a7bb397: pile stirs before the zip, exhausted droop and trudge at home size",
-      "time": "2026-11-25T21:45:35.661Z",
+      "caption": "the acting sheet beside the approved image: the row's outer gutters 0.067 and 0.064 of the width (approved 0.068 and 0.049), sizes and poses unchanged",
+      "time": "2026-11-25T22:09:20.038Z",
       "by": "acting3",
-      "from": "out/work/sheets/sheet-beat-step1_shredded-preview-draft.jpg"
+      "from": "out/work/compare/compare-cursor-acting.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "key step1-fire at 6.0 s beside the approved image, draft: the arrow whole and still on the struck key",
-      "time": "2026-11-25T21:45:35.883Z",
+      "caption": "the hit at review tier: the arrow stands a key to the left of the flash for 0.07 s, squashed and whole, then comes back and holds its recoil",
+      "time": "2026-11-25T22:09:20.266Z",
       "by": "acting3",
-      "from": "out/work/compare/compare-step1-fire.jpg"
+      "from": "out/work/sheets/sheet-motion-hit-preview-review.jpg"
     }
   ]
 }
