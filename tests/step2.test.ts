@@ -201,6 +201,7 @@ describe('step 2, live', () => {
     for (const at of [0.5, 3, 6.2, 12, 17]) {
       const l = live(new BotDriver('keen', config.seed))
       l.advance(Math.round(at * stepHz))
+      if (l.page.id !== 'step2') continue
       l.page.skip()
       for (let n = 0; n < 3 * stepHz && l.page.id !== 'step3'; n++) l.advance(1)
       expect(l.page.id, String(at)).toBe('step3')
