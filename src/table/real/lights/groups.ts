@@ -106,7 +106,7 @@ function build(z: Zone): Group[] {
     inserts.forEach(insert)
     const fire = model('street.firehouse')
     const police = model('street.police')
-    const beacon = (m: Model): Source => at(centre(m)[0], m.box[1] + m.box[3] * 0.3, m.h * BALL + 24, 2.0, 7.5, m.id)
+    const beacon = (m: Model): Source => at(centre(m)[0], m.box[1] + m.box[3] * 0.3, m.h * BALL + 24, 1.1, 5.2, m.id)
     add('red', 1, C.STREET_RED, [beacon(fire)], true)
     add('blue', 1, C.STREET_BLUE, [beacon(police)], true)
     const windows: Source[] = []

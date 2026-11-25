@@ -24,6 +24,7 @@ Branch `agent/lights`. Part `table-lights` and `hook`, both in `src/table/real/l
 - The globes are brightest where they face the eye and fall to 0.3 at their edge, so each reads as a ball of opal glass and not a flat white disc.
 - `CORPORATE_WINDOW` went from 1.0, 0.74, 0.4 to 1.0, 0.83, 0.6 and the lamp at the HQ door from power 1.3 to 0.85, as the corporate owner asked: the gold light turned the steel of the tower to brass.
 - The four street lamps of the shoulders (places from the street owner) are sources in `street.windows`. Not done: a source in the open cellar of Mom's hatch. The street has all ten channels in use and the cellar is lit only while its doors are open, which needs a level of its own.
+- The beacons went from power 2.0 and reach 7.5 balls to power 1.1 and reach 5.2 balls: at full level the red one washed the whole steel wall behind the firehouse pink in `youre-fired` (seen in the scratch merge at 17:08 UTC; at 17:10 UTC the red falls off along the wall).
 - Rail lamps: times 1.3 in corporate, 0.8 in the office (its floor is pale), 1.35 in the street.
 - Windows, displays, the marquee panel and the flash are fields with no one direction: lit by height and by how far a surface faces up.
 - The law of fall off in the pictures is the law of the true lights of the renderer, so a lamp that turns into a true light near the clear ball changes nothing but its shadows.
