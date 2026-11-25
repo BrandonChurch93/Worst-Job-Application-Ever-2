@@ -13,11 +13,11 @@ const FLOOR = 20.5
 const COL = 17
 const WHITE: RGB = [1, 0.9, 0.72]
 const COOL: RGB = [WHITE[0] / colours.CORPORATE_WINDOW[0], WHITE[1] / colours.CORPORATE_WINDOW[1], WHITE[2] / colours.CORPORATE_WINDOW[2]]
-const STEEL = hex(0x93a5c4)
-const STEEL_DARK = hex(0x6b7a94)
+const STEEL = hex(0x9ca8bd)
+const STEEL_DARK = hex(0x727d8f)
 const PORTAL = hex(0x7a6238)
 const ROOF = hex(0x474c55)
-const BRIGHT = hex(0xb2c1dc)
+const BRIGHT = hex(0xbac4d4)
 const HALL = 4
 const warmLamp = (k: number): RGB => [COOL[0] * k, COOL[1] * k * 0.92, COOL[2] * k * 0.79]
 // The light of the hall seen through its glass: amber where it is dim, cream where it is bright.
