@@ -9,16 +9,16 @@ import { hex, Kit, matsOf, meshOf, mix, rrect, screwGeometry, shade, SURF, type 
 import { staplerScrews } from './staplers'
 
 const C = {
-  slab: hex(0x3b4046),
-  carpet: hex(0x4d5660),
-  aisle: hex(0x5d6670),
-  fabric: [hex(0x9a8e7c), hex(0x8f8573), hex(0xa39783)] as RGB[],
-  frame: hex(0x8d9196),
-  cap: hex(0xa9adb1),
+  slab: hex(0x5c5850),
+  carpet: hex(0x857f70),
+  aisle: hex(0x979181),
+  fabric: [hex(0xb5a88f), hex(0xa99c84), hex(0xbfb298)] as RGB[],
+  frame: hex(0x9a9c9e),
+  cap: hex(0xcfcabd),
   kick: hex(0x55585c),
-  wood: hex(0xb98a56),
-  woodEdge: hex(0x7a5836),
-  steel: hex(0xb4b8bc),
+  wood: hex(0xc2a37a),
+  woodEdge: hex(0x8a6a48),
+  steel: hex(0x8f9499),
   grey: hex(0x8b8f93),
   dark: hex(0x1c1d20),
   screen: hex(0x0c0f14),
@@ -28,7 +28,7 @@ const C = {
   notes: [hex(0xe9d95a), hex(0x8fc7e8), hex(0xe58aa8), hex(0x9fd58a)] as RGB[],
   pin: hex(0xb3202a),
   mugs: [hex(0xe9e6dd), hex(0x27406b), hex(0x3f6b4c), hex(0xd9c24a), hex(0x2f7f86), hex(0x7b4a6e)] as RGB[],
-  seats: [hex(0x2c3340), hex(0x39424a), hex(0x2f4a55), hex(0x40363c), hex(0x2c3340), hex(0x364034)] as RGB[],
+  seats: [hex(0xb09a78), hex(0x8f8672), hex(0xa58d6c), hex(0x4f6a82), hex(0xb7a283), hex(0x9a8468)] as RGB[],
   lamps: [hex(0x2a2c30), hex(0x3d5a48), hex(0x2a2c30), hex(0x8a8d91), hex(0x27406b), hex(0x2a2c30)] as RGB[],
   cabinet: hex(0xa7a493),
   cooler: hex(0xdcdad2),
@@ -310,12 +310,13 @@ function small(k: Kit, f: Kit, c: Kit, z: Zone, r: Random): void {
     const [x, y] = at('plant')
     k.lathe(x, y, 0, [[9.5, 0], [10.2, 1.2], [13.6, 20], [14.6, 20.6], [14.6, 23.4], [12.6, 23.4], [12.2, 20.6], [0, 20.6]], [C.pot, C.pot, C.pot, shade(C.pot, 1.06), shade(C.pot, 0.9), shade(C.pot, 0.7), C.soil], [SURF.gloss, SURF.gloss, SURF.gloss, SURF.gloss, SURF.gloss, SURF.matte, SURF.matte], 18)
     k.lathe(x, y, 0, [[16, 0], [16.6, 1.6], [12, 2.2]], [shade(C.pot, 0.9), shade(C.pot, 0.96)], SURF.gloss, 18)
-    const n = 13
+    const n = 11
     for (let i = 0; i < n; i++) {
-      const a = (i / n) * Math.PI * 2 * 2.4 + r.range(-0.2, 0.2)
-      const lift = 0.35 + (i / n) * 0.75
-      leaf(f, x, y, 21, a, r.range(22, 34) * (1.1 - lift * 0.3), r.range(7, 10), lift, mix(C.leaf, C.dust, r.range(0.25, 0.6)))
+      const a = i * 2.39996 + r.range(-0.25, 0.25)
+      const lift = 0.3 + (i / n) * 0.95
+      leaf(f, x, y, 21, a, r.range(24, 33) * (1.12 - lift * 0.42), r.range(15, 20) * (1.05 - lift * 0.3), lift, mix(C.leaf, C.dust, r.range(0.2, 0.55)))
     }
+    f.cyl(x, y, 20.6, 1.6, 9, shade(C.leaf, 0.7), SURF.matte, 6, 0.3)
   }
 }
 
