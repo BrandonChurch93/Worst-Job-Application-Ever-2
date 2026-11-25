@@ -97,3 +97,33 @@ Decisions, numbered on from 32.
 - At the key the left arm goes under the body for a third of its length, and the lower third of the still frame is bare page.
 - Between 27.1 and 27.4 s the arms hang with the hands just over the rim above the machine while they spring back.
 - (Decision 45.) `TUG.least` 28, supersedes 38: at 26.4 s with 21 the lower hand of the tilted pair lay at the machine's north edge. The last haul leans 0.15 and not 0.51 (`TUG_CURVE` row 4.6), so the cursor still moves more than 5 px in every second with the longer least hold.
+
+## Fix round 3, 25 November, branch agent/paper
+
+Decisions, numbered on from 46.
+
+46. The pickup, the proud hold and the carry play inside the tug frame. `PAPER_REST` is 640, 678 (it was 1078, 854): the sheet slides in under the drop zone's lower rim, left of the slot. The camera goes in between 20.3 and 21.1 s (it was 20.9 to 21.95), so the crouch at 20.78, the heave at 20.99 and the hold are seen at the size of the tug. At home size the arrow is 17 px tall on a sheet of twelve frames and no pose reads.
+47. `RESUME` (script.ts): a wind-up where it stands at 19.9, a strut from 20.04 to 20.42 to the right of where the sheet comes in, an eager tap at 20.5, a crouch at 20.78, the grip at 20.96 on the middle of the sheet's right edge (`hold`), a heave with a hop from 20.99 to 21.07, a dip of 9 px under the weight to 21.14, `proud` from 21.0 with the dust-off at 21.1, the sheet held 34 px up over the grip and 16 px higher off the page (`raise`, `high`, `raised()`) and still until 21.36, a strut to the slot to 21.54, a stop over it, the drop at 21.62 as before.
+48. The tug's temper (`TEMPER`): two stamps (a hop and a tap, 22.24 and 24.12) and a wind-up before each haul (22.3, 23.0, 23.76, 24.56). In the film the page no longer sets the state from the amount and no longer flinches at each strain: the flinch read as protecting itself. Nothing is cued in the half second before the key picture at 25.125.
+49. Scared is held before the loss: the big bite at 25.22 to 25.5, a start at 25.3 and `scared` from 25.32, the body turned back twice (25.62, 26.06) and held while the sheet stands at 0.61 to 0.655, a small win back to 0.63 at 26.22, then the sheet goes in 0.32 s.
+50. The loss is at 26.54 (`TIMES.tugFilm` 4.52, it was 5.06) and the body stays lost until 27.38 (`TIMES.lostFilm` 0.84; live keeps 0.3): thrown back at 26.54, small, low and turned away from 27.0, pale. The shredder takes it at 27.38 as before, so `SHRED` and every time after it stand.
+51. The frame's top is 205 px over the slot (it was 191): 14 px less bare page under the machine. No further: at 230 the cursor's pile at 28.2 s is cut by the lower edge.
+52. Declined to `/root/acting_closer`: holding the tug frame until 30.25 s. `tests/step1.test.ts` holds the camera at home once the form says the resume was received, and the message would be cut by the frame.
+
+Tests changed, each where a number of mine changed: `tests/step1.test.ts` and `tests/cursor-act.test.ts`, the arms are out for more than 4.4 s (it was 5: the tug is 4.52 s).
+
+53. The held sheet is folded (`FOLD`, `folded`, `fold` in `real/paper.ts`): a ridge from each hand to the mouth where the pull runs, a buckle between them, a dent under each thumb, the free top edge curled up between the hands and the two side edges curled. It is a height field over the solved grid, in step with the bite and the hands, stronger with the pull. Three things are made from it. The grid is moved along its normals by 0.4 of the height (round ridges). The normals turn by 0.4 of its slope. The light of the folds is painted in the sheet's vertex colours (`foldTone`): the slope of the sharp-crested ridges toward the key, 0.75 of it, at most 0.1 lighter and 0.3 darker. Tried and dropped, each rendered and looked at: turning the normals by the full slope of a sharp ridge drew a dark saw edge along the grid's diagonals at both tiers; moving the grid by the full height put the print, which is laid on few points, under the sheet. The four older soft creases (`CREASES`) are kept at 0.45 of their shade: at full they read as smudges beside the new folds.
+54. The thumb dents are where `/root/arms_fixer` lays the thumbs (its message of 21:40): 3.5 px inside each side edge, the left 0.1 of the sheet's length under the top corner, the right 0.06. `TUG.hands` is unchanged.
+55. The print is finer and lighter: the title ink is 0x606166 (it was 0x2b2a28), the bars 0xa3a4a8 (0x8c8c90) and 0.8 px high (1.1), the lines between them 0.6 px. The title stays 14 px: it is the smallest type the measure allows. The print rides 0.5 px over the sheet (`PRINT_LIFT`, it was 0.12) so no fold comes through it.
+56. The frame of the machine (`EAR` in `real/shredder.ts`): an anodised plate (0x8f939a, roughness 0.55, darker than the housing) at each end of the opening, 6.6 px wide, flush with the page (0.36 px proud), a 0.32 px dark seam round it and two socket screws through it. The two panels run between the plates. A plate grows out from the opening's end as the panels part, so nothing shows on the page at rest. The dark line round a panel's foot is 0.4 px (it was 1), a seam and not a border.
+57. The strips (`TIP` in `real/shredder.ts`): the free end of each rolls up off the page by 1.3 to 3.9 radians, from 0.4 to 0.62 of its length, each from its own numbers; the twist along a strip is up to 1.3 radians (it was 0.45). A strip is 36 segments (it was 26). The shadow of each is its own: the strips mesh casts.
+58. Item 4 is answered in part only. The frame cannot go up or in: the cursor's pile at 28.2 s reaches 143 px under the slot and the frame's lower edge is 144 px under it, and the Builder's note of round 4 and `tests/step1-script.test.ts` hold the frame still between the move in and the move out. What fills the lower part now is the curled strips with their shadows and the two plates.
+
+Still wrong, looked at in the compare of `step1-tug` and the sheets of `step1.resume` and `step1.tug` at the draft tier:
+
+- The sheet is smaller in the frame than the approved one. Its folds now have a dark side and a crest, but the left one is faint and none is a hard crease as in the approved image.
+- The title is still the heaviest thing on the sheet: at 14 px it is three quarters of the sheet's width. The approved title is a third of it.
+- The strips' rolled ends are short and read as nubs at the film's size; the strips still hang in one straight comb under the hood.
+- The lower fifth of the key frame is bare page.
+- At the pickup the grabbing hand crosses the card's rim. The two stamps of the temper are small at the sheet's size.
+

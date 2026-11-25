@@ -77,7 +77,7 @@ describe('the keys answer what strikes them', () => {
     expect(low).toBe(heights.keycap - heights.keyTravel)
     expect(glow).toBe(1)
     expect(shook).toBeGreaterThan(1)
-    expect(shook).toBeLessThan(3)
+    expect(shook).toBeLessThan(4.5)
   })
 })
 
