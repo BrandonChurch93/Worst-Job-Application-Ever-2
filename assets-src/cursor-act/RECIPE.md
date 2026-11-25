@@ -13,7 +13,7 @@ Date: 2026-11-25
 ## The arms and hands (geometry only, no picture)
 Made by: `makeArms()` in `src/cursor/act/arms.ts`
 From: no input file. `ARM` and `HAND` at the top of that file hold every size, all as shares of `cursor.heightPxAt1080`
-Prompt or command: none. Both arms are one tube mesh of 22 by 10 segments each, redrawn each frame from shoulder to hand; the palms, the cuff rings and the finger joints are three instanced meshes. Four draws for the pair. An arm is 5.4 percent of the body's height thick
+Prompt or command: none. Both arms are one tube mesh of 22 by 10 segments each, redrawn each frame from shoulder to hand; the palms, the cuff rings and the finger joints are three instanced meshes. Four draws for the pair. An arm is 7 percent of the body's height thick and widens to the wrist
 Takes: about 16 looks of the 40 allowed
 Why this one: thin matte arms with a ring at the wrist and a hand of three fingers and a thumb, as in `references/approved/cursor-arms.png`
 Date: 2026-11-25

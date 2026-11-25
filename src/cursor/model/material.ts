@@ -45,7 +45,8 @@ void wjaHoles( vec3 rest ) {
     vec4 h = uHoles[ i ];
     if ( h.z <= 0.0 ) continue;
     vec2 d = rest.xy - h.xy;
-    float r = h.z * wjaRag( d, uBurnt[ i ] ) * ( 0.85 + 0.15 * clamp( rest.z / 2.3, 0.0, 1.0 ) );
+    float k = clamp( rest.z / 2.3, 0.0, 1.0 );
+    float r = h.z * wjaRag( d, uBurnt[ i ] ) * mix( 0.85 + 0.15 * k, 0.24 + 0.76 * pow( k, 1.6 ), uBurnt[ i ] );
     if ( dot( d, d ) < r * r ) discard;
   }
 }
@@ -122,14 +123,15 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
     texture2D( uDetail, q / 1.9 + vec2( e, 0.0 ) ).g - texture2D( uDetail, q / 1.9 - vec2( e, 0.0 ) ).g,
     texture2D( uDetail, q / 1.9 + vec2( 0.0, e ) ).g - texture2D( uDetail, q / 1.9 - vec2( 0.0, e ) ).g );
   float bare = step( 1.5, vInk );
-  float ink = smoothstep( 0.3, 0.7, vInk ) * ( 1.0 - bare ) * ( 1.0 - smoothstep( 0.0, 0.55, melt ) );
+  float reach = clamp( 3.7 * fwidth( vInset ), 0.5, 0.86 );
+  float ink = max( smoothstep( 0.3, 0.7, vInk ), 1.0 - smoothstep( reach - 0.05, reach + 0.03, vInset ) ) * ( 1.0 - bare ) * ( 1.0 - smoothstep( 0.0, 0.55, melt ) );
   ink *= 1.0 - uShape.x * smoothstep( 0.2, 0.34, vInset );
   float face = 1.0 - ink;
-  vec3 col = mix( enamel, edge * 0.6, ink );
+  vec3 col = mix( enamel, edge * 0.5, ink );
   wjaRough = mix( 0.3, 0.42, ink );
-  wjaCoatRough = mix( 0.09, 0.16, ink );
-  wjaCoat = mix( 1.0, 0.3, ink );
-  wjaSpec = mix( 1.0, 0.3, ink );
+  wjaCoatRough = mix( 0.09, 0.2, ink );
+  wjaCoat = mix( 1.0, 0.22, ink );
+  wjaSpec = mix( 1.0, 0.22, ink );
 
   // A cut face: bare fired clay, with the dark of the edge band only at its foot.
   if ( bare > 0.5 ) {
@@ -220,8 +222,8 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
     float r = hole.z * wjaRag( d, burnt );
     float from = length( d ) / r + ( mid.g - 0.5 ) * 0.16 + ( fine.b - 0.5 ) * 0.14;
     float soot = ( 1.0 - smoothstep( 1.1, 1.62, from ) ) * burnt;
-    float crust = ( 1.0 - smoothstep( 1.14, 1.27, from ) ) * burnt;
-    col = mix( col, col * vec3( 0.46, 0.27, 0.12 ), soot * soot * 0.95 );
+    float crust = ( 1.0 - smoothstep( 1.16, 1.32, from ) ) * burnt;
+    col = mix( col, col * vec3( 0.3, 0.215, 0.14 ), soot * soot * 0.95 );
     col = mix( col, vec3( 0.014, 0.012, 0.010 ) + 0.03 * fine.g * mid.b, crust );
     float chipAt = length( d ) / r + ( fine.g - 0.5 ) * 0.2 + ( mid.b - 0.5 ) * 0.14;
     float chip = ( 1.0 - smoothstep( 1.3, 1.36, chipAt ) ) * ( 1.0 - burnt );
@@ -236,7 +238,7 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
     wjaTilt += grain * ( 4.0 * crust + 6.0 * chip );
     float lip = ( 1.0 - smoothstep( 1.0, 1.16, from ) ) * hole.w * burnt;
     float spark = smoothstep( 0.46, 0.72, fine.b * 0.6 + mid.g * 0.6 - 0.25 * ( 1.0 - hole.w ) );
-    float lee = 0.25 + 0.75 * smoothstep( -0.5, 0.8, dot( normalize( d ), vec2( -0.5, 0.86 ) ) );
+    float lee = 0.04 + 0.96 * smoothstep( 0.1, 0.95, dot( normalize( d ), vec2( -0.5, 0.86 ) ) );
     wjaGlow += mix( vec3( 0.85, 0.07, 0.01 ), vec3( 1.25, 0.6, 0.12 ), hole.w * fine.g ) * lip * lee * ( 0.07 + 2.2 * spark );
   }
   return col;
