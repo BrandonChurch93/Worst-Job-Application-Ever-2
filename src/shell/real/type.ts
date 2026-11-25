@@ -292,7 +292,7 @@ const groundOfShape = (u: Shape): Ground => (u.role === 'field' ? 'glass' : u.to
 let seenList: Shape[] | null = null
 const seenGround = new Map<string, Ground>()
 
-// What a run lies on: the part its id names, or else the highest thing whose top is at the run's height under its middle.
+// What a run lies on: the part its id names when the run's middle is over it, or else the highest thing whose top is at the run's height under its middle.
 export function groundOf(s: Shape, ctx: RealContext): Ground {
   if (ctx.list !== seenList) {
     seenList = ctx.list
@@ -301,20 +301,20 @@ export function groundOf(s: Shape, ctx: RealContext): Ground {
   const hit = seenGround.get(s.id)
   if (hit) return hit
   let found: Ground | null = null
+  const cx = s.x + s.w / 2
+  const cy = s.y + s.h / 2
   const cut = s.id.lastIndexOf('-')
   if (cut > 0) {
     const stem = s.id.slice(0, cut)
     for (const id of [`${stem}-cap`, `${stem}-pocket`, stem]) {
       const u = ctx.byId.get(id)
-      if (u && u.kind !== 'text' && u.kind !== 'well') {
+      if (u && u.kind !== 'text' && u.kind !== 'well' && cx >= u.x && cx <= u.x + u.w && cy >= u.y && cy <= u.y + u.h) {
         found = groundOfShape(u)
         break
       }
     }
   }
   if (!found) {
-    const cx = s.x + s.w / 2
-    const cy = s.y + s.h / 2
     let best: Shape | null = null
     for (const u of ctx.list) {
       if (u.kind === 'text' || u.kind === 'well' || u === s) continue

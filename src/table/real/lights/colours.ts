@@ -35,7 +35,7 @@ export const FILL: Record<string, RGB> = {
 }
 
 // How bright a lens is when its lamp is on, in linear light: the middle is above the threshold of the lens glow, the rim below.
-export const LENS = { on: 2.6, rim: 0.34, off: 0.0 }
+export const LENS = { on: 2.0, window: 1.45, rim: 0.3, off: 0.0 }
 // The lamp in a bumper stands at this share of the general lighting and flashes to full on a hit.
 export const BUMPER = { rest: 0.5, seconds: 0.25 }
 
