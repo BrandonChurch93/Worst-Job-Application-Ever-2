@@ -435,6 +435,103 @@ NOT IN THE IMAGE: no people, no hands, no faces, no cars with drivers; no cabine
 SCALE, with the ball as the unit: the frame is twenty balls wide and eleven tall. A flipper is three balls long. Every lane, every ramp and the lift tube are one and a half balls wide, so the ball fits in each of them with room to spare.
 ```
 
+### G1 · The whole machine from the player's end
+
+- File: `references/drafts/round-6/G1-machine-wide.png`
+- Model: `seedream_5`
+- Takes made: 4 of 4 allowed. Kept: take 3.
+- How it was made: Take 3 as generated, with one retouch after generation. The plate over the drain came out as "Uemployment Office". Re-making the plate with the same model (the method used for G5: a 768 px square crop sent back with the instruction to change only the lettering) was tried twice and failed twice: "Jemployment Office" and "Uamployment Office". So the plate was fixed by hand on the 2816 px original: the lettering was lifted off the plate, the "U" was moved 11 px left, "employment" 10 px right and "Office" 6 px right, and a copy of the plate's own "n" (the one in "ment") was set between the "U" and the "e". No letter was drawn. Nothing outside the plate (412 by 78 px of the 2816 px original) was changed. The judge whose answer is quoted below saw the retouched file. The retouch was not counted as a take.
+- Reference images passed in, in order: `references/guides/round-6/guide-machine-wide.png` (the unlabeled guide); the G2 join (take 1 of G2, the file now at `references/drafts/round-6/G2-machine-top.png`), passed as a 1080 by 1920 copy; `references/drafts/round-6/G7-clear-ball.png` (the kept G7).
+
+Takes:
+
+- Take 1 (long prompt naming every part of every tier). All three tiers with their flippers, marquee `THE DAILY GRIND` and digits right. Misses: the machine sits on a wide slab of ceramic, not a narrow border; the drain plate reads "Uemployment Office"; unreadable squiggles on the bank pediment and on a sign on the tower. Judge: "Most likely generated art (the \"amateur generated art\" option)", then named ten things. Failed.
+- Take 2 (made at the same time; shorter prompt, lettering only on the marquee and the drain plate, every roof bare). `THE DAILY GRIND` in bold capitals, six digits, `Unemployment Office`, all right as generated. Misses: no ceramic border outside the aluminum rail (only the apron is ceramic); the near corners of the rail run off the bottom corners of the frame; plunger spring and knob inside the lane. Judge: "Most likely: a frame from a top-budget film" and, in the same answer, "film-grade finish, probably generated", then named eleven things. Failed.
+- Take 3 (the take 2 prompt plus: a table-overview line asking for a crisp image, the frame as two bands with the narrow ceramic border outermost and the aluminum rail inside it, the plunger rod through the rail with the knob outside, the ball one twenty-fifth of the frame wide). The only take with the ceramic border outside the aluminum rail. Marquee and digits right. The drain plate read "Uemployment Office". Judge, on the file as generated: "Amateur generated art (an AI-generated image)", naming the misspelled plate first, then eleven things. Failed. After the retouch described above a fresh judge was asked again; its answer is the one quoted below: "Most likely a screenshot from a commercial pinball video game, rendered at close to film quality", then nine things. Failed on the second question. Kept as the best of four: the only take with both the ceramic border and the rail, the only one a judge took for a game screenshot, and every word right after the retouch.
+- Take 4 (made at the same time as take 3; the take 3 prompt plus: drain doorway larger than the ball, open chutes two balls wide between the tiers, a lift tube with open mouths, the wire ramp as two rails side by side). Words right as generated. Misses: no ceramic border; the ball sits on the plunger rod like a knob, so the judge could not tell whether it was the ball. Judge: "Amateur generated art (an AI image-generator picture), fairly confident", then named nine things. Failed.
+
+The judge's answer on the kept take:
+
+> picture-1305.png — answers after viewing the full frame and zoomed crops.
+>
+> **1. What it most likely is**
+> Most likely a screenshot from a commercial pinball video game, rendered at close to film quality. It is clearly not a stock image, a textbook picture or amateur generated art.
+> - The framing is a digital pinball game's: player's-eye view of the whole table, symmetrical, floating in a black void, a ball waiting on the plunger, and a live score (042500) on the backbox.
+> - The finish is premium: consistent warm lighting and reflections, believable metal, glass and plastic, and gentle depth of field.
+> - The text is clean and on theme: "THE DAILY GRIND" marquee, "Unemployment Office" over the drain.
+> - The theme is carried through: stapler slingshots, coffee-lid pop bumpers, cubicle targets, an inbox tray, a cursor inside a glass ball.
+> - It is less likely a film frame, because a film would rarely show a whole table straight-on in empty black.
+> - The one thing against "shipping game" is the playfield logic below; that reads as a concept render, not a table tuned for play.
+>
+> **2. Could a ball travel every lane and ramp? No.**
+> A plausible one-way route exists: up the right shooter lane, around the top-right wire curve, onto the upper level, then down through the middle level to the bottom flippers and the drain. These parts could not work:
+> - Left clear tube: sealed by a metal and glass cap at the bottom and plugged by an orange fitting at the top. It has no entrance or exit, and it looks narrower than the ball.
+> - Parking-garage spiral (right): the decks are stacked far closer than a ball's height, and nothing feeds it or leaves it. It is decoration, not a ramp.
+> - No way back up: the three levels are separated by vertical step walls. The centre notch in the lower step is a lit recessed pocket, not a ramp, so a ball at the bottom flippers can never return to the middle or upper level.
+> - Wire railing across the lower playfield: it is a handrail (rails stacked vertically on posts), not a ball track. It spans the full width and blocks any shot up the centre road.
+> - Plunger: the knob and spring sit inside the cabinet, under where the glass would be, so a player could not pull it.
+> - Pop bumpers: the three are packed together on the centre line with gaps smaller than the ball, walling off the path to the upper level's centre strip.
+> - Lower inlanes: the gaps between the outer guides and the slingshots look narrower than the ball, and they do not clearly deliver onto the flippers.
+> - Bottom-right corner: a flat dead pocket with no outhole, so a ball going down the right outlane would just sit there. The left side does have a hole.
+> - Small openings: the red building's archway and the cubicle pockets are at or below ball size, so they work only as targets, not lanes.
+
+Judge result: FAILED on the second question (STATED by the judge): the first answer was the game screenshot, but nine things were named that could not work. Kept at the limit of four takes. The same picture before the plate was retouched got "amateur generated art" from another judge, so one judge's first answer is not a stable measure.
+
+What the kept take misses (MEASURED on the file unless marked):
+
+- The judge did not pass it: nine things named that could not work (quoted above).
+- `Unemployment Office` was not spelled right by the model: it made "Uemployment Office". The plate in the file is a hand retouch (see "How it was made").
+- Lift tube (MEASURED). One clear tube the whole length of the left side, closed at both ends: a chrome cap at the apron and an orange fitting at the top left. The orange lift doors came out as orange flaps clipped to the outside of the tube, two of them; none opens onto a tier.
+- No way up (STATED by the judge; I see the same). The walls between the tiers have a lit recess at the centre where the chute should be, not an open gap, and nothing carries a ball up a tier.
+- Parking garage spiral. Stacked rings closer together than the ball is high; nothing feeds it and nothing leaves it.
+- Wire ramp. A handrail: two chrome rails one above the other on posts, with a peak over the road, from the firehouse to the garage. Not a track a ball could ride, no way on and no way off.
+- Plunger (MEASURED). The spring and the orange knob are inside the frame, in the lower right corner of the launch lane. The prompt asked for the rod to pass out through the rail with the knob outside it.
+- Ball size (MEASURED). About 100 px across on the 1920 px frame; the prompt asked for one twenty-fifth of the width, 77 px. It is about half as long as a bottom flipper (asked: one third) and wider than the launch lane it rests on.
+- Marquee (MEASURED). `THE DAILY GRIND` is spelled right, in thin capitals with "THE" smaller than the other two words; the prompt asked for large clean capitals. The marquee is 31% of the frame's width; in the guide it is about 26%.
+- Digits. The score strip under the marquee shows 042500. I asked for six digits; numbers are not on the brief's list of allowed words. See the choices at the end.
+- Tower roof (MEASURED). A small grey plate with raised marks, about 60 px wide on the 1920 px frame, which can be taken for unreadable lettering. The prompt asked for bare roofs.
+- Frame (MEASURED). Ceramic border outside, brushed aluminum rail inside, along both long sides and across the foot. Across the head both are hidden by the marquee. The near corners of the ceramic border run off the bottom corners of the frame, so there is darkness beyond the long sides and the head but not beyond the foot. In perspective the border is wider than the rail at the near end.
+- Sharpness. The near two tiers are sharp. The corporate tier and the marquee are a little softer; the judge calls it "gentle depth of field". The brief asks for sharp front to back.
+- Corporate tier. Its flippers read brown-orange, darker than the other two pairs. The ladder ramp is a small tangle of chrome wire under the beach box with no clear start or end. The revolving door stands in front of the tower doors.
+- Bumpers. The three coffee lid bumpers stand closer together than a ball's width (STATED by the judge; I see the same).
+- Bottom right outlane ends in a flat pocket against the apron with no hole (STATED by the judge; I see the same). Mom's house and its hatch are at the bottom left as asked.
+- The buildings carry no signs. That was asked for in the prompt, to keep misspelled small signs out of the wide view, so seven of the allowed tier words are absent: `Corporate HQ`, `Retirement`, `Coffee`, `You're Fired`, `Background Check`, `Student Loans`, `Mom's Basement`.
+- Words (MEASURED at full size): `THE DAILY GRIND`, spelled right by the model; `Unemployment Office`, spelled right by the retouch; the digits 042500. No other letters or numbers found, with the plate on the tower roof above as the one doubt.
+- Musts (MEASURED): three tiers, each with its own pair of flippers, in the order corporate, office, street from head to foot; the cursor is inside the ball, a solid white arrow with a black edge, clearly seen; no people; no cabinet, legs, room or other machine; no real name or brand found.
+
+Full prompt of the kept take:
+
+```text
+A photograph-real frame from a finished commercial pinball video game: the table overview, the whole machine seen from where the player stands. A real, physical pinball playfield, photographed. 16:9. This is the game's table overview screen: crisp, clean and razor sharp from the nearest rail to the marquee, with no film grain, no lens blur and no vignette.
+
+REFERENCE IMAGE 1 is a layout guide of flat coloured blocks. Copy its framing exactly: the outline of the machine in the frame, the angle, how much it narrows toward the far end, the three bands that are the three tiers, the upright marquee at the far end, the ball at the lower right. Follow where things are and how big they are, and make everything a real, photographed object. Do not copy its flat colours or its drawing style.
+
+REFERENCE IMAGE 2 is the same machine photographed from straight above, with every part in its place. Build this picture from it: the same three tiers, the same parts in the same places, the same materials and colours, now seen in perspective from the foot of the machine. Reference image 2 has no ball and no marquee; this picture has one ball and the marquee.
+
+REFERENCE IMAGE 3 shows the ball three times: a clear acrylic ball with a white arrow cursor sealed inside. There is exactly one ball in this picture and it looks like that.
+
+CAMERA: at the foot of the machine, a player's eye, looking up the length of the machine and down at it at about forty degrees. Normal lens. The near end of the machine spans the bottom of the frame; the long sides converge; the far end is about a third as wide as the near end and sits in the upper middle of the frame. The machine fills most of the frame. Everything is in sharp focus from front to back.
+
+WHAT IS IN THE FRAME, from the bottom edge to the top:
+1. THE FRAME ROUND THE MACHINE, two bands, as in reference image 1. Outermost: a narrow flat border of matte off-white ceramic (the cream band in reference image 1). Inside it: a low brushed aluminum rail (the grey band), about as wide as the ceramic border. Both bands run along the foot, up both long sides and across the far end, and both can be seen plainly the whole way round. The ceramic border is narrow, no wider than the rail: it is a border, not a slab and not a table top. Outside the ceramic border: plain darkness.
+2. The apron of tier 1: a band of off-white ceramic with a small grey office front at its centre whose dark doorway is the drain, and on the office's roof a cream sign plate with dark serif letters: "Unemployment Office".
+3. TIER 1, THE STREET, the lower half of the frame, in amber dusk light: a pair of orange flippers, two yellow slingshots with black chevrons, three round lit inserts, a dark teal and navy street playfield under glossy clear coat, the red brick firehouse with its red dome lit, the bank with stone columns, the police station with its blue dome lit, the parking garage with a clear spiral, a chrome wire ramp over the road, six tiny houses, and one more tiny house at the foot of the left outlane.
+4. A low wall across the machine with a drain gap at its centre.
+5. TIER 2, THE OFFICE, in flat pale green-white fluorescent light: its own pair of orange flippers, two red staplers as slingshots, three round lit inserts, grey-green carpet tile and beige laminate, three pop bumpers capped with white coffee cup lids, a coffee machine, a cubicle farm, an inbox tray heaped with envelopes.
+6. A low wall across the machine with a drain gap at its centre.
+7. TIER 3, CORPORATE, the smallest and farthest, in cold white and gold light: its own pair of orange flippers, two white marble slingshots, three round lit inserts, midnight navy marble with gold inlay, a red carpet and a small revolving door, a glass and steel tower with glowing lobby doors and two lit white globe domes, a sealed glass box with a tiny beach in it, a walnut boardroom table.
+8. THE MARQUEE, standing upright at the head of the machine, facing the camera: a low, wide brushed aluminum frame, as wide as the far end of the playfield. In it a lit art panel, a city skyline at dusk under an amber and violet sky, with the name of the game across it in large clean capitals: "THE DAILY GRIND". Under the art panel, in the same frame, a black display strip with exactly six glowing amber dot-matrix digits: 0 4 2 5 0 0.
+
+ALONG THE LEFT SIDE, inside the rail: a clear acrylic lift tube with aluminum collars, the whole length of the machine.
+ALONG THE RIGHT SIDE, inside the rail: the launch lane, a narrow straight channel the whole length of the machine with small lit arrow inserts, all pointing up the machine. At its near end, lower right corner of the frame: the plunger. Its steel rod passes out through the aluminum rail at the foot of the machine and its round orange knob sits outside the rail, where a player's hand would pull it; its coil spring and its tip are inside the lane. Resting against the plunger's tip, down inside the lane between the lane's two walls, is the clear ball. It is small: one twenty-fifth of the frame's width across, one third as long as a bottom flipper. The cursor inside it is plain to see: a solid white enamel arrow with a black edge. The cursor is only an arrow: no face, no eyes, no limbs.
+
+LIGHT: only the machine's own lamps. Each tier glows its own colour, so the three tiers read as three different places: amber dusk, pale office green-white, cold white and gold. The marquee glows. Sharp reflections in the clear coat. Clean air, deep rich contrast, darkness all round the machine.
+
+LETTERING: only two things are lettered: "THE DAILY GRIND" on the marquee (T-H-E, D-A-I-L-Y, G-R-I-N-D) with the six amber digits under it, and "Unemployment Office" (U-n-e-m-p-l-o-y-m-e-n-t, O-f-f-i-c-e) on the plate at the apron. In this wide view no building carries a sign plate: every roof is bare. Inserts carry pictures only. No other letters or numbers, and nothing that looks like blurred writing.
+
+NOT IN THE IMAGE: no people, no hands, no faces; no cabinet, no legs, no coin door, no arcade, no room, no floor, no wall, no other machine, no glass sheet over the playfield; no fog, no smoke, no haze, no lens flare, no motion blur; no second ball; not a cartoon, not an illustration, not a toy, not a diorama, not a model railway, not isometric.
+```
+
 ### G6 · The loader page
 
 - File: `references/drafts/round-6/G6-loader-page.png`
