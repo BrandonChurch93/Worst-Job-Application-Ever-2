@@ -1,0 +1,35 @@
+{
+  "folder": "measure",
+  "pushed": "2026-11-25T10:36:20.844Z",
+  "commit": "b8307c154797155273ebd6a2020d52d0eb6e4fd5",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Still pinball-pinball_coffee-0p43-tier-2-preview-draft-events: draft tier, preview, view events",
+      "time": "2026-11-25T10:35:18.398Z",
+      "by": "measure",
+      "from": "out/work/stills/pinball-pinball_coffee-0p43-tier-2-preview-draft-events.png"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Views of key step1-fire, preview, draft: ids (each part one flat colour), height (grey, one half is the page surface), type (black on white with each run's box), layout (the layout tree's boxes over the still, one colour per kind)",
+      "time": "2026-11-25T10:36:18.731Z",
+      "by": "measure",
+      "from": "out/work/stills/measure/views-step1-ids-height-type-layout.png"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Views of key tier-office, preview, draft: coverage (bare floor black, marks white: M8 reads 0.216 bare against 0.08), colliders (the physics shapes by kind), height, ids",
+      "time": "2026-11-25T10:36:18.957Z",
+      "by": "measure",
+      "from": "out/work/stills/measure/views-tier-office-coverage-colliders-height-ids.png"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "shadow of step1-fire; events of step2.slot at 0.588 (red rings: the coins strike 218 px from the cursor, an M7 finding); events of pinball.coffee at 0.43 (none in that half second); lights.dome of tier-office",
+      "time": "2026-11-25T10:36:19.191Z",
+      "by": "measure",
+      "from": "out/work/stills/measure/views-shadow-events-lights.png"
+    }
+  ]
+}
