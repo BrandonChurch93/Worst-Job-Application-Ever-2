@@ -1,0 +1,234 @@
+.root {
+  --u: 1px;
+  --ink: #262522;
+  --quiet: rgba(38, 37, 34, 0.74);
+  --accent: #c4460f;
+  --light: #f1eee7;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 20;
+  pointer-events: none;
+  font-family: Inter, 'Helvetica Neue', Helvetica, Arial, system-ui, sans-serif;
+  font-size: max(12px, calc(var(--u) * 16));
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+}
+
+.root [hidden] {
+  display: none;
+}
+
+.live,
+.bar,
+.surface {
+  display: none;
+}
+
+.root[data-mode='live'] .live {
+  position: absolute;
+  left: calc(var(--u) * 128);
+  top: calc(var(--u) * 34);
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: max(14px, calc(var(--u) * 28));
+  pointer-events: auto;
+  cursor: default;
+}
+
+.icon,
+.link {
+  appearance: none;
+  box-sizing: border-box;
+  margin: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--quiet);
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: max(24px, calc(var(--u) * 32));
+  height: max(24px, calc(var(--u) * 32));
+  padding: 0;
+  margin-left: calc(max(24px, calc(var(--u) * 32)) * -0.14);
+}
+
+.icon svg {
+  width: 78%;
+  height: 78%;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  min-height: max(24px, calc(var(--u) * 32));
+  padding: 0 2px;
+  font-weight: 500;
+  white-space: nowrap;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+}
+
+.icon:hover,
+.link:hover {
+  color: var(--ink);
+}
+
+.icon:focus-visible,
+.link:focus-visible,
+.position:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  color: var(--ink);
+}
+
+.root[data-mode='film'] .surface {
+  display: block;
+  position: absolute;
+  inset: 0;
+  pointer-events: auto;
+  cursor: default;
+}
+
+.root[data-mode='film'][data-film='false'] .surface {
+  pointer-events: none;
+}
+
+.root[data-mode='film'] .bar {
+  position: absolute;
+  left: calc(var(--u) * 128);
+  right: calc(var(--u) * 128);
+  bottom: max(10px, calc(var(--u) * 28));
+  display: flex;
+  align-items: center;
+  gap: max(10px, calc(var(--u) * 20));
+  padding: max(6px, calc(var(--u) * 10)) max(12px, calc(var(--u) * 24));
+  border-radius: 999px;
+  background: rgba(30, 29, 27, 0.84);
+  color: var(--light);
+  pointer-events: auto;
+  cursor: default;
+  transition: opacity 0.25s linear;
+}
+
+.root[data-mode='film'][data-awake='false'][data-playing='true'] .bar {
+  opacity: 0;
+}
+
+.root[data-mode='film'][data-awake='false'][data-playing='true'] .surface {
+  cursor: none;
+}
+
+.bar .icon {
+  margin-left: 0;
+  color: var(--light);
+}
+
+.bar .icon:hover,
+.bar .icon:focus-visible {
+  color: #fbf8f2;
+}
+
+.bar .icon:focus-visible,
+.bar .position:focus-visible {
+  outline-color: #f08a4b;
+}
+
+.root[data-film='false'] .position,
+.root[data-film='false'] .time,
+.root[data-film='false'] .bar .icon[aria-pressed]:first-child {
+  display: none;
+}
+
+.root[data-film='false'] .bar {
+  left: auto;
+}
+
+.position {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: max(24px, calc(var(--u) * 32));
+  margin: 0;
+  accent-color: #f08a4b;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.time {
+  flex: 0 0 auto;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.said {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.said p {
+  margin: 0;
+}
+
+.menu {
+  position: absolute;
+  left: calc(var(--u) * 128);
+  bottom: max(10px, calc(var(--u) * 28));
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(30, 29, 27, 0.92);
+  color: var(--light);
+  font: 12px/1.2 ui-monospace, Menlo, Consolas, monospace;
+  pointer-events: auto;
+  cursor: default;
+}
+
+.menuRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.menuName {
+  width: 7ch;
+  color: rgba(241, 238, 231, 0.66);
+}
+
+.menuButton {
+  appearance: none;
+  margin: 0;
+  padding: 4px 8px;
+  border: 1px solid rgba(241, 238, 231, 0.3);
+  border-radius: 4px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.menuButton:hover {
+  border-color: var(--light);
+}
+
+.menuButton[data-current='true'] {
+  background: var(--light);
+  border-color: var(--light);
+  color: var(--ink);
+}
