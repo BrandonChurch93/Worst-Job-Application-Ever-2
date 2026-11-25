@@ -26,6 +26,9 @@ const SHAKE = { seconds: 0.25, px: 2.2, reach: 320, hop: 8 }
 const RATTLE = { seconds: 0.22, px: 2.4 }
 const JAW = { tug: 14, shred: 30, lag: 0.3 }
 const NEAR = 130
+const SINGE = 0.2
+const HOLD = { inside: 34, least: 24 }
+const EATEN = -30
 const WIPE: FieldName[] = ['email', 'lastName', 'firstName']
 const SLAB_HIGH = 110
 const SLAB_GAP = 8
@@ -67,8 +70,9 @@ interface State {
   realFired: boolean
   paper: { on: boolean; slide: number; x: number; y: number; held: boolean; dx: number; dy: number; feed: number; fx: number; fy: number; vx: number; vy: number }
   slot: number
-  tug: { t: number; amount: number; cool: number; gx: number; gy: number; reach: number; rate: number; pull: number; vx: number; vy: number }
+  tug: { t: number; amount: number; cool: number; gx: number; gy: number; reach: number; rate: number; pull: number; vx: number; vy: number; hx: number; hy: number }
   lost: number
+  singe: number
   armed: boolean
   seat: number
   shake: number
@@ -121,8 +125,8 @@ export function makePage(): PageLogic {
   const fresh = (mode: Mode, seed: number): State => ({
     mode, seed, time: 0, phase: 'rest', phaseTime: 0, board: 0, boardUp: false, values: { firstName: '', lastName: '', email: '' }, places: homePlaces(), from: homePlaces(), shuffle: 1, blocks: false,
     rng: stream('step1:shuffle', seed).state(), shuffles: 0, shuffledAt: 0, queue: [], keyDown: {}, drum: 0, shock: 0, slabs: [], slabClear: -1, accepted: false, slow: 0, slowFired: false, realFired: false,
-    paper: { on: false, slide: 0, x: PAPER_REST.x, y: SCREEN_H + 20, held: false, dx: 0, dy: 0, feed: -1, fx: 0, fy: 0, vx: 0, vy: 0 }, slot: 0, tug: { t: 0, amount: 0, cool: 0, gx: SLOT.cx, gy: SLOT.cy - PAPER.h, reach: TUG.reach.rest, rate: 0, pull: 0, vx: 0, vy: 0 },
-    lost: -1, armed: false, seat: 9, shake: 9, shakeAt: { x: 0, y: 0 }, caret: 9, glow: 9, spin: 0, turn: 0, kept: null,
+    paper: { on: false, slide: 0, x: PAPER_REST.x, y: SCREEN_H + 20, held: false, dx: 0, dy: 0, feed: -1, fx: 0, fy: 0, vx: 0, vy: 0 }, slot: 0, tug: { t: 0, amount: 0, cool: 0, gx: SLOT.cx, gy: SLOT.cy - PAPER.h, reach: TUG.reach.rest, rate: 0, pull: 0, vx: 0, vy: 0, hx: SLOT.cx, hy: SLOT.cy - PAPER.h },
+    lost: -1, singe: 0, armed: false, seat: 9, shake: 9, shakeAt: { x: 0, y: 0 }, caret: 9, glow: 9, spin: 0, turn: 0, kept: null,
     shred: 0, received: false, pressed: -1, skipped: false, cleaned: false, done: false, cue: 0, cx: START.x, cy: START.y, acted: null
   })
   let s = fresh('live', config.seed)
@@ -267,8 +271,15 @@ export function makePage(): PageLogic {
       io.cursor.react('recoil')
       act(io, 'shocked')
       s.shock = 0.9
-      s.values.firstName = s.values.firstName.slice(0, -1)
+      s.singe = SINGE
       s.queue = []
+    }
+    if (s.singe > 0) {
+      s.singe -= io.dt
+      if (s.singe <= 0) {
+        s.values.firstName = s.values.firstName.slice(0, -1)
+        s.glow = 0
+      }
     }
     if (s.shock > 0) {
       s.shock -= io.dt
@@ -352,7 +363,7 @@ export function makePage(): PageLogic {
       p.vy = (p.y - wy) / io.dt
       if (p.feed >= TIMES.bite) {
         enter('tug')
-        s.tug = { t: 0, amount: tugCurve(0), cool: 0.5, gx: SLOT.cx, gy: SLOT.cy - PAPER.h, reach: TUG.reach.rest, rate: 0, pull: 0, vx: 0, vy: 0 }
+        s.tug = { t: 0, amount: tugCurve(0), cool: 0.5, gx: SLOT.cx, gy: SLOT.cy - PAPER.h, reach: TUG.reach.rest, rate: 0, pull: 0, vx: 0, vy: 0, hx: SLOT.cx, hy: SLOT.cy - PAPER.h }
         s.lost = -1
         grip(io)
         io.emit('shredder', SLOT.cx, SLOT.cy, false)
@@ -446,7 +457,10 @@ export function makePage(): PageLogic {
     }
     const px = -dy / d
     const py = dx / d
-    io.cursor.setArms(true, [{ x: t.gx - px * TUG.hands, y: t.gy - py * TUG.hands, z: LIE + 6 }, { x: t.gx + px * TUG.hands, y: t.gy + py * TUG.hands, z: LIE + 6 }])
+    const hold = Math.min(d, Math.max(HOLD.least, PAPER.h * (1 - t.amount) - HOLD.inside))
+    t.hx = SLOT.cx + (dx / d) * hold
+    t.hy = SLOT.cy + (dy / d) * hold
+    io.cursor.setArms(true, [{ x: t.hx - px * TUG.hands, y: t.hy - py * TUG.hands, z: LIE + 6 }, { x: t.hx + px * TUG.hands, y: t.hy + py * TUG.hands, z: LIE + 6 }])
     act(io, t.amount > 0.7 ? 'scared' : t.amount > 0.45 ? 'nervous' : 'angry')
     const lost = s.mode === 'film' ? t.t >= TIMES.tugFilm : t.amount >= 0.9 || t.t >= 9
     if (lost) {
@@ -562,16 +576,22 @@ export function makePage(): PageLogic {
     const c = at(startV + shown / 2, 0)
     const armed = s.phase === 'tug' && s.lost < 0
     const reach = armed ? TUG.hands : 0
-    const v = [LIE, 1, t.amount, armed ? t.pull : 0, t.gx + uy * reach, t.gy - ux * reach, t.gx - uy * reach, t.gy + ux * reach, t.vx, t.vy, armed ? 1 : 0]
+    const hx = armed ? t.hx : t.gx
+    const hy = armed ? t.hy : t.gy
+    const v = [LIE, 1, t.amount, armed ? t.pull : 0, hx + uy * reach, hy - ux * reach, hx - uy * reach, hy + ux * reach, t.vx, t.vy, armed ? 1 : 0]
     out.push({ id: 'resume-paper', part: 'paper', kind: 'box', x: c.x - PAPER.w / 2, y: c.y - shown / 2, w: PAPER.w, h: shown, z0: LIE, z1: LIE + heights.paper, rot, tone: 'paper', moved: true, v })
     const rest = Math.max(36, PAPER.h * (1 - t.amount))
     const scale = whole / rest
-    const p = at(30 * scale + 10, -PAPER.w / 2 + 24 + 50)
-    out.push({ id: 'resume-paper-title', part: 'paper', kind: 'text', x: p.x - 50, y: p.y - 10, w: 100, h: 20, z0: LIE + 0.1 + heights.paper, z1: LIE + 0.1 + heights.paper, rot, tone: 'ink', words: 'copy:step1.resume.paperTitle', type: PAPER_TITLE, moved: true })
+    const gone = rest <= 70 || s.phase !== 'tug'
+    const p = at(gone ? whole : 30 * scale + 10, -PAPER.w / 2 + 24 + 50)
+    const tz = gone ? EATEN : LIE + 0.1 + heights.paper
+    out.push({ id: 'resume-paper-title', part: 'paper', kind: 'text', x: p.x - 50, y: p.y - 10, w: 100, h: 20, z0: tz, z1: tz, rot, tone: 'ink', words: 'copy:step1.resume.paperTitle', type: PAPER_TITLE, moved: true })
     PAPER_LINES.forEach((f, i) => {
       const w = (PAPER.w - 48) * (i === 3 || i === 6 ? 0.6 : 1)
-      const q = at(f * PAPER.h * scale, -(PAPER.w - 48 - w) / 2)
-      out.push({ id: `resume-paper-line-${i}`, part: 'paper', kind: 'box', x: q.x - w / 2, y: q.y - 4, w, h: 8, z0: LIE + heights.paper, z1: LIE + 0.4 + heights.paper, rot, tone: 'pocket', moved: true })
+      const eaten = f * PAPER.h > rest - 12 || s.phase !== 'tug'
+      const q = at(eaten ? whole : f * PAPER.h * scale, -(PAPER.w - 48 - w) / 2)
+      const z = eaten ? EATEN : LIE + heights.paper
+      out.push({ id: `resume-paper-line-${i}`, part: 'paper', kind: 'box', x: q.x - w / 2, y: q.y - 4, w, h: 8, z0: z, z1: z + 0.4, rot, tone: 'pocket', moved: true, v: [eaten ? 1 : 0] })
     })
   }
 
