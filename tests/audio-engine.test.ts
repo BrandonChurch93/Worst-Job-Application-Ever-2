@@ -274,6 +274,38 @@ describe('with sound', () => {
     s.beat('no.such.beat', 'film')
   })
 
+  it('after a seek into a beat speaks the lines still to come at their places and none that has begun', async () => {
+    const two = cfg.film.beats.find((b: any) => (narration.film[b.id] ?? []).length >= 2 && narration.film[b.id][1].at > narration.film[b.id][0].at)
+    const site = fixtureSite()
+    const enc = new TextEncoder()
+    narration.film[two.id].forEach((_: unknown, i: number) => {
+      const id = `line.${two.id}.${i}`
+      site.index.lines.push({ id, file: `${id}.mp3`, seconds: 1, mime: 'audio/mpeg' })
+      site.files.set(`${id}.mp3`, enc.encode(id))
+    })
+    serve(site.files)
+    const s = makeSound({ base: './audio/', index: site.index })
+    await s.unlock()
+    const ctx = made[0]!
+    const span = two.to - two.from
+    const second = narration.film[two.id][1].at * span
+    const into = (narration.film[two.id][0].at * span + second) / 2
+    ctx.currentTime = 40
+    s.beat(two.id, 'film', into)
+    expect(playsOf(ctx, `line.${two.id}.0`).length).toBe(0)
+    const later = playsOf(ctx, `line.${two.id}.1`)
+    expect(later.length).toBe(1)
+    expect(later[0]!.started).toBeCloseTo(40 + second - into, 6)
+    s.stop()
+    s.start()
+    ctx.currentTime = 60
+    s.beat(two.id, 'film', span + 1)
+    expect(playsOf(ctx, `line.${two.id}.0`).length).toBe(0)
+    expect(playsOf(ctx, `line.${two.id}.1`).length).toBe(1)
+    s.beat(beatId, 'film', Number.NaN)
+    expect(playsOf(ctx, `line.${beatId}.0`).length).toBe(1)
+  })
+
   it('never lets a live line interrupt, keeps the gap, and drops the late line', async () => {
     const { s, ctx } = await ready()
     const live = () => ctx.sources.filter((x) => x.buffer?.id.startsWith('line.live.')).map((x) => x.buffer!.id)

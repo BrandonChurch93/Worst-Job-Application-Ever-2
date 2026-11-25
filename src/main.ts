@@ -224,6 +224,10 @@ function play(first: PlayMode): void {
     heardTo = T
     if (opening) sound?.opening(T, T)
   }
+  const midBeat = () => {
+    const b = beats.reduce<{ id: string; at: number } | null>((best, x) => (x.at < T && (!best || x.at > best.at) ? x : best), null)
+    if (b) sound?.beat(b.id, 'film', T - b.at)
+  }
   const film = {
     seconds: total,
     time: () => T,
@@ -234,6 +238,7 @@ function play(first: PlayMode): void {
       heardTo = T
       if (opening) sound?.opening(T, T)
       sound?.start()
+      midBeat()
     },
     pause() {
       playing = false
@@ -242,7 +247,10 @@ function play(first: PlayMode): void {
     seek(seconds: number) {
       T = Math.min(total, Math.max(0, seconds))
       quiet()
-      if (playing) sound?.start()
+      if (playing) {
+        sound?.start()
+        midBeat()
+      }
     }
   }
   const filmMoment = (t: number): { unit: string; time: number } => (oneUnit ? { unit: oneUnit, time: Math.min(t, body) } : app.filmMomentAt(t))

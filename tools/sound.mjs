@@ -365,9 +365,22 @@ export function keptSounds(P, M) {
   return { sounds, absent }
 }
 
+// One row for each sound file under public/audio, so that every file the site ships is named.
+function shippedRows(P, head) {
+  const file = path.join(P.pub, 'index.json')
+  const index = fs.existsSync(file) ? readJson(file) : null
+  if (!index || index.sfx.length + index.loops.length + index.lines.length === 0) return []
+  const made = 'Made by `npm run sound -- --pack` from'
+  const rows = []
+  if (index.pack) rows.push(`| \`public/audio/${index.pack.file}\` | The ${index.sfx.length} short sounds of the site in one file | ${made} the kept sounds of \`audio/kept/\` named in the index | \`public/audio/index.json\` |`)
+  for (const f of [...index.loops, ...index.lines]) rows.push(`| \`public/audio/${f.file}\` | The site's copy of \`${f.id}\` | ${made} \`audio/kept/${f.id}.wav\` | \`audio/kept/${f.id}.json\` |`)
+  return ['## What the site ships', '', ...head, ...rows]
+}
+
 function writeAssetRows(P) {
   const rows = keptRecords(P).map((r) => `| \`audio/kept/${r.file}\` | ${r.kind !== 'cue' ? `Narrator line: ${r.words}` : `Sound effect \`${r.cue}\`${r.variant ? `, variant ${r.variant}` : ''}`} | Generated with the sound tool, take ${r.take.number} (${r.take.round}) | \`audio/kept/${r.id}.json\` |`)
-  const text = ['# Rows for ASSETS.md', '', 'One row for each kept sound. `npm run sound` writes this file. The Builder copies the rows under "Generated sounds" in `ASSETS.md`.', '', '| File | What it is | How it was made | Record |', '| --- | --- | --- | --- |', ...rows, ''].join('\n')
+  const head = ['| File | What it is | How it was made | Record |', '| --- | --- | --- | --- |']
+  const text = ['# Rows for ASSETS.md', '', 'One row for each kept sound, and after `--pack` one for each sound file the site ships. `npm run sound` writes this file. The Builder copies the rows under "Generated sounds" in `ASSETS.md`.', '', ...head, ...rows, '', ...shippedRows(P, head), ''].join('\n')
   fs.mkdirSync(P.audio, { recursive: true })
   fs.writeFileSync(path.join(P.audio, 'ASSETS-ROWS.md'), text)
 }
@@ -407,6 +420,7 @@ export function pack(P, c, M, quiet = false) {
   }
   index.totalBytes = offset + [...index.loops, ...index.lines].reduce((s, f) => s + f.bytes, 0)
   writeJson(path.join(P.pub, 'index.json'), index)
+  if (records.length || fs.existsSync(path.join(P.audio, 'ASSETS-ROWS.md'))) writeAssetRows(P)
   const mb = index.totalBytes / 1048576
   if (!quiet) {
     console.log(`packed: ${index.sfx.length} short sounds in one file, ${index.loops.length} loops, ${index.lines.length} narrator lines, ${mb.toFixed(2)} MB of ${c.audio.appMaxMb} MB, in ${rel(P.pub)}`)

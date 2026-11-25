@@ -21,7 +21,7 @@ export interface SoundApi {
   setVolume(v: number): void
   volume(): number
   event(e: { name: string; x: number; y: number; hitsCursor: boolean }, mode: SoundMode): void
-  beat(id: string, mode: SoundMode): void
+  beat(id: string, mode: SoundMode, into?: number): void
   trigger(name: string): void
   opening(from: number, to: number): void
   start(): void
@@ -438,7 +438,7 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
       if (cue && cue !== 'room-tone') playCue(cue, e.x)
       if (mode === 'live') for (const key of liveKeysFor(e, seenOnce)) api.trigger(key)
     },
-    beat(id, _mode) {
+    beat(id, _mode, into = 0) {
       if (state !== 'ready' || !backend) return
       flowing = true
       startTone()
@@ -446,7 +446,8 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
       const lines = film[id]
       if (!b || !lines) return
       const now = backend.now()
-      const wanted = lines.map((l, i) => ({ id: filmLineId(id, i), offset: l.at * (b.to - b.from), seconds: lengths.get(filmLineId(id, i)) ?? 0 })).filter((l) => loaded.has(l.id))
+      const past = Math.max(0, Number.isFinite(into) ? into : 0)
+      const wanted = lines.map((l, i) => ({ id: filmLineId(id, i), offset: l.at * (b.to - b.from) - past, seconds: lengths.get(filmLineId(id, i)) ?? 0 })).filter((l) => loaded.has(l.id) && l.offset >= 0)
       const plan = narrator.beat(now, id, wanted)
       for (const c of plan.cancelled) {
         speaking.get(c)?.stop(0)
