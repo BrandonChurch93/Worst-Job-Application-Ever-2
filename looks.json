@@ -1,35 +1,35 @@
 {
   "folder": "keys",
-  "pushed": "2026-11-25T18:59:48.311Z",
-  "commit": "967d2838bc236dd1bce91459830d49a8107395ef",
+  "pushed": "2026-11-25T19:25:27.633Z",
+  "commit": "13594957da39154e3ec1b4f96acb5b8b4651a026",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Keys second pass: the hit, a star flash where the bolt strikes the cursor from frame 1268, draft tier",
-      "time": "2026-11-25T18:53:19.362Z",
-      "by": "keys",
-      "from": "out/work/sheets/sheet-motion-hit-preview-draft.jpg"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "Still step1-step1_lastName-0p094-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-25T18:55:11.039Z",
-      "by": "keys",
-      "from": "out/work/stills/step1-step1_lastName-0p094-hd-review.png"
-    },
-    {
-      "file": "look-3.jpg",
       "caption": "Still step1-step1_lastName-0p094-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-25T18:56:13.074Z",
+      "time": "2026-11-25T19:18:48.850Z",
       "by": "keys",
       "from": "out/work/stills/step1-step1_lastName-0p094-hd-draft.png"
     },
     {
-      "file": "look-4.jpg",
-      "caption": "Keys: the shuffle in the air, step1.lastName at 0.094: crossing caps over and under, every top cap keeps its legend, draft tier",
-      "time": "2026-11-25T18:59:46.846Z",
+      "file": "look-2.jpg",
+      "caption": "Still step1-step1_lastName-0p094-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T19:19:47.623Z",
       "by": "keys",
-      "from": "out/work/keys/shuffle-mid.jpg"
+      "from": "out/work/stills/step1-step1_lastName-0p094-hd-draft.png"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Contact sheet, the beat step1.lastName: 12 frames from 0:24.00 to 0:28.97, draft tier, preview",
+      "time": "2026-11-25T19:22:41.388Z",
+      "by": "keys",
+      "from": "out/work/sheets/sheet-beat-step1_lastName-preview-draft.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Keys: flying caps throw a clear shadow across the space bar and the seated caps, step1.lastName at 0.094, draft tier",
+      "time": "2026-11-25T19:25:26.326Z",
+      "by": "keys",
+      "from": "out/work/keys/shuffle-shadow.jpg"
     }
   ]
 }
