@@ -2,7 +2,8 @@ import { readFileSync, readdirSync } from 'node:fs'
 import path from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { makeSound, type SoundIndex } from '../src/audio/index'
-import { PITCH_CENTS } from '../src/audio/cues'
+import { PITCH_CENTS, openingEvents } from '../src/audio/cues'
+import { openingFrames, openingTimes } from '../src/film/opening'
 import { LIVE, db } from '../src/audio/levels'
 
 const read = (...p: string[]) => JSON.parse(readFileSync(path.join(process.cwd(), ...p), 'utf8'))
@@ -61,7 +62,7 @@ const beat = cfg.film.beats.find((x: any) => x.id === beatId)
 
 function fixtureSite(): { index: SoundIndex; files: Map<string, Uint8Array | null> } {
   const enc = new TextEncoder()
-  const short = ['step.1', 'step.2', 'step.3', 'step.4', 'button-press', 'hold-music', 'bolt-hit.1', 'bolt-hit.2', 'bolt-hit.3', 'flipper.1', 'flipper.2', 'flipper.3', 'checkbox', 'paper-strain']
+  const short = ['step.1', 'step.2', 'step.3', 'step.4', 'button-press', 'hold-music', 'bolt-hit.1', 'bolt-hit.2', 'bolt-hit.3', 'flipper.1', 'flipper.2', 'flipper.3', 'checkbox', 'paper-strain', 'key-tap', 'ui-tick', 'ui-send']
   const parts = short.map((id) => enc.encode(id))
   const pack = new Uint8Array(parts.reduce((s, p) => s + p.length, 0))
   const sfx: SoundIndex['sfx'] = []
@@ -476,6 +477,108 @@ describe('with sound', () => {
     page.heard[0]!()
     s.event(hit('checkbox'), 'film')
     expect(playing.size).toBe(2)
+  })
+})
+
+describe('the opening of film A on the site', () => {
+  const FPS: number = cfg.film.fps
+  const end = openingFrames() / FPS
+  const t = openingTimes()
+  const laid = openingEvents({ prompt: cfg.intro.prompt, charsPerSecond: cfg.intro.charsPerSecond, levelOpens: t.levelOpens, levelPicks: t.levelPicks, sendPressed: t.held, linesDone: t.lines.map((l) => l.done) }, FPS)
+  const ready = async () => {
+    const site = fixtureSite()
+    serve(site.files)
+    const s = makeSound({ base: './audio/', index: site.index })
+    return { s, unlock: async () => { await s.unlock(); return made[0]! } }
+  }
+  const run = (s: ReturnType<typeof makeSound>, ctx: FakeContext, from: number, to: number) => {
+    for (let f = Math.round(from * FPS); f < Math.round(to * FPS); f++) {
+      ctx.currentTime = (f + 1) / FPS
+      s.opening(f / FPS, (f + 1) / FPS)
+    }
+  }
+
+  it('plays the sounds the film A mix lays over the opening, each in the frame the mix lays it in', async () => {
+    const { s, unlock } = await ready()
+    const ctx = await unlock()
+    s.stop()
+    s.opening(0, 0)
+    s.start()
+    const first = ctx.sources.filter((x) => x.buffer?.id !== 'room-tone')
+    expect(first.length).toBeGreaterThan(1)
+    expect(first.every((x) => x.started! < LIVE.aheadSeconds)).toBe(true)
+    run(s, ctx, 0, end)
+    const heard = ctx.sources.filter((x) => x.buffer?.id !== 'room-tone').map((x) => ({ name: x.buffer!.id, frame: Math.round(x.started! * FPS) }))
+    expect(heard).toEqual(laid.map((e) => ({ name: e.name, frame: e.frame })).sort((a, b) => a.frame - b.frame))
+    expect(heard.length).toBe(cfg.intro.prompt.length + 3 + cfg.intro.steps.length)
+  })
+
+  it('plays every sound once and on its time when the page draws only two frames a second', async () => {
+    const { s, unlock } = await ready()
+    const ctx = await unlock()
+    s.stop()
+    s.opening(0, 0)
+    s.start()
+    for (let at = 0; at < end; at += 0.2) {
+      ctx.currentTime = at + 0.2
+      s.opening(at, at + 0.2)
+    }
+    const heard = ctx.sources.filter((x) => x.buffer?.id !== 'room-tone').map((x) => ({ name: x.buffer!.id, frame: Math.round(x.started! * FPS) }))
+    expect(heard).toEqual(laid.map((e) => ({ name: e.name, frame: e.frame })).sort((a, b) => a.frame - b.frame))
+  })
+
+  it('takes back the sounds set ahead when the film is paused', async () => {
+    const { s, unlock } = await ready()
+    const ctx = await unlock()
+    s.stop()
+    s.opening(0, 0)
+    s.start()
+    const set = ctx.sources.filter((x) => x.buffer?.id !== 'room-tone')
+    expect(set.length).toBeGreaterThan(1)
+    s.stop()
+    expect(set.every((x) => x.stopped !== null)).toBe(true)
+    s.opening(0, 0)
+    s.start()
+    expect(ctx.sources.filter((x) => x.buffer?.id !== 'room-tone').length).toBe(set.length * 2)
+  })
+
+  it('keeps the room tone out until the opening is over, as the mix does', async () => {
+    const { s, unlock } = await ready()
+    s.opening(0, 1 / FPS)
+    const ctx = await unlock()
+    expect(playsOf(ctx, 'room-tone').length).toBe(0)
+    s.start()
+    run(s, ctx, 1 / FPS, end - 1 / FPS)
+    expect(playsOf(ctx, 'room-tone').length).toBe(0)
+    s.opening(end - 1 / FPS, end)
+    expect(playsOf(ctx, 'room-tone').length).toBe(1)
+    expect(playsOf(ctx, 'room-tone')[0]!.stopped).toBeNull()
+  })
+
+  it('cuts a running tone when the film is sent back into the opening, and stays out of it through a pause', async () => {
+    const { s, unlock } = await ready()
+    const ctx = await unlock()
+    expect(playsOf(ctx, 'room-tone').length).toBe(1)
+    s.stop()
+    s.opening(2, 2)
+    s.start()
+    expect(playsOf(ctx, 'room-tone').length).toBe(1)
+    s.stop()
+    s.opening(end + 1, end + 1)
+    s.start()
+    expect(playsOf(ctx, 'room-tone').length).toBe(2)
+    s.opening(1, 1 + 1 / FPS)
+    expect(playsOf(ctx, 'room-tone')[1]!.stopped).not.toBeNull()
+    s.stop()
+    s.start()
+    expect(playsOf(ctx, 'room-tone').length).toBe(3)
+  })
+
+  it('does nothing before the first click', async () => {
+    const { s } = await ready()
+    s.opening(0, 1)
+    expect(made.length).toBe(0)
+    expect(fetched.length).toBe(0)
   })
 })
 

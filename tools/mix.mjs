@@ -235,7 +235,8 @@ export async function soundChecks(a, P, c, M) {
 
   if (!records.length) add('A5', 'not yet', 'no sound is kept')
   else {
-    const assets = fs.existsSync(at('ASSETS.md')) ? fs.readFileSync(at('ASSETS.md'), 'utf8') : ''
+    const assetsFile = P.scratch ? path.join(path.dirname(P.audio), 'ASSETS.md') : at('ASSETS.md')
+    const assets = fs.existsSync(assetsFile) ? fs.readFileSync(assetsFile, 'utf8') : ''
     const bad = []
     for (const r of records) {
       const lacks = []
@@ -352,10 +353,11 @@ export async function soundChecks(a, P, c, M) {
   } else add('A11', 'not yet', `${siteNote}. Held so far: ${engineSilent}`, { engine: engine.runs.map((r) => ({ name: r.name, after: r.after, errors: r.errors, console: r.console })) })
 
   const out = P.scratch ? path.join(path.dirname(P.audio), 'sound-checks.json') : at('out', 'work', 'sound-checks.json')
-  writeJson(out, { about: 'The sound checks A1 to A11 of kit/07-QUALITY-BAR.md. None can fail a gate: a failing one is an open item.', root: P.scratch ? rel(P.audio) : 'audio', checks, also: { filmOnTheSite: site?.film ?? null } })
+  writeJson(out, { about: 'The sound checks A1 to A11 of kit/07-QUALITY-BAR.md. None can fail a gate: a failing one is an open item.', root: P.scratch ? rel(P.audio) : 'audio', checks, also: { filmOnTheSite: site?.film ?? null, filmAOnTheSite: site?.filmA ?? null } })
   for (const k of checks) console.log(`${k.id}  ${k.status.padEnd(7)}  ${k.reason}`)
   const count = (s) => checks.filter((k) => k.status === s).length
   if (site?.film?.steps?.length) console.log(`also measured, the film on the site with its sound: ${site.film.steps.map((x) => `${x.what}: ${x.level === null ? 'held, nothing comes out' : `level ${x.level}`}, ${x.sources} sounds ${x.level === null ? 'waiting' : 'running'}, ${x.toneLoops} of them the room tone, graph ${x.context}`).join('; ')}. ${site.film.errors.length} errors`)
+  if (site?.filmA && site.filmA.heard !== null) console.log(`also measured, film A on the site: over its opening of ${site.filmA.openingSeconds.toFixed(3)} s it plays ${site.filmA.heard} sounds, the mix lays ${site.filmA.laid}; ${site.filmA.toneLoopsInTheOpening} room tones run in the opening and ${site.filmA.toneLoopsAfterIt} after it. ${site.filmA.errors.length} errors`)
   console.log(`sound checks: ${count('pass')} pass, ${count('fail')} fail, ${count('not yet')} not yet. Written to ${rel(out)}`)
   return checks
 }
