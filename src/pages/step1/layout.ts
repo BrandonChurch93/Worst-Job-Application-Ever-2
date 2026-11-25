@@ -28,7 +28,7 @@ export const PAPER_REST = { x: 1000, y: 748 }
 export const PAPER_TITLE = { font: 'inter-600', px: 28 }
 export const PAPER_LINES = [0.3, 0.38, 0.46, 0.54, 0.66, 0.74, 0.82]
 export const SLOT = { w: 300, h: 26, cx: ZONE.x + ZONE.w * 0.62, cy: FORM_BOTTOM + 30 }
-export const NOTE_Y = FORM_BOTTOM + 9
+export const NOTE_Y = FORM_BOTTOM + 14
 export const CONTINUE_Y = DECK.y + 10
 
 const cap = (font: string, px: number): number => block(font, 'X', px).cap
@@ -44,15 +44,15 @@ export function paperNodes(x: number, y: number): LayoutNode[] {
 export function buildLayout(): LayoutNode {
   const zoneLabel = text('resume-label', 'copy:step1.resume.label', TYPE.label, LEFT, HEADER.contentY, { part: 'type' })
   const promptCap = cap(TYPE.body.font, TYPE.body.px)
-  const browseW = Math.round(block(TYPE.helper.font, words('copy:step1.resume.browse'), TYPE.helper.px).width + 56)
-  const browseH = 44
+  const browseW = Math.round(block(TYPE.label.font, words('copy:step1.resume.browse'), TYPE.label.px).width + 64)
+  const browseH = 50
   const stackH = promptCap + 24 + browseH
   const promptY = ZONE.y + (ZONE.h - stackH) / 2
   const browseY = promptY + promptCap + 24
   const cx = ZONE.x + ZONE.w / 2
   const browse = node('resume-browse', 'chip', [cx - browseW / 2, browseY, browseW, browseH], {
     part: 'shell', shape: 'capsule', height: heights.card + 8, floor: heights.card, tone: 'metal', states: ['prompt'],
-    children: [text('resume-browse-label', 'copy:step1.resume.browse', { ...TYPE.helper, align: 'centre' }, cx, browseY + (browseH - cap(TYPE.helper.font, TYPE.helper.px)) / 2, { part: 'type', on: heights.card + 8, tone: 'inkLight' })]
+    children: [text('resume-browse-label', 'copy:step1.resume.browse', { ...TYPE.label, align: 'centre' }, cx, browseY + (browseH - cap(TYPE.label.font, TYPE.label.px)) / 2, { part: 'type', on: heights.card + 8, tone: 'inkLight' })]
   })
   const received = block(TYPE.hero.font, words('copy:step1.resume.received'), TYPE.hero.px, ZONE.w - 120)
   const zone = node('resume-zone', 'card', [ZONE.x, ZONE.y, ZONE.w, ZONE.h], {

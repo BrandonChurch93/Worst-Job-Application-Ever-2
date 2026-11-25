@@ -135,7 +135,7 @@ export function makePlan(seed: number, first: string, last: string, email: strin
   }
   const stand = { x: keySpot(seatIndex[FIRST.stand]!).x + FIRST.aside, y: keySpot(seatIndex[FIRST.stand]!).y }
   const fled = keySpot(seatIndex[FIRST.fled]!)
-  leap(FIRST.cocky[0], FIRST.cocky[1], stand.x, stand.y, { arc: 84 })
+  leap(FIRST.cocky[0], FIRST.cocky[1], stand.x, stand.y, { arc: 20 })
   cue(FIRST.proud, { act: 'proud' })
   cue(FIRST.proud + 0.06, { react: 'dustOff' })
   cue(FIRST.see, { react: 'anticipate' })
