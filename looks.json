@@ -1,35 +1,35 @@
 {
   "folder": "keyboard",
-  "pushed": "2026-11-25T15:14:38.712Z",
-  "commit": "5400f7b003a39408b5e35254dc595b22e35b2ca8",
+  "pushed": "2026-11-25T15:37:07.231Z",
+  "commit": "87cea35ac6fdd910504ed9a10397c37501925904",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-step1-fire-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-25T15:06:21.922Z",
+      "caption": "Still step1-step1_email-0p955-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T15:31:37.586Z",
       "by": "keyboard",
-      "from": "out/work/stills/key-step1-fire-hd-review.png"
+      "from": "out/work/stills/step1-step1_email-0p955-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
       "caption": "Still key-step1-fire-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-25T15:11:26.710Z",
+      "time": "2026-11-25T15:34:41.125Z",
       "by": "keyboard",
       "from": "out/work/stills/key-step1-fire-hd-review.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Review tier after the critic issues: approved above, built below. Bright silver deck, aluminium bed under the caps, all caps one draw",
-      "time": "2026-11-25T15:14:37.115Z",
+      "caption": "Review tier after the 15:32 issues: approved above, built below. Stepped barrel with a bore, even round cap shoulders, brighter bolts",
+      "time": "2026-11-25T15:37:05.723Z",
       "by": "keyboard",
-      "from": "out/work/look-o-compare.jpg"
+      "from": "out/work/look-r-compare.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Right turret, Enter and the bed between the caps at review tier",
-      "time": "2026-11-25T15:14:37.354Z",
+      "caption": "Left turret, its barrel and bore, a bolt leaving, cap shoulders, review tier",
+      "time": "2026-11-25T15:37:05.980Z",
       "by": "keyboard",
-      "from": "out/work/look-p-right.jpg"
+      "from": "out/work/look-s-left.jpg"
     }
   ]
 }
