@@ -94,7 +94,7 @@ export function kit(): Kit {
   speckle.repeat.set(1, 1)
   speckle.needsUpdate = true
   const cap = studio(
-    new THREE.MeshPhysicalMaterial({ color: srgb(0xe6dfd2), roughness: 0.56, metalness: 0, normalMap: speckle, normalScale: new THREE.Vector2(0.12, 0.12), specularIntensity: 0.55, clearcoat: 0.1, clearcoatRoughness: 0.5 })
+    new THREE.MeshPhysicalMaterial({ color: srgb(0xe6dfd2), roughness: 0.56, metalness: 0, normalMap: speckle, normalScale: new THREE.Vector2(0.07, 0.07), specularIntensity: 0.55, clearcoat: 0.1, clearcoatRoughness: 0.5 })
   )
   const seat = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x8a8782), roughness: 0.78, metalness: 0, specularIntensity: 0.3 }))
   const dark = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x201f1e), roughness: 0.55, metalness: 0.2, specularIntensity: 0.5 }))
