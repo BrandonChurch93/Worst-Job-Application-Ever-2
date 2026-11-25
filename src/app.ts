@@ -12,6 +12,7 @@ import { cursorSheet } from './cursor/sheets'
 import { EVENT_TRAIL, applyView, isView, type ViewContext, type ViewEvent } from './diagnostics/views'
 import { makeLoop, makeOpening, type FilmPiece, type LoopPiece, type OpeningPiece } from './film'
 import { pages, preparePages, unitPages } from './pages'
+import { websiteLevel } from './real'
 import { loadTable } from './table/real/assets'
 import { look } from './post/look'
 import { studioEnvironment } from './post/studio'
@@ -217,6 +218,9 @@ export class App {
     this.view.focus = -cy
     this.rig.setBounds(this.view.bounds())
     this.rig.setEmitters(this.view.emitters())
+    const website = websiteLevel(frame.list)
+    this.rig.level = website
+    this.view.scene.environmentIntensity = look.envIntensity * website
     for (const s of this.view.standIns()) this.seen.add(s)
   }
 

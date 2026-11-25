@@ -23,7 +23,8 @@ Branch `agent/type`. Looks branch `agent/type-looks`. Part made real: `type`.
 | cap (keycap, light button) | ink | sunk | the same, shallower |
 | glass (field value, glass tone) | ink | flat | charcoal with a soft edge, drawn after the glass |
 | paper | ink | flat | charcoal with a soft edge |
-| metal (aluminium) | ink | cut | dark floor, shadowed wall upper left, lit wall lower right |
+| metal (aluminium) | ink | cut | dark matte floor, shadowed wall upper left, lit wall lower right |
+| smoked (a chip or button of tone metal) | any | raised | warm off-white: only light type reads on the smoked capsule |
 | accent, danger, dark | ink | flat | charcoal with a soft edge |
 | accent, danger, dark, metal | inkLight | raised | warm off-white, a faint darker edge at the lower right |
 | anything else | inkLight | raised | the same, a little lower |
@@ -31,7 +32,11 @@ Branch `agent/type`. Looks branch `agent/type-looks`. Part made real: `type`.
 ## Decisions
 
 - Geometry, not SDF. Sharp at 1920 and 3840 with the capture's accumulation and the live MSAA, no texture memory, and the edge can carry real normals so the lit side comes from the light and not from paint.
-- Ink is sRGB 40 41 43 (`0x28292b`) with `specularIntensity` 0.15 and roughness 0.62; on keycaps a warmer 52 45 38 (`0x342d26`). MEASURED on `--key step1-fire --format uhd --tier review`: the mean of the darkest 8% of the title's box is 49 49 49, of the field value 50 50 51. The same measure on the approved images gives 53 52 51 (`step1-fire.png`) and 44 47 49 (`page-look.png`) for the title and 54 51 46 for the field value. Never pure black.
+- Ink is sRGB 36 39 42 (`0x24272a`) with `specularIntensity` 0.15 and roughness 0.62; on keycaps a warmer 63 53 42 (`0x3f352a`). MEASURED with ink at `0x28292b` on `--sheet page-look --tier review --format hd`: the mean of the darkest 3% of the title's box was 42 43 43 against 37 39 41 in `page-look.png`, so the ink went a step darker and cooler. Never pure black.
+- The ink of sunk print carries the ceramic's own grain picture as its normal map at 0.16 (uv = page pixels, the same as the slab), so the grain shows faintly through the print as in the approved crops. No texture of my own.
+- The floor of cut type is matte and not metal: a metal floor mirrored the studio and the numeral came and went with the turned finish under it.
+- A shoulder is set in page pixels. When a camera comes nearer than the home view the vertex shader draws each shoulder in by as much as it is nearer (attribute `wjaRing`), so an edge never grows past its width at 1920. Further away it is left alone.
+- A text shape with `turnX` (the marquee, a plate on a building) needs nothing of its own: the view turns the object about the shape's centre and the run stands 0.05 off its board.
 - `material.envMapIntensity` does nothing in three 0.187 when the reflection comes from `scene.environment` (`node_modules/three/src/renderers/WebGLRenderer.js` near line 2749). MEASURED: black ink rendered 70 at 0.3 and at 0.08, and 28 with `specularIntensity` 0.2. I use `specularIntensity`. Told the Builder, surface_mason, light_keeper and keyboard_smith.
 - Type lies `HOVER` 0.05 above the `z1` of its shape, with polygon offset, receives shadow, casts none. It is an alpha-blended layer drawn in the opaque pass with depth write, so it is in the picture a transmissive part refracts. A run on glass is drawn after the glass, without depth write.
 - No part of a frame reads a clock or a random number. The maker reads only the shape and `ctx`.
@@ -70,7 +75,14 @@ Branch `agent/type`. Looks branch `agent/type-looks`. Part made real: `type`.
 | 16 | `npm run compare -- --key step1-fire --tier review --format hd` | for the report |
 
 | 17, 18, 19 | `npm run still -- --key step1-fire --format uhd --tier review --force`, three times | ink was too dark and too crisp beside the approved crops: ink raised from 24 to 40, a soft band of ink added at the edge, engraved lip weaker, legends warmer |
-Checks that are not tuning looks: `--id rest-step1 --diag type`, one draft still in each of the seven beats of step 1, one of each of `--page marketing`, `step2`, `boss`, `decision`.
+| 20, 21 | scratch merge of surface, light and keyboard with type, `--key step1-fire` at uhd and hd review | first look on real materials: the chip is smoked, so its label went light; grain added to the ink; white warmer |
+| 22 | `npm run compare -- --key step1-fire --tier review --format hd` on main 63c4dd0 | among the others |
+| 23 | `npm run still -- --key step1-fire --tier review --format hd --force` | shoulders hold their width near a camera: unchanged at home |
+| 24 | `npm run compare -- --sheet page-look --tier review --format hd` on the 20 degree lens | numerals sink into the dark sectors of the turned metal: told surface_mason; cut floor made matte |
+| 25 | `npm run still -- --sheet page-look --tier review --format hd --force` | numeral floor 47, metal 84 to 100 in the dark sectors |
+| 26 | `npm run compare -- --key step1-fire --tier review --format hd` | ink `0x24272a`, grain 0.16, lighter white print, warmer legends |
+
+Checks that are not tuning looks: `--key tier-corporate` and `--key table-wide` at draft (the signs of the table, flat and standing, are all set by this maker), `--id rest-step1 --diag type`, one draft still in each of the seven beats of step 1, one of each of `--page marketing`, `step2`, `boss`, `decision`.
 
 ## What I learned
 
