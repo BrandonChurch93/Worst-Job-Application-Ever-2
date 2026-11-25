@@ -155,6 +155,18 @@ describe('the contrast of a run of type', () => {
     const got = typeContrasts(scene(flat(2000, 2000, 0, grey(0.8)), flat(300, 300, 1, mark), flat(120, 40, 2, grey(0.02), { type: 'copy:a', shape: 'label' })), [run()]).get('label')!
     expect(got.ground).toBeCloseTo(0.8, 6)
   })
+  it('passes a triangle of no area, which has no colour to give', () => {
+    const g = new THREE.BufferGeometry()
+    g.setAttribute('position', new THREE.Float32BufferAttribute([-200, 0, 0, 200, 0, 0, 200, 1e-30, 0], 3))
+    g.setAttribute('color', new THREE.Float32BufferAttribute([1, 1, 1, 1, 1, 1, 1, 1, 1], 3))
+    const sliver = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: new THREE.Color(1, 1, 1), vertexColors: true, side: THREE.DoubleSide }))
+    sliver.position.set(0, 0, 1)
+    const ray = new THREE.Raycaster(new THREE.Vector3(0, 0, 50), new THREE.Vector3(0, 0, -1))
+    const hit = ray.intersectObject(sliver)[0] as { barycoord?: THREE.Vector3 } | undefined
+    expect(hit?.barycoord?.lengthSq()).toBe(0)
+    const got = typeContrasts(scene(flat(2000, 2000, 0, grey(0.8)), sliver, flat(120, 40, 2, grey(0.02), { type: 'copy:a', shape: 'label' })), [run()]).get('label')!
+    expect(got.ground).toBeCloseTo(0.8, 6)
+  })
   it('gives nothing for a run the scene holds no mesh for, or one that lies over nothing', () => {
     expect(typeContrasts(scene(flat(2000, 2000, 0, grey(0.8))), [run()]).size).toBe(0)
     expect(typeContrasts(scene(flat(120, 40, 2, grey(0.02), { type: 'copy:a', shape: 'label' })), [run()]).size).toBe(0)
