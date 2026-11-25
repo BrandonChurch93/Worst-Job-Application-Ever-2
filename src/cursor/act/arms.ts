@@ -26,13 +26,13 @@ function parts() {
   const rubber = studio(
     new THREE.MeshPhysicalMaterial({
       color: new THREE.Color().setHex(0x1b1b1c, THREE.SRGBColorSpace),
-      roughness: 0.66,
+      roughness: 0.6,
       metalness: 0,
-      sheen: 0.8,
+      sheen: 0.25,
       sheenRoughness: 0.5,
       sheenColor: new THREE.Color().setHex(0x8a8680, THREE.SRGBColorSpace),
       normalMap: grain,
-      normalScale: new THREE.Vector2(0.16, 0.16),
+      normalScale: new THREE.Vector2(0.07, 0.07),
       specularIntensity: 0.5
     })
   )
