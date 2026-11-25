@@ -10,7 +10,7 @@ import { detailTexture } from './texture'
 const DROPS = 26
 const STEAM = 54
 const SMOKE_POINTS = 4
-const SMOKE_EACH = 26
+const SMOKE_EACH = 36
 const DUST = 22
 const PUFFS = STEAM + SMOKE_POINTS * SMOKE_EACH + DUST
 const SEED = config.seed
@@ -297,7 +297,7 @@ class Effects implements EffectsModel {
       const s = i % strands
       const j = Math.floor(i / strands)
       const path = (h: number): number =>
-        (lean + 0.07) * h + (0.05 * h + 0.024 * h * h) * Math.sin(h * (0.55 + 0.15 * s) + a0 + s * 2.2 - time * 1.6) + 0.16 * h * Math.sin(h * 0.23 + a1 + time * 0.55)
+        (lean + 0.07) * h + (0.05 * h + 0.024 * h * h) * Math.sin(h * (0.55 + 0.06 * s) + a0 + s * 0.8 - time * 1.6) + 0.075 * h * Math.sin(h * 0.23 + a1 + time * 0.55)
       const clock = time / period + (j + 0.41 * s) / each
       const cycle = Math.floor(clock)
       const t = clock - cycle
@@ -329,7 +329,7 @@ class Effects implements EffectsModel {
       const amount = clamp01(s.amount)
       if (amount <= 0.01) continue
       this.on(surface, s.x, s.y, this.a)
-      n = this.plume(n, this.a.x, this.a.y, this.a.z, amount, look.time, SMOKE_EACH, 2, 17, 4.8, 0.3, 2.6, 0.5, 0.8, 0.95, 40 + k * 9)
+      n = this.plume(n, this.a.x, this.a.y, this.a.z, amount, look.time, SMOKE_EACH, 2, 15, 4.8, 0.2, 1.9, 0.56, 0.84, 0.95, 40 + k * 9)
     }
     if (look.dust >= 0 && look.dust < 1) {
       const d = look.dust
