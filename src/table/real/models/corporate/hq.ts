@@ -15,9 +15,9 @@ const WHITE: RGB = [1, 0.9, 0.72]
 const COOL: RGB = [WHITE[0] / colours.CORPORATE_WINDOW[0], WHITE[1] / colours.CORPORATE_WINDOW[1], WHITE[2] / colours.CORPORATE_WINDOW[2]]
 const STEEL = hex(0x93a5c4)
 const STEEL_DARK = hex(0x6b7a94)
-const PORTAL = hex(0x8f7748)
+const PORTAL = hex(0x7a6238)
 const ROOF = hex(0x474c55)
-const BRIGHT = hex(0xc3cede)
+const BRIGHT = hex(0xb2c1dc)
 const HALL = 4
 const warmLamp = (k: number): RGB => [COOL[0] * k, COOL[1] * k * 0.92, COOL[2] * k * 0.79]
 // The light of the hall seen through its glass: amber where it is dim, cream where it is bright.
@@ -76,6 +76,7 @@ function curtain(S: Geo, G: Geo, a: V2, b: V2, z0: number, z1: number, rnd: Rand
         let warm = 1
         let cool = 1
         let off = 0
+        let kind = 0
         for (let i = 0; i < cols; i++) {
           if (run <= 0) {
             run = 1 + rnd.int(4)
@@ -83,6 +84,7 @@ function curtain(S: Geo, G: Geo, a: V2, b: V2, z0: number, z1: number, rnd: Rand
             warm = rnd.range(0.72, 1.12)
             cool = rnd.next() < 0.2 ? 1.25 : 1
             off = rnd.range(-0.07, 0.07)
+            kind = rnd.int(4)
           }
           run--
           const s0 = i * cw
@@ -99,9 +101,9 @@ function curtain(S: Geo, G: Geo, a: V2, b: V2, z0: number, z1: number, rnd: Rand
             const side = i === 0 ? 0 : i === cols - 1 ? 1 : 0.5
             sheet(G, (u, v) => [s0 + cw * u, 0, f0 + fh * v], n, al, 2, 8, (u, v) => (0.1 + 0.4 * bump(v, 0.48, 0.3) * warm + 0.16 * bump(v, 0.93, 0.1) + 0.08 * bump(v, 0.04, 0.08)) * (1 - 0.3 * Math.abs(u - side)))
             rect(0.12, 0.88, 0.9, 0.935, h(1.1), 0.12)
-            rect(0.2, 0.8, 0.83, 0.86, h(0.8), 0.12)
-            rect(0.27, 0.73, 0.78, 0.8, h(0.55), 0.12)
-            rect(0.33, 0.67, 0.745, 0.758, h(0.4), 0.12)
+            rect(0.24, 0.76, 0.82, 0.842, h(0.6), 0.12)
+            rect(0, 1, 0.07, 0.22, h(0.07), 0.12)
+            rect(0, 1, 0.22, 0.236, h(0.5), 0.14)
             continue
           }
           if (!on) {
@@ -115,9 +117,13 @@ function curtain(S: Geo, G: Geo, a: V2, b: V2, z0: number, z1: number, rnd: Rand
           rect(0, 1, 0.3, 0.56, blind ? lamp(0.11 * k) : room(0.05))
           rect(0, 1, 0, 0.3, rnd.next() < 0.5 ? room(0.018) : room(0.03))
           if (!blind) {
-            rect(0.14 + off, 0.86 + off, 0.8, 0.9, lamp(1.15 * k, cool), 0.12)
-            rect(0.27 + off, 0.73 + off, 0.66, 0.71, lamp(0.7 * k, cool), 0.12)
-            rect(0.36 + off, 0.64 + off, 0.58, 0.61, lamp(0.42 * k, cool), 0.12)
+            if (kind !== 3) rect(0.14 + off, 0.86 + off, 0.8, 0.9, lamp(1.15 * k, cool), 0.12)
+            if (kind < 2) rect(0.27 + off, 0.73 + off, 0.66, 0.71, lamp(0.7 * k, cool), 0.12)
+            if (kind === 0) rect(0.36 + off, 0.64 + off, 0.58, 0.61, lamp(0.42 * k, cool), 0.12)
+            if (kind === 3) {
+              rect(0.08, 0.44, 0.74, 0.9, lamp(0.9 * k, cool), 0.12)
+              rect(0.56, 0.92, 0.74, 0.9, lamp(0.9 * k, cool), 0.12)
+            }
           }
         }
       }
@@ -230,7 +236,7 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
     // The fascia over the lobby, with the plate the name stands on, and the canopy over the doors.
     fin(S, FINISH.brushed, () => {
       S.box(-HW - 1, HW + 1, F - 4, F + 1, pz0, pz1 - 0.4, STEEL_DARK, { bevel: 1, bottom: true })
-      S.box(-dw - 19.2, dw + 19.2, F - 9.6, F - 4, pz0 + 2, pz1 - 2, STEEL, { bottom: true })
+      S.box(-dw - 19.2, dw + 19.2, F - 9.6, F - 4, pz0 + 2, pz1 - 2, shade(STEEL, 0.8), { bottom: true })
       const fx = dw + 19.2
       for (const s of [-1, 1]) S.box(s > 0 ? fx : -fx - 3, s > 0 ? fx + 3 : -fx, F - 11.4, F - 4, pz0, pz1, STEEL, { bevel: 0.8, bottom: true })
       S.box(-fx - 3, fx + 3, F - 11.4, F - 4, pz1 - 2.6, pz1 + 0.4, STEEL, { bevel: 0.8, bottom: true })
