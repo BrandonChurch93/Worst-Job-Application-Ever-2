@@ -73,13 +73,16 @@ function acting(): CursorPose[] {
 // On the approved sheet every damaged body lies on the page.
 const LIE = 0.6
 
+// The pile lies down the page and to the right of where the body was cut: the sheet sets the body back by that much, so the pile is in its cell.
+const PILE = { x: 33, y: 62 }
+
 function damage(): CursorPose[] {
   const n = 5
   const at = (i: number) => across(n, i, SHEET.damage.step)
   const y = SHEET.y
   const wound = (kind: CursorPose['damage'][number], life: number) => ({ damage: [kind], healing: life, wounds: [{ kind, at: life, x: STRIKE.x, y: STRIKE.y }] })
   return [
-    restPose(at(0), y, { ...wound('shredded', 0.8), strips: pileAt(seed + 1, 2), z: LIE }),
+    restPose(at(0) - PILE.x, y - PILE.y, { ...wound('shredded', 0.8), strips: pileAt(seed + 1, 2), z: LIE }),
     restPose(at(1), y, { ...wound('reassembled', 0.64), strips: gatheredAt(seed + 1, 0.64), z: LIE }),
     restPose(at(2), y, { ...wound('scorched', 0.15), z: LIE }),
     restPose(at(3), y, { ...wound('burn', 0.63), z: LIE }),

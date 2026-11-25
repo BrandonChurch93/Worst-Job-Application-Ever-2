@@ -198,7 +198,7 @@ describe('the cursor body model', () => {
     expect(cut.boundingBox!.min.x).toBeLessThan(g.boundingBox!.min.x - 30)
   })
 
-  it('reports the light it gives off: none at rest, the hot tip, a glowing hole', () => {
+  it('reports the light it gives off: none at rest, the hot tip, a glowing hole, and the daylight down each bore', () => {
     const b = makeBody!()
     const out: Emitter[] = []
     b.apply(body())
@@ -206,7 +206,7 @@ describe('the cursor body model', () => {
     expect(out.length).toBe(0)
     b.apply(body({ heat: 1, holes: [{ x: 4.2, y: 9.5, r: 2, glow: 1 }, { x: 6, y: 15, r: 1, glow: 0 }] }))
     b.emit!(out)
-    expect(out.length).toBe(2)
+    expect(out.length).toBe(4)
     expect(out.every((e) => e.power > 0 && e.z > 0)).toBe(true)
   })
 

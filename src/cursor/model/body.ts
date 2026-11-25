@@ -9,6 +9,9 @@ import { cutBand, stripSet, type StripSet } from './strips'
 
 const HOLE_SEGMENTS = 48
 const HOLE_ROWS = [0, 0.3, 0.65, 1]
+// A punched bore narrows to this share of its mouth at the foot, so its wall is seen from above.
+const BORE = 0.7
+const BORE_LIGHT = { power: 0.0035, reach: 3.4 }
 const smooth01 = (v: number): number => {
   const t = Math.min(1, Math.max(0, v))
   return t * t * (3 - 2 * t)
@@ -16,7 +19,7 @@ const smooth01 = (v: number): number => {
 const rag = (a: number, burnt: number): number => 1 + (0.25 + 0.3 * burnt) * (0.06 * Math.sin(3 * a + 1.3) + 0.04 * Math.sin(7 * a + 0.4) + 0.03 * Math.sin(11 * a + 2.1))
 const clamp01 = (v: number): number => Math.min(1, Math.max(0, v))
 // A strip out of its place by more than a few pixels is a loose sliver, and lies thin.
-const LOOSE = { thin: 0.6, from: 4, to: 14, arm: 40 }
+const LOOSE = { thin: 0.8, from: 9, to: 22, arm: 40 }
 
 export class Body implements BodyModel {
   readonly root = new THREE.Group()
@@ -32,7 +35,7 @@ export class Body implements BodyModel {
   private last = ''
   private p = { x: 0, y: 0, z: 0 }
   private heat = 0
-  private holes: { x: number; y: number; glow: number; r: number }[] = []
+  private holes: { x: number; y: number; glow: number; r: number; clean: number }[] = []
   private q = new THREE.Quaternion()
   private qz = new THREE.Quaternion()
   private v = new THREE.Vector3()
@@ -107,11 +110,11 @@ export class Body implements BodyModel {
       if (h && h.r > 0.02) {
         u.uHoles.value[i]!.set(h.x, h.y, h.r, clamp01(h.glow))
         u.uBurnt.value.setComponent(i, clamp01(h.burnt ?? 1))
-        this.holes.push({ x: h.x, y: h.y, glow: clamp01(h.glow), r: h.r })
+        this.holes.push({ x: h.x, y: h.y, glow: clamp01(h.glow), r: h.r, clean: look.strips ? 0 : smooth01(h.r / 1.2) })
       } else u.uHoles.value[i]!.set(0, 0, 0, 0)
     }
     this.heat = clamp01(look.heat)
-    if (look.strips && look.strips.length > 0) this.applyStrips(look.strips)
+    if (look.strips && look.strips.length > 0) this.applyStrips(look.strips, clamp01(look.ribbon ?? 0))
     else this.applyWhole()
     this.applyWalls(look)
   }
@@ -134,7 +137,7 @@ export class Body implements BodyModel {
     g.computeVertexNormals()
   }
 
-  private applyStrips(strips: StripPose[]): void {
+  private applyStrips(strips: StripPose[], ribbon: number): void {
     const set = stripSet(strips.length)
     const g = this.cut.geometry
     if (this.set !== set) {
@@ -151,8 +154,8 @@ export class Body implements BodyModel {
         rest[i * 3 + 2] = set.rest[i * 4 + 2]!
       }
       g.setAttribute('aRest', new THREE.BufferAttribute(rest, 3))
-      g.setAttribute('aInset', new THREE.BufferAttribute(inset, 1))
-      g.setAttribute('aInk', new THREE.BufferAttribute(set.ink, 1))
+      g.setAttribute('aInset', new THREE.BufferAttribute(inset, 1).setUsage(THREE.DynamicDrawUsage))
+      g.setAttribute('aInk', new THREE.BufferAttribute(new Float32Array(set.ink), 1).setUsage(THREE.DynamicDrawUsage))
     }
     this.whole.visible = false
     this.cut.visible = true
@@ -164,10 +167,20 @@ export class Body implements BodyModel {
     const count = set.count
     const sum = new Float64Array(count * 4)
     const p = this.p
-    const keep = strips.map((s) => 1 - LOOSE.thin * smooth01((Math.hypot(s.x, s.y) + Math.abs(s.rot) * LOOSE.arm - LOOSE.from) / (LOOSE.to - LOOSE.from)))
+    const loose = strips.map((s) => Math.max(ribbon, smooth01((Math.hypot(s.x, s.y) + Math.abs(s.rot) * LOOSE.arm - LOOSE.from) / (LOOSE.to - LOOSE.from))))
+    const insetAt = g.getAttribute('aInset') as THREE.BufferAttribute
+    const inkAt = g.getAttribute('aInk') as THREE.BufferAttribute
+    const insets = insetAt.array as Float32Array
+    const inks = inkAt.array as Float32Array
+    const r = set.rest
+    const o = set.ribbon
     for (let i = 0; i < n; i++) {
-      this.deform.point(set.rest[i * 4]!, set.rest[i * 4 + 1]!, set.rest[i * 4 + 2]!, set.rest[i * 4 + 3]!, p)
-      this.deform.thin(p, keep[set.strip[i]!]!)
+      const l = loose[set.strip[i]!]!
+      const inset = r[i * 4 + 3]! + (o[i * 4 + 3]! - r[i * 4 + 3]!) * l
+      this.deform.point(r[i * 4]! + (o[i * 4]! - r[i * 4]!) * l, r[i * 4 + 1]! + (o[i * 4 + 1]! - r[i * 4 + 1]!) * l, r[i * 4 + 2]! + (o[i * 4 + 2]! - r[i * 4 + 2]!) * l, inset, p)
+      this.deform.thin(p, 1 - LOOSE.thin * l)
+      insets[i] = inset
+      inks[i] = set.ink[i]! + (set.ribbonInk[i]! - set.ink[i]!) * l
       a[i * 3] = p.x
       a[i * 3 + 1] = p.y
       a[i * 3 + 2] = p.z
@@ -196,13 +209,17 @@ export class Body implements BodyModel {
       a[i * 3] = v.x + cx + pose.x
       a[i * 3 + 1] = v.y + cy + pose.y
       a[i * 3 + 2] = v.z + cz + pose.z
-      v.set(set.normal[i * 3]!, set.normal[i * 3 + 1]!, set.normal[i * 3 + 2]!).applyQuaternion(turn[k]!)
+      const l = loose[k]!
+      const flat = set.ribbonNormal
+      v.set(set.normal[i * 3]! + (flat[i * 3]! - set.normal[i * 3]!) * l, set.normal[i * 3 + 1]! + (flat[i * 3 + 1]! - set.normal[i * 3 + 1]!) * l, set.normal[i * 3 + 2]! + (flat[i * 3 + 2]! - set.normal[i * 3 + 2]!) * l).normalize().applyQuaternion(turn[k]!)
       b[i * 3] = v.x
       b[i * 3 + 1] = v.y
       b[i * 3 + 2] = v.z
     }
     pos.needsUpdate = true
     nor.needsUpdate = true
+    insetAt.needsUpdate = true
+    inkAt.needsUpdate = true
   }
 
   private applyWalls(look: BodyLook): void {
@@ -236,7 +253,7 @@ export class Body implements BodyModel {
           const z = (heightAt(ex, ey) - 0.03) * (1 - HOLE_ROWS[r]!)
           const up = clamp01(z / 2.3)
           const crater = clamp01(hole.burnt ?? 1)
-          const k = reach * (0.85 + 0.15 * up + crater * (0.7 + 0.3 * Math.pow(up, 1.6) - 0.85 - 0.15 * up)) * 1.012
+          const k = reach * (BORE + (1 - BORE) * up + crater * (0.7 + 0.3 * Math.pow(up, 1.6) - BORE - (1 - BORE) * up)) * 1.012
           this.deform.point(hole.x + Math.cos(ang) * k, hole.y + Math.sin(ang) * k, z, d, p)
           a[i] = p.x
           a[i + 1] = p.y
@@ -245,16 +262,16 @@ export class Body implements BodyModel {
           const flick = Math.pow(0.5 + 0.5 * Math.sin(ang * 5 + h * 2.1) * Math.sin(ang * 9 + 1.7), 3.4)
           const side = smooth01((Math.cos(ang) * -0.5 + Math.sin(ang) * 0.86 - 0.1) / 0.9)
           const lee = 0.3 + 0.7 * side
-          const heat = (r === 0 ? 0.1 : r === 1 ? 0.9 : r === 2 ? 0.45 : 0.02) * lee
+          const heat = (r === 0 ? 0.9 : r === 1 ? 0.5 : r === 2 ? 0.12 : 0.02) * lee
           const burnt = clamp01(hole.burnt ?? 1)
-          const lit = Math.pow(glow, 1.3) * (0.08 + 2.4 * flick) * burnt
+          const lit = Math.pow(glow, 0.9) * (0.5 + 3.2 * flick) * burnt
           const facing = clamp01(0.5 + 0.5 * (Math.cos(ang) * 0.5 + Math.sin(ang) * 0.86))
           const grit = 0.82 + 0.36 * hash01(j, r, 7 + h)
-          const bare = (1 - burnt) * (0.86 - 0.22 * HOLE_ROWS[r]!) * (0.5 + 0.5 * facing) * grit
-          const ash = burnt * (0.1 + 0.3 * facing) * (0.45 + 0.55 * HOLE_ROWS[r]!) * grit
+          const bare = (1 - burnt) * (0.15 + 0.22 * Math.pow(facing, 1.5)) * (1 - 0.3 * HOLE_ROWS[r]!) * (0.72 + 0.56 * hash01(j, r, 7 + h))
+          const ash = burnt * (0.025 + 0.09 * facing) * (0.45 + 0.55 * HOLE_ROWS[r]!) * grit
           c[i] = 1.0 * heat * lit + bare * 0.84 + ash * 0.8
-          c[i + 1] = (r === 0 ? 0.5 : 0.24) * heat * lit + bare * 0.78 + ash * 0.76
-          c[i + 2] = 0.05 * heat * lit + bare * 0.66 + ash * 0.7
+          c[i + 1] = (r === 0 ? 0.5 : 0.24) * heat * lit + bare * (0.66 + 0.1 * facing) + ash * 0.76
+          c[i + 2] = 0.05 * heat * lit + bare * (0.42 + 0.18 * facing) + ash * 0.7
         }
       }
     }
@@ -280,9 +297,14 @@ export class Body implements BodyModel {
     if (this.heat > 0.02) {
       const along = 1.5 + this.heat * 4.5
       this.deform.point(along * AXIS[0] * 0.9, along * AXIS[1], 2.4, 2, this.p)
-      out.push({ x: this.p.x, y: this.p.y, z: this.p.z + 6 * UNIT, colour: [1, 0.3, 0.06], power: 0.06 * this.heat, reach: (10 + 8 * this.heat) * UNIT })
+      out.push({ x: this.p.x, y: this.p.y, z: this.p.z + 6 * UNIT, colour: [1, 0.3, 0.06], power: 0.022 * this.heat, reach: (10 + 8 * this.heat) * UNIT })
     }
     for (const h of this.holes) {
+      // Daylight comes down the bore: the page under it is seen, and the wall's far side is lit.
+      if (h.clean > 0.04) {
+        this.deform.point(h.x, h.y, 1.7, 2, this.p)
+        out.push({ x: this.p.x, y: this.p.y, z: this.p.z, colour: [1, 0.97, 0.92], power: BORE_LIGHT.power * h.clean, reach: BORE_LIGHT.reach * h.r * UNIT })
+      }
       if (h.glow < 0.04) continue
       this.deform.point(h.x, h.y, 2.4, 2, this.p)
       out.push({ x: this.p.x, y: this.p.y, z: this.p.z + 3.5 * UNIT, colour: [1, 0.42, 0.1], power: 0.02 * h.glow * h.glow, reach: (5 + 3 * h.r) * UNIT })
