@@ -1,35 +1,35 @@
 {
   "folder": "marketing",
-  "pushed": "2026-11-25T09:25:11.941Z",
-  "commit": "a4299d86ad3e359db4aa19c9560149b197bd7f8d",
+  "pushed": "2026-11-25T09:31:34.208Z",
+  "commit": "307fdf799ce6db5fc668b08c819a1088f974e4b5",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still decision-decision_reset-0p85-preview-draft: draft tier, preview, view beauty",
-      "time": "2026-11-25T09:24:57.433Z",
+      "caption": "Key marketing-top: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-25T09:27:25.835Z",
       "by": "marketing",
-      "from": "out/work/stills/decision-decision_reset-0p85-preview-draft.png"
+      "from": "out/work/compare/compare-marketing-top.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Ticker beat at 9.0 s: the tape is cut off at the window on both sides, the cursor walks past without looking down",
-      "time": "2026-11-25T09:25:10.251Z",
+      "caption": "Still key-marketing-top-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T09:29:07.582Z",
       "by": "marketing",
-      "from": "out/work/stills/seq-6-preview-draft.png"
+      "from": "out/work/stills/key-marketing-top-hd-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "After the rejection: tape reads tickerAfterRejection, the cursor stands by the Apply button",
-      "time": "2026-11-25T09:25:10.489Z",
+      "caption": "Still iface-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T09:31:17.468Z",
       "by": "marketing",
-      "from": "out/work/stills/decision-decision_reset-0p85-preview-draft.png"
+      "from": "out/work/stills/iface-hd-draft.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Scroll 0.78: process steps, wait field with its value shown, questions",
-      "time": "2026-11-25T09:25:10.723Z",
+      "caption": "Live first screen with the interface of main 26ad6cc: sound and film link sit above the top bar, clear of the page",
+      "time": "2026-11-25T09:31:33.055Z",
       "by": "marketing",
-      "from": "out/work/stills/scroll-0.78-preview-draft.png"
+      "from": "out/work/stills/iface-1200.png"
     }
   ]
 }
