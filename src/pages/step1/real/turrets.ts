@@ -11,7 +11,7 @@ import { EMIT, fx, GLOW, overlay } from './turret-fx'
 const heights = config.scale.heights
 
 export const TURRET_LOOK = {
-  collar: 46, head: 40, axis: -19, muzzle: 116, lift: 0.17, sunk: 9, socket: 56, socketDepth: 36, bezel: 63.5, door: 58, doorDrop: 2.2,
+  collar: 46, head: 40, axis: -19, muzzle: 116, lift: 0.17, stowed: 62, clear: 0.72, sunk: 9, socket: 56, socketDepth: 36, bezel: 63.5, door: 58, doorDrop: 2.2,
   flashSeconds: 0.05, steam: 6, sparks: 8
 }
 
@@ -81,7 +81,7 @@ function geometries(): Shared {
     turn([[L.head, -56], [L.head, -30], [L.head - 0.9, -29.2], [L.head - 0.9, -27.8], [L.head, -27], [L.head, -fillet], ...crown], 56, 4)
   ]
   const headDark: THREE.BufferGeometry[] = []
-  const barrel = along(turn([[18.5, 20], [18.5, 50], [17.5, 51], [15.2, 51], [15.2, 60], [14.4, 60.6], [14.4, 62], [15.2, 62.6], [15.2, 94], [18, 95.2], [18, 100], [17.2, 100.7], [17.2, 102.3], [18, 103], [18, 113.6], [16.6, L.muzzle], [12, L.muzzle]], 32, 2))
+  const barrel = along(turn([[18.5, 30], [18.5, 50], [17.5, 51], [15.2, 51], [15.2, 60], [14.4, 60.6], [14.4, 62], [15.2, 62.6], [15.2, 94], [18, 95.2], [18, 100], [17.2, 100.7], [17.2, 102.3], [18, 103], [18, 113.6], [16.6, L.muzzle], [12, L.muzzle]], 32, 2))
   const barrelDark = along(turn([[12, L.muzzle], [12, 92], [0, 92]], 24, 1))
   const bezel = turn([[L.bezel, -0.2], [L.bezel - 1.1, 0.9], [L.socket + 1.6, 0.9], [L.socket, -0.6]], 64, 5)
   const socket = merge([turn([[L.socket, -0.6], [L.socket, -L.socketDepth], [0, -L.socketDepth]], 48, 1)])
@@ -135,7 +135,6 @@ function makeTurret(s: Shape): THREE.Object3D {
   head.add(new THREE.Mesh(g.head, metal), slots)
   barrel.add(new THREE.Mesh(g.barrel, steel), bore)
   barrel.position.z = TURRET_LOOK.axis
-  barrel.rotation.y = -TURRET_LOOK.lift
   head.add(barrel)
   rise.add(head)
   root.add(rise)
@@ -180,14 +179,17 @@ function poseTurret(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const since = v[3]!
   const heat = Math.min(1, Math.max(0, v[4]!))
   const kick = since < 0.12 ? -5 * Math.exp(-since / 0.03) * Math.sin(Math.min(1, since / 0.03) * Math.PI * 0.5) : 0
-  d.barrel.position.x = -v[5]! * 0.55 + kick
+  const out = smooth((up - TURRET_LOOK.clear) / (1 - TURRET_LOOK.clear))
+  const lift = TURRET_LOOK.lift * out
+  d.barrel.position.x = -v[5]! * 0.55 + kick - TURRET_LOOK.stowed * (1 - out)
+  d.barrel.rotation.y = -lift
   const cx = s.x + s.w / 2
   const cy = s.y + s.h / 2
   const tip = TURRET_LOOK.muzzle + 2 + d.barrel.position.x
-  const flat = tip * Math.cos(TURRET_LOOK.lift)
+  const flat = tip * Math.cos(lift)
   const mx = cx + Math.cos(a) * flat
   const my = cy + Math.sin(a) * flat
-  const mz = s.z0 + d.rise.position.z + TURRET_LOOK.axis + tip * Math.sin(TURRET_LOOK.lift)
+  const mz = s.z0 + d.rise.position.z + TURRET_LOOK.axis + tip * Math.sin(lift)
 
   d.charge.visible = charge > 0.02
   d.sparks.visible = false
