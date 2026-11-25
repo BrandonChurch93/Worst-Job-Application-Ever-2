@@ -43,6 +43,7 @@ Agent `tug_fixer`, branch `agent/tug`. Started 16:42 UTC.
 27. At the loss the cursor is driven to the mouth and no further (its body centre stops at the slot, it sinks from 0.2 of the way): before, its stem showed below the machine at 27.6 s.
 28. The cut edge of the sheet takes 0.8 of the sheet's shade (`MOUTH.edge`). It is thinner than a pixel and faced the light, so it sparkled as a dotted line along the left and top of the sheet at both tiers.
 29. The shade of the bend at the mouth a little deeper and wider (`MOUTH.bent` 0.24, `fold` 15, `soft` 7), seen at review tier beside the one before.
+30. The lines of text on the sheet a softer grey (`INK.bar` 0x7c7c80 to 0x8c8c90), nearer the approved image's; at the key they still read as lines, seen at review tier. The ticks the strips keep of them are paler with it.
 
 ## M3 and the camera
 
