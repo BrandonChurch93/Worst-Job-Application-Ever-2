@@ -73,3 +73,11 @@ Blockout phase. Stand-in shapes, working logic.
 - The slabs. A slab never lands on the typed address. It is aimed at the cursor. If the cursor is on the field row and there is room right of the value (24 px clear), the slab lands on the field beside the value. Otherwise it lands on the keyboard, on top of the keys, where the cursor stands. In the film: beside the value, on the keys, beside the value.
 - Continue is drawn as step 2 draws its own: metal with dark type while the form is empty, accent with light type once the form can be sent. It stays under the fields, at the line the keyboard rises from.
 
+
+## After round 2 of the blockout
+
+- The tug. `TUG_CURVE` has five bites, each followed by a pull-back, over the same 5.2 s. The arms change length with the rate of the paper (`tugReach`, 50 to 150 px): long when the shredder bites, short when the cursor hauls. The cursor leans to the other side on each pull-back. No second of the tug looks like the one before it.
+- The first name. A bolt is a light capsule with a dark edge and a short tail. The muzzle is a light block on a dark barrel. A scorch is a small disc. The pressed key stays down 0.24 s and is drawn dark. The cursor dodges, ducks, stands proud on x for 0.8 s, is hit once, holds the shock for about 0.95 s, then types the rest. The times are in the `FIRST` table in `script.ts`.
+- The slabs. This replaces the note of round 1. Each slab falls straight down from 110 px onto the place where the cursor stood on the keyboard, stays where it landed, and all three lift together after the third. None lands on the address, its field or the Continue button. The fall is low because the straight-on camera shows height only by the shadow, and a slab that hangs higher throws the two thin shadow lines the critics saw.
+- The sink. The well keeps its full width and closes upward. A legend is not drawn once its key is within 24 px of the closing edge, so no legend shows without its key.
+- The landing. The film cursor is let go by the page turn at 0.5 s at the handoff point and reaches the page at about 1.0 to 1.2 s. The script now waits at the handoff point and walks straight to the First name field. The click is still at 1.08 s, while the cursor is close to the page but not yet on it.

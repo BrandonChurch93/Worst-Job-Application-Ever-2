@@ -8,7 +8,7 @@ import { smooth } from '../../stage/camera'
 import type { CameraPose, DrawList, GagInfo, Hint, Mode, PageContext, PageLogic, Pointer, Shape, StepIo } from '../../stage/types'
 import { CAP_TOP, DECK, DECK_TOP, hatchCentre, homePlaces, keyAt, onDeck, seatIndex, seats, shuffled, TRAVEL, typed } from './keyboard'
 import { buildLayout, FIELDS, PAPER, PAPER_LINES, PAPER_REST, PAPER_TITLE, SLAB, SLOT, ZONE, type FieldName } from './layout'
-import { BITE, filmCamera, makePlan, PILE, pointerAt, START, TIMES, TUG, tugCurve, type Plan } from './script'
+import { BITE, filmCamera, makePlan, PILE, pointerAt, START, TIMES, TUG, tugCurve, tugReach, type Plan } from './script'
 import { Turrets, type TurretsState } from './turrets'
 
 const live = config.live
@@ -21,7 +21,10 @@ const LIE = heights.card + 9
 const IDLE_SHUFFLE = 5
 const HOUSING = 44
 const SHRED = { zip: 1.1, reset: 1.5, end: 1.6 }
-const SLAB_CLEAR = 24
+const SLAB_HIGH = 110
+const SLAB_GAP = 8
+const PRESS = 0.24
+const LEGEND_CLEAR = 24
 
 type Phase = 'rest' | 'keyboard' | 'firstName' | 'lastName' | 'email' | 'slabs' | 'resume' | 'tug' | 'shredded' | 'received'
 const GAG: Record<Phase, string> = {
@@ -50,14 +53,15 @@ interface State {
   keyDown: Record<string, number>
   drum: number
   shock: number
-  slab: { n: number; t: number; x: number; y: number; base: number; landed: boolean } | null
+  slabs: { t: number; x: number; y: number; base: number; landed: boolean }[]
+  slabClear: number
   accepted: boolean
   slow: number
   slowFired: boolean
   realFired: boolean
   paper: { on: boolean; slide: number; x: number; y: number; held: boolean; dx: number; dy: number; feed: number; fx: number; fy: number }
   slot: number
-  tug: { t: number; amount: number; cool: number; gx: number; gy: number }
+  tug: { t: number; amount: number; cool: number; gx: number; gy: number; reach: number; rate: number }
   shred: number
   received: boolean
   pressed: number
@@ -94,8 +98,8 @@ export function makePage(): PageLogic {
 
   const fresh = (mode: Mode, seed: number): State => ({
     mode, seed, time: 0, phase: 'rest', phaseTime: 0, board: 0, boardUp: false, values: { firstName: '', lastName: '', email: '' }, places: homePlaces(), from: homePlaces(), shuffle: 1, blocks: false,
-    rng: stream('step1:shuffle', seed).state(), shuffles: 0, shuffledAt: 0, queue: [], keyDown: {}, drum: 0, shock: 0, slab: null, accepted: false, slow: 0, slowFired: false, realFired: false,
-    paper: { on: false, slide: 0, x: PAPER_REST.x, y: SCREEN_H + 20, held: false, dx: 0, dy: 0, feed: -1, fx: 0, fy: 0 }, slot: 0, tug: { t: 0, amount: 0, cool: 0, gx: SLOT.cx, gy: SLOT.cy - PAPER.h },
+    rng: stream('step1:shuffle', seed).state(), shuffles: 0, shuffledAt: 0, queue: [], keyDown: {}, drum: 0, shock: 0, slabs: [], slabClear: -1, accepted: false, slow: 0, slowFired: false, realFired: false,
+    paper: { on: false, slide: 0, x: PAPER_REST.x, y: SCREEN_H + 20, held: false, dx: 0, dy: 0, feed: -1, fx: 0, fy: 0 }, slot: 0, tug: { t: 0, amount: 0, cool: 0, gx: SLOT.cx, gy: SLOT.cy - PAPER.h, reach: TUG.reach.rest, rate: 0 },
     shred: 0, received: false, pressed: -1, skipped: false, cleaned: false, done: false, cue: 0, cx: START.x, cy: START.y, acted: null
   })
   let s = fresh('live', config.seed)
@@ -159,7 +163,7 @@ export function makePage(): PageLogic {
     const name = seats[key]!.name
     const at = seatOf(key, 1)
     io.emit('key-press', at.x + seats[key]!.w / 2, at.y + seats[key]!.h / 2, false)
-    s.keyDown[name] = 0.14
+    s.keyDown[name] = PRESS
     const field = FIELD_OF[s.phase]
     if (!field || s.phase === 'keyboard' || s.phase === 'slabs') return
     const value = s.values[field]
@@ -239,50 +243,44 @@ export function makePage(): PageLogic {
     }
   }
 
-  const valueBox = (): { x: number; y: number; w: number; h: number } => ({ x: emailValue.x, y: pockets.email.y, w: block(TYPE.value.font, s.values.email, TYPE.value.px).width, h: pockets.email.h })
-
   const slabAim = (io: StepIo): { x: number; y: number; base: number } => {
-    const cx = io.cursor.x + BODY.x - SLAB.w / 2
-    const cy = io.cursor.y + BODY.y
-    const p = pockets.email
-    const from = valueBox().x + valueBox().w + SLAB_CLEAR
-    const to = p.x + p.w - SLAB.w
-    if (cy < DECK.y && from <= to) return { x: clamp(cx, from, to), y: slabHome.y, base: 0 }
-    return { x: clamp(cx, DECK.x + 8, DECK.x + DECK.w - SLAB.w - 8), y: clamp(cy - SLAB.h / 2, DECK.y + 8, DECK.y + DECK.h - SLAB.h - 8), base: CAP_TOP }
+    const x = clamp(io.cursor.x + BODY.x - SLAB.w / 2, DECK.x + SLAB_GAP, DECK.x + DECK.w - SLAB.w - SLAB_GAP)
+    const y = clamp(io.cursor.y + BODY.y - SLAB.h / 2, DECK.y + SLAB_GAP, DECK.y + DECK.h - SLAB.h - SLAB_GAP)
+    let base = CAP_TOP
+    for (const b of s.slabs) if (x < b.x + SLAB.w && x + SLAB.w > b.x && y < b.y + SLAB.h && y + SLAB.h > b.y) base = Math.max(base, b.base + heights.slab)
+    return { x, y, base }
   }
 
   const stepSlabs = (io: StepIo): void => {
-    const every = TIMES.slabEvery
-    if (!s.slab) {
-      if (s.phaseTime >= TIMES.slabFirst) {
-        s.slab = { n: 0, t: 0, ...slabAim(io), landed: false }
-      }
-      return
-    }
-    const b = s.slab
-    b.t += io.dt
-    if (!b.landed && b.t >= TIMES.slabFall) {
+    s.slabs.forEach((b, n) => {
+      b.t += io.dt
+      if (b.landed || b.t < TIMES.slabFall) return
       b.landed = true
       const under = inside({ x: b.x, y: b.y, w: SLAB.w, h: SLAB.h }, io.cursor.x + BODY.x, io.cursor.y + BODY.y)
       io.emit('slab-drop', b.x + SLAB.w / 2, b.y + SLAB.h / 2, under)
       if (under) {
         io.cursor.hurt('flattened')
         io.cursor.react('flinch')
-      } else io.cursor.react(b.n === 0 ? 'jump' : 'flinch')
-      act(io, b.n === 2 ? 'angry' : 'scared')
+      } else io.cursor.react(n === 0 ? 'jump' : 'flinch')
+      act(io, n === 2 ? 'angry' : 'scared')
+    })
+    if (s.slabClear >= 0) {
+      s.slabClear += io.dt
+      if (s.slabClear < TIMES.slabLift) return
+      s.slabs = []
+      s.slabClear = -1
+      s.accepted = true
+      s.boardUp = false
+      turrets.retract()
+      enter('resume')
+      act(io, 'proud')
+      return
     }
-    if (b.t >= every) {
-      if (b.n >= 2) {
-        s.slab = null
-        s.accepted = true
-        s.boardUp = false
-        turrets.retract()
-        enter('resume')
-        act(io, 'proud')
-      } else {
-        s.slab = { n: b.n + 1, t: 0, ...slabAim(io), landed: false }
-      }
+    if (s.slabs.length < TIMES.slabCount) {
+      if (s.phaseTime >= TIMES.slabFirst + s.slabs.length * TIMES.slabEvery) s.slabs.push({ t: 0, ...slabAim(io), landed: false })
+      return
     }
+    if (s.slabs[s.slabs.length - 1]!.t >= TIMES.slabFall + TIMES.slabLie) s.slabClear = 0
   }
 
   const stepResume = (io: StepIo): void => {
@@ -308,7 +306,8 @@ export function makePage(): PageLogic {
       p.y = lerp(p.fy, to.y, u)
       if (p.feed >= TIMES.bite) {
         enter('tug')
-        s.tug = { t: 0, amount: tugCurve(0), cool: 0.5, gx: io.cursor.x + TUG.grip.x, gy: io.cursor.y + TUG.grip.y }
+        s.tug = { t: 0, amount: tugCurve(0), cool: 0.5, gx: SLOT.cx, gy: SLOT.cy - PAPER.h, reach: TUG.reach.rest, rate: 0 }
+        grip(io)
         io.emit('shredder', SLOT.cx, SLOT.cy, false)
         io.emit('arms-out', io.cursor.x, io.cursor.y, false)
         act(io, 'angry')
@@ -338,11 +337,22 @@ export function makePage(): PageLogic {
     if ((!io.pointer.down && over) || (s.mode === 'live' && s.phaseTime >= live.skipLinkAfterSeconds * 2)) feed()
   }
 
+  const grip = (io: StepIo): void => {
+    const t = s.tug
+    const sx = io.cursor.x + TUG.shoulder.x
+    const sy = io.cursor.y + TUG.shoulder.y
+    const dx = SLOT.cx - sx
+    const dy = SLOT.cy - sy
+    const d = Math.hypot(dx, dy) || 1
+    const reach = Math.max(0, Math.min(t.reach, d - 24))
+    t.gx = sx + (dx / d) * reach
+    t.gy = sy + (dy / d) * reach
+  }
+
   const stepTug = (io: StepIo): void => {
     const t = s.tug
     t.t += io.dt
-    t.gx = io.cursor.x + TUG.grip.x
-    t.gy = io.cursor.y + TUG.grip.y
+    grip(io)
     const dx = t.gx - SLOT.cx
     const dy = t.gy - SLOT.cy
     const d = Math.hypot(dx, dy) || 1
@@ -353,8 +363,11 @@ export function makePage(): PageLogic {
       io.cursor.knock((-dx / d) * a, (-dy / d) * a, 0)
     }
     const pull = Math.min(1, strain / TUG.strainPx)
+    const was = t.amount
     if (s.mode === 'film') t.amount = tugCurve(t.t)
     else t.amount = clamp(t.amount + (0.11 - 0.2 * pull + Math.max(0, t.t - 5) * 0.2) * io.dt, 0.03, 1)
+    t.rate += ((t.amount - was) / io.dt - t.rate) * Math.min(1, io.dt / TUG.rateLag)
+    t.reach = tugReach(t.rate)
     t.cool -= io.dt
     if (pull > 0.7 && t.cool <= 0) {
       t.cool = 0.9
@@ -363,7 +376,7 @@ export function makePage(): PageLogic {
     }
     const px = -dy / d
     const py = dx / d
-    io.cursor.setArms(true, [{ x: t.gx - px * 44, y: t.gy - py * 44, z: LIE + 6 }, { x: t.gx + px * 44, y: t.gy + py * 44, z: LIE + 6 }])
+    io.cursor.setArms(true, [{ x: t.gx - px * TUG.hands, y: t.gy - py * TUG.hands, z: LIE + 6 }, { x: t.gx + px * TUG.hands, y: t.gy + py * TUG.hands, z: LIE + 6 }])
     act(io, t.amount > 0.7 ? 'scared' : t.amount > 0.45 ? 'nervous' : 'angry')
     const lost = s.mode === 'film' ? t.t >= TIMES.tugFilm : t.amount >= 0.9 || t.t >= 9
     if (lost) {
@@ -483,7 +496,7 @@ export function makePage(): PageLogic {
     if (s.accepted) out.push('accepted')
     if (s.board > 0) out.push('keyboard', 'note')
     else out.push('closed')
-    if (s.slab) out.push('slab')
+    if (s.slabs.length) out.push('slab')
     if (s.paper.on && s.phase === 'resume') out.push('paper')
     return out
   }
@@ -560,9 +573,9 @@ export function makePage(): PageLogic {
       const over: Record<string, Partial<Shape> | null> = {}
       const off = lift(s.board)
       if (s.board > 0) {
-        const open = smooth(s.board / 0.3)
-        const w = DECK.w * open
-        out.push({ id: 'keyboard-well', part: 'keyboard', kind: 'well', x: DECK.x + (DECK.w - w) / 2, y: DECK.y, w, h: DECK.h, z0: WELL, z1: 0, tone: 'dark' })
+        const h = DECK.h * smooth(s.board / 0.3)
+        const mouth = DECK.y + DECK.h - h
+        if (h >= 2) out.push({ id: 'keyboard-well', part: 'keyboard', kind: 'well', x: DECK.x, y: mouth, w: DECK.w, h, z0: WELL, z1: 0, tone: 'dark' })
         over['keyboard-deck'] = { z0: WELL, z1: DECK_TOP + off }
         for (const side of [0, 1]) over[`hatch-${side}`] = { z0: DECK_TOP + off, z1: DECK_TOP + 0.6 + off }
         const u = smooth(s.shuffle)
@@ -573,19 +586,24 @@ export function makePage(): PageLogic {
           const press = (s.keyDown[seat.name] ? TRAVEL : 0) + wave
           const top = CAP_TOP + off + hop - press
           const away = at.moved || s.places[key] !== key
-          over[`key-${seat.name}`] = { x: at.x, y: at.y, z0: DECK_TOP + off + hop, z1: top, mechanism: top >= heights.machineMinTop, moved: away }
+          const seen = top > 0 || at.y >= mouth + LEGEND_CLEAR
+          over[`key-${seat.name}`] = { x: at.x, y: at.y, z0: DECK_TOP + off + hop, z1: top, mechanism: top >= heights.machineMinTop, moved: away, ...(s.keyDown[seat.name] ? { tone: 'pocket' as const } : {}) }
           const legend = boxOf(layout, `key-${seat.name}`)
           const label = seat.name === 'space' ? null : boxOf(layout, `key-${seat.name}-legend`)
-          if (label) over[`key-${seat.name}-legend`] = { x: label.x + (at.x - legend.x), y: label.y + (at.y - legend.y), z0: top, z1: top, moved: away }
+          if (label) over[`key-${seat.name}-legend`] = !seen ? null : { x: label.x + (at.x - legend.x), y: label.y + (at.y - legend.y), z0: top, z1: top, moved: away }
         })
       }
-      if (s.slab) {
-        const b = s.slab
-        const fall = 1 - smooth(b.t / TIMES.slabFall)
-        const rise = smooth((b.t - TIMES.slabFall - TIMES.slabLie) / TIMES.slabLift)
-        const z = b.base + 300 * fall * fall + 300 * rise * rise
-        over['email-slab'] = { x: b.x, y: b.y, z0: z, z1: z + heights.slab, moved: true }
-        over['email-slab-label'] = { x: slabLabel.x + (b.x - slabHome.x), y: slabLabel.y + (b.y - slabHome.y), z0: z + heights.slab, z1: z + heights.slab, moved: true }
+      const slabZ = (b: { t: number; base: number }): number => {
+        const u = clamp(b.t / TIMES.slabFall, 0, 1)
+        const v = clamp((b.t - TIMES.slabFall) / TIMES.slabSettle, 0, 1)
+        const w = s.slabClear < 0 ? 0 : clamp(s.slabClear / TIMES.slabLift, 0, 1)
+        return b.base + SLAB_HIGH * (1 - u * u) + 5 * Math.sin(Math.PI * v) * (1 - v) + SLAB_HIGH * w * w
+      }
+      const first = s.slabs[0]
+      if (first) {
+        const z = slabZ(first)
+        over['email-slab'] = { x: first.x, y: first.y, z0: z, z1: z + heights.slab, moved: true }
+        over['email-slab-label'] = { x: slabLabel.x + (first.x - slabHome.x), y: slabLabel.y + (first.y - slabHome.y), z0: z + heights.slab, z1: z + heights.slab, moved: true }
       }
       if (s.paper.on && s.phase === 'resume') {
         const dx = s.paper.x - PAPER_REST.x
@@ -607,6 +625,17 @@ export function makePage(): PageLogic {
         over['continue-label'] = { tone: 'inkLight', z0: top, z1: top }
       }
       drawLayout(out, layout, { states: stateList(), over, runtime: { 'step1.firstName': s.values.firstName, 'step1.lastName': s.values.lastName, 'step1.email': s.values.email } })
+      if (s.slabs.length > 1) {
+        const body = out.find((x) => x.id === 'email-slab')
+        const face = out.find((x) => x.id === 'email-slab-label')
+        const first = s.slabs[0]!
+        s.slabs.forEach((b, n) => {
+          if (n === 0 || !body || !face) return
+          const z = slabZ(b)
+          out.push({ ...body, id: `email-slab-${n}`, x: b.x, y: b.y, z0: z, z1: z + heights.slab })
+          out.push({ ...face, id: `email-slab-${n}-label`, x: face.x + (b.x - first.x), y: face.y + (b.y - first.y), z0: z + heights.slab, z1: z + heights.slab })
+        })
+      }
       const field = FIELD_OF[s.phase]
       if (field) {
         const p = pockets[field]
@@ -678,7 +707,8 @@ export function makePage(): PageLogic {
       s.boardUp = false
       turrets.reset()
       s.queue = []
-      s.slab = null
+      s.slabs = []
+      s.slabClear = -1
       s.paper.on = false
       s.paper.held = false
       s.accepted = false
