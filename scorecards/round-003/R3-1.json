@@ -1,0 +1,56 @@
+{
+  "critic": "R3",
+  "score": 6,
+  "pass": false,
+  "issues": [
+    {
+      "severity": "severe",
+      "file": "set-A-02.png",
+      "where": "the large resume-upload slab behind the arrow, especially the right and lower edges",
+      "what": "the slab reads immediately as an opaque gray panel; the page texture disappears at the edge and there is no visible transmitted detail or reflected highlight across the face",
+      "fix": "Make the page grain faintly visible through the slab, add a narrow refracted edge band, and give the face a grazing reflection distinct from its cast shadow."
+    },
+    {
+      "severity": "major",
+      "file": "set-A-05.png",
+      "where": "the round damage mark on the fourth arrow from the left, and the red-rimmed version at far right in set-A-06.png",
+      "what": "both holes read as dark filled spots; there is no clearly lit inner wall or identifiable background visible through them",
+      "fix": "Cut actual openings through the shell, render an irregular charred inner wall and far lip, and show the page or its shadow through the aperture."
+    },
+    {
+      "severity": "major",
+      "file": "set-A-05.png",
+      "where": "the far-right cracked arrow and the taped arrow second from left",
+      "what": "the fine fractures look inked onto the glossy surface instead of splitting it; the repair strips look like flat translucent overlays where they cross the joins",
+      "fix": "Split the shell along fractures, reveal small exposed sidewalls and dark gaps, and give the tape lifted edges, thickness, and small contact shadows where it bridges the pieces."
+    },
+    {
+      "severity": "major",
+      "file": "set-A-09.png",
+      "where": "top-right crop, the paper-feed mechanism directly under the resume",
+      "what": "the rollers have fine detail, but the complete unit reads as an assembly attached to the face of the page rather than seated in it; the lower casing casts a broad shadow on uninterrupted page texture",
+      "fix": "Recess the housing into a cutout and show a narrow opening around it, with a dark contact line where the mounting flange meets the page."
+    },
+    {
+      "severity": "major",
+      "file": "set-A-10.png",
+      "where": "middle-right crop, the resting arrow's tip and long diagonal edge",
+      "what": "the white face is nearly featureless at delivery size and the black edge reads as an outline rather than a separate sidewall; the offset shadow conveys height more clearly than the arrow itself",
+      "fix": "Give the bevel a narrow directional highlight and reveal a distinct sidewall on one edge while keeping the offset cast shadow."
+    },
+    {
+      "severity": "major",
+      "file": "set-A-08.png",
+      "where": "bottom-middle crop, the Browse files button",
+      "what": "the button has a bevel but appears stuck on top of the slab; there is no visible socket or clearance seam around the cap",
+      "fix": "Recess the cap in a shallow seat with a narrow dark clearance and a tight contact shadow on the side away from the light."
+    },
+    {
+      "severity": "major",
+      "file": "set-A-04.png",
+      "where": "far-right arm pose, where the upper arm crosses the arrow face",
+      "what": "the upper arm tapers into the white face without a visible cuff, mounting point, or separation, so it appears to pass through the shell",
+      "fix": "Attach the arm to a visible joint at the shell edge or route it visibly in front with a narrow separation shadow."
+    }
+  ]
+}
