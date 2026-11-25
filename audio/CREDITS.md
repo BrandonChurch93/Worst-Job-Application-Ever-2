@@ -4,12 +4,12 @@ This build may spend at most 10000 ElevenLabs credits in all, on every call of e
 
 The count is of this build's own calls, never of what the account has left: the account is shared with other builds. Every call goes through `npm run credits`, which writes its row here before it returns and makes no call that would pass the limit. A sound effect is never asked for without its length. `kit/addenda/001-sound-budget-and-narrator.md` sets these rules. This file is written by the tool from `audio/CREDITS.json`.
 
-Running total: 120 of 10000. Calls: 7.
+Running total: 207 of 10000. Calls: 11.
 
 ## Rates
 
 - Speech: 0.439 credits a character. MEASURED 2026-11-25T17:44:37Z on call 3: 18 credits for 41 characters, reported by the response; the account's usage moved by 0 across the call.
-- Sound effects: not measured yet. Until it is, a call is checked at 40 credits a second
+- Sound effects: 12 credits a second. MEASURED 2026-11-25T17:54:46Z on call 11: 6 credits for 0.5 s asked, reported by the response; the account's usage moved by 0 across the call.
 
 ## Calls
 
@@ -22,3 +22,7 @@ Running total: 120 of 10000. Calls: 7.
 | 5 | 2026-11-25T17:44:51Z | POST /v1/text-to-speech | pause test 3 of 3: the documented break mark, 0.8 s | 84 characters | HTTP 200, 0.9 s | 27 | reported by the response | 66 |
 | 6 | 2026-11-25T17:45:16Z | POST /v1/text-to-speech | speed test 1: speed 0.7, breaks of 1.0 s | 84 characters, speed 0.7 | HTTP 200, 1.0 s | 27 | reported by the response | 93 |
 | 7 | 2026-11-25T17:45:17Z | POST /v1/text-to-speech | speed test 2: speed 0.8, breaks of 1.0 s | 84 characters, speed 0.8 | HTTP 200, 0.8 s | 27 | reported by the response | 120 |
+| 8 | 2026-11-25T17:50:54Z | POST /v1/text-to-speech | stability test 1: speed 0.7, stability 0.75, take A | 84 characters, stability 0.75, speed 0.7 | HTTP 200, 1.0 s | 27 | reported by the response | 147 |
+| 9 | 2026-11-25T17:50:55Z | POST /v1/text-to-speech | stability test 2: speed 0.7, stability 0.75, take B | 84 characters, stability 0.75, speed 0.7 | HTTP 200, 1.3 s | 27 | reported by the response | 174 |
+| 10 | 2026-11-25T17:50:57Z | POST /v1/text-to-speech | stability test 3: speed 0.7, stability 0.5, a second take | 84 characters, stability 0.5, speed 0.7 | HTTP 200, 0.9 s | 27 | reported by the response | 201 |
+| 11 | 2026-11-25T17:54:46Z | POST /v1/sound-generation | effect rate test, and take 1 of cue card-flip | 0.5 s | HTTP 200, 1.9 s | 6 | reported by the response; the account's usage moved by 0 across the call | 207 |

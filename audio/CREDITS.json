@@ -4,6 +4,10 @@
     "speech": {
       "perCharacter": 0.439,
       "how": "MEASURED 2026-11-25T17:44:37Z on call 3: 18 credits for 41 characters, reported by the response; the account's usage moved by 0 across the call."
+    },
+    "effect": {
+      "perSecond": 12,
+      "how": "MEASURED 2026-11-25T17:54:46Z on call 11: 6 credits for 0.5 s asked, reported by the response; the account's usage moved by 0 across the call."
     }
   },
   "reviewReached": false,
@@ -77,6 +81,46 @@
       "answer": "HTTP 200, 0.8 s",
       "cost": 27,
       "how": "reported by the response"
+    },
+    {
+      "n": 8,
+      "time": "2026-11-25T17:50:54Z",
+      "endpoint": "POST /v1/text-to-speech",
+      "what": "stability test 1: speed 0.7, stability 0.75, take A",
+      "asked": "84 characters, stability 0.75, speed 0.7",
+      "answer": "HTTP 200, 1.0 s",
+      "cost": 27,
+      "how": "reported by the response"
+    },
+    {
+      "n": 9,
+      "time": "2026-11-25T17:50:55Z",
+      "endpoint": "POST /v1/text-to-speech",
+      "what": "stability test 2: speed 0.7, stability 0.75, take B",
+      "asked": "84 characters, stability 0.75, speed 0.7",
+      "answer": "HTTP 200, 1.3 s",
+      "cost": 27,
+      "how": "reported by the response"
+    },
+    {
+      "n": 10,
+      "time": "2026-11-25T17:50:57Z",
+      "endpoint": "POST /v1/text-to-speech",
+      "what": "stability test 3: speed 0.7, stability 0.5, a second take",
+      "asked": "84 characters, stability 0.5, speed 0.7",
+      "answer": "HTTP 200, 0.9 s",
+      "cost": 27,
+      "how": "reported by the response"
+    },
+    {
+      "n": 11,
+      "time": "2026-11-25T17:54:46Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "effect rate test, and take 1 of cue card-flip",
+      "asked": "0.5 s",
+      "answer": "HTTP 200, 1.9 s",
+      "cost": 6,
+      "how": "reported by the response; the account's usage moved by 0 across the call"
     }
   ]
 }
