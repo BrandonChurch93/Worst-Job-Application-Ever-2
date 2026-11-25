@@ -84,5 +84,6 @@ The lenses of the arrow windows and of the lane lamps are one mesh; a fourth ver
 | tier-street | 5 | 5 | 11614 | 24 | 59 | 8108 |
 
 - Whole frame, same command, real against stand-in: table-wide 616 calls and 228682 triangles against 741 and 226718; tier-corporate 294 and 172730 against 361 and 168336; tier-office 388 and 192310 against 463 and 185558; tier-street 376 and 201814 against 430 and 198308.
+- Measured again at 16:35 to 16:37 UTC with main at 915b3b4 merged (the real frame is in): the row `table-lights` is unchanged in all four keys, real and stand-in. Whole frame, real against stand-in: table-wide 513 calls and 263322 triangles against 638 and 261358; tier-corporate 244 and 187542 against 311 and 183148; tier-office 302 and 209448 against 377 and 202696; tier-street 297 and 217014 against 351 and 213508.
 - Per zone the part draws at most 6 meshes (corporate: lenses, sockets, plates, screws, globes, globe glass; office and street: the first four). A tier key shows parts of two zones, hence 7.
 - No file ships from my folder: the pictures of light, the surround and every lamp are made in code. Asset sets: 0 MB.
