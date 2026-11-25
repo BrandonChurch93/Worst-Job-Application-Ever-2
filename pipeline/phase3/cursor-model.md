@@ -218,7 +218,7 @@ What was wrong, seen beside `cursor-damage.png` at native size: a flat face with
 
 What the shell is now (`shape.ts`):
 
-- One section, from the page up: the foot tucked 0.34 under the outline (`FOOT`), a full round out to the outline at z 0.62 and over to the crown at z 1.76, a 0.05 groove (`BEAD`), then the enamel in one roll 1.0 wide (`SHOULDER`, 41 degrees at the lip, easing to level by the power `ROLL`), then a dome of 0.1 to the middle (`DOME`). `TOP` stays 2.3.
+- One section, from the page up: the foot tucked 0.34 under the outline (`FOOT`), a full round out to the outline at z 0.62 and over to the crown at z 2.0, a 0.05 groove (`BEAD`), then the enamel in one roll 0.62 wide (`SHOULDER`, 39 degrees at the lip, easing to level by the power `ROLL`), then a dome of 0.1 that starts 2.0 in (`DOME`, `DOME_AT`), further in than the stem is wide, so the stem's top is level. `TOP` stays 2.3. The first push had the crown at 1.76 and the roll 1.0 wide: in the close frame of the tug and on the sheet the wide roll read as a bevel, with a dent round each notch where the roll wraps the corner.
 - The dome is a height field over the whole face, `enamelAt(domeInside(x, y))`. Near the outline it is the true distance; from 0.9 in it blends to a distance every edge has a say in (a power mean, `POWER` 5), so no ridge runs down the stem, into the nose or into the wings.
 - Corners: nose 0.5, wings 0.62, notches 0.36, tail 0.9 (`RADII`), eleven points to an arc. The inner rings keep their own radius (`ownRadius`) and one centre law, so the band has no mitred black wedge at the nose.
 - `GROW` 0.22: the rounded form stands 0.22 outside the outline, so its rounded corners still reach the outline's corners. MEASURED with the body at rest: 18.93 units tall (the outline is 19), where plain rounding of the outline gave 18.12. The configured height holds; the arrow is 1.6 px wider at 70 px.
@@ -261,3 +261,9 @@ What it is now (`deform.ts`, `FLAT`): a fifth wider, the stem a further 30 perce
 Still wrong: the lumps are shallower than approved; the outline's waves are longer and fewer.
 
 One number of a test changed (`tests/cursor-model.test.ts`, the anchor on a flattened body): the middle of the face had to stand under 0.75 of its height at rest, and now under 0.9. The pressed face is a pillow, so its middle sinks less than its rim does; MEASURED 0.885 before the last trim of the lumps.
+
+### What is still wrong with the shell
+
+- On the sheet at review size the roll still reads as a band of its own tone, with an arc round each notch. The height view shows the form is as designed, one roll into a level top; the tone is how the finish lights a tilted face (its fill term and what the gloss reflects). Told to the finisher; not changed here.
+- The black wall is thinner on the lit side than approved, and the stem is slimmer: the outline is the contract's.
+- No dense dark contact (above).
