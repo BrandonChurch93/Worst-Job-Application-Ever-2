@@ -1,12 +1,13 @@
 import * as THREE from 'three'
-import { BALL, COLS, LANE_RAMP, TH, TIERS, table } from '../../layout'
+import { BALL, COLS, LANE_RAMP, TH, TIERS, floorZ, table } from '../../layout'
 import type { Zone } from '../zone'
 import { Geo, type V2, type V3 } from './geo'
 import { TUBE, clamp, collar, frameAt, lengthOf, shells, spot } from './kit'
 import { FIN, Screws, TONE, shade } from './mats'
 
-export const LIFT = { centre: TUBE.outer + 1.5, foot: 10.55, cup: 12 / BALL, face: 2.1, elbowOut: 66, bend: 0.75 * BALL, lean: 0, swing: 1.25, decay: 4, beat: 7 }
+export const LIFT = { centre: TUBE.outer + 1.5, foot: 10.55, face: 2.1, joint: 14, elbowOut: 66, bend: 0.75 * BALL, lean: 0, swing: 1.25, decay: 4, beat: 7 }
 export const DOOR = { high: 88 }
+const tierStep = floorZ(0) - floorZ(1)
 
 export interface Lift { G: Geo; C: Geo; S: Screws; flap: Geo | null; hinge: V3 }
 
@@ -20,9 +21,19 @@ export function lift(z: Zone): Lift {
   const elbow = table.openings.find((o) => o.tier === k && o.id.endsWith('.elbow'))
   const door = table.openings.find((o) => o.tier === k && o.id.endsWith('.lift.door'))
   const v = (y: number): number => y - (z.top / BALL)
-  // Over a tier that sends balls up, the cup stands against the housing the lift rises in, its closed end just inside it.
-  const base = spot(z, COLS.lift, k < TIERS.length - 1 ? TH - LANE_RAMP.lift - LIFT.cup : LIFT.foot)
-  let top: V3
+  // One shaft runs the whole left lane. It lies level over each floor and climbs a tier's step within LANE_RAMP.lift either side of a tier's line, so each tier builds its own length of it up to the lines it ends on.
+  const rise = (tierStep * BALL) / 2
+  const above = k > 0
+  const below = k < TIERS.length - 1
+  const low = spot(z, COLS.lift, below ? TH - LANE_RAMP.lift : LIFT.foot)
+  const base = low
+  const path: V3[] = []
+  if (below) {
+    const line = spot(z, COLS.lift, TH)
+    path.push([line[0], line[1], zc - rise])
+  }
+  path.push([low[0], low[1], zc])
+  let fork = -1
   let bendPath: V3[] = []
   if (elbow) {
     const mid = (v(elbow.a[1]) + v(elbow.b[1])) / 2
@@ -30,21 +41,26 @@ export function lift(z: Zone): Lift {
     const r = LIFT.bend
     const cx = end[0] + r
     const cy = end[1] - r
-    top = [end[0], cy, zc]
     for (let i = 0; i <= 8; i++) {
       const a = Math.PI - (i / 8) * (Math.PI / 2)
       bendPath.push([cx + r * Math.cos(a), cy + r * Math.sin(a), zc])
     }
-  } else {
-    const end = spot(z, COLS.lift, 0)
-    top = [end[0], end[1] + 4, zc]
+    if (!above) path.push([end[0], cy, zc])
+    fork = cy
   }
-  const path: V3[] = [[base[0], base[1], zc], top]
+  if (above) {
+    const flat = spot(z, COLS.lift, LANE_RAMP.lift)
+    const line = spot(z, COLS.lift, 0)
+    path.push([flat[0], flat[1], zc], [line[0], line[1], zc + rise])
+  }
   shells(C, path)
+  const slope = Math.hypot(LANE_RAMP.lift * BALL, rise)
+  const from0 = below ? slope : 0
+  const sOf = (y: number): number => from0 + y - low[1]
   const ground = 0
 
-  // The cup the tube stands in at the foot of the tier.
-  {
+  // The cup the tube stands in at the foot of the lowest tier.
+  if (!below) {
     const from = G.vertices
     const o = TUBE.outer
     G.f(FIN.alu).lathe([[0, -11], [16, -11], [18, -9], [18, -7.5], [o - 22, -7.5], [o - 20, -6], [o - 20, -4], [o + 2, -4], [o + 7, 1], [o + 7, 11], [o + 4.6, 12.4], [o + 4.6, 15.6], [o + 7, 17], [o + 7, 28], [o + 5, 30], [o + 0.3, 30]], 0, 0, 24, (i) => (i === 10 ? TONE.aluDark : i === 0 || i === 3 || i === 6 ? shade(TONE.alu, LIFT.face * (i === 3 ? 0.84 : 1)) : i < 8 ? shade(TONE.alu, 0.8) : TONE.alu))
@@ -57,19 +73,29 @@ export function lift(z: Zone): Lift {
   }
 
   const length = lengthOf(path)
-  const span: [number, number] | null = door ? [spot(z, COLS.lift, v(Math.max(door.a[1], door.b[1])))[1] - base[1], spot(z, COLS.lift, v(Math.min(door.a[1], door.b[1])))[1] - base[1]] : null
-  const clear = (s: number, pad: number): boolean => !span || s < span[0] - pad || s > span[1] + pad
+  const span: [number, number] | null = door ? [sOf(spot(z, COLS.lift, v(Math.max(door.a[1], door.b[1])))[1]), sOf(spot(z, COLS.lift, v(Math.min(door.a[1], door.b[1])))[1])] : null
+  const turn: [number, number] | null = fork >= 0 ? [sOf(fork) - 8, sOf(fork) + LIFT.bend + LIFT.elbowOut] : null
+  const clear = (s: number, pad: number): boolean => (!span || s < span[0] - pad || s > span[1] + pad) && (!turn || s < turn[0] - pad || s > turn[1] + pad)
   const step = TUBE.collarStep
-  for (let s = step * 0.62; s < length - 30; s += step) {
+  const s0 = from0
+  const s1 = length - (above ? slope : 0)
+  // Where no elbow stands at a tier's top the frame's housing reaches twice the ramp down the lane: no ring sits under it.
+  const roof = above && !elbow ? s1 - LANE_RAMP.lift * BALL - 13 : s1 - 8
+  for (let s = s0 + step * 0.62; s < roof - 22; s += step) {
     const f = frameAt(path, s)
-    if (f && clear(s, 26)) collar(G, S, f)
+    if (f && clear(s, 46)) collar(G, S, f)
     const g = frameAt(path, s + step / 2)
-    if (g && s + step / 2 < length - 40 && clear(s + step / 2, 20)) clamp(G, S, g, ground)
+    if (g && s + step / 2 < roof - 32 && clear(s + step / 2, 20)) clamp(G, S, g, ground)
+  }
+  // A ring on the level run at each place the shaft turns up or down to the next tier.
+  for (const q of [below ? s0 + LIFT.joint : -1, above && elbow ? s1 - LIFT.joint : -1]) {
+    const f = q > 0 ? frameAt(path, q) : null
+    if (f) collar(G, S, f, { long: 18, out: TUBE.collarOut + 2 })
   }
   if (span) {
-    for (const s of [span[0] - 13, span[1] + 13]) {
-      const f = frameAt(path, s)
-      if (f) collar(G, S, f, { long: 18, out: TUBE.collarOut + 2 })
+    for (const s of [span[0] - 24, span[1] + 24]) {
+      const f = s < roof ? frameAt(path, s) : null
+      if (f) collar(G, S, f)
     }
   }
 
@@ -95,9 +121,9 @@ export function lift(z: Zone): Lift {
         S.add(p.x, p.y, p.z, 0.6, d.transformDirection(f.m))
       }
     })
-    const f0 = frameAt(path, length - 14)
+    const f0 = frameAt(path, sOf(fork) - 14)
     if (f0) collar(G, S, f0)
-  } else {
+  } else if (!above) {
     const f = frameAt(path, length - 16)
     if (f) collar(G, S, f, { long: 26, out: TUBE.collarOut + 3 })
   }
@@ -112,13 +138,24 @@ export function lift(z: Zone): Lift {
     const y0 = b[1]
     const y1 = a[1]
     const high = DOOR.high
+    // The scoop is one orange moulding clipped round the shaft: a ring at each end, a cheek down from each ring, a hood between them.
+    const R = TUBE.collarOut + 1
     for (const y of [y0 - 4, y1 + 4]) {
-      G.f(FIN.zinc).box(x - 2, x + 9, y - 6, y + 6, 0.4, high, TONE.zinc, { bevel: 1.4 })
-      G.box(x + 9, x + 25, y - 6, y + 6, 0.4, 2.8, TONE.zinc)
+      G.f(FIN.gloss).box(x - 2, x + 9, y - 6, y + 6, 0.4, high, TONE.orange, { bevel: 1.4 })
+      G.box(x + 9, x + 25, y - 6, y + 6, 0.4, 2.8, TONE.orange)
       S.add(x + 17.5, y, 2.8, 0.8)
       S.add(x + 3.5, y, high, 0.7)
+      const f = frameAt(path, Math.min(sOf(y), roof))
+      if (f) {
+        const from = G.vertices
+        G.f(FIN.gloss).lathe([[R - 6, -6], [R + 3, -6], [R + 4, -5], [R + 4, 5], [R + 3, 6], [R - 6, 6]], 0, 0, 20, TONE.orange)
+        G.move(from, f.m)
+        const d = new THREE.Vector3(0, 1, 0)
+        const q = d.clone().multiplyScalar(R + 4).applyMatrix4(f.m)
+        S.add(q.x, q.y, q.z, 0.7, d.transformDirection(f.m))
+      }
     }
-    G.box(x - 2, x + 11, y0 - 10, y1 + 10, high - 8, high, TONE.zinc, { bevel: 1.4 })
+    G.f(FIN.gloss).box(x - 2, x + 11, y0 - 10, y1 + 10, high - 8, high, TONE.orange, { bevel: 1.4 })
     const hz = high - 13
     const hx = x + 7
     G.f(FIN.steel).pipe([[hx, y0 + 1, hz], [hx, y1 - 1, hz]], 2.2, 6, TONE.steel)
