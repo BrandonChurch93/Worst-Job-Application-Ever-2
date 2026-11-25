@@ -1,0 +1,129 @@
+{
+ "critic": "R9",
+ "score": 6,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "A: one sheet across each beat",
+ "reads": [
+  {
+   "file": "set-A-01.png",
+   "read": "Tentative: the arrow hangs back while the form swings into view, then tries the first-name field and tips back as a keyboard rises underneath it."
+  },
+  {
+   "file": "set-A-02.png",
+   "read": "Determined, then flustered: it tries to type its first name while the keyboard sputters with sparks, and pushes through to Enter."
+  },
+  {
+   "file": "set-A-03.png",
+   "read": "Startled but persistent: it tries to type its last name while the keys spring up and rearrange beneath it."
+  },
+  {
+   "file": "set-A-04.png",
+   "read": "Focused, then alarmed: it submits the email and jerks away when red rejection notices pop up, then waits warily until they clear."
+  },
+  {
+   "file": "set-A-05.png",
+   "read": "Cautiously purposeful: with the keyboard gone, it picks up the résumé and carries it to the upload panel, where the paper meets a slot."
+  },
+  {
+   "file": "set-A-06.png",
+   "read": "Alarmed and desperate: it pulls back against the shredder eating its résumé, then loses its grip and is flung out of sight."
+  },
+  {
+   "file": "set-A-07.png",
+   "read": "Dazed and deflated: a crumpled shape that seems to be the arrow emerges among the scraps as the form wipes its entries, then tumbles away as the page tilts."
+  }
+ ],
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "rows 1–3, beside the form fields",
+   "what": "The still pose and the move to the first-name field look mostly like a normal pointer waiting and translating. The keyboard reveal has a change in angle, but little held reaction.",
+   "fix": "Give the approach a small pullback and a deliberate stretch into the click, then hold a distinct compressed recoil when the keyboard rises."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "rows 2–4, over the sparking keys",
+   "what": "The arrow is hard to separate from the keys and flashes. The sequence shows the keyboard getting frantic more clearly than it shows the arrow feeling or reacting to it.",
+   "fix": "Stage one spark with clear space around the arrow; compress it on the hit, stretch it away, and hold the recoil before it goes back to typing."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "rows 1–2, during the first upheavals of the keys",
+   "what": "The first key eruption hides the arrow and its next appearance is already off the keyboard, so there is no clear silhouette showing whether it jumped, was struck, or merely moved.",
+   "fix": "Show a readable squash at the launch point and a separated stretched airborne pose before the landing."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "row 3 right through row 4 center, above the red notices",
+   "what": "The retreat is visible, but the arrow slips to the end of the email field and holds there almost like a normal pointer while the notices keep multiplying.",
+   "fix": "Give the advancing notices a distinct held flinch with a changed silhouette, then let the arrow settle into a clearly different pose when the notices leave."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "rows 2–4, just below the shredder and during the fall",
+   "what": "The crumpled arrow is hard to distinguish from the paper scraps. Its damage and reaction are not immediately legible, and it is easy to lose the character altogether as the camera pulls back.",
+   "fix": "Keep an identifiable arrow tip or notch in the crumpled silhouette and hold a clear, isolated stunned pose before the fall."
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-05.png",
+   "where": "bottom row, at first contact with the upload slot",
+   "what": "The arrow carries and presents the paper clearly, but gives little visible weight to the pickup or thought to the slot before contact.",
+   "fix": "Add a small preparatory dip, carry the paper with a slight lean, and hold a short check at the slot before letting it engage."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "the whole sheet",
+   "what": "did not read: confident reads as tentative. The arrow is read as hanging back while the form swings in.",
+   "fix": "The upright stand, the bounce and the strut of Confident held before the tap, and the tap struck with a wind-up.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "the whole sheet",
+   "what": "did not read: the turrets, the bolts, the dodges, the cocky moment and the hit with its burn hole are not in the read. The beat reads as typing on a keyboard that sputters with sparks.",
+   "fix": "Each dodge and duck a held pose clear of the keys, the cocky pose held before the hit, and the hit answered by a held shock with the hole and the smoke plain on the arrow.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "the whole sheet",
+   "what": "did not read: the thinning patience is not in the read. It reads as startled but persistent.",
+   "fix": "The hunt and each landing acted shorter and harder from letter to letter, with a held show of temper after a shuffle.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "the whole sheet",
+   "what": "did not read: the slabs read as notices that pop up, not as heavy slabs that drop from above, and the dives clear of them read as one jerk away.",
+   "fix": "Each slab seen falling and landing with weight, and each dive a wind-up, a stretch and a landing held clear of the slab.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "the whole sheet",
+   "what": "did not read: proud reads as cautiously purposeful.",
+   "fix": "The puff up and the dusting of Proud held with the paper before the carry, and the carry acted as a show.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "the whole sheet",
+   "what": "did not read: the pile of strips that stirs, stands up and zips itself back into the arrow is not in the read. It reads as a crumpled shape that comes out among the scraps and tumbles away.",
+   "fix": "The pile, the stand and the zip larger in the frame and each held, the mended arrow out of line for a moment and then true.",
+   "by": "builder"
+  }
+ ]
+}

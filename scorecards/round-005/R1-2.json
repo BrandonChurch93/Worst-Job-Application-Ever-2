@@ -1,0 +1,163 @@
+{
+ "critic": "R1",
+ "score": 4,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "B: the three sheets of the cursor (arms, damage, acting), each beside its approved sheet",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-B-01-b.png",
+   "where": "caption row",
+   "what": "All pose captions are absent, leaving the lower sheet unstructured.",
+   "fix": "Restore the approved-copy labels in regular-weight charcoal centered on a common baseline below the figures."
+  },
+  {
+   "severity": "severe",
+   "file": "set-B-02-b.png",
+   "where": "caption row",
+   "what": "All damage captions are absent.",
+   "fix": "Restore the approved-copy labels in regular-weight charcoal centered on a common baseline below the states."
+  },
+  {
+   "severity": "severe",
+   "file": "set-B-03-b.png",
+   "where": "caption row",
+   "what": "All emotion captions are absent.",
+   "fix": "Restore the approved-copy labels in regular-weight charcoal centered on a common baseline below the states."
+  },
+  {
+   "severity": "severe",
+   "file": "set-B-01-b.png",
+   "where": "paper pulling, fourth figure",
+   "what": "Two near-vertical arms hold the top of a flat, printed sheet fed into a protruding chrome roller. The reference has unequal, forward-reaching hands pulling a curling diagonal sheet from a slim slot.",
+   "fix": "Stagger and bend the arms forward, curl the sheet down and right, and put a narrow recessed mouth and tight contact shadow where the exposed roller is. Make the printed marks less dominant without changing approved copy."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01-b.png",
+   "where": "five arrow bodies and cast shadows",
+   "what": "Flat ivory panels, angular noses, and hard narrow rims read like outlined badges instead of softly domed glossy white shells with substantial rounded black sidewalls. Soft arm shadows float away from the feet and grip points.",
+   "fix": "Round over the faces, noses and black sidewalls, carry a continuous rolled highlight down the lit edge, and strengthen the tight contact under stems and hands without changing scale or camera."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01-b.png",
+   "where": "idle and waving arms and hands on the left",
+   "what": "Uniform black arcs and small straight spread fingers read like wires and prongs. The idle arms are near mirror images; the raised glove lacks a broad palm and substantial cuff.",
+   "fix": "Give the arms a more asymmetric sweep and tapered section, then model integrated rounded palms, distinct cuffs and thicker posed fingers."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01-b.png",
+   "where": "holding paper, center",
+   "what": "The squared sheet masks the arrow face; a straight forearm crosses the sheet and dark headline and rules dominate where the reference shows a quiet tilted paper surface held around the edges.",
+   "fix": "Tilt and lower the sheet within the established layout, wrap both hands around the side edges, and reduce the visual dominance of the printed block without changing approved wording."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01-b.png",
+   "where": "bracing to push, far right",
+   "what": "Two parallel arms reach toward the image edge with splayed fingers in different planes. The target's foreground arm crosses the face and chunky palms press into a common plane.",
+   "fix": "Stagger the arms vertically and in depth, bring one across the face, align the palms, and allow more right margin around the fingertips."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02-b.png",
+   "where": "shredded arrow, far left",
+   "what": "Straight free-floating slats read as a pile of separate sticks, without the recognizable common tip and rim fragments in the target.",
+   "fix": "Gather one end into a shared arrow tip, retain dark edge fragments, and vary the separation, tilt and lift of the fanning strips."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02-b.png",
+   "where": "reassembled arrow, second",
+   "what": "Wide bright tape with protruding sawtooth ends obscures the slats. The target has restrained translucent overlaps, distinct seams and a readable dark perimeter.",
+   "fix": "Shorten and soften the tape ends, lower tape opacity, and keep the fitted slat joints visible through the tape."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02-b.png",
+   "where": "scorched arrow, center tip and plume",
+   "what": "A flat triangular black patch neatly fits an intact tip and releases broad gray loops. The reference has raised crumbling char, an irregular amber edge and finer dissipating smoke.",
+   "fix": "Break up the tip geometry and char thickness, add a narrow amber transition, and use finer smoke filaments that recede as they rise."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02-b.png",
+   "where": "punched arrow, fourth face",
+   "what": "The feature looks like a gray disc with a flat taupe border rather than a deep hole with a chipped wall and a view of the page.",
+   "fix": "Expose cut-wall depth, light a broken-inward bevel and add directional occlusion; let the underlying page texture and tone show through."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02-b.png",
+   "where": "flattened arrow, far right",
+   "what": "Angular bends and a thick dark perimeter retain the regular arrow form; one visible crack crosses the notch. The target is softer and wider-feeling, with rounded deformation and a branching network of fine glaze cracks.",
+   "fix": "Round the collapsed bends and edge profile, deform the face more organically, and branch low-contrast hairline cracks through the center."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02-b.png",
+   "where": "faces, outlines and shadows across the row",
+   "what": "The standardized faces and sharp edge breaks lack the original soft roll of the glaze, and dark projecting shadows make the pieces look uniformly raised rather than differently grounded.",
+   "fix": "Round the glaze rolloff, give each damaged edge a distinct section, and tune each shadow's contact and spread to its individual shape."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03-b.png",
+   "where": "row distribution and left edge",
+   "what": "The first pose sits very close to the left edge and the first three anchors skew left; the far right retains much more breathing room.",
+   "fix": "Rebalance the horizontal anchors and outer gutters without changing configured sizes or the settled shocked pose."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03-b.png",
+   "where": "nervous arrow, far left",
+   "what": "Droplets bunch into bright overlapping blobs at the left edge and lower notch. The target has distinct drops on the face plus a scattered trail outside the right edge.",
+   "fix": "Separate and stagger the droplets across the face, restore the right-side trail, and give each drop a focused glint and tiny contact shadow."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03-b.png",
+   "where": "angry arrow, third tip and vapor",
+   "what": "A hard diagonal red patch reads painted on, and the gray smoke has little separation. The target reads incandescent at the tip with warm spill and bright curls of steam.",
+   "fix": "Build a luminous red-to-orange-white falloff, add a tight warm bounce near the tip, and taper bright vapor into transparent curls."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03-b.png",
+   "where": "scared arrow, fourth face and rim",
+   "what": "A mostly smooth face with regular pin-dot pores and a thick uniform black edge looks like the normal glazed arrow. The reference is chalky, mottled and matte with a subdued narrow edge.",
+   "fix": "Roughen the finish, replace the regular dot field with irregular fine mottling, and soften and desaturate the exposed edge."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03-b.png",
+   "where": "exhausted arrow, fifth outline and stem",
+   "what": "The shell-like walls and hollow-looking breaks leave a recognizably straight arrow cutout. The target sags as thick softened plastic, with solid rounded lobes and a curled tail.",
+   "fix": "Use continuous rounded folds and a drooping, curving stem with a turned-up end; remove the hollow and pinched sharp-looking sections."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03-b.png",
+   "where": "laser-hit arrow, far right burn opening and smoke",
+   "what": "A broad blended soot halo and flat orange ring surround a gray center, with a wide diagonal smoke plume. The target shows a narrow broken incandescent rim, visible scorched depth, and thinner curling smoke emerging from the hole.",
+   "fix": "Make the opening read as a cut-through with a lit bevel and visible page, tighten the char and orange edge into irregular hot specks, and narrow and feather the plume."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03-b.png",
+   "where": "face finish and grounding across the row",
+   "what": "The ordinary glazed states share a sharper dark perimeter and broad flat face shading, while the cast shadows are blocky and diffuse with weak contact. The reference has softer shell volume and darker attached contact that falls away smoothly.",
+   "fix": "Round the lip-to-face transition, improve the highlights and contact occlusion, and tune shadow spread per state; keep the chosen clean lighting."
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-02-b.png",
+   "where": "exposed page surface",
+   "what": "The clean page is slightly warm and uniformly diffuse relative to the target's brighter ivory lit areas and more tactile fine tooth.",
+   "fix": "Nudge the base toward neutral ivory and add fine irregular grain relief without restoring any window-shade bands."
+  }
+ ]
+}

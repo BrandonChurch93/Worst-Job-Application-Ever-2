@@ -1,0 +1,37 @@
+{
+ "critic": "R4",
+ "score": 6,
+ "pass": false,
+ "model": "kimi_k3",
+ "set": "A: one sheet across each beat, the page turn and the slab seating",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "the keycap burst, frames 0:24.47 through 0:26.27",
+   "what": "the scattered keycaps hang weightless in mid-air over the form fields and keyboard for what is roughly two seconds of playback, with motion-streak blur but no fall, no tumbling descent and no landing; the keyboard body and the fields under the overlap do not react at all when the keys pop out, so nothing answers the event and the scatter reads as moved-by-hand, not as sprung keys with mass",
+   "fix": "give the keycaps an arc with gravity: rise, slow at the peak, then drop and settle onto the keyboard deck and fields with a visible contact frame (a small bounce or stop-dead on land); add a flex or kick to the keyboard slab at the moment the keys blow out so the machine reacts too"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-02.png",
+   "where": "the on-screen keyboard through the typing beat, frames 0:16.00 to 0:23.97",
+   "what": "keys register only as an orange highlight; in none of the twelve sampled frames does a key visibly travel down and spring back, so the keypress reads as a selection flash rather than a physical key going down with a return",
+   "fix": "add visible key travel on struck keys (down a millimetre or two with a tightened contact shadow, then a fast spring back), so at least some sampled frames catch a mid-press"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-04.png",
+   "where": "the Invalid email tags, frames 0:32.17 to 0:33.97",
+   "what": "the red tags appear already in place with no arrival or settle, and the sequence ends on a frame with a motion-blurred duplicate tag while two others sit static, so a single middle frame is hard to read: it is not clear whether a tag is spawning, splitting or being dragged away",
+   "fix": "give each tag a tiny pop-in with overshoot and settle, and make the exit drag directional so the blurred tag clearly leaves the stack rather than duplicating it"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-08.png",
+   "where": "the page turn start, frames 0:45.40 to 0:45.77",
+   "what": "there is a hold before and after the turn and the slab seats with mass (confirmed sharp-by-0:46.23 and dead-stable through 0:46.57 on the native consecutive sheet set-A-09), but the sampled frames show no wind-up: the page is static at 0:45.67 and already deeply folded by 0:45.77, so the big action starts abruptly with no anticipation visible at this sampling",
+   "fix": "if the source frames allow, let the slab lift or breathe a frame or two before it commits to the fold so the turn reads as wound-up rather than triggered"
+  }
+ ]
+}

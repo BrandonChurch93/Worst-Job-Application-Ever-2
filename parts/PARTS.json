@@ -3,71 +3,75 @@
     {
       "name": "shell",
       "unit": "step1",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/boss/body.ts",
-        "src/pages/marketing/layout.ts",
-        "src/pages/step1/fire.ts",
-        "src/pages/step1/index.ts",
-        "src/pages/step1/layout.ts",
-        "src/pages/step2/layout.ts",
-        "src/pages/step3/index.ts",
-        "src/pages/step4/layout.ts",
-        "src/pages/step5/layout.ts",
-        "src/pages/stub.ts",
-        "src/shell/blockout.ts",
-        "src/shell/layout.ts",
-        "src/shell/parts.ts"
+        "src/shell/real/controls.ts",
+        "src/shell/real/ground.ts",
+        "src/shell/solids.ts"
       ],
-      "standInHash": "dc37a96a0a1ccc0bac878a1f67a52480fbcc4731ea67eb9d98fddff301f22bfd",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "c9d0af9f045b270d01b2666f40ed978794e4173463b9e7ead148bd81e5ffbdcd",
+      "commit": "9443fc467ed413cb3f82587dbadcc3f31b46c26a",
+      "hashAt": {
+        "src/shell/real/controls.ts": "729ee568a01a9cf67a8e72e9d6b9d0484d32519f",
+        "src/shell/real/ground.ts": "729ee568a01a9cf67a8e72e9d6b9d0484d32519f",
+        "src/shell/solids.ts": "729ee568a01a9cf67a8e72e9d6b9d0484d32519f"
+      }
     },
     {
       "name": "type",
       "unit": "step1",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/pages/marketing/index.ts",
-        "src/pages/marketing/layout.ts",
-        "src/pages/step1/index.ts",
-        "src/pages/step1/layout.ts",
-        "src/pages/step2/index.ts",
-        "src/pages/step2/layout.ts",
-        "src/pages/step3/index.ts",
-        "src/pages/step4/layout.ts",
-        "src/pages/step5/layout.ts",
-        "src/pages/stub.ts",
-        "src/shell/parts.ts"
+        "src/shell/real/type.ts",
+        "src/shell/type.ts"
       ],
-      "standInHash": "f66117c26eee5354d3bf466e66797e9f2c4faf0d130018afd723097c76b128d8",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "34838ad677652554197ab1380daae9c179961812da9cd63985c5a0e5b8d8cb6d",
+      "commit": "9443fc467ed413cb3f82587dbadcc3f31b46c26a",
+      "hashAt": {
+        "src/shell/real/type.ts": "729ee568a01a9cf67a8e72e9d6b9d0484d32519f",
+        "src/shell/type.ts": "729ee568a01a9cf67a8e72e9d6b9d0484d32519f"
+      }
     },
     {
       "name": "materials",
       "unit": "step1",
-      "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "state": "finished",
+      "files": [
+        "src/shell/materials.ts"
+      ],
+      "standInHash": "8afe0eae63127f22408c3e487ae421c6b3940b75a2df163c0b2503fc754df362",
+      "commit": "9443fc467ed413cb3f82587dbadcc3f31b46c26a",
+      "hashAt": {
+        "src/shell/materials.ts": "729ee568a01a9cf67a8e72e9d6b9d0484d32519f"
+      }
     },
     {
       "name": "light-engine",
       "unit": "step1",
-      "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "state": "finished",
+      "files": [
+        "src/post/emitters.ts",
+        "src/post/look.ts",
+        "src/post/studio.ts"
+      ],
+      "standInHash": "a608f4907ae4a75c05c6f6b99e156efef1dd3956098084b8e57f56b1f07bf65b",
+      "commit": "9443fc467ed413cb3f82587dbadcc3f31b46c26a",
+      "hashAt": {
+        "src/post/emitters.ts": "absent",
+        "src/post/look.ts": "729ee568a01a9cf67a8e72e9d6b9d0484d32519f",
+        "src/post/studio.ts": "729ee568a01a9cf67a8e72e9d6b9d0484d32519f"
+      }
     },
     {
       "name": "page-turn",
       "unit": "step1",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
         "src/stage/stage.ts",
         "src/stage/turn.ts"
       ],
       "standInHash": "e88c90a73015c219c21c33d0176c78d0b9c8dffe8e154c1be8b59d33452554ba",
-      "commit": "f05a91829596ebdecf09b4c20b47fe6dc1151e48",
+      "commit": "9443fc467ed413cb3f82587dbadcc3f31b46c26a",
       "hashAt": {
         "src/stage/stage.ts": "729ee568a01a9cf67a8e72e9d6b9d0484d32519f",
         "src/stage/turn.ts": "absent"
@@ -76,112 +80,171 @@
     {
       "name": "cursor-body",
       "unit": "step1",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/shell/blockout.ts"
+        "src/cursor/model/body.ts",
+        "src/cursor/model/material.ts",
+        "src/cursor/model/shape.ts",
+        "src/cursor/view.ts"
       ],
-      "standInHash": "cd07f63b0211e87b0dff6cfd714220d8e7ad6669fde6f5ddd68968398d740ff5",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "d931b012b4434cec004b25dbc6a0a98cc922460933618eac70b9bb01a4952e0e",
+      "commit": "9443fc467ed413cb3f82587dbadcc3f31b46c26a",
+      "hashAt": {
+        "src/cursor/model/body.ts": "729ee568a01a9cf67a8e72e9d6b9d0484d32519f",
+        "src/cursor/model/material.ts": "absent",
+        "src/cursor/model/shape.ts": "absent",
+        "src/cursor/view.ts": "729ee568a01a9cf67a8e72e9d6b9d0484d32519f"
+      }
     },
     {
       "name": "cursor-acting",
       "unit": "step1",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/shell/blockout.ts"
+        "src/cursor/act/acting.ts",
+        "src/cursor/act/feel.ts",
+        "src/cursor/body.ts"
       ],
-      "standInHash": "cd07f63b0211e87b0dff6cfd714220d8e7ad6669fde6f5ddd68968398d740ff5",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "a5d1f530765ae93d1ec3cda7bec06e1188711d19e5c33cff10895f9f5a86ea38",
+      "commit": "9443fc467ed413cb3f82587dbadcc3f31b46c26a",
+      "hashAt": {
+        "src/cursor/act/acting.ts": "729ee568a01a9cf67a8e72e9d6b9d0484d32519f",
+        "src/cursor/act/feel.ts": "absent",
+        "src/cursor/body.ts": "729ee568a01a9cf67a8e72e9d6b9d0484d32519f"
+      }
     },
     {
       "name": "cursor-damage",
       "unit": "step1",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/shell/blockout.ts"
+        "src/cursor/act/damage.ts",
+        "src/cursor/act/tape.ts",
+        "src/cursor/model/deform.ts",
+        "src/cursor/model/strips.ts"
       ],
-      "standInHash": "cd07f63b0211e87b0dff6cfd714220d8e7ad6669fde6f5ddd68968398d740ff5",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "28944424a24c747ad779cfc83dfe394145ddac0df41cba000bdd3e7ff7823dec",
+      "commit": "9443fc467ed413cb3f82587dbadcc3f31b46c26a",
+      "hashAt": {
+        "src/cursor/act/damage.ts": "729ee568a01a9cf67a8e72e9d6b9d0484d32519f",
+        "src/cursor/act/tape.ts": "absent",
+        "src/cursor/model/deform.ts": "absent",
+        "src/cursor/model/strips.ts": "absent"
+      }
     },
     {
       "name": "cursor-arms",
       "unit": "step1",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/shell/blockout.ts"
+        "src/cursor/act/arms.ts"
       ],
-      "standInHash": "cd07f63b0211e87b0dff6cfd714220d8e7ad6669fde6f5ddd68968398d740ff5",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "bfa81f87b9b303d4855157ad2e629a3cd2c2d0a171686f18bc4b39dd4d8db432",
+      "commit": "9443fc467ed413cb3f82587dbadcc3f31b46c26a",
+      "hashAt": {
+        "src/cursor/act/arms.ts": "729ee568a01a9cf67a8e72e9d6b9d0484d32519f"
+      }
     },
     {
       "name": "cursor-effects",
       "unit": "step1",
-      "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "state": "finished",
+      "files": [
+        "src/cursor/model/effects.ts"
+      ],
+      "standInHash": "cd6e37e41000d24607eed3c3014fb08fc23a8a3ccf4b802b5db3ae14691a8a3b",
+      "commit": "9443fc467ed413cb3f82587dbadcc3f31b46c26a",
+      "hashAt": {
+        "src/cursor/model/effects.ts": "729ee568a01a9cf67a8e72e9d6b9d0484d32519f"
+      }
     },
     {
       "name": "keyboard",
       "unit": "step1",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/pages/step1/fire.ts",
-        "src/pages/step1/index.ts",
-        "src/pages/step1/layout.ts"
+        "src/pages/step1/real/keyboard-kit.ts",
+        "src/pages/step1/real/keyboard.ts"
       ],
-      "standInHash": "2ba09be678b8df8de466ca8797da57b143661d08d27615b256b225edc09428b0",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "859a55f57ac41af7da221657c746c134a5331d8b3537f107fb9af14ed8682b9a",
+      "commit": "9443fc467ed413cb3f82587dbadcc3f31b46c26a",
+      "hashAt": {
+        "src/pages/step1/real/keyboard-kit.ts": "absent",
+        "src/pages/step1/real/keyboard.ts": "729ee568a01a9cf67a8e72e9d6b9d0484d32519f"
+      }
     },
     {
       "name": "turrets",
       "unit": "step1",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/pages/step1/layout.ts",
-        "src/pages/step1/turrets.ts"
+        "src/pages/step1/real/turret-fx.ts",
+        "src/pages/step1/real/turrets.ts"
       ],
-      "standInHash": "99219178e13ffdb7f99ec954c6b0d3462396a462766228d3b3e4ece9a8bcf5d1",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "4ec662ca1213813322731dba145a84cb5c4107b6b94991ae51839d427ca22def",
+      "commit": "9443fc467ed413cb3f82587dbadcc3f31b46c26a",
+      "hashAt": {
+        "src/pages/step1/real/turret-fx.ts": "absent",
+        "src/pages/step1/real/turrets.ts": "729ee568a01a9cf67a8e72e9d6b9d0484d32519f"
+      }
     },
     {
       "name": "slabs",
       "unit": "step1",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/pages/step1/layout.ts"
+        "src/pages/step1/real/slabs.ts"
       ],
-      "standInHash": "130cc4d39ce4aed1b0109f68fea0b30d8e4debcaa884c24bcc1f2914d58dae17",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "fc67f026b03b145722233f19b2719bd1b846ec0f8e8ac9231f7528ab822bb8a9",
+      "commit": "9443fc467ed413cb3f82587dbadcc3f31b46c26a",
+      "hashAt": {
+        "src/pages/step1/real/slabs.ts": "729ee568a01a9cf67a8e72e9d6b9d0484d32519f"
+      }
     },
     {
       "name": "paper",
       "unit": "step1",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/pages/step1/index.ts",
-        "src/pages/step1/layout.ts"
+        "src/pages/step1/real/paper.ts",
+        "src/pages/step1/real/paperSolve.ts",
+        "src/pages/step1/real/paperStock.ts"
       ],
-      "standInHash": "5022727c883c29ff54eee52fbaf9fc8384c52f70bc01b3447546aac6d2a7b5dd",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "c16ceb74bb87098b6ac59dfda7f9f9889a905913e0d2e91f07c415c3102f919e",
+      "commit": "9443fc467ed413cb3f82587dbadcc3f31b46c26a",
+      "hashAt": {
+        "src/pages/step1/real/paper.ts": "729ee568a01a9cf67a8e72e9d6b9d0484d32519f",
+        "src/pages/step1/real/paperSolve.ts": "absent",
+        "src/pages/step1/real/paperStock.ts": "absent"
+      }
     },
     {
       "name": "shredder",
       "unit": "step1",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/pages/step1/index.ts"
+        "src/pages/step1/real/shredder.ts",
+        "src/pages/step1/real/shredderShape.ts"
       ],
-      "standInHash": "08deedf5cd077a57eb70ac30e7d555e4523ba53a5973812f6a52ec3397b73d96",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "baafc60430069f76f5bed522b0d3a5d69c6c1461222032007a924f3e098a3f1b",
+      "commit": "9443fc467ed413cb3f82587dbadcc3f31b46c26a",
+      "hashAt": {
+        "src/pages/step1/real/shredder.ts": "729ee568a01a9cf67a8e72e9d6b9d0484d32519f",
+        "src/pages/step1/real/shredderShape.ts": "absent"
+      }
     },
     {
       "name": "acting-step1",
       "unit": "step1",
-      "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "state": "finished",
+      "files": [
+        "src/pages/step1/script.ts"
+      ],
+      "standInHash": "544f900a64852fbd910b8017be31cff367b69f99f3fa2150c5ac8d0025a7a7ee",
+      "commit": "9443fc467ed413cb3f82587dbadcc3f31b46c26a",
+      "hashAt": {
+        "src/pages/step1/script.ts": "729ee568a01a9cf67a8e72e9d6b9d0484d32519f"
+      }
     },
     {
       "name": "rows",
