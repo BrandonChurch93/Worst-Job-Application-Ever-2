@@ -7,7 +7,7 @@ import { materials } from '../../../shell/materials'
 import type { Shape } from '../../../stage/types'
 import { PAPER, SLOT } from '../layout'
 import { INK, stock } from './paperStock'
-import { CASSETTE as C, HOOD, chuteAngle, chuteOf, chuteReach, hoodUnder, openOf, panelsOf, riseOf, smooth } from './shredderShape'
+import { CASSETTE as C, GAP, HOOD, K, RAISE, TRAVEL, UNIT, chuteAngle, chuteOf, chuteReach, hoodUnder, openOf, panelsOf, riseOf, smooth } from './shredderShape'
 
 const srgb = (hex: number) => new THREE.Color().setHex(hex, THREE.SRGBColorSpace)
 
@@ -284,8 +284,8 @@ function screws(at: [number, number][], z: number): { heads: THREE.BufferGeometr
   return { heads: merge(heads), sockets: merge(sockets) }
 }
 
-const PANEL = { thick: 3.6, lift: 0.3, clear: 1 }
-const SEAT = 1.1
+const PANEL = { thick: 1.5, lift: 0.3, clear: 0.7, bevel: 0.3 }
+const SEAT = 0.5
 
 interface Cassette {
   lift: THREE.Group
@@ -308,6 +308,7 @@ function makeCassette(): THREE.Group {
   const m = materials()
   const root = new THREE.Group()
   const lift = new THREE.Group()
+  lift.scale.setScalar(K)
   root.add(lift)
   const inner = C.half - C.cheek
   const geometries: THREE.BufferGeometry[] = []
@@ -370,9 +371,9 @@ function makeCassette(): THREE.Group {
   // The two panels that close the slot. They are the page's own ceramic, so shut they are two tiles with a seam.
   // Open, they have come up out of the slot and lie on the page either side of it, their thickness showing.
   const panel = (y0: number, y1: number): THREE.Mesh => {
-    const tile = add(root, block(-SLOT.w / 2, SLOT.w / 2, y0, y1, -0.2 - PANEL.thick, -0.2, 0.5), m.ceramic, true)
+    const tile = add(root, block(-SLOT.w / 2, SLOT.w / 2, y0, y1, -0.2 - PANEL.thick, -0.2, PANEL.bevel), m.ceramic, true)
     // The dark line a tile lying on the page has round its foot.
-    add(tile, strip(block(-SLOT.w / 2 - SEAT, SLOT.w / 2 + SEAT, y0 - SEAT, y1 + SEAT, -0.2 - PANEL.thick - 0.2, -0.2 - PANEL.thick + 0.25, 0.01)), shade(), false)
+    add(tile, strip(block(-SLOT.w / 2 - SEAT, SLOT.w / 2 + SEAT, y0 - SEAT, y1 + SEAT, -0.2 - PANEL.thick - 0.1, -0.2 - PANEL.thick + 0.15, 0.01)), shade(), false)
     return tile
   }
   const panelN = panel(0, SLOT.h / 2)
@@ -391,7 +392,7 @@ function poseCassette(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const open = openOf(s)
   const rise = riseOf(open)
   const p = panelsOf(open)
-  rig.lift.position.z = -C.sink * (1 - rise)
+  rig.lift.position.z = RAISE - TRAVEL * (1 - rise)
   rig.lift.visible = p > 0.5
   rig.seat.visible = rig.lift.visible
   const turn = s.v && s.v.length > 1 ? s.v[1]! : ctx.time * 9
@@ -407,8 +408,8 @@ function poseCassette(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
 }
 
 const SEG = 26
-const MAX = 16
-const RIBBON = 7.6
+const MAX = 24
+const RIBBON = 3.6
 
 interface Strips { geometry: THREE.BufferGeometry; was: string }
 
@@ -439,7 +440,7 @@ function makeStrips(): THREE.Group {
 const isStrip = (s: Shape): boolean => s.id.startsWith('strip-')
 
 // Where the hood's underside is over a point south of the cassette, so a strip still under it stays under it.
-const ceiling = (y: number): number => hoodUnder(y - SLOT.cy - C.deep) - 0.6
+const ceiling = (y: number): number => hoodUnder(y - SLOT.cy - UNIT.deep) - 0.4
 
 function poseStrips(o: THREE.Object3D, ctx: RealContext): void {
   const rig = o.userData.strips as Strips
@@ -458,13 +459,10 @@ function poseStrips(o: THREE.Object3D, ctx: RealContext): void {
   const put = (x: number, y: number, z: number, nx: number, ny: number, nz: number, c: THREE.Color): void => {
     let py = y
     let pz = z
-    if (Math.abs(x - SLOT.cx) < C.half) {
+    if (Math.abs(x - SLOT.cx) < UNIT.half) {
       const top = ceiling(py)
       if (pz > top) pz = Math.max(0.5, top)
-      if (py < SLOT.cy + C.deep + 1) {
-        py = SLOT.cy + C.deep + 1
-        pz = Math.min(pz, 6)
-      }
+      if (py < SLOT.cy + UNIT.deep + GAP.deep * 0.5) py = SLOT.cy + UNIT.deep + GAP.deep * 0.5
     }
     pos[k * 3] = x - 960
     pos[k * 3 + 1] = 540 - py
@@ -489,9 +487,9 @@ function poseStrips(o: THREE.Object3D, ctx: RealContext): void {
     const wy = Math.sin(rot)
     const cx = s.x + s.w / 2
     const cy = s.y + s.h / 2
-    const curl = (0.016 + 0.03 * hash01(n, 1, seed)) * (hash01(n, 2, seed) < 0.25 ? -0.5 : 1)
+    const curl = (0.05 + 0.1 * hash01(n, 1, seed)) * (hash01(n, 2, seed) < 0.25 ? -0.5 : 1)
     const twist = (hash01(n, 3, seed) - 0.5) * 1.5
-    const off = hash01(n, 4, seed) * 24
+    const off = hash01(n, 4, seed) * 8
     const sway = len * (0.02 + 0.05 * hash01(n, 5, seed))
     const waves = 0.8 + 1.4 * hash01(n, 6, seed)
     const phase = hash01(n, 7, seed) * 2
@@ -540,7 +538,7 @@ function poseStrips(o: THREE.Object3D, ctx: RealContext): void {
       ring(i / SEG, a)
       ring((i + 1) / SEG, b)
       const d = (i + 0.5) * (len / SEG) + off
-      const marked = ink ? (d % 11) < 6.2 && hash01(n, Math.floor(d / 11), seed + 9) < 0.7 : (d % 24) < Math.min(3.3, len / SEG)
+      const marked = ink ? (d % 4) < 2.2 && hash01(n, Math.floor(d / 4), seed + 9) < 0.7 : (d % 7) < Math.min(1.1, len / SEG)
       const c = marked ? (ink ? INK.title : RULE) : INK.paper
       put(a[0]!, a[1]!, a[2]!, 0, 0, 1, c)
       put(a[3]!, a[4]!, a[5]!, 0, 0, 1, c)
