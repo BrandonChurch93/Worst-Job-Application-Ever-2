@@ -24,6 +24,12 @@ Unit `decision`, page `step5`. Files: `layout.ts` (the page and its places), `ti
 - Live way out: a pointer that never moves or does the wrong thing still gets the whole story by time alone, and 20 s (`live.skipLinkAfterSeconds`) after the button is up the page takes the cursor for at most 1.95 s, presses its own button and lets go. `skip()` settles the story and presses at once.
 - `hint()` sends a capable visitor to read the letter where the stamp lands, then to the button.
 
+## After the measures of blockout round 1
+
+- M4. The stamp's ink (the word and its four bars) has the tone `dark` in the blockout, not `danger`: on the paper `danger` gave a contrast of 4.47, `dark` gives 7.7. The red of the stamp belongs to the look of the part `stamp`.
+- M7. The event `stamp` is emitted at the cursor when the block strikes it (at the mark's centre if it ever misses), on the step the damage `flattened` begins.
+- M7. The event `peel-up` is the cursor's own act, so it is emitted with hitsCursor false.
+
 ## Seen, not mine to change
 
 - A stand-in shape that floats above the page (the stamp block in the air, the letter while it drops) casts a hollow shadow in the blockout view: an outline, with light inside it. A shape that rests on the page is right. The cause is not known. This page only gives the shape its place and its height. The stamp flies at 200 to 220 and is carried at 120, under the 320 the lamps cover.
