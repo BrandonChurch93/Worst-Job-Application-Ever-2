@@ -322,7 +322,7 @@ interface ScorchData {
   hotMaterial: THREE.MeshBasicMaterial
 }
 
-const SCORCH = { size: 58, smoke: 3, smokeSeconds: 1.5, hotSeconds: 0.55, hotSize: 120, shoulder: 9, core: 11, legend: 27, word: 52, bar: 400, wide: 112, sparks: 9, sparkSeconds: 0.55, fall: 900, ember: 0.35, snap: 36, flareSeconds: 0.1, ride: 16 }
+const SCORCH = { size: 52, smoke: 3, smokeSeconds: 1.5, hotSeconds: 0.55, hotSize: 150, shoulder: 9, core: 13, legend: 27, word: 52, bar: 400, wide: 112, sparks: 9, sparkSeconds: 0.55, fall: 900, ember: 0.35, snap: 36, flareSeconds: 0.1, ride: 16 }
 
 function makeScorch(s: Shape): THREE.Object3D {
   const f = fx()
@@ -342,7 +342,7 @@ function makeScorch(s: Shape): THREE.Object3D {
   const smokeMaterials: THREE.MeshBasicMaterial[] = []
   for (let i = 0; i < SCORCH.smoke; i++) {
     const m = f.puffMaterial.clone()
-    m.color.setRGB(0.42, 0.4, 0.38)
+    m.color.setRGB(0.38, 0.365, 0.35)
     const puff = overlay(new THREE.Mesh(f.quad, m), 10 + i)
     smoke.push(puff)
     smokeMaterials.push(m)
@@ -461,7 +461,7 @@ function poseScorch(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
     const size = SCORCH.hotSize * (0.8 + 0.2 * warm)
     d.hot.position.set(0, 0, 1.5 - drop)
     d.hot.scale.set(size, size, 1)
-    d.hotMaterial.color.setRGB(...mix([0, 0, 0], GLOW.boltTail, 0.75 * warm))
+    d.hotMaterial.color.setRGB(...mix([0, 0, 0], GLOW.boltTail, 0.42 * warm))
   }
   const lamp = strike ? EMIT.struck : EMIT.ember
   if (alive && warm > 0.06) ctx.light({ x: s.x + s.w / 2 + d.at[0], y: s.y + s.h / 2 - d.at[1], z: s.z0 - drop + 22, colour: lamp.colour, power: lamp.power * warm, reach: lamp.reach })
@@ -470,11 +470,11 @@ function poseScorch(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
     puff.visible = u > 0 && u < 1 && alive
     if (!puff.visible) return
     const sway = Math.sin(u * 6 + i * 1.9 + d.seed) * 9 * u
-    const size = 9 + 20 * u
-    puff.position.set(d.at[0] + sway - 8 * u, d.at[1] + 6 + 64 * u, 4 + 70 * u - drop * (1 - u))
-    puff.scale.set(size, size * 1.9, 1)
+    const size = 15 + 24 * u
+    puff.position.set(d.at[0] + sway - 8 * u, d.at[1] + 6 + 80 * u ** 0.6, 4 + 70 * u - drop * (1 - u))
+    puff.scale.set(size, size * 2.1, 1)
     puff.rotation.z = (hash01(i, d.seed, 21) - 0.5) * 0.7 + sway * 0.02
-    d.smokeMaterials[i]!.opacity = 0.44 * smooth(u / 0.12) * (1 - u) ** 1.4
+    d.smokeMaterials[i]!.opacity = 0.8 * smooth(u / 0.08) * (1 - u) ** 1.4
   })
 }
 
