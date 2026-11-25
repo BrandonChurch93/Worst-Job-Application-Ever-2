@@ -95,16 +95,16 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
   // Crazing: a web of hairline cracks, and each plate between them tipped a hair its own way.
   float crack = uMarks.x * face;
   if ( crack > 0.0 ) {
-    vec2 cq = q / 11.0;
+    vec2 cq = q / 25.0 + vec2( 0.21, 0.37 );
     float c0 = texture2D( uDetail, cq ).r;
-    float line = 1.0 - smoothstep( 0.0, 0.05, c0 );
+    float line = 1.0 - smoothstep( 0.02, 0.1, c0 );
     float plate = texture2D( uDetail, cq ).a * 6.2832;
     float cx = texture2D( uDetail, cq + vec2( 0.004, 0.0 ) ).r - texture2D( uDetail, cq - vec2( 0.004, 0.0 ) ).r;
     float cy = texture2D( uDetail, cq + vec2( 0.0, 0.004 ) ).r - texture2D( uDetail, cq - vec2( 0.0, 0.004 ) ).r;
-    float near = 1.0 - smoothstep( 0.0, 0.16, c0 );
-    wjaCoatTilt += crack * ( vec2( cos( plate ), sin( plate ) ) * 0.05 - vec2( cx, cy ) * near * 2.2 );
+    float near = 1.0 - smoothstep( 0.0, 0.4, c0 );
+    wjaCoatTilt += crack * ( vec2( cos( plate ), sin( plate ) ) * 0.035 - vec2( cx, cy ) * near * 0.7 );
     wjaTilt += wjaCoatTilt;
-    col *= 1.0 - 0.72 * crack * line;
+    col *= 1.0 - 0.6 * crack * line;
     wjaCoat *= 1.0 - 0.8 * crack * line;
   }
 
@@ -144,10 +144,12 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
   if ( heat > 0.0 ) {
     float front = heat * 12.5;
     float h = smoothstep( front + 1.2, front - 5.0, along + ( wide.g - 0.5 ) * 2.4 + ( mid.b - 0.5 ) * 1.2 );
-    vec3 ember = mix( vec3( 1.0, 0.42, 0.06 ), vec3( 0.95, 0.045, 0.012 ), smoothstep( 0.35, 0.95, h ) );
-    float body = h * face;
-    col = mix( col, ember * 0.42, min( 1.0, body * 1.25 ) * 0.9 );
-    wjaGlow += ember * body * ( 0.35 + 1.1 * h ) * ( 0.7 + 0.6 * mid.g ) * 1.15;
+    vec3 ember = mix( vec3( 1.0, 0.8, 0.42 ), vec3( 1.0, 0.5, 0.07 ), smoothstep( 0.08, 0.34, h ) );
+    ember = mix( ember, vec3( 0.96, 0.2, 0.02 ), smoothstep( 0.34, 0.62, h ) );
+    ember = mix( ember, vec3( 0.6, 0.03, 0.012 ), smoothstep( 0.62, 0.97, h ) );
+    float body = smoothstep( 0.0, 0.3, h ) * face;
+    col = mix( col, ember * 0.12, body );
+    wjaGlow += ember * body * ( 0.66 + 0.16 * mid.g );
     wjaGlow += ember * h * ink * 0.05;
   }
 

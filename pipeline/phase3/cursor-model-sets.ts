@@ -8,6 +8,19 @@ const strip = (n: number, spread: number): BodyLook['strips'] =>
   Array.from({ length: n }, (_, i) => ({ x: (i - (n - 1) / 2) * spread * 2.2 + Math.sin(i * 2.3) * spread * 3, y: Math.cos(i * 1.7) * spread * 5, z: spread > 2 ? -3 + (i % 3) * 1.2 : 0, rot: Math.sin(i * 1.3) * spread * 0.09, tilt: 0 }))
 
 export const SETS: Record<string, CellSet> = {
+  fix: {
+    cols: 6,
+    pitch: 95,
+    cells: [
+      ...three('flat', (v) => ({ flat: v, crack: v })),
+      ...three('melt', (v) => ({ melt: v })),
+      ...three('peel', (v) => ({ peel: v, flat: 1, crack: 1 })),
+      ...[0, 0.5, 1].map((v) => ({ name: `steam ${v}`, effects: { steam: v }, body: { heat: v } })),
+      { name: 'melt and sweat', body: { melt: 0.6 }, effects: { sweat: 1 } },
+      { name: 'crack on its own', body: { crack: 1 } },
+      { name: 'stone, cracked', body: { pale: 1, crack: 0.6 } }
+    ]
+  },
   rest: { cols: 3, pitch: 90, cells: [{ name: 'rest' }, { name: 'rest lifted', z: 26 }, { name: 'rest turned', turn: 0.5 }] },
   body: {
     cols: 6,
