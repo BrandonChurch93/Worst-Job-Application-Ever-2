@@ -57,6 +57,9 @@ export const LIVE = {
   // A loop that nothing stops ends by itself after this long.
   loopMaxSeconds: 30,
   volumeRampSeconds: 0.03,
+  // The sounds of film A's opening are known before they are due, so each is set on the sound clock this long ahead of the picture.
+  // It is longer than the longest step the film takes in one drawn frame, so a slow page drops none.
+  aheadSeconds: 0.6,
   // How far left or right of the middle a sound at the edge of the page sits, from 0 to 1.
   panWidth: 0.35,
   // Some browsers start sound only at the end of a touch or a click. The sound graph is asked to run again at each of these.

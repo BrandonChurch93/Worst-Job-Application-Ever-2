@@ -1,5 +1,7 @@
 // The film's sound, laid out from the events of the film. Pure arithmetic: the same inputs give the same samples.
 import { eventCues, loopCues, pickVariant, stopEvents } from './cues'
+
+export { openingEvents, type OpeningPlan } from './cues'
 import { master, repitch, type Mastered, type Sound } from './dsp'
 import { DUCK, LIVE, MIX, db } from './levels'
 import { duckAt, duckSpans } from './narrator'
@@ -20,27 +22,6 @@ export interface MixInput {
   targetLufs: number
   truePeakDb: number
   toneFromFrame?: number
-}
-
-export interface OpeningPlan {
-  prompt: string
-  charsPerSecond: number
-  levelOpens: number
-  levelPicks: number
-  sendPressed: number
-  linesDone: number[]
-}
-
-// The sounds of film A's prompt opening, from its own times: a key tap for each letter as it shows, a tick when the level control opens,
-// when the level is picked and as each line of the build screen is ticked off, and the send tone as the send control goes down.
-export function openingEvents(o: OpeningPlan, fps: number): FilmEvent[] {
-  const frame = (t: number) => Math.ceil(t * fps - 1e-6)
-  const out: FilmEvent[] = []
-  for (let i = 0; i < o.prompt.length; i++) out.push({ name: 'key-tap', frame: frame(i / o.charsPerSecond), x: 960 })
-  for (const t of [o.levelOpens, o.levelPicks]) out.push({ name: 'ui-tick', frame: frame(t), x: 960 })
-  out.push({ name: 'ui-send', frame: frame(o.sendPressed), x: 960 })
-  for (const t of o.linesDone) out.push({ name: 'ui-tick', frame: frame(t), x: 960 })
-  return out
 }
 
 // Film A is the opening and then film B unchanged: every event and line of film B moves back by the opening's frames.

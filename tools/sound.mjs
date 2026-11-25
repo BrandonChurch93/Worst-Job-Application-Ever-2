@@ -597,11 +597,12 @@ export async function siteInBrowser(dir = at('dist'), o = {}) {
     page.on('pageerror', (e) => errors.push(String(e.message)))
     if (block) await page.route(block, (route) => route.fulfill({ status: 404, body: 'not found' }))
     await page.addInitScript(() => {
-      window.__sound = { contexts: 0, plays: 0, taps: [], running: new Set(), made: [] }
+      window.__sound = { contexts: 0, plays: 0, taps: [], running: new Set(), made: [], shots: 0 }
       const startSource = AudioBufferSourceNode.prototype.start
       AudioBufferSourceNode.prototype.start = function (...r) {
         const node = this
         window.__sound.running.add(node)
+        if (!node.loop) window.__sound.shots++
         node.addEventListener('ended', () => window.__sound.running.delete(node))
         return startSource.apply(this, r)
       }
@@ -778,6 +779,67 @@ export async function siteInBrowser(dir = at('dist'), o = {}) {
       }
       out.film = { started: film.started, playButton, position: Boolean(position), steps, errors: film.errors, console: film.consoleLines }
       await film.context.close()
+
+      const a = await visit('mode=film&which=a', { wait: 300 })
+      const M = await (await import('./lib/logic.mjs')).logic()
+      let lead = null
+      let laid = null
+      let ahead = 0
+      try {
+        const o = await M.load('/src/film/opening.ts')
+        const cues = await M.load('/src/audio/cues.ts')
+        ahead = (await M.load('/src/audio/levels.ts')).LIVE.aheadSeconds
+        const t = o.openingTimes()
+        lead = o.openingFrames() / c.film.fps
+        laid = cues.openingEvents({ prompt: c.intro.prompt, charsPerSecond: c.intro.charsPerSecond, levelOpens: t.levelOpens, levelPicks: t.levelPicks, sendPressed: t.held, linesDone: t.lines.map((l) => l.done) }, c.film.fps).length
+      } finally {
+        await M.close()
+      }
+      const bar = await a.page.evaluate(() => {
+        const r = [...document.querySelectorAll('input[type="range"]')].find((x) => x.getClientRects().length > 0)
+        if (r) r.setAttribute('data-position-check', '1')
+        return r ? { min: Number(r.min || 0), max: Number(r.max || 0) } : null
+      })
+      const opening = { started: a.started, position: Boolean(bar), openingSeconds: lead, laid, heard: null, toneLoopsInTheOpening: null, toneLoopsAfterIt: null, errors: a.errors, console: a.consoleLines }
+      if (bar && lead !== null) {
+        const now = () => a.page.evaluate(() => ({ at: Number(document.querySelector('[data-position-check]').value), shots: window.__sound.shots, tone: [...window.__sound.running].filter((n) => n.loop).length }))
+        const button = await a.page.evaluate(() => {
+          const b = [...document.querySelectorAll('button[aria-label]')].find((x) => !/sound/i.test(x.getAttribute('aria-label')) && x.hasAttribute('aria-pressed') && x.getClientRects().length > 0)
+          if (b) b.setAttribute('data-play-check', '1')
+          return Boolean(b)
+        })
+        await a.page.keyboard.press('Shift')
+        await a.page.waitForTimeout(1500)
+        if (button) {
+          await a.page.click('[data-play-check]')
+          await a.page.waitForTimeout(300)
+        }
+        const from = (await now()).shots
+        await a.page.evaluate((value) => {
+          const r = document.querySelector('[data-position-check]')
+          r.value = String(value)
+          r.dispatchEvent(new Event('input', { bubbles: true }))
+          r.dispatchEvent(new Event('change', { bubbles: true }))
+        }, bar.min)
+        if (button) await a.page.click('[data-play-check]')
+        const unit = (bar.max - bar.min) / (lead + c.film.units.reduce((n, u) => n + u.seconds, 0))
+        let tone = 0
+        let last = await now()
+        for (let i = 0; i < 400 && last.at < bar.min + (lead - ahead) * unit; i++) {
+          tone = Math.max(tone, last.tone)
+          await a.page.waitForTimeout(50)
+          last = await now()
+        }
+        opening.toneLoopsInTheOpening = tone
+        opening.heard = last.shots - from
+        opening.heardBy = Number(((last.at - bar.min) / unit).toFixed(2))
+        await a.page.waitForTimeout(1500)
+        const end = await now()
+        opening.toneLoopsAfterIt = end.tone
+        opening.endedAt = Number(((end.at - bar.min) / unit).toFixed(2))
+      }
+      out.filmA = opening
+      await a.context.close()
     }
 
     if (o.still !== false && c.stills.length) {
@@ -852,7 +914,7 @@ export async function fixtures(a, c, M) {
     }
     const file = make(`cue-${s.id}`, expr, secs)
     await fileTake({ cue: s.id, file, prompt: `A fixture made with ffmpeg, not a take. ${promptLine(s.id)}`, cost: '0', filed: 'fixture', root }, P, c, M, true)
-    await keepTake({ cue: s.id, force: true, fixture: true, why: 'a fixture, kept so the tools can be run', root }, P, c, M, true)
+    await keepTake({ cue: s.id, force: true, fixture: true, why: 'a fixture, kept so the tools can be run', listener: a.answered ? JSON.stringify({ by: 'a stand-in answer, nobody listened', voice: false, word: false, music: s.id === 'hold-music', melody: s.id === 'hold-music', fits: true }) : undefined, root }, P, c, M, true)
     made++
   }
   const lines = []
@@ -875,9 +937,10 @@ export async function fixtures(a, c, M) {
     }
     const file = make(`line-${t.id}`, parts.join('+'), at0 - pause + 0.15)
     await fileTake({ line: name, file, cost: '0', filed: 'fixture', root }, P, c, M, true)
-    await keepTake({ line: name, force: true, fixture: true, why: 'a fixture, kept so the tools can be run', root }, P, c, M, true)
+    await keepTake({ line: name, force: true, fixture: true, why: 'a fixture, kept so the tools can be run', listener: a.answered ? JSON.stringify({ by: 'a stand-in answer, nobody listened', transcript: t.text, whisper: false, laugh: false, warmth: false, excitement: false, unimpressedAndSmug: true }) : undefined, root }, P, c, M, true)
     made++
   }
+  if (a.answered) fs.copyFileSync(path.join(P.audio, 'ASSETS-ROWS.md'), path.join(path.dirname(P.audio), 'ASSETS.md'))
   const index = pack(P, c, M, true)
   console.log(`fixtures: ${made} stand-in sounds made with ffmpeg in ${rel(dir)}, filed, kept and packed under ${rel(path.resolve(root))}`)
   console.log(`fixtures: ${index.sfx.length} short sounds, ${index.loops.length} loops, ${index.lines.length} lines, ${(index.totalBytes / 1048576).toFixed(2)} MB. They are not takes: nothing here is committed or shipped`)
