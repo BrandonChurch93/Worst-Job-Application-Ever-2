@@ -1,35 +1,35 @@
 {
   "folder": "keys-motion",
-  "pushed": "2026-11-25T22:03:56.845Z",
-  "commit": "8fb6d85b1dfcf4175258835fcf832b35e08a70a4",
+  "pushed": "2026-11-25T22:30:43.377Z",
+  "commit": "0d8881cdb14c4cb2f63b107a8000cb8d3e5aa4bf",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "The first slab of step 1, every second frame from 10 before the landing to 10 after, cut at its place, draft tier: it comes down large and bright, lands on the frame of slab-drop and lies still",
-      "time": "2026-11-25T22:03:54.967Z",
-      "by": "keys-motion",
-      "from": "out/work/keys-motion-slab-fall.jpg"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "The beat step1.lastName, twelve frames, draft tier: caps in the air with their shadows off them near the pressed key, seated by the next press",
-      "time": "2026-11-25T22:03:55.231Z",
-      "by": "keys-motion",
-      "from": "out/work/keys-motion-lastname.jpg"
-    },
-    {
-      "file": "look-3.jpg",
-      "caption": "Key step1-fire, approved on the left and this build on the right, draft tier",
-      "time": "2026-11-25T22:03:55.472Z",
+      "caption": "step1-fire at draft beside the approved image, after the second push 0d8881c (measure at review: M3 0.8224, M4 4.76, 8 green)",
+      "time": "2026-11-25T22:30:41.492Z",
       "by": "keys-motion",
       "from": "out/work/keys-motion-compare-fire.jpg"
     },
     {
-      "file": "look-4.jpg",
-      "caption": "The hit on the arrow, every second frame around the flash, draft tier: the timing of main, the new press of H is not in this push",
-      "time": "2026-11-25T22:03:55.732Z",
+      "file": "look-2.jpg",
+      "caption": "the bolt on the arrow, every frame from 4 before to 13 after: approach, flash with H driven to full travel, arrow knocked and back, caps beside hop and settle",
+      "time": "2026-11-25T22:30:41.780Z",
       "by": "keys-motion",
       "from": "out/work/keys-motion-arrow-hit.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "slab 2 falling, film frames 1965 to 1970 at draft: large and shrinking, its shadow far off and wide, closing in under it in the last two frames",
+      "time": "2026-11-25T22:30:42.029Z",
+      "by": "keys-motion",
+      "from": "out/work/keys-motion-slab-fall.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "sheet of step1.lastName at draft: caps in the air over detached shadows on six of the frames, seated before each press",
+      "time": "2026-11-25T22:30:42.264Z",
+      "by": "keys-motion",
+      "from": "out/work/keys-motion-lastname.jpg"
     }
   ]
 }
