@@ -6801,7 +6801,7 @@
       "beat": "pinball.launch",
       "page": "step3",
       "x": 1699.2,
-      "y": 4681.2,
+      "y": 4712,
       "hitsCursor": false,
       "cue": "plunger"
     },
@@ -6826,8 +6826,8 @@
       "unit": "pinball",
       "beat": "pinball.lobby",
       "page": "step3",
-      "x": 961.9,
-      "y": 2041.2,
+      "x": 961.8,
+      "y": 2042.2,
       "hitsCursor": false,
       "cue": "spinner"
     },
@@ -6839,8 +6839,8 @@
       "unit": "pinball",
       "beat": "pinball.lobby",
       "page": "step3",
-      "x": 963.4,
-      "y": 1950.1,
+      "x": 963.2,
+      "y": 1951.9,
       "hitsCursor": true,
       "cue": "doors-slam"
     },
@@ -7282,7 +7282,7 @@
       "beat": "pinball.replyAll",
       "page": "step3",
       "x": 692.6,
-      "y": 4201.1,
+      "y": 4205.3,
       "hitsCursor": false,
       "cue": "sling"
     },
@@ -7295,7 +7295,7 @@
       "beat": "pinball.fired",
       "page": "step3",
       "x": 729.6,
-      "y": 4257.2,
+      "y": 4261.5,
       "hitsCursor": false,
       "cue": "sling"
     },
@@ -7308,7 +7308,7 @@
       "beat": "pinball.fired",
       "page": "step3",
       "x": 665.1,
-      "y": 4152.8,
+      "y": 4157.1,
       "hitsCursor": false,
       "cue": "sling"
     },
@@ -7334,7 +7334,7 @@
       "beat": "pinball.highway",
       "page": "step3",
       "x": 960,
-      "y": 4614.5,
+      "y": 4618.8,
       "hitsCursor": false,
       "cue": "flasher"
     },
@@ -7347,7 +7347,7 @@
       "beat": "pinball.highway",
       "page": "step3",
       "x": 676.4,
-      "y": 4097.7,
+      "y": 4102,
       "hitsCursor": false,
       "cue": "ramp-roll"
     },
@@ -7360,7 +7360,7 @@
       "beat": "pinball.highway",
       "page": "step3",
       "x": 1394.5,
-      "y": 4038.8,
+      "y": 4040.2,
       "hitsCursor": false,
       "cue": "spiral"
     },
@@ -7385,8 +7385,8 @@
       "unit": "pinball",
       "beat": "pinball.save",
       "page": "step3",
-      "x": 1091.8,
-      "y": 4589.3,
+      "x": 1059.4,
+      "y": 4617.7,
       "hitsCursor": false,
       "cue": "flipper"
     },
@@ -7399,7 +7399,7 @@
       "beat": "pinball.drain",
       "page": "step3",
       "x": 960,
-      "y": 4660.2,
+      "y": 4664.5,
       "hitsCursor": false,
       "cue": "drain"
     },
