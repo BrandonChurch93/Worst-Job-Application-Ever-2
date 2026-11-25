@@ -5,7 +5,7 @@ Every picture here is made by one command: `node assets-src/table/art/make.mjs` 
 ## corporate.webp, office.webp, street.webp (colour, the print of a floor)
 
 - Made by: `make.mjs`, from three layers: a tone under everything (`ground()`), an optional painted base (`painted/<tier>.png`, see below), and the drawn layer of `tiers.mjs` set in balls and rasterised by sharp
-- From: the layout (walls, lanes, posts, bumpers, slings, flippers, targets, models, displays, lamps, inserts, rails, holds, flats) and the seed
+- From: the layout (walls, lanes, posts, bumpers, slings, flippers, targets, models, displays, lamps, inserts, rails, holds, flats), the seed, and the length of each mode's name in `content/copy.json` (only to size the card under its window; no word is printed)
 - Prompt or command: `node assets-src/table/art/make.mjs --only art`
 - Takes: about 35 s for the web set and 150 s for the full set (MEASURED on the build machine)
 - Why this one: a drawn floor is exactly on the layout, so every line answers a part that stands there. Corporate is a sunburst of gold hairlines from the doors of the tower on blue marble; Office is broad chequered carpet tile in two grey-greens with a wide pale walkway cross and a little loose stationery; Street is an avenue on the layout's road with a cross street, crossings, two car parks and faint paving
