@@ -74,12 +74,14 @@ function build(z: Zone): Group[] {
   const inserts = table.inserts.filter((n) => n.tier === k)
   // Under each sling plastic stands a lamp that lights the floor round it and the flipper before it.
   const slings: Source[] = table.slings.filter((s) => s.tier === k).map((s) => at((s.a[0] + s.b[0] + s.c[0]) / 3, (s.a[1] + s.b[1] + s.c[1]) / 3, 30, 0.6, 2.7, `sling.${s.id}`))
+  // A lamp over each bat, so the flippers are the brightest things at the foot of a tier.
+  const bats: Source[] = table.flippers.filter((f) => f.tier === k).map((f) => at(f.pivot[0] + (f.side === 'left' ? 0.85 : -0.85), f.pivot[1] + 0.25, 64, 0.5, 3))
   const insert = (n: Insert, i: number): void => add(`insert.${i + 1}`, 1, linear(insertColour(n)), [at(n.c[0], n.c[1], 40, 1.0, 3.6)], true)
   const d = table.displays[k]!
   const display = (): void => add('display', 0, C.DISPLAY_AMBER, [0.2, 0.5, 0.8].map((f) => at(d.box[0] + d.box[2] * f, d.box[1] + d.box[3] * 0.4, 34, 0.22, 2.4)))
   if (z.id === 'corporate') {
     add('general', 2, C.CORPORATE_COLD_WHITE, both(rail, 1.3))
-    add('lanes', 2, C.CORPORATE_GOLD, [...both(lane), ...slings])
+    add('lanes', 2, C.CORPORATE_GOLD, [...both(lane), ...slings, ...bats])
     inserts.forEach(insert)
     for (const p of table.posts) if (p.tier === k && p.lamp) add(p.id.slice(p.id.indexOf('.') + 1), 1, C.CORPORATE_GLOBE, [at(p.c[0], p.c[1], 46, 1.2, 5.2, `post.${p.id}`)], true)
     const hq = model('corporate.hq')
@@ -97,12 +99,12 @@ function build(z: Zone): Group[] {
     inserts.forEach(insert)
     table.bumpers.filter((b) => b.tier === k).forEach((b, i) => add(`bumper.${i + 1}`, 1, C.OFFICE_BUMPER, [at(b.c[0], b.c[1], 58, 1.1, 4.2, `bumper.${b.id}`)], true))
     const coffee = model('office.coffee')
-    add('windows', 0, C.OFFICE_COFFEE, [...lane.map((l) => at(l.c[0], l.c[1], LAMP.z, LAMP.power * 0.8, LAMP.reach / BALL)), ...slings, at(centre(coffee)[0], coffee.box[1] + coffee.box[3] + 0.12, 90, 0.9, 3.6, coffee.id), at(coffee.box[0] - 0.12, centre(coffee)[1], 90, 0.7, 3.2, coffee.id)])
+    add('windows', 0, C.OFFICE_COFFEE, [...lane.map((l) => at(l.c[0], l.c[1], LAMP.z, LAMP.power * 0.8, LAMP.reach / BALL)), ...slings, ...bats, at(centre(coffee)[0], coffee.box[1] + coffee.box[3] + 0.12, 90, 0.9, 3.6, coffee.id), at(coffee.box[0] - 0.12, centre(coffee)[1], 90, 0.7, 3.2, coffee.id)])
     display()
     add('flash', 0, C.OFFICE_FLASH, [])
   } else {
     add('general', 2, C.STREET_DUSK, both(rail, 1.35))
-    add('lanes', 2, C.STREET_SODIUM, [...both(lane), ...slings])
+    add('lanes', 2, C.STREET_SODIUM, [...both(lane), ...slings, ...bats])
     inserts.forEach(insert)
     const fire = model('street.firehouse')
     const police = model('street.police')
