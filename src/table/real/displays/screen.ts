@@ -168,7 +168,7 @@ function drawMode(out: Uint8Array, name: string, line: string, t: number): void 
 }
 
 // The hint: a computer mouse seen from above, between the two flippers it works, each button and its flipper lit in turn.
-const MOUSE = { cx: 63.5, top: 1, foot: 28, half: 9.2, split: 12, wheel: [4, 9] as [number, number] }
+const MOUSE = { cx: 63.5, top: 1, foot: 28, half: 10.2, split: 12, wheel: [4, 8] as [number, number] }
 
 const inMouse = (x: number, y: number): boolean => {
   const cy = (MOUSE.top + MOUSE.foot) / 2
@@ -200,13 +200,13 @@ function drawHint(out: Uint8Array, t: number): void {
       let v = 0
       if (inMouse(x, y)) {
         const edge = !inMouse(x - 1, y) || !inMouse(x + 1, y) || !inMouse(x, y - 1) || !inMouse(x, y + 1)
-        const seam = y === MOUSE.split || (y < MOUSE.split && (x === 63 || x === 64))
-        const wheel = (x === 63 || x === 64) && y >= MOUSE.wheel[0] && y <= MOUSE.wheel[1]
-        const button = y < MOUSE.split - 1 && !edge && !seam && !inMouseEdge(x, y)
-        if (edge || (seam && !wheel)) v = 255
-        else if (button && x < 63 && leftOn) v = 255
-        else if (button && x > 64 && rightOn) v = 255
-        else if (wheel) v = 0
+        const mid = x === 63 || x === 64
+        const wheel = mid && y >= MOUSE.wheel[0] && y <= MOUSE.wheel[1]
+        const seam = y === MOUSE.split || (y < MOUSE.split && mid && (y < MOUSE.wheel[0] - 1 || y > MOUSE.wheel[1] + 1))
+        const button = y < MOUSE.split - 1 && !inMouseEdge(x, y)
+        if (edge || seam || wheel) v = 255
+        else if (button && x < 62 && leftOn) v = 255
+        else if (button && x > 65 && rightOn) v = 255
       } else {
         for (const side of [-1, 1]) {
           const d = bat(x, y, side)
