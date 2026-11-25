@@ -74,6 +74,13 @@ No sound is kept. `public/audio/index.json` lists nothing, the engine reports `a
 26. The listener's questions are fixed and printed by `npm run sound -- --cue ID` and `--line BEAT:N` with the answers file to fill in. The listener of a line is not told the line. A yes or no question left unanswered counts against the take, so an empty answers file does not pass. `sameRoom`, the family check, may stay open: it can only be asked once two other sounds are kept.
 27. Gate G8 of `tools/gate.mjs` wants every file under `public/` named in `ASSETS.md`, all but `public/audio/index.json`. So `--pack` adds to `audio/ASSETS-ROWS.md` one row for each sound file the site ships: the packed file, each loop, each line. MEASURED on the answered stand-in folder: 54 shipped sound files, 0 not named in the rows. With no kept sound `--pack` writes no rows file.
 
+## Not done
+
+1. A seek into the middle of a beat does not speak the lines of that beat: `src/main.ts` calls `beat(id, 'film')` only when the start of the beat lies in the span just drawn. The lines of the next beat are spoken as usual. To close it the page would pass the film time of the seek, and the engine would book each line of the running beat that has not started yet at its own offset.
+2. Film B on a page that draws far under 60 pictures a second: two events with the same cue that arrive in one drawn picture sound once, by decision 3. Only the opening of film A is set ahead on the sound clock (decision 24). The mix is not touched by this: it lays every event on its frame.
+3. The count of film A on the site, 78 sounds played of 78 laid, is measured in headless Chromium with stand-ins. Safari, Firefox and a real phone are not measured: only Chromium is in the workspace.
+4. Two early merge commits of this branch, 3731ac1 and 56cfcf0, lack the trailer. History is not rewritten.
+
 ## Where the kit and the code differed
 
 `kit/05-ARCHITECTURE.md` says under "Hashes and records" that commits which touch only sound change no hash. `tools/lib/hashes.mjs` put every file of `src/` outside the page folders into the engine hash, `src/audio/` too, so a change to the sound engine made every kept picture stale. The Builder took the patch that leaves `src/audio/` out of the engine hash, on main at 5632d86. Sound changes no pixel: check A3 renders a judged still with the audio code in the build and with it blocked, and the two are byte equal. The sound files and their index are in `public/audio/` and were never in the hash.
