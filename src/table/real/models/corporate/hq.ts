@@ -177,9 +177,31 @@ function leaf(): Geo {
       }
       const h = (k: number): RGB => warmLamp(k / HALL)
       sheet(g, (u, v) => [st + (W - 2 * st) * u, y, kick + (H - 7 - kick) * v], [0, s, 0], [1, 0, 0], 4, 10, (u, v) => 0.16 + 0.62 * bump(v, 0.46, 0.34) * (0.66 + 0.34 * bump(u, 0.8, 0.5)) + 0.14 * bump(v, 0.95, 0.08))
-      quad(st + 5, W - st - 5, H - 30, H - 24, h(1.1), 0.05)
-      quad(st + 9, W - st - 9, H - 44, H - 40, h(0.8), 0.05)
-      quad(st + 12, W - st - 12, H - 55, H - 52.6, h(0.55), 0.05)
+      const X = (u: number): number => st + (W - 2 * st) * u
+      const Z = (v: number): number => kick + (H - 7 - kick) * v
+      const room = (u0: number, u1: number, v0: number, v1: number, k: number, out = 0.05): void => quad(X(u0), X(u1), Z(v0), Z(v1), h(k), out)
+      const line = (u0: number, v0: number, u1: number, v1: number, w: number, k: number): void => {
+        const yy = y + s * 0.05
+        g.face([[X(u0), yy, Z(v0)], [X(u1), yy, Z(v1)], [X(u1), yy, Z(v1 + w)], [X(u0), yy, Z(v0 + w)]], [0, s, 0], [1, 0, 0], h(k))
+      }
+      room(0.44, 1, 0.33, 0.74, 0.5)
+      room(0.6, 0.94, 0.33, 0.68, 0.2, 0.1)
+      room(0.63, 0.91, 0.33, 0.655, 0.4, 0.15)
+      room(0.764, 0.776, 0.33, 0.655, 0.18, 0.2)
+      room(0.72, 0.82, 0.69, 0.715, 1.2, 0.1)
+      room(0.47, 0.55, 0.33, 0.74, 0.34, 0.1)
+      line(0, 0.1, 0.44, 0.33, 0.012, 0.2)
+      line(0, 0.985, 0.44, 0.74, 0.012, 0.24)
+      room(0.14, 0.27, 0.21, 0.87, 0.3)
+      room(0.165, 0.245, 0.4, 0.6, 0.85, 0.1)
+      room(0.62, 0.92, 0.1, 0.3, 0.62)
+      room(0.72, 0.82, 0.03, 0.09, 0.5)
+      room(0.3, 0.62, 0.925, 0.95, 1.15)
+      room(0.8, 1, 0.925, 0.95, 1.15)
+      room(0.42, 0.62, 0.855, 0.872, 0.95)
+      room(0.82, 0.98, 0.855, 0.872, 0.95)
+      room(0.5, 0.63, 0.795, 0.806, 0.8)
+      room(0.85, 0.96, 0.795, 0.806, 0.8)
     }
   }, HALL)
   fin(g, FINISH.polished, () => {
