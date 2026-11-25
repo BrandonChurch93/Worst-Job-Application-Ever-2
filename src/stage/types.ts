@@ -95,6 +95,7 @@ export type Emit = (name: string, x: number, y: number, hitsCursor?: boolean) =>
 export interface StepIo {
   step: number
   time: number
+  elapsed?: number
   dt: number
   pointer: Pointer
   pressed: boolean
