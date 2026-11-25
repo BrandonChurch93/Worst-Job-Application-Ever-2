@@ -214,8 +214,13 @@ export function makePage(): PageLogic {
     const dy = vy / sp
     return { eye: toWorld(px(b.x - dx * back), px(b.y - dy * back), px(b.z + up)), target: toWorld(px(b.x + dx * ahead), px(b.y + dy * ahead), px(b.z + lift)), up: [0, 0, 1], fov: fov('rail') }
   }
+  const ridePose = (): CameraPose => {
+    const b = ball()
+    const u = b.mode === 'rail' && b.rail === 'launch' ? smooth(Math.min(1, b.s / 7)) : b.mode === 'hold' ? 0 : 1
+    return railPose(0.8 + 2.6 * u, 4.4 - 1.0 * u, 1.0 + 1.5 * u, 0.5)
+  }
   const follow = (): CameraPose => homePose(s.scroll, s.floor)
-  const named = (name: string): CameraPose | null => (name === 'follow' ? follow() : name === 'rail' ? railPose() : name === 'ride' ? railPose(3.4, 3.4, 2.5, 0.5) : NAMED[name] ?? null)
+  const named = (name: string): CameraPose | null => (name === 'follow' ? follow() : name === 'rail' ? railPose() : name === 'ride' ? ridePose() : NAMED[name] ?? null)
 
   const filmPose = (time: number): CameraPose => {
     let i = 0
