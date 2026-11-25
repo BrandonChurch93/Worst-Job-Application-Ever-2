@@ -25,22 +25,22 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 39, 2026-11-25T19:37Z, Phase 3.
+Status 40, 2026-11-25T20:02Z, Phase 3.
 
-1. `out/stills/status/01-round-4-what-the-first-match-critic-saw.jpg`: Made by me from the pack of round 4 (review tier, built 19:25Z from the judged site). Each approved image stands left of the build's. Top: the keyboard key and its crops. Bottom: the tug key and its crops. Still wrong, in the critic's words and mine: the deck is a flat light grey with stripes where the approved metal is darker with curved reflections; the cursor is clean and near the number row; the tug shows a close view where the approved shows the whole page (declined, the kit has the camera push in), and in it the arrow is small, the arms are straight sticks and the sheet is a stiff card.
-2. `out/stills/status/02-the-drop-zone-s-card-beside-the-approved-card.jpg`: From the surface fixer's own tree, sent 19:31Z (1d54dba, after the judged commit, not yet on main). Top approved, bottom built. Better: the face is lit from the upper left and falls off to the right as the approved does, and the grey is now a cyan grey. Still wrong: the build has a second raised frame inside the dashed line that the approved does not have, its outer edge is thin and square where the approved edge is a thick rounded lip with a bright line, and Browse files has a hard dark outline and heavier letters.
-3. `out/stills/status/03-the-cursor-s-damage-states-beside-the-approved-s.jpg`: From the cursor fixer's own tree, sent 19:32Z (f3d50d4, after the judged commit, not yet on main). Top row approved, bottom row built. Better: the shredded strips are even ribbons with square ends, the punched hole shows the wall of its bore. Still wrong: the reassembled arrow is ragged and its tape is yellow and opaque where the approved tape is a clear film; the flattened arrow is a spiky star with deep cracks where the approved is a soft melted puddle; the shadows are harder than the approved ones.
-4. `out/stills/status/04-the-tug-key-with-the-new-arms-beside-the-approve.jpg`: From the tug finisher's own tree, draft tier, sent 19:33Z (44cf977, after the judged commit, not yet on main). Left approved, right built, crops below. Better: the arms are hoses with slack. Still wrong: the two hoses read as one round hoop; the arrow is small and stands apart from the sheet; the sheet is a flat card where the approved is thin crumpled paper; the shredder stands below the drop zone with a block of shadow and is not joined to it.
+1. `out/stills/status/01-the-keyboard-key-beside-the-approved-image-on-ma.jpg`: Made by me at 19:58Z from main (9267c2b), draft tier. Left approved, right built, with the crop of the cursor below. Better than round 4 saw: at 6.0 s the arrow stands scorched on a glowing key in the letter rows, with sparks, and two keycaps carry bullet holes. Still wrong: the deck is a flat light grey slab lying on the page, where the approved is a darker rounded metal tray sunk into it; the turrets are plainer and sit on stalks at the sides; the arrow is smaller than the approved one and has no smoke; there are no bolts in flight in this frame; the page is brighter and cooler.
+2. `out/stills/status/02-twelve-frames-across-the-hit-on-the-arrow.jpg`: From the acting fixer's own tree, draft tier, sent 20:00Z (774e1c8, not yet on main). Frames 1/30 s apart read left to right, top to bottom; the bolt lands in frame 4. Better: the sheet now shows the approach, the flash, one recoil and the arrow back upright on H. Still wrong: at this size the arrow is a few pixels and the recoil is hard to see, which is what the acting critics will be given; the flash covers the arrow for three frames; the deck and turrets as above.
+3. `out/stills/status/03-the-tug-key-beside-the-approved-image-on-main-no.jpg`: Made by me at 19:59Z from main (9267c2b), draft tier. Left approved, right built, crops below. Better: the arms are hoses with slack, the sheet bends and carries its print, strips hang under the shredder. Still wrong: the hands are black balls that read as gloves; the arrow is small against the sheet; the sheet is a stiff card where the approved is thin crumpled paper; the shredder sits across the card's lower edge with a block of shadow to its right; the frame is a close view where the approved shows the whole page (declined: the kit has the camera push in), so the crops, which are cut at the approved image's places, do not line up.
+4. `out/stills/status/04-the-arms-sheet-and-the-damage-sheet-beside-the-a.jpg`: Made by me at 20:01Z, draft tier: main (9267c2b) with one change of mine not yet committed, the Holding pose (third from the left, top right). Left approved, right built. Better: Holding has the sheet low at the body's right; the tape is a clear film; the punched hole has a wall. Still wrong on the arms: the build's arrows lie flat seen from above where the approved stand as figures seen from the front; the hands are mittens without fingers; the held sheet is too large; the shredder throws a block of shadow. Still wrong on the damage: the flattened arrow is a cracked flat arrow where the approved is a glossy melted blob; the shredded strips fan sideways; the scorch is small; the light is even where the approved has a soft raking light with long shadows.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 3, tick 83 at 2026-11-25T19:37:04Z, allowance: build
-time used in this phase: 6.73 h of its box of 8.00 h
-time used under the allowance in force: 14.08 h of 36.00 h allowed
-time used: 14.08 of 36.00 hours before the review
+clock: phase 3, tick 86 at 2026-11-25T20:02:58Z, allowance: build
+time used in this phase: 7.16 h of its box of 8.00 h
+time used under the allowance in force: 14.51 h of 36.00 h allowed
+time used: 14.51 of 36.00 hours before the review
 extra rounds: yes
 half point: reached
 box end: not reached
