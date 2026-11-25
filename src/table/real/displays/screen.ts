@@ -15,7 +15,7 @@ export const PACE = {
   hintLit: 0.38,
   // The faint burn of the first and last columns, out of 255.
   burn: 16,
-  scoreGap: 2,
+  scoreGap: 5,
   scoreRight: 4
 }
 
