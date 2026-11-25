@@ -259,8 +259,8 @@ function shape(rig: Rig, q: SheetIn): void {
   pos.needsUpdate = true
   nor.needsUpdate = true
   rig.body.computeBoundingSphere()
-  lay(rig.title, rig.titleMarks, sheet, THICK + 0.22)
-  lay(rig.bars, rig.barMarks, sheet, THICK + 0.22)
+  lay(rig.title, rig.titleMarks, sheet, THICK + 0.3)
+  lay(rig.bars, rig.barMarks, sheet, THICK + 0.3)
   const mat = stock(PAPER.w, PAPER.h)
   mat.sheet.normalScale.setScalar(0.1 + 0.55 * sheet.abuse)
 }
