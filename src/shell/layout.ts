@@ -101,6 +101,7 @@ export function shapeOf(n: LayoutNode, part: string): Shape | null {
   const top = heightOf(n)
   const kind = n.shape ?? 'box'
   const shape: Shape = { id: n.id, part, kind, x, y, w, h, z0: top < 0 ? top : (n.floor ?? 0), z1: top < 0 ? 0 : top, tone: (n.tone as Tone | undefined) ?? TONES[n.kind] ?? 'raised' }
+  if (top < 0) shape.pocket = true
   if (n.r !== undefined) shape.r = n.r
   if (n.mechanism) shape.mechanism = true
   return shape

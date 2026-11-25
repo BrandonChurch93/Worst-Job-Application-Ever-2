@@ -81,8 +81,8 @@ export function makeShowcase(app: App, ready: Promise<void>): Showcase {
       const layout: { id: string; kind: string; planned: number[]; drawn: number[]; plannedHeight: number | null; height: number; mechanism: boolean }[] = []
       walk(page.layout, (n) => {
         const s = drawn.get(n.id)
-        if (!s || s.kind === 'text') return
-        layout.push({ id: n.id, kind: n.kind, planned: [...n.box], drawn: [s.x, s.y, s.w, s.h], plannedHeight: plannedHeight(n.kind), height: s.z1 <= 0 ? s.z0 : s.z1, mechanism: s.mechanism === true })
+        if (!s || s.kind === 'text' || s.kind === 'well') return
+        layout.push({ id: n.id, kind: n.kind, planned: [...n.box], drawn: [s.x, s.y, s.w, s.h], plannedHeight: plannedHeight(n.kind), height: s.pocket ? s.z0 : s.z1, mechanism: s.mechanism === true })
       })
       const type = frame.list.filter((s) => s.kind === 'text').map((s) => ({ key: s.words!, text: words(s.words!, s.text), box: [s.x, s.y, s.w, s.h], px: s.type!.px, contrast: ratio(TONES[s.tone], app.groundOf(frame.list, s)) }))
       return { layout, type, cursor: app.cursorState(frame.cursor, pose) }

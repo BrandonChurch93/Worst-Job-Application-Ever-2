@@ -84,7 +84,7 @@ export function recordFor(session, { units, tier, diagnostic, what }) {
   const info = buildInfo(at())
   const pageHashes = {}
   for (const u of units) if (info.pageHashes[u] !== undefined) pageHashes[u] = info.pageHashes[u]
-  return { what, engineHash: info.engineHash, pageHashes, format: session.format.id, tier, assets: session.assets, diagnostic, browser: session.version, machine: machine() }
+  return { what, engineHash: info.engineHash, sharedHash: info.sharedHash, pageHashes, format: session.format.id, tier, assets: session.assets, diagnostic, browser: session.version, machine: machine() }
 }
 
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b)

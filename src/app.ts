@@ -7,7 +7,8 @@ import { eventCues } from './audio/cues'
 import { assetSet, type AssetSet } from './core/assets'
 import { Engine, LightRig, type Shot } from './core/renderer'
 import type { TargetKind } from './core/accumulator'
-import type { CursorPose } from './cursor/body'
+import { restPose, type CursorPose } from './cursor/body'
+import { cursorSheet } from './cursor/sheets'
 import { applyView, views } from './diagnostics/views'
 import { pages, unitPages } from './pages'
 import { look } from './post/look'
@@ -17,7 +18,7 @@ import { studioEnvironment } from './shell/materials'
 import { FONTS } from './shell/metrics'
 import { loadFont } from './shell/type'
 import { homePose, project, toWorld } from './stage/camera'
-import { filmFlow, filmOptions, ScriptDriver, Stage, StillDriver, type Frame } from './stage/stage'
+import { filmFlow, filmOptions, ScriptDriver, Stage, StillDriver, TURN_HALF, type Frame } from './stage/stage'
 import type { CameraPose, PageLogic, Shape } from './stage/types'
 
 export interface StillSpec { page: string; beat?: string; at?: number; scroll?: number; camera: string; tier: string; sheet?: string; interface?: boolean; touchOnly?: boolean; live?: string }
@@ -114,14 +115,30 @@ export class App {
     return this.rest(unit).page
   }
 
+  // A still never shows a page in the middle of a turn: its moment moves to the nearest one with the page flat.
   momentOf(spec: { beat?: string; at?: number }): number {
     if (!spec.beat) return 0
     const b = beatOf(spec.beat)
-    return Math.min(b.to - 1 / config.film.fps, b.from + (b.to - b.from) * (spec.at ?? 0))
+    const t = Math.min(b.to - 1 / config.film.fps, b.from + (b.to - b.from) * (spec.at ?? 0))
+    const turn = filmOptions(b.unit)
+    const seconds = config.film.units.find((u) => u.id === b.unit)!.seconds
+    return Math.min(turn.leave ? seconds - TURN_HALF - 1 / stepHz : seconds, Math.max(turn.arrive ? TURN_HALF : 0, t))
+  }
+
+  // A sheet: several moments of a part side by side, from the page that owns it or from the cursor's own sheets.
+  sheet(spec: StillSpec): { frame: Frame; pose: CameraPose; page: PageLogic; size: { width: number; height: number } } | null {
+    if (!spec.sheet) return null
+    const page = this.pageOf(spec.page)
+    const made = page.sheet?.(spec.sheet) ?? cursorSheet(spec.sheet, page)
+    if (!made) return null
+    const frame: Frame = { list: made.list, cursor: made.cursors[0] ?? restPose(-400, -400, { onPage: false }), cursors: made.cursors, turn: 0, scroll: 0, page: `${page.id}:${spec.sheet}`, view: made.view }
+    return { frame, pose: made.view, page, size: { width: made.width ?? page.width, height: made.height ?? page.height } }
   }
 
   // The frame a still shows, and the camera it is seen from.
-  still(spec: StillSpec): { frame: Frame; pose: CameraPose; page: PageLogic } {
+  still(spec: StillSpec): { frame: Frame; pose: CameraPose; page: PageLogic; size?: { width: number; height: number } } {
+    const sheet = this.sheet(spec)
+    if (sheet) return sheet
     const stage = spec.beat ? this.film(spec.page) : this.rest(spec.page)
     const time = this.momentOf(spec)
     const frame = stage.frameAt(time)
@@ -152,8 +169,8 @@ export class App {
     return c
   }
 
-  put(frame: Frame, page: PageLogic, pose: CameraPose): void {
-    this.view.apply(frame, { width: page.width, height: page.height })
+  put(frame: Frame, page: PageLogic, pose: CameraPose, size?: { width: number; height: number }): void {
+    this.view.apply(frame, size ?? { width: page.width, height: page.height })
     const cy = pose.target[1]
     this.view.focus = -cy
     this.rig.setBounds(this.view.bounds())
@@ -169,9 +186,14 @@ export class App {
   }
 
   async renderStill(spec: StillSpec): Promise<void> {
-    const { frame, pose, page } = this.still(spec)
-    this.put(frame, page, pose)
-    this.setCamera(pose)
+    const { frame, pose, page, size } = this.still(spec)
+    const entry = spec.sheet ? (config.sheets as { id: string; width?: number; height?: number }[]).find((s) => s.id === spec.sheet) : undefined
+    const k = this.format.width / hd.width
+    const width = entry?.width ? Math.round(entry.width * k) : this.format.width
+    const height = entry?.height ? Math.round(entry.height * k) : this.format.height
+    this.engine.setSize(width, height)
+    this.put(frame, page, pose, size)
+    this.setCamera(pose, width, height)
     this.tier = spec.tier
     await this.engine.picture(this.shot(), { samples: spec.live ? 1 : tierSamples(spec.tier), frame: 0, diagnostic: this.diagnostic })
     this.note(spec.page)
@@ -199,6 +221,7 @@ export class App {
     const { unit, time } = this.filmMoment(frameIndex)
     const open = config.film.shutterDegrees / 360 / config.film.fps
     this.tier = tier
+    this.engine.setSize(this.format.width, this.format.height)
     const pose = (s: number) => {
       const f = this.filmFrame(unit, time + s * open)
       this.put(f.frame, f.page, f.pose)
@@ -229,12 +252,12 @@ export class App {
     let best = -Infinity
     let tone = TONES.page
     for (const o of list) {
-      if (o.kind === 'text' || o === s) continue
+      if (o.kind === 'text' || o.kind === 'well' || o === s) continue
       if (cx < o.x || cx > o.x + o.w || cy < o.y || cy > o.y + o.h) continue
-      const top = o.z1 <= 0 ? o.z0 : o.z1
+      const top = o.pocket ? o.z0 : o.z1
       if (top > s.z1 + 0.5 || top < best) continue
       best = top
-      tone = TONES[o.z1 <= 0 && o.tone !== 'dark' ? 'pocket' : o.tone]
+      tone = TONES[o.pocket && o.tone !== 'dark' ? 'pocket' : o.tone]
     }
     return tone
   }

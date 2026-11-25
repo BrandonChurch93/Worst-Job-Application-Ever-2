@@ -59,6 +59,13 @@ export function pageHashes(root) {
   return out
 }
 
+// The folders every page is drawn with. They sit in the look lock unit's hash, so a record of another page names them too.
+export const sharedFolders = ['src/shell', 'src/cursor', 'src/post']
+
+export function sharedHash(root) {
+  return hashFiles(root, sharedFolders.flatMap((f) => walk(path.join(root, f))))
+}
+
 // Every file of each asset set, by page folder: what the loader reads.
 export function assetIndex(root) {
   const set = (base) => {
@@ -91,7 +98,7 @@ export function versions(root) {
 }
 
 export function buildInfo(root) {
-  return { engineHash: engineHash(root), pageHashes: pageHashes(root), assets: assetIndex(root), approved: approvedFiles(root), versions: versions(root) }
+  return { engineHash: engineHash(root), pageHashes: pageHashes(root), sharedHash: sharedHash(root), assets: assetIndex(root), approved: approvedFiles(root), versions: versions(root) }
 }
 
 // The build's own plugin: gives the page its hashes and indexes as a module, with no file copied.

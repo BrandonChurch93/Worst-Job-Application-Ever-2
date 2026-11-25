@@ -39,11 +39,14 @@ export interface CursorPose {
   damage: Damage[]
   healing: number
   arms: boolean
+  hands: [Place, Place] | null
   onPage: boolean
   inBall: boolean
   taken: boolean
   scale: number
 }
+
+export interface Place { x: number; y: number; z: number }
 
 interface State {
   x: number
@@ -64,6 +67,7 @@ interface State {
   damage: { kind: Damage; left: number; whole: number }[]
   windowLeft: number
   arms: boolean
+  hands: [Place, Place] | null
   onPage: boolean
   inBall: boolean
   air: { x: number; y: number } | null
@@ -76,7 +80,7 @@ interface State {
 
 const fresh = (x: number, y: number): State => ({
   x, y, z: hover, vx: 0, vy: 0, vz: 0, squash: 1, squashV: 0, lean: 0, spin: 0, stride: 0, fast: 0, acting: 'plain', reaction: null, reactionLeft: 0,
-  damage: [], windowLeft: 0, arms: false, onPage: true, inBall: false, air: null, taken: null, takenFor: 0, drive: null, handback: 1, from: { x, y }
+  damage: [], windowLeft: 0, arms: false, hands: null, onPage: true, inBall: false, air: null, taken: null, takenFor: 0, drive: null, handback: 1, from: { x, y }
 })
 
 export class CursorBody {
@@ -165,8 +169,9 @@ export class CursorBody {
     s.from = { x: s.x, y: s.y }
   }
 
-  setArms(on: boolean): void {
+  setArms(on: boolean, hands?: [Place, Place]): void {
     this.s.arms = on
+    this.s.hands = on ? (hands ?? this.s.hands) : null
   }
 
   seal(inBall: boolean): void {
@@ -188,11 +193,14 @@ export class CursorBody {
   step(target: { x: number; y: number }, emit: Emit, armsAllowed: boolean): void {
     const s = this.s
     const gait = GAIT[s.acting]
-    if (s.taken !== null) {
+    if (s.taken !== null && !s.inBall) {
       s.takenFor += dt
       if (s.takenFor >= takenMax - 0.5) this.release()
     }
-    if (s.arms && !armsAllowed) s.arms = false
+    if (s.arms && !armsAllowed) {
+      s.arms = false
+      s.hands = null
+    }
     let tx = target.x
     let ty = target.y
     let tz = hover
@@ -268,7 +276,7 @@ export class CursorBody {
     return {
       x: s.x, y: s.y, z: s.z, squash: s.squash, lean: s.lean, spin: s.spin, acting: s.acting, reaction: s.reaction,
       reactionAt: s.reaction ? 1 - s.reactionLeft / REACTION_SECONDS[s.reaction] : 0,
-      damage: s.damage.map((d) => d.kind), healing, arms: s.arms, onPage: s.onPage, inBall: s.inBall, taken: s.taken !== null, scale: 1
+      damage: s.damage.map((d) => d.kind), healing, arms: s.arms, hands: s.arms && s.hands ? [{ ...s.hands[0] }, { ...s.hands[1] }] : null, onPage: s.onPage, inBall: s.inBall, taken: s.taken !== null, scale: 1
     }
   }
 
@@ -281,7 +289,13 @@ export class CursorBody {
   }
 }
 
+export function restPose(x: number, y: number, extra: Partial<CursorPose> = {}): CursorPose {
+  return { x, y, z: hover, squash: 1, lean: 0, spin: 0, acting: 'plain', reaction: null, reactionAt: 0, damage: [], healing: 0, arms: false, hands: null, onPage: true, inBall: false, taken: false, scale: 1, ...extra }
+}
+
 export function blendPose(a: CursorPose, b: CursorPose, t: number): CursorPose {
   const mix = (p: number, q: number) => p + (q - p) * t
-  return { ...b, x: mix(a.x, b.x), y: mix(a.y, b.y), z: mix(a.z, b.z), squash: mix(a.squash, b.squash), lean: mix(a.lean, b.lean), spin: mix(a.spin, b.spin), healing: mix(a.healing, b.healing) }
+  const place = (p: Place, q: Place): Place => ({ x: mix(p.x, q.x), y: mix(p.y, q.y), z: mix(p.z, q.z) })
+  const hands: [Place, Place] | null = a.hands && b.hands ? [place(a.hands[0], b.hands[0]), place(a.hands[1], b.hands[1])] : b.hands
+  return { ...b, x: mix(a.x, b.x), y: mix(a.y, b.y), z: mix(a.z, b.z), squash: mix(a.squash, b.squash), lean: mix(a.lean, b.lean), spin: mix(a.spin, b.spin), healing: mix(a.healing, b.healing), hands }
 }

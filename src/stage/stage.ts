@@ -1,5 +1,6 @@
 import { beat, config, stepHz } from '../config'
 import { blendPose, CursorBody, HANDOFF, type CursorPose } from '../cursor/body'
+import { BotDriver, type BotName, type BotRun } from './bots'
 import { homePose, smooth } from './camera'
 import type { CameraPose, Driver, DrawList, FlowEntry, Mode, PageLogic, PageMaker, Pointer, Shape, StageEvent } from './types'
 
@@ -31,6 +32,7 @@ interface Saved {
   phase: Phase
   phaseStep: number
   down: boolean
+  skipped: boolean
   run: number
   max: { pointer: number; flippers: number }
   reached: string[]
@@ -40,7 +42,7 @@ interface Saved {
   cursor: unknown
 }
 
-export interface Frame { list: DrawList; cursor: CursorPose; turn: number; scroll: number; page: string; view: CameraPose | null }
+export interface Frame { list: DrawList; cursor: CursorPose; turn: number; scroll: number; page: string; view: CameraPose | null; cursors?: CursorPose[] }
 
 const applicant = { firstName: config.applicant.filmFirstName, lastName: config.applicant.filmLastName, email: config.applicant.filmEmail }
 
@@ -55,6 +57,7 @@ export class Stage {
   private phase: Phase = 'play'
   private phaseStep = 0
   private down = false
+  private skipped = false
   private run = 0
   private max = { pointer: 0, flippers: 0 }
   private reached = new Set<string>()
@@ -86,6 +89,7 @@ export class Stage {
     this.page = this.pageOf(entry)
     this.page.reset({ mode: this.o.mode, variant: entry.variant ?? '', applicant: this.o.mode === 'film' ? applicant : null, seed: this.o.seed ?? config.seed })
     this.pageStep = 0
+    this.skipped = false
     if (entry.opens !== false) this.unitStep = 0
     this.phaseStep = 0
     this.phase = arrive ? 'arrive' : 'play'
@@ -109,11 +113,12 @@ export class Stage {
   }
 
   get entry(): FlowEntry { return this.o.flow[this.index]! }
+  get entryIndex(): number { return this.index }
   get time(): number { return this.step / stepHz }
   get pageTime(): number { return this.pageStep / stepHz }
   get turning(): boolean { return this.phase !== 'play' }
   get finished(): boolean { return this.phase === 'end' || (this.index === this.o.flow.length - 1 && this.phase === 'play' && !this.o.film?.leave && this.index > 0) }
-  get skipOffered(): boolean { return this.o.mode === 'live' && this.phase === 'play' && this.pageStep >= skipAfter && this.index < this.o.flow.length - 1 }
+  get skipOffered(): boolean { return this.o.mode === 'live' && this.phase === 'play' && this.pageStep >= skipAfter && this.index < this.o.flow.length - 1 && this.page.unit !== 'marketing' }
   get longestIgnored(): { pointer: number; flippers: number } { return { pointer: this.max.pointer / stepHz, flippers: this.max.flippers / stepHz } }
   get gagsReached(): string[] { return [...this.reached] }
   get pagesVisited(): string[] { return [...this.visited] }
@@ -141,7 +146,8 @@ export class Stage {
     const emit = (name: string, x: number, y: number, hitsCursor = false) => {
       this.events.push({ name, step: this.step, page: page.id, x, y, hitsCursor })
     }
-    if (pointer.skip && this.skipOffered) {
+    if (pointer.skip && this.skipOffered && !this.skipped) {
+      this.skipped = true
       emit('skip', pointer.x, pointer.y)
       page.skip()
     }
@@ -198,7 +204,7 @@ export class Stage {
 
   private save(): Saved {
     return {
-      step: this.step, index: this.index, pageStep: this.pageStep, unitStep: this.unitStep, phase: this.phase, phaseStep: this.phaseStep, down: this.down, run: this.run, max: { ...this.max },
+      step: this.step, index: this.index, pageStep: this.pageStep, unitStep: this.unitStep, phase: this.phase, phaseStep: this.phaseStep, down: this.down, skipped: this.skipped, run: this.run, max: { ...this.max },
       reached: [...this.reached], visited: [...this.visited], events: this.events.length, page: JSON.parse(JSON.stringify(this.page.save() ?? null)), cursor: this.cursor.save()
     }
   }
@@ -216,6 +222,7 @@ export class Stage {
     this.phase = s.phase
     this.phaseStep = s.phaseStep
     this.down = s.down
+    this.skipped = s.skipped
     this.run = s.run
     this.max = { ...s.max }
     this.reached = new Set(s.reached)
@@ -381,6 +388,24 @@ export function filmFlow(unit: string): FlowEntry[] {
 }
 
 export const wholeFilmFlow = (): FlowEntry[] => config.film.units.flatMap((u) => filmFlow(u.id))
+
+export function runBot(pages: Record<string, PageMaker>, bot: BotName, seed: number, flow: FlowEntry[] = liveFlow(), maxSeconds: number = config.live.botMaxSeconds): BotRun {
+  const stage = new Stage({ mode: 'live', flow, pages, driver: new BotDriver(bot, seed), seed })
+  const limit = Math.round(maxSeconds * stepHz)
+  const pageSeconds: Record<string, number> = {}
+  let seen = 0
+  while (!stage.finished && stage.step < limit) {
+    stage.advance(24)
+    const name = `${stage.page.id}${seen >= flow.length - 1 ? ' again' : ''}`
+    if (stage.entryIndex > seen) seen = stage.entryIndex
+    pageSeconds[name] = (pageSeconds[name] ?? 0) + 0.1
+  }
+  const ignored = stage.longestIgnored
+  return {
+    bot, seed, finished: stage.finished, seconds: stage.time, ignoredPointer: ignored.pointer, ignoredFlippers: ignored.flippers, gags: stage.gagsReached, pages: stage.pagesVisited, pageSeconds,
+    skips: stage.events.filter((e) => e.name === 'skip').length, stuckOn: stage.finished ? null : stage.page.id
+  }
+}
 
 export const liveFlow = (): FlowEntry[] => [{ page: 'marketing' }, { page: 'step1' }, { page: 'step2' }, { page: 'step3' }, { page: 'step4' }, { page: 'step5' }, { page: 'marketing', variant: 'rejected' }]
 

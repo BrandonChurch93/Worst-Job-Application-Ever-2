@@ -39,6 +39,8 @@ class Cache<T extends { dispose(): void }> {
 
 const q = (v: number): number => Math.round(v * 4) / 4
 
+interface Arrow { group: THREE.Group; body: THREE.Mesh; rim: THREE.Mesh; mark: THREE.Mesh; strips: THREE.Group; sweat: THREE.Group; arms: THREE.Group; limbs: THREE.Mesh[]; fists: THREE.Mesh[] }
+
 export class BlockoutView {
   readonly scene = new THREE.Scene()
   private pivot = new THREE.Group()
@@ -51,25 +53,21 @@ export class BlockoutView {
   private unitBox = new THREE.BoxGeometry(1, 1, 1)
   private unitDisc = new THREE.CylinderGeometry(0.5, 0.5, 1, 40).rotateX(Math.PI / 2)
   private unitBall = new THREE.SphereGeometry(0.5, 32, 20)
-  private slab = new THREE.Mesh(this.unitBox, this.tone('page'))
-  private arrow = new THREE.Group()
-  private arrowBody!: THREE.Mesh
-  private mark!: THREE.Mesh
-  private strips = new THREE.Group()
+  private slab = new THREE.Group()
+  private slabKey = ''
+  private arrows: Arrow[] = []
   private tick = 0
   private pageId = ''
   private lastScroll = 0
   private size = { width: 1920, height: 1080 }
+  private cursors: CursorPose[] = []
   focus = 0
 
   constructor() {
     this.scene.add(this.pivot)
     this.pivot.add(this.sheet)
-    this.slab.receiveShadow = true
-    this.slab.castShadow = true
-    this.slab.userData.standIn = 'shell'
     this.sheet.add(this.slab)
-    this.makeArrow()
+    this.arrows.push(this.makeArrow())
   }
 
   private tone(t: Tone): THREE.MeshStandardMaterial {
@@ -87,7 +85,7 @@ export class BlockoutView {
     return m
   }
 
-  private makeArrow(): void {
+  private makeArrow(): Arrow {
     const k = config.cursor.heightPxAt1080 / 19
     const pts: [number, number][] = [[0, 0], [0, 16.2], [3.9, 12.6], [6.9, 19], [9.6, 17.8], [6.7, 11.6], [11.8, 11.6]]
     const outline = (grow: number) => {
@@ -101,28 +99,56 @@ export class BlockoutView {
       s.closePath()
       return s
     }
-    this.arrowBody = new THREE.Mesh(new THREE.ExtrudeGeometry(outline(1), { depth: 2.4, bevelEnabled: false }), this.tone('light'))
-    this.arrowBody.position.z = 1.6
+    const group = new THREE.Group()
+    const body = new THREE.Mesh(new THREE.ExtrudeGeometry(outline(1), { depth: 2.4, bevelEnabled: false }), this.tone('light'))
+    body.position.z = 1.6
     const rim = new THREE.Mesh(new THREE.ExtrudeGeometry(outline(1.16), { depth: 1.4, bevelEnabled: false }), this.tone('dark'))
-    this.mark = new THREE.Mesh(this.unitDisc, this.tone('dark'))
-    this.mark.scale.set(16, 16, 0.6)
-    this.mark.position.set(5 * k, -9 * k, 4.4)
+    const mark = new THREE.Mesh(this.unitDisc, this.tone('dark'))
+    mark.scale.set(16, 16, 0.6)
+    mark.position.set(5 * k, -9 * k, 4.4)
+    const strips = new THREE.Group()
     for (let i = 0; i < 6; i++) {
       const strip = new THREE.Mesh(this.unitBox, this.tone('light'))
       strip.scale.set(7, 62, 1.2)
       strip.position.set(6 + i * 9, -34 - (i % 2) * 5, 1 + i * 0.4)
       strip.rotation.z = (i - 2.5) * 0.09
-      this.strips.add(strip)
+      strips.add(strip)
     }
-    this.arrow.add(this.arrowBody, rim, this.mark, this.strips)
-    this.arrow.traverse((o) => {
+    const sweat = new THREE.Group()
+    for (let i = 0; i < 3; i++) {
+      const drop = new THREE.Mesh(this.unitBall, this.tone('glass'))
+      drop.scale.set(7, 10, 4)
+      drop.position.set(-8 + i * 22, 6 - (i % 2) * 14, 5)
+      sweat.add(drop)
+    }
+    group.add(body, rim, mark, strips, sweat)
+    group.traverse((o) => {
       const m = o as THREE.Mesh
       if (!m.isMesh) return
       m.castShadow = true
       m.receiveShadow = true
       m.userData.standIn = 'cursor-body'
     })
-    this.scene.add(this.arrow)
+    for (const strip of strips.children) strip.userData.standIn = 'cursor-damage'
+    mark.userData.standIn = 'cursor-damage'
+    for (const drop of sweat.children) drop.userData.standIn = 'cursor-acting'
+    const arms = new THREE.Group()
+    const limbs: THREE.Mesh[] = []
+    const fists: THREE.Mesh[] = []
+    for (let i = 0; i < 2; i++) {
+      const limb = new THREE.Mesh(this.unitBox, this.tone('light'))
+      const fist = new THREE.Mesh(this.unitBall, this.tone('light'))
+      for (const m of [limb, fist]) {
+        m.castShadow = true
+        m.receiveShadow = true
+        m.userData.standIn = 'cursor-arms'
+      }
+      limbs.push(limb)
+      fists.push(fist)
+      arms.add(limb, fist)
+    }
+    this.scene.add(group, arms)
+    return { group, body, rim, mark, strips, sweat, arms, limbs, fists }
   }
 
   private solidGeometry(s: Shape, depth: number): { geometry: THREE.BufferGeometry; unit: boolean } {
@@ -132,6 +158,94 @@ export class BlockoutView {
     if (r <= 0.5) return { geometry: this.unitBox, unit: true }
     const key = `${q(s.w)}:${q(s.h)}:${q(r)}:${q(depth)}`
     return { geometry: this.geometry.get(key, () => sweep(roundedRect(s.w, s.h, r, 8), plateProfile(depth, Math.min(2.5, depth / 3), 0, 3))), unit: false }
+  }
+
+  // The page's slab with its wells cut in: columns of one height each, from a shared bottom, so walls and risers come by themselves.
+  private ground(list: Shape[], width: number, top: number, tall: number): void {
+    const wells: { x0: number; x1: number; y0: number; y1: number; z: number; tone: Tone; part: string }[] = []
+    for (const s of list) {
+      if (s.kind !== 'well') continue
+      const x0 = Math.max(0, s.x)
+      const x1 = Math.min(width, s.x + s.w)
+      const y0 = Math.max(top, s.y)
+      const y1 = Math.min(top + tall, s.y + s.h)
+      if (x1 - x0 > 0.5 && y1 - y0 > 0.5) wells.push({ x0, x1, y0, y1, z: s.z0, tone: s.tone, part: s.part })
+    }
+    const key = `${width}:${top}:${tall}:${wells.map((w) => `${q(w.x0)},${q(w.x1)},${q(w.y0)},${q(w.y1)},${q(w.z)},${w.tone}`).join(';')}`
+    if (key === this.slabKey) return
+    this.slabKey = key
+    for (const child of [...this.slab.children]) {
+      this.slab.remove(child)
+      ;(child as THREE.Mesh).geometry.dispose()
+    }
+    let bottom = -slabDepth
+    for (const w of wells) bottom = Math.min(bottom, w.z - 8)
+    const xs = [...new Set([0, width, ...wells.flatMap((w) => [w.x0, w.x1])])].sort((a, b) => a - b)
+    const ys = [...new Set([top, top + tall, ...wells.flatMap((w) => [w.y0, w.y1])])].sort((a, b) => a - b)
+    const nx = xs.length - 1
+    const ny = ys.length - 1
+    const cells: { z: number; tone: Tone; part: string }[][] = []
+    for (let j = 0; j < ny; j++) {
+      const row: { z: number; tone: Tone; part: string }[] = []
+      for (let i = 0; i < nx; i++) {
+        const cx = (xs[i]! + xs[i + 1]!) / 2
+        const cy = (ys[j]! + ys[j + 1]!) / 2
+        const cell: { z: number; tone: Tone; part: string } = { z: 0, tone: 'page', part: 'shell' }
+        for (const w of wells) {
+          if (cx > w.x0 && cx < w.x1 && cy > w.y0 && cy < w.y1 && w.z < cell.z) {
+            cell.z = w.z
+            cell.tone = w.tone
+            cell.part = w.part
+          }
+        }
+        row.push(cell)
+      }
+      cells.push(row)
+    }
+    const groups = new Map<string, { tone: Tone; part: string; pos: number[]; nor: number[] }>()
+    const quad = (tone: Tone, part: string, a: number[], b: number[], c: number[], d: number[], n: number[]) => {
+      const k = `${tone}|${part}`
+      let g = groups.get(k)
+      if (!g) {
+        g = { tone, part, pos: [], nor: [] }
+        groups.set(k, g)
+      }
+      for (const v of [a, b, c, a, c, d]) {
+        g.pos.push(v[0]! - 960, 540 - v[1]!, v[2]!)
+        g.nor.push(n[0]!, n[1]!, n[2]!)
+      }
+    }
+    const zAt = (i: number, j: number): number => (i < 0 || j < 0 || i >= nx || j >= ny ? bottom : cells[j]![i]!.z)
+    for (let j = 0; j < ny; j++) {
+      for (let i = 0; i < nx; i++) {
+        const c = cells[j]![i]!
+        const x0 = xs[i]!
+        const x1 = xs[i + 1]!
+        const y0 = ys[j]!
+        const y1 = ys[j + 1]!
+        const side = c.z === 0 ? 'page' : c.tone
+        quad(c.tone, c.part, [x0, y1, c.z], [x1, y1, c.z], [x1, y0, c.z], [x0, y0, c.z], [0, 0, 1])
+        const west = zAt(i - 1, j)
+        if (west < c.z) quad(side, c.part, [x0, y0, west], [x0, y1, west], [x0, y1, c.z], [x0, y0, c.z], [-1, 0, 0])
+        const east = zAt(i + 1, j)
+        if (east < c.z) quad(side, c.part, [x1, y1, east], [x1, y0, east], [x1, y0, c.z], [x1, y1, c.z], [1, 0, 0])
+        const north = zAt(i, j - 1)
+        if (north < c.z) quad(side, c.part, [x1, y0, north], [x0, y0, north], [x0, y0, c.z], [x1, y0, c.z], [0, 1, 0])
+        const south = zAt(i, j + 1)
+        if (south < c.z) quad(side, c.part, [x0, y1, south], [x1, y1, south], [x1, y1, c.z], [x0, y1, c.z], [0, -1, 0])
+      }
+    }
+    quad('page', 'shell', [0, top, bottom], [width, top, bottom], [width, top + tall, bottom], [0, top + tall, bottom], [0, 0, -1])
+    for (const g of groups.values()) {
+      const geometry = new THREE.BufferGeometry()
+      geometry.setAttribute('position', new THREE.Float32BufferAttribute(g.pos, 3))
+      geometry.setAttribute('normal', new THREE.Float32BufferAttribute(g.nor, 3))
+      const mesh = new THREE.Mesh(geometry, this.tone(g.tone))
+      mesh.castShadow = true
+      mesh.receiveShadow = true
+      mesh.userData.standIn = g.part
+      this.slab.add(mesh)
+    }
   }
 
   private place(o: THREE.Object3D, s: Shape, z: number): void {
@@ -149,7 +263,7 @@ export class BlockoutView {
       this.sheet.add(mesh)
     }
     const mesh = entry.mesh
-    const pocket = s.z1 <= 0
+    const pocket = s.pocket === true
     const z0 = pocket ? 0.02 : s.z0
     const z1 = pocket ? 0.07 : Math.max(s.z1, s.z0 + 0.05)
     const depth = z1 - z0
@@ -207,21 +321,38 @@ export class BlockoutView {
     entry.seen = this.tick
   }
 
-  private cursor(c: CursorPose): void {
-    const a = this.arrow
-    a.visible = c.onPage
+  private cursor(c: CursorPose, a: Arrow): void {
+    const k = config.cursor.heightPxAt1080 / 19
+    a.group.visible = c.onPage
     const flat = c.damage.includes('flattened')
     const shredded = c.damage.includes('shredded')
-    a.position.set(c.x - 960, 540 - c.y, c.z)
-    a.rotation.set(0, 0, -c.lean)
+    if (c.inBall) a.group.position.set(c.x - 960 - 4.2 * k, 540 - c.y + 9.5 * k, c.z + config.table.ballPx / 2 + 1)
+    else a.group.position.set(c.x - 960, 540 - c.y, c.z)
+    a.group.rotation.set(0, 0, -c.lean - c.spin)
     const sq = Math.max(0.3, c.squash)
-    a.scale.set(flat ? 1.35 : 1 / Math.sqrt(sq), flat ? 1.35 : sq, flat ? 0.25 : 1)
-    this.mark.visible = c.damage.includes('burn') || c.damage.includes('scorched')
-    this.strips.visible = shredded
-    this.arrowBody.visible = !shredded
-    this.arrow.children[1]!.visible = !shredded
-    for (const strip of this.strips.children) strip.userData.standIn = 'cursor-damage'
-    this.mark.userData.standIn = 'cursor-damage'
+    a.group.scale.set(flat ? 1.35 : 1 / Math.sqrt(sq), flat ? 1.35 : sq, flat ? 0.25 : 1)
+    a.mark.visible = c.damage.includes('burn') || c.damage.includes('scorched')
+    a.strips.visible = shredded
+    a.body.visible = !shredded
+    a.rim.visible = !shredded
+    a.sweat.visible = c.acting === 'nervous' || c.acting === 'scared' || c.acting === 'exhausted'
+    const hands = c.onPage && c.arms ? c.hands : null
+    a.arms.visible = hands !== null
+    if (!hands) return
+    const sides = [-1, 1]
+    for (let i = 0; i < 2; i++) {
+      const from = new THREE.Vector3(c.x - 960 + (4.2 + sides[i]! * 4.4) * k, 540 - c.y - 10.5 * k, c.z + 2.8)
+      const h = hands[i]!
+      const to = new THREE.Vector3(h.x - 960, 540 - h.y, h.z)
+      const limb = a.limbs[i]!
+      const d = Math.max(1, from.distanceTo(to))
+      limb.position.copy(from).add(to).multiplyScalar(0.5)
+      limb.scale.set(d, 6.5, 6.5)
+      limb.quaternion.setFromUnitVectors(new THREE.Vector3(1, 0, 0), to.clone().sub(from).normalize())
+      const fist = a.fists[i]!
+      fist.position.copy(to)
+      fist.scale.set(17, 17, 12)
+    }
   }
 
   apply(f: Frame, size: { width: number; height: number }): void {
@@ -241,12 +372,12 @@ export class BlockoutView {
     const turning = Math.abs(f.turn) > 1e-6
     const top = turning ? f.scroll : 0
     const tall = turning ? 1080 : size.height
-    this.slab.scale.set(size.width, tall, slabDepth)
-    this.slab.position.set(0, 540 - top - tall / 2, -slabDepth / 2)
+    this.ground(f.list, size.width, top, tall)
     this.pivot.position.set(0, -f.scroll, 0)
     this.sheet.position.set(0, f.scroll, 0)
     this.pivot.rotation.x = f.turn
     for (const s of f.list) {
+      if (s.kind === 'well') continue
       if (turning && !s.fixed && (s.y + s.h < top || s.y > top + tall)) continue
       if (s.kind === 'text') this.text(s)
       else this.solid(s)
@@ -268,7 +399,17 @@ export class BlockoutView {
         this.texts.delete(id)
       }
     }
-    this.cursor(f.cursor)
+    const cursors = f.cursors ?? [f.cursor]
+    while (this.arrows.length < cursors.length) this.arrows.push(this.makeArrow())
+    this.arrows.forEach((a, i) => {
+      const c = cursors[i]
+      if (c) this.cursor(c, a)
+      else {
+        a.group.visible = false
+        a.arms.visible = false
+      }
+    })
+    this.cursors = cursors
   }
 
   bounds(reach = 1500): Bounds {
@@ -279,8 +420,14 @@ export class BlockoutView {
 
   standIns(): string[] {
     const out = new Set<string>(['shell', 'cursor-body'])
-    for (const e of this.solids.values()) out.add(e.mesh.userData.standIn as string)
-    for (const e of this.texts.values()) for (const child of e.group.children) out.add(child.userData.standIn as string)
+    for (const m of this.slab.children) out.add(m.userData.standIn as string)
+    for (const c of this.cursors) {
+      if (c.arms && c.hands) out.add('cursor-arms')
+      if (c.damage.length) out.add('cursor-damage')
+      if (c.acting !== 'plain' || c.reaction) out.add('cursor-acting')
+    }
+    for (const e of this.solids.values()) if (e.seen === this.tick) out.add(e.mesh.userData.standIn as string)
+    for (const e of this.texts.values()) if (e.seen === this.tick) for (const child of e.group.children) out.add(child.userData.standIn as string)
     return [...out]
   }
 }

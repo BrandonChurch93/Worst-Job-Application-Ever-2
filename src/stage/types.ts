@@ -1,5 +1,5 @@
 import type { LayoutNode } from '../copy'
-import type { CursorBody } from '../cursor/body'
+import type { CursorBody, CursorPose } from '../cursor/body'
 
 export type Mode = 'live' | 'film'
 
@@ -37,7 +37,7 @@ export interface DriverView {
 }
 
 export type Tone = 'page' | 'pocket' | 'raised' | 'metal' | 'accent' | 'danger' | 'paper' | 'dark' | 'glass' | 'light' | 'ink' | 'inkLight'
-export type ShapeKind = 'box' | 'disc' | 'capsule' | 'ball' | 'text'
+export type ShapeKind = 'box' | 'disc' | 'capsule' | 'ball' | 'text' | 'well'
 
 export interface TypeSpec {
   font: string
@@ -67,6 +67,7 @@ export interface Shape {
   type?: TypeSpec
   mechanism?: boolean
   fixed?: boolean
+  pocket?: boolean
 }
 
 export type DrawList = Shape[]
@@ -116,6 +117,14 @@ export interface TableState {
   sealed: string[]
 }
 
+export interface SheetFrame {
+  list: DrawList
+  cursors: CursorPose[]
+  view: CameraPose
+  width?: number
+  height?: number
+}
+
 export interface PageLogic {
   readonly id: string
   readonly unit: string
@@ -141,6 +150,7 @@ export interface PageLogic {
   ignoring(): boolean
   states(): string[]
   tableState?(): TableState
+  sheet?(id: string): SheetFrame | null
 }
 
 export type PageMaker = () => PageLogic
