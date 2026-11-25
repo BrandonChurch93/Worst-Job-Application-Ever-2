@@ -41,9 +41,41 @@ Whether it is the strongest photoreal model on this account that accepts referen
 
 Each take was first checked by me against "What to check". Then one fresh agent that had not seen the brief was given only a copy of the image under a neutral file name and the two questions, word for word. Its answer is quoted in each section.
 
+## Results at a glance
+
+No take passed the blind judge. 41 takes were made across the twelve images, every image went to its limit, and every take was judged. On the second question every judge named things that could not work, so nothing passes whichever way the first question is read. Each image below is its best take, kept at the limit as the brief says.
+
+| Image | File | Takes | Kept | The judge's first answer on the kept file | Things named | Changed after generation |
+| --- | --- | --- | --- | --- | --- | --- |
+| G1 | `G1-machine-wide.png` | 4 of 4 | take 3 | "Best fit of the five: a frame from a top-budget film". The judge before it, who saw the same picture with one small roof plate not yet blanked, said "Most likely a screenshot from a commercial pinball video game" and named 9 | 7 | Yes. One letter added to the drain plate by hand; the marks on a small roof plate smoothed away |
+| G2 | `G2-machine-top.png` | 3 of 3 | take 1 | "Closest to a screenshot (or table-select/promo render) from a commercial pinball video game" | 10 | It is a join of the kept G3, G4 and G5, with a frame made in code |
+| G3 | `G3-tier-corporate.png` | 4 of 4 | take 4 | "Most likely generated art" | 9 | No |
+| G4 | `G4-tier-office.png` | 4 of 4 | take 4 | "generated art, of the five options" | 9 | No |
+| G5 | `G5-tier-street.png` | 4 of 4 | take 3 | "Generated art (AI image), of the five options. Fairly confident, not certain" | 9 | Yes. One sign re-made by the model and pasted in |
+| G6 | `G6-loader-page.png` | 3 of 3 | take 2 | "Of the five options, the closest is a commercial video game ... But it does not read as a pinball game" | 6 | No |
+| G7 | `G7-clear-ball.png` | 4 of 4 | take 3 | "Most likely generated art" | 9 | No |
+| G8 | `G8-rail-cam.png` | 3 of 3 | take 3 | "amateur generated art, graded to look like a film frame". Before the retouch another judge said "a frame from a top-budget film (or a high-end commercial)" | 8 | Yes. The bank's roof smoothed |
+| G9 | `G9-lobby-doors.png` | 3 of 3 | take 2 | "it most resembles a frame from a top-budget film" | 6 | No |
+| G10 | `G10-reply-all.png` | 3 of 3 | take 2 | "it reads most like a frame from a top-budget film" | 8 | No |
+| G11 | `G11-youre-fired.png` | 3 of 3 | take 2 | "Most likely: a frame from a top-budget film" | 6 | No |
+| G12 | `G12-last-save.png` | 3 of 3 | take 2 | "Most likely a frame from a top-budget film" | 9 | No |
+
+What the judges named again and again, in almost every image that shows them (STATED by the judges; I see the same):
+
+- The lift tube is closed at both ends and nothing shows how a ball gets in, out or up.
+- The street's wire ramp reads as a handrail on posts, not a track, with no way on and no way off.
+- The parking garage spiral is stacked rings too close together for a ball.
+- The plunger's knob and spring sit inside the frame.
+- Nothing carries a ball back up a tier.
+- No score, no display and no interface in the tier views and close shots, which most judges gave as their reason for not saying game screenshot.
+
+Words: every word in every kept file is on the allowed list and spelled right (MEASURED at full size on each file). Two of them were not spelled right by the model and were corrected afterwards: `Mom's Basement` in G5 and `Unemployment Office` in G1.
+
+Contact sheet: `references/drafts/round-6/contact-sheet.jpg`.
+
 ## The images
 
-In the order they were made.
+In the brief's order of work: G7, G3, G4, G5, G2, G1, G6, G8 to G12. The order they were in fact made is in the choices at the end.
 
 ### G7 · The clear ball
 
@@ -537,63 +569,65 @@ There is no ball anywhere in the image and no arrow anywhere in the image. The l
 - File: `references/drafts/round-6/G1-machine-wide.png`
 - Model: `seedream_5`
 - Takes made: 4 of 4 allowed. Kept: take 3.
-- How it was made: Take 3 as generated, with one retouch after generation. The plate over the drain came out as "Uemployment Office". Re-making the plate with the same model (the method used for G5: a 768 px square crop sent back with the instruction to change only the lettering) was tried twice and failed twice: "Jemployment Office" and "Uamployment Office". So the plate was fixed by hand on the 2816 px original: the lettering was lifted off the plate, the "U" was moved 11 px left, "employment" 10 px right and "Office" 6 px right, and a copy of the plate's own "n" (the one in "ment") was set between the "U" and the "e". No letter was drawn. Nothing outside the plate (412 by 78 px of the 2816 px original) was changed. The judge whose answer is quoted below saw the retouched file. The retouch was not counted as a take.
+- How it was made: Take 3 as generated, with one retouch after generation. The plate over the drain came out as "Uemployment Office". Re-making the plate with the same model (the method used for G5: a 768 px square crop sent back with the instruction to change only the lettering) was tried twice and failed twice: "Jemployment Office" and "Uamployment Office". So the plate was fixed by hand on the 2816 px original: the lettering was lifted off the plate, the "U" was moved 11 px left, "employment" 10 px right and "Office" 6 px right, and a copy of the plate's own "n" (the one in "ment") was set between the "U" and the "e". No letter was drawn. Nothing outside the plate (412 by 78 px of the 2816 px original) was changed. A fresh judge saw that file and took it for a game screenshot (see the takes below). Then one more change: a small grey plate on the tower's roof carried raised marks that could be taken for unreadable lettering, and the brief says a sign that cannot be got right is left blank, so the face of that plate (92 by 5 px of the 2816 px original, about 63 by 4 px on the kept file) was smoothed to plain grey. Nothing else was changed. Another fresh judge then saw the file exactly as it is kept; its answer is the one quoted below. Neither change was counted as a take.
 - Reference images passed in, in order: `references/guides/round-6/guide-machine-wide.png` (the unlabeled guide); the G2 join (take 1 of G2, the file now at `references/drafts/round-6/G2-machine-top.png`), passed as a 1080 by 1920 copy; `references/drafts/round-6/G7-clear-ball.png` (the kept G7).
 
 Takes:
 
 - Take 1 (long prompt naming every part of every tier). All three tiers with their flippers, marquee `THE DAILY GRIND` and digits right. Misses: the machine sits on a wide slab of ceramic, not a narrow border; the drain plate reads "Uemployment Office"; unreadable squiggles on the bank pediment and on a sign on the tower. Judge: "Most likely generated art (the \"amateur generated art\" option)", then named ten things. Failed.
 - Take 2 (made at the same time; shorter prompt, lettering only on the marquee and the drain plate, every roof bare). `THE DAILY GRIND` in bold capitals, six digits, `Unemployment Office`, all right as generated. Misses: no ceramic border outside the aluminum rail (only the apron is ceramic); the near corners of the rail run off the bottom corners of the frame; plunger spring and knob inside the lane. Judge: "Most likely: a frame from a top-budget film" and, in the same answer, "film-grade finish, probably generated", then named eleven things. Failed.
-- Take 3 (the take 2 prompt plus: a table-overview line asking for a crisp image, the frame as two bands with the narrow ceramic border outermost and the aluminum rail inside it, the plunger rod through the rail with the knob outside, the ball one twenty-fifth of the frame wide). The only take with the ceramic border outside the aluminum rail. Marquee and digits right. The drain plate read "Uemployment Office". Judge, on the file as generated: "Amateur generated art (an AI-generated image)", naming the misspelled plate first, then eleven things. Failed. After the retouch described above a fresh judge was asked again; its answer is the one quoted below: "Most likely a screenshot from a commercial pinball video game, rendered at close to film quality", then nine things. Failed on the second question. Kept as the best of four: the only take with both the ceramic border and the rail, the only one a judge took for a game screenshot, and every word right after the retouch.
+- Take 3 (the take 2 prompt plus: a table-overview line asking for a crisp image, the frame as two bands with the narrow ceramic border outermost and the aluminum rail inside it, the plunger rod through the rail with the knob outside, the ball one twenty-fifth of the frame wide). The only take with the ceramic border outside the aluminum rail. Marquee and digits right. The drain plate read "Uemployment Office". Judge, on the file as generated: "Amateur generated art (an AI-generated image)", naming the misspelled plate first, then eleven things. Failed. After the drain plate was fixed a fresh judge was asked: "Most likely a screenshot from a commercial pinball video game, rendered at close to film quality", then nine things. Failed on the second question. After the roof plate was blanked a third fresh judge saw the file as it is kept; its answer is the one quoted below: "Best fit of the five: a frame from a top-budget film", with amateur generated art as the runner-up, then seven things. Failed. Kept as the best of four: the only take with both the ceramic border and the rail, the only one any judge took for a game screenshot, and every word right after the retouch.
 - Take 4 (made at the same time as take 3; the take 3 prompt plus: drain doorway larger than the ball, open chutes two balls wide between the tiers, a lift tube with open mouths, the wire ramp as two rails side by side). Words right as generated. Misses: no ceramic border; the ball sits on the plunger rod like a knob, so the judge could not tell whether it was the ball. Judge: "Amateur generated art (an AI image-generator picture), fairly confident", then named nine things. Failed.
 
 The judge's answer on the kept take:
 
-> picture-1305.png — answers after viewing the full frame and zoomed crops.
+> Answer for picture-1306.png (viewed at full 1920x1080 and in zoomed crops of every region).
 >
-> **1. What it most likely is**
-> Most likely a screenshot from a commercial pinball video game, rendered at close to film quality. It is clearly not a stock image, a textbook picture or amateur generated art.
-> - The framing is a digital pinball game's: player's-eye view of the whole table, symmetrical, floating in a black void, a ball waiting on the plunger, and a live score (042500) on the backbox.
-> - The finish is premium: consistent warm lighting and reflections, believable metal, glass and plastic, and gentle depth of field.
-> - The text is clean and on theme: "THE DAILY GRIND" marquee, "Unemployment Office" over the drain.
-> - The theme is carried through: stapler slingshots, coffee-lid pop bumpers, cubicle targets, an inbox tray, a cursor inside a glass ball.
-> - It is less likely a film frame, because a film would rarely show a whole table straight-on in empty black.
-> - The one thing against "shipping game" is the playfield logic below; that reads as a concept render, not a table tuned for play.
+> WHAT IT IS
+> A pinball table called "THE DAILY GRIND" seen from the player's end against a black void. Score display reads 042500. Office-life props: glass office tower, six cubicles, coffee machine, inbox tray, red staplers as upper slingshots, a bank, red and blue buildings with beacon lights, tiny houses, a spiral parking garage, a beach diorama at the top right, a clear ball with a mouse cursor inside sitting on the plunger, and a drain labelled "Unemployment Office".
 >
-> **2. Could a ball travel every lane and ramp? No.**
-> A plausible one-way route exists: up the right shooter lane, around the top-right wire curve, onto the upper level, then down through the middle level to the bottom flippers and the drain. These parts could not work:
-> - Left clear tube: sealed by a metal and glass cap at the bottom and plugged by an orange fitting at the top. It has no entrance or exit, and it looks narrower than the ball.
-> - Parking-garage spiral (right): the decks are stacked far closer than a ball's height, and nothing feeds it or leaves it. It is decoration, not a ramp.
-> - No way back up: the three levels are separated by vertical step walls. The centre notch in the lower step is a lit recessed pocket, not a ramp, so a ball at the bottom flippers can never return to the middle or upper level.
-> - Wire railing across the lower playfield: it is a handrail (rails stacked vertically on posts), not a ball track. It spans the full width and blocks any shot up the centre road.
-> - Plunger: the knob and spring sit inside the cabinet, under where the glass would be, so a player could not pull it.
-> - Pop bumpers: the three are packed together on the centre line with gaps smaller than the ball, walling off the path to the upper level's centre strip.
-> - Lower inlanes: the gaps between the outer guides and the slingshots look narrower than the ball, and they do not clearly deliver onto the flippers.
-> - Bottom-right corner: a flat dead pocket with no outhole, so a ball going down the right outlane would just sit there. The left side does have a hole.
-> - Small openings: the red building's archway and the cubicle pockets are at or below ball size, so they work only as targets, not lanes.
+> QUESTION 1 - most likely source
+> Best fit of the five: a frame from a top-budget film (high-end CG or a photographed miniature). I hold this with moderate confidence, not certainty; a single still cannot prove origin.
+> - For film: cinema-grade lighting and materials, fine grain and slight softness like a 16:9 video frame, every prop is a deliberate story gag, text is clean, and the composition is an opening beat (ball waiting on the plunger, nothing in motion).
+> - Not a commercial pinball video game: no HUD, no on-screen score or ball count, no button prompts, and the layout is not playable (see below). A shipped game needs a table that works.
+> - Not a stock image: too specific and narrative, with a titled, one-off design.
+> - Not a textbook picture: no labels, callouts or explanatory purpose.
+> - Amateur generated art is the runner-up. The non-working mechanics and a few mushy spots (the tangle of wire guides by the beach box, the vague hardware at the top of the left tube, the ambiguous garage spiral) would fit generated imagery. But the finish, symmetry, crisp lettering and coherent art direction are well above what "amateur" suggests. The unplayable layout fits either a prop built for looks or generated art, so it does not settle it.
+>
+> QUESTION 2 - could a ball travel every lane and ramp?
+> No. Only one route looks workable: up the shooter lane on the right wall (the one with lit arrows), in at the top right, then down through the centre gaps between each flipper pair to the drain. Things that could not work:
+> 1. Left clear tube: runs the whole left wall but ends at the bottom in a sealed chrome cap sitting on the apron, so there is no exit. Its top end (orange elbow) is not fed by any lane or ramp. The tube also looks no wider than the ball.
+> 2. Centre wire "ramp": it is really a handrail. Its two rails are stacked one above the other on posts rather than side by side, so a ball cannot ride it. It has no entry flap, its left end curls shut, and its right end runs into the garage posts. Its posts also stand in the main shot paths above the bottom flippers.
+> 3. Stepped playfield: the table appears to be three terraces with vertical risers under the top and middle flipper pairs. A ball can drop down a tier through the centre notch, but nothing brings it back up (no ramp, no lift). The bottom flippers could never reach the bumpers, cubicles, coffee machine, inbox, tower or beach.
+> 4. Spiral parking garage: nothing feeds its top and no exit is visible at the bottom. The levels read as separate stacked rings, not one continuous helix, and the vertical posts cross the openings.
+> 5. Plunger: the knob and spring are inside the cabinet with the knob pressed against the front rail. There is no room to pull it back and a player could not reach it.
+> 6. Blocked targets: the bank has a solid columned front with no ball opening; the cubicles are open-top boxes with no entrances, so a ball that hopped in would stay; the beach box sits right where the shooter lane lets out.
+> 7. Outlanes: the bottom-left one is blocked by a house beside a square hole; the bottom-right one ends in a blank wedge with no opening to the drain.
+> Minor: the ball is clear glass rather than steel.
+> Parts that look plausible: the three pop bumpers, the slingshots under the yellow signs, the bottom flipper pair, the inbox tray slot and red-building archway as scoops, and the centre drain.
 
-Judge result: FAILED on the second question (STATED by the judge): the first answer was the game screenshot, but nine things were named that could not work. Kept at the limit of four takes. The same picture before the plate was retouched got "amateur generated art" from another judge, so one judge's first answer is not a stable measure.
+Judge result: FAILED (STATED by the judge). On the file as kept the first answer was "a frame from a top-budget film", not a game screenshot, and seven things were named that could not work. Kept at the limit of four takes. This one picture got three different first answers from three fresh judges: "Amateur generated art" as generated, with the misspelled plate; "a screenshot from a commercial pinball video game" after the plate was fixed; "a frame from a top-budget film" after 92 by 5 px of a roof plate were smoothed. So one judge's first answer is not a stable measure. The second answers agree: all three judges named the lift tube, the wire ramp, the spiral, the plunger and the lack of any way up.
 
 What the kept take misses (MEASURED on the file unless marked):
 
-- The judge did not pass it: nine things named that could not work (quoted above).
+- The judge did not pass it: its first answer was a film frame, not a game screenshot, and it named seven things that could not work (quoted above). The judge before it, on the file with the roof plate still marked, said game screenshot and named nine.
 - `Unemployment Office` was not spelled right by the model: it made "Uemployment Office". The plate in the file is a hand retouch (see "How it was made").
 - Lift tube (MEASURED). One clear tube the whole length of the left side, closed at both ends: a chrome cap at the apron and an orange fitting at the top left. The orange lift doors came out as orange flaps clipped to the outside of the tube, two of them; none opens onto a tier.
-- No way up (STATED by the judge; I see the same). The walls between the tiers have a lit recess at the centre where the chute should be, not an open gap, and nothing carries a ball up a tier.
+- No way up (STATED by both judges of the retouched file; I see the same). Nothing carries a ball up a tier. At the centre of each wall between tiers there is a lit recess where the chute should be: the earlier judge read it as a closed pocket, the last judge as a notch a ball can drop through (UNKNOWN which). The prompt asked for a low wall across the machine with a drain gap at its centre.
 - Parking garage spiral. Stacked rings closer together than the ball is high; nothing feeds it and nothing leaves it.
 - Wire ramp. A handrail: two chrome rails one above the other on posts, with a peak over the road, from the firehouse to the garage. Not a track a ball could ride, no way on and no way off.
 - Plunger (MEASURED). The spring and the orange knob are inside the frame, in the lower right corner of the launch lane. The prompt asked for the rod to pass out through the rail with the knob outside it.
 - Ball size (MEASURED). About 100 px across on the 1920 px frame; the prompt asked for one twenty-fifth of the width, 77 px. It is about half as long as a bottom flipper (asked: one third) and wider than the launch lane it rests on.
 - Marquee (MEASURED). `THE DAILY GRIND` is spelled right, in thin capitals with "THE" smaller than the other two words; the prompt asked for large clean capitals. The marquee is 31% of the frame's width; in the guide it is about 26%.
-- Digits. The score strip under the marquee shows 042500. I asked for six digits; numbers are not on the brief's list of allowed words. See the choices at the end.
-- Tower roof (MEASURED). A small grey plate with raised marks, about 60 px wide on the 1920 px frame, which can be taken for unreadable lettering. The prompt asked for bare roofs.
+- Tower roof (MEASURED). The prompt asked for bare roofs; the model put a small grey plate on the tower's roof, about 63 px wide on the 1920 px frame, with raised marks like unreadable lettering. In the file the plate is blank because its face was smoothed after generation (see "How it was made"). The plate itself is still there.
 - Frame (MEASURED). Ceramic border outside, brushed aluminum rail inside, along both long sides and across the foot. Across the head both are hidden by the marquee. The near corners of the ceramic border run off the bottom corners of the frame, so there is darkness beyond the long sides and the head but not beyond the foot. In perspective the border is wider than the rail at the near end.
-- Sharpness. The near two tiers are sharp. The corporate tier and the marquee are a little softer; the judge calls it "gentle depth of field". The brief asks for sharp front to back.
+- Sharpness. The near two tiers are sharp. The corporate tier and the marquee are a little softer; the earlier judge calls it "gentle depth of field" and the last judge "fine grain and slight softness". The brief asks for sharp front to back.
 - Corporate tier. Its flippers read brown-orange, darker than the other two pairs. The ladder ramp is a small tangle of chrome wire under the beach box with no clear start or end. The revolving door stands in front of the tower doors.
-- Bumpers. The three coffee lid bumpers stand closer together than a ball's width (STATED by the judge; I see the same).
-- Bottom right outlane ends in a flat pocket against the apron with no hole (STATED by the judge; I see the same). Mom's house and its hatch are at the bottom left as asked.
+- Bumpers. The three coffee lid bumpers stand closer together than a ball's width (STATED by the earlier judge; I see the same. The last judge lists the bumpers among the parts that look plausible).
+- Bottom right outlane ends in a flat pocket against the apron with no hole (STATED by both judges; I see the same). Mom's house and its hatch are at the bottom left as asked; the last judge reads the house as blocking that outlane beside its hole.
+- Targets (STATED by the last judge; I see the same): the bank has a solid columned front with no opening for a ball, the cubicles are open-topped boxes with no way in from the side, and the beach box stands where the launch lane lets out at the top right.
 - The buildings carry no signs. That was asked for in the prompt, to keep misspelled small signs out of the wide view, so seven of the allowed tier words are absent: `Corporate HQ`, `Retirement`, `Coffee`, `You're Fired`, `Background Check`, `Student Loans`, `Mom's Basement`.
-- Words (MEASURED at full size): `THE DAILY GRIND`, spelled right by the model; `Unemployment Office`, spelled right by the retouch; the digits 042500. No other letters or numbers found, with the plate on the tower roof above as the one doubt.
+- Words (MEASURED at full size): `THE DAILY GRIND`, spelled right by the model; `Unemployment Office`, spelled right by the retouch; and 042500 on the display under the marquee, digits only as the brief asks. No other letters or numbers found. The clock-face insert on the street tier has hands and small dots for the hours, no numerals.
 - Musts (MEASURED): three tiers, each with its own pair of flippers, in the order corporate, office, street from head to foot; the cursor is inside the ball, a solid white arrow with a black edge, clearly seen; no people; no cabinet, legs, room or other machine; no real name or brand found.
 
 Full prompt of the kept take:
