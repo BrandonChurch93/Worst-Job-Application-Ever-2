@@ -9,7 +9,7 @@ import { table } from '../../layout'
 import { lit } from '../light'
 import { zone } from '../zone'
 import { backFragment, decalFragment, decalVertex, dropFragment, dropVertex, frontFragment, shellVertex } from './glsl'
-import { LAMPS, lightAt, type Light } from './lamps'
+import { BOXES, LAMPS, lightAt, washAt, type Light } from './lamps'
 
 export const PART = 'clear-ball'
 export const RIN = 0.875
@@ -22,6 +22,8 @@ const SOFT_DIR = new THREE.Vector3(-0.66, 0.56, 0.5).normalize()
 const KEY_AWAY = new THREE.Vector2(0.52, -0.5).normalize()
 const TIERS = ['corporate', 'office', 'street']
 const FLATS: Record<string, number> = { 'corporate.carpet': 0xa3161c }
+const INSET = 0.45
+const WALLS: Record<string, number[]> = { 'model-hq': [0.74, 0.5, 0.2], glass: [0.5, 0.52, 0.54], danger: [0.5, 0.17, 0.12], paper: [0.7, 0.68, 0.62], light: [0.7, 0.68, 0.6], raised: [0.42, 0.42, 0.44], metal: [0.5, 0.5, 0.52] }
 const floors = TIERS.map((id) => ask(`table/art/${id}.webp`, { colour: true }))
 
 // What the page tells the maker about the ball, on the shape's `v`: the share it is closed, the seconds since it closed, how much it sweats.
@@ -177,7 +179,8 @@ const lightUniforms = (): Record<string, THREE.IUniform> => ({
   uArtOn: { value: 0 },
   uBallUv: { value: new THREE.Vector2(0.5, 0.5) },
   uFlat: { value: new THREE.Vector4(0, 0, 0, 0) },
-  uBlock: { value: new THREE.Vector4(0, 0, 0, 0) },
+  uBoxAt: { value: Array.from({ length: BOXES }, () => new THREE.Vector4(0, 0, 0, 0)) },
+  uBoxCol: { value: Array.from({ length: BOXES }, () => new THREE.Vector4(0, 0, 0, 0)) },
   uFlatCol: { value: new THREE.Color(0, 0, 0) },
   uDrop: { value: 0 },
   uTrue: { value: 0 },
@@ -229,13 +232,13 @@ function build(s: Shape): THREE.Group {
     uR: { value: r },
     uNear: { value: 0 },
     uLift: { value: 0 },
-    uSize: { value: r * 3 }
+    uSize: { value: r * 5.2 }
   }
   const dm = new THREE.ShaderMaterial({ uniforms: d, vertexShader: decalVertex, fragmentShader: decalFragment, transparent: true, depthWrite: false, premultipliedAlpha: true, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 })
   dm.userData.unlit = true
   const decal = new THREE.Mesh(k.plane, lit(dm, z))
   decal.name = 'ball.shadow'
-  decal.scale.setScalar(r * 3)
+  decal.scale.setScalar(r * 5.2)
   root.add(decal)
 
   const back = new THREE.Mesh(k.shell, mat(backFragment, shellVertex, THREE.BackSide))
@@ -333,8 +336,9 @@ function pose(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
     ;(u.uFlatCol!.value as THREE.Color).setHex(FLATS[flat.id]!)
   } else (u.uFlat!.value as THREE.Vector4).set(0, 0, 0, 0)
   const B = config.table.ballPx
-  let near = Infinity
-  ;(u.uBlock!.value as THREE.Vector4).set(0, 0, 0, 0)
+  const boxAt = u.uBoxAt!.value as THREE.Vector4[]
+  const boxCol = u.uBoxCol!.value as THREE.Vector4[]
+  const seen: { far: number; mx: number; my: number; hw: number; hh: number; tall: number; tone: string; part: string }[] = []
   for (const m of table.models) {
     if (m.tier !== L.zone.tier) continue
     const mx = (m.box[0] + m.box[2] / 2) * B - cx
@@ -342,10 +346,23 @@ function pose(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
     const hw = (m.box[2] / 2) * B
     const hh = (m.box[3] / 2) * B
     const far = Math.hypot(Math.max(0, Math.abs(mx) - hw), Math.max(0, Math.abs(my) - hh))
-    if (far < near) {
-      near = far
-      ;(u.uBlock!.value as THREE.Vector4).set(mx, my, hw, hh)
+    if (far < r * 20) seen.push({ far, mx, my, hw, hh, tall: m.h * B, tone: m.tone, part: m.part })
+  }
+  seen.sort((p, q) => p.far - q.far || p.mx - q.mx)
+  for (let i = 0; i < BOXES; i++) {
+    const b = seen[i]
+    if (!b) {
+      boxAt[i]!.set(0, 0, 0, 0)
+      boxCol[i]!.set(0, 0, 0, 0)
+      continue
     }
+    const face = Math.max(-b.hh, Math.min(b.hh, -b.my))
+    const side = Math.max(-b.hw, Math.min(b.hw, -b.mx))
+    const wash = washAt(L.zone, ctx, cx - 960 + b.mx + side, L.zone.top + L.zone.height / 2 - cy + b.my + face, Math.min(b.tall, 60))
+    const tone = WALLS[b.part] ?? WALLS[b.tone] ?? WALLS.raised!
+    const top = Math.max(1, wash[0], wash[1], wash[2])
+    boxAt[i]!.set(b.mx, b.my, b.hw - Math.min(INSET * B, b.hw * 0.5), b.hh - Math.min(INSET * B, b.hh * 0.5))
+    boxCol[i]!.set((tone[0]! * wash[0]) / top, (tone[1]! * wash[1]) / top, (tone[2]! * wash[2]) / top, b.tall)
   }
   u.uDrop!.value = L.drop
   u.uTrue!.value = debug.grade === 'true' ? 1 : 0
@@ -357,14 +374,15 @@ function pose(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
 
   const lift = -L.drop
   own.decal.visible = L.tier && lift < r * 6
-  own.decal.position.set(0, 0, L.drop + 3.4)
+  const rug = u.uFlat!.value as THREE.Vector4
+  own.decal.position.set(0, 0, L.drop + (rug.z > 0 && Math.abs(rug.x) < rug.z + r * 3 && Math.abs(rug.y) < rug.w + r * 3 ? 5.6 : 3.4))
   const shade = d.uShade!.value as THREE.Vector4[]
   const spot = d.uSpot!.value as THREE.Vector3[]
   const lum = (c: number[]): number => 0.25 * c[0]! + 0.6 * c[1]! + 0.15 * c[2]!
   const high = 1 / (1 + lift / (r * 2.5))
   const dim = 1 - 0.7 * open
   const key = Math.min(1, lum(L.soft) * 2.2)
-  shade[0]!.set(KEY_AWAY.x, KEY_AWAY.y, 1, Math.min(0.62, 0.3 + 0.5 * key) * Math.min(1, key * 8) * high)
+  shade[0]!.set(KEY_AWAY.x, KEY_AWAY.y, 1.8, Math.min(0.72, 0.4 + 0.5 * key) * Math.min(1, key * 8) * high)
   spot[0]!.set(L.soft[0] * 0.8 * high * dim, L.soft[1] * 0.8 * high * dim, L.soft[2] * 0.8 * high * dim)
   const low = L.lamps.filter((l) => !l.window && l.z - L.drop > 16 && l.amount > 0.03 && Math.hypot(l.x, l.y) > r * 0.8)
   for (let i = 1; i < 3; i++) {
@@ -375,8 +393,8 @@ function pose(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
       continue
     }
     const flat = Math.hypot(l.x, l.y)
-    const slant = Math.min(1.6, flat / Math.max(20, l.z - L.drop))
-    shade[i]!.set(-l.x / flat, -l.y / flat, slant, Math.min(0.5, 0.45 * lum(l.colour) * l.amount) * high)
+    const slant = Math.min(2.4, flat / Math.max(20, l.z - L.drop))
+    shade[i]!.set(-l.x / flat, -l.y / flat, slant, Math.min(0.6, 0.55 * lum(l.colour) * l.amount) * high)
     const gain = 0.45 * Math.min(1.5, l.amount) * high * dim
     spot[i]!.set(l.colour[0] * gain, l.colour[1] * gain, l.colour[2] * gain)
   }

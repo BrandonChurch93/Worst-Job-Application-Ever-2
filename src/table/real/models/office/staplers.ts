@@ -5,8 +5,8 @@ import { localBalls, type Zone } from '../../zone'
 import { hex, Kit, matsOf, meshOf, shade, SURF, type V2, type V3 } from './kit'
 
 const C = {
-  red: hex(0x5e1219),
-  plate: hex(0x3d0c11),
+  red: hex(0x54151c),
+  plate: hex(0x4a1218),
   steel: hex(0x6c7480),
   chrome: hex(0x8a94a0),
   rubber: hex(0x222223),
@@ -19,8 +19,8 @@ export const PLATE = { z: 46, thick: 5, round: 7 }
 const OPEN = 0.27
 const MAG = 0.05
 const PIN = { x: 9, z: 12 }
-const BACK: V3 = [0.76, 0.17, 0.07]
-const FRONT: V3 = [0.07, 0.17, 0.76]
+const BACK: V3 = [0.72, 0.21, 0.07]
+const FRONT: V3 = [0.07, 0.19, 0.74]
 
 interface Frame { a: V2; b: V2; c: V2; s: V2; e: V2; length: number; turn: number }
 
@@ -117,33 +117,28 @@ function body(k: Kit, f: Frame): void {
 }
 
 function arm(k: Kit, f: Frame): void {
-  const L = f.length - PIN.x - 6
+  const L = f.length - PIN.x - 1
   const section = (x: number, grow: number, wide: number, tall: number, skirt: number): V3[] => {
-    const w = (taper(f, x + PIN.x) - 1.6) * wide * (0.6 + 0.4 * grow)
-    const h = (12.5 + (1.5 * Math.max(0, x)) / L) * tall * (0.45 + 0.55 * grow)
-    const out: V3[] = [[x, -w, -skirt]]
-    const n = 12
-    for (let i = 0; i <= n; i++) {
-      const a = (i / n) * Math.PI
-      const cs = Math.cos(a)
-      out.push([x, -w * Math.sign(cs) * Math.pow(Math.abs(cs), 0.3), 1 + h * (0.72 * Math.pow(Math.sin(a), 0.3) + 0.28 * Math.sin(a))])
-    }
-    out.push([x, w, -skirt])
+    const w = (taper(f, x + PIN.x) + 1.2) * wide * (0.6 + 0.4 * grow)
+    const h = 1 + (15.5 - (3.5 * Math.max(0, x)) / L) * tall * (0.45 + 0.55 * grow)
+    const s = h * 0.46
+    const t = w * 0.6
+    const half: V2[] = [[w, -skirt], [w, s - 1], [w - 0.7, s], [t + 0.9, h - 0.6], [t, h]]
+    const out: V3[] = half.map((q) => [x, -q[0], q[1]] as V3)
+    for (let i = half.length - 1; i >= 0; i--) out.push([x, half[i]![0], half[i]![1]])
     return out
   }
-  const xs: [number, number][] = [[-9.5, 0.5], [-8.6, 0.74], [-6.5, 0.92], [-3, 1], [L * 0.2, 1], [L * 0.45, 1], [L * 0.7, 1], [L - 12, 1], [L - 5, 0.97], [L - 1, 0.86], [L + 1.2, 0.66], [L + 2, 0.42]]
+  const xs: [number, number][] = [[-11, 0.4], [-10.2, 0.7], [-8, 0.93], [-4, 1], [L * 0.2, 1], [L * 0.45, 1], [L * 0.7, 1], [L - 14, 1], [L - 13.2, 0.985], [L - 4, 0.8], [L + 0.4, 0.62], [L + 1.6, 0.4]]
   k.loft(xs.map(([x, g]) => section(x, g, 1, 1, 5 * g)), C.red, SURF.enamel)
   k.box(L - 9, 0, -6.2, 5, 13, 2.4, C.chrome, SURF.chrome, 0.3)
   for (const s of [-1, 1]) {
     const seam: V3[] = []
     for (let i = 0; i <= 8; i++) {
       const x = -4 + ((L - 2) * i) / 8
-      seam.push([x, s * ((taper(f, x + PIN.x) - 1.6) + 0.15), -1.2])
+      seam.push([x, s * (taper(f, x + PIN.x) + 1.35), -1.2])
     }
     k.tube(seam, 0.7, shade(C.red, 0.55), SURF.enamel, 4)
   }
-  const band = section(L - 16, 1.1, 1, 1, 5).map((q) => [q[0], q[1], q[2]] as V3)
-  k.loft([band, band.map((q) => [q[0] + 2.2, q[1], q[2]] as V3)], C.chrome, SURF.chrome, false)
 }
 
 interface Built { arms: { mesh: THREE.Mesh; ids: string[]; turn: number }[] }
