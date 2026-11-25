@@ -23,7 +23,7 @@ export const TYPE = {
   title: { font: 'inter-600', px: 28 },
   heading: { font: 'inter-display-600', px: 40 },
   subline: { font: 'inter-400', px: 24 },
-  label: { font: 'inter-500', px: 22 },
+  label: { font: 'inter-400', px: 22 },
   helper: { font: 'inter-400', px: 18 },
   body: { font: 'inter-400', px: 22 },
   value: { font: 'inter-500', px: 26 },
