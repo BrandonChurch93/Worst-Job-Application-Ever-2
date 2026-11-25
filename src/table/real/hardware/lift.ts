@@ -5,7 +5,7 @@ import { Geo, type V2, type V3 } from './geo'
 import { TUBE, clamp, collar, frameAt, lengthOf, shells, spot } from './kit'
 import { FIN, Screws, TONE, shade } from './mats'
 
-export const LIFT = { centre: TUBE.outer + 1.5, foot: 10.55, face: 2.1, joint: 14, elbowOut: 66, bend: 0.75 * BALL, lean: 0, swing: 1.25, decay: 4, beat: 7 }
+export const LIFT = { centre: TUBE.outer + 1.5, foot: 10.55, face: 2.1, joint: 14, crown: 1.5, elbowOut: 66, bend: 0.75 * BALL, lean: 0, swing: 1.25, decay: 4, beat: 7 }
 export const DOOR = { high: 88 }
 const tierStep = floorZ(0) - floorZ(1)
 
@@ -24,6 +24,8 @@ export function lift(z: Zone): Lift {
   // One shaft runs the whole left lane. It lies level over each floor and climbs a tier's step within LANE_RAMP.lift either side of a tier's line, so each tier builds its own length of it up to the lines it ends on.
   const rise = (tierStep * BALL) / 2
   const above = k > 0
+  // The frame's housing over the lane is lower than the shaft's crown at the line, so a tier's length stops inside it where its crown is LIFT.crown balls up.
+  const under = Math.min(1, (LIFT.crown * BALL - zc - TUBE.outer) / rise)
   const below = k < TIERS.length - 1
   const low = spot(z, COLS.lift, below ? TH - LANE_RAMP.lift : LIFT.foot)
   const base = low
@@ -51,7 +53,7 @@ export function lift(z: Zone): Lift {
   if (above) {
     const flat = spot(z, COLS.lift, LANE_RAMP.lift)
     const line = spot(z, COLS.lift, 0)
-    path.push([flat[0], flat[1], zc], [line[0], line[1], zc + rise])
+    path.push([flat[0], flat[1], zc], [flat[0] + (line[0] - flat[0]) * under, flat[1] + (line[1] - flat[1]) * under, zc + rise * under])
   }
   shells(C, path)
   const slope = Math.hypot(LANE_RAMP.lift * BALL, rise)
@@ -78,7 +80,7 @@ export function lift(z: Zone): Lift {
   const clear = (s: number, pad: number): boolean => (!span || s < span[0] - pad || s > span[1] + pad) && (!turn || s < turn[0] - pad || s > turn[1] + pad)
   const step = TUBE.collarStep
   const s0 = from0
-  const s1 = length - (above ? slope : 0)
+  const s1 = length - (above ? slope * under : 0)
   // Where no elbow stands at a tier's top the frame's housing reaches twice the ramp down the lane: no ring sits under it.
   const roof = above && !elbow ? s1 - LANE_RAMP.lift * BALL - 13 : s1 - 8
   for (let s = s0 + step * 0.62; s < roof - 22; s += step) {
