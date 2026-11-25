@@ -21,6 +21,12 @@ Part `clear-ball`. Branch `agent/ball`. Folder `src/table/real/ball/`.
 - The halves are one geometry: two half shells, the two cut faces of the wall, the plug. The vertex shader swings them open on a hinge at the foot by one number from 0 to 1. The plug turns home in the first 0.6 s after the ball closes.
 - The numbers I read on the ball's `v`: `[share closed 0..1, seconds since it closed, sweat 0..1]`. Without them the ball is closed, long closed and dry.
 - The shadow is a decal on the zone's floor: one soft ellipse away from the key of the soft light, two more away from the two strongest low lamps, each with the bright spot of gathered light in it, and a dark touch under the foot that fades as the ball lifts.
+- A lamp has two numbers, not one: `amount`, the light that reaches the ball from it, and `shine`, how bright the lamp itself looks in a mirror. The highlights use `shine`, so a lamp is a small sharp point and not a wash. A lit insert is a window in the floor and not a bulb: it is not mirrored as a point, it is a lit disc in the bent picture of the floor and in the mirror of the floor on the shell.
+- The window of the soft light is 0.46 by 0.29 with one bar, brighter toward one side. Its copy on the far inner wall is one eighth as bright, so it does not lie over the arrow.
+- The outline: the last 5 hundredths of the radius are dark (0.22 of the colour, nearly opaque), and the band dims a little toward it. Without this the ball had no edge against a pale floor.
+- The bright spot of the shadow lies at 1.05 of the radius from the foot, away from the key, at the ball's edge as seen from above and not under the arrow. The shadow of the key is never weaker than 0.3 while the soft light is on.
+- STATED, not solved in grade `bend`: the arrow is drawn by its owner before the shell and the shell cannot bend it. Its length is 0.73 of the ball, so from most views its outline stays inside 0.6 of the radius, where a real wall would not bend it either; toward the ring the shell lays its bent picture over it (up to half). True bending of the arrow's outline happens in grade `true` alone, where the transmission pass redraws the arrow through the core.
+- Looks: I count every still I rendered while tuning. After 38 of the 40 I stopped tuning the shader.
 
 ## Needs outside my folder
 

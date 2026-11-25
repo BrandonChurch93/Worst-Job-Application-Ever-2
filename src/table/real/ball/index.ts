@@ -168,7 +168,8 @@ const lightUniforms = (): Record<string, THREE.IUniform> => ({
   uFloor: { value: new THREE.Vector3(1, 1, 1) },
   uGround: { value: new THREE.Vector3(0.5, 0.5, 0.5) },
   uLampPos: { value: Array.from({ length: LAMPS }, () => new THREE.Vector3(0, 0, 1000)) },
-  uLampCol: { value: Array.from({ length: LAMPS }, () => new THREE.Vector3(0, 0, 0)) },
+  uLampCol: { value: Array.from({ length: LAMPS }, () => new THREE.Vector4(0, 0, 0, 0)) },
+  uLampLit: { value: Array.from({ length: LAMPS }, () => new THREE.Vector3(0, 0, 0)) },
   uR: { value: 48 },
   uArt: { value: null },
   uArtOn: { value: 0 },
@@ -300,22 +301,25 @@ function pose(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   ;(u.uHaze!.value as THREE.Vector3).fromArray(L.haze)
   ;(u.uFloor!.value as THREE.Vector3).fromArray(L.floor)
   const pos = u.uLampPos!.value as THREE.Vector3[]
-  const col = u.uLampCol!.value as THREE.Vector3[]
+  const col = u.uLampCol!.value as THREE.Vector4[]
+  const glow = u.uLampLit!.value as THREE.Vector3[]
   for (let i = 0; i < LAMPS; i++) {
     const l = L.lamps[i]
     if (l) {
       pos[i]!.set(l.x, l.y, l.z)
-      col[i]!.set(l.colour[0] * l.amount, l.colour[1] * l.amount, l.colour[2] * l.amount)
+      col[i]!.set(l.colour[0] * l.shine, l.colour[1] * l.shine, l.colour[2] * l.shine, l.window ? 1 : 0)
+      glow[i]!.set(l.colour[0] * l.amount, l.colour[1] * l.amount, l.colour[2] * l.amount)
     } else {
       pos[i]!.set(0, 0, 1000)
-      col[i]!.set(0, 0, 0)
+      col[i]!.set(0, 0, 0, 0)
+      glow[i]!.set(0, 0, 0)
     }
   }
   const art = L.zone.tier >= 0 ? floors[L.zone.tier] : undefined
   const ready = !!art && art.ready()
   u.uArt!.value = ready ? art!.texture() : kit().grey
   u.uArtOn!.value = ready ? 1 : 0
-  ;(u.uGround!.value as THREE.Vector3).setScalar(L.tier ? 0.3 : 0.62)
+  ;(u.uGround!.value as THREE.Vector3).setScalar(L.tier ? 0.3 : 0.45)
   ;(u.uBallUv!.value as THREE.Vector2).set(cx / 1920, 1 - (cy - L.zone.top) / 1080)
   u.uDrop!.value = L.drop
   u.uTrue!.value = debug.grade === 'true' ? 1 : 0
@@ -334,9 +338,9 @@ function pose(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const high = 1 / (1 + lift / (r * 2.5))
   const dim = 1 - 0.7 * open
   const key = Math.min(1, lum(L.soft) * 2.2)
-  shade[0]!.set(KEY_AWAY.x, KEY_AWAY.y, 1, 0.6 * key * high)
+  shade[0]!.set(KEY_AWAY.x, KEY_AWAY.y, 1, Math.min(0.62, 0.3 + 0.5 * key) * Math.min(1, key * 8) * high)
   spot[0]!.set(L.soft[0] * 0.8 * high * dim, L.soft[1] * 0.8 * high * dim, L.soft[2] * 0.8 * high * dim)
-  const low = L.lamps.filter((l) => l.z - L.drop > 16 && l.amount > 0.03 && Math.hypot(l.x, l.y) > r * 0.8)
+  const low = L.lamps.filter((l) => !l.window && l.z - L.drop > 16 && l.amount > 0.03 && Math.hypot(l.x, l.y) > r * 0.8)
   for (let i = 1; i < 3; i++) {
     const l = low[i - 1]
     if (!l) {
