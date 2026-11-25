@@ -74,6 +74,17 @@ export function coverOf(data: Record<string, unknown>): Cover {
   return 'mark'
 }
 
+// A printed surface says which of its pixels are printed with a mask on `userData.coverageMap`: white where there is a printed line or shape, black where the floor is bare.
+const coverShades = new Map<THREE.Texture, THREE.MeshBasicMaterial>()
+function coverShade(mask: THREE.Texture): THREE.MeshBasicMaterial {
+  let m = coverShades.get(mask)
+  if (!m) {
+    m = new THREE.MeshBasicMaterial({ map: mask })
+    coverShades.set(mask, m)
+  }
+  return m
+}
+
 export function layoutBoxes(tree: LayoutNode | null): { id: string; kind: string; box: number[] }[] {
   const out: { id: string; kind: string; box: number[] }[] = []
   const visit = (n: LayoutNode): void => {
@@ -314,6 +325,8 @@ export function applyView(view: string, ctx: ViewContext): (() => void) | void {
   } else if (name === 'coverage') {
     change.ground(0.2, 0.2, 0.2)
     change.paint((m) => {
+      const mask = m.userData.coverageMap as THREE.Texture | undefined
+      if (mask) return coverShade(mask)
       const c = coverOf(m.userData)
       return c === 'floor' ? black : c === 'mark' ? white : basic(0.2, 0.2, 0.2)
     })

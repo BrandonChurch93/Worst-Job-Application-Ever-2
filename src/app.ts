@@ -319,7 +319,7 @@ export class App {
     let best = -Infinity
     let tone = TONES.page
     for (const o of list) {
-      if (o.kind === 'text' || o.kind === 'well' || o === s) continue
+      if (o.kind === 'text' || o.kind === 'well' || o.kind === 'anchor' || o === s) continue
       if (cx < o.x || cx > o.x + o.w || cy < o.y || cy > o.y + o.h) continue
       const top = o.pocket ? o.z0 : o.z1
       if (top > s.z1 + 0.5 || top < best) continue
