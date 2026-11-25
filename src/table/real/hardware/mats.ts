@@ -73,6 +73,32 @@ function finishes(): THREE.DataTexture {
   return palette
 }
 
+// What polished metal sends back is what it sees: a dim room overhead with a window and one small lamp in it, the lit walls round the horizon, the floor of its tier below and its own shadow straight under it. The smoother the metal the more of this it shows.
+const MIRROR = /* glsl */ `
+{
+	float hwGloss = metalnessFactor * ( 1.0 - smoothstep( 0.04, 0.4, roughnessFactor ) );
+	if ( hwGloss > 0.01 ) {
+		vec3 hwR = normalize( ( wjaViewInverse * vec4( reflect( - normalize( vViewPosition ), normal ), 0.0 ) ).xyz );
+		float hwSoft = 0.02 + roughnessFactor * 1.6;
+		vec3 hwD = vec3( -0.66, 0.56, 0.5 );
+		vec3 hwX = vec3( 0.647, 0.763, 0.0 );
+		vec3 hwY = cross( hwD, hwX );
+		float hwF = dot( hwR, hwD );
+		vec2 hwP = vec2( dot( hwR, hwX ), dot( hwR, hwY ) ) / max( hwF, 0.001 );
+		float hwWin = step( 0.0, hwF ) * ( 1.0 - smoothstep( 0.39 - hwSoft, 0.39 + hwSoft, abs( hwP.x ) ) ) * ( 1.0 - smoothstep( 0.23 - hwSoft, 0.23 + hwSoft, abs( hwP.y ) ) );
+		hwWin *= mix( smoothstep( 0.012, 0.03, abs( hwP.x ) ), 1.0, smoothstep( 0.03, 0.08, roughnessFactor ) );
+		float hwLamp = smoothstep( 0.965 - hwSoft * 0.3, 0.99, dot( hwR, vec3( 0.58, -0.33, 0.744 ) ) );
+		float hwSky = 0.22 + 2.6 * exp( - 6.5 * max( hwR.z, 0.0 ) );
+		vec3 hwLow = mix( vec3( 0.25 ), hwFloor * ( 2.5 - 1.2 * min( 1.0, - 2.0 * hwR.z ) ), smoothstep( -0.98, -0.7, hwR.z ) );
+		vec3 hwRoom = mix( hwLow, vec3( hwSky ), smoothstep( -0.05, 0.05, hwR.z ) );
+		diffuseColor.rgb *= mix( vec3( 1.0 ), hwRoom + hwWin * 14.0 + hwLamp * 7.0, hwGloss );
+	}
+}
+`
+
+// The floor of each zone as polished metal sees it.
+const FLOOR: Record<string, [number, number, number]> = { corporate: [0.5, 0.58, 0.82], office: [0.62, 0.8, 0.72], street: [0.5, 0.76, 0.8] }
+
 const made = new Map<string, THREE.MeshPhysicalMaterial>()
 
 // The one material of the hardware in a zone.
@@ -80,7 +106,16 @@ export const metalOf = (z: Zone): THREE.MeshPhysicalMaterial => {
   let m = made.get(z.id)
   if (m) return m
   const map = finishes()
-  m = lit(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 1, metalness: 1, clearcoat: 1, clearcoatRoughness: 0.07, roughnessMap: map, metalnessMap: map, clearcoatMap: map })), z)
+  m = studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 1, metalness: 1, clearcoat: 1, clearcoatRoughness: 0.07, roughnessMap: map, metalnessMap: map, clearcoatMap: map }))
+  const room = m.onBeforeCompile
+  const made0 = m
+  m.onBeforeCompile = (shader, renderer) => {
+    room.call(made0, shader, renderer)
+    shader.uniforms.hwFloor = { value: new THREE.Vector3(...(FLOOR[z.id] ?? [0.72, 0.72, 0.72])) }
+    shader.fragmentShader = 'uniform vec3 hwFloor;\n' + shader.fragmentShader.replace('#include <normal_fragment_maps>', '#include <normal_fragment_maps>\n' + MIRROR)
+  }
+  m.customProgramCacheKey = () => 'wja-studio-hardware-metal'
+  m = lit(m, z)
   m.name = `hardware.${z.id}`
   made.set(z.id, m)
   return m

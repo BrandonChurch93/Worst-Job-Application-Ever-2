@@ -42,7 +42,7 @@ function buildHardware(z: Zone): THREE.Object3D {
       tip.userData.home = t.tipAt[1]
       o.add(tip)
     }
-    const ball = new Geo().f(FIN.chrome).ball(0, 0, 0, BALL / 2, 24, TONE.chrome)
+    const ball = new Geo().f(FIN.chrome).ball(0, 0, 0, BALL / 2, 48, TONE.chrome)
     const balls = new THREE.InstancedMesh(ball.done(), m, STEEL_BALLS)
     balls.name = 'hardware.balls'
     balls.castShadow = true
