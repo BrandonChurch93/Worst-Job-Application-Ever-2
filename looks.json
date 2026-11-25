@@ -1,35 +1,35 @@
 {
   "folder": "step1-script",
-  "pushed": "2026-11-25T14:56:12.068Z",
-  "commit": "8298f340f55fa1a97c8a85c49a6292c888089f34",
+  "pushed": "2026-11-25T15:04:03.289Z",
+  "commit": "75df84e6dd7691d99801f21e05320a6443396067",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key step1-fire: approved on the left, this build on the right, review tier",
-      "time": "2026-11-25T14:47:17.281Z",
+      "caption": "Contact sheet, the beat step1.tug: 12 frames from 0:36.00 to 0:42.23, draft tier, preview",
+      "time": "2026-11-25T15:03:48.308Z",
       "by": "step1-script",
-      "from": "out/work/compare/compare-step1-fire.jpg"
+      "from": "out/work/sheets/sheet-beat-step1_tug-preview-draft.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Key step1-tug: approved on the left, this build on the right, review tier",
-      "time": "2026-11-25T14:50:07.663Z",
+      "caption": "step1.shredded at 75df84e: the form emptied by its caret, Email then Last name then First name, then the reaction to the message",
+      "time": "2026-11-25T15:04:01.538Z",
       "by": "step1-script",
-      "from": "out/work/compare/compare-step1-tug.jpg"
+      "from": "out/work/report/sheet-step1-shredded-2.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Key step1-fire: approved on the left, this build on the right, review tier",
-      "time": "2026-11-25T14:55:47.258Z",
+      "caption": "step1.tug at 75df84e: the film camera pushes in to a 600 px window after the key frame",
+      "time": "2026-11-25T15:04:01.800Z",
       "by": "step1-script",
-      "from": "out/work/compare/compare-step1-fire.jpg"
+      "from": "out/work/report/sheet-step1-tug-2.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Key step1-fire at 8298f34: approved on the left, this build on the right, review tier. Two bolts in the air, the cursor mid dodge between W and 4, the burn on K 0.33 s old",
-      "time": "2026-11-25T14:56:10.924Z",
+      "caption": "step1.email at 75df84e: slabs press the keys under them and stay down",
+      "time": "2026-11-25T15:04:02.052Z",
       "by": "step1-script",
-      "from": "out/work/report/step1-script-fire-beside-approved-2.jpg"
+      "from": "out/work/report/sheet-step1-email-2.jpg"
     }
   ]
 }
