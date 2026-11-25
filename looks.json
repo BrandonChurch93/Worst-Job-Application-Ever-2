@@ -1,35 +1,35 @@
 {
   "folder": "frame",
-  "pushed": "2026-11-25T16:17:35.812Z",
-  "commit": "545adbb571be850803a42882e98c86b55da17fa1",
+  "pushed": "2026-11-25T16:40:27.125Z",
+  "commit": "706207d2cda7fb58056753f65ac53addff12f320",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Frame 2: top tier beside the approved image. Rails, corner block, tube collars, pips plaque and display bezel are the frame's; grey boxes are other owners' stand-ins",
-      "time": "2026-11-25T16:17:13.485Z",
+      "caption": "Key tier-corporate: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-25T16:39:37.888Z",
       "by": "frame",
-      "from": "out/work/looks/files/20261125161713-look-cmp-corp.jpg"
+      "from": "out/work/compare/compare-tier-corporate.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Frame 2: whole table beside the approved image. Marquee, three wells, tube in its cradle, apron with drain ring",
-      "time": "2026-11-25T16:17:13.730Z",
+      "caption": "Key last-save: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-25T16:40:11.935Z",
       "by": "frame",
-      "from": "out/work/looks/files/20261125161713-look-cmp-wide.jpg"
+      "from": "out/work/compare/compare-last-save.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Frame 2: street tier from above, kerb with black and yellow run, dive pocket, foot wall",
-      "time": "2026-11-25T16:17:13.974Z",
+      "caption": "Frame 4, last-save beside the approved image: the drain plate is now ivory enamel in a brass edge with dark words",
+      "time": "2026-11-25T16:40:25.550Z",
       "by": "frame",
-      "from": "out/work/looks/files/20261125161713-look-street.jpg"
+      "from": "out/work/compare/compare-last-save.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Frame 2: office tier from above, cross rail with throat, shoulders and laminate trim",
-      "time": "2026-11-25T16:17:14.216Z",
+      "caption": "Frame 4, tier-corporate beside the approved image: rails with a groove on the lane side, feed tube with a dark edge line seen from above",
+      "time": "2026-11-25T16:40:25.805Z",
       "by": "frame",
-      "from": "out/work/looks/files/20261125161714-look-office.jpg"
+      "from": "out/work/compare/compare-tier-corporate.jpg"
     }
   ]
 }
