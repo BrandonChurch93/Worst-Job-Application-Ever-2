@@ -1,0 +1,35 @@
+{
+  "folder": "marketing",
+  "pushed": "2026-11-25T09:04:31.348Z",
+  "commit": "ca722c7ee307f87e655d9b3356b03a5c595f9f60",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "rest-marketing: the first screen at rest, cards shut, cursor in the left margin",
+      "time": "2026-11-25T09:04:29.634Z",
+      "by": "marketing",
+      "from": "out/work/stills/still-rest-marketing-preview-draft.png"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "marketing.perks at 2.4 s: the Unlimited PTO card turns over as four slats under the cursor",
+      "time": "2026-11-25T09:04:29.865Z",
+      "by": "marketing",
+      "from": "out/work/stills/marketing-marketing_perks-0p07-preview-draft.png"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "key marketing-top at 11.0 s: three cards show their fine print, cursor stands by the big button",
+      "time": "2026-11-25T09:04:30.093Z",
+      "by": "marketing",
+      "from": "out/work/stills/key-marketing-top-preview-draft.png"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "marketing.apply at 13.1 s: the cursor has jumped on the big button, the cap is down",
+      "time": "2026-11-25T09:04:30.316Z",
+      "by": "marketing",
+      "from": "out/work/stills/marketing-marketing_apply-0p7-preview-draft.png"
+    }
+  ]
+}
