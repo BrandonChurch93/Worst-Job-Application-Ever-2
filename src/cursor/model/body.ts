@@ -294,10 +294,10 @@ export class Body implements BodyModel {
   }
 
   emit(out: Emitter[]): void {
-    if (this.heat > 0.02) {
+    if (this.heat > 0.3) {
       const along = 1.5 + this.heat * 4.5
       this.deform.point(along * AXIS[0] * 0.9, along * AXIS[1], 2.4, 2, this.p)
-      out.push({ x: this.p.x, y: this.p.y, z: this.p.z + 6 * UNIT, colour: [1, 0.3, 0.06], power: 0.022 * this.heat, reach: (10 + 8 * this.heat) * UNIT })
+      out.push({ x: this.p.x, y: this.p.y, z: this.p.z + 6 * UNIT, colour: [1, 0.3, 0.06], power: 0.022 * this.heat * smooth01((this.heat - 0.3) / 0.3), reach: (10 + 8 * this.heat) * UNIT })
     }
     for (const h of this.holes) {
       // Daylight comes down the bore: the page under it is seen, and the wall's far side is lit.
