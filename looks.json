@@ -1,35 +1,35 @@
 {
   "folder": "cursor-act",
-  "pushed": "2026-11-25T15:07:44.802Z",
+  "pushed": "2026-11-25T15:08:33.641Z",
   "commit": "7ce886b6096a1f563036918e4ba2468bc6b3cff6",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still step1-step1_firstName-0p53750-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-25T15:04:08.357Z",
-      "by": "cursor-act",
-      "from": "out/work/stills/step1-step1_firstName-0p53750-hd-draft.png"
-    },
-    {
-      "file": "look-2.jpg",
       "caption": "Still step1-step1_firstName-0p55625-hd-draft: draft tier, hd, view beauty",
       "time": "2026-11-25T15:04:22.400Z",
       "by": "cursor-act",
       "from": "out/work/stills/step1-step1_firstName-0p55625-hd-draft.png"
     },
     {
-      "file": "look-3.jpg",
+      "file": "look-2.jpg",
       "caption": "Key step1-fire at review tier beside the approved image",
       "time": "2026-11-25T15:07:43.408Z",
       "by": "cursor-act",
       "from": "out/work/compare/compare-step1-fire.jpg"
     },
     {
-      "file": "look-4.jpg",
+      "file": "look-3.jpg",
       "caption": "Acting sheet at review tier beside the approved image",
       "time": "2026-11-25T15:07:43.659Z",
       "by": "cursor-act",
       "from": "out/work/compare/compare-cursor-acting.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Close on the hit at 6.0 s: approved left, this build right (key step1-fire, review tier). The struck cursor is knocked over past upright",
+      "time": "2026-11-25T15:08:32.380Z",
+      "by": "cursor-act",
+      "from": "out/work/compare/fire-knock-close.jpg"
     }
   ]
 }
