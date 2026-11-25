@@ -555,9 +555,9 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | 112.683 | 6761 | `boss.verify` | `step` | `step` | no |
 | 112.800 | 6768 | `boss.verify` | `checkbox` | `checkbox` | no |
 | 112.800 | 6768 | `boss.verify` | `step` | `step` | no |
-| 113.313 | 6798 | `boss.verify` | `step` | `step` | no |
-| 113.417 | 6805 | `boss.verify` | `step` | `step` | no |
-| 113.529 | 6811 | `boss.verify` | `step` | `step` | no |
+| 113.158 | 6789 | `boss.verify` | `step` | `step` | no |
+| 113.250 | 6795 | `boss.verify` | `step` | `step` | no |
+| 113.346 | 6800 | `boss.verify` | `step` | `step` | no |
 | 114.621 | 6877 | `boss.unfold` | `step` | `step` | no |
 | 114.758 | 6885 | `boss.unfold` | `step` | `step` | no |
 | 114.912 | 6894 | `boss.unfold` | `step` | `step` | no |
@@ -604,7 +604,7 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | 126.183 | 7571 | `boss.popups` | `dart-fire` | `dart-fire` | no |
 | 126.321 | 7579 | `boss.popups` | `dart-hit` | `dart-hit` | no |
 | 126.463 | 7587 | `boss.popups` | `dart-fire` | `dart-fire` | no |
-| 126.492 | 7589 | `boss.popups` | `slab-drop` | `slab-drop` | no |
+| 126.471 | 7588 | `boss.popups` | `slab-drop` | `slab-drop` | no |
 | 126.600 | 7596 | `boss.popups` | `popup` | `popup` | no |
 | 126.600 | 7596 | `boss.popups` | `dart-hit` | `dart-hit` | no |
 | 126.721 | 7603 | `boss.popups` | `dart-hit` | `dart-hit` | no |
