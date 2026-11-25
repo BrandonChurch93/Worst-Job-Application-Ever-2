@@ -65,7 +65,7 @@ export class Deform {
     this.gulp = look.gulp < 0 ? -1 : clamp01(look.gulp)
     this.time = look.time
     // A melting body slumps by its own running, not by being pressed short: most of the pose's squash is given back, or the arrow reads as a cap on a stalk.
-    this.stretch += (1 - this.stretch) * 0.65 * this.melt
+    this.stretch += (1 - this.stretch) * 0.9 * this.melt
     this.wide = 1 / Math.sqrt(this.stretch)
     const t = look.time
     const k = this.tremble
@@ -138,20 +138,24 @@ export class Deform {
       const wob = 0.6 * Math.sin(2 * ang + 0.9) + 0.4 * Math.sin(5 * ang + 2.6)
       let blunt = 0
       let droop = 0
+      let dull = Math.exp(-(x0 * x0 + y0 * y0) / 2.2)
       for (const c of POINTS) {
         const cx = x0 - c[0]
         const cy = y0 - c[1]
         const near = Math.exp(-(cx * cx + cy * cy) / c[3])
         blunt += c[2] * near
-        if (c[1] > 1) droop += near
+        if (c[1] > 1) {
+          droop += near
+          dull += Math.exp(-(cx * cx + cy * cy) / 2.2)
+        }
       }
-      const grow = (1 + m * 0.045 * wob * (1 - stem)) * (1 - m * Math.min(0.2, blunt))
+      const grow = (1 + m * 0.045 * wob * (1 - stem)) * (1 - m * Math.min(0.2, blunt) - m * 0.2 * dull)
       x = CENTRE[0] + dx * grow
       y = CENTRE[1] + dy * grow
-      y += m * (0.3 * low + 0.4 * droop + 0.16 * Math.sin(x0 * 0.85 + 1.4) * (1 - stem))
+      y += m * (0.3 * low + 0.9 * droop + 0.16 * Math.sin(x0 * 0.85 + 1.4) * (1 - stem))
       x += m * (0.2 * Math.sin(y0 * 0.42 + 1.0) + 0.14 * Math.sin(y0 * 0.95 + 0.3)) * (1 - stem)
       // The stem runs a little longer, leans to the right and turns up at its end in a soft hook.
-      const du = m * (1.1 * t - 1.5 * t * t * t * t)
+      const du = m * (2.6 * t - 1.5 * t * t * t * t)
       const dv = m * (0.45 * Math.sin(t * 5.2) * (1 - t) + 1.25 * t * t * t)
       x += du * AXIS[0] + dv * AXIS[1]
       y += du * AXIS[1] - dv * AXIS[0]
@@ -162,7 +166,7 @@ export class Deform {
       y -= lv * AXIS[0]
       const fold = Math.sin(x0 * 0.55 + y0 * 0.38 + 0.5) * Math.sin(y0 * 0.31 - x0 * 0.2 + 1.2)
       z *= 1 - 0.12 * m - 0.22 * m * t
-      z += m * up * 0.42 * fold * (1 - Math.exp(-inset / 0.9)) * (1 - 0.5 * t)
+      z += m * up * 0.6 * fold * (1 - Math.exp(-inset / 0.9)) * (1 - 0.5 * t)
     }
     x *= this.wide
     y *= this.stretch

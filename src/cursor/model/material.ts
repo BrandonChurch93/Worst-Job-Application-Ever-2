@@ -225,6 +225,11 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
   // Melt: the enamel runs over its own edge, wet and a little warmer.
   if ( melt > 0.0 ) {
     col = mix( col, col * vec3( 1.0, 0.95, 0.83 ), melt );
+    float side = q.x * 0.912 - q.y * 0.409;
+    float vein = sin( side * 1.05 + 1.5 * sin( along * 0.42 + 1.0 ) + 0.7 * sin( along * 1.05 + side * 0.7 ) + 0.9 );
+    float blot = 0.5 + 0.5 * sin( along * 0.55 + side * 0.3 + 2.2 );
+    float streak = smoothstep( 0.05, 0.85, vein ) * smoothstep( 0.25, 1.0, vInset ) * ( 0.55 + 0.45 * blot );
+    col = mix( col, col * vec3( 0.36, 0.31, 0.25 ), streak * melt * 1.5 );
     wjaRough = mix( wjaRough, 0.14, melt );
     wjaCoatRough = mix( wjaCoatRough, 0.04, melt );
   }
