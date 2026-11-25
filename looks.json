@@ -1,35 +1,35 @@
 {
   "folder": "keys-look",
-  "pushed": "2026-11-25T21:43:47.520Z",
-  "commit": "b7894016ea6b514a6be2ade5f322ee38d03e7b6f",
+  "pushed": "2026-11-25T22:26:37.913Z",
+  "commit": "f149e41dc2942fc0e9fad6628e8f84f32162e186",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "step1-fire, approved left, build right: pale satin deck with a rolled rim, ivory caps, domed turrets",
-      "time": "2026-11-25T21:43:45.732Z",
+      "caption": "step1-fire at review beside the approved image, second push of the look round (f149e41)",
+      "time": "2026-11-25T22:26:36.082Z",
       "by": "keys-look",
-      "from": "out/work/looks/files/20261125214345-p1-compare.jpg"
+      "from": "out/work/looks/files/20261125222636-1-compare.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "The keyboard at 6.0 s: approved above, build below",
-      "time": "2026-11-25T21:43:45.970Z",
+      "caption": "The keyboard: approved above, the build below. Pale satin ends, dark only in the bed between the caps and in the wells",
+      "time": "2026-11-25T22:26:36.352Z",
       "by": "keys-look",
-      "from": "out/work/looks/files/20261125214345-p1-keyboard.jpg"
+      "from": "out/work/looks/files/20261125222636-2-keyboard.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Left turret at native size: approved left, build right. The bolt rides above the Caps Lock legend",
-      "time": "2026-11-25T21:43:46.205Z",
+      "caption": "A turret: approved left, the build right. Turned head in a dark well, tapered barrel, hot muzzle, the tracer above the Caps Lock legend",
+      "time": "2026-11-25T22:26:36.589Z",
       "by": "keys-look",
-      "from": "out/work/looks/files/20261125214346-p1-turret.jpg"
+      "from": "out/work/looks/files/20261125222636-3-turret.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Keys and marks at native size: approved left, build right",
-      "time": "2026-11-25T21:43:46.444Z",
+      "caption": "The keys and the marks: approved left, the build right. Ivory caps with a tight edge, char with a brown singe",
+      "time": "2026-11-25T22:26:36.823Z",
       "by": "keys-look",
-      "from": "out/work/looks/files/20261125214346-p1-keys.jpg"
+      "from": "out/work/looks/files/20261125222636-4-keys.jpg"
     }
   ]
 }
