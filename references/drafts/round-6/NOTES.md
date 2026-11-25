@@ -33,7 +33,7 @@ Not taken: any layout, artwork, character or name.
 
 ## Model
 
-`seedream_5` (Seedream 5 Pro, ByteDance), the same for all twelve images. It accepts up to ten reference images and returns exact 16:9 at 2816 by 1584; every file is scaled to 1920 by 1080 (G2 to 1080 by 1920) with no other processing unless a section says so.
+`seedream_5` (Seedream 5 Pro, ByteDance), the same for all twelve images. It accepts up to ten reference images and returns exact 16:9 at 2816 by 1584; every generated file is scaled to 1920 by 1080 with no other processing unless a section says so. G2 is a join of three takes and is saved at 2160 by 3840.
 
 Whether it is the strongest photoreal model on this account that accepts references is UNKNOWN: no bake-off was run, to save takes. It was chosen because it made all fifteen approved images of this website, so the ceramic, aluminum, orange and the cursor match what is already approved.
 
@@ -433,6 +433,103 @@ LETTERING: the only words anywhere in the image are these five signs, each a cre
 NOT IN THE IMAGE: no people, no hands, no faces, no cars with drivers; no cabinet, no legs, no room, no floor, no sheet of glass over the playfield; no fog, smoke, haze, lens flare or blur; not pixel art, not a flat illustration, not a cartoon, not a diorama, not a model railway.
 
 SCALE, with the ball as the unit: the frame is twenty balls wide and eleven tall. A flipper is three balls long. Every lane, every ramp and the lift tube are one and a half balls wide, so the ball fits in each of them with room to spare.
+```
+
+### G2 · All three tiers from directly above
+
+- File: `references/drafts/round-6/G2-machine-top.png`
+- Model: `seedream_5`
+- Takes made: 3 of 3 allowed. Kept: take 1.
+- How it was made: Joined, not generated. The brief allows either. Take 1 is the join; takes 2 and 3 were generated to see whether the model could do better in one picture, and it could not. The join was made from the 2816 by 1584 originals of the kept G3, G4 and G5. (1) The ball was painted out of each: a 512 px square round the ball was sent back to the same model with the instruction to remove only the ball, and the result was pasted back under a feathered mask of the pixels that had changed. (2) Each tier was warped a little so that its sides are square (the tier takes narrow slightly toward the top), scaled to 2514 by 1452 px, and the three were stacked: corporate, office, street. (3) The seams were tidied by hand: the lift tube was cloned across each tier's capped end so that it runs the whole length, with a tube collar pasted over the first seam; the launch lane was cloned through each tier's end with 80 px cross-fades; five lane arrows that pointed down were flipped to point up (two in G3, two in G4, one in G5); the blank paper tag on the office tier's bottom edge was covered. (4) The frame is not from the model. The tier takes end at the rail, so the rail and the border round the whole machine were made in code: a brushed aluminum rail with mitred corners (68 px at the sides and 44 px at the top and bottom of a 2700 by 4800 canvas) and matte ceramic of about RGB 208, 205, 196 outside it, with a soft contact shadow. The file is saved at 2160 by 3840, so each tier keeps about the detail of its own 1920 px file.
+- Reference images passed in, in order: none for the join itself (it is the kept G3, G4 and G5); for each of the three ball removals, one reference: the 512 px crop of that tier's take round the ball; takes 2 and 3, generated and not kept, were each given `references/guides/round-6/guide-machine-top.png` (the unlabeled guide), then the kept G3, G4 and G5. G7 was not passed because this view has no ball.
+
+Takes:
+
+- Take 1, the join described above. Three tiers in order, each with its flippers; no ball; no marquee; rail and border all round; all eight tier words present and spelled right. Judge: "Closest to a screenshot (or table-select/promo render) from a commercial pinball video game", then named ten things. Failed on the second question. Kept as the best of three: the only one with no ball, the only one with the rail and the border both plain to see, the only one a judge took for a game screenshot, and its layout is exactly the layout of the kept tier images.
+- Take 2 (generated; a prompt naming the parts of all three tiers, with lettering on the drain plate only). One coherent machine, three tiers with their flippers, `Unemployment Office` spelled right. Misses: a ball with the cursor on the red carpet, though the prompt said no ball; the rim is a wide band of ceramic with rounded corners and no aluminum rail to be seen inside it; the lift tube is in two pieces, each ending in an elbow; blocks cross the launch lane at each wall. Judge: "Amateur generated art (an AI-generated image), not a commercial pinball video game screenshot", then named ten things. Failed.
+- Take 3 (generated; the take 2 prompt with every path written out as open at both ends: the launch lane and orbit lane, one lift tube with an open mouth at each tier, slots at the foot of the outlanes, both wire ramps as tracks; the rail described as bright silver). Misses: two balls with cursors, one on the red carpet and one beside the firehouse, though the prompt said no ball; a small plate on the coffee machine with unreadable lettering; a dark grey textured surface beyond the border, like a floor; the aluminum rail is a thin bright line; the paths came out as in take 2. Judge: "Most likely: amateur generated art (AI-generated image)", then named eleven things. Failed.
+
+The judge's answer on the kept take:
+
+> picture-0201.png — viewed at full resolution (2160x3840) plus zoomed crops of every lane, ramp and tier boundary.
+>
+> **Q1. What is it most likely to be?**
+> Closest to a screenshot (or table-select/promo render) from a commercial pinball video game. It is not a film frame, stock image or textbook picture, and it is far above amateur generated art.
+> - For: straight top-down view of a whole table, consistent materials and lighting, and clean, correctly spelled labels (Corporate HQ, Retirement, Coffee, You're Fired, Student Loans, Background Check, Mom's Basement, Unemployment Office). It has one coherent career-ladder theme across three stacked playfields, with themed parts: coffee-cup bumpers, stapler slingshots, a spiral parking-garage ramp.
+> - Against a live gameplay capture: no ball, score, HUD or DMD anywhere, and it is framed like a photographed miniature in a white frame.
+> - Tell that it is a generated concept rather than an engineered table: the routing faults below.
+>
+> **Q2. Could a ball really travel every lane and ramp? No.**
+>
+> Paths that look workable:
+> - Right shooter lane running the full height with up arrows.
+> - Each upper tier's centre drain chute dropping into the tier below (top to office, office to street).
+> - The scoops at the mail tray, You're Fired and Mom's Basement.
+> - The bottom "Unemployment Office" drain.
+> - The three pop bumpers, slingshots and flipper pairs.
+>
+> Things that could not work:
+> 1. Retirement ladder ramp (top right): it rises from a flap, U-turns and comes back down beside the right inlane. It never reaches the Retirement case, which is a sealed glass box with no entrance, so "Retirement" is unreachable.
+> 2. Bottom-tier wire rail: its left end is capped in mid-air above the Student Loans targets with no entry flap, so nothing can get onto it. Its support posts also stand in the central shot path.
+> 3. Spiral garage ramp: its only feed is that dead-ended rail, so no ball can reach the top of the spiral. Only its bottom exit flap makes sense.
+> 4. Top lane of the top tier: arrows on the left half point right and on the right half point left, meeting behind the Corporate HQ building where there is no opening onto the playfield. The lane's left end runs into the orange elbow of the left tube, so a plunged ball would either stall behind the building or go straight down the tube without ever entering play.
+> 5. Top lanes of the middle and bottom tiers: the same converging arrows, in enclosed channels with rounded, closed ends beside the centre chute. No visible exit onto the playfield.
+> 6. Left clear tube: one straight pipe the full height with small orange diverters. No kicker or lift is shown to move a ball upward. Its bottom is a closed cap next to, not connected to, the Mom's Basement hole.
+> 7. Shooter lane junctions: no gates or diverters where the lane meets each tier's top lane, so nothing determines which tier the ball enters.
+> 8. Outlanes on the top and middle tiers: they end against the tier's bottom wall or blank corner plates with no hole. A ball there would be trapped, since only the centre chute leads down.
+> 9. Corporate HQ: closed lit doors, no hole, with a glass turnstile on a post directly in front. Background Check's doorway is blocked by the spiral ramp. Neither can accept a ball.
+> 10. Plunger: the knob and spring sit inside the cabinet frame under the glass, so it could not be pulled by a player.
+>
+> Net: the three tiers and drains read as a plausible game design, but about half the lanes and ramps (Retirement ramp, wire rail, spiral, all three top lanes, the tube) are decorative or dead-ended.
+
+Judge result: FAILED on the second question (STATED by the judge): the first answer was the game screenshot ("or table-select/promo render"), but ten things were named that could not work. Kept at the limit of three takes.
+
+What the kept take misses (MEASURED on the file unless marked):
+
+- The judge did not pass it: ten things named that could not work (quoted above). All ten come from the kept G3, G4 and G5; the join adds no part and removes none except the balls and the paper tag.
+- It is not one photograph. It is three photographs joined, and the rail and the border round it were made in code, not by the model (see "How it was made"). At full size the rail is cleaner and flatter than the photographed metal inside it.
+- Three top strips. Each tier take has a chrome strip with arrow lamps along its own top edge, so the join shows one under each wall as well as the orbit lane at the head. The guide has a lane along the top of the corporate tier only. On each strip the arrows left of centre point right and those right of centre point left, as generated.
+- Lift tube. One clear tube the whole length, as the guide shows, but only because the capped ends of the three tier tubes were cloned over. It has an orange elbow at the top left, an orange flap beside it at the office tier and at the street tier, and a closed cap at the bottom beside Mom's house. At the top of the street tier the join shows as a sleeve a few pixels out of line.
+- Launch lane. One lane the whole length, every arrow pointing up after five were flipped by hand; one arrow in the street tier is malformed. Nothing marks where a launched ball leaves the lane (STATED by the judge as no gates).
+- Plunger. The spring and the orange knob are inside the rail at the lower right.
+- Outlanes of the corporate and office tiers end at the wall below them with no opening; only the chute at the centre leads down (STATED by the judge; I see the same).
+- Ladder ramp. It starts at a flap, turns round under the beach box and comes back down beside the right inlane; the beach box is sealed. The judge counts both as faults. Both are the brief's design ("It climbs, loops and sets the ball down where it started").
+- Street wire ramp. Its left end is capped above the bank's targets with no flap, its posts stand in the centre of the tier, and the spiral is fed only by it (STATED by the judge; I see the same).
+- Doors. The tower's lobby doors are shut with the revolving door on its post in front of them, and the police station's door is behind the spiral (STATED by the judge; I see the same).
+- Camera. Each tier was photographed with things leaning a little outward from its own centre, so in the join the buildings of each tier lean from three different centres, not from one.
+- Size. 2160 by 3840, twice the 1080 by 1920 of a 9:16 frame at this round's width.
+- Words (MEASURED at full size): `Corporate HQ`, `Retirement`, `Coffee`, `You're Fired`, `Background Check`, `Student Loans`, `Mom's Basement`, `Unemployment Office`. All eight are present and spelled right; `Mom's Basement` by the retouch described under G5. No other letters or numbers found, with the clock face insert noted under G5 as the one UNKNOWN.
+- Musts (MEASURED): three tiers, each with its own pair of flippers, in the order corporate, office, street from head to foot; no ball; no marquee; no people; no cabinet, legs, room or other machine; no real name or brand found.
+
+Full prompt of the kept take:
+
+```text
+No generation prompt: the kept G2 was joined, not generated.
+
+It is the kept takes of G3, G4 and G5 (their 2816 by 1584 originals), one above the other, corporate, office, street.
+
+The only generation calls behind it are the three that painted the balls out. Each sent a 512 px square crop round the ball back to the same model, with the crop as the only reference image, and pasted the result back under a feathered mask of what had changed. Their prompts:
+
+--- Ball removed from the G3 take ---
+REFERENCE IMAGE 1 is a close photograph of part of a pinball playfield, seen from straight above: a strip of red carpet with thin gold edges on a midnight navy marble playfield with fine gold inlay lines; on the carpet a small revolving door, four clear acrylic vanes with chrome edges on a brass post with a round brass base; two white globe lamps at the top; round lit inserts at the bottom showing an hourglass. On the carpet, at the lower right of the revolving door, sits a clear glass ball with a white arrow inside it.
+
+Reproduce this photograph exactly: the same framing, the same objects in the same places, the same colours, the same light, the same sharpness. Change one thing only: the clear glass ball with the white arrow inside it is gone, removed from the picture. Where it was you now see what was behind it: the red carpet, the lower right clear vane of the revolving door, whole, with its chrome edge, and the round brass base of the door's post. The ball's shadow and the patch of light it threw on the carpet are gone too: the carpet there is plain, evenly lit red carpet.
+
+There is no ball anywhere in the image and no arrow anywhere in the image. No words, letters or numbers. Nothing else changes.
+
+--- Ball removed from the G4 take ---
+REFERENCE IMAGE 1 is a close photograph of part of a pinball playfield, seen from straight above: a pop bumper whose cap is a white coffee cup lid, with a brown cup body, a lamp glowing under the lid, and a steel ring and a black rubber ring round its foot; a playfield of beige and grey-green carpet tile under a glossy clear coat; round lit inserts at the bottom showing an envelope. Just below the bumper, touching its foot, sits a clear glass ball with a white arrow inside it.
+
+Reproduce this photograph exactly: the same framing, the same objects in the same places, the same colours, the same light, the same sharpness. Change one thing only: the clear glass ball with the white arrow inside it is gone, removed from the picture. Where it was you now see what was behind it: the beige carpet tile of the playfield, and the whole of the steel ring and the black rubber ring round the foot of the bumper, unbroken. The ball's shadow and the bright patch of light it threw on the floor are gone too: the floor there is plain, evenly lit beige tile, with the straight edge between the beige tile and the grey-green tile running on as it does elsewhere.
+
+There is no ball anywhere in the image and no arrow anywhere in the image. No words, letters or numbers other than those already on the sign. Nothing else changes.
+
+--- Ball removed from the G5 take ---
+REFERENCE IMAGE 1 is a close photograph of part of a pinball playfield, seen from straight above: at the left a small red brick firehouse with grey stone trim, lit amber windows and a dark garage opening; a glossy dark teal and navy playfield printed with streets and white dashes; at the right a chrome wire ramp of two rails on thin posts; at the bottom a small row of white lamps. On the street just right of the firehouse, above the left end of the wire ramp, sits a clear glass ball with a white arrow inside it.
+
+Reproduce this photograph exactly: the same framing, the same objects in the same places, the same colours, the same light, the same sharpness. Change one thing only: the clear glass ball with the white arrow inside it is gone, removed from the picture. Where it was you now see what was behind it: the glossy dark teal street of the playfield with soft reflections of the lamps, the right-hand wall of the firehouse standing whole, and the two chrome rails of the wire ramp running on unbroken to their left end. The ball's shadow is gone too.
+
+There is no ball anywhere in the image and no arrow anywhere in the image. The lettering on the cream sign at the top left stays exactly as it is. No other words, letters or numbers. Nothing else changes.
 ```
 
 ### G1 · The whole machine from the player's end
