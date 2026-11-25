@@ -135,6 +135,8 @@ Owner: `/root/keys_fixer`, branch `agent/keys`. It answers the round 3 issues R4
 13. A pit rides its cap. `layScorch` took a cap only if its top was within 3 px of the height the bolt struck at, so a cap that hopped in the tray's shake or dipped under a tap lost its pit: the mark stayed at the old height and was hidden inside the plastic. MEASURED: draft stills of `step1.firstName` at 0.644 and 0.650 (the hit and three frames later) showed three pits on W vanish in 0.05 s; with `SCORCH.ride` 16 px and the mark lifted to the cap's top they stay.
 14. The Enter lamp was looked at on the press: draft stills of `step1.email` at 0.492 (before, lamp dark) and 0.506 (Enter down, lamp lit).
 
+15. A cap in the air throws a clear shadow that leaves it as it rises (the Builder's note of 19:17Z). Above a hop of 4.5 px the cap's shade is no longer on the bed, where the caps round it hid it, but 3 px above the tops of the seated caps (`SHADE.over`), so it falls across the space bar, the number row, the seated neighbours and the gaps alike. It is two patches, a wide soft one and a core of 0.74 of its size, moved `hop x (1.8, 1.67)` along the key light and widened by a quarter of the hop. A cap above it hides it, which is right: that cap takes the real shadow of the ghost box. Tried first at 0.6 px above the tops: the caps that stir by 1.6 px showed the patch in their own dish (draft still, number row), hence 3 px and the threshold of 4.5.
+
 ### Not reached
 
 - The landing frame of a slab falls between two sheet samples; what shows it afterwards is the pressed keys under the slab only.
@@ -153,4 +155,4 @@ Owner: `/root/keys_fixer`, branch `agent/keys`. It answers the round 3 issues R4
 
 ### Tuning looks
 
-Of 40 each in the fix round: keyboard 19, turrets 7, slabs 4.
+Of 40 each in the fix round: keyboard 23, turrets 7, slabs 4.

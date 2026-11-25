@@ -21,7 +21,7 @@ const capShape = (w: number, h: number): THREE.BufferGeometry => {
 }
 
 const CORE = 0.6
-const SHADE = { soft: 0.16, dark: 0.4, x: 1.8, y: 1.67, least: 0.6, rest: 10, tight: 0.6, grow: -6 }
+const SHADE = { soft: 0.16, dark: 0.44, spread: 0.25, over: 3, clear: 4.5, core: 0.74, x: 1.8, y: 1.67, least: 0.6, rest: 10, tight: 0.6, grow: -6 }
 
 // The shadow a cap in the air leaves on the bed: a soft dark patch with no picture, its edge fading to nothing.
 function shadeGeometry(): THREE.BufferGeometry {
@@ -194,7 +194,7 @@ function makeDeck(s: Shape, ctx: RealContext): THREE.Object3D {
   body.castShadow = false
   shadeMaterial ??= new THREE.MeshBasicMaterial({ color: new THREE.Color(0.012, 0.011, 0.01), vertexColors: true, transparent: true, opacity: SHADE.dark, depthWrite: false, toneMapped: false })
   const patch = shadeGeometry()
-  const shades = new THREE.InstancedMesh(patch, shadeMaterial, cream.length)
+  const shades = new THREE.InstancedMesh(patch, shadeMaterial, cream.length * 2)
   shades.count = 0
   shades.frustumCulled = false
   shades.castShadow = false
@@ -230,6 +230,11 @@ function poseDeck(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   let patches = 0
   let casters = 0
   const floor = s.z1 - s.z0 - DECK_LOOK.fieldDepth + 0.35
+  let crest = floor
+  for (const id of data.caps.keys()) {
+    const c = ctx.byId.get(id)
+    if (c) crest = Math.max(crest, c.z1 - s.z0 - Math.max(0, c.v && c.v.length > 1 ? c.v[1]! : 0))
+  }
   const place = (c: Shape): boolean => {
     const hop = Math.max(0, c.v && c.v.length > 1 ? c.v[1]! : c.z0 - s.z1)
     const sink = tumble(c, hop)
@@ -249,7 +254,16 @@ function poseDeck(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
     }
     const leaning = place(c)
     const hop = Math.max(0, c.v && c.v.length > 1 ? c.v[1]! : 0)
-    if (hop > SHADE.least) {
+    if (hop > SHADE.clear) {
+      const wide = c.w - 6 + hop * SHADE.spread
+      const tall = c.h - 6 + hop * SHADE.spread
+      matrix.makeScale(wide, tall, 1)
+      matrix.setPosition(at.x + hop * SHADE.x, at.y - hop * SHADE.y, crest + SHADE.over)
+      data.shades.setMatrixAt(patches++, matrix)
+      matrix.makeScale(wide * SHADE.core, tall * SHADE.core, 1)
+      matrix.setPosition(at.x + hop * SHADE.x, at.y - hop * SHADE.y, crest + SHADE.over + 0.2)
+      data.shades.setMatrixAt(patches++, matrix)
+    } else if (hop > SHADE.least) {
       matrix.makeScale(c.w - 6, c.h - 6, 1)
       matrix.setPosition(at.x + hop * SHADE.x, at.y - hop * SHADE.y, floor)
       data.shades.setMatrixAt(patches++, matrix)
