@@ -91,31 +91,32 @@ Read at full size from `references/approved/page-look.png` (crops at three times
 
 `npm run counts -- --key ID | --id ID | --page P --beat B --at F [--live LEVEL]`. How it counts is in `tools/HARNESS-NOTES.md`, "counts: by part". `package.json` and `tools/counts.mjs` are outside my files: they are one commit, `NEEDS: npm run counts`, and `pipeline/phase3/gate-NEEDS.patch` holds the same diff.
 
-MEASURED, `npm run counts -- --key step1-fire --live low`, exit 0:
+MEASURED at 827c48d (main 43a73a8 merged), `npm run counts -- --key step1-fire --live low`, exit 0:
 
 ```
 key-step1-fire, format hd, assets web, level low: one drawing of the scene
 part                                  made  meshes  colour  shadow dome  shadow emitter-0  shadow key  calls  triangles
 ------------------------------------  ----  ------  ------  -----------  ----------------  ----------  -----  ---------
-turrets                               real      47      47           18                 0          18     83      22214
+turrets                               real      47      47           18                 0          18     83      25358
 keyboard                              real       9       9            9                54           9     81     247608
-shell                                 real      21      21           13                24          13     71      80360
-type (shell, type)                    real      63      63            0                 0           0     63      91036
+shell                                 real      20      20           12                22          12     66      90176
+type (shell, type)                    real      63      63            0                 0           0     63      93744
 ground (shell)                        real       5       6            5                30           5     46      27740
-cursor (cursor-body, cursor-effects)  real       3       3            1                 6           1     11      42036
+cursor (cursor-body, cursor-effects)  real       3       3            1                 6           1     11      48768
 ------------------------------------  ----  ------  ------  -----------  ----------------  ----------  -----  ---------
-sum of the rows                                148     149           46               114          46    355     510994
+sum of the rows                                147     148           45               112          45    350     533394
 not a mesh of the scene                                                                                    1          2
-info().counts                                                                                            356     510996
-356 draw calls against a limit of 300: 56 over
+info().counts                                                                                            351     533396
+351 draw calls against a limit of 300: 51 over
 record: out/work/counts/key-step1-fire-hd-live-low.json
 ```
 
-- The 356 of `step1-fire`: 149 in the colour pass, 46 in the shadow pass of `dome`, 46 in that of `key`, 114 in that of `emitter-0`, 1 that is no mesh of the scene (2 triangles: a full-screen pass of the engine, by its size). `emitter-0` is a point light: six faces, each drawn on its own. It costs 114 of 356, 32 percent, more than the two directional shadows together (92).
-- The type is 63 calls and casts no shadow. The ground is 5 meshes and 46 calls, 30 of them in the six faces of `emitter-0`.
-- MEASURED, the same key with `--live medium`, `--live high` and with no `--live` (tier draft): 356 each time, the same rows. The level changes nothing the renderer draws in a still. STATED from the code: `spec.live` is read once for a still, `samples: spec.live ? 1 : tierSamples(spec.tier)` in `src/app.ts`; `config.live.quality` is read by `src/main.ts` and `src/core/quality.ts` for the pixel ratio and the size of the shadow maps on the site.
+- `step1-fire` is 351 calls at this commit (it was 356 at c534a17, before the last merge of main: `shell` draws one mesh less). 148 in the colour pass, 45 in the shadow pass of `dome`, 45 in that of `key`, 112 in that of `emitter-0`, 1 that is no mesh of the scene (2 triangles: a full-screen pass of the engine, by its size).
+- `emitter-0` is a point light: six faces, each drawn on its own. It costs 112 of 351, 32 percent, more than the two directional shadows together (90). Without it the picture is 239 calls.
+- The type is 63 calls and casts no shadow. The ground is 5 meshes and 46 calls, 30 of them in the six faces of `emitter-0`. The keyboard is 9 meshes and 81 calls, 54 of them in `emitter-0`.
+- MEASURED, the same key with `--live medium`, `--live high` and with no `--live` (tier draft): 351 each time, every row the same. The level changes nothing the renderer draws in a still. STATED from the code: `spec.live` is read once for a still, `samples: spec.live ? 1 : tierSamples(spec.tier)` in `src/app.ts`; on the site `src/main.ts` reads the level for the pixel ratio (`pixelRatioCap`) and the size of the shadow maps (`app.rig.setQuality`), and for nothing that adds or removes a draw.
 
-MEASURED, `npm run counts -- --key table-wide --live low`, exit 0:
+MEASURED at the same commit, `npm run counts -- --key table-wide --live low`, exit 0:
 
 ```
 key-table-wide, format hd, assets web, level low: one drawing of the scene
@@ -140,7 +141,7 @@ tier-art                                       real          12      12         
 model-hq                                       stand-in       6       6            0           6     12        144
 model-wedges                                   stand-in       6       6            0           6     12        144
 displays                                       stand-in       3       3            3           3      9        108
-cursor (cursor-body, cursor-effects)           real           2       2            2           2      6      29508
+cursor (cursor-body, cursor-effects)           real           2       2            2           2      6      31752
 model-notes                                    stand-in       3       3            0           3      6         72
 model-revolving-door                           stand-in       2       2            0           2      4        640
 marquee                                        stand-in       2       2            0           2      4         48
@@ -157,14 +158,14 @@ model-boardroom                                stand-in       1       1         
 shell                                          real           1       1            0           0      1        884
 model-beach                                    stand-in       1       1            0           0      1         12
 ---------------------------------------------  --------  ------  ------  -----------  ----------  -----  ---------
-sum of the rows                                             419     419          284         339   1042     226087
+sum of the rows                                             419     419          284         339   1042     228331
 not a mesh of the scene                                                                               1          2
-info().counts                                                                                      1043     226089
+info().counts                                                                                      1043     228333
 1043 draw calls against a limit of 300: 743 over
 record: out/work/counts/key-table-wide-hd-live-low.json
 ```
 
-- 1043 calls: 419 colour, 284 `dome`, 339 `key`, 1 engine. Four stand-in parts are 707 of them: `table-hardware`, `table-frame`, `table-lights`, `ramps`. Each is many small meshes, each mesh drawn three times. Merged into one mesh a material, or instanced, the four would be a few dozen calls.
+- 1043 calls: 419 colour, 284 `dome`, 339 `key`, 1 engine. Four stand-in parts are 707 of them: `table-hardware`, `table-frame`, `table-lights`, `ramps`. Each is many small meshes, and each mesh is drawn up to three times.
 
 ## Not done
 
