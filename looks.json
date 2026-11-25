@@ -1,35 +1,35 @@
 {
   "folder": "cursor-model",
-  "pushed": "2026-11-25T15:38:36.160Z",
-  "commit": "09fe46526c3d1140e5ac0d66763d86aa87c1c95f",
+  "pushed": "2026-11-25T15:56:25.143Z",
+  "commit": "bea66df1bb210ff0ad1244b34abff40ab04f7ce7",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-step1-tug-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-25T15:37:57.963Z",
+      "caption": "Sheet cursor-acting: approved on the left, this build on the right, review tier",
+      "time": "2026-11-25T15:54:59.529Z",
       "by": "cursor-model",
-      "from": "out/work/stills/key-step1-tug-hd-review.png"
+      "from": "out/work/compare/compare-cursor-acting.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "cursor-acting at review beside the approved sheet, commit 09fe465: cleaner enamel, deeper heat, ember ring on the laser hole, darker stone, wetter melt",
-      "time": "2026-11-25T15:38:34.499Z",
+      "caption": "Acting sheet at review beside the approved image, commit bea66df: the melt no longer shows stripes",
+      "time": "2026-11-25T15:56:23.471Z",
       "by": "cursor-model",
-      "from": "out/work/cursor-model/r4-acting.jpg"
+      "from": "out/work/cursor-model/r6-acting.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "cursor-damage at review beside the approved sheet, commit 09fe465: cut faces of strips are cream and not black, scorch at the approved size, punch is a hole through",
-      "time": "2026-11-25T15:38:34.752Z",
+      "caption": "Damage sheet at review beside the approved image, commit 9fdffc0",
+      "time": "2026-11-25T15:56:23.707Z",
       "by": "cursor-model",
-      "from": "out/work/cursor-model/r4-damage.jpg"
+      "from": "out/work/cursor-model/r5-damage.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "the cursor at three times page size in the step1-fire and step1-tug stills at review, commit 09fe465",
-      "time": "2026-11-25T15:38:35.003Z",
+      "caption": "The cursor at three times its size in the fire key and the tug key, review tier, commit 9fdffc0",
+      "time": "2026-11-25T15:56:23.939Z",
       "by": "cursor-model",
-      "from": "out/work/cursor-model/r4-keys.jpg"
+      "from": "out/work/cursor-model/r5-keys.jpg"
     }
   ]
 }
