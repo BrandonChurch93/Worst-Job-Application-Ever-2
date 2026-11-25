@@ -2,6 +2,7 @@ import { config, stepHz } from '../config'
 import { hash01 } from '../core/random'
 import type { Emit } from '../stage/types'
 import { FEEL, FEEL_EASE, FEEL_KEYS, freshFeel, reactionPose, type Feel } from './act/feel'
+import { OUTLINE, STRIP_AXIS, UNIT } from './contract'
 
 export const ACTING = ['plain', 'confident', 'nervous', 'shocked', 'angry', 'scared', 'proud', 'exhausted'] as const
 export const REACTIONS = ['anticipate', 'flinch', 'doubleTake', 'recoil', 'dustOff', 'jump'] as const
@@ -469,19 +470,52 @@ export class CursorBody {
   }
 }
 
-// Where a strip comes to lie: the pile is a fan, pinched near the tip and spread at the tail, each strip on its own layer.
-const FAN = { spread: 0.075, wobble: 0.06, reach: 25, slide: 2.6 }
-const TIPWARD = [-0.409, 0.912]
+// Each strip of the cut body: its middle and half its length along the tail, in page pixels with y up the page.
+const CUTS: { x: number; y: number; half: number }[] = (() => {
+  const across = (p: [number, number]): number => p[0] * STRIP_AXIS[1] - p[1] * STRIP_AXIS[0]
+  const along = (p: [number, number]): number => p[0] * STRIP_AXIS[0] + p[1] * STRIP_AXIS[1]
+  const reach = OUTLINE.map(across)
+  const lo = Math.min(...reach)
+  const width = (Math.max(...reach) - lo) / STRIPS
+  const clip = (poly: [number, number][], limit: number, above: boolean): [number, number][] => {
+    const out: [number, number][] = []
+    const side = (p: [number, number]): number => (above ? across(p) - limit : limit - across(p))
+    poly.forEach((a, i) => {
+      const b = poly[(i + 1) % poly.length]!
+      const sa = side(a)
+      const sb = side(b)
+      if (sa >= 0) out.push(a)
+      if (sa >= 0 !== sb >= 0) out.push([a[0] + ((b[0] - a[0]) * sa) / (sa - sb), a[1] + ((b[1] - a[1]) * sa) / (sa - sb)])
+    })
+    return out
+  }
+  const out: { x: number; y: number; half: number }[] = []
+  for (let i = 0; i < STRIPS; i++) {
+    const piece = clip(clip(OUTLINE, lo + i * width, true), lo + (i + 1) * width, false)
+    const run = piece.map(along)
+    const from = Math.min(...run)
+    const to = Math.max(...run)
+    const mid = lo + (i + 0.5) * width
+    const m = (from + to) / 2
+    out.push({ x: (m * STRIP_AXIS[0] + mid * STRIP_AXIS[1]) * UNIT, y: -(m * STRIP_AXIS[1] - mid * STRIP_AXIS[0]) * UNIT, half: ((to - from) / 2) * UNIT })
+  }
+  return out
+})()
+
+// Where a strip comes to lie: the pile is a fan of sticks, their top ends pinched together near where the tip was, each strip on its own layer.
+const FAN = { pinch: [5, -5], from: -0.36, to: 0.6, wobble: 0.2, stagger: 9, across: 1.1 }
 
 function lie(i: number, seed: number): Strip {
   const h = (k: number) => hash01(i, k + 40, seed)
-  const mid = i - (STRIPS - 1) / 2
-  const rot = -mid * FAN.spread + (h(1) - 0.5) * FAN.wobble
-  const ax = TIPWARD[0]! * FAN.reach
-  const ay = TIPWARD[1]! * FAN.reach
+  const cut = CUTS[i]!
+  const rot = FAN.from + ((FAN.to - FAN.from) * i) / (STRIPS - 1) + (h(1) - 0.5) * FAN.wobble
   const c = Math.cos(rot)
   const n = Math.sin(rot)
-  return { x: ax - (ax * c - ay * n) + mid * 0.5 + (h(2) - 0.5) * FAN.slide, y: ay - (ax * n + ay * c) + (h(3) - 0.5) * FAN.slide * 2.4 - 3, z: layer(i), rot, tilt: 0 }
+  const dx = STRIP_AXIS[0] * c + STRIP_AXIS[1] * n
+  const dy = STRIP_AXIS[0] * n - STRIP_AXIS[1] * c
+  const reach = cut.half + (h(2) - 0.5) * FAN.stagger
+  const side = (i - (STRIPS - 1) / 2) * FAN.across
+  return { x: FAN.pinch[0]! + side + dx * reach - cut.x, y: FAN.pinch[1]! + dy * reach - cut.y, z: layer(i), rot, tilt: 0 }
 }
 
 // The strips as they leave the shredder: thrown down the page from above their places, each with its own spin, each bound for its place in the fan.

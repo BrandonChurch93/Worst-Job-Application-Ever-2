@@ -46,7 +46,7 @@ function damage(): CursorPose[] {
   const wound = (kind: CursorPose['damage'][number], life: number) => ({ damage: [kind], healing: life, wounds: [{ kind, at: life, x: STRIKE.x, y: STRIKE.y }] })
   return [
     restPose(at(0), y, { ...wound('shredded', 0.8), strips: pileAt(seed + 1, 2) }),
-    restPose(at(1), y, { ...wound('reassembled', 0.55), strips: gatheredAt(seed + 1, 0.55) }),
+    restPose(at(1), y, { ...wound('reassembled', 0.64), strips: gatheredAt(seed + 1, 0.64) }),
     restPose(at(2), y, { ...wound('scorched', 0.15) }),
     restPose(at(3), y, { ...wound('burn', 0.52) }),
     restPose(at(4), y, { ...wound('flattened', 0.3), squash: 0.96 })
