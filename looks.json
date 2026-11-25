@@ -1,35 +1,35 @@
 {
   "folder": "slabs",
-  "pushed": "2026-11-25T15:11:56.308Z",
-  "commit": "0b81ee67978ae9a96afadf360ff7584ef2d35479",
+  "pushed": "2026-11-25T16:07:06.415Z",
+  "commit": "dbce259c6a40e637397d627671c3e71d82d95e91",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-step1-tug-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-25T15:07:42.950Z",
+      "caption": "Still key-step1-tug-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T16:06:21.507Z",
       "by": "slabs",
-      "from": "out/work/stills/key-step1-tug-hd-review.png"
+      "from": "out/work/stills/key-step1-tug-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Still key-step1-tug-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-25T15:08:42.547Z",
+      "caption": "Round 3, tug key at review on agent/slabs dbce259: approved (left) beside this build (right). Paper quiet and white, rules level, cassette seated in a dark opening",
+      "time": "2026-11-25T16:07:04.497Z",
       "by": "slabs",
-      "from": "out/work/stills/key-step1-tug-hd-review.png"
+      "from": "out/work/look-r3-pair.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Tug key, review tier, merged main 3c334e4 + agent/slabs 0b81ee6: approved (left) beside this build (right). Page of close rules, no teeth at the crest, hood keeps its band",
-      "time": "2026-11-25T15:11:54.870Z",
+      "caption": "Scratch merge of agent/slabs with the director's 214288c (not on main yet): strips from the bite, bent, their ends down on the page",
+      "time": "2026-11-25T16:07:04.773Z",
       "by": "slabs",
-      "from": "out/work/look-tug-pair2.jpg"
+      "from": "out/work/look-r3-strips.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Slabs in step1.email at 0.85, review tier, native crop: the slabs' own deep red (0xa3120f) with coat and grain",
-      "time": "2026-11-25T15:11:55.104Z",
+      "caption": "Round 3 at twice size: sheet into the rollers, panels with a dark foot, the dark of the slot round the cassette. A blocky shadow patch is left low on the sheet",
+      "time": "2026-11-25T16:07:05.017Z",
       "by": "slabs",
-      "from": "out/work/look-slab2.jpg"
+      "from": "out/work/look-r3-seat.jpg"
     }
   ]
 }
