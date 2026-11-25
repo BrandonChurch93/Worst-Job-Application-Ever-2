@@ -1,0 +1,35 @@
+{
+  "folder": "step5",
+  "pushed": "2026-11-25T08:59:48.610Z",
+  "commit": "f204bf887d7581605a66ca2ca8fc24771d41a208",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "decision.wait at 1.0 s: the wait panel, the counter reads 6-8 business months, the cursor paces under it",
+      "time": "2026-11-25T08:59:46.931Z",
+      "by": "step5",
+      "from": "out/work/stills/decision-decision_wait-0p5-preview-draft.png"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "decision.letter at 4.24 s: the letter is down, the metrics panel reads 00:00, the stamp block comes down on the cursor",
+      "time": "2026-11-25T08:59:47.155Z",
+      "by": "step5",
+      "from": "out/work/stills/decision-decision_letter-0p56-preview-draft.png"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "decision.metrics at 7.2 s, the key moment: REJECTED on the letter, the cursor flat beside the mark, readouts counted, stamp at rest, button and link up",
+      "time": "2026-11-25T08:59:47.387Z",
+      "by": "step5",
+      "from": "out/work/stills/decision-decision_metrics-0p3-preview-draft.png"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "decision.metrics at 9.36 s: the cursor, whole again, presses Accept Rejection at its right end, clear of the label",
+      "time": "2026-11-25T08:59:47.612Z",
+      "by": "step5",
+      "from": "out/work/stills/decision-decision_metrics-0p84-preview-draft.png"
+    }
+  ]
+}
