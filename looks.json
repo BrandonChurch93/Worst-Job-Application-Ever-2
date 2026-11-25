@@ -1,0 +1,35 @@
+{
+  "folder": "frame",
+  "pushed": "2026-11-25T16:17:35.812Z",
+  "commit": "545adbb571be850803a42882e98c86b55da17fa1",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Frame 2: top tier beside the approved image. Rails, corner block, tube collars, pips plaque and display bezel are the frame's; grey boxes are other owners' stand-ins",
+      "time": "2026-11-25T16:17:13.485Z",
+      "by": "frame",
+      "from": "out/work/looks/files/20261125161713-look-cmp-corp.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Frame 2: whole table beside the approved image. Marquee, three wells, tube in its cradle, apron with drain ring",
+      "time": "2026-11-25T16:17:13.730Z",
+      "by": "frame",
+      "from": "out/work/looks/files/20261125161713-look-cmp-wide.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Frame 2: street tier from above, kerb with black and yellow run, dive pocket, foot wall",
+      "time": "2026-11-25T16:17:13.974Z",
+      "by": "frame",
+      "from": "out/work/looks/files/20261125161713-look-street.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Frame 2: office tier from above, cross rail with throat, shoulders and laminate trim",
+      "time": "2026-11-25T16:17:14.216Z",
+      "by": "frame",
+      "from": "out/work/looks/files/20261125161714-look-office.jpg"
+    }
+  ]
+}
