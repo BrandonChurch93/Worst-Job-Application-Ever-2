@@ -18,7 +18,7 @@ export const SLATS = 4
 const SLAT_SECONDS = 0.42
 const SLAT_GAP = 0.07
 export const FLIP_SECONDS = SLAT_SECONDS + (SLATS - 1) * SLAT_GAP
-export const TAPE_SPEED = 48
+const REJECTED_SETTLE = 1.7
 export const TRAVEL = heights.button - 4
 const WIND = 0.34
 const JUMP = 0.42
@@ -97,6 +97,7 @@ export function makePage(): PageLogic {
     item.at = tapeLength
     tapeLength += item.w + TICKER.gap
   }
+  const tapeSpeed = (tapeLength - tapeItems[tapeItems.length - 2]!.at) / applyBeat.from
   const afterKey = 'copy:marketing.tickerAfterRejection'
   const afterW = block(T.tape.font, words(afterKey), T.tape.px).width
   const afterCount = Math.ceil((TICKER.w + afterW) / (afterW + TICKER.gap)) + 1
@@ -304,7 +305,7 @@ export function makePage(): PageLogic {
     reset(ctx: PageContext) {
       const after = ctx.variant === 'rejected'
       Object.assign(s, {
-        mode: ctx.mode, variant: ctx.variant, time: 0, scroll: 0, scrollTo: 0, tape: after ? 0 : mod(-applyBeat.from * TAPE_SPEED, tapeLength), flip: Array(perkCount).fill(0),
+        mode: ctx.mode, variant: ctx.variant, time: 0, scroll: 0, scrollTo: 0, tape: after ? mod(-REJECTED_SETTLE * tapeSpeed, afterLength) : mod(-applyBeat.from * tapeSpeed, tapeLength), flip: Array(perkCount).fill(0),
         phase: after ? phaseSeconds.length : 0, phaseTime: 0, auto: 0, took: false, shock: 0, sink: BUTTONS.map(() => 0), apply: null, skipAsked: false, done: false, cue: 0,
         base: after ? 'exhausted' : 'confident'
       } satisfies State)
@@ -317,7 +318,7 @@ export function makePage(): PageLogic {
         const gap = s.scrollTo - s.scroll
         s.scroll = Math.abs(gap) < 0.05 ? s.scrollTo : s.scroll + gap * Math.min(1, dt * 16)
       }
-      s.tape = mod(s.tape + TAPE_SPEED * dt, rejected() ? afterLength : tapeLength)
+      s.tape = mod(s.tape + tapeSpeed * dt, rejected() ? afterLength : tapeLength)
 
       if (s.mode === 'film') {
         const cues = rejected() ? REJECTED_CUES : CUES
