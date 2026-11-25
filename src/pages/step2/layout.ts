@@ -124,9 +124,13 @@ function crankNodes(): LayoutNode[] {
   const c = CRANK
   const prompt = text('crank-prompt', 'copy:step2.rows.volume.panel', TYPE.body, FX + PAD, cy + PAD, { part: 'type', on: TRAY_Z, states: ['volume-panel'] })
   const base = node('crank-base', 'crankBase', [c.hx - c.base / 2, c.hy - c.base / 2, c.base, c.base], { part: 'crank', shape: 'disc', height: 18, floor: TRAY_Z, tone: 'metal' })
-  const arm = node('crank-arm', 'crankArm', [c.hx - 8, c.hy - 8, c.arm + 16, 16], { part: 'crank', shape: 'capsule', height: TOP + 6, floor: TOP - 4, tone: 'metal', mechanism: true, over: true })
+  const ax = c.hx + (c.arm / 2) * Math.cos(c.rest)
+  const ay = c.hy + (c.arm / 2) * Math.sin(c.rest)
+  const gx = c.hx + c.arm * Math.cos(c.rest)
+  const gy = c.hy + c.arm * Math.sin(c.rest)
+  const arm = node('crank-arm', 'crankArm', [ax - (c.arm + 16) / 2, ay - 8, c.arm + 16, 16], { part: 'crank', shape: 'capsule', height: TOP + 6, floor: TOP - 4, tone: 'metal', mechanism: true, over: true })
   const hub = node('crank-hub', 'crankHub', [c.hx - c.hub / 2, c.hy - c.hub / 2, c.hub, c.hub], { part: 'crank', shape: 'disc', height: TOP + 10, floor: 18, tone: 'raised', mechanism: true, over: true })
-  const grip = node('crank-grip', 'crankGrip', [c.hx + c.arm - c.gripW / 2, c.hy - c.gripH / 2, c.gripW, c.gripH], { part: 'crank', shape: 'capsule', height: TOP + 30, floor: TOP + 6, tone: 'accent', mechanism: true, over: true })
+  const grip = node('crank-grip', 'crankGrip', [gx - c.gripW / 2, gy - c.gripH / 2, c.gripW, c.gripH], { part: 'crank', shape: 'capsule', height: TOP + 30, floor: TOP + 6, tone: 'accent', mechanism: true, over: true })
   const segs: LayoutNode[] = []
   for (let k = 0; k < 10; k++) segs.push(node(`meter-${k + 1}`, 'meterSegment', [c.segX + k * (c.segW + c.segGap), c.segY, c.segW, c.segH], { part: 'crank', shape: 'capsule', height: 12, floor: TRAY_Z, tone: 'glass' }))
   const meter: LayoutNode = { id: 'meter', kind: 'row', box: [c.segX, c.segY, 10 * c.segW + 9 * c.segGap, c.segH], children: segs, flow: 'row', gap: c.segGap, part: 'crank' }
