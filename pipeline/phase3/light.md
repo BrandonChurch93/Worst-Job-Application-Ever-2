@@ -34,7 +34,7 @@ A fact below is MEASURED (the command and the number are given), STATED (read so
 | Setting | Value | Why |
 | --- | --- | --- |
 | `key.direction` | -0.65, 0.6, 0.45 | Shadows fall down and to the right and reach twice the height of the part; the soft far end fades, so what is seen is about one and a half times. At the first value (0.69 up) a 6 px pocket and a low button had almost no shadow. |
-| `key.radius` | 0.2 rad | Half the angle of the light's area. The far end of a 40 px part's shadow is about 16 px soft, the contact is sharp. |
+| `key.radius` | 0.13 rad | Half the angle of the light's area. The far end of a 40 px part's shadow is about 20 px soft, the contact is sharp. At 0.2 the shadow of a part 5 px tall was all soft edge and no dark middle. |
 | `key.intensity` | 4.55 | With the fill, puts the ceramic of the surface owner (`0xecebe6`) where the approved page look has it. See the table of measurements. |
 | `key.colour` | 1, 0.975, 0.945 | The approved ceramic is 6 warmer in red than in blue at the upper left; at 0.92 blue it was 10. |
 | `key.at` | -1200, 1000, 3750 px from the middle of the view | Fitted to the five patches of the approved page look by least squares (`out/work/light/fit.mjs`, not in the repository). |
@@ -131,7 +131,7 @@ Shadow texel, MEASURED by computing the shadow camera the rig fits to the view w
 | key, 2048 | live, medium | 0.90 px | 2.2 texels | 6.7 texels |
 | key, 1024 | live, low | 1.80 px | 1.1 texels | 3.3 texels |
 
-At live low the 2 px rule has one texel: its shadow is there but soft. UNKNOWN: a `uhd` still was not rendered and looked at after the last change.
+At live low the 2 px rule has one texel: its shadow is there but soft. MEASURED: `npm run still -- --sheet page-look --format uhd --tier draft --force` took 30.9 s; a crop of the stepper at twice its size shows no texel step in any shadow edge.
 
 Cost of one still, MEASURED with `npm run still -- --key step1-fire --format hd --tier <tier> --force` (the number the tool prints). "Before" is the same page with my files as they were on main at a844b0c, in a second worktree:
 
@@ -164,4 +164,4 @@ Live frame time: UNKNOWN on the merged page. `npm run budget` was last run on th
 - The cost of a sample rose by half. The first places to win it back: fewer taps for the fill, and no fill shadow at draft.
 - `--diag shadow` shows black rectangles where another owner's hidden shapes are (the drop zone, the left end of two fields). The diagnostic draws every mesh with one shadow material; that file is frozen for me.
 - `rig.level` is kept and works, but no page sets it yet.
-- A `uhd` still and the live frame time on the merged page were not measured.
+- The live frame time on the merged page was not measured. `npm run budget` at `uhd`: 9.17 s a sample, 7.26 s fixed, draft 25.6 s warm, review 80.6 s, final 227.3 s predicted (the run was stopped before `hd`).

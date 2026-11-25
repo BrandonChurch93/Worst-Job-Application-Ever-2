@@ -243,7 +243,7 @@ const mix = (a: Rgb, b: Rgb, t: number): Rgb => [a[0] + (b[0] - a[0]) * t, a[1] 
 
 const INK = 0x24272a
 const INK_WARM = 0x3f352a
-const INK_LIGHT = 0xfbeede
+const INK_LIGHT = 0xfdf3e6
 const LIP = 0xf2efe8
 const CUT_FLOOR = 0x1d1e21
 
@@ -327,23 +327,26 @@ export function groundOf(s: Shape, ctx: RealContext): Ground {
 }
 
 interface Kit { opaque: THREE.MeshPhysicalMaterial; over: THREE.MeshPhysicalMaterial }
-const kits = new Map<Setting, Kit>()
+const kits = new Map<string, Kit>()
 
-function kit(setting: Setting): Kit {
-  const hit = kits.get(setting)
+// The material's own colour is the ink, so that whatever reads a material reads the ink. The colours of a run's vertices are then counted from it.
+function kit(name: string): Kit {
+  const hit = kits.get(name)
   if (hit) return hit
+  const style = styles()[name]!
+  const setting = style.setting
   const cut = setting === 'cut'
   const make = (over: boolean): THREE.MeshPhysicalMaterial => {
     const m = studio(
       new THREE.MeshPhysicalMaterial({
-        color: 0xffffff,
+        color: new THREE.Color().setRGB(style.fill[0], style.fill[1], style.fill[2]),
         vertexColors: true,
         roughness: cut ? 0.5 : setting === 'raised' ? 0.5 : 0.62,
         metalness: 0,
         specularIntensity: cut ? 0.35 : 0.15
       })
     )
-    m.name = `type-${setting}${over ? '-over' : ''}`
+    m.name = `type-${name}${over ? '-over' : ''}`
     const lit = m.onBeforeCompile
     m.onBeforeCompile = (shader, renderer) => {
       lit.call(m, shader, renderer)
@@ -372,7 +375,7 @@ function kit(setting: Setting): Kit {
     return m
   }
   const made = { opaque: make(false), over: make(true) }
-  kits.set(setting, made)
+  kits.set(name, made)
   return made
 }
 
@@ -399,7 +402,13 @@ function geometryOf(s: Shape, said: string, style: Style): THREE.BufferGeometry 
   const geometry = new THREE.BufferGeometry()
   geometry.setAttribute('position', new THREE.BufferAttribute(data.position, 3))
   geometry.setAttribute('normal', new THREE.BufferAttribute(data.normal, 3))
-  geometry.setAttribute('color', new THREE.BufferAttribute(data.colour, 4))
+  const tint = data.colour
+  for (let i = 0; i < tint.length; i += 4) {
+    tint[i] = tint[i]! / style.fill[0]
+    tint[i + 1] = tint[i + 1]! / style.fill[1]
+    tint[i + 2] = tint[i + 2]! / style.fill[2]
+  }
+  geometry.setAttribute('color', new THREE.BufferAttribute(tint, 4))
   geometry.setAttribute('wjaRing', new THREE.BufferAttribute(data.ring, 2))
   const uv = new Float32Array((data.position.length / 3) * 2)
   for (let i = 0, j = 0; i < data.position.length; i += 3, j += 2) {
@@ -427,7 +436,7 @@ export const type: PartMaker = {
     const style = styles()[name]!
     const said = words(s.words!, s.text)
     const over = ground === 'glass'
-    const mesh = new THREE.Mesh(geometryOf(s, said, style), over ? kit(style.setting).over : kit(style.setting).opaque)
+    const mesh = new THREE.Mesh(geometryOf(s, said, style), over ? kit(name).over : kit(name).opaque)
     mesh.position.z = HOVER
     mesh.receiveShadow = true
     mesh.castShadow = false
