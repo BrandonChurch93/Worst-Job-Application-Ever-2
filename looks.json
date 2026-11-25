@@ -1,35 +1,35 @@
 {
   "folder": "damage",
-  "pushed": "2026-11-25T19:22:09.547Z",
-  "commit": "f916439725017cbd1421c22a95b639aa7458e702",
+  "pushed": "2026-11-25T19:31:24.554Z",
+  "commit": "f3d50d4397dc9d25bc8e5fcf55f4c97246ad8360",
   "looks": [
     {
       "file": "look-1.jpg",
       "caption": "Still sheet-cursor-damage-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-25T19:15:36.298Z",
+      "time": "2026-11-25T19:28:19.436Z",
       "by": "damage",
       "from": "out/work/stills/sheet-cursor-damage-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Still sheet-cursor-damage-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-25T19:19:57.671Z",
+      "caption": "Still sheet-cursor-acting-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T19:31:07.962Z",
       "by": "damage",
-      "from": "out/work/stills/sheet-cursor-damage-hd-draft.png"
+      "from": "out/work/stills/sheet-cursor-acting-hd-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Still sheet-cursor-damage-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-25T19:22:07.156Z",
+      "caption": "Damage sheet at f3d50d4: approved on top, build below. Even ribbons with square ends, strips side by side under three tapes, bore wall",
+      "time": "2026-11-25T19:31:22.799Z",
       "by": "damage",
-      "from": "out/work/stills/sheet-cursor-damage-hd-draft.png"
+      "from": "out/work/c/send/dmg3.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Damage sheet at f916439: approved on top, build below. Ribbons with square ends, three tapes, bore wall",
-      "time": "2026-11-25T19:22:08.295Z",
+      "caption": "Acting sheet at f3d50d4: approved on top, build below. Scared keeps a thin dark rim",
+      "time": "2026-11-25T19:31:23.100Z",
       "by": "damage",
-      "from": "out/work/c/send/dmg3.jpg"
+      "from": "out/work/c/send/act3.jpg"
     }
   ]
 }
