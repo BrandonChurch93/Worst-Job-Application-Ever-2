@@ -102,33 +102,30 @@ export function kit(): Kit {
   return made
 }
 
-export const CAP = { rise: config.scale.heights.keycap - config.scale.heights.keyboardDeck, skirt: 7.2, rim: 0.5, dish: 13, corner: 10, tile: 96 }
+export const CAP = { rise: config.scale.heights.keycap - config.scale.heights.keyboardDeck, skirt: 7.2, rim: 0.9, dish: 16, corner: 10, tile: 96, gap: 1.2, shoulder: 8, fall: 5.6 }
 
-// A keycap: a skirt that stands in its seat, walls that lean in, a soft shoulder and a dished top.
+// A keycap: a skirt that stands in its seat, straight walls, a wide soft shoulder and a shallow dished top.
 // z = 0 is the crest of the rim, at the top of the key shape. The dish lies below it, so a flat legend at that height is never under the plastic.
 export function capGeometry(w: number, h: number, perCorner = 5): THREE.BufferGeometry {
-  const lean = 0
-  const round = 4.6
-  const zs = -round * (1 - Math.sin(lean))
-  const foot = -CAP.rise + 0.5
-  const taper = Math.tan(lean) * (zs - foot)
-  const rings: { inset: number; z: number }[] = [
-    { inset: 0, z: -(CAP.rise + CAP.skirt) },
-    { inset: 0, z: foot },
-    { inset: taper, z: zs }
+  const g0 = CAP.gap
+  const rings: { inset: number; z: number; soft?: number }[] = [
+    { inset: g0, z: -(CAP.rise + CAP.skirt) },
+    { inset: g0, z: -CAP.rise + 0.5 },
+    { inset: g0, z: -CAP.fall }
   ]
-  for (let i = 1; i <= 8; i++) {
-    const a = lean + ((Math.PI / 2 - lean) * i) / 8
-    rings.push({ inset: taper + round * (Math.cos(lean) - Math.cos(a)), z: zs + round * (Math.sin(a) - Math.sin(lean)) })
+  for (let i = 1; i <= 10; i++) {
+    const a = (Math.PI / 2) * (i / 10)
+    rings.push({ inset: g0 + CAP.shoulder * (1 - Math.cos(a)), z: -CAP.fall * (1 - Math.sin(a)) })
   }
   const crest = rings[rings.length - 1]!.inset
-  for (const d of [2, 4.5, 7, 10, CAP.dish]) rings.push({ inset: crest + d, z: -CAP.rim * smooth(d / CAP.dish) })
+  for (const d of [1.5, 3.5, 6, 9, CAP.dish]) rings.push({ inset: crest + d, z: -CAP.rim * smooth(d / CAP.dish), soft: d })
   const n = (perCorner + 1) * 4
   const pos: number[] = []
   const uv: number[] = []
   const idx: number[] = []
   for (const ring of rings) {
-    const o = roundedRect(w - ring.inset * 2, h - ring.inset * 2, Math.max(1.5, CAP.corner - ring.inset * 0.45), perCorner)
+    const half = Math.min(w, h) / 2 - ring.inset
+    const o = roundedRect(w - ring.inset * 2, h - ring.inset * 2, Math.min(half, Math.max(1.5, CAP.corner - ring.inset * 0.45) + (ring.soft ?? 0) * 0.9), perCorner)
     for (let i = 0; i < n; i++) {
       pos.push(o.x[i]!, o.y[i]!, ring.z)
       uv.push(o.x[i]! / CAP.tile, o.y[i]! / CAP.tile)

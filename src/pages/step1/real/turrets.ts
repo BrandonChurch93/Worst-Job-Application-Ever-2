@@ -277,7 +277,7 @@ function makeBolt(): THREE.Object3D {
   const root = new THREE.Group()
   const len = TURRET.bolt
   const head = overlay(new THREE.Mesh(f.head, f.headMaterial), 6)
-  head.scale.set(13, 5.4, 5.4)
+  head.scale.set(22, 5.4, 5.4)
   head.position.set(len / 2 - 11, 0, 8)
   const tails = overlay(new THREE.InstancedMesh(f.tail, f.tailMaterial, 2), 4) as THREE.InstancedMesh
   tails.frustumCulled = false
@@ -319,7 +319,7 @@ interface ScorchData {
   flareMaterial: THREE.MeshBasicMaterial
 }
 
-const SCORCH = { size: 62, smoke: 2, smokeSeconds: 1.5, shoulder: 5.5, core: 14, sparks: 9, sparkSeconds: 0.55, fall: 900, ember: 0.35, snap: 36, flareSeconds: 0.1 }
+const SCORCH = { size: 62, smoke: 2, smokeSeconds: 1.5, shoulder: 9, core: 14, sparks: 9, sparkSeconds: 0.55, fall: 900, ember: 0.35, snap: 36, flareSeconds: 0.1 }
 
 function makeScorch(s: Shape): THREE.Object3D {
   const f = fx()
