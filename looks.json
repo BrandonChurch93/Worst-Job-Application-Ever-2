@@ -1,33 +1,33 @@
 {
   "folder": "play",
-  "pushed": "2026-11-25T17:07:08.827Z",
-  "commit": "71c5b8f8bd240003f860c8ac44c50317e36adf6e",
+  "pushed": "2026-11-25T18:12:48.085Z",
+  "commit": "65b42a761fd043f2d94e730d541e43fbaec2e46a",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "reply-all: approved left, this build right (draft). Cups with lid, sleeve, ring and skirt; flippers with band and boss",
-      "time": "2026-11-25T17:07:06.956Z",
+      "caption": "Last save, approved beside this build: highway on welded trestles, clear garage trough inside the concrete frame",
+      "time": "2026-11-25T18:12:46.429Z",
       "by": "play",
-      "from": "out/work/report/play-reply-all-compare.jpg"
+      "from": "out/work/report/play-last-save-compare.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "tier-street: approved left, this build right (draft). Wire highway, flap, clear spiral, spinner, drop bank",
-      "time": "2026-11-25T17:07:07.183Z",
+      "caption": "Garage close: clear trough with rolled lip and newel, trestle feet with plates and screws",
+      "time": "2026-11-25T18:12:46.666Z",
       "by": "play",
-      "from": "out/work/report/play-tier-street-compare.jpg"
+      "from": "out/work/report/play-garage-close.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "reply-all crop: the three cups close",
-      "time": "2026-11-25T17:07:07.419Z",
+      "caption": "Cups close: dark skirt, chrome ring on its rods, kraft sleeve, matte lid with a warm lit well",
+      "time": "2026-11-25T18:12:46.902Z",
       "by": "play",
       "from": "out/work/report/play-cups-close.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "tier-street crop: highway with hoops, welds and brackets, spiral, spinner",
-      "time": "2026-11-25T17:07:07.648Z",
+      "caption": "Rail cam: steel wires, hoops, weld beads and the flap of the highway",
+      "time": "2026-11-25T18:12:47.141Z",
       "by": "play",
       "from": "out/work/report/play-highway-close.jpg"
     }
