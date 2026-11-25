@@ -2,6 +2,7 @@ import { beat, config, stepHz } from '../config'
 import { blendPose, CursorBody, HANDOFF, type CursorPose } from '../cursor/body'
 import { BotDriver, type BotName, type BotRun } from './bots'
 import { homePose, smooth } from './camera'
+import { arriveTurn, leaveTurn } from './turn'
 import type { CameraPose, Driver, DrawList, FlowEntry, Mode, PageLogic, PageMaker, Pointer, Shape, StageEvent } from './types'
 
 export * from './types'
@@ -124,9 +125,9 @@ export class Stage {
   get pagesVisited(): string[] { return [...this.visited] }
 
   private turnAt(): number {
-    const u = smooth(Math.min(1, this.phaseStep / turnSteps))
-    if (this.phase === 'arrive') return -(1 - u) * (Math.PI / 2)
-    if (this.phase === 'leave') return u * (Math.PI / 2)
+    const u = Math.min(1, this.phaseStep / turnSteps)
+    if (this.phase === 'arrive') return arriveTurn(u)
+    if (this.phase === 'leave') return leaveTurn(u)
     if (this.phase === 'end') return Math.PI / 2
     return 0
   }
