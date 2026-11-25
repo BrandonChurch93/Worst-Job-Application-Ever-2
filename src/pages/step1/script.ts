@@ -14,7 +14,7 @@ export const TIMES = {
   slabCount: 3, slabFirst: 0.4, slabEvery: 0.55, slabHang: 0.2, slabFall: 0.2, slabSettle: 0.12, slabLie: 0.25, slabLift: 0.18,
   paperSlide: 0.42, bite: 0.4, tugFilm: 5.06, lost: 0.3
 }
-export const TUG = { stiff: 2600, damp: 36, strainPx: 9.6, lead: 0.4, shoulder: { x: 14, y: 30 }, hands: 29, rateLag: 0.07, inside: 10, least: 10, reach: { rest: 44, min: 38, max: 54, bite: 26, haul: 70 } }
+export const TUG = { stiff: 2600, damp: 36, strainPx: 9.6, lead: 0.4, shoulder: { x: 14, y: 30 }, hands: 31, rateLag: 0.07, inside: 10, least: 10, reach: { rest: 37, min: 31, max: 47, bite: 26, haul: 70 } }
 export const SPOT = { x: -12, y: -14 }
 export const BITE = { x: SLOT.cx - PAPER.w / 2, y: SLOT.cy - PAPER.h + 3 }
 export const HOOD = { y: SLOT.cy + 17, z: 26 }
@@ -40,11 +40,11 @@ export const DIVES = [{ x: 1088, y: 816 }, { x: 744, y: 944 }, { x: 940, y: 668 
 export const DIVE = { see: 0.05, start: 0.22, seconds: 0.16 }
 export const TRUDGE = { x: 150, y: -110, seconds: 0.8 }
 export const END = { lean: { x: -10, y: -30 }, stamp: 0.62, sag: 1.0 }
-export const RESUME = { look: 19.9, walk: [20.3, 20.72] as [number, number], grab: 20.92, hoist: [20.98, 21.06] as [number, number], carry: [21.1, 21.54] as [number, number], drop: 21.62 }
+export const RESUME = { walk: [19.9, 20.3] as [number, number], proud: 20.4, beside: { x: 20, y: 6 }, grab: 21.06, hoist: [21.1, 21.16] as [number, number], carry: [21.18, 21.54] as [number, number], drop: 21.62 }
 
 const TUG_CURVE: [number, number, number, number][] = [
-  [0, 0.05, -0.26, 4], [0.3, 0.15, -0.2, 4], [0.8, 0.11, -0.32, 22], [1.05, 0.26, -0.12, 5], [1.55, 0.22, 0.28, 23], [1.8, 0.37, 0.1, 5], [2.3, 0.33, -0.3, 24],
-  [2.6, 0.48, -0.1, 5], [3.2, 0.44, 0.32, 24], [3.5, 0.6, 0.12, 6], [4.0, 0.56, -0.3, 24], [4.3, 0.72, -0.1, 6], [4.6, 0.68, 0.2, 22], [5.06, 0.95, 0, 3]
+  [0, 0.05, -0.2, 4], [0.3, 0.15, -0.14, 0], [0.8, 0.11, -0.4, 24], [1.05, 0.26, -0.12, 4], [1.55, 0.22, 0.36, 24], [1.8, 0.37, 0.1, 4], [2.3, 0.33, -0.4, 25],
+  [2.6, 0.48, -0.1, 4], [3.2, 0.44, 0.4, 25], [3.5, 0.6, 0.12, 5], [4.0, 0.56, -0.36, 25], [4.3, 0.72, -0.1, 5], [4.6, 0.68, 0.22, 22], [5.06, 0.95, 0, 3]
 ]
 
 function tugAt(t: number, column: 1 | 2 | 3): number {
@@ -212,11 +212,13 @@ export function makePlan(seed: number, first: string, last: string, email: strin
     to(at + DIVE.start, at + DIVE.start + DIVE.seconds, d.x, d.y, { arc: 36, ease: 'out' })
   }
 
-  // step1.resume: it watches the keyboard go, fetches its paper and carries it over
+  // step1.resume: it walks to its paper, stands beside it proud and dusts itself off, and only then lifts it and carries it over
   const grab = { x: PAPER_REST.x + PAPER.w - 12, y: PAPER_REST.y + 8 }
-  cue(RESUME.look, { react: 'dustOff' })
-  to(RESUME.walk[0], RESUME.walk[1], grab.x, grab.y, { arc: -34 })
-  cue(RESUME.grab - 0.06, { react: 'anticipate' })
+  to(RESUME.walk[0], RESUME.walk[1], PAPER_REST.x + PAPER.w + RESUME.beside.x, PAPER_REST.y + RESUME.beside.y, { arc: -34 })
+  cue(RESUME.proud, { act: 'proud' })
+  cue(RESUME.proud + 0.02, { react: 'dustOff' })
+  to(RESUME.grab - 0.14, RESUME.grab - 0.03, grab.x, grab.y, { ease: 'out' })
+  cue(RESUME.grab - 0.1, { react: 'anticipate' })
   clicks.push([RESUME.grab, RESUME.drop])
   to(RESUME.hoist[0], RESUME.hoist[1], grab.x - 6, grab.y - 20, { ease: 'out' })
   to(RESUME.carry[0], RESUME.carry[1], BITE.x + (grab.x - PAPER_REST.x), BITE.y - 14 + (grab.y - PAPER_REST.y), { arc: 52 })

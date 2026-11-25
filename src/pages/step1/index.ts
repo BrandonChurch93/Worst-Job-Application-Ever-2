@@ -7,6 +7,7 @@ import { SCREEN_H, TYPE } from '../../shell/parts'
 import { smooth } from '../../stage/camera'
 import type { CameraPose, DrawList, Emit, GagInfo, Hint, Mode, PageContext, PageLogic, Pointer, Shape, StepIo } from '../../stage/types'
 import { CAP_TOP, DECK, DECK_TOP, hatchCentre, homePlaces, keyAt, onDeck, seatIndex, seats, shuffled, TRAVEL, typed } from './keyboard'
+import { slotShapes } from './real/shredderShape'
 import { buildLayout, FIELDS, PAPER, PAPER_LINES, PAPER_REST, PAPER_TITLE, SLAB, SLOT, uploadGlyph, ZONE, type FieldName } from './layout'
 import { BITE, filmCamera, FRINGE, HOOD, makePlan, PILE, pointerAt, SHRED, START, TIMES, TUG, tugCurve, tugReach, type Plan } from './script'
 import { Turrets, TURRET, type TurretsState } from './turrets'
@@ -21,7 +22,6 @@ const STRIP = { paper: 30, ink: 26, wide: 3.6, every: 4 }
 const GRAB = 26
 const LIE = heights.card + 9
 const IDLE_SHUFFLE = 5
-const HOUSING = 22
 const DROP = CAP_TOP + 8
 const SWING = 0.12
 const SHAKE = { seconds: 0.25, px: 4.5, reach: 460, hop: 15 }
@@ -466,7 +466,7 @@ export function makePage(): PageLogic {
     t.hx = SLOT.cx + (dx / d) * held
     t.hy = SLOT.cy + (dy / d) * held
     io.cursor.setArms(true, [{ x: t.hx - px * TUG.hands, y: t.hy - py * TUG.hands, z: LIE + 6 }, { x: t.hx + px * TUG.hands, y: t.hy + py * TUG.hands, z: LIE + 6 }])
-    act(io, t.amount > 0.7 ? 'scared' : t.amount > 0.45 ? 'nervous' : 'angry')
+    act(io, t.amount > 0.7 ? 'scared' : t.amount > 0.62 ? 'nervous' : 'angry')
     const lost = s.mode === 'film' ? t.t >= TIMES.tugFilm : t.amount >= 0.9 || t.t >= 9
     if (lost) {
       io.cursor.setArms(false)
@@ -788,12 +788,9 @@ export function makePage(): PageLogic {
       if (!s.received) for (const [i, g] of glyph.entries()) out.push({ id: `resume-glyph-${i}`, part: 'shell', kind: 'box', x: g.x, y: g.y, w: g.w, h: g.h, z0: heights.card, z1: heights.card + 0.4, r: 1.5, rot: g.rot, tone: 'ink' })
       if (s.board > 0) turrets.draw(out, off)
       if (s.slot > 0) {
-        const w = SLOT.w
         const open = smooth(s.slot)
-        const jaw = [open, s.turn, s.phase === 'tug' ? s.tug.rate : s.phase === 'shredded' && s.shred < SHRED.pile ? 1 / TIMES.lost : 0]
-        out.push({ id: 'shredder-slot', part: 'shredder', kind: 'well', x: SLOT.cx - w / 2, y: SLOT.cy - SLOT.h / 2, w, h: SLOT.h, z0: -44, z1: 0, tone: 'dark' })
-        out.push({ id: 'shredder-jaw-0', part: 'shredder', kind: 'capsule', x: SLOT.cx - w / 2 - 2, y: SLOT.cy - SLOT.h / 2 - 5, w: w + 4, h: 4, z0: 0, z1: 2, tone: 'metal', v: jaw })
-        out.push({ id: 'shredder-jaw-1', part: 'shredder', kind: 'box', x: SLOT.cx - w / 2, y: SLOT.cy - SLOT.h / 2, w, h: HOUSING, z0: 0, z1: heights.machineMinTop + 2, r: 2, tone: 'metal', mechanism: true, v: jaw })
+        const jaw: [number, number, number] = [open, s.turn, s.phase === 'tug' ? s.tug.rate : s.phase === 'shredded' && s.shred < SHRED.pile ? 1 / TIMES.lost : 0]
+        out.push(...slotShapes(jaw))
       }
       if (s.phase === 'tug' || s.phase === 'shredded') tugPaper(out)
       strips(out)

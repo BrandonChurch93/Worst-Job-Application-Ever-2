@@ -5,14 +5,15 @@ import { grainNormalMap } from '../../shell/materials'
 import type { ArmsLook, ArmsModel } from '../contract'
 
 // Sizes in page pixels. The arm is 7% of the body's height thick, the hand a fifth of it long.
+// An arm is `rest` long: nearer than that it bows out at the elbow by what is left over, up to `slack` of the reach, and `elbow` is how sharply it bends there (1 is an even bow). An open hand that pushes bends back at the wrist by `wrist`; an open hand that hangs lets its fingers fall by `droop`.
 const H = config.cursor.heightPxAt1080
-export const ARM = { radius: H * 0.035, rest: 48, along: 22, round: 10, grainPx: 64, slack: 1.04 }
+export const ARM = { radius: H * 0.038, rest: 46, along: 22, round: 10, grainPx: 64, slack: 1.25, elbow: 2.2, wrist: 1, droop: 0.6 }
 const HAND = { palm: [4.6, 4.7, 2.7], palmY: 4.8, finger: 1.5, joint: 3.1, joints: 8 }
 
 export interface Arms extends ArmsModel {
   // How far the arms have grown, 0 to 1 and a little over: the hands swell with it.
   grown: number
-  // The height of the body's top face, in the same space as the shoulders: an arm that reaches across the body goes over it.
+  // The height of the body's top face, in the same space as the shoulders.
   over: number
 }
 
@@ -77,6 +78,14 @@ class Limb {
     }
   }
 
+  private at(out: THREE.Vector3, u: number, from: THREE.Vector3, to: THREE.Vector3, z0: number): void {
+    const a = (1 - u) * (1 - u)
+    const b = 2 * u * (1 - u) * ARM.elbow
+    const c = u * u
+    const k = 1 / (a + b + c)
+    out.set((a * from.x + b * this.c.x + c * to.x) * k, (a * from.y + b * this.c.y + c * to.y) * k, (a * z0 + b * this.c.z + c * to.z) * k)
+  }
+
   pose(d3: Draw, from: THREE.Vector3, to: THREE.Vector3, grip: number, strain: number, grown: number, over: number): void {
     const dx = to.x - from.x
     const dy = to.y - from.y
@@ -90,23 +99,24 @@ class Limb {
       px = -px
       py = -py
     }
-    const sag = Math.sqrt((3 * d * Math.max(0, length - d)) / 8) * (1 - 0.86 * strain) * Math.min(1, Math.abs(want) * 3) + 0.035 * d
-    this.c.set((from.x + to.x) / 2 + px * sag * 2, (from.y + to.y) / 2 + py * sag * 2, (from.z + to.z) / 2 + 1.5 + sag * 0.3)
-    // An arm whose hand is on the far side of the body is carried over the top face.
+    const sag = Math.sqrt((3 * d * Math.max(0, length - d)) / 8) * (1 - 0.8 * strain) * Math.min(1, Math.abs(want) * 3) + 0.035 * d
+    const out = (sag * (1 + ARM.elbow)) / ARM.elbow
+    this.c.set((from.x + to.x) / 2 + px * out, (from.y + to.y) / 2 + py * out, (from.z + to.z) / 2 + 1 + sag * 0.12)
+    // An arm whose hand is on the far side of the body goes under it and comes out at the far edge: no arm lies over the white face.
     const across = Math.min(1, Math.max(0, (-this.side * dx - 6) / 10))
-    const z0 = from.z + across * (over + ARM.radius * 0.6 - from.z)
-    if (across > 0) this.c.z = Math.max(this.c.z, z0 + across * (ARM.radius + 2 + Math.max(0, over - to.z) * 0.6))
+    const z0 = from.z
+    if (across > 0) this.c.z = Math.min(this.c.z, from.z + (1 - across) * (this.c.z - from.z))
+    void over
     const thin = Math.max(0.95, Math.sqrt(Math.min(1, ARM.rest / d))) * (1 - 0.05 * strain)
     const pos = d3.position.array as Float32Array
     const nor = d3.normal.array as Float32Array
     let k = this.slot * RINGS * RING * 3
     for (let i = 0; i <= ARM.along; i++) {
       const u = i / ARM.along
-      const a = (1 - u) * (1 - u)
-      const b = 2 * u * (1 - u)
-      const c = u * u
-      this.p.set(a * from.x + b * this.c.x + c * to.x, a * from.y + b * this.c.y + c * to.y, a * z0 + b * this.c.z + c * to.z)
-      this.t.set((1 - u) * (this.c.x - from.x) + u * (to.x - this.c.x), (1 - u) * (this.c.y - from.y) + u * (to.y - this.c.y), (1 - u) * (this.c.z - z0) + u * (to.z - this.c.z)).normalize()
+      this.at(this.t, Math.min(1, u + 0.02), from, to, z0)
+      this.at(this.p, Math.max(0, u - 0.02), from, to, z0)
+      this.t.sub(this.p).normalize()
+      this.at(this.p, u, from, to, z0)
       this.n1.set(this.t.y, -this.t.x, 0)
       if (this.n1.lengthSq() < 1e-6) this.n1.set(1, 0, 0)
       this.n1.normalize()
@@ -131,6 +141,22 @@ class Limb {
       }
     }
     this.t.set(to.x - this.c.x, to.y - this.c.y, (to.z - this.c.z) * 0.5).normalize()
+    const open = 1 - grip
+    const hang = open * (1 - strain) * ARM.droop * Math.max(0, -this.t.y)
+    const back = Math.min(1, open * strain * ARM.wrist)
+    if (hang > 0 || back > 0) {
+      const flatT = Math.hypot(this.t.x, this.t.y) || 1
+      let a = Math.atan2(this.t.y, this.t.x)
+      const turn = (goal: number, share: number): void => {
+        let by = goal - a
+        while (by > Math.PI) by -= Math.PI * 2
+        while (by < -Math.PI) by += Math.PI * 2
+        a += by * share
+      }
+      turn(-Math.PI / 2, hang)
+      turn(Math.PI / 2, back)
+      this.t.set(Math.cos(a) * flatT, Math.sin(a) * flatT, this.t.z).normalize()
+    }
     this.n1.set(this.t.y, -this.t.x, 0)
     if (this.n1.lengthSq() < 1e-6) this.n1.set(1, 0, 0)
     this.n1.normalize()
@@ -155,7 +181,7 @@ class Limb {
   }
 }
 
-const HAND_SCALE = 0.9
+const HAND_SCALE = 1.05
 // A clenched fist bulges: without this a closed hand is half the size of an open one and is lost on the sheet it holds.
 const FIST = 0.4
 

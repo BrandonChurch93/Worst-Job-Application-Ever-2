@@ -6,7 +6,7 @@ const heights = config.scale.heights
 
 // The cassette that comes up through the slot. It is built in its own units, drawn for an opening 300 wide, and set into the page at the slot's width (K page pixels to a unit), standing so that its top is machineMinTop + 2 above the page.
 // It is narrower than the slot by GAP on every side, so the dark of the opening shows round it; its chute swings out and reaches south once it is up.
-export const GAP = { side: 1.4, deep: 1.2 }
+export const GAP = { side: 2.2, deep: 2 }
 export const K = (SLOT.w - GAP.side * 2) / 296
 export const TOP = heights.machineMinTop + 2
 export const RAISE = TOP * (1 - K)
@@ -25,6 +25,17 @@ export const CASSETTE = {
 }
 // The same in page pixels, for what meets the cassette on the page: the sheet, the strips.
 export const UNIT = { half: CASSETTE.half * K, deep: CASSETTE.deep * K, r: CASSETTE.roller.r * K }
+
+// The slot as the page draws it: the well, the lip and the housing. `jaw` is how far it is open, the rollers' turn, and the rate the sheet is fed at.
+export const HOUSING = 22
+export function slotShapes(jaw: [number, number, number]): Shape[] {
+  const w = SLOT.w
+  return [
+    { id: 'shredder-slot', part: 'shredder', kind: 'well', x: SLOT.cx - w / 2, y: SLOT.cy - SLOT.h / 2, w, h: SLOT.h, z0: -WELL, z1: 0, tone: 'dark' },
+    { id: 'shredder-jaw-0', part: 'shredder', kind: 'capsule', x: SLOT.cx - w / 2 - 2, y: SLOT.cy - SLOT.h / 2 - 5, w: w + 4, h: 4, z0: 0, z1: 2, tone: 'metal', v: jaw },
+    { id: 'shredder-jaw-1', part: 'shredder', kind: 'box', x: SLOT.cx - w / 2, y: SLOT.cy - SLOT.h / 2, w, h: HOUSING, z0: 0, z1: TOP, r: 2, tone: 'metal', mechanism: true, v: jaw }
+  ]
+}
 
 export const smooth = (t: number): number => {
   const u = Math.min(1, Math.max(0, t))

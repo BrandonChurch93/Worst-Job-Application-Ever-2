@@ -22,6 +22,13 @@ Agent `tug_fixer`, branch `agent/tug`. Started 16:42 UTC.
 8. Arms: the cuff is gone, the hand is 0.9 of its drawn size (about 14 px), the tube is 4.9 px thick, the rubber is darker. `ARM` in `body.ts` is `rest: 40, strain: 14`, so strain shows at the new reach of 38 to 54 px.
 9. `src/cursor/sheets.ts` reads `PAPER` from `src/pages/step1/layout.ts` and the hands' half span from `TUG.hands`: one source.
 
+10. Supersedes 3 and 8 where the numbers differ. The dark gap is 2.2 px at each end and 2 px at each side (`GAP`), so it shows at the 972 px frame. The arms: 5.3 px thick, at most 46 px long, bent at an elbow each to its own side (`ARM.elbow`, a conic curve, so the arm reads as upper arm and forearm and not as a bow or a cable), straight only at full strain; hand 1.05 of its drawn size (about 15 px over the fingers). `ARM` in `body.ts` is `rest: 34, strain: 13, snap: 0.035`; `TUG.reach` is 31 to 47 px, so an arm is about half the arrow long, as in the approved sheet.
+11. An arm whose hand is on the far side of the body goes under the body and comes out at the far edge. The approved sheet draws that arm across the white face; the brief says no upper arm over the white face, and the brief is the later word.
+12. The sheet's title sits 12 px under the top edge (`PAPER.top`) and the hands are 31 px out from the middle (`TUG.hands`), so the two fists on the top corners leave the word whole.
+13. The sheet `cursor-arms` is laid out round step 1's own slot, because the shredder is built at `SLOT` and nowhere else: the fourth pose feeds its sheet to it through `slotShapes()`, the same three shapes the page draws. Five poses 100 px apart, the camera at 3.6 times home, straight on like the other two cursor sheets. The approved sheet is a three quarter view of a standing arrow; the cursor of the site lies in the plane of the page, so the sheet stays straight on (settled by the acting and damage sheets).
+14. `step1.resume`: the proud puff and the dust-off play beside the place of the sheet while it slides in (20.4 to 20.96 s), the lift follows at 21.06 s. Held 0.56 s: the sheet is at rest only from 20.86 s and the drop at 21.62 s does not move.
+15. In the tug the acting is `angry` until 0.62 of the sheet is gone (it was 0.45), so the key picture at 25.125 s and the peaks before it are angry: red tip and steam come from the acting of that state.
+
 ## M3 and the camera
 
 MEASURED with `npm run still -- --key step1-tug --format hd --tier draft` and the measure's own `highFrequencyEnergy` against `references/approved/step1-tug.png`, at the key instant 25.125 s, sheet and slot at the new scale:

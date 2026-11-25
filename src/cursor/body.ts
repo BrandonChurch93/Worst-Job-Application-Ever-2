@@ -36,7 +36,7 @@ const TUMBLE = { far: 1, share: 0.6, out: { k: 900, c: 60 }, back: { k: 300, c: 
 // Thrown through the air it goes tip first: the arrow turns toward the way it flies, most when that is up or to the right. tip is the angle its tip points at rest.
 const DIVE = { tip: 2.09, far: 1.25, high: [5, 18] as [number, number], fast: [150, 400] as [number, number] }
 const DRAG = { stride: 90, pulse: 0.2, lean: 0.34 }
-const ARM = { rest: 40, strain: 14, shed: 0.3 }
+const ARM = { rest: 34, strain: 13, shed: 0.3, snap: 0.035 }
 // What the body can be drawn at: the springs may ask for more, the pose never does.
 // Leaning right is held short of 0.42, where the arrow would stand upright on its tail and stop reading as a cursor.
 const LIMIT = { short: 0.55, long: 1.4, left: 0.6, right: 0.34 }
@@ -408,9 +408,10 @@ export class CursorBody {
       const hy = (s.hands[0].y + s.hands[1].y) / 2 - (s.y + 10.5 * UNIT_PX)
       const far = Math.hypot(hx, hy)
       const pull = Math.max(0, Math.min(1, (far - ARM.rest) / ARM.strain))
+      const was = s.strain
       s.strain += (pull - s.strain) * Math.min(1, dt * 18)
-      lean += Math.max(-0.5, Math.min(0.5, Math.atan2(hx, Math.max(20, hy)) * 0.55))
-      stretch += 0.1 * s.strain
+      lean += Math.max(-0.7, Math.min(0.7, Math.atan2(hx, Math.max(20, hy)) * 0.85))
+      stretch += 0.2 * s.strain - Math.min(0.3, (Math.max(0, was - s.strain) / dt) * ARM.snap)
       s.sproutV += (SPRING.sprout.k * (1 - s.sprout) - SPRING.sprout.c * s.sproutV) * dt
       s.sprout += s.sproutV * dt
       s.grip += ((s.sprout > 0.8 ? 1 : 0) - s.grip) * Math.min(1, dt * 30)
