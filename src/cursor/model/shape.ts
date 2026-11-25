@@ -5,15 +5,15 @@ import { OUTLINE } from '../contract'
 export const AXIS: [number, number] = [0.409, 0.912]
 export const CENTRE: [number, number] = [4.2, 9.5]
 export const TOP = 2.3
-const ENAMEL_AT = 0.76
-const SHOULDER = 0.44
-const RISE = 0.7
-const GROOVE = 1.4
+const ENAMEL_AT = 0.52
+const SHOULDER = 0.6
+const RISE = 0.66
+const GROOVE = 1.48
 const SOFT = 6
 
 // The edge band's section: how far in from the outline, how high, in outline units.
 const BAND: [number, number][] = [
-  [0.08, 0], [0.015, 0.1], [0, 0.28], [0, 1.2], [0.04, 1.38], [0.14, 1.5], [0.31, 1.55], [0.53, 1.55], [0.65, 1.52], [0.72, GROOVE]
+  [0.08, 0], [0.015, 0.1], [0, 0.28], [0, 1.2], [0.03, 1.38], [0.1, 1.5], [0.21, 1.56], [0.36, 1.56], [0.45, 1.54], [0.5, GROOVE]
 ]
 const SHOULDER_TURNS = [0, 10, 22, 36, 52, 70]
 const RADII = [0.2, 0.3, 0.26, 0.3, 0.3, 0.26, 0.3]
@@ -272,7 +272,7 @@ export function solid(): Solid {
     for (let x0 = 0.2 + (line % 2) * pitch * 0.5; x0 < 12; x0 += pitch) {
       const x = x0 + (hash01(Math.round(x0 * 100), line, 7) - 0.5) * 0.08
       const d = inside(x, y)
-      if (d < reach + 0.36) continue
+      if (d < reach + 0.45) continue
       pts.push([x, y])
       names.push(xs.length / 3)
       const soft = softInside(x, y)

@@ -51,7 +51,7 @@ The logic, the script of the film and the numbers the makers of the real parts r
 
 ## Last 4 s
 
-- The kit wins. From the moment the shredder has the cursor (`SHRED`, seconds): the body is under the page at 0.34, the strips leave the hood from 0.12, the cursor lies as a pile of strips from 0.78 for 1.0 s, the form empties from 1.3 to 1.8 (Email, then Last name, then First name, a character at a time), the strips zip back from 1.78 for 1.0 s, and the pointer is handed back at 2.8. In the film that is whole at 30.2 s, with 1.3 s left to look at the empty form and start toward it.
+- The kit wins. From the moment the shredder has the cursor (`SHRED`, seconds): the body is under the page at 0.34, the strips leave the hood from 0.12, the cursor lies as a pile of strips from 0.78 for 1.0 s, the form empties from 0.92 to 1.76 (Email, then Last name, then First name, one field after the other, 0.28 s each: the focus ring lights on the field and its caret runs back along the line and takes a character at a time), the strips zip back from 1.78 for 1.0 s, and the pointer is handed back at 2.8. In the film that is whole at 30.2 s, with 1.3 s left to look at the empty form and start toward it.
 
 ## When the visitor does nothing
 
