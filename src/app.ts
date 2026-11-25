@@ -10,6 +10,7 @@ import type { TargetKind } from './core/accumulator'
 import { restPose, type CursorPose } from './cursor/body'
 import { cursorSheet } from './cursor/sheets'
 import { applyView, views } from './diagnostics/views'
+import { makeLoop, makeOpening, type FilmPiece, type LoopPiece, type OpeningPiece } from './film'
 import { pages, preparePages, unitPages } from './pages'
 import { look } from './post/look'
 import { BlockoutView, TONES } from './shell/blockout'
@@ -44,6 +45,7 @@ export class App {
   private rests = new Map<string, Stage>()
   private counts = new Map<string, { triangles: number; drawCalls: number }>()
   private seen = new Set<string>()
+  private pieces: { opening?: OpeningPiece; loop?: LoopPiece } = {}
 
   static layouts(): Record<string, LayoutNode> {
     const out: Record<string, LayoutNode> = {}
@@ -169,7 +171,7 @@ export class App {
     return c
   }
 
-  put(frame: Frame, page: PageLogic, pose: CameraPose, size?: { width: number; height: number }): void {
+  put(frame: Frame, page: { width: number; height: number }, pose: CameraPose, size?: { width: number; height: number }): void {
     this.view.apply(frame, size ?? { width: page.width, height: page.height })
     const cy = pose.target[1]
     this.view.focus = -cy
@@ -200,7 +202,10 @@ export class App {
   }
 
   filmMoment(frameIndex: number): { unit: string; time: number } {
-    const t = frameIndex / config.film.fps
+    return this.filmMomentAt(frameIndex / config.film.fps)
+  }
+
+  filmMomentAt(t: number): { unit: string; time: number } {
     let start = 0
     for (const u of config.film.units) {
       if (t < start + u.seconds - 1e-9) return { unit: u.id, time: t - start }
@@ -230,6 +235,30 @@ export class App {
     pose(0)
     await this.engine.picture(this.shot(pose), { samples: tierSamples(tier), frame: frameIndex + 1, diagnostic: this.diagnostic })
     this.note(unit)
+  }
+
+  opening(): OpeningPiece {
+    return (this.pieces.opening ??= makeOpening())
+  }
+
+  loop(): LoopPiece {
+    return (this.pieces.loop ??= makeLoop())
+  }
+
+  // One frame of a piece that is not a page of the film: the opening of film A, the card loop.
+  // The shutter is open over the same part of a frame as in the film.
+  async renderPiece(piece: FilmPiece, index: number, tier: string, seed: number): Promise<void> {
+    const open = config.film.shutterDegrees / 360
+    this.tier = tier
+    this.engine.setSize(this.format.width, this.format.height)
+    const pose = (s: number) => {
+      const i = index + s * open
+      const view = piece.pose(i)
+      this.put(piece.frame(i), piece.size, view, piece.size)
+      this.setCamera(view)
+    }
+    pose(0)
+    await this.engine.picture(this.shot(pose), { samples: tierSamples(tier), frame: seed, diagnostic: this.diagnostic })
   }
 
   cursorState(c: CursorPose, pose: CameraPose): CursorState {
