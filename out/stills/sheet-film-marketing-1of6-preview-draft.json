@@ -1,0 +1,99 @@
+{
+  "what": {
+    "sheet": {
+      "kind": "film",
+      "id": "marketing",
+      "frames": [
+        0,
+        76,
+        152,
+        228,
+        304,
+        380,
+        458,
+        534,
+        610,
+        686,
+        762,
+        838
+      ]
+    }
+  },
+  "engineHash": "e6f9508050543b35",
+  "sharedHash": "a365b739db2b651c",
+  "pageHashes": {
+    "marketing": "da0853ca495d3bc5"
+  },
+  "format": "preview",
+  "tier": "draft",
+  "assets": "full",
+  "diagnostic": "beauty",
+  "browser": "147.0.7727.15",
+  "machine": {
+    "host": "space-sandbox",
+    "cores": 2,
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.90GHz",
+    "memoryMb": 7958,
+    "platform": "linux 6.1.155",
+    "node": "v20.20.2"
+  },
+  "width": 1399,
+  "height": 1192,
+  "columns": 3,
+  "rows": 4,
+  "tile": [
+    461,
+    259
+  ],
+  "pictures": [
+    "0:00.00  marketing.stroll  frame 0",
+    "0:01.27  marketing.stroll  frame 76",
+    "0:02.53  marketing.perks  frame 152",
+    "0:03.80  marketing.perks  frame 228",
+    "0:05.07  marketing.perks  frame 304",
+    "0:06.33  marketing.perks  frame 380",
+    "0:07.63  marketing.perks  frame 458",
+    "0:08.90  marketing.ticker  frame 534",
+    "0:10.17  marketing.ticker  frame 610",
+    "0:11.43  marketing.apply  frame 686",
+    "0:12.70  marketing.apply  frame 762",
+    "0:13.97  marketing.apply  frame 838"
+  ],
+  "standIns": [
+    {
+      "name": "apply-button",
+      "unit": "marketing"
+    },
+    {
+      "name": "careers-page",
+      "unit": "marketing"
+    },
+    {
+      "name": "cursor-acting",
+      "unit": "step1"
+    },
+    {
+      "name": "cursor-body",
+      "unit": "step1"
+    },
+    {
+      "name": "perk-cards",
+      "unit": "marketing"
+    },
+    {
+      "name": "shell",
+      "unit": "step1"
+    },
+    {
+      "name": "ticker",
+      "unit": "marketing"
+    },
+    {
+      "name": "type",
+      "unit": "step1"
+    }
+  ],
+  "problems": [],
+  "sha256": "400bcb9a6ecaa17aa5169ec8fcaac36ac70df63e4ce7455188c18f244b774e59",
+  "keptFrom": "out/work/sheets/sheet-film-marketing-1of6-preview-draft.jpg"
+}

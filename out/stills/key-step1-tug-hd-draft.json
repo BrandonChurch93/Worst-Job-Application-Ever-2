@@ -1,0 +1,68 @@
+{
+  "what": {
+    "still": {
+      "page": "step1",
+      "beat": "step1.tug",
+      "at": 0.5,
+      "camera": "film",
+      "tier": "draft"
+    }
+  },
+  "engineHash": "e6f9508050543b35",
+  "sharedHash": "a365b739db2b651c",
+  "pageHashes": {
+    "step1": "143605278a5b331a"
+  },
+  "format": "hd",
+  "tier": "draft",
+  "assets": "full",
+  "diagnostic": "beauty",
+  "browser": "147.0.7727.15",
+  "machine": {
+    "host": "space-sandbox",
+    "cores": 2,
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.90GHz",
+    "memoryMb": 7958,
+    "platform": "linux 6.1.155",
+    "node": "v20.20.2"
+  },
+  "seconds": 5.738,
+  "invalidValues": 0,
+  "standIns": [
+    {
+      "name": "cursor-acting",
+      "unit": "step1"
+    },
+    {
+      "name": "cursor-arms",
+      "unit": "step1"
+    },
+    {
+      "name": "cursor-body",
+      "unit": "step1"
+    },
+    {
+      "name": "paper",
+      "unit": "step1"
+    },
+    {
+      "name": "shell",
+      "unit": "step1"
+    },
+    {
+      "name": "shredder",
+      "unit": "step1"
+    },
+    {
+      "name": "type",
+      "unit": "step1"
+    }
+  ],
+  "counts": {
+    "triangles": 29716,
+    "drawCalls": 81
+  },
+  "problems": [],
+  "sha256": "ff6bf58ee070790236ba65cdab52c96ff9dac140c84d9ae5e856a9335cc4c048",
+  "keptFrom": "out/work/stills/key-step1-tug-hd-draft.png"
+}

@@ -1,0 +1,83 @@
+{
+  "what": {
+    "still": {
+      "page": "boss",
+      "beat": "boss.slabs",
+      "at": 0.5,
+      "camera": "home",
+      "tier": "draft"
+    }
+  },
+  "engineHash": "e6f9508050543b35",
+  "sharedHash": "a365b739db2b651c",
+  "pageHashes": {
+    "boss": "c760279b498e8bb3"
+  },
+  "format": "hd",
+  "tier": "draft",
+  "assets": "full",
+  "diagnostic": "beauty",
+  "browser": "147.0.7727.15",
+  "machine": {
+    "host": "space-sandbox",
+    "cores": 2,
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.90GHz",
+    "memoryMb": 7958,
+    "platform": "linux 6.1.155",
+    "node": "v20.20.2"
+  },
+  "seconds": 5.43,
+  "invalidValues": 0,
+  "standIns": [
+    {
+      "name": "boss-body",
+      "unit": "boss"
+    },
+    {
+      "name": "boss-transform",
+      "unit": "boss"
+    },
+    {
+      "name": "boss-weapons",
+      "unit": "boss"
+    },
+    {
+      "name": "cursor-acting",
+      "unit": "step1"
+    },
+    {
+      "name": "cursor-body",
+      "unit": "step1"
+    },
+    {
+      "name": "health-bar",
+      "unit": "boss"
+    },
+    {
+      "name": "shell",
+      "unit": "step1"
+    },
+    {
+      "name": "type",
+      "unit": "step1"
+    },
+    {
+      "name": "verify-card",
+      "unit": "boss"
+    }
+  ],
+  "counts": {
+    "triangles": 63343,
+    "drawCalls": 218
+  },
+  "problems": [],
+  "compare": {
+    "id": "boss-fight",
+    "approved": "references/approved/boss-fight.png",
+    "still": "out/work/stills/key-boss-fight-hd-draft.png",
+    "crops": [],
+    "width": 1400,
+    "height": 426
+  },
+  "keptFrom": "out/work/compare/compare-boss-fight.jpg"
+}

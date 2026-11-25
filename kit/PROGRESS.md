@@ -25,22 +25,22 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 20, 2026-11-25T12:26Z, Phase 2.
+Status 21, 2026-11-25T12:45Z, Phase 2.
 
-1. `out/stills/status/01-fix-last-save.jpg`: The last save. Left: your approved picture. Right: the pinball agent's fix, from its branch. Lower camera, flipper up, ball on it.
-2. `out/stills/status/02-fix-lobby-doors.jpg`: The lobby doors. Left: your approved picture. Right: the pinball agent's fix, from its branch. Low on the carpet, plate, shut leaves, door post.
-3. `out/stills/status/03-fix-rail-cam.jpg`: The rail camera. Left: your approved picture. Right: the pinball agent's fix, from its branch. The ball on two rails.
-4. `out/stills/status/04-fix-boss-socket.jpg`: The boss unfolds, twelve frames from the boss agent's branch. The empty socket at bottom centre is a dark hole with cracked rim.
+1. `out/stills/status/01-film-sheet-marketing.jpg`: The film, sheet 1 of 6: the careers page, 0:00 to 0:14. Stroll, perk cards, ticker, the jump on Apply.
+2. `out/stills/status/02-film-sheet-step1.jpg`: The film, sheet 2 of 6: step 1, 0:14 to 0:46. Keyboard, turrets, shuffle, resume, tug of war, shredded. No frame of the twelve falls on the error slabs.
+3. `out/stills/status/03-film-sheet-step2.jpg`: The film, sheet 3 of 6: step 2, 0:46 to 1:07. The dial, the slot machine, the crank.
+4. `out/stills/status/04-film-sheet-pinball.jpg`: The film, sheet 4 of 6: the pinball machine, 1:07 to 1:49. Sealed, the whole machine, three tiers, the last save, the drain.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 2, tick 51 at 2026-11-25T12:26:55Z, allowance: build
-time used in this phase: 4.81 h of its box of 6.50 h
-time used under the allowance in force: 6.91 h of 36.00 h allowed
-time used: 6.91 of 36.00 hours before the review
+clock: phase 2, tick 54 at 2026-11-25T12:45:13Z, allowance: build
+time used in this phase: 5.11 h of its box of 6.50 h
+time used under the allowance in force: 7.21 h of 36.00 h allowed
+time used: 7.21 of 36.00 hours before the review
 extra rounds: yes
 half point: reached
 box end: not reached
@@ -267,7 +267,7 @@ Kept by `npm run judged -- --write`. Check G6 compares its ids with the computed
 | `site:boss` | `site` | step 4 at rest, drawn through the live site's own path at the high level, from home, in hd |  |
 | `site:decision` | `site` | step 5 at rest, drawn through the live site's own path at the high level, from home, in hd |  |
 
-47 frames of the films and the loop. The frame numbers are those of the build of 2026-11-25T12:09:17Z. A judged frame is found again by its id when it is rendered, so a beat's frame follows its event.
+47 frames of the films and the loop. The frame numbers are those of the build of 2026-11-25T12:35:31Z. A judged frame is found again by its id when it is rendered, so a beat's frame follows its event.
 
 | Id | Unit | What | Frame |
 | --- | --- | --- | --- |
@@ -400,6 +400,7 @@ One line each: the date, the decision, the reason, and the config key if one was
 - 2026-11-25T11:55Z, Phase 2, after round 2 of the blockout. The round did not pass (8, 7, 6; two severe issues on the pinball close cameras) and it was the last of the two the kit allows, so R4 blockout closes at its limit. Kit/07 keeps the build of the best judged round "plus later fixes only while the machine checks and measures stay green". The phase box has 2 h 17 min left and the rest of the phase needs about 75 minutes of it, so 40 minutes go to fixes, made by three new build agents side by side while the Builder posts the status and renders the pages that do not change: `pinball_fixer` (the save camera, the lobby camera with its doors and plate, the title board in the wide view, the commentary card in the street tier's frame, the rail camera's moment, the launch ride), `step1_fixer` (the tug that stalls, the first name under fire that cannot be read, the slab that reads as a drifting toast, the keyboard's exit) and `boss_fixer` (the empty socket that reads as a second button, the escalation of the pop-ups and the last stand). Each starts from main at 1aeefb2 on the branch of the agent that built its part, with a limit of 40 minutes, and must leave the take, the beat times, the bots and the measures as they are. No beat is shortened: the narrator's lines fill them, so the pace is fixed by what happens inside a beat. What is not pushed and checked by 12:40Z is not merged and goes to "Open items" for its phase: step 1 to the look lock, the pinball machine and the boss to Phase 4. The other issues are ruled in `scorecards/round-002/SUMMARY.md`.
 - 2026-11-25T12:28Z, Phase 2, the three round 2 fix branches are merged while a render runs here. The merges were made and checked in a second work tree (`git worktree`), so the source under the running render stayed as it was: type check clean, 782 of 782 tests (775, 2 new for the boss, 5 for step 1), build, bots all clear on 37 of 37 gags, the table's take 10 of 10, cut list up to date. Pushed to main as 42e6c7d at 12:28Z. The engine hash is unchanged (e6f9508050543b35), so the three chunks rendered here stay good; the page hashes of step1, pinball and boss changed. The measures and stills that need the browser are run on this VM when the render has ended. Three sandbox agents render the changed pages from 42e6c7d meanwhile; if a check then asks for a source change, only that page is rendered again.
 - 2026-11-25T12:28Z, Phase 2, two leftover patch files removed before the film render (`src/pages/step3/NEEDS.patch`, `tools/HARNESS-NEEDS.patch`): each was taken or declined earlier, and every file in a page folder counts in that page's hash, so removing one later would have made the pinball chunk stale. For the same reason no note or config comment is edited until the preview film is kept: the pinball agent's remark that the notes of `cameras.table-save` and `cameras.tier-1` in the config are out of date is an open item for the start of Phase 3.
+- 2026-11-25T12:48Z, Phase 2, steps 15 and 16. (1) The blockout film was joined from six chunks of one build (engine `e6f9508050543b35`), three rendered here and three by sandbox render agents from 42e6c7d, each chunk returned as a message attachment and checked here by its sha256 before it was taken in. MEASURED: attachments of 16.5, 16.6 and 21.4 MB arrive whole. (2) `tools/review.mjs` listed the newest `film-*.mp4` of `out/work/` as "Film B at 1920 by 1080, newest render" even when no hd film exists, which put the 79 MB preview on the review page twice under a wrong label. It now lists only films in `formats.hd` there. The review page fell from 171.2 MB to 95.9 MB. (3) App hosting, MEASURED 12:46Z: an upload of 45 files, 101.2 MB, is accepted in 25 s. The first request for the 79 MB film through the test address answered 502 and the hosted check failed on it; the same check run again one minute later passed, with the film whole by script (79019423 of 79019423 bytes) and playable by element (153 s). So a hosted check that fails only on a first request for a large file is run once more before it counts.
 
 ## Notes from Brandon
 
@@ -482,7 +483,10 @@ Each with the command, the range, the log file, the VM, when it started and the 
 
 Each with the command, the range, the log file, the VM, when it started and the time the render budget says it should take.
 
-- Ended 2026-11-25T12:31:39Z, exit 0: blockout film B, the chunks of `marketing` (420 frames, 0.83 s a frame, 6.1 min), `step2` (630 frames, 0.88 to 0.91 s a frame, 9.1 min) and `decision` (360 frames, 0.84 to 1.12 s a frame, 5.3 min), 20.6 min in all against 21 min in the render budget. The chunks are in `out/work/film/chunks/`. The chunks of `step1`, `pinball` and `boss` are rendered by three sandbox agents from 42e6c7d (see "Running agents"). The cap of `sandbox.previewFilmMaxHours` (2 h from 12:11Z) ends 14:11Z.
+- Nothing is running at 2026-11-25T12:43Z.
+- Ended 2026-11-25T12:42:18Z, exit 0: blockout film B, joined from six chunks of one build (engine `e6f9508050543b35`): `marketing`, `step2` and `decision` rendered on this VM (1410 frames, 20.6 min, 0.83 to 1.12 s a frame), `step1`, `pinball` and `boss` rendered by three sandbox agents from 42e6c7d (3180 frames, 0.43 to 0.56 s a frame on 4 cores, 7.2 to 12.1 min each, side by side). Command: `npm run film -- --chunks-from ../wja-scratch/chunks-in --join --tier draft --format preview`. Result: `out/work/film-b-preview-draft.mp4`, 4590 frames at 30 a second, 960 by 540, 153.00 s, 4.13 Mbps. From the first frame at 12:11Z to the joined film: 31 min of the 2 h `sandbox.previewFilmMaxHours` allows.
+- Ended 2026-11-25T12:40:26Z, exit 0: `npm run render:local -- --proof` (log `../wja-scratch/logs/proof.log`), 2.4 min: `out/work/render-local/proof/proof-film-b.mov`, 60 frames at 60 a second across the hit `bolt-hit` at frame 1217, ProRes 422 HQ, 960 by 540, drawn by SwiftShader; and `proof-opening.mov`, the same of the stand-in opening.
+- Ended 2026-11-25T12:42:38Z, exit 0: `npm run keep -- --film`: `out/preview-b.mp4` and `out/preview-b.json`, 75.36 MB, under `repo.maxFileMb` 95.
 
 ## Running agents
 
@@ -507,9 +511,9 @@ Each with its name, its folders, its branch and its looks branch, when it starte
 | `pinball_fixer` | build, sandbox | `src/table/`, `src/pages/step3/`, `cut/TABLE-TAKE.json`, the table's entries under `cameras` in the config | `agent/pinball` | 2026-11-25T11:55Z | 12:35Z | reported done 12:17Z at 9460611 (5 commits; its eleven looks at b6316f9 looked at by the Builder); released; merged at bbb6609, on main since 12:28Z |
 | `step1_fixer` | build, sandbox | `src/pages/step1/`, `tests/step1.test.ts` | `agent/step1` | 2026-11-25T11:55Z | 12:35Z | reported done 12:22Z at 05de29d (3 commits; its four sheets at 5da0ea3 looked at by the Builder); released; merged at 8a4de1e, on main since 12:28Z |
 | `boss_fixer` | build, sandbox | `src/pages/step4/`, `src/boss/` | `agent/boss` | 2026-11-25T11:55Z | 12:35Z | reported done 12:11Z at e1041e8 (4 commits; its looks at 81e3bf8 looked at by the Builder 12:13Z); released; merged at 7dae87c, on main since 12:28Z |
-| `film_renderer_step1` | render, sandbox | the film chunk of `step1`: 960 frames, `draft`, `formats.preview`, from 42e6c7d; changes no file | none: the chunk comes back attached to its message; fallback `agent/render-step1-looks` | 2026-11-25T12:29Z | 12:54Z | started 12:29Z; the render budget says about 12 min with the set-up |
-| `film_renderer_pinball` | render, sandbox | the film chunk of `pinball`: 1260 frames, `draft`, `formats.preview`, from 42e6c7d; changes no file | none: the chunk comes back attached to its message; fallback `agent/render-pinball-looks` | 2026-11-25T12:29Z | 13:04Z | started 12:29Z; the render budget says about 17 min with the set-up |
-| `film_renderer_boss` | render, sandbox | the film chunk of `boss`: 960 frames, `draft`, `formats.preview`, from 42e6c7d; changes no file | none: the chunk comes back attached to its message; fallback `agent/render-boss-looks` | 2026-11-25T12:29Z | 12:54Z | started 12:29Z; the render budget says about 12 min with the set-up |
+| `film_renderer_step1` | render, sandbox | the film chunk of `step1`: 960 frames, `draft`, `formats.preview`, from 42e6c7d; changes no file | none: the chunk came back attached to its message | 2026-11-25T12:29Z | 12:54Z | released 12:37Z: MEASURED 960 frames at 0.46 s a frame on 4 cores, 7.7 min, exit 0, 16.48 MB, sha256 58a951c4 checked here, hashes of the build matched; taken into the film at 12:42Z |
+| `film_renderer_pinball` | render, sandbox | the film chunk of `pinball`: 1260 frames, `draft`, `formats.preview`, from 42e6c7d; changes no file | none: the chunk came back attached to its message | 2026-11-25T12:29Z | 13:04Z | released 12:42Z: MEASURED 1260 frames at 0.56 s a frame on 4 cores, 12.1 min, exit 0, 21.36 MB, sha256 6e243538 checked here, hashes of the build matched; taken into the film at 12:42Z |
+| `film_renderer_boss` | render, sandbox | the film chunk of `boss`: 960 frames, `draft`, `formats.preview`, from 42e6c7d; changes no file | none: the chunk came back attached to its message | 2026-11-25T12:29Z | 12:54Z | released 12:37Z: MEASURED 960 frames at 0.43 s a frame on 4 cores, 7.2 min, exit 0, 16.57 MB, sha256 7bb15fcb checked here, hashes of the build matched; taken into the film at 12:42Z |
 
 Ten build agents, the most the kit allows beside six critic slots. Each brief names the approved images of its part, gives its sections of the kit word for word, and repeats the three rules. First complete versions wanted by 10:45Z to 10:50Z. A build agent silent for 45 minutes is replaced once from its branch. The Builder keeps for itself: `tools/parts.mjs`, `simcache.mjs`, `pack.mjs`, `measure.mjs`, `hostcheck.mjs`, the gate checks, the diagnostic views, `src/main.ts`, `src/app.ts` and the frame interface.
 

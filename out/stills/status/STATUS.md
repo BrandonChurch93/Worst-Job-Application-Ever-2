@@ -1,8 +1,8 @@
 # Status pictures
 
-Time: 2026-11-25T12:26Z. Phase 2, status 20.
+Time: 2026-11-25T12:45Z. Phase 2, status 21.
 
-1. `01-fix-last-save.jpg`: The last save. Left: your approved picture. Right: the pinball agent's fix, from its branch. Lower camera, flipper up, ball on it.
-2. `02-fix-lobby-doors.jpg`: The lobby doors. Left: your approved picture. Right: the pinball agent's fix, from its branch. Low on the carpet, plate, shut leaves, door post.
-3. `03-fix-rail-cam.jpg`: The rail camera. Left: your approved picture. Right: the pinball agent's fix, from its branch. The ball on two rails.
-4. `04-fix-boss-socket.jpg`: The boss unfolds, twelve frames from the boss agent's branch. The empty socket at bottom centre is a dark hole with cracked rim.
+1. `01-film-sheet-marketing.jpg`: The film, sheet 1 of 6: the careers page, 0:00 to 0:14. Stroll, perk cards, ticker, the jump on Apply.
+2. `02-film-sheet-step1.jpg`: The film, sheet 2 of 6: step 1, 0:14 to 0:46. Keyboard, turrets, shuffle, resume, tug of war, shredded. No frame of the twelve falls on the error slabs.
+3. `03-film-sheet-step2.jpg`: The film, sheet 3 of 6: step 2, 0:46 to 1:07. The dial, the slot machine, the crank.
+4. `04-film-sheet-pinball.jpg`: The film, sheet 4 of 6: the pinball machine, 1:07 to 1:49. Sealed, the whole machine, three tiers, the last save, the drain.

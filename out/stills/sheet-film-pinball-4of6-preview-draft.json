@@ -1,0 +1,267 @@
+{
+  "what": {
+    "sheet": {
+      "kind": "film",
+      "id": "pinball",
+      "frames": [
+        4020,
+        4248,
+        4478,
+        4706,
+        4936,
+        5164,
+        5394,
+        5622,
+        5852,
+        6080,
+        6310,
+        6538
+      ]
+    }
+  },
+  "engineHash": "e6f9508050543b35",
+  "sharedHash": "a365b739db2b651c",
+  "pageHashes": {
+    "pinball": "52eaa98774a574fc"
+  },
+  "format": "preview",
+  "tier": "draft",
+  "assets": "full",
+  "diagnostic": "beauty",
+  "browser": "147.0.7727.15",
+  "machine": {
+    "host": "space-sandbox",
+    "cores": 2,
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.90GHz",
+    "memoryMb": 7958,
+    "platform": "linux 6.1.155",
+    "node": "v20.20.2"
+  },
+  "width": 1399,
+  "height": 1192,
+  "columns": 3,
+  "rows": 4,
+  "tile": [
+    461,
+    259
+  ],
+  "pictures": [
+    "1:07.00  pinball.seal  frame 4020",
+    "1:10.80  pinball.seal  frame 4248",
+    "1:14.63  pinball.reveal  frame 4478",
+    "1:18.43  pinball.lobby  frame 4706",
+    "1:22.27  pinball.coffee  frame 4936",
+    "1:26.07  pinball.replyAll  frame 5164",
+    "1:29.90  pinball.replyAll  frame 5394",
+    "1:33.70  pinball.fired  frame 5622",
+    "1:37.53  pinball.highway  frame 5852",
+    "1:41.33  pinball.save  frame 6080",
+    "1:45.17  pinball.drain  frame 6310",
+    "1:48.97  pinball.drain  frame 6538"
+  ],
+  "standIns": [
+    {
+      "name": "apply-button",
+      "unit": "marketing"
+    },
+    {
+      "name": "bumpers",
+      "unit": "pinball"
+    },
+    {
+      "name": "careers-page",
+      "unit": "marketing"
+    },
+    {
+      "name": "clear-ball",
+      "unit": "pinball"
+    },
+    {
+      "name": "crank",
+      "unit": "step2"
+    },
+    {
+      "name": "cursor-acting",
+      "unit": "step1"
+    },
+    {
+      "name": "cursor-arms",
+      "unit": "step1"
+    },
+    {
+      "name": "cursor-body",
+      "unit": "step1"
+    },
+    {
+      "name": "cursor-damage",
+      "unit": "step1"
+    },
+    {
+      "name": "dial",
+      "unit": "step2"
+    },
+    {
+      "name": "displays",
+      "unit": "pinball"
+    },
+    {
+      "name": "flippers",
+      "unit": "pinball"
+    },
+    {
+      "name": "keyboard",
+      "unit": "step1"
+    },
+    {
+      "name": "lift",
+      "unit": "pinball"
+    },
+    {
+      "name": "loader",
+      "unit": "pinball"
+    },
+    {
+      "name": "marquee",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-bank",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-beach",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-boardroom",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-coffee-machine",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-cubicles",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-firehouse",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-garage",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-houses",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-hq",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-inbox",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-ladder",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-moms",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-notes",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-police",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-revolving-door",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-road-signs",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-staplers",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-wedges",
+      "unit": "pinball"
+    },
+    {
+      "name": "paper",
+      "unit": "step1"
+    },
+    {
+      "name": "perk-cards",
+      "unit": "marketing"
+    },
+    {
+      "name": "ramps",
+      "unit": "pinball"
+    },
+    {
+      "name": "rows",
+      "unit": "step2"
+    },
+    {
+      "name": "shell",
+      "unit": "step1"
+    },
+    {
+      "name": "shredder",
+      "unit": "step1"
+    },
+    {
+      "name": "slot",
+      "unit": "step2"
+    },
+    {
+      "name": "table-frame",
+      "unit": "pinball"
+    },
+    {
+      "name": "table-hardware",
+      "unit": "pinball"
+    },
+    {
+      "name": "table-layout",
+      "unit": "pinball"
+    },
+    {
+      "name": "table-lights",
+      "unit": "pinball"
+    },
+    {
+      "name": "targets",
+      "unit": "pinball"
+    },
+    {
+      "name": "ticker",
+      "unit": "marketing"
+    },
+    {
+      "name": "tier-art",
+      "unit": "pinball"
+    },
+    {
+      "name": "turrets",
+      "unit": "step1"
+    },
+    {
+      "name": "type",
+      "unit": "step1"
+    }
+  ],
+  "problems": [],
+  "sha256": "3abb5f46d67da40176fe705a7d02d2bd8a2ba99e7bcd776d316fd668e8714398",
+  "keptFrom": "out/work/sheets/sheet-film-pinball-4of6-preview-draft.jpg"
+}

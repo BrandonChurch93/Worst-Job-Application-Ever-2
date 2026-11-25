@@ -1,0 +1,139 @@
+{
+  "what": {
+    "sheet": {
+      "kind": "film",
+      "id": "step2",
+      "frames": [
+        2760,
+        2874,
+        2988,
+        3104,
+        3218,
+        3332,
+        3446,
+        3560,
+        3674,
+        3790,
+        3904,
+        4018
+      ]
+    }
+  },
+  "engineHash": "e6f9508050543b35",
+  "sharedHash": "a365b739db2b651c",
+  "pageHashes": {
+    "step2": "55cb277c9b082808"
+  },
+  "format": "preview",
+  "tier": "draft",
+  "assets": "full",
+  "diagnostic": "beauty",
+  "browser": "147.0.7727.15",
+  "machine": {
+    "host": "space-sandbox",
+    "cores": 2,
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.90GHz",
+    "memoryMb": 7958,
+    "platform": "linux 6.1.155",
+    "node": "v20.20.2"
+  },
+  "width": 1399,
+  "height": 1192,
+  "columns": 3,
+  "rows": 4,
+  "tile": [
+    461,
+    259
+  ],
+  "pictures": [
+    "0:46.00  step2.open  frame 2760",
+    "0:47.90  step2.open  frame 2874",
+    "0:49.80  step2.dial  frame 2988",
+    "0:51.73  step2.dial  frame 3104",
+    "0:53.63  step2.dial  frame 3218",
+    "0:55.53  step2.slot  frame 3332",
+    "0:57.43  step2.slot  frame 3446",
+    "0:59.33  step2.slot  frame 3560",
+    "1:01.23  step2.crank  frame 3674",
+    "1:03.17  step2.crank  frame 3790",
+    "1:05.07  step2.crank  frame 3904",
+    "1:06.97  step2.continue  frame 4018"
+  ],
+  "standIns": [
+    {
+      "name": "apply-button",
+      "unit": "marketing"
+    },
+    {
+      "name": "careers-page",
+      "unit": "marketing"
+    },
+    {
+      "name": "crank",
+      "unit": "step2"
+    },
+    {
+      "name": "cursor-acting",
+      "unit": "step1"
+    },
+    {
+      "name": "cursor-arms",
+      "unit": "step1"
+    },
+    {
+      "name": "cursor-body",
+      "unit": "step1"
+    },
+    {
+      "name": "cursor-damage",
+      "unit": "step1"
+    },
+    {
+      "name": "dial",
+      "unit": "step2"
+    },
+    {
+      "name": "keyboard",
+      "unit": "step1"
+    },
+    {
+      "name": "paper",
+      "unit": "step1"
+    },
+    {
+      "name": "perk-cards",
+      "unit": "marketing"
+    },
+    {
+      "name": "rows",
+      "unit": "step2"
+    },
+    {
+      "name": "shell",
+      "unit": "step1"
+    },
+    {
+      "name": "shredder",
+      "unit": "step1"
+    },
+    {
+      "name": "slot",
+      "unit": "step2"
+    },
+    {
+      "name": "ticker",
+      "unit": "marketing"
+    },
+    {
+      "name": "turrets",
+      "unit": "step1"
+    },
+    {
+      "name": "type",
+      "unit": "step1"
+    }
+  ],
+  "problems": [],
+  "sha256": "61037fe67c8312bcb5d8d24f8a3470d59c64a5034e0658c934a5685f41c1a8b1",
+  "keptFrom": "out/work/sheets/sheet-film-step2-3of6-preview-draft.jpg"
+}

@@ -1,0 +1,223 @@
+{
+  "what": {
+    "sheet": {
+      "kind": "pages",
+      "pages": [
+        "marketing",
+        "step1",
+        "step2",
+        "pinball",
+        "boss",
+        "decision"
+      ]
+    }
+  },
+  "engineHash": "e6f9508050543b35",
+  "sharedHash": "a365b739db2b651c",
+  "pageHashes": {
+    "marketing": "da0853ca495d3bc5",
+    "step1": "143605278a5b331a",
+    "step2": "55cb277c9b082808",
+    "pinball": "52eaa98774a574fc",
+    "boss": "c760279b498e8bb3",
+    "decision": "08e4b1401a38f867"
+  },
+  "format": "preview",
+  "tier": "draft",
+  "assets": "full",
+  "diagnostic": "beauty",
+  "browser": "147.0.7727.15",
+  "machine": {
+    "host": "space-sandbox",
+    "cores": 2,
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.90GHz",
+    "memoryMb": 7958,
+    "platform": "linux 6.1.155",
+    "node": "v20.20.2"
+  },
+  "width": 1399,
+  "height": 610,
+  "columns": 3,
+  "rows": 2,
+  "tile": [
+    461,
+    259
+  ],
+  "pictures": [
+    "marketing  at rest",
+    "step1  at rest",
+    "step2  at rest",
+    "pinball  at rest",
+    "boss  at rest",
+    "decision  at rest"
+  ],
+  "standIns": [
+    {
+      "name": "apply-button",
+      "unit": "marketing"
+    },
+    {
+      "name": "bumpers",
+      "unit": "pinball"
+    },
+    {
+      "name": "careers-page",
+      "unit": "marketing"
+    },
+    {
+      "name": "cursor-body",
+      "unit": "step1"
+    },
+    {
+      "name": "displays",
+      "unit": "pinball"
+    },
+    {
+      "name": "flippers",
+      "unit": "pinball"
+    },
+    {
+      "name": "lift",
+      "unit": "pinball"
+    },
+    {
+      "name": "loader",
+      "unit": "pinball"
+    },
+    {
+      "name": "marquee",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-bank",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-beach",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-boardroom",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-coffee-machine",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-cubicles",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-firehouse",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-garage",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-houses",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-hq",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-inbox",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-ladder",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-moms",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-notes",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-police",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-revolving-door",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-road-signs",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-staplers",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-wedges",
+      "unit": "pinball"
+    },
+    {
+      "name": "perk-cards",
+      "unit": "marketing"
+    },
+    {
+      "name": "ramps",
+      "unit": "pinball"
+    },
+    {
+      "name": "rows",
+      "unit": "step2"
+    },
+    {
+      "name": "shell",
+      "unit": "step1"
+    },
+    {
+      "name": "table-frame",
+      "unit": "pinball"
+    },
+    {
+      "name": "table-hardware",
+      "unit": "pinball"
+    },
+    {
+      "name": "table-layout",
+      "unit": "pinball"
+    },
+    {
+      "name": "table-lights",
+      "unit": "pinball"
+    },
+    {
+      "name": "targets",
+      "unit": "pinball"
+    },
+    {
+      "name": "ticker",
+      "unit": "marketing"
+    },
+    {
+      "name": "tier-art",
+      "unit": "pinball"
+    },
+    {
+      "name": "type",
+      "unit": "step1"
+    },
+    {
+      "name": "verify-card",
+      "unit": "boss"
+    },
+    {
+      "name": "wait",
+      "unit": "decision"
+    }
+  ],
+  "problems": [],
+  "sha256": "38cc345a67d7d1294ced4617504bc62e05687cd557c7860dbe3a379a8ee9845c",
+  "keptFrom": "out/work/sheets/sheet-pages-preview-draft.jpg"
+}

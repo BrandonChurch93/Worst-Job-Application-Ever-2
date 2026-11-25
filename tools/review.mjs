@@ -77,8 +77,7 @@ const previews = [
 function newestHdFilms() {
   const dir = at('out', 'work')
   let found = names(dir, (n) => /^film-.+\.mp4$/i.test(n)).map((n) => ({ n, parts: stem(n).split('-'), mtime: fs.statSync(path.join(dir, n)).mtimeMs }))
-  const inHd = found.filter((f) => hd.id && f.parts.includes(hd.id))
-  if (inHd.length) found = inHd
+  found = found.filter((f) => hd.id && f.parts.includes(hd.id))
   const newest = new Map()
   for (const f of found.sort((x, y) => y.mtime - x.mtime)) {
     const which = f.parts[1] ?? f.n

@@ -1,0 +1,304 @@
+{
+  "what": {
+    "sheet": {
+      "kind": "film",
+      "id": "decision",
+      "frames": [
+        8460,
+        8526,
+        8590,
+        8656,
+        8722,
+        8786,
+        8852,
+        8916,
+        8982,
+        9048,
+        9112,
+        9178
+      ]
+    }
+  },
+  "engineHash": "e6f9508050543b35",
+  "sharedHash": "a365b739db2b651c",
+  "pageHashes": {
+    "decision": "08e4b1401a38f867",
+    "marketing": "da0853ca495d3bc5"
+  },
+  "format": "preview",
+  "tier": "draft",
+  "assets": "full",
+  "diagnostic": "beauty",
+  "browser": "147.0.7727.15",
+  "machine": {
+    "host": "space-sandbox",
+    "cores": 2,
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.90GHz",
+    "memoryMb": 7958,
+    "platform": "linux 6.1.155",
+    "node": "v20.20.2"
+  },
+  "width": 1399,
+  "height": 1192,
+  "columns": 3,
+  "rows": 4,
+  "tile": [
+    461,
+    259
+  ],
+  "pictures": [
+    "2:21.00  decision.wait  frame 8460",
+    "2:22.10  decision.wait  frame 8526",
+    "2:23.17  decision.letter  frame 8590",
+    "2:24.27  decision.letter  frame 8656",
+    "2:25.37  decision.letter  frame 8722",
+    "2:26.43  decision.letter  frame 8786",
+    "2:27.53  decision.metrics  frame 8852",
+    "2:28.60  decision.metrics  frame 8916",
+    "2:29.70  decision.metrics  frame 8982",
+    "2:30.80  decision.metrics  frame 9048",
+    "2:31.87  decision.reset  frame 9112",
+    "2:32.97  decision.reset  frame 9178"
+  ],
+  "standIns": [
+    {
+      "name": "apply-button",
+      "unit": "marketing"
+    },
+    {
+      "name": "boss-body",
+      "unit": "boss"
+    },
+    {
+      "name": "boss-transform",
+      "unit": "boss"
+    },
+    {
+      "name": "boss-weapons",
+      "unit": "boss"
+    },
+    {
+      "name": "bumpers",
+      "unit": "pinball"
+    },
+    {
+      "name": "careers-page",
+      "unit": "marketing"
+    },
+    {
+      "name": "clear-ball",
+      "unit": "pinball"
+    },
+    {
+      "name": "crank",
+      "unit": "step2"
+    },
+    {
+      "name": "cursor-acting",
+      "unit": "step1"
+    },
+    {
+      "name": "cursor-arms",
+      "unit": "step1"
+    },
+    {
+      "name": "cursor-body",
+      "unit": "step1"
+    },
+    {
+      "name": "cursor-damage",
+      "unit": "step1"
+    },
+    {
+      "name": "dial",
+      "unit": "step2"
+    },
+    {
+      "name": "displays",
+      "unit": "pinball"
+    },
+    {
+      "name": "flippers",
+      "unit": "pinball"
+    },
+    {
+      "name": "health-bar",
+      "unit": "boss"
+    },
+    {
+      "name": "keyboard",
+      "unit": "step1"
+    },
+    {
+      "name": "letter",
+      "unit": "decision"
+    },
+    {
+      "name": "lift",
+      "unit": "pinball"
+    },
+    {
+      "name": "loader",
+      "unit": "pinball"
+    },
+    {
+      "name": "marquee",
+      "unit": "pinball"
+    },
+    {
+      "name": "metrics",
+      "unit": "decision"
+    },
+    {
+      "name": "model-bank",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-beach",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-boardroom",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-coffee-machine",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-cubicles",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-firehouse",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-garage",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-houses",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-hq",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-inbox",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-ladder",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-moms",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-notes",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-police",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-revolving-door",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-road-signs",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-staplers",
+      "unit": "pinball"
+    },
+    {
+      "name": "model-wedges",
+      "unit": "pinball"
+    },
+    {
+      "name": "paper",
+      "unit": "step1"
+    },
+    {
+      "name": "perk-cards",
+      "unit": "marketing"
+    },
+    {
+      "name": "ramps",
+      "unit": "pinball"
+    },
+    {
+      "name": "rows",
+      "unit": "step2"
+    },
+    {
+      "name": "shell",
+      "unit": "step1"
+    },
+    {
+      "name": "shredder",
+      "unit": "step1"
+    },
+    {
+      "name": "slot",
+      "unit": "step2"
+    },
+    {
+      "name": "stamp",
+      "unit": "decision"
+    },
+    {
+      "name": "table-frame",
+      "unit": "pinball"
+    },
+    {
+      "name": "table-hardware",
+      "unit": "pinball"
+    },
+    {
+      "name": "table-layout",
+      "unit": "pinball"
+    },
+    {
+      "name": "table-lights",
+      "unit": "pinball"
+    },
+    {
+      "name": "targets",
+      "unit": "pinball"
+    },
+    {
+      "name": "ticker",
+      "unit": "marketing"
+    },
+    {
+      "name": "tier-art",
+      "unit": "pinball"
+    },
+    {
+      "name": "turrets",
+      "unit": "step1"
+    },
+    {
+      "name": "type",
+      "unit": "step1"
+    },
+    {
+      "name": "verify-card",
+      "unit": "boss"
+    },
+    {
+      "name": "wait",
+      "unit": "decision"
+    }
+  ],
+  "problems": [],
+  "sha256": "d321a4df014dd343caa2fff64d957c633f155bdf4cae83b7ae634e11f14aeb97",
+  "keptFrom": "out/work/sheets/sheet-film-decision-6of6-preview-draft.jpg"
+}
