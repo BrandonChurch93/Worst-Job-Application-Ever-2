@@ -733,8 +733,14 @@ export async function siteInBrowser(dir = at('dist'), o = {}) {
     const before = await live.look()
     await live.page.mouse.click(640, 360)
     await live.page.waitForTimeout(3500)
-    const after = await live.look()
-    out.live = { started: live.started, soundRequestsAtFirstPicture: live.atFirstPicture, before, after, console: live.consoleLines, errors: live.errors }
+    let after = await live.look()
+    let controlWait = 3.5
+    while (after.control === 0 && controlWait < 20) {
+      await live.page.waitForTimeout(500)
+      controlWait += 0.5
+      after = await live.look()
+    }
+    out.live = { started: live.started, soundRequestsAtFirstPicture: live.atFirstPicture, before, after, controlWaitSeconds: controlWait, console: live.consoleLines, errors: live.errors }
 
     if (after.control > 0) {
       const page = live.page
@@ -796,7 +802,7 @@ export async function siteInBrowser(dir = at('dist'), o = {}) {
     out.removed = { started: gone.started, before: goneBefore, after: await gone.look(), console: gone.consoleLines, errors: gone.errors }
     await gone.context.close()
 
-    if (after.control > 0) {
+    if (after.control > 0) try {
       const film = await visit('mode=film', { wait: 1200 })
       const page = film.page
       const read = async (what) => ({ what, ...(await page.evaluate(() => ({ level: window.__sound.made[0]?.state === 'running' ? window.__level() : null, sources: window.__sound.running.size, toneLoops: [...window.__sound.running].filter((n) => n.loop).length, context: window.__sound.made[0]?.state ?? 'none' }))) })
@@ -934,7 +940,7 @@ export async function siteInBrowser(dir = at('dist'), o = {}) {
       }
       out.filmA = opening
       await a.context.close()
-    }
+    } catch (e) { out.filmError = String(e.message).split("\n")[0] }
 
     if (o.still !== false && c.stills.length) {
       const { readCanvas, stillFrom } = await import('./lib/capture.mjs')
