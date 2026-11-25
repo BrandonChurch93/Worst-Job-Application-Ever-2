@@ -18,15 +18,18 @@ export const PRESS_FOR = 0.15
 
 export function path(m: Marks): Key[] {
   const [a, b, c] = m.cards as [Key, Key, Key]
+  const wait = { x: m.stand.x + 560, y: m.lane.y }
+  const bound = { x: m.stand.x + 270, y: (m.lane.y + m.stand.y) / 2 }
   return [
     { t: 0, ...m.start }, { t: 0.25, ...m.start },
     { t: 1.85, ...m.lane },
-    { t: 2.5, x: a.x, y: a.y }, { t: 3.75, x: a.x, y: a.y },
-    { t: 4.5, x: b.x, y: b.y }, { t: 5.45, x: b.x, y: b.y },
-    { t: 6.2, x: c.x, y: c.y }, { t: 7.25, x: c.x, y: c.y },
-    { t: 7.95, ...m.off },
-    { t: 8.85, ...m.medal }, { t: 9.5, ...m.medal },
-    { t: 10.7, ...m.stand }, { t: 12, ...m.stand },
+    { t: 2.5, x: a.x, y: a.y }, { t: 4, x: a.x, y: a.y },
+    { t: 4.85, x: b.x, y: b.y }, { t: 6.05, x: b.x, y: b.y },
+    { t: 6.85, x: c.x, y: c.y }, { t: 8.75, x: c.x, y: c.y },
+    { t: 9.3, ...m.off },
+    { t: 10.9, ...wait }, { t: 11.2, ...wait },
+    { t: 11.58, ...bound }, { t: 11.65, ...bound },
+    { t: 12.02, ...m.stand },
     { t: PRESS_AT, ...m.press }
   ]
 }
@@ -60,9 +63,12 @@ export interface Cue { at: number; act?: Acting; react?: Reaction }
 
 export const CUES: Cue[] = [
   { at: 0, act: 'confident' },
-  { at: 8.9, act: 'proud', react: 'dustOff' },
-  { at: 9.5, act: 'confident' },
-  { at: 11.3, react: 'anticipate' }
+  { at: 7.9, act: 'proud' },
+  { at: 8.05, react: 'dustOff' },
+  { at: 8.9, act: 'confident' },
+  { at: 11, react: 'anticipate' },
+  { at: 11.2, react: 'jump' },
+  { at: 11.65, react: 'jump' }
 ]
 
 export const REJECTED_CUES: Cue[] = [{ at: 0, act: 'exhausted' }]
