@@ -59,7 +59,7 @@ function buildLayout(): LayoutNode {
     }
     for (const n of table.inserts) {
       if (n.tier !== k) continue
-      kids.push(text(`insert-label.${n.id}`, `copy:step3.table.modes.${n.mode}.insert`, { font: 'inter-500', px: 15, align: 'centre', wrap: 138, lead: 19 }, px(n.c[0]), px(n.c[1] + n.r + 0.08), { part: 'table-lights', on: f + 4, tone: light ? 'inkLight' : 'ink' }))
+      kids.push(text(`insert-label.${n.id}`, `copy:step3.table.modes.${n.mode}.insert`, { font: 'inter-500', px: 18, align: 'centre', wrap: 160, lead: 22 }, px(n.c[0]), px(n.c[1] + n.r + 0.08), { part: 'table-lights', on: f + 4, tone: light ? 'inkLight' : 'ink' }))
     }
     const d = table.displays[k]!
     for (const n of table.inserts) {
