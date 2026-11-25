@@ -1,35 +1,35 @@
 {
   "folder": "boss",
-  "pushed": "2026-11-25T11:10:28.124Z",
-  "commit": "0781cc41debe4b88276a34c7274528bf57232bcc",
+  "pushed": "2026-11-25T12:09:20.692Z",
+  "commit": "9920231161fbc538ffa48050ec1917af27a475c1",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still still-rest-step4-preview-draft: draft tier, preview, view beauty",
-      "time": "2026-11-25T10:41:56.618Z",
+      "caption": "Contact sheet, the beat boss.unfold: 12 frames from 1:54.00 to 1:57.97, draft tier, preview",
+      "time": "2026-11-25T12:08:27.313Z",
       "by": "boss",
-      "from": "out/work/stills/still-rest-step4-preview-draft.png"
+      "from": "out/work/sheets/sheet-beat-boss_unfold-preview-draft.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Step 4 at rest at d44c036: the closed verify card is the layout tree's own box (M5 0 px)",
-      "time": "2026-11-25T10:43:14.514Z",
+      "caption": "Contact sheet, the beat boss.slabs: 12 frames from 1:58.00 to 2:04.97, draft tier, preview",
+      "time": "2026-11-25T12:08:36.540Z",
       "by": "boss",
-      "from": "out/work/stills/still-rest-step4-preview-draft.png"
+      "from": "out/work/sheets/sheet-beat-boss_slabs-preview-draft.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "3.7 to 5.2 s: the card opens on the tick (moved for 0.3 s), then the open card is drawn from the tree",
-      "time": "2026-11-25T10:43:14.746Z",
+      "caption": "Contact sheet, the beat boss.popups: 12 frames from 2:05.00 to 2:10.97, draft tier, preview",
+      "time": "2026-11-25T12:08:45.743Z",
       "by": "boss",
-      "from": "out/work/filmR.png"
+      "from": "out/work/sheets/sheet-beat-boss_popups-preview-draft.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Round 1 fix at 0781cc4: unit 16.7 to 27.3 s one second apart: one attack at a time, Session expired clears the page, the last 1.8 s is the boss, its bar and the cursor",
-      "time": "2026-11-25T11:10:26.831Z",
+      "caption": "Contact sheet, the beat boss.lastStand: 12 frames from 2:11.00 to 2:15.97, draft tier, preview",
+      "time": "2026-11-25T12:08:54.701Z",
       "by": "boss",
-      "from": "out/work/filmT.png"
+      "from": "out/work/sheets/sheet-beat-boss_lastStand-preview-draft.jpg"
     }
   ]
 }
