@@ -25,6 +25,7 @@ export const SHIFT = TRAY_H + TRAY_GAP
 export const TRAY_Z = heights.machineTray
 export const TOP = heights.machineMinTop
 export const PAD = 24
+export const VALUE_Z = 0
 
 export const rowY = (i: number, low = false): number => ROW_Y + i * PITCH + (low ? SHIFT : 0)
 export const trayY = (i: number): number => rowY(i) + FH + TRAY_GAP
@@ -71,7 +72,7 @@ function rowNodes(i: number, low: boolean): LayoutNode[] {
   const when = (cond: string): string[] => (i === 0 ? [`${name}-${cond}`] : [`${name}-${low ? 'low' : 'up'}-${cond}`])
   const capY = y + (FH - block(TYPE.value.font, 'X', TYPE.value.px).cap) / 2
   const value = (suffix: string, key: string, cond: string): LayoutNode =>
-    text(`${id}-${suffix}`, key, { ...TYPE.value, wrap: FW - 116 }, FX + PAD, capY, { part: 'type', on: heights.field, states: when(cond) })
+    text(`${id}-${suffix}`, key, { ...TYPE.value, wrap: FW - 116 }, FX + PAD, capY, { part: 'type', on: VALUE_Z, states: when(cond) })
   const values: LayoutNode[] = []
   if (name === 'phone') values.push(value('typed', 'runtime:step2.phone', 'typing'), value('value', 'copy:step2.rows.phone.gaveUp', 'done'))
   if (name === 'birth') values.push(value('value', 'copy:step2.rows.birth.recorded', 'done'))
@@ -112,7 +113,7 @@ function slotNodes(): LayoutNode[] {
   const cabinet = node('slot-cabinet', 'slotCabinet', [s.x, s.y, s.w, s.h], { part: 'slot', height: TOP + 8, floor: TRAY_Z, tone: 'metal', r: 12, mechanism: true, children: [window] })
   const knob = node('slot-knob', 'slotKnob', [s.leverX - s.knob / 2, s.knobY - s.knob / 2, s.knob, s.knob], { part: 'slot', shape: 'disc', height: TOP + 40, floor: TOP + 12, tone: 'accent', mechanism: true })
   const payout = node('slot-payout', 'slotPayout', [s.payX, s.payY, s.payW, s.payH], { part: 'slot', height: 6, floor: TRAY_Z, tone: 'dark', r: 6 })
-  const px = s.leverX + s.knob / 2 + 28
+  const px = s.leverX + s.knob / 2 + 64
   const wrap = FX + FW - PAD - px
   const b = block(TYPE.body.font, words('copy:step2.rows.birth.panel'), TYPE.body.px, wrap)
   const prompt = text('slot-prompt', 'copy:step2.rows.birth.panel', { ...TYPE.body, wrap }, px, sy + (TRAY_H - b.height) / 2, { part: 'type', on: TRAY_Z, states: ['birth-panel'] })

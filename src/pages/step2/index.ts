@@ -3,10 +3,11 @@ import type { LayoutNode } from '../../copy'
 import { Random, stream } from '../../core/random'
 import { restPose } from '../../cursor/body'
 import { boxOf, drawLayout, find, walk } from '../../shell/layout'
-import { SCREEN_H } from '../../shell/parts'
+import { measure } from '../../shell/metrics'
+import { SCREEN_H, TYPE } from '../../shell/parts'
 import { frame } from '../../stage/camera'
 import type { DrawList, GagInfo, Hint, PageContext, PageLogic, Pointer, Shape, SheetFrame, StepIo, Tone } from '../../stage/types'
-import { buildLayout, CRANK, DIAL, FH, FW, FX, reelId, ROWS, rowY, SHIFT, SLOT, statesOf, TOP, TRAY_H, TRAY_Z, trayY } from './layout'
+import { buildLayout, CRANK, DIAL, FH, FW, FX, PAD, reelId, ROWS, rowY, SHIFT, SLOT, statesOf, TOP, TRAY_H, TRAY_Z, trayY } from './layout'
 import { actingAt, BUTTON, FILM_HOLE, LANDING, pointerAt, reactions } from './script'
 
 const dt = 1 / stepHz
@@ -434,6 +435,47 @@ export function makePage(): PageLogic {
     }
   }
 
+  function topAt(x: number, y: number): number {
+    const i = s.open
+    if (i < 0) return 0
+    let top = TRAY_Z
+    const put = (v: number): void => {
+      top = Math.max(top, v)
+    }
+    if (i === 0) {
+      const far = Math.hypot(x - DIAL.cx, y - DIAL.cy)
+      if (far <= DIAL.r) put(TOP + 3)
+      if (far <= 30) put(TOP + 16)
+    } else if (i === 1) {
+      const ky = knobY(s.slot.p)
+      if (x >= SLOT.x && x <= SLOT.x + SLOT.w && y >= SLOT.y && y <= SLOT.y + SLOT.h) put(TOP + 8)
+      if (x >= SLOT.x + 10 && x <= SLOT.x + SLOT.w - 10 && y >= SLOT.y + 14 && y <= SLOT.y + SLOT.h - 14) put(TOP + 14)
+      if (Math.abs(x - SLOT.leverX) <= 6 && y >= ky && y <= SLOT.knobY + SLOT.pull + 34) put(TOP + 12)
+      if (Math.hypot(x - SLOT.leverX, y - ky) <= SLOT.knob / 2) put(TOP + 40)
+    } else {
+      const c = s.crank
+      const far = Math.hypot(x - CRANK.hx, y - CRANK.hy)
+      if (far <= CRANK.base / 2) put(18)
+      if (far <= CRANK.hub / 2) put(TOP + 10)
+      if (x >= CRANK.segX && x <= CRANK.segX + 10 * CRANK.segW + 9 * CRANK.segGap && y >= CRANK.segY && y <= CRANK.segY + CRANK.segH) put(18)
+      if (c.phase === 'rest') {
+        const ux = Math.cos(c.b)
+        const uy = Math.sin(c.b)
+        const along = (x - CRANK.hx) * ux + (y - CRANK.hy) * uy
+        const across = Math.abs(-(x - CRANK.hx) * uy + (y - CRANK.hy) * ux)
+        if (along >= 0 && along <= CRANK.arm && across <= 8) put(TOP + 6)
+        if (Math.abs(along - CRANK.arm) <= CRANK.gripW / 2 && across <= CRANK.gripH / 2) put(TOP + 30)
+      }
+    }
+    return top <= TRAY_Z ? 0 : Math.max(0, mix(TRAY_Z, top, smooth(s.lift)))
+  }
+
+  function ground(io: StepIo): void {
+    const x = io.cursor.x
+    const y = io.cursor.y
+    io.cursor.setGround(Math.max(topAt(x, y), topAt(x + 12, y + 18), topAt(x + 22, y + 34), topAt(x + 4, y + 34)))
+  }
+
   function press(io: StepIo): void {
     s.pressed = true
     io.emit('button-press', go.cx, go.cy, false)
@@ -508,6 +550,7 @@ export function makePage(): PageLogic {
         }
       }
       afterCrank(io)
+      ground(io)
       for (let i = 0; i < 3; i++) {
         const target = s.open === i && (s.phase === 'opening' || s.phase === 'ready' || s.phase === 'ending' || (s.phase === 'closing' && s.lift > 0)) ? 1 : 0
         if (target === 0 && s.spring[i] === 0) continue
@@ -677,6 +720,12 @@ export function makePage(): PageLogic {
         const ring: [string, number, number, number, number][] = [['n', FX - t, y - t, FW + 2 * t, t], ['s', FX - t, y + FH, FW + 2 * t, t], ['w', FX - t, y, t, FH], ['e', FX + FW, y, t, FH]]
         for (const [side, x, yy, w, h] of ring) out.push({ id: `focus-${side}`, part: 'rows', kind: 'box', x, y: yy, w, h, z0: 0, z1: 2, tone: 'accent' })
       }
+    }
+    const caret = s.open >= 0 && s.open !== 1 && !s.done[s.open] && s.phase !== 'closing' && s.spring[s.open]! > 0.9 && Math.floor(s.time * 2) % 2 === 0
+    if (caret) {
+      const said = s.open === 0 ? phoneMask(s.dial.digits) : percent(s.crank.level)
+      const wide = said ? measure(TYPE.value.font, said, TYPE.value.px).width + 4 : 0
+      out.push({ id: 'caret', part: 'rows', kind: 'box', x: FX + PAD + wide, y: rowY(s.open) + offsets[s.open]! + 17, w: 2, h: 30, z0: 0.1, z1: 0.6, tone: 'ink' })
     }
     if (shown >= 0) machine(out, shown, s, s.lift, 0, 0, '', s.phase === 'closing' ? Math.max(0.02, smooth(s.lift)) : 1)
   }

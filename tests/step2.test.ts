@@ -115,7 +115,7 @@ describe('step 2, the film', () => {
       t.seek(at)
       expect(t.page.gag(), String(at)).toBe(gag)
     }
-    for (const at of [1, 8.1, 14.1, 20]) {
+    for (const at of [1, 8.1, 14, 20]) {
       t.seek(at)
       expect(t.page.states(), String(at)).toContain('rest')
     }

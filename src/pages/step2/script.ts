@@ -31,7 +31,7 @@ const dial = (t: number): Seg[] => [
   line(t + 0.5, t + 0.8, wound, hole)
 ]
 
-const T = { dial: 3.25, lever: 9.15, crank: 15.25, runaway: 16.33, press: 20.3 }
+const T = { dial: 3.25, lever: 9.15, crank: 14.7, runaway: 16.33, press: 20.3 }
 
 const path: Seg[] = [
   line(0, 0.6, { x: 1560, y: 440 }, { x: 1560, y: 440 }),
@@ -59,11 +59,11 @@ const path: Seg[] = [
   line(11.6, 12.0, watch, { x: 1180, y: 850 }),
   line(12.0, 12.6, { x: 1180, y: 850 }, { x: 800, y: 700 }),
   line(12.6, 13.45, { x: 800, y: 700 }, { x: 760, y: 690 }),
-  line(13.45, 14.14, { x: 760, y: 690 }, field(2)),
-  line(14.14, 14.5, field(2), field(2)),
-  line(14.5, 15.0, field(2), grip),
-  line(15.0, T.crank + 0.05, grip, grip),
-  arc(T.crank + 0.05, T.runaway + 0.04, hub, CRANK.arm, 0, TURNS * 2 * Math.PI, (u) => u * (0.55 + 0.45 * u)),
+  line(13.45, 14.02, { x: 760, y: 690 }, field(2)),
+  line(14.02, 14.25, field(2), field(2)),
+  line(14.25, 14.62, field(2), grip),
+  line(14.62, T.crank + 0.05, grip, grip),
+  arc(T.crank + 0.05, T.runaway + 0.04, hub, CRANK.arm, 0, TURNS * 2 * Math.PI, (u) => u * (1.4 - 0.4 * u)),
   line(T.runaway + 0.04, 17.7, caught, caught),
   line(17.7, 19.9, caught, { x: BUTTON.x - 40, y: BUTTON.y - 4 }),
   line(19.9, 20.24, { x: BUTTON.x - 40, y: BUTTON.y - 4 }, BUTTON),
@@ -75,7 +75,7 @@ const presses: [number, number][] = [
   [T.dial, T.dial + 0.45], [T.dial + 0.85, T.dial + 1.3], [T.dial + 1.7, T.dial + 2.15],
   [8.2, 8.32],
   [T.lever, T.lever + 0.36],
-  [14.2, 14.32],
+  [14.08, 14.2],
   [T.crank, T.runaway + 0.1],
   [T.press, T.press + 0.12]
 ]
@@ -106,5 +106,5 @@ export function actingAt(time: number): Acting {
 }
 
 export const reactions: [number, Reaction][] = [
-  [2.24, 'anticipate'], [7.05, 'doubleTake'], [9.05, 'anticipate'], [11.05, 'doubleTake'], [13.3, 'dustOff'], [15.15, 'anticipate'], [T.runaway + 0.05, 'flinch'], [20.2, 'jump']
+  [2.24, 'anticipate'], [7.05, 'doubleTake'], [9.05, 'anticipate'], [11.05, 'doubleTake'], [13.3, 'dustOff'], [14.64, 'anticipate'], [T.runaway + 0.05, 'flinch'], [20.2, 'jump']
 ]

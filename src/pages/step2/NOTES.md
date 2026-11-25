@@ -21,6 +21,11 @@ Decisions taken without asking, in the order they were met.
 
 - The brief says the last beat is only the press of the button. The kit (01-FILM) has the cursor still flat at the start of `step2.continue`, peeling up before the press. Built as the kit says: flatten at 16.7 s, healed at 20.1 s, press at 20.3 s. No damage when the next page arrives.
 
+## The blockout view
+
+- The value of a field is drawn at height 0, not on the floor of the pocket (`scale.heights.field`): the blockout view draws a pocket flat at the page's surface, so a text on the floor of a pocket is hidden under the page. `VALUE_Z` in `layout.ts` is the one place to change when the view cuts real pockets. The shell's own `field()` puts its value at `heights.field` and has the same trouble.
+- The cursor stands on the machine under it through `cursor.setGround`: the wheel, the cabinet, the knob, the grip. The handle of the crank stops counting as ground once it runs away, so that it can hit.
+
 ## Needs from the Builder (nothing blocks)
 
 - Sound: the events `row-open`, `dial-wind`, `dial-return`, `lever-pull`, `reels-spin`, `coins`, `crank-turn`, `crank-runaway`, `flatten`, `peel-up` are emitted with the names of the cues in `audio.sfx`. They are silent until they are listed in `eventCues` in `src/audio/cues.ts`.
