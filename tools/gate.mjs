@@ -87,15 +87,19 @@ const checks = {
     for (const file of walk(at('out', 'work', 'stills')).filter((f) => f.endsWith('.png'))) {
       const rec = file.replace(/\.png$/, '.json')
       if (!fs.existsSync(rec)) continue
-      const f = formatOf(readJson(rec).format)
+      const record = readJson(rec)
+      const f = formatOf(record.format)
+      const sheet = c.sheets.find((x) => x.id === record.what?.still?.sheet && x.width && x.height)
+      const scale = f.width / c.formats.hd.width
+      const want = sheet ? { width: Math.round(sheet.width * scale), height: Math.round(sheet.height * scale) } : f
       const meta = await sharp(file).metadata()
       count++
-      if (meta.width !== f.width || meta.height !== f.height) {
+      if (meta.width !== want.width || meta.height !== want.height) {
         pass = false
-        detail.push(`${path.relative(at(), file)} is ${meta.width} by ${meta.height}, its format ${f.id} is ${f.width} by ${f.height}`)
+        detail.push(sheet ? `${path.relative(at(), file)} is ${meta.width} by ${meta.height}, and the sheet ${sheet.id} in the format ${f.id} is ${want.width} by ${want.height}` : `${path.relative(at(), file)} is ${meta.width} by ${meta.height}, its format ${f.id} is ${f.width} by ${f.height}`)
       }
     }
-    return { pass, note: `${count} stills checked against the size of their format (a draft still rendered now in ${Object.values(c.formats).map((f) => f.id).join(', ')}, and every still in out/work/stills/)`, detail }
+    return { pass, note: `${count} stills checked against the size of their format (a draft still rendered now in ${Object.values(c.formats).map((f) => f.id).join(', ')}, and every still in out/work/stills/; a sheet with a size of its own is held to that size, scaled as its format is to hd)`, detail }
   },
 
   async G8() {
