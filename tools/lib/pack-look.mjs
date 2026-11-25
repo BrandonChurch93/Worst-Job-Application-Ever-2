@@ -142,7 +142,7 @@ function motionGroups(cfg, unit, facts) {
   })
   const hits = facts.hits.map((h, i) => {
     const frames = around(h.frame, count, step, u.first, u.last)
-    return { kind: 'look-sheet', unit, hit: h.name, at: h.frame, frames, heading: `Consecutive frames at a hit, ${i + 1} of ${facts.hits.length}: ${range(frames, fps)}` }
+    return { kind: 'hit-sheet', unit, hit: h.name, at: h.frame, frames, heading: `Consecutive frames at a hit, ${i + 1} of ${facts.hits.length}, the part of the picture round the hit at its real size: ${range(frames, fps)}` }
   })
   const start = facts.turn === null ? u.last - Math.round(fps / 2) : facts.turn
   const frames = spread(Math.max(0, start - TURN_BEFORE), Math.min(plan.frameCount - 1, start + TURN_AFTER), count, step)
@@ -193,7 +193,7 @@ export const lookRoles = {
   R9: { critic: 'R9', section: 'R9 · Acting', groups: actingGroups, facts: true }
 }
 
-export const LOOK_KINDS = ['pair', 'pair-crops', 'judged', 'surface-crops', 'text-crops', 'look-sheet', 'plain-sheet', 'acting-sheet', 'jury']
+export const LOOK_KINDS = ['pair', 'pair-crops', 'judged', 'surface-crops', 'text-crops', 'look-sheet', 'hit-sheet', 'plain-sheet', 'acting-sheet', 'jury']
 
 // Tiles in a grid. A heading and labels are drawn only when given, and a tile keeps its own pixels.
 async function sheetOf(tiles, { edge, columns, tileW, tileH, heading = '', labels = true, exact = true }) {
@@ -488,6 +488,20 @@ export async function buildLook({ cfg, session, files, built, about, tier, log, 
     built.set(f.name, await sheetOf(tiles, { edge, columns: ACT.columns, tileW: actW, tileH: ACT.tileH, labels: false }))
     about.set(f.name, { unit: f.unit, state: f.state, frames: f.frames, windows, windowFollowsTheArrow: !still, format: hd.id, tier: 'draft' })
     log(`${f.name}: the acting state ${f.state}`)
+  }
+
+  // A hit is a small thing in a whole frame: its sheet is the part of the picture round it, uncut and unscaled, in one fixed window.
+  for (const f of files.filter((x) => x.kind === 'hit-sheet')) {
+    await use(hd)
+    const s = await session.page.evaluate((i) => window.showcase.filmState(i), f.at)
+    const e = s.events.find((x) => (f.hit === 'hit on the arrow' ? x.hitsCursor : x.name === f.hit))
+    const c = e ? [e.x, e.y] : [s.cursor.x, s.cursor.y]
+    const win = windowRound(point(c[0], c[1]), actW, ACT.tileH, hd.width, hd.height)
+    const tiles = []
+    for (const frame of f.frames) tiles.push({ png: await cut(await frameOf(frame, hd, filmTier), win), label: timeLabel(frame, fps) })
+    built.set(f.name, await sheetOf(tiles, { edge, columns: ACT.columns, tileW: actW, tileH: ACT.tileH, heading: f.heading }))
+    about.set(f.name, { unit: f.unit, hit: f.hit, at: f.at, frames: f.frames, window: win, format: hd.id, tier: filmTier })
+    log(`${f.name}: the ${f.hit} at frame ${f.at}`)
   }
 
   for (const f of files.filter((x) => x.kind === 'look-sheet' || x.kind === 'plain-sheet')) {
