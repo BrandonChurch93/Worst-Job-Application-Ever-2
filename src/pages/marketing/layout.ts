@@ -114,7 +114,7 @@ function firstScreen(): LayoutNode[] {
     out.push(text(`nav-link-${i}`, key, { ...TYPE.label, align: 'right' }, right, HEADER.progressY - cap(TYPE.label) / 2, type))
     right -= wide(TYPE.label, key) + 48
   }
-  out.push(node('header-rule', 'rule', [LEFT, HEADER.ruleY, WIDTH, 2], { part: 'shell' }))
+  out.push(node('header-rule', 'rule', [LEFT, HEADER.ruleY - 2, WIDTH, 6], { part: 'shell' }))
   const headY = 200
   const headline = { ...T.display, wrap: 1040 }
   out.push(text('hero-headline', 'copy:marketing.hero.headline', headline, LEFT, headY, type))
