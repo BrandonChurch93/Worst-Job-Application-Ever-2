@@ -14,9 +14,9 @@ const THICK = 0.9
 // The film's sheet is `resume-paper`. A sheet of any other frame is `resume-paper:<name>`.
 const isSheet = (id: string): boolean => id === 'resume-paper' || id.startsWith('resume-paper:')
 const CARRY = { from: 21, span: 14 }
-const BAR = { inset: 24, tall: 1.7, pad: 3.15, cells: 44, wide: [0.46, 1, 0.9, 0.62, 1, 0.84, 0.52] }
+const BAR = { inset: 24, tall: 1.5, pad: 3.15, cells: 44, wide: [0.46, 1, 0.9, 0.62, 1, 0.84, 0.52] }
 // Between two of the layout's lines runs a thinner one, so the sheet reads as a page of close text.
-const BETWEEN = { tall: 1.15, wide: [0.94, 0.78, 1, 0.34, 0.88, 0.97, 0.6] }
+const BETWEEN = { tall: 1.5, wide: [0.94, 0.78, 1, 0.34, 0.88, 0.97, 0.6] }
 const WRAP_LEN = 1.12 * (CASSETTE.roller.r + 0.7)
 
 const clamp = (v: number, lo: number, hi: number): number => Math.min(hi, Math.max(lo, v))

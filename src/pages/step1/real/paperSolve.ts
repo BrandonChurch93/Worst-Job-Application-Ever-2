@@ -176,7 +176,7 @@ export function solveSheet(q: SheetIn, into?: Sheet): Sheet {
   const L = q.l
   const bite = smooth(q.bite)
   const abuse = clamp(0.05 + bite * (0.3 + 0.5 * q.amount + 0.2 * q.pull) + (1 - bite) * 0.5 * q.pull * smooth(q.hands), 0, 1)
-  const g0 = 0.5 + 2.5 * abuse
+  const g0 = 0.4 + 1.5 * abuse
   out.abuse = abuse
 
   const cos = Math.cos(q.rot)
@@ -447,8 +447,38 @@ export function solveSheet(q: SheetIn, into?: Sheet): Sheet {
     hold(out, da, db, 3)
     normals(out)
   }
+  level(out, 0.45)
   if (bite > 0) calm(out, crestAt, db, bite)
   return out
+}
+
+// Paper scatters light through its body, so a slow bend barely changes its tone: only a fold does. The grid's normals
+// are drawn toward the sheet's mean, less the more they differ, so the ear and the sharp folds keep their own.
+function level(s: Sheet, k: number): void {
+  const { nor } = s
+  let mx = 0
+  let my = 0
+  let mz = 0
+  for (let o = 0; o < nor.length; o += 3) {
+    mx += nor[o]!
+    my += nor[o + 1]!
+    mz += nor[o + 2]!
+  }
+  const ml = Math.hypot(mx, my, mz) || 1
+  mx /= ml
+  my /= ml
+  mz /= ml
+  for (let o = 0; o < nor.length; o += 3) {
+    const d = nor[o]! * mx + nor[o + 1]! * my + nor[o + 2]! * mz
+    const w = k * smooth((d - 0.5) / 0.3)
+    const x = nor[o]! + (mx - nor[o]!) * w
+    const y = nor[o + 1]! + (my - nor[o + 1]!) * w
+    const z = nor[o + 2]! + (mz - nor[o + 2]!) * w
+    const l = Math.hypot(x, y, z) || 1
+    nor[o] = x / l
+    nor[o + 1] = y / l
+    nor[o + 2] = z / l
+  }
 }
 
 // A sheet fed askew crosses the crest on a slant, and the grid would shade that line in teeth. The rows by the crest
