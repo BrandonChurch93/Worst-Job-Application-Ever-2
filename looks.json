@@ -1,35 +1,35 @@
 {
   "folder": "boss",
-  "pushed": "2026-11-25T09:32:47.218Z",
-  "commit": "2d8ac77e9d2c7d30a2604b5fe90b56b9c859b42c",
+  "pushed": "2026-11-25T09:38:14.261Z",
+  "commit": "dd776a6f1ac65d1320cd69adc97a583b0a639024",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Contact sheet, the page boss, sheet 2 of 3: 12 frames from 1:59.97 to 2:10.00, draft tier, preview",
-      "time": "2026-11-25T09:32:27.455Z",
-      "by": "boss",
-      "from": "out/work/sheets/sheet-unit-boss-2of3-preview-draft.jpg"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "Contact sheet, the page boss, sheet 3 of 3: 12 frames from 2:10.93 to 2:20.97, draft tier, preview",
-      "time": "2026-11-25T09:32:32.767Z",
-      "by": "boss",
-      "from": "out/work/sheets/sheet-unit-boss-3of3-preview-draft.jpg"
-    },
-    {
-      "file": "look-3.jpg",
-      "caption": "Still key-boss-fight-preview-draft: draft tier, preview, view beauty",
-      "time": "2026-11-25T09:32:45.889Z",
-      "by": "boss",
-      "from": "out/work/stills/key-boss-fight-preview-draft.png"
-    },
-    {
-      "file": "look-4.jpg",
       "caption": "Step 4 key boss-fight in the blockout: the boss stands where the approved picture has it, a dart spark on the shield",
       "time": "2026-11-25T09:32:46.226Z",
       "by": "boss",
       "from": "out/work/stills/key-boss-fight-preview-draft.png"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Still key-boss-down-preview-draft: draft tier, preview, view beauty",
+      "time": "2026-11-25T09:37:54.647Z",
+      "by": "boss",
+      "from": "out/work/stills/key-boss-down-preview-draft.png"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Step 4 end: the cursor comes to the fallen button during the collapse (28.5, 29 s), stands by it as the line appears (29.8 s) and presses it (30.6 s)",
+      "time": "2026-11-25T09:38:12.949Z",
+      "by": "boss",
+      "from": "out/work/filmH.png"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Step 4 key boss-down in the blockout, laid out as the approved picture: fallen button, parts, cursor beside it",
+      "time": "2026-11-25T09:38:13.177Z",
+      "by": "boss",
+      "from": "out/work/stills/key-boss-down-preview-draft.png"
     }
   ]
 }
