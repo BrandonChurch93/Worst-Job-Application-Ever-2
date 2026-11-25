@@ -104,7 +104,7 @@ export const CAP = { rise: config.scale.heights.keycap - config.scale.heights.ke
 // A keycap: a skirt that stands in its seat, walls that lean in, a soft shoulder and a dished top.
 // z = 0 is the crest of the rim, at the top of the key shape. The dish lies below it, so a flat legend at that height is never under the plastic.
 export function capGeometry(w: number, h: number, perCorner = 5): THREE.BufferGeometry {
-  const lean = 0.38
+  const lean = 0.34
   const round = 4.2
   const zs = -round * (1 - Math.sin(lean))
   const foot = -CAP.rise + 0.5
