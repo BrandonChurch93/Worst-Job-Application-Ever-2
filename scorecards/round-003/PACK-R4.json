@@ -1,0 +1,120 @@
+{
+  "stamp": {
+    "role": "R4",
+    "round": 3,
+    "unit": "step1",
+    "commit": "cacc69d1da930ab0131714b14a44f5a9718c41ff",
+    "tier": "review",
+    "engineHash": "9019d0fe14dc01f2",
+    "sharedHash": "d2cdf1ded46e55e1",
+    "pageHashes": {
+      "step1": "e7a1ea67d96a652d",
+      "step2": "55cb277c9b082808",
+      "marketing": "c46c984d2df73782",
+      "pinball": "c9adeea06f31761d",
+      "boss": "f7b68d3ef704e243",
+      "decision": "08e4b1401a38f867"
+    }
+  },
+  "format": "png",
+  "longEdgeMostPx": 1400,
+  "filesMostPerCritic": 10,
+  "sets": [
+    {
+      "set": "A",
+      "critic": "R4-1",
+      "files": [
+        {
+          "name": "set-A-01.png",
+          "width": 1399,
+          "height": 1210,
+          "bytes": 1578733,
+          "sha256": "a598487b99900128e5cb32beeae3034412a109a66a6cf1be04b999cc9df51345"
+        },
+        {
+          "name": "set-A-02.png",
+          "width": 1399,
+          "height": 1210,
+          "bytes": 1908341,
+          "sha256": "1a940ab6d3d4acbfe4de781b469e90e3b9d2f6742eea52367384d2db5a486f5d"
+        },
+        {
+          "name": "set-A-03.png",
+          "width": 1399,
+          "height": 1210,
+          "bytes": 1859104,
+          "sha256": "2f840aed051b6b99b9ab0ed8d1cf8d285a69faf1d3bc42833909bc7d15550216"
+        },
+        {
+          "name": "set-A-04.png",
+          "width": 1399,
+          "height": 1210,
+          "bytes": 1860893,
+          "sha256": "cd127f921803d23e7443c646247b6c1eebc5b849b742fbefb2857b7784896bc4"
+        },
+        {
+          "name": "set-A-05.png",
+          "width": 1399,
+          "height": 1210,
+          "bytes": 1782721,
+          "sha256": "1bf845a6c883b9ad5ebe00453264f3964adf38d4d71fb61f6027c1f3a2c8972a"
+        },
+        {
+          "name": "set-A-06.png",
+          "width": 1399,
+          "height": 1210,
+          "bytes": 1890553,
+          "sha256": "bc79a30c4ca2ec7dbeedfc8b25fe87cfacf4917e0e3a437fc40a517482c61348"
+        },
+        {
+          "name": "set-A-07.png",
+          "width": 1399,
+          "height": 1210,
+          "bytes": 1683380,
+          "sha256": "efc5bd2f89e663881b51153fb07e6a92190851494bed4ee487181f272b1805a7"
+        },
+        {
+          "name": "set-A-08.png",
+          "width": 1399,
+          "height": 1210,
+          "bytes": 1433671,
+          "sha256": "ba0c5af87b20c0e0db786f99dcfb6c29ae89548d39e07dbe36f09d2d634f48d8"
+        }
+      ]
+    },
+    {
+      "set": "B",
+      "critic": "R4-2",
+      "files": [
+        {
+          "name": "set-B-01.png",
+          "width": 1399,
+          "height": 1210,
+          "bytes": 1894050,
+          "sha256": "49c146b65f4a0098442b8c3836c9433449ffbdaa467b99ffc7c30bb956adaa89"
+        },
+        {
+          "name": "set-B-02.png",
+          "width": 1399,
+          "height": 1210,
+          "bytes": 1866527,
+          "sha256": "0589640570a45f472c4f9301e6dc326658d29f7a6ca1accc79baa56cb8236f13"
+        },
+        {
+          "name": "set-B-03.png",
+          "width": 1399,
+          "height": 1210,
+          "bytes": 1869096,
+          "sha256": "adb02a0fef82f3af6f845994f3cbff8cf4839cf1fcc3e42fbeed0e00d97d0cab"
+        },
+        {
+          "name": "set-B-04.png",
+          "width": 1399,
+          "height": 1210,
+          "bytes": 1869348,
+          "sha256": "84de2376f2f850967bd5c43f517718d2155804ba3299b241da6e30242e8515bb"
+        }
+      ]
+    }
+  ]
+}
