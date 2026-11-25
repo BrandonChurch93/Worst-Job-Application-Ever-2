@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { config } from '../config'
 import { hash01 } from '../core/random'
 import { look } from '../post/look'
 
@@ -97,6 +98,12 @@ export interface Materials {
   inkOnOrange: THREE.MeshPhysicalMaterial
   enamel: THREE.MeshPhysicalMaterial
   edge: THREE.MeshPhysicalMaterial
+  smoked: THREE.MeshPhysicalMaterial
+  paper: THREE.MeshPhysicalMaterial
+  red: THREE.MeshPhysicalMaterial
+  keycap: THREE.MeshPhysicalMaterial
+  steel: THREE.MeshPhysicalMaterial
+  rubber: THREE.MeshPhysicalMaterial
   textures: THREE.Texture[]
 }
 
@@ -128,10 +135,24 @@ export function makeMaterials(seed: number): Materials {
   const inkOnOrange = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xfbf6ee), roughness: 0.4, metalness: 0, envMapIntensity: 0.6 }))
   const enamel = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xf7f5f0), roughness: 0.3, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.05, envMapIntensity: 1.1 }))
   const edge = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x1b1a19), roughness: 0.35, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.08, envMapIntensity: 1.0 }))
+  const smoked = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x4a4c4d), roughness: 0.38, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.08, envMapIntensity: 1.1 }))
+  const paper = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xf3efe6), roughness: 0.88, metalness: 0, envMapIntensity: 0.3, side: THREE.DoubleSide }))
+  const red = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xc22a1e), roughness: 0.4, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.1, envMapIntensity: 1.0 }))
+  const keycap = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xece4d4), roughness: 0.52, metalness: 0, clearcoat: 0.25, clearcoatRoughness: 0.4, envMapIntensity: 0.7 }))
+  const steel = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x9a9ea3), roughness: 0.24, metalness: 1, envMapIntensity: 1.3 }))
+  const rubber = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x1c1c1d), roughness: 0.92, metalness: 0, envMapIntensity: 0.3 }))
   for (const m of [ink, inkOnOrange]) {
     m.polygonOffset = true
     m.polygonOffsetFactor = -1
     m.polygonOffsetUnits = -2
   }
-  return { ceramic, pocket, glass, aluminium, orange, gap, ink, inkOnOrange, enamel, edge, textures: [grain] }
+  return { ceramic, pocket, glass, aluminium, orange, gap, ink, inkOnOrange, enamel, edge, smoked, paper, red, keycap, steel, rubber, textures: [grain] }
+}
+
+let set: Materials | null = null
+
+// The one shared set. Every part of the site takes its materials from here.
+export function materials(): Materials {
+  set ??= makeMaterials(config.seed)
+  return set
 }
