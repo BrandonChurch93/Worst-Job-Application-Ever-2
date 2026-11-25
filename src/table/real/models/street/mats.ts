@@ -70,10 +70,10 @@ vec4 wsSurface( vec3 face ) {
 		tone = vec3( 0.84 + 0.22 * c.y + 0.1 * grain ) * ( 1.0 - 0.2 * c.x );
 		h = ( 1.0 - c.x ) * 0.3 + grain * 0.35;
 	} else if ( kind == 3.0 ) {
-		vec2 c = wsCells( uv, vec2( 400.0, 7.0 ), 0.37, 0.7 );
+		vec2 c = wsCells( uv, vec2( 400.0, 13.0 ), 0.37, 0.45 );
 		float stain = wsNoise( vec2( uv.x * 0.11, uv.y * 0.035 ) );
-		tone = vec3( 0.86 + 0.1 * c.y + 0.12 * grain ) * ( 1.0 - 0.22 * c.x ) * ( 0.82 + 0.26 * stain );
-		h = ( 1.0 - c.x ) * 0.5 + grain * 0.35;
+		tone = vec3( 0.93 + 0.05 * c.y + 0.08 * grain ) * ( 1.0 - 0.1 * c.x ) * ( 0.88 + 0.18 * stain );
+		h = ( 1.0 - c.x ) * 0.25 + grain * 0.3;
 	} else if ( kind == 4.0 ) {
 		vec2 c = wsCells( uv, vec2( 3.4, 2.6 ), 0.5, 0.45 );
 		float lap = fract( uv.y / 2.6 );
@@ -120,7 +120,7 @@ vec4 wsSurface( vec3 face ) {
 // The moulded and painted plastic of the models: one material for the zone, a colour for each vertex and a kind of surface for each face.
 export function paintOf(z: Zone): THREE.MeshPhysicalMaterial {
   const m = studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.6, metalness: 0, specularIntensity: 0.5, clearcoat: 0.22, clearcoatRoughness: 0.38 }))
-  over(m, 'wja-studio-street-paint-8', (shader) => {
+  over(m, 'wja-studio-street-paint-9', (shader) => {
     shader.vertexShader = 'attribute vec3 face;\nvarying vec3 vWsFace;\n' + shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n\tvWsFace = face;')
     shader.fragmentShader =
       'varying vec3 vWsFace;\n' +
