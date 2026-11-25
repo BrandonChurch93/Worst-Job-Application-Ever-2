@@ -4,7 +4,7 @@ import { hash01 } from '../../core/random'
 import { UNIT, type BodyLook, type BodyModel, type StripPose } from '../contract'
 import { Deform } from './deform'
 import { MAX_HOLES, bodyDepthMaterial, bodyMaterial, bodyUniforms, charMaterial, type BodyUniforms } from './material'
-import { AXIS, heightAt, inside, solid } from './shape'
+import { AXIS, domeAt, heightAt, inside, softInside, solid } from './shape'
 import { cutBand, stripSet, type StripSet } from './strips'
 
 const HOLE_SEGMENTS = 28
@@ -47,6 +47,7 @@ export class Body implements BodyModel {
     g.setAttribute('aInk', new THREE.BufferAttribute(s.ink, 1))
     g.setIndex(new THREE.BufferAttribute(s.index, 1))
     this.whole = this.mesh(g, this.material)
+    this.whole.receiveShadow = false
     this.cut = this.mesh(new THREE.BufferGeometry(), this.material)
     this.cut.visible = false
     const wall = new THREE.BufferGeometry()
@@ -127,6 +128,40 @@ export class Body implements BodyModel {
     }
     pos.needsUpdate = true
     g.computeVertexNormals()
+    const nor = g.getAttribute('normal') as THREE.BufferAttribute
+    const b = nor.array as Float32Array
+    const e = 0.05
+    const d = this.deform
+    for (let i = 0, n = s.inset.length; i < n; i++) {
+      if (s.ink[i] !== 0) continue
+      const x = s.rest[i * 3]!
+      const y = s.rest[i * 3 + 1]!
+      d.point(x + e, y, domeAt(x + e, y), softInside(x + e, y), p)
+      let tx = p.x
+      let ty = p.y
+      let tz = p.z
+      d.point(x - e, y, domeAt(x - e, y), softInside(x - e, y), p)
+      tx -= p.x
+      ty -= p.y
+      tz -= p.z
+      d.point(x, y + e, domeAt(x, y + e), softInside(x, y + e), p)
+      let ux = p.x
+      let uy = p.y
+      let uz = p.z
+      d.point(x, y - e, domeAt(x, y - e), softInside(x, y - e), p)
+      ux -= p.x
+      uy -= p.y
+      uz -= p.z
+      const nx = uy * tz - uz * ty
+      const ny = uz * tx - ux * tz
+      const nz = ux * ty - uy * tx
+      const len = Math.hypot(nx, ny, nz)
+      if (len < 1e-9) continue
+      b[i * 3] = nx / len
+      b[i * 3 + 1] = ny / len
+      b[i * 3 + 2] = nz / len
+    }
+    nor.needsUpdate = true
   }
 
   private applyStrips(strips: StripPose[]): void {
@@ -227,15 +262,18 @@ export class Body implements BodyModel {
           const ey = hole.y + Math.sin(ang) * reach
           const d = Math.max(0, inside(ex, ey))
           const z = (heightAt(ex, ey) - 0.03) * (1 - HOLE_ROWS[r]!)
-          const k = reach * (0.85 + 0.15 * clamp01(z / 2.3)) * 1.012
+          const up = clamp01(z / 2.3)
+          const crater = clamp01(hole.burnt ?? 1)
+          const k = reach * (0.85 + 0.15 * up + crater * (0.24 + 0.76 * Math.pow(up, 1.6) - 0.85 - 0.15 * up)) * 1.012
           this.deform.point(hole.x + Math.cos(ang) * k, hole.y + Math.sin(ang) * k, z, d, p)
           a[i] = p.x
           a[i + 1] = p.y
           a[i + 2] = p.z
           const glow = clamp01(hole.glow)
           const flick = Math.pow(0.5 + 0.5 * Math.sin(ang * 5 + h * 2.1) * Math.sin(ang * 9 + 1.7), 2.2)
-          const lee = 0.2 + 0.8 * smooth01((Math.cos(ang) * -0.5 + Math.sin(ang) * 0.86 + 0.5) / 1.3)
-          const heat = (r === 0 ? 0.12 : r === 1 ? 1.1 : r === 2 ? 0.3 : 0.02) * lee
+          const side = smooth01((Math.cos(ang) * -0.5 + Math.sin(ang) * 0.86 - 0.1) / 0.9)
+          const lee = 0.03 + 0.97 * side * side
+          const heat = (r === 0 ? 0.1 : r === 1 ? 0.9 : r === 2 ? 0.45 : 0.02) * lee
           const burnt = clamp01(hole.burnt ?? 1)
           const lit = glow * glow * flick * burnt
           const bare = (1 - burnt) * (0.34 - 0.2 * HOLE_ROWS[r]!) * (0.8 + 0.4 * hash01(j, r, 7 + h))

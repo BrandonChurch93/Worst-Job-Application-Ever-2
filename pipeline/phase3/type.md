@@ -23,7 +23,7 @@ Branch `agent/type`. Looks branch `agent/type-looks`. Part made real: `type`.
 | cap (keycap, light button) | ink | sunk | the same, shallower |
 | glass (field value, glass tone) | ink | flat | charcoal with a soft edge, drawn after the glass |
 | paper | ink | flat | charcoal with a soft edge |
-| metal (aluminium) | ink | cut | dark matte floor, shadowed wall upper left, lit wall lower right |
+| metal (aluminium) | ink | flat print | matte ink `0x232427` with a 0.4 px soft edge; no wall, no floor |
 | smoked (a chip or button of tone metal) | any | raised | warm off-white: only light type reads on the smoked capsule |
 | accent, danger, dark | ink | flat | charcoal with a soft edge |
 | accent, danger, dark, metal | inkLight | raised | warm off-white, a faint darker edge at the lower right |
@@ -32,17 +32,18 @@ Branch `agent/type`. Looks branch `agent/type-looks`. Part made real: `type`.
 ## Decisions
 
 - Geometry, not SDF. Sharp at 1920 and 3840 with the capture's accumulation and the live MSAA, no texture memory, and the edge can carry real normals so the lit side comes from the light and not from paint.
-- Ink is sRGB 36 39 42 (`0x24272a`) with `specularIntensity` 0.15 and roughness 0.62; on keycaps a warmer 63 53 42 (`0x3f352a`). MEASURED with ink at `0x28292b` on `--sheet page-look --tier review --format hd`: the mean of the darkest 3% of the title's box was 42 43 43 against 37 39 41 in `page-look.png`, so the ink went a step darker and cooler. Never pure black.
+- Ink is sRGB 48 46 43 (`0x302e2b`, see the two inks below; before that 36 39 42, `0x24272a`) with `specularIntensity` 0.15 and roughness 0.62; on keycaps a warmer 63 53 42 (`0x3f352a`). MEASURED with ink at `0x28292b` on `--sheet page-look --tier review --format hd`: the mean of the darkest 3% of the title's box was 42 43 43 against 37 39 41 in `page-look.png`, so the ink went a step darker and cooler. Never pure black.
 - The ink of sunk print carries the ceramic's own grain picture as its normal map at 0.16 (uv = page pixels, the same as the slab), so the grain shows faintly through the print as in the approved crops. No texture of my own.
-- The floor of cut type is matte and not metal: a metal floor mirrored the studio and the numeral came and went with the turned finish under it.
+- Type on metal is printed, not cut (changed at look 30). The study line for type says ink on brushed metal is matte, even and sharp-edged and the highlight passes behind it; the cut I had first showed a lit lower wall at 8x beside the approved numeral, which reads as a second edge. The print is a matte layer of its own, so the turned finish under it cannot lift it.
 - The material's own colour is the ink and the vertex colours are counted from it, one material for each setting in the table. Reason, MEASURED: `typeContrasts` in `src/capture/showcase.ts` reads `material.color` of the mesh that carries a run. With white materials and the ink in the vertices `npm run measure -- --unit step1` gave M4 FAIL, least contrast 1.19, as soon as the real ceramic was under the type. Now M4 passes, least 4.64 (white on the orange and on the smoked capsule; the white went to `0xfdf3e6` for it).
+- Two inks on the page, read off the approved `step1-fire.png` (MEASURED, darkest 3 to 5% of each line with PIL): title 48 47 45, heading 56 53 50, label 61 56 50, value 65 62 57, and the subline 105 100 94, the helper the same family. So the ink is a warm charcoal `0x302e2b` (renders 50 48 45 at review) and the regular weight on the page (`inter-400`: sublines, helpers, body) takes the soft ink `0x67625c` (renders 97 91 85), style `page:soft`. The layout gives only tone `ink`, so the font is the key: in this system the regular weight is the quiet voice. The soft ink is as light as the 4.5 contrast floor lets it be with some room (M4 least stays 4.64, from the white on orange).
 - A shoulder is set in page pixels. When a camera comes nearer than the home view the vertex shader draws each shoulder in by as much as it is nearer (attribute `wjaRing`), so an edge never grows past its width at 1920. Further away it is left alone.
 - A text shape with `turnX` (the marquee, a plate on a building) needs nothing of its own: the view turns the object about the shape's centre and the run stands 0.05 off its board.
 - `material.envMapIntensity` does nothing in three 0.187 when the reflection comes from `scene.environment` (`node_modules/three/src/renderers/WebGLRenderer.js` near line 2749). MEASURED: black ink rendered 70 at 0.3 and at 0.08, and 28 with `specularIntensity` 0.2. I use `specularIntensity`. Told the Builder, surface_mason, light_keeper and keyboard_smith.
 - Type lies `HOVER` 0.05 above the `z1` of its shape, with polygon offset, receives shadow, casts none. It is an alpha-blended layer drawn in the opaque pass with depth write, so it is in the picture a transmissive part refracts. A run on glass is drawn after the glass, without depth write.
 - No part of a frame reads a clock or a random number. The maker reads only the shape and `ctx`.
 - Legends of keys (`key-<name>-legend`) are mine. Agreed with keyboard_smith: the floor of the dish is flat and exactly at the key's `z1`, 15 px in from the cap's edge, 64 by 26 px on a 1u cap. A flat legend 0.05 above `z1` lies on it. If a legend ever gets wider than cap width minus 30 or taller than 26 px I tell keyboard_smith. A flying cap tumbles a few degrees in the shuffle and the legend stays level: not visible from straight on.
-- Asked of surface_mason, no answer yet: the top of the glass in a field pocket exactly at `scale.heights.field`, and the top of a progress button flat at its `z1` under the numeral. Sunk type has a 0.3 px band of its own ink at alpha 0.8 (the soft edge of real print) and then a near-white lip (`0xf2efe8`) at alpha 0.5 fading to nothing at 0.9 px, so it brightens whatever it lies on and needs no colour from the surface. The walls of cut type take `materials().aluminium.color`, and their width follows the size of the type (times px / 28, held between 0.6 and 2).
+- Asked of surface_mason, no answer yet: the top of the glass in a field pocket exactly at `scale.heights.field`, and the top of a progress button flat at its `z1` under the numeral. Sunk type has a 0.3 px band of its own ink at alpha 0.8 (the soft edge of real print) and then a near-white lip (`0xf2efe8`) at alpha 0.5 fading to nothing at 0.9 px, so it brightens whatever it lies on and needs no colour from the surface.
 - Told by slab_maker: the resume sheet bends, so the paper maker sets `resume-paper-title` itself from the same outlines through `TypeRegister.set` and lays it on the bent sheet. The director is changing that shape to `part: 'paper'`. Until then my flat run shows and the paper's stays hidden. No objection.
 
 ## How a new page gets its type
@@ -84,6 +85,11 @@ Branch `agent/type`. Looks branch `agent/type-looks`. Part made real: `type`.
 | 26 | `npm run compare -- --key step1-fire --tier review --format hd` | ink `0x24272a`, grain 0.16, lighter white print, warmer legends |
 
 | 27 | `npm run still -- --key step1-fire --tier review --format hd --force` | after the ink moved into the material's colour: the picture is the same |
+| 28 | `npm run still -- --key step1-fire --tier review --format hd --force` | soft ink for subline and helper, first value: 92 87 80 against 105 100 94, ink 46 45 42 against 56 53 50 |
+| 29 | the same | ink `0x302e2b`, soft `0x67625c`: 50 48 45 and 97 91 85; six crops beside the approved image looked at |
+| 30 | `npm run still -- --key step1-fire --tier review --format hd --force` | numerals on metal as flat matte print: at 8x beside the approved numeral the lit lower wall is gone and the numeral reads as one dark shape |
+| 31 | `npm run still -- --key step1-fire --tier review --format uhd` (53.7 s, 747,688 triangles, 482 draw calls) | at 3840 the helper (18 px), the subline, the value under the glass and the legends are sharp and even; nothing to change |
+| 32 | `npm run still -- --key step1-fire --tier review --format hd --force` | ink under and on glass a step darker and cooler (`0x262827`): prompt 45 45 44 against 39 42 39 approved, value 43 44 42 against 40 36 31 |
 Checks that are not tuning looks: `--key tier-corporate` and `--key table-wide` at draft (the signs of the table, flat and standing, are all set by this maker), `--id rest-step1 --diag type`, one draft still in each of the seven beats of step 1, one of each of `--page marketing`, `step2`, `boss`, `decision`.
 
 ## What I learned
@@ -97,10 +103,12 @@ Checks that are not tuning looks: `--key tier-corporate` and `--key table-wide` 
 - `npm run still -- --key step1-fire --format hd --tier draft`: 3.7 s, 155,896 triangles, 305 draw calls. With the stand-in type: 3.2 s, 84,708 triangles, 303 draw calls.
 - `npm run still -- --key step1-fire --format uhd --tier review --force`: 19.6 s, same triangles and draw calls.
 - `npm run still -- --id rest-step1 --diag type`: 2.4 s, 47,401 triangles, 137 draw calls, every run inside its box.
+- With every part real (main at 1d29720 and this branch): `npm run still -- --key step1-fire --format hd --tier review --force` 21.2 s, 747,688 triangles, 482 draw calls for the whole page; the same at uhd 53.7 s; `npm run still -- --id rest-step1 --diag type --tier draft --format hd --force` 2.5 s, 294,995 triangles, 295 draw calls.
 - Textures of the part: none, 0 MB.
 - `npm run measure -- --unit step1` on main 77d4dc7 with this branch: M4 pass, 103 runs, smallest 18 px, least contrast 4.64. M2 and M3 are red there and are not type: M2 counts pixels of a `map`, which type has none of; M3 is the fine detail of the whole key. `npm run gate -- --phase 3 --only G11`: pass.
 - Shimmer: the regions of the title, the subline, the Resume label and the helper line differ by 0 between `--at 0.3` and `--at 0.6` of `step1.firstName` at hd draft.
 
 ## Seen and not mine
 
-- On `step1-fire.png` and `page-look.png` the "Browse files" chip is dark graphite with light type. The layout gives a chip of tone `metal` with type of tone `ink`, so I engrave it dark. If the chip is to be dark, its label needs tone `inkLight` in `src/pages/step1/layout.ts`.
+- The chip: settled. A chip or a button of tone `metal` is the smoked capsule of the surface and its label is set light whatever tone the layout gives.
+- Sizes, MEASURED in the approved images at 1920 (width of a line of dark pixels, ours as the ruler) and sent to the Builder, who owns `TYPE` in `src/shell/parts.ts`: the title is inter-600 at 46 to 48 px there (ours 28), the heading inter-display-600 at 40 to 43 px (ours 60), the chip label about 22 px (ours 18). Labels, subline, value, legends and "Enter" are within 5%.

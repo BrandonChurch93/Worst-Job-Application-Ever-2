@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import { config } from '../../../config'
 import { studio } from '../../../post/studio'
 import type { PartMaker } from '../../../real/types'
-import { grainNormalMap, materials } from '../../../shell/materials'
+import { grainNormalMap } from '../../../shell/materials'
 import { roundedRect } from '../../../shell/solids'
 
 const srgb = (hex: number) => new THREE.Color().setHex(hex, THREE.SRGBColorSpace)
@@ -11,10 +11,8 @@ const q = (v: number): number => Math.round(v * 4) / 4
 let redMade: THREE.MeshPhysicalMaterial | null = null
 let underMade: THREE.MeshPhysicalMaterial | null = null
 
-// Red is kept for things that hurt. The shared set's red is used as soon as it has one.
+// Red is kept for things that hurt. This is the slabs' own red, its numbers are in the notes for whoever needs the same.
 export function red(): THREE.MeshPhysicalMaterial {
-  const set = materials() as unknown as Record<string, unknown>
-  if (set.red instanceof THREE.MeshPhysicalMaterial) return set.red
   if (!redMade) {
     const grain = grainNormalMap(256, config.seed + 71, 1.6)
     grain.repeat.set(1 / 90, 1 / 90)

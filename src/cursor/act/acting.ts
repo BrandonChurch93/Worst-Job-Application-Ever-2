@@ -1,6 +1,7 @@
 import type { LookMaker } from '../contract'
 import { reactionPose } from './feel'
 
+const BUSY = { heat: 0.72 }
 const clamp = (v: number, lo: number, hi: number): number => Math.min(hi, Math.max(lo, v))
 
 // How it feels and what just happened, as the numbers the body and its effects are asked to look like.
@@ -14,10 +15,12 @@ export const actingLook: LookMaker | null = (pose, look) => {
   b.puff = clamp(f.puff + (react ? react.puff : 0), 0, 1)
   b.tremble = clamp(f.tremble + (pose.reaction === 'flinch' ? 0.35 * (1 - pose.reactionAt) : 0), 0, 1)
   b.pale = clamp(f.pale, 0, 1)
-  b.heat = clamp(f.heat * (0.92 + 0.08 * Math.sin(look.body.time * 7.3)), 0, 1)
+  // With its arms out the anger goes into the pull: the tip only warms and gives no steam, which beside a burn would read as the singe.
+  const busy = pose.arms ? clamp(pose.sprout, 0, 1) : 0
+  b.heat = clamp(f.heat * (0.92 + 0.08 * Math.sin(look.body.time * 7.3)) * (1 - BUSY.heat * busy), 0, 1)
   b.melt = clamp(f.melt, 0, 1)
   b.gulp = pose.gulp
   e.sweat = clamp(f.sweat, 0, 1)
-  e.steam = clamp(f.steam, 0, 1)
+  e.steam = clamp(f.steam * (1 - busy), 0, 1)
   if (pose.reaction === 'dustOff') e.dust = clamp(pose.reactionAt, 0, 1)
 }

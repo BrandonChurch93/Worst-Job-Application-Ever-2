@@ -66,7 +66,8 @@ export function resolveCommit(root, name) {
 }
 
 // The stand-in record of a part: each file hashed as it was at the first of `anchors` that holds it.
-// `show(commit, file)` gives the bytes or null. A file that none of the commits holds is listed in `absent` and no hash is made: a file that never was a stand-in proves nothing.
+// `show(commit, file)` gives the bytes or null. A file that none of the commits holds is listed in `absent` and recorded as `ABSENT` with no bytes: it was not there while the part was a stand-in, so it differs as soon as it holds a byte.
+export const ABSENT = 'absent'
 export function anchoredRecord(files, anchors, show) {
   const sorted = [...new Set(files)].sort()
   const hashAt = {}
@@ -82,9 +83,13 @@ export function anchoredRecord(files, anchors, show) {
       found = true
       break
     }
-    if (!found) absent.push(f)
+    if (!found) {
+      absent.push(f)
+      hashAt[f] = ABSENT
+      bytes[f] = Buffer.alloc(0)
+    }
   }
-  if (absent.length || !sorted.length) return { files: sorted, hashAt, absent, hash: null }
+  if (!sorted.length) return { files: sorted, hashAt, absent, hash: null }
   return { files: sorted, hashAt, absent, hash: hashOfBytes(sorted, (f) => bytes[f]) }
 }
 
@@ -94,7 +99,7 @@ export function recordedAgain(part, show) {
   const bytes = {}
   for (const f of part.files) {
     const c = part.hashAt[f]
-    const b = c ? show(c, f) : null
+    const b = c === ABSENT ? Buffer.alloc(0) : c ? show(c, f) : null
     if (b === null || b === undefined) return null
     bytes[f] = b
   }
@@ -126,6 +131,7 @@ export function standInTests(part, facts = {}) {
   else if (facts.hashNow === null) why.push('test 2: the hash of its files today cannot be made')
   else if (facts.hashNow === part.standInHash) why.push(`test 2: its files (${part.files.join(' ')}) are byte for byte what they were when it was recorded as a stand-in`)
   else if (same) why.push(`test 2: its files (${part.files.join(' ')}) are byte for byte what they were at ${same.commit.slice(0, 7)}, when every part was a stand-in. The hash recorded for it is older than that, so differing from it shows nothing`)
+  else if (!part.hashAt) why.push(`test 2: its record names no commit, so it was not taken from the commits in which every part was a stand-in. A file it names may have changed since for a reason that has nothing to do with the part, and differing from such a hash shows nothing (npm run parts -- --record ${part.name} --files a,b --replace)`)
   const frames = facts.frames
   if (frames && frames.count > 0) why.push(`test 3: the page reports it as a stand-in in ${frames.count} of ${frames.of} film frames, first in frame ${frames.first} (${frames.beats.join(', ')})`)
   const lit = (facts.pixels ?? []).filter((p) => p.pixels > 0)
