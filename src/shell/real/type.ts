@@ -172,13 +172,14 @@ export function setRun(spec: RunSpec): RunData {
   let k = 0
   const lean = st.lean
   const up = Math.sqrt(1 - lean * lean)
+  const grow = st.setting === 'cut' ? Math.min(2, Math.max(0.6, spec.px / 28)) : 1
   if (bands > 0) {
     for (const { g, x, y } of placed) {
       for (const c of g.contours) {
         const n = c.p.length / 2
         const base = v
         for (let r = 0; r <= bands; r++) {
-          const d = r === 0 ? 0 : rings[r - 1]!.d
+          const d = r === 0 ? 0 : rings[r - 1]!.d * grow
           const a = r === 0 ? rings[0]!.a : r < bands ? rings[r]!.a : 0
           const col = rings[Math.min(r, bands - 1)]!.c
           for (let i = 0; i < n; i++) {
@@ -239,7 +240,7 @@ const mix = (a: Rgb, b: Rgb, t: number): Rgb => [a[0] + (b[0] - a[0]) * t, a[1] 
 
 const INK = 0x18191b
 const INK_LIGHT = 0xf6f1e8
-const CAP = 0xe9e3d6
+const LIP = 0xf2efe8
 const CUT_FLOOR = 0x1d1e21
 
 let styleSet: Record<string, Style> | null = null
@@ -250,16 +251,15 @@ export function styles(): Record<string, Style> {
   const mat = materials()
   const ink = hex(INK)
   const light = hex(INK_LIGHT)
-  const ceramic = lin(mat.ceramic.color)
-  const cap = hex(CAP)
+  const lip = hex(LIP)
   const metal = lin(mat.aluminium.color)
   const floor = hex(CUT_FLOOR)
   styleSet = {
-    'page:ink': { setting: 'sunk', fill: ink, lean: 0.5, rings: [{ d: 0.7, a: 0.9, c: ceramic }] },
-    'cap:ink': { setting: 'sunk', fill: ink, lean: 0.42, rings: [{ d: 0.6, a: 0.8, c: cap }] },
+    'page:ink': { setting: 'sunk', fill: ink, lean: 0.5, rings: [{ d: 0.7, a: 0.6, c: lip }] },
+    'cap:ink': { setting: 'sunk', fill: ink, lean: 0.42, rings: [{ d: 0.6, a: 0.5, c: lip }] },
     'glass:ink': { setting: 'flat', fill: ink, lean: 0, rings: [{ d: 0.45, a: 0.85, c: ink }] },
     'paper:ink': { setting: 'flat', fill: ink, lean: 0, rings: [{ d: 0.5, a: 0.8, c: ink }] },
-    'metal:ink': { setting: 'cut', fill: floor, lean: 0.74, rings: [{ d: 1.0, a: 1, c: mix(metal, floor, 0.25) }, { d: 1.5, a: 1, c: metal }] },
+    'metal:ink': { setting: 'cut', fill: floor, lean: 0.6, rings: [{ d: 0.5, a: 1, c: mix(metal, floor, 0.55) }, { d: 0.95, a: 0.7, c: metal }] },
     'gloss:ink': { setting: 'flat', fill: ink, lean: 0, rings: [{ d: 0.45, a: 0.85, c: ink }] },
     'page:light': { setting: 'raised', fill: light, lean: -0.5, rings: [{ d: 0.6, a: 1, c: light }] },
     'gloss:light': { setting: 'raised', fill: light, lean: -0.55, rings: [{ d: 0.7, a: 1, c: light }] }
