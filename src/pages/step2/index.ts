@@ -658,7 +658,7 @@ export function makePage(): PageLogic {
       return s.done.some(Boolean) ? null : gags[0]!.id
     },
     ignoring: () => s.pressed || s.skipping,
-    volume: () => (s.crank.set ? Math.max(0.1, s.crank.level) : 1),
+    volume: () => (s.crank.set && !s.done[2] ? Math.max(0.1, s.crank.level) : 1),
     states: () => statesOf({ open: s.spring.findIndex((v) => v > 0.004), panel: s.open >= 0 && s.spring[s.open]! > 0.9, done: s.done, typing: [s.open === 0 || s.dial.digits.length > 0, false, false], settled: settled() }),
     sheet(id: string): SheetFrame | null {
       if (id !== 'machines') return null

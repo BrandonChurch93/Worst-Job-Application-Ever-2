@@ -246,6 +246,22 @@ describe('step 2, live', () => {
     }
   })
 
+  it('gives the full volume back when the step is skipped with the crank half turned', () => {
+    const l = live(new BotDriver('keen', config.seed))
+    let low = false
+    for (let i = 0; i < 60 * stepHz && l.page.id === 'step2'; i++) {
+      l.advance(1)
+      if (l.page.id === 'step2' && l.page.volume!() < 1) {
+        low = true
+        break
+      }
+    }
+    expect(low).toBe(true)
+    l.page.skip()
+    l.advance(1)
+    expect(l.page.volume?.() ?? 1).toBe(1)
+  })
+
   it('heals a flat cursor in sight before the page turns, when Continue comes early', () => {
     const l = live(new BotDriver('clumsy', config.seed))
     while (!names(l).includes('flatten') && l.time < 60) l.advance(1)

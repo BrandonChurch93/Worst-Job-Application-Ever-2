@@ -14,10 +14,11 @@ Decisions taken without asking, in the order they were met.
 - Dial: a hole is dragged clockwise to the stop. Digits 1 and 2 return the usual way. The digit that reaches `live.step2.dialDigitsBeforeItGivesUp` whips a full circle with the cursor in the hole and flings it to the left column: one hit per machine. The field then shows `rows.phone.gaveUp`.
 - Slot: the lever is pulled down, the reels stop one after the other, the field shows `rows.birth.recorded`, the cabinet pays out coins at the cursor. It always pays out. The film date is 07 23 1991; the live date comes from the seeded stream.
 - Crank: one turn is one segment, ten percent. The level starts at nothing, the handle rests up and to the right. After `live.step2.crankTurnsBeforeItRunsAway` turns the handle runs away to one hundred, and flattens the cursor once if the cursor is in its way. The hit can be dodged: `hint().dodge` points away from the hub.
-- Volume: `volume()` is 1 until the row of the volume is opened, then the level of the crank, never under 0.1, and 1 once the meter is full.
+- Volume: `volume()` is 1 until the row of the volume is opened, then the level of the crank, never under 0.1, and 1 once the row holds its value (the meter is full, or the step was skipped).
 - In the film the cursor is taken and placed on the thing it holds (the hole, the knob, the grip) for as long as it holds it, so the hand never slips. Live, the visitor's pointer is the hand and nothing is taken until a machine hits.
 - When Continue is pressed with a flat cursor (a visitor who is quicker than the peel), the cursor peels up in sight in 0.3 s and the page waits for it before it turns.
 - A gag that sits idle, or lasts past `live.skipLinkAfterSeconds`, plays its own ending: the row opens itself, the dial gives up, the lever pulls itself, the crank runs away, Continue presses itself.
+- The sheet `machines` shows the three machines in the order of the rows, the lever down, the meter above the crank with four segments lit, one cursor below, as in `references/approved/machines.png`.
 - `skip()` fills the three rows, closes the open one and presses Continue.
 
 ## Where the brief and the kit differ
