@@ -314,7 +314,7 @@ function shape(rig: Rig, q: SheetIn): void {
   lay(rig.title, rig.titleMarks, sheet, THICK + 0.12)
   lay(rig.bars, rig.barMarks, sheet, THICK + 0.12)
   const mat = stock(PAPER.w, PAPER.h)
-  mat.sheet.normalScale.setScalar(0.08 + 0.3 * sheet.abuse)
+  mat.sheet.normalScale.setScalar(0.07 + 0.22 * sheet.abuse)
 }
 
 // The sheet prints its own title. While the page still hands the title to the type maker, that one shows on the flat sheet
