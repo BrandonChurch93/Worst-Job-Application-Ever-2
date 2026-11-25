@@ -1,35 +1,35 @@
 {
   "folder": "damage",
-  "pushed": "2026-11-25T20:22:30.311Z",
-  "commit": "8fe9e4409fadf1bb212e24399d7cd1e8985a9ff5",
+  "pushed": "2026-11-25T20:28:53.625Z",
+  "commit": "fed1fd9c256946e2c0c01764253b4511b5596e2a",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Damage sheet at 8fe9e44, approved above, build below: tape plain on the mended arrow, hole with a wall, flattened with one faint crack",
-      "time": "2026-11-25T20:22:28.558Z",
+      "caption": "Still key-step1-fire-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T20:23:07.260Z",
       "by": "damage",
-      "from": "out/work/c/send/dmg9.jpg"
+      "from": "out/work/stills/key-step1-fire-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Acting sheet at 8fe9e44, approved above, build below: exhausted droops in its outline, laser hole larger and darker",
-      "time": "2026-11-25T20:22:28.782Z",
+      "caption": "Still key-step1-tug-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T20:23:39.097Z",
       "by": "damage",
-      "from": "out/work/c/send/act9.jpg"
+      "from": "out/work/stills/key-step1-tug-hd-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Pairs at 8fe9e44, approved left of each build: reassembled, punched, exhausted, hit by a laser",
-      "time": "2026-11-25T20:22:29.009Z",
+      "caption": "Still sheet-cursor-acting-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T20:24:49.786Z",
       "by": "damage",
-      "from": "out/work/c/send/pairs9.jpg"
+      "from": "out/work/stills/sheet-cursor-acting-hd-draft.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Keys at 8fe9e44: approved tug cursor, the build's tug crop (cursor not in it, see report), fire key cursor at 4 times",
-      "time": "2026-11-25T20:22:29.229Z",
+      "caption": "Keys, approved left, build right: tug tip clean with no heat light (f2b9802), fire key cursor at 4 times (8fe9e44, body unchanged since)",
+      "time": "2026-11-25T20:28:52.380Z",
       "by": "damage",
-      "from": "out/work/c/send/keys9.jpg"
+      "from": "out/work/c/send/keys11.jpg"
     }
   ]
 }
