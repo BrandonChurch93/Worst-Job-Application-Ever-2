@@ -45,6 +45,8 @@ function unit(h: Float32Array): Float32Array {
   return h
 }
 
+const PIT_FROM = 0.7
+
 // The eggshell grain as heights, one number a texel, with a mean of nought and a spread of one. The size is a power of two and the picture tiles.
 export function grainHeights(size: number, seed: number): Float32Array {
   const rnd = new Random(seed, 'grain')
@@ -56,13 +58,13 @@ export function grainHeights(size: number, seed: number): Float32Array {
     for (let i = 0; i < a.length; i++) a[i] = a[i]! - b[i]!
     return unit(a)
   }
-  const fine = band(0.45, 1.1)
-  const coarse = band(0.9, 2.2)
+  const fine = band(0.4, 0.9)
+  const coarse = band(1.2, 3)
   const h = new Float32Array(size * size)
   for (let i = 0; i < h.length; i++) {
-    // Pits read as eggshell: the low side of the fine grain is pressed down, the high side is flattened.
+    // Pits read as eggshell: only the low places of the fine grain are kept as pits, the rest is nearly flat.
     const f = fine[i]!
-    h[i] = 0.8 * (f < 0 ? f * 1.3 : f * 0.65) + 0.2 * coarse[i]!
+    h[i] = -1.6 * Math.max(0, -f - PIT_FROM) + 0.22 * f + 0.34 * coarse[i]!
   }
   return unit(h)
 }
@@ -268,7 +270,7 @@ export function makeMaterials(seed: number): Materials {
   brushed.repeat.set(1 / 720, 1 / 420)
   const turned = turnedMaps(256, seed, 2.2)
   const physical = (o: THREE.MeshPhysicalMaterialParameters) => studio(new THREE.MeshPhysicalMaterial(o))
-  const ceramic = grained(physical({ color: srgb(0xecebe6), roughness: 0.74, metalness: 0, normalMap: grain, normalScale: new THREE.Vector2(0.09, 0.09), specularIntensity: 0.6 }), 0.5)
+  const ceramic = grained(physical({ color: srgb(0xecebe6), roughness: 0.74, metalness: 0, normalMap: grain, normalScale: new THREE.Vector2(0.085, 0.085), specularIntensity: 0.6 }), 0.5)
   const pocket = grained(physical({ color: srgb(0xdcdfdc), roughness: 0.8, metalness: 0, normalMap: grain, normalScale: new THREE.Vector2(0.08, 0.08), specularIntensity: 0.4 }), 0.3)
   const glass = physical({ color: srgb(0xbdc5c2), roughness: 0.44, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8 })
   const glassSunk = physical({ color: srgb(0xbdc5c2), roughness: 0.44, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8, vertexColors: true })

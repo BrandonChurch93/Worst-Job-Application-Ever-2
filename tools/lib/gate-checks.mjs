@@ -66,7 +66,8 @@ export function resolveCommit(root, name) {
 }
 
 // The stand-in record of a part: each file hashed as it was at the first of `anchors` that holds it.
-// `show(commit, file)` gives the bytes or null. A file that none of the commits holds is listed in `absent` and no hash is made: a file that never was a stand-in proves nothing.
+// `show(commit, file)` gives the bytes or null. A file that none of the commits holds is listed in `absent` and recorded as `ABSENT` with no bytes: it was not there while the part was a stand-in, so it differs as soon as it holds a byte.
+export const ABSENT = 'absent'
 export function anchoredRecord(files, anchors, show) {
   const sorted = [...new Set(files)].sort()
   const hashAt = {}
@@ -82,9 +83,13 @@ export function anchoredRecord(files, anchors, show) {
       found = true
       break
     }
-    if (!found) absent.push(f)
+    if (!found) {
+      absent.push(f)
+      hashAt[f] = ABSENT
+      bytes[f] = Buffer.alloc(0)
+    }
   }
-  if (absent.length || !sorted.length) return { files: sorted, hashAt, absent, hash: null }
+  if (!sorted.length) return { files: sorted, hashAt, absent, hash: null }
   return { files: sorted, hashAt, absent, hash: hashOfBytes(sorted, (f) => bytes[f]) }
 }
 
@@ -94,7 +99,7 @@ export function recordedAgain(part, show) {
   const bytes = {}
   for (const f of part.files) {
     const c = part.hashAt[f]
-    const b = c ? show(c, f) : null
+    const b = c === ABSENT ? Buffer.alloc(0) : c ? show(c, f) : null
     if (b === null || b === undefined) return null
     bytes[f] = b
   }
