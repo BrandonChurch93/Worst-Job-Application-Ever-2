@@ -1,35 +1,35 @@
 {
   "folder": "film",
-  "pushed": "2026-11-25T09:04:50.296Z",
-  "commit": "7a49535c0199c3d7873eb0cda4a47221ec25bc59",
+  "pushed": "2026-11-25T09:22:31.020Z",
+  "commit": "637607d07839cfe887617e756b6ca43b6ae98369",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Opening of film A, frame 317: the prompt typed, the reasoning level control open on its one word. Stand-in, drawn by the builder's own scratch harness because npm run still has no opening yet",
-      "time": "2026-11-25T09:04:48.542Z",
+      "caption": "Card loop, prepared on step 1's own page (not on main yet), 2.17 s: the cursor has typed the x of Perplex, the right turret's bolt lands where it stood a moment ago",
+      "time": "2026-11-25T09:22:29.053Z",
       "by": "film",
-      "from": "out/work/stills/film-opening-0317-preview-draft.png"
+      "from": "out/work/stills/film-loop-0130-preview-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Opening of film A, frame 530: the build screen, three steps done and the fourth busy",
-      "time": "2026-11-25T09:04:48.773Z",
+      "caption": "Card loop, prepared, 3.58 s: the left turret's bolt on its way to the cursor that stopped to type",
+      "time": "2026-11-25T09:22:29.297Z",
       "by": "film",
-      "from": "out/work/stills/film-opening-0530-preview-draft.png"
+      "from": "out/work/stills/film-loop-0215-preview-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Card loop, frame 0 (step1-fire from home): stand-in deck, keys, two turrets, a bolt in flight, a scorch mark, the cursor mid hop",
-      "time": "2026-11-25T09:04:49.049Z",
+      "caption": "Card loop, prepared, 3.77 s: hit, the x is gone from the first name, the cursor is thrown off the key",
+      "time": "2026-11-25T09:22:29.544Z",
       "by": "film",
-      "from": "out/work/stills/film-loop-0000-preview-draft.png"
+      "from": "out/work/stills/film-loop-0226-preview-draft.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Card loop, frame 240 (half way): the cursor just hit, with its burn, knocked down a row",
-      "time": "2026-11-25T09:04:49.276Z",
+      "caption": "Opening, frame 317: the reasoning level control open, the level word now reads on its pill",
+      "time": "2026-11-25T09:22:29.774Z",
       "by": "film",
-      "from": "out/work/stills/film-loop-0240-preview-draft.png"
+      "from": "out/work/stills/film-opening-0317-preview-draft.png"
     }
   ]
 }
