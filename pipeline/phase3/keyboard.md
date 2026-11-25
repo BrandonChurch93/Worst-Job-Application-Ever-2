@@ -219,20 +219,22 @@ Owner: `/root/keys_look_fixer`, branch `agent/keys-look`, 2026-11-25 from 21:22Z
 - The sheen of the deck is no picture: 0 px, 0 MB.
 - Total of the pictures of the keyboard and the turrets: 1.54 MB, 2.04 MB with mipmaps (STATED from the sizes in `assets-src/keyboard/RECIPE.md`; main had 1.52 MB and 2.02 MB, the difference is the halo).
 
-### MEASURED (2026-11-25, 22:02Z to 22:08Z, on this branch at the commit before the last chrome tone, and on main at 054d9be in a second worktree)
+### MEASURED (2026-11-25, 22:13Z to 22:25Z, on this branch at 86969de, which holds main at db41bef; "main before" is main at 054d9be in a second worktree, before any push of this round was merged)
 
-| What | Command | Main | This branch |
+| What | Command | Main before | This branch |
 | --- | --- | --- | --- |
-| Tests | `npm test` | 79 files, 1230 tests | 79 files, 1230 tests |
+| Tests | `npm test` | 79 files, 1230 tests | 79 files, 1233 tests |
 | Build | `npm run build` | built | built |
 | Bots | `npm run bots` | all clear | all clear |
-| Measure at review | `npm run measure -- --unit step1 --tier review` | STATED by the Builder: M2 0.0159, M3 0.8846, M4 14 px and 4.64, M9 1.87 px | 8 green, 0 red. M2 0.0083, M3 0.8846, M4 14 px and 4.64, M9 1.87 px |
-| Measure at draft | `npm run measure -- --unit step1` | STATED by the Builder: M2 0.0216, red | 8 green, 0 red. M2 0.015, M3 1.2974 |
+| Measure at review | `npm run measure -- --unit step1 --tier review` | STATED by the Builder for db41bef: M2 0.0065, M3 0.8224, M4 4.76 | 8 green, 0 red. M2 0.0069, M3 0.8224, M4 14 px and 4.76, M9 1.87 px |
+| M3 of each key at review | the measure's own sum, run by a script on `out/work/measures/stills/key-*-hd-review.png` | not run | `step1-fire` 1.1948, `step1-tug` 0.8224. The least is the tug key, which shows no part of mine |
 | Draw calls of the picture, live low | `npm run counts -- --key step1-fire --live low` | 120 | 125 |
-| Triangles of the picture, live low | same | 236139 | 229745 |
+| Triangles of the picture, live low | same | 236139 | 234673 |
 | Keyboard, live low | same | 7 meshes, 10 calls, 40468 triangles | 7 meshes, 10 calls, 37906 triangles |
 | Turrets, live low | same | 33 meshes, 35 calls, 14638 triangles | 38 meshes, 40 calls, 10806 triangles |
-| One draft still | `npm run still -- --key step1-fire --format hd --tier draft --force` | 11.75 s, 437746 triangles, 282 calls | 11.28 s, 448691 triangles, 280 calls |
-| One review still | the same with `--tier review` | 24.12 s | 22.19 s |
+| One draft still | `npm run still -- --key step1-fire --format hd --tier draft --force` | 11.75 s, 437746 triangles, 282 calls | 11.78 s, 470467 triangles, 282 calls |
+| One review still | the same with `--tier review` | 24.12 s | 24.81 s |
 
-The five calls more in the turrets are the muzzle collar, its halo and the mark of the strike. The face of the deck is 2 pieces split to 40 px; the keyboard has fewer triangles than main because the face no longer lies under the keys.
+The five calls more in the turrets are the muzzle collar, its halo and the mark of the strike. The keyboard has fewer triangles than main because the face no longer lies under the keys. The still of this branch also holds the other agents' first pushes, so its triangles are not the keyboard's alone.
+
+Tried and dropped, never pushed: narrower bands of light on the ends of the deck with the face split to 18 px. MEASURED 520207 triangles in a draft still against 470467, and nothing to see for it.
