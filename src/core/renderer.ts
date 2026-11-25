@@ -231,9 +231,10 @@ export class LightRig {
     this.key.intensity = look.key.intensity * this.level
     this.aim(this.key, dx, dy, dz, r * split.blur, look.key.biasPx, s, alone)
     this.dome.color.setRGB(...look.dome.colour)
-    this.dome.intensity = look.dome.intensity * this.level
+    const up = alone ? 1 : s.dome[2]
+    this.dome.intensity = (look.dome.intensity * this.level) / up
     if (alone) this.aim(this.dome, 0, 0, 1, domeSpread(1), look.dome.biasPx, s, alone)
-    else this.aim(this.dome, s.dome[0], s.dome[1], s.dome[2], domeSpread(s.count), look.dome.biasPx, s, alone)
+    else this.aim(this.dome, s.dome[0], s.dome[1], up, domeSpread(s.count), look.dome.biasPx, s, alone)
     const cx = (this.rect.minX + this.rect.maxX) / 2
     const cy = (this.rect.minY + this.rect.maxY) / 2
     const at = look.key.at

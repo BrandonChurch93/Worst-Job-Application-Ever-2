@@ -7,18 +7,19 @@ export const look = {
     direction: [-0.52, 0.5, 0.69] as [number, number, number],
     // Half the angle the light's area takes up, seen from the page, in radians. It sets how fast a shadow softens with height.
     radius: 0.2,
-    intensity: 3.1,
-    colour: [1.0, 0.965, 0.92] as [number, number, number],
+    intensity: 2.8,
+    colour: [1.0, 0.975, 0.945] as [number, number, number],
     // Where the light stands over the middle of the view, in page pixels: x right, y up the page, z toward the viewer.
     // It sets how the light falls off across the page, lighter at the upper left.
-    at: [-1100, 900, 3500] as [number, number, number],
+    at: [-1200, 1000, 3750] as [number, number, number],
     shadowMapPx: 4096,
     // How far a surface is moved toward the light before its shadow is looked up, in page pixels.
     biasPx: 0.1,
     normalBiasPx: 0.2
   },
   dome: {
-    intensity: 1.05,
+    // The light a flat page takes from the fill, the same in a picture of any number of samples.
+    intensity: 0.46,
     colour: [1.0, 0.975, 0.945] as [number, number, number],
     shadowMapPx: 2048,
     biasPx: 0.2,
