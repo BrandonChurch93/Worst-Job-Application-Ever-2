@@ -1,35 +1,35 @@
 {
   "folder": "corporate",
-  "pushed": "2026-11-25T16:53:56.189Z",
-  "commit": "52a402d75f5f9fd82487c789abf5ab6310614a14",
+  "pushed": "2026-11-25T17:44:21.080Z",
+  "commit": "8fbfed909e70605e85cdbd9a6aa1a03bc23b90d7",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key tier-corporate: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-25T16:53:26.787Z",
+      "caption": "Key lobby-doors: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-25T17:43:25.415Z",
       "by": "corporate",
-      "from": "out/work/compare/compare-tier-corporate.jpg"
+      "from": "out/work/compare/compare-lobby-doors.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Key lobby-doors: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-25T16:53:35.337Z",
-      "by": "corporate",
-      "from": "out/work/compare/compare-lobby-doors.jpg"
-    },
-    {
-      "file": "look-3.jpg",
-      "caption": "First complete version of the seven corporate models beside the approved tier image: tower, doors, carpet, revolving door, beach case, boardroom, notes, wedges, ladder, all real",
-      "time": "2026-11-25T16:53:54.775Z",
+      "caption": "Key tier-corporate: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-25T17:44:19.471Z",
       "by": "corporate",
       "from": "out/work/compare/compare-tier-corporate.jpg"
     },
     {
-      "file": "look-4.jpg",
-      "caption": "Lobby doors beside the approved image, first complete version: the tower is too bright and too flat, the brass too yellow",
-      "time": "2026-11-25T16:53:55.029Z",
+      "file": "look-3.jpg",
+      "caption": "Lobby doors beside the approved image: lit hall behind the glass, steel fins, teal panes",
+      "time": "2026-11-25T17:44:19.746Z",
       "by": "corporate",
       "from": "out/work/compare/compare-lobby-doors.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Corporate tier beside the approved image: paved roofs, lit skylight, feathered palm, smooth sand",
+      "time": "2026-11-25T17:44:19.997Z",
+      "by": "corporate",
+      "from": "out/work/compare/compare-tier-corporate.jpg"
     }
   ]
 }
