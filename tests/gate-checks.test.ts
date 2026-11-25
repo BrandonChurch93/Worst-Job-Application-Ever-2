@@ -103,7 +103,12 @@ describe('the three tests of G13', () => {
   it('fails an old record whose files are what they were when every part was a stand-in', () => {
     const old = { name: 'x', unit: 'step1', state: 'finished', files: ['src/x.ts'], standInHash: 'e'.repeat(64), commit: A } as unknown as ReturnType<typeof recorded>
     expect(verdict(old, untouched)[0]).toMatch(/^test 2: its files .* at aaaaaaa, when every part was a stand-in/)
-    expect(verdict(old, { ...untouched, 'src/x.ts': 'export const part = "x"' })).toEqual([])
+  })
+  it('fails an old record that names no commit, though its files changed: a file can change for a reason that is not the part', () => {
+    const old = { name: 'x', unit: 'step1', state: 'finished', files: ['src/x.ts'], standInHash: 'e'.repeat(64), commit: A } as unknown as ReturnType<typeof recorded>
+    const why = verdict(old, { ...untouched, 'src/x.ts': 'export const part = "x"' })
+    expect(why).toHaveLength(1)
+    expect(why[0]).toMatch(/^test 2: its record names no commit.*npm run parts -- --record x --files a,b --replace/)
   })
   it('fails a part the page reports in a frame of the film', () => {
     const why = verdict(finished, made, { frames: { count: 1, of: 960, first: 906, beats: ['step1.keyboard'] } })
