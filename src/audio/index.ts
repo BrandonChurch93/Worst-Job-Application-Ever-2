@@ -22,6 +22,7 @@ export interface SoundApi {
   event(e: { name: string; x: number; y: number; hitsCursor: boolean }, mode: SoundMode): void
   beat(id: string, mode: SoundMode): void
   trigger(name: string): void
+  start(): void
   stop(): void
   state(): SoundState
   backend(): 'graph' | 'elements' | 'none'
@@ -272,6 +273,7 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
   let isMuted = false
   let level = 1
   let tone: Voice | null = null
+  let flowing = true
   const listeners: (() => void)[] = []
   const loaded = new Set<string>()
   const lengths = new Map<string, number>()
@@ -320,7 +322,7 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
   }
 
   const startTone = () => {
-    if (state !== 'ready' || !backend || tone || !loaded.has('room-tone')) return
+    if (state !== 'ready' || !backend || tone || !flowing || !loaded.has('room-tone')) return
     tone = backend.play('room-tone', { bus: 'tone', when: backend.now(), cents: 0, pan: 0, loop: true })
   }
 
@@ -407,6 +409,7 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
     event(e, mode) {
       if (state !== 'ready' || !backend) return
       backend.resume()
+      flowing = true
       startTone()
       for (const cue of stopEvents[e.name] ?? []) stopCue(cue)
       if (e.name === 'page-turn') for (const cue of loopCues) if (cue !== 'room-tone') stopCue(cue)
@@ -416,10 +419,11 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
     },
     beat(id, _mode) {
       if (state !== 'ready' || !backend) return
+      flowing = true
+      startTone()
       const b = config.film.beats.find((x) => x.id === id)
       const lines = film[id]
       if (!b || !lines) return
-      startTone()
       const now = backend.now()
       const wanted = lines.map((l, i) => ({ id: filmLineId(id, i), offset: l.at * (b.to - b.from), seconds: lengths.get(filmLineId(id, i)) ?? 0 })).filter((l) => loaded.has(l.id))
       const plan = narrator.beat(now, id, wanted)
@@ -445,7 +449,14 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
       speak(booking)
       reduck()
     },
+    start() {
+      flowing = true
+      if (state !== 'ready' || !backend) return
+      backend.resume()
+      startTone()
+    },
     stop() {
+      flowing = false
       narrator.clear()
       speaking.clear()
       running.clear()

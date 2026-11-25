@@ -120,6 +120,7 @@ describe('before the first click', () => {
     s.setVolume(0.5)
     s.setMuted(true)
     s.stop()
+    s.start()
     expect(made.length).toBe(0)
     expect(fetched).toEqual([])
     expect(s.state()).toBe('locked')
@@ -362,6 +363,40 @@ describe('with sound', () => {
     ctx.currentTime = 61
     s.event(hit('button-press'), 'film')
     expect(playsOf(ctx, 'room-tone').length).toBe(2)
+  })
+
+  it('is fully silent after stop() and has the room tone back at once at start()', async () => {
+    const { s, ctx } = await ready()
+    ctx.currentTime = 10
+    s.stop()
+    expect(playsOf(ctx, 'room-tone')[0]!.stopped).not.toBeNull()
+    ctx.currentTime = 20
+    s.trigger('idle')
+    expect(playsOf(ctx, 'room-tone').length).toBe(1)
+    s.start()
+    const tone = playsOf(ctx, 'room-tone')
+    expect(tone.length).toBe(2)
+    expect(tone[1]!.started).toBe(20)
+    expect(tone[1]!.loop).toBe(true)
+    expect(tone[1]!.stopped).toBeNull()
+    s.start()
+    s.event(hit('step'), 'film')
+    expect(playsOf(ctx, 'room-tone').length).toBe(2)
+  })
+
+  it('stopped before the first click, stays silent after it until start()', async () => {
+    const site = fixtureSite()
+    serve(site.files)
+    const s = makeSound({ base: './audio/', index: site.index })
+    s.start()
+    expect(made.length).toBe(0)
+    s.stop()
+    await s.unlock()
+    const ctx = made[0]!
+    expect(s.state()).toBe('ready')
+    expect(ctx.sources.length).toBe(0)
+    s.start()
+    expect(playsOf(ctx, 'room-tone').length).toBe(1)
   })
 
   it('holds its breath while the page is hidden and carries on when it is back', async () => {
