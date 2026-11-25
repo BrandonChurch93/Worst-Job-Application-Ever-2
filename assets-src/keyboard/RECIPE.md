@@ -32,10 +32,28 @@ Every picture here is made in code when the page starts. No file is downloaded a
 ## Scorch mark
 
 - Made by: `scorchPicture(config.seed + 403)` in `src/pages/step1/real/turret-fx.ts`
-- From: nothing. A charred middle with a ragged edge, a brown ring that thins out, a few specks, all from value noise.
+- From: nothing. A ragged pit of black char, a sooty crust round it, a soft brown singe that fades outward, a few flecks of soot and the faintest lit far wall, all from value noise.
 - Prompt or command: none.
-- Takes: one. 256 x 256 px, RGBA 8 bit, sRGB, 0.25 MB, 0.33 MB with its mipmaps. Each scorch turns and stretches it by its own name.
-- Why this one: the approved scorch is irregular and has a brown ring. A plain dark disc reads as a sticker.
+- Takes: three over the rounds (a dark blot with a brown ring; a bullet hole with a raised cream rim; this one). 256 x 256 px, RGBA 8 bit, sRGB, 0.25 MB, 0.33 MB with its mipmaps. Each scorch stretches it by its own name.
+- Why this one: round 5 read the raised rim as a bright bronze ring. The approved marks are charred black with sooty edges and a brown burn that fades.
+- Date: 2026-11-25
+
+## Sheen of the deck
+
+- Made by: `sheen(u, v, config.seed + 307)` in `src/pages/step1/real/keyboard-kit.ts`, written as a tone at every point of the deck's face by `deckGeometry` in `keyboard.ts` after `refine` has split the face until no edge is longer than 40 px.
+- From: nothing. Soft upright bands of light, slow value noise across the brushing, a little lighter toward the upper left.
+- Prompt or command: none.
+- Takes: two. A colour picture of 512 x 256 px was made first and dropped: laid once over a deck of 1560 px it has a third of a texel a pixel and turned measure M2 red. Kept: no picture, 0 px, 0 MB.
+- Why this one: the approved steel is not one tone. It has broad upright bands of light, and a flat tone reads as a painted slab.
+- Date: 2026-11-25
+
+## Halo
+
+- Made by: `haloPicture()` in `src/pages/step1/real/turret-fx.ts`
+- From: nothing. A round falloff, `exp(-r^2 / 0.09)`, that ends at the picture's edge.
+- Prompt or command: none.
+- Takes: one. 64 x 64 px, RGBA 8 bit, 0.016 MB, 0.02 MB with its mipmaps. Grey, drawn additively: the warm spot where a bolt struck and the glow of a hot muzzle.
+- Why this one: the star picture drawn large over a struck cap hid its legend. A hit leaves a small round warmth and nothing with rays.
 - Date: 2026-11-25
 
 ## Speckle of the cap plastic
@@ -47,4 +65,4 @@ Every picture here is made in code when the page starts. No file is downloaded a
 - Why this one: moulded plastic has a fine even speckle and the page already has one.
 - Date: 2026-11-25
 
-Total of my own pictures: 1.52 MB, 2.02 MB with mipmaps.
+Total of the pictures of the keyboard and the turrets: 1.54 MB, 2.04 MB with mipmaps.

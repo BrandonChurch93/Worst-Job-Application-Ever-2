@@ -26,7 +26,7 @@ export function woundOf(w: Wound, look: Parameters<LookMaker>[1], pose: Paramete
     const hole = { x: w.x, y: w.y, r, glow: Math.pow(1 - ramp(u, 0, L.cold), 1.6), burnt }
     if (r > 0.03) b.holes.push(hole)
     const smoke = 1 - ramp(u, 0.08, L.smokeEnd)
-    if (smoke > 0) e.smoke.push({ x: w.x, y: w.y - L.radius * 0.9, amount: smoke })
+    if (smoke > 0) e.smoke.push({ x: w.x, y: w.y - L.radius * 0.45, amount: smoke })
   } else if (w.kind === 'scorched') {
     const L = LIFE.scorched
     // The crust draws back to the tip as it heals.

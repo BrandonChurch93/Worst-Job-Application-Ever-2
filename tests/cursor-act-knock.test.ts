@@ -25,14 +25,18 @@ const struck = (vx: number): CursorBody => {
 }
 
 describe('a hit knocks the cursor over', () => {
-  it('past upright onto its other shoulder within 0.12 s, the way the bolt was going', () => {
+  it('the way the bolt was going within 0.06 s, and holds laid back that way', () => {
     const right = struck(900)
-    run(right, 0.11)
-    expect(right.pose().spin).toBeGreaterThan(0.5)
+    run(right, 0.05)
+    expect(right.pose().spin).toBeGreaterThan(0.2)
     expect(right.pose().spin).toBeLessThan(1.1)
+    run(right, 0.25)
+    expect(right.pose().lean + right.pose().spin).toBeGreaterThan(0.3)
     const left = struck(-900)
-    run(left, 0.11)
-    expect(left.pose().spin).toBeLessThan(-0.5)
+    run(left, 0.05)
+    expect(left.pose().spin).toBeLessThan(-0.2)
+    run(left, 0.25)
+    expect(left.pose().lean + left.pose().spin).toBeLessThan(-0.4)
   })
 
   it('swings back and stands exactly as before', () => {
