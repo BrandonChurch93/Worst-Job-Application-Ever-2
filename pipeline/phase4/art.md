@@ -29,7 +29,7 @@ See the report at the end of this file; every number there names its command.
 
 ## Report, first complete version (14:46 UTC, 2026-11-25)
 
-Branch `agent/art`, last commit `ba711dc`. Looks on `agent/art-looks`.
+Branch `agent/art`, last commit `ba711dc` (this report added in the commit after it). Looks on `agent/art-looks`.
 
 Done: three printed floors in the machine (drawn layer on the layout, painted material under it), their coverage masks made by rule, the clear coat (one `MeshPhysicalMaterial` a tier through `studio()` and `lit()`, orange peel in the coat's normal, a faint ball trail in the coat's roughness, gold leaf as metal on the corporate floor), nine insert windows with moulded pictures that glow with `insert.<id>.v[0]`, the plainer print under the launch lane and the lift, tests, recipes.
 
@@ -45,7 +45,7 @@ MEASURED (all at `--format hd`, full assets, on the build machine):
 | tier-office review | not measured | 30.541 s, 183593, 809 | `npm run still -- --key tier-office --format hd --tier review --force` |
 
 - With `--assets web` a draft still of tier-corporate took 10.6 s: about 3 s of the added time is the coat's shading over the whole frame and about 4 s is the 8192 wide pictures of the full set.
-- Asset sets: web 9.77 MB, full 30.5 MB (`du -sb public/assets/table/art assets-full/table/art`); largest file 9.9 MB (`assets-full/table/art/office.webp`).
+- Asset sets: web 8.01 MB, full 25.54 MB (`du -sb public/assets/table/art assets-full/table/art`); largest file 9.30 MB (`assets-full/table/art/office.webp`, `ls -S -l`). The sources under `assets-src/table/art` are 25.45 MB, nearly all the three painted bases.
 - Bare floor (M8's rule, radius 38.4 px, from `--diag coverage` stills read with `bareFloor` of `tools/lib/measure-core.mjs`): corporate 0.0093, office 0.0000, street 0.0001, against a limit of 0.08.
 - `npm test`: 989 passed. `npm run build`: built. `npm run bots`: all clear.
 
