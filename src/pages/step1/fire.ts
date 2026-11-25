@@ -28,7 +28,7 @@ export function drawFire(out: DrawList, view: FireView): void {
   for (const side of [0, 1]) over[`hatch-${side}`] = { z0: DECK_TOP, z1: DECK_TOP + 0.6 }
   for (const seat of seats) {
     const top = CAP_TOP - (view.pressed.includes(seat.name) ? TRAVEL : 0)
-    over[`key-${seat.name}`] = { z1: top, mechanism: true }
+    over[`key-${seat.name}`] = { z0: DECK_TOP, z1: top, mechanism: true }
     if (seat.name !== 'space') over[`key-${seat.name}-legend`] = { z0: top, z1: top }
   }
   for (const f of FIELDS) over[`${f}-value`] = { z0: 0.1, z1: 0.1 }

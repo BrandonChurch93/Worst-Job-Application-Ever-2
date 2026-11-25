@@ -455,6 +455,26 @@ describe('what the measures read', () => {
     expect(keys).toBeGreaterThan(1000)
   })
 
+  it('stands a keycap on the deck and gives its top as a height above the page', () => {
+    const { keyboardDeck, keycap, keyTravel } = config.scale.heights
+    const out: DrawList = []
+    drawFire(out, { typed: 'Perplex', pressed: ['e'], turrets: makeTurrets() })
+    const names = new Set(seats.map((q) => `key-${q.name}`))
+    const keys = out.filter((s) => names.has(s.id))
+    expect(keys.length).toBe(seats.length)
+    for (const s of keys) {
+      expect(s.z0).toBe(keyboardDeck)
+      expect(s.z1).toBe(s.id === 'key-e' ? keycap - keyTravel : keycap)
+    }
+    const floors: string[] = []
+    const walk = (n: { id: string; kind: string; floor?: number; children?: unknown[] }): void => {
+      if (n.kind === 'keycap' && n.floor !== undefined) floors.push(n.id)
+      for (const c of n.children ?? []) walk(c as Parameters<typeof walk>[0])
+    }
+    walk(makePage().layout as Parameters<typeof walk>[0])
+    expect(floors).toEqual([])
+  })
+
   it('says that the strips do not strike the cursor', () => {
     const a = film()
     a.advance(at(31.9))

@@ -62,4 +62,5 @@ Blockout phase. Stand-in shapes, working logic.
 
 - A part that a gag has taken from its place in the layout tree carries `moved: true` for as long as it is away: the paper and its lines while it slides, is carried, fed or tugged; a slab; a key and its legend while it sits on another seat or flies to one. A part at rest on the tree does not carry it.
 - `mechanism` is on the keycaps, the turrets and the shredder housing, and only while the part stands at least `machineMinTop` high. The deck, the slab, the paper and the upper lip of the slot are not mechanisms.
+- A keycap node has no `floor`: the still's state gives a part's height as its top less its node's floor, and scale.heights.keycap (42) is a height above the page, not above the deck. The key shape still stands on the deck: each draw sets its `z0` to the deck top.
 - `strips-zip` is emitted with hitsCursor false: the strips fly to the pile, they do not strike the cursor.
