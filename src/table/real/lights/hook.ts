@@ -45,6 +45,7 @@ const body = /* glsl */ `
 	wjlCut = max( wjlCut, 0.0 );
 	float wjlUp = max( wjlP.z, 0.0 );
 	float wjlWall = 1.0 - smoothstep( 0.3, 0.9, wjlN.z );
+	float wjlTop = 1.0 - wjlWall;
 	float wjlShine = 1.0 - smoothstep( 0.9, 0.995, wjlN.z ) * ( 1.0 - smoothstep( 4.0, 16.0, wjlUp ) );
 	IncidentLight wjlLight;
 	wjlLight.visible = true;
@@ -64,11 +65,11 @@ const body = /* glsl */ `
 		}
 		vec3 from = at.xyz;
 		if ( at.w > 1.5 ) {
-			from = vec3( wjlP.xy + wjlToward * at.z * wjlRun, at.z );
-			amount *= wjlCut;
+			from = vec3( wjlP.xy + wjlToward * at.z * wjlRun, at.z + wjlUp * wjlTop );
+			amount *= wjlCut / ( 1.0 + wjlTop * wjlUp * wjlUp * ${(1 / (170 * 170)).toExponential(4)} );
 			amount = mix( amount, 0.6 * amount / ( 1.0 + 1.5 * amount ), wjlWall );
 		}
-		vec3 low = from - vec3( wjlP.xy, 0.0 );
+		vec3 low = vec3( from.xy - wjlP.xy, at.z );
 		vec3 to = from - wjlP;
 		amount *= ( dot( low, low ) + ${(BODY * BODY).toFixed(1)} ) / ( dot( to, to ) + ${(BODY * BODY).toFixed(1)} );
 		wjlLight.direction = normalize( ( viewMatrix * vec4( to, 0.0 ) ).xyz );
@@ -85,7 +86,7 @@ const body = /* glsl */ `
 			#endif
 		}
 	}
-	wjlField += wjlFill * ( 0.5 + 0.5 * wjlN.z );
+	wjlField += wjlFill * ( 0.5 + 0.5 * wjlN.z ) * ( 1.0 + 1.6 * wjlTop * smoothstep( 20.0, 130.0, wjlUp ) );
 	reflectedLight.directDiffuse += wjlField * material.diffuseColor;
 	#ifdef STANDARD
 	reflectedLight.directSpecular += wjlField * material.specularColor * 0.12;
