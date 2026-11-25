@@ -7,7 +7,7 @@ import { WEDGE } from './wedges'
 import { FINISH, drop as free, fin, hex, matsOf, mesh, moved, place, screw, shade } from './mats'
 
 // The wire ramp, as agreed with the owner of the ramps: the rail's height is the underside of the ball.
-export const WIRE = { r: 2.6, under: 34.56, underUp: 11, side: 53.76, sideUp: 40, hoop: 55.4, hoopR: 2.2, centre: 48, rung: 48, hoops: 144, clear: 58, weld: 3.4, foot: 14 }
+export const WIRE = { r: 2.6, under: 34.56, underUp: 11, side: 53.76, sideUp: 40, hoop: 55.4, hoopR: 2.2, centre: 48, rung: 24, hoops: 144, clear: 58, weld: 3.4, foot: 14 }
 const STEEL = hex(0xd0d4d8)
 
 interface At { p: V3; t: V2; r: V2 }
@@ -182,7 +182,7 @@ export function buildLadder(z: Zone, _ctx: RealContext): THREE.Object3D {
         if (s > sApex - 30) continue
         r = off(mate(s), out * WIRE.under, WIRE.underUp - 1.4)
       }
-      S.pipe([l, r], 2.1, 5, shade(STEEL, 0.94))
+      S.pipe([l, r], 1.9, 5, shade(STEEL, 0.94))
       bead(l)
       bead(r)
     }

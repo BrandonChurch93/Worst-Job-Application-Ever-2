@@ -13,15 +13,17 @@ Owner: the maker of the office models. Branch `agent/office`. Parts: `model-coff
 ## Decisions
 
 - One opaque material for the whole tier. Roughness, metalness and clear coat ride on each vertex (`aSurf`), colour on each vertex too, so steel, enamel, fabric and paper share a draw. The material passes once through `lit(studio(material), zone)` and is extended after that by chaining `onBeforeCompile` and the program cache key.
-- Fourteen colour draws were allowed, thirteen are used: cubicles 5 (body, fine trim, clear bottles, bezel light, the screws of the whole tier as one instanced mesh), coffee machine 3 (body, clear tank, button rings), inbox 3 (stand, tray, loose envelopes), staplers 3 (bases with plates, two arms). The clear material is drawn in one pass (`forceSinglePass`), otherwise each clear mesh costs two draws.
+- Fourteen colour draws were allowed and fourteen are used: cubicles 5 (body, fine trim, clear bottles, bezel light, the screws of the whole tier as one instanced mesh), coffee machine 3 (body, clear tank, button rings), inbox 3 (stand, tray, loose envelopes), staplers 3 (bases with plates, two arms). Two of the fourteen are fine meshes, which the low level drops.
+- The small trim of every model of the tier (staples, the hinge spring, the grille bars of the drip tray, cup stacks, sugar sticks, the rail and slots of the cup warmer, the gauge, chair bases, keyboards, mugs, lamps, papers, pin boards, leaves) is gathered into the one fine mesh `office.cubicles.trim` (`Kit.fine`, `Kit.takeFine`), so it costs one draw for the tier and is counted as fine. The clear material is drawn in one pass (`forceSinglePass`), otherwise each clear mesh costs two draws.
 - Desks, chairs and monitors are merged into the one static mesh of the cubicles instead of being instanced. Three instanced meshes would cost three draws and the tier has fourteen; merged they cost none, and each chair still stands at its own angle. This departs from the brief on purpose.
 - The cubicles are two columns of three with an aisle between them, open to the front, so each cell has a real way in. The right column is the mirror image of the left.
 - The sign of the coffee machine stands where the type's shape `sign.office.coffee` stands: on two steel brackets from the front of the head, in front of and above the control strip. The row of buttons is on a sloped strip of the top so it is seen from straight above.
 - The button rings are green, yellow, red and cool white. No ring is amber: orange belongs to the flippers, the plunger and the lift.
-- The staplers are dark crimson (`0x5e1219` arm, `0x3d0c11` plate), well on the blue side of the machine's orange and darker than it. The plate is darker than the arm so the arm reads as the stapler and the plate as its stand. The base under the arm is brushed steel, as on a desk stapler.
+- The staplers are dark crimson (`0x54151c` arm, `0x4a1218` plate), well on the blue side of the machine's orange and darker than it. The plate is a shade darker than the arm, as in the approved image. The arm has a flat top with broad chamfers and is taller at the hinge than at the nose. The base under the arm is brushed steel, as on a desk stapler.
 - The stapler plate keeps to the post triangle plus 7 px and its underside is 46 px over the floor, as agreed with the owner of the hardware. The fixing through the plate is mine: a screw at each post, in the tier's instanced mesh of screws.
 - The inbox leaves the scoop alone: nothing of it within the hold's radius plus half the clearance, tipped or level (tested).
 - The small standing things are placed from things of the layout, not typed in: the water cooler and a spare bottle in the closed sliver between the guide `office.cubicles.roof` and the cubicles, the filing cabinet, the waste bin and the plant on the closed left shoulder below the inlane guide. No ball reaches either floor, so no path is narrowed. A test holds them behind those walls.
+- Chair seats are six clear colours (blue, teal, plum, green, grey, navy) on aluminium star bases, so each chair reads as a chair from straight above; keyboards are light grey so they are seen on the desks.
 - The pot of the plant is glazed off white, not terracotta, to keep orange off the tier.
 - No picture is used: every surface is built. No take was spent.
 - Surface grain is made in the one opaque material instead of in pictures: fine fibre grain on soft finishes, long streaks on metal, a weave on cloth and slow smudges in the roughness, all from the position of the point in the model and all faded out by `fwidth` where a pixel is wider than the grain, so nothing shimmers at a distance. It costs no draw and no asset.
@@ -45,3 +47,25 @@ Owner: the maker of the office models. Branch `agent/office`. Parts: `model-coff
 
 - The mirror of a cubicle is made in the builder (`Kit.mirror`), which also turns the winding, so no mesh has a negative scale.
 - Triangles and draws are in the report to the Builder, with the commands.
+
+## Open for the next owner
+
+Work ended at 18:13 UTC on the Builder's word, before the limit. Everything in the brief is present and real. What a critic would still mark down, in order:
+
+1. Staplers. The arm now has a flat top with broad chamfers and reads as the approved one, but it is a plain shell: no pressed line round the nose, no maker's blank badge, and the hinge end is a plain rounded block. The last colour change (`0x54151c` arm, `0x4a1218` plate in `staplers.ts`) was pushed with the gates green but was not looked at in a still: check it in `reply-all` at uhd first, the target is the approved crimson, about (139, 43, 45) on the arm in the picture.
+2. Cubicles. The walls take light from above through leaned normals (`Kit.up = 0.75` in `wall`), which is a cheat: from a low camera the fabric may look flat. The cells are small from the key cameras, and the desks are thin. The cubicles cast no shadow (`cast: false` on `office.cubicles.body`); if the shadow owner softens the tier's shadow, try `cast: true` again.
+3. Coffee machine. The front (group heads, cups on the grille, gauge) is under the sign from the key cameras, which look straight down, so the model reads as a top plate with four rings. Steam is left out. The cups on the warmer are plain.
+4. Small standing things. They stand on the closed left shoulder, where the tier is dim: the cabinet reads as a box and the bin is nearly black. The plant has nineteen leaves and reads as a plant.
+5. Inbox. The tray is drawn level in `reply-all` at 0.2 and 0.5 of the beat, when no ball is held, so the tip and the slide were never seen in a still, only in the test `tests/table-office.test.ts`. Look at the beat between 19.1 s and 21.4 s of the pinball unit (`T.inboxBy` to `T.eject` in `src/pages/step3/index.ts`).
+
+How the folder is laid out:
+
+- `kit.ts`: the builder of triangles (`Kit`), the three materials of the zone (`matsOf`), the surface presets (`SURF`), the grain shader. To change the shader, change the cache key string `office-surf-2` as well.
+- `Kit.fine = true` sends what follows to the fine store of that kit; `cubicles.ts` gathers the fine stores of the coffee machine and the stapler bases with `takeFine` into `office.cubicles.trim`. `coffeeFine` and `staplerFine` build those kits a second time for that, so anything added to the coffee machine or the stapler bases inside a `k.fine = true` stretch lands in the fine mesh of the cubicles and nowhere else.
+- All screws of the tier are one instanced mesh, `office.screws`, built in `cubicles.ts` from `coffeeScrews`, `inboxScrews`, `staplerScrews`, `cubicleScrews`.
+- Looks tools: `/tmp` helpers are gone with the sandbox. Crop a uhd still of `reply-all` by hand: cubicles at about (90..320, 110..320) of 1430 by 804, left stapler (250..400, 330..540), coffee machine and inbox (930..1170, 130..400), small things (0..260, 560..804).
+
+Not agreed with anyone yet:
+
+- The posts of the slingshots, from the hardware owner, stand to 46 px under the plate. Seen in `reply-all`, the posts and the rubber band show under the plate as intended.
+- The lights owner was told where the button rings and the bezel light are (group `office.windows`); no answer was needed.

@@ -59,6 +59,9 @@ export class Kit {
   private n: number[] = []
   private c: number[] = []
   private s: number[] = []
+  private small: number[][] = [[], [], [], []]
+  // What follows is small trim: it is kept apart, for the one mesh of fine things of the tier.
+  fine = false
   private m = new THREE.Matrix4()
   private stack: THREE.Matrix4[] = []
   private flips: boolean[] = []
@@ -97,16 +100,26 @@ export class Kit {
   }
 
   private vert(a: V3, n: V3, col: RGB, surf: Surf): void {
+    const [p, nn, c, ss] = this.fine ? (this.small as [number[], number[], number[], number[]]) : [this.p, this.n, this.c, this.s]
     this.v.set(a[0], a[1], a[2]).applyMatrix4(this.m)
-    this.p.push(this.v.x, this.v.y, this.v.z)
+    p.push(this.v.x, this.v.y, this.v.z)
     this.v.set(n[0], n[1], n[2]).transformDirection(this.m)
     if (this.up > 0 && this.v.z > -0.5) {
       this.v.z += this.up
       this.v.normalize()
     }
-    this.n.push(this.v.x, this.v.y, this.v.z)
-    this.c.push(col[0], col[1], col[2])
-    this.s.push(surf[0], surf[1], surf[2])
+    nn.push(this.v.x, this.v.y, this.v.z)
+    c.push(col[0], col[1], col[2])
+    ss.push(surf[0], surf[1], surf[2])
+  }
+  // Takes the small trim of another kit in among its own triangles.
+  takeFine(from: Kit): this {
+    const dst = [this.p, this.n, this.c, this.s]
+    from.small.forEach((a, i) => {
+      const d = dst[i]!
+      for (const x of a) d.push(x)
+    })
+    return this
   }
 
   tri(a: V3, b: V3, c: V3, na: V3, nb: V3, nc: V3, col: RGB, surf: Surf): this {

@@ -5,7 +5,7 @@ import { localBalls, whole, type Zone } from '../zone'
 import { Bag, ball, box, DEG, lathe, look, mat, prism, rod, sweep, wire, type V2, type V3 } from './g'
 import { drop, matsOf, part } from './mats'
 
-const WIRE = look(0xf2f5f7, 0.2, 0.5, 1)
+const WIRE = look(0xf4f6f8, 0.1, 0.9, 0)
 const PLATE = look(0xd3d6d9, 0.3, 0.76, 0)
 const SPRING = look(0xbfc4c9, 0.24, 0.8, 0)
 const WORN = look(0xf0f2f3, 0.1, 0.72, 0)
@@ -80,15 +80,34 @@ function clearOf(z: Zone, x: number, y: number): number {
   return best
 }
 
-// A post from a foot plate on the floor to the lowest point of a hoop: thicker the taller it stands.
-function post(b: Bag, fine: Bag, low: V3, turn: number): void {
-  const tall = low[2]
-  const r = tall > 240 ? 6.2 : tall > 96 ? 5 : TRACK.wire + 0.6
-  footPlate(b, fine, low[0], low[1], turn)
-  const m = mat({ x: low[0], y: low[1] })
-  b.add(lathe([[r + 3, 2.4], [r + 3, 9], [r + 1.6, 11], [r, 11.6], [r, tall - 9], [r - 1.4, tall - 6], [r - 1.4, tall + 0.5]], 12), PLATE, m)
-  if (tall > 96) b.add(lathe([[r, tall * 0.5 - 3], [r + 1.2, tall * 0.5 - 2], [r + 1.2, tall * 0.5 + 2], [r, tall * 0.5 + 3]], 12), WIRE, m)
-  fine.add(ball(TRACK.bead + 1, 8, 6), BEAD, mat({ x: low[0], y: low[1], z: low[2] - 0.6, s: [1.25, 1.25, 0.8] }))
+// A trestle under a hoop: two legs welded to the under wires and spread to two foot plates, with a rung at every ball of height.
+function trestle(b: Bag, fine: Bag, f: Frame, turn: number): void {
+  const tops = [-1, 1].map((side) => put(f, side * TRACK.under, TRACK.underUp - TRACK.wire * 0.6))
+  const tall = Math.min(tops[0]![2], tops[1]![2])
+  const spread = Math.min(20, tall * 0.1)
+  const r = tall > 240 ? 4.2 : tall > 96 ? 3.6 : TRACK.wire + 0.4
+  const feet = tops.map((p, i) => [p[0] + f.side[0] * (i * 2 - 1) * spread, p[1] + f.side[1] * (i * 2 - 1) * spread, 2.4] as V3)
+  const at = (i: number, h: number): V3 => {
+    const k = (h - feet[i]![2]) / (tops[i]![2] - feet[i]![2])
+    return [feet[i]![0] + (tops[i]![0] - feet[i]![0]) * k, feet[i]![1] + (tops[i]![1] - feet[i]![1]) * k, h]
+  }
+  for (let i = 0; i < 2; i++) {
+    footPlate(b, fine, feet[i]![0], feet[i]![1], turn)
+    b.add(rod(feet[i]!, tops[i]!, r, 8, r * 0.8), WIRE)
+    b.add(lathe([[r + 2.6, 2.4], [r + 2.6, 7], [r + 1, 9], [r, 9.6]], 10), PLATE, mat({ x: feet[i]![0], y: feet[i]![1] }))
+    fine.add(ball(TRACK.bead + 0.6, 8, 6), BEAD, mat({ x: tops[i]![0], y: tops[i]![1], z: tops[i]![2] + 0.6, s: [1.25, 1.25, 0.8] }))
+  }
+  for (let h = tall - 64; h > 44; h -= BALL) {
+    const p = at(0, h)
+    const q = at(1, h)
+    b.add(rod(p, q, 2.3, 6), WIRE)
+    for (const e of [p, q]) fine.add(ball(TRACK.bead - 0.2, 8, 6), BEAD, mat({ x: e[0], y: e[1], z: e[2] }))
+  }
+  if (tall > 240) {
+    const h0 = 44 + ((tall - 64 - 44) % BALL)
+    b.add(rod(at(0, 14), at(1, h0), 2, 6), WIRE)
+    b.add(rod(at(1, 14), at(0, h0), 2, 6), WIRE)
+  }
 }
 
 function highway(z: Zone, b: Bag, fine: Bag): Frame[] {
@@ -119,7 +138,7 @@ function highway(z: Zone, b: Bag, fine: Bag): Frame[] {
       const a = -open + (i / 14) * open * 2
       arc.push(put(f, Math.sin(a) * TRACK.hoopR, TRACK.centre - Math.cos(a) * TRACK.hoopR))
     }
-    b.add(wire(arc, TRACK.hoop, 8, 2), WIRE)
+    b.add(wire(arc, TRACK.hoop, 8, 1), WIRE)
     for (const side of [-1, 1]) {
       for (const [across, up] of [[TRACK.under, TRACK.underUp], [TRACK.side, TRACK.sideUp]] as const) {
         const d = put(f, side * across * 1.035, up + (up - TRACK.centre) * 0.035)
@@ -127,7 +146,11 @@ function highway(z: Zone, b: Bag, fine: Bag): Frame[] {
       }
     }
     const low = put(f, 0, TRACK.centre - TRACK.hoopR)
-    if (low[2] > 16 && clearOf(z, low[0], low[1]) > CLEARANCE + 16) post(b, fine, low, Math.atan2(f.along[1], f.along[0]))
+    const stand = [-1, 1].every((side) => {
+      const p = put(f, side * (TRACK.under + 20), 0)
+      return clearOf(z, p[0], p[1]) > CLEARANCE + 16
+    })
+    if (low[2] > 16 && stand) trestle(b, fine, f, Math.atan2(f.along[1], f.along[0]))
   }
   return frames
 }
@@ -151,20 +174,20 @@ function spiral(z: Zone, b: Bag, clear: Bag): void {
   const pts = all.slice(1, all.length - 1)
   pts.unshift(new THREE.Vector3(all[0]!.x, all[0]!.y, all[1]!.z))
   const curve = new THREE.CatmullRomCurve3(pts, false, 'centripetal')
-  const flat = framesOf(curve, 11).map((f) => ({ ...f, up: [0, 0, 1] as V3 }))
+  const flat = framesOf(curve, 13).map((f) => ({ ...f, up: [0, 0, 1] as V3 }))
   const h = TROUGH.half
   const t = TROUGH.wall
   const top = TROUGH.tall
   const u = -TROUGH.under
   const c: [number, number] = [pts[1]!.x + SPIRAL.r * BALL, pts[1]!.y]
-  clear.add(sweep([[-h - t, u], [h + t, u], [h + t, u + t], [-h - t, u + t]], flat), CLEAR, undefined, 0.1)
+  clear.add(sweep([[-h - t, u], [h + t, u], [h + t, u + t], [-h - t, u + t]], flat), CLEAR, undefined, 0.035)
   for (const side of [-1, 1]) {
     const wall: V2[] = [[side * h, u + t], [side * (h + t), u + t], [side * (h + t), top], [side * (h + 1), top]]
     if (side < 0) wall.reverse()
-    clear.add(sweep(wall, flat), CLEAR, undefined, 0.13)
-    const lip: V2[] = [[side * (h - 1.5), top], [side * (h + t + 1), top], [side * (h + t + 1), top + 2.6], [side * (h - 1.5), top + 2.6]]
+    clear.add(sweep(wall, flat), CLEAR, undefined, 0.09)
+    const lip: V2[] = [[side * (h - 1.5), top], [side * (h + t + 1), top], [side * (h + t + 1), top + 3.6], [side * (h - 1.5), top + 3.6]]
     if (side < 0) lip.reverse()
-    clear.add(sweep(lip, flat), CLEAR_EDGE, undefined, 0.6)
+    clear.add(sweep(lip, flat), CLEAR_EDGE, undefined, 0.78)
     const foot: V2[] = [[side * (h + t - 3), u - 0.8], [side * (h + t + 0.6), u - 0.8], [side * (h + t + 0.6), u + 0.8], [side * (h + t - 3), u + 0.8]]
     if (side < 0) foot.reverse()
     clear.add(sweep(foot, flat), CLEAR_EDGE, undefined, 0.36)
@@ -205,7 +228,7 @@ interface Built { flap: THREE.Mesh | null; down: number }
 export const flapLift = (open: number): number => (1 - Math.max(0, Math.min(1, open))) * FLAP.lift
 
 export const ramps = whole('ramps', {
-  version: 'play-ramps-9',
+  version: 'play-ramps-14',
   build(z) {
     const g = new THREE.Group()
     g.name = `play.ramps.${z.id}`

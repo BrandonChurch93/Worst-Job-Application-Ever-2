@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { BALL, SPIRAL, railOf, table } from '../src/table/layout'
+import { BALL, COLS, SPIRAL, railOf, table } from '../src/table/layout'
 import { localBalls, zone } from '../src/table/real/zone'
 import { buckets } from '../src/table/real/models/street/geo'
 import { garage, inTube, tube } from '../src/table/real/models/street/garage'
@@ -17,12 +17,13 @@ describe('the models of the street', () => {
     for (const id of ['model-firehouse', 'model-police', 'model-bank', 'model-garage', 'model-houses', 'model-moms', 'model-road-signs']) expect(parts[id], id).toBeTruthy()
   })
 
-  it('holds the firehouse door half raised at rest, shut on a held ball and up as the ball is fired out', () => {
-    expect(doorOf([0, 9, 9]).raise).toBeCloseTo(0.5)
-    expect(doorOf([1, 1, 9]).raise).toBeLessThan(0.01)
+  it('hangs the firehouse door low at rest, runs it up on a held ball and keeps it up as the ball is fired out', () => {
+    expect(doorOf([0, 9, 9]).raise).toBeCloseTo(0.35)
+    expect(doorOf([1, 1, 9]).raise).toBeGreaterThan(0.9)
+    expect(doorOf([1, 0.25, 9]).shake).toBeGreaterThan(0.1)
     expect(doorOf([0, 9, 0.2]).raise).toBeGreaterThan(0.9)
     expect(doorOf([0, 9, 0.2]).shake).toBeGreaterThan(0.1)
-    expect(doorOf([0, 9, 3]).raise).toBeCloseTo(0.5)
+    expect(doorOf([0, 9, 3]).raise).toBeCloseTo(0.35)
     expect(doorOf([0, 9, 3]).shake).toBe(0)
   })
 
@@ -49,7 +50,8 @@ describe('the models of the street', () => {
       for (let i = 0; i < p.count; i++) {
         const r = Math.hypot(p.getX(i) - centre[0], p.getY(i) - centre[1])
         expect(r).toBeGreaterThan(trough + 4)
-        expect(p.getZ(i)).toBeGreaterThan((m.base ?? 0) * BALL - 3)
+        // Under its base the garage has only the two stanchions that stand on the right wall.
+        if (p.getZ(i) < (m.base ?? 0) * BALL - 3) expect(p.getX(i)).toBeGreaterThan(localBalls(z, COLS.right, 0)[0])
         expect(p.getZ(i)).toBeLessThan(((m.base ?? 0) + m.h) * BALL + 2)
         expect(inTube(pts, p.getX(i), p.getY(i), p.getZ(i), p.getZ(i))).toBe(false)
         n++
