@@ -9,13 +9,16 @@ import { formatOf, openSession, renderJob, still } from './lib/capture.mjs'
 import { buildInfo } from './lib/hashes.mjs'
 import { difference, psnrText, rawOf } from './lib/image.mjs'
 import { machine } from './lib/browser.mjs'
+import { state } from './lib/state.mjs'
+import { storyCheck, wordsCheck } from './lib/story.mjs'
+import { cutListExists, judgedFilm, judgedPages, listedIds, readCutList } from './lib/judged.mjs'
 
 const a = args()
 const c = config()
 const phase = Number(a.phase ?? 0)
 const only = a.only ? String(a.only).toUpperCase().split(',') : null
-const from = { G1: 0, G2: 0, G3: 0, G4: 0, G8: 0, G9: 0, G10: 0 }
-const onlyAt = { D1: [1] }
+const from = { G1: 0, G2: 0, G3: 0, G4: 0, G5: 2, G6: 2, G7: 2, G8: 0, G9: 0, G10: 0, G11: 2, G12: 2, G14: 2, G17: 2, G18: 2 }
+const onlyAt = { D1: [1], D2: [2, 6], D3: [2, 6] }
 const results = []
 const sha = (file) => crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')
 const run = (cmd, argv) => spawnSync(cmd, argv, { cwd: at(), encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 })
@@ -209,6 +212,196 @@ const checks = {
     }
   },
 
+  async G5() {
+    const detail = []
+    const visible = (session) =>
+      session.page.evaluate(() => {
+        const out = []
+        for (const el of document.body.querySelectorAll('button, a, input, select, textarea, summary, video, audio, [role], [tabindex]')) {
+          const r = el.getBoundingClientRect()
+          const st = getComputedStyle(el)
+          if (r.width < 1 || r.height < 1 || st.display === 'none' || st.visibility === 'hidden' || Number(st.opacity) === 0) continue
+          let shown = true
+          for (let p = el.parentElement; p; p = p.parentElement) {
+            const ps = getComputedStyle(p)
+            if (ps.display === 'none' || ps.visibility === 'hidden' || Number(ps.opacity) === 0 || p.hidden) shown = false
+          }
+          if (shown) out.push(`${el.tagName.toLowerCase()}${el.id ? `#${el.id}` : ''}`)
+        }
+        return out
+      })
+    const session = await openSession({ format: 'preview' })
+    let plain = 0
+    let withControls = 0
+    try {
+      const page = c.film.units[0].id
+      const steps = [{ name: `a still of ${c.lookLockUnit} at rest`, job: { kind: 'still', spec: { page: c.lookLockUnit, camera: 'home', tier: 'draft' } }, controls: false }]
+      for (const st of c.stills.filter((x) => x.interface)) {
+        const spec = { page: st.unit === 'site' ? page : st.unit, camera: st.camera, tier: 'draft', interface: true }
+        if (st.touchOnly) spec.touchOnly = true
+        steps.push({ name: `the still ${st.id}`, job: { kind: 'still', spec }, controls: true })
+        steps.push({ name: `a film frame after the still ${st.id}`, job: { kind: 'film', frame: Math.round(c.film.hookSeconds * c.film.fps), tier: 'draft' }, controls: false })
+      }
+      steps.push({ name: 'frame 0 of the loop', job: { kind: 'loop', frame: 0, tier: 'draft' }, controls: false })
+      steps.push({ name: `a still of ${page} at rest, last`, job: { kind: 'still', spec: { page, camera: 'home', tier: 'draft' } }, controls: false })
+      for (const step of steps) {
+        try {
+          await renderJob(session, step.job)
+        } catch (e) {
+          detail.push(`${step.name} could not be drawn: ${e.message.split('\n')[0]}`)
+          continue
+        }
+        const seen = await visible(session)
+        if (step.controls) {
+          withControls++
+          if (!seen.length) detail.push(`${step.name} asks for the interface and no control is in the page`)
+        } else {
+          plain++
+          if (seen.length) detail.push(`${step.name} has ${seen.length} control${seen.length === 1 ? '' : 's'} in the page: ${seen.slice(0, 6).join(', ')}`)
+        }
+      }
+    } finally {
+      await session.close()
+    }
+    return { pass: detail.length === 0, note: `${plain} pictures without the interface (stills, film frames and a loop frame, drawn before and after the pictures with it) checked for a control in the page, and ${withControls} stills with the interface checked for theirs. A picture without the interface is read from the canvas alone, so no control can be in its pixels`, detail }
+  },
+
+  async G6() {
+    const detail = []
+    const s = await state()
+    let computed = judgedPages(c)
+    try {
+      try {
+        s.App.check()
+      } catch (e) {
+        detail.push(...e.message.split('\n').filter(Boolean).slice(0, 20))
+      }
+      if (cutListExists()) computed = [...computed, ...judgedFilm(s.showcase, c)]
+    } finally {
+      await s.close()
+    }
+    const listed = new Set(listedIds())
+    const missing = computed.filter((e) => !listed.has(e.id))
+    for (const e of missing.slice(0, 20)) detail.push(`${e.id} is on the computed judged list and not on the judged list in kit/PROGRESS.md (npm run judged -- --write)`)
+    if (missing.length > 20) detail.push(`and ${missing.length - 20} more`)
+    return { pass: detail.length === 0, note: `the config and the two content files pass the site's startup validation; ${computed.length} computed judged entries${cutListExists() ? ', the film\'s part among them' : ' (the film\'s part waits for cut/CUTLIST.json)'}, ${listed.size} listed in kit/PROGRESS.md`, detail }
+  },
+
+  async G7() {
+    const detail = []
+    const total = c.film.units.reduce((n, u) => n + u.seconds, 0)
+    if (total > c.film.maxSeconds + 1e-9) detail.push(`film B is ${total} s, over film.maxSeconds (${c.film.maxSeconds})`)
+    for (const u of c.film.units) {
+      const planned = c.film.plannedSeconds[u.id]
+      if (planned === undefined) detail.push(`${u.id} has no planned length in film.plannedSeconds`)
+      else if (Math.abs(u.seconds - planned) > planned * c.film.unitTuneFraction + 1e-9) detail.push(`${u.id} is ${u.seconds} s, more than film.unitTuneFraction (${c.film.unitTuneFraction}) away from its planned ${planned} s`)
+    }
+    let opening = null
+    let from = 'the numbers of intro in the config, because the opening is not built yet'
+    const s = await state()
+    try {
+      opening = s.showcase.opening().frameCount / c.film.fps
+      from = 'opening().frameCount'
+    } catch {
+      opening = c.intro.prompt.length / c.intro.charsPerSecond + c.intro.readHoldSeconds + c.intro.steps.length * c.intro.stepSeconds + c.intro.endHoldSeconds
+    } finally {
+      await s.close()
+    }
+    if (opening > c.intro.maxSeconds + 1e-9) detail.push(`the opening is ${opening.toFixed(2)} s, over intro.maxSeconds (${c.intro.maxSeconds})`)
+    const mb = (seconds) => (seconds * (c.export.bitrateMbps * 1e6 + c.export.audioKbps * 1e3)) / 8 / 1048576
+    const sizeB = mb(total)
+    const sizeA = mb(total + opening)
+    if (sizeA >= c.platform.maxFileMb) detail.push(`film A in ${c.formats.hd.id} at ${c.export.bitrateMbps} Mbps would be ${sizeA.toFixed(0)} MB, not under platform.maxFileMb (${c.platform.maxFileMb})`)
+    for (const file of walk(at('out', 'work')).filter((f) => /film-[ab]-hd-[a-z]+\.mp4$/.test(f))) {
+      const real = fs.statSync(file).size / 1048576
+      if (real >= c.platform.maxFileMb) detail.push(`${path.relative(at(), file)} is ${real.toFixed(0)} MB, not under platform.maxFileMb (${c.platform.maxFileMb})`)
+    }
+    const std = c.platform.standardAccountMaxSeconds
+    const longer = [total > std ? `film B (${total} s)` : null, total + opening > std ? `film A (${(total + opening).toFixed(1)} s)` : null].filter(Boolean)
+    return {
+      pass: detail.length === 0,
+      note: `film B is ${total} s of at most ${c.film.maxSeconds}; every page is within ${c.film.unitTuneFraction} of its planned length; the opening is ${opening.toFixed(2)} s of at most ${c.intro.maxSeconds} (from ${from}); in ${c.formats.hd.id} at ${c.export.bitrateMbps} Mbps film B is about ${sizeB.toFixed(0)} MB and film A about ${sizeA.toFixed(0)} MB, under ${c.platform.maxFileMb}. Note, not a failure: ${longer.length ? `${longer.join(' and ')} ${longer.length === 1 ? 'is' : 'are'} longer than the ${std} s a standard account on ${c.platform.name} may post` : `both films fit the ${std} s a standard account on ${c.platform.name} may post`}`,
+      detail
+    }
+  },
+
+  async G11() {
+    const s = await state()
+    try {
+      return await wordsCheck(s)
+    } finally {
+      await s.close()
+    }
+  },
+
+  async G12() {
+    const s = await state()
+    try {
+      return storyCheck(s)
+    } finally {
+      await s.close()
+    }
+  },
+
+  async G14() {
+    const frames = c.deliver.cardLoop.seconds * c.film.fps
+    const session = await openSession({ format: 'preview' })
+    try {
+      const dir = at('out', 'work', 'gate')
+      fs.mkdirSync(dir, { recursive: true })
+      const first = path.join(dir, 'loop-first.png')
+      const past = path.join(dir, 'loop-past-last.png')
+      fs.writeFileSync(past, await renderJob(session, { kind: 'loop', frame: frames, tier: 'draft' }))
+      fs.writeFileSync(first, await renderJob(session, { kind: 'loop', frame: 0, tier: 'draft' }))
+      const d = difference(await rawOf(first), await rawOf(past))
+      const same = d.sameSize && d.pixels === 0
+      return { pass: same, note: `the loop's seam: frame ${frames}, one past the last, ${same ? 'is pixel-identical to' : 'differs from'} frame 0 (${session.format.id}, draft)`, detail: same ? [] : [`${d.pixels} pixels differ, the largest difference is ${d.largest} of 255`] }
+    } finally {
+      await session.close()
+    }
+  },
+
+  async G17() {
+    const r = run('node', ['tools/bots.mjs'])
+    const file = at('out', 'work', 'bots.json')
+    if (!fs.existsSync(file)) return { pass: false, note: '`npm run bots` left no report', detail: tail(r.stdout + r.stderr, 10) }
+    const report = readJson(file)
+    const finishing = report.problems.filter((p) => !p.startsWith('keen never reached'))
+    const done = report.runs.filter((x) => x.finished).length
+    const slowest = report.runs.reduce((m, x) => Math.max(m, x.seconds), 0)
+    const pointer = report.runs.reduce((m, x) => Math.max(m, x.ignoredPointer), 0)
+    const flippers = report.runs.reduce((m, x) => Math.max(m, x.ignoredFlippers), 0)
+    return { pass: finishing.length === 0 && done === report.runs.length, note: `finishing: ${done} of ${report.runs.length} runs (${c.live.bots.join(', ')} on ${c.live.botSeeds} seeds each) reached the careers page after the rejection, the slowest in ${slowest.toFixed(0)} s of ${c.live.botMaxSeconds}; the pointer was ignored for at most ${pointer.toFixed(2)} s and the flippers for at most ${flippers.toFixed(2)} s, of ${c.live.controlTakenMaxSeconds} allowed`, detail: finishing.slice(0, 20) }
+  },
+
+  async G18() {
+    const detail = []
+    const session = await openSession({ format: 'preview' })
+    let modules
+    try {
+      modules = session.info.modules
+    } finally {
+      await session.close()
+    }
+    const live = new Set(modules.live)
+    const filmOnly = modules.film.filter((m) => !live.has(m))
+    for (const m of filmOnly) detail.push(`${m} is loaded by film mode and not by live mode`)
+    for (const m of modules.unplaced ?? []) detail.push(`${m} is imported in a way that names no mode, so the lists cannot be trusted`)
+    if (!modules.film.length || !modules.live.length) detail.push('info().modules is empty')
+    const file = at('out', 'work', 'bots.json')
+    let keenNote = 'no report of the bots yet'
+    const info = buildInfo(at())
+    if (!fs.existsSync(file) || readJson(file).engineHash !== info.engineHash || JSON.stringify(readJson(file).pageHashes) !== JSON.stringify(info.pageHashes)) run('node', ['tools/bots.mjs'])
+    if (fs.existsSync(file)) {
+      const report = readJson(file)
+      const keen = report.runs.filter((x) => x.bot === 'keen')
+      for (const g of report.missed) detail.push(`the keen bot never reached the gag of ${g} in live mode on some seed`)
+      if (!keen.length) detail.push('the keen bot did not run')
+      keenNote = `the keen bot reached ${c.film.beats.length - report.missed.length} of ${c.film.beats.length} gags on each of its ${keen.length} seeds`
+    } else detail.push('`npm run bots` left no report')
+    return { pass: detail.length === 0, note: `one site: film mode loads ${modules.film.length} modules under src/pages/, src/table/ and src/boss/ and live mode ${modules.live.length}; ${filmOnly.length} of film mode's are not in live mode; ${keenNote}`, detail }
+  },
+
   async D1() {
     const file = at('out', 'roughcut.mp4')
     if (!fs.existsSync(file)) return { pass: false, note: 'out/roughcut.mp4 does not exist', detail: [] }
@@ -225,10 +418,73 @@ const checks = {
     const mb = fs.statSync(file).size / 1048576
     if (mb > c.repo.maxFileMb) detail.push(`it is ${mb.toFixed(1)} MB, over repo.maxFileMb`)
     return { pass: detail.length === 0, note: `out/roughcut.mp4 is ${s.width} by ${s.height} with ${s.nb_read_frames} frames at ${s.r_frame_rate} (${frames} expected), ${mb.toFixed(1)} MB, silent`, detail }
+  },
+
+  async D2() {
+    const file = at('out', c.export.files.previewB)
+    const rel = path.relative(at(), file)
+    if (!fs.existsSync(file)) return { pass: false, note: `${rel} does not exist`, detail: [] }
+    const probe = (argv) => run('ffprobe', ['-v', 'error', ...argv, file]).stdout
+    const v = JSON.parse(probe(['-select_streams', 'v:0', '-count_frames', '-show_entries', 'stream=width,height,nb_read_frames,r_frame_rate', '-of', 'json']) || '{}').streams?.[0]
+    if (!v) return { pass: false, note: `${rel} holds no picture stream that can be read`, detail: [] }
+    const f = c.formats.preview
+    const frames = Math.round(c.film.units.reduce((n, u) => n + u.seconds, 0) * c.film.previewFps)
+    const detail = []
+    if (v.width !== f.width || v.height !== f.height) detail.push(`it is ${v.width} by ${v.height}, formats.preview is ${f.width} by ${f.height}`)
+    if (Number(v.nb_read_frames) !== frames) detail.push(`it holds ${v.nb_read_frames} frames, film.units at film.previewFps is ${frames}`)
+    if (v.r_frame_rate !== `${c.film.previewFps}/1`) detail.push(`its rate is ${v.r_frame_rate}, film.previewFps is ${c.film.previewFps}`)
+    const sound = probe(['-select_streams', 'a', '-show_entries', 'stream=index', '-of', 'csv=p=0']).trim() !== ''
+    const anySound = walk(at('audio', 'kept')).some((x) => !x.endsWith('.json') && !x.endsWith('.md')) || walk(at('audio', 'final')).some((x) => /\.(wav|m4a|mp3)$/.test(x))
+    if (phase === 6 && anySound && !sound) detail.push('sound exists and the preview carries no sound stream')
+    const mb = fs.statSync(file).size / 1048576
+    if (mb > c.repo.maxFileMb) detail.push(`it is ${mb.toFixed(1)} MB, over repo.maxFileMb (${c.repo.maxFileMb})`)
+    const rec = file.replace(/\.mp4$/, '.json')
+    const info = buildInfo(at())
+    let built = 'no record beside it'
+    if (!fs.existsSync(rec)) detail.push(`${rel} has no record beside it, so the build it was rendered from is not known`)
+    else {
+      const r = readJson(rec)
+      const same = r.engineHash === info.engineHash && Object.keys(info.pageHashes).every((u) => r.pageHashes?.[u] === info.pageHashes[u])
+      built = same ? 'rendered from the build as it is now' : 'rendered from an older build'
+      if (!same) detail.push(`${rel} was rendered from another build: its record has engine ${r.engineHash}, the build is ${info.engineHash}${Object.keys(info.pageHashes).filter((u) => r.pageHashes?.[u] !== info.pageHashes[u]).map((u) => `, ${u} differs`).join('')}`)
+    }
+    return { pass: detail.length === 0, note: `${rel} is ${v.width} by ${v.height} with ${v.nb_read_frames} frames at ${v.r_frame_rate} (${frames} expected), ${mb.toFixed(1)} MB, ${sound ? 'with a sound stream' : 'silent'}, ${built}`, detail }
+  },
+
+  async D3() {
+    const file = at('out', 'work', 'render-local', 'proof.json')
+    if (!fs.existsSync(file)) return { pass: false, note: 'the local render proof does not exist (npm run render:local -- --proof)', detail: [] }
+    const proof = readJson(file)
+    const info = buildInfo(at())
+    const detail = []
+    const same = proof.engineHash === info.engineHash && Object.keys(info.pageHashes).every((u) => proof.pageHashes?.[u] === info.pageHashes[u])
+    if (!same) detail.push('the proof was made from another build than the one that stands now')
+    const want = phase >= 6 ? ['film-b', 'opening'] : ['film-b']
+    const frames = Math.round(c.export.proofSeconds * c.film.fps)
+    for (const name of want) {
+      const part = (proof.parts ?? []).find((x) => x.what === name)
+      if (!part) {
+        detail.push(`the proof holds no part for ${name}`)
+        continue
+      }
+      const p = at(part.file)
+      if (!fs.existsSync(p)) {
+        detail.push(`${part.file} is named by the proof and does not exist`)
+        continue
+      }
+      const v = JSON.parse(run('ffprobe', ['-v', 'error', '-select_streams', 'v:0', '-count_frames', '-show_entries', 'stream=width,height,nb_read_frames,r_frame_rate', '-of', 'json', p]).stdout || '{}').streams?.[0]
+      if (!v) detail.push(`${part.file} holds no picture stream that can be read`)
+      else {
+        if (v.width !== c.formats.preview.width || v.height !== c.formats.preview.height) detail.push(`${part.file} is ${v.width} by ${v.height}, formats.preview is ${c.formats.preview.width} by ${c.formats.preview.height}`)
+        if (Number(v.nb_read_frames) !== frames) detail.push(`${part.file} holds ${v.nb_read_frames} frames, export.proofSeconds at film.fps is ${frames}`)
+      }
+    }
+    return { pass: detail.length === 0, note: `the local render proof: ${(proof.parts ?? []).map((x) => `${x.what} (${x.file})`).join(', ') || 'no parts'}, ${same ? 'made from the build as it is now' : 'made from an older build'}; this phase needs ${want.join(' and ')}`, detail }
   }
 }
 
-const wanted = Object.keys(checks).filter((id) => (onlyAt[id] ? onlyAt[id].includes(phase) : from[id] <= phase) && (!only || only.includes(id)))
+const rank = (id) => (id[0] === 'G' ? 0 : 1000) + Number(id.slice(1))
+const wanted = Object.keys(checks).filter((id) => (onlyAt[id] ? onlyAt[id].includes(phase) : from[id] <= phase) && (!only || only.includes(id))).sort((x, y) => rank(x) - rank(y))
 let failed = 0
 for (const id of wanted) {
   const t0 = process.hrtime.bigint()
