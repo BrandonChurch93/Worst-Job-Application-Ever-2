@@ -10,6 +10,7 @@ import { hook } from '../src/table/real/lights/hook'
 import { groupsOf, levels, parts, solo } from '../src/table/real/lights/index'
 import { fall, picturesOf, TEXEL } from '../src/table/real/lights/pictures'
 import { BUMPER } from '../src/table/real/lights/colours'
+import { buildLamps } from '../src/table/real/lights/lamps'
 
 const shape = (id: string, v: number[]): Shape => ({ id, part: 'table-lights', kind: 'anchor', x: 0, y: 0, w: 1, h: 1, z0: 0, z1: 0, tone: 'dark', v }) as Shape
 const context = (shapes: Shape[]): RealContext => ({ page: 'step3', list: shapes, byId: new Map(shapes.map((s) => [s.id, s])), time: 0, scroll: 0, turning: false, width: 1920, top: 0, tall: 1080, light: () => {} })
@@ -155,5 +156,61 @@ describe('the pictures of light', () => {
 describe('the part', () => {
   it('is real', () => {
     expect(parts['table-lights']).not.toBeNull()
+  })
+})
+
+describe('the lamps as things', () => {
+  const plates = (id: string): Shape[] => {
+    const z = zone(id)
+    return table.inserts.filter((n) => n.tier === z.tier).map((n) => ({ ...shape(`insert-plate.${n.id}`, []), kind: 'box', x: n.c[0] * 96 - 80, y: n.c[1] * 96 + 60, w: 160, h: 34, z0: z.floor, z1: z.floor + 3 }) as Shape)
+  }
+  const count = (o: THREE.Object3D): { meshes: THREE.Mesh[]; triangles: number; fine: number } => {
+    const meshes: THREE.Mesh[] = []
+    let triangles = 0
+    let fine = 0
+    o.traverse((c) => {
+      const m = c as THREE.Mesh
+      if (!m.isMesh) return
+      meshes.push(m)
+      const n = (m.geometry.index ? m.geometry.index.count : m.geometry.getAttribute('position').count) / 3
+      const t = n * ((m as THREE.InstancedMesh).isInstancedMesh ? (m as THREE.InstancedMesh).count : 1)
+      triangles += t
+      if (m.userData.fine === true) fine += t
+    })
+    return { meshes, triangles, fine }
+  }
+  it('are at most six meshes a zone, none casting a shadow, inside the triangles of the part', () => {
+    let all = 0
+    let coarse = 0
+    for (const id of LIT) {
+      const c = count(buildLamps(zone(id), context(plates(id))).group)
+      expect(c.meshes.length).toBeLessThanOrEqual(6)
+      for (const m of c.meshes) expect(m.castShadow).toBe(false)
+      all += c.triangles
+      coarse += c.triangles - c.fine
+    }
+    expect(all).toBeLessThan(60000)
+    expect(coarse).toBeLessThan(30000)
+  })
+  it('name the light group of every mesh that gives light, and mark the screws as fine detail', () => {
+    for (const id of ['corporate', 'office', 'street']) {
+      const c = count(buildLamps(zone(id), context(plates(id))).group)
+      const names = groupsOf(id).map((g) => g.id)
+      for (const m of c.meshes) {
+        const mat = m.material as THREE.MeshStandardMaterial
+        if (mat.emissive && mat.emissive.r + mat.emissive.g + mat.emissive.b > 0) expect(names).toContain(m.userData.lightGroup)
+        if (m.name === 'screws') expect(m.userData.fine).toBe(true)
+      }
+      expect(c.meshes.map((m) => m.name)).toEqual(expect.arrayContaining(['lenses', 'sockets', 'plates', 'screws']))
+    }
+    expect(count(buildLamps(zone('corporate'), context(plates('corporate'))).group).meshes.map((m) => m.name)).toEqual(expect.arrayContaining(['globes', 'globe-glass']))
+  })
+  it('are built the same twice', () => {
+    const a = count(buildLamps(zone('street'), context(plates('street'))).group)
+    const b = count(buildLamps(zone('street'), context(plates('street'))).group)
+    expect(a.triangles).toBe(b.triangles)
+    const pa = a.meshes[0]!.geometry.getAttribute('position').array
+    const pb = b.meshes[0]!.geometry.getAttribute('position').array
+    expect(Array.from(pa.slice(0, 300))).toEqual(Array.from(pb.slice(0, 300)))
   })
 })

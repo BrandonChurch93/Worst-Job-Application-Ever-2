@@ -33,9 +33,10 @@ const body = /* glsl */ `
 	wjlPhi[ 4 ] = wjlTb.r; wjlPhi[ 5 ] = wjlTb.g; wjlPhi[ 6 ] = wjlTb.b; wjlPhi[ 7 ] = wjlTb.a;
 	wjlPhi[ 8 ] = wjlTc.r; wjlPhi[ 9 ] = wjlTc.g;
 	float wjlInside = step( abs( wjlUv.x - 0.5 ), 0.5 ) * step( abs( wjlUv.y - 0.5 ), 0.5 );
-	float wjlLen = length( wjlTc.ba );
-	vec2 wjlToward = wjlLen > 0.0001 ? wjlTc.ba / wjlLen : vec2( 0.0 );
-	float wjlRun = min( wjlLen, 0.999 ) / sqrt( 1.0 - min( wjlLen, 0.999 ) * min( wjlLen, 0.999 ) );
+	float wjlSide = length( wjlTc.ba );
+	vec2 wjlToward = wjlSide > 0.0001 ? wjlTc.ba / wjlSide : vec2( 1.0, 0.0 );
+	float wjlLean = clamp( wjlPhi[ ${CHANNELS - 1} ], 0.2, 0.999 );
+	float wjlRun = wjlLean / sqrt( 1.0 - wjlLean * wjlLean );
 	float wjlCut = 1.0;
 	for ( int h = 0; h < 2; h ++ ) {
 		vec2 wjlOff = wjlP.xy - wjlHole[ h ].xy;
@@ -50,6 +51,10 @@ const body = /* glsl */ `
 		vec3 c = wjlCol[ i ];
 		if ( c.r + c.g + c.b <= 0.0 ) continue;
 		vec4 at = wjlAt[ i ];
+		if ( at.w > 2.5 ) {
+			wjlField += c * ( 0.34 + 0.5 * min( 1.6, wjlPhi[ 0 ] ) ) * wjlInside * ( 0.58 + 0.42 * wjlN.z );
+			continue;
+		}
 		float amount = wjlPhi[ i ] * wjlInside;
 		if ( at.w < 0.5 ) {
 			wjlField += c * amount * ( 0.58 + 0.42 * wjlN.z ) / ( 1.0 + wjlUp * wjlUp * at.z );

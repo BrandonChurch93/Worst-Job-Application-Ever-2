@@ -9,23 +9,25 @@ import { LENS, type RGB } from './colours'
 import { groupsOf } from './groups'
 
 // The lamps as things: the lenses of the general lighting in their sockets, the globes, the bezels of the inserts and the plates under their labels.
-const SIZE = { dome: 13, domeHigh: 6, ring: 20, screw: 3.1, window: [36, 22] as [number, number], globe: 21, core: 19 }
+const SIZE = { dome: 13, domeHigh: 6, ring: 20, screw: 3.1, window: [29, 18] as [number, number], globe: 21, core: 19 }
 const STEEL: RGB = [0.74, 0.76, 0.79]
 const BRASS: RGB = [0.83, 0.6, 0.27]
 const SOCKET: RGB = [0.035, 0.035, 0.04]
 
-const paint = (g: THREE.BufferGeometry, colour: (x: number, y: number, z: number) => RGB): THREE.BufferGeometry => {
+const paint = (g: THREE.BufferGeometry, colour: (x: number, y: number, z: number) => RGB, lane = -1): THREE.BufferGeometry => {
   const flat = g.index ? g.toNonIndexed() : g
   flat.deleteAttribute('uv')
   const p = flat.getAttribute('position')
-  const c = new Float32Array(p.count * 3)
+  const n = lane < 0 ? 3 : 4
+  const c = new Float32Array(p.count * n)
   for (let i = 0; i < p.count; i++) {
     const v = colour(p.getX(i), p.getY(i), p.getZ(i))
-    c[i * 3] = v[0]
-    c[i * 3 + 1] = v[1]
-    c[i * 3 + 2] = v[2]
+    c[i * n] = v[0]
+    c[i * n + 1] = v[1]
+    c[i * n + 2] = v[2]
+    if (n === 4) c[i * n + 3] = lane
   }
-  flat.setAttribute('color', new THREE.BufferAttribute(c, 3))
+  flat.setAttribute('color', new THREE.BufferAttribute(c, n))
   return flat
 }
 const put = (g: THREE.BufferGeometry, x: number, y: number, z: number, turn = 0): THREE.BufferGeometry => {
@@ -80,7 +82,7 @@ function dome(colour: RGB): THREE.BufferGeometry {
   return paint(g, (x, y) => {
     const q = Math.min(1, (x * x + y * y) / (SIZE.dome * SIZE.dome))
     return k(colour, LENS.rim + (LENS.on - LENS.rim) * Math.pow(1 - q, 1.6))
-  })
+  }, 1)
 }
 function socket(metal: RGB): THREE.BufferGeometry[] {
   const ring = paint(lathe([[SIZE.ring, 0.3], [SIZE.ring, 2.4], [SIZE.ring - 1.4, 3.8], [SIZE.dome + 2.6, 3.8], [SIZE.dome + 0.4, 2.6]], 20), () => metal)
@@ -90,21 +92,21 @@ function socket(metal: RGB): THREE.BufferGeometry[] {
 // A lens let into a lane, with the arrow of the way the ball travels raised on it.
 function arrowLens(colour: RGB): THREE.BufferGeometry[] {
   const [w, h] = SIZE.window
-  const lens = paint(tablet(roundedLoop(w - 5, h - 5, 4), roundedLoop(w - 6.2, h - 6.2, 3.4), 0.7, 2.7, 0.6), (x, y) => {
+  const lens = paint(tablet(roundedLoop(w - 4, h - 4, 3.5), roundedLoop(w - 5.2, h - 5.2, 2.9), 0.7, 2.7, 0.6), (x, y) => {
     const q = Math.min(1, (x * x) / ((w * w) / 4) + (y * y) / ((h * h) / 4))
     return k(colour, 0.5 + (LENS.window - 0.5) * Math.pow(1 - q, 1.4))
-  })
-  const a: Loop = [[10, 0], [1, 6.5], [1, 2.6], [-9, 2.6], [-9, -2.6], [1, -2.6], [1, -6.5]]
-  const head: Loop = [[10, 0], [1, 6.5], [1, -6.5]]
-  const tail: Loop = [[1, 2.6], [-9, 2.6], [-9, -2.6], [1, -2.6]]
-  const arrow = paint(new Solid().cap(head, 3.4).cap(tail, 3.4).band(a, 2.7, a, 3.4).done(), () => k(colour, 0.1))
+  }, 0)
+  const a: Loop = [[8, 0], [1, 5], [1, 2], [-7, 2], [-7, -2], [1, -2], [1, -5]]
+  const head: Loop = [[8, 0], [1, 5], [1, -5]]
+  const tail: Loop = [[1, 2], [-7, 2], [-7, -2], [1, -2]]
+  const arrow = paint(new Solid().cap(head, 3.4).cap(tail, 3.4).band(a, 2.7, a, 3.4).done(), () => k(colour, 0.1), 0)
   return [lens, arrow]
 }
 function arrowBezel(metal: RGB): THREE.BufferGeometry[] {
   const [w, h] = SIZE.window
-  const outer = roundedLoop(w, h, 6)
-  const top = roundedLoop(w - 1, h - 1, 5.5)
-  const inner = roundedLoop(w - 5, h - 5, 4)
+  const outer = roundedLoop(w, h, 5.5)
+  const top = roundedLoop(w - 1, h - 1, 5)
+  const inner = roundedLoop(w - 4, h - 4, 3.5)
   return [paint(new Solid().band(top, 3.2, inner, 3.2).band(outer, 2.7, top, 3.2).band(outer, 0.3, outer, 2.7).band(inner, 3.2, inner, 0.6).done(), () => metal)]
 }
 function globeStem(metal: RGB): THREE.BufferGeometry {
@@ -113,22 +115,24 @@ function globeStem(metal: RGB): THREE.BufferGeometry {
 
 export interface Lamps {
   group: THREE.Group
-  lens: THREE.MeshStandardMaterial | null
+  // How lit the lenses are: x the arrow windows, y the lane lamps.
+  lens: THREE.Vector2 | null
   cores: THREE.InstancedMesh | null
   coreGroups: string[]
 }
 
 // The lens of every lamp shows its own colour as light, brightest where the vertex says, and stays a pale thing when its lamp is out.
-function lensMaterial(z: Zone): THREE.MeshStandardMaterial {
-  const m = new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.16, metalness: 0, emissive: new THREE.Color(1, 1, 1), emissiveIntensity: 0, clearcoat: 1, clearcoatRoughness: 0.06, specularIntensity: 0.6 })
+function lensMaterial(z: Zone, level: THREE.Vector2): THREE.MeshStandardMaterial {
+  const m = new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.16, metalness: 0, emissive: new THREE.Color(1, 1, 1), emissiveIntensity: 1, clearcoat: 1, clearcoatRoughness: 0.06, specularIntensity: 0.6 })
   m.userData.lit = true
   lit(studio(m), z)
   const inner = m.onBeforeCompile
   m.onBeforeCompile = function (shader, renderer) {
     inner.call(m, shader, renderer)
-    shader.fragmentShader = shader.fragmentShader
+    shader.uniforms.wjlLens = { value: level }
+    shader.fragmentShader = ('uniform vec2 wjlLens;\n' + shader.fragmentShader)
       .replace('#include <color_fragment>', 'diffuseColor.rgb *= 0.05 + 0.09 * min( vColor.rgb / max( max( vColor.r, max( vColor.g, vColor.b ) ), 0.001 ), vec3( 1.0 ) );')
-      .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\n\ttotalEmissiveRadiance *= vColor.rgb;')
+      .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\n\ttotalEmissiveRadiance *= vColor.rgb * mix( wjlLens.x, wjlLens.y, vColor.a );')
   }
   const key = m.customProgramCacheKey
   m.customProgramCacheKey = () => `${key.call(m)}|wjl-lens`
@@ -178,8 +182,8 @@ export function buildLamps(z: Zone, ctx: RealContext): Lamps {
     screws.push([p[0] - s.w / 2 + 5.5, p[1], 3.0], [p[0] + s.w / 2 - 5.5, p[1], 3.0])
   }
   if (lenses.length > 0) {
-    out.lens = lensMaterial(z)
-    const mesh = new THREE.Mesh(mergeGeometries(lenses), out.lens)
+    out.lens = new THREE.Vector2(0, 0)
+    const mesh = new THREE.Mesh(mergeGeometries(lenses), lensMaterial(z, out.lens))
     mesh.name = 'lenses'
     mesh.userData.lightGroup = `${z.id}.general`
     mesh.receiveShadow = true
@@ -216,11 +220,10 @@ export function buildLamps(z: Zone, ctx: RealContext): Lamps {
     group.add(mesh)
   }
   if (globes.length > 0) {
-    const lens = lensMaterial(z)
-    lens.emissiveIntensity = 1
+    const lens = lensMaterial(z, new THREE.Vector2(1, 1))
     lens.roughness = 0.35
     const white = colourOf('globe.left')
-    const core = paint(new THREE.SphereGeometry(SIZE.core, 24, 14).rotateX(Math.PI / 2), (_x, _y, zz) => k(white, 0.78 + (LENS.on - 0.78) * Math.pow(0.5 - zz / (2 * SIZE.core), 1.5)))
+    const core = paint(new THREE.SphereGeometry(SIZE.core, 24, 14).rotateX(Math.PI / 2), (_x, _y, zz) => k(white, 0.78 + (LENS.on - 0.78) * Math.pow(0.5 - zz / (2 * SIZE.core), 1.5)), 0)
     const cores = new THREE.InstancedMesh(core, lens, globes.length)
     const shell = new THREE.InstancedMesh(
       new THREE.SphereGeometry(SIZE.globe, 24, 14).rotateX(Math.PI / 2),

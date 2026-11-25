@@ -6,7 +6,8 @@ import { groupsOf } from './groups'
 // What the steel, the chrome and the clear coat of a zone reflect once the studio is put out: darkness, with the zone's lamps in it as bright spots at their true directions and colours, and the lit floor below.
 const W = 256
 const H = 128
-const EYE = 60
+const EYE = 20
+const FAR = 420
 const made = new Map<string, THREE.DataTexture>()
 
 export function surroundPixels(z: Zone): Float32Array {
@@ -14,13 +15,17 @@ export function surroundPixels(z: Zone): Float32Array {
   const fill = FILL[z.id] ?? [0.5, 0.5, 0.5]
   const dirs: { x: number; y: number; z: number; c: [number, number, number]; size: number; gain: number }[] = []
   for (const g of groupsOf(z)) {
-    if (g.name === 'flash') continue
+    if (g.name === 'flash' || g.name === 'display' || g.name.startsWith('insert.')) continue
     for (const s of g.sources) {
       if (s.z > 100 && g.mode === 2) continue
+      if (s.on !== undefined && s.on.startsWith('sling.')) continue
+      // A lamp is seen from all over its tier, not from the middle of it: none is nearer than FAR, so none is a wide blob on the horizon.
+      const flat = Math.hypot(s.x, s.y) || 1
+      const far = Math.max(flat, FAR)
       const dz = s.z - EYE
-      const d = Math.hypot(s.x, s.y, dz) || 1
-      const size = Math.max(0.035, Math.min(0.16, 30 / d))
-      dirs.push({ x: s.x / d, y: s.y / d, z: dz / d, c: g.colour, size, gain: s.power * Math.min(4, 3 * (420 / (d + 120))) })
+      const d = Math.hypot(far, dz)
+      const size = Math.max(0.03, Math.min(0.045, 18 / d))
+      dirs.push({ x: (s.x / flat) * (far / d), y: (s.y / flat) * (far / d), z: dz / d, c: g.colour, size, gain: Math.min(3, s.power * 2.4) })
     }
   }
   for (let j = 0; j < H; j++) {
@@ -41,9 +46,9 @@ export function surroundPixels(z: Zone): Float32Array {
       let b = 0.005 + fill[2] * (0.02 * haze + below)
       for (const d of dirs) {
         const dot = x * d.x + y * d.y + zz * d.z
-        if (dot < 0.9) continue
+        if (dot < 0.97) continue
         const a = Math.acos(Math.min(1, dot)) / d.size
-        const v = d.gain * (Math.exp(-a * a) + 0.012 * Math.exp(-a * a * 0.3))
+        const v = d.gain * Math.exp(-a * a)
         r += d.c[0] * v
         g += d.c[1] * v
         b += d.c[2] * v
