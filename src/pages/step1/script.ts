@@ -161,7 +161,7 @@ export function pointerAt(plan: Plan, time: number): Pointer {
   return { x, y, down }
 }
 
-const TUG_FRAME = { x: 160, y: 300, w: 880, h: 495 }
+const TUG_FRAME = { x: 90, y: 300, w: 880, h: 495 }
 
 export function filmCamera(time: number): CameraPose {
   const home = homePose(0)
