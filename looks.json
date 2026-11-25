@@ -1,35 +1,84 @@
 {
   "folder": "pinball",
-  "pushed": "2026-11-25T11:19:28.966Z",
-  "commit": "4f7ed66f23e92e11ddb7a7572f2c70c3b8d578ac",
+  "pushed": "2026-11-25T12:14:43.000Z",
+  "commit": "425c68d1e6eaf3962a78dc124fce7b7a261143b7",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "pinball.launch, film 8.9 to 10.85 s: one ride behind the ball from the plunger up the launch lane to the top lane of tier 3",
-      "time": "2026-11-25T11:19:27.009Z",
+      "caption": "Round 2 fix: still of key last-save as config has it (at 0.5), table-save low over the apron",
+      "time": "2026-11-25T12:13:25.013Z",
       "by": "pinball",
-      "from": "out/work/look-launch.png"
+      "from": "out/work/stills/key-last-save-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Keys last-save and lobby-doors (left) beside their approved images (right)",
-      "time": "2026-11-25T11:19:27.236Z",
+      "caption": "Round 2 fix: key last-save at the wanted moment, at 0.53 (film 35.59 s): flipper up, ball on it",
+      "time": "2026-11-25T12:13:55.029Z",
       "by": "pinball",
-      "from": "out/work/look-save-lobby.png"
+      "from": "out/work/stills/key-last-save-at-0p53-hd-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Sheet table-map and key tier-street (left) beside their approved images (right)",
-      "time": "2026-11-25T11:19:27.539Z",
+      "caption": "Round 2 fix: still of key lobby-doors, low on the carpet, leaves shut behind the ball, plate above, tower rising",
+      "time": "2026-11-25T12:13:30.085Z",
       "by": "pinball",
-      "from": "out/work/look-map-street.png"
+      "from": "out/work/stills/key-lobby-doors-hd-draft.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Film 32.47 s and 32.83 s of pinball.highway (top), key rail-cam beside its approved image (bottom)",
-      "time": "2026-11-25T11:19:27.883Z",
+      "caption": "Round 2 fix: still of key table-wide, title board standing clear of the tower with title and score",
+      "time": "2026-11-25T12:13:35.105Z",
       "by": "pinball",
-      "from": "out/work/look-rail.png"
+      "from": "out/work/stills/key-table-wide-hd-draft.png"
+    },
+    {
+      "file": "look-5.jpg",
+      "caption": "Round 2 fix: still of key rail-cam, ball on the wire ramp with two drawn rails running ahead",
+      "time": "2026-11-25T12:13:40.533Z",
+      "by": "pinball",
+      "from": "out/work/stills/key-rail-cam-hd-draft.png"
+    },
+    {
+      "file": "look-6.jpg",
+      "caption": "Round 2 fix: still of key tier-street, the Street commentary card whole inside the frame",
+      "time": "2026-11-25T12:13:45.601Z",
+      "by": "pinball",
+      "from": "out/work/stills/key-tier-street-hd-draft.png"
+    },
+    {
+      "file": "look-7.jpg",
+      "caption": "Round 2 fix: sheet table-map, the whole machine with the standing board inside the frame",
+      "time": "2026-11-25T12:13:49.697Z",
+      "by": "pinball",
+      "from": "out/work/stills/sheet-table-map-hd-draft.png"
+    },
+    {
+      "file": "look-8.jpg",
+      "caption": "Round 2 fix: sheet of the beat pinball.launch, ride camera low and behind with the lane ahead",
+      "time": "2026-11-25T12:11:55.709Z",
+      "by": "pinball",
+      "from": "out/work/sheets/sheet-beat-pinball_launch-preview-draft.jpg"
+    },
+    {
+      "file": "look-9.jpg",
+      "caption": "Round 2 fix: sheet of the beat pinball.lobby",
+      "time": "2026-11-25T12:12:06.885Z",
+      "by": "pinball",
+      "from": "out/work/sheets/sheet-beat-pinball_lobby-preview-draft.jpg"
+    },
+    {
+      "file": "look-10.jpg",
+      "caption": "Round 2 fix: sheet of the beat pinball.save",
+      "time": "2026-11-25T12:12:18.805Z",
+      "by": "pinball",
+      "from": "out/work/sheets/sheet-beat-pinball_save-preview-draft.jpg"
+    },
+    {
+      "file": "look-11.jpg",
+      "caption": "Round 2 fix: sheet of the beat pinball.fired, follow camera on the Street tier",
+      "time": "2026-11-25T12:13:08.509Z",
+      "by": "pinball",
+      "from": "out/work/sheets/sheet-beat-pinball_fired-preview-draft.jpg"
     }
   ]
 }
