@@ -15,7 +15,7 @@ export const FEEL: Record<Acting, Feel> = {
   angry: feel({ stretch: 1.03, lean: 0.17, puff: 0.35, tremble: 0.3, heat: 1, steam: 1 }),
   scared: feel({ stretch: 0.86, lean: -0.44, bend: -0.3, pale: 1, tremble: 0.7 }),
   proud: feel({ stretch: 1.18, lean: 0.3, puff: 0.9, bounce: 0.04 }),
-  exhausted: feel({ stretch: 0.8, lean: -0.3, bend: 0.4, melt: 0.4 })
+  exhausted: feel({ stretch: 0.8, lean: -0.3, bend: 0.4, melt: 0.6 })
 }
 
 // Seconds for each number to cover most of the way to a new state.
