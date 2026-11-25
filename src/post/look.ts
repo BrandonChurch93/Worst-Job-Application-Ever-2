@@ -37,7 +37,7 @@ export const look = {
   // glossy face that looks at the viewer still catches the edge of it.
   // Shadows are worked out in a world where everything above `knee` px stands lower: what is higher keeps `keep` of
   // the height above it. A flying arrow or an arm then throws a short shadow close by, a button's shadow is untouched.
-  shadowHeights: { knee: 24, keep: 0.2 },
+  shadowHeights: { knee: 8, keep: 0.2 },
   studio: {
     direction: [-0.52, 0.5, 0.69] as [number, number, number],
     // How much of the studio's reflection a surface loses where the key does not reach it, and where the fill does not.
