@@ -30,7 +30,12 @@ async function visit(file, name, test) {
   const page = await context.newPage()
   const failed = []
   const errors = []
-  page.on('requestfailed', (r) => failed.push(`${short(r.url())}: ${r.failure()?.errorText ?? 'failed'}`))
+  const stopped = []
+  page.on('requestfailed', (r) => {
+    const why = r.failure()?.errorText ?? 'failed'
+    if (r.resourceType() === 'media' && why === 'net::ERR_ABORTED') stopped.push(new URL(r.url()).pathname.split('/').slice(-2).join('/'))
+    else failed.push(`${short(r.url())}: ${why}`)
+  })
   page.on('response', (r) => {
     if (r.status() >= 400) failed.push(`${short(r.url())}: ${r.status()}`)
   })
@@ -38,7 +43,7 @@ async function visit(file, name, test) {
   page.on('console', (m) => {
     if (m.type() === 'error') errors.push(m.text().slice(0, 200))
   })
-  const entry = { file, name, failed, errors }
+  const entry = { file, name, failed, errors, stopped }
   try {
     const response = await page.goto(sibling(file), { waitUntil: 'load', timeout: 60000 })
     entry.status = response ? response.status() : null
@@ -86,9 +91,13 @@ if (fs.existsSync(path.join(dist, 'review.html'))) {
       await Promise.all(imgs.map((i) => (i.complete && i.naturalWidth ? null : new Promise((done) => { i.onload = i.onerror = done; setTimeout(done, 20000) }))))
       const broken = imgs.filter((i) => !i.naturalWidth).map((i) => i.getAttribute('src'))
       const links = [...document.querySelectorAll('#open a')].map((l) => l.getAttribute('href'))
-      return { images: imgs.length, broken, links, parts: [...document.querySelectorAll('main section')].map((s) => s.id) }
+      const played = [...document.querySelectorAll('video, audio')]
+      await Promise.all(played.map((m) => (m.readyState >= 1 || m.error ? null : new Promise((done) => { m.onloadedmetadata = m.onerror = done; setTimeout(done, 30000) }))))
+      const media = played.map((m) => ({ src: m.getAttribute('src'), seconds: Number.isFinite(m.duration) ? Math.round(m.duration * 100) / 100 : null, error: m.error ? m.error.code : null }))
+      return { images: imgs.length, broken, links, media, parts: [...document.querySelectorAll('main section')].map((s) => s.id) }
     })
-    return { ...r, ok: r.broken.length === 0 && r.parts.length === 7 }
+    const silent = r.media.filter((m) => m.error || !(m.seconds > 0)).map((m) => m.src)
+    return { ...r, silent, ok: r.broken.length === 0 && silent.length === 0 && r.parts.length === 7 }
   })
   const page = await context.newPage()
   try {
@@ -171,7 +180,7 @@ await browser.close()
 fs.writeFileSync(path.join(outDir, 'hosted.json'), JSON.stringify(report, null, 2) + '\n')
 for (const p of report.pages) {
   const why = [p.error, ...p.failed, ...p.errors, p.result?.fail].filter(Boolean)
-  console.log(`hosted: ${p.file} ${p.ok ? 'opens' : 'FAILS'}${p.result?.canvas ? `, canvas ${p.result.canvas.join(' by ')}` : ''}${p.result?.images !== undefined ? `, ${p.result.images} pictures, ${p.result.broken.length} broken, ${p.result.parts.length} parts` : ''}${why.length ? `: ${why.slice(0, 4).join('; ')}` : ''}`)
+  console.log(`hosted: ${p.file} ${p.ok ? 'opens' : 'FAILS'}${p.result?.canvas ? `, canvas ${p.result.canvas.join(' by ')}` : ''}${p.result?.images !== undefined ? `, ${p.result.images} pictures, ${p.result.broken.length} broken, ${p.result.media.length} films and sounds, ${p.result.silent.length} that do not load, ${p.result.parts.length} parts` : ''}${p.stopped.length ? `, ${p.stopped.length} media request stopped by the browser after it had what it needed` : ''}${why.length ? `: ${why.slice(0, 4).join('; ')}` : ''}`)
 }
 if (report.link) console.log(`hosted: the first link of "Open it" ${report.link.ok ? `leads to ${report.link.to}` : `FAILS: ${report.link.error ?? report.link.to}`}`)
 for (const f of report.fetches) {

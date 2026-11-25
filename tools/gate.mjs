@@ -222,7 +222,7 @@ const checks = {
     if (Number(s.nb_read_frames) !== frames) detail.push(`it holds ${s.nb_read_frames} frames, film.units at film.previewFps is ${frames}`)
     if (s.r_frame_rate !== `${c.film.previewFps}/1`) detail.push(`its rate is ${s.r_frame_rate}, film.previewFps is ${c.film.previewFps}`)
     if (probe(['-select_streams', 'a', '-show_entries', 'stream=index', '-of', 'csv=p=0']).trim()) detail.push('it carries a sound stream, and the rough cut is silent')
-    const mb = fs.statSync(file).size / 1e6
+    const mb = fs.statSync(file).size / 1048576
     if (mb > c.repo.maxFileMb) detail.push(`it is ${mb.toFixed(1)} MB, over repo.maxFileMb`)
     return { pass: detail.length === 0, note: `out/roughcut.mp4 is ${s.width} by ${s.height} with ${s.nb_read_frames} frames at ${s.r_frame_rate} (${frames} expected), ${mb.toFixed(1)} MB, silent`, detail }
   }

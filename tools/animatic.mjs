@@ -25,6 +25,40 @@ if (a.check) {
 }
 
 const { width, height, fps, total } = tl
+const outFile = at('out', 'roughcut.mp4')
+const recordFile = at('out', 'roughcut.json')
+const enc = plan.encode
+const MB = 1024 * 1024
+const sha = (f) => crypto.createHash('sha256').update(fs.readFileSync(f)).digest('hex')
+const probeOf = (f) => JSON.parse(spawnSync('ffprobe', ['-v', 'error', '-select_streams', 'v:0', '-count_frames', '-show_entries', 'stream=width,height,nb_read_frames,r_frame_rate,codec_name,pix_fmt', '-of', 'json', f], { encoding: 'utf8' }).stdout || '{}').streams?.[0]
+const holds = (probe) => probe && Number(probe.nb_read_frames) === total && probe.width === width && probe.height === height
+function record(probe) {
+  const bytes = fs.statSync(outFile).size
+  writeJson(recordFile, {
+    what: 'The rough cut: the film at its planned times, made from the approved images. Silent. Made by npm run animatic.',
+    file: 'out/roughcut.mp4',
+    sha256: sha(outFile),
+    bytes,
+    megabytes: Number((bytes / MB).toFixed(2)),
+    megabyte: '1048576 bytes, as everywhere in the harness',
+    width, height, fps, frames: total, seconds: total / fps,
+    codec: probe.codec_name, pixelFormat: probe.pix_fmt, encode: enc,
+    planSha256: sha(planFile),
+    pageTurns: tl.dips,
+    parts: tl.segments.map((s) => ({ beat: s.beat, image: s.image, first: s.first, last: s.last, from: s.from, to: s.to, held: s.held })),
+  })
+  return bytes / MB
+}
+if (a.record) {
+  const before = fs.existsSync(recordFile) ? readJson(recordFile) : null
+  if (!before || !fs.existsSync(outFile)) throw new Error('animatic: --record writes the record of a rough cut that exists. Run npm run animatic first')
+  if (before.planSha256 !== sha(planFile) || before.sha256 !== sha(outFile)) throw new Error('animatic: the plan or the file changed since the rough cut was made. Run npm run animatic')
+  const probe = probeOf(outFile)
+  if (!holds(probe)) throw new Error('animatic: out/roughcut.mp4 does not hold the frames of the plan. Run npm run animatic')
+  const mb = record(probe)
+  console.log(`animatic: out/roughcut.json written again for the same file, ${total} frames, ${mb.toFixed(1)} MB`)
+  process.exit(0)
+}
 const dark = [27, 27, 29]
 const pad = 12
 const work = at('out', 'work', 'roughcut')
@@ -106,9 +140,7 @@ async function frameOf(index) {
   return out
 }
 
-const outFile = at('out', 'roughcut.mp4')
 const made = path.join(work, 'roughcut.mp4')
-const enc = plan.encode
 const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', `${width}x${height}`, '-r', String(fps), '-i', '-', '-an',
   '-vf', 'scale=in_range=pc:out_color_matrix=bt709:out_range=tv,format=yuv420p', '-c:v', 'libx264', '-preset', enc.preset, '-crf', String(enc.crf), '-g', String(fps * 2),
   '-color_primaries', 'bt709', '-color_trc', 'bt709', '-colorspace', 'bt709', '-color_range', 'tv', '-movflags', '+faststart', made], { stdio: ['pipe', 'inherit', 'inherit'] })
@@ -144,9 +176,9 @@ ff.stdin.end()
 await ended
 const seconds = Number(process.hrtime.bigint() - started) / 1e9
 
-const probe = JSON.parse(spawnSync('ffprobe', ['-v', 'error', '-select_streams', 'v:0', '-count_frames', '-show_entries', 'stream=width,height,nb_read_frames,r_frame_rate,codec_name,pix_fmt', '-of', 'json', made], { encoding: 'utf8' }).stdout).streams[0]
-const mb = fs.statSync(made).size / 1e6
-if (Number(probe.nb_read_frames) !== total || probe.width !== width || probe.height !== height) throw new Error(`animatic: the file holds ${probe.nb_read_frames} frames at ${probe.width} by ${probe.height}, expected ${total} at ${width} by ${height}`)
+const probe = probeOf(made)
+const mb = fs.statSync(made).size / MB
+if (!holds(probe)) throw new Error(`animatic: the file holds ${probe?.nb_read_frames} frames at ${probe?.width} by ${probe?.height}, expected ${total} at ${width} by ${height}`)
 
 const per = 4
 const tileW = 348
@@ -176,17 +208,6 @@ if (mb > enc.maxMb) {
   process.exit(1)
 }
 fs.copyFileSync(made, outFile)
-const sha = (f) => crypto.createHash('sha256').update(fs.readFileSync(f)).digest('hex')
-writeJson(at('out', 'roughcut.json'), {
-  what: 'The rough cut: the film at its planned times, made from the approved images. Silent. Made by npm run animatic.',
-  file: 'out/roughcut.mp4',
-  sha256: sha(outFile),
-  megabytes: Number(mb.toFixed(2)),
-  width, height, fps, frames: total, seconds: total / fps,
-  codec: probe.codec_name, pixelFormat: probe.pix_fmt, encode: enc,
-  planSha256: sha(planFile),
-  pageTurns: tl.dips,
-  parts: tl.segments.map((s) => ({ beat: s.beat, image: s.image, first: s.first, last: s.last, from: s.from, to: s.to, held: s.held })),
-})
+record(probe)
 console.log(`animatic: out/roughcut.mp4, ${total} frames at ${width} by ${height}, ${fps} a second, ${(total / fps).toFixed(0)} s, ${mb.toFixed(1)} MB, made in ${seconds.toFixed(0)} s`)
 console.log(`animatic: one frame from every beat in ${sheets.join(' and ')}, and each one alone in out/work/roughcut/frames/`)

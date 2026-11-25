@@ -5,7 +5,7 @@ The Builder's memory. Read it at the start of every task and after every compact
 ## Status
 
 - Build: in progress
-- Phase: 1
+- Phase: 2
 - Review: not reached
 - Review round: none
 - Review round step: none
@@ -25,24 +25,25 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 6, 2026-11-25T07:11Z, Phase 0.
+Status 7, 2026-11-25T07:38Z, Phase 1.
 
-1. `out/stills/status/01-spike-crops.jpg`: Crops of the spike at native size, as the harness now cuts them for every still: the cursor, the buttons, the field, the smallest type, a contact shadow and a glass edge. Stand-in materials, not the look.
+1. `out/stills/status/01-roughcut-boss-press.jpg`: The rough cut at 2:19, the beat boss.press: the boss is beaten and the cursor comes to press what is left of Submit. This is an approved image with a slow push, not the build.
+2. `out/stills/status/02-roughcut-pinball-fired.jpg`: The rough cut at 1:35, the beat pinball.fired: the ball drops into the You're Fired building. An approved image, not the build.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 1, tick 26 at 2026-11-25T07:30:36Z, allowance: build
-time used in this phase: 0.24 h of its box of 0.50 h
-time used under the allowance in force: 1.97 h of 36.00 h allowed
-time used: 1.97 of 36.00 hours before the review
+clock: phase 1, tick 27 at 2026-11-25T07:38:30Z, allowance: build
+time used in this phase: 0.37 h of its box of 0.50 h
+time used under the allowance in force: 2.10 h of 36.00 h allowed
+time used: 2.10 of 36.00 hours before the review
 extra rounds: yes
-half point: not reached
+half point: reached
 box end: not reached
 budget report: not due
-minutes since the last status: 19
+minutes since the last status: 0
 ```
 
 ## Phases
@@ -50,8 +51,8 @@ minutes since the last status: 19
 | Phase | State | Started | Done | Commit | Gate evidence |
 | --- | --- | --- | --- | --- | --- |
 | 0 Ground truth | done | 2026-11-25T05:32Z | 2026-11-25T07:11Z | f38580d and the gate commit after it | G1, G2, G3, G4, G8, G9, G10 pass on the final build (`out/work/gate/gate-phase-0.json`, 7 of 7). Pushed. Published and opened on the hosted copy (`out/work/hosted/hosted.json`). Records: workspace, tools, voice, pause mark UNKNOWN for lack of credits, prompt screen skill, terms, hosting limits, pinned versions, render budget, inline display, repo is public, polling test, physics between VMs equal, PSNR between three VMs identical. Statuses 1 to 6 |
-| 1 The rough cut | in progress | 2026-11-25T07:11Z |  |  |  |
-| 2 Engine and blockout | not started | | | | |
+| 1 The rough cut | done | 2026-11-25T07:17Z | 2026-11-25T07:42Z | d8be8c4 and the gate commit after it | D1 passes: `out/roughcut.mp4` is 960 by 540 with 4590 frames at 30 a second, silent, 14.2 MB (`out/work/gate/gate-phase-1.json`). Order and lengths match `film.units` and `film.beats` (no fault from `faults()`), one frame of every beat looked at. 248 unit tests pass. Pushed. On the published review page, where it reads 153 s and seeks (`out/work/hosted/hosted.json`). Status 7 |
+| 2 Engine and blockout | in progress | 2026-11-25T07:42Z |  |  |  |
 | 3 The look lock | not started | | | | |
 | 4 The other pages | not started | | | | |
 | 5 The whole site, the sound and the review | not started | | | | |
@@ -134,7 +135,8 @@ Every line says whether it is MEASURED here, STATED by a tool's own description,
 - Image to 3D. MEASURED by looking through the tool list: there is no tool that turns a picture into a model. Every model is built by script, as `kit/03-METHOD.md` says.
 - App hosting, MEASURED 2026-11-25T07:06:40Z at the first publish (step 17). The publish tool takes a folder and one entry file and gives an address of the form `https://www.perplexity.ai/computer/a/<name>`. It is private to Brandon until he shares it from that page, and publishing the same folder again updates it in place (the second publish kept the address). The tool takes a picture of the entry page before it accepts the upload, and refuses an entry page that shows nothing. Three facts that shape the build: (1) a folder named `build` is not uploaded at all (14 of 15 files went up and the bundle was missing), so the hashed files are in `bundle/`; (2) the address opens the entry file only, so `<url>/review.html` does not exist here, and the review page is published a second time as its own app from `out/work/publish/review/`, a copy of `dist/` with `review.html` as the entry, which `npm run review` makes; (3) on the uploaded copy, opened in a fresh browser context by `npm run hosted`: `index.html` draws the canvas, `review.html` shows its 4 pictures and 7 parts, its first "Open it" link leads to `index.html`, a JSON file fetched by script arrives whole (192230 of 192230 bytes) and a JPEG fetched by script arrives whole (110797 of 110797 bytes) and is readable from an image element with `crossOrigin` set. That copy was opened through the tool's own 24 hour test address. What the permanent address does with a binary file fetched by script is UNKNOWN from here, because only Brandon can open it, and the hosting guide STATES it fails, so the loaders keep to text files and page elements. Size accepted so far: 15 files, 2.9 MB. The largest size it accepts is still UNKNOWN and is measured as the review page grows; the guide STATES 500 MB.
 - Publishing order. MEASURED 2026-11-25T07:15Z: the two apps are two uploads of two folders. When `npm run review` is run again after one folder has been uploaded, the hosted check finds the older picture on that copy (153558 bytes hosted against 152116 on disk). The rule: run `npm run review` last, then upload both folders, then run `npm run hosted`. The publish tool also looks at the entry page before it accepts it: at this publish it refused the review page for a caption that ran past its tile, so `tools/lib/image.mjs` now shrinks or shortens a label that would not fit.
-- Rough cut. MEASURED 2026-11-25T07:31Z: `npm run animatic` makes `out/roughcut.mp4` in 136 s on this workspace (2 cores): 4590 frames at 960 by 540 and 30 a second, 153 s, h264 yuv420p, 14.9 MB, no sound. Its record is `out/roughcut.json` (the hash of the file, the hash of the plan, every part with its image and its views, the six page turns). `npm run animatic -- --check` checks the plan without making anything. One frame from the middle of each of the 40 parts is in `out/work/roughcut/frames/`, and the three sheets of them are in the look log.
+- Rough cut. MEASURED 2026-11-25T07:31Z: `npm run animatic` makes `out/roughcut.mp4` in 136 s on this workspace (2 cores): 4590 frames at 960 by 540 and 30 a second, 153 s, h264 yuv420p, 14937558 bytes (14.2 MB at 1048576 bytes to the megabyte, the unit every harness tool now prints), no sound. Its record is `out/roughcut.json` (the hash of the file, the hash of the plan, every part with its image and its views, the six page turns). `npm run animatic -- --check` checks the plan without making anything. One frame from the middle of each of the 40 parts is in `out/work/roughcut/frames/`, and the three sheets of them are in the look log.
+- Hosted check and films. MEASURED 2026-11-25T07:36Z: on the hosted review page the browser stops its first request for a film once it has read the film's length (`net::ERR_ABORTED` on a media request), then reads the rest in ranges. That is how a video element with `preload="metadata"` behaves and not a failure, and the first hosted check after the rough cut reported it as one. `npm run hosted` now lists such requests under `stopped` in its report, and instead checks every film and sound on the review page by the element: it must load its length with no error (`media` and `silent` in the report). The rough cut reads 153 s there, a seek to 39.5 s shows `step1.tug`, and the file comes whole by script (14937558 of 14937558 bytes).
 
 ## Pinned versions
 
@@ -259,8 +261,9 @@ One line each: the date, the decision, the reason, and the config key if one was
 - 2026-11-25T07:30Z, Phase 1, how the rough cut is made. `npm run animatic` is a Node script with sharp and ffmpeg: no browser, no 3D. The plan is `tools/assets/roughcut-plan.json`: for each beat the approved image and the view the push ends on, read off the images by eye. Every frame is cut from its image at a position finer than a pixel (a lanczos reduce, then a bicubic shift), so a slow push does not shimmer. `tools/lib/roughcut.mjs` builds the timeline and lists every fault the kit's rules allow to be read off it. `tests/roughcut.test.ts` holds 13 tests of it.
 - 2026-11-25T07:30Z, Phase 1, which image each beat shows. Its own key, if a key names it. A beat with two keys shows both and changes halfway between their two moments (`pinball.lobby` at 0.475 of the beat, `pinball.fired` at 0.325). A beat with no key holds the image of the beat before it, and the push carries on from where that beat ended to where this beat's gag happens in the same image. Six beats have no key and either no beat before them on their page or a sheet that shows their gag: `marketing.stroll` and `decision.wait` show their page's one key; `step1.keyboard` shows the sheet `page-look`, the step 1 form at rest; `step2.slot` shows the sheet `machines` pushed in on the slot machine, so the slot beat shows a slot machine and not the dial; `boss.verify` shows `boss-fight` held tight on the Human Verification card; `boss.unfold` travels across the sheet `boss-stages` from the resting button to the boss. `pinball.reveal` pulls back from the marquee to the whole machine instead of pushing in, because that is the beat's camera and its key's moment is the end of the beat.
 - 2026-11-25T07:30Z, Phase 1, page turns and label. A page turn is 6 frames down and 6 frames up to the harness's dark grey: at each of the five page changes, and inside `decision.reset` at 0.25 of the beat where the picture changes to the careers page. Frame 0 has no fade. Inside a page a change of image is a plain cut. The label is the beat's id at 15 px on a dark chip in the bottom left corner.
-- 2026-11-25T07:30Z, Phase 1, the encode. h264 at constant quality 25, preset slow, a key frame every 2 seconds, with a cap of 19 MB so the file stays under `host.maxFileMb` on the review page. The first run at quality 23 came out at 20.0 MB and was refused by the cap. The kit sets no bitrate for the rough cut.
+- 2026-11-25T07:30Z, Phase 1, the encode. h264 at constant quality 25, preset slow, a key frame every 2 seconds, with a cap of 19 MB so the file stays under `host.maxFileMb` on the review page. The first run at quality 23 came out at 20.0 million bytes (19.1 MB) and was refused by the cap. The kit sets no bitrate for the rough cut.
 - 2026-11-25T07:33Z, Phase 1 step 2, the order and the lengths. MEASURED: the timeline built from the plan was checked against `film.units` and `film.beats` by `faults()` in `tools/lib/roughcut.mjs`, which reports nothing: every beat is present once, in the config's order, with the config's first and last frame, the six units add up to 4590 frames, and no part overlaps or leaves a gap. The file was counted by decoding it: 4590 frames. One frame from every beat was looked at on the three sheets (40 parts across 36 beats) and each shows the image and the gag its beat names. The machine checks of Phase 0 were not run again for this gate because no site source changed after them; the unit tests were (248 pass, 13 of them new for the rough cut) and D1 was (pass).
+- 2026-11-25T07:41Z, Phase 1 step 4, which two frames the status shows. The first choice was the frame of `step1.tug`. The publish tool's own look at the review page refused the upload for it: the push on that beat is tight, so the heading on the left of the page loses its first letter at the frame edge, and the tool read the picture as clipped by the page. A reader could read it the same way, so the status shows `boss.press` and `pinball.fired`, two frames where nothing is cut through. The rough cut itself is unchanged: a push toward a gag takes the page's far edges out of frame, and its job is the order and the pace. The real cameras are placed in Phase 2.
 
 ## Notes from Brandon
 
@@ -350,6 +353,7 @@ One line for each push that closes a gate or publishes a unit. Every other push 
 - 2026-11-25T07:07Z, f38580d: Phase 0 step 18, first publish of the site and the review page, Status 5.
 - 2026-11-25T07:12Z, 849e0df: Phase 0 gate closed, 7 of 7, Status 6.
 - 2026-11-25T07:17Z, 382c9f2: the review page published again after the caption fix, hosted check passes.
+- 2026-11-25T07:42Z, the commit after d8be8c4: Phase 1 gate closed, the rough cut on the published review page, Status 7.
 
 ## Session log
 
