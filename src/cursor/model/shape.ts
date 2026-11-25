@@ -144,6 +144,11 @@ export function softInside(x: number, y: number): number {
   return -Math.log(sum) / SOFT
 }
 
+// How high the enamel stands over a point, by the smoothed distance alone: the dome with no crease, for the directions it faces.
+export function domeAt(x: number, y: number): number {
+  return enamelAt(softInside(x, y))
+}
+
 // How high the top of the body stands over a point of the outline's plane.
 export function heightAt(x: number, y: number): number {
   const d = inside(x, y)
@@ -261,13 +266,13 @@ export function solid(): Solid {
       names.push(base + i)
     }
   }
-  const pitch = 0.62
+  const pitch = 0.28
   let line = 0
   for (let y = 0.4; y < 19; y += pitch * 0.866, line++) {
     for (let x0 = 0.2 + (line % 2) * pitch * 0.5; x0 < 12; x0 += pitch) {
       const x = x0 + (hash01(Math.round(x0 * 100), line, 7) - 0.5) * 0.08
       const d = inside(x, y)
-      if (d < reach + 0.42) continue
+      if (d < reach + 0.36) continue
       pts.push([x, y])
       names.push(xs.length / 3)
       const soft = softInside(x, y)
