@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { AXIS, solid } from './shape'
+import { AXIS, TOP, inside, solid } from './shape'
 
 export interface StripSet {
   count: number
@@ -11,6 +11,12 @@ export interface StripSet {
   strip: Uint16Array
   from: number
   width: number
+  // The same corners as a loose ribbon: even in width, square at its ends, flat on top. x, y, z and the distance in from the outline, then the ink and the direction faced.
+  ribbon: Float32Array
+  // x and y of the same corners with each strip's ends cut square at its own length, the rim kept: a strip laid back in its place before it is whole.
+  square: Float32Array
+  ribbonInk: Float32Array
+  ribbonNormal: Float32Array
 }
 
 interface Corner { x: number; y: number; z: number; ink: number; inset: number; nx: number; ny: number; nz: number }
@@ -66,6 +72,52 @@ function clip(poly: Corner[], limit: number, keepAbove: boolean, cut: Corner[]):
     }
   }
   return out
+}
+
+const RIBBON = { least: 0.5, samples: 9, step: 0.02, foot: 0.5, crown: 0.06, roll: 0.26, rim: 2.2, splay: 0.045, jump: [2.0, 3.0] as [number, number] }
+const near = (d: number): number => {
+  const t = Math.min(1, Math.max(0, (Math.abs(d) - RIBBON.jump[0]) / (RIBBON.jump[1] - RIBBON.jump[0])))
+  return 1 - t * t * (3 - 2 * t)
+}
+
+// Where the outline starts and ends along the tail, on lines across each strip.
+function reaches(count: number, from: number, width: number): { lo: Float32Array; hi: Float32Array; start: Float32Array; end: Float32Array } {
+  const n = RIBBON.samples
+  const lo = new Float32Array(count * n)
+  const hi = new Float32Array(count * n)
+  const start = new Float32Array(count).fill(Infinity)
+  const end = new Float32Array(count).fill(-Infinity)
+  for (let k = 0; k < count; k++) {
+    for (let j = 0; j < n; j++) {
+      const v = from + (k + (j + 0.02 * (j === 0 ? 1 : j === n - 1 ? -1 : 0)) / (n - 1)) * width
+      let a = Infinity
+      let b = -Infinity
+      for (let al = -2; al < 24; al += RIBBON.step) {
+        if (inside(al * AXIS[0] + v * AXIS[1], al * AXIS[1] - v * AXIS[0]) < 0) continue
+        a = Math.min(a, al)
+        b = Math.max(b, al)
+      }
+      lo[k * n + j] = a
+      hi[k * n + j] = b
+      if (a < start[k]!) start[k] = a
+      if (b > end[k]!) end[k] = b
+    }
+    for (let j = 0; j < n; j++) {
+      if (lo[k * n + j]! > hi[k * n + j]!) {
+        lo[k * n + j] = (start[k]! + end[k]!) / 2
+        hi[k * n + j] = lo[k * n + j]!
+      }
+    }
+  }
+  // A ribbon is a length of the same stock as the longest: a short slice comes out of the shredder longer than the arrow was there.
+  let longest = 0
+  for (let k = 0; k < count; k++) longest = Math.max(longest, end[k]! - start[k]!)
+  for (let k = 0; k < count; k++) {
+    const more = Math.max(0, RIBBON.least * longest - (end[k]! - start[k]!)) / 2
+    start[k] = start[k]! - more
+    end[k] = end[k]! + more
+  }
+  return { lo, hi, start, end }
 }
 
 // The solid cut into strips along the tail, each closed with a face at its cuts.
@@ -127,7 +179,57 @@ export function stripSet(count: number): StripSet {
       if (cutB.length === 2) cap(cutB[0]!, cutB[1]!, k, 1)
     }
   }
-  const set: StripSet = { count, rest: new Float32Array(rest), ink: new Float32Array(ink), normal: new Float32Array(normal), strip: new Uint16Array(strip), from: band.from, width: band.width }
+  const total = strip.length
+  const ribbon = new Float32Array(total * 4)
+  const square = new Float32Array(total * 2)
+  const ribbonInk = new Float32Array(total)
+  const ribbonNormal = new Float32Array(total * 3)
+  const reach = reaches(count, band.from, band.width)
+  const m = RIBBON.samples
+  for (let i = 0; i < total; i++) {
+    const k = strip[i]!
+    const x = rest[i * 4]!
+    const y = rest[i * 4 + 1]!
+    const z = rest[i * 4 + 2]!
+    const al = x * AXIS[0] + y * AXIS[1]
+    const v = Math.min(band.from + (k + 1) * band.width, Math.max(band.from + k * band.width, x * AXIS[1] - y * AXIS[0]))
+    const f = ((v - band.from) / band.width - k) * (m - 1)
+    const j = Math.min(m - 2, Math.floor(f))
+    const w = f - j
+    const lo = reach.lo[k * m + j]! * (1 - w) + reach.lo[k * m + j + 1]! * w
+    const hi = reach.hi[k * m + j]! * (1 - w) + reach.hi[k * m + j + 1]! * w
+    const t = hi - lo > 0.02 ? Math.min(1, Math.max(0, (al - lo) / (hi - lo))) : 0.5
+    const to = reach.start[k]! + t * (reach.end[k]! - reach.start[k]!)
+    const mid = (m - 1) >> 1
+    const dLo = reach.lo[k * m + mid]! - lo
+    const dHi = reach.hi[k * m + mid]! - hi
+    const sq = al + dLo * (1 - t) * near(dLo) + dHi * t * near(dHi)
+    square[i * 2] = sq * AXIS[0] + (x * AXIS[1] - y * AXIS[0]) * AXIS[1]
+    square[i * 2 + 1] = sq * AXIS[1] - (x * AXIS[1] - y * AXIS[0]) * AXIS[0]
+    const u = ((v - band.from) / band.width - k) * 2 - 1
+    const cap = ink[i]! > 1.5
+    const up = Math.min(1, z / RIBBON.foot)
+    // The sides and ends lean out a little toward the foot, so each shows as a thin dark line from above.
+    const side = cap ? Math.sign(normal[i * 3]! * AXIS[1] + normal[i * 3 + 1]! * AXIS[0]) : 0
+    const out = v + side * RIBBON.splay * (1 - z / TOP)
+    const far = cap ? to : to + (t < 0.5 ? -1 : 1) * RIBBON.splay * (1 - up)
+    ribbon[i * 4] = far * AXIS[0] + out * AXIS[1]
+    ribbon[i * 4 + 1] = far * AXIS[1] - out * AXIS[0]
+    ribbon[i * 4 + 2] = TOP * up * (1 - RIBBON.crown * u * u)
+    ribbon[i * 4 + 3] = k === 0 ? (v - band.from) * RIBBON.rim : k === count - 1 ? (band.from + count * band.width - v) * RIBBON.rim : 3
+    ribbonInk[i] = cap ? 1 : z < RIBBON.foot ? ink[i]! : 0
+    if (cap || z < RIBBON.foot) {
+      ribbonNormal[i * 3] = normal[i * 3]!
+      ribbonNormal[i * 3 + 1] = normal[i * 3 + 1]!
+      ribbonNormal[i * 3 + 2] = cap ? 0 : normal[i * 3 + 2]!
+    } else {
+      const len = Math.hypot(u * RIBBON.roll, 1)
+      ribbonNormal[i * 3] = (u * RIBBON.roll * AXIS[1]) / len
+      ribbonNormal[i * 3 + 1] = (u * RIBBON.roll * AXIS[0]) / len
+      ribbonNormal[i * 3 + 2] = 1 / len
+    }
+  }
+  const set: StripSet = { count, rest: new Float32Array(rest), ink: new Float32Array(ink), normal: new Float32Array(normal), strip: new Uint16Array(strip), from: band.from, width: band.width, ribbon, square, ribbonInk, ribbonNormal }
   sets.set(count, set)
   return set
 }
