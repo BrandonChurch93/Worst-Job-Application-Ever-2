@@ -8,6 +8,25 @@
     "clock": "node tools/clock.mjs",
     "look": "node tools/look.mjs",
     "progress": "node tools/progress.mjs",
-    "status:post": "node tools/status-post.mjs"
+    "status:post": "node tools/status-post.mjs",
+    "caps": "node tools/caps.mjs",
+    "physics:test": "node tools/physics-test.mjs"
+  },
+  "dependencies": {
+    "@dimforge/rapier2d-deterministic-compat": "0.21.0",
+    "gsap": "3.15.1",
+    "opentype.js": "2.0.0",
+    "three": "0.187.0"
+  },
+  "devDependencies": {
+    "@fontsource/inter": "5.3.0",
+    "@fontsource/playfair-display": "5.3.0",
+    "@types/node": "20.19.25",
+    "@types/three": "0.187.0",
+    "playwright-core": "1.59.1",
+    "sharp": "0.35.5",
+    "typescript": "7.0.2",
+    "vite": "8.3.8",
+    "vitest": "4.1.12"
   }
 }

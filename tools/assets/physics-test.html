@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Physics test</title>
+<script type="importmap">
+{ "imports": { "rapier": "/node_modules/@dimforge/rapier2d-deterministic-compat/dist/rapier.mjs" } }
+</script>
+</head>
+<body>
+<script type="module">
+import RAPIER from 'rapier'
+import { runPhysicsTest } from '/tools/lib/physics-sim.mjs'
+try {
+  window.result = await runPhysicsTest(RAPIER)
+} catch (e) {
+  window.result = { error: String(e && e.stack || e) }
+}
+</script>
+</body>
+</html>
