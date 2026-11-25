@@ -39,7 +39,7 @@ Whether it is the strongest photoreal model on this account that accepts referen
 
 ## How each take was judged
 
-Each take was first checked by me against "What to check". Then one fresh agent that had not seen the brief was given only a copy of the image under a neutral file name and the two questions, word for word. Its answer is quoted in each section.
+Each take was first checked by me against "What to check". Then one fresh agent that had not seen the brief was given only a copy of the image under a neutral file name and the two questions, word for word. Its answer is quoted in each section. Where a kept file was changed after it was generated, a fresh judge saw the changed file too, and each section quotes the judge who saw the file exactly as it is kept.
 
 ## Results at a glance
 
@@ -70,6 +70,8 @@ What the judges named again and again, in almost every image that shows them (ST
 - The plunger's knob and spring sit inside the frame.
 - Nothing carries a ball back up a tier.
 - No score, no display and no interface in the tier views and close shots, which most judges gave as their reason for not saying game screenshot.
+
+Miniature and diorama (STATED by the judges). The brief says the machine is "not a model railway, not a diorama, not a doll's house". The judges of eight of the twelve kept files used the word miniature for what they saw: G1, G2, G4, G5, G8, G9, G11 and G12. Two of them used the word diorama: for G1 "a beach diorama at the top right", and for G2 "miniature-diorama photorealism", given as a reason for calling it generated art. For G4 and G5 the word is used of the cubicles and the buildings, which the brief asks to be small moulded toys. For G1, G9, G11 and G12 the judge gave a miniature set as one of the ways its film frame could have been made, and for G8 the judge wrote "a believable miniature-set feel".
 
 The first answer is not a stable measure (MEASURED on three images). The same picture got different first answers from different fresh judges when only a small patch had changed between them:
 
@@ -561,6 +563,7 @@ What the kept take misses (MEASURED on the file unless marked):
 - Length. Three playfields end to end are about three times a normal table's length, with the upper two pairs of flippers far from the player (STATED by the last judge). That is the brief's design.
 - Camera. Each tier was photographed with things leaning a little outward from its own centre, so in the join the buildings of each tier lean from three different centres, not from one.
 - Size. 2160 by 3840, twice the 1080 by 1920 of a 9:16 frame at this round's width.
+- Diorama (STATED by the judge). The brief's "Never" list names a diorama. The judge gives "miniature-diorama photorealism" as one of its reasons for calling the picture generated art.
 - Words (MEASURED at full size): `Corporate HQ`, `Retirement`, `Coffee`, `You're Fired`, `Background Check`, `Student Loans`, `Mom's Basement`, `Unemployment Office`. All eight are present and spelled right; `Mom's Basement` by the retouch described under G5. No other letters or numbers found. The street tier's clock face is plain: its mock numerals were smoothed away as described under G5.
 - Musts (MEASURED): three tiers, each with its own pair of flippers, in the order corporate, office, street from head to foot; no ball; no marquee; no people; no cabinet, legs, room or other machine; no real name or brand found.
 
@@ -658,6 +661,7 @@ What the kept take misses (MEASURED on the file unless marked):
 - Bottom right outlane ends in a flat pocket against the apron with no hole (STATED by both judges; I see the same). Mom's house and its hatch are at the bottom left as asked; the last judge reads the house as blocking that outlane beside its hole.
 - Targets (STATED by the last judge; I see the same): the bank has a solid columned front with no opening for a ball, the cubicles are open-topped boxes with no way in from the side, and the beach box stands where the launch lane lets out at the top right.
 - The buildings carry no signs. That was asked for in the prompt, to keep misspelled small signs out of the wide view, so seven of the allowed tier words are absent: `Corporate HQ`, `Retirement`, `Coffee`, `You're Fired`, `Background Check`, `Student Loans`, `Mom's Basement`.
+- Diorama (STATED by the judge). The brief's "Never" list names a diorama. The judge calls the retirement corner "a beach diorama" and gives "a photographed miniature" as one way the picture could have been made.
 - Words (MEASURED at full size): `THE DAILY GRIND`, spelled right by the model; `Unemployment Office`, spelled right by the retouch; and 042500 on the display under the marquee, digits only as the brief asks. No other letters or numbers found. The clock-face insert on the street tier has hands and small dots for the hours, no numerals.
 - Musts (MEASURED): three tiers, each with its own pair of flippers, in the order corporate, office, street from head to foot; the cursor is inside the ball, a solid white arrow with a black edge, clearly seen; no people; no cabinet, legs, room or other machine; no real name or brand found.
 
@@ -1188,4 +1192,72 @@ LETTERING: the only words in the image are these two signs, spelled exactly, let
 
 NOT IN THE IMAGE: no people, no hands, no faces; no cabinet, no legs, no room, no floor, no sheet of glass over the playfield; no fog, no smoke, no haze, no lens flare; no second ball; not a cartoon, not an illustration, not a diorama, not a model railway.
 ```
+
+## Choices the brief did not make
+
+Times are UTC, read from the files and the commits (MEASURED).
+
+Where I did not do what the brief says:
+
+- Order of work. The brief's order is G7, then G3, G4 and G5, then G2, then G1, then G6, then G8 to G12. The order in fact was G7, G3, G4 and G5, G6, G8 to G12, G2, G1. G6 and the five close shots need only G7 and the tier takes, so they were generated while the G2 join was being made by hand, and G1 waited for G2. Nothing was made before the pictures it depends on.
+- Showing and pushing. G7, G3, G4, G5, G6, G1 and G2 were each pushed and shown when finished. The last takes of G8 to G12 were all judged between 03:50 and 03:52, and G8's retouched file at 04:00. The five were pushed as five commits in a row and shown together at 04:05. That is later than "as soon as it is done".
+- What counts as a take. The brief says "Retries count". I counted every whole picture the model made as a take: 41. I did not count seven smaller model calls on crops: two that re-made the `Mom's Basement` sign plate in G5 (the first was used), two that tried to re-make the drain plate in G1 (both misspelled, neither used), and three that painted the ball out of G3, G4 and G5 for the G2 join. If those count, G5 had six against a limit of four, G1 six against four and G2 six against three. The retouches made in code (G1 plate, G1 roof plate, G5 and G2 clock, G8 roof, the G2 join) used no model call.
+- Two misspelled signs were corrected, not left blank. The brief says "A sign you cannot get spelled right is left blank". `Mom's Basement` in G5, and so in G2, was re-made by the model on a crop and pasted in. `Unemployment Office` in G1 was fixed by hand, by moving the plate's own letters and copying its own "n". Both read right in the kept files, and each section says so. Three other things were blanked as the brief says: the marks on the roof plate in G1, the mock numerals on the clock insert in G5 and G2, and the ruled roof of the bank in G8.
+- The judge got three instructions besides the two questions: view the file at full size, do not search the web, send your answer. The brief says to give it the image and "exactly these two questions". The two questions themselves were given word for word.
+
+The judge:
+
+- Every answer came from a fresh agent in its own separate sandbox. It got one file under a neutral name, `picture-NNNN.png`, and nothing about the project, the brief or the other takes.
+- File numbers. The first two digits are the image: 01 is G7, 02 is G2, 03 to 06 are G3 to G6, 08 to 12 are G8 to G12, 13 is G1. The last two are the take, or a later number for a file judged again after a change: 0831, 1305, 1306, 0505 and 0204.
+- Every take was judged, not only the one I meant to keep: 41 takes and 5 files judged again, 46 answers. Whether any judge was slow enough to need a replacement is not in my records (UNKNOWN).
+- How I read the first question. Its first comma comes after "film", so it can be read two ways: the first option is a game screenshot alone (narrow), or a game screenshot or a film frame taken together (wide). The notes use the narrow reading. Under the wide reading the first answers on the kept G1, G9, G10, G11 and G12 would be the first option. The judges themselves spoke of "five options". No result changes either way, because every judge named things on the second question.
+- G6 was judged with the same two questions although it is a web page and not a playfield. Its judge said so.
+- Each file changed after generation was judged again in the form it is kept. The earlier answers are kept in the notes beside the last one.
+
+Which take was kept, where the judge and I disagreed:
+
+- G7. Take 3 was kept over take 1, although take 1's judge said film frame and take 3's said generated art. In take 1 the flipper is orange in one panel and white in the other two, the ball is as wide as the flipper is long, and the cursor is not squashed at the hit.
+- G3. Take 4 was kept over take 2, although take 2's judge said game screenshot. Take 2 has three lines of scribble on each sticky note and gold marks like letters near the bottom left, which fails the line on words.
+- G1. Take 3, with the plate fixed by hand, was kept over take 2, whose words were all right as generated. Take 3 is the only take with the ceramic border outside the aluminum rail.
+- G2. The join was kept over the two generated takes. Both generated takes put a ball in the picture, although the brief says no ball for G2. Their other misses are in the G2 section.
+- G9 to G12. Take 2 was kept over take 3 in each. Each take 3 fixed one thing and broke another; the lists are in the sections.
+- Only the kept take of each image is committed. The other 29 takes are described in each section's take list and are not in the repo.
+
+How the pictures were made:
+
+- Model. `seedream_5` for every take and for the seven crop calls. Whether it is the strongest on this account is UNKNOWN, as said under "Model".
+- Takes were made two at a time with two different prompts where the limit was four: takes 1 and 2 together, then takes 3 and 4 together after the first two judges had answered. G6's takes 2 and 3 were also made together.
+- Passing a whole take back in with a list of changes returned it almost unchanged (G3 take 3). After that every new take was a fresh picture from a rewritten prompt.
+- G7 was given the two approved cursor sheets, with an instruction not to copy their captions. It is one frame of three panels, one for each of the brief's three views.
+- G8 to G12 have no layout guide in `references/guides/round-6/`. Each was given the kept take of its tier first and the kept G7 second.
+- G2's two generated takes were given the unlabeled guide and the kept G3, G4 and G5. G7 was not passed, because G2 has no ball.
+- G1 was given the unlabeled guide, the G2 join as a 1080 by 1920 copy, and the kept G7. It was made from the join before G2's two generated takes existed.
+- G2's frame. The brief allows the join "with the seams tidied and the balls painted out". It does not say where the rail and the border round the whole machine come from. The tier takes end at their own rails, so the outer aluminum rail and the ceramic border were drawn in code. The file is saved at 2160 by 3840, twice 1080 by 1920, so that each tier keeps its detail.
+- Lane arrows that point the wrong way were left as generated in the tier takes and flipped by hand only in the join.
+
+What is in the pictures:
+
+- No score display in the tier views or the close shots. The brief puts the only display in the marquee, which only G1 shows. Most judges gave the missing score or display as their reason for not saying game screenshot. I did not add one.
+- Signs. Tier signs are cream plates with plain black letters lying on the roofs, so that they can be read from straight above. `Retirement` is on a small brass plate on the lid of the beach box. In the low shots the sign is on the lintel over the doors (G9) or on the front edge of the roof (G11).
+- G1 carries lettering only on the marquee and the drain plate, with bare roofs, to keep small misspelled signs out of the wide view. Seven of the allowed tier words are therefore absent from G1. The six digits on the display, 042500, are my choice.
+- G12. The far buildings carry no signs, after take 1 misspelled one of them.
+- G8. No lettering at all. A ramp of four wires was accepted at the limit; the brief asks for two rails.
+- Inserts. The brief names the nine pictures. Their glow colours are my choice: ice blue, white and gold in the corporate tier; yellow, green and blue in the office; red, amber and white in the street.
+- Street slingshots are road-sign yellow with black chevrons. Mom's cellar hatch is a hole in the floor of the outlane beside her house.
+- The lobby doors were asked for open in G3 and came out shut.
+- G6. The subline and the paragraph are plain grey bars with no letters. The five progress buttons carry the digits 1 to 5, as on the approved `page-look.png`. The ball is about 126 px across, as generated, against the 96 px the brief asks for.
+- Contact sheet. Eleven 16:9 tiles in three columns with G2 as one tall tile at the right, each labeled with its take, on a dark ground.
+
+When each thing was made:
+
+- 02:18 start. Brief, kit, guides and the study read until the first takes at 02:32.
+- G7: takes at 02:32 and 02:40. Pushed 02:45.
+- G3: takes at 02:46 and 02:54. Pushed 02:57.
+- G4 and G5: takes at 02:58 to 02:59 and 03:06 to 03:07. G5's sign re-made at 03:12. Pushed 03:14 and 03:15.
+- G6: takes at 03:11 and 03:16. Pushed 03:23.
+- G8 to G12: takes at 03:20 to 03:21, at 03:30 (G11 at 03:38) and at 03:48. G8's roof retouched at 03:57. Pushed 04:05.
+- G2: the join finished at 03:50, the two generated takes at 04:12 and 04:20. Pushed 04:24.
+- G1: takes at 03:57 and 04:05, the plate fixed at 04:14. Pushed 04:20.
+- Late changes: G1's roof plate blanked at 04:30, G5's clock at 04:32, the G2 join rebuilt at 04:34. Each was judged again and pushed at 04:39, 04:44 and 04:45.
+- Contact sheet and these notes finished after that, inside the four hours.
 
