@@ -1,35 +1,35 @@
 {
   "folder": "street",
-  "pushed": "2026-11-25T18:00:24.334Z",
-  "commit": "9e61f0de0759bbd8030ec2200fcee8d623186072",
+  "pushed": "2026-11-25T18:42:40.258Z",
+  "commit": "98209c4013fa24ce7dcaae32fb8e755df1cd4e5c",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key youre-fired: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-25T17:59:34.955Z",
+      "caption": "Firehouse beside the approved picture: fine brick on both storeys, stone quoins and door frame, clear red beacon, low stair head on the roof",
+      "time": "2026-11-25T18:42:38.017Z",
       "by": "street",
       "from": "out/work/compare/compare-youre-fired.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Key tier-street: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-25T18:00:10.514Z",
+      "caption": "The Street from above beside the approved picture: the garage is a round concrete frame outside the clear spiral",
+      "time": "2026-11-25T18:42:38.298Z",
       "by": "street",
       "from": "out/work/compare/compare-tier-street.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Firehouse beside the approved picture: brick on both storeys, stone quoins, larger beacon, door low at rest",
-      "time": "2026-11-25T18:00:22.339Z",
+      "caption": "The Street in the last save view: garage frame carried on two stanchions on the right wall, its outer faces still too dark",
+      "time": "2026-11-25T18:42:38.562Z",
       "by": "street",
-      "from": "out/work/compare/compare-youre-fired.jpg"
+      "from": "out/work/looks/files/20261125184238-last-save.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "The Street from above beside the approved picture, with the garage as a round frame outside the spiral",
-      "time": "2026-11-25T18:00:22.590Z",
+      "caption": "From the highway: police station, the garage frame round the spiral, a road sign plate on its sling posts",
+      "time": "2026-11-25T18:42:38.818Z",
       "by": "street",
-      "from": "out/work/compare/compare-tier-street.jpg"
+      "from": "out/work/looks/files/20261125184238-rail-cam.jpg"
     }
   ]
 }
