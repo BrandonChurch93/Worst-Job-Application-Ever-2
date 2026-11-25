@@ -141,3 +141,9 @@ Owner: `/root/keys_fixer`, branch `agent/keys`. It answers the round 3 issues R4
 1. Slabs never overlap, so the old rule "a later slab lies on an earlier one" is gone. `tests/step1.test.ts` checks a slab's place only while it lies (`slabClear < 0`).
 2. The exit is sideways, not up into the camera: a slab that rises toward a straight-down camera only grows, and it would cover the form.
 3. A live visitor is not held: the form can be typed while the slabs leave, and `load(save())` continues because the slab's times are in the state.
+
+### Times in the film, MEASURED
+
+By a walk of the film at 240 Hz that prints each change of the pressed keys, the phase and the count of landed slabs: Enter goes down at 17.496 s and is up again by 17.738 s; the slabs land at 18.304, 18.854 and 19.404 s; the lift starts at about 19.66 s; the phase is `resume` at 19.837 s; the slabs are cleared from the state at 20.117 s. By then each has flown 1900 px; the last one is off the screen at about 20.03 s. The Builder accepted this overlap with the start of the tug fixer's window at 18:45Z: over the deck and its sides only, never over the resume field or the slot.
+
+Looked at as draft stills of `step1.email` at 0.650 (the first slab down on Enter, the keys under it pressed) and 0.940 (three slabs, 14 px apart, every label whole).

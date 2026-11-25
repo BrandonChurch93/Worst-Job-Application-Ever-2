@@ -320,7 +320,7 @@ interface ScorchData {
   flareMaterial: THREE.MeshBasicMaterial
 }
 
-const SCORCH = { size: 54, smoke: 2, smokeSeconds: 1.5, shoulder: 9, core: 11, legend: 24, word: 52, bar: 400, wide: 112, sparks: 9, sparkSeconds: 0.55, fall: 900, ember: 0.35, snap: 36, flareSeconds: 0.1 }
+const SCORCH = { size: 54, smoke: 2, smokeSeconds: 1.5, shoulder: 9, core: 11, legend: 24, word: 52, bar: 400, wide: 112, sparks: 9, sparkSeconds: 0.55, fall: 900, ember: 0.35, snap: 36, flareSeconds: 0.1, ride: 16 }
 
 function makeScorch(s: Shape): THREE.Object3D {
   const f = fx()
@@ -373,7 +373,7 @@ function layScorch(d: ScorchData, s: Shape, ctx: RealContext): void {
   let cap: Shape | null = null
   let near = SCORCH.snap
   for (const c of ctx.list) {
-    if (c.role !== 'keycap' || c.kind === 'text' || Math.abs(c.z1 - s.z0) > 3) continue
+    if (c.role !== 'keycap' || c.kind === 'text' || Math.abs(c.z1 - s.z0) > SCORCH.ride) continue
     const far = Math.hypot(Math.max(c.x - cx, 0, cx - c.x - c.w), Math.max(c.y - cy, 0, cy - c.y - c.h))
     if (far >= near) continue
     near = far
@@ -397,6 +397,7 @@ function layScorch(d: ScorchData, s: Shape, ctx: RealContext): void {
     y1 = Math.min(oy + reach, high)
   }
   d.at = [ox, oy]
+  d.mark.position.z = 1.25 + (cap ? cap.z1 - s.z0 : 0)
   d.mark.visible = x1 > x0 && y1 > y0
   if (!d.mark.visible) return
   const p = d.geometry.getAttribute('position') as THREE.BufferAttribute

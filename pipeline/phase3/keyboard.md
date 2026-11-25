@@ -132,6 +132,9 @@ Owner: `/root/keys_fixer`, branch `agent/keys`. It answers the round 3 issues R4
 
 12. In a swap one cap flies over and the other under: the cap that moves to a later seat flies at 1.25 of its height and the other at 0.75 (`FLIGHT.over`, `FLIGHT.under`), so two caps that cross are never at one height. Of two caps that overlap only the lower one loses its legend for those frames; before, both could, and blank caps flew. MEASURED by a review still of `step1.lastName` at 0.094 before (4 blank caps in the air) and a draft still after (none).
 
+13. A pit rides its cap. `layScorch` took a cap only if its top was within 3 px of the height the bolt struck at, so a cap that hopped in the tray's shake or dipped under a tap lost its pit: the mark stayed at the old height and was hidden inside the plastic. MEASURED: draft stills of `step1.firstName` at 0.644 and 0.650 (the hit and three frames later) showed three pits on W vanish in 0.05 s; with `SCORCH.ride` 16 px and the mark lifted to the cap's top they stay.
+14. The Enter lamp was looked at on the press: draft stills of `step1.email` at 0.492 (before, lamp dark) and 0.506 (Enter down, lamp lit).
+
 ### Not reached
 
 - The landing frame of a slab falls between two sheet samples; what shows it afterwards is the pressed keys under the slab only.
@@ -150,4 +153,4 @@ Owner: `/root/keys_fixer`, branch `agent/keys`. It answers the round 3 issues R4
 
 ### Tuning looks
 
-Of 40 each in the fix round: keyboard 17, turrets 3, slabs 2.
+Of 40 each in the fix round: keyboard 19, turrets 7, slabs 4.
