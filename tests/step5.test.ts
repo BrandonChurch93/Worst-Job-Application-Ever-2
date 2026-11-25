@@ -191,6 +191,22 @@ describe('step 5, the film', () => {
     expect(s.cursor.y).toBeLessThan(cap.y + cap.h)
   })
 
+  it('lets the film cursor walk to the letter by itself, and holds it only while the stamp is over it', () => {
+    const s = film()
+    let first = -1
+    let last = -1
+    for (let i = 0; i < 9.7 * hz; i++) {
+      s.advance(1)
+      if (s.cursor.taken) {
+        if (first < 0) first = s.step
+        last = s.step
+      }
+    }
+    expect(first / hz).toBeGreaterThanOrEqual(3.9)
+    expect(last / hz).toBeLessThanOrEqual(5.12)
+    expect((last - first) / hz).toBeLessThan(config.live.controlTakenMaxSeconds)
+  })
+
   it('never gives the cursor arms and never changes its size', () => {
     const s = film()
     for (let i = 0; i < 12 * hz; i += 8) {
@@ -219,6 +235,9 @@ describe('step 5, the live site', () => {
       expect(s.events.filter((e) => e.name === 'button-press').length).toBe(1)
       expect(s.longestIgnored.pointer).toBeLessThanOrEqual(config.live.controlTakenMaxSeconds)
       expect(s.gagsReached).toEqual(expect.arrayContaining(beats.map((b) => b.id)))
+      expect(s.events.find((e) => e.name === 'stamp')!.hitsCursor, `${at}`).toBe(true)
+      expect(s.events.filter((e) => e.name === 'flatten').length).toBe(1)
+      expect(s.events.filter((e) => e.name === 'peel-up').length).toBe(1)
     }
   })
 
@@ -228,6 +247,7 @@ describe('step 5, the live site', () => {
     runUntilTurned(s, 60)
     expect(s.page.id).toBe('marketing')
     expect(s.events.filter((e) => e.name === 'stamp').length).toBe(1)
+    expect(s.events.find((e) => e.name === 'stamp')!.hitsCursor).toBe(true)
     expect(s.longestIgnored.pointer).toBeLessThanOrEqual(config.live.controlTakenMaxSeconds)
   })
 
@@ -241,7 +261,7 @@ describe('step 5, the live site', () => {
     expect(press.step / hz).toBeGreaterThanOrEqual(7)
     expect(press.step / hz).toBeLessThan(7.3)
     expect(took).toBeLessThan(8.5)
-    expect(s.events.find((e) => e.name === 'stamp')!.hitsCursor).toBe(false)
+    expect(s.events.find((e) => e.name === 'stamp')!.hitsCursor).toBe(true)
   })
 
   it('hands the cursor on whole, however early the button is pressed after the stamp', () => {
@@ -301,11 +321,11 @@ describe('step 5, the live site', () => {
     for (const id of ['letter', 'letter-title', 'letter-body', 'letter-closing', 'letter-stamp', 'metrics', 'accept-cap']) expect(ids.has(id), id).toBe(true)
   })
 
-  it('hints at what a capable visitor would do, with a way out of the stamp', () => {
+  it('hints at what a capable visitor would do, and offers no way out of the stamp', () => {
     const s = live(still(960, 900))
     s.advance(Math.round(3 * hz))
     const hint = s.page.hint()!
-    expect(hint.dodge).toBeDefined()
+    expect(hint.dodge).toBeUndefined()
     expect(hint.down).toBe(false)
     s.advance(Math.round(5 * hz))
     let pressed = false

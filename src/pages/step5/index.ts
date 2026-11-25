@@ -20,6 +20,11 @@ interface State {
   loomed: boolean
   stamped: boolean
   held: boolean
+  pull: number
+  fx: number
+  fy: number
+  tx: number
+  ty: number
   flat: boolean
   peeled: boolean
   jolt: number
@@ -48,7 +53,7 @@ export const secondsOf = (value: string): number => {
 export const spun = (value: string, u: number): string => value.replace(/\d/g, (d) => String(Math.ceil(Number(d) * (1 - clamp(u)))))
 
 const fresh = (mode: Mode): State => ({
-  n: 0, phase: 'wait', at: 0, mode, music: false, landed: false, loomed: false, stamped: false, held: false, flat: false, peeled: false, jolt: -1, your: 0, self: -1, shared: false, done: false, cue: 0, skip: false
+  n: 0, phase: 'wait', at: 0, mode, music: false, landed: false, loomed: false, stamped: false, held: false, pull: -1, fx: 0, fy: 0, tx: 0, ty: 0, flat: false, peeled: false, jolt: -1, your: 0, self: -1, shared: false, done: false, cue: 0, skip: false
 })
 
 function carry(over: Over, root: LayoutNode, m: Move): void {
@@ -98,6 +103,16 @@ export function makePage(): PageLogic {
     const l = nodes.letter.box
     if ((s.phase !== 'letter' || seconds() >= AT.drop[1]) && inRect(p, { x: l[0]!, y: l[1]!, w: l[2]!, h: l[3]! })) return heights.paper
     return 0
+  }
+
+  const hold = (io: StepIo, x: number, y: number): void => {
+    io.cursor.take('stamp')
+    s.held = true
+    s.pull = s.n
+    s.fx = io.cursor.x
+    s.fy = io.cursor.y
+    s.tx = x
+    s.ty = y
   }
 
   const press = (io: StepIo): void => {
@@ -181,7 +196,7 @@ export function makePage(): PageLogic {
       const fall = span(p, AT.drop)
       const k = 1 - out3(span(p, AT.slide))
       const b = nodes.letter.box
-      carry(over, nodes.letter, { dx: -34 * k, dy: -52 * k, dz: 340 * (1 - fall * fall), rot: 0.045 * k, px: b[0]! + b[2]! / 2, py: b[1]! + b[3]! / 2 })
+      carry(over, nodes.letter, { dx: -56 * k, dy: 0, dz: 220 * (1 - fall * fall), rot: 0.04 * k, px: b[0]! + b[2]! / 2, py: b[1]! + b[3]! / 2 })
     }
     if (lettering && p < AT.panel[0]) over[nodes.metrics.id] = null
     else if (lettering && p < AT.panel[1]) carry(over, nodes.metrics, { dx: 0, dy: 0, dz: -(heights.card + 4) * (1 - smooth(span(p, AT.panel))), rot: 0, px: 0, py: 0 })
@@ -254,12 +269,19 @@ export function makePage(): PageLogic {
           cursor.act('nervous')
           cursor.react('recoil')
         }
-        if (!s.loomed && p >= AT.slam[0] - 0.22) {
+        if (!s.stamped && !s.held && p >= AT.swoop[0] && !underStamp(cursor)) hold(io, spot.x, spot.y)
+        if (!s.loomed && p >= AT.loom) {
           s.loomed = true
-          if (underStamp(cursor)) {
-            cursor.act('scared')
-            cursor.react('flinch')
-          }
+          if (!s.held) hold(io, cursor.x, cursor.y)
+          cursor.act('scared')
+          cursor.react('flinch')
+        }
+        if (s.held && !s.stamped) {
+          const left = Math.max(0.05, Math.min(AT.pullSeconds, AT.slam[1] - 0.06 - (s.pull - s.at) / stepHz))
+          const u = smooth(clamp((s.n - s.pull) / stepHz / left))
+          const x = s.fx + (s.tx - s.fx) * u
+          const y = s.fy + (s.ty - s.fy) * u
+          cursor.drive(x, y, heights.cursorHover + groundAt(x, y))
         }
         if (!s.stamped && p >= AT.slam[1]) {
           s.stamped = true
@@ -269,21 +291,24 @@ export function makePage(): PageLogic {
           if (hit) {
             cursor.hurt('flattened')
             io.emit('flatten', cursor.x, cursor.y, true)
-            cursor.take('stamp')
-            cursor.place(cursor.x, cursor.y, heights.paper)
+            if (!s.held) cursor.take('stamp')
             s.held = true
             s.flat = true
             s.peeled = false
+            s.tx = cursor.x
+            s.ty = cursor.y
           } else {
+            if (s.held) cursor.release()
+            s.held = false
             cursor.act('shocked')
             cursor.react('jump')
           }
         }
-        if (s.held) {
+        if (s.held && s.stamped) {
           if (p >= AT.lift[1]) {
             s.held = false
             cursor.release()
-          } else cursor.place(cursor.x, cursor.y, heights.paper)
+          } else cursor.place(s.tx, s.ty, heights.paper)
         }
         if (p >= AT.letterSeconds) {
           s.phase = 'metrics'
@@ -349,7 +374,7 @@ export function makePage(): PageLogic {
     script: (time: number): Pointer => pointerAt(marks, time),
     hint(): Hint | null {
       if (s.phase === 'wait') return { x: safe.x, y: safe.y, down: false }
-      if (s.phase === 'letter' && !s.stamped) return { x: spot.x, y: spot.y, down: false, dodge: safe }
+      if (s.phase === 'letter' && !s.stamped) return { x: spot.x, y: spot.y, down: false }
       return { x: marks.press.x, y: marks.press.y, down: armed() && s.self < 0 && Math.floor(s.n / (stepHz / 4)) % 2 === 0 }
     },
     skip() {
@@ -357,7 +382,7 @@ export function makePage(): PageLogic {
     },
     done: () => s.done,
     gag: () => `decision.${s.phase}`,
-    ignoring: () => false,
+    ignoring: () => s.held || (s.self >= 0 && !s.done),
     states: () => look().states
   }
 }
