@@ -12,7 +12,7 @@ import { machine } from './lib/browser.mjs'
 import { state } from './lib/state.mjs'
 import { storyCheck, wordsCheck } from './lib/story.mjs'
 import { cutListExists, judgedFilm, judgedPages, listedIds, readCutList } from './lib/judged.mjs'
-import { ANCHORS, coveredUnits, flaggedPixels, hashFacts, hosting, memoryAndCounts, resolveCommit, showAt, standInTests, unitStates, unknownUnits } from './lib/gate-checks.mjs'
+import { ANCHORS, coveredUnits, filmMoments, flaggedPixels, hashFacts, hosting, memoryAndCounts, resolveCommit, showAt, standInTests, unitStates, unknownUnits } from './lib/gate-checks.mjs'
 import { launch } from './lib/browser.mjs'
 import { serve } from './lib/serve.mjs'
 
@@ -384,6 +384,8 @@ const checks = {
     const grounds = [[0.02, 0.02, 0.02], [...background].slice(0, 3), [0, 0, 0]]
     const session = await openSession({ format: 'hd' })
     let pictures = 0
+    let filmPictures = 0
+    let moments = []
     let framesRead = 0
     let unread = 0
     const levels = Object.keys(c.live.quality)
@@ -407,7 +409,7 @@ const checks = {
               }
             }
           }
-          return { out, read }
+          return { out, read, units: film.units.filter((u) => list.includes(u.id)).map((u) => ({ id: u.id, first: u.first, last: u.last })) }
         },
         [pages, step]
       )
@@ -421,6 +423,15 @@ const checks = {
         pictures++
         unread += other
         for (const p of parts) if (counts[p.name]) facts[p.name].pixels.push({ still: j.id, pixels: counts[p.name] })
+      }
+      moments = filmMoments(told.units, c.film.beats, c.film.fps, parts.map((p) => facts[p.name].frames?.first).filter((f) => f !== undefined))
+      for (const m of moments) {
+        const got = await still(session, { page: m.unit, beat: m.beat, at: m.at, camera: 'film', tier: 'draft', live: levels[0], diag: 'standins', out: `film-${m.frame}` }, { dir: 'gate', force: true })
+        const raw = await rawOf(got.file)
+        const { counts, other } = flaggedPixels(raw.data, raw.width, raw.height, raw.channels, colours, grounds)
+        filmPictures++
+        unread += other
+        for (const p of parts) if (counts[p.name]) facts[p.name].pixels.push({ still: `film frame ${m.frame} (${m.beat})`, pixels: counts[p.name] })
       }
       if (covered.some((u) => u.unit === 'film')) {
         const o = await session.page.evaluate(() => window.showcase.opening().frameCount)
@@ -449,8 +460,8 @@ const checks = {
       for (const w of why) detail.push(`${p.name} (${p.unit}): ${w}`)
     }
     const red = rows.filter((r) => r.why.length)
-    writeJson(at('out', 'work', 'gate', 'G13.json'), { covered, anchors, framesRead, pictures: judged.map((j) => j.id), unreadPixels: unread, parts: rows })
-    return { pass: red.length === 0, note: `stand-ins: ${parts.length} parts of ${covered.map((u) => `${u.unit} (${u.why})`).join(', ')}; ${red.length ? `${red.length} still a stand-in: ${red.map((r) => r.name).join(', ')}` : 'none is a stand-in by the three tests'}; read ${framesRead} film frames at ${c.film.previewFps} a second and ${pictures} pictures of the standins view at one sample a pixel${unread ? `, in which ${unread} pixels are no flag colour and no ground` : ''}`, detail }
+    writeJson(at('out', 'work', 'gate', 'G13.json'), { covered, anchors, framesRead, pictures: judged.map((j) => j.id), filmPictures: moments.map((m) => m.frame), unreadPixels: unread, parts: rows })
+    return { pass: red.length === 0, note: `stand-ins: ${parts.length} parts of ${covered.map((u) => `${u.unit} (${u.why})`).join(', ')}; ${red.length ? `${red.length} still a stand-in: ${red.map((r) => r.name).join(', ')}` : 'none is a stand-in by the three tests'}; read ${framesRead} film frames at ${c.film.previewFps} a second and ${pictures + filmPictures} pictures of the standins view at one sample a pixel (${pictures} keys, sheets and judged stills, ${filmPictures} moments of the film, one a second, through the film's camera)${unread ? `, in which ${unread} pixels are no flag colour and no ground` : ''}`, detail }
   },
 
   async G15() {
@@ -474,7 +485,7 @@ const checks = {
                 await window.showcase.renderStill(spec)
                 const i = window.showcase.info()
                 return { counts: i.counts[spec.page], mb: i.textureMb[spec.page], textures: i.textures?.[spec.page] ?? null }
-              }, { ...s.spec, live: level })
+              }, set === 'full' && s.id === 'rest' ? s.spec : { ...s.spec, live: level })
               pictures++
               const n = (p.counts[level] ??= { triangles: 0, drawCalls: 0, at: s.id, callsAt: s.id })
               if (got.counts.triangles > n.triangles) Object.assign(n, { triangles: got.counts.triangles, at: s.id })
@@ -496,11 +507,11 @@ const checks = {
     const memory = sets.map((set) => {
       const p = most(set)
       const t = p?.textures[set]
-      return `${set} at ${formatOfSet(set)}: ${(p?.textureMb[set] ?? 0).toFixed(1)} of ${c.assetSets[set].maxTextureMb} MB on ${p?.page}${t ? ` (${t.counted} of the ${t.held} textures the renderer holds were read, ${t.assetMb} MB of pictures and ${t.targetMb} MB of targets${t.unseenMb > 0 ? `, and ${t.unseenMb} MB for the rest taken at their largest` : ''})` : ''}`
+      return `${set} at ${formatOfSet(set)}: ${(p?.textureMb[set] ?? 0).toFixed(1)} of ${c.assetSets[set].maxTextureMb} MB on ${p?.page}${t ? ` (${t.counted} of the ${t.held} textures the renderer holds were read, ${t.assetMb} MB of pictures and ${t.targetMb} MB of targets${t.unseenMb > 0 ? `, and ${t.unseenMb} MB for the ${t.held - t.counted} the walk does not reach, the renderer's own target for materials that let light through, taken at the size of the picture` : ''})` : ''}`
     })
     const counts = levels.map((l) => `${l} ${Math.max(0, ...pages.map((p) => p.counts[l]?.triangles ?? 0))} of ${c.perf.maxTriangles[l]} triangles and ${Math.max(0, ...pages.map((p) => p.counts[l]?.drawCalls ?? 0))} of ${c.perf.maxDrawCalls[l]} draw calls`)
     const alike = levels.length > 1 && pages.every((p) => levels.every((l) => p.counts[l]?.triangles === p.counts[levels[0]]?.triangles && p.counts[l]?.drawCalls === p.counts[levels[0]]?.drawCalls))
-    return { pass: v.pass, note: `memory and counts: ${pages.length} page${pages.length === 1 ? '' : 's'} (${units.join(', ')}), ${pictures} pictures drawn through the live path; the most textures, ${memory.join('; ')}; the most counts, ${counts.join('; ')}${alike ? '; every level draws the same counts, so the levels are not built yet' : ''}`, detail: v.detail }
+    return { pass: v.pass, note: `memory and counts: ${pages.length} page${pages.length === 1 ? '' : 's'} (${units.join(', ')}), ${pictures} pictures drawn through the live path${sets.includes('full') ? `, and the picture at rest of the set full through the film's path, so its targets are held` : ''}; the most textures, ${memory.join('; ')}; the most counts, ${counts.join('; ')}${alike ? '; every level draws the same counts, so the levels are not built yet' : ''}`, detail: v.detail }
   },
 
   async G16() {
