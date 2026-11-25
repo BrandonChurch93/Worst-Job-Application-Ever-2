@@ -1,35 +1,35 @@
 {
   "folder": "displays",
-  "pushed": "2026-11-25T16:41:20.357Z",
-  "commit": "f3e5c17a4f95654a8dc940efb2e6c82593aa243c",
+  "pushed": "2026-11-25T17:07:16.430Z",
+  "commit": "2f7db52d50c8adf2d568b388ea2d7e7540147639",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "tier-street draft beside the approved image: the street display in its seat, score right aligned",
-      "time": "2026-11-25T16:41:18.638Z",
+      "caption": "Still key-tier-street-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T17:05:23.372Z",
       "by": "displays",
-      "from": "out/work/looks-src/d1-compare-street.jpg"
+      "from": "out/work/stills/key-tier-street-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "street display at 4 times: mask holes, beads, lit numerals, smoked pane with dust at the edge",
-      "time": "2026-11-25T16:41:18.866Z",
+      "caption": "street display at 4 times: wide glow round the lit numerals, the tier's lamps faint in the pane, sweep passing the middle numerals (forced)",
+      "time": "2026-11-25T17:07:14.780Z",
       "by": "displays",
-      "from": "out/work/looks-src/d1-street-score.png"
+      "from": "out/work/looks-src/d2-street-glow.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "office display at 4 times: a mode line running at twice the text size (forced for the look)",
-      "time": "2026-11-25T16:41:19.109Z",
+      "caption": "main display in the frame's new seat, table-wide draft, from a local merge of agent/frame (not on main yet)",
+      "time": "2026-11-25T17:07:15.012Z",
       "by": "displays",
-      "from": "out/work/looks-src/d1-office-line.png"
+      "from": "out/work/looks-src/d2-marquee-new-seat.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "corporate display at 4 times: the hint, left button and left bat lit (forced for the look)",
-      "time": "2026-11-25T16:41:19.341Z",
+      "caption": "sheet of pinball.coffee: name held, then the line runs",
+      "time": "2026-11-25T17:07:15.248Z",
       "by": "displays",
-      "from": "out/work/looks-src/d1-corporate-hint.png"
+      "from": "out/work/sheets/sheet-beat-pinball_coffee-preview-draft.jpg"
     }
   ]
 }
