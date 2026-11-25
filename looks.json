@@ -1,0 +1,35 @@
+{
+  "folder": "street",
+  "pushed": "2026-11-25T16:56:46.462Z",
+  "commit": "e7fa53c71700acf2af4f5e4947dca7b65eeabd83",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Still key-last-save-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T16:56:21.653Z",
+      "by": "street",
+      "from": "out/work/stills/key-last-save-hd-draft.png"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Street models, first whole version: tier-street beside the approved image",
+      "time": "2026-11-25T16:56:44.832Z",
+      "by": "street",
+      "from": "out/work/compare/compare-tier-street.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Firehouse and bank, first whole version: youre-fired beside the approved image",
+      "time": "2026-11-25T16:56:45.068Z",
+      "by": "street",
+      "from": "out/work/compare/compare-youre-fired.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "last-save draft: all seven street models in place, first whole version",
+      "time": "2026-11-25T16:56:45.302Z",
+      "by": "street",
+      "from": "out/work/looks/files/20261125165645-v1-last-save.jpg"
+    }
+  ]
+}
