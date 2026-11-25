@@ -59,6 +59,7 @@ export interface Materials {
   pocket: THREE.MeshPhysicalMaterial
   glass: THREE.MeshPhysicalMaterial
   aluminium: THREE.MeshPhysicalMaterial
+  aluminiumTurned: THREE.MeshPhysicalMaterial
   orange: THREE.MeshPhysicalMaterial
   gap: THREE.MeshPhysicalMaterial
   ink: THREE.MeshPhysicalMaterial
@@ -96,6 +97,7 @@ export function makeMaterials(seed: number): Materials {
     })
   )
   const aluminium = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xd3d6d8), roughness: 0.32, metalness: 1, envMapIntensity: 1.25 }))
+  const aluminiumTurned = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xd3d6d8), roughness: 0.32, metalness: 1, envMapIntensity: 1.25 }))
   const orange = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xf0641c), roughness: 0.42, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.07, envMapIntensity: 1.1 }))
   const gap = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x23211f), roughness: 0.85, metalness: 0, envMapIntensity: 0.3 }))
   const ink = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x2a2927), roughness: 0.48, metalness: 0, envMapIntensity: 0.5 }))
@@ -113,7 +115,7 @@ export function makeMaterials(seed: number): Materials {
     m.polygonOffsetFactor = -1
     m.polygonOffsetUnits = -2
   }
-  return { ceramic, pocket, glass, aluminium, orange, gap, ink, inkOnOrange, enamel, edge, smoked, paper, red, keycap, steel, rubber, textures: [grain] }
+  return { ceramic, pocket, glass, aluminium, aluminiumTurned, orange, gap, ink, inkOnOrange, enamel, edge, smoked, paper, red, keycap, steel, rubber, textures: [grain] }
 }
 
 let made: Materials | null = null
