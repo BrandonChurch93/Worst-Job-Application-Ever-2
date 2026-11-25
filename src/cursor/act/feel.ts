@@ -63,6 +63,9 @@ export function reactionPose(name: Reaction, u: number, dir: number): ReactionPo
     // A sideways snap out of a shot's way: the tip thrown up and over, held.
     case 'snap':
       return u < 0.8 ? at(0.1, 0.2, 0.62) : at(0)
+    // A dart for cover: a long reach on the way, then small, low and leaning away from what it left, held.
+    case 'dart':
+      return u < 0.3 ? at(0.3, -0.3) : at(-0.3, -0.36, -0.4, -0.5)
     // A decided tap: back, down, held.
     case 'tap':
       return u < 0.3 ? at(-0.3, -0.3, -0.16) : u < 0.86 ? at(0.2, 0.3, 0.12) : at(0)

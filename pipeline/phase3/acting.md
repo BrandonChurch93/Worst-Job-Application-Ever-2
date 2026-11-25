@@ -16,8 +16,8 @@ Read from close looks at 1920 px wide (film frames cut round the cursor) and fro
 
 - `step1.keyboard` (0 to 2.0 s). It struts straight to the field, upright, bouncing, leaning into the walk. It pulls back, taps once, and stays on the tap. The page opens under it and it throws itself back, flat on its heel, and stays there. Read: it was sure of itself and the page surprised it.
 - `step1.firstName` (2.0 to 10.0 s). It stomps the first keys. The turrets come up, it looks twice, goes small. It leaps clear and stands tall and puffed (4.7 to 5.6 s). It sees the next shot, snaps a row up and holds, tip high, still (the key at 6.0 s). It drops flat and slides a key along while the shot lands where it was, stretches up out of the duck and stands tall again, pleased (6.6 to 7.1 s). The shot of 6.82 s hits it at 7.138 s: one short bent frame, then it is thrown, long, across the board on to the bare metal by the right hatch, where it stands tall and stiff with a hole in it and a wisp of smoke until 7.92 s. Then it finishes the name, nervous. Read: cocky, then punished.
-- `step1.lastName` (10.0 to 15.0 s). The keys change places. Three times it pulls up off the keys on to the bare page above the board, rears back, and dives for the letter where it is now. Then it stops looking and stomps. Read: thrown each time, then cross.
-- `step1.email` (15.0 to 19.9 s). One careful key, a flinch, a step back, a short tight wait. Nothing happens. It types the address in one run and hits Enter, proud. The first slab hangs over it: it starts, leaps long to the bare page, jumps when the slab lands. The second hangs over it: it cowers, leaps to the corner of the Email field, jumps when that one lands. The third hangs: it cowers there, pale, laid back, and ducks flat when it lands a hand away. It stays scared. Read: sure, then hunted, then hiding.
+- `step1.lastName` (10.0 to 15.0 s). The keys change places. Three times it pulls up off the keys on to the bare page above the board, to the right of the note so it never stands on text, rears back and holds the lean (0.2 to 0.3 s still), and dives for the letter where it is now. The second time it looks both ways first. Then it stops looking and stomps. Read: thrown each time, then cross.
+- `step1.email` (15.0 to 19.9 s). One careful key. It darts off the board to the bare strip of page between the board's upper edge and the upload zone, right of the note, and waits there small, low and leaning away, beads on it (15.36 to 15.5 s). Nothing happens. It types the address in one run and hits Enter, proud. The first slab hangs over it: it starts, leaps long to the bare page, jumps when the slab lands. The second hangs over it: it cowers, leaps to the corner of the Email field, jumps when that one lands. The third hangs: it cowers there, pale, laid back, and ducks flat when it lands a hand away. It stays scared. Read: sure, then hunted, then hiding.
 - `step1.shredded` (28.25 to 32.0 s). Its fifteen strips lie in a fan beside the slot, apart from the paper's strips. They stand, hold out of line, and close. It starts at what the form says, sags, and drags itself a little way off the slot, low and bent. Read: it has nothing left.
 
 ## Decisions
@@ -29,7 +29,7 @@ Read from close looks at 1920 px wide (film frames cut round the cursor) and fro
 - A hit sets the squash and the bend at once (`HIT`), with no spring to build them: one frame of contact.
 - A jump or a start no longer kicks a body that is already in the air (`aloft`). Before, three reactions in a row left it hanging 260 px up for a second.
 - The keys of the last name and of the email are struck when the body reaches the key. The dives (`LAST.dive`) and the leave from the shock (`FIRST.after`) are set so the body reaches each key in the same step as on main.
-- The nervous wait of the email is a step back from the key, not a trip to bare ground: there is 0.32 s between the first key and the run, and every bare place is too far to reach and leave in that time without moving a key (I tried four places and measured each).
+- The nervous wait of the email is on the bare strip of page between the board's upper edge and the upload zone (the Builder's ruling of 19:00Z), 46 px above the board, right of the note. A new reaction `dart` takes it there at a scared body's pace and drops it to the ground at once. The wait is 0.14 s long: the first key is struck at 15.175 s and the run's click is at 15.5 s, and neither moves. The body turns confident 0.1 s into the run, so the nervous gait carries it to the second key in the same step as on main.
 - The second `dustOff` is gone so the cocky pose is a clean hold. The angry stamp at the end of the shredded beat is gone: a start, then exhausted.
 - After the third slab it stays scared until the form takes the address (the page set it angry for 0.4 s, which read as a flicker).
 - The pile lies `FAN.away` from the body's place because `PILE` is not mine. `ASKEW` is larger and `GATHER` holds the strips out of line from 0.4 to 0.8 of the mend.
@@ -37,6 +37,6 @@ Read from close looks at 1920 px wide (film frames cut round the cursor) and fro
 
 ## Not done
 
-- The nervous wait of the email is among the keys, not in clear space.
-- The pulls up of the last name are short (0.25 to 0.4 s on the page); the second lands on the end of the note under the form.
+- The nervous wait of the email is in clear space but only 0.14 s long.
+- The holds of the last name's rears are 0.2 to 0.3 s; a `rear` now travels at a scared body's pace for its first 0.24 s so the lean is held on the page, not on the way.
 - The pile of the cursor's strips is close under the slot. Moving it needs `PILE`, which is the tug fixer's.

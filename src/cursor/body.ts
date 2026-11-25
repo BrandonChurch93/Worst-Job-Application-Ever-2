@@ -5,7 +5,7 @@ import { FEEL, FEEL_EASE, FEEL_KEYS, freshFeel, reactionPose, type Feel } from '
 import { OUTLINE, STRIP_AXIS, UNIT } from './contract'
 
 export const ACTING = ['plain', 'confident', 'nervous', 'shocked', 'angry', 'scared', 'proud', 'exhausted'] as const
-export const REACTIONS = ['anticipate', 'flinch', 'doubleTake', 'recoil', 'dustOff', 'jump', 'duck', 'startle', 'cower', 'rear', 'snap', 'tap'] as const
+export const REACTIONS = ['anticipate', 'flinch', 'doubleTake', 'recoil', 'dustOff', 'jump', 'duck', 'startle', 'cower', 'rear', 'snap', 'tap', 'dart'] as const
 export const DAMAGE = ['burn', 'shredded', 'reassembled', 'flattened', 'scorched'] as const
 export type Acting = (typeof ACTING)[number]
 export type Reaction = (typeof REACTIONS)[number]
@@ -17,7 +17,7 @@ const dt = 1 / stepHz
 const hover = config.scale.heights.cursorHover
 const healSeconds = config.cursor.damageHealSeconds
 const takenMax = config.live.controlTakenMaxSeconds
-const REACTION_SECONDS: Record<Reaction, number> = { anticipate: 0.35, flinch: 0.3, doubleTake: 0.7, recoil: 0.45, dustOff: 0.9, jump: 0.5, duck: 0.55, startle: 0.42, cower: 0.62, rear: 0.6, snap: 0.5, tap: 0.42 }
+const REACTION_SECONDS: Record<Reaction, number> = { anticipate: 0.35, flinch: 0.3, doubleTake: 0.7, recoil: 0.45, dustOff: 0.9, jump: 0.5, duck: 0.55, startle: 0.42, cower: 0.62, rear: 0.6, snap: 0.5, tap: 0.42, dart: 0.34 }
 // Layer 1, where it goes. rock is how far it tips from tip to heel corner on each hop, dip how deep it squashes on each footfall.
 // The walk is plain, the strut confident and proud, the tiptoe nervous and scared, the drag exhausted.
 const GAIT: Record<Acting, { stiff: number; damp: number; stride: number; hop: number; top: number; rock: number; dip: number }> = {
@@ -30,6 +30,10 @@ const GAIT: Record<Acting, { stiff: number; damp: number; stride: number; hop: n
   proud: { stiff: 340, damp: 26, stride: 120, hop: 32, top: 4200, rock: 0.36, dip: 3.4 },
   exhausted: { stiff: 110, damp: 20, stride: 70, hop: 0, top: 900, rock: 0, dip: 0 }
 }
+// A dart for cover goes at a scared body's pace and drops to the ground at once.
+const DART = { fall: 9000 }
+// A rear gets to its place fast, so the lean is held there.
+const REAR = { settle: 0.36 }
 // The frame of a hit: the body is short and bent away from the blow at once, with no spring to build it.
 const HIT = { squash: 0.58, bend: 0.8 }
 const SPRING = { squash: { k: 620, c: 26 }, lean: { k: 330, c: 17 }, bend: { k: 260, c: 13 }, sprout: { k: 2400, c: 58 } }
@@ -327,7 +331,7 @@ export class CursorBody {
 
   step(target: { x: number; y: number }, emit: Emit, armsAllowed: boolean): void {
     const s = this.s
-    const gait = GAIT[s.acting]
+    const gait = s.reaction === 'dart' || (s.reaction === 'rear' && s.reactionLeft > REAR.settle) ? GAIT.scared : GAIT[s.acting]
     if (s.taken !== null && !s.inBall) {
       s.takenFor += dt
       if (s.takenFor >= takenMax - 0.5) this.release()
@@ -399,7 +403,7 @@ export class CursorBody {
       s.foot = 1
     }
     const floor = tz + hop
-    s.vz += (-2400 + 700 * Math.max(0, floor - s.z) - 0) * dt
+    s.vz += (-(s.reaction === 'dart' ? DART.fall : 2400) + 700 * Math.max(0, floor - s.z) - 0) * dt
     if (s.air || s.taken !== null) s.vz = (floor - s.z) * 9
     s.z += s.vz * dt
     s.aloft = s.z > floor + 2
