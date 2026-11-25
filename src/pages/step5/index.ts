@@ -45,7 +45,8 @@ const span = (p: number, range: readonly [number, number] | readonly number[]): 
 const smooth = (u: number): number => u * u * (3 - 2 * u)
 const out3 = (u: number): number => 1 - (1 - u) * (1 - u) * (1 - u)
 const two = (v: number): string => String(v).padStart(2, '0')
-export const clock = (seconds: number): string => `${two(Math.floor(Math.max(0, seconds) / 60))}:${two(Math.floor(Math.max(0, seconds)) % 60)}`
+const capped = (seconds: number): number => Math.min(5999, Math.max(0, seconds))
+export const clock = (seconds: number): string => `${two(Math.floor(capped(seconds) / 60))}:${two(Math.floor(capped(seconds)) % 60)}`
 export const secondsOf = (value: string): number => {
   const [m, s] = value.split(':')
   return Number(m) * 60 + Number(s)

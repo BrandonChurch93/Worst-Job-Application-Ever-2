@@ -26,7 +26,7 @@ Unit `decision`, page `step5`. Files: `layout.ts` (the page and its places), `ti
 
 ## Seen, not mine to change
 
-- A stand-in shape that floats above the page (the stamp block in the air, the letter while it drops) casts a hollow shadow in the blockout view: only its side walls throw one. A shape that rests on the page is right. The cause is in the blockout view, not in this page. The stamp flies at 200 to 220 and is carried at 120, under the 320 the lamps cover.
+- A stand-in shape that floats above the page (the stamp block in the air, the letter while it drops) casts a hollow shadow in the blockout view: an outline, with light inside it. A shape that rests on the page is right. The cause is not known. This page only gives the shape its place and its height. The stamp flies at 200 to 220 and is carried at 120, under the 320 the lamps cover.
 
 ## Not done
 

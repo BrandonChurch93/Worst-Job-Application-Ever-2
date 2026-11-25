@@ -139,6 +139,8 @@ describe('step 5, the words', () => {
     expect(spun(words('copy:step5.wait.value'), 1)).toBe(words('copy:step5.wait.value').replace(/\d/g, '0'))
     expect(clock(secondsOf(words('copy:step5.metrics.averageTimeValue')))).toBe(words('copy:step5.metrics.averageTimeValue'))
     expect(clock(secondsOf(words('copy:step5.metrics.targetTimeValue')))).toBe(words('copy:step5.metrics.targetTimeValue'))
+    expect(clock(7 * 3600)).toBe('99:59')
+    expect(clock(-3)).toBe('00:00')
     const s = film()
     s.advance(Math.round(7.2 * hz))
     const list = draw(s)
