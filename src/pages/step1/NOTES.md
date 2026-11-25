@@ -21,7 +21,7 @@ The logic, the script of the film and the numbers the makers of the real parts r
 
 - `Turrets` is a class that stands alone: no page state, its own `save()` and `load()`.
 - A hit burns the last letter, knocks the cursor back and calls `hurt('burn')`.
-- The film takes exactly one hit, at "Perpl", at 7.08 s of the unit, after two proud pauses of more than a second each. Between them, at 6.0 s, is the frame of the approved image: two bolts in the air, one 130 px from the cursor, the cursor in the air on its way from W to the 4. The turrets rise `TIMES.turretDelay` (0.72 s) into the first name, in the film and live. The letter burns away 0.2 s after the hit (`SINGE`). It then types the name again to the end.
+- The film takes exactly one hit, at "Perpl", at 7.14 s of the unit, after two proud pauses of more than a second each. Between them, at 6.0 s, is the frame of the approved image: two bolts in the air, one 106 px from the cursor, the cursor in the air on its way from W up and to the right to the 5. The turrets rise `TIMES.turretDelay` (0.72 s) into the first name, in the film and live. The letter burns away 0.2 s after the hit (`SINGE`). It then types the name again to the end.
 - A bolt that lands within 130 px of the cursor makes it flinch, unless it is being proud.
 - For 0.9 s after a hit the cursor cannot be hit again.
 
@@ -50,6 +50,9 @@ The logic, the script of the film and the numbers the makers of the real parts r
 - A live tug is lost at the far end or after 9 s.
 - After the loss the page stays in the tug for 0.3 s (`TIMES.lost`) with the arms off and the cursor taken, so the torn arms of the body can be seen. For that time the body is driven over the card, 6 px above its face and 84 px up the page from the slot, so the plate does not cut it. Then the shredder has it.
 
+- From the first bite the six paper strips hang under the hood (`FRINGE`): `u = clamp((most - 0.12 - order * 0.018) * 1.2, 0, 0.34)`, where `most` is the largest share of the sheet eaten so far, so a strip never goes back in. After the loss each goes on from where it hangs.
+- The drop zone has an upload glyph above its prompt (`GLYPH`, `uploadGlyph`): six strokes 3 px wide, 64 px across, drawn as `resume-glyph-<i>` boxes of the shell in ink on the face of the card until the resume is received. A level stroke is a box with no turn: a turned box whose own rectangle lay over the prompt made the type maker set the prompt for the wrong ground (contrast 3.43).
+
 ## Last 4 s
 
 - The kit wins. From the moment the shredder has the cursor (`SHRED`, seconds): the body is under the page at 0.34, the strips leave the hood from 0.12, the cursor lies as a pile of strips from 0.78 for 1.0 s, the form empties from 0.92 to 1.76 (Email, then Last name, then First name, one field after the other, 0.28 s each: the focus ring lights on the field and its caret runs back along the line and takes a character at a time), the strips zip back from 1.78 for 1.0 s, and the pointer is handed back at 2.8. In the film that is whole at 30.2 s, with 1.3 s left to look at the empty form and start toward it.
@@ -66,7 +69,7 @@ The logic, the script of the film and the numbers the makers of the real parts r
 
 - `fire.ts` gives `makeTurrets()` and `drawFire(out, { typed, pressed, turrets })`: the page with the keyboard up, First name holding `typed`, the keys named in `pressed` down, and the given turrets with their bolts and marks. Key names are those of `keyboard.json`.
 - The cursor grabs the paper by its top right corner, clear of the title.
-- The film camera eases from home to a wide frame of the card and the slot (1200 px wide) between 21.1 s and 22.1 s, pushes slowly in to 1000 px for 4.6 s, pushes to a 600 px frame on the slot and the hands between 24.35 s and 26.35 s (the key still at 25.125 is about 900 px wide, where the fine detail against the approved image, M3, measures 1.008; at 850 px it is 0.8635 and at 600 px 0.6701, under the least of 0.8), and eases home between 27.6 s and 28.9 s. All three frames are placed from `SLOT`. `tests/step1-script.test.ts` holds the cursor at least 70 px inside the frame for the whole tug.
+- The film camera eases from home to a wide frame of the card and the slot (1200 px wide) between 21.1 s and 22.1 s, pushes in for 2.7 s to a 928 px frame (`TUG_CLOSE`: the whole drop zone with 34 px above it, the slot, the hood and the strips under it) and holds it through the key still at 25.125, then eases home between 27.6 s and 28.9 s. The frames are placed from `ZONE` and `SLOT`. No closer: the fine detail against the approved image (M3) is 1.0925 at this frame and falls under the least at about 850 px. `tests/step1-script.test.ts` holds the cursor at least 70 px inside the frame for the whole tug.
 - The end (`END`, seconds after the cursor is whole): a double take at 0.06, a lean toward the message with `shocked` from 0.14, a wind-up and a stamp in `angry` at 0.62, then `exhausted` and a trudge of 0.8 s away from the card from 1.0.
 
 ## For the measures
