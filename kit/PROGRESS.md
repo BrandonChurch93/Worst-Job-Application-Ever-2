@@ -266,7 +266,57 @@ Kept by `npm run judged -- --write`. Check G6 compares its ids with the computed
 | `site:boss` | `site` | step 4 at rest, drawn through the live site's own path at the high level, from home, in hd |  |
 | `site:decision` | `site` | step 5 at rest, drawn through the live site's own path at the high level, from home, in hd |  |
 
-The film's part is added when `cut/CUTLIST.json` first exists.
+47 frames of the films and the loop. The frame numbers are those of the build of 2026-11-25T09:38:42Z. A judged frame is found again by its id when it is rendered, so a beat's frame follows its event.
+
+| Id | Unit | What | Frame |
+| --- | --- | --- | --- |
+| `film:first` | `film` | film B, frame 0 | 0 |
+| `film:hook` | `film` | film B, the frame at film.hookSeconds (2 s) | 120 |
+| `film:marketing.stroll` | `film` | film B, the beat marketing.stroll: the frame of its event, step | 60 |
+| `film:marketing.perks` | `film` | film B, the beat marketing.perks: the frame of its event, card-flip | 126 |
+| `film:marketing.ticker` | `film` | film B, the beat marketing.ticker: its middle frame | 570 |
+| `film:marketing.apply` | `film` | film B, the beat marketing.apply: the frame of its event, page-turn | 810 |
+| `film:step1.keyboard` | `film` | film B, the beat step1.keyboard: the frame of its event, keyboard-rise | 905 |
+| `film:step1.firstName` | `film` | film B, the beat step1.firstName: the frame of its event, bolt-hit-cursor | 1215 |
+| `film:step1.lastName` | `film` | film B, the beat step1.lastName: the frame of its event, keys-shuffle | 1458 |
+| `film:step1.email` | `film` | film B, the beat step1.email: the frame of its event, slab-drop | 1927 |
+| `film:step1.resume` | `film` | film B, the beat step1.resume: the frame of its event, paper-slide | 2050 |
+| `film:step1.tug` | `film` | film B, the beat step1.tug: the frame of its event, arms-out | 2175 |
+| `film:step1.shredded` | `film` | film B, the beat step1.shredded: the frame of its event, strips-zip | 2661 |
+| `film:step2.open` | `film` | film B, the beat step2.open: its middle frame | 2820 |
+| `film:step2.dial` | `film` | film B, the beat step2.dial: the frame of its event, dial-fling | 3094 |
+| `film:step2.slot` | `film` | film B, the beat step2.slot: the frame of its event, coins | 3451 |
+| `film:step2.crank` | `film` | film B, the beat step2.crank: the frame of its event, flatten | 3767 |
+| `film:step2.continue` | `film` | film B, the beat step2.continue: the frame of its event, button-press | 3978 |
+| `film:pinball.seal` | `film` | film B, the beat pinball.seal: the frame of its event, ball-seal | 4116 |
+| `film:pinball.reveal` | `film` | film B, the beat pinball.reveal: the frame of its event, power-on | 4356 |
+| `film:pinball.launch` | `film` | film B, the beat pinball.launch: the frame of its event, plunger | 4572 |
+| `film:pinball.lobby` | `film` | film B, the beat pinball.lobby: the frame of its event, doors-slam | 4776 |
+| `film:pinball.coffee` | `film` | film B, the beat pinball.coffee: the frame of its event, bumper | 5016 |
+| `film:pinball.replyAll` | `film` | film B, the beat pinball.replyAll: the frame of its event, ball-drop | 5328 |
+| `film:pinball.fired` | `film` | film B, the beat pinball.fired: the frame of its event, scoop-kick | 5664 |
+| `film:pinball.highway` | `film` | film B, the beat pinball.highway: the frame of its event, ramp-roll | 5898 |
+| `film:pinball.save` | `film` | film B, the beat pinball.save: the frame of its event, flipper-save | 6132 |
+| `film:pinball.drain` | `film` | film B, the beat pinball.drain: the frame of its event, drain | 6360 |
+| `film:boss.verify` | `film` | film B, the beat boss.verify: the frame of its event, checkbox | 6768 |
+| `film:boss.unfold` | `film` | film B, the beat boss.unfold: the frame of its event, unfold | 6942 |
+| `film:boss.slabs` | `film` | film B, the beat boss.slabs: the frame of its event, slab-fire | 7131 |
+| `film:boss.popups` | `film` | film B, the beat boss.popups: the frame of its event, popup | 7511 |
+| `film:boss.lastStand` | `film` | film B, the beat boss.lastStand: the frame of its event, session-expired | 7864 |
+| `film:boss.collapse` | `film` | film B, the beat boss.collapse: the frame of its event, power-down | 8166 |
+| `film:boss.press` | `film` | film B, the beat boss.press: the frame of its event, button-press | 8370 |
+| `film:decision.wait` | `film` | film B, the beat decision.wait: the frame of its event, hold-music | 8484 |
+| `film:decision.letter` | `film` | film B, the beat decision.letter: the frame of its event, stamp | 8718 |
+| `film:decision.metrics` | `film` | film B, the beat decision.metrics: the frame of its event, button-press | 9018 |
+| `film:decision.reset` | `film` | film B, the beat decision.reset: the frame of its event, page-turn | 9045 |
+| `film:last` | `film` | film B, the last frame | 9179 |
+| `opening:typing` | `film` | the opening of film A, a frame in the middle of the typing |  |
+| `opening:level` | `film` | the opening of film A, a frame with the reasoning level control open |  |
+| `opening:build` | `film` | the opening of film A, a frame in the middle of the build screen |  |
+| `loop:first` | `film` | the card loop, frame 0 | 0 |
+| `loop:quarter` | `film` | the card loop, the frame quarter of the way through | 120 |
+| `loop:half` | `film` | the card loop, the frame half of the way through | 240 |
+| `loop:three-quarters` | `film` | the card loop, the frame three quarters of the way through | 360 |
 
 ## Look lock
 

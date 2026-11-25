@@ -126,7 +126,7 @@ export class Engine {
   lastCounts = { triangles: 0, drawCalls: 0 }
   beforeSample: ((shot: Shot, view: string) => (() => void) | void) | null = null
 
-  constructor(canvas: HTMLCanvasElement, width: number, height: number, opts: { preserve: boolean; forceKind?: TargetKind }) {
+  constructor(canvas: HTMLCanvasElement, width: number, height: number, opts: { preserve: boolean; forceKind?: TargetKind; multisamples?: number }) {
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, depth: false, stencil: false, preserveDrawingBuffer: opts.preserve, powerPreference: 'high-performance' })
     this.renderer.setPixelRatio(1)
     this.renderer.setSize(width, height, false)
@@ -138,7 +138,7 @@ export class Engine {
     this.renderer.setClearColor(new THREE.Color(...look.background), 1)
     this.width = width
     this.height = height
-    this.acc = new Accumulator(this.renderer, width, height, opts.forceKind)
+    this.acc = new Accumulator(this.renderer, width, height, opts.forceKind, opts.multisamples ?? 0)
     this.kind = this.acc.kind
   }
 
