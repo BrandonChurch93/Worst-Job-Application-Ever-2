@@ -1,0 +1,35 @@
+{
+  "folder": "surface",
+  "pushed": "2026-11-25T13:53:50.230Z",
+  "commit": "a140728cfaaaf5eff61dfa3a61b42137c6a959e2",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Page look at review tier beside the approved image: real slab, shell controls and the four materials",
+      "time": "2026-11-25T13:53:48.579Z",
+      "by": "surface",
+      "from": "out/work/report/1-page-look-review.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Field, card, progress buttons and button at twice size: approved on the left, this build on the right",
+      "time": "2026-11-25T13:53:48.807Z",
+      "by": "surface",
+      "from": "out/work/report/2-crops-beside-approved.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Both step 1 keys beside their approved images at draft tier",
+      "time": "2026-11-25T13:53:49.033Z",
+      "by": "surface",
+      "from": "out/work/report/3-keys-beside-approved.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "The slab on marketing, step 2, boss, decision and pinball, and the tug key",
+      "time": "2026-11-25T13:53:49.259Z",
+      "by": "surface",
+      "from": "out/work/report/4-other-pages.jpg"
+    }
+  ]
+}
