@@ -396,7 +396,7 @@ interface ScorchData {
   hotMaterial: THREE.MeshBasicMaterial
 }
 
-const SCORCH = { size: 60, smoke: 3, smokeSeconds: 1.5, hotSeconds: 0.4, hotSize: 46, emberSize: 30, shoulder: 9, core: 13, legend: 30, word: 52, bar: 400, wide: 112, sparks: 6, sparkSeconds: 0.24, fall: 900, ember: 0.35, snap: 36, flareSeconds: 0.1, ride: 16, strikeSeconds: 1.5, strikeMark: 0.72 }
+const SCORCH = { size: 54, smoke: 3, smokeSeconds: 1.5, hotSeconds: 0.4, hotSize: 46, emberSize: 30, shoulder: 9, core: 13, legend: 30, word: 52, bar: 400, wide: 112, sparks: 6, sparkSeconds: 0.24, fall: 900, ember: 0.35, snap: 36, flareSeconds: 0.1, ride: 16, strikeSeconds: 1.5, strikeMark: 0.72 }
 
 function makeScorch(s: Shape): THREE.Object3D {
   const f = fx()
