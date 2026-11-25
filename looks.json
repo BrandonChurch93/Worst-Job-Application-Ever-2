@@ -1,0 +1,35 @@
+{
+  "folder": "keys",
+  "pushed": "2026-11-25T18:41:36.638Z",
+  "commit": "97c3e142543d959e2e06c6936fce42fcacc51df4",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Keys fix round: step1-fire, approved on the left, this build on the right, review tier",
+      "time": "2026-11-25T18:41:34.962Z",
+      "by": "keys",
+      "from": "out/work/compare/compare-step1-fire.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Keys fix round: the caps, approved above, this build below, review tier",
+      "time": "2026-11-25T18:41:35.192Z",
+      "by": "keys",
+      "from": "out/work/keys/keys-crop.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Keys fix round: the shuffle in step1.lastName, caps launched and seated, draft tier",
+      "time": "2026-11-25T18:41:35.432Z",
+      "by": "keys",
+      "from": "out/work/sheets/sheet-beat-step1_lastName-preview-draft.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Keys fix round: the slabs in step1.email, one an error, none cut, leaving sideways, draft tier",
+      "time": "2026-11-25T18:41:35.654Z",
+      "by": "keys",
+      "from": "out/work/sheets/sheet-beat-step1_email-preview-draft.jpg"
+    }
+  ]
+}
