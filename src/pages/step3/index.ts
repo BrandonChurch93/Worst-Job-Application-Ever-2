@@ -39,7 +39,7 @@ const centred = (id: string, key: string, type: { font: string; px: number; wrap
 
 function buildLayout(): LayoutNode {
   const kids: LayoutNode[] = [...stepHead(3)]
-  kids.push(text('intro', 'copy:transitions.step3', { ...TYPE.body, wrap: 760, lead: 1.5 }, LEFT, HEADER.contentY, { part: 'type' }))
+  kids.push(text('intro', 'copy:transitions.step3', { ...TYPE.body, wrap: 760, lead: 34 }, LEFT, HEADER.contentY, { part: 'type' }))
   kids.push(node('loader-port', 'port', [px(PORT.x - PORT.ring / 2), px(PORT.y - PORT.ring / 2), px(PORT.ring), px(PORT.ring)], { part: 'loader', shape: 'none' }))
   const my = px(MARQUEE_Y)
   kids.push(node('marquee', 'marquee', [312, my + 24, 1296, 336], {
@@ -55,16 +55,16 @@ function buildLayout(): LayoutNode {
     for (const m of table.models) {
       if (m.tier !== k || !m.sign) continue
       const dark = m.tone === 'danger'
-      kids.push(centred(`sign.${m.id}`, m.sign, { font: 'inter-600', px: m.signPx ?? 22, wrap: px(m.box[2]) - 6, lead: 1.2 }, px(m.box[0] + m.box[2] / 2), px(m.box[1] + m.box[3] / 2), { part: m.part, on: f + px((m.base ?? 0) + m.h) + 1, tone: dark ? 'inkLight' : 'ink' }))
+      kids.push(centred(`sign.${m.id}`, m.sign, { font: 'inter-600', px: m.signPx ?? 22, wrap: px(m.box[2]) - 6 }, px(m.box[0] + m.box[2] / 2), px(m.box[1] + m.box[3] / 2), { part: m.part, on: f + px((m.base ?? 0) + m.h) + 1, tone: dark ? 'inkLight' : 'ink' }))
     }
     for (const n of table.inserts) {
       if (n.tier !== k) continue
-      kids.push(text(`insert-label.${n.id}`, `copy:step3.table.modes.${n.mode}.insert`, { font: 'inter-500', px: 15, align: 'centre', wrap: 138, lead: 1.2 }, px(n.c[0]), px(n.c[1] + n.r + 0.08), { part: 'table-lights', on: f + 4, tone: light ? 'inkLight' : 'ink' }))
+      kids.push(text(`insert-label.${n.id}`, `copy:step3.table.modes.${n.mode}.insert`, { font: 'inter-500', px: 15, align: 'centre', wrap: 138, lead: 19 }, px(n.c[0]), px(n.c[1] + n.r + 0.08), { part: 'table-lights', on: f + 4, tone: light ? 'inkLight' : 'ink' }))
     }
     const d = table.displays[k]!
     for (const n of table.inserts) {
       if (n.tier !== k) continue
-      kids.push(text(`display.${name}.${n.mode}`, `copy:step3.table.modes.${n.mode}.display`, { font: 'inter-500', px: 16, wrap: px(d.box[2]) - 20, lead: 1.2 }, px(d.box[0]) + 10, px(d.box[1]) + 6, { part: 'displays', on: f + 31, tone: 'inkLight', states: [`mode${n.mode}`] }))
+      kids.push(text(`display.${name}.${n.mode}`, `copy:step3.table.modes.${n.mode}.display`, { font: 'inter-500', px: 16, wrap: px(d.box[2]) - 20, lead: 21 }, px(d.box[0]) + 10, px(d.box[1]) + 6, { part: 'displays', on: f + 31, tone: 'inkLight', states: [`mode${n.mode}`] }))
     }
     kids.push(text(`display.${name}.score`, 'runtime:score', { font: 'inter-600', px: 30, align: 'centre', wrap: px(d.box[2]) - 20 }, px(d.box[0] + d.box[2] / 2), px(d.box[1]) + 18, { part: 'displays', on: f + 31, tone: 'inkLight', states: [`score${k}`] }))
   }
@@ -81,7 +81,7 @@ function buildLayout(): LayoutNode {
   kids.push(node('result', 'card', [560, ly + 255, RIGHT - 560, 236], {
     part: 'shell', states: ['result'], children: [
       text('result-title', 'copy:step3.result.title', TYPE.heading, 608, ly + 295, { part: 'type', on: 12 }),
-      text('result-body', 'copy:step3.result.body', { ...TYPE.body, wrap: 1040, lead: 1.5 }, 608, ly + 385, { part: 'type', on: 12 })
+      text('result-body', 'copy:step3.result.body', { ...TYPE.body, wrap: 1040, lead: 34 }, 608, ly + 385, { part: 'type', on: 12 })
     ]
   }))
   kids.push(button('go', 560, ly + 255 + 236 + 32, buttonWidth('copy:step2.continue'), 'copy:step2.continue', { part: 'shell', states: ['result'] }))
