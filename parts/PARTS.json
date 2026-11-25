@@ -1,0 +1,644 @@
+{
+  "parts": [
+    {
+      "name": "shell",
+      "unit": "step1",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "type",
+      "unit": "step1",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "materials",
+      "unit": "step1",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "light-engine",
+      "unit": "step1",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "page-turn",
+      "unit": "step1",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "cursor-body",
+      "unit": "step1",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "cursor-acting",
+      "unit": "step1",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "cursor-damage",
+      "unit": "step1",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "cursor-arms",
+      "unit": "step1",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "cursor-effects",
+      "unit": "step1",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "keyboard",
+      "unit": "step1",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "turrets",
+      "unit": "step1",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "slabs",
+      "unit": "step1",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "paper",
+      "unit": "step1",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "shredder",
+      "unit": "step1",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "acting-step1",
+      "unit": "step1",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "rows",
+      "unit": "step2",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "dial",
+      "unit": "step2",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "slot",
+      "unit": "step2",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "crank",
+      "unit": "step2",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "acting-step2",
+      "unit": "step2",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "careers-page",
+      "unit": "marketing",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "perk-cards",
+      "unit": "marketing",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "ticker",
+      "unit": "marketing",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "apply-button",
+      "unit": "marketing",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "acting-marketing",
+      "unit": "marketing",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "table-layout",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "table-frame",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "marquee",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "loader",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "tier-art",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "table-hardware",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "flippers",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "bumpers",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "targets",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "ramps",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "lift",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "displays",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "clear-ball",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "table-lights",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "table-physics",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "director",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "table-cameras",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "model-hq",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "model-revolving-door",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "model-beach",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "model-boardroom",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "model-ladder",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "model-notes",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "model-coffee-machine",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "model-cubicles",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "model-inbox",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "model-staplers",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "model-firehouse",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "model-police",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "model-bank",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "model-garage",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "model-houses",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "model-moms",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "model-wedges",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "model-road-signs",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "acting-pinball",
+      "unit": "pinball",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "verify-card",
+      "unit": "boss",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "boss-body",
+      "unit": "boss",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "boss-transform",
+      "unit": "boss",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "boss-weapons",
+      "unit": "boss",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "health-bar",
+      "unit": "boss",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "acting-boss",
+      "unit": "boss",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "wait",
+      "unit": "decision",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "letter",
+      "unit": "decision",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "stamp",
+      "unit": "decision",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "metrics",
+      "unit": "decision",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "acting-decision",
+      "unit": "decision",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "interface",
+      "unit": "site",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "pointer",
+      "unit": "site",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "sound-engine",
+      "unit": "site",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "quality-levels",
+      "unit": "site",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "finish-logic",
+      "unit": "site",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "opening",
+      "unit": "film",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    },
+    {
+      "name": "loop",
+      "unit": "film",
+      "state": "stand-in",
+      "files": [],
+      "standInHash": "",
+      "commit": ""
+    }
+  ]
+}

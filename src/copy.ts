@@ -51,7 +51,26 @@ export function timedLines(c: Config, n: Narration): TimedLine[] {
 }
 
 // A layout tree names its words by key. Every page's tree is given here to be checked.
-export interface LayoutNode { id: string; kind: string; box: number[]; copy?: string; children?: LayoutNode[] }
+export interface LayoutNode {
+  id: string
+  kind: string
+  box: number[]
+  copy?: string
+  children?: LayoutNode[]
+  part?: string
+  height?: number
+  floor?: number
+  on?: number
+  mechanism?: boolean
+  over?: boolean
+  states?: string[]
+  type?: { font: string; px: number; align?: 'left' | 'centre' | 'right'; wrap?: number; lead?: number }
+  shape?: 'box' | 'disc' | 'capsule' | 'none'
+  tone?: string
+  r?: number
+  flow?: 'column' | 'row'
+  gap?: number
+}
 
 export function copyKeysOf(node: LayoutNode, out: string[] = []): string[] {
   if (node.copy !== undefined) out.push(node.copy)
@@ -78,7 +97,7 @@ export function contentProblems(c: Config, cp: Copy, n: Narration, layouts: Reco
     }
   }
   for (const [page, tree] of Object.entries(layouts)) {
-    for (const key of copyKeysOf(tree)) if (lookup(cp, key) === undefined) out.push(`layout: the tree of "${page}" names the copy key "${key}", which does not exist`)
+    for (const key of copyKeysOf(tree)) if (key.startsWith('copy:') && lookup(cp, key) === undefined) out.push(`layout: the tree of "${page}" names the copy key "${key}", which does not exist`)
   }
   return out
 }

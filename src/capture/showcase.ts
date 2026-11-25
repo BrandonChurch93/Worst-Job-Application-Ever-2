@@ -1,13 +1,15 @@
-// The frame interface: the one object the page puts on `window`, as kit/05-ARCHITECTURE.md types it.
-import * as THREE from 'three'
 import build from 'virtual:build-info'
-import { App, pageUnits, type StillSpec } from '../app'
+import { App, pageUnits, type CursorState, type StillSpec } from '../app'
 import { config, filmSeconds, stepHz, unitStart } from '../config'
 import { narration, timedLines } from '../copy'
 import { assetSet } from '../core/assets'
-import type { CursorState } from '../stage/stage'
+import { pages } from '../pages'
+import { TONES } from '../shell/blockout'
+import { plannedHeight, typeRegister, walk } from '../shell/layout'
+import { words } from '../shell/words'
+import type { TableState } from '../stage/types'
 
-export type { StillSpec }
+export type { StillSpec, CursorState }
 
 export interface Showcase {
   ready: Promise<void>
@@ -19,7 +21,7 @@ export interface Showcase {
   pictureStats(): { invalidValues: number }
   typeRegister(page: string): { key: string; text: string; states: string[]; made: 'copy' | 'config' | 'runtime' }[]
   stillState(spec: StillSpec): { layout: { id: string; kind: string; planned: number[]; drawn: number[]; plannedHeight: number | null; height: number; mechanism: boolean }[]; type: { key: string; text: string; box: number[]; px: number; contrast: number }[]; cursor: CursorState }
-  tableState(): { tiers: { id: string; standingParts: number; inserts: number; dropTargets: number; display: { box: number[]; charPx: number } }[]; openings: { id: string; tier: string; clearBalls: number }[]; rails: { id: string; from: string; to: string }[]; holds: { id: string; releases: boolean }[]; sealed: string[] }
+  tableState(): TableState
   film(): { frameCount: number; units: { id: string; first: number; last: number }[]; beats: { id: string; first: number; last: number }[]; lines: { beat: string; first: number; last: number }[] }
   filmState(frameIndex: number): { unit: string; beat: string; camera: number[]; cursor: CursorState; events: { name: string; x: number; y: number; hitsCursor: boolean }[]; standIns: string[] }
   renderFilmFrame(frameIndex: number, tier: string): Promise<void>
@@ -30,12 +32,7 @@ export interface Showcase {
   renderLoopFrame(frameIndex: number, tier: string): Promise<void>
 }
 
-const luminance = (c: THREE.Color): number => 0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b
-const contrast = (a: THREE.Color, b: THREE.Color): number => {
-  const la = luminance(a)
-  const lb = luminance(b)
-  return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05)
-}
+const ratio = (a: number, b: number): number => (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05)
 
 export function makeShowcase(app: App, ready: Promise<void>): Showcase {
   const fps = config.film.fps
@@ -53,12 +50,7 @@ export function makeShowcase(app: App, ready: Promise<void>): Showcase {
         counts[unit] = app.countsOf(unit)
         textureMb[unit] = 0
       }
-      const standIns: { name: string; unit: string }[] = []
-      for (const l of app.loadedPages()) {
-        standIns.push(...l.page.standIns())
-        textureMb[l.page.id] = l.page.textureBytes() / 1048576
-      }
-      return { fps, format: app.format.id, tier: app.tier, assets: app.assets, engineHash: build.engineHash, pageHashes: build.pageHashes, standIns, modules: { film: [], live: [] }, counts, textureMb, versions: { ...build.versions, target: app.engine.kind } }
+      return { fps, format: app.format.id, tier: app.tier, assets: app.assets, engineHash: build.engineHash, pageHashes: build.pageHashes, standIns: app.standIns(), modules: { film: [], live: [] }, counts, textureMb, versions: { ...build.versions, target: app.engine.kind } }
     },
     async setFormat(id) {
       await ready
@@ -79,22 +71,25 @@ export function makeShowcase(app: App, ready: Promise<void>): Showcase {
       return { invalidValues: app.engine.invalidValues() }
     },
     typeRegister(page) {
-      return app.page(page).page.type().map((r) => ({ key: r.key, text: r.text, states: r.states, made: r.made }))
+      const out: { key: string; text: string; states: string[]; made: 'copy' | 'config' | 'runtime' }[] = []
+      for (const id of pages[page] ? [page] : app.pagesOf(page)) for (const r of typeRegister(pages[id]!().layout)) out.push({ key: r.key, text: r.text, states: r.states, made: r.made })
+      return out
     },
     stillState(spec) {
-      const l = app.page(spec.page)
-      l.stage.driver = l.script
-      l.stage.seek(app.momentOf(spec))
-      const camera = app.cameraFor(spec.camera)
-      const type = l.page.type().map((r) => {
-        const ink = (r.mesh.material as THREE.MeshStandardMaterial).color
-        const ground = (r.mesh.userData.ground as THREE.Color | undefined) ?? app.materials.ceramic.color
-        return { key: r.key, text: r.text, box: [...r.box], px: r.px, contrast: contrast(ink, ground) }
+      const { frame, pose, page } = app.still(spec)
+      const drawn = new Map(frame.list.map((s) => [s.id, s]))
+      const layout: { id: string; kind: string; planned: number[]; drawn: number[]; plannedHeight: number | null; height: number; mechanism: boolean }[] = []
+      walk(page.layout, (n) => {
+        const s = drawn.get(n.id)
+        if (!s || s.kind === 'text') return
+        layout.push({ id: n.id, kind: n.kind, planned: [...n.box], drawn: [s.x, s.y, s.w, s.h], plannedHeight: plannedHeight(n.kind), height: s.z1 <= 0 ? s.z0 : s.z1, mechanism: s.mechanism === true })
       })
-      return { layout: l.page.layout(), type, cursor: app.cursorState(l, camera) }
+      const type = frame.list.filter((s) => s.kind === 'text').map((s) => ({ key: s.words!, text: words(s.words!, s.text), box: [s.x, s.y, s.w, s.h], px: s.type!.px, contrast: ratio(TONES[s.tone], app.groundOf(frame.list, s)) }))
+      return { layout, type, cursor: app.cursorState(frame.cursor, pose) }
     },
     tableState() {
-      return { tiers: [], openings: [], rails: [], holds: [], sealed: [] }
+      const table = app.pageOf('pinball').tableState?.()
+      return table ?? { tiers: [], openings: [], rails: [], holds: [], sealed: [] }
     },
     film() {
       const units = config.film.units.map((u) => ({ id: u.id, first: frameOf(unitStart(u.id)), last: frameOf(unitStart(u.id) + u.seconds) - 1 }))
@@ -104,14 +99,19 @@ export function makeShowcase(app: App, ready: Promise<void>): Showcase {
     },
     filmState(frameIndex) {
       const { unit, time } = app.filmMoment(frameIndex)
-      const l = app.page(unit)
-      l.stage.driver = l.script
-      l.stage.seek(time)
-      const camera = app.cameraFor('film')
-      const b = config.film.beats.find((x) => x.unit === unit && time >= x.from - 1e-9 && time < x.to - 1e-9) ?? config.film.beats.filter((x) => x.unit === unit).at(-1)!
+      const { frame, pose } = app.filmFrame(unit, time)
+      const stage = app.film(unit)
       const from = app.stepOf(time)
-      const events = l.stage.eventsBetween(from, from + stepHz / fps).map((e) => ({ name: e.name, x: e.x, y: e.y, hitsCursor: e.hitsCursor }))
-      return { unit, beat: b.id, camera: [...camera.position.toArray(), ...camera.quaternion.toArray(), camera.fov], cursor: app.cursorState(l, camera), events, standIns: l.page.standIns().map((s) => s.name) }
+      const to = from + stepHz / fps
+      if (stage.step < to) stage.advance(to - stage.step)
+      const b = config.film.beats.find((x) => x.unit === unit && time >= x.from - 1e-9 && time < x.to - 1e-9) ?? config.film.beats.filter((x) => x.unit === unit).at(-1)!
+      const events = stage.eventsBetween(from, to).map((e) => {
+        const p = app.eventPlace(pose, e.x, e.y)
+        return { name: e.name, x: p.x, y: p.y, hitsCursor: e.hitsCursor }
+      })
+      const parts = new Set<string>(['shell', 'cursor-body'])
+      for (const s of frame.list) parts.add(s.part)
+      return { unit, beat: b.id, camera: [...pose.eye, ...pose.target, pose.fov], cursor: app.cursorState(frame.cursor, pose), events, standIns: [...parts].sort() }
     },
     async renderFilmFrame(frameIndex, tier) {
       await ready

@@ -1,9 +1,11 @@
 import { App } from './app'
 import { makeShowcase, type Showcase } from './capture/showcase'
-import { config } from './config'
+import { stepHz } from './config'
 import { copy } from './copy'
 import { samples } from './core/sampler'
-import { MouseDriver } from './stage/stage'
+import { pages } from './pages'
+import { filmFlow, liveFlow, liveView, MouseDriver, ScriptDriver, Stage, wholeFilmFlow } from './stage/stage'
+import type { Driver } from './stage/types'
 import { wallSeconds } from './ui/clock'
 import type { TargetKind } from './core/accumulator'
 
@@ -43,17 +45,23 @@ async function start(): Promise<void> {
   play()
 }
 
-// The site running in real time. The wall clock paces it; the simulation still moves in fixed steps.
+function makeStage(mouse: MouseDriver): Stage {
+  if (mode === 'film') {
+    const unit = params.get('unit')
+    if (unit) return new Stage({ mode: 'film', flow: filmFlow(unit), pages, driver: new ScriptDriver(), film: { arrive: false, leave: false } })
+    return new Stage({ mode: 'film', flow: wholeFilmFlow(), pages, driver: new ScriptDriver(), film: { arrive: false, leave: false } })
+  }
+  const flow = liveFlow()
+  const step = Number(params.get('step') ?? 0)
+  const from = step >= 1 && step <= 5 ? flow.slice(step) : flow
+  const driver: Driver = mouse
+  return new Stage({ mode: 'live', flow: from, pages, driver })
+}
+
 function play(): void {
-  const unit = params.get('unit') ?? config.lookLockUnit
-  const l = app.page(unit)
   const mouse = new MouseDriver()
-  const scripted = mode !== 'live'
-  l.stage.driver = scripted ? l.script : mouse
-  l.stage.reset()
-  const camera = app.cameraFor('home')
+  const stage = makeStage(mouse)
   const restSamples = samples(64)
-  const stepHz = config.sim.stepHz
 
   const fit = () => {
     const ratio = Math.min(window.devicePixelRatio || 1, 2)
@@ -64,44 +72,60 @@ function play(): void {
     const pw = Math.min(1920, Math.round(w * ratio))
     app.engine.setSize(pw, Math.round((pw * 9) / 16))
     app.format = { id: 'live', width: app.engine.width, height: app.engine.height }
-    app.cameraFor('home')
   }
   fit()
   window.addEventListener('resize', fit)
   const toPage = (e: PointerEvent) => {
     const r = canvas.getBoundingClientRect()
-    mouse.pointer = { x: ((e.clientX - r.left) / r.width) * 1920, y: ((e.clientY - r.top) / r.height) * 1080, down: mouse.pointer.down }
+    mouse.pointer = { ...mouse.pointer, x: ((e.clientX - r.left) / r.width) * 1920, y: ((e.clientY - r.top) / r.height) * 1080 }
   }
   canvas.addEventListener('pointermove', toPage)
+  canvas.addEventListener('contextmenu', (e) => e.preventDefault())
   canvas.addEventListener('pointerdown', (e) => {
     toPage(e)
-    mouse.pointer = { ...mouse.pointer, down: true }
+    if (e.button === 2) mouse.pointer = { ...mouse.pointer, flipRight: true }
+    else mouse.pointer = { ...mouse.pointer, down: true, flipLeft: true }
   })
-  window.addEventListener('pointerup', () => {
-    mouse.pointer = { ...mouse.pointer, down: false }
+  window.addEventListener('pointerup', (e) => {
+    if (e.button === 2) mouse.pointer = { ...mouse.pointer, flipRight: false }
+    else mouse.pointer = { ...mouse.pointer, down: false, flipLeft: false }
   })
+  window.addEventListener('keydown', (e) => {
+    if (e.code === 'ShiftLeft') mouse.pointer = { ...mouse.pointer, flipLeft: true }
+    else if (e.code === 'ShiftRight') mouse.pointer = { ...mouse.pointer, flipRight: true }
+    else if (e.key.length === 1 || e.key === 'Backspace' || e.key === 'Enter' || e.key === 'Tab') mouse.pulse({ key: e.key })
+  })
+  window.addEventListener('keyup', (e) => {
+    if (e.code === 'ShiftLeft') mouse.pointer = { ...mouse.pointer, flipLeft: false }
+    else if (e.code === 'ShiftRight') mouse.pointer = { ...mouse.pointer, flipRight: false }
+  })
+  canvas.addEventListener('wheel', (e) => {
+    e.preventDefault()
+    mouse.pulse({ wheel: e.deltaY })
+  }, { passive: false })
 
   let last = wallSeconds()
   let owed = 0
   let still = 0
   let frame = 0
-  let before: number[] = []
+  let before = ''
   const tick = () => {
     const now = wallSeconds()
     owed += Math.min(0.1, now - last)
     last = now
     const steps = Math.floor(owed * stepHz)
     owed -= steps / stepHz
-    l.stage.advance(steps)
-    l.page.pose(Math.min(1, owed * stepHz))
-    const state = l.page.save()
-    let moved = state.length !== before.length
-    for (let i = 0; i < state.length && !moved; i++) moved = Math.abs(state[i]! - before[i]!) > 1e-3
+    stage.advance(steps)
+    const f = stage.frameAt(stage.time)
+    const state = stage.hash()
+    still = state !== before ? 0 : Math.min(still + 1, restSamples.length)
     before = state
-    still = moved ? 0 : Math.min(still + 1, restSamples.length)
     if (still < restSamples.length) {
       frame++
-      app.engine.frame(app.shot(l, camera), restSamples[still]!, still === 0, frame, app.diagnostic)
+      const pose = mode === 'film' ? app.poseFor('film', stage.page, f, stage.pageTime) : liveView(f)
+      app.put(f, stage.page, pose)
+      app.setCamera(pose)
+      app.engine.frame(app.shot(), restSamples[still]!, still === 0, frame, app.diagnostic)
     }
     requestAnimationFrame(tick)
   }

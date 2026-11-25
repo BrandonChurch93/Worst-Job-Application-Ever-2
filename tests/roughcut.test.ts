@@ -1,7 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-// @ts-expect-error the harness is plain JavaScript
 import { brightnessAt, clampView, faults, segmentAt, timeline, viewAt } from '../tools/lib/roughcut.mjs'
 
 const root = path.resolve(__dirname, '..')

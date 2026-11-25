@@ -1,44 +1,16 @@
 import * as THREE from 'three'
-import { lookup, copy } from '../copy'
-import { config } from '../config'
+import { font, measure, registerFont, type BakedFont } from './metrics'
+import { madeOf, words, type Made } from './words'
 
-export interface BakedFont {
-  family: string
-  style: string
-  weight: number
-  unitsPerEm: number
-  ascender: number
-  descender: number
-  lineGap: number
-  capHeight: number
-  xHeight: number
-  glyphs: Record<string, { a: number; p: number[] }>
-  kern: Record<string, number[]>
-}
-
-const fonts = new Map<string, BakedFont>()
-const kernMaps = new Map<string, Map<number, number>>()
+export { font, measure, words }
+export type { BakedFont, Made }
 
 export async function loadFont(name: string): Promise<BakedFont> {
-  const hit = fonts.get(name)
-  if (hit) return hit
   const res = await fetch(`./fonts/${name}.json`)
   if (!res.ok) throw new Error(`The font file "${name}.json" did not load`)
-  const font = (await res.json()) as BakedFont
-  fonts.set(name, font)
-  const map = new Map<number, number>()
-  for (const [left, list] of Object.entries(font.kern)) {
-    const l = Number(left)
-    for (let i = 0; i < list.length; i += 2) map.set(l * 65536 + list[i]!, list[i + 1]!)
-  }
-  kernMaps.set(name, map)
-  return font
-}
-
-export function font(name: string): BakedFont {
-  const f = fonts.get(name)
-  if (!f) throw new Error(`The font "${name}" is not loaded`)
-  return f
+  const data = (await res.json()) as BakedFont
+  registerFont(name, data)
+  return data
 }
 
 const glyphCache = new Map<string, { position: Float32Array; index: Uint32Array }>()
@@ -88,27 +60,6 @@ function glyphGeometry(name: string, code: number, segments: number): { position
   return out
 }
 
-export interface Measured { width: number; advances: number[] }
-
-export function measure(name: string, text: string, px: number, tracking = 0): Measured {
-  const f = font(name)
-  const kern = kernMaps.get(name)!
-  const scale = px / f.unitsPerEm
-  const advances: number[] = []
-  let x = 0
-  const codes = Array.from(text, (ch) => ch.codePointAt(0)!)
-  for (let i = 0; i < codes.length; i++) {
-    const g = f.glyphs[String(codes[i])]
-    if (!g) throw new Error(`The font "${name}" has no glyph for "${String.fromCodePoint(codes[i]!)}"`)
-    advances.push(x)
-    x += g.a * scale + tracking
-    if (i + 1 < codes.length) x += (kern.get(codes[i]! * 65536 + codes[i + 1]!) ?? 0) * scale
-  }
-  return { width: codes.length ? x - tracking : 0, advances }
-}
-
-export type Made = 'copy' | 'config' | 'runtime'
-
 export interface TypeRun {
   // The copy key or config key the words come from, written as the kit writes it.
   key: string
@@ -127,6 +78,7 @@ export interface RunSpec {
   made?: Made
   // Only for runs made at run time: typed input, a counter, the score display.
   text?: string
+  line?: string
   font: string
   px: number
   // Page pixels: where the baseline starts, or its centre or end with align.
@@ -138,26 +90,13 @@ export interface RunSpec {
   states?: string[]
 }
 
-// The words of a key: `copy:` keys come from content/copy.json, every other key from the config.
-export function words(key: string): string {
-  if (key.startsWith('copy:')) {
-    const v = lookup(copy, key)
-    if (v === undefined) throw new Error(`No copy with the key "${key}"`)
-    return v
-  }
-  let v: unknown = config
-  for (const part of key.split('.')) v = v !== null && typeof v === 'object' ? (v as Record<string, unknown>)[part] : undefined
-  if (typeof v !== 'string') throw new Error(`No words in the config under "${key}"`)
-  return v
-}
-
 export class TypeRegister {
   readonly runs: TypeRun[] = []
 
   // Sets one run of type as geometry, lying on the surface. Page pixels in, world units out.
   set(spec: RunSpec, material: THREE.Material): TypeRun {
-    const made: Made = spec.made ?? (spec.key.startsWith('copy:') ? 'copy' : 'config')
-    const text = made === 'runtime' ? (spec.text ?? '') : words(spec.key)
+    const made: Made = spec.made ?? madeOf(spec.key)
+    const text = spec.line ?? words(spec.key, spec.text)
     const f = font(spec.font)
     const scale = spec.px / f.unitsPerEm
     const m = measure(spec.font, text, spec.px, spec.tracking ?? 0)

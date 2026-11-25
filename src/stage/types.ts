@@ -1,0 +1,150 @@
+import type { LayoutNode } from '../copy'
+import type { CursorBody } from '../cursor/body'
+
+export type Mode = 'live' | 'film'
+
+export interface Pointer {
+  x: number
+  y: number
+  down: boolean
+  flipLeft?: boolean
+  flipRight?: boolean
+  key?: string
+  wheel?: number
+  scroll?: number
+  skip?: boolean
+}
+
+export interface Hint extends Pointer {
+  dodge?: { x: number; y: number }
+}
+
+export interface Driver {
+  readonly name: 'mouse' | 'script' | 'bot' | 'loop'
+  input(view: DriverView): Pointer
+}
+
+export interface DriverView {
+  step: number
+  time: number
+  pageStep: number
+  pageTime: number
+  page: PageLogic
+  scroll: number
+  cursor: CursorBody
+  turning: boolean
+  skipOffered: boolean
+}
+
+export type Tone = 'page' | 'pocket' | 'raised' | 'metal' | 'accent' | 'danger' | 'paper' | 'dark' | 'glass' | 'light' | 'ink' | 'inkLight'
+export type ShapeKind = 'box' | 'disc' | 'capsule' | 'ball' | 'text'
+
+export interface TypeSpec {
+  font: string
+  px: number
+  align?: 'left' | 'centre' | 'right'
+  wrap?: number
+  lead?: number
+}
+
+export interface Shape {
+  id: string
+  part: string
+  kind: ShapeKind
+  x: number
+  y: number
+  w: number
+  h: number
+  z0: number
+  z1: number
+  tone: Tone
+  r?: number
+  rot?: number
+  turnX?: number
+  turnY?: number
+  words?: string
+  text?: string
+  type?: TypeSpec
+  mechanism?: boolean
+  fixed?: boolean
+}
+
+export type DrawList = Shape[]
+
+export interface CameraPose {
+  eye: [number, number, number]
+  target: [number, number, number]
+  up?: [number, number, number]
+  fov: number
+  focus?: number
+  aperture?: number
+}
+
+export interface Applicant { firstName: string; lastName: string; email: string }
+
+export interface PageContext {
+  mode: Mode
+  variant: string
+  applicant: Applicant | null
+  seed: number
+}
+
+export type Emit = (name: string, x: number, y: number, hitsCursor?: boolean) => void
+
+export interface StepIo {
+  step: number
+  time: number
+  dt: number
+  pointer: Pointer
+  pressed: boolean
+  released: boolean
+  cursor: CursorBody
+  emit: Emit
+  mode: Mode
+}
+
+export interface GagInfo {
+  id: string
+  event: string | null
+}
+
+export interface TableState {
+  tiers: { id: string; standingParts: number; inserts: number; dropTargets: number; display: { box: number[]; charPx: number } }[]
+  openings: { id: string; tier: string; clearBalls: number }[]
+  rails: { id: string; from: string; to: string }[]
+  holds: { id: string; releases: boolean }[]
+  sealed: string[]
+}
+
+export interface PageLogic {
+  readonly id: string
+  readonly unit: string
+  readonly width: number
+  readonly height: number
+  readonly layout: LayoutNode
+  readonly gags: GagInfo[]
+  readonly start: { x: number; y: number }
+  readonly control: 'pointer' | 'flippers'
+  reset(ctx: PageContext): void
+  step(io: StepIo): void
+  save(): unknown
+  load(state: unknown): void
+  draw(out: DrawList): void
+  scroll(): number
+  view(): CameraPose | null
+  camera(name: string, time: number): CameraPose | null
+  script(time: number): Pointer
+  hint(): Hint | null
+  skip(): void
+  done(): boolean
+  gag(): string | null
+  ignoring(): boolean
+  states(): string[]
+  tableState?(): TableState
+}
+
+export type PageMaker = () => PageLogic
+
+export interface StageEvent { name: string; step: number; page: string; x: number; y: number; hitsCursor: boolean }
+
+export interface FlowEntry { page: string; variant?: string; opens?: boolean; closes?: number }

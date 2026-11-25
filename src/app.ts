@@ -1,54 +1,77 @@
 import * as THREE from 'three'
 import build from 'virtual:build-info'
+import register from '../parts/PARTS.json'
 import { beat as beatOf, config, configProblems, fail, formatById, stepHz, tierSamples, unitStart } from './config'
 import { contentProblems, copy, narration, type LayoutNode } from './copy'
 import { eventCues } from './audio/cues'
 import { assetSet, type AssetSet } from './core/assets'
 import { Engine, LightRig, type Shot } from './core/renderer'
 import type { TargetKind } from './core/accumulator'
+import type { CursorPose } from './cursor/body'
 import { applyView, views } from './diagnostics/views'
+import { pages, unitPages } from './pages'
 import { look } from './post/look'
-import { makeMaterials, studioEnvironment, type Materials } from './shell/materials'
+import { BlockoutView, TONES } from './shell/blockout'
+import { layoutProblems } from './shell/layout'
+import { studioEnvironment } from './shell/materials'
+import { FONTS } from './shell/metrics'
 import { loadFont } from './shell/type'
-import { makeSpike } from './spike/spike'
-import { ScriptDriver, Stage, type CursorState, type Driver, type PageRuntime } from './stage/stage'
-
-export interface Loaded { page: PageRuntime; stage: Stage; rig: LightRig; script: Driver }
+import { homePose, project, toWorld } from './stage/camera'
+import { filmFlow, filmOptions, ScriptDriver, Stage, StillDriver, type Frame } from './stage/stage'
+import type { CameraPose, PageLogic, Shape } from './stage/types'
 
 export interface StillSpec { page: string; beat?: string; at?: number; scroll?: number; camera: string; tier: string; sheet?: string; interface?: boolean; touchOnly?: boolean; live?: string }
 
-const FONTS = ['inter-400', 'inter-500', 'inter-600', 'inter-display-600', 'playfair-700', 'playfair-900']
-const layouts: Record<string, LayoutNode> = {}
+export interface CursorState { x: number; y: number; heightPx: number; screenHeightPx: number; worldScale: number; acting: string; damage: string[]; arms: boolean; onPage: boolean; inBall: boolean; ballScreenPx: number }
 
 export const pageUnits = config.film.units.map((u) => u.id)
+export const unitOfPart = (name: string): string => register.parts.find((p) => p.name === name)?.unit ?? 'site'
+
+const hd = formatById('hd')
 
 export class App {
   engine!: Engine
-  materials!: Materials
   environment!: THREE.Texture
   format = formatById('hd')
   tier = 'draft'
   assets: AssetSet = 'web'
   diagnostic = 'beauty'
-  private loaded = new Map<string, Loaded>()
-  private counts = new Map<string, { triangles: number; drawCalls: number }>()
+  readonly view = new BlockoutView()
+  readonly rig = new LightRig()
   readonly camera = new THREE.PerspectiveCamera()
+  private films = new Map<string, Stage>()
+  private rests = new Map<string, Stage>()
+  private counts = new Map<string, { triangles: number; drawCalls: number }>()
+  private seen = new Set<string>()
 
-  // Everything that must hold before a picture is drawn. Stops at once, in plain words, when it does not.
+  static layouts(): Record<string, LayoutNode> {
+    const out: Record<string, LayoutNode> = {}
+    for (const [id, make] of Object.entries(pages)) out[id] = make().layout
+    return out
+  }
+
   static check(): void {
+    const layouts = App.layouts()
     const problems = [...configProblems(config, { approved: build.approved, eventCues }), ...contentProblems(config, copy, narration, layouts)]
+    for (const [id, make] of Object.entries(pages)) {
+      const p = make()
+      if (p.id !== id) problems.push(`pages: the page "${id}" calls itself "${p.id}"`)
+      problems.push(...layoutProblems(p.layout, { width: p.width, height: p.height }))
+    }
     if (problems.length) fail(problems)
   }
 
   async start(canvas: HTMLCanvasElement, o: { format: string; assets: string; capture: boolean; forceKind?: TargetKind }): Promise<void> {
-    App.check()
     this.format = formatById(o.format)
     this.assets = assetSet(o.assets)
+    await Promise.all(FONTS.map((name) => loadFont(name)))
+    App.check()
     this.engine = new Engine(canvas, this.format.width, this.format.height, { preserve: o.capture, forceKind: o.forceKind })
     this.engine.beforeSample = (shot, view) => applyView(view, shot.scene)
-    await Promise.all(FONTS.map((name) => loadFont(name)))
-    this.materials = makeMaterials(config.seed)
     this.environment = studioEnvironment(this.engine.renderer)
+    this.view.scene.environment = this.environment
+    this.view.scene.environmentIntensity = look.envIntensity
+    this.rig.addTo(this.view.scene)
   }
 
   setFormat(id: string): void {
@@ -61,64 +84,84 @@ export class App {
     this.diagnostic = view
   }
 
-  // The page of a unit, built on first use. Only one page is kept on the graphics card at a time.
-  page(unit: string): Loaded {
+  private unit(unit: string): void {
     if (!pageUnits.includes(unit)) throw new Error(`No page called "${unit}"`)
-    const hit = this.loaded.get(unit)
-    if (hit) return hit
-    for (const [id, other] of this.loaded) {
-      other.page.scene.traverse((o) => {
-        const m = o as THREE.Mesh
-        if (m.isMesh) m.geometry.dispose()
-      })
-      this.loaded.delete(id)
+  }
+
+  film(unit: string): Stage {
+    this.unit(unit)
+    let s = this.films.get(unit)
+    if (!s) {
+      s = new Stage({ mode: 'film', flow: filmFlow(unit), pages, driver: new ScriptDriver(), film: filmOptions(unit) })
+      this.films.set(unit, s)
     }
-    const page = makeSpike(unit, this.materials)
-    page.scene.environment = this.environment
-    page.scene.environmentIntensity = look.envIntensity
-    const rig = new LightRig()
-    rig.addTo(page.scene)
-    rig.setBounds(page.bounds)
-    const script = new ScriptDriver(page)
-    const made = { page, stage: new Stage(page, script), rig, script }
-    this.loaded.set(unit, made)
-    return made
+    return s
   }
 
-  loadedPages(): Loaded[] {
-    return [...this.loaded.values()]
+  rest(unit: string): Stage {
+    this.unit(unit)
+    let s = this.rests.get(unit)
+    if (!s) {
+      const flow = [filmFlow(unit)[0]!]
+      const start = pages[flow[0]!.page]!().start
+      s = new Stage({ mode: 'live', flow, pages, driver: new StillDriver(start) })
+      this.rests.set(unit, s)
+    }
+    return s
   }
 
-  // The camera of a name, placed for the format in use.
-  cameraFor(name: string): THREE.PerspectiveCamera {
+  pageOf(unit: string): PageLogic {
+    return this.rest(unit).page
+  }
+
+  momentOf(spec: { beat?: string; at?: number }): number {
+    if (!spec.beat) return 0
+    const b = beatOf(spec.beat)
+    return Math.min(b.to - 1 / config.film.fps, b.from + (b.to - b.from) * (spec.at ?? 0))
+  }
+
+  // The frame a still shows, and the camera it is seen from.
+  still(spec: StillSpec): { frame: Frame; pose: CameraPose; page: PageLogic } {
+    const stage = spec.beat ? this.film(spec.page) : this.rest(spec.page)
+    const time = this.momentOf(spec)
+    const frame = stage.frameAt(time)
+    const page = stage.page
+    return { frame, page, pose: this.poseFor(spec.camera, page, frame, time, spec.scroll) }
+  }
+
+  poseFor(name: string, page: PageLogic, frame: Frame, time: number, scroll?: number): CameraPose {
     const cameras = config.cameras as Record<string, { fovDeg?: number; like?: string }>
-    let entry = cameras[name === 'film' ? 'home' : name]
-    if (!entry) throw new Error(`No camera called "${name}"`)
-    if (entry.like) entry = cameras[entry.like]!
-    const fov = entry.fovDeg ?? config.cameras.home.fovDeg
-    const distance = 540 / Math.tan(THREE.MathUtils.degToRad(fov / 2))
+    if (name !== 'film' && !cameras[name]) throw new Error(`No camera called "${name}"`)
+    if (scroll !== undefined && (name === 'home' || name === 'film')) return homePose(scroll * Math.max(0, page.height - 1080))
+    if (name === 'home') return frame.view ?? homePose(frame.scroll)
+    return page.camera(name, time) ?? frame.view ?? homePose(frame.scroll)
+  }
+
+  setCamera(pose: CameraPose, width = this.format.width, height = this.format.height): THREE.PerspectiveCamera {
     const c = this.camera
-    c.fov = fov
-    c.aspect = this.format.width / this.format.height
-    c.near = distance - 600
-    c.far = distance + 400
-    c.position.set(0, 0, distance)
-    c.up.set(0, 1, 0)
-    c.lookAt(0, 0, 0)
+    const d = Math.hypot(pose.eye[0] - pose.target[0], pose.eye[1] - pose.target[1], pose.eye[2] - pose.target[2])
+    c.fov = pose.fov
+    c.aspect = width / height
+    c.near = Math.max(4, d - 1500)
+    c.far = d + 3000
+    c.position.set(...pose.eye)
+    c.up.set(...(pose.up ?? [0, 1, 0]))
+    c.lookAt(...pose.target)
     c.updateProjectionMatrix()
     c.updateMatrixWorld()
     return c
   }
 
-  // The moment of a still inside its page, in seconds. A still with no beat is the page at rest.
-  momentOf(spec: { beat?: string; at?: number }): number {
-    if (!spec.beat) return 0
-    const b = beatOf(spec.beat)
-    return b.from + (b.to - b.from) * (spec.at ?? 0)
+  put(frame: Frame, page: PageLogic, pose: CameraPose): void {
+    this.view.apply(frame, { width: page.width, height: page.height })
+    const cy = pose.target[1]
+    this.view.focus = -cy
+    this.rig.setBounds(this.view.bounds())
+    for (const s of this.view.standIns()) this.seen.add(s)
   }
 
-  shot(l: Loaded, camera: THREE.PerspectiveCamera, pose?: (shutter: number) => void): Shot {
-    return { scene: l.page.scene, camera, rig: l.rig, pose }
+  shot(pose?: (shutter: number) => void): Shot {
+    return { scene: this.view.scene, camera: this.camera, rig: this.rig, pose }
   }
 
   private note(unit: string): void {
@@ -126,16 +169,14 @@ export class App {
   }
 
   async renderStill(spec: StillSpec): Promise<void> {
-    const l = this.page(spec.page)
-    l.stage.driver = l.script
-    l.stage.seek(this.momentOf(spec))
-    const camera = this.cameraFor(spec.camera)
+    const { frame, pose, page } = this.still(spec)
+    this.put(frame, page, pose)
+    this.setCamera(pose)
     this.tier = spec.tier
-    await this.engine.picture(this.shot(l, camera), { samples: spec.live ? 1 : tierSamples(spec.tier), frame: 0, diagnostic: this.diagnostic })
+    await this.engine.picture(this.shot(), { samples: spec.live ? 1 : tierSamples(spec.tier), frame: 0, diagnostic: this.diagnostic })
     this.note(spec.page)
   }
 
-  // Which page a film frame belongs to, and the moment inside it.
   filmMoment(frameIndex: number): { unit: string; time: number } {
     const t = frameIndex / config.film.fps
     let start = 0
@@ -147,41 +188,68 @@ export class App {
     return { unit: last.id, time: last.seconds }
   }
 
+  filmFrame(unit: string, time: number): { frame: Frame; pose: CameraPose; page: PageLogic } {
+    const stage = this.film(unit)
+    const frame = stage.frameAt(time)
+    const page = stage.page
+    return { frame, page, pose: this.poseFor('film', page, frame, stage.pageTimeAt(time)) }
+  }
+
   async renderFilmFrame(frameIndex: number, tier: string): Promise<void> {
     const { unit, time } = this.filmMoment(frameIndex)
-    const l = this.page(unit)
-    l.stage.driver = l.script
     const open = config.film.shutterDegrees / 360 / config.film.fps
-    const camera = this.cameraFor('film')
     this.tier = tier
-    await this.engine.picture(this.shot(l, camera, (s) => l.stage.seek(time + s * open)), { samples: tierSamples(tier), frame: frameIndex + 1, diagnostic: this.diagnostic })
+    const pose = (s: number) => {
+      const f = this.filmFrame(unit, time + s * open)
+      this.put(f.frame, f.page, f.pose)
+      this.setCamera(f.pose)
+    }
+    pose(0)
+    await this.engine.picture(this.shot(pose), { samples: tierSamples(tier), frame: frameIndex + 1, diagnostic: this.diagnostic })
     this.note(unit)
   }
 
-  cursorState(l: Loaded, camera: THREE.PerspectiveCamera): CursorState {
-    const c = l.page.cursor()
-    const hd = formatById('hd')
-    const v = new THREE.Vector3(c.x - 960, 540 - c.y, c.z).project(camera)
+  cursorState(c: CursorPose, pose: CameraPose): CursorState {
+    const p = project(pose, toWorld(c.x, c.y, c.z), hd.width, hd.height)
     const heightPx = config.cursor.heightPxAt1080 * c.scale
-    const distance = camera.position.z - c.z
-    const pxPerUnit = hd.height / 2 / (Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * distance)
     return {
-      x: (v.x * 0.5 + 0.5) * hd.width,
-      y: (0.5 - v.y * 0.5) * hd.height,
-      heightPx,
-      screenHeightPx: heightPx * pxPerUnit,
-      worldScale: c.scale,
-      acting: c.acting,
-      damage: c.damage,
-      arms: c.arms,
-      onPage: c.onPage,
-      inBall: c.inBall,
-      ballScreenPx: 0
+      x: p.x, y: p.y, heightPx, screenHeightPx: heightPx * p.pxPerUnit, worldScale: c.scale, acting: c.acting, damage: [...c.damage], arms: c.arms, onPage: c.onPage, inBall: c.inBall,
+      ballScreenPx: c.inBall ? config.table.ballPx * p.pxPerUnit : 0
     }
+  }
+
+  eventPlace(pose: CameraPose, x: number, y: number): { x: number; y: number } {
+    const p = project(pose, toWorld(x, y, 0), hd.width, hd.height)
+    return { x: p.x, y: p.y }
+  }
+
+  groundOf(list: Shape[], s: Shape): number {
+    const cx = s.x + s.w / 2
+    const cy = s.y + s.h / 2
+    let best = -Infinity
+    let tone = TONES.page
+    for (const o of list) {
+      if (o.kind === 'text' || o === s) continue
+      if (cx < o.x || cx > o.x + o.w || cy < o.y || cy > o.y + o.h) continue
+      const top = o.z1 <= 0 ? o.z0 : o.z1
+      if (top > s.z1 + 0.5 || top < best) continue
+      best = top
+      tone = TONES[o.z1 <= 0 && o.tone !== 'dark' ? 'pocket' : o.tone]
+    }
+    return tone
   }
 
   countsOf(unit: string): { triangles: number; drawCalls: number } {
     return this.counts.get(unit) ?? { triangles: 0, drawCalls: 0 }
+  }
+
+  standIns(): { name: string; unit: string }[] {
+    return [...this.seen].sort().map((name) => ({ name, unit: unitOfPart(name) }))
+  }
+
+  pagesOf(unit: string): string[] {
+    this.unit(unit)
+    return unitPages[unit]!
   }
 
   stepOf(time: number): number {

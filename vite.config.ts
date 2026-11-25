@@ -13,5 +13,5 @@ export default defineConfig({
   css: { modules: { localsConvention: 'camelCaseOnly' } },
   build: { outDir: 'dist', assetsDir: 'bundle', emptyOutDir: true, target: 'es2022', assetsInlineLimit: 0, sourcemap: false, chunkSizeWarningLimit: 6000 },
   server: { port: 5173, strictPort: false },
-  test: { include: ['tests/**/*.test.ts'], environment: 'node', testTimeout: 20000 }
+  test: { include: ['tests/**/*.test.ts'], environment: 'node', testTimeout: 20000, setupFiles: ['tests/setup.ts'] }
 })
