@@ -331,6 +331,256 @@
       "answer": "HTTP 200, 1.0 s",
       "cost": 25,
       "how": "reported by the response"
+    },
+    {
+      "n": 33,
+      "time": "2026-11-25T18:13:01Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "room-tone take 1",
+      "asked": "20 s, a loop",
+      "answer": "HTTP 200, 4.7 s",
+      "cost": 220,
+      "how": "reported by the response"
+    },
+    {
+      "n": 34,
+      "time": "2026-11-25T18:13:07Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "step.1 take 1, variant 1 of 4",
+      "asked": "0.5 s for a cue of 0.15 s",
+      "answer": "HTTP 200, 1.9 s",
+      "cost": 6,
+      "how": "reported by the response"
+    },
+    {
+      "n": 35,
+      "time": "2026-11-25T18:13:09Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "step.2 take 1, variant 2 of 4",
+      "asked": "0.5 s for a cue of 0.15 s",
+      "answer": "HTTP 200, 1.6 s",
+      "cost": 6,
+      "how": "reported by the response"
+    },
+    {
+      "n": 36,
+      "time": "2026-11-25T18:13:11Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "step.3 take 1, variant 3 of 4",
+      "asked": "0.5 s for a cue of 0.15 s",
+      "answer": "HTTP 200, 1.7 s",
+      "cost": 6,
+      "how": "reported by the response"
+    },
+    {
+      "n": 37,
+      "time": "2026-11-25T18:13:13Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "step.4 take 1, variant 4 of 4",
+      "asked": "0.5 s for a cue of 0.15 s",
+      "answer": "HTTP 200, 1.5 s",
+      "cost": 6,
+      "how": "reported by the response"
+    },
+    {
+      "n": 38,
+      "time": "2026-11-25T18:13:14Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "button-press take 1",
+      "asked": "0.5 s for a cue of 0.4 s",
+      "answer": "HTTP 200, 2.1 s",
+      "cost": 6,
+      "how": "reported by the response"
+    },
+    {
+      "n": 39,
+      "time": "2026-11-25T18:13:17Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "page-turn take 1",
+      "asked": "1.2 s",
+      "answer": "HTTP 200, 1.9 s",
+      "cost": 13,
+      "how": "reported by the response"
+    },
+    {
+      "n": 40,
+      "time": "2026-11-25T18:13:19Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "keyboard-rise take 1",
+      "asked": "1 s",
+      "answer": "HTTP 200, 2.5 s",
+      "cost": 11,
+      "how": "reported by the response"
+    },
+    {
+      "n": 41,
+      "time": "2026-11-25T18:13:22Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "key-press.1 take 1, variant 1 of 6",
+      "asked": "0.5 s for a cue of 0.15 s",
+      "answer": "HTTP 200, 2.3 s",
+      "cost": 6,
+      "how": "reported by the response"
+    },
+    {
+      "n": 42,
+      "time": "2026-11-25T18:13:24Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "key-press.2 take 1, variant 2 of 6",
+      "asked": "0.5 s for a cue of 0.15 s",
+      "answer": "HTTP 200, 1.7 s",
+      "cost": 6,
+      "how": "reported by the response"
+    },
+    {
+      "n": 43,
+      "time": "2026-11-25T18:13:26Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "key-press.3 take 1, variant 3 of 6",
+      "asked": "0.5 s for a cue of 0.15 s",
+      "answer": "HTTP 200, 2.7 s",
+      "cost": 6,
+      "how": "reported by the response"
+    },
+    {
+      "n": 44,
+      "time": "2026-11-25T18:13:29Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "key-press.4 take 1, variant 4 of 6",
+      "asked": "0.5 s for a cue of 0.15 s",
+      "answer": "HTTP 200, 1.7 s",
+      "cost": 6,
+      "how": "reported by the response"
+    },
+    {
+      "n": 45,
+      "time": "2026-11-25T18:13:31Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "key-press.5 take 1, variant 5 of 6",
+      "asked": "0.5 s for a cue of 0.15 s",
+      "answer": "HTTP 200, 2.2 s",
+      "cost": 6,
+      "how": "reported by the response"
+    },
+    {
+      "n": 46,
+      "time": "2026-11-25T18:13:34Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "key-press.6 take 1, variant 6 of 6",
+      "asked": "0.5 s for a cue of 0.15 s",
+      "answer": "HTTP 200, 1.5 s",
+      "cost": 6,
+      "how": "reported by the response"
+    },
+    {
+      "n": 47,
+      "time": "2026-11-25T18:13:35Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "turret-rise take 1",
+      "asked": "0.6 s",
+      "answer": "HTTP 200, 2.2 s",
+      "cost": 7,
+      "how": "reported by the response"
+    },
+    {
+      "n": 48,
+      "time": "2026-11-25T18:13:38Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "bolt-fire.1 take 1, variant 1 of 3",
+      "asked": "0.5 s for a cue of 0.4 s",
+      "answer": "HTTP 200, 2.6 s",
+      "cost": 6,
+      "how": "reported by the response"
+    },
+    {
+      "n": 49,
+      "time": "2026-11-25T18:13:41Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "bolt-fire.2 take 1, variant 2 of 3",
+      "asked": "0.5 s for a cue of 0.4 s",
+      "answer": "HTTP 200, 2.0 s",
+      "cost": 6,
+      "how": "reported by the response"
+    },
+    {
+      "n": 50,
+      "time": "2026-11-25T18:13:43Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "bolt-fire.3 take 1, variant 3 of 3",
+      "asked": "0.5 s for a cue of 0.4 s",
+      "answer": "HTTP 200, 1.6 s",
+      "cost": 6,
+      "how": "reported by the response"
+    },
+    {
+      "n": 51,
+      "time": "2026-11-25T18:13:45Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "bolt-hit.1 take 1, variant 1 of 3",
+      "asked": "0.5 s for a cue of 0.4 s",
+      "answer": "HTTP 200, 2.1 s",
+      "cost": 6,
+      "how": "reported by the response"
+    },
+    {
+      "n": 52,
+      "time": "2026-11-25T18:13:47Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "bolt-hit.2 take 1, variant 2 of 3",
+      "asked": "0.5 s for a cue of 0.4 s",
+      "answer": "HTTP 200, 1.5 s",
+      "cost": 6,
+      "how": "reported by the response"
+    },
+    {
+      "n": 53,
+      "time": "2026-11-25T18:13:49Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "bolt-hit.3 take 1, variant 3 of 3",
+      "asked": "0.5 s for a cue of 0.4 s",
+      "answer": "HTTP 200, 1.5 s",
+      "cost": 6,
+      "how": "reported by the response"
+    },
+    {
+      "n": 54,
+      "time": "2026-11-25T18:13:51Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "sizzle take 1",
+      "asked": "1.2 s",
+      "answer": "HTTP 200, 2.0 s",
+      "cost": 13,
+      "how": "reported by the response"
+    },
+    {
+      "n": 55,
+      "time": "2026-11-25T18:13:53Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "keys-shuffle take 1",
+      "asked": "0.7 s",
+      "answer": "HTTP 200, 1.9 s",
+      "cost": 8,
+      "how": "reported by the response"
+    },
+    {
+      "n": 56,
+      "time": "2026-11-25T18:13:55Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "slab-drop.1 take 1, variant 1 of 3",
+      "asked": "0.8 s",
+      "answer": "HTTP 200, 2.3 s",
+      "cost": 9,
+      "how": "reported by the response"
+    },
+    {
+      "n": 57,
+      "time": "2026-11-25T18:13:58Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "slab-drop.2 take 1, variant 2 of 3",
+      "asked": "0.8 s",
+      "answer": "HTTP 200, 2.1 s",
+      "cost": 9,
+      "how": "reported by the response"
     }
   ]
 }

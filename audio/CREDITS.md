@@ -4,7 +4,7 @@ This build may spend at most 10000 ElevenLabs credits in all, on every call of e
 
 The count is of this build's own calls, never of what the account has left: the account is shared with other builds. Every call goes through `npm run credits`, which writes its row here before it returns and makes no call that would pass the limit. A sound effect is never asked for without its length. `kit/addenda/001-sound-budget-and-narrator.md` sets these rules. This file is written by the tool from `audio/CREDITS.json`.
 
-Running total: 723 of 10000. Calls: 32.
+Running total: 1115 of 10000. Calls: 57.
 
 ## Rates
 
@@ -47,3 +47,28 @@ Running total: 723 of 10000. Calls: 32.
 | 30 | 2026-11-25T18:05:57Z | POST /v1/text-to-speech | line.boss.lastStand.0 take 1, breaks of 1.0 s | 49 characters, stability 0.75, speed 0.7 | HTTP 200, 0.8 s | 17 | reported by the response | 681 |
 | 31 | 2026-11-25T18:05:59Z | POST /v1/text-to-speech | line.decision.letter.0 take 1, breaks of 1.1 s | 50 characters, stability 0.75, speed 0.7 | HTTP 200, 1.0 s | 17 | reported by the response | 698 |
 | 32 | 2026-11-25T18:06:00Z | POST /v1/text-to-speech | line.decision.metrics.0 take 1, breaks of 1.9 s | 67 characters, stability 0.75, speed 0.7 | HTTP 200, 1.0 s | 25 | reported by the response | 723 |
+| 33 | 2026-11-25T18:13:01Z | POST /v1/sound-generation | room-tone take 1 | 20 s, a loop | HTTP 200, 4.7 s | 220 | reported by the response | 943 |
+| 34 | 2026-11-25T18:13:07Z | POST /v1/sound-generation | step.1 take 1, variant 1 of 4 | 0.5 s for a cue of 0.15 s | HTTP 200, 1.9 s | 6 | reported by the response | 949 |
+| 35 | 2026-11-25T18:13:09Z | POST /v1/sound-generation | step.2 take 1, variant 2 of 4 | 0.5 s for a cue of 0.15 s | HTTP 200, 1.6 s | 6 | reported by the response | 955 |
+| 36 | 2026-11-25T18:13:11Z | POST /v1/sound-generation | step.3 take 1, variant 3 of 4 | 0.5 s for a cue of 0.15 s | HTTP 200, 1.7 s | 6 | reported by the response | 961 |
+| 37 | 2026-11-25T18:13:13Z | POST /v1/sound-generation | step.4 take 1, variant 4 of 4 | 0.5 s for a cue of 0.15 s | HTTP 200, 1.5 s | 6 | reported by the response | 967 |
+| 38 | 2026-11-25T18:13:14Z | POST /v1/sound-generation | button-press take 1 | 0.5 s for a cue of 0.4 s | HTTP 200, 2.1 s | 6 | reported by the response | 973 |
+| 39 | 2026-11-25T18:13:17Z | POST /v1/sound-generation | page-turn take 1 | 1.2 s | HTTP 200, 1.9 s | 13 | reported by the response | 986 |
+| 40 | 2026-11-25T18:13:19Z | POST /v1/sound-generation | keyboard-rise take 1 | 1 s | HTTP 200, 2.5 s | 11 | reported by the response | 997 |
+| 41 | 2026-11-25T18:13:22Z | POST /v1/sound-generation | key-press.1 take 1, variant 1 of 6 | 0.5 s for a cue of 0.15 s | HTTP 200, 2.3 s | 6 | reported by the response | 1003 |
+| 42 | 2026-11-25T18:13:24Z | POST /v1/sound-generation | key-press.2 take 1, variant 2 of 6 | 0.5 s for a cue of 0.15 s | HTTP 200, 1.7 s | 6 | reported by the response | 1009 |
+| 43 | 2026-11-25T18:13:26Z | POST /v1/sound-generation | key-press.3 take 1, variant 3 of 6 | 0.5 s for a cue of 0.15 s | HTTP 200, 2.7 s | 6 | reported by the response | 1015 |
+| 44 | 2026-11-25T18:13:29Z | POST /v1/sound-generation | key-press.4 take 1, variant 4 of 6 | 0.5 s for a cue of 0.15 s | HTTP 200, 1.7 s | 6 | reported by the response | 1021 |
+| 45 | 2026-11-25T18:13:31Z | POST /v1/sound-generation | key-press.5 take 1, variant 5 of 6 | 0.5 s for a cue of 0.15 s | HTTP 200, 2.2 s | 6 | reported by the response | 1027 |
+| 46 | 2026-11-25T18:13:34Z | POST /v1/sound-generation | key-press.6 take 1, variant 6 of 6 | 0.5 s for a cue of 0.15 s | HTTP 200, 1.5 s | 6 | reported by the response | 1033 |
+| 47 | 2026-11-25T18:13:35Z | POST /v1/sound-generation | turret-rise take 1 | 0.6 s | HTTP 200, 2.2 s | 7 | reported by the response | 1040 |
+| 48 | 2026-11-25T18:13:38Z | POST /v1/sound-generation | bolt-fire.1 take 1, variant 1 of 3 | 0.5 s for a cue of 0.4 s | HTTP 200, 2.6 s | 6 | reported by the response | 1046 |
+| 49 | 2026-11-25T18:13:41Z | POST /v1/sound-generation | bolt-fire.2 take 1, variant 2 of 3 | 0.5 s for a cue of 0.4 s | HTTP 200, 2.0 s | 6 | reported by the response | 1052 |
+| 50 | 2026-11-25T18:13:43Z | POST /v1/sound-generation | bolt-fire.3 take 1, variant 3 of 3 | 0.5 s for a cue of 0.4 s | HTTP 200, 1.6 s | 6 | reported by the response | 1058 |
+| 51 | 2026-11-25T18:13:45Z | POST /v1/sound-generation | bolt-hit.1 take 1, variant 1 of 3 | 0.5 s for a cue of 0.4 s | HTTP 200, 2.1 s | 6 | reported by the response | 1064 |
+| 52 | 2026-11-25T18:13:47Z | POST /v1/sound-generation | bolt-hit.2 take 1, variant 2 of 3 | 0.5 s for a cue of 0.4 s | HTTP 200, 1.5 s | 6 | reported by the response | 1070 |
+| 53 | 2026-11-25T18:13:49Z | POST /v1/sound-generation | bolt-hit.3 take 1, variant 3 of 3 | 0.5 s for a cue of 0.4 s | HTTP 200, 1.5 s | 6 | reported by the response | 1076 |
+| 54 | 2026-11-25T18:13:51Z | POST /v1/sound-generation | sizzle take 1 | 1.2 s | HTTP 200, 2.0 s | 13 | reported by the response | 1089 |
+| 55 | 2026-11-25T18:13:53Z | POST /v1/sound-generation | keys-shuffle take 1 | 0.7 s | HTTP 200, 1.9 s | 8 | reported by the response | 1097 |
+| 56 | 2026-11-25T18:13:55Z | POST /v1/sound-generation | slab-drop.1 take 1, variant 1 of 3 | 0.8 s | HTTP 200, 2.3 s | 9 | reported by the response | 1106 |
+| 57 | 2026-11-25T18:13:58Z | POST /v1/sound-generation | slab-drop.2 take 1, variant 2 of 3 | 0.8 s | HTTP 200, 2.1 s | 9 | reported by the response | 1115 |
