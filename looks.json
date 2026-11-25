@@ -1,35 +1,35 @@
 {
   "folder": "tug2",
-  "pushed": "2026-11-25T20:08:59.183Z",
-  "commit": "23d078ba3097460fe43ddc4695a10b9e2fe5cd35",
+  "pushed": "2026-11-25T20:20:12.938Z",
+  "commit": "a36598f79b0e9b0f095080fad7e7bf0736065aa0",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key step1-tug at review tier beside the approved image: one still frame 620 px wide, slot at the drop zone's rim, small hands with fingers, close shadow",
-      "time": "2026-11-25T20:08:57.299Z",
+      "caption": "Still key-step1-tug-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-25T20:16:17.867Z",
+      "by": "tug2",
+      "from": "out/work/stills/key-step1-tug-hd-review.png"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Key step1-tug: approved on the left, this build on the right, review tier, with crops of cursor, paper, paper.below, chip, card.glass",
+      "time": "2026-11-25T20:20:11.280Z",
       "by": "tug2",
       "from": "out/work/compare/compare-step1-tug.jpg"
     },
     {
-      "file": "look-2.jpg",
-      "caption": "The beat step1.tug, 12 frames at draft: the camera does not move, the bite comes before the arms",
-      "time": "2026-11-25T20:08:57.529Z",
-      "by": "tug2",
-      "from": "out/work/sheets/sheet-beat-step1_tug-preview-draft.jpg"
-    },
-    {
       "file": "look-3.jpg",
-      "caption": "21.80, 21.92, 21.99, 22.10, 22.25 s: the cursor steps over the sheet, the sheet is jerked into the mouth, then the arms come out",
-      "time": "2026-11-25T20:08:57.756Z",
+      "caption": "Key step1-tug at review beside the approved image, on a36598f: creased sheet, hands with fingers, shadow close round the machine's foot",
+      "time": "2026-11-25T20:20:11.509Z",
       "by": "tug2",
-      "from": "out/work/looks/files/20261125200857-bite-strip.jpg"
+      "from": "out/work/compare/compare-step1-tug.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Sheet cursor-arms at draft beside the approved image: hoses with slack, hands with separate fingers",
-      "time": "2026-11-25T20:08:57.980Z",
+      "caption": "The beat step1.tug at draft on a36598f: still camera, bite first, hands 28 px clear of the slot to the end",
+      "time": "2026-11-25T20:20:11.736Z",
       "by": "tug2",
-      "from": "out/work/compare/compare-cursor-arms.jpg"
+      "from": "out/work/sheets/sheet-beat-step1_tug-preview-draft.jpg"
     }
   ]
 }
