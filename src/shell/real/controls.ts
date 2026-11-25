@@ -154,6 +154,9 @@ function field(s: Shape): THREE.Object3D {
 
 const CROWN_RAIL = 1.2
 const CROWN_BUTTON = 1.3
+const FOOT_RING = 8
+const SHOULDER = 10
+const FLANGE = 5.6
 
 function rail(s: Shape): THREE.Object3D {
   const under = pocketCut(s).under
@@ -176,18 +179,27 @@ function capsule(s: Shape, round: number): THREE.Object3D {
   return mesh(g, toneMaterial(s.tone))
 }
 
-// A step's button, turned on a lathe: a flange with a chamfer, a short neck and a flat face for its numeral.
+// A step's button. The current one is moulded plastic: a wide foot and a domed cap. The others are turned on a lathe:
+// a wide chamfered flange, a groove and a flat face for the numeral.
 function progressButton(s: Shape, current: boolean): THREE.Object3D {
   const m = materials()
   const h = s.z1 - s.z0
   const foot = Math.max(0, -s.z0)
   const up = h - foot
   const d = s.w
-  const points: ProfilePoint[] = current
-    ? [[0, foot - 0.5, true], [0, foot + up * 0.16], ...arc(0, foot + up * 0.16, 3.4, up * 0.2, 5).slice(1), [5.2, foot + up * 0.36], [5.6, foot + up * 0.4], [5.6, foot + up * 0.66], ...arc(5.6, foot + up * 0.66, 9, up * 0.34 - CROWN_BUTTON, 8).slice(1), ...[0.82, 0.64, 0.46, 0.28, 0.12].map((t): ProfilePoint => [d / 2 - (d / 2 - 14.6) * t, h - CROWN_BUTTON * t * t])]
-    : [[0, foot - 0.5, true], [0, foot + up * 0.6, true], ...arc(0, foot + up * 0.6, 4.2, up * 0.22, 6).slice(1), [4.4, foot + up * 0.74, true], [5.4, foot + up * 0.74, true], [5.6, h - 0.5, true], [6.2, h, true]]
-  const g = shared(`progress:${dims(s)}:${current}`, () => discUv(sweep(circle(d / 2, 72), profile(points)), d))
-  return mesh(g, current ? m.orange : m.aluminiumTurned)
+  if (current) {
+    const points: ProfilePoint[] = [
+      [0, foot - 0.5, true], [0, foot + up * 0.18], ...arc(0, foot + up * 0.18, 3, up * 0.16, 5).slice(1), [FOOT_RING, foot + up * 0.37], [FOOT_RING + 0.5, foot + up * 0.33, true], [FOOT_RING + 0.7, foot + up * 0.6],
+      ...arc(FOOT_RING + 0.7, foot + up * 0.6, SHOULDER, up * 0.4 - CROWN_BUTTON, 9).slice(1),
+      ...[0.82, 0.64, 0.46, 0.28, 0.12].map((t): ProfilePoint => [d / 2 - (d / 2 - FOOT_RING - 0.7 - SHOULDER) * t, h - CROWN_BUTTON * t * t])
+    ]
+    return mesh(shared(`progress:${dims(s)}:1`, () => sweep(circle(d / 2, 72), profile(points))), m.orange)
+  }
+  const root = new THREE.Group()
+  const flange: ProfilePoint[] = [[0, foot - 0.5, true], [0, foot + up * 0.34, true], [0.5, foot + up * 0.4, true], [FLANGE, foot + up * 0.8, true], [FLANGE + 0.7, foot + up * 0.8, true], [FLANGE + 0.9, foot + up * 0.6, true], [FLANGE + 1.9, foot + up * 0.6, true], [FLANGE + 2.1, h - 0.4, true], [FLANGE + 2.5, h, true]]
+  root.add(mesh(shared(`progressFlange:${dims(s)}`, () => sweep(circle(d / 2, 72), profile(flange), false)), m.aluminiumEdge))
+  root.add(mesh(shared(`progressFace:${dims(s)}`, () => discUv(sweep(circle(d / 2 - FLANGE - 2.5, 72), [{ inset: 0, z: h, out: 0, up: 1 }]), d - (FLANGE + 2.5) * 2)), m.aluminiumTurned))
+  return root
 }
 
 function rule(s: Shape): THREE.Object3D {
