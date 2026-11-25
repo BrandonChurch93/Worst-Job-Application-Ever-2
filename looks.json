@@ -1,35 +1,35 @@
 {
   "folder": "film",
-  "pushed": "2026-11-25T09:22:31.020Z",
-  "commit": "637607d07839cfe887617e756b6ca43b6ae98369",
+  "pushed": "2026-11-25T09:26:19.817Z",
+  "commit": "d544fd6bf79a638282ff44818fba8ccc84fc6765",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Card loop, prepared on step 1's own page (not on main yet), 2.17 s: the cursor has typed the x of Perplex, the right turret's bolt lands where it stood a moment ago",
-      "time": "2026-11-25T09:22:29.053Z",
+      "caption": "Card loop on step 1's own page, frame 0 (d544fd6): mid jump, the left turret is winding up, two fresh scorch marks where the cursor stood",
+      "time": "2026-11-25T09:26:17.994Z",
       "by": "film",
-      "from": "out/work/stills/film-loop-0130-preview-draft.png"
+      "from": "out/work/stills/film-loop-0000-preview-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Card loop, prepared, 3.58 s: the left turret's bolt on its way to the cursor that stopped to type",
-      "time": "2026-11-25T09:22:29.297Z",
+      "caption": "Card loop, frame 215: it stopped to type the x of Perplex, the left turret's bolt is on its way",
+      "time": "2026-11-25T09:26:18.277Z",
       "by": "film",
       "from": "out/work/stills/film-loop-0215-preview-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Card loop, prepared, 3.77 s: hit, the x is gone from the first name, the cursor is thrown off the key",
-      "time": "2026-11-25T09:22:29.544Z",
+      "caption": "Card loop, frame 226: hit, the x is gone from the first name, the cursor is thrown off the key",
+      "time": "2026-11-25T09:26:18.513Z",
       "by": "film",
       "from": "out/work/stills/film-loop-0226-preview-draft.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Opening, frame 317: the reasoning level control open, the level word now reads on its pill",
-      "time": "2026-11-25T09:22:29.774Z",
+      "caption": "Card loop, frame 300: dodging again, the bolt for the G key landed where it stood",
+      "time": "2026-11-25T09:26:18.748Z",
       "by": "film",
-      "from": "out/work/stills/film-opening-0317-preview-draft.png"
+      "from": "out/work/stills/film-loop-0300-preview-draft.png"
     }
   ]
 }
