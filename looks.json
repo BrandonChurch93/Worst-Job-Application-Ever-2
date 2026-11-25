@@ -1,0 +1,35 @@
+{
+  "folder": "office",
+  "pushed": "2026-11-25T16:53:38.318Z",
+  "commit": "b30c26eb549e09809caae889c941590d8e4975d3",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Still key-reply-all-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T16:53:12.494Z",
+      "by": "office",
+      "from": "out/work/stills/key-reply-all-hd-draft.png"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Office models, first complete version: approved tier-office on the left, this build (draft) on the right",
+      "time": "2026-11-25T16:53:36.807Z",
+      "by": "office",
+      "from": "out/work/office/compare-tier-office-1.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Office models from the review still, straight down: cubicles with cooler, coffee machine over the inbox, left stapler, cabinet with bin and plant",
+      "time": "2026-11-25T16:53:37.046Z",
+      "by": "office",
+      "from": "out/work/office/crops-1.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Office models in the reply-all view, draft tier",
+      "time": "2026-11-25T16:53:37.281Z",
+      "by": "office",
+      "from": "out/work/office/reply-all-1.jpg"
+    }
+  ]
+}
