@@ -119,11 +119,8 @@ function boardOf(z: Zone, ctx: RealContext): Board | null {
   return { x, y, z: zz, w: s.w, h: s.h, turn: s.turnX ?? 0 }
 }
 
-export function buildCoffee(z: Zone, ctx: RealContext): THREE.Object3D {
+function draw(z: Zone, ctx: RealContext): { k: Kit; g: Kit; c: Kit } {
   const b = boxOf(z, 'office.coffee')
-  const mats = matsOf(z)
-  const root = new THREE.Group()
-  root.name = 'office.coffee'
   const r = new Random(config.seed, 'office.coffee')
   const k = new Kit()
   const g = new Kit()
@@ -137,7 +134,9 @@ export function buildCoffee(z: Zone, ctx: RealContext): THREE.Object3D {
   k.box(0, 28, 4, 150, 66, 97, C.steel, SURF.brushed, 2)
   for (const s of [-1, 1]) {
     k.box(s * 76, 28, 4, 3, 68, 96, C.bronze, BRONZE, 1)
+    k.fine = true
     for (let i = 0; i < 6; i++) k.box(s * 77.6, 12 + i * 7, 60, 0.5, 3.4, 26, C.slot, SURF.matte, 0)
+    k.fine = false
   }
   k.box(0, -5.6, 30, 130, 1.2, 62, C.steelLight, SURF.brushed, 0.4)
 
@@ -148,6 +147,7 @@ export function buildCoffee(z: Zone, ctx: RealContext): THREE.Object3D {
   k.box(0, HEAD.lip - 0.5, 108, 150, 1, 6, C.chrome, SURF.chrome, 0.4)
 
   k.box(0, 27, HEAD.top, 142, 64, 1.2, C.steelLight, SURF.brushed, 0.5)
+  k.fine = true
   const rail = rrect(126, 48, 5, 3).map((q) => [q[0], q[1] + 27, HEAD.top + 8] as V3)
   k.tube(rail, 1.3, C.chrome, SURF.chrome, 6, true)
   for (const [px, py] of [[-58, 8], [0, 3], [58, 8], [-58, 46], [0, 51], [58, 46]] as V2[]) k.cyl(px, py, HEAD.top + 1.2, 1.3, 6.8, C.chrome, SURF.chrome, 6, 0.2)
@@ -159,6 +159,8 @@ export function buildCoffee(z: Zone, ctx: RealContext): THREE.Object3D {
       k.lathe(cx + i * 16, cy - i * 1.5, HEAD.top + 2.2, [[3.4, 0], [5.4, 4], [5.9, 7], [5.2, 7], [4.6, 2.6], [0, 2.6]], [C.paper, C.paper, shade(C.paper, 0.96), shade(C.paper, 0.78), shade(C.paper, 0.7)], SURF.gloss, 16)
     }
   }
+
+  k.fine = false
 
   const sy = (HEAD.deck + HEAD.lip) / 2
   const sz = (HEAD.top + HEAD.slope) / 2
@@ -179,6 +181,7 @@ export function buildCoffee(z: Zone, ctx: RealContext): THREE.Object3D {
 
   group(k, -36, -1)
   group(k, 36, 1)
+  k.fine = true
   k.at(0, HEAD.lip - 0.4, 117, 0, Math.PI / 2)
   k.lathe(0, 0, 0, [[11, 0], [11, 2.2], [9.6, 3], [9.2, 1.6], [0, 1.6]], [C.chrome, C.chrome, C.chrome, C.face], [SURF.chrome, SURF.chrome, SURF.chrome, SURF.satin], 20)
   for (let i = 0; i < 9; i++) {
@@ -196,22 +199,27 @@ export function buildCoffee(z: Zone, ctx: RealContext): THREE.Object3D {
   k.tube([[HEAD.x - 5, HEAD.lip + 4, HEAD.low], [HEAD.x - 4, HEAD.lip - 8, 92], [HEAD.x - 3, -50, 58], [HEAD.x - 3, -52, 44]], 1.9, C.chrome, SURF.chrome, 7)
   k.tube([[HEAD.x - 3.6, -46, 72], [HEAD.x - 3.2, -49.5, 62]], 3, C.black, SURF.rubber, 7)
 
+  k.fine = false
   k.box(0, -33, 4, 152, 58, 10, C.bronze, BRONZE, 1.6)
   k.box(0, -33, 13.6, 140, 47, 0.5, C.slot, SURF.matte, 0)
+  k.fine = true
   for (let i = 0; i < 23; i++) k.box(-66 + i * 6, -33, 13.8, 2.6, 47, 1.5, C.steelLight, SURF.steel, 0.4)
   for (const y of [-56.5, -9.5]) k.box(0, y, 13.8, 140, 2, 1.7, C.steelLight, SURF.steel, 0.4)
+  k.fine = false
   paperCup(k, -36, -45, 15.3, true)
   paperCup(k, 36, -45, 15.3, false)
 
   k.at(-98, 0, 4)
   k.poly(rrect(34, 114, 5, 3), 0, 2.4, shade(C.steel, 0.8), SURF.brushed, 0.8)
   k.tube(rrect(31, 111, 4, 3).map((q) => [q[0], q[1], 3.4] as V3), 1, C.chrome, SURF.chrome, 5, true)
+  k.fine = true
   cupStack(k, 0, 36, 2.4, 9)
   cupStack(k, 0.5, 11, 2.4, 5)
   k.lathe(0, -15, 2.4, [[8.4, 0], [9.4, 15], [8.6, 15], [8, 3], [0, 3]], [C.steel, C.steel, shade(C.steel, 0.6), C.slot], SURF.brushed, 16)
   sticks(k, r, 0, -15, 5.4, 11, [C.sugarWhite, C.sugarWhite, C.sugarBrown, C.sugarBlue], 3.6, 1.2, 24)
   k.lathe(0, -41, 2.4, [[6.6, 0], [7.4, 12], [6.6, 12], [6, 3], [0, 3]], [C.black, C.black, shade(C.black, 0.8), C.slot], SURF.plastic, 14)
   sticks(k, r, 0, -41, 5.4, 9, [C.wood, shade(C.wood, 0.92)], 2.4, 0.7, 30)
+  k.fine = false
   k.back()
 
   k.at(98, 27, 4)
@@ -223,10 +231,12 @@ export function buildCoffee(z: Zone, ctx: RealContext): THREE.Object3D {
   for (const [w, d, x, y] of [[29, 1.8, 0, -30.1], [29, 1.8, 0, 30.1], [1.8, 62, -13.6, 0], [1.8, 62, 13.6, 0]] as number[][]) k.box(x!, y!, 118, w!, d!, 3.4, shade(C.steel, 0.8), SURF.brushed, 0.6)
   k.box(0, 21, 119.4, 27, 18, 2.2, C.black, SURF.plastic, 0.8)
   k.box(0, 11, 121.6, 12, 2.6, 1.4, C.chrome, SURF.chrome, 0.5)
+  k.fine = true
   k.box(-6, -30.6, 16, 2, 0.5, 96, C.mark, SURF.plastic, 0)
   for (let i = 0; i < 6; i++) k.box(-2.5, -30.6, 22 + i * 15, 6, 0.5, 1, C.mark, SURF.plastic, 0)
   k.box(0, -30.7, 96, 20, 0.6, 1.4, C.max, SURF.plastic, 0)
   k.box(14.2, -6, 96, 0.6, 20, 1.4, C.max, SURF.plastic, 0)
+  k.fine = false
   k.tube([[-13, 20, 4], [-17, 20, 6], [-20, 20, 10]], 2, C.steel, SURF.steel, 6)
   k.back()
 
@@ -256,6 +266,17 @@ export function buildCoffee(z: Zone, ctx: RealContext): THREE.Object3D {
   k.back()
   g.back()
   c.back()
+  return { k, g, c }
+}
+
+// The small trim of the coffee machine, for the one mesh of fine things of the tier.
+export const coffeeFine = (z: Zone, ctx: RealContext): Kit => draw(z, ctx).k
+
+export function buildCoffee(z: Zone, ctx: RealContext): THREE.Object3D {
+  const mats = matsOf(z)
+  const root = new THREE.Group()
+  root.name = 'office.coffee'
+  const { k, g, c } = draw(z, ctx)
   root.add(meshOf(k.done(), mats.solid, 'office.coffee.body', { cast: true }))
   const glow = meshOf(g.done(), mats.glow, 'office.coffee.buttons')
   glow.userData.lightGroup = 'office.windows'

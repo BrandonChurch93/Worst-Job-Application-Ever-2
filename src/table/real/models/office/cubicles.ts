@@ -1,12 +1,13 @@
 import * as THREE from 'three'
 import { config } from '../../../../config'
 import { Random } from '../../../../core/random'
+import type { RealContext } from '../../../../real/types'
 import { BALL, table } from '../../../layout'
 import { localBalls, type Zone } from '../../zone'
-import { coffeeScrews } from './coffee'
+import { coffeeFine, coffeeScrews } from './coffee'
 import { boxOf, inboxScrews } from './inbox'
 import { hex, Kit, matsOf, meshOf, mix, rrect, screwGeometry, shade, SURF, type RGB, type V2, type V3 } from './kit'
-import { staplerScrews } from './staplers'
+import { staplerFine, staplerScrews } from './staplers'
 
 const C = {
   slab: hex(0x8f8774),
@@ -70,6 +71,7 @@ function wall(k: Kit, a: V2, b: V2, r: Random): void {
 }
 
 function chair(k: Kit, seat: RGB): void {
+  k.fine = true
   for (let i = 0; i < 5; i++) {
     const a = (i / 5) * Math.PI * 2
     k.at(0, 0, 0, a)
@@ -79,6 +81,7 @@ function chair(k: Kit, seat: RGB): void {
   }
   k.cyl(0, 0, 2.6, 3, 2.6, C.dark, SURF.plastic, 10, 0.6)
   k.cyl(0, 0, 5, 1.4, 9, C.steel, SURF.chrome, 8, 0.2)
+  k.fine = false
   k.poly(rrect(17.5, 17, 5, 3), 13.6, 1.6, C.dark, SURF.plastic, 0.5)
   k.poly(rrect(18.5, 18, 5.5, 3), 15, 4, seat, SURF.fabric, 1.8, shade(seat, 1.12))
   for (const s of [-1, 1]) {
@@ -403,7 +406,7 @@ export function cubicleScrews(z: Zone): [number, number, number][] {
   return out
 }
 
-export function buildCubicles(z: Zone): THREE.Object3D {
+export function buildCubicles(z: Zone, ctx: RealContext): THREE.Object3D {
   const b = boxOf(z, 'office.cubicles')
   const mats = matsOf(z)
   const root = new THREE.Group()
@@ -460,6 +463,7 @@ export function buildCubicles(z: Zone): THREE.Object3D {
   small(k, f, c, z, r)
 
   root.add(meshOf(k.done(), mats.solid, 'office.cubicles.body', { cast: false }))
+  f.takeFine(k).takeFine(coffeeFine(z, ctx)).takeFine(staplerFine(z))
   root.add(meshOf(f.done(), mats.solid, 'office.cubicles.trim', { fine: true }))
   const clear = meshOf(c.done(), mats.clear, 'office.cubicles.bottles')
   clear.renderOrder = 2
