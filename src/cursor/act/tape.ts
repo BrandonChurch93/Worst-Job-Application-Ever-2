@@ -13,9 +13,9 @@ export const TAPE = {
   on: [0.3, 0.44] as [number, number],
   off: [0.8, 0.97] as [number, number],
   pieces: [
-    { x: 3.2, y: 6.0, turn: 0.2, half: 20, wide: 6.2, cut: 2.2, late: 0 },
-    { x: 5.2, y: 10.6, turn: -0.14, half: 28, wide: 6.8, cut: -1.8, late: 0.03 },
-    { x: 8.3, y: 16.2, turn: 0.32, half: 15, wide: 5.6, cut: 1.6, late: 0.06 }
+    { x: 3.2, y: 6.0, turn: 0.2, half: 20, wide: 5.0, cut: 2.2, late: 0 },
+    { x: 5.2, y: 10.6, turn: -0.14, half: 28, wide: 5.4, cut: -1.8, late: 0.03 },
+    { x: 8.3, y: 16.2, turn: 0.32, half: 15, wide: 4.8, cut: 1.6, late: 0.06 }
   ]
 }
 
@@ -53,7 +53,7 @@ function tapeMaterial(): THREE.MeshPhysicalMaterial {
       float wjaBright = wjaRim * smoothstep( 0.1, 0.9, -wjaLee ) * wjaRun;
       float wjaDark = wjaRim * smoothstep( 0.1, 0.9, wjaLee );
       float wjaCast = ( 1.0 - wjaBody ) * ( 1.0 - smoothstep( 0.0, ${(2.0).toFixed(1)}, wjaOut ) ) * smoothstep( -0.1, 0.8, wjaLee );
-      float wjaFrost = 0.44 + 0.06 * sin( vTape.x * 0.37 + vTape.z * 1.7 );
+      float wjaFrost = 0.37 + 0.06 * sin( vTape.x * 0.37 + vTape.z * 1.7 );
       float wjaBand = ( vTape.z / vTape.w + 0.38 ) / 0.2;
       float wjaSheen = wjaBody * exp( -wjaBand * wjaBand ) * ( 0.45 + 0.55 * sin( vTape.x * 0.29 + 0.7 ) * sin( vTape.x * 0.11 + 2.1 ) );
       float wjaFold = sin( vTape.x * 0.9 + vTape.z * 1.3 + 2.0 * sin( vTape.x * 0.13 ) );

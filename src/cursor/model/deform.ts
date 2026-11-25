@@ -65,7 +65,7 @@ export class Deform {
     this.gulp = look.gulp < 0 ? -1 : clamp01(look.gulp)
     this.time = look.time
     // A melting body slumps by its own running, not by being pressed short: most of the pose's squash is given back, or the arrow reads as a cap on a stalk.
-    this.stretch += (1 - this.stretch) * 0.35 * this.melt
+    this.stretch += (1 - this.stretch) * 0.5 * this.melt
     this.wide = 1 / Math.sqrt(this.stretch)
     const t = look.time
     const k = this.tremble
@@ -162,7 +162,7 @@ export class Deform {
       // The tip bows over to one side and sinks, and the whole body spreads: the droop is in the outline.
       const bow = smooth(8.5, 0, u0)
       const tu = m * 1.4 * bow
-      const tv = m * (3.4 * bow * bow + 0.16 * v0 * (1 - stem))
+      const tv = m * (2.7 * bow * bow + 0.09 * v0 * (1 - stem))
       x += tu * AXIS[0] + tv * AXIS[1]
       y += tu * AXIS[1] - tv * AXIS[0]
       const end = clamp01((u0 - 18.85) / 1.3)
