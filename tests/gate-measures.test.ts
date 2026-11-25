@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { describe, expect, it } from 'vitest'
-import { chainTexels, fullChain, luminance, median, surfaceOf, texelBytes, textureBytes, typeContrasts } from '../src/capture/showcase'
+import { chainTexels, fullChain, luminance, median, surfaceOf, texelBytes, textureBytes, typeContrasts, textureMemory } from '../src/capture/showcase'
 import type { Shape } from '../src/stage/types'
 
 const MB = 1048576
@@ -117,5 +117,58 @@ describe('the contrast of a run of type', () => {
   it('gives nothing for a run the scene holds no mesh for, or one that lies over nothing', () => {
     expect(typeContrasts(scene(flat(2000, 2000, 0, grey(0.8))), [run()]).size).toBe(0)
     expect(typeContrasts(scene(flat(120, 40, 2, grey(0.02), { type: 'copy:a', shape: 'label' })), [run()]).size).toBe(0)
+  })
+})
+
+describe('the textures the renderer holds', () => {
+  const made = (w: number, h: number): THREE.DataTexture => {
+    const t = new THREE.DataTexture(new Uint8Array(w * h * 4), w, h, THREE.RGBAFormat, THREE.UnsignedByteType)
+    t.generateMipmaps = false
+    t.minFilter = THREE.NearestFilter
+    return t
+  }
+  const fake = (scene: THREE.Scene, on: Map<object, object>, held: number) =>
+    ({
+      view: { scene },
+      environment: null,
+      rig: null,
+      engine: { width: 1024, height: 512, renderer: { properties: { has: (o: object) => on.has(o), get: (o: object) => on.get(o) }, info: { memory: { textures: held } } } }
+    }) as unknown as Parameters<typeof textureMemory>[0]
+
+  it('counts a texture on the graphics card once, leaves out one that is not there, and reads what the renderer gave the material', () => {
+    const a = made(1024, 1024)
+    const b = made(512, 512)
+    const own = made(256, 256)
+    const scene = new THREE.Scene()
+    const material = new THREE.MeshBasicMaterial({ map: a })
+    scene.add(new THREE.Mesh(new THREE.PlaneGeometry(1, 1), material), new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: a, alphaMap: b })))
+    const on = new Map<object, object>([[a, { __webglTexture: {} }], [own, { __webglTexture: {} }], [material, { uniforms: { table: { value: own } } }]])
+    const t = textureMemory(fake(scene, on, 2))
+    expect(t.counted).toBe(2)
+    expect(t.assetMb).toBeCloseTo(4 + 0.25, 3)
+    expect(t.unseenMb).toBe(0)
+    expect(t.largest?.[0]).toMatchObject({ width: 1024, height: 1024, mb: 4, target: false })
+  })
+
+  it('counts what the renderer holds and nothing leads to at the size of the picture, so the number errs upward', () => {
+    const scene = new THREE.Scene()
+    const t = textureMemory(fake(scene, new Map(), 1))
+    expect(t.counted).toBe(0)
+    expect(t.unseenMb).toBeGreaterThan((1024 * 512 * 8) / 1048576)
+    expect(t.mb).toBe(t.unseenMb)
+  })
+
+  it('keeps the textures of a page drawn before for as long as the renderer holds them', () => {
+    const a = made(1024, 1024)
+    const first = new THREE.Scene()
+    first.add(new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: a })))
+    const on = new Map<object, object>([[a, { __webglTexture: {} }]])
+    const known = new Map<THREE.Texture, boolean>()
+    expect(textureMemory(fake(first, on, 1), known).mb).toBe(4)
+    const second = new THREE.Scene()
+    expect(textureMemory(fake(second, on, 1), known)).toMatchObject({ mb: 4, counted: 1, unseenMb: 0 })
+    on.delete(a)
+    expect(textureMemory(fake(second, on, 0), known)).toMatchObject({ mb: 0, counted: 0 })
+    expect(known.size).toBe(0)
   })
 })
