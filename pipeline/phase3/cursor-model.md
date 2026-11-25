@@ -207,3 +207,22 @@ One push earlier, 20:17Z to 20:19Z, main 5a9e748 merged: `npm test` 79 files, 12
 - Laser rim: thinner and dimmer than the approved ember ring.
 - Tug (R1-1 issue 7): the face's cream colour is the shared enamel; only the rim and gloss were touched.
 - Shredded: the fan is wider than approved; its spread is the acting side's `lie()`.
+
+## Fix round 3: the form
+
+Owner: cursor_form_fixer, 21:22Z to 22:50Z on 2026-11-25. Files: `src/cursor/model/shape.ts`, `body.ts`, `deform.ts`, `strips.ts`.
+
+### The shell (R1-2 issues 5, 14, 21; R1-1 issue 8)
+
+What was wrong, seen beside `cursor-damage.png` at native size: a flat face with a 0.66 unit shoulder, a groove, a wall that stood straight with a quarter round on top, mitred corners. It read as a flat plate with an outline.
+
+What the shell is now (`shape.ts`):
+
+- One section, from the page up: the foot tucked 0.34 under the outline (`FOOT`), a full round out to the outline at z 0.62 and over to the crown at z 1.76, a 0.05 groove (`BEAD`), then the enamel in one roll 1.0 wide (`SHOULDER`, 41 degrees at the lip, easing to level by the power `ROLL`), then a dome of 0.1 to the middle (`DOME`). `TOP` stays 2.3.
+- The dome is a height field over the whole face, `enamelAt(domeInside(x, y))`. Near the outline it is the true distance; from 0.9 in it blends to a distance every edge has a say in (a power mean, `POWER` 5), so no ridge runs down the stem, into the nose or into the wings.
+- Corners: nose 0.5, wings 0.62, notches 0.36, tail 0.9 (`RADII`), eleven points to an arc. The inner rings keep their own radius (`ownRadius`) and one centre law, so the band has no mitred black wedge at the nose.
+- `GROW` 0.22: the rounded form stands 0.22 outside the outline, so its rounded corners still reach the outline's corners. MEASURED with the body at rest: 18.93 units tall (the outline is 19), where plain rounding of the outline gave 18.12. The configured height holds; the arrow is 1.6 px wider at 70 px.
+- The band is 0.63 wide in geometry (`ENAMEL_AT`). The finish paints black under a told distance of 0.545, so the solid hands the finish a remapped distance (`told`).
+- Nine rings carry the roll (`LIP`), then the scattered points. A face triangle is kept only when its middle is inside the innermost ring: the test by distance left folded slivers at the two notches that read as lashes.
+- `SLANT` 0.17 to 0.24 (`deform.ts`): the approved arrow shows a black line of about 0.24 units on the lit side and a wall of about 0.62 on the shaded side.
+- Strips (`strips.ts`): the face that closes a cut stops at the tucked foot (`underAt`), so a cut body is not larger than the whole one.
