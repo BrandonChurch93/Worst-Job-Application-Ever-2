@@ -84,6 +84,7 @@ Each is a way to draw any still or frame. The harness reaches them by name.
 | `shadow` | The shadow term alone |
 | `height` | Height off the page surface as shades of grey |
 | `ids` | Each part in its own flat colour |
+| `coverage` | On the table from above: every standing part, every insert and every printed line in white, bare playfield in black. Measure M8 reads it |
 | `lights` | The table lit by one light group at a time |
 | `colliders` | The physics shapes of the table and the bodies on it |
 | `events` | The events of this frame, as marks where they happen |
@@ -92,6 +93,8 @@ Each is a way to draw any still or frame. The harness reaches them by name.
 ## 10. The ladder
 
 When a picture falls short, move one rung at a time for that problem. The plateau rule in `kit/07-QUALITY-BAR.md` says when. Log each move. When a problem's rungs are used up it becomes an open item.
+
+A rung that moves a part to its named fallback is not a quiet swap: set that part's state to `fallback` in `parts/PARTS.json` and log it as an open item, like any other part that ended on a fallback.
 
 ### A still does not match its approved image
 
@@ -107,7 +110,6 @@ When a picture falls short, move one rung at a time for that problem. The platea
 2. Deepen and tighten the contact shadows. Add the dark gap round every part that sits in a socket.
 3. Strengthen the grain on the ceramic so the highlight breaks up.
 4. Push the materials apart: more sheen on the glass, more brushing on the aluminum, more gloss on the orange.
-5. Narrow the lens a little less, inside its limits, so standing things lean at the edges.
 
 ### The page looks like a 3D scene and not a web page
 

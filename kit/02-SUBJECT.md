@@ -156,13 +156,13 @@ Copy: `copy:step1`. Approved images: keys `step1-fire` and `step1-tug`. The roun
 | First name | Typing under turret fire |
 | Last name | The turrets retract. The keys shuffle to new positions after every letter |
 | Email | The keys behave. A correct email is answered with a heavy red slab reading `copy:step1.emailError`, dropped from above. Then two more. Then `copy:step1.emailAccepted` |
-| Resume | The shredder |
+| Resume | The keyboard sinks back into its slot first, so the lower part of the page is clear. Then the shredder |
 
 **The shredder**
 
 - The resume is a real sheet of paper lying on the page, titled `copy:step1.resume.paperTitle`.
 - When it reaches the drop zone, a slot opens in the page beneath the zone, steel rollers turning inside, and takes the bottom edge of the paper.
-- The tug of war is the one beat with arms. It is the best gag in the piece and it is played long: gains and losses, the paper stretching and creasing, the cursor's feet sliding on the ceramic.
+- The tug of war is the one beat with arms. It is the best gag in the piece and it is played long: gains and losses, the paper stretching and creasing, the cursor's tip and heel corner skidding on the ceramic. It has no feet.
 - The cursor loses. Paper and cursor go in together. Strips come out onto the page below the slot.
 - The strips reassemble into the cursor. The form shows `copy:step1.resume.received`.
 

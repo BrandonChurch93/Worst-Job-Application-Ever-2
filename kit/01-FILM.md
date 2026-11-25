@@ -102,8 +102,8 @@ A beat is one timed gag inside a unit. Times are in `film.beats`, in seconds fro
 | `step1.firstName` | It types by stomping key to key. Two turrets rise at the ends of the keyboard tray and fire glowing bolts across the keys. It dodges, ducks, gets cocky, and takes a hit: a round burn hole, a wisp of smoke, a moment of shock. It finishes the name |
 | `step1.lastName` | The keys shuffle to new positions after every letter. It hunts, lands, and the keys move again. Its patience is visibly thinner |
 | `step1.email` | It types a correct email. A heavy red "Invalid email" slab drops from above and it dives clear. Another. Another. The form gives in |
-| `step1.resume` | The cursor fetches its paper resume, proud of it, and carries it to the drop zone |
-| `step1.tug` | A shredder slot opens in the page under the drop zone and bites the paper. The cursor grows two thin black arms and pulls. A full tug of war: heels dug in, the paper stretching, the shredder winning inch by inch |
+| `step1.resume` | The keyboard sinks back into its slot and the page closes over it. The cursor fetches its paper resume, proud of it, and carries it to the drop zone |
+| `step1.tug` | A shredder slot opens in the page under the drop zone and bites the paper. The cursor grows two thin black arms and pulls. A full tug of war: its heel corner dug into the page, the paper stretching, the shredder winning inch by inch |
 | `step1.shredded` | It loses. Paper and cursor go through together. A pile of white strips on the page stirs, stands up and zips itself back into a cursor, slightly misaligned, then true. The form says the resume was received and asks for everything again |
 
 ### `step2`
@@ -137,7 +137,7 @@ This is a directed scene with cuts. The camera leaves the screenshot view and go
 | Beat | What is seen |
 | --- | --- |
 | `boss.verify` | The Human Verification card and the Submit button. The cursor reads the checkbox. In the film it hesitates, sweats, and ticks it. The card answers |
-| `boss.unfold` | The Submit button shudders, cracks its socket, tears loose and unfolds: legs, armor, two cannons, a glass shield. A health bar slides in under the header |
+| `boss.unfold` | The Submit button shudders, cracks its socket, tears loose and unfolds: legs, armor, two cannons, a glass shield. A health bar slides in under the step heading, where the subline was |
 | `boss.slabs` | The boss fires error messages as solid red slabs. The cursor dodges and shoots a stream of tiny cursor darts with each click. The bar starts to drop |
 | `boss.popups` | The boss throws up pop-up dialogs as shields. The cursor has to shoot them down or go round them. It takes a hit and shakes it off |
 | `boss.lastStand` | Nearly beaten, the boss plays "Session expired" and its health jumps back up a little. The cursor's whole body says "really". It finishes the job |

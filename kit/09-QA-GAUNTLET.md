@@ -16,7 +16,7 @@ The gauntlet runs at most `quality.gauntletMaxPasses` times. An item that still 
 8. Every bot finishes on every seed. Evidence: G17 on the frozen build, with the table `npm run bots` prints.
 9. On each step the skip link appears after `live.skipLinkAfterSeconds` and plays that step's ending. The watch the film link plays film mode from any page.
 10. A touch-only device gets the message page with the words of `copy:live.touchOnly`, and the link to `links.portfolioWork` if that key is set. A visitor whose system asks for less motion is offered the film with playback controls. Evidence: the `screen-touch` still, and a still of the offer.
-11. No sound starts before the first click. The sound control mutes and unmutes. With the sound files removed, the site runs silent and hides the control. Evidence: sound checks A1, A2 and A4.
+11. No sound starts before the first click. The sound control mutes and unmutes. With the sound files removed, the site runs silent and hides the control. Evidence: sound checks A1, A2, A4 and A11.
 12. The site picks a level of `live.quality` by itself and can be forced to each level from the `M` menu. `?mode=probe` runs to its end and gives its block of text. During a whole bot run the page makes no network request except for its own files and stores nothing. Evidence: the request log of that run.
 
 ## The picture
@@ -43,7 +43,7 @@ The gauntlet runs at most `quality.gauntletMaxPasses` times. An item that still 
 
 27. The table is crowded. Evidence: M8 on the frozen build, with the count of standing parts and the bare share in the `BUILD COMPLETE` block.
 28. The table carries everything `kit/02-SUBJECT.md` lists: every building with its label from `copy:step3.table.buildings`, `table.inserts` lit inserts with the lines of `copy:step3.table.modes`, the apron card, and the name on the backbox. Evidence: the `table-top`, `table-player` and `table-backbox` stills and the `type` view of each.
-29. The take holds. Evidence: `npm run take -- --check` on the frozen build shows every pinball beat's event within `film.beatToleranceSeconds`, or the beats that fell back are listed.
+29. The take holds. Evidence: `npm run take -- --check` on the frozen build shows every pinball beat's event inside its beat, give or take `film.beatToleranceSeconds`, or the beats that fell back are listed.
 30. The table copies no real machine. Evidence: `quality.jury.jurors` fresh agents are each given the `table-top` and `table-player` stills and asked only whether this is an existing pinball machine and, if so, which. Their answers are logged. If two or more name the same real machine, it is a failed item.
 
 ## The films, the sound and the card
@@ -57,7 +57,7 @@ The gauntlet runs at most `quality.gauntletMaxPasses` times. An item that still 
 37. Every kept sound has its record and its row in `ASSETS.md`, no cue or line went over its take limit, and every narrator line says its words. Evidence: A5, A8 and A10.
 38. `deliver/` holds the card loop, its web copy and the card still. The still is the loop's frame 0. Evidence: D6.
 39. The loop's frame one past the last is pixel-identical to frame 0. Evidence: G14 on the frozen build.
-40. The cursor and the thing it is up against stay inside a centred 4:3 crop and a centred square crop in every loop frame.
+40. The cursor and the thing it is up against stay inside a centred 4:3 crop and a centred square crop in every loop frame. Evidence: `loopState` for every frame.
 41. `deliver/POST.md` holds its three parts. Evidence: D7.
 42. `npm run render:local -- --proof` ran on the frozen build and both of its files pass `ffprobe`. Evidence: D3.
 

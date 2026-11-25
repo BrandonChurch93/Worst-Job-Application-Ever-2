@@ -71,10 +71,10 @@ Which folders make up a unit:
 
 - `src/config.ts` imports `config/showcase.json`, validates it and exports it typed. `src/copy.ts` does the same for the two files in `content/`.
 - No other file contains a number, an id, a name, a word of copy or an approved image path that those three files hold.
-- Startup fails loudly if a key is missing; if a beat, a key, a sheet or a still names a unit, a beat or a camera that does not exist; if the beats of a page do not run from zero to that page's seconds in `film.units` with no gap or overlap; if `film.units` adds up to more than `film.maxSeconds`; if `budget.phaseHours` does not add up to `budget.runHours`; if `film.fps` is not a whole multiple of `film.previewFps` and of `deliver.cardLoop.fps`; if `cursor.armsOnlyInBeat` is not a beat; if an entry of `deliver.cardLoop.candidates` is not a key; if `content/narration.json` has a beat the config does not have or lacks one it has; if a line of the film, spoken at `audio.narratorMaxWordsPerSecond`, would run into the next line with less than `audio.lineGapSeconds` between them; if the table of events to cues names a cue that `audio.sfx` does not have; if the layout tree of a page names a copy key that does not exist; or if an approved image is missing.
+- Startup fails loudly if a key is missing; if a beat, a key, a sheet or a still names a unit, a beat or a camera that does not exist, where the camera name `film` always exists; if the beats of a page do not run from zero to that page's seconds in `film.units` with no gap or overlap; if `film.units` adds up to more than `film.maxSeconds`; if `budget.phaseHours` does not add up to `budget.runHours`; if `film.fps` is not a whole multiple of `film.previewFps` and of `deliver.cardLoop.fps`; if `cursor.armsOnlyInBeat` is not a beat; if an entry of `deliver.cardLoop.candidates` is not a key; if `content/narration.json` has a beat the config does not have or lacks one it has; if a line of the film, spoken at `audio.narratorMaxWordsPerSecond`, would run into the next line with less than `audio.lineGapSeconds` between them; if the table of events to cues names a cue that `audio.sfx` does not have; if the layout tree of a page names a copy key that does not exist; or if an approved image is missing.
 - A camera in `cameras` is a lens angle and a note of what it is for. Its position is fitted and written back. The camera named `film` in a key means the film's own camera at that key's beat and moment.
 - A key's `beat` and `at` name the moment of film mode the approved image shows: `at` is the share of the beat that has passed.
-- A handful of values are the Builder's to tune and write back: everything under `cameras`, with `cameras.home.fovDeg` inside its limits; each key's `at`, once, when its camera is fitted, to the moment that matches its approved image best; the times in `film.beats` and `film.units`, inside `film.unitTuneFraction` and `film.maxSeconds`; each number under `live.step1`, `live.step2`, `live.pinball` and `live.boss`, by up to a quarter either way, when the bots or a round show a step dragging or rushing; and what each level of `live.quality` draws. Log each change. Two more values may move, each in one direction only: the sizes under `assetSets.web` may be lowered to fit `host`, and `critics.maxImageLongEdgePx` may be lowered in Phase 0. Nothing else in the config is yours to change.
+- A handful of values are the Builder's to tune and write back: everything under `cameras`, with `cameras.home.fovDeg` inside its limits; each key's `at`, once, when its camera is fitted, to the moment that matches its approved image best; the times in `film.beats` and `film.units`, inside `film.unitTuneFraction` and `film.maxSeconds`; each number under `live.step1`, `live.step2`, `live.pinball` and `live.boss`, by up to a quarter either way, when the bots or a round show a step dragging or rushing; and what each level of `live.quality` draws. Log each change. Two more values may move, each in one direction only: the sizes under `assetSets.web` may be lowered to fit `host`, and `critics.maxImageLongEdgePx` may be lowered in Phase 0. One value is Brandon's, and you write it for him when he sends it: `links.portfolioWork`, from the approval prompt. While it is empty the message page for touch devices shows no link. `film.plannedSeconds` is the record of each page's planned length and is never changed. Nothing else in the config is yours to change.
 
 ## The stage and its drivers
 
@@ -133,7 +133,7 @@ A computed picture is a pure function of what it shows, the format, the tier, th
 - In `live`, the careers page and the cursor load first. Each later page loads while the visitor is on the one before it. The table is the largest and starts loading during step 1.
 - Only one page's assets need to be on the graphics card at a time, plus the next page's while it loads. A page that has been left is released.
 - Once a texture is uploaded, its decoded source is released.
-- A stand-in is never silent. `parts/PARTS.json` is the register of every part, as `kit/03-METHOD.md` defines it. `info().standIns` is every part whose state is `stand-in`, with its unit.
+- A stand-in is never silent. `parts/PARTS.json` is the register of every part, as `kit/03-METHOD.md` defines it. `info().standIns` is every part that carries the stand-in flag in the code or data now loaded, with its unit.
 - Check G13 does not take the register's word alone. For every part it covers, as `kit/07-QUALITY-BAR.md` says which, it makes three tests, and it is red if any fails:
   1. The part's state in the register is not `stand-in`.
   2. The hash of the part's files differs from the hash recorded when it was a stand-in. This holds for every state, `fallback`, `general fallback` and `last resort` included, so changing a label changes nothing. Finishing a part always changes its files, if only because its stand-in flag is removed, so a part that is really finished always passes.
@@ -146,22 +146,25 @@ The page exposes one object on `window`:
 ```ts
 interface Showcase {
   ready: Promise<void>
-  info(): { fps: number; format: string; tier: string; assets: string; engineHash: string; pageHashes: Record<string, string>; standIns: { name: string; unit: string }[]; counts: Record<string, { triangles: number; drawCalls: number; standingParts?: number }>; textureMb: Record<string, number>; versions: Record<string, string> }
+  info(): { fps: number; format: string; tier: string; assets: string; engineHash: string; pageHashes: Record<string, string>; standIns: { name: string; unit: string }[]; modules: { film: string[]; live: string[] }; counts: Record<string, { triangles: number; drawCalls: number; standingParts?: number }>; textureMb: Record<string, number>; versions: Record<string, string> }
   setFormat(id: string): Promise<void>
   setAssets(id: string): Promise<void>
   setDiagnostic(view: string): void
   renderStill(spec: StillSpec): Promise<void>
+  pictureStats(): { invalidValues: number }
+  typeRegister(page: string): { key: string; text: string; states: string[]; made: 'copy' | 'config' | 'runtime' }[]
   stillState(spec: StillSpec): { layout: { id: string; kind: string; planned: number[]; drawn: number[] }[]; type: { key: string; text: string; box: number[]; px: number; contrast: number }[]; cursor: CursorState }
   film(): { frameCount: number; units: { id: string; first: number; last: number }[]; beats: { id: string; first: number; last: number }[]; lines: { beat: string; first: number; last: number }[] }
-  filmState(frameIndex: number): { unit: string; beat: string; camera: number[]; cursor: CursorState; events: { name: string; x: number; y: number }[]; standIns: string[] }
+  filmState(frameIndex: number): { unit: string; beat: string; camera: number[]; cursor: CursorState; events: { name: string; x: number; y: number; hitsCursor: boolean }[]; standIns: string[] }
   renderFilmFrame(frameIndex: number, tier: string): Promise<void>
   opening(): { frameCount: number }
   renderOpeningFrame(frameIndex: number): Promise<void>
   loop(): { frameCount: number; scene: string }
+  loopState(frameIndex: number): { cursorBox: number[]; threatBox: number[] }
   renderLoopFrame(frameIndex: number, tier: string): Promise<void>
 }
 type StillSpec = { page: string; beat?: string; at?: number; scroll?: number; camera: string; tier: string; sheet?: string; interface?: boolean; touchOnly?: boolean; live?: string }
-type CursorState = { x: number; y: number; heightPx: number; worldScale: number; acting: string; damage: string[]; arms: boolean; onPage: boolean }
+type CursorState = { x: number; y: number; heightPx: number; screenHeightPx: number; worldScale: number; acting: string; damage: string[]; arms: boolean; onPage: boolean }
 ```
 
 - A still with a `beat` shows film mode at that share of the beat. A still with neither `beat` nor `sheet` shows the page at rest as a visitor first sees it, before any gag, with the cursor at its starting place. Every entry of `stills` in the config is one of these. `scroll` is how far down the careers page the view is, from 0 to 1.
@@ -169,6 +172,11 @@ type CursorState = { x: number; y: number; heightPx: number; worldScale: number;
 - `live` names a level of `live.quality` and draws the still through the live site's own path, with one sample.
 - `info().counts` and `info().textureMb` have one entry for each page.
 - `stillState` and `filmState` return what the checks need without rendering. `planned` is a part's box in the layout tree and `drawn` is where its edges fall in the picture, both in page pixels. `counts` and `type` come from the scene itself, never from reading a picture.
+- Places are given in picture pixels: `x` and `y` of the cursor and of every event, and the boxes of `loopState`, are positions in the frame at `formats.hd`, whatever camera is in use. `heightPx` is the cursor's height in page pixels at the page surface, which is what measure M6 reads. `screenHeightPx` is its height in the picture, which is what measure M7 reads.
+- An event's `hitsCursor` is true when the thing that happened struck the cursor: a bolt, a slab, a coin, the crank, a bumper, a steel ball, the doors, the stamp.
+- `pictureStats` reports on the picture just rendered, before tone and grade. Measure M1 reads it.
+- `typeRegister` lists every run of type a page can ever show, with the states that show it and how its text is made. Check G11 reads it.
+- `info().standIns` is read from the stand-in flags in the code and data that are loaded, not from the register. `info().modules` lists the modules under `src/pages/`, `src/table/` and `src/boss/` that each mode loads. Check G18 reads it.
 - `renderLoopFrame` accepts the index one past the last frame. Check G14 uses it.
 - After a call resolves, a clean picture is on the canvas. For a picture with the interface, the harness captures the page region that holds canvas and controls together.
 - If one picture at the `final` tier does not fit in `sandbox.chunkBudgetMinutes`, add calls that split its samples across steps, and prove with `npm run determinism` that a split picture is pixel-identical to an unsplit one.
@@ -210,8 +218,8 @@ Scripts in `tools/`, run through npm.
 | `npm run clock` | The clock. See below |
 | `npm run animatic` | The rough cut: `out/roughcut.mp4`. See below |
 | `npm run simcache` | The simulation's checkpoints along the film, under `out/work/` |
-| `npm run take` | Searches for the pinball take and writes `cut/TABLE-TAKE.json`, as `kit/03-METHOD.md` section 10 says. Resumable. `--check` replays the kept take and prints when each beat's event fell |
-| `npm run bots` | Every bot in `live.bots`, `live.botSeeds` times each, through the whole live site without rendering. Prints for each run whether it finished, how long each step took and the longest time control was held. `--watch` renders one run as a sheet |
+| `npm run take` | Searches for the pinball take and writes `cut/TABLE-TAKE.json`, as `kit/03-METHOD.md` section 10 says. Resumable. `--check` replays the kept take and prints when each pinball beat's event fell, and whether that is inside its beat give or take `film.beatToleranceSeconds` |
+| `npm run bots` | Every bot in `live.bots`, `live.botSeeds` times each, through the whole live site without rendering. Prints for each run whether it finished, how long each step took, every beat's gag it reached, the longest time the pointer was ignored outside the pinball scene and the longest time the flippers were ignored inside it. `--watch` renders one run as a sheet |
 | `npm run still -- --page P --beat B --at X --camera C --tier R --format F --assets A --diag V` | One still in `out/work/stills/`. `--key ID` and `--id ID` render a key or a judged still by name. `--sheet ID` renders the build's version of an approved sheet. `--interface` captures it with the controls on. `--live LEVEL` draws it through the live site's path |
 | `npm run crops -- --key ID` | Grids of native-size crops, each with a long edge of at most `critics.maxImageLongEdgePx`: the cursor, every kind of control in the still, the smallest type, a contact shadow, a glass edge, and whatever the key is about |
 | `npm run compare -- --key ID` | A comparison image `compare-<key>.jpg`: the approved image beside the key's still at the same size, and under them matching native-size crops. `--sheet ID` does the same for a sheet |
@@ -263,13 +271,14 @@ Rules:
 - `npm run clock -- --phase N` is a tick. It adds the whole time since the previous tick or start to phase N.
 - `npm run clock -- --review-round N` ticks review round N. The first tick of a round opens it with `budget.reviewRoundHours`. Its time is kept apart from both allowances. It prints the time used in the round out of the time allowed, and `extra rounds: yes` or `no`, which is no once those hours are used. It never prints `budget report: due`.
 - `npm run clock -- --review` records that the review was approved. From then on the allowance in force is `budget.afterReviewHours`, counted from zero, and Phase 6 has all of it as its box. A second call changes nothing.
-- `npm run clock -- --continue N` records continuation N, where N is "Continuations" in `kit/PROGRESS.md` plus one. The Builder writes the new count back. Before the review it gives each of Phases 0 to 5 that is not `done` a new box: `budget.continueHours` split in proportion to those phases' boxes in `budget.phaseHours`. After the review it gives Phase 6 all of `budget.continueHours`. From then on the lines below are measured from the start of the continuation against the new boxes.
+- `npm run clock -- --continue N` records continuation N, where N is "Continuations" in `kit/PROGRESS.md` plus one. The Builder writes the new count back. Before the review it gives each of Phases 0 to 5 that is not `done` a new box: `budget.continueHours` split in proportion to those phases' boxes in `budget.phaseHours`. After the review it gives Phase 6 all of `budget.continueHours`. From then on the lines below are measured from the start of the continuation against the new boxes, with one exception: a phase that had already printed `half point: reached` or `box end: reached` keeps printing it. A continuation never reopens polishing before a first round, and never reopens the planned method for a part that went to its fallback.
 - `npm run clock -- --extension N` ticks an extension after completion. Its time is kept apart from the build's. It prints the time used in the extension out of `budget.extendHours`, and `extra rounds: yes` or `no`, which is no once those hours are used. It never prints `budget report: due`.
 - A tick with `--phase N` prints, in plain words:
   - Time used in this phase and under the allowance in force, and the time allowed.
   - `extra rounds: yes` or `no`. It is no once the time used under the allowance has reached the sum of the boxes up to and including this phase. In Phases 5 and 6 it is also no once the time left before the budget report is under `budget.reserveHours` for that phase.
   - `half point: reached` once this phase has itself used half of its own box.
   - `box end: reached` once this phase has itself used all of its own box.
+  - In Phases 5 and 6 those two lines are counted against the phase's box less `budget.reserveHours` for that phase, so `box end: reached` is always printed before `budget report: due`.
   - `budget report: due` once the time used has reached the time allowed.
   - Minutes since the last status, and `status overdue` once that passes `budget.statusMaxGapMinutes`.
 - The Builder reads those lines and follows the clock rules in `AGENTS.md`. The script decides nothing by itself.
@@ -306,7 +315,7 @@ Rules:
 The masters are not made here. Brandon's computer has a real graphics card, and a film that is computed frame by frame does not care how fast the machine is. `npm run render:local` is the tool for it. It is run on his computer after the build, from a fresh clone, by an agent working for him.
 
 - It needs Node, an installed Chrome and `ffmpeg`. It uses the installed Chrome with its graphics card on, in a visible window, and never downloads a browser.
-- `npm run render:local -- --what film-b --test` first renders one judged still and writes it beside the kept still of the same key with their PSNR, so a machine that draws the scene differently is seen before a long render. It then runs `npm run take -- --check` on this machine. If a beat's event falls outside `film.beatToleranceSeconds` here, it searches for a take on this machine and uses that one for the render, without changing the committed file. Then it renders the first `export.local.testSeconds` seconds, assembles them with sound, opens the result and stops.
+- `npm run render:local -- --what film-b --test` first renders one judged still and writes it beside the kept still of the same key with their PSNR, so a machine that draws the scene differently is seen before a long render. It then runs `npm run take -- --check` on this machine. If a pinball beat's event falls outside its beat here by more than `film.beatToleranceSeconds`, it searches for a take on this machine and uses that one for the render, without changing the committed file. Then it renders the first `export.local.testSeconds` seconds, assembles them with sound, opens the result and stops.
 - `npm run render:local -- --what film-b --go` renders the whole film: every frame at `film.fps` in `formats.master`, at the `final` tier with the `full` asset set, through `capture` mode. Frames are written and assembled in chunks, so a run that is interrupted carries on where it stopped. The chunks are joined with the final mix into an `export.local.container` file with `export.local.videoCodec`, named from `export.files`.
 - `--what film-a` renders the opening and joins it in front of film B's chunks, reusing them if they exist. `--what loop` renders the card loop at `film.fps` and writes the card still from its frame 0.
 - If `audio/final/` holds no mix, it renders silent and says so in its last line.
@@ -341,6 +350,7 @@ For the second:
 - Limits, from `host`: `dist/` is at most `maxShippedMb` in all, no file is over `maxFileMb`, everything fetched before the first complete picture of the careers page is at most `firstLoadMaxMb`, and a clean build takes at most `maxBuildMinutes`. `npm run hostcheck` measures all four. Check G16 reads its result.
 - The asset sizes in `assetSets.web` are the starting point for fitting those limits. If the web set does not fit, lower its texture sizes for the largest parts first, and log it. Type is never one of them.
 - In Phase 0, read the hosting provider's current limits page and record what its static file limit counts. When this kit was written its free plan listed a limit of 100 MB on static file uploads. If what you find changes what `host.maxShippedMb` should be, log it as a note for Brandon. Do not change the key.
+- Which extensions are portable cannot be measured here, where only one browser runs. In Phase 0 a supporting agent reads a public table of WebGL extension support by browser, records its address and the date, and an extension is marked `portable` in `config/webgl-caps.json` only if that table shows it in current Chrome, Safari, Firefox and Edge on a computer. Every extension that is not portable is used only behind a test, with a path that works without it.
 - The site runs in current Chrome, Safari, Firefox and Edge on a computer. If a second browser engine can be driven in this workspace, load the site in it and keep a still. If not, log that it was not possible.
 - A touch-only device gets the message page. Detect it by what the device reports about its pointer and hover, not by the width of the window.
 

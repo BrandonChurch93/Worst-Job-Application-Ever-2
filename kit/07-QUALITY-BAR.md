@@ -22,18 +22,18 @@ They test the code and the files, not the picture. They are cheap and they run o
 | G4 | Every still is exactly the size of its format. `film().frameCount` matches `cut/CUTLIST.json`. `loop().frameCount` equals `deliver.cardLoop.seconds` times `film.fps` | Phase 0, the film and loop parts from Phase 2 |
 | G5 | No DOM control is in a still without `interface`, in any frame of film B or in the loop. The controls are present in every still with `interface` | Phase 2 |
 | G6 | The config and the two content files pass startup validation, and every still and frame on the computed judged list is on the judged list in `kit/PROGRESS.md` | Phase 2 |
-| G7 | Lengths. Film B is at most `film.maxSeconds`. Each page's length is within `film.unitTuneFraction` of its seconds in `film.units` as the kit set them. The opening is at most `intro.maxSeconds`. A film in `formats.hd` at `export.bitrateMbps` is under `platform.maxFileMb`. The check also prints, as a note and never as a failure, whether film B or film A is longer than `platform.standardAccountMaxSeconds`, the most a standard account on `platform.name` may post | Phase 2 |
+| G7 | Lengths. Film B is at most `film.maxSeconds`. Each page's length in `film.units` is within `film.unitTuneFraction` of its planned length in `film.plannedSeconds`. The opening is at most `intro.maxSeconds`. A film in `formats.hd` at `export.bitrateMbps` is under `platform.maxFileMb`. The check also prints, as a note and never as a failure, whether film B or film A is longer than `platform.standardAccountMaxSeconds`, the most a standard account on `platform.name` may post | Phase 2 |
 | G8 | Every third-party file has a row in `ASSETS.md`. Every built or generated file that ships has a recipe in `assets-src/`. Every kept sound has its record | Phase 0 |
 | G9 | No tracked file is over `repo.maxFileMb`. The tracked files together are under `repo.maxTreeGb`. No secret is tracked. `references/cache/` and `out/work/` are not tracked. Every file in `references/approved/MANIFEST.sha256` still has its listed hash. `content/copy.json` has the hash listed for it in `content/MANIFEST.sha256` | Phase 0 |
 | G10 | The site needs only WebGL2 core and the extensions marked portable in `config/webgl-caps.json`. Where it uses float targets it has a half float path | Phase 0 |
-| G11 | The words. Read from `stillState` for every page at rest and from the type register for every state a script reaches: every run of type shows the string its copy key or config key holds, character for character; every copy key a layout tree names is drawn; and no run of type was made from a string written in code. Typed input, counters and the score display are the only runs whose text is made at run time | Phase 2 |
-| G12 | The story. Read from `filmState` for every frame of the film: the beats of `film.beats` start in order; every beat with an `event` reports that event inside the beat, within `film.beatToleranceSeconds` of where its script puts it; the cursor has arms only inside `cursor.armsOnlyInBeat`; its world scale is the same in every frame; it carries no damage on the first frame of a page; and no damage lasts longer than `cursor.damageHealSeconds` | Phase 2 |
+| G11 | The words. Read from `stillState` for every page at rest and from `typeRegister` for every page: every run of type shows the string its copy key or config key holds, character for character; every copy key a layout tree names is drawn; and no run of type was made from a string written in code. Typed input, counters and the score display are the only runs whose text is made at run time | Phase 2 |
+| G12 | The story. Read from `filmState` for every frame of the film: the beats of `film.beats` start in order; every beat with an `event` reports that event inside the beat, give or take `film.beatToleranceSeconds`; the cursor has arms only inside `cursor.armsOnlyInBeat`; its world scale is the same in every frame; it carries no damage on the first frame of a page; and no damage lasts longer than `cursor.damageHealSeconds` | Phase 2 |
 | G13 | Stand-ins. No part that it covers is a stand-in, by the three tests in `kit/05-ARCHITECTURE.md`. It covers every part of the unit a round is about, in that round; every part of a unit marked `finished` in `kit/PROGRESS.md`; from the first round on `site` in Phase 5, every part outside the `film` unit; and from the first round on `film` in Phase 6, every part there is | Phase 3 |
 | G14 | The loop's seam. The loop frame one past the last is pixel-identical to frame 0 | Phase 2 |
 | G15 | Memory and counts. For every page, `info().textureMb` is at or under `assetSets.<set>.maxTextureMb` for both asset sets, and `info().counts` is within `perf` for every level of `live.quality` | Phase 3 |
 | G16 | Hosting. `npm run hostcheck` is inside every limit in `host`, and the built site opens the careers page in `live` mode | Phase 5 |
 | G17 | Finishing. `npm run bots`: every bot in `live.bots`, on each of `live.botSeeds` seeds, reaches the careers page after the rejection within `live.botMaxSeconds`. Outside the pinball scene the pointer is never ignored for longer than `live.controlTakenMaxSeconds` at a time. Inside it the flippers are never ignored for longer than that. No run ends in a state with no way forward | Phase 2 |
-| G18 | One site. No module under `src/pages/`, `src/table/` or `src/boss/` is loaded by film mode and not by live mode, and every beat's gag can be reached in live mode by a bot | Phase 2 |
+| G18 | One site. Read from `info().modules`: no module under `src/pages/`, `src/table/` or `src/boss/` is loaded by film mode and not by live mode. Read from what `npm run bots` prints: every beat's gag was reached in live mode by the `keen` bot | Phase 2 |
 
 - A red machine check is a bug. Fix it before critics see the round.
 - If a machine check is still red after `quality.gateFixMaxAttempts` attempts in one round, or in one phase when no round is running, log it as a severe open item. A round goes on to the critics if pictures can still be rendered, and ends there if they cannot. A phase goes on to its next step.
@@ -46,14 +46,14 @@ They put a number on the picture or the motion. They run in every round, for the
 
 | Id | Measure | Units |
 | --- | --- | --- |
-| M1 | Sanity. In each judged still of the unit: the picture before tone and grade holds no invalid or infinite value. From `home`, every pixel on the frame's edge is page surface or something standing on the page, so nothing shows round the page. The cursor lies inside the frame whenever it is on the page | All pages |
+| M1 | Sanity. In each judged still of the unit: `pictureStats` reports no invalid or infinite value in the picture before tone and grade. From `home`, every pixel on the frame's edge is page surface or something standing on the page, so nothing shows round the page. The cursor lies inside the frame whenever it is on the page | All pages |
 | M2 | Texture detail. In the `texels` view of each judged still: among textured pixels, the share with fewer than `detail.minTexelsPerPixel` texels per screen pixel is at most `detail.maxSoftPixelFraction`. In a still taken through a lens with focus, only pixels whose blur circle is under `detail.focusCocPx` pixels are counted | All pages |
 | M3 | Real sharpness. For each key: fine detail, measured as high frequency energy over the still, is at least `detail.minSharpnessRatio` of the same measure on the approved image at the same size | All pages |
 | M4 | Readable type. From `stillState` for each page at rest and for each key: every run of type is at least `layout.minTextPx` tall, counted in page pixels, and its contrast against what lies under it is at least `layout.minTextContrast` | All pages |
 | M5 | Layout. From `stillState` for each page at rest and for each key: every part is drawn within `layout.tolerancePx` of where the layout tree puts it, counted in page pixels at the page surface | All pages |
 | M6 | The cursor's size. In each still from `home` in which the cursor stands at rest, its height is `cursor.heightPxAt1080` page pixels, within `cursor.sizeTolerancePx` | All pages |
-| M7 | Contact. From `filmState` for the unit's beats: every event that hits the cursor happens within the cursor's own height of where the cursor is on that frame, and the cursor's damage or acting state changes on that frame or the next | All pages, `film` |
-| M8 | A crowded table. In the `table-top` still: the standing parts counted from the scene are at least `table.minStandingParts`, and the share of playfield pixels that lie further than `table.bareDistanceFraction` of the playfield's width from any standing part, insert or printed line is at most `table.maxBareFraction` | `pinball` |
+| M7 | Contact. From `filmState` for the unit's beats: every event whose `hitsCursor` is true happens within the cursor's own height in the picture of where the cursor is on that frame, and the cursor's damage or acting state changes on that frame or the next | All pages, `film` |
+| M8 | A crowded table. In the `table-top` still: the standing parts counted from the scene are at least `table.minStandingParts`, and, in the `coverage` view of that still, the share of playfield pixels that lie further than `table.bareDistanceFraction` of the playfield's width from any standing part, insert or printed line is at most `table.maxBareFraction` | `pinball` |
 
 - M2 counts texels, so a texture that was enlarged without gaining detail can pass it. M3 is there to catch that.
 - A red measure is not a blocker. It is a severe issue in that round, beside the critics' issues, and it follows the same round limits.
@@ -91,6 +91,7 @@ They are run with the gates and reported. None can fail a gate. A failing one be
 | A8 | No cue used more than `audio.maxTakesPerCue` takes and no line more than `audio.narratorMaxTakesPerLine` in the build, and none used more than that again in any one review round |
 | A9 | Sync. In `cut/CUES.md`, every event of the film that the table of events to cues maps has its cue starting within `audio.contactSyncFrames` frames of it. Every narrator line starts inside its beat and ends at least `audio.lineGapSeconds` before the next line |
 | A10 | Every kept narrator line, written down by the listener, is its line in `content/narration.json` word for word |
+| A11 | With the site's sound files removed from the build, the site runs silent, hides the sound control and reports no error |
 
 ## Freshness
 
@@ -395,6 +396,7 @@ Sound is not part of any pass bar.
 | Low-tier looks rendered while tuning one part | per part, per round, and per phase for parts tuned outside a round | `assets.maxTuningLooksPerPart` | |
 | Searches for the pinball take | each time a take is needed: the first one, after a change to the table's layout or physics, and after a pinball beat's time has moved | `quality.takeSearchMaxRuns` | |
 | Moves of `cameras.home.fovDeg` | per build | one | |
+| Returns of the pinball table to its build agents for being too bare, before it is integrated | per build | one | |
 | Working time of one review round | per round Brandon sends | `budget.reviewRoundHours` | |
 | Fixes to a finished unit that a change to a shared system made worse | per unit, per change | one | |
 | Wall-clock time of one build agent | per agent | `budget.buildAgentMaxHours` | |

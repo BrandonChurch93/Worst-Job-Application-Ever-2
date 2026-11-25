@@ -33,10 +33,10 @@ Every loop below has a limit in `kit/07-QUALITY-BAR.md`. The clock rules and the
    - "Build" says `extension N in progress`: carry that extension on from the step after "Extension step", as "Extensions" below describes. Skip the rest of this list.
    - "Review" says `approving`: carry the approval on from the step after "After review step", as "After the review" below describes, whatever the prompt says. Skip the rest of this list.
    - "Review round" says `round N in progress`: carry that review round on from the step after "Review round step", as "A review round" below describes. If this task's prompt holds notes that are not yet logged, add them to the round's items first. If it holds the line `The review is done.`, close the round at once: put back the kept takes and the mix of the last `REVIEW` block he was sent, because those are what he heard and approved, do the round's step 7 without ending the task, with the round's unfinished items listed under "Review items not done", and then do "After the review" with this prompt. Skip the rest of this list.
-   - "Review" says `waiting`: read the prompt. With the line `The review is done.`, do "After the review" below. With the line `Review notes.`, do "A review round" below. With neither, show the block under "Last report block" again and build nothing.
+   - "Review" says `waiting`: read the prompt. With the line `The review is done.`, do "After the review" below, also when the prompt holds `Review notes.` as well: the approval wins and every note in the prompt is a review item. With the line `Review notes.` alone, do "A review round" below. With neither, show the block under "Last report block" again and build nothing.
    - "Budget" says `reported`: follow "The budget report" in `AGENTS.md`.
    - Otherwise tick the clock for the current phase. If it prints `budget report: due`, go straight to "The budget report" in `AGENTS.md`. Start nothing first.
-6. Post the status that opens the task. In the very first task there is nothing to show yet: its opening status is the one in Phase 0 step 4, and steps 1 to 3 come before it. If those three steps take longer than `budget.statusMaxGapMinutes`, post two lines of text by hand.
+6. Post the status that opens the task. In the very first task there is nothing to show yet: its opening status is the one in Phase 0 step 4, and steps 1 to 3 come before it. If those three steps take longer than `budget.statusMaxGapMinutes`, post two lines of text by hand and show `references/approved/contact-sheet.jpg` with them by whatever means you have.
 7. If a phase is already in progress, continue it. Never redo a phase marked `done`. Check "Rounds" for a round that was interrupted, "Running jobs" for jobs to pick up or restart, and "Running agents" for branches to fetch and work to hand to new agents.
 
 ## Phase 0 · Ground truth
@@ -49,7 +49,7 @@ Steps:
 2. Create `package.json` at the repo root before installing anything.
 3. Build `npm run clock` and `npm run look`. Run `npm run clock -- --start` and tick. From here on, every status and every poll ticks the clock.
 4. Prove the inline display. Show `references/approved/contact-sheet.jpg` in the task thread so that it is visible without opening or downloading a file. Record the method under "Tool record". If no method works, record that and follow the fallback rule in "Showing the work" in `AGENTS.md`. Measure whether `repo.url` is private. Post this as the first status, with one line that says where the sound files will live, as "Sound" in `AGENTS.md` asks.
-5. Record the workspace: OS, cores, memory, disk, Node and npm versions, the browser and its exact version, and the WebGL2 limits and extensions under software rendering. Write them to `config/webgl-caps.json`, with the extensions every target browser has marked `portable`.
+5. Record the workspace: OS, cores, memory, disk, Node and npm versions, the browser and its exact version. Build `npm run caps` and run it for the WebGL2 limits and extensions under software rendering. Mark extensions `portable` in `config/webgl-caps.json` as the hosting section of `kit/05-ARCHITECTURE.md` says.
 6. Confirm `ffmpeg` and `ffprobe` run. If either is missing, install a static build through npm.
 7. Test, with an agent whose whole job is to wait two minutes and answer, whether you can tick the clock and post a status while an agent you started is still working. Record the result. If you cannot, follow the short agent rule in "Waits" in `AGENTS.md` for the whole build. Test whether a detached process outlives a scripted step. Test whether a sandbox agent can clone the repo, return a video file as an attachment and push a branch.
 8. Measure the image limit: view a test image with fine numbered marks and find the longest edge that arrives without being downscaled. If it is smaller than `critics.maxImageLongEdgePx`, lower that key.
@@ -59,7 +59,7 @@ Steps:
 12. With supporting agents, read the output terms of each image model you will use and of the sound tool, and the hosting provider's current limits, and record them as `kit/06-ASSETS.md` and the hosting section of `kit/05-ARCHITECTURE.md` say.
 13. Decide the three.js version as `kit/05-ARCHITECTURE.md` says. Pick the physics library and prove with a ten second test that the same input gives the same state on this VM and on a sandbox VM. Three tries, with a different library or build each time. If none passes, the table's physics is its named fallback from `kit/03-METHOD.md` section 10, your own solver, from the start. Pick the two type families and record their licences. Pin every version.
 14. Scaffold the site: config and content import and validation, seeded random, sampler, accumulator, the asset loader, the stage with its sim steps and one driver, the frame interface with the stand-in list, and `capture` mode. Put a spike scene in it to measure with: a ceramic slab with one glass field, one orange button in a socket, one line of type and a plain arrow, under the key light with soft shadows.
-15. Build the harness commands `still`, `crops`, `compare`, `determinism`, `gate`, `caps`, `budget`, `status`, `keep` and `review`.
+15. Build the harness commands `still`, `crops`, `compare`, `determinism`, `gate`, `budget`, `status`, `keep` and `review`.
 16. Measure the render budget on the spike scene: seconds per sample at each format, and the fixed cost of starting a render. Render one still on this VM and on two sandbox VMs and log the PSNR of each pair. Write the table.
 17. Publish the build with its review page. Record the URL in `kit/PROGRESS.md` and `README.md`.
 18. Post a status with the spike still beside the approved `page-look` image, shown inline.
@@ -83,7 +83,7 @@ Read first: `kit/01-FILM.md`, the rough cut section of `kit/05-ARCHITECTURE.md`,
 
 Steps:
 
-1. Build `npm run animatic` and make `out/roughcut.mp4`.
+1. Build `npm run animatic` and make `out/roughcut.mp4`. It is a job of minutes: its expected time is `sandbox.stepTimeoutMinutes`.
 2. Look at one frame from every beat. Confirm the order and the lengths against `film.units` and `film.beats`.
 3. Commit and push. Run `npm run review` and publish, so the rough cut plays at `<url>/review.html`.
 4. Post a status with two frames of it shown inline and the review page link. Say that the rough cut is made from the approved images with no sound, that it exists so Brandon can judge the order and pace of the film, and that the build is continuing.
@@ -106,12 +106,12 @@ Steps:
 2. Write the layout tree of all six pages. Draw every part as a flat grey box at its place and height, with its real words from the copy in a plain system face. Create `parts/PARTS.json` with every part as `stand-in`, and record the file hash of each as it stands now.
 3. Give the cursor a stand-in: a flat arrow that follows the pointer with weight and squashes when it stops.
 4. Build every gag as a working state machine on stand-in shapes, with its live way out: the keyboard that types, turrets that fire, keys that shuffle, slabs that drop, the tug of war as one number, the three rows and their machines, the checkbox and the boss with its health and its three phases, the wait, the letter and the stamp. Build the page turn.
-5. Build the pinball table's stand-in: a flat board with the layout of the approved `table-top` image as colliders and plain shapes, the physics library running, the flippers, the director with every beat's entry and deadline. Run `npm run take` for a first take.
-6. Build the film: a script for every beat that reaches the beat's event on time, the film's cameras with every pinball shot of `kit/01-FILM.md`, `npm run cut`, `film` mode, and a stand-in for film A's opening that has the right length. Build `loop` mode with a closed script for the first entry of `deliver.cardLoop.candidates`.
+5. Build the pinball table's stand-in: a flat board with the layout of the approved `table-top` image as colliders and plain shapes, the physics library running, the flippers, the director with every beat's entry and deadline. Build `npm run take` and `npm run simcache`, and run the search for a first take, inside `quality.takeSearchMaxRuns`.
+6. Build the film: a script for every beat that reaches the beat's event on time, the film's cameras with every pinball shot of `kit/01-FILM.md`, the command `npm run cut`, `film` mode, and a stand-in for film A's opening that has the right length. Build `loop` mode with a closed script for the first entry of `deliver.cardLoop.candidates`.
 7. Build the live site: `live` mode, the pointer, the three DOM controls, the message page for touch devices, the offer for reduced motion, the levels of quality and how the site picks one, the menu on the `M` key, and the probe page.
 8. Build `npm run bots` and run it.
 9. Build the sound side: `npm run sound`, `npm run mix`, the site's sound engine, and the table of events to cues. Spend the first take of every line under `film` in `content/narration.json`, because the length of the voice sets the pace of the film. Move beat times inside their limits where a line needs the room, and log each move. Spend the first takes of `room-tone`, `step`, `key-press`, `bolt-fire`, `slab-drop`, `bumper`, `flipper`, `stamp` and `page-turn`, so the site and the blockout film carry sound from the start.
-10. Build the remaining harness commands, including `npm run render:local`.
+10. Build every harness command in `kit/05-ARCHITECTURE.md` that does not exist yet, including `npm run sheet`, `npm run measure`, `npm run pack`, `npm run film`, `npm run loop`, `npm run stress`, `npm run hostcheck` and `npm run render:local`.
 11. Write `cut/SHOTS.md`: for every beat, the camera, its move, the start and end framing, and for the pinball shots the lens and the focus.
 12. Measure the render budget again on this scene and update the table.
 13. Write the judged list into `kit/PROGRESS.md`.
@@ -197,7 +197,7 @@ For each unit:
 
 For `pinball`, in addition:
 
-1. Before integration, put the table's parts together on the playfield and render `table-top` and `table-player` beside their approved images. Count the standing parts and run M8. A table that is not yet crowded goes back to the hardware and building agents before anything else is tuned.
+1. Before integration, put the table's parts together on the playfield and render `table-top` and `table-player` beside their approved images. Count the standing parts and run M8. A table that is not yet crowded goes back to the hardware and building agents once, for one more pass inside `budget.buildAgentMaxHours`, while the rest of the unit's work carries on. After that pass the table is integrated as it stands, and a red M8 is a severe issue for its round.
 2. Fit the eight table cameras to their keys.
 3. Once the layout of the colliders is final, run `npm run take`, for at most `quality.takeSearchMaxRuns` searches. A later change to the layout or the physics buys the same number of searches once more.
 4. Write the light show's score against the take's events.

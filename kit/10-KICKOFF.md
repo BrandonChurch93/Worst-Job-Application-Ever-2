@@ -139,6 +139,8 @@ BUILD MODE.
 Pull https://github.com/BrandonChurch93/Worst-Job-Application-Ever-2 and continue from kit/PROGRESS.md. Read AGENTS.md and kit/addenda/ first. Same rules.
 ```
 
+If the task that ended early was an extension, send the extension prompt again in place of this one.
+
 ## To ask for a status at any time
 
 ```

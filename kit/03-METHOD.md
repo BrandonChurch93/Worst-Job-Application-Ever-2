@@ -121,6 +121,15 @@ Part: `cursor-acting`.
 - In live mode layer 1 follows the visitor's mouse, section 15. Layers 2 and 3 are set by what the page is doing, so the visitor's cursor acts by itself.
 - Named fallback: squash and stretch as plain scaling along its length, a lean, and the colour changes.
 
+### The performance on each page
+
+Part: `acting-<unit>`, one for each of the six pages.
+
+- This is the cursor's scripted performance for that page's beats in film mode: `src/pages/<page>/script.ts`. For each beat it gives the pointer's path, the clicks, the acting state at each moment and the one-off reactions, so that the beat plays as `kit/01-FILM.md` describes it and its event happens inside it.
+- Write it like a piece of character animation: a clear pose for each idea, a wind-up before, a hold after, and a reaction to everything.
+- It is a stand-in while any of its beats only moves the pointer from event to event with no acting.
+- Named fallback: for each beat, the path and the clicks that reach the beat's event on time, the acting state `kit/02-SUBJECT.md` names for that moment held for the whole beat, and the acting system's own squash, stretch and lean. This can always be made.
+
 ### Damage
 
 Part: `cursor-damage`.
@@ -285,7 +294,7 @@ Parts: `table-hardware`, `flippers`, `bumpers`, `targets`, `ramps`, and one `bui
 - Ramps: one chrome wire ramp, the highway, and one clear plastic spiral, the parking garage, both with real supports.
 - Buildings: each is a small detailed model in the style of the approved images, with lit windows and a sign set as type. Corporate HQ has lobby doors that open and slam. The firehouse has a garage door that is the scoop. The beach sits sealed in a clear box with its own warm light.
 - A building may start from a generated picture of its faces laid on simple geometry, then gain depth: recessed windows, ledges, a roof with things on it. An image-to-3D tool may be tried once per building if Phase 0 found one. Three failures in all end that idea.
-- Count the standing parts. Measure M9 holds the table to `table.minStandingParts` and to `table.maxBareFraction`.
+- Count the standing parts. Measure M8 holds the table to `table.minStandingParts` and to `table.maxBareFraction`.
 - Named fallback for each: the general fallback, plain shapes with generated maps.
 
 ### The lights
@@ -316,7 +325,7 @@ The scene hits every story beat in `kit/01-FILM.md` in order, in both modes, and
 - Each beat has an entry: a place and a state that starts it. The coffee beat starts when the cursor enters the bumper cluster. The firehouse beat starts when it drops in the scoop.
 - Between beats the physics runs free. The director nudges with things a table really has: a magnet under the playfield, a kicker, a gate, a ball save. A nudge is small and reads as the table's own behaviour.
 - Each beat has a deadline. If the cursor has not reached the next entry by then, the director catches it with the nearest such device and delivers it.
-- Film mode uses a take. `npm run take` searches flipper timings and nudges, from the seed, for a run in which every beat's event lands within `film.beatToleranceSeconds` of its time in `film.beats`. The inputs of the take it keeps are saved as `cut/TABLE-TAKE.json` and replayed exactly.
+- Film mode uses a take. `npm run take` searches flipper timings and nudges, from the seed, for a run in which every pinball beat's event falls inside its beat in `film.beats`, give or take `film.beatToleranceSeconds`. The inputs of the take it keeps are saved as `cut/TABLE-TAKE.json` and replayed exactly.
 - Live mode has no take. The visitor's flips are real, the same director runs, and the scene ends within a few seconds of `live.pinball.sceneSeconds` for everyone.
 - Named fallback: in film mode, author the cursor's and the balls' paths between beats as curves with speeds a ball would have. In live mode, let the director hold the cursor on such paths between the moments the flippers are needed.
 
@@ -430,6 +439,7 @@ You have no ears. Every choice about sound is made from numbers and from a liste
 | `stamp` | A big rubber stamp slammed down on paper on a hard desk | The stamp |
 | `ui-tick`, `key-tap`, `ui-send` | A small soft tick, a soft key tap, a short send tone | The prompt opening of film A only |
 
+- Phase 0 records the shortest and the longest sound the effect endpoint will make. A cue shorter than its shortest is asked for at that shortest length and trimmed to the cue's own length by the chain below.
 - A cue gets at most `audio.maxTakesPerCue` takes. The best is kept. A cue with no acceptable take after that is an open item, and its moment is silent.
 - A cue with `variants` is heard many times in a row, so it needs that many different versions. Ask for takes that hold several separate hits, let the harness cut them apart, and keep the best `variants` of them. The site and the mix step through the kept ones in a fixed order, with a short fixed list of small pitch offsets on top.
 - One line ends every effect prompt, word for word, so the effects belong together: close and dry, recorded in a quiet room, real materials, no music, no melody, no voice. The hold music cue alone leaves out the words about music.
@@ -455,7 +465,8 @@ An effect is kept when the numbers fit its length and the listener's answers fit
 
 - The sound engine uses the browser's audio graph, so levels, loops and ducking are exact. Its named fallback is plain audio elements, one for each sound.
 - Nothing plays before the visitor's first click. The sound control mutes everything.
-- The same events play the same cues. The narrator speaks a beat's `film` lines when that beat's gag starts, and a `liveOnly` line when its trigger happens. A line never interrupts another, and two lines are at least `audio.liveNarratorMinGapSeconds` apart. A line that would be late is dropped.
+- If the site's sound files cannot be loaded, the site runs silent, hides the sound control and reports no error.
+- The same events play the same cues. The narrator speaks a beat's `film` lines when that beat's gag starts, and a `liveOnly` line when its trigger happens. The triggers that need a number have one in `live`: `idle` after `live.idleSeconds` with no movement and no click, `slowTyping` after `live.slowTypingSeconds` between two letters, and `boss.slow` once the fight has run `live.bossSlowSeconds` with the boss above half its health. A line never interrupts another, and two lines are at least `audio.liveNarratorMinGapSeconds` apart. A line that would be late is dropped.
 - The crank of step 2 sets the site's volume for real.
 
 ### Files
@@ -489,6 +500,7 @@ Part: `quality-levels`.
 - Shadows follow section 5. Glass, reflections and the number of small things follow the visitor's level in `live.quality`.
 - Motion blur in the live site: stretch the fast small things, a bolt, a dart, a ball, a coin, along their own velocity.
 - Anti-aliasing: multisampling, and a pixel ratio up to the level's cap. Type stays sharp at every level.
+- `live.defaultQuality` says who picks the level. With `auto` the site picks. Any other value names the one level every visitor gets.
 - The site picks a level by itself: it starts at the level its first frames can hold and steps down if the frame rate stays under that level's `minFps`. It never steps up and down in a loop.
 - Named fallback: one fixed level, the `low` one, for every visitor.
 - The picture must never stall while files load. The careers page and the cursor load first. Each later page loads while the visitor is busy on the one before it. A page that is not ready holds the page turn for at most `live.loadWaitSeconds` with the cursor tapping its tip, in character.
@@ -520,6 +532,7 @@ Part: `finish-logic`.
 - `kit/02-SUBJECT.md` under "Rules for the live site" is the specification: every visitor can finish, nobody can get stuck, and control is always handed back.
 - Every gag is a small state machine with a way out that does not depend on skill: the turrets overheat, the dial gives up, the crank runs away, the boss tires, the table's director delivers. The numbers are in `live`.
 - `npm run bots` proves it. Each bot in `live.bots` plays the whole site as a visitor would, through the same pointer path a mouse uses. Check G17 has the rule.
+- Named fallback: a plain timer on every gag. Once a gag has run for `live.skipLinkAfterSeconds` it plays its own ending, whatever the visitor is doing, and hands control back. This can always be made.
 
 ## 16. Page turns
 
@@ -536,6 +549,7 @@ Part: `loop`.
 - One of the scenes in `deliver.cardLoop.candidates`, chosen as `kit/07-QUALITY-BAR.md` says, played as a loop of `deliver.cardLoop.seconds` seconds from that key's camera.
 - Everything in it is periodic, with a period that divides the loop's length: the cursor's path and acting, every bolt, bumper, dart and slab, every lamp, every puff of smoke, every scorch mark that fades.
 - The loop is its own small script on the same stage. Nothing in it is a recording of the film.
+- A portfolio card may crop it. The cursor and the thing it is up against stay inside a centred 4:3 crop and a centred square crop of the frame for the whole loop.
 - Named fallback: the same scene with only the cursor and one repeating threat moving.
 
 ## 18. Where image generation helps
