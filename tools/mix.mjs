@@ -6,7 +6,7 @@ import { spawnSync } from 'node:child_process'
 import { pathToFileURL } from 'node:url'
 import { args, at, config, readJson, writeJson } from './lib/paths.mjs'
 import { logic } from './lib/logic.mjs'
-import { engineInBrowser, keptRecords, keptSounds, listenerFindings, modulesFrom, places, readLedger, sha, siteInBrowser, target } from './sound.mjs'
+import { engineInBrowser, keptRecords, keptSounds, listenerFindings, modulesFrom, places, readLedger, sha, siteBuild, siteInBrowser, target } from './sound.mjs'
 
 const rel = (p) => path.relative(at(), p)
 const narration = () => readJson(at('content', 'narration.json'))
@@ -138,20 +138,40 @@ export async function soundChecks(a, P, c, M) {
   const add = (id, status, reason, facts = {}) => checks.push({ id, status, reason, ...facts })
   const records = keptRecords(P)
   const ledger = readLedger(P)
-  const wired = has(at('src', 'main.ts'), /import\(['"]\.\/audio(\/index)?['"]\)/)
-  const notWired = 'src/main.ts does not load the sound engine yet, so the site has no sound to test in a browser'
+  const loads = /import\(['"][./]+\/audio(\/index)?(\.ts)?['"]\)/
+  const sources = (dir) => fs.readdirSync(dir, { withFileTypes: true }).flatMap((f) => (f.isDirectory() ? (path.join(dir, f.name) === at('src', 'audio') ? [] : sources(path.join(dir, f.name))) : /\.ts$/.test(f.name) ? [path.join(dir, f.name)] : []))
+  const loaders = sources(at('src')).filter((f) => loads.test(fs.readFileSync(f, 'utf8'))).map(rel)
+  const wired = loaders.length > 0
+  const notWired = 'No file of the site loads the sound engine yet, so the site has no sound to test in a browser'
 
   const engine = await engineInBrowser(P, c)
-  const live = wired && !P.scratch ? await siteInBrowser() : null
-  const siteNote = P.scratch ? 'The site is not measured on a scratch root' : !wired ? notWired : live && !live.built ? 'The site is not built. Run npm run build' : ''
+  const site = wired ? await siteInBrowser(await siteBuild(P)) : null
+  const live = site && site.built && site.live.started ? { built: true, ...site.live } : null
+  const siteNote = !wired ? notWired : !site.built ? 'The site is not built. Run npm run build' : !site.live.started ? `The site did not start: ${site.live.errors.join('; ')}` : ''
+  if (site) writeJson(P.scratch ? path.join(path.dirname(P.audio), 'site.json') : at('out', 'work', 'audio', 'site.json'), site)
   const early = engine.runs.filter((r) => r.before.contexts > 0 || r.before.plays > 0 || r.soundRequestsBefore > 0)
   const engineFact = `on a page of its own in a browser the engine made ${engine.runs.reduce((n, r) => n + r.before.contexts, 0)} audio contexts and asked for ${engine.runs.reduce((n, r) => n + r.soundRequestsBefore, 0)} sound files before the first click, over ${engine.runs.length} visits, with events, a beat and a trigger sent to it first`
   if (early.length) add('A1', 'fail', `the engine starts before the first click: ${engineFact}`, { engine: engine.runs.map((r) => ({ name: r.name, before: r.before })) })
   else if (live && live.built) {
     const ok = live.before.contexts === 0 && live.before.plays === 0
-    add('A1', ok ? 'pass' : 'fail', `the live site, 4 s after it opens and before any click: ${live.before.contexts} audio contexts, ${live.before.plays} sounds played. Also ${engineFact}${engine.lists ? '' : '. No sound is kept, so nothing would play after the click either'}`, { site: live.before })
+    add('A1', ok ? 'pass' : 'fail', `the live site, 3 s after its first picture and before any click: ${live.before.contexts} audio contexts, ${live.before.plays} sounds played, ${live.before.soundRequests} sound files asked for; after the click ${live.after.contexts} audio contexts and ${live.after.soundRequests} sound files. Also ${engineFact}${engine.lists ? '' : '. No sound is kept, so nothing plays after the click either'}`, { site: { before: live.before, after: live.after } })
   } else add('A1', 'not yet', `${siteNote}. Held so far: ${engineFact}`, { engine: engine.runs.map((r) => ({ name: r.name, before: r.before })) })
-  add('A2', 'not yet', wired ? 'the sound control is the interface\'s part: its test by pointer and by keyboard is not run by this command' : notWired)
+  if (!live) add('A2', 'not yet', siteNote)
+  else if (!site.control) add('A2', engine.lists ? 'fail' : 'not yet', engine.lists ? 'sound is kept and the live site shows no sound control after the first click' : 'no sound is kept, so the site hides the sound control, as it should: there is nothing to press yet')
+  else {
+    const k = site.control
+    const [found, pointer, enter, space] = k.steps
+    const flips = found.pressed !== pointer.pressed && pointer.pressed !== enter.pressed && enter.pressed !== space.pressed && [found, pointer, enter, space].every((x) => x.pressed === 'true' || x.pressed === 'false')
+    const heard = k.steps.every((x) => (x.pressed === 'true') === (x.level > 0))
+    const problems = []
+    if (!k.name) problems.push('it has no name')
+    if (!flips) problems.push(`its state did not change at every press: ${k.steps.map((x) => `${x.how} ${x.pressed}`).join(', ')}`)
+    if (!k.reachedByTab) problems.push('the Tab key did not reach it')
+    if (!k.pictureChanges) problems.push('its picture is the same in both states')
+    if (live.after.contexts > 0 && !heard) problems.push(`what is heard does not follow it: ${k.steps.map((x) => `${x.how} level ${x.level}`).join(', ')}`)
+    if (k.errors) problems.push(`${k.errors} errors on the page`)
+    add('A2', problems.length ? 'fail' : 'pass', problems.length ? problems.join('; ') : `the control is named "${k.name}", is reached with ${k.tabs} presses of Tab, and changes its state and its picture at a pointer click, at Enter and at Space: ${k.steps.map((x) => `${x.how}: pressed ${x.pressed}, level heard ${x.level}`).join('; ')}`, { control: k })
+  }
 
   const importers = []
   const walk = (dir) => {
@@ -168,15 +188,23 @@ export async function soundChecks(a, P, c, M) {
   walk(at('src'))
   const cuesClean = !/^import\s/m.test(fs.readFileSync(at('src', 'audio', 'cues.ts'), 'utf8'))
   if (importers.length || !cuesClean) add('A3', 'fail', importers.length ? `these files import audio code outright, so it would load in capture mode: ${importers.join(', ')}` : 'src/audio/cues.ts imports other code')
-  else add('A3', wired ? 'pass' : 'not yet', wired ? 'by its imports: only src/main.ts loads the sound engine, by a dynamic import outside capture mode, and the table of cues imports nothing. The two stills themselves are not rendered by this command' : `${notWired}. By its imports no audio code can load in capture mode: nothing outside src/audio/ imports it, and the table of cues imports nothing`)
+  else if (!site || !site.built || !site.capture) add('A3', 'not yet', `${siteNote || 'The still was not rendered'}. By its imports no audio code can load in capture mode: nothing outside src/audio/ imports it outright, and the table of cues imports nothing`)
+  else {
+    const k = site.capture
+    if (!k.absent) add('A3', 'not yet', 'the build holds no audio code of its own to take away', { capture: k })
+    else {
+      const ok = k.present.sha256 !== null && k.present.sha256 === k.absent.sha256 && k.present.audioChunkRequests === 0 && k.present.contexts === 0
+      add('A3', ok ? 'pass' : 'fail', `the judged still ${k.still} at ${k.format}, ${k.tier}, in capture mode: sha256 ${String(k.present.sha256).slice(0, 16)} with the audio code in the build and ${String(k.absent.sha256).slice(0, 16)} with it blocked. The page asked for the audio code ${k.present.audioChunkRequests} times, made ${k.present.contexts} audio contexts and asked for ${k.present.soundRequests} sound files. It is loaded by a dynamic import in ${loaders.join(', ')}`, { capture: k })
+    }
+  }
 
   const pubFiles = fs.existsSync(P.pub) ? fs.readdirSync(P.pub).map((f) => ({ f, bytes: fs.statSync(path.join(P.pub, f)).size })) : []
   const soundBytes = pubFiles.filter((x) => x.f !== 'index.json').reduce((s, x) => s + x.bytes, 0)
   const mb = soundBytes / 1048576
   if (!pubFiles.some((x) => x.f === 'index.json')) add('A4', 'not yet', `${rel(P.pub)} has no index. Run npm run sound -- --pack`)
   else if (mb > c.audio.appMaxMb) add('A4', 'fail', `the site's sound files are ${mb.toFixed(2)} MB together and audio.appMaxMb is ${c.audio.appMaxMb}`, { megabytes: Number(mb.toFixed(3)) })
-  else if (live && live.built && live.before.soundRequests > 0) add('A4', 'fail', `the live site asked for ${live.before.soundRequests} sound files before the first click`, { megabytes: Number(mb.toFixed(3)) })
-  else if (live && live.built) add('A4', 'pass', `${mb.toFixed(2)} MB of ${c.audio.appMaxMb} MB${soundBytes === 0 ? ', because no sound is kept' : ''}. The live site asked for 0 sound files in its first 4 s, before any click`, { megabytes: Number(mb.toFixed(3)) })
+  else if (live && (live.soundRequestsAtFirstPicture > 0 || live.before.soundRequests > 0)) add('A4', 'fail', `the live site asked for ${live.soundRequestsAtFirstPicture} sound files before its first picture and ${live.before.soundRequests} before the first click`, { megabytes: Number(mb.toFixed(3)) })
+  else if (live) add('A4', 'pass', `${mb.toFixed(2)} MB of ${c.audio.appMaxMb} MB${soundBytes === 0 ? ', because no sound is kept' : ''}. The live site asked for 0 sound files before its first picture and 0 in the 3 s after it; after the first click it asked for ${live.after.soundRequests}`, { megabytes: Number(mb.toFixed(3)) })
   else add('A4', 'not yet', `${mb.toFixed(2)} MB of ${c.audio.appMaxMb} MB${soundBytes === 0 ? ', because no sound is kept' : ''}. ${siteNote}. Held so far: ${engineFact}`, { megabytes: Number(mb.toFixed(3)) })
 
   if (!records.length) add('A5', 'not yet', 'no sound is kept')
@@ -287,17 +315,11 @@ export async function soundChecks(a, P, c, M) {
   const silentRun = (r) => r.after.state === 'silent' && r.after.available === false && r.errors.length === 0
   const engineSilent = `on a page of its own the engine, with an index that lists nothing, is ${none.after.state}, available() ${none.after.available}, ${none.after.contexts} audio contexts, ${none.soundRequests} requests, ${none.errors.length} errors, ${none.console.length} console lines${gone ? `; with the files removed and the index still naming them it is ${gone.after.state}, available() ${gone.after.available}, ${gone.errors.length} errors, and the browser itself writes ${gone.console.length} line about the file it did not find` : ''}`
   if (!silentRun(none) || none.console.length || (gone && !silentRun(gone))) add('A11', 'fail', engineSilent, { engine: engine.runs })
-  else if (live && live.built) {
-    let bare = live
-    if (engine.lists) {
-      const copy = at('out', 'work', 'audio', 'dist-silent')
-      fs.rmSync(copy, { recursive: true, force: true })
-      fs.cpSync(at('dist'), copy, { recursive: true })
-      fs.rmSync(path.join(copy, 'audio'), { recursive: true, force: true })
-      bare = await siteInBrowser(copy)
-    }
-    const ok = !bare.after.failShown && bare.after.control === 0 && bare.errors.length === 0 && (engine.lists || bare.console.length === 0)
-    add('A11', ok ? 'pass' : 'fail', `the live site ${engine.lists ? 'with its sound files removed' : 'as built, which has no sound files'}, after a click: sound control shown ${bare.after.control} times, ${bare.errors.length} errors, ${bare.console.length} console lines, failure box ${bare.after.failShown ? 'shown' : 'hidden'}. Also ${engineSilent}`, { site: bare })
+  else if (live) {
+    const bare = site.removed
+    const own = bare.console.filter((l) => !/Failed to load resource.*\/audio\//.test(l))
+    const ok = bare.started && !bare.after.failShown && bare.after.control === 0 && bare.after.plays === 0 && bare.errors.length === 0 && own.length === 0 && (engine.lists || bare.console.length === 0)
+    add('A11', ok ? 'pass' : 'fail', `the live site ${engine.lists ? 'with every sound file answered as not found' : 'as built, which has no sound files'}, after a click: sound control shown ${bare.after.control} times, ${bare.after.soundRequests} sound files asked for, ${bare.errors.length} errors, ${own.length} console lines of the site${bare.console.length - own.length ? ` and ${bare.console.length - own.length} that the browser writes itself about the file it did not find` : ''}, failure box ${bare.after.failShown ? 'shown' : 'hidden'}. Also ${engineSilent}`, { site: bare })
   } else add('A11', 'not yet', `${siteNote}. Held so far: ${engineSilent}`, { engine: engine.runs.map((r) => ({ name: r.name, after: r.after, errors: r.errors, console: r.console })) })
 
   const out = P.scratch ? path.join(path.dirname(P.audio), 'sound-checks.json') : at('out', 'work', 'sound-checks.json')
