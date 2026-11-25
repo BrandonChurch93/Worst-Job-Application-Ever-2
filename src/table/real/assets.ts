@@ -34,7 +34,7 @@ export function ask(file: string, o: { colour: boolean; repeat?: boolean }): Ask
 
 export const askedFiles = (): string[] => [...asked.keys()].sort()
 
-// Loads every picture that was asked for and is in the asset set. The app awaits it before any page draws its first frame.
+// Loads every picture that was asked for and is in the asset set. A capture awaits it before its first frame; the live site calls it once the visitor has left the careers page.
 export async function loadTable(set: AssetSet): Promise<void> {
   const have = new Set(filesOf('table', set).map((f) => f.file))
   await Promise.all(
