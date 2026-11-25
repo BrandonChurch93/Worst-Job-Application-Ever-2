@@ -15,13 +15,13 @@ Parts made real: `keyboard`, `turrets`. Branch `agent/keyboard`. Looks: `agent/k
 | Thing | File | How |
 | --- | --- | --- |
 | Deck | `src/pages/step1/real/keyboard.ts` | One plate: top face with the key field and the two hatch holes cut out, a 2.4 px chamfer, walls 84 px deep so the sides are real through the whole rise. The key field is one pocket, 9.4 px deep, with a 1.1 px chamfered lip in aluminium and a dark floor. The shared aluminium, cloned, with a brushed normal picture and anisotropy. |
-| Caps | `src/pages/step1/real/keyboard.ts`, `keyboard-kit.ts` | One instanced mesh for each size of cap, the Enter in the shared orange. A cap is lofted rings: a skirt that stands in the field, a wall that leans in 0.26 rad, a shoulder of radius 5, a rim and a dish 0.5 deep. Every frame each instance takes the place and the top of its key shape, so press, hop and shuffle are whatever the shapes say. A flying cap leans up to 4 degrees, from its hop and its name, and sinks by what the lean lifts under its legend (at most 0.8 px). |
+| Caps | `src/pages/step1/real/keyboard.ts`, `keyboard-kit.ts` | One instanced mesh for each size of cap, the Enter in the shared orange. A cap is lofted rings: a skirt that stands in the field, a wall that leans in 0.38 rad, a shoulder of radius 4.2, a rim and a dish 0.5 deep. Every frame each instance takes the place and the top of its key shape, so press, hop and shuffle are whatever the shapes say. A flying cap leans up to 4 degrees, from its hop and its name, and sinks by what the lean lifts under its legend (at most 0.8 px). |
 | Hatches | `src/pages/step1/real/turrets.ts` | A turned bezel that stands 0.9 above the deck, a dark socket 36 deep, two half lids brushed like the deck that slide apart. How far open comes from `v[6]` of the turret shape. |
 | Turrets | `src/pages/step1/real/turrets.ts` | Turned parts with flat bands: a fixed collar, a head that turns, with a seam groove, a 5 px chamfer, a shallow turned centre, three vent slots; a barrel in a darker steel with a sleeve, a gasket, a taper, a muzzle ring with a groove and a dark bore. It aims from `v[0], v[1]`, pulls back with the charge and kicks on the shot. |
 | Charge, flash | `src/pages/step1/real/turrets.ts`, `turret-fx.ts` | An orb at the muzzle that grows with `v[2]`, eight sparks that fall into it, a star for 0.05 s after the shot. Each asks `ctx.light` for a light. |
 | Bolt | same | A head that is white hot on top and orange at its rim, two additive cones for the tail. `ctx.light` with `shadow: true`. No painted halo and no painted streak: glow is the post chain's, the streak is the shutter's. |
-| Scorch | same | A decal with a ragged charred middle and a brown ring, turned by its name, an ember for the first 0.2 s, four smoke puffs for 1.5 s, fading with `v[0]`. |
-| Overheat | same | The turret's own clone of the metal takes a dull red emissive from `v[4]`, six steam puffs rise from `ctx.time` and the seed of its name, one red light. |
+| Scorch | same | A decal with a ragged charred middle and a brown ring, turned by its name, an ember for the first 0.2 s, four smoke puffs for 1.5 s. It lies on the cap it struck: its middle is moved at most 14 px to stay on the cap and the decal is cut at the cap's shoulder, so no burn hangs over a gap. It fades over its last 0.4 s. |
+| Overheat | same | The turret's own clones of the metal go dark (hot metal mirrors less) and take a dull red emissive from `v[4]`, the barrel hotter than the head; six white steam puffs rise from `ctx.time` and the seed of its name; one red light. Seen only with heat forced to 1 in a still: no still command reaches the live state. |
 
 ## Numbers of the shapes this part writes and reads
 
@@ -33,15 +33,15 @@ Read from /root/step1_director's shapes: `key-<name>` `v` = [press, hop px, shuf
 
 ## Glow and light, agreed with /root/light_keeper
 
-Unit of `ctx.light`: power p means a white matte surface 100 px from the emitter, facing it, sends back about p times the colour in linear light; zero at `reach`. Six true lights a frame, two with shadows.
+Unit of `ctx.light`: power p means a white matte surface 100 px from the emitter, facing it, sends back about p times the colour in linear light; zero at `reach`. Six true lights a frame, two with shadows. The emitter's body is 20 px: light at distance d is power times colour times (100² + 20²) / (d² + 20²). Reflected light is capped at linear 1.25 and glow starts at 1.3, so only emissive parts glow. The bolt was first 1.0 at reach 260 and washed three caps pale yellow; /root/light_keeper suggested 0.25 to 0.35 at reach 90 to 120, taken.
 
 | Thing | Colour of the mesh, linear, past white | `ctx.light` colour | power | reach px | shadow |
 | --- | --- | --- | --- | --- | --- |
-| Bolt head | 16, 10, 4.5 | 1, 0.42, 0.1 | 1.0 | 260 | yes |
+| Bolt head | 16, 10, 4.5 | 1, 0.4, 0.09 | 0.3 | 110 | yes |
 | Bolt tail | 3.2, 1.0, 0.18 | | | | |
-| Muzzle flash | 9, 3.6, 0.9 falling over 0.05 s | 1, 0.5, 0.15 | 2.2 | 380 | no |
-| Charge | 6, 2.5, 0.6 to 16, 7, 2 | 1, 0.45, 0.12 | 0.6 times charge squared | 160 | no |
-| Overheated metal | emissive 0.55, 0.05, 0.012 | 1, 0.12, 0.03 | 0.35 | 140 | no |
+| Muzzle flash | 9, 3.6, 0.9 falling over 0.05 s | 1, 0.5, 0.15 | 0.9 | 220 | no |
+| Charge | 6, 2.5, 0.6 to 16, 7, 2 | 1, 0.45, 0.12 | 0.3 times charge squared | 110 | no |
+| Overheated metal | emissive 0.42, 0.03, 0.006 on the head, 2.2 to 3.2 times that on the barrel | 1, 0.12, 0.03 | 0.35 | 140 | no |
 
 Emissive meshes cast no shadow.
 
@@ -54,7 +54,10 @@ Emissive meshes cast no shadow.
 5. `material.envMapIntensity` does nothing in the pinned three (fact from /root/type_setter). The cap plastic and the dark parts use `specularIntensity`.
 6. `Material.clone()` drops `onBeforeCompile`, so a cloned shared material is passed through `studio()` again, and a clone of one of mine takes the hooks of its source.
 7. Overlays (bolt, flash, puffs, scorch) set `userData.order` to 900000 and up so the view draws them after everything opaque.
-8. `Turrets.draw` gives the hatch the first 0.3 of the rise. No number of `TURRET` that /root/step1_director listed is changed, and `step` is as it was.
+8. `Turrets.draw` gives the hatch the first 0.3 of the rise (`TURRET.hatchShare`). When the turrets go down every scorch is gone in 0.4 s (`TURRET.scorchFade`, the rule of /root/step1_director). No number of `TURRET` that /root/step1_director listed is changed, and `step` is as it was.
+
+9. The corners of the deck are rounded to 5 px, not 18: the ground cuts the well as a plain rectangle, and a rounder plate left a dark notch of the well at each corner.
+10. The home lens is 20 degrees since main 77d4dc7. Nothing of mine relied on walls being hidden: the deck's walls go 84 px down, the collar of a turret 112 px, the socket 36 px.
 
 ## One more mechanism that rises out of the page
 
