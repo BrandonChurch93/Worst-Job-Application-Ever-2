@@ -162,23 +162,56 @@ export function fixedShapes(): Shape[] {
     out.push(disc(`${id}.ring`, 'loader', [c.x, c.y], c.ring / 2, 0, 26, 'metal'))
     out.push(disc(`${id}.cup`, 'loader', [c.x, c.y], c.cup / 2, 26, 28, 'pocket'))
   }
-  fixed = [...anchors(out), ...out]
+  fixed = [...anchors(out), ...out.filter((s) => !MOVER.test(s.id))]
+  movers = out.filter((s) => MOVER.test(s.id))
   return fixed
 }
 
-export function movingShapes(m: Machine, lit: boolean[], hide: boolean, glow: boolean[] = [true, true, true], pull = 0, shut = false, website = 1): Shape[] {
+// The shapes that stand where the layout puts them and still have a state: they are drawn with the moving shapes, each with its state in `v`.
+const MOVER = /^(bumper\.[a-z]+\.bumper\.\d+|sling\..+|hold\.corporate\.revolving|gate\.\d|flap\.highway|lift\.door\..+|model\.street\.firehouse|model\.office\.inbox|model\.street\.mom)$/
+const HELD: Record<string, string> = { 'model.street.firehouse': 'street.firehouse', 'model.office.inbox': 'office.inbox', 'model.street.mom': 'street.mom', 'hold.corporate.revolving': 'corporate.revolving' }
+let movers: Shape[] = []
+const FLASH = 0.25
+const BEACON = { idle: 0.35, seconds: 1.5 }
+const STROBE_HZ = 2.5
+
+function stateOf(id: string, m: Machine): number[] {
+  const hold = HELD[id]
+  if (hold) {
+    const inside = m.balls.some((b) => b.mode === 'hold' && b.hold === hold) ? 1 : 0
+    const sinceIn = Math.min(m.since(`scoop-in:${hold}`), m.since(`kicker-in:${hold}`), m.since(`mom-hatch:${hold}`))
+    const sinceOut = Math.min(m.since(`scoop-kick:${hold}`), m.since(`eject:${hold}`), m.since(`spinner:${hold}`), m.since(`mom-save:${hold}`))
+    return hold === 'street.mom' ? [inside, sinceIn, sinceOut, m.on['street.mom'] && !m.mom ? 1 : 0] : [inside, sinceIn, sinceOut]
+  }
+  if (id.startsWith('bumper.')) return [m.since(id.slice(7))]
+  if (id.startsWith('sling.')) return [m.since(id.slice(6, id.lastIndexOf('.')))]
+  if (id.startsWith('gate.')) return [m.gate[Number(id.slice(5))] ? 1 : 0]
+  if (id === 'flap.highway') return [m.on['street.flap'] !== false ? 1 : 0]
+  return [m.since(`${id.split('.')[2]}.lift.door`)]
+}
+
+export function movingShapes(m: Machine, lit: boolean[], hide: boolean, glow: (boolean | number)[] = [true, true, true], pull = 0, shut = false, website = 1): Shape[] {
   const out: Shape[] = []
+  const level = glow.map(Number)
+  fixedShapes()
+  const struck = (k: number): number => Math.min(9, ...table.bumpers.filter((b) => b.tier === k).map((b) => m.since(b.id)), ...table.slings.filter((s) => s.tier === k).map((s) => m.since(s.id)), ...table.targets.filter((t) => t.tier === k).map((t) => m.since(t.id)))
+  const strobe = m.balls.some((b) => b.steel && b.mode !== 'none') ? 0.5 - 0.5 * Math.cos(m.seconds * STROBE_HZ * 2 * Math.PI) : 0
+  const fire = m.balls.some((b) => b.mode === 'hold' && b.hold === 'street.firehouse') || m.since('scoop-kick:street.firehouse') < BEACON.seconds
+  const check = m.since('street.spinner') < BEACON.seconds
   for (const z of ZONES) {
     if (!LIT_ZONES.includes(z.id)) continue
     const k = (TIERS as string[]).indexOf(z.id)
-    out.push({ ...anchor('table-lights', z), v: [k < 0 ? (glow.some(Boolean) ? 1 : 0) : glow[k] ? 1 : 0, website] })
+    const flash = k < 0 ? 0 : Math.max(Math.max(0, 1 - struck(k) / FLASH), k === 1 ? strobe : 0)
+    const general = k < 0 ? Math.max(...level) : level[k]!
+    out.push({ ...anchor('table-lights', z), v: [general, website, flash, k === 2 ? general * (fire ? 1 : BEACON.idle) : 0, k === 2 ? general * (check ? 1 : BEACON.idle) : 0] })
   }
+  for (const s of movers) out.push({ ...s, v: stateOf(s.id, m) })
   const hf = px(floorZ(0))
   const leaf = (DOORS.w - DOORS.seam) / 2
   const dy = TIER_Y[0]! + DOORS.y + 0.04
   for (const side of [0, 1]) {
     const b = shut ? [DOORS.x + side * (leaf + DOORS.seam), dy, leaf, 0.05] : [DOORS.x + side * (DOORS.w - 0.05), dy, 0.05, leaf]
-    out.push({ ...box(`hq.door.${side === 0 ? 'left' : 'right'}`, 'model-hq', b, hf, hf + px(DOORS.h - 0.05), 'light'), v: [shut ? 1 : 0] })
+    out.push({ ...box(`hq.door.${side === 0 ? 'left' : 'right'}`, 'model-hq', b, hf, hf + px(DOORS.h - 0.05), 'light'), v: [shut ? 1 : 0, m.since('doors-slam:corporate.hq'), m.since('doors-open:corporate.doors')] })
   }
   for (const f of table.flippers) {
     const z = px(floorZ(f.tier))
@@ -190,13 +223,14 @@ export function movingShapes(m: Machine, lit: boolean[], hide: boolean, glow: bo
   for (const t of table.targets) {
     const z = px(floorZ(t.tier))
     const up = t.kind !== 'drop' || !m.down[t.index]
-    out.push({ ...box(`target.${t.id}`, t.id.startsWith('corporate.note') ? 'model-notes' : 'targets', t.box, z, z + (up ? 44 : 3), t.kind === 'spinner' ? 'metal' : 'paper'), v: [up ? 1 : 0] })
+    out.push({ ...box(`target.${t.id}`, t.id.startsWith('corporate.note') ? 'model-notes' : 'targets', t.box, z, z + (up ? 44 : 3), t.kind === 'spinner' ? 'metal' : 'paper'), v: [up ? 1 : 0, m.since(t.id)] })
   }
   out.push({ ...box('plunger.rod', 'table-hardware', [PLUNGER[0] - 0.08, PLUNGER[1] + 0.55 + pull * 0.45, 0.16, 1.2 + pull * 0.25], px(floorZ(2)) + 30, px(floorZ(2)) + 46, 'metal'), v: [pull] })
   out.push({ ...disc('plunger.knob', 'table-hardware', [PLUNGER[0], APRON_Y + 0.75 + pull * 0.7], 0.32, 0, 60, 'accent'), v: [pull] })
   for (const l of table.lamps) {
     const f = px(floorZ(l.tier))
-    out.push({ ...disc(`lamp.${l.id}`, 'table-lights', l.c, glow[l.tier] ? 0.14 : 0.1, f, f + 4, glow[l.tier] ? 'light' : 'glass'), v: [glow[l.tier] ? 1 : 0] })
+    const on = level[l.tier]! > 0.5
+    out.push({ ...disc(`lamp.${l.id}`, 'table-lights', l.c, on ? 0.14 : 0.1, f, f + 4, on ? 'light' : 'glass'), v: [level[l.tier]!] })
   }
   for (const n of table.inserts) {
     const z = px(floorZ(n.tier))
