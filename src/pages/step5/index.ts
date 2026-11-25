@@ -72,7 +72,7 @@ export function makePage(): PageLogic {
   const mark = markOf()
   const spot = spotOf()
   const start = { x: places.accept.cx, y: places.accept.cy + 14 }
-  const marks: Marks = { start, spot, press: { x: places.accept.cx - 6, y: places.accept.cy - 4 } }
+  const marks: Marks = { start, spot, press: { x: places.accept.x + places.accept.w - 42, y: places.accept.cy - 8 } }
   const nodes = { wait: find(layout, 'wait-panel'), letter: find(layout, 'letter'), metrics: find(layout, 'metrics'), stamp: find(layout, 'stamp'), accept: find(layout, 'accept'), cap: find(layout, 'accept-cap') }
   const average = secondsOf(words(KEYS.averageValue))
   const target = secondsOf(words(KEYS.targetValue))
@@ -101,6 +101,7 @@ export function makePage(): PageLogic {
   }
 
   const press = (io: StepIo): void => {
+    if (io.cursor.damaged) io.cursor.hurt('flattened', AT.hold - 0.12)
     s.phase = 'reset'
     s.at = s.n
     io.emit('button-press', places.accept.cx, places.accept.cy, false)

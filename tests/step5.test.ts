@@ -244,6 +244,33 @@ describe('step 5, the live site', () => {
     expect(s.events.find((e) => e.name === 'stamp')!.hitsCursor).toBe(false)
   })
 
+  it('hands the cursor on whole, however early the button is pressed after the stamp', () => {
+    const page = makePage()
+    const cap = page.layout.children!.find((n) => n.id === 'accept')!.children![0]!.box
+    const spot = page.script(4.2)
+    const hasty: Driver = { name: 'bot', input: (v: DriverView): Pointer => (v.pageTime < 5.4 ? { x: spot.x, y: spot.y, down: false } : { x: cap[0]! + cap[2]! / 2, y: cap[1]! + cap[3]! / 2, down: Math.floor(v.step / 24) % 2 === 0 }) }
+    const s = live(hasty)
+    let longest = 0
+    let run = 0
+    while (s.page.id === 'step5' && !s.page.done() && s.step < 30 * hz) {
+      s.advance(1)
+      run = s.cursor.damaged ? run + 1 : 0
+      longest = Math.max(longest, run)
+    }
+    expect(s.events.find((e) => e.name === 'stamp')!.hitsCursor).toBe(true)
+    expect(s.events.some((e) => e.name === 'peel-up')).toBe(true)
+    expect(s.step / hz).toBeLessThan(7.6)
+    expect(s.cursor.damaged).toBe(false)
+    expect(longest / hz).toBeLessThanOrEqual(config.cursor.damageHealSeconds)
+    const skipped = live(still(spot.x, spot.y))
+    skipped.advance(Math.round(4.4 * hz))
+    expect(skipped.cursor.damaged).toBe(true)
+    skipped.page.skip()
+    while (!skipped.page.done() && skipped.step < 30 * hz) skipped.advance(1)
+    expect(skipped.cursor.damaged).toBe(false)
+    expect(skipped.cursor.taken).toBe(false)
+  })
+
   it('does nothing when the button is pressed before it is there', () => {
     const page = makePage()
     const cap = page.layout.children!.find((n) => n.id === 'accept')!.children![0]!.box
