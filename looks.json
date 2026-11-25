@@ -1,35 +1,35 @@
 {
   "folder": "film",
-  "pushed": "2026-11-25T09:26:19.817Z",
-  "commit": "d544fd6bf79a638282ff44818fba8ccc84fc6765",
+  "pushed": "2026-11-25T09:38:08.378Z",
+  "commit": "4f1fa91e348bb31835220ad03b68282a64375aca",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Card loop on step 1's own page, frame 0 (d544fd6): mid jump, the left turret is winding up, two fresh scorch marks where the cursor stood",
-      "time": "2026-11-25T09:26:17.994Z",
+      "caption": "The opening of film A, frame 200: the prompt being typed at 68 px, second line begun",
+      "time": "2026-11-25T09:38:06.422Z",
       "by": "film",
-      "from": "out/work/stills/film-loop-0000-preview-draft.png"
+      "from": "out/work/stills/film-opening-0200-preview-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Card loop, frame 215: it stopped to type the x of Perplex, the left turret's bolt is on its way",
-      "time": "2026-11-25T09:26:18.277Z",
+      "caption": "The opening, frame 317 (marks.level): the reasoning level control drawn open, Max picked",
+      "time": "2026-11-25T09:38:06.705Z",
       "by": "film",
-      "from": "out/work/stills/film-loop-0215-preview-draft.png"
+      "from": "out/work/stills/film-opening-0317-preview-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Card loop, frame 226: hit, the x is gone from the first name, the cursor is thrown off the key",
-      "time": "2026-11-25T09:26:18.513Z",
+      "caption": "The opening, frame 560: the build screen, the checklist filling",
+      "time": "2026-11-25T09:38:06.952Z",
       "by": "film",
-      "from": "out/work/stills/film-loop-0226-preview-draft.png"
+      "from": "out/work/stills/film-opening-0560-preview-draft.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Card loop, frame 300: dodging again, the bolt for the G key landed where it stood",
-      "time": "2026-11-25T09:26:18.748Z",
+      "caption": "The opening, last frame: every line of intro.steps ticked",
+      "time": "2026-11-25T09:38:07.172Z",
       "by": "film",
-      "from": "out/work/stills/film-loop-0300-preview-draft.png"
+      "from": "out/work/stills/film-opening-0715-preview-draft.png"
     }
   ]
 }
