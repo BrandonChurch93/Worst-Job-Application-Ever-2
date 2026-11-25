@@ -1,0 +1,35 @@
+{
+  "folder": "paper",
+  "pushed": "2026-11-25T21:40:48.540Z",
+  "commit": "e5749806e087be52f66e605fde713ad9f017a2c8",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Still step1-step1_resume-0p66-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T21:36:42.355Z",
+      "by": "paper",
+      "from": "out/work/stills/step1-step1_resume-0p66-hd-draft.png"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "step1.resume, twelve frames: the pickup, the sheet held up proud and the carry now play inside the tug frame",
+      "time": "2026-11-25T21:40:47.054Z",
+      "by": "paper",
+      "from": "out/work/looks/files/20261125214047-first-resume.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "step1.tug, twelve frames: angry with stamps and yanks, scared and turned back at 25.97, lost and turned away at 26.53 and 27.1",
+      "time": "2026-11-25T21:40:47.277Z",
+      "by": "paper",
+      "from": "out/work/looks/files/20261125214047-first-tug.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "step1-tug beside the approved image after the acting pass (sheet and shredder not yet touched)",
+      "time": "2026-11-25T21:40:47.497Z",
+      "by": "paper",
+      "from": "out/work/looks/files/20261125214047-first-compare.jpg"
+    }
+  ]
+}
