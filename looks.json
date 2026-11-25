@@ -1,33 +1,33 @@
 {
   "folder": "audio",
-  "pushed": "2026-11-25T09:42:20.779Z",
-  "commit": "88dfdbff3c344e18afd97fa5fb55d1b9cee975f0",
+  "pushed": "2026-11-25T10:00:01.868Z",
+  "commit": "a3796f7d461c47c9a1982368d4a08420bf37f3ed",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Sound: npm run mix on the stand-in sounds, read from cut/CUTLIST.json: 333 cues and 37 lines on the film's 153 s, -14 LUFS, true peak under -1 dB, the same bytes twice",
-      "time": "2026-11-25T09:15:09.767Z",
-      "by": "audio",
-      "from": "out/work/audio/mix-fixtures.png"
-    },
-    {
-      "file": "look-2.jpg",
       "caption": "Sound: npm run mix today, with no kept sound: 153 s of silence at the film's exact length",
       "time": "2026-11-25T09:15:09.994Z",
       "by": "audio",
       "from": "out/work/audio/mix.png"
     },
     {
-      "file": "look-3.jpg",
+      "file": "look-2.jpg",
       "caption": "The live site built with stand-in sounds in a scratch folder: the sound control shows at the top left after the first click. With no sound kept, as on main, it stays hidden",
       "time": "2026-11-25T09:42:19.272Z",
       "by": "audio",
       "from": "out/work/audio/site-sound-on.png"
     },
     {
-      "file": "look-4.jpg",
+      "file": "look-3.jpg",
       "caption": "The stand-in mix on the cut list of main: 625 cues and 37 lines, -14 LUFS, true peak -3.88 dB, same bytes twice",
       "time": "2026-11-25T09:42:19.499Z",
+      "by": "audio",
+      "from": "out/work/audio/mix-fixtures-1200.png"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "The stand-in mix on the cut list of main at e970ef5: 664 cues and 37 lines, -14 LUFS, true peak -1.91 dB, same bytes twice. Stand-ins made with ffmpeg, not takes",
+      "time": "2026-11-25T10:00:00.513Z",
       "by": "audio",
       "from": "out/work/audio/mix-fixtures-1200.png"
     }
