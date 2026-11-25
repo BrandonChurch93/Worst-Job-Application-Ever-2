@@ -42,7 +42,7 @@ const SEAM = 1.1
 
 // The aluminium sleeve of a pocket: a thin flat rim at the surface and a wall that leans in, down to what lies in the pocket.
 function sleeve(s: Shape, surface: number, lean: number): THREE.BufferGeometry {
-  const top = surface - pocketCut(s).lip - 0.2
+  const top = surface - Math.min(0.7, pocketCut(s).lip)
   const foot = RIM - 0.4 + lean * (top - 0.5)
   const points: ProfilePoint[] = [
     [0.1, top - 1.4, true], [0.1, top - 0.8, true], ...arc(0.1, top - 0.8, 1, 0.8, 4).slice(1), ...bead(RIM - 1.5, top, 1.5, 1, 5).slice(1), [foot, 0, true], [foot, -0.4, true]
@@ -62,7 +62,7 @@ function bead(inset: number, z: number, across: number, fall: number, steps: num
 
 const SOAK = 7
 const SOAK_HOLD = 2.5
-const SOAK_DEPTH = 0.3
+const SOAK_DEPTH = 0.24
 const BOUNCE = 0.2
 const BOUNCE_REACH = 10
 const GLINT = 0.14
@@ -148,7 +148,7 @@ function field(s: Shape): THREE.Object3D {
   const m = materials()
   const root = new THREE.Group()
   const surface = -s.z0
-  const liner = mesh(shared(`sleeve:${dims(s)}`, () => sleeve(s, surface, 0.22)), m.aluminiumSatin)
+  const liner = mesh(shared(`sleeve:${dims(s)}`, () => sleeve(s, surface, 0.12)), m.aluminiumSatin)
   liner.receiveShadow = false
   root.add(liner)
   const glass = mesh(shared(`fieldGlass:${dims(s)}`, () => sunkGlass(s, RIM - 0.6, surface)), m.glassSunk, false)
@@ -182,9 +182,16 @@ const SEAT_RISE = 2.2
 function capsule(s: Shape, round: number): THREE.Object3D {
   const h = s.z1 - s.z0
   const r = Math.min(round, h * 0.6, Math.min(s.w, s.h) / 2 - 1)
-  const g = shared(`cap:${dims(s)}:${round}`, () => sweep(outlineOf(s, 0, 18), profile([[0, 0, true], [0, h - r], ...arc(0, h - r, r, r, 8).slice(1)])))
-  const cap = mesh(g, toneMaterial(s.tone))
-  if (s.role !== 'chip') return cap
+  if (s.role !== 'chip') return mesh(shared(`cap:${dims(s)}:${round}`, () => sweep(outlineOf(s, 0, 18), profile([[0, 0, true], [0, h - r], ...arc(0, h - r, r, r, 8).slice(1)]))), toneMaterial(s.tone))
+  // A chip's edge is a wide soft round that starts 40 degrees up from its wall, so no part of it looks at the floor.
+  const from = (40 * Math.PI) / 180
+  const big = Math.min(6, Math.min(s.w, s.h) / 2 - 1)
+  const soft: ProfilePoint[] = [[0, 0, true], [0, h - big + big * Math.sin(from), true]]
+  for (let i = 1; i <= 8; i++) {
+    const t = from + ((Math.PI / 2 - from) * i) / 8
+    soft.push([big * (Math.cos(from) - Math.cos(t)), h - big + big * Math.sin(t)])
+  }
+  const cap = mesh(shared(`chipCap:${dims(s)}`, () => sweep(outlineOf(s, 0, 18), profile(soft))), toneMaterial(s.tone))
   // A chip stands in a seat: a low satin collar let into the glass, a narrow dark clearance inside it, and the cap rising out of that.
   const root = new THREE.Group()
   const out = SEAM + SEAT

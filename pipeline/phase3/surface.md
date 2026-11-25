@@ -110,9 +110,12 @@ Owner of this round: glass (`surface_fixer`), branch `agent/glass`, 2026-11-25. 
 - Orange: 0xb94503, roughness 0.57, coat 0.14 at roughness 0.36 (was 0xc24400, 0.5, 0.3 at 0.09). One material, so the Enter key, the active step and the action button all moved. Steel face of the other steps: 0x9da1a6 at roughness 0.3 (was 0x8e9399 at 0.2).
 - For keys_fixer (asked by message, critic R4-2 #4): the focus ring's spill goes 0.8 to 2.4 with `v[0]` (was 0.8 to 1.3) and the core line lifts by 0.7 of itself. At `v[0]` = 0 nothing changes.
 
+- After the first push. A field's inner shadow: frosted glass carries light sideways, so `glassSunk` gets back 0.3 of its matt light where a shadow lies on it (`lightFilled`, `SUNK_FILL`). MEASURED, column x=1300 of `page-look` hd: the glass under the upper wall reads 102, 105, 111, 129, 151 where it read 59, 71, 79, 113, 147 (approved 133, 115, 110, 109, 123, 143). The liner's rim now stands 0.7 under the page (it stood 2.4 under), its wall leans 0.12, and a field's lip in the ground is 1.4 (was 2.2). One dark line 1 px wide is left outside the rim on the light's side (69): it is the ground's lip in its own shade.
+- The Browse cap's edge is a round of radius 6 that starts 40 degrees up from its wall, so no part of it looks at the floor and the black line round it is gone.
+
 ### Numbers (MEASURED)
 
-- M3, `npm run measure -- --unit step1 --tier review`: 0.8853 on `step1-tug` where 0.8 is the least (it was 0.68 on main, STATED in the brief). `step1-fire` is green in the same run; 1.26 was read from its review still before the last changes of the ground and the orange (`node out/work/hf.mjs`, the tool's own function), not again after.
+- M3, `npm run measure -- --unit step1 --tier review`: 0.8853 on `step1-tug` at the first push and 0.8835 at the second, all eight measures green both times, where 0.8 is the least (it was 0.68 on main, STATED in the brief). `step1-fire` is green in the same run; 1.26 was read from its review still before the last changes of the ground and the orange (`node out/work/hf.mjs`, the tool's own function), not again after.
 - On the way: the first card alone gave 0.85 at draft and 0.56 at review, because review averages 8 samples a pixel and detail under a pixel wide is lost. What carries the number is detail 2 px wide: the frost read at 3.0 texels a page pixel (glass region 0.0034 to 0.0054) and the ground's tooth up close (0.0040 to 0.0106). The glass alone does not carry it: both are needed. (Not measured apart; from the regions' shares the frame would stand near 0.75 with the ground left as it was. That is an estimate.)
 - The same run: M1, M2, M3, M4, M5, M6, M7, M9 green. M4 turned red once (type on the orange 4.31 where 4.5 is the least) with a lighter orange, 0xc64c08; with 0xb94503 it is 4.67.
 - `npm run still -- --key step1-tug --format hd --tier draft`: before 618027 triangles, 295 draw calls, 11.7 s; after 599811 triangles, 286 draw calls, 11.2 s. Review: 23.7 s.
@@ -123,7 +126,7 @@ Owner of this round: glass (`surface_fixer`), branch `agent/glass`, 2026-11-25. 
 - The card is opaque geometry that paints what glass would show. Real transmission was measured by the last owner at 7.3 s and 122 draw calls against 4.5 s and 84, and it hides the shadows that fall on the glass.
 - The approved `step1-tug.png` is the whole page and the build's key frame is three times closer, so M3 on that key compares a close view with a far one. The number is reached with a fine tooth on paper and glass, never with pores: both were looked at in the review still at native size.
 - Tuning looks used on the card: 13 of 40.
-- `npm run counts -- --key step1-tug --live low` after: 75 draw calls (limit 300), 162313 triangles. Before: not yet run on main.
+- `npm run counts -- --key step1-tug --live low` after: 75 draw calls (limit 300), 162313 triangles. Before, with main's two files put back for one run: 74 draw calls, 161437 triangles.
 
 ### Still least real
 

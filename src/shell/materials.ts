@@ -352,6 +352,17 @@ function slabbed<T extends THREE.MeshPhysicalMaterial>(material: T, grain: THREE
   })
 }
 
+const SUNK_FILL = 0.3
+
+// Frosted glass carries light sideways inside itself, so a shadow that falls on it is never as deep as one on the page.
+function lightFilled<T extends THREE.MeshPhysicalMaterial>(material: T, fill: number): T {
+  return also(material, `filled-${fill}`, (shader) => {
+    const end = '#include <lights_fragment_end>'
+    if (!shader.fragmentShader.includes(end)) throw new Error('The surface code of this three.js release is not the one this build was written for')
+    shader.fragmentShader = shader.fragmentShader.replace(end, `${end}\n\treflectedLight.indirectDiffuse += diffuseColor.rgb * ( ( 1.0 - wjaOpen ) * ${fill.toFixed(3)} );`)
+  })
+}
+
 export interface Materials {
   ceramic: THREE.MeshPhysicalMaterial
   pocket: THREE.MeshPhysicalMaterial
@@ -394,7 +405,7 @@ export function makeMaterials(seed: number): Materials {
   const ceramic = grained(physical({ color: srgb(0xf0f0ed), roughness: 0.74, metalness: 0, normalMap: grain, normalScale: new THREE.Vector2(PAGE_GRAIN, PAGE_GRAIN), specularIntensity: 0.6 }), 0.5)
   const pocket = grained(physical({ color: srgb(0xdcdfdc), roughness: 0.8, metalness: 0, normalMap: grain, normalScale: new THREE.Vector2(0.08, 0.08), specularIntensity: 0.4 }), 0.3)
   const glass = physical({ color: srgb(0xbdc5c2), roughness: 0.44, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8, ...frosted })
-  const glassSunk = physical({ color: srgb(0xbdc5c2), roughness: 0.44, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8, vertexColors: true, ...frosted })
+  const glassSunk = lightFilled(physical({ color: srgb(0xbdc5c2), roughness: 0.44, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8, vertexColors: true, ...frosted }), SUNK_FILL)
   const glassCard = slabbed(physical({ color: srgb(0xaab1b2), roughness: 0.4, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.3, specularIntensity: 0.8 }), grain, brushed, look.key.direction)
   const glassThick = physical({ color: srgb(0xa8b0af), roughness: 0.48, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8, ...frosted })
   const aluminium = physical({
@@ -405,7 +416,7 @@ export function makeMaterials(seed: number): Materials {
   }))
   const aluminiumEdge = physical({ color: srgb(0xc6cacd), roughness: 0.38, metalness: 0.62 })
   const aluminiumRim = physical({ color: srgb(0xcdd0d2), roughness: 0.34, metalness: 0.7 })
-  const aluminiumSatin = physical({ color: srgb(0xc9ccce), roughness: 0.5, metalness: 0.35 })
+  const aluminiumSatin = physical({ color: srgb(0xcfd2d4), roughness: 0.5, metalness: 0.2 })
   const orange = physical({ color: srgb(0xb94503), roughness: 0.57, metalness: 0, clearcoat: 0.14, clearcoatRoughness: 0.36, specularIntensity: 0.6, specularColor: srgb(0xff9a52) })
   const gap = physical({ color: srgb(0x23211f), roughness: 0.85, metalness: 0, specularIntensity: 0.3 })
   const ink = physical({ color: srgb(0x2a2927), roughness: 0.48, metalness: 0, specularIntensity: 0.2 })
