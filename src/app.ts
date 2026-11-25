@@ -15,7 +15,7 @@ import { pages, preparePages, unitPages } from './pages'
 import { loadTable } from './table/real/assets'
 import { look } from './post/look'
 import { studioEnvironment } from './post/studio'
-import { PageView, TONES } from './shell/view'
+import { PageView } from './shell/view'
 import { layoutProblems } from './shell/layout'
 import { FONTS } from './shell/metrics'
 import { loadFont } from './shell/type'
@@ -68,10 +68,19 @@ export class App {
     if (problems.length) fail(problems)
   }
 
-  async start(canvas: HTMLCanvasElement, o: { format: string; assets: string; capture: boolean; forceKind?: TargetKind }): Promise<void> {
+  // What a later page is built from, fetched after the first complete picture: a part is drawn by its stand-in until its pictures are in.
+  loadLater(): void {
+    if (this.later) return
+    this.later = loadTable(this.assets)
+    this.later.catch((e: unknown) => console.error(e))
+  }
+
+  private later: Promise<void> | null = null
+
+  async start(canvas: HTMLCanvasElement, o: { format: string; assets: string; capture: boolean; stepped?: boolean; forceKind?: TargetKind }): Promise<void> {
     this.format = formatById(o.format)
     this.assets = assetSet(o.assets)
-    await Promise.all([...FONTS.map((name) => loadFont(name)), preparePages(), loadTable(this.assets)])
+    await Promise.all([...FONTS.map((name) => loadFont(name)), preparePages(), o.capture || o.stepped ? loadTable(this.assets) : Promise.resolve()])
     App.check()
     this.engine = new Engine(canvas, this.format.width, this.format.height, { preserve: o.capture, forceKind: o.forceKind, multisamples: o.capture ? 0 : LIVE_MULTISAMPLES })
     this.engine.beforeSample = (_shot, view) => (view === 'beauty' ? undefined : applyView(view, this.viewContext()))
@@ -312,22 +321,6 @@ export class App {
   eventPlace(pose: CameraPose, x: number, y: number): { x: number; y: number } {
     const p = project(pose, toWorld(x, y, 0), hd.width, hd.height)
     return { x: p.x, y: p.y }
-  }
-
-  groundOf(list: Shape[], s: Shape): number {
-    const cx = s.x + s.w / 2
-    const cy = s.y + s.h / 2
-    let best = -Infinity
-    let tone = TONES.page
-    for (const o of list) {
-      if (o.kind === 'text' || o.kind === 'well' || o.kind === 'anchor' || o === s) continue
-      if (cx < o.x || cx > o.x + o.w || cy < o.y || cy > o.y + o.h) continue
-      const top = o.pocket ? o.z0 : o.z1
-      if (top > s.z1 + 0.5 || top < best) continue
-      best = top
-      tone = TONES[o.pocket && o.tone !== 'dark' ? 'pocket' : o.tone]
-    }
-    return tone
   }
 
   countsOf(unit: string): { triangles: number; drawCalls: number } {

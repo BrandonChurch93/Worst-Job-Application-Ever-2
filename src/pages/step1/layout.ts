@@ -1,6 +1,6 @@
 import { config } from '../../config'
 import type { LayoutNode } from '../../copy'
-import { column, node, text } from '../../shell/layout'
+import { group, node, text } from '../../shell/layout'
 import { block } from '../../shell/metrics'
 import { button, buttonWidth, field, HEADER, LEFT, page, RIGHT, SCREEN_H, stepHead, TYPE } from '../../shell/parts'
 import { words } from '../../shell/words'
@@ -12,9 +12,11 @@ const heights = config.scale.heights
 export const GUTTER = 56
 export const COL_W = (RIGHT - LEFT - GUTTER) / 2
 export const FIELD_X = RIGHT - COL_W
-export const FIELD_GAP = 20
+export const FIELD_GAP = 16
+export const HELPER_ROOM = 28
 export const FIELD_PITCH = 36 + sizes.field + FIELD_GAP
-export const ZONE = { x: LEFT, y: HEADER.contentY + 36, w: COL_W, h: FIELD_PITCH * 2 + sizes.field }
+export const FIELD_Y = [HEADER.contentY, HEADER.contentY + FIELD_PITCH + HELPER_ROOM, HEADER.contentY + FIELD_PITCH * 2 + HELPER_ROOM]
+export const ZONE = { x: LEFT, y: HEADER.contentY + 36, w: COL_W, h: FIELD_Y[2]! + 36 + sizes.field - (HEADER.contentY + 36) }
 export const FORM_BOTTOM = ZONE.y + ZONE.h
 export const FIELDS = ['firstName', 'lastName', 'email'] as const
 export type FieldName = (typeof FIELDS)[number]
@@ -26,13 +28,13 @@ export const PAPER_REST = { x: 1000, y: 748 }
 export const PAPER_TITLE = { font: 'inter-600', px: 28 }
 export const PAPER_LINES = [0.3, 0.38, 0.46, 0.54, 0.66, 0.74, 0.82]
 export const SLOT = { w: 300, h: 26, cx: ZONE.x + ZONE.w * 0.62, cy: FORM_BOTTOM + 30 }
-export const NOTE_Y = FORM_BOTTOM + 18
+export const NOTE_Y = FORM_BOTTOM + 10
 export const CONTINUE_Y = DECK.y + 10
 
 const cap = (font: string, px: number): number => block(font, 'X', px).cap
 
 export function paperNodes(x: number, y: number): LayoutNode[] {
-  const out: LayoutNode[] = [text('resume-paper-title', 'copy:step1.resume.paperTitle', PAPER_TITLE, x + 24, y + 30, { part: 'type', on: heights.paper })]
+  const out: LayoutNode[] = [text('resume-paper-title', 'copy:step1.resume.paperTitle', PAPER_TITLE, x + 24, y + 30, { part: 'paper', on: heights.paper })]
   PAPER_LINES.forEach((at, i) => {
     out.push(node(`resume-paper-line-${i}`, 'paperLine', [x + 24, y + PAPER.h * at, (PAPER.w - 48) * (i === 3 || i === 6 ? 0.6 : 1), 8], { part: 'paper', height: heights.paper + 0.4, floor: heights.paper, tone: 'pocket' }))
   })
@@ -61,11 +63,10 @@ export function buildLayout(): LayoutNode {
       text('resume-received', 'copy:step1.resume.received', { ...TYPE.hero, align: 'centre', wrap: ZONE.w - 120 }, cx, ZONE.y + (ZONE.h - received.height) / 2, { part: 'type', on: heights.card, states: ['received'] })
     ]
   })
-  const fields = column('fields', FIELD_X, HEADER.contentY, FIELD_GAP, FIELDS.map((name) => (x: number, y: number) => field(name, x, y, COL_W, `copy:step1.fields.${name}.label`, { value: `runtime:step1.${name}` })))
+  const fields = group('fields', FIELDS.map((name, i) => field(name, FIELD_X, FIELD_Y[i]!, COL_W, `copy:step1.fields.${name}.label`, { value: `runtime:step1.${name}`, ...(i === 0 ? { helper: 'copy:step1.fields.firstName.helper' } : {}) })))
   const labelCap = cap(TYPE.label.font, TYPE.label.px)
   const helperCap = cap(TYPE.helper.font, TYPE.helper.px)
-  const helper = text('firstName-helper', 'copy:step1.fields.firstName.helper', { ...TYPE.helper, align: 'right' }, RIGHT, HEADER.contentY + labelCap - helperCap, { part: 'type' })
-  const accepted = text('email-accepted', 'copy:step1.emailAccepted', { ...TYPE.helper, align: 'right' }, RIGHT, HEADER.contentY + FIELD_PITCH * 2 + labelCap - helperCap, { part: 'type', states: ['accepted'] })
+  const accepted = text('email-accepted', 'copy:step1.emailAccepted', { ...TYPE.helper, align: 'right' }, RIGHT, FIELD_Y[2]! + labelCap - helperCap, { part: 'type', states: ['accepted'] })
   const note = text('keyboard-note', 'copy:step1.keyboardNote', TYPE.helper, LEFT, NOTE_Y, { part: 'type', states: ['note'] })
   const w = buttonWidth('copy:step1.continue')
   const go = button('continue', RIGHT - 5 - w, CONTINUE_Y + 5, w, 'copy:step1.continue', { part: 'shell', tone: 'metal', states: ['closed'] })
@@ -92,5 +93,5 @@ export function buildLayout(): LayoutNode {
   })
   const paper = node('resume-paper', 'paper', [PAPER_REST.x, PAPER_REST.y, PAPER.w, PAPER.h], { part: 'paper', over: true, states: ['paper'], children: paperNodes(PAPER_REST.x, PAPER_REST.y) })
 
-  return page('step1', SCREEN_H, [...stepHead(1), zoneLabel, zone, fields, helper, accepted, note, go, deck, slab, paper])
+  return page('step1', SCREEN_H, [...stepHead(1), zoneLabel, zone, fields, accepted, note, go, deck, slab, paper])
 }

@@ -208,3 +208,98 @@ export function translate(g: THREE.BufferGeometry, x: number, y: number, z = 0):
   }
   return g
 }
+
+// A profile drawn as a line of points, each (inset, z, sharp). A sharp point keeps a crisp edge, any other is rounded over.
+export type ProfilePoint = [number, number, boolean?]
+
+export function profile(points: ProfilePoint[]): Ring[] {
+  const seg: [number, number][] = []
+  for (let i = 0; i < points.length - 1; i++) {
+    const di = points[i + 1]![0] - points[i]![0]
+    const dz = points[i + 1]![1] - points[i]![1]
+    const l = Math.hypot(di, dz) || 1
+    seg.push([dz / l, di / l])
+  }
+  const rings: Ring[] = []
+  points.forEach((p, i) => {
+    const before = seg[i - 1]
+    const after = seg[i]
+    if (before && after && !p[2]) {
+      const out = before[0] + after[0]
+      const up = before[1] + after[1]
+      const l = Math.hypot(out, up) || 1
+      rings.push({ inset: p[0], z: p[1], out: out / l, up: up / l })
+      return
+    }
+    if (before) rings.push({ inset: p[0], z: p[1], out: before[0], up: before[1] })
+    if (after) rings.push({ inset: p[0], z: p[1], out: after[0], up: after[1] })
+  })
+  return rings
+}
+
+// A quarter round from (inset, z) going inward by `across` and up by `rise`.
+export function arc(inset: number, z: number, across: number, rise: number, steps = 6): ProfilePoint[] {
+  const out: ProfilePoint[] = []
+  for (let i = 0; i <= steps; i++) {
+    const a = (i / steps) * (Math.PI / 2)
+    out.push([inset + across * (1 - Math.cos(a)), z + rise * Math.sin(a)])
+  }
+  return out
+}
+
+export interface Plan { kind: string; w: number; h: number; r?: number }
+
+// The outline of a shape seen from above, moved inward by `inset`.
+export function outlineOf(s: Plan, inset = 0, perCorner = 10): Outline {
+  const w = Math.max(0.5, s.w - inset * 2)
+  const h = Math.max(0.5, s.h - inset * 2)
+  if (s.kind === 'disc') return circle(Math.min(w, h) / 2, 72)
+  if (s.kind === 'capsule') return roundedRect(w, h, Math.min(w, h) / 2, Math.max(perCorner, 16))
+  return roundedRect(w, h, Math.max(0.6, (s.r ?? 0) - inset), perCorner)
+}
+
+// How the slab is cut for a pocket: how far below the top of what lies in it, and how round the lip is.
+export function pocketCut(s: { role?: string; z0: number }): { under: number; depth: number; lip: number } {
+  const under = s.role === 'field' ? 5 : s.role === 'progressRail' ? 1.5 : s.role === 'buttonSocket' ? 0.6 : 0
+  const depth = Math.max(0.5, -s.z0 + under)
+  return { under, depth, lip: Math.min(1.2, depth / 2) }
+}
+
+// The flat of the slab between a rectangle and a hole inside it.
+export function collar(hw: number, hh: number, hole: Outline): THREE.BufferGeometry {
+  const n = hole.count
+  const pos: number[] = []
+  const nor: number[] = []
+  const uv: number[] = []
+  const idx: number[] = []
+  const side: number[] = []
+  for (let i = 0; i < n; i++) {
+    const x = hole.x[i]!
+    const y = hole.y[i]!
+    const k = Math.min(x === 0 ? Infinity : hw / Math.abs(x), y === 0 ? Infinity : hh / Math.abs(y))
+    const vertical = (x === 0 ? Infinity : hw / Math.abs(x)) <= (y === 0 ? Infinity : hh / Math.abs(y))
+    side.push(vertical ? (x > 0 ? 0 : 2) : y > 0 ? 1 : 3)
+    pos.push(x, y, 0, x * k, y * k, 0)
+    nor.push(0, 0, 1, 0, 0, 1)
+    uv.push(x, y, x * k, y * k)
+  }
+  const corners: [number, number][] = [[hw, hh], [-hw, hh], [-hw, -hh], [hw, -hh]]
+  for (let i = 0; i < n; i++) {
+    const j = (i + 1) % n
+    idx.push(i * 2, i * 2 + 1, j * 2 + 1, i * 2, j * 2 + 1, j * 2)
+    if (side[i] !== side[j]) {
+      const c = corners[side[i]!]!
+      const at = pos.length / 3
+      pos.push(c[0], c[1], 0)
+      nor.push(0, 0, 1)
+      uv.push(c[0], c[1])
+      idx.push(i * 2 + 1, at, j * 2 + 1)
+    }
+  }
+  const g = new THREE.BufferGeometry()
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
+  g.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3))
+  g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2))
+  g.setIndex(idx)
+  return g
+}
