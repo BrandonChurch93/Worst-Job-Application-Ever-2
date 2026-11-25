@@ -1,0 +1,263 @@
+{
+ "critic": "R2",
+ "pass": true,
+ "jurors": 5,
+ "judged": [
+  {
+   "file": "set-A-01.png",
+   "what": {
+    "key": "step1-fire"
+   },
+   "votes": [
+    {
+     "juror": "r3_juror_01",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 99,
+     "why": "the visible cursor interacting with a stylized on-screen keyboard in a web-style form",
+     "at": "15:54Z"
+    },
+    {
+     "juror": "r3_juror_02",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 80,
+     "why": "it is clearly a web app UI: a joke form with a step tracker, text fields and a cursor, built on a skeuomorphic 3D keyboard with cannon effects; it looks like a browser demo, not film, photo or stock render",
+     "at": "15:53Z"
+    },
+    {
+     "juror": "r3_juror_03",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 99,
+     "why": "the live form UI with a cursor-controlled 3D keyboard reads as an interactive web demo",
+     "at": "15:53Z"
+    },
+    {
+     "juror": "r3_juror_04",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 90,
+     "why": "web-form UI with an on-screen cursor and simple stylized keyboard effects strongly suggests an interactive web 3D demo or low-budget app rather than a cinematic render",
+     "at": "15:55Z"
+    },
+    {
+     "juror": "r3_juror_05",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 98,
+     "why": "the on-screen keyboard sits inside an active job-application form, making the image read as an interactive web demo",
+     "at": "15:55Z"
+    }
+   ],
+   "letters": "d d d d d"
+  },
+  {
+   "file": "set-A-02.png",
+   "what": {
+    "key": "step1-tug"
+   },
+   "votes": [
+    {
+     "juror": "r3_juror_06",
+     "model": "claude_opus_5_5",
+     "answer": "c",
+     "confidence": 55,
+     "why": "a polished, stylized skeuomorphic UI illustration (paper resume, chrome shredder slot, textured wall, soft studio shadows): a well-lit but ordinary designed 3D render, not a photo; no scene complexity of a film frame; texture and shadow detail better than a typical web or mobile real-time render; (d) is the main alternative",
+     "at": "15:55Z"
+    },
+    {
+     "juror": "r3_juror_07",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "c",
+     "confidence": 88,
+     "why": "the stock-style visual metaphor: a solid 3D cursor physically hauling a resume across a beveled upload form",
+     "at": "15:55Z"
+    },
+    {
+     "juror": "r3_juror_08",
+     "model": "kimi_k3",
+     "answer": "c",
+     "confidence": 70,
+     "why": "the conceptual UI-made-physical composition with clean flat studio lighting and simple materials is the classic style of a stock or conceptual 3D illustration: competently rendered but without cinematic lighting, complex environments or photographic detail",
+     "at": "15:55Z"
+    },
+    {
+     "juror": "r3_juror_09",
+     "model": "gpt_6_2_sol",
+     "answer": "c",
+     "confidence": 93,
+     "why": "the cursor physically dragging a resume through a beveled upload form reads as a purpose-built 3D illustration of a UI metaphor",
+     "at": "15:55Z"
+    },
+    {
+     "juror": "r3_juror_10",
+     "model": "claude_opus_5_5",
+     "answer": "c",
+     "confidence": 55,
+     "why": "a polished but stylized skeuomorphic web-form illustration (a shredder slot, a paper resume, a cursor with strings) with clean, studio-like shading and textures: a well-made one-off 3D render, not a photo or a film or game frame; could also be a web 3D demo (d), since the subject is a UI",
+     "at": "15:55Z"
+    }
+   ],
+   "letters": "c c c c c"
+  },
+  {
+   "file": "set-A-03.png",
+   "what": {
+    "sheet": "page-look"
+   },
+   "votes": [
+    {
+     "juror": "r3_juror_11",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 99,
+     "why": "the visible mouse cursor on a bevelled multi-step form makes it look like a screenshot of a web app",
+     "at": "15:56Z"
+    },
+    {
+     "juror": "r3_juror_12",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 95,
+     "why": "screenshot-like web form UI with simple pseudo-3D buttons and a cursor",
+     "at": "15:56Z"
+    },
+    {
+     "juror": "r3_juror_13",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 97,
+     "why": "a clearly interactive web-form layout rendered as skeuomorphic beveled controls, including the visible mouse cursor",
+     "at": "15:56Z"
+    },
+    {
+     "juror": "r3_juror_14",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 85,
+     "why": "clearly a web app UI (a form with text fields, a step indicator and a cursor) styled with skeuomorphic 3D or textured shading, so it reads as a web demo or low-budget app screenshot rather than a photo, film frame or stock render",
+     "at": "15:56Z"
+    },
+    {
+     "juror": "r3_juror_15",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 99,
+     "why": "the beveled 3D effects are applied directly to an interactive web-style job application form",
+     "at": "15:56Z"
+    }
+   ],
+   "letters": "d d d d d"
+  }
+ ],
+ "controls": [
+  {
+   "file": "set-A-04.png",
+   "what": "step1-fire",
+   "votes": [
+    {
+     "juror": "r3_juror_16",
+     "model": "kimi_k3",
+     "answer": "c",
+     "confidence": 82,
+     "why": "the polished but essentially stock or product-style 3D rendering of a UI and keyboard, rather than a cinematic scene with narrative-scale environments or characters",
+     "at": "15:56Z"
+    },
+    {
+     "juror": "r3_juror_17",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 95,
+     "why": "the rendered keyboard is embedded directly in an interactive job-application form",
+     "at": "15:56Z"
+    },
+    {
+     "juror": "r3_juror_18",
+     "model": "claude_opus_5_5",
+     "answer": "c",
+     "confidence": 45,
+     "why": "the polished, product-shot look: soft studio lighting, brushed-metal and keycap materials, and clean UI text rendered as physical objects; too finely shaded for a low-budget web or app demo (d), and a staged concept piece rather than a real photograph or a film frame",
+     "at": "15:56Z"
+    },
+    {
+     "juror": "r3_juror_19",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 88,
+     "why": "the active text-entry form (visible caret and field-validation message) makes the 3D scene read as a playable web-interface gag",
+     "at": "15:56Z"
+    },
+    {
+     "juror": "r3_juror_20",
+     "model": "kimi_k3",
+     "answer": "c",
+     "confidence": 78,
+     "why": "the polished but static product-render composition and studio-like materials most suggested an ordinary high-quality 3D render rather than a photograph or cinematic scene",
+     "at": "15:57Z"
+    }
+   ],
+   "letters": "c d c d c"
+  },
+  {
+   "file": "set-A-05.png",
+   "what": "step1-tug",
+   "votes": [
+    {
+     "juror": "r3_juror_21",
+     "model": "gpt_6_2_sol",
+     "answer": "c",
+     "confidence": 89,
+     "why": "the consistent studio-style contact shadows on the sculpted interface make it look like a polished standalone 3D illustration",
+     "at": "15:56Z"
+    },
+    {
+     "juror": "r3_juror_22",
+     "model": "claude_opus_5_5",
+     "answer": "c",
+     "confidence": 65,
+     "why": "a clean, evenly lit, stylized UI-as-physical-object scene (soft shadows, paper texture, glossy buttons, cartoon cursor with arms): a polished but ordinary illustrative or stock-style 3D render, not a real photographed object, a film frame, or a low-fidelity real-time app",
+     "at": "15:56Z"
+    },
+    {
+     "juror": "r3_juror_23",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "c",
+     "confidence": 88,
+     "why": "the cursor physically feeding a paper resume into the form looks like a staged 3D illustration rather than a functioning interface",
+     "at": "15:57Z"
+    },
+    {
+     "juror": "r3_juror_24",
+     "model": "kimi_k3",
+     "answer": "c",
+     "confidence": 80,
+     "why": "a polished but generic conceptual 3D illustration of a skeuomorphic job-application UI with a cartoon cursor character: the kind of stylized editorial or stock render that illustrates an article, not a photograph, a big-budget cinematic scene, or an actual low-budget app or game screenshot",
+     "at": "15:57Z"
+    },
+    {
+     "juror": "r3_juror_25",
+     "model": "gpt_6_2_sol",
+     "answer": "c",
+     "confidence": 87,
+     "why": "the form's controls are styled as tactile, studio-lit 3D objects in a static product-style composition",
+     "at": "15:57Z"
+    }
+   ],
+   "letters": "c c c c c"
+  }
+ ],
+ "judgedShare": {
+  "votes": 15,
+  "aOrB": 0,
+  "share": 0.0
+ },
+ "controlShare": {
+  "votes": 10,
+  "aOrB": 0,
+  "share": 0.0
+ },
+ "rule": "R2 passes when the judged share is no lower than the control share minus quality.jury.maxShareGap (0.2)",
+ "note": "It passes by the rule with both shares at nought: no juror took a picture of the build or an approved image for a photograph or a film frame. What the rule does not see: the build's two pictures from the home camera drew (d) from all ten jurors, the approved key from the same camera drew (d) from two of five and (c) from three. The words of the jurors on the judged pictures are input for the next round.",
+ "replaced": 0
+}
