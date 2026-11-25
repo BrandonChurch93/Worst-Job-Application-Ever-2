@@ -74,46 +74,47 @@ function puffPicture(seed: number): THREE.DataTexture {
   })
 }
 
-// A bullet hole seen from straight above, lit from the upper left: a dark shaft with the deck's metal faint at its foot, the far wall lit, a raised splintered rim of cap plastic, a singe that fades outward.
+// A soft round glow that falls to nothing at its edge. Grey, drawn additively.
+function haloPicture(): THREE.DataTexture {
+  return picture(64, false, (u, v) => {
+    const r = Math.hypot(u, v)
+    const g = Math.exp(-(r * r) / 0.09) * smooth((1 - r) / 0.3)
+    return [g, g, g, 1]
+  })
+}
+
+// A burn seen from straight above: a ragged pit of black char, a sooty crust round it, a soft brown singe that fades outward and a few flecks of soot.
 function scorchPicture(seed: number): THREE.DataTexture {
-  const lx = -0.735
-  const ly = 0.678
   const mix = (a: number, b: number, t: number) => a + (b - a) * t
   return picture(256, true, (u, v) => {
     const r = Math.hypot(u, v)
     const a = Math.atan2(v, u)
     const ca = Math.cos(a)
     const sa = Math.sin(a)
-    const ragged = noise(ca * 2.4 + 5, sa * 2.4 + 5, seed) * 0.5 + noise(ca * 6 + 9, sa * 6 + 9, seed + 3) * 0.3
-    const splinter = noise(ca * 11 + 21, sa * 11 + 21, seed + 5) ** 2
-    const hole = 0.25 + ragged * 0.1
-    const rim = hole + 0.07 + splinter * 0.13
-    const reach = rim + 0.2 + ragged * 0.26
-    const toLight = ca * lx + sa * ly
-    const fine = noise(u * 22, v * 22, seed + 11)
-    const cloud = noise(u * 7 + 3, v * 7 + 8, seed + 17)
-    const inside = 1 - smooth((r - hole) / 0.035)
-    const wall = smooth((r - hole * 0.5) / (hole * 0.5)) * Math.max(0, -toLight) ** 0.8
-    const metal = (1 - smooth((r - hole * 0.2) / (hole * 0.35))) * (0.7 + 0.3 * fine)
-    const onRim = (1 - inside) * (1 - smooth((r - rim) / 0.04))
-    const ridge = smooth(0.5 + 0.62 * toLight)
-    const cast = (1 - inside) * (1 - onRim) * (1 - smooth((r - rim) / 0.12)) * Math.max(0, -toLight)
-    const halo = (1 - smooth((r - rim * 0.9) / (reach - rim * 0.9))) ** 1.1
-    const t = Math.min(1, halo * 1.4)
-    const burnt = smooth((noise(ca * 4 + 31, sa * 4 + 31, seed + 23) - 0.38) / 0.3) * (1 - 0.55 * smooth((r - hole - 0.05) / 0.1))
-    const soot = 1 - 0.4 * smooth((fine - 0.58) / 0.2)
-    let red = mix(mix(0.6, 0.13, t), 0.07, cast * 0.75)
-    let green = mix(mix(0.34, 0.06, t), 0.05, cast * 0.75)
-    let blue = mix(mix(0.13, 0.025, t), 0.04, cast * 0.75)
-    let alpha = Math.max(Math.min(1, halo * 1.3) * (0.8 + cloud * 0.2), cast * 0.6) * smooth((1 - r) / 0.1)
-    red = mix(red, mix(mix(0.4, 0.93, ridge) * soot, 0.1 + 0.16 * ridge, burnt), onRim)
-    green = mix(green, mix(mix(0.34, 0.88, ridge) * soot, 0.06 + 0.09 * ridge, burnt), onRim)
-    blue = mix(blue, mix(mix(0.26, 0.76, ridge) * soot, 0.04 + 0.04 * ridge, burnt), onRim)
-    alpha = Math.max(alpha, onRim * 0.97)
-    red = mix(red, 0.03 + wall * 0.6 + metal * 0.2, inside)
-    green = mix(green, 0.028 + wall * 0.54 + metal * 0.21, inside)
-    blue = mix(blue, 0.026 + wall * 0.44 + metal * 0.225, inside)
-    alpha = Math.max(alpha, inside)
+    const ragged = noise(ca * 2.2 + 5, sa * 2.2 + 5, seed) * 0.6 + noise(ca * 6 + 9, sa * 6 + 9, seed + 3) * 0.4
+    const fine = noise(u * 26, v * 26, seed + 11)
+    const cloud = noise(u * 6 + 3, v * 6 + 8, seed + 17)
+    const pit = 0.2 + ragged * 0.12
+    const crust = pit + 0.06 + noise(ca * 9 + 21, sa * 9 + 21, seed + 5) * 0.12
+    const reach = crust + 0.26 + ragged * 0.2
+    const inside = 1 - smooth((r - pit) / 0.03)
+    const char = (1 - smooth((r - crust) / 0.07)) * (0.72 + 0.28 * smooth((fine - 0.3) / 0.3))
+    const singe = (1 - smooth((r - pit) / (reach - pit))) ** 1.7 * (0.75 + 0.25 * cloud)
+    const fleck = smooth((noise(u * 34 + 2, v * 34 + 6, seed + 29) - 0.8) / 0.08) * (1 - smooth((r - reach) / 0.2)) * 0.7
+    const wall = inside * smooth((r - pit * 0.45) / (pit * 0.55)) * Math.max(0, ca * 0.735 - sa * 0.678) * 0.11
+    const ash = inside * (0.02 * fine)
+    let red = mix(0.36, 0.2, singe)
+    let green = mix(0.21, 0.1, singe)
+    let blue = mix(0.1, 0.045, singe)
+    let alpha = singe * 0.78
+    red = mix(red, 0.055, char)
+    green = mix(green, 0.044, char)
+    blue = mix(blue, 0.036, char)
+    alpha = Math.max(alpha, char * 0.96, fleck)
+    red = mix(red, 0.026 + wall + ash, inside)
+    green = mix(green, 0.023 + wall * 0.92 + ash, inside)
+    blue = mix(blue, 0.021 + wall * 0.8 + ash, inside)
+    alpha = Math.max(alpha, inside) * smooth((1 - r) / 0.12)
     return [red, green, blue, alpha]
   })
 }
@@ -124,22 +125,26 @@ export const GLOW = {
   flash: [9, 3.6, 0.9] as [number, number, number],
   chargeLow: [6, 2.5, 0.6] as [number, number, number],
   chargeHigh: [16, 7, 2] as [number, number, number],
-  hot: [0.42, 0.03, 0.006] as [number, number, number]
+  hot: [0.42, 0.03, 0.006] as [number, number, number],
+  tip: [5.2, 1.7, 0.3] as [number, number, number],
+  tipCold: [0.3, 0.3, 0.31] as [number, number, number]
 }
 
 export const EMIT = {
-  bolt: { colour: [1, 0.4, 0.09] as [number, number, number], power: 0.3, reach: 110 },
+  bolt: { colour: [1, 0.4, 0.09] as [number, number, number], power: 0.16, reach: 64 },
   flash: { colour: [1, 0.5, 0.15] as [number, number, number], power: 0.6, reach: 160 },
   charge: { colour: [1, 0.45, 0.12] as [number, number, number], power: 0.3, reach: 110 },
   hot: { colour: [1, 0.12, 0.03] as [number, number, number], power: 0.35, reach: 140 },
-  ember: { colour: [1, 0.36, 0.08] as [number, number, number], power: 0.5, reach: 130 },
-  struck: { colour: [1, 0.3, 0.06] as [number, number, number], power: 0.8, reach: 170 }
+  ember: { colour: [1, 0.36, 0.08] as [number, number, number], power: 0.3, reach: 70 },
+  struck: { colour: [1, 0.3, 0.06] as [number, number, number], power: 0.28, reach: 64 },
+  tip: { colour: [1, 0.42, 0.1] as [number, number, number], power: 0.12, reach: 60 }
 }
 
 export interface Fx {
   star: THREE.DataTexture
   puff: THREE.DataTexture
   scorch: THREE.DataTexture
+  halo: THREE.DataTexture
   quad: THREE.PlaneGeometry
   head: THREE.BufferGeometry
   tail: THREE.BufferGeometry
@@ -149,6 +154,7 @@ export interface Fx {
   flashMaterial: THREE.MeshBasicMaterial
   puffMaterial: THREE.MeshBasicMaterial
   scorchMaterial: THREE.MeshBasicMaterial
+  haloMaterial: THREE.MeshBasicMaterial
 }
 
 // The tail of a bolt: a cone that thins to nothing behind the head, brightest at the head.
@@ -204,9 +210,10 @@ export function fx(): Fx {
   const star = starPicture(seed)
   const puff = puffPicture(seed + 1)
   const scorch = scorchPicture(seed + 2)
+  const halo = haloPicture()
   const add = { blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, toneMapped: false, fog: false }
   made = {
-    star, puff, scorch,
+    star, puff, scorch, halo,
     quad: new THREE.PlaneGeometry(1, 1),
     head: headGeometry(),
     tail: tailGeometry(1, 1),
@@ -215,6 +222,7 @@ export function fx(): Fx {
     tailMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...GLOW.boltTail), vertexColors: true, ...add }),
     flashMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...GLOW.flash), map: star, ...add }),
     puffMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(0.8, 0.8, 0.8), alphaMap: puff, transparent: true, depthWrite: false, toneMapped: false }),
+    haloMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...GLOW.boltTail), map: halo, ...add }),
     scorchMaterial: new THREE.MeshBasicMaterial({ map: scorch, transparent: true, depthWrite: false, toneMapped: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 })
   }
   return made

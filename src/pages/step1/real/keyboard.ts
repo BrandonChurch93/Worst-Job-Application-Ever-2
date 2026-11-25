@@ -4,9 +4,10 @@ import type { PartMaker, RealContext } from '../../../real/types'
 import { circle, merge, ringPath, roundedRect, sweep, translate, type Ring } from '../../../shell/solids'
 import type { Shape } from '../../../stage/types'
 import { DECK, HATCH, hatchCentre, seats } from '../keyboard'
-import { BRUSH, CAP, capGeometry, kit, lit, scaleUv } from './keyboard-kit'
+import { config } from '../../../config'
+import { BRUSH, CAP, capGeometry, kit, lit, refine, scaleUv, sheen } from './keyboard-kit'
 
-export const DECK_LOOK = { chamfer: 3.4, rim: 9, depth: 84, corner: 5, field: 7, fieldLip: 1.1, fieldDepth: CAP.skirt + 2.2, hatchHole: HATCH / 2 - 2 }
+export const DECK_LOOK = { roll: 8, rim: 4.5, groove: 2, grooveDepth: 1, depth: 84, corner: 8, cell: 40, field: 7, fieldLip: 1.1, fieldDepth: CAP.skirt + 2.2, hatchHole: HATCH / 2 - 2 }
 
 const capKey = (w: number, h: number): string => `${Math.round(w * 4) / 4}x${Math.round(h * 4) / 4}`
 const capGeometries = new Map<string, THREE.BufferGeometry>()
@@ -62,11 +63,11 @@ const isCap = (s: Shape): boolean => s.role === 'keycap' && s.kind !== 'text'
 const isEnter = (s: Shape): boolean => s.id === 'key-enter'
 
 function deckGeometry(w: number, h: number): { metal: THREE.BufferGeometry; well: THREE.BufferGeometry; seat: THREE.BufferGeometry } {
-  const c = DECK_LOOK.chamfer
-  const outer = roundedRect(w, h, DECK_LOOK.corner, 8)
-  const face = new THREE.Shape(ringPath(outer, c + DECK_LOOK.rim, 0, 0).getPoints())
-  const band = new THREE.Shape(ringPath(outer, c, 0, 0).getPoints())
-  band.holes.push(ringPath(outer, c + DECK_LOOK.rim, 0, 0))
+  const R = DECK_LOOK.roll
+  const edge = R + DECK_LOOK.rim
+  const inner = edge + DECK_LOOK.groove
+  const outer = roundedRect(w, h, DECK_LOOK.corner, 10)
+  const face = new THREE.Shape(ringPath(outer, inner, 0, 0).getPoints())
   const metal: THREE.BufferGeometry[] = []
   const dark: THREE.BufferGeometry[] = []
   const ox = DECK.x + DECK.w / 2
@@ -110,15 +111,31 @@ function deckGeometry(w: number, h: number): { metal: THREE.BufferGeometry; well
     top.setAttribute('uv', new THREE.BufferAttribute(uvs, 2))
     return top
   }
-  metal.push(flat(band))
   const wall: Ring[] = [
     { inset: 0, z: -DECK_LOOK.depth, out: 1, up: 0 },
-    { inset: 0, z: -c, out: 1, up: 0 },
-    { inset: 0, z: -c, out: 0.7071, up: 0.7071 },
-    { inset: c, z: 0, out: 0.7071, up: 0.7071 }
+    { inset: 0, z: -R, out: 1, up: 0 }
   ]
+  for (let i = 1; i <= 8; i++) {
+    const t = (i / 8) * (Math.PI / 2)
+    wall.push({ inset: R * (1 - Math.cos(t)), z: -R * (1 - Math.sin(t)), out: Math.cos(t), up: Math.sin(t) })
+  }
+  const gd = DECK_LOOK.grooveDepth
+  const gh = DECK_LOOK.groove / 2
+  const gl = Math.hypot(gd, gh)
+  wall.push(
+    { inset: edge, z: 0, out: 0, up: 1 },
+    { inset: edge, z: 0, out: -gd / gl, up: gh / gl },
+    { inset: edge + gh, z: -gd, out: -gd / gl, up: gh / gl },
+    { inset: edge + gh, z: -gd, out: gd / gl, up: gh / gl },
+    { inset: inner, z: 0, out: gd / gl, up: gh / gl }
+  )
   metal.push(sweep(outer, wall, false))
-  return { metal: scaleUv(merge(metal), 1 / BRUSH.u, 1 / BRUSH.v), well: scaleUv(merge([flat(face)]), 1 / BRUSH.u, 1 / BRUSH.v), seat: merge(dark) }
+  const well = refine(flat(face), DECK_LOOK.cell)
+  const at = well.getAttribute('position')
+  const tone = new Float32Array(at.count * 3)
+  for (let i = 0; i < at.count; i++) tone.fill(sheen(at.getX(i) / w + 0.5, at.getY(i) / h + 0.5, config.seed + 307), i * 3, i * 3 + 3)
+  well.setAttribute('color', new THREE.BufferAttribute(tone, 3))
+  return { metal: scaleUv(merge(metal), 1 / BRUSH.u, 1 / BRUSH.v), well: scaleUv(well, 1 / BRUSH.u, 1 / BRUSH.v), seat: merge(dark) }
 }
 
 interface CapSlot { start: number; count: number; from: Float32Array; facing: Float32Array; pose: [number, number, number, number, number]; leaned: boolean; shade: number }
