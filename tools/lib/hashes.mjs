@@ -169,8 +169,12 @@ export function buildInfo(root) {
 // The build's own plugin: gives the page its hashes and indexes as a module, with no file copied.
 export function buildInfoPlugin(root) {
   const id = 'virtual:build-info'
+  let building = false
   return {
     name: 'wja-build-info',
+    configResolved(c) {
+      building = c.command === 'build'
+    },
     resolveId(source) {
       if (source === id) return '\0' + id
       return null
@@ -180,8 +184,10 @@ export function buildInfoPlugin(root) {
       const info = buildInfo(root)
       // The harness reads this to know which state of the source the build in dist/ was made from.
       const note = path.join(root, 'out', 'work', 'build-info.json')
-      fs.mkdirSync(path.dirname(note), { recursive: true })
-      fs.writeFileSync(note, JSON.stringify({ engineHash: info.engineHash, pageHashes: info.pageHashes }, null, 2) + '\n')
+      if (building) {
+        fs.mkdirSync(path.dirname(note), { recursive: true })
+        fs.writeFileSync(note, JSON.stringify({ engineHash: info.engineHash, pageHashes: info.pageHashes }, null, 2) + '\n')
+      }
       return `export default ${JSON.stringify(info)}`
     }
   }

@@ -1,11 +1,11 @@
 # Step 1, About You: decisions
 
-Blockout phase. Stand-in shapes, working logic.
+The logic, the script of the film and the numbers the makers of the real parts read. The shapes this page draws are the stand-ins; the real parts are built from them and from `v`.
 
 ## Layout
 
 - Two columns under the step head: the resume card on the left, the three fields on the right, the keyboard deck across the full width below.
-- The helper text of First name sits right-aligned on its label row, so the three fields keep one pitch.
+- The helper text of First name sits under its field at the left, as in the approved image. Last name and Email are moved down by its line (`HELPER_ROOM`, 34 px), and the gap between fields is 12 px.
 - Continue sits right-aligned in the lower area. It is hidden while the keyboard is up, because the keyboard takes that area.
 - The keyboard note is shown for as long as the keyboard is up.
 - The shredder slot sits under the resume card, centred on it.
@@ -21,7 +21,9 @@ Blockout phase. Stand-in shapes, working logic.
 
 - `Turrets` is a class that stands alone: no page state, its own `save()` and `load()`.
 - A hit burns the last letter, knocks the cursor back and calls `hurt('burn')`.
-- The film takes exactly one hit, at "Perplex", and types the name again to the end.
+- The film takes exactly one hit, at "Perpl", at 5.89 s of the unit, after more than a second of standing still and proud. The letter burns away 0.2 s after the hit (`SINGE`), so the frame at 6.0 s, the approved image, still reads "Perpl" with the burn fresh. It then types the name again to the end.
+- A bolt that lands within 130 px of the cursor makes it flinch, unless it is being proud.
+- For 0.9 s after a hit the cursor cannot be hit again.
 
 ## Last name
 
@@ -30,19 +32,23 @@ Blockout phase. Stand-in shapes, working logic.
 
 ## Email and slabs
 
-- Three slabs, each aimed at where the cursor is. The film dodges all three.
+- Three slabs, each aimed at where the cursor is. Each hangs for 0.2 s, then falls for 0.2 s. The film sees each one and dives clear of all three.
+- When a slab lands the deck and its keys shake in the plane of the page by at most 2.2 px for 0.25 s, the keys within 320 px hop, the caret jumps and the cursor is jolted.
 - A slab that lands on the cursor flattens it for a moment through `hurt`.
 
 ## Resume and the tug
 
 - The paper sticks to the cursor on a click, so click then click works as well as a drag.
 - The paper and the hands ride above the resume card, so nothing is hidden by it.
+- The hands sit on the paper: the points in `resume-paper` are kept at most `300 * (1 - amount) - 34` px from the slot (`HOLD`), so the sheet never has to stretch.
+- A line of the sheet that the shredder has eaten is parked at the slot under the page (z -30) with `v = [1]`, so the count of shapes does not change.
 - No control is taken during the tug. The cursor is tethered to the paper by a knock, never held.
 - A live tug is lost at the far end or after 9 s.
+- After the loss the page stays in the tug for 0.3 s (`TIMES.lost`) with the arms off and the cursor taken, so the torn arms of the body can be seen. Then the shredder has it.
 
 ## Last 4 s
 
-- The kit wins. The cursor is whole again by 31.45 s.
+- The kit wins. From the moment the shredder has the cursor (`SHRED`, seconds): the body is under the page at 0.34, the strips leave the hood from 0.12, the cursor lies as a pile of strips from 0.78 for 1.0 s, the form empties from 1.3 to 1.8 (Email, then Last name, then First name, a character at a time), the strips zip back from 1.78 for 1.0 s, and the pointer is handed back at 2.8. In the film that is whole at 30.2 s, with 1.3 s left to look at the empty form and start toward it.
 
 ## When the visitor does nothing
 
@@ -56,7 +62,7 @@ Blockout phase. Stand-in shapes, working logic.
 
 - `fire.ts` gives `makeTurrets()` and `drawFire(out, { typed, pressed, turrets })`: the page with the keyboard up, First name holding `typed`, the keys named in `pressed` down, and the given turrets with their bolts and marks. Key names are those of `keyboard.json`.
 - The cursor grabs the paper by its top right corner, clear of the title.
-- The film camera pushes in on the resume card and the slot from 21.6 s and is home again by 30.1 s.
+- The film camera eases from home to a wide frame of the card and the slot between 21.1 s and 22.1 s, pushes slowly in for 4.6 s, and eases home between 27.6 s and 28.9 s. `tests/step1-script.test.ts` holds the cursor at least 70 px inside the frame for the whole tug.
 
 ## For the measures
 
@@ -81,3 +87,28 @@ Blockout phase. Stand-in shapes, working logic.
 - The slabs. This replaces the note of round 1. Each slab falls straight down from 110 px onto the place where the cursor stood on the keyboard, stays where it landed, and all three lift together after the third. None lands on the address, its field or the Continue button. The fall is low because the straight-on camera shows height only by the shadow, and a slab that hangs higher throws the two thin shadow lines the critics saw.
 - The sink. The well keeps its full width and closes upward. A legend is not drawn once its key is within 24 px of the closing edge, so no legend shows without its key.
 - The landing. The film cursor is let go by the page turn at 0.5 s at the handoff point and reaches the page at about 1.0 to 1.2 s. The script now waits at the handoff point and walks straight to the First name field. The click is still at 1.08 s, while the cursor is close to the page but not yet on it.
+
+## The script of the film
+
+- `script.ts` builds the pointer path from moves: a start, an end, an arc that bulges up the screen, and an ease. Two moves never overlap; `makePlan` throws if they do.
+- A cue is a time with an acting state, a reaction, or a hop (an upward speed given to the body). A leap is a move with a hop at its start, so the body leaves the key, flies the arc and comes down on the next key.
+- Every time in `FIRST`, `LAST`, `MAIL`, `DIVE`, `RESUME`, `TRUDGE` and `CAMERA` is a second of the unit.
+- The click on the field is at 1.5 s. The cursor is on the page from 0.96 s.
+
+## Numbers for the makers: `v`
+
+All are blended between sim steps by the stage. A length never changes for an id.
+
+| Shape | `v` | Meaning |
+| --- | --- | --- |
+| `keyboard-deck` | `[rise, swing, shake]` | rise 0 to 1: how far the deck has come up. swing: px above its seat while it overshoots. shake: px of in-plane shake from a slab, signed. |
+| `key-<name>` | `[press, hop, shuffle, heat]` | press 0 to 1: how far down. hop: px above its seat, from a shuffle, a slab nearby or the rattle as the deck seats. shuffle 0 to 1: peak in the middle of a change of places. heat 0 to 1: a scorch lies on the key, cooling. |
+| `email-slab`, `email-slab-<n>` | `[since, impact]` | since: seconds since it landed, 0 before. impact: 1 at the landing, 0 after 0.25 s. |
+| `resume-paper` | `[lift, bite, amount, pull, lx, ly, rx, ry, vx, vy, hands]` | lift: px above the page. bite 0 to 1: how far the feed into the slot has gone, 1 in the tug. amount 0 to 1: how much of the sheet the shredder has. pull 0 to 1: strain between the hands and the slot. lx, ly, rx, ry: page px of the left and right hand; with no arms both are the point the cursor holds. vx, vy: px per second of the held end. hands: 1 while two hands hold it. |
+| `resume-paper-line-<i>` | `[eaten]` | 1 once the line is past the slot. An eaten line and the eaten title are drawn at the slot, 30 px under the page, so the count of shapes never changes. |
+| `shredder-jaw-0`, `shredder-jaw-1` | `[open, turn, feed]` | open 0 to 1. turn: radians, summed in `step`, 14 rad/s in the tug and 30 rad/s while it eats the cursor, with 0.3 s of lag. feed: change of amount per second. |
+| `strip-<i>` | `[u, ink]` | u 0 to 1: its way from the hood to the pile. ink 1: a strip of the cursor, dark; 0: a strip of paper. |
+| `field-focus` | `[glow]` | 1 on a typed or erased character, 0 after 0.25 s. |
+| `field-caret` | `[jump]` | px above its line, after a slab lands. |
+
+The slot's well is drawn at full width from its first frame. Strips leave from `HOOD`, the south face of the hood, 8 px above the page.

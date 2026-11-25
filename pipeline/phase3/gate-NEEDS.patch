@@ -1,0 +1,66 @@
+diff --git a/src/app.ts b/src/app.ts
+index d56339c..4c73fc8 100644
+--- a/src/app.ts
++++ b/src/app.ts
+@@ -14,7 +14,7 @@ import { makeLoop, makeOpening, type FilmPiece, type LoopPiece, type OpeningPiec
+ import { pages, preparePages, unitPages } from './pages'
+ import { look } from './post/look'
+ import { studioEnvironment } from './post/studio'
+-import { PageView, TONES } from './shell/view'
++import { PageView } from './shell/view'
+ import { layoutProblems } from './shell/layout'
+ import { FONTS } from './shell/metrics'
+ import { loadFont } from './shell/type'
+@@ -313,22 +313,6 @@ export class App {
+     return { x: p.x, y: p.y }
+   }
+ 
+-  groundOf(list: Shape[], s: Shape): number {
+-    const cx = s.x + s.w / 2
+-    const cy = s.y + s.h / 2
+-    let best = -Infinity
+-    let tone = TONES.page
+-    for (const o of list) {
+-      if (o.kind === 'text' || o.kind === 'well' || o.kind === 'anchor' || o === s) continue
+-      if (cx < o.x || cx > o.x + o.w || cy < o.y || cy > o.y + o.h) continue
+-      const top = o.pocket ? o.z0 : o.z1
+-      if (top > s.z1 + 0.5 || top < best) continue
+-      best = top
+-      tone = TONES[o.pocket && o.tone !== 'dark' ? 'pocket' : o.tone]
+-    }
+-    return tone
+-  }
+-
+   countsOf(unit: string): { triangles: number; drawCalls: number } {
+     return this.counts.get(unit) ?? { triangles: 0, drawCalls: 0 }
+   }
+diff --git a/tools/lib/hashes.mjs b/tools/lib/hashes.mjs
+index f0d8a1e..2ee2d05 100644
+--- a/tools/lib/hashes.mjs
++++ b/tools/lib/hashes.mjs
+@@ -169,8 +169,12 @@ export function buildInfo(root) {
+ // The build's own plugin: gives the page its hashes and indexes as a module, with no file copied.
+ export function buildInfoPlugin(root) {
+   const id = 'virtual:build-info'
++  let building = false
+   return {
+     name: 'wja-build-info',
++    configResolved(c) {
++      building = c.command === 'build'
++    },
+     resolveId(source) {
+       if (source === id) return '\0' + id
+       return null
+@@ -180,8 +184,10 @@ export function buildInfoPlugin(root) {
+       const info = buildInfo(root)
+       // The harness reads this to know which state of the source the build in dist/ was made from.
+       const note = path.join(root, 'out', 'work', 'build-info.json')
+-      fs.mkdirSync(path.dirname(note), { recursive: true })
+-      fs.writeFileSync(note, JSON.stringify({ engineHash: info.engineHash, pageHashes: info.pageHashes }, null, 2) + '\n')
++      if (building) {
++        fs.mkdirSync(path.dirname(note), { recursive: true })
++        fs.writeFileSync(note, JSON.stringify({ engineHash: info.engineHash, pageHashes: info.pageHashes }, null, 2) + '\n')
++      }
+       return `export default ${JSON.stringify(info)}`
+     }
+   }
