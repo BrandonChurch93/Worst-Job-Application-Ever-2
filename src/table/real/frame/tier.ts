@@ -7,8 +7,10 @@ import { Screws, TONE, aluOf, mesh, paintOf, screwOf, steelOf } from './mats'
 
 // What the walls of a tier are made to, in page pixels.
 const WALL = { height: 60, seg: 56, chamfer: 2.5, strip: [30, 54] as V2, stripOut: 0.9 }
-const RAIL = { chamfer: 3, channel: 17, channelDepth: 3, ledge: 18, ledgeDrop: 7, gap: 1.2, joint: 1.4, screwStep: 1.5, cradle: 62.5, tubeUp: 48 }
+const RAIL = { reveal: 30, revealWide: 4.5, revealDeep: 2, chamfer: 3, channel: 17, channelDepth: 3, ledge: 18, ledgeDrop: 7, gap: 1.2, joint: 1.4, screwStep: 1.5, cradle: 62.5, tubeUp: 48 }
 const CROSS = { lower: 0.3, upper: 0.12, throat: 0.75, mouth: 1.2, tunnel: 122 }
+const STEP = { back: 11, rise: 3, groove: 64, grooveWide: 4.5, grooveDeep: 2 }
+const PLAQUE = { wide: 1.1, tall: 0.42, inset: 0.55, foot: 0.21 }
 
 export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
   const k = z.tier
@@ -49,10 +51,15 @@ export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
     const j = Y(joint)
     return joint > v0 && joint < v1 ? [[Y(v1), j - RAIL.joint / 2], [j + RAIL.joint / 2, Y(v0)]] : [[Y(v1), Y(v0)]]
   }
+  // A fine groove runs along the lane side of each rail, a little under its top: the line an extrusion's die leaves.
+  const reveal = (x: number, into: 1 | -1): V2[] => {
+    const y = H - RAIL.reveal
+    return H > RAIL.reveal + 30 ? [[x, y], [x + into * RAIL.revealDeep, y - 1.2], [x + into * RAIL.revealDeep, y - RAIL.revealWide + 1.2], [x, y - RAIL.revealWide]] : []
+  }
   const land0 = xb + c
   const land1 = xa - RAIL.ledge
   const mid = (land0 + land1) / 2
-  const left: V2[] = [[xb, 0], [xb, H - c], [land0, H], [mid - RAIL.channel - 3, H], [mid - RAIL.channel, H - RAIL.channelDepth], [mid + RAIL.channel, H - RAIL.channelDepth], [mid + RAIL.channel + 3, H], [land1, H], [land1, H - RAIL.ledgeDrop], [xa - c, H - RAIL.ledgeDrop], [xa, H - RAIL.ledgeDrop - c], [xa, 0]]
+  const left: V2[] = [[xb, 0], [xb, H - c], [land0, H], [mid - RAIL.channel - 3, H], [mid - RAIL.channel, H - RAIL.channelDepth], [mid + RAIL.channel, H - RAIL.channelDepth], [mid + RAIL.channel + 3, H], [land1, H], [land1, H - RAIL.ledgeDrop], [xa - c, H - RAIL.ledgeDrop], [xa, H - RAIL.ledgeDrop - c], ...reveal(xa, -1), [xa, 0]]
   for (const [y0, y1] of lengths(0, TH, 5.6)) A.prism(left, [0, y0], [0, y1], TONE.alu)
   P.box(xb, xa, Y(5.6) - RAIL.joint / 2, Y(5.6) + RAIL.joint / 2, 0, H - 4, TONE.gap, { along: [0, 1, 0] })
   for (let v = RAIL.screwStep / 2; v < TH; v += RAIL.screwStep) screws.add(mid, Y(v), H - RAIL.channelDepth, 1, turnOf(mid, v))
@@ -63,7 +70,7 @@ export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
   const dive = k === 2 ? feed[4]![1] - TIER_Y[k]! - 0.6 : TH
   const half = Math.sqrt(RAIL.cradle * RAIL.cradle - RAIL.tubeUp * RAIL.tubeUp)
   const t0 = Math.asin(half / RAIL.cradle)
-  const right: V2[] = [[xc, 0], [xc, H - c], [xc + c, H], [xf - half, H]]
+  const right: V2[] = [[xc, 0], ...reveal(xc, 1).reverse(), [xc, H - c], [xc + c, H], [xf - half, H]]
   for (let i = 1; i < 12; i++) {
     const t = -t0 + (2 * t0 * i) / 12
     right.push([xf + RAIL.cradle * Math.sin(t), H + RAIL.tubeUp - RAIL.cradle * Math.cos(t)])
@@ -136,7 +143,7 @@ export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
   // The top of the tier.
   const top = CROSS.lower * BALL
   if (k === 0) {
-    A.prism([[0, 0], [0, H], [top - c, H], [top, H - c], [top, 0]], [xa, yT], [xc, yT], TONE.alu, [false, false])
+    A.prism([[0, 0], [0, H], [top - c, H], [top, H - c], ...reveal(top, -1), [top, 0]], [xa, yT], [xc, yT], TONE.alu, [false, false])
     A.box(xL + 8, xR - 8, yT - top / 2 - 1.2, yT - top / 2 + 1.2, H - 0.4, H + 0.35, TONE.brass)
     for (let u = COLS.left + 0.75; u < COLS.right; u += RAIL.screwStep) screws.add(X(u), yT - 7, H, 0.8, turnOf(u, 1))
     // The throat: the launch lane turns into the top lane round a corner block cut to the ball's way.
@@ -161,15 +168,19 @@ export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
   } else {
     // The cross rail: the wall the tier above ends on, with the chute's throat cut through it, and the step of the floor under it.
     const h = BALL + WALL.seg
-    const cross: V2[] = [[0, 0], [0, h - c], [c, h], [top - c, h], [top, h - c], [top, 0]]
-    A.prism(cross, [xL, yT], [X(MID - CROSS.throat), yT], TONE.alu)
-    A.prism(cross, [X(MID + CROSS.throat), yT], [xR, yT], TONE.alu)
+    // Above the ball's height the wall steps back to a ledge, and a fine groove runs under the strip's line: light falls on it in bands, not as one sheet.
+    const g = STEP.groove
+    const in0 = top - STEP.back
+    const cross: V2[] = [[0, 0], [0, h - c], [c, h], [in0 - c, h], [in0, h - c], [in0, BALL + STEP.rise], [top - STEP.rise, BALL + STEP.rise], [top, BALL], [top, g + STEP.grooveWide], [top - STEP.grooveDeep, g + STEP.grooveWide - 1.2], [top - STEP.grooveDeep, g + 1.2], [top, g], [top, 0]]
+    const tone = (edge: number): [number, number, number] => (edge === 4 || edge >= 7 ? TONE.aluDark : TONE.alu)
+    A.prism(cross, [xL, yT], [X(MID - CROSS.throat), yT], tone)
+    A.prism(cross, [X(MID + CROSS.throat), yT], [xR, yT], tone)
     A.box(xa, xL, yT - 4, yT, 0, BALL, TONE.aluDark)
     A.box(xR, xc, yT - 4, yT, 0, BALL, TONE.aluDark)
     A.box(X(MID - CROSS.throat), X(MID + CROSS.throat), yT - 4, yT, 0, BALL * 0.42, TONE.aluDark)
     S.box(xL + 6, X(MID - CROSS.throat) - 6, yT - top - WALL.stripOut, yT - top, WALL.strip[0], WALL.strip[1], [1, 1, 1])
     S.box(X(MID + CROSS.throat) + 6, xR - 6, yT - top - WALL.stripOut, yT - top, WALL.strip[0], WALL.strip[1], [1, 1, 1])
-    for (let u = COLS.left + 0.75; u < COLS.right; u += RAIL.screwStep) if (Math.abs(u - MID) > CROSS.throat + 0.3) screws.add(X(u), yT - top / 2, h, 0.8, turnOf(u, 2))
+    for (let u = COLS.left + 0.75; u < COLS.right; u += RAIL.screwStep) if (Math.abs(u - MID) > CROSS.throat + 0.3) screws.add(X(u), yT - in0 / 2, h, 0.8, turnOf(u, 2))
     const r = 0.5
     const fillet: V2[] = [at(COLS.right, CROSS.lower), at(COLS.right, CROSS.lower + r)]
     for (let i = 1; i <= 8; i++) {
@@ -239,8 +250,11 @@ export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
 
   // The left shoulder carries the mark of the tier: three pips of enamel at the top, two in the middle, one on the street.
   {
-    const a = at(7.15, 10.62)
-    const b = at(8.25, 11.04)
+    const side = table.segs.find((x) => x.id === `${name}.mouth.side.left`)!
+    const u1 = side.a[0] - PLAQUE.inset
+    const v1 = Math.max(side.a[1], side.b[1]) - TIER_Y[k]! - PLAQUE.foot
+    const a = at(u1 - PLAQUE.wide, v1 - PLAQUE.tall)
+    const b = at(u1, v1)
     A.box(a[0], b[0], b[1], a[1], 0, 5, TONE.aluBright, { bevel: 1.4 })
     const n = 3 - k
     const cy = (a[1] + b[1]) / 2
