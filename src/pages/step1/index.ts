@@ -491,6 +491,7 @@ export function makePage(): PageLogic {
       s.cy = io.cursor.y
       if (s.skipped && !s.cleaned) {
         s.cleaned = true
+        if (s.slot > 0) io.emit('shredder-stop', SLOT.cx, SLOT.cy, false)
         io.cursor.setArms(false)
         io.cursor.setOnPage(true)
         io.cursor.release()
