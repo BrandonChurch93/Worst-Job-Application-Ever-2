@@ -161,4 +161,51 @@ describe('the pinball page', () => {
     s.page.draw(list as never)
     expect(websiteLevel(list as never, false)).toBe(1)
   })
+
+  it('carries the state of everything that is struck, and the levels of the light show, in the draw list', () => {
+    const s = film()
+    const low: Record<string, number> = {}
+    const high: Record<string, number> = {}
+    const note = (key: string, v: number): void => {
+      low[key] = Math.min(low[key] ?? 99, v)
+      high[key] = Math.max(high[key] ?? -99, v)
+    }
+    let last: number[][] = []
+    while (!s.finished && s.time < 43 && s.page.id === 'step3') {
+      s.advance(2)
+      if (s.page.id !== 'step3') break
+      const list: { id: string; v?: number[] }[] = []
+      s.page.draw(list as never)
+      const v = (id: string): number[] => list.find((x) => x.id === id)!.v!
+      for (const id of ['bumper.office.bumper.1', 'bumper.office.bumper.2', 'bumper.office.bumper.3']) note('bumper', v(id)[0]!)
+      for (const side of ['left', 'right']) for (const tier of ['corporate', 'office', 'street']) note('sling', v(`sling.${tier}.sling.${side}.3`)[0]!)
+      note('revolving', v('hold.corporate.revolving')[1]!)
+      note('firehouse', v('model.street.firehouse')[0]!)
+      note('inbox', v('model.office.inbox')[0]!)
+      note('doors', v('hq.door.left')[1]!)
+      note('gate2', v('gate.2')[0]!)
+      const lights = ['corporate', 'office', 'street'].map((z) => v(`whole.table-lights.${z}`))
+      lights.forEach((l, k) => {
+        note(`general${k}`, l[0]!)
+        note(`flash${k}`, l[2]!)
+        for (const x of l) expect(x >= 0 && x <= 1).toBe(true)
+      })
+      note('red', lights[2]![3]!)
+      note('blue', lights[2]![4]!)
+      if (Math.abs(s.time - (T.powerOn + 0.5)) < 0.02) expect(lights[0]![0]!).toBeGreaterThan(lights[2]![0]!)
+      last = lights
+    }
+    expect(low.bumper).toBeLessThan(0.1)
+    expect(high.bumper).toBe(9)
+    expect(low.revolving).toBeLessThan(0.1)
+    expect(low.doors).toBeLessThan(0.1)
+    expect(high.firehouse).toBe(1)
+    expect(high.inbox).toBe(1)
+    expect([low.gate2, high.gate2]).toEqual([0, 1])
+    for (const k of [0, 1, 2]) expect([low[`general${k}`], high[`general${k}`]]).toEqual([0, 1])
+    expect(high.flash1).toBe(1)
+    expect(high.red).toBe(1)
+    expect(low.red).toBe(0)
+    expect(last.map((l) => l[0]!.toFixed(2))).toEqual(['0.25', '0.25', '0.25'])
+  })
 })

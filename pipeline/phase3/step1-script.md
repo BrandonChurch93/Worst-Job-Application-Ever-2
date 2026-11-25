@@ -43,6 +43,8 @@ Times are seconds of the unit. Events are read from a run of the stage in film m
 15. The size of the page title (28 px) and of the heading (60 px) are `TYPE` in `src/shell/parts.ts`, which is frozen. They were left.
 11. In live mode the shredded gag counts its whole length toward `live.skipLinkAfterSeconds + 3`. The way out of every gag is the same plain timer.
 12. Pile 1.0 s and reassembly 1.0 s, as cursor_actor asked.
+16. The strips of paper hang in a heap just under the hood and the strips of the cursor fall on to a pile 176 px under the slot, so the reassembly is seen in the open and not inside the paper. Once the message shows, the paper strips are drawn back under the hood in 0.3 s and the slot shuts.
+17. The number row and Backspace show their legends as soon as the well is open, as keyboard_smith reported them blank at 1.76 s.
 
 ## Agreed with other owners
 

@@ -6,7 +6,7 @@ import type { Shape } from '../../../stage/types'
 import { DECK, HATCH, hatchCentre, seats } from '../keyboard'
 import { BRUSH, CAP, capGeometry, kit, lit, scaleUv } from './keyboard-kit'
 
-export const DECK_LOOK = { chamfer: 2.4, depth: 84, corner: 18, field: 7, fieldLip: 1.1, fieldDepth: CAP.skirt + 2.2, hatchHole: HATCH / 2 - 2 }
+export const DECK_LOOK = { chamfer: 2.4, depth: 84, corner: 5, field: 7, fieldLip: 1.1, fieldDepth: CAP.skirt + 2.2, hatchHole: HATCH / 2 - 2 }
 
 const capKey = (w: number, h: number): string => `${Math.round(w * 4) / 4}x${Math.round(h * 4) / 4}`
 const capGeometries = new Map<string, THREE.BufferGeometry>()

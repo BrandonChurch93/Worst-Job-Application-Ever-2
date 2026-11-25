@@ -42,18 +42,29 @@ Looked at `references/approved/step1-tug.png` at full size and in two crops (the
 
 ## One more gag with its live way out and its events
 
-Draft sent to `/root/step1_director` at 13:56Z; their corrections are folded in when they answer (see the end of this file for the state).
+Written with `/root/step1_director`. I sent ten steps at 13:56Z; they accepted them, added three (the case in `hint()` and `skip()`, the beat in the test of events, the whole gag inside `live.skipLinkAfterSeconds + 3`) and wrote all thirteen in `pipeline/phase3/step1-script.md`. These are the same thirteen, as they stand there.
 
-1. The beat and the event names exist already in the frozen `config/` and `content/`. Find the beat: `npm run sheet -- --beat <page>.<beat> --tier draft`.
-2. In `src/pages/<page>/index.ts` add a phase to the state machine and its line in `GAG`; put its numbers in one const in `script.ts`.
-3. Step it in `step(io)` from page state only: no clock, no random outside `src/core/random.ts`; `save()` and `load()` carry every number it holds.
-4. Give it a way out that needs no skill (it tires, overheats, lets go), and under it the plain timer: `s.mode === 'live' && s.phaseTime >= live.skipLinkAfterSeconds` plays the ending.
-5. Emit each event once, at the moment it happens: `io.emit('<name>', x, y, onCursor)`.
-6. Draw it as shapes with stable ids, a `part`, heights from `config.scale.heights`, and hand the maker what moves as `v` numbers (list them in the page's `NOTES.md`): amounts 0 to 1 and summed angles, never a shape that grows to show progress.
-7. Script the film's pointer for the beat in `script.ts`. `npm run bots`: keen reaches the gag, skipper gets out.
-8. Make it real in `src/pages/<page>/real/<part>.ts` as a `PartMaker`: `key` from the numbers the geometry is built from, `make` once, `pose` moves it from `v` and `ctx.time`; shared materials from `materials()`, own ones through `studio()`.
-9. Test that the same numbers give the same pose in `tests/<part>*.test.ts`; then `npm test`, `npm run build`, `npm run bots`.
-10. Look: `npm run sheet -- --beat <page>.<beat> --tier draft`; `npm run still -- --page <page> --beat <page>.<beat> --at 0.5 --format hd --tier review --diag standins` lists no stand-in of the part.
+1. Name the beat and its event. They live in `config/film.json` and `content/copy.json`, which are frozen for agents: the Builder adds them. Check with `npx vitest run tests/film.test.ts`.
+2. In `src/pages/step1/index.ts` add the phase to `type Phase` and its line to `GAG`. Put every number of the gag in one const in `src/pages/step1/script.ts`, next to `TIMES`.
+3. Step it in `step()` from the page state only: `s.phase`, `s.phaseTime`, `io.pointer`, `io.pressed`. No clock, no random. Every number the next frame needs goes into the state object, so `save()` and `load()` carry it with no more code. Check: `npx vitest run tests/step1.test.ts -t "save"`.
+4. Give it a way out that needs no skill, then the plain timer: `s.mode === 'live' && s.phaseTime >= live.skipLinkAfterSeconds`. If the gag takes the pointer from the player, give it back inside `live.controlTakenMaxSeconds`. The whole gag, timer included, ends inside `live.skipLinkAfterSeconds + 3`.
+5. Add its case to `hint()`: where a player should point now, and `down` only on the frame a press helps. Add what it leaves behind to `skip()`: every list emptied, every flag back.
+6. Emit each event once: `io.emit('<name>', x, y, hitsCursor)`, at the frame the thing is seen to happen, not when it is decided.
+7. Draw it in `shapes()`: stable ids, a `part`, heights from `config.scale.heights`, and the numbers a maker needs in `v`. Write the meaning of each `v` into the table in `src/pages/step1/NOTES.md`. A shape is never grown to show an action: it moves, or a second shape appears.
+8. Script the film: add the times to a const in `script.ts`, the moves and the click to `makePlan()`. The test of the next step reads the time of the event.
+9. Add the beat and its event to the table `BEATS` in `tests/step1-script.test.ts`. `npx vitest run tests/step1-script.test.ts`: the event must lie inside the beat, 0.25 s either way.
+10. `npm run bots`: all three bots must finish the page, the one that does nothing included.
+11. Make it real as a `PartMaker` in `src/pages/step1/real/<part>.ts` that reads the shapes by id and their `v`. Its owner registers it. Write the recipe of any texture in `assets-src/<folder>/RECIPE.md`.
+12. Look: `npm run sheet -- --beat <beat> --tier draft`, then `npm run still -- --page step1 --beat <beat> --at 0.5 --format hd --tier draft`, and once with `--diag standins`. The twelve frames alone must tell the gag.
+13. `npm test && npm run build && npm run bots && npm run measure -- --unit step1`.
+
+For step 11, the maker's half in full:
+
+- `key(s, ctx)` answers a string for a shape the maker builds (the string names what the geometry is built from, so a change of it rebuilds), `''` for a shape it knows and draws nothing for, `null` for a shape it does not know (the stand-in stays).
+- `make` runs once and builds geometry and materials; a material only this part has goes through `studio()` of `src/post/studio.ts`.
+- `pose(o, s, ctx)` runs every frame and moves things from `s` and `s.v` only. A shape that is solved (the sheet) keeps the numbers it was last solved for and does nothing when they are the same.
+- Many equal things are one mesh: the maker of the first shape of a kind owns it and reads the others from `ctx.list` (see the strips in `shredder.ts`).
+- A test in `tests/<part>*.test.ts`: the same numbers give the same pose.
 
 ## What I learned
 

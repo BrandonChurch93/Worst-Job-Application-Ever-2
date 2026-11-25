@@ -7,8 +7,8 @@ const three = (name: string, make: (v: number) => Partial<BodyLook>): Cell[] => 
 const strip = (n: number, spread: number): BodyLook['strips'] =>
   Array.from({ length: n }, (_, i) => ({ x: (i - (n - 1) / 2) * spread * 2.2 + Math.sin(i * 2.3) * spread * 3, y: Math.cos(i * 1.7) * spread * 5, z: spread > 2 ? -3 + (i % 3) * 1.2 : 0, rot: Math.sin(i * 1.3) * spread * 0.09, tilt: 0 }))
 
-const whole9: BodyLook['strips'] = Array.from({ length: 9 }, (_, i) => ({ x: Math.sin(i * 2.1) * 1.6, y: Math.cos(i * 1.3) * 2.4, z: 0, rot: Math.sin(i * 1.7) * 0.035, tilt: 0 }))
-const heap: BodyLook['strips'] = Array.from({ length: 9 }, (_, i) => ({ x: (4 - i) * 1.4 + Math.sin(i * 2.3) * 5, y: Math.cos(i * 1.7) * 7, z: (i % 3) * 2.2, rot: 0.35 + Math.sin(i * 1.3 + 0.5) * 0.3, tilt: Math.sin(i * 0.9) * 0.2 }))
+const whole9: BodyLook['strips'] = Array.from({ length: 9 }, (_, i) => ({ x: Math.sin(i * 2.1) * 0.6, y: Math.cos(i * 1.3) * 1.6, z: i % 2 ? 0.9 : 0.3, rot: Math.sin(i * 1.7) * 0.018, tilt: 0 }))
+const heap: BodyLook['strips'] = Array.from({ length: 9 }, (_, i) => ({ x: (i - 4) * 2.3 + (i - 4) * 3.2, y: -Math.abs(i - 4) * 1.2 + Math.cos(i * 1.7) * 2, z: 0.4 + (i % 4) * 0.9, rot: -0.3 + (0.66 * i) / 8 + Math.sin(i * 2.9) * 0.07, tilt: 0 }))
 
 export const SETS: Record<string, CellSet> = {
   // The six states of the approved sheet cursor-acting, in its order.
