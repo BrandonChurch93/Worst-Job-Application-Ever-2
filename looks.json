@@ -1,35 +1,35 @@
 {
   "folder": "type",
-  "pushed": "2026-11-25T14:48:01.283Z",
-  "commit": "2068505d5e200c2e903c6bf158938b14675d811e",
+  "pushed": "2026-11-25T15:10:34.345Z",
+  "commit": "66e5523738a9912169f80bdced568f09464f8932",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Six type crops beside the approved step1-fire at review tier after the ink change (left approved, right this build)",
-      "time": "2026-11-25T14:43:23.841Z",
+      "caption": "Still marketing-rest-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T15:06:48.461Z",
       "by": "type",
-      "from": "out/work/study/look-type-crops.png"
+      "from": "out/work/stills/marketing-rest-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Still key-step1-fire-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-25T14:44:56.254Z",
+      "caption": "Key step1-fire: approved on the left, this build on the right, review tier",
+      "time": "2026-11-25T15:09:58.270Z",
       "by": "type",
-      "from": "out/work/stills/key-step1-fire-hd-review.png"
+      "from": "out/work/compare/compare-step1-fire.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Still key-tier-corporate-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-25T14:45:34.605Z",
+      "caption": "Still key-step1-fire-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T15:10:11.989Z",
       "by": "type",
-      "from": "out/work/stills/key-tier-corporate-hd-draft.png"
+      "from": "out/work/stills/key-step1-fire-hd-draft.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Numeral on the turned metal at 8x beside the approved step1-fire: now a flat matte print, no lit wall",
-      "time": "2026-11-25T14:47:59.857Z",
+      "caption": "step1-fire at review tier beside the approved image, with the header at the approved sizes, the two inks, print on metal, and the runs batched into sheets (298 draw calls at draft)",
+      "time": "2026-11-25T15:10:33.147Z",
       "by": "type",
-      "from": "out/work/study/look-type-numeral.png"
+      "from": "out/work/study/look-type-fire-compare.jpg"
     }
   ]
 }
