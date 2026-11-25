@@ -5,7 +5,7 @@ import { FEEL, FEEL_EASE, FEEL_KEYS, freshFeel, reactionPose, type Feel } from '
 import { OUTLINE, STRIP_AXIS, UNIT } from './contract'
 
 export const ACTING = ['plain', 'confident', 'nervous', 'shocked', 'angry', 'scared', 'proud', 'exhausted'] as const
-export const REACTIONS = ['anticipate', 'flinch', 'doubleTake', 'recoil', 'dustOff', 'jump', 'duck', 'startle', 'cower', 'rear', 'snap', 'tap'] as const
+export const REACTIONS = ['anticipate', 'flinch', 'doubleTake', 'recoil', 'dustOff', 'jump', 'duck', 'startle', 'cower', 'rear', 'snap', 'tap', 'dart'] as const
 export const DAMAGE = ['burn', 'shredded', 'reassembled', 'flattened', 'scorched'] as const
 export type Acting = (typeof ACTING)[number]
 export type Reaction = (typeof REACTIONS)[number]
@@ -17,7 +17,7 @@ const dt = 1 / stepHz
 const hover = config.scale.heights.cursorHover
 const healSeconds = config.cursor.damageHealSeconds
 const takenMax = config.live.controlTakenMaxSeconds
-const REACTION_SECONDS: Record<Reaction, number> = { anticipate: 0.35, flinch: 0.3, doubleTake: 0.7, recoil: 0.45, dustOff: 0.9, jump: 0.5, duck: 0.55, startle: 0.42, cower: 0.62, rear: 0.6, snap: 0.5, tap: 0.42 }
+const REACTION_SECONDS: Record<Reaction, number> = { anticipate: 0.35, flinch: 0.3, doubleTake: 0.7, recoil: 0.45, dustOff: 0.9, jump: 0.5, duck: 0.55, startle: 0.42, cower: 0.62, rear: 0.6, snap: 0.5, tap: 0.42, dart: 0.34 }
 // Layer 1, where it goes. rock is how far it tips from tip to heel corner on each hop, dip how deep it squashes on each footfall.
 // The walk is plain, the strut confident and proud, the tiptoe nervous and scared, the drag exhausted.
 const GAIT: Record<Acting, { stiff: number; damp: number; stride: number; hop: number; top: number; rock: number; dip: number }> = {
@@ -30,11 +30,15 @@ const GAIT: Record<Acting, { stiff: number; damp: number; stride: number; hop: n
   proud: { stiff: 340, damp: 26, stride: 120, hop: 32, top: 4200, rock: 0.36, dip: 3.4 },
   exhausted: { stiff: 110, damp: 20, stride: 70, hop: 0, top: 900, rock: 0, dip: 0 }
 }
-// The frame of a hit: the body is short and bent away from the blow at once, with no spring to build it.
-const HIT = { squash: 0.58, bend: 0.8 }
+// A dart for cover goes at a scared body's pace and drops to the ground at once.
+const DART = { fall: 9000 }
+// A rear gets to its place fast, so the lean is held there.
+const REAR = { settle: 0.36 }
+// The frame of a hit: the body is short and bent away from the blow at once, with no spring to build it, and stands a body's width along the blow, clear of the flash.
+const HIT = { squash: 0.58, bend: 0.8, shove: 60, lift: 0.7 }
 const SPRING = { squash: { k: 620, c: 26 }, lean: { k: 330, c: 17 }, bend: { k: 260, c: 13 }, sprout: { k: 2400, c: 58 } }
 // A hit knocks the body over, past upright onto its other shoulder, and it swings back: the knocked cursor of the approved fire image.
-const TUMBLE = { far: 1, share: 0.6, out: { k: 900, c: 60 }, back: { k: 300, c: 27 } }
+const TUMBLE = { far: 1, share: 0.27, out: { k: 900, c: 60 }, back: { k: 620, c: 44 } }
 // Thrown through the air it goes tip first: the arrow turns toward the way it flies, most when that is up or to the right. tip is the angle its tip points at rest.
 const DIVE = { tip: 2.09, far: 1.25, high: [5, 18] as [number, number], fast: [150, 400] as [number, number] }
 const DRAG = { stride: 90, pulse: 0.2, lean: 0.34 }
@@ -251,7 +255,7 @@ export class CursorBody {
     const s = this.s
     s.vx += vx
     s.vy += vy
-    s.vz += vz
+    s.vz += vz * (s.damage.some((w) => w.fresh && w.kind === 'burn') ? HIT.lift : 1)
     const d = Math.hypot(vx, vy)
     if (d < 1) return
     for (const w of s.damage) {
@@ -259,6 +263,10 @@ export class CursorBody {
       w.x = STRIKE.x - (vx / d) * STRIKE.reach * 0.6
       w.y = STRIKE.y - (vy / d) * STRIKE.reach * 0.6
       w.fresh = false
+      if (s.taken === null && !s.air && !s.inBall) {
+        s.x += (vx / d) * HIT.shove
+        s.y += (vy / d) * HIT.shove
+      }
     }
   }
 
@@ -327,7 +335,7 @@ export class CursorBody {
 
   step(target: { x: number; y: number }, emit: Emit, armsAllowed: boolean): void {
     const s = this.s
-    const gait = GAIT[s.acting]
+    const gait = s.reaction === 'dart' || (s.reaction === 'rear' && s.reactionLeft > REAR.settle) ? GAIT.scared : GAIT[s.acting]
     if (s.taken !== null && !s.inBall) {
       s.takenFor += dt
       if (s.takenFor >= takenMax - 0.5) this.release()
@@ -399,7 +407,7 @@ export class CursorBody {
       s.foot = 1
     }
     const floor = tz + hop
-    s.vz += (-2400 + 700 * Math.max(0, floor - s.z) - 0) * dt
+    s.vz += (-(s.reaction === 'dart' ? DART.fall : 2400) + 700 * Math.max(0, floor - s.z) - 0) * dt
     if (s.air || s.taken !== null) s.vz = (floor - s.z) * 9
     s.z += s.vz * dt
     s.aloft = s.z > floor + 2
@@ -441,7 +449,7 @@ export class CursorBody {
     s.squashV += (SPRING.squash.k * (stretch - s.squash) - SPRING.squash.c * s.squashV) * dt
     s.squash = Math.min(1.6, Math.max(0.35, s.squash + s.squashV * dt))
     const free = !s.air && s.taken === null && !s.inBall
-    const flying = free ? smooth01((s.z - floor - DIVE.high[0]) / (DIVE.high[1] - DIVE.high[0])) * smooth01((now - DIVE.fast[0]) / (DIVE.fast[1] - DIVE.fast[0])) : 0
+    const flying = free && s.reaction !== 'rear' && s.reaction !== 'dart' ? smooth01((s.z - floor - DIVE.high[0]) / (DIVE.high[1] - DIVE.high[0])) * smooth01((now - DIVE.fast[0]) / (DIVE.fast[1] - DIVE.fast[0])) : 0
     const knocked = s.reaction === 'recoil' && pose && 1 - s.reactionLeft / REACTION_SECONDS.recoil < TUMBLE.share
     const over = (knocked ? TUMBLE.far * s.dir : flying > 0 ? DIVE.far * Math.sin(DIVE.tip - Math.atan2(-s.vy, s.vx)) * flying : 0) + (pose ? pose.turn : 0)
     const swing = over !== 0 ? TUMBLE.out : TUMBLE.back
@@ -627,11 +635,12 @@ function drop(p: LooseStrip, i: number): void {
 }
 
 // Where a strip stands before it snaps true: out of line, every other strip a step up or down its own length, so the ends make a ragged comb that reads from far.
-const ASKEW = { x: 1.6, y: 4, step: 3.4, rot: 0.05 }
-
+const ASKEW = { across: 0.7, along: 4, step: 3.4, rot: 0.05 }
 export function askew(i: number, seed: number): Strip {
   const h = (k: number) => hash01(i, k + 20, seed)
-  return { x: (h(1) - 0.5) * ASKEW.x, y: (i % 2 ? 1 : -1) * ASKEW.step + (h(2) - 0.5) * ASKEW.y, z: i % 2 ? 0.9 : 0.3, rot: (h(3) - 0.5) * ASKEW.rot, tilt: 0 }
+  const along = (i % 2 ? 1 : -1) * ASKEW.step + (h(2) - 0.5) * ASKEW.along
+  const across = (h(1) - 0.5) * ASKEW.across
+  return { x: along * STRIP_AXIS[0] + across * STRIP_AXIS[1], y: -along * STRIP_AXIS[1] + across * STRIP_AXIS[0], z: i % 2 ? 0.9 : 0.3, rot: (h(3) - 0.5) * ASKEW.rot, tilt: 0 }
 }
 
 const GATHER = { stand: 0.4, snap: 0.8, true: 0.87 }

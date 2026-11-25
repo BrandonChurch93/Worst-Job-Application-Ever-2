@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
 import { pages } from '../src/pages'
-import { DECK } from '../src/pages/step1/keyboard'
+import { DECK, keyAt, seats } from '../src/pages/step1/keyboard'
 import { FIELD_X, GLYPH, SLOT, ZONE } from '../src/pages/step1/layout'
 import { CAMERA, FIRST, makePlan, pointerAt } from '../src/pages/step1/script'
 import { projectPage } from '../src/stage/camera'
@@ -30,34 +30,33 @@ describe('step 1: the script of the film', () => {
       return true
     }
     expect(still(FIRST.cocky[1], FIRST.flee[0])).toBe(true)
-    expect(FIRST.flee[0] - FIRST.cocky[1]).toBeGreaterThanOrEqual(1)
+    expect(FIRST.flee[0] - FIRST.cocky[1]).toBeGreaterThanOrEqual(1.5)
     expect(still(FIRST.flee[1], FIRST.slide[0])).toBe(true)
-    expect(FIRST.slide[0] - FIRST.flee[1]).toBeGreaterThanOrEqual(0.3)
-    expect(still(FIRST.slide[1], FIRST.shock[0])).toBe(true)
-    expect(FIRST.shock[0] - FIRST.slide[1]).toBeGreaterThanOrEqual(0.85)
-    expect(still(FIRST.shock[0] + 0.2, FIRST.shock[1])).toBe(true)
-    expect(FIRST.shock[1] - FIRST.shock[0]).toBeGreaterThanOrEqual(0.6)
+    expect(FIRST.slide[0] - FIRST.flee[1]).toBeGreaterThanOrEqual(0.6)
+    expect(still(FIRST.slide[1], FIRST.after[0]![0])).toBe(true)
+    expect(FIRST.after[0]![0] - FIRST.slide[1]).toBeGreaterThanOrEqual(0.4)
   })
 
-  it('makes the frame of the approved image at 6.0: two bolts in the air, one a hand from the cursor, a burn just landed, the cursor still', () => {
+  it('makes the frame of the approved image at 6.0: the cursor still on a key of the middle letter rows, scorched, the key under it hot, a bolt in the air', () => {
     const s = film()
     s.advance(at(6))
-    const st = s.page.save() as unknown as { values: Record<string, string>; turrets: { bolts: { x0: number; y0: number; tx: number; ty: number; age: number; flight: number }[]; scorches: { left: number }[] } }
+    const st = s.page.save() as unknown as { values: Record<string, string>; thudKey: number; places: number[]; turrets: { bolts: unknown[]; scorches: { x: number; y: number; left: number }[] } }
     const pose = s.cursor.pose()
-    const far = st.turrets.bolts.map((b) => {
-      const u = b.age / b.flight
-      return Math.hypot(b.x0 + (b.tx - b.x0) * u - pose.x - 14, b.y0 + (b.ty - b.y0) * u - pose.y - 26)
-    })
-    expect(st.turrets.bolts.length).toBe(2)
-    expect(Math.min(...far)).toBeGreaterThan(60)
-    expect(Math.min(...far)).toBeLessThan(140)
-    for (const b of st.turrets.bolts) expect((b.flight - b.age) * stepHz).toBeGreaterThan(3)
-    expect(Math.max(...st.turrets.scorches.map((c) => c.left))).toBeGreaterThan(2.4 - 0.5)
+    const body = { x: pose.x + 14, y: pose.y + 26 }
     expect(s.cursor.speed).toBeLessThan(60)
-    expect(pose.reaction).toBe('snap')
-    expect(pose.damage.length).toBe(0)
-    expect(st.values.firstName).toBe(config.applicant.filmFirstName.slice(0, 5))
-    console.log(`the frame at 6.0: the near bolt ${Math.min(...far).toFixed(0)} px from the cursor, the last burn ${(2.4 - Math.max(...st.turrets.scorches.map((c) => c.left))).toFixed(2)} s old`)
+    expect(Math.abs(pose.spin)).toBeLessThan(0.2)
+    expect(pose.damage).toContain('burn')
+    expect(pose.acting).toBe('shocked')
+    const under = keyAt(st.places, body.x, body.y)
+    expect(under).toBeGreaterThanOrEqual(0)
+    expect(under).toBe(st.thudKey)
+    expect(seats[under]!.letter).toBe(true)
+    expect(Math.abs(body.x - (DECK.x + DECK.w / 2))).toBeLessThan(DECK.w * 0.2)
+    expect(st.turrets.bolts.length).toBeGreaterThanOrEqual(1)
+    const near = st.turrets.scorches.filter((c) => Math.hypot(c.x - body.x, c.y - body.y) < 200)
+    expect(near.length).toBeGreaterThanOrEqual(1)
+    expect(st.values.firstName).toBe(config.applicant.filmFirstName.slice(0, 4))
+    console.log(`the frame at 6.0: the cursor on the key ${seats[under]!.name}, body at ${body.x.toFixed(0)}, ${body.y.toFixed(0)}, ${near.length} burn near it, ${st.turrets.bolts.length} bolt in the air`)
   })
 
   it('clicks the field only once the cursor stands on the page', () => {
