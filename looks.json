@@ -1,35 +1,35 @@
 {
   "folder": "damage",
-  "pushed": "2026-11-25T19:49:32.328Z",
-  "commit": "e2f1a4a9719192173a6a426c36edbea930c97855",
+  "pushed": "2026-11-25T20:03:41.375Z",
+  "commit": "e7eb978de590a71353d83e88c7754bf0b1ecf562",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still sheet-cursor-acting-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-25T19:46:49.541Z",
+      "caption": "Still sheet-cursor-damage-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T20:03:13.627Z",
       "by": "damage",
-      "from": "out/work/stills/sheet-cursor-acting-hd-draft.png"
+      "from": "out/work/stills/sheet-cursor-damage-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
       "caption": "Still sheet-cursor-acting-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-25T19:47:44.276Z",
+      "time": "2026-11-25T20:03:23.993Z",
       "by": "damage",
       "from": "out/work/stills/sheet-cursor-acting-hd-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Damage sheet at 9e32148, approved above, build below: pile in its cell, reassembled as an arrow under three tapes, lit bore with a wall, finer cracks",
-      "time": "2026-11-25T19:49:30.966Z",
+      "caption": "Damage sheet at e7eb978, approved above, build below: smoke joined to the scorched tip",
+      "time": "2026-11-25T20:03:39.802Z",
       "by": "damage",
-      "from": "out/work/c/send/dmg5.jpg"
+      "from": "out/work/c/send/dmg7.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Acting sheet at e2f1a4a, approved above, build below: heat tight and red at the tip, larger drops, scared keeps its rim, laser hole rim glows",
-      "time": "2026-11-25T19:49:31.185Z",
+      "caption": "Acting sheet at e7eb978, approved above, build below: exhausted with a dulled tip and brown veins, denser smoke from the laser hole",
+      "time": "2026-11-25T20:03:40.033Z",
       "by": "damage",
-      "from": "out/work/c/send/act6.jpg"
+      "from": "out/work/c/send/act7.jpg"
     }
   ]
 }
