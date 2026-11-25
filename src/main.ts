@@ -498,7 +498,7 @@ function play(first: PlayMode): void {
       liveSound()
     } else if (now === 'film') {
       if (playing) {
-        T = Math.min(total, T + run)
+        T = Math.min(total, T + Math.min(0.5, dt))
         if (T >= total) playing = false
       }
       draw()
