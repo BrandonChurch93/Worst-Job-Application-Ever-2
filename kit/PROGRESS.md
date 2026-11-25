@@ -25,25 +25,26 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 9, 2026-11-25T08:18Z, Phase 2.
+Status 10, 2026-11-25T08:42Z, Phase 2.
 
-1. `out/stills/status/01-blockout-frame-step1.jpg`: The new frame drawing step 1 at rest, in plain grey stand-in shapes: the shared header, the numbered progress buttons, the heading and one button. The fields and the keyboard are not built yet.
-2. `out/stills/status/02-blockout-frame-decision.jpg`: The same frame at a moment of the film, in step 5: the script has walked the cursor to the button. The letter and the stamp are not built yet.
+1. `out/stills/status/01-blockout-cursor-arms.jpg`: Stand-in for the cursor's arms sheet: thin arms with round hands that reach to two places. The arms exist only in the tug of war of step 1.
+2. `out/stills/status/02-blockout-cursor-damage.jpg`: Stand-in for the damage sheet: a burn mark, shredded strips, the body at rest, a swollen state and a second burn. Every kind of damage heals inside four seconds.
+3. `out/stills/status/03-blockout-cursor-acting.jpg`: Stand-in for the acting sheet: five ways the body carries itself, with sweat drops as small beads. The cursor has no face, so all acting is posture.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 2, tick 32 at 2026-11-25T08:24:03Z, allowance: build
-time used in this phase: 0.76 h of its box of 6.50 h
-time used under the allowance in force: 2.86 h of 36.00 h allowed
-time used: 2.86 of 36.00 hours before the review
+clock: phase 2, tick 33 at 2026-11-25T08:42:07Z, allowance: build
+time used in this phase: 1.06 h of its box of 6.50 h
+time used under the allowance in force: 3.16 h of 36.00 h allowed
+time used: 3.16 of 36.00 hours before the review
 extra rounds: yes
 half point: not reached
 box end: not reached
 budget report: not due
-minutes since the last status: 5
+minutes since the last status: 0
 ```
 
 ## Phases
@@ -320,7 +321,16 @@ none
 
 Each with its name, its folders, its branch and its looks branch, when it started, its limit, and what it has pushed.
 
-none
+| Agent | Kind | Owns | Branch | Started | Limit | Last seen |
+| --- | --- | --- | --- | --- | --- | --- |
+| `pinball_builder` | build, sandbox | `src/table/`, `src/pages/step3/`, `tools/paths.mjs`, `tools/take.mjs` | `agent/pinball` | 2026-11-25T08:41:30Z | 11:41Z | started |
+| `step1_builder` | build, sandbox | `src/pages/step1/` | `agent/step1` | 2026-11-25T08:41:30Z | 11:41Z | started |
+| `step2_builder` | build, sandbox | `src/pages/step2/` | `agent/step2` | 2026-11-25T08:41:30Z | 11:41Z | started |
+| `boss_builder` | build, sandbox | `src/pages/step4/`, `src/boss/` | `agent/boss` | 2026-11-25T08:41:30Z | 11:41Z | started |
+| `marketing_builder` | build, sandbox | `src/pages/marketing/` | `agent/marketing` | 2026-11-25T08:41:30Z | 11:41Z | started |
+| `step5_builder` | build, sandbox | `src/pages/step5/` | `agent/step5` | 2026-11-25T08:41:30Z | 11:41Z | started |
+
+Each brief names the approved images of its part, gives its sections of `kit/01-FILM.md`, `kit/02-SUBJECT.md` and `kit/03-METHOD.md` word for word, and repeats the three rules. First complete version wanted by 10:45Z. A build agent silent for 45 minutes is replaced once from its branch.
 
 ## Rounds
 
