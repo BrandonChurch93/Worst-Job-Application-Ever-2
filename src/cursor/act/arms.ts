@@ -7,7 +7,7 @@ import type { ArmsLook, ArmsModel } from '../contract'
 // Sizes in page pixels. The arm is a rubber hose 7% of the body's height thick, the hand a fifth of it long.
 // A hose is `rest` long and never shorter. A hand nearer than that leaves the rest as slack: the hose leaves the body outward (`out`), bows round in one loop and comes to the hand along the line of its reach (`into`). A hand further away stretches it: it is still `taut` longer than the straight line, so it keeps a curve, and it thins by `thin` at full strain and by the root of its stretch. `most` is the longest a short reach may be for its length, so a hand that is still growing out does not throw a loop. An open hand that pushes bends back at the wrist by `wrist`; an open hand that hangs lets its fingers fall by `droop`.
 const H = config.cursor.heightPxAt1080
-export const ARM = { radius: H * 0.04, rest: 48, taut: 1.15, most: 2.1, out: 0.16, into: 0.3, ease: 0.45, thin: 0.12, along: 34, round: 12, grainPx: 64, wrist: 2.5, droop: 0.6, low: 0.15, rise: 0.55, thick: 1.3, taper: 0.4, cuff: [1.3, 1.62, 1.62, 1.2] }
+export const ARM = { radius: H * 0.04, rest: 43, taut: 1.15, most: 2.1, out: 0.16, into: 0.3, ease: 0.45, thin: 0.12, along: 34, round: 12, grainPx: 64, wrist: 2.5, droop: 0.6, low: 0.15, rise: 0.55, thick: 1.3, taper: 0.4, cuff: [1.3, 1.62, 1.62, 1.2] }
 const HAND = { palm: [4.5, 4, 2.3], palmY: 3.6, finger: 1.42, joint: 2.9, joints: 8, curl: 0.5, knuckle: 0.65 }
 // A hand that holds a sheet by its side edge: the arm leaves the shoulder outward and back (`side`, `back`), bends at an elbow and comes to the edge from outside the sheet (`into`). The two arms are not a pair: `lead` and `hand` set how far each elbow stands off at its shoulder end and at its hand end, first the left arm, then the right.
 const ELBOW = { lead: [0.8, 0.7], back: [0.4, 0.1], hand: [0.55, 1], side: 0.9, into: 0.3, least: 0.22 }
@@ -150,7 +150,7 @@ class Limb {
     const flat = Math.max(1e-3, Math.hypot(dx, dy))
     const ex = dx / flat
     const ey = dy / flat
-    const length = Math.min(d * ARM.most, Math.max(ARM.rest, d * ARM.taut))
+    const length = Math.min(d * ARM.most, Math.max(ARM.rest * Math.min(1, Math.max(0.2, grown)), d * ARM.taut))
     let px = -ey
     let py = ex
     const want = (px * axis[0] + py * axis[1]) * this.side * 0.857 + py * 0.514
