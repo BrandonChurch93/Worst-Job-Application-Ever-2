@@ -1,35 +1,35 @@
 {
   "folder": "damage",
-  "pushed": "2026-11-25T18:43:08.997Z",
-  "commit": "0353e62dadf0a2c243202b6d2a9797b30d0443ae",
+  "pushed": "2026-11-25T19:22:09.547Z",
+  "commit": "f916439725017cbd1421c22a95b639aa7458e702",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "cursor-damage, approved above and this build below, native crops of the five states",
-      "time": "2026-11-25T18:43:07.226Z",
+      "caption": "Still sheet-cursor-damage-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T19:15:36.298Z",
       "by": "damage",
-      "from": "out/work/c/send/dmg.jpg"
+      "from": "out/work/stills/sheet-cursor-damage-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "cursor-acting, approved above and this build below, native crops of the six states",
-      "time": "2026-11-25T18:43:07.453Z",
+      "caption": "Still sheet-cursor-damage-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T19:19:57.671Z",
       "by": "damage",
-      "from": "out/work/c/send/act.jpg"
+      "from": "out/work/stills/sheet-cursor-damage-hd-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "the cursor in step1-fire (4x) and step1-tug (2x): approved left, this build right",
-      "time": "2026-11-25T18:43:07.718Z",
+      "caption": "Still sheet-cursor-damage-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T19:22:07.156Z",
       "by": "damage",
-      "from": "out/work/c/send/keys.jpg"
+      "from": "out/work/stills/sheet-cursor-damage-hd-draft.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "step1-tug compare, draft, approved left and this build right",
-      "time": "2026-11-25T18:43:07.977Z",
+      "caption": "Damage sheet at f916439: approved on top, build below. Ribbons with square ends, three tapes, bore wall",
+      "time": "2026-11-25T19:22:08.295Z",
       "by": "damage",
-      "from": "out/work/c/send/tug.jpg"
+      "from": "out/work/c/send/dmg3.jpg"
     }
   ]
 }
