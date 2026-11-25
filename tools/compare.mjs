@@ -4,7 +4,8 @@ import path from 'node:path'
 import sharp from 'sharp'
 import { args, at, config, readJson } from './lib/paths.mjs'
 import { openSession, still } from './lib/capture.mjs'
-import { cropTile, cursorBox, fit, label, sheet } from './lib/image.mjs'
+import { cropTile, fit, label, sheet } from './lib/image.mjs'
+import { finder } from './lib/pack-look.mjs'
 import { addLook } from './lib/looks.mjs'
 
 const a = args()
@@ -57,20 +58,12 @@ const rows = [
 // Where each kind of part lies in the approved image, as fractions of its width and height.
 const boxes = readJson(at('tools', 'assets', 'approved-boxes.json'))[id] || null
 const kinds = boxes ? Object.keys(boxes) : []
-const built = (kind) => {
-  if (kind === 'cursor') return cursorBox(state.cursor)
-  if (kind === 'type') {
-    const runs = [...state.type].sort((x, y) => x.px - y.px)
-    return runs.length ? runs[0].box : null
-  }
-  const part = state.layout.find((p) => p.kind === kind)
-  return part ? part.drawn : null
-}
+const built = finder(state, 1920, 1080)
 const pairs = []
 for (const kind of kinds) {
   const b = built(kind)
   if (!b) continue
-  const f = boxes[kind]
+  const f = boxes[kind].box || boxes[kind]
   pairs.push({ kind, approvedBox: [f[0] * meta.width, f[1] * meta.height, f[2] * meta.width, f[3] * meta.height], buildBox: [(b[0] / 1920) * shot.width, (b[1] / 1080) * shot.height, (b[2] / 1920) * shot.width, (b[3] / 1080) * shot.height] })
 }
 const perRow = 2

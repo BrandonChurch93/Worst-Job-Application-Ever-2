@@ -20,6 +20,15 @@ const capShape = (w: number, h: number): THREE.BufferGeometry => {
   return g
 }
 
+const CORE = 0.6
+let core: THREE.BufferGeometry | null = null
+const coreShape = (w: number, h: number): THREE.BufferGeometry => {
+  if (core) return core
+  core = capGeometry(w - CORE * 2, h - CORE * 2)
+  core.translate(0, 0, -CORE)
+  return core
+}
+
 const isCap = (s: Shape): boolean => s.role === 'keycap' && s.kind !== 'text'
 const isEnter = (s: Shape): boolean => s.id === 'key-enter'
 
@@ -79,7 +88,7 @@ function deckGeometry(w: number, h: number): { metal: THREE.BufferGeometry; seat
 }
 
 interface CapSlot { start: number; count: number; from: Float32Array; facing: Float32Array; pose: [number, number, number, number, number]; leaned: boolean }
-interface DeckData { plate: THREE.Group; caps: Map<string, CapSlot>; body: THREE.Mesh; owned: THREE.BufferGeometry[] }
+interface DeckData { plate: THREE.Group; caps: Map<string, CapSlot>; body: THREE.Mesh; accent: THREE.Mesh | null; owned: THREE.BufferGeometry[] }
 
 const quat = new THREE.Quaternion()
 const euler = new THREE.Euler()
@@ -109,27 +118,22 @@ function makeDeck(s: Shape, ctx: RealContext): THREE.Object3D {
   plate.add(new THREE.Mesh(g.metal, k.deck), bed)
   root.add(plate)
   const cream = ctx.list.filter(isCap)
-  const tint = k.orange.color.clone()
-  tint.r = Math.min(1, tint.r / k.cap.color.r)
-  tint.g = Math.min(1, tint.g / k.cap.color.g)
-  tint.b = Math.min(1, tint.b / k.cap.color.b)
-  const total = cream.reduce((n, c) => n + capShape(c.w, c.h).getAttribute('position').count, 0)
+  const enter = cream.find(isEnter)
+  const total = cream.reduce((n, c) => n + (isEnter(c) ? coreShape(c.w, c.h) : capShape(c.w, c.h)).getAttribute('position').count, 0)
   const position = new Float32Array(total * 3)
   const normal = new Float32Array(total * 3)
   const uv = new Float32Array(total * 2)
-  const colour = new Float32Array(total * 3).fill(1)
   const index: number[] = []
   const caps = new Map<string, CapSlot>()
   let start = 0
   for (const c of cream) {
-    const shape = capShape(c.w, c.h)
+    const shape = isEnter(c) ? coreShape(c.w, c.h) : capShape(c.w, c.h)
     const from = shape.getAttribute('position').array as Float32Array
     const facing = shape.getAttribute('normal').array as Float32Array
     const count = from.length / 3
     normal.set(facing, start * 3)
     uv.set(shape.getAttribute('uv').array as Float32Array, start * 2)
     for (const i of shape.getIndex()!.array) index.push(start + i)
-    if (isEnter(c)) for (let i = start; i < start + count; i++) colour.set([tint.r, tint.g, tint.b], i * 3)
     caps.set(c.id, { start, count, from, facing, pose: [NaN, 0, 0, 0, 0], leaned: false })
     start += count
   }
@@ -141,19 +145,25 @@ function makeDeck(s: Shape, ctx: RealContext): THREE.Object3D {
   all.setAttribute('position', spots)
   all.setAttribute('normal', faces)
   all.setAttribute('uv', new THREE.BufferAttribute(uv, 2))
-  all.setAttribute('color', new THREE.BufferAttribute(colour, 3))
   all.setIndex(index)
-  const body = new THREE.Mesh(all, k.field)
+  const body = new THREE.Mesh(all, k.cap)
   body.frustumCulled = false
   root.add(body)
+  let accent: THREE.Mesh | null = null
+  if (enter) {
+    accent = new THREE.Mesh(capShape(enter.w, enter.h), k.orange)
+    accent.frustumCulled = false
+    root.add(accent)
+  }
   lit(root)
   bed.castShadow = false
-  const data: DeckData = { plate, caps, body, owned: [g.metal, g.seat, all] }
+  if (accent) accent.castShadow = false
+  const data: DeckData = { plate, caps, body, accent, owned: [g.metal, g.seat, all] }
   root.userData.deck = data
   return root
 }
 
-// Every cap is one stretch of one mesh, the Enter in the shared orange by its vertex colour. A cap that moved since the last frame has its stretch written again, the others are left.
+// Every cap is one stretch of one mesh. The Enter is the shared orange over a core in that mesh, and the core casts its shadow. A cap that moved since the last frame has its stretch written again, the others are left.
 function poseDeck(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const data = o.userData.deck as DeckData
   data.plate.position.z = s.z1 - s.z0
@@ -215,6 +225,15 @@ function poseDeck(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   }
   if (moved) spots.needsUpdate = true
   if (turned) faces.needsUpdate = true
+  if (data.accent) {
+    const c = ctx.byId.get('key-enter')
+    data.accent.visible = !!c
+    if (c) {
+      place(c)
+      data.accent.position.copy(at)
+      data.accent.quaternion.copy(quat)
+    }
+  }
 }
 
 function makeLoneCap(s: Shape): THREE.Object3D {
@@ -227,7 +246,7 @@ function makeLoneCap(s: Shape): THREE.Object3D {
   return root
 }
 
-// The deck, its bed and every cap on it are one object, and the caps are one mesh of one draw.
+// The deck, its bed and every cap on it are one object: the caps are one mesh of one draw, the orange Enter a second that casts no shadow of its own.
 export const keyboard: PartMaker = {
   key(s, ctx) {
     if (s.kind === 'text' || s.kind === 'well') return null
