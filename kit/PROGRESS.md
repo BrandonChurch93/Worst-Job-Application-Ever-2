@@ -267,7 +267,7 @@ Kept by `npm run judged -- --write`. Check G6 compares its ids with the computed
 | `site:boss` | `site` | step 4 at rest, drawn through the live site's own path at the high level, from home, in hd |  |
 | `site:decision` | `site` | step 5 at rest, drawn through the live site's own path at the high level, from home, in hd |  |
 
-47 frames of the films and the loop. The frame numbers are those of the build of 2026-11-25T11:26:32Z. A judged frame is found again by its id when it is rendered, so a beat's frame follows its event.
+47 frames of the films and the loop. The frame numbers are those of the build of 2026-11-25T12:09:17Z. A judged frame is found again by its id when it is rendered, so a beat's frame follows its event.
 
 | Id | Unit | What | Frame |
 | --- | --- | --- | --- |

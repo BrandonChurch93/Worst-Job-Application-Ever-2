@@ -171,7 +171,7 @@
     "table-lobby": { "fovDeg": 35, "note": "fitted to its approved image" },
     "table-replyall": { "fovDeg": 30, "note": "fitted to its approved image" },
     "table-fired": { "fovDeg": 35, "note": "fitted to its approved image" },
-    "table-save": { "fovDeg": 35, "note": "fitted to its approved image" }
+    "table-save": { "fovDeg": 62, "note": "fitted to its approved image" }
   },
   "layout": { "tolerancePx": 2, "minTextPx": 14, "minTextContrast": 4.5 },
   "sim": { "stepHz": 240, "checkpointSeconds": 1 },
@@ -366,7 +366,7 @@
       "id": "last-save",
       "unit": "pinball",
       "beat": "pinball.save",
-      "at": 0.5,
+      "at": 0.53,
       "camera": "table-save",
       "image": "references/approved/last-save.png",
       "settled": ["The far buildings carry no signs in the image. The build carries them."]
