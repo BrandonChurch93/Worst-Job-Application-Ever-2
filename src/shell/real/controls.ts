@@ -37,14 +37,14 @@ function discUv(g: THREE.BufferGeometry, d: number): THREE.BufferGeometry {
   return g
 }
 
-const RIM = 3.4
+const RIM = 2.8
 
 // The aluminium sleeve of a pocket: a thin flat rim at the surface and a wall that leans in, down to what lies in the pocket.
 function sleeve(s: Shape, surface: number, lean: number): THREE.BufferGeometry {
-  const top = surface - 0.2
-  const foot = RIM - 0.4 + lean * (top - 0.8)
+  const top = surface - pocketCut(s).lip - 0.2
+  const foot = RIM - 0.4 + lean * (top - 0.5)
   const points: ProfilePoint[] = [
-    [0.1, top - 1.2, true], [0.1, top, true], ...bead(RIM - 1.4, top, 1, 0.8, 4), [foot, 0, true], [foot, -0.4, true]
+    [0.1, top - 1.2, true], [0.1, top, true], ...bead(RIM - 0.9, top, 0.5, 0.5, 3), [foot, 0, true], [foot, -0.4, true]
   ]
   return sweep(outlineOf(s, 0, 12), profile(points), false)
 }
@@ -60,10 +60,10 @@ function bead(inset: number, z: number, across: number, fall: number, steps: num
 }
 
 const SOAK = 10
-const SOAK_HOLD = 3
-const SOAK_DEPTH = 0.7
+const SOAK_HOLD = 8
+const SOAK_DEPTH = 0.66
 const BOUNCE = 0.14
-const SOAK_RINGS = [0, 1.5, 3, 5, 7.5, 10.5, 14, 18, 23]
+const SOAK_RINGS = [0, 1.5, 3, 5, 7.5, 10.5, 14, 18, 23, 29, 36]
 
 // One ring of a sunk face: a rounded rectangle with extra points along its straight sides, the same count for every ring.
 function denseRing(w: number, h: number, r: number, perCorner: number, along: number, across: number): [number, number][] {
@@ -87,10 +87,11 @@ function sunkGlass(s: Shape, inset: number, depth: number): THREE.BufferGeometry
   const w = s.w - inset * 2
   const h = s.h - inset * 2
   const r = Math.max(0.6, (s.r ?? 0) - inset)
-  const insets = SOAK_RINGS.filter((v) => v < Math.min(w, h) / 2 - 2)
+  const half = Math.min(w, h) / 2
+  const insets = [...SOAK_RINGS.filter((v) => v < half - 2), half - 0.4]
   const along = Math.max(1, Math.ceil(w / 28))
   const across = Math.max(1, Math.ceil(h / 28))
-  const rings = insets.map((v) => denseRing(w - v * 2, h - v * 2, Math.max(0.6, r - v), 8, along, across))
+  const rings = insets.map((v) => denseRing(w - v * 2, h - v * 2, Math.min(Math.max(0.6, r - v), half - v), 8, along, across))
   const n = rings[0]!.length
   const [lx, ly, lz] = look.key.direction
   const flat = Math.hypot(lx, ly) || 1
@@ -291,16 +292,16 @@ function focusRing(f: Shape): THREE.Object3D {
   coreMaterial ??= new THREE.MeshBasicMaterial({ color: new THREE.Color(1.5, 0.42, 0.07), toneMapped: false })
   glowMaterial ??= new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })
   const outline = outlineOf(f, 0, 12)
-  const core = mesh(shared(`focusCore:${dims(f)}`, () => sweep(outline, profile([[-0.9, 0, true], [-0.5, 0.7], [0.9, 0.9], [2.0, 0.7], [2.4, 0, true]]), false)), coreMaterial, false)
+  const core = mesh(shared(`focusCore:${dims(f)}`, () => sweep(outline, profile([[-0.7, 0.1, true], [-0.4, 0.5], [0.5, 0.6], [1.4, 0.5], [1.7, 0.1, true]]), false)), coreMaterial, false)
   core.receiveShadow = false
   root.add(core)
   const spill = shared(`focusGlow:${dims(f)}`, () => {
-    const steps: [number, number, number][] = [[-22, 0.25, 0], [-12, 0.25, 0.12], [-5, 0.25, 0.42], [-0.9, 0.3, 1], [2.4, 0.3, 1], [2.6, f.z0 + 0.4, 0.5], [9, f.z0 + 0.4, 0.22], [20, f.z0 + 0.4, 0]]
+    const steps: [number, number, number][] = [[-34, 0.25, 0], [-20, 0.25, 0.07], [-11, 0.25, 0.2], [-5, 0.25, 0.48], [-0.7, 0.3, 1], [1.7, 0.3, 1], [RIM + 0.2, f.z0 + 0.4, 0.55], [10, f.z0 + 0.4, 0.26], [18, f.z0 + 0.4, 0.1], [28, f.z0 + 0.4, 0]]
     const g = sweep(outline, steps.map(([inset, z]) => ({ inset, z, out: 0, up: 1 })), false)
     const n = outline.count
     const colour = new Float32Array(steps.length * n * 3)
     steps.forEach(([, , a], k) => {
-      for (let i = 0; i < n; i++) colour.set([0.55 * a, 0.14 * a, 0.02 * a], (k * n + i) * 3)
+      for (let i = 0; i < n; i++) colour.set([0.72 * a, 0.2 * a, 0.03 * a], (k * n + i) * 3)
     })
     g.setAttribute('color', new THREE.BufferAttribute(colour, 3))
     return g
@@ -359,6 +360,9 @@ export const controls: PartMaker = {
     const f = holder(s, ctx)
     if (!f) return
     if (s.id === 'field-caret') o.position.z = f.z0 + 0.04
-    else o.position.set(f.x + f.w / 2 - 960, 540 - (f.y + f.h / 2), 0)
+    else {
+      o.position.set(f.x + f.w / 2 - 960, 540 - (f.y + f.h / 2), 0)
+      glowMaterial?.color.setScalar(0.8 + 0.5 * Math.min(1, Math.max(0, s.v?.[0] ?? 0)))
+    }
   }
 }
