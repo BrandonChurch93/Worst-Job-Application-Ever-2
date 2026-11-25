@@ -82,6 +82,7 @@ export class CursorView {
       }
     }
     this.arms.grown = c.shed > 0 ? 1 - 0.5 * c.shed : grown
+    this.arms.over = c.z + 2 * (Math.max(this.from[0]!.z, this.from[1]!.z) - c.z)
     this.arms.apply(this.from, this.to, look.arms)
   }
 
