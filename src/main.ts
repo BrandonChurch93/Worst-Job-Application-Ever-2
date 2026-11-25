@@ -346,7 +346,7 @@ function play(first: PlayMode): void {
     if (f.view) return stage.page.unit === 'pinball' ? 'dark' : 'light'
     let under: 'page' | 'light' | 'dark' = 'page'
     for (const s of f.list) {
-      if (s.kind === 'well' || s.x >= ROW.x1 || s.x + s.w <= ROW.x0 || s.y >= f.scroll + ROW.y1 || s.y + s.h <= f.scroll) continue
+      if (s.kind === 'well' || s.kind === 'anchor' || s.x >= ROW.x1 || s.x + s.w <= ROW.x0 || s.y >= f.scroll + ROW.y1 || s.y + s.h <= f.scroll) continue
       if (s.w >= 1900 && s.z1 <= 0) continue
       if (s.tone === 'dark') return 'dark'
       under = 'light'
