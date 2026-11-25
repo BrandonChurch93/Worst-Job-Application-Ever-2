@@ -107,7 +107,7 @@ const LOOKS: HouseLook[] = [
   { wall: rgb(0x7f8f6a), kind: KIND.board, roof: rgb(0x5b4636), ridge: 'hip', door: rgb(0x5a2f22), trim: rgb(0xefe8d6), eave: 24, chimney: -1 }
 ]
 
-const GRASS = rgb(0x4f6b3c)
+const GRASS = rgb(0x34472c)
 
 // The six small houses, three in a row on each side, each row on a kerbed strip of its own.
 export function houses(b: Buckets, z: Zone): void {
@@ -120,7 +120,7 @@ export function houses(b: Buckets, z: Zone): void {
     const hi = Math.max(...sites.map((s) => s.x1))
     const yf = sites[0]!.yf
     const yb = sites[0]!.yb
-    g.box(lo - 3, hi + 3, yf - 3, yb + 3, 0, 2.2, TONE.stone, { bevel: 0.8, top: GRASS, topKind: KIND.stucco })
+    g.box(lo - 3, hi + 3, yf - 3, yb + 3, 0, 2.2, TONE.stoneDark, { bevel: 0.8, top: GRASS, topKind: KIND.stucco })
     b.screws.push([lo - 0.5, yf - 0.6, 2.2, 1], [hi + 0.5, yf - 0.6, 2.2, 1])
     sites.forEach((S, i) => {
       const L = LOOKS[(row === 'left' ? 0 : 3) + (i % 3)]!
@@ -140,7 +140,7 @@ export function houses(b: Buckets, z: Zone): void {
       mailbox(b, x0 + dx + (i % 2 === 0 ? 9 : -9), S.yf + 0.5, 2.2, [TONE.iron, TONE.red, TONE.blueDark][i % 3]!)
       // A hedge along one side.
       const hx = i % 2 === 0 ? S.x0 + 0.4 : S.x1 - 2.6
-      g.box(hx, hx + 2.2, y0 + 2, y1 - 2, 2.2, 6.5, rgb(0x35512f), { bevel: 0.9, kind: KIND.stucco })
+      g.box(hx, hx + 2.2, y0 + 2, y1 - 2, 2.2, 6.5, rgb(0x263a22), { bevel: 0.9, kind: KIND.stucco })
     })
   }
 }
