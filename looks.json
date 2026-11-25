@@ -1,35 +1,35 @@
 {
   "folder": "lights",
-  "pushed": "2026-11-25T16:07:26.067Z",
-  "commit": "5c0c7528f9805c86cb00c4c8e19f09ce43fac90c",
+  "pushed": "2026-11-25T16:31:41.349Z",
+  "commit": "915b3b4a9e6b54603e28b188e7c57346dcb03447",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key tier-corporate: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-25T16:07:24.109Z",
+      "caption": "Still key-table-wide-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T16:29:02.627Z",
       "by": "lights",
-      "from": "out/work/compare/compare-tier-corporate.jpg"
+      "from": "out/work/stills/key-table-wide-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Office beside the approved image: a pool of light at each rail lamp, no smudge between lamps",
-      "time": "2026-11-25T16:07:24.377Z",
+      "caption": "Still key-tier-corporate-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T16:29:34.011Z",
       "by": "lights",
-      "from": "out/work/compare/compare-tier-office.jpg"
+      "from": "out/work/stills/key-tier-corporate-hd-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Corporate beside the approved image: lamps light the floor in pools, globes light the doors",
-      "time": "2026-11-25T16:07:24.631Z",
+      "caption": "Key table-wide: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-25T16:31:39.816Z",
       "by": "lights",
-      "from": "out/work/compare/compare-tier-corporate.jpg"
+      "from": "out/work/compare/compare-table-wide.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Office proof sheet: all groups, then each group alone",
-      "time": "2026-11-25T16:07:24.873Z",
+      "caption": "Table wide beside the approved image, with the real frame: the steel walls take a scallop of light from each lamp",
+      "time": "2026-11-25T16:31:40.078Z",
       "by": "lights",
-      "from": "out/work/lights/sheet-office.jpg"
+      "from": "out/work/compare/compare-table-wide.jpg"
     }
   ]
 }
