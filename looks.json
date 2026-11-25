@@ -1,35 +1,35 @@
 {
   "folder": "keys",
-  "pushed": "2026-11-25T19:25:27.633Z",
-  "commit": "13594957da39154e3ec1b4f96acb5b8b4651a026",
+  "pushed": "2026-11-25T19:26:46.644Z",
+  "commit": "56b07b79bd43883618e4edcad10aa2bb96d6b227",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still step1-step1_lastName-0p094-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-25T19:18:48.850Z",
-      "by": "keys",
-      "from": "out/work/stills/step1-step1_lastName-0p094-hd-draft.png"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "Still step1-step1_lastName-0p094-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-25T19:19:47.623Z",
-      "by": "keys",
-      "from": "out/work/stills/step1-step1_lastName-0p094-hd-draft.png"
-    },
-    {
-      "file": "look-3.jpg",
-      "caption": "Contact sheet, the beat step1.lastName: 12 frames from 0:24.00 to 0:28.97, draft tier, preview",
-      "time": "2026-11-25T19:22:41.388Z",
-      "by": "keys",
-      "from": "out/work/sheets/sheet-beat-step1_lastName-preview-draft.jpg"
-    },
-    {
-      "file": "look-4.jpg",
       "caption": "Keys: flying caps throw a clear shadow across the space bar and the seated caps, step1.lastName at 0.094, draft tier",
       "time": "2026-11-25T19:25:26.326Z",
       "by": "keys",
       "from": "out/work/keys/shuffle-shadow.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Still step1-step1_firstName-0p7580-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T19:26:06.435Z",
+      "by": "keys",
+      "from": "out/work/stills/step1-step1_firstName-0p7580-hd-draft.png"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Still step1-step1_firstName-0p7985-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T19:26:20.300Z",
+      "by": "keys",
+      "from": "out/work/stills/step1-step1_firstName-0p7985-hd-draft.png"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Keys: the field's rim on the frame after a key press (above) and 0.34 s later (below), draft tier",
+      "time": "2026-11-25T19:26:45.374Z",
+      "by": "keys",
+      "from": "out/work/keys/field-pulse.jpg"
     }
   ]
 }
