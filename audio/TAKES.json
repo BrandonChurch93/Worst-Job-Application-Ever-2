@@ -61,41 +61,46 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
-        "asks": 2,
-        "whole": 2,
+        "by": "the audio evaluation tool: 8 asks, 1 whole, 7 void",
+        "asks": 8,
+        "whole": 1,
         "transcript": "Here we find the applicant. Rent is due.",
         "transcripts": [
           "Here we find the applicant. Rent is due.",
+          "Here we find the applicant. Rent is due.",
           "Here we find the applicant. Rent is due."
         ],
-        "transcriptAgreed": "2 of 2",
+        "transcriptAgreed": "3 of 3",
         "attitudes": [
-          "condescending and authoritative",
-          "condescending and authoritative"
+          "aloof and demanding"
         ],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 2,
+        "accents": [
+          "American"
+        ],
+        "pitches": [
+          "low"
+        ],
         "whisper": null,
+        "whisperVotes": "0 yes, 1 no",
         "laugh": null,
+        "laughVotes": "0 yes, 1 no",
         "warmth": null,
+        "warmthVotes": "0 yes, 1 no",
         "excitement": null,
+        "excitementVotes": "0 yes, 1 no",
         "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "1 yes, 0 no",
         "basis": [
+          "The speaker's flat, deliberate delivery and lack of emotional warmth suggest a low-pitched, unimpressed, and smug demeanor.",
           "The speaker's delivery is flat and condescending, lacking warmth or excitement, which conveys a distinctly smug and unimpressed demeanor.",
           "The flat, documentary-style delivery lacks warmth or excitement, conveying instead a cold, superior, and demanding tone."
         ]
       },
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "kept": true,
+      "keptAs": [
+        "line.marketing.stroll.0"
+      ],
+      "why": "too long for its place: 5.13 s in 5.12 s, over by 0.010 s; tone not judged: 1 whole answers in 8 asks",
       "line": {
         "words": 8,
         "seconds": 5.13,
@@ -179,40 +184,56 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
-        "asks": 2,
+        "by": "the audio evaluation tool: 8 asks, 2 whole, 6 void",
+        "asks": 8,
         "whole": 2,
         "transcript": "It spots unlimited PTO. Poor thing. Believes it.",
         "transcripts": [
           "It spots unlimited PTO. Poor thing. Believes it.",
+          "It spots unlimited PTO. Poor thing. Believes it.",
+          "It spots unlimited PTO. Poor thing. Believes it.",
+          "It spots unlimited PTO. Poor thing. Believes it.",
+          "It spots unlimited PTO. Poor thing. Believes it.",
+          "It spots unlimited PTO. Poor thing. Believes it.",
           "It spots unlimited PTO. Poor thing. Believes it."
         ],
-        "transcriptAgreed": "2 of 2",
+        "transcriptAgreed": "7 of 7",
         "attitudes": [
           "cynical and condescending",
-          "cynical, condescending, and sarcastic"
+          "cynical and condescending"
         ],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 2,
-        "whisper": null,
-        "laugh": null,
-        "warmth": null,
-        "excitement": null,
-        "unimpressedAndSmug": null,
+        "accents": [
+          "American",
+          "American"
+        ],
+        "pitches": [
+          "low",
+          "low"
+        ],
+        "whisper": false,
+        "whisperVotes": "0 yes, 2 no",
+        "laugh": false,
+        "laughVotes": "0 yes, 2 no",
+        "warmth": false,
+        "warmthVotes": "0 yes, 2 no",
+        "excitement": false,
+        "excitementVotes": "0 yes, 2 no",
+        "unimpressedAndSmug": true,
+        "unimpressedAndSmugVotes": "2 yes, 0 no",
         "basis": [
+          "The low pitch and slow, deliberate delivery convey a distinct lack of warmth and a strong sense of cynical superiority.",
+          "The assessment is based on the cynical phrasing of the text, which mimics a smug narrator observing naive corporate behavior.",
+          "The speaker delivers the words with a slow, deadpan rhythm and a sarcastic tone that implies patronizing pity.",
+          "The sarcastic and cynical phrasing implies a dry, smug, and unimpressed vocal delivery.",
+          "The speaker delivers the lines with a slow, deliberate pace and a low, cynical tone, lacking any warmth or excitement to highlight the condescending attitude.",
           "The speaker uses short, dismissive phrases and a dry, sarcastic delivery that conveys cynicism and pity rather than warmth, excitement, or laughter.",
           "The speaker delivers the lines with a dry, deadpan, and slightly mocking tone, devoid of any genuine warmth or excitement."
         ]
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "line.marketing.perks.0"
+      ],
       "why": "",
       "line": {
         "words": 8,
@@ -282,41 +303,46 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
-        "asks": 2,
-        "whole": 2,
+        "by": "the audio evaluation tool: 8 asks, 1 whole, 7 void",
+        "asks": 8,
+        "whole": 1,
         "transcript": "First name. Under fire. Standard onboarding.",
         "transcripts": [
           "First name. Under fire. Standard onboarding.",
+          "First name. Under fire. Standard onboarding.",
           "First name under fire standard onboarding."
         ],
-        "transcriptAgreed": "2 of 2",
+        "transcriptAgreed": "3 of 3",
         "attitudes": [
-          "detached, unimpressed, and smug",
-          "unimpressed, dry, and smug"
+          "serious and factual"
         ],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 2,
+        "accents": [
+          "American"
+        ],
+        "pitches": [
+          "low"
+        ],
         "whisper": null,
+        "whisperVotes": "0 yes, 1 no",
         "laugh": null,
+        "laughVotes": "0 yes, 1 no",
         "warmth": null,
+        "warmthVotes": "0 yes, 1 no",
         "excitement": null,
+        "excitementVotes": "0 yes, 1 no",
         "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "0 yes, 1 no",
         "basis": [
+          "The speaker delivers the phrases with a steady, low-pitched tone, lacking any laughter, whispering, or emotional warmth.",
           "The speaker's delivery is flat, clinical, and somewhat arrogant, showing no signs of warmth, excitement, laughter, or whispering.",
           "The speaker's flat, detached delivery completely lacks warmth or excitement, resulting in an aloof and smugly unimpressed tone."
         ]
       },
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "kept": true,
+      "keptAs": [
+        "line.step1.firstName.0"
+      ],
+      "why": "too long for its place: 5.346 s in 4.5 s, over by 0.846 s; tone not judged: 1 whole answers in 8 asks",
       "line": {
         "words": 6,
         "seconds": 5.346,
@@ -390,33 +416,42 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 2 asks, 1 whole, 1 void",
-        "asks": 2,
-        "whole": 1,
-        "transcript": "Hit It keeps typing It has bills",
+        "by": "the audio evaluation tool: 6 asks, 2 whole, 4 void",
+        "asks": 6,
+        "whole": 2,
+        "transcript": "Hit. It keeps typing. It has bills.",
         "transcripts": [
+          "Hit. It keeps typing. It has bills.",
+          "Hit. It keeps typing. It has bills.",
           "Hit It keeps typing It has bills",
           "Hit It keeps typing It has bills"
         ],
-        "transcriptAgreed": "2 of 2",
+        "transcriptAgreed": "4 of 4",
         "attitudes": [
-          "unimpressed and cynical"
+          "deadpan and matter-of-fact",
+          "serious and detached"
         ],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 1,
-        "whisper": null,
-        "laugh": null,
-        "warmth": null,
-        "excitement": null,
-        "unimpressedAndSmug": null,
+        "accents": [
+          "American",
+          "American"
+        ],
+        "pitches": [
+          "middle",
+          "low"
+        ],
+        "whisper": false,
+        "whisperVotes": "0 yes, 2 no",
+        "laugh": false,
+        "laughVotes": "0 yes, 2 no",
+        "warmth": false,
+        "warmthVotes": "0 yes, 2 no",
+        "excitement": false,
+        "excitementVotes": "0 yes, 2 no",
+        "unimpressedAndSmug": false,
+        "unimpressedAndSmugVotes": "0 yes, 2 no",
         "basis": [
+          "The analysis is based on a neutral, steady delivery of the short sentences without noticeable emotional inflection or vocal variation.",
+          "The analysis is based on the speaker's low-pitched, flat delivery which lacks any warmth or excitement.",
           "The text describes a mundane, reluctant action driven by financial necessity, which inherently implies a flat, unenthusiastic, and slightly cynical tone.",
           "The speaker delivers the lines with a flat, deadpan intonation completely devoid of warmth or excitement, resulting in an unimpressed and smug tone."
         ]
@@ -517,41 +552,48 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
-        "asks": 2,
-        "whole": 2,
+        "by": "the audio evaluation tool: 8 asks, 1 whole, 7 void",
+        "asks": 8,
+        "whole": 1,
         "transcript": "A valid email rejected. The system is working as designed.",
         "transcripts": [
           "A valid email rejected. The system is working as designed.",
+          "A valid email rejected. The system is working as designed.",
+          "A valid email rejected. The system is working as designed.",
           "A valid email rejected. The system is working as designed."
         ],
-        "transcriptAgreed": "2 of 2",
+        "transcriptAgreed": "4 of 4",
         "attitudes": [
-          "cynical and sarcastic",
-          "smug, dismissive, and bureaucratic"
+          "deadpan, cynical, and smug"
         ],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 2,
+        "accents": [
+          "American"
+        ],
+        "pitches": [
+          "low"
+        ],
         "whisper": null,
+        "whisperVotes": "0 yes, 1 no",
         "laugh": null,
+        "laughVotes": "0 yes, 1 no",
         "warmth": null,
+        "warmthVotes": "0 yes, 1 no",
         "excitement": null,
+        "excitementVotes": "0 yes, 1 no",
         "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "1 yes, 0 no",
         "basis": [
+          "The slow pacing and flat, low-pitched delivery typically associated with this phrasing indicate a cynical, unimpressed, and smug tone.",
+          "The speaker delivers the technical irony with a low, unenthusiastic tone and a complete lack of warmth, projecting a clear sense of smug detachment.",
           "The speaker delivers the ironic statement with a slow, flat tone that highlights the absurdity of the situation without any warmth or excitement.",
           "The answers rest on the flat, unapologetic delivery of a frustrating technical outcome being framed as an intended feature, which inherently conveys a cold and smug tone."
         ]
       },
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "kept": true,
+      "keptAs": [
+        "line.step1.email.0"
+      ],
+      "why": "too long for its place: 9.508 s in 7.325 s, over by 2.183 s; tone not judged: 1 whole answers in 8 asks",
       "line": {
         "words": 10,
         "seconds": 9.508,
@@ -631,38 +673,40 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 2 asks, 0 whole, 2 void",
-        "asks": 2,
+        "by": "the audio evaluation tool: 8 asks, 0 whole, 8 void",
+        "asks": 8,
         "whole": 0,
         "transcript": "It fights for the resume. Two pages. One of them is true.",
         "transcripts": [
           "It fights for the resume. Two pages. One of them is true.",
+          "It fights for the resume. Two pages. One of them is true.",
           "It fights for the resume. Two pages. One of them is true."
         ],
-        "transcriptAgreed": "2 of 2",
+        "transcriptAgreed": "3 of 3",
         "attitudes": [],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 0,
+        "accents": [],
+        "pitches": [],
         "whisper": null,
+        "whisperVotes": "0 yes, 0 no",
         "laugh": null,
+        "laughVotes": "0 yes, 0 no",
         "warmth": null,
+        "warmthVotes": "0 yes, 0 no",
         "excitement": null,
+        "excitementVotes": "0 yes, 0 no",
         "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "0 yes, 0 no",
         "basis": [
+          "The cynical and sarcastic nature of the statement implies a flat, dismissive delivery that sounds unimpressed.",
           "The cynical, deadpan nature of the statement implies a dry, smug, and unimpressed delivery devoid of warmth, excitement, or laughter.",
           "Since no actual audio is present, the assessment relies on the inherent cynicism of the provided text, which strongly implies a dry, unimpressed, and smug delivery rather than warmth or excitement."
         ]
       },
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "kept": true,
+      "keptAs": [
+        "line.step1.tug.0"
+      ],
+      "why": "tone not judged: 0 whole answers in 8 asks",
       "line": {
         "words": 12,
         "seconds": 7.816,
@@ -736,40 +780,42 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 2 asks, 1 whole, 1 void",
-        "asks": 2,
-        "whole": 1,
+        "by": "the audio evaluation tool: 8 asks, 0 whole, 8 void",
+        "asks": 8,
+        "whole": 0,
         "transcript": "A rotary phone. The applicant has never seen one.",
         "transcripts": [
           "A rotary phone. The applicant has never seen one.",
+          "A rotary phone. The applicant has never seen one.",
+          "A rotary phone. The applicant has never seen one.",
           "A rotary phone. The applicant has never seen one."
         ],
-        "transcriptAgreed": "2 of 2",
-        "attitudes": [
-          "smug and condescending"
-        ],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 1,
+        "transcriptAgreed": "4 of 4",
+        "attitudes": [],
+        "accents": [],
+        "pitches": [],
         "whisper": null,
+        "whisperVotes": "0 yes, 0 no",
         "laugh": null,
+        "laughVotes": "0 yes, 0 no",
         "warmth": null,
+        "warmthVotes": "0 yes, 0 no",
         "excitement": null,
+        "excitementVotes": "0 yes, 0 no",
         "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "0 yes, 0 no",
         "basis": [
+          "The statement highlights the applicant's lack of familiarity with an older piece of technology, carrying an inherently smug and unimpressed implication.",
+          "While the exact acoustic features cannot be heard, the semantic content of the statement inherently conveys a dry, dismissive, and smug attitude regarding the applicant's unfamiliarity with older technology.",
           "The speaker delivers the observation with a dry, flat cadence that suggests a sense of superiority regarding the applicant's unfamiliarity with older technology.",
           "The short, blunt sentences and judgmental observation about the applicant's inexperience with older technology strongly imply a dry, smug delivery."
         ]
       },
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "kept": true,
+      "keptAs": [
+        "line.step2.dial.0"
+      ],
+      "why": "tone not judged: 0 whole answers in 8 asks",
       "line": {
         "words": 9,
         "seconds": 5.864,
@@ -848,9 +894,9 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 4 asks, 1 whole, 3 void",
-        "asks": 4,
-        "whole": 1,
+        "by": "the audio evaluation tool: 10 asks, 0 whole, 10 void",
+        "asks": 10,
+        "whole": 0,
         "transcript": "Volume all the way up. It will regret that.",
         "transcripts": [
           "Volume all the way up. It will regret that.",
@@ -859,23 +905,19 @@
           "Volume all the way up. It will regret that."
         ],
         "transcriptAgreed": "4 of 4",
-        "attitudes": [
-          "cold and threatening"
-        ],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 4 no",
-          "laugh": "0 yes, 4 no",
-          "warmth": "0 yes, 4 no",
-          "excitement": "0 yes, 4 no",
-          "unimpressedAndSmug": "4 yes, 0 no"
-        },
-        "claimedFromSound": 1,
+        "attitudes": [],
+        "accents": [],
+        "pitches": [],
         "whisper": null,
+        "whisperVotes": "0 yes, 0 no",
         "laugh": null,
+        "laughVotes": "0 yes, 0 no",
         "warmth": null,
+        "warmthVotes": "0 yes, 0 no",
         "excitement": null,
+        "excitementVotes": "0 yes, 0 no",
         "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "0 yes, 0 no",
         "basis": [
           "The speaker's threatening statement conveys a cold, confident demeanor without any warmth, excitement, or laughter.",
           "Since no audio file was provided, the answers rest on the semantic content of the text, which implies a cold, confident, and unimpressed delivery.",
@@ -968,40 +1010,48 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 2 asks, 1 whole, 1 void",
-        "asks": 2,
+        "by": "the audio evaluation tool: 8 asks, 1 whole, 7 void",
+        "asks": 8,
         "whole": 1,
         "transcript": "The skills assessment. No skills will be assessed.",
         "transcripts": [
           "The skills assessment. No skills will be assessed.",
+          "The skills assessment. No skills will be assessed.",
+          "The skills assessment. No skills will be assessed.",
           "The skills assessment. No skills. Will be assessed."
         ],
-        "transcriptAgreed": "2 of 2",
+        "transcriptAgreed": "4 of 4",
         "attitudes": [
-          "deadpan, dry, and sarcastic"
+          "deadpan and bureaucratic"
         ],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 1,
+        "accents": [
+          "American"
+        ],
+        "pitches": [
+          "middle"
+        ],
         "whisper": null,
+        "whisperVotes": "0 yes, 1 no",
         "laugh": null,
+        "laughVotes": "0 yes, 1 no",
         "warmth": null,
+        "warmthVotes": "0 yes, 1 no",
         "excitement": null,
+        "excitementVotes": "0 yes, 1 no",
         "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "1 yes, 0 no",
         "basis": [
+          "The measured, flat delivery of a contradictory statement gives the voice a decidedly dry, smug, and uninterested quality.",
+          "The deliberate, flat pacing used to deliver the contradictory statement conveys a highly sarcastic and smug tone.",
           "The inherent irony and brevity of the contradictory statement strongly suggest a flat, deadpan, and mildly smug delivery.",
           "The cynical phrasing and fragmented sentence structure strongly suggest a dry, sarcastic delivery that is entirely devoid of warmth or enthusiasm."
         ]
       },
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "kept": true,
+      "keptAs": [
+        "line.pinball.seal.0"
+      ],
+      "why": "tone not judged: 1 whole answers in 8 asks",
       "line": {
         "words": 8,
         "seconds": 6.698,
@@ -1070,8 +1120,8 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 2 asks, 0 whole, 2 void",
-        "asks": 2,
+        "by": "the audio evaluation tool: 8 asks, 0 whole, 8 void",
+        "asks": 8,
         "whole": 0,
         "transcript": "A career In reverse",
         "transcripts": [
@@ -1080,28 +1130,28 @@
         ],
         "transcriptAgreed": "2 of 2",
         "attitudes": [],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 0,
+        "accents": [],
+        "pitches": [],
         "whisper": null,
+        "whisperVotes": "0 yes, 0 no",
         "laugh": null,
+        "laughVotes": "0 yes, 0 no",
         "warmth": null,
+        "warmthVotes": "0 yes, 0 no",
         "excitement": null,
+        "excitementVotes": "0 yes, 0 no",
         "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "0 yes, 0 no",
         "basis": [
           "The conclusions about the sound of the voice rest on the deliberate pacing and dry articulation that would naturally accompany such a critical statement.",
           "Because no actual audio was provided, the assessment relies on the inherently derogatory nature of the text, which implies a dry, smug, and unimpressed delivery devoid of warmth or excitement."
         ]
       },
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "kept": true,
+      "keptAs": [
+        "line.pinball.launch.0"
+      ],
+      "why": "too long for its place: 3.094 s in 2.7 s, over by 0.394 s; tone not judged: 0 whole answers in 8 asks",
       "line": {
         "words": 4,
         "seconds": 3.094,
@@ -1174,8 +1224,8 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 4 asks, 0 whole, 4 void",
-        "asks": 4,
+        "by": "the audio evaluation tool: 10 asks, 0 whole, 10 void",
+        "asks": 10,
         "whole": 0,
         "transcript": "Corporate headquarters. So close.",
         "transcripts": [
@@ -1186,20 +1236,18 @@
         ],
         "transcriptAgreed": "4 of 4",
         "attitudes": [],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 4 no",
-          "laugh": "0 yes, 4 no",
-          "warmth": "0 yes, 4 no",
-          "excitement": "0 yes, 4 no",
-          "unimpressedAndSmug": "1 yes, 3 no"
-        },
-        "claimedFromSound": 0,
+        "accents": [],
+        "pitches": [],
         "whisper": null,
+        "whisperVotes": "0 yes, 0 no",
         "laugh": null,
+        "laughVotes": "0 yes, 0 no",
         "warmth": null,
+        "warmthVotes": "0 yes, 0 no",
         "excitement": null,
+        "excitementVotes": "0 yes, 0 no",
         "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "0 yes, 0 no",
         "basis": [
           "Because no actual audio file was provided, these vocal characteristics are best-guess inferences based solely on the textual context and the specific questions asked.",
           "Since no audio file was provided in the prompt, these vocal characteristics were inferred purely from the semantic content and likely dramatic tone of the text.",
@@ -1207,9 +1255,11 @@
           "Since no actual audio was provided, these vocal characteristics are estimated based on the likely dramatic context of the written transcript."
         ]
       },
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "kept": true,
+      "keptAs": [
+        "line.pinball.lobby.0"
+      ],
+      "why": "tone not judged: 0 whole answers in 10 asks",
       "line": {
         "words": 4,
         "seconds": 3.674,
@@ -1277,40 +1327,38 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 2 asks, 1 whole, 1 void",
-        "asks": 2,
-        "whole": 1,
+        "by": "the audio evaluation tool: 8 asks, 0 whole, 8 void",
+        "asks": 8,
+        "whole": 0,
         "transcript": "It runs on coffee and fear.",
         "transcripts": [
           "It runs on coffee and fear.",
           "It runs on coffee and fear."
         ],
         "transcriptAgreed": "2 of 2",
-        "attitudes": [
-          "deadpan and cynical"
-        ],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 1,
+        "attitudes": [],
+        "accents": [],
+        "pitches": [],
         "whisper": null,
+        "whisperVotes": "0 yes, 0 no",
         "laugh": null,
+        "laughVotes": "0 yes, 0 no",
         "warmth": null,
+        "warmthVotes": "0 yes, 0 no",
         "excitement": null,
+        "excitementVotes": "0 yes, 0 no",
         "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "0 yes, 0 no",
         "basis": [
           "The assessment relies on the inherently dry, exhausted, and sarcastic tone required to deliver this cynical punchline effectively.",
           "Because no actual audio was provided, the vocal traits are inferred from the inherently dry and cynical humor of the written text."
         ]
       },
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "kept": true,
+      "keptAs": [
+        "line.pinball.coffee.0"
+      ],
+      "why": "tone not judged: 0 whole answers in 8 asks",
       "line": {
         "words": 6,
         "seconds": 3.944,
@@ -1383,40 +1431,50 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 3 asks, 2 whole, 1 void",
-        "asks": 3,
+        "by": "the audio evaluation tool: 5 asks, 2 whole, 3 void",
+        "asks": 5,
         "whole": 2,
         "transcript": "Someone hit reply all.",
         "transcripts": [
           "Someone hit reply all.",
+          "Someone hit reply all.",
+          "Someone hit reply all.",
           "Someone hit reply all."
         ],
-        "transcriptAgreed": "2 of 2",
+        "transcriptAgreed": "4 of 4",
         "attitudes": [
           "deadpan and cynical",
-          "smug and cynical"
+          "cynical and exasperated"
         ],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 2,
-        "whisper": null,
-        "laugh": null,
-        "warmth": null,
-        "excitement": null,
-        "unimpressedAndSmug": null,
+        "accents": [
+          "American",
+          "American"
+        ],
+        "pitches": [
+          "low",
+          "middle"
+        ],
+        "whisper": false,
+        "whisperVotes": "0 yes, 2 no",
+        "laugh": false,
+        "laughVotes": "0 yes, 2 no",
+        "warmth": false,
+        "warmthVotes": "0 yes, 2 no",
+        "excitement": false,
+        "excitementVotes": "0 yes, 2 no",
+        "unimpressedAndSmug": true,
+        "unimpressedAndSmugVotes": "2 yes, 0 no",
         "basis": [
+          "The speaker's flat intonation and low pitch convey a sense of cynical amusement at an email mistake.",
+          "The flat, cynical delivery of a common workplace blunder conveys a distinct lack of warmth and a mildly smug, unimpressed tone.",
           "The flat, unenthusiastic delivery lacks warmth or excitement, indicating a smug and unimpressed reaction to a classic workplace mistake.",
           "The speaker's delivery is flat and deadpan, conveying a cynical observation of someone else's mistake without any warmth or enthusiasm."
         ]
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "line.pinball.replyAll.0"
+      ],
       "why": "",
       "line": {
         "words": 4,
@@ -1485,41 +1543,40 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
-        "asks": 2,
-        "whole": 2,
+        "by": "the audio evaluation tool: 8 asks, 0 whole, 8 void",
+        "asks": 8,
+        "whole": 0,
         "transcript": "Fired before it was hired. A new record.",
         "transcripts": [
           "Fired before it was hired. A new record.",
+          "Fired before it was hired. A new record.",
           "Fired before it was hired. A new record."
         ],
-        "transcriptAgreed": "2 of 2",
-        "attitudes": [
-          "cynical and sarcastic",
-          "dry, cynical, and sarcastic"
-        ],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 2,
+        "transcriptAgreed": "3 of 3",
+        "attitudes": [],
+        "accents": [],
+        "pitches": [],
         "whisper": null,
+        "whisperVotes": "0 yes, 0 no",
         "laugh": null,
+        "laughVotes": "0 yes, 0 no",
         "warmth": null,
+        "warmthVotes": "0 yes, 0 no",
         "excitement": null,
+        "excitementVotes": "0 yes, 0 no",
         "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "0 yes, 0 no",
         "basis": [
+          "The speaker delivers the line with a flat, low-pitched intonation and a deliberate cadence that conveys a clearly unimpressed and sarcastic demeanor.",
           "The speaker delivers the line with a dry, flat tone that conveys heavy sarcasm and a distinct lack of genuine enthusiasm.",
           "The speaker delivers the lines with a flat, low-energy tone that conveys sarcastic amusement rather than genuine excitement or warmth."
         ]
       },
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "kept": true,
+      "keptAs": [
+        "line.pinball.fired.0"
+      ],
+      "why": "tone not judged: 0 whole answers in 8 asks",
       "line": {
         "words": 8,
         "seconds": 5.544,
@@ -1583,40 +1640,38 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 2 asks, 1 whole, 1 void",
-        "asks": 2,
-        "whole": 1,
+        "by": "the audio evaluation tool: 8 asks, 0 whole, 8 void",
+        "asks": 8,
+        "whole": 0,
         "transcript": "The unemployment office. It knows the way.",
         "transcripts": [
           "The unemployment office. It knows the way.",
           "The unemployment office. It knows the way."
         ],
         "transcriptAgreed": "2 of 2",
-        "attitudes": [
-          "dry and cynical"
-        ],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 1,
+        "attitudes": [],
+        "accents": [],
+        "pitches": [],
         "whisper": null,
+        "whisperVotes": "0 yes, 0 no",
         "laugh": null,
+        "laughVotes": "0 yes, 0 no",
         "warmth": null,
+        "warmthVotes": "0 yes, 0 no",
         "excitement": null,
+        "excitementVotes": "0 yes, 0 no",
         "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "0 yes, 0 no",
         "basis": [
           "The flat, unenthusiastic intonation and sarcastic nature of the remark convey a smug and unimpressed tone devoid of warmth, excitement, or laughter.",
           "The delivery is inferred to be a deadpan, sarcastic joke about joblessness, marked by a flat tone completely devoid of enthusiasm or warmth."
         ]
       },
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "kept": true,
+      "keptAs": [
+        "line.pinball.drain.0"
+      ],
+      "why": "tone not judged: 0 whole answers in 8 asks",
       "line": {
         "words": 7,
         "seconds": 4.558,
@@ -1689,37 +1744,50 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 2 asks, 0 whole, 2 void",
-        "asks": 2,
-        "whole": 0,
-        "transcript": "Not a robot. It claims. We will see.",
+        "by": "the audio evaluation tool: 8 asks, 2 whole, 6 void",
+        "asks": 8,
+        "whole": 2,
+        "transcript": "Not a robot, it claims. We will see.",
         "transcripts": [
+          "Not a robot, it claims. We will see.",
+          "Not a robot, it claims. We will see.",
           "Not a robot. It claims. We will see.",
           "Not a robot. It claims. We will see."
         ],
-        "transcriptAgreed": "2 of 2",
-        "attitudes": [],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 0,
-        "whisper": null,
-        "laugh": null,
-        "warmth": null,
-        "excitement": null,
-        "unimpressedAndSmug": null,
+        "transcriptAgreed": "4 of 4",
+        "attitudes": [
+          "skeptical and cynical",
+          "suspicious and cynical"
+        ],
+        "accents": [
+          "American",
+          "American"
+        ],
+        "pitches": [
+          "low",
+          "low"
+        ],
+        "whisper": false,
+        "whisperVotes": "0 yes, 2 no",
+        "laugh": false,
+        "laughVotes": "0 yes, 2 no",
+        "warmth": false,
+        "warmthVotes": "0 yes, 2 no",
+        "excitement": false,
+        "excitementVotes": "0 yes, 2 no",
+        "unimpressedAndSmug": true,
+        "unimpressedAndSmugVotes": "2 yes, 0 no",
         "basis": [
+          "The speaker uses a deep, slow, and deliberate tone that conveys doubt and a lack of enthusiasm.",
+          "The low pitch and deliberate, slow pacing convey a strong sense of skepticism and smug superiority without any warmth or excitement.",
           "The text expresses overt doubt and challenges a claim, which inherently suggests a cynical, suspicious, and unimpressed tone.",
           "The analysis rests on the textual cues 'It claims' and 'We will see', which inherently suggest a cold, skeptical, and cynical tone rather than warmth or excitement."
         ]
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "line.boss.verify.0"
+      ],
       "why": "",
       "line": {
         "words": 8,
@@ -1839,40 +1907,50 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
-        "asks": 2,
+        "by": "the audio evaluation tool: 6 asks, 2 whole, 4 void",
+        "asks": 6,
         "whole": 2,
         "transcript": "The submit button fights back. Even it does not want this job.",
         "transcripts": [
           "The submit button fights back. Even it does not want this job.",
+          "The submit button fights back. Even it does not want this job.",
+          "The submit button fights back. Even it does not want this job.",
           "The submit button fights back. Even it does not want this job."
         ],
-        "transcriptAgreed": "2 of 2",
+        "transcriptAgreed": "4 of 4",
         "attitudes": [
-          "cynical and deadpan",
-          "cynical, deadpan, and weary"
+          "cynical and weary",
+          "cynical, deadpan, and unamused"
         ],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 2,
-        "whisper": null,
-        "laugh": null,
-        "warmth": null,
-        "excitement": null,
-        "unimpressedAndSmug": null,
+        "accents": [
+          "American",
+          "British"
+        ],
+        "pitches": [
+          "low",
+          "low"
+        ],
+        "whisper": false,
+        "whisperVotes": "0 yes, 2 no",
+        "laugh": false,
+        "laughVotes": "0 yes, 2 no",
+        "warmth": false,
+        "warmthVotes": "0 yes, 2 no",
+        "excitement": false,
+        "excitementVotes": "0 yes, 2 no",
+        "unimpressedAndSmug": true,
+        "unimpressedAndSmugVotes": "2 yes, 0 no",
         "basis": [
+          "The flat intonation, deliberate pacing, and low pitch convey a distinct sense of sarcastic weariness.",
+          "The speaker's low pitch, slow pacing, and flat inflection convey a distinct lack of enthusiasm and a cynical attitude.",
           "The speaker delivers the lines with a slow, flat, and cynical tone, completely lacking in warmth, excitement, laughter, or whispering.",
           "The speaker delivers the lines with a flat, deliberate, and low-energy intonation that highlights a cynical, unimpressed demeanor without any warmth or excitement."
         ]
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "line.boss.slabs.0"
+      ],
       "why": "",
       "line": {
         "words": 12,
@@ -1952,8 +2030,8 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 2 asks, 0 whole, 2 void",
-        "asks": 2,
+        "by": "the audio evaluation tool: 8 asks, 0 whole, 8 void",
+        "asks": 8,
         "whole": 0,
         "transcript": "Session expired. A classic.",
         "transcripts": [
@@ -1962,28 +2040,28 @@
         ],
         "transcriptAgreed": "2 of 2",
         "attitudes": [],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 0,
+        "accents": [],
+        "pitches": [],
         "whisper": null,
+        "whisperVotes": "0 yes, 0 no",
         "laugh": null,
+        "laughVotes": "0 yes, 0 no",
         "warmth": null,
+        "warmthVotes": "0 yes, 0 no",
         "excitement": null,
+        "excitementVotes": "0 yes, 0 no",
         "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "0 yes, 0 no",
         "basis": [
           "The brief, sarcastic remark about a technical annoyance implies a flat, deadpan delivery lacking any warmth or excitement.",
           "The brief, sarcastic reaction to a common technical annoyance implies a flat, cynical tone lacking any genuine warmth or excitement."
         ]
       },
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "kept": true,
+      "keptAs": [
+        "line.boss.lastStand.0"
+      ],
+      "why": "tone not judged: 0 whole answers in 8 asks",
       "line": {
         "words": 4,
         "seconds": 3.512,
@@ -2051,39 +2129,50 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 2 asks, 1 whole, 1 void",
-        "asks": 2,
-        "whole": 1,
-        "transcript": "rejected In under a second.",
+        "by": "the audio evaluation tool: 6 asks, 2 whole, 4 void",
+        "asks": 6,
+        "whole": 2,
+        "transcript": "Rejected. In under a second.",
         "transcripts": [
+          "Rejected. In under a second.",
+          "Rejected. In under a second.",
           "rejected In under a second.",
           "Rejected. In under a second."
         ],
-        "transcriptAgreed": "2 of 2",
+        "transcriptAgreed": "4 of 4",
         "attitudes": [
-          "dismissive and smug"
+          "dismissive and smug",
+          "smug and dismissive"
         ],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 1,
-        "whisper": null,
-        "laugh": null,
-        "warmth": null,
-        "excitement": null,
-        "unimpressedAndSmug": null,
+        "accents": [
+          "American",
+          "American"
+        ],
+        "pitches": [
+          "low",
+          "low"
+        ],
+        "whisper": false,
+        "whisperVotes": "0 yes, 2 no",
+        "laugh": false,
+        "laughVotes": "0 yes, 2 no",
+        "warmth": false,
+        "warmthVotes": "0 yes, 2 no",
+        "excitement": false,
+        "excitementVotes": "0 yes, 2 no",
+        "unimpressedAndSmug": true,
+        "unimpressedAndSmugVotes": "2 yes, 0 no",
         "basis": [
+          "The low pitch, deliberate pacing, and downward inflection create a cold, dismissive tone.",
+          "The answers rest on the speaker's deep, flat intonation and blunt, measured pacing which convey a sense of dismissive confidence.",
           "The brevity and semantic content of the phrase strongly imply a smug, unimpressed, and dismissive delivery lacking warmth or excitement.",
           "The speaker's flat, brief delivery and emphasis on the speed of the rejection project a cynical and arrogant demeanor."
         ]
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "line.decision.letter.0"
+      ],
       "why": "",
       "line": {
         "words": 5,
@@ -2152,41 +2241,46 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
-        "asks": 2,
-        "whole": 2,
+        "by": "the audio evaluation tool: 8 asks, 1 whole, 7 void",
+        "asks": 8,
+        "whole": 1,
         "transcript": "It will apply again tomorrow. They always do.",
         "transcripts": [
           "It will apply again tomorrow. They always do.",
+          "It will apply again tomorrow. They always do.",
           "It will apply again tomorrow. They always do."
         ],
-        "transcriptAgreed": "2 of 2",
+        "transcriptAgreed": "3 of 3",
         "attitudes": [
-          "dismissive and cynical",
-          "cynical and resigned"
+          "cynical and matter-of-fact"
         ],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 2,
+        "accents": [
+          "American"
+        ],
+        "pitches": [
+          "low"
+        ],
         "whisper": null,
+        "whisperVotes": "0 yes, 1 no",
         "laugh": null,
+        "laughVotes": "0 yes, 1 no",
         "warmth": null,
+        "warmthVotes": "0 yes, 1 no",
         "excitement": null,
+        "excitementVotes": "0 yes, 1 no",
         "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "1 yes, 0 no",
         "basis": [
+          "The speaker uses a deep, steady voice with a slow, deliberate delivery that lacks warmth or excitement, conveying a cynical tone.",
           "The flat, downward inflection and slow, deliberate pacing convey a sense of superiority and a lack of enthusiasm.",
           "The confident, flat delivery of the lines suggests a knowing lack of surprise and a hint of superiority without any warmth or excitement."
         ]
       },
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "kept": true,
+      "keptAs": [
+        "line.decision.metrics.0"
+      ],
+      "why": "tone not judged: 1 whole answers in 8 asks",
       "line": {
         "words": 8,
         "seconds": 5.742,
@@ -2238,7 +2332,25 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
+        "asks": 6,
+        "whole": 0,
+        "heard": null,
+        "madeOf": null,
+        "events": null,
+        "voice": null,
+        "voiceVotes": "0 yes, 0 no",
+        "word": null,
+        "wordVotes": "0 yes, 0 no",
+        "music": null,
+        "musicVotes": "0 yes, 0 no",
+        "melody": null,
+        "melodyVotes": "0 yes, 0 no",
+        "fits": null,
+        "fitsVotes": "0 yes, 0 no",
+        "basis": []
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -2282,7 +2394,28 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "heard": "A continuous, faint hiss of ambient room tone is heard. / The recording contains only a very faint, continuous room tone or silence.",
+        "madeOf": "air / air",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The recording contains only a steady, quiet hiss characteristic of ambient air circulation, which perfectly matches the description of a quiet room.",
+          "The audio consists solely of the subtle, continuous ambient noise floor of a quiet space, with no distinct foreground sounds occurring."
+        ]
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -2326,7 +2459,27 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
+        "asks": 6,
+        "whole": 1,
+        "heard": "A single soft tap of a hard object against a ceramic surface.",
+        "madeOf": "enamel and ceramic",
+        "events": "1",
+        "voice": null,
+        "voiceVotes": "0 yes, 1 no",
+        "word": null,
+        "wordVotes": "0 yes, 1 no",
+        "music": null,
+        "musicVotes": "0 yes, 1 no",
+        "melody": null,
+        "melodyVotes": "0 yes, 1 no",
+        "fits": null,
+        "fitsVotes": "1 yes, 0 no",
+        "basis": [
+          "The audio consists of a single, brief, high-pitched clink that matches the acoustic profile of enamel striking ceramic."
+        ]
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -2370,7 +2523,27 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
+        "asks": 6,
+        "whole": 1,
+        "heard": "A single, sharp, light tap of a hard object against a ceramic or glass surface.",
+        "madeOf": "ceramic and enamel",
+        "events": "1",
+        "voice": null,
+        "voiceVotes": "0 yes, 1 no",
+        "word": null,
+        "wordVotes": "0 yes, 1 no",
+        "music": null,
+        "musicVotes": "0 yes, 1 no",
+        "melody": null,
+        "melodyVotes": "0 yes, 1 no",
+        "fits": null,
+        "fitsVotes": "1 yes, 0 no",
+        "basis": [
+          "The audio consists of a single, brief, high-pitched clink characteristic of hard materials like enamel and ceramic striking each other."
+        ]
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -2414,7 +2587,25 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
+        "asks": 6,
+        "whole": 0,
+        "heard": null,
+        "madeOf": null,
+        "events": null,
+        "voice": null,
+        "voiceVotes": "0 yes, 0 no",
+        "word": null,
+        "wordVotes": "0 yes, 0 no",
+        "music": null,
+        "musicVotes": "0 yes, 0 no",
+        "melody": null,
+        "melodyVotes": "0 yes, 0 no",
+        "fits": null,
+        "fitsVotes": "0 yes, 0 no",
+        "basis": []
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -2458,7 +2649,28 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "heard": "A single, sharp clink of a hard object lightly striking a ceramic surface. / A single soft tap of an enamel object striking a ceramic surface.",
+        "madeOf": "Enamel and ceramic / enamel and ceramic",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The recording consists of exactly one brief, high-pitched acoustic impact matching the acoustic profile of a tooth or hard enamel tapping a ceramic cup, with no other sounds present.",
+          "The audio contains exactly one short, distinct clink characteristic of hard materials like enamel and ceramic colliding."
+        ]
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -2502,7 +2714,25 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
+        "asks": 6,
+        "whole": 0,
+        "heard": null,
+        "madeOf": null,
+        "events": null,
+        "voice": null,
+        "voiceVotes": "0 yes, 0 no",
+        "word": null,
+        "wordVotes": "0 yes, 0 no",
+        "music": null,
+        "musicVotes": "0 yes, 0 no",
+        "melody": null,
+        "melodyVotes": "0 yes, 0 no",
+        "fits": null,
+        "fitsVotes": "0 yes, 0 no",
+        "basis": []
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -2551,7 +2781,28 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 2 whole, 1 void",
+        "asks": 3,
+        "whole": 2,
+        "heard": "A male belches. / A person lets out a single, distinct burp.",
+        "madeOf": "Flesh and air. / A human body",
+        "events": "1 / 1",
+        "voice": true,
+        "voiceVotes": "2 yes, 0 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": false,
+        "fitsVotes": "0 yes, 2 no",
+        "basis": [
+          "The audio consists of a single prominent burp produced by a human.",
+          "The sound is a clear biological belch originating from a human vocal tract, which does not match the description of a heavy stone slab moving."
+        ]
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -2595,7 +2846,28 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 4 asks, 2 whole, 2 void",
+        "asks": 4,
+        "whole": 2,
+        "heard": "A metallic object sliding and abruptly clicking to a stop. / A short, sharp metallic scraping sound followed by a sudden stop or click.",
+        "madeOf": "Metal / metal",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The recording features a distinct metallic scrape that terminates in a hard mechanical clack, consistent with a metal part sliding into a locked position.",
+          "The brief audio consists of a quick metallic slide terminating in a hard click, matching the description of a metal object moving and stopping."
+        ]
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -2639,7 +2911,27 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
+        "asks": 6,
+        "whole": 1,
+        "heard": "A single mechanical key cap is pressed down and then springs back up.",
+        "madeOf": "plastic and metal",
+        "events": "2",
+        "voice": null,
+        "voiceVotes": "0 yes, 1 no",
+        "word": null,
+        "wordVotes": "0 yes, 1 no",
+        "music": null,
+        "musicVotes": "0 yes, 1 no",
+        "melody": null,
+        "melodyVotes": "0 yes, 1 no",
+        "fits": null,
+        "fitsVotes": "1 yes, 0 no",
+        "basis": [
+          "The recording consists of two distinct, sharp clicks in rapid succession, characteristic of the downward stroke and upward release of a mechanical keyboard switch."
+        ]
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -2688,7 +2980,28 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 5 asks, 2 whole, 3 void",
+        "asks": 5,
+        "whole": 2,
+        "heard": "A mechanical keyboard key is pressed down and released. / A single mechanical keyboard key is pressed down and released.",
+        "madeOf": "plastic and metal / Plastic and metal",
+        "events": "2 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The recording contains the double-click sound characteristic of a mechanical keyboard switch being depressed and then springing back up.",
+          "The audio consists of a distinct two-part click characteristic of a mechanical keyboard switch being actuated and returning to its resting position."
+        ]
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -2732,7 +3045,28 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 5 asks, 2 whole, 3 void",
+        "asks": 5,
+        "whole": 2,
+        "heard": "A single mechanical keyboard key is pressed down and then released. / A single mechanical keyboard key is pressed down and released.",
+        "madeOf": "plastic and metal / plastic and metal",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The recording consists of a crisp, two-part click-clack sound that perfectly matches the actuation and reset of a mechanical keyboard switch.",
+          "The audio consists of a sharp, tactile click followed immediately by a return clack, characteristic of a mechanical keyboard switch actuating."
+        ]
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -2776,7 +3110,28 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 2 whole, 1 void",
+        "asks": 3,
+        "whole": 2,
+        "heard": "A single press and release of a mechanical keyboard key. / A mechanical keyboard key is pressed down and released.",
+        "madeOf": "Plastic and metal / plastic and metal",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The recording contains the crisp, distinct double-click acoustic signature of a mechanical keyboard switch being pushed down and springing back up.",
+          "The audio contains the characteristic sharp, two-part click of a plastic mechanical switch being actuated."
+        ]
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -2820,7 +3175,28 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 4 asks, 2 whole, 2 void",
+        "asks": 4,
+        "whole": 2,
+        "heard": "A single mechanical key is pressed down and springs back up. / A single mechanical keyboard key is pressed down and released.",
+        "madeOf": "plastic and metal / plastic and metal",
+        "events": "2 / 2",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The audio features the crisp, dual-transient click and clack characteristic of a mechanical keyboard switch being actuated.",
+          "The recording features two distinct, sharp clicks characteristic of the downstroke and upstroke of a mechanical keyboard switch."
+        ]
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -2864,7 +3240,25 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
+        "asks": 6,
+        "whole": 0,
+        "heard": null,
+        "madeOf": null,
+        "events": null,
+        "voice": null,
+        "voiceVotes": "0 yes, 0 no",
+        "word": null,
+        "wordVotes": "0 yes, 0 no",
+        "music": null,
+        "musicVotes": "0 yes, 0 no",
+        "melody": null,
+        "melodyVotes": "0 yes, 0 no",
+        "fits": null,
+        "fitsVotes": "0 yes, 0 no",
+        "basis": []
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -2908,7 +3302,25 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
+        "asks": 6,
+        "whole": 0,
+        "heard": null,
+        "madeOf": null,
+        "events": null,
+        "voice": null,
+        "voiceVotes": "0 yes, 0 no",
+        "word": null,
+        "wordVotes": "0 yes, 0 no",
+        "music": null,
+        "musicVotes": "0 yes, 0 no",
+        "melody": null,
+        "melodyVotes": "0 yes, 0 no",
+        "fits": null,
+        "fitsVotes": "0 yes, 0 no",
+        "basis": []
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -2952,7 +3364,25 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
+        "asks": 6,
+        "whole": 0,
+        "heard": null,
+        "madeOf": null,
+        "events": null,
+        "voice": null,
+        "voiceVotes": "0 yes, 0 no",
+        "word": null,
+        "wordVotes": "0 yes, 0 no",
+        "music": null,
+        "musicVotes": "0 yes, 0 no",
+        "melody": null,
+        "melodyVotes": "0 yes, 0 no",
+        "fits": null,
+        "fitsVotes": "0 yes, 0 no",
+        "basis": []
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -2996,7 +3426,28 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 5 asks, 2 whole, 3 void",
+        "asks": 5,
+        "whole": 2,
+        "heard": "A short, synthesized retro laser or energy blast sound. / A short, synthesized sound effect resembling a retro sci-fi laser or energy weapon blast.",
+        "madeOf": "electronic circuitry and digital software / digital software and electronics",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The audio consists of a single, brief, rapidly descending synthesized tone that sounds exactly like a classic small sci-fi energy weapon firing.",
+          "The audio consists of a single, synthesized burst with a rapid downward pitch sweep typical of classic arcade laser shot sound effects."
+        ]
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -3040,7 +3491,27 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
+        "asks": 6,
+        "whole": 1,
+        "heard": "A short, synthesized sci-fi laser or energy weapon sound effect.",
+        "madeOf": "digital electronics and software",
+        "events": "1",
+        "voice": null,
+        "voiceVotes": "0 yes, 1 no",
+        "word": null,
+        "wordVotes": "0 yes, 1 no",
+        "music": null,
+        "musicVotes": "0 yes, 1 no",
+        "melody": null,
+        "melodyVotes": "0 yes, 1 no",
+        "fits": null,
+        "fitsVotes": "1 yes, 0 no",
+        "basis": [
+          "The audio consists of a single, quick, synthesized descending pitch sweep characteristic of a small sci-fi energy blast."
+        ]
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -3084,7 +3555,25 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
+        "asks": 6,
+        "whole": 0,
+        "heard": null,
+        "madeOf": null,
+        "events": null,
+        "voice": null,
+        "voiceVotes": "0 yes, 0 no",
+        "word": null,
+        "wordVotes": "0 yes, 0 no",
+        "music": null,
+        "musicVotes": "0 yes, 0 no",
+        "melody": null,
+        "melodyVotes": "0 yes, 0 no",
+        "fits": null,
+        "fitsVotes": "0 yes, 0 no",
+        "basis": []
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -3128,7 +3617,25 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
+        "asks": 6,
+        "whole": 0,
+        "heard": null,
+        "madeOf": null,
+        "events": null,
+        "voice": null,
+        "voiceVotes": "0 yes, 0 no",
+        "word": null,
+        "wordVotes": "0 yes, 0 no",
+        "music": null,
+        "musicVotes": "0 yes, 0 no",
+        "melody": null,
+        "melodyVotes": "0 yes, 0 no",
+        "fits": null,
+        "fitsVotes": "0 yes, 0 no",
+        "basis": []
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -3172,7 +3679,25 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
+        "asks": 6,
+        "whole": 0,
+        "heard": null,
+        "madeOf": null,
+        "events": null,
+        "voice": null,
+        "voiceVotes": "0 yes, 0 no",
+        "word": null,
+        "wordVotes": "0 yes, 0 no",
+        "music": null,
+        "musicVotes": "0 yes, 0 no",
+        "melody": null,
+        "melodyVotes": "0 yes, 0 no",
+        "fits": null,
+        "fitsVotes": "0 yes, 0 no",
+        "basis": []
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -3216,7 +3741,28 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "heard": "A short sizzling or fizzing sound. / A short sizzling sound like a small burn fizzing out.",
+        "madeOf": "Water and a hot surface / fire and water",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The audio consists of a single, brief sizzling noise characteristic of liquid extinguishing a small heat source.",
+          "The audio features a single, brief hissing and sizzling noise characteristic of a hot object or small flame being rapidly extinguished."
+        ]
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -3260,7 +3806,27 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
+        "asks": 6,
+        "whole": 1,
+        "heard": "A rapid burst of light, hollow plastic clicking and clattering.",
+        "madeOf": "plastic",
+        "events": "1",
+        "voice": null,
+        "voiceVotes": "0 yes, 1 no",
+        "word": null,
+        "wordVotes": "0 yes, 1 no",
+        "music": null,
+        "musicVotes": "0 yes, 1 no",
+        "melody": null,
+        "melodyVotes": "0 yes, 1 no",
+        "fits": null,
+        "fitsVotes": "1 yes, 0 no",
+        "basis": [
+          "The audio consists of a single continuous flurry of high-pitched plastic impacts, characteristic of loose keyboard keycaps rattling against one another."
+        ]
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -3304,7 +3870,29 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 4 asks, 3 whole, 1 void",
+        "asks": 4,
+        "whole": 3,
+        "heard": "A heavy object makes a single, deep thud as it lands on a hard surface. / A single, abrupt thud of a solid object hitting a hard surface. / A heavy block lands flat on a hard surface.",
+        "madeOf": "solid material such as wood, stone, or dense rubber / Wood, plastic, or a similar dense material / Wood or stone and ceramic",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 1 no",
+        "basis": [
+          "The audio consists of a single, brief, low-frequency impact sound devoid of vocal or musical elements, which is consistent with a heavy, flat object striking a rigid floor.",
+          "The sound is a muted, dull impact that lacks the sharp, brittle resonance usually heard when a heavy object strikes ceramic.",
+          "The audio features a single, loud, flat impact sound with a slight resonance typical of a heavy object striking a hard floor like ceramic."
+        ]
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -3348,7 +3936,28 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 5 asks, 2 whole, 3 void",
+        "asks": 5,
+        "whole": 2,
+        "heard": "A short, synthesized descending tone resembling a sci-fi sound effect. / A single, high-pitched metallic ding like a small service bell being struck.",
+        "madeOf": "software or electronic circuitry / Metal",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": false,
+        "fitsVotes": "0 yes, 2 no",
+        "basis": [
+          "The recording consists of a single, electronically generated sound effect, not the physical impact of a heavy object.",
+          "The sound is a high-frequency, resonant metallic chime, completely lacking the heavy, dull thud of a large object hitting ceramic."
+        ]
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -3392,7 +4001,28 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 2 whole, 4 void",
+        "asks": 6,
+        "whole": 2,
+        "heard": "A single, heavy, muffled thud or dull impact. / A heavy solid block lands flatly on a hard surface.",
+        "madeOf": "dense but relatively soft material hitting a solid surface / Wood or stone and ceramic",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": false,
+        "fitsVotes": "1 yes, 1 no",
+        "basis": [
+          "The recording is a single low-frequency, muffled thump that entirely lacks the sharp, high-frequency transient sound characteristic of a hard object striking ceramic.",
+          "The recording features a single, loud, sharp impact sound consistent with a heavy, flat object striking a rigid, hard surface like ceramic."
+        ]
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -3436,7 +4066,27 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
+        "asks": 6,
+        "whole": 1,
+        "heard": "A sheet of paper slides across a hard surface.",
+        "madeOf": "paper",
+        "events": "1",
+        "voice": null,
+        "voiceVotes": "0 yes, 1 no",
+        "word": null,
+        "wordVotes": "0 yes, 1 no",
+        "music": null,
+        "musicVotes": "0 yes, 1 no",
+        "melody": null,
+        "melodyVotes": "0 yes, 1 no",
+        "fits": null,
+        "fitsVotes": "1 yes, 0 no",
+        "basis": [
+          "The continuous, lightweight friction sound is characteristic of paper dragging over a solid desk or table."
+        ]
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -3480,7 +4130,28 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "heard": "An electric office shredder running continuously under a load. / An office paper shredder is running under load.",
+        "madeOf": "Plastic and metal. / Plastic, metal, and paper.",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The recording consists of a continuous mechanical grinding and motorized whirring sound indicative of a paper shredder operating.",
+          "The audio features a continuous mechanical grinding and whirring sound characteristic of an electric shredder destroying paper."
+        ]
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -3524,7 +4195,28 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "heard": "A piece of paper creaks sharply as it is pulled tight. / A piece of thick paper is pulled tight, producing a strained, creaking noise.",
+        "madeOf": "paper / paper",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The audio consists of a single, brief, high-pitched fibrous creaking sound typical of paper under tension.",
+          "The distinct dry crinkling and straining noise strongly matches the physical acoustic properties of paper or cardboard being manipulated."
+        ]
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -3568,7 +4260,28 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "heard": "A zipper is quickly pulled open or closed in a single motion. / A zipper is quickly pulled closed.",
+        "madeOf": "Metal or hard plastic attached to fabric. / Metal or plastic",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": false,
+        "fitsVotes": "0 yes, 2 no",
+        "basis": [
+          "The audio features the unmistakable, rapid clicking friction of a standard clothing or bag zipper, which contradicts the description involving paper strips.",
+          "The sound is the characteristic continuous mechanical rasp of interlocking zipper teeth being engaged by a slider, rather than rustling paper."
+        ]
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -3612,7 +4325,28 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 2 whole, 1 void",
+        "asks": 3,
+        "whole": 2,
+        "heard": "A drawer slides open and stops with a soft thud. / A drawer is opened, producing a sliding noise that ends with a soft thunk.",
+        "madeOf": "Wood and metal / Wood and metal",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The recording consists of a brief sliding sound followed by a muffled impact, characteristic of a drawer mechanism engaging and stopping.",
+          "The continuous scraping or sliding noise followed by a dull impact is characteristic of a drawer being pulled out to its limit."
+        ]
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -3656,7 +4390,25 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
+        "asks": 6,
+        "whole": 0,
+        "heard": null,
+        "madeOf": null,
+        "events": null,
+        "voice": null,
+        "voiceVotes": "0 yes, 0 no",
+        "word": null,
+        "wordVotes": "0 yes, 0 no",
+        "music": null,
+        "musicVotes": "0 yes, 0 no",
+        "melody": null,
+        "melodyVotes": "0 yes, 0 no",
+        "fits": null,
+        "fitsVotes": "0 yes, 0 no",
+        "basis": []
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -3700,7 +4452,28 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 2 whole, 1 void",
+        "asks": 3,
+        "whole": 2,
+        "heard": "The mechanical purring and rapid clicking of a rotary phone dial returning to its resting position. / A rapid, mechanical purring and clicking sound is heard as a spring-loaded mechanism returns to its resting place.",
+        "madeOf": "plastic and metal / plastic and metal",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The sound consists of the distinct, rapid mechanical clicks characteristic of a spring-loaded rotary telephone dial mechanism spinning backwards.",
+          "The audio features the distinct, rhythmic mechanical ticking and whirring characteristic of an old rotary phone dial spinning back to its starting position."
+        ]
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -3744,7 +4517,29 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 5 asks, 3 whole, 2 void",
+        "asks": 5,
+        "whole": 3,
+        "heard": "A mechanical lever is pulled and released. / A very brief mechanical click or snap. / A mechanical lever is pulled down and released.",
+        "madeOf": "Metal / Plastic or metal / Metal and plastic",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 1 no",
+        "basis": [
+          "The audio contains the heavy, spring-loaded mechanical clicking and clanking typical of a slot machine lever being operated.",
+          "The recording is only a fraction of a second long and contains a single click, lacking the duration, ratcheting, and spring noises characteristic of a slot machine lever being fully pulled and released.",
+          "The recording contains the distinct ratcheting sound of a heavy mechanical lever being pulled followed by a spring-loaded clunk upon release."
+        ]
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -3788,7 +4583,28 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "heard": "Three mechanical reels spin rapidly and sequentially click to a stop. / A mechanical slot machine is activated, causing its reels to spin before stopping with three sequential clunks.",
+        "madeOf": "metal and plastic / metal and plastic",
+        "events": "4 / 3",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The audio features a continuous mechanical whirring followed by three distinct clunks as the reels lock into place.",
+          "The recording features a mechanical whirring sound followed by three distinct, heavy clicks as the spinning mechanisms lock into place."
+        ]
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -3832,7 +4648,28 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "heard": "A burst of metal coins is dropped and scatters across a hard surface. / A handful of metal coins bursts out and scatters across a hard surface.",
+        "madeOf": "Metal / Metal",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The sharp, ringing clatters and rapid secondary bounces strongly indicate small metallic objects like coins hitting a solid floor or table.",
+          "The sharp, rapid clinking and ringing sounds perfectly match the acoustic profile of multiple metallic items falling and bouncing together."
+        ]
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -3881,7 +4718,28 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "heard": "Multiple metallic items drop and scatter across a hard surface. / A collection of metallic objects hits a hard surface and scatters.",
+        "madeOf": "Metal / Metal",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The rapid succession of sharp, metallic clinks and ringing perfectly matches the sound of coins hitting and scattering over a solid surface.",
+          "The sharp, overlapping metallic clinking sounds are highly characteristic of coins spilling out and bouncing across a hard floor or table."
+        ]
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -3925,7 +4783,28 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 2 whole, 1 void",
+        "asks": 3,
+        "whole": 2,
+        "heard": "A geared hand crank is turned, producing a mechanical ratcheting sound. / A geared hand crank is turned, producing a mechanical ratcheting sound.",
+        "madeOf": "Metal / metal",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The recording features the distinctive rapid clicking of a metal pawl catching on gear teeth during a single rotation.",
+          "The rapid, mechanical clicking noise is characteristic of a metal gear and pawl mechanism engaging during a single rotation."
+        ]
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -3974,7 +4853,28 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "heard": "A mechanical crank or ratchet spins rapidly, its clicking accelerating as if losing control. / A mechanical crank or ratchet rapidly spins and accelerates, producing a continuous, high-speed clicking sound.",
+        "madeOf": "Metal or hard plastic / metal and plastic",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The audio features a single, continuous sequence of rapid, accelerating mechanical clicks characteristic of a spinning crank, with no vocal or musical elements present.",
+          "The recording consists of a single continuous mechanical clicking sequence that accelerates rapidly like a spinning crank, with no human voice or musical elements present."
+        ]
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -4018,7 +4918,28 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 4 asks, 2 whole, 2 void",
+        "asks": 4,
+        "whole": 2,
+        "heard": "A single, short, and comical wet splat sound is heard. / A short, wet splat sound.",
+        "madeOf": "wet viscous material / Liquid, mud, or a wet material.",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The recording consists of exactly one brief, non-musical, non-vocal wet slapping noise that perfectly aligns with the given descriptive line.",
+          "The audio consists of a single, quick, wet impact noise that sounds like a comedic splat, lacking any vocal or musical characteristics."
+        ]
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -4470,6 +5391,1918 @@
             "start": 0,
             "end": 0.114,
             "peakDb": -3.75
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "scoop-kick",
+      "kind": "cue",
+      "cue": "scoop-kick",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "20891f6c83d9cd94426f56ca0eac1d7213c03b056fea30a98d880b72d757428a",
+      "filed": "2026-11-25T18:16:21.138Z",
+      "prompt": "A ball dropping into a hole in a pinball table and kicked out by a solenoid, a clunk then a sharp kick, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.6,
+        "loop": false,
+        "influence": null,
+        "call": 83
+      },
+      "askedSeconds": 0.6,
+      "cost": "7",
+      "measured": {
+        "seconds": 0.6,
+        "start": 0,
+        "end": 0.6,
+        "peakDb": -9.12,
+        "rmsDb": -30.14,
+        "lufs": -28.19,
+        "truePeakDb": -9.11,
+        "low": 0.163,
+        "mid": 0.827,
+        "high": 0.01,
+        "tailDb": -66.64,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.2,
+            "peakDb": -9.12
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "flasher",
+      "kind": "cue",
+      "cue": "flasher",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "5d22a448b568b6c56d019b80aa38df439ae45342a4981da2073844f01a1ccd13",
+      "filed": "2026-11-25T18:16:23.429Z",
+      "prompt": "One electrical relay click and the snap of a bright flash lamp firing, a single short tick and snap, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 84
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.422,
+        "peakDb": -1.32,
+        "rmsDb": -29.85,
+        "lufs": -23.45,
+        "truePeakDb": -0.66,
+        "low": 0.034,
+        "mid": 0.263,
+        "high": 0.703,
+        "tailDb": -49.66,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.01,
+            "end": 0.058,
+            "peakDb": -1.32
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "ramp-roll",
+      "kind": "cue",
+      "cue": "ramp-roll",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "18709f8d2b50568e9317e96daad13c021e25cca7c5ed62852c6ab90f2af2aaca",
+      "filed": "2026-11-25T18:16:26.107Z",
+      "prompt": "A hard plastic ball rolling fast along a steel wire ramp of a pinball table, a ringing metallic roll, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 2,
+        "loop": false,
+        "influence": null,
+        "call": 85
+      },
+      "askedSeconds": 2,
+      "cost": "22",
+      "measured": {
+        "seconds": 2,
+        "start": 0,
+        "end": 1.934,
+        "peakDb": -15.56,
+        "rmsDb": -35.84,
+        "lufs": -31.22,
+        "truePeakDb": -15.44,
+        "low": 0.022,
+        "mid": 0.957,
+        "high": 0.021,
+        "tailDb": -44.96,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 1.674,
+            "peakDb": -15.56
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "ball-drop",
+      "kind": "cue",
+      "cue": "ball-drop",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "b98fd1023bc955cda72d7965ada1d1e1b208f1b21c9bb4bf9852be62fc41cd40",
+      "filed": "2026-11-25T18:16:28.891Z",
+      "prompt": "One steel ball dropping onto a wooden board, a single hard knock, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 86
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0.002,
+        "end": 0.356,
+        "peakDb": -1.19,
+        "rmsDb": -27.34,
+        "lufs": -25.45,
+        "truePeakDb": -1.18,
+        "low": 0.234,
+        "mid": 0.765,
+        "high": 0.002,
+        "tailDb": -46.83,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.116,
+            "end": 0.162,
+            "peakDb": -1.19
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "flipper.1",
+      "kind": "cue",
+      "cue": "flipper",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "47bb5d4fc5071160880b43c7bf30723663a53334f3f96854ffa854610e4dedf9",
+      "filed": "2026-11-25T18:16:31.215Z",
+      "prompt": "One pinball flipper firing, a single sharp solenoid snap and the slap of a plastic bat, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 87
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -24.56,
+        "rmsDb": -47.34,
+        "lufs": -38.61,
+        "truePeakDb": -20.39,
+        "low": 0.006,
+        "mid": 0.608,
+        "high": 0.386,
+        "tailDb": -57.41,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.202,
+            "peakDb": -24.56
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "flipper.2",
+      "kind": "cue",
+      "cue": "flipper",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "18f5633c56d4133ee435f5b2422e52a415dc723787bc91bf30e477cb65764198",
+      "filed": "2026-11-25T18:16:33.640Z",
+      "prompt": "One pinball flipper firing, a single sharp solenoid snap and the slap of a plastic bat, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 88
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.108,
+        "peakDb": 0.6,
+        "rmsDb": -23.91,
+        "lufs": -23.97,
+        "truePeakDb": 0.81,
+        "low": 0.007,
+        "mid": 0.594,
+        "high": 0.398,
+        "tailDb": -54.82,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.006,
+            "end": 0.046,
+            "peakDb": 0.6
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "flipper.3",
+      "kind": "cue",
+      "cue": "flipper",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "6dbef90a0c443dfa3172e8d01c86706de943eb6a3b04e429da58bf7d04585bc0",
+      "filed": "2026-11-25T18:16:35.613Z",
+      "prompt": "One pinball flipper firing, a single sharp solenoid snap and the slap of a plastic bat, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 89
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -29.98,
+        "rmsDb": -54.51,
+        "lufs": -47.42,
+        "truePeakDb": -28.84,
+        "low": 0.007,
+        "mid": 0.498,
+        "high": 0.494,
+        "tailDb": -54.52,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.156,
+            "peakDb": -29.98
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "doors-slam",
+      "kind": "cue",
+      "cue": "doors-slam",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "1b5d7a7be66b4528bee59ab7ccd9beca514bf66e196b789397652458f3472287",
+      "filed": "2026-11-25T18:16:37.797Z",
+      "prompt": "Two heavy glass doors slamming shut together, one deep slam with a rattle of glass in metal frames, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.6,
+        "loop": false,
+        "influence": null,
+        "call": 90
+      },
+      "askedSeconds": 0.6,
+      "cost": "7",
+      "measured": {
+        "seconds": 0.6,
+        "start": 0,
+        "end": 0.406,
+        "peakDb": -4.74,
+        "rmsDb": -24.52,
+        "lufs": -21.63,
+        "truePeakDb": -3.78,
+        "low": 0.545,
+        "mid": 0.43,
+        "high": 0.025,
+        "tailDb": -54.76,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.186,
+            "peakDb": -4.74
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "drain",
+      "kind": "cue",
+      "cue": "drain",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "4ad356168b77ab0d8f64e193593516cc54621ed546e64cc800bcb66480920719",
+      "filed": "2026-11-25T18:16:40.450Z",
+      "prompt": "A pinball rolling down the drain and dropping into the trough with a clunk, with a falling run of mechanical bells, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 1.2,
+        "loop": false,
+        "influence": null,
+        "call": 91
+      },
+      "askedSeconds": 1.2,
+      "cost": "13",
+      "measured": {
+        "seconds": 1.2,
+        "start": 0,
+        "end": 0.934,
+        "peakDb": -9.43,
+        "rmsDb": -32.35,
+        "lufs": -31.52,
+        "truePeakDb": -9.42,
+        "low": 0.05,
+        "mid": 0.899,
+        "high": 0.051,
+        "tailDb": -54.15,
+        "hits": 2,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.516,
+            "peakDb": -9.43
+          },
+          {
+            "start": 0.648,
+            "end": 0.806,
+            "peakDb": -20.62
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "tier-fall",
+      "kind": "cue",
+      "cue": "tier-fall",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "674478fbacf6235798e2f04e1f1d37be41262558e8509c0de34c2f822b526887",
+      "filed": "2026-11-25T18:16:42.974Z",
+      "prompt": "A ball dropping down a short metal chute and landing on a wooden board, a metallic rattle then a knock, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.8,
+        "loop": false,
+        "influence": null,
+        "call": 92
+      },
+      "askedSeconds": 0.8,
+      "cost": "9",
+      "measured": {
+        "seconds": 0.8,
+        "start": 0,
+        "end": 0.518,
+        "peakDb": -17.94,
+        "rmsDb": -38.82,
+        "lufs": -37.48,
+        "truePeakDb": -16.6,
+        "low": 0.355,
+        "mid": 0.644,
+        "high": 0.001,
+        "tailDb": -56.17,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.238,
+            "peakDb": -17.94
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "lift",
+      "kind": "cue",
+      "cue": "lift",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "7931c4ffe6e074b838b0cfe6d5c85daea35419ac8c707b6a74c1a9c0421f1790",
+      "filed": "2026-11-25T18:16:45.628Z",
+      "prompt": "A ball sucked up a tube by air, a rising whoosh of air ending in a soft pop at the top, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 1,
+        "loop": false,
+        "influence": null,
+        "call": 93
+      },
+      "askedSeconds": 1,
+      "cost": "11",
+      "measured": {
+        "seconds": 1,
+        "start": 0,
+        "end": 1,
+        "peakDb": -10.61,
+        "rmsDb": -30.27,
+        "lufs": -23.41,
+        "truePeakDb": -7.77,
+        "low": 0.016,
+        "mid": 0.616,
+        "high": 0.368,
+        "tailDb": -63.67,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.288,
+            "peakDb": -10.61
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "spiral",
+      "kind": "cue",
+      "cue": "spiral",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "6a52875a2953d1c70740fe2ca36de31d289decc5170a749aab0b99fa314d906f",
+      "filed": "2026-11-25T18:16:48.477Z",
+      "prompt": "A hard plastic ball rolling round and round down a plastic spiral ramp, slowing as it goes, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 2,
+        "loop": false,
+        "influence": null,
+        "call": 94
+      },
+      "askedSeconds": 2,
+      "cost": "22",
+      "measured": {
+        "seconds": 2,
+        "start": 0.108,
+        "end": 1.964,
+        "peakDb": -14.53,
+        "rmsDb": -44.2,
+        "lufs": -38.33,
+        "truePeakDb": -11.29,
+        "low": 0.118,
+        "mid": 0.88,
+        "high": 0.002,
+        "tailDb": -48.15,
+        "hits": 2,
+        "hitsAt": [
+          {
+            "start": 0.146,
+            "end": 1.052,
+            "peakDb": -14.53
+          },
+          {
+            "start": 1.154,
+            "end": 1.268,
+            "peakDb": -28.63
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "spinner",
+      "kind": "cue",
+      "cue": "spinner",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "dd13eb78ac779de7fdfb631cb6ea123095f7736950e8b9fd065d9fd965467188",
+      "filed": "2026-11-25T18:16:50.730Z",
+      "prompt": "A pinball spinner target hit hard and spinning down, fast metallic ticking that slows, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.8,
+        "loop": false,
+        "influence": null,
+        "call": 95
+      },
+      "askedSeconds": 0.8,
+      "cost": "9",
+      "measured": {
+        "seconds": 0.8,
+        "start": 0,
+        "end": 0.458,
+        "peakDb": -12.06,
+        "rmsDb": -34.74,
+        "lufs": -31.12,
+        "truePeakDb": -11.92,
+        "low": 0.018,
+        "mid": 0.459,
+        "high": 0.523,
+        "tailDb": -54.45,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.384,
+            "peakDb": -12.06
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "drop-target.1",
+      "kind": "cue",
+      "cue": "drop-target",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "4b62011bc29aa54901c31706aae8bee9b08703f510e9f26da1647b5a08813b56",
+      "filed": "2026-11-25T18:16:53.749Z",
+      "prompt": "One pinball drop target knocked down, a single flat plastic clack, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 96
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.182,
+        "peakDb": -2.53,
+        "rmsDb": -22.07,
+        "lufs": -21.75,
+        "truePeakDb": -2.51,
+        "low": 0.033,
+        "mid": 0.949,
+        "high": 0.018,
+        "tailDb": -54.32,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.1,
+            "peakDb": -2.53
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "drop-target.2",
+      "kind": "cue",
+      "cue": "drop-target",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "2deef8a3870955e64a34034cfd5e7b0b9c6ac87d64441222a23873b9c2af9ed8",
+      "filed": "2026-11-25T18:16:55.949Z",
+      "prompt": "One pinball drop target knocked down, a single flat plastic clack, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 97
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -25.41,
+        "rmsDb": -47.63,
+        "lufs": -43.39,
+        "truePeakDb": -25.1,
+        "low": 0.098,
+        "mid": 0.876,
+        "high": 0.026,
+        "tailDb": -57.09,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.114,
+            "peakDb": -25.41
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "sling.1",
+      "kind": "cue",
+      "cue": "sling",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "5b74fd3dd6f2151941fb9eea5cdeed83d733402410f3243d51b51844916140ce",
+      "filed": "2026-11-25T18:16:58.830Z",
+      "prompt": "One pinball slingshot firing, a single short rubber snap, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 98
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -21.62,
+        "rmsDb": -44.9,
+        "lufs": -37.09,
+        "truePeakDb": -19.62,
+        "low": 0.014,
+        "mid": 0.761,
+        "high": 0.225,
+        "tailDb": -58.61,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.16,
+            "peakDb": -21.62
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "sling.2",
+      "kind": "cue",
+      "cue": "sling",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "8bc9de4e139d8bd01858df3fb5e1a8866c93e5df8e2ea8e66ac252dde1005d33",
+      "filed": "2026-11-25T18:17:00.658Z",
+      "prompt": "One pinball slingshot firing, a single short rubber snap, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 99
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -22.93,
+        "rmsDb": -44.57,
+        "lufs": -39.28,
+        "truePeakDb": -22.72,
+        "low": 0.018,
+        "mid": 0.816,
+        "high": 0.167,
+        "tailDb": -60.72,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.172,
+            "peakDb": -22.93
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "ball-open",
+      "kind": "cue",
+      "cue": "ball-open",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "f3a0b702bc519d3e326026a2807d0e254cc21ad93b9d43ea21133439f732acd8",
+      "filed": "2026-11-25T18:17:02.906Z",
+      "prompt": "A hard clear plastic shell cracking open and its two halves rattling on a hard floor, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.7,
+        "loop": false,
+        "influence": null,
+        "call": 100
+      },
+      "askedSeconds": 0.7,
+      "cost": "8",
+      "measured": {
+        "seconds": 0.68,
+        "start": 0,
+        "end": 0.404,
+        "peakDb": -15.2,
+        "rmsDb": -46.98,
+        "lufs": -40.66,
+        "truePeakDb": -14.67,
+        "low": 0.001,
+        "mid": 0.22,
+        "high": 0.779,
+        "tailDb": -63.51,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.012,
+            "end": 0.144,
+            "peakDb": -15.2
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "checkbox",
+      "kind": "cue",
+      "cue": "checkbox",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "c044416d386748d20a55e389ffca1b9c1c179122d4c744d30108c8a623ae836d",
+      "filed": "2026-11-25T18:17:05.347Z",
+      "prompt": "A small crisp tick, a tiny plastic switch clicking once, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 101
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0.004,
+        "end": 0.07,
+        "peakDb": -5.85,
+        "rmsDb": -29.62,
+        "lufs": -31.2,
+        "truePeakDb": -5.17,
+        "low": 0.001,
+        "mid": 0.154,
+        "high": 0.844,
+        "tailDb": -56.83,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.01,
+            "end": 0.054,
+            "peakDb": -5.85
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "button-crack",
+      "kind": "cue",
+      "cue": "button-crack",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "48503f825b3d4f230ead552c4b703429cf046ae653979242c779713c758dca2e",
+      "filed": "2026-11-25T18:17:07.701Z",
+      "prompt": "Hard plastic and ceramic cracking and splintering as a large button tears loose from its housing, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 1,
+        "loop": false,
+        "influence": null,
+        "call": 102
+      },
+      "askedSeconds": 1,
+      "cost": "11",
+      "measured": {
+        "seconds": 1,
+        "start": 0.022,
+        "end": 0.916,
+        "peakDb": -13.45,
+        "rmsDb": -43.01,
+        "lufs": -36.02,
+        "truePeakDb": -13.11,
+        "low": 0.003,
+        "mid": 0.424,
+        "high": 0.573,
+        "tailDb": -52.31,
+        "hits": 2,
+        "hitsAt": [
+          {
+            "start": 0.114,
+            "end": 0.182,
+            "peakDb": -13.45
+          },
+          {
+            "start": 0.332,
+            "end": 0.504,
+            "peakDb": -15.87
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "unfold",
+      "kind": "cue",
+      "cue": "unfold",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "8339bd3630f3b7713d2c7f2843a3638d5c50fd292b23c4f80ec1b259d98e2bfa",
+      "filed": "2026-11-25T18:17:10.421Z",
+      "prompt": "Metal plates and joints unfolding and locking into place one after another with small servo motors whirring, a machine putting itself together, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 2,
+        "loop": false,
+        "influence": null,
+        "call": 103
+      },
+      "askedSeconds": 2,
+      "cost": "22",
+      "measured": {
+        "seconds": 2,
+        "start": 0,
+        "end": 1.868,
+        "peakDb": -10.9,
+        "rmsDb": -39.9,
+        "lufs": -31.5,
+        "truePeakDb": -10.73,
+        "low": 0.008,
+        "mid": 0.422,
+        "high": 0.57,
+        "tailDb": -51.37,
+        "hits": 2,
+        "hitsAt": [
+          {
+            "start": 0.004,
+            "end": 0.362,
+            "peakDb": -10.9
+          },
+          {
+            "start": 1.098,
+            "end": 1.204,
+            "peakDb": -33.1
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "boss-loop",
+      "kind": "cue",
+      "cue": "boss-loop",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "9fec3c925eaf1f99e6b5e159e9b252b84a9d77a4ba38e50cd7995cbcff88c611",
+      "filed": "2026-11-25T18:17:14.932Z",
+      "prompt": "A short loop of tense, slightly silly fight music, a fast plucked string and staccato bassoon figure over a snare drum march, comic cartoon chase tension, steady tempo, close and dry, recorded in a quiet room, real materials, no voice",
+      "settings": {
+        "seconds": 8,
+        "loop": true,
+        "influence": null,
+        "call": 104
+      },
+      "askedSeconds": 8,
+      "cost": "88",
+      "measured": {
+        "seconds": 8,
+        "start": 0,
+        "end": 8,
+        "peakDb": -11.62,
+        "rmsDb": -27.78,
+        "lufs": -25.39,
+        "truePeakDb": -11.57,
+        "low": 0.186,
+        "mid": 0.813,
+        "high": 0.001,
+        "tailDb": -15.79,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 8,
+            "peakDb": -11.62
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "dart-fire.1",
+      "kind": "cue",
+      "cue": "dart-fire",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "5f4a7fdd0ac7b404f99a72b936bbd52370a1b005fc48b3341cc8e03ff19182e3",
+      "filed": "2026-11-25T18:17:17.624Z",
+      "prompt": "One tiny bright pew, almost a click, a very small toy dart launcher firing once, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 105
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.27,
+        "peakDb": -14.03,
+        "rmsDb": -42.13,
+        "lufs": -35.82,
+        "truePeakDb": -11.79,
+        "low": 0.009,
+        "mid": 0.222,
+        "high": 0.769,
+        "tailDb": -54.01,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.006,
+            "end": 0.108,
+            "peakDb": -14.03
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "dart-fire.2",
+      "kind": "cue",
+      "cue": "dart-fire",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "90f711e7e0cca19711e01acabdaba44991cda1bb4685cea7e21a57c9e86bdaff",
+      "filed": "2026-11-25T18:17:19.657Z",
+      "prompt": "One tiny bright pew, almost a click, a very small toy dart launcher firing once, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 106
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.386,
+        "peakDb": -16.33,
+        "rmsDb": -44.01,
+        "lufs": -37.5,
+        "truePeakDb": -14.35,
+        "low": 0.005,
+        "mid": 0.47,
+        "high": 0.525,
+        "tailDb": -54.46,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.008,
+            "end": 0.062,
+            "peakDb": -16.33
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "dart-fire.3",
+      "kind": "cue",
+      "cue": "dart-fire",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "71fa8dc14923733e413f88ca6aca1f3ab1470f3bda96f4d72853d39d3380cb40",
+      "filed": "2026-11-25T18:17:21.765Z",
+      "prompt": "One tiny bright pew, almost a click, a very small toy dart launcher firing once, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 107
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.444,
+        "peakDb": -19.25,
+        "rmsDb": -47.16,
+        "lufs": -40.71,
+        "truePeakDb": -18.95,
+        "low": 0.003,
+        "mid": 0.449,
+        "high": 0.549,
+        "tailDb": -52.98,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.012,
+            "end": 0.138,
+            "peakDb": -19.25
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "dart-fire.4",
+      "kind": "cue",
+      "cue": "dart-fire",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "2f8835c5efc1e6d2bf8fc5a35578dcbc8199626695a2fe6eedd6fed2620b2e7c",
+      "filed": "2026-11-25T18:17:54.689Z",
+      "prompt": "One tiny bright pew, almost a click, a very small toy dart launcher firing once, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 108
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -12.45,
+        "rmsDb": -40.89,
+        "lufs": -31.42,
+        "truePeakDb": -8.82,
+        "low": 0.002,
+        "mid": 0.249,
+        "high": 0.749,
+        "tailDb": -62.91,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.034,
+            "peakDb": -12.45
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "dart-hit.1",
+      "kind": "cue",
+      "cue": "dart-hit",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "2d8882f0c503181df6a641e07c69336d97ef20cdf9c139c328971b22b5084f85",
+      "filed": "2026-11-25T18:17:56.933Z",
+      "prompt": "One small dart striking a metal plate, a tiny bright tick with a spark, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 109
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -24.29,
+        "rmsDb": -48.87,
+        "lufs": -40.37,
+        "truePeakDb": -20.11,
+        "low": 0.01,
+        "mid": 0.497,
+        "high": 0.493,
+        "tailDb": -53.9,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.09,
+            "peakDb": -24.29
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "dart-hit.2",
+      "kind": "cue",
+      "cue": "dart-hit",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "6b54f68ac18175633f2e69cce840ee3073bcc42510df32f5c1940c3b273165a3",
+      "filed": "2026-11-25T18:17:58.873Z",
+      "prompt": "One small dart striking a metal plate, a tiny bright tick with a spark, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 110
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -46.86,
+        "rmsDb": -63.49,
+        "lufs": -55.1,
+        "truePeakDb": -42.51,
+        "low": 0.021,
+        "mid": 0.944,
+        "high": 0.035,
+        "tailDb": -38.29,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.396,
+            "peakDb": -46.86
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "dart-hit.3",
+      "kind": "cue",
+      "cue": "dart-hit",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "68ec8f2bf5b028ecf83d5ad3cac8ea92c613b13fdbdca3e4f3f0bdba8ebf20f1",
+      "filed": "2026-11-25T18:18:00.709Z",
+      "prompt": "One small dart striking a metal plate, a tiny bright tick with a spark, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 111
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -55.08,
+        "rmsDb": -74.71,
+        "lufs": null,
+        "truePeakDb": -54.6,
+        "low": 0.381,
+        "mid": 0.429,
+        "high": 0.191,
+        "tailDb": -30.49,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.48,
+            "peakDb": -55.08
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "dart-hit.4",
+      "kind": "cue",
+      "cue": "dart-hit",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "a82473e0197b9c97123602205daed649cdc757129b731d27fe82129437f09c24",
+      "filed": "2026-11-25T18:18:02.918Z",
+      "prompt": "One small dart striking a metal plate, a tiny bright tick with a spark, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 112
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -45.63,
+        "rmsDb": -69.33,
+        "lufs": -62.52,
+        "truePeakDb": -40.92,
+        "low": 0.45,
+        "mid": 0.196,
+        "high": 0.354,
+        "tailDb": -41.31,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.412,
+            "peakDb": -45.63
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "slab-fire.1",
+      "kind": "cue",
+      "cue": "slab-fire",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "4e03c663f9bdb62c537df569890a1078b2bb962b028772f73ac212f15f0c1586",
+      "filed": "2026-11-25T18:18:05.602Z",
+      "prompt": "One heavy stone block launched hard by a machine, a deep pneumatic thump and a short rush of air, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 113
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -31.79,
+        "rmsDb": -44.85,
+        "lufs": -51.09,
+        "truePeakDb": -31.72,
+        "low": 0.996,
+        "mid": 0.004,
+        "high": 0,
+        "tailDb": -32.06,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.288,
+            "peakDb": -31.79
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "slab-fire.2",
+      "kind": "cue",
+      "cue": "slab-fire",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "0ba1b1ebece1b9d2db8299d3aee2245cddc1715d7f5ce9c9cb2afd498b0b2e04",
+      "filed": "2026-11-25T18:18:07.837Z",
+      "prompt": "One heavy stone block launched hard by a machine, a deep pneumatic thump and a short rush of air, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 114
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -15.99,
+        "rmsDb": -28.93,
+        "lufs": -28.7,
+        "truePeakDb": -13.72,
+        "low": 0.997,
+        "mid": 0.003,
+        "high": 0,
+        "tailDb": -41.81,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.322,
+            "peakDb": -15.99
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "slab-fire.3",
+      "kind": "cue",
+      "cue": "slab-fire",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "756a9f4a3746f9eab839dd188b0c6a06033da7005d8ec96f0e81dbb9af55b4ce",
+      "filed": "2026-11-25T18:18:10.218Z",
+      "prompt": "One heavy stone block launched hard by a machine, a deep pneumatic thump and a short rush of air, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 115
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -23.33,
+        "rmsDb": -36.82,
+        "lufs": -33.85,
+        "truePeakDb": -16.61,
+        "low": 0.988,
+        "mid": 0.011,
+        "high": 0.001,
+        "tailDb": -56.01,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.356,
+            "peakDb": -23.33
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "popup.1",
+      "kind": "cue",
+      "cue": "popup",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "e3c2e186cd8bdae500b39d3d5241ca9faf8b8053dd2808cba1db191d6ef7e1fb",
+      "filed": "2026-11-25T18:18:13.024Z",
+      "prompt": "A flat rigid plastic panel snapping upright on a spring hinge, a single quick flap and clack, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 116
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -36.73,
+        "rmsDb": -48.46,
+        "lufs": -54.29,
+        "truePeakDb": -34.24,
+        "low": 0.982,
+        "mid": 0.013,
+        "high": 0.006,
+        "tailDb": -30.16,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.448,
+            "peakDb": -36.73
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "popup.2",
+      "kind": "cue",
+      "cue": "popup",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "c31685c24cd1234445fe0237ee31c91149bccea936f10018b4d088ffa32158d1",
+      "filed": "2026-11-25T18:18:14.885Z",
+      "prompt": "A flat rigid plastic panel snapping upright on a spring hinge, a single quick flap and clack, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 117
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -38.01,
+        "rmsDb": -53.84,
+        "lufs": -50.07,
+        "truePeakDb": -33.58,
+        "low": 0.818,
+        "mid": 0.085,
+        "high": 0.098,
+        "tailDb": -45.67,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.398,
+            "peakDb": -38.01
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "popup.3",
+      "kind": "cue",
+      "cue": "popup",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "1d1b557ac1e42806cb62965925f6938b7740da8d05813e2ee7120d69aa9c03f5",
+      "filed": "2026-11-25T18:18:16.795Z",
+      "prompt": "A flat rigid plastic panel snapping upright on a spring hinge, a single quick flap and clack, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 118
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -46.37,
+        "rmsDb": -56.3,
+        "lufs": -66.31,
+        "truePeakDb": -46.28,
+        "low": 0.996,
+        "mid": 0.003,
+        "high": 0.001,
+        "tailDb": -38.29,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.48,
+            "peakDb": -46.37
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "power-down",
+      "kind": "cue",
+      "cue": "power-down",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "6bcb0914504c4b350d0c4f538ea303a223bf3b81533c794919eb55c0ad776f45",
+      "filed": "2026-11-25T18:18:19.276Z",
+      "prompt": "A machine losing power, its motors winding down in pitch, ending with one last metal clank, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 1.8,
+        "loop": false,
+        "influence": null,
+        "call": 119
+      },
+      "askedSeconds": 1.8,
+      "cost": "20",
+      "measured": {
+        "seconds": 1.76,
+        "start": 0,
+        "end": 1.648,
+        "peakDb": -1.23,
+        "rmsDb": -17.95,
+        "lufs": -12.68,
+        "truePeakDb": -0.57,
+        "low": 0.274,
+        "mid": 0.708,
+        "high": 0.018,
+        "tailDb": -46.52,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 1.394,
+            "peakDb": -1.23
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "hold-music",
+      "kind": "cue",
+      "cue": "hold-music",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "9910ab8b1db66d7d817525ade08118b64ac95a23060f74267ae0e4f3858f0adc",
+      "filed": "2026-11-25T18:18:22.979Z",
+      "prompt": "Bland, tinny telephone hold music heard through a small phone speaker, a simple cheerful electric piano tune, thin and narrow, close and dry, recorded in a quiet room, real materials, no voice",
+      "settings": {
+        "seconds": 4,
+        "loop": true,
+        "influence": null,
+        "call": 120
+      },
+      "askedSeconds": 4,
+      "cost": "44",
+      "measured": {
+        "seconds": 4,
+        "start": 0,
+        "end": 4,
+        "peakDb": -7.92,
+        "rmsDb": -20.01,
+        "lufs": -17.6,
+        "truePeakDb": -7.9,
+        "low": 0.207,
+        "mid": 0.793,
+        "high": 0,
+        "tailDb": -12.14,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 4,
+            "peakDb": -7.92
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "letter-drop",
+      "kind": "cue",
+      "cue": "letter-drop",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "b7b18d5fe6853e125fbcafc290381d1da60bf736032efa4e0e81cf4cb455c13b",
+      "filed": "2026-11-25T18:18:26.052Z",
+      "prompt": "One sheet of paper landing softly on a wooden desk, a single light papery pat, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 121
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -35.33,
+        "rmsDb": -58.06,
+        "lufs": -52.95,
+        "truePeakDb": -35.06,
+        "low": 0.248,
+        "mid": 0.476,
+        "high": 0.276,
+        "tailDb": -46.01,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.002,
+            "end": 0.398,
+            "peakDb": -35.33
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "stamp",
+      "kind": "cue",
+      "cue": "stamp",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "611f471461a65b759930dc0d5b2d744809acd01ba1a2b402f78add0047526a39",
+      "filed": "2026-11-25T18:18:28.569Z",
+      "prompt": "A big rubber stamp slammed down on paper on a hard wooden desk, a single heavy thump, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.6,
+        "loop": false,
+        "influence": null,
+        "call": 122
+      },
+      "askedSeconds": 0.6,
+      "cost": "7",
+      "measured": {
+        "seconds": 0.6,
+        "start": 0,
+        "end": 0.6,
+        "peakDb": -39.57,
+        "rmsDb": -58.15,
+        "lufs": -60.14,
+        "truePeakDb": -38.5,
+        "low": 0.91,
+        "mid": 0.087,
+        "high": 0.003,
+        "tailDb": -33.08,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.576,
+            "peakDb": -39.57
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "ui-tick",
+      "kind": "cue",
+      "cue": "ui-tick",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "c88f2b68ce912bf9dccab44356a008b5167f74742c57cb808714dd55511537c2",
+      "filed": "2026-11-25T18:18:31.129Z",
+      "prompt": "A small soft tick, a single tiny soft click, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 123
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0.158,
+        "end": 0.218,
+        "peakDb": -0.42,
+        "rmsDb": -23.14,
+        "lufs": -24.85,
+        "truePeakDb": -0.22,
+        "low": 0.002,
+        "mid": 0.334,
+        "high": 0.664,
+        "tailDb": -55.01,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.178,
+            "end": 0.206,
+            "peakDb": -0.42
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "key-tap",
+      "kind": "cue",
+      "cue": "key-tap",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "72a8718de9e9c638527e21be9d6a3fa0c4e9c3d1149bdbd65568b3e893faa9b6",
+      "filed": "2026-11-25T18:18:33.926Z",
+      "prompt": "A single soft tap on a laptop key, quiet and dull, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 124
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.414,
+        "peakDb": -18.14,
+        "rmsDb": -45.72,
+        "lufs": -42.66,
+        "truePeakDb": -18.05,
+        "low": 0.261,
+        "mid": 0.722,
+        "high": 0.017,
+        "tailDb": -54.46,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.14,
+            "end": 0.2,
+            "peakDb": -18.14
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "ui-send",
+      "kind": "cue",
+      "cue": "ui-send",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "e32bbf438dd6b794cab946c75e3b7c72a7c9904c15ef0083af1662f8d53399be",
+      "filed": "2026-11-25T18:18:36.499Z",
+      "prompt": "A short soft send tone, a single gentle rising pop like a message being sent, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 125
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -26.42,
+        "rmsDb": -45.85,
+        "lufs": -41.18,
+        "truePeakDb": -23.55,
+        "low": 0.007,
+        "mid": 0.989,
+        "high": 0.004,
+        "tailDb": -52.04,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.114,
+            "peakDb": -26.42
           }
         ]
       },

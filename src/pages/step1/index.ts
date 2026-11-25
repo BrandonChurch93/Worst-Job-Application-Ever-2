@@ -558,7 +558,7 @@ export function makePage(): PageLogic {
     s.tug.amount = Math.min(1, s.tug.amount + io.dt / 0.25)
     if (s.shred < SHRED.gone) {
       const u = s.shred / SHRED.gone
-      io.cursor.drive(SLOT.cx - BODY.x, lerp(SLOT.cy - 70, SLOT.cy - 16, smooth(u / 0.7)), lerp(heights.card + 6, -60, smooth((u - 0.3) / 0.7)))
+      io.cursor.drive(SLOT.cx - BODY.x, lerp(SLOT.cy - 70, SLOT.cy - 30, smooth(u / 0.7)), lerp(heights.card + 6, -60, smooth((u - 0.2) / 0.6)))
     }
     if (crossed(SHRED.gone)) io.cursor.setOnPage(false)
     if (crossed(SHRED.pile)) {

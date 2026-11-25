@@ -6,6 +6,7 @@ import { CursorView, cursorReal } from '../cursor/view'
 import { real } from '../real'
 import type { Emitter, PartMaker, RealContext } from '../real/types'
 import type { Frame } from '../stage/stage'
+import { rattleAt, SHIVER, shiverAt, shiverDelay } from '../stage/turn'
 import type { Shape, Tone } from '../stage/types'
 import { studio } from '../post/studio'
 import { block } from './metrics'
@@ -110,6 +111,7 @@ export class PageView {
   private tick = 0
   private pageId = ''
   private lastScroll = 0
+  private settle = -1
   private size = { width: 1920, height: 1080 }
   private cursors: CursorPose[] = []
   focus = 0
@@ -329,6 +331,7 @@ export class PageView {
     this.tag(entry.object, s.part, order, s.kind === 'text' ? { shape: s.id, type: s.words } : { shape: s.id })
     entry.object.visible = true
     hit.maker.pose?.(entry.object, s, ctx)
+    this.shiver(entry.object, s)
     entry.seen = this.tick
   }
 
@@ -364,6 +367,13 @@ export class PageView {
     o.rotation.set(s.turnX ?? 0, s.turnY ?? 0, -(s.rot ?? 0))
   }
 
+  private shiver(o: THREE.Object3D, s: Shape): void {
+    if (this.settle < 0 || s.z1 <= SHIVER.loose || s.pocket === true) return
+    const t = this.settle - shiverDelay((s.y + s.h / 2 - this.lastScroll) / 1080)
+    o.position.z += shiverAt(t)
+    o.position.y += rattleAt(t)
+  }
+
   private solid(s: Shape, order: number): void {
     let entry = this.solids.get(s.id)
     if (!entry) {
@@ -392,6 +402,7 @@ export class PageView {
       this.place(mesh, s, z0)
       mesh.scale.set(1, 1, 1)
     }
+    this.shiver(mesh, s)
     mesh.visible = true
     mesh.renderOrder = order
     mesh.userData.standIn = s.part
@@ -436,6 +447,7 @@ export class PageView {
       entry.key = key
     }
     this.place(entry.group, s, (s.z1 < 0 && !this.sunk(s) ? 0.07 : s.z1) + 0.09)
+    this.shiver(entry.group, s)
     entry.group.children.forEach((child, i) => (child.renderOrder = order + i / 1024))
     entry.group.visible = true
     entry.seen = this.tick
@@ -494,6 +506,7 @@ export class PageView {
     }
     this.size = size
     this.lastScroll = f.scroll
+    this.settle = f.settle ?? -1
     const turning = Math.abs(f.turn) > 1e-6
     const top = turning ? f.scroll : 0
     const tall = turning ? 1080 : size.height

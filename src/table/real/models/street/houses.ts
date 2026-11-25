@@ -102,12 +102,12 @@ export function mailbox(b: Buckets, x: number, y: number, z: number, col: RGB): 
 }
 
 const LOOKS: HouseLook[] = [
-  { wall: rgb(0xd8cfb8), kind: KIND.board, roof: rgb(0x7a3028), ridge: 'y', door: rgb(0x2f5d50), trim: TONE.white, eave: 22, chimney: 1 },
+  { wall: rgb(0xd8cfb8), kind: KIND.stucco, roof: rgb(0x7a3028), ridge: 'y', door: rgb(0x2f5d50), trim: TONE.white, eave: 22, chimney: 1 },
   { wall: rgb(0x8a4534), kind: KIND.brick, roof: rgb(0x3d4a5c), ridge: 'y', door: rgb(0xd9d2bf), trim: TONE.stonePale, eave: 25, chimney: -1 },
   { wall: rgb(0xc9ba94), kind: KIND.stucco, roof: rgb(0x6a3a2c), ridge: 'x', door: rgb(0x7a2a26), trim: rgb(0xe0dacc), eave: 24, chimney: 1 },
-  { wall: rgb(0x8398a6), kind: KIND.board, roof: rgb(0x6e2c26), ridge: 'y', door: rgb(0xe0dacc), trim: TONE.white, eave: 24, chimney: 1 },
+  { wall: rgb(0x8c979c), kind: KIND.stucco, roof: rgb(0x6e2c26), ridge: 'y', door: rgb(0xe0dacc), trim: TONE.white, eave: 24, chimney: 1 },
   { wall: rgb(0xd5cfc2), kind: KIND.stucco, roof: rgb(0x40444a), ridge: 'x', door: rgb(0x33486b), trim: rgb(0x6c7479), eave: 22, chimney: -1 },
-  { wall: rgb(0x75855f), kind: KIND.board, roof: rgb(0x74352a), ridge: 'y', door: rgb(0x5a2f22), trim: rgb(0xdfd8c6), eave: 25, chimney: -1 }
+  { wall: rgb(0xc4b596), kind: KIND.stucco, roof: rgb(0x4a4038), ridge: 'x', door: rgb(0x5a2f22), trim: rgb(0xdfd8c6), eave: 25, chimney: -1 }
 ]
 
 const GRASS = rgb(0x34472c)

@@ -64,7 +64,7 @@ describe('the models of the corporate tier', () => {
         if (!m.userData.fine) coarse += trianglesOf(m)
       }
     }
-    expect(coarse).toBeLessThanOrEqual(42000)
+    expect(coarse).toBeLessThanOrEqual(36000)
     expect(total).toBeLessThanOrEqual(46000)
   })
 

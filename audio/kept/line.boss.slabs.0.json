@@ -1,0 +1,267 @@
+{
+  "id": "line.boss.slabs.0",
+  "kind": "line",
+  "cue": null,
+  "variant": null,
+  "class": "voice",
+  "loop": false,
+  "beat": "boss.slabs",
+  "liveKey": null,
+  "group": null,
+  "describes": null,
+  "index": 0,
+  "words": "The submit button fights back. / Even it / does not want this job.",
+  "text": "The submit button fights back. / Even it / does not want this job.",
+  "prompt": null,
+  "settings": {
+    "speed": 0.7,
+    "stability": 0.75,
+    "breakSeconds": 1.4,
+    "sent": "The submit button fights back. <break time=\"1.4s\" /> Even it <break time=\"1.4s\" /> does not want this job.",
+    "call": 29
+  },
+  "askedSeconds": null,
+  "cost": "37",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "30ee9a63a040b554afff9314d7b0152d1e931def07cc22ed34159849b35e17e9",
+    "filed": "2026-11-25T18:05:57.883Z",
+    "measured": {
+      "seconds": 8.313,
+      "start": 0.036,
+      "end": 8.074,
+      "peakDb": -2.71,
+      "rmsDb": -22.02,
+      "lufs": -19.59,
+      "truePeakDb": -2.71,
+      "low": 0.511,
+      "mid": 0.224,
+      "high": 0.265,
+      "tailDb": -21,
+      "hits": 13,
+      "hitsAt": [
+        {
+          "start": 0.04,
+          "end": 0.684,
+          "peakDb": -2.71
+        },
+        {
+          "start": 0.862,
+          "end": 0.99,
+          "peakDb": -8.3
+        },
+        {
+          "start": 1.098,
+          "end": 1.596,
+          "peakDb": -8.68
+        },
+        {
+          "start": 1.662,
+          "end": 1.776,
+          "peakDb": -3.55
+        },
+        {
+          "start": 1.872,
+          "end": 2.172,
+          "peakDb": -9.5
+        },
+        {
+          "start": 2.294,
+          "end": 2.364,
+          "peakDb": -28
+        },
+        {
+          "start": 3.934,
+          "end": 4.458,
+          "peakDb": -9.61
+        },
+        {
+          "start": 4.58,
+          "end": 4.698,
+          "peakDb": -10.99
+        },
+        {
+          "start": 6.238,
+          "end": 6.652,
+          "peakDb": -3.91
+        },
+        {
+          "start": 6.722,
+          "end": 7.01,
+          "peakDb": -8.11
+        },
+        {
+          "start": 7.166,
+          "end": 7.408,
+          "peakDb": -4.03
+        },
+        {
+          "start": 7.488,
+          "end": 7.846,
+          "peakDb": -9.84
+        },
+        {
+          "start": 7.982,
+          "end": 8.04,
+          "peakDb": -22.39
+        }
+      ]
+    },
+    "line": {
+      "words": 12,
+      "seconds": 8.038,
+      "wordsPerSecond": 1.493,
+      "maxWordsPerSecond": 1.6,
+      "pauseMarks": 2,
+      "pausesFound": 2,
+      "pauses": [
+        1.534,
+        1.53
+      ],
+      "paceHolds": true,
+      "pausesHold": true,
+      "room": 12.7,
+      "fits": true,
+      "beatSeconds": 7
+    }
+  },
+  "chain": {
+    "trimStart": 0.036,
+    "trimEnd": 8.074,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 80,
+    "levelMeasure": "lufs",
+    "levelDb": -18,
+    "gainDb": 1.71,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 8.038,
+    "start": 0.002,
+    "end": 8.014,
+    "peakDb": -1.01,
+    "rmsDb": -20.66,
+    "lufs": -18,
+    "truePeakDb": -1.01,
+    "low": 0.473,
+    "mid": 0.238,
+    "high": 0.288,
+    "tailDb": -21.34,
+    "hits": 12,
+    "hitsAt": [
+      {
+        "start": 0.006,
+        "end": 0.65,
+        "peakDb": -1.01
+      },
+      {
+        "start": 0.828,
+        "end": 0.956,
+        "peakDb": -3.89
+      },
+      {
+        "start": 1.062,
+        "end": 1.56,
+        "peakDb": -6.27
+      },
+      {
+        "start": 1.626,
+        "end": 1.74,
+        "peakDb": -1.87
+      },
+      {
+        "start": 1.836,
+        "end": 2.136,
+        "peakDb": -9.27
+      },
+      {
+        "start": 2.258,
+        "end": 2.328,
+        "peakDb": -26.74
+      },
+      {
+        "start": 3.898,
+        "end": 4.424,
+        "peakDb": -8.64
+      },
+      {
+        "start": 4.544,
+        "end": 4.662,
+        "peakDb": -9.1
+      },
+      {
+        "start": 6.202,
+        "end": 6.618,
+        "peakDb": -2.17
+      },
+      {
+        "start": 6.686,
+        "end": 6.968,
+        "peakDb": -7.06
+      },
+      {
+        "start": 7.13,
+        "end": 7.372,
+        "peakDb": -2.35
+      },
+      {
+        "start": 7.452,
+        "end": 7.81,
+        "peakDb": -8.18
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 6 asks, 2 whole, 4 void",
+    "asks": 6,
+    "whole": 2,
+    "transcript": "The submit button fights back. Even it does not want this job.",
+    "transcripts": [
+      "The submit button fights back. Even it does not want this job.",
+      "The submit button fights back. Even it does not want this job.",
+      "The submit button fights back. Even it does not want this job.",
+      "The submit button fights back. Even it does not want this job."
+    ],
+    "transcriptAgreed": "4 of 4",
+    "attitudes": [
+      "cynical and weary",
+      "cynical, deadpan, and unamused"
+    ],
+    "accents": [
+      "American",
+      "British"
+    ],
+    "pitches": [
+      "low",
+      "low"
+    ],
+    "whisper": false,
+    "whisperVotes": "0 yes, 2 no",
+    "laugh": false,
+    "laughVotes": "0 yes, 2 no",
+    "warmth": false,
+    "warmthVotes": "0 yes, 2 no",
+    "excitement": false,
+    "excitementVotes": "0 yes, 2 no",
+    "unimpressedAndSmug": true,
+    "unimpressedAndSmugVotes": "2 yes, 0 no",
+    "basis": [
+      "The flat intonation, deliberate pacing, and low pitch convey a distinct sense of sarcastic weariness.",
+      "The speaker's low pitch, slow pacing, and flat inflection convey a distinct lack of enthusiasm and a cynical attitude.",
+      "The speaker delivers the lines with a slow, flat, and cynical tone, completely lacking in warmth, excitement, laughter, or whispering.",
+      "The speaker delivers the lines with a flat, deliberate, and low-energy intonation that highlights a cynical, unimpressed demeanor without any warmth or excitement."
+    ]
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "line.boss.slabs.0.wav",
+  "seconds": 8.038,
+  "sha256": "9a0d712b688ee2e87e175b123e93e2b4e491f5326e91c7de916b3e11dc3d0ea8"
+}

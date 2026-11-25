@@ -67,12 +67,12 @@ export function bank(b: Buckets, z: Zone, ctx: RealContext): void {
   const cx0 = S.x0 + 2
   for (const u of [0.11, 0.37, 0.63, 0.89]) {
     const cx = cx0 + span * u
-    const cy = pf + 6
-    g.box(cx - 6.2, cx + 6.2, cy - 6.2, cy + 6.2, podium, podium + 2, stone, { bevel: 0.5 })
-    g.lathe([[5.9, 0], [5.9, 1.4], [5, 2.6], [5, 3]], cx, cy, 20, stone, { base: podium + 2 })
-    g.lathe([[4.7, 0], [4.1, entab - podium - 11]], cx, cy, 32, stone, { base: podium + 5, wave: [16, 0.1] })
-    g.lathe([[4.3, 0], [5.6, 2], [5.6, 3.2]], cx, cy, 20, stone, { base: entab - 6 })
-    g.box(cx - 6.4, cx + 6.4, cy - 6.4, cy + 6.4, entab - 2.8, entab, stone, { under: true })
+    const cy = pf + 9
+    g.box(cx - 8.4, cx + 8.4, cy - 8.4, cy + 8.4, podium, podium + 2.2, stone, { bevel: 0.6 })
+    g.lathe([[8, 0], [8, 1.5], [7.1, 2.1], [7.6, 2.9], [6.8, 3.6]], cx, cy, 24, stone, { base: podium + 2.2 })
+    g.lathe([[6.6, 0], [6.5, (entab - podium - 11.8) * 0.4], [5.7, entab - podium - 11.8]], cx, cy, 48, stone, { base: podium + 5.8, wave: [16, 0.1] })
+    g.lathe([[5.8, 0], [6.2, 0.8], [5.9, 1.4], [7.6, 3.2], [7.6, 4]], cx, cy, 24, stone, { base: entab - 6.6 })
+    g.box(cx - 8.3, cx + 8.3, cy - 8.3, cy + 8.3, entab - 2.8, entab, stone, { under: true, bevel: 0.4 })
   }
 
   // The entablature and the roof with a plain pediment at the front and the back.

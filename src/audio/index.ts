@@ -5,9 +5,9 @@ import { config } from '../config'
 import { narration } from '../copy'
 import { openingFrames, openingTimes } from '../film/opening'
 import { wallSeconds } from '../ui/clock'
-import { eventCues, filmLineId, liveKeysFor, liveLineId, loopCues, openingEvents, pickVariant, stopEvents } from './cues'
+import { eventCues, filmKeysForEvent, filmKeysForGag, filmLive, filmLineId, liveKeysFor, liveLineId, loopCues, openingEvents, pagelessLive, pickVariant, stopEvents, unitPage } from './cues'
 import { DUCK, LIVE, db } from './levels'
-import { duckSpans, Narrator, type Booking } from './narrator'
+import { duckSpans, LiveDesk, Narrator, type Booking } from './narrator'
 import shipped from '../../public/audio/index.json'
 
 export type SoundMode = 'live' | 'film'
@@ -20,7 +20,7 @@ export interface SoundApi {
   muted(): boolean
   setVolume(v: number): void
   volume(): number
-  event(e: { name: string; x: number; y: number; hitsCursor: boolean }, mode: SoundMode): void
+  event(e: { name: string; x: number; y: number; hitsCursor: boolean; page?: string }, mode: SoundMode): void
   beat(id: string, mode: SoundMode, into?: number): void
   trigger(name: string): void
   opening(from: number, to: number): void
@@ -267,6 +267,10 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
   const film = narration.film as Record<string, { at: number; text: string }[]>
   const live = narration.liveOnly as Record<string, unknown>
   const narrator = new Narrator({ minGap: audio.liveNarratorMinGapSeconds, lineGap: audio.lineGapSeconds, beatLate: LIVE.beatLateSeconds, liveLate: LIVE.liveLateSeconds })
+  const unitOfBeat = (beat: string): string | undefined => config.film.beats.find((x) => x.id === beat)?.unit
+  const pageOfBeat = (beat: string): string | null => unitPage[unitOfBeat(beat) ?? ''] ?? null
+  const beatOfKey = (key: string): string => key.slice(0, key.lastIndexOf('.'))
+  const desk = new LiveDesk(narrator, Object.fromEntries(Object.keys(filmLive).map((key) => [filmLineId(beatOfKey(key), Number(key.slice(key.lastIndexOf('.') + 1))), pageOfBeat(beatOfKey(key)) ?? ''])))
   const index = o.index ?? (shipped as unknown as SoundIndex)
   const lists = index.sfx.length + index.loops.length + index.lines.length > 0
   let state: SoundState = lists ? 'locked' : 'silent'
@@ -388,6 +392,39 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
     if (voice) speaking.set(booking, voice)
   }
 
+  const takeBack = (list: Booking[]) => {
+    for (const c of list) {
+      speaking.get(c)?.stop(0)
+      speaking.delete(c)
+    }
+    if (list.length) reduck()
+  }
+
+  // A line of the film on the live site: once in a visit, at the first time its trigger happens.
+  const sayFilm = (key: string) => {
+    const beat = beatOfKey(key)
+    const id = filmLineId(beat, Number(key.slice(key.lastIndexOf('.') + 1)))
+    const booking = desk.ask(backend!.now(), { id, group: beat, seconds: lengths.get(id) ?? 0, wait: loaded.has(id) ? (LIVE.waitSeconds['film'] ?? LIVE.liveLateSeconds) : -1, page: pageOfBeat(beat), once: true })
+    if (!booking) return
+    speak(booking)
+    reduck()
+  }
+
+  // A line only the live site has: the next of its list, in order.
+  const sayLive = (name: string, page: string | null) => {
+    const list = live[name]
+    if (!Array.isArray(list) || !list.length) return
+    startTone()
+    const count = liveCounts.get(name) ?? 0
+    const id = liveLineId(name, count % list.length)
+    if (!loaded.has(id)) return
+    const booking = desk.ask(backend!.now(), { id, group: name, seconds: lengths.get(id) ?? 0, wait: LIVE.waitSeconds[name] ?? LIVE.liveLateSeconds, page: pagelessLive.includes(name) ? null : page, once: false })
+    if (!booking) return
+    liveCounts.set(name, count + 1)
+    speak(booking)
+    reduck()
+  }
+
   const api: SoundApi = {
     available: () => state !== 'silent',
     unlock() {
@@ -436,7 +473,15 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
       if (e.name === 'page-turn') for (const cue of loopCues) if (cue !== 'room-tone') stopCue(cue)
       const cue = eventCues[e.name]
       if (cue && cue !== 'room-tone') playCue(cue, e.x)
-      if (mode === 'live') for (const key of liveKeysFor(e, seenOnce)) api.trigger(key)
+      if (mode !== 'live') return
+      const page = e.page ?? desk.page
+      if (page !== null) {
+        const now = backend.now()
+        takeBack(desk.at(now, page))
+        if (e.name === 'skip' || e.name === 'page-turn') takeBack(desk.leave(now, page))
+        for (const key of filmKeysForEvent(e.name, page, unitOfBeat)) sayFilm(key)
+      }
+      for (const key of liveKeysFor(e, seenOnce)) sayLive(key, page)
     },
     beat(id, _mode, into = 0) {
       if (state !== 'ready' || !backend) return
@@ -446,6 +491,12 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
       const lines = film[id]
       if (!b || !lines) return
       const now = backend.now()
+      if (_mode === 'live') {
+        const page = pageOfBeat(id)
+        if (page !== null) takeBack(desk.at(now, page))
+        for (const key of filmKeysForGag(id)) sayFilm(key)
+        return
+      }
       const past = Math.max(0, Number.isFinite(into) ? into : 0)
       const wanted = lines.map((l, i) => ({ id: filmLineId(id, i), offset: l.at * (b.to - b.from) - past, seconds: lengths.get(filmLineId(id, i)) ?? 0 })).filter((l) => loaded.has(l.id) && l.offset >= 0)
       const plan = narrator.beat(now, id, wanted)
@@ -458,18 +509,7 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
     },
     trigger(name) {
       if (state !== 'ready' || !backend) return
-      const list = live[name]
-      if (!Array.isArray(list) || !list.length) return
-      startTone()
-      const count = liveCounts.get(name) ?? 0
-      const index = count % list.length
-      const id = liveLineId(name, index)
-      if (!loaded.has(id)) return
-      const booking = narrator.live(backend.now(), id, name, lengths.get(id) ?? 0)
-      if (!booking) return
-      liveCounts.set(name, count + 1)
-      speak(booking)
-      reduck()
+      sayLive(name, desk.page)
     },
     opening(from, to) {
       lead = to < openingFrames() / config.film.fps
@@ -497,6 +537,7 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
       aheadTo = -1
       lastPlay.clear()
       narrator.clear()
+      desk.clear()
       speaking.clear()
       running.clear()
       tone = null

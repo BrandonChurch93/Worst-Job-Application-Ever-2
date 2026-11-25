@@ -1,0 +1,154 @@
+{
+  "id": "line.pinball.drain.0",
+  "kind": "line",
+  "cue": null,
+  "variant": null,
+  "class": "voice",
+  "loop": false,
+  "beat": "pinball.drain",
+  "liveKey": null,
+  "group": null,
+  "describes": null,
+  "index": 0,
+  "words": "The unemployment office. / It knows the way.",
+  "text": "The unemployment office. / It knows the way.",
+  "prompt": null,
+  "settings": {
+    "speed": 0.7,
+    "stability": 0.75,
+    "breakSeconds": 1.6,
+    "sent": "The unemployment office. <break time=\"1.6s\" /> It knows the way.",
+    "call": 27
+  },
+  "askedSeconds": null,
+  "cost": "23",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "01501ecf01882e1fc86251a80c53b8adb6bcabe2b1d0392187a85ff80620a1dd",
+    "filed": "2026-11-25T18:05:55.128Z",
+    "measured": {
+      "seconds": 4.783,
+      "start": 0.036,
+      "end": 4.594,
+      "peakDb": -3.96,
+      "rmsDb": -21.86,
+      "lufs": -20.2,
+      "truePeakDb": -3.88,
+      "low": 0.572,
+      "mid": 0.292,
+      "high": 0.136,
+      "tailDb": -20.95,
+      "hits": 2,
+      "hitsAt": [
+        {
+          "start": 0.04,
+          "end": 1.632,
+          "peakDb": -4.76
+        },
+        {
+          "start": 3.406,
+          "end": 4.55,
+          "peakDb": -3.96
+        }
+      ]
+    },
+    "line": {
+      "words": 7,
+      "seconds": 4.558,
+      "wordsPerSecond": 1.536,
+      "maxWordsPerSecond": 1.6,
+      "pauseMarks": 1,
+      "pausesFound": 1,
+      "pauses": [
+        1.77
+      ],
+      "paceHolds": true,
+      "pausesHold": true,
+      "room": 4.7,
+      "fits": true,
+      "beatSeconds": 5
+    }
+  },
+  "chain": {
+    "trimStart": 0.036,
+    "trimEnd": 4.594,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 80,
+    "levelMeasure": "lufs",
+    "levelDb": -18,
+    "gainDb": 2.47,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 4.558,
+    "start": 0.002,
+    "end": 4.53,
+    "peakDb": -1.06,
+    "rmsDb": -19.85,
+    "lufs": -18,
+    "truePeakDb": -0.99,
+    "low": 0.527,
+    "mid": 0.321,
+    "high": 0.152,
+    "tailDb": -23,
+    "hits": 2,
+    "hitsAt": [
+      {
+        "start": 0.004,
+        "end": 1.596,
+        "peakDb": -2.27
+      },
+      {
+        "start": 3.37,
+        "end": 4.49,
+        "peakDb": -1.06
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 8 asks, 0 whole, 8 void",
+    "asks": 8,
+    "whole": 0,
+    "transcript": "The unemployment office. It knows the way.",
+    "transcripts": [
+      "The unemployment office. It knows the way.",
+      "The unemployment office. It knows the way."
+    ],
+    "transcriptAgreed": "2 of 2",
+    "attitudes": [],
+    "accents": [],
+    "pitches": [],
+    "whisper": null,
+    "whisperVotes": "0 yes, 0 no",
+    "laugh": null,
+    "laughVotes": "0 yes, 0 no",
+    "warmth": null,
+    "warmthVotes": "0 yes, 0 no",
+    "excitement": null,
+    "excitementVotes": "0 yes, 0 no",
+    "unimpressedAndSmug": null,
+    "unimpressedAndSmugVotes": "0 yes, 0 no",
+    "basis": [
+      "The flat, unenthusiastic intonation and sarcastic nature of the remark convey a smug and unimpressed tone devoid of warmth, excitement, or laughter.",
+      "The delivery is inferred to be a deadpan, sarcastic joke about joblessness, marked by a flat tone completely devoid of enthusiasm or warmth."
+    ]
+  },
+  "why": "tone not judged: 0 whole answers in 8 asks",
+  "forced": true,
+  "problems": [
+    "the listener left \"whisper\" unanswered",
+    "the listener left \"laugh\" unanswered",
+    "the listener left \"warmth\" unanswered",
+    "the listener left \"excitement\" unanswered",
+    "the listener left \"unimpressedAndSmug\" unanswered"
+  ],
+  "fixture": false,
+  "file": "line.pinball.drain.0.wav",
+  "seconds": 4.558,
+  "sha256": "090bc8a60e97db0c43c5c81d946cd2e44ac65d41e509eee3b08353167112664f"
+}

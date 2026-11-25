@@ -38,6 +38,7 @@ Agent `tug_fixer`, branch `agent/tug`. Started 16:42 UTC.
 22. Not done: the thick turned corner of the approved image. The dog ear of the solver is at the left top corner, under the left hand; a larger ear, or one at the right, comes up through the mitt that holds that corner.
 23. M3 at the key is red at draft since 16 (0.68, least 0.8), reported to the Builder as red; not worked on, by the Builder's word.
 24. When the sheet is lost the arms spring back into the body: the hands run to the shoulders, fast at first, in 0.3 s. Before, the shoulder ends let go and the two arms trailed into the mouth after the sheet: for 0.2 s they were two loose black cables, which the brief forbids, and a cursor with its arms torn off is grimmer than the film is.
+25. The cursor leans to one side only, to the right of the slot (`TUG_CURVE`, lean 0.02 to -0.52 rad). With the lean going both ways the tip touched the Browse files chip at the key and covered the word files at 23.7 s. The hauls differ in how far they lean (0.28, 0.42, 0.52, 0.51, 0.36, 0.51) and in strain, so no second repeats; the test of a move of more than 5 px in every second passes with 7.5 px at the least (searched over the leans and strains with the test's own measure).
 
 ## M3 and the camera
 

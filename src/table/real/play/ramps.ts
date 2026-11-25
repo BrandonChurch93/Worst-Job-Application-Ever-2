@@ -14,7 +14,6 @@ const SCREW_SLOT = look(0x242526, 0.7, 1, 0)
 const BEAD = look(0xd6d9dc, 0.34, 0.74, 0)
 const CLEAR = look(0x8fa4ad, 0.05, 0, 1)
 const CLEAR_EDGE = look(0xd4e3ea, 0.04, 0, 1)
-const PAINT = look(0xd9d6ca, 0.55, 0, 0)
 
 export const TRACK = { wire: 2.6, under: 34.56, underUp: 11, side: 53.76, sideUp: 40, hoop: 2.2, hoopR: 55.4, centre: 48, every: 192, bead: 3.4 }
 // The clear width of the trough is the width of the layout's opening for the spiral's turn.
@@ -169,7 +168,7 @@ function flapGeometry(): THREE.BufferGeometry {
 }
 
 // The clear trough of the garage: it starts under the end of the highway, winds down round its newel and ends open over the inlane. The last point of the rail is the ball's fall, so the trough stops one point short of it.
-function spiral(z: Zone, b: Bag, clear: Bag): void {
+function spiral(z: Zone, clear: Bag): void {
   const all = pathOf(z, 'spiral')
   const pts = all.slice(1, all.length - 1)
   pts.unshift(new THREE.Vector3(all[0]!.x, all[0]!.y, all[1]!.z))
@@ -181,36 +180,41 @@ function spiral(z: Zone, b: Bag, clear: Bag): void {
   const u = -TROUGH.under
   const c: [number, number] = [pts[1]!.x + SPIRAL.r * BALL, pts[1]!.y]
   clear.add(sweep([[-h - t, u], [h + t, u], [h + t, u + t], [-h - t, u + t]], flat), CLEAR, undefined, 0.035)
+  const far = (f: Frame): number => Math.hypot(f.at[0] - c[0], f.at[1] - c[1])
+  const probe = flat[Math.floor(flat.length / 2)]!
+  const inner = probe.side[0] * (probe.at[0] - c[0]) + probe.side[1] * (probe.at[1] - c[1]) > 0 ? -1 : 1
+  // Round the helix the newel is the inner wall. The inner wall of the trough stands only on its two straight ends.
+  const lead = flat.findIndex((f) => far(f) < SPIRAL.r * BALL + 2)
+  const trail = flat.length - 1 - [...flat].reverse().findIndex((f) => far(f) < SPIRAL.r * BALL + 2)
+  const runs: Frame[][] = [flat]
+  const ends: Frame[][] = [flat.slice(0, lead + 2), flat.slice(trail - 1)].filter((r) => r.length > 1)
   for (const side of [-1, 1]) {
     const wall: V2[] = [[side * h, u + t], [side * (h + t), u + t], [side * (h + t), top], [side * (h + 1), top]]
     if (side < 0) wall.reverse()
-    clear.add(sweep(wall, flat), CLEAR, undefined, 0.09)
     const lip: V2[] = [[side * (h - 1.5), top], [side * (h + t + 1), top], [side * (h + t + 1), top + 3.6], [side * (h - 1.5), top + 3.6]]
     if (side < 0) lip.reverse()
-    clear.add(sweep(lip, flat), CLEAR_EDGE, undefined, 0.78)
     const foot: V2[] = [[side * (h + t - 3), u - 0.8], [side * (h + t + 0.6), u - 0.8], [side * (h + t + 0.6), u + 0.8], [side * (h + t - 3), u + 0.8]]
     if (side < 0) foot.reverse()
-    clear.add(sweep(foot, flat), CLEAR_EDGE, undefined, 0.36)
+    for (const run of side === inner ? ends : runs) {
+      clear.add(sweep(wall, run), CLEAR, undefined, 0.09)
+      clear.add(sweep(lip, run), CLEAR_EDGE, undefined, 0.78)
+      clear.add(sweep(foot, run), CLEAR_EDGE, undefined, 0.36)
+    }
   }
   const first = flat[0]!
   const back = Math.atan2(first.side[1], first.side[0])
   clear.add(box(2 * (h + t), t, top - u), CLEAR, mat({ x: first.at[0], y: first.at[1], z: first.at[2] + (top + u) / 2, rz: back }), 0.1)
   const z0 = flat[flat.length - 1]!.at[2] + u
   const z1 = first.at[2] + top + 8
-  clear.add(lathe([[0, z0 - 6], [7, z0 - 6], [9, z0 - 3], [9, z1 - 3], [7, z1], [0, z1]], 16), CLEAR, mat({ x: c[0], y: c[1] }), 0.16)
-  let dash = 0
+  const core = SPIRAL.r * BALL - h
+  clear.add(lathe([[0, z0 - 6], [core - 2, z0 - 6], [core, z0 - 3], [core, z1 - 3], [core - 2, z1], [0, z1]], 20), CLEAR, mat({ x: c[0], y: c[1] }), 0.14)
+  clear.add(lathe([[core - 2.4, z1 - 0.4], [core + 0.6, z1 - 3], [core + 0.6, z1 - 6], [core - 0.2, z1 - 6]], 20), CLEAR_EDGE, mat({ x: c[0], y: c[1] }), 0.7)
   let tab = -1
   for (let i = 2; i < flat.length - 2; i++) {
     const f = flat[i]!
     const dx = f.at[0] - c[0]
     const dy = f.at[1] - c[1]
     const d = Math.hypot(dx, dy)
-    const out = f.side[0] * dx + f.side[1] * dy > 0 ? 1 : -1
-    if (f.s - dash >= 44) {
-      dash = f.s
-      const p = put(f, out * 26, u + t + 0.25)
-      b.add(box(22, 2.6, 0.5), PAINT, mat({ x: p[0], y: p[1], z: p[2], rz: Math.atan2(f.side[1], f.side[0]) }))
-    }
     const quarter = Math.floor(Math.atan2(dy, dx) / (Math.PI / 2) + 4)
     if (Math.abs(d - SPIRAL.r * BALL) < 3 && quarter !== tab) {
       if (tab >= 0) {
@@ -228,7 +232,7 @@ interface Built { flap: THREE.Mesh | null; down: number }
 export const flapLift = (open: number): number => (1 - Math.max(0, Math.min(1, open))) * FLAP.lift
 
 export const ramps = whole('ramps', {
-  version: 'play-ramps-14',
+  version: 'play-ramps-15',
   build(z) {
     const g = new THREE.Group()
     g.name = `play.ramps.${z.id}`
@@ -238,7 +242,7 @@ export const ramps = whole('ramps', {
     const clear = new Bag(true)
     const built: Built = { flap: null, down: 0 }
     const frames = highway(z, fixed, fine)
-    spiral(z, fixed, clear)
+    spiral(z, clear)
     const hinge = frames.find((f) => f.at[2] + TRACK.underUp >= FLAP.hinge) ?? frames[1]!
     const at = put(hinge, 0, 0)
     const flap = part(flapGeometry(), m.solid, 'play.ramps.flap', { cast: true })
