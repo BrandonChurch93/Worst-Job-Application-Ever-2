@@ -1,0 +1,35 @@
+{
+  "critic": "R8",
+  "score": 6,
+  "pass": false,
+  "issues": [
+    {
+      "severity": "severe",
+      "file": "set-A-03.png",
+      "where": "right edge of the page, the whole right-hand field column",
+      "what": "the First name / Last name / Email fields and their labels and values run off the frame and are cut mid-word (\"Perpl\", \"Compl\", \"applic...\"), because the page is rendered at a larger scale than in the other moments; since this still is captioned as the whole page, it reads as the layout overflowing the viewport, i.e. a broken page, not a camera move",
+      "fix": "keep the page at a constant scale across moments so all fields stay fully inside the viewport; if the gag needs emphasis, move the mechanism to where the camera can see it without pushing the form off-screen, or accept a genuine camera zoom and clearly reframe (e.g. crop in evenly) rather than letting content be sliced by the frame edge"
+    },
+    {
+      "severity": "major",
+      "file": "set-A-02.png",
+      "where": "the on-screen keyboard, gap between the Q and W keys, just above W",
+      "what": "a stray glyph that looks like \"A^\" floats over the key gap; it is not a key label and not part of the cursor, so it reads as a rendering artifact dropped onto the keyboard",
+      "fix": "remove the stray glyph and re-check the key grid for any other orphaned characters between keys"
+    },
+    {
+      "severity": "minor",
+      "file": "set-A-01.png",
+      "where": "the Continue button, lower right",
+      "what": "the only primary action on the page is the same muted gray as the inset fields, while the orange accent is spent on the step marker and (later) the Enter key; the first thing to do is the quietest control on the page",
+      "fix": "give Continue the orange accent treatment (or a distinctly raised, high-contrast style) so the primary action is unmistakable at a glance"
+    },
+    {
+      "severity": "minor",
+      "file": "set-A-02.png",
+      "where": "the bolted-on keyboard over the lower half of the page",
+      "what": "the keyboard completely covers the Email field's lower edge and the Continue button; the bolted plate sells it as a mechanism happening to a real page, but the page's primary action disappears behind the gag with no way forward",
+      "fix": "raise the keyboard a little or shrink it a row so the Continue button stays visible (or move Continue above the keyboard), keeping the joke without burying the action"
+    }
+  ]
+}
