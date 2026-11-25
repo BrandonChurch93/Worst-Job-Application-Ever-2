@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { AXIS, TOP, inside, solid } from './shape'
+import { AXIS, TOP, UNDER_TOP, inside, solid, underAt } from './shape'
 
 export interface StripSet {
   count: number
@@ -133,11 +133,11 @@ export function stripSet(count: number): StripSet {
     strip.push(k)
   }
   const cap = (a: Corner, b: Corner, k: number, sign: number): void => {
-    if (a.z < 1e-4 && b.z < 1e-4) return
+    if (a.z < UNDER_TOP + 1e-4 && b.z < UNDER_TOP + 1e-4) return
     const nx = AXIS[1] * sign
     const ny = AXIS[0] * sign
     const mk = (c: Corner, z: number): Corner => ({ ...c, z, ink: 2, nx, ny, nz: 0 })
-    const quad = [mk(a, a.z), mk(b, b.z), mk(b, 0), mk(a, 0)]
+    const quad = [mk(a, a.z), mk(b, b.z), mk(b, underAt(b.inset)), mk(a, underAt(a.inset))]
     // Seen from outside the strip, the face's corners run anticlockwise.
     const ex = quad[1]!.x - quad[0]!.x
     const ey = -(quad[1]!.y - quad[0]!.y)
