@@ -315,6 +315,7 @@ function pose(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const ready = !!art && art.ready()
   u.uArt!.value = ready ? art!.texture() : kit().grey
   u.uArtOn!.value = ready ? 1 : 0
+  ;(u.uGround!.value as THREE.Vector3).setScalar(L.tier ? 0.3 : 0.62)
   ;(u.uBallUv!.value as THREE.Vector2).set(cx / 1920, 1 - (cy - L.zone.top) / 1080)
   u.uDrop!.value = L.drop
   u.uTrue!.value = debug.grade === 'true' ? 1 : 0

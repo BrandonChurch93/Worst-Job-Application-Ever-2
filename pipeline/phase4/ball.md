@@ -25,3 +25,34 @@ Part `clear-ball`. Branch `agent/ball`. Folder `src/table/real/ball/`.
 ## Needs outside my folder
 
 - `pipeline/phase4/ball-NEEDS.patch`: the cursor in the ball is drawn at the top of the ball, not at its centre. The page hands the cursor the ball's centre (`px(b.z) + BALL / 2`) and the cursor's view adds half a ball and one pixel again. The patch hands it the ball's foot in the two places (play and the sheet).
+
+## Measured (my VM, 25 November, format hd)
+
+Commands: `node assets-src/table/ball/proof.mjs [--grade true] [--tier review] key:<id> sheet:<id>` (prints seconds and `info().counts` of the page), with the part switched off in `index.ts` for the "before" rows; `npm run build && npm run counts -- --key <id> --live low`.
+
+| key, draft, grade bend | triangles before | after | draw calls before | after | seconds before | after |
+| --- | --- | --- | --- | --- | --- | --- |
+| table-wide | 534388 | 548396 | 1050 | 1048 | 27.7 | 27.7 |
+| tier-corporate | 338580 | 351374 | 610 | 608 | 9.1 | 8.7 |
+| tier-office | 317534 | 331544 | 549 | 548 | 9.1 | 8.8 |
+| tier-street | 385520 | 397098 | 680 | 677 | 7.9 | 8.2 |
+| lobby-doors | 377587 | 390381 | 683 | 681 | 7.4 | 7.3 |
+
+"Before" is the stand-in ball, which also draws into the shadow passes; mine casts no shadow, so the page's calls fall by 1 to 3 while the triangles rise by about 13000.
+
+The two grades of what is seen through the ball, sweat held at 0.6:
+
+| still | grade | seconds | draw calls of the page | triangles of the page |
+| --- | --- | --- | --- | --- |
+| lobby-doors draft | bend | 14.8 | 703 | 394373 |
+| lobby-doors draft | true | 24.2 | 795 | 569266 |
+| lobby-doors review | bend | 39.2 | 864 | 403093 |
+| lobby-doors review | true | 69.6 | 956 | 577986 |
+| sheet clear-ball draft (3 balls) | bend | 22.7 | 537 | 599510 |
+| sheet clear-ball draft (3 balls) | true | 31.2 | 602 | 772116 |
+
+Grade bend is 4 drawings of the ball in the colour pass (3 while dry). Grade true is 5, and the renderer adds its own pass for transmission that draws the solid scene again: 92 more calls and 175000 more triangles in lobby-doors, 30 s more on a review still.
+
+`counts` rows: `table-wide --live low`: clear-ball real, 2 meshes, 2 colour, 0 shadow, 2 calls, 18872 triangles. `tier-office --live low`: 3 meshes, 3 colour, 0 shadow, 3 calls, 18874 triangles. `tier-office --live high`: 3 calls, 18874 triangles.
+
+Asset sets: none. `public/assets/table/ball/` and `assets-full/table/ball/` do not exist; the part is code alone, 0 MB in both sets.

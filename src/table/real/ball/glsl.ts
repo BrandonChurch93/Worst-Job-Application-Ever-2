@@ -186,8 +186,8 @@ void main() {
 	float band = smoothstep( RIN - 0.012, RIN + 0.012, rho );
 	float lens = smoothstep( 0.42, RIN, rho );
 	float aIn = mix( 0.05, 0.5, lens * lens );
-	float alpha = mix( mix( aIn, 0.93, band ), mix( 0.03, 0.34, band ), uTrue );
-	vec3 col = ( bent * mix( 1.0, 1.25, band ) + ( gather * 0.5 + uHaze + uSoft * 0.16 ) * band ) * alpha;
+	float alpha = mix( mix( aIn, 0.93, band ), mix( 0.03, 0.34, band ), uTrue ) * mix( 0.55, 1.0, uArtOn );
+	vec3 col = ( bent * mix( 1.0, 1.25, band ) + ( gather * 0.3 + uHaze + uSoft * 0.16 ) * band ) * alpha;
 
 	vec3 Ni = normalize( N + 0.1 * Np );
 	vec3 Ri = reflect( - V, Ni );
