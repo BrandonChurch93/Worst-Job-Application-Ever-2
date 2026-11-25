@@ -24,7 +24,7 @@ const px = (v: number): number => v * BALL
 
 export const T = {
   arrive: 0.8, seal: 2.4, tube: 3.3, lightsDown: 4.0, powerOn: 5.2, atPlunger: 8.3, plunger: 9.4, onTable: 10.85, doorKick: 13.2, doorOpen: 14.1, lobbyEnd: 14.9, inboxOn: 18.3, inboxBy: 19.1,
-  drops: [20.0, 20.35, 20.7], eject: 21.4, officeOpen: 24.6, officeBy: 25.2, firedBy: 27.2, scoopKick: 28.5, flapOn: 29.6, flapBy: 30.8, highwayEnd: 32.7, spiralEnd: 34.2, streetOpen: 37.3, streetBy: 37.9,
+  drops: [20.0, 20.35, 20.7], eject: 21.4, officeOpen: 24.6, officeBy: 25.2, firedBy: 27.2, scoopKick: 28.5, flapOn: 29.6, flapBy: 30.8, highwayEnd: 32.7, spiralEnd: 34.6, streetOpen: 37.3, streetBy: 37.9,
   press: seconds - TURN_HALF - 0.5
 }
 const MODES: { at: number; tier: number; mode: number }[] = [
@@ -444,7 +444,7 @@ export function makePage(): PageLogic {
     script(time: number): Pointer {
       const flipLeft = held('L', time)
       const flipRight = held('R', time)
-      if (time < T.press - 1.2) {
+      if (time < T.streetBy) {
         const u = smooth(Math.min(1, Math.max(0, (time - TURN_HALF - 0.1) / 1.2)))
         return { x: HANDOFF.x + (port.x - 40 - HANDOFF.x) * u, y: HANDOFF.y + (port.y + 30 - HANDOFF.y) * u, down: false, flipLeft, flipRight }
       }
