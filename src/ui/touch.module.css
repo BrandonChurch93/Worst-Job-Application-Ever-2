@@ -15,6 +15,10 @@
   align-items: center;
 }
 
+.page:focus {
+  outline: none;
+}
+
 .header,
 .body {
   width: 100%;

@@ -4,7 +4,8 @@ import { word } from './words'
 
 export const portfolioAddress = (): string => config.links.portfolioWork.trim()
 
-export function mountTouchMessage(host: HTMLElement): void {
+// The message takes the focus, so that a screen reader starts at it.
+export function mountTouchMessage(host: HTMLElement): { destroy(): void } {
   const page = document.createElement('main')
   page.className = css.page!
   const head = document.createElement('header')
@@ -31,5 +32,8 @@ export function mountTouchMessage(host: HTMLElement): void {
     body.append(link)
   }
   page.append(head, body)
+  page.tabIndex = -1
   host.append(page)
+  page.focus({ preventScroll: true })
+  return { destroy: () => page.remove() }
 }
