@@ -1,0 +1,91 @@
+{
+  "critic": "R1",
+  "score": 4,
+  "pass": false,
+  "issues": [
+    {
+      "severity": "severe",
+      "file": "set-A-03-b.png",
+      "where": "whole frame",
+      "what": "the shot is a tight close-up on the drop zone and shredder; the header, progress buttons, Step 1 title and most of the fields are out of frame, where the target shows the whole page with the drop zone on the left and fields on the right",
+      "fix": "pull the camera back to the full-page framing used in set-A-01 / set-A-05 so the header, title, drop zone and field column are all in frame"
+    },
+    {
+      "severity": "severe",
+      "file": "set-A-03-b.png",
+      "where": "the paper slot below the drop zone",
+      "what": "a large chrome shredder with roller, teeth and bolted end caps stands proud of the page and casts a big shadow; the target has only a thin dark slit cut into the page",
+      "fix": "replace it with a narrow dark slot cut flush into the page surface, black inside, with a faint lit lip on its lower edge and no mechanism above the surface"
+    },
+    {
+      "severity": "severe",
+      "file": "set-A-03-b.png",
+      "where": "the arrow and its arms, centre",
+      "what": "the arrow is small, its white body is mottled with lumpy grey specks and has a thin edge; the arms are thin wires ending in tiny blobs. The target arrow is a large, smooth, glossy white ceramic shape with a thick black edge and rubbery black arms ending in gloved hands that grip the paper",
+      "fix": "give the arrow a clean smooth glossy white body with a thick dark edge, thicken the arms to soft black rubber tubes and end them in cartoon gloved hands clasping the paper's top edge"
+    },
+    {
+      "severity": "major",
+      "file": "set-A-04-b.png",
+      "where": "the paper ('the paper', 'where the paper goes in' crops)",
+      "what": "the sheet is grey with heavy dark streaky blotches across it and the lines are thin, uneven hand-drawn strokes; the target sheet is clean white crumpled paper with soft fold shading and neat grey printed text lines",
+      "fix": "lighten the sheet to clean white, keep only soft fold shading, and draw tidy straight grey text lines under the heading"
+    },
+    {
+      "severity": "major",
+      "file": "set-A-01-b.png",
+      "where": "the arrow over the keys, upper left of the keyboard",
+      "what": "the arrow body is translucent grey rather than solid white, and a large soft dark smear sits under and beside it; the target arrow is solid glossy white with a crisp black edge and a small tight shadow",
+      "fix": "make the arrow body opaque glossy white with a crisp dark edge and a short, tight, soft shadow offset lower right; remove the big smear"
+    },
+    {
+      "severity": "major",
+      "file": "set-A-02-b.png",
+      "where": "keys ('the arrow', 'keys', 'a turret' crops)",
+      "what": "key tops are mottled and smudgy, with blurry dark blobs on several keys (D, Shift, near W) and dark grey gaps between keys; target keys are smooth matte cream caps with clean soft shading over brushed steel",
+      "fix": "smooth the keycap surface to an even matte cream, remove the stray dark blotches, and make the gap between keys brushed steel rather than dark grey"
+    },
+    {
+      "severity": "major",
+      "file": "set-A-01-b.png",
+      "where": "drop zone, upper left",
+      "what": "the upload icon (arrow out of a tray) above 'Drag and drop your resume here' is missing; the same in set-A-03-b and set-A-05-b",
+      "fix": "draw the outlined upload icon centred above the drop-zone text, in the same dark grey line weight as the target"
+    },
+    {
+      "severity": "major",
+      "file": "set-A-05-b.png",
+      "where": "the page surface, whole frame",
+      "what": "the page is a warmer, darker beige with a coarse stucco-like grain; the target is a cooler, brighter off-white with a fine paper tooth (also in set-A-01-b, set-A-02-b, set-A-04-b crops)",
+      "fix": "brighten and cool the page toward a soft off-white and reduce the grain to a fine, low-contrast paper texture"
+    },
+    {
+      "severity": "major",
+      "file": "set-A-05-b.png",
+      "where": "the drop-zone glass, left",
+      "what": "the glass is a flat, opaque mid-grey slab with a hard dark shadow lower right; the target glass is lighter, frosted and translucent with a raised inner panel and a soft shadow",
+      "fix": "lighten the glass, add frosted translucency and a lit bevel, set a slightly inset inner panel inside the dashed line, and soften and shorten its shadow"
+    },
+    {
+      "severity": "major",
+      "file": "set-A-05-b.png",
+      "where": "the field wells, right column",
+      "what": "each well has a heavy dark rim and a deep dark inner shadow on top; the target wells have thin light silver rims and a gentle inner shadow",
+      "fix": "thin and lighten the rims to brushed silver and soften the inner top shadow (same in set-A-01-b)"
+    },
+    {
+      "severity": "minor",
+      "file": "set-A-05-b.png",
+      "where": "progress buttons, top right",
+      "what": "the active button is a glossier, redder orange and the steel buttons are darker and glossier than the target's matte orange and satin steel",
+      "fix": "shift the active button toward the target's softer orange with a satin finish and lighten the steel buttons to a satin brushed metal"
+    },
+    {
+      "severity": "minor",
+      "file": "set-A-05-b.png",
+      "where": "Continue button, right",
+      "what": "the button is dark grey plastic in a dark rim; the target's action button is glossy orange plastic in a chrome bezel",
+      "fix": "if this is not a deliberate disabled state, render it in the target's orange plastic with a bright chrome bezel"
+    }
+  ]
+}
