@@ -1,35 +1,35 @@
 {
   "folder": "cursor-act",
-  "pushed": "2026-11-25T15:46:46.005Z",
-  "commit": "92ec67a1ed0f8cec9f40bbe85056a857298c74e2",
+  "pushed": "2026-11-25T15:56:34.240Z",
+  "commit": "b36e3308112bb85ef0cd5d266f3bcfc88108e25f",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Sheet cursor-damage: approved on the left, this build on the right, review tier",
-      "time": "2026-11-25T15:42:31.279Z",
+      "caption": "Key step1-fire: approved on the left, this build on the right, review tier, with crops of cursor, keys, hatch, keyboardDeck.corner, field.start, type, progressButton, chip, card.corner",
+      "time": "2026-11-25T15:53:32.212Z",
       "by": "cursor-act",
-      "from": "out/work/compare/compare-cursor-damage.jpg"
+      "from": "out/work/compare/compare-step1-fire.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Sheet cursor-acting: approved on the left, this build on the right, review tier",
-      "time": "2026-11-25T15:42:48.055Z",
+      "caption": "Still step1-step1_firstName-0p668-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-25T15:55:31.775Z",
       "by": "cursor-act",
-      "from": "out/work/compare/compare-cursor-acting.jpg"
+      "from": "out/work/stills/step1-step1_firstName-0p668-hd-review.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Acting sheet at review tier beside the approved image, with the model's rescaled heat",
-      "time": "2026-11-25T15:46:44.659Z",
+      "caption": "Damage sheet beside the approved one at review: the scorch is a burnt tip again (reach 0.62 with the model's scale put back)",
+      "time": "2026-11-25T15:56:32.873Z",
       "by": "cursor-act",
-      "from": "out/work/compare/compare-cursor-acting.jpg"
+      "from": "out/work/report/damage-beside-approved.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Damage sheet at review tier beside the approved image: scorch on the tip, smaller clean hole, tape",
-      "time": "2026-11-25T15:46:44.903Z",
+      "caption": "Approved fire key (left), the one hit at 7.3 s knocked over with burn and smoke (middle), the key frame at 6.0 s in flight tip up and right (right)",
+      "time": "2026-11-25T15:56:33.113Z",
       "by": "cursor-act",
-      "from": "out/work/compare/compare-cursor-damage.jpg"
+      "from": "out/work/report/fire-hit-beside-approved.jpg"
     }
   ]
 }
