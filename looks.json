@@ -1,35 +1,35 @@
 {
   "folder": "pinball",
-  "pushed": "2026-11-25T09:12:00.899Z",
-  "commit": "d472bed69be9424151bf990767d702707fc52f55",
+  "pushed": "2026-11-25T09:38:11.802Z",
+  "commit": "2de015318945a44204235c7db18d020a7b994128",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still still-step3-result-preview-draft: draft tier, preview, view beauty",
-      "time": "2026-11-25T09:11:35.833Z",
+      "caption": "Key table-wide at 8.0 s: the whole machine from the player's end, three tiers, marquee, apron",
+      "time": "2026-11-25T09:38:10.004Z",
       "by": "pinball",
-      "from": "out/work/stills/still-step3-result-preview-draft.png"
+      "from": "out/work/stills/key-table-wide-preview-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Step 3 at rest: heading, subline, paragraph and the loader port, blockout",
-      "time": "2026-11-25T09:11:59.362Z",
-      "by": "pinball",
-      "from": "out/work/stills/pinball-rest-preview-draft.png"
-    },
-    {
-      "file": "look-3.jpg",
-      "caption": "Key tier-corporate, camera tier-3, 12.0 s: the corporate tier as stand-ins (render from before the line spacing fix)",
-      "time": "2026-11-25T09:11:59.594Z",
+      "caption": "Key tier-corporate at 12.0 s: the Corporate tier from above, ball at the revolving door",
+      "time": "2026-11-25T09:38:10.254Z",
       "by": "pinball",
       "from": "out/work/stills/key-tier-corporate-preview-draft.png"
     },
     {
-      "file": "look-4.jpg",
-      "caption": "Step 3 result: outlet port, result card and Continue, blockout",
-      "time": "2026-11-25T09:11:59.840Z",
+      "file": "look-3.jpg",
+      "caption": "Key reply-all at 21.1 s: three balls dropped on the Office tier",
+      "time": "2026-11-25T09:38:10.491Z",
       "by": "pinball",
-      "from": "out/work/stills/still-step3-result-preview-draft.png"
+      "from": "out/work/stills/key-reply-all-preview-draft.png"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Sheet table-map: the three tiers, lift, launch lane, rails and apron, from above",
+      "time": "2026-11-25T09:38:10.724Z",
+      "by": "pinball",
+      "from": "out/work/stills/sheet-table-map-preview-draft.png"
     }
   ]
 }
