@@ -14,7 +14,9 @@ const THICK = 0.9
 // The film's sheet is `resume-paper`. A sheet of any other frame is `resume-paper:<name>`.
 const isSheet = (id: string): boolean => id === 'resume-paper' || id.startsWith('resume-paper:')
 const CARRY = { from: 21, span: 14 }
-const BAR = { inset: 24, tall: 2.3, pad: 2.85, cells: 44, wide: [0.46, 1, 0.9, 0.62, 1, 0.84, 0.52] }
+const BAR = { inset: 24, tall: 1.7, pad: 3.15, cells: 44, wide: [0.46, 1, 0.9, 0.62, 1, 0.84, 0.52] }
+// Between two of the layout's lines runs a thinner one, so the sheet reads as a page of close text.
+const BETWEEN = { tall: 1.15, wide: [0.94, 0.78, 1, 0.34, 0.88, 0.97, 0.6] }
 const WRAP_LEN = 1.12 * (CASSETTE.roller.r + 0.7)
 
 const clamp = (v: number, lo: number, hi: number): number => Math.min(hi, Math.max(lo, v))
@@ -160,18 +162,22 @@ function flat(marks: Mark[], index: number[], colour: THREE.Color): THREE.Buffer
 function barMarks(): { marks: Mark[]; index: number[] } {
   const marks: Mark[] = []
   const index: number[] = []
-  PAPER_LINES.forEach((at, i) => {
-    const w = (PAPER.w - BAR.inset * 2) * (BAR.wide[i] ?? 1)
-    const b0 = PAPER.h * at + BAR.pad
+  const rule = (b0: number, share: number, tall: number): void => {
+    const w = (PAPER.w - BAR.inset * 2) * share
     const base = marks.length
     for (let k = 0; k <= BAR.cells; k++) {
       const a = BAR.inset + (w * k) / BAR.cells
-      marks.push({ u: a / PAPER.w, v: b0 / PAPER.h }, { u: a / PAPER.w, v: (b0 + BAR.tall) / PAPER.h })
+      marks.push({ u: a / PAPER.w, v: b0 / PAPER.h }, { u: a / PAPER.w, v: (b0 + tall) / PAPER.h })
     }
     for (let k = 0; k < BAR.cells; k++) {
       const a = base + k * 2
       index.push(a, a + 1, a + 2, a + 2, a + 1, a + 3)
     }
+  }
+  PAPER_LINES.forEach((at, i) => {
+    const next = PAPER_LINES[i + 1] ?? at + (at - (PAPER_LINES[i - 1] ?? at))
+    rule(PAPER.h * at + BAR.pad, BAR.wide[i] ?? 1, BAR.tall)
+    rule(PAPER.h * (at + next) * 0.5 + BAR.pad, BETWEEN.wide[i] ?? 1, BETWEEN.tall)
   })
   return { marks, index }
 }
@@ -262,7 +268,7 @@ function shape(rig: Rig, q: SheetIn): void {
   lay(rig.title, rig.titleMarks, sheet, THICK + 0.3)
   lay(rig.bars, rig.barMarks, sheet, THICK + 0.3)
   const mat = stock(PAPER.w, PAPER.h)
-  mat.sheet.normalScale.setScalar(0.1 + 0.55 * sheet.abuse)
+  mat.sheet.normalScale.setScalar(0.08 + 0.4 * sheet.abuse)
 }
 
 // The sheet prints its own title. While the page still hands the title to the type maker, that one shows on the flat sheet

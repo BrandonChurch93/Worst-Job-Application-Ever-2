@@ -68,11 +68,14 @@ function geometries(): Shared {
   if (shared) return shared
   const L = TURRET_LOOK
   const collar = turn([[L.collar, -112], [L.collar, -48], [L.collar - 2, -46], [L.head + 1.2, -46], [L.head + 1.2, -50]], 56, 4)
+  const fillet = 9
+  const crown: [number, number][] = []
+  for (let i = 1; i <= 6; i++) crown.push([L.head - fillet + fillet * Math.cos((i * Math.PI) / 12), -fillet + fillet * Math.sin((i * Math.PI) / 12)])
+  for (let i = 3; i >= 0; i--) crown.push([((L.head - fillet) * i) / 4, 1.1 * (1 - (i / 4) ** 2)])
   const headParts: THREE.BufferGeometry[] = [
-    turn([[L.head, -56], [L.head, -30], [L.head - 0.9, -29.2], [L.head - 0.9, -27.8], [L.head, -27], [L.head, -5.5], [L.head - 5, -0.9], [L.head - 6.2, 0], [13, 0], [12.4, -0.6], [0, -0.6]], 56, 4)
+    turn([[L.head, -56], [L.head, -30], [L.head - 0.9, -29.2], [L.head - 0.9, -27.8], [L.head, -27], [L.head, -fillet], ...crown], 56, 4)
   ]
   const headDark: THREE.BufferGeometry[] = []
-  for (let i = -1; i <= 1; i++) headDark.push(place(flat(slot(16 - Math.abs(i) * 3, 2.6), 0.04), -21, i * 5.6, 0))
   headDark.push(place(turn([[17.4, 0], [17.4, 4.5], [16, 5.2], [16, 0]], 24, 1), 0, 0, 0).rotateY(Math.PI / 2).translate(L.head - 1.5, 0, L.axis))
   const barrel = along(turn([[15.4, 24], [15.4, 45], [14.4, 46], [13.4, 46], [10.6, 83], [12.9, 84.2], [12.9, 87.4], [12.1, 88.1], [12.1, 89.5], [12.9, 90.2], [12.9, 96.4], [11.6, L.muzzle], [7.8, L.muzzle]], 28, 2))
   const barrelDark = along(turn([[7.8, L.muzzle], [7.8, 84], [0, 84]], 20, 1))
@@ -267,13 +270,13 @@ function makeBolt(): THREE.Object3D {
   const root = new THREE.Group()
   const len = TURRET.bolt
   const head = overlay(new THREE.Mesh(f.head, f.headMaterial), 6)
-  head.scale.set(11, 5.2, 5.2)
+  head.scale.set(9, 3.8, 3.8)
   head.position.set(len / 2 - 11, 0, 8)
   const tail = overlay(new THREE.Mesh(f.tail, f.tailMaterial), 4)
-  tail.scale.set(88, 5.4, 5.4)
+  tail.scale.set(112, 3.8, 3.8)
   tail.position.set(len / 2 - 12, 0, 8)
   const core = overlay(new THREE.Mesh(f.tail, f.tailMaterial), 5)
-  core.scale.set(40, 3.2, 3.2)
+  core.scale.set(48, 2.2, 2.2)
   core.position.set(len / 2 - 12, 0, 8)
   root.add(tail, core, head)
   const data: BoltData = { head, tail, core }
@@ -285,8 +288,8 @@ function poseBolt(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const d = o.userData.bolt as BoltData
   const born = s.v ? Math.min(1, Math.max(0, s.v[1] ?? 1)) : 1
   const flick = 0.92 + 0.08 * Math.sin(ctx.time * 140 + (hashName(s.id) & 255))
-  d.tail.scale.set(30 + 62 * born, 5.4 * flick, 5.4 * flick)
-  d.core.scale.set(14 + 26 * born, 3.2, 3.2)
+  d.tail.scale.set(30 + 82 * born, 3.8 * flick, 3.8 * flick)
+  d.core.scale.set(14 + 34 * born, 2.2, 2.2)
   const a = s.rot ?? 0
   const half = TURRET.bolt / 2 - 9
   ctx.light({ x: s.x + s.w / 2 + Math.cos(a) * half, y: s.y + s.h / 2 + Math.sin(a) * half, z: s.z0 + 8, colour: EMIT.bolt.colour, power: EMIT.bolt.power * flick, reach: EMIT.bolt.reach, shadow: true })
@@ -302,9 +305,12 @@ interface ScorchData {
   wide: number
   tall: number
   turn: number
+  at: [number, number]
+  sparks: THREE.Mesh[]
+  sparkMaterial: THREE.MeshBasicMaterial
 }
 
-const SCORCH = { size: 52, smoke: 4, smokeSeconds: 1.5, shoulder: 4.5, core: 14 }
+const SCORCH = { size: 62, smoke: 4, smokeSeconds: 1.5, shoulder: 4.5, core: 14, sparks: 9, sparkSeconds: 0.55, fall: 900, ember: 0.35, snap: 36 }
 
 function makeScorch(s: Shape): THREE.Object3D {
   const f = fx()
@@ -330,12 +336,19 @@ function makeScorch(s: Shape): THREE.Object3D {
     smokeMaterials.push(m)
     root.add(puff)
   }
-  const data: ScorchData = { mark, geometry, material, smoke, smokeMaterials, seed, wide, tall: wide * (0.85 + 0.25 * hash01(seed, 3, 4)), turn: hash01(seed, 5, 6) * Math.PI * 2 }
+  const sparkMaterial = new THREE.MeshBasicMaterial({ color: new THREE.Color(...GLOW.chargeHigh), toneMapped: false })
+  const sparks: THREE.Mesh[] = []
+  for (let i = 0; i < SCORCH.sparks; i++) {
+    const spark = overlay(new THREE.Mesh(f.orb, sparkMaterial), 20 + i)
+    sparks.push(spark)
+    root.add(spark)
+  }
+  const data: ScorchData = { mark, geometry, material, smoke, smokeMaterials, sparks, sparkMaterial, seed, wide, tall: wide * (0.85 + 0.25 * hash01(seed, 3, 4)), turn: hash01(seed, 5, 6) * Math.PI * 2, at: [0, 0] }
   root.userData.scorch = data
   return root
 }
 
-// A scorch lies on the top of the cap it struck and ends at that cap's shoulder: a burn does not hang over a gap.
+// A scorch lies on the top of the cap it struck, or of the nearest cap when it struck a gap, and ends at that cap's shoulder.
 function layScorch(d: ScorchData, s: Shape, ctx: RealContext): void {
   const cx = s.x + s.w / 2
   const cy = s.y + s.h / 2
@@ -346,14 +359,21 @@ function layScorch(d: ScorchData, s: Shape, ctx: RealContext): void {
   let x1 = reach
   let y0 = -reach
   let y1 = reach
+  let cap: Shape | null = null
+  let near = SCORCH.snap
   for (const c of ctx.list) {
-    if (c.role !== 'keycap' || c.kind === 'text') continue
-    if (cx < c.x || cx > c.x + c.w || cy < c.y || cy > c.y + c.h || Math.abs(c.z1 - s.z0) > 3) continue
+    if (c.role !== 'keycap' || c.kind === 'text' || Math.abs(c.z1 - s.z0) > 3) continue
+    const far = Math.hypot(Math.max(c.x - cx, 0, cx - c.x - c.w), Math.max(c.y - cy, 0, cy - c.y - c.h))
+    if (far >= near) continue
+    near = far
+    cap = c
+  }
+  if (cap) {
     const e = SCORCH.shoulder
-    const left = c.x + e - cx
-    const right = c.x + c.w - e - cx
-    const low = -(c.y + c.h - e - cy)
-    const high = -(c.y + e - cy)
+    const left = cap.x + e - cx
+    const right = cap.x + cap.w - e - cx
+    const low = -(cap.y + cap.h - e - cy)
+    const high = -(cap.y + e - cy)
     const m = Math.min(SCORCH.core, (right - left) / 2, (high - low) / 2)
     ox = Math.min(right - m, Math.max(left + m, 0))
     oy = Math.min(high - m, Math.max(low + m, 0))
@@ -361,8 +381,8 @@ function layScorch(d: ScorchData, s: Shape, ctx: RealContext): void {
     x1 = Math.min(ox + reach, right)
     y0 = Math.max(oy - reach, low)
     y1 = Math.min(oy + reach, high)
-    break
   }
+  d.at = [ox, oy]
   d.mark.visible = x1 > x0 && y1 > y0
   if (!d.mark.visible) return
   const p = d.geometry.getAttribute('position') as THREE.BufferAttribute
@@ -384,15 +404,30 @@ function poseScorch(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const age = (1 - left) * TURRET.scorchSeconds
   layScorch(d, s, ctx)
   d.material.opacity = smooth((left * TURRET.scorchSeconds) / TURRET.scorchFade)
-  const ember = Math.exp(-age / 0.18)
-  d.material.color.setRGB(1 + 9 * ember, 1 + 3.2 * ember, 1 + 0.6 * ember)
+  const ember = Math.exp(-age / SCORCH.ember)
+  const spent = age / SCORCH.sparkSeconds
+  d.sparkMaterial.color.setRGB(...mix(GLOW.chargeHigh, GLOW.boltTail, Math.min(1, spent)))
+  d.sparks.forEach((spark, i) => {
+    const out = 50 + 130 * hash01(i, d.seed, 31)
+    const up = 150 + 170 * hash01(i, d.seed, 32)
+    const t = age * (0.8 + 0.4 * hash01(i, d.seed, 33))
+    const z = 2 + up * t - (SCORCH.fall / 2) * t * t
+    spark.visible = spent < 1 && z > 0 && left * TURRET.scorchSeconds > TURRET.scorchFade
+    if (!spark.visible) return
+    const a = hash01(i, d.seed, 34) * Math.PI * 2
+    const long = 1.2 + 3.2 * (1 - spent)
+    spark.position.set(d.at[0] + Math.cos(a) * out * t, d.at[1] + Math.sin(a) * out * t, z)
+    spark.rotation.set(0, -Math.atan2(up - SCORCH.fall * t, out), a, 'ZYX')
+    spark.scale.set(long, 0.85, 0.85)
+  })
+  d.material.color.setRGB(1 + 6 * ember, 1 + 6 * ember, 1 + ember)
   d.smoke.forEach((puff, i) => {
     const u = age / SCORCH.smokeSeconds - i * 0.12
     puff.visible = u > 0 && u < 1 && left * TURRET.scorchSeconds > TURRET.scorchFade
     if (!puff.visible) return
     const sway = Math.sin(u * 5 + i * 1.9 + d.seed) * 7 * u
     const size = 12 + 34 * u
-    puff.position.set(sway - 10 * u, 46 * u, 4 + 70 * u)
+    puff.position.set(d.at[0] + sway - 10 * u, d.at[1] + 46 * u, 4 + 70 * u)
     puff.scale.set(size, size * 1.25, 1)
     puff.rotation.z = hash01(i, d.seed, 21) * 6.28 + u
     d.smokeMaterials[i]!.opacity = 0.3 * smooth(u / 0.15) * (1 - u) ** 1.5
@@ -440,6 +475,7 @@ export const turrets: PartMaker = {
     const c = o.userData.scorch as ScorchData | undefined
     if (c) {
       c.material.dispose()
+      c.sparkMaterial.dispose()
       c.geometry.dispose()
       for (const m of c.smokeMaterials) m.dispose()
     }

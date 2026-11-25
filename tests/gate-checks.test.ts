@@ -43,10 +43,17 @@ describe('a record against the commits in which every part was a stand-in', () =
     expect(r.hashAt).toEqual({ 'src/real/x.ts': B, 'src/x.ts': A })
     expect(r.hash).toBe(hashOfBytes(['src/real/x.ts', 'src/x.ts'], reader(untouched)))
   })
-  it('makes no hash of a file that no such commit holds, nor of no files', () => {
+  it('records a file that no such commit holds as absent, with no bytes, and makes no hash of no files', () => {
     const r = anchoredRecord(['src/x.ts', 'src/new.ts'], [A, B], show)
     expect(r.absent).toEqual(['src/new.ts'])
-    expect(r.hash).toBeNull()
+    expect(r.hashAt).toEqual({ 'src/new.ts': 'absent', 'src/x.ts': A })
+    const none = (f: string) => (f === 'src/new.ts' ? Buffer.alloc(0) : reader(untouched)(f))
+    expect(r.hash).toBe(hashOfBytes(['src/new.ts', 'src/x.ts'], none))
+    const part = { name: 'p', state: 'finished', files: r.files, standInHash: r.hash, hashAt: r.hashAt }
+    expect(recordedAgain(part, show)).toBe(r.hash)
+    expect(standInTests(part, hashFacts(part, none, show, [A, B])).join(' ')).toMatch(/test 2: its files .* are byte for byte/)
+    expect(standInTests(part, hashFacts(part, (f: string) => (f === 'src/new.ts' ? null : none(f)), show, [A, B])).join(' ')).toMatch(/test 2: src\/new\.ts is recorded for it and gone/)
+    expect(standInTests(part, hashFacts(part, (f: string) => (f === 'src/new.ts' ? Buffer.from('export const turn = 1') : none(f)), show, [A, B]))).toEqual([])
     expect(anchoredRecord([], [A, B], show).hash).toBeNull()
   })
   it('can be made again from what it names', () => {
@@ -103,7 +110,12 @@ describe('the three tests of G13', () => {
   it('fails an old record whose files are what they were when every part was a stand-in', () => {
     const old = { name: 'x', unit: 'step1', state: 'finished', files: ['src/x.ts'], standInHash: 'e'.repeat(64), commit: A } as unknown as ReturnType<typeof recorded>
     expect(verdict(old, untouched)[0]).toMatch(/^test 2: its files .* at aaaaaaa, when every part was a stand-in/)
-    expect(verdict(old, { ...untouched, 'src/x.ts': 'export const part = "x"' })).toEqual([])
+  })
+  it('fails an old record that names no commit, though its files changed: a file can change for a reason that is not the part', () => {
+    const old = { name: 'x', unit: 'step1', state: 'finished', files: ['src/x.ts'], standInHash: 'e'.repeat(64), commit: A } as unknown as ReturnType<typeof recorded>
+    const why = verdict(old, { ...untouched, 'src/x.ts': 'export const part = "x"' })
+    expect(why).toHaveLength(1)
+    expect(why[0]).toMatch(/^test 2: its record names no commit.*npm run parts -- --record x --files a,b --replace/)
   })
   it('fails a part the page reports in a frame of the film', () => {
     const why = verdict(finished, made, { frames: { count: 1, of: 960, first: 906, beats: ['step1.keyboard'] } })

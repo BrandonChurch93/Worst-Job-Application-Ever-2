@@ -47,6 +47,7 @@ A fact below is MEASURED (the command and the number are given), STATED (read so
 | `emitters.shadowMapPx` | 512 | A face of a lamp's shadow cube. A lamp's reach is 140 to 380 px, so a texel is about 1 px near the lamp. |
 | `emitters.sizePx` | 5 | How far a lamp moves between samples, which softens its shadow. |
 | `studio.direction` | -0.52, 0.5, 0.69 | Where the soft light stands in the reflection. Kept higher than the key: at the key's angle flat metal went dark. |
+| `studio.shadeKey`, `studio.shadeFill` | 0.7, 0.6 | How much of the studio's reflection a surface loses where the key does not reach it (in its shadow, or turned away from it) and where the fill does not. This made the upper left wall of a field pocket dark and took the contact of the first stepper from 20 to 11 (approved 13). |
 | `envDiffuse` | 0.05 | The share of the studio that reaches a surface with no shadow in it. Low, so the contact can be dark. |
 | `keySpecular` | 0 | The key gives no highlight of its own. Highlights come from the studio, so there is no bright dot. |
 | `exposure`, `knee` | 1, 0.74 | The ceramic's upper left sits just on the shoulder (linear 0.83 goes to 0.82), nothing on the page clips. |
@@ -54,7 +55,7 @@ A fact below is MEASURED (the command and the number are given), STATED (read so
 | `grain` | 0.011 | About 1 level of 255 on the ceramic. The approved ceramic's speckle (5 to 8 levels) is the surface owner's eggshell, not film grain. |
 | `glow.threshold`, `glow.knee` | 1.5, 0.2 | Glow starts at linear 1.3 after exposure. |
 | `glow.surfaceKnee`, `glow.surfaceMax` | 0.95, 1.25 | No lit surface is brighter than 1.25, which is under 1.3. `tests/light-sampler.test.ts` holds that. |
-| `glow.strength`, `glow.rings` | 0.5; 1, 0.9, 0.6, 0.3, 0.12, 0.05 | Most of the glow is in the first three rings (about 4, 8 and 16 px at `hd`), which is the halo of two to three core widths of the approved bolts; the last rings are the faint wide veil. |
+| `glow.strength`, `glow.rings` | 0.8; 1, 1, 0.8, 0.45, 0.15, 0.05 | Most of the glow is in the first three rings (about 4, 8 and 16 px at `hd`), which is the halo of two to three core widths of the approved bolts; the last rings are the faint wide veil. |
 
 `src/post/studio.ts`:
 
@@ -84,6 +85,7 @@ Worked:
 - Keeping a draft's fill directions near the top. Two low directions drew two long streaks from every tall part.
 - A cap on reflected light under the glow's threshold. Before it, a cap lit by a bolt bloomed like the bolt.
 - The glow's size counted from the picture's height.
+- Dimming the studio's reflection by the shadows of the key and the fill. A glossy pocket floor is lit mostly by reflection, so a shadow of the lamps alone hardly showed on it; with this the pocket wall hides the soft light as well.
 
 Did not work:
 
@@ -115,9 +117,9 @@ Contact shadow, MEASURED with the same tool. The two pictures do not have the pa
 
 | | Approved | This build |
 | --- | --- | --- |
-| darkest value at the contact | 13 (patch 1105,120,30,30) | 20 (patch 1085,85,30,30) |
-| first percentile at the contact | 16 | 24 |
-| darkest value in the body of the shadow | 113 (patch 1290,125,25,25) | 108 (patch 1100,100,30,30) |
+| darkest value at the contact | 13 (patch 1105,120,30,30) | 11 (patch 1085,85,30,30) |
+| first percentile at the contact | 16 | 15 |
+| darkest value in the body of the shadow | 113 (patch 1290,125,25,25) | 91 (patch 1100,100,30,30) |
 
 Nothing in a shadow is 0 and red is above blue in every shadow patch.
 
@@ -141,7 +143,9 @@ Cost of one still, MEASURED with `npm run still -- --key step1-fire --format hd 
 | review (8 samples) | 25.4 s | 41.4 to 43.4 s |
 | final (24 samples) | UNKNOWN (not run; about 67 s from the cost of a sample) | 114.9 s |
 
-One sample was about 2.6 s and is about 4.0 s. The scene went from 408580 triangles and 352 draw calls to 884726 and 596 in the same count, because the rig now draws the fill's shadow map and both sides of every solid. `npm run still -- --sheet page-look --format hd --tier review --force`: 31.0 s, 361994 triangles, 238 draw calls. Texture memory of the light: see `assets-src/light/RECIPE.md` (STATED from the sizes, not read from the GPU).
+Later, on 7a48290 (main with the keyboard owner's next version and the 20 degree lens), the same commands: draft 11.3 s, review 21.0 s, 763376 triangles, 491 draw calls. That is 1.6 s a sample and 8.0 s fixed. With the fill's shadow switched off for the test: draft 9.2 s, review 17.6 s, so the fill's shadow is about 0.4 s a sample and 1.2 s fixed; the two lamp shadows are about 0.3 s a sample (draft 8.6 s without them too). The times of a still depend more on the page's parts than on the light: the table above was the first keyboard.
+
+In that table one sample was about 2.6 s and is about 4.0 s. The scene went from 408580 triangles and 352 draw calls to 884726 and 596 in the same count, because the rig now draws the fill's shadow map and both sides of every solid. `npm run still -- --sheet page-look --format hd --tier review --force`: 31.0 s, 361994 triangles, 238 draw calls. Texture memory of the light: see `assets-src/light/RECIPE.md` (STATED from the sizes, not read from the GPU).
 
 Bolt light, MEASURED on `out/work/stills/key-step1-fire-hd-review.png`: the top of the cap beside the bolt (patch 1355,868,14,10) is 243, 229, 205; the same place on the next cap away from it (patch 1255,868,14,10) is 228, 219, 204. The bolt adds warm light and no cap is burned out (highest value 243).
 
