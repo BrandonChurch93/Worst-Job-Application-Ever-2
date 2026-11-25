@@ -359,6 +359,21 @@ ${section('comparisons', comparisonsBody)}
 ${section('motion', motionBody)}
 </main>
 <footer>Built ${esc(date)} from the workspace of ${esc(cfg.name)}. This page is not part of the site.</footer>
+<script>
+for (const m of document.querySelectorAll('video, audio')) {
+  let tries = 0
+  m.addEventListener('error', () => {
+    if (tries++ >= 4) return
+    setTimeout(() => {
+      const src = m.getAttribute('src')
+      m.removeAttribute('src')
+      m.load()
+      m.setAttribute('src', src)
+      m.load()
+    }, 1200)
+  })
+}
+</script>
 </body>
 </html>
 `

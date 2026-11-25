@@ -5,7 +5,7 @@ The Builder's memory. Read it at the start of every task and after every compact
 ## Status
 
 - Build: in progress
-- Phase: 2
+- Phase: 3
 - Review: not reached
 - Review round: none
 - Review round step: none
@@ -25,22 +25,22 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 21, 2026-11-25T12:45Z, Phase 2.
+Status 22, 2026-11-25T12:53Z, Phase 2.
 
-1. `out/stills/status/01-film-sheet-marketing.jpg`: The film, sheet 1 of 6: the careers page, 0:00 to 0:14. Stroll, perk cards, ticker, the jump on Apply.
-2. `out/stills/status/02-film-sheet-step1.jpg`: The film, sheet 2 of 6: step 1, 0:14 to 0:46. Keyboard, turrets, shuffle, resume, tug of war, shredded. No frame of the twelve falls on the error slabs.
-3. `out/stills/status/03-film-sheet-step2.jpg`: The film, sheet 3 of 6: step 2, 0:46 to 1:07. The dial, the slot machine, the crank.
-4. `out/stills/status/04-film-sheet-pinball.jpg`: The film, sheet 4 of 6: the pinball machine, 1:07 to 1:49. Sealed, the whole machine, three tiers, the last save, the drain.
+1. `out/stills/status/01-film-sheet-boss.jpg`: The film, sheet 5 of 6: the boss, 1:49 to 2:21. The checkbox, the transformation, three phases, the boss down.
+2. `out/stills/status/02-film-sheet-decision.jpg`: The film, sheet 6 of 6: the decision, 2:21 to 2:33. The wait, the letter, the stamp, the careers page again.
+3. `out/stills/status/03-six-page-layouts.jpg`: The six page layouts on one sheet, at rest: careers page, steps 1 to 5.
+4. `out/stills/status/04-compare-step1-fire.jpg`: Step 1 under fire: your approved picture on the left, the grey blockout on the right. The look lock closes this gap.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 2, tick 54 at 2026-11-25T12:45:13Z, allowance: build
-time used in this phase: 5.11 h of its box of 6.50 h
-time used under the allowance in force: 7.21 h of 36.00 h allowed
-time used: 7.21 of 36.00 hours before the review
+clock: phase 2, tick 56 at 2026-11-25T12:53:05Z, allowance: build
+time used in this phase: 5.24 h of its box of 6.50 h
+time used under the allowance in force: 7.34 h of 36.00 h allowed
+time used: 7.34 of 36.00 hours before the review
 extra rounds: yes
 half point: reached
 box end: not reached
@@ -54,7 +54,7 @@ minutes since the last status: 0
 | --- | --- | --- | --- | --- | --- |
 | 0 Ground truth | done | 2026-11-25T05:32Z | 2026-11-25T07:11Z | f38580d and the gate commit after it | G1, G2, G3, G4, G8, G9, G10 pass on the final build (`out/work/gate/gate-phase-0.json`, 7 of 7). Pushed. Published and opened on the hosted copy (`out/work/hosted/hosted.json`). Records: workspace, tools, voice, pause mark UNKNOWN for lack of credits, prompt screen skill, terms, hosting limits, pinned versions, render budget, inline display, repo is public, polling test, physics between VMs equal, PSNR between three VMs identical. Statuses 1 to 6 |
 | 1 The rough cut | done | 2026-11-25T07:17Z | 2026-11-25T07:42Z | d8be8c4 and the gate commit after it | D1 passes: `out/roughcut.mp4` is 960 by 540 with 4590 frames at 30 a second, silent, 14.2 MB (`out/work/gate/gate-phase-1.json`). Order and lengths match `film.units` and `film.beats` (no fault from `faults()`), one frame of every beat looked at. 248 unit tests pass. Pushed. On the published review page, where it reads 153 s and seeks (`out/work/hosted/hosted.json`). Status 7 |
-| 2 Engine and blockout | in progress | 2026-11-25T07:42Z |  |  |  |
+| 2 Engine and blockout | done | 2026-11-25T07:42Z | 2026-11-25T12:55Z | c791472 and the gate commit after it | `npm run gate -- --phase 2` at 12:52Z: pass, 17 checks (G1 to G12, G14, G17, G18, D2, D3), on the build of 42e6c7d (`out/work/gate/gate-phase-2.json`). R4 blockout closed at its limit: round 2 scored 8, 7, 6 with two severe issues, `quality.blockoutMaxRounds` is 2; the fixes of its issues are merged. Every issue still open is under "Open items" with its phase. The judged list is in this file, 92 of 92. D2: `out/preview-b.mp4`, 4590 frames at 30 a second, 960 by 540, 75.4 MB, committed. D3: `out/work/render-local/proof.json`. `keep -- --film` ran. The site plays from the careers page to the rejection at the published address (hosted check passes, 20 of 20 bot runs finish), film mode and loop mode play (G12, G14). No narrator take: the quota, logged under "Sound". Statuses 8 to 22 |
 | 3 The look lock | not started | | | | |
 | 4 The other pages | not started | | | | |
 | 5 The whole site, the sound and the review | not started | | | | |
@@ -401,6 +401,7 @@ One line each: the date, the decision, the reason, and the config key if one was
 - 2026-11-25T12:28Z, Phase 2, the three round 2 fix branches are merged while a render runs here. The merges were made and checked in a second work tree (`git worktree`), so the source under the running render stayed as it was: type check clean, 782 of 782 tests (775, 2 new for the boss, 5 for step 1), build, bots all clear on 37 of 37 gags, the table's take 10 of 10, cut list up to date. Pushed to main as 42e6c7d at 12:28Z. The engine hash is unchanged (e6f9508050543b35), so the three chunks rendered here stay good; the page hashes of step1, pinball and boss changed. The measures and stills that need the browser are run on this VM when the render has ended. Three sandbox agents render the changed pages from 42e6c7d meanwhile; if a check then asks for a source change, only that page is rendered again.
 - 2026-11-25T12:28Z, Phase 2, two leftover patch files removed before the film render (`src/pages/step3/NEEDS.patch`, `tools/HARNESS-NEEDS.patch`): each was taken or declined earlier, and every file in a page folder counts in that page's hash, so removing one later would have made the pinball chunk stale. For the same reason no note or config comment is edited until the preview film is kept: the pinball agent's remark that the notes of `cameras.table-save` and `cameras.tier-1` in the config are out of date is an open item for the start of Phase 3.
 - 2026-11-25T12:48Z, Phase 2, steps 15 and 16. (1) The blockout film was joined from six chunks of one build (engine `e6f9508050543b35`), three rendered here and three by sandbox render agents from 42e6c7d, each chunk returned as a message attachment and checked here by its sha256 before it was taken in. MEASURED: attachments of 16.5, 16.6 and 21.4 MB arrive whole. (2) `tools/review.mjs` listed the newest `film-*.mp4` of `out/work/` as "Film B at 1920 by 1080, newest render" even when no hd film exists, which put the 79 MB preview on the review page twice under a wrong label. It now lists only films in `formats.hd` there. The review page fell from 171.2 MB to 95.9 MB. (3) App hosting, MEASURED 12:46Z: an upload of 45 files, 101.2 MB, is accepted in 25 s. The first request for the 79 MB film through the test address answered 502 and the hosted check failed on it; the same check run again one minute later passed, with the film whole by script (79019423 of 79019423 bytes) and playable by element (153 s). So a hosted check that fails only on a first request for a large file is run once more before it counts.
+- 2026-11-25T12:57Z, publishing. MEASURED: the app host answered the review page's own request for the 79 MB blockout film with 502 in 4 of 5 page loads (12:46Z to 12:56Z), while the same file fetched by script arrived whole every time (79019423 of 79019423 bytes) and played from a second element. So the entry of 12:48Z was wrong to call it a first request matter. Two changes. (1) `tools/review.mjs`: the review page asks again, up to four times 1.2 s apart, when a film or a sound fails to load; MEASURED after it: both films load on every visit (0 that do not load). (2) `tools/hosted.mjs`: a media request the host refused with a 5xx counts as a failure only if the film or sound did not load in the end; the check prints how many were refused and answered on asking again, so the fact stays visible. Every other failed request and every other console error still fails the check.
 
 ## Notes from Brandon
 

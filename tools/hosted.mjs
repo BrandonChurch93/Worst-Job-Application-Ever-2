@@ -31,19 +31,21 @@ async function visit(file, name, test) {
   const failed = []
   const errors = []
   const stopped = []
+  const refused = []
   page.on('requestfailed', (r) => {
     const why = r.failure()?.errorText ?? 'failed'
     if (r.resourceType() === 'media' && why === 'net::ERR_ABORTED') stopped.push(new URL(r.url()).pathname.split('/').slice(-2).join('/'))
     else failed.push(`${short(r.url())}: ${why}`)
   })
   page.on('response', (r) => {
-    if (r.status() >= 400) failed.push(`${short(r.url())}: ${r.status()}`)
+    if (r.status() >= 500 && r.request().resourceType() === 'media') refused.push(`${short(r.url())}: ${r.status()}`)
+    else if (r.status() >= 400) failed.push(`${short(r.url())}: ${r.status()}`)
   })
   page.on('pageerror', (e) => errors.push(String(e.message).slice(0, 200)))
   page.on('console', (m) => {
     if (m.type() === 'error') errors.push(m.text().slice(0, 200))
   })
-  const entry = { file, name, failed, errors, stopped }
+  const entry = { file, name, failed, errors, stopped, refused, asked: 0 }
   try {
     const response = await page.goto(sibling(file), { waitUntil: 'load', timeout: 60000 })
     entry.status = response ? response.status() : null
@@ -56,7 +58,15 @@ async function visit(file, name, test) {
   } catch (e) {
     entry.error = String(e.message).split('\n')[0].slice(0, 200)
   }
-  entry.ok = !entry.error && entry.status === 200 && !failed.length && !errors.length && entry.result?.ok !== false
+  if (refused.length) {
+    const loaded = entry.result?.media?.length > 0 && entry.result.silent.length === 0
+    const server = (e) => /status of 5\d\d/.test(e)
+    if (loaded && errors.filter(server).length <= refused.length) {
+      entry.asked = refused.length
+      entry.errors = errors.filter((e) => !server(e))
+    } else failed.push(...refused)
+  }
+  entry.ok = !entry.error && entry.status === 200 && !failed.length && !entry.errors.length && entry.result?.ok !== false
   if (!entry.ok) report.ok = false
   report.pages.push(entry)
   await page.close()
@@ -185,7 +195,7 @@ await browser.close()
 fs.writeFileSync(path.join(outDir, 'hosted.json'), JSON.stringify(report, null, 2) + '\n')
 for (const p of report.pages) {
   const why = [p.error, ...p.failed, ...p.errors, p.result?.fail].filter(Boolean)
-  console.log(`hosted: ${p.file} ${p.ok ? 'opens' : 'FAILS'}${p.result?.canvas ? `, canvas ${p.result.canvas.join(' by ')}` : ''}${p.result?.images !== undefined ? `, ${p.result.images} pictures, ${p.result.broken.length} broken, ${p.result.media.length} films and sounds, ${p.result.silent.length} that do not load, ${p.result.parts.length} parts` : ''}${p.stopped.length ? `, ${p.stopped.length} media request stopped by the browser after it had what it needed` : ''}${why.length ? `: ${why.slice(0, 4).join('; ')}` : ''}`)
+  console.log(`hosted: ${p.file} ${p.ok ? 'opens' : 'FAILS'}${p.result?.canvas ? `, canvas ${p.result.canvas.join(' by ')}` : ''}${p.result?.images !== undefined ? `, ${p.result.images} pictures, ${p.result.broken.length} broken, ${p.result.media.length} films and sounds, ${p.result.silent.length} that do not load, ${p.result.parts.length} parts` : ''}${p.stopped.length ? `, ${p.stopped.length} media request stopped by the browser after it had what it needed` : ''}${p.asked ? `, ${p.asked} media request refused by the host with a 5xx and answered when the page asked again` : ''}${why.length ? `: ${why.slice(0, 4).join('; ')}` : ''}`)
 }
 if (report.link) console.log(`hosted: the first link of "Open it" ${report.link.ok ? `leads to ${report.link.to}` : `FAILS: ${report.link.error ?? report.link.to}`}`)
 for (const f of report.fetches) {
