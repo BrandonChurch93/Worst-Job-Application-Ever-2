@@ -17,7 +17,7 @@ export const parts: Record<string, PartMaker | null> = {
       matsOf(z).level.value = levels(ctx, z).byName.windows ?? 0
     }
   }),
-  'model-cubicles': whole('model-cubicles', { version: VERSION, build: (z) => buildCubicles(z) }),
+  'model-cubicles': whole('model-cubicles', { version: VERSION, build: (z, ctx) => buildCubicles(z, ctx) }),
   'model-inbox': whole('model-inbox', { version: VERSION, build: (z) => buildInbox(z), pose: poseInbox }),
   'model-staplers': whole('model-staplers', { version: VERSION, build: (z) => buildStaplers(z), pose: poseStaplers })
 }

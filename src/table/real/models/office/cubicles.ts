@@ -1,12 +1,13 @@
 import * as THREE from 'three'
 import { config } from '../../../../config'
 import { Random } from '../../../../core/random'
+import type { RealContext } from '../../../../real/types'
 import { BALL, table } from '../../../layout'
 import { localBalls, type Zone } from '../../zone'
-import { coffeeScrews } from './coffee'
+import { coffeeFine, coffeeScrews } from './coffee'
 import { boxOf, inboxScrews } from './inbox'
 import { hex, Kit, matsOf, meshOf, mix, rrect, screwGeometry, shade, SURF, type RGB, type V2, type V3 } from './kit'
-import { staplerScrews } from './staplers'
+import { staplerFine, staplerScrews } from './staplers'
 
 const C = {
   slab: hex(0x8f8774),
@@ -18,17 +19,20 @@ const C = {
   kick: hex(0x55585c),
   wood: hex(0xdcc096),
   woodEdge: hex(0xa5855c),
-  steel: hex(0x8f9499),
+  steel: hex(0x7c8590),
   grey: hex(0x8b8f93),
   dark: hex(0x2b2c30),
   screen: hex(0x0c0f14),
-  key: hex(0x3a3c41),
+  key: hex(0xd9d3c2),
+  keyBed: hex(0xb9b3a2),
+  base: hex(0x8d9298),
+  bezel: hex(0x3b3d42),
   paper: hex(0xebe7dc),
   cork: hex(0xa98558),
   notes: [hex(0xe9d95a), hex(0x8fc7e8), hex(0xe58aa8), hex(0x9fd58a)] as RGB[],
   pin: hex(0xb3202a),
   mugs: [hex(0xe9e6dd), hex(0x27406b), hex(0x3f6b4c), hex(0xd9c24a), hex(0x2f7f86), hex(0x7b4a6e)] as RGB[],
-  seats: [hex(0xd8c29c), hex(0xb9ae96), hex(0xcdb48e), hex(0x6f8fae), hex(0xdcc8a4), hex(0xc4ab86)] as RGB[],
+  seats: [hex(0x6a8fbf), hex(0x55a39c), hex(0xa06a98), hex(0x8aa868), hex(0x858d98), hex(0x5674b0)] as RGB[],
   lamps: [hex(0x2a2c30), hex(0x3d5a48), hex(0x2a2c30), hex(0x8a8d91), hex(0x27406b), hex(0x2a2c30)] as RGB[],
   cabinet: hex(0xc4c0ac),
   cooler: hex(0xdcdad2),
@@ -70,15 +74,17 @@ function wall(k: Kit, a: V2, b: V2, r: Random): void {
 }
 
 function chair(k: Kit, seat: RGB): void {
+  k.fine = true
   for (let i = 0; i < 5; i++) {
     const a = (i / 5) * Math.PI * 2
     k.at(0, 0, 0, a)
-    k.box(6.4, 0, 2.6, 12, 2.4, 1.8, C.dark, SURF.plastic, 0.6)
+    k.box(6.4, 0, 2.6, 12, 2.4, 1.8, C.base, SURF.zinc, 0.6)
     k.cyl(11.6, 0, 0, 1.9, 2.8, C.dark, SURF.rubber, 8, 0.6)
     k.back()
   }
-  k.cyl(0, 0, 2.6, 3, 2.6, C.dark, SURF.plastic, 10, 0.6)
+  k.cyl(0, 0, 2.6, 3, 2.6, C.base, SURF.zinc, 10, 0.6)
   k.cyl(0, 0, 5, 1.4, 9, C.steel, SURF.chrome, 8, 0.2)
+  k.fine = false
   k.poly(rrect(17.5, 17, 5, 3), 13.6, 1.6, C.dark, SURF.plastic, 0.5)
   k.poly(rrect(18.5, 18, 5.5, 3), 15, 4, seat, SURF.fabric, 1.8, shade(seat, 1.12))
   for (const s of [-1, 1]) {
@@ -106,10 +112,10 @@ function chair(k: Kit, seat: RGB): void {
 }
 
 function monitor(k: Kit): V3 {
-  k.poly(rrect(13, 8.5, 2.5, 2), 0, 1.1, C.dark, SURF.plastic, 0.5)
-  k.box(0, 1.6, 1, 3, 1.6, 9, C.dark, SURF.plastic, 0.5)
+  k.poly(rrect(13, 8.5, 2.5, 2), 0, 1.1, C.bezel, SURF.plastic, 0.5)
+  k.box(0, 1.6, 1, 3, 1.6, 9, C.bezel, SURF.plastic, 0.5)
   k.at(0, 0.4, 8.6, 0, -0.2)
-  k.box(0, 0, 0, 29, 2.2, 18.5, C.dark, SURF.plastic, 0.7)
+  k.box(0, 0, 0, 29, 2.2, 18.5, C.bezel, SURF.plastic, 0.7)
   k.flat([[-13.3, -1.14, 1.5], [13.3, -1.14, 1.5], [13.3, -1.14, 17.3], [-13.3, -1.14, 17.3]], [0, -1, 0], C.screen, SURF.gloss)
   k.box(0, 1.6, 5, 12, 1.6, 9, shade(C.dark, 1.3), SURF.plastic, 0.6)
   const led = k.where([11, -1.4, 0.8])
@@ -118,11 +124,11 @@ function monitor(k: Kit): V3 {
 }
 
 function keyboard(k: Kit): void {
-  k.box(0, 0, 0, 22, 8, 1.3, C.dark, SURF.plastic, 0.4)
+  k.box(0, 0, 0, 22, 8, 1.3, C.keyBed, SURF.plastic, 0.4)
   for (let row = 1; row < 4; row++) for (const [x, w] of [[-5.2, 9.6], [5.2, 9.6]]) k.box(x!, -2.7 + row * 1.8, 1.3, w!, 1.35, 0.5, C.key, SURF.plastic, 0)
   for (const [x, w] of [[-8.4, 3.2], [0, 12.1], [8.4, 3.2]]) k.box(x!, -2.7, 1.3, w!, 1.35, 0.5, C.key, SURF.plastic, 0)
   k.at(16.5, -0.5, 0)
-  k.poly(rrect(4, 6.4, 1.9, 2), 0, 1.7, shade(C.dark, 1.2), SURF.plastic, 0.9)
+  k.poly(rrect(4, 6.4, 1.9, 2), 0, 1.7, C.key, SURF.plastic, 0.9)
   k.back()
 }
 
@@ -312,11 +318,11 @@ function small(k: Kit, f: Kit, c: Kit, z: Zone, r: Random): void {
     const [x, y] = at('plant')
     k.lathe(x, y, 0, [[9.5, 0], [10.2, 1.2], [13.6, 20], [14.6, 20.6], [14.6, 23.4], [12.6, 23.4], [12.2, 20.6], [0, 20.6]], [C.pot, C.pot, C.pot, shade(C.pot, 1.06), shade(C.pot, 0.9), shade(C.pot, 0.7), C.soil], [SURF.gloss, SURF.gloss, SURF.gloss, SURF.gloss, SURF.gloss, SURF.matte, SURF.matte], 18)
     k.lathe(x, y, 0, [[16, 0], [16.6, 1.6], [12, 2.2]], [shade(C.pot, 0.9), shade(C.pot, 0.96)], SURF.gloss, 18)
-    const n = 11
+    const n = 19
     for (let i = 0; i < n; i++) {
-      const a = i * 2.39996 + r.range(-0.25, 0.25)
-      const lift = 0.3 + (i / n) * 0.95
-      leaf(f, x, y, 21, a, r.range(24, 33) * (1.12 - lift * 0.42), r.range(15, 20) * (1.05 - lift * 0.3), lift, mix(C.leaf, C.dust, r.range(0.2, 0.55)))
+      const a = i * 2.39996 + r.range(-0.3, 0.3)
+      const lift = 0.22 + (i / n) * 1.1
+      leaf(f, x, y, 21, a, r.range(22, 36) * (1.12 - lift * 0.42), r.range(9, 13) * (1.05 - lift * 0.3), lift, shade(mix(C.leaf, C.dust, r.range(0.15, 0.6)), r.range(0.72, 1.08)))
     }
     f.cyl(x, y, 20.6, 1.6, 9, shade(C.leaf, 0.7), SURF.matte, 6, 0.3)
   }
@@ -367,13 +373,13 @@ function crumple(k: Kit, r: Random, x: number, y: number, z: number, s: number):
 
 function leaf(k: Kit, x: number, y: number, z: number, a: number, len: number, wid: number, lift: number, col: RGB): void {
   k.at(x, y, z, a)
-  const rows = 6
+  const rows = 8
   const pts: { p: V3; l: V3; r: V3; n: V3 }[] = []
   for (let i = 0; i <= rows; i++) {
     const t = i / rows
     const out = 2 + len * t * Math.cos(lift * (1 - t * 0.9))
     const up = len * (Math.sin(lift) * t - 0.55 * t * t * t) * 1.1
-    const w = wid * Math.sin(Math.PI * Math.pow(t, 0.7)) * 0.5 + 0.3
+    const w = wid * Math.pow(Math.sin(Math.PI * Math.pow(t, 0.62)), 0.8) * 0.5 + 0.2
     const slope = Math.atan2(len * (Math.sin(lift) - 1.65 * t * t) * 1.1, len * Math.cos(lift * (1 - t * 0.9)))
     const n: V3 = [-Math.sin(slope), 0, Math.cos(slope)]
     pts.push({ p: [out, 0, up], l: [out, w, up + w * 0.28], r: [out, -w, up + w * 0.28], n })
@@ -386,7 +392,7 @@ function leaf(k: Kit, x: number, y: number, z: number, a: number, len: number, w
       const s = side === 'l' ? 1 : -1
       const na: V3 = [A.n[0], -s * 0.28, A.n[2]]
       const nb: V3 = [B.n[0], -s * 0.28, B.n[2]]
-      k.quad(A.p, B.p, B[side], A[side], na, nb, nb, na, c0, SURF.matte)
+      k.quad(A.p, B.p, B[side], A[side], na, nb, nb, na, c0, SURF.satin)
       const ua: V3 = [-na[0], -na[1], -na[2]]
       const ub: V3 = [-nb[0], -nb[1], -nb[2]]
       k.quad(A.p, B.p, B[side], A[side], ua, ub, ub, ua, shade(c0, 0.6), SURF.matte)
@@ -403,7 +409,7 @@ export function cubicleScrews(z: Zone): [number, number, number][] {
   return out
 }
 
-export function buildCubicles(z: Zone): THREE.Object3D {
+export function buildCubicles(z: Zone, ctx: RealContext): THREE.Object3D {
   const b = boxOf(z, 'office.cubicles')
   const mats = matsOf(z)
   const root = new THREE.Group()
@@ -460,6 +466,7 @@ export function buildCubicles(z: Zone): THREE.Object3D {
   small(k, f, c, z, r)
 
   root.add(meshOf(k.done(), mats.solid, 'office.cubicles.body', { cast: false }))
+  f.takeFine(k).takeFine(coffeeFine(z, ctx)).takeFine(staplerFine(z))
   root.add(meshOf(f.done(), mats.solid, 'office.cubicles.trim', { fine: true }))
   const clear = meshOf(c.done(), mats.clear, 'office.cubicles.bottles')
   clear.renderOrder = 2
