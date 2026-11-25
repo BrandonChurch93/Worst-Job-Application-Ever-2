@@ -126,3 +126,105 @@ LIGHT AND FOCUS: lit by the machine's own lamps, warm amber and cold white point
 There are no words, letters, numbers, captions or labels anywhere in the image. The captions written under the cursors in the reference images must not be copied. No people, no hands, no fingers. No sheet of glass over the playfield. No fog, no smoke, no haze, no lens flare, no motion blur.
 ```
 
+### G3 · Tier 3, Corporate
+
+- File: `references/drafts/round-6/G3-tier-corporate.png`
+- Model: `seedream_5`
+- Takes made: 4 of 4 allowed. Kept: take 4.
+- Reference images passed in, in order: `references/guides/round-6/guide-tier-corporate.png` (the unlabeled guide); `references/drafts/round-6/G7-clear-ball.png` (the kept G7).
+
+Takes:
+
+- Take 1. Counts right: two flippers, two slingshots, three inserts, one tower, one revolving door, one beach box, one table with twelve chairs, five drop targets, three sticky notes, one ladder ramp; both signs spelled right. Misses: scribbles like handwriting on the three sticky notes; the revolving door is a closed glass drum; the lift tube stops a third of the way up and does not reach its door; three lamps each side, not two. Judge: "Most likely generated art", then named nine things. Failed.
+- Take 2 (made at the same time; same prompt plus a paragraph on finish). Counts right, both signs spelled right. Misses: three lines of scribble on each sticky note; gold marks like letters printed near the bottom left; the revolving door is a rimmed wheel of six wedges. Judge: "Most likely a screenshot (or promo capture) from a commercial pinball video game", then named seven things that could not work. Failed on the second question.
+- Take 3 (take 2 passed back in as a third reference with a list of nine changes). The model returned take 2 almost unchanged: same scribbles, same rimmed wheel. Judge: "Amateur generated art (AI image), fairly confident", then named eight things. Failed.
+- Take 4 (made at the same time as take 3; a fresh picture from the take 2 prompt, rewritten for every fault the two judges named: free-standing spinner, blank notes, entry flap and width for the ramp, tube joined to its door, lane widths, inlanes, no artwork like letters, deep focus, a scale paragraph). Counts right, both signs spelled right, no other writing. Judge: "Most likely generated art", then named nine things. Failed. Kept as the best of four: it is the only take with no writing off the list and with a way on and off the ramp.
+
+The judge's answer on the kept take:
+
+> picture-0304.png: verdict after viewing it at full size and zooming into each region.
+>
+> Q1. What is it most likely to be?
+> Most likely generated art, not a real screenshot from a commercial pinball video game. The finish is far above "amateur", and at a glance it passes for commercial pinball game key art, but the details say it was not captured from a shipping game.
+> - Polish is high: photoreal steel, marble, acrylic and lacquer, coherent warm lighting, shallow depth of field, and clean legible text ("Corporate HQ", "Retirement").
+> - Against a real game screenshot: no score, HUD, ball count or any UI, and the layout is not playable (see Q2). A shipped table has to be mechanically coherent.
+> - Against the other options: it is not a film frame (static top-down product view, no scene), not a textbook picture (no labels or diagram intent), and stock image is possible only in the sense that stock sites carry generated images.
+> - Rough confidence: generated about 80%, real game screenshot about 10%, stock about 5%, the rest negligible.
+>
+> Q2. Could a ball really travel every lane and ramp? No. Things that could not work:
+> - Contradictory direction arrows in one lane. The right-hand lane has three arrows pointing up, then two pointing down. The top lane points right on the left of the building, and on the right of the building one arrow points right and three point left.
+> - The top lane vanishes behind or under the Corporate HQ building, with no visible passage through it.
+> - The clear tube on the left has no usable exit. It runs from the orange elbow at top left to a closed rounded cap with a small spout into a bracket in the bottom-left corner, below the flipper line. A ball would be stuck or delivered straight to the drain.
+> - The "Retirement" beach box is sealed acrylic on all sides, so no ball can get in, even though the ramp arches right under it.
+> - The Corporate HQ doors are closed, with no visible opening, so the red-carpet lane has no visible way in.
+> - A four-blade turnstile on a brass post sits dead centre of that carpet lane. A straight shot hits the post, and the space either side is about one ball wide.
+> - The wire ramp is drawn as a ladder with handrails only at the arch. The rails are narrower than the ball, so it could ride them, but the straight climb has no side guards, and the far end finishes in curled wire loops above the right inlane with no clear drop or hand-off.
+> - The boardroom table and chairs are a solid block across the upper left. The five white rectangles and three sticky notes below it are flat, so nothing there is a lane or target a ball could use.
+> - No plunger or launch mechanism is visible; the right lane runs off the bottom of the frame.
+>
+> What does look workable: the two flippers, the marble slingshots, the inlane/outlane guides and the centre drain gap are roughly right, though the flippers are oversized relative to the ball (about 4.5 ball diameters long versus roughly 3 on a real table). The ball itself is a clear glass sphere with a mouse cursor inside, not steel.
+
+Judge result: FAILED both questions (STATED by the judge). Kept at the limit of four takes.
+
+What the kept take misses (MEASURED on the file unless marked):
+
+- The judge did not pass it: it called it generated art (about 80% sure) and named nine things that could not work.
+- Ball size (MEASURED). The ball is about 70 px across on the 1920 px frame, 1/27 of the width. The brief says 1/20. A flipper is about 4.5 to 4.8 of these balls long. The brief says 3.
+- Camera. Not straight down: the tower shows its whole glass front and the spinner stands on a tall brass post seen from the side. The brief says things lean "a very little".
+- Arrows. In the launch lane three arrows point up and two point down. Along the orbit lane the arrows left of the tower point right, and right of the tower one points right and three point left. The prompt asked for up and for left.
+- Orbit lane. It passes behind the tower and cannot be seen there.
+- Lobby doors. They are shut glass doors with handles, lit from inside. The prompt asked for doors standing open. They are about two balls wide, not three.
+- Revolving door. It is a four-vane glass spinner on a brass post in the middle of the carpet, with about one ball of carpet each side of it, not one and a half.
+- Lift tube. It joins the orange door at the top left, but its bottom end is a closed cap in a bracket in the bottom left corner. It should run on off the bottom of the frame.
+- Chute. Under the gap between the flippers there is a printed gold outline, not an opening in the board.
+- Ladder ramp. It has an entry flap, rungs, a U-turn under the beach box and comes down the right side, but it has side rails only round the turn, and its lower right end finishes in wire loops above the right inlane (STATED by the judge as no clear drop).
+- Drop targets and sticky notes. The five targets and the three notes read as flat on the board from this angle, not as standing targets.
+- No plunger in frame (the plunger is in tier 1; the launch lane runs off the bottom of this frame as the guide shows).
+- Ceramic border. Not in frame. The edge of the picture is the aluminum rail, as in the guide for the tier views.
+- Focus (STATED by the judge as shallow depth of field). I see the whole frame as sharp at full size; UNKNOWN which is right.
+- Words (MEASURED at full size): `Corporate HQ` and `Retirement`, both spelled right. No other letters or numbers found.
+
+Full prompt of the kept take:
+
+```text
+A screenshot from a finished commercial 3D pinball video game with photoreal graphics: one full screen of play, looking straight down at one tier of a pinball table. It looks exactly like a photograph of a real, physical pinball playfield taken from directly overhead with a long lens. 16:9. The tier fills the whole frame from its left edge to its right edge. Dense, designed, polished and readable: every part of the board is busy, nothing is bare, and every lane is clear to see.
+
+REFERENCE IMAGE 1 is a LAYOUT GUIDE made of flat coloured blocks. Follow it exactly for where each thing is and how big it is. Do not copy its flat colours or its flat look: every block stands for a real, solid, photographed pinball part, described below. REFERENCE IMAGE 2 shows the ball of this game, three times: a clear acrylic ball with a white arrow cursor sealed inside it. Use it only for how the ball looks. This image has exactly one ball.
+
+THE PLACE: the executive floor of a big company, built as a pinball playfield. The board is flat: midnight navy marble with fine gold inlay lines and art-deco gold pinstripes, printed as artwork under a thick glossy clear coat that shows sharp reflections of every lamp and part. Its light is cold white and gold. Everything that stands on the board is real pinball hardware or a small moulded playfield sculpture fixed among the hardware.
+
+THE FRAME, as in the guide. Far left edge: a brushed aluminum side rail with a fine straight grain. Just inside it, the lift: a clear acrylic tube with aluminum collars, one and a half balls wide, running straight up from the bottom edge of the frame to the upper left corner. At its top end it joins one small glossy orange lift door, whose open mouth faces right onto the board, so a ball carried up the tube rolls out there. The tube touches nothing else. Far right: the launch lane, a straight open channel running the full height of the frame beside the right aluminum rail. It is one and a half balls wide, plainly wider than the ball, and its floor is clear and empty, with a row of small identical arrow inserts set flush in the floor, every one pointing up the lane. At the top right corner it curves left in one smooth bend into the orbit lane. The orbit lane is an open lane of the same width along the whole top edge of the tier, between a curved steel wall above it and a low steel wall below it, its floor clear, with small identical arrow inserts set flush in the floor, every one pointing left. At the top left corner the orbit lane curves down and opens onto the board in a clear lane between the lift door and the left end of the boardroom table.
+
+UPPER PART, placed exactly as in the guide:
+- Top centre, the centerpiece and by far the biggest thing in the image: the company's headquarters, a tall glass-and-steel office tower seen from above. We see its flat steel roof and, because it leans a very little toward the top of the frame, a sliver of its glass front with lit windows and a pair of wide brass lobby doors at its foot, three balls wide, facing down the tier and standing open on a brightly lit lobby. Flat on the roof lies a lit sign with two words: "Corporate HQ".
+- One round white flasher dome at each side of the lobby doors, both lit bright white.
+- From the lobby doors a short red carpet ramp with brass edges runs down toward the middle of the tier.
+- On the carpet in front of the doors: the revolving door, one large four-vane spinner: a brass centre post with four flat glass vanes in a cross, each vane one and a half balls long, seen from above as a plain cross. It stands free: there is no ring, no rim, no drum and no wall round it, only bare red carpet, so it bats a ball that touches it.
+- Upper left: one long boardroom table of dark walnut with exactly twelve empty black leather chairs, six along each long side. Nobody is there. Along its near edge, a straight row of exactly five white drop targets.
+- Below the drop targets, a little to the right: exactly three standup targets shaped like yellow sticky notes, stepping down to the right. Each is plain blank yellow: nothing is written, printed or drawn on any of them.
+- Top right: one sealed clear acrylic box, lit warm from inside like sunshine, holding a tiny sunny beach: sand, turquoise water, one palm tree, one deck chair. It has no door and no lane leads to it. A small brass plate along the top edge of its lid carries one word: "Retirement".
+- Right, below the box: the corporate ladder, one chrome wire ramp for the ball, built like a ladder: two parallel chrome rails with rungs between them. It is one and a half balls wide between its rails, plainly wider than the ball, and the two rails stay the same distance apart from one end to the other. Its way on is its lower left end: a wide steel entry flap lying on the board in open floor to the right of centre, facing the flippers. From there it climbs up and to the right, makes one U-turn in front of the beach box, and comes straight down the right side. Its way off is its lower right end, where both rails end together, side by side, just above the board at the top of the right inlane. Nothing crosses it and it crosses no lane.
+
+LOWER PART, the same on every tier of this machine, placed exactly as in the guide:
+- A pair of glossy orange flippers at the bottom centre, each three balls long, on steel shafts, each with a black rubber band round it. Their pivots are wide apart and their tips point down toward the centre, with a gap one and a half balls wide between the tips.
+- Below the gap: the chute, a steel-edged opening in the board through which a missed ball falls to the tier below.
+- A slingshot above and outside each flipper: a triangle of polished white marble and chrome, with a rubber band round three posts and a lamp inside.
+- Outside each slingshot: an inlane and an outlane, each one and a half balls wide, divided by one chrome wire lane guide. The inlane runs between the slingshot and the guide and leads straight onto the base of the flipper, so a ball that rolls down it rolls onto the flipper. The outlane runs outside the guide and leads down past the flipper. Two lit amber lamps set flush in the floor on each side. No bolt or post stands in the mouth of a lane.
+- Above the flippers, in an arc: exactly three large round lit inserts set flat and flush in the board, level with its surface. Each shows one simple picture and no words. Left: a magnifying glass. Middle: an hourglass. Right: a clipboard. They glow ice blue, white and gold.
+- Everywhere between these: printed gold artwork of straight lines, arcs, fans and chevrons only, rows of small identical lit arrow and circle inserts along the lanes, steel posts with rubber rings, small lamps. None of the artwork looks like letters, numbers or writing. Nothing stands in a lane.
+
+THE BALL: exactly one ball, the clear acrylic ball of reference image 2, one twentieth of the frame's width across. It is on the red carpet at the lower edge of the revolving door, touching one of its vanes. We look down through the top of the clear ball at the solid white arrow cursor with its black edge lying inside it; the arrow is three quarters of the ball's width and is plain to see. A crisp highlight on the ball and a soft shadow under it.
+
+FINISH: the level of the best modern 3D pinball simulations on sale today. Rich contrast, glowing lamps, deep sharp reflections in the clear coat, crisp moulded plastics with printed art, chrome wire, brass, real screws, posts and rubber rings. The tower stands tall toward the camera: its roof is the nearest thing to the lens, and the perspective shows slivers of its glass sides.
+
+LIGHT: every lamp is on. General lighting round the edges of the tier, a lamp under every insert, both flasher domes, lit windows in the tower, the warm glow of the beach box. Light from each insert spills onto the post beside it. Cold white and gold overall.
+
+CAMERA: directly overhead, long lens, so things that stand up lean only a very little outward toward the edges of the frame and show a sliver of their sides. Deep focus: every part of the image is sharp from edge to edge, with no soft or blurred area anywhere.
+
+LETTERING: the only words anywhere in the image are "Corporate HQ" on the tower's roof and "Retirement" on the beach box, spelled exactly like that. There are no other letters or numbers anywhere: no score, no display, no labels, no captions, no brand, no logo. Inserts and plastics carry only pictures, arrows, circles, stars and stripes.
+
+NOT IN THE IMAGE: no people, no hands, no faces; no cabinet, no legs, no room, no floor, no sheet of glass over the playfield; no fog, smoke, haze, lens flare or blur; not pixel art, not a flat illustration, not a cartoon, not a diorama, not a model railway.
+
+SCALE, with the ball as the unit: the frame is twenty balls wide and eleven tall. A flipper is three balls long. Every lane, the ramp and the lift tube are one and a half balls wide, so the ball fits in each of them with room to spare. The tower's footprint is four balls wide.
+```
+
