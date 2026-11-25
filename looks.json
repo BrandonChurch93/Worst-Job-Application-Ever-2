@@ -1,35 +1,35 @@
 {
   "folder": "keyboard",
-  "pushed": "2026-11-25T14:00:41.770Z",
-  "commit": "e46d07bd1d6a8fb8946e68eb87cac77fb5e3767f",
+  "pushed": "2026-11-25T14:49:09.975Z",
+  "commit": "80ee502889429af541c6e9052015e9c163511346",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "step1-fire at review tier: the approved image above, this build below. Deck, key field, instanced caps, hatches, turrets, flash, scorches",
-      "time": "2026-11-25T13:59:45.741Z",
+      "caption": "Still step1-step1_firstName-0p2606-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-25T14:46:16.754Z",
       "by": "keyboard",
-      "from": "out/work/look-a2-compare.jpg"
+      "from": "out/work/stills/step1-step1_firstName-0p2606-hd-review.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "The left turret and the caps at native size: approved above, this build below",
-      "time": "2026-11-25T13:59:46.044Z",
+      "caption": "Review tier under the 20 degree lens: approved above, built below. Darker deck, rounded turret crown, thin bolt, scorch with a singed halo",
+      "time": "2026-11-25T14:49:08.350Z",
       "by": "keyboard",
-      "from": "out/work/look-b2-turret.jpg"
+      "from": "out/work/look-j-compare.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "A bolt in flight at review tier, step1.firstName at 0.515 (before the turret was made plainer)",
-      "time": "2026-11-25T13:59:46.418Z",
+      "caption": "Right turret, Enter and a bolt in flight at review tier",
+      "time": "2026-11-25T14:49:08.592Z",
       "by": "keyboard",
-      "from": "out/work/look-c-bolt.jpg"
+      "from": "out/work/look-k-turret.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "The shuffle, step1.lastName at 0.1, review tier: caps in the air, hatches shut",
-      "time": "2026-11-25T13:59:46.797Z",
+      "caption": "Scorches on the caps at review tier, 2x",
+      "time": "2026-11-25T14:49:08.830Z",
       "by": "keyboard",
-      "from": "out/work/look-d2-shuffle.jpg"
+      "from": "out/work/look-l-scorch.jpg"
     }
   ]
 }
