@@ -8,7 +8,7 @@ import { zone, zones } from '../src/table/real/zone'
 import { CHANNELS, LIT } from '../src/table/real/lights/groups'
 import { hook } from '../src/table/real/lights/hook'
 import { groupsOf, levels, parts, solo } from '../src/table/real/lights/index'
-import { fall, picturesOf, TEXEL } from '../src/table/real/lights/pictures'
+import { fall, LEAN, picturesOf, TEXEL } from '../src/table/real/lights/pictures'
 import { BUMPER } from '../src/table/real/lights/colours'
 import { buildLamps } from '../src/table/real/lights/lamps'
 
@@ -150,6 +150,28 @@ describe('the pictures of light', () => {
     expect(fall(100 * 100, 1e6)).toBeCloseTo(1, 3)
     expect(fall(300 * 300, 300)).toBe(0)
     expect(fall(90 * 90, 300)).toBeGreaterThan(fall(120 * 120, 300))
+  })
+  it('keep the lean of the general lighting in the channel the flash leaves free, and lean it between two lamps too', () => {
+    for (const id of ['corporate', 'office', 'street']) {
+      const z = zone(id)
+      const p = picturesOf(z)
+      const groups = groupsOf(id)
+      expect(groups[LEAN]?.name ?? 'flash').toBe('flash')
+      const lean = p.planes[LEAN]!
+      for (let i = 0; i < lean.length; i += 53) {
+        expect(lean[i]).toBeGreaterThanOrEqual(0)
+        expect(lean[i]).toBeLessThanOrEqual(1.0001)
+      }
+      const rail = groups[0]!.sources.filter((s) => s.z < 100).sort((a, b) => a.y - b.y || a.x - b.x)
+      const pair = rail.find((a, n) => rail[n + 1] !== undefined && Math.abs(rail[n + 1]!.y - a.y) < 1 && rail[n + 1]!.x - a.x > 60)
+      expect(pair).toBeDefined()
+      const next = rail[rail.indexOf(pair!) + 1]!
+      const i = Math.floor(((pair!.x + next.x) / 2 + 960) / TEXEL)
+      const j = Math.floor((pair!.y + z.height / 2) / TEXEL)
+      const at = j * p.width + i
+      expect(lean[at]).toBeGreaterThan(0.5)
+      expect(Math.hypot(p.planes[CHANNELS]![at]!, p.planes[CHANNELS + 1]![at]!)).toBeLessThan(lean[at]!)
+    }
   })
 })
 
