@@ -8,14 +8,55 @@ import { CENTRE, inside } from './shape'
 import { detailTexture } from './texture'
 
 const DROPS = 26
-const STEAM = 54
+const STEAM = 96
 const SMOKE_POINTS = 4
 const SMOKE_EACH = 36
 const DUST = 22
 const PUFFS = STEAM + SMOKE_POINTS * SMOKE_EACH + DUST
 const SEED = config.seed
 const HOVER = config.scale.heights.cursorHover
-const WISPS: [number, number, number][] = [[3.1, 4.6, 15], [5.4, 6.9, 12.5], [6.9, 8.6, 10]]
+const FACE_DROPS = 18
+// Where each bead sits: the first lot spread over the face with room between them, the rest a trail on the page off the right edge.
+const HOMES: [number, number][] = (() => {
+  const out: [number, number][] = []
+  for (let i = 0; i < FACE_DROPS; i++) {
+    let best: [number, number] = [2.6, 8]
+    let room = -1
+    for (let k = 0; k < 40; k++) {
+      const y = 2.6 + 12.4 * hash01(i * 41 + k, 3, SEED)
+      const x = 0.6 + 9 * hash01(i * 41 + k, 4, SEED)
+      if (inside(x, y) < 0.95) continue
+      let near = 99
+      for (const o of out) near = Math.min(near, Math.hypot(o[0] - x, o[1] - y))
+      if (near > room) {
+        room = near
+        best = [x, y]
+      }
+      if (near > 2.1) break
+    }
+    out.push(best)
+  }
+  for (let i = FACE_DROPS; i < DROPS; i++) {
+    const k = i - FACE_DROPS
+    const y = 4.6 + 1.3 * k + 0.7 * hash01(i, 8, SEED)
+    let x = 0.9
+    while (x < 14 && inside(x, y) > 0.3) x += 0.2
+    out.push([x + 0.5 + 1.5 * hash01(i, 9, SEED), y])
+  }
+  return out
+})()
+// The order the beads come in: face and trail by turns, so a little sweat already shows both.
+const ORDER: number[] = (() => {
+  const out: number[] = new Array(DROPS).fill(0)
+  let f = 0
+  let t = FACE_DROPS
+  for (let n = 0; n < DROPS; n++) {
+    const trail = t < DROPS && (n % 3 === 2 || f >= FACE_DROPS)
+    out[trail ? t++ : f++] = n
+  }
+  return out
+})()
+const WISPS: [number, number, number][] = [[2.6, 4.4, 15], [4.0, 6.2, 12.5]]
 
 const clamp01 = (v: number): number => Math.min(1, Math.max(0, v))
 const smooth = (v: number): number => {
@@ -192,79 +233,34 @@ class Effects implements EffectsModel {
       const floor = -HOVER + 0.05
       const p = this.p
       for (let i = 0; i < DROPS; i++) {
-        const on = clamp01(amount * (DROPS + 1) - i)
+        const on = clamp01(amount * (DROPS + 1) - ORDER[i]!)
         if (on <= 0) continue
-        const period = 1.5 + 1.3 * hash01(i, 1, SEED)
+        const home = HOMES[i]!
+        const period = 3.2 + 2.6 * hash01(i, 1, SEED)
         const clock = look.time / period + hash01(i, 2, SEED)
         const cycle = Math.floor(clock)
         const t = clock - cycle
-        let x = 2.6
-        let y = 8
-        for (let k = 0; k < 8; k++) {
-          const hy = 3 + 11.5 * hash01(i * 31 + k, cycle, SEED + 4)
-          const hx = 0.9 + (Math.min(hy, 11.4) * 0.98 - 1.8) * hash01(i * 31 + k, cycle, SEED + 3)
-          if (inside(hx, hy) > 0.95) {
-            x = hx
-            y = hy
-            break
-          }
-        }
-        const size = (0.5 + 1.0 * Math.pow(hash01(i, cycle, SEED + 5), 1.9)) * (0.8 + 0.2 * amount) * on * UNIT
-        const flyer = hash01(i, cycle, SEED + 6) < 0.22
-        let r = size
-        let long = 1
-        let high = 0.8
-        let angle = 0
-        if (flyer) {
-          this.on(surface, CENTRE[0], CENTRE[1], this.a)
-          this.on(surface, x, y, p)
-          const ox = p.x - this.a.x
-          const oy = p.y - this.a.y
-          const len = Math.max(1e-3, Math.hypot(ox, oy))
-          const far = (2.5 + 3 * hash01(i, cycle, SEED + 7)) * UNIT
-          const grow = smooth(t / 0.18)
-          const w = clamp01((t - 0.18) / 0.5)
-          const out = 1 - (1 - w) * (1 - w)
-          const z0 = p.z
-          p.x += (ox / len) * far * out
-          p.y += (oy / len) * far * out - 1.5 * UNIT * w * w
-          p.z = z0 + (floor - z0) * w * w + 2.5 * UNIT * w * (1 - w) * 2
-          angle = Math.atan2(oy, ox) - Math.PI / 2
-          long = 1 + 0.5 * Math.sin(Math.PI * w)
-          r = size * 0.7 * grow
-          if (t > 0.68) {
-            const v = (t - 0.68) / 0.32
-            p.z = floor
-            high = 0.8 - 0.55 * smooth(v * 3)
-            r *= (1 + 0.25 * smooth(v * 3)) * (1 - smooth((v - 0.35) / 0.65))
-          }
+        const big = Math.pow(hash01(i, 5, SEED), 2.4)
+        const size = (0.2 + 0.46 * big) * (0.85 + 0.15 * amount) * on * UNIT
+        const grow = smooth(t / 0.16)
+        const gone = 1 - smooth((t - 0.86) / 0.14)
+        let r = size * grow * gone
+        let long = 1.12 + 0.3 * big
+        let high = 0.62
+        if (i < FACE_DROPS) {
+          const u = clamp01((t - 0.3) / 0.56)
+          const ran = (0.25 + 1.1 * big) * u * u
+          this.on(surface, home[0] + dx * ran, home[1] + dy * ran, p)
+          long += 0.35 * big * Math.sin(Math.PI * u)
         } else {
-          let reach = 0
-          for (let k = 0; k < 48; k++) {
-            if (inside(x + dx * (reach + 0.35), y + dy * (reach + 0.35)) < 0.3) break
-            reach += 0.35
-          }
-          const grow = smooth(t / 0.3)
-          const u = clamp01((t - 0.3) / 0.42)
-          const ran = reach * u * u
-          this.on(surface, x + dx * ran, y + dy * ran, p)
-          r = size * grow
-          long = 1 + 0.55 * Math.sin(Math.PI * Math.min(1, u * 1.1))
-          if (t > 0.72) {
-            const v = (t - 0.72) / 0.28
-            const fall = clamp01(v / 0.4)
-            p.y -= (0.8 + 1.6 * fall) * UNIT * fall
-            p.z += (floor - p.z) * fall * fall
-            long = 1 + 0.3 * Math.sin(Math.PI * fall)
-            if (fall >= 1) {
-              const w = (v - 0.4) / 0.6
-              high = 0.8 - 0.55 * smooth(w * 3)
-              r *= (1 + 0.3 * smooth(w * 3)) * (1 - smooth((w - 0.3) / 0.7))
-            }
-          }
+          this.on(surface, home[0], home[1], p)
+          p.z = floor
+          high = 0.5
+          long = 1.05
+          r *= 0.9
         }
         if (r < 0.02) continue
-        this.q.setFromAxisAngle(this.up, angle)
+        this.q.setFromAxisAngle(this.up, 0)
         this.s.set(r, r * long, r * high)
         this.m.compose(p, this.q, this.s)
         this.drops.setMatrixAt(n++, this.m)
@@ -307,7 +303,7 @@ class Effects implements EffectsModel {
       const size = (thin + (wide - thin) * Math.pow(t, 1.5)) * (0.8 + 0.4 * hash01(i, cycle, SEED + salt + 1)) * UNIT
       const long = 3.4 - 1.6 * t
       const shade = dark + (pale - dark) * t
-      const alpha = amount * dense * smooth(t / (thin < 0.25 ? 0.22 : 0.06)) * Math.pow(1 - t, 0.8) * (1 - 0.3 * t * t)
+      const alpha = amount * dense * smooth(t / (thin < 0.25 ? 0.1 : 0.06)) * Math.pow(1 - t, 0.8) * (1 - 0.3 * t * t)
       n = this.puff(n, x + off * UNIT, y + h * UNIT, z + (0.1 + 3.2 * t + 0.5 * s * t) * UNIT, size, size * long, size * 0.7, -Math.atan(slope), shade, shade * 1.005, shade * 1.02, alpha, salt * 13 + i * 7 + cycle * 3)
     }
     return n
@@ -320,7 +316,7 @@ class Effects implements EffectsModel {
       // Wisps leave the heated face itself, each from its own place, and curl before they thin.
       WISPS.forEach((w, i) => {
         this.on(surface, w[0], w[1], this.a)
-        n = this.plume(n, this.a.x, this.a.y, this.a.z, steam, look.time, STEAM / WISPS.length, 2, w[2], 1.9 + 0.3 * i, 0.2, 2.1, 1.0, 1.0, 0.62, 3 + i * 5)
+        n = this.plume(n, this.a.x, this.a.y, this.a.z, steam, look.time, STEAM / WISPS.length, 2, w[2], 1.9 + 0.3 * i, 0.14, 2.3, 1.3, 1.18, 0.55, 3 + i * 5)
       })
     }
     const points = Math.min(SMOKE_POINTS, look.smoke.length)

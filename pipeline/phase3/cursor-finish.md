@@ -67,7 +67,7 @@ is untouched. What tint remains comes from bloom over the body, which is the lig
 
 ## Tests
 
-No test changed in the first push. MEASURED: `npm test` 1230 passed, `npm run build` built,
+No test changed in any push so far. MEASURED: `npm test` 1230 passed, `npm run build` built,
 `npm run bots` all clear, on the working tree before the first commit.
 
 ## Textures
@@ -88,3 +88,42 @@ MEASURED: `npm run measure -- --unit step1` (draft tier): 7 green, 1 red. The re
 `step1-fire`, soft share 0.0216 against 0.02. MEASURED on main 9443fc4 with my changes stashed,
 same command: the same red, the same 0.0216 of 21935 pixels. It is the draft tier's, not this
 branch's. STATED in the brief: 0.0159 on main at review tier.
+
+## Item 2: angry
+
+What was wrong beside the approved sheet: the tip was a washed salmon patch with a hard ragged edge to
+white, and the steam was faint, wide and began off the face.
+
+- The glow's colours were too high in green: `(1.05, 0.1, 0.012)` in linear light is sRGB green 89.
+  MEASURED on the approved image: the red is `(179, 3, 7)`, the tip `(102, 9, 4)`. The ramp is now
+  pale `(1.3, 0.8, 0.35)`, orange `(1.25, 0.3, 0.02)`, red `(0.9, 0.015, 0.003)`, deep
+  `(0.16, 0.003, 0.001)` at the tip.
+- The falloff is long and soft: 8 units from nothing to full, a warm tint on the white before the
+  glow covers it, less noise on the front (1.3 and 0.5, was 2.4 and 1.2).
+- The coat and the specular are cut where it glows (0.88 and 0.8), else the studio's reflection
+  washes the red to pink.
+- Fine bright flecks in the orange part.
+- Decision: the glow shows from heat 0.05 (was 0.3) and reaches `4.6 + 4.2 * heat` units, so the
+  tug, which sends 0.28, has a glowing tip. The acting side's numbers are untouched.
+- Steam: 2 wisps of 48 quads (was 3 of 18), foot 0.14 units wide, brighter than the page (1.3 to
+  1.18), fades in over a tenth of its height (was 0.22) so it leaves the face itself.
+
+Still wrong: no deep dark red at the very tip; the steam is ribbons more than curls; the warm
+spill on the page comes from the emitter in `body.ts` (not mine), which gives light only over
+heat 0.3 and is faint.
+
+## Item 3: nervous
+
+What was wrong: beads ran down the face and bunched at the lower left edge and under the neck, and
+were large bubbles.
+
+- 18 beads have fixed homes on the face, placed once from the seed with room between them (2.1
+  units where it can be had). Each grows, sits, slides a short way down and dries, each on its own
+  clock (3.2 to 5.8 s).
+- 8 beads are a trail on the page off the right edge, 0.5 to 2 units out, from 4.6 to 14 units
+  down.
+- Radius 0.2 to 0.66 units (was 0.5 to 1.5), a little long down the slope.
+- Face and trail come in by turns as the sweat rises, so a little sweat shows both.
+
+Still wrong: the beads are faint on the white face at sheet size; the approved ones have a darker
+edge and a stronger shadow.

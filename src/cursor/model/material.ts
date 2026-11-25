@@ -211,18 +211,24 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
     wjaGlow += vec3( 1.3, 0.42, 0.05 ) * coal * 1.6;
   }
 
-  // Heat: a glow inside the enamel that climbs from the tip.
+  // Heat: the enamel glows from inside, deep red at the tip, through orange to a pale warm white where it dies out.
   if ( heat > 0.0 ) {
-    float front = heat * 8.8;
-    float h = smoothstep( front + 0.7, front - 4.0, along + ( wide.g - 0.5 ) * 2.4 + ( mid.b - 0.5 ) * 1.2 ) * smoothstep( 0.3, 0.6, heat );
-    vec3 ember = mix( vec3( 1.1, 0.7, 0.3 ), vec3( 1.25, 0.56, 0.06 ), smoothstep( 0.04, 0.2, h ) );
-    ember = mix( ember, vec3( 1.2, 0.3, 0.02 ), smoothstep( 0.2, 0.42, h ) );
-    ember = mix( ember, vec3( 0.86, 0.04, 0.012 ), smoothstep( 0.42, 0.8, h ) );
-    float streak = 0.82 + 0.36 * mid.g * fine.b * 2.0;
-    float body = smoothstep( 0.0, 0.2, h ) * face;
-    col = mix( col, ember * 0.1, body );
-    wjaGlow += ember * body * 0.72 * streak;
+    float on = smoothstep( 0.05, 0.3, heat );
+    float front = 4.6 + 4.2 * heat;
+    float h = smoothstep( front + 2.4, front - 5.6, along + ( wide.g - 0.5 ) * 1.3 + ( mid.b - 0.5 ) * 0.5 ) * on;
+    vec3 ember = mix( vec3( 1.3, 0.8, 0.35 ), vec3( 1.25, 0.3, 0.02 ), smoothstep( 0.05, 0.36, h ) );
+    ember = mix( ember, vec3( 0.9, 0.015, 0.003 ), smoothstep( 0.4, 0.68, h ) );
+    ember = mix( ember, vec3( 0.16, 0.003, 0.001 ), smoothstep( 0.78, 1.0, h ) );
+    float warm = smoothstep( 0.0, 0.25, h ) * face;
+    float body = smoothstep( 0.03, 0.36, h ) * face;
+    col = mix( col, col * vec3( 1.0, 0.8, 0.5 ), warm * 0.8 );
+    col = mix( col, ember * 0.12, body );
+    float vein = smoothstep( 0.7, 0.82, fine.b * 0.8 + mid.g * 0.4 ) * smoothstep( 0.15, 0.4, h ) * ( 1.0 - smoothstep( 0.8, 1.0, h ) );
+    wjaGlow += ember * body * ( 0.95 + 0.3 * mid.g );
+    wjaGlow += vec3( 1.5, 0.95, 0.3 ) * vein * face * 1.2;
     wjaGlow += ember * h * ink * 0.1;
+    wjaCoat *= 1.0 - 0.88 * body;
+    wjaSpec *= 1.0 - 0.8 * body;
   }
 
   // Melt: the enamel runs over its own edge, wet and a little warmer.
