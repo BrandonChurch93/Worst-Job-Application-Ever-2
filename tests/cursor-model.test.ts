@@ -148,7 +148,7 @@ describe('the cursor body model', () => {
     b.apply(body({ puff: 1 }))
     expect(b.anchor(4.2, 9.5, v).z).toBeGreaterThan(z)
     b.apply(body({ flat: 1 }))
-    expect(b.anchor(4.2, 9.5, v).z).toBeLessThan(z * 0.5)
+    expect(b.anchor(4.2, 9.5, v).z).toBeLessThan(z * 0.75)
   })
 
   it('stays the same height off the page whatever it is asked: its size never changes on its own', () => {

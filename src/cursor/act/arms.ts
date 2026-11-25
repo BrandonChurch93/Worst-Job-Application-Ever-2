@@ -6,7 +6,7 @@ import type { ArmsLook, ArmsModel } from '../contract'
 
 // Sizes in page pixels. The arm is 4.4% of the body's height thick, the hand a fifth of it long.
 const H = config.cursor.heightPxAt1080
-export const ARM = { radius: H * 0.022, rest: 62, along: 22, round: 10, grainPx: 64, slack: 1.04 }
+export const ARM = { radius: H * 0.027, rest: 62, along: 22, round: 10, grainPx: 64, slack: 1.04 }
 const HAND = { palm: [4.6, 4.7, 2.7], palmY: 4.8, finger: 1.5, joint: 3.1, cuff: 2.5, cuffTube: 1.05, joints: 8 }
 
 export interface Arms extends ArmsModel {
@@ -157,7 +157,7 @@ class Limb {
   }
 }
 
-const HAND_SCALE = 1.08
+const HAND_SCALE = 1.18
 
 interface Draw { position: THREE.BufferAttribute; normal: THREE.BufferAttribute; palms: THREE.InstancedMesh; cuffs: THREE.InstancedMesh; joints: THREE.InstancedMesh }
 
