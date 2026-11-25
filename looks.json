@@ -1,35 +1,35 @@
 {
   "folder": "step1-script",
-  "pushed": "2026-11-25T15:58:27.032Z",
-  "commit": "7efbaddd995af06c473696df92769f75b1081094",
+  "pushed": "2026-11-25T16:10:23.633Z",
+  "commit": "1b110fb20500b396359cca4db75fc6e309b4a968",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still step1-step1_firstName-0p5-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-25T15:53:16.301Z",
+      "caption": "Contact sheet, the beat step1.tug: 12 frames from 0:36.00 to 0:42.23, draft tier, preview",
+      "time": "2026-11-25T16:05:25.546Z",
       "by": "step1-script",
-      "from": "out/work/stills/step1-step1_firstName-0p5-hd-review.png"
+      "from": "out/work/sheets/sheet-beat-step1_tug-preview-draft.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Still step1-step1_tug-0p5-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-25T15:53:29.704Z",
+      "caption": "Contact sheet, the beat step1.tug: 12 frames from 0:36.00 to 0:42.23, draft tier, preview",
+      "time": "2026-11-25T16:06:37.196Z",
       "by": "step1-script",
-      "from": "out/work/stills/step1-step1_tug-0p5-hd-draft.png"
+      "from": "out/work/sheets/sheet-beat-step1_tug-preview-draft.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Key step1-fire: approved on the left, this build on the right, review tier, with crops of cursor, keys, hatch, keyboardDeck.corner, field.start, type, progressButton, chip, card.corner",
-      "time": "2026-11-25T15:58:10.488Z",
+      "caption": "step1-tug key still beside the approved image: the frame ends in the gutter, no field or label of the right column in it, the Resume label whole",
+      "time": "2026-11-25T16:10:22.060Z",
       "by": "step1-script",
-      "from": "out/work/compare/compare-step1-fire.jpg"
+      "from": "out/work/report/step1-script-tug-beside-approved-4.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "step1-fire at 7efbadd beside the approved image: the cursor has fled up and right to the 5 key, one bolt in the air by F, burn on K",
-      "time": "2026-11-25T15:58:25.605Z",
+      "caption": "the tug beat in twelve frames with the new camera: from 22.1 s the right column and the lead line are out of frame",
+      "time": "2026-11-25T16:10:22.352Z",
       "by": "step1-script",
-      "from": "out/work/report/step1-script-fire-beside-approved-5.jpg"
+      "from": "out/work/report/sheet-step1-tug-4-1200.jpg"
     }
   ]
 }
