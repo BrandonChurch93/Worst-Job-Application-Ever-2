@@ -241,7 +241,7 @@ export async function soundChecks(a, P, c, M) {
     for (const r of records) {
       const lacks = []
       if (!ledger.takes.some((t) => t.sha256 === r.take.sha256)) lacks.push('its take in the log')
-      if (!(r.kind === 'line' ? r.words : r.prompt)) lacks.push(r.kind === 'line' ? 'its words' : 'its prompt')
+      if (!(r.kind !== 'cue' ? r.words : r.prompt)) lacks.push(r.kind !== 'cue' ? 'its words' : 'its prompt')
       if (!r.measured || !r.take.measured) lacks.push('its measurements')
       if (!r.listener) lacks.push("the listener's answers")
       if (!assets.includes(`audio/kept/${r.file}`)) lacks.push('its row in ASSETS.md')
@@ -326,7 +326,7 @@ export async function soundChecks(a, P, c, M) {
     }
   }
 
-  const lineRecords = records.filter((r) => r.kind === 'line')
+  const lineRecords = records.filter((r) => r.kind !== 'cue')
   if (!lineRecords.length) add('A10', 'not yet', 'no narrator line is kept')
   else {
     const bad = []

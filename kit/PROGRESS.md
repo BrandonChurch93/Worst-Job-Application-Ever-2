@@ -266,7 +266,7 @@ Kept by `npm run judged -- --write`. Check G6 compares its ids with the computed
 | `site:boss` | `site` | step 4 at rest, drawn through the live site's own path at the high level, from home, in hd |  |
 | `site:decision` | `site` | step 5 at rest, drawn through the live site's own path at the high level, from home, in hd |  |
 
-47 frames of the films and the loop. The frame numbers are those of the build of 2026-11-25T10:14:40Z. A judged frame is found again by its id when it is rendered, so a beat's frame follows its event.
+47 frames of the films and the loop. The frame numbers are those of the build of 2026-11-25T10:51:11Z. A judged frame is found again by its id when it is rendered, so a beat's frame follows its event.
 
 | Id | Unit | What | Frame |
 | --- | --- | --- | --- |
@@ -439,17 +439,17 @@ Each with its name, its folders, its branch and its looks branch, when it starte
 
 | Agent | Kind | Owns | Branch | Started | Limit | Last seen |
 | --- | --- | --- | --- | --- | --- | --- |
-| `pinball_builder` | build, sandbox | `src/table/`, `src/pages/step3/`, `tools/paths.mjs`, `tools/take.mjs`, `cut/TABLE-TAKE.json` | `agent/pinball` | 2026-11-25T08:41:30Z | 11:40Z | 09:52Z push; improving until its limit; fourth take search allowed for the last-save key |
-| `step1_builder` | build, sandbox | `src/pages/step1/` | `agent/step1` | 2026-11-25T08:41:30Z | 11:41Z | released 10:12Z: its part is merged, nothing more asked |
-| `step2_builder` | build, sandbox | `src/pages/step2/` | `agent/step2` | 2026-11-25T08:41:30Z | 11:41Z | released 10:12Z: its part is merged, nothing more asked |
-| `boss_builder` | build, sandbox | `src/pages/step4/`, `src/boss/` | `agent/boss` | 2026-11-25T08:41:30Z | 11:41Z | released 10:12Z: its part is merged, nothing more asked |
-| `marketing_builder` | build, sandbox | `src/pages/marketing/` | `agent/marketing` | 2026-11-25T08:41:30Z | 11:40Z | 10:03Z asked: the perk card as one slab; answer by 11:10Z if it cannot |
-| `step5_builder` | build, sandbox | `src/pages/step5/` | `agent/step5` | 2026-11-25T08:41:30Z | 11:41Z | released 10:12Z: its part is merged, nothing more asked |
-| `harness_builder` | build, sandbox | `tools/film.mjs`, `seq.mjs`, `sheet.mjs`, `loop.mjs`, `render-local.mjs`, `stress.mjs` | `agent/harness` | 2026-11-25T08:49:20Z | 11:49Z | 10:12Z new work: keep --film, parts, simcache, hostcheck |
+| `pinball_builder` | build, sandbox | `src/table/`, `src/pages/step3/`, `tools/paths.mjs`, `tools/take.mjs`, `cut/TABLE-TAKE.json` | `agent/pinball` | 2026-11-25T08:41:30Z | 11:40Z | 10:39Z sent the red measures of its unit (M4 insert labels, M7 bumper, flasher, scoop-kick) and two flag names; merged at 61fc270 |
+| `step1_builder` | build, sandbox | `src/pages/step1/` | `agent/step1` | 2026-11-25T08:41:30Z | 11:20Z | 10:39Z called back: red measures M5 (tug), M7 (strips-zip), M9 (deck) |
+| `step2_builder` | build, sandbox | `src/pages/step2/` | `agent/step2` | 2026-11-25T08:41:30Z | 11:20Z | 10:39Z called back: red measures M5 (crank), M7 (dial-fling, coins, peel-up) |
+| `boss_builder` | build, sandbox | `src/pages/step4/`, `src/boss/` | `agent/boss` | 2026-11-25T08:41:30Z | 11:20Z | 10:39Z called back: red measure M5 (verify-card at rest) |
+| `marketing_builder` | build, sandbox | `src/pages/marketing/` | `agent/marketing` | 2026-11-25T08:41:30Z | 11:10Z | 10:31Z slab merged at 57b9edb; asked to shorten the dark moment past half way |
+| `step5_builder` | build, sandbox | `src/pages/step5/` | `agent/step5` | 2026-11-25T08:41:30Z | 11:20Z | 10:39Z called back: red measures M4 (stamp), M7 (stamp, peel-up) |
+| `harness_builder` | build, sandbox | `tools/film.mjs`, `seq.mjs`, `sheet.mjs`, `loop.mjs`, `render-local.mjs`, `stress.mjs`, `keep.mjs`, `parts.mjs`, `simcache.mjs`, `hostcheck.mjs` | `agent/harness` | 2026-11-25T08:49:20Z | 11:49Z | 10:34Z keep --film and parts merged at e5f5e77; simcache and hostcheck to come |
 | `film_builder` | build, sandbox | `src/film/`, `tools/cut.mjs`, `cut/CUTLIST.json`, `cut/CUES.md`, `cut/SHOTS.md` | `agent/film` | 2026-11-25T08:49:20Z | 11:49Z | released 10:12Z: its part is merged, nothing more asked |
-| `interface_builder` | build, sandbox | `src/ui/`, `src/probe/` | `agent/ui` | 2026-11-25T08:49:20Z | 11:49Z | 10:06Z report 3; cannot push (sign-in from its VM fails), code complete at 68549d0 |
-| `sound_builder` | build, sandbox | `src/audio/`, `tools/sound.mjs`, `tools/mix.mjs`, `audio/`, `public/audio/` | `agent/audio` | 2026-11-25T08:49:20Z | 11:49Z | 10:08Z; start() and stop() merged at b6aea13 |
-| `measure_builder` | build, sandbox | `tools/measure.mjs`, `tools/lib/measure-*.mjs`, `src/diagnostics/` | `agent/measure` | 2026-11-25T10:12:00Z | 13:00Z | started |
+| `interface_builder` | build, sandbox | `src/ui/`, `src/probe/` | `agent/ui` | 2026-11-25T08:49:20Z | 11:49Z | 10:31Z done: its last two note lines put on main by the Builder; nothing open |
+| `sound_builder` | build, sandbox | `src/audio/`, `tools/sound.mjs`, `tools/mix.mjs`, `audio/`, `public/audio/` | `agent/audio` | 2026-11-25T08:49:20Z | 11:49Z | 10:33Z opening sounds for film A merged at 8ff5a2d; nothing more asked |
+| `measure_builder` | build, sandbox | `tools/measure.mjs`, `tools/lib/measure-*.mjs`, `src/diagnostics/` | `agent/measure` | 2026-11-25T10:12:00Z | 13:00Z | 10:31Z M4 M5 M6 M7 M9 M10 and the view hook merged at 24f3d58; M1 M8 M3 M2 to come |
 
 Ten build agents, the most the kit allows beside six critic slots. Each brief names the approved images of its part, gives its sections of the kit word for word, and repeats the three rules. First complete versions wanted by 10:45Z to 10:50Z. A build agent silent for 45 minutes is replaced once from its branch. The Builder keeps for itself: `tools/parts.mjs`, `simcache.mjs`, `pack.mjs`, `measure.mjs`, `hostcheck.mjs`, the gate checks, the diagnostic views, `src/main.ts`, `src/app.ts` and the frame interface.
 
@@ -457,7 +457,7 @@ Ten build agents, the most the kit allows beside six critic slots. Each brief na
 
 One line per round: its number, the unit, the commit it judges, the parts ticked off, the scores, and what changes next.
 
-- Round 1, unit `blockout`, critic R4 blockout, judges commit 0dfc589, started 2026-11-25T10:34:28Z. Parts: machine checks [ ]; measures [ ]; pack [ ]; critics asked [ ]; reviewer-01 in [ ]; reviewer-02 in [ ]; reviewer-03 in [ ]; key released [ ]; issues read [ ]; summary [ ]. Scores: not in yet. What changes next: not known yet.
+- Round 1, unit `blockout`, critic R4 blockout, judges commit 0dfc589, started 2026-11-25T10:34:28Z. Parts: machine checks [x] (type check, 718 tests, build, bots, cut, mix, judged list, G3 G4 G5 G6 G7 G11 G12 G14 G17 G18 all pass); measures [x] (M4 M5 M6 M7 M9 M10 on all six pages and the film: 20 green, 12 red; M1 M2 M3 M8 not built yet); pack [x] (29 files in three sets, built from e2f5b6e; every file looked at by the Builder before sending); critics asked [x] (10:47Z: reviewer-01 set A (Claude), reviewer-02 set B (GPT), reviewer-03 set C (GLM); fresh agents, attachments only, limit 45 min); reviewer-01 in [x] (10:48Z, set A: score 7, 3 major, 5 minor); reviewer-02 in [x] (10:48Z, set B: score 7, 6 major); reviewer-03 in [x] (10:49Z, set C: score 7, 1 severe, 6 major); key released [ ]; issues read [ ]; summary [ ]. Scores: not in yet. What changes next: not known yet.
 
 ## Final scores
 

@@ -203,21 +203,25 @@ export function makePage(): PageLogic {
       const slide = s.stage === 'unfold' ? (1 - prog(s.t, UNFOLD.bar[0], UNFOLD.bar[1])) * -1760 : 0
       if (slide !== 0) {
         const label = L.tree.children!.find((c) => c.id === 'health')!.children![0]!
-        over['health-label'] = { x: label.box[0]! + slide }
-        over['health-track'] = { x: L.track.x + slide }
+        over['health-label'] = { x: label.box[0]! + slide, moved: true }
+        over['health-track'] = { x: L.track.x + slide, moved: true }
       }
-      const fold = shut()
-      if (fold >= L.fold) over['verify-rule'] = null
       const options: DrawOptions = { states, over }
       const first = out.length
       drawLayout(out, L.tree, options)
-      if (fold > 0) {
+      const open = L.fold - shut()
+      if (open > 0 && states[0] === 'rest') {
         for (let i = first; i < out.length; i++) {
           const shape = out[i]!
-          if (shape.id === 'verify-card') shape.h -= fold
-          else if (shape.id === 'verify-fine') shape.y -= fold
-          else if (shape.id === 'verify-rule') shape.w *= 1 - fold / L.fold
+          if (shape.id === 'verify-card') {
+            shape.h += open
+            shape.moved = true
+          } else if (shape.id === 'verify-fine') {
+            shape.y += open
+            shape.moved = true
+          }
         }
+        out.push({ id: 'verify-rule', part: 'verify-card', kind: 'box', x: L.rule.x, y: L.rule.y, w: L.rule.w * (open / L.fold), h: L.rule.h, z0: heights.card, z1: heights.card + heights.rule, tone: 'metal', moved: true })
       }
       if (s.ticked >= 0) {
         const b = L.checkbox

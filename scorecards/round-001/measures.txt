@@ -1,0 +1,126 @@
+measure: tier draft, format hd (a judged still is rendered at final: these numbers are from draft), engine 16022bd5432726ea
+
+unit marketing: 5 judged stills
+pass  M4  758 runs of type in 5 stills: the smallest 18 px (least 14), the least contrast 5.22 (least 4.5)
+pass  M5  348 parts in 5 stills: the furthest 0 px from the layout tree, the most allowed 2
+pass  M6  5 stills from home with the cursor at rest and 0 from a tier camera: the furthest 0 px from its size, the most allowed 6
+pass  M7  840 frames read: no event strikes the cursor in them
+pass  M9  185 of 348 parts checked in 5 stills from home: the furthest 0 px from its size or height, the most allowed 2
+record: out/work/measures/marketing.json
+
+unit step1: 7 judged stills
+pass  M4  103 runs of type in 3 stills: the smallest 18 px (least 14), the least contrast 5.22 (least 4.5)
+FAIL  M5  94 parts in 3 stills: the furthest 523.22 px from the layout tree, the most allowed 2
+      key:step1-tug, resume-paper: its left edge is off the layout tree: 516.94 against 2
+      key:step1-tug, resume-paper-line-0: its left edge is off the layout tree: 523.22 against 2
+      key:step1-tug, resume-paper-line-1: its left edge is off the layout tree: 515.99 against 2
+      key:step1-tug, resume-paper-line-2: its left edge is off the layout tree: 508.75 against 2
+      key:step1-tug, resume-paper-line-3: its left edge is off the layout tree: 433.71 against 2
+      key:step1-tug, resume-paper-line-4: its left edge is off the layout tree: 490.66 against 2
+pass  M6  2 stills from home with the cursor at rest and 0 from a tier camera: the furthest 0 px from its size, the most allowed 6
+FAIL  M7  1920 frames read, 4 events strike the cursor: 1 further from it than its own height in the picture, 0 with no change of damage or acting on that frame or the next
+      frame 2661 (step1.shredded), event strips-zip: distance in the picture from the event to the cursor: 121.64 against 69.19
+FAIL  M9  70 of 74 parts checked in 2 stills from home: the furthest 0 px from its size or height, the most allowed 2
+      key:step1-fire, keyboard-deck: a mechanism's top above the page surface: 24 against at least 30
+record: out/work/measures/step1.json
+
+unit step2: 5 judged stills
+pass  M4  79 runs of type in 4 stills: the smallest 18 px (least 14), the least contrast 5.22 (least 4.5)
+FAIL  M5  64 parts in 4 stills: the furthest 35.79 px from the layout tree, the most allowed 2
+      key:step2-crank, crank-arm: its top edge is off the layout tree: 17.9 against 2
+      key:step2-crank, crank-grip: its top edge is off the layout tree: 35.79 against 2
+pass  M6  4 stills from home with the cursor at rest and 0 from a tier camera: the furthest 0 px from its size, the most allowed 6
+FAIL  M7  1260 frames read, 4 events strike the cursor: 1 further from it than its own height in the picture, 2 with no change of damage or acting on that frame or the next
+      frame 3094 (step2.dial), event dial-fling: the cursor's damage or acting state does not change on that frame or the next: shocked| against a change
+      frame 3451 (step2.slot), event coins: distance in the picture from the event to the cursor: 218.3 against 70.05
+      frame 3947 (step2.crank), event peel-up: the cursor's damage or acting state does not change on that frame or the next: exhausted|flattened against a change
+pass  M9  53 of 64 parts checked in 4 stills from home: the furthest 0 px from its size or height, the most allowed 2
+record: out/work/measures/step2.json
+
+unit pinball: 14 judged stills
+FAIL  M4  342 runs of type in 11 stills: the smallest 16 px (least 14), the least contrast 1.42 (least 4.5)
+      key:loader-page and 10 more stills, run copy:step3.table.modes.5.insert "Micromanagement": contrast against what lies under it: 1.42 against 4.5
+      key:loader-page and 10 more stills, run copy:step3.table.modes.6.insert "Aggressive Deadlines": contrast against what lies under it: 1.42 against 4.5
+      key:loader-page and 10 more stills, run copy:step3.table.modes.7.insert "Performance Improvement Plan": contrast against what lies under it: 1.42 against 4.5
+      key:loader-page and 10 more stills, run copy:step3.table.modes.3.insert "Entry-Level": contrast against what lies under it: 1.42 against 4.5
+      key:loader-page and 10 more stills, run copy:step3.table.modes.2.insert "Multiple Hats": contrast against what lies under it: 1.42 against 4.5
+pass  M5  110 parts in 11 stills: the furthest 0 px from the layout tree, the most allowed 2
+pass  M6  2 stills from home with the cursor at rest and 3 from a tier camera: the furthest 0.91 px from its size, the most allowed 6
+FAIL  M7  2520 frames read, 19 events strike the cursor: 2 further from it than its own height in the picture, 14 with no change of damage or acting on that frame or the next
+      frame 4972 (pinball.coffee), event bumper: the cursor's damage or acting state does not change on that frame or the next: scared|flattened against a change
+      frame 4974 (pinball.coffee), event bumper: the cursor's damage or acting state does not change on that frame or the next: scared|flattened against a change
+      frame 5058 (pinball.coffee), event bumper: the cursor's damage or acting state does not change on that frame or the next: scared| against a change
+      frame 5071 (pinball.coffee), event bumper: the cursor's damage or acting state does not change on that frame or the next: scared| against a change
+      frame 5081 (pinball.coffee), event bumper: the cursor's damage or acting state does not change on that frame or the next: scared| against a change
+      frame 5118 (pinball.coffee), event bumper: the cursor's damage or acting state does not change on that frame or the next: scared| against a change
+      frame 5119 (pinball.coffee), event bumper: the cursor's damage or acting state does not change on that frame or the next: scared| against a change
+      frame 5333 (pinball.replyAll), event flasher: distance in the picture from the event to the cursor: 81.85 against 80.49
+      frame 5333 (pinball.replyAll), event flasher: the cursor's damage or acting state does not change on that frame or the next: angry| against a change
+      frame 5370 (pinball.replyAll), event flasher: the cursor's damage or acting state does not change on that frame or the next: angry| against a change
+      frame 5385 (pinball.replyAll), event flasher: the cursor's damage or acting state does not change on that frame or the next: angry| against a change
+      frame 5394 (pinball.replyAll), event flasher: the cursor's damage or acting state does not change on that frame or the next: angry| against a change
+      frame 5409 (pinball.replyAll), event flasher: the cursor's damage or acting state does not change on that frame or the next: angry| against a change
+      frame 5483 (pinball.replyAll), event flasher: the cursor's damage or acting state does not change on that frame or the next: angry| against a change
+      frame 5730 (pinball.fired), event scoop-kick: distance in the picture from the event to the cursor: 768.92 against 215.41
+      frame 5730 (pinball.fired), event scoop-kick: the cursor's damage or acting state does not change on that frame or the next: scared| against a change
+FAIL  M9  20 of 20 parts checked in 2 stills from home: the furthest 16 px from its size or height, the most allowed 2
+      key:loader-page and 1 more still, apron-card: the height of its top above the page surface: 17 against 1 within 2
+pass  M10  65 openings, the narrowest 1.25 balls (least 1.25); 16 rails; 17 holds; the lift has 2 doors and 2 elbows; display characters 16.15 px in the tier stills (least 14); npm run paths ended with code 0: paths: all clear
+record: out/work/measures/pinball.json
+
+unit boss: 4 judged stills
+pass  M4  42 runs of type in 3 stills: the smallest 18 px (least 14), the least contrast 5 (least 4.5)
+FAIL  M5  31 parts in 3 stills: the furthest 74.01 px from the layout tree, the most allowed 2
+      still:rest-step4, verify-card: its bottom edge is off the layout tree: 74.01 against 2
+pass  M6  3 stills from home with the cursor at rest and 0 from a tier camera: the furthest 0 px from its size, the most allowed 6
+pass  M7  1920 frames read, 2 events strike the cursor: 0 further from it than its own height in the picture, 0 with no change of damage or acting on that frame or the next
+pass  M9  26 of 31 parts checked in 3 stills from home: the furthest 0 px from its size or height, the most allowed 2
+record: out/work/measures/boss.json
+
+unit decision: 2 judged stills
+FAIL  M4  32 runs of type in 2 stills: the smallest 20 px (least 14), the least contrast 4.47 (least 4.5)
+      key:decision, run copy:step5.letter.stamp "REJECTED": contrast against what lies under it: 4.47 against 4.5
+pass  M5  26 parts in 2 stills: the furthest 0 px from the layout tree, the most allowed 2
+pass  M6  2 stills from home with the cursor at rest and 0 from a tier camera: the furthest 0 px from its size, the most allowed 6
+FAIL  M7  720 frames read, 3 events strike the cursor: 1 further from it than its own height in the picture, 1 with no change of damage or acting on that frame or the next
+      frame 8718 (decision.letter), event stamp: distance in the picture from the event to the cursor: 230.18 against 70.07
+      frame 8885 (decision.metrics), event peel-up: the cursor's damage or acting state does not change on that frame or the next: scared|flattened against a change
+pass  M9  22 of 26 parts checked in 2 stills from home: the furthest 0 px from its size or height, the most allowed 2
+record: out/work/measures/decision.json
+
+unit film: the frames of the film
+FAIL  M7  9180 frames read, 32 events strike the cursor: 5 further from it than its own height in the picture, 17 with no change of damage or acting on that frame or the next
+      frame 2661 (step1.shredded), event strips-zip: distance in the picture from the event to the cursor: 121.64 against 69.19
+      frame 3094 (step2.dial), event dial-fling: the cursor's damage or acting state does not change on that frame or the next: shocked| against a change
+      frame 3451 (step2.slot), event coins: distance in the picture from the event to the cursor: 218.3 against 70.05
+      frame 3947 (step2.crank), event peel-up: the cursor's damage or acting state does not change on that frame or the next: exhausted|flattened against a change
+      frame 4972 (pinball.coffee), event bumper: the cursor's damage or acting state does not change on that frame or the next: scared|flattened against a change
+      frame 4974 (pinball.coffee), event bumper: the cursor's damage or acting state does not change on that frame or the next: scared|flattened against a change
+      frame 5058 (pinball.coffee), event bumper: the cursor's damage or acting state does not change on that frame or the next: scared| against a change
+      frame 5071 (pinball.coffee), event bumper: the cursor's damage or acting state does not change on that frame or the next: scared| against a change
+      frame 5081 (pinball.coffee), event bumper: the cursor's damage or acting state does not change on that frame or the next: scared| against a change
+      frame 5118 (pinball.coffee), event bumper: the cursor's damage or acting state does not change on that frame or the next: scared| against a change
+      frame 5119 (pinball.coffee), event bumper: the cursor's damage or acting state does not change on that frame or the next: scared| against a change
+      frame 5333 (pinball.replyAll), event flasher: distance in the picture from the event to the cursor: 81.85 against 80.49
+      frame 5333 (pinball.replyAll), event flasher: the cursor's damage or acting state does not change on that frame or the next: angry| against a change
+      frame 5370 (pinball.replyAll), event flasher: the cursor's damage or acting state does not change on that frame or the next: angry| against a change
+      frame 5385 (pinball.replyAll), event flasher: the cursor's damage or acting state does not change on that frame or the next: angry| against a change
+      frame 5394 (pinball.replyAll), event flasher: the cursor's damage or acting state does not change on that frame or the next: angry| against a change
+      frame 5409 (pinball.replyAll), event flasher: the cursor's damage or acting state does not change on that frame or the next: angry| against a change
+      frame 5483 (pinball.replyAll), event flasher: the cursor's damage or acting state does not change on that frame or the next: angry| against a change
+      frame 5730 (pinball.fired), event scoop-kick: distance in the picture from the event to the cursor: 768.92 against 215.41
+      frame 5730 (pinball.fired), event scoop-kick: the cursor's damage or acting state does not change on that frame or the next: scared| against a change
+      frame 8718 (decision.letter), event stamp: distance in the picture from the event to the cursor: 230.18 against 70.07
+      frame 8885 (decision.metrics), event peel-up: the cursor's damage or acting state does not change on that frame or the next: scared|flattened against a change
+record: out/work/measures/film.json
+
+summary
+  marketing  M4 pass, M5 pass, M6 pass, M7 pass, M9 pass
+  step1      M4 pass, M5 FAIL, M6 pass, M7 FAIL, M9 FAIL
+  step2      M4 pass, M5 FAIL, M6 pass, M7 FAIL, M9 pass
+  pinball    M4 FAIL, M5 pass, M6 pass, M7 FAIL, M9 FAIL, M10 pass
+  boss       M4 pass, M5 FAIL, M6 pass, M7 pass, M9 pass
+  decision   M4 FAIL, M5 pass, M6 pass, M7 FAIL, M9 pass
+  film       M7 FAIL
+
+measure: 20 green, 12 red, 0 not yet
