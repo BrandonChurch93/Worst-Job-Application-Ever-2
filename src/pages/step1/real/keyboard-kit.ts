@@ -82,8 +82,8 @@ export function kit(): Kit {
     return out
   }
   const deck = metal(0.5, 0.8, 0.22)
-  deck.color.multiply(new THREE.Color(0.6, 0.62, 0.66))
-  const turned = metal(0.4, 0.85, 0.18)
+  deck.color.multiply(new THREE.Color(0.47, 0.49, 0.53))
+  const turned = metal(0.42, 0.4, 0.14)
   turned.color.multiply(new THREE.Color(0.5, 0.515, 0.54))
   const barrel = metal(0.34, 0.6, 0.14)
   barrel.color.multiply(new THREE.Color(0.3, 0.31, 0.33))

@@ -68,11 +68,14 @@ function geometries(): Shared {
   if (shared) return shared
   const L = TURRET_LOOK
   const collar = turn([[L.collar, -112], [L.collar, -48], [L.collar - 2, -46], [L.head + 1.2, -46], [L.head + 1.2, -50]], 56, 4)
+  const fillet = 9
+  const crown: [number, number][] = []
+  for (let i = 1; i <= 6; i++) crown.push([L.head - fillet + fillet * Math.cos((i * Math.PI) / 12), -fillet + fillet * Math.sin((i * Math.PI) / 12)])
+  for (let i = 3; i >= 0; i--) crown.push([((L.head - fillet) * i) / 4, 1.1 * (1 - (i / 4) ** 2)])
   const headParts: THREE.BufferGeometry[] = [
-    turn([[L.head, -56], [L.head, -30], [L.head - 0.9, -29.2], [L.head - 0.9, -27.8], [L.head, -27], [L.head, -5.5], [L.head - 5, -0.9], [L.head - 6.2, 0], [13, 0], [12.4, -0.6], [0, -0.6]], 56, 4)
+    turn([[L.head, -56], [L.head, -30], [L.head - 0.9, -29.2], [L.head - 0.9, -27.8], [L.head, -27], [L.head, -fillet], ...crown], 56, 4)
   ]
   const headDark: THREE.BufferGeometry[] = []
-  for (let i = -1; i <= 1; i++) headDark.push(place(flat(slot(16 - Math.abs(i) * 3, 2.6), 0.04), -21, i * 5.6, 0))
   headDark.push(place(turn([[17.4, 0], [17.4, 4.5], [16, 5.2], [16, 0]], 24, 1), 0, 0, 0).rotateY(Math.PI / 2).translate(L.head - 1.5, 0, L.axis))
   const barrel = along(turn([[15.4, 24], [15.4, 45], [14.4, 46], [13.4, 46], [10.6, 83], [12.9, 84.2], [12.9, 87.4], [12.1, 88.1], [12.1, 89.5], [12.9, 90.2], [12.9, 96.4], [11.6, L.muzzle], [7.8, L.muzzle]], 28, 2))
   const barrelDark = along(turn([[7.8, L.muzzle], [7.8, 84], [0, 84]], 20, 1))
