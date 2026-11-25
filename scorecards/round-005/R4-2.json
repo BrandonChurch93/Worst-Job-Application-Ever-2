@@ -1,0 +1,37 @@
+{
+ "critic": "R4",
+ "score": 5,
+ "pass": false,
+ "model": "gpt_6_2_sol",
+ "set": "B: one sheet of consecutive frames at each hit",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-B-01.png",
+   "where": "H key and arrow, 0:19.80–0:19.97",
+   "what": "The flash and sharp sideways kick make the hit readable, but H and the surrounding deck show no clear physical response. The arrow snaps left and slides back almost to its starting pose, so the spark carries most of the impact.",
+   "fix": "On the flash frame, drive H briefly into its socket and send a small jolt through the deck. Give the arrow a sharp deflection and a short, damped settle rather than easing it back to its starting pose."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02.png",
+   "where": "first red Invalid email block over the right-hand keys, 0:32.13–0:32.43",
+   "what": "The block already covers the keys in the first frame, then creeps upward a little and holds. The sheet shows the warning clearly but not what struck what or when it landed.",
+   "fix": "Include the approach and first contact in the crop. Make the block stop sharply on the visible key, with brief key travel or a deck jolt on the same frame, then hold on the landed pose."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03.png",
+   "where": "center red block and the lower edge, 0:32.70–0:33.07",
+   "what": "The center block is already in place after a blurred glimpse of the arrow. The next block enters at the bottom edge before the sheet establishes a visible point of contact for either action.",
+   "fix": "Reframe or retime the sheet to follow the incoming block all the way to its strike surface, keeping the arrow and the receiving key visible through contact and recovery."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-04.png",
+   "where": "lower Invalid email block over V–M, 0:33.23–0:33.60",
+   "what": "The lower block hovers over the keys, rises slightly, then holds. The exposed key edges do not appear to compress or rebound, so the movement reads as a sliding banner rather than a heavy block striking the keyboard.",
+   "fix": "Give the block a decisive approach and hard stop against the keys, show the key row react on that frame, and keep the final hold after a brief, tight settle."
+  }
+ ]
+}

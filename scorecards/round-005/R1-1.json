@@ -1,0 +1,107 @@
+{
+ "critic": "R1",
+ "score": 5,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "A: the two keys, whole and in native crops, and the page look sheet, each beside its approved image",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-A-03-b.png",
+   "where": "whole frame",
+   "what": "the frame is a close-up of the lower-right corner of the drop zone, with the Browse files button and text huge. The target shows the whole step 1 page at normal framing (header, progress buttons, drop zone, fields) with the arrow feeding the paper in beside the drop zone",
+   "fix": "use the full-page framing of the target for this beat, at the same scale as set-A-05-b, and keep the arrow and paper as one small part of the page"
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-01-b.png",
+   "where": "keyboard deck around the keys",
+   "what": "the deck is a flat, dark grey, brushed slab. The target's metal is light, satin brushed steel with a bright rolled rim and soft reflections, so the keyboard reads as a dark block against the light page",
+   "fix": "lighten the deck to the target's pale satin steel, add a bright bevelled rim along its top edge and soft vertical highlights, and keep the dark shading only in the gaps between the keys"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "Continue button, lower right",
+   "what": "the main button is dark charcoal with grey text. In the target the main button is glossy orange in a chrome bezel with light text, the one accent beside button 1",
+   "fix": "make the primary button the target's glossy orange (#E0602A range) with a top highlight, a thin chrome bezel ring and a soft shadow on the lower right"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "the key under the arrow, between G and J",
+   "what": "the H key has lost its letter and shows only a blank orange glow. In the target the hit key keeps its letter and gets only a small glow and a scorch",
+   "fix": "keep the legend on the hit key and cut the glow to a small warm halo at the point of impact"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "the arrow crop and the keys crop",
+   "what": "the bullet holes are bright bronze rings with sparks, and the arrow is small, thin-edged and tinted orange by the glow. In the target the holes are charred black scorch marks with sooty edges and a wisp of smoke, and the arrow is a glossy white body with a thick dark outline and a scorch mark on it",
+   "fix": "redraw the holes as dark char with a soft brown burn falloff and thin smoke, and keep the arrow white and glossy with a heavy dark edge and its own drop shadow, with no orange tint over the body"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "the turret crop",
+   "what": "the barrel is short and level, and the bolt sits on top of the Caps Lock legend and hides it. The target's turret is a polished chrome dome with a long tapered barrel at an angle, a bright orange muzzle glow and a thin glowing tracer above the keys",
+   "fix": "lengthen and taper the barrel, aim it up toward the keys, add the hot orange tip, and draw the bolts as thin tracers with a soft trail that travel above the legends"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "keys crop",
+   "what": "the keycaps are a saturated butter-yellow with soft, puffy sides. The target's caps are pale ivory with crisp, sculpted tops and a cool grey shadow",
+   "fix": "move the keycap colour toward a neutral ivory (less yellow), tighten the top edge highlight and give each cap a short, crisp shadow"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04-b.png",
+   "where": "the arrow and its arms",
+   "what": "the arrow is grey chrome with blurry grey shading, and the arms are flat black outlines with small hands. In the target the arrow is a glossy white ceramic body with a thick black edge, and the arms are round black rubber tubes with modelled gloved hands that cast shadows",
+   "fix": "make the arrow body white with a glossy top highlight and a heavy dark edge, give the arms round tube shading and specular highlights, and enlarge the hands with knuckle detail and a soft shadow on the glass"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04-b.png",
+   "where": "the page surface in every crop",
+   "what": "the page grain is a coarse, even noise like stucco. The target's page is a fine paper with a faint fibrous grain",
+   "fix": "cut the grain contrast by about half and use a finer, fibrous paper texture"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "drop zone and fields",
+   "what": "the drop zone is a raised frame around a deeper inner well, darker and greyer, and the fields have dark, heavy rims. The target's drop zone is one pale frosted-glass plate with a bright edge, and its fields are shallow pale glass troughs with light rims",
+   "fix": "flatten the drop zone into one frosted glass plate with a bright bevel and a dashed inset line, lighten the glass, and thin and lighten the field rims"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "overall page and shadows",
+   "what": "the page is greyer and darker, and the shadows under the progress buttons, drop zone and fields are dark and hard on the lower right. The target is brighter ivory-white with long, soft, faint shadows",
+   "fix": "raise the page brightness toward the target's warm white, and make the shadows longer, softer and lighter"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "progress button 1 and the metal buttons, upper right",
+   "what": "button 1 is a dark red-brown, and the steel buttons are dark, heavily domed chrome with black shadows. The target's button 1 is a bright, glossy orange, and its steel buttons are lighter satin metal",
+   "fix": "brighten button 1 to the target's orange, and lighten the steel buttons toward satin with a softer shadow"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-02-b.png",
+   "where": "the field crop",
+   "what": "the focus glow on First name is yellow-amber and spread wide. The target's glow is a thin, bright orange line with a tight bloom",
+   "fix": "shift the hue toward orange and tighten the bloom radius"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-04-b.png",
+   "where": "where the paper goes in",
+   "what": "the paper is a flat sheet going into a raised chrome shredder that drops strips onto the page. The target feeds a crumpled, lined sheet into a dark slot cut into the page",
+   "fix": "give the sheet folds and soft shading, and set the feed into a dark slot in the page surface with a lip shadow"
+  }
+ ]
+}
