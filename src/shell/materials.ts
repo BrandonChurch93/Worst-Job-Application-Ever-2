@@ -281,7 +281,7 @@ function stretched<T extends THREE.MeshPhysicalMaterial>(material: T): T {
   })
 }
 
-const SLAB = { bend: 26, through: 0.075, cloud: 0.014, frost: 0.034, hair: 0.007, glint: 0.2, tooth: 0.235, sheen: 0.045, wash: 0.05, shoulder: 0.5, far: 0.16, farSide: 0.4, farLow: 0.2, farLowEnd: 0.08, spill: 0.6, spillLow: 0.14, bevelEnd: 16.8, flat: 0.24, bandSide: 0.56, bandSideLow: 0.33, bandTopNear: 0.9, bandTop: 0.65, dipTop: 0.3, dipTopFar: 0.18, dipSide: 0.54, dipSideLow: 0.1, rim: 1.15, rimFar: 0.3, level: 0.95, pool: 0.15, poolRise: 0.22 }
+const SLAB = { bend: 14, through: 0.06, cloud: 0.004, frost: 0.034, hair: 0.007, glint: 0.2, tooth: 0.235, sheen: 0.045, wash: 0.05, shoulder: 0.5, far: 0.16, farSide: 0.14, farLow: 0.1, farLowEnd: 0.05, spill: 0.16, spillLow: 0.05, bevelEnd: 14.9, flat: 0.24, bandSide: 0.78, bandSideLow: 0.66, bandTopNear: 0.94, bandTop: 0.78, dipTop: 0.12, dipTopFar: 0.12, dipSide: 0.22, dipSideLow: 0.07, rim: 1.2, rimFar: 0.25, level: 0.99, pool: 0.13, poolRise: 0.18, dash: 0.42, dashInset: 26, dashDepth: 9, dashPitch: 30, dashWide: 1.0 }
 
 // A slab of frosted glass seen from above. Its geometry carries where each point lies on the card (`slab`: x, y, half width, half height,
 // and `slabEdge`: the corner's radius and whether a panel is sunk in the face), and the face is worked out from that for every pixel:
@@ -321,23 +321,23 @@ function slabbed<T extends THREE.MeshPhysicalMaterial>(material: T, grain: THREE
 		float wT = exp( - dT / 34.0 );
 		float wS = exp( - dS / 34.0 );
 		float nearT = wT / ( wT + wS );
-		float past = 1.0 - smoothstep( 24.0, 36.0, E );
+		float past = 1.0 - smoothstep( mix( 24.0, 14.0, panel ), mix( 36.0, 46.0, panel ), E );
 		float fallU = smoothstep( 0.7, - 0.7, u );
 		float fallV = smoothstep( 0.6, - 0.6, v );
 		float bandL = mix( 0.45, 1.0, smoothstep( 3.0, mix( 10.0, 16.0, nearT ), D ) ) * mix( mix( ${n(SLAB.bandSide)}, ${n(SLAB.bandSideLow)}, fallV ), mix( ${n(SLAB.bandTopNear)}, ${n(SLAB.bandTop)}, fallU ), nearT );
-		float mL = mix( mix( ${n(SLAB.shoulder)}, 1.0, ramp ), mix( bandL, 1.0, smoothstep( 25.0, 36.0, E ) ), panel );
+		float mL = mix( mix( ${n(SLAB.shoulder)}, 1.0, ramp ), mix( bandL, 1.0, smoothstep( 12.0, 46.0, E ) ), panel );
 		float wB = exp( - ( 2.0 * sh.y - dT ) / 34.0 );
 		float wR = exp( - ( 2.0 * sh.x - dS ) / 34.0 );
 		float mF = 1.0 + mix( ${n(SLAB.far)}, mix( ${n(SLAB.farSide)}, mix( ${n(SLAB.farLow)}, ${n(SLAB.farLowEnd)}, fallU ), wB / ( wB + wR ) ), panel ) * past;
 		float mN = 1.0 + 0.1 * past;
 		float m = mN + toLight * ( mL - mN ) + away * ( mF - mN );
 		float dipL = mix( ${n(SLAB.dipSide)} + ${n(SLAB.dipSideLow)} * fallV, ${n(SLAB.dipTop)} + ${n(SLAB.dipTopFar)} * fallU, nearT ) * exp( - max( dL - 40.0, 0.0 ) / mix( 31.0, mix( 12.0, 25.0, fallU ), nearT ) );
-		m *= 1.0 - panel * smoothstep( 27.5, 40.0, E ) * dipL;
-		m *= 1.0 + panel * smoothstep( 27.5, 33.0, E ) * ( ${n(SLAB.spill)} * exp( - max( 2.0 * sh.x - dS - 30.0, 0.0 ) / 18.0 ) + ${n(SLAB.spillLow)} * exp( - max( 2.0 * sh.y - dT - 30.0, 0.0 ) / 14.0 ) );
+		m *= 1.0 - panel * smoothstep( 8.0, 46.0, E ) * dipL;
+		m *= 1.0 + panel * smoothstep( 10.0, 40.0, E ) * ( ${n(SLAB.spill)} * exp( - max( 2.0 * sh.x - dS - 30.0, 0.0 ) / 18.0 ) + ${n(SLAB.spillLow)} * exp( - max( 2.0 * sh.y - dT - 30.0, 0.0 ) / 14.0 ) );
 		float seam = exp( - pow( ( D - ${n(SLAB.bevelEnd)} ) / 1.2, 2.0 ) );
-		m *= 1.0 + 0.1 * seam * ( away - 0.6 * toLight );
+		m *= 1.0 + mix( 0.1, 0.02, panel ) * seam * ( away - 0.6 * toLight );
 		m *= mix( 1.0 - ${n(SLAB.wash)} * wash, mix( ${n(SLAB.level)} * ( 1.0 + ${n(SLAB.pool)} * u + ${n(SLAB.poolRise)} * max( u, 0.0 ) * v ), 1.0, away * past ), panel );
-		m = mix( m, ${n(SLAB.rim)} + ${n(SLAB.rimFar)} * away, panel * ( 1.0 - smoothstep( 4.2, 5.4, D ) ) );
+		m = mix( m, ${n(SLAB.rim)} + ${n(SLAB.rimFar)} * away, panel * ( 1.0 - smoothstep( 3.6, 5.0, D ) ) );
 		wjaSlabShade = m;
 		m = 1.0 + ${n(SLAB.cloud)} * cloud;
 		float thin = 1.0 - smoothstep( 3.0, ${n(SLAB.bevelEnd)}, D );
@@ -345,7 +345,20 @@ function slabbed<T extends THREE.MeshPhysicalMaterial>(material: T, grain: THREE
 		vec4 under = texture2D( wjaSlabGrain, ( wjaAt.xy - wjaFace.xy * ${n(SLAB.bend)} ) * ( 2.0 / 1024.0 ), 0.5 );
 		vec2 uvT = mat2( 0.4540, 0.8910, - 0.8910, 0.4540 ) * ( wjaAt.xy - wjaFace.xy * ${n(SLAB.bend)} ) * ( 4.0 / 1024.0 ) + vec2( 0.173, 0.591 );
 		vec2 tooth = mat2( 0.4540, - 0.8910, 0.8910, 0.4540 ) * ( texture2D( wjaSlabGrain, uvT ).xy - texture2D( wjaSlabGrain, uvT, 2.0 ).xy );
-		m *= 1.0 + ${n(SLAB.through)} * ( 0.6 + 0.3 * near + 1.6 * thin ) * dot( under.xy * 2.0 - 1.0, vec2( ${kx}, ${ky} ) ) + ${n(SLAB.tooth)} * near * 2.0 * dot( tooth, vec2( ${kx}, ${ky} ) );
+		m *= 1.0 + ${n(SLAB.through)} * ( 0.6 + 0.3 * near + 0.5 * thin ) * dot( under.xy * 2.0 - 1.0, vec2( ${kx}, ${ky} ) ) + ${n(SLAB.tooth)} * ( 0.3 + 0.7 * near ) * 2.0 * dot( tooth, vec2( ${kx}, ${ky} ) );
+		vec3 wjaEye = normalize( cameraPosition - wjaAt );
+		vec2 dp = sp - wjaEye.xy * ( ${n(SLAB.dashDepth)} / ( 1.5 * max( wjaEye.z, 0.2 ) ) );
+		float dr = max( 12.0, sr - 6.0 );
+		vec2 da = sh - ${n(SLAB.dashInset)} - dr;
+		vec2 de = abs( dp ) - da;
+		float dd = length( max( de, 0.0 ) ) + min( max( de.x, de.y ), 0.0 ) - dr;
+		float dturn = de.x > 0.0 && de.y > 0.0 ? dr * ( atan( de.x, de.y ) - 0.7854 ) : ( de.y > de.x ? - 0.7854 * dr - da.x + abs( dp.x ) : 0.7854 * dr + da.y - abs( dp.y ) );
+		float dl = 0.7854 * dr + ( dturn < 0.0 ? da.x : da.y );
+		float dpitch = dl / max( floor( dl / ${n(SLAB.dashPitch)} + 0.5 ), 1.0 );
+		float ds = dturn;
+		float dsoft = 0.55 + 0.25 * near;
+		float dline = ( 1.0 - smoothstep( 0.29 * dpitch - dsoft, 0.29 * dpitch + dsoft, abs( fract( ds / dpitch + 0.5 ) - 0.5 ) * dpitch ) ) * ( 1.0 - smoothstep( ${n(SLAB.dashWide)} - 0.5 * dsoft, ${n(SLAB.dashWide)} + dsoft, abs( dd ) ) );
+		m *= 1.0 - panel * ${n(SLAB.dash)} * dline;
 		diffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.83, 0.83, 0.8 ), 0.3 * thin * ( 0.35 + 0.65 * away ) ) * m;
 		vec2 fu = mat2( 0.819, 0.574, - 0.574, 0.819 ) * wjaAt.xy;
 		vec4 f1 = texture2D( wjaSlabGrain, fu * ( 3.0 / 1024.0 ) );
@@ -354,9 +367,9 @@ function slabbed<T extends THREE.MeshPhysicalMaterial>(material: T, grain: THREE
 		vec2 slope = ${n(SLAB.frost)} * ( 0.6 - 0.25 * near ) * ( ( f1.xy * 2.0 - 1.0 ) + 0.2 * ( f2.xy * 2.0 - 1.0 ) ) + ${n(SLAB.hair)} * ( mat2( 0.94, - 0.342, 0.342, 0.94 ) * ( hair.xy * 2.0 - 1.0 ) );
 		vec3 wjaUp = normalize( ( viewMatrix * vec4( 0.0, 0.0, 1.0, 0.0 ) ).xyz );
 		normal = normalize( mix( wjaUp, normal, ${n(SLAB.flat)} ) + ( viewMatrix * vec4( slope, 0.0, 0.0 ) ).xyz );
-		roughnessFactor = clamp( roughnessFactor + 0.08 * cloud, 0.1, 1.0 );
+		roughnessFactor = clamp( roughnessFactor + 0.02 * cloud, 0.1, 1.0 );
 		float top = smoothstep( 3.5, 6.0, D );
-		wjaSlabGlow = top * ( ${n(SLAB.glint)} * ( 1.0 - near ) * smoothstep( 0.3, 0.42, f2.a - f1.a ) + ${n(SLAB.sheen)} * smoothstep( mix( 0.75, - 0.65, panel ), mix( - 0.65, 0.75, panel ), wash + 0.3 * cloud ) );
+		wjaSlabGlow = top * ( ${n(SLAB.glint)} * ( 1.0 - near ) * smoothstep( 0.3, 0.42, f2.a - f1.a ) + ${n(SLAB.sheen)} * smoothstep( mix( 0.75, - 0.65, panel ), mix( - 0.65, 0.75, panel ), wash + 0.08 * cloud ) );
 	}
 `
   return also(material, 'slab', (shader) => {
@@ -374,7 +387,7 @@ function slabbed<T extends THREE.MeshPhysicalMaterial>(material: T, grain: THREE
   })
 }
 
-const SUNK_FILL = 0.3
+const SUNK_FILL = 0.4
 
 // Frosted glass carries light sideways inside itself, so a shadow that falls on it is never as deep as one on the page.
 function lightFilled<T extends THREE.MeshPhysicalMaterial>(material: T, fill: number): T {
@@ -398,6 +411,8 @@ export interface Materials {
   aluminiumSatin: THREE.MeshPhysicalMaterial
   cardSeal: THREE.MeshPhysicalMaterial
   orange: THREE.MeshPhysicalMaterial
+  chrome: THREE.MeshPhysicalMaterial
+  railSatin: THREE.MeshPhysicalMaterial
   gap: THREE.MeshPhysicalMaterial
   ink: THREE.MeshPhysicalMaterial
   inkOnOrange: THREE.MeshPhysicalMaterial
@@ -429,7 +444,7 @@ export function makeMaterials(seed: number): Materials {
   const ceramic = grained(physical({ color: srgb(0xf1efea), roughness: 0.74, metalness: 0, normalMap: grain, normalScale: new THREE.Vector2(PAGE_GRAIN, PAGE_GRAIN), specularIntensity: 0.6 }), 0.5)
   const pocket = grained(physical({ color: srgb(0xdcdfdc), roughness: 0.8, metalness: 0, normalMap: grain, normalScale: new THREE.Vector2(0.08, 0.08), specularIntensity: 0.4 }), 0.3)
   const glass = physical({ color: srgb(0xbdc5c2), roughness: 0.44, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8, ...frosted })
-  const glassSunk = lightFilled(physical({ color: srgb(0xc6ced0), roughness: 0.44, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8, vertexColors: true, ...frosted }), SUNK_FILL)
+  const glassSunk = lightFilled(physical({ color: srgb(0xd0d8d9), roughness: 0.44, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8, vertexColors: true, ...frosted }), SUNK_FILL)
   const glassCard = slabbed(physical({ color: srgb(0xa8b1b4), roughness: 0.4, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.3, specularIntensity: 0.8 }), grain, brushed, look.key.direction)
   const glassThick = physical({ color: srgb(0xa8b0af), roughness: 0.48, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8, ...frosted })
   const aluminium = physical({
@@ -440,8 +455,10 @@ export function makeMaterials(seed: number): Materials {
   }))
   const aluminiumEdge = physical({ color: srgb(0xd0d4d7), roughness: 0.34, metalness: 0.8 })
   const cardSeal = physical({ color: srgb(0x6f7071), roughness: 0.7, metalness: 0 })
-  const aluminiumSatin = physical({ color: srgb(0x73777a), roughness: 0.34, metalness: 0.75 })
-  const orange = physical({ color: srgb(0xb94503), roughness: 0.57, metalness: 0, clearcoat: 0.14, clearcoatRoughness: 0.36, specularIntensity: 0.6, specularColor: srgb(0xff9a52) })
+  const aluminiumSatin = physical({ color: srgb(0xb7bbbe), roughness: 0.3, metalness: 0.8 })
+  const orange = physical({ color: srgb(0xb94503), roughness: 0.5, metalness: 0, clearcoat: 0.85, clearcoatRoughness: 0.17, specularIntensity: 0.8, specularColor: srgb(0xff9a52) })
+  const chrome = physical({ color: srgb(0xdfe1e3), roughness: 0.16, metalness: 1 })
+  const railSatin = physical({ color: srgb(0xd2d6d9), roughness: 0.36, metalness: 0.85, normalMap: brushed, normalScale: new THREE.Vector2(0.2, 0.2), anisotropy: 0.6, anisotropyRotation: Math.PI / 2 })
   const gap = physical({ color: srgb(0x23211f), roughness: 0.85, metalness: 0, specularIntensity: 0.3 })
   const ink = physical({ color: srgb(0x2a2927), roughness: 0.48, metalness: 0, specularIntensity: 0.2 })
   const inkOnOrange = physical({ color: srgb(0xfbf6ee), roughness: 0.4, metalness: 0, specularIntensity: 0.4 })
@@ -461,7 +478,7 @@ export function makeMaterials(seed: number): Materials {
     m.polygonOffsetUnits = -2
   }
   return {
-    ceramic, pocket, glass, glassThick, glassSunk, glassCard, aluminium, aluminiumTurned, aluminiumEdge, aluminiumSatin, cardSeal, orange, gap, ink, inkOnOrange, enamel, edge, smoked, chip, waiting, paper, red, keycap, steel, rubber,
+    ceramic, pocket, glass, glassThick, glassSunk, glassCard, aluminium, aluminiumTurned, aluminiumEdge, aluminiumSatin, cardSeal, orange, chrome, railSatin, gap, ink, inkOnOrange, enamel, edge, smoked, chip, waiting, paper, red, keycap, steel, rubber,
     textures: [grain, brushed, turned.normal, turned.direction]
   }
 }

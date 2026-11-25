@@ -162,3 +162,26 @@ Owner of this round: glass (`surface_fixer`), branch `agent/glass`, 2026-11-25. 
 1. The discs' faces: the approved ones are darker, brushed one way, with a strong fan from dark to bright; the build's are pale and turned in rings. They cannot go darker while the numeral is dark ink (M4 3.3 at 0x70747a).
 2. The orange button: the approved one has a bright honey crown over a darker second tier; the build's is one even orange. The shared orange was left alone because the type on it stands at 4.67 against 4.5.
 3. The upload glass against `step1-fire.png`: the approved slab has a thin rim and a flat face, the build's has a wider band round a sunk panel (it was fitted to `page-look.png`, where the panel shows more). The shadows of every raised part are shorter and paler than the approved ones: the light's, not a material's.
+
+## Fix round 3
+
+Owner of this round: glass3 (`surface_closer`), branch `agent/glass3`, 2026-11-25, 21:22Z to 22:50Z. Files changed: `src/shell/materials.ts`, `src/shell/real/controls.ts`, this file.
+
+### What the approved images show, looked at once at full size before the first change
+
+1. The approved card is one plate. The tone is the same on both sides of the dashed line: there is no second, darker panel inside it. The build had one, with round corners, and it read as a tray.
+2. The dashed line turns the corner as a curved dash. The build's stopped before each corner.
+3. The approved Submit is the one orange thing of its size on the page, in a bright ring. The build's Continue was charcoal.
+4. An approved field has a light metal rim with one dark line under the upper wall. The build's rim was gunmetal all the way round.
+5. The approved focus ring is a tight line: its bloom ends about 12 px out. The build's reached 34 px.
+
+### First push: the card, the Continue, the wells, the focus ring
+
+- The card (R3-1 issue 1, R1-1 issue 10). The glass and what lies under it are now two things in the material. The dashed rule is no longer an instanced mesh lying on the face (`dashes()` is gone): it is worked out for every pixel inside the glass's own colour, `dashDepth` 9 px under the face, looked up where the eye's ray reaches that depth (`cameraPosition`, index 1.5), with a soft edge of 0.55 px (0.8 px up close) because frost lies over it. So the sheen and the reflection of the studio pass over the rule unbroken, the rule shifts against the face when the camera moves, and it turns the corners (`dr` = the card's corner less 6, at least 12; a dash is centred on each corner and on the middle of each side). `dash` 0.42, `dashWide` 1.0, pitch 30.
+- The panel inside the rule is gone as a shape. The shade that marked it is cut to under half and spread over 8 to 46 px from the edge (it stepped over 27.5 to 40): `dipSide` 0.22 (was 0.54), `dipTop` 0.12 (0.3), `bandSide` 0.78 (0.56), `bandSideLow` 0.66 (0.33), `bandTop` 0.78 (0.65), `farSide` 0.14 (0.4), `farLow` 0.1 (0.2), `spill` 0.16 (0.6), `spillLow` 0.05 (0.14), `level` 0.99 (0.95). The slow cloud is 0.004 (was 0.014) and no longer moves the sheen or the roughness: that was the mottling.
+- The bevel is a quarter round over 10.5 px (was a flat chamfer over 12.5 px that ended in a crease), so the light rolls off it and no line marks its end. `bend` 14 (was 26) and the page's grain is no longer made stronger in the bevel: with the round bevel that drew ticks along the lower edge.
+- Continue (R1-1 issue 3). The button of every step is the shared orange, whatever tone the layout gives it, in a polished bezel (`chrome`, 0xdfe1e3, roughness 0.16, metal) that stands 1.1 proud of the page and rolls into the socket. The cap has a shoulder 8 px wide and a crown of 0.9, so the studio's light lies along its upper edge. DECISION, told to the Builder: step 1's Continue is `metal` in the layout until the resume is received and `accent` after. Both are now the same orange, so the picture no longer shows the change. The brief asks for the orange.
+- The orange (R1-1 issue 12): the colour is unchanged, 0xb94503, because the type on it stands at 4.67 against 4.5 in M4 and a lighter body fails it (0xc64c08 gave 4.31 in round 4). What changed is the gloss: roughness 0.5 (was 0.57), coat 0.85 at roughness 0.17 (was 0.14 at 0.36).
+- The rail has its own satin (`railSatin`, 0xd2d6d9, roughness 0.36, metalness 0.85, brushed): the shared `aluminium` is left alone because the keyboard and the shredder read it.
+- Wells (R1-1 issue 10): the sleeve is 0xb7bbbe (was gunmetal 0x73777a), `RIM` 2.2 (was 2.6), the glass 0xd0d8d9 (was 0xc6ced0), `SOAK_DEPTH` 0.32 (was 0.4), `SUNK_FILL` 0.4 (was 0.3).
+- Focus ring (R1-1 issue 13, R8-1 issue 2): the spill ends 17 px outside and 15 px inside (was 34 and 28), its colour is 0.74, 0.15, 0.015 (was 0.72, 0.2, 0.03) and the core 1.5, 0.34, 0.045 (was 1.5, 0.42, 0.07).
