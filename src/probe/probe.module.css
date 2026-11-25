@@ -1,0 +1,152 @@
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  font-family: Inter, 'Helvetica Neue', Helvetica, Arial, system-ui, sans-serif;
+  color: #262522;
+  -webkit-font-smoothing: antialiased;
+}
+
+.root [hidden] {
+  display: none;
+}
+
+.status {
+  position: absolute;
+  left: 16px;
+  top: 16px;
+  margin: 0;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(30, 29, 27, 0.88);
+  color: #f1eee7;
+  font: 13px/1.2 ui-monospace, Menlo, Consolas, monospace;
+}
+
+.panel {
+  position: absolute;
+  inset: 0;
+  overflow: auto;
+  box-sizing: border-box;
+  padding: 40px max(24px, calc(50% - 520px)) 56px;
+  background: #e7e4dd;
+  pointer-events: auto;
+  cursor: auto;
+}
+
+.title {
+  margin: 0 0 24px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #b9b5ad;
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+  line-height: 1.3;
+  font-variant-numeric: tabular-nums;
+}
+
+.table th,
+.table td {
+  padding: 9px 12px;
+  text-align: right;
+  border-bottom: 1px solid #c9c5bd;
+}
+
+.table thead th {
+  font-weight: 600;
+  text-align: center;
+}
+
+.table tbody th {
+  text-align: left;
+  font-weight: 600;
+}
+
+.table .sub {
+  text-align: right;
+  font-size: 12px;
+  font-weight: 500;
+  color: #55524c;
+}
+
+.table .under {
+  color: #a8320a;
+  font-weight: 600;
+}
+
+.table .failed {
+  text-align: center;
+  color: #55524c;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 8px 24px;
+  margin: 28px 0;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.facts dt {
+  color: #55524c;
+}
+
+.facts dd {
+  margin: 0;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.block {
+  margin: 0;
+  padding: 16px 18px;
+  border-radius: 10px;
+  background: #d6d2ca;
+  font: 13px/1.5 ui-monospace, Menlo, Consolas, monospace;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+
+.buttons {
+  display: flex;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.button,
+.quiet {
+  appearance: none;
+  margin: 0;
+  padding: 12px 26px;
+  border-radius: 999px;
+  border: 2px solid #c4460f;
+  background: #c4460f;
+  color: #fbf8f2;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.quiet {
+  background: none;
+  border-color: #8f8b83;
+  color: #262522;
+}
+
+.button:focus-visible,
+.quiet:focus-visible,
+.block:focus-visible {
+  outline: 3px solid #262522;
+  outline-offset: 3px;
+}
