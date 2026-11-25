@@ -7,6 +7,7 @@ declare module 'virtual:build-info' {
     assets: { web: Record<string, { file: string; bytes: number }[]>; full: Record<string, { file: string; bytes: number }[]> }
     approved: string[]
     versions: Record<string, string>
+    modules: Record<string, string[]>
   }
   export default info
 }

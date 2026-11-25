@@ -97,8 +97,71 @@ export function versions(root) {
   return out
 }
 
+// Which modules under the page folders each mode loads, read from the imports themselves, starting at src/main.ts.
+// A static import is loaded by every mode. A dynamic import is loaded by the modes src/modes.json gives for it.
+// A relative dynamic import that the table does not hold goes to `unplaced`, and check G18 then fails.
+const STATIC = /(?:^|[\n;])\s*(?:import|export)\s+(?!type\b)(?:[^'"()]*?\sfrom\s+)?['"]([^'"]+)['"]/g
+const DYNAMIC = /\bimport\(\s*['"]([^'"]+)['"]\s*\)/g
+
+function resolveImport(from, spec) {
+  if (!spec.startsWith('.')) return null
+  const base = path.resolve(path.dirname(from), spec.split('?')[0])
+  for (const p of [base, `${base}.ts`, path.join(base, 'index.ts')]) if (fs.existsSync(p) && fs.statSync(p).isFile()) return p
+  return null
+}
+
+export function moduleLists(root) {
+  const rel = (f) => path.relative(root, f).split(path.sep).join('/')
+  const table = JSON.parse(fs.readFileSync(path.join(root, 'src', 'modes.json'), 'utf8'))
+  const modes = table.modes
+  const reads = new Map()
+  const read = (file) => {
+    if (reads.has(file)) return reads.get(file)
+    const out = { statics: [], dynamics: [] }
+    if (/\.(ts|mjs|js)$/.test(file)) {
+      const text = fs.readFileSync(file, 'utf8')
+      for (const m of text.matchAll(STATIC)) {
+        const to = resolveImport(file, m[1])
+        if (to) out.statics.push(to)
+      }
+      for (const m of text.matchAll(DYNAMIC)) {
+        const to = resolveImport(file, m[1])
+        if (to) out.dynamics.push(to)
+      }
+    }
+    reads.set(file, out)
+    return out
+  }
+  const unplaced = new Set()
+  const loaded = (mode) => {
+    const seen = new Set()
+    const todo = [path.join(root, 'src', 'main.ts')]
+    while (todo.length) {
+      const file = todo.pop()
+      if (seen.has(file)) continue
+      seen.add(file)
+      const r = read(file)
+      todo.push(...r.statics)
+      for (const d of r.dynamics) {
+        const listed = table.lazy[rel(d)]
+        if (!listed) unplaced.add(`${rel(d)} (from ${rel(file)})`)
+        else if (listed.includes(mode)) todo.push(d)
+      }
+    }
+    return seen
+  }
+  const folders = ['src/pages/', 'src/table/', 'src/boss/']
+  const out = {}
+  for (const mode of modes) out[mode] = [...loaded(mode)].map(rel).filter((f) => folders.some((d) => f.startsWith(d))).sort()
+  for (const [file, list] of Object.entries(table.lazy)) {
+    if (!fs.existsSync(path.join(root, file))) unplaced.add(`${file} (in src/modes.json, and no such file)`)
+    for (const m of list) if (!modes.includes(m)) unplaced.add(`${file} (src/modes.json gives it the mode "${m}", which does not exist)`)
+  }
+  return { ...out, unplaced: [...unplaced].sort() }
+}
+
 export function buildInfo(root) {
-  return { engineHash: engineHash(root), pageHashes: pageHashes(root), sharedHash: sharedHash(root), assets: assetIndex(root), approved: approvedFiles(root), versions: versions(root) }
+  return { engineHash: engineHash(root), pageHashes: pageHashes(root), sharedHash: sharedHash(root), assets: assetIndex(root), approved: approvedFiles(root), versions: versions(root), modules: moduleLists(root) }
 }
 
 // The build's own plugin: gives the page its hashes and indexes as a module, with no file copied.

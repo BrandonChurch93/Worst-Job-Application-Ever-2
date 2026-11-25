@@ -2,6 +2,7 @@
 import { mountInterface } from './interface'
 import { makeQualityPicker, type QualityLevel, type QualityPicker } from './picker'
 import { lessMotion, touchOnly } from './device'
+import { ready } from './glyphs'
 import { mountTouchMessage } from './touch'
 import { mountProbe, PROBE_SCENES, type ProbeRunner, type ProbeScene } from '../probe'
 
@@ -56,6 +57,8 @@ export interface InterfaceApi {
   film?: FilmApi
   // The wall time of the last drawn frame in seconds, for the level picker.
   frameSeconds(): number
+  // Optional. What lies under the row of live controls now. 'page': the empty strip above the title, so the row is drawn bare. 'light': pale content that has scrolled under it, so the row gets a pale capsule. 'dark': something dark such as a tier of the table, so the row turns pale on a dark capsule. Left out, it is 'page'.
+  backing?(): 'page' | 'light' | 'dark'
   // Optional. True while the page takes typed letters: the M key then belongs to the page, and the menu opens with Alt and M.
   typing?(): boolean
 }
@@ -67,4 +70,4 @@ export interface Mounted {
 }
 
 export type { ProbeRunner, ProbeScene, QualityLevel, QualityPicker }
-export { lessMotion, makeQualityPicker, mountInterface, mountProbe, mountTouchMessage, PROBE_SCENES, touchOnly }
+export { lessMotion, makeQualityPicker, mountInterface, mountProbe, mountTouchMessage, PROBE_SCENES, ready, touchOnly }
