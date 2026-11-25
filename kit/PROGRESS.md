@@ -321,7 +321,26 @@ Kept by `npm run judged -- --write`. Check G6 compares its ids with the computed
 
 Written in Phase 3: what was learned from study in ten lines, every locked setting, each technique that worked and each that did not, and the six recipes.
 
-none
+### Study
+
+Done 2026-11-25T13:30Z, step 1 of Phase 3. The approved images of `step1` (`step1-fire`, `step1-tug`, `page-look`, `cursor-acting`, `cursor-damage`, `cursor-arms`) were looked at crop by crop at full size before the briefs were written, and what was seen is in each brief. Eight photographs were then studied, 8 of `assets.maxStudySources` 12; four are left for the pinball table. They are in `references/cache/phase3/` and are not committed. Sources: Wikimedia Commons files `Bisque Firing or Biscuit Firing.jpg` (CC0), `Frosted glass surface.jpg`, `Brushed Aluminium.jpg`, `Large Format Printing of Black Numbers on a Brushed Aluminum Sheet.jpg`, `Arcade button chording effects controller.jpg`, `Two-shot injection molded keycaps.jpg`, `AppleDesign Keyboard top.jpg`, and the Pexels photograph 6944705, a white matte bowl on a white surface. The first showed a kiln and taught nothing about the surface. Nothing from any of them is in a frame.
+
+What was learned, in ten lines:
+
+1. Matte ceramic has no bright spot at all. Under a low soft light the bowl's tone turns slowly across its form, and the only bright thing is its rim, a lighter line about a millimetre wide where the surface turns toward the light. So the page gets its shape from slow falloff and from thin light lines on its lips, never from a highlight.
+2. Its shadows are warm grey, darkest in a narrow line at the contact and soft a few millimetres out. No shadow in the photograph is black or blue. The approved page says the same: pockets dark on the upper left wall, bright on the lower right, about 14 px of corner radius.
+3. The grain of a matte glaze shows only where light rakes it and in the brightest part. In the approved images it is an eggshell speckle of 2 to 4 px at 1080p. It is height and roughness, not paint, and it must not crawl from frame to frame.
+4. Frosting on glass is a pebble far finer than one pixel at our scale. At page distance it is a satin sheen with a wide soft highlight and no grain to see. What touches the glass is sharp, what lies deeper under it is soft. The approved fields add a thin aluminum rim and a grey-green body.
+5. Brushed aluminum is dark where it mirrors nothing bright: blue-grey, not light grey. Its highlight is one broad band that runs across the brushing, the fine lines show inside that band and vanish outside it, a few stray scratches cross the grain, and its edge is a crisp chamfer.
+6. Ink on brushed metal is matte, even and sharp-edged, and the metal's highlight passes behind it without lifting it. So type is its own matte layer on every material and never takes a reflection.
+7. Glossy moulded plastic shows two things on each dome: one small sharp highlight and a wider, dimmer picture of the light. The highlight has the light's colour, and the body colour lives in the mid tones. A dark ring marks where a button meets its bezel, and the moulded radius carries a thin bright line. The approved orange button is this with a soft box of light along its upper edge.
+8. A keycap is matte, slightly dished on top, with sides that slope about ten degrees and are darker than the top, an edge radius of about a millimetre, and a legend that lies flush. The approved caps are warm cream with centred charcoal legends and one orange Enter.
+9. A keyboard seen from above reads through its gaps: they are the darkest tone in the picture, each cap throws a short shadow into the gap on the side away from the light, the tops are the lightest tone and nearly even, and side walls show only toward the edges of the frame. The deck is a little different in tone from the caps. In the build the deck stands above the page, as Brandon settled.
+10. One low soft key from the upper left, as in the approved page: every part throws a clear soft shadow down and to the right, deeper near things that stand high, and the frame is a little brighter at the upper left than at the lower right. Bands and window shapes of light, which one approved sheet shows, are not the target.
+
+### Locked settings, techniques and recipes
+
+Written at step 9 of the phase, from the final build.
 
 ## Sound
 
@@ -472,6 +491,7 @@ How much of each limit in the table of `kit/07-QUALITY-BAR.md` has been used.
 | Searches for the pinball take | 4, the fourth logged as over the count at 10:00Z | 3 (`quality.takeSearchMaxRuns`) |
 | Replacements of an agent that ran past its limit | 0 | one per job |
 | Attempts to fix one machine check | 2 (M9 after the height reading, the progress rail) | 5 per round (`quality.gateFixMaxAttempts`) |
+| Photographs and footage studied | 8, at 13:30Z: the eight photographs of the look lock study | 12 (`assets.maxStudySources`): four are kept for the pinball table |
 
 ## Review items not done
 
