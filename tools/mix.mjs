@@ -81,7 +81,7 @@ export async function makeMix(P, c, M, out, name, given = null) {
     mix: name, file: path.basename(out), source: plan.source, planSha256: planSha(plan), ...(plan.openingFrames ? { openingFrames: plan.openingFrames, openingEvents: plan.openingEvents } : {}), seconds: plan.seconds, frames: Math.round(plan.seconds * plan.fps), fps: plan.fps, sampleRate: c.audio.sampleRate, bits: M.levels.MIX.bitsPerSample,
     samples: result.sound.channels[0].length, silent: result.mastered.silent, lufs: fix(result.mastered.lufs), truePeakDb: fix(result.mastered.truePeakDb), gainDb: fix(result.mastered.gainDb),
     targetLufs: c.audio.filmLoudnessLufs, ceilingDb: c.audio.truePeakDb, duckDb: c.audio.duckDb, bytes: bytes.length, sha256: sha(bytes),
-    events: plan.events.length, mappedEvents: plan.events.filter((e) => M.cues.eventCues[e.name]).length, cuesLaid: result.placed.filter((p) => p.kind === 'cue').length, linesLaid: result.placed.filter((p) => p.kind === 'line').length,
+    events: plan.events.length, mappedEvents: plan.events.filter((e) => M.cues.cueOfEvent(e.name)).length, cuesLaid: result.placed.filter((p) => p.kind === 'cue').length, linesLaid: result.placed.filter((p) => p.kind === 'line').length,
     missingCues: result.missingCues, missingLines: result.missingLines, recordsWithNoFile: absent,
     placed: result.placed.map((p) => ({ ...p, seconds: Number(p.seconds.toFixed(4)), pan: Number(p.pan.toFixed(3)) }))
   }
@@ -295,7 +295,7 @@ export async function soundChecks(a, P, c, M) {
     const late = []
     const seen = new Set()
     for (const e of plan.events) {
-      const cue = M.cues.eventCues[e.name]
+      const cue = M.cues.cueOfEvent(e.name)
       if (!cue || cue === 'room-tone' || r.missingCues.includes(cue)) continue
       const k = `${cue}@${e.frame}`
       if (seen.has(k)) continue

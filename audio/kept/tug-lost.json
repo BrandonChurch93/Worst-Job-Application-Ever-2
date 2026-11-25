@@ -1,0 +1,116 @@
+{
+  "id": "tug-lost",
+  "kind": "cue",
+  "cue": "tug-lost",
+  "variant": null,
+  "class": "mechanism",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "One sheet of thick paper torn out of a grip and ripped in two",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "One sheet of thick paper ripped out of a grip and torn in two in one fast pull, a sharp dry paper tear, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.6,
+    "loop": false,
+    "influence": null,
+    "call": 162
+  },
+  "askedSeconds": 0.6,
+  "cost": "7",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "b8a3a2af08debcaf7a6730e18b09d4de368f120ed65bc41d3535eeeb6d582d29",
+    "filed": "2026-11-25T19:24:26.438Z",
+    "measured": {
+      "seconds": 0.6,
+      "start": 0,
+      "end": 0.6,
+      "peakDb": -1.01,
+      "rmsDb": -16.77,
+      "lufs": -11.13,
+      "truePeakDb": -0.74,
+      "low": 0.005,
+      "mid": 0.329,
+      "high": 0.666,
+      "tailDb": -66.01,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.35,
+          "peakDb": -1.01
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.6,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -10,
+    "gainDb": -8.93,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.6,
+    "start": 0,
+    "end": 0.444,
+    "peakDb": -10,
+    "rmsDb": -24.44,
+    "lufs": -23.12,
+    "truePeakDb": -9.93,
+    "low": 0.004,
+    "mid": 0.329,
+    "high": 0.667,
+    "tailDb": -60.82,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.352,
+        "peakDb": -10
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+    "asks": 2,
+    "whole": 2,
+    "heard": "A single, quick tear of thick paper is heard. / A quick, sharp tear of thick paper or cardboard.",
+    "madeOf": "paper / Paper",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The audio features a single, sharp ripping noise consistent with tearing a sheet of thick paper.",
+      "The recording contains a single, rapid, harsh tearing sound that is highly characteristic of thick paper being forcefully ripped."
+    ]
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "tug-lost.wav",
+  "seconds": 0.6,
+  "sha256": "9d9ad9b0c621c0098e238fa177b1c71de0fd20e614060b5069df6b4514bba867"
+}

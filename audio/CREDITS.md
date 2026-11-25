@@ -4,7 +4,7 @@ This build may spend at most 10000 ElevenLabs credits in all, on every call of e
 
 The count is of this build's own calls, never of what the account has left: the account is shared with other builds. Every call goes through `npm run credits`, which writes its row here before it returns and makes no call that would pass the limit. A sound effect is never asked for without its length. `kit/addenda/001-sound-budget-and-narrator.md` sets these rules. This file is written by the tool from `audio/CREDITS.json`.
 
-Running total: 2524 of 10000. Calls: 160.
+Running total: 2659 of 10000. Calls: 177.
 
 ## Rates
 
@@ -175,3 +175,20 @@ Running total: 2524 of 10000. Calls: 160.
 | 158 | 2026-11-25T19:03:38Z | POST /v1/sound-generation | slab-drop.3 take 3, variant 3 of 3 | 0.8 s | HTTP 200, 1.7 s | 9 | reported by the response | 2507 |
 | 159 | 2026-11-25T19:03:40Z | POST /v1/sound-generation | strips-zip take 3 | 1 s | HTTP 200, 1.7 s | 11 | reported by the response | 2518 |
 | 160 | 2026-11-25T19:03:42Z | POST /v1/sound-generation | dart-hit.4 take 3, variant 4 of 4 | 0.5 s for a cue of 0.2 s | HTTP 200, 1.9 s | 6 | reported by the response | 2524 |
+| 161 | 2026-11-25T19:11:32Z | POST /v1/sound-generation | slab-drop.2 take 3, variant 2 of 3 | 0.8 s | HTTP 200, 1.8 s | 9 | reported by the response | 2533 |
+| 162 | 2026-11-25T19:24:24Z | POST /v1/sound-generation | tug-lost take 1 | 0.6 s | HTTP 200, 2.0 s | 7 | reported by the response | 2540 |
+| 163 | 2026-11-25T19:24:26Z | POST /v1/sound-generation | arms-out take 1 | 0.5 s | HTTP 200, 2.0 s | 6 | reported by the response | 2546 |
+| 164 | 2026-11-25T19:24:29Z | POST /v1/sound-generation | dial-fling take 1 | 0.8 s | HTTP 200, 2.4 s | 9 | reported by the response | 2555 |
+| 165 | 2026-11-25T19:24:31Z | POST /v1/sound-generation | flipper-save take 1 | 0.5 s for a cue of 0.4 s | HTTP 200, 2.3 s | 6 | reported by the response | 2561 |
+| 166 | 2026-11-25T19:24:34Z | POST /v1/sound-generation | session-expired take 1 | 0.8 s | HTTP 200, 2.1 s | 9 | reported by the response | 2570 |
+| 167 | 2026-11-25T19:24:37Z | POST /v1/sound-generation | popup-close take 1 | 0.5 s for a cue of 0.3 s | HTTP 200, 2.3 s | 6 | reported by the response | 2576 |
+| 168 | 2026-11-25T19:24:39Z | POST /v1/sound-generation | carpet-roll take 1 | 1 s | HTTP 200, 2.2 s | 11 | reported by the response | 2587 |
+| 169 | 2026-11-25T19:24:42Z | POST /v1/sound-generation | inbox-take take 1 | 0.6 s | HTTP 200, 2.2 s | 7 | reported by the response | 2594 |
+| 170 | 2026-11-25T19:24:45Z | POST /v1/sound-generation | firehouse-take take 1 | 0.6 s | HTTP 200, 2.3 s | 7 | reported by the response | 2601 |
+| 171 | 2026-11-25T19:24:47Z | POST /v1/sound-generation | metrics-card take 1 | 0.5 s | HTTP 200, 2.2 s | 6 | reported by the response | 2607 |
+| 172 | 2026-11-25T19:24:50Z | POST /v1/sound-generation | skip take 1 | 0.5 s for a cue of 0.3 s | HTTP 200, 2.1 s | 6 | reported by the response | 2613 |
+| 173 | 2026-11-25T19:25:02Z | POST /v1/sound-generation | popup-close take 2 | 0.5 s for a cue of 0.3 s | HTTP 200, 2.2 s | 6 | reported by the response | 2619 |
+| 174 | 2026-11-25T19:27:30Z | POST /v1/sound-generation | session-expired take 2 | 0.8 s | HTTP 200, 1.8 s | 9 | reported by the response | 2628 |
+| 175 | 2026-11-25T19:28:56Z | POST /v1/sound-generation | session-expired take 3 | 0.8 s | HTTP 200, 4.5 s | 9 | reported by the response | 2637 |
+| 176 | 2026-11-25T19:29:01Z | POST /v1/sound-generation | carpet-roll take 2 | 1 s | HTTP 200, 1.6 s | 11 | reported by the response | 2648 |
+| 177 | 2026-11-25T19:30:12Z | POST /v1/sound-generation | carpet-roll take 3 | 1 s | HTTP 200, 2.1 s | 11 | reported by the response | 2659 |
