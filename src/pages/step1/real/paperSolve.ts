@@ -466,7 +466,7 @@ function solveDrawn(q: SheetIn, into?: Sheet): Sheet {
     hold(out, da, db, 3)
     normals(out)
   }
-  level(out, 0.45)
+  level(out, 0.3)
   if (bite > 0) calm(out, crestAt, db, bite)
   return out
 }

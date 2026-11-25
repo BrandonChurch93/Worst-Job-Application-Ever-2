@@ -18,7 +18,7 @@ const WELL = -(CAP_TOP + 12)
 const MAX_CHARS = 26
 const BODY = { x: 14, y: 26 }
 const STRIPS = 20
-const STRIP = { paper: 30, ink: 26, wide: 3.6, every: 4 }
+const STRIP = { paper: 42, ink: 26, wide: 2.5, every: 4, askew: 0.2 }
 const GRAB = 26
 const LIE = heights.card + 9
 const IDLE_SHUFFLE = 5
@@ -556,7 +556,7 @@ export function makePage(): PageLogic {
       const hang = ink ? 0 : clamp((Math.max(s.tug.most, s.tug.amount) - FRINGE.from - ((i * 7) % STRIPS) * (8 / (STRIPS - 1)) * 0.6 * FRINGE.step) * FRINGE.rate, 0, FRINGE.most)
       const u = Math.max(hang, tug ? 0 : clamp((t - SHRED.strips - i * 0.04) / 0.3, 0, 1))
       if (u <= 0) continue
-      const len = ink ? STRIP.ink : STRIP.paper
+      const len = ink ? STRIP.ink : STRIP.paper * (0.8 + 0.4 * hash01(i, 11, s.seed))
       const out0 = clamp(u / 0.45, 0, 1)
       const fall = smooth((u - 0.45) / 0.55)
       const lane = (i - (STRIPS - 1) / 2) / ((STRIPS - 1) / 2)
@@ -567,7 +567,7 @@ export function makePage(): PageLogic {
       const x = lerp(lerp(x0, tx, fall), x0, back)
       const y = lerp(lerp(y0, ty, fall), HOOD.y - len / 2 - 2, back)
       const z = (HOOD.z * (1 - fall) + Math.sin(Math.PI * fall) * 6) * (1 - back) + HOOD.z * back
-      out.push({ id: `strip-${i}`, part: 'shredder', kind: 'box', x: x - STRIP.wide / 2, y: y - len / 2, w: STRIP.wide, h: len, z0: z + 0.4 + i * 0.06 * fall, z1: z + 1.4 + i * 0.06 * fall, rot: (hash01(i, 7, s.seed) - 0.5) * 1.1 * fall * (1 - back), tone: ink ? 'dark' : 'paper', v: [u, ink ? 1 : 0] })
+      out.push({ id: `strip-${i}`, part: 'shredder', kind: 'box', x: x - STRIP.wide / 2, y: y - len / 2, w: STRIP.wide, h: len, z0: z + 0.4 + i * 0.06 * fall, z1: z + 1.4 + i * 0.06 * fall, rot: (hash01(i, 7, s.seed) - 0.5) * (STRIP.askew * out0 + 1.1 * fall) * (1 - back), tone: ink ? 'dark' : 'paper', v: [u, ink ? 1 : 0] })
     }
   }
 
