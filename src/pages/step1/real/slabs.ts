@@ -128,11 +128,15 @@ export const slabs: PartMaker | null = {
   },
   pose(o, s) {
     // The landing rings through the block for a moment: a slow rock on its long axis that dies fast with the impact the
-    // page reports. Its label is laid flat by the type maker, so the rock stays under 1 px at the face's edge.
+    // page reports. Its label is laid flat by the type maker at the face's resting height, so the block sinks by as much
+    // as its highest edge would rise: no part of the face ever comes up through the label.
     const hit = s.v && s.v.length > 1 ? s.v[1]! : 0
     const t = s.v && s.v.length > 0 ? s.v[0]! : 0
     const ring = hit * hit
-    o.rotation.x += ring * 0.028 * Math.cos(t * 52)
-    o.rotation.y += ring * 0.007 * Math.sin(t * 41)
+    const rx = ring * 0.028 * Math.cos(t * 52)
+    const ry = ring * 0.007 * Math.sin(t * 41)
+    o.rotation.x += rx
+    o.rotation.y += ry
+    o.position.z -= Math.abs(Math.sin(rx)) * (s.h / 2) + Math.abs(Math.sin(ry)) * (s.w / 2)
   }
 }

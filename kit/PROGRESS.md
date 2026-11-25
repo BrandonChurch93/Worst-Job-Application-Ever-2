@@ -25,22 +25,22 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 30, 2026-11-25T16:04Z, Phase 3.
+Status 31, 2026-11-25T16:25Z, Phase 3.
 
-1. `out/stills/status/01-round-3-keyboard-still.jpg`: The keyboard under fire as round 3 judged it: the build at the review tier, commit cacc69d. All five jurors who saw only this picture called it a web 3D demo.
-2. `out/stills/status/02-cursor-damage-beside-approved.jpg`: Five kinds of damage: your approved sheet above, the build below at the review tier, as the critics saw them. Named by them: coarse ground, too few strips, flat yellow tape, a weak scorch, a hole that reads as a printed dot, cracks that read as ink.
-3. `out/stills/status/03-page-text-and-controls.jpg`: Text and controls of step 1 at rest at their real size, the build at the review tier, from the page critic's pack. Its score: 6.
-4. `out/stills/status/04-tug-new-frame-beside-approved.jpg`: The tug of war after the round's commit: your approved picture on the left, the build on the right at the review tier, made by the scene's agent and not merged yet. The upload glyph is in, the frame holds the whole drop zone, strips hang from the shredder. Slivers of the right column still show at the edge.
+1. `out/stills/status/01-tug-sheet-against-arrow.jpg`: Left: part of your approved tug of war at its own size. Right: the build as round 3 judged it. Your arrow is taller than the sheet is wide; the build's arrow is a third of the sheet's width. The sheet will shrink to the arrow's scale.
+2. `out/stills/status/02-slab-words-cut.jpg`: Four frames one after another from round 3, 0:33.40 to 0:33.50: the rocking red block hides parts of its own words. Found by me and by a motion critic; fixed in e100e0f, not yet drawn again.
+3. `out/stills/status/03-arms-beside-approved.jpg`: The arms sheet: yours on the left, the build on the right at the review tier, made by the acting agent on its branch at its last commit (54f933a) before merge 11. Fingers sit together now; the sheet is still three times the arrow.
+4. `out/stills/status/04-table-wide-beside-approved.jpg`: The whole machine: yours on the left, the build on the right at the draft tier, made by the frame's agent on its branch (545adbb). Floors, frame and lamps are real; the dark blocks are stand-ins for the models, hardware and playing parts whose makers started at 16:18Z.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 3, tick 69 at 2026-11-25T16:04:09Z, allowance: build
-time used in this phase: 3.18 h of its box of 8.00 h
-time used under the allowance in force: 10.53 h of 36.00 h allowed
-time used: 10.53 of 36.00 hours before the review
+clock: phase 3, tick 70 at 2026-11-25T16:25:04Z, allowance: build
+time used in this phase: 3.53 h of its box of 8.00 h
+time used under the allowance in force: 10.88 h of 36.00 h allowed
+time used: 10.88 of 36.00 hours before the review
 extra rounds: yes
 half point: not reached
 box end: not reached
