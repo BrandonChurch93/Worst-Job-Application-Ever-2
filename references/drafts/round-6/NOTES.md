@@ -329,3 +329,109 @@ SCALE, with the ball as the unit: the frame is twenty balls wide and eleven tall
 ROUTES, all clear to see: the ball drops in at the top centre straight onto the three bumpers. An open lane one and a half balls wide runs down each side of the bumper group to the flippers. From the left flipper an open shot runs up to the scoop at the inbox; from the right flipper an open shot runs up to the row of drop targets beside the cubicles and to the lift door on the left. The cubicles, the coffee machine and the inbox stand outside the lanes, against the walls, and block nothing.
 ```
 
+### G5 · Tier 1, The Street
+
+- File: `references/drafts/round-6/G5-tier-street.png`
+- Model: `seedream_5`
+- Takes made: 4 of 4 allowed. Kept: take 3.
+- How it was made: Take 3 as generated, with one retouch after generation: the sign on the house at the bottom left came out as "Mom's Baskưtt"-like nonsense. The 512 px square round that house was cut out, sent back to the same model with the instruction to change only the lettering to `Mom's Basement` (prompt: `Reproduce this photograph exactly ... Change one thing only: the dark serif lettering on the cream sign plate. It now reads, on two lines, exactly: Mom's / Basement`), made twice, both spelled right, and the sign plate alone (148 by 92 px of the 2816 px original, feathered) was pasted back from the first one. Nothing else in the file was changed. The judge saw the retouched file. The retouch was not counted as a take.
+- Reference images passed in, in order: `references/guides/round-6/guide-tier-street.png` (the unlabeled guide); `references/drafts/round-6/G7-clear-ball.png` (the kept G7); `references/drafts/round-6/G3-tier-corporate.png` (the kept G3).
+
+Takes:
+
+- Take 1. Misses: seen at a steep angle with dark margins, so the tier does not fill the frame; signs wrong: "You're Fire-" (cut off), "Student Loan", an unreadable "Mom's ..."; two tiny houses only. Judge: "amateur generated art", then named eight things. Failed.
+- Take 2 (made at the same time; same prompt plus a paragraph naming the routes). Seen from straight above. `You're Fired`, `Background Check`, `Student Loans` spelled right. Misses: "Mom's Ekōaier" and "Unemployment Offier"; four tiny houses near the top and none above the slingshots, five houses in all, not seven; no spinner to be seen; lift tube ends in a cap at the apron. Judge: "amateur generated (AI) art", then named seven things. Failed.
+- Take 3 (prompt rewritten for every fault the two judges named: two rows of three houses, large cream signs spelled letter by letter, cellar hatch as a hole in the outlane, office doorway two balls wide, plunger tip in the lane, wire ramp as two rails side by side with a stated way on and off, spiral as a wide clear half-pipe, straight lift tube, every launch lane arrow up). Seen from straight above, all counts right, four of five signs spelled right, the fifth wrong ("Mom's Baskưtt") and retouched as described above. Judge (on the retouched file): "Generated art (AI image), of the five options. Fairly confident, not certain", then named nine things. Failed. Kept as the best of four: the only take with every count right and every sign right after the retouch.
+- Take 4 (made at the same time as take 3; the take 3 prompt plus the routes paragraph). Misses: seen at an angle with dark margins; "Enemployment Offer" and "Mom's Basenen"; houses scattered over the upper board. Judge: "amateur generated art (AI-generated)", then named ten things. Failed.
+
+The judge's answer on the kept take:
+
+> picture-0503.png — I opened it at full size and zoomed into each region.
+>
+> What it shows: a top-down, photoreal 16:9 view of a satirical "job hunt" pinball table. Labels read "You're Fired", "Student Loans", "Background Check", "Mom's Basement" and "Unemployment Office" (on the drain). The ball is a clear glass sphere with a mouse-cursor arrow inside it.
+>
+> Q1 — Which is it most likely?
+> Generated art (AI image), of the five options. Fairly confident, not certain.
+> - Not a commercial pinball video game screenshot: no score, HUD, ball count or display, and the look is photographic (shallow depth of field, grime, scratches) rather than a game render.
+> - Not a textbook picture or stock image: too specific and jokey, with no instructional or generic purpose.
+> - Top-budget film frame is the only real rival, because lighting, materials and legible text are polished. What tips it away: small parts dissolve into nonsense on close inspection, which a built prop or a modelled CG asset would not do. Examples: a melted, squiggly street lamp and a loose hex nut lying on the playfield near the spiral; the lit arrow inserts along the top arch are scribbled glyphs pointing in inconsistent directions; the lowest arrow in the shooter lane points down while the rest point up; rails at the top overlap and merge ambiguously.
+> - Caveat: "amateur" undersells the finish. It is a high-quality generation, but the mechanical incoherence is the signature of an image model, not of a design that anyone had to make work.
+>
+> Q2 — Could a ball travel every lane and ramp? No. Things that could not work:
+> - Wire ramp across the middle: it is just two rails with rungs, like a ladder or handrail, with no guard rails. Its left end is a closed loop sitting at playfield level with no entry flap, so a ball cannot get onto it, and it has a sharp peak in the middle that the ball would fly off. Its right end butts into the outside wall of the spiral beside a support post rather than feeding a trough.
+> - Spiral "parking garage" ramp: the lower levels are stacked separate rings, not a continuous helix, and the gaps between floors are roughly a quarter to a third of the ball's diameter. The clear top level is a closed loop around a hole. The exit at the bottom is a thin metal tongue narrower than the ball.
+> - Plunger: the knob and spring sit inside the cabinet on the playfield, at the bottom of the shooter lane, under where the glass would be. Nobody could pull it.
+> - Left clear tube: about ball width, but its top entry is an orange funnel that connects to no lane, and its bottom ends in a chrome elbow at the apron with no visible exit back to the playfield. At best it goes under the table; as drawn it is a dead end.
+> - Top arch: a lit box sits in the top centre and splits the arch in two, and the left half appears to end in a capped rail, so there is no continuous orbit.
+> - Inlanes: the guide rails below each inlane run underneath the flippers toward the drain instead of ending at the flipper pivot, so a ball coming down an inlane would be delivered under the flipper, not onto it. (Moderate confidence; the geometry there is a little ambiguous.)
+> - Building targets: "Background Check" has its doorway blocked by the spiral and a little windmill; "Student Loans" is a solid columned facade with no opening. Only "You're Fired" has a usable scoop mouth.
+> - Left outlane: the "Mom's Basement" house sits in the lane; the square hole beside it could work as a sink, but the house itself blocks the path.
+> - Minor: the ball is clear glass with a cursor inside, not steel.
+>
+> What does look workable: the two flippers (correct pivots, a normal-sized gap, sensible size against the ball), the slingshots, the centre "road" lane, the "You're Fired" scoop, and the drain slot.
+
+Judge result: FAILED both questions (STATED by the judge). Kept at the limit of four takes.
+
+What the kept take misses (MEASURED on the file unless marked):
+
+- The judge did not pass it: it called it generated art ("fairly confident, not certain"; a film frame was "the only real rival") and named nine things that could not work.
+- `Mom's Basement` was not spelled right by the model in the full picture. The sign in the file is a retouch (see "How it was made").
+- Wire ramp. Two chrome rails with rungs on thin posts, more like a handrail than a track a ball rides. It has a peak over the road. Its left end is a closed loop near the bank with no flap, and its right end meets the outside of the spiral beside a post. So the way on and the way off are not clear (STATED by the judge; I see the same).
+- Parking garage spiral. The three levels are stacked rings, not one continuous ramp, and the clear half-pipe on the roof is a closed loop round a hole. The way off is a thin metal tongue at the lower right corner of the garage, narrower than the ball.
+- Police station door. The spiral and the spinner stand directly in front of it.
+- Spinner. It came out as a small pinwheel on a post beside the police station, not a flat flag hanging between two posts across the lane.
+- Launch lane arrows (MEASURED). Five arrow inserts: the top four point up, the lowest one points down.
+- Top edge. Arrow lamps along the top left point right and those along the top right point left; a lit box at the top centre is the chute. The prompt asked for no lane along the top; the lamps and rails there read as one.
+- Lift tube. It runs straight up the left side to an orange funnel at the top left corner, not to a door between the firehouse and the bank, and at the bottom it ends in a chrome elbow at the apron.
+- Plunger. The spring and the orange knob are inside the frame at the foot of the launch lane, a little left of the lane's centre line.
+- Inlanes. The wire guides below each inlane run on under the flippers toward the drain (STATED by the judge with moderate confidence; I see the same on both sides).
+- Mom's house stands in the left outlane beside its hatch and takes about half of the outlane's width.
+- Insert pictures. The left one is a ladder and the middle one a clock face (with twelve small marks that could be read as numerals; too small to tell, UNKNOWN). The right one shows one hat with a brim, perhaps two, not a stack of three.
+- Stray small things on the board near the spiral: a bent street lamp and a loose nut (STATED by the judge; I see a bent lamp post and a small ring).
+- Ball size (MEASURED). About 100 px across on the 1920 px frame, so the tier is about 19 balls wide. A flipper is about 3 balls long.
+- Ceramic border. The apron along the bottom is ceramic as asked. The border on the other sides is not in frame; the edge of the picture is the aluminum rail, as in the guide for the tier views.
+- Words (MEASURED at full size): `You're Fired`, `Background Check`, `Student Loans`, `Unemployment Office`, all spelled right by the model; `Mom's Basement`, spelled right by the retouch. No other letters or numbers found, with the clock face above as the one UNKNOWN.
+
+Full prompt of the kept take:
+
+```text
+A screenshot from a finished commercial 3D pinball video game with photoreal graphics: one full screen of play, looking straight down at one tier of a pinball table. It looks exactly like a photograph of a real, physical pinball playfield taken from directly overhead with a long lens. 16:9. The tier fills the whole frame from its left edge to its right edge. Dense, designed, polished and readable: every part of the board is busy, nothing is bare, and every lane is clear to see.
+
+REFERENCE IMAGE 1 is a LAYOUT GUIDE made of flat coloured blocks. Follow it exactly for where each thing is and how big it is. Do not copy its flat colours or its flat look: every block stands for a real, solid, photographed pinball part, described below. REFERENCE IMAGE 2 shows the ball of this game, three times: a clear acrylic ball with a white arrow cursor sealed inside it. Use it only for how the ball looks. This image has exactly one ball. REFERENCE IMAGE 3 is the top tier of the same machine, already finished. Match its brushed aluminum side rails, its clear lift tube on the left, its launch lane on the right, its orange flippers, its lane guides and lamps, the size of its parts and of its ball, its overhead camera and its photographic finish. Do not copy its navy marble, its tower or its other parts: this tier is a different place.
+
+THE PLACE: the city outside, at dusk, built as a pinball playfield. The board is flat: deep teal and navy streets printed as artwork, with road markings, crossings, kerbs, parking bays and manhole covers, under a thick glossy clear coat that shows sharp reflections of every lamp and part. Its light is warm dusk: amber windows and street lamps, with red and blue flashers. Everything that stands on the board is real pinball hardware or a small moulded playfield sculpture fixed among the hardware.
+
+THE FRAME, as in the guide and in reference image 3. Far left edge: a brushed aluminum side rail. Just inside it, the lift: a clear acrylic tube with aluminum collars, one and a half balls wide, running dead straight up from the left end of the apron to the top edge of the frame, where it leaves the frame with no bend, no elbow and no cap, because it carries on to the tier above. Left edge, upper part, between the firehouse and the bank, where the lift opens onto this tier: one small glossy orange lift door, a hinged flap in the right side of the tube, standing open onto the board. The tube touches nothing else. Far right: the launch lane, a straight open channel running the full height of the frame beside the right aluminum rail, shut off from this tier by one continuous low steel wall: the launched ball only passes through here on its way up to the top tier. It is one and a half balls wide, plainly wider than the ball, and leaves the frame at the top edge, dead straight. Its floor is clear and empty, with a row of small identical arrow inserts set flush in the floor, every single one pointing up toward the top of the frame. At its foot, bottom right: the plunger, a steel rod with a coiled spring whose tip stands in the foot of the lane, in line with it, and whose glossy orange ball knob sits at the very bottom edge of the frame, below the end of the lane. Top centre: the chute from the tier above, a steel-edged opening two balls wide through which the ball drops in. The rest of the top edge is a plain low steel wall with a row of small white lamps. There is no lane along the top of this tier.
+
+UPPER PART, placed exactly as in the guide:
+- Upper left: one red brick firehouse seen from above, with one red flasher dome on its roof, lit. At its lower edge its garage door stands open onto the scoop, a dark steel-edged hole in the board. Flat on its roof lies a sign: "You're Fired".
+- Upper right: one police station seen from above, blue-grey stone, with one blue flasher dome on its roof, lit. Flat on its roof lies a sign: "Background Check". On the open lane at the right, just below the station: one spinner, a small flat steel flag hanging on a wire between two posts across the lane.
+- Left, below the firehouse: one bank with stone columns along its front. Flat on its roof lies a sign: "Student Loans". Along its right side: a straight column of exactly five white drop targets.
+- Right, below the police station and clear of its door: one three-level parking garage of grey concrete, seen from above, with one clear plastic spiral ramp wound once round it: an open clear half-pipe one and a half balls wide, plainly wide enough for the ball. Its way on is a steel entry flap lying on the board at the garage's lower left corner, facing the flippers. It winds up round the garage in one turn and ends open at the top deck, where the wire ramp begins.
+- Across the tier: the highway. A printed road runs up the middle of the board from the flippers to the chute. Over it crosses the overpass, one chrome wire ramp that a ball rides: two chrome rails side by side at the same height, like a railway track, one and a half balls apart, joined underneath by small U-shaped wire hoops, held up on a few thin steel stands. The ball rolls along between the two rails. It is the same width from end to end. Its way on is at the top deck of the parking garage, where the spiral delivers the ball. From there it arcs over the centre of the tier, high above the road, and comes down to the left. Its way off is its lower left end, where both rails end together, side by side and open, just above the board at the top of the left inlane. Nothing crosses it.
+- The suburbs. Directly above the left slingshot, between the bank and the slingshot: one row of exactly three tiny houses standing side by side, each with a pitched roof and lit amber windows. Directly above the right slingshot, below the parking garage: one more row of exactly three tiny houses side by side. That is six tiny houses in two rows of three. There are no houses anywhere else in the upper part of the board: the ground between the firehouse and the police station is road and printed street only.
+- Bottom left, at the foot of the left outlane: one more tiny house, a little bigger than the others, standing against the wall beside the outlane. In the floor of the outlane in front of it: its cellar hatch, an open steel-edged hole in the board one and a half balls wide, into which an outlane ball drops. Flat on its roof lies a wide cream sign as long as the roof, with two words in large plain black letters: "Mom's Basement".
+- Along the whole bottom edge: the apron, a smooth band of matte off-white ceramic. At its centre, right under the gap between the flippers: a small grey office front with a dark open doorway two balls wide. That doorway is the drain, wide enough to swallow the ball. Over the door, across the whole width of the office front, a wide cream sign with two words in large plain black letters: "Unemployment Office".
+
+LOWER PART, the same on every tier of this machine, placed exactly as in the guide:
+- A pair of glossy orange flippers at the bottom centre, each three balls long, on steel shafts, each with a black rubber band round it. Their pivots are wide apart and their tips point down toward the centre, with a gap one and a half balls wide between the tips.
+- A slingshot above and outside each flipper: a triangle of road-sign yellow plastic with black chevron stripes, with a rubber band round three posts and a lamp inside.
+- Outside each slingshot: an inlane and an outlane, each one and a half balls wide, divided by one chrome wire lane guide. The inlane runs between the slingshot and the guide, and its lower end turns in to meet the pivot end of the flipper, so the flipper is the continuation of the inlane and a ball that rolls down it rolls onto the top of the flipper. No rail or guide runs under a flipper. The outlane runs outside the guide and leads down past the flipper. Two lit amber lamps set flush in the floor on each side. No bolt or post stands in the mouth of a lane.
+- Above the flippers, in an arc: exactly three large round lit inserts set flat and flush in the board, level with its surface. Each shows one simple picture and no words. Left: a ladder. Middle: a clock face with two hands and no numbers. Right: a stack of three hats. They glow red, amber and white.
+- Everywhere between these: printed street artwork, rows of small identical lit arrow and circle inserts along the lanes, steel posts with rubber rings, tiny street lamps. None of the artwork looks like letters, numbers or writing. Nothing stands in a lane.
+
+THE BALL: exactly one ball, the clear acrylic ball of reference image 2, one twentieth of the frame's width across. It is on the street between the firehouse and the bank, just right of the scoop, rolling left toward it. We look down through the top of the clear ball at the solid white arrow cursor with its black edge inside it; the arrow is three quarters of the ball's width and is plain to see. A crisp highlight on the ball and a soft shadow under it.
+
+FINISH: the level of the best modern 3D pinball simulations on sale today. Rich contrast, glowing lamps, deep sharp reflections in the clear coat, crisp moulded plastics with printed art, chrome wire, brass, real screws, posts and rubber rings.
+
+LIGHT: every lamp is on. General lighting round the edges of the tier, a lamp under every insert, the red dome, the blue dome, lit windows in every building. Red light falls round the firehouse and blue light round the police station. Light from each insert spills onto the post beside it. Warm dusk overall.
+
+CAMERA: directly overhead, long lens, so things that stand up lean only a very little outward toward the edges of the frame and show a sliver of their sides. Deep focus: every part of the image is sharp from edge to edge, with no soft or blurred area anywhere.
+
+LETTERING: the only words anywhere in the image are these five signs, each a cream plate with large plain black letters, spelled exactly like this, letter for letter: "You're Fired" on the firehouse roof; "Background Check" on the police station roof; "Student Loans" on the bank roof; "Mom's Basement" (M-o-m-'-s, then B-a-s-e-m-e-n-t) on the roof of the house at the bottom left; "Unemployment Office" (U-n-e-m-p-l-o-y-m-e-n-t, then O-f-f-i-c-e) over the door of the office front at the bottom centre. Every letter is crisp and correct. There are no other letters or numbers anywhere: no score, no display, no labels, no captions, no street names, no brand, no logo. Inserts and plastics carry only pictures, arrows, circles, stars and stripes.
+
+NOT IN THE IMAGE: no people, no hands, no faces, no cars with drivers; no cabinet, no legs, no room, no floor, no sheet of glass over the playfield; no fog, smoke, haze, lens flare or blur; not pixel art, not a flat illustration, not a cartoon, not a diorama, not a model railway.
+
+SCALE, with the ball as the unit: the frame is twenty balls wide and eleven tall. A flipper is three balls long. Every lane, every ramp and the lift tube are one and a half balls wide, so the ball fits in each of them with room to spare.
+```
+
