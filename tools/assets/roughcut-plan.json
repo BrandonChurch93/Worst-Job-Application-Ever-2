@@ -1,0 +1,59 @@
+{
+  "about": "The rough cut's plan: for each beat, the approved image it shows and the view the slow push ends on, as [centre x, centre y, zoom] in fractions of the image. Read off the images by eye. A beat with no image of its own names the image of the beat before it and the push carries on from where that beat ended. 'at' is where in the beat a part starts. 'from' sets where a push starts. 'turn' marks a page turn inside a beat.",
+  "dipFrames": 6,
+  "label": { "sizePx": 15, "marginPx": 14 },
+  "encode": { "crf": 25, "preset": "slow", "maxMb": 19 },
+  "beats": {
+    "marketing.stroll": [{ "image": "marketing-top", "to": [0.4, 0.47, 1.1] }],
+    "marketing.perks": [{ "image": "marketing-top", "to": [0.36, 0.66, 1.45] }],
+    "marketing.ticker": [{ "image": "marketing-top", "to": [0.5, 0.95, 1.5] }],
+    "marketing.apply": [{ "image": "marketing-top", "to": [0.29, 0.44, 1.7] }],
+
+    "step1.keyboard": [{ "image": "page-look", "to": [0.6, 0.45, 1.2] }],
+    "step1.firstName": [{ "image": "step1-fire", "to": [0.5, 0.64, 1.35] }],
+    "step1.lastName": [{ "image": "step1-fire", "to": [0.5, 0.78, 1.7] }],
+    "step1.email": [{ "image": "step1-fire", "to": [0.69, 0.5, 1.6] }],
+    "step1.resume": [{ "image": "step1-fire", "to": [0.33, 0.48, 1.5] }],
+    "step1.tug": [{ "image": "step1-tug", "to": [0.44, 0.52, 1.7] }],
+    "step1.shredded": [{ "image": "step1-tug", "to": [0.45, 0.68, 2] }],
+
+    "step2.open": [{ "image": "step2-rest", "to": [0.6, 0.45, 1.12] }],
+    "step2.dial": [{ "image": "step2-dial", "to": [0.62, 0.48, 1.7] }],
+    "step2.slot": [{ "image": "machines", "from": [0.54, 0.64, 1.6], "to": [0.56, 0.66, 2] }],
+    "step2.crank": [{ "image": "step2-crank", "to": [0.7, 0.72, 1.8] }],
+    "step2.continue": [{ "image": "step2-crank", "to": [0.75, 0.75, 2] }],
+
+    "pinball.seal": [{ "image": "loader-page", "to": [0.7, 0.47, 1.7] }],
+    "pinball.reveal": [{ "image": "table-wide", "from": [0.5, 0.2, 1.9], "to": [0.5, 0.5, 1] }],
+    "pinball.launch": [{ "image": "table-wide", "to": [0.69, 0.69, 1.6] }],
+    "pinball.lobby": [
+      { "image": "tier-corporate", "to": [0.5, 0.5, 1.5] },
+      { "image": "lobby-doors", "at": 0.475, "to": [0.55, 0.62, 1.4] }
+    ],
+    "pinball.coffee": [{ "image": "tier-office", "to": [0.5, 0.38, 1.5] }],
+    "pinball.replyAll": [{ "image": "reply-all", "to": [0.6, 0.48, 1.6] }],
+    "pinball.fired": [
+      { "image": "tier-street", "to": [0.37, 0.37, 1.35] },
+      { "image": "youre-fired", "at": 0.325, "to": [0.5, 0.6, 1.3] }
+    ],
+    "pinball.highway": [{ "image": "rail-cam", "to": [0.5, 0.62, 1.35] }],
+    "pinball.save": [{ "image": "last-save", "to": [0.56, 0.62, 1.6] }],
+    "pinball.drain": [{ "image": "last-save", "to": [0.5, 0.74, 1.9] }],
+
+    "boss.verify": [{ "image": "boss-fight", "from": [0.2175, 0.5, 2.3], "to": [0.215, 0.5, 2.45] }],
+    "boss.unfold": [{ "image": "boss-stages", "from": [0.25, 0.45, 2], "to": [0.75, 0.45, 2] }],
+    "boss.slabs": [{ "image": "boss-fight", "to": [0.56, 0.55, 1.2] }],
+    "boss.popups": [{ "image": "boss-fight", "to": [0.7, 0.5, 1.7] }],
+    "boss.lastStand": [{ "image": "boss-fight", "to": [0.6, 0.48, 1.45] }],
+    "boss.collapse": [{ "image": "boss-down", "to": [0.64, 0.57, 1.4] }],
+    "boss.press": [{ "image": "boss-down", "to": [0.66, 0.66, 2] }],
+
+    "decision.wait": [{ "image": "decision", "to": [0.45, 0.45, 1.08] }],
+    "decision.letter": [{ "image": "decision", "to": [0.33, 0.6, 1.6] }],
+    "decision.metrics": [{ "image": "decision", "to": [0.66, 0.62, 1.5] }],
+    "decision.reset": [
+      { "image": "decision", "to": [0.6, 0.66, 1.5] },
+      { "image": "marketing-top", "at": 0.25, "turn": true, "to": [0.39, 0.46, 1.3] }
+    ]
+  }
+}

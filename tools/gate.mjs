@@ -15,6 +15,7 @@ const c = config()
 const phase = Number(a.phase ?? 0)
 const only = a.only ? String(a.only).toUpperCase().split(',') : null
 const from = { G1: 0, G2: 0, G3: 0, G4: 0, G8: 0, G9: 0, G10: 0 }
+const onlyAt = { D1: [1] }
 const results = []
 const sha = (file) => crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')
 const run = (cmd, argv) => spawnSync(cmd, argv, { cwd: at(), encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 })
@@ -206,10 +207,28 @@ const checks = {
       note: `the site asks for ${Object.keys(all.asked).length} extensions (${Object.keys(all.asked).sort().join(', ')}); ${refused.length ? `${refused.join(', ')} ${refused.length === 1 ? 'is' : 'are'} not portable and the picture is the same without (PSNR ${psnrText(dSome.psnr)})` : `all are portable (PSNR against the unrestricted picture ${psnrText(dSome.psnr)})`}; target "${all.target}" normally and "${half.target}" without EXT_color_buffer_float, PSNR ${psnrText(dHalf.psnr)}, floor ${floor} dB`,
       detail
     }
+  },
+
+  async D1() {
+    const file = at('out', 'roughcut.mp4')
+    if (!fs.existsSync(file)) return { pass: false, note: 'out/roughcut.mp4 does not exist', detail: [] }
+    const probe = (argv) => run('ffprobe', ['-v', 'error', ...argv, file]).stdout
+    const s = JSON.parse(probe(['-select_streams', 'v:0', '-count_frames', '-show_entries', 'stream=width,height,nb_read_frames,r_frame_rate', '-of', 'json']) || '{}').streams?.[0]
+    if (!s) return { pass: false, note: 'out/roughcut.mp4 holds no picture stream that can be read', detail: [] }
+    const f = c.formats.preview
+    const frames = Math.round(c.film.units.reduce((n, u) => n + u.seconds, 0) * c.film.previewFps)
+    const detail = []
+    if (s.width !== f.width || s.height !== f.height) detail.push(`it is ${s.width} by ${s.height}, formats.preview is ${f.width} by ${f.height}`)
+    if (Number(s.nb_read_frames) !== frames) detail.push(`it holds ${s.nb_read_frames} frames, film.units at film.previewFps is ${frames}`)
+    if (s.r_frame_rate !== `${c.film.previewFps}/1`) detail.push(`its rate is ${s.r_frame_rate}, film.previewFps is ${c.film.previewFps}`)
+    if (probe(['-select_streams', 'a', '-show_entries', 'stream=index', '-of', 'csv=p=0']).trim()) detail.push('it carries a sound stream, and the rough cut is silent')
+    const mb = fs.statSync(file).size / 1e6
+    if (mb > c.repo.maxFileMb) detail.push(`it is ${mb.toFixed(1)} MB, over repo.maxFileMb`)
+    return { pass: detail.length === 0, note: `out/roughcut.mp4 is ${s.width} by ${s.height} with ${s.nb_read_frames} frames at ${s.r_frame_rate} (${frames} expected), ${mb.toFixed(1)} MB, silent`, detail }
   }
 }
 
-const wanted = Object.keys(checks).filter((id) => from[id] <= phase && (!only || only.includes(id)))
+const wanted = Object.keys(checks).filter((id) => (onlyAt[id] ? onlyAt[id].includes(phase) : from[id] <= phase) && (!only || only.includes(id)))
 let failed = 0
 for (const id of wanted) {
   const t0 = process.hrtime.bigint()
