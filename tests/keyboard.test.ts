@@ -23,13 +23,12 @@ function context(list: Shape[], time: number, asked: Emitter[] = []): RealContex
 }
 
 interface Slot { start: number; count: number }
-interface DeckData { caps: Map<string, Slot>; body: THREE.Mesh; accent: THREE.Mesh | null }
+interface DeckData { caps: Map<string, Slot>; body: THREE.Mesh }
 
 const isCap = (s: Shape): boolean => s.role === 'keycap' && s.kind !== 'text'
 
 // Where a cap is drawn, read from the vertices the renderer is given: the middle of its outline and its highest point.
 function placeOf(data: DeckData, id: string): THREE.Vector3 {
-  if (id === 'key-enter') return data.accent!.position.clone()
   const slot = data.caps.get(id)!
   const p = data.body.geometry.getAttribute('position')
   const box = new THREE.Box3()
@@ -41,7 +40,7 @@ function follows(o: THREE.Object3D, list: Shape[]): void {
   const deck = list.find((s) => s.id === 'keyboard-deck')!
   const data = o.userData.deck as DeckData
   for (const s of list.filter(isCap)) {
-    if (s.id !== 'key-enter') expect(data.caps.get(s.id), s.id).toBeDefined()
+    expect(data.caps.get(s.id), s.id).toBeDefined()
     const p = placeOf(data, s.id)
     const flying = s.z0 > deck.z1 + 0.01
     const near = flying ? 2.5 : 0.002
@@ -69,7 +68,7 @@ describe('the real keyboard', () => {
       for (const c of shapes) expect(keyboard.key(c, ctx)).toBe('')
       if (!o) {
         o = keyboard.make(deck, ctx)
-        expect((o.userData.deck as DeckData).caps.size + 1).toBe(seats.length)
+        expect((o.userData.deck as DeckData).caps.size).toBe(seats.length)
       }
       keyboard.pose!(o, deck, ctx)
       follows(o, list)
@@ -80,7 +79,7 @@ describe('the real keyboard', () => {
     expect(flown).toBeGreaterThan(0)
   })
 
-  it('draws every cream cap in one mesh and the Enter in a second, and writes again only the caps that moved', () => {
+  it('draws every cap in one mesh, the Enter orange by its vertex colour, and writes again only the caps that moved', () => {
     const s = film()
     s.advance(steps(6))
     const list = listOf(s)
@@ -90,8 +89,12 @@ describe('the real keyboard', () => {
     const data = o.userData.deck as DeckData
     const meshes: THREE.Mesh[] = []
     o.traverse((c) => { if ((c as THREE.Mesh).isMesh) meshes.push(c as THREE.Mesh) })
-    expect(meshes.length).toBe(4)
-    expect(meshes.filter((m) => m.castShadow).length).toBe(3)
+    expect(meshes.length).toBe(3)
+    expect(meshes.filter((m) => m.castShadow).length).toBe(2)
+    const colour = data.body.geometry.getAttribute('color')
+    const enter = data.caps.get('key-enter')!
+    expect(colour.getY(enter.start)).toBeLessThan(0.2)
+    expect(colour.getY(data.caps.get('key-q')!.start)).toBe(1)
     const spots = data.body.geometry.getAttribute('position') as THREE.BufferAttribute
     const before = spots.version
     keyboard.pose!(o, deck, context(list, 6))

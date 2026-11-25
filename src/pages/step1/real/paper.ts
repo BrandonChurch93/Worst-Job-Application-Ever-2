@@ -132,11 +132,14 @@ function bodyGeometry(ring: number[]): THREE.BufferGeometry {
       uv[(n + k) * 2 + 1] = j / (ny - 1)
     }
   }
+  // The cut edge is 0.9 px tall: its lower line reads the stock 3 px further in, so the fibre does not smear down it.
   ring.forEach((k, r) => {
-    for (const base of [n * 2 + r, n * 2 + m + r]) {
-      uv[base * 2] = uv[k * 2]!
-      uv[base * 2 + 1] = uv[k * 2 + 1]!
-    }
+    const u = uv[k * 2]!
+    const v = uv[k * 2 + 1]!
+    uv[(n * 2 + r) * 2] = u
+    uv[(n * 2 + r) * 2 + 1] = v
+    uv[(n * 2 + m + r) * 2] = u + Math.sign(0.5 - u) * (3 / PAPER.w)
+    uv[(n * 2 + m + r) * 2 + 1] = v + Math.sign(0.5 - v) * (3 / PAPER.h)
   })
   const index: number[] = []
   for (let j = 0; j < ny - 1; j++) {

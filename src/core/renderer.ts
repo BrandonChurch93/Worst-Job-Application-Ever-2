@@ -6,6 +6,7 @@ import { look } from '../post/look'
 import { chooseEmitters, lampIntensity } from '../post/emitters'
 import { EMITTER_BODY_PX, lightLaw, shadowFilter } from '../post/studio'
 import type { Emitter } from '../real/types'
+import { quality, type QualityId } from './quality'
 
 // What the lamps must cover, in world units: the page and everything that stands on it.
 export interface Bounds { minX: number; maxX: number; minY: number; maxY: number; minZ: number; maxZ: number }
@@ -24,6 +25,7 @@ export class LightRig {
   readonly dome = new THREE.DirectionalLight()
   readonly lamps: THREE.PointLight[] = []
   private scene: THREE.Scene | null = null
+  private levelSet: QualityId | null | undefined = undefined
   private pool = look.emitters.pool
   private shadows = look.emitters.shadows
   private axisU = new THREE.Vector3()
@@ -43,8 +45,6 @@ export class LightRig {
     this.axisV.crossVectors(this.base, this.axisU).normalize()
     this.key.castShadow = true
     this.dome.castShadow = true
-    this.key.shadow.normalBias = look.key.normalBiasPx
-    this.dome.shadow.normalBias = look.dome.normalBiasPx
     for (let i = 0; i < look.emitters.pool; i++) {
       const lamp = new THREE.PointLight(0xffffff, 0, 100, 2)
       lamp.name = `emitter-${i}`
@@ -60,6 +60,21 @@ export class LightRig {
   // What a level of the live site gets: the size of the shadow maps, whether the fill has shadows,
   // how many emitters are true lights and how many of those throw a shadow.
   setQuality(keyPx: number, domePx: number): void {
+    this.levelSet = undefined
+    this.resize(keyPx, domePx)
+  }
+
+  // One call for whoever draws: a level of `live.quality`, or null for a computed picture with everything on.
+  // High: the key at its level's size, the fill's shadows, 6 lamps and 2 of them with shadows. Medium: half the size,
+  // the fill's shadows, 4 lamps and 1. Low: a quarter, the key's shadow pass alone, 2 lamps and none with a shadow.
+  setLevel(level: QualityId | null): void {
+    if (level === this.levelSet) return
+    if (level === null) this.resize(look.key.shadowMapPx, look.dome.shadowMapPx)
+    else this.resize(quality(level).shadowMapPx, quality(level).shadowMapPx / 2)
+    this.levelSet = level
+  }
+
+  private resize(keyPx: number, domePx: number): void {
     this.key.shadow.mapSize.set(keyPx, keyPx)
     this.dome.shadow.mapSize.set(domePx, domePx)
     this.dome.castShadow = domePx >= MIN_DOME_SHADOW_PX
@@ -141,7 +156,7 @@ export class LightRig {
 
   // Aims a lamp at the part of the page on show and fits its shadow map to it: square, so a texel is as wide as it is high.
   // `tan` is the tangent of half the angle of the piece of the light's area this sample stands for.
-  private aim(light: THREE.DirectionalLight, dx: number, dy: number, dz: number, tan: number, biasPx: number, s: Sample, alone: boolean): void {
+  private aim(light: THREE.DirectionalLight, dx: number, dy: number, dz: number, tan: number, of: { biasPx: number; normalBiasPx: number; shadowMapPx: number }, s: Sample, alone: boolean): void {
     const b = this.bounds
     const r = this.rect
     const cx = (r.minX + r.maxX) / 2
@@ -185,7 +200,9 @@ export class LightRig {
     cam.far = far - below + 4
     cam.updateProjectionMatrix()
     const depth = cam.far - cam.near
-    light.shadow.bias = -biasPx / depth
+    const coarse = Math.max(1, of.shadowMapPx / px)
+    light.shadow.bias = (-of.biasPx * coarse) / depth
+    light.shadow.normalBias = of.normalBiasPx * coarse
     light.shadow.radius = Math.floor((depth * tan) / texel) + (alone ? 0.5 : Math.min(0.998, Math.max(0, s.phase)))
   }
 
@@ -243,12 +260,12 @@ export class LightRig {
     this.seen(camera)
     this.key.color.setRGB(...look.key.colour)
     this.key.intensity = look.key.intensity * this.level
-    this.aim(this.key, dx, dy, dz, r * split.blur, look.key.biasPx, s, alone)
+    this.aim(this.key, dx, dy, dz, r * split.blur, look.key, s, alone)
     this.dome.color.setRGB(...look.dome.colour)
     const up = alone ? 1 : s.dome[2]
     this.dome.intensity = (look.dome.intensity * this.level) / up
-    if (alone) this.aim(this.dome, 0, 0, 1, domeSpread(1), look.dome.biasPx, s, alone)
-    else this.aim(this.dome, s.dome[0], s.dome[1], up, domeSpread(s.count), look.dome.biasPx, s, alone)
+    if (alone) this.aim(this.dome, 0, 0, 1, domeSpread(1), look.dome, s, alone)
+    else this.aim(this.dome, s.dome[0], s.dome[1], up, domeSpread(s.count), look.dome, s, alone)
     const cx = (this.rect.minX + this.rect.maxX) / 2
     const cy = (this.rect.minY + this.rect.maxY) / 2
     const at = look.key.at
@@ -299,6 +316,9 @@ export class Engine {
     this.renderer.shadowMap.enabled = true
     this.renderer.shadowMap.type = THREE.BasicShadowMap
     this.renderer.info.autoReset = false
+    // Solid things are drawn in an order that does not ask how far away they are. Two faces in one plane that meet
+    // at an edge then always win the same pixels, whatever was on show before this frame.
+    this.renderer.setOpaqueSort((a, b) => a.groupOrder - b.groupOrder || a.renderOrder - b.renderOrder || a.material.id - b.material.id || a.id - b.id)
     this.renderer.setClearColor(new THREE.Color(...look.background), 1)
     this.width = width
     this.height = height
