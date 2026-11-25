@@ -24,7 +24,7 @@ import type { CameraPose, PageLogic, Shape } from './stage/types'
 
 export interface StillSpec { page: string; beat?: string; at?: number; scroll?: number; camera: string; tier: string; sheet?: string; interface?: boolean; touchOnly?: boolean; live?: string }
 
-export interface CursorState { x: number; y: number; heightPx: number; screenHeightPx: number; worldScale: number; acting: string; damage: string[]; arms: boolean; onPage: boolean; inBall: boolean; ballScreenPx: number }
+export interface CursorState { x: number; y: number; heightPx: number; screenHeightPx: number; worldScale: number; acting: string; reaction: string | null; reactionAt: number; damage: string[]; arms: boolean; onPage: boolean; inBall: boolean; ballScreenPx: number }
 
 export const pageUnits = config.film.units.map((u) => u.id)
 export const unitOfPart = (name: string): string => register.parts.find((p) => p.name === name)?.unit ?? 'site'
@@ -108,8 +108,8 @@ export class App {
     if (!stage || this.diagnostic !== 'events') return
     const per = stepHz / config.film.fps
     const to = this.stepOf(time) + per
-    if (stage.step < to) stage.advance(to - stage.step)
     const page = stage.frameAt(time).page
+    if (stage.step < to) stage.advance(to - stage.step)
     this.marks = stage.eventsBetween(to - (EVENT_TRAIL + 1) * per, to).filter((e) => e.page === page).map((e) => ({ name: e.name, x: e.x, y: e.y, hitsCursor: e.hitsCursor, age: Math.max(0, Math.floor((to - 1 - e.step) / per)) }))
   }
 
@@ -169,8 +169,11 @@ export class App {
     if (sheet) return sheet
     const stage = spec.beat ? this.film(spec.page) : this.rest(spec.page)
     const time = this.momentOf(spec)
-    const frame = stage.frameAt(time)
     const page = stage.page
+    const at = stage.frameAt(time)
+    const down = !spec.beat && spec.scroll && spec.camera === 'home' ? spec.scroll * Math.max(0, page.height - hd.height) : 0
+    const lower = (c: CursorPose): CursorPose => ({ ...c, y: c.y + down })
+    const frame: Frame = down ? { ...at, cursor: lower(at.cursor), cursors: at.cursors?.map(lower) } : at
     return { frame, page, pose: this.poseFor(spec.camera, page, frame, time, spec.scroll) }
   }
 
@@ -243,6 +246,10 @@ export class App {
     return { unit: last.id, time: last.seconds }
   }
 
+  useCheckpoint(unit: string, saved: unknown): void {
+    this.film(unit).restore(saved)
+  }
+
   filmFrame(unit: string, time: number): { frame: Frame; pose: CameraPose; page: PageLogic } {
     const stage = this.film(unit)
     const frame = stage.frameAt(time)
@@ -295,7 +302,7 @@ export class App {
     const p = project(pose, toWorld(c.x, c.y, c.z), hd.width, hd.height)
     const heightPx = config.cursor.heightPxAt1080 * c.scale
     return {
-      x: p.x, y: p.y, heightPx, screenHeightPx: heightPx * p.pxPerUnit, worldScale: c.scale, acting: c.acting, damage: [...c.damage], arms: c.arms, onPage: c.onPage, inBall: c.inBall,
+      x: p.x, y: p.y, heightPx, screenHeightPx: heightPx * p.pxPerUnit, worldScale: c.scale, acting: c.acting, reaction: c.reaction, reactionAt: c.reactionAt, damage: [...c.damage], arms: c.arms, onPage: c.onPage, inBall: c.inBall,
       ballScreenPx: c.inBall ? config.table.ballPx * p.pxPerUnit : 0
     }
   }
