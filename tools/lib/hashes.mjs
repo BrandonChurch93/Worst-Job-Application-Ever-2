@@ -83,9 +83,10 @@ export function assetIndex(root) {
   return { web: set(path.join('public', 'assets')), full: set('assets-full') }
 }
 
+// Null where the folder does not exist, as on the host: an empty folder is another thing, and every image is missing from it.
 export function approvedFiles(root) {
   const dir = path.join(root, 'references', 'approved')
-  if (!fs.existsSync(dir)) return []
+  if (!fs.existsSync(dir)) return null
   return fs.readdirSync(dir).filter((n) => /\.(png|jpg|jpeg|webp)$/i.test(n)).sort().map((n) => `references/approved/${n}`)
 }
 

@@ -5,7 +5,7 @@ declare module 'virtual:build-info' {
     engineHash: string
     pageHashes: Record<string, string>
     assets: { web: Record<string, { file: string; bytes: number }[]>; full: Record<string, { file: string; bytes: number }[]> }
-    approved: string[]
+    approved: string[] | null
     versions: Record<string, string>
     modules: Record<string, string[]>
   }
