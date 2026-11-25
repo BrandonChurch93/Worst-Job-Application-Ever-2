@@ -52,13 +52,13 @@ export function buildLayout(): LayoutNode {
     part: 'shell', shape: 'capsule', height: heights.card + 8, floor: heights.card, tone: 'metal', states: ['prompt'],
     children: [text('resume-browse-label', 'copy:step1.resume.browse', { ...TYPE.helper, align: 'centre' }, cx, browseY + (browseH - cap(TYPE.helper.font, TYPE.helper.px)) / 2, { part: 'type', on: heights.card + 8 })]
   })
-  const received = block(TYPE.body.font, words('copy:step1.resume.received'), TYPE.body.px, ZONE.w - 160)
+  const received = block(TYPE.hero.font, words('copy:step1.resume.received'), TYPE.hero.px, ZONE.w - 120)
   const zone = node('resume-zone', 'card', [ZONE.x, ZONE.y, ZONE.w, ZONE.h], {
     part: 'shell', r: 20,
     children: [
       text('resume-prompt', 'copy:step1.resume.prompt', { ...TYPE.body, align: 'centre' }, cx, promptY, { part: 'type', on: heights.card, states: ['prompt'] }),
       browse,
-      text('resume-received', 'copy:step1.resume.received', { ...TYPE.body, align: 'centre', wrap: ZONE.w - 160 }, cx, ZONE.y + (ZONE.h - received.height) / 2, { part: 'type', on: heights.card, states: ['received'] })
+      text('resume-received', 'copy:step1.resume.received', { ...TYPE.hero, align: 'centre', wrap: ZONE.w - 120 }, cx, ZONE.y + (ZONE.h - received.height) / 2, { part: 'type', on: heights.card, states: ['received'] })
     ]
   })
   const fields = column('fields', FIELD_X, HEADER.contentY, FIELD_GAP, FIELDS.map((name) => (x: number, y: number) => field(name, x, y, COL_W, `copy:step1.fields.${name}.label`, { value: `runtime:step1.${name}` })))
@@ -68,7 +68,8 @@ export function buildLayout(): LayoutNode {
   const accepted = text('email-accepted', 'copy:step1.emailAccepted', { ...TYPE.helper, align: 'right' }, RIGHT, HEADER.contentY + FIELD_PITCH * 2 + labelCap - helperCap, { part: 'type', states: ['accepted'] })
   const note = text('keyboard-note', 'copy:step1.keyboardNote', TYPE.helper, LEFT, NOTE_Y, { part: 'type', states: ['note'] })
   const w = buttonWidth('copy:step1.continue')
-  const go = button('continue', RIGHT - 5 - w, CONTINUE_Y + 5, w, 'copy:step1.continue', { part: 'shell', states: ['closed'] })
+  const go = button('continue', RIGHT - 5 - w, CONTINUE_Y + 5, w, 'copy:step1.continue', { part: 'shell', tone: 'metal', states: ['closed'] })
+  go.children![0]!.children![0]!.tone = 'ink'
 
   const keys: LayoutNode[] = seats.map((s) => {
     const key = legendKey(s.name)
