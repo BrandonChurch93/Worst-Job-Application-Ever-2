@@ -3,8 +3,8 @@ import { along, arc, arrow, beside, chevron, dirDeg, dist, dot, el, f, footprint
 
 export const PAL = {
   corporate: { base: '#081229', base2: '#0f2147', key: '#c9a551', fine: '#a78a45', pale: '#ecd797', under: '#070f27', dark: '#040a1a', lane: '#102249', accent: '#27468a', soft: '#1b3466' },
-  office: { base: '#647b73', base2: '#3b5452', key: '#c9b684', fine: '#a99a6e', pale: '#e2d6b0', under: '#33494a', dark: '#1c2c2c', lane: '#cdc5a6', accent: '#7d968f', soft: '#69817a' },
-  street: { base: '#11243b', base2: '#0c1b2f', key: '#dde4e1', fine: '#86a9b0', pale: '#f0f1e9', under: '#0a1627', dark: '#050c17', lane: '#1d4250', accent: '#d8b53b', soft: '#234a5c' }
+  office: { base: '#647b73', base2: '#3b5452', key: '#c9b684', fine: '#a99a6e', pale: '#e2d6b0', under: '#33494a', dark: '#1c2c2c', lane: '#8ea398', accent: '#7d968f', soft: '#69817a' },
+  street: { base: '#0f2433', base2: '#17323d', key: '#dde4e1', fine: '#86a9b0', pale: '#f0f1e9', under: '#0a1a26', dark: '#050e15', lane: '#1d4250', accent: '#d8b53b', soft: '#234a58' }
 }
 
 // One tier of the layout in its own frame: u across, v down from the top of the tier, in balls.
@@ -545,12 +545,12 @@ export function street(D, seed) {
       const r = rand()
       const w = pw - 0.1
       const h = ph - 0.1
-      const fill = r < 0.12 ? '#1c3f55' : r < 0.5 ? '#16304a' : '#132a42'
-      plots.push(rect(u, v, w, h, { fill, rx: 0.04 }), rect(u, v, w, h, { ...stroke('#2c5673', 0.01), rx: 0.04 }))
-      if (r < 0.3) plots.push(rect(u + 0.08, v + 0.08, w - 0.16, h - 0.16, { ...stroke('#3b6f8a', 0.007), rx: 0.02 }))
-      else if (r < 0.55) plots.push(line([u + w / 2, v + 0.06], [u + w / 2, v + h - 0.06], '#2c5673', 0.007), line([u + 0.06, v + h / 2], [u + w - 0.06, v + h / 2], '#2c5673', 0.007))
-      else if (r < 0.7) for (let i = 1; i < 4; i++) plots.push(line([u + (w * i) / 4, v + 0.06], [u + (w * i) / 4, v + h - 0.06], '#2c5673', 0.007))
-      else if (r < 0.8) plots.push(dot([u + w / 2, v + h / 2], 0.09, '#1f4a52'), ring([u + w / 2, v + h / 2], 0.09, '#3b6f8a', 0.007))
+      const fill = r < 0.12 ? '#1a3d49' : r < 0.5 ? '#153441' : '#122c39'
+      plots.push(rect(u, v, w, h, { fill, rx: 0.04 }), rect(u, v, w, h, { ...stroke('#2b5866', 0.01), rx: 0.04 }))
+      if (r < 0.3) plots.push(rect(u + 0.08, v + 0.08, w - 0.16, h - 0.16, { ...stroke('#3a6f7e', 0.007), rx: 0.02 }))
+      else if (r < 0.55) plots.push(line([u + w / 2, v + 0.06], [u + w / 2, v + h - 0.06], '#2b5866', 0.007), line([u + 0.06, v + h / 2], [u + w - 0.06, v + h / 2], '#2b5866', 0.007))
+      else if (r < 0.7) for (let i = 1; i < 4; i++) plots.push(line([u + (w * i) / 4, v + 0.06], [u + (w * i) / 4, v + h - 0.06], '#2b5866', 0.007))
+      else if (r < 0.8) plots.push(dot([u + w / 2, v + h / 2], 0.09, '#1f4a52'), ring([u + w / 2, v + h / 2], 0.09, '#3a6f7e', 0.007))
       if (r > 0.93) plots.push(rect(u + w - 0.14, v + 0.06, 0.07, 0.07, { fill: '#d9b866', opacity: 0.85 }))
     }
   }
@@ -590,8 +590,8 @@ export function street(D, seed) {
   // Manholes and drains in the carriageways.
   const holes = []
   for (const c of [[D.MID + 0.2, 1.75], [D.MID - 0.2, 6.3], [7.2, cm - 0.15], [12.9, cm + 0.15], [D.MID - 0.18, 10.75]]) {
-    holes.push(dot(c, 0.11, '#0a1626'), ring(c, 0.11, '#3b6f8a', 0.012), ring(c, 0.07, '#2c5673', 0.008))
-    for (let a = 0; a < 180; a += 45) holes.push(line(polar(c, 0.07, a), polar(c, 0.07, a + 180), '#2c5673', 0.006))
+    holes.push(dot(c, 0.11, '#0a1a24'), ring(c, 0.11, '#3a6f7e', 0.012), ring(c, 0.07, '#2b5866', 0.008))
+    for (let a = 0; a < 180; a += 45) holes.push(line(polar(c, 0.07, a), polar(c, 0.07, a + 180), '#2b5866', 0.006))
   }
   const keep = keepOut(D, [rect(rx0 - kw - 0.08, 0, road[2] + 2 * kw + 0.16, D.H, { fill: '#000' }), rect(cross.uL - 0.08, cross.v0 - xk - 0.08, cross.uR - cross.uL + 0.16, cross.v1 - cross.v0 + 2 * xk + 0.16, { fill: '#000' }), rect(fire[0] + fire[2] + 0.25, 1.9, rx0 - kw - 0.2 - (fire[0] + fire[2] + 0.25), cross.v0 - xk - 0.25 - 1.9, { fill: '#000' }), rect(rx1 + kw + 0.2, 1.9, pol[0] - 0.1 - (rx1 + kw + 0.2), cross.v0 - xk - 0.25 - 1.9, { fill: '#000' }), ...(scoop ? [rect(scoop.c[0] - 0.9, fire[1] + fire[3], 1.8, 1.3, { fill: '#000' })] : []), rect(pol[0], pol[1] + pol[3], pol[2], 0.75, { fill: '#000' })])
   defs.push(el('mask', { id: 'keep-street', maskUnits: 'userSpaceOnUse', x: 0, y: 0, width: D.W, height: D.H }, rect(C.left, 0.3, C.right - C.left, D.H - 0.3, { fill: '#fff' }) + keep.join('')))
@@ -610,7 +610,7 @@ export function street(D, seed) {
   }
   const clipId = 'field-street'
   defs.push(el('clipPath', { id: clipId }, rect(C.left, 0.3, C.right - C.left, D.H - 0.3, { fill: '#000' })))
-  return { pal, defs, ground: [g({ mask: 'url(#keep-street)', opacity: 0.5 }, plots)], top: [lanes, g({ 'clip-path': `url(#${clipId})` }, [roads, lots, holes]), local, answers, insertsPrint(D, pal)] }
+  return { pal, defs, ground: [g({ mask: 'url(#keep-street)', opacity: 0.38 }, plots)], top: [lanes, g({ 'clip-path': `url(#${clipId})` }, [roads, lots, holes]), local, answers, insertsPrint(D, pal)] }
 }
 
 // The guide: the tier from straight above with every lane, wall, post, footprint, insert and flipper as plain lines.

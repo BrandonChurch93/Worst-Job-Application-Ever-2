@@ -7,7 +7,7 @@ import { materials } from '../../../shell/materials'
 import type { Shape } from '../../../stage/types'
 import { PAPER, SLOT } from '../layout'
 import { INK, stock } from './paperStock'
-import { CASSETTE as C, HOOD, chuteAngle, chuteOf, chuteReach, hoodUnder, openOf, panelsOf, riseOf } from './shredderShape'
+import { CASSETTE as C, HOOD, chuteAngle, chuteOf, chuteReach, hoodUnder, openOf, panelsOf, riseOf, smooth } from './shredderShape'
 
 const srgb = (hex: number) => new THREE.Color().setHex(hex, THREE.SRGBColorSpace)
 
@@ -20,8 +20,14 @@ function steel(): THREE.MeshPhysicalMaterial {
   return steelMade
 }
 
+// The cutters are ground tool steel: darker and duller than the polished shafts, so a row of them reads as one roller.
+let cutterMade: THREE.MeshPhysicalMaterial | null = null
+function cutterSteel(): THREE.MeshPhysicalMaterial {
+  cutterMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xa2a6ad), roughness: 0.32, metalness: 1 }))
+  return cutterMade
+}
+
 let brushedMade: THREE.MeshPhysicalMaterial | null = null
-let hoodMade: THREE.MeshPhysicalMaterial | null = null
 let brushMap: THREE.DataTexture | null = null
 
 // Fine lines along x, as a roughness picture: the brushing of the housing's faces.
@@ -60,16 +66,6 @@ function brushing(): THREE.DataTexture {
 function brushed(): THREE.MeshPhysicalMaterial {
   brushedMade ??= studio(new THREE.MeshPhysicalMaterial({ color: materials().aluminium.color, roughness: 0.5, metalness: 1, roughnessMap: brushing(), anisotropy: 0.75, anisotropyRotation: 0 }))
   return brushedMade
-}
-
-// The hood leans away from the key, where the studio's reflection is dimmed for every surface. Bare metal has nothing
-// but its reflection to show, so the hood takes a larger share of it and keeps its band of light.
-function hoodMetal(): THREE.MeshPhysicalMaterial {
-  if (!hoodMade) {
-    hoodMade = studio(brushed().clone())
-    hoodMade.envMapIntensity = 4
-  }
-  return hoodMade
 }
 
 // The inside of the cassette under the rollers: anodised dark, so the machine is lit from above and dark below.
@@ -131,6 +127,7 @@ function block(x0: number, x1: number, y0: number, y1: number, z0: number, z1: n
 }
 
 // A strip of sheet metal along x with the given run across it: the outer face smooth, the cut ends flat.
+// Its thickness lies under the run, so the face that is seen is the one the light reaches first.
 function sheetMetal(x0: number, x1: number, run: [number, number][], thick: number): THREE.BufferGeometry {
   const n = run.length
   const ny = new Float32Array(n)
@@ -141,8 +138,8 @@ function sheetMetal(x0: number, x1: number, run: [number, number][], thick: numb
     const ty = b[0] - a[0]
     const tz = b[1] - a[1]
     const l = Math.hypot(ty, tz) || 1
-    ny[i] = tz / l
-    nz[i] = -ty / l
+    ny[i] = -tz / l
+    nz[i] = ty / l
   }
   const pos: number[] = []
   const nor: number[] = []
@@ -218,7 +215,7 @@ function rod(x0: number, x1: number, r: number, segments: number): THREE.BufferG
   return g.toNonIndexed()
 }
 
-// One roller: a shaft with hooked cutting discs along it, each turned a little from the last so the turning shows.
+// One roller: a shaft with hooked cutting discs along it, each turned an eighth of a tooth from the last, as cutters are stacked, so the turning shows as one slow spiral.
 function rollerGeometry(): THREE.BufferGeometry {
   const r = C.roller
   const pos: number[] = []
@@ -236,7 +233,7 @@ function rollerGeometry(): THREE.BufferGeometry {
   for (let k = 0; k < count; k++) {
     const x0 = first + k * r.pitch - r.disc / 2
     const x1 = x0 + r.disc
-    const phase = k * 0.618 * span
+    const phase = k * 0.125 * span
     for (let t = 0; t < r.teeth; t++) {
       tooth.forEach(([at, up], i) => {
         const a = phase + (t + at) * span
@@ -286,6 +283,8 @@ function screws(at: [number, number][], z: number): { heads: THREE.BufferGeometr
   }
   return { heads: merge(heads), sockets: merge(sockets) }
 }
+
+const PANEL = { thick: 3.6, lift: 0.3, clear: 1 }
 
 interface Cassette {
   lift: THREE.Group
@@ -346,8 +345,8 @@ function makeCassette(): THREE.Group {
   const south = new THREE.Group()
   north.position.set(0, -C.roller.north, C.roller.z)
   south.position.set(C.roller.pitch / 2, -C.roller.south, C.roller.z)
-  const a = new THREE.Mesh(roller, steel())
-  const b = new THREE.Mesh(roller, steel())
+  const a = new THREE.Mesh(roller, cutterSteel())
+  const b = new THREE.Mesh(roller, cutterSteel())
   b.rotation.z = Math.PI
   for (const r of [a, b]) {
     r.castShadow = true
@@ -360,14 +359,15 @@ function makeCassette(): THREE.Group {
   const chute = new THREE.Group()
   chute.position.set(0, -C.deep, C.chute.z)
   lift.add(chute)
-  add(chute, sheetMetal(-inner + 0.6, inner - 0.6, arcRun(HOOD.cy, HOOD.cz, HOOD.r, HOOD.from, HOOD.to, 0), C.chute.thick), hoodMetal())
+  add(chute, sheetMetal(-inner + 0.6, inner - 0.6, arcRun(HOOD.cy, HOOD.cz, HOOD.r, HOOD.from, HOOD.to, 0), C.chute.thick), brushed())
   const slide = new THREE.Group()
   slide.position.set(0, HOOD.cy, HOOD.cz)
   chute.add(slide)
-  const reach = add(slide, sheetMetal(-inner + 4, inner - 4, arcRun(0, 0, HOOD.r - C.chute.thick - 0.35, HOOD.to - HOOD.more - 0.08, HOOD.to + 0.02, 1.25), C.chute.thick), hoodMetal())
+  const reach = add(slide, sheetMetal(-inner + 4, inner - 4, arcRun(0, 0, HOOD.r - C.chute.thick - 0.35, HOOD.to - HOOD.more - 0.08, HOOD.to + 0.02, 1.25), C.chute.thick), brushed())
 
   // The two panels that close the slot. They are the page's own ceramic, so shut they are two tiles with a seam.
-  const panel = (y0: number, y1: number): THREE.Mesh => add(root, block(-SLOT.w / 2, SLOT.w / 2, y0, y1, -2.6, -0.2, 0.35), m.ceramic, false)
+  // Open, they have come up out of the slot and lie on the page either side of it, their thickness showing.
+  const panel = (y0: number, y1: number): THREE.Mesh => add(root, block(-SLOT.w / 2, SLOT.w / 2, y0, y1, -0.2 - PANEL.thick, -0.2, 0.5), m.ceramic, true)
   const panelN = panel(0, SLOT.h / 2)
   const panelS = panel(-SLOT.h / 2, 0)
   const rig: Cassette = { lift, north, south, chute, reach, panelN, panelS, geometries }
@@ -390,10 +390,10 @@ function poseCassette(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const c = chuteOf(open)
   rig.chute.rotation.x = chuteAngle(c)
   rig.reach.rotation.x = chuteReach(c) / HOOD.r
-  const slide = (SLOT.h / 2) * p
-  rig.panelN.position.set(0, slide, -1.2 * Math.min(1, p * 6))
-  rig.panelS.position.set(0, -slide, -1.2 * Math.min(1, p * 6))
-  rig.panelN.visible = rig.panelS.visible = p < 0.999
+  const up = (PANEL.thick + 0.5) * smooth(p / PANEL.lift)
+  const slide = (SLOT.h / 2 + PANEL.clear) * smooth((p - PANEL.lift * 0.7) / (1 - PANEL.lift * 0.7))
+  rig.panelN.position.set(0, slide, up)
+  rig.panelS.position.set(0, -slide, up)
 }
 
 const SEG = 26

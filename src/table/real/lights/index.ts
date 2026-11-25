@@ -94,7 +94,8 @@ function pose(o: THREE.Object3D, z: Zone, ctx: RealContext): void {
   u.wjlFill.value.set(fill[0] * soft, fill[1] * soft, fill[2] * soft)
   u.wjlEnv.value = soloed() !== null ? 0.5 : L.general * (1 + 0.5 * L.flash) + 0.2 * L.website
   if (!b) return
-  if (b.lens) b.lens.emissiveIntensity = Math.min(1.4, L.general * (1 + 0.4 * L.flash))
+  const alone = soloed()
+  if (b.lens) b.lens.emissiveIntensity = alone !== null ? (alone === `${z.id}.general` || alone === `${z.id}.lanes` ? 1 : 0) : Math.min(1.4, L.general * (1 + 0.4 * L.flash))
   if (b.cores) {
     b.coreGroups.forEach((id, i) => {
       const g = groups.find((x) => x.id === id)

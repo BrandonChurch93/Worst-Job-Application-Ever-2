@@ -34,71 +34,81 @@ const put = (g: THREE.BufferGeometry, x: number, y: number, z: number, turn = 0)
   return g
 }
 const lathe = (profile: [number, number][], segments: number): THREE.BufferGeometry => new THREE.LatheGeometry(profile.map((p) => new THREE.Vector2(p[0], p[1])), segments).rotateX(Math.PI / 2)
-const rounded = (w: number, h: number, r: number): THREE.Shape => {
-  const s = new THREE.Shape()
-  const x = -w / 2
-  const y = -h / 2
-  s.moveTo(x + r, y)
-  s.lineTo(x + w - r, y)
-  s.absarc(x + w - r, y + r, r, -Math.PI / 2, 0, false)
-  s.lineTo(x + w, y + h - r)
-  s.absarc(x + w - r, y + h - r, r, 0, Math.PI / 2, false)
-  s.lineTo(x + r, y + h)
-  s.absarc(x + r, y + h - r, r, Math.PI / 2, Math.PI, false)
-  s.lineTo(x, y + r)
-  s.absarc(x + r, y + r, r, Math.PI, Math.PI * 1.5, false)
-  return s
+
+type Loop = [number, number][]
+const roundedLoop = (w: number, h: number, r: number, steps = 3): Loop => {
+  const out: Loop = []
+  const corners: [number, number, number][] = [[w / 2 - r, -h / 2 + r, -Math.PI / 2], [w / 2 - r, h / 2 - r, 0], [-w / 2 + r, h / 2 - r, Math.PI / 2], [-w / 2 + r, -h / 2 + r, Math.PI]]
+  for (const c of corners) for (let i = 0; i <= steps; i++) out.push([c[0] + r * Math.cos(c[2] + (i / steps) * (Math.PI / 2)), c[1] + r * Math.sin(c[2] + (i / steps) * (Math.PI / 2))])
+  return out
 }
-const slab = (shape: THREE.Shape, z0: number, depth: number, bevel = 0): THREE.BufferGeometry =>
-  new THREE.ExtrudeGeometry(shape, { depth: depth - bevel, bevelEnabled: bevel > 0, bevelThickness: bevel, bevelSize: bevel, bevelSegments: 2, curveSegments: 6 }).translate(0, 0, z0)
+const stadiumLoop = (half: number, r: number, steps = 6): Loop => {
+  const out: Loop = []
+  for (let i = 0; i <= steps; i++) out.push([half + r * Math.cos(-Math.PI / 2 + (i / steps) * Math.PI), r * Math.sin(-Math.PI / 2 + (i / steps) * Math.PI)])
+  for (let i = 0; i <= steps; i++) out.push([-half + r * Math.cos(Math.PI / 2 + (i / steps) * Math.PI), r * Math.sin(Math.PI / 2 + (i / steps) * Math.PI)])
+  return out
+}
+class Solid {
+  private readonly v: number[] = []
+  band(a: Loop, za: number, b: Loop, zb: number): this {
+    for (let i = 0; i < a.length; i++) {
+      const j = (i + 1) % a.length
+      this.v.push(a[i]![0], a[i]![1], za, a[j]![0], a[j]![1], za, b[j]![0], b[j]![1], zb, a[i]![0], a[i]![1], za, b[j]![0], b[j]![1], zb, b[i]![0], b[i]![1], zb)
+    }
+    return this
+  }
+  cap(a: Loop, z: number): this {
+    for (let i = 1; i < a.length - 1; i++) this.v.push(a[0]![0], a[0]![1], z, a[i]![0], a[i]![1], z, a[i + 1]![0], a[i + 1]![1], z)
+    return this
+  }
+  done(): THREE.BufferGeometry {
+    const g = new THREE.BufferGeometry()
+    g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(this.v), 3))
+    g.computeVertexNormals()
+    return g
+  }
+}
+// A flat piece with a broken top edge: its top, the bevel and the side, and no underside, which nothing ever sees.
+const tablet = (outer: Loop, top: Loop, z0: number, z1: number, bevel: number): THREE.BufferGeometry => new Solid().cap(top, z1).band(outer, z1 - bevel, top, z1).band(outer, z0, outer, z1 - bevel).done()
 
 const k = (c: RGB, v: number): RGB => [c[0] * v, c[1] * v, c[2] * v]
 
 // A domed lens: brightest in the middle, where its lamp stands under it.
 function dome(colour: RGB): THREE.BufferGeometry {
   const r = (SIZE.dome * SIZE.dome + SIZE.domeHigh * SIZE.domeHigh) / (2 * SIZE.domeHigh)
-  const g = new THREE.SphereGeometry(r, 24, 7, 0, Math.PI * 2, 0, Math.asin(SIZE.dome / r)).rotateX(Math.PI / 2).translate(0, 0, 2.4 + SIZE.domeHigh - r)
+  const g = new THREE.SphereGeometry(r, 18, 4, 0, Math.PI * 2, 0, Math.asin(SIZE.dome / r)).rotateX(Math.PI / 2).translate(0, 0, 2.4 + SIZE.domeHigh - r)
   return paint(g, (x, y) => {
     const q = Math.min(1, (x * x + y * y) / (SIZE.dome * SIZE.dome))
     return k(colour, LENS.rim + (LENS.on - LENS.rim) * Math.pow(1 - q, 1.6))
   })
 }
 function socket(metal: RGB): THREE.BufferGeometry[] {
-  const ring = paint(lathe([[SIZE.ring, 0.3], [SIZE.ring, 2.4], [SIZE.ring - 1.4, 3.8], [SIZE.dome + 2.6, 3.8], [SIZE.dome + 0.4, 2.6], [SIZE.dome + 0.4, 0.5]], 28), () => metal)
-  const flange = new THREE.Shape()
-  flange.absarc(-24, 0, 8, Math.PI / 2, Math.PI * 1.5, false)
-  flange.absarc(24, 0, 8, -Math.PI / 2, Math.PI / 2, false)
-  const plate = paint(slab(flange, 0.3, 1.5, 0.3), () => k(metal, 0.82))
-  const well = paint(new THREE.CircleGeometry(SIZE.dome + 0.4, 20).translate(0, 0, 0.9), () => SOCKET)
-  return [ring, plate, well]
+  const ring = paint(lathe([[SIZE.ring, 0.3], [SIZE.ring, 2.4], [SIZE.ring - 1.4, 3.8], [SIZE.dome + 2.6, 3.8], [SIZE.dome + 0.4, 2.6]], 20), () => metal)
+  const plate = paint(tablet(stadiumLoop(24, 8), stadiumLoop(24, 7.6), 0.3, 1.8, 0.4), () => k(metal, 0.82))
+  return [ring, plate]
 }
 // A lens let into a lane, with the arrow of the way the ball travels raised on it.
 function arrowLens(colour: RGB): THREE.BufferGeometry[] {
   const [w, h] = SIZE.window
-  const lens = paint(slab(rounded(w - 5, h - 5, 4), 0.7, 2.0, 0.5), (x, y) => {
+  const lens = paint(tablet(roundedLoop(w - 5, h - 5, 4), roundedLoop(w - 6.2, h - 6.2, 3.4), 0.7, 2.7, 0.6), (x, y) => {
     const q = Math.min(1, (x * x) / ((w * w) / 4) + (y * y) / ((h * h) / 4))
-    return k(colour, LENS.rim + 0.5 * (1 - q))
+    return k(colour, 0.5 + (LENS.window - 0.5) * Math.pow(1 - q, 1.4))
   })
-  const a = new THREE.Shape()
-  a.moveTo(10, 0)
-  a.lineTo(1, 6.5)
-  a.lineTo(1, 2.6)
-  a.lineTo(-9, 2.6)
-  a.lineTo(-9, -2.6)
-  a.lineTo(1, -2.6)
-  a.lineTo(1, -6.5)
-  a.closePath()
-  const arrow = paint(slab(a, 2.7, 0.7), () => k(colour, LENS.on))
+  const a: Loop = [[10, 0], [1, 6.5], [1, 2.6], [-9, 2.6], [-9, -2.6], [1, -2.6], [1, -6.5]]
+  const head: Loop = [[10, 0], [1, 6.5], [1, -6.5]]
+  const tail: Loop = [[1, 2.6], [-9, 2.6], [-9, -2.6], [1, -2.6]]
+  const arrow = paint(new Solid().cap(head, 3.4).cap(tail, 3.4).band(a, 2.7, a, 3.4).done(), () => k(colour, 0.1))
   return [lens, arrow]
 }
 function arrowBezel(metal: RGB): THREE.BufferGeometry[] {
   const [w, h] = SIZE.window
-  const frame = rounded(w, h, 6)
-  frame.holes.push(rounded(w - 5, h - 5, 4))
-  return [paint(slab(frame, 0.3, 2.9, 0.5), () => metal), paint(new THREE.PlaneGeometry(w - 5, h - 5).translate(0, 0, 0.6), () => SOCKET)]
+  const outer = roundedLoop(w, h, 6)
+  const top = roundedLoop(w - 1, h - 1, 5.5)
+  const inner = roundedLoop(w - 5, h - 5, 4)
+  return [paint(new Solid().band(top, 3.2, inner, 3.2).band(outer, 2.7, top, 3.2).band(outer, 0.3, outer, 2.7).band(inner, 3.2, inner, 0.6).done(), () => metal)]
 }
 function globeStem(metal: RGB): THREE.BufferGeometry {
-  return paint(lathe([[0, 0.3], [15, 0.3], [15, 2.2], [13.6, 3.2], [9, 3.4], [9, 6.2], [5.2, 7.4], [4.6, 24], [6.4, 26], [10.5, 29], [12.5, 33], [11, 33.4], [0, 33.4]], 24), () => metal)
+  return paint(lathe([[15, 0.3], [15, 2.2], [13.6, 3.2], [9, 3.4], [9, 6.2], [5.2, 7.4], [4.6, 24], [6.4, 26], [10.5, 29], [12.5, 33], [11, 33.4], [0, 33.4]], 18), () => metal)
 }
 
 export interface Lamps {
@@ -117,7 +127,7 @@ function lensMaterial(z: Zone): THREE.MeshStandardMaterial {
   m.onBeforeCompile = function (shader, renderer) {
     inner.call(m, shader, renderer)
     shader.fragmentShader = shader.fragmentShader
-      .replace('#include <color_fragment>', 'diffuseColor.rgb *= 0.34 + 0.3 * min( vColor.rgb / max( max( vColor.r, max( vColor.g, vColor.b ) ), 0.001 ), vec3( 1.0 ) );')
+      .replace('#include <color_fragment>', 'diffuseColor.rgb *= 0.05 + 0.09 * min( vColor.rgb / max( max( vColor.r, max( vColor.g, vColor.b ) ), 0.001 ), vec3( 1.0 ) );')
       .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\n\ttotalEmissiveRadiance *= vColor.rgb;')
   }
   const key = m.customProgramCacheKey
@@ -144,7 +154,7 @@ export function buildLamps(z: Zone, ctx: RealContext): Lamps {
       for (const g of arrowLens(colourOf('general'))) lenses.push(put(g, p[0], p[1], 0, turn))
       for (const g of arrowBezel(STEEL)) metals.push(put(g, p[0], p[1], 0, turn))
     } else {
-      lenses.push(put(dome(colourOf(groups.some((g) => g.name === 'lanes') ? 'lanes' : 'general')), p[0], p[1], 0))
+      lenses.push(put(dome(colourOf(groups.some((g) => g.name === 'lanes') ? 'lanes' : 'windows')), p[0], p[1], 0))
       for (const g of socket(metal)) metals.push(put(g, p[0], p[1], 0))
       screws.push([p[0] - 25.5, p[1], 1.8], [p[0] + 25.5, p[1], 1.8])
     }
@@ -153,7 +163,7 @@ export function buildLamps(z: Zone, ctx: RealContext): Lamps {
     if (n.tier !== z.tier) continue
     const p = localBalls(z, n.c[0], n.c[1])
     const r = n.r * BALL
-    metals.push(put(paint(lathe([[r + 0.6, 0.4], [r + 0.6, 1.5], [r + 1.6, 2.1], [r + 4.2, 2.1], [r + 5.4, 1.2], [r + 5.4, 0.4]], 64), () => metal), p[0], p[1], 0))
+    metals.push(put(paint(lathe([[r + 5.4, 0.4], [r + 5.4, 1.2], [r + 4.2, 2.1], [r + 1.6, 2.1], [r + 0.6, 1.5]], 48), () => metal), p[0], p[1], 0))
   }
   const globes = table.posts.filter((q) => q.tier === z.tier && q.lamp)
   for (const q of globes) {
@@ -164,9 +174,7 @@ export function buildLamps(z: Zone, ctx: RealContext): Lamps {
   for (const s of shapesIn(ctx, 'table-lights', z)) {
     if (!s.id.startsWith('insert-plate.')) continue
     const p = localOf(z, s)
-    const g = slab(rounded(s.w, s.h, 3.5), 0.5, 2.5, 0.45)
-    g.deleteAttribute('uv')
-    plates.push(put(g.index ? g.toNonIndexed() : g, p[0], p[1], 0))
+    plates.push(put(tablet(roundedLoop(s.w, s.h, 3.5), roundedLoop(s.w - 1, s.h - 1, 3), 0.5, 3.0, 0.5), p[0], p[1], 0))
     screws.push([p[0] - s.w / 2 + 5.5, p[1], 3.0], [p[0] + s.w / 2 - 5.5, p[1], 3.0])
   }
   if (lenses.length > 0) {
@@ -197,7 +205,7 @@ export function buildLamps(z: Zone, ctx: RealContext): Lamps {
     group.add(mesh)
   }
   if (screws.length > 0) {
-    const head = new THREE.SphereGeometry(SIZE.screw * 1.25, 10, 4, 0, Math.PI * 2, 0, Math.PI * 0.3).rotateX(Math.PI / 2).translate(0, 0, -SIZE.screw * 1.25 * Math.cos(Math.PI * 0.3))
+    const head = new THREE.SphereGeometry(SIZE.screw * 1.25, 8, 3, 0, Math.PI * 2, 0, Math.PI * 0.3).rotateX(Math.PI / 2).translate(0, 0, -SIZE.screw * 1.25 * Math.cos(Math.PI * 0.3))
     const m = lit(studio(new THREE.MeshStandardMaterial({ color: new THREE.Color(0.7, 0.71, 0.73), metalness: 1, roughness: 0.24 })), z)
     const mesh = new THREE.InstancedMesh(head, m, screws.length)
     const at = new THREE.Matrix4()
@@ -212,10 +220,10 @@ export function buildLamps(z: Zone, ctx: RealContext): Lamps {
     lens.emissiveIntensity = 1
     lens.roughness = 0.35
     const white = colourOf('globe.left')
-    const core = paint(new THREE.SphereGeometry(SIZE.core, 28, 18).rotateX(Math.PI / 2), (_x, _y, zz) => k(white, 0.78 + (LENS.on - 0.78) * Math.pow(0.5 - zz / (2 * SIZE.core), 1.5)))
+    const core = paint(new THREE.SphereGeometry(SIZE.core, 24, 14).rotateX(Math.PI / 2), (_x, _y, zz) => k(white, 0.78 + (LENS.on - 0.78) * Math.pow(0.5 - zz / (2 * SIZE.core), 1.5)))
     const cores = new THREE.InstancedMesh(core, lens, globes.length)
     const shell = new THREE.InstancedMesh(
-      new THREE.SphereGeometry(SIZE.globe, 28, 18).rotateX(Math.PI / 2),
+      new THREE.SphereGeometry(SIZE.globe, 24, 14).rotateX(Math.PI / 2),
       lit(studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.9, 0.92, 0.95), transparent: true, opacity: 0.22, roughness: 0.04, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.03, depthWrite: false })), z),
       globes.length
     )

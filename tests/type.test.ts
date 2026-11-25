@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { describe, expect, it } from 'vitest'
 import type { RealContext } from '../src/real/types'
-import { segmentsFor, setRun, Sheet, styleName, styles, type, type RunSpec } from '../src/shell/real/type'
+import { groundOf, segmentsFor, setRun, Sheet, styleName, styles, type, type RunSpec } from '../src/shell/real/type'
 import type { Shape } from '../src/stage/types'
 
 const spec = (line: string, over: Partial<RunSpec> = {}): RunSpec => ({
@@ -145,8 +145,8 @@ describe('type: the runs of a page as one sheet', () => {
   const part = (sheet: Sheet, from: number, to: number): number[] => Array.from((sheet.geometry.getAttribute('position').array as Float32Array).subarray(from, to))
 
   it('draws every run of one setting as one mesh, and only the runs on show', () => {
-    const a = shape('a', 'runtime:test.a', 100, 'First name')
-    const b = shape('b', 'runtime:test.b', 600, 'Email')
+    const a = shape('a', 'copy:step1.fields.firstName.label', 100)
+    const b = shape('b', 'copy:step1.fields.email.label', 600)
     const ctx = context([a, b])
     const page = new THREE.Group()
     const oa = set(page, a, ctx)
@@ -174,9 +174,9 @@ describe('type: the runs of a page as one sheet', () => {
     expect(page.children.some((c) => c instanceof Sheet)).toBe(false)
   })
 
-  it('a changed word or a moved run changes only its own part of the sheet', () => {
-    const a = shape('a', 'runtime:test.a', 100, 'First name')
-    const b = shape('b', 'runtime:test.b', 600, 'Email')
+  it('a moved run, or a run set again with other words, changes only its own part of the sheet', () => {
+    const a = shape('a', 'copy:step1.fields.firstName.label', 100)
+    const b = shape('b', 'copy:step1.fields.email.label', 600)
     const ctx = context([a, b])
     const page = new THREE.Group()
     const oa = set(page, a, ctx)
@@ -193,11 +193,32 @@ describe('type: the runs of a page as one sheet', () => {
     const moved = part(sheet, alone, total)
     expect(moved.length).toBe(second.length)
     for (let i = 0; i < moved.length; i += 3) expect(moved[i]! - second[i]!).toBeCloseTo(40, 3)
-    type.pose!(ob, { ...b, text: 'Emails' } as Shape, ctx)
+    page.remove(ob)
+    type.drop!(ob)
+    const c = shape('b', 'copy:step1.fields.lastName.label', 600)
+    const oc = set(page, c, context([a, c]))
     page.updateMatrixWorld(true)
     expect(part(sheet, 0, alone)).toEqual(first)
     expect(sheet.geometry.getAttribute('position').array.length).toBeGreaterThan(total)
     type.drop!(oa)
-    type.drop!(ob)
+    type.drop!(oc)
+  })
+})
+
+describe('type: what a run lies on', () => {
+  const run = (id: string, y: number, z: number): Shape =>
+    ({ id, kind: 'text', part: 'type', tone: 'ink', x: 100, y, w: 200, h: 24, z0: z, z1: z, words: 'copy:step1.fields.firstName.label', type: { font: 'inter-400', px: 18 } }) as unknown as Shape
+  const pocket = { id: 'f-pocket', kind: 'field', role: 'field', part: 'shell', tone: 'glass', x: 80, y: 136, w: 600, h: 64, z0: -6, z1: 0, pocket: true } as unknown as Shape
+  const context = (list: Shape[]): RealContext => ({ page: 'step1', list, byId: new Map(list.map((s) => [s.id, s])), time: 0, scroll: 0, turning: false, width: 1920, top: 0, tall: 1080, light: () => undefined })
+
+  it('takes the label and the helper of a field as type on the page, and only its value as type under the glass', () => {
+    const label = run('f-label', 100, 0)
+    const value = run('f-value', 156, -6)
+    const helper = run('f-helper', 214, 0)
+    const ctx = context([label, pocket, value, helper])
+    expect(groundOf(label, ctx)).toBe('page')
+    expect(groundOf(helper, ctx)).toBe('page')
+    expect(groundOf(value, ctx)).toBe('glass')
+    expect(styleName(groundOf(helper, ctx), 'ink', 'inter-400')).toBe('page:soft')
   })
 })

@@ -292,7 +292,7 @@ const groundOfShape = (u: Shape): Ground => (u.role === 'field' ? 'glass' : u.to
 let seenList: Shape[] | null = null
 const seenGround = new Map<string, Ground>()
 
-// What a run lies on: the part its id names, or else the highest thing whose top is at the run's height under its middle.
+// What a run lies on: the part its id names when the run's middle is over it, or else the highest thing whose top is at the run's height under its middle.
 export function groundOf(s: Shape, ctx: RealContext): Ground {
   if (ctx.list !== seenList) {
     seenList = ctx.list
@@ -301,20 +301,20 @@ export function groundOf(s: Shape, ctx: RealContext): Ground {
   const hit = seenGround.get(s.id)
   if (hit) return hit
   let found: Ground | null = null
+  const cx = s.x + s.w / 2
+  const cy = s.y + s.h / 2
   const cut = s.id.lastIndexOf('-')
   if (cut > 0) {
     const stem = s.id.slice(0, cut)
     for (const id of [`${stem}-cap`, `${stem}-pocket`, stem]) {
       const u = ctx.byId.get(id)
-      if (u && u.kind !== 'text' && u.kind !== 'well') {
+      if (u && u.kind !== 'text' && u.kind !== 'well' && cx >= u.x && cx <= u.x + u.w && cy >= u.y && cy <= u.y + u.h) {
         found = groundOfShape(u)
         break
       }
     }
   }
   if (!found) {
-    const cx = s.x + s.w / 2
-    const cy = s.y + s.h / 2
     let best: Shape | null = null
     for (const u of ctx.list) {
       if (u.kind === 'text' || u.kind === 'well' || u === s) continue
@@ -411,7 +411,7 @@ function dataOf(s: Shape, said: string, style: Style): RunData {
   return data
 }
 
-// A run that is drawn alone: type under or on glass, which has to keep its own place in the order of drawing.
+// A run that is drawn alone: type under or on glass, which has to keep its own place in the order of drawing, and type whose words are made while the page runs, which would set the whole sheet again at every change.
 function geometryOf(data: RunData): THREE.BufferGeometry {
   const n = data.position.length / 3
   const ring = new Float32Array(n * 3)
@@ -434,17 +434,16 @@ function geometryOf(data: RunData): THREE.BufferGeometry {
 
 const boxOf = (data: RunData): THREE.BufferGeometry => new THREE.BufferGeometry().setAttribute('position', new THREE.BufferAttribute(data.position, 3))
 
-interface Member { hold: THREE.Object3D; proxy: THREE.Mesh; data: RunData; version: number; first: number; at: THREE.Vector3; turn: THREE.Quaternion; sheet: Sheet | null }
+interface Member { hold: THREE.Object3D; proxy: THREE.Mesh; data: RunData; first: number; at: THREE.Vector3; turn: THREE.Quaternion; sheet: Sheet | null }
 
 const ONE = new THREE.Vector3(1, 1, 1)
 const placing = new THREE.Matrix4()
 
 // All the runs of one page that share a setting, as one mesh and one draw call. It lies in the page's own space beside the runs.
-// Each run keeps an empty holder that the view places, shows and hides; the sheet reads those holders just before it is drawn and sets itself again only where a run came, went, moved or changed its words.
+// Each run keeps an empty holder that the view places, shows and hides; the sheet reads those holders just before it is drawn and sets itself again only when a run came or went, and where a run moved.
 export class Sheet extends THREE.Mesh<THREE.BufferGeometry, THREE.MeshPhysicalMaterial> {
   members: Member[] = []
   private set: Member[] = []
-  private versions: number[] = []
 
   constructor(material: THREE.MeshPhysicalMaterial) {
     super(new THREE.BufferGeometry(), material)
@@ -467,8 +466,7 @@ export class Sheet extends THREE.Mesh<THREE.BufferGeometry, THREE.MeshPhysicalMa
     let order = 0
     for (const m of this.members) {
       if (!m.hold.visible) continue
-      const i = live.length
-      if (this.set[i] !== m || this.versions[i] !== m.version) changed = true
+      if (this.set[live.length] !== m) changed = true
       live.push(m)
       if (m.proxy.renderOrder > order) order = m.proxy.renderOrder
     }
@@ -518,7 +516,6 @@ export class Sheet extends THREE.Mesh<THREE.BufferGeometry, THREE.MeshPhysicalMa
       v += m.data.position.length / 3
     }
     this.set = live
-    this.versions = live.map((m) => m.version)
   }
 
   private bake(m: Member): void {
@@ -601,8 +598,9 @@ export const type: PartMaker = {
     const name = styleName(ground, s.tone, s.type!.font)
     const said = words(s.words!, s.text)
     const data = dataOf(s, said, styles()[name]!)
-    if (ground === 'glass') {
-      const mesh = new THREE.Mesh(geometryOf(data), kit(name).over)
+    const over = ground === 'glass'
+    if (over || s.words!.startsWith('runtime:')) {
+      const mesh = new THREE.Mesh(geometryOf(data), over ? kit(name).over : kit(name).opaque)
       mesh.position.z = HOVER
       mesh.receiveShadow = true
       mesh.castShadow = false
@@ -616,7 +614,7 @@ export const type: PartMaker = {
     proxy.layers.set(UNSEEN)
     proxy.castShadow = false
     hold.add(proxy)
-    const member: Member = { hold, proxy, data, version: 0, first: 0, at: new THREE.Vector3(), turn: new THREE.Quaternion(), sheet: null }
+    const member: Member = { hold, proxy, data, first: 0, at: new THREE.Vector3(), turn: new THREE.Quaternion(), sheet: null }
     const held: Held = { said, style: name, member }
     hold.userData.held = held
     return hold
@@ -624,21 +622,16 @@ export const type: PartMaker = {
   pose(o, s) {
     const held = o.userData.held as Held
     const m = held.member
-    if (m && !m.sheet && o.parent) join(m, held.style, o.parent)
+    if (m) {
+      if (!m.sheet && o.parent) join(m, held.style, o.parent)
+      return
+    }
     const said = words(s.words!, s.text)
     if (said === held.said) return
     held.said = said
-    const data = dataOf(s, said, styles()[held.style]!)
-    if (m) {
-      m.proxy.geometry.dispose()
-      m.proxy.geometry = boxOf(data)
-      m.data = data
-      m.version++
-      return
-    }
     const mesh = o as THREE.Mesh
     mesh.geometry.dispose()
-    mesh.geometry = geometryOf(data)
+    mesh.geometry = geometryOf(dataOf(s, said, styles()[held.style]!))
   },
   drop(o) {
     const held = o.userData.held as Held
