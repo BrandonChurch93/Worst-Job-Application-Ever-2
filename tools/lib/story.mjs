@@ -90,12 +90,59 @@ export async function wordsCheck(s) {
     const f = live.frameAt(live.time)
     for (const shape of f.list) note(f.page, shape)
   }
+  let waited = 0
+  for (const [id, make] of Object.entries(pages)) {
+    const first = make()
+    const lacks = () => [...new Set(copyKeysOf(first.layout))].some((k) => !k.startsWith('runtime:') && !(drawn.get(id) ?? new Set()).has(k))
+    if (!lacks()) continue
+    const alone = new stage.Stage({ mode: 'live', flow: [{ page: id }], pages, driver: new stage.StillDriver(first.start), seed: c.seed })
+    while (!alone.finished && alone.step < limit && lacks()) {
+      alone.advance(30)
+      const f = alone.frameAt(alone.time)
+      for (const shape of f.list) note(f.page, shape)
+    }
+    waited = Math.max(waited, alone.time)
+  }
+  let looked = 0
+  for (const [id, make] of Object.entries(pages)) {
+    const first = make()
+    const named = []
+    const gatherNodes = (n) => {
+      if (n.copy && !n.copy.startsWith('runtime:')) named.push(n)
+      for (const child of n.children ?? []) gatherNodes(child)
+    }
+    gatherNodes(first.layout)
+    const seen = () => drawn.get(id) ?? new Set()
+    const todo = named.filter((n) => !seen().has(n.copy))
+    if (!todo.length) continue
+    let target = todo[0]
+    const driver = {
+      name: 'script',
+      input(view) {
+        const [x, y, w, h] = target.box
+        const cy = y + h / 2
+        return { x: x + w / 2, y: cy - view.scroll, down: false, scroll: Math.max(0, cy - c.formats.hd.height / 2) }
+      }
+    }
+    const looking = new stage.Stage({ mode: 'live', flow: [{ page: id }], pages, driver, seed: c.seed })
+    for (const n of todo) {
+      if (seen().has(n.copy)) continue
+      target = n
+      looked++
+      const until = looking.step + Math.round(8 * c.sim.stepHz)
+      while (!looking.finished && looking.step < until && !seen().has(n.copy)) {
+        looking.advance(12)
+        const f = looking.frameAt(looking.time)
+        for (const shape of f.list) note(f.page, shape)
+      }
+    }
+  }
   for (const [id, make] of Object.entries(pages)) {
     const tree = make().layout
     const seen = drawn.get(id) ?? new Set()
     const named = [...new Set(copyKeysOf(tree))].filter((k) => !k.startsWith('runtime:'))
     const missing = named.filter((k) => !seen.has(k))
-    for (const k of few(missing, 8)) detail.push(k.startsWith('and ') ? `${id}: ${k} keys its layout names are never drawn` : `${id}: its layout names "${k}", which is never drawn: not at rest, not in the film, not in the keen bot's visit`)
+    for (const k of few(missing, 8)) detail.push(k.startsWith('and ') ? `${id}: ${k} keys its layout names are never drawn` : `${id}: its layout names "${k}", which is never drawn: not at rest, not in the film, not in the keen bot's visit, not to a visitor who waits on the page, not to one who scrolls to it and holds the pointer on it for 8 s`)
     const parents = new Map()
     const visit = (n, parent) => {
       parents.set(n, parent)
@@ -114,7 +161,7 @@ export async function wordsCheck(s) {
   }
   return {
     pass: detail.length === 0,
-    note: `the words: ${runs} runs of type on the six pages at rest and ${listed} entries of the type registers compared with the keys they name, character for character; every key a layout names looked for at rest, in ${Math.ceil(film.frameCount / 6)} film frames and in the keen bot's visit${live.finished ? '' : ' (which did not finish)'}`,
+    note: `the words: ${runs} runs of type on the six pages at rest and ${listed} entries of the type registers compared with the keys they name, character for character; every key a layout names looked for at rest, in ${Math.ceil(film.frameCount / 6)} film frames and in the keen bot's visit${live.finished ? '' : ' (which did not finish)'}${waited ? `, and for what was still missing on a page alone with a visitor who does nothing, for up to ${Math.round(waited)} s` : ''}${looked ? `, and for ${looked} runs with a pointer that scrolls to the run and rests on it` : ''}`,
     detail: few(detail, 30)
   }
 }
