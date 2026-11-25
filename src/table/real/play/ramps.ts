@@ -100,13 +100,13 @@ function trestle(b: Bag, fine: Bag, f: Frame, turn: number): void {
   for (let h = tall - 64; h > 44; h -= BALL) {
     const p = at(0, h)
     const q = at(1, h)
-    b.add(rod(p, q, 2.3, 8), WIRE)
+    b.add(rod(p, q, 2.3, 6), WIRE)
     for (const e of [p, q]) fine.add(ball(TRACK.bead - 0.2, 8, 6), BEAD, mat({ x: e[0], y: e[1], z: e[2] }))
   }
   if (tall > 240) {
     const h0 = 44 + ((tall - 64 - 44) % BALL)
-    b.add(rod(at(0, 14), at(1, h0), 2, 8), WIRE)
-    b.add(rod(at(1, 14), at(0, h0), 2, 8), WIRE)
+    b.add(rod(at(0, 14), at(1, h0), 2, 6), WIRE)
+    b.add(rod(at(1, 14), at(0, h0), 2, 6), WIRE)
   }
 }
 
@@ -138,7 +138,7 @@ function highway(z: Zone, b: Bag, fine: Bag): Frame[] {
       const a = -open + (i / 14) * open * 2
       arc.push(put(f, Math.sin(a) * TRACK.hoopR, TRACK.centre - Math.cos(a) * TRACK.hoopR))
     }
-    b.add(wire(arc, TRACK.hoop, 8, 2), WIRE)
+    b.add(wire(arc, TRACK.hoop, 8, 1), WIRE)
     for (const side of [-1, 1]) {
       for (const [across, up] of [[TRACK.under, TRACK.underUp], [TRACK.side, TRACK.sideUp]] as const) {
         const d = put(f, side * across * 1.035, up + (up - TRACK.centre) * 0.035)
@@ -174,7 +174,7 @@ function spiral(z: Zone, b: Bag, clear: Bag): void {
   const pts = all.slice(1, all.length - 1)
   pts.unshift(new THREE.Vector3(all[0]!.x, all[0]!.y, all[1]!.z))
   const curve = new THREE.CatmullRomCurve3(pts, false, 'centripetal')
-  const flat = framesOf(curve, 11).map((f) => ({ ...f, up: [0, 0, 1] as V3 }))
+  const flat = framesOf(curve, 13).map((f) => ({ ...f, up: [0, 0, 1] as V3 }))
   const h = TROUGH.half
   const t = TROUGH.wall
   const top = TROUGH.tall
@@ -228,7 +228,7 @@ interface Built { flap: THREE.Mesh | null; down: number }
 export const flapLift = (open: number): number => (1 - Math.max(0, Math.min(1, open))) * FLAP.lift
 
 export const ramps = whole('ramps', {
-  version: 'play-ramps-12',
+  version: 'play-ramps-13',
   build(z) {
     const g = new THREE.Group()
     g.name = `play.ramps.${z.id}`
