@@ -1,35 +1,35 @@
 {
   "folder": "paper",
-  "pushed": "2026-11-25T21:40:48.540Z",
-  "commit": "e5749806e087be52f66e605fde713ad9f017a2c8",
+  "pushed": "2026-11-25T21:54:53.656Z",
+  "commit": "7965ed0ec21292c3700b1d32175d689e3d20da93",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still step1-step1_resume-0p66-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-25T21:36:42.355Z",
+      "caption": "Contact sheet, the beat step1.resume: 12 frames from 0:34.00 to 0:35.97, draft tier, preview",
+      "time": "2026-11-25T21:54:27.551Z",
       "by": "paper",
-      "from": "out/work/stills/step1-step1_resume-0p66-hd-draft.png"
+      "from": "out/work/sheets/sheet-beat-step1_resume-preview-draft.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "step1.resume, twelve frames: the pickup, the sheet held up proud and the carry now play inside the tug frame",
-      "time": "2026-11-25T21:40:47.054Z",
+      "caption": "step1-tug beside the approved image: folded sheet with lighter print, plates at the ends of the opening, strips with rolled ends",
+      "time": "2026-11-25T21:54:52.131Z",
       "by": "paper",
-      "from": "out/work/looks/files/20261125214047-first-resume.jpg"
+      "from": "out/work/looks/files/20261125215452-p2-compare.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "step1.tug, twelve frames: angry with stamps and yanks, scared and turned back at 25.97, lost and turned away at 26.53 and 27.1",
-      "time": "2026-11-25T21:40:47.277Z",
+      "caption": "the machine at the key instant, enlarged 3 times from the draft still: the two fastened plates, the strips and their shadows",
+      "time": "2026-11-25T21:54:52.352Z",
       "by": "paper",
-      "from": "out/work/looks/files/20261125214047-first-tug.jpg"
+      "from": "out/work/looks/files/20261125215452-p2-machine.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "step1-tug beside the approved image after the acting pass (sheet and shredder not yet touched)",
-      "time": "2026-11-25T21:40:47.497Z",
+      "caption": "step1.tug, twelve frames, after the sheet and the shredder pass",
+      "time": "2026-11-25T21:54:52.580Z",
       "by": "paper",
-      "from": "out/work/looks/files/20261125214047-first-compare.jpg"
+      "from": "out/work/looks/files/20261125215452-p2-tug.jpg"
     }
   ]
 }
