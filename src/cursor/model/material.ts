@@ -77,6 +77,7 @@ uniform sampler2D uDetail;
 ${HOLE_COMMON}
 vec3 wjaGlow = vec3( 0.0 );
 float wjaRough = 0.3;
+float wjaFill = 0.0;
 float wjaCoat = 1.0;
 float wjaSpec = 1.0;
 float wjaCoatRough = 0.05;
@@ -227,7 +228,7 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
     float crust = ( 1.0 - smoothstep( 1.2, 1.42, from ) ) * burnt;
     col = mix( col, col * vec3( 0.3, 0.215, 0.14 ), soot * soot * 0.95 );
     col = mix( col, vec3( 0.014, 0.012, 0.010 ) + 0.03 * fine.g * mid.b, crust );
-    float chipAt = length( d ) / r + ( fine.g - 0.5 ) * 0.1 + ( mid.b - 0.5 ) * 0.1;
+    float chipAt = length( d ) / r + ( wide.g - 0.5 ) * 0.1 + ( mid.b - 0.5 ) * 0.12;
     float chip = ( 1.0 - smoothstep( 1.13, 1.17, chipAt ) ) * ( 1.0 - burnt );
     float nick = smoothstep( 1.1, 1.17, chipAt ) * ( 1.0 - smoothstep( 1.17, 1.26, chipAt ) ) * ( 1.0 - burnt );
     vec3 clay = vec3( 0.86, 0.80, 0.68 ) * ( 0.72 + 0.5 * fine.b * mid.g + 0.16 * fine.g );
@@ -237,12 +238,13 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
     wjaRough = mix( wjaRough, 0.95, dull );
     wjaCoat *= 1.0 - max( max( crust, soot * 0.7 ), chip );
     wjaSpec *= 1.0 - 0.8 * chip;
-    wjaTilt += grain * ( 4.0 * crust + 6.0 * chip );
+    wjaTilt += grain * ( 4.0 * crust + 2.0 * chip );
     float lip = ( 1.0 - smoothstep( 1.04, 1.24, from ) ) * pow( hole.w, 0.7 ) * burnt;
     float spark = smoothstep( 0.4, 0.68, fine.b * 0.6 + mid.g * 0.6 - 0.2 * ( 1.0 - hole.w ) );
     float lee = 0.4 + 0.6 * smoothstep( -0.6, 0.9, dot( normalize( d ), vec2( -0.5, 0.86 ) ) );
     wjaGlow += mix( vec3( 0.85, 0.07, 0.01 ), vec3( 1.25, 0.6, 0.12 ), hole.w * fine.g ) * lip * lee * ( 0.3 + 2.0 * spark );
   }
+  wjaFill = 0.6 * face;
   return col;
 }
 `
@@ -273,7 +275,7 @@ export function bodyMaterial(uniforms: BodyUniforms): THREE.MeshPhysicalMaterial
       .replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\nroughnessFactor = wjaRough;')
       .replace('#include <normal_fragment_maps>', '#include <normal_fragment_maps>\nnormal = normalize( normal + vAcross * wjaTilt.x + vDown * wjaTilt.y );')
       .replace('#include <clearcoat_normal_fragment_maps>', '#include <clearcoat_normal_fragment_maps>\nclearcoatNormal = normalize( clearcoatNormal + vAcross * wjaCoatTilt.x + vDown * wjaCoatTilt.y );')
-      .replace('#include <lights_physical_fragment>', '#include <lights_physical_fragment>\nmaterial.clearcoat = saturate( wjaCoat );\nmaterial.specularColor *= wjaSpec;\nmaterial.specularF90 *= wjaSpec;\nmaterial.clearcoatRoughness = max( wjaCoatRough, 0.0525 );')
+      .replace('#include <lights_physical_fragment>', '#include <lights_physical_fragment>\nmaterial.clearcoat = saturate( wjaCoat );\nmaterial.specularColor *= wjaSpec;\nmaterial.specularF90 *= wjaSpec;\nmaterial.clearcoatRoughness = max( wjaCoatRough, 0.0525 );\ntotalEmissiveRadiance += diffuseColor.rgb * wjaFill * ( 1.0 - dot( normal, normalize( ( viewMatrix * vec4( 0.0, 0.0, 1.0, 0.0 ) ).xyz ) ) );')
       .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\ntotalEmissiveRadiance += wjaGlow;')
   }
   m.customProgramCacheKey = () => 'wja-studio-cursor-body'
