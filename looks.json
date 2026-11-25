@@ -1,0 +1,35 @@
+{
+  "folder": "tug",
+  "pushed": "2026-11-25T17:29:01.100Z",
+  "commit": "d6f6f0e127a6a768f7e36c4d1173f82270f4f513",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Still key-step1-tug-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-25T17:26:55.072Z",
+      "by": "tug",
+      "from": "out/work/stills/key-step1-tug-hd-review.png"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Key picture step1-tug beside the approved image: sheet 64 by 88 px, slot 96 px, frame 972 px of page wide, draft tier",
+      "time": "2026-11-25T17:28:59.529Z",
+      "by": "tug",
+      "from": "out/work/report/tug-compare-step1-tug.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Sheet cursor-arms beside the approved image: five poses round step 1's own slot, arms with elbows, no cuff, draft tier",
+      "time": "2026-11-25T17:28:59.771Z",
+      "by": "tug",
+      "from": "out/work/report/tug-compare-cursor-arms.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Twelve pictures across the beat step1.tug: the 972 px frame to the key picture, then the push to 462 px, held on the intake and the outlet",
+      "time": "2026-11-25T17:29:00.004Z",
+      "by": "tug",
+      "from": "out/work/report/tug-sheet-across-the-tug.jpg"
+    }
+  ]
+}
