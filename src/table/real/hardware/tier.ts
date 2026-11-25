@@ -134,7 +134,7 @@ function pocket(G: Geo, at: (grow: number) => V2[], centre: V2, o: { lip?: numbe
   strip(G, at(lip), 0.4, at(lip - 1.8), h, TONE.steelDim)
   strip(G, at(lip - 1.8), h, at(0.8), h, TONE.steel)
   G.f(FIN.steel)
-  strip(G, at(0.8), h, at(-1.4), h - 1.5, TONE.chrome)
+  strip(G, at(0.8), h, at(-1.4), h - 1.5, TONE.steelDim)
   G.f(FIN.dark)
   const wall = at(-5)
   const deep = at(-17)
@@ -162,7 +162,7 @@ function chute(G: Geo, S: Screws, z: Zone, upper: number): void {
     const q = path[i + 1]!
     const n = up(p, q)
     const along: V3 = [0, q[1] - p[1], q[2] - p[2]]
-    G.f(FIN.zinc).face([[x - w, p[1], p[2] + 0.8], [x + w, p[1], p[2] + 0.8], [x + w, q[1], q[2] + 0.8], [x - w, q[1], q[2] + 0.8]], n, along, i % 2 === 0 ? TONE.zinc : shade(TONE.zinc, 0.94))
+    G.f(FIN.zinc).face([[x - w, p[1], p[2] + 0.8], [x + w, p[1], p[2] + 0.8], [x + w, q[1], q[2] + 0.8], [x - w, q[1], q[2] + 0.8]], n, along, shade(TONE.zinc, i % 2 === 0 ? 0.56 : 0.52))
     for (const side of [-1, 1]) {
       const xi = x + side * w
       const xo = x + side * (w + t)

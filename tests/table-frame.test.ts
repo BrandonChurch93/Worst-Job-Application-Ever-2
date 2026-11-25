@@ -3,10 +3,10 @@ import * as THREE from 'three'
 import { parts } from '../src/table/real/frame'
 import { TUBE } from '../src/table/real/frame/loader'
 import { FACE, skyline } from '../src/table/real/frame/skyline'
-import { Geo } from '../src/table/real/frame/geo'
-import { isAnchor, zoneOf } from '../src/table/real/zone'
+import { Geo, grooved } from '../src/table/real/frame/geo'
+import { isAnchor, localBalls, zoneOf } from '../src/table/real/zone'
 import { fixedShapes } from '../src/table/draw'
-import { BALL, COLS, railOf } from '../src/table/layout'
+import { BALL, COLS, PORT, railOf } from '../src/table/layout'
 import type { Shape } from '../src/stage/types'
 import type { RealContext } from '../src/real/types'
 
@@ -142,5 +142,38 @@ describe('the body of the machine', () => {
     const p = g.getAttribute('position')
     const n = g.getAttribute('normal')
     for (let i = 0; i < p.count; i++) expect((p.getX(i) - 5) * n.getX(i) + (p.getY(i) - 10) * n.getY(i) + (p.getZ(i) - 5) * n.getZ(i)).toBeGreaterThan(0)
+  })
+
+  test('a slotted ring leaves its slot clear: nothing of it lies between the two walls on the side the slot opens to', () => {
+    const toward = -Math.PI / 2
+    const half = TUBE.outer + 2
+    const g = new Geo().slotted([[165, 0], [165, 21], [160, 26], [116, 26], [110, 17], [110, 3], [94, 3]], 0, 0, 72, [1, 1, 1], toward, half).done()
+    const p = g.getAttribute('position')
+    let walls = 0
+    for (let i = 0; i < p.count; i++) {
+      const along = p.getX(i) * Math.cos(toward) + p.getY(i) * Math.sin(toward)
+      const across = -p.getX(i) * Math.sin(toward) + p.getY(i) * Math.cos(toward)
+      if (along > 0) expect(Math.abs(across)).toBeGreaterThan(half - 0.001)
+      if (along > 0 && Math.abs(Math.abs(across) - half) < 0.001) walls++
+    }
+    expect(walls).toBeGreaterThan(0)
+  })
+
+  test('the bottom of a groove is told from the wall it is cut in', () => {
+    const outline: [number, number][] = [[0, 0], [10, 0], [10, 4], [8, 5], [8, 8], [10, 9], [10, 20], [0, 20]]
+    const tone = grooved(outline, [8], [1, 1, 1], [0.1, 0.1, 0.1])
+    expect(outline.map((_, i) => tone(i)[0])).toEqual([1, 1, 1, 0.1, 1, 1, 1, 1])
+  })
+
+  test('the tube starts at the wall of the port cup, not at its middle, so the ball is seen lying in the cup', () => {
+    const first = loader.find((b) => b.zone === 'first')!
+    const tube = meshesOf(first.o).find((m) => m.name.startsWith('loader.tube.'))!
+    const a = anchorsOf('loader').find((s) => zoneOf(s).id === 'first')!
+    const middle = localBalls(zoneOf(a), PORT.x, PORT.y)
+    const p = tube.geometry.getAttribute('position')
+    let nearest = Infinity
+    for (let i = 0; i < p.count; i++) nearest = Math.min(nearest, Math.hypot(p.getX(i) - middle[0], p.getY(i) - middle[1]))
+    expect(nearest).toBeGreaterThan(BALL / 2 + 20)
+    expect(nearest).toBeLessThan((PORT.cup / 2) * BALL)
   })
 })

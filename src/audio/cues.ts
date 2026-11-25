@@ -56,6 +56,7 @@ export const eventCues: Record<string, string> = {
   'checkbox': 'checkbox',
   'button-crack': 'button-crack',
   'unfold': 'unfold',
+  'boss-loop': 'boss-loop',
   'dart-fire': 'dart-fire',
   'dart-hit': 'dart-hit',
   'slab-fire': 'slab-fire',
@@ -79,12 +80,13 @@ export const stopEvents: Record<string, string[]> = {
   'shredder-stop': ['shredder'],
   'tug-lost': ['paper-strain'],
   'strips-zip': ['shredder', 'paper-strain'],
+  'power-down': ['boss-loop'],
   'hold-music-stop': ['hold-music'],
   'letter-drop': ['hold-music']
 }
 
 // Cues that repeat until they are stopped.
-export const loopCues: string[] = ['room-tone', 'shredder']
+export const loopCues: string[] = ['room-tone', 'shredder', 'boss-loop']
 
 // What sets each live line of the narrator off. The keys are the keys of liveOnly in content/narration.json.
 export type LiveTrigger =
@@ -175,6 +177,7 @@ export const cueClass: Record<string, CueClass> = {
   'checkbox': 'tick',
   'button-crack': 'hit',
   'unfold': 'mechanism',
+  'boss-loop': 'music',
   'dart-fire': 'tick',
   'dart-hit': 'tick',
   'slab-fire': 'hit',

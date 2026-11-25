@@ -9,6 +9,7 @@ import { Screws, TONE, aluOf, clearOf, mesh, screwOf } from './mats'
 export const TUBE = { outer: 59.5, wall: 4.5, sides: 24, opacity: 0.05, collar: 22, collarOut: 66, collarStep: 3.4 * BALL, clampStep: 3.4 * BALL, clampWide: 9, strap: 2.4, bend: 1.1 * BALL }
 const RING = { height: 26, lip: 6, floor: 3, slot: 2, mouth: 6 }
 const BED = { height: 6, land: 5 }
+const CUP: [number, number, number] = [0.05, 0.052, 0.056]
 
 // The middle line of the tube on the page, in page pixels, its corners rounded.
 function line(): V3[] {
@@ -160,10 +161,10 @@ function port(A: Geo, screws: Screws, z: Zone, c: { x: number; y: number; ring: 
     const half = TUBE.outer + RING.slot
     A.slotted(outline, p[0], p[1], 72, tone, toward, half)
     const from = A.vertices
-    A.box(r - 18, Math.sqrt(R * R - half * half), -half, half, 0, RING.floor, TONE.aluDeep)
+    A.box(r - 18, Math.sqrt(R * R - half * half), -half, half, 0, RING.floor, CUP)
     A.move(from, new THREE.Matrix4().makeTranslation(p[0], p[1], 0).multiply(new THREE.Matrix4().makeRotationZ(toward)))
   }
-  A.lathe([[r - 16, RING.floor], [BALL * 0.62, RING.floor - 0.6], [BALL * 0.5, RING.floor - 1.6], [0, RING.floor - 1.8]], p[0], p[1], 48, (i) => (i === 0 ? [0.05, 0.052, 0.056] : [0.006, 0.006, 0.008]))
+  A.lathe([[r - 16, RING.floor], [BALL * 0.62, RING.floor - 0.6], [BALL * 0.5, RING.floor - 1.6], [0, RING.floor - 1.8]], p[0], p[1], 48, (i) => (i === 0 ? CUP : [0.006, 0.006, 0.008]))
   for (let i = 0; i < 8; i++) {
     const a = Math.PI / 8 + (i * Math.PI) / 4
     if (toward !== null && Math.cos(a - toward) > 0 && Math.abs(Math.sin(a - toward)) * (R - 29) < TUBE.outer + 14) continue

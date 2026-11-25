@@ -1,6 +1,13 @@
 import * as THREE from 'three'
 
 export type RGB = [number, number, number]
+
+// The colour of each edge of an outline: `dark` where the edge lies wholly at one of the given sides (the bottom of a groove), `base` elsewhere.
+export const grooved = (outline: [number, number][], sides: number[], base: RGB, dark: RGB): ((edge: number) => RGB) => (edge) => {
+  const p = outline[edge]!
+  const q = outline[(edge + 1) % outline.length]!
+  return sides.some((x) => Math.abs(p[0] - x) < 0.01 && Math.abs(q[0] - x) < 0.01) ? dark : base
+}
 export type V2 = [number, number]
 export type V3 = [number, number, number]
 

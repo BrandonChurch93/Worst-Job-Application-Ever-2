@@ -4,7 +4,6 @@ import { pages } from '../src/pages'
 import { DECK } from '../src/pages/step1/keyboard'
 import { FIELD_X, GLYPH, SLOT, ZONE } from '../src/pages/step1/layout'
 import { CAMERA, FIRST, makePlan, pointerAt } from '../src/pages/step1/script'
-import { HEADER } from '../src/shell/parts'
 import { projectPage } from '../src/stage/camera'
 import { filmFlow, filmOptions, ScriptDriver, Stage, type DrawList } from '../src/stage/stage'
 
@@ -203,29 +202,40 @@ describe('step 1: the script of the film', () => {
         expect(x.v![1]).toBe(0)
         expect(projectPage(cam, x.x, x.y + x.h, 0).y).toBeLessThan(1080 - 20)
       }
-      for (const q of [{ x: ZONE.x, y: ZONE.y }, { x: ZONE.x + ZONE.w, y: ZONE.y + ZONE.h }]) {
+      for (const q of [{ x: SLOT.cx - SLOT.w / 2, y: SLOT.cy - SLOT.h / 2 }, { x: SLOT.cx + SLOT.w / 2, y: SLOT.cy + 44 }]) {
         const on = projectPage(cam, q.x, q.y, 0)
         expect(Math.min(on.x, 1920 - on.x, on.y, 1080 - on.y)).toBeGreaterThan(40)
       }
     }
   })
 
-  it('holds the tug frame clear of the field column, with the label of the drop zone whole', () => {
+  it('holds the tug frame left of the field column on the intake and the outlet, and closes to about 462 px of page after the key picture', () => {
     const page = film().page
     let gutter = Infinity
-    let label = Infinity
+    let widest = 0
+    let closest = Infinity
     for (let now = CAMERA.in[1]; now <= CAMERA.out[0]; now += 0.05) {
       const cam = page.camera('film', now)!
-      for (const y of [ZONE.y, ZONE.y + ZONE.h]) {
-        gutter = Math.min(gutter, projectPage(cam, FIELD_X, y, 0).x - 1920)
+      const wide = (1920 * 200) / (projectPage(cam, SLOT.cx + 100, SLOT.cy, 0).x - projectPage(cam, SLOT.cx - 100, SLOT.cy, 0).x)
+      if (now >= CAMERA.closer[1]) {
+        widest = Math.max(widest, wide)
+        closest = Math.min(closest, wide)
+      } else expect(wide, now.toFixed(2)).toBeLessThan(980)
+      for (const y of [ZONE.y, ZONE.y + ZONE.h, SLOT.cy]) {
+        gutter = Math.min(gutter, projectPage(cam, FIELD_X - 16, y, 0).x - 1920)
+        expect(projectPage(cam, FIELD_X - 16, y, 0).x, now.toFixed(2)).toBeGreaterThan(1920 - 0.01)
         expect(projectPage(cam, FIELD_X - 6, y, config.scale.heights.card).x, now.toFixed(2)).toBeGreaterThan(1920)
-        expect(projectPage(cam, ZONE.x + ZONE.w, y, 0).x, now.toFixed(2)).toBeLessThan(1920 - 40)
       }
-      const top = projectPage(cam, ZONE.x, HEADER.contentY, 0).y
-      label = Math.min(label, top)
-      expect(top, now.toFixed(2)).toBeGreaterThan(16)
+      for (const q of [{ x: SLOT.cx - SLOT.w / 2, y: SLOT.cy - SLOT.h / 2 }, { x: SLOT.cx + SLOT.w / 2, y: SLOT.cy + 30 }]) {
+        const on = projectPage(cam, q.x, q.y, 0)
+        expect(Math.min(on.x, 1920 - on.x, on.y, 1080 - on.y), now.toFixed(2)).toBeGreaterThan(100)
+      }
     }
-    console.log(`tug frame: the field column starts ${gutter.toFixed(0)} px outside the right edge, the label of the drop zone ${label.toFixed(0)} px under the top edge`)
+    expect(CAMERA.closer[0]).toBeGreaterThan(25.125)
+    expect(widest).toBeLessThan(480)
+    expect(closest).toBeGreaterThan(440)
+    expect((config.cursor.heightPxAt1080 * 1920) / widest / 1080).toBeGreaterThan(0.22)
+    console.log(`tug frame: ${closest.toFixed(0)} to ${widest.toFixed(0)} px of page wide once it has closed, the line before the field column ${gutter.toFixed(0)} px outside the right edge`)
   })
 
   it('draws the upload glyph above the prompt of the drop zone until the resume is received', () => {

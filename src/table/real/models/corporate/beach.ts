@@ -7,7 +7,7 @@ import { Geo, roundedLoop, type RGB, type V2, type V3 } from './geo'
 import { FINISH, TONE, drop as free, fin, hex, matsOf, mesh, mix, moved, place, poseGlow, screw, shade, signBoard, textAt, washer } from './mats'
 
 const SEED = 20261125
-export const CASE = { base: 7, wall: 6, lid: 7, sun: 0.2, sky: 0.5, lamp: 1.5 }
+export const CASE = { base: 7, wall: 6, lid: 7, sun: 0.11, sky: 0.4, lamp: 1.5 }
 
 const both = (g: Geo, pts: V3[], n: V3, along: V3, col: RGB, under: RGB = shade(col, 0.72)): void => {
   g.face(pts, n, along, col)
@@ -36,7 +36,7 @@ export function buildBeach(z: Zone, ctx: RealContext): THREE.Object3D {
   const shore = id * 0.3
   const ground = (x: number, y: number): number => {
     const dune = 5.5 * Math.exp(-((x + iw * 0.55) ** 2 + (y + id * 0.1) ** 2) / 2600) + 3 * Math.exp(-((x - iw * 0.5) ** 2 + (y + id * 0.5) ** 2) / 1800)
-    const ripple = 0.55 * Math.sin(y * 0.62 + Math.sin(x * 0.05) * 2.2) + 0.3 * Math.sin(x * 0.21 + y * 0.33)
+    const ripple = 0.6 * Math.sin(y * 0.46 + Math.sin(x * 0.05) * 2.2) + 0.25 * Math.sin(x * 0.13 + y * 0.21)
     const fall = Math.max(0, (y - shore + 26) / 26)
     return CASE.base + 5 + dune + ripple * (1 - Math.min(1, fall)) - fall * fall * 4.2
   }
@@ -112,7 +112,7 @@ export function buildBeach(z: Zone, ctx: RealContext): THREE.Object3D {
       for (let i = 0; i < cols; i++) {
         const x0 = -iw + (iw * 2 * i) / cols
         const x1 = -iw + (iw * 2 * (i + 1)) / cols
-        const bands: [number, RGB][] = [[1, TONE.seaDeep], [0.55, TONE.sea], [0.2, hex(0x6fd0d6)], [0, hex(0xa9e6dc)]]
+        const bands: [number, RGB][] = [[1, shade(TONE.seaDeep, 0.8)], [0.78, TONE.seaDeep], [0.56, TONE.sea], [0.36, hex(0x4fbfd0)], [0.2, hex(0x76d6d6)], [0.08, hex(0xa9e6dc)], [0, hex(0xcff2e6)]]
         for (let k = 0; k < bands.length - 1; k++) {
           const y = (x: number, u: number): number => edge(x) + (id - edge(x)) * u
           const u0 = bands[k]![0]
@@ -125,8 +125,10 @@ export function buildBeach(z: Zone, ctx: RealContext): THREE.Object3D {
     }, CASE.sun)
     // The sand, raked by the wind.
     fin(G, FINISH.cloth, () => {
-      const nx = 24
-      const ny = 14
+      const nx = 44
+      const ny = 30
+      const blob = (x: number, y: number, bx: number, by: number, r: number): number => Math.max(0, 1 - ((x - bx) ** 2 + (y - by) ** 2) / (r * r))
+      const shadow = (x: number, y: number): number => 0.3 * blob(x, y, -iw * 0.56 + 30, -id * 0.05 - 13, 38) * (0.6 + 0.4 * Math.sin(x * 0.5 + y * 0.3)) + 0.42 * blob(x, y, iw * 0.48 + 3, -id * 0.34 - 5, 17) + 0.4 * blob(x, y, iw * 0.74 + 7, -id * 0.02 - 9, 23)
       const y1 = shore - 4
       for (let i = 0; i < nx; i++) {
         for (let j = 0; j < ny; j++) {
@@ -138,7 +140,7 @@ export function buildBeach(z: Zone, ctx: RealContext): THREE.Object3D {
           const sx = (p[1]![2] - p[0]![2]) / (x1 - x0)
           const sy = (p[3]![2] - p[0]![2]) / (yb - ya)
           const wet = Math.max(0, Math.min(1, (yb - (shore - 16)) / 12))
-          const col = shade(mix(TONE.sand, hex(0xc9a773), wet), 1 + Math.max(-0.16, Math.min(0.14, sy * 0.9 + sx * 0.3)) + rnd.range(-0.025, 0.025))
+          const col = shade(mix(TONE.sand, hex(0xa3855a), wet), (1 + Math.max(-0.2, Math.min(0.16, sy * 1.1 + sx * 0.4)) + rnd.range(-0.008, 0.008)) * (1 - Math.min(0.5, shadow((x0 + x1) / 2, (ya + yb) / 2))))
           G.face(p, [-sx, -sy, 1], [1, 0, 0], col)
         }
       }

@@ -38,6 +38,7 @@
     "pack": "node tools/pack.mjs",
     "measure": "node tools/measure.mjs",
     "sound": "node tools/sound.mjs",
+    "credits": "node tools/credits.mjs",
     "mix": "node tools/mix.mjs",
     "render:local": "node tools/render-local.mjs",
     "parts": "node tools/parts.mjs",

@@ -5,19 +5,20 @@ import { TypeRegister } from '../../../shell/type'
 import type { Shape } from '../../../stage/types'
 import { PAPER, PAPER_LINES, PAPER_TITLE, SLOT } from '../layout'
 import { TUG } from '../script'
-import { GRID, MARGIN, sheetAt, solveSheet, type Sheet, type SheetIn } from './paperSolve'
+import { DRAWN, GRID, MARGIN, sheetAt, solveSheet, type Sheet, type SheetIn } from './paperSolve'
 import { INK, STOCK, stock } from './paperStock'
-import { CASSETTE, crest, openOf, riseOf } from './shredderShape'
+import { UNIT, crest, openOf, riseOf } from './shredderShape'
 
 const TITLE_KEY = 'copy:step1.resume.paperTitle'
-const THICK = 0.9
+const THICK = 0.3
+const SIZE = PAPER.w / DRAWN
 // The film's sheet is `resume-paper`. A sheet of any other frame is `resume-paper:<name>`.
 const isSheet = (id: string): boolean => id === 'resume-paper' || id.startsWith('resume-paper:')
 const CARRY = { from: 21, span: 14 }
-const BAR = { inset: 24, tall: 1.5, pad: 3.15, cells: 44, wide: [0.46, 1, 0.9, 0.62, 1, 0.84, 0.52] }
+const BAR = { inset: PAPER.inset, tall: 0.75, pad: (PAPER.bar - 0.75) / 2, cells: 44, wide: [0.46, 1, 0.9, 0.62, 1, 0.84, 0.52] }
 // Between two of the layout's lines runs a thinner one, so the sheet reads as a page of close text.
-const BETWEEN = { tall: 1.5, wide: [0.94, 0.78, 1, 0.34, 0.88, 0.97, 0.6] }
-const WRAP_LEN = 1.12 * (CASSETTE.roller.r + 0.7)
+const BETWEEN = { tall: 0.75, wide: [0.94, 0.78, 1, 0.34, 0.88, 0.97, 0.6] }
+const WRAP_LEN = 1.12 * (UNIT.r + 0.7 * SIZE)
 
 const clamp = (v: number, lo: number, hi: number): number => Math.min(hi, Math.max(lo, v))
 
@@ -29,7 +30,7 @@ export function sheetIn(s: Shape, ctx: RealContext): SheetIn {
   const q: SheetIn = {
     w: PAPER.w, l: PAPER.h, x: s.x, y: s.y, bw: s.w, bh: s.h, rot: s.rot ?? 0, z: s.z0,
     lift: 0, bite: 0, amount: 0, pull: 0, lx: s.x + s.w / 2, ly: s.y, rx: s.x + s.w / 2, ry: s.y, hz: s.z0 + 5, vx: 0, vy: 0, hands: 0,
-    cx: c.x, cy: c.y, cz: c.z, r: CASSETTE.roller.r, rise, seed: STOCK.seed
+    cx: c.x, cy: c.y, cz: c.z, r: UNIT.r, rise, seed: STOCK.seed
   }
   const v = s.v
   if (v && v.length >= 11) {
@@ -62,7 +63,7 @@ export function sheetIn(s: Shape, ctx: RealContext): SheetIn {
     q.ly = gy - sin * TUG.hands
     q.rx = gx + cos * TUG.hands
     q.ry = gy + sin * TUG.hands
-    q.amount = clamp(1 - (Math.hypot(gx - SLOT.cx, gy - c.y) + MARGIN + WRAP_LEN) / PAPER.h, 0, 1)
+    q.amount = clamp(1 - (Math.hypot(gx - SLOT.cx, gy - c.y) + MARGIN * SIZE + WRAP_LEN) / PAPER.h, 0, 1)
   } else if (s.z0 > 30) {
     q.lift = 1
     q.lx = q.rx = s.x + s.w * 0.5
@@ -91,7 +92,7 @@ interface Rig {
 
 // What throws the fed sheet's shadow lies a little under what is seen, so a sheet that leans away from the light
 // does not shade itself in teeth.
-const SINK = 1.6
+const SINK = 0.5
 function caster(sink: { value: number }): THREE.MeshDepthMaterial {
   const m = new THREE.MeshDepthMaterial({ side: THREE.DoubleSide })
   m.onBeforeCompile = (shader) => {
@@ -132,14 +133,14 @@ function bodyGeometry(ring: number[]): THREE.BufferGeometry {
       uv[(n + k) * 2 + 1] = j / (ny - 1)
     }
   }
-  // The cut edge is 0.9 px tall: its lower line reads the stock 3 px further in, so the fibre does not smear down it.
+  // The cut edge is thin: its lower line reads the stock 1 px further in, so the fibre does not smear down it.
   ring.forEach((k, r) => {
     const u = uv[k * 2]!
     const v = uv[k * 2 + 1]!
     uv[(n * 2 + r) * 2] = u
     uv[(n * 2 + r) * 2 + 1] = v
-    uv[(n * 2 + m + r) * 2] = u + Math.sign(0.5 - u) * (3 / PAPER.w)
-    uv[(n * 2 + m + r) * 2 + 1] = v + Math.sign(0.5 - v) * (3 / PAPER.h)
+    uv[(n * 2 + m + r) * 2] = u + Math.sign(0.5 - u) * (1 / PAPER.w)
+    uv[(n * 2 + m + r) * 2 + 1] = v + Math.sign(0.5 - v) * (1 / PAPER.h)
   })
   const index: number[] = []
   for (let j = 0; j < ny - 1; j++) {
@@ -211,7 +212,7 @@ function titleMarks(): { marks: Mark[]; index: number[] } {
   const cap = capHeight(PAPER_TITLE.font, PAPER_TITLE.px)
   const p = run.mesh.geometry.getAttribute('position')
   const marks: Mark[] = []
-  for (let i = 0; i < p.count; i++) marks.push({ u: (BAR.inset + p.getX(i)) / PAPER.w, v: (30 + cap - p.getY(i)) / PAPER.h })
+  for (let i = 0; i < p.count; i++) marks.push({ u: (BAR.inset + p.getX(i)) / PAPER.w, v: (PAPER.top + cap - p.getY(i)) / PAPER.h })
   const index = Array.from(run.mesh.geometry.getIndex()!.array)
   ;(run.mesh.material as THREE.Material).dispose()
   register.clear()
@@ -288,10 +289,10 @@ function shape(rig: Rig, q: SheetIn): void {
   pos.needsUpdate = true
   nor.needsUpdate = true
   rig.body.computeBoundingSphere()
-  lay(rig.title, rig.titleMarks, sheet, THICK + 0.3)
-  lay(rig.bars, rig.barMarks, sheet, THICK + 0.3)
+  lay(rig.title, rig.titleMarks, sheet, THICK + 0.12)
+  lay(rig.bars, rig.barMarks, sheet, THICK + 0.12)
   const mat = stock(PAPER.w, PAPER.h)
-  mat.sheet.normalScale.setScalar(0.06 + 0.22 * sheet.abuse)
+  mat.sheet.normalScale.setScalar(0.04 + 0.12 * sheet.abuse)
 }
 
 // The sheet prints its own title. While the page still hands the title to the type maker, that one shows on the flat sheet

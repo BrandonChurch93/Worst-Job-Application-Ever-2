@@ -137,6 +137,10 @@ describe('the clear ball', () => {
     expect(L.lamps.length).toBeLessThanOrEqual(LAMPS)
     for (let i = 1; i < L.lamps.length; i++) expect(L.lamps[i]!.amount).toBeLessThanOrEqual(L.lamps[i - 1]!.amount)
     expect(L.lamps[0]!.colour[2]).toBeGreaterThan(L.lamps[0]!.colour[0])
+    for (const l of L.lamps) {
+      expect(l.shine).toBeGreaterThan(0)
+      expect(l.shine).toBeLessThanOrEqual(l.window ? 0.9 * 6 : 26)
+    }
     const dark = lightAt(office, { ...ctx, list: fixedShapes(), byId: new Map() })
     expect(dark.lamps.length).toBe(0)
     expect(lightAt(ball(960, 600, 0), ctx).tier).toBe(false)

@@ -8,7 +8,7 @@ import { BALL, MARQUEE_H, MARQUEE_Y } from '../../layout'
 import { groupsOf, levels } from '../lights'
 import type { Shape } from '../../../stage/types'
 import { localOf, shapesIn, type Zone } from '../zone'
-import { Geo, type V2 } from './geo'
+import { Geo, grooved, type V2 } from './geo'
 import { Screws, TONE, aluOf, mesh, paintOf, screwOf } from './mats'
 import { skyline } from './skyline'
 
@@ -17,6 +17,7 @@ export const POCKET = { w: 472, h: 116, bar: 7, proud: 6, floor: 0.9, rest: 0.26
 // The housing of the marquee, in page pixels, measured from the face: `off` is out of the face, towards who looks at it.
 const BOX = { rim: 30, proud: 16, deep: 46, inner: POCKET.bar, innerProud: POCKET.proud, bevel: 4.5, vents: 12, bar: 12, barProud: 9 }
 const STRIP = { slot: 4.5, pitch: 11, slotPad: 7 }
+const BEAM = { thick: 16, first: 12, pitch: 15, wide: 4.5, deep: 2 }
 const GLOW = { rest: 0.05, lit: 1.0 }
 // Where the foot of the face lies on the page while the board is not stood up: `boardAt` in `draw.ts` turns the board about it.
 const flatFoot = (MARQUEE_Y + MARQUEE_H - 0.25) * BALL
@@ -108,14 +109,18 @@ export function marquee(z: Zone, ctx: RealContext): THREE.Object3D {
     const x1 = x0 + (2 * w - 60) / 7 - 3
     A.pipe([[x0, -h2 - r - 4, -BOX.deep / 2], [x1, -h2 - r - 4, -BOX.deep / 2]], 8.5, 12, i % 2 === 0 ? TONE.alu : TONE.aluDark)
   }
+  // The picture sits inside a second, lower frame of bright aluminium.
+  const lip = (x0: number, x1: number, y0: number, y1: number, along: [number, number, number]): void => {
+    A.box(x0, x1, y0, y1, 0, BOX.innerProud, TONE.aluBright, { bevel: 1.6, along })
+  }
+  lip(-w, w, h2 - step, h2, [1, 0, 0])
+  lip(-w, w, p0, p0 + step, [1, 0, 0])
+  lip(-w, -w + step, p0 + step, h2 - step, [0, 1, 0])
+  lip(w - step, w, p0 + step, h2 - step, [0, 1, 0])
   A.move(body, toBoard)
   const inner = (x0: number, x1: number, y0: number, y1: number): void => {
     P.box(x0, x1, y0, y1, 0, BOX.innerProud, TONE.bezel, { bevel: 1.6 })
   }
-  inner(-w, w, h2 - step, h2)
-  inner(-w, w, p0, p0 + step)
-  inner(-w, -w + step, p0 + step, h2 - step)
-  inner(w - step, w, p0 + step, h2 - step)
   // The seat of the main display: a dark strip the whole width of the face.
   inner(-w, w, s1 - step, s1)
   inner(-w, w, s0, s0 + step)
@@ -157,7 +162,16 @@ export function marquee(z: Zone, ctx: RealContext): THREE.Object3D {
   const lean = new THREE.Vector3(0, -h2 * 0.35, -BOX.deep).applyMatrix4(toBoard)
   const brace: V2[] = [[-(sp[1] - sh + 10), 9], [-(hinge.y - 2), Math.min(tall, hinge.z)], [-lean.y, lean.z], [-(sp[1] + sh - 16), 9]]
   for (const bx of [-0.82, -0.28, 0.28, 0.82]) P.prism(brace, [sp[0] + bx * sw - 9, 0], [sp[0] + bx * sw + 9, 0], TONE.bezel)
-  P.box(sp[0] - sw + 12, sp[0] + sw - 12, hinge.y - 7, hinge.y + 9, 9, Math.min(tall, hinge.z) - 2, TONE.bezel, { bevel: 2 })
+  // The beam the housing is hinged on: one ribbed extrusion across the foot.
+  const beamTall = Math.min(tall, hinge.z) - 11
+  const ribs = (side: number, into: 1 | -1): V2[] => {
+    const out: V2[] = []
+    for (let g = BEAM.first; g < beamTall - BEAM.first; g += BEAM.pitch) out.push([side, g], [side + into * BEAM.deep, g + 1.2], [side + into * BEAM.deep, g + BEAM.wide - 1.2], [side, g + BEAM.wide])
+    return out
+  }
+  const bw = BEAM.thick / 2
+  const beam: V2[] = [[-bw, 0], ...ribs(-bw, 1), [-bw, beamTall - 2.5], [-bw + 2.5, beamTall], [bw - 2.5, beamTall], [bw, beamTall - 2.5], ...ribs(bw, -1).reverse(), [bw, 0]]
+  if (beamTall > 12) A.prism(beam, [sp[0] - sw + 12, hinge.y + 1], [sp[0] + sw - 12, hinge.y + 1], grooved(beam, [-bw + BEAM.deep, bw - BEAM.deep], TONE.aluDark, TONE.gap), [true, true], 9)
   for (let i = 0; i < 9; i++) for (const sy of [-sh + 9, sh - 9]) screws.add(sp[0] - sw + 18 + (i * (2 * sw - 36)) / 8, sp[1] + sy, 9, 1.25, i + sy)
 
   const drawn = sky.ready() ? null : skyline()
