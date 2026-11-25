@@ -127,3 +127,83 @@ were large bubbles.
 
 Still wrong: the beads are faint on the white face at sheet size; the approved ones have a darker
 edge and a stronger shadow.
+
+## Item 4: scorch and tape
+
+Scorch, what was wrong: a flat matte black triangle with a faint fringe.
+
+- The crust is glossy lumps: roughness 0.26 on a lump and 0.9 between, stronger tilt of the normal
+  (12, was 7), pale glints on the lumps, a more crumbled edge (fine noise 1.1, was 0.6).
+- The fringe is narrow and amber: `(0.85, 0.48, 0.16)` at its outside to `(0.14, 0.05, 0.012)`
+  against the crust, 1.2 units wide, and it follows the crust with less noise than the crust has.
+- Found here: the item 6 change (coloured light made neutral on the face) also made the face's
+  own colour neutral, so the fringe, the heat's warm tint and the melt's tint were grayed. It now
+  divides the face's colour out before it takes the light's luma, and puts it back.
+
+Still wrong: the crust does not stand up from the body (the shell's form is not mine) and does
+not run down the left edge as on the approved sheet; the smoke is thinner than approved.
+
+Tape, what was wrong: wide frosted bands with saw teeth, far past the body.
+
+- Ends: teeth 0.22 high (was 1.1) on a slow uneven wave, so an end reads torn, not pinked.
+- Opacity: frost 0.2 (was 0.37), less sheen (0.4, was 0.8), a fainter cast shadow.
+- Shorter and narrower: halves 16, 23, 11 px (were 20, 28, 15), widths 4.4, 4.6, 4.2 (were 5.0,
+  5.4, 4.8). No test holds these numbers (MEASURED: `npm test` green).
+- The slat joints show through the tape.
+
+## Item 5: scared and the flattened cracks
+
+Scared, what was wrong: smooth gray with a regular grid of dots (the detail texture sampled at
+one small scale).
+
+- The dots are gone. Mottling comes from three scales of the texture together, pits from two, and
+  a slow warm and cool drift; the grain of the normal is stronger (0.5, was 0.22).
+
+Still wrong: the band still catches a bright line on the lamp side, so it is not fully matte;
+that is the fill term on the roll, see the form fixer's ask below.
+
+Cracks, what was wrong: one crack (the cells were 11 units wide, wider than the body).
+
+- A net: cells 4.2 units wide, and a finer set (1.9 units) that shows only near a main crack in
+  about half the plates, at 0.12 against 0.3, so it branches. Hairlines with the lit lip and the
+  slight tilt of each plate kept.
+
+Still wrong: the lines are a little paler and wavier than the approved ones.
+
+## The new light (main e599fbb and after)
+
+- The shadow pass now lifts things between 6 and 12 px by `shadowHeights.from` and `lift`. My depth
+  material for the body (`bodyDepthMaterial`) reads the same band as `src/post/studio.ts`, so the
+  arrow's shadow follows the page's rule. Nothing in `src/post/` is changed.
+- The page seen through a punched hole went to an even gray disc under the longer shadow. The
+  share of the light let down a bore is 0.6 (was 0.5). Still wrong: the disc is flatter and
+  grayer than the approved one, where the lower right of the page inside is plainly lit.
+
+## The fill term and M3 (decision, measured)
+
+The form fixer asked for the fill to depend on the side, because the new roll of the enamel reads
+as a gray band with an arc round each notch. I wrote it (commit a83e58b: a face tilted from the
+lamp gets back the share it lost, the lit side gets nothing) and it does take the band away.
+
+It is taken back out. MEASURED at the review tier with
+`npm run measure -- --unit step1 --only M3,M4 --tier review`: main db41bef M3 0.8224, my branch
+with the new fill 0.8191. With the tool's own `highFrequencyEnergy` on the two stills, cell by
+cell (120 px), all of the loss is on the arrow in `step1-tug` (cells at 1200,360; 1320,360;
+1200,240): the even white face has less fine contrast than the banded one. With the old fill back
+the same still reads 0.8222, and the last 0.0002 was the softer flecks in the hot tip.
+
+- The fill term is the one main has. The band on the roll is therefore still there. The code of
+  the side dependent fill is in a83e58b for whoever takes it up with M3 in hand: it costs 0.0031
+  of M3 on `step1-tug`.
+- The flecks in the glowing tip are crisper and a little brighter (threshold 0.685 to 0.735,
+  strength 1.5; were 0.7 to 0.82 and 1.2). Still wrong: on the sheet they are coarser than the
+  approved sparks, which are fine points and thin veins.
+
+## The three things that still look least real
+
+1. The fresh laser hole at 70 px in `step1-fire` still reads as a ring: darker than before and
+   with the key seen through it, but a ring.
+2. The punched hole: the page inside is an even gray disc and the wall has less tooth than the
+   approved one.
+3. Angry: the flecks are blobs and the steam is two ribbons, where the approved picture has fine
+   sparks, a deep dark tip and a curling plume.
