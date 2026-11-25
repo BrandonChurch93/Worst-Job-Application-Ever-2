@@ -1,7 +1,7 @@
 # Status pictures
 
-Time: 2026-11-25T17:28Z. Phase 3, status 34.
+Time: 2026-11-25T18:00Z. Phase 3, status 35.
 
-1. `01-street-tier-new-spiral.jpg`: The street tier from straight above with the new layout, draft tier. Right: the spiral's three turns now stand 1.3 balls apart, so the top turn is nearer the camera and looks larger. The thin column inside is the old garage core, due to be rebuilt as the frame outside the trough.
-2. `02-rail-cam-new-highway.jpg`: The rail camera riding the highway, draft tier: the ball on the wire track above the police station, the spiral's turns ahead.
-3. `03-drop-zone-glass-approved-over-build.jpg`: The drop zone's glass at the same scale: your approved fire image above, the build below (review tier). The build's glass is the next thing I change.
+1. `01-tug-key-beside-approved.jpg`: The tug key: your approved image on the left, the build on the right at the draft tier, with crops at native size below. The build's frame is the close one, so the two frames do not match in width. The glass card behind the cursor is the build's weakest surface here.
+2. `02-table-wide-beside-approved.jpg`: The whole table: your approved image on the left, the build on the right, draft tier. The garage frame and the launch ramp are new. The cabinet round the tiers is not lit yet.
+3. `03-street-tier-rebuilt-garage.jpg`: The street tier from straight above, draft tier: the garage rebuilt as a round frame outside the spiral, the highway's wire track to it, the lift tube on the left and the launch lane on the right.
