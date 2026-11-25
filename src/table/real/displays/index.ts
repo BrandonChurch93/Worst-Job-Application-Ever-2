@@ -73,11 +73,12 @@ function pictures(): { dots: THREE.DataTexture; soft: THREE.DataTexture } {
     dots = new THREE.DataTexture(texels, COLS, ROWS, THREE.RedFormat, THREE.UnsignedByteType)
     dots.magFilter = dots.minFilter = THREE.NearestFilter
     soft = new THREE.DataTexture(texels, COLS, ROWS, THREE.RedFormat, THREE.UnsignedByteType)
-    soft.magFilter = soft.minFilter = THREE.LinearFilter
+    soft.magFilter = THREE.LinearFilter
+    soft.minFilter = THREE.LinearMipmapLinearFilter
     for (const t of [dots, soft]) {
       t.colorSpace = THREE.NoColorSpace
       t.wrapS = t.wrapT = THREE.ClampToEdgeWrapping
-      t.generateMipmaps = false
+      t.generateMipmaps = t === soft
       t.needsUpdate = true
     }
     shown = ''
@@ -116,7 +117,11 @@ float wjdAt( vec2 cell ) {
 float wjdField( vec2 q ) {
 	vec2 uv = q / wjdGrid;
 	vec2 ok = step( vec2( 0.0 ), uv ) * step( uv, vec2( 1.0 ) );
-	return texture2D( wjdSoft, uv ).r * ok.x * ok.y;
+	return textureLod( wjdSoft, uv, 0.0 ).r * ok.x * ok.y;
+}
+float wjdGlow( vec2 q ) {
+	vec2 uv = clamp( q / wjdGrid, 0.0, 1.0 );
+	return 0.6 * textureLod( wjdSoft, uv, 2.6 ).r + 0.4 * textureLod( wjdSoft, uv, 3.8 ).r;
 }
 `
 
@@ -154,8 +159,8 @@ const body = /* glsl */ `
 		wjdWide += wjdField( wjdG + d * 1.6 );
 		wjdWider += wjdField( wjdG + vec2( d.x * 0.9239 - d.y * 0.3827, d.x * 0.3827 + d.y * 0.9239 ) * 3.3 );
 	}
-	vec3 wjdHalo = wjdAmber * ( 0.1 * wjdTight + 0.015 * wjdWide + 0.011 * wjdWider ) * wjdLight.x;
-	vec3 wjdCoarse = ( wjdAmber * 1.05 + wjdHot * 0.3 ) * 0.5 * wjdField( wjdQ ) * wjdLight.x * wjdSweep + wjdAmber * 0.006 * wjdLight.y * wjdRows;
+	vec3 wjdHalo = ( wjdAmber * ( 0.1 * wjdTight + 0.015 * wjdWide + 0.011 * wjdWider ) + wjdAmber * vec3( 1.0, 0.72, 0.5 ) * 0.32 * wjdGlow( wjdG ) * wjdRows ) * wjdLight.x;
+	vec3 wjdCoarse = ( wjdAmber * 1.05 + wjdHot * 0.3 ) * 0.8 * wjdField( wjdQ ) * wjdLight.x * wjdSweep + wjdAmber * 0.006 * wjdLight.y * wjdRows;
 	totalEmissiveRadiance = mix( wjdNear, wjdCoarse, wjdFar ) + wjdHalo;
 }
 `
@@ -201,7 +206,7 @@ interface Mirror { spots: THREE.Vector4[]; colour: THREE.Vector3; tint: readonly
 
 // The pane is taken to bulge a hair, as a pressed pane does: the lamps of the tier stand in it small and in a row, the near ones larger, and they slide as the camera moves.
 function mirrorOf(z: Zone, s: Seat): Mirror {
-  const group = groupsOf(z).find((g) => g.name === 'general') ?? groupsOf(z).find((g) => g.name === 'panel')
+  const group = groupsOf(z).find((g) => g.name === 'general')
   const back = s.matrix.clone().invert()
   const found: { q: THREE.Vector4; gain: number }[] = []
   const seen = new Set<string>()
@@ -366,7 +371,7 @@ function pose(o: THREE.Object3D, z: Zone, ctx: RealContext): void {
   const score = show(ctx)
   const L = levels(ctx, z)
   b.u.light.set(L.byName.display ?? 0, Math.min(1, 0.55 * L.website + 0.6 * L.general + 0.3 * L.flash), 0, 0)
-  const lamps = (L.byName.general ?? L.byName.panel ?? L.general) * MIRROR.gain
+  const lamps = (L.byName.general ?? 0) * MIRROR.gain
   b.mirror.colour.set(b.mirror.tint[0] * lamps, b.mirror.tint[1] * lamps, b.mirror.tint[2] * lamps)
   const at = (((ctx.time % SWEEP.every) + SWEEP.every) % SWEEP.every) / SWEEP.takes
   b.u.deep.z = score && at < 1 ? -24 + at * (COLS + 48) : -1000
