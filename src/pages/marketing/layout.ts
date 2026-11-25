@@ -104,7 +104,7 @@ function medallion(i: number, cx: number, y: number): LayoutNode[] {
 
 function firstScreen(): LayoutNode[] {
   const out: LayoutNode[] = []
-  out.push(text('nav-brand', 'copy:marketing.nav.brand', TYPE.title, LEFT, HEADER.titleY, { part: 'shell' }))
+  out.push(text('nav-brand', 'copy:marketing.nav.brand', TYPE.title, LEFT, HEADER.progressY - cap(TYPE.title) / 2, { part: 'shell' }))
   const ctaW = buttonWidth('copy:marketing.nav.cta')
   const ctaX = RIGHT - ctaW
   out.push(button('nav-cta', ctaX, HEADER.progressY - sizes.button / 2, ctaW, 'copy:marketing.nav.cta', { part: 'apply-button' }))

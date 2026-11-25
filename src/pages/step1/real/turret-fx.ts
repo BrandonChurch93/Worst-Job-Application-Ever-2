@@ -74,21 +74,26 @@ function puffPicture(seed: number): THREE.DataTexture {
   })
 }
 
-// A scorch: a charred middle with a ragged edge, a brown ring that thins out, a few specks.
+// A scorch: a small charred pit with a ragged edge, a wide singed halo that goes from dark brown to tan, ash flecks.
 function scorchPicture(seed: number): THREE.DataTexture {
   return picture(128, true, (u, v) => {
     const r = Math.hypot(u, v)
     const a = Math.atan2(v, u)
     const ragged = noise(Math.cos(a) * 2.4 + 5, Math.sin(a) * 2.4 + 5, seed) * 0.5 + noise(Math.cos(a) * 6 + 9, Math.sin(a) * 6 + 9, seed + 3) * 0.3
-    const edge = 0.3 + ragged * 0.22
-    const char = 1 - smooth((r - edge) / 0.1)
-    const ring = (1 - smooth((r - edge) / (0.7 - edge))) * 0.7
+    const edge = 0.13 + ragged * 0.17
+    const reach = 0.62 + ragged * 0.34
+    const char = 1 - smooth((r - edge) / 0.15)
+    const halo = (1 - smooth((r - edge * 0.6) / (reach - edge * 0.6))) ** 0.7
     const fine = noise(u * 22, v * 22, seed + 11)
+    const cloud = noise(u * 7 + 3, v * 7 + 8, seed + 17)
+    const ash = char * smooth((fine - 0.62) / 0.2) * 0.13
     const speck = fine > 0.8 && r < 0.85 ? (fine - 0.8) * 3 * (1 - r) : 0
-    const pit = smooth((0.16 - r) / 0.12) * 0.35
-    const alpha = Math.max(char * 0.96, ring * (0.75 + fine * 0.25), speck) * smooth((1 - r) / 0.1)
-    const k = char
-    return [0.46 * (1 - k) + 0.05 * k + pit * 0.05, 0.25 * (1 - k) + 0.043 * k + pit * 0.03, 0.1 * (1 - k) + 0.038 * k, alpha]
+    const alpha = Math.max(char * 0.97, halo * (0.55 + cloud * 0.4), speck) * smooth((1 - r) / 0.1)
+    const t = Math.min(1, halo * 1.15)
+    const red = 0.66 * (1 - t) + 0.42 * t
+    const green = 0.38 * (1 - t) + 0.16 * t
+    const blue = 0.15 * (1 - t) + 0.04 * t
+    return [red * (1 - char) + (0.04 + ash) * char, green * (1 - char) + (0.036 + ash) * char, blue * (1 - char) + (0.033 + ash) * char, alpha]
   })
 }
 
