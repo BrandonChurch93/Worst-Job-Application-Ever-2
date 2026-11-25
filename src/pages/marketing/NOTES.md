@@ -42,4 +42,5 @@ Phase 2 blockout. Stand-in shapes only. Every word is a key of `content/copy.jso
 ## Other
 
 - The ticker is closed-form: its offset is a function of the page time, 36 px a second, set so that an item starts at the window's left pad at 11.0 s (the key) and, after the rejection, at 1.7 s.
-- `field()` of the shell sets a value at the pocket floor (z -6); the blockout draws a pocket as a thin plate on the page, so the value would be under the page. The page lifts `wait-value` onto the plate in `draw`.
+- The value of the wait field sits at the pocket floor as the shell's `field()` places it; the blockout view of main 8c84635 lifts type on a flat pocket by itself, so the page no longer lifts it.
+- The tape is clipped by the page: a run of the tape lies below the surface, so the part of it outside the window is under the slab. The blockout view of main 8c84635 lifts sunk type whose box centre is outside every well onto the page, which would spill a run that crosses the window's edge. A crossing run is therefore drawn with a 2 px box at its inner end (left aligned as it comes in, right aligned as it goes out), so its centre stays inside the well.

@@ -293,8 +293,11 @@ export function makePage(): PageLogic {
       let rel = mod(item.at - tape, length)
       if (rel + item.w + TICKER.gap > length) rel -= length
       const x = left + TICKER.pad + rel
-      if (x + item.w > left && x < right) {
-        out.push({ id: `${item.id}-run`, part: 'type', kind: 'text', x, y: tapeY, w: item.w, h: tapeH, z0: TICKER.tape, z1: TICKER.tape, tone: 'ink', words: item.key, type: T.tape })
+      if (x + item.w > left + 2 && x < right - 2) {
+        const run = { id: `${item.id}-run`, part: 'type', kind: 'text', y: tapeY, h: tapeH, z0: TICKER.tape, z1: TICKER.tape, tone: 'ink', words: item.key } as const
+        if (x >= left && x + item.w <= right) out.push({ ...run, x, w: item.w, type: T.tape })
+        else if (x >= left) out.push({ ...run, x, w: 2, type: T.tape })
+        else out.push({ ...run, x: x + item.w - 2, w: 2, type: { ...T.tape, align: 'right' } })
       }
       const dot = x + item.w + TICKER.gap / 2
       if (dot - 4 > left && dot + 4 < right) out.push({ id: `${item.id}-dot`, part: 'ticker', kind: 'disc', x: dot - 4, y: TICKER.y + TICKER.h / 2 - 4, w: 8, h: 8, z0: TICKER.tape, z1: TICKER.tape + 0.6, tone: 'dark' })
@@ -370,7 +373,7 @@ export function makePage(): PageLogic {
       Object.assign(s, JSON.parse(JSON.stringify(state)) as State)
     },
     draw(out: DrawList) {
-      const over: Record<string, Partial<Shape> | null> = { 'wait-value': { z0: 0.08, z1: 0.08 } }
+      const over: Record<string, Partial<Shape> | null> = {}
       for (let i = 0; i < perkCount; i++) if (s.flip[i]! > 0 && s.flip[i]! < 1) over[`perk-${i}`] = null
       BUTTONS.forEach((id, i) => {
         if (s.sink[i]! <= 0) return

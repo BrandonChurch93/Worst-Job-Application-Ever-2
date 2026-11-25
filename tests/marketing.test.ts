@@ -306,6 +306,26 @@ describe('the careers page', () => {
     expect(JSON.stringify(drawn(b))).toBe(JSON.stringify(drawn(a)))
   })
 
+  it('keeps the tape inside its window: a run that crosses an edge keeps its box centre in the well, so the page hides the rest', () => {
+    const s = film()
+    let crossing = 0
+    for (let i = 0; i < 52; i++) {
+      s.advance(seconds(0.25))
+      const list = drawn(s)
+      const well = list.find((d) => d.id === 'ticker-well')!
+      const runs = list.filter((d) => d.kind === 'text' && d.id.startsWith('ticker-'))
+      expect(runs.length).toBeGreaterThan(2)
+      for (const r of runs) {
+        const centre = r.x + r.w / 2
+        expect(centre, r.id).toBeGreaterThanOrEqual(well.x)
+        expect(centre, r.id).toBeLessThanOrEqual(well.x + well.w)
+        expect(r.z1).toBeLessThan(0)
+        if (r.w === 2) crossing++
+      }
+    }
+    expect(crossing).toBeGreaterThan(0)
+  })
+
   it('lets every bot finish, and the keen one reach every gag of the page', () => {
     const seed = config.seed
     const keen = runBot(pages, 'keen', seed)
