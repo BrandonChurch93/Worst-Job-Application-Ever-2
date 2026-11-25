@@ -1,35 +1,35 @@
 {
   "folder": "film",
-  "pushed": "2026-11-25T09:38:08.378Z",
-  "commit": "4f1fa91e348bb31835220ad03b68282a64375aca",
+  "pushed": "2026-11-25T10:02:33.367Z",
+  "commit": "e478083cd1aad7bb56588f16f9f3f87e503be01b",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "The opening of film A, frame 200: the prompt being typed at 68 px, second line begun",
-      "time": "2026-11-25T09:38:06.422Z",
+      "caption": "Contact sheet across film A's opening: 12 frames, draft tier, preview",
+      "time": "2026-11-25T10:01:47.320Z",
       "by": "film",
-      "from": "out/work/stills/film-opening-0200-preview-draft.png"
+      "from": "out/work/sheets/sheet-opening-preview-draft.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "The opening, frame 317 (marks.level): the reasoning level control drawn open, Max picked",
-      "time": "2026-11-25T09:38:06.705Z",
+      "caption": "Contact sheet across the card loop: 12 frames, draft tier, preview",
+      "time": "2026-11-25T10:01:57.679Z",
       "by": "film",
-      "from": "out/work/stills/film-opening-0317-preview-draft.png"
+      "from": "out/work/sheets/sheet-loop-preview-draft.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "The opening, frame 560: the build screen, the checklist filling",
-      "time": "2026-11-25T09:38:06.952Z",
+      "caption": "Film A's opening through the site after main cef0562: 12 frames, draft tier, the send arrow and the larger type",
+      "time": "2026-11-25T10:02:32.010Z",
       "by": "film",
-      "from": "out/work/stills/film-opening-0560-preview-draft.png"
+      "from": "out/work/sheets/sheet-opening-preview-draft.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "The opening, last frame: every line of intro.steps ticked",
-      "time": "2026-11-25T09:38:07.172Z",
+      "caption": "The card loop through the site after main cef0562: 12 frames across the 8 s, draft tier",
+      "time": "2026-11-25T10:02:32.238Z",
       "by": "film",
-      "from": "out/work/stills/film-opening-0715-preview-draft.png"
+      "from": "out/work/sheets/sheet-loop-preview-draft.jpg"
     }
   ]
 }
