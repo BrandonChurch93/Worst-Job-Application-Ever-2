@@ -591,10 +591,8 @@
           "The answers rest on the flat, unapologetic delivery of a frustrating technical outcome being framed as an intended feature, which inherently conveys a cold and smug tone."
         ]
       },
-      "kept": true,
-      "keptAs": [
-        "line.step1.email.0"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "too long for its place: 9.508 s in 7.325 s, over by 2.183 s; tone not judged: 1 whole answers in 8 asks",
       "line": {
         "words": 10,
@@ -9119,31 +9117,48 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
-        "asks": 6,
-        "whole": 0,
-        "transcript": null,
-        "transcripts": [],
-        "transcriptAgreed": "0 of 0",
-        "attitudes": [],
-        "accents": [],
-        "pitches": [],
-        "whisper": null,
-        "whisperVotes": "0 yes, 0 no",
-        "laugh": null,
-        "laughVotes": "0 yes, 0 no",
-        "warmth": null,
-        "warmthVotes": "0 yes, 0 no",
-        "excitement": null,
-        "excitementVotes": "0 yes, 0 no",
-        "unimpressedAndSmug": null,
-        "unimpressedAndSmugVotes": "0 yes, 0 no",
-        "basis": [],
+        "by": "the audio evaluation tool: 12 asks, 2 whole, 10 void",
+        "asks": 12,
+        "whole": 2,
+        "transcript": "Still typing. It has bills.",
+        "transcripts": [
+          "Still typing. It has bills.",
+          "Still typing. It has bills."
+        ],
+        "transcriptAgreed": "2 of 2",
+        "attitudes": [
+          "detached and deadpan",
+          "deadpan and serious"
+        ],
+        "accents": [
+          "American",
+          "American"
+        ],
+        "pitches": [
+          "low",
+          "low"
+        ],
+        "whisper": false,
+        "whisperVotes": "0 yes, 2 no",
+        "laugh": false,
+        "laughVotes": "0 yes, 2 no",
+        "warmth": false,
+        "warmthVotes": "0 yes, 2 no",
+        "excitement": false,
+        "excitementVotes": "0 yes, 2 no",
+        "unimpressedAndSmug": false,
+        "unimpressedAndSmugVotes": "1 yes, 1 no",
+        "basis": [
+          "The speaker delivers the lines with a deep, flat, and monotone voice, conveying a dry and unimpressed attitude without any excitement or warmth.",
+          "The speaker uses a deep, resonant, and monotone voice with a completely flat delivery."
+        ],
         "heardRaisedByDb": 2.15
       },
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "kept": true,
+      "keptAs": [
+        "line.live.hit.2"
+      ],
+      "why": "listener: not unimpressed and a little smug (1 yes, 1 no; [\"detached and deadpan\",\"deadpan and serious\"]). The Builder's ruling of 18:46Z: the listener's tone answers are not evidence",
       "line": {
         "words": 5,
         "seconds": 3.484,
@@ -9530,8 +9545,8 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
-        "asks": 6,
+        "by": "the audio evaluation tool: 18 asks, 0 whole, 18 void",
+        "asks": 18,
         "whole": 0,
         "transcript": null,
         "transcripts": [],
@@ -9551,9 +9566,11 @@
         "unimpressedAndSmugVotes": "0 yes, 0 no",
         "basis": []
       },
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "kept": true,
+      "keptAs": [
+        "line.live.tugLost.0"
+      ],
+      "why": "18 asks brought no whole answer; two answers that were cut off before their end both wrote the transcript The shredder always eats first, word for word, one of them saying it had no audio; pace 1.245 words a second and 1 pause of 1 measured",
       "line": {
         "words": 5,
         "seconds": 4.016,
@@ -10662,25 +10679,26 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 6 asks, 2 whole, 4 void",
-        "asks": 6,
-        "whole": 2,
-        "heard": "A single sharp tap of a small hard object against a surface. / A heavy block dropping flat onto a hard surface.",
-        "madeOf": "Hard material such as plastic, wood, or metal. / Wood, stone, or dense plastic and ceramic",
-        "events": "1 / 1",
+        "by": "the audio evaluation tool: 8 asks, 3 whole, 5 void",
+        "asks": 8,
+        "whole": 3,
+        "heard": "A single sharp tap of a small hard object against a surface. / A heavy block dropping flat onto a hard surface. / A single sharp strike on a wooden block.",
+        "madeOf": "Hard material such as plastic, wood, or metal. / Wood, stone, or dense plastic and ceramic / Wood",
+        "events": "1 / 1 / 1",
         "voice": false,
-        "voiceVotes": "0 yes, 2 no",
+        "voiceVotes": "0 yes, 3 no",
         "word": false,
-        "wordVotes": "0 yes, 2 no",
+        "wordVotes": "0 yes, 3 no",
         "music": false,
-        "musicVotes": "0 yes, 2 no",
+        "musicVotes": "0 yes, 3 no",
         "melody": false,
-        "melodyVotes": "0 yes, 2 no",
+        "melodyVotes": "0 yes, 3 no",
         "fits": false,
-        "fitsVotes": "1 yes, 1 no",
+        "fitsVotes": "1 yes, 2 no",
         "basis": [
           "The audio consists of a brief, high-frequency click indicative of a small, light object, completely lacking the loud, low-frequency thud expected from a heavy block.",
-          "The recording consists of a single, sharp, heavy thud characteristic of a solid block striking a hard, resonant surface."
+          "The recording consists of a single, sharp, heavy thud characteristic of a solid block striking a hard, resonant surface.",
+          "The audio features a single, hollow, resonant 'tock' typical of struck wood, which lacks the heavy impact and brittle acoustic properties of a block landing on ceramic."
         ],
         "heardRaisedByDb": 22.83
       },
@@ -10755,9 +10773,11 @@
         ],
         "heardRaisedByDb": 5.5
       },
-      "kept": false,
-      "keptAs": [],
-      "why": ""
+      "kept": true,
+      "keptAs": [
+        "strips-zip"
+      ],
+      "why": "three takes used and no take fits by the listener; take 2 is the only one heard as paper (flipping the pages of a book, 0 of 2 fits), take 1 was a metal zipper, take 3 a wrapper, a zipper or Velcro (0 of 3)"
     },
     {
       "key": "button-crack",
@@ -11190,31 +11210,43 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
-        "asks": 6,
-        "whole": 0,
-        "transcript": null,
-        "transcripts": [],
-        "transcriptAgreed": "0 of 0",
-        "attitudes": [],
-        "accents": [],
-        "pitches": [],
+        "by": "the audio evaluation tool: 12 asks, 1 whole, 11 void",
+        "asks": 12,
+        "whole": 1,
+        "transcript": "Take your time. The job is not real.",
+        "transcripts": [
+          "Take your time. The job is not real."
+        ],
+        "transcriptAgreed": "1 of 1",
+        "attitudes": [
+          "calm and detached"
+        ],
+        "accents": [
+          "British"
+        ],
+        "pitches": [
+          "low"
+        ],
         "whisper": null,
-        "whisperVotes": "0 yes, 0 no",
+        "whisperVotes": "0 yes, 1 no",
         "laugh": null,
-        "laughVotes": "0 yes, 0 no",
+        "laughVotes": "0 yes, 1 no",
         "warmth": null,
-        "warmthVotes": "0 yes, 0 no",
+        "warmthVotes": "0 yes, 1 no",
         "excitement": null,
-        "excitementVotes": "0 yes, 0 no",
+        "excitementVotes": "0 yes, 1 no",
         "unimpressedAndSmug": null,
-        "unimpressedAndSmugVotes": "0 yes, 0 no",
-        "basis": [],
+        "unimpressedAndSmugVotes": "1 yes, 0 no",
+        "basis": [
+          "The speaker uses a slow, deliberate pace and a low, flat tone that lacks warmth or excitement, conveying a detached and slightly arrogant demeanor."
+        ],
         "heardRaisedByDb": 1.27
       },
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "kept": true,
+      "keptAs": [
+        "line.live.idle.1"
+      ],
+      "why": "tone not judged: 1 whole answers in 12 asks",
       "line": {
         "words": 8,
         "seconds": 5.162,
@@ -11405,10 +11437,45 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "listener": {
+        "by": "the audio evaluation tool: 5 asks, 1 whole, 4 void",
+        "asks": 5,
+        "whole": 1,
+        "transcript": "A valid email rejected the system is working as designed.",
+        "transcripts": [
+          "A valid email rejected the system is working as designed.",
+          "A valid email rejected, the system is working as designed."
+        ],
+        "transcriptAgreed": "2 of 2",
+        "attitudes": [
+          "deadpan and dismissive"
+        ],
+        "accents": [
+          "American"
+        ],
+        "pitches": [
+          "middle"
+        ],
+        "whisper": null,
+        "whisperVotes": "0 yes, 1 no",
+        "laugh": null,
+        "laughVotes": "0 yes, 1 no",
+        "warmth": null,
+        "warmthVotes": "0 yes, 1 no",
+        "excitement": null,
+        "excitementVotes": "0 yes, 1 no",
+        "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "1 yes, 0 no",
+        "basis": [
+          "The speaker delivers the ironic statement with a flat, measured tone that lacks warmth or excitement, conveying a distinctly smug and unimpressed attitude.",
+          "The speaker delivers the technical excuse with a steady, flat tone, indicating a deadpan dismissiveness devoid of any warmth or excitement."
+        ]
+      },
+      "kept": true,
+      "keptAs": [
+        "line.step1.email.0"
+      ],
+      "why": "the Builder's ruling of 19:11Z: take 2 is kept and the tug line moves 0.15 s later on main; transcript word for word in 2 of 2 answers that had one, 1 whole answer in 5 asks",
       "line": {
         "words": 10,
         "seconds": 7.47,
@@ -11651,9 +11718,34 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A heavy object forcefully drops and lands flat on a resonant hard surface. / A heavy object forcefully drops and lands flat on a hard, resonant surface. / A heavy solid block landing flatly with a loud thud on a hard floor.",
+        "madeOf": "dense material and ceramic / A dense solid material and ceramic. / Wood, concrete, or dense plastic impacting ceramic.",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The audio features a single, loud impact with a hard, slightly brittle resonance characteristic of a dense block striking a ceramic tile.",
+          "The audio consists of a single, loud, and sudden impact thud that matches the acoustic profile of a heavy mass striking a hard ceramic tile.",
+          "The audio consists of a single, forceful, heavy impact sound with the sharp, hard resonance characteristic of an object striking a ceramic tile surface."
+        ],
+        "heardRaisedByDb": 32.39
+      },
+      "kept": true,
+      "keptAs": [
+        "slab-drop.3"
+      ],
       "why": ""
     },
     {
@@ -11695,7 +11787,30 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A thin plastic wrapper is torn open. / A zipper is rapidly opened or closed. / A short, rapid ripping sound, much like a strip of Velcro being quickly pulled apart.",
+        "madeOf": "plastic / Metal or plastic and fabric / Nylon, plastic, or synthetic fabric",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": false,
+        "fitsVotes": "0 yes, 3 no",
+        "basis": [
+          "The recording contains a single, sharp sound of thin, crinkly material being ripped.",
+          "The fast, clicking friction sound is characteristic of interlocking zipper teeth.",
+          "The brief, abrasive tearing noise is characteristic of a single hook-and-loop fastener separating, rather than many paper strips zipping together."
+        ],
+        "heardRaisedByDb": 8.19
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -11739,9 +11854,103 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
+      "listener": {
+        "by": "the audio evaluation tool: 5 asks, 3 whole, 2 void",
+        "asks": 5,
+        "whole": 3,
+        "heard": "A single, high-pitched metallic ping or spark sound. / A very brief and sharp metallic click or strike is heard. / A very brief, faint snapping or clicking sound.",
+        "madeOf": "metal / Metal / electricity and metal",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The audio features a singular, very brief, sharp metallic impact sound with a high-frequency ring.",
+          "The audio is a fraction-of-a-second high-pitched metallic transient that sounds exactly like a flint striker or lighter sparking against metal.",
+          "The recording contains a single, nearly instantaneous high-frequency snap that strongly resembles a tiny static discharge or electrical spark."
+        ],
+        "heardRaisedByDb": 42.01
+      },
+      "kept": true,
+      "keptAs": [
+        "dart-hit.4"
+      ],
+      "why": ""
+    },
+    {
+      "key": "slab-drop.2",
+      "kind": "cue",
+      "cue": "slab-drop",
+      "take": 3,
+      "round": "build",
+      "file": "take-3.mp3",
+      "sha256": "46d0e87d08a9b3ef2b56cbe43c1f7c8cf8811a76602aea974970e838b8d83788",
+      "filed": "2026-11-25T19:11:34.125Z",
+      "prompt": "One very heavy ceramic block landing flat on a ceramic floor, a single deep hard thud, close microphone, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.8,
+        "loop": false,
+        "influence": null,
+        "call": 161
+      },
+      "askedSeconds": 0.8,
+      "cost": "9",
+      "measured": {
+        "seconds": 0.8,
+        "start": 0.128,
+        "end": 0.34,
+        "peakDb": -6.62,
+        "rmsDb": -29.97,
+        "lufs": -27.83,
+        "truePeakDb": -6.53,
+        "low": 0.097,
+        "mid": 0.848,
+        "high": 0.055,
+        "tailDb": -54.11,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.134,
+            "end": 0.202,
+            "peakDb": -6.62
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 3 whole, 3 void",
+        "asks": 6,
+        "whole": 3,
+        "heard": "A solid object strikes a hard surface with a single, resonant thwack. / A very heavy block drops and lands flat on a hard ceramic surface. / A heavy object dropping onto a hard surface.",
+        "madeOf": "dense material such as wood, stone, or hard plastic / solid dense material and ceramic / solid material and ceramic",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The audio contains exactly one sharp, heavy impact sound with a brief, hard resonance, matching the acoustic profile of a dense block hitting ceramic.",
+          "The sound is a single, forceful impact that has the blunt, heavy acoustic characteristics of a solid block striking a hard, slightly resonant surface like ceramic tile.",
+          "The audio contains a single, solid impact followed by a short reverberation, consistent with a heavy block hitting a ceramic surface."
+        ],
+        "heardRaisedByDb": 3.62
+      },
+      "kept": true,
+      "keptAs": [
+        "slab-drop.2"
+      ],
       "why": ""
     }
   ]

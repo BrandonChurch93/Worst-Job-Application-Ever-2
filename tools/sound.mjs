@@ -413,12 +413,12 @@ export function pack(P, c, M, quiet = false) {
       const bytes = encode(wav, ['-ac', '1', '-c:a', 'libmp3lame', '-b:a', '64k', '-id3v2_version', '0', '-f', 'mp3'])
       const file = `${r.id}.mp3`
       fs.writeFileSync(path.join(P.pub, file), bytes)
-      index.lines.push({ id: r.id, file, seconds: r.seconds, mime: 'audio/mpeg', bytes: bytes.length })
+      index.lines.push({ id: r.id, file, seconds: r.seconds, mime: 'audio/mpeg', bytes: bytes.length, sha256: sha(bytes) })
     } else if (r.loop) {
       const bytes = encode(wav, ['-c:a', 'flac', '-sample_fmt', 's16', '-compression_level', '8', '-f', 'flac'])
       const file = `${r.id}.flac`
       fs.writeFileSync(path.join(P.pub, file), bytes)
-      index.loops.push({ id: r.id, file, seconds: r.seconds, mime: 'audio/flac', bytes: bytes.length })
+      index.loops.push({ id: r.id, file, seconds: r.seconds, mime: 'audio/flac', bytes: bytes.length, sha256: sha(bytes) })
     } else {
       const bytes = encode(wav, ['-ac', '1', '-c:a', 'flac', '-sample_fmt', 's16', '-compression_level', '8', '-f', 'flac'])
       chunks.push(bytes)
@@ -427,8 +427,9 @@ export function pack(P, c, M, quiet = false) {
     }
   }
   if (chunks.length) {
-    fs.writeFileSync(path.join(P.pub, 'sfx.bin'), Buffer.concat(chunks))
-    index.pack = { file: 'sfx.bin', bytes: offset }
+    const all = Buffer.concat(chunks)
+    fs.writeFileSync(path.join(P.pub, 'sfx.bin'), all)
+    index.pack = { file: 'sfx.bin', bytes: offset, sha256: sha(all) }
   }
   index.totalBytes = offset + [...index.loops, ...index.lines].reduce((s, f) => s + f.bytes, 0)
   writeJson(path.join(P.pub, 'index.json'), index)
@@ -1073,13 +1074,18 @@ function status(P, c, M) {
   if (missing.length) console.log(`sound: not kept yet: ${missing.slice(0, 12).map((m) => m.id).join(', ')}${missing.length > 12 ? `, and ${missing.length - 12} more` : ''}`)
   const e = emittedEvents(M)
   console.log(`sound: the pages emit ${e.count} events by name. ${e.unknown.length ? `With no cue, no stop, no line and not listed as silent in src/audio/cues.ts: ${e.unknown.join(', ')}` : 'Each has a cue, stops one, sets off a line or is listed as silent on purpose'}`)
-  console.log('sound: --cue ID --file F files a take, --line BEAT:N --file F files a line, --keep keeps one, --pack builds what the site ships, --sheet draws the kept sounds, --check runs the sound checks, --fixtures makes stand-ins to test with')
+  console.log('sound: --cue ID --file F files a take, --line BEAT:N --file F files a line, --keep keeps one, --pack builds what the site ships, --pack-check compares public/audio/ with the committed index, --sheet draws the kept sounds, --check runs the sound checks, --fixtures makes stand-ins to test with')
 }
 
 async function main() {
   const a = args()
   const c = config()
   const P = places(a.root)
+  if (a['pack-check']) {
+    const { packCheck } = await import('./lib/sound-packcheck.mjs')
+    if (!packCheck(at(), P.pub)) process.exitCode = 1
+    return
+  }
   const M = await modules()
   try {
     if (a.fixtures) await fixtures(a, c, M)

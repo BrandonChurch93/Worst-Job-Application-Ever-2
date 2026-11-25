@@ -1,0 +1,129 @@
+{
+  "id": "strips-zip",
+  "kind": "cue",
+  "cue": "strips-zip",
+  "variant": null,
+  "class": "mechanism",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "Many paper strips zipping together quickly",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "Many thin paper strips snapping back together side by side in one quick run, a fast rising papery flutter and rustle, paper only, no metal, no zipper, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 1,
+    "loop": false,
+    "influence": null,
+    "call": 147
+  },
+  "askedSeconds": 1,
+  "cost": "11",
+  "take": {
+    "number": 2,
+    "round": "build",
+    "file": "take-2.mp3",
+    "sha256": "9649b2c9735f9ed37f35f3c18f2c671cd6edd8f4ce803b7a6ddc7b9bd0d9bd4c",
+    "filed": "2026-11-25T18:44:31.223Z",
+    "measured": {
+      "seconds": 1,
+      "start": 0,
+      "end": 0.82,
+      "peakDb": -8.5,
+      "rmsDb": -37.88,
+      "lufs": -28.91,
+      "truePeakDb": -8.19,
+      "low": 0.002,
+      "mid": 0.244,
+      "high": 0.753,
+      "tailDb": -54.59,
+      "hits": 2,
+      "hitsAt": [
+        {
+          "start": 0.004,
+          "end": 0.404,
+          "peakDb": -8.5
+        },
+        {
+          "start": 0.498,
+          "end": 0.624,
+          "peakDb": -28.59
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.82,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -10,
+    "gainDb": -1.5,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.82,
+    "start": 0,
+    "end": 0.76,
+    "peakDb": -10,
+    "rmsDb": -39.06,
+    "lufs": -33.44,
+    "truePeakDb": -9.83,
+    "low": 0.002,
+    "mid": 0.244,
+    "high": 0.754,
+    "tailDb": -59.07,
+    "hits": 2,
+    "hitsAt": [
+      {
+        "start": 0.004,
+        "end": 0.404,
+        "peakDb": -10
+      },
+      {
+        "start": 0.498,
+        "end": 0.624,
+        "peakDb": -30.35
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+    "asks": 2,
+    "whole": 2,
+    "heard": "Someone rapidly flipping through the pages of a book. / A rapid riffling or flipping through the pages of a small book or notepad.",
+    "madeOf": "Paper / Paper",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": false,
+    "fitsVotes": "0 yes, 2 no",
+    "basis": [
+      "The audio features the fast, fluttering sound characteristic of stiff paper pages being quickly turned.",
+      "The audio features a fast, single continuous sequence of snappy ticks typical of paper pages snapping back, rather than strips zipping together."
+    ],
+    "heardRaisedByDb": 5.5
+  },
+  "why": "three takes used and no take fits by the listener; take 2 is the only one heard as paper (flipping the pages of a book, 0 of 2 fits), take 1 was a metal zipper, take 3 a wrapper, a zipper or Velcro (0 of 3)",
+  "forced": true,
+  "problems": [
+    "the listener says it does not fit the line that describes the cue"
+  ],
+  "fixture": false,
+  "file": "strips-zip.wav",
+  "seconds": 0.82,
+  "sha256": "9227efcdc06851be5583807d90b1fd9b9316eb522690fb4acdb81b9214a62caf"
+}

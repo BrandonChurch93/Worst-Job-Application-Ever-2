@@ -177,6 +177,25 @@ describe('with no sound to play', () => {
     expect(fetched).toEqual(['./audio/sfx.bin'])
   })
 
+  it('runs silent and throws nothing on the committed index when none of its files is there', async () => {
+    serve()
+    const s = makeSound({ base: './audio/' })
+    await expect(s.unlock()).resolves.toBeUndefined()
+    expect(() => {
+      s.event(hit('step'), 'live')
+      s.event(hit('bolt-hit-cursor', true), 'live')
+      s.beat('marketing.stroll', 'live')
+      s.beat('marketing.stroll', 'film')
+      s.trigger('idle')
+      s.opening(0, 1)
+      s.trigger('watchFilm')
+      s.stop()
+      s.start()
+    }).not.toThrow()
+    quiet(s)
+    expect(made.flatMap((ctx) => ctx.sources).length).toBe(0)
+  })
+
   it('runs silent when the request itself fails', async () => {
     vi.stubGlobal('fetch', async () => { throw new Error('offline') })
     const s = makeSound({ base: './audio/', index: fixtureSite().index })
