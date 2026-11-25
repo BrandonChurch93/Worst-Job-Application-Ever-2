@@ -125,11 +125,11 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
   float ink = smoothstep( 0.3, 0.7, vInk ) * ( 1.0 - bare ) * ( 1.0 - smoothstep( 0.0, 0.55, melt ) );
   ink *= 1.0 - uShape.x * smoothstep( 0.2, 0.34, vInset );
   float face = 1.0 - ink;
-  vec3 col = mix( enamel, edge, ink );
-  wjaRough = mix( 0.3, 0.55, ink );
-  wjaCoatRough = mix( 0.05, 0.3, ink );
-  wjaCoat = mix( 1.0, 0.45, ink );
-  wjaSpec = mix( 1.0, 0.35, ink );
+  vec3 col = mix( enamel, edge * 0.6, ink );
+  wjaRough = mix( 0.3, 0.42, ink );
+  wjaCoatRough = mix( 0.09, 0.16, ink );
+  wjaCoat = mix( 1.0, 0.3, ink );
+  wjaSpec = mix( 1.0, 0.3, ink );
 
   // A cut face: bare fired clay, with the dark of the edge band only at its foot.
   if ( bare > 0.5 ) {

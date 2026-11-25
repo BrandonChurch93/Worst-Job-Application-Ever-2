@@ -68,11 +68,14 @@ function geometries(): Shared {
   if (shared) return shared
   const L = TURRET_LOOK
   const collar = turn([[L.collar, -112], [L.collar, -48], [L.collar - 2, -46], [L.head + 1.2, -46], [L.head + 1.2, -50]], 56, 4)
+  const fillet = 9
+  const crown: [number, number][] = []
+  for (let i = 1; i <= 6; i++) crown.push([L.head - fillet + fillet * Math.cos((i * Math.PI) / 12), -fillet + fillet * Math.sin((i * Math.PI) / 12)])
+  for (let i = 3; i >= 0; i--) crown.push([((L.head - fillet) * i) / 4, 1.1 * (1 - (i / 4) ** 2)])
   const headParts: THREE.BufferGeometry[] = [
-    turn([[L.head, -56], [L.head, -30], [L.head - 0.9, -29.2], [L.head - 0.9, -27.8], [L.head, -27], [L.head, -5.5], [L.head - 5, -0.9], [L.head - 6.2, 0], [13, 0], [12.4, -0.6], [0, -0.6]], 56, 4)
+    turn([[L.head, -56], [L.head, -30], [L.head - 0.9, -29.2], [L.head - 0.9, -27.8], [L.head, -27], [L.head, -fillet], ...crown], 56, 4)
   ]
   const headDark: THREE.BufferGeometry[] = []
-  for (let i = -1; i <= 1; i++) headDark.push(place(flat(slot(16 - Math.abs(i) * 3, 2.6), 0.04), -21, i * 5.6, 0))
   headDark.push(place(turn([[17.4, 0], [17.4, 4.5], [16, 5.2], [16, 0]], 24, 1), 0, 0, 0).rotateY(Math.PI / 2).translate(L.head - 1.5, 0, L.axis))
   const barrel = along(turn([[15.4, 24], [15.4, 45], [14.4, 46], [13.4, 46], [10.6, 83], [12.9, 84.2], [12.9, 87.4], [12.1, 88.1], [12.1, 89.5], [12.9, 90.2], [12.9, 96.4], [11.6, L.muzzle], [7.8, L.muzzle]], 28, 2))
   const barrelDark = along(turn([[7.8, L.muzzle], [7.8, 84], [0, 84]], 20, 1))
@@ -267,13 +270,13 @@ function makeBolt(): THREE.Object3D {
   const root = new THREE.Group()
   const len = TURRET.bolt
   const head = overlay(new THREE.Mesh(f.head, f.headMaterial), 6)
-  head.scale.set(11, 5.2, 5.2)
+  head.scale.set(9, 3.8, 3.8)
   head.position.set(len / 2 - 11, 0, 8)
   const tail = overlay(new THREE.Mesh(f.tail, f.tailMaterial), 4)
-  tail.scale.set(88, 5.4, 5.4)
+  tail.scale.set(112, 3.8, 3.8)
   tail.position.set(len / 2 - 12, 0, 8)
   const core = overlay(new THREE.Mesh(f.tail, f.tailMaterial), 5)
-  core.scale.set(40, 3.2, 3.2)
+  core.scale.set(48, 2.2, 2.2)
   core.position.set(len / 2 - 12, 0, 8)
   root.add(tail, core, head)
   const data: BoltData = { head, tail, core }
@@ -285,8 +288,8 @@ function poseBolt(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const d = o.userData.bolt as BoltData
   const born = s.v ? Math.min(1, Math.max(0, s.v[1] ?? 1)) : 1
   const flick = 0.92 + 0.08 * Math.sin(ctx.time * 140 + (hashName(s.id) & 255))
-  d.tail.scale.set(30 + 62 * born, 5.4 * flick, 5.4 * flick)
-  d.core.scale.set(14 + 26 * born, 3.2, 3.2)
+  d.tail.scale.set(30 + 82 * born, 3.8 * flick, 3.8 * flick)
+  d.core.scale.set(14 + 34 * born, 2.2, 2.2)
   const a = s.rot ?? 0
   const half = TURRET.bolt / 2 - 9
   ctx.light({ x: s.x + s.w / 2 + Math.cos(a) * half, y: s.y + s.h / 2 + Math.sin(a) * half, z: s.z0 + 8, colour: EMIT.bolt.colour, power: EMIT.bolt.power * flick, reach: EMIT.bolt.reach, shadow: true })
@@ -304,7 +307,7 @@ interface ScorchData {
   turn: number
 }
 
-const SCORCH = { size: 52, smoke: 4, smokeSeconds: 1.5, shoulder: 4.5, core: 14 }
+const SCORCH = { size: 62, smoke: 4, smokeSeconds: 1.5, shoulder: 4.5, core: 14 }
 
 function makeScorch(s: Shape): THREE.Object3D {
   const f = fx()

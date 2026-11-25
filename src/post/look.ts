@@ -36,7 +36,10 @@ export const look = {
   // The studio the surfaces reflect. Its soft light stands higher than the key throws its shadows from, so a flat
   // glossy face that looks at the viewer still catches the edge of it.
   studio: {
-    direction: [-0.52, 0.5, 0.69] as [number, number, number]
+    direction: [-0.52, 0.5, 0.69] as [number, number, number],
+    // How much of the studio's reflection a surface loses where the key does not reach it, and where the fill does not.
+    shadeKey: 0.7,
+    shadeFill: 0.6
   },
   // How much of the studio's light a surface takes as plain diffuse light with no shadow in it.
   envDiffuse: 0.05,
@@ -52,11 +55,11 @@ export const look = {
   glow: {
     threshold: 1.5,
     knee: 0.2,
-    strength: 0.5,
+    strength: 0.8,
     // A surface that only sends light back is pressed softly under `surfaceMax` from `surfaceKnee` up, below the threshold.
     surfaceKnee: 0.95,
     surfaceMax: 1.25,
     // How much of the glow each wider ring of the spread carries, from the tightest to the widest.
-    rings: [1.0, 0.9, 0.6, 0.3, 0.12, 0.05] as number[]
+    rings: [1.0, 1.0, 0.8, 0.45, 0.15, 0.05] as number[]
   }
 }
