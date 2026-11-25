@@ -1,35 +1,35 @@
 {
   "folder": "glass",
-  "pushed": "2026-11-25T19:31:14.000Z",
-  "commit": "1d54dbaf0d284df7d233afa70b7f93a14915061d",
+  "pushed": "2026-11-25T19:56:30.071Z",
+  "commit": "7cf63b385c3b79b7cfd86e6e618bd5601329658f",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Sheet page-look: approved on the left, this build on the right, draft tier, with crops of button, field.start, progressButton, type, cursor",
-      "time": "2026-11-25T19:25:11.447Z",
+      "caption": "Round 5, page tone and grain: approved home, build home, approved cursor sheet, build cursor sheet, clean patch at twice size",
+      "time": "2026-11-25T19:56:28.186Z",
       "by": "glass",
-      "from": "out/work/compare/compare-page-look.jpg"
+      "from": "out/work/report/r5-page-ab.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Sheet page-look: approved on the left, this build on the right, draft tier, with crops of button, field.start, progressButton, type, cursor",
-      "time": "2026-11-25T19:30:53.772Z",
+      "caption": "Round 5: approved Browse files, the build's Browse files, the build's waiting Continue",
+      "time": "2026-11-25T19:56:28.420Z",
       "by": "glass",
-      "from": "out/work/compare/compare-page-look.jpg"
+      "from": "out/work/report/r5-browse-continue.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Card at home, approved above and build below, after shading the slab to the approved card as measured patch by patch; Browse pill satin on a glass collar",
-      "time": "2026-11-25T19:31:12.657Z",
+      "caption": "Round 5, wells: approved left, build right, native size crop of the page-look sheet",
+      "time": "2026-11-25T19:56:28.657Z",
       "by": "glass",
-      "from": "out/work/report/glass-card-ab.jpg"
+      "from": "out/work/report/r5-wells-ab.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Page look beside the approved image at 1d54dba",
-      "time": "2026-11-25T19:31:12.887Z",
+      "caption": "Round 5, discs: approved left, build right, native size crop of the page-look sheet",
+      "time": "2026-11-25T19:56:28.894Z",
       "by": "glass",
-      "from": "out/work/report/glass-compare-page-look.jpg"
+      "from": "out/work/report/r5-discs-ab.jpg"
     }
   ]
 }
