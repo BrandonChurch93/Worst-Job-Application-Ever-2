@@ -123,7 +123,8 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
     texture2D( uDetail, q / 1.9 + vec2( e, 0.0 ) ).g - texture2D( uDetail, q / 1.9 - vec2( e, 0.0 ) ).g,
     texture2D( uDetail, q / 1.9 + vec2( 0.0, e ) ).g - texture2D( uDetail, q / 1.9 - vec2( 0.0, e ) ).g );
   float bare = step( 1.5, vInk );
-  float ink = smoothstep( 0.3, 0.7, vInk ) * ( 1.0 - bare ) * ( 1.0 - smoothstep( 0.0, 0.55, melt ) );
+  float reach = clamp( 3.7 * fwidth( vInset ), 0.5, 0.86 );
+  float ink = max( smoothstep( 0.3, 0.7, vInk ), 1.0 - smoothstep( reach - 0.05, reach + 0.03, vInset ) ) * ( 1.0 - bare ) * ( 1.0 - smoothstep( 0.0, 0.55, melt ) );
   ink *= 1.0 - uShape.x * smoothstep( 0.2, 0.34, vInset );
   float face = 1.0 - ink;
   vec3 col = mix( enamel, edge * 0.5, ink );
