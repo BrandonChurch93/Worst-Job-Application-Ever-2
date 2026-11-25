@@ -152,6 +152,8 @@ export interface PageLogic {
   states(): string[]
   tableState?(): TableState
   sheet?(id: string): SheetFrame | null
+  typing?(): boolean
+  volume?(): number
 }
 
 export type PageMaker = () => PageLogic
