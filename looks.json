@@ -1,35 +1,35 @@
 {
   "folder": "cursor-finish",
-  "pushed": "2026-11-25T21:46:59.171Z",
-  "commit": "e65d1023581c3896fd95ba3f23fc4b6c6b3116c0",
+  "pushed": "2026-11-25T22:30:12.673Z",
+  "commit": "f50c27d632687006b34a684af8e6cddcaa879769",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "The damage sheet beside the approved sheet after the hole pass: the punched hole is a cut with a tan wall and the page lit through it",
-      "time": "2026-11-25T21:46:57.223Z",
+      "caption": "Damage sheet beside the approved one, last push, draft tier",
+      "time": "2026-11-25T22:30:10.901Z",
       "by": "cursor-finish",
-      "from": "out/work/compare/compare-cursor-damage.jpg"
+      "from": "out/work/looks/files/20261125223010-damage-compare.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "The punched hole close: approved on the left, this build on the right",
-      "time": "2026-11-25T21:46:57.508Z",
+      "caption": "Acting sheet beside the approved one, last push, draft tier",
+      "time": "2026-11-25T22:30:11.155Z",
       "by": "cursor-finish",
-      "from": "out/work/crops/pair-punched.jpg"
+      "from": "out/work/looks/files/20261125223011-acting-compare.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "The acting sheet beside the approved sheet: the laser hole has a tight crust and thin smoke from the hole",
-      "time": "2026-11-25T21:46:57.805Z",
+      "caption": "The arrow in step1-fire at 70 px, approved left, this build right, review tier",
+      "time": "2026-11-25T22:30:11.403Z",
       "by": "cursor-finish",
-      "from": "out/work/compare/compare-cursor-acting.jpg"
+      "from": "out/work/looks/files/20261125223011-fire-pair.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "The arrow at the keyboard hit, review tier, on the right: the body stays white in the glow, the hole is still a ring",
-      "time": "2026-11-25T21:46:58.148Z",
+      "caption": "Angry close, approved left, this build right, draft tier",
+      "time": "2026-11-25T22:30:11.655Z",
       "by": "cursor-finish",
-      "from": "out/work/crops/pair-fire.jpg"
+      "from": "out/work/looks/files/20261125223011-angry-pair.jpg"
     }
   ]
 }
