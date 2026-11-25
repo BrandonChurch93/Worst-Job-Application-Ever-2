@@ -34,15 +34,15 @@ Status 3, 2026-11-25T06:17Z, Phase 0.
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 0, tick 10 at 2026-11-25T06:17:30Z, allowance: build
-time used in this phase: 0.75 h of its box of 3.00 h
-time used under the allowance in force: 0.75 h of 36.00 h allowed
-time used: 0.75 of 36.00 hours before the review
+clock: phase 0, tick 11 at 2026-11-25T06:22:17Z, allowance: build
+time used in this phase: 0.83 h of its box of 3.00 h
+time used under the allowance in force: 0.83 h of 36.00 h allowed
+time used: 0.83 of 36.00 hours before the review
 extra rounds: yes
 half point: not reached
 box end: not reached
 budget report: not due
-minutes since the last status: 0
+minutes since the last status: 4
 ```
 
 ## Phases
@@ -143,15 +143,16 @@ All MEASURED on 2026-11-25 from `package.json` and `package-lock.json` after a c
 | `@types/three` | 0.187.0 | Types for it | MIT |
 | `gsap` | 3.15.1 | Easing | GSAP standard licence, free for this use |
 | `@dimforge/rapier2d-deterministic-compat` | 0.21.0 | The pinball physics, first try. See the physics test below | Apache-2.0 |
-| `opentype.js` | 2.0.0 | Reads font outlines, so type is geometry and never a picture | MIT |
 | `vite` | 8.3.8 | The build | MIT |
 | `typescript` | 7.0.2 | Type checking, strict | Apache-2.0 |
 | `vitest` | 4.1.12 | Unit tests | MIT |
 | `playwright-core` | 1.59.1 | Drives the headless browser already in the workspace. It never downloads a browser | Apache-2.0 |
 | `sharp` | 0.35.5 | Harness only: resizing, crops, comparison images, PSNR | Apache-2.0 |
 | `@types/node` | 20.19.25 | Types for the harness | MIT |
-| `@fontsource/inter` | 5.3.0 | Source of the Inter font files. Build time only | OFL-1.1 |
 | `@fontsource/playfair-display` | 5.3.0 | Source of the Playfair Display font files. Build time only | OFL-1.1 |
+| Inter 4.1 (not a package) | 4.1 | Source of the Inter font files: the official release archive, sha256 `9883fdd4a49d4fb66bd8177ba6625ef9a64aa45899767dde3d36aa425756b11e`. Build time only | OFL-1.1 |
+| fonttools (Python, build time) | 4.68.0 | Reads the outlines in `pipeline/fonts/bake_fonts.py` | MIT |
+| uharfbuzz (Python, build time) | 0.57.0 | Reads the kerning between every pair in the same script | Apache-2.0 |
 
 - Browser: Chrome for Testing 147.0.7727.15, the headless shell build already in this workspace at `~/.cache/ms-playwright/chromium_headless_shell-1217/`. `playwright-core` 1.59.1 names revision 1217 as its own browser, so driver and browser match and nothing is downloaded. `tools/lib/browser.mjs` finds it, or takes a path from `WJA_BROWSER`. A second browser, Chromium 156.0.8078.48 at `/opt/pplx-chromium/chrome`, is in the workspace and is not used by the harness.
 - Node v20.20.2, npm 10.8.2, ffmpeg 8.0.1.
@@ -170,7 +171,8 @@ All MEASURED on 2026-11-25 from `package.json` and `package-lock.json` after a c
   - Inter, for every word of the site's interface and pages. SIL Open Font License 1.1. Chosen because the approved page images show a plain, even, modern sans with open shapes, and Inter's numerals and punctuation hold at the small sizes of field labels.
   - Playfair Display, weights 700 and 900, for the signs and the marquee of the pinball machine. SIL Open Font License 1.1. Chosen after looking at `references/approved/table-wide.png` and `tier-office.png`: the machine's printed words are a serif with strong thick and thin strokes, and this family has the weight for a backlit sign.
   - A dot matrix face is added only if the machine's displays fall back from built dots to type. Until then none is in the repo.
-  - The font files are copied from the two packages into `public/fonts/` and listed in `ASSETS.md` under "Third-party files" before the site uses them.
+  - Decision, 2026-11-25: type is baked to JSON outlines at build time by `pipeline/fonts/bake_fonts.py`, and the site reads only those files. MEASURED: `opentype.js` 2.0.0 threw on one of Inter's feature tables and does not read kerning that sits in extension lookups, which is where Inter keeps it. The baked files hold each glyph's outline, its advance and every kerning pair as the shaping engine itself gives them (checked: "To" -160, "AV" -147, "Yo" -179 font units). `opentype.js` and `@fontsource/inter` were removed. Nothing that ships depends on Python.
+  - Baked files, in `public/fonts/`: `inter-400.json`, `inter-500.json`, `inter-600.json`, `inter-display-600.json` (373 glyphs each, with the infinity sign, the arrow and the check mark the copy uses), `playfair-700.json`, `playfair-900.json` (213 glyphs each), and the two licence texts. About 190 KB each, 44 to 50 KB compressed. Listed in `ASSETS.md` under "Third-party files". Recipe: `assets-src/fonts/RECIPE.md`.
 
 ## Render budget
 

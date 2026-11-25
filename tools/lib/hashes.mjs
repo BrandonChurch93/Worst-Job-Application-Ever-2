@@ -84,7 +84,7 @@ export function approvedFiles(root) {
 export function versions(root) {
   const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'))
   const out = {}
-  for (const name of ['three', 'gsap', '@dimforge/rapier2d-deterministic-compat', 'opentype.js', 'vite', 'typescript']) {
+  for (const name of ['three', 'gsap', '@dimforge/rapier2d-deterministic-compat', 'vite', 'typescript']) {
     out[name] = (pkg.dependencies && pkg.dependencies[name]) || (pkg.devDependencies && pkg.devDependencies[name]) || 'unknown'
   }
   return out
