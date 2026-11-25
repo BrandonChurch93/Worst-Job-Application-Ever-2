@@ -92,7 +92,7 @@ describe('the register', () => {
 
 describe('the register of this repo', () => {
   const reg = JSON.parse(fs.readFileSync(path.join(root, 'parts/PARTS.json'), 'utf8'))
-  const found = scan(root, parseAst)
+  const found = scan(root, parseAst) as { flags: Record<string, string[]>; templates: { file: string; parts: string[] }[] }
   it('finds the flags the pages are known to carry', () => {
     for (const n of ['shell', 'type', 'opening', 'boss-body', 'flippers', 'model-beach', 'cursor-body', 'keyboard']) expect(found.flags[n]?.length, n).toBeGreaterThan(0)
     expect(found.flags['boss-body']).toEqual(['src/boss/body.ts'])
