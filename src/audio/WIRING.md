@@ -1,6 +1,6 @@
 # Wiring the sound engine into the site
 
-`src/main.ts` is not the sound builder's file. This is what it needs. Nothing here is applied.
+`src/main.ts` is not the sound builder's file. This is what the engine expects of it. The Builder wired it on main at f28f064, and `npm run sound -- --check` measures the result in a browser.
 
 ```ts
 if (mode !== 'capture') {

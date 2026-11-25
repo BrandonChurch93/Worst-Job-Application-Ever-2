@@ -1,9 +1,8 @@
 import { config } from '../config'
 import type { CursorPose } from '../cursor/body'
-import { pages } from '../pages'
 import { homePose } from '../stage/camera'
 import type { Frame } from '../stage/stage'
-import type { CameraPose, DrawList } from '../stage/types'
+import type { CameraPose } from '../stage/types'
 import { CURSOR_BOX, cursorAt, fireScene, LOOP_SECONDS, type Threat } from './fire'
 import type { Box, FilmPiece } from './piece'
 
@@ -45,11 +44,8 @@ export function threatOf(threats: Threat[], cursor: Box): Box | null {
 
 export function makeLoop(): LoopPiece {
   const frameCount = Math.round(loop.seconds * fps)
-  const page = pages.step1!()
-  page.reset({ mode: 'film', variant: '', applicant: null, seed: config.seed })
-  const base: DrawList = []
-  page.draw(base)
   const pose = homePose(0)
+  const size = { width: 1920, height: 1080 }
   const timeOf = (index: number): number => {
     const i = ((index % frameCount) + frameCount) % frameCount
     return i / fps
@@ -58,12 +54,12 @@ export function makeLoop(): LoopPiece {
   return {
     frameCount,
     seconds: loop.seconds,
-    size: { width: page.width, height: 1080 },
+    size,
     scene: loop.candidates[0]!,
     frame(index: number): Frame {
       const time = timeOf(index)
       const scene = fireScene(time / LOOP_SECONDS)
-      return { list: [...base, ...scene.list], cursor: cursorAt(time), turn: 0, scroll: 0, page: 'loop', view: null }
+      return { list: scene.list, cursor: cursorAt(time), turn: 0, scroll: 0, page: 'loop', view: null }
     },
     pose: (): CameraPose => pose,
     state(index: number) {

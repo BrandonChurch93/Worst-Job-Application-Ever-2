@@ -102,6 +102,11 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
   skip.hidden = true
   press(skip, () => api.skip())
 
+  live.addEventListener('wheel', (e) => {
+    e.preventDefault()
+    api.canvas.dispatchEvent(new WheelEvent('wheel', { deltaX: e.deltaX, deltaY: e.deltaY, deltaMode: e.deltaMode, clientX: e.clientX, clientY: e.clientY, bubbles: true, cancelable: true }))
+  }, { passive: false })
+
   const surface = el('div', css.surface, root)
   const offer = el('div', css.offer, surface)
   offer.setAttribute('aria-hidden', 'true')
@@ -165,6 +170,7 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
     ? makeQualityPicker(levels, auto ? { start: levels.some((l) => l.id === api.quality.level()) ? api.quality.level() : undefined } : { fixed: api.quality.level() })
     : null
 
+  let picked = picker ? picker.level() : ''
   const menu = mountMenu(root, api, (level) => picker?.pin(level))
 
   listen('keydown', (e) => {
@@ -239,7 +245,11 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
         }
         if (picker && !picker.pinned()) {
           const level = picker.frame(api.frameSeconds())
-          if (level !== api.quality.level()) api.quality.set(level)
+          if (level !== picked) {
+            picked = level
+            const ids = api.quality.levels
+            if (ids.indexOf(level) > ids.indexOf(api.quality.level())) api.quality.set(level)
+          }
         }
         menu.update()
       } else if (m === 'film') {

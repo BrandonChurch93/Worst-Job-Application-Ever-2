@@ -1,0 +1,13 @@
+diff --git a/src/main.ts b/src/main.ts
+index 3461e89..5f1111c 100644
+--- a/src/main.ts
++++ b/src/main.ts
+@@ -29,7 +29,7 @@ const MODES = ['live', 'film', 'loop', 'capture', 'probe']
+ const PLAY: PlayMode[] = ['live', 'film', 'loop']
+ const ROW = { x0: 128, x1: 700, y1: 56 }
+ const params = new URLSearchParams(location.search)
+-const mode = params.get('mode') ?? 'live'
++const mode = params.get('mode') ?? (lessMotion() && !touchOnly() && !params.get('bot') ? 'film' : 'live')
+ const canvas = document.getElementById('stage') as HTMLCanvasElement
+ const host = document.getElementById('controls') as HTMLElement
+ const app = new App()

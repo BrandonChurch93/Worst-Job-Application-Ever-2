@@ -150,7 +150,7 @@ async function run() {
       await session.page.evaluate(async ([m, n, t]) => {
         window.showcase.setDiagnostic('beauty')
         if (m === 'loop') await window.showcase.renderLoopFrame(n, t)
-        else await window.showcase.renderOpeningFrame(n)
+        else await window.showcase.renderOpeningFrame(n, t)
       }, [mode, frame, tier])
       tiles.push({ png: await readCanvas(session.page), label: `${timeLabel(frame, fps)}  ${mode === 'loop' ? `the loop, ${got.value.scene}` : 'the opening'}  frame ${frame}` })
     }
