@@ -1,35 +1,35 @@
 {
   "folder": "damage",
-  "pushed": "2026-11-25T19:31:24.554Z",
-  "commit": "f3d50d4397dc9d25bc8e5fcf55f4c97246ad8360",
+  "pushed": "2026-11-25T19:49:32.328Z",
+  "commit": "e2f1a4a9719192173a6a426c36edbea930c97855",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still sheet-cursor-damage-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-25T19:28:19.436Z",
+      "caption": "Still sheet-cursor-acting-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T19:46:49.541Z",
       "by": "damage",
-      "from": "out/work/stills/sheet-cursor-damage-hd-draft.png"
+      "from": "out/work/stills/sheet-cursor-acting-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
       "caption": "Still sheet-cursor-acting-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-25T19:31:07.962Z",
+      "time": "2026-11-25T19:47:44.276Z",
       "by": "damage",
       "from": "out/work/stills/sheet-cursor-acting-hd-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Damage sheet at f3d50d4: approved on top, build below. Even ribbons with square ends, strips side by side under three tapes, bore wall",
-      "time": "2026-11-25T19:31:22.799Z",
+      "caption": "Damage sheet at 9e32148, approved above, build below: pile in its cell, reassembled as an arrow under three tapes, lit bore with a wall, finer cracks",
+      "time": "2026-11-25T19:49:30.966Z",
       "by": "damage",
-      "from": "out/work/c/send/dmg3.jpg"
+      "from": "out/work/c/send/dmg5.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Acting sheet at f3d50d4: approved on top, build below. Scared keeps a thin dark rim",
-      "time": "2026-11-25T19:31:23.100Z",
+      "caption": "Acting sheet at e2f1a4a, approved above, build below: heat tight and red at the tip, larger drops, scared keeps its rim, laser hole rim glows",
+      "time": "2026-11-25T19:49:31.185Z",
       "by": "damage",
-      "from": "out/work/c/send/act3.jpg"
+      "from": "out/work/c/send/act6.jpg"
     }
   ]
 }
