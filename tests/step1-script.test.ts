@@ -2,8 +2,9 @@ import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
 import { pages } from '../src/pages'
 import { DECK } from '../src/pages/step1/keyboard'
-import { GLYPH, SLOT, ZONE } from '../src/pages/step1/layout'
-import { FIRST, makePlan, pointerAt } from '../src/pages/step1/script'
+import { FIELD_X, GLYPH, SLOT, ZONE } from '../src/pages/step1/layout'
+import { CAMERA, FIRST, makePlan, pointerAt } from '../src/pages/step1/script'
+import { HEADER } from '../src/shell/parts'
 import { projectPage } from '../src/stage/camera'
 import { filmFlow, filmOptions, ScriptDriver, Stage, type DrawList } from '../src/stage/stage'
 
@@ -207,6 +208,24 @@ describe('step 1: the script of the film', () => {
         expect(Math.min(on.x, 1920 - on.x, on.y, 1080 - on.y)).toBeGreaterThan(40)
       }
     }
+  })
+
+  it('holds the tug frame clear of the field column, with the label of the drop zone whole', () => {
+    const page = film().page
+    let gutter = Infinity
+    let label = Infinity
+    for (let now = CAMERA.in[1]; now <= CAMERA.out[0]; now += 0.05) {
+      const cam = page.camera('film', now)!
+      for (const y of [ZONE.y, ZONE.y + ZONE.h]) {
+        gutter = Math.min(gutter, projectPage(cam, FIELD_X, y, 0).x - 1920)
+        expect(projectPage(cam, FIELD_X - 6, y, config.scale.heights.card).x, now.toFixed(2)).toBeGreaterThan(1920)
+        expect(projectPage(cam, ZONE.x + ZONE.w, y, 0).x, now.toFixed(2)).toBeLessThan(1920 - 40)
+      }
+      const top = projectPage(cam, ZONE.x, HEADER.contentY, 0).y
+      label = Math.min(label, top)
+      expect(top, now.toFixed(2)).toBeGreaterThan(16)
+    }
+    console.log(`tug frame: the field column starts ${gutter.toFixed(0)} px outside the right edge, the label of the drop zone ${label.toFixed(0)} px under the top edge`)
   })
 
   it('draws the upload glyph above the prompt of the drop zone until the resume is received', () => {

@@ -272,9 +272,10 @@ export function pointerAt(plan: Plan, time: number): Pointer {
   return { x: s.x0 + (s.x1 - s.x0) * u + s.side * bulge, y: s.y0 + (s.y1 - s.y0) * u - s.arc * bulge, down }
 }
 
-// The film camera in the tug: a window of the page for a moment. It pushes in to the whole drop zone with the slot, the rollers and the strips under the hood, and holds there through the key picture at 25.125. No closer: under about 850 px of page the frame has less fine detail than the approved image.
-const TUG_WIDE = { x: ZONE.x + ZONE.w / 2 - 600, y: SLOT.cy - 574, w: 1200, h: 675 }
-const TUG_CLOSE = { x: ZONE.x + ZONE.w / 2 - 464, y: ZONE.y - 34, w: 928, h: 522 }
+// The film camera in the tug: a window of the page for a moment. It pushes in to the whole drop zone with the slot, the rollers and the strips under the hood, and holds there through the key picture at 25.125. Its right edge stays in the gutter before the field column, so no label or field of that column is cut by the frame, and the label of the drop zone is whole. No closer: under about 850 px of page the frame has less fine detail than the approved image.
+const TUG_EDGE = FIELD_X - 16
+const TUG_WIDE = { x: TUG_EDGE - 1000, y: ZONE.y - 46, w: 1000, h: 562.5 }
+const TUG_CLOSE = { x: TUG_EDGE - 928, y: ZONE.y - 46, w: 928, h: 522 }
 export const CAMERA = { in: [21.1, 22.1] as [number, number], push: 2.7, out: [27.6, 28.9] as [number, number] }
 
 export function filmCamera(time: number): CameraPose {
