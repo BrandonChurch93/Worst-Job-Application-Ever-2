@@ -610,3 +610,87 @@ LETTERING: no words, letters or numbers anywhere in the image, and nothing that 
 NOT IN THE IMAGE: no people, no hands, no faces; no cabinet, no legs, no room, no floor, no sheet of glass; no fog, no smoke, no haze, no lens flare; no second ball; not a cartoon, not an illustration, not a toy train set.
 ```
 
+### G9 · The lobby doors
+
+- File: `references/drafts/round-6/G9-lobby-doors.png`
+- Model: `seedream_5`
+- Takes made: 3 of 3 allowed. Kept: take 2.
+- Reference images passed in, in order: `references/drafts/round-6/G3-tier-corporate.png` (the kept take of G3, the tier the shot is in, passed first); `references/drafts/round-6/G7-clear-ball.png` (the kept G7, passed second); No layout guide was passed: `references/guides/round-6/` has none for this view.
+
+Takes:
+
+- Take 1. The revolving door came out as a pinwheel: flat blades round a hub on a post. `Corporate HQ` spelled right. Judge: "A frame from a top-budget film", then named things. Failed.
+- Take 2 (prompt changed: the revolving door described as a small hotel revolving door, four upright clear panes on one upright brass shaft with a round base plate and cap). Judge: "it most resembles a frame from a top-budget film", then named six things. Failed. Kept as the best of three: the tower fills the top of the frame, the doors are shut, both domes are lit, the sign is right and the door reads as a revolving door from the front.
+- Take 3 (prompt changed: the door standing across the left half of the carpet with a flat disc canopy, strong spin blur on its panes, the cursor pure white and pressed face-on against the far wall of the ball). The door's upper panes came out as tilted wings and the tower no longer fills the top of the frame. Judge: "Most likely a frame from a top-budget film", then named things. Failed.
+
+The judge's answer on the kept take:
+
+> Answer for picture-0902.png (I opened it and inspected zoomed crops).
+>
+> What the image shows: a close, low-angle view of a miniature "Corporate HQ" building façade (brushed steel, lit glass windows, brass double doors), a red carpet with gold edging running to the doors, a clear glass ball with a mouse-cursor arrow embedded inside sitting on the carpet, two white globe lamps on metal bases, a brass post with clear acrylic wings (a revolving-door style spinner) on the left, and a dark blue marble floor with gold inlay lines.
+>
+> Question 1 – which is it most likely?
+> Of the five options, it most resembles a frame from a top-budget film (a high-end CG or miniature-set shot). Reasons:
+> - Cinematic macro look: shallow depth of field, film grain, warm practical lighting, anamorphic-style softness at the edges.
+> - Materials are rendered convincingly: brushed metal, brass wear, carpet pile, a refraction caustic under the glass ball, bubbles in the glass, clean legible sign lettering.
+> - It is not a pinball game screenshot in any visible sense: no score, HUD, flippers, plunger, or playfield overview, and the camera is a staged beauty angle rather than a play view.
+> - It does not read as a textbook picture (no labels or diagram purpose), and it is too specific and stylized for typical stock.
+> - It is well above amateur generated art in coherence, though I cannot rule out that it was machine-generated; a few geometry oddities (below) are the kind that appear in generated images.
+>
+> Question 2 – could a ball travel every lane and ramp visible?
+> No. Only one path is clearly traversable: the red carpet lane, and even that dead-ends. Things that could not work or do not connect:
+> - The brass doors at the end of the carpet are closed, hinged double doors with handles and a brass frame and sill. There is no scoop, hole, or opening, so the lane terminates at a wall. The ball also looks wider than a single door leaf, so it would need both leaves open to pass.
+> - The acrylic spinner on the left is inconsistent. The two near wings are vertical, but the upper-left one is a flat horizontal slab, like a shelf attached to the top of the post, and the upper-right one also looks like a flat canopy. Those would not work as spinner blades. The near wings also reach almost to the floor, so they would drag, and the spinner sits beside the carpet rather than across a lane, so the ball would at most clip a wing tip.
+> - The gold lines on the blue floor are flush inlay, not rails or walls. Nothing keeps a ball on any particular lane; off the carpet it is just open floor.
+> - The blurred structures at far left (stacked horizontal rails or steps, with a vertical clear panel in front) and at far right are not readable as continuous ramps. I can see no entrance or exit joining them to the carpet or floor, and the left one looks like stair treads, which a ball could not climb. They are out of focus, so I cannot say for certain what they are.
+> - I see no actual ramp anywhere in the frame; the carpet appears flat.
+> - Minor: the left globe lamp is tucked behind the spinner against the door frame where a ball could hardly reach it; the right lamp sits in open floor and could act as a bumper. The ball itself is glass with an off-centre solid arrow inside, on plush carpet, so it would roll slowly and unevenly compared with a steel pinball.
+>
+> Uncertain points: exact ball-to-door size ratio (perspective makes it approximate) and the identity of the out-of-focus background structures.
+
+Judge result: FAILED. First answer: "a frame from a top-budget film", not a game screenshot (STATED). Under the narrow reading of the question's first option that is not the first answer; under the wide reading (game screenshot or film frame as one option) it is. See the choices at the end. Second answer: six things named, which fails under either reading. Kept at the limit of three takes.
+
+What the kept take misses (MEASURED on the file unless marked):
+
+- The judge did not read it as a pinball game: "no score, HUD, flippers, plunger, or playfield overview" (STATED). Nothing in the frame but the ball says pinball.
+- The cursor is not flat against the wall of the ball. It floats upright in the middle of the ball, pointing up and to the left, and is not squashed.
+- The ball shows no sign of having just hit the doors. It rests on the carpet in front of the right-hand door leaf, a little right of the doors' centre line.
+- Cursor colour (MEASURED). The arrow's face is a warm off-white, mean RGB about (239, 233, 225), lit by the lobby. Its edge is dark, as asked.
+- Revolving door. It is almost sharp, with only a little blur on its right pane, so it does not read as still spinning. Its two near panes stand upright; its upper left pane lies flat like a shelf at the top of the shaft, and its upper right pane also reads as a flat canopy (STATED by the judge; I see the same). The near panes reach almost to the board. It stands beside the carpet, not across it.
+- The left flasher dome is behind the revolving door's pane and is seen through it. Both domes are lit.
+- The ball looks wider than one door leaf (STATED by the judge, who notes that perspective makes this approximate).
+- At the far left, out of focus, stacked horizontal rails or steps with an upright clear panel in front of them; at the far right, more blurred structure. Neither can be read as a lane or a ramp (STATED by the judge).
+- The carpet lane ends at shut doors with no hole or scoop. That is the moment the brief asks for, and the judge names it as a dead end.
+- Frame. Neither the aluminum rail nor the ceramic border is in the picture.
+- Words (MEASURED at full size): `Corporate HQ`, spelled right, in raised steel letters on the lintel over the doors. No other letters or numbers found.
+
+Full prompt of the kept take:
+
+```text
+A frame from a finished commercial 3D pinball video game with photoreal graphics, in its low dramatic replay camera. It looks exactly like a close photograph taken inside a real, physical pinball machine. 16:9.
+
+REFERENCE IMAGE 1 is the top tier of this pinball table seen from straight above. This shot is taken inside that same tier, low down, at its top centre, so its parts are the same parts: the same glass and steel tower, the same pair of lobby doors in polished gold frames, the same two white globe flasher domes, one each side of the doors, the same red carpet, the same revolving door, which is a small hotel revolving door: four upright clear panes on an upright brass shaft, the same midnight navy marble playfield with fine gold inlay under a glossy clear coat. REFERENCE IMAGE 2 shows the ball of this game three times: a clear acrylic ball with a white arrow cursor sealed inside it. Use it for how the ball and the cursor look, above all its third view, where the cursor is thrown flat against the inside wall. This image has exactly one ball.
+
+THE SHOT: the camera is low, just above the red carpet, at the foot of the short carpet ramp, looking up the carpet at the doors of the tower. A wide lens close to the ground.
+
+FOREGROUND: the revolving door, large, in the lower left of the frame, standing on the board at the left edge of the carpet, clear of the lobby doors behind it. It is built exactly like the revolving door of a hotel, at the scale of the ball: one upright brass shaft, as tall as two and a half balls, standing straight up from a flat round brass plate on the board, with a flat round brass cap on its top. Four tall upright rectangular panes of clear acrylic with thin chrome edges are fixed to the shaft along their inner edges, at right angles to one another, so that seen from above they make a plus sign. Each pane stands on end like a door: its bottom edge is just above the board and its top edge is level with the cap. The whole thing turns round its upright shaft the way a turnstile or a revolving door turns: the panes sweep round sideways, level with the board. It is still spinning from the ball's pass: the four panes are smeared sideways into a soft, glassy drum of motion blur round the shaft, and the brass shaft, cap and base plate are sharp. It is not a fan, not a propeller, not a windmill and not a pinwheel: no blades radiate from the top of a post.
+
+THE CARPET: a strip of deep red running up a short ramp from the camera to the doors, with a thin gold edge each side. Either side of it, navy marble playfield with gold inlay lines, glossy, reflecting the lamps.
+
+THE DOORS: at the top of the carpet, the pair of lobby doors: two tall glass panels in polished gold frames, glowing warm from inside. They have just slammed shut. They are tight together with no gap between them.
+
+THE BALL: the clear acrylic ball is pressed against the shut doors at their middle, at carpet level, stopped dead by them. It is about one tenth of the frame's width across. Inside it the cursor, a solid white enamel arrow with a black edge, has been thrown forward and lies squashed flat against the inside wall of the ball on the side nearest the doors, spread against the acrylic like a thing thrown against a window. The arrow is plain to see through the clear acrylic. A few beads of sweat on the inside of the acrylic. Crisp white highlights from the two domes on the ball. The cursor is only an arrow: no face, no eyes, no limbs.
+
+THE DOMES: one each side of the doors, standing on the board at carpet level: two white flasher domes, round frosted globes on chrome bases, both lit at full brightness, throwing cold white light over the doors, the ball and the carpet, with sharp reflections in the clear coat.
+
+THE TOWER: above the doors the tower rises and fills the whole top of the frame from side to side: floor upon floor of glass and steel with lit, empty office windows, seen from below, its top cut off by the top edge of the frame. Across the steel lintel directly above the doors, one wide brushed steel sign plate with large clean raised letters: "Corporate HQ".
+
+LIGHT: cold white and gold. The two domes are the brightest things in the frame. Warm gold from the lobby behind the doors. Deep navy shadows, rich contrast, glossy reflections. The air is clean.
+
+FOCUS: the doors, the ball, the domes and the sign are sharp. Only the spinning vanes are blurred, by their own motion.
+
+LETTERING: the only words in the image are "Corporate HQ", once, on the plate over the doors, spelled exactly like that: C-o-r-p-o-r-a-t-e, then H-Q. No other letters or numbers anywhere.
+
+NOT IN THE IMAGE: no people, no hands, no faces, no figures in the windows; no cabinet, no legs, no room, no floor, no sheet of glass over the playfield; no fog, no smoke, no haze, no dust, no lens flare; no second ball; not a cartoon, not an illustration, not a diorama.
+```
+
