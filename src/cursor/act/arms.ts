@@ -99,7 +99,7 @@ class Limb {
     const across = Math.min(1, Math.max(0, (-this.side * dx - 6) / 10))
     const z0 = from.z + across * (over + ARM.radius * 0.6 - from.z)
     if (across > 0) this.c.z = Math.max(this.c.z, z0 + across * (ARM.radius + 2 + Math.max(0, over - to.z) * 0.6))
-    const thin = Math.max(0.78, Math.sqrt(Math.min(1, ARM.rest / d))) * (1 - 0.14 * strain)
+    const thin = Math.max(0.9, Math.sqrt(Math.min(1, ARM.rest / d))) * (1 - 0.14 * strain)
     const pos = d3.position.array as Float32Array
     const nor = d3.normal.array as Float32Array
     let k = this.slot * RINGS * RING * 3
@@ -139,13 +139,13 @@ class Limb {
     this.basis.makeBasis(this.n1, this.t, this.n2)
     this.hand.quaternion.setFromRotationMatrix(this.basis)
     this.hand.position.copy(to)
-    const size = (0.25 + 0.75 * Math.min(1.15, Math.max(0, grown))) * HAND_SCALE
+    const size = (0.25 + 0.75 * Math.min(1.15, Math.max(0, grown))) * HAND_SCALE * (1 + FIST * grip)
     this.hand.scale.setScalar(size)
     for (const f of this.fingers) {
       const splay = f.open + (f.shut - f.open) * grip
       f.base.position.set(f.x, f.y, f.thumb ? -0.4 * grip : 0)
-      f.base.rotation.set(f.thumb ? -0.9 * grip : -1.25 * grip - 0.08, f.thumb ? -0.5 * grip * this.side : 0, splay)
-      f.tip.rotation.x = f.thumb ? -0.9 * grip - 0.1 : -1.45 * grip - 0.12
+      f.base.rotation.set(f.thumb ? -0.9 * grip : -1.1 * grip - 0.08, f.thumb ? -0.5 * grip * this.side : 0, splay)
+      f.tip.rotation.x = f.thumb ? -0.9 * grip - 0.1 : -1.25 * grip - 0.12
     }
     this.hand.updateMatrixWorld(true)
     d3.palms.setMatrixAt(this.slot, this.palm.matrixWorld)
@@ -158,6 +158,8 @@ class Limb {
 }
 
 const HAND_SCALE = 1.18
+// A clenched fist bulges: without this a closed hand is half the size of an open one and is lost on the sheet it holds.
+const FIST = 0.4
 
 interface Draw { position: THREE.BufferAttribute; normal: THREE.BufferAttribute; palms: THREE.InstancedMesh; cuffs: THREE.InstancedMesh; joints: THREE.InstancedMesh }
 
