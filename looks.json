@@ -1,35 +1,35 @@
 {
   "folder": "harness",
-  "pushed": "2026-11-25T09:07:33.581Z",
-  "commit": "d82a1915fba112a7e47cae7d44696cbc3c8e30ef",
+  "pushed": "2026-11-25T09:26:14.225Z",
+  "commit": "a8d14ef0d3c0556dd687bd57c69811e2b7e8195d",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "sheet --beat step1.firstName: 12 frames across the beat, labels under the pictures (stub pages)",
-      "time": "2026-11-25T09:07:31.719Z",
+      "caption": "npm run stress, the boss fight: frame 7290 as rendered, at 20 Mbps and at 5 Mbps, whole frame above and its own pixels below",
+      "time": "2026-11-25T09:26:12.395Z",
       "by": "harness",
-      "from": "out/work/sheets/sheet-beat-step1_firstName-preview-draft.jpg"
+      "from": "out/work/stress/stress-boss-hd-draft.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "sheet --motion hit: the frame found from the events of filmState, 12 frames in a row round it",
-      "time": "2026-11-25T09:07:31.957Z",
+      "caption": "npm run stress, a page at rest: step 2 at 0:47, as rendered, 20 Mbps and 5 Mbps, with the grain in its own pixels below",
+      "time": "2026-11-25T09:26:12.627Z",
       "by": "harness",
-      "from": "out/work/sheets/sheet-motion-hit-preview-draft.jpg"
+      "from": "out/work/stress/stress-rest-hd-draft.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "sheet --pages: the six pages at rest",
-      "time": "2026-11-25T09:07:32.196Z",
+      "caption": "npm run seq --first 7286 --last 7291: one of six numbered frames of the boss fight, draft tier, preview",
+      "time": "2026-11-25T09:26:12.869Z",
       "by": "harness",
-      "from": "out/work/sheets/sheet-pages-preview-draft.jpg"
+      "from": "out/work/seq/frame-007288-preview-draft.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "sheet --live: the live site's path with the bot keen driving and a stepped clock",
-      "time": "2026-11-25T09:07:32.441Z",
+      "caption": "npm run sheet --unit boss, sheet 2 of 3: 12 frames from 1:59.97 to 2:10.00, draft tier",
+      "time": "2026-11-25T09:26:13.099Z",
       "by": "harness",
-      "from": "out/work/sheets/sheet-live-keen_20261124-preview-live.jpg"
+      "from": "out/work/sheets/sheet-unit-boss-2of3-preview-draft.jpg"
     }
   ]
 }
