@@ -44,6 +44,7 @@ const body = /* glsl */ `
 	}
 	wjlCut = max( wjlCut, 0.0 );
 	float wjlUp = max( wjlP.z, 0.0 );
+	float wjlShine = 1.0 - smoothstep( 0.9, 0.995, wjlN.z ) * ( 1.0 - smoothstep( 4.0, 16.0, wjlUp ) );
 	IncidentLight wjlLight;
 	wjlLight.visible = true;
 	vec3 wjlField = vec3( 0.0 );
@@ -70,7 +71,17 @@ const body = /* glsl */ `
 		amount *= ( dot( low, low ) + ${(BODY * BODY).toFixed(1)} ) / ( dot( to, to ) + ${(BODY * BODY).toFixed(1)} );
 		wjlLight.direction = normalize( ( viewMatrix * vec4( to, 0.0 ) ).xyz );
 		wjlLight.color = c * amount * PI;
+		vec3 wjlGloss = reflectedLight.directSpecular;
+		#ifdef USE_CLEARCOAT
+		vec3 wjlCoat = clearcoatSpecularDirect;
+		#endif
 		RE_Direct( wjlLight, geometryPosition, geometryNormal, geometryViewDir, geometryClearcoatNormal, material, reflectedLight );
+		if ( at.w > 1.5 ) {
+			reflectedLight.directSpecular = mix( wjlGloss, reflectedLight.directSpecular, wjlShine );
+			#ifdef USE_CLEARCOAT
+			clearcoatSpecularDirect = mix( wjlCoat, clearcoatSpecularDirect, wjlShine );
+			#endif
+		}
 	}
 	wjlField += wjlFill * ( 0.5 + 0.5 * wjlN.z );
 	reflectedLight.directDiffuse += wjlField * material.diffuseColor;
