@@ -64,6 +64,8 @@ export class Kit {
   private flips: boolean[] = []
   private flip = false
   private v = new THREE.Vector3()
+  // How far the normals of what follows lean up, so that upright cloth takes the light from above as a soft thing does.
+  up = 0
 
   get triangles(): number {
     return this.p.length / 9
@@ -98,6 +100,10 @@ export class Kit {
     this.v.set(a[0], a[1], a[2]).applyMatrix4(this.m)
     this.p.push(this.v.x, this.v.y, this.v.z)
     this.v.set(n[0], n[1], n[2]).transformDirection(this.m)
+    if (this.up > 0 && this.v.z > -0.5) {
+      this.v.z += this.up
+      this.v.normalize()
+    }
     this.n.push(this.v.x, this.v.y, this.v.z)
     this.c.push(col[0], col[1], col[2])
     this.s.push(surf[0], surf[1], surf[2])

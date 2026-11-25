@@ -6,7 +6,7 @@ import { hex, Kit, matsOf, meshOf, shade, SURF, type V2, type V3 } from './kit'
 
 const C = {
   red: hex(0x5e1219),
-  plate: hex(0x521016),
+  plate: hex(0x3d0c11),
   steel: hex(0x7c8187),
   chrome: hex(0x8d9298),
   rubber: hex(0x222223),
@@ -80,7 +80,7 @@ function body(k: Kit, f: Frame): void {
     return out
   }
   k.poly(strip(3, L - 3, -2.2), 0, 1.6, C.rubber, SURF.rubber, 0.3)
-  k.poly(strip(0, L, 0), 1.4, 3.2, C.steel, SURF.brushed, 1.2)
+  k.poly(strip(0, L, -1.2), 1.4, 3.2, C.steel, SURF.brushed, 1.2)
   k.poly(strip(18, L - 30, -5), 4.4, 0.7, shade(C.steel, 0.8), SURF.brushed, 0.4)
   k.box(L - 15, 0, 4.4, 20, 20, 1.1, C.chrome, SURF.chrome, 0.4)
   for (const y of [-3.2, 3.2]) k.box(L - 14, y, 5.5, 9, 2.4, 0.25, C.dark, SURF.steel, 0)
@@ -116,7 +116,7 @@ function arm(k: Kit, f: Frame): void {
     for (let i = 0; i <= n; i++) {
       const a = (i / n) * Math.PI
       const cs = Math.cos(a)
-      out.push([x, -w * Math.sign(cs) * Math.pow(Math.abs(cs), 0.22), 1 + h * Math.pow(Math.sin(a), 0.3)])
+      out.push([x, -w * Math.sign(cs) * Math.pow(Math.abs(cs), 0.3), 1 + h * (0.72 * Math.pow(Math.sin(a), 0.3) + 0.28 * Math.sin(a))])
     }
     out.push([x, w, -skirt])
     return out

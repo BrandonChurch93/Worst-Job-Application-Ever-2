@@ -10,8 +10,8 @@ import { staplerScrews } from './staplers'
 
 const C = {
   slab: hex(0x8f8774),
-  carpet: hex(0x5d5a52),
-  aisle: hex(0x6e6a5f),
+  carpet: hex(0x938d7f),
+  aisle: hex(0xa39d8d),
   fabric: [hex(0xc9bea5), hex(0xbfb399), hex(0xd1c7b0)] as RGB[],
   frame: hex(0x9a9c9e),
   cap: hex(0xd3c9b2),
@@ -20,7 +20,7 @@ const C = {
   woodEdge: hex(0xa5855c),
   steel: hex(0x8f9499),
   grey: hex(0x8b8f93),
-  dark: hex(0x1c1d20),
+  dark: hex(0x2b2c30),
   screen: hex(0x0c0f14),
   key: hex(0x3a3c41),
   paper: hex(0xebe7dc),
@@ -28,7 +28,7 @@ const C = {
   notes: [hex(0xe9d95a), hex(0x8fc7e8), hex(0xe58aa8), hex(0x9fd58a)] as RGB[],
   pin: hex(0xb3202a),
   mugs: [hex(0xe9e6dd), hex(0x27406b), hex(0x3f6b4c), hex(0xd9c24a), hex(0x2f7f86), hex(0x7b4a6e)] as RGB[],
-  seats: [hex(0xb09a78), hex(0x8f8672), hex(0xa58d6c), hex(0x4f6a82), hex(0xb7a283), hex(0x9a8468)] as RGB[],
+  seats: [hex(0xd8c29c), hex(0xb9ae96), hex(0xcdb48e), hex(0x6f8fae), hex(0xdcc8a4), hex(0xc4ab86)] as RGB[],
   lamps: [hex(0x2a2c30), hex(0x3d5a48), hex(0x2a2c30), hex(0x8a8d91), hex(0x27406b), hex(0x2a2c30)] as RGB[],
   cabinet: hex(0xc4c0ac),
   cooler: hex(0xdcdad2),
@@ -50,6 +50,7 @@ function wall(k: Kit, a: V2, b: V2, r: Random): void {
   const len = Math.hypot(b[0] - a[0], b[1] - a[1])
   const rz = Math.atan2(b[1] - a[1], b[0] - a[0])
   k.at((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, WALL.base, rz)
+  k.up = 0.75
   k.box(0, 0, 0, len, WALL.t + 1.2, 6, C.kick, SURF.plastic, 0.6)
   const n = Math.max(1, Math.round(len / 36))
   const w = len / n
@@ -64,6 +65,7 @@ function wall(k: Kit, a: V2, b: V2, r: Random): void {
     cap.push([0, Math.cos(ang) * (WALL.t / 2 + 1.1), WALL.h - 3.2 + Math.sin(ang) * 3.2])
   }
   k.loft([cap.map((q) => [-len / 2 - 1.3, q[1], q[2]] as V3), cap.map((q) => [len / 2 + 1.3, q[1], q[2]] as V3)], C.cap, SURF.satin, true)
+  k.up = 0
   k.back()
 }
 
@@ -457,7 +459,7 @@ export function buildCubicles(z: Zone): THREE.Object3D {
 
   small(k, f, c, z, r)
 
-  root.add(meshOf(k.done(), mats.solid, 'office.cubicles.body', { cast: true }))
+  root.add(meshOf(k.done(), mats.solid, 'office.cubicles.body', { cast: false }))
   root.add(meshOf(f.done(), mats.solid, 'office.cubicles.trim', { fine: true }))
   const clear = meshOf(c.done(), mats.clear, 'office.cubicles.bottles')
   clear.renderOrder = 2
