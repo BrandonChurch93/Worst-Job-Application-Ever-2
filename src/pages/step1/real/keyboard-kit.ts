@@ -107,8 +107,8 @@ export const CAP = { rise: config.scale.heights.keycap - config.scale.heights.ke
 // A keycap: a skirt that stands in its seat, walls that lean in, a soft shoulder and a dished top.
 // z = 0 is the crest of the rim, at the top of the key shape. The dish lies below it, so a flat legend at that height is never under the plastic.
 export function capGeometry(w: number, h: number, perCorner = 5): THREE.BufferGeometry {
-  const lean = 0.12
-  const round = 3.4
+  const lean = 0
+  const round = 4.6
   const zs = -round * (1 - Math.sin(lean))
   const foot = -CAP.rise + 0.5
   const taper = Math.tan(lean) * (zs - foot)
@@ -117,8 +117,8 @@ export function capGeometry(w: number, h: number, perCorner = 5): THREE.BufferGe
     { inset: 0, z: foot },
     { inset: taper, z: zs }
   ]
-  for (let i = 1; i <= 5; i++) {
-    const a = lean + ((Math.PI / 2 - lean) * i) / 5
+  for (let i = 1; i <= 8; i++) {
+    const a = lean + ((Math.PI / 2 - lean) * i) / 8
     rings.push({ inset: taper + round * (Math.cos(lean) - Math.cos(a)), z: zs + round * (Math.sin(a) - Math.sin(lean)) })
   }
   const crest = rings[rings.length - 1]!.inset
