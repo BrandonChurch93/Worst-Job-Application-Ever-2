@@ -3,7 +3,7 @@ import { makeShowcase, type Showcase } from './capture/showcase'
 import { beat as beatOf, config, filmSeconds, stepHz, unitStart } from './config'
 import { copy } from './copy'
 import type { TargetKind } from './core/accumulator'
-import { quality, qualityIds } from './core/quality'
+import { quality, qualityIds, type QualityId } from './core/quality'
 import { samples } from './core/sampler'
 import { views } from './diagnostics/views'
 import { pages } from './pages'
@@ -92,7 +92,7 @@ function sizer(): { level(): string; set(level: string): void; fit(): void; chan
     app.format = { id: 'live', width: app.engine.width, height: app.engine.height }
     dirty = true
   }
-  const shadows = () => app.rig.setQuality(quality(level).shadowMapPx, quality(level).shadowMapPx / 2)
+  const shadows = () => app.setLevel(level as QualityId)
   shadows()
   fit()
   window.addEventListener('resize', fit)
