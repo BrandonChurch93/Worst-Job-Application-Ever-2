@@ -25,7 +25,7 @@ A fact is MEASURED (the command is given), STATED (read somewhere) or UNKNOWN.
 6. G15 covers every page, as the kit says. Your brief said "covering `step1`": `--unit step1` gives that. G15 opens the set `web` at hd for every level and the set `full` at uhd, the size the film is rendered at, for its textures.
 7. G16 makes its own test of live mode on the clean build and does not use `opensCareersLive` of the host report, which asks for the flag `careers-page` and so turns false on the day the careers page is finished. `tools/hostcheck.mjs` is not mine: it wants that line changed before Phase 5.
 8. The contrast is base colour against base colour. Light, shadow, tone curve and grade are not in it. A lit measure needs a rendered picture and belongs to a picture measure, not to `stillState`.
-9. The pixel test of G13 reads the keys, sheets and judged stills of the unit, as your brief says. The kit says "any judged still or frame": the judged frames of the film are covered by the page's word in every frame, not by pixels. `slabs` shows why both readings are needed: it is flagged in 49 film frames and in no key or sheet.
+9. The pixel test of G13 reads the keys, sheets and judged stills of the unit, as your brief says, and also one moment a second of the unit's film time through the film's camera, with the frame in which the page first reports each part. The kit says "any judged still or frame", and a part can be on screen in the film and in no key: MEASURED, `slabs` is in no key or sheet of step 1 and shows 47001 flagged pixels in film frame 1916. The moments are drawn as stills with one sample a pixel, not as film frames, because a film frame is drawn with many samples and its edge mixes are read as other parts.
 
 ## Where the kit and the brief or the code differ
 
@@ -36,10 +36,17 @@ A fact is MEASURED (the command is given), STATED (read somewhere) or UNKNOWN.
 ## Found
 
 - MEASURED, `npm run gate -- --phase 3 --only G15`: step 1 draws 303 draw calls in `step1-fire`, over `perf.maxDrawCalls.low` (300). The pinball page draws 1026 in `table-wide`, over every level's limit (600, 450, 300). Both are stand-ins. Triangles are far inside: 148758 at most against 700000.
-- MEASURED, the same run: textures are 264.2 MB for `web` at hd and 564.8 MB for `full` at uhd, against 700 and 2400.
+- MEASURED, the same run: textures are 264.2 MB for `web` at hd and 564.8 MB for `full` at uhd, against 700 and 2400. On step 1 none of it is a picture: it is the engine's targets, the shadow maps (160 MB, the same at every size) and the reflection. `info().textures.step1.largest` lists them.
 - MEASURED in Node with `stillState` on every key: on the pinball page `copy:step3.table.modes.1.insert` has a contrast of 1.22 (ink 0.040 on a ground of 0.060). The tone rule gave 9.44 because it skipped wells. M4 will be red on pinball stills until that run or its floor changes. On step 2 the panel runs read 5.22 where the tones gave 7.44.
 - The note `out/work/build-info.json` was written by every load of the source in Node, so a stale `dist/` passed as current. In `gate-NEEDS.patch`.
 - No code path reports `materials`, `light-engine`, `page-turn`, `cursor-effects` or `acting-step1`. For them G13 is tests 1 and 2 only.
+
+## The gate of Phase 2 today
+
+MEASURED, `npm run gate -- --phase 2` on this branch at 13:55 UTC: 15 of 17 checks pass, G1 to G12, G14, G17, G18 among them, and D2 and D3 fail. Neither failure is from this branch.
+
+- D2: `out/preview-b.mp4` was rendered at `d0f83c8`. MEASURED with `engineHash` and `pageHashes` of `tools/lib/hashes.mjs` in a worktree at each commit: the record's engine hash `e6f9508050543b35` is that of `d0f83c8`, and it already differs at `4b65361`, at `729ee56` and on `origin/main` (`6c70661`), where step1 and pinball differ too. D2 stays red on every branch until the preview is rendered again from the build as it is.
+- D3: `out/work/render-local/proof.json` is under `out/work/`, which git ignores, so it is not in a fresh clone. `npm run render:local -- --proof` makes it, and it also names the build it was made from.
 
 ## The records to take (for the Builder: `parts/` is not mine)
 
@@ -77,6 +84,6 @@ Read at full size from `references/approved/page-look.png` (crops at three times
 
 ## Not done
 
-- G13 does not render the judged frames of the film in the `standins` view (decision 9).
-- The texture count takes one texture a page at its largest because the page cannot reach it (21.1 MB at hd).
+- G13 reads the pixels of one film moment a second, not of every film frame. Between two moments it has the page's word in every frame of the preview rate. A still is never drawn in the middle of a page turn, so the frames of a turn have the page's word only.
+- The texture count cannot read one texture of the renderer, the target it keeps for materials that let light through (three 0.187, `transmissionRenderTarget`; `src/shell/materials.ts` has a material with `transmission: 1`). It is counted at the size of the picture, half float, with a full chain: 21.1 MB at hd, 84.4 at uhd.
 - The contrast does not read a colour picture that is an image or a canvas, only one made of numbers. Such a material is read by its colour alone.

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { hashOf } from '../tools/lib/film-parts.mjs'
-import { anchoredRecord, codeOf, coveredUnits as covered, flaggedPixels, hashFacts, hashOfBytes, hosting, memoryAndCounts, recordedAgain, standInTests, unitStates as statesIn, unknownUnits } from '../tools/lib/gate-checks.mjs'
+import { anchoredRecord, codeOf, coveredUnits as covered, filmMoments, flaggedPixels, hashFacts, hashOfBytes, hosting, memoryAndCounts, recordedAgain, standInTests, unitStates as statesIn, unknownUnits } from '../tools/lib/gate-checks.mjs'
 import path from 'node:path'
 
 const root = path.resolve(__dirname, '..')
@@ -222,5 +222,33 @@ describe('the rule of G16', () => {
     expect(hosting(report(), { head, careers: 'marketing', live: { ...live, page: 'step1' } }).detail[0]).toMatch(/opens the page "step1" in live mode/)
     expect(hosting(report(), { head, careers: 'marketing', live: { ...live, problems: ['boom'] } }).pass).toBe(false)
     expect(hosting(report({ firstLoad: { state: { ready: false, why: 'x' } } }), { head, careers: 'marketing', live }).pass).toBe(false)
+  })
+})
+
+describe('filmMoments', () => {
+  const beats = [
+    { id: 'a.one', unit: 'a', from: 0, to: 2 },
+    { id: 'a.two', unit: 'a', from: 2, to: 3.5 },
+    { id: 'b.one', unit: 'b', from: 0, to: 1 }
+  ]
+  const units = [{ id: 'a', first: 100, last: 309 }]
+
+  it('gives one moment a second and the last frame, each with its beat and its place in the beat', () => {
+    const m = filmMoments(units, beats, 60)
+    expect(m.map((x) => x.frame)).toEqual([100, 160, 220, 280, 309])
+    expect(m.map((x) => x.beat)).toEqual(['a.one', 'a.one', 'a.two', 'a.two', 'a.two'])
+    expect(m[1]!.at).toBeCloseTo(0.5, 6)
+    expect(m[2]!.at).toBe(0)
+    expect(m[3]!.at).toBeCloseTo(2 / 3, 5)
+  })
+
+  it('adds the frames it is told of, once, and leaves out a frame of another unit', () => {
+    const m = filmMoments(units, beats, 60, [130, 160, 5000])
+    expect(m.map((x) => x.frame)).toEqual([100, 130, 160, 220, 280, 309])
+    expect(m[1]).toMatchObject({ unit: 'a', beat: 'a.one', at: 0.25 })
+  })
+
+  it('gives nothing for a unit without a beat', () => {
+    expect(filmMoments([{ id: 'c', first: 0, last: 10 }], beats, 60)).toEqual([])
   })
 })
