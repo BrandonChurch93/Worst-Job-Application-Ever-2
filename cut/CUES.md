@@ -48,7 +48,7 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 
 ## Events with a cue
 
-293 of the film's 333 events have a cue in the table of events to cues. A cue starts on the frame of its event.
+333 of the film's 333 events have a cue in the table of events to cues. A cue starts on the frame of its event.
 
 | Time s | Frame | Beat | Event | Cue | Hits the cursor |
 | --- | --- | --- | --- | --- | --- |
@@ -80,8 +80,12 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | 14.579 | 874 | `step1.keyboard` | `step` | `step` | no |
 | 14.637 | 878 | `step1.keyboard` | `step` | `step` | no |
 | 14.800 | 888 | `step1.keyboard` | `keyboard-rise` | `keyboard-rise` | no |
+| 19.200 | 1152 | `step1.firstName` | `bolt-hit-cursor` | `bolt-hit` | no |
 | 26.000 | 1560 | `step1.lastName` | `keys-shuffle` | `keys-shuffle` | no |
 | 31.000 | 1860 | `step1.email` | `slab-drop` | `slab-drop` | no |
+| 34.800 | 2088 | `step1.resume` | `paper-slide` | `paper-slide` | no |
+| 38.800 | 2328 | `step1.tug` | `arms-out` | `paper-strain` | no |
+| 44.200 | 2652 | `step1.shredded` | `strips-zip` | `strips-zip` | no |
 | 45.000 | 2700 | `step1.shredded` | `button-press` | `button-press` | no |
 | 45.500 | 2730 | `step1.shredded` | `page-turn` | `page-turn` | no |
 | 46.533 | 2792 | `step2.open` | `step` | `step` | no |
@@ -90,14 +94,22 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | 46.608 | 2796 | `step2.open` | `step` | `step` | no |
 | 46.654 | 2799 | `step2.open` | `step` | `step` | no |
 | 48.054 | 2883 | `step2.dial` | `step` | `step` | no |
+| 48.300 | 2898 | `step2.dial` | `row-open` | `row-open` | no |
 | 48.846 | 2930 | `step2.dial` | `step` | `step` | no |
 | 48.942 | 2936 | `step2.dial` | `step` | `step` | no |
 | 49.042 | 2942 | `step2.dial` | `step` | `step` | no |
+| 49.250 | 2955 | `step2.dial` | `dial-wind` | `dial-wind` | no |
 | 49.525 | 2971 | `step2.dial` | `step` | `step` | no |
+| 49.700 | 2982 | `step2.dial` | `dial-return` | `dial-return` | no |
 | 50.029 | 3001 | `step2.dial` | `step` | `step` | no |
+| 50.100 | 3006 | `step2.dial` | `dial-wind` | `dial-wind` | no |
 | 50.375 | 3022 | `step2.dial` | `step` | `step` | no |
+| 50.550 | 3033 | `step2.dial` | `dial-return` | `dial-return` | no |
 | 50.879 | 3052 | `step2.dial` | `step` | `step` | no |
+| 50.950 | 3057 | `step2.dial` | `dial-wind` | `dial-wind` | no |
 | 51.225 | 3073 | `step2.dial` | `step` | `step` | no |
+| 51.400 | 3084 | `step2.dial` | `dial-return` | `dial-return` | no |
+| 52.163 | 3129 | `step2.dial` | `dial-fling` | `dial-return` | yes |
 | 53.712 | 3222 | `step2.dial` | `step` | `step` | no |
 | 53.754 | 3225 | `step2.dial` | `step` | `step` | no |
 | 53.783 | 3227 | `step2.dial` | `step` | `step` | no |
@@ -117,8 +129,12 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | 54.108 | 3246 | `step2.slot` | `step` | `step` | no |
 | 54.146 | 3248 | `step2.slot` | `step` | `step` | no |
 | 54.196 | 3251 | `step2.slot` | `step` | `step` | no |
+| 54.200 | 3252 | `step2.slot` | `row-open` | `row-open` | no |
 | 54.875 | 3292 | `step2.slot` | `step` | `step` | no |
+| 55.367 | 3322 | `step2.slot` | `lever-pull` | `lever-pull` | no |
+| 55.367 | 3322 | `step2.slot` | `reels-spin` | `reels-spin` | no |
 | 55.396 | 3323 | `step2.slot` | `step` | `step` | no |
+| 57.521 | 3451 | `step2.slot` | `coins` | `coins` | yes |
 | 57.775 | 3466 | `step2.slot` | `step` | `step` | no |
 | 57.846 | 3470 | `step2.slot` | `step` | `step` | no |
 | 57.908 | 3474 | `step2.slot` | `step` | `step` | no |
@@ -136,6 +152,7 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | 59.837 | 3590 | `step2.slot` | `step` | `step` | no |
 | 59.892 | 3593 | `step2.slot` | `step` | `step` | no |
 | 59.950 | 3597 | `step2.slot` | `step` | `step` | no |
+| 60.083 | 3605 | `step2.crank` | `row-open` | `row-open` | no |
 | 60.438 | 3626 | `step2.crank` | `step` | `step` | no |
 | 60.508 | 3630 | `step2.crank` | `step` | `step` | no |
 | 60.583 | 3635 | `step2.crank` | `step` | `step` | no |
@@ -143,24 +160,40 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | 60.958 | 3657 | `step2.crank` | `step` | `step` | no |
 | 61.033 | 3662 | `step2.crank` | `step` | `step` | no |
 | 61.108 | 3666 | `step2.crank` | `step` | `step` | no |
+| 61.158 | 3669 | `step2.crank` | `crank-turn` | `crank-turn` | no |
 | 61.188 | 3671 | `step2.crank` | `step` | `step` | no |
 | 61.267 | 3676 | `step2.crank` | `step` | `step` | no |
 | 61.346 | 3680 | `step2.crank` | `step` | `step` | no |
 | 61.429 | 3685 | `step2.crank` | `step` | `step` | no |
 | 61.517 | 3691 | `step2.crank` | `step` | `step` | no |
 | 61.604 | 3696 | `step2.crank` | `step` | `step` | no |
+| 61.650 | 3699 | `step2.crank` | `crank-turn` | `crank-turn` | no |
 | 61.700 | 3702 | `step2.crank` | `step` | `step` | no |
 | 61.796 | 3707 | `step2.crank` | `step` | `step` | no |
 | 61.900 | 3714 | `step2.crank` | `step` | `step` | no |
 | 62.013 | 3720 | `step2.crank` | `step` | `step` | no |
 | 62.129 | 3727 | `step2.crank` | `step` | `step` | no |
 | 62.258 | 3735 | `step2.crank` | `step` | `step` | no |
+| 62.321 | 3739 | `step2.crank` | `crank-turn` | `crank-turn` | no |
+| 62.321 | 3739 | `step2.crank` | `crank-runaway` | `crank-runaway` | no |
 | 62.433 | 3746 | `step2.crank` | `step` | `step` | no |
+| 62.763 | 3765 | `step2.crank` | `flatten` | `flatten` | yes |
+| 65.763 | 3945 | `step2.crank` | `peel-up` | `peel-up` | yes |
 | 66.300 | 3978 | `step2.continue` | `button-press` | `button-press` | no |
 | 66.500 | 3990 | `step2.continue` | `page-turn` | `page-turn` | no |
 | 67.546 | 4052 | `pinball.seal` | `step` | `step` | no |
 | 67.579 | 4054 | `pinball.seal` | `step` | `step` | no |
 | 67.638 | 4058 | `pinball.seal` | `step` | `step` | no |
+| 68.600 | 4116 | `pinball.seal` | `ball-seal` | `ball-seal` | no |
+| 72.600 | 4356 | `pinball.reveal` | `power-on` | `power-on` | no |
+| 76.200 | 4572 | `pinball.launch` | `plunger` | `plunger` | no |
+| 79.600 | 4776 | `pinball.lobby` | `doors-slam` | `doors-slam` | no |
+| 83.600 | 5016 | `pinball.coffee` | `bumper` | `bumper` | no |
+| 88.800 | 5328 | `pinball.replyAll` | `ball-drop` | `ball-drop` | no |
+| 94.400 | 5664 | `pinball.fired` | `scoop-kick` | `scoop-kick` | no |
+| 98.300 | 5898 | `pinball.highway` | `ramp-roll` | `ramp-roll` | no |
+| 102.200 | 6132 | `pinball.save` | `flipper-save` | `flipper` | no |
+| 106.000 | 6360 | `pinball.drain` | `drain` | `drain` | no |
 | 108.000 | 6480 | `pinball.drain` | `button-press` | `button-press` | no |
 | 108.500 | 6510 | `pinball.drain` | `page-turn` | `page-turn` | no |
 | 109.950 | 6597 | `boss.verify` | `step` | `step` | no |
@@ -256,6 +289,7 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | 130.604 | 7836 | `boss.popups` | `slab-fire` | `slab-fire` | no |
 | 130.662 | 7839 | `boss.popups` | `dart-fire` | `dart-fire` | no |
 | 130.771 | 7846 | `boss.popups` | `dart-hit` | `dart-hit` | no |
+| 131.071 | 7864 | `boss.lastStand` | `session-expired` | `popup` | no |
 | 131.208 | 7872 | `boss.lastStand` | `slab-drop` | `slab-drop` | no |
 | 132.150 | 7929 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
 | 132.254 | 7935 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
@@ -318,6 +352,7 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | 136.229 | 8173 | `boss.collapse` | `power-down` | `power-down` | no |
 | 139.500 | 8370 | `boss.press` | `button-press` | `button-press` | no |
 | 140.500 | 8430 | `boss.press` | `page-turn` | `page-turn` | no |
+| 141.400 | 8484 | `decision.wait` | `hold-music` | `hold-music` | no |
 | 141.529 | 8491 | `decision.wait` | `step` | `step` | no |
 | 141.546 | 8492 | `decision.wait` | `step` | `step` | no |
 | 141.563 | 8493 | `decision.wait` | `step` | `step` | no |
@@ -329,6 +364,8 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | 142.146 | 8528 | `decision.wait` | `step` | `step` | no |
 | 142.762 | 8565 | `decision.wait` | `step` | `step` | no |
 | 143.325 | 8599 | `decision.letter` | `step` | `step` | no |
+| 143.800 | 8628 | `decision.letter` | `letter-drop` | `letter-drop` | no |
+| 143.800 | 8628 | `decision.letter` | `paper-slide` | `paper-slide` | no |
 | 144.075 | 8644 | `decision.letter` | `step` | `step` | no |
 | 144.121 | 8647 | `decision.letter` | `step` | `step` | no |
 | 144.158 | 8649 | `decision.letter` | `step` | `step` | no |
@@ -343,6 +380,9 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | 144.783 | 8687 | `decision.letter` | `step` | `step` | no |
 | 144.863 | 8691 | `decision.letter` | `step` | `step` | no |
 | 144.950 | 8697 | `decision.letter` | `step` | `step` | no |
+| 145.300 | 8718 | `decision.letter` | `stamp` | `stamp` | yes |
+| 145.300 | 8718 | `decision.letter` | `flatten` | `flatten` | yes |
+| 148.092 | 8885 | `decision.metrics` | `peel-up` | `peel-up` | yes |
 | 150.300 | 9018 | `decision.metrics` | `button-press` | `button-press` | no |
 | 150.754 | 9045 | `decision.metrics` | `page-turn` | `page-turn` | no |
 

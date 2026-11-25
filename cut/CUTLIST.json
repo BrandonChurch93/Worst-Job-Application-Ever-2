@@ -1447,7 +1447,7 @@
       "x": 229,
       "y": 556,
       "hitsCursor": false,
-      "cue": null
+      "cue": "bolt-hit"
     },
     {
       "name": "keys-shuffle",
@@ -1486,7 +1486,7 @@
       "x": 229,
       "y": 556,
       "hitsCursor": false,
-      "cue": null
+      "cue": "paper-slide"
     },
     {
       "name": "arms-out",
@@ -1499,7 +1499,7 @@
       "x": 229,
       "y": 556,
       "hitsCursor": false,
-      "cue": null
+      "cue": "paper-strain"
     },
     {
       "name": "strips-zip",
@@ -1512,7 +1512,7 @@
       "x": 229,
       "y": 556,
       "hitsCursor": false,
-      "cue": null
+      "cue": "strips-zip"
     },
     {
       "name": "button-press",
@@ -1629,7 +1629,7 @@
       "x": 1396,
       "y": 368,
       "hitsCursor": false,
-      "cue": null
+      "cue": "row-open"
     },
     {
       "name": "step",
@@ -1681,7 +1681,7 @@
       "x": 1066.8,
       "y": 495,
       "hitsCursor": false,
-      "cue": null
+      "cue": "dial-wind"
     },
     {
       "name": "step",
@@ -1707,7 +1707,7 @@
       "x": 1181.2,
       "y": 561,
       "hitsCursor": false,
-      "cue": null
+      "cue": "dial-return"
     },
     {
       "name": "step",
@@ -1733,7 +1733,7 @@
       "x": 1066.8,
       "y": 495,
       "hitsCursor": false,
-      "cue": null
+      "cue": "dial-wind"
     },
     {
       "name": "step",
@@ -1759,7 +1759,7 @@
       "x": 1181.2,
       "y": 561,
       "hitsCursor": false,
-      "cue": null
+      "cue": "dial-return"
     },
     {
       "name": "step",
@@ -1785,7 +1785,7 @@
       "x": 1066.8,
       "y": 495,
       "hitsCursor": false,
-      "cue": null
+      "cue": "dial-wind"
     },
     {
       "name": "step",
@@ -1811,7 +1811,7 @@
       "x": 1181.2,
       "y": 561,
       "hitsCursor": false,
-      "cue": null
+      "cue": "dial-return"
     },
     {
       "name": "dial-fling",
@@ -1824,7 +1824,7 @@
       "x": 1124,
       "y": 462,
       "hitsCursor": true,
-      "cue": null
+      "cue": "dial-return"
     },
     {
       "name": "step",
@@ -2084,7 +2084,7 @@
       "x": 1396,
       "y": 512,
       "hitsCursor": false,
-      "cue": null
+      "cue": "row-open"
     },
     {
       "name": "step",
@@ -2110,7 +2110,7 @@
       "x": 1394,
       "y": 706,
       "hitsCursor": false,
-      "cue": null
+      "cue": "lever-pull"
     },
     {
       "name": "reels-spin",
@@ -2123,7 +2123,7 @@
       "x": 1192,
       "y": 655,
       "hitsCursor": false,
-      "cue": null
+      "cue": "reels-spin"
     },
     {
       "name": "step",
@@ -2149,7 +2149,7 @@
       "x": 1192,
       "y": 749,
       "hitsCursor": true,
-      "cue": null
+      "cue": "coins"
     },
     {
       "name": "step",
@@ -2383,7 +2383,7 @@
       "x": 1396,
       "y": 656,
       "hitsCursor": false,
-      "cue": null
+      "cue": "row-open"
     },
     {
       "name": "step",
@@ -2487,7 +2487,7 @@
       "x": 1182,
       "y": 846.9,
       "hitsCursor": false,
-      "cue": null
+      "cue": "crank-turn"
     },
     {
       "name": "step",
@@ -2578,7 +2578,7 @@
       "x": 1182,
       "y": 847,
       "hitsCursor": false,
-      "cue": null
+      "cue": "crank-turn"
     },
     {
       "name": "step",
@@ -2669,7 +2669,7 @@
       "x": 1182,
       "y": 847.4,
       "hitsCursor": false,
-      "cue": null
+      "cue": "crank-turn"
     },
     {
       "name": "crank-runaway",
@@ -2682,7 +2682,7 @@
       "x": 1110,
       "y": 846,
       "hitsCursor": false,
-      "cue": null
+      "cue": "crank-runaway"
     },
     {
       "name": "step",
@@ -2708,7 +2708,7 @@
       "x": 1177,
       "y": 872.5,
       "hitsCursor": true,
-      "cue": null
+      "cue": "flatten"
     },
     {
       "name": "peel-up",
@@ -2721,7 +2721,7 @@
       "x": 1618.1,
       "y": 991.9,
       "hitsCursor": true,
-      "cue": null
+      "cue": "peel-up"
     },
     {
       "name": "button-press",
@@ -2799,7 +2799,7 @@
       "x": 229,
       "y": 556,
       "hitsCursor": false,
-      "cue": null
+      "cue": "ball-seal"
     },
     {
       "name": "power-on",
@@ -2812,7 +2812,7 @@
       "x": 229,
       "y": 556,
       "hitsCursor": false,
-      "cue": null
+      "cue": "power-on"
     },
     {
       "name": "plunger",
@@ -2825,7 +2825,7 @@
       "x": 229,
       "y": 556,
       "hitsCursor": false,
-      "cue": null
+      "cue": "plunger"
     },
     {
       "name": "doors-slam",
@@ -2838,7 +2838,7 @@
       "x": 229,
       "y": 556,
       "hitsCursor": false,
-      "cue": null
+      "cue": "doors-slam"
     },
     {
       "name": "bumper",
@@ -2851,7 +2851,7 @@
       "x": 229,
       "y": 556,
       "hitsCursor": false,
-      "cue": null
+      "cue": "bumper"
     },
     {
       "name": "ball-drop",
@@ -2864,7 +2864,7 @@
       "x": 229,
       "y": 556,
       "hitsCursor": false,
-      "cue": null
+      "cue": "ball-drop"
     },
     {
       "name": "scoop-kick",
@@ -2877,7 +2877,7 @@
       "x": 229,
       "y": 556,
       "hitsCursor": false,
-      "cue": null
+      "cue": "scoop-kick"
     },
     {
       "name": "ramp-roll",
@@ -2890,7 +2890,7 @@
       "x": 229,
       "y": 556,
       "hitsCursor": false,
-      "cue": null
+      "cue": "ramp-roll"
     },
     {
       "name": "flipper-save",
@@ -2903,7 +2903,7 @@
       "x": 229,
       "y": 556,
       "hitsCursor": false,
-      "cue": null
+      "cue": "flipper"
     },
     {
       "name": "drain",
@@ -2916,7 +2916,7 @@
       "x": 229,
       "y": 556,
       "hitsCursor": false,
-      "cue": null
+      "cue": "drain"
     },
     {
       "name": "button-press",
@@ -4164,7 +4164,7 @@
       "x": 1542.2,
       "y": 605.5,
       "hitsCursor": false,
-      "cue": null
+      "cue": "popup"
     },
     {
       "name": "slab-drop",
@@ -4983,7 +4983,7 @@
       "x": 960,
       "y": 586,
       "hitsCursor": false,
-      "cue": null
+      "cue": "hold-music"
     },
     {
       "name": "step",
@@ -5139,7 +5139,7 @@
       "x": 532,
       "y": 560,
       "hitsCursor": false,
-      "cue": null
+      "cue": "letter-drop"
     },
     {
       "name": "paper-slide",
@@ -5152,7 +5152,7 @@
       "x": 532,
       "y": 560,
       "hitsCursor": false,
-      "cue": null
+      "cue": "paper-slide"
     },
     {
       "name": "step",
@@ -5347,7 +5347,7 @@
       "x": 616.5,
       "y": 677.8,
       "hitsCursor": true,
-      "cue": null
+      "cue": "stamp"
     },
     {
       "name": "flatten",
@@ -5360,7 +5360,7 @@
       "x": 836.7,
       "y": 610.4,
       "hitsCursor": true,
-      "cue": null
+      "cue": "flatten"
     },
     {
       "name": "peel-up",
@@ -5373,7 +5373,7 @@
       "x": 836.8,
       "y": 610.4,
       "hitsCursor": true,
-      "cue": null
+      "cue": "peel-up"
     },
     {
       "name": "button-press",
