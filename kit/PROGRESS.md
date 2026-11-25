@@ -457,7 +457,7 @@ Ten build agents, the most the kit allows beside six critic slots. Each brief na
 
 One line per round: its number, the unit, the commit it judges, the parts ticked off, the scores, and what changes next.
 
-none
+- Round 1, unit `blockout`, critic R4 blockout, judges commit 0dfc589, started 2026-11-25T10:34:28Z. Parts: machine checks [ ]; measures [ ]; pack [ ]; critics asked [ ]; reviewer-01 in [ ]; reviewer-02 in [ ]; reviewer-03 in [ ]; key released [ ]; issues read [ ]; summary [ ]. Scores: not in yet. What changes next: not known yet.
 
 ## Final scores
 
