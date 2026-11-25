@@ -124,6 +124,7 @@ const FILM: [number, string][] = [
 ]
 const BLEND = 0.6
 const TURN = 1.5707963267948966
+const SIGN = { turn: 0.5235987755982988, cos: 0.8660254037844387, sin: 0.5, inset: 8, lift: 6, back: ['corporate.beach'] }
 const WAKE = 0.35
 const DUSK = config.table.pageDuskLevel
 const ASLEEP = 0.25
@@ -142,6 +143,14 @@ export function makePage(): PageLogic {
     const b = boxOf(layout, id)
     const at = boardAt(b.y, b.h, 2)
     stood[id] = { y: at.y, z0: at.z, z1: at.z, turnX: BOARD.turn }
+  }
+  for (const m of table.models) {
+    if (!m.sign) continue
+    const b = boxOf(layout, `sign.${m.id}`)
+    const back = SIGN.back.includes(m.id)
+    const foot = back ? px(m.box[1]) + SIGN.inset + b.h * SIGN.cos : px(m.box[1] + m.box[3]) - SIGN.inset
+    const z = px(floorZ(m.tier) + (m.base ?? 0) + m.h) + SIGN.lift + (b.h / 2) * SIGN.sin
+    stood[`sign.${m.id}`] = { y: foot - (b.h / 2) * SIGN.cos - b.h / 2, z0: z, z1: z, turnX: SIGN.turn }
   }
   const hqType = { font: 'inter-600', px: 30, align: 'centre' as const }
   const hqBlock = block(hqType.font, words('copy:step3.table.buildings.hq', ''), hqType.px)
