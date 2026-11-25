@@ -1,35 +1,35 @@
 {
   "folder": "step2",
-  "pushed": "2026-11-25T09:36:11.223Z",
-  "commit": "43f0f4e045cd747a6a465170a24f70c71745962d",
+  "pushed": "2026-11-25T10:02:34.222Z",
+  "commit": "f6cb5fad0d9082669f5fea2551238822a01104ba",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still step2-slot-coins-preview-draft: draft tier, preview, view beauty",
-      "time": "2026-11-25T09:35:51.963Z",
-      "by": "step2",
-      "from": "out/work/stills/step2-slot-coins-preview-draft.png"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "Key step2-crank at 15.2 s, crank aligned under its prompt: three segments lit, the handle starts to run away",
-      "time": "2026-11-25T09:36:09.708Z",
+      "caption": "Still key-step2-crank-preview-draft: draft tier, preview, view beauty",
+      "time": "2026-11-25T10:02:01.305Z",
       "by": "step2",
       "from": "out/work/stills/key-step2-crank-preview-draft.png"
     },
     {
+      "file": "look-2.jpg",
+      "caption": "Still sheet-machines-preview-draft: draft tier, preview, view beauty",
+      "time": "2026-11-25T10:02:04.871Z",
+      "by": "step2",
+      "from": "out/work/stills/sheet-machines-preview-draft.png"
+    },
+    {
       "file": "look-3.jpg",
-      "caption": "step2.slot at 11.6 s: 07 23 1991 recorded, the cabinet pays out",
-      "time": "2026-11-25T09:36:09.938Z",
+      "caption": "Still step2-slot-coins-preview-draft: draft tier, preview, view beauty",
+      "time": "2026-11-25T10:02:08.425Z",
       "by": "step2",
       "from": "out/work/stills/step2-slot-coins-preview-draft.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Sheet machines",
-      "time": "2026-11-25T09:36:10.188Z",
+      "caption": "Key step2-dial at 3.2 s on main cef0562 (new draw order): real dial order, (555) 01",
+      "time": "2026-11-25T10:02:32.988Z",
       "by": "step2",
-      "from": "out/work/stills/sheet-machines-preview-draft.png"
+      "from": "out/work/stills/key-step2-dial-preview-draft.png"
     }
   ]
 }
