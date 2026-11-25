@@ -18,12 +18,18 @@ Owner: the maker of the office models. Branch `agent/office`. Parts: `model-coff
 - The cubicles are two columns of three with an aisle between them, open to the front, so each cell has a real way in. The right column is the mirror image of the left.
 - The sign of the coffee machine stands where the type's shape `sign.office.coffee` stands: on two steel brackets from the front of the head, in front of and above the control strip. The row of buttons is on a sloped strip of the top so it is seen from straight above.
 - The button rings are green, yellow, red and cool white. No ring is amber: orange belongs to the flippers, the plunger and the lift.
-- The staplers are crimson (`0xa30d1b` arm, `0x6e0c16` plate), well on the blue side of the machine's orange.
+- The staplers are dark crimson (`0x5e1219` arm, `0x3d0c11` plate), well on the blue side of the machine's orange and darker than it. The plate is darker than the arm so the arm reads as the stapler and the plate as its stand. The base under the arm is brushed steel, as on a desk stapler.
 - The stapler plate keeps to the post triangle plus 7 px and its underside is 46 px over the floor, as agreed with the owner of the hardware. The fixing through the plate is mine: a screw at each post, in the tier's instanced mesh of screws.
 - The inbox leaves the scoop alone: nothing of it within the hold's radius plus half the clearance, tipped or level (tested).
 - The small standing things are placed from things of the layout, not typed in: the water cooler and a spare bottle in the closed sliver between the guide `office.cubicles.roof` and the cubicles, the filing cabinet, the waste bin and the plant on the closed left shoulder below the inlane guide. No ball reaches either floor, so no path is narrowed. A test holds them behind those walls.
 - The pot of the plant is glazed off white, not terracotta, to keep orange off the tier.
 - No picture is used: every surface is built. No take was spent.
+- Surface grain is made in the one opaque material instead of in pictures: fine fibre grain on soft finishes, long streaks on metal, a weave on cloth and slow smudges in the roughness, all from the position of the point in the model and all faded out by `fwidth` where a pixel is wider than the grain, so nothing shimmers at a distance. It costs no draw and no asset.
+- Steel and chrome are mid grey in colour (`0x7d848b` to `0xb4b8bc`): lighter values read as cream paint under the warm lamps of the tier.
+- The normals of the cubicle walls lean up (`Kit.up`), so upright cloth takes the light from above as a soft thing does. Without it the walls were dark olive from every camera above them.
+- The walls of the cubicles are 5.4 px thick with a round cap wider than the wall, as in the approved image, where the caps are the brightest lines of the model.
+- The cubicles cast no shadow of their own: the cells are small and deep, and their own shadow made every cell a black hole. They still take the shadows of the machine.
+- Crumpled paper is a faceted ball with flat shaded faces from a seeded stream, not a smooth turned shape.
 - Steam is left out: there is no way to make it real inside one opaque material and the budget of draws.
 
 ## Motion
