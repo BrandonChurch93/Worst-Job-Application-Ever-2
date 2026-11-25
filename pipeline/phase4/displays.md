@@ -82,3 +82,16 @@ One display is 2 draw calls and 82 triangles. The four together are 328 of the 4
 1. From `table-wide` a dot of the main display is about one screen pixel, so the numerals read as smooth strokes. The shader fades to a soft picture of the grid there on purpose, since single dots at that size shimmer.
 2. The lamps in the pane of a tier display are soft round spots in a row. A real pane would show them with the shape of each lens.
 3. The numerals of the main display are the two-dot strokes of the tiers. The approved image has thinner strokes with rounder ends.
+
+## Open for the next owner
+
+The work was ended by the Builder at 18:13 UTC, before the limit. What is left, in order:
+
+1. The page does not yet give the times the displays need. Until it does, `pick.ts` shows the newest mode of the ball's tier in a round on `ctx.time` (name, line, four seconds of score), which is not tied to the moment the mode was lit. Wanted from the page of step 3: `v[0]`, the seconds since the mode was lit, on each `display.<tier>.<mode>` shape; `v = [seconds since the score last changed, the score before the change]` on `display.<tier>.score` and `marquee-score`; a shape `display.hint` of part `displays` with `v[0]`, the seconds it has been shown. `pick.ts` already reads all three, and `tests/table-displays-pick.test.ts` holds how. Once they are there, look at a sheet of a beat and check the name is held when the insert lights.
+2. The roll of a changed numeral is built and tested in `screen.ts` (`drawScore`) and has never been seen in a picture, since no score shape carries `v`. Look at it at two frames after a score change.
+3. The sweep was looked at in one forced still only, never in motion. It runs every 9 seconds for 2.6 seconds (`SWEEP` in `index.ts`).
+4. The scroll was changed from 84 to 120 dots a second after the last sheet was made. The tests pass, and the line was seen running in stills before the change, but no sheet was looked at after it.
+5. The lamps in the pane (`mirrorOf` and `MIRROR` in `index.ts`) are soft round spots. Smaller, sharper spots with the shape of a lens would read more as glass.
+6. Looks used: about 31 of 40.
+
+How to force a picture for a look, and put it back after: in `pick.ts`, return `{ kind: 'hint', t: 0.6 }` or a mode at a fixed `t` on the first line of `pick`, render, then restore the file. Never commit that line.
