@@ -36,15 +36,15 @@ Status 10, 2026-11-25T08:42Z, Phase 2.
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 2, tick 33 at 2026-11-25T08:42:07Z, allowance: build
-time used in this phase: 1.06 h of its box of 6.50 h
-time used under the allowance in force: 3.16 h of 36.00 h allowed
-time used: 3.16 of 36.00 hours before the review
+clock: phase 2, tick 34 at 2026-11-25T08:50:54Z, allowance: build
+time used in this phase: 1.21 h of its box of 6.50 h
+time used under the allowance in force: 3.31 h of 36.00 h allowed
+time used: 3.31 of 36.00 hours before the review
 extra rounds: yes
 half point: not reached
 box end: not reached
 budget report: not due
-minutes since the last status: 0
+minutes since the last status: 8
 ```
 
 ## Phases
@@ -213,7 +213,59 @@ What the films and the loop would take on one VM like this one, from the time of
 
 Every judged still and frame, with its unit. Computed as `kit/07-QUALITY-BAR.md` says. Entries are added, never removed.
 
-none
+Kept by `npm run judged -- --write`. Check G6 compares its ids with the computed list.
+
+45 stills and sheets:
+
+| Id | Unit | What | Frame |
+| --- | --- | --- | --- |
+| `key:marketing-top` | `marketing` | the key marketing-top: the careers page at 0 of the beat marketing.apply, from the camera home, in hd |  |
+| `key:step1-fire` | `step1` | the key step1-fire: step 1 at 0.5 of the beat step1.firstName, from the camera home, in hd |  |
+| `key:step1-tug` | `step1` | the key step1-tug: step 1 at 0.5 of the beat step1.tug, from the camera film, in hd |  |
+| `key:step2-rest` | `step2` | the key step2-rest: step 2 at 0.5 of the beat step2.open, from the camera home, in hd |  |
+| `key:step2-dial` | `step2` | the key step2-dial: step 2 at 0.2 of the beat step2.dial, from the camera home, in hd |  |
+| `key:step2-crank` | `step2` | the key step2-crank: step 2 at 0.2 of the beat step2.crank, from the camera home, in hd |  |
+| `key:loader-page` | `pinball` | the key loader-page: step 3 at 0.7 of the beat pinball.seal, from the camera home, in hd |  |
+| `key:table-wide` | `pinball` | the key table-wide: step 3 at 1 of the beat pinball.reveal, from the camera table-wide, in hd |  |
+| `key:tier-corporate` | `pinball` | the key tier-corporate: step 3 at 0.25 of the beat pinball.lobby, from the camera tier-3, in hd |  |
+| `key:lobby-doors` | `pinball` | the key lobby-doors: step 3 at 0.7 of the beat pinball.lobby, from the camera table-lobby, in hd |  |
+| `key:tier-office` | `pinball` | the key tier-office: step 3 at 0.6 of the beat pinball.coffee, from the camera tier-2, in hd |  |
+| `key:reply-all` | `pinball` | the key reply-all: step 3 at 0.3 of the beat pinball.replyAll, from the camera table-replyall, in hd |  |
+| `key:tier-street` | `pinball` | the key tier-street: step 3 at 0.15 of the beat pinball.fired, from the camera tier-1, in hd |  |
+| `key:youre-fired` | `pinball` | the key youre-fired: step 3 at 0.5 of the beat pinball.fired, from the camera table-fired, in hd |  |
+| `key:rail-cam` | `pinball` | the key rail-cam: step 3 at 0.5 of the beat pinball.highway, from the camera rail, in hd |  |
+| `key:last-save` | `pinball` | the key last-save: step 3 at 0.5 of the beat pinball.save, from the camera table-save, in hd |  |
+| `key:boss-fight` | `boss` | the key boss-fight: step 4 at 0.5 of the beat boss.slabs, from the camera home, in hd |  |
+| `key:boss-down` | `boss` | the key boss-down: step 4 at 1 of the beat boss.collapse, from the camera home, in hd |  |
+| `key:decision` | `decision` | the key decision: step 5 at 0.3 of the beat decision.metrics, from the camera home, in hd |  |
+| `sheet:page-look` | `step1` | the build's version of the sheet page-look, from the camera sheet |  |
+| `sheet:cursor-arms` | `step1` | the build's version of the sheet cursor-arms, from the camera sheet |  |
+| `sheet:cursor-damage` | `step1` | the build's version of the sheet cursor-damage, from the camera sheet |  |
+| `sheet:cursor-acting` | `step1` | the build's version of the sheet cursor-acting, from the camera sheet |  |
+| `sheet:machines` | `step2` | the build's version of the sheet machines, from the camera sheet |  |
+| `sheet:boss-stages` | `boss` | the build's version of the sheet boss-stages, from the camera sheet |  |
+| `sheet:clear-ball` | `pinball` | the build's version of the sheet clear-ball, from the camera sheet |  |
+| `sheet:table-map` | `pinball` | the build's version of the sheet table-map, from the camera table-map at 1080 by 1920 |  |
+| `still:rest-marketing` | `marketing` | the careers page, at rest, scrolled to 0, from home |  |
+| `still:marketing-perks` | `marketing` | the careers page, at rest, scrolled to 0.25, from home |  |
+| `still:marketing-proof` | `marketing` | the careers page, at rest, scrolled to 0.5, from home |  |
+| `still:marketing-foot` | `marketing` | the careers page, at rest, scrolled to 1, from home |  |
+| `still:rest-step1` | `step1` | step 1, at rest, from home |  |
+| `still:rest-step2` | `step2` | step 2, at rest, from home |  |
+| `still:rest-step3` | `pinball` | step 3, at rest, from home |  |
+| `still:step3-result` | `pinball` | step 3, at 1 of the beat pinball.drain, scrolled to 1, from home |  |
+| `still:rest-step4` | `boss` | step 4, at rest, from home |  |
+| `still:rest-step5` | `decision` | step 5, at rest, from home |  |
+| `still:screen-live` | `site` | the live screen, at rest, with the controls on, from home |  |
+| `still:screen-touch` | `site` | the live screen, at rest, with the controls on, as a touch screen sees it, from home |  |
+| `site:marketing` | `site` | the careers page at rest, drawn through the live site's own path at the high level, from home, in hd |  |
+| `site:step1` | `site` | step 1 at rest, drawn through the live site's own path at the high level, from home, in hd |  |
+| `site:step2` | `site` | step 2 at rest, drawn through the live site's own path at the high level, from home, in hd |  |
+| `site:pinball` | `site` | step 3 at rest, drawn through the live site's own path at the high level, from home, in hd |  |
+| `site:boss` | `site` | step 4 at rest, drawn through the live site's own path at the high level, from home, in hd |  |
+| `site:decision` | `site` | step 5 at rest, drawn through the live site's own path at the high level, from home, in hd |  |
+
+The film's part is added when `cut/CUTLIST.json` first exists.
 
 ## Look lock
 
