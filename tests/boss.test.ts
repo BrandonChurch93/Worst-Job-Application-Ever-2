@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
 import { copy } from '../src/copy'
 import { pages } from '../src/pages'
+import { FLOOR, SOCKET, WAKE_AFTER_TICK } from '../src/boss/plan'
 import { makePage } from '../src/pages/step4'
 import { layoutProblems, typeRegister } from '../src/shell/layout'
 import { hasWords } from '../src/shell/words'
@@ -146,6 +147,45 @@ describe('step 4, the boss', () => {
     expect(fight).toBeLessThan(config.live.boss.maxSeconds - 5)
     expect(run.damagedAtEnd).toBe(false)
     expect(run.events.filter((e) => e.name === 'boss-slow').length).toBeLessThanOrEqual(1)
+  })
+
+  it('keeps every phase of the fight on the page for the fastest visitor', () => {
+    const run = play(live(keen()))
+    expect(run.gagSeconds['boss.slabs']).toBeGreaterThanOrEqual(FLOOR[0] - 0.1)
+    expect(run.gagSeconds['boss.popups']).toBeGreaterThanOrEqual(FLOOR[1] - 0.1)
+    expect(run.gagSeconds['boss.lastStand']).toBeGreaterThanOrEqual(FLOOR[2] - 0.1)
+  })
+
+  it.each([['comes to Submit', true], ['stays away', false]])('breaks the button out when a visitor who has ticked the box %s', (_name, near) => {
+    let ticked = false
+    const driver: Driver = {
+      name: 'bot',
+      input(v: DriverView): Pointer {
+        const h = v.page.hint()
+        if (!ticked && h) return { x: h.x, y: h.y, down: h.down }
+        return near ? { x: SOCKET.x, y: SOCKET.y, down: false } : { x: 300, y: 700, down: false }
+      }
+    }
+    const stage = live(driver)
+    let tick = -1
+    let crack = -1
+    while (crack < 0 && stage.time < 30) {
+      stage.advance(1)
+      if (tick < 0 && stage.events.some((e) => e.name === 'checkbox')) {
+        tick = stage.time
+        ticked = true
+      }
+      if (stage.events.some((e) => e.name === 'button-crack')) crack = stage.time
+    }
+    expect(tick).toBeGreaterThan(0)
+    const wait = crack - tick
+    if (near) {
+      expect(wait).toBeGreaterThanOrEqual(WAKE_AFTER_TICK.near)
+      expect(wait).toBeLessThan(WAKE_AFTER_TICK.near + 2)
+    } else {
+      expect(wait).toBeGreaterThanOrEqual(WAKE_AFTER_TICK.live)
+      expect(wait).toBeLessThan(WAKE_AFTER_TICK.live + 1.5)
+    }
   })
 
   it.each([0.5, 3, 6.2, 7.5, 12, 19, 25, 28.2, 30])('ends soon after a skip at %s s', (at) => {
