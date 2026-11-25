@@ -20,6 +20,11 @@ function chair(): Geo {
     }
     g.lathe([[2.6, 4], [1.5, 8], [1.5, ROOM.seat - 8], [3.4, ROOM.seat - 5]], 0, 0, 6, TONE.steel)
     for (const s of [-1, 1]) g.pipe([[-5.5, s * 11.2, ROOM.seat - 2], [-5.5, s * 11.2, ROOM.seat + 13], [7, s * 11.2, ROOM.seat + 14.5]], 1, 4, TONE.steel)
+    // A steel hoop round the back.
+    moved(g, place(-9.2, 0, ROOM.seat - 1, 0, 0, -0.16), () => {
+      const h = ROOM.back - ROOM.seat + 1
+      g.pipe([[0.6, -11.2, 2], [0.6, -11.2, h - 1], [0.6, -9.6, h + 0.9], [0.6, 9.6, h + 0.9], [0.6, 11.2, h - 1], [0.6, 11.2, 2]], 0.95, 5, TONE.steel)
+    })
   })
   fin(g, FINISH.leather, () => {
     g.slab(roundedLoop(-10.5, 11, -10.5, 10.5, 3.2, 2), ROOM.seat - 5, ROOM.seat + 1, TONE.leather, { bevel: 1.8, bottom: true, top: shade(TONE.leather, 1.5) })
@@ -28,7 +33,8 @@ function chair(): Geo {
     moved(g, place(-9.2, 0, ROOM.seat - 1, 0, 0, -0.16), () => {
       const h = ROOM.back - ROOM.seat + 1
       g.slab(roundedLoop(-2.4, 2.2, -10.4, 10.4, 2, 2), 0, h, TONE.leather, { bevel: 1.6 })
-      for (let k = 0; k < 3; k++) g.box(2.2, 3.5, -8.8, 8.8, 6 + k * (h - 10) / 3, 6 + (k + 1) * (h - 10) / 3 - 1.2, shade(TONE.leather, 1.5))
+      for (let k = 0; k < 3; k++) g.box(2.2, 3.5, -8.8, 8.8, 6 + k * (h - 10) / 3, 6 + (k + 1) * (h - 10) / 3 - 1.2, shade(TONE.leather, 1.5), { bevel: 0.6 })
+      for (let k = 0; k < 3; k++) g.box(-3, -2.4, -8.8, 8.8, 6 + k * (h - 10) / 3, 6 + (k + 1) * (h - 10) / 3 - 1.2, shade(TONE.leather, 1.5), { bevel: 0.6 })
     })
   })
   return g
