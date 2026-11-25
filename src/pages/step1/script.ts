@@ -20,7 +20,7 @@ export const BITE = { x: SLOT.cx - PAPER.w / 2, y: SLOT.cy - PAPER.h + 11, jerk:
 export const HOOD = { y: SLOT.cy + 17, z: 26 }
 export const FRINGE = { from: 0.12, step: 0.03, rate: 1.2, most: 0.34 }
 export const PILE = { x: SLOT.cx - 20, y: SLOT.cy + 60 }
-export const SHRED = { in: 0.3, gone: 0.46, strips: 0.12, pile: 0.64, pileSeconds: 1.14, empty: 1.44, emptySeconds: 0.75, hold: 0.3, zip: 1.78, zipSeconds: 1.0, end: 2.8 }
+export const SHRED = { in: 0.3, gone: 0.46, strips: 0.12, pile: 0.64, pileSeconds: 1.14, empty: 1.56, emptySeconds: 0.75, hold: 0.3, zip: 1.78, zipSeconds: 1.0, end: 2.8 }
 
 // The film's first name: every time is a second of the unit. The turrets are up at 3.52 and fire at 4.12, 4.57, 5.02, 5.47, 5.92, and so on.
 // 6.0 is the frame of the approved image: the shot of 5.02 has just landed on L, the shot of 5.47 is a hand's width from the cursor, the shot of 5.92 has left the barrel, and the cursor has snapped out of the way to the row above, a key short of 5 (short), and holds there, still.
@@ -324,7 +324,7 @@ export function pointerAt(plan: Plan, time: number): Pointer {
 const TUG_EDGE = FIELD_X - 16
 const TUG_FRAME = { w: 620, mid: SLOT.cx + 4, top: SLOT.cy - 205 }
 const tugFrame = (): { x: number; y: number; w: number; h: number } => ({ x: Math.min(TUG_EDGE - TUG_FRAME.w, TUG_FRAME.mid - TUG_FRAME.w / 2), y: TUG_FRAME.top, w: TUG_FRAME.w, h: (TUG_FRAME.w * 9) / 16 })
-export const CAMERA = { in: [20.3, 21.1] as [number, number], key: 25.125, out: [28.1, 28.8] as [number, number] }
+export const CAMERA = { in: [20.3, 21.1] as [number, number], key: 25.125, out: [28.3, 28.9] as [number, number] }
 const glide = (t: number): number => {
   const u = Math.min(1, Math.max(0, t))
   return u * u * u * (u * (u * 6 - 15) + 10)
