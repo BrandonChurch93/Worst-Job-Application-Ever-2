@@ -44,8 +44,8 @@ function buildLayout(): LayoutNode {
   const my = px(MARQUEE_Y)
   kids.push(node('marquee', 'marquee', [312, my + 24, 1296, 336], {
     part: 'marquee', shape: 'none', children: [
-      text('marquee-title', 'copy:step3.table.title', { font: 'inter-display-600', px: 128, align: 'centre' }, 960, my + 70, { part: 'marquee', on: 41, tone: 'inkLight' }),
-      text('marquee-score', 'runtime:score', { font: 'inter-600', px: 44, align: 'centre', wrap: 420 }, 960, my + 250, { part: 'displays', on: 41, tone: 'inkLight' })
+      text('marquee-title', 'copy:step3.table.title', { font: 'inter-display-600', px: 128, align: 'centre' }, 960, my + 70, { part: 'marquee', on: 41, tone: 'inkLight', states: ['on'] }),
+      text('marquee-score', 'runtime:score', { font: 'inter-600', px: 44, align: 'centre', wrap: 420 }, 960, my + 250, { part: 'displays', on: 41, tone: 'inkLight', states: ['on'] })
     ]
   }))
   for (let k = 0; k < 3; k++) {
@@ -113,10 +113,12 @@ const NAMED: Record<string, CameraPose> = {
   'table-save': look('table-save', [MID, Y2 + 14.0, 10.5], [MID, Y2 + 6.8, -3])
 }
 const FILM: [number, string][] = [
-  [0, 'follow'], [5.0, 'table-wide'], [9.5, 'follow'], [11.2, 'tier-3'], [13.0, 'table-lobby'], [14.3, 'follow'], [20.6, 'table-replyall'], [22.6, 'follow'], [27.2, 'table-fired'], [28.8, 'follow'],
+  [0, 'follow'], [4.2, 'table-wide'], [8.2, 'follow'], [11.2, 'tier-3'], [13.0, 'table-lobby'], [14.3, 'follow'], [20.6, 'table-replyall'], [22.6, 'follow'], [27.2, 'table-fired'], [28.8, 'follow'],
   [31.0, 'rail'], [33.0, 'follow'], [34.3, 'table-save'], [36.6, 'follow']
 ]
 const BLEND = 0.6
+const WAKE = 0.35
+const LOW = 2.4
 
 export function makePage(): PageLogic {
   const layout = buildLayout()
@@ -134,7 +136,13 @@ export function makePage(): PageLogic {
   }
   const gagAt = (t: number): string => (beats.find((b) => t < b.to) ?? beats[beats.length - 1]!).id
   const ball = () => machine().balls[0]!
-  const lit = (): boolean[] => table.inserts.map((n) => MODES.some((x) => x.mode === n.mode && s.t >= x.at && s.phase !== 'wait' && s.phase !== 'pull'))
+  const powered = (): boolean => s.said.includes('power-on')
+  const drawn = (): number => {
+    const b = ball()
+    return b.mode === 'hold' && b.hold === 'plunger' && s.t < T.plunger ? Math.max(0, Math.min(1, (s.t - T.atPlunger) / (T.plunger - T.atPlunger - 0.15))) : 0
+  }
+  const glow = (): boolean[] => [0, 1, 2].map((k) => powered() && s.t >= T.powerOn + k * WAKE)
+  const lit = (): boolean[] => table.inserts.map((n) => (powered() && s.t >= T.powerOn + n.tier * WAKE && s.t < T.powerOn + n.tier * WAKE + 0.6) || MODES.some((x) => x.mode === n.mode && s.t >= x.at && s.phase !== 'wait' && s.phase !== 'pull'))
   const modeOf = (k: number): number | null => {
     let out: number | null = null
     if (s.phase === 'wait' || s.phase === 'pull') return null
@@ -143,9 +151,11 @@ export function makePage(): PageLogic {
   }
   const activeStates = (): string[] => {
     const out = [s.phase === 'result' ? 'result' : s.phase === 'wait' ? 'rest' : 'play']
+    if (powered()) out.push('on')
+    const lamps = glow()
     for (let k = 0; k < 3; k++) {
       const mode = modeOf(k)
-      out.push(mode === null ? `score${k}` : `mode${mode}`)
+      if (lamps[k]) out.push(mode === null ? `score${k}` : `mode${mode}`)
     }
     return out
   }
@@ -164,9 +174,10 @@ export function makePage(): PageLogic {
       const y = px(b.y)
       const inTier = b.y >= Y0 && b.y < APRON_Y && b.rail !== 'feed'
       if (b.rail === 'launch' && b.y < Y0 + TH) return { scroll: px(Y0), floor: px(floorZ(0)) }
-      if (b.rail === 'feed' && b.y > Y2 + 2) return { scroll: px(Y2), floor: px(floorZ(2)) }
+      if (b.rail === 'feed' && b.y > Y2 + 2) return { scroll: px(Y2 + LOW), floor: px(floorZ(2)) }
       return { scroll: Math.max(0, Math.min(lastScroll, y - 540)), floor: inTier ? px(floorZ(tierAt(b.y))) : 0 }
     }
+    if (b.mode === 'hold' && b.hold === 'plunger') return { scroll: px(Y2 + LOW), floor: px(floorZ(2)) }
     const k = b.mode === 'rail' && b.rail.startsWith('chute.') ? TIERS.indexOf(b.rail.slice(6) as never) + 1 : b.mode === 'rail' && b.rail.startsWith('lift.') ? tierAt(railOf(b.rail).points[3]![1]) : tierAt(Math.max(Y0, Math.min(APRON_Y - 0.01, b.y)))
     return { scroll: px(TIER_Y[k]!), floor: px(floorZ(k)) }
   }
@@ -415,7 +426,7 @@ export function makePage(): PageLogic {
       const mc = machine()
       drawLayout(out, layout, { states: activeStates(), runtime: { score: scoreText() }, over: s.pressed ? { 'go-cap': { z1: config.scale.heights.button - config.scale.heights.keyTravel } } : {} })
       for (const shape of fixedShapes()) out.push(shape)
-      for (const shape of movingShapes(mc, lit(), false)) out.push(shape)
+      for (const shape of movingShapes(mc, lit(), false, glow(), drawn())) out.push(shape)
     },
     scroll: () => s.scroll,
     view: () => (s.floor === 0 ? null : follow()),
@@ -484,7 +495,7 @@ export function makePage(): PageLogic {
       if (id === 'clear-ball') {
         const mc = machine()
         const list: DrawList = []
-        drawLayout(list, layout, { states: ['play', 'mode0', 'score0', 'score2'], runtime: { score: scoreText() } })
+        drawLayout(list, layout, { states: ['play', 'on', 'mode0', 'score0', 'score2'], runtime: { score: scoreText() } })
         for (const shape of fixedShapes()) list.push(shape)
         for (const shape of movingShapes(mc, table.inserts.map(() => true), true)) list.push(shape)
         const f = px(floorZ(1))
@@ -499,7 +510,7 @@ export function makePage(): PageLogic {
       if (id !== 'table-map') return null
       const mc = machine()
       const list: DrawList = []
-      drawLayout(list, layout, { states: ['play', 'mode5', 'mode0', 'mode3'], runtime: { score: scoreText() } })
+      drawLayout(list, layout, { states: ['play', 'on', 'mode5', 'mode0', 'mode3'], runtime: { score: scoreText() } })
       for (const shape of fixedShapes()) list.push(shape)
       for (const shape of movingShapes(mc, table.inserts.map(() => true), true)) list.push(shape)
       const top = px(MARQUEE_Y)
