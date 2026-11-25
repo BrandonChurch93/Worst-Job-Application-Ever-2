@@ -19,6 +19,13 @@ Branch `agent/lights`. Part `table-lights` and `hook`, both in `src/table/real/l
 - A wall takes the general lighting through a soft knee (`0.6 a / (1 + 1.5 a)`) and 0.4 of its gloss, since the lamps are lenses in the floor and the rebuilt lamp stands 44 px over it: without the knee the bright steel walls of the frame beside the top lane lamps went to flat white (seen at 16:22 UTC in a scratch merge of `agent/frame` and this branch; with the knee they show a scallop per lamp).
 - A display throws a faint amber wash about one ball out from its glass (three sources of power 0.22, reach 2.4 balls), as its owner asked: at rest about 8 percent of its dots are lit.
 - A surface that faces up is lit by the general lighting from a lamp that rides over it (the rebuilt lamp stands 44 px over the surface, not over the floor), with a slow fall by height (halved at 170 px), and the top fill rises to 2.6 times between 20 and 130 px. Before this a top at 53 px was lit from below its own height: the corporate owner saw white stone sling plates read mid grey from above. Looked at in a scratch merge with `agent/corporate`, `agent/play`, `agent/displays` and `agent/ball` at 16:50 UTC: the plates read warm near white, roofs are lit, nothing clips.
+- Clear glass (a transparent material under 0.5 opacity) takes a quarter of the lamps' light: it shows the lamps in its reflection, not as a matte thing does. Without this the lift tube of the frame went to white blobs over each lamp of the lift lane (its alpha rises with the light it sends back). Seen in a scratch merge of all owners' branches at 16:58 UTC, gone at 17:01 UTC.
+- The general lighting on any one fragment is never taken as nearer than its lamp is to the floor under it by more than 1.4 times, and a thing more than 40 to 100 px over the floor takes it through the same knee as a wall.
+- The globes are brightest where they face the eye and fall to 0.3 at their edge, so each reads as a ball of opal glass and not a flat white disc.
+- `CORPORATE_WINDOW` went from 1.0, 0.74, 0.4 to 1.0, 0.83, 0.6 and the lamp at the HQ door from power 1.3 to 0.85, as the corporate owner asked: the gold light turned the steel of the tower to brass.
+- The four street lamps of the shoulders (places from the street owner) are sources in `street.windows`. Not done: a source in the open cellar of Mom's hatch. The street has all ten channels in use and the cellar is lit only while its doors are open, which needs a level of its own.
+- The beacons went from power 2.0 and reach 7.5 balls to power 1.1 and reach 5.2 balls: at full level the red one washed the whole steel wall behind the firehouse pink in `youre-fired` (seen in the scratch merge at 17:08 UTC; at 17:10 UTC the red falls off along the wall).
+- The window sources at the garage and the bank stood low and near, so the field on the models themselves was about 3.1 and 2.5 (worked out by the street owner from `fall`), and pale concrete and stone clipped to cream. The garage source is now at 110 px with power 0.9 (about 0.75 at its middle), the bank's two at 70 px with power 0.3 and 0.2 (about 0.6 and 0.4). The street owner had painted both models darker to answer it and was told at once.
 - Rail lamps: times 1.3 in corporate, 0.8 in the office (its floor is pale), 1.35 in the street.
 - Windows, displays, the marquee panel and the flash are fields with no one direction: lit by height and by how far a surface faces up.
 - The law of fall off in the pictures is the law of the true lights of the renderer, so a lamp that turns into a true light near the clear ball changes nothing but its shadows.
@@ -48,7 +55,7 @@ Branch `agent/lights`. Part `table-lights` and `hook`, both in `src/table/real/l
 | `CORPORATE_COLD_WHITE` | 0.78, 0.88, 1.0 | `corporate.general`: the arrow windows |
 | `CORPORATE_GOLD` | 1.0, 0.62, 0.24 | `corporate.lanes`: lane lamps and sling lamps |
 | `CORPORATE_GLOBE` | 1.0, 0.93, 0.82 | `corporate.globe.left`, `corporate.globe.right` |
-| `CORPORATE_WINDOW` | 1.0, 0.74, 0.4 | `corporate.windows`: HQ and the beach case |
+| `CORPORATE_WINDOW` | 1.0, 0.83, 0.6 | `corporate.windows`: HQ and the beach case |
 | `CORPORATE_FLASH` | 0.92, 0.95, 1.0 | `corporate.flash` |
 | `OFFICE_FLUORESCENT` | 0.86, 1.0, 0.92 | `office.general` |
 | `OFFICE_BUMPER` | 1.0, 0.95, 0.84 | `office.bumper.1` to `.3` |

@@ -122,7 +122,7 @@ export interface Lamps {
 }
 
 // The lens of every lamp shows its own colour as light, brightest where the vertex says, and stays a pale thing when its lamp is out.
-function lensMaterial(z: Zone, level: THREE.Vector2): THREE.MeshStandardMaterial {
+function lensMaterial(z: Zone, level: THREE.Vector2, limb = 0): THREE.MeshStandardMaterial {
   const m = new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.16, metalness: 0, emissive: new THREE.Color(1, 1, 1), emissiveIntensity: 1, clearcoat: 1, clearcoatRoughness: 0.06, specularIntensity: 0.6 })
   m.userData.lit = true
   lit(studio(m), z)
@@ -130,9 +130,10 @@ function lensMaterial(z: Zone, level: THREE.Vector2): THREE.MeshStandardMaterial
   m.onBeforeCompile = function (shader, renderer) {
     inner.call(m, shader, renderer)
     shader.uniforms.wjlLens = { value: level }
-    shader.fragmentShader = ('uniform vec2 wjlLens;\n' + shader.fragmentShader)
+    shader.uniforms.wjlLimb = { value: limb }
+    shader.fragmentShader = ('uniform vec2 wjlLens;\nuniform float wjlLimb;\n' + shader.fragmentShader)
       .replace('#include <color_fragment>', 'diffuseColor.rgb *= 0.05 + 0.09 * min( vColor.rgb / max( max( vColor.r, max( vColor.g, vColor.b ) ), 0.001 ), vec3( 1.0 ) );')
-      .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\n\ttotalEmissiveRadiance *= vColor.rgb * mix( wjlLens.x, wjlLens.y, vColor.a );')
+      .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\n\ttotalEmissiveRadiance *= vColor.rgb * mix( wjlLens.x, wjlLens.y, vColor.a ) * mix( 1.0, 0.3 + 0.7 * pow( clamp( dot( normal, normalize( vViewPosition ) ), 0.0, 1.0 ), 2.2 ), wjlLimb );')
   }
   const key = m.customProgramCacheKey
   m.customProgramCacheKey = () => `${key.call(m)}|wjl-lens`
@@ -220,10 +221,10 @@ export function buildLamps(z: Zone, ctx: RealContext): Lamps {
     group.add(mesh)
   }
   if (globes.length > 0) {
-    const lens = lensMaterial(z, new THREE.Vector2(1, 1))
+    const lens = lensMaterial(z, new THREE.Vector2(1, 1), 1)
     lens.roughness = 0.35
     const white = colourOf('globe.left')
-    const core = paint(new THREE.SphereGeometry(SIZE.core, 24, 14).rotateX(Math.PI / 2), (_x, _y, zz) => k(white, 0.78 + (LENS.on - 0.78) * Math.pow(0.5 - zz / (2 * SIZE.core), 1.5)), 0)
+    const core = paint(new THREE.SphereGeometry(SIZE.core, 24, 14).rotateX(Math.PI / 2), (_x, _y, zz) => k(white, LENS.on * (0.8 - 0.2 * (zz / SIZE.core))), 0)
     const cores = new THREE.InstancedMesh(core, lens, globes.length)
     const shell = new THREE.InstancedMesh(
       new THREE.SphereGeometry(SIZE.globe, 24, 14).rotateX(Math.PI / 2),
