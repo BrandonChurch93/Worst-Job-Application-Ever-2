@@ -6,8 +6,8 @@ export type Config = typeof raw
 export const config: Config = raw
 
 export interface Checks {
-  // Every file under references/approved/, as the build's index lists them.
-  approved: string[]
+  // Every file under references/approved/, as the build's index lists them. Null where the folder does not exist: the host never gets it.
+  approved: string[] | null
   // The table of events to cues, from src/audio/cues.ts.
   eventCues: Record<string, string>
 }
@@ -88,6 +88,7 @@ export function configProblems(c: Config, checks: Checks): string[] {
   const cues = new Set(c.audio.sfx.map((s) => s.id))
   for (const [event, cue] of Object.entries(checks.eventCues)) if (!cues.has(cue)) out.push(`sound: the event "${event}" names the cue "${cue}", which audio.sfx does not have`)
 
+  if (checks.approved === null) return out
   const approved = new Set(checks.approved)
   const images = [...c.keys.map((k) => k.image), ...c.sheets.map((s) => s.image), ...Object.values(c.references.approved)]
   for (const image of new Set(images)) if (!approved.has(image)) out.push(`config: the approved image "${image}" is missing`)
