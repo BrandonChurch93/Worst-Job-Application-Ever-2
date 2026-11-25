@@ -1,35 +1,35 @@
 {
   "folder": "keys",
-  "pushed": "2026-11-25T19:26:46.644Z",
-  "commit": "56b07b79bd43883618e4edcad10aa2bb96d6b227",
+  "pushed": "2026-11-25T20:08:53.902Z",
+  "commit": "07f29fb44cebd001fd48780992512c9bdf546861",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Keys: flying caps throw a clear shadow across the space bar and the seated caps, step1.lastName at 0.094, draft tier",
-      "time": "2026-11-25T19:25:26.326Z",
+      "caption": "Round 5, the fire key beside the approved image: charred holes with rims, the hot key and the marks grouped round the cursor on J, darker turret and deck",
+      "time": "2026-11-25T20:08:52.059Z",
       "by": "keys",
-      "from": "out/work/keys/shuffle-shadow.jpg"
+      "from": "out/work/looks/files/20261125200852-r5-compare.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Still step1-step1_firstName-0p7580-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-25T19:26:06.435Z",
+      "caption": "Round 5, close: approved cursor and hole on the left, the build at 6.0 s on the right, hot key, sparks, wisp and holes round the cursor",
+      "time": "2026-11-25T20:08:52.313Z",
       "by": "keys",
-      "from": "out/work/stills/step1-step1_firstName-0p7580-hd-draft.png"
+      "from": "out/work/looks/files/20261125200852-r5-cluster.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Still step1-step1_firstName-0p7985-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-25T19:26:20.300Z",
+      "caption": "Round 5: the approved holes above, the build's bullet holes on R, U and J below, and the hot key after a hit",
+      "time": "2026-11-25T20:08:52.594Z",
       "by": "keys",
-      "from": "out/work/stills/step1-step1_firstName-0p7985-hd-draft.png"
+      "from": "out/work/looks/files/20261125200852-r5-holes.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Keys: the field's rim on the frame after a key press (above) and 0.34 s later (below), draft tier",
-      "time": "2026-11-25T19:26:45.374Z",
+      "caption": "Round 5: larger brighter bolts, and a slab one frame before it lands and one frame after with the caps under it down",
+      "time": "2026-11-25T20:08:52.825Z",
       "by": "keys",
-      "from": "out/work/keys/field-pulse.jpg"
+      "from": "out/work/looks/files/20261125200852-r5-b.jpg"
     }
   ]
 }
