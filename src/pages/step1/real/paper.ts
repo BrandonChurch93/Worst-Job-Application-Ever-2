@@ -15,9 +15,9 @@ const SIZE = PAPER.w / DRAWN
 // The film's sheet is `resume-paper`. A sheet of any other frame is `resume-paper:<name>`.
 const isSheet = (id: string): boolean => id === 'resume-paper' || id.startsWith('resume-paper:')
 const CARRY = { from: 21, span: 14 }
-const BAR = { inset: PAPER.inset, tall: 1.1, pad: (PAPER.bar - 1.1) / 2, cells: 44, wide: [0.46, 1, 0.9, 0.62, 1, 0.84, 0.52] }
+const BAR = { inset: PAPER.inset, tall: 0.8, pad: (PAPER.bar - 0.8) / 2, cells: 44, wide: [0.46, 1, 0.9, 0.62, 1, 0.84, 0.52] }
 // Between two of the layout's lines runs a thinner one, so the sheet reads as a page of close text.
-const BETWEEN = { tall: 1.1, wide: [0.94, 0.78, 1, 0.34, 0.88, 0.97, 0.6] }
+const BETWEEN = { tall: 0.6, wide: [0.94, 0.78, 1, 0.34, 0.88, 0.97, 0.6] }
 // The hood and the cutters keep the sky off the sheet where it goes in, and the sheet bends over to go down:
 // a deep shade at the mouth, and below the line of the bend the sheet is turned from the light.
 const MOUTH = { in: 0.5, near: 0.36, nearPx: 4, bent: 0.3, fold: 15, soft: 7, slant: 0.12, lit: 0.03, edge: 0.8 }
@@ -37,7 +37,86 @@ function creased(u: number, v: number): number {
   }
   return sum
 }
+const PRINT_LIFT = 0.5
 const WRAP_LEN = 1.12 * (UNIT.r + 0.7 * SIZE)
+
+// The held sheet as a height over its own plane, in px: a ridge from each hand to the mouth where the pull runs, a shorter buckle between them, a dent under each thumb where the arms lay it (the left 4 to 14 px under the top corner, the right 0 to 10), and the free top edge and the two side edges curled up.
+// It is laid on the solved grid along its normals and its slopes turn them, so the light follows the bends.
+const FOLD = { tall: 1.9, wide: 3.1, mid: 1, midWide: 4.2, dent: 1.4, dentWide: 3.6, curl: 2.6, curlWide: 5, side: 1.5, sideWide: 3.4, slack: 0.5, gain: 1.3, raise: 0.4, hand: { u: 0.02, v: [0.1, 0.06] }, foot: [0.35, 0.67] }
+function ridge(x: number, y: number, x0: number, y0: number, x1: number, y1: number, wide: number, sharp: boolean): number {
+  const dx = x1 - x0
+  const dy = y1 - y0
+  const len = Math.hypot(dx, dy) || 1
+  const along = ((x - x0) * dx + (y - y0) * dy) / (len * len)
+  const off = ((x - x0) * dy - (y - y0) * dx) / len
+  const side = sharp ? Math.max(0, 1 - Math.abs(off) / wide) : Math.exp(-(off * off) / (wide * wide * 0.45))
+  return side * smooth(along / 0.12) * smooth((1 - along) / 0.1)
+}
+function folded(u: number, v: number, foot: number, pull: number, sharp: boolean): number {
+  const x = u * PAPER.w
+  const y = v * PAPER.h
+  const fy = foot * PAPER.h
+  const ly = FOLD.hand.v[0]! * PAPER.h
+  const ry = FOLD.hand.v[1]! * PAPER.h
+  const hy = (ly + ry) / 2
+  const lx = FOLD.hand.u * PAPER.w
+  const rx = PAPER.w - lx
+  const taut = FOLD.slack + (1 - FOLD.slack) * pull
+  let h = FOLD.tall * taut * (ridge(x, y, lx + 5, ly + 2, FOLD.foot[0]! * PAPER.w, fy, FOLD.wide, sharp) + 0.8 * ridge(x, y, rx - 5, ry + 3, FOLD.foot[1]! * PAPER.w, fy, FOLD.wide * 1.2, sharp))
+  h -= FOLD.mid * ridge(x, y, PAPER.w * 0.3, hy + (fy - hy) * 0.16, PAPER.w * 0.58, hy + (fy - hy) * 0.8, FOLD.midWide, sharp)
+  h += 0.6 * FOLD.mid * ridge(x, y, PAPER.w * 0.86, hy + (fy - hy) * 0.3, PAPER.w * 0.5, hy + (fy - hy) * 0.62, FOLD.wide, sharp)
+  h -= FOLD.dent * (Math.exp(-((x - lx - 3.5) ** 2 + (y - ly) ** 2) / FOLD.dentWide ** 2) + Math.exp(-((x - rx + 3.5) ** 2 + (y - ry) ** 2) / FOLD.dentWide ** 2))
+  const between = smooth((x - lx - 5) / 8) * smooth((rx - 5 - x) / 8)
+  h += FOLD.curl * between * Math.exp(-y / FOLD.curlWide) * (0.7 + 0.3 * Math.sin(u * 5.1 + 0.6))
+  const down = smooth((y - hy - 8) / 10) * smooth((fy - 4 - y) / 10)
+  h += FOLD.side * down * (Math.exp(-(PAPER.w - x) / FOLD.sideWide) - 0.7 * Math.exp(-x / FOLD.sideWide))
+  return h
+}
+function fold(sheet: Sheet, foot: number, pull: number, k: number): void {
+  if (k <= 0.001) return
+  const { nx, ny, pos, nor } = sheet
+  const e = 0.9
+  const du = e / PAPER.w
+  const dv = e / PAPER.h
+  const t = [0, 0, 0, 0, 0, 0]
+  const tangent = (a: number, b: number, at: number): void => {
+    const x = pos[b]! - pos[a]!
+    const y = pos[b + 1]! - pos[a + 1]!
+    const z = pos[b + 2]! - pos[a + 2]!
+    const l = Math.hypot(x, y, z) || 1
+    t[at] = x / l
+    t[at + 1] = y / l
+    t[at + 2] = z / l
+  }
+  const lift = new Float32Array(nx * ny)
+  for (let j = 0; j < ny; j++) {
+    for (let i = 0; i < nx; i++) {
+      const u = i / (nx - 1)
+      const v = j / (ny - 1)
+      const o = (j * nx + i) * 3
+      const fade = k * (1 - smooth((v - foot + 0.02) / 0.06))
+      if (fade <= 0) continue
+      tangent((j * nx + Math.max(0, i - 1)) * 3, (j * nx + Math.min(nx - 1, i + 1)) * 3, 0)
+      tangent((Math.max(0, j - 1) * nx + i) * 3, (Math.min(ny - 1, j + 1) * nx + i) * 3, 3)
+      const hu = ((folded(u + du, v, foot, pull, false) - folded(u - du, v, foot, pull, false)) / (2 * e)) * fade * FOLD.gain
+      const hv = ((folded(u, v + dv, foot, pull, false) - folded(u, v - dv, foot, pull, false)) / (2 * e)) * fade * FOLD.gain
+      const x = nor[o]! - hu * t[0]! - hv * t[3]!
+      const y = nor[o + 1]! - hu * t[1]! - hv * t[4]!
+      const z = nor[o + 2]! - hu * t[2]! - hv * t[5]!
+      const l = Math.hypot(x, y, z) || 1
+      lift[j * nx + i] = folded(u, v, foot, pull, false) * FOLD.raise * fade
+      nor[o] = x / l
+      nor[o + 1] = y / l
+      nor[o + 2] = z / l
+    }
+  }
+  for (let n = 0; n < nx * ny; n++) {
+    const o = n * 3
+    pos[o] = pos[o]! + nor[o]! * lift[n]!
+    pos[o + 1] = pos[o + 1]! + nor[o + 1]! * lift[n]!
+    pos[o + 2] = pos[o + 2]! + nor[o + 2]! * lift[n]!
+  }
+}
 
 const clamp = (v: number, lo: number, hi: number): number => Math.min(hi, Math.max(lo, v))
 const smooth = (t: number): number => {
@@ -260,6 +339,8 @@ function shape(rig: Rig, q: SheetIn): void {
   rig.was = was
   const sheet = solveSheet(q, rig.sheet)
   const { nx, ny } = GRID
+  const top0 = MARGIN / (DRAWN * (PAPER.h / PAPER.w))
+  fold(sheet, Math.max(top0 + 0.05, sheet.out - WRAP_LEN / PAPER.h), clamp(q.pull, 0, 1), clamp(q.bite, 0, 1) * smooth(q.hands))
   const n = nx * ny
   const m = rig.ring.length
   const pos = rig.body.getAttribute('position') as THREE.BufferAttribute
@@ -334,8 +415,8 @@ function shape(rig: Rig, q: SheetIn): void {
   pos.needsUpdate = true
   nor.needsUpdate = true
   rig.body.computeBoundingSphere()
-  lay(rig.title, rig.titleMarks, sheet, THICK + 0.12)
-  lay(rig.bars, rig.barMarks, sheet, THICK + 0.12)
+  lay(rig.title, rig.titleMarks, sheet, THICK + PRINT_LIFT)
+  lay(rig.bars, rig.barMarks, sheet, THICK + PRINT_LIFT)
   const mat = stock(PAPER.w, PAPER.h)
   mat.sheet.normalScale.setScalar(0.09 + 0.3 * sheet.abuse)
 }
