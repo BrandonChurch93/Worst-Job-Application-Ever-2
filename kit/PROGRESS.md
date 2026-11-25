@@ -25,22 +25,22 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 27, 2026-11-25T14:52Z, Phase 3.
+Status 28, 2026-11-25T15:18Z, Phase 3.
 
-1. `out/stills/status/01-compare-step1-fire-third.jpg`: Keyboard under fire: your approved picture on the left, the build on the right, with the header now at your sizes. Still short: no bolt in flight with sparks at this moment, the deck reads dark where your aluminum is bright, and the gaps between the keys are black.
-2. `out/stills/status/02-floors-beside-approved.jpg`: The three tiers: your approved pictures on the left, the build on the right with the first printed floors under the grey stand-ins. Everything that stands on them is still to be made real.
-3. `out/stills/status/03-sheet-first-name.jpg`: Twelve frames across the beat First name: the turrets rise from the deck, bolts cross the keys and leave scorch marks, and the cursor types between them.
-4. `out/stills/status/04-sheet-tug.jpg`: Twelve frames across the tug of war: the shredder takes the sheet, the cursor grows arms and pulls, loses, and the strips fall.
+1. `out/stills/status/01-compare-step1-fire-fourth.jpg`: Keyboard under fire: your approved picture on the left, the build on the right at the low tier. The deck is now bright and the cursor is knocked over by the hit. Still short: the turrets and their bolts, the upload glyph, the wobble on the keycap edges.
+2. `out/stills/status/02-compare-step1-tug-second.jpg`: The tug of war: your approved picture on the left, the build on the right at the low tier. The camera is pushed in as the kit asks, the sheet is taut between the hands and the rollers, and the shredder stands above the page.
+3. `out/stills/status/03-hit-close.jpg`: The hit, close: your approved picture on the left, the build on the right at the review tier, made by the cursor's acting agent. The burn hole, the scorch on the key and the knocked pose are there; the keycap edges are not yet clean.
+4. `out/stills/status/04-office-floor-beside-approved.jpg`: The Office tier: your approved picture on the left, the build on the right, made by the floor's agent. The printed floor is real; the cups, cubicles, flippers and frame are still grey stand-ins.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 3, tick 66 at 2026-11-25T14:52:21Z, allowance: build
-time used in this phase: 1.99 h of its box of 8.00 h
-time used under the allowance in force: 9.33 h of 36.00 h allowed
-time used: 9.33 of 36.00 hours before the review
+clock: phase 3, tick 67 at 2026-11-25T15:18:46Z, allowance: build
+time used in this phase: 2.43 h of its box of 8.00 h
+time used under the allowance in force: 9.77 h of 36.00 h allowed
+time used: 9.77 of 36.00 hours before the review
 extra rounds: yes
 half point: not reached
 box end: not reached
