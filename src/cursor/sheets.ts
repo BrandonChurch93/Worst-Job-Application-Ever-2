@@ -20,17 +20,17 @@ const reach = (x: number, y: number, left: [number, number, number], right: [num
 ]
 
 // The resume sheet of the tug, at its true size beside the cursor, held by its two sides near the top corners.
-const PAPER = { w: SHEET_OF_STEP1.w, h: SHEET_OF_STEP1.h, hands: TUG.hands, edge: 5, tall: config.scale.heights.paper, front: hover + 13 }
+const PAPER = { w: SHEET_OF_STEP1.w, h: SHEET_OF_STEP1.h, hands: TUG.hands, edge: 5, hold: 24, tall: config.scale.heights.paper, front: hover + 13 }
 
 // The row stands round step 1's own slot: the pulling pose, the fourth, feeds its sheet to it.
 const ROW = { x: SLOT.cx - 16 - 3 * SHEET.arms.step, y: SLOT.cy - 132, pull: { x: -10, y: -6, from: 84, in: 0.34 } }
 
 // Standing idle, waving, holding, pulling, bracing to push. Hands in page pixels from the tip.
-// A pose with a sheet names where the middle of the sheet's top edge is from the tip: its hands are on the two sides just under that edge.
+// A pose with a sheet names where the middle of the sheet's top edge is from the tip. A held sheet hangs low at the body's side with the hands on its two sides, `PAPER.hold` under that edge.
 const ARMS: { x: number; y: number; left: [number, number, number]; right: [number, number, number]; lean: number; grip: [number, number]; strain: number; squash: number; sheet?: { name: string; x: number; y: number; z: number; pull: number } }[] = [
   { x: 0, y: 0, left: [-13, 70, 4], right: [45, 70, 4], lean: 0, grip: [0.25, 0.25], strain: 0, squash: 1 },
   { x: 0, y: 0, left: [-17, -4, 12], right: [45, 68, 4], lean: -0.06, grip: [0, 0.25], strain: 0, squash: 1.05 },
-  { x: 0, y: -2, left: [0, 0, 0], right: [0, 0, 0], lean: 0, grip: [1, 1], strain: 0.1, squash: 1, sheet: { name: 'holding', x: 15, y: 50, z: PAPER.front, pull: 0 } },
+  { x: -12, y: -2, left: [0, 0, 0], right: [0, 0, 0], lean: 0, grip: [1, 1], strain: 0.1, squash: 1, sheet: { name: 'holding', x: 46, y: 30, z: PAPER.front, pull: 0 } },
   { x: ROW.pull.x, y: ROW.pull.y, left: [0, 0, 0], right: [0, 0, 0], lean: -0.2, grip: [1, 1], strain: 0.85, squash: 1.1, sheet: { name: 'pulling', x: 24, y: ROW.pull.from, z: 3, pull: 1 } },
   { x: 6, y: 0, left: [60, 24, 9], right: [63, 47, 9], lean: 0.12, grip: [0, 0], strain: 0.9, squash: 0.94 }
 ]
@@ -44,7 +44,7 @@ function held(x: number, y: number, sheet: NonNullable<(typeof ARMS)[number]['sh
   const c = Math.cos(rot)
   const n = Math.sin(rot)
   const z = sheet.z + PAPER.edge
-  const down = fed ? 0 : PAPER.edge + 3
+  const down = fed ? 0 : PAPER.hold
   const at = (side: number): Place => ({ x: mx + side * c * PAPER.hands - n * down, y: my + side * n * PAPER.hands + c * down, z })
   const hands: [Place, Place] = [at(-1), at(1)]
   const cx = mx - n * (whole / 2)
