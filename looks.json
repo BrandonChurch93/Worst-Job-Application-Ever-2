@@ -1,35 +1,35 @@
 {
   "folder": "cursor-act",
-  "pushed": "2026-11-25T13:49:31.772Z",
-  "commit": "fe7f43494f30c644d88e7a0e56772833818f4cf1",
+  "pushed": "2026-11-25T14:18:41.918Z",
+  "commit": "7e5cbd30c664546358f071a622defda175560a5c",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Sheet cursor-acting beside the approved image, draft tier, on the first real body: acting, damage and arms are real, sweat, steam and smoke wait for the effects",
-      "time": "2026-11-25T13:49:29.812Z",
-      "by": "cursor-act",
-      "from": "out/work/compare/compare-cursor-acting.jpg"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "Sheet cursor-damage beside the approved image, draft tier, on the first real body: acting, damage and arms are real, sweat, steam and smoke wait for the effects",
-      "time": "2026-11-25T13:49:30.045Z",
-      "by": "cursor-act",
-      "from": "out/work/compare/compare-cursor-damage.jpg"
-    },
-    {
-      "file": "look-3.jpg",
-      "caption": "Sheet cursor-arms beside the approved image, draft tier, on the first real body: acting, damage and arms are real, sweat, steam and smoke wait for the effects",
-      "time": "2026-11-25T13:49:30.290Z",
+      "caption": "Sheet cursor-arms: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-25T14:18:13.760Z",
       "by": "cursor-act",
       "from": "out/work/compare/compare-cursor-arms.jpg"
     },
     {
-      "file": "look-4.jpg",
-      "caption": "The tug across its beat, draft tier: arms sprout, strain, the body braces",
-      "time": "2026-11-25T13:49:30.515Z",
+      "file": "look-2.jpg",
+      "caption": "Acting sheet beside the approved one, with the merged body, effects and surface: sweat, heat, steam, grey scared, melted exhausted, burnt hole",
+      "time": "2026-11-25T14:18:40.166Z",
       "by": "cursor-act",
-      "from": "out/work/sheets/sheet-beat-step1_tug-preview-draft.jpg"
+      "from": "out/work/compare/compare-cursor-acting.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Damage sheet beside the approved one: the pile fanned open strip by strip, tape on the reassembled body",
+      "time": "2026-11-25T14:18:40.430Z",
+      "by": "cursor-act",
+      "from": "out/work/compare/compare-cursor-damage.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Arms sheet beside the approved one: thicker arms, larger hands, no paper yet",
+      "time": "2026-11-25T14:18:40.661Z",
+      "by": "cursor-act",
+      "from": "out/work/compare/compare-cursor-arms.jpg"
     }
   ]
 }
