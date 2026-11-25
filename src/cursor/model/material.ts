@@ -12,6 +12,8 @@ export interface BodyUniforms {
   uMarks: { value: THREE.Vector4 }
   // The band the strips are cut across: its start and the width of one strip, in outline units.
   uCut: { value: THREE.Vector2 }
+  // flat, and three spare numbers.
+  uShape: { value: THREE.Vector4 }
   // x, y, radius, glow of each hole, in outline units.
   uHoles: { value: THREE.Vector4[] }
   // How burnt each hole is: 1 a charred burn, 0 a clean punched hole.
@@ -24,6 +26,7 @@ export function bodyUniforms(): BodyUniforms {
     uState: { value: new THREE.Vector4() },
     uMarks: { value: new THREE.Vector4() },
     uCut: { value: new THREE.Vector2(-6.1, 1.4) },
+    uShape: { value: new THREE.Vector4() },
     uHoles: { value: Array.from({ length: MAX_HOLES }, () => new THREE.Vector4()) },
     uBurnt: { value: new THREE.Vector4(1, 1, 1, 1) },
     uDetail: { value: detailTexture() }
@@ -51,8 +54,10 @@ void wjaHoles( vec3 rest ) {
 const VERTEX_HEAD = /* glsl */ `
 attribute vec3 aRest;
 attribute float aInk;
+attribute float aInset;
 varying vec3 vRest;
 varying float vInk;
+varying float vInset;
 varying vec3 vAcross;
 varying vec3 vDown;
 `
@@ -60,11 +65,13 @@ varying vec3 vDown;
 const FRAGMENT_HEAD = /* glsl */ `
 varying vec3 vRest;
 varying float vInk;
+varying float vInset;
 varying vec3 vAcross;
 varying vec3 vDown;
 uniform vec4 uState;
 uniform vec4 uMarks;
 uniform vec2 uCut;
+uniform vec4 uShape;
 uniform sampler2D uDetail;
 ${HOLE_COMMON}
 vec3 wjaGlow = vec3( 0.0 );
@@ -114,13 +121,25 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
   vec2 grain = vec2(
     texture2D( uDetail, q / 1.9 + vec2( e, 0.0 ) ).g - texture2D( uDetail, q / 1.9 - vec2( e, 0.0 ) ).g,
     texture2D( uDetail, q / 1.9 + vec2( 0.0, e ) ).g - texture2D( uDetail, q / 1.9 - vec2( 0.0, e ) ).g );
-  float ink = smoothstep( 0.3, 0.7, vInk ) * ( 1.0 - smoothstep( 0.0, 0.55, melt ) );
+  float bare = step( 1.5, vInk );
+  float ink = smoothstep( 0.3, 0.7, vInk ) * ( 1.0 - bare ) * ( 1.0 - smoothstep( 0.0, 0.55, melt ) );
+  ink *= 1.0 - uShape.x * smoothstep( 0.2, 0.34, vInset );
   float face = 1.0 - ink;
   vec3 col = mix( enamel, edge, ink );
   wjaRough = mix( 0.3, 0.55, ink );
   wjaCoatRough = mix( 0.05, 0.3, ink );
   wjaCoat = mix( 1.0, 0.45, ink );
   wjaSpec = mix( 1.0, 0.35, ink );
+
+  // A cut face: bare fired clay, with the dark of the edge band only at its foot.
+  if ( bare > 0.5 ) {
+    vec3 clay = vec3( 0.84, 0.79, 0.68 ) * ( 0.84 + 0.2 * fine.g + 0.12 * mid.b );
+    col = mix( edge, clay, smoothstep( 0.1, 0.42, vRest.z ) );
+    wjaRough = 0.92;
+    wjaCoat = 0.0;
+    wjaSpec = 0.3;
+    wjaTilt += grain * 2.5;
+  }
 
   // Crazing: a web of hairline cracks, and each plate between them tipped a hair its own way.
   float crack = uMarks.x * face;
@@ -243,7 +262,7 @@ export function bodyMaterial(uniforms: BodyUniforms): THREE.MeshPhysicalMaterial
     shader.uniforms.uEdge = { value: edge }
     shader.vertexShader = VERTEX_HEAD + shader.vertexShader.replace(
       '#include <begin_vertex>',
-      '#include <begin_vertex>\nvRest = aRest;\nvInk = aInk;\nvAcross = normalize( normalMatrix * vec3( 1.0, 0.0, 0.0 ) );\nvDown = normalize( normalMatrix * vec3( 0.0, -1.0, 0.0 ) );'
+      '#include <begin_vertex>\nvRest = aRest;\nvInk = aInk;\nvInset = aInset;\nvAcross = normalize( normalMatrix * vec3( 1.0, 0.0, 0.0 ) );\nvDown = normalize( normalMatrix * vec3( 0.0, -1.0, 0.0 ) );'
     )
     shader.fragmentShader = ('uniform vec3 uEnamel;\nuniform vec3 uEdge;\n' + FRAGMENT_HEAD + shader.fragmentShader)
       .replace('#include <color_fragment>', '#include <color_fragment>\nwjaHoles( vRest );\ndiffuseColor.rgb = wjaSurface( uEnamel, uEdge );')
