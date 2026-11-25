@@ -1,0 +1,29 @@
+{
+ "critic": "R8",
+ "score": 8,
+ "pass": true,
+ "model": "kimi_k3",
+ "issues": [
+  {
+   "severity": "minor",
+   "file": "set-A-01.png",
+   "where": "middle of the page, below the form",
+   "what": "the page at rest leaves the lower ~40% of the viewport completely empty except for a lone mouse pointer floating over nothing, so as a still it reads unfinished and the cursor has no purpose",
+   "fix": "either crop/heighten the page to the content at rest, or place the pointer over an actual control (e.g. the Continue button or the first field) so the rest frame reads as a composed page"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-02.png",
+   "where": "the focused First name field",
+   "what": "the amber focus glow is thick and blooms well past the field, rising into the 'First name' label and fading over the page surface; readable, but heavier than any other element on the page and slightly washes the label",
+   "fix": "halve the glow radius and keep a clean 2-3px focus ring so the label above stays crisp"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-02.png",
+   "where": "helper line above the keyboard ('Physical keyboards are not supported...')",
+   "what": "set in the same small gray as the field helpers, it competes with them rather than reading as a page-level notice tied to the new keyboard mechanism",
+   "fix": "give it the body-text size/color or an icon so it reads as a notice, not a fourth field helper"
+  }
+ ]
+}
