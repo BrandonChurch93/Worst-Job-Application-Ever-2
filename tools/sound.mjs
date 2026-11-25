@@ -597,13 +597,21 @@ export async function siteInBrowser(dir = at('dist'), o = {}) {
     page.on('pageerror', (e) => errors.push(String(e.message)))
     if (block) await page.route(block, (route) => route.fulfill({ status: 404, body: 'not found' }))
     await page.addInitScript(() => {
-      window.__sound = { contexts: 0, plays: 0, taps: [] }
+      window.__sound = { contexts: 0, plays: 0, taps: [], running: new Set(), made: [] }
+      const startSource = AudioBufferSourceNode.prototype.start
+      AudioBufferSourceNode.prototype.start = function (...r) {
+        const node = this
+        window.__sound.running.add(node)
+        node.addEventListener('ended', () => window.__sound.running.delete(node))
+        return startSource.apply(this, r)
+      }
       const Real = window.AudioContext
       if (Real) {
         window.AudioContext = class extends Real {
           constructor(...a) {
             super(...a)
             window.__sound.contexts++
+            window.__sound.made.push(this)
             const tap = this.createAnalyser()
             tap.fftSize = 2048
             window.__sound.taps.push(tap)
@@ -716,6 +724,61 @@ export async function siteInBrowser(dir = at('dist'), o = {}) {
     await gone.page.waitForTimeout(3500)
     out.removed = { started: gone.started, before: goneBefore, after: await gone.look(), console: gone.consoleLines, errors: gone.errors }
     await gone.context.close()
+
+    if (after.control > 0) {
+      const film = await visit('mode=film', { wait: 1200 })
+      const page = film.page
+      const read = async (what) => ({ what, ...(await page.evaluate(() => ({ level: window.__sound.made[0]?.state === 'running' ? window.__level() : null, sources: window.__sound.running.size, toneLoops: [...window.__sound.running].filter((n) => n.loop).length, context: window.__sound.made[0]?.state ?? 'none' }))) })
+      const playButton = await page.evaluate(() => {
+        const b = [...document.querySelectorAll('button[aria-label]')].find((x) => !/sound/i.test(x.getAttribute('aria-label')) && x.hasAttribute('aria-pressed') && x.getClientRects().length > 0)
+        if (b) b.setAttribute('data-play-check', '1')
+        return Boolean(b)
+      })
+      const position = await page.evaluate(() => {
+        const r = [...document.querySelectorAll('input[type="range"]')].find((x) => x.getClientRects().length > 0)
+        if (r) r.setAttribute('data-position-check', '1')
+        return r ? { min: Number(r.min || 0), max: Number(r.max || 0) } : null
+      })
+      const steps = []
+      if (playButton && position) {
+        const press = () => page.click('[data-play-check]')
+        const seek = (v) => page.evaluate((value) => {
+          const r = document.querySelector('[data-position-check]')
+          r.value = String(value)
+          r.dispatchEvent(new Event('input', { bubbles: true }))
+          r.dispatchEvent(new Event('change', { bubbles: true }))
+        }, v)
+        const hide = (state) => page.evaluate((v) => {
+          Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => v })
+          document.dispatchEvent(new Event('visibilitychange'))
+        }, state)
+        await page.keyboard.press('Shift')
+        await page.waitForTimeout(2500)
+        steps.push(await read('playing'))
+        await press()
+        await page.waitForTimeout(400)
+        steps.push(await read('paused'))
+        await press()
+        await page.waitForTimeout(200)
+        steps.push(await read('playing again'))
+        await seek(position.min + (position.max - position.min) * 0.4)
+        await page.waitForTimeout(200)
+        steps.push(await read('after a seek while playing'))
+        await hide('hidden')
+        await page.waitForTimeout(400)
+        steps.push(await read('page hidden'))
+        await hide('visible')
+        await page.waitForTimeout(400)
+        steps.push(await read('page back'))
+        await press()
+        await page.waitForTimeout(300)
+        await seek(position.min + (position.max - position.min) * 0.1)
+        await page.waitForTimeout(400)
+        steps.push(await read('after a seek while paused'))
+      }
+      out.film = { started: film.started, playButton, position: Boolean(position), steps, errors: film.errors, console: film.consoleLines }
+      await film.context.close()
+    }
 
     if (o.still !== false && c.stills.length) {
       const { readCanvas, stillFrom } = await import('./lib/capture.mjs')
