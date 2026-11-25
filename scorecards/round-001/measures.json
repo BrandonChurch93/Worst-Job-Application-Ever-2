@@ -1,0 +1,114 @@
+{
+  "round": 1,
+  "commit": "0dfc589",
+  "ran": "M4,M5,M6,M7,M9,M10 (M1,M2,M3,M8 are not built yet)",
+  "units": {
+    "boss": {
+      "tier": "draft",
+      "format": "hd",
+      "engineHash": "16022bd5432726ea",
+      "exit": 2,
+      "green": [
+        "M4",
+        "M6",
+        "M7",
+        "M9"
+      ],
+      "red": [
+        "M5"
+      ],
+      "notYet": []
+    },
+    "decision": {
+      "tier": "draft",
+      "format": "hd",
+      "engineHash": "16022bd5432726ea",
+      "exit": 2,
+      "green": [
+        "M5",
+        "M6",
+        "M9"
+      ],
+      "red": [
+        "M4",
+        "M7"
+      ],
+      "notYet": []
+    },
+    "film": {
+      "tier": "draft",
+      "format": "hd",
+      "engineHash": "16022bd5432726ea",
+      "exit": 2,
+      "green": [],
+      "red": [
+        "M7"
+      ],
+      "notYet": []
+    },
+    "marketing": {
+      "tier": "draft",
+      "format": "hd",
+      "engineHash": "16022bd5432726ea",
+      "exit": 0,
+      "green": [
+        "M4",
+        "M5",
+        "M6",
+        "M7",
+        "M9"
+      ],
+      "red": [],
+      "notYet": []
+    },
+    "pinball": {
+      "tier": "draft",
+      "format": "hd",
+      "engineHash": "16022bd5432726ea",
+      "exit": 2,
+      "green": [
+        "M5",
+        "M6",
+        "M10"
+      ],
+      "red": [
+        "M4",
+        "M7",
+        "M9"
+      ],
+      "notYet": []
+    },
+    "step1": {
+      "tier": "draft",
+      "format": "hd",
+      "engineHash": "16022bd5432726ea",
+      "exit": 2,
+      "green": [
+        "M4",
+        "M6"
+      ],
+      "red": [
+        "M5",
+        "M7",
+        "M9"
+      ],
+      "notYet": []
+    },
+    "step2": {
+      "tier": "draft",
+      "format": "hd",
+      "engineHash": "16022bd5432726ea",
+      "exit": 2,
+      "green": [
+        "M4",
+        "M6",
+        "M9"
+      ],
+      "red": [
+        "M5",
+        "M7"
+      ],
+      "notYet": []
+    }
+  }
+}
