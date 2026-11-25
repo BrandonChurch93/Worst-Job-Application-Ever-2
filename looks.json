@@ -1,0 +1,35 @@
+{
+  "folder": "cursor-model",
+  "pushed": "2026-11-25T14:06:53.073Z",
+  "commit": "346df519b08fc3043e85531cf989e87f1df00423",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Still sheet-cursor-acting-hd-draft-standins: draft tier, hd, view standins",
+      "time": "2026-11-25T14:06:13.676Z",
+      "by": "cursor-model",
+      "from": "out/work/stills/sheet-cursor-acting-hd-draft-standins.png"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Acting states: approved above, cursor model below (sweep at fixed poses)",
+      "time": "2026-11-25T14:06:51.362Z",
+      "by": "cursor-model",
+      "from": "out/work/cursor-model/report/r-beside-acting.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Damage states: approved above, cursor model below",
+      "time": "2026-11-25T14:06:51.592Z",
+      "by": "cursor-model",
+      "from": "out/work/cursor-model/report/r-beside-harm.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Acting sheet and step1-fire key on the merged tree, draft tier",
+      "time": "2026-11-25T14:06:51.817Z",
+      "by": "cursor-model",
+      "from": "out/work/cursor-model/report/r-on-main.jpg"
+    }
+  ]
+}
