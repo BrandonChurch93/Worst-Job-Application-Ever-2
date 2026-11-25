@@ -1,6 +1,8 @@
 import { config } from '../config'
 import { homePose } from '../stage/camera'
 import type { DrawList, PageLogic, SheetFrame } from '../stage/types'
+import { PAPER as SHEET_OF_STEP1 } from '../pages/step1/layout'
+import { TUG } from '../pages/step1/script'
 import { gatheredAt, pileAt, restPose, STRIKE, type CursorPose, type Place } from './body'
 
 const hover = config.scale.heights.cursorHover
@@ -17,7 +19,7 @@ const reach = (x: number, y: number, left: [number, number, number], right: [num
 ]
 
 // The resume sheet of the tug, at its true size beside the cursor: flat on the page, held by its top edge.
-const PAPER = { w: 220, h: 300, hands: 34, edge: 5, tall: config.scale.heights.paper }
+const PAPER = { w: SHEET_OF_STEP1.w, h: SHEET_OF_STEP1.h, hands: TUG.hands, edge: 5, tall: config.scale.heights.paper }
 
 // Standing idle, waving, holding, pulling, bracing to push. Hands in page pixels from the tip.
 // A pose with a sheet names where the middle of the sheet's top edge is from the tip: its hands are on that edge.

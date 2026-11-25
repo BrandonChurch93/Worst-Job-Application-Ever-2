@@ -14,12 +14,12 @@ export const TIMES = {
   slabCount: 3, slabFirst: 0.4, slabEvery: 0.55, slabHang: 0.2, slabFall: 0.2, slabSettle: 0.12, slabLie: 0.25, slabLift: 0.18,
   paperSlide: 0.42, bite: 0.4, tugFilm: 5.06, lost: 0.3
 }
-export const TUG = { stiff: 2600, damp: 36, strainPx: 24, shoulder: { x: 14, y: 30 }, hands: 64, rateLag: 0.07, inside: 34, least: 24, reach: { rest: 58, min: 42, max: 92, bite: 80, haul: 220 } }
+export const TUG = { stiff: 2600, damp: 36, strainPx: 9.6, lead: 0.4, shoulder: { x: 14, y: 30 }, hands: 29, rateLag: 0.07, inside: 10, least: 10, reach: { rest: 44, min: 38, max: 54, bite: 26, haul: 70 } }
 export const SPOT = { x: -12, y: -14 }
-export const BITE = { x: SLOT.cx - PAPER.w / 2, y: SLOT.cy - PAPER.h + 8 }
-export const HOOD = { y: SLOT.cy + 44, z: 8 }
+export const BITE = { x: SLOT.cx - PAPER.w / 2, y: SLOT.cy - PAPER.h + 3 }
+export const HOOD = { y: SLOT.cy + 17, z: 26 }
 export const FRINGE = { from: 0.12, step: 0.03, rate: 1.2, most: 0.34 }
-export const PILE = { x: SLOT.cx - 20, y: SLOT.cy + 176 }
+export const PILE = { x: SLOT.cx - 20, y: SLOT.cy + 60 }
 export const SHRED = { in: 0.3, gone: 0.34, strips: 0.12, pile: 0.78, pileSeconds: 1.0, empty: 0.92, emptySeconds: 0.84, zip: 1.78, zipSeconds: 1.0, end: 2.8 }
 
 // The film's first name: every time is a second of the unit. The turrets are up at 3.52 and fire at 4.12, 4.57, 5.02, 5.47, 5.92, and so on.
@@ -213,13 +213,13 @@ export function makePlan(seed: number, first: string, last: string, email: strin
   }
 
   // step1.resume: it watches the keyboard go, fetches its paper and carries it over
-  const grab = { x: PAPER_REST.x + PAPER.w - 62, y: PAPER_REST.y + 24 }
+  const grab = { x: PAPER_REST.x + PAPER.w - 12, y: PAPER_REST.y + 8 }
   cue(RESUME.look, { react: 'dustOff' })
   to(RESUME.walk[0], RESUME.walk[1], grab.x, grab.y, { arc: -34 })
   cue(RESUME.grab - 0.06, { react: 'anticipate' })
   clicks.push([RESUME.grab, RESUME.drop])
-  to(RESUME.hoist[0], RESUME.hoist[1], grab.x - 8, grab.y - 26, { ease: 'out' })
-  to(RESUME.carry[0], RESUME.carry[1], BITE.x + (grab.x - PAPER_REST.x), BITE.y + (grab.y - PAPER_REST.y), { arc: 52 })
+  to(RESUME.hoist[0], RESUME.hoist[1], grab.x - 6, grab.y - 20, { ease: 'out' })
+  to(RESUME.carry[0], RESUME.carry[1], BITE.x + (grab.x - PAPER_REST.x), BITE.y - 14 + (grab.y - PAPER_REST.y), { arc: 52 })
 
   // step1.tug: the paper's curve places the pointer, so the body leans, loses ground and wins a little of it back
   const bite = RESUME.drop + TIMES.bite
@@ -248,7 +248,7 @@ function tugPoint(tau: number): { x: number; y: number } {
   const amount = tugCurve(tau)
   const reach = tugReach((tugCurve(tau + 0.03) - tugCurve(tau - 0.03)) / 0.06)
   const lean = tugAt(tau, 2)
-  const strain = tugAt(tau, 3) + 4 * Math.sin(tau * 23)
+  const strain = (tugAt(tau, 3) + 4 * Math.sin(tau * 23)) * TUG.lead
   const far = Math.max(TUG.least, PAPER.h * (1 - amount) - TUG.inside) + strain * (1 + TUG.stiff / 480) + reach
   return { x: SLOT.cx - Math.sin(lean) * far - TUG.shoulder.x, y: SLOT.cy - Math.cos(lean) * far - TUG.shoulder.y }
 }
@@ -272,16 +272,20 @@ export function pointerAt(plan: Plan, time: number): Pointer {
   return { x: s.x0 + (s.x1 - s.x0) * u + s.side * bulge, y: s.y0 + (s.y1 - s.y0) * u - s.arc * bulge, down }
 }
 
-// The film camera in the tug: a window of the page for a moment. It pushes in to the whole drop zone with the slot, the rollers and the strips under the hood, and holds there through the key picture at 25.125. Its right edge stays in the gutter before the field column, so no label or field of that column is cut by the frame, and the label of the drop zone is whole. No closer: under about 850 px of page the frame has less fine detail than the approved image.
+// The film camera in the tug: a window of the page for a moment. One push with an ease from home to a close frame on the cursor, its arms, the sheet, the intake and the outlet, as wide as the fine detail allows at the key picture of 25.125 and closer after it. It drifts down as the sheet gets short, holds on the intake and the outlet while the cursor goes through and the strips drop, and only then pulls out. Its right edge stays left of the field column, so no word of that column is cut.
 const TUG_EDGE = FIELD_X - 16
-const TUG_WIDE = { x: TUG_EDGE - 1000, y: ZONE.y - 46, w: 1000, h: 562.5 }
-const TUG_CLOSE = { x: TUG_EDGE - 928, y: ZONE.y - 46, w: 928, h: 522 }
-export const CAMERA = { in: [21.1, 22.1] as [number, number], push: 2.7, out: [27.6, 28.9] as [number, number] }
+const TUG_FRAMES = { wide: 972, key: 972, close: 462, mid: SLOT.cx + 4, high: 250, top: SLOT.cy - 182, low: SLOT.cy - 122 }
+const tugFrame = (w: number, top: number): { x: number; y: number; w: number; h: number } => ({ x: Math.min(TUG_EDGE - w, TUG_FRAMES.mid - w / 2), y: top, w, h: (w * 9) / 16 })
+export const CAMERA = { in: [21.1, 22.1] as [number, number], key: 25.125, closer: [25.15, 26.15] as [number, number], down: [26.9, 28.1] as [number, number], out: [28.3, 29.1] as [number, number] }
 
 export function filmCamera(time: number): CameraPose {
   const home = homePose(0)
   if (time <= CAMERA.in[0] || time >= CAMERA.out[1]) return home
-  const close = mixPose(frame(TUG_WIDE), frame(TUG_CLOSE), smooth((time - CAMERA.in[1]) / CAMERA.push))
+  const creep = smooth((time - CAMERA.in[1]) / (CAMERA.key - CAMERA.in[1]))
+  const closer = smooth((time - CAMERA.closer[0]) / (CAMERA.closer[1] - CAMERA.closer[0]))
+  const down = smooth((time - CAMERA.down[0]) / (CAMERA.down[1] - CAMERA.down[0]))
+  const w = TUG_FRAMES.wide + (TUG_FRAMES.key - TUG_FRAMES.wide) * creep + (TUG_FRAMES.close - TUG_FRAMES.key) * closer
+  const top = TUG_FRAMES.high + (TUG_FRAMES.top - TUG_FRAMES.high) * closer + (TUG_FRAMES.low - TUG_FRAMES.top) * down
   const u = smooth((time - CAMERA.in[0]) / (CAMERA.in[1] - CAMERA.in[0])) * (1 - smooth((time - CAMERA.out[0]) / (CAMERA.out[1] - CAMERA.out[0])))
-  return mixPose(home, close, u)
+  return mixPose(home, frame(tugFrame(w, top)), u)
 }

@@ -6,8 +6,8 @@ import type { ArmsLook, ArmsModel } from '../contract'
 
 // Sizes in page pixels. The arm is 7% of the body's height thick, the hand a fifth of it long.
 const H = config.cursor.heightPxAt1080
-export const ARM = { radius: H * 0.035, rest: 62, along: 22, round: 10, grainPx: 64, slack: 1.04 }
-const HAND = { palm: [4.6, 4.7, 2.7], palmY: 4.8, finger: 1.5, joint: 3.1, cuff: 2.5, cuffTube: 1.05, joints: 8 }
+export const ARM = { radius: H * 0.035, rest: 48, along: 22, round: 10, grainPx: 64, slack: 1.04 }
+const HAND = { palm: [4.6, 4.7, 2.7], palmY: 4.8, finger: 1.5, joint: 3.1, joints: 8 }
 
 export interface Arms extends ArmsModel {
   // How far the arms have grown, 0 to 1 and a little over: the hands swell with it.
@@ -16,7 +16,7 @@ export interface Arms extends ArmsModel {
   over: number
 }
 
-let shared: { rubber: THREE.MeshPhysicalMaterial; grain: THREE.DataTexture; palm: THREE.BufferGeometry; joint: THREE.BufferGeometry; cuff: THREE.BufferGeometry } | null = null
+let shared: { rubber: THREE.MeshPhysicalMaterial; grain: THREE.DataTexture; palm: THREE.BufferGeometry; joint: THREE.BufferGeometry } | null = null
 
 function parts() {
   if (shared) return shared
@@ -24,7 +24,7 @@ function parts() {
   grain.repeat.set(2, 5)
   const rubber = studio(
     new THREE.MeshPhysicalMaterial({
-      color: new THREE.Color().setHex(0x262524, THREE.SRGBColorSpace),
+      color: new THREE.Color().setHex(0x1b1b1c, THREE.SRGBColorSpace),
       roughness: 0.66,
       metalness: 0,
       sheen: 0.8,
@@ -37,8 +37,7 @@ function parts() {
   )
   const palm = new THREE.SphereGeometry(1, 20, 14).scale(HAND.palm[0]!, HAND.palm[1]!, HAND.palm[2]!)
   const joint = new THREE.CapsuleGeometry(HAND.finger, HAND.joint, 4, 10).translate(0, HAND.joint / 2, 0)
-  const cuff = new THREE.TorusGeometry(HAND.cuff, HAND.cuffTube, 8, 18).rotateX(Math.PI / 2)
-  shared = { rubber, grain, palm, joint, cuff }
+  shared = { rubber, grain, palm, joint }
   return shared
 }
 
@@ -51,7 +50,6 @@ const RINGS = ARM.along + 1
 class Limb {
   readonly hand = new THREE.Group()
   private palm = new THREE.Object3D()
-  private cuff = new THREE.Object3D()
   private fingers: Finger[] = []
   private c = new THREE.Vector3()
   private p = new THREE.Vector3()
@@ -62,8 +60,7 @@ class Limb {
 
   constructor(private side: number, private slot: number) {
     this.palm.position.set(0, HAND.palmY, 0)
-    this.cuff.position.set(0, 0.3, 0)
-    this.hand.add(this.palm, this.cuff)
+    this.hand.add(this.palm)
     const lay: [number, number, number, number, number, boolean][] = [
       [-2.5, 7.4, 0.11, 0.04, 1, false], [0, 8.1, 0, 0, 1.12, false], [2.5, 7.4, -0.11, -0.04, 1, false], [3.6, 3.4, -0.95, -0.45, 0.86, true]
     ]
@@ -151,7 +148,6 @@ class Limb {
     }
     this.hand.updateMatrixWorld(true)
     d3.palms.setMatrixAt(this.slot, this.palm.matrixWorld)
-    d3.cuffs.setMatrixAt(this.slot, this.cuff.matrixWorld)
     this.fingers.forEach((f, i) => {
       d3.joints.setMatrixAt(this.slot * HAND.joints + i * 2, f.base.matrixWorld)
       d3.joints.setMatrixAt(this.slot * HAND.joints + i * 2 + 1, f.tip.matrixWorld)
@@ -159,13 +155,13 @@ class Limb {
   }
 }
 
-const HAND_SCALE = 1.18
+const HAND_SCALE = 0.9
 // A clenched fist bulges: without this a closed hand is half the size of an open one and is lost on the sheet it holds.
 const FIST = 0.4
 
-interface Draw { position: THREE.BufferAttribute; normal: THREE.BufferAttribute; palms: THREE.InstancedMesh; cuffs: THREE.InstancedMesh; joints: THREE.InstancedMesh }
+interface Draw { position: THREE.BufferAttribute; normal: THREE.BufferAttribute; palms: THREE.InstancedMesh; joints: THREE.InstancedMesh }
 
-// Two thin matte black rubber arms with small plain hands of three fingers and a thumb. Four draws for the pair: both tubes as one mesh, then the palms, the cuffs and the finger joints as instances.
+// Two thin matte black rubber arms with small plain hands of three fingers and a thumb. Three draws for the pair: both tubes as one mesh, then the palms and the finger joints as instances.
 export const makeArms: (() => Arms) | null = () => {
   const s = parts()
   const root = new THREE.Group()
@@ -203,7 +199,6 @@ export const makeArms: (() => Arms) | null = () => {
     position,
     normal,
     palms: add(new THREE.InstancedMesh(s.palm, s.rubber, 2)),
-    cuffs: add(new THREE.InstancedMesh(s.cuff, s.rubber, 2)),
     joints: add(new THREE.InstancedMesh(s.joint, s.rubber, 2 * HAND.joints))
   }
   const limbs = [new Limb(-1, 0), new Limb(1, 1)]
@@ -216,13 +211,11 @@ export const makeArms: (() => Arms) | null = () => {
       position.needsUpdate = true
       normal.needsUpdate = true
       draw.palms.instanceMatrix.needsUpdate = true
-      draw.cuffs.instanceMatrix.needsUpdate = true
       draw.joints.instanceMatrix.needsUpdate = true
     },
     dispose(): void {
       geometry.dispose()
       draw.palms.dispose()
-      draw.cuffs.dispose()
       draw.joints.dispose()
     }
   }
