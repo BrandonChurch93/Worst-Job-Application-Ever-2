@@ -18,7 +18,7 @@ Every texture here is made in code at start, from `config.seed`. No file is down
 - From: the folds of `creaseExact` in `paperSolve.ts`, the same folds the grid of the sheet is bent by. The folds are solved at the drawn size (220 px wide) and the sheet is that shape at 64 / 220 of the size
 - Prompt or command: none; built with the first sheet
 - Takes: about 0.2 s
-- Why this one: the grid of the sheet cannot hold a sharp ridge; this picture holds the ridges of the same folds, so shading and shape agree. Its strength follows how hard the sheet has been used (`normalScale` 0.04 to 0.16), so the sheet at rest is clean stock
+- Why this one: the grid of the sheet cannot hold a sharp ridge; this picture holds the ridges of the same folds, so shading and shape agree. Its strength follows how hard the sheet has been used (`normalScale` 0.16 on a fresh sheet to 0.66 on a spent one, raised in fix round 3 of the tug so the creases show at the film's size), so the sheet at rest is clean stock
 - Size: 512 by 704 px, 1.83 MB
 - Date: 2026-11-25
 
