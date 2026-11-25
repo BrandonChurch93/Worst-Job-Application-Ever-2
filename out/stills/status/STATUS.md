@@ -1,8 +1,8 @@
 # Status pictures
 
-Time: 2026-11-25T15:40Z. Phase 3, status 29.
+Time: 2026-11-25T16:04Z. Phase 3, status 30.
 
-1. `01-keyboard-beside-approved-after-fixes.jpg`: The keyboard under fire: your approved picture above, the build below at the review tier, made by the keyboard's agent after the 15:32Z list. Stepped barrels with a bore, even keycap rims, brighter bolts. Your caps are still softer and more dished.
-2. `02-tug-beside-approved.jpg`: The tug of war: your approved picture on the left, the build on the right at the review tier, made by the scene's agent. The camera is pushed in as the kit asks; the shredder stands out of its opened slot; the upload glyph is still missing.
-3. `03-cursor-acting-beside-approved.jpg`: The cursor's acting sheet: yours on the left, the build on the right at the review tier, made by the cursor's modeller. Nervous, shocked, angry, scared, exhausted, hit by a laser. The ground's grain is too rough at this closeness.
-4. `04-corporate-lit-by-its-lamps.jpg`: Tier 3 of the pinball machine: your approved picture on the left, the build on the right at the low tier, made by the lamps' agent. The printed floor is lit only by the machine's lamps; every standing part is still a grey stand-in.
+1. `01-round-3-keyboard-still.jpg`: The keyboard under fire as round 3 judged it: the build at the review tier, commit cacc69d. All five jurors who saw only this picture called it a web 3D demo.
+2. `02-cursor-damage-beside-approved.jpg`: Five kinds of damage: your approved sheet above, the build below at the review tier, as the critics saw them. Named by them: coarse ground, too few strips, flat yellow tape, a weak scorch, a hole that reads as a printed dot, cracks that read as ink.
+3. `03-page-text-and-controls.jpg`: Text and controls of step 1 at rest at their real size, the build at the review tier, from the page critic's pack. Its score: 6.
+4. `04-tug-new-frame-beside-approved.jpg`: The tug of war after the round's commit: your approved picture on the left, the build on the right at the review tier, made by the scene's agent and not merged yet. The upload glyph is in, the frame holds the whole drop zone, strips hang from the shredder. Slivers of the right column still show at the edge.

@@ -1,0 +1,168 @@
+{
+  "critic": "R1",
+  "score": 5,
+  "pass": false,
+  "issues": [
+    {
+      "severity": "severe",
+      "file": "set-B-01-b.png",
+      "where": "page surface across the sheet",
+      "what": "The large, high-contrast pores make the page look like rough plaster rather than fine, warm off-white paper.",
+      "fix": "Reduce the grain size, relief and contrast substantially, and warm the clean midtone slightly without introducing a lighting band."
+    },
+    {
+      "severity": "severe",
+      "file": "set-B-02-b.png",
+      "where": "page surface across the sheet",
+      "what": "Coarse black-and-white relief dominates the background where the target has fine, quiet paper tooth.",
+      "fix": "Use much finer, lower-amplitude paper grain and a slightly warmer off-white base under the existing clean light."
+    },
+    {
+      "severity": "severe",
+      "file": "set-B-03-b.png",
+      "where": "page surface across the sheet",
+      "what": "The deep, strongly directional grain reads as stucco, competing with the sweat, smoke and surface changes on the arrows.",
+      "fix": "Substitute fine, low-contrast paper grain and preserve even, clean illumination."
+    },
+    {
+      "severity": "severe",
+      "file": "set-B-01-b.png",
+      "where": "third state, holding paper",
+      "what": "The hands hang from the upper edge on long splayed arms rather than wrapping around opposite sides of a sheet held in front of the arrow. The bold heading, ruled lines and faceted shading dominate the paper instead of a quiet almost blank plane.",
+      "fix": "Bring the hands in and curl the fingers around the sides, so the arrow visibly holds the paper in front of it. Reduce the prominence of the printing and planar facets while preserving any prescribed copy."
+    },
+    {
+      "severity": "severe",
+      "file": "set-B-01-b.png",
+      "where": "fourth state, pulling paper",
+      "what": "The hands are spread on the top of a hanging document, with no visible feed slit. It reads as a second holding state rather than paper under tension being pulled out of the page.",
+      "fix": "Bring the grip points into a pulling action and curve the paper diagonally down into a narrow, dark surface slit, with a visible bend and contact shadow at the opening."
+    },
+    {
+      "severity": "severe",
+      "file": "set-B-01-b.png",
+      "where": "caption row beneath the five states",
+      "what": "The five small, centered charcoal captions are missing; the large dark headings on the props do not supply that visual row.",
+      "fix": "Set the approved copy in a regular-weight charcoal caption centered under each state on a shared baseline."
+    },
+    {
+      "severity": "severe",
+      "file": "set-B-02-b.png",
+      "where": "caption row beneath the five states",
+      "what": "The entire line of visually separate state labels is missing, leaving a blank lower region.",
+      "fix": "Place the approved captions centered below each state in the target's medium-small, regular charcoal type on a common baseline."
+    },
+    {
+      "severity": "severe",
+      "file": "set-B-03-b.png",
+      "where": "caption row beneath the six states",
+      "what": "The outline and shadow row has no individual captions underneath it.",
+      "fix": "Restore the six centered, regular-weight charcoal captions using approved copy, on one consistent baseline below the shadows."
+    },
+    {
+      "severity": "major",
+      "file": "set-B-01-b.png",
+      "where": "first and second states, idle and waving arms and hands",
+      "what": "The gloves are gray, straight-fingered and splayed, while the target has darker satin gloves with more rounded fingers and clearly relaxed hanging wrists. The raised hand consequently reads more as a fan than a rounded open palm.",
+      "fix": "Round the fingers and joints, ease the wrists into relaxed curves on the hanging hands, and shape the raised glove as an open palm with rounded grouped fingers and a distinct thumb."
+    },
+    {
+      "severity": "major",
+      "file": "set-B-01-b.png",
+      "where": "fifth state, bracing to push",
+      "what": "The arms sweep out in two separate arcs with fingers flared outward; the hands do not read as two palms braced against the same resistance.",
+      "fix": "Aim both forearms forward into a shared push plane, bend the wrists back and turn the rounder, less splayed palms toward that plane."
+    },
+    {
+      "severity": "major",
+      "file": "set-B-01-b.png",
+      "where": "five arrow bodies and their cast/contact shadows",
+      "what": "Serrated-looking inner highlight transitions and thin black outlines make the face and sidewall look less molded. The down-right shadows on the arms and hands drag out into soft gray trails instead of separating into dense contact and a distinct cast shadow.",
+      "fix": "Smooth the white bevel highlights and give the dark edge a fuller rounded profile without changing configured size or lift. Reduce the soft shadow trails and bring back a more distinct contact-to-cast transition."
+    },
+    {
+      "severity": "major",
+      "file": "set-B-02-b.png",
+      "where": "intact portions of the arrows and their shadows",
+      "what": "The white faces have localized wobbly gray ridges, especially at inner corners, and the dark perimeter reads as a sharp stroke around a flat plate rather than a rounded dark sidewall. Shadows trail farther down-right and look greyer at contact.",
+      "fix": "Smooth the face into a continuous satin gloss, round the bevel and dark wall, and make the cast shadows more compact and concentrated near contact without changing configured heights."
+    },
+    {
+      "severity": "major",
+      "file": "set-B-02-b.png",
+      "where": "first state, shredded",
+      "what": "There are fewer separately readable strips, and broad black-bordered fragments retain a nearly complete arrow underneath, unlike the target's loose fan of narrow slivers with independently visible ends.",
+      "fix": "Break the remaining outline into more individually separated narrow strips; widen the spaces and vary the tip offsets enough to read each strip and its small shadow."
+    },
+    {
+      "severity": "major",
+      "file": "set-B-02-b.png",
+      "where": "second state, reassembled",
+      "what": "The tape looks yellow and opaque, with a broad band across the face; the joints do not remain nearly as legible as through the target's clear overlapping pieces.",
+      "fix": "Reduce the tape's color and opacity, let the split lines show through, and use restrained edge glints to mark overlapping strips."
+    },
+    {
+      "severity": "major",
+      "file": "set-B-02-b.png",
+      "where": "third state, scorched tip and smoke",
+      "what": "A subtle dark stain and narrow straight plume replace the visibly eroded, textured charcoal crust with a warm singed halo and diffuse curling smoke.",
+      "fix": "Give the tip an irregular, rough black crust, add a narrow caramel scorch transition and let the thin smoke broaden into loose translucent curls."
+    },
+    {
+      "severity": "major",
+      "file": "set-B-02-b.png",
+      "where": "fourth state, punched opening",
+      "what": "The dark filled center and soft stain read more like a printed circle than a punched-through hole with an exposed torn wall.",
+      "fix": "Show an actual open center with a lit ragged lip, visible raw material inside the wall and light falling into the recess."
+    },
+    {
+      "severity": "major",
+      "file": "set-B-02-b.png",
+      "where": "fifth state, flattened",
+      "what": "The face stays relatively flat, the corners and stem retain some rigid angles, and the broad dark fissures overwhelm the target's subdued hairline crazing.",
+      "fix": "Round and slump the outline and stem further, introduce broader surface undulations, and make the branching cracks much thinner and lower contrast."
+    },
+    {
+      "severity": "major",
+      "file": "set-B-03-b.png",
+      "where": "glossy arrow bodies and cast shadows across the state row",
+      "what": "The black edges have a straighter, sharper graphic quality; the gloss catches in isolated wells at inner corners rather than flowing around the bevel. The cast shadows spread into long diffuse gray wedges, with less contrast in the immediate contact region.",
+      "fix": "Soften the bevel transitions and maintain a continuous highlight on the rounded rim, then tighten the spread and restore denser contact shadow while retaining the clean lighting and configured lift."
+    },
+    {
+      "severity": "major",
+      "file": "set-B-03-b.png",
+      "where": "first state, nervous sweat",
+      "what": "Many droplets sit on or spill over the rim, leaving much of the arrow face bare compared with the target's readable scatter of beads across the face and just beyond it.",
+      "fix": "Distribute more discrete droplets across the white face, from small beads to larger drops, with pinpoint highlights and tiny individual cast shadows."
+    },
+    {
+      "severity": "major",
+      "file": "set-B-03-b.png",
+      "where": "third state, angry heated tip and smoke",
+      "what": "The heat is a fairly simple red-and-yellow wedge, while the smoke grows into a broad soft column rising from the apex rather than fine strands curling off the heated face.",
+      "fix": "Layer a red-hot upper zone into a more graduated orange glow and start two or more narrow translucent wisps on the heated surface, letting them curl before dispersing."
+    },
+    {
+      "severity": "major",
+      "file": "set-B-03-b.png",
+      "where": "fourth state, scared surface",
+      "what": "The translucent face reveals background grain and reads as frosted glass; the target is mostly opaque, matte and pale, with its own fine chalklike texture and a soft, solid edge.",
+      "fix": "Make the face opaque with low gloss, fine intrinsic texture and a softly rounded gray bevel instead of showing the background through it."
+    },
+    {
+      "severity": "major",
+      "file": "set-B-03-b.png",
+      "where": "fifth state, exhausted melt",
+      "what": "The blob retains an abrupt apex and straight, heavy stem with a bulbous end, plus stray clear drops. The target's cream material slumps continuously and the tip of the stem turns up in a soft hooked curl.",
+      "fix": "Soften the apex and the shoulder-to-stem transition, curve the stem into a slumped upturned end, and remove the clear sweat-like beads from this state."
+    },
+    {
+      "severity": "major",
+      "file": "set-B-03-b.png",
+      "where": "sixth state, laser hole and smoke",
+      "what": "The nearly black center and relatively uniform dull red rim read as a surface mark. The target has a lighter visible bore, an uneven ember-bright edge with scorching and noticeably curled smoke.",
+      "fix": "Expose an illuminated bore through the arrow, break up the carbonized rim with brighter orange ember accents and a soft scorch halo, and make the lifting smoke coil and disperse."
+    }
+  ]
+}
