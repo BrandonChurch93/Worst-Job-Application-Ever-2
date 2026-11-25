@@ -189,7 +189,7 @@ export function streetThings(b: Buckets, z: Zone): void {
   const rx0 = Math.min(...right.map((s) => s.x0))
   const rx1 = Math.max(...right.map((s) => s.x1))
   const ryf = right[0]!.yf
-  car(b, (rx0 + rx1) / 2 + 22, ryf - 15, Math.PI, rgb(0x4a2422))
+  car(b, (rx0 + rx1) / 2 + 22, ryf - 15, Math.PI, rgb(0x2a2f36))
   hydrant(b, rx0 + 6, ryf - 9)
   lamp(b, rx0 + 10, right[0]!.yb + 16, Math.PI * 0.8, 56)
   lamp(b, rx1 - 3, ryf - 12, 0, 56)
