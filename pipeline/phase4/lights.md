@@ -63,3 +63,20 @@ Insert colours are not mine: `insertColour(n)` and `INSERT_GLOW` of `src/table/r
 ## Proof
 
 `node assets-src/table/lights/proof.mjs` (or `--zone corporate`) writes `out/work/lights/sheet-<zone>.jpg`: the tier with every group at its level, then lit by each group alone.
+
+## What it costs (MEASURED on this machine, 15:35 to 15:37 UTC, branch at a852226)
+
+- One material through the hook: `npm run still -- --key tier-office --format hd --tier draft --force` took 23.319 s with the hook on and 19.114 s with the hook off (first line of `hook` returning at once, same build otherwise). The 4.2 s holds the making of the light pictures and the surround of the zones in view, and the compiling of the patched programs; it is paid once per page load, not per frame.
+- `npm run still -- --key tier-corporate --format hd --tier review --force`: 40.148 s.
+- `npm run counts -- --key <key> --live low`, row `table-lights`, real against the stand-in it replaces (part and hook both off):
+
+| Key | Colour calls, real | Calls with shadow passes, real | Triangles, real | Colour calls, stand-in | Calls, stand-in | Triangles, stand-in |
+| --- | --- | --- | --- | --- | --- | --- |
+| table-wide | 11 | 11 | 21060 | 74 | 136 | 19096 |
+| tier-corporate | 7 | 7 | 14902 | 26 | 74 | 10508 |
+| tier-office | 7 | 7 | 18096 | 24 | 82 | 11344 |
+| tier-street | 5 | 5 | 11614 | 24 | 59 | 8108 |
+
+- Whole frame, same command, real against stand-in: table-wide 616 calls and 228682 triangles against 741 and 226718; tier-corporate 294 and 172730 against 361 and 168336; tier-office 388 and 192310 against 463 and 185558; tier-street 376 and 201814 against 430 and 198308.
+- Per zone the part draws at most 6 meshes (corporate: lenses, sockets, plates, screws, globes, globe glass; office and street: the first four). A tier key shows parts of two zones, hence 7.
+- No file ships from my folder: the pictures of light, the surround and every lamp are made in code. Asset sets: 0 MB.
