@@ -1,35 +1,35 @@
 {
   "folder": "play",
-  "pushed": "2026-11-25T18:12:48.085Z",
-  "commit": "65b42a761fd043f2d94e730d541e43fbaec2e46a",
+  "pushed": "2026-11-25T18:37:58.747Z",
+  "commit": "12c4b0957edb161a1baa7da70b95661691aea567",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Last save, approved beside this build: highway on welded trestles, clear garage trough inside the concrete frame",
-      "time": "2026-11-25T18:12:46.429Z",
+      "caption": "Last save, approved beside this build: trestles under the highway, plain clear trough round its newel",
+      "time": "2026-11-25T18:37:56.897Z",
       "by": "play",
       "from": "out/work/report/play-last-save-compare.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Garage close: clear trough with rolled lip and newel, trestle feet with plates and screws",
-      "time": "2026-11-25T18:12:46.666Z",
+      "caption": "Reply all, approved beside this build: cups with matte lids, warm wells and copper sleeves",
+      "time": "2026-11-25T18:37:57.143Z",
       "by": "play",
-      "from": "out/work/report/play-garage-close.jpg"
+      "from": "out/work/report/play-reply-all-compare.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Cups close: dark skirt, chrome ring on its rods, kraft sleeve, matte lid with a warm lit well",
-      "time": "2026-11-25T18:12:46.902Z",
+      "caption": "Street tier, approved beside this build",
+      "time": "2026-11-25T18:37:57.391Z",
       "by": "play",
-      "from": "out/work/report/play-cups-close.jpg"
+      "from": "out/work/report/play-tier-street-compare.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Rail cam: steel wires, hoops, weld beads and the flap of the highway",
-      "time": "2026-11-25T18:12:47.141Z",
+      "caption": "Garage close: clear trough, rolled lips, trestle feet",
+      "time": "2026-11-25T18:37:57.629Z",
       "by": "play",
-      "from": "out/work/report/play-highway-close.jpg"
+      "from": "out/work/report/play-garage-close.jpg"
     }
   ]
 }
