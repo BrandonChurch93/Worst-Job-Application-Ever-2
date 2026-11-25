@@ -4,10 +4,10 @@ export const look = {
   background: [0.012, 0.012, 0.014] as [number, number, number],
   key: {
     // Toward the light, from the page: upper left, toward the viewer. It sets where the shadows fall.
-    direction: [-0.52, 0.5, 0.69] as [number, number, number],
+    direction: [-0.65, 0.6, 0.45] as [number, number, number],
     // Half the angle the light's area takes up, seen from the page, in radians. It sets how fast a shadow softens with height.
-    radius: 0.2,
-    intensity: 2.8,
+    radius: 0.13,
+    intensity: 4.55,
     colour: [1.0, 0.975, 0.945] as [number, number, number],
     // Where the light stands over the middle of the view, in page pixels: x right, y up the page, z toward the viewer.
     // It sets how the light falls off across the page, lighter at the upper left.
@@ -19,7 +19,7 @@ export const look = {
   },
   dome: {
     // The light a flat page takes from the fill, the same in a picture of any number of samples.
-    intensity: 0.46,
+    intensity: 0.34,
     colour: [1.0, 0.975, 0.945] as [number, number, number],
     shadowMapPx: 2048,
     biasPx: 0.2,
@@ -33,8 +33,13 @@ export const look = {
     // How wide the body of an emitter is taken to be for its shadow's softness, in page pixels.
     sizePx: 5
   },
+  // The studio the surfaces reflect. Its soft light stands higher than the key throws its shadows from, so a flat
+  // glossy face that looks at the viewer still catches the edge of it.
+  studio: {
+    direction: [-0.52, 0.5, 0.69] as [number, number, number]
+  },
   // How much of the studio's light a surface takes as plain diffuse light with no shadow in it.
-  envDiffuse: 0.08,
+  envDiffuse: 0.05,
   // The key's own sharp highlight. The studio's reflection gives highlights their shape, so this stays low.
   keySpecular: 0.0,
   envIntensity: 1.0,

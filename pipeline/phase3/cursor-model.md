@@ -12,7 +12,7 @@ Parts `cursor-body` and `cursor-effects`. Branch `agent/cursor-model`. Owner of 
 
 ## How it is built
 
-- `shape.ts`: the outline with rounded corners as rings of 122 points, the band's section, the enamel's shoulder and dome, an own Delaunay net for the face. One closed solid: 2075 points, 4116 triangles.
+- `shape.ts`: the outline with rounded corners as rings of 122 points, the band's section, the enamel's shoulder and dome, an own Delaunay net for the face. One closed solid: 2060 points, 4116 triangles.
 - `deform.ts`: every bend of the body, on the processor, in this order: gulp, puff, flat, melt, stretch, bend, peel, tremble. Normals are worked out again after it.
 - `material.ts`: one material for enamel and edge (a number on each point says which), built on the shared `studio()` rule and the shared colours of `materials().enamel` and `.edge`. The shader holds crazing, seams, pale stone, char, heat, melt, and up to 4 holes.
 - `strips.ts`: the solid clipped into strips across the tail's axis, with black cut faces.

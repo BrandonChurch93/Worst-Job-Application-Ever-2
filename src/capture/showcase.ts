@@ -109,8 +109,8 @@ export function textureBytes(t: TextureLike): number {
 
 interface Held { texture: THREE.Texture; target: boolean }
 
-// Every texture that can be reached from what the app draws with: the scene's materials and lights, the studio's reflection, and the engine's own targets.
-function reach(roots: unknown[]): Held[] {
+// Every texture that can be reached from what the app draws with: the scene's materials and lights, the studio's reflection, the engine's own targets, and what the renderer itself gives a material (`also`).
+function reach(roots: unknown[], also?: (o: object) => unknown): Held[] {
   const seen = new Set<object>()
   const out = new Map<THREE.Texture, Held>()
   const add = (t: THREE.Texture | null | undefined, target: boolean): void => {
@@ -135,6 +135,7 @@ function reach(roots: unknown[]): Held[] {
       add(o as unknown as THREE.Texture, false)
       continue
     }
+    if (o.isMaterial && also) stack.push(also(o))
     if (o.isRenderTarget) {
       const rt = o as unknown as THREE.WebGLRenderTarget
       for (const t of rt.textures ?? [rt.texture]) add(t, true)
@@ -155,8 +156,9 @@ function reach(roots: unknown[]): Held[] {
 }
 
 // The memory of the textures the renderer holds now. A texture counts once it is on the graphics card, by the renderer's own record of it.
-// `held` is the renderer's own count. What it holds and the walk did not reach is the renderer's own: the target it draws through for a material that lets light through, the size of the picture with a full chain.
-export function textureMemory(app: App): TextureCount {
+// `held` is the renderer's own count. What it holds and the walk did not reach is counted as a target the size of the picture with a full chain, the largest it can be.
+// `known` keeps the textures met in earlier counts: a page drawn before still holds its textures, though the scene no longer leads to them.
+export function textureMemory(app: App, known: Map<THREE.Texture, boolean> = new Map()): TextureCount {
   const renderer = app.engine?.renderer
   if (!renderer) return { mb: 0, counted: 0, held: 0, assetMb: 0, targetMb: 0, unseenMb: 0 }
   const props = renderer.properties as unknown as { has(o: object): boolean; get(o: object): { __webglTexture?: object } }
@@ -164,16 +166,21 @@ export function textureMemory(app: App): TextureCount {
   let assets = 0
   let targets = 0
   const rows: TextureRow[] = []
-  for (const h of reach([app.view.scene, app.environment, app.rig, app.engine])) {
-    if (!props.has(h.texture)) continue
-    const on = props.get(h.texture).__webglTexture
-    if (!on || gpu.has(on)) continue
+  const given = (m: object): unknown => (props.has(m) ? (props.get(m) as { uniforms?: unknown }).uniforms : null)
+  for (const h of reach([app.view.scene, app.environment, app.rig, app.engine], given)) known.set(h.texture, h.target || known.get(h.texture) === true)
+  for (const [texture, target] of [...known]) {
+    const on = props.has(texture) ? props.get(texture).__webglTexture : undefined
+    if (!on) {
+      known.delete(texture)
+      continue
+    }
+    if (gpu.has(on)) continue
     gpu.add(on)
-    const bytes = textureBytes(h.texture as unknown as TextureLike)
-    if (h.target) targets += bytes
+    const bytes = textureBytes(texture as unknown as TextureLike)
+    if (target) targets += bytes
     else assets += bytes
-    const size = textureSize(h.texture as unknown as TextureLike)
-    rows.push({ what: h.texture.name || (h.target ? 'target' : 'picture'), width: size.width, height: size.height, mb: Number((bytes / MB).toFixed(3)), target: h.target })
+    const size = textureSize(texture as unknown as TextureLike)
+    rows.push({ what: texture.name || (target ? 'target' : 'picture'), width: size.width, height: size.height, mb: Number((bytes / MB).toFixed(3)), target })
   }
   rows.sort((a, b) => b.mb - a.mb)
   const held = renderer.info.memory.textures
@@ -351,9 +358,10 @@ export function makeShowcase(app: App, ready: Promise<void>): Showcase {
   const fps = config.film.fps
   const frameOf = (seconds: number) => Math.round(seconds * fps)
   const memory = new Map<string, TextureCount>()
+  const known = new Map<THREE.Texture, boolean>()
   let last: string | null = null
   const weigh = (): void => {
-    if (last !== null) memory.set(last, textureMemory(app))
+    if (last !== null) memory.set(last, textureMemory(app, known))
   }
   const drew = (unit: string): void => {
     last = unit

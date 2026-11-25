@@ -1,8 +1,9 @@
 import * as THREE from 'three'
 import type { PartMaker, RealContext } from '../../real/types'
 import type { Shape, Tone } from '../../stage/types'
+import { look } from '../../post/look'
 import { materials, type Materials } from '../materials'
-import { arc, circle, outlineOf, pocketCut, profile, sweep, type Outline, type ProfilePoint } from '../solids'
+import { arc, circle, outlineOf, pocketCut, profile, roundedRect, sweep, type Outline, type ProfilePoint } from '../solids'
 
 const q = (v: number): number => Math.round(v * 4) / 4
 const geometries = new Map<string, THREE.BufferGeometry>()
@@ -36,31 +37,126 @@ function discUv(g: THREE.BufferGeometry, d: number): THREE.BufferGeometry {
   return g
 }
 
-const RIM = 2.4
-const GLASS_FIELD = 5
+const RIM = 2.8
 
 // The aluminium sleeve of a pocket: a thin flat rim at the surface and a wall that leans in, down to what lies in the pocket.
 function sleeve(s: Shape, surface: number, lean: number): THREE.BufferGeometry {
-  const top = surface - 0.2
+  const top = surface - pocketCut(s).lip - 0.2
+  const foot = RIM - 0.4 + lean * (top - 0.5)
   const points: ProfilePoint[] = [
-    [0.1, top - 0.7, true], [0.5, top, true], [RIM - 0.9, top, true], [RIM - 0.4, top - 0.45, true], [RIM - 0.4 + lean * (top - 0.45), 0, true], [RIM - 0.4 + lean * (top - 0.45), -0.4, true]
+    [0.1, top - 1.2, true], [0.1, top, true], ...bead(RIM - 0.9, top, 0.5, 0.5, 3), [foot, 0, true], [foot, -0.4, true]
   ]
   return sweep(outlineOf(s, 0, 12), profile(points), false)
+}
+
+// The inner quarter of a rounded rim: from its flat top down to where the wall begins.
+function bead(inset: number, z: number, across: number, fall: number, steps: number): ProfilePoint[] {
+  const out: ProfilePoint[] = []
+  for (let i = 0; i <= steps; i++) {
+    const a = (i / steps) * (Math.PI / 2)
+    out.push([inset + across * Math.sin(a), z - fall * (1 - Math.cos(a))])
+  }
+  return out
+}
+
+const SOAK = 10
+const SOAK_HOLD = 8
+const SOAK_DEPTH = 0.66
+const BOUNCE = 0.14
+const SOAK_RINGS = [0, 1.5, 3, 5, 7.5, 10.5, 14, 18, 23, 29, 36]
+
+// One ring of a sunk face: a rounded rectangle with extra points along its straight sides, the same count for every ring.
+function denseRing(w: number, h: number, r: number, perCorner: number, along: number, across: number): [number, number][] {
+  const o = roundedRect(w, h, r, perCorner)
+  const n = perCorner + 1
+  const out: [number, number][] = []
+  for (let c = 0; c < 4; c++) {
+    for (let i = 0; i < n; i++) out.push([o.x[c * n + i]!, o.y[c * n + i]!])
+    const from = c * n + n - 1
+    const to = ((c + 1) % 4) * n
+    const steps = c % 2 === 0 ? along : across
+    for (let k = 1; k < steps; k++) out.push([o.x[from]! + ((o.x[to]! - o.x[from]!) * k) / steps, o.y[from]! + ((o.y[to]! - o.y[from]!) * k) / steps])
+  }
+  return out
+}
+
+// The face of frosted glass sunk in a pocket. The wall on the light's side throws its shadow into the body of the glass, not only onto its face:
+// the nearer the wall, the more of the glass under a point lies in that shadow. The wall on the far side is lit and gives a little light back.
+// Both are laid into the face as vertex colour, from the key's direction and the pocket's depth.
+function sunkGlass(s: Shape, inset: number, depth: number): THREE.BufferGeometry {
+  const w = s.w - inset * 2
+  const h = s.h - inset * 2
+  const r = Math.max(0.6, (s.r ?? 0) - inset)
+  const half = Math.min(w, h) / 2
+  const insets = [...SOAK_RINGS.filter((v) => v < half - 2), half - 0.4]
+  const along = Math.max(1, Math.ceil(w / 28))
+  const across = Math.max(1, Math.ceil(h / 28))
+  const rings = insets.map((v) => denseRing(w - v * 2, h - v * 2, Math.min(Math.max(0.6, r - v), half - v), 8, along, across))
+  const n = rings[0]!.length
+  const [lx, ly, lz] = look.key.direction
+  const flat = Math.hypot(lx, ly) || 1
+  const dx = lx / flat
+  const dy = ly / flat
+  const slope = lz / flat
+  const outside = (x: number, y: number): boolean => {
+    const qx = Math.abs(x) - (w / 2 - r)
+    const qy = Math.abs(y) - (h / 2 - r)
+    return Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) + Math.min(Math.max(qx, qy), 0) - r > 0
+  }
+  const reach = (x: number, y: number, sign: number): number => {
+    let near = 0
+    let far = w + h
+    for (let k = 0; k < 14; k++) {
+      const mid = (near + far) / 2
+      if (outside(x + sign * dx * mid, y + sign * dy * mid)) far = mid
+      else near = mid
+    }
+    return near
+  }
+  const shade = (x: number, y: number): number => 1 - SOAK_DEPTH * Math.exp(-Math.max(0, reach(x, y, 1) * slope - depth - SOAK_HOLD) / SOAK) + BOUNCE * Math.exp(-(reach(x, y, -1) * slope) / (SOAK * 3))
+  const pos: number[] = []
+  const col: number[] = []
+  const idx: number[] = []
+  const put = (x: number, y: number): void => {
+    const v = shade(x, y)
+    pos.push(x, y, 0)
+    col.push(v, v, v)
+  }
+  for (const ring of rings) for (const [x, y] of ring) put(x, y)
+  put(0, 0)
+  for (let k = 0; k < rings.length - 1; k++) {
+    for (let i = 0; i < n; i++) {
+      const j = (i + 1) % n
+      idx.push(k * n + i, k * n + j, (k + 1) * n + i, k * n + j, (k + 1) * n + j, (k + 1) * n + i)
+    }
+  }
+  const last = (rings.length - 1) * n
+  for (let i = 0; i < n; i++) idx.push(rings.length * n, last + i, last + ((i + 1) % n))
+  const g = new THREE.BufferGeometry()
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
+  g.setAttribute('normal', new THREE.Float32BufferAttribute(pos.map((_, i) => (i % 3 === 2 ? 1 : 0)), 3))
+  g.setAttribute('uv', new THREE.Float32BufferAttribute(pos.filter((_, i) => i % 3 !== 2), 2))
+  g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3))
+  g.setIndex(idx)
+  return g
 }
 
 function field(s: Shape): THREE.Object3D {
   const m = materials()
   const root = new THREE.Group()
   const surface = -s.z0
-  root.add(mesh(shared(`sleeve:${dims(s)}`, () => sleeve(s, surface, 0.55)), m.aluminium))
-  const glass = mesh(shared(`fieldGlass:${dims(s)}`, () => sweep(outlineOf(s, RIM - 0.6, 12), profile([[0, -GLASS_FIELD, true], [0, 0, true]]))), m.glass, false)
+  root.add(mesh(shared(`sleeve:${dims(s)}`, () => sleeve(s, surface, 0.22)), m.aluminium))
+  const glass = mesh(shared(`fieldGlass:${dims(s)}`, () => sunkGlass(s, RIM - 0.6, surface)), m.glassSunk, false)
   root.add(glass)
   return root
 }
 
+const CROWN_RAIL = 1.2
+const CROWN_BUTTON = 1.3
+
 function rail(s: Shape): THREE.Object3D {
   const under = pocketCut(s).under
-  return mesh(shared(`rail:${dims(s)}`, () => sweep(outlineOf(s, 0.15, 16), profile([[0, -under, true], [0, -0.3, true], [0.3, 0, true]]))), materials().aluminium, false)
+  return mesh(shared(`rail:${dims(s)}`, () => sweep(outlineOf(s, 0.15, 16), profile([[0, -under, true], [0, -0.2, true], ...[0.8, 0.6, 0.4, 0.2, 0.05].map((t): ProfilePoint => [(s.h / 2) * (1 - t), -0.2 + CROWN_RAIL * (1 - t * t)])]))), materials().aluminium, false)
 }
 
 function socket(s: Shape): THREE.Object3D {
@@ -87,7 +183,7 @@ function progressButton(s: Shape, current: boolean): THREE.Object3D {
   const up = h - foot
   const d = s.w
   const points: ProfilePoint[] = current
-    ? [[0, foot - 0.5, true], [0, foot + up * 0.16], ...arc(0, foot + up * 0.16, 3.4, up * 0.2, 5).slice(1), [5.2, foot + up * 0.36], [5.6, foot + up * 0.4], [5.6, foot + up * 0.66], ...arc(5.6, foot + up * 0.66, 9, up * 0.34, 8).slice(1)]
+    ? [[0, foot - 0.5, true], [0, foot + up * 0.16], ...arc(0, foot + up * 0.16, 3.4, up * 0.2, 5).slice(1), [5.2, foot + up * 0.36], [5.6, foot + up * 0.4], [5.6, foot + up * 0.66], ...arc(5.6, foot + up * 0.66, 9, up * 0.34 - CROWN_BUTTON, 8).slice(1), ...[0.82, 0.64, 0.46, 0.28, 0.12].map((t): ProfilePoint => [d / 2 - (d / 2 - 14.6) * t, h - CROWN_BUTTON * t * t])]
     : [[0, foot - 0.5, true], [0, foot + up * 0.3, true], [3.2, foot + up * 0.62, true], [5.2, foot + up * 0.62, true], [5.2, foot + up * 0.84], ...arc(5.2, foot + up * 0.84, 1.6, up * 0.16, 4).slice(1)]
   const g = shared(`progress:${dims(s)}:${current}`, () => discUv(sweep(circle(d / 2, 72), profile(points)), d))
   return mesh(g, current ? m.orange : m.aluminiumTurned)
@@ -102,18 +198,38 @@ function rule(s: Shape): THREE.Object3D {
 
 const roundEnds = (s: Shape): Outline => outlineOf({ kind: 'capsule', w: s.w, h: s.h }, 0, 6)
 
-const FRAME = 2.2
+const FRAME = 3
+const WASH = 0.15
+
+// A glass card is brighter toward the light and dimmer away from it: the wide soft picture of the light in its frosted face.
+// Laid in as vertex colour over the sunk glass's material, tinted to the thick glass's colour.
+function washed(g: THREE.BufferGeometry, s: Shape): THREE.BufferGeometry {
+  const m = materials()
+  const [lx, ly] = look.key.direction
+  const flat = Math.hypot(lx, ly) || 1
+  const reach = Math.hypot(s.w, s.h) / 2
+  const tint = [m.glassThick.color.r / m.glassSunk.color.r, m.glassThick.color.g / m.glassSunk.color.g, m.glassThick.color.b / m.glassSunk.color.b]
+  const pos = g.getAttribute('position')
+  const col = new Float32Array(pos.count * 3)
+  for (let i = 0; i < pos.count; i++) {
+    const v = 1 + (WASH * (pos.getX(i) * lx + pos.getY(i) * ly)) / (flat * reach)
+    col.set([tint[0]! * v, tint[1]! * v, tint[2]! * v], i * 3)
+  }
+  g.setAttribute('color', new THREE.BufferAttribute(col, 3))
+  return g
+}
 
 // A glass card standing on the page: an aluminium band round its foot and a slab with a wide rounded shoulder.
 function card(s: Shape): THREE.Object3D {
   const m = materials()
   const root = new THREE.Group()
   const h = s.z1 - s.z0
-  const rise = Math.min(h * 0.5, 6)
-  const across = Math.min(11, Math.min(s.w, s.h) / 4)
+  const rise = Math.min(h * 0.25, 3)
+  const across = Math.min(13, Math.min(s.w, s.h) / 4)
   const band = h - rise
-  root.add(mesh(shared(`cardFrame:${dims(s)}`, () => sweep(outlineOf(s, 0, 14), profile([[0, 0, true], [0, band - 0.5, true], [0.5, band, true], [FRAME - 0.4, band, true], [FRAME, band - 0.5, true], [FRAME, 0.2, true]]), false)), m.aluminium))
-  root.add(mesh(shared(`cardGlass:${dims(s)}`, () => sweep(outlineOf(s, FRAME - 0.3, 14), profile([[0, 0.05, true], [0, band], ...arc(0, band, across, rise, 10).slice(1)]))), m.glassThick))
+  root.add(mesh(shared(`cardFrame:${dims(s)}`, () => sweep(outlineOf(s, 0, 14), profile([[0, 0, true], [0, band - 0.9, true], ...arc(0, band - 0.9, 1.1, 0.9, 4).slice(1), ...bead(FRAME - 1.1, band, 1.1, 0.9, 4).slice(1), [FRAME, 0.2, true]]), false)), m.aluminium))
+  root.add(mesh(shared(`cardBevel:${dims(s)}`, () => washed(sweep(outlineOf(s, FRAME - 0.3, 14), profile([[0, 0.05, true], [0, band - 0.4, true], [0.4, band, true], [across, h, true]]), false), s)), m.glassSunk))
+  root.add(mesh(shared(`cardFace:${dims(s)}`, () => washed(sweep(outlineOf(s, FRAME - 0.3 + across, 14), [{ inset: 0, z: h, out: 0, up: 1 }]), s)), m.glassSunk))
   if (s.id.endsWith('-zone')) root.add(dashes(s, h))
   return root
 }
@@ -176,16 +292,16 @@ function focusRing(f: Shape): THREE.Object3D {
   coreMaterial ??= new THREE.MeshBasicMaterial({ color: new THREE.Color(1.5, 0.42, 0.07), toneMapped: false })
   glowMaterial ??= new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })
   const outline = outlineOf(f, 0, 12)
-  const core = mesh(shared(`focusCore:${dims(f)}`, () => sweep(outline, profile([[-0.9, 0, true], [-0.5, 0.7], [0.9, 0.9], [2.0, 0.7], [2.4, 0, true]]), false)), coreMaterial, false)
+  const core = mesh(shared(`focusCore:${dims(f)}`, () => sweep(outline, profile([[-0.7, 0.1, true], [-0.4, 0.5], [0.5, 0.6], [1.4, 0.5], [1.7, 0.1, true]]), false)), coreMaterial, false)
   core.receiveShadow = false
   root.add(core)
   const spill = shared(`focusGlow:${dims(f)}`, () => {
-    const steps: [number, number, number][] = [[-22, 0.25, 0], [-12, 0.25, 0.12], [-5, 0.25, 0.42], [-0.9, 0.3, 1], [2.4, 0.3, 1], [2.6, f.z0 + 0.4, 0.5], [9, f.z0 + 0.4, 0.22], [20, f.z0 + 0.4, 0]]
+    const steps: [number, number, number][] = [[-34, 0.25, 0], [-20, 0.25, 0.07], [-11, 0.25, 0.2], [-5, 0.25, 0.48], [-0.7, 0.3, 1], [1.7, 0.3, 1], [RIM + 0.2, f.z0 + 0.4, 0.55], [10, f.z0 + 0.4, 0.26], [18, f.z0 + 0.4, 0.1], [28, f.z0 + 0.4, 0]]
     const g = sweep(outline, steps.map(([inset, z]) => ({ inset, z, out: 0, up: 1 })), false)
     const n = outline.count
     const colour = new Float32Array(steps.length * n * 3)
     steps.forEach(([, , a], k) => {
-      for (let i = 0; i < n; i++) colour.set([0.55 * a, 0.14 * a, 0.02 * a], (k * n + i) * 3)
+      for (let i = 0; i < n; i++) colour.set([0.72 * a, 0.2 * a, 0.03 * a], (k * n + i) * 3)
     })
     g.setAttribute('color', new THREE.BufferAttribute(colour, 3))
     return g
@@ -244,6 +360,9 @@ export const controls: PartMaker = {
     const f = holder(s, ctx)
     if (!f) return
     if (s.id === 'field-caret') o.position.z = f.z0 + 0.04
-    else o.position.set(f.x + f.w / 2 - 960, 540 - (f.y + f.h / 2), 0)
+    else {
+      o.position.set(f.x + f.w / 2 - 960, 540 - (f.y + f.h / 2), 0)
+      glowMaterial?.color.setScalar(0.8 + 0.5 * Math.min(1, Math.max(0, s.v?.[0] ?? 0)))
+    }
   }
 }

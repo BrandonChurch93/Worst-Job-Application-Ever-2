@@ -14,11 +14,11 @@ export const TIMES = {
   slabCount: 3, slabFirst: 0.4, slabEvery: 0.55, slabHang: 0.2, slabFall: 0.2, slabSettle: 0.12, slabLie: 0.25, slabLift: 0.18,
   paperSlide: 0.42, bite: 0.4, tugFilm: 5.06, lost: 0.3
 }
-export const TUG = { stiff: 2600, damp: 36, strainPx: 50, shoulder: { x: 14, y: 30 }, hands: 52, rateLag: 0.07, reach: { rest: 78, min: 50, max: 150, bite: 190, haul: 260 } }
+export const TUG = { stiff: 2600, damp: 36, strainPx: 24, shoulder: { x: 14, y: 30 }, hands: 64, rateLag: 0.07, inside: 34, least: 24, reach: { rest: 58, min: 42, max: 92, bite: 80, haul: 220 } }
 export const SPOT = { x: -12, y: -14 }
 export const BITE = { x: SLOT.cx - PAPER.w / 2, y: SLOT.cy - PAPER.h + 8 }
 export const HOOD = { y: SLOT.cy + 44, z: 8 }
-export const PILE = { x: SLOT.cx - 20, y: SLOT.cy + 118 }
+export const PILE = { x: SLOT.cx - 20, y: SLOT.cy + 176 }
 export const SHRED = { in: 0.3, gone: 0.34, strips: 0.12, pile: 0.78, pileSeconds: 1.0, empty: 1.3, emptySeconds: 0.5, zip: 1.78, zipSeconds: 1.0, end: 2.8 }
 
 // The film's first name: every time is a second of the unit. The turrets are up at 3.02 and fire at 3.62, 4.07, 4.52, 4.97, 5.42, 5.87, and so on.
@@ -40,8 +40,8 @@ export const TRUDGE = { x: 150, y: -110, seconds: 1.0 }
 export const RESUME = { look: 19.9, walk: [20.3, 20.72] as [number, number], grab: 20.92, hoist: [20.98, 21.06] as [number, number], carry: [21.1, 21.54] as [number, number], drop: 21.62 }
 
 const TUG_CURVE: [number, number, number, number][] = [
-  [0, 0.05, 0.3, 14], [0.34, 0.22, 0.08, 8], [0.91, 0.16, -0.5, 44], [1.25, 0.36, -0.12, 10], [1.88, 0.3, 0.55, 46], [2.21, 0.5, 0.18, 10],
-  [2.84, 0.44, -0.6, 48], [3.13, 0.63, -0.2, 10], [3.7, 0.58, 0.6, 50], [3.99, 0.77, 0.22, 12], [4.47, 0.73, -0.45, 46], [5.06, 0.95, 0, 6]
+  [0, 0.05, -0.26, 4], [0.3, 0.15, -0.2, 4], [0.8, 0.11, -0.32, 22], [1.05, 0.26, -0.12, 5], [1.55, 0.22, 0.28, 23], [1.8, 0.37, 0.1, 5], [2.3, 0.33, -0.3, 24],
+  [2.6, 0.48, -0.1, 5], [3.2, 0.44, 0.32, 24], [3.5, 0.6, 0.12, 6], [4.0, 0.56, -0.3, 24], [4.3, 0.72, -0.1, 6], [4.6, 0.68, 0.2, 22], [5.06, 0.95, 0, 3]
 ]
 
 function tugAt(t: number, column: 1 | 2 | 3): number {
@@ -239,7 +239,7 @@ function tugPoint(tau: number): { x: number; y: number } {
   const reach = tugReach((tugCurve(tau + 0.03) - tugCurve(tau - 0.03)) / 0.06)
   const lean = tugAt(tau, 2)
   const strain = tugAt(tau, 3) + 4 * Math.sin(tau * 23)
-  const far = PAPER.h * (1 - amount) + strain * (1 + TUG.stiff / 480) + reach
+  const far = Math.max(TUG.least, PAPER.h * (1 - amount) - TUG.inside) + strain * (1 + TUG.stiff / 480) + reach
   return { x: SLOT.cx - Math.sin(lean) * far - TUG.shoulder.x, y: SLOT.cy - Math.cos(lean) * far - TUG.shoulder.y }
 }
 

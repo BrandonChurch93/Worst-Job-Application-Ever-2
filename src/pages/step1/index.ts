@@ -27,13 +27,14 @@ const RATTLE = { seconds: 0.22, px: 2.4 }
 const JAW = { tug: 14, shred: 30, lag: 0.3 }
 const NEAR = 130
 const SINGE = 0.2
-const HOLD = { inside: 34, least: 24 }
 const EATEN = -30
+const HEAP = { y: 56, spread: 104 }
+const TIDY = 0.3
 const WIPE: FieldName[] = ['email', 'lastName', 'firstName']
 const SLAB_HIGH = 110
 const SLAB_GAP = 8
 const PRESS = 0.24
-const LEGEND_CLEAR = 24
+const LEGEND_CLEAR = 0
 
 type Phase = 'rest' | 'keyboard' | 'firstName' | 'lastName' | 'email' | 'slabs' | 'resume' | 'tug' | 'shredded' | 'received'
 const GAG: Record<Phase, string> = {
@@ -436,8 +437,8 @@ export function makePage(): PageLogic {
     const dx = t.gx - SLOT.cx
     const dy = t.gy - SLOT.cy
     const d = Math.hypot(dx, dy) || 1
-    const rest = Math.max(36, PAPER.h * (1 - t.amount))
-    const strain = Math.max(0, d - rest)
+    const hold = Math.max(TUG.least, PAPER.h * (1 - t.amount) - TUG.inside)
+    const strain = Math.max(0, d - hold)
     if (strain > 0) {
       const a = TUG.stiff * Math.min(strain, 320) * io.dt
       io.cursor.knock((-dx / d) * a, (-dy / d) * a, 0)
@@ -457,9 +458,9 @@ export function makePage(): PageLogic {
     }
     const px = -dy / d
     const py = dx / d
-    const hold = Math.min(d, Math.max(HOLD.least, PAPER.h * (1 - t.amount) - HOLD.inside))
-    t.hx = SLOT.cx + (dx / d) * hold
-    t.hy = SLOT.cy + (dy / d) * hold
+    const held = Math.min(d, hold)
+    t.hx = SLOT.cx + (dx / d) * held
+    t.hy = SLOT.cy + (dy / d) * held
     io.cursor.setArms(true, [{ x: t.hx - px * TUG.hands, y: t.hy - py * TUG.hands, z: LIE + 6 }, { x: t.hx + px * TUG.hands, y: t.hy + py * TUG.hands, z: LIE + 6 }])
     act(io, t.amount > 0.7 ? 'scared' : t.amount > 0.45 ? 'nervous' : 'angry')
     const lost = s.mode === 'film' ? t.t >= TIMES.tugFilm : t.amount >= 0.9 || t.t >= 9
@@ -539,8 +540,8 @@ export function makePage(): PageLogic {
   const strips = (out: DrawList): void => {
     if (s.phase !== 'shredded' && s.phase !== 'received') return
     const t = s.phase === 'received' ? SHRED.end + s.phaseTime : s.shred
-    const gone = s.phase === 'received' ? smooth((s.phaseTime - 0.3) / 0.5) : 0
-    if (gone >= 1) return
+    const back = s.phase === 'received' ? smooth(s.phaseTime / TIDY) : 0
+    if (back >= 1) return
     for (let i = 0; i < STRIPS; i++) {
       const ink = i % 3 === 1
       if (ink && t >= SHRED.pile) continue
@@ -552,12 +553,12 @@ export function makePage(): PageLogic {
       const lane = (i - (STRIPS - 1) / 2) / ((STRIPS - 1) / 2)
       const x0 = SLOT.cx + lane * SLOT.w * 0.38
       const y0 = HOOD.y - len / 2 + out0 * (len + 8)
-      const tx = PILE.x + BODY.x + lane * 92 + (hash01(i, 3, s.seed) - 0.5) * 18
-      const ty = PILE.y + 4 + (hash01(i, 5, s.seed) - 0.5) * 44
-      const x = lerp(x0, tx, fall)
-      const y = lerp(y0, ty, fall) + gone * 30
-      const z = HOOD.z * (1 - fall) + Math.sin(Math.PI * fall) * 18
-      out.push({ id: `strip-${i}`, part: 'shredder', kind: 'box', x: x - 5, y: y - len / 2, w: 10, h: len * (1 - gone), z0: z + 0.4 + i * 0.12 * fall, z1: z + 1.4 + i * 0.12 * fall, rot: (hash01(i, 7, s.seed) - 0.5) * 1.1 * fall, tone: ink ? 'dark' : 'paper', v: [u, ink ? 1 : 0] })
+      const tx = ink ? PILE.x + BODY.x + lane * 26 : SLOT.cx + lane * HEAP.spread + (hash01(i, 3, s.seed) - 0.5) * 18
+      const ty = ink ? PILE.y + BODY.y + (hash01(i, 5, s.seed) - 0.5) * 12 : HOOD.y + HEAP.y + (hash01(i, 5, s.seed) - 0.5) * 24
+      const x = lerp(lerp(x0, tx, fall), x0, back)
+      const y = lerp(lerp(y0, ty, fall), HOOD.y - len / 2 - 4, back)
+      const z = (HOOD.z * (1 - fall) + Math.sin(Math.PI * fall) * 18) * (1 - back) + HOOD.z * back
+      out.push({ id: `strip-${i}`, part: 'shredder', kind: 'box', x: x - 5, y: y - len / 2, w: 10, h: len, z0: z + 0.4 + i * 0.12 * fall, z1: z + 1.4 + i * 0.12 * fall, rot: (hash01(i, 7, s.seed) - 0.5) * 1.1 * fall * (1 - back), tone: ink ? 'dark' : 'paper', v: [u, ink ? 1 : 0] })
     }
   }
 
@@ -578,7 +579,7 @@ export function makePage(): PageLogic {
     const reach = armed ? TUG.hands : 0
     const hx = armed ? t.hx : t.gx
     const hy = armed ? t.hy : t.gy
-    const v = [LIE, 1, t.amount, armed ? t.pull : 0, hx + uy * reach, hy - ux * reach, hx - uy * reach, hy + ux * reach, t.vx, t.vy, armed ? 1 : 0]
+    const v = [LIE, 1, t.amount, armed ? t.pull : 0, hx - uy * reach, hy + ux * reach, hx + uy * reach, hy - ux * reach, t.vx, t.vy, armed ? 1 : 0]
     out.push({ id: 'resume-paper', part: 'paper', kind: 'box', x: c.x - PAPER.w / 2, y: c.y - shown / 2, w: PAPER.w, h: shown, z0: LIE, z1: LIE + heights.paper, rot, tone: 'paper', moved: true, v })
     const rest = Math.max(36, PAPER.h * (1 - t.amount))
     const scale = whole / rest
@@ -656,7 +657,7 @@ export function makePage(): PageLogic {
       const eating = s.phase === 'tug' || (s.phase === 'shredded' && s.shred < SHRED.pile)
       s.spin += ((eating ? (s.phase === 'tug' && s.lost < 0 ? JAW.tug : JAW.shred) : 0) - s.spin) * Math.min(1, io.dt / JAW.lag)
       s.turn += s.spin * io.dt
-      const slotOpen = (s.phase === 'resume' && s.paper.feed >= 0) || s.phase === 'tug' || s.phase === 'shredded'
+      const slotOpen = (s.phase === 'resume' && s.paper.feed >= 0) || s.phase === 'tug' || s.phase === 'shredded' || (s.phase === 'received' && s.phaseTime < TIDY && !s.skipped)
       s.slot = clamp(s.slot + ((slotOpen ? 1 : -1) * io.dt) / 0.25, 0, 1)
 
       if (s.phase === 'rest') {

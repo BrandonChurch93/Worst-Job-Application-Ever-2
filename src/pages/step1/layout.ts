@@ -52,7 +52,7 @@ export function buildLayout(): LayoutNode {
   const cx = ZONE.x + ZONE.w / 2
   const browse = node('resume-browse', 'chip', [cx - browseW / 2, browseY, browseW, browseH], {
     part: 'shell', shape: 'capsule', height: heights.card + 8, floor: heights.card, tone: 'metal', states: ['prompt'],
-    children: [text('resume-browse-label', 'copy:step1.resume.browse', { ...TYPE.helper, align: 'centre' }, cx, browseY + (browseH - cap(TYPE.helper.font, TYPE.helper.px)) / 2, { part: 'type', on: heights.card + 8 })]
+    children: [text('resume-browse-label', 'copy:step1.resume.browse', { ...TYPE.helper, align: 'centre' }, cx, browseY + (browseH - cap(TYPE.helper.font, TYPE.helper.px)) / 2, { part: 'type', on: heights.card + 8, tone: 'inkLight' })]
   })
   const received = block(TYPE.hero.font, words('copy:step1.resume.received'), TYPE.hero.px, ZONE.w - 120)
   const zone = node('resume-zone', 'card', [ZONE.x, ZONE.y, ZONE.w, ZONE.h], {

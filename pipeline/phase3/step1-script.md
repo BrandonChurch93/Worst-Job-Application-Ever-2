@@ -37,9 +37,14 @@ Times are seconds of the unit. Events are read from a run of the stage in film m
 7. The tug is armed for 5.06 s of film. The check of the brief needs more than 5 s, and the rest of the beat is given to the 0.3 s of torn arms.
 8. The film camera pushes in from 21.1 to 22.1 s and pulls back from 27.6 to 28.9 s, so the strips, the pile and the emptying form are seen from home. In the tug the cursor's tip keeps 163 px or more from the frame edge (MEASURED by the test "keeps the cursor, the hands and the slot well inside the frame all through the tug", `npx vitest run tests/step1-script.test.ts`).
 9. A line of the sheet that the shredder has eaten is parked at the slot under the page. The count of shapes stays the same from frame to frame.
-10. The hands are kept on the paper by `HOLD`: at most `300 * (1 - amount) - 34` px from the slot. Agreed with slab_maker, who asked for 28.
+10. The hands are kept on the paper: at most `300 * (1 - amount) - 34` px from the slot (`TUG.inside`), 128 px apart. Agreed with slab_maker, who asked for 28. The strain of the tug is measured from the hands, so the sheet is taut in a haul and never crushed between the hands and the slot. The body stays 42 to 92 px from the hands (`TUG.reach`), as cursor_actor asked, so the arms keep their thickness.
+13. The film tug loses the sheet slowly: 0.44 gone at the middle of the beat, so the key picture has a sheet with its title, as approved. The loss comes in the last half second.
+14. The Browse chip's label is `inkLight`, as the approved images show a dark chip with light type.
+15. The size of the page title (28 px) and of the heading (60 px) are `TYPE` in `src/shell/parts.ts`, which is frozen. They were left.
 11. In live mode the shredded gag counts its whole length toward `live.skipLinkAfterSeconds + 3`. The way out of every gag is the same plain timer.
 12. Pile 1.0 s and reassembly 1.0 s, as cursor_actor asked.
+16. The strips of paper hang in a heap just under the hood and the strips of the cursor fall on to a pile 176 px under the slot, so the reassembly is seen in the open and not inside the paper. Once the message shows, the paper strips are drawn back under the hood in 0.3 s and the slot shuts.
+17. The number row and Backspace show their legends as soon as the well is open, as keyboard_smith reported them blank at 1.76 s.
 
 ## Agreed with other owners
 

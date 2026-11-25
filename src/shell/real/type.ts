@@ -7,7 +7,7 @@ import { block, font, measure } from '../metrics'
 import { words } from '../words'
 
 // What the type lies on decides how it is set: sunk print, flat print, raised print or a cut.
-export type Ground = 'page' | 'cap' | 'glass' | 'paper' | 'metal' | 'gloss'
+export type Ground = 'page' | 'cap' | 'glass' | 'paper' | 'metal' | 'smoked' | 'gloss'
 export type Setting = 'sunk' | 'flat' | 'raised' | 'cut'
 
 type Rgb = [number, number, number]
@@ -131,7 +131,7 @@ export interface RunSpec {
   style: Style
 }
 
-export interface RunData { position: Float32Array; normal: Float32Array; colour: Float32Array; index: Uint32Array; triangles: number }
+export interface RunData { position: Float32Array; normal: Float32Array; colour: Float32Array; ring: Float32Array; index: Uint32Array; triangles: number }
 
 const LIFT = 0.03
 
@@ -167,6 +167,7 @@ export function setRun(spec: RunSpec): RunData {
   const position = new Float32Array(vertices * 3)
   const normal = new Float32Array(vertices * 3)
   const colour = new Float32Array(vertices * 4)
+  const ring = new Float32Array(vertices * 2)
   const index = new Uint32Array(indices)
   let v = 0
   let k = 0
@@ -188,6 +189,8 @@ export function setRun(spec: RunSpec): RunData {
             const ml = Math.hypot(mx, my)
             position[v * 3] = x + c.p[i * 2]! * scale + mx * d
             position[v * 3 + 1] = y + c.p[i * 2 + 1]! * scale + my * d
+            ring[v * 2] = mx * d
+            ring[v * 2 + 1] = my * d
             normal[v * 3] = (-mx / ml) * lean
             normal[v * 3 + 1] = (-my / ml) * lean
             normal[v * 3 + 2] = up
@@ -231,16 +234,16 @@ export function setRun(spec: RunSpec): RunData {
     for (let i = 0; i < g.index.length; i++) index[k++] = g.index[i]! + v
     v += n
   }
-  return { position, normal, colour, index: index.subarray(0, k), triangles: k / 3 }
+  return { position, normal, colour, ring, index: index.subarray(0, k), triangles: k / 3 }
 }
 
 const lin = (c: THREE.Color): Rgb => [c.r, c.g, c.b]
 const hex = (h: number): Rgb => lin(new THREE.Color().setHex(h, THREE.SRGBColorSpace))
 const mix = (a: Rgb, b: Rgb, t: number): Rgb => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t]
 
-const INK = 0x28292b
-const INK_WARM = 0x342d26
-const INK_LIGHT = 0xf6f1e8
+const INK = 0x24272a
+const INK_WARM = 0x3f352a
+const INK_LIGHT = 0xfdf3e6
 const LIP = 0xf2efe8
 const CUT_FLOOR = 0x1d1e21
 
@@ -263,13 +266,14 @@ export function styles(): Record<string, Style> {
     'paper:ink': { setting: 'flat', fill: ink, lean: 0, rings: [{ d: 0.5, a: 0.8, c: ink }] },
     'metal:ink': { setting: 'cut', fill: floor, lean: 0.6, rings: [{ d: 0.5, a: 1, c: mix(metal, floor, 0.55) }, { d: 0.95, a: 0.5, c: metal }] },
     'gloss:ink': { setting: 'flat', fill: ink, lean: 0, rings: [{ d: 0.45, a: 0.85, c: ink }] },
-    'page:light': { setting: 'raised', fill: light, lean: -0.5, rings: [{ d: 0.6, a: 1, c: light }] },
-    'gloss:light': { setting: 'raised', fill: light, lean: -0.55, rings: [{ d: 0.7, a: 1, c: light }] }
+    'page:light': { setting: 'raised', fill: light, lean: -0.5, rings: [{ d: 0.4, a: 0.85, c: light }] },
+    'gloss:light': { setting: 'raised', fill: light, lean: -0.55, rings: [{ d: 0.4, a: 0.85, c: light }] }
   }
   return styleSet
 }
 
 export function styleName(ground: Ground, tone: string): string {
+  if (ground === 'smoked') return 'gloss:light'
   const inkName = tone === 'inkLight' || tone === 'light' ? 'light' : 'ink'
   if (inkName === 'light') return ground === 'gloss' || ground === 'metal' ? 'gloss:light' : 'page:light'
   return `${ground}:ink`
@@ -277,7 +281,10 @@ export function styleName(ground: Ground, tone: string): string {
 
 const GROUND_OF_TONE: Record<string, Ground> = { metal: 'metal', accent: 'gloss', danger: 'gloss', dark: 'gloss', glass: 'glass', raised: 'cap', light: 'cap', paper: 'paper', page: 'page', pocket: 'page' }
 
-const groundOfShape = (u: Shape): Ground => (u.role === 'field' ? 'glass' : (GROUND_OF_TONE[u.tone] ?? 'page'))
+const SMOKED_ROLES = new Set(['chip', 'button', 'heroButton'])
+
+// A chip or a button of tone metal is the smoked grey capsule of the surface, dark enough that only light type reads on it.
+const groundOfShape = (u: Shape): Ground => (u.role === 'field' ? 'glass' : u.tone === 'metal' && SMOKED_ROLES.has(u.role ?? '') ? 'smoked' : (GROUND_OF_TONE[u.tone] ?? 'page'))
 
 let seenList: Shape[] | null = null
 const seenGround = new Map<string, Ground>()
@@ -320,23 +327,38 @@ export function groundOf(s: Shape, ctx: RealContext): Ground {
 }
 
 interface Kit { opaque: THREE.MeshPhysicalMaterial; over: THREE.MeshPhysicalMaterial }
-const kits = new Map<Setting, Kit>()
+const kits = new Map<string, Kit>()
 
-function kit(setting: Setting): Kit {
-  const hit = kits.get(setting)
+// The material's own colour is the ink, so that whatever reads a material reads the ink. The colours of a run's vertices are then counted from it.
+function kit(name: string): Kit {
+  const hit = kits.get(name)
   if (hit) return hit
+  const style = styles()[name]!
+  const setting = style.setting
   const cut = setting === 'cut'
   const make = (over: boolean): THREE.MeshPhysicalMaterial => {
     const m = studio(
       new THREE.MeshPhysicalMaterial({
-        color: 0xffffff,
+        color: new THREE.Color().setRGB(style.fill[0], style.fill[1], style.fill[2]),
         vertexColors: true,
         roughness: cut ? 0.5 : setting === 'raised' ? 0.5 : 0.62,
-        metalness: cut ? 0.85 : 0,
-        specularIntensity: cut ? 1 : 0.15
+        metalness: 0,
+        specularIntensity: cut ? 0.35 : 0.15
       })
     )
-    m.name = `type-${setting}${over ? '-over' : ''}`
+    m.name = `type-${name}${over ? '-over' : ''}`
+    const lit = m.onBeforeCompile
+    m.onBeforeCompile = (shader, renderer) => {
+      lit.call(m, shader, renderer)
+      shader.vertexShader = shader.vertexShader
+        .replace('#include <common>', '#include <common>\nattribute vec2 wjaRing;')
+        .replace('#include <begin_vertex>', `#include <begin_vertex>\n${NEAR_GLSL}`)
+    }
+    m.customProgramCacheKey = () => 'wja-studio-type'
+    if (setting === 'sunk') {
+      m.normalMap = materials().ceramic.normalMap
+      m.normalScale.set(GRAIN, GRAIN)
+    }
     m.polygonOffset = true
     m.polygonOffsetFactor = -1
     m.polygonOffsetUnits = -2
@@ -353,9 +375,19 @@ function kit(setting: Setting): Kit {
     return m
   }
   const made = { opaque: make(false), over: make(true) }
-  kits.set(setting, made)
+  kits.set(name, made)
   return made
 }
+
+const GRAIN = 0.16
+
+// The shoulders are set in page pixels. A camera that comes nearer than the home view would widen them on screen, so they are drawn in by as much as it is nearer.
+const NEAR_GLSL = `
+float wjaDepth = - ( modelViewMatrix * vec4( position, 1.0 ) ).z;
+float wjaPixel = projectionMatrix[ 3 ][ 3 ] == 1.0 ? 2.0 / ( projectionMatrix[ 1 ][ 1 ] * 1080.0 ) : wjaDepth * 2.0 / ( projectionMatrix[ 1 ][ 1 ] * 1080.0 );
+float wjaUnit = clamp( wjaPixel / length( modelMatrix[ 0 ].xyz ), 0.0, 1.0 );
+transformed.xy -= wjaRing * ( 1.0 - wjaUnit );
+`
 
 const q = (v: number): number => Math.round(v * 4) / 4
 
@@ -370,7 +402,20 @@ function geometryOf(s: Shape, said: string, style: Style): THREE.BufferGeometry 
   const geometry = new THREE.BufferGeometry()
   geometry.setAttribute('position', new THREE.BufferAttribute(data.position, 3))
   geometry.setAttribute('normal', new THREE.BufferAttribute(data.normal, 3))
-  geometry.setAttribute('color', new THREE.BufferAttribute(data.colour, 4))
+  const tint = data.colour
+  for (let i = 0; i < tint.length; i += 4) {
+    tint[i] = tint[i]! / style.fill[0]
+    tint[i + 1] = tint[i + 1]! / style.fill[1]
+    tint[i + 2] = tint[i + 2]! / style.fill[2]
+  }
+  geometry.setAttribute('color', new THREE.BufferAttribute(tint, 4))
+  geometry.setAttribute('wjaRing', new THREE.BufferAttribute(data.ring, 2))
+  const uv = new Float32Array((data.position.length / 3) * 2)
+  for (let i = 0, j = 0; i < data.position.length; i += 3, j += 2) {
+    uv[j] = data.position[i]!
+    uv[j + 1] = data.position[i + 1]!
+  }
+  geometry.setAttribute('uv', new THREE.BufferAttribute(uv, 2))
   geometry.setIndex(new THREE.BufferAttribute(data.index, 1))
   return geometry
 }
@@ -391,7 +436,7 @@ export const type: PartMaker = {
     const style = styles()[name]!
     const said = words(s.words!, s.text)
     const over = ground === 'glass'
-    const mesh = new THREE.Mesh(geometryOf(s, said, style), over ? kit(style.setting).over : kit(style.setting).opaque)
+    const mesh = new THREE.Mesh(geometryOf(s, said, style), over ? kit(name).over : kit(name).opaque)
     mesh.position.z = HOVER
     mesh.receiveShadow = true
     mesh.castShadow = false

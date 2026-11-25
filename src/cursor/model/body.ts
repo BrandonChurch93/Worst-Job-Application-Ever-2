@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import type { Emitter } from '../../real/types'
+import { hash01 } from '../../core/random'
 import { UNIT, type BodyLook, type BodyModel, type StripPose } from '../contract'
 import { Deform } from './deform'
 import { MAX_HOLES, bodyDepthMaterial, bodyMaterial, bodyUniforms, charMaterial, type BodyUniforms } from './material'
@@ -8,7 +9,11 @@ import { cutBand, stripSet, type StripSet } from './strips'
 
 const HOLE_SEGMENTS = 28
 const HOLE_ROWS = [0, 0.3, 0.65, 1]
-const rag = (a: number): number => 1 + 0.06 * Math.sin(3 * a + 1.3) + 0.04 * Math.sin(7 * a + 0.4) + 0.03 * Math.sin(11 * a + 2.1)
+const smooth01 = (v: number): number => {
+  const t = Math.min(1, Math.max(0, v))
+  return t * t * (3 - 2 * t)
+}
+const rag = (a: number, burnt: number): number => 1 + (0.25 + 0.75 * burnt) * (0.06 * Math.sin(3 * a + 1.3) + 0.04 * Math.sin(7 * a + 0.4) + 0.03 * Math.sin(11 * a + 2.1))
 const clamp01 = (v: number): number => Math.min(1, Math.max(0, v))
 
 export class Body implements BodyModel {
@@ -38,6 +43,7 @@ export class Body implements BodyModel {
     g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(s.rest.length), 3).setUsage(THREE.DynamicDrawUsage))
     g.setAttribute('normal', new THREE.BufferAttribute(new Float32Array(s.rest.length), 3).setUsage(THREE.DynamicDrawUsage))
     g.setAttribute('aRest', new THREE.BufferAttribute(s.rest, 3))
+    g.setAttribute('aInset', new THREE.BufferAttribute(s.inset, 1))
     g.setAttribute('aInk', new THREE.BufferAttribute(s.ink, 1))
     g.setIndex(new THREE.BufferAttribute(s.index, 1))
     this.whole = this.mesh(g, this.material)
@@ -84,6 +90,7 @@ export class Body implements BodyModel {
     this.deform.set(look)
     const u = this.uniforms
     u.uState.value.set(clamp01(look.pale), clamp01(look.heat), clamp01(look.char), clamp01(look.melt))
+    u.uShape.value.set(clamp01(look.flat), 0, 0, 0)
     const crack = Math.max(clamp01(look.crack ?? 0), 0)
     const seamCount = look.strips ? look.strips.length : Math.max(1, Math.round(look.seamCount ?? 9))
     u.uMarks.value.set(crack, look.strips ? 0 : clamp01(look.seam ?? 0), seamCount, look.time)
@@ -94,6 +101,7 @@ export class Body implements BodyModel {
       const h = look.holes[i]
       if (h && h.r > 0.02) {
         u.uHoles.value[i]!.set(h.x, h.y, h.r, clamp01(h.glow))
+        u.uBurnt.value.setComponent(i, clamp01(h.burnt ?? 1))
         this.holes.push({ x: h.x, y: h.y, glow: clamp01(h.glow), r: h.r })
       } else u.uHoles.value[i]!.set(0, 0, 0, 0)
     }
@@ -130,12 +138,15 @@ export class Body implements BodyModel {
       g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(n * 3), 3).setUsage(THREE.DynamicDrawUsage))
       g.setAttribute('normal', new THREE.BufferAttribute(new Float32Array(n * 3), 3).setUsage(THREE.DynamicDrawUsage))
       const rest = new Float32Array(n * 3)
+      const inset = new Float32Array(n)
       for (let i = 0; i < n; i++) {
+        inset[i] = set.rest[i * 4 + 3]!
         rest[i * 3] = set.rest[i * 4]!
         rest[i * 3 + 1] = set.rest[i * 4 + 1]!
         rest[i * 3 + 2] = set.rest[i * 4 + 2]!
       }
       g.setAttribute('aRest', new THREE.BufferAttribute(rest, 3))
+      g.setAttribute('aInset', new THREE.BufferAttribute(inset, 1))
       g.setAttribute('aInk', new THREE.BufferAttribute(set.ink, 1))
     }
     this.whole.visible = false
@@ -211,22 +222,26 @@ export class Body implements BodyModel {
             continue
           }
           const ang = (j / HOLE_SEGMENTS) * Math.PI * 2
-          const reach = hole.r * rag(ang)
+          const reach = hole.r * rag(ang, clamp01(hole.burnt ?? 1))
           const ex = hole.x + Math.cos(ang) * reach
           const ey = hole.y + Math.sin(ang) * reach
           const d = Math.max(0, inside(ex, ey))
           const z = (heightAt(ex, ey) - 0.03) * (1 - HOLE_ROWS[r]!)
-          const k = reach * (0.74 + 0.26 * clamp01(z / 2.3)) * 1.012
+          const k = reach * (0.85 + 0.15 * clamp01(z / 2.3)) * 1.012
           this.deform.point(hole.x + Math.cos(ang) * k, hole.y + Math.sin(ang) * k, z, d, p)
           a[i] = p.x
           a[i + 1] = p.y
           a[i + 2] = p.z
           const glow = clamp01(hole.glow)
-          const flick = 0.55 + 0.45 * Math.sin(ang * 5 + h * 2.1) * Math.sin(ang * 9 + 1.7)
-          const heat = r === 0 ? 2.2 : r === 1 ? 1.1 : r === 2 ? 0.25 : 0.03
-          c[i] = 1.0 * heat * glow * glow * flick
-          c[i + 1] = (r === 0 ? 0.42 : 0.12) * heat * glow * glow * flick
-          c[i + 2] = 0.05 * heat * glow * glow * flick
+          const flick = Math.pow(0.5 + 0.5 * Math.sin(ang * 5 + h * 2.1) * Math.sin(ang * 9 + 1.7), 2.2)
+          const lee = 0.2 + 0.8 * smooth01((Math.cos(ang) * -0.5 + Math.sin(ang) * 0.86 + 0.5) / 1.3)
+          const heat = (r === 0 ? 0.12 : r === 1 ? 1.1 : r === 2 ? 0.3 : 0.02) * lee
+          const burnt = clamp01(hole.burnt ?? 1)
+          const lit = glow * glow * flick * burnt
+          const bare = (1 - burnt) * (0.34 - 0.2 * HOLE_ROWS[r]!) * (0.8 + 0.4 * hash01(j, r, 7 + h))
+          c[i] = 1.0 * heat * lit + bare * 0.8
+          c[i + 1] = (r === 0 ? 0.42 : 0.12) * heat * lit + bare * 0.72
+          c[i + 2] = 0.05 * heat * lit + bare * 0.58
         }
       }
     }
@@ -252,12 +267,12 @@ export class Body implements BodyModel {
     if (this.heat > 0.02) {
       const along = 1.5 + this.heat * 4.5
       this.deform.point(along * AXIS[0] * 0.9, along * AXIS[1], 2.4, 2, this.p)
-      out.push({ x: this.p.x, y: this.p.y, z: this.p.z + 3 * UNIT, colour: [1, 0.3, 0.06], power: 0.9 * this.heat, reach: (14 + 16 * this.heat) * UNIT })
+      out.push({ x: this.p.x, y: this.p.y, z: this.p.z + 6 * UNIT, colour: [1, 0.3, 0.06], power: 0.06 * this.heat, reach: (10 + 8 * this.heat) * UNIT })
     }
     for (const h of this.holes) {
       if (h.glow < 0.04) continue
       this.deform.point(h.x, h.y, 2.4, 2, this.p)
-      out.push({ x: this.p.x, y: this.p.y, z: this.p.z + 2 * UNIT, colour: [1, 0.42, 0.1], power: 0.7 * h.glow * h.glow, reach: (6 + 5 * h.r) * UNIT })
+      out.push({ x: this.p.x, y: this.p.y, z: this.p.z + 3.5 * UNIT, colour: [1, 0.42, 0.1], power: 0.02 * h.glow * h.glow, reach: (5 + 3 * h.r) * UNIT })
     }
   }
 

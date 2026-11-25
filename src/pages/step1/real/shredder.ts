@@ -7,7 +7,7 @@ import { materials } from '../../../shell/materials'
 import type { Shape } from '../../../stage/types'
 import { PAPER, SLOT } from '../layout'
 import { INK, stock } from './paperStock'
-import { CASSETTE as C, chuteAngle, chuteOf, chuteReach, openOf, panelsOf, riseOf } from './shredderShape'
+import { CASSETTE as C, HOOD, chuteAngle, chuteOf, chuteReach, hoodUnder, openOf, panelsOf, riseOf } from './shredderShape'
 
 const srgb = (hex: number) => new THREE.Color().setHex(hex, THREE.SRGBColorSpace)
 
@@ -117,6 +117,86 @@ function block(x0: number, x1: number, y0: number, y1: number, z0: number, z1: n
   g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2))
   g.computeVertexNormals()
   return g
+}
+
+// A strip of sheet metal along x with the given run across it: the outer face smooth, the cut ends flat.
+function sheetMetal(x0: number, x1: number, run: [number, number][], thick: number): THREE.BufferGeometry {
+  const n = run.length
+  const ny = new Float32Array(n)
+  const nz = new Float32Array(n)
+  for (let i = 0; i < n; i++) {
+    const a = run[Math.max(0, i - 1)]!
+    const b = run[Math.min(n - 1, i + 1)]!
+    const ty = b[0] - a[0]
+    const tz = b[1] - a[1]
+    const l = Math.hypot(ty, tz) || 1
+    ny[i] = tz / l
+    nz[i] = -ty / l
+  }
+  const pos: number[] = []
+  const nor: number[] = []
+  const uv: number[] = []
+  let at = 0
+  const tri = (p: number[][], q: number[][]): void => {
+    for (let i = 0; i < 3; i++) {
+      pos.push(p[i]![0]!, p[i]![1]!, p[i]![2]!)
+      nor.push(q[i]![0]!, q[i]![1]!, q[i]![2]!)
+      uv.push(p[i]![0]!, p[i]![3] ?? 0)
+    }
+  }
+  const quad = (a: number[], b: number[], c: number[], d: number[], na: number[], nb: number[]): void => {
+    tri([a, b, c], [na, na, nb])
+    tri([a, c, d], [na, nb, nb])
+  }
+  for (let i = 0; i + 1 < n; i++) {
+    const [y0, z0] = run[i]!
+    const [y1, z1] = run[i + 1]!
+    const next = at + Math.hypot(y1 - y0, z1 - z0)
+    const n0 = [0, ny[i]!, nz[i]!]
+    const n1 = [0, ny[i + 1]!, nz[i + 1]!]
+    const i0 = [y0 - ny[i]! * thick, z0 - nz[i]! * thick]
+    const i1 = [y1 - ny[i + 1]! * thick, z1 - nz[i + 1]! * thick]
+    quad([x0, y0, z0, at], [x1, y0, z0, at], [x1, y1, z1, next], [x0, y1, z1, next], n0, n1)
+    quad([x1, i0[0]!, i0[1]!, at], [x0, i0[0]!, i0[1]!, at], [x0, i1[0]!, i1[1]!, next], [x1, i1[0]!, i1[1]!, next], [0, -n0[1]!, -n0[2]!], [0, -n1[1]!, -n1[2]!])
+    quad([x1, y0, z0, at], [x1, i0[0]!, i0[1]!, at], [x1, i1[0]!, i1[1]!, next], [x1, y1, z1, next], [1, 0, 0], [1, 0, 0])
+    quad([x0, i0[0]!, i0[1]!, at], [x0, y0, z0, at], [x0, y1, z1, next], [x0, i1[0]!, i1[1]!, next], [-1, 0, 0], [-1, 0, 0])
+    at = next
+  }
+  for (const [i, sign] of [[0, -1], [n - 1, 1]] as [number, number][]) {
+    const j = i === 0 ? 1 : n - 2
+    const ty = (run[i]![0] - run[j]![0])
+    const tz = (run[i]![1] - run[j]![1])
+    const l = Math.hypot(ty, tz) || 1
+    const e = [0, ty / l, tz / l]
+    const o = [run[i]![0], run[i]![1]]
+    const u = [o[0]! - ny[i]! * thick, o[1]! - nz[i]! * thick]
+    if (sign > 0) quad([x0, o[0]!, o[1]!, at], [x1, o[0]!, o[1]!, at], [x1, u[0]!, u[1]!, at], [x0, u[0]!, u[1]!, at], e, e)
+    else quad([x1, o[0]!, o[1]!, 0], [x0, o[0]!, o[1]!, 0], [x0, u[0]!, u[1]!, 0], [x1, u[0]!, u[1]!, 0], e, e)
+  }
+  const g = new THREE.BufferGeometry()
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
+  g.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3))
+  g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2))
+  return g
+}
+
+// A run round the hood's circle from one angle to another, about a centre at (cy, cz), with a rolled lip at its far end.
+function arcRun(cy: number, cz: number, r: number, from: number, to: number, lip: number): [number, number][] {
+  const run: [number, number][] = []
+  const steps = Math.max(4, Math.ceil(Math.abs(to - from) / 0.045))
+  for (let i = 0; i <= steps; i++) {
+    const a = from + ((to - from) * i) / steps
+    run.push([cy - r * Math.sin(a), cz + r * Math.cos(a)])
+  }
+  if (lip > 0) {
+    const ky = cy - (r + lip) * Math.sin(to)
+    const kz = cz + (r + lip) * Math.cos(to)
+    for (let i = 1; i <= 9; i++) {
+      const a = to + Math.PI - (i / 9) * 2.5
+      run.push([ky - lip * Math.sin(a), kz + lip * Math.cos(a)])
+    }
+  }
+  return run
 }
 
 // A rod along x.
@@ -269,8 +349,11 @@ function makeCassette(): THREE.Group {
   const chute = new THREE.Group()
   chute.position.set(0, -C.deep, C.chute.z)
   lift.add(chute)
-  add(chute, block(-inner + 0.6, inner - 0.6, -C.chute.len, 0, -0.1, C.chute.thick, 0.45), brushed())
-  const reach = add(chute, block(-inner + 5, inner - 5, -C.chute.len, 0, -1.0, -0.1, 0.3), brushed())
+  add(chute, sheetMetal(-inner + 0.6, inner - 0.6, arcRun(HOOD.cy, HOOD.cz, HOOD.r, HOOD.from, HOOD.to, 0), C.chute.thick), brushed())
+  const slide = new THREE.Group()
+  slide.position.set(0, HOOD.cy, HOOD.cz)
+  chute.add(slide)
+  const reach = add(slide, sheetMetal(-inner + 4, inner - 4, arcRun(0, 0, HOOD.r - C.chute.thick - 0.35, HOOD.to - HOOD.more - 0.08, HOOD.to + 0.02, 1.25), C.chute.thick), brushed())
 
   // The two panels that close the slot. They are the page's own ceramic, so shut they are two tiles with a seam.
   const panel = (y0: number, y1: number): THREE.Mesh => add(root, block(-SLOT.w / 2, SLOT.w / 2, y0, y1, -2.6, -0.2, 0.35), m.ceramic, false)
@@ -295,7 +378,7 @@ function poseCassette(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   rig.south.rotation.x = -turn
   const c = chuteOf(open)
   rig.chute.rotation.x = chuteAngle(c)
-  rig.reach.position.y = -chuteReach(c)
+  rig.reach.rotation.x = chuteReach(c) / HOOD.r
   const slide = (SLOT.h / 2) * p
   rig.panelN.position.set(0, slide, -1.2 * Math.min(1, p * 6))
   rig.panelS.position.set(0, -slide, -1.2 * Math.min(1, p * 6))
@@ -304,7 +387,7 @@ function poseCassette(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
 
 const SEG = 26
 const MAX = 16
-const RIBBON = 6.5
+const RIBBON = 7.6
 
 interface Strips { geometry: THREE.BufferGeometry; was: string }
 
@@ -330,13 +413,8 @@ function makeStrips(): THREE.Group {
 
 const isStrip = (s: Shape): boolean => s.id.startsWith('strip-')
 
-// Where the chute's underside is over a point south of the cassette, so a strip still under it stays under it.
-function ceiling(y: number): number {
-  const from = SLOT.cy + C.deep
-  const reach = (C.chute.len + C.chute.more) * Math.cos(C.chute.slope)
-  if (y > from + reach) return Infinity
-  return C.chute.z - 2.2 - Math.max(0, y - from) * Math.tan(C.chute.slope)
-}
+// Where the hood's underside is over a point south of the cassette, so a strip still under it stays under it.
+const ceiling = (y: number): number => hoodUnder(y - SLOT.cy - C.deep) - 0.6
 
 function poseStrips(o: THREE.Object3D, ctx: RealContext): void {
   const rig = o.userData.strips as Strips
@@ -389,6 +467,9 @@ function poseStrips(o: THREE.Object3D, ctx: RealContext): void {
     const curl = (0.016 + 0.03 * hash01(n, 1, seed)) * (hash01(n, 2, seed) < 0.25 ? -0.5 : 1)
     const twist = (hash01(n, 3, seed) - 0.5) * 1.5
     const off = hash01(n, 4, seed) * 24
+    const sway = len * (0.02 + 0.05 * hash01(n, 5, seed))
+    const waves = 0.8 + 1.4 * hash01(n, 6, seed)
+    const phase = hash01(n, 7, seed) * 2
     const sag = curl < 0 ? (1 - Math.cos(curl * len * 0.5)) / -curl : 0
     const ring = (t: number, o: number[]): void => {
       const d = (t - 0.5) * len
@@ -403,8 +484,9 @@ function poseStrips(o: THREE.Object3D, ctx: RealContext): void {
       const ux = wx * cr + ax * -tu * sr
       const uy = wy * cr + ay * -tu * sr
       const uz = ta * sr
-      const mx = cx + ax * along
-      const my = cy + ay * along
+      const side = sway * Math.sin(Math.PI * (t * waves + phase))
+      const mx = cx + ax * along + wx * side
+      const my = cy + ay * along + wy * side
       const mz = s.z0 + 0.4 + up + Math.abs(uz) * RIBBON * 0.5
       o[0] = mx - ux * RIBBON * 0.5
       o[1] = my - uy * RIBBON * 0.5
@@ -430,7 +512,7 @@ function poseStrips(o: THREE.Object3D, ctx: RealContext): void {
       ring(i / SEG, a)
       ring((i + 1) / SEG, b)
       const d = (i + 0.5) * (len / SEG) + off
-      const marked = ink ? (d % 11) < 6.2 && hash01(n, Math.floor(d / 11), seed + 9) < 0.7 : (d % 24) < 4.6
+      const marked = ink ? (d % 11) < 6.2 && hash01(n, Math.floor(d / 11), seed + 9) < 0.7 : (d % 24) < 3.3
       const c = marked ? (ink ? INK.title : INK.bar) : INK.paper
       put(a[0]!, a[1]!, a[2]!, 0, 0, 1, c)
       put(a[3]!, a[4]!, a[5]!, 0, 0, 1, c)
@@ -456,6 +538,19 @@ function poseStrips(o: THREE.Object3D, ctx: RealContext): void {
         fx /= fl
         fy /= fl
         fz /= fl
+      }
+      if (fz < 0) {
+        // Turned over: the quad is wound the other way, so its lit side and its shadow side are the ones that face up.
+        for (const at of [o, o + 6]) {
+          for (let c = 0; c < 3; c++) {
+            const keep = pos[at + c]!
+            pos[at + c] = pos[at + 3 + c]!
+            pos[at + 3 + c] = keep
+          }
+        }
+        fx = -fx
+        fy = -fy
+        fz = -fz
       }
       for (let q = 0; q < 4; q++) {
         nor[o + q * 3] = fx
