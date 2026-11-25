@@ -471,7 +471,9 @@ none
 
 Each with the command, the range, the log file, the VM, when it started and the time the render budget says it should take.
 
-none
+Each with the command, the range, the log file, the VM, when it started and the time the render budget says it should take.
+
+- Blockout film B, the three pages that no fix touches. `npm run film -- --unit marketing`, then `--unit step2`, then `--unit decision`, at `draft` in `formats.preview`: 1410 frames (14 s, 21 s and 12 s at 30 a second). Log `../wja-scratch/logs/film-keep3.log`. This VM (2 cores). Started 2026-11-25T12:11Z. The render budget says 21 min (0.9 s a frame); stopped past 42 min. The cap of `sandbox.previewFilmMaxHours` (2 h) on the preview film counts from this start: it ends 14:11Z. Engine `e6f9508050543b35`.
 
 ## Running agents
 
