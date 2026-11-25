@@ -1,0 +1,564 @@
+{
+  "role": "R1",
+  "round": 5,
+  "unit": "step1",
+  "commit": "3215d8bbe5b7a65c8e2fc9fd7a66a953a4be8114",
+  "tier": "review",
+  "engineHash": "72e0e4f995fcd904",
+  "sharedHash": "8024ab9dce0bbce9",
+  "pageHashes": {
+    "step1": "3e7198f87fce8bc9",
+    "step2": "55cb277c9b082808",
+    "marketing": "c46c984d2df73782",
+    "pinball": "fd303e8468a6b766",
+    "boss": "f7b68d3ef704e243",
+    "decision": "08e4b1401a38f867"
+  },
+  "browser": "147.0.7727.15",
+  "files": {
+    "set-A-01-a.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "step1-fire"
+      },
+      "side": "a",
+      "image": "references/approved/step1-fire.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-01-b.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "step1-fire"
+      },
+      "side": "b",
+      "still": {
+        "page": "step1",
+        "beat": "step1.firstName",
+        "at": 0.5,
+        "camera": "home",
+        "tier": "review"
+      },
+      "format": "hd",
+      "tier": "review",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-02-a.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "step1-fire"
+      },
+      "side": "a",
+      "crops": [
+        {
+          "part": "cursor",
+          "window": [
+            739,
+            629,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "keys",
+          "window": [
+            538,
+            629,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "hatch",
+          "window": [
+            29,
+            683,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "keyboardDeck.corner",
+          "window": [
+            0,
+            486,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "field.start",
+          "window": [
+            941,
+            192,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "type",
+          "window": [
+            941,
+            235,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "progressButton",
+          "window": [
+            931,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "chip",
+          "window": [
+            307,
+            384,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "card.corner",
+          "window": [
+            0,
+            165,
+            461,
+            340
+          ]
+        }
+      ],
+      "image": "references/approved/step1-fire.png"
+    },
+    "set-A-02-b.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "step1-fire"
+      },
+      "side": "b",
+      "crops": [
+        {
+          "part": "cursor",
+          "window": [
+            868,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "keys",
+          "window": [
+            562,
+            675,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "hatch",
+          "window": [
+            0,
+            725,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "keyboardDeck.corner",
+          "window": [
+            0,
+            559,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "field.start",
+          "window": [
+            957,
+            198,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "type",
+          "window": [
+            890,
+            251,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "progressButton",
+          "window": [
+            922,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "chip",
+          "window": [
+            297,
+            385,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "card.corner",
+          "window": [
+            0,
+            165,
+            461,
+            340
+          ]
+        }
+      ],
+      "still": {
+        "page": "step1",
+        "beat": "step1.firstName",
+        "at": 0.5,
+        "camera": "home",
+        "tier": "review"
+      },
+      "format": "hd",
+      "tier": "review"
+    },
+    "set-A-03-a.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "step1-tug"
+      },
+      "side": "a",
+      "image": "references/approved/step1-tug.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-03-b.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "step1-tug"
+      },
+      "side": "b",
+      "still": {
+        "page": "step1",
+        "beat": "step1.tug",
+        "at": 0.5,
+        "camera": "film",
+        "tier": "review"
+      },
+      "format": "hd",
+      "tier": "review",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-04-a.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "step1-tug"
+      },
+      "side": "a",
+      "crops": [
+        {
+          "part": "cursor",
+          "window": [
+            576,
+            251,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "paper",
+          "window": [
+            634,
+            494,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "paper.below",
+          "window": [
+            614,
+            575,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "chip",
+          "window": [
+            307,
+            451,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "card.glass",
+          "window": [
+            710,
+            554,
+            461,
+            340
+          ]
+        }
+      ],
+      "image": "references/approved/step1-tug.png"
+    },
+    "set-A-04-b.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "step1-tug"
+      },
+      "side": "b",
+      "crops": [
+        {
+          "part": "cursor",
+          "window": [
+            1064,
+            177,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "paper",
+          "window": [
+            1137,
+            344,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "paper.below",
+          "window": [
+            1137,
+            502,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "chip",
+          "window": [
+            312,
+            69,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "card.glass",
+          "window": [
+            1459,
+            394,
+            461,
+            340
+          ]
+        }
+      ],
+      "still": {
+        "page": "step1",
+        "beat": "step1.tug",
+        "at": 0.5,
+        "camera": "film",
+        "tier": "review"
+      },
+      "format": "hd",
+      "tier": "review"
+    },
+    "set-A-05-a.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "sheet": "page-look"
+      },
+      "side": "a",
+      "image": "references/approved/page-look.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-05-b.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "sheet": "page-look"
+      },
+      "side": "b",
+      "still": {
+        "page": "step1",
+        "camera": "sheet",
+        "tier": "review",
+        "sheet": "page-look"
+      },
+      "format": "hd",
+      "tier": "review",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-B-01-a.png": {
+      "set": "B",
+      "critic": "R1-2",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "sheet": "cursor-arms"
+      },
+      "side": "a",
+      "image": "references/approved/cursor-arms.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-B-01-b.png": {
+      "set": "B",
+      "critic": "R1-2",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "sheet": "cursor-arms"
+      },
+      "side": "b",
+      "still": {
+        "page": "step1",
+        "camera": "sheet",
+        "tier": "review",
+        "sheet": "cursor-arms"
+      },
+      "format": "hd",
+      "tier": "review",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-B-02-a.png": {
+      "set": "B",
+      "critic": "R1-2",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "sheet": "cursor-damage"
+      },
+      "side": "a",
+      "image": "references/approved/cursor-damage.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-B-02-b.png": {
+      "set": "B",
+      "critic": "R1-2",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "sheet": "cursor-damage"
+      },
+      "side": "b",
+      "still": {
+        "page": "step1",
+        "camera": "sheet",
+        "tier": "review",
+        "sheet": "cursor-damage"
+      },
+      "format": "hd",
+      "tier": "review",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-B-03-a.png": {
+      "set": "B",
+      "critic": "R1-2",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "sheet": "cursor-acting"
+      },
+      "side": "a",
+      "image": "references/approved/cursor-acting.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-B-03-b.png": {
+      "set": "B",
+      "critic": "R1-2",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "sheet": "cursor-acting"
+      },
+      "side": "b",
+      "still": {
+        "page": "step1",
+        "camera": "sheet",
+        "tier": "review",
+        "sheet": "cursor-acting"
+      },
+      "format": "hd",
+      "tier": "review",
+      "size": [
+        1400,
+        788
+      ]
+    }
+  }
+}
