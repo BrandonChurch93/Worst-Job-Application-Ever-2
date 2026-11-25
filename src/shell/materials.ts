@@ -269,9 +269,9 @@ export function makeMaterials(seed: number): Materials {
   const physical = (o: THREE.MeshPhysicalMaterialParameters) => studio(new THREE.MeshPhysicalMaterial(o))
   const ceramic = grained(physical({ color: srgb(0xecebe6), roughness: 0.74, metalness: 0, normalMap: grain, normalScale: new THREE.Vector2(0.09, 0.09), specularIntensity: 0.6 }), 0.5)
   const pocket = grained(physical({ color: srgb(0xdcdfdc), roughness: 0.8, metalness: 0, normalMap: grain, normalScale: new THREE.Vector2(0.08, 0.08), specularIntensity: 0.4 }), 0.3)
-  const glass = physical({ color: srgb(0xb8c0be), roughness: 0.44, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8 })
-  const glassSunk = physical({ color: srgb(0xb8c0be), roughness: 0.44, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8, vertexColors: true })
-  const glassThick = physical({ color: srgb(0xa3acad), roughness: 0.48, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8 })
+  const glass = physical({ color: srgb(0xbdc5c2), roughness: 0.44, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8 })
+  const glassSunk = physical({ color: srgb(0xbdc5c2), roughness: 0.44, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8, vertexColors: true })
+  const glassThick = physical({ color: srgb(0x9aa3a4), roughness: 0.48, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8 })
   const aluminium = physical({
     color: srgb(0xb9bdc1), roughness: 0.3, metalness: 1, normalMap: brushed, normalScale: new THREE.Vector2(0.22, 0.22), anisotropy: 0.72, anisotropyRotation: Math.PI / 2
   })
