@@ -114,7 +114,7 @@ Checks that are not tuning looks: `--key tier-corporate` and `--key table-wide` 
 
 ## Seen and not mine
 
-- M4 red on main 55caf90, MEASURED `npm run measure -- --unit step1`: "Enter" 1.21 against 4.5. The Enter cap is in the cream caps mesh by vertex colour (keyboard 0eda37c) and the harness reads the ground as the material's colour. The picture is right. Told the Builder and the keyboard's owner.
+- M4 red on main 55caf90, MEASURED `npm run measure -- --unit step1`: "Enter" 1.21 against 4.5. The Enter cap is in the cream caps mesh by vertex colour (keyboard 0eda37c) and the harness reads the ground as the material's colour. The picture was right. Settled by keyboard 5400f7b (the Enter cap is its own orange mesh again): MEASURED on main ddf26ba with this branch, every measure of step 1 passes, M4 at 4.64.
 
 - The chip: settled. A chip or a button of tone `metal` is the smoked capsule of the surface and its label is set light whatever tone the layout gives.
 - Sizes, MEASURED in the approved images at 1920 (width of a line of dark pixels, ours as the ruler) and sent to the Builder, who owns `TYPE` in `src/shell/parts.ts`: the title is inter-600 at 46 to 48 px there (ours 28), the heading inter-display-600 at 40 to 43 px (ours 60), the chip label about 22 px (ours 18). Labels, subline, value, legends and "Enter" are within 5%.
