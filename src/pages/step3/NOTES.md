@@ -38,7 +38,7 @@ Phase 2, engine and blockout. Everything here is a stand-in shape with working l
 - Each tier's exit is closed until that tier's beats are over. A ball that reaches a closed exit is kicked back up the middle.
 - `bumper` is emitted for the applicant's ball during the Coffee beat only. Bumper hits at other times and hits by steel balls emit `flasher`.
 - `flipper-save` is emitted when a flipper is pressed with the ball over it during the Save beat. If nobody flips, the kick from the closed exit emits it once.
-- The loader pulls the cursor in from a distance that grows with time, so a still pointer is sealed about 6 s in.
+- The loader pulls the cursor in from a distance that grows with time, so a still pointer is sealed about 6 s in. It does not pull in the first 0.8 s, while the page is still arriving.
 - `skip()` puts the ball on the drain rail and plays the ending. Without a press the result card moves on after `live.idleSeconds`.
 
 - After the doors open they stay open: the ball is flattened once.
@@ -59,7 +59,7 @@ Phase 2, engine and blockout. Everything here is a stand-in shape with working l
 
 ## Needs
 
-- `tests/step2.test.ts` waited 3 s after a skip and then expected the cursor not to be taken. With a real step 3 behind it the keen bot is in the loader by then. `NEEDS.patch` makes that test look at the cursor when step 3 is reached.
+- `tests/step2.test.ts` waited 3 s after a skip and then expected the cursor not to be taken. With a real step 3 behind it the keen bot is in the loader by then, and at 17 s it has already left step 2. `NEEDS.patch` makes that test look at the cursor when step 3 is reached, and only when the skip was made on step 2. It is on this branch as two commits whose subjects start with `NEEDS:`, because the first one was not enough.
 
 ## Cameras
 

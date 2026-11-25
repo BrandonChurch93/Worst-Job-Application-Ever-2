@@ -23,7 +23,7 @@ const beatAt = (id: string): { from: number; to: number } => beats.find((b) => b
 const px = (v: number): number => v * BALL
 
 export const T = {
-  seal: 2.4, tube: 3.3, lightsDown: 4.0, powerOn: 5.2, atPlunger: 8.3, plunger: 9.4, onTable: 10.85, doorKick: 13.2, doorOpen: 14.1, lobbyEnd: 14.9, inboxOn: 18.3, inboxBy: 19.1,
+  arrive: 0.8, seal: 2.4, tube: 3.3, lightsDown: 4.0, powerOn: 5.2, atPlunger: 8.3, plunger: 9.4, onTable: 10.85, doorKick: 13.2, doorOpen: 14.1, lobbyEnd: 14.9, inboxOn: 18.3, inboxBy: 19.1,
   drops: [20.0, 20.35, 20.7], eject: 21.4, officeOpen: 24.6, officeBy: 25.2, firedBy: 27.2, scoopKick: 28.5, flapOn: 29.6, flapBy: 30.8, highwayEnd: 32.7, spiralEnd: 34.2, streetOpen: 37.3, streetBy: 37.9,
   press: seconds - TURN_HALF - 0.5
 }
@@ -344,7 +344,7 @@ export function makePage(): PageLogic {
         s.t = Math.min(s.t + dt, T.seal)
         const reach = 150 + Math.max(0, io.time - 1.2) * 420
         const d = Math.hypot(io.cursor.x - port.x, io.cursor.y - port.y)
-        if (s.phase === 'wait' && d < reach && !io.cursor.inAir) {
+        if (s.phase === 'wait' && d < reach && io.time >= T.arrive && !io.cursor.inAir) {
           s.phase = 'pull'
           s.pull = 0
           io.cursor.take('ball')
