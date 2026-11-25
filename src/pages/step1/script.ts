@@ -19,7 +19,7 @@ export const SPOT = { x: -12, y: -14 }
 export const BITE = { x: SLOT.cx - PAPER.w / 2, y: SLOT.cy - PAPER.h + 8 }
 export const HOOD = { y: SLOT.cy + 44, z: 8 }
 export const PILE = { x: SLOT.cx - 20, y: SLOT.cy + 176 }
-export const SHRED = { in: 0.3, gone: 0.34, strips: 0.12, pile: 0.78, pileSeconds: 1.0, empty: 1.3, emptySeconds: 0.5, zip: 1.78, zipSeconds: 1.0, end: 2.8 }
+export const SHRED = { in: 0.3, gone: 0.34, strips: 0.12, pile: 0.78, pileSeconds: 1.0, empty: 0.92, emptySeconds: 0.84, zip: 1.78, zipSeconds: 1.0, end: 2.8 }
 
 // The film's first name: every time is a second of the unit. The turrets are up at 3.52 and fire at 4.12, 4.57, 5.02, 5.47, 5.92, and so on.
 // 6.0 is the frame of the approved image: the shot of 5.02 has just landed on L, the shot of 5.47 is a hand's width from the cursor, the shot of 5.92 has left the barrel, and the cursor is in the air over the row above.
