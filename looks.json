@@ -1,0 +1,35 @@
+{
+  "folder": "keyboard",
+  "pushed": "2026-11-25T14:00:41.770Z",
+  "commit": "e46d07bd1d6a8fb8946e68eb87cac77fb5e3767f",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "step1-fire at review tier: the approved image above, this build below. Deck, key field, instanced caps, hatches, turrets, flash, scorches",
+      "time": "2026-11-25T13:59:45.741Z",
+      "by": "keyboard",
+      "from": "out/work/look-a2-compare.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "The left turret and the caps at native size: approved above, this build below",
+      "time": "2026-11-25T13:59:46.044Z",
+      "by": "keyboard",
+      "from": "out/work/look-b2-turret.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "A bolt in flight at review tier, step1.firstName at 0.515 (before the turret was made plainer)",
+      "time": "2026-11-25T13:59:46.418Z",
+      "by": "keyboard",
+      "from": "out/work/look-c-bolt.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "The shuffle, step1.lastName at 0.1, review tier: caps in the air, hatches shut",
+      "time": "2026-11-25T13:59:46.797Z",
+      "by": "keyboard",
+      "from": "out/work/look-d2-shuffle.jpg"
+    }
+  ]
+}
