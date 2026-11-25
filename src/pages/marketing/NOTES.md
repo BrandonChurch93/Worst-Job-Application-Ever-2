@@ -13,7 +13,7 @@ Phase 2 blockout. Stand-in shapes only. Every word is a key of `content/copy.jso
 
 - First screen follows `references/approved/marketing-top.png`: top bar, hero with the big button, one medallion (award 0), perk cards 0 to 2, ticker strip at y 984 to 1040.
 - Below: perks (cards 3 to 7 in a 3 by 2 grid, `perks.closing` in the sixth cell), awards 1 to 4, testimonials, comparison table, five-step process, questions, final call to action, footer.
-- Section gap 160, heading to content 148, foot margin 120. These three numbers are chosen so that the judged scroll stills (0.25, 0.5, 1 of the scroll range) start in a gap between rows and not through a card.
+- Section gap 170, heading to content 140, foot margin 128. These three numbers are chosen so that the judged scroll stills (0.25, 0.5, 1 of the scroll range) start in a gap between rows, 25 to 29 px above a row, and not through a card.
 - `copy:marketing.hero.sublineLong` is the hero subline in long form. The approved first screen uses the short one, so the long one stands in the footer as the line about the company, under the brand.
 - The ticker texts are layout nodes with their own states (`tape-N`, `tape-after`) so they count in the type register; the moving tape is drawn by the page, in a well cut into the page.
 
