@@ -252,12 +252,12 @@ export class Body implements BodyModel {
     if (this.heat > 0.02) {
       const along = 1.5 + this.heat * 4.5
       this.deform.point(along * AXIS[0] * 0.9, along * AXIS[1], 2.4, 2, this.p)
-      out.push({ x: this.p.x, y: this.p.y, z: this.p.z + 3 * UNIT, colour: [1, 0.3, 0.06], power: 0.9 * this.heat, reach: (14 + 16 * this.heat) * UNIT })
+      out.push({ x: this.p.x, y: this.p.y, z: this.p.z + 6 * UNIT, colour: [1, 0.3, 0.06], power: 0.06 * this.heat, reach: (10 + 8 * this.heat) * UNIT })
     }
     for (const h of this.holes) {
       if (h.glow < 0.04) continue
       this.deform.point(h.x, h.y, 2.4, 2, this.p)
-      out.push({ x: this.p.x, y: this.p.y, z: this.p.z + 2 * UNIT, colour: [1, 0.42, 0.1], power: 0.7 * h.glow * h.glow, reach: (6 + 5 * h.r) * UNIT })
+      out.push({ x: this.p.x, y: this.p.y, z: this.p.z + 3.5 * UNIT, colour: [1, 0.42, 0.1], power: 0.02 * h.glow * h.glow, reach: (5 + 3 * h.r) * UNIT })
     }
   }
 

@@ -8,9 +8,9 @@ import { CENTRE, inside } from './shape'
 import { detailTexture } from './texture'
 
 const DROPS = 24
-const STEAM = 22
+const STEAM = 54
 const SMOKE_POINTS = 4
-const SMOKE_EACH = 12
+const SMOKE_EACH = 26
 const DUST = 22
 const PUFFS = STEAM + SMOKE_POINTS * SMOKE_EACH + DUST
 const SEED = config.seed
@@ -286,24 +286,27 @@ class Effects implements EffectsModel {
   }
 
   // One rising column: its puffs follow one curling path, thin at the foot and wide at the head.
-  private plume(n: number, x: number, y: number, z: number, amount: number, time: number, count: number, high: number, period: number, thin: number, wide: number, dark: number, pale: number, dense: number, salt: number): number {
+  private plume(n: number, x: number, y: number, z: number, amount: number, time: number, count: number, strands: number, high: number, period: number, thin: number, wide: number, dark: number, pale: number, dense: number, salt: number): number {
     const a0 = hash01(salt, 51, SEED) * 6.28
     const a1 = hash01(salt, 52, SEED) * 6.28
-    const lean = (hash01(salt, 53, SEED) - 0.35) * 0.22
-    const path = (h: number): number => Math.sin(h * 0.5 + a0 - time * 1.7) * 0.085 * h + Math.sin(h * 0.21 + a1 + time * 0.6) * 0.15 * h + lean * h
+    const lean = (hash01(salt, 53, SEED) - 0.35) * 0.2
+    const each = count / strands
     for (let i = 0; i < count; i++) {
-      const clock = time / period + i / count
+      const s = i % strands
+      const j = Math.floor(i / strands)
+      const path = (h: number): number =>
+        lean * h + (0.035 * h + 0.0095 * h * h) * Math.sin(h * (0.5 + 0.13 * s) + a0 + s * 2.2 - time * 1.6) + 0.1 * h * Math.sin(h * 0.21 + a1 + time * 0.55)
+      const clock = time / period + (j + 0.41 * s) / each
       const cycle = Math.floor(clock)
       const t = clock - cycle
-      const h = high * Math.pow(t, 0.9)
+      const h = high * Math.pow(t, 0.9) * (1 - 0.07 * s)
       const off = path(h)
       const slope = (path(h + 0.2) - off) / 0.2
-      const jitter = (hash01(i, cycle, SEED + salt) - 0.5) * 0.7
-      const size = (thin + (wide - thin) * Math.pow(t, 1.25)) * (0.8 + 0.4 * hash01(i, cycle, SEED + salt + 1)) * UNIT
-      const long = 2.1 - 1.1 * t
+      const size = (thin + (wide - thin) * Math.pow(t, 1.5)) * (0.8 + 0.4 * hash01(i, cycle, SEED + salt + 1)) * UNIT
+      const long = 3.4 - 1.6 * t
       const shade = dark + (pale - dark) * t
-      const alpha = amount * dense * smooth(t / 0.07) * Math.pow(1 - t, 0.7) * (1 - 0.35 * t * t)
-      n = this.puff(n, x + (off + jitter * size / UNIT * t) * UNIT, y + h * UNIT, z + (0.1 + 3.2 * t) * UNIT, size, size * long, size * 0.7, -Math.atan(slope), shade, shade * 1.005, shade * 1.02, alpha, salt * 13 + i * 7 + cycle * 3)
+      const alpha = amount * dense * smooth(t / 0.06) * Math.pow(1 - t, 0.8) * (1 - 0.3 * t * t)
+      n = this.puff(n, x + off * UNIT, y + h * UNIT, z + (0.1 + 3.2 * t + 0.5 * s * t) * UNIT, size, size * long, size * 0.7, -Math.atan(slope), shade, shade * 1.005, shade * 1.02, alpha, salt * 13 + i * 7 + cycle * 3)
     }
     return n
   }
@@ -315,7 +318,7 @@ class Effects implements EffectsModel {
       TOPS.forEach((t, i) => this.on(surface, t[0], t[1], this.tops[i]!))
       let top = this.tops[0]!
       for (const t of this.tops) if (t.y > top.y) top = t
-      n = this.plume(n, top.x, top.y - 2.2 * UNIT, top.z, steam, look.time, STEAM, 17, 1.9, 0.6, 4.2, 1.0, 1.0, 0.95, 3)
+      n = this.plume(n, top.x, top.y - 2.2 * UNIT, top.z, steam, look.time, STEAM, 3, 17, 1.9, 0.32, 2.3, 1.0, 1.0, 0.6, 3)
     }
     const points = Math.min(SMOKE_POINTS, look.smoke.length)
     for (let k = 0; k < points; k++) {
@@ -323,7 +326,7 @@ class Effects implements EffectsModel {
       const amount = clamp01(s.amount)
       if (amount <= 0.01) continue
       this.on(surface, s.x, s.y, this.a)
-      n = this.plume(n, this.a.x, this.a.y, this.a.z, amount, look.time, SMOKE_EACH, 17, 4.8, 0.5, 3.8, 0.15, 0.5, 0.9, 40 + k * 9)
+      n = this.plume(n, this.a.x, this.a.y, this.a.z, amount, look.time, SMOKE_EACH, 2, 17, 4.8, 0.3, 2.4, 0.16, 0.46, 0.62, 40 + k * 9)
     }
     if (look.dust >= 0 && look.dust < 1) {
       const d = look.dust
