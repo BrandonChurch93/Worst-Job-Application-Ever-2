@@ -114,6 +114,21 @@ A stand-in is what `src/shell/view.ts` draws for a shape when nobody has made it
 - The cursor is made of five parts in `src/cursor/`: `model/body.ts`, `model/effects.ts`, `act/acting.ts`, `act/damage.ts`, `act/arms.ts`, put together by `src/cursor/view.ts` as `src/cursor/contract.ts` says. Each exports null until it is made, and the view draws the stand-in for what is missing.
 - `info().standIns` and `filmState().standIns` list a part while any shape of it is still drawn as a stand-in. Check G13 reads them and the `standins` view.
 
+## Making the table real
+
+The table has hundreds of shapes, so its parts are built whole, zone by zone, and not shape by shape. The page of step 3 has seven zones from the top: `first`, `marquee`, `corporate`, `office`, `street`, `apron`, `last` (`ZONES` in `src/table/draw.ts`). The three tiers are 1920 by 1080 each and their floors lie 96, 192 and 288 below the page.
+
+- For every part and every zone the part stands in, the draw list carries one shape of kind `anchor`, named `whole.<part>.<zone>`. An anchor is never drawn. It spans its zone, so its object sits at the middle of the zone with z = 0 on the zone's floor, x to the right and y up the page, in page pixels. One ball is 96.
+- `src/table/real/zone.ts` has what an owner needs: `zoneOf(anchor)`, `local`, `localBalls` and `localOf` to put a place of `src/table/layout.ts` or a shape of the draw list into the zone's frame, `shapesIn(ctx, part, zone)`, and `whole(part, { version, build, pose, drop })`, which makes a `PartMaker` that answers the part's anchors with one object for each zone and answers the part's single shapes with `''`. `build` throws when it leaves a zone empty that has shapes of the part.
+- While an anchor is answered with null, its part stays on the list of stand-ins, also when every single shape of it is real. A part that is built shape by shape answers its anchors with `''`.
+- Everything that moves carries its state in `v` on its shape, read in `pose` through `ctx.byId`: a flipper its angle in radians, 0 when level and positive when its tip is below its pivot (`flipper.<id>`), a target 1 when it is up (`target.<id>`), an insert and a lamp 1 when lit (`insert.<id>`, `lamp.<id>`), the plunger how far it is pulled, 0 to 1 (`plunger.rod`), the lobby doors 1 when shut (`hq.door.left`). The balls are single shapes of kind `ball`: `ball.clear` and `ball.steel.N`.
+- Places, sizes and what the ball collides with are in `src/table/layout.ts`, and only the Builder changes that file, `draw.ts` and `physics.ts`. A model reads its place there (`table.models`, `table.bumpers`, `table.targets` and the rest) and adds whatever the ball never touches in its own folder. A change to something the ball touches comes as a patch for the Builder.
+- Each folder under `src/table/real/` belongs to one owner, who fills the `parts` of its `index.ts`. `src/table/real/index.ts` says which folder makes which part and is frozen, like `zone.ts`.
+- The floor of a tier is printed. Its mesh carries a mask on `userData.coverageMap`, white where something is printed and black where the floor is bare, and the `coverage` view and measure M8 read that mask. Everything else that is drawn on a tier counts as marking the floor.
+- The anchors of `table-lights` come with the moving shapes, one for the marquee and one for each tier, and carry in `v` how bright the zone's general lighting is and how bright the website's own light is, each 0 to 1.
+- Every material drawn in a zone of the table passes once through `lit(material, zone)` of `src/table/real/light.ts` when it is made. It does nothing until the owner of `table-lights` fills `src/table/real/lights/hook.ts`, and from then on it is how the zone's light groups reach every surface. So a material is shared inside a zone and not between zones.
+- A tier draws many of the same thing: posts, screws, lamps, rubbers. Draw them as instanced meshes and keep one zone's object to a few dozen draw calls.
+
 ## Working on a part
 
 - Work in your own files only: your brief names them. Never edit `package.json`, `content/`, `references/`, `kit/`, `config/`, `src/stage/`, `src/real/`, `src/app.ts`, `src/main.ts` or another builder's files. If you need something there, say so in a message and carry on with a workaround in your own folder.
