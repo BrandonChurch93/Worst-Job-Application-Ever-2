@@ -66,7 +66,8 @@ describe('the mended body', () => {
     const clean = hole(0.63)!
     expect(clean.burnt).toBe(0)
     expect(clean.glow).toBe(0)
-    expect(clean.r).toBeCloseTo(LIFE.burn.radius, 5)
+    expect(clean.r).toBeCloseTo(LIFE.burn.clean, 5)
+    expect(hole(0.2)!.r).toBeCloseTo(LIFE.burn.radius, 5)
     expect(hole(0.999)).toBeUndefined()
   })
 })

@@ -29,10 +29,19 @@ describe.skipIf(!here)('npm run parts -- --record', () => {
     expect(p.state).toBe('stand-in')
     expect(other).toEqual(blank('other'))
   })
-  it('refuses a file that was in neither commit, a file that is not there, a part that is not there and no files', () => {
+  it('records a file that was in none of the commits as absent, and says so', () => {
+    const file = register([blank('page-turn')])
+    const r = record(file, '--record', 'page-turn', '--files', 'tools/lib/gate-checks.mjs')
+    expect(r.status).toBe(0)
+    expect(r.stdout).toMatch(/in none of the commits .* recorded as absent/)
+    const [p] = JSON.parse(fs.readFileSync(file, 'utf8')).parts
+    expect(p.hashAt).toEqual({ 'tools/lib/gate-checks.mjs': 'absent' })
+    expect(p.standInHash).toBe(hashOfBytes(p.files, () => Buffer.alloc(0)))
+    expect(recordedAgain(p, (c: string, f: string) => showAt(root, c, f))).toBe(p.standInHash)
+  })
+  it('refuses a file that is not there, a part that is not there and no files', () => {
     const file = register([blank('materials')])
     const before = fs.readFileSync(file, 'utf8')
-    expect(record(file, '--record', 'materials', '--files', 'tools/lib/gate-checks.mjs').stderr).toMatch(/in none of the commits/)
     expect(record(file, '--record', 'materials', '--files', 'src/no/such.ts').stderr).toMatch(/not a file of this tree/)
     expect(record(file, '--record', 'nothing', '--files', 'src/shell/materials.ts').stderr).toMatch(/no part called/)
     expect(record(file, '--record', 'materials').status).toBe(1)

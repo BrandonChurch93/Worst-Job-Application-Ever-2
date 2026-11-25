@@ -21,7 +21,7 @@ The logic, the script of the film and the numbers the makers of the real parts r
 
 - `Turrets` is a class that stands alone: no page state, its own `save()` and `load()`.
 - A hit burns the last letter, knocks the cursor back and calls `hurt('burn')`.
-- The film takes exactly one hit, at "Perpl", at 5.89 s of the unit, after more than a second of standing still and proud. The letter burns away 0.2 s after the hit (`SINGE`), so the frame at 6.0 s, the approved image, still reads "Perpl" with the burn fresh. It then types the name again to the end.
+- The film takes exactly one hit, at "Perpl", at 7.08 s of the unit, after two proud pauses of more than a second each. Between them, at 6.0 s, is the frame of the approved image: two bolts in the air, one 130 px from the cursor, the cursor in the air on its way from W to the 4. The turrets rise `TIMES.turretDelay` (0.72 s) into the first name, in the film and live. The letter burns away 0.2 s after the hit (`SINGE`). It then types the name again to the end.
 - A bolt that lands within 130 px of the cursor makes it flinch, unless it is being proud.
 - For 0.9 s after a hit the cursor cannot be hit again.
 
@@ -51,7 +51,7 @@ The logic, the script of the film and the numbers the makers of the real parts r
 
 ## Last 4 s
 
-- The kit wins. From the moment the shredder has the cursor (`SHRED`, seconds): the body is under the page at 0.34, the strips leave the hood from 0.12, the cursor lies as a pile of strips from 0.78 for 1.0 s, the form empties from 1.3 to 1.8 (Email, then Last name, then First name, a character at a time), the strips zip back from 1.78 for 1.0 s, and the pointer is handed back at 2.8. In the film that is whole at 30.2 s, with 1.3 s left to look at the empty form and start toward it.
+- The kit wins. From the moment the shredder has the cursor (`SHRED`, seconds): the body is under the page at 0.34, the strips leave the hood from 0.12, the cursor lies as a pile of strips from 0.78 for 1.0 s, the form empties from 0.92 to 1.76 (Email, then Last name, then First name, one field after the other, 0.28 s each: the focus ring lights on the field and its caret runs back along the line and takes a character at a time), the strips zip back from 1.78 for 1.0 s, and the pointer is handed back at 2.8. In the film that is whole at 30.2 s, with 1.3 s left to look at the empty form and start toward it.
 
 ## When the visitor does nothing
 
@@ -113,5 +113,8 @@ All are blended between sim steps by the stage. A length never changes for an id
 | `strip-<i>` | `[u, ink]` | u 0 to 1: its way out of the hood. ink 1: a strip of the cursor, dark, which goes to the pile (`PILE`, 176 px under the slot) and zips into the cursor; 0: a strip of paper, which hangs in a heap 56 px under the hood (`HEAP`) and is drawn back under the hood in 0.3 s (`TIDY`) once the message shows. |
 | `field-focus` | `[glow]` | 1 on a typed or erased character, 0 after 0.25 s. |
 | `field-caret` | `[jump]` | px above its line, after a slab lands. |
+| `turret-<i>` | `[cos aim, sin aim, charge, since, heat, back, open, shots]` | Set by `Turrets.draw` (keyboard_smith). charge 0 to 1 over the 0.35 s wind-up. since: seconds since its last shot, at most 1. heat 0 to 1 once overheated. back: px the barrel is pulled back. open 0 to 1: the hatch. shots: how many it has fired. |
+| `bolt-<n>` | `[share, born]` | share 0 to 1 of its flight. born 0 to 1 over its first 0.05 s. |
+| `scorch-<n>` | `[left]` | share of its 2.4 s of life that is left. It fades in 0.4 s once the turrets start down. |
 
 The slot's well is drawn at full width from its first frame. Strips leave from `HOOD`, the south face of the hood, 8 px above the page.

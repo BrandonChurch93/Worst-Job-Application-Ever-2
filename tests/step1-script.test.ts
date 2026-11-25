@@ -29,10 +29,32 @@ describe('step 1: the script of the film', () => {
       }
       return true
     }
-    expect(still(FIRST.cocky[1], FIRST.shock[0])).toBe(true)
-    expect(FIRST.shock[0] - FIRST.cocky[1]).toBeGreaterThanOrEqual(1)
+    expect(still(FIRST.cocky[1], FIRST.flee[0])).toBe(true)
+    expect(FIRST.flee[0] - FIRST.cocky[1]).toBeGreaterThanOrEqual(1)
+    expect(still(FIRST.flee[1], FIRST.shock[0])).toBe(true)
+    expect(FIRST.shock[0] - FIRST.flee[1]).toBeGreaterThanOrEqual(1)
     expect(still(FIRST.shock[0] + 0.2, FIRST.shock[1])).toBe(true)
     expect(FIRST.shock[1] - FIRST.shock[0]).toBeGreaterThanOrEqual(0.6)
+  })
+
+  it('makes the frame of the approved image at 6.0: two bolts in the air, one a hand from the cursor, a burn just landed, the cursor off the keys', () => {
+    const s = film()
+    s.advance(at(6))
+    const st = s.page.save() as unknown as { values: Record<string, string>; turrets: { bolts: { x0: number; y0: number; tx: number; ty: number; age: number; flight: number }[]; scorches: { left: number }[] } }
+    const pose = s.cursor.pose()
+    const far = st.turrets.bolts.map((b) => {
+      const u = b.age / b.flight
+      return Math.hypot(b.x0 + (b.tx - b.x0) * u - pose.x - 14, b.y0 + (b.ty - b.y0) * u - pose.y - 26)
+    })
+    expect(st.turrets.bolts.length).toBe(2)
+    expect(Math.min(...far)).toBeGreaterThan(60)
+    expect(Math.min(...far)).toBeLessThan(140)
+    for (const b of st.turrets.bolts) expect((b.flight - b.age) * stepHz).toBeGreaterThan(3)
+    expect(Math.max(...st.turrets.scorches.map((c) => c.left))).toBeGreaterThan(2.4 - 0.35)
+    expect(pose.z).toBeGreaterThan(50)
+    expect(pose.damage.length).toBe(0)
+    expect(st.values.firstName).toBe(config.applicant.filmFirstName.slice(0, 5))
+    console.log(`the frame at 6.0: the near bolt ${Math.min(...far).toFixed(0)} px from the cursor, the last burn ${(2.4 - Math.max(...st.turrets.scorches.map((c) => c.left))).toFixed(2)} s old`)
   })
 
   it('clicks the field only once the cursor stands on the page', () => {
@@ -140,8 +162,8 @@ describe('step 1: the script of the film', () => {
       else if (now - landed > 0.3 && now - landed < 0.5) after = Math.max(after, off)
       expect(Boolean(deck.moved)).toBe(off > 0.01)
     }
-    expect(most).toBeGreaterThan(1)
-    expect(most).toBeLessThan(3)
+    expect(most).toBeGreaterThan(2)
+    expect(most).toBeLessThan(6)
     expect(after).toBe(0)
   })
 

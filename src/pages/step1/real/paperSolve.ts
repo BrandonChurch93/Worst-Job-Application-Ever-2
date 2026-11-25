@@ -278,6 +278,7 @@ export function solveSheet(q: SheetIn, into?: Sheet): Sheet {
   const fed = [0, 0, 0]
 
   const scales = new Float32Array(nx).fill(1)
+  const crestAt = new Float32Array(nx).fill(-1)
   for (let pass = 0; pass < 2; pass++) {
     if (pass === 1) even(scales)
     for (let i = 0; i < nx; i++) {
@@ -383,6 +384,7 @@ export function solveSheet(q: SheetIn, into?: Sheet): Sheet {
         if (fit !== 1) for (let k = 0; k <= NS + NT; k++) sig[k] = sig[k]! * fit
       }
       if (pass === 0) continue
+      if (live) crestAt[i] = bCrest
       for (let j = 0; j < ny; j++) {
         const b = j * db
         free(a, b, p)
@@ -441,7 +443,38 @@ export function solveSheet(q: SheetIn, into?: Sheet): Sheet {
     hold(out, da, db, 3)
     normals(out)
   }
+  if (bite > 0) calm(out, crestAt, db, bite)
   return out
+}
+
+// A sheet fed askew crosses the crest on a slant, and the grid would shade that line in teeth. The rows by the crest
+// take the light as the row a little above them does, so the sheet goes over the roller as one clean bend.
+function calm(s: Sheet, crestAt: Float32Array, db: number, bite: number): void {
+  const { nx, ny, nor } = s
+  const before = 2.5 * db
+  const after = 1.5 * db
+  for (let i = 0; i < nx; i++) {
+    const bc = crestAt[i]!
+    if (bc < 0) continue
+    const js = Math.max(0, Math.floor((bc - before) / db))
+    const from = (js * nx + i) * 3
+    const sx = nor[from]!
+    const sy = nor[from + 1]!
+    const sz = nor[from + 2]!
+    for (let j = js + 1; j < ny; j++) {
+      const b = j * db
+      if (b > bc + after) break
+      const w = bite * (b < bc ? smooth((b - (bc - before)) / before) : 1 - smooth((b - bc) / after))
+      const o = (j * nx + i) * 3
+      const x = nor[o]! + (sx - nor[o]!) * w
+      const y = nor[o + 1]! + (sy - nor[o + 1]!) * w
+      const z = nor[o + 2]! + (sz - nor[o + 2]!) * w
+      const l = Math.hypot(x, y, z) || 1
+      nor[o] = x / l
+      nor[o + 1] = y / l
+      nor[o + 2] = z / l
+    }
+  }
 }
 
 const EAR = { a: 34, b: 27, turn: 2.72 }
