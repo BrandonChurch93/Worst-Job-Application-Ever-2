@@ -1,35 +1,35 @@
 {
   "folder": "ui",
-  "pushed": "2026-11-25T09:17:58.341Z",
-  "commit": "6effdab7ee655648711a88910be345a16894d32f",
+  "pushed": "2026-11-25T09:43:51.662Z",
+  "commit": "7d7a0568dbf359e6dda360ffcd2bc3f602f8720a",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Live, the real careers page at rest: sound and the film link above the title (dev page over a still, not the wired site)",
-      "time": "2026-11-25T09:17:56.525Z",
+      "caption": "The wired site, step 1 with the skip link due: the row sits above the title on the content column's left edge",
+      "time": "2026-11-25T09:43:49.920Z",
       "by": "ui",
-      "from": "out/work/stills/ui-live.png"
+      "from": "out/work/stills/site-skip-1200.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Live, step 2 with the skip link due, words drawn in Inter from the stage's outlines (dev page over a still)",
-      "time": "2026-11-25T09:17:56.753Z",
+      "caption": "The wired site in film mode: the bar now covers the whole ticker (y 978 to 1046) while it shows",
+      "time": "2026-11-25T09:43:50.157Z",
       "by": "ui",
-      "from": "out/work/stills/ui-skip.png"
+      "from": "out/work/stills/site-film-1200.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Live, careers page scrolled: the row gets a pale capsule when content passes under it (backing light)",
-      "time": "2026-11-25T09:17:56.978Z",
+      "caption": "The wired site with reduced motion and no mode (with the NEEDS commit): the film waits at 0 with the play sign",
+      "time": "2026-11-25T09:43:50.385Z",
       "by": "ui",
-      "from": "out/work/stills/ui-scrolled.png"
+      "from": "out/work/stills/site-less-motion-1200.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Film mode over the careers page: the bar covers the ticker while it shows, and fades after 2.6 s of play",
-      "time": "2026-11-25T09:17:57.209Z",
+      "caption": "The measuring page after a full run in the headless browser (software graphics, so the numbers are low)",
+      "time": "2026-11-25T09:43:50.609Z",
       "by": "ui",
-      "from": "out/work/stills/ui-film.png"
+      "from": "out/work/stills/site-probe-1200.png"
     }
   ]
 }
