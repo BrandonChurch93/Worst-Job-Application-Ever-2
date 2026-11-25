@@ -17,6 +17,8 @@ const WELL = -(CAP_TOP + 12)
 const MAX_CHARS = 26
 const BODY = { x: 14, y: 26 }
 const STRIPS = 9
+const LIE = heights.card + 9
+const IDLE_SHUFFLE = 5
 
 type Phase = 'rest' | 'keyboard' | 'firstName' | 'lastName' | 'email' | 'slabs' | 'resume' | 'tug' | 'shredded' | 'received'
 const GAG: Record<Phase, string> = {
@@ -40,6 +42,7 @@ interface State {
   blocks: boolean
   rng: number[]
   shuffles: number
+  shuffledAt: number
   queue: { key: number; wait: number }[]
   keyDown: Record<string, number>
   drum: number
@@ -87,7 +90,7 @@ export function makePage(): PageLogic {
 
   const fresh = (mode: Mode, seed: number): State => ({
     mode, seed, time: 0, phase: 'rest', phaseTime: 0, board: 0, boardUp: false, values: { firstName: '', lastName: '', email: '' }, places: homePlaces(), from: homePlaces(), shuffle: 1, blocks: false,
-    rng: stream('step1:shuffle', seed).state(), shuffles: 0, queue: [], keyDown: {}, drum: 0, shock: 0, slab: null, accepted: false, slow: 0, slowFired: false, realFired: false,
+    rng: stream('step1:shuffle', seed).state(), shuffles: 0, shuffledAt: 0, queue: [], keyDown: {}, drum: 0, shock: 0, slab: null, accepted: false, slow: 0, slowFired: false, realFired: false,
     paper: { on: false, slide: 0, x: PAPER_REST.x, y: SCREEN_H + 20, held: false, dx: 0, dy: 0, feed: -1, fx: 0, fy: 0 }, slot: 0, tug: { t: 0, amount: 0, cool: 0, gx: SLOT.cx, gy: SLOT.cy - PAPER.h },
     shred: 0, received: false, pressed: -1, skipped: false, cleaned: false, done: false, cue: 0, cx: START.x, cy: START.y, acted: null
   })
@@ -97,6 +100,7 @@ export function makePage(): PageLogic {
     s.phase = phase
     s.phaseTime = 0
     s.slow = 0
+    s.shuffledAt = 0
     s.queue = []
   }
   const act = (io: StepIo, a: Acting): void => {
@@ -124,6 +128,7 @@ export function makePage(): PageLogic {
     s.shuffle = 0
     s.blocks = true
     s.shuffles++
+    s.shuffledAt = s.phaseTime
     io.emit('keys-shuffle', DECK.x + DECK.w / 2, DECK.y + DECK.h / 2, false)
   }
   const goHome = (): void => {
@@ -205,6 +210,7 @@ export function makePage(): PageLogic {
         s.drum = 0.8
         io.emit('slow-typing', pockets[field].cx, pockets[field].cy, false)
       }
+      if (s.phase === 'lastName' && !s.blocks && s.phaseTime - s.shuffledAt >= IDLE_SHUFFLE) reshuffle(io)
       if (s.phaseTime >= live.skipLinkAfterSeconds) advance(io)
     }
   }
@@ -343,7 +349,7 @@ export function makePage(): PageLogic {
     }
     const px = -dy / d
     const py = dx / d
-    io.cursor.setArms(true, [{ x: t.gx - px * 44, y: t.gy - py * 44, z: 6 }, { x: t.gx + px * 44, y: t.gy + py * 44, z: 6 }])
+    io.cursor.setArms(true, [{ x: t.gx - px * 44, y: t.gy - py * 44, z: LIE + 6 }, { x: t.gx + px * 44, y: t.gy + py * 44, z: LIE + 6 }])
     act(io, t.amount > 0.7 ? 'scared' : t.amount > 0.45 ? 'nervous' : 'angry')
     const lost = s.mode === 'film' ? t.t >= TIMES.tugFilm : t.amount >= 0.9 || t.t >= 9
     if (lost) {
@@ -397,6 +403,7 @@ export function makePage(): PageLogic {
   }
 
   const ground = (io: StepIo): number => {
+    if (inside(ZONE, io.cursor.x + BODY.x, io.cursor.y + BODY.y)) return heights.card
     if (s.board <= 0 || !onDeck(io.cursor.x, io.cursor.y)) return 0
     const key = keyAt(s.places, io.cursor.x, io.cursor.y)
     const top = key >= 0 ? CAP_TOP - (s.keyDown[seats[key]!.name] ? TRAVEL : 0) : DECK_TOP
@@ -439,19 +446,19 @@ export function makePage(): PageLogic {
     const startV = whole - shown
     const at = (v: number, across: number): { x: number; y: number } => ({ x: t.gx + ux * v - uy * across, y: t.gy + uy * v + ux * across })
     const c = at(startV + shown / 2, 0)
-    out.push({ id: 'resume-paper', part: 'paper', kind: 'box', x: c.x - PAPER.w / 2, y: c.y - shown / 2, w: PAPER.w, h: shown, z0: 0.6, z1: 0.6 + heights.paper, rot, tone: 'paper', mechanism: true })
+    out.push({ id: 'resume-paper', part: 'paper', kind: 'box', x: c.x - PAPER.w / 2, y: c.y - shown / 2, w: PAPER.w, h: shown, z0: LIE, z1: LIE + heights.paper, rot, tone: 'paper', mechanism: true })
     const rest = Math.max(36, PAPER.h * (1 - t.amount))
     const scale = whole / rest
     if (s.phase === 'tug' && rest > 70) {
       const p = at(30 * scale + 10, -PAPER.w / 2 + 24 + 50)
-      out.push({ id: 'resume-paper-title', part: 'type', kind: 'text', x: p.x - 50, y: p.y - 10, w: 100, h: 20, z0: 0.7 + heights.paper, z1: 0.7 + heights.paper, rot, tone: 'ink', words: 'copy:step1.resume.paperTitle', type: PAPER_TITLE })
+      out.push({ id: 'resume-paper-title', part: 'type', kind: 'text', x: p.x - 50, y: p.y - 10, w: 100, h: 20, z0: LIE + 0.1 + heights.paper, z1: LIE + 0.1 + heights.paper, rot, tone: 'ink', words: 'copy:step1.resume.paperTitle', type: PAPER_TITLE })
     }
     PAPER_LINES.forEach((f, i) => {
       const v = f * PAPER.h
       if (v > rest - 12 || s.phase !== 'tug') return
       const w = (PAPER.w - 48) * (i === 3 || i === 6 ? 0.6 : 1)
       const p = at(v * scale, -(PAPER.w - 48 - w) / 2)
-      out.push({ id: `resume-paper-line-${i}`, part: 'paper', kind: 'box', x: p.x - w / 2, y: p.y - 4, w, h: 8, z0: 0.6 + heights.paper, z1: 1 + heights.paper, rot, tone: 'pocket' })
+      out.push({ id: `resume-paper-line-${i}`, part: 'paper', kind: 'box', x: p.x - w / 2, y: p.y - 4, w, h: 8, z0: LIE + heights.paper, z1: LIE + 0.4 + heights.paper, rot, tone: 'pocket' })
     })
   }
 
@@ -566,7 +573,7 @@ export function makePage(): PageLogic {
       if (s.paper.on && s.phase === 'resume') {
         const dx = s.paper.x - PAPER_REST.x
         const dy = s.paper.y - PAPER_REST.y
-        const up = s.paper.held ? 22 : 0.6
+        const up = s.paper.held ? LIE + 14 : s.paper.feed >= 0 ? LIE : 0.6
         over['resume-paper'] = { x: s.paper.x, y: s.paper.y, z0: up, z1: up + heights.paper, mechanism: true }
         const title = boxOf(layout, 'resume-paper-title')
         over['resume-paper-title'] = { x: title.x + dx, y: title.y + dy, z0: up + heights.paper + 0.1, z1: up + heights.paper + 0.1 }
@@ -575,6 +582,7 @@ export function makePage(): PageLogic {
           over[`resume-paper-line-${i}`] = { x: line.x + dx, y: line.y + dy, z0: up + heights.paper, z1: up + heights.paper + 0.4 }
         })
       }
+      for (const f of FIELDS) over[`${f}-value`] = { z0: 0.1, z1: 0.1 }
       if (s.pressed >= 0) over['continue-cap'] = { z1: heights.button - TRAVEL }
       drawLayout(out, layout, { states: stateList(), over, runtime: { 'step1.firstName': s.values.firstName, 'step1.lastName': s.values.lastName, 'step1.email': s.values.email } })
       const field = FIELD_OF[s.phase]
@@ -662,6 +670,7 @@ export function makePage(): PageLogic {
     done: () => s.done,
     gag: () => GAG[s.phase],
     ignoring: () => false,
+    typing: () => s.board > 0 && !s.skipped,
     states: stateList
   }
 }

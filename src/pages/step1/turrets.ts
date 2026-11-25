@@ -4,7 +4,7 @@ import type { DrawList, Emit } from '../../stage/types'
 const heights = config.scale.heights
 
 export const TURRET = {
-  riseSeconds: 0.5, period: 1.5, firstShot: 1.0, stagger: 0.75, windup: 0.35, boltSpeed: 1500, aimLag: 0.16, hitRadius: 42, scorchSeconds: 2.4, body: 92, barrel: 66,
+  riseSeconds: 0.5, period: 0.9, firstShot: 0.6, stagger: 0.45, windup: 0.35, boltSpeed: 1500, aimLag: 0.16, hitRadius: 42, scorchSeconds: 2.4, body: 92, barrel: 112,
   muzzleHeight: heights.turret - 18
 }
 
@@ -135,7 +135,7 @@ export class Turrets {
   draw(out: DrawList, lift = 0): void {
     const s = this.s
     for (const c of s.scorches) {
-      const d = 30 * Math.min(1, c.left / (TURRET.scorchSeconds * 0.6))
+      const d = 34 * Math.min(1, c.left / (TURRET.scorchSeconds * 0.6))
       out.push({ id: `scorch-${c.id}`, part: 'turrets', kind: 'disc', x: c.x - d / 2, y: c.y - d / 2, w: d, h: d, z0: c.z + lift, z1: c.z + lift + 0.5, tone: 'dark' })
     }
     if (s.up > 0) {
@@ -147,14 +147,15 @@ export class Turrets {
         const winding = s.lock[i] !== null
         const back = winding ? Math.min(1, (TURRET.windup - (s.next[i]! - s.clock)) / TURRET.windup) * 14 : 0
         const a = s.overheated ? (i === 0 ? 0.5 : Math.PI - 0.5) : s.angle[i]!
-        const reach = TURRET.barrel / 2 + 8 - back
+        const reach = TURRET.barrel / 2 + 14 - back
         const cx = p.x + Math.cos(a) * reach
         const cy = p.y + Math.sin(a) * reach
-        out.push({ id: `turret-${i}-barrel`, part: 'turrets', kind: 'capsule', x: cx - TURRET.barrel / 2, y: cy - 11, w: TURRET.barrel, h: 22, z0: top - 26, z1: top - 4, rot: a, tone: s.overheated ? 'dark' : 'metal', mechanism: true })
+        out.push({ id: `turret-${i}-barrel`, part: 'turrets', kind: 'capsule', x: cx - TURRET.barrel / 2, y: cy - 13, w: TURRET.barrel, h: 26, z0: top - 30, z1: top - 4, rot: a, tone: 'dark', mechanism: true })
+        out.push({ id: `turret-${i}-head`, part: 'turrets', kind: 'disc', x: p.x - 30, y: p.y - 30, w: 60, h: 60, z0: top, z1: top + 8, tone: s.overheated ? 'danger' : 'dark', mechanism: true })
         if (winding) {
-          const mx = p.x + Math.cos(a) * (TURRET.barrel + 6 - back)
-          const my = p.y + Math.sin(a) * (TURRET.barrel + 6 - back)
-          const g = 10 + back
+          const mx = p.x + Math.cos(a) * (TURRET.barrel + 20 - back)
+          const my = p.y + Math.sin(a) * (TURRET.barrel + 20 - back)
+          const g = 12 + back
           out.push({ id: `turret-${i}-charge`, part: 'turrets', kind: 'ball', x: mx - g / 2, y: my - g / 2, w: g, h: g, z0: top - 15 - g / 2, z1: top - 15 + g / 2, tone: 'accent' })
         }
         if (s.overheated) {
@@ -172,11 +173,11 @@ export class Turrets {
       const y = b.y0 + (b.ty - b.y0) * u
       const z = TURRET.muzzleHeight + (b.z + 10 - TURRET.muzzleHeight) * u + lift
       const a = Math.atan2(b.ty - b.y0, b.tx - b.x0)
-      const len = 58
+      const len = 96
       const cx = x - Math.cos(a) * len * 0.45
       const cy = y - Math.sin(a) * len * 0.45
-      out.push({ id: `bolt-${b.id}`, part: 'turrets', kind: 'capsule', x: cx - len / 2, y: cy - 6, w: len, h: 12, z0: z - 6, z1: z + 6, rot: a, tone: 'accent' })
-      out.push({ id: `bolt-${b.id}-head`, part: 'turrets', kind: 'ball', x: x - 9, y: y - 9, w: 18, h: 18, z0: z - 9, z1: z + 9, tone: 'light' })
+      out.push({ id: `bolt-${b.id}`, part: 'turrets', kind: 'capsule', x: cx - len / 2, y: cy - 8, w: len, h: 16, z0: z - 8, z1: z + 8, rot: a, tone: 'dark' })
+      out.push({ id: `bolt-${b.id}-head`, part: 'turrets', kind: 'ball', x: x - 12, y: y - 12, w: 24, h: 24, z0: z - 12, z1: z + 12, tone: 'accent' })
     }
   }
 }

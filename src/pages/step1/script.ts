@@ -9,7 +9,7 @@ import { HEADER } from '../../shell/parts'
 
 const FIELD_Y = HEADER.contentY
 
-export const START = { x: 960, y: 560 }
+export const START = { x: 1180, y: 800 }
 export const TIMES = { riseSeconds: 0.8, sinkSeconds: 0.6, turretDelay: 0.3, shuffleSeconds: 0.32, pressWait: 0.16, slabFirst: 0.4, slabEvery: 0.55, slabFall: 0.22, slabLie: 0.2, slabLift: 0.13, paperSlide: 0.5, bite: 0.4, tugFilm: 6.6 }
 export const TUG = { stiff: 2600, damp: 36, strainPx: 50, grip: { x: 18, y: 78 }, reach: 320 }
 export const SPOT = { x: -12, y: -14 }
@@ -67,9 +67,9 @@ export function makePlan(seed: number, first: string, last: string, email: strin
     t += 0.5
   }
   const cocky = keySpot(seatIndex[firstKeys[cockyAfter - 1]!]!)
-  hold(t - 0.3, 6.62, cocky.x, cocky.y)
+  hold(t - 0.3, 6.4, cocky.x, cocky.y)
   cues.push({ at: 5.62, act: 'proud' }, { at: 5.7, react: 'dustOff' })
-  go(6.95, cocky.x - 150, cocky.y - 70)
+  go(6.75, cocky.x - 150, cocky.y - 70)
   go(7.2, cocky.x - 150, cocky.y - 70)
   cues.push({ at: 7.3, act: 'nervous' })
   t = 7.5
