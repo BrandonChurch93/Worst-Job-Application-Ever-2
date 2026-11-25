@@ -1,26 +1,28 @@
+import * as THREE from 'three'
 import build from 'virtual:build-info'
 import { App, pageUnits, type CursorState, type StillSpec } from '../app'
 import { config, filmSeconds, stepHz, unitStart } from '../config'
 import { narration, timedLines } from '../copy'
 import { assetSet } from '../core/assets'
 import { pages } from '../pages'
+import { look } from '../post/look'
 import { standInsOf, TONES } from '../shell/view'
 import { plannedHeight, typeRegister, walk } from '../shell/layout'
 import { words } from '../shell/words'
-import type { TableState } from '../stage/types'
+import type { Shape, TableState } from '../stage/types'
 
 export type { StillSpec, CursorState }
 
 export interface Showcase {
   ready: Promise<void>
-  info(): { fps: number; format: string; tier: string; assets: string; engineHash: string; pageHashes: Record<string, string>; standIns: { name: string; unit: string }[]; modules: Record<string, string[]>; counts: Record<string, { triangles: number; drawCalls: number; standingParts?: number }>; textureMb: Record<string, number>; versions: Record<string, string> }
+  info(): { fps: number; format: string; tier: string; assets: string; engineHash: string; pageHashes: Record<string, string>; standIns: { name: string; unit: string }[]; modules: Record<string, string[]>; counts: Record<string, { triangles: number; drawCalls: number; standingParts?: number }>; textureMb: Record<string, number>; textures: Record<string, TextureCount>; versions: Record<string, string> }
   setFormat(id: string): Promise<void>
   setAssets(id: string): Promise<void>
   setDiagnostic(view: string): void
   renderStill(spec: StillSpec): Promise<void>
   pictureStats(): { invalidValues: number }
   typeRegister(page: string): { key: string; text: string; states: string[]; made: 'copy' | 'config' | 'runtime' }[]
-  stillState(spec: StillSpec): { layout: { id: string; kind: string; planned: number[]; drawn: number[]; plannedHeight: number | null; height: number; mechanism: boolean; moved: boolean }[]; type: { key: string; text: string; box: number[]; px: number; contrast: number }[]; cursor: CursorState }
+  stillState(spec: StillSpec): { layout: { id: string; kind: string; planned: number[]; drawn: number[]; plannedHeight: number | null; height: number; mechanism: boolean; moved: boolean }[]; type: { key: string; text: string; box: number[]; px: number; contrast: number; ink: number; ground: number; contrastFrom: ContrastFrom }[]; cursor: CursorState }
   tableState(): TableState
   film(): { frameCount: number; units: { id: string; first: number; last: number }[]; beats: { id: string; first: number; last: number }[]; lines: { beat: string; first: number; last: number }[] }
   filmState(frameIndex: number): { unit: string; beat: string; camera: number[]; cursor: CursorState; events: { name: string; x: number; y: number; hitsCursor: boolean }[]; standIns: string[] }
@@ -33,22 +35,332 @@ export interface Showcase {
   renderLoopFrame(frameIndex: number, tier: string): Promise<void>
 }
 
+export type ContrastFrom = 'materials' | 'stand-in tones'
+export interface TextureCount { mb: number; counted: number; held: number; assetMb: number; targetMb: number; unseenMb: number }
+
+type Rgb = [number, number, number]
+const MB = 1048576
+
 const ratio = (a: number, b: number): number => (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05)
+export const luminance = (c: Rgb): number => 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
+export const median = (list: number[]): number => {
+  const s = [...list].sort((a, b) => a - b)
+  return s.length % 2 ? s[(s.length - 1) / 2]! : (s[s.length / 2 - 1]! + s[s.length / 2]!) / 2
+}
+
+const CHANNELS: Record<number, number> = {
+  [THREE.RGBAFormat]: 4, [THREE.RGBFormat]: 3, [THREE.RGFormat]: 2, [THREE.RedFormat]: 1, [THREE.AlphaFormat]: 1, [THREE.DepthFormat]: 1, [THREE.DepthStencilFormat]: 1,
+  [THREE.RGBAIntegerFormat]: 4, [THREE.RGBIntegerFormat]: 3, [THREE.RGIntegerFormat]: 2, [THREE.RedIntegerFormat]: 1
+}
+const BYTES: Record<number, number> = {
+  [THREE.UnsignedByteType]: 1, [THREE.ByteType]: 1, [THREE.UnsignedShortType]: 2, [THREE.ShortType]: 2, [THREE.HalfFloatType]: 2, [THREE.UnsignedIntType]: 4, [THREE.IntType]: 4, [THREE.FloatType]: 4
+}
+const PACKED: Record<number, number> = {
+  [THREE.UnsignedShort4444Type]: 2, [THREE.UnsignedShort5551Type]: 2, [THREE.UnsignedInt248Type]: 4, [THREE.UnsignedInt5999Type]: 4, [THREE.UnsignedInt101111Type]: 4
+}
+
+// The bytes one texel takes on the graphics card, from the texture's format and type.
+export function texelBytes(format: number, type: number): number {
+  const packed = PACKED[type]
+  if (packed !== undefined) return packed
+  return (CHANNELS[format] ?? 4) * (BYTES[type] ?? 1)
+}
+
+// The texels of a picture with its chain of smaller copies, each half the size of the one before, down to one texel.
+export function chainTexels(width: number, height: number, levels: number): number {
+  let n = 0
+  let w = Math.max(1, Math.floor(width))
+  let h = Math.max(1, Math.floor(height))
+  for (let i = 0; i < levels; i++) {
+    n += w * h
+    if (w === 1 && h === 1) break
+    w = Math.max(1, w >> 1)
+    h = Math.max(1, h >> 1)
+  }
+  return n
+}
+
+export const fullChain = (width: number, height: number): number => 1 + Math.floor(Math.log2(Math.max(1, width, height)))
+
+interface TextureLike {
+  format: number; type: number; generateMipmaps: boolean; minFilter: number
+  image?: unknown; mipmaps?: { data?: { byteLength: number }; width?: number; height?: number }[]
+  isCubeTexture?: boolean; isCompressedTexture?: boolean
+}
+
+// The bytes a texture holds on the graphics card: every face, every layer and every level of its chain.
+export function textureBytes(t: TextureLike): number {
+  const faces = t.isCubeTexture ? 6 : 1
+  const first = (t.isCubeTexture && Array.isArray(t.image) ? t.image[0] : t.image) as { width?: number; height?: number; depth?: number; videoWidth?: number; videoHeight?: number } | undefined
+  const mips = t.mipmaps ?? []
+  if (t.isCompressedTexture && mips.length) return faces * mips.reduce((n, m) => n + (m.data?.byteLength ?? 0), 0)
+  const width = first?.width ?? first?.videoWidth ?? mips[0]?.width ?? 0
+  const height = first?.height ?? first?.videoHeight ?? mips[0]?.height ?? 0
+  const depth = first?.depth && first.depth > 0 ? first.depth : 1
+  if (!width || !height) return 0
+  const chained = t.minFilter !== THREE.NearestFilter && t.minFilter !== THREE.LinearFilter
+  const levels = mips.length > 1 ? mips.length : t.generateMipmaps && chained ? fullChain(width, height) : 1
+  return faces * depth * chainTexels(width, height, levels) * texelBytes(t.format, t.type)
+}
+
+interface Held { texture: THREE.Texture; target: boolean }
+
+// Every texture that can be reached from what the app draws with: the scene's materials and lights, the studio's reflection, and the engine's own targets.
+function reach(roots: unknown[]): Held[] {
+  const seen = new Set<object>()
+  const out = new Map<THREE.Texture, Held>()
+  const add = (t: THREE.Texture | null | undefined, target: boolean): void => {
+    if (t && t.isTexture && !out.has(t)) out.set(t, { texture: t, target })
+  }
+  const stack: unknown[] = [...roots]
+  let budget = 2000000
+  while (stack.length && budget-- > 0) {
+    const v = stack.pop()
+    if (v === null || typeof v !== 'object') continue
+    const o = v as Record<string, unknown>
+    if (seen.has(o)) continue
+    seen.add(o)
+    if (ArrayBuffer.isView(o) || o instanceof ArrayBuffer) continue
+    if (typeof Node !== 'undefined' && o instanceof Node) continue
+    if (o.isWebGLRenderer || o.isBufferGeometry || o.isBufferAttribute || o.isInterleavedBuffer) continue
+    if (o.isTexture) {
+      add(o as unknown as THREE.Texture, false)
+      continue
+    }
+    if (o.isRenderTarget) {
+      const rt = o as unknown as THREE.WebGLRenderTarget
+      for (const t of rt.textures ?? [rt.texture]) add(t, true)
+      add(rt.depthTexture, true)
+      continue
+    }
+    if (o instanceof Map) {
+      for (const [k, x] of o) stack.push(k, x)
+      continue
+    }
+    if (o instanceof Set || Array.isArray(o)) {
+      for (const x of o as Iterable<unknown>) stack.push(x)
+      continue
+    }
+    for (const k of Object.keys(o)) stack.push(o[k])
+  }
+  return [...out.values()]
+}
+
+// The memory of the textures the renderer holds now. A texture counts once it is on the graphics card, by the renderer's own record of it.
+// `held` is the renderer's own count. What it holds and the walk did not reach is counted as a target the size of the picture, the largest it can be.
+export function textureMemory(app: App): TextureCount {
+  const renderer = app.engine?.renderer
+  if (!renderer) return { mb: 0, counted: 0, held: 0, assetMb: 0, targetMb: 0, unseenMb: 0 }
+  const props = renderer.properties as unknown as { has(o: object): boolean; get(o: object): { __webglTexture?: object } }
+  const gpu = new Set<object>()
+  let assets = 0
+  let targets = 0
+  for (const h of reach([app.view.scene, app.environment, app.rig, app.engine])) {
+    if (!props.has(h.texture)) continue
+    const on = props.get(h.texture).__webglTexture
+    if (!on || gpu.has(on)) continue
+    gpu.add(on)
+    const bytes = textureBytes(h.texture as unknown as TextureLike)
+    if (h.target) targets += bytes
+    else assets += bytes
+  }
+  const held = renderer.info.memory.textures
+  const unseen = Math.max(0, held - gpu.size) * chainTexels(app.engine.width, app.engine.height, fullChain(app.engine.width, app.engine.height)) * texelBytes(THREE.RGBAFormat, THREE.HalfFloatType)
+  const r = (bytes: number) => Number((bytes / MB).toFixed(3))
+  return { mb: r(assets + targets + unseen), counted: gpu.size, held, assetMb: r(assets), targetMb: r(targets), unseenMb: r(unseen) }
+}
+
+const shown = (o: THREE.Object3D): boolean => {
+  for (let p: THREE.Object3D | null = o; p; p = p.parent) if (!p.visible) return false
+  return true
+}
+
+const srgbToLinear = (v: number): number => (v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)
+
+// The colour a picture gives a surface at one place, when the picture is made of numbers this code can read.
+function mapColour(map: THREE.Texture | null | undefined, uv: THREE.Vector2 | undefined): Rgb | null {
+  const image = map?.image as { data?: ArrayLike<number>; width?: number; height?: number } | undefined
+  if (!map || !uv || !image?.data || !image.width || !image.height) return null
+  const data = image.data
+  const channels = Math.round(data.length / (image.width * image.height))
+  if (channels < 3) return null
+  const wrap = (v: number): number => v - Math.floor(v)
+  const u = wrap(uv.x * map.repeat.x + map.offset.x)
+  const w = wrap(uv.y * map.repeat.y + map.offset.y)
+  const i = (Math.min(image.height - 1, Math.floor(w * image.height)) * image.width + Math.min(image.width - 1, Math.floor(u * image.width))) * channels
+  const scale = data instanceof Float32Array || data instanceof Uint16Array ? 1 : 1 / 255
+  const c: Rgb = [data[i]! * scale, data[i + 1]! * scale, data[i + 2]! * scale]
+  return map.colorSpace === THREE.SRGBColorSpace ? [srgbToLinear(c[0]), srgbToLinear(c[1]), srgbToLinear(c[2])] : c
+}
+
+interface Surface { colour: Rgb; through: number; tint: boolean }
+
+// The colour a material has in linear light: its colour, times its colour picture where one is set, plus what it gives off.
+export function surfaceOf(material: THREE.Material | undefined, uv?: THREE.Vector2): Surface | null {
+  const m = material as (THREE.MeshPhysicalMaterial & { visible: boolean }) | undefined
+  if (!m || m.visible === false || !m.color || !m.color.isColor) return null
+  const texel = mapColour(m.map, uv) ?? [1, 1, 1]
+  const colour: Rgb = [m.color.r * texel[0], m.color.g * texel[1], m.color.b * texel[2]]
+  if (m.emissive && m.emissive.isColor) {
+    const k = m.emissiveIntensity ?? 1
+    colour[0] += m.emissive.r * k
+    colour[1] += m.emissive.g * k
+    colour[2] += m.emissive.b * k
+  }
+  const clear = typeof m.transmission === 'number' && m.transmission > 0
+  const through = clear ? Math.min(1, m.transmission) : m.transparent ? 1 - Math.min(1, Math.max(0, m.opacity)) : 0
+  return { colour, through, tint: clear }
+}
+
+const materialAt = (mesh: THREE.Mesh, index: number | undefined): THREE.Material | undefined => (Array.isArray(mesh.material) ? mesh.material[index ?? 0] : mesh.material)
+const isCursor = (data: Record<string, unknown>): boolean => String(data.part ?? data.standIn ?? '').startsWith('cursor')
+
+// What lies under a place, seen along `down` from `from`: the first surface that is neither type nor the cursor, and what shows through it when it is clear. Null when nothing lies there: the place is off the page.
+function groundAt(scene: THREE.Scene, ray: THREE.Raycaster, from: THREE.Vector3, down: THREE.Vector3): Rgb | null {
+  ray.set(from, down)
+  const colour: Rgb = [0, 0, 0]
+  let weight: Rgb = [1, 1, 1]
+  let layers = 0
+  for (const hit of ray.intersectObject(scene, true)) {
+    const mesh = hit.object as THREE.Mesh
+    if (!mesh.isMesh || mesh.userData.type !== undefined || isCursor(mesh.userData) || !shown(mesh)) continue
+    const s = surfaceOf(materialAt(mesh, hit.face?.materialIndex), hit.uv)
+    if (!s) continue
+    const own = 1 - s.through
+    for (let i = 0; i < 3; i++) colour[i]! += weight[i]! * own * s.colour[i]!
+    layers++
+    if (s.through <= 0 || layers >= 6) return colour
+    weight = [0, 1, 2].map((i) => weight[i]! * s.through * (s.tint ? s.colour[i]! : 1)) as Rgb
+  }
+  if (!layers) return null
+  const back = look.background as unknown as number[]
+  for (let i = 0; i < 3; i++) colour[i]! += weight[i]! * (back[i] ?? 0)
+  return colour
+}
+
+const SAMPLES = [0.1, 0.3, 0.5, 0.7, 0.9]
+const LIFT = 0.5
+
+// The box of a mesh in the frame of its shape: x along the line of type, z out of the surface it lies on.
+function boxIn(mesh: THREE.Mesh, toShape: THREE.Quaternion): THREE.Box3 {
+  const inst = mesh as unknown as THREE.InstancedMesh
+  let local: THREE.Box3 | null
+  if (inst.isInstancedMesh) {
+    if (!inst.boundingBox) inst.computeBoundingBox()
+    local = inst.boundingBox
+  } else {
+    if (!mesh.geometry.boundingBox) mesh.geometry.computeBoundingBox()
+    local = mesh.geometry.boundingBox
+  }
+  const out = new THREE.Box3()
+  if (!local || local.isEmpty()) return out
+  const p = new THREE.Vector3()
+  for (let i = 0; i < 8; i++) {
+    p.set(i & 1 ? local.max.x : local.min.x, i & 2 ? local.max.y : local.min.y, i & 4 ? local.max.z : local.min.z)
+    out.expandByPoint(p.applyMatrix4(mesh.matrixWorld).applyQuaternion(toShape))
+  }
+  return out
+}
+
+// The contrast of every run of type in the frame the view shows, from the materials the scene is drawn with.
+// A run's colour is the colour of the mesh that carries its key. Its ground is read at five places along the middle line of that mesh, looking down the shape's own axis, and the middle value of the places that lie over something counts.
+export function typeContrasts(scene: THREE.Scene, list: Shape[]): Map<string, { contrast: number; ink: number; ground: number }> {
+  scene.updateMatrixWorld(true)
+  const byShape = new Map<string, THREE.Mesh>()
+  const byKey = new Map<string, THREE.Mesh[]>()
+  scene.traverse((o) => {
+    const m = o as THREE.Mesh
+    if (!m.isMesh || m.userData.type === undefined || !shown(m)) return
+    const key = String(m.userData.type)
+    if (m.userData.shape !== undefined && !byShape.has(`${m.userData.shape}|${key}`)) byShape.set(`${m.userData.shape}|${key}`, m)
+    if (!byKey.has(key)) byKey.set(key, [])
+    byKey.get(key)!.push(m)
+  })
+  const ray = new THREE.Raycaster()
+  ray.far = 4000
+  const turn = new THREE.Quaternion()
+  const back = new THREE.Quaternion()
+  const centre = new THREE.Vector3()
+  const at = new THREE.Vector3()
+  const out = new Map<string, { contrast: number; ink: number; ground: number }>()
+  for (const s of list) {
+    if (s.kind !== 'text') continue
+    centre.set(s.x + s.w / 2 - 960, 540 - (s.y + s.h / 2), s.z1)
+    let mesh = byShape.get(`${s.id}|${s.words}`)
+    if (!mesh) {
+      let near = Infinity
+      for (const m of byKey.get(String(s.words)) ?? []) {
+        if (m.userData.shape !== undefined) continue
+        const d = m.getWorldPosition(at).distanceToSquared(centre)
+        if (d < near) {
+          near = d
+          mesh = m
+        }
+      }
+    }
+    const inkOf = mesh ? surfaceOf(materialAt(mesh, 0)) : null
+    if (!mesh || !inkOf) continue
+    turn.setFromEuler(new THREE.Euler(s.turnX ?? 0, s.turnY ?? 0, -(s.rot ?? 0)))
+    back.copy(turn).invert()
+    const box = boxIn(mesh, back)
+    if (box.isEmpty()) continue
+    const down = new THREE.Vector3(0, 0, -1).applyQuaternion(turn)
+    const ink = luminance(inkOf.colour)
+    const grounds: number[] = []
+    for (const k of SAMPLES) {
+      const under = groundAt(scene, ray, new THREE.Vector3(box.min.x + (box.max.x - box.min.x) * k, (box.min.y + box.max.y) / 2, box.max.z + LIFT).applyQuaternion(turn), down)
+      if (under) grounds.push(luminance(under))
+    }
+    if (!grounds.length) continue
+    const ground = median(grounds)
+    out.set(s.id, { contrast: ratio(ink, ground), ink, ground })
+  }
+  return out
+}
+
+// The stand-in measure: the tone of the run against the tone of the highest shape under it. Used only for a run the scene holds no mesh for.
+function toneGround(list: Shape[], s: Shape): number {
+  const cx = s.x + s.w / 2
+  const cy = s.y + s.h / 2
+  let best = -Infinity
+  let tone = TONES.page
+  for (const o of list) {
+    if (o.kind === 'text' || o.kind === 'well' || o.kind === 'anchor' || o === s) continue
+    if (cx < o.x || cx > o.x + o.w || cy < o.y || cy > o.y + o.h) continue
+    const top = o.pocket ? o.z0 : o.z1
+    if (top > s.z1 + 0.5 || top < best) continue
+    best = top
+    tone = TONES[o.pocket && o.tone !== 'dark' ? 'pocket' : o.tone]
+  }
+  return tone
+}
 
 export function makeShowcase(app: App, ready: Promise<void>): Showcase {
   const fps = config.film.fps
   const frameOf = (seconds: number) => Math.round(seconds * fps)
+  const memory = new Map<string, TextureCount>()
+  let last: string | null = null
+  const weigh = (): void => {
+    if (last !== null) memory.set(last, textureMemory(app))
+  }
+  const drew = (unit: string): void => {
+    last = unit
+    weigh()
+  }
 
   return {
     ready,
     info() {
       const counts: Record<string, { triangles: number; drawCalls: number }> = {}
       const textureMb: Record<string, number> = {}
+      const textures: Record<string, TextureCount> = {}
+      weigh()
       for (const unit of pageUnits) {
         counts[unit] = app.countsOf(unit)
-        textureMb[unit] = 0
+        textures[unit] = memory.get(unit) ?? { mb: 0, counted: 0, held: 0, assetMb: 0, targetMb: 0, unseenMb: 0 }
+        textureMb[unit] = textures[unit]!.mb
       }
-      return { fps, format: app.format.id, tier: app.tier, assets: app.assets, engineHash: build.engineHash, pageHashes: build.pageHashes, standIns: app.standIns(), modules: build.modules, counts, textureMb, versions: { ...build.versions, target: app.engine.kind } }
+      return { fps, format: app.format.id, tier: app.tier, assets: app.assets, engineHash: build.engineHash, pageHashes: build.pageHashes, standIns: app.standIns(), modules: build.modules, counts, textureMb, textures, versions: { ...build.versions, target: app.engine.kind } }
     },
     async setFormat(id) {
       await ready
@@ -64,6 +376,7 @@ export function makeShowcase(app: App, ready: Promise<void>): Showcase {
     async renderStill(spec) {
       await ready
       await app.renderStill(spec)
+      drew(spec.page)
     },
     pictureStats() {
       return { invalidValues: app.engine.invalidValues() }
@@ -74,7 +387,7 @@ export function makeShowcase(app: App, ready: Promise<void>): Showcase {
       return out
     },
     stillState(spec) {
-      const { frame, pose, page } = app.still(spec)
+      const { frame, pose, page, size } = app.still(spec)
       const drawn = new Map(frame.list.map((s) => [s.id, s]))
       const layout: { id: string; kind: string; planned: number[]; drawn: number[]; plannedHeight: number | null; height: number; mechanism: boolean; moved: boolean }[] = []
       walk(page.layout, (n) => {
@@ -82,7 +395,21 @@ export function makeShowcase(app: App, ready: Promise<void>): Showcase {
         if (!s || s.kind === 'text' || s.kind === 'well') return
         layout.push({ id: n.id, kind: n.kind, planned: [...n.box], drawn: [s.x, s.y, s.w, s.h], plannedHeight: plannedHeight(n.kind), height: s.pocket ? s.z0 : s.z1, mechanism: s.mechanism === true, moved: s.moved === true })
       })
-      const type = frame.list.filter((s) => s.kind === 'text').map((s) => ({ key: s.words!, text: words(s.words!, s.text), box: [s.x, s.y, s.w, s.h], px: s.type!.px, contrast: ratio(TONES[s.tone], app.groundOf(frame.list, s)) }))
+      let real = new Map<string, { contrast: number; ink: number; ground: number }>()
+      try {
+        app.view.apply(frame, size ?? { width: page.width, height: page.height })
+        real = typeContrasts(app.view.scene, frame.list)
+      } catch {
+        real = new Map()
+      }
+      const type = frame.list.filter((s) => s.kind === 'text').map((s) => {
+        const run = { key: s.words!, text: words(s.words!, s.text), box: [s.x, s.y, s.w, s.h], px: s.type!.px }
+        const hit = real.get(s.id)
+        if (hit) return { ...run, contrast: hit.contrast, ink: hit.ink, ground: hit.ground, contrastFrom: 'materials' as ContrastFrom }
+        const ink = TONES[s.tone]
+        const ground = toneGround(frame.list, s)
+        return { ...run, contrast: ratio(ink, ground), ink, ground, contrastFrom: 'stand-in tones' as ContrastFrom }
+      })
       return { layout, type, cursor: app.cursorState(frame.cursor, pose) }
     },
     tableState() {
@@ -115,6 +442,7 @@ export function makeShowcase(app: App, ready: Promise<void>): Showcase {
     async renderFilmFrame(frameIndex, tier) {
       await ready
       await app.renderFilmFrame(frameIndex, tier)
+      drew(app.filmMoment(frameIndex).unit)
     },
     opening() {
       const piece = app.opening()
