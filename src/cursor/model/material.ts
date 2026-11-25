@@ -46,7 +46,7 @@ void wjaHoles( vec3 rest ) {
     if ( h.z <= 0.0 ) continue;
     vec2 d = rest.xy - h.xy;
     float k = clamp( rest.z / 2.3, 0.0, 1.0 );
-    float r = h.z * wjaRag( d, uBurnt[ i ] ) * mix( 0.85 + 0.15 * k, 0.24 + 0.76 * pow( k, 1.6 ), uBurnt[ i ] );
+    float r = h.z * wjaRag( d, uBurnt[ i ] ) * mix( 0.85 + 0.15 * k, 0.7 + 0.3 * pow( k, 1.6 ), uBurnt[ i ] );
     if ( dot( d, d ) < r * r ) discard;
   }
 }
@@ -196,7 +196,7 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
   // Heat: a glow inside the enamel that climbs from the tip.
   if ( heat > 0.0 ) {
     float front = heat * 12.5;
-    float h = smoothstep( front + 1.2, front - 5.0, along + ( wide.g - 0.5 ) * 2.4 + ( mid.b - 0.5 ) * 1.2 );
+    float h = smoothstep( front + 1.4, front - 3.4, along + ( wide.g - 0.5 ) * 2.4 + ( mid.b - 0.5 ) * 1.2 );
     vec3 ember = mix( vec3( 1.0, 0.82, 0.45 ), vec3( 1.25, 0.62, 0.08 ), smoothstep( 0.06, 0.3, h ) );
     ember = mix( ember, vec3( 1.2, 0.3, 0.02 ), smoothstep( 0.3, 0.58, h ) );
     ember = mix( ember, vec3( 0.74, 0.035, 0.012 ), smoothstep( 0.58, 0.96, h ) );
@@ -210,7 +210,8 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
   // Melt: the enamel runs over its own edge, wet and a little warmer.
   if ( melt > 0.0 ) {
     col = mix( col, col * vec3( 1.0, 0.975, 0.91 ), melt );
-    wjaRough = mix( wjaRough, 0.2, melt );
+    wjaRough = mix( wjaRough, 0.14, melt );
+    wjaCoatRough = mix( wjaCoatRough, 0.04, melt );
   }
 
   // Holes: a burn has soot round it and a lip that glows and cools; a punched one has a broken rim of bare clay.
@@ -225,12 +226,12 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
     float crust = ( 1.0 - smoothstep( 1.16, 1.32, from ) ) * burnt;
     col = mix( col, col * vec3( 0.3, 0.215, 0.14 ), soot * soot * 0.95 );
     col = mix( col, vec3( 0.014, 0.012, 0.010 ) + 0.03 * fine.g * mid.b, crust );
-    float chipAt = length( d ) / r + ( fine.g - 0.5 ) * 0.2 + ( mid.b - 0.5 ) * 0.14;
-    float chip = ( 1.0 - smoothstep( 1.3, 1.36, chipAt ) ) * ( 1.0 - burnt );
-    float nick = smoothstep( 1.26, 1.36, chipAt ) * ( 1.0 - smoothstep( 1.36, 1.5, chipAt ) ) * ( 1.0 - burnt );
+    float chipAt = length( d ) / r + ( fine.g - 0.5 ) * 0.1 + ( mid.b - 0.5 ) * 0.1;
+    float chip = ( 1.0 - smoothstep( 1.13, 1.17, chipAt ) ) * ( 1.0 - burnt );
+    float nick = smoothstep( 1.1, 1.17, chipAt ) * ( 1.0 - smoothstep( 1.17, 1.26, chipAt ) ) * ( 1.0 - burnt );
     vec3 clay = vec3( 0.86, 0.80, 0.68 ) * ( 0.72 + 0.5 * fine.b * mid.g + 0.16 * fine.g );
-    col = mix( col, clay * mix( 0.62, 1.0, smoothstep( 1.0, 1.3, chipAt ) ), chip );
-    col *= 1.0 - 0.22 * nick;
+    col = mix( col, clay * mix( 0.8, 1.06, smoothstep( 1.0, 1.15, chipAt ) ), chip );
+    col *= 1.0 - 0.1 * nick;
     float dull = max( max( crust, soot * 0.5 ), chip );
     wjaRough = mix( wjaRough, 0.95, dull );
     wjaCoat *= 1.0 - max( max( crust, soot * 0.7 ), chip );

@@ -264,7 +264,7 @@ export class Body implements BodyModel {
           const z = (heightAt(ex, ey) - 0.03) * (1 - HOLE_ROWS[r]!)
           const up = clamp01(z / 2.3)
           const crater = clamp01(hole.burnt ?? 1)
-          const k = reach * (0.85 + 0.15 * up + crater * (0.24 + 0.76 * Math.pow(up, 1.6) - 0.85 - 0.15 * up)) * 1.012
+          const k = reach * (0.85 + 0.15 * up + crater * (0.7 + 0.3 * Math.pow(up, 1.6) - 0.85 - 0.15 * up)) * 1.012
           this.deform.point(hole.x + Math.cos(ang) * k, hole.y + Math.sin(ang) * k, z, d, p)
           a[i] = p.x
           a[i + 1] = p.y
@@ -276,10 +276,11 @@ export class Body implements BodyModel {
           const heat = (r === 0 ? 0.1 : r === 1 ? 0.9 : r === 2 ? 0.45 : 0.02) * lee
           const burnt = clamp01(hole.burnt ?? 1)
           const lit = glow * glow * flick * burnt
-          const bare = (1 - burnt) * (0.34 - 0.2 * HOLE_ROWS[r]!) * (0.8 + 0.4 * hash01(j, r, 7 + h))
-          c[i] = 1.0 * heat * lit + bare * 0.8
-          c[i + 1] = (r === 0 ? 0.42 : 0.12) * heat * lit + bare * 0.72
-          c[i + 2] = 0.05 * heat * lit + bare * 0.58
+          const facing = clamp01(0.5 + 0.5 * (Math.cos(ang) * 0.5 + Math.sin(ang) * 0.86))
+          const bare = (1 - burnt) * (0.66 - 0.3 * HOLE_ROWS[r]!) * (0.38 + 0.62 * facing) * (0.88 + 0.24 * hash01(j, r, 7 + h))
+          c[i] = 1.0 * heat * lit + bare * 0.84
+          c[i + 1] = (r === 0 ? 0.42 : 0.12) * heat * lit + bare * 0.78
+          c[i + 2] = 0.05 * heat * lit + bare * 0.66
         }
       }
     }
