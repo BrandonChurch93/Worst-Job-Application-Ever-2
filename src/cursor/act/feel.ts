@@ -38,7 +38,7 @@ export function reactionPose(name: Reaction, u: number, dir: number): { stretch:
       if (u < 0.52) return { stretch: -0.12, lean: 0.42, puff: 0 }
       return u < 0.86 ? { stretch: 0.42, lean: 0, puff: 0 } : { stretch: 0, lean: 0, puff: 0 }
     case 'recoil':
-      return u < 0.5 ? { stretch: -0.22, lean: 0.36 * dir, puff: 0 } : { stretch: 0.1, lean: 0.1 * dir, puff: 0 }
+      return u < 0.5 ? { stretch: -0.22, lean: 0.1 * dir, puff: 0 } : { stretch: 0.1, lean: 0.04 * dir, puff: 0 }
     case 'dustOff':
       return { stretch: 0.08, lean: 0.22 * Math.sin(u * Math.PI * 8) * (1 - ramp(u, 0.7, 1)), puff: 0.35 * (1 - ramp(u, 0.8, 1)) }
     case 'jump':

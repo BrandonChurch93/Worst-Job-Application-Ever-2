@@ -31,6 +31,8 @@ const GAIT: Record<Acting, { stiff: number; damp: number; stride: number; hop: n
   exhausted: { stiff: 110, damp: 20, stride: 70, hop: 0, top: 900, rock: 0, dip: 0 }
 }
 const SPRING = { squash: { k: 620, c: 26 }, lean: { k: 330, c: 17 }, bend: { k: 260, c: 13 }, sprout: { k: 2400, c: 58 } }
+// A hit knocks the body over, past upright onto its other shoulder, and it swings back: the knocked cursor of the approved fire image.
+const TUMBLE = { far: 1.25, share: 0.6, out: { k: 900, c: 60 }, back: { k: 300, c: 27 } }
 const DRAG = { stride: 90, pulse: 0.2, lean: 0.34 }
 const ARM = { rest: 62, strain: 70, shed: 0.3 }
 // What the body can be drawn at: the springs may ask for more, the pose never does.
@@ -106,6 +108,7 @@ interface State {
   damage: { kind: Damage; left: number; whole: number; x: number; y: number; fresh: boolean }[]
   windowLeft: number
   leanV: number
+  spinV: number
   bend: number
   bendV: number
   foot: number
@@ -138,7 +141,7 @@ interface State {
 
 const fresh = (x: number, y: number): State => ({
   x, y, z: hover, vx: 0, vy: 0, vz: 0, squash: 1, squashV: 0, lean: 0, spin: 0, stride: 0, fast: 0, acting: 'plain', reaction: null, reactionLeft: 0,
-  damage: [], windowLeft: 0, leanV: 0, bend: 0, bendV: 0, foot: 1, drag: 0, ticks: 0, dir: 1, feel: freshFeel(), gulp: -1,
+  damage: [], windowLeft: 0, leanV: 0, spinV: 0, bend: 0, bendV: 0, foot: 1, drag: 0, ticks: 0, dir: 1, feel: freshFeel(), gulp: -1,
   strips: null, seed: config.seed, shreds: 0, sprout: 0, sproutV: 0, strain: 0, grip: 0, shed: 0, shedHands: null, arms: false, hands: null, onPage: true, inBall: false, air: null, ground: 0, taken: null, takenFor: 0, drive: null, handback: 1, from: { x, y }
 })
 
@@ -413,6 +416,14 @@ export class CursorBody {
     }
     s.squashV += (SPRING.squash.k * (stretch - s.squash) - SPRING.squash.c * s.squashV) * dt
     s.squash = Math.min(1.6, Math.max(0.35, s.squash + s.squashV * dt))
+    const over = s.reaction === 'recoil' && pose && 1 - s.reactionLeft / REACTION_SECONDS.recoil < TUMBLE.share ? TUMBLE.far * s.dir : 0
+    const swing = over !== 0 ? TUMBLE.out : TUMBLE.back
+    s.spinV += (swing.k * (over - s.spin) - swing.c * s.spinV) * dt
+    s.spin += s.spinV * dt
+    if (over === 0 && Math.abs(s.spin) < 1e-4 && Math.abs(s.spinV) < 1e-3) {
+      s.spin = 0
+      s.spinV = 0
+    }
     s.leanV += (SPRING.lean.k * (Math.max(-0.9, Math.min(0.9, lean)) - s.lean) - SPRING.lean.c * s.leanV) * dt
     s.lean += s.leanV * dt
     s.bendV += (SPRING.bend.k * (s.feel.bend - ax * 0.9 - ay * 0.35 - s.bend) - SPRING.bend.c * s.bendV) * dt
