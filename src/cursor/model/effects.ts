@@ -201,16 +201,16 @@ class Effects implements EffectsModel {
         let x = 2.6
         let y = 8
         for (let k = 0; k < 8; k++) {
-          const hx = 0.5 + 10 * hash01(i * 31 + k, cycle, SEED + 3)
-          const hy = 1.5 + 13.5 * Math.pow(hash01(i * 31 + k, cycle, SEED + 4), 1.25)
-          if (inside(hx, hy) > 0.85) {
+          const hy = 4 + 11 * Math.pow(hash01(i * 31 + k, cycle, SEED + 4), 0.7)
+          const hx = 1.5 + (Math.min(hy, 11.5) * 0.85 - 2.6) * hash01(i * 31 + k, cycle, SEED + 3)
+          if (inside(hx, hy) > 1.5) {
             x = hx
             y = hy
             break
           }
         }
         const size = (0.4 + 0.7 * Math.pow(hash01(i, cycle, SEED + 5), 1.6)) * (0.8 + 0.2 * amount) * on * UNIT
-        const flyer = hash01(i, cycle, SEED + 6) < 0.2
+        const flyer = hash01(i, cycle, SEED + 6) < 0.12
         let r = size
         let long = 1
         let high = 0.8
@@ -320,7 +320,7 @@ class Effects implements EffectsModel {
       TOPS.forEach((t, i) => this.on(surface, t[0], t[1], this.tops[i]!))
       let top = this.tops[0]!
       for (const t of this.tops) if (t.y > top.y) top = t
-      n = this.plume(n, top.x, top.y - 2.2 * UNIT, top.z, steam, look.time, STEAM, 3, 15, 1.9, 0.4, 3.5, 1.0, 1.0, 0.86, 3)
+      n = this.plume(n, top.x, top.y - 2.2 * UNIT, top.z, steam, look.time, STEAM, 3, 15, 1.9, 0.32, 2.6, 1.0, 1.0, 0.86, 3)
     }
     const points = Math.min(SMOKE_POINTS, look.smoke.length)
     for (let k = 0; k < points; k++) {
