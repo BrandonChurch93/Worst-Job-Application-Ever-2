@@ -34,7 +34,7 @@ The logic, the script of the film and the numbers the makers of the real parts r
 
 - Three slabs, each aimed at where the cursor is. Each hangs for 0.2 s, then falls for 0.2 s. The film sees each one and dives clear of all three.
 - When a slab lands the deck and its keys shake in the plane of the page by at most 4.5 px for 0.25 s (`SHAKE`), the keys within 460 px hop up to 15 px, the nearest first, the caret jumps and the cursor is jolted.
-- A key under a landed slab is pressed its full travel (6 px) and stays down until the slabs lift. The slab sinks with the keys and does not bounce.
+- A key under a landed slab is pressed its full travel (6 px) and stays down until the slabs lift. The slab sinks with the keys, stops dead and rebounds once by 1.2 px inside 0.06 s.
 - A slab that lands on the cursor flattens it for a moment through `hurt`.
 
 ## Resume and the tug
@@ -48,7 +48,7 @@ The logic, the script of the film and the numbers the makers of the real parts r
 - A line of the sheet that the shredder has eaten is parked at the slot under the page (z -30) with `v = [1]`, so the count of shapes does not change.
 - No control is taken during the tug. The cursor is tethered to the paper by a knock, never held.
 - A live tug is lost at the far end or after 9 s.
-- After the loss the page stays in the tug for 0.3 s (`TIMES.lost`) with the arms off and the cursor taken, so the torn arms of the body can be seen. Then the shredder has it.
+- After the loss the page stays in the tug for 0.3 s (`TIMES.lost`) with the arms off and the cursor taken, so the torn arms of the body can be seen. For that time the body is driven over the card, 6 px above its face and 84 px up the page from the slot, so the plate does not cut it. Then the shredder has it.
 
 ## Last 4 s
 
@@ -66,7 +66,7 @@ The logic, the script of the film and the numbers the makers of the real parts r
 
 - `fire.ts` gives `makeTurrets()` and `drawFire(out, { typed, pressed, turrets })`: the page with the keyboard up, First name holding `typed`, the keys named in `pressed` down, and the given turrets with their bolts and marks. Key names are those of `keyboard.json`.
 - The cursor grabs the paper by its top right corner, clear of the title.
-- The film camera eases from home to a wide frame of the card and the slot (1200 px wide) between 21.1 s and 22.1 s, pushes slowly in to 1000 px for 4.6 s, pushes to a 600 px frame on the slot and the hands between 25.2 s and 26.8 s (after the key still at 25.125), and eases home between 27.6 s and 28.9 s. All three frames are placed from `SLOT`. `tests/step1-script.test.ts` holds the cursor at least 70 px inside the frame for the whole tug.
+- The film camera eases from home to a wide frame of the card and the slot (1200 px wide) between 21.1 s and 22.1 s, pushes slowly in to 1000 px for 4.6 s, pushes to a 600 px frame on the slot and the hands between 24.35 s and 26.35 s (the key still at 25.125 is about 900 px wide, where the fine detail against the approved image, M3, measures 1.008; at 850 px it is 0.8635 and at 600 px 0.6701, under the least of 0.8), and eases home between 27.6 s and 28.9 s. All three frames are placed from `SLOT`. `tests/step1-script.test.ts` holds the cursor at least 70 px inside the frame for the whole tug.
 - The end (`END`, seconds after the cursor is whole): a double take at 0.06, a lean toward the message with `shocked` from 0.14, a wind-up and a stamp in `angry` at 0.62, then `exhausted` and a trudge of 0.8 s away from the card from 1.0.
 
 ## For the measures

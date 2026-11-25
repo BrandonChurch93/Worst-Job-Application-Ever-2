@@ -63,6 +63,6 @@ export const look = {
     surfaceKnee: 0.95,
     surfaceMax: 1.25,
     // How much of the glow each wider ring of the spread carries, from the tightest to the widest.
-    rings: [1.0, 1.0, 0.8, 0.45, 0.15, 0.05] as number[]
+    rings: [1.0, 1.0, 0.6, 0.25, 0.08, 0.02] as number[]
   }
 }
