@@ -25,22 +25,22 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 12, 2026-11-25T09:29Z, Phase 2.
+Status 13, 2026-11-25T09:56Z, Phase 2.
 
-1. `out/stills/status/01-blockout-step1-fire.jpg`: Step 1 blockout, the key moment of the keyboard under fire: the deck is up with a turret at each end, bolts are in flight, and First name holds Perplex.
-2. `out/stills/status/02-blockout-step1-invalid-email.jpg`: Step 1 blockout, the email beat: all three fields are filled and a slab reading Invalid email has dropped beside the cursor.
-3. `out/stills/status/03-blockout-step1-tug.jpg`: Step 1 blockout, the key moment of the tug: the camera is close on the upload card, and the cursor holds the sheet marked Resume with two arms while its lower edge is in the slot.
-4. `out/stills/status/04-blockout-step1-shredded.jpg`: Step 1 blockout, after the tug is lost: the cursor has gone into the slot and strips come out under the upload card.
+1. `out/stills/status/01-blockout-pinball-map.jpg`: Step 3 blockout, the machine from straight above: the marquee THE DAILY GRIND with the score, then the Corporate, Office and Street tiers one below the other, each with its own flippers.
+2. `out/stills/status/02-blockout-pinball-wide.jpg`: Step 3 blockout, the whole machine seen from its foot: three tiers sunk into the tall page, and the Unemployment Office and the message window on the apron.
+3. `out/stills/status/03-blockout-pinball-reply-all.jpg`: Step 3 blockout, the key moment of Reply All on the Office tier: four balls in play among the three bumpers, with the Coffee model at the right.
+4. `out/stills/status/04-site-live-step1-fixed.jpg`: Screenshot of live mode, step 1, after the fix: every key has its letter while both turrets aim and a bolt is in flight.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 2, tick 38 at 2026-11-25T09:29:23Z, allowance: build
-time used in this phase: 1.85 h of its box of 6.50 h
-time used under the allowance in force: 3.95 h of 36.00 h allowed
-time used: 3.95 of 36.00 hours before the review
+clock: phase 2, tick 41 at 2026-11-25T09:56:35Z, allowance: build
+time used in this phase: 2.30 h of its box of 6.50 h
+time used under the allowance in force: 4.40 h of 36.00 h allowed
+time used: 4.40 of 36.00 hours before the review
 extra rounds: yes
 half point: not reached
 box end: not reached
