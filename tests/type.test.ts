@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { describe, expect, it } from 'vitest'
 import type { RealContext } from '../src/real/types'
-import { segmentsFor, setRun, Sheet, styleName, styles, type, type RunSpec } from '../src/shell/real/type'
+import { groundOf, segmentsFor, setRun, Sheet, styleName, styles, type, type RunSpec } from '../src/shell/real/type'
 import type { Shape } from '../src/stage/types'
 
 const spec = (line: string, over: Partial<RunSpec> = {}): RunSpec => ({
@@ -202,5 +202,23 @@ describe('type: the runs of a page as one sheet', () => {
     expect(sheet.geometry.getAttribute('position').array.length).toBeGreaterThan(total)
     type.drop!(oa)
     type.drop!(oc)
+  })
+})
+
+describe('type: what a run lies on', () => {
+  const run = (id: string, y: number, z: number): Shape =>
+    ({ id, kind: 'text', part: 'type', tone: 'ink', x: 100, y, w: 200, h: 24, z0: z, z1: z, words: 'copy:step1.fields.firstName.label', type: { font: 'inter-400', px: 18 } }) as unknown as Shape
+  const pocket = { id: 'f-pocket', kind: 'field', role: 'field', part: 'shell', tone: 'glass', x: 80, y: 136, w: 600, h: 64, z0: -6, z1: 0, pocket: true } as unknown as Shape
+  const context = (list: Shape[]): RealContext => ({ page: 'step1', list, byId: new Map(list.map((s) => [s.id, s])), time: 0, scroll: 0, turning: false, width: 1920, top: 0, tall: 1080, light: () => undefined })
+
+  it('takes the label and the helper of a field as type on the page, and only its value as type under the glass', () => {
+    const label = run('f-label', 100, 0)
+    const value = run('f-value', 156, -6)
+    const helper = run('f-helper', 214, 0)
+    const ctx = context([label, pocket, value, helper])
+    expect(groundOf(label, ctx)).toBe('page')
+    expect(groundOf(helper, ctx)).toBe('page')
+    expect(groundOf(value, ctx)).toBe('glass')
+    expect(styleName(groundOf(helper, ctx), 'ink', 'inter-400')).toBe('page:soft')
   })
 })

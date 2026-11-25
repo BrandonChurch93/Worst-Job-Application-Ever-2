@@ -7,7 +7,7 @@ import { materials } from '../../../shell/materials'
 import type { Shape } from '../../../stage/types'
 import { PAPER, SLOT } from '../layout'
 import { INK, stock } from './paperStock'
-import { CASSETTE as C, HOOD, chuteAngle, chuteOf, chuteReach, hoodUnder, openOf, panelsOf, riseOf } from './shredderShape'
+import { CASSETTE as C, HOOD, chuteAngle, chuteOf, chuteReach, hoodUnder, openOf, panelsOf, riseOf, smooth } from './shredderShape'
 
 const srgb = (hex: number) => new THREE.Color().setHex(hex, THREE.SRGBColorSpace)
 
@@ -23,7 +23,7 @@ function steel(): THREE.MeshPhysicalMaterial {
 // The cutters are ground tool steel: darker and duller than the polished shafts, so a row of them reads as one roller.
 let cutterMade: THREE.MeshPhysicalMaterial | null = null
 function cutterSteel(): THREE.MeshPhysicalMaterial {
-  cutterMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x7e8288), roughness: 0.46, metalness: 1 }))
+  cutterMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xa2a6ad), roughness: 0.32, metalness: 1 }))
   return cutterMade
 }
 
@@ -284,6 +284,8 @@ function screws(at: [number, number][], z: number): { heads: THREE.BufferGeometr
   return { heads: merge(heads), sockets: merge(sockets) }
 }
 
+const PANEL = { thick: 3.6, lift: 0.3, clear: 1 }
+
 interface Cassette {
   lift: THREE.Group
   north: THREE.Group
@@ -364,7 +366,8 @@ function makeCassette(): THREE.Group {
   const reach = add(slide, sheetMetal(-inner + 4, inner - 4, arcRun(0, 0, HOOD.r - C.chute.thick - 0.35, HOOD.to - HOOD.more - 0.08, HOOD.to + 0.02, 1.25), C.chute.thick), brushed())
 
   // The two panels that close the slot. They are the page's own ceramic, so shut they are two tiles with a seam.
-  const panel = (y0: number, y1: number): THREE.Mesh => add(root, block(-SLOT.w / 2, SLOT.w / 2, y0, y1, -2.6, -0.2, 0.35), m.ceramic, false)
+  // Open, they have come up out of the slot and lie on the page either side of it, their thickness showing.
+  const panel = (y0: number, y1: number): THREE.Mesh => add(root, block(-SLOT.w / 2, SLOT.w / 2, y0, y1, -0.2 - PANEL.thick, -0.2, 0.5), m.ceramic, true)
   const panelN = panel(0, SLOT.h / 2)
   const panelS = panel(-SLOT.h / 2, 0)
   const rig: Cassette = { lift, north, south, chute, reach, panelN, panelS, geometries }
@@ -387,10 +390,10 @@ function poseCassette(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const c = chuteOf(open)
   rig.chute.rotation.x = chuteAngle(c)
   rig.reach.rotation.x = chuteReach(c) / HOOD.r
-  const slide = (SLOT.h / 2) * p
-  rig.panelN.position.set(0, slide, -1.2 * Math.min(1, p * 6))
-  rig.panelS.position.set(0, -slide, -1.2 * Math.min(1, p * 6))
-  rig.panelN.visible = rig.panelS.visible = p < 0.999
+  const up = (PANEL.thick + 0.5) * smooth(p / PANEL.lift)
+  const slide = (SLOT.h / 2 + PANEL.clear) * smooth((p - PANEL.lift * 0.7) / (1 - PANEL.lift * 0.7))
+  rig.panelN.position.set(0, slide, up)
+  rig.panelS.position.set(0, -slide, up)
 }
 
 const SEG = 26

@@ -20,7 +20,7 @@ export function surroundPixels(z: Zone): Float32Array {
       const dz = s.z - EYE
       const d = Math.hypot(s.x, s.y, dz) || 1
       const size = Math.max(0.035, Math.min(0.16, 30 / d))
-      dirs.push({ x: s.x / d, y: s.y / d, z: dz / d, c: g.colour, size, gain: s.power * Math.min(9, 5.5 * (420 / (d + 120))) })
+      dirs.push({ x: s.x / d, y: s.y / d, z: dz / d, c: g.colour, size, gain: s.power * Math.min(4, 3 * (420 / (d + 120))) })
     }
   }
   for (let j = 0; j < H; j++) {
@@ -36,14 +36,14 @@ export function surroundPixels(z: Zone): Float32Array {
       const zz = ez
       const haze = Math.exp(-Math.abs(zz) * 5.5)
       const below = zz < 0 ? 0.05 + 0.07 * Math.min(1, -zz * 3) : 0
-      let r = 0.004 + fill[0] * (0.05 * haze + below)
-      let g = 0.004 + fill[1] * (0.05 * haze + below)
-      let b = 0.005 + fill[2] * (0.05 * haze + below)
+      let r = 0.004 + fill[0] * (0.02 * haze + below)
+      let g = 0.004 + fill[1] * (0.02 * haze + below)
+      let b = 0.005 + fill[2] * (0.02 * haze + below)
       for (const d of dirs) {
         const dot = x * d.x + y * d.y + zz * d.z
-        if (dot < 0.6) continue
+        if (dot < 0.9) continue
         const a = Math.acos(Math.min(1, dot)) / d.size
-        const v = d.gain * (Math.exp(-a * a) + 0.06 * Math.exp(-a * a * 0.08))
+        const v = d.gain * (Math.exp(-a * a) + 0.012 * Math.exp(-a * a * 0.3))
         r += d.c[0] * v
         g += d.c[1] * v
         b += d.c[2] * v
