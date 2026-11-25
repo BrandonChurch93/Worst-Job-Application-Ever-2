@@ -1,35 +1,35 @@
 {
   "folder": "type",
-  "pushed": "2026-11-25T14:43:24.934Z",
-  "commit": "28abb6bf4498f980c918981f2f113dbec45514ef",
+  "pushed": "2026-11-25T14:48:01.283Z",
+  "commit": "2068505d5e200c2e903c6bf158938b14675d811e",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key step1-tug: approved on the left, this build on the right, review tier",
-      "time": "2026-11-25T14:41:43.745Z",
-      "by": "type",
-      "from": "out/work/compare/compare-step1-tug.jpg"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "Sheet page-look: approved on the left, this build on the right, review tier, with crops of button, field, progressButton, type, cursor",
-      "time": "2026-11-25T14:42:28.886Z",
-      "by": "type",
-      "from": "out/work/compare/compare-page-look.jpg"
-    },
-    {
-      "file": "look-3.jpg",
-      "caption": "Two inks beside the approved step1-fire at native size: warm charcoal for heading and labels, a softer ink for the subline (heading size is the layout's and is being changed by the Builder)",
-      "time": "2026-11-25T14:43:23.614Z",
-      "by": "type",
-      "from": "out/work/study/look-type-inks.png"
-    },
-    {
-      "file": "look-4.jpg",
       "caption": "Six type crops beside the approved step1-fire at review tier after the ink change (left approved, right this build)",
       "time": "2026-11-25T14:43:23.841Z",
       "by": "type",
       "from": "out/work/study/look-type-crops.png"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Still key-step1-fire-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-25T14:44:56.254Z",
+      "by": "type",
+      "from": "out/work/stills/key-step1-fire-hd-review.png"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Still key-tier-corporate-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T14:45:34.605Z",
+      "by": "type",
+      "from": "out/work/stills/key-tier-corporate-hd-draft.png"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Numeral on the turned metal at 8x beside the approved step1-fire: now a flat matte print, no lit wall",
+      "time": "2026-11-25T14:47:59.857Z",
+      "by": "type",
+      "from": "out/work/study/look-type-numeral.png"
     }
   ]
 }
