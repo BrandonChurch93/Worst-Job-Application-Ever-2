@@ -100,7 +100,7 @@ index d8e508a..78ada05 100644
      await this.engine.picture(this.shot(pose), { samples: tierSamples(tier), frame: seed, diagnostic: this.diagnostic })
    }
 diff --git a/src/pages/step3/index.ts b/src/pages/step3/index.ts
-index e59d1d0..4836ec2 100644
+index f4b1ecf..9f857b8 100644
 --- a/src/pages/step3/index.ts
 +++ b/src/pages/step3/index.ts
 @@ -7,10 +7,10 @@ import { button, buttonWidth, HEADER, LEFT, page, RIGHT, stepHead, TYPE } from '
@@ -116,7 +116,7 @@ index e59d1d0..4836ec2 100644
  import { Machine, prepare as startPhysics, type MachineState, type TableEvent } from '../../table/physics'
  
  export const prepare = (): Promise<void> => startPhysics()
-@@ -491,6 +491,36 @@ export function makePage(): PageLogic {
+@@ -496,6 +496,36 @@ export function makePage(): PageLogic {
          sealed: [...table.sealed]
        }
      },
