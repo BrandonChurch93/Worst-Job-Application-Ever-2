@@ -60,6 +60,20 @@ export function makePage(): PageLogic {
     if (s.stage === 'press' && s.from) return collapseRig(s.from, COLLAPSE_SECONDS)
     return null
   }
+  const groundAt = (x: number, y: number): number => {
+    const p = { x, y }
+    let z = inBox(L.card, p) ? heights.card : 0
+    if ((s.stage === 'verify' || s.inSocket) && inBox(L.cap, p)) z = heights.button
+    if (s.stage === 'press' && !s.inSocket && inBox(fallenBox, p, -24)) z = 16
+    if (s.stage === 'fight' && s.fight) {
+      for (const up of s.fight.popups) if (up.closing < 0 && up.t > 0.14 && inBox(L.weapons.popups[up.slot]!.box, p)) z = Math.max(z, heights.card)
+      for (const slab of s.fight.slabs) {
+        const size = L.weapons.slabs[slab.m]!
+        if (slab.state === 1 && Math.abs(x - slab.x) < size.w / 2 && Math.abs(y - slab.y) < size.h / 2) z = Math.max(z, heights.slab)
+      }
+    }
+    return z
+  }
   const toCollapse = (io: StepIo, from: Rig): void => {
     s.from = from
     s.stage = 'collapse'
@@ -159,6 +173,7 @@ export function makePage(): PageLogic {
           if (s.pressed >= 0.35 && !s.damaged) s.done = true
         }
       }
+      io.cursor.setGround(groundAt(io.cursor.x, io.cursor.y))
     },
     save: () => JSON.parse(JSON.stringify(s)) as State,
     load(state) {
@@ -203,7 +218,7 @@ export function makePage(): PageLogic {
       if (states.includes('fight') && s.fight) {
         const t = L.track
         const w = Math.max(0, (t.w - 6) * (s.fight.shown / 100))
-        if (w > 1) out.push({ id: 'health-fill', part: 'health-bar', kind: 'capsule', x: t.x + 3 + slide, y: t.y + 3, w: Math.max(t.h - 6, w), h: t.h - 6, z0: heights.progressRail, z1: 2.5, tone: 'accent' })
+        if (w >= t.h - 6) out.push({ id: 'health-fill', part: 'health-bar', kind: 'capsule', x: t.x + 3 + slide, y: t.y + 3, w, h: t.h - 6, z0: heights.progressRail, z1: 2.5, tone: 'accent' })
       } else if (states.includes('fight')) {
         const t = L.track
         out.push({ id: 'health-fill', part: 'health-bar', kind: 'capsule', x: t.x + 3 + slide, y: t.y + 3, w: t.w - 6, h: t.h - 6, z0: heights.progressRail, z1: 2.5, tone: 'accent' })

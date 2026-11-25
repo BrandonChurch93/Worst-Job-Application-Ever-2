@@ -17,7 +17,7 @@ export function makeScript(L: Step4Layout): FilmScript {
     [9.45, 430, 880], [10.3, 430, 880], [10.75, 420, 700], [11.85, 420, 700], [12.3, 450, 900], [14.9, 450, 900], [15.3, 400, 720], [15.9, 400, 720],
     [16.8, 470, 900], [17.6, 500, 900], [18.2, 560, 860], [19.4, 560, 860], [19.9, 640, 880], [20.8, 1100, 944], [21.5, 1390, 946], [23.95, 1400, 946],
     [24.45, 1150, 940], [25.42, 1150, 940], [25.8, 1420, 950], [26.74, 1420, 950], [27.1, 1170, 940],
-    [27.4, 1380, 934], [29.1, 1380, 934], [30.2, FALLEN.x + 6, FALLEN.y + 8], [32, FALLEN.x + 6, FALLEN.y + 8]
+    [27.4, 1380, 934], [29.1, 1380, 934], [30.2, FALLEN.x + 100, FALLEN.y + 28], [32, FALLEN.x + 100, FALLEN.y + 28]
   ]
   const clicks: number[] = [tickAt]
   const burst = (from: number, to: number, every: number): void => {
@@ -26,7 +26,7 @@ export function makeScript(L: Step4Layout): FilmScript {
   burst(9.9, 15.6, 0.7)
   burst(16.9, 20.7, 0.28)
   clicks.push(21.66)
-  burst(23.15, 27.7, 0.2)
+  burst(23.0, 27.7, 0.2)
   clicks.push(30.5)
   const pointer = (time: number): Pointer => {
     let x = path[0]![1]

@@ -39,12 +39,12 @@ Unit `boss`, page `step4`. Logic in `src/pages/step4/`, the boss in `src/boss/`,
 
 - Legs: four capsules from under the cap.
 - Cannons: the progress buttons of steps 1 and 2 leave the header and fly to the boss. Their places in the header stay empty until the page is left.
-- Shield: step 4 has no input field, so a field-sized plate slides in from the right edge of the page.
+- Shield: step 4 has no input field, so a glass plate slides out from under the body to its place in front of the boss.
 - Plates: two halves of the button's own socket ring.
 
 ## The film
 
-- The pointer path and the clicks are in `src/pages/step4/script.ts`, a pure function of time. Events measured with `npx vitest run tests/boss.test.ts`: `checkbox` 3.80 s, `button-crack` 6.11, `unfold` 6.71, first `slab-fire` 9.86, first `popup` 16.20, `session-expired` 22.07, `power-down` 27.23, `button-press` 30.50.
+- The pointer path and the clicks are in `src/pages/step4/script.ts`, a pure function of time. Events measured with `npx vitest run tests/boss.test.ts`: `checkbox` 3.80 s, `button-crack` 6.11, `unfold` 6.71, first `slab-fire` 9.86, first `popup` 16.20, `session-expired` 22.07, `power-down` 27.10, `button-press` 30.50.
 - The cursor is hit twice in the film, at 14.06 s and 19.60 s, and is whole again before the collapse.
 
 ## Events
@@ -52,3 +52,7 @@ Unit `boss`, page `step4`. Logic in `src/pages/step4/`, the boss in `src/boss/`,
 Named as the cue where there is one: `checkbox`, `button-crack`, `unfold`, `dart-fire`, `dart-hit`, `slab-fire`, `slab-drop`, `popup`, `power-down`, `button-press`. Without a cue: `session-expired` (the beat's event), `popup-close`, `boss-slow` (the narrator's trigger).
 
 `src/audio/cues.ts` does not list the boss cues yet. `NEEDS.patch` adds them.
+
+## The cursor's ground
+
+The cursor stands on what is under its tip (`cursor.setGround`): 12 on the verify card and on a raised pop-up, 14 on Submit in its socket, 16 on a slab that has landed and on the fallen button. A slab in flight passes over it.
