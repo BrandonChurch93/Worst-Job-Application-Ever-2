@@ -396,7 +396,7 @@ interface ScorchData {
   hotMaterial: THREE.MeshBasicMaterial
 }
 
-const SCORCH = { size: 54, smoke: 3, smokeSeconds: 1.5, hotSeconds: 0.4, hotSize: 46, emberSize: 30, shoulder: 9, core: 13, legend: 30, word: 52, bar: 400, wide: 112, sparks: 6, sparkSeconds: 0.24, fall: 900, ember: 0.35, snap: 36, flareSeconds: 0.1, ride: 16, strikeSeconds: 1.5, strikeMark: 0.72 }
+const SCORCH = { size: 54, smoke: 3, smokeSeconds: 1.5, hotSeconds: 0.4, hotSize: 46, emberSize: 15, shoulder: 9, core: 13, legend: 30, word: 52, bar: 400, wide: 112, sparks: 6, sparkSeconds: 0.24, fall: 900, ember: 0.35, snap: 36, flareSeconds: 0.1, ride: 16, strikeSeconds: 1.5, strikeMark: 0.72 }
 
 function makeScorch(s: Shape): THREE.Object3D {
   const f = fx()
@@ -533,7 +533,7 @@ function poseScorch(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
     const size = (strike ? SCORCH.hotSize : SCORCH.emberSize) * (0.8 + 0.2 * warm)
     d.hot.position.set(strike ? 0 : d.at[0], strike ? 0 : d.at[1], 1.5 - drop)
     d.hot.scale.set(size, size, 1)
-    d.hotMaterial.color.setRGB(...mix([0, 0, 0], GLOW.boltTail, (strike ? 0.5 : 0.3) * warm))
+    d.hotMaterial.color.setRGB(...mix([0, 0, 0], GLOW.boltTail, (strike ? 0.5 : 0.16) * warm))
   }
   const lamp = strike ? EMIT.struck : EMIT.ember
   if (alive && warm > 0.06) ctx.light({ x: s.x + s.w / 2 + d.at[0], y: s.y + s.h / 2 - d.at[1], z: s.z0 - drop + 22, colour: lamp.colour, power: lamp.power * warm, reach: lamp.reach })
