@@ -67,27 +67,31 @@ is untouched. What tint remains comes from bloom over the body, which is the lig
 
 ## Tests
 
-No test changed in any push so far. MEASURED: `npm test` 1230 passed, `npm run build` built,
-`npm run bots` all clear, on the working tree before the first commit.
+No test changed in any push. No new test. MEASURED on the last tree: `npm test` 1233 passed,
+`npm run build` built, `npm run bots` all clear.
 
 ## Textures
 
 Unchanged: one 512 px RGBA detail texture, 1.0 MB, made in code (`texture.ts`). No recipe changed.
 
-## Counts and times (draft tier, this VM)
+## Counts and times (this VM)
 
-MEASURED with `npm run still -- --sheet <name> --format hd --tier draft`:
+MEASURED with `npm run still -- --sheet <name> --format hd --tier draft`, before my work and now
+(now includes the form fixer's shell, which is where the triangles of the sheets grew):
 
-- `cursor-damage`: 7.7 to 8.1 s, 857956 triangles, 111 draw calls.
-- `cursor-acting`: 7.2 s, 731566 triangles (729766 before the smoke change), 140 draw calls.
-- `step1-fire` (`--key step1-fire`): 11.8 to 12.1 s, 439546 triangles, 282 draw calls.
+- `cursor-damage`: 857956 triangles, 111 draw calls before; 928336 and 111 now; 8.1 s.
+- `cursor-acting`: 729766 triangles, 140 draw calls before; 832186 and 140 now; 8.1 s.
+- `step1-fire` (`--key step1-fire`), draft: 439546 triangles, 282 draw calls before; 470467 and
+  282 now; 11.7 s. Review tier: 24.5 s.
+- `npm run counts -- --key step1-fire --live low`: the cursor's row is 4 draw calls and 23660
+  triangles, the frame 125 draw calls and 234673 triangles, the same on main db41bef and on this
+  branch.
 
 ## Measures
 
-MEASURED: `npm run measure -- --unit step1` (draft tier): 7 green, 1 red. The red is M2 on
-`step1-fire`, soft share 0.0216 against 0.02. MEASURED on main 9443fc4 with my changes stashed,
-same command: the same red, the same 0.0216 of 21935 pixels. It is the draft tier's, not this
-branch's. STATED in the brief: 0.0159 on main at review tier.
+MEASURED on the last tree: `npm run measure -- --unit step1` (draft): 8 green, 0 red.
+`npm run measure -- --unit step1 --tier review`: 8 green, 0 red; M2 0.0065 (most 0.02), M3 0.8232
+(least 0.8; main db41bef 0.8224), M4 4.76 (least 4.5).
 
 ## Item 2: angry
 
@@ -207,3 +211,9 @@ the same still reads 0.8222, and the last 0.0002 was the softer flecks in the ho
    approved one.
 3. Angry: the flecks are blobs and the steam is two ribbons, where the approved picture has fine
    sparks, a deep dark tip and a curling plume.
+
+## Tried and taken back
+
+- Less light let down a burnt bore (so the key seen through the fresh hole in `step1-fire` sits
+  in shade): no change in the picture, because what lights the cap there is the glow of the hit
+  and not the lamp. Taken back out. The hole at 70 px stays a dark ring round a lit cap.
