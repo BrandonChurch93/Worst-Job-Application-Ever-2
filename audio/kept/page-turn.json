@@ -1,0 +1,122 @@
+{
+  "id": "page-turn",
+  "kind": "cue",
+  "cue": "page-turn",
+  "variant": null,
+  "class": "hit",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A heavy slab turning over with a low rush of air and a knock as it seats",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A heavy stone slab the size of a tabletop flipping over on a pivot, a low whoosh of displaced air, then one solid ceramic knock as it seats, close microphone, no body sounds, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 1.2,
+    "loop": false,
+    "influence": null,
+    "call": 145
+  },
+  "askedSeconds": 1.2,
+  "cost": "13",
+  "take": {
+    "number": 2,
+    "round": "build",
+    "file": "take-2.mp3",
+    "sha256": "0acc68b94c59bf6e04fc436985291e36e8b040e948a8cd8796251a7ede60bf36",
+    "filed": "2026-11-25T18:44:26.794Z",
+    "measured": {
+      "seconds": 1.2,
+      "start": 0,
+      "end": 1.2,
+      "peakDb": -7.58,
+      "rmsDb": -24.87,
+      "lufs": -19.88,
+      "truePeakDb": -5.03,
+      "low": 0.944,
+      "mid": 0.056,
+      "high": 0,
+      "tailDb": -71.51,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0.02,
+          "end": 0.466,
+          "peakDb": -7.58
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0.105,
+    "trimEnd": 1.2,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -5,
+    "gainDb": 5.13,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 1.095,
+    "start": 0,
+    "end": 0.72,
+    "peakDb": -5,
+    "rmsDb": -20.22,
+    "lufs": -22.66,
+    "truePeakDb": -5,
+    "low": 0.905,
+    "mid": 0.095,
+    "high": 0,
+    "tailDb": -53.46,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.366,
+        "peakDb": -5
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
+    "asks": 6,
+    "whole": 1,
+    "heard": "A heavy object moves through the air and lands with a solid impact.",
+    "madeOf": "stone or concrete",
+    "events": "1",
+    "voice": null,
+    "voiceVotes": "0 yes, 1 no",
+    "word": null,
+    "wordVotes": "0 yes, 1 no",
+    "music": null,
+    "musicVotes": "0 yes, 1 no",
+    "melody": null,
+    "melodyVotes": "0 yes, 1 no",
+    "fits": null,
+    "fitsVotes": "1 yes, 0 no",
+    "basis": [
+      "The recording consists of a low-pitched whooshing sound followed immediately by a heavy, resonant knock, matching the description of a large slab seating."
+    ],
+    "heardRaisedByDb": 4.58
+  },
+  "why": "not judged by ear: 1 whole answers in 6 asks",
+  "forced": true,
+  "problems": [
+    "the listener left \"voice\" unanswered",
+    "the listener left \"word\" unanswered",
+    "the listener left \"music\" unanswered",
+    "the listener left \"melody\" unanswered",
+    "the listener left \"fits\" unanswered"
+  ],
+  "fixture": false,
+  "file": "page-turn.wav",
+  "seconds": 1.0951,
+  "sha256": "208c96e3cf2b6c1096a24b8080f59988e8ee4f8e87cb8b3b810625323b8d9b67"
+}

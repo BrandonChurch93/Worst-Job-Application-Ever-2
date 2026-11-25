@@ -1,8 +1,10 @@
 // Judges the newest take of every sound that has none kept, and keeps what holds.
 //   node tools/lib/sound-judge.mjs [--do] [--kind line|cue] [--only ID,ID]
+//   node tools/lib/sound-judge.mjs --rekeep [--kind line|cue] [--only ID,ID]   every kept take through the chain again, after the chain has changed
 // A take holds when its numbers hold and two whole answers of the listener hold. It is kept as it is.
 // A take whose numbers hold and that the listener could not be made to hear twice in its asks is kept with --force, and its record says so.
 // A line that only fails by being too long for its place in the film is kept with --force too: the Builder is told its seconds.
+// The Builder's ruling of 18:46Z: a line fails on tone only where two whole answers agree that it laughs, whispers or is excited.
 // Everything else fails and waits for another take.
 import path from 'node:path'
 import { spawnSync } from 'node:child_process'
@@ -22,12 +24,14 @@ export function judge(take, c) {
   if (take.kind === 'line') {
     const want = plain(take.text)
     if (!l || plain(l.transcript) !== want) fails.push(`transcript differs: "${l?.transcript ?? ''}"`)
+    else if (String(l.transcript).toLowerCase().replace(/[^a-z0-9' ]/g, ' ').split(/\s+/).filter(Boolean).join(' ') !== String(take.text).toLowerCase().replace(/[^a-z0-9' ]/g, ' ').split(/\s+/).filter(Boolean).join(' ')) forced.push(`the listener wrote "${l.transcript}": the same words in another spelling`)
     if (!take.line.paceHolds) fails.push(`pace ${take.line.wordsPerSecond} words a second`)
     if (!take.line.pausesHold) fails.push(`${take.line.pausesFound} pauses for ${take.line.pauseMarks} marks`)
     if (!take.line.fits) forced.push(`too long for its place: ${take.line.seconds} s in ${take.line.room} s, over by ${(take.line.seconds - take.line.room).toFixed(3)} s`)
     if (whole >= 2) {
-      for (const k of ['whisper', 'laugh', 'warmth', 'excitement']) if (l[k] === true) fails.push(`listener heard ${k} (${l[`${k}Votes`]})`)
-      if (l.unimpressedAndSmug === false) fails.push(`listener: not unimpressed and a little smug (${l.unimpressedAndSmugVotes}; ${JSON.stringify(l.attitudes)})`)
+      for (const k of ['whisper', 'laugh', 'excitement']) if (l[k] === true) fails.push(`listener heard ${k} (${l[`${k}Votes`]})`)
+      if (l.warmth === true) forced.push(`listener heard warmth (${l.warmthVotes})`)
+      if (l.unimpressedAndSmug === false) forced.push(`listener: not unimpressed and a little smug (${l.unimpressedAndSmugVotes}; ${JSON.stringify(l.attitudes)}). The Builder's ruling of 18:46Z: the listener's tone answers are not evidence`)
     } else forced.push(`tone not judged: ${whole} whole answers in ${l?.asks ?? 0} asks`)
   } else {
     const cue = take.cue ?? take.key
@@ -40,7 +44,9 @@ export function judge(take, c) {
   return { verdict: fails.length ? 'fail' : forced.length ? 'force' : 'keep', fails, forced }
 }
 
-const plain = (s) => String(s ?? '').toLowerCase().replace(/[^a-z0-9' ]/g, ' ').split(/\s+/).filter(Boolean).join(' ')
+// One word, two spellings: the listener writes the American one.
+export const SAME_WORD = { defense: 'defence' }
+const plain = (s) => String(s ?? '').toLowerCase().replace(/[^a-z0-9' ]/g, ' ').split(/\s+/).filter(Boolean).map((w) => SAME_WORD[w] ?? w).join(' ')
 
 export const cliOf = (take) => {
   if (take.kind === 'line') {
@@ -63,6 +69,22 @@ function main() {
   for (const t of ledger.takes) {
     newest.set(t.key, t)
     if (t.kept) kept.add(t.key)
+  }
+  if (a.rekeep) {
+    let n = 0
+    for (const t of ledger.takes) {
+      if (!t.kept) continue
+      if (a.kind && a.kind !== true && t.kind !== a.kind) continue
+      if (only && !only.includes(t.key)) continue
+      const cmd = [at('tools', 'sound.mjs'), ...cliOf(t), '--take', String(t.take), '--keep']
+      if (t.why) cmd.push('--force', '--why', t.why)
+      const r = spawnSync('node', cmd, { encoding: 'utf8' })
+      const out = `${r.stdout}${r.stderr}`.trim().split('\n')
+      if (r.status !== 0 || !out[0].startsWith('kept')) console.log(`${t.key} take ${t.take}: ${out.slice(0, 3).join(' | ')}`)
+      else n++
+    }
+    console.log(`judge: ${n} kept takes put through the chain again`)
+    return
   }
   const count = { keep: 0, force: 0, fail: 0 }
   for (const t of newest.values()) {

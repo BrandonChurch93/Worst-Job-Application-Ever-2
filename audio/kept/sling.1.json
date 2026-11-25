@@ -1,0 +1,122 @@
+{
+  "id": "sling.1",
+  "kind": "cue",
+  "cue": "sling",
+  "variant": 1,
+  "class": "hit",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A pinball slingshot firing: a short rubber snap",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "One pinball slingshot firing, a single short rubber snap, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 98
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "5b74fd3dd6f2151941fb9eea5cdeed83d733402410f3243d51b51844916140ce",
+    "filed": "2026-11-25T18:16:58.830Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0,
+      "end": 0.48,
+      "peakDb": -21.62,
+      "rmsDb": -44.9,
+      "lufs": -37.09,
+      "truePeakDb": -19.62,
+      "low": 0.014,
+      "mid": 0.761,
+      "high": 0.225,
+      "tailDb": -58.61,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.16,
+          "peakDb": -21.62
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0.004,
+    "trimEnd": 0.254,
+    "cutToSeconds": 0.25,
+    "fadeInMs": 3,
+    "fadeOutMs": 62.5,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -5,
+    "gainDb": 16.5,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.25,
+    "start": 0,
+    "end": 0.23,
+    "peakDb": -5,
+    "rmsDb": -25.36,
+    "lufs": -23.87,
+    "truePeakDb": -4.87,
+    "low": 0.012,
+    "mid": 0.764,
+    "high": 0.223,
+    "tailDb": -52.95,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.156,
+        "peakDb": -5
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
+    "asks": 6,
+    "whole": 1,
+    "heard": "A short rubber snap of a pinball slingshot firing.",
+    "madeOf": "rubber and metal",
+    "events": "1",
+    "voice": null,
+    "voiceVotes": "0 yes, 1 no",
+    "word": null,
+    "wordVotes": "0 yes, 1 no",
+    "music": null,
+    "musicVotes": "0 yes, 1 no",
+    "melody": null,
+    "melodyVotes": "0 yes, 1 no",
+    "fits": null,
+    "fitsVotes": "1 yes, 0 no",
+    "basis": [
+      "The sound is a single, brief snapping noise consistent with a rubber pinball mechanism activating."
+    ],
+    "heardRaisedByDb": 18.62
+  },
+  "why": "not judged by ear: 1 whole answers in 6 asks",
+  "forced": true,
+  "problems": [
+    "the listener left \"voice\" unanswered",
+    "the listener left \"word\" unanswered",
+    "the listener left \"music\" unanswered",
+    "the listener left \"melody\" unanswered",
+    "the listener left \"fits\" unanswered"
+  ],
+  "fixture": false,
+  "file": "sling.1.wav",
+  "seconds": 0.25,
+  "sha256": "79dee655a25aa87543f7f0669e73a25112c86df4fd20b8ee8eab1256173673c4"
+}

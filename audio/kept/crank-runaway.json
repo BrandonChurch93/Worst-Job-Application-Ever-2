@@ -1,0 +1,121 @@
+{
+  "id": "crank-runaway",
+  "kind": "cue",
+  "cue": "crank-runaway",
+  "variant": null,
+  "class": "mechanism",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "The same crank spinning up out of control",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A small geared metal hand crank spinning faster and faster out of control, its ratchet clicks speeding up into a rattle, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 2,
+    "loop": false,
+    "influence": null,
+    "call": 71
+  },
+  "askedSeconds": 2,
+  "cost": "22",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "32a25dfb9fa668b8c79c54e00e9e1a88f49b48483fbef7ceb749ad46cbffac29",
+    "filed": "2026-11-25T18:15:20.469Z",
+    "measured": {
+      "seconds": 2,
+      "start": 0.002,
+      "end": 1.756,
+      "peakDb": -8.56,
+      "rmsDb": -34.08,
+      "lufs": -28.22,
+      "truePeakDb": -7.89,
+      "low": 0,
+      "mid": 0.166,
+      "high": 0.834,
+      "tailDb": -29.76,
+      "hits": 2,
+      "hitsAt": [
+        {
+          "start": 0.008,
+          "end": 1.618,
+          "peakDb": -8.56
+        },
+        {
+          "start": 1.696,
+          "end": 1.72,
+          "peakDb": -12.13
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0.004,
+    "trimEnd": 1.756,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -10,
+    "gainDb": -1.44,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 1.752,
+    "start": 0,
+    "end": 1.722,
+    "peakDb": -10,
+    "rmsDb": -35.53,
+    "lufs": -32.1,
+    "truePeakDb": -9.39,
+    "low": 0,
+    "mid": 0.167,
+    "high": 0.833,
+    "tailDb": -33.04,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0.004,
+        "end": 1.614,
+        "peakDb": -10
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+    "asks": 2,
+    "whole": 2,
+    "heard": "A mechanical crank or ratchet spins rapidly, its clicking accelerating as if losing control. / A mechanical crank or ratchet rapidly spins and accelerates, producing a continuous, high-speed clicking sound.",
+    "madeOf": "Metal or hard plastic / metal and plastic",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The audio features a single, continuous sequence of rapid, accelerating mechanical clicks characteristic of a spinning crank, with no vocal or musical elements present.",
+      "The recording consists of a single continuous mechanical clicking sequence that accelerates rapidly like a spinning crank, with no human voice or musical elements present."
+    ]
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "crank-runaway.wav",
+  "seconds": 1.752,
+  "sha256": "4f70577b6845b2a24798dbf25a4340c652b33f18cccda6d3d081f98dfa65662f"
+}

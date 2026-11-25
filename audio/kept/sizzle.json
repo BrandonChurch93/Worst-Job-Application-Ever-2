@@ -1,0 +1,116 @@
+{
+  "id": "sizzle",
+  "kind": "cue",
+  "cue": "sizzle",
+  "variant": null,
+  "class": "tick",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A small burn fizzing out",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A small burn hole fizzing out on plastic, a quiet short sizzle that dies away, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 1.2,
+    "loop": false,
+    "influence": null,
+    "call": 54
+  },
+  "askedSeconds": 1.2,
+  "cost": "13",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "1c9aa26aca056e7ded29f71a7c74a421adfbc60f37fd7f949beb14c48564948c",
+    "filed": "2026-11-25T18:13:53.463Z",
+    "measured": {
+      "seconds": 1.2,
+      "start": 0,
+      "end": 1.2,
+      "peakDb": -27.89,
+      "rmsDb": -44.64,
+      "lufs": -36.76,
+      "truePeakDb": -26.38,
+      "low": 0.016,
+      "mid": 0.237,
+      "high": 0.748,
+      "tailDb": -51.28,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.88,
+          "peakDb": -27.89
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 1.2,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -16,
+    "gainDb": 11.62,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 1.2,
+    "start": 0,
+    "end": 1.154,
+    "peakDb": -16,
+    "rmsDb": -32.89,
+    "lufs": -29.06,
+    "truePeakDb": -15.73,
+    "low": 0.014,
+    "mid": 0.237,
+    "high": 0.748,
+    "tailDb": -50.83,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.88,
+        "peakDb": -16
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+    "asks": 2,
+    "whole": 2,
+    "heard": "A short sizzling or fizzing sound. / A short sizzling sound like a small burn fizzing out.",
+    "madeOf": "Water and a hot surface / fire and water",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The audio consists of a single, brief sizzling noise characteristic of liquid extinguishing a small heat source.",
+      "The audio features a single, brief hissing and sizzling noise characteristic of a hot object or small flame being rapidly extinguished."
+    ]
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "sizzle.wav",
+  "seconds": 1.2,
+  "sha256": "4f2677c9715004ebfc49e72b8e007f4734b686f11689197f85f378f203449d52"
+}

@@ -1,0 +1,116 @@
+{
+  "id": "row-open",
+  "kind": "cue",
+  "cue": "row-open",
+  "variant": null,
+  "class": "mechanism",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A drawer mechanism opening with a soft thunk",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A small drawer mechanism sliding open and stopping with a soft thunk, a single short movement, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.6,
+    "loop": false,
+    "influence": null,
+    "call": 63
+  },
+  "askedSeconds": 0.6,
+  "cost": "7",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "65860b989ccaafa49514e36e634c657d2d86c989d4dfb490afc3f5aa610a89e5",
+    "filed": "2026-11-25T18:15:00.245Z",
+    "measured": {
+      "seconds": 0.6,
+      "start": 0,
+      "end": 0.6,
+      "peakDb": -23.19,
+      "rmsDb": -44.98,
+      "lufs": -40.08,
+      "truePeakDb": -22.95,
+      "low": 0.266,
+      "mid": 0.641,
+      "high": 0.093,
+      "tailDb": -38.29,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.49,
+          "peakDb": -23.19
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.6,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -10,
+    "gainDb": 13.26,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.6,
+    "start": 0,
+    "end": 0.518,
+    "peakDb": -10,
+    "rmsDb": -31.56,
+    "lufs": -30.01,
+    "truePeakDb": -9.92,
+    "low": 0.207,
+    "mid": 0.694,
+    "high": 0.099,
+    "tailDb": -51.9,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.106,
+        "peakDb": -10
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 2 whole, 1 void",
+    "asks": 3,
+    "whole": 2,
+    "heard": "A drawer slides open and stops with a soft thud. / A drawer is opened, producing a sliding noise that ends with a soft thunk.",
+    "madeOf": "Wood and metal / Wood and metal",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The recording consists of a brief sliding sound followed by a muffled impact, characteristic of a drawer mechanism engaging and stopping.",
+      "The continuous scraping or sliding noise followed by a dull impact is characteristic of a drawer being pulled out to its limit."
+    ]
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "row-open.wav",
+  "seconds": 0.6,
+  "sha256": "16a22340d450d7c1174e9506772246b037e11755995e214f3fbf61729c6467c4"
+}

@@ -262,7 +262,7 @@ export function outlineOf(s: Plan, inset = 0, perCorner = 10): Outline {
 export function pocketCut(s: { role?: string; z0: number }): { under: number; depth: number; lip: number } {
   const under = s.role === 'field' ? 5 : s.role === 'progressRail' ? 1.5 : s.role === 'buttonSocket' ? 0.6 : 0
   const depth = Math.max(0.5, -s.z0 + under)
-  return { under, depth, lip: Math.min(s.role === 'field' ? 2.2 : 1.2, depth / 2) }
+  return { under, depth, lip: Math.min(s.role === 'field' ? 1.4 : 1.2, depth / 2) }
 }
 
 // The flat of the slab between a rectangle and a hole inside it.

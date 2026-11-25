@@ -1,0 +1,117 @@
+{
+  "id": "dial-wind",
+  "kind": "cue",
+  "cue": "dial-wind",
+  "variant": null,
+  "class": "mechanism",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A rotary phone dial pulled round against its spring",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A rotary telephone dial pulled round by a finger against its spring, a single ratcheting pull, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.8,
+    "loop": false,
+    "influence": null,
+    "call": 64
+  },
+  "askedSeconds": 0.8,
+  "cost": "9",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "4f94540322d11d1fa945abd87fcd362b9a04bc73dabdd8809a659c6caeb58482",
+    "filed": "2026-11-25T18:15:02.582Z",
+    "measured": {
+      "seconds": 0.8,
+      "start": 0,
+      "end": 0.38,
+      "peakDb": -8.5,
+      "rmsDb": -34.36,
+      "lufs": -29.51,
+      "truePeakDb": -8.39,
+      "low": 0.066,
+      "mid": 0.524,
+      "high": 0.41,
+      "tailDb": -52.11,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.104,
+          "peakDb": -8.5
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.38,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 95,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -10,
+    "gainDb": -1.16,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.38,
+    "start": 0,
+    "end": 0.186,
+    "peakDb": -10,
+    "rmsDb": -32.55,
+    "lufs": -33.48,
+    "truePeakDb": -9.92,
+    "low": 0.037,
+    "mid": 0.54,
+    "high": 0.423,
+    "tailDb": -53.78,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0.002,
+        "end": 0.104,
+        "peakDb": -10
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 2 whole, 1 void",
+    "asks": 3,
+    "whole": 2,
+    "heard": "A rotary phone dial is pulled around and released to spin back to its starting position. / A rotary phone dial is pulled round and released to spin back.",
+    "madeOf": "plastic and metal / Plastic and metal.",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The recording features the distinct mechanical clicking and spring-loaded return whir characteristic of a traditional rotary telephone dial.",
+      "The recording captures the distinct mechanical clicking and spring-loaded whirring characteristic of operating an old-fashioned rotary telephone."
+    ],
+    "heardRaisedByDb": 5.5
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "dial-wind.wav",
+  "seconds": 0.38,
+  "sha256": "83f4940d63f7939bdde958a60911975cb94ed5fe8e531c8ddb787708b00767ba"
+}

@@ -1,0 +1,117 @@
+{
+  "id": "popup.3",
+  "kind": "cue",
+  "cue": "popup",
+  "variant": 3,
+  "class": "mechanism",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A flat panel snapping upright",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A flat rigid plastic panel snapping upright on a spring hinge, a single quick flap and clack, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 118
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "1d1b557ac1e42806cb62965925f6938b7740da8d05813e2ee7120d69aa9c03f5",
+    "filed": "2026-11-25T18:18:16.795Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0,
+      "end": 0.48,
+      "peakDb": -46.37,
+      "rmsDb": -56.3,
+      "lufs": -66.31,
+      "truePeakDb": -46.28,
+      "low": 0.996,
+      "mid": 0.003,
+      "high": 0.001,
+      "tailDb": -38.29,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.48,
+          "peakDb": -46.37
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.4,
+    "cutToSeconds": 0.4,
+    "fadeInMs": 3,
+    "fadeOutMs": 100,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -10,
+    "gainDb": 46.88,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.4,
+    "start": 0,
+    "end": 0.398,
+    "peakDb": -10,
+    "rmsDb": -26.03,
+    "lufs": -29.51,
+    "truePeakDb": -9.96,
+    "low": 0.804,
+    "mid": 0.148,
+    "high": 0.048,
+    "tailDb": -41.04,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.378,
+        "peakDb": -10
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+    "asks": 2,
+    "whole": 2,
+    "heard": "A sharp snap is heard as a flat panel locks into an upright position. / A sharp snap or click, like a flat panel snapping upright.",
+    "madeOf": "plastic or wood / plastic or metal",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The recording consists of a single, brief impact sound characteristic of a rigid object snapping into place.",
+      "The recording consists of a single, quick snapping sound typical of a rigid object clicking into place."
+    ],
+    "heardRaisedByDb": 43.37
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "popup.3.wav",
+  "seconds": 0.4,
+  "sha256": "695f481afc727fa961d365765dec396989d9b5eeb9b6ce103813386be341acd0"
+}

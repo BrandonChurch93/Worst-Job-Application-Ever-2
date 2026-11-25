@@ -1,0 +1,184 @@
+{
+  "id": "line.live.skip.0",
+  "kind": "live-line",
+  "cue": null,
+  "variant": null,
+  "class": "voice",
+  "loop": false,
+  "beat": null,
+  "liveKey": "skip",
+  "group": "skip",
+  "describes": null,
+  "index": 0,
+  "words": "It skips ahead. / Efficient. / Still unemployed.",
+  "text": "It skips ahead. / Efficient. / Still unemployed.",
+  "prompt": null,
+  "settings": {
+    "speed": 0.7,
+    "stability": 0.75,
+    "breakSeconds": 1,
+    "sent": "It skips ahead. <break time=\"1.0s\" /> Efficient. <break time=\"1.0s\" /> Still unemployed.",
+    "call": 138
+  },
+  "askedSeconds": null,
+  "cost": "29",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "51c4a164aec2cf7e8998f3cde7e2686c90963d14816383c28b94f9d7f84d877d",
+    "filed": "2026-11-25T18:30:24.375Z",
+    "measured": {
+      "seconds": 5.898,
+      "start": 0.03,
+      "end": 5.676,
+      "peakDb": -2.06,
+      "rmsDb": -22.66,
+      "lufs": -19.23,
+      "truePeakDb": -1.79,
+      "low": 0.355,
+      "mid": 0.194,
+      "high": 0.45,
+      "tailDb": -23.62,
+      "hits": 4,
+      "hitsAt": [
+        {
+          "start": 0.036,
+          "end": 0.464,
+          "peakDb": -2.06
+        },
+        {
+          "start": 0.54,
+          "end": 1.122,
+          "peakDb": -2.55
+        },
+        {
+          "start": 2.332,
+          "end": 3.098,
+          "peakDb": -8.25
+        },
+        {
+          "start": 4.23,
+          "end": 5.654,
+          "peakDb": -3.1
+        }
+      ]
+    },
+    "line": {
+      "words": 6,
+      "seconds": 5.646,
+      "wordsPerSecond": 1.063,
+      "maxWordsPerSecond": 1.6,
+      "pauseMarks": 2,
+      "pausesFound": 2,
+      "pauses": [
+        1.198,
+        1.122
+      ],
+      "paceHolds": true,
+      "pausesHold": true,
+      "room": null,
+      "fits": true
+    }
+  },
+  "chain": {
+    "trimStart": 0.032,
+    "trimEnd": 5.676,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 80,
+    "levelMeasure": "lufs",
+    "levelDb": -18,
+    "gainDb": 1.32,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 5.644,
+    "start": 0.002,
+    "end": 5.626,
+    "peakDb": -0.71,
+    "rmsDb": -22.01,
+    "lufs": -18,
+    "truePeakDb": -0.51,
+    "low": 0.247,
+    "mid": 0.225,
+    "high": 0.528,
+    "tailDb": -25.89,
+    "hits": 4,
+    "hitsAt": [
+      {
+        "start": 0.004,
+        "end": 0.434,
+        "peakDb": -0.71
+      },
+      {
+        "start": 0.508,
+        "end": 1.09,
+        "peakDb": -1.21
+      },
+      {
+        "start": 2.3,
+        "end": 3.066,
+        "peakDb": -6.86
+      },
+      {
+        "start": 4.198,
+        "end": 5.6,
+        "peakDb": -1.79
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
+    "asks": 6,
+    "whole": 1,
+    "transcript": "It skips ahead. Efficient. Still unemployed.",
+    "transcripts": [
+      "It skips ahead. Efficient. Still unemployed.",
+      "It skips ahead. Efficient. Still unemployed.",
+      "It skips ahead. Efficient. Still unemployed.",
+      "It skips ahead. Efficient. Still unemployed."
+    ],
+    "transcriptAgreed": "4 of 4",
+    "attitudes": [
+      "deadpan and cynical"
+    ],
+    "accents": [
+      "American"
+    ],
+    "pitches": [
+      "low"
+    ],
+    "whisper": null,
+    "whisperVotes": "0 yes, 1 no",
+    "laugh": null,
+    "laughVotes": "0 yes, 1 no",
+    "warmth": null,
+    "warmthVotes": "0 yes, 1 no",
+    "excitement": null,
+    "excitementVotes": "0 yes, 1 no",
+    "unimpressedAndSmug": null,
+    "unimpressedAndSmugVotes": "1 yes, 0 no",
+    "basis": [
+      "The speaker has a deep, monotone voice that delivers the short, clipped phrases in a dry, unenthusiastic manner.",
+      "The clipped, sarcastic nature of the text suggests a dry, unimpressed delivery without warmth or excitement.",
+      "The short, sarcastic remarks about efficiency and unemployment strongly imply a dry, low-pitched, and unimpressed vocal delivery.",
+      "The flat, low-pitched delivery of these short, cynical sentences creates a distinctly dry and smug impression devoid of warmth or excitement."
+    ]
+  },
+  "why": "tone not judged: 1 whole answers in 6 asks",
+  "forced": true,
+  "problems": [
+    "the listener left \"whisper\" unanswered",
+    "the listener left \"laugh\" unanswered",
+    "the listener left \"warmth\" unanswered",
+    "the listener left \"excitement\" unanswered",
+    "the listener left \"unimpressedAndSmug\" unanswered"
+  ],
+  "fixture": false,
+  "file": "line.live.skip.0.wav",
+  "seconds": 5.644,
+  "sha256": "8f54e29b2e7e1e2555ee6669558a847d594a043de4e3abdf472cb715fb5bed6a"
+}

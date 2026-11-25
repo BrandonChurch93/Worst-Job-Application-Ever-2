@@ -1,0 +1,117 @@
+{
+  "id": "hold-music",
+  "kind": "cue",
+  "cue": "hold-music",
+  "variant": null,
+  "class": "music",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "Bland, tinny hold music through a phone speaker. Cut off mid-note by the mix",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "Bland, tinny telephone hold music heard through a small phone speaker, a simple cheerful electric piano tune, thin and narrow, close and dry, recorded in a quiet room, real materials, no voice",
+  "settings": {
+    "seconds": 4,
+    "loop": true,
+    "influence": null,
+    "call": 120
+  },
+  "askedSeconds": 4,
+  "cost": "44",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "9910ab8b1db66d7d817525ade08118b64ac95a23060f74267ae0e4f3858f0adc",
+    "filed": "2026-11-25T18:18:22.979Z",
+    "measured": {
+      "seconds": 4,
+      "start": 0,
+      "end": 4,
+      "peakDb": -7.92,
+      "rmsDb": -20.01,
+      "lufs": -17.6,
+      "truePeakDb": -7.9,
+      "low": 0.207,
+      "mid": 0.793,
+      "high": 0,
+      "tailDb": -12.14,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 4,
+          "peakDb": -7.92
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 4,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -14,
+    "gainDb": -6.27,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 4,
+    "start": 0,
+    "end": 3.998,
+    "peakDb": -14,
+    "rmsDb": -26.32,
+    "lufs": -26.89,
+    "truePeakDb": -14,
+    "low": 0.206,
+    "mid": 0.793,
+    "high": 0,
+    "tailDb": -12.66,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 3.986,
+        "peakDb": -14
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+    "asks": 2,
+    "whole": 2,
+    "heard": "Tinny, low-fidelity electronic music plays continuously before abruptly cutting off. / Bland, tinny hold music plays through a phone speaker and cuts off abruptly.",
+    "madeOf": "Electronic circuitry and a speaker / electronic components and a speaker",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": true,
+    "musicVotes": "2 yes, 0 no",
+    "melody": true,
+    "melodyVotes": "2 yes, 0 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The recording features a muffled, synthesized instrumental track characteristic of telephone hold music that stops mid-note.",
+      "The recording features a continuous stream of low-quality, synthesized music typical of phone systems that suddenly stops mid-note."
+    ],
+    "heardRaisedByDb": 4.92
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "hold-music.wav",
+  "seconds": 4,
+  "sha256": "e552519164928d8a20a4e567236e8498b17e63dc17ae8581875b94512fe25e94"
+}

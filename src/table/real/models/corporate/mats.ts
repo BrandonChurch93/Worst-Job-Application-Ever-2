@@ -33,7 +33,7 @@ export const TONE = {
   carpet: hex(0x4c0a10),
   carpetEdge: hex(0x33060a),
   rubber: hex(0x1b1b1d),
-  marble: hex(0xe6ebf5),
+  marble: hex(0xc9cfdc),
   vein: hex(0x8f9296),
   wood: hex(0x6b3c20),
   woodLight: hex(0xb08a4e),
