@@ -533,7 +533,7 @@ function poseStrips(o: THREE.Object3D, ctx: RealContext): void {
     const curl = (0.016 + 0.034 * hash01(n, 1, seed)) * (hash01(n, 2, seed) < 0.25 ? -0.5 : 1)
     const twist = (hash01(n, 3, seed) - 0.5) * 2.6
     const off = hash01(n, 4, seed) * 8
-    const sway = len * (0.01 + 0.025 * hash01(n, 5, seed))
+    const sway = len * (0.02 + 0.05 * hash01(n, 5, seed))
     const waves = 0.5 + 0.7 * hash01(n, 6, seed)
     const phase = hash01(n, 7, seed) * 2
     const sag = curl < 0 ? (1 - Math.cos(curl * len * 0.5)) / -curl : 0

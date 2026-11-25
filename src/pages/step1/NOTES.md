@@ -150,4 +150,4 @@ This replaces every size and camera number of the tug given above.
 - The loss is at 26.54 (`TIMES.tugFilm` 4.52). In the film the body stays lost for 0.84 s (`TIMES.lostFilm`), live for 0.3 s. `SHRED` starts at 27.38 as before.
 - The held sheet is folded by `fold` in `real/paper.ts` (`FOLD`); the thumb dents follow the arms' thumbs. Title ink 0x606166, bars 0xa3a4a8.
 - The machine has a plate at each end of the opening (`EAR`), shown only once the panels part. A strip's free end rolls up (`TIP`).
-
+- A paper strip is up to 0.17 radians askew as it comes out (`STRIP.askew` 0.44, it was 0.2) and sways up to 0.07 of its length, so the strips cross and do not hang as a comb.
