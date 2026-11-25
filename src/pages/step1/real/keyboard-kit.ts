@@ -63,6 +63,7 @@ export interface Kit {
   bed: THREE.MeshPhysicalMaterial
   cap: THREE.MeshPhysicalMaterial
   orange: THREE.MeshPhysicalMaterial
+  lamp: THREE.MeshPhysicalMaterial
   seat: THREE.MeshPhysicalMaterial
   dark: THREE.MeshPhysicalMaterial
 }
@@ -87,18 +88,16 @@ export function kit(): Kit {
   const turned = metal(0.42, 0.4, 0.14)
   turned.color.multiply(new THREE.Color(0.5, 0.515, 0.54))
   const bed = metal(0.55, 0.5, 0.12)
-  bed.color.multiply(new THREE.Color(0.72, 0.73, 0.75))
+  bed.color.multiply(new THREE.Color(0.9, 0.91, 0.93))
   const barrel = metal(0.34, 0.6, 0.14)
   barrel.color.multiply(new THREE.Color(0.3, 0.31, 0.33))
-  const speckle = m.textures[0]!.clone()
-  speckle.repeat.set(1, 1)
-  speckle.needsUpdate = true
-  const cap = studio(
-    new THREE.MeshPhysicalMaterial({ color: srgb(0xe6dfd2), roughness: 0.56, metalness: 0, normalMap: speckle, normalScale: new THREE.Vector2(0.03, 0.03), specularIntensity: 0.55, clearcoat: 0.1, clearcoatRoughness: 0.5 })
-  )
+  const cap = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xefe9dd), roughness: 0.66, metalness: 0, specularIntensity: 0.4, vertexColors: true }))
+  const lamp = studio(m.orange.clone())
+  lamp.emissive = srgb(0xff5a08)
+  lamp.emissiveIntensity = 0
   const seat = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x8a8782), roughness: 0.78, metalness: 0, specularIntensity: 0.3 }))
   const dark = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x201f1e), roughness: 0.55, metalness: 0.2, specularIntensity: 0.5 }))
-  made = { brushed, deck, turned, barrel, bed, cap, orange: m.orange, seat, dark }
+  made = { brushed, deck, turned, barrel, bed, cap, orange: m.orange, lamp, seat, dark }
   return made
 }
 
@@ -147,6 +146,7 @@ export function capGeometry(w: number, h: number, perCorner = 5): THREE.BufferGe
   const g = new THREE.BufferGeometry()
   g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
   g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2))
+  g.setAttribute('color', new THREE.Float32BufferAttribute(new Float32Array(pos.length).fill(1), 3))
   g.setIndex(idx)
   g.computeVertexNormals()
   return g

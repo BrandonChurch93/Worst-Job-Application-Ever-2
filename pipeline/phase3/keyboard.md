@@ -90,3 +90,54 @@ Emissive meshes cast no shadow.
 - A rim of 1 px round a dish reads as an embossed button under a key light at 45 degrees. 0.5 px over 13 px reads as a moulded dish.
 - A dial is what a turret is from straight above if its top carries rings and screws. A plain turned top with one wide chamfer and a darker barrel reads as a cylinder.
 - In the film the turrets never overheat (MEASURED: a walk of the film in steps of 0.05 s finds heat 0 throughout). The glow and the steam show in a live run only.
+
+## Fix round
+
+Owner: `/root/keys_fixer`, branch `agent/keys`. It answers the round 3 issues R4-1 #1, R4-2 #2, #4, #5, R1-1 #6 and R8-1 #2. The slab issues are in `pipeline/phase3/slabs.md`.
+
+### What a quick look misses (five things the approved image and the critics' frames show)
+
+1. The approved caps are one even tone from edge to edge. The only darker tone on a cap is its lower and right wall. There is no cap that is darker than its neighbour.
+2. The gaps between the caps are light steel, lighter than the walls of the caps, and they are the same tone across the whole field.
+3. A cap that is down is told from its neighbours by a darker top and a thinner lit rim, not by its size: from straight above 6 px of travel moves no edge.
+4. The dark marks on the approved keyboard are small crisp pits (on the space bar and in the gap between U and I), never a soft brown cloud beside a legend.
+5. In the critics' frames the shuffle was read from two samples 0.45 s apart: whatever is not visible in a single frame of the flight is not seen at all.
+
+### What changed
+
+- Pressed keys. The struck key stands at full travel on the frame of the strike (`v[0] = 1`), is held there for `HOLD` 0.1 s, and springs back by 0.24 s with one overshoot of about 1.5 px above its rest (`spring()` in `src/pages/step1/index.ts`: 1 while held, then `cos(1.5 pi t) (1 - t)^1.5`). `ground()` follows the same curve, so the cursor rides the cap down and up. A bolt that lands on a key taps it to 0.55 of its travel (`TAP`). A bolt that hits the cursor drives the key under the body down (`THUD`, 0.26 s, held 0.07 s) and shakes the tray at 0.4 of the shuffle's amplitude.
+- A pressed cap is darker. The cap material carries a vertex colour; a cap at depth d is tinted by `1 - 0.24 d` (`SUNK` in `real/keyboard.ts`). This is what reads at the size of a sheet tile.
+- The field answers in the same frame. On the strike frame the focused field's glow goes to 1 for `PULSE.hold` 0.05 s and fades over 0.3 s, the caret is on, and the letter is in. On the frame a bolt hits the cursor the glow and the caret go out. A slab that lands pulses the field too.
+- Shuffle. `shuffled()` in `keyboard.ts` now swaps each letter with a neighbour at most 2.3 pitches away (pairs; an odd one out joins a ring of three), so no cap crosses the field. Each cap launches on its own frame: a ripple outward from the struck key at 0.09 s a 100 px plus a seeded jitter of 0.025 s (`launchOf`). A cap crouches 0.035 s, flies 0.165 s along a path bowed sideways so two swapping caps pass beside each other, 24 to 64 px high by distance, lands with a hard stop and one seat spring of 0.09 s (`flightOf`). The tray jolts at the first launch and at each landing wave, and caps that keep their seat stir by 1.6 px. A flying cap has a shade on the bed that slides away from it as it rises (offset `hop x (1.8, 1.67)` along the key light) and an undrawn ghost box that casts its real shadow.
+- Covered legends. A legend whose cap is under a higher flying cap is hidden for those frames. This was the class of the stray glyph: the type is drawn after the plastic, so a covered legend showed through the cap above it.
+- Cap look. Cream `0xefe9dd`, roughness 0.66, `specularIntensity` 0.4, no clearcoat, no speckle normal picture. The caps mesh receives shadows and casts none. The bed is the shared aluminium at 0.9, 0.91, 0.93.
+- Enter lamp. The orange accent on Enter is `studio(m.orange.clone())` with an emissive `0xff5a08` at intensity 0 at rest and `0.9 x depth` while the key is down, so it glows only when Enter is pressed.
+
+### Decisions
+
+1. The mottle on the cap tops was the caps' own shadows on each other. MEASURED: a draft still of `step1.lastName` at 0.094 with `caps.receiveShadow = false` showed even caps and no blotch; with `castShadow = true` the blotches were back. The caps keep receiving (the cursor, the turrets and the slabs still shade them) and cast none. The price: a cap at rest throws no shadow on the bed, which the lit bed of decision 21 above had already given up.
+2. A pressed key is shown by tone as well as by height. From straight above a 6 px dip moves nothing on screen; the critic's "dip 1 to 2 px with a tightened shadow" is answered by the tint and by the cursor's own shadow closing up as `ground()` falls.
+3. The local shuffle changes which letter sits where after the first press. `script.ts` reads `shuffled()` through `makePlan`, so the film's cursor path follows; I did not edit `script.ts`. The times of the beats are unchanged.
+4. The overshoot of a returning key rises above the rest height by about 1.5 px. `tests/step1.test.ts` checked the pressed key's `z1` exactly; it now checks a range.
+5. `SHAKE.px` is 5.5, under the 6 that `tests/step1-script.test.ts` (not mine) allows.
+6. The stray mark between Q and W in the key still: decision 22 above stands (the arrow's tip and tail over two legends). In motion the same reading came from legends showing through overlapping caps, which is fixed by hiding covered legends.
+
+### Not reached
+
+- The red-brown scorch beside a legend still reads as a mark on the legend at sheet size. It should be a small dark pit.
+- The field's rim pulse is in the numbers and is weak in the picture: the glow material of the focus ring is in `src/shell/real/controls.ts` (surface fixer). Asked for `0.8 + 1.6 v` in place of `0.8 + 0.5 v`.
+
+### MEASURED (2026-11-25, on the working tree of the first fix commit, main at ed12811)
+
+- `npm test`: 72 files, 1151 tests passed.
+- `npm run build`: built.
+- `npm run bots`: "bots: all clear", gags 37 of 37 for each bot.
+- `npm run measure -- --unit step1`: 7 green, 1 red. The red is M3 on `key:step1-tug` (0.6683, red on main, the tug fixer's). `key:step1-fire` is not in the failing list of M3, so it is at 0.8 or more; its exact value is UNKNOWN, the tool prints only the least.
+- `npm run counts -- --key step1-fire --live low`: on main keyboard 4 meshes, 6 calls, 77380 triangles and the picture 115 calls, 270969 triangles; on this branch keyboard 6 meshes, 8 calls, 39580 triangles and the picture 114 calls, 233169 triangles. Turrets 31 calls, 12796 triangles on both.
+- `npm run still -- --key step1-fire --format hd --tier draft --force`: 9.9 s (12.8 s wall), triangles 487287, draw calls 279.
+- `npm run still -- --key step1-fire --format hd --tier review --force`: 20.5 s (23.7 s wall), triangles 487287, draw calls 279. Before the fix round the same command gave 22.4 s, triangles 1016487, draw calls 293: the caps left the shadow passes.
+- Textures: none added. STATED from `assets-src/keyboard/RECIPE.md` and `assets-src/slabs/RECIPE.md`: keyboard and turrets 2.0 MB with mipmaps (512 px brushed 1.33, 256 px star 0.33, 64 px puff 0.02, 256 px scorch 0.33), slabs 3.82 MB.
+
+### Tuning looks
+
+Of 40 each in the fix round: keyboard 12, turrets 0, slabs 2.

@@ -115,3 +115,29 @@ For step 11, the maker's half in full:
 ## Tuning looks
 
 Of 40 each: slabs 9, paper 40, shredder 20 (counted by the stills looked at while tuning that part). The paper's are used up.
+
+## Fix round
+
+Owner: `/root/keys_fixer`, branch `agent/keys`. It answers the round 3 issues R4-1 #2, R4-2 #1 and #3.
+
+### What a quick look misses
+
+1. A slab that lies across the edge of the deck is cut by the deck's wall in the picture, and a word on it is cut with it.
+2. Two slabs that overlap hide each other's label, however little they overlap.
+3. A landing that takes 0.2 s between two sheet samples 0.45 s apart is never seen: the evidence of the landing has to last (a pressed key, a pinned row).
+4. A slab that fades is read as a badge of the page. A slab that flies off the screen is read as a thing.
+5. Enter has to be seen down before the first slab moves, or the slabs have no cause.
+
+### What changed
+
+- One slab an error, never stacked. `slabAim` picks the nearest free place on the deck to the key it answers, with `SLAB_CLEAR` 14 px between slabs and to the deck's edge, so every label is whole for the whole life of the slab.
+- Entrance. A slab comes from 900 px above in `SLAB_IN.seconds` 0.05 s (three frames), dips 5 px into what it lands on and settles in 0.08 s.
+- What it hits. The keys under a slab are pressed on the landing frame and stay down while it lies there. The tray jolts and the focused field pulses on each landing. Enter bottoms out and is held before the first slab starts.
+- The pile is held for `slabLie`, then each slab leaves 0.06 s after the one before: it pops up 100 px in 0.12 s, waits 0.04 s and flies 1900 px sideways off the nearer screen edge in 0.3 s. The keys it pinned spring back as it lifts.
+- The page's phase goes to `resume` on time. The slabs stay drawn until 0.46 s after the lift starts (about 0.3 s into `step1.resume`, by then over the deck and the sides only) and are then cleared. `skip()` clears them at once.
+
+### Decisions
+
+1. Slabs never overlap, so the old rule "a later slab lies on an earlier one" is gone. `tests/step1.test.ts` checks a slab's place only while it lies (`slabClear < 0`).
+2. The exit is sideways, not up into the camera: a slab that rises toward a straight-down camera only grows, and it would cover the form.
+3. A live visitor is not held: the form can be typed while the slabs leave, and `load(save())` continues because the slab's times are in the state.

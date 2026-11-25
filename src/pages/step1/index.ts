@@ -24,7 +24,7 @@ const LIE = heights.card + 9
 const IDLE_SHUFFLE = 5
 const DROP = CAP_TOP + 8
 const SWING = 0.12
-const SHAKE = { seconds: 0.25, px: 4.5, reach: 460, hop: 15 }
+const SHAKE = { seconds: 0.25, px: 5.5, reach: 460, hop: 15 }
 const RATTLE = { seconds: 0.22, px: 2.4 }
 const JAW = { tug: 14, shred: 30, lag: 0.3 }
 const NEAR = 130
@@ -35,7 +35,15 @@ const TIDY = 0.3
 const WIPE: FieldName[] = ['email', 'lastName', 'firstName']
 const SLAB_HIGH = 110
 const SLAB_GAP = 8
+const SLAB_CLEAR = 14
+const SLAB_IN = { seconds: 0.05, from: 900, dip: 5, settle: 0.08 }
+const SLAB_OUT = { every: 0.06, pop: 0.12, up: 100, wait: 0.04, fly: 0.3, far: 1900, spring: 0.16 }
 const PRESS = 0.24
+const HOLD = 0.1
+const TAP = { seconds: 0.16, hold: 0.03, depth: 0.55 }
+const THUD = { seconds: 0.26, hold: 0.07, shake: 0.4 }
+const PULSE = { hold: 0.05, fade: 0.3 }
+const FLIGHT = { ripple: 0.09, jitter: 0.025, seconds: 0.165, crouch: 0.035, low: 24, high: 64, perPx: 0.1, seat: 0.09, jolt: 2.6, rattle: 1.6, clear: 5 }
 const LEGEND_CLEAR = 0
 
 type Phase = 'rest' | 'keyboard' | 'firstName' | 'lastName' | 'email' | 'slabs' | 'resume' | 'tug' | 'shredded' | 'received'
@@ -80,6 +88,11 @@ interface State {
   seat: number
   shake: number
   shakeAt: { x: number; y: number }
+  shakeAmp: number
+  thud: number
+  thudKey: number
+  sinceShuffle: number
+  burst: { x: number; y: number }
   caret: number
   glow: number
   spin: number
@@ -99,6 +112,13 @@ interface State {
 
 const lerp = (a: number, b: number, u: number): number => a + (b - a) * u
 const clamp = (v: number, lo: number, hi: number): number => Math.min(hi, Math.max(lo, v))
+const spring = (e: number, hold: number, total: number): number => {
+  if (e < 0 || e >= total) return 0
+  if (e < hold) return 1
+  const t = (e - hold) / (total - hold)
+  return Math.cos(t * Math.PI * 1.5) * (1 - t) ** 1.5
+}
+const ring = (t: number, px: number): number => (t < 0 || t > 0.3 ? 0 : px * Math.exp(-t * 16) * Math.cos(t * 58))
 const inside = (b: { x: number; y: number; w: number; h: number }, x: number, y: number, pad = 0): boolean => x >= b.x - pad && x <= b.x + b.w + pad && y >= b.y - pad && y <= b.y + b.h + pad
 
 export function makePage(): PageLogic {
@@ -130,7 +150,7 @@ export function makePage(): PageLogic {
     mode, seed, time: 0, phase: 'rest', phaseTime: 0, board: 0, boardUp: false, values: { firstName: '', lastName: '', email: '' }, places: homePlaces(), from: homePlaces(), shuffle: 1, blocks: false,
     rng: stream('step1:shuffle', seed).state(), shuffles: 0, shuffledAt: 0, queue: [], keyDown: {}, drum: 0, shock: 0, slabs: [], slabClear: -1, accepted: false, slow: 0, slowFired: false, realFired: false,
     paper: { on: false, slide: 0, x: PAPER_REST.x, y: SCREEN_H + 20, held: false, dx: 0, dy: 0, feed: -1, fx: 0, fy: 0, vx: 0, vy: 0 }, slot: 0, tug: { t: 0, amount: 0, most: 0, cool: 0, gx: SLOT.cx, gy: SLOT.cy - PAPER.h, reach: TUG.reach.rest, rate: 0, pull: 0, vx: 0, vy: 0, hx: SLOT.cx, hy: SLOT.cy - PAPER.h },
-    lost: -1, singe: 0, armed: false, seat: 9, shake: 9, shakeAt: { x: 0, y: 0 }, caret: 9, glow: 9, spin: 0, turn: 0, kept: null,
+    lost: -1, singe: 0, armed: false, seat: 9, shake: 9, shakeAt: { x: 0, y: 0 }, shakeAmp: 1, thud: 9, thudKey: -1, sinceShuffle: 9, burst: { x: DECK.x + DECK.w / 2, y: DECK.y + DECK.h / 2 }, caret: 9, glow: 9, spin: 0, turn: 0, kept: null,
     shred: 0, received: false, pressed: -1, skipped: false, cleaned: false, done: false, cue: 0, cx: START.x, cy: START.y, acted: null
   })
   let s = fresh('live', config.seed)
@@ -147,11 +167,36 @@ export function makePage(): PageLogic {
     s.acted = a
     io.cursor.act(a)
   }
-  const seatOf = (key: number, u: number): { x: number; y: number; moved: boolean } => {
+  const seatOf = (key: number, u: number, bow = 0): { x: number; y: number; moved: boolean } => {
     const a = seats[s.from[key]!]!
     const b = seats[s.places[key]!]!
     const own = seats[key]!
-    return { x: lerp(a.cx, b.cx, u) - own.w / 2, y: lerp(a.y, b.y, u), moved: s.from[key] !== s.places[key] }
+    const at = { x: lerp(a.cx, b.cx, u) - own.w / 2, y: lerp(a.y, b.y, u), moved: s.from[key] !== s.places[key] }
+    if (bow <= 0 || !at.moved) return at
+    const dx = b.cx - a.cx
+    const dy = b.cy - a.cy
+    const d = Math.hypot(dx, dy) || 1
+    const reach = ((Math.abs(dy / d) * own.w + Math.abs(dx / d) * own.h) / 2 + FLIGHT.clear) * bow
+    at.x -= (dy / d) * reach
+    at.y += (dx / d) * reach
+    return at
+  }
+  const launchOf = (key: number): number => {
+    const a = seats[s.from[key]!]!
+    const far = Math.hypot(a.cx - s.burst.x, a.cy - s.burst.y)
+    return FLIGHT.crouch + Math.min(FLIGHT.ripple, (far / 900) * FLIGHT.ripple) + FLIGHT.jitter * hash01(key, s.shuffles, 23)
+  }
+  const flightOf = (key: number): { u: number; air: number; bow: number; high: number; crouch: number; seat: number; t: number } => {
+    const t = s.sinceShuffle
+    if (t >= 1) return { u: 1, air: 0, bow: 0, high: 0, crouch: 0, seat: 0, t }
+    const start = launchOf(key)
+    const a = clamp((t - start) / FLIGHT.seconds, 0, 1)
+    const from = seats[s.from[key]!]!
+    const to = seats[s.places[key]!]!
+    const far = Math.hypot(to.cx - from.cx, to.cy - from.cy)
+    const high = Math.min(FLIGHT.high, FLIGHT.low + far * FLIGHT.perPx)
+    const crouch = t < start ? clamp((t - (start - FLIGHT.crouch)) / FLIGHT.crouch, 0, 1) : 0
+    return { u: a + 0.12 * Math.sin(2 * Math.PI * a), air: Math.sin(Math.PI * a) ** 0.75, bow: Math.sin(Math.PI * a), high, crouch, seat: spring(t - start - FLIGHT.seconds, 0.012, FLIGHT.seat), t: t - start }
   }
   const openKeyboard = (io: StepIo): void => {
     s.boardUp = true
@@ -165,6 +210,7 @@ export function makePage(): PageLogic {
     s.places = shuffled(s.places, rng)
     s.rng = rng.state()
     s.shuffle = 0
+    s.sinceShuffle = 0
     s.blocks = true
     s.shuffles++
     s.shuffledAt = s.phaseTime
@@ -174,6 +220,8 @@ export function makePage(): PageLogic {
     s.from = s.places.slice()
     s.places = homePlaces()
     s.shuffle = 0
+    s.sinceShuffle = 0
+    s.burst = { x: DECK.x + DECK.w / 2, y: DECK.y + DECK.h / 2 }
     s.blocks = false
   }
   const advance = (io: StepIo): void => {
@@ -211,6 +259,7 @@ export function makePage(): PageLogic {
     s.glow = 0
     s.values[field] = value + (field !== 'email' && value.length === 0 ? ch.toUpperCase() : ch)
     if (s.phase === 'lastName' && seats[key]!.letter) {
+      s.burst = { x: at.x + seats[key]!.w / 2, y: at.y + seats[key]!.h / 2 }
       reshuffle(io)
       if (s.shuffles === 4) act(io, 'nervous')
     }
@@ -250,7 +299,10 @@ export function makePage(): PageLogic {
         s.drum = 0.8
         io.emit('slow-typing', pockets[field].cx, pockets[field].cy, false)
       }
-      if (s.phase === 'lastName' && !s.blocks && s.phaseTime - s.shuffledAt >= IDLE_SHUFFLE) reshuffle(io)
+      if (s.phase === 'lastName' && !s.blocks && s.phaseTime - s.shuffledAt >= IDLE_SHUFFLE) {
+        s.burst = { x: DECK.x + DECK.w / 2, y: DECK.y + DECK.h / 2 }
+        reshuffle(io)
+      }
       if (s.phaseTime >= live.skipLinkAfterSeconds) advance(io)
     }
   }
@@ -277,6 +329,13 @@ export function makePage(): PageLogic {
       s.shock = 0.9
       s.singe = SINGE
       s.queue = []
+      s.thud = 0
+      s.thudKey = keyAt(s.places, body.x, body.y)
+      s.shake = 0
+      s.shakeAmp = THUD.shake
+      s.shakeAt = { x: body.x, y: body.y }
+      s.glow = 0
+      s.caret = 0
     }
     if (s.singe > 0) {
       s.singe -= io.dt
@@ -294,11 +353,24 @@ export function makePage(): PageLogic {
   const slabAim = (io: StepIo): { x: number; y: number; base: number } => {
     const x = clamp(io.cursor.x + BODY.x - SLAB.w / 2, DECK.x + SLAB_GAP, DECK.x + DECK.w - SLAB.w - SLAB_GAP)
     const y = clamp(io.cursor.y + BODY.y - SLAB.h / 2, DECK.y + SLAB_GAP, DECK.y + DECK.h - SLAB.h - SLAB_GAP)
-    let base = CAP_TOP
-    for (const b of s.slabs) if (x < b.x + SLAB.w && x + SLAB.w > b.x && y < b.y + SLAB.h && y + SLAB.h > b.y) base = Math.max(base, b.base + heights.slab)
-    return { x, y, base }
+    const x0 = DECK.x + SLAB_GAP
+    const x1 = DECK.x + DECK.w - SLAB.w - SLAB_GAP
+    const y0 = DECK.y + SLAB_GAP
+    const y1 = DECK.y + DECK.h - SLAB.h - SLAB_GAP
+    const free = (px: number, py: number): boolean => s.slabs.every((b) => px >= b.x + SLAB.w + SLAB_CLEAR || px + SLAB.w + SLAB_CLEAR <= b.x || py >= b.y + SLAB.h + SLAB_CLEAR || py + SLAB.h + SLAB_CLEAR <= b.y)
+    if (free(x, y)) return { x, y, base: CAP_TOP }
+    let best = { x, y, far: Infinity }
+    const xs = [x, x0, x1, ...s.slabs.flatMap((b) => [b.x - SLAB.w - SLAB_CLEAR, b.x + SLAB.w + SLAB_CLEAR])]
+    const ys = [y, y0, y1, ...s.slabs.flatMap((b) => [b.y - SLAB.h - SLAB_CLEAR, b.y + SLAB.h + SLAB_CLEAR])]
+    for (const px of xs) for (const py of ys) {
+      if (px < x0 || px > x1 || py < y0 || py > y1 || !free(px, py)) continue
+      const far = Math.hypot(px - x, py - y)
+      if (far < best.far) best = { x: px, y: py, far }
+    }
+    return { x: best.x, y: best.y, base: CAP_TOP }
   }
 
+  const slabGone = (TIMES.slabCount - 1) * SLAB_OUT.every + SLAB_OUT.wait + SLAB_OUT.fly
   const stepSlabs = (io: StepIo): void => {
     s.slabs.forEach((b, n) => {
       b.t += io.dt
@@ -308,8 +380,10 @@ export function makePage(): PageLogic {
       const under = inside({ x: b.x, y: b.y, w: SLAB.w, h: SLAB.h }, io.cursor.x + BODY.x, io.cursor.y + BODY.y)
       io.emit('slab-drop', b.x + SLAB.w / 2, b.y + SLAB.h / 2, under)
       s.shake = 0
+      s.shakeAmp = 1
       s.shakeAt = { x: b.x + SLAB.w / 2, y: b.y + SLAB.h / 2 }
       s.caret = 0
+      s.glow = 0
       if (under) {
         io.cursor.hurt('flattened')
         io.cursor.react('flinch')
@@ -322,8 +396,6 @@ export function makePage(): PageLogic {
     if (s.slabClear >= 0) {
       s.slabClear += io.dt
       if (s.slabClear < TIMES.slabLift) return
-      s.slabs = []
-      s.slabClear = -1
       s.accepted = true
       s.boardUp = false
       turrets.retract()
@@ -540,7 +612,8 @@ export function makePage(): PageLogic {
     if (inside(ZONE, io.cursor.x + BODY.x, io.cursor.y + BODY.y)) return heights.card
     if (s.board <= 0 || !onDeck(io.cursor.x, io.cursor.y)) return 0
     const key = keyAt(s.places, io.cursor.x, io.cursor.y)
-    const top = key >= 0 ? CAP_TOP - (s.keyDown[seats[key]!.name] ? TRAVEL : 0) : DECK_TOP
+    const down = key >= 0 ? s.keyDown[seats[key]!.name] : undefined
+    const top = key >= 0 ? CAP_TOP - (down ? TRAVEL * Math.max(0, spring(PRESS - down, HOLD, PRESS)) : 0) : DECK_TOP
     return Math.max(0, top + lift(s.board))
   }
 
@@ -661,6 +734,8 @@ export function makePage(): PageLogic {
       if (s.boardUp && boardWas < 1 && s.board >= 1) s.seat = 0
       s.seat = Math.min(9, s.seat + io.dt)
       s.shake = Math.min(9, s.shake + io.dt)
+      s.thud = Math.min(9, s.thud + io.dt)
+      s.sinceShuffle = Math.min(9, s.sinceShuffle + io.dt)
       s.caret = Math.min(9, s.caret + io.dt)
       s.glow = Math.min(9, s.glow + io.dt)
       const eating = s.phase === 'tug' || (s.phase === 'shredded' && s.shred < SHRED.pile)
@@ -680,6 +755,13 @@ export function makePage(): PageLogic {
       }
       stepKeys(io)
       stepTurrets(io)
+      if (s.slabClear >= 0 && s.phase !== 'slabs') {
+        s.slabClear += io.dt
+        if (s.slabClear >= slabGone) {
+          s.slabs = []
+          s.slabClear = -1
+        }
+      }
       if (s.phase === 'slabs') stepSlabs(io)
       else if (s.phase === 'resume') stepResume(io)
       else if (s.phase === 'tug') stepTug(io)
@@ -701,47 +783,80 @@ export function makePage(): PageLogic {
         const mouth = DECK.y + DECK.h - h
         if (h >= 2) out.push({ id: 'keyboard-well', part: 'keyboard', kind: 'well', x: DECK.x, y: mouth, w: DECK.w, h, z0: WELL, z1: 0, tone: 'dark' })
         const hit = s.shake < SHAKE.seconds ? 1 - s.shake / SHAKE.seconds : 0
-        const shake = hit * hit * SHAKE.px * Math.cos(s.shake * 58)
+        const landing = FLIGHT.crouch + FLIGHT.ripple * 0.5 + FLIGHT.seconds
+        const shake = hit * hit * SHAKE.px * s.shakeAmp * Math.cos(s.shake * 58) + ring(s.sinceShuffle - FLIGHT.crouch, -FLIGHT.jolt) + ring(s.sinceShuffle - landing, FLIGHT.jolt)
         const shaken = Math.abs(shake) > 0.01
         over['keyboard-deck'] = { y: DECK.y + shake, z0: WELL, z1: DECK_TOP + off, ...(shaken ? { moved: true } : {}), v: [s.board, Math.max(0, off), shake] }
         for (const side of [0, 1]) over[`hatch-${side}`] = { y: hatchY[side]! + shake, z0: DECK_TOP + off, z1: DECK_TOP + 0.6 + off, ...(shaken ? { moved: true } : {}) }
-        const u = smooth(s.shuffle)
         const scorches = turrets.s.scorches
+        const spots: { x: number; y: number; w: number; h: number; top: number; air: boolean }[] = []
         seats.forEach((seat, key) => {
-          const at = seatOf(key, u)
+          const fl = flightOf(key)
+          const at = seatOf(key, fl.u, fl.bow)
           at.y += shake
           const down = s.keyDown[seat.name]
           const far = Math.hypot(at.x + seat.w / 2 - s.shakeAt.x, at.y + seat.h / 2 - s.shakeAt.y)
-          const pinned = s.slabs.some((b) => b.landed && at.x < b.x + SLAB.w && at.x + seat.w > b.x && at.y < b.y + SLAB.h && at.y + seat.h > b.y)
-          const kick = !pinned && !down && far < SHAKE.reach ? SHAKE.hop * (1 - far / SHAKE.reach) * Math.sin(Math.PI * clamp((s.shake - far / 2600) / 0.2, 0, 1)) : 0
+          let pin = 0
+          s.slabs.forEach((b, n) => {
+            if (!b.landed || !(at.x < b.x + SLAB.w && at.x + seat.w > b.x && at.y < b.y + SLAB.h && at.y + seat.h > b.y)) return
+            const e = s.slabClear < 0 ? -1 : s.slabClear - n * SLAB_OUT.every
+            pin = Math.max(pin, e < 0 ? Math.min(1, b.since / 0.03) : spring(e, 0, SLAB_OUT.spring))
+          })
+          const pinned = pin !== 0
+          const kick = !pinned && !down && far < SHAKE.reach ? SHAKE.hop * s.shakeAmp * (1 - far / SHAKE.reach) * Math.sin(Math.PI * clamp((s.shake - far / 2600) / 0.2, 0, 1)) : 0
           const rattle = !down && s.seat < RATTLE.seconds ? RATTLE.px * hash01(key, 2, 17) * Math.sin(Math.PI * clamp((s.seat - 0.08 * hash01(key, 4, 17)) / (RATTLE.seconds - 0.08), 0, 1)) : 0
-          const hop = (at.moved ? Math.sin(Math.PI * u) * (18 + 14 * hash01(key, s.shuffles, 11)) : 0) + kick + rattle
+          const stir = !at.moved && !down && fl.t > 0 && fl.t < 0.1 ? FLIGHT.rattle * (0.4 + 0.6 * hash01(key, s.shuffles, 29)) * Math.sin((Math.PI * fl.t) / 0.1) : 0
+          const hop = (at.moved ? fl.air * fl.high : 0) + kick + rattle + stir
           const wave = s.drum > 0 ? Math.max(0, Math.sin((0.8 - s.drum) * 14 - (seat.cx - DECK.x) / 160)) * TRAVEL : 0
-          const press = (down || pinned ? TRAVEL : 0) + wave
+          let heat = 0
+          let tap = 0
+          for (const c of scorches) {
+            if (c.x < at.x - 8 || c.x > at.x + seat.w + 8 || c.y < at.y - 8 || c.y > at.y + seat.h + 8) continue
+            heat = Math.max(heat, c.left / TURRET.scorchSeconds)
+            const age = TURRET.scorchSeconds - c.left
+            if (age < TAP.seconds) tap = TAP.depth * spring(age, TAP.hold, TAP.seconds)
+          }
+          const struck = down ? spring(PRESS - down, HOLD, PRESS) : key === s.thudKey ? spring(s.thud, THUD.hold, THUD.seconds) : 0
+          const held = pinned ? pin : struck !== 0 ? struck : tap
+          const sunk = clamp(held + (at.moved ? fl.crouch * 0.5 + fl.seat * 0.6 : 0), -0.25, 1)
+          const press = sunk * TRAVEL + wave
           const top = CAP_TOP + off + hop - press
           const away = at.moved || s.places[key] !== key || shaken
           const seen = top > 0 || at.y >= mouth + LEGEND_CLEAR
-          let heat = 0
-          for (const c of scorches) if (c.x >= at.x - 8 && c.x <= at.x + seat.w + 8 && c.y >= at.y - 8 && c.y <= at.y + seat.h + 8) heat = Math.max(heat, c.left / TURRET.scorchSeconds)
-          const depth = down ? Math.min(1, (PRESS - down) / 0.04, down / 0.12) : wave / TRAVEL
-          over[`key-${seat.name}`] = { x: at.x, y: at.y, z0: DECK_TOP + off + hop, z1: top, mechanism: top >= heights.machineMinTop, moved: away, ...(down ? { tone: 'pocket' as const } : {}), v: [depth, hop, at.moved ? Math.sin(Math.PI * u) : 0, heat] }
+          const depth = clamp(press / TRAVEL, 0, 1)
+          over[`key-${seat.name}`] = { x: at.x, y: at.y, z0: DECK_TOP + off + hop, z1: top, mechanism: top >= heights.machineMinTop, moved: away, ...(down ? { tone: 'pocket' as const } : {}), v: [depth, hop, at.moved ? fl.air : 0, heat] }
           const legend = boxOf(layout, `key-${seat.name}`)
           const label = seat.name === 'space' ? null : boxOf(layout, `key-${seat.name}-legend`)
           if (label) over[`key-${seat.name}-legend`] = !seen ? null : { x: label.x + (at.x - legend.x), y: label.y + (at.y - legend.y), z0: top, z1: top, moved: away }
+          spots.push({ x: at.x, y: at.y, w: seat.w, h: seat.h, top, air: at.moved && fl.air > 0 })
         })
+        if (spots.some((p) => p.air)) {
+          seats.forEach((seat, key) => {
+            const mine = spots[key]!
+            const word = over[`key-${seat.name}-legend`]
+            if (!word) return
+            const box = boxOf(layout, `key-${seat.name}-legend`)
+            const covered = spots.some((p, other) => other !== key && (p.air || mine.air) && p.top > mine.top - 8 && p.x + 3 < word.x! + box.w && p.x + p.w - 3 > word.x! && p.y + 3 < word.y! + box.h && p.y + p.h - 3 > word.y!)
+            if (covered) over[`key-${seat.name}-legend`] = null
+          })
+        }
       }
-      const slabZ = (b: { t: number; base: number }): number => {
+      const slabAt = (b: { t: number; x: number; base: number }, n: number): { x: number; z: number } => {
         const u = clamp((b.t - TIMES.slabHang) / TIMES.slabFall, 0, 1)
         const v = clamp((b.t - TIMES.slabHang - TIMES.slabFall) / TIMES.slabSettle, 0, 1)
-        const w = s.slabClear < 0 ? 0 : clamp(s.slabClear / TIMES.slabLift, 0, 1)
-        return b.base + SLAB_HIGH * (1 - u * u) + 16 * (1 - smooth(b.t / (TIMES.slabHang * 0.7))) - TRAVEL * Math.min(1, v * 4) + 1.2 * Math.sin(Math.PI * clamp(((v - 0.25) * TIMES.slabSettle) / 0.06, 0, 1)) + SLAB_HIGH * w * w
+        const come = SLAB_IN.from * (1 - clamp(b.t / SLAB_IN.seconds, 0, 1)) ** 2 - SLAB_IN.dip * Math.sin(Math.PI * clamp((b.t - SLAB_IN.seconds) / SLAB_IN.settle, 0, 1))
+        const e = s.slabClear < 0 ? 0 : Math.max(0, s.slabClear - n * SLAB_OUT.every)
+        const pop = SLAB_OUT.up * (1 - (1 - Math.min(1, e / SLAB_OUT.pop)) ** 2)
+        const fly = e <= SLAB_OUT.wait ? 0 : SLAB_OUT.far * ((e - SLAB_OUT.wait) / SLAB_OUT.fly) ** 2
+        const z = b.base + SLAB_HIGH * (1 - u ** 3) + come - TRAVEL * Math.min(1, v * 4) + 1.2 * Math.sin(Math.PI * clamp(((v - 0.25) * TIMES.slabSettle) / 0.06, 0, 1)) + pop
+        return { x: b.x + (b.x + SLAB.w / 2 < 960 ? -fly : fly), z }
       }
       const slabV = (b: { landed: boolean; since: number }): number[] => [b.since, b.landed ? Math.max(0, 1 - b.since / SHAKE.seconds) : 0]
       const first = s.slabs[0]
       if (first) {
-        const z = slabZ(first)
-        over['email-slab'] = { x: first.x, y: first.y, z0: z, z1: z + heights.slab, moved: true, v: slabV(first) }
-        over['email-slab-label'] = { x: slabLabel.x + (first.x - slabHome.x), y: slabLabel.y + (first.y - slabHome.y), z0: z + heights.slab, z1: z + heights.slab, moved: true }
+        const p = slabAt(first, 0)
+        over['email-slab'] = { x: p.x, y: first.y, z0: p.z, z1: p.z + heights.slab, moved: true, v: slabV(first) }
+        over['email-slab-label'] = { x: slabLabel.x + (p.x - slabHome.x), y: slabLabel.y + (first.y - slabHome.y), z0: p.z + heights.slab, z1: p.z + heights.slab, moved: true }
       }
       if (s.paper.on && s.phase === 'resume') {
         const dx = s.paper.x - PAPER_REST.x
@@ -769,18 +884,19 @@ export function makePage(): PageLogic {
         const body = out.find((x) => x.id === 'email-slab')
         const face = out.find((x) => x.id === 'email-slab-label')
         const first = s.slabs[0]!
+        const home = slabAt(first, 0)
         s.slabs.forEach((b, n) => {
           if (n === 0 || !body || !face) return
-          const z = slabZ(b)
-          out.push({ ...body, id: `email-slab-${n}`, x: b.x, y: b.y, z0: z, z1: z + heights.slab, v: slabV(b) })
-          out.push({ ...face, id: `email-slab-${n}-label`, x: face.x + (b.x - first.x), y: face.y + (b.y - first.y), z0: z + heights.slab, z1: z + heights.slab })
+          const p = slabAt(b, n)
+          out.push({ ...body, id: `email-slab-${n}`, x: p.x, y: b.y, z0: p.z, z1: p.z + heights.slab, v: slabV(b) })
+          out.push({ ...face, id: `email-slab-${n}-label`, x: face.x + (p.x - home.x), y: face.y + (b.y - first.y), z0: p.z + heights.slab, z1: p.z + heights.slab })
         })
       }
       const wiping = s.kept ? WIPE.find((f) => s.values[f].length > 0) : undefined
       const field = FIELD_OF[s.phase] ?? wiping
       if (field) {
         const p = pockets[field]
-        const glow = Math.max(0, 1 - s.glow / 0.25)
+        const glow = s.glow < PULSE.hold ? 1 : Math.max(0, 1 - (s.glow - PULSE.hold) / PULSE.fade)
         out.push({ id: 'field-focus', part: 'shell', kind: 'box', x: p.x + 14, y: p.y + p.h - 5, w: p.w - 28, h: 3, z0: 0.1, z1: 0.5, tone: 'accent', v: [glow] })
         const jump = s.caret < 0.2 ? 6 * Math.sin((Math.PI * s.caret) / 0.2) : 0
         if ((Math.floor(s.time * 2.5) % 2 === 0 || glow > 0 || jump > 0) && s.phase !== 'slabs') {
