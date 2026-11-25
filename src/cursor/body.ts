@@ -41,7 +41,7 @@ export const STRIKE = { x: 4.3, y: 9.4, reach: 2.1 }
 const UNIT_PX = config.cursor.heightPxAt1080 / 19
 
 export interface Strip { x: number; y: number; z: number; rot: number; tilt: number }
-interface LooseStrip extends Strip { vx: number; vy: number; vz: number; vr: number; vt: number; rest: boolean }
+interface LooseStrip extends Strip { vx: number; vy: number; vz: number; vr: number; vt: number; rest: boolean; tx: number; ty: number; tr: number }
 export interface Wound { kind: Damage; at: number; x: number; y: number }
 
 export interface CursorPose {
@@ -469,14 +469,31 @@ export class CursorBody {
   }
 }
 
-// The strips as they leave the shredder: thrown down the page from above their places, each with its own spin.
+// Where a strip comes to lie: the pile is a fan, pinched near the tip and spread at the tail, each strip on its own layer.
+const FAN = { spread: 0.075, wobble: 0.06, reach: 25, slide: 2.6 }
+const TIPWARD = [-0.409, 0.912]
+
+function lie(i: number, seed: number): Strip {
+  const h = (k: number) => hash01(i, k + 40, seed)
+  const mid = i - (STRIPS - 1) / 2
+  const rot = -mid * FAN.spread + (h(1) - 0.5) * FAN.wobble
+  const ax = TIPWARD[0]! * FAN.reach
+  const ay = TIPWARD[1]! * FAN.reach
+  const c = Math.cos(rot)
+  const n = Math.sin(rot)
+  return { x: ax - (ax * c - ay * n) + mid * 0.5 + (h(2) - 0.5) * FAN.slide, y: ay - (ax * n + ay * c) + (h(3) - 0.5) * FAN.slide * 2.4 - 3, z: layer(i), rot, tilt: 0 }
+}
+
+// The strips as they leave the shredder: thrown down the page from above their places, each with its own spin, each bound for its place in the fan.
 function pile(seed: number): LooseStrip[] {
   const out: LooseStrip[] = []
   for (let i = 0; i < STRIPS; i++) {
     const h = (k: number) => hash01(i, k, seed)
+    const to = lie(i, seed)
     out.push({
-      x: (h(1) - 0.5) * 8, y: 38 + h(2) * 12, z: 24 + h(3) * 30 + i * 2, rot: (h(4) - 0.5) * 0.3, tilt: (h(5) - 0.5) * 1.4,
-      vx: (i - (STRIPS - 1) / 2) * 15 + (h(6) - 0.5) * 22, vy: -(250 + h(7) * 34), vz: -90, vr: (i - (STRIPS - 1) / 2) * 0.8 + (h(8) - 0.5) * 1.3, vt: (h(9) - 0.5) * 10, rest: false
+      x: (h(1) - 0.5) * 6, y: 38 + h(2) * 12, z: 22 + h(3) * 26 + i * 2, rot: (h(4) - 0.5) * 0.5, tilt: (h(5) - 0.5) * 1.4,
+      vx: (h(6) - 0.5) * 60, vy: -(210 + h(7) * 60), vz: -90, vr: (h(8) - 0.5) * 5, vt: (h(9) - 0.5) * 10, rest: false,
+      tx: to.x, ty: to.y, tr: to.rot
     })
   }
   return out
@@ -484,52 +501,52 @@ function pile(seed: number): LooseStrip[] {
 
 const layer = (i: number): number => 0.5 + ((i * 5) % STRIPS) * 0.85
 
-// One step of the loose strips: each falls, lands on the pile at its own layer, skids and comes to rest.
+// One step of the loose strips: each falls, lands on the pile at its own layer, skids to its place in the fan and comes to rest.
 function fall(strips: LooseStrip[]): void {
   strips.forEach(drop)
 }
 
 function drop(p: LooseStrip, i: number): void {
-  {
-    if (p.rest) return
-    const floor = layer(i)
+  if (p.rest) return
+  const floor = layer(i)
+  const down = p.z <= floor + 0.01 && Math.abs(p.vz) < 1
+  const k = down ? 150 : 46
+  const c = down ? 21 : 9
+  p.vx += (k * (p.tx - p.x) - c * p.vx) * dt
+  p.vy += (k * (p.ty - p.y) - c * p.vy) * dt
+  p.vr += (k * (p.tr - p.rot) - c * p.vr) * dt
+  p.x += p.vx * dt
+  p.y += p.vy * dt
+  p.rot += p.vr * dt
+  if (!down) {
     p.vz -= 2400 * dt
-    p.x += p.vx * dt
-    p.y += p.vy * dt
     p.z += p.vz * dt
-    p.rot += p.vr * dt
     p.tilt += p.vt * dt
     if (p.z > floor) return
     p.z = floor
-    if (p.vz < -130) {
-      p.vz = -p.vz * 0.28
-      p.vx *= 0.55
-      p.vy *= 0.55
-      p.vr *= 0.5
-      p.vt *= 0.3
-      return
-    }
-    p.vz = 0
-    const slow = Math.exp(-16 * dt)
-    p.vx *= slow
-    p.vy *= slow
-    p.vr *= slow
-    p.vt = 0
-    p.tilt *= Math.exp(-34 * dt)
-    if (Math.hypot(p.vx, p.vy) < 3 && Math.abs(p.vr) < 0.05 && Math.abs(p.tilt) < 0.004) {
-      p.vx = 0
-      p.vy = 0
-      p.vr = 0
-      p.tilt = 0
-      p.rest = true
-    }
+    p.vt *= 0.3
+    p.vz = p.vz < -130 ? -p.vz * 0.28 : 0
+    return
+  }
+  p.vz = 0
+  p.z = floor
+  p.tilt *= Math.exp(-34 * dt)
+  if (Math.hypot(p.vx, p.vy) < 2 && Math.abs(p.vr) < 0.04 && Math.abs(p.tilt) < 0.004 && Math.hypot(p.tx - p.x, p.ty - p.y) < 0.15 && Math.abs(p.tr - p.rot) < 0.004) {
+    p.x = p.tx
+    p.y = p.ty
+    p.rot = p.tr
+    p.vx = 0
+    p.vy = 0
+    p.vr = 0
+    p.tilt = 0
+    p.rest = true
   }
 }
 
 // Where a strip stands before it snaps true: a little out of line.
 export function askew(i: number, seed: number): Strip {
   const h = (k: number) => hash01(i, k + 20, seed)
-  return { x: (h(1) - 0.5) * 3.4, y: (h(2) - 0.5) * 9, z: i % 2 ? 2 : 0.6, rot: (h(3) - 0.5) * 0.06, tilt: 0 }
+  return { x: (h(1) - 0.5) * 1.6, y: (h(2) - 0.5) * 5, z: i % 2 ? 1.6 : 0.5, rot: (h(3) - 0.5) * 0.045, tilt: 0 }
 }
 
 const GATHER = { stand: 0.42, snap: 0.68, true: 0.76 }
