@@ -76,21 +76,24 @@ Words: First name. / Under fire. / Standard onboarding.
 
 ### line.step1.firstName.1
 
-Takes used: 1 of 3.
+Takes used: 2 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | build | 2026-11-25T18:05:39.807Z | 5.387 s | -1.96 dB | -18.9 LUFS | 4 | 25 | no |  |
+| 2 | build | 2026-11-25T18:44:17.337Z | 5.526 s | -3.31 dB | -19.94 LUFS | 5 | 25 | no |  |
 
 Words: Hit. / It keeps typing. / It has bills.
 
 ### line.step1.email.0
 
-Takes used: 1 of 3.
+Takes used: 3 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | build | 2026-11-25T18:05:41.273Z | 9.706 s | -3.98 dB | -21.68 LUFS | 8 | 40 | yes, as line.step1.email.0 | too long for its place: 9.508 s in 7.325 s, over by 2.183 s; tone not judged: 1 whole answers in 8 asks |
+| 2 | build | 2026-11-25T18:45:55.737Z | 7.663 s | -2.12 dB | -18.56 LUFS | 7 | 40 | no |  |
+| 3 | build | 2026-11-25T18:46:21.814Z | 6.316 s | -2.77 dB | -19.09 LUFS | 5 | 40 | no |  |
 
 Words: A valid email. / Rejected. / The system / is working as designed.
 
@@ -116,11 +119,13 @@ Words: A rotary phone. / The applicant / has never seen one.
 
 ### line.step2.crank.0
 
-Takes used: 1 of 3.
+Takes used: 3 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | build | 2026-11-25T18:05:45.642Z | 6.084 s | -4.63 dB | -19.9 LUFS | 5 | 29 | no |  |
+| 2 | build | 2026-11-25T18:44:18.654Z | 5.805 s | -3.54 dB | -22.28 LUFS | 6 | 29 | no |  |
+| 3 | build | 2026-11-25T18:44:54.436Z | 6.641 s | -1.51 dB | -20.32 LUFS | 6 | 29 | no |  |
 
 Words: Volume. / All the way up. / It will regret that.
 
@@ -316,13 +321,14 @@ Prompt: One large glossy plastic push button the size of a palm pressed down and
 
 ### page-turn
 
-Takes used: 1 of 3.
+Takes used: 2 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | build | 2026-11-25T18:13:19.397Z | 1.2 s | -10.76 dB | -24.86 LUFS | 2 | 13 | no |  |
+| 2 | build | 2026-11-25T18:44:26.794Z | 1.2 s | -7.58 dB | -19.88 LUFS | 1 | 13 | no |  |
 
-Prompt: A heavy ceramic slab the size of a tabletop turning over, a low rush of air, then one solid knock as it seats, close microphone, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+Prompt: A heavy stone slab the size of a tabletop flipping over on a pivot, a low whoosh of displaced air, then one solid ceramic knock as it seats, close microphone, no body sounds, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
 
 ### keyboard-rise
 
@@ -496,21 +502,23 @@ Prompt: One very heavy ceramic block landing flat on a ceramic floor, a single d
 
 ### slab-drop.2
 
-Takes used: 1 of 3.
+Takes used: 2 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | build | 2026-11-25T18:14:00.392Z | 0.8 s | -24.58 dB | -44.11 LUFS | 1 | 9 | no |  |
+| 2 | build | 2026-11-25T18:44:28.474Z | 0.8 s | -25.83 dB | -38.63 LUFS | 1 | 9 | no |  |
 
 Prompt: One very heavy ceramic block landing flat on a ceramic floor, a single deep hard thud, close microphone, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
 
 ### slab-drop.3
 
-Takes used: 1 of 3.
+Takes used: 2 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | build | 2026-11-25T18:14:47.363Z | 0.8 s | -26.2 dB | -44.49 LUFS | 1 | 9 | no |  |
+| 2 | build | 2026-11-25T18:47:18.098Z | 0.8 s | -3.63 dB | -24.59 LUFS | 1 | 9 | no |  |
 
 Prompt: One very heavy ceramic block landing flat on a ceramic floor, a single deep hard thud, close microphone, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
 
@@ -546,13 +554,14 @@ Prompt: A sheet of paper pulled tight between two grips, creaking and straining,
 
 ### strips-zip
 
-Takes used: 1 of 3.
+Takes used: 2 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | build | 2026-11-25T18:14:57.656Z | 1 s | -14.81 dB | -23.74 LUFS | 1 | 11 | no |  |
+| 2 | build | 2026-11-25T18:44:31.223Z | 1 s | -8.5 dB | -28.91 LUFS | 2 | 11 | no |  |
 
-Prompt: Many thin paper strips zipping back together quickly, a fast rising papery zip, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+Prompt: Many thin paper strips snapping back together side by side in one quick run, a fast rising papery flutter and rustle, paper only, no metal, no zipper, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
 
 ### row-open
 
@@ -840,7 +849,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:16:40.450Z | 1.2 s | -9.43 dB | -31.52 LUFS | 2 | 13 | no |  |
+| 1 | build | 2026-11-25T18:16:40.450Z | 1.2 s | -9.43 dB | -31.52 LUFS | 2 | 13 | yes, as drain | the listener names its falling bells as music and melody (2 of 3) and says it fits its row (3 of 3); the row itself asks for a falling tone of bells, so the melody answer is the row, not a fault |
 
 Prompt: A pinball rolling down the drain and dropping into the trough with a clunk, with a falling run of mechanical bells, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
 
@@ -946,13 +955,14 @@ Prompt: A small crisp tick, a tiny plastic switch clicking once, close and dry, 
 
 ### button-crack
 
-Takes used: 1 of 3.
+Takes used: 2 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | build | 2026-11-25T18:17:07.701Z | 1 s | -13.45 dB | -36.02 LUFS | 2 | 11 | no |  |
+| 2 | build | 2026-11-25T18:44:34.418Z | 1 s | -5.37 dB | -25.8 LUFS | 1 | 11 | no |  |
 
-Prompt: Hard plastic and ceramic cracking and splintering as a large button tears loose from its housing, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+Prompt: A thick ceramic plate and hard plastic cracking and breaking apart as a large button is torn out of its housing, sharp cracks then small falling fragments, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
 
 ### unfold
 
@@ -970,7 +980,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:17:14.932Z | 8 s | -11.62 dB | -25.39 LUFS | 1 | 88 | no |  |
+| 1 | build | 2026-11-25T18:17:14.932Z | 8 s | -11.62 dB | -25.39 LUFS | 1 | 88 | yes, as boss-loop |  |
 
 Prompt: A short loop of tense, slightly silly fight music, a fast plucked string and staccato bassoon figure over a snare drum march, comic cartoon chase tension, steady tempo, close and dry, recorded in a quiet room, real materials, no voice
 
@@ -1046,11 +1056,12 @@ Prompt: One small dart striking a metal plate, a tiny bright tick with a spark, 
 
 ### dart-hit.4
 
-Takes used: 1 of 3.
+Takes used: 2 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | build | 2026-11-25T18:18:02.918Z | 0.48 s | -45.63 dB | -62.52 LUFS | 1 | 6 | no |  |
+| 2 | build | 2026-11-25T18:44:37.056Z | 0.48 s | -38.58 dB | -52.27 LUFS | 1 | 6 | no |  |
 
 Prompt: One small dart striking a metal plate, a tiny bright tick with a spark, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
 
@@ -1086,21 +1097,23 @@ Prompt: One heavy stone block launched hard by a machine, a deep pneumatic thump
 
 ### popup.1
 
-Takes used: 1 of 3.
+Takes used: 2 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | build | 2026-11-25T18:18:13.024Z | 0.48 s | -36.73 dB | -54.29 LUFS | 1 | 6 | no |  |
+| 2 | build | 2026-11-25T18:44:39.242Z | 0.48 s | -10.41 dB | -34.29 LUFS | 1 | 6 | no |  |
 
 Prompt: A flat rigid plastic panel snapping upright on a spring hinge, a single quick flap and clack, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
 
 ### popup.2
 
-Takes used: 1 of 3.
+Takes used: 2 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | build | 2026-11-25T18:18:14.885Z | 0.48 s | -38.01 dB | -50.07 LUFS | 1 | 6 | no |  |
+| 2 | build | 2026-11-25T18:44:41.144Z | 0.48 s | -10.09 dB | -33.19 LUFS | 1 | 6 | no |  |
 
 Prompt: A flat rigid plastic panel snapping upright on a spring hinge, a single quick flap and clack, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
 
@@ -1190,27 +1203,30 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:30:10.441Z | 8.22 s | -3.48 dB | -19.67 LUFS | 6 | 37 | no |  |
+| 1 | build | 2026-11-25T18:30:10.441Z | 8.22 s | -3.48 dB | -19.67 LUFS | 6 | 37 | yes, as line.live.idle.0 | the listener wrote "The applicant has frozen. A common defense. It does not work.": the same words in another spelling; tone not judged: 0 whole answers in 6 asks |
 
 Words: The applicant has frozen. / A common defence. / It does not work.
 
 ### line.live.idle.1
 
-Takes used: 1 of 3.
+Takes used: 3 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | build | 2026-11-25T18:30:11.613Z | 5.016 s | -4.33 dB | -19.75 LUFS | 2 | 21 | no |  |
+| 2 | build | 2026-11-25T18:44:20.193Z | 4.923 s | -5.13 dB | -19.81 LUFS | 1 | 21 | no |  |
+| 3 | build | 2026-11-25T18:44:55.752Z | 5.294 s | -4.27 dB | -21.51 LUFS | 2 | 21 | no |  |
 
 Words: Take your time. / The job is not real.
 
 ### line.live.hit.0
 
-Takes used: 1 of 3.
+Takes used: 2 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | build | 2026-11-25T18:30:12.693Z | 0.789 s | -1.42 dB | -14.77 LUFS | 2 | 2 | no |  |
+| 2 | build | 2026-11-25T18:44:21.551Z | 0.604 s | -0.36 dB | -12.15 LUFS | 2 | 2 | no |  |
 
 Words: Hit.
 
@@ -1220,7 +1236,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:30:13.711Z | 0.789 s | -1.46 dB | -17.36 LUFS | 1 | 3 | no |  |
+| 1 | build | 2026-11-25T18:30:13.711Z | 0.789 s | -1.46 dB | -17.36 LUFS | 1 | 3 | yes, as line.live.hit.1 | listener: not unimpressed and a little smug (0 yes, 2 no; ["stern and demanding","stern and commanding"]). The Builder's ruling of 18:46Z: the listener's tone answers are not evidence |
 
 Words: Again.
 
@@ -1250,7 +1266,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:30:16.953Z | 2.926 s | -3.8 dB | -21.88 LUFS | 2 | 15 | no |  |
+| 1 | build | 2026-11-25T18:30:16.953Z | 2.926 s | -3.8 dB | -21.88 LUFS | 2 | 15 | yes, as line.live.slowTyping.0 | tone not judged: 1 whole answers in 6 asks |
 
 Words: One letter. / Well done.
 
@@ -1280,27 +1296,29 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:30:20.759Z | 6.362 s | -2.31 dB | -18.58 LUFS | 6 | 31 | no |  |
+| 1 | build | 2026-11-25T18:30:20.759Z | 6.362 s | -2.31 dB | -18.58 LUFS | 6 | 31 | yes, as line.live.pinball.flipper.0 | tone not judged: 1 whole answers in 6 asks |
 
 Words: It found the flippers. / Hope / is a powerful thing.
 
 ### line.live.boss.verify.0
 
-Takes used: 1 of 3.
+Takes used: 2 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | build | 2026-11-25T18:30:21.937Z | 4.18 s | -4.29 dB | -19.86 LUFS | 2 | 17 | no |  |
+| 2 | build | 2026-11-25T18:44:57.007Z | 4.18 s | -4.72 dB | -21.97 LUFS | 3 | 17 | no |  |
 
 Words: It claims to be human. / Bold.
 
 ### line.live.boss.slow.0
 
-Takes used: 1 of 3.
+Takes used: 2 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | build | 2026-11-25T18:30:23.133Z | 3.715 s | -1.77 dB | -18.95 LUFS | 4 | 20 | no |  |
+| 2 | build | 2026-11-25T18:44:22.709Z | 4.319 s | -2.55 dB | -18.55 LUFS | 4 | 20 | no |  |
 
 Words: The button is winning. / The button.
 
@@ -1320,6 +1338,6 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:30:25.468Z | 4.087 s | -3.11 dB | -20.3 LUFS | 3 | 22 | no |  |
+| 1 | build | 2026-11-25T18:30:25.468Z | 4.087 s | -3.11 dB | -20.3 LUFS | 3 | 22 | yes, as line.live.watchFilm.0 | tone not judged: 1 whole answers in 6 asks |
 
 Words: It would rather watch. / Understandable.

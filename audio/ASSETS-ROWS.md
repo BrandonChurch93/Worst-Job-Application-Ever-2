@@ -13,6 +13,7 @@ One row for each kept sound, and after `--pack` one for each sound file the site
 | `audio/kept/bolt-hit.1.wav` | Sound effect `bolt-hit`, variant 1 | Generated with the sound tool, take 1 (build) | `audio/kept/bolt-hit.1.json` |
 | `audio/kept/bolt-hit.2.wav` | Sound effect `bolt-hit`, variant 2 | Generated with the sound tool, take 1 (build) | `audio/kept/bolt-hit.2.json` |
 | `audio/kept/bolt-hit.3.wav` | Sound effect `bolt-hit`, variant 3 | Generated with the sound tool, take 1 (build) | `audio/kept/bolt-hit.3.json` |
+| `audio/kept/boss-loop.wav` | Sound effect `boss-loop` | Generated with the sound tool, take 1 (build) | `audio/kept/boss-loop.json` |
 | `audio/kept/bumper.1.wav` | Sound effect `bumper`, variant 1 | Generated with the sound tool, take 1 (build) | `audio/kept/bumper.1.json` |
 | `audio/kept/bumper.2.wav` | Sound effect `bumper`, variant 2 | Generated with the sound tool, take 1 (build) | `audio/kept/bumper.2.json` |
 | `audio/kept/bumper.3.wav` | Sound effect `bumper`, variant 3 | Generated with the sound tool, take 1 (build) | `audio/kept/bumper.3.json` |
@@ -34,6 +35,7 @@ One row for each kept sound, and after `--pack` one for each sound file the site
 | `audio/kept/dial-return.wav` | Sound effect `dial-return` | Generated with the sound tool, take 1 (build) | `audio/kept/dial-return.json` |
 | `audio/kept/dial-wind.wav` | Sound effect `dial-wind` | Generated with the sound tool, take 1 (build) | `audio/kept/dial-wind.json` |
 | `audio/kept/doors-slam.wav` | Sound effect `doors-slam` | Generated with the sound tool, take 1 (build) | `audio/kept/doors-slam.json` |
+| `audio/kept/drain.wav` | Sound effect `drain` | Generated with the sound tool, take 1 (build) | `audio/kept/drain.json` |
 | `audio/kept/drop-target.1.wav` | Sound effect `drop-target`, variant 1 | Generated with the sound tool, take 1 (build) | `audio/kept/drop-target.1.json` |
 | `audio/kept/drop-target.2.wav` | Sound effect `drop-target`, variant 2 | Generated with the sound tool, take 1 (build) | `audio/kept/drop-target.2.json` |
 | `audio/kept/flasher.wav` | Sound effect `flasher` | Generated with the sound tool, take 1 (build) | `audio/kept/flasher.json` |
@@ -60,6 +62,11 @@ One row for each kept sound, and after `--pack` one for each sound file the site
 | `audio/kept/line.boss.verify.0.wav` | Narrator line: Not a robot, / it claims. / We will see. | Generated with the sound tool, take 1 (build) | `audio/kept/line.boss.verify.0.json` |
 | `audio/kept/line.decision.letter.0.wav` | Narrator line: Rejected. / In under a second. | Generated with the sound tool, take 1 (build) | `audio/kept/line.decision.letter.0.json` |
 | `audio/kept/line.decision.metrics.0.wav` | Narrator line: It will apply again tomorrow. / They always do. | Generated with the sound tool, take 1 (build) | `audio/kept/line.decision.metrics.0.json` |
+| `audio/kept/line.live.hit.1.wav` | Narrator line: Again. | Generated with the sound tool, take 1 (build) | `audio/kept/line.live.hit.1.json` |
+| `audio/kept/line.live.idle.0.wav` | Narrator line: The applicant has frozen. / A common defence. / It does not work. | Generated with the sound tool, take 1 (build) | `audio/kept/line.live.idle.0.json` |
+| `audio/kept/line.live.pinball.flipper.0.wav` | Narrator line: It found the flippers. / Hope / is a powerful thing. | Generated with the sound tool, take 1 (build) | `audio/kept/line.live.pinball.flipper.0.json` |
+| `audio/kept/line.live.slowTyping.0.wav` | Narrator line: One letter. / Well done. | Generated with the sound tool, take 1 (build) | `audio/kept/line.live.slowTyping.0.json` |
+| `audio/kept/line.live.watchFilm.0.wav` | Narrator line: It would rather watch. / Understandable. | Generated with the sound tool, take 1 (build) | `audio/kept/line.live.watchFilm.0.json` |
 | `audio/kept/line.marketing.perks.0.wav` | Narrator line: It spots unlimited PTO. / Poor thing / believes it. | Generated with the sound tool, take 1 (build) | `audio/kept/line.marketing.perks.0.json` |
 | `audio/kept/line.marketing.stroll.0.wav` | Narrator line: Here we find / the applicant. / Rent is due. | Generated with the sound tool, take 1 (build) | `audio/kept/line.marketing.stroll.0.json` |
 | `audio/kept/line.pinball.coffee.0.wav` | Narrator line: It runs on coffee / and fear. | Generated with the sound tool, take 1 (build) | `audio/kept/line.pinball.coffee.0.json` |

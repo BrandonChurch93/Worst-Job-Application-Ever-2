@@ -4085,8 +4085,8 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 6 asks, 2 whole, 4 void",
-        "asks": 6,
+        "by": "the audio evaluation tool: 12 asks, 2 whole, 10 void",
+        "asks": 12,
         "whole": 2,
         "heard": "A single, heavy, muffled thud or dull impact. / A heavy solid block lands flatly on a hard surface.",
         "madeOf": "dense but relatively soft material hitting a solid surface / Wood or stone and ceramic",
@@ -4104,7 +4104,8 @@
         "basis": [
           "The recording is a single low-frequency, muffled thump that entirely lacks the sharp, high-frequency transient sound characteristic of a hard object striking ceramic.",
           "The recording features a single, loud, sharp impact sound consistent with a heavy, flat object striking a rigid, hard surface like ceramic."
-        ]
+        ],
+        "heardRaisedByDb": 23.2
       },
       "kept": false,
       "keptAs": [],
@@ -6365,9 +6366,11 @@
         ],
         "heardRaisedByDb": 6.43
       },
-      "kept": false,
-      "keptAs": [],
-      "why": ""
+      "kept": true,
+      "keptAs": [
+        "drain"
+      ],
+      "why": "the listener names its falling bells as music and melody (2 of 3) and says it fits its row (3 of 3); the row itself asks for a falling tone of bells, so the melody answer is the row, not a fault"
     },
     {
       "key": "tier-fall",
@@ -7253,8 +7256,10 @@
         ],
         "heardRaisedByDb": 8.62
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "boss-loop"
+      ],
       "why": ""
     },
     {
@@ -8722,10 +8727,43 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
+        "asks": 6,
+        "whole": 0,
+        "transcript": "The applicant has frozen. A common defense. It does not work.",
+        "transcripts": [
+          "The applicant has frozen. A common defense. It does not work.",
+          "The applicant has frozen. A common defense. It does not work.",
+          "The applicant has frozen. A common defense. It does not work.",
+          "The applicant has frozen. A common defense. It does not work."
+        ],
+        "transcriptAgreed": "4 of 4",
+        "attitudes": [],
+        "accents": [],
+        "pitches": [],
+        "whisper": null,
+        "whisperVotes": "0 yes, 0 no",
+        "laugh": null,
+        "laughVotes": "0 yes, 0 no",
+        "warmth": null,
+        "warmthVotes": "0 yes, 0 no",
+        "excitement": null,
+        "excitementVotes": "0 yes, 0 no",
+        "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "0 yes, 0 no",
+        "basis": [
+          "The speaker's low pitch, lack of warmth, and clinical phrasing suggest a cold, smug, and unimpressed demeanor.",
+          "The phrasing is highly clinical and matter-of-fact, implying a controlled, low-pitched delivery lacking any warmth or excitement, consistent with a smug and unimpressed demeanor.",
+          "The slow, deliberate pacing, low pitch, and dismissive phrasing indicate a lack of warmth and a highly smug, unimpressed demeanor.",
+          "The speaker's low pitch, steady pacing, and complete lack of warmth or excitement create a highly analytical and smug impression."
+        ]
+      },
+      "kept": true,
+      "keptAs": [
+        "line.live.idle.0"
+      ],
+      "why": "the listener wrote \"The applicant has frozen. A common defense. It does not work.\": the same words in another spelling; tone not judged: 0 whole answers in 6 asks",
       "line": {
         "words": 11,
         "seconds": 8.014,
@@ -8787,7 +8825,29 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
+        "asks": 6,
+        "whole": 0,
+        "transcript": null,
+        "transcripts": [],
+        "transcriptAgreed": "0 of 0",
+        "attitudes": [],
+        "accents": [],
+        "pitches": [],
+        "whisper": null,
+        "whisperVotes": "0 yes, 0 no",
+        "laugh": null,
+        "laughVotes": "0 yes, 0 no",
+        "warmth": null,
+        "warmthVotes": "0 yes, 0 no",
+        "excitement": null,
+        "excitementVotes": "0 yes, 0 no",
+        "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "0 yes, 0 no",
+        "basis": [],
+        "heardRaisedByDb": 1.33
+      },
       "kept": false,
       "keptAs": [],
       "why": "",
@@ -8851,7 +8911,48 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 3 whole, 3 void",
+        "asks": 6,
+        "whole": 3,
+        "transcript": "Hit.",
+        "transcripts": [
+          "Hit.",
+          "Hit.",
+          "Hit."
+        ],
+        "transcriptAgreed": "3 of 3",
+        "attitudes": [
+          "firm and direct",
+          "neutral and direct",
+          "abrupt and commanding"
+        ],
+        "accents": [
+          "American",
+          "American",
+          "American"
+        ],
+        "pitches": [
+          "middle",
+          "middle",
+          "middle"
+        ],
+        "whisper": false,
+        "whisperVotes": "0 yes, 3 no",
+        "laugh": false,
+        "laughVotes": "0 yes, 3 no",
+        "warmth": false,
+        "warmthVotes": "0 yes, 3 no",
+        "excitement": false,
+        "excitementVotes": "0 yes, 3 no",
+        "unimpressedAndSmug": false,
+        "unimpressedAndSmugVotes": "0 yes, 3 no",
+        "basis": [
+          "The assessment is based on the short, sharp, and commanding delivery of a single word at a normal speaking volume.",
+          "The speaker delivers the single word in a clear, straightforward manner with a moderate pitch and no discernible emotion.",
+          "The analysis rests on the speaker's flat, forceful, and extremely brief delivery of a single word."
+        ]
+      },
       "kept": false,
       "keptAs": [],
       "why": "",
@@ -8908,10 +9009,48 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 2 whole, 4 void",
+        "asks": 6,
+        "whole": 2,
+        "transcript": "Again.",
+        "transcripts": [
+          "Again.",
+          "Again."
+        ],
+        "transcriptAgreed": "2 of 2",
+        "attitudes": [
+          "stern and demanding",
+          "stern and commanding"
+        ],
+        "accents": [
+          "American",
+          "American"
+        ],
+        "pitches": [
+          "low",
+          "low"
+        ],
+        "whisper": false,
+        "whisperVotes": "0 yes, 2 no",
+        "laugh": false,
+        "laughVotes": "0 yes, 2 no",
+        "warmth": false,
+        "warmthVotes": "0 yes, 2 no",
+        "excitement": false,
+        "excitementVotes": "0 yes, 2 no",
+        "unimpressedAndSmug": false,
+        "unimpressedAndSmugVotes": "0 yes, 2 no",
+        "basis": [
+          "The single word is spoken with a deep, flat, and authoritative downward inflection, lacking any warmth or excitement.",
+          "The speaker delivers a single word with a low, firm pitch and a downward inflection, conveying a strict and authoritative tone."
+        ]
+      },
+      "kept": true,
+      "keptAs": [
+        "line.live.hit.1"
+      ],
+      "why": "listener: not unimpressed and a little smug (0 yes, 2 no; [\"stern and demanding\",\"stern and commanding\"]). The Builder's ruling of 18:46Z: the listener's tone answers are not evidence",
       "line": {
         "words": 1,
         "seconds": 0.72,
@@ -8975,7 +9114,29 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
+        "asks": 6,
+        "whole": 0,
+        "transcript": null,
+        "transcripts": [],
+        "transcriptAgreed": "0 of 0",
+        "attitudes": [],
+        "accents": [],
+        "pitches": [],
+        "whisper": null,
+        "whisperVotes": "0 yes, 0 no",
+        "laugh": null,
+        "laughVotes": "0 yes, 0 no",
+        "warmth": null,
+        "warmthVotes": "0 yes, 0 no",
+        "excitement": null,
+        "excitementVotes": "0 yes, 0 no",
+        "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "0 yes, 0 no",
+        "basis": [],
+        "heardRaisedByDb": 2.15
+      },
       "kept": false,
       "keptAs": [],
       "why": "",
@@ -9044,7 +9205,29 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
+        "asks": 6,
+        "whole": 0,
+        "transcript": null,
+        "transcripts": [],
+        "transcriptAgreed": "0 of 0",
+        "attitudes": [],
+        "accents": [],
+        "pitches": [],
+        "whisper": null,
+        "whisperVotes": "0 yes, 0 no",
+        "laugh": null,
+        "laughVotes": "0 yes, 0 no",
+        "warmth": null,
+        "warmthVotes": "0 yes, 0 no",
+        "excitement": null,
+        "excitementVotes": "0 yes, 0 no",
+        "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "0 yes, 0 no",
+        "basis": [],
+        "heardRaisedByDb": 2.68
+      },
       "kept": false,
       "keptAs": [],
       "why": "",
@@ -9108,10 +9291,46 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
+        "asks": 6,
+        "whole": 1,
+        "transcript": "One letter. Well done.",
+        "transcripts": [
+          "One letter. Well done.",
+          "One letter. Well done."
+        ],
+        "transcriptAgreed": "2 of 2",
+        "attitudes": [
+          "sarcastic and dismissive"
+        ],
+        "accents": [
+          "British"
+        ],
+        "pitches": [
+          "low"
+        ],
+        "whisper": null,
+        "whisperVotes": "0 yes, 1 no",
+        "laugh": null,
+        "laughVotes": "0 yes, 1 no",
+        "warmth": null,
+        "warmthVotes": "0 yes, 1 no",
+        "excitement": null,
+        "excitementVotes": "0 yes, 1 no",
+        "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "1 yes, 0 no",
+        "basis": [
+          "The short, clipped phrasing of the transcribed text strongly implies a dry, sarcastic, and unimpressed delivery.",
+          "The flat, slow delivery of the words lacks genuine enthusiasm, sounding highly sarcastic and slightly arrogant."
+        ],
+        "heardRaisedByDb": 0.8
+      },
+      "kept": true,
+      "keptAs": [
+        "line.live.slowTyping.0"
+      ],
+      "why": "tone not judged: 1 whole answers in 6 asks",
       "line": {
         "words": 4,
         "seconds": 2.766,
@@ -9182,7 +9401,29 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
+        "asks": 6,
+        "whole": 0,
+        "transcript": null,
+        "transcripts": [],
+        "transcriptAgreed": "0 of 0",
+        "attitudes": [],
+        "accents": [],
+        "pitches": [],
+        "whisper": null,
+        "whisperVotes": "0 yes, 0 no",
+        "laugh": null,
+        "laughVotes": "0 yes, 0 no",
+        "warmth": null,
+        "warmthVotes": "0 yes, 0 no",
+        "excitement": null,
+        "excitementVotes": "0 yes, 0 no",
+        "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "0 yes, 0 no",
+        "basis": [],
+        "heardRaisedByDb": 1.14
+      },
       "kept": false,
       "keptAs": [],
       "why": "",
@@ -9256,7 +9497,28 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
+        "asks": 6,
+        "whole": 0,
+        "transcript": null,
+        "transcripts": [],
+        "transcriptAgreed": "0 of 0",
+        "attitudes": [],
+        "accents": [],
+        "pitches": [],
+        "whisper": null,
+        "whisperVotes": "0 yes, 0 no",
+        "laugh": null,
+        "laughVotes": "0 yes, 0 no",
+        "warmth": null,
+        "warmthVotes": "0 yes, 0 no",
+        "excitement": null,
+        "excitementVotes": "0 yes, 0 no",
+        "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "0 yes, 0 no",
+        "basis": []
+      },
       "kept": false,
       "keptAs": [],
       "why": "",
@@ -9340,10 +9602,45 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
+        "asks": 6,
+        "whole": 1,
+        "transcript": "It found the flippers. Hope is a powerful thing.",
+        "transcripts": [
+          "It found the flippers. Hope is a powerful thing.",
+          "It found the flippers. Hope is a powerful thing."
+        ],
+        "transcriptAgreed": "2 of 2",
+        "attitudes": [
+          "solemn and dramatic"
+        ],
+        "accents": [
+          "American"
+        ],
+        "pitches": [
+          "low"
+        ],
+        "whisper": null,
+        "whisperVotes": "0 yes, 1 no",
+        "laugh": null,
+        "laughVotes": "0 yes, 1 no",
+        "warmth": null,
+        "warmthVotes": "0 yes, 1 no",
+        "excitement": null,
+        "excitementVotes": "0 yes, 1 no",
+        "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "0 yes, 1 no",
+        "basis": [
+          "The speaker delivers the lines with a calm, resonant depth and a steady pace that conveys a sense of sincere reflection.",
+          "The speaker has a deep, resonant voice and delivers the lines with a slow, solemn, and cinematic tone."
+        ]
+      },
+      "kept": true,
+      "keptAs": [
+        "line.live.pinball.flipper.0"
+      ],
+      "why": "tone not judged: 1 whole answers in 6 asks",
       "line": {
         "words": 9,
         "seconds": 6.186,
@@ -9405,7 +9702,29 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
+        "asks": 6,
+        "whole": 0,
+        "transcript": null,
+        "transcripts": [],
+        "transcriptAgreed": "0 of 0",
+        "attitudes": [],
+        "accents": [],
+        "pitches": [],
+        "whisper": null,
+        "whisperVotes": "0 yes, 0 no",
+        "laugh": null,
+        "laughVotes": "0 yes, 0 no",
+        "warmth": null,
+        "warmthVotes": "0 yes, 0 no",
+        "excitement": null,
+        "excitementVotes": "0 yes, 0 no",
+        "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "0 yes, 0 no",
+        "basis": [],
+        "heardRaisedByDb": 1.29
+      },
       "kept": false,
       "keptAs": [],
       "why": "",
@@ -9477,7 +9796,48 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 3 whole, 3 void",
+        "asks": 6,
+        "whole": 3,
+        "transcript": "The button is winning. The button.",
+        "transcripts": [
+          "The button is winning. The button.",
+          "The button is winning. The button.",
+          "The button is winning. The button!"
+        ],
+        "transcriptAgreed": "3 of 3",
+        "attitudes": [
+          "detached and unimpressed",
+          "smug and detached",
+          "enthusiastic and slightly dramatic"
+        ],
+        "accents": [
+          "American",
+          "American",
+          "American"
+        ],
+        "pitches": [
+          "low",
+          "low",
+          "middle"
+        ],
+        "whisper": false,
+        "whisperVotes": "0 yes, 3 no",
+        "laugh": false,
+        "laughVotes": "0 yes, 3 no",
+        "warmth": false,
+        "warmthVotes": "0 yes, 3 no",
+        "excitement": false,
+        "excitementVotes": "1 yes, 2 no",
+        "unimpressedAndSmug": true,
+        "unimpressedAndSmugVotes": "2 yes, 1 no",
+        "basis": [
+          "The speaker delivers the words with a flat, low-pitched tone that completely lacks warmth or excitement, giving off a smug and detached vibe.",
+          "The flat intonation and low pitch of the voice give it a detached, unamused quality that lacks warmth or excitement.",
+          "The speaker emphasizes the words with a clear, mid-pitched tone and energetic pacing, showing excitement without any whispering or laughter."
+        ]
+      },
       "kept": false,
       "keptAs": [],
       "why": "",
@@ -9551,7 +9911,28 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
+        "asks": 6,
+        "whole": 0,
+        "transcript": null,
+        "transcripts": [],
+        "transcriptAgreed": "0 of 0",
+        "attitudes": [],
+        "accents": [],
+        "pitches": [],
+        "whisper": null,
+        "whisperVotes": "0 yes, 0 no",
+        "laugh": null,
+        "laughVotes": "0 yes, 0 no",
+        "warmth": null,
+        "warmthVotes": "0 yes, 0 no",
+        "excitement": null,
+        "excitementVotes": "0 yes, 0 no",
+        "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "0 yes, 0 no",
+        "basis": []
+      },
       "kept": false,
       "keptAs": [],
       "why": "",
@@ -9621,10 +10002,43 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
+        "asks": 6,
+        "whole": 1,
+        "transcript": "It would rather watch. Understandable.",
+        "transcripts": [
+          "It would rather watch. Understandable."
+        ],
+        "transcriptAgreed": "1 of 1",
+        "attitudes": [
+          "dry and dismissive"
+        ],
+        "accents": [
+          "American"
+        ],
+        "pitches": [
+          "low"
+        ],
+        "whisper": null,
+        "whisperVotes": "0 yes, 1 no",
+        "laugh": null,
+        "laughVotes": "0 yes, 1 no",
+        "warmth": null,
+        "warmthVotes": "0 yes, 1 no",
+        "excitement": null,
+        "excitementVotes": "0 yes, 1 no",
+        "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "1 yes, 0 no",
+        "basis": [
+          "The deliberate pacing, flat intonation, and lack of emotion convey a dry, detached, and slightly smug demeanor."
+        ]
+      },
+      "kept": true,
+      "keptAs": [
+        "line.live.watchFilm.0"
+      ],
+      "why": "tone not judged: 1 whole answers in 6 asks",
       "line": {
         "words": 5,
         "seconds": 4.018,
@@ -9640,6 +10054,1116 @@
         "room": null,
         "fits": true
       }
+    },
+    {
+      "key": "line.step1.firstName.1",
+      "kind": "line",
+      "take": 2,
+      "round": "build",
+      "file": "take-2.mp3",
+      "sha256": "87816bd7266471b0561be3806b8313c89f145d254198ff0012f682f0b94cc60e",
+      "filed": "2026-11-25T18:44:17.337Z",
+      "text": "Hit. / It keeps typing. / It has bills.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1,
+        "sent": "Hit. <break time=\"1.0s\" /> It keeps typing. <break time=\"1.0s\" /> It has bills.",
+        "call": 140
+      },
+      "askedSeconds": null,
+      "cost": "25",
+      "measured": {
+        "seconds": 5.526,
+        "start": 0.028,
+        "end": 5.432,
+        "peakDb": -3.31,
+        "rmsDb": -22.98,
+        "lufs": -19.94,
+        "truePeakDb": -2.94,
+        "low": 0.438,
+        "mid": 0.255,
+        "high": 0.308,
+        "tailDb": -20.1,
+        "hits": 5,
+        "hitsAt": [
+          {
+            "start": 0.042,
+            "end": 0.296,
+            "peakDb": -5
+          },
+          {
+            "start": 0.404,
+            "end": 0.52,
+            "peakDb": -6.34
+          },
+          {
+            "start": 1.706,
+            "end": 2.53,
+            "peakDb": -3.31
+          },
+          {
+            "start": 2.618,
+            "end": 2.964,
+            "peakDb": -13.18
+          },
+          {
+            "start": 4.108,
+            "end": 5.39,
+            "peakDb": -4.13
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 7,
+        "seconds": 5.404,
+        "wordsPerSecond": 1.295,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 2,
+        "pausesFound": 2,
+        "pauses": [
+          1.172,
+          1.126
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": 7.9,
+        "fits": true,
+        "beatSeconds": 8
+      }
+    },
+    {
+      "key": "line.step2.crank.0",
+      "kind": "line",
+      "take": 2,
+      "round": "build",
+      "file": "take-2.mp3",
+      "sha256": "987802c3967496c5f415655e5984e57ed7b9d5f26a652b7ce6afe4b182161b27",
+      "filed": "2026-11-25T18:44:18.654Z",
+      "text": "Volume. / All the way up. / It will regret that.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1,
+        "sent": "Volume. <break time=\"1.0s\" /> All the way up. <break time=\"1.0s\" /> It will regret that.",
+        "call": 141
+      },
+      "askedSeconds": null,
+      "cost": "29",
+      "measured": {
+        "seconds": 5.805,
+        "start": 0.028,
+        "end": 5.576,
+        "peakDb": -3.54,
+        "rmsDb": -23.14,
+        "lufs": -22.28,
+        "truePeakDb": -3.54,
+        "low": 0.643,
+        "mid": 0.331,
+        "high": 0.026,
+        "tailDb": -24.21,
+        "hits": 6,
+        "hitsAt": [
+          {
+            "start": 0.036,
+            "end": 0.736,
+            "peakDb": -5.89
+          },
+          {
+            "start": 1.92,
+            "end": 2.722,
+            "peakDb": -5.03
+          },
+          {
+            "start": 2.806,
+            "end": 2.86,
+            "peakDb": -24.09
+          },
+          {
+            "start": 4.158,
+            "end": 4.962,
+            "peakDb": -3.54
+          },
+          {
+            "start": 5.136,
+            "end": 5.36,
+            "peakDb": -13.55
+          },
+          {
+            "start": 5.422,
+            "end": 5.546,
+            "peakDb": -9.43
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 9,
+        "seconds": 5.548,
+        "wordsPerSecond": 1.622,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 2,
+        "pausesFound": 2,
+        "pauses": [
+          1.172,
+          1.262
+        ],
+        "paceHolds": false,
+        "pausesHold": true,
+        "room": 6.9,
+        "fits": true,
+        "beatSeconds": 6
+      }
+    },
+    {
+      "key": "line.live.idle.1",
+      "kind": "line",
+      "take": 2,
+      "round": "build",
+      "file": "take-2.mp3",
+      "sha256": "156f74fffb4a09d1a3d731264ad52080f9ecbf553384469e8106f1357c98be75",
+      "filed": "2026-11-25T18:44:20.193Z",
+      "text": "Take your time. / The job is not real.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1.9,
+        "sent": "Take your time. <break time=\"1.9s\" /> The job is not real.",
+        "call": 142
+      },
+      "askedSeconds": null,
+      "cost": "21",
+      "measured": {
+        "seconds": 4.923,
+        "start": 0.036,
+        "end": 4.86,
+        "peakDb": -5.13,
+        "rmsDb": -19.09,
+        "lufs": -19.81,
+        "truePeakDb": -4.97,
+        "low": 0.645,
+        "mid": 0.321,
+        "high": 0.034,
+        "tailDb": -19.38,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.04,
+            "end": 4.794,
+            "peakDb": -5.13
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 8,
+        "seconds": 4.824,
+        "wordsPerSecond": 1.658,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 1,
+        "pausesFound": 0,
+        "pauses": [],
+        "paceHolds": false,
+        "pausesHold": false,
+        "room": null,
+        "fits": true
+      }
+    },
+    {
+      "key": "line.live.hit.0",
+      "kind": "line",
+      "take": 2,
+      "round": "build",
+      "file": "take-2.mp3",
+      "sha256": "d73dd2021c34cb90d503015f190622d06ee0282f549d65172f966bbc881b2c8c",
+      "filed": "2026-11-25T18:44:21.551Z",
+      "text": "Hit.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 0,
+        "sent": "Hit.",
+        "call": 143
+      },
+      "askedSeconds": null,
+      "cost": "2",
+      "measured": {
+        "seconds": 0.604,
+        "start": 0.026,
+        "end": 0.568,
+        "peakDb": -0.36,
+        "rmsDb": -13.54,
+        "lufs": -12.15,
+        "truePeakDb": -0.36,
+        "low": 0.315,
+        "mid": 0.377,
+        "high": 0.308,
+        "tailDb": -26.72,
+        "hits": 2,
+        "hitsAt": [
+          {
+            "start": 0.036,
+            "end": 0.302,
+            "peakDb": -0.36
+          },
+          {
+            "start": 0.396,
+            "end": 0.546,
+            "peakDb": -1.82
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 1,
+        "seconds": 0.542,
+        "wordsPerSecond": 1.845,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 0,
+        "pausesFound": 0,
+        "pauses": [],
+        "paceHolds": false,
+        "pausesHold": true,
+        "room": null,
+        "fits": true
+      }
+    },
+    {
+      "key": "line.live.boss.slow.0",
+      "kind": "line",
+      "take": 2,
+      "round": "build",
+      "file": "take-2.mp3",
+      "sha256": "278c5b72cb175645ac0b8a695fdd86dfc90bf167fdf9821b8145854e87601eb0",
+      "filed": "2026-11-25T18:44:22.709Z",
+      "text": "The button is winning. / The button.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1.9,
+        "sent": "The button is winning. <break time=\"1.9s\" /> The button.",
+        "call": 144
+      },
+      "askedSeconds": null,
+      "cost": "20",
+      "measured": {
+        "seconds": 4.319,
+        "start": 0.034,
+        "end": 4.226,
+        "peakDb": -2.55,
+        "rmsDb": -21.63,
+        "lufs": -18.55,
+        "truePeakDb": -2.53,
+        "low": 0.474,
+        "mid": 0.475,
+        "high": 0.05,
+        "tailDb": -27.91,
+        "hits": 4,
+        "hitsAt": [
+          {
+            "start": 0.038,
+            "end": 0.37,
+            "peakDb": -2.55
+          },
+          {
+            "start": 0.456,
+            "end": 1.352,
+            "peakDb": -5.45
+          },
+          {
+            "start": 3.438,
+            "end": 3.804,
+            "peakDb": -7.71
+          },
+          {
+            "start": 3.91,
+            "end": 4.184,
+            "peakDb": -14.76
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 6,
+        "seconds": 4.192,
+        "wordsPerSecond": 1.431,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 1,
+        "pausesFound": 1,
+        "pauses": [
+          2.066
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": null,
+        "fits": true
+      }
+    },
+    {
+      "key": "page-turn",
+      "kind": "cue",
+      "cue": "page-turn",
+      "take": 2,
+      "round": "build",
+      "file": "take-2.mp3",
+      "sha256": "0acc68b94c59bf6e04fc436985291e36e8b040e948a8cd8796251a7ede60bf36",
+      "filed": "2026-11-25T18:44:26.794Z",
+      "prompt": "A heavy stone slab the size of a tabletop flipping over on a pivot, a low whoosh of displaced air, then one solid ceramic knock as it seats, close microphone, no body sounds, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 1.2,
+        "loop": false,
+        "influence": null,
+        "call": 145
+      },
+      "askedSeconds": 1.2,
+      "cost": "13",
+      "measured": {
+        "seconds": 1.2,
+        "start": 0,
+        "end": 1.2,
+        "peakDb": -7.58,
+        "rmsDb": -24.87,
+        "lufs": -19.88,
+        "truePeakDb": -5.03,
+        "low": 0.944,
+        "mid": 0.056,
+        "high": 0,
+        "tailDb": -71.51,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.02,
+            "end": 0.466,
+            "peakDb": -7.58
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "slab-drop.2",
+      "kind": "cue",
+      "cue": "slab-drop",
+      "take": 2,
+      "round": "build",
+      "file": "take-2.mp3",
+      "sha256": "73e7abf553ad6a81dbd1650bde8257e234d589b1657fe7dce8b72fa8ad2d614d",
+      "filed": "2026-11-25T18:44:28.474Z",
+      "prompt": "One very heavy ceramic block landing flat on a ceramic floor, a single deep hard thud, close microphone, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.8,
+        "loop": false,
+        "influence": null,
+        "call": 146
+      },
+      "askedSeconds": 0.8,
+      "cost": "9",
+      "measured": {
+        "seconds": 0.8,
+        "start": 0,
+        "end": 0.8,
+        "peakDb": -25.83,
+        "rmsDb": -46.38,
+        "lufs": -38.63,
+        "truePeakDb": -25.3,
+        "low": 0.209,
+        "mid": 0.697,
+        "high": 0.094,
+        "tailDb": -57.44,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.22,
+            "peakDb": -25.83
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "strips-zip",
+      "kind": "cue",
+      "cue": "strips-zip",
+      "take": 2,
+      "round": "build",
+      "file": "take-2.mp3",
+      "sha256": "9649b2c9735f9ed37f35f3c18f2c671cd6edd8f4ce803b7a6ddc7b9bd0d9bd4c",
+      "filed": "2026-11-25T18:44:31.223Z",
+      "prompt": "Many thin paper strips snapping back together side by side in one quick run, a fast rising papery flutter and rustle, paper only, no metal, no zipper, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 1,
+        "loop": false,
+        "influence": null,
+        "call": 147
+      },
+      "askedSeconds": 1,
+      "cost": "11",
+      "measured": {
+        "seconds": 1,
+        "start": 0,
+        "end": 0.82,
+        "peakDb": -8.5,
+        "rmsDb": -37.88,
+        "lufs": -28.91,
+        "truePeakDb": -8.19,
+        "low": 0.002,
+        "mid": 0.244,
+        "high": 0.753,
+        "tailDb": -54.59,
+        "hits": 2,
+        "hitsAt": [
+          {
+            "start": 0.004,
+            "end": 0.404,
+            "peakDb": -8.5
+          },
+          {
+            "start": 0.498,
+            "end": 0.624,
+            "peakDb": -28.59
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "button-crack",
+      "kind": "cue",
+      "cue": "button-crack",
+      "take": 2,
+      "round": "build",
+      "file": "take-2.mp3",
+      "sha256": "24d7e961d02c9e990648cb5e40eda095ed9b4df0ff2c389e8ae5823ca98ac6c2",
+      "filed": "2026-11-25T18:44:34.418Z",
+      "prompt": "A thick ceramic plate and hard plastic cracking and breaking apart as a large button is torn out of its housing, sharp cracks then small falling fragments, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 1,
+        "loop": false,
+        "influence": null,
+        "call": 148
+      },
+      "askedSeconds": 1,
+      "cost": "11",
+      "measured": {
+        "seconds": 1,
+        "start": 0,
+        "end": 0.25,
+        "peakDb": -5.37,
+        "rmsDb": -28.44,
+        "lufs": -25.8,
+        "truePeakDb": -5.32,
+        "low": 0.008,
+        "mid": 0.898,
+        "high": 0.094,
+        "tailDb": -56.32,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.112,
+            "peakDb": -5.37
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "dart-hit.4",
+      "kind": "cue",
+      "cue": "dart-hit",
+      "take": 2,
+      "round": "build",
+      "file": "take-2.mp3",
+      "sha256": "c8f603e3b8487340ccf050be1cac7e775963110da311e4586374b30b4432dd38",
+      "filed": "2026-11-25T18:44:37.056Z",
+      "prompt": "One small dart striking a metal plate, a tiny bright tick with a spark, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 149
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -38.58,
+        "rmsDb": -60.11,
+        "lufs": -52.27,
+        "truePeakDb": -36.2,
+        "low": 0.028,
+        "mid": 0.388,
+        "high": 0.583,
+        "tailDb": -45.6,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.27,
+            "peakDb": -38.58
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "popup.1",
+      "kind": "cue",
+      "cue": "popup",
+      "take": 2,
+      "round": "build",
+      "file": "take-2.mp3",
+      "sha256": "950d9436487a18c5c91d0d7143dfaefb106f336e09a25b96ad05750c63334ea8",
+      "filed": "2026-11-25T18:44:39.242Z",
+      "prompt": "A flat rigid plastic panel snapping upright on a spring hinge, a single quick flap and clack, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 150
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.478,
+        "peakDb": -10.41,
+        "rmsDb": -41.59,
+        "lufs": -34.29,
+        "truePeakDb": -9.72,
+        "low": 0.017,
+        "mid": 0.098,
+        "high": 0.885,
+        "tailDb": -69.01,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.034,
+            "peakDb": -10.41
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "popup.2",
+      "kind": "cue",
+      "cue": "popup",
+      "take": 2,
+      "round": "build",
+      "file": "take-2.mp3",
+      "sha256": "c3b25dc93144ae9ccda5076a24d25bb8e5fafc2be0a4a7af4b1fa30a4b90e431",
+      "filed": "2026-11-25T18:44:41.144Z",
+      "prompt": "A flat rigid plastic panel snapping upright on a spring hinge, a single quick flap and clack, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 151
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.136,
+        "peakDb": -10.09,
+        "rmsDb": -34.56,
+        "lufs": -33.19,
+        "truePeakDb": -9.81,
+        "low": 0.065,
+        "mid": 0.186,
+        "high": 0.75,
+        "tailDb": -52.95,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.008,
+            "end": 0.058,
+            "peakDb": -10.09
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "line.step2.crank.0",
+      "kind": "line",
+      "take": 3,
+      "round": "build",
+      "file": "take-3.mp3",
+      "sha256": "23707810f8b8d9c084582b3d9ef986020efcd11945e50e8441a89867d40aa468",
+      "filed": "2026-11-25T18:44:54.436Z",
+      "text": "Volume. / All the way up. / It will regret that.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1.3,
+        "sent": "Volume. <break time=\"1.3s\" /> All the way up. <break time=\"1.3s\" /> It will regret that.",
+        "call": 152
+      },
+      "askedSeconds": null,
+      "cost": "29",
+      "measured": {
+        "seconds": 6.641,
+        "start": 0.022,
+        "end": 6.476,
+        "peakDb": -1.51,
+        "rmsDb": -21.34,
+        "lufs": -20.32,
+        "truePeakDb": -1.5,
+        "low": 0.766,
+        "mid": 0.191,
+        "high": 0.043,
+        "tailDb": -19.4,
+        "hits": 6,
+        "hitsAt": [
+          {
+            "start": 0.026,
+            "end": 0.796,
+            "peakDb": -4.11
+          },
+          {
+            "start": 2.292,
+            "end": 3.206,
+            "peakDb": -2.94
+          },
+          {
+            "start": 3.316,
+            "end": 3.336,
+            "peakDb": -11.3
+          },
+          {
+            "start": 4.912,
+            "end": 5.84,
+            "peakDb": -1.51
+          },
+          {
+            "start": 5.916,
+            "end": 6.254,
+            "peakDb": -4.5
+          },
+          {
+            "start": 6.332,
+            "end": 6.442,
+            "peakDb": -5.48
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 9,
+        "seconds": 6.454,
+        "wordsPerSecond": 1.394,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 2,
+        "pausesFound": 2,
+        "pauses": [
+          1.478,
+          1.562
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": 6.9,
+        "fits": true,
+        "beatSeconds": 6
+      }
+    },
+    {
+      "key": "line.live.idle.1",
+      "kind": "line",
+      "take": 3,
+      "round": "build",
+      "file": "take-3.mp3",
+      "sha256": "899cf28370ccc3508d1c193cfcc347dae602ea7c352ed77242bb99bfa41de4dc",
+      "filed": "2026-11-25T18:44:55.752Z",
+      "text": "Take your time. / The job is not real.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 2.4,
+        "sent": "Take your time. <break time=\"2.4s\" /> The job is not real.",
+        "call": 153
+      },
+      "askedSeconds": null,
+      "cost": "21",
+      "measured": {
+        "seconds": 5.294,
+        "start": 0.014,
+        "end": 5.176,
+        "peakDb": -4.27,
+        "rmsDb": -23.9,
+        "lufs": -21.51,
+        "truePeakDb": -4.17,
+        "low": 0.584,
+        "mid": 0.261,
+        "high": 0.154,
+        "tailDb": -23.58,
+        "hits": 2,
+        "hitsAt": [
+          {
+            "start": 0.026,
+            "end": 0.966,
+            "peakDb": -4.27
+          },
+          {
+            "start": 3.582,
+            "end": 5.116,
+            "peakDb": -8.35
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 8,
+        "seconds": 5.162,
+        "wordsPerSecond": 1.55,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 1,
+        "pausesFound": 1,
+        "pauses": [
+          2.602
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": null,
+        "fits": true
+      }
+    },
+    {
+      "key": "line.live.boss.verify.0",
+      "kind": "line",
+      "take": 2,
+      "round": "build",
+      "file": "take-2.mp3",
+      "sha256": "207f6488169b55b2951b873d1e0859eab17d7b95897345cfae7b453ff2444e13",
+      "filed": "2026-11-25T18:44:57.007Z",
+      "text": "It claims to be human. / Bold.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1.4,
+        "sent": "It claims to be human. <break time=\"1.4s\" /> Bold.",
+        "call": 154
+      },
+      "askedSeconds": null,
+      "cost": "17",
+      "measured": {
+        "seconds": 4.18,
+        "start": 0.028,
+        "end": 4.104,
+        "peakDb": -4.72,
+        "rmsDb": -24.02,
+        "lufs": -21.97,
+        "truePeakDb": -4.3,
+        "low": 0.582,
+        "mid": 0.275,
+        "high": 0.142,
+        "tailDb": -24.11,
+        "hits": 3,
+        "hitsAt": [
+          {
+            "start": 0.042,
+            "end": 0.166,
+            "peakDb": -7.65
+          },
+          {
+            "start": 0.252,
+            "end": 1.626,
+            "peakDb": -4.72
+          },
+          {
+            "start": 3.242,
+            "end": 4.046,
+            "peakDb": -6.06
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 6,
+        "seconds": 4.076,
+        "wordsPerSecond": 1.472,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 1,
+        "pausesFound": 1,
+        "pauses": [
+          1.602
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": null,
+        "fits": true
+      }
+    },
+    {
+      "key": "line.step1.email.0",
+      "kind": "line",
+      "take": 2,
+      "round": "build",
+      "file": "take-2.mp3",
+      "sha256": "88682409c2d1cd650b8ae6d434f9c93e1f670da991e48ec7c4e11e35612b911f",
+      "filed": "2026-11-25T18:45:55.737Z",
+      "text": "A valid email. / Rejected. / The system / is working as designed.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 0.1,
+        "sent": "A valid email. <break time=\"0.1s\" /> Rejected. <break time=\"0.1s\" /> The system <break time=\"0.1s\" /> is working as designed.",
+        "call": 155
+      },
+      "askedSeconds": null,
+      "cost": "40",
+      "measured": {
+        "seconds": 7.663,
+        "start": 0.026,
+        "end": 7.496,
+        "peakDb": -2.12,
+        "rmsDb": -20.27,
+        "lufs": -18.56,
+        "truePeakDb": -2.12,
+        "low": 0.481,
+        "mid": 0.267,
+        "high": 0.252,
+        "tailDb": -22.98,
+        "hits": 7,
+        "hitsAt": [
+          {
+            "start": 0.028,
+            "end": 1.632,
+            "peakDb": -2.12
+          },
+          {
+            "start": 1.988,
+            "end": 2.502,
+            "peakDb": -5
+          },
+          {
+            "start": 2.57,
+            "end": 3.066,
+            "peakDb": -8.15
+          },
+          {
+            "start": 3.57,
+            "end": 4.668,
+            "peakDb": -2.73
+          },
+          {
+            "start": 5.032,
+            "end": 5.566,
+            "peakDb": -4.84
+          },
+          {
+            "start": 5.636,
+            "end": 5.992,
+            "peakDb": -9.83
+          },
+          {
+            "start": 6.092,
+            "end": 7.456,
+            "peakDb": -4.74
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 10,
+        "seconds": 7.47,
+        "wordsPerSecond": 1.339,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 3,
+        "pausesFound": 3,
+        "pauses": [
+          0.34,
+          0.494,
+          0.352
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": 7.325,
+        "fits": false,
+        "beatSeconds": 5
+      }
+    },
+    {
+      "key": "line.step1.email.0",
+      "kind": "line",
+      "take": 3,
+      "round": "build",
+      "file": "take-3.mp3",
+      "sha256": "b3773cd82927c785f3412b153e55b425c3c02a16b4eb48b9fbf66b8dedb3be2e",
+      "filed": "2026-11-25T18:46:21.814Z",
+      "text": "A valid email. / Rejected. / The system / is working as designed.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 0.1,
+        "sent": "A valid email. <break time=\"0.1s\" /> Rejected. <break time=\"0.1s\" /> The system <break time=\"0.1s\" /> is working as designed.",
+        "call": 156
+      },
+      "askedSeconds": null,
+      "cost": "40",
+      "measured": {
+        "seconds": 6.316,
+        "start": 0.036,
+        "end": 6.222,
+        "peakDb": -2.77,
+        "rmsDb": -20.55,
+        "lufs": -19.09,
+        "truePeakDb": -2.76,
+        "low": 0.452,
+        "mid": 0.326,
+        "high": 0.222,
+        "tailDb": -21.8,
+        "hits": 5,
+        "hitsAt": [
+          {
+            "start": 0.04,
+            "end": 1.404,
+            "peakDb": -2.77
+          },
+          {
+            "start": 1.726,
+            "end": 2.22,
+            "peakDb": -6.81
+          },
+          {
+            "start": 2.368,
+            "end": 2.68,
+            "peakDb": -10.41
+          },
+          {
+            "start": 3.048,
+            "end": 3.996,
+            "peakDb": -2.82
+          },
+          {
+            "start": 4.368,
+            "end": 6.184,
+            "peakDb": -5.5
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 10,
+        "seconds": 6.186,
+        "wordsPerSecond": 1.617,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 3,
+        "pausesFound": 3,
+        "pauses": [
+          0.29,
+          0.352,
+          0.36
+        ],
+        "paceHolds": false,
+        "pausesHold": true,
+        "room": 7.325,
+        "fits": true,
+        "beatSeconds": 5
+      }
+    },
+    {
+      "key": "slab-drop.3",
+      "kind": "cue",
+      "cue": "slab-drop",
+      "take": 2,
+      "round": "build",
+      "file": "take-2.mp3",
+      "sha256": "705157bc25f55b065f56a2d6388bf4a1392dcfc232e7a5eda57b979b88d4cb3f",
+      "filed": "2026-11-25T18:47:18.098Z",
+      "prompt": "One very heavy ceramic block landing flat on a ceramic floor, a single deep hard thud, close microphone, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.8,
+        "loop": false,
+        "influence": null,
+        "call": 157
+      },
+      "askedSeconds": 0.8,
+      "cost": "9",
+      "measured": {
+        "seconds": 0.8,
+        "start": 0,
+        "end": 0.582,
+        "peakDb": -3.63,
+        "rmsDb": -26.86,
+        "lufs": -24.59,
+        "truePeakDb": -3.51,
+        "low": 0.516,
+        "mid": 0.483,
+        "high": 0,
+        "tailDb": -55.77,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.258,
+            "end": 0.354,
+            "peakDb": -3.63
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
     }
   ]
 }
