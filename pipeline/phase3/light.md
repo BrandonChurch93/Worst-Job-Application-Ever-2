@@ -141,7 +141,9 @@ Cost of one still, MEASURED with `npm run still -- --key step1-fire --format hd 
 | review (8 samples) | 25.4 s | 41.4 to 43.4 s |
 | final (24 samples) | UNKNOWN (not run; about 67 s from the cost of a sample) | 114.9 s |
 
-One sample was about 2.6 s and is about 4.0 s. The scene went from 408580 triangles and 352 draw calls to 884726 and 596 in the same count, because the rig now draws the fill's shadow map and both sides of every solid. `npm run still -- --sheet page-look --format hd --tier review --force`: 31.0 s, 361994 triangles, 238 draw calls. Texture memory of the light: see `assets-src/light/RECIPE.md` (STATED from the sizes, not read from the GPU).
+Later, on 7a48290 (main with the keyboard owner's next version and the 20 degree lens), the same commands: draft 11.3 s, review 21.0 s, 763376 triangles, 491 draw calls. That is 1.6 s a sample and 8.0 s fixed. With the fill's shadow switched off for the test: draft 9.2 s, review 17.6 s, so the fill's shadow is about 0.4 s a sample and 1.2 s fixed; the two lamp shadows are about 0.3 s a sample (draft 8.6 s without them too). The times of a still depend more on the page's parts than on the light: the table above was the first keyboard.
+
+In that table one sample was about 2.6 s and is about 4.0 s. The scene went from 408580 triangles and 352 draw calls to 884726 and 596 in the same count, because the rig now draws the fill's shadow map and both sides of every solid. `npm run still -- --sheet page-look --format hd --tier review --force`: 31.0 s, 361994 triangles, 238 draw calls. Texture memory of the light: see `assets-src/light/RECIPE.md` (STATED from the sizes, not read from the GPU).
 
 Bolt light, MEASURED on `out/work/stills/key-step1-fire-hd-review.png`: the top of the cap beside the bolt (patch 1355,868,14,10) is 243, 229, 205; the same place on the next cap away from it (patch 1255,868,14,10) is 228, 219, 204. The bolt adds warm light and no cap is burned out (highest value 243).
 
