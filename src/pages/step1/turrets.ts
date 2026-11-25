@@ -4,8 +4,13 @@ import type { DrawList, Emit } from '../../stage/types'
 const heights = config.scale.heights
 
 export const TURRET = {
-  riseSeconds: 0.5, period: 0.9, firstShot: 0.6, stagger: 0.45, windup: 0.35, boltSpeed: 1500, aimLag: 0.16, hitRadius: 42, scorchSeconds: 2.4, body: 92, barrel: 84, scorch: 24, bolt: 60,
+  riseSeconds: 0.5, period: 0.9, firstShot: 0.6, stagger: 0.45, windup: 0.35, boltSpeed: 1500, aimLag: 0.16, hitRadius: 42, scorchSeconds: 2.4, body: 92, barrel: 84, scorch: 24, bolt: 60, hatchShare: 0.3,
   muzzleHeight: heights.turret - 18
+}
+
+const ease = (t: number): number => {
+  const u = Math.min(1, Math.max(0, t))
+  return u * u * (3 - 2 * u)
 }
 
 export interface Place { x: number; y: number }
@@ -136,25 +141,35 @@ export class Turrets {
     const s = this.s
     for (const c of s.scorches) {
       const d = TURRET.scorch * Math.min(1, c.left / (TURRET.scorchSeconds * 0.5))
-      out.push({ id: `scorch-${c.id}`, part: 'turrets', kind: 'disc', x: c.x - d / 2, y: c.y - d / 2, w: d, h: d, z0: c.z + lift, z1: c.z + lift + 0.5, tone: 'dark' })
+      out.push({ id: `scorch-${c.id}`, part: 'turrets', kind: 'disc', x: c.x - d / 2, y: c.y - d / 2, w: d, h: d, z0: c.z + lift, z1: c.z + lift + 0.5, tone: 'dark', v: [c.left / TURRET.scorchSeconds] })
     }
     if (s.up > 0) {
+      const open = ease(s.up / TURRET.hatchShare)
+      const rise = ease((s.up - TURRET.hatchShare) / (1 - TURRET.hatchShare))
       for (let i = 0; i < 2; i++) {
         const p = this.at[i]!
-        const top = this.base + (heights.turret - this.base) * s.up + lift
+        const top = this.base + (heights.turret - this.base) * rise + lift
         const tone = s.overheated ? 'danger' : 'metal'
         const stands = top >= heights.machineMinTop
-        out.push({ id: `turret-${i}`, part: 'turrets', kind: 'disc', x: p.x - TURRET.body / 2, y: p.y - TURRET.body / 2, w: TURRET.body, h: TURRET.body, z0: this.base + lift, z1: top, tone, mechanism: stands })
         const winding = s.lock[i] !== null
-        const back = winding ? Math.min(1, (TURRET.windup - (s.next[i]! - s.clock)) / TURRET.windup) * 14 : 0
+        const charge = winding ? Math.min(1, (TURRET.windup - (s.next[i]! - s.clock)) / TURRET.windup) : 0
+        const back = charge * 14
         const a = s.overheated ? (i === 0 ? 0.5 : Math.PI - 0.5) : s.angle[i]!
+        const first = TURRET.firstShot + (i === 0 ? 0 : TURRET.stagger)
+        const since = this.firing && s.next[i]! > first + 1e-9 ? Math.min(1, s.clock - (s.next[i]! - TURRET.period)) : 1
+        const shots = Math.round((s.next[i]! - first) / TURRET.period)
+        const heat = s.overheated ? Math.min(1, s.heat / 0.6) : 0
+        out.push({
+          id: `turret-${i}`, part: 'turrets', kind: 'disc', x: p.x - TURRET.body / 2, y: p.y - TURRET.body / 2, w: TURRET.body, h: TURRET.body, z0: this.base + lift, z1: top, tone, mechanism: stands,
+          v: [Math.cos(a), Math.sin(a), charge, since, heat, back, open, shots]
+        })
         const reach = TURRET.barrel / 2 + 14 - back
         const cx = p.x + Math.cos(a) * reach
         const cy = p.y + Math.sin(a) * reach
         out.push({ id: `turret-${i}-barrel`, part: 'turrets', kind: 'box', x: cx - TURRET.barrel / 2, y: cy - 10, w: TURRET.barrel, h: 20, z0: top - 28, z1: top - 4, r: 3, rot: a, tone: 'dark', mechanism: stands })
         const tip = TURRET.barrel + 8 - back
         out.push({ id: `turret-${i}-muzzle`, part: 'turrets', kind: 'box', x: p.x + Math.cos(a) * tip - 7, y: p.y + Math.sin(a) * tip - 15, w: 14, h: 30, z0: top - 32, z1: top, r: 3, rot: a, tone: 'raised', mechanism: stands })
-        out.push({ id: `turret-${i}-head`, part: 'turrets', kind: 'disc', x: p.x - 30, y: p.y - 30, w: 60, h: 60, z0: top, z1: top + 8, tone: s.overheated ? 'danger' : 'dark', mechanism: stands })
+        out.push({ id: `turret-${i}-head`, part: 'turrets', kind: 'disc', x: p.x - 30, y: p.y - 30, w: 60, h: 60, z0: top - 2, z1: top, tone: s.overheated ? 'danger' : 'dark', mechanism: stands })
         if (winding) {
           const mx = p.x + Math.cos(a) * (TURRET.barrel + 26 - back)
           const my = p.y + Math.sin(a) * (TURRET.barrel + 26 - back)
@@ -183,7 +198,7 @@ export class Turrets {
       const ty = y - Math.sin(a) * (len + 14)
       out.push({ id: `bolt-${b.id}-edge`, part: 'turrets', kind: 'capsule', x: cx - len / 2 - 5, y: cy - 13, w: len + 10, h: 26, z0: z - 10, z1: z + 6, rot: a, tone: 'dark' })
       out.push({ id: `bolt-${b.id}-tail`, part: 'turrets', kind: 'capsule', x: tx - 18, y: ty - 4, w: 36, h: 8, z0: z - 6, z1: z + 2, rot: a, tone: 'dark' })
-      out.push({ id: `bolt-${b.id}`, part: 'turrets', kind: 'capsule', x: cx - len / 2, y: cy - 8, w: len, h: 16, z0: z - 8, z1: z + 9, rot: a, tone: 'light' })
+      out.push({ id: `bolt-${b.id}`, part: 'turrets', kind: 'capsule', x: cx - len / 2, y: cy - 8, w: len, h: 16, z0: z - 8, z1: z + 9, rot: a, tone: 'light', v: [u, Math.min(1, b.age / 0.05)] })
     }
   }
 }
