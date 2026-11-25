@@ -144,13 +144,11 @@ function fire(f: Fight, io: StepIo, arena: Arena): void {
   dy /= d
   let left = d + SLAB.overshoot
   const pad = 70
-  if (dx < 0) left = Math.min(left, (from.x - (ARENA.x0 + pad + arena.slabs[m]!.w / 2 * Math.abs(dx))) / -dx)
+  if (dx < 0) left = Math.min(left, (from.x - (ARENA.x0 + pad + arena.slabs[m]!.w / 2)) / -dx)
   if (dx > 0) left = Math.min(left, (ARENA.x1 - pad - from.x) / dx)
   if (dy < 0) left = Math.min(left, (from.y - (ARENA.y0 + pad)) / -dy)
   if (dy > 0) left = Math.min(left, (ARENA.y1 - pad - from.y) / dy)
-  let rot = Math.atan2(dy, dx)
-  if (rot > Math.PI / 2) rot -= Math.PI
-  if (rot < -Math.PI / 2) rot += Math.PI
+  const rot = (m % 2 === 0 ? -1 : 1) * (0.06 + 0.03 * (m % 3))
   f.slabs.push({ m, x: from.x, y: from.y, dx, dy, rot, left: Math.max(40, left), state: 0, t: 0 })
   f.slabCount = m + 1
   f.recoil[f.cannon] = 26
@@ -185,11 +183,7 @@ function slabs(f: Fight, io: StepIo, arena: Arena): void {
       s.y += s.dy * go
       s.left -= go
       const size = arena.slabs[s.m]!
-      const rx = c.x - s.x
-      const ry = c.y - s.y
-      const along = rx * s.dx + ry * s.dy
-      const across = -rx * s.dy + ry * s.dx
-      const hit = f.safe <= 0 && s.t > 0.12 && Math.abs(along) < size.w / 2 + 14 && Math.abs(across) < size.h / 2 + 24
+      const hit = f.safe <= 0 && s.t > 0.12 && Math.abs(c.x - s.x) < size.w / 2 + 14 && Math.abs(c.y - s.y) < size.h / 2 + 24
       if (hit) {
         f.safe = HIT.safe
         f.dust = 0.95
@@ -342,11 +336,11 @@ export function clearSpot(f: Fight, arena: Arena, x: number, y: number): boolean
 export function threat(f: Fight, arena: Arena, x: number, y: number): { dx: number; dy: number } | null {
   const c = { x: x + 18, y: y + 32 }
   const lanes: { x: number; y: number; dx: number; dy: number; reach: number; half: number }[] = []
-  for (const s of f.slabs) if (s.state === 0) lanes.push({ x: s.x, y: s.y, dx: s.dx, dy: s.dy, reach: s.left + arena.slabs[s.m]!.w / 2 + 30, half: arena.slabs[s.m]!.h / 2 + 24 })
+  for (const s of f.slabs) if (s.state === 0) lanes.push({ x: s.x, y: s.y, dx: s.dx, dy: s.dy, reach: s.left + arena.slabs[s.m]!.w / 2 + 30, half: (Math.abs(s.dy) * arena.slabs[s.m]!.w + Math.abs(s.dx) * arena.slabs[s.m]!.h) / 2 + 24 })
   if (f.windup >= 0) {
     const from = muzzle(f, f.cannon)
     const d = Math.hypot(f.aim.x - from.x, f.aim.y - from.y) || 1
-    lanes.push({ x: from.x, y: from.y, dx: (f.aim.x - from.x) / d, dy: (f.aim.y - from.y) / d, reach: d + SLAB.overshoot + 260, half: SLAB_HALF })
+    lanes.push({ x: from.x, y: from.y, dx: (f.aim.x - from.x) / d, dy: (f.aim.y - from.y) / d, reach: d + SLAB.overshoot + 260, half: SLAB_HALF + Math.abs((f.aim.y - from.y) / d) * 120 })
   }
   for (const l of lanes) {
     const rx = c.x - l.x

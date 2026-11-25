@@ -74,7 +74,7 @@ export function makeLayout(): Step4Layout {
     { states: ['fight'], part: 'health-bar' }
   )
 
-  const defeated = text('defeated', 'copy:step4.defeated', { ...TYPE.label, align: 'centre' }, FALLEN.x, FALLEN.y + 78, { part: 'type', states: ['down'] })
+  const defeated = text('defeated', 'copy:step4.defeated', { ...TYPE.value, align: 'centre' }, FALLEN.x, FALLEN.y + 84, { part: 'type', states: ['down'] })
 
   const slabPlans: SlabPlan[] = SLAB_KEYS.map((key) => {
     const b = block(SLAB_TYPE.font, words(key), SLAB_TYPE.px)
@@ -97,12 +97,12 @@ export function makeLayout(): Step4Layout {
   const titleType = TYPE.label
   const titleW = Math.max(...POPUPS.map((p) => block(titleType.font, words(p.title), titleType.px).width))
   const popW = Math.round(titleW + 56)
-  const popPad = 28
+  const popPad = 24
   const titleCap = block(titleType.font, 'X', titleType.px).cap
-  const popH = popPad + titleCap + 26 + sizes.button + 10 + popPad
+  const popH = popPad + titleCap + 22 + sizes.button + 10 + popPad - 6
   const right = HOME.x - 260
-  const tops = [ARENA.y0 + 12, ARENA.y0 + 12 + popH + 22, ARENA.y0 + 12 + (popH + 22) * 2]
-  const insets = [0, 60, 0]
+  const tops = [HEADER.contentY, HEADER.contentY + popH + 16, HEADER.contentY + (popH + 16) * 2]
+  const insets = [0, 0, 0]
   const popupPlans: PopupPlan[] = []
   const popupNodes = POPUPS.map((p, i) => {
     const x = right - popW - insets[i]!
@@ -111,7 +111,7 @@ export function makeLayout(): Step4Layout {
     const widths = p.buttons.map((b) => buttonWidth(b))
     const total = widths.reduce((a, b) => a + b, 0) + (widths.length - 1) * 22
     let bx = x + popW - popPad - total
-    const by = y + popPad + titleCap + 26 + 5
+    const by = y + popPad + titleCap + 22 + 5
     const plan: PopupPlan = { title: p.title, box: { x, y, w: popW, h: popH, cx: x + popW / 2, cy: y + popH / 2 }, titleAt: { x: x + popPad, y: y + popPad, w: title.box[2]!, cap: titleCap }, buttons: [] }
     const buttons = p.buttons.map((b, j) => {
       const made = button(`popup-${i}-button-${j}`, bx, by, widths[j]!, b, { part: 'boss-weapons', tone: j === p.buttons.length - 1 ? 'accent' : 'metal' })

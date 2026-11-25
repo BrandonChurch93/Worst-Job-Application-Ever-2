@@ -35,8 +35,8 @@ export function drawWeapons(out: DrawList, f: Fight, plan: WeaponPlan): void {
       out.push(label(`popup-up-${p.slot}-button-${j}-word`, part, btn.key, btn.box.cx, btn.box.cy, TYPE.button, z1, btn.main ? 'inkLight' : 'ink'))
     })
     for (let i = p.hp; i < POPUP.hp; i++) {
-      const cx = b.x + b.w * (0.3 + 0.36 * (POPUP.hp - 1 - i)) 
-      out.push({ id: `popup-up-${p.slot}-chip-${i}`, part, kind: 'disc', x: cx - 9, y: b.y + 20 + i * 7 - 9, w: 18, h: 18, z0: heights.card, z1: heights.card + 0.6, tone: 'dark' })
+      const n = POPUP.hp - 1 - i
+      out.push({ id: `popup-up-${p.slot}-chip-${n}`, part, kind: 'disc', x: b.x + 30 + n * 46, y: b.y + b.h - 58 + (n % 2) * 10, w: 20, h: 20, z0: heights.card, z1: heights.card + 0.6, tone: 'dark' })
     }
   }
   for (const s of f.slabs) {

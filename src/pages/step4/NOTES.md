@@ -10,6 +10,7 @@ Unit `boss`, page `step4`. Logic in `src/pages/step4/`, the boss in `src/boss/`,
 - Submit is a real shell button, 288 wide, in its socket at the bottom centre of the page (960, 960). It is the control the boss grows out of.
 - The health bar sits where a subline would sit (step 4 has no subline in the copy): the label `copy:step4.bossHealthLabel` and a recessed track with a raised fill, the whole width of the content. It is a layout node with the state `fight`, so the layout check sees it.
 - `copy:step4.defeated` is centred under the fallen button, state `down`.
+- The three pop-ups stand in one column beside the card, on the card's top line, with even gaps, between the cursor's side of the page and the boss.
 - The six error slabs, the three pop-ups with their buttons and the banner are layout nodes in an over layer (state `fight`), so every word is in the type register and the check sees their sizes. They are drawn by the fight where they are in play.
 
 ## The beats
@@ -27,7 +28,7 @@ Unit `boss`, page `step4`. Logic in `src/pages/step4/`, the boss in `src/boss/`,
 - The fight is a state machine in `src/boss/fight.ts`. It has no drawing code and no library. The longest fight is 12 + 14.5 + 13.5 = 40 s, inside `live.boss.maxSeconds`.
 - The boss tires: each phase has a health ceiling that falls to the phase's end in its last seconds. A visitor who does nothing still sees every phase.
 - One click is one dart. A dart leaves the cursor's tip and flies at the boss, so a click anywhere counts. This keeps the fight fair for a wrong pointer and keeps the pointer free at all times: the page never takes control.
-- A slab aims at where the cursor was when the cannon wound up (0.45 s before it fires), flies along its long axis and stops. A hit scorches the cursor, knocks it back and is followed by a dust off. The scorch is the cursor body's own and heals by itself. After a hit the cursor is safe for 1.2 s.
+- A slab aims at where the cursor was when the cannon wound up (0.45 s before it fires), flies flat and upright with a small tilt so its words stay readable, as in the approved picture, and stops. A hit scorches the cursor, knocks it back and is followed by a dust off. The scorch is the cursor body's own and heals by itself. After a hit the cursor is safe for 1.2 s.
 - A pop-up blocks darts. Three darts break it. A click on one of its buttons closes it at once (event `popup-close`, silent) and fires no dart.
 - The last stand: 0.3 s after health 40 the boss emits `session-expired`, raises the banner `copy:step4.errorSlabs.2`, takes 10 health back, then fires faster and raises pop-ups again.
 - From `boss.collapse` on nothing can hit the cursor: slabs, pop-ups and darts are cleared in the same step as `power-down`. `done()` waits for the cursor to be whole.
@@ -43,8 +44,8 @@ Unit `boss`, page `step4`. Logic in `src/pages/step4/`, the boss in `src/boss/`,
 
 ## The film
 
-- The pointer path and the clicks are in `src/pages/step4/script.ts`, a pure function of time. Events measured with `npx vitest run tests/boss.test.ts`: `checkbox` 3.80 s, `button-crack` 6.11, `unfold` 6.71, first `slab-fire` 9.86, first `popup` 16.20, `session-expired` 22.10, `power-down` 27.34, `button-press` 30.50.
-- The cursor is hit twice in the film, at 14.07 s and 19.60 s, and is whole again before the collapse.
+- The pointer path and the clicks are in `src/pages/step4/script.ts`, a pure function of time. Events measured with `npx vitest run tests/boss.test.ts`: `checkbox` 3.80 s, `button-crack` 6.11, `unfold` 6.71, first `slab-fire` 9.86, first `popup` 16.20, `session-expired` 22.07, `power-down` 27.23, `button-press` 30.50.
+- The cursor is hit twice in the film, at 14.06 s and 19.60 s, and is whole again before the collapse.
 
 ## Events
 
