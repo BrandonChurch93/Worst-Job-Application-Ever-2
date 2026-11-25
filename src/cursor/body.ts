@@ -49,7 +49,7 @@ const smooth01 = (t: number): number => {
 const softSquash = (v: number): number => (v >= 1 ? 1 + soft(v - 1, LIMIT.long - 1) : 1 - soft(1 - v, 1 - LIMIT.short))
 const softLean = (v: number): number => (v >= 0 ? soft(v, LIMIT.right) : -soft(-v, LIMIT.left))
 const GULP = { every: 2 * stepHz, steps: Math.round(0.55 * stepHz) }
-export const STRIPS = 9
+export const STRIPS = 15
 // Where a bolt strikes when nobody says where: the middle of the arrow's head, in the outline's units.
 export const STRIKE = { x: 4.3, y: 9.4, reach: 2.1 }
 const UNIT_PX = config.cursor.heightPxAt1080 / 19
@@ -529,7 +529,7 @@ const CUTS: { x: number; y: number; half: number }[] = (() => {
 })()
 
 // Where a strip comes to lie: the pile is the arrow fanned open, every strip swung about its top end, slid along itself and pushed apart from its neighbours, each on its own layer.
-const FAN = { pinch: [14, -10], pull: 0.18, from: -0.3, to: 0.36, wobble: 0.14, stagger: 12, across: 2.3 }
+const FAN = { pinch: [14, -10], pull: 0.18, from: -0.38, to: 0.42, wobble: 0.12, stagger: 16, across: 2.1 }
 
 function lie(i: number, seed: number): Strip {
   const h = (k: number) => hash01(i, k + 40, seed)
@@ -565,7 +565,7 @@ function pile(seed: number): LooseStrip[] {
   return out
 }
 
-const layer = (i: number): number => 0.4 + ((i * 5) % STRIPS) * 0.36
+const layer = (i: number): number => 0.4 + ((i * 7) % STRIPS) * 0.22
 
 // One step of the loose strips: each falls, lands on the pile at its own layer, skids to its place in the fan and comes to rest.
 function fall(strips: LooseStrip[]): void {
