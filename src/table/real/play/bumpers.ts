@@ -7,7 +7,7 @@ import { localBalls, whole, type Zone } from '../zone'
 import { Bag, ball, box, ease, lathe, look, mat, prism, rod, type V2 } from './g'
 import { drop, matsOf, part } from './mats'
 
-const PLATE = look(0xc9cdd1, 0.2, 1, 0)
+const PLATE = look(0xdde0e3, 0.2, 0.78, 0)
 const PRINT = look(0x20262a, 0.55, 0, 0.4)
 const PRINT_PALE = look(0xd9d4c4, 0.55, 0, 0.4)
 const SKIRT = look(0xeae7df, 0.34, 0, 0.7)
@@ -16,8 +16,8 @@ const KRAFT = look(0xb5814b, 0.82, 0, 0)
 const KRAFT_DARK = look(0x8f6038, 0.85, 0, 0)
 const LID = look(0xf0eee8, 0.36, 0, 0.55)
 const LID_DARK = look(0x2a2826, 0.7, 0, 0)
-const CHROME = look(0xd6dadd, 0.1, 1, 0)
-const SCREW = look(0xb4b8bc, 0.28, 1, 0)
+const CHROME = look(0xe6e9ec, 0.12, 0.8, 0)
+const SCREW = look(0xd2d5d8, 0.26, 0.76, 0)
 
 // The heights of a cup, in page pixels over the floor.
 export const CUP = { foot: 10, footR: 46, rimZ: 90, rimR: 60, sleeve0: 23, sleeve1: 74, ringRest: 83, ringDown: 30, ringIn: 67, ringOut: 76, lidZ: 87, lidR: 74, deck: 100, top: 107, flutes: 60 }
@@ -110,7 +110,7 @@ function glowGeometry(): THREE.BufferGeometry {
   const c: number[] = []
   const n = 48
   const lid = lidProfile().map((q) => [q[0] + 0.5, q[1] + 0.6] as V2)
-  const shine = (r: number, z: number): number => (z < CUP.lidZ + 6 ? 0.22 : 0.4 + 0.6 * Math.pow(Math.max(0, 1 - r / CUP.lidR), 1.4))
+  const shine = (r: number, z: number): number => (z < CUP.lidZ + 6 ? 0.2 : 0.24 + 0.76 * Math.pow(Math.max(0, 1 - r / CUP.lidR), 1.4))
   const band = (r0: number, z0: number, v0: number, r1: number, z1: number, v1: number, tint: [number, number, number] = [1, 1, 1]): void => {
     for (let i = 0; i < n; i++) {
       const a0 = (i / n) * Math.PI * 2
@@ -151,7 +151,7 @@ export const ringDown = (t: number): number => (t < 0.03 ? t / 0.03 : 1 - ease(0
 export const lidJump = (t: number): number => (t > 0.7 ? 0 : 4.5 * Math.exp(-7 * t) * Math.abs(Math.sin((Math.PI * t) / 0.14)))
 
 export const bumpers = whole('bumpers', {
-  version: 'play-bumpers-7',
+  version: 'play-bumpers-9',
   build(z) {
     const g = new THREE.Group()
     g.name = `play.bumpers.${z.id}`
@@ -182,7 +182,7 @@ export const bumpers = whole('bumpers', {
     const groups = groupsOf(z)
     const glowShape = glowGeometry()
     const glows = list.map((b, i) => {
-      const mat = lit(new THREE.MeshBasicMaterial({ color: 0x000000, vertexColors: true, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 }), z)
+      const mat = lit(new THREE.MeshBasicMaterial({ color: 0x000000, vertexColors: true, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, forceSinglePass: true, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 }), z)
       mat.userData.unlit = true
       const glow = new THREE.Mesh(glowShape, mat)
       glow.name = `play.bumpers.lamp.${b.id}`

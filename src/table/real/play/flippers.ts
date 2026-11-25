@@ -11,9 +11,9 @@ const ORANGE_SOFT = look(0xb84000, 0.42, 0, 0.6)
 const RUBBER = look(0x1d1d1f, 0.9, 0, 0)
 const RUBBER_LINE = look(0x29292b, 0.8, 0, 0)
 const NYLON = look(0xe4e0d6, 0.5, 0, 0.2)
-const CHROME = look(0xd6dadd, 0.12, 1, 0)
+const CHROME = look(0xe6e9ec, 0.12, 0.8, 0)
 const SOCKET = look(0x2a2b2d, 0.6, 1, 0)
-const SHAFT = look(0x8f9398, 0.3, 1, 0)
+const SHAFT = look(0xc9cdd1, 0.3, 0.78, 0)
 
 const BAT = { pivot: 22.5, tip: 15.5, floor: 7.5, top: 40, band: 1.3 }
 
@@ -61,7 +61,7 @@ export function batGeometry(): THREE.BufferGeometry {
 const flippersOf = (z: Zone) => table.flippers.filter((f) => f.tier === z.tier)
 
 export const flippers = whole('flippers', {
-  version: 'play-flippers-3',
+  version: 'play-flippers-4',
   build(z) {
     const g = new THREE.Group()
     g.name = `play.flippers.${z.id}`

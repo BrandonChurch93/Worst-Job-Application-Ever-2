@@ -6,12 +6,12 @@ import { Bag, ball, box, lathe, look, mat, prism, rod, sweep, wire, type V2, typ
 import { drop, matsOf, part } from './mats'
 
 const WIRE = look(0xe9ecee, 0.16, 0.72, 0)
-const PLATE = look(0xb9bdc1, 0.3, 1, 0)
-const SPRING = look(0x9da3aa, 0.24, 1, 0)
-const WORN = look(0xe4e7ea, 0.1, 1, 0)
-const SCREW = look(0xb4b8bc, 0.28, 1, 0)
+const PLATE = look(0xd3d6d9, 0.3, 0.76, 0)
+const SPRING = look(0xbfc4c9, 0.24, 0.8, 0)
+const WORN = look(0xf0f2f3, 0.1, 0.72, 0)
+const SCREW = look(0xd2d5d8, 0.26, 0.76, 0)
 const SCREW_SLOT = look(0x242526, 0.7, 1, 0)
-const BEAD = look(0xc3c7cb, 0.34, 1, 0)
+const BEAD = look(0xd6d9dc, 0.34, 0.74, 0)
 const CLEAR = look(0x1a2226, 0.05, 0, 1)
 const CLEAR_EDGE = look(0xb9cfd9, 0.04, 0, 1)
 const PAINT = look(0xe9e6da, 0.55, 0, 0)
@@ -184,7 +184,7 @@ interface Built { flap: THREE.Mesh | null; down: number }
 export const flapLift = (open: number): number => (1 - Math.max(0, Math.min(1, open))) * FLAP.lift
 
 export const ramps = whole('ramps', {
-  version: 'play-ramps-2',
+  version: 'play-ramps-3',
   build(z) {
     const g = new THREE.Group()
     g.name = `play.ramps.${z.id}`

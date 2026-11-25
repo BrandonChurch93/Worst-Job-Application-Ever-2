@@ -31,7 +31,7 @@ function solidOf(z: Zone): THREE.MeshPhysicalMaterial {
 
 // Clear plastic with no light passed through it: thin where it is seen straight on, bright where it turns away and at every edge.
 function clearOf(z: Zone): THREE.MeshPhysicalMaterial {
-  const m = studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.05, metalness: 0, transparent: true, opacity: 1, depthWrite: false, specularIntensity: 1, clearcoat: 1, clearcoatRoughness: 0.03, side: THREE.DoubleSide }))
+  const m = studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.05, metalness: 0, transparent: true, opacity: 1, depthWrite: false, specularIntensity: 1, clearcoat: 1, clearcoatRoughness: 0.03, side: THREE.DoubleSide, forceSinglePass: true }))
   const room = m.onBeforeCompile
   m.onBeforeCompile = (shader, renderer) => {
     room.call(m, shader, renderer)
