@@ -109,6 +109,7 @@ Checks that are not tuning looks: `--key tier-corporate` and `--key table-wide` 
 - `npm run still -- --key step1-fire --format uhd --tier review --force`: 19.6 s, same triangles and draw calls.
 - `npm run still -- --id rest-step1 --diag type`: 2.4 s, 47,401 triangles, 137 draw calls, every run inside its box.
 - With every part real (main at 1d29720 and this branch): `npm run still -- --key step1-fire --format hd --tier review --force` 21.2 s, 747,688 triangles, 482 draw calls for the whole page; the same at uhd 53.7 s; `npm run still -- --id rest-step1 --diag type --tier draft --format hd --force` 2.5 s, 294,995 triangles, 295 draw calls.
+- At the end (agent/type b053ff2, holds main as of 15:38Z): `npm run still -- --key step1-fire --format hd --tier draft --force` 10.4 s, 857,971 triangles, 283 draw calls; the same at `--tier review` 22.1 s, 857,971 triangles, 283 draw calls; `npm run still -- --id rest-step1 --diag type --tier draft --format hd --force` 2.8 s, 356,533 triangles, 281 draw calls. The type of step1-fire costs 13 draw calls as sheets, measured on main 3c334e4 (471 with one mesh for each run, 408 with no type, 421 with sheets), and 4 fewer since the labels and the helper left the glass. `npm run measure -- --unit step1`: every measure passes, M4 103 runs, smallest 18 px, least contrast 4.64. `npm run gate -- --phase 3 --only G11`: pass. `npm test` 1014 pass, `npm run build` built, `npm run bots` all clear.
 - Textures of the part: none, 0 MB.
 - `npm run measure -- --unit step1` on main 77d4dc7 with this branch: M4 pass, 103 runs, smallest 18 px, least contrast 4.64. M2 and M3 are red there and are not type: M2 counts pixels of a `map`, which type has none of; M3 is the fine detail of the whole key. `npm run gate -- --phase 3 --only G11`: pass.
 - Shimmer: the regions of the title, the subline, the Resume label and the helper line differ by 0 between `--at 0.3` and `--at 0.6` of `step1.firstName` at hd draft.
@@ -119,3 +120,9 @@ Checks that are not tuning looks: `--key tier-corporate` and `--key table-wide` 
 
 - The chip: settled. A chip or a button of tone `metal` is the smoked capsule of the surface and its label is set light whatever tone the layout gives.
 - Sizes, MEASURED in the approved images at 1920 (width of a line of dark pixels, ours as the ruler) and sent to the Builder, who owns `TYPE` in `src/shell/parts.ts`: the title is inter-600 at 46 to 48 px there (ours 28), the heading inter-display-600 at 40 to 43 px (ours 60), the chip label about 22 px (ours 18). Labels, subline, value, legends and "Enter" are within 5%.
+
+## What still looks least real, at the end
+
+1. The labels over the fields and the card ("First name", "Resume") are heavier than in the approved image: `TYPE.label` is inter-500 and the approved reads as a regular weight. The weight is the layout's.
+2. The legends: letters and words are one size in main; the approved has letters at about 26 px and words at about 20 px. The director has this on its branch (e1476b0).
+3. The numerals over the dark sectors of the turned buttons have little contrast, as in the approved image; the chip label is about 18 px against about 22 px approved.
