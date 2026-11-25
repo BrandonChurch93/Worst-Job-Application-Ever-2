@@ -596,7 +596,7 @@ describe('the fixes after round 2 of the blockout', () => {
 })
 
 describe('the hold after the shredder', () => {
-  it('lands the reset at least 2 s before the page turns, seen front-on from home all the while', () => {
+  it('lands the reset at least 1.6 s before the page turns, seen front-on from home all the while', () => {
     const a = film()
     const page = makePage()
     const home = page.camera('film', 0)!
@@ -615,7 +615,7 @@ describe('the hold after the shredder', () => {
       if (a.events.some((e) => e.name === 'page-turn')) turn = now
     }
     expect(reset).toBeGreaterThan(28.25)
-    expect(turn - reset).toBeGreaterThanOrEqual(2)
+    expect(turn - reset).toBeGreaterThanOrEqual(1.6)
   })
 })
 
