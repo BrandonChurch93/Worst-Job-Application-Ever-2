@@ -1003,3 +1003,183 @@ Takes used: 1 of 3.
 | 1 | build | 2026-11-25T18:17:21.765Z | 0.48 s | -19.25 dB | -40.71 LUFS | 1 | 6 | no |  |
 
 Prompt: One tiny bright pew, almost a click, a very small toy dart launcher firing once, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### dart-fire.4
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:17:54.689Z | 0.48 s | -12.45 dB | -31.42 LUFS | 1 | 6 | no |  |
+
+Prompt: One tiny bright pew, almost a click, a very small toy dart launcher firing once, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### dart-hit.1
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:17:56.933Z | 0.48 s | -24.29 dB | -40.37 LUFS | 1 | 6 | no |  |
+
+Prompt: One small dart striking a metal plate, a tiny bright tick with a spark, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### dart-hit.2
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:17:58.873Z | 0.48 s | -46.86 dB | -55.1 LUFS | 1 | 6 | no |  |
+
+Prompt: One small dart striking a metal plate, a tiny bright tick with a spark, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### dart-hit.3
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:18:00.709Z | 0.48 s | -55.08 dB | null LUFS | 1 | 6 | no |  |
+
+Prompt: One small dart striking a metal plate, a tiny bright tick with a spark, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### dart-hit.4
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:18:02.918Z | 0.48 s | -45.63 dB | -62.52 LUFS | 1 | 6 | no |  |
+
+Prompt: One small dart striking a metal plate, a tiny bright tick with a spark, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### slab-fire.1
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:18:05.602Z | 0.48 s | -31.79 dB | -51.09 LUFS | 1 | 6 | no |  |
+
+Prompt: One heavy stone block launched hard by a machine, a deep pneumatic thump and a short rush of air, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### slab-fire.2
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:18:07.837Z | 0.48 s | -15.99 dB | -28.7 LUFS | 1 | 6 | no |  |
+
+Prompt: One heavy stone block launched hard by a machine, a deep pneumatic thump and a short rush of air, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### slab-fire.3
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:18:10.218Z | 0.48 s | -23.33 dB | -33.85 LUFS | 1 | 6 | no |  |
+
+Prompt: One heavy stone block launched hard by a machine, a deep pneumatic thump and a short rush of air, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### popup.1
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:18:13.024Z | 0.48 s | -36.73 dB | -54.29 LUFS | 1 | 6 | no |  |
+
+Prompt: A flat rigid plastic panel snapping upright on a spring hinge, a single quick flap and clack, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### popup.2
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:18:14.885Z | 0.48 s | -38.01 dB | -50.07 LUFS | 1 | 6 | no |  |
+
+Prompt: A flat rigid plastic panel snapping upright on a spring hinge, a single quick flap and clack, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### popup.3
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:18:16.795Z | 0.48 s | -46.37 dB | -66.31 LUFS | 1 | 6 | no |  |
+
+Prompt: A flat rigid plastic panel snapping upright on a spring hinge, a single quick flap and clack, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### power-down
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:18:19.276Z | 1.76 s | -1.23 dB | -12.68 LUFS | 1 | 20 | no |  |
+
+Prompt: A machine losing power, its motors winding down in pitch, ending with one last metal clank, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### hold-music
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:18:22.979Z | 4 s | -7.92 dB | -17.6 LUFS | 1 | 44 | no |  |
+
+Prompt: Bland, tinny telephone hold music heard through a small phone speaker, a simple cheerful electric piano tune, thin and narrow, close and dry, recorded in a quiet room, real materials, no voice
+
+### letter-drop
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:18:26.052Z | 0.48 s | -35.33 dB | -52.95 LUFS | 1 | 6 | no |  |
+
+Prompt: One sheet of paper landing softly on a wooden desk, a single light papery pat, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### stamp
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:18:28.569Z | 0.6 s | -39.57 dB | -60.14 LUFS | 1 | 7 | no |  |
+
+Prompt: A big rubber stamp slammed down on paper on a hard wooden desk, a single heavy thump, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### ui-tick
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:18:31.129Z | 0.48 s | -0.42 dB | -24.85 LUFS | 1 | 6 | no |  |
+
+Prompt: A small soft tick, a single tiny soft click, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### key-tap
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:18:33.926Z | 0.48 s | -18.14 dB | -42.66 LUFS | 1 | 6 | no |  |
+
+Prompt: A single soft tap on a laptop key, quiet and dull, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### ui-send
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:18:36.499Z | 0.48 s | -26.42 dB | -41.18 LUFS | 1 | 6 | no |  |
+
+Prompt: A short soft send tone, a single gentle rising pop like a message being sent, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice

@@ -4,7 +4,7 @@ This build may spend at most 10000 ElevenLabs credits in all, on every call of e
 
 The count is of this build's own calls, never of what the account has left: the account is shared with other builds. Every call goes through `npm run credits`, which writes its row here before it returns and makes no call that would pass the limit. A sound effect is never asked for without its length. `kit/addenda/001-sound-budget-and-narrator.md` sets these rules. This file is written by the tool from `audio/CREDITS.json`.
 
-Running total: 1756 of 10000. Calls: 107.
+Running total: 1917 of 10000. Calls: 125.
 
 ## Rates
 
@@ -122,3 +122,21 @@ Running total: 1756 of 10000. Calls: 107.
 | 105 | 2026-11-25T18:17:15Z | POST /v1/sound-generation | dart-fire.1 take 1, variant 1 of 4 | 0.5 s for a cue of 0.15 s | HTTP 200, 2.5 s | 6 | reported by the response | 1744 |
 | 106 | 2026-11-25T18:17:17Z | POST /v1/sound-generation | dart-fire.2 take 1, variant 2 of 4 | 0.5 s for a cue of 0.15 s | HTTP 200, 1.8 s | 6 | reported by the response | 1750 |
 | 107 | 2026-11-25T18:17:19Z | POST /v1/sound-generation | dart-fire.3 take 1, variant 3 of 4 | 0.5 s for a cue of 0.15 s | HTTP 200, 1.9 s | 6 | reported by the response | 1756 |
+| 108 | 2026-11-25T18:17:52Z | POST /v1/sound-generation | dart-fire.4 take 1, variant 4 of 4 | 0.5 s for a cue of 0.15 s | HTTP 200, 1.6 s | 6 | reported by the response | 1762 |
+| 109 | 2026-11-25T18:17:54Z | POST /v1/sound-generation | dart-hit.1 take 1, variant 1 of 4 | 0.5 s for a cue of 0.2 s | HTTP 200, 2.0 s | 6 | reported by the response | 1768 |
+| 110 | 2026-11-25T18:17:57Z | POST /v1/sound-generation | dart-hit.2 take 1, variant 2 of 4 | 0.5 s for a cue of 0.2 s | HTTP 200, 1.7 s | 6 | reported by the response | 1774 |
+| 111 | 2026-11-25T18:17:58Z | POST /v1/sound-generation | dart-hit.3 take 1, variant 3 of 4 | 0.5 s for a cue of 0.2 s | HTTP 200, 1.6 s | 6 | reported by the response | 1780 |
+| 112 | 2026-11-25T18:18:00Z | POST /v1/sound-generation | dart-hit.4 take 1, variant 4 of 4 | 0.5 s for a cue of 0.2 s | HTTP 200, 2.0 s | 6 | reported by the response | 1786 |
+| 113 | 2026-11-25T18:18:02Z | POST /v1/sound-generation | slab-fire.1 take 1, variant 1 of 3 | 0.5 s | HTTP 200, 2.4 s | 6 | reported by the response | 1792 |
+| 114 | 2026-11-25T18:18:05Z | POST /v1/sound-generation | slab-fire.2 take 1, variant 2 of 3 | 0.5 s | HTTP 200, 1.9 s | 6 | reported by the response | 1798 |
+| 115 | 2026-11-25T18:18:07Z | POST /v1/sound-generation | slab-fire.3 take 1, variant 3 of 3 | 0.5 s | HTTP 200, 2.2 s | 6 | reported by the response | 1804 |
+| 116 | 2026-11-25T18:18:10Z | POST /v1/sound-generation | popup.1 take 1, variant 1 of 3 | 0.5 s for a cue of 0.4 s | HTTP 200, 2.6 s | 6 | reported by the response | 1810 |
+| 117 | 2026-11-25T18:18:13Z | POST /v1/sound-generation | popup.2 take 1, variant 2 of 3 | 0.5 s for a cue of 0.4 s | HTTP 200, 1.6 s | 6 | reported by the response | 1816 |
+| 118 | 2026-11-25T18:18:14Z | POST /v1/sound-generation | popup.3 take 1, variant 3 of 3 | 0.5 s for a cue of 0.4 s | HTTP 200, 1.7 s | 6 | reported by the response | 1822 |
+| 119 | 2026-11-25T18:18:16Z | POST /v1/sound-generation | power-down take 1 | 1.8 s | HTTP 200, 2.2 s | 20 | reported by the response | 1842 |
+| 120 | 2026-11-25T18:18:19Z | POST /v1/sound-generation | hold-music take 1 | 4 s, a loop | HTTP 200, 3.4 s | 44 | reported by the response | 1886 |
+| 121 | 2026-11-25T18:18:23Z | POST /v1/sound-generation | letter-drop take 1 | 0.5 s | HTTP 200, 2.8 s | 6 | reported by the response | 1892 |
+| 122 | 2026-11-25T18:18:26Z | POST /v1/sound-generation | stamp take 1 | 0.6 s | HTTP 200, 2.3 s | 7 | reported by the response | 1899 |
+| 123 | 2026-11-25T18:18:28Z | POST /v1/sound-generation | ui-tick take 1 | 0.5 s for a cue of 0.08 s | HTTP 200, 2.3 s | 6 | reported by the response | 1905 |
+| 124 | 2026-11-25T18:18:31Z | POST /v1/sound-generation | key-tap take 1 | 0.5 s for a cue of 0.1 s | HTTP 200, 2.4 s | 6 | reported by the response | 1911 |
+| 125 | 2026-11-25T18:18:34Z | POST /v1/sound-generation | ui-send take 1 | 0.5 s for a cue of 0.3 s | HTTP 200, 2.2 s | 6 | reported by the response | 1917 |
