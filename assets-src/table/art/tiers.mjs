@@ -3,7 +3,7 @@ import { along, arc, arrow, beside, chevron, dirDeg, dist, dot, el, f, footprint
 
 export const PAL = {
   corporate: { base: '#081229', base2: '#0f2147', key: '#c9a551', fine: '#a78a45', pale: '#ecd797', under: '#070f27', dark: '#040a1a', lane: '#102249', accent: '#27468a', soft: '#1b3466' },
-  office: { base: '#647b73', base2: '#3b5452', key: '#c9b684', fine: '#a99a6e', pale: '#e2d6b0', under: '#33494a', dark: '#1c2c2c', lane: '#cdc5a6', accent: '#7d968f', soft: '#69817a' },
+  office: { base: '#647b73', base2: '#3b5452', key: '#c9b684', fine: '#a99a6e', pale: '#e2d6b0', under: '#33494a', dark: '#1c2c2c', lane: '#8ea398', accent: '#7d968f', soft: '#69817a' },
   street: { base: '#0f2433', base2: '#17323d', key: '#dde4e1', fine: '#86a9b0', pale: '#f0f1e9', under: '#0a1a26', dark: '#050e15', lane: '#1d4250', accent: '#d8b53b', soft: '#234a58' }
 }
 
