@@ -1,35 +1,35 @@
 {
   "folder": "ball",
-  "pushed": "2026-11-25T16:54:27.895Z",
-  "commit": "442ca3a4974a259299c7ea52b9aefadbafb80a4f",
+  "pushed": "2026-11-25T17:43:53.105Z",
+  "commit": "57a925c07f965c5894ff8a76a8f0a198071c40be",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Sheet clear-ball, draft: approved on the left, the first clear ball on the right (no sweat number on the shape yet)",
-      "time": "2026-11-25T16:54:26.114Z",
+      "caption": "Key lobby-doors: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-25T17:19:33.290Z",
       "by": "ball",
-      "from": "out/work/compare/compare-clear-ball.jpg"
+      "from": "out/work/compare/compare-lobby-doors.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Clear ball, grade bend, sweat held at 0.6: the three sheet balls at real size, lobby-doors beside the approved crop, tier-office with the shadow and its bright spot",
-      "time": "2026-11-25T16:54:26.364Z",
+      "caption": "lobby-doors, draft: approved, the blue hoop before the fix, and now (band shows the room where the floor is not known)",
+      "time": "2026-11-25T17:43:51.575Z",
       "by": "ball",
-      "from": "out/work/ball/look-sheet-lobby.jpg"
+      "from": "out/work/ball/final-lobby.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Clear ball: top row grade true (one transmission drawing), bottom row the two halves opened to 0.6, sheet balls and rail-cam",
-      "time": "2026-11-25T16:54:26.614Z",
+      "caption": "Sheet clear-ball, draft, grade bend: approved above, the three balls of the build below",
+      "time": "2026-11-25T17:43:51.811Z",
       "by": "ball",
-      "from": "out/work/ball/look-true-open.jpg"
+      "from": "out/work/ball/final-sheet.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Clear ball in the six close keys at real size, draft, grade bend (before the softer far highlight)",
-      "time": "2026-11-25T16:54:26.850Z",
+      "caption": "tier-office, draft: the ball with its window highlight, its shadow and the bright spot at its edge",
+      "time": "2026-11-25T17:43:52.031Z",
       "by": "ball",
-      "from": "out/work/ball/look-keys.jpg"
+      "from": "out/work/ball/final-office.jpg"
     }
   ]
 }
