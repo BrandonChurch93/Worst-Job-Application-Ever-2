@@ -85,12 +85,14 @@ export class Deform {
       const far = Math.hypot(dx, dy)
       const ang = Math.atan2(dy, dx)
       const wob = 0.5 * Math.sin(3 * ang + 0.7) + 0.3 * Math.sin(5 * ang + 2.1) + 0.2 * Math.sin(8 * ang + 4.0)
-      const grow = 1 + 0.2 * f + (f * 0.2 * wob * far) / 8
+      const grow = 1 + 0.16 * f + (f * 0.09 * wob * far) / 8
       x = CENTRE[0] + dx * grow
       y = CENTRE[1] + dy * grow
-      const lumps = Math.sin(x0 * 0.9 + 0.6) * Math.sin(y0 * 0.7 + 1.9) + 0.5 * Math.sin(x0 * 1.7 - y0 * 1.3)
-      z *= 1 - 0.66 * f
-      z += f * 0.42 * up * lumps * (1 - Math.exp(-inset / 0.8))
+      x += f * (0.3 * Math.sin(y0 * 0.72 + 1.0) + 0.1 * Math.sin(y0 * 1.5 + x0 * 0.6 + 2.2))
+      y += f * (0.3 * Math.sin(x0 * 0.78 + 2.0) + 0.1 * Math.sin(x0 * 1.4 - y0 * 0.5 + 0.4))
+      const lumps = Math.sin(x0 * 0.62 + 0.6) * Math.sin(y0 * 0.5 + 1.9) + 0.4 * Math.sin(x0 * 1.1 - y0 * 0.9)
+      z *= 1 - 0.5 * f
+      z += f * 0.34 * up * lumps * (1 - Math.exp(-inset / 1.1))
     }
     if (this.melt > 0) {
       const m = this.melt

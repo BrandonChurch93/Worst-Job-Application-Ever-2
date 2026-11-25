@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import type { Emitter } from '../../real/types'
+import { hash01 } from '../../core/random'
 import { UNIT, type BodyLook, type BodyModel, type StripPose } from '../contract'
 import { Deform } from './deform'
 import { MAX_HOLES, bodyDepthMaterial, bodyMaterial, bodyUniforms, charMaterial, type BodyUniforms } from './material'
@@ -8,7 +9,7 @@ import { cutBand, stripSet, type StripSet } from './strips'
 
 const HOLE_SEGMENTS = 28
 const HOLE_ROWS = [0, 0.3, 0.65, 1]
-const rag = (a: number): number => 1 + 0.06 * Math.sin(3 * a + 1.3) + 0.04 * Math.sin(7 * a + 0.4) + 0.03 * Math.sin(11 * a + 2.1)
+const rag = (a: number, burnt: number): number => 1 + (0.25 + 0.75 * burnt) * (0.06 * Math.sin(3 * a + 1.3) + 0.04 * Math.sin(7 * a + 0.4) + 0.03 * Math.sin(11 * a + 2.1))
 const clamp01 = (v: number): number => Math.min(1, Math.max(0, v))
 
 export class Body implements BodyModel {
@@ -94,6 +95,7 @@ export class Body implements BodyModel {
       const h = look.holes[i]
       if (h && h.r > 0.02) {
         u.uHoles.value[i]!.set(h.x, h.y, h.r, clamp01(h.glow))
+        u.uBurnt.value.setComponent(i, clamp01(h.burnt ?? 1))
         this.holes.push({ x: h.x, y: h.y, glow: clamp01(h.glow), r: h.r })
       } else u.uHoles.value[i]!.set(0, 0, 0, 0)
     }
@@ -211,7 +213,7 @@ export class Body implements BodyModel {
             continue
           }
           const ang = (j / HOLE_SEGMENTS) * Math.PI * 2
-          const reach = hole.r * rag(ang)
+          const reach = hole.r * rag(ang, clamp01(hole.burnt ?? 1))
           const ex = hole.x + Math.cos(ang) * reach
           const ey = hole.y + Math.sin(ang) * reach
           const d = Math.max(0, inside(ex, ey))
@@ -224,9 +226,12 @@ export class Body implements BodyModel {
           const glow = clamp01(hole.glow)
           const flick = Math.pow(0.5 + 0.5 * Math.sin(ang * 5 + h * 2.1) * Math.sin(ang * 9 + 1.7), 2.2)
           const heat = r === 0 ? 0.25 : r === 1 ? 1.5 : r === 2 ? 0.5 : 0.03
-          c[i] = 1.0 * heat * glow * glow * flick
-          c[i + 1] = (r === 0 ? 0.42 : 0.12) * heat * glow * glow * flick
-          c[i + 2] = 0.05 * heat * glow * glow * flick
+          const burnt = clamp01(hole.burnt ?? 1)
+          const lit = glow * glow * flick * burnt
+          const bare = (1 - burnt) * (0.34 - 0.2 * HOLE_ROWS[r]!) * (0.8 + 0.4 * hash01(j, r, 7 + h))
+          c[i] = 1.0 * heat * lit + bare * 0.8
+          c[i + 1] = (r === 0 ? 0.42 : 0.12) * heat * lit + bare * 0.72
+          c[i + 2] = 0.05 * heat * lit + bare * 0.58
         }
       }
     }
@@ -252,12 +257,12 @@ export class Body implements BodyModel {
     if (this.heat > 0.02) {
       const along = 1.5 + this.heat * 4.5
       this.deform.point(along * AXIS[0] * 0.9, along * AXIS[1], 2.4, 2, this.p)
-      out.push({ x: this.p.x, y: this.p.y, z: this.p.z + 3 * UNIT, colour: [1, 0.3, 0.06], power: 0.9 * this.heat, reach: (14 + 16 * this.heat) * UNIT })
+      out.push({ x: this.p.x, y: this.p.y, z: this.p.z + 6 * UNIT, colour: [1, 0.3, 0.06], power: 0.06 * this.heat, reach: (10 + 8 * this.heat) * UNIT })
     }
     for (const h of this.holes) {
       if (h.glow < 0.04) continue
       this.deform.point(h.x, h.y, 2.4, 2, this.p)
-      out.push({ x: this.p.x, y: this.p.y, z: this.p.z + 2 * UNIT, colour: [1, 0.42, 0.1], power: 0.7 * h.glow * h.glow, reach: (6 + 5 * h.r) * UNIT })
+      out.push({ x: this.p.x, y: this.p.y, z: this.p.z + 3.5 * UNIT, colour: [1, 0.42, 0.1], power: 0.02 * h.glow * h.glow, reach: (5 + 3 * h.r) * UNIT })
     }
   }
 
