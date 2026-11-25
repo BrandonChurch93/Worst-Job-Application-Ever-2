@@ -1,8 +1,8 @@
 # Status pictures
 
-Time: 2026-11-25T12:06Z. Phase 2, status 19.
+Time: 2026-11-25T12:26Z. Phase 2, status 20.
 
-1. `01-declined-step2-rest.jpg`: Step 2 at rest. Left: your approved picture. Right: the blockout. Labels at the left, controls at the right in both.
-2. `02-declined-step3-loader-page.jpg`: Step 3 at rest. Left: your approved picture. Right: the blockout. The loader port at the right edge, its tube running off the screen.
-3. `03-declined-step4-submit-place.jpg`: The boss fight. Left: your approved picture. Right: the blockout as judged. The socket at bottom centre is kept; how it is drawn is being fixed.
-4. `04-declined-step1-form-place.jpg`: Step 1 under fire. Left: your approved picture. Right: the blockout as judged. Form in the upper half, keyboard below.
+1. `01-fix-last-save.jpg`: The last save. Left: your approved picture. Right: the pinball agent's fix, from its branch. Lower camera, flipper up, ball on it.
+2. `02-fix-lobby-doors.jpg`: The lobby doors. Left: your approved picture. Right: the pinball agent's fix, from its branch. Low on the carpet, plate, shut leaves, door post.
+3. `03-fix-rail-cam.jpg`: The rail camera. Left: your approved picture. Right: the pinball agent's fix, from its branch. The ball on two rails.
+4. `04-fix-boss-socket.jpg`: The boss unfolds, twelve frames from the boss agent's branch. The empty socket at bottom centre is a dark hole with cracked rim.
