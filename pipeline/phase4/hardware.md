@@ -27,7 +27,7 @@ Owner: hardware. Parts: `table-hardware`, `lift`. Code: `src/table/real/hardware
 - Ring after a shot, with no clock: the plunger's overshoot is a function of how far the ball has gone up the launch lane, `8 px * exp(-d / 2) * sin(2 pi d / 1.5)` with d in balls, and only while the pull is 0.
 - The lift, tier by tier: a tube lying in the left lane (middle 61 px over the lane's floor) from a turned aluminium cup at 10.55 balls down the tier up to the bend (corporate, office) or to the top wall (street). Collars every 3.4 balls, a clamp half a step from each. At a door the collars stand either side of the opening.
 - The bend is a quarter turn of 0.75 balls on the middle line, 66 px in outer radius, glossy orange, with a seam along its back and a flange with five screws at each end.
-- A door is a steel frame set on the wall line with a pin under its lintel and a glossy orange flap hung from the pin. It rests leaning 25 degrees into the lane so it reads from above, swings a further 60 degrees when a ball goes through and falls shut as `exp(-4 t) |cos 7 t|`.
+- A door is a steel frame on the wall's face (two jambs screwed to the floor, a lintel 88 px up) with a pin under the lintel and a glossy orange flap hung from the pin. The flap is moulded: it bulges 27 px into the tier and carries three ribs, so it reads from above though the wall over it is tall. It swings 72 degrees into the lane when a ball goes through and falls shut as `exp(-4 t) |cos 7 t|`.
 - Steel balls: chrome finish of the zone's one material, 24 sides, one instanced mesh per tier with as many instances as there are steel balls in that zone.
 - Drain: drawn on the last screen only, from the second point of the layout's rail. In the apron it is under the slab.
 

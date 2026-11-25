@@ -5,7 +5,8 @@ import { Geo, type V2, type V3 } from './geo'
 import { TUBE, clamp, collar, frameAt, lengthOf, shells, spot } from './kit'
 import { FIN, Screws, TONE, shade } from './mats'
 
-export const LIFT = { centre: TUBE.outer + 1.5, foot: 10.55, elbowOut: 66, bend: 0.75 * BALL, lean: 0.44, swing: 1.05, decay: 4, beat: 7 }
+export const LIFT = { centre: TUBE.outer + 1.5, foot: 10.55, elbowOut: 66, bend: 0.75 * BALL, lean: 0, swing: 1.25, decay: 4, beat: 7 }
+export const DOOR = { high: 88 }
 
 export interface Lift { G: Geo; C: Geo; S: Screws; flap: Geo | null; hinge: V3 }
 
@@ -99,36 +100,39 @@ export function lift(z: Zone): Lift {
     if (f) collar(G, S, f, { long: 26, out: TUBE.collarOut + 3 })
   }
 
-  // The door: a flap hung from a pin in a steel frame set in the wall between the lane and the floor.
+  // The door: a moulded flap hung from a pin under the lintel of a steel frame on the wall's face. It bulges into the tier, so it reads from above.
   let flap: Geo | null = null
   let hinge: V3 = [0, 0, 0]
   if (door) {
     const a = spot(z, door.a[0], v(Math.min(door.a[1], door.b[1])))
     const b = spot(z, door.a[0], v(Math.max(door.a[1], door.b[1])))
-    const x = spot(z, (COLS.liftB + COLS.left) / 2, 0)[0]
-    const t = ((COLS.left - COLS.liftB) * BALL) / 2 + 1.5
+    const x = a[0]
     const y0 = b[1]
     const y1 = a[1]
-    const high = 84
-    for (const y of [y0 - 5, y1 + 5]) G.f(FIN.zinc).box(x - t, x + t, y - 5, y + 5, 0.4, high, TONE.zinc, { bevel: 1.4 })
-    G.box(x - t, x + t, y0 - 10, y1 + 10, high - 9, high, TONE.zinc, { bevel: 1.4 })
-    G.f(FIN.steel).pipe([[x + t + 2, y0 - 2, high - 6], [x + t + 2, y1 + 2, high - 6]], 2.4, 8, TONE.steel)
-    for (const y of [y0 - 5, y1 + 5]) {
-      S.add(x, y, high, 0.7)
-      G.f(FIN.zinc).box(x + t, x + t + 18, y - 6, y + 6, 0.4, 2.8, TONE.zinc)
-      S.add(x + t + 10, y, 2.8, 0.8)
+    const high = DOOR.high
+    for (const y of [y0 - 4, y1 + 4]) {
+      G.f(FIN.zinc).box(x - 2, x + 9, y - 6, y + 6, 0.4, high, TONE.zinc, { bevel: 1.4 })
+      G.box(x + 9, x + 25, y - 6, y + 6, 0.4, 2.8, TONE.zinc)
+      S.add(x + 17.5, y, 2.8, 0.8)
+      S.add(x + 3.5, y, high, 0.7)
     }
-    hinge = [x + t + 2, (y0 + y1) / 2, high - 6]
+    G.box(x - 2, x + 11, y0 - 10, y1 + 10, high - 8, high, TONE.zinc, { bevel: 1.4 })
+    const hz = high - 13
+    const hx = x + 7
+    G.f(FIN.steel).pipe([[hx, y0 + 1, hz], [hx, y1 - 1, hz]], 2.2, 6, TONE.steel)
+    hinge = [hx, (y0 + y1) / 2, hz]
     flap = new Geo()
-    const w = (y1 - y0) / 2 - 3
-    const tall = high - 12
-    flap.f(FIN.gloss)
-    const loop: V2[] = [[-w, 0], [-w, -tall + 9], [-w + 3, -tall + 3], [-w + 9, -tall], [w - 9, -tall], [w - 3, -tall + 3], [w, -tall + 9], [w, 0]]
-    const from = flap.vertices
-    flap.slab(loop, -2.6, 2.6, TONE.orange, { bevel: 1.2, bottom: true })
-    flap.slab(loop.map((p) => [p[0] * 0.8, p[1] * 0.8 - 6] as V2), 2.6, 4.2, TONE.orange, { bevel: 1.2 })
-    flap.move(from, new THREE.Matrix4().makeBasis(new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, 0, 1), new THREE.Vector3(1, 0, 0)))
-    for (const s of [-0.6, 0.6]) flap.f(FIN.gloss).pipe([[0, w * s - 9, 0], [0, w * s + 9, 0]], 4.6, 10, TONE.orange)
+    const w = (y1 - y0) / 2 - 3.5
+    const tall = hz - 5
+    const out: V2[] = [[0, 5], [6, 4], [13, -2], [20, -12], [25, -25], [27, -40], [25, -54], [20, -65], [13, -tall]]
+    const thick = 5
+    const outline: V2[] = [...out, ...out.map((p, i) => [Math.max(-3, p[0] - thick - (i === 0 ? 0 : 1)), p[1] - (i < 2 ? 3 : 0)] as V2).reverse()]
+    flap.f(FIN.gloss).prism(outline, [0, -w], [0, w], (e) => (e < out.length - 1 ? TONE.orange : TONE.orangeSeam))
+    for (const s of [-0.5, 0, 0.5]) {
+      const rib: V2[] = [...out.slice(1).map((p) => [p[0] + 2.2, p[1]] as V2), ...out.slice(1).map((p) => [p[0] - 1, p[1]] as V2).reverse()]
+      flap.prism(rib, [0, w * s - 3], [0, w * s + 3], TONE.orange)
+    }
+    for (const s of [-0.62, 0.62]) flap.pipe([[0, w * s - 12, 0], [0, w * s + 12, 0]], 5.4, 8, TONE.orange)
   }
   return { G, C, S, flap, hinge }
 }
