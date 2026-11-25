@@ -21,14 +21,14 @@ const watch: P = { x: SLOT.leverX + 6, y: SLOT.y + SLOT.h + 6 }
 const hub: P = { x: CRANK.hx, y: CRANK.hy }
 const grip: P = { x: CRANK.hx + CRANK.arm * Math.cos(CRANK.rest), y: CRANK.hy + CRANK.arm * Math.sin(CRANK.rest) }
 const TURNS = 3.03
-const away: P = { x: CRANK.hx + 250, y: CRANK.hy - 6 }
-const caught: P = { x: CRANK.hx + 62, y: CRANK.hy - 30 }
+const away: P = { x: CRANK.hx + 636, y: CRANK.hy - 6 }
+const caught: P = { x: CRANK.hx + 37, y: CRANK.hy - 100 }
 export const BUTTON: P = { x: 1688, y: 1004 }
 
 const T = {
   phone: 1.88, zero: 2.33, one: 2.99, third: 4.25,
   birth: 8.2, lever: 9.15,
-  volume: 14.0, crank: 14.45, runaway: 15.17, lean: 16.36, press: 20.3
+  volume: 14.0, crank: 14.45, runaway: 15.17, lean: 16.32, press: 20.3
 }
 
 const wind = (t: number, k: number, long: number): Seg[] => [
@@ -71,10 +71,10 @@ const path: Seg[] = [
   line(T.volume + 0.12, T.crank - 0.05, field(2), grip),
   line(T.crank - 0.05, T.crank, grip, grip),
   arc(T.crank, T.runaway + 0.01, hub, CRANK.arm, CRANK.rest, CRANK.rest + TURNS * 2 * Math.PI, (u) => u * (1.25 - 0.25 * u)),
-  line(T.runaway + 0.01, T.runaway + 0.26, grip, away),
-  line(T.runaway + 0.26, T.lean, away, { x: away.x + 14, y: away.y + 8 }),
-  line(T.lean, T.lean + 0.1, { x: away.x + 14, y: away.y + 8 }, caught),
-  line(T.lean + 0.1, 17.7, caught, caught),
+  line(T.runaway + 0.01, T.runaway + 0.36, grip, away),
+  line(T.runaway + 0.36, T.lean, away, { x: away.x + 14, y: away.y + 8 }),
+  line(T.lean, T.lean + 0.3, { x: away.x + 14, y: away.y + 8 }, caught),
+  line(T.lean + 0.3, 17.7, caught, caught),
   line(17.7, 19.9, caught, { x: BUTTON.x - 40, y: BUTTON.y - 4 }),
   line(19.9, 20.24, { x: BUTTON.x - 40, y: BUTTON.y - 4 }, BUTTON),
   line(20.24, 21, BUTTON, BUTTON)
@@ -106,7 +106,7 @@ export function pointerAt(time: number): Pointer {
 
 const acts: [number, Acting][] = [
   [0, 'confident'], [T.third + 0.56, 'shocked'], [6.5, 'nervous'], [9.5, 'plain'], [11.0, 'shocked'], [11.5, 'scared'], [13.3, 'angry'],
-  [T.runaway, 'shocked'], [T.lean - 0.25, 'plain'], [T.lean + 0.25, 'exhausted'], [20.26, 'plain']
+  [T.runaway, 'shocked'], [T.lean - 0.1, 'confident'], [16.95, 'exhausted'], [20.28, 'plain']
 ]
 
 export function actingAt(time: number): Acting {
@@ -117,5 +117,5 @@ export function actingAt(time: number): Acting {
 
 export const reactions: [number, Reaction][] = [
   [T.phone - 0.08, 'anticipate'], [3.3, 'jump'], [T.third - 0.12, 'anticipate'], [6.6, 'doubleTake'], [9.05, 'anticipate'], [11.05, 'doubleTake'], [13.3, 'dustOff'],
-  [T.crank - 0.1, 'anticipate'], [T.runaway + 0.03, 'recoil'], [T.lean - 0.2, 'doubleTake'], [20.2, 'jump']
+  [T.crank - 0.1, 'anticipate'], [T.runaway + 0.03, 'recoil'], [T.lean - 0.3, 'doubleTake']
 ]

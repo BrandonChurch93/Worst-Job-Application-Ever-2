@@ -762,10 +762,12 @@ export function makePage(): PageLogic {
 
   function machinesSheet(): SheetFrame {
     const list: DrawList = []
-    const demo = { dial: freshDial(), slot: freshSlot(), crank: { ...freshCrank(), level: 0.4, b: 1.05 } }
+    const demo = { dial: freshDial(), slot: { ...freshSlot(), p: 1 }, crank: { ...freshCrank(), level: 0.4, b: 0.6 } }
     demo.slot.to = SLOT.film.map((legend, r) => SLOT.strips[r]!.indexOf(legend))
-    const spots = [{ x: 150, y: 430 }, { x: 540, y: 455 }, { x: 1044, y: 408 }]
-    const origin = [{ x: DIAL.cx - DIAL.r, y: DIAL.cy - DIAL.r }, { x: SLOT.x, y: SLOT.y }, { x: FX + 24, y: trayY(2) + 24 }]
+    const spots = [{ x: 150, y: 400 }, { x: 450, y: 425 }, { x: 1010, y: 560 }]
+    const origin = [{ x: DIAL.cx - DIAL.r, y: DIAL.cy - DIAL.r }, { x: SLOT.x, y: SLOT.y }, { x: CRANK.hx, y: CRANK.hy }]
+    const meterAt = { x: 900, y: 372 }
+    const labelX = [150, 450, 900]
     for (let i = 0; i < 3; i++) {
       const dx = spots[i]!.x - origin[i]!.x
       const dy = spots[i]!.y - origin[i]!.y
@@ -775,15 +777,16 @@ export function makePage(): PageLogic {
       const settledNow = SLOT.film.map((legend, r) => reelId(r, legend))
       for (const child of find(layout, `${ROWS[i]}-tray`).children ?? []) drawLayout(local, child, { states: i === 1 ? settledNow : [], over })
       for (const shape of local) {
-        list.push({ ...shape, id: `sheet-${shape.id}`, x: shape.x + dx, y: shape.y + dy })
+        const meter = shape.id.startsWith('meter-')
+        list.push({ ...shape, id: `sheet-${shape.id}`, x: meter ? shape.x - CRANK.segX + meterAt.x : shape.x + dx, y: meter ? shape.y - CRANK.segY + meterAt.y : shape.y + dy })
       }
       const extra: DrawList = []
       machine(extra, i, demo, 1, dx, dy, 'sheet-')
       for (const shape of extra) list.push(shape)
       const label = find(layout, `${ROWS[i]}-label`)
-      list.push({ id: `sheet-${label.id}`, part: 'type', kind: 'text', x: i === 2 ? spots[i]!.x + 36 : spots[i]!.x, y: 330, w: label.box[2]!, h: label.box[3]!, z0: 0, z1: 0, tone: 'ink', words: label.copy!, type: label.type! })
+      list.push({ id: `sheet-${label.id}`, part: 'type', kind: 'text', x: labelX[i]!, y: 316, w: label.box[2]!, h: label.box[3]!, z0: 0, z1: 0, tone: 'ink', words: label.copy!, type: label.type! })
     }
-    return { list, cursors: [restPose(470, 700)], view: frame({ x: 110, y: 250, w: 1600, h: 500 }, 1) }
+    return { list, cursors: [restPose(400, 640)], view: frame({ x: 100, y: 120, w: 1240, h: 697 }, 1) }
   }
 
   return page
