@@ -1,35 +1,35 @@
 {
   "folder": "keyboard",
-  "pushed": "2026-11-25T15:53:26.797Z",
-  "commit": "98fae6280c9d66b0d726666941c4cf3843f2d0a6",
+  "pushed": "2026-11-25T16:07:23.783Z",
+  "commit": "8950e4d1b68742d7d62a8bc5e328230a616cccfd",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still step1-step1_lastName-0p03-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-25T15:51:11.683Z",
+      "caption": "Still step1-step1_lastName-0p094-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T16:03:05.196Z",
       "by": "keyboard",
-      "from": "out/work/stills/step1-step1_lastName-0p03-hd-draft.png"
+      "from": "out/work/stills/step1-step1_lastName-0p094-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Approved above, review still of step1-fire below at 98fae62: softer caps, wider gaps, longer barrels, brighter bolts",
-      "time": "2026-11-25T15:53:24.223Z",
+      "caption": "Still key-step1-fire-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-25T16:06:08.277Z",
       "by": "keyboard",
-      "from": "out/work/look-t-compare.jpg"
+      "from": "out/work/stills/key-step1-fire-hd-review.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Caps beside the approved at 1.4x: wide shoulder, shallow dish, 1.2 px inset",
-      "time": "2026-11-25T15:53:24.522Z",
+      "caption": "Round 3: approved above, review still at 8950e4d below: lit steel between the caps, no turret smudge on Shift",
+      "time": "2026-11-25T16:07:22.252Z",
       "by": "keyboard",
-      "from": "out/work/look-u-caps.jpg"
+      "from": "out/work/look-v-compare.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Right turret going down: barrel stowed inside the hatch, lids closing",
-      "time": "2026-11-25T15:53:24.781Z",
+      "caption": "Shuffle at 8950e4d: flying caps throw no shadow on the bed (not done, see keyboard.md 21)",
+      "time": "2026-11-25T16:07:22.494Z",
       "by": "keyboard",
-      "from": "out/work/l68-down.jpg"
+      "from": "out/work/l72-shuffle.jpg"
     }
   ]
 }
