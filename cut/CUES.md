@@ -17,8 +17,8 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | `step1.lastName` | 24.000 | 1440 | 1739 | `keys-shuffle` | 24.300 | 1458 | yes |
 | `step1.email` | 29.000 | 1740 | 2039 | `slab-drop` | 32.129 | 1927 | yes |
 | `step1.resume` | 34.000 | 2040 | 2159 | `paper-slide` | 34.175 | 2050 | yes |
-| `step1.tug` | 36.000 | 2160 | 2579 | `arms-out` | 36.254 | 2175 | yes |
-| `step1.shredded` | 43.000 | 2580 | 2759 | `strips-zip` | 44.362 | 2661 | yes |
+| `step1.tug` | 36.000 | 2160 | 2534 | `arms-out` | 36.254 | 2175 | yes |
+| `step1.shredded` | 42.250 | 2535 | 2759 | `strips-zip` | 42.558 | 2553 | yes |
 | `step2.open` | 46.000 | 2760 | 2879 | none |  |  |  |
 | `step2.dial` | 48.000 | 2880 | 3239 | `dial-fling` | 51.575 | 3094 | yes |
 | `step2.slot` | 54.000 | 3240 | 3599 | `coins` | 57.962 | 3477 | yes |
@@ -48,7 +48,7 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 
 ## Events with a cue
 
-656 of the film's 656 events have a cue in the table of events to cues. A cue starts on the frame of its event.
+657 of the film's 657 events have a cue in the table of events to cues. A cue starts on the frame of its event.
 
 | Time s | Frame | Beat | Event | Cue | Hits the cursor |
 | --- | --- | --- | --- | --- | --- |
@@ -57,26 +57,26 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | 2.104 | 126 | `marketing.perks` | `card-flip` | `card-flip` | no |
 | 2.233 | 134 | `marketing.perks` | `step` | `step` | no |
 | 2.454 | 147 | `marketing.perks` | `step` | `step` | no |
-| 4.037 | 242 | `marketing.perks` | `card-flip` | `card-flip` | no |
-| 4.046 | 242 | `marketing.perks` | `step` | `step` | no |
-| 4.158 | 249 | `marketing.perks` | `step` | `step` | no |
-| 4.267 | 256 | `marketing.perks` | `step` | `step` | no |
-| 4.388 | 263 | `marketing.perks` | `step` | `step` | no |
-| 5.737 | 344 | `marketing.perks` | `card-flip` | `card-flip` | no |
-| 5.746 | 344 | `marketing.perks` | `step` | `step` | no |
-| 5.858 | 351 | `marketing.perks` | `step` | `step` | no |
-| 5.967 | 358 | `marketing.perks` | `step` | `step` | no |
-| 6.088 | 365 | `marketing.perks` | `step` | `step` | no |
-| 7.704 | 462 | `marketing.perks` | `step` | `step` | no |
-| 8.358 | 501 | `marketing.ticker` | `step` | `step` | no |
-| 8.537 | 512 | `marketing.ticker` | `step` | `step` | no |
-| 8.754 | 525 | `marketing.ticker` | `step` | `step` | no |
-| 9.896 | 593 | `marketing.ticker` | `step` | `step` | no |
-| 10.050 | 603 | `marketing.ticker` | `step` | `step` | no |
-| 10.192 | 611 | `marketing.ticker` | `step` | `step` | no |
-| 10.333 | 620 | `marketing.ticker` | `step` | `step` | no |
-| 10.504 | 630 | `marketing.ticker` | `step` | `step` | no |
-| 12.971 | 778 | `marketing.apply` | `button-press` | `button-press` | no |
+| 4.313 | 258 | `marketing.perks` | `card-flip` | `card-flip` | no |
+| 4.325 | 259 | `marketing.perks` | `step` | `step` | no |
+| 4.454 | 267 | `marketing.perks` | `step` | `step` | no |
+| 4.575 | 274 | `marketing.perks` | `step` | `step` | no |
+| 4.713 | 282 | `marketing.perks` | `step` | `step` | no |
+| 6.350 | 381 | `marketing.perks` | `card-flip` | `card-flip` | no |
+| 6.362 | 381 | `marketing.perks` | `step` | `step` | no |
+| 6.479 | 388 | `marketing.perks` | `step` | `step` | no |
+| 6.596 | 395 | `marketing.perks` | `step` | `step` | no |
+| 6.725 | 403 | `marketing.perks` | `step` | `step` | no |
+| 9.600 | 576 | `marketing.ticker` | `step` | `step` | no |
+| 9.771 | 586 | `marketing.ticker` | `step` | `step` | no |
+| 9.912 | 594 | `marketing.ticker` | `step` | `step` | no |
+| 10.046 | 602 | `marketing.ticker` | `step` | `step` | no |
+| 10.179 | 610 | `marketing.ticker` | `step` | `step` | no |
+| 10.317 | 619 | `marketing.ticker` | `step` | `step` | no |
+| 10.467 | 628 | `marketing.ticker` | `step` | `step` | no |
+| 10.654 | 639 | `marketing.ticker` | `step` | `step` | no |
+| 11.567 | 694 | `marketing.apply` | `step` | `step` | no |
+| 12.771 | 766 | `marketing.apply` | `button-press` | `button-press` | no |
 | 13.500 | 810 | `marketing.apply` | `page-turn` | `page-turn` | no |
 | 14.550 | 873 | `step1.keyboard` | `step` | `step` | no |
 | 14.592 | 875 | `step1.keyboard` | `step` | `step` | no |
@@ -374,17 +374,18 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | 31.725 | 1903 | `step1.email` | `step` | `step` | no |
 | 31.867 | 1912 | `step1.email` | `step` | `step` | no |
 | 32.129 | 1927 | `step1.email` | `slab-drop` | `slab-drop` | no |
-| 32.158 | 1929 | `step1.email` | `step` | `step` | no |
-| 32.225 | 1933 | `step1.email` | `step` | `step` | no |
-| 32.408 | 1944 | `step1.email` | `step` | `step` | no |
-| 32.433 | 1946 | `step1.email` | `step` | `step` | no |
-| 32.458 | 1947 | `step1.email` | `step` | `step` | no |
-| 32.508 | 1950 | `step1.email` | `step` | `step` | no |
-| 32.675 | 1960 | `step1.email` | `step` | `step` | no |
+| 32.146 | 1928 | `step1.email` | `step` | `step` | no |
+| 32.179 | 1930 | `step1.email` | `step` | `step` | no |
+| 32.246 | 1934 | `step1.email` | `step` | `step` | no |
+| 32.579 | 1954 | `step1.email` | `step` | `step` | no |
+| 32.608 | 1956 | `step1.email` | `step` | `step` | no |
+| 32.638 | 1958 | `step1.email` | `step` | `step` | no |
+| 32.671 | 1960 | `step1.email` | `step` | `step` | no |
 | 32.683 | 1961 | `step1.email` | `slab-drop` | `slab-drop` | no |
-| 32.729 | 1963 | `step1.email` | `step` | `step` | no |
-| 32.996 | 1979 | `step1.email` | `step` | `step` | no |
-| 33.042 | 1982 | `step1.email` | `step` | `step` | no |
+| 33.138 | 1988 | `step1.email` | `step` | `step` | no |
+| 33.167 | 1990 | `step1.email` | `step` | `step` | no |
+| 33.196 | 1991 | `step1.email` | `step` | `step` | no |
+| 33.233 | 1994 | `step1.email` | `step` | `step` | no |
 | 33.237 | 1994 | `step1.email` | `slab-drop` | `slab-drop` | no |
 | 34.175 | 2050 | `step1.resume` | `paper-slide` | `paper-slide` | no |
 | 34.483 | 2069 | `step1.resume` | `step` | `step` | no |
@@ -396,11 +397,11 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | 36.254 | 2175 | `step1.tug` | `arms-out` | `paper-strain` | no |
 | 36.304 | 2178 | `step1.tug` | `step` | `step` | no |
 | 36.350 | 2181 | `step1.tug` | `step` | `step` | no |
-| 37.254 | 2235 | `step1.tug` | `paper-strain` | `paper-strain` | no |
-| 38.958 | 2337 | `step1.tug` | `paper-strain` | `paper-strain` | no |
-| 40.571 | 2434 | `step1.tug` | `paper-strain` | `paper-strain` | no |
-| 41.971 | 2518 | `step1.tug` | `paper-strain` | `paper-strain` | no |
-| 44.362 | 2661 | `step1.shredded` | `strips-zip` | `strips-zip` | no |
+| 37.063 | 2223 | `step1.tug` | `paper-strain` | `paper-strain` | no |
+| 38.392 | 2303 | `step1.tug` | `paper-strain` | `paper-strain` | no |
+| 39.671 | 2380 | `step1.tug` | `paper-strain` | `paper-strain` | no |
+| 40.754 | 2445 | `step1.tug` | `paper-strain` | `paper-strain` | no |
+| 42.558 | 2553 | `step1.shredded` | `strips-zip` | `strips-zip` | no |
 | 45.500 | 2730 | `step1.shredded` | `page-turn` | `page-turn` | no |
 | 46.533 | 2792 | `step2.open` | `step` | `step` | no |
 | 46.558 | 2793 | `step2.open` | `step` | `step` | no |
@@ -722,10 +723,10 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | `line.step1.firstName.1` | `step1.firstName` | 20.800 | 1248 | 23.300 | 1397 | estimate | 0.700 | Shot. / On field one. |
 | `line.step1.lastName.0` | `step1.lastName` | 24.000 | 1440 | 28.375 | 1702 | estimate | 0.625 | The keys moved. / It did not notice. |
 | `line.step1.email.0` | `step1.email` | 29.000 | 1740 | 33.375 | 2002 | estimate | 0.625 | A valid email. / Rejected. / As is tradition. |
-| `line.step1.resume.0` | `step1.resume` | 34.000 | 2040 | 35.875 | 2152 | estimate | 0.475 | Ah. / The resume. |
-| `line.step1.tug.0` | `step1.tug` | 36.350 | 2181 | 38.850 | 2330 | estimate | 1.000 | It grows arms. / Desperate. |
-| `line.step1.tug.1` | `step1.tug` | 39.850 | 2391 | 42.350 | 2540 | estimate | 0.650 | The shredder / always wins. |
-| `line.step1.shredded.0` | `step1.shredded` | 43.000 | 2580 | 45.500 | 2729 | estimate | 0.500 | Now type it again. |
+| `line.step1.resume.0` | `step1.resume` | 34.000 | 2040 | 35.875 | 2152 | estimate | 0.438 | Ah. / The resume. |
+| `line.step1.tug.0` | `step1.tug` | 36.313 | 2179 | 38.813 | 2328 | estimate | 0.625 | It grows arms. / Desperate. |
+| `line.step1.tug.1` | `step1.tug` | 39.438 | 2366 | 41.938 | 2515 | estimate | 0.312 | The shredder / always wins. |
+| `line.step1.shredded.0` | `step1.shredded` | 42.250 | 2535 | 44.750 | 2684 | estimate | 1.250 | Now type it again. |
 | `line.step2.open.0` | `step2.open` | 46.000 | 2760 | 47.875 | 2872 | estimate | 0.425 | Personal details. / Simple. |
 | `line.step2.dial.0` | `step2.dial` | 48.300 | 2898 | 52.675 | 3160 | estimate | 1.325 | A phone. / From before it was born. |
 | `line.step2.slot.0` | `step2.slot` | 54.000 | 3240 | 59.000 | 3539 | estimate | 1.000 | Its birthday / is now a gamble. / It loses. |

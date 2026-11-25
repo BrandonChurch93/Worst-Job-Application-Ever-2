@@ -29,8 +29,8 @@ Frames 840 to 2759.
 | `step1.lastName` | 1440 to 1739 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
 | `step1.email` | 1740 to 2039 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
 | `step1.resume` | 2040 to 2159 | `home`, then `film` | follows, pushes in | x 0, y 0, 1920 by 1080 | x 29.5, y 98.5, 1578.7 by 888 |
-| `step1.tug` | 2160 to 2579 | `film` | follows, pushes in | x 31.7, y 105.6, 1553.9 by 874.1 | x 90, y 300, 880 by 495 |
-| `step1.shredded` | 2580 to 2759 | `film`, then `home` | follows, eases out | x 90, y 300, 880 by 495 | x 0, y 0, 1920 by 1080 |
+| `step1.tug` | 2160 to 2534 | `film` | follows, pushes in | x 31.7, y 105.6, 1553.9 by 874.1 | x 56.1, y 187.2, 1271.2 by 715.1 |
+| `step1.shredded` | 2535 to 2759 | `film`, then `home` | follows, eases out | x 53.4, y 178, 1303 by 732.9 | x 0, y 0, 1920 by 1080 |
 
 ## step2
 
