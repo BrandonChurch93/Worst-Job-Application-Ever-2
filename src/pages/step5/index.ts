@@ -143,13 +143,13 @@ export function makePage(): PageLogic {
     const rest = { cx: places.rest.cx, cy: places.rest.cy, z: 0, rot: 0 }
     if (s.phase !== 'letter') return rest
     const p = seconds()
-    const high = 360
-    const carryZ = 170
+    const high = 200
+    const carryZ = 120
     const on = heights.paper
     if (p < AT.swoop[0]) return null
     if (p < AT.swoop[1]) {
       const u = out3(span(p, AT.swoop))
-      return { cx: mark.cx + (1 - u) * 190, cy: mark.cy - (1 - u) * (mark.cy + 260), z: high + (1 - u) * 80, rot: MARK_ROT }
+      return { cx: mark.cx + (1 - u) * 190, cy: mark.cy - (1 - u) * (mark.cy + 260), z: high + (1 - u) * 20, rot: MARK_ROT }
     }
     if (p < AT.slam[1]) {
       const u = span(p, AT.slam)
