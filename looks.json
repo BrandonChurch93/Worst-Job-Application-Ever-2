@@ -1,35 +1,35 @@
 {
   "folder": "ui",
-  "pushed": "2026-11-25T09:03:44.132Z",
-  "commit": "276c34a746e6c6d5bcd01ef0e66a17d5148462ba",
+  "pushed": "2026-11-25T09:17:58.341Z",
+  "commit": "6effdab7ee655648711a88910be345a16894d32f",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Live, careers page: the sound control and the film link, top left above the title (dev page over a still of the stub page)",
-      "time": "2026-11-25T09:03:42.552Z",
+      "caption": "Live, the real careers page at rest: sound and the film link above the title (dev page over a still, not the wired site)",
+      "time": "2026-11-25T09:17:56.525Z",
       "by": "ui",
       "from": "out/work/stills/ui-live.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Live, step 1 with the skip link due: sound on, Watch the film instead, Skip step (Accept Defeat)",
-      "time": "2026-11-25T09:03:42.773Z",
+      "caption": "Live, step 2 with the skip link due, words drawn in Inter from the stage's outlines (dev page over a still)",
+      "time": "2026-11-25T09:17:56.753Z",
       "by": "ui",
       "from": "out/work/stills/ui-skip.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Film mode: play, position, time, sound and back along the bottom",
-      "time": "2026-11-25T09:03:42.993Z",
+      "caption": "Live, careers page scrolled: the row gets a pale capsule when content passes under it (backing light)",
+      "time": "2026-11-25T09:17:56.978Z",
       "by": "ui",
-      "from": "out/work/stills/ui-film.png"
+      "from": "out/work/stills/ui-scrolled.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "The menu on M (top left), the probe page with made-up numbers (bottom left), the touch message on a phone (right)",
-      "time": "2026-11-25T09:03:43.205Z",
+      "caption": "Film mode over the careers page: the bar covers the ticker while it shows, and fades after 2.6 s of play",
+      "time": "2026-11-25T09:17:57.209Z",
       "by": "ui",
-      "from": "out/work/stills/ui-menu-probe-touch.png"
+      "from": "out/work/stills/ui-film.png"
     }
   ]
 }
