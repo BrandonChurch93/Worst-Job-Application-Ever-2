@@ -14,6 +14,7 @@ export const shade = (c: RGB, k: number): RGB => [c[0] * k, c[1] * k, c[2] * k]
 export const TONE = {
   alu: hex(0xdde0e3),
   aluDark: hex(0xa3a7ac),
+  aluDeep: hex(0x777b80),
   aluBright: hex(0xeceef0),
   brass: hex(0xc9a45c),
   ceramic: hex(0xecebe6),
@@ -66,7 +67,7 @@ export const screwOf = (z: Zone): THREE.MeshPhysicalMaterial => own(lit(studio(n
 
 // Clear plastic with no light passed through it: thin where it is seen straight on, bright where it turns away and wherever a lamp shines in it, with the dark line a clear wall shows just inside its edge.
 export const clearOf = (z: Zone, name = 'clear', base = 0.06): THREE.MeshPhysicalMaterial => {
-  const m = studio(new THREE.MeshPhysicalMaterial({ color: 0xdfe8ea, roughness: 0.06, metalness: 0, transparent: true, opacity: base, depthWrite: false, specularIntensity: 1, clearcoat: 1, clearcoatRoughness: 0.04 }))
+  const m = studio(new THREE.MeshPhysicalMaterial({ color: 0x8a9296, roughness: 0.06, metalness: 0, transparent: true, opacity: base, depthWrite: false, specularIntensity: 1, clearcoat: 1, clearcoatRoughness: 0.04 }))
   const room = m.onBeforeCompile
   m.onBeforeCompile = (shader, renderer) => {
     room.call(m, shader, renderer)

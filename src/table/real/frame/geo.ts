@@ -158,6 +158,42 @@ export class Geo {
     return this
   }
 
+  // A turned thing with a slot cut through it. Both walls of the slot run parallel, `half` either side of the line from the centre toward `toward`.
+  slotted(outline: V2[], cx: number, cy: number, segs: number, col: RGB | ((step: number) => RGB), toward: number, half: number): this {
+    const open = (r: number): number => (r > half ? Math.asin(half / r) : Math.PI / 2)
+    const angle = (r: number, i: number): number => toward + open(r) + ((Math.PI * 2 - 2 * open(r)) * i) / segs
+    const v = (r: number, a: number, z: number): V3 => [cx + r * Math.cos(a), cy + r * Math.sin(a), z]
+    for (let k = 0; k < outline.length - 1; k++) {
+      const p = outline[k]!
+      const q = outline[k + 1]!
+      const dr = q[0] - p[0]
+      const dz = q[1] - p[1]
+      const l = Math.hypot(dr, dz)
+      if (l < 1e-6) continue
+      const nr = dz / l
+      const nz = -dr / l
+      const colour = typeof col === 'function' ? col(k) : col
+      const rm = Math.max(1, (p[0] + q[0]) / 2)
+      const n = (a: number): V3 => [nr * Math.cos(a), nr * Math.sin(a), nz]
+      for (let i = 0; i < segs; i++) {
+        const p0 = angle(p[0], i)
+        const p1 = angle(p[0], i + 1)
+        const q0 = angle(q[0], i)
+        const q1 = angle(q[0], i + 1)
+        const quad: [V3, V3, number, number][] = [[v(p[0], p0, p[1]), n(p0), p0 * rm, 0], [v(p[0], p1, p[1]), n(p1), p1 * rm, 0], [v(q[0], q1, q[1]), n(q1), q1 * rm, l], [v(q[0], q0, q[1]), n(q0), q0 * rm, l]]
+        const order = sign(quad[0]![0], quad[1]![0], quad[2]![0], quad[3]![0], n(p0)) ? [0, 1, 2, 0, 2, 3] : [0, 2, 1, 0, 3, 2]
+        for (const m of order) this.push(quad[m]![0], quad[m]![1], quad[m]![2], quad[m]![3] + p[0], colour)
+      }
+      if (Math.abs(dr) < 1e-6) continue
+      for (const [i, turn] of [[0, -1], [segs, 1]] as [number, number][]) {
+        const a = angle(p[0], i)
+        const b = angle(q[0], i)
+        this.face([v(p[0], a, p[1]), v(q[0], b, q[1]), v(q[0], b, 0), v(p[0], a, 0)], [-turn * Math.sin(toward), turn * Math.cos(toward), 0], [Math.cos(toward), Math.sin(toward), 0], colour)
+      }
+    }
+    return this
+  }
+
   // A round pipe along a path of points. `inward` turns its faces to the inside.
   pipe(path: V3[], radius: number, segs: number, col: RGB, inward = false, arc: [number, number] = [0, Math.PI * 2]): this {
     const frames: { o: V3; s: V3; u: V3 }[] = []
