@@ -25,27 +25,27 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 13, 2026-11-25T09:56Z, Phase 2.
+Status 14, 2026-11-25T10:23Z, Phase 2.
 
-1. `out/stills/status/01-blockout-pinball-map.jpg`: Step 3 blockout, the machine from straight above: the marquee THE DAILY GRIND with the score, then the Corporate, Office and Street tiers one below the other, each with its own flippers.
-2. `out/stills/status/02-blockout-pinball-wide.jpg`: Step 3 blockout, the whole machine seen from its foot: three tiers sunk into the tall page, and the Unemployment Office and the message window on the apron.
-3. `out/stills/status/03-blockout-pinball-reply-all.jpg`: Step 3 blockout, the key moment of Reply All on the Office tier: four balls in play among the three bumpers, with the Coffee model at the right.
-4. `out/stills/status/04-site-live-step1-fixed.jpg`: Screenshot of live mode, step 1, after the fix: every key has its letter while both turrets aim and a bolt is in flight.
+1. `out/stills/status/01-blockout-perk-slab.jpg`: Careers page blockout at 2.30 s: the first perk card half way over, one slab turning in its well, with the cursor riding its raised edge.
+2. `out/stills/status/02-blockout-last-save.jpg`: Step 3 blockout, the key moment of the last save: the ball on the right flipper with the cursor in it, the three bumpers above.
+3. `out/stills/status/03-site-film-start.jpg`: Screenshot of the built site in film mode, stopped at its start: the play button, and the bar with play, the position in the film, the time and the way back to the application.
+4. `out/stills/status/04-site-live-careers.jpg`: Screenshot of the built site in live mode, the careers page at rest: the sound sign and the link to the film at the top left, clear of the page's header.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 2, tick 42 at 2026-11-25T10:06:39Z, allowance: build
-time used in this phase: 2.47 h of its box of 6.50 h
-time used under the allowance in force: 4.57 h of 36.00 h allowed
-time used: 4.57 of 36.00 hours before the review
+clock: phase 2, tick 43 at 2026-11-25T10:23:32Z, allowance: build
+time used in this phase: 2.75 h of its box of 6.50 h
+time used under the allowance in force: 4.85 h of 36.00 h allowed
+time used: 4.85 of 36.00 hours before the review
 extra rounds: yes
 half point: not reached
 box end: not reached
 budget report: not due
-minutes since the last status: 10
+minutes since the last status: 0
 ```
 
 ## Phases
