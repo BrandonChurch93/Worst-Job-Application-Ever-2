@@ -203,7 +203,7 @@ describe('step 2, live', () => {
       l.advance(Math.round(at * stepHz))
       if (l.page.id !== 'step2') continue
       l.page.skip()
-      for (let n = 0; n < 3 * stepHz && l.page.id !== 'step3'; n++) l.advance(1)
+      for (let n = 0; n < 3 * stepHz && (l.page.id as string) !== 'step3'; n++) l.advance(1)
       expect(l.page.id, String(at)).toBe('step3')
       expect(l.cursor.taken, String(at)).toBe(false)
       expect(l.cursor.damaged, String(at)).toBe(false)
