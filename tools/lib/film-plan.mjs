@@ -180,7 +180,7 @@ export function timeLabel(frame, fps) {
 }
 
 // The grid of a contact sheet: tiles of one size with a label strip under each, the whole no longer than `edge` on its long edge.
-export function sheetGrid(count, pictureWidth, pictureHeight, { edge, gap = 8, labelHeight = 24, columns = null, head = 0 } = {}) {
+export function sheetGrid(count, pictureWidth, pictureHeight, { edge, gap = 8, labelHeight = 24, columns = 0, head = 0 }) {
   if (count < 1) throw new Error('A sheet needs at least one picture')
   const shape = pictureWidth / pictureHeight
   let best = null
