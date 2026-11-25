@@ -32,7 +32,7 @@ export const SETS: Record<string, CellSet> = {
       { name: 'shredded', body: { strips: heap } },
       { name: 'reassembled', body: { strips: whole9 } },
       { name: 'scorched', body: { char: 0.42 }, effects: { smoke: [{ x: 0.6, y: 1.2, amount: 0.8 }] } },
-      { name: 'punched', body: { holes: [{ x: 4.2, y: 8.6, r: 1.6, glow: 0 }] } },
+      { name: 'punched', body: { holes: [{ x: 4.2, y: 8.6, r: 1.6, glow: 0, burnt: 0 }] } },
       { name: 'flattened', body: { flat: 1, crack: 1 } }
     ]
   },

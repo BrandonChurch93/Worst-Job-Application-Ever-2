@@ -48,9 +48,11 @@ function dropMaterial(): THREE.MeshPhysicalMaterial {
       float wjaAway = -dot( wjaSide, wjaLamp );
       float wjaGather = smoothstep( 0.2, 0.75, wjaAway ) * ( 1.0 - smoothstep( 0.82, 0.98, length( wjaSide ) ) );
       float wjaEdge = pow( 1.0 - wjaFacing, 1.7 );
-      float wjaGlint = smoothstep( 0.95, 0.985, dot( reflect( -wjaV, wjaN ), wjaL ) );
-      diffuseColor.a = 0.05 + 0.9 * wjaEdge + 0.3 * smoothstep( 0.05, 0.85, -wjaAway ) * ( 1.0 - wjaEdge );
-      outgoingLight += vec3( 0.55, 0.55, 0.52 ) * wjaGather + vec3( 2.4, 2.35, 2.25 ) * wjaGlint;
+      float wjaGlint = smoothstep( 0.9, 0.965, dot( reflect( -wjaV, wjaN ), wjaL ) );
+      float wjaRim = pow( 1.0 - wjaFacing, 3.0 );
+      diffuseColor.a = 0.03 + 0.6 * wjaRim + 0.26 * smoothstep( 0.05, 0.85, -wjaAway ) * ( 1.0 - wjaRim );
+      outgoingLight *= 0.12 * ( 1.0 - 0.9 * wjaEdge );
+      outgoingLight += vec3( 0.5, 0.5, 0.47 ) * wjaGather + vec3( 2.6, 2.55, 2.45 ) * wjaGlint;
       #include <opaque_fragment>
       `
     )
