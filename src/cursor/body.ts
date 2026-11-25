@@ -33,6 +33,8 @@ const GAIT: Record<Acting, { stiff: number; damp: number; stride: number; hop: n
 const SPRING = { squash: { k: 620, c: 26 }, lean: { k: 330, c: 17 }, bend: { k: 260, c: 13 }, sprout: { k: 2400, c: 58 } }
 // A hit knocks the body over, past upright onto its other shoulder, and it swings back: the knocked cursor of the approved fire image.
 const TUMBLE = { far: 1.25, share: 0.6, out: { k: 900, c: 60 }, back: { k: 300, c: 27 } }
+// Thrown through the air it goes tip first: the arrow turns toward the way it flies, most when that is up or to the right. tip is the angle its tip points at rest.
+const DIVE = { tip: 2.09, far: 1.25, high: [5, 18] as [number, number], fast: [150, 400] as [number, number] }
 const DRAG = { stride: 90, pulse: 0.2, lean: 0.34 }
 const ARM = { rest: 62, strain: 70, shed: 0.3 }
 // What the body can be drawn at: the springs may ask for more, the pose never does.
@@ -40,6 +42,10 @@ const ARM = { rest: 62, strain: 70, shed: 0.3 }
 const LIMIT = { short: 0.55, long: 1.4, left: 0.6, right: 0.34 }
 // A limit that is leaned into, never hit: springs stacked on a hit still move the pose all the way.
 const soft = (v: number, limit: number): number => limit * Math.tanh(v / limit)
+const smooth01 = (t: number): number => {
+  const u = Math.min(1, Math.max(0, t))
+  return u * u * (3 - 2 * u)
+}
 const softSquash = (v: number): number => (v >= 1 ? 1 + soft(v - 1, LIMIT.long - 1) : 1 - soft(1 - v, 1 - LIMIT.short))
 const softLean = (v: number): number => (v >= 0 ? soft(v, LIMIT.right) : -soft(-v, LIMIT.left))
 const GULP = { every: 2 * stepHz, steps: Math.round(0.55 * stepHz) }
@@ -416,7 +422,10 @@ export class CursorBody {
     }
     s.squashV += (SPRING.squash.k * (stretch - s.squash) - SPRING.squash.c * s.squashV) * dt
     s.squash = Math.min(1.6, Math.max(0.35, s.squash + s.squashV * dt))
-    const over = s.reaction === 'recoil' && pose && 1 - s.reactionLeft / REACTION_SECONDS.recoil < TUMBLE.share ? TUMBLE.far * s.dir : 0
+    const free = !s.air && s.taken === null && !s.inBall
+    const flying = free ? smooth01((s.z - floor - DIVE.high[0]) / (DIVE.high[1] - DIVE.high[0])) * smooth01((now - DIVE.fast[0]) / (DIVE.fast[1] - DIVE.fast[0])) : 0
+    const knocked = s.reaction === 'recoil' && pose && 1 - s.reactionLeft / REACTION_SECONDS.recoil < TUMBLE.share
+    const over = knocked ? TUMBLE.far * s.dir : flying > 0 ? DIVE.far * Math.sin(DIVE.tip - Math.atan2(-s.vy, s.vx)) * flying : 0
     const swing = over !== 0 ? TUMBLE.out : TUMBLE.back
     s.spinV += (swing.k * (over - s.spin) - swing.c * s.spinV) * dt
     s.spin += s.spinV * dt
