@@ -1,0 +1,35 @@
+{
+  "folder": "boss",
+  "pushed": "2026-11-25T09:05:58.064Z",
+  "commit": "3a165046d70fa55f1e569f822b68e6e0d85e264a",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Step 4 at rest: the verify card, fine print and Submit in its socket",
+      "time": "2026-11-25T09:05:56.315Z",
+      "by": "boss",
+      "from": "out/work/stills/boss-boss_verify-0p5-preview-draft.png"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "boss.slabs at 12.5 s: health bar, slabs flying flat, darts, the open socket",
+      "time": "2026-11-25T09:05:56.572Z",
+      "by": "boss",
+      "from": "out/work/stills/boss-boss_slabs-0p5-preview-draft.png"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "boss.popups at 18.7 s: the pop-up column as shields",
+      "time": "2026-11-25T09:05:56.810Z",
+      "by": "boss",
+      "from": "out/work/stills/boss-boss_popups-0p45-preview-draft.png"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "boss.collapse at 28 s: the boss in parts, the button fallen and smoking",
+      "time": "2026-11-25T09:05:57.034Z",
+      "by": "boss",
+      "from": "out/work/stills/key-boss-down-preview-draft.png"
+    }
+  ]
+}
