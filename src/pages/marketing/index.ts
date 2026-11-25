@@ -20,12 +20,14 @@ const SLAT_GAP = 0.07
 export const FLIP_SECONDS = SLAT_SECONDS + (SLATS - 1) * SLAT_GAP
 const REJECTED_SETTLE = 1.7
 export const TRAVEL = heights.button - 4
-const WIND = 0.34
-const JUMP = 0.42
+const WIND = 0.45
+const BACK = 44
+const JUMP = 0.46
 const SINK = 0.09
 const HOLD = 0.3
-const JUMP_HEIGHT = 84
+const JUMP_HEIGHT = 96
 const AUTO_GAP = 0.5
+const LINK_LEAD = 96
 const BUTTONS = ['nav-cta', 'hero-cta', 'final-cta'] as const
 const HERO = 1
 
@@ -37,7 +39,6 @@ interface State {
   time: number
   scroll: number
   scrollTo: number
-  tape: number
   flip: number[]
   phase: number
   phaseTime: number
@@ -62,7 +63,7 @@ const smooth = (u: number): number => {
 const mod = (a: number, n: number): number => ((a % n) + n) % n
 
 export function makePage(): PageLogic {
-  const { layout, height } = careersLayout()
+  const { layout, height, sections } = careersLayout()
   const beats = config.film.beats.filter((b) => b.unit === 'marketing')
   const gags: GagInfo[] = beats.map((b) => ({ id: b.id, event: b.event ?? null }))
   const [strollBeat, perksBeat, tickerBeat, applyBeat] = ['marketing.stroll', 'marketing.perks', 'marketing.ticker', 'marketing.apply'].map((id) => beat(id)) as [ReturnType<typeof beat>, ReturnType<typeof beat>, ReturnType<typeof beat>, ReturnType<typeof beat>]
@@ -97,7 +98,7 @@ export function makePage(): PageLogic {
     item.at = tapeLength
     tapeLength += item.w + TICKER.gap
   }
-  const tapeSpeed = (tapeLength - tapeItems[tapeItems.length - 2]!.at) / applyBeat.from
+  const tapeSpeed = (tapeLength - tapeItems[tapeItems.length - 1]!.at) / applyBeat.from
   const afterKey = 'copy:marketing.tickerAfterRejection'
   const afterW = block(T.tape.font, words(afterKey), T.tape.px).width
   const afterCount = Math.ceil((TICKER.w + afterW) / (afterW + TICKER.gap)) + 1
@@ -106,20 +107,25 @@ export function makePage(): PageLogic {
   const tapeY = boxOf(layout, 'ticker-0').y
   const tapeH = boxOf(layout, 'ticker-0').h
 
+  const links = (['final', 'awards', 'perks'] as const).map((name, i) => {
+    const b = boxOf(layout, `nav-link-${i}`)
+    return { box: { ...b, x: b.x - 12, y: b.y - 16, w: b.w + 24, h: b.h + 32 }, to: Math.min(maxScroll, Math.max(0, sections[name]! - LINK_LEAD)) }
+  })
+
   const hero = caps[HERO]!
   const start = { x: 64, y: 596 }
   const marks: Marks = {
     start,
     lane: { x: 430, y: 598 },
-    cards: [0, 1, 2].map((i) => ({ x: cards[i]!.x + cards[i]!.w - 96, y: cards[i]!.y + 24 })),
-    off: { x: cards[2]!.cx - 30, y: cards[2]!.y - 44 },
+    cards: [0, 1, 2].map((i) => ({ x: cards[i]!.x + cards[i]!.w - 72, y: cards[i]!.y + 178 })),
+    off: { x: cards[2]!.x + cards[2]!.w - 60, y: cards[2]!.y - 44 },
     medal: { x: boxOf(layout, 'award-0').x - 96, y: boxOf(layout, 'award-0').cy + 56 },
     stand: { x: hero.x + hero.w + 92, y: hero.cy - 2 },
     press: { x: hero.x + hero.w * 0.76, y: hero.cy - 4 }
   }
 
   const s: State = {
-    mode: 'live', variant: '', time: 0, scroll: 0, scrollTo: 0, tape: 0, flip: Array(perkCount).fill(0), phase: 0, phaseTime: 0, auto: 0, took: false, shock: 0,
+    mode: 'live', variant: '', time: 0, scroll: 0, scrollTo: 0, flip: Array(perkCount).fill(0), phase: 0, phaseTime: 0, auto: 0, took: false, shock: 0,
     sink: BUTTONS.map(() => 0), apply: null, skipAsked: false, done: false, cue: 0, base: 'confident'
   }
   const rejected = (): boolean => s.variant === 'rejected'
@@ -173,7 +179,7 @@ export function makePage(): PageLogic {
         dy /= d
       }
       const u = smooth(a.t / WIND)
-      io.cursor.drive(a.fx + dx * 30 * u, a.fy + dy * 30 * u, hover + surface(a.fx, a.fy))
+      io.cursor.drive(a.fx + dx * BACK * u, a.fy + dy * BACK * u, hover + surface(a.fx, a.fy))
       a.jx = io.cursor.x
       a.jy = io.cursor.y
       return
@@ -286,14 +292,18 @@ export function makePage(): PageLogic {
     out.push({ id: 'ticker-tape', part: 'ticker', kind: 'box', x: TICKER.x, y: TICKER.y + 4, w: TICKER.w, h: TICKER.h - 8, z0: TICKER.floor, z1: TICKER.tape, tone: 'paper' })
     const items = rejected() ? afterItems : tapeItems
     const length = rejected() ? afterLength : tapeLength
+    const tape = (rejected() ? s.time - REJECTED_SETTLE : s.time - applyBeat.from) * tapeSpeed
     const left = TICKER.x
     const right = TICKER.x + TICKER.w
     for (const item of items) {
-      let rel = mod(item.at - s.tape, length)
+      let rel = mod(item.at - tape, length)
       if (rel + item.w + TICKER.gap > length) rel -= length
       const x = left + TICKER.pad + rel
-      if (x + item.w > left && x < right) {
-        out.push({ id: `${item.id}-run`, part: 'type', kind: 'text', x, y: tapeY, w: item.w, h: tapeH, z0: TICKER.tape, z1: TICKER.tape, tone: 'ink', words: item.key, type: T.tape })
+      if (x + item.w > left + 2 && x < right - 2) {
+        const run = { id: `${item.id}-run`, part: 'type', kind: 'text', y: tapeY, h: tapeH, z0: TICKER.tape, z1: TICKER.tape, tone: 'ink', words: item.key } as const
+        if (x >= left && x + item.w <= right) out.push({ ...run, x, w: item.w, type: T.tape })
+        else if (x >= left) out.push({ ...run, x, w: 2, type: T.tape })
+        else out.push({ ...run, x: x + item.w - 2, w: 2, type: { ...T.tape, align: 'right' } })
       }
       const dot = x + item.w + TICKER.gap / 2
       if (dot - 4 > left && dot + 4 < right) out.push({ id: `${item.id}-dot`, part: 'ticker', kind: 'disc', x: dot - 4, y: TICKER.y + TICKER.h / 2 - 4, w: 8, h: 8, z0: TICKER.tape, z1: TICKER.tape + 0.6, tone: 'dark' })
@@ -305,7 +315,7 @@ export function makePage(): PageLogic {
     reset(ctx: PageContext) {
       const after = ctx.variant === 'rejected'
       Object.assign(s, {
-        mode: ctx.mode, variant: ctx.variant, time: 0, scroll: 0, scrollTo: 0, tape: after ? mod(-REJECTED_SETTLE * tapeSpeed, afterLength) : mod(-applyBeat.from * tapeSpeed, tapeLength), flip: Array(perkCount).fill(0),
+        mode: ctx.mode, variant: ctx.variant, time: 0, scroll: 0, scrollTo: 0, flip: Array(perkCount).fill(0),
         phase: after ? phaseSeconds.length : 0, phaseTime: 0, auto: 0, took: false, shock: 0, sink: BUTTONS.map(() => 0), apply: null, skipAsked: false, done: false, cue: 0,
         base: after ? 'exhausted' : 'confident'
       } satisfies State)
@@ -315,10 +325,10 @@ export function makePage(): PageLogic {
       if (s.mode === 'live') {
         if (io.pointer.scroll !== undefined) s.scrollTo = Math.min(maxScroll, Math.max(0, io.pointer.scroll))
         if (io.pointer.wheel) s.scrollTo = Math.min(maxScroll, Math.max(0, s.scrollTo + io.pointer.wheel))
+        if (io.pressed) for (const link of links) if (inside(link.box, io.pointer)) s.scrollTo = link.to
         const gap = s.scrollTo - s.scroll
         s.scroll = Math.abs(gap) < 0.05 ? s.scrollTo : s.scroll + gap * Math.min(1, dt * 16)
       }
-      s.tape = mod(s.tape + tapeSpeed * dt, rejected() ? afterLength : tapeLength)
 
       if (s.mode === 'film') {
         const cues = rejected() ? REJECTED_CUES : CUES

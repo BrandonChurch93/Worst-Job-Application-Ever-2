@@ -1,8 +1,8 @@
 # Status pictures
 
-Time: 2026-11-25T09:29Z. Phase 2, status 12.
+Time: 2026-11-25T09:56Z. Phase 2, status 13.
 
-1. `01-blockout-step1-fire.jpg`: Step 1 blockout, the key moment of the keyboard under fire: the deck is up with a turret at each end, bolts are in flight, and First name holds Perplex.
-2. `02-blockout-step1-invalid-email.jpg`: Step 1 blockout, the email beat: all three fields are filled and a slab reading Invalid email has dropped beside the cursor.
-3. `03-blockout-step1-tug.jpg`: Step 1 blockout, the key moment of the tug: the camera is close on the upload card, and the cursor holds the sheet marked Resume with two arms while its lower edge is in the slot.
-4. `04-blockout-step1-shredded.jpg`: Step 1 blockout, after the tug is lost: the cursor has gone into the slot and strips come out under the upload card.
+1. `01-blockout-pinball-map.jpg`: Step 3 blockout, the machine from straight above: the marquee THE DAILY GRIND with the score, then the Corporate, Office and Street tiers one below the other, each with its own flippers.
+2. `02-blockout-pinball-wide.jpg`: Step 3 blockout, the whole machine seen from its foot: three tiers sunk into the tall page, and the Unemployment Office and the message window on the apron.
+3. `03-blockout-pinball-reply-all.jpg`: Step 3 blockout, the key moment of Reply All on the Office tier: four balls in play among the three bumpers, with the Coffee model at the right.
+4. `04-site-live-step1-fixed.jpg`: Screenshot of live mode, step 1, after the fix: every key has its letter while both turrets aim and a bolt is in flight.

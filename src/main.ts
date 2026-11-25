@@ -29,7 +29,7 @@ const MODES = ['live', 'film', 'loop', 'capture', 'probe']
 const PLAY: PlayMode[] = ['live', 'film', 'loop']
 const ROW = { x0: 128, x1: 700, y1: 56 }
 const params = new URLSearchParams(location.search)
-const mode = params.get('mode') ?? 'live'
+const mode = params.get('mode') ?? (lessMotion() && !touchOnly() && !params.get('bot') ? 'film' : 'live')
 const canvas = document.getElementById('stage') as HTMLCanvasElement
 const host = document.getElementById('controls') as HTMLElement
 const app = new App()
@@ -178,12 +178,14 @@ function play(first: PlayMode): void {
   if (!stepped) {
     void import('./audio/index').then(({ makeSound }) => {
       sound = makeSound({ base: `${import.meta.env.BASE_URL}audio/` })
+      if (!flowing()) sound.stop()
       const unlock = () => void sound?.unlock()
       window.addEventListener('pointerdown', unlock, { once: true, capture: true })
       window.addEventListener('keydown', unlock, { once: true, capture: true })
     })
   }
   const soundMode = () => (now === 'live' ? 'live' : 'film')
+  const flowing = () => now !== 'film' || playing
 
   const botName = params.get('bot')
   if (botName && !BOTS.includes(botName)) throw new Error(`No bot called "${botName}"`)
@@ -229,6 +231,7 @@ function play(first: PlayMode): void {
       if (T >= total - 1 / fps) T = 0
       playing = true
       heardTo = T
+      sound?.start()
     },
     pause() {
       playing = false
@@ -237,6 +240,7 @@ function play(first: PlayMode): void {
     seek(seconds: number) {
       T = Math.min(total, Math.max(0, seconds))
       quiet()
+      if (playing) sound?.start()
     }
   }
   const filmMoment = (t: number): { unit: string; time: number } => (oneUnit ? { unit: oneUnit, time: Math.min(t, body) } : app.filmMomentAt(t))
@@ -310,6 +314,7 @@ function play(first: PlayMode): void {
       playing = !lessMotion()
     }
     if (next === 'live') sent = stage.events.length
+    if (flowing()) sound?.start()
     if (record) {
       const q = new URLSearchParams(location.search)
       if (next === 'live') q.delete('mode')
@@ -346,6 +351,7 @@ function play(first: PlayMode): void {
       base = Math.min(5, Math.max(0, Math.round(step)))
       stage = makeStage()
       sound?.stop()
+      if (flowing()) sound?.start()
       sent = 0
       gags = 0
       entry = -1
@@ -499,7 +505,10 @@ function play(first: PlayMode): void {
     } else if (now === 'film') {
       if (playing) {
         T = Math.min(total, T + Math.min(0.5, dt))
-        if (T >= total) playing = false
+        if (T >= total) {
+          playing = false
+          quiet()
+        }
       }
       draw()
       if (playing) {
@@ -519,12 +528,13 @@ function play(first: PlayMode): void {
 }
 
 // A still of the site with its controls over it, or of the message a touch screen gets, for the judged list.
-function overlays(): (spec: StillSpec) => void {
+function overlays(): (spec: StillSpec | null) => void {
   let mounted: { destroy(): void } | null = null
   return (spec) => {
     mounted?.destroy()
     mounted = null
     canvas.hidden = false
+    if (!spec) return
     if (spec.touchOnly) {
       canvas.hidden = true
       mounted = mountTouchMessage(host)
@@ -559,11 +569,18 @@ function overlays(): (spec: StillSpec) => void {
 const ready = start()
 const showcase = makeShowcase(app, ready)
 if (mode === 'capture') {
+  canvas.removeAttribute('tabindex')
   const overlay = overlays()
-  const render = showcase.renderStill
-  showcase.renderStill = async (spec) => {
-    await render(spec)
-    overlay(spec)
+  const draws = showcase as unknown as Record<string, (...args: unknown[]) => Promise<unknown>>
+  for (const name of Object.keys(draws)) {
+    if (!name.startsWith('render')) continue
+    const render = draws[name]!
+    draws[name] = async (...args) => {
+      overlay(null)
+      const result = await render(...args)
+      if (name === 'renderStill') overlay(args[0] as StillSpec)
+      return result
+    }
   }
 }
 window.showcase = showcase

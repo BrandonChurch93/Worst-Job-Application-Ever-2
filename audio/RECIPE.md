@@ -9,7 +9,7 @@ Every sound of the site and the film is made the same way. This file is its log.
 3. `npm run sound -- --cue ID --keep` runs the one chain and writes the kept sound to `audio/kept/` with its record beside it.
 4. `npm run sound -- --pack` builds what the site ships. `npm run mix` lays the film.
 
-A cue has at most `audio.maxTakesPerCue` takes, a line at most `audio.narratorMaxTakesPerLine`. The tool refuses the next one.
+A cue has at most `audio.maxTakesPerCue` takes, a line at most `audio.narratorMaxTakesPerLine`. A take past that is still filed, since it was made and paid for: the tool warns, the log shows it, and check A8 fails.
 
 ## The chain
 

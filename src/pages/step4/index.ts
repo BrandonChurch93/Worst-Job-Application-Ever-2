@@ -18,6 +18,7 @@ interface State {
   stage: StageName
   t: number
   ticked: number
+  selfTick: boolean
   cracked: boolean
   opened: boolean
   fight: Fight | null
@@ -28,13 +29,15 @@ interface State {
   damaged: boolean
   done: boolean
   cue: number
+  cx: number
+  cy: number
 }
 
 const heights = config.scale.heights
 const PHASE_GAG = ['boss.slabs', 'boss.popups', 'boss.lastStand'] as const
-const SPOTS: [number, number][] = [[560, 800], [640, 1010], [1420, 1012], [1700, 990]]
+const SPOTS: [number, number][] = [[560, 800], [430, 640], [330, 900], [760, 900], [1150, 940], [1420, 950], [1690, 960]]
 
-const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, skipping: false, damaged: false, done: false, cue: 0 })
+const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, skipping: false, damaged: false, done: false, cue: 0, cx: 700, cy: 820 })
 
 export function makePage(): PageLogic {
   const L = makeLayout()
@@ -46,12 +49,13 @@ export function makePage(): PageLogic {
 
   const inBox = (b: { x: number; y: number; w: number; h: number }, p: { x: number; y: number }, grow = 0): boolean => p.x >= b.x - grow && p.x <= b.x + b.w + grow && p.y >= b.y - grow && p.y <= b.y + b.h + grow
   const fallenBox = { x: FALLEN.x - 150, y: FALLEN.y - 62, w: 300, h: 124 }
-  const wake = (): number => (s.mode === 'film' ? WAKE_AFTER_TICK.film : WAKE_AFTER_TICK.live)
+  const wake = (): number => (s.mode === 'film' ? WAKE_AFTER_TICK.film : s.selfTick ? WAKE_AFTER_TICK.near : WAKE_AFTER_TICK.live)
   const card = (): string => {
     if (s.ticked < 0.3) return 'rest'
     if (s.mode === 'film') return 'confirmed-film'
     return s.ticked < 0.3 + DOUBT_SECONDS ? 'doubt' : 'confirmed-live'
   }
+  const shut = (): number => L.fold * (1 - (s.ticked < 0 ? 0 : prog(s.ticked, 0.02, 0.3)))
   const feetOf = (f: Fight): { x: number; y: number; z: number }[] => f.feet.map((foot) => ({ x: foot.x, y: foot.y, z: foot.t >= 0 ? Math.sin(Math.PI * Math.min(1, foot.t)) * 16 : 0 }))
   const rigNow = (): Rig | null => {
     if (s.stage === 'unfold') return unfoldRig(s.t)
@@ -59,6 +63,20 @@ export function makePage(): PageLogic {
     if (s.stage === 'collapse' && s.from) return collapseRig(s.from, s.t)
     if (s.stage === 'press' && s.from) return collapseRig(s.from, COLLAPSE_SECONDS)
     return null
+  }
+  const groundAt = (x: number, y: number): number => {
+    const p = { x, y }
+    let z = inBox({ x: L.card.x, y: L.card.y, w: L.card.w, h: L.card.h - shut() }, p) ? heights.card : 0
+    if ((s.stage === 'verify' || s.inSocket) && inBox(L.cap, p)) z = heights.button
+    if (s.stage === 'press' && !s.inSocket && inBox(fallenBox, p, -24)) z = 16
+    if (s.stage === 'fight' && s.fight) {
+      for (const up of s.fight.popups) if (up.closing < 0 && up.t > 0.14 && inBox(L.weapons.popups[up.slot]!.box, p)) z = Math.max(z, heights.card)
+      for (const slab of s.fight.slabs) {
+        const size = L.weapons.slabs[slab.m]!
+        if (slab.state === 1 && Math.abs(x - slab.x) < size.w / 2 && Math.abs(y - slab.y) < size.h / 2) z = Math.max(z, heights.slab)
+      }
+    }
+    return z
   }
   const toCollapse = (io: StepIo, from: Rig): void => {
     s.from = from
@@ -86,6 +104,8 @@ export function makePage(): PageLogic {
       s.time = io.time
       s.t += dt
       s.damaged = io.cursor.damaged
+      s.cx = io.cursor.x
+      s.cy = io.cursor.y
       if (s.mode === 'film') {
         while (s.cue < film.reactions.length && s.time >= film.reactions[s.cue]!.at) io.cursor.react(film.reactions[s.cue++]!.name)
       }
@@ -103,12 +123,14 @@ export function makePage(): PageLogic {
           const self = s.t >= GAG_MAX
           if ((io.pressed && inBox(L.checkRow, io.pointer, 8)) || self) {
             s.ticked = 0
+            s.selfTick = self
             io.emit('checkbox', L.checkbox.cx, L.checkbox.cy, false)
             io.cursor.act(self ? 'plain' : 'confident')
           } else io.cursor.act(Math.hypot(io.pointer.x - L.checkbox.cx, io.pointer.y - L.checkbox.cy) < 150 ? 'nervous' : 'plain')
         } else {
           s.ticked += dt
-          if (s.ticked >= wake()) {
+          const near = s.mode === 'live' && s.ticked >= WAKE_AFTER_TICK.near && (inBox(L.cap, io.pointer, 70) || inBox(L.cap, io.cursor, 70))
+          if (s.ticked >= wake() || near) {
             s.stage = 'unfold'
             s.t = 0
           }
@@ -159,6 +181,7 @@ export function makePage(): PageLogic {
           if (s.pressed >= 0.35 && !s.damaged) s.done = true
         }
       }
+      io.cursor.setGround(groundAt(io.cursor.x, io.cursor.y))
     },
     save: () => JSON.parse(JSON.stringify(s)) as State,
     load(state) {
@@ -183,8 +206,19 @@ export function makePage(): PageLogic {
         over['health-label'] = { x: label.box[0]! + slide }
         over['health-track'] = { x: L.track.x + slide }
       }
+      const fold = shut()
+      if (fold >= L.fold) over['verify-rule'] = null
       const options: DrawOptions = { states, over }
+      const first = out.length
       drawLayout(out, L.tree, options)
+      if (fold > 0) {
+        for (let i = first; i < out.length; i++) {
+          const shape = out[i]!
+          if (shape.id === 'verify-card') shape.h -= fold
+          else if (shape.id === 'verify-fine') shape.y -= fold
+          else if (shape.id === 'verify-rule') shape.w *= 1 - fold / L.fold
+        }
+      }
       if (s.ticked >= 0) {
         const b = L.checkbox
         const z = heights.card + 4
@@ -203,7 +237,7 @@ export function makePage(): PageLogic {
       if (states.includes('fight') && s.fight) {
         const t = L.track
         const w = Math.max(0, (t.w - 6) * (s.fight.shown / 100))
-        if (w > 1) out.push({ id: 'health-fill', part: 'health-bar', kind: 'capsule', x: t.x + 3 + slide, y: t.y + 3, w: Math.max(t.h - 6, w), h: t.h - 6, z0: heights.progressRail, z1: 2.5, tone: 'accent' })
+        if (w >= t.h - 6) out.push({ id: 'health-fill', part: 'health-bar', kind: 'capsule', x: t.x + 3 + slide, y: t.y + 3, w, h: t.h - 6, z0: heights.progressRail, z1: 2.5, tone: 'accent' })
       } else if (states.includes('fight')) {
         const t = L.track
         out.push({ id: 'health-fill', part: 'health-bar', kind: 'capsule', x: t.x + 3 + slide, y: t.y + 3, w: t.w - 6, h: t.h - 6, z0: heights.progressRail, z1: 2.5, tone: 'accent' })
@@ -224,14 +258,35 @@ export function makePage(): PageLogic {
     script: (time: number): Pointer => film.pointer(time),
     hint(): Hint | null {
       const blink = Math.floor(s.time * 6) % 2 === 0
-      if (s.stage === 'verify') return { x: L.checkbox.cx, y: L.checkbox.cy, down: s.ticked < 0 && blink }
+      if (s.stage === 'verify' && s.ticked < WAKE_AFTER_TICK.near) return { x: L.checkbox.cx, y: L.checkbox.cy, down: s.ticked < 0 && blink }
+      if (s.stage === 'verify') return { x: SOCKET.x, y: SOCKET.y, down: blink }
       if (s.stage === 'unfold') return { x: SPOTS[0]![0], y: SPOTS[0]![1], down: false }
       if (s.stage === 'fight' && s.fight) {
         const f = s.fight
-        const spot = SPOTS.find(([x, y]) => clearSpot(f, arena, x, y)) ?? SPOTS[2]!
+        const near = (list: [number, number][]): [number, number] | null => {
+          let best: [number, number] | null = null
+          let d = Infinity
+          for (const c of list) {
+            const k = Math.hypot(c[0] - s.cx, c[1] - s.cy)
+            if (k < d) {
+              d = k
+              best = c
+            }
+          }
+          return best
+        }
+        const clear = SPOTS.filter(([x, y]) => clearSpot(f, arena, x, y))
+        const safe = SPOTS.filter(([x, y]) => !threat(f, arena, x, y))
+        const both = near(clear.filter((c) => safe.includes(c)))
+        if (both) {
+          const out: Hint = { x: both[0], y: both[1], down: blink }
+          if (threat(f, arena, s.cx, s.cy)) out.dodge = { x: both[0], y: both[1] }
+          return out
+        }
+        const spot = near(clear) ?? near(safe) ?? SPOTS[0]!
         const out: Hint = { x: spot[0], y: spot[1], down: blink }
         const hit = threat(f, arena, spot[0], spot[1])
-        if (hit) out.dodge = { x: Math.min(ARENA.x1 - 60, Math.max(ARENA.x0 + 20, spot[0] + hit.dx * 170)), y: Math.min(ARENA.y1 - 50, Math.max(ARENA.y0 + 20, spot[1] + hit.dy * 170)) }
+        if (hit) out.dodge = { x: Math.min(ARENA.x1 - 60, Math.max(ARENA.x0 + 20, spot[0] + hit.dx * 190)), y: Math.min(ARENA.y1 - 90, Math.max(ARENA.y0 + 20, spot[1] + hit.dy * 190)) }
         return out
       }
       const at = s.inSocket ? SOCKET : FALLEN

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
 import { makePage } from '../src/pages/step2'
-import { pruned, ROWS, statesOf } from '../src/pages/step2/layout'
+import { DIAL, pruned, ROWS, statesOf } from '../src/pages/step2/layout'
 import { pages } from '../src/pages'
 import { layoutProblems, typeRegister } from '../src/shell/layout'
 import { hasWords } from '../src/shell/words'
@@ -42,6 +42,18 @@ describe('step 2, the layout', () => {
       }
     }
     expect(seen.size).toBeGreaterThan(40)
+  })
+
+  it('has the digits in the order of a real dial: 1 nearest the stop, 0 the longest way round', () => {
+    const deg = (rad: number) => Math.round((rad * 180) / Math.PI)
+    expect(deg(DIAL.stop)).toBe(30)
+    expect(deg(DIAL.holeAngle(1))).toBe(-30)
+    for (let k = 1; k <= 10; k++) {
+      expect(deg(DIAL.holeAngle(k)), String(k)).toBe(-30 * k)
+      expect(deg(DIAL.travel(k)), String(k)).toBe(deg(DIAL.stop) - deg(DIAL.holeAngle(k)))
+    }
+    expect(DIAL.digit(10)).toBe('0')
+    expect(deg(DIAL.holeAngle(10)) + 360).toBe(60)
   })
 
   it('names every word it shows by a key that exists, and uses all the copy of the step', () => {
@@ -115,10 +127,47 @@ describe('step 2, the film', () => {
       t.seek(at)
       expect(t.page.gag(), String(at)).toBe(gag)
     }
-    for (const at of [1, 8.1, 14, 20]) {
+    for (const at of [1, 8.1, 13.9, 20]) {
       t.seek(at)
       expect(t.page.states(), String(at)).toContain('rest')
     }
+  })
+
+  it('stands on the approved keys: two digits dialled at 3.2 s, three segments lit at 15.2 s', () => {
+    const t = film()
+    const shapes = (): Shape[] => {
+      const list: Shape[] = []
+      t.page.draw(list)
+      return list
+    }
+    t.seek(3.2)
+    const typed = shapes().filter((x) => x.kind === 'text' && x.words === 'runtime:step2.phone')
+    expect(typed.length).toBe(1)
+    expect(typed[0]!.text).toBe('(555) 01')
+    expect(hasWords('data:step2.phone.prefix')).toBe(true)
+    expect(t.page.volume!()).toBe(1)
+    t.seek(15.2)
+    const lit = shapes().filter((x) => /^meter-\d+$/.test(x.id) && x.tone === 'accent').map((x) => x.id)
+    expect(lit).toEqual(['meter-1', 'meter-2', 'meter-3'])
+    expect(t.page.volume!()).toBeCloseTo(0.3, 5)
+  })
+
+  it('sets the volume of the site with the crank: full before the row, low when it opens, full at the end', () => {
+    const t = film()
+    let last = 0
+    let low = 1
+    for (let at = 0; at <= 20.4; at += 0.05) {
+      t.seek(at)
+      const v = t.page.volume!()
+      expect(v, at.toFixed(2)).toBeGreaterThanOrEqual(0.1)
+      expect(v, at.toFixed(2)).toBeLessThanOrEqual(1)
+      if (at < 13.9) expect(v, at.toFixed(2)).toBe(1)
+      if (at > 14.1) expect(v, at.toFixed(2)).toBeGreaterThanOrEqual(last - 1e-9)
+      if (at > 14.1) last = v
+      low = Math.min(low, v)
+    }
+    expect(low).toBeCloseTo(0.1, 5)
+    expect(last).toBe(1)
   })
 
   it('heals every hurt inside the limit and hands the cursor on whole', () => {
@@ -201,12 +250,49 @@ describe('step 2, live', () => {
     for (const at of [0.5, 3, 6.2, 12, 17]) {
       const l = live(new BotDriver('keen', config.seed))
       l.advance(Math.round(at * stepHz))
+      if (l.page.id !== 'step2') continue
       l.page.skip()
-      l.advance(3 * stepHz)
+      for (let n = 0; n < 3 * stepHz && (l.page.id as string) !== 'step3'; n++) l.advance(1)
       expect(l.page.id, String(at)).toBe('step3')
       expect(l.cursor.taken, String(at)).toBe(false)
       expect(l.cursor.damaged, String(at)).toBe(false)
     }
+  })
+
+  it('gives the full volume back when the step is skipped with the crank half turned', () => {
+    const l = live(new BotDriver('keen', config.seed))
+    let low = false
+    for (let i = 0; i < 60 * stepHz && l.page.id === 'step2'; i++) {
+      l.advance(1)
+      if (l.page.id === 'step2' && l.page.volume!() < 1) {
+        low = true
+        break
+      }
+    }
+    expect(low).toBe(true)
+    l.page.skip()
+    l.advance(1)
+    expect(l.page.volume?.() ?? 1).toBe(1)
+  })
+
+  it('heals a flat cursor in sight before the page turns, when Continue comes early', () => {
+    const l = live(new BotDriver('clumsy', config.seed))
+    while (!names(l).includes('flatten') && l.time < 60) l.advance(1)
+    expect(names(l)).toContain('flatten')
+    l.advance(stepHz)
+    expect(l.cursor.damaged).toBe(true)
+    l.page.skip()
+    let healedAt = -1
+    const from = l.time
+    while (l.page.id === 'step2' && l.time < from + 5) {
+      l.advance(1)
+      if (healedAt < 0 && !l.cursor.damaged) healedAt = l.time - from
+    }
+    expect(l.page.id).toBe('step3')
+    expect(healedAt).toBeGreaterThan(0.1)
+    expect(healedAt).toBeLessThan(1.5)
+    expect(l.cursor.damaged).toBe(false)
+    expect(names(l)).toContain('peel-up')
   })
 
   it('continues exactly after load(save())', () => {
