@@ -51,7 +51,7 @@
     "line": null
   },
   "chain": {
-    "trimStart": 0,
+    "trimStart": 0.007,
     "trimEnd": 1.264,
     "cutToSeconds": null,
     "fadeInMs": 3,
@@ -64,22 +64,22 @@
     "loop": null
   },
   "measured": {
-    "seconds": 1.264,
+    "seconds": 1.257,
     "start": 0,
-    "end": 1.242,
+    "end": 1.236,
     "peakDb": -5,
-    "rmsDb": -24.4,
-    "lufs": -20.4,
+    "rmsDb": -24.38,
+    "lufs": -20.42,
     "truePeakDb": -5,
     "low": 0.001,
     "mid": 0.024,
     "high": 0.976,
-    "tailDb": -40.16,
+    "tailDb": -40.19,
     "hits": 1,
     "hitsAt": [
       {
-        "start": 0.002,
-        "end": 1.156,
+        "start": 0,
+        "end": 1.15,
         "peakDb": -5
       }
     ]
@@ -111,6 +111,6 @@
   "problems": [],
   "fixture": false,
   "file": "coins.1.wav",
-  "seconds": 1.264,
-  "sha256": "5aa40f8297b3a288b6720a13a772f59282f4b90a1fe107a65d2811f850093cf8"
+  "seconds": 1.2575,
+  "sha256": "404a356bda94efbcb10e95cb6751ef25fa26502017d9c1800f1ae6fade021d37"
 }

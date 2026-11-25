@@ -51,7 +51,7 @@
     "line": null
   },
   "chain": {
-    "trimStart": 0,
+    "trimStart": 0.005,
     "trimEnd": 0.8,
     "cutToSeconds": null,
     "fadeInMs": 3,
@@ -64,22 +64,22 @@
     "loop": null
   },
   "measured": {
-    "seconds": 0.8,
+    "seconds": 0.795,
     "start": 0,
-    "end": 0.62,
+    "end": 0.616,
     "peakDb": -5,
-    "rmsDb": -22.95,
-    "lufs": -22.89,
+    "rmsDb": -22.93,
+    "lufs": -23.05,
     "truePeakDb": -4.8,
     "low": 0.105,
     "mid": 0.804,
     "high": 0.091,
-    "tailDb": -55.07,
+    "tailDb": -55.05,
     "hits": 1,
     "hitsAt": [
       {
         "start": 0,
-        "end": 0.448,
+        "end": 0.444,
         "peakDb": -5
       }
     ]
@@ -112,6 +112,6 @@
   "problems": [],
   "fixture": false,
   "file": "plunger.wav",
-  "seconds": 0.8,
-  "sha256": "e2a6d43646c36c05f261a5c0facbcfa72e4a4ed0e870a8285bf04aa18a6d23a6"
+  "seconds": 0.7955,
+  "sha256": "42298f4964f8aff19a26b96144e14d3eb2ea2819b099f316d43149d151f31997"
 }

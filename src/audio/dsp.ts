@@ -533,6 +533,13 @@ export function chain(input: Sound, o: ChainOptions): { sound: Sound; record: Ch
     const first = loudSpans(region, sr, CHAIN.trimStartDb, 0, 0)[0]
     const sounding = loudSpans(region, sr, CHAIN.trimEndDb, 0, 0)
     if (first) start = Math.max(0, first.start - Math.round((CHAIN.preRollMs / 1000) * sr))
+    if (o.cls === 'hit' || (o.cls === 'tick' && o.seconds < CHAIN.contactMaxSeconds)) {
+      const heard = highPass(Float32Array.from(region), sr, CHAIN.lowCutHz)
+      const floor = peak(heard) * db(CHAIN.contactStartDb)
+      let onset = start
+      while (onset < heard.length && Math.abs(heard[onset]!) < floor) onset++
+      if (onset < heard.length) start = Math.max(start, onset - Math.round((CHAIN.contactLeadMs / 1000) * sr))
+    }
     if (sounding.length) end = sounding[sounding.length - 1]!.end
   }
   let crossWanted = o.loop ? loopCross(o.seconds, sr) : 0

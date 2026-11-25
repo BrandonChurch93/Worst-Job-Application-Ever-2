@@ -51,11 +51,11 @@
     "line": null
   },
   "chain": {
-    "trimStart": 0.01,
+    "trimStart": 0.066,
     "trimEnd": 0.404,
     "cutToSeconds": null,
     "fadeInMs": 3,
-    "fadeOutMs": 98.5,
+    "fadeOutMs": 84.39,
     "lowCutHz": 60,
     "levelMeasure": "peak",
     "levelDb": -5,
@@ -64,22 +64,22 @@
     "loop": null
   },
   "measured": {
-    "seconds": 0.394,
+    "seconds": 0.338,
     "start": 0,
-    "end": 0.27,
+    "end": 0.214,
     "peakDb": -5,
-    "rmsDb": -35.02,
-    "lufs": -33.41,
+    "rmsDb": -34.29,
+    "lufs": -33.01,
     "truePeakDb": -4.5,
     "low": 0.001,
-    "mid": 0.22,
-    "high": 0.779,
-    "tailDb": -36.88,
+    "mid": 0.222,
+    "high": 0.778,
+    "tailDb": -50.26,
     "hits": 1,
     "hitsAt": [
       {
-        "start": 0.002,
-        "end": 0.134,
+        "start": 0,
+        "end": 0.078,
         "peakDb": -5
       }
     ]
@@ -115,6 +115,6 @@
   ],
   "fixture": false,
   "file": "ball-open.wav",
-  "seconds": 0.394,
-  "sha256": "a0d937e8f55b54b1f4433838bf8d460613dd5316fdcb8f1f6e7b17fcb042584c"
+  "seconds": 0.3376,
+  "sha256": "3dbfd5213f46f4d4e6855a08095a7a699f1b809963d22dfc83abc784fe140eed"
 }

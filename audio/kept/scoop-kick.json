@@ -69,12 +69,12 @@
     "end": 0.346,
     "peakDb": -5,
     "rmsDb": -23.85,
-    "lufs": -27.31,
+    "lufs": -27.32,
     "truePeakDb": -5,
     "low": 0.161,
     "mid": 0.83,
     "high": 0.009,
-    "tailDb": -54.82,
+    "tailDb": -54.87,
     "hits": 1,
     "hitsAt": [
       {
@@ -112,6 +112,6 @@
   "problems": [],
   "fixture": false,
   "file": "scoop-kick.wav",
-  "seconds": 0.6,
-  "sha256": "38673019b823baea09f7e5c362f5d3907227032f78e59e6b5e7e51dce6ca55e6"
+  "seconds": 0.5996,
+  "sha256": "bf60fb968a093f17f5d7952676d7cb6d481d7c341829cbef37ecb99ab42979a4"
 }

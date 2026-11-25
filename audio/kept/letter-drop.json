@@ -51,35 +51,35 @@
     "line": null
   },
   "chain": {
-    "trimStart": 0,
+    "trimStart": 0.272,
     "trimEnd": 0.48,
     "cutToSeconds": null,
     "fadeInMs": 3,
-    "fadeOutMs": 120,
+    "fadeOutMs": 52.05,
     "lowCutHz": 60,
     "levelMeasure": "peak",
     "levelDb": -16,
-    "gainDb": 18.33,
+    "gainDb": 18.37,
     "channels": 1,
     "loop": null
   },
   "measured": {
-    "seconds": 0.48,
+    "seconds": 0.208,
     "start": 0,
-    "end": 0.446,
+    "end": 0.184,
     "peakDb": -16,
-    "rmsDb": -39.7,
-    "lufs": -37.71,
+    "rmsDb": -38.27,
+    "lufs": -38.12,
     "truePeakDb": -15.99,
-    "low": 0.198,
-    "mid": 0.507,
-    "high": 0.295,
-    "tailDb": -51.76,
+    "low": 0.286,
+    "mid": 0.578,
+    "high": 0.136,
+    "tailDb": -50.56,
     "hits": 1,
     "hitsAt": [
       {
-        "start": 0.008,
-        "end": 0.35,
+        "start": 0,
+        "end": 0.08,
         "peakDb": -16
       }
     ]
@@ -112,6 +112,6 @@
   "problems": [],
   "fixture": false,
   "file": "letter-drop.wav",
-  "seconds": 0.48,
-  "sha256": "843272125376d8ab5a518bbf9007359661ee41161cc754fc4f8c8c6d202411a2"
+  "seconds": 0.2082,
+  "sha256": "120eec6a4f23e949984c881d59d5c0f0217892896724b8835acb138ca966217d"
 }

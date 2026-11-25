@@ -16,6 +16,11 @@ export const CHAIN = {
   trimStartDb: -40,
   trimEndDb: -50,
   preRollMs: 2,
+  // A hit, and a tick shorter than the limit, is a contact: it starts this long before its first sample within this much
+  // of its peak, measured after the low cut, so that what is heard lands on the frame of the contact. Other sounds keep their lead in.
+  contactStartDb: -9,
+  contactLeadMs: 4,
+  contactMaxSeconds: 0.6,
   fadeInMs: 3,
   // The fade out is this share of the sound, held between the two limits.
   fadeOutShare: 0.25,

@@ -1,0 +1,194 @@
+{
+  "id": "line.step2.crank.0",
+  "kind": "line",
+  "cue": null,
+  "variant": null,
+  "class": "voice",
+  "loop": false,
+  "beat": "step2.crank",
+  "liveKey": null,
+  "group": null,
+  "describes": null,
+  "index": 0,
+  "words": "Volume. / All the way up. / It will regret that.",
+  "text": "Volume. / All the way up. / It will regret that.",
+  "prompt": null,
+  "settings": {
+    "speed": 0.7,
+    "stability": 0.75,
+    "breakSeconds": 1.3,
+    "sent": "Volume. <break time=\"1.3s\" /> All the way up. <break time=\"1.3s\" /> It will regret that.",
+    "call": 152
+  },
+  "askedSeconds": null,
+  "cost": "29",
+  "take": {
+    "number": 3,
+    "round": "build",
+    "file": "take-3.mp3",
+    "sha256": "23707810f8b8d9c084582b3d9ef986020efcd11945e50e8441a89867d40aa468",
+    "filed": "2026-11-25T18:44:54.436Z",
+    "measured": {
+      "seconds": 6.641,
+      "start": 0.022,
+      "end": 6.476,
+      "peakDb": -1.51,
+      "rmsDb": -21.34,
+      "lufs": -20.32,
+      "truePeakDb": -1.5,
+      "low": 0.766,
+      "mid": 0.191,
+      "high": 0.043,
+      "tailDb": -19.4,
+      "hits": 6,
+      "hitsAt": [
+        {
+          "start": 0.026,
+          "end": 0.796,
+          "peakDb": -4.11
+        },
+        {
+          "start": 2.292,
+          "end": 3.206,
+          "peakDb": -2.94
+        },
+        {
+          "start": 3.316,
+          "end": 3.336,
+          "peakDb": -11.3
+        },
+        {
+          "start": 4.912,
+          "end": 5.84,
+          "peakDb": -1.51
+        },
+        {
+          "start": 5.916,
+          "end": 6.254,
+          "peakDb": -4.5
+        },
+        {
+          "start": 6.332,
+          "end": 6.442,
+          "peakDb": -5.48
+        }
+      ]
+    },
+    "line": {
+      "words": 9,
+      "seconds": 6.454,
+      "wordsPerSecond": 1.394,
+      "maxWordsPerSecond": 1.6,
+      "pauseMarks": 2,
+      "pausesFound": 2,
+      "pauses": [
+        1.478,
+        1.562
+      ],
+      "paceHolds": true,
+      "pausesHold": true,
+      "room": 6.9,
+      "fits": true,
+      "beatSeconds": 6
+    }
+  },
+  "chain": {
+    "trimStart": 0.022,
+    "trimEnd": 6.476,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 80,
+    "levelMeasure": "lufs",
+    "levelDb": -18,
+    "gainDb": 3.93,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 6.454,
+    "start": 0.002,
+    "end": 6.426,
+    "peakDb": 4.11,
+    "rmsDb": -19.46,
+    "lufs": -18,
+    "truePeakDb": 4.22,
+    "low": 0.634,
+    "mid": 0.299,
+    "high": 0.066,
+    "tailDb": -22.59,
+    "hits": 5,
+    "hitsAt": [
+      {
+        "start": 0.006,
+        "end": 0.77,
+        "peakDb": -0.77
+      },
+      {
+        "start": 2.27,
+        "end": 3.184,
+        "peakDb": 2.94
+      },
+      {
+        "start": 4.892,
+        "end": 5.818,
+        "peakDb": 4.11
+      },
+      {
+        "start": 5.9,
+        "end": 6.228,
+        "peakDb": -0.11
+      },
+      {
+        "start": 6.31,
+        "end": 6.394,
+        "peakDb": -1.92
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
+    "asks": 6,
+    "whole": 1,
+    "transcript": "Volume all the way up. It will regret that.",
+    "transcripts": [
+      "Volume all the way up. It will regret that."
+    ],
+    "transcriptAgreed": "1 of 1",
+    "attitudes": [
+      "ominous and threatening"
+    ],
+    "accents": [
+      "American"
+    ],
+    "pitches": [
+      "low"
+    ],
+    "whisper": null,
+    "whisperVotes": "0 yes, 1 no",
+    "laugh": null,
+    "laughVotes": "0 yes, 1 no",
+    "warmth": null,
+    "warmthVotes": "0 yes, 1 no",
+    "excitement": null,
+    "excitementVotes": "0 yes, 1 no",
+    "unimpressedAndSmug": null,
+    "unimpressedAndSmugVotes": "1 yes, 0 no",
+    "basis": [
+      "The deep pitch, deliberate pacing, and lack of warmth give the voice a menacing and confident quality."
+    ]
+  },
+  "why": "tone not judged: 1 whole answers in 6 asks",
+  "forced": true,
+  "problems": [
+    "the listener left \"whisper\" unanswered",
+    "the listener left \"laugh\" unanswered",
+    "the listener left \"warmth\" unanswered",
+    "the listener left \"excitement\" unanswered",
+    "the listener left \"unimpressedAndSmug\" unanswered"
+  ],
+  "fixture": false,
+  "file": "line.step2.crank.0.wav",
+  "seconds": 6.454,
+  "sha256": "bc6d06a5fa19e11791edd533ae9f341b0d4438f8be07b03c55a3dd1869af6fc1"
+}

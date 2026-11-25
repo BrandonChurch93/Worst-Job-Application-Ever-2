@@ -51,35 +51,35 @@
     "line": null
   },
   "chain": {
-    "trimStart": 0,
+    "trimStart": 0.049,
     "trimEnd": 0.518,
     "cutToSeconds": null,
     "fadeInMs": 3,
-    "fadeOutMs": 120,
+    "fadeOutMs": 117.35,
     "lowCutHz": 60,
     "levelMeasure": "peak",
     "levelDb": -5,
-    "gainDb": 12.57,
+    "gainDb": 12.62,
     "channels": 1,
     "loop": null
   },
   "measured": {
-    "seconds": 0.518,
+    "seconds": 0.469,
     "start": 0,
-    "end": 0.404,
+    "end": 0.354,
     "peakDb": -5,
-    "rmsDb": -25.5,
-    "lufs": -28.97,
+    "rmsDb": -25.18,
+    "lufs": -26.57,
     "truePeakDb": -5,
-    "low": 0.309,
-    "mid": 0.69,
+    "low": 0.274,
+    "mid": 0.725,
     "high": 0,
-    "tailDb": -52.23,
+    "tailDb": -52.17,
     "hits": 1,
     "hitsAt": [
       {
-        "start": 0,
-        "end": 0.24,
+        "start": 0.002,
+        "end": 0.192,
         "peakDb": -5
       }
     ]
@@ -112,6 +112,6 @@
   "problems": [],
   "fixture": false,
   "file": "tier-fall.wav",
-  "seconds": 0.518,
-  "sha256": "e63033870835ebef9c62c0047122d1e7a4ce654c47e0bf924ff515974f62c687"
+  "seconds": 0.4694,
+  "sha256": "448845b55ec030667389b1f4239125d6adcd1206a7443e89ff2b37204d0d0d8c"
 }

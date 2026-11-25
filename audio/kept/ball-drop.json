@@ -51,40 +51,40 @@
     "line": null
   },
   "chain": {
-    "trimStart": 0.112,
+    "trimStart": 0.12,
     "trimEnd": 0.356,
     "cutToSeconds": null,
     "fadeInMs": 3,
-    "fadeOutMs": 61,
+    "fadeOutMs": 58.92,
     "lowCutHz": 60,
     "levelMeasure": "peak",
     "levelDb": -5,
-    "gainDb": -3.98,
+    "gainDb": -3.97,
     "channels": 1,
     "loop": null
   },
   "measured": {
-    "seconds": 0.244,
-    "start": 0.002,
-    "end": 0.222,
+    "seconds": 0.236,
+    "start": 0,
+    "end": 0.214,
     "peakDb": -5,
-    "rmsDb": -29.38,
-    "lufs": -30.36,
+    "rmsDb": -29.27,
+    "lufs": -30.22,
     "truePeakDb": -5,
-    "low": 0.212,
+    "low": 0.213,
     "mid": 0.786,
     "high": 0.002,
-    "tailDb": -53.98,
+    "tailDb": -53.58,
     "hits": 2,
     "hitsAt": [
       {
-        "start": 0.008,
-        "end": 0.042,
+        "start": 0.002,
+        "end": 0.034,
         "peakDb": -5
       },
       {
-        "start": 0.136,
-        "end": 0.158,
+        "start": 0.128,
+        "end": 0.15,
         "peakDb": -11.3
       }
     ]
@@ -121,6 +121,6 @@
   ],
   "fixture": false,
   "file": "ball-drop.wav",
-  "seconds": 0.244,
-  "sha256": "e6d22ce36b723779fe5fb2fa4af6dfa0f7a061f7db546ed022520949103379e4"
+  "seconds": 0.2357,
+  "sha256": "870013c0c6b52e0e368df148424329bd1550563de61d05c654e4f98366f02893"
 }

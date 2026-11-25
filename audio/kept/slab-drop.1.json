@@ -51,7 +51,7 @@
     "line": null
   },
   "chain": {
-    "trimStart": 0.062,
+    "trimStart": 0.068,
     "trimEnd": 0.558,
     "cutToSeconds": null,
     "fadeInMs": 3,
@@ -64,22 +64,22 @@
     "loop": null
   },
   "measured": {
-    "seconds": 0.496,
-    "start": 0.002,
-    "end": 0.298,
+    "seconds": 0.49,
+    "start": 0,
+    "end": 0.292,
     "peakDb": -5,
-    "rmsDb": -20.83,
-    "lufs": -23.74,
+    "rmsDb": -20.78,
+    "lufs": -23.75,
     "truePeakDb": -5,
     "low": 0.657,
-    "mid": 0.343,
+    "mid": 0.342,
     "high": 0,
-    "tailDb": -52.04,
+    "tailDb": -51.97,
     "hits": 1,
     "hitsAt": [
       {
-        "start": 0.008,
-        "end": 0.152,
+        "start": 0.002,
+        "end": 0.146,
         "peakDb": -5
       }
     ]
@@ -112,6 +112,6 @@
   "problems": [],
   "fixture": false,
   "file": "slab-drop.1.wav",
-  "seconds": 0.496,
-  "sha256": "fe750b78ea872bee23753f849ab9b6c98bc906b215ad1b32ba93ad51708b970a"
+  "seconds": 0.4897,
+  "sha256": "fe130653926d509f4584a256d056109265b8140c6fc0ad899fb4e7e11951b1b5"
 }

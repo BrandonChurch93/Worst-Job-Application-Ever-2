@@ -51,15 +51,15 @@
     "line": null
   },
   "chain": {
-    "trimStart": 0,
-    "trimEnd": 0.15,
+    "trimStart": 0.083,
+    "trimEnd": 0.233,
     "cutToSeconds": 0.15,
     "fadeInMs": 3,
     "fadeOutMs": 37.5,
     "lowCutHz": 60,
     "levelMeasure": "peak",
     "levelDb": -16,
-    "gainDb": 33.37,
+    "gainDb": 33.46,
     "channels": 1,
     "loop": null
   },
@@ -68,18 +68,18 @@
     "start": 0,
     "end": 0.148,
     "peakDb": -16,
-    "rmsDb": -38.13,
-    "lufs": -37.41,
+    "rmsDb": -39.35,
+    "lufs": -38.76,
     "truePeakDb": -15.99,
-    "low": 0.281,
-    "mid": 0.61,
-    "high": 0.109,
-    "tailDb": -40.46,
+    "low": 0.3,
+    "mid": 0.615,
+    "high": 0.085,
+    "tailDb": -44.62,
     "hits": 1,
     "hitsAt": [
       {
         "start": 0,
-        "end": 0.134,
+        "end": 0.114,
         "peakDb": -16
       }
     ]
@@ -113,5 +113,5 @@
   "fixture": false,
   "file": "key-press.6.wav",
   "seconds": 0.15,
-  "sha256": "3c74564ac87b2f969daf910339c9bb9ded2744fb6ce898fb85e7d0fdebf8475b"
+  "sha256": "94cef179e54af91552cb25d2fe47b329dfed83764585e34a3a9d9302c7f697d9"
 }

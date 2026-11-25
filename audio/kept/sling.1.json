@@ -51,8 +51,8 @@
     "line": null
   },
   "chain": {
-    "trimStart": 0,
-    "trimEnd": 0.25,
+    "trimStart": 0.004,
+    "trimEnd": 0.254,
     "cutToSeconds": 0.25,
     "fadeInMs": 3,
     "fadeOutMs": 62.5,
@@ -68,18 +68,18 @@
     "start": 0,
     "end": 0.23,
     "peakDb": -5,
-    "rmsDb": -25.26,
-    "lufs": -23.77,
+    "rmsDb": -25.36,
+    "lufs": -23.87,
     "truePeakDb": -4.87,
     "low": 0.012,
-    "mid": 0.762,
-    "high": 0.225,
-    "tailDb": -52.69,
+    "mid": 0.764,
+    "high": 0.223,
+    "tailDb": -52.95,
     "hits": 1,
     "hitsAt": [
       {
         "start": 0,
-        "end": 0.16,
+        "end": 0.156,
         "peakDb": -5
       }
     ]
@@ -118,5 +118,5 @@
   "fixture": false,
   "file": "sling.1.wav",
   "seconds": 0.25,
-  "sha256": "374db5e2eba0ff4552490d77c568b975ad2e1d2d16977b565abb37f6e2c9884e"
+  "sha256": "79dee655a25aa87543f7f0669e73a25112c86df4fd20b8ee8eab1256173673c4"
 }

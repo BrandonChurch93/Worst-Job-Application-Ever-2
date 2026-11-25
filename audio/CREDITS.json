@@ -1581,6 +1581,36 @@
       "answer": "HTTP 200, 1.6 s",
       "cost": 9,
       "how": "reported by the response"
+    },
+    {
+      "n": 158,
+      "time": "2026-11-25T19:03:38Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "slab-drop.3 take 3, variant 3 of 3",
+      "asked": "0.8 s",
+      "answer": "HTTP 200, 1.7 s",
+      "cost": 9,
+      "how": "reported by the response"
+    },
+    {
+      "n": 159,
+      "time": "2026-11-25T19:03:40Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "strips-zip take 3",
+      "asked": "1 s",
+      "answer": "HTTP 200, 1.7 s",
+      "cost": 11,
+      "how": "reported by the response"
+    },
+    {
+      "n": 160,
+      "time": "2026-11-25T19:03:42Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "dart-hit.4 take 3, variant 4 of 4",
+      "asked": "0.5 s for a cue of 0.2 s",
+      "answer": "HTTP 200, 1.9 s",
+      "cost": 6,
+      "how": "reported by the response"
     }
   ]
 }

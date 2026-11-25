@@ -4,7 +4,7 @@ This build may spend at most 10000 ElevenLabs credits in all, on every call of e
 
 The count is of this build's own calls, never of what the account has left: the account is shared with other builds. Every call goes through `npm run credits`, which writes its row here before it returns and makes no call that would pass the limit. A sound effect is never asked for without its length. `kit/addenda/001-sound-budget-and-narrator.md` sets these rules. This file is written by the tool from `audio/CREDITS.json`.
 
-Running total: 2498 of 10000. Calls: 157.
+Running total: 2524 of 10000. Calls: 160.
 
 ## Rates
 
@@ -172,3 +172,6 @@ Running total: 2498 of 10000. Calls: 157.
 | 155 | 2026-11-25T18:45:54Z | POST /v1/text-to-speech | line.step1.email.0 take 2, breaks of 0.1 s | 125 characters, stability 0.75, speed 0.7 | HTTP 200, 1.0 s | 40 | reported by the response | 2449 |
 | 156 | 2026-11-25T18:46:20Z | POST /v1/text-to-speech | line.step1.email.0 take 3, breaks of 0.1 s | 125 characters, stability 0.75, speed 0.7 | HTTP 200, 1.1 s | 40 | reported by the response | 2489 |
 | 157 | 2026-11-25T18:47:16Z | POST /v1/sound-generation | slab-drop.3 take 2, variant 3 of 3 | 0.8 s | HTTP 200, 1.6 s | 9 | reported by the response | 2498 |
+| 158 | 2026-11-25T19:03:38Z | POST /v1/sound-generation | slab-drop.3 take 3, variant 3 of 3 | 0.8 s | HTTP 200, 1.7 s | 9 | reported by the response | 2507 |
+| 159 | 2026-11-25T19:03:40Z | POST /v1/sound-generation | strips-zip take 3 | 1 s | HTTP 200, 1.7 s | 11 | reported by the response | 2518 |
+| 160 | 2026-11-25T19:03:42Z | POST /v1/sound-generation | dart-hit.4 take 3, variant 4 of 4 | 0.5 s for a cue of 0.2 s | HTTP 200, 1.9 s | 6 | reported by the response | 2524 |

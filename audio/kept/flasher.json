@@ -51,11 +51,11 @@
     "line": null
   },
   "chain": {
-    "trimStart": 0,
-    "trimEnd": 0.4,
-    "cutToSeconds": 0.4,
+    "trimStart": 0.03,
+    "trimEnd": 0.422,
+    "cutToSeconds": null,
     "fadeInMs": 3,
-    "fadeOutMs": 100,
+    "fadeOutMs": 98.03,
     "lowCutHz": 60,
     "levelMeasure": "peak",
     "levelDb": -16,
@@ -64,22 +64,22 @@
     "loop": null
   },
   "measured": {
-    "seconds": 0.4,
-    "start": 0.002,
-    "end": 0.142,
+    "seconds": 0.392,
+    "start": 0,
+    "end": 0.112,
     "peakDb": -16,
-    "rmsDb": -39.81,
-    "lufs": -41.09,
+    "rmsDb": -38.93,
+    "lufs": -41.1,
     "truePeakDb": -15.57,
     "low": 0.002,
-    "mid": 0.271,
-    "high": 0.726,
-    "tailDb": -51.1,
+    "mid": 0.274,
+    "high": 0.725,
+    "tailDb": -51.63,
     "hits": 1,
     "hitsAt": [
       {
-        "start": 0.01,
-        "end": 0.058,
+        "start": 0,
+        "end": 0.028,
         "peakDb": -16
       }
     ]
@@ -111,6 +111,6 @@
   "problems": [],
   "fixture": false,
   "file": "flasher.wav",
-  "seconds": 0.4,
-  "sha256": "e0616d850ad4efcbe631442e6384ba4fdf8d378b8979e7326810249b147f8517"
+  "seconds": 0.3921,
+  "sha256": "a3cecb160824fede041df5fdc997a5e3fa9ce64cc713691fe138fad6ed313192"
 }

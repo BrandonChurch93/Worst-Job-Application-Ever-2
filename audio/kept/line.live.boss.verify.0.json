@@ -1,0 +1,170 @@
+{
+  "id": "line.live.boss.verify.0",
+  "kind": "live-line",
+  "cue": null,
+  "variant": null,
+  "class": "voice",
+  "loop": false,
+  "beat": null,
+  "liveKey": "boss.verify",
+  "group": "boss.verify",
+  "describes": null,
+  "index": 0,
+  "words": "It claims to be human. / Bold.",
+  "text": "It claims to be human. / Bold.",
+  "prompt": null,
+  "settings": {
+    "speed": 0.7,
+    "stability": 0.75,
+    "breakSeconds": 1.4,
+    "sent": "It claims to be human. <break time=\"1.4s\" /> Bold.",
+    "call": 154
+  },
+  "askedSeconds": null,
+  "cost": "17",
+  "take": {
+    "number": 2,
+    "round": "build",
+    "file": "take-2.mp3",
+    "sha256": "207f6488169b55b2951b873d1e0859eab17d7b95897345cfae7b453ff2444e13",
+    "filed": "2026-11-25T18:44:57.007Z",
+    "measured": {
+      "seconds": 4.18,
+      "start": 0.028,
+      "end": 4.104,
+      "peakDb": -4.72,
+      "rmsDb": -24.02,
+      "lufs": -21.97,
+      "truePeakDb": -4.3,
+      "low": 0.582,
+      "mid": 0.275,
+      "high": 0.142,
+      "tailDb": -24.11,
+      "hits": 3,
+      "hitsAt": [
+        {
+          "start": 0.042,
+          "end": 0.166,
+          "peakDb": -7.65
+        },
+        {
+          "start": 0.252,
+          "end": 1.626,
+          "peakDb": -4.72
+        },
+        {
+          "start": 3.242,
+          "end": 4.046,
+          "peakDb": -6.06
+        }
+      ]
+    },
+    "line": {
+      "words": 6,
+      "seconds": 4.076,
+      "wordsPerSecond": 1.472,
+      "maxWordsPerSecond": 1.6,
+      "pauseMarks": 1,
+      "pausesFound": 1,
+      "pauses": [
+        1.602
+      ],
+      "paceHolds": true,
+      "pausesHold": true,
+      "room": null,
+      "fits": true
+    }
+  },
+  "chain": {
+    "trimStart": 0.032,
+    "trimEnd": 4.104,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 80,
+    "levelMeasure": "lufs",
+    "levelDb": -18,
+    "gainDb": 4.08,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 4.072,
+    "start": 0.002,
+    "end": 4.042,
+    "peakDb": -0.15,
+    "rmsDb": -20.71,
+    "lufs": -18,
+    "truePeakDb": -0.13,
+    "low": 0.503,
+    "mid": 0.326,
+    "high": 0.171,
+    "tailDb": -25.72,
+    "hits": 3,
+    "hitsAt": [
+      {
+        "start": 0.01,
+        "end": 0.134,
+        "peakDb": -2.79
+      },
+      {
+        "start": 0.228,
+        "end": 1.588,
+        "peakDb": -0.63
+      },
+      {
+        "start": 3.21,
+        "end": 4,
+        "peakDb": -0.15
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
+    "asks": 6,
+    "whole": 1,
+    "transcript": "It claims to be human. Bold.",
+    "transcripts": [
+      "It claims to be human. Bold.",
+      "It claims to be human. Bold."
+    ],
+    "transcriptAgreed": "2 of 2",
+    "attitudes": [
+      "cynical and skeptical"
+    ],
+    "accents": [
+      "American"
+    ],
+    "pitches": [
+      "low"
+    ],
+    "whisper": null,
+    "whisperVotes": "0 yes, 1 no",
+    "laugh": null,
+    "laughVotes": "0 yes, 1 no",
+    "warmth": null,
+    "warmthVotes": "0 yes, 1 no",
+    "excitement": null,
+    "excitementVotes": "0 yes, 1 no",
+    "unimpressedAndSmug": null,
+    "unimpressedAndSmugVotes": "1 yes, 0 no",
+    "basis": [
+      "The speaker uses a deep, slow, and cold delivery with a deliberate pause before the final word, conveying a highly skeptical and smug demeanor.",
+      "The speaker delivers the lines with a slow, deliberate cadence and a cold, mocking tone."
+    ],
+    "heardRaisedByDb": 1.72
+  },
+  "why": "tone not judged: 1 whole answers in 6 asks",
+  "forced": true,
+  "problems": [
+    "the listener left \"whisper\" unanswered",
+    "the listener left \"laugh\" unanswered",
+    "the listener left \"warmth\" unanswered",
+    "the listener left \"excitement\" unanswered",
+    "the listener left \"unimpressedAndSmug\" unanswered"
+  ],
+  "fixture": false,
+  "file": "line.live.boss.verify.0.wav",
+  "seconds": 4.072,
+  "sha256": "db1f8a30d743142433811e7e0ab571c25ae5c97f6c6b9accaab501d0f063186b"
+}

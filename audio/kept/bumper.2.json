@@ -51,8 +51,8 @@
     "line": null
   },
   "chain": {
-    "trimStart": 0,
-    "trimEnd": 0.3,
+    "trimStart": 0.001,
+    "trimEnd": 0.301,
     "cutToSeconds": 0.3,
     "fadeInMs": 3,
     "fadeOutMs": 75,
@@ -68,18 +68,18 @@
     "start": 0,
     "end": 0.284,
     "peakDb": -5,
-    "rmsDb": -24.87,
-    "lufs": -23.8,
+    "rmsDb": -24.9,
+    "lufs": -23.83,
     "truePeakDb": -4.97,
-    "low": 0.048,
+    "low": 0.047,
     "mid": 0.822,
-    "high": 0.13,
-    "tailDb": -48,
+    "high": 0.131,
+    "tailDb": -48.44,
     "hits": 1,
     "hitsAt": [
       {
         "start": 0,
-        "end": 0.224,
+        "end": 0.222,
         "peakDb": -5
       }
     ]
@@ -113,5 +113,5 @@
   "fixture": false,
   "file": "bumper.2.wav",
   "seconds": 0.3,
-  "sha256": "94c439cf0edfd0ef50e83a21e76b8245c04a51d33d4d886ebf8ede5e80af0920"
+  "sha256": "633841aa50798675f130cc1815ea1ca88f612b789163a604fbe56f4437c13342"
 }

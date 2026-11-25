@@ -51,35 +51,35 @@
     "line": null
   },
   "chain": {
-    "trimStart": 0.094,
-    "trimEnd": 0.194,
+    "trimStart": 0.154,
+    "trimEnd": 0.254,
     "cutToSeconds": 0.1,
     "fadeInMs": 3,
     "fadeOutMs": 25,
     "lowCutHz": 60,
     "levelMeasure": "peak",
     "levelDb": -16,
-    "gainDb": 2.31,
+    "gainDb": 2.32,
     "channels": 1,
     "loop": null
   },
   "measured": {
     "seconds": 0.1,
-    "start": 0.002,
-    "end": 0.094,
+    "start": 0,
+    "end": 0.088,
     "peakDb": -16,
-    "rmsDb": -37.16,
-    "lufs": -37.53,
+    "rmsDb": -36.84,
+    "lufs": -37.44,
     "truePeakDb": -15.99,
-    "low": 0.231,
-    "mid": 0.751,
-    "high": 0.018,
-    "tailDb": -36.03,
+    "low": 0.24,
+    "mid": 0.742,
+    "high": 0.017,
+    "tailDb": -54.44,
     "hits": 1,
     "hitsAt": [
       {
-        "start": 0.046,
-        "end": 0.09,
+        "start": 0,
+        "end": 0.032,
         "peakDb": -16
       }
     ]
@@ -118,5 +118,5 @@
   "fixture": false,
   "file": "key-tap.wav",
   "seconds": 0.1,
-  "sha256": "b12e610abe8ad7a30b6e9bea299b682252548e6c032d139fff0ae083c274174e"
+  "sha256": "7e156ff7a4cb15d267728c489b324f0d4f1860cc850112005bef50432969f564"
 }

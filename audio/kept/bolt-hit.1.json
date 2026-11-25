@@ -51,11 +51,11 @@
     "line": null
   },
   "chain": {
-    "trimStart": 0.024,
+    "trimStart": 0.043,
     "trimEnd": 0.152,
     "cutToSeconds": null,
     "fadeInMs": 3,
-    "fadeOutMs": 32,
+    "fadeOutMs": 27.16,
     "lowCutHz": 60,
     "levelMeasure": "peak",
     "levelDb": -5,
@@ -64,22 +64,22 @@
     "loop": null
   },
   "measured": {
-    "seconds": 0.128,
+    "seconds": 0.109,
     "start": 0,
-    "end": 0.11,
+    "end": 0.092,
     "peakDb": -5,
-    "rmsDb": -24.13,
-    "lufs": -21.76,
+    "rmsDb": -23.42,
+    "lufs": -21.11,
     "truePeakDb": -4.95,
     "low": 0.016,
-    "mid": 0.419,
-    "high": 0.565,
-    "tailDb": -46.83,
+    "mid": 0.418,
+    "high": 0.566,
+    "tailDb": -47.14,
     "hits": 1,
     "hitsAt": [
       {
-        "start": 0.002,
-        "end": 0.098,
+        "start": 0,
+        "end": 0.08,
         "peakDb": -5
       }
     ]
@@ -117,6 +117,6 @@
   ],
   "fixture": false,
   "file": "bolt-hit.1.wav",
-  "seconds": 0.128,
-  "sha256": "c61df6c1d095e41faf8cc5d2e371261acee9208cfc2559435fc983075a9790fc"
+  "seconds": 0.1086,
+  "sha256": "5beb565898e04f928d23d8e89684ea9a28711390a79cf7ca4d7e82054447fbc9"
 }

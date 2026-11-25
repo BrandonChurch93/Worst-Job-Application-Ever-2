@@ -1,5 +1,6 @@
 // Judges the newest take of every sound that has none kept, and keeps what holds.
 //   node tools/lib/sound-judge.mjs [--do] [--kind line|cue] [--only ID,ID]
+//   node tools/lib/sound-judge.mjs --rekeep [--kind line|cue] [--only ID,ID]   every kept take through the chain again, after the chain has changed
 // A take holds when its numbers hold and two whole answers of the listener hold. It is kept as it is.
 // A take whose numbers hold and that the listener could not be made to hear twice in its asks is kept with --force, and its record says so.
 // A line that only fails by being too long for its place in the film is kept with --force too: the Builder is told its seconds.
@@ -68,6 +69,22 @@ function main() {
   for (const t of ledger.takes) {
     newest.set(t.key, t)
     if (t.kept) kept.add(t.key)
+  }
+  if (a.rekeep) {
+    let n = 0
+    for (const t of ledger.takes) {
+      if (!t.kept) continue
+      if (a.kind && a.kind !== true && t.kind !== a.kind) continue
+      if (only && !only.includes(t.key)) continue
+      const cmd = [at('tools', 'sound.mjs'), ...cliOf(t), '--take', String(t.take), '--keep']
+      if (t.why) cmd.push('--force', '--why', t.why)
+      const r = spawnSync('node', cmd, { encoding: 'utf8' })
+      const out = `${r.stdout}${r.stderr}`.trim().split('\n')
+      if (r.status !== 0 || !out[0].startsWith('kept')) console.log(`${t.key} take ${t.take}: ${out.slice(0, 3).join(' | ')}`)
+      else n++
+    }
+    console.log(`judge: ${n} kept takes put through the chain again`)
+    return
   }
   const count = { keep: 0, force: 0, fail: 0 }
   for (const t of newest.values()) {

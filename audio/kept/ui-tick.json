@@ -51,11 +51,11 @@
     "line": null
   },
   "chain": {
-    "trimStart": 0.172,
+    "trimStart": 0.185,
     "trimEnd": 0.218,
     "cutToSeconds": null,
     "fadeInMs": 3,
-    "fadeOutMs": 11.5,
+    "fadeOutMs": 8.32,
     "lowCutHz": 60,
     "levelMeasure": "peak",
     "levelDb": -16,
@@ -64,22 +64,22 @@
     "loop": null
   },
   "measured": {
-    "seconds": 0.046,
-    "start": 0.002,
-    "end": 0.042,
+    "seconds": 0.033,
+    "start": 0,
+    "end": 0.028,
     "peakDb": -16,
-    "rmsDb": -36.96,
-    "lufs": -34.4,
+    "rmsDb": -35.6,
+    "lufs": -33.18,
     "truePeakDb": -15.99,
     "low": 0.001,
-    "mid": 0.334,
-    "high": 0.665,
-    "tailDb": -56.55,
+    "mid": 0.336,
+    "high": 0.662,
+    "tailDb": -52.3,
     "hits": 1,
     "hitsAt": [
       {
-        "start": 0.006,
-        "end": 0.034,
+        "start": 0,
+        "end": 0.02,
         "peakDb": -16
       }
     ]
@@ -111,6 +111,6 @@
   "problems": [],
   "fixture": false,
   "file": "ui-tick.wav",
-  "seconds": 0.046,
-  "sha256": "b44a2571a430282f12d7136ca9577f424ad99f411a4b44184d53f502794361dd"
+  "seconds": 0.0333,
+  "sha256": "ba79f75d4d056a52ffb93f4d226f5661328fc152ccb4741fcebb9621f17792e2"
 }

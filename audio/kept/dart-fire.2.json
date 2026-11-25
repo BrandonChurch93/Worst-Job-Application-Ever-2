@@ -51,8 +51,8 @@
     "line": null
   },
   "chain": {
-    "trimStart": 0,
-    "trimEnd": 0.15,
+    "trimStart": 0.024,
+    "trimEnd": 0.174,
     "cutToSeconds": 0.15,
     "fadeInMs": 3,
     "fadeOutMs": 37.5,
@@ -66,20 +66,20 @@
   "measured": {
     "seconds": 0.15,
     "start": 0,
-    "end": 0.13,
+    "end": 0.124,
     "peakDb": -16,
-    "rmsDb": -39.05,
-    "lufs": -36.7,
+    "rmsDb": -38.94,
+    "lufs": -36.8,
     "truePeakDb": -15.48,
     "low": 0.002,
     "mid": 0.471,
     "high": 0.527,
-    "tailDb": -54.36,
+    "tailDb": -55.46,
     "hits": 1,
     "hitsAt": [
       {
-        "start": 0.008,
-        "end": 0.062,
+        "start": 0,
+        "end": 0.038,
         "peakDb": -16
       }
     ]
@@ -113,5 +113,5 @@
   "fixture": false,
   "file": "dart-fire.2.wav",
   "seconds": 0.15,
-  "sha256": "4f128f41d735f38d93e614840c0b724d4aaab9deac7c17d84bdecf59fd2a5eec"
+  "sha256": "93cd26a7b0823fb05790c72eaf5f69ce015700e3ad2a4a4d8c52421cf333c869"
 }

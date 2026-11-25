@@ -51,11 +51,11 @@
     "line": null
   },
   "chain": {
-    "trimStart": 0.048,
+    "trimStart": 0.075,
     "trimEnd": 0.17,
     "cutToSeconds": null,
     "fadeInMs": 3,
-    "fadeOutMs": 30.5,
+    "fadeOutMs": 23.85,
     "lowCutHz": 60,
     "levelMeasure": "peak",
     "levelDb": -16,
@@ -64,22 +64,22 @@
     "loop": null
   },
   "measured": {
-    "seconds": 0.122,
-    "start": 0.002,
-    "end": 0.106,
+    "seconds": 0.095,
+    "start": 0,
+    "end": 0.084,
     "peakDb": -16,
-    "rmsDb": -36.39,
-    "lufs": -34.68,
+    "rmsDb": -35.49,
+    "lufs": -33.65,
     "truePeakDb": -15.65,
-    "low": 0.081,
-    "mid": 0.501,
-    "high": 0.418,
-    "tailDb": -45.52,
+    "low": 0.082,
+    "mid": 0.502,
+    "high": 0.416,
+    "tailDb": -52.53,
     "hits": 1,
     "hitsAt": [
       {
-        "start": 0.02,
-        "end": 0.092,
+        "start": 0,
+        "end": 0.066,
         "peakDb": -16
       }
     ]
@@ -111,6 +111,6 @@
   "problems": [],
   "fixture": false,
   "file": "key-press.4.wav",
-  "seconds": 0.122,
-  "sha256": "740ca468c2a081ccdcb2ed464f36e04a0d53c508caa86818404ec8746249aa04"
+  "seconds": 0.0954,
+  "sha256": "564d4a662eb0a5d36ac33fda47f4c1bf13cd3c5d0d1b137d47aef2be2401a235"
 }

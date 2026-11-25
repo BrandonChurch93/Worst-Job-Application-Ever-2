@@ -51,11 +51,11 @@
     "line": null
   },
   "chain": {
-    "trimStart": 0.004,
+    "trimStart": 0.027,
     "trimEnd": 0.07,
     "cutToSeconds": null,
     "fadeInMs": 3,
-    "fadeOutMs": 16.5,
+    "fadeOutMs": 10.83,
     "lowCutHz": 60,
     "levelMeasure": "peak",
     "levelDb": -16,
@@ -64,22 +64,22 @@
     "loop": null
   },
   "measured": {
-    "seconds": 0.066,
+    "seconds": 0.043,
     "start": 0,
-    "end": 0.056,
+    "end": 0.034,
     "peakDb": -16,
-    "rmsDb": -39.05,
-    "lufs": -36.53,
+    "rmsDb": -37.04,
+    "lufs": -34.86,
     "truePeakDb": -15.32,
     "low": 0.001,
-    "mid": 0.154,
-    "high": 0.845,
-    "tailDb": -47.44,
+    "mid": 0.155,
+    "high": 0.844,
+    "tailDb": -50.01,
     "hits": 1,
     "hitsAt": [
       {
-        "start": 0.006,
-        "end": 0.05,
+        "start": 0,
+        "end": 0.028,
         "peakDb": -16
       }
     ]
@@ -117,6 +117,6 @@
   ],
   "fixture": false,
   "file": "checkbox.wav",
-  "seconds": 0.066,
-  "sha256": "34c8ca8f020c3e36ddc12eb24766207d73f5d1e6d565a462a9a1b7bda0a47581"
+  "seconds": 0.0433,
+  "sha256": "631b3d7f35e29c89b2eae3de3633d7755105f40c0c4e18d75770f6faac9b5b84"
 }
