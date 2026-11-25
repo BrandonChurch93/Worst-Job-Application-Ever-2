@@ -68,7 +68,7 @@ Phase 2, engine and blockout. Everything here is a stand-in shape with working l
 
 - `tier-1`, `tier-2`, `tier-3`: the home camera moved to the tier, at home's distance from its floor.
 - `table-wide`, `table-lobby`, `table-replyall`, `table-fired`, `table-save`: fixed poses, set by eye against the approved images. To be refitted when the models exist.
-- `rail`: above and behind the ball, looking a little ahead.
+- `rail`: above and behind the ball, looking a little ahead. Its heading is the chord of the rail from 1.6 balls behind the ball to 2.2 ahead, so it does not jump at the joints of the rail. The whole ball is in the frame.
 - `film`: a list of times and camera names, blended over 0.6 s.
 - The site sets a camera's near plane at 1500 px in front of its target, so a fixed pose keeps its target within 1500 px of the nearest thing it must show. `table-wide` lost the Street tier until its target was moved toward the eye.
 - The wells are deep (the Street floor is 288 px down), so a low camera cannot see the flippers. `table-save` is steep for that reason.
@@ -92,6 +92,7 @@ Phase 2, engine and blockout. Everything here is a stand-in shape with working l
 
 ## Open
 
+- Each insert has its name beside it as a small label (`copy:step3.table.modes.N.insert`), because the moulded pictures do not exist yet and the copy has to be shown. The kit says an insert carries no words: when the pictures exist the names move to where the kit puts them.
 - The models are boxes. Signs are type on top of the boxes.
 - Lights down and power on change no light yet: the blockout has no dusk.
 - The ball's tone `glass` renders opaque in the blockout. That is the shell's view and stays. The cursor is placed at the ball's centre, so the blockout draws it on top of the ball.

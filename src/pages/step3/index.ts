@@ -10,7 +10,7 @@ import { TURN_HALF } from '../../stage/stage'
 import type { CameraPose, DrawList, GagInfo, Hint, PageContext, PageLogic, Pointer, SheetFrame, StepIo, TableState } from '../../stage/types'
 import take from '../../../cut/TABLE-TAKE.json'
 import { fixedShapes, movingShapes } from '../../table/draw'
-import { APRON_Y, BALL, LAST_Y, MARQUEE_Y, MID, OUTLET, PAGE_H, PORT, TH, TIERS, TIER_Y, floorZ, holdOf, railLength, railOf, table, tierAt } from '../../table/layout'
+import { APRON_Y, BALL, LAST_Y, MARQUEE_Y, MID, OUTLET, PAGE_H, PORT, TH, TIERS, TIER_Y, floorZ, holdOf, railAt, railLength, railOf, table, tierAt } from '../../table/layout'
 import { Machine, prepare as startPhysics, type MachineState, type TableEvent } from '../../table/physics'
 
 export const prepare = (): Promise<void> => startPhysics()
@@ -184,10 +184,19 @@ export function makePage(): PageLogic {
   }
   const railPose = (): CameraPose => {
     const b = ball()
-    const sp = Math.hypot(b.vx, b.vy) || 1
-    const dx = b.vx / sp
-    const dy = b.vy / sp
-    return { eye: toWorld(px(b.x - dx * 1.6), px(b.y - dy * 1.6), px(b.z + 4.2)), target: toWorld(px(b.x + dx * 1.2), px(b.y + dy * 1.2), px(b.z + 0.5)), up: [0, 0, 1], fov: fov('rail') }
+    let vx = b.vx
+    let vy = b.vy
+    if (b.mode === 'rail') {
+      const r = railOf(b.rail)
+      const p0 = railAt(r, Math.max(0, b.s - 1.6))
+      const p1 = railAt(r, Math.min(railLength(r), b.s + 2.2))
+      vx = p1.x - p0.x
+      vy = p1.y - p0.y
+    }
+    const sp = Math.hypot(vx, vy) || 1
+    const dx = vx / sp
+    const dy = vy / sp
+    return { eye: toWorld(px(b.x - dx * 2.4), px(b.y - dy * 2.4), px(b.z + 4.6)), target: toWorld(px(b.x + dx * 1.0), px(b.y + dy * 1.0), px(b.z + 0.5)), up: [0, 0, 1], fov: fov('rail') }
   }
   const follow = (): CameraPose => homePose(s.scroll, s.floor)
   const named = (name: string): CameraPose | null => (name === 'follow' ? follow() : name === 'rail' ? railPose() : NAMED[name] ?? null)
