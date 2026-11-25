@@ -12,7 +12,7 @@ const heights = config.scale.heights
 
 export const TURRET_LOOK = {
   collar: 46, head: 40, axis: -19, muzzle: 116, lift: 0.17, stowed: 62, clear: 0.72, sunk: 9, socket: 56, socketDepth: 36, bezel: 63.5, door: 58, doorDrop: 2.2,
-  flashSeconds: 0.05, steam: 6, sparks: 8
+  flashSeconds: 0.034, steam: 6, sparks: 8
 }
 
 const smooth = (t: number) => {
@@ -217,7 +217,7 @@ function poseTurret(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   if (flashing) {
     const t = since / TURRET_LOOK.flashSeconds
     const power = (1 - t) ** 1.5
-    const size = 124 + 60 * t
+    const size = 24 + 8 * t
     d.flash.scale.set(size, size, 1)
     d.flash.rotation.z = hash01(Math.round(v[7] ?? 0), 13, d.seed) * Math.PI * 2
     d.flashMaterial.color.setRGB(GLOW.flash[0] * power, GLOW.flash[1] * power, GLOW.flash[2] * power)
@@ -273,27 +273,18 @@ function poseHatch(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
 
 interface BoltData { head: THREE.Mesh; tails: THREE.InstancedMesh }
 
-let boltHalo: THREE.MeshBasicMaterial | null = null
-
 function makeBolt(): THREE.Object3D {
   const f = fx()
   const root = new THREE.Group()
   const len = TURRET.bolt
   const head = overlay(new THREE.Mesh(f.head, f.headMaterial), 6)
-  head.scale.set(20, 5.2, 5.2)
+  head.scale.set(8, 3, 3)
   head.position.set(len / 2 - 8, 0, 8)
   const tails = overlay(new THREE.InstancedMesh(f.tail, f.tailMaterial, 2), 4) as THREE.InstancedMesh
   tails.frustumCulled = false
   tails.setColorAt(0, new THREE.Color(1.1, 1.1, 1.1))
   tails.setColorAt(1, new THREE.Color(2.4, 5, 12))
-  if (!boltHalo) {
-    boltHalo = f.flashMaterial.clone()
-    boltHalo.color.setRGB(GLOW.boltTail[0] * 0.5, GLOW.boltTail[1] * 0.5, GLOW.boltTail[2] * 0.5)
-  }
-  const halo = overlay(new THREE.Mesh(f.quad, boltHalo), 5)
-  halo.scale.set(58, 58, 1)
-  halo.position.set(len / 2 - 8, 0, 8)
-  root.add(tails, halo, head)
+  root.add(tails, head)
   const data: BoltData = { head, tails }
   root.userData.bolt = data
   return root
@@ -304,8 +295,8 @@ function poseBolt(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const born = s.v ? Math.min(1, Math.max(0, s.v[1] ?? 1)) : 1
   const flick = 0.92 + 0.08 * Math.sin(ctx.time * 140 + (hashName(s.id) & 255))
   v3.set(TURRET.bolt / 2 - 12, 0, 8)
-  d.tails.setMatrixAt(0, m4.compose(v3, q4.identity(), w3.set(44 + 124 * born, 3.8 * flick, 3.8 * flick)))
-  d.tails.setMatrixAt(1, m4.compose(v3, q4, w3.set(20 + 50 * born, 2.1, 2.1)))
+  d.tails.setMatrixAt(0, m4.compose(v3, q4.identity(), w3.set(30 + 62 * born, 2.6 * flick, 2.6 * flick)))
+  d.tails.setMatrixAt(1, m4.compose(v3, q4, w3.set(16 + 34 * born, 1.4, 1.4)))
   d.tails.instanceMatrix.needsUpdate = true
   const a = s.rot ?? 0
   const half = TURRET.bolt / 2 - 9
