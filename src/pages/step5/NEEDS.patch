@@ -1,0 +1,25 @@
+diff --git a/src/stage/stage.ts b/src/stage/stage.ts
+index e8ca638..1efe759 100644
+--- a/src/stage/stage.ts
++++ b/src/stage/stage.ts
+@@ -152,7 +152,7 @@ export class Stage {
+       page.skip()
+     }
+     if (this.phase !== 'end') {
+-      page.step({ step: this.pageStep, time: this.pageTime, dt, pointer, pressed: pointer.down && !this.down, released: !pointer.down && this.down, cursor: this.cursor, emit, mode: this.o.mode })
++      page.step({ step: this.pageStep, time: this.pageTime, elapsed: this.time, dt, pointer, pressed: pointer.down && !this.down, released: !pointer.down && this.down, cursor: this.cursor, emit, mode: this.o.mode })
+       const gag = page.gag()
+       if (gag) this.reached.add(gag)
+       const inBeat = this.o.mode === 'live' || (this.index === 0 && this.pageTime >= armsBeat.from && this.pageTime < armsBeat.to)
+diff --git a/src/stage/types.ts b/src/stage/types.ts
+index 387f98b..efa4d76 100644
+--- a/src/stage/types.ts
++++ b/src/stage/types.ts
+@@ -95,6 +95,7 @@ export type Emit = (name: string, x: number, y: number, hitsCursor?: boolean) =>
+ export interface StepIo {
+   step: number
+   time: number
++  elapsed?: number
+   dt: number
+   pointer: Pointer
+   pressed: boolean
