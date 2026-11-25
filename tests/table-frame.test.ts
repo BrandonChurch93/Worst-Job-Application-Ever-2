@@ -6,7 +6,7 @@ import { FACE, skyline } from '../src/table/real/frame/skyline'
 import { Geo, grooved } from '../src/table/real/frame/geo'
 import { isAnchor, localBalls, zoneOf } from '../src/table/real/zone'
 import { fixedShapes } from '../src/table/draw'
-import { BALL, COLS, PORT, railOf } from '../src/table/layout'
+import { BALL, COLS, LANE_RAMP, PORT, TH, TIER_Y, railOf } from '../src/table/layout'
 import type { Shape } from '../src/stage/types'
 import type { RealContext } from '../src/real/types'
 
@@ -175,5 +175,62 @@ describe('the body of the machine', () => {
     for (let i = 0; i < p.count; i++) nearest = Math.min(nearest, Math.hypot(p.getX(i) - middle[0], p.getY(i) - middle[1]))
     expect(nearest).toBeGreaterThan(BALL / 2 + 20)
     expect(nearest).toBeLessThan((PORT.cup / 2) * BALL)
+  })
+
+  test('the launch lane climbs by a ramp that stands on the lower floor and meets the upper floor at the tier line, and nothing of the frame stands where the ball hops', () => {
+    for (const k of [1, 2]) {
+      const b = frame.find((f) => f.zone === ['corporate', 'office', 'street'][k])!
+      const z = zoneOf(anchorsOf('table-frame').find((s) => zoneOf(s).id === b.zone)!)
+      const x0 = localBalls(z, COLS.launchA, 0)[0] + 2
+      const x1 = localBalls(z, COLS.launchB, 0)[0] - 2
+      const line = localBalls(z, 0, TIER_Y[k]!)[1]
+      const foot = localBalls(z, 0, TIER_Y[k]! + LANE_RAMP.run)[1]
+      let top = -Infinity
+      let low = Infinity
+      for (const m of meshesOf(b.o)) {
+        if ((m as THREE.InstancedMesh).isInstancedMesh) continue
+        const p = m.geometry.getAttribute('position')
+        for (let i = 0; i < p.count; i++) {
+          if (p.getX(i) < x0 || p.getX(i) > x1 || p.getY(i) < foot - 20 || p.getY(i) > line + 0.01) continue
+          top = Math.max(top, p.getZ(i))
+          low = Math.min(low, p.getZ(i))
+          const along = (p.getY(i) - foot) / (line - foot)
+          if (along >= 0) expect(p.getZ(i), `${b.zone} ramp`).toBeLessThanOrEqual(along * BALL + 1)
+        }
+      }
+      expect(Math.abs(top - BALL), b.zone).toBeLessThan(0.6)
+      expect(low, b.zone).toBeGreaterThanOrEqual(0)
+    }
+    for (const k of [0, 1]) {
+      const b = frame.find((f) => f.zone === ['corporate', 'office', 'street'][k])!
+      const z = zoneOf(anchorsOf('table-frame').find((s) => zoneOf(s).id === b.zone)!)
+      const x0 = localBalls(z, COLS.launchA, 0)[0] + 2
+      const x1 = localBalls(z, COLS.launchB, 0)[0] - 2
+      const y0 = localBalls(z, 0, TIER_Y[k]! + TH)[1]
+      const y1 = localBalls(z, 0, TIER_Y[k]! + TH - 2)[1]
+      for (const m of meshesOf(b.o)) {
+        if ((m as THREE.InstancedMesh).isInstancedMesh) continue
+        const p = m.geometry.getAttribute('position')
+        for (let i = 0; i < p.count; i++) {
+          const inLane = p.getX(i) > x0 && p.getX(i) < x1 && p.getY(i) > y0 + 0.01 && p.getY(i) < y1
+          if (inLane) expect(p.getZ(i), `${b.zone} ${m.name}`).toBeLessThan(1)
+        }
+      }
+    }
+  })
+
+  test('over the lift lane the cross rail is a closed housing deep enough to hide the rise of the ball', () => {
+    const b = frame.find((f) => f.zone === 'street')!
+    const z = zoneOf(anchorsOf('table-frame').find((s) => zoneOf(s).id === 'street')!)
+    const x = localBalls(z, COLS.lift, 0)[0]
+    const line = localBalls(z, 0, TIER_Y[2]!)[1]
+    let deep = 0
+    for (const m of meshesOf(b.o)) {
+      if ((m as THREE.InstancedMesh).isInstancedMesh) continue
+      const p = m.geometry.getAttribute('position')
+      for (let i = 0; i < p.count; i++) if (Math.abs(p.getX(i) - x) < 0.74 * BALL && p.getZ(i) > BALL * 1.5) deep = Math.max(deep, line - p.getY(i))
+    }
+    expect(deep).toBeGreaterThanOrEqual(0.8 * BALL - 4)
+    expect(deep).toBeGreaterThanOrEqual(LANE_RAMP.lift * BALL)
   })
 })

@@ -100,3 +100,19 @@ The lenses of the arrow windows and of the lane lamps are one mesh; a fourth ver
 - Making the light pictures, timed in node on this machine at 17:27 UTC: marquee 39 ms, corporate 605 ms, office 423 ms, street 584 ms; each surround 8 to 23 ms. It is done once per zone at first use, on the main thread.
 - Per zone the part draws at most 6 meshes (corporate: lenses, sockets, plates, screws, globes, globe glass; office and street: the first four). A tier key shows parts of two zones, hence 7.
 - No file ships from my folder: the pictures of light, the surround and every lamp are made in code. Asset sets: 0 MB.
+
+## State at the limit (17:40 UTC)
+
+Not done:
+
+- No source in the open cellar of Mom's hatch: the street has all ten channels in use and the cellar needs a level of its own.
+- The proof sheets of the marquee, the office and the street were last made at 16:41 UTC, before the changes to walls, tops, glass, beacons, bats and the garage. The corporate sheet was made again at 17:28 UTC (before the bat lamps) and looked at.
+- The flash and the strobe were looked at only as one group alone in the proof sheets, not in motion.
+- The light pictures are made on the main thread at first use (about 1.6 s for the three tiers in node on this machine). Not moved to a worker or spread over frames.
+- The surround of a zone is one fixed picture: steel shows the zone's lamps as spots, not the models beside it.
+
+What still looks least real, worst first:
+
+1. The glossy floors and the steel show few lamps. The approved images are full of small bright reflections of lamps on the floor, the rails and the wire; here the floor reads mostly matte with a soft spot here and there, so a tier looks more evenly lit than it is.
+2. Outside the tiers the table is not dark. The apron, the outside of the frame and the two end zones have no lamps and stay in the studio's grey light, so in `table-wide` the cabinet reads flat grey round the lit tiers where the approved image has it dark with lit edges.
+3. The globes at the HQ doors and the lenses in the rails glow too little for what they light: the globes read as small opal balls with no halo and a faint pool on the carpet, and from above the arrow windows read as printed marks more than as lamps.

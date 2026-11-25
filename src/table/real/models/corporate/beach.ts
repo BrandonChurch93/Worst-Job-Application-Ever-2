@@ -117,7 +117,7 @@ export function buildBeach(z: Zone, ctx: RealContext): THREE.Object3D {
           const y = (x: number, u: number): number => edge(x) + (id - edge(x)) * u
           const u0 = bands[k]![0]
           const u1 = bands[k + 1]![0]
-          G.face([[x0, y(x0, u1), sea], [x1, y(x1, u1), sea], [x1, y(x1, u0), sea], [x0, y(x0, u0), sea]], [0, 0, 1], [1, 0, 0], mix(bands[k]![1], bands[k + 1]![1], 0.5))
+          G.blend([[x0, y(x0, u1), sea], [x1, y(x1, u1), sea], [x1, y(x1, u0), sea], [x0, y(x0, u0), sea]], [0, 0, 1], [1, 0, 0], [bands[k + 1]![1], bands[k + 1]![1], bands[k]![1], bands[k]![1]])
         }
         G.face([[x0, edge(x0) - 2.6, sea + 0.25], [x1, edge(x1) - 2.6, sea + 0.25], [x1, edge(x1) + 1.2, sea + 0.25], [x0, edge(x0) + 1.2, sea + 0.25]], [0, 0, 1], [1, 0, 0], TONE.foam)
         if (i % 3 === 1) G.face([[x0, edge(x0) + 7 + (i % 5), sea + 0.2], [x1 + 6, edge(x1) + 7.6 + (i % 5), sea + 0.2], [x1 + 6, edge(x1) + 8.6 + (i % 5), sea + 0.2], [x0, edge(x0) + 8 + (i % 5), sea + 0.2]], [0, 0, 1], [1, 0, 0], hex(0xd5f1ee))
@@ -136,12 +136,17 @@ export function buildBeach(z: Zone, ctx: RealContext): THREE.Object3D {
           const x1 = -iw + (iw * 2 * (i + 1)) / nx
           const ya = -id + ((y1 + id) * j) / ny
           const yb = -id + ((y1 + id) * (j + 1)) / ny
-          const p: V3[] = [[x0, ya, ground(x0, ya)], [x1, ya, ground(x1, ya)], [x1, yb, ground(x1, yb)], [x0, yb, ground(x0, yb)]]
-          const sx = (p[1]![2] - p[0]![2]) / (x1 - x0)
-          const sy = (p[3]![2] - p[0]![2]) / (yb - ya)
-          const wet = Math.max(0, Math.min(1, (yb - (shore - 16)) / 12))
-          const col = shade(mix(TONE.sand, hex(0xa3855a), wet), (1 + Math.max(-0.2, Math.min(0.16, sy * 1.1 + sx * 0.4)) + rnd.range(-0.008, 0.008)) * (1 - Math.min(0.5, shadow((x0 + x1) / 2, (ya + yb) / 2))))
-          G.face(p, [-sx, -sy, 1], [1, 0, 0], col)
+          const p: [V3, V3, V3, V3] = [[x0, ya, ground(x0, ya)], [x1, ya, ground(x1, ya)], [x1, yb, ground(x1, yb)], [x0, yb, ground(x0, yb)]]
+          const sx = (p[1][2] - p[0][2]) / (x1 - x0)
+          const sy = (p[3][2] - p[0][2]) / (yb - ya)
+          const at = (q: V3): RGB => {
+            const gx = (ground(q[0] + 1.5, q[1]) - ground(q[0] - 1.5, q[1])) / 3
+            const gy = (ground(q[0], q[1] + 1.5) - ground(q[0], q[1] - 1.5)) / 3
+            const wet = Math.max(0, Math.min(1, (q[1] - (shore - 16)) / 12))
+            const grain = 0.012 * Math.sin(q[0] * 12.9898 + q[1] * 78.233)
+            return shade(mix(TONE.sand, hex(0xa3855a), wet), (1 + Math.max(-0.2, Math.min(0.16, gy * 1.1 + gx * 0.4)) + grain) * (1 - Math.min(0.5, shadow(q[0], q[1]))))
+          }
+          G.blend(p, [-sx, -sy, 1], [1, 0, 0], [at(p[0]), at(p[1]), at(p[2]), at(p[3])])
         }
       }
       G.box(-iw, iw, -id - 0.4, -id, CASE.base, ground(0, -id) + 0.2, shade(TONE.sand, 0.8))
@@ -168,28 +173,33 @@ export function buildBeach(z: Zone, ctx: RealContext): THREE.Object3D {
     }, CASE.sun)
     fin(G, FINISH.satin, () => {
       const head = spine(1)
-      const fronds = 9
+      const fronds = 13
       for (let f = 0; f < fronds; f++) {
-        const turn = (f / fronds) * Math.PI * 2 + rnd.range(-0.2, 0.2)
-        const len = rnd.range(40, 52) * (Math.sin(turn) > 0.5 ? 0.72 : 1)
-        const rise = rnd.range(0.2, 0.75)
+        const upper = f % 3 === 2
+        const turn = (f / fronds) * Math.PI * 2 + rnd.range(-0.16, 0.16)
+        const len = (upper ? rnd.range(30, 38) : rnd.range(44, 54)) * (Math.sin(turn) > 0.5 ? 0.74 : 1)
+        const rise = upper ? rnd.range(0.7, 0.95) : rnd.range(0.15, 0.55)
         const dx = Math.cos(turn)
         const dy = Math.sin(turn)
-        const steps = 6
+        const steps = 10
+        const tone = rnd.range(0, 1)
         const rib = (u: number): V3 => [head[0] + dx * len * u, head[1] + dy * len * u, head[2] + 3 + len * (rise * u - (0.55 + rise) * u * u)]
         const path: V3[] = []
-        for (let k = 0; k <= steps; k++) path.push(rib(k / steps))
-        G.pipe(path, 0.7, 3, shade(TONE.palmDark, 0.8))
-        for (let k = 1; k <= steps; k++) {
-          const u = k / steps
-          const p = rib(u - 0.5 / steps)
-          const q = rib(Math.min(1, u + 0.9 / steps))
-          const wide = 12.5 * Math.sin(Math.PI * Math.min(1, u * 0.9 + 0.12)) + 2
-          for (const s of [-1, 1]) {
-            const tip: V3 = [q[0] - dy * s * wide, q[1] + dx * s * wide, q[2] - wide * 0.5]
-            const p2 = rib(u + 0.3 / steps > 1 ? 1 : u + 0.3 / steps)
-            const col = mix(TONE.palm, TONE.palmDark, rnd.range(0, 1))
-            both(G, [p, p2, tip], [dy * s * 0.4, -dx * s * 0.4, 1], [dx, dy, 0], shade(col, 1.12), shade(col, 0.6))
+        for (let k = 0; k <= steps; k += 2) path.push(rib(k / steps))
+        G.pipe(path, 0.6, 3, hex(0x8a9a3e))
+        const wide = (k: number): number => (k === 0 ? 0.6 : (upper ? 7.5 : 10) * Math.pow(Math.sin(Math.PI * Math.min(1, (k / steps) * 0.86 + 0.1)), 0.7) * (k % 2 ? 1 : 0.78))
+        for (const s of [-1, 1]) {
+          const edge = (k: number): V3 => {
+            const q = rib(k / steps)
+            const w = wide(k)
+            return [q[0] - dy * s * w + dx * w * 0.42, q[1] + dx * s * w + dy * w * 0.42, q[2] - w * 0.55 - 0.3]
+          }
+          for (let k = 0; k < steps; k++) {
+            const u = (k + 0.5) / steps
+            const col = shade(mix(mix(TONE.palmDark, TONE.palm, tone), hex(0x9fbf4a), (upper ? 0.3 : 0.08) + 0.25 * u), (k % 2 ? 1.08 : 0.84) * (s > 0 ? 1 : 0.9))
+            const p0 = rib(k / steps)
+            const p1 = rib((k + 1) / steps)
+            both(G, [p0, p1, edge(k + 1), edge(k)], [dy * s * 0.45, -dx * s * 0.45, 1], [dx, dy, 0], col, shade(col, 0.55))
           }
         }
       }

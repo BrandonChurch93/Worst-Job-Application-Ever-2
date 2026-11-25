@@ -56,9 +56,9 @@ export const aluOf = (z: Zone, name = 'alu'): THREE.MeshPhysicalMaterial => {
   return own(lit(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.4, metalness: 0.4, normalMap: src.normalMap ? fine(src.normalMap) : null, normalScale: new THREE.Vector2(0.15, 0.15), anisotropy: 0.72, anisotropyRotation: Math.PI / 2 })), z), `frame.${name}.${z.id}`)
 }
 
-export const paintOf = (z: Zone, name = 'paint'): THREE.MeshPhysicalMaterial => {
+export const paintOf = (z: Zone, name = 'paint', grain = 0.035): THREE.MeshPhysicalMaterial => {
   const src = materials().ceramic
-  return own(lit(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.66, metalness: 0, normalMap: src.normalMap, normalScale: new THREE.Vector2(0.035, 0.035), specularIntensity: 0.55 })), z), `frame.${name}.${z.id}`)
+  return own(lit(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.66, metalness: 0, normalMap: src.normalMap, normalScale: new THREE.Vector2(grain, grain), specularIntensity: 0.55 })), z), `frame.${name}.${z.id}`)
 }
 
 export const steelOf = (z: Zone): THREE.MeshPhysicalMaterial => own(lit(studio(new THREE.MeshPhysicalMaterial({ color: 0xe2e5e8, roughness: 0.2, metalness: 0.55 })), z), `frame.steel.${z.id}`)
