@@ -29,7 +29,7 @@ Phase 2 blockout. Stand-in shapes only. Every word is a key of `content/copy.jso
 ## Differences from the brief, told to the Builder
 
 - The kit names a perk card as one slab that turns over on its long axis, or a face that slides aside. Here it is four slats, each turning on its long axis, for the reason given above.
-- `hint()` points at the first unopened first-screen card during the stroll and perks phases, and at the hero button from the ticker phase on (with a pulsing press). Reason: the bots walk to the hint, and the keen bot has to reach the perks and ticker gags before the press ends the page. In the rejected variant it points at the hero button without a press.
+- `hint()` points at the first unopened first-screen card during the stroll and perks phases (and, once the three are open, at the stand beside the hero button, without a press), and at the hero button from the ticker phase on (with a pulsing press). Only the bots read `hint()`: nothing in `src/ui/` or `src/app.ts` draws it, so a visitor never sees it point at the bare page. Reason: the bots walk to the hint, and the keen bot has to reach the perks and ticker gags before the press ends the page. In the rejected variant it points at the hero button without a press.
 - The cursor rides surfaces with `cursor.setGround` (on `main` since f6c1585), so it stands on cards, caps and medallions and is not hidden under them.
 
 ## Film timing (page seconds)
