@@ -1,0 +1,118 @@
+{
+  "id": "tube-run",
+  "kind": "cue",
+  "cue": "tube-run",
+  "variant": null,
+  "class": "mechanism",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A hard plastic ball rolling fast down a plastic tube",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A hard plastic ball rolling fast down a hollow plastic tube, a rattling hollow roll, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 1.5,
+    "loop": false,
+    "influence": null,
+    "call": 75
+  },
+  "askedSeconds": 1.5,
+  "cost": "17",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "2d4799c13e49e038ea7157aef17bd01da309bcec2b890a8188dad4e7e26f00ce",
+    "filed": "2026-11-25T18:15:30.540Z",
+    "measured": {
+      "seconds": 1.48,
+      "start": 0,
+      "end": 1.48,
+      "peakDb": -23.5,
+      "rmsDb": -44.4,
+      "lufs": -41.64,
+      "truePeakDb": -23.41,
+      "low": 0.324,
+      "mid": 0.675,
+      "high": 0.001,
+      "tailDb": -40.88,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0.014,
+          "end": 1.34,
+          "peakDb": -23.5
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 1.48,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -10,
+    "gainDb": 13.04,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 1.48,
+    "start": 0,
+    "end": 1.408,
+    "peakDb": -10,
+    "rmsDb": -31.17,
+    "lufs": -31.64,
+    "truePeakDb": -10,
+    "low": 0.321,
+    "mid": 0.679,
+    "high": 0.001,
+    "tailDb": -32.83,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0.014,
+        "end": 1.34,
+        "peakDb": -10
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void",
+    "asks": 3,
+    "whole": 3,
+    "heard": "A hard plastic ball rolls rapidly down a plastic tube. / A rapid riffling or shuffling of a deck of cards or thick paper pages. / A hard plastic ball rolling rapidly down a corrugated plastic tube.",
+    "madeOf": "plastic / Paper or cardstock. / plastic",
+    "events": "1 / 1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 1 no",
+    "basis": [
+      "The recording features a continuous, rapid rattling noise consistent with a hard object moving quickly over the ridges inside a hollow plastic structure.",
+      "The audio consists of rapid, dry, successive clicks characteristic of stiff paper or cards being flipped quickly, rather than the resonant, continuous rumbling of a ball in a tube.",
+      "The audio consists of a fast, continuous series of hollow clicks, which matches the sound of a hard object hitting the ridges inside a plastic tube."
+    ],
+    "heardRaisedByDb": 20.5
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "tube-run.wav",
+  "seconds": 1.48,
+  "sha256": "32c0ebf64e000a4d16f14cf06dc50e120ed7c73e7d8ac5b4803fb331ae5e479d"
+}

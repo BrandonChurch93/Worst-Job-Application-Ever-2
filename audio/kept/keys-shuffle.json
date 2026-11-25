@@ -1,0 +1,120 @@
+{
+  "id": "keys-shuffle",
+  "kind": "cue",
+  "cue": "keys-shuffle",
+  "variant": null,
+  "class": "mechanism",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "Many key caps clattering as they change places",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "Many plastic keyboard key caps clattering quickly as they change places on a metal tray, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.7,
+    "loop": false,
+    "influence": null,
+    "call": 55
+  },
+  "askedSeconds": 0.7,
+  "cost": "8",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "6dd661481d03a66c45124b9a40954462cadb49c578823129ee2eb606246d846c",
+    "filed": "2026-11-25T18:13:55.625Z",
+    "measured": {
+      "seconds": 0.68,
+      "start": 0,
+      "end": 0.41,
+      "peakDb": -5.05,
+      "rmsDb": -29.36,
+      "lufs": -24.87,
+      "truePeakDb": -4.59,
+      "low": 0.002,
+      "mid": 0.508,
+      "high": 0.49,
+      "tailDb": -38,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0.008,
+          "end": 0.312,
+          "peakDb": -5.05
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.41,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 102.5,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -10,
+    "gainDb": -4.8,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.41,
+    "start": 0,
+    "end": 0.396,
+    "peakDb": -10,
+    "rmsDb": -34.04,
+    "lufs": -31.1,
+    "truePeakDb": -9.4,
+    "low": 0.001,
+    "mid": 0.508,
+    "high": 0.491,
+    "tailDb": -48.85,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0.008,
+        "end": 0.312,
+        "peakDb": -10
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
+    "asks": 6,
+    "whole": 0,
+    "heard": null,
+    "madeOf": null,
+    "events": null,
+    "voice": null,
+    "voiceVotes": "0 yes, 0 no",
+    "word": null,
+    "wordVotes": "0 yes, 0 no",
+    "music": null,
+    "musicVotes": "0 yes, 0 no",
+    "melody": null,
+    "melodyVotes": "0 yes, 0 no",
+    "fits": null,
+    "fitsVotes": "0 yes, 0 no",
+    "basis": [],
+    "heardRaisedByDb": 2.05
+  },
+  "why": "not judged by ear: 0 whole answers in 6 asks",
+  "forced": true,
+  "problems": [
+    "the listener left \"voice\" unanswered",
+    "the listener left \"word\" unanswered",
+    "the listener left \"music\" unanswered",
+    "the listener left \"melody\" unanswered",
+    "the listener left \"fits\" unanswered"
+  ],
+  "fixture": false,
+  "file": "keys-shuffle.wav",
+  "seconds": 0.41,
+  "sha256": "6a8187ead30dd0148779a053702218d3753e2d163d02283ad573933a63c9463b"
+}

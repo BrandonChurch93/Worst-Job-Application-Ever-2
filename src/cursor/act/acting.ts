@@ -13,7 +13,7 @@ export const actingLook: LookMaker | null = (pose, look) => {
   const react = pose.reaction ? reactionPose(pose.reaction, pose.reactionAt, 1) : null
   b.bend = clamp(pose.bend, -1, 1)
   b.puff = clamp(f.puff + (react ? react.puff : 0), 0, 1)
-  b.tremble = clamp(f.tremble + (pose.reaction === 'flinch' ? 0.35 * (1 - pose.reactionAt) : 0), 0, 1)
+  b.tremble = clamp(f.tremble + (pose.reaction === 'flinch' ? 0.35 * (1 - pose.reactionAt) : pose.reaction === 'cower' ? 0.4 : 0), 0, 1)
   b.pale = clamp(f.pale, 0, 1)
   // With its arms out the anger goes into the pull: the tip only warms and gives no steam, which beside a burn would read as the singe.
   const busy = pose.arms ? clamp(pose.sprout, 0, 1) : 0

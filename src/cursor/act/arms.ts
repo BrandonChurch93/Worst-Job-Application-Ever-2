@@ -7,7 +7,7 @@ import type { ArmsLook, ArmsModel } from '../contract'
 // Sizes in page pixels. The arm is 7% of the body's height thick, the hand a fifth of it long.
 // An arm is `rest` long: nearer than that it bows out at the elbow by what is left over, up to `slack` of the reach, and `elbow` is how sharply it bends there (1 is an even bow). An open hand that pushes bends back at the wrist by `wrist`; an open hand that hangs lets its fingers fall by `droop`.
 const H = config.cursor.heightPxAt1080
-export const ARM = { radius: H * 0.038, rest: 46, along: 22, round: 10, grainPx: 64, slack: 1.25, elbow: 2.2, wrist: 1, droop: 0.6 }
+export const ARM = { radius: H * 0.038, rest: 46, along: 22, round: 10, grainPx: 64, slack: 1.25, elbow: 2.2, wrist: 1, droop: 0.6, low: 0.15, rise: 0.55 }
 const HAND = { palm: [4.6, 4.7, 2.7], palmY: 4.8, finger: 1.5, joint: 3.1, joints: 8 }
 
 export interface Arms extends ArmsModel {
@@ -83,7 +83,8 @@ class Limb {
     const b = 2 * u * (1 - u) * ARM.elbow
     const c = u * u
     const k = 1 / (a + b + c)
-    out.set((a * from.x + b * this.c.x + c * to.x) * k, (a * from.y + b * this.c.y + c * to.y) * k, (a * z0 + b * this.c.z + c * to.z) * k)
+    const w = Math.min(1, Math.max(0, (u - ARM.low) / ARM.rise))
+    out.set((a * from.x + b * this.c.x + c * to.x) * k, (a * from.y + b * this.c.y + c * to.y) * k, z0 + ((a * z0 + b * this.c.z + c * to.z) * k - z0) * w * w * (3 - 2 * w))
   }
 
   pose(d3: Draw, from: THREE.Vector3, to: THREE.Vector3, grip: number, strain: number, grown: number, over: number): void {

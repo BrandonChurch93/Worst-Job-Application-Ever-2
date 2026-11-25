@@ -1,0 +1,142 @@
+{
+  "id": "power-on",
+  "kind": "cue",
+  "cue": "power-on",
+  "variant": null,
+  "class": "mechanism",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A pinball machine powering up: relays, a hum, a start-up chime of mechanical bells",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A pinball machine powering up, relays clacking, a transformer hum rising, then a short start up chime struck on mechanical bells, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 2.5,
+    "loop": false,
+    "influence": null,
+    "call": 77
+  },
+  "askedSeconds": 2.5,
+  "cost": "28",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "33cc241b4faa36346ef83d3b16e8072766b9a17b64f35317ea9569ec716df06c",
+    "filed": "2026-11-25T18:15:36.314Z",
+    "measured": {
+      "seconds": 2.48,
+      "start": 0,
+      "end": 2.234,
+      "peakDb": -12.77,
+      "rmsDb": -34.98,
+      "lufs": -26.84,
+      "truePeakDb": -12,
+      "low": 0.087,
+      "mid": 0.514,
+      "high": 0.4,
+      "tailDb": -54.16,
+      "hits": 4,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.148,
+          "peakDb": -26.4
+        },
+        {
+          "start": 0.306,
+          "end": 0.592,
+          "peakDb": -29.59
+        },
+        {
+          "start": 0.656,
+          "end": 0.732,
+          "peakDb": -31.03
+        },
+        {
+          "start": 0.814,
+          "end": 1.81,
+          "peakDb": -12.77
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 2.234,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -10,
+    "gainDb": 2.97,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 2.234,
+    "start": 0,
+    "end": 2.128,
+    "peakDb": -10,
+    "rmsDb": -31.8,
+    "lufs": -26.9,
+    "truePeakDb": -9.47,
+    "low": 0.086,
+    "mid": 0.514,
+    "high": 0.4,
+    "tailDb": -51.93,
+    "hits": 3,
+    "hitsAt": [
+      {
+        "start": 0.002,
+        "end": 0.152,
+        "peakDb": -23.36
+      },
+      {
+        "start": 0.306,
+        "end": 0.732,
+        "peakDb": -26.51
+      },
+      {
+        "start": 0.814,
+        "end": 1.81,
+        "peakDb": -10
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+    "asks": 2,
+    "whole": 2,
+    "heard": "A pinball machine powers up with the sound of clicking relays, an electrical hum, and a mechanical bell chime. / A machine powers up with a sequence of clicking relays, a low electrical hum, and a chime of mechanical bells.",
+    "madeOf": "Metal, plastic, and electrical components / metal, plastic, and electronic components",
+    "events": "3 / 3",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The sequential sounds of mechanical clicks, a continuous low hum, and ringing bells perfectly match the description of an older pinball machine powering on.",
+      "The recording features distinct mechanical clicks, an electrical humming sound, and a bell chime, perfectly matching the description of a pinball machine turning on."
+    ],
+    "heardRaisedByDb": 9.77
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "power-on.wav",
+  "seconds": 2.234,
+  "sha256": "7c16edf2609f9e8b1670a055d33cecd17e46c7e54ec5df60b9f36f5f1ee74d32"
+}

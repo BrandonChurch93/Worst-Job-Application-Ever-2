@@ -1,0 +1,117 @@
+{
+  "id": "step.1",
+  "kind": "cue",
+  "cue": "step",
+  "variant": 1,
+  "class": "tick",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "One soft tap of enamel on ceramic",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "One soft tap of a small glossy enamel coated metal tip on a glazed ceramic tile, a single light tick, very close microphone, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 34
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "3b15963671fd5f1347b74cd8b5ed4a504373480ee0d005c49d44213f4e720934",
+    "filed": "2026-11-25T18:13:09.179Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0,
+      "end": 0.48,
+      "peakDb": -40.11,
+      "rmsDb": -59.6,
+      "lufs": -55.54,
+      "truePeakDb": -39.55,
+      "low": 0.114,
+      "mid": 0.855,
+      "high": 0.032,
+      "tailDb": -40.2,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.362,
+          "peakDb": -40.11
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.15,
+    "cutToSeconds": 0.15,
+    "fadeInMs": 3,
+    "fadeOutMs": 37.5,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -16,
+    "gainDb": 24.04,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.15,
+    "start": 0,
+    "end": 0.146,
+    "peakDb": -16,
+    "rmsDb": -31.06,
+    "lufs": -30.67,
+    "truePeakDb": -16,
+    "low": 0.023,
+    "mid": 0.947,
+    "high": 0.031,
+    "tailDb": -46.81,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.124,
+        "peakDb": -16
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 6 asks, 2 whole, 4 void",
+    "asks": 6,
+    "whole": 2,
+    "heard": "A single, high-pitched clink of a hard object striking another. / A single, clear tap of a hard object against a ceramic surface.",
+    "madeOf": "enamel and ceramic / enamel and ceramic",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The audio contains exactly one short, sharp, and high-pitched tap consistent with a small enamel object gently hitting a ceramic surface.",
+      "The audio consists of a single, distinct, resonant clink characteristic of a hard material like enamel gently striking a ceramic vessel, with no other sounds present."
+    ],
+    "heardRaisedByDb": 37.11
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "step.1.wav",
+  "seconds": 0.15,
+  "sha256": "aed11ed01c0a28ead4446c2cb81973b087cc612fd3a181757016e0121d362bf7"
+}

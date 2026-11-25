@@ -411,14 +411,17 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
   }
 
   // A line only the live site has: the next of its list, in order.
-  const sayLive = (name: string, page: string | null) => {
+  const sayLive = (name: string, page: string | null, room: number = Infinity) => {
     const list = live[name]
     if (!Array.isArray(list) || !list.length) return
     startTone()
     const count = liveCounts.get(name) ?? 0
     const id = liveLineId(name, count % list.length)
     if (!loaded.has(id)) return
-    const booking = desk.ask(backend!.now(), { id, group: name, seconds: lengths.get(id) ?? 0, wait: LIVE.waitSeconds[name] ?? LIVE.liveLateSeconds, page: pagelessLive.includes(name) ? null : page, once: false })
+    const seconds = lengths.get(id) ?? 0
+    const wait = Math.min(LIVE.waitSeconds[name] ?? LIVE.liveLateSeconds, room - seconds - audio.lineGapSeconds)
+    if (wait < 0) return
+    const booking = desk.ask(backend!.now(), { id, group: name, seconds, wait, page: pagelessLive.includes(name) ? null : page, once: false })
     if (!booking) return
     liveCounts.set(name, count + 1)
     speak(booking)
@@ -509,7 +512,8 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
     },
     trigger(name) {
       if (state !== 'ready' || !backend) return
-      sayLive(name, desk.page)
+      if (name === 'watchFilm') sayLive(name, null, lead ? openingFrames() / config.film.fps - filmAt : 0)
+      else sayLive(name, desk.page)
     },
     opening(from, to) {
       lead = to < openingFrames() / config.film.fps

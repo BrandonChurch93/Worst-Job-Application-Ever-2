@@ -1,0 +1,131 @@
+{
+  "id": "drain",
+  "kind": "cue",
+  "cue": "drain",
+  "variant": null,
+  "class": "mechanism",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A ball rolling down the drain and into the trough, with a falling tone of bells",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A pinball rolling down the drain and dropping into the trough with a clunk, with a falling run of mechanical bells, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 1.2,
+    "loop": false,
+    "influence": null,
+    "call": 91
+  },
+  "askedSeconds": 1.2,
+  "cost": "13",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "4ad356168b77ab0d8f64e193593516cc54621ed546e64cc800bcb66480920719",
+    "filed": "2026-11-25T18:16:40.450Z",
+    "measured": {
+      "seconds": 1.2,
+      "start": 0,
+      "end": 0.934,
+      "peakDb": -9.43,
+      "rmsDb": -32.35,
+      "lufs": -31.52,
+      "truePeakDb": -9.42,
+      "low": 0.05,
+      "mid": 0.899,
+      "high": 0.051,
+      "tailDb": -54.15,
+      "hits": 2,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.516,
+          "peakDb": -9.43
+        },
+        {
+          "start": 0.648,
+          "end": 0.806,
+          "peakDb": -20.62
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.934,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -10,
+    "gainDb": -0.58,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.934,
+    "start": 0,
+    "end": 0.858,
+    "peakDb": -10,
+    "rmsDb": -32.56,
+    "lufs": -34.1,
+    "truePeakDb": -10,
+    "low": 0.05,
+    "mid": 0.899,
+    "high": 0.051,
+    "tailDb": -39.56,
+    "hits": 2,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.516,
+        "peakDb": -10
+      },
+      {
+        "start": 0.648,
+        "end": 0.806,
+        "peakDb": -21.38
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void",
+    "asks": 3,
+    "whole": 3,
+    "heard": "A rapid, descending sequence of metallic bell tones. / A ball rolls down a hollow surface and lands, accompanied by a descending cascade of bell chimes. / A small object rolls down a descending path, rapidly striking metallic elements to create a cascading, bell-like glissando.",
+    "madeOf": "metal / Metal and hard plastic or wood / Metal",
+    "events": "1 / 2 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": true,
+    "musicVotes": "2 yes, 1 no",
+    "melody": true,
+    "melodyVotes": "2 yes, 1 no",
+    "fits": true,
+    "fitsVotes": "3 yes, 0 no",
+    "basis": [
+      "The audio is a single continuous sound effect featuring a series of falling bell tones, characteristic of an arcade or pinball machine.",
+      "The audio contains the distinct physical rattling of a ball rolling along a channel, followed immediately by a downward run of tuned metallic bells, matching the description perfectly.",
+      "The distinct falling pitch of the rapid metallic strikes perfectly matches the description of a ball rolling down a drain with a falling tone of bells."
+    ],
+    "heardRaisedByDb": 6.43
+  },
+  "why": "the listener names its falling bells as music and melody (2 of 3) and says it fits its row (3 of 3); the row itself asks for a falling tone of bells, so the melody answer is the row, not a fault",
+  "forced": true,
+  "problems": [
+    "the listener heard music",
+    "the listener heard melody"
+  ],
+  "fixture": false,
+  "file": "drain.wav",
+  "seconds": 0.934,
+  "sha256": "fc794fec3a5ad1f68c5bea8fb7fe55a52efd2ace3db93311182ab771529ebab3"
+}

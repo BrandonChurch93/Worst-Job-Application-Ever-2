@@ -1,0 +1,146 @@
+{
+  "id": "line.live.hit.1",
+  "kind": "live-line",
+  "cue": null,
+  "variant": null,
+  "class": "voice",
+  "loop": false,
+  "beat": null,
+  "liveKey": "hit",
+  "group": "hit",
+  "describes": null,
+  "index": 1,
+  "words": "Again.",
+  "text": "Again.",
+  "prompt": null,
+  "settings": {
+    "speed": 0.7,
+    "stability": 0.75,
+    "breakSeconds": 0,
+    "sent": "Again.",
+    "call": 129
+  },
+  "askedSeconds": null,
+  "cost": "3",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "ba031b02c66471f98d5cb556e5c179a615eb3b6d0b5624d3f88272ba848e9d4a",
+    "filed": "2026-11-25T18:30:13.711Z",
+    "measured": {
+      "seconds": 0.789,
+      "start": 0.024,
+      "end": 0.744,
+      "peakDb": -1.46,
+      "rmsDb": -17.69,
+      "lufs": -17.36,
+      "truePeakDb": -1.46,
+      "low": 0.496,
+      "mid": 0.468,
+      "high": 0.036,
+      "tailDb": -35.67,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0.03,
+          "end": 0.714,
+          "peakDb": -1.46
+        }
+      ]
+    },
+    "line": {
+      "words": 1,
+      "seconds": 0.72,
+      "wordsPerSecond": 1.389,
+      "maxWordsPerSecond": 1.6,
+      "pauseMarks": 0,
+      "pausesFound": 0,
+      "pauses": [],
+      "paceHolds": true,
+      "pausesHold": true,
+      "room": null,
+      "fits": true
+    }
+  },
+  "chain": {
+    "trimStart": 0.024,
+    "trimEnd": 0.744,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 80,
+    "levelMeasure": "lufs",
+    "levelDb": -18,
+    "gainDb": -0.28,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.72,
+    "start": 0.002,
+    "end": 0.694,
+    "peakDb": -0.66,
+    "rmsDb": -18.1,
+    "lufs": -18,
+    "truePeakDb": -0.66,
+    "low": 0.467,
+    "mid": 0.494,
+    "high": 0.039,
+    "tailDb": -34.07,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0.006,
+        "end": 0.658,
+        "peakDb": -0.66
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 6 asks, 2 whole, 4 void",
+    "asks": 6,
+    "whole": 2,
+    "transcript": "Again.",
+    "transcripts": [
+      "Again.",
+      "Again."
+    ],
+    "transcriptAgreed": "2 of 2",
+    "attitudes": [
+      "stern and demanding",
+      "stern and commanding"
+    ],
+    "accents": [
+      "American",
+      "American"
+    ],
+    "pitches": [
+      "low",
+      "low"
+    ],
+    "whisper": false,
+    "whisperVotes": "0 yes, 2 no",
+    "laugh": false,
+    "laughVotes": "0 yes, 2 no",
+    "warmth": false,
+    "warmthVotes": "0 yes, 2 no",
+    "excitement": false,
+    "excitementVotes": "0 yes, 2 no",
+    "unimpressedAndSmug": false,
+    "unimpressedAndSmugVotes": "0 yes, 2 no",
+    "basis": [
+      "The single word is spoken with a deep, flat, and authoritative downward inflection, lacking any warmth or excitement.",
+      "The speaker delivers a single word with a low, firm pitch and a downward inflection, conveying a strict and authoritative tone."
+    ]
+  },
+  "why": "listener: not unimpressed and a little smug (0 yes, 2 no; [\"stern and demanding\",\"stern and commanding\"]). The Builder's ruling of 18:46Z: the listener's tone answers are not evidence",
+  "forced": true,
+  "problems": [
+    "the listener did not hear an unimpressed, slightly smug speaker"
+  ],
+  "fixture": false,
+  "file": "line.live.hit.1.wav",
+  "seconds": 0.72,
+  "sha256": "e917d4eea00ff629154b38703213aa83c37a87205b21c064838a2e84b1af2eaf"
+}

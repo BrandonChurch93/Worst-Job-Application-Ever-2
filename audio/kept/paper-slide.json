@@ -1,0 +1,117 @@
+{
+  "id": "paper-slide",
+  "kind": "cue",
+  "cue": "paper-slide",
+  "variant": null,
+  "class": "tick",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A sheet of paper sliding over a hard surface",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "One sheet of paper sliding across a hard smooth desk, a single short soft hiss, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.6,
+    "loop": false,
+    "influence": null,
+    "call": 59
+  },
+  "askedSeconds": 0.6,
+  "cost": "7",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "e32c7ad0fe2c118b02733635d550cd627a3891bd1c8c3a2e90e8769e97ecf004",
+    "filed": "2026-11-25T18:14:49.491Z",
+    "measured": {
+      "seconds": 0.6,
+      "start": 0,
+      "end": 0.6,
+      "peakDb": -14.64,
+      "rmsDb": -28.84,
+      "lufs": -21.67,
+      "truePeakDb": -14.05,
+      "low": 0.001,
+      "mid": 0.077,
+      "high": 0.922,
+      "tailDb": -59.39,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.518,
+          "peakDb": -14.64
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.6,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -16,
+    "gainDb": -1.43,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.6,
+    "start": 0,
+    "end": 0.536,
+    "peakDb": -16,
+    "rmsDb": -29.8,
+    "lufs": -26.14,
+    "truePeakDb": -15.68,
+    "low": 0,
+    "mid": 0.077,
+    "high": 0.923,
+    "tailDb": -31.78,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.516,
+        "peakDb": -16
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 2 whole, 1 void",
+    "asks": 3,
+    "whole": 2,
+    "heard": "A sheet of paper slides across a hard surface. / A sheet of paper slides continuously across a hard surface.",
+    "madeOf": "paper / paper",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The recording consists of a single continuous friction sound characteristic of paper moving over a desk.",
+      "The continuous, light, and dry scraping noise is characteristic of paper friction against a solid object like a desk."
+    ],
+    "heardRaisedByDb": 11.64
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "paper-slide.wav",
+  "seconds": 0.6,
+  "sha256": "4633fa30b0452329eba80b01f9a484812d3ba77c34844d9154b15f780e9b389c"
+}

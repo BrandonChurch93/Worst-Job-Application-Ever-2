@@ -1,0 +1,128 @@
+{
+  "id": "boss-loop",
+  "kind": "cue",
+  "cue": "boss-loop",
+  "variant": null,
+  "class": "music",
+  "loop": true,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A short loop of tense, slightly silly fight music. Loops",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A short loop of tense, slightly silly fight music, a fast plucked string and staccato bassoon figure over a snare drum march, comic cartoon chase tension, steady tempo, close and dry, recorded in a quiet room, real materials, no voice",
+  "settings": {
+    "seconds": 8,
+    "loop": true,
+    "influence": null,
+    "call": 104
+  },
+  "askedSeconds": 8,
+  "cost": "88",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "9fec3c925eaf1f99e6b5e159e9b252b84a9d77a4ba38e50cd7995cbcff88c611",
+    "filed": "2026-11-25T18:17:14.932Z",
+    "measured": {
+      "seconds": 8,
+      "start": 0,
+      "end": 8,
+      "peakDb": -11.62,
+      "rmsDb": -27.78,
+      "lufs": -25.39,
+      "truePeakDb": -11.57,
+      "low": 0.186,
+      "mid": 0.813,
+      "high": 0.001,
+      "tailDb": -15.79,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 8,
+          "peakDb": -11.62
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 7.071,
+    "cutToSeconds": 6.858,
+    "fadeInMs": 0,
+    "fadeOutMs": 0,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -14,
+    "gainDb": -3.03,
+    "channels": 1,
+    "loop": {
+      "crossMs": 214.3,
+      "seamStepDb": 2.72,
+      "seamLevelDb": -0.93,
+      "holds": true,
+      "pulse": {
+        "seconds": 0.2143,
+        "strength": 0.55,
+        "pulses": 32,
+        "offBy": 0
+      }
+    }
+  },
+  "measured": {
+    "seconds": 6.857,
+    "start": 0,
+    "end": 6.857,
+    "peakDb": -14,
+    "rmsDb": -30.85,
+    "lufs": -31.52,
+    "truePeakDb": -14,
+    "low": 0.194,
+    "mid": 0.805,
+    "high": 0.001,
+    "tailDb": -17.31,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 6.857,
+        "peakDb": -14
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+    "asks": 2,
+    "whole": 2,
+    "heard": "A short, fast-paced, and slightly silly piece of tense music plays. / A short, quirky, and slightly tense synthesized musical loop.",
+    "madeOf": "wood and metal / electronic software and synthesizers",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": true,
+    "musicVotes": "2 yes, 0 no",
+    "melody": true,
+    "melodyVotes": "2 yes, 0 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The recording consists of a single continuous loop of instrumental music played on a mallet instrument like a marimba, containing no voices or words, perfectly matching the provided description.",
+      "The recording is a single continuous clip of playful, video game-style background music with a clear melody and no vocals."
+    ],
+    "heardRaisedByDb": 8.62
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "boss-loop.wav",
+  "seconds": 6.857,
+  "sha256": "32584064ba3b6eef4fedb4efd9bca16f796112eb348efa8e47c431edb601102a"
+}

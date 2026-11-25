@@ -16,6 +16,11 @@ export const CHAIN = {
   trimStartDb: -40,
   trimEndDb: -50,
   preRollMs: 2,
+  // A hit, and a tick shorter than the limit, is a contact: it starts this long before its first sample within this much
+  // of its peak, measured after the low cut, so that what is heard lands on the frame of the contact. Other sounds keep their lead in.
+  contactStartDb: -9,
+  contactLeadMs: 4,
+  contactMaxSeconds: 0.6,
   fadeInMs: 3,
   // The fade out is this share of the sound, held between the two limits.
   fadeOutShare: 0.25,
@@ -30,6 +35,16 @@ export const CHAIN = {
   // and the level round the seam at most this far from the level of the whole.
   loopSeamMaxStepDb: 10,
   loopSeamMaxLevelDb: 3,
+  // A loop of music is cut to whole pulses and blended over one pulse, one loop apart, where a steady pulse is found.
+  // The pulse is looked for between these two periods in steps of this size; under this strength there is none.
+  pulseStepMs: 2,
+  pulseMinSeconds: 0.15,
+  pulseMaxSeconds: 0.75,
+  pulseMinStrength: 0.3,
+  // Whole groups of pulses are kept, the largest of these that fits.
+  pulseGroups: [8, 4, 2],
+  // The loop's length may be this far from a whole number of pulses, in pulses.
+  pulseMaxOffBy: 0.02,
   // Two hits in one take are separate when the level between them falls this far under the take's peak for at least this long.
   hitGapDb: -30,
   hitGapMs: 60,

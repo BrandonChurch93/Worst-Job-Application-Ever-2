@@ -1,0 +1,117 @@
+{
+  "id": "turret-rise",
+  "kind": "cue",
+  "cue": "turret-rise",
+  "variant": null,
+  "class": "mechanism",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A small hatch opening and a servo lifting",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A small metal hatch flipping open, then a small servo motor lifting a part with a short whirr, close microphone, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.6,
+    "loop": false,
+    "influence": null,
+    "call": 47
+  },
+  "askedSeconds": 0.6,
+  "cost": "7",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "1b7007f074d05f58afe2a8f549a0f04e6154f392a658396282ca555fcaae2b01",
+    "filed": "2026-11-25T18:13:38.447Z",
+    "measured": {
+      "seconds": 0.6,
+      "start": 0,
+      "end": 0.6,
+      "peakDb": -34.39,
+      "rmsDb": -52.86,
+      "lufs": -50.63,
+      "truePeakDb": -33.01,
+      "low": 0.851,
+      "mid": 0.145,
+      "high": 0.005,
+      "tailDb": -48.14,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.364,
+          "peakDb": -34.39
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.6,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -10,
+    "gainDb": 23.06,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.6,
+    "start": 0,
+    "end": 0.556,
+    "peakDb": -10,
+    "rmsDb": -29.93,
+    "lufs": -32.27,
+    "truePeakDb": -10,
+    "low": 0.852,
+    "mid": 0.143,
+    "high": 0.005,
+    "tailDb": -54.58,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.26,
+        "peakDb": -10
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 4 asks, 2 whole, 2 void",
+    "asks": 4,
+    "whole": 2,
+    "heard": "A motorized servo whirs and engages with a distinct mechanical click. / A mechanical click of a latch opening followed by the distinct whirring of a small servo motor.",
+    "madeOf": "Metal and plastic / Metal and plastic",
+    "events": "2 / 2",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The recording features the high-pitched whine of a small electric motor followed by a physical clack, which perfectly matches the sound of a servo opening a hatch.",
+      "The audio consists of a sharp mechanical clack followed by the high-pitched buzzing rotation of an electric motor."
+    ],
+    "heardRaisedByDb": 31.39
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "turret-rise.wav",
+  "seconds": 0.6,
+  "sha256": "67133f254e69e13cbc878541dd6a42be8c0a60b21cee4153d26a911e392cf5cd"
+}

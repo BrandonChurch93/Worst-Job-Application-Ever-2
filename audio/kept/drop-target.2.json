@@ -1,0 +1,117 @@
+{
+  "id": "drop-target.2",
+  "kind": "cue",
+  "cue": "drop-target",
+  "variant": 2,
+  "class": "hit",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "One pinball drop target knocked down: a flat plastic clack",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "One pinball drop target knocked down, a single flat plastic clack, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 97
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "2deef8a3870955e64a34034cfd5e7b0b9c6ac87d64441222a23873b9c2af9ed8",
+    "filed": "2026-11-25T18:16:55.949Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0,
+      "end": 0.48,
+      "peakDb": -25.41,
+      "rmsDb": -47.63,
+      "lufs": -43.39,
+      "truePeakDb": -25.1,
+      "low": 0.098,
+      "mid": 0.876,
+      "high": 0.026,
+      "tailDb": -57.09,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.114,
+          "peakDb": -25.41
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.3,
+    "cutToSeconds": 0.3,
+    "fadeInMs": 3,
+    "fadeOutMs": 75,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -5,
+    "gainDb": 20.28,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.3,
+    "start": 0,
+    "end": 0.234,
+    "peakDb": -5,
+    "rmsDb": -24.9,
+    "lufs": -25.63,
+    "truePeakDb": -4.96,
+    "low": 0.099,
+    "mid": 0.877,
+    "high": 0.025,
+    "tailDb": -47.98,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.112,
+        "peakDb": -5
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 5 asks, 2 whole, 3 void",
+    "asks": 5,
+    "whole": 2,
+    "heard": "A single, sharp, flat plastic clack. / A sharp, brief clack of a mechanical plastic piece snapping down.",
+    "madeOf": "Plastic / plastic and metal",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The recording consists of a single, brief, percussive impact sound that perfectly matches the acoustic profile of a plastic pinball drop target being struck.",
+      "The audio consists of a single, quick percussive impact that perfectly matches the sound of a flat plastic target being knocked down."
+    ],
+    "heardRaisedByDb": 22.41
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "drop-target.2.wav",
+  "seconds": 0.3,
+  "sha256": "a30ce827bbe71074f4dd0967340bfdf91636e6c1101f9cc18ab1f83da6f16590"
+}

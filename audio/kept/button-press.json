@@ -1,0 +1,117 @@
+{
+  "id": "button-press",
+  "kind": "cue",
+  "cue": "button-press",
+  "variant": null,
+  "class": "mechanism",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A large plastic button going down and bottoming out",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "One large glossy plastic push button the size of a palm pressed down and bottoming out with a solid low clunk, a single press, close microphone, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 38
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "f3e1d38db90f1eb8eca062610fd080fe7faf7bce3c9e786c3a7044b467271744",
+    "filed": "2026-11-25T18:13:17.137Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0,
+      "end": 0.48,
+      "peakDb": -43.45,
+      "rmsDb": -64.35,
+      "lufs": -60.92,
+      "truePeakDb": -42.69,
+      "low": 0.135,
+      "mid": 0.852,
+      "high": 0.013,
+      "tailDb": -42.02,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.24,
+          "peakDb": -43.45
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.4,
+    "cutToSeconds": 0.4,
+    "fadeInMs": 3,
+    "fadeOutMs": 100,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -10,
+    "gainDb": 33.92,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.4,
+    "start": 0,
+    "end": 0.382,
+    "peakDb": -10,
+    "rmsDb": -30.1,
+    "lufs": -30.68,
+    "truePeakDb": -10,
+    "low": 0.124,
+    "mid": 0.867,
+    "high": 0.01,
+    "tailDb": -51.96,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.204,
+        "peakDb": -10
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+    "asks": 2,
+    "whole": 2,
+    "heard": "A sharp, quick click of a button being pressed. / A sharp mechanical click occurs as a button is pressed.",
+    "madeOf": "Plastic / plastic",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The recording contains a single, abrupt clicking sound characteristic of a plastic mechanism hitting a hard stop.",
+      "The short, distinct clicking sound corresponds to a plastic button being depressed and bottoming out."
+    ],
+    "heardRaisedByDb": 40.45
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "button-press.wav",
+  "seconds": 0.4,
+  "sha256": "6e037c7870f9696fe776076b18307fef501c96d2b99c713d43281e93a7190bb0"
+}

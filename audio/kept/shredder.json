@@ -1,0 +1,121 @@
+{
+  "id": "shredder",
+  "kind": "cue",
+  "cue": "shredder",
+  "variant": null,
+  "class": "mechanism",
+  "loop": true,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "An office shredder running under load. Loops",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A small office paper shredder running steadily under load, its motor grinding through paper, a constant whirr, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 4,
+    "loop": true,
+    "influence": null,
+    "call": 60
+  },
+  "askedSeconds": 4,
+  "cost": "44",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "a8261788c685ef9618a5c4987103bde38454c96f06074535f664de120723ec7f",
+    "filed": "2026-11-25T18:14:52.937Z",
+    "measured": {
+      "seconds": 4,
+      "start": 0,
+      "end": 4,
+      "peakDb": -8.8,
+      "rmsDb": -22.43,
+      "lufs": -16.73,
+      "truePeakDb": -7.92,
+      "low": 0.191,
+      "mid": 0.569,
+      "high": 0.24,
+      "tailDb": -14.29,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 4,
+          "peakDb": -8.8
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 4,
+    "cutToSeconds": null,
+    "fadeInMs": 0,
+    "fadeOutMs": 0,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -10,
+    "gainDb": -1.07,
+    "channels": 1,
+    "loop": {
+      "crossMs": 800,
+      "seamStepDb": -3.76,
+      "seamLevelDb": -0.14,
+      "holds": true
+    }
+  },
+  "measured": {
+    "seconds": 3.2,
+    "start": 0,
+    "end": 3.2,
+    "peakDb": -10,
+    "rmsDb": -23.4,
+    "lufs": -21.57,
+    "truePeakDb": -10,
+    "low": 0.199,
+    "mid": 0.561,
+    "high": 0.24,
+    "tailDb": -13.95,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 3.2,
+        "peakDb": -10
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+    "asks": 2,
+    "whole": 2,
+    "heard": "An electric office shredder running continuously under a load. / An office paper shredder is running under load.",
+    "madeOf": "Plastic and metal. / Plastic, metal, and paper.",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The recording consists of a continuous mechanical grinding and motorized whirring sound indicative of a paper shredder operating.",
+      "The audio features a continuous mechanical grinding and whirring sound characteristic of an electric shredder destroying paper."
+    ]
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "shredder.wav",
+  "seconds": 3.2,
+  "sha256": "4caa88c1af7fc3f62572c65feef06a1b7d3cd2d0e628a8125570a8e52315b45f"
+}
