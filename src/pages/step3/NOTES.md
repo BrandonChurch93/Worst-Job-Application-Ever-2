@@ -59,7 +59,7 @@ Phase 2, engine and blockout. Everything here is a stand-in shape with working l
 
 ## Needs
 
-- `tests/step2.test.ts` waited 3 s after a skip and then expected the cursor not to be taken. With a real step 3 behind it the keen bot is in the loader by then, and at 17 s it has already left step 2. `NEEDS.patch` makes that test look at the cursor when step 3 is reached, and only when the skip was made on step 2. It is on this branch as two commits whose subjects start with `NEEDS:`, because the first one was not enough.
+- `tests/step2.test.ts` waited 3 s after a skip and then expected the cursor not to be taken. With a real step 3 behind it the keen bot is in the loader by then, and at 17 s it has already left step 2. `NEEDS.patch` makes that test look at the cursor when step 3 is reached, and only when the skip was made on step 2. It is on this branch as three commits whose subjects start with `NEEDS:` (`e6bdc26`, `dc75257`, `49f63e7`), because the first two were not enough. Do not merge a commit of this branch before `49f63e7`.
 
 ## Cameras
 
@@ -67,8 +67,18 @@ Phase 2, engine and blockout. Everything here is a stand-in shape with working l
 - `table-wide`, `table-lobby`, `table-replyall`, `table-fired`, `table-save`: fixed poses, set by eye against the approved images. To be refitted when the models exist.
 - `rail`: above and behind the ball, looking a little ahead.
 - `film`: a list of times and camera names, blended over 0.6 s.
+- The site sets a camera's near plane at 1500 px in front of its target, so a fixed pose keeps its target within 1500 px of the nearest thing it must show. `table-wide` lost the Street tier until its target was moved toward the eye.
+- The wells are deep (the Street floor is 288 px down), so a low camera cannot see the flippers. `table-save` is steep for that reason.
+
+## Sheets
+
+- `table-map`: the machine from above in 1080 x 1920.
+- `clear-ball`: three balls on the Office tier: at rest on the left flipper, in flight, flattened beside a bumper.
 
 ## Open
 
 - The models are boxes. Signs are type on top of the boxes.
 - Lights down and power on change no light yet: the blockout has no dusk.
+- Key `last-save` (35.5 s): the kept take flips at 35.12 s and the ball has left the `table-save` frame by 35.5 s. A fix needs a later flip and a new take, and the three searches are used.
+- The ball's tone `glass` renders opaque in the blockout, so the cursor inside it cannot be seen.
+- The merge commit `71827b8` has no trailer. It was pushed before this was seen and history is not rewritten.
