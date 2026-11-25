@@ -132,4 +132,4 @@ export function stock(sheetW: number, sheetL: number): Stock {
   return made
 }
 
-export const INK = { title: srgb(0x2b2a28), bar: srgb(0x8c8c90), paper: srgb(0xf1f2f5) }
+export const INK = { title: srgb(0x606166), bar: srgb(0xa3a4a8), paper: srgb(0xf1f2f5) }
