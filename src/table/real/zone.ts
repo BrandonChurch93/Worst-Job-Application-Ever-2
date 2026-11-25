@@ -48,12 +48,16 @@ export interface Whole {
   // Called for every sample of every frame. It moves what moves and builds nothing.
   pose?(o: THREE.Object3D, z: Zone, ctx: RealContext): void
   drop?(o: THREE.Object3D): void
+  // False while a picture the part is built from is not loaded: the part is drawn by its stand-ins until it answers true.
+  ready?(): boolean
+  // True when the object draws the part's words itself, as a display draws its dots. Otherwise every `text` shape of the part is set by the owner of the type, on whatever the part has built under it.
+  words?: boolean
 }
 
 // The maker of a part that is built whole, zone by zone, on its anchors. Its single shapes are drawn by the anchor's object.
 export function whole(part: string, w: Whole): PartMaker {
   return {
-    key: (s) => (s.kind === 'anchor' ? `${w.version}|${s.id}` : ''),
+    key: (s) => (w.ready && !w.ready() ? null : s.kind === 'anchor' ? `${w.version}|${s.id}` : s.kind === 'text' && !w.words ? null : ''),
     make(s, ctx) {
       const z = zoneOf(s)
       const o = w.build(z, ctx)

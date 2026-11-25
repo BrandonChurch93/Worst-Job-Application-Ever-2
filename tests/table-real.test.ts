@@ -110,6 +110,15 @@ describe('the makers of the table', () => {
     const single = list.find((s) => s.part === 'bumpers' && s.kind !== 'anchor')!
     expect(maker.key(anchor, ctx)).toBe(`v1|${anchor.id}`)
     expect(maker.key(single, ctx)).toBe('')
+    const sign = { ...single, id: 'sign.test', kind: 'text' as const, words: 'copy:step3.table.title' }
+    expect(maker.key(sign, ctx)).toBe(null)
+    expect(whole('bumpers', { version: 'v1', words: true, build: () => new THREE.Group() }).key(sign, ctx)).toBe('')
+    let ready = false
+    const waits = whole('bumpers', { version: 'v1', ready: () => ready, build: () => new THREE.Group() })
+    expect(waits.key(anchor, ctx)).toBe(null)
+    expect(waits.key(single, ctx)).toBe(null)
+    ready = true
+    expect(waits.key(anchor, ctx)).toBe(`v1|${anchor.id}`)
     expect(maker.make(anchor, ctx).name).toBe('office')
     expect(built).toBe(1)
     const empty = whole('bumpers', { version: 'v1', build: () => new THREE.Group() })
