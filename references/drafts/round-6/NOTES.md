@@ -694,3 +694,78 @@ LETTERING: the only words in the image are "Corporate HQ", once, on the plate ov
 NOT IN THE IMAGE: no people, no hands, no faces, no figures in the windows; no cabinet, no legs, no room, no floor, no sheet of glass over the playfield; no fog, no smoke, no haze, no dust, no lens flare; no second ball; not a cartoon, not an illustration, not a diorama.
 ```
 
+### G10 · Reply All
+
+- File: `references/drafts/round-6/G10-reply-all.png`
+- Model: `seedream_5`
+- Takes made: 3 of 3 allowed. Kept: take 2.
+- Reference images passed in, in order: `references/drafts/round-6/G4-tier-office.png` (the kept take of G4, the tier the shot is in, passed first); `references/drafts/round-6/G7-clear-ball.png` (the kept G7, passed second); No layout guide was passed: `references/guides/round-6/` has none for this view.
+
+Takes:
+
+- Take 1. Misses: seen from almost straight above, not at sixty degrees; the three steel balls sit in a row at the scoop and none touches the clear ball; paper scraps, paper clips and loose cable lie on the board and a blank paper tag lies on the lower right apron; launch lane arrows point up at the top and down at the bottom. `Coffee` spelled right. Judge: "amateur generated art (an AI-generated image), fairly confident", then named things. Failed.
+- Take 2 (prompt changed: the camera described as down and back toward the player so that things show their front faces; the first steel ball touching the clear ball; the cursor against the wall away from it; no tag, card or label on the board). Clean board, no tag, the steel balls run from the scoop to the clear ball and the nearest touches it. Judge: "it reads most like a frame from a top-budget film" (film frame about 55%, generated art about 35%, game screenshot about 10%), then named eight things. Failed. Kept as the best of three.
+- Take 3 (prompt changed: a streak of motion blur behind each steel ball, every launch lane arrow pointing up, the bumpers standing a little apart). A blank paper tag is back on the apron, loose black cables lie on the board and a wire hook stands beside the tube. Judge: "Most likely generated art, though with a finish well above amateur", then named things. Failed.
+
+The judge's answer on the kept take:
+
+> Verdict on picture-1002.png (viewed at full size plus zoomed crops of all four quadrants).
+>
+> Q1 – What is it most likely?
+> Of the five options, it reads most like a frame from a top-budget film (CG feature or high-end commercial close-up), not a commercial pinball video game screenshot. My rough split: film frame ~55%, generated art ~35%, game screenshot ~10%, stock/textbook ~0%.
+> - For film: cinematic teal/amber grade, shallow depth of field, physically convincing brushed steel, chrome balls, felt-like playfield, glowing inserts, and a coherent, witty office theme (coffee-cup bumpers, stapler slingshots, pocket-knife flippers, cubicle block, inbox tray of envelopes, coffee machine, glass ball with a cursor arrow).
+> - Against game screenshot: no score, HUD, display or ball count; a product-shot camera angle; and a layout that would not be playable.
+> - Against stock/textbook: too stylised and art-directed, no labels or neutral lighting.
+> - The one thing pulling it toward generated art is that the surface finish is excellent but the mechanics are incoherent (see below). It does not look amateur in finish; it looks amateur only in engineering.
+>
+> Q2 – Could a ball travel every lane and ramp? No. Things that could not work:
+> - Left clear tube: no ramp or lane feeds it. The top elbow just ends in a capped clear stub against the back wall, and the bottom ends in a closed metal cup in the lower-left corner beside the apron. No entrance, no exit.
+> - Right metal lane: its arrows contradict themselves (upper arrows point up, the lower two point down). It is drawn as several nested rails that blur together at the bottom, and at the top it curves left into a flat wall panel behind the coffee machine with no visible mouth onto the playfield. The coffee machine sits right where it would have to exit.
+> - Coffee-cup bumpers: the three are packed so tightly (lids overlapping) that a ball could not pass between them, so the centre pocket is unreachable or a ball trap.
+> - Cubicle block: six open-topped walled boxes with no entrance or lane; pure set dressing, and a trap if an airborne ball landed in one. The column of white targets beside it is fine.
+> - Inlanes: the left and right wire guides lead the ball onto the rail that runs underneath/behind each flipper rather than onto the flipper, so an inlane ball would drain instead of being returned.
+> - Orange clip/gate on the left by the tube, with a loose wire: it guards no lane at all.
+> - Top of table: no rollover lanes or arch; just a U-shaped metal chute at top centre that connects to nothing visible.
+> - The four balls (three chrome, one glass) sit in a neat diagonal row mid-slope with no motion blur; on an inclined playfield they would not rest there.
+>
+> What does work: the flipper gap is a sensible ~1.3 ball widths with a centre drain, the stapler slingshots are placed correctly, the three lit inserts (pizza, mail, knot/bird) are plausible, and the square hole in the front of the inbox tray is a believable scoop a ball could enter.
+
+Judge result: FAILED. First answer: "a frame from a top-budget film", with a game screenshot at about 10% (STATED). Under the narrow reading of the question's first option that is not the first answer; under the wide reading (game screenshot or film frame as one option) it is. See the choices at the end. Second answer: eight things named, which fails under either reading. Kept at the limit of three takes.
+
+What the kept take misses (MEASURED on the file unless marked):
+
+- The judge did not read it as a game screenshot: no score or display, "a product-shot camera angle", and a layout it calls unplayable (STATED).
+- Launch lane arrows (MEASURED). The upper arrow lamps point up the board; the lower two point down.
+- The steel balls are not pouring. Three chrome balls and the clear ball sit in one neat row, each touching the next, with no motion blur, and the last steel ball is in front of the scoop, not half inside it.
+- The cursor is not pressed against the wall. It lies left of the ball's centre, the side away from the steel balls, upright and unsquashed, pointing up and to the left.
+- The three coffee bumpers stand so close that their lids nearly touch; a ball could not pass between them (STATED by the judge; I see the same).
+- Lift tube. Its top elbow ends in a capped clear stub at the back wall and its bottom ends in a closed metal cup at the lower left. No way in and no way out (STATED; I see the same). Inherited from the kept G4.
+- Launch lane. Drawn as several nested rails that blur together at the bottom, and at the top it curves in behind the coffee machine with no mouth onto the board that can be seen (STATED).
+- Cubicles. Six open-topped boxes with no way in or out, as in the kept G4 (STATED).
+- Inlanes. The wire guides lead on under each flipper, not onto it (STATED; I see the same on both sides). Inherited from the kept G4.
+- An orange clip with a loose wire stands by the lift tube and guards nothing (STATED; I see it). A U-shaped steel chute at the top centre joins nothing that can be seen (STATED).
+- Frame. Brushed aluminum rail on the left, top and right. No ceramic in the picture: the lower corners are dark teal plates.
+- Words (MEASURED at full size): `Coffee`, spelled right, on a small plate on the coffee machine. No other letters or numbers found; the inserts carry pictures (a pizza slice, an envelope, a knot).
+
+Full prompt of the kept take:
+
+```text
+A frame from a finished commercial 3D pinball video game with photoreal graphics, in its multiball camera. It looks exactly like a photograph of a real, physical pinball playfield. 16:9.
+
+REFERENCE IMAGE 1 is the office tier of this pinball table seen from straight above. This shot shows that same tier with every part in the same place: the three pop bumpers whose caps are white coffee cup lids at the top centre; the office coffee machine beside them at the upper right; the cubicle farm at the upper left with its column of five white drop targets; the inbox at the right, a large beige mail tray heaped with white envelopes, with a dark steel-edged scoop hole at its front; the two red staplers that are the slingshots; the pair of orange flippers at the bottom centre; the three round lit inserts showing a pizza slice, an envelope and a knot; the grey-green carpet tile and beige laminate playfield under a glossy clear coat; the brushed aluminum side rails; the clear lift tube at the left; the launch lane at the right. REFERENCE IMAGE 2 shows the clear ball of this game three times: a clear acrylic ball with a white arrow cursor sealed inside it. Use it for how that ball and the cursor look. This image has exactly one clear ball.
+
+THE SHOT: this is not the straight-down view of reference image 1. The camera has come down and back toward the player: it is above the flipper end of the tier and looks up the board at a slant, about sixty degrees from the board's surface. So everything that stands up shows its front face as well as its top: you see the front of the coffee cups under the bumper lids, the front of the coffee machine, the near wall of the inbox tray, the near sides of the red staplers, the near walls of the cubicles. The far end of the tier is a little smaller than the near end, and the two side rails draw slightly together toward the top of the frame. The view is wide: the inbox is at the right of the frame, the three coffee bumpers in the upper middle, both red staplers in the lower part of the frame, the two orange flippers at the bottom edge. The tier fills the frame. Deep focus: everything is sharp.
+
+THE MOMENT: three chrome steel pinballs are pouring out of the scoop hole at the front of the inbox, one close behind the other, in a short curving line across the board toward the centre. They are ordinary steel pinballs, mirror bright, each one reflecting the lamps and the tier, each the same size as the clear ball. The last of the three is still half in the mouth of the scoop. The first of the three has just struck the clear ball: the two are in contact at this instant, the steel ball pressed against the right side of the clear ball with no gap at all between them, the clear ball's acrylic showing the steel ball's mirror surface right against it.
+
+THE CLEAR BALL: on the open board just left of the scoop of the inbox, below the lowest coffee bumper, the same size as each steel ball, about one sixteenth of the frame's width across. Inside it the cursor, a solid white enamel arrow with a black edge, half as long as the ball is wide, has been thrown to the far side: it lies flat against the inside wall at the left edge of the ball, the side away from the steel ball, as far from the steel ball as it can get, with the right half of the ball empty. The arrow is plain to see through the clear acrylic. A few beads of sweat on the inside of the acrylic. Crisp highlights on the ball. The cursor is only an arrow: no face, no eyes, no limbs.
+
+EVERY LAMP IN THE TIER IS LIT: the lamp inside each of the three coffee bumpers, glowing warm under its lid; the three large inserts, bright; the amber lamps in the inlanes and outlanes; the lamps inside the two staplers; the row of small white lamps along the top; the small arrow inserts; the lights on the coffee machine. Light from each insert spills onto the posts beside it. Sharp reflections of the lamps and the steel balls in the clear coat.
+
+LIGHT: flat, bright fluorescent office light over the tier, with the lamps of the game on top of it. Clean air.
+
+LETTERING: the only word in the image is "Coffee", once, on the small plate on top of the coffee machine. No other letters or numbers anywhere: the envelopes are blank, the inserts carry pictures only.
+
+NOT IN THE IMAGE: no people, no hands, no faces, nobody in the cubicles; no cabinet, no legs, no room, no floor, no sheet of glass over the playfield; no fog, no smoke, no haze, no lens flare; no second clear ball and no more than three steel balls; no paper tag, card or label lying on the board; not a cartoon, not an illustration, not a diorama.
+```
+
