@@ -223,6 +223,8 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
         mode = m
         root.dataset.mode = m
         if (m !== 'live' && menu.open()) menu.toggle()
+        api.canvas.classList.toggle(css.fitted!, m === 'film')
+        place()
         if (m === 'film') wake()
       }
       if (!!f !== hasFilm) {
@@ -301,6 +303,7 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
     destroy() {
       window.clearTimeout(timer)
       watch?.disconnect()
+      api.canvas.classList.remove(css.fitted!)
       for (const fn of off) fn()
       root.remove()
     }
