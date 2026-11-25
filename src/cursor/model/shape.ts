@@ -5,46 +5,79 @@ import { OUTLINE } from '../contract'
 export const AXIS: [number, number] = [0.409, 0.912]
 export const CENTRE: [number, number] = [4.2, 9.5]
 export const TOP = 2.3
-const ENAMEL_AT = 0.56
-const SHOULDER = 0.66
-const GROOVE = 1.82
-const RISE = TOP - GROOVE
+const ENAMEL_AT = 0.63
+// The finish paints the band black where the distance it is handed is under this.
+const INK_AT = 0.56
+const BEAD = { in: 0.09, deep: 0.05 }
+// The rounded form stands this far outside the outline, so that its rounded corners still reach the outline's own: the arrow keeps its configured height.
+const GROW = 0.22
+const SHOULDER = 1.0
+const FOOT = { in: 0.34, tall: 0.62 }
+const CROWN = 1.76
+const DOME = 0.1
+const RISE = TOP - CROWN - DOME
+const ROLL = 2.2
 const SOFT = 6
-const WALL_TOP = 1.18
-const WALL_WIDE = 0.5
-const CROWN = 1.93
+const POWER = 5
+const BLEND = { from: 0.9, over: 0.5 }
 
-// The edge band's section: how far in from the outline, how high, in outline units.
-const BAND: [number, number][] = [[0.2, 0], [0.09, 0.04], [0.025, 0.14], [0, 0.32], [0, 0.62], [0, WALL_TOP]]
-for (const turn of [14, 28, 42, 56, 70, 82, 90]) {
+// The edge band's section: how far in from the outline, how high, in outline units. A full round from the foot, tucked under, out to the outline and over to the enamel.
+const BAND: [number, number][] = []
+for (const turn of [0, 22.5, 45, 67.5, 90]) {
   const a = (turn * Math.PI) / 180
-  BAND.push([WALL_WIDE * (1 - Math.cos(a)), WALL_TOP + (CROWN - WALL_TOP) * Math.sin(a)])
+  BAND.push([FOOT.in * (1 - Math.sin(a)), FOOT.tall * (1 - Math.cos(a))])
 }
-BAND.push([ENAMEL_AT - 0.03, CROWN - 0.05], [ENAMEL_AT - 0.005, GROOVE])
-const WALL_FROM = 5
-const SHOULDER_TURNS = [0, 10, 20, 31, 43, 56, 70, 90]
-const RADII = [0.24, 0.42, 0.3, 0.4, 0.4, 0.3, 0.42]
-const ARC = 9
+const WALL_FROM = BAND.length - 1
+for (const turn of [12, 24, 36, 48, 60, 72, 82, 90]) {
+  const a = (turn * Math.PI) / 180
+  BAND.push([(ENAMEL_AT - BEAD.in) * (1 - Math.cos(a)), FOOT.tall + (CROWN - FOOT.tall) * Math.sin(a)])
+}
+BAND.push([ENAMEL_AT - BEAD.in * 0.45, CROWN - BEAD.deep * 0.4], [ENAMEL_AT - 0.005, CROWN - BEAD.deep])
+// The distance handed to the finish for a distance in from the outline: the band ends where the finish expects it.
+const told = (t: number): number => (t < ENAMEL_AT ? (Math.max(0, t) * INK_AT) / ENAMEL_AT : t - ENAMEL_AT + INK_AT)
+const LIP = [0, 0.04, 0.1, 0.18, 0.27, 0.36, 0.48, 0.62, 0.78]
+const NARROW = 1.47
+const RADII = [0.5, 0.62, 0.36, 0.9, 0.9, 0.36, 0.62]
+const ARC = 11
 const SPACING = 0.75
 
 export const shoulderInset = (turnDeg: number): number => ENAMEL_AT + (SHOULDER * turnDeg) / 90
 
+const smooth01 = (v: number): number => {
+  const t = Math.min(1, Math.max(0, v))
+  return t * t * (3 - 2 * t)
+}
+
 // How high the edge band stands at a distance in from the outline.
 function bandAt(d: number): number {
-  if (d <= 0) return WALL_TOP
+  if (d <= 0) return FOOT.tall
   for (let i = WALL_FROM; i < BAND.length - 1; i++) {
     const a = BAND[i]!
     const b = BAND[i + 1]!
     if (d <= b[0]) return a[1] + ((b[1] - a[1]) * (d - a[0])) / Math.max(1e-6, b[0] - a[0])
   }
-  return GROOVE
+  return CROWN - BEAD.deep
 }
 
-// How high the enamel stands where the soft distance in from the outline is d.
+// How high the enamel stands where the distance in from the outline is d: one soft roll up from the band, then a shallow dome to the middle.
 function enamelAt(d: number): number {
-  const e = Math.max(0, d - ENAMEL_AT)
-  const k = Math.min(1, e / SHOULDER)
-  return GROOVE + RISE * Math.sin((k * Math.PI) / 2)
+  const k = Math.min(1, Math.max(0, d - ENAMEL_AT) / SHOULDER)
+  return CROWN - BEAD.deep + (RISE + BEAD.deep) * (1 - Math.pow(1 - k, ROLL)) + DOME * smooth01((d - 1.2) / 2.2)
+}
+
+// How high the underside of the band stands at a distance in from the outline, as the finish is told it: the foot is tucked under.
+export function underAt(toldInset: number): number {
+  const t = (toldInset * ENAMEL_AT) / INK_AT
+  if (t >= FOOT.in) return 0
+  const k = 1 - Math.max(0, t) / FOOT.in
+  return FOOT.tall * (1 - Math.sqrt(Math.max(0, 1 - k * k)))
+}
+export const UNDER_TOP = FOOT.tall
+
+// How rounded a ring's own corners are at a distance in from the outline.
+function ownRadius(t: number): number {
+  if (t < ENAMEL_AT) return 0.12 * smooth01((t - 0.3) / (ENAMEL_AT - 0.3))
+  return Math.min(0.34, 0.12 + 0.65 * (t - ENAMEL_AT), Math.max(0.03, 0.45 * (NARROW - t)))
 }
 
 const N = OUTLINE.length
@@ -90,9 +123,8 @@ export function ring(t: number): [number, number][] {
     const b = EDGES[i]!
     const r = RADII[i]!
     const convex = CONVEX[i]!
-    const own = t >= ENAMEL_AT - 1e-6 ? Math.max(0.05, Math.min(0.42, 0.3 + 0.16 * (t - ENAMEL_AT), 1.4 - t)) : 0
-    const radius = convex ? Math.max(own, r - t) : r + t
-    const c = convex ? (own > 0 ? miter(i, t + radius) : miter(i, Math.max(t, r))) : miter(i, -r)
+    const radius = convex ? Math.max(ownRadius(t), r - t) : r + t
+    const c = convex ? miter(i, t - GROW + radius) : miter(i, -r - GROW)
     const sign = convex ? -1 : 1
     const a0 = Math.atan2(a.ny * sign, a.nx * sign)
     let a1 = Math.atan2(b.ny * sign, b.nx * sign)
@@ -146,16 +178,30 @@ export function softInside(x: number, y: number): number {
   return -Math.log(sum) / SOFT
 }
 
+// The distance the dome is built on: the true one near the outline, and further in one that every edge has a say in, so no ridge runs down the stem or into a corner.
+export function domeInside(x: number, y: number): number {
+  const d = inside(x, y) + GROW
+  if (d <= BLEND.from) return d
+  let sum = 0
+  for (let i = 0; i < N; i++) {
+    const e = EDGES[i]!
+    const s = Math.min(e.len, Math.max(0, (x - e.px) * e.dx + (y - e.py) * e.dy))
+    sum += Math.pow(Math.max(1e-3, Math.hypot(x - e.px - e.dx * s, y - e.py - e.dy * s) + GROW), -POWER)
+  }
+  const all = Math.pow(sum, -1 / POWER)
+  return d + (all - d) * smooth01((d - BLEND.from) / BLEND.over)
+}
+
 // How high the enamel stands over a point, by the smoothed distance alone: the dome with no crease, for the directions it faces.
 export function domeAt(x: number, y: number): number {
-  return enamelAt(Math.max(inside(x, y), softInside(x, y)))
+  return enamelAt(domeInside(x, y))
 }
 
 // How high the top of the body stands over a point of the outline's plane.
 export function heightAt(x: number, y: number): number {
-  const d = inside(x, y)
+  const d = inside(x, y) + GROW
   if (d < ENAMEL_AT) return bandAt(d)
-  return enamelAt(d)
+  return enamelAt(domeInside(x, y))
 }
 
 export interface Solid {
@@ -213,7 +259,7 @@ export function solid(): Solid {
   if (cached) return cached
   const rows: { t: number; z: number; ink: number }[] = []
   for (const [t, z] of BAND) rows.push({ t, z, ink: 1 })
-  for (const turn of SHOULDER_TURNS) rows.push({ t: shoulderInset(turn), z: -1, ink: 0 })
+  for (const more of LIP) rows.push({ t: ENAMEL_AT + more, z: -1, ink: 0 })
   const first = ring(rows[0]!.t)
   const size = first.length
   const xs: number[] = []
@@ -221,10 +267,11 @@ export function solid(): Solid {
   const insets: number[] = []
   const index: number[] = []
   for (const row of rows) {
+    const field = row.z < 0 ? smooth01((row.t - ENAMEL_AT) / (BLEND.from - ENAMEL_AT)) : 0
     for (const p of ring(row.t)) {
-      xs.push(p[0], p[1], row.z < 0 ? enamelAt(row.t) : row.z)
+      xs.push(p[0], p[1], row.z < 0 ? enamelAt(row.t + (field > 0 ? (domeInside(p[0], p[1]) - row.t) * field : 0)) : row.z)
       inks.push(row.ink)
-      insets.push(Math.max(0, row.t))
+      insets.push(told(row.t))
     }
   }
   const signed = (a: number, b: number, c: number): number =>
@@ -272,21 +319,31 @@ export function solid(): Solid {
   for (let y = 0.4; y < 19; y += pitch * 0.866, line++) {
     for (let x0 = 0.2 + (line % 2) * pitch * 0.5; x0 < 12; x0 += pitch) {
       const x = x0 + (hash01(Math.round(x0 * 100), line, 7) - 0.5) * 0.08
-      const d = inside(x, y)
-      if (d < reach + 0.45) continue
+      const d = inside(x, y) + GROW
+      if (d < reach + 0.3) continue
       pts.push([x, y])
       names.push(xs.length / 3)
-      xs.push(x, y, TOP)
+      xs.push(x, y, enamelAt(domeInside(x, y)))
       inks.push(0)
-      insets.push(Math.max(d, softInside(x, y)))
+      insets.push(told(d))
     }
   }
   const face = triangulate(pts)
+  // A triangle of the face belongs only where its middle is inside the innermost ring.
+  const within = (x: number, y: number): boolean => {
+    let hit = false
+    for (let i = 0, j = size - 1; i < size; j = i++) {
+      const p = inner[i]!
+      const q = inner[j]!
+      if (p[1] > y !== q[1] > y && x < p[0] + ((y - p[1]) / (q[1] - p[1])) * (q[0] - p[0])) hit = !hit
+    }
+    return hit
+  }
   for (let i = 0; i < face.length; i += 3) {
     const a = pts[face[i]!]!
     const b = pts[face[i + 1]!]!
     const c = pts[face[i + 2]!]!
-    if (inside((a[0] + b[0] + c[0]) / 3, (a[1] + b[1] + c[1]) / 3) < reach - 0.02) continue
+    if (!within((a[0] + b[0] + c[0]) / 3, (a[1] + b[1] + c[1]) / 3)) continue
     up(names[face[i]!]!, names[face[i + 1]!]!, names[face[i + 2]!]!)
   }
   void alias

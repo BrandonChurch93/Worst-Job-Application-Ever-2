@@ -1,6 +1,8 @@
 import * as THREE from 'three'
+import { look as picture } from '../../post/look'
 import { studio } from '../../post/studio'
 import { materials } from '../../shell/materials'
+import { UNIT } from '../contract'
 import { detailTexture } from './texture'
 
 export const MAX_HOLES = 4
@@ -81,6 +83,7 @@ ${HOLE_COMMON}
 vec3 wjaGlow = vec3( 0.0 );
 float wjaRough = 0.3;
 float wjaFill = 0.0;
+float wjaPlain = 0.0;
 float wjaCoat = 1.0;
 float wjaSpec = 1.0;
 float wjaCoatRough = 0.05;
@@ -208,18 +211,24 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
     wjaGlow += vec3( 1.3, 0.42, 0.05 ) * coal * 1.6;
   }
 
-  // Heat: a glow inside the enamel that climbs from the tip.
+  // Heat: the enamel glows from inside, deep red at the tip, through orange to a pale warm white where it dies out.
   if ( heat > 0.0 ) {
-    float front = heat * 8.8;
-    float h = smoothstep( front + 0.7, front - 4.0, along + ( wide.g - 0.5 ) * 2.4 + ( mid.b - 0.5 ) * 1.2 ) * smoothstep( 0.3, 0.6, heat );
-    vec3 ember = mix( vec3( 1.1, 0.7, 0.3 ), vec3( 1.25, 0.56, 0.06 ), smoothstep( 0.04, 0.2, h ) );
-    ember = mix( ember, vec3( 1.2, 0.3, 0.02 ), smoothstep( 0.2, 0.42, h ) );
-    ember = mix( ember, vec3( 0.86, 0.04, 0.012 ), smoothstep( 0.42, 0.8, h ) );
-    float streak = 0.82 + 0.36 * mid.g * fine.b * 2.0;
-    float body = smoothstep( 0.0, 0.2, h ) * face;
-    col = mix( col, ember * 0.1, body );
-    wjaGlow += ember * body * 0.72 * streak;
+    float on = smoothstep( 0.05, 0.3, heat );
+    float front = 4.6 + 4.2 * heat;
+    float h = smoothstep( front + 2.4, front - 5.6, along + ( wide.g - 0.5 ) * 1.3 + ( mid.b - 0.5 ) * 0.5 ) * on;
+    vec3 ember = mix( vec3( 1.3, 0.8, 0.35 ), vec3( 1.25, 0.3, 0.02 ), smoothstep( 0.05, 0.36, h ) );
+    ember = mix( ember, vec3( 0.9, 0.015, 0.003 ), smoothstep( 0.4, 0.68, h ) );
+    ember = mix( ember, vec3( 0.16, 0.003, 0.001 ), smoothstep( 0.78, 1.0, h ) );
+    float warm = smoothstep( 0.0, 0.25, h ) * face;
+    float body = smoothstep( 0.03, 0.36, h ) * face;
+    col = mix( col, col * vec3( 1.0, 0.8, 0.5 ), warm * 0.8 );
+    col = mix( col, ember * 0.12, body );
+    float vein = smoothstep( 0.7, 0.82, fine.b * 0.8 + mid.g * 0.4 ) * smoothstep( 0.15, 0.4, h ) * ( 1.0 - smoothstep( 0.8, 1.0, h ) );
+    wjaGlow += ember * body * ( 0.95 + 0.3 * mid.g );
+    wjaGlow += vec3( 1.5, 0.95, 0.3 ) * vein * face * 1.2;
     wjaGlow += ember * h * ink * 0.1;
+    wjaCoat *= 1.0 - 0.88 * body;
+    wjaSpec *= 1.0 - 0.8 * body;
   }
 
   // Melt: the enamel runs over its own edge, wet and a little warmer.
@@ -234,49 +243,61 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
     wjaCoatRough = mix( wjaCoatRough, 0.04, melt );
   }
 
-  // Holes: a burn has soot round it and a lip that glows and cools; a punched one has a broken rim of bare clay.
+  // Holes: a burn has a tight crust, a brown fall-off and a broken line of hot specks on its lip; a punched one has a lip broken inward and chips of bare clay.
   for ( int i = 0; i < ${MAX_HOLES}; i ++ ) {
     vec4 hole = uHoles[ i ];
     if ( hole.z <= 0.0 ) continue;
     float burnt = uBurnt[ i ];
     vec2 d = q - hole.xy;
+    vec2 dn = d / max( length( d ), 1e-4 );
     float r = hole.z * wjaRag( d, burnt );
-    float from = length( d ) / r + ( mid.g - 0.5 ) * 0.16 + ( fine.b - 0.5 ) * 0.14;
-    float soot = ( 1.0 - smoothstep( 1.12, 2.3, from ) ) * burnt;
-    float crust = ( 1.0 - smoothstep( 1.16, 1.4, from + ( wide.b - 0.5 ) * 0.25 + ( fine.g - 0.5 ) * 0.2 ) ) * burnt;
-    col = mix( col, col * vec3( 0.2, 0.13, 0.08 ), min( 1.0, soot * soot * 1.15 ) );
+    float rr = length( d ) / r;
+    float far = dot( dn, vec2( 0.73, 0.68 ) );
+    float from = rr + ( mid.g - 0.5 ) * 0.16 + ( fine.b - 0.5 ) * 0.14;
+    float soot = ( 1.0 - smoothstep( 1.02, 1.7, from ) ) * burnt;
+    float tiny = smoothstep( 0.035, 0.085, fwidth( rr ) );
+    float crust = ( 1.0 - smoothstep( 1.05 + 0.2 * tiny, 1.2 + 0.36 * tiny, from + ( wide.b - 0.5 ) * 0.3 + ( fine.g - 0.5 ) * 0.22 ) ) * burnt;
+    col = mix( col, col * vec3( 0.6, 0.36, 0.16 ), min( 1.0, soot * soot * 1.5 ) );
     col = mix( col, vec3( 0.014, 0.012, 0.010 ) + 0.03 * fine.g * mid.b, crust );
     float turn = atan( d.y, d.x ) + float( i ) * 1.7;
-    float bite = sin( turn + 0.6 ) * sin( turn * 3.0 + 1.9 ) + 0.3 * sin( turn * 7.0 + 0.4 );
-    float chipAt = length( d ) / r + ( mid.b - 0.5 ) * 0.1 - 0.15 * smoothstep( 0.4, 1.0, bite );
-    float chip = ( 1.0 - smoothstep( 1.03, 1.06, chipAt ) ) * ( 1.0 - burnt );
-    float nick = smoothstep( 1.0, 1.06, chipAt ) * ( 1.0 - smoothstep( 1.06, 1.16, chipAt ) ) * ( 1.0 - burnt );
-    float lipSide = 0.5 + 0.5 * dot( normalize( d ), vec2( 0.5, 0.86 ) );
-    vec3 clay = vec3( 0.8, 0.73, 0.6 ) * ( 0.6 + 0.5 * fine.b * mid.g + 0.16 * fine.g );
-    col = mix( col, clay * mix( 0.62, 1.05, lipSide ), chip );
-    col *= 1.0 - 0.16 * nick * ( 1.0 - lipSide );
-    wjaGlow += vec3( 0.05 ) * nick * lipSide;
+    float bite = sin( turn + 0.6 ) * sin( turn * 3.0 + 1.9 ) + 0.3 * sin( turn * 7.0 + 0.4 ) + ( mid.g - 0.5 ) * 1.3;
+    float chipAt = rr - 0.2 * smoothstep( 0.3, 1.0, bite ) - 0.03 - ( fine.b - 0.5 ) * 0.07;
+    float clean = 1.0 - burnt;
+    float chip = ( 1.0 - smoothstep( 1.0, 1.03, chipAt ) ) * clean;
+    float step_ = smoothstep( 0.93, 1.0, chipAt ) * chip;
+    float brink = smoothstep( 1.0, 1.03, chipAt ) * ( 1.0 - smoothstep( 1.03, 1.1, chipAt ) ) * clean;
+    vec3 clay = vec3( 0.93, 0.87, 0.74 ) * ( 0.7 + 0.34 * fine.b * mid.g + 0.2 * fine.g );
+    col = mix( col, clay * mix( 0.6, 1.0, smoothstep( -0.7, 0.7, far ) ), chip );
+    col *= 1.0 - 0.55 * step_ * smoothstep( 0.2, -0.6, far );
+    col *= 1.0 - 0.1 * brink * smoothstep( 0.0, -0.8, far );
+    wjaGlow += vec3( 0.07, 0.068, 0.062 ) * brink * smoothstep( 0.0, 0.8, far );
+    float roll = ( 1.0 - smoothstep( 1.0, 1.16, rr ) ) * ( 1.0 - chip );
+    wjaTilt -= dn * roll * mix( 0.55, 0.2, burnt );
+    wjaCoatTilt -= dn * roll * 0.55 * clean;
     float dull = max( max( crust, soot * 0.5 ), chip );
     wjaRough = mix( wjaRough, 0.95, dull );
     wjaCoat *= 1.0 - max( max( crust, soot * 0.7 ), chip );
     wjaSpec *= 1.0 - 0.8 * chip;
-    wjaTilt += grain * ( 4.0 * crust + 2.0 * chip );
-    float lip = ( 1.0 - smoothstep( 1.0, 1.26, from ) ) * pow( hole.w, 0.5 ) * burnt;
-    wjaGlow += vec3( 1.0, 0.36, 0.04 ) * 0.22 * hole.w * burnt * ( 1.0 - smoothstep( 1.1, 2.1, from ) ) * ( 1.0 - crust );
-    float spark = smoothstep( 0.46, 0.66, fine.b * 0.5 + mid.g * 0.7 - 0.2 * ( 1.0 - hole.w ) );
-    float lee = 0.4 + 0.6 * smoothstep( -0.6, 0.9, dot( normalize( d ), vec2( -0.5, 0.86 ) ) );
-    wjaGlow += mix( vec3( 1.0, 0.13, 0.015 ), vec3( 1.45, 0.72, 0.14 ), fine.g * ( 0.4 + 0.6 * hole.w ) ) * lip * lee * ( 0.8 + 3.6 * spark );
+    wjaTilt += grain * ( 5.0 * crust + 3.0 * chip );
+    float lip = ( 1.0 - smoothstep( 1.0, 1.1, from ) ) * pow( hole.w, 0.5 ) * burnt;
+    float spark = smoothstep( 0.6, 0.7, fine.b * 0.5 + mid.g * 0.7 + 0.12 * hole.w );
+    float fleck = smoothstep( 0.68, 0.76, fine.g * 0.6 + mid.b * 0.6 ) * ( 1.0 - smoothstep( 1.06, 1.24, from ) ) * hole.w * burnt;
+    wjaGlow += vec3( 1.0, 0.36, 0.04 ) * 0.05 * hole.w * burnt * ( 1.0 - smoothstep( 1.1, 1.7, from ) ) * ( 1.0 - crust );
+    wjaGlow += mix( vec3( 1.0, 0.13, 0.015 ), vec3( 1.5, 0.78, 0.16 ), fine.g * ( 0.4 + 0.6 * hole.w ) ) * ( lip * spark * 4.2 + fleck * 1.4 );
   }
   wjaFill = 0.9 * mix( face, 0.3, pale );
+  wjaPlain = face;
   return col;
 }
 `
 
+let latest: BodyUniforms | null = null
 let enamelColour: THREE.Color | null = null
 let edgeColour: THREE.Color | null = null
 
 // The body's one material: the shared enamel and the shared edge, mixed by where on the body a point is, and every state the surface can be in.
 export function bodyMaterial(uniforms: BodyUniforms): THREE.MeshPhysicalMaterial {
+  latest = uniforms
   const shared = materials()
   enamelColour ??= shared.enamel.color.clone()
   edgeColour ??= shared.edge.color.clone()
@@ -300,33 +321,94 @@ export function bodyMaterial(uniforms: BodyUniforms): THREE.MeshPhysicalMaterial
       .replace('#include <clearcoat_normal_fragment_maps>', '#include <clearcoat_normal_fragment_maps>\nclearcoatNormal = normalize( clearcoatNormal + vAcross * wjaCoatTilt.x + vDown * wjaCoatTilt.y );')
       .replace('#include <lights_physical_fragment>', '#include <lights_physical_fragment>\nmaterial.clearcoat = saturate( wjaCoat );\nmaterial.specularColor *= wjaSpec;\nmaterial.specularF90 *= wjaSpec;\nmaterial.clearcoatRoughness = max( wjaCoatRough, 0.0525 );\ntotalEmissiveRadiance += diffuseColor.rgb * wjaFill * ( 1.0 - dot( normal, normalize( ( viewMatrix * vec4( 0.0, 0.0, 1.0, 0.0 ) ).xyz ) ) );')
       .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\ntotalEmissiveRadiance += wjaGlow;')
+      .replace('#include <aomap_fragment>', '#include <aomap_fragment>\nreflectedLight.directDiffuse = mix( reflectedLight.directDiffuse, vec3( 1.0, 0.975, 0.945 ) * dot( reflectedLight.directDiffuse, vec3( 0.25, 0.6, 0.15 ) ), 0.85 * wjaPlain );')
   }
   m.customProgramCacheKey = () => 'wja-studio-cursor-body'
   return m
 }
 
-// The shadow's own material: it lets light through the holes.
+// The shadow's own material: it lets light through the holes. The light that comes down a bore is let fall on the page under the bore,
+// most of the way back along the light's own slant, so that what is seen through a hole is the page lit and not a disc of shade.
+const BORE_SHARE = 0.5
 export function bodyDepthMaterial(uniforms: BodyUniforms): THREE.MeshDepthMaterial {
   const m = new THREE.MeshDepthMaterial()
+  const low = picture.shadowHeights
   m.onBeforeCompile = (shader) => {
     shader.uniforms.uHoles = uniforms.uHoles
     shader.uniforms.uBurnt = uniforms.uBurnt
-    shader.vertexShader = 'attribute vec3 aRest;\nvarying vec3 vRest;\n' + shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\nvRest = aRest;')
-    shader.fragmentShader = '#define WJA_HOLE_WIDE 1.6\nvarying vec3 vRest;\n' + HOLE_COMMON + shader.fragmentShader.replace('#include <clipping_planes_fragment>', '#include <clipping_planes_fragment>\nwjaHoles( vec3( vRest.xy, 2.3 ) );')
+    shader.vertexShader =
+      'attribute vec3 aRest;\nvarying vec3 vRest;\nvarying vec2 vShift;\n' +
+      shader.vertexShader.replace(
+        '#include <begin_vertex>',
+        `#include <begin_vertex>
+vRest = aRest;
+vec4 wjaAt = modelMatrix * vec4( transformed, 1.0 );
+float wjaHigh = min( wjaAt.z, ${low.knee.toFixed(2)} ) + max( wjaAt.z - ${low.knee.toFixed(2)}, 0.0 ) * ${low.keep.toFixed(4)};
+vec3 wjaLamp = vec3( viewMatrix[ 0 ][ 2 ], viewMatrix[ 1 ][ 2 ], viewMatrix[ 2 ][ 2 ] );
+vec3 wjaOff = transpose( mat3( modelMatrix ) ) * vec3( wjaLamp.xy / max( wjaLamp.z, 0.05 ) * wjaHigh, 0.0 ) / dot( modelMatrix[ 0 ].xyz, modelMatrix[ 0 ].xyz );
+vShift = vec2( wjaOff.x, - wjaOff.y ) * ${(BORE_SHARE / UNIT).toFixed(5)};`
+      )
+    shader.fragmentShader = '#define WJA_HOLE_WIDE 1.0\nvarying vec3 vRest;\nvarying vec2 vShift;\n' + HOLE_COMMON + shader.fragmentShader.replace('#include <clipping_planes_fragment>', '#include <clipping_planes_fragment>\nwjaHoles( vec3( vRest.xy - vShift, 2.3 ) );')
   }
   m.customProgramCacheKey = () => 'wja-cursor-body-depth'
   return m
 }
 
-// The wall of a burn hole: char, with its glow carried in the colour of each point.
+// The wall of a hole. A burnt one is ash with hot specks, its glow carried in the colour of each point. A punched one is bare crumbling clay:
+// the side that faces the lamp is lit as far down as the light comes across the bore, the side under the lamp is in its own shade.
 export function charMaterial(): THREE.MeshStandardMaterial {
+  const u = latest ?? bodyUniforms()
   const m = studio(new THREE.MeshStandardMaterial({ color: new THREE.Color(0.02, 0.017, 0.015), roughness: 0.95, metalness: 0, vertexColors: true, side: THREE.DoubleSide, envMapIntensity: 0.3 }))
   const law = m.onBeforeCompile
+  const key = new THREE.Vector3(...picture.key.direction).normalize()
   m.onBeforeCompile = (shader, renderer) => {
     law.call(m, shader, renderer)
-    shader.fragmentShader = shader.fragmentShader
+    shader.uniforms.uHoles = u.uHoles
+    shader.uniforms.uBurnt = u.uBurnt
+    shader.uniforms.uDetail = u.uDetail
+    shader.uniforms.uKey = { value: key }
+    shader.vertexShader = ('varying vec3 vObj;\n' + shader.vertexShader).replace('#include <begin_vertex>', '#include <begin_vertex>\nvObj = position;')
+    shader.fragmentShader = (`varying vec3 vObj;\nuniform vec4 uHoles[${MAX_HOLES}];\nuniform vec4 uBurnt;\nuniform sampler2D uDetail;\nuniform vec3 uKey;\n` + shader.fragmentShader)
       .replace('#include <color_fragment>', '')
-      .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\n#ifdef USE_COLOR\ntotalEmissiveRadiance += vColor.rgb;\n#endif')
+      .replace(
+        '#include <emissivemap_fragment>',
+        `#include <emissivemap_fragment>
+#ifdef USE_COLOR
+{
+  vec2 wjaQ = vec2( vObj.x, - vObj.y ) / ${UNIT.toFixed(5)};
+  float wjaBurnt = 1.0;
+  float wjaBest = 1e9;
+  float wjaR = 1.0;
+  vec2 wjaD = vec2( 1.0, 0.0 );
+  for ( int i = 0; i < ${MAX_HOLES}; i ++ ) {
+    vec4 h = uHoles[ i ];
+    if ( h.z <= 0.0 ) continue;
+    vec2 d = wjaQ - h.xy;
+    float l = dot( d, d );
+    if ( l < wjaBest ) { wjaBest = l; wjaBurnt = uBurnt[ i ]; wjaR = h.z; wjaD = d; }
+  }
+  float wjaDeep = 1.0 - clamp( vObj.z / ${(2.3 * UNIT).toFixed(4)}, 0.0, 1.0 );
+  vec3 wjaN = inverseTransformDirection( normal, viewMatrix );
+  vec2 wjaIn = wjaN.xy / max( length( wjaN.xy ), 1e-4 );
+  float wjaFace = dot( wjaIn, normalize( uKey.xy ) );
+  float wjaDown = 2.0 * wjaR * max( wjaFace, 0.0 ) * uKey.z / length( uKey.xy );
+  float wjaTurn = atan( wjaD.y, wjaD.x );
+  vec2 wjaUv = vec2( wjaTurn * wjaR * 0.42, wjaDeep * 0.8 );
+  vec4 wjaFine = texture2D( uDetail, wjaUv * 0.9 + vec2( 0.21, 0.63 ) );
+  vec4 wjaMid = texture2D( uDetail, wjaUv * 0.27 + vec2( 0.71, 0.13 ) );
+  float wjaCrumb = 0.62 + 0.5 * wjaFine.g * ( 0.6 + 0.8 * wjaMid.b );
+  float wjaPit = smoothstep( 0.56, 0.7, wjaFine.b * 0.6 + wjaMid.g * 0.5 );
+  float wjaSun = max( wjaFace, 0.0 ) * ( 1.0 - smoothstep( 0.5 * wjaDown, 1.1 * wjaDown + 0.12, wjaDeep * 2.3 ) );
+  float wjaSky = ( 0.4 + 0.2 * dot( wjaIn, vec2( 0.85, -0.3 ) ) ) * ( 1.0 - 0.55 * wjaDeep ) * ( 0.75 + 0.25 * smoothstep( 0.0, 0.12, wjaDeep ) );
+  vec3 wjaClay = vec3( 0.82, 0.69, 0.52 ) * wjaCrumb * ( 1.0 - 0.5 * wjaPit ) * ( wjaSky + 0.7 * wjaSun );
+  float wjaHot = max( vColor.r - 1.25 * vColor.b, 0.0 ) / 0.9375;
+  vec3 wjaAsh = vec3( 1.14, 1.08, 1.0 ) * max( vColor.b - 0.05 * wjaHot, 0.0 ) * ( 0.35 + 0.75 * wjaFine.g ) * ( 1.0 - 0.6 * wjaDeep * step( wjaFace, 0.0 ) );
+  float wjaSpeck = smoothstep( 0.56, 0.68, wjaFine.b * 0.55 + wjaMid.g * 0.6 );
+  vec3 wjaEmber = ( 1.0 - exp( - 0.8 * wjaHot ) ) * vec3( 1.0, 0.4, 0.05 ) * wjaSpeck * 1.8;
+  totalEmissiveRadiance += mix( wjaClay, wjaAsh + wjaEmber, wjaBurnt );
+}
+#endif`
+      )
   }
   m.customProgramCacheKey = () => 'wja-studio-cursor-char'
   return m
