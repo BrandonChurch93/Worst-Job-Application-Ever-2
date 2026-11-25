@@ -35,7 +35,15 @@ const focus = (page) => page.evaluate(() => {
     await page.keyboard.press('Tab')
     order.push(await focus(page))
   }
-  check('tab order: sound, watch the film, skip, then out', order[0] === 'button:Sound' && order[1].startsWith('a:Watch') && order[2].startsWith('button:Skip') && order[3] === 'body', order.join(' | '))
+  check('tab order: sound, watch the film, skip, then the picture', order[0] === 'button:Sound' && order[1].startsWith('a:Watch') && order[2].startsWith('button:Skip') && order[3] === 'div:', order.join(' | '))
+  await page.keyboard.press('b')
+  const onPicture = await log(page)
+  check('a letter typed while the picture has the focus goes to the page', onPicture.includes('page:key:b'), onPicture.join())
+  await page.keyboard.press('Shift+Tab')
+  check('Shift and Tab from the picture goes back to the last control', (await focus(page)).startsWith('button:Skip'), await focus(page))
+  await page.keyboard.press('Shift+Tab')
+  await page.keyboard.press('Shift+Tab')
+  await page.keyboard.press('Shift+Tab')
   await log(page)
   await page.keyboard.press('Tab')
   await page.keyboard.press('Enter')
@@ -47,7 +55,7 @@ const focus = (page) => page.evaluate(() => {
   check('visible focus ring on keyboard focus', ring === 'solid 2px', ring)
   await page.keyboard.press('a')
   l = await log(page)
-  check('a letter typed while a control has focus goes on to the page', l.includes('page:key:a'), l.join())
+  check('a letter typed while a control has the focus does not reach the page', !l.includes('page:key:a'), l.join())
   const state = await page.evaluate(() => {
     const b = document.querySelector('button[aria-label]')
     return { pressed: b.getAttribute('aria-pressed'), icon: b.querySelector('svg').dataset.icon }
@@ -160,6 +168,20 @@ const focus = (page) => page.evaluate(() => {
   const desk = await open('view=auto')
   check('touchOnly() is false on a computer', (await desk.evaluate(() => !!document.querySelector('main'))) === false)
   await desk.context().close()
+}
+{
+  const page = await open('view=skip&step=1&backing=light')
+  await page.waitForTimeout(300)
+  const drawn = await page.evaluate(() => [...document.querySelectorAll('[class*="live"] > [class*="link"]')].map((e) => ({ text: e.textContent, hidden: e.querySelector('svg')?.getAttribute('aria-hidden'), width: Math.round(e.querySelector('svg')?.getBoundingClientRect().width ?? 0) })))
+  check('each word is drawn from the outlines and still stands in the page as text', drawn.length === 2 && drawn[0].text === 'Watch the film instead' && drawn[1].text === 'Skip step (Accept Defeat)' && drawn.every((d) => d.hidden === 'true' && d.width > 40), JSON.stringify(drawn))
+  const alpha = (c) => Number((c.match(/rgba\([^)]*,\s*([\d.]+)\)/) ?? [0, c.startsWith('rgb(') ? 1 : 0])[1])
+  const light = await page.evaluate(() => getComputedStyle(document.querySelector('[class*="live"]')).backgroundColor)
+  check('over pale content the row gets a pale capsule', alpha(light) > 0.8, light)
+  await page.context().close()
+  const bare = await open('view=skip&step=1')
+  const none = await bare.evaluate(() => getComputedStyle(document.querySelector('[class*="live"]')).backgroundColor)
+  check('over the empty strip the row is drawn bare', alpha(none) === 0, none)
+  await bare.context().close()
 }
 {
   const page = await open('view=probe&wait=20')

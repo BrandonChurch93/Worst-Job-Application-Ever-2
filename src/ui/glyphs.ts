@@ -68,3 +68,10 @@ export function draw(el: HTMLElement, text: string, name: string, how: Drawn = {
     el.textContent = text
   }
 }
+
+const FACES = ['inter-400', 'inter-500', 'inter-600', 'inter-display-600']
+
+// Resolves when the outlines the interface draws its words from have loaded or have failed to. Never rejects.
+export function ready(): Promise<void> {
+  return Promise.all(FACES.map((name) => needFont(name))).then(() => undefined)
+}
