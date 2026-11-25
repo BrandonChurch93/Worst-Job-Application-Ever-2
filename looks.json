@@ -1,35 +1,35 @@
 {
   "folder": "cursor-act",
-  "pushed": "2026-11-25T16:01:12.020Z",
-  "commit": "defb7660ce0f415a180fc85fbcc74e3f29aedf59",
+  "pushed": "2026-11-25T16:10:14.773Z",
+  "commit": "54f933aefe99d5316cb7bd686ad83845d0ddcb2c",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Sheet cursor-arms: approved on the left, this build on the right, review tier",
-      "time": "2026-11-25T16:00:27.356Z",
-      "by": "cursor-act",
-      "from": "out/work/compare/compare-cursor-arms.jpg"
-    },
-    {
-      "file": "look-2.jpg",
       "caption": "Sheet cursor-damage: approved on the left, this build on the right, review tier",
-      "time": "2026-11-25T16:01:10.060Z",
+      "time": "2026-11-25T16:07:22.925Z",
       "by": "cursor-act",
       "from": "out/work/compare/compare-cursor-damage.jpg"
     },
     {
+      "file": "look-2.jpg",
+      "caption": "Arms sheet beside the approved one at review on 54f933a: fingers grouped, hands in on the held sheet (round 3 issues 1 and 4, in part)",
+      "time": "2026-11-25T16:10:13.211Z",
+      "by": "cursor-act",
+      "from": "out/work/report/arms-beside-approved.jpg"
+    },
+    {
       "file": "look-3.jpg",
-      "caption": "Acting sheet beside the approved one at review, on defb766",
-      "time": "2026-11-25T16:01:10.481Z",
+      "caption": "Acting sheet beside the approved one at review on 54f933a: exhausted without beads, the holed body lies on the page",
+      "time": "2026-11-25T16:10:13.470Z",
       "by": "cursor-act",
       "from": "out/work/report/acting-beside-approved.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Arms sheet beside the approved one at review, on defb766: the paper is the real resume sheet at true size",
-      "time": "2026-11-25T16:01:10.720Z",
+      "caption": "Damage sheet beside the approved one at review on 54f933a: scorch a burnt tip, page seen through the punched hole",
+      "time": "2026-11-25T16:10:13.716Z",
       "by": "cursor-act",
-      "from": "out/work/report/arms-beside-approved.jpg"
+      "from": "out/work/report/damage-beside-approved.jpg"
     }
   ]
 }
