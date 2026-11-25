@@ -1,35 +1,35 @@
 {
   "folder": "pinball",
-  "pushed": "2026-11-25T10:29:50.768Z",
-  "commit": "f470c639cd0c387ba3478ab4a9543e4dcdc8d369",
+  "pushed": "2026-11-25T10:47:45.476Z",
+  "commit": "93b7c842c15700398515fbc7691e388f94130fe0",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-rail-cam-preview-draft: draft tier, preview, view beauty",
-      "time": "2026-11-25T10:27:36.580Z",
+      "caption": "Still key-tier-office-preview-draft: draft tier, preview, view beauty",
+      "time": "2026-11-25T10:45:48.690Z",
       "by": "pinball",
-      "from": "out/work/stills/key-rail-cam-preview-draft.png"
+      "from": "out/work/stills/key-tier-office-preview-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Key lobby-doors: the camera now holds the Corporate HQ sign, the doors, the revolving door and the ball",
-      "time": "2026-11-25T10:29:49.229Z",
+      "caption": "Still key-tier-street-preview-draft: draft tier, preview, view beauty",
+      "time": "2026-11-25T10:45:52.804Z",
       "by": "pinball",
-      "from": "out/work/stills/key-lobby-doors-preview-draft.png"
+      "from": "out/work/stills/key-tier-street-preview-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Key rail-cam: whole ball in the frame, heading along the rail",
-      "time": "2026-11-25T10:29:49.503Z",
+      "caption": "Key tier-corporate: each insert label on a paper plate, dark ink",
+      "time": "2026-11-25T10:47:43.617Z",
       "by": "pinball",
-      "from": "out/work/stills/key-rail-cam-preview-draft.png"
+      "from": "out/work/stills/key-tier-corporate-preview-draft.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Key tier-corporate: inserts and labels clear of the raised flipper and the revolving door",
-      "time": "2026-11-25T10:29:49.731Z",
+      "caption": "Key tier-street: insert labels on plates, the road-sign slings",
+      "time": "2026-11-25T10:47:43.996Z",
       "by": "pinball",
-      "from": "out/work/stills/key-tier-corporate-preview-draft.png"
+      "from": "out/work/stills/key-tier-street-preview-draft.png"
     }
   ]
 }
