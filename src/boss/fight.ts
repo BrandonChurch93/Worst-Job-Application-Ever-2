@@ -254,6 +254,12 @@ function popups(f: Fight, io: StepIo, arena: Arena): boolean {
       const slot = free.includes(want) ? want : free[0]!
       const box = arena.popups[slot]!.box
       f.popups.push({ slot, hp: POPUP.hp, t: 0, closing: -1 })
+      for (const s of f.slabs) {
+        if (s.state === 1) {
+          s.state = 2
+          s.t = 0
+        }
+      }
       f.popupCount++
       io.emit('popup', box.x + box.w / 2, box.y + box.h / 2, false)
       f.popupDue = f.phase === 1 ? POPUP.gaps[Math.min(f.popupCount, POPUP.gaps.length) - 1]! : POPUP.again
