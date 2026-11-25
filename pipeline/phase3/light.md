@@ -55,7 +55,8 @@ A fact below is MEASURED (the command and the number are given), STATED (read so
 | `grain` | 0.011 | About 1 level of 255 on the ceramic. The approved ceramic's speckle (5 to 8 levels) is the surface owner's eggshell, not film grain. |
 | `glow.threshold`, `glow.knee` | 1.5, 0.2 | Glow starts at linear 1.3 after exposure. |
 | `glow.surfaceKnee`, `glow.surfaceMax` | 0.95, 1.25 | No lit surface is brighter than 1.25, which is under 1.3. `tests/light-sampler.test.ts` holds that. |
-| `glow.strength`, `glow.rings` | 0.8; 1, 1, 0.6, 0.25, 0.08, 0.02 | Most of the glow is in the first three rings (about 4, 8 and 16 px at `hd`), which is the halo of two to three core widths of the approved bolts; the last rings are the faint wide veil. |
+| `glow.strength`, `glow.rings` | 1.4; 1, 1, 0.6, 0.25, 0.08, 0.02 | Most of the glow is in the first three rings (about 4, 8 and 16 px at `hd`), which is the halo of two to three core widths of the approved bolts; the last rings are the faint wide veil. |
+| `glow.depth`, `glow.cover` | 0.8; 0.9 | A bolt's halo was pale yellow and did not read on a cream cap: light added to a pale surface can only go to white. `depth` spreads the hue of the source without its white (a head of 16, 10, 4.5 spreads as 1, 0.42, 0.1). `cover` lets a strong glow hide the surface behind it, never a thing that gives off light itself, so the core stays white and the halo is orange. Looked at beside the approved bolt at real size: white core, orange halo of about one core width. |
 
 `src/post/studio.ts`:
 
