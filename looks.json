@@ -1,35 +1,35 @@
 {
   "folder": "glass",
-  "pushed": "2026-11-25T18:47:08.862Z",
-  "commit": "88684783482974c85801adaebbc35e2844d2edab",
+  "pushed": "2026-11-25T19:04:15.319Z",
+  "commit": "dce5526ce9c1867664fd705c254946c24a74ad60",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "step1-tug: approved left, agent/glass 8868478 right, draft tier, with crops",
-      "time": "2026-11-25T18:47:07.106Z",
+      "caption": "Still key-step1-tug-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-25T19:00:35.851Z",
       "by": "glass",
-      "from": "out/work/report/glass-compare-step1-tug.jpg"
+      "from": "out/work/stills/key-step1-tug-hd-review.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "page-look: approved left, agent/glass 8868478 right, draft tier, with crops",
-      "time": "2026-11-25T18:47:07.336Z",
+      "caption": "Tug close view at review tier after the satin change: no bright points in the frost, glass quieter than the page, M3 0.851",
+      "time": "2026-11-25T19:02:22.275Z",
       "by": "glass",
-      "from": "out/work/report/glass-compare-page-look.jpg"
+      "from": "out/work/report/glass-tug-review.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Glass edge: approved at home (top), build at home draft (middle), build at the tug key review tier, native pixels doubled (bottom)",
-      "time": "2026-11-25T18:47:07.570Z",
+      "caption": "Key step1-tug: approved on the left, this build on the right, review tier, with crops of cursor, paper, paper.below, chip, card.glass",
+      "time": "2026-11-25T19:03:59.095Z",
       "by": "glass",
-      "from": "out/work/report/glass-edge.jpg"
+      "from": "out/work/compare/compare-step1-tug.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Field well: approved (top), build draft (bottom), native pixels doubled",
-      "time": "2026-11-25T18:47:07.800Z",
+      "caption": "Tug key at review tier beside the approved image after the satin change: frost has no bright points; M3 0.851 by the tool's own function",
+      "time": "2026-11-25T19:04:14.033Z",
       "by": "glass",
-      "from": "out/work/report/glass-field-well.jpg"
+      "from": "out/work/report/glass-satin-compare.jpg"
     }
   ]
 }
