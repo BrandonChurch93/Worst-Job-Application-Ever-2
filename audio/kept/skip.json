@@ -1,0 +1,120 @@
+{
+  "id": "skip",
+  "kind": "cue",
+  "cue": "skip",
+  "variant": null,
+  "class": "tick",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "One firm press of a wide plastic key",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "One firm press of a wide plastic key bottoming out on a ceramic base, a single low click, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 172
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "56b04ef72469e4796a958ff825f924f4afa7a6ec7f81c4ad4dfd2dd14c221d30",
+    "filed": "2026-11-25T19:24:52.881Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0,
+      "end": 0.48,
+      "peakDb": -17.92,
+      "rmsDb": -44.91,
+      "lufs": -39.53,
+      "truePeakDb": -14.93,
+      "low": 0.052,
+      "mid": 0.946,
+      "high": 0.002,
+      "tailDb": -63.84,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.046,
+          "peakDb": -17.92
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0.012,
+    "trimEnd": 0.312,
+    "cutToSeconds": 0.3,
+    "fadeInMs": 3,
+    "fadeOutMs": 75,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -16,
+    "gainDb": 2.19,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.3,
+    "start": 0,
+    "end": 0.23,
+    "peakDb": -16,
+    "rmsDb": -39.65,
+    "lufs": -41.25,
+    "truePeakDb": -16,
+    "low": 0.05,
+    "mid": 0.949,
+    "high": 0.002,
+    "tailDb": -57.63,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0.002,
+        "end": 0.034,
+        "peakDb": -16
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
+    "asks": 6,
+    "whole": 0,
+    "heard": null,
+    "madeOf": null,
+    "events": null,
+    "voice": null,
+    "voiceVotes": "0 yes, 0 no",
+    "word": null,
+    "wordVotes": "0 yes, 0 no",
+    "music": null,
+    "musicVotes": "0 yes, 0 no",
+    "melody": null,
+    "melodyVotes": "0 yes, 0 no",
+    "fits": null,
+    "fitsVotes": "0 yes, 0 no",
+    "basis": [],
+    "heardRaisedByDb": 14.92
+  },
+  "why": "not judged by ear: 0 whole answers in 6 asks",
+  "forced": true,
+  "problems": [
+    "the listener left \"voice\" unanswered",
+    "the listener left \"word\" unanswered",
+    "the listener left \"music\" unanswered",
+    "the listener left \"melody\" unanswered",
+    "the listener left \"fits\" unanswered"
+  ],
+  "fixture": false,
+  "file": "skip.wav",
+  "seconds": 0.3,
+  "sha256": "398a70d5e07cb830fba775dbd3ba761b9ae4460a1eabcac474c07b2e554739f4"
+}

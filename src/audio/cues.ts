@@ -19,12 +19,10 @@ export const eventCues: Record<string, string> = {
   'paper-slide': 'paper-slide',
   'shredder': 'shredder',
   'paper-strain': 'paper-strain',
-  'arms-out': 'paper-strain',
   'strips-zip': 'strips-zip',
   'row-open': 'row-open',
   'dial-wind': 'dial-wind',
   'dial-return': 'dial-return',
-  'dial-fling': 'dial-return',
   'lever-pull': 'lever-pull',
   'reels-spin': 'reels-spin',
   'coins': 'coins',
@@ -43,7 +41,6 @@ export const eventCues: Record<string, string> = {
   'ramp-roll': 'ramp-roll',
   'ball-drop': 'ball-drop',
   'flipper': 'flipper',
-  'flipper-save': 'flipper',
   'doors-slam': 'doors-slam',
   'drain': 'drain',
   'tier-fall': 'tier-fall',
@@ -61,7 +58,6 @@ export const eventCues: Record<string, string> = {
   'dart-hit': 'dart-hit',
   'slab-fire': 'slab-fire',
   'popup': 'popup',
-  'session-expired': 'popup',
   'power-down': 'power-down',
   'hold-music': 'hold-music',
   'letter-drop': 'letter-drop',
@@ -72,8 +68,31 @@ export const eventCues: Record<string, string> = {
   'ui-send': 'ui-send'
 }
 
+// Cues the build added, inside audio.extraCuesMax, for contacts that had no sound of their own. Each plays on the event of its own name.
+// They are kept apart from the table above until audio.sfx holds their rows: audio/EXTRA-CUES.json says the same, and a test holds the two together.
+export const extraCues: { id: string; seconds: number; event: string }[] = [
+  { id: 'tug-lost', seconds: 0.6, event: 'tug-lost' },
+  { id: 'arms-out', seconds: 0.5, event: 'arms-out' },
+  { id: 'dial-fling', seconds: 0.8, event: 'dial-fling' },
+  { id: 'flipper-save', seconds: 0.4, event: 'flipper-save' },
+  { id: 'session-expired', seconds: 0.8, event: 'session-expired' },
+  { id: 'popup-close', seconds: 0.3, event: 'popup-close' },
+  { id: 'carpet-roll', seconds: 1.0, event: 'carpet-roll' },
+  { id: 'inbox-take', seconds: 0.6, event: 'inbox-take' },
+  { id: 'firehouse-take', seconds: 0.6, event: 'firehouse-take' },
+  { id: 'metrics-card', seconds: 0.5, event: 'metrics-card' },
+  { id: 'skip', seconds: 0.3, event: 'skip' }
+]
+
+export const cueOfEvent = (name: string): string | undefined => eventCues[name] ?? extraCues.find((x) => x.event === name)?.id
+
+// Every cue with its length and its variants: the rows of audio.sfx, and the added cues that audio.sfx does not hold yet.
+export function allCues<T extends { id: string; seconds: number }>(sfx: T[]): (T | { id: string; seconds: number; variants?: number })[] {
+  return [...sfx, ...extraCues.filter((x) => !sfx.some((s) => s.id === x.id)).map((x) => ({ id: x.id, seconds: x.seconds }))]
+}
+
 // Events that are left without a sound on purpose.
-export const silentEvents: string[] = ['popup-close']
+export const silentEvents: string[] = []
 
 // An event that ends a sound that would otherwise run on. A page turn ends every running loop but the room tone.
 export const stopEvents: Record<string, string[]> = {
@@ -181,6 +200,17 @@ export function liveKeysFor(e: { name: string; hitsCursor: boolean }, seen: Set<
 export type CueClass = 'tone' | 'tick' | 'mechanism' | 'hit' | 'music'
 
 export const cueClass: Record<string, CueClass> = {
+  'tug-lost': 'mechanism',
+  'arms-out': 'mechanism',
+  'dial-fling': 'hit',
+  'flipper-save': 'hit',
+  'session-expired': 'hit',
+  'popup-close': 'tick',
+  'carpet-roll': 'mechanism',
+  'inbox-take': 'hit',
+  'firehouse-take': 'hit',
+  'metrics-card': 'tick',
+  'skip': 'tick',
   'room-tone': 'tone',
   'step': 'tick',
   'card-flip': 'tick',

@@ -1,0 +1,78 @@
+{
+ "critic": "R3",
+ "score": 6,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "the keycaps R, U and J, and the matching crop 'the deck's front edge' in set-A-08.png",
+   "what": "the bullet holes are flat, soft black blobs painted on the key faces. They have no depth, no torn rim, no exposed plastic wall and no metal showing through, so they read as dark spots and not holes",
+   "fix": "cut a real hole with a dark interior and a lit lower wall, add a raised, splintered cream rim with scorch fading outward, and show the deck's metal faintly at the bottom of the hole"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "the fourth arrow, the one with the hole",
+   "what": "the hole is a uniform mid-grey disc. No page texture shows through it and it has no inner wall, so it reads as a grey dot printed on the arrow and not as a hole through a thick body",
+   "fix": "show the page texture through the opening, add a visible wall of the arrow's thickness on the side away from the light, and let the arrow's shadow on the page show a matching lit gap"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "the fifth arrow, the cracked one",
+   "what": "the cracks are thin, even grey lines drawn on the surface. They have no edge offset, no chipping and no break in the gloss. The black outline also wobbles like a melted shape, which does not match a brittle crack",
+   "fix": "render the cracks as fractures with a slight height step and a dark gap, a lit edge on one side and small chips at the outline, break the specular highlight across each crack, and keep the outline crisp"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "the upper glitch arrow, centre and right",
+   "what": "a translucent, blurred rectangular smear floats across the slices. It looks like a leftover compositing layer or motion-blur patch, not part of any object",
+   "fix": "remove the smear, or replace it with crisp, offset slice copies that each have their own thickness and shadow"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "the 'Last name' and 'Email' fields, and the panel behind 'Drag and drop', also seen in set-A-03.png and set-A-07.png",
+   "what": "the inset fields and the drop-zone slab are flat, even grey-green fills. Nothing shows through them and they have no gloss or highlight, so they read as flat grey panels and not glass or lit recesses",
+   "fix": "add a faint grazing highlight along the upper inner edge, a soft reflection gradient, and a slight refraction or darkening of the page texture beneath, so the material reads"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "the shredder under the paper, also the crops 'the paper' and 'the machine under the paper' in set-A-09.png",
+   "what": "the shredder sits on top of the page and straddles the glass slab's edge like a sticker. The dark backplate is a flat offset rectangle with no slot depth, the paper's lower edge just stops at the rollers with no feed-in, and the shredder has no screws or seam detail at this scale",
+   "fix": "set the shredder into a recessed slot cut into the page with a dark gap all round, run the paper visibly into the rollers with its lower edge occluded by the top lip, and add small screws and a housing seam"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-06.png",
+   "where": "the sixth arrow, the burn hole",
+   "what": "the hole's interior is a flat grey with no page texture showing through. The charred rim is convincing, but the opening still reads slightly as a grey fill",
+   "fix": "show the page texture through the opening and add an inner wall of the arrow's thickness"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-02.png",
+   "where": "the shredded strips below the shredder",
+   "what": "the strips are flat, uniform white ribbons with no curl, no printed lines from the resume and no edge thickness",
+   "fix": "curl and twist the strips, carry fragments of the grey text lines onto them, and add a thin shaded edge"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-06.png",
+   "where": "the fourth arrow, fear",
+   "what": "it has lost its black rim and gloss and become a matte grey foam with a uniform texture, so it reads as a different material and not the same arrow gone pale",
+   "fix": "keep the rim and some gloss, desaturate and cool the body, and lower the highlight rather than swapping the material"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-04.png",
+   "where": "the fourth pose, arrow lifting the resume over the shredder",
+   "what": "the cast shadow is one very large, soft blur that merges the arrow, arms, paper and shredder, with no tighter contact shadow where the shredder meets the page",
+   "fix": "add a tight dark contact line under the shredder, and keep the arrow's lifted shadow separate and offset from it"
+  }
+ ]
+}

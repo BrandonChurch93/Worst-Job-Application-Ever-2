@@ -11,6 +11,8 @@ import { cut, out, riskyType, strip, windowRound } from './pack-build.mjs'
 const GROUND = '#1b1b1d'
 const GAP = 8
 const LANDS = /(^|-)(drop|land|slam)$/
+// A sheet at a hit gives half its frames to the approach, so what falls is seen falling.
+const HIT_LEAD = 2
 const ACTING_LEAST_SECONDS = 0.25
 const ACTING_SHOWN_SECONDS = 1.5
 const TURN_BEFORE = 6
@@ -147,7 +149,7 @@ function motionGroups(cfg, unit, facts) {
     return { kind: 'look-sheet', unit, beat: b.id, frames, heading: `Beat ${i + 1} of ${beats.length} of the page, frames spread across it: ${range(frames, fps)}` }
   })
   const hits = facts.hits.map((h, i) => {
-    const frames = around(h.frame, count, step, u.first, u.last)
+    const frames = around(h.frame, count, step, u.first, u.last, HIT_LEAD)
     return { kind: 'hit-sheet', unit, hit: h.name, at: h.frame, frames, heading: `Consecutive frames at a hit, ${i + 1} of ${facts.hits.length}, the part of the picture round the hit at its real size: ${range(frames, fps)}` }
   })
   const start = facts.turn === null ? u.last - Math.round(fps / 2) : facts.turn

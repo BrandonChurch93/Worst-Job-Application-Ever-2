@@ -16,85 +16,80 @@
   "settings": {
     "speed": 0.7,
     "stability": 0.75,
-    "breakSeconds": 1,
-    "sent": "A valid email. <break time=\"1.0s\" /> Rejected. <break time=\"1.0s\" /> The system <break time=\"1.0s\" /> is working as designed.",
-    "call": 17
+    "breakSeconds": 0.1,
+    "sent": "A valid email. <break time=\"0.1s\" /> Rejected. <break time=\"0.1s\" /> The system <break time=\"0.1s\" /> is working as designed.",
+    "call": 155
   },
   "askedSeconds": null,
   "cost": "40",
   "take": {
-    "number": 1,
+    "number": 2,
     "round": "build",
-    "file": "take-1.mp3",
-    "sha256": "6b5253686269f5cb14f6c63f3f2935d3a3bfb2492e0156a7ff5cd3d0e60954d3",
-    "filed": "2026-11-25T18:05:41.273Z",
+    "file": "take-2.mp3",
+    "sha256": "88682409c2d1cd650b8ae6d434f9c93e1f670da991e48ec7c4e11e35612b911f",
+    "filed": "2026-11-25T18:45:55.737Z",
     "measured": {
-      "seconds": 9.706,
+      "seconds": 7.663,
       "start": 0.026,
-      "end": 9.534,
-      "peakDb": -3.98,
-      "rmsDb": -24.91,
-      "lufs": -21.68,
-      "truePeakDb": -3.87,
-      "low": 0.453,
-      "mid": 0.2,
-      "high": 0.347,
-      "tailDb": -19.8,
-      "hits": 8,
+      "end": 7.496,
+      "peakDb": -2.12,
+      "rmsDb": -20.27,
+      "lufs": -18.56,
+      "truePeakDb": -2.12,
+      "low": 0.481,
+      "mid": 0.267,
+      "high": 0.252,
+      "tailDb": -22.98,
+      "hits": 7,
       "hitsAt": [
         {
-          "start": 0.036,
-          "end": 1.602,
-          "peakDb": -6.66
+          "start": 0.028,
+          "end": 1.632,
+          "peakDb": -2.12
         },
         {
-          "start": 2.798,
-          "end": 3.218,
-          "peakDb": -6.2
+          "start": 1.988,
+          "end": 2.502,
+          "peakDb": -5
         },
         {
-          "start": 3.372,
-          "end": 3.704,
-          "peakDb": -10.29
+          "start": 2.57,
+          "end": 3.066,
+          "peakDb": -8.15
         },
         {
-          "start": 4.994,
-          "end": 5.868,
-          "peakDb": -3.98
+          "start": 3.57,
+          "end": 4.668,
+          "peakDb": -2.73
         },
         {
-          "start": 7.046,
-          "end": 7.584,
-          "peakDb": -5.42
+          "start": 5.032,
+          "end": 5.566,
+          "peakDb": -4.84
         },
         {
-          "start": 7.666,
-          "end": 8.042,
-          "peakDb": -7.45
+          "start": 5.636,
+          "end": 5.992,
+          "peakDb": -9.83
         },
         {
-          "start": 8.156,
-          "end": 8.484,
-          "peakDb": -7.7
-        },
-        {
-          "start": 8.562,
-          "end": 9.498,
-          "peakDb": -4.3
+          "start": 6.092,
+          "end": 7.456,
+          "peakDb": -4.74
         }
       ]
     },
     "line": {
       "words": 10,
-      "seconds": 9.508,
-      "wordsPerSecond": 1.052,
+      "seconds": 7.47,
+      "wordsPerSecond": 1.339,
       "maxWordsPerSecond": 1.6,
       "pauseMarks": 3,
       "pausesFound": 3,
       "pauses": [
-        1.186,
-        1.286,
-        1.166
+        0.34,
+        0.494,
+        0.352
       ],
       "paceHolds": true,
       "pausesHold": true,
@@ -104,94 +99,97 @@
     }
   },
   "chain": {
-    "trimStart": 0.034,
-    "trimEnd": 9.534,
+    "trimStart": 0.024,
+    "trimEnd": 7.496,
     "cutToSeconds": null,
     "fadeInMs": 3,
     "fadeOutMs": 120,
     "lowCutHz": 80,
     "levelMeasure": "lufs",
     "levelDb": -18,
-    "gainDb": 3.92,
+    "gainDb": 0.59,
     "channels": 1,
     "loop": null
   },
   "measured": {
-    "seconds": 9.5,
-    "start": 0,
-    "end": 9.478,
-    "peakDb": -0.08,
-    "rmsDb": -21.97,
+    "seconds": 7.472,
+    "start": 0.002,
+    "end": 7.448,
+    "peakDb": 0.52,
+    "rmsDb": -20.16,
     "lufs": -18,
-    "truePeakDb": 0.06,
-    "low": 0.316,
-    "mid": 0.248,
-    "high": 0.436,
-    "tailDb": -20.6,
-    "hits": 8,
+    "truePeakDb": 0.53,
+    "low": 0.423,
+    "mid": 0.294,
+    "high": 0.283,
+    "tailDb": -26.93,
+    "hits": 9,
     "hitsAt": [
       {
-        "start": 0.002,
-        "end": 1.568,
-        "peakDb": -2.52
+        "start": 0.004,
+        "end": 1.604,
+        "peakDb": 0.52
       },
       {
-        "start": 2.768,
-        "end": 3.182,
-        "peakDb": -2.21
+        "start": 1.962,
+        "end": 2.478,
+        "peakDb": -2.97
       },
       {
-        "start": 3.338,
-        "end": 3.67,
-        "peakDb": -6.5
+        "start": 2.546,
+        "end": 2.578,
+        "peakDb": -7.72
       },
       {
-        "start": 4.96,
-        "end": 5.82,
-        "peakDb": -0.08
+        "start": 2.646,
+        "end": 2.868,
+        "peakDb": -7.72
       },
       {
-        "start": 7.012,
-        "end": 7.548,
-        "peakDb": -1.61
+        "start": 2.956,
+        "end": 3.042,
+        "peakDb": -18.32
       },
       {
-        "start": 7.632,
-        "end": 8.008,
-        "peakDb": -3.37
+        "start": 3.548,
+        "end": 4.644,
+        "peakDb": -2.12
       },
       {
-        "start": 8.122,
-        "end": 8.448,
-        "peakDb": -3.59
+        "start": 5.008,
+        "end": 5.542,
+        "peakDb": -3.88
       },
       {
-        "start": 8.528,
-        "end": 9.442,
-        "peakDb": -1.26
+        "start": 5.614,
+        "end": 5.966,
+        "peakDb": -10.28
+      },
+      {
+        "start": 6.068,
+        "end": 7.406,
+        "peakDb": -3.81
       }
     ]
   },
   "listener": {
-    "by": "the audio evaluation tool: 8 asks, 1 whole, 7 void",
-    "asks": 8,
+    "by": "the audio evaluation tool: 5 asks, 1 whole, 4 void",
+    "asks": 5,
     "whole": 1,
-    "transcript": "A valid email rejected. The system is working as designed.",
+    "transcript": "A valid email rejected the system is working as designed.",
     "transcripts": [
-      "A valid email rejected. The system is working as designed.",
-      "A valid email rejected. The system is working as designed.",
-      "A valid email rejected. The system is working as designed.",
-      "A valid email rejected. The system is working as designed."
+      "A valid email rejected the system is working as designed.",
+      "A valid email rejected, the system is working as designed."
     ],
-    "transcriptAgreed": "4 of 4",
+    "transcriptAgreed": "2 of 2",
     "attitudes": [
-      "deadpan, cynical, and smug"
+      "deadpan and dismissive"
     ],
     "accents": [
       "American"
     ],
     "pitches": [
-      "low"
+      "middle"
     ],
     "whisper": null,
     "whisperVotes": "0 yes, 1 no",
@@ -204,13 +202,11 @@
     "unimpressedAndSmug": null,
     "unimpressedAndSmugVotes": "1 yes, 0 no",
     "basis": [
-      "The slow pacing and flat, low-pitched delivery typically associated with this phrasing indicate a cynical, unimpressed, and smug tone.",
-      "The speaker delivers the technical irony with a low, unenthusiastic tone and a complete lack of warmth, projecting a clear sense of smug detachment.",
-      "The speaker delivers the ironic statement with a slow, flat tone that highlights the absurdity of the situation without any warmth or excitement.",
-      "The answers rest on the flat, unapologetic delivery of a frustrating technical outcome being framed as an intended feature, which inherently conveys a cold and smug tone."
+      "The speaker delivers the ironic statement with a flat, measured tone that lacks warmth or excitement, conveying a distinctly smug and unimpressed attitude.",
+      "The speaker delivers the technical excuse with a steady, flat tone, indicating a deadpan dismissiveness devoid of any warmth or excitement."
     ]
   },
-  "why": "too long for its place: 9.508 s in 7.325 s, over by 2.183 s; tone not judged: 1 whole answers in 8 asks",
+  "why": "the Builder's ruling of 19:11Z: take 2 is kept and the tug line moves 0.15 s later on main; transcript word for word in 2 of 2 answers that had one, 1 whole answer in 5 asks",
   "forced": true,
   "problems": [
     "the listener left \"whisper\" unanswered",
@@ -218,10 +214,10 @@
     "the listener left \"warmth\" unanswered",
     "the listener left \"excitement\" unanswered",
     "the listener left \"unimpressedAndSmug\" unanswered",
-    "it is 9.508 s long and its place in the film has 7.325 s"
+    "it is 7.47 s long and its place in the film has 7.325 s"
   ],
   "fixture": false,
   "file": "line.step1.email.0.wav",
-  "seconds": 9.5,
-  "sha256": "fed2bc3e64de065cd4cb03233b43cc93fc366be770a7a6633eb3d4fc1b3b1e76"
+  "seconds": 7.472,
+  "sha256": "f666e8b6f14830f9e016a5e7a0db2c52ca4260007cd3b700b50defff2f1a6576"
 }

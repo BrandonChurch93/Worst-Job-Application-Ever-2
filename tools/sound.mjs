@@ -55,8 +55,8 @@ export function decodeFile(file, sampleRate) {
 // What an id on the command line names.
 export function target(a, c, cues) {
   if (a.cue && a.cue !== true) {
-    const spec = c.audio.sfx.find((s) => s.id === a.cue)
-    if (!spec) throw new Error(`No cue called "${a.cue}" in audio.sfx`)
+    const spec = cues.allCues(c.audio.sfx).find((s) => s.id === a.cue)
+    if (!spec) throw new Error(`No cue called "${a.cue}" in audio.sfx or among the added cues`)
     const variants = spec.variants ?? 1
     if (a.variant && a.variant !== true && variants > 1) {
       const slot = Number(a.variant) - 1
@@ -413,12 +413,12 @@ export function pack(P, c, M, quiet = false) {
       const bytes = encode(wav, ['-ac', '1', '-c:a', 'libmp3lame', '-b:a', '64k', '-id3v2_version', '0', '-f', 'mp3'])
       const file = `${r.id}.mp3`
       fs.writeFileSync(path.join(P.pub, file), bytes)
-      index.lines.push({ id: r.id, file, seconds: r.seconds, mime: 'audio/mpeg', bytes: bytes.length })
+      index.lines.push({ id: r.id, file, seconds: r.seconds, mime: 'audio/mpeg', bytes: bytes.length, sha256: sha(bytes) })
     } else if (r.loop) {
       const bytes = encode(wav, ['-c:a', 'flac', '-sample_fmt', 's16', '-compression_level', '8', '-f', 'flac'])
       const file = `${r.id}.flac`
       fs.writeFileSync(path.join(P.pub, file), bytes)
-      index.loops.push({ id: r.id, file, seconds: r.seconds, mime: 'audio/flac', bytes: bytes.length })
+      index.loops.push({ id: r.id, file, seconds: r.seconds, mime: 'audio/flac', bytes: bytes.length, sha256: sha(bytes) })
     } else {
       const bytes = encode(wav, ['-ac', '1', '-c:a', 'flac', '-sample_fmt', 's16', '-compression_level', '8', '-f', 'flac'])
       chunks.push(bytes)
@@ -427,8 +427,9 @@ export function pack(P, c, M, quiet = false) {
     }
   }
   if (chunks.length) {
-    fs.writeFileSync(path.join(P.pub, 'sfx.bin'), Buffer.concat(chunks))
-    index.pack = { file: 'sfx.bin', bytes: offset }
+    const all = Buffer.concat(chunks)
+    fs.writeFileSync(path.join(P.pub, 'sfx.bin'), all)
+    index.pack = { file: 'sfx.bin', bytes: offset, sha256: sha(all) }
   }
   index.totalBytes = offset + [...index.loops, ...index.lines].reduce((s, f) => s + f.bytes, 0)
   writeJson(path.join(P.pub, 'index.json'), index)
@@ -1056,7 +1057,7 @@ export function emittedEvents(M) {
   }
   walk(at('src'))
   const live = new Set(Object.values(M.cues.liveTriggers).map((t) => (t.on === 'event' ? t.event : '')))
-  const unknown = [...found].filter(([name]) => !M.cues.eventCues[name] && !M.cues.stopEvents[name] && !live.has(name) && !M.cues.silentEvents.includes(name))
+  const unknown = [...found].filter(([name]) => !M.cues.cueOfEvent(name) && !M.cues.stopEvents[name] && !live.has(name) && !M.cues.silentEvents.includes(name))
   return { count: found.size, unknown: unknown.map(([name, file]) => `${name} (${file})`) }
 }
 
@@ -1065,21 +1066,26 @@ function status(P, c, M) {
   const ledger = readLedger(P)
   const n = narration()
   const want = []
-  for (const s of c.audio.sfx) for (let i = 0; i < (s.variants ?? 1); i++) want.push({ id: M.cues.variantId(s.id, i, s.variants ?? 1), key: s.id })
+  for (const s of M.cues.allCues(c.audio.sfx)) for (let i = 0; i < (s.variants ?? 1); i++) want.push({ id: M.cues.variantId(s.id, i, s.variants ?? 1), key: s.id })
   for (const [beat, list] of Object.entries(n.film)) list.forEach((_, k) => want.push({ id: M.cues.filmLineId(beat, k), key: M.cues.filmLineId(beat, k) }))
   for (const [key, list] of Object.entries(n.liveOnly)) if (Array.isArray(list)) list.forEach((_, k) => want.push({ id: M.cues.liveLineId(key, k), key: M.cues.liveLineId(key, k) }))
   const missing = want.filter((w) => !kept.has(w.id))
-  console.log(`sound: ${want.length - missing.length} of ${want.length} sounds kept (${c.audio.sfx.length} cues with their variants, and the narrator's lines). ${ledger.takes.length} takes filed`)
+  console.log(`sound: ${want.length - missing.length} of ${want.length} sounds kept (${M.cues.allCues(c.audio.sfx).length} cues with their variants, and the narrator's lines). ${ledger.takes.length} takes filed`)
   if (missing.length) console.log(`sound: not kept yet: ${missing.slice(0, 12).map((m) => m.id).join(', ')}${missing.length > 12 ? `, and ${missing.length - 12} more` : ''}`)
   const e = emittedEvents(M)
   console.log(`sound: the pages emit ${e.count} events by name. ${e.unknown.length ? `With no cue, no stop, no line and not listed as silent in src/audio/cues.ts: ${e.unknown.join(', ')}` : 'Each has a cue, stops one, sets off a line or is listed as silent on purpose'}`)
-  console.log('sound: --cue ID --file F files a take, --line BEAT:N --file F files a line, --keep keeps one, --pack builds what the site ships, --sheet draws the kept sounds, --check runs the sound checks, --fixtures makes stand-ins to test with')
+  console.log('sound: --cue ID --file F files a take, --line BEAT:N --file F files a line, --keep keeps one, --pack builds what the site ships, --pack-check compares public/audio/ with the committed index, --sheet draws the kept sounds, --check runs the sound checks, --fixtures makes stand-ins to test with')
 }
 
 async function main() {
   const a = args()
   const c = config()
   const P = places(a.root)
+  if (a['pack-check']) {
+    const { packCheck } = await import('./lib/sound-packcheck.mjs')
+    if (!packCheck(at(), P.pub)) process.exitCode = 1
+    return
+  }
   const M = await modules()
   try {
     if (a.fixtures) await fixtures(a, c, M)

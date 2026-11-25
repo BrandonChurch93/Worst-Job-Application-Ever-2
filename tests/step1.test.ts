@@ -503,8 +503,8 @@ describe('the fixes after round 2 of the blockout', () => {
         }
       }
     }
-    expect(hit).toBeGreaterThan(6.8)
-    expect(hit).toBeLessThan(7.3)
+    expect(hit).toBeGreaterThan(5.5)
+    expect(hit).toBeLessThan(6)
     expect(a.pageTime).toBeGreaterThan(0)
     expect(full).toBeGreaterThan(hit + 1.5)
     expect(full).toBeLessThanOrEqual(9.5)

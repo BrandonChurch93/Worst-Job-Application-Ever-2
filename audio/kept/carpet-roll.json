@@ -1,0 +1,120 @@
+{
+  "id": "carpet-roll",
+  "kind": "cue",
+  "cue": "carpet-roll",
+  "variant": null,
+  "class": "mechanism",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A steel ball rolling off a hard floor onto thick carpet",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A steel ball rolling off a hard floor onto thick carpet, the bright roll turning soft and muffled, then stopping, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 1,
+    "loop": false,
+    "influence": null,
+    "call": 168
+  },
+  "askedSeconds": 1,
+  "cost": "11",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "3189892aa2a90fba0c13e28fa6c61d0f6cf5ff98b369d188408e026c64bc2830",
+    "filed": "2026-11-25T19:24:42.208Z",
+    "measured": {
+      "seconds": 1,
+      "start": 0,
+      "end": 0.866,
+      "peakDb": -14.83,
+      "rmsDb": -32.18,
+      "lufs": -28.76,
+      "truePeakDb": -13.32,
+      "low": 0.269,
+      "mid": 0.731,
+      "high": 0,
+      "tailDb": -50.04,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.7,
+          "peakDb": -14.83
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.866,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -10,
+    "gainDb": 5.08,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.866,
+    "start": 0,
+    "end": 0.788,
+    "peakDb": -10,
+    "rmsDb": -26.7,
+    "lufs": -27.53,
+    "truePeakDb": -10,
+    "low": 0.268,
+    "mid": 0.732,
+    "high": 0,
+    "tailDb": -41.67,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0.002,
+        "end": 0.7,
+        "peakDb": -10
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void",
+    "asks": 3,
+    "whole": 3,
+    "heard": "A metallic object rolls continuously across a hard surface before abruptly becoming muffled. / A small, hollow object rolling and rapidly wobbling to a complete stop on a hard surface. / A hard metallic object rapidly spinning and settling to a stop on a solid surface.",
+    "madeOf": "Metal / Plastic / metal",
+    "events": "1 / 1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": false,
+    "fitsVotes": "1 yes, 2 no",
+    "basis": [
+      "The recording features a hard, metallic rolling rumble that suddenly transitions into a muffled thud, matching the acoustic transition of an object moving from a hard floor to a sound-dampening carpet.",
+      "The recording features the high-pitched, hollow acoustic signature and rapid wobbling finish typical of a lightweight plastic ball settling on a hard surface, which directly contradicts the muffled, heavy sound a steel ball would make rolling onto thick carpet.",
+      "The audio features the characteristic accelerating rattle of a rigid circular object wobbling to a stop on a hard surface, lacking the muffled silence of rolling onto carpet."
+    ],
+    "heardRaisedByDb": 11.83
+  },
+  "why": "three takes made and none holds: take 1 fits by 1 yes to 2 no (heard as a metal thing rolling on a hard floor and then going muffled), take 2 by 0 to 2 (liquid, or a coin settling), take 3 with the changed prompt by 0 to 2 (a coin or a light ball settling). Take 1 is the nearest to the row. The cue is silent until Phase 4 emits carpet-roll",
+  "forced": true,
+  "problems": [
+    "the listener says it does not fit the line that describes the cue"
+  ],
+  "fixture": false,
+  "file": "carpet-roll.wav",
+  "seconds": 0.866,
+  "sha256": "29cae1171d190754c883e409de99ac1072393f6a5d4f0f1b70a136732afbb56d"
+}

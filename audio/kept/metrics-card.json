@@ -1,0 +1,120 @@
+{
+  "id": "metrics-card",
+  "kind": "cue",
+  "cue": "metrics-card",
+  "variant": null,
+  "class": "tick",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A stiff card laid flat on a hard desk",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A stiff card laid flat on a ceramic desk, a short slide and one soft flat tap, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 171
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "846e5785a8306042c97e7635dcb2d6b76773f6b41da75f9ce10b56f2e270eb5c",
+    "filed": "2026-11-25T19:24:50.350Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0,
+      "end": 0.314,
+      "peakDb": -7.03,
+      "rmsDb": -30.09,
+      "lufs": -25.28,
+      "truePeakDb": -5.88,
+      "low": 0.014,
+      "mid": 0.828,
+      "high": 0.158,
+      "tailDb": -56.68,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.06,
+          "peakDb": -7.03
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0.002,
+    "trimEnd": 0.314,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 77.89,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -16,
+    "gainDb": -8.94,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.312,
+    "start": 0,
+    "end": 0.152,
+    "peakDb": -16,
+    "rmsDb": -35.92,
+    "lufs": -36.67,
+    "truePeakDb": -15.88,
+    "low": 0.012,
+    "mid": 0.831,
+    "high": 0.156,
+    "tailDb": -50.72,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.058,
+        "peakDb": -16
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
+    "asks": 6,
+    "whole": 0,
+    "heard": null,
+    "madeOf": null,
+    "events": null,
+    "voice": null,
+    "voiceVotes": "0 yes, 0 no",
+    "word": null,
+    "wordVotes": "0 yes, 0 no",
+    "music": null,
+    "musicVotes": "0 yes, 0 no",
+    "melody": null,
+    "melodyVotes": "0 yes, 0 no",
+    "fits": null,
+    "fitsVotes": "0 yes, 0 no",
+    "basis": [],
+    "heardRaisedByDb": 4.03
+  },
+  "why": "not judged by ear: 0 whole answers in 6 asks",
+  "forced": true,
+  "problems": [
+    "the listener left \"voice\" unanswered",
+    "the listener left \"word\" unanswered",
+    "the listener left \"music\" unanswered",
+    "the listener left \"melody\" unanswered",
+    "the listener left \"fits\" unanswered"
+  ],
+  "fixture": false,
+  "file": "metrics-card.wav",
+  "seconds": 0.3116,
+  "sha256": "dda046635b1482689dabf072fa3c1d33abc1b37df55ccad78e48b59bd2b3890b"
+}
