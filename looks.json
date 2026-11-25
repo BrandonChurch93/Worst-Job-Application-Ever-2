@@ -1,35 +1,35 @@
 {
   "folder": "boss",
-  "pushed": "2026-11-25T09:23:47.593Z",
-  "commit": "5ed659c39bc3e8d9ecfe566ff11841fb8e9c5ae0",
+  "pushed": "2026-11-25T09:32:47.218Z",
+  "commit": "2d8ac77e9d2c7d30a2604b5fe90b56b9c859b42c",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still still-rest-step4-preview-draft: draft tier, preview, view beauty",
-      "time": "2026-11-25T09:19:00.777Z",
+      "caption": "Contact sheet, the page boss, sheet 2 of 3: 12 frames from 1:59.97 to 2:10.00, draft tier, preview",
+      "time": "2026-11-25T09:32:27.455Z",
       "by": "boss",
-      "from": "out/work/stills/still-rest-step4-preview-draft.png"
+      "from": "out/work/sheets/sheet-unit-boss-2of3-preview-draft.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Step 4 after the last push: a dart with its trail at 13.5 s, the banner clear above the boss at 22.6 and 23.3 s, the last stand at 25.3 s",
-      "time": "2026-11-25T09:23:45.939Z",
+      "caption": "Contact sheet, the page boss, sheet 3 of 3: 12 frames from 2:10.93 to 2:20.97, draft tier, preview",
+      "time": "2026-11-25T09:32:32.767Z",
       "by": "boss",
-      "from": "out/work/filmD.png"
+      "from": "out/work/sheets/sheet-unit-boss-3of3-preview-draft.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Step 4 at 4.7 s: the cursor steps aside so the answer under the rule can be read",
-      "time": "2026-11-25T09:23:46.176Z",
+      "caption": "Still key-boss-fight-preview-draft: draft tier, preview, view beauty",
+      "time": "2026-11-25T09:32:45.889Z",
       "by": "boss",
-      "from": "out/work/stills/boss-boss_verify-0p94-preview-draft.png"
+      "from": "out/work/stills/key-boss-fight-preview-draft.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Step 4 at 6.1 s: the cursor goes to press Submit as the button cracks out of its socket",
-      "time": "2026-11-25T09:23:46.417Z",
+      "caption": "Step 4 key boss-fight in the blockout: the boss stands where the approved picture has it, a dart spark on the shield",
+      "time": "2026-11-25T09:32:46.226Z",
       "by": "boss",
-      "from": "out/work/stills/boss-boss_unfold-0p275-preview-draft.png"
+      "from": "out/work/stills/key-boss-fight-preview-draft.png"
     }
   ]
 }
