@@ -36,7 +36,8 @@ export interface Showcase {
 }
 
 export type ContrastFrom = 'materials' | 'stand-in tones'
-export interface TextureCount { mb: number; counted: number; held: number; assetMb: number; targetMb: number; unseenMb: number }
+export interface TextureRow { what: string; width: number; height: number; mb: number; target: boolean }
+export interface TextureCount { mb: number; counted: number; held: number; assetMb: number; targetMb: number; unseenMb: number; largest?: TextureRow[] }
 
 type Rgb = [number, number, number]
 const MB = 1048576
@@ -89,14 +90,17 @@ interface TextureLike {
 }
 
 // The bytes a texture holds on the graphics card: every face, every layer and every level of its chain.
-export function textureBytes(t: TextureLike): number {
-  const faces = t.isCubeTexture ? 6 : 1
+export function textureSize(t: TextureLike): { width: number; height: number; depth: number } {
   const first = (t.isCubeTexture && Array.isArray(t.image) ? t.image[0] : t.image) as { width?: number; height?: number; depth?: number; videoWidth?: number; videoHeight?: number } | undefined
   const mips = t.mipmaps ?? []
+  return { width: first?.width ?? first?.videoWidth ?? mips[0]?.width ?? 0, height: first?.height ?? first?.videoHeight ?? mips[0]?.height ?? 0, depth: first?.depth && first.depth > 0 ? first.depth : 1 }
+}
+
+export function textureBytes(t: TextureLike): number {
+  const faces = t.isCubeTexture ? 6 : 1
+  const mips = t.mipmaps ?? []
   if (t.isCompressedTexture && mips.length) return faces * mips.reduce((n, m) => n + (m.data?.byteLength ?? 0), 0)
-  const width = first?.width ?? first?.videoWidth ?? mips[0]?.width ?? 0
-  const height = first?.height ?? first?.videoHeight ?? mips[0]?.height ?? 0
-  const depth = first?.depth && first.depth > 0 ? first.depth : 1
+  const { width, height, depth } = textureSize(t)
   if (!width || !height) return 0
   const chained = t.minFilter !== THREE.NearestFilter && t.minFilter !== THREE.LinearFilter
   const levels = mips.length > 1 ? mips.length : t.generateMipmaps && chained ? fullChain(width, height) : 1
@@ -110,7 +114,11 @@ function reach(roots: unknown[]): Held[] {
   const seen = new Set<object>()
   const out = new Map<THREE.Texture, Held>()
   const add = (t: THREE.Texture | null | undefined, target: boolean): void => {
-    if (t && t.isTexture && !out.has(t)) out.set(t, { texture: t, target })
+    if (!t || !t.isTexture) return
+    const of = target || (t as unknown as { isRenderTargetTexture?: boolean }).isRenderTargetTexture === true
+    const had = out.get(t)
+    if (!had) out.set(t, { texture: t, target: of })
+    else if (of) had.target = true
   }
   const stack: unknown[] = [...roots]
   let budget = 2000000
@@ -147,7 +155,7 @@ function reach(roots: unknown[]): Held[] {
 }
 
 // The memory of the textures the renderer holds now. A texture counts once it is on the graphics card, by the renderer's own record of it.
-// `held` is the renderer's own count. What it holds and the walk did not reach is counted as a target the size of the picture, the largest it can be.
+// `held` is the renderer's own count. What it holds and the walk did not reach is the renderer's own: the target it draws through for a material that lets light through, the size of the picture with a full chain.
 export function textureMemory(app: App): TextureCount {
   const renderer = app.engine?.renderer
   if (!renderer) return { mb: 0, counted: 0, held: 0, assetMb: 0, targetMb: 0, unseenMb: 0 }
@@ -155,6 +163,7 @@ export function textureMemory(app: App): TextureCount {
   const gpu = new Set<object>()
   let assets = 0
   let targets = 0
+  const rows: TextureRow[] = []
   for (const h of reach([app.view.scene, app.environment, app.rig, app.engine])) {
     if (!props.has(h.texture)) continue
     const on = props.get(h.texture).__webglTexture
@@ -163,11 +172,14 @@ export function textureMemory(app: App): TextureCount {
     const bytes = textureBytes(h.texture as unknown as TextureLike)
     if (h.target) targets += bytes
     else assets += bytes
+    const size = textureSize(h.texture as unknown as TextureLike)
+    rows.push({ what: h.texture.name || (h.target ? 'target' : 'picture'), width: size.width, height: size.height, mb: Number((bytes / MB).toFixed(3)), target: h.target })
   }
+  rows.sort((a, b) => b.mb - a.mb)
   const held = renderer.info.memory.textures
   const unseen = Math.max(0, held - gpu.size) * chainTexels(app.engine.width, app.engine.height, fullChain(app.engine.width, app.engine.height)) * texelBytes(THREE.RGBAFormat, THREE.HalfFloatType)
   const r = (bytes: number) => Number((bytes / MB).toFixed(3))
-  return { mb: r(assets + targets + unseen), counted: gpu.size, held, assetMb: r(assets), targetMb: r(targets), unseenMb: r(unseen) }
+  return { mb: r(assets + targets + unseen), counted: gpu.size, held, assetMb: r(assets), targetMb: r(targets), unseenMb: r(unseen), largest: rows.slice(0, 12) }
 }
 
 const shown = (o: THREE.Object3D): boolean => {

@@ -211,3 +211,21 @@ export function hosting(report, { head, careers, live }) {
   for (const p of (live?.problems ?? []).slice(0, 4)) detail.push(`the built site in live mode reported: ${p}`)
   return { pass: detail.length === 0, detail }
 }
+
+export function filmMoments(units, beats, fps, extra = []) {
+  const out = new Map()
+  const add = (u, frame) => {
+    if (frame < u.first || frame > u.last || out.has(frame)) return
+    const t = (frame - u.first) / fps
+    const of = beats.filter((b) => b.unit === u.id)
+    const b = of.find((x) => t >= x.from - 1e-9 && t < x.to - 1e-9) ?? of.at(-1)
+    if (!b) return
+    out.set(frame, { unit: u.id, frame, beat: b.id, at: Number(Math.min(1, Math.max(0, (t - b.from) / (b.to - b.from))).toFixed(6)) })
+  }
+  for (const u of units) {
+    for (let f = u.first; f <= u.last; f += fps) add(u, f)
+    add(u, u.last)
+    for (const f of extra) add(u, f)
+  }
+  return [...out.values()].sort((a, b) => a.frame - b.frame)
+}
