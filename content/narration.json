@@ -47,7 +47,7 @@
     ],
     "step1.resume": [],
     "step1.tug": [
-      { "at": 0.1, "text": "It fights for the resume. / Two pages. / One of them is true.", "live": "the cursor's arms come out" }
+      { "at": 0.125, "text": "It fights for the resume. / Two pages. / One of them is true.", "live": "the cursor's arms come out" }
     ],
     "step1.shredded": [],
     "step2.open": [],

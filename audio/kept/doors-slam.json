@@ -1,0 +1,118 @@
+{
+  "id": "doors-slam",
+  "kind": "cue",
+  "cue": "doors-slam",
+  "variant": null,
+  "class": "hit",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "Two heavy glass doors slamming shut",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "Two heavy glass doors slamming shut together, one deep slam with a rattle of glass in metal frames, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.6,
+    "loop": false,
+    "influence": null,
+    "call": 90
+  },
+  "askedSeconds": 0.6,
+  "cost": "7",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "1b5d7a7be66b4528bee59ab7ccd9beca514bf66e196b789397652458f3472287",
+    "filed": "2026-11-25T18:16:37.797Z",
+    "measured": {
+      "seconds": 0.6,
+      "start": 0,
+      "end": 0.406,
+      "peakDb": -4.74,
+      "rmsDb": -24.52,
+      "lufs": -21.63,
+      "truePeakDb": -3.78,
+      "low": 0.545,
+      "mid": 0.43,
+      "high": 0.025,
+      "tailDb": -54.76,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.186,
+          "peakDb": -4.74
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.406,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 101.5,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -5,
+    "gainDb": -0.89,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.406,
+    "start": 0,
+    "end": 0.304,
+    "peakDb": -5,
+    "rmsDb": -24.72,
+    "lufs": -26.64,
+    "truePeakDb": -4.99,
+    "low": 0.507,
+    "mid": 0.467,
+    "high": 0.026,
+    "tailDb": -51.68,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.17,
+        "peakDb": -5
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 5 asks, 3 whole, 2 void",
+    "asks": 5,
+    "whole": 3,
+    "heard": "Two heavy glass doors slam shut one after the other. / A single heavy thud, such as a thick book dropping on a wooden surface or a wooden door slamming. / Two heavy glass doors slamming shut in quick succession.",
+    "madeOf": "Glass and metal / dense solid material, likely wood / glass and metal",
+    "events": "2 / 1 / 2",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 1 no",
+    "basis": [
+      "The recording consists of two loud, heavy impacts accompanied by a glassy reverberation, matching the sound of heavy glass doors closing.",
+      "The sound is a dull, dry impact that lacks the high-frequency ringing, resonance, or metallic rattling typically associated with heavy glass doors slamming.",
+      "The recording features two loud, heavy impacts with a resonant, glassy clunk typical of thick doors closing."
+    ],
+    "heardRaisedByDb": 1.74
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "doors-slam.wav",
+  "seconds": 0.406,
+  "sha256": "c5782b3d402137fbaaf24e59e3dd0c4398658f9a18f1b1f516733773ad04579a"
+}

@@ -1,0 +1,116 @@
+{
+  "id": "reels-spin",
+  "kind": "cue",
+  "cue": "reels-spin",
+  "variant": null,
+  "class": "mechanism",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "Three mechanical reels spinning and stopping one after another",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "Three mechanical slot machine reels spinning with a whirr and stopping one after another with three separate clunks, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 2.5,
+    "loop": false,
+    "influence": null,
+    "call": 67
+  },
+  "askedSeconds": 2.5,
+  "cost": "28",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "cebe4086264c9a025cf624bef9468034bcad3a740e015942aaff7525a320aed9",
+    "filed": "2026-11-25T18:15:11.476Z",
+    "measured": {
+      "seconds": 2.48,
+      "start": 0,
+      "end": 2.428,
+      "peakDb": -11.36,
+      "rmsDb": -31.58,
+      "lufs": -25.65,
+      "truePeakDb": -8.08,
+      "low": 0.181,
+      "mid": 0.565,
+      "high": 0.254,
+      "tailDb": -44.89,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 2.098,
+          "peakDb": -11.36
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 2.428,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -10,
+    "gainDb": 1.66,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 2.428,
+    "start": 0,
+    "end": 2.34,
+    "peakDb": -10,
+    "rmsDb": -29.77,
+    "lufs": -28.12,
+    "truePeakDb": -9.86,
+    "low": 0.179,
+    "mid": 0.567,
+    "high": 0.255,
+    "tailDb": -46.94,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 2.094,
+        "peakDb": -10
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+    "asks": 2,
+    "whole": 2,
+    "heard": "Three mechanical reels spin rapidly and sequentially click to a stop. / A mechanical slot machine is activated, causing its reels to spin before stopping with three sequential clunks.",
+    "madeOf": "metal and plastic / metal and plastic",
+    "events": "4 / 3",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The audio features a continuous mechanical whirring followed by three distinct clunks as the reels lock into place.",
+      "The recording features a mechanical whirring sound followed by three distinct, heavy clicks as the spinning mechanisms lock into place."
+    ]
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "reels-spin.wav",
+  "seconds": 2.428,
+  "sha256": "e1a4c40aa9cd12e90fb673940f1fad02502af220c456a4f66ce79d0f3f40aee5"
+}

@@ -1,0 +1,117 @@
+{
+  "id": "bumper.4",
+  "kind": "cue",
+  "cue": "bumper",
+  "variant": 4,
+  "class": "hit",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "One pop bumper firing: a solenoid thwack and a bell",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "One pinball pop bumper firing, a sharp solenoid thwack with a single bell ding, one hit, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 82
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "766c10ebd2d9306d39b98235e1eb37c87b3fbfddafb604fa0db49f04a0661973",
+    "filed": "2026-11-25T18:15:47.533Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0,
+      "end": 0.194,
+      "peakDb": -3.75,
+      "rmsDb": -28.02,
+      "lufs": -27.1,
+      "truePeakDb": -3.6,
+      "low": 0.026,
+      "mid": 0.845,
+      "high": 0.129,
+      "tailDb": -54.14,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.114,
+          "peakDb": -3.75
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0.036,
+    "trimEnd": 0.194,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 39.58,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -5,
+    "gainDb": -1.09,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.158,
+    "start": 0,
+    "end": 0.128,
+    "peakDb": -5,
+    "rmsDb": -27.8,
+    "lufs": -27.6,
+    "truePeakDb": -4.98,
+    "low": 0.021,
+    "mid": 0.841,
+    "high": 0.138,
+    "tailDb": -52.39,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.08,
+        "peakDb": -5
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 5 asks, 2 whole, 3 void",
+    "asks": 5,
+    "whole": 2,
+    "heard": "A mechanical solenoid thwacks and simultaneously strikes a small bell. / A pinball pop bumper fires, producing a distinct mechanical thwack and a ringing bell.",
+    "madeOf": "Metal and plastic / metal and plastic",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The recording consists of a single composite sound featuring a sharp mechanical clack and a brief metallic ding, perfectly matching an electromechanical pinball machine pop bumper.",
+      "The sound consists of a simultaneous mechanical solenoid strike and a brief bell ring, which perfectly matches the action of a pinball pop bumper."
+    ],
+    "heardRaisedByDb": 0.75
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "bumper.4.wav",
+  "seconds": 0.1583,
+  "sha256": "15995522e9feee50cd77b7bc1e43632c2ae7f7dc8be68599986b011ddb6ceff3"
+}

@@ -1,0 +1,118 @@
+{
+  "id": "button-crack",
+  "kind": "cue",
+  "cue": "button-crack",
+  "variant": null,
+  "class": "hit",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "Plastic and ceramic cracking as something tears loose",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A thick ceramic plate and hard plastic cracking and breaking apart as a large button is torn out of its housing, sharp cracks then small falling fragments, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 1,
+    "loop": false,
+    "influence": null,
+    "call": 148
+  },
+  "askedSeconds": 1,
+  "cost": "11",
+  "take": {
+    "number": 2,
+    "round": "build",
+    "file": "take-2.mp3",
+    "sha256": "24d7e961d02c9e990648cb5e40eda095ed9b4df0ff2c389e8ae5823ca98ac6c2",
+    "filed": "2026-11-25T18:44:34.418Z",
+    "measured": {
+      "seconds": 1,
+      "start": 0,
+      "end": 0.25,
+      "peakDb": -5.37,
+      "rmsDb": -28.44,
+      "lufs": -25.8,
+      "truePeakDb": -5.32,
+      "low": 0.008,
+      "mid": 0.898,
+      "high": 0.094,
+      "tailDb": -56.32,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.112,
+          "peakDb": -5.37
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0.042,
+    "trimEnd": 0.25,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 52.01,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -5,
+    "gainDb": 0.5,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.208,
+    "start": 0,
+    "end": 0.172,
+    "peakDb": -5,
+    "rmsDb": -27.05,
+    "lufs": -26.33,
+    "truePeakDb": -4.99,
+    "low": 0.007,
+    "mid": 0.921,
+    "high": 0.072,
+    "tailDb": -53.04,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.07,
+        "peakDb": -5
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 5 asks, 3 whole, 2 void",
+    "asks": 5,
+    "whole": 3,
+    "heard": "A quick, sharp ripping sound similar to pulling apart Velcro or adhesive tape. / A sharp, rapid ripping and cracking noise, like a piece of heavy tape being torn or stiff material snapping loose. / Plastic and ceramic crack and break as something tears loose.",
+    "madeOf": "Velcro, adhesive tape, or fabric / plastic / plastic and ceramic",
+    "events": "1 / 1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 1 no",
+    "basis": [
+      "The audio consists of a single, rapid tearing noise with the characteristic acoustic profile of hook-and-loop fasteners or sticky tape separating, rather than cracking ceramic.",
+      "The recording consists of a single, brief sound of forceful tearing and snapping, which matches the description of rigid materials breaking as something pulls loose.",
+      "The recording features the sharp, brittle snaps of plastic and ceramic cracking accompanied by a tearing sound."
+    ],
+    "heardRaisedByDb": 2.37
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "button-crack.wav",
+  "seconds": 0.208,
+  "sha256": "82a3218bb8b3b7c40a9467ba02bf2cf6c19f5b68d11dcbd7476fbce97a99a826"
+}

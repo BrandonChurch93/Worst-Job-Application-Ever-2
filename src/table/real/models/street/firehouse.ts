@@ -37,7 +37,7 @@ export interface Firehouse {
 }
 
 // The paint of the engine bay behind the door: a deep oxide red.
-const BAY: [number, number, number] = [0.15, 0.03, 0.026]
+const BAY: [number, number, number] = [0.085, 0.017, 0.015]
 
 export const DOOR = { w: 104, h: 55, depth: 4 }
 
@@ -103,6 +103,7 @@ export function firehouse(b: Buckets, z: Zone, ctx: RealContext): Firehouse {
       g.quad([c, d1, 3], [c, d0, 3], [c, d0, zc], [c, d1, zc], BAY)
       g.quad([a, d1, 3], [c, d1, 3], [c, d1, zc], [a, d1, zc], shade(BAY, 0.7))
       g.quad([a, d1, zc], [c, d1, zc], [c, d0, zc], [a, d0, zc], shade(BAY, 0.5))
+      g.quad([a, d0, 3.15], [c, d0, 3.15], [c, d1, 3.15], [a, d1, 3.15], shade(BAY, 0.45))
       // Hose racks on the back wall of the bay: three red bars.
       for (let k = 0; k < 3; k++) g.box(a + 14 + k * 28, a + 34 + k * 28, d1 - 2, d1, 26, 30, TONE.red, { skip: 'b', under: true, kind: KIND.gloss })
     }

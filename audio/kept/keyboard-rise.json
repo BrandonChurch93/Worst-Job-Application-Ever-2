@@ -1,0 +1,116 @@
+{
+  "id": "keyboard-rise",
+  "kind": "cue",
+  "cue": "keyboard-rise",
+  "variant": null,
+  "class": "mechanism",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A metal deck sliding up out of a slot and stopping",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A brushed aluminium deck sliding up out of a slot on smooth rails and stopping with a soft metal stop, close microphone, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 1,
+    "loop": false,
+    "influence": null,
+    "call": 40
+  },
+  "askedSeconds": 1,
+  "cost": "11",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "0390fa9dd0f246816e51f8233dbd038c386f966cadb4ef05f0918d378df1d567",
+    "filed": "2026-11-25T18:13:22.148Z",
+    "measured": {
+      "seconds": 1,
+      "start": 0,
+      "end": 1,
+      "peakDb": -35,
+      "rmsDb": -54.63,
+      "lufs": -48.96,
+      "truePeakDb": -34.68,
+      "low": 0.18,
+      "mid": 0.586,
+      "high": 0.233,
+      "tailDb": -39.92,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.906,
+          "peakDb": -35
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 1,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -10,
+    "gainDb": 24.84,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 1,
+    "start": 0,
+    "end": 0.952,
+    "peakDb": -10,
+    "rmsDb": -30.34,
+    "lufs": -27.2,
+    "truePeakDb": -9.75,
+    "low": 0.033,
+    "mid": 0.693,
+    "high": 0.274,
+    "tailDb": -43.25,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.83,
+        "peakDb": -10
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 4 asks, 2 whole, 2 void",
+    "asks": 4,
+    "whole": 2,
+    "heard": "A metallic object sliding and abruptly clicking to a stop. / A short, sharp metallic scraping sound followed by a sudden stop or click.",
+    "madeOf": "Metal / metal",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The recording features a distinct metallic scrape that terminates in a hard mechanical clack, consistent with a metal part sliding into a locked position.",
+      "The brief audio consists of a quick metallic slide terminating in a hard click, matching the description of a metal object moving and stopping."
+    ]
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "keyboard-rise.wav",
+  "seconds": 1,
+  "sha256": "b54d0997464df86e0572a9044da9a1bae7c507354815e0c712dac7d892315e50"
+}

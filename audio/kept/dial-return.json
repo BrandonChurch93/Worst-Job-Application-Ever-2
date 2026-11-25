@@ -1,0 +1,116 @@
+{
+  "id": "dial-return",
+  "kind": "cue",
+  "cue": "dial-return",
+  "variant": null,
+  "class": "mechanism",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A rotary phone dial running back, purring",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A rotary telephone dial let go and running back to rest, a fast mechanical purr ending in a soft stop, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.9,
+    "loop": false,
+    "influence": null,
+    "call": 65
+  },
+  "askedSeconds": 0.9,
+  "cost": "10",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "18aa42ca999fba09de3a47b0c09246974eb1dd35ea10235f5ae95c384eb4cacd",
+    "filed": "2026-11-25T18:15:05.560Z",
+    "measured": {
+      "seconds": 0.88,
+      "start": 0,
+      "end": 0.804,
+      "peakDb": -2.1,
+      "rmsDb": -30.04,
+      "lufs": -24.21,
+      "truePeakDb": -2.05,
+      "low": 0.001,
+      "mid": 0.928,
+      "high": 0.071,
+      "tailDb": -58.14,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0.002,
+          "end": 0.636,
+          "peakDb": -2.1
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.804,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -10,
+    "gainDb": -7.87,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.804,
+    "start": 0,
+    "end": 0.692,
+    "peakDb": -10,
+    "rmsDb": -37.26,
+    "lufs": -35.1,
+    "truePeakDb": -9.96,
+    "low": 0.001,
+    "mid": 0.928,
+    "high": 0.071,
+    "tailDb": -43.77,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0.002,
+        "end": 0.636,
+        "peakDb": -10
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 2 whole, 1 void",
+    "asks": 3,
+    "whole": 2,
+    "heard": "The mechanical purring and rapid clicking of a rotary phone dial returning to its resting position. / A rapid, mechanical purring and clicking sound is heard as a spring-loaded mechanism returns to its resting place.",
+    "madeOf": "plastic and metal / plastic and metal",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The sound consists of the distinct, rapid mechanical clicks characteristic of a spring-loaded rotary telephone dial mechanism spinning backwards.",
+      "The audio features the distinct, rhythmic mechanical ticking and whirring characteristic of an old rotary phone dial spinning back to its starting position."
+    ]
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "dial-return.wav",
+  "seconds": 0.804,
+  "sha256": "30375226cbe8c41223d0caae626f62cfd5d7430d1970a0071a6ec66156f0b2e1"
+}

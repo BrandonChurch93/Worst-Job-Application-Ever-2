@@ -1,0 +1,117 @@
+{
+  "id": "letter-drop",
+  "kind": "cue",
+  "cue": "letter-drop",
+  "variant": null,
+  "class": "tick",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A sheet of paper landing on a desk",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "One sheet of paper landing softly on a wooden desk, a single light papery pat, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 121
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "b7b18d5fe6853e125fbcafc290381d1da60bf736032efa4e0e81cf4cb455c13b",
+    "filed": "2026-11-25T18:18:26.052Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0,
+      "end": 0.48,
+      "peakDb": -35.33,
+      "rmsDb": -58.06,
+      "lufs": -52.95,
+      "truePeakDb": -35.06,
+      "low": 0.248,
+      "mid": 0.476,
+      "high": 0.276,
+      "tailDb": -46.01,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0.002,
+          "end": 0.398,
+          "peakDb": -35.33
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0.272,
+    "trimEnd": 0.48,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 52.05,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -16,
+    "gainDb": 18.37,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.208,
+    "start": 0,
+    "end": 0.184,
+    "peakDb": -16,
+    "rmsDb": -38.27,
+    "lufs": -38.12,
+    "truePeakDb": -15.99,
+    "low": 0.286,
+    "mid": 0.578,
+    "high": 0.136,
+    "tailDb": -50.56,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.08,
+        "peakDb": -16
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 4 asks, 2 whole, 2 void",
+    "asks": 4,
+    "whole": 2,
+    "heard": "A sheet of paper is dropped and lands flat on a hard surface. / A single, sharp slap sound of a flat object striking a hard surface.",
+    "madeOf": "Paper / Paper",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The recording contains a single, light slapping sound with a brief rustle characteristic of paper hitting a solid object.",
+      "The recording consists of a brief, flat impact noise highly characteristic of a sheet of paper or a thin book landing flatly on a desk."
+    ],
+    "heardRaisedByDb": 32.33
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "letter-drop.wav",
+  "seconds": 0.2082,
+  "sha256": "120eec6a4f23e949984c881d59d5c0f0217892896724b8835acb138ca966217d"
+}

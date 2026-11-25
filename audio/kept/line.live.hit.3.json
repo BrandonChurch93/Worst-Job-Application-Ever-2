@@ -1,0 +1,168 @@
+{
+  "id": "line.live.hit.3",
+  "kind": "live-line",
+  "cue": null,
+  "variant": null,
+  "class": "voice",
+  "loop": false,
+  "beat": null,
+  "liveKey": "hit",
+  "group": "hit",
+  "describes": null,
+  "index": 3,
+  "words": "Resilient. / Or desperate.",
+  "text": "Resilient. / Or desperate.",
+  "prompt": null,
+  "settings": {
+    "speed": 0.7,
+    "stability": 0.75,
+    "breakSeconds": 1,
+    "sent": "Resilient. <break time=\"1.0s\" /> Or desperate.",
+    "call": 131
+  },
+  "askedSeconds": null,
+  "cost": "15",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "ae15d6b1938af79ceeabb1247c7b2e4f3ef5cfdda2dbd558f5ff970b42e2e537",
+    "filed": "2026-11-25T18:30:15.918Z",
+    "measured": {
+      "seconds": 3.344,
+      "start": 0.028,
+      "end": 3.192,
+      "peakDb": -5.68,
+      "rmsDb": -25.02,
+      "lufs": -22.02,
+      "truePeakDb": -5.33,
+      "low": 0.453,
+      "mid": 0.314,
+      "high": 0.233,
+      "tailDb": -29.17,
+      "hits": 3,
+      "hitsAt": [
+        {
+          "start": 0.03,
+          "end": 1.106,
+          "peakDb": -7.51
+        },
+        {
+          "start": 2.268,
+          "end": 2.79,
+          "peakDb": -5.68
+        },
+        {
+          "start": 2.862,
+          "end": 3.136,
+          "peakDb": -20.32
+        }
+      ]
+    },
+    "line": {
+      "words": 3,
+      "seconds": 3.164,
+      "wordsPerSecond": 0.948,
+      "maxWordsPerSecond": 1.6,
+      "pauseMarks": 1,
+      "pausesFound": 1,
+      "pauses": [
+        1.146
+      ],
+      "paceHolds": true,
+      "pausesHold": true,
+      "room": null,
+      "fits": true
+    }
+  },
+  "chain": {
+    "trimStart": 0.026,
+    "trimEnd": 3.192,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 80,
+    "levelMeasure": "lufs",
+    "levelDb": -18,
+    "gainDb": 4.05,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 3.166,
+    "start": 0.002,
+    "end": 3.134,
+    "peakDb": -1.64,
+    "rmsDb": -21.25,
+    "lufs": -18,
+    "truePeakDb": -1.29,
+    "low": 0.415,
+    "mid": 0.334,
+    "high": 0.251,
+    "tailDb": -30.99,
+    "hits": 3,
+    "hitsAt": [
+      {
+        "start": 0.004,
+        "end": 1.08,
+        "peakDb": -3.34
+      },
+      {
+        "start": 2.242,
+        "end": 2.764,
+        "peakDb": -1.64
+      },
+      {
+        "start": 2.836,
+        "end": 3.108,
+        "peakDb": -19.69
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
+    "asks": 6,
+    "whole": 1,
+    "transcript": "Resilient or desperate.",
+    "transcripts": [
+      "Resilient or desperate."
+    ],
+    "transcriptAgreed": "1 of 1",
+    "attitudes": [
+      "cynical and evaluating"
+    ],
+    "accents": [
+      "American"
+    ],
+    "pitches": [
+      "middle"
+    ],
+    "whisper": null,
+    "whisperVotes": "0 yes, 1 no",
+    "laugh": null,
+    "laughVotes": "0 yes, 1 no",
+    "warmth": null,
+    "warmthVotes": "0 yes, 1 no",
+    "excitement": null,
+    "excitementVotes": "0 yes, 1 no",
+    "unimpressedAndSmug": null,
+    "unimpressedAndSmugVotes": "1 yes, 0 no",
+    "basis": [
+      "The speaker delivers the words with a slow, deliberate pace and a critical intonation that sounds somewhat cynical and devoid of warmth."
+    ],
+    "heardRaisedByDb": 2.68
+  },
+  "why": "tone not judged: 1 whole answers in 6 asks",
+  "forced": true,
+  "problems": [
+    "the listener left \"whisper\" unanswered",
+    "the listener left \"laugh\" unanswered",
+    "the listener left \"warmth\" unanswered",
+    "the listener left \"excitement\" unanswered",
+    "the listener left \"unimpressedAndSmug\" unanswered"
+  ],
+  "fixture": false,
+  "file": "line.live.hit.3.wav",
+  "seconds": 3.166,
+  "sha256": "77da40f46ea23cda0c27d4c7a6fce385ae6f18eac4baae4b3dac199f2175979b"
+}

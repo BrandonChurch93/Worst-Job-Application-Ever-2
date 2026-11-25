@@ -1,0 +1,117 @@
+{
+  "id": "stamp",
+  "kind": "cue",
+  "cue": "stamp",
+  "variant": null,
+  "class": "hit",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A big rubber stamp slammed down on paper on a hard desk",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A big rubber stamp slammed down on paper on a hard wooden desk, a single heavy thump, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.6,
+    "loop": false,
+    "influence": null,
+    "call": 122
+  },
+  "askedSeconds": 0.6,
+  "cost": "7",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "611f471461a65b759930dc0d5b2d744809acd01ba1a2b402f78add0047526a39",
+    "filed": "2026-11-25T18:18:28.569Z",
+    "measured": {
+      "seconds": 0.6,
+      "start": 0,
+      "end": 0.6,
+      "peakDb": -39.57,
+      "rmsDb": -58.15,
+      "lufs": -60.14,
+      "truePeakDb": -38.5,
+      "low": 0.91,
+      "mid": 0.087,
+      "high": 0.003,
+      "tailDb": -33.08,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.576,
+          "peakDb": -39.57
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.6,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -5,
+    "gainDb": 36.36,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.6,
+    "start": 0,
+    "end": 0.58,
+    "peakDb": -5,
+    "rmsDb": -23.72,
+    "lufs": -28.4,
+    "truePeakDb": -4.98,
+    "low": 0.895,
+    "mid": 0.103,
+    "high": 0.003,
+    "tailDb": -43.74,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.514,
+        "peakDb": -5
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 6 asks, 2 whole, 4 void",
+    "asks": 6,
+    "whole": 2,
+    "heard": "A heavy rubber stamp is forcefully slammed down onto a hard desk. / A heavy rubber stamp is forcefully slammed onto a piece of paper on a desk.",
+    "madeOf": "Wood, rubber, paper, and hard desk material / Rubber, wood, metal, and paper",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The audio consists of a single, sharp, and resonant thud characteristic of a heavy stamp striking a solid wooden surface.",
+      "The audio features a single, distinct, and forceful thud consistent with a large stamp hitting a hard surface."
+    ],
+    "heardRaisedByDb": 36.57
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "stamp.wav",
+  "seconds": 0.6,
+  "sha256": "a74c97280a0d20b2756d79793b9fe92999d08641153d79eaf515478008694c6c"
+}

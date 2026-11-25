@@ -1,0 +1,120 @@
+{
+  "id": "slab-fire.2",
+  "kind": "cue",
+  "cue": "slab-fire",
+  "variant": 2,
+  "class": "hit",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A heavy block launched hard",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "One heavy stone block launched hard by a machine, a deep pneumatic thump and a short rush of air, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 114
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "0ba1b1ebece1b9d2db8299d3aee2245cddc1715d7f5ce9c9cb2afd498b0b2e04",
+    "filed": "2026-11-25T18:18:07.837Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0,
+      "end": 0.48,
+      "peakDb": -15.99,
+      "rmsDb": -28.93,
+      "lufs": -28.7,
+      "truePeakDb": -13.72,
+      "low": 0.997,
+      "mid": 0.003,
+      "high": 0,
+      "tailDb": -41.81,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.322,
+          "peakDb": -15.99
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.48,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -5,
+    "gainDb": 15.9,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.48,
+    "start": 0,
+    "end": 0.45,
+    "peakDb": -5,
+    "rmsDb": -18.2,
+    "lufs": -21.61,
+    "truePeakDb": -5,
+    "low": 0.995,
+    "mid": 0.005,
+    "high": 0,
+    "tailDb": -47.04,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.31,
+        "peakDb": -5
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
+    "asks": 6,
+    "whole": 0,
+    "heard": null,
+    "madeOf": null,
+    "events": null,
+    "voice": null,
+    "voiceVotes": "0 yes, 0 no",
+    "word": null,
+    "wordVotes": "0 yes, 0 no",
+    "music": null,
+    "musicVotes": "0 yes, 0 no",
+    "melody": null,
+    "melodyVotes": "0 yes, 0 no",
+    "fits": null,
+    "fitsVotes": "0 yes, 0 no",
+    "basis": [],
+    "heardRaisedByDb": 12.99
+  },
+  "why": "not judged by ear: 0 whole answers in 6 asks",
+  "forced": true,
+  "problems": [
+    "the listener left \"voice\" unanswered",
+    "the listener left \"word\" unanswered",
+    "the listener left \"music\" unanswered",
+    "the listener left \"melody\" unanswered",
+    "the listener left \"fits\" unanswered"
+  ],
+  "fixture": false,
+  "file": "slab-fire.2.wav",
+  "seconds": 0.48,
+  "sha256": "8c5978b9b00ac54357871601b2b67e1aa1614251676a0a06aa0d7b1607d65953"
+}

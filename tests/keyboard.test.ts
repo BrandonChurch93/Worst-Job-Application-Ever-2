@@ -80,7 +80,7 @@ describe('the real keyboard', () => {
     expect(flown).toBeGreaterThan(0)
   })
 
-  it('draws every cap in one mesh, the orange Enter over its core as a second that casts no shadow, and writes again only the caps that moved', () => {
+  it('draws every cap in one mesh, the orange Enter over its core as a second that casts no shadow, the shadows of the caps in the air as two more, and writes again only the caps that moved', () => {
     const s = film()
     s.advance(steps(6))
     const list = listOf(s)
@@ -90,8 +90,10 @@ describe('the real keyboard', () => {
     const data = o.userData.deck as DeckData
     const meshes: THREE.Mesh[] = []
     o.traverse((c) => { if ((c as THREE.Mesh).isMesh) meshes.push(c as THREE.Mesh) })
-    expect(meshes.length).toBe(4)
+    expect(meshes.length).toBe(6)
     expect(meshes.filter((m) => m.castShadow).length).toBe(2)
+    expect(data.body.castShadow).toBe(false)
+    expect(data.body.receiveShadow).toBe(true)
     expect(data.accent!.castShadow).toBe(false)
     expect(data.caps.has('key-enter')).toBe(true)
     const spots = data.body.geometry.getAttribute('position') as THREE.BufferAttribute

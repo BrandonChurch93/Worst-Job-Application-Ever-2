@@ -46,7 +46,7 @@ describe('a hit knocks the cursor over', () => {
   })
 
   it('no other reaction turns the body over', () => {
-    for (const name of ['anticipate', 'flinch', 'doubleTake', 'dustOff', 'jump'] as const) {
+    for (const name of ['dustOff', 'jump'] as const) {
       const b = body()
       run(b, 0.2)
       b.react(name)

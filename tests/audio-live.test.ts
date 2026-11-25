@@ -1,3 +1,4 @@
+import { openingFrames } from '../src/film/opening'
 import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import path from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -424,6 +425,43 @@ describe('the live narrator inside the sound engine, on a fake clock', () => {
       ctx.currentTime += far
     }
     expect(said(ctx)).toEqual(Array.from({ length: hits + 2 }, (_, i) => liveLineId('hit', i % hits)))
+  })
+
+  it('says the line of the visitor who would rather watch only over the opening of the film, where it ends before the first line', async () => {
+    const lineGap: number = cfg.audio.lineGapSeconds
+    const opening = openingFrames() / cfg.film.fps
+    const room = opening - LINE - lineGap
+    expect(room).toBeGreaterThan(0)
+    const a = await ready()
+    a.ctx.currentTime = 20
+    a.s.stop()
+    a.s.opening(0, 0)
+    a.s.start()
+    a.s.trigger('watchFilm')
+    expect(said(a.ctx)).toEqual([liveLineId('watchFilm', 0)])
+    expect(source(a.ctx, liveLineId('watchFilm', 0))[0]!.started).toBe(20)
+  })
+
+  it('does not say it where it would not end before the first line of the film', async () => {
+    const room = openingFrames() / cfg.film.fps - LINE - cfg.audio.lineGapSeconds
+    const late = await ready()
+    late.ctx.currentTime = 20
+    late.s.stop()
+    late.s.opening(0, room + 0.01)
+    late.s.start()
+    late.s.trigger('watchFilm')
+    expect(said(late.ctx)).toEqual([])
+  })
+
+  it('does not say it where the film has no opening, and the first line of the film starts at its time', async () => {
+    const none = await ready()
+    none.ctx.currentTime = 20
+    none.s.stop()
+    none.s.start()
+    none.s.trigger('watchFilm')
+    expect(said(none.ctx)).toEqual([])
+    none.s.beat('marketing.stroll', 'film')
+    expect(source(none.ctx, 'line.marketing.stroll.0')[0]!.started).toBeCloseTo(20 + narration.film['marketing.stroll'][0].at * 2, 9)
   })
 
   it('leaves the film as it was: its lines are placed by their beats and events set none off', async () => {
