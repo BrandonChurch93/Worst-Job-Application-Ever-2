@@ -246,6 +246,7 @@ const SOFT_FONT = 'inter-400'
 const INK_LIGHT = 0xfdf3e6
 const LIP = 0xf2efe8
 const INK_ON_METAL = 0x232427
+const INK_ON_GLASS = 0x262827
 
 let styleSet: Record<string, Style> | null = null
 
@@ -258,11 +259,12 @@ export function styles(): Record<string, Style> {
   const light = hex(INK_LIGHT)
   const lip = hex(LIP)
   const onMetal = hex(INK_ON_METAL)
+  const onGlass = hex(INK_ON_GLASS)
   styleSet = {
     'page:ink': { setting: 'sunk', fill: ink, lean: 0.5, rings: [{ d: 0.3, a: 0.8, c: ink }, { d: 0.9, a: 0.5, c: lip }] },
     'page:soft': { setting: 'sunk', fill: soft, lean: 0.5, rings: [{ d: 0.3, a: 0.8, c: soft }, { d: 0.9, a: 0.5, c: lip }] },
     'cap:ink': { setting: 'sunk', fill: warm, lean: 0.42, rings: [{ d: 0.3, a: 0.8, c: warm }, { d: 0.8, a: 0.4, c: lip }] },
-    'glass:ink': { setting: 'flat', fill: ink, lean: 0, rings: [{ d: 0.45, a: 0.85, c: ink }] },
+    'glass:ink': { setting: 'flat', fill: onGlass, lean: 0, rings: [{ d: 0.45, a: 0.85, c: onGlass }] },
     'paper:ink': { setting: 'flat', fill: ink, lean: 0, rings: [{ d: 0.5, a: 0.8, c: ink }] },
     'metal:ink': { setting: 'flat', fill: onMetal, lean: 0, rings: [{ d: 0.4, a: 0.9, c: onMetal }] },
     'gloss:ink': { setting: 'flat', fill: ink, lean: 0, rings: [{ d: 0.45, a: 0.85, c: ink }] },
