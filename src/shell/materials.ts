@@ -57,7 +57,7 @@ const PAGE_COARSE = 0.07
 const PAGE_GRAIN = 0.04
 const CLOSE_FALL = 1.5
 const CLOSE_FLOOR = 0.03
-const CLOSE_TOOTH = 2.85
+const CLOSE_TOOTH = 3.1
 const MOTTLE = 0.035
 
 // The eggshell grain as heights, one number a texel, with a mean of nought and a spread of one. The size is a power of two and the picture tiles.
@@ -276,7 +276,7 @@ function stretched<T extends THREE.MeshPhysicalMaterial>(material: T): T {
   })
 }
 
-const SLAB = { bend: 26, through: 0.075, cloud: 0.03, frost: 0.034, hair: 0.007, glint: 0.2, sheen: 0.045, wash: 0.05, shoulder: 0.5, dip: 0.4, far: 0.16, bevelEnd: 16.8, flat: 0.24 }
+const SLAB = { bend: 26, through: 0.075, cloud: 0.03, frost: 0.034, hair: 0.007, glint: 0.2, tooth: 0.19, sheen: 0.045, wash: 0.05, shoulder: 0.5, dip: 0.4, far: 0.16, bevelEnd: 16.8, flat: 0.24 }
 
 // A slab of frosted glass seen from above. Its geometry carries where each point lies on the card (`slab`: x, y, half width, half height,
 // and `slabEdge`: the corner's radius and whether a panel is sunk in the face), and the face is worked out from that for every pixel:
@@ -323,18 +323,20 @@ function slabbed<T extends THREE.MeshPhysicalMaterial>(material: T, grain: THREE
 		float thin = 1.0 - smoothstep( 3.0, ${n(SLAB.bevelEnd)}, D );
 		float near = smoothstep( 1.0, 2.6, projectionMatrix[ 1 ][ 1 ] * 540.0 / ( isOrthographic ? 1.0 : max( vViewPosition.z, 1.0 ) ) );
 		vec4 under = texture2D( wjaSlabGrain, ( wjaAt.xy - wjaFace.xy * ${n(SLAB.bend)} ) * ( 2.0 / 1024.0 ), 0.5 );
-		m *= 1.0 + ${n(SLAB.through)} * ( 0.6 + 0.3 * near + 1.6 * thin ) * dot( under.xy * 2.0 - 1.0, vec2( ${kx}, ${ky} ) );
+		vec2 uvT = mat2( 0.4540, 0.8910, - 0.8910, 0.4540 ) * ( wjaAt.xy - wjaFace.xy * ${n(SLAB.bend)} ) * ( 4.0 / 1024.0 ) + vec2( 0.173, 0.591 );
+		vec2 tooth = mat2( 0.4540, - 0.8910, 0.8910, 0.4540 ) * ( texture2D( wjaSlabGrain, uvT ).xy - texture2D( wjaSlabGrain, uvT, 2.0 ).xy );
+		m *= 1.0 + ${n(SLAB.through)} * ( 0.6 + 0.3 * near + 1.6 * thin ) * dot( under.xy * 2.0 - 1.0, vec2( ${kx}, ${ky} ) ) + ${n(SLAB.tooth)} * near * 2.0 * dot( tooth, vec2( ${kx}, ${ky} ) );
 		diffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.83, 0.83, 0.8 ), 0.3 * thin * ( 0.35 + 0.65 * away ) ) * m;
 		vec2 fu = mat2( 0.819, 0.574, - 0.574, 0.819 ) * wjaAt.xy;
 		vec4 f1 = texture2D( wjaSlabGrain, fu * ( 3.0 / 1024.0 ) );
 		vec4 f2 = texture2D( wjaSlabGrain, fu.yx * ( 2.3 / 1024.0 ) + vec2( 0.37, 0.71 ) );
 		vec4 hair = texture2D( wjaSlabBrushed, mat2( 0.94, 0.342, - 0.342, 0.94 ) * wjaAt.xy * vec2( 1.0 / 900.0, 1.0 / 190.0 ) );
-		vec2 slope = ${n(SLAB.frost)} * ( 0.6 + 0.9 * near ) * ( ( f1.xy * 2.0 - 1.0 ) + 0.2 * ( f2.xy * 2.0 - 1.0 ) ) + ${n(SLAB.hair)} * ( mat2( 0.94, - 0.342, 0.342, 0.94 ) * ( hair.xy * 2.0 - 1.0 ) );
+		vec2 slope = ${n(SLAB.frost)} * ( 0.6 - 0.25 * near ) * ( ( f1.xy * 2.0 - 1.0 ) + 0.2 * ( f2.xy * 2.0 - 1.0 ) ) + ${n(SLAB.hair)} * ( mat2( 0.94, - 0.342, 0.342, 0.94 ) * ( hair.xy * 2.0 - 1.0 ) );
 		vec3 wjaUp = normalize( ( viewMatrix * vec4( 0.0, 0.0, 1.0, 0.0 ) ).xyz );
 		normal = normalize( mix( wjaUp, normal, ${n(SLAB.flat)} ) + ( viewMatrix * vec4( slope, 0.0, 0.0 ) ).xyz );
 		roughnessFactor = clamp( roughnessFactor + 0.08 * cloud, 0.1, 1.0 );
 		float top = smoothstep( 3.5, 6.0, D );
-		wjaSlabGlow = top * ( ${n(SLAB.glint)} * smoothstep( 0.3, 0.42, f2.a - f1.a ) + ${n(SLAB.sheen)} * smoothstep( 0.75, - 0.65, wash + 0.3 * cloud ) );
+		wjaSlabGlow = top * ( ${n(SLAB.glint)} * ( 1.0 - near ) * smoothstep( 0.3, 0.42, f2.a - f1.a ) + ${n(SLAB.sheen)} * smoothstep( 0.75, - 0.65, wash + 0.3 * cloud ) );
 	}
 `
   return also(material, 'slab', (shader) => {

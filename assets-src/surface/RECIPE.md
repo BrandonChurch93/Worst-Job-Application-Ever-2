@@ -55,3 +55,4 @@ Prompt or command: `makeMaterials(config.seed)`. The grain is read five times: u
 Takes: nothing to make.
 Why this one: the card of the third round read as an opaque grey panel with sandpaper on it. Glass that is frosted shows three things at once: what lies under it, softened; its own slow unevenness; and a tooth too fine to pick out at home. The first frost, at 7.1 texels a page pixel, was lost in the 8 samples a pixel of the review tier (M3 0.56); at 2.3 alone it read as pebbled bathroom glass (M3 0.79); at 3.0 with a little of 2.3 it is fine and holds (M3 0.885).
 Date: 2026-11-25
+Later the same day: in a close view the bright points are faded out and the slopes lowered, and the page's fine reading (4 texels a page pixel, less its own blurred copy) is laid on the matt light at 0.19. Why: slopes under a low key sparkle in the coat and read as grit; a tooth in the matt light reads as satin. M3 0.851.
