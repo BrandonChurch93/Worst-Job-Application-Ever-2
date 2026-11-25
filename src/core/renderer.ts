@@ -4,7 +4,7 @@ import { areaSplit, domeSpread, filterTaps, samples, type Sample } from './sampl
 import { Post } from '../post/post'
 import { look } from '../post/look'
 import { chooseEmitters, lampIntensity } from '../post/emitters'
-import { EMITTER_BODY_PX, lightLaw, shadowFilter } from '../post/studio'
+import { EMITTER_BODY_PX, lightLaw, pageFrame, shadowFilter } from '../post/studio'
 import type { Emitter } from '../real/types'
 import { quality, type QualityId } from './quality'
 
@@ -132,8 +132,8 @@ export class LightRig {
     let minY = Infinity
     let maxY = -Infinity
     for (let i = 0; i < 4; i++) {
-      this.v.set(i & 1 ? 1 : -1, i & 2 ? 1 : -1, -1).unproject(camera)
-      this.w.set(i & 1 ? 1 : -1, i & 2 ? 1 : -1, 1).unproject(camera)
+      this.v.set(i & 1 ? 1 : -1, i & 2 ? 1 : -1, -1).unproject(camera).applyMatrix4(pageFrame.value[0])
+      this.w.set(i & 1 ? 1 : -1, i & 2 ? 1 : -1, 1).unproject(camera).applyMatrix4(pageFrame.value[0])
       const t = this.v.z / (this.v.z - this.w.z)
       if (!(t > 0 && t < 1)) return
       this.v.lerp(this.w, t)
@@ -164,8 +164,9 @@ export class LightRig {
     const above = Math.max(0, b.maxZ) / dz
     const below = Math.min(0, b.minZ) / dz
     const reach = Math.hypot(r.maxX - r.minX, r.maxY - r.minY) + above + 200
-    light.target.position.set(cx, cy, 0)
-    light.position.set(cx + dx * reach, cy + dy * reach, dz * reach)
+    const page = pageFrame.value[1]
+    light.target.position.set(cx, cy, 0).applyMatrix4(page)
+    light.position.set(dx, dy, dz).multiplyScalar(reach).add(light.target.position)
     light.target.updateMatrixWorld()
     light.updateMatrixWorld()
     this.m.lookAt(light.position, light.target.position, light.up).setPosition(light.position).invert()
@@ -177,12 +178,12 @@ export class LightRig {
     let far = -Infinity
     for (let i = 0; i < 8; i++) {
       const z = i & 4 ? Math.min(b.maxZ, FIT_Z[1]) : Math.max(b.minZ, FIT_Z[0])
-      this.v.set(i & 1 ? r.maxX : r.minX, i & 2 ? r.maxY : r.minY, z).applyMatrix4(this.m)
+      this.v.set(i & 1 ? r.maxX : r.minX, i & 2 ? r.maxY : r.minY, z).applyMatrix4(page).applyMatrix4(this.m)
       minX = Math.min(minX, this.v.x)
       maxX = Math.max(maxX, this.v.x)
       minY = Math.min(minY, this.v.y)
       maxY = Math.max(maxY, this.v.y)
-      this.v.set(i & 1 ? r.maxX : r.minX, i & 2 ? r.maxY : r.minY, 0).applyMatrix4(this.m)
+      this.v.set(i & 1 ? r.maxX : r.minX, i & 2 ? r.maxY : r.minY, 0).applyMatrix4(page).applyMatrix4(this.m)
       near = Math.min(near, -this.v.z)
       far = Math.max(far, -this.v.z)
     }

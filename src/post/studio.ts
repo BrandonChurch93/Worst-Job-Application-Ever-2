@@ -46,7 +46,9 @@ export const lightLaw = {
   // Where the key stands, in world units, and the square of its distance to the middle of the view.
   keyAt: { value: new THREE.Vector4(0, 0, 1, 1) },
   // The studio's reflection is dimmer where the key or the fill is in shadow: a pocket's wall hides the soft light too.
-  shade: { value: new THREE.Vector3(look.studio.shadeKey, look.studio.shadeFill, look.studio.floorKept) }
+  shade: { value: new THREE.Vector3(look.studio.shadeKey, look.studio.shadeFill, look.studio.floorKept) },
+  // The fill's shadows are counted on a page that lies flat. They go out as the page turns and come back as it seats.
+  fillShadow: { value: 1 }
 }
 
 const fail = () => new Error('The light code of this three.js release is not the one this build was written for')
@@ -147,18 +149,38 @@ function patchFalloff(): void {
   THREE.ShaderChunk.lights_pars_begin = chunk.replace(line, `float distanceFalloff = 1.0 / ( pow( lightDistance, decayExponent ) + ${(EMITTER_BODY_PX * EMITTER_BODY_PX).toFixed(1)} ); // WJA_BODY`)
 }
 
+// The heights a shadow is cast from are counted from the page, so a page that turns keeps the shadows it has lying flat.
+// The first matrix takes a point of the world to the page lying flat, the second takes it back.
+const FILL_GONE = (4 * Math.PI) / 180
+export const pageFrame = { value: [new THREE.Matrix4(), new THREE.Matrix4()] }
+export function setPageFrame(world: THREE.Matrix4 | null, turn = 0): void {
+  const k = Math.min(1, Math.abs(turn) / FILL_GONE)
+  lightLaw.fillShadow.value = world ? 1 - k * k * (3 - 2 * k) : 1
+  if (world) {
+    pageFrame.value[1].copy(world)
+    pageFrame.value[0].copy(world).invert()
+  } else {
+    pageFrame.value[0].identity()
+    pageFrame.value[1].identity()
+  }
+}
+
 function patchHeights(): void {
   const knee = look.shadowHeights.knee.toFixed(2)
   const keep = look.shadowHeights.keep.toFixed(4)
   const from = look.shadowHeights.from.toFixed(2)
   const span = (look.shadowHeights.knee - look.shadowHeights.from).toFixed(4)
   const lift = look.shadowHeights.lift.toFixed(4)
-  const low = (v: string) => `${v}.z = min( ${v}.z, ${knee} ) + clamp( ( ${v}.z - ${from} ) / ${span}, 0.0, 1.0 ) * ${lift} + max( ${v}.z - ${knee}, 0.0 ) * ${keep};`
+  const low = (v: string) => `${v} = wjaPage[ 0 ] * ${v};\n\t${v}.z = min( ${v}.z, ${knee} ) + clamp( ( ${v}.z - ${from} ) / ${span}, 0.0, 1.0 ) * ${lift} + max( ${v}.z - ${knee}, 0.0 ) * ${keep};\n\t${v} = wjaPage[ 1 ] * ${v};`
   const depth = THREE.ShaderLib.depth.vertexShader
   if (depth.includes('WJA_LOW')) return
   const project = '#include <project_vertex>'
   if (!depth.includes(project)) throw fail()
-  THREE.ShaderLib.depth.vertexShader = depth.replace(
+  const declare = 'uniform mat4 wjaPage[ 2 ];\n'
+  const pars = THREE.ShaderChunk.shadowmap_pars_vertex
+  THREE.ShaderChunk.shadowmap_pars_vertex = `#ifndef WJA_PAGE\n#define WJA_PAGE\n${declare}#endif\n${pars}`
+  for (const lib of Object.values(THREE.ShaderLib)) lib.uniforms.wjaPage = pageFrame
+  THREE.ShaderLib.depth.vertexShader = declare + depth.replace(
     project,
     `// WJA_LOW\n\tvec4 mvPosition = vec4( transformed, 1.0 );\n\t#ifdef USE_BATCHING\n\tmvPosition = batchingMatrix * mvPosition;\n\t#endif\n\t#ifdef USE_INSTANCING\n\tmvPosition = instanceMatrix * mvPosition;\n\t#endif\n\tmvPosition = modelMatrix * mvPosition;\n\t${low('mvPosition')}\n\tmvPosition = viewMatrix * mvPosition;\n\tgl_Position = projectionMatrix * mvPosition;`
   )
@@ -194,7 +216,7 @@ function patchedBegin(): string {
   if (!loop.includes(tail)) throw fail()
   const open =
     tail +
-    '\n\t\tdirectLight.color *= wjaLit;\n\t\t#if UNROLLED_LOOP_INDEX == 0\n\t\twjaOpen *= mix( 1.0, wjaLit * saturate( dot( geometryNormal, directLight.direction ) * 3.0 + 0.5 ), wjaShade.x );\n\t\t#else\n\t\twjaOpen *= mix( 1.0, wjaLit, wjaShade.y );\n\t\t#endif\n'
+    '\n\t\t#if UNROLLED_LOOP_INDEX != 0\n\t\twjaLit = mix( 1.0, wjaLit, wjaFillShadow );\n\t\t#endif\n\t\tdirectLight.color *= wjaLit;\n\t\t#if UNROLLED_LOOP_INDEX == 0\n\t\twjaOpen *= mix( 1.0, wjaLit * saturate( dot( geometryNormal, directLight.direction ) * 3.0 + 0.5 ), wjaShade.x );\n\t\t#else\n\t\twjaOpen *= mix( 1.0, wjaLit, wjaShade.y );\n\t\t#endif\n'
   return chunk.slice(0, at) + '\tfloat wjaOpen = 1.0;\n\tfloat wjaLit = 1.0;\n' + dirStart + before + loop.replace(info, fall).replace(shadowed, lit).replace(tail, open) + after + chunk.slice(stop)
 }
 function patchedMaps(): string {
@@ -240,9 +262,10 @@ export function studio<T extends THREE.MeshStandardMaterial>(material: T): T {
     shader.uniforms.wjaKeyAt = lightLaw.keyAt
     shader.uniforms.wjaCap = lightLaw.cap
     shader.uniforms.wjaShade = lightLaw.shade
+    shader.uniforms.wjaFillShadow = lightLaw.fillShadow
     shader.uniforms.wjaEnvOwn = { get value() { return material.envMapIntensity } } as THREE.IUniform
     shader.fragmentShader =
-      'uniform float wjaEnvDiffuse;\nuniform float wjaKeySpecular;\nuniform mat4 wjaViewInverse;\nuniform vec4 wjaKeyAt;\nuniform float wjaEnvOwn;\nuniform vec2 wjaCap;\nuniform vec3 wjaShade;\n' +
+      'uniform float wjaEnvDiffuse;\nuniform float wjaKeySpecular;\nuniform mat4 wjaViewInverse;\nuniform vec4 wjaKeyAt;\nuniform float wjaEnvOwn;\nuniform vec2 wjaCap;\nuniform vec3 wjaShade;\nuniform float wjaFillShadow;\n' +
       shader.fragmentShader.replace('#include <opaque_fragment>', capped + '#include <opaque_fragment>').replace('#include <lights_fragment_begin>', patchedBegin()).replace('#include <lights_fragment_maps>', patchedMaps()).replace('#include <envmap_physical_pars_fragment>', patchedEnv())
   }
   material.customProgramCacheKey = () => 'wja-studio'

@@ -8,7 +8,7 @@ import type { Emitter, PartMaker, RealContext } from '../real/types'
 import type { Frame } from '../stage/stage'
 import { rattleAt, SHIVER, shiverAt, shiverDelay } from '../stage/turn'
 import type { Shape, Tone } from '../stage/types'
-import { studio } from '../post/studio'
+import { setPageFrame, studio } from '../post/studio'
 import { block } from './metrics'
 import { circle, plateProfile, roundedRect, sweep } from './solids'
 import { TypeRegister } from './type'
@@ -89,6 +89,8 @@ function cursorStandIns(c: CursorPose): string[] {
 export class PageView {
   readonly scene = new THREE.Scene()
   private pivot = new THREE.Group()
+  private turned = new THREE.Matrix4()
+  private flat = new THREE.Matrix4()
   private sheet = new THREE.Group()
   private materials = new Map<Tone, THREE.MeshStandardMaterial>()
   private solids = new Map<string, { mesh: THREE.Mesh; key: string; seen: number }>()
@@ -514,6 +516,7 @@ export class PageView {
     this.sheet.position.set(0, f.scroll, 0)
     this.pivot.rotation.x = f.turn
     this.pivot.updateMatrixWorld(true)
+    setPageFrame(turning ? this.turned.copy(this.pivot.matrixWorld).multiply(this.flat.makeTranslation(0, f.scroll, 0)) : null, f.turn)
     this.lit = []
     const ctx = contextOf(f, size.width, top, tall, (e) => {
       this.world.set(e.x - 960, 540 - e.y, e.z)

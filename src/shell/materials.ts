@@ -379,7 +379,7 @@ function slabbed<T extends THREE.MeshPhysicalMaterial>(material: T, grain: THREE
 		vec4 f2 = texture2D( wjaSlabGrain, fu.yx * ( 2.3 / 1024.0 ) + vec2( 0.37, 0.71 ) );
 		vec4 hair = texture2D( wjaSlabBrushed, mat2( 0.94, 0.342, - 0.342, 0.94 ) * wjaAt.xy * vec2( 1.0 / 900.0, 1.0 / 190.0 ) );
 		vec2 slope = ${n(SLAB.frost)} * ( 0.6 - 0.25 * near ) * ( ( f1.xy * 2.0 - 1.0 ) + 0.2 * ( f2.xy * 2.0 - 1.0 ) ) + ${n(SLAB.hair)} * ( mat2( 0.94, - 0.342, 0.342, 0.94 ) * ( hair.xy * 2.0 - 1.0 ) );
-		vec3 wjaUp = normalize( ( viewMatrix * vec4( 0.0, 0.0, 1.0, 0.0 ) ).xyz );
+		vec3 wjaUp = normalize( normalMatrix * vec3( 0.0, 0.0, 1.0 ) );
 		normal = normalize( mix( wjaUp, normal, ${n(SLAB.flat)} ) + ( viewMatrix * vec4( slope, 0.0, 0.0 ) ).xyz );
 		roughnessFactor = clamp( roughnessFactor + 0.02 * cloud, 0.1, 1.0 );
 		float top = smoothstep( 3.5, 6.0, D );
@@ -394,7 +394,7 @@ function slabbed<T extends THREE.MeshPhysicalMaterial>(material: T, grain: THREE
     const out = '#include <opaque_fragment>'
     if (!shader.fragmentShader.includes(maps) || !shader.fragmentShader.includes(end) || !shader.fragmentShader.includes(out) || !shader.vertexShader.includes('#include <begin_vertex>')) throw new Error('The surface code of this three.js release is not the one this build was written for')
     shader.vertexShader = 'attribute vec4 slab;\nattribute vec2 slabEdge;\nvarying vec4 wjaSlab;\nvarying vec2 wjaSlabEdge;\n' + shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n\twjaSlab = slab;\n\twjaSlabEdge = slabEdge;')
-    shader.fragmentShader = '#ifndef USE_TRANSMISSION\nuniform mat4 projectionMatrix;\n#endif\nvarying vec4 wjaSlab;\nvarying vec2 wjaSlabEdge;\nuniform sampler2D wjaSlabGrain;\nuniform sampler2D wjaSlabBrushed;\n' + shader.fragmentShader
+    shader.fragmentShader = '#ifndef USE_TRANSMISSION\nuniform mat4 projectionMatrix;\n#endif\nuniform mat3 normalMatrix;\nvarying vec4 wjaSlab;\nvarying vec2 wjaSlabEdge;\nuniform sampler2D wjaSlabGrain;\nuniform sampler2D wjaSlabBrushed;\n' + shader.fragmentShader
       .replace(maps, `${maps}\n${body}`)
       .replace(end, `${end}\n\treflectedLight.indirectSpecular += vec3( wjaSlabGlow ) * mix( 1.0, wjaOpen, 0.6 );`)
       .replace(out, `outgoingLight *= wjaSlabShade;\n\t${out}`)
