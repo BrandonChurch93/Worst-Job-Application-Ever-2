@@ -32,7 +32,7 @@ npm run sound -- --browser                      the engine in a real browser, be
 npm run mix -- --picture                        the mix drawn on one picture
 npm run sound -- --fixtures                     stand-in sounds made with ffmpeg, in a scratch root
 npm run mix                                     audio/mix/review.wav
-npm run mix -- --final                          audio/final/film-b.wav
+npm run mix -- --final                          audio/final/film-b.wav and audio/final/film-a.wav
 ```
 
 `--root DIR` moves every place a sound file is written under one folder. The fixtures run under `out/work/audio/fixture-run`, so they never touch `audio/` or `public/audio/`.
@@ -60,6 +60,10 @@ No sound is kept. `public/audio/index.json` lists nothing, the engine reports `a
 13. `npm run mix` reads `cut/CUTLIST.json` when it holds `events` with a `name` and a `frame`, `seconds` or `step` each, and optionally `lines` with `beat`, `index` and `frame` or `start`. Anything else, and it says so and reads the stage.
 14. `npm run sound -- --check` opens a browser, twice. First the engine alone: it is built onto a page of its own in `out/work/audio/harness/` and measured before and after a click, with the sound files of the root, with plain audio elements, with an index that lists nothing, and with the files removed. Then, once a file of the site loads the engine, the built site itself: what it makes and asks for before its first picture and before the first click (A1, A4), the sound control by a pointer click, by Tab, Enter and Space, with the level heard at the output in each state (A2), the site with every sound file answered as not found (A11), and one judged still in capture mode rendered with the audio code in the build and with it blocked, compared by sha256 (A3). Until the site loads the engine those five say "not yet" and give the engine's numbers. With `--root` the site is built again into `out/work/audio/site/` with the index and the files of that root, so the whole site can be checked with stand-ins. `npm run sound -- --browser` runs the engine part alone, `--browser --site` both.
 15. The prompt line of the kit ends every effect prompt the tool records. For hold music the words about music are left out.
+
+16. Film A. `npm run mix -- --final` writes `audio/final/film-b.wav` and then `audio/final/film-a.wav`: the opening and then film B unchanged, every event and line of film B moved back by the opening's frames. The opening's own sounds come from `opening.events` of `cut/CUTLIST.json` if the cut list ever holds them, and otherwise from the times of `src/film/opening.ts`: a `key-tap` on the frame each letter of the prompt first shows, spaces too, a `ui-tick` when the level control opens, when the level is picked and as each line of the build screen is ticked off, and one `ui-send` on the frame the send control starts to go down. The room tone starts where the opening ends, with a 30 ms fade in. The live site plays no sound over the opening: `src/main.ts` sends the engine nothing before film B starts.
+17. `audio/mix/review.json` carries a sha256 of the list of events and lines it was made from. Check A9 says "not yet, run npm run mix" when the cut list has changed since.
+18. `stop()` stops everything, the room tone too. The tone starts again at the next event, beat or trigger.
 
 ## Where the brief and the kit differ
 
