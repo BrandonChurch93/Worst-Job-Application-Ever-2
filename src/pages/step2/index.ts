@@ -5,10 +5,11 @@ import { restPose } from '../../cursor/body'
 import { boxOf, drawLayout, find, walk } from '../../shell/layout'
 import { measure } from '../../shell/metrics'
 import { SCREEN_H, TYPE } from '../../shell/parts'
+import { words } from '../../shell/words'
 import { frame } from '../../stage/camera'
 import type { DrawList, GagInfo, Hint, PageContext, PageLogic, Pointer, Shape, SheetFrame, StepIo, Tone } from '../../stage/types'
 import { buildLayout, CRANK, DIAL, FH, FW, FX, PAD, reelId, ROWS, rowY, SHIFT, SLOT, statesOf, TOP, TRAY_H, TRAY_Z, trayY } from './layout'
-import { actingAt, BUTTON, FILM_HOLE, LANDING, pointerAt, reactions } from './script'
+import { actingAt, LANDING, pointerAt, reactions } from './script'
 
 const dt = 1 / stepHz
 const LIMIT = config.live.skipLinkAfterSeconds
@@ -22,12 +23,13 @@ const TAU = Math.PI * 2
 const STOPS = [0.8, 1.15, 1.5]
 const REEL_PITCH = 62
 const COINS = 14
+const RETURN = 18
 
 type RowPhase = 'closed' | 'opening' | 'ready' | 'ending' | 'closing'
 interface Coin { n: number; x: number; y: number; z: number; vx: number; vy: number; vz: number; rot: number; hit: boolean; still: boolean }
 interface DialState { a: number; k: number; phase: 'rest' | 'drag' | 'return' | 'whip' | 'fly' | 'over'; digits: string; w: number; left: number; x: number; y: number; z: number; vx: number; vy: number; vz: number; t: number }
 interface SlotState { p: number; pv: number; grab: boolean; phase: 'rest' | 'spin' | 'read' | 'pay' | 'over'; t: number; from: number[]; to: number[]; coins: Coin[]; spawned: number; cool: number }
-interface CrankState { b: number; grab: boolean; total: number; turns: number; phase: 'rest' | 'runaway' | 'full' | 'over'; w: number; level: number; hit: boolean; hitAt: number; peeled: boolean; t: number; stuck: number; sx: number; sy: number }
+interface CrankState { b: number; set: boolean; grab: boolean; total: number; turns: number; phase: 'rest' | 'runaway' | 'full' | 'over'; w: number; level: number; hit: boolean; hitAt: number; peeled: boolean; t: number; stuck: number; sx: number; sy: number }
 interface State {
   mode: 'live' | 'film'
   time: number
@@ -49,6 +51,7 @@ interface State {
   hold: number
   finished: boolean
   skipping: boolean
+  gripped: boolean
   rng: number[]
 }
 
@@ -63,15 +66,13 @@ const mix = (a: number, b: number, t: number): number => a + (b - a) * t
 
 const freshDial = (): DialState => ({ a: 0, k: 0, phase: 'rest', digits: '', w: 0, left: 0, x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0, t: 0 })
 const freshSlot = (): SlotState => ({ p: 0, pv: 0, grab: false, phase: 'rest', t: 0, from: [0, 0, 0], to: [0, 0, 0], coins: [], spawned: 0, cool: 0 })
-const freshCrank = (): CrankState => ({ b: 0, grab: false, total: 0, turns: 0, phase: 'rest', w: 0, level: 0.1, hit: false, hitAt: -1, peeled: false, t: 0, stuck: 0, sx: 0, sy: 0 })
+const freshCrank = (): CrankState => ({ b: CRANK.rest, set: false, grab: false, total: 0, turns: 0, phase: 'rest', w: 0, level: 0, hit: false, hitAt: -1, peeled: false, t: 0, stuck: 0, sx: 0, sy: 0 })
 const fresh = (mode: 'live' | 'film'): State => ({
   mode, time: 0, open: -1, phase: 'closed', spring: [0, 0, 0], springV: [0, 0, 0], lift: 0, rowT: 0, endT: 0, idle: 0, done: [false, false, false], px: 0, py: 0,
-  dial: freshDial(), slot: freshSlot(), crank: freshCrank(), pressed: false, hold: 0, finished: false, skipping: false, rng: []
+  dial: freshDial(), slot: freshSlot(), crank: freshCrank(), pressed: false, hold: 0, finished: false, skipping: false, gripped: false, rng: []
 })
 
-export const phoneMask = (digits: string): string => (digits.length === 0 ? '' : `(${digits}${digits.length >= 3 ? ') ' : ''}`)
-export const percent = (level: number): string => `${Math.round(level * 100)}%`
-export const volumeOf = (saved: unknown): number => (saved as State).crank.level
+export const phoneMask = (digits: string): string => words('data:step2.phone.prefix') + digits
 
 const holePlace = (k: number, a: number): { x: number; y: number } => ({ x: DIAL.cx + DIAL.ring * Math.cos(DIAL.holeAngle(k) + a), y: DIAL.cy + DIAL.ring * Math.sin(DIAL.holeAngle(k) + a) })
 const gripPlace = (b: number, r: number = CRANK.arm): { x: number; y: number } => ({ x: CRANK.hx + r * Math.cos(b), y: CRANK.hy + r * Math.sin(b) })
@@ -132,6 +133,7 @@ export function makePage(): PageLogic {
     s.endT = 0
     s.lift = 0
     s.idle = 0
+    if (i === 2) s.crank.set = true
     io.emit('row-open', FX + FW / 2, rowY(i) + FH / 2, false)
   }
 
@@ -177,7 +179,7 @@ export function makePage(): PageLogic {
       if (!p.down || far > DIAL.r + 90) dialRelease(io)
       else if (far > 12) d.a = clamp(d.a + clamp(wrapPi(Math.atan2(p.y - DIAL.cy, p.x - DIAL.cx) - (DIAL.holeAngle(d.k) + d.a)), -0.6, 0.6), 0, DIAL.travel(d.k))
     } else if (d.phase === 'return') {
-      d.a = Math.max(0, d.a - 10 * dt)
+      d.a = Math.max(0, d.a - RETURN * dt)
       if (d.a === 0) {
         d.phase = s.done[0] ? 'over' : 'rest'
         d.k = 0
@@ -204,7 +206,7 @@ export function makePage(): PageLogic {
         d.t = 0
       }
     } else if (d.phase === 'fly') {
-      d.a = Math.max(0, d.a - 10 * dt)
+      d.a = Math.max(0, d.a - RETURN * dt)
       d.x += d.vx * dt
       d.y += d.vy * dt
       d.vz -= G * dt
@@ -358,7 +360,7 @@ export function makePage(): PageLogic {
     const turned = (): void => {
       while (c.total >= (c.turns + 1) * TAU) {
         c.turns++
-        c.level = Math.min(1, 0.1 + 0.1 * c.turns)
+        c.level = Math.min(1, 0.1 * c.turns)
         if (c.phase === 'rest') {
           const at = gripPlace(c.b)
           io.emit('crank-turn', at.x, at.y, false)
@@ -385,7 +387,7 @@ export function makePage(): PageLogic {
     } else if (c.phase === 'runaway' || c.phase === 'full') {
       c.t += dt
       if (c.phase === 'runaway') c.w = Math.min(42, c.w + 26 * dt)
-      else c.w *= 1 - 8 * dt
+      else c.w *= 1 - 5 * dt
       c.b += c.w * dt
       c.total += c.w * dt
       turned()
@@ -476,10 +478,26 @@ export function makePage(): PageLogic {
     io.cursor.setGround(Math.max(topAt(x, y), topAt(x + 12, y + 18), topAt(x + 22, y + 34), topAt(x + 4, y + 34)))
   }
 
+  function grip(io: StepIo): void {
+    const ready = s.open >= 0 && s.phase === 'ready'
+    let at: { x: number; y: number; z: number } | null = null
+    if (ready && s.open === 0 && s.dial.phase === 'drag') at = { ...holePlace(s.dial.k, s.dial.a), z: TOP + 3 }
+    if (ready && s.open === 1 && s.slot.grab) at = { x: SLOT.leverX, y: knobY(s.slot.p), z: TOP + 40 }
+    if (ready && s.open === 2 && s.crank.grab) at = { ...gripPlace(s.crank.b), z: TOP + 30 }
+    if (at) {
+      io.cursor.take('grip')
+      io.cursor.place(at.x, at.y, at.z + hover)
+      s.gripped = true
+    } else if (s.gripped) {
+      s.gripped = false
+      if (s.dial.phase !== 'whip' && s.dial.phase !== 'fly') io.cursor.release()
+    }
+  }
+
   function press(io: StepIo): void {
     s.pressed = true
     if (io.cursor.damaged) {
-      io.cursor.heal()
+      io.cursor.hurt('flattened', 0.3)
       if (s.crank.hit && !s.crank.peeled) {
         s.crank.peeled = true
         io.emit('peel-up', io.cursor.x, io.cursor.y, true)
@@ -527,8 +545,8 @@ export function makePage(): PageLogic {
         s.rowT += dt
         const forced = s.phase === 'ready' && s.rowT >= LIMIT
         const active = s.phase === 'ready' || s.phase === 'ending' || s.phase === 'closing'
-        if (s.phase === 'opening' && s.spring[i]! >= 0.97) {
-          s.lift = Math.min(1, s.lift + dt / 0.3)
+        if (s.phase === 'opening' && s.spring[i]! >= 0.9) {
+          s.lift = Math.min(1, s.lift + dt / 0.25)
           if (s.lift >= 1) s.phase = 'ready'
         }
         let over = false
@@ -559,6 +577,7 @@ export function makePage(): PageLogic {
       }
       afterCrank(io)
       ground(io)
+      if (s.mode === 'film') grip(io)
       for (let i = 0; i < 3; i++) {
         const target = s.open === i && (s.phase === 'opening' || s.phase === 'ready' || s.phase === 'ending' || (s.phase === 'closing' && s.lift > 0)) ? 1 : 0
         if (target === 0 && s.spring[i] === 0) continue
@@ -571,7 +590,7 @@ export function makePage(): PageLogic {
       }
       if (s.pressed) {
         s.hold += dt
-        if (s.hold > 0.25) s.finished = true
+        if (s.hold > 0.25 && !io.cursor.damaged) s.finished = true
       }
       s.rng = rng.state()
     },
@@ -599,11 +618,11 @@ export function makePage(): PageLogic {
       }
       if (s.open === 0) {
         const d = s.dial
-        const k = d.k || FILM_HOLE
+        const k = d.k || 5
         const rest = holePlace(k, 0)
         if (s.phase === 'opening') return { ...rest, down: false }
         if (s.phase !== 'ready' || s.done[0]) return here
-        if (d.phase === 'rest') return { ...rest, down: true }
+        if (d.phase === 'rest') return { ...rest, down: Math.hypot(s.px - rest.x, s.py - rest.y) <= DIAL.hole * 0.6 }
         if (d.phase === 'drag') {
           const full = DIAL.travel(k)
           if (d.a >= full - 0.01) return { ...holePlace(k, full), down: false }
@@ -614,15 +633,18 @@ export function makePage(): PageLogic {
       if (s.open === 1) {
         const sl = s.slot
         if (s.phase === 'opening') return { x: SLOT.leverX, y: SLOT.knobY, down: false }
-        if (sl.phase === 'rest' && s.phase === 'ready') return { x: SLOT.leverX, y: sl.grab ? Math.min(knobY(1) + 4, Math.max(s.py, knobY(sl.p)) + 12) : knobY(sl.p), down: true }
+        if (sl.phase === 'rest' && s.phase === 'ready') return { x: SLOT.leverX, y: sl.grab ? Math.min(knobY(1) + 4, Math.max(s.py, knobY(sl.p)) + 12) : knobY(sl.p), down: sl.grab || Math.hypot(s.px - SLOT.leverX, s.py - knobY(sl.p)) <= SLOT.knob / 2 }
         const out: Hint = { x: SLOT.leverX + 6, y: SLOT.y + SLOT.h + 6, down: false }
         if (sl.phase === 'read' || sl.phase === 'pay') out.dodge = { x: 420, y: trayY(1) + 60 }
         return out
       }
       const c = s.crank
       if (s.phase === 'opening') return { ...gripPlace(c.b), down: false }
-      if (c.phase === 'rest' && s.phase === 'ready') return { ...gripPlace(c.b + (c.grab ? 0.15 : 0)), down: true }
-      const out: Hint = { ...gripPlace(0), down: false }
+      if (c.phase === 'rest' && s.phase === 'ready') {
+        const at = gripPlace(c.b)
+        return { ...gripPlace(c.b + (c.grab ? 0.15 : 0)), down: c.grab || Math.hypot(s.px - at.x, s.py - at.y) <= 20 }
+      }
+      const out: Hint = { ...gripPlace(CRANK.rest), down: false }
       if (c.phase === 'runaway' && !c.hit) out.dodge = { x: CRANK.hx + 300, y: CRANK.hy - 110 }
       return out
     },
@@ -636,7 +658,8 @@ export function makePage(): PageLogic {
       return s.done.some(Boolean) ? null : gags[0]!.id
     },
     ignoring: () => s.pressed || s.skipping,
-    states: () => statesOf({ open: s.spring.findIndex((v) => v > 0.004), panel: s.open >= 0 && s.spring[s.open]! > 0.9, done: s.done, typing: [s.dial.digits.length > 0, false, s.open === 2], settled: settled() }),
+    volume: () => (s.crank.set ? Math.max(0.1, s.crank.level) : 1),
+    states: () => statesOf({ open: s.spring.findIndex((v) => v > 0.004), panel: s.open >= 0 && s.spring[s.open]! > 0.9, done: s.done, typing: [s.open === 0 || s.dial.digits.length > 0, false, false], settled: settled() }),
     sheet(id: string): SheetFrame | null {
       if (id !== 'machines') return null
       return machinesSheet()
@@ -718,7 +741,7 @@ export function makePage(): PageLogic {
       over['continue-cap'] = { tone: 'accent', ...(s.pressed ? { z1: heights.button - heights.keyTravel } : {}) }
       over['continue-label'] = { tone: 'inkLight', ...(s.pressed ? { z0: heights.button - heights.keyTravel, z1: heights.button - heights.keyTravel } : {}) }
     }
-    drawLayout(out, layout, { states, over, runtime: { 'step2.phone': phoneMask(s.dial.digits), 'step2.volume': percent(s.crank.level) } })
+    drawLayout(out, layout, { states, over, runtime: { 'step2.phone': phoneMask(s.dial.digits) } })
     for (let i = 0; i < 3; i++) {
       const y = rowY(i) + offsets[i]!
       const isOpen = s.open === i && s.phase !== 'closing'
@@ -729,10 +752,9 @@ export function makePage(): PageLogic {
         for (const [side, x, yy, w, h] of ring) out.push({ id: `focus-${side}`, part: 'rows', kind: 'box', x, y: yy, w, h, z0: 0, z1: 2, tone: 'accent' })
       }
     }
-    const caret = s.open >= 0 && s.open !== 1 && !s.done[s.open] && s.phase !== 'closing' && s.spring[s.open]! > 0.9 && Math.floor(s.time * 2) % 2 === 0
+    const caret = s.open === 0 && !s.done[0] && s.phase !== 'closing' && Math.floor(s.time * 2) % 2 === 0
     if (caret) {
-      const said = s.open === 0 ? phoneMask(s.dial.digits) : percent(s.crank.level)
-      const wide = said ? measure(TYPE.value.font, said, TYPE.value.px).width + 4 : 0
+      const wide = measure(TYPE.value.font, phoneMask(s.dial.digits), TYPE.value.px).width + 4
       out.push({ id: 'caret', part: 'rows', kind: 'box', x: FX + PAD + wide, y: rowY(s.open) + offsets[s.open]! + 17, w: 2, h: 30, z0: 0.1, z1: 0.6, tone: 'ink' })
     }
     if (shown >= 0) machine(out, shown, s, s.lift, 0, 0, '', s.phase === 'closing' ? Math.max(0.02, smooth(s.lift)) : 1)
@@ -740,10 +762,12 @@ export function makePage(): PageLogic {
 
   function machinesSheet(): SheetFrame {
     const list: DrawList = []
-    const demo = { dial: freshDial(), slot: freshSlot(), crank: { ...freshCrank(), level: 0.4, b: 1.05 } }
+    const demo = { dial: freshDial(), slot: { ...freshSlot(), p: 1 }, crank: { ...freshCrank(), level: 0.4, b: 0.6 } }
     demo.slot.to = SLOT.film.map((legend, r) => SLOT.strips[r]!.indexOf(legend))
-    const spots = [{ x: 150, y: 430 }, { x: 540, y: 455 }, { x: 1044, y: 408 }]
-    const origin = [{ x: DIAL.cx - DIAL.r, y: DIAL.cy - DIAL.r }, { x: SLOT.x, y: SLOT.y }, { x: FX + 24, y: trayY(2) + 24 }]
+    const spots = [{ x: 150, y: 400 }, { x: 450, y: 425 }, { x: 1010, y: 560 }]
+    const origin = [{ x: DIAL.cx - DIAL.r, y: DIAL.cy - DIAL.r }, { x: SLOT.x, y: SLOT.y }, { x: CRANK.hx, y: CRANK.hy }]
+    const meterAt = { x: 900, y: 372 }
+    const labelX = [150, 450, 900]
     for (let i = 0; i < 3; i++) {
       const dx = spots[i]!.x - origin[i]!.x
       const dy = spots[i]!.y - origin[i]!.y
@@ -753,15 +777,16 @@ export function makePage(): PageLogic {
       const settledNow = SLOT.film.map((legend, r) => reelId(r, legend))
       for (const child of find(layout, `${ROWS[i]}-tray`).children ?? []) drawLayout(local, child, { states: i === 1 ? settledNow : [], over })
       for (const shape of local) {
-        list.push({ ...shape, id: `sheet-${shape.id}`, x: shape.x + dx, y: shape.y + dy })
+        const meter = shape.id.startsWith('meter-')
+        list.push({ ...shape, id: `sheet-${shape.id}`, x: meter ? shape.x - CRANK.segX + meterAt.x : shape.x + dx, y: meter ? shape.y - CRANK.segY + meterAt.y : shape.y + dy })
       }
       const extra: DrawList = []
       machine(extra, i, demo, 1, dx, dy, 'sheet-')
       for (const shape of extra) list.push(shape)
       const label = find(layout, `${ROWS[i]}-label`)
-      list.push({ id: `sheet-${label.id}`, part: 'type', kind: 'text', x: i === 2 ? spots[i]!.x + 36 : spots[i]!.x, y: 330, w: label.box[2]!, h: label.box[3]!, z0: 0, z1: 0, tone: 'ink', words: label.copy!, type: label.type! })
+      list.push({ id: `sheet-${label.id}`, part: 'type', kind: 'text', x: labelX[i]!, y: 316, w: label.box[2]!, h: label.box[3]!, z0: 0, z1: 0, tone: 'ink', words: label.copy!, type: label.type! })
     }
-    return { list, cursors: [restPose(470, 700)], view: frame({ x: 110, y: 250, w: 1600, h: 500 }, 1) }
+    return { list, cursors: [restPose(400, 640)], view: frame({ x: 100, y: 120, w: 1240, h: 697 }, 1) }
   }
 
   return page

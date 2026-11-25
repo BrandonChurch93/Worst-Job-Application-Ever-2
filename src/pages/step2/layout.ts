@@ -25,7 +25,7 @@ export const SHIFT = TRAY_H + TRAY_GAP
 export const TRAY_Z = heights.machineTray
 export const TOP = heights.machineMinTop
 export const PAD = 24
-export const VALUE_Z = 0
+export const VALUE_Z = heights.field
 
 export const rowY = (i: number, low = false): number => ROW_Y + i * PITCH + (low ? SHIFT : 0)
 export const trayY = (i: number): number => rowY(i) + FH + TRAY_GAP
@@ -55,8 +55,8 @@ export const SLOT = {
 
 const cy = trayY(2)
 export const CRANK = {
-  hx: FX + PAD + 86, hy: cy + 146, arm: 72, gripW: 56, gripH: 26, base: 100, hub: 40,
-  segW: 26, segH: 96, segGap: 12, segX: FX + PAD + 86 + 72 + 28 + 44, segY: cy + 146 - 48
+  hx: FX + PAD + 86, hy: cy + 146, rest: -0.75, arm: 96, gripW: 60, gripH: 28, base: 110, hub: 44,
+  segW: 28, segH: 96, segGap: 13, segX: FX + PAD + 86 + 227, segY: cy + 146 - 48
 }
 
 export const REEL_TYPE = { font: 'inter-600', px: 34, align: 'centre' as const }
@@ -76,7 +76,7 @@ function rowNodes(i: number, low: boolean): LayoutNode[] {
   const values: LayoutNode[] = []
   if (name === 'phone') values.push(value('typed', 'runtime:step2.phone', 'typing'), value('value', 'copy:step2.rows.phone.gaveUp', 'done'))
   if (name === 'birth') values.push(value('value', 'copy:step2.rows.birth.recorded', 'done'))
-  if (name === 'volume') values.push(value('typed', 'runtime:step2.volume', 'typing'), value('value', 'copy:step2.rows.volume.done', 'done'))
+  if (name === 'volume') values.push(value('value', 'copy:step2.rows.volume.done', 'done'))
   const chevron = node(`${id}-chevron`, 'chevron', [FX + FW - PAD - 28, y + (FH - 28) / 2, 28, 28], { part: 'rows', shape: 'none' })
   const extra = here ? { states: here } : {}
   return [
