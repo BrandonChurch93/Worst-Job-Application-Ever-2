@@ -63,10 +63,12 @@ function graphBackend(Maker: ContextMaker): Backend {
   const buffers = new Map<string, AudioBuffer>()
   const voices = new Set<Voice>()
   let held = false
+  const resume = () => { if (!held && ctx.state !== 'running') void ctx.resume().catch(() => undefined) }
+  if (typeof window.addEventListener === 'function') for (const name of LIVE.wakeEvents) window.addEventListener(name, resume, true)
   return {
     kind: 'graph',
     now: () => ctx.currentTime,
-    resume: () => { if (!held && ctx.state !== 'running') void ctx.resume().catch(() => undefined) },
+    resume,
     hold(on) {
       held = on
       void (on ? ctx.suspend() : ctx.resume()).catch(() => undefined)

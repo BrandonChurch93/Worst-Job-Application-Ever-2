@@ -383,6 +383,29 @@ describe('with sound', () => {
     expect(ctx.state).toBe('running')
   })
 
+  it('asks the sound graph to run again at the end of a touch or a click, never while the page is hidden', async () => {
+    const heard = new Map<string, () => void>()
+    const page = { visibilityState: 'visible', back: null as (() => void) | null, addEventListener(_: string, f: () => void) { this.back = f } }
+    vi.stubGlobal('document', page)
+    vi.stubGlobal('window', { AudioContext: FakeContext, setTimeout, clearTimeout, addEventListener: (name: string, f: () => void) => heard.set(name, f) })
+    const site = fixtureSite()
+    serve(site.files)
+    const s = makeSound({ base: './audio/', index: site.index })
+    expect(heard.size).toBe(0)
+    await s.unlock()
+    const ctx = made[0]!
+    expect([...heard.keys()].sort()).toEqual([...LIVE.wakeEvents].sort())
+    for (const name of LIVE.wakeEvents) {
+      ctx.state = 'suspended'
+      heard.get(name)!()
+      expect(ctx.state, name).toBe('running')
+    }
+    page.visibilityState = 'hidden'
+    page.back!()
+    heard.get('click')!()
+    expect(ctx.state).toBe('suspended')
+  })
+
   it('with plain audio elements stops what plays when the page is hidden', async () => {
     const page = { visibilityState: 'visible', heard: [] as (() => void)[], addEventListener(name: string, f: () => void) { if (name === 'visibilitychange') this.heard.push(f) } }
     vi.stubGlobal('document', page)

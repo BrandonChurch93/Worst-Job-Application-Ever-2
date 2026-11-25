@@ -66,6 +66,7 @@ No sound is kept. `public/audio/index.json` lists nothing, the engine reports `a
 18. `stop()` stops everything, the room tone too. The tone starts again at the next event, beat or trigger.
 19. A take past the limit is still filed, with a warning, because it was made and paid for and the log must show it. Check A8 then fails. The tool never asks a service for a take, so it cannot refuse the spending, only show it.
 20. While the page is hidden the engine holds: the sound graph is suspended and carries on from the same point when the page is back, so a line is never spoken to a tab nobody looks at. With plain audio elements everything is stopped instead, and the tone starts again at the next event.
+21. The site calls `unlock()` at the first press. Some browsers, phones above all, let sound start only at the end of a touch or at a click. So once unlocked, the sound graph is asked to run again at every `pointerup`, `touchend`, `click` and `keydown` for as long as it is not running. Nothing listens before `unlock()`. MEASURED in Chromium only: what Safari on a phone does is UNKNOWN.
 
 ## Where the brief and the kit differ
 

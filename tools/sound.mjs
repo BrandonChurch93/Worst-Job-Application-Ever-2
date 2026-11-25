@@ -168,8 +168,20 @@ export async function fileTake(a, P, c, M, quiet = false) {
   fs.mkdirSync(dir, { recursive: true })
   const ext = path.extname(a.file) || '.bin'
   const dest = path.join(dir, `take-${number}${ext}`)
+  const same = mine.find((x) => x.sha256 === sha(fs.readFileSync(a.file)))
+  if (same) throw new Error(`${a.file} is already filed as ${t.key} take ${same.take}. Nothing filed, no take used`)
   fs.copyFileSync(a.file, dest)
-  const sound = decodeFile(dest, c.audio.sampleRate)
+  let sound
+  try {
+    sound = decodeFile(dest, c.audio.sampleRate)
+  } catch (e) {
+    fs.rmSync(dest, { force: true })
+    throw new Error(`${a.file} could not be read as sound. Nothing filed, no take used. ${e.message.split('\n')[0]}`)
+  }
+  if (!sound.channels[0]?.length) {
+    fs.rmSync(dest, { force: true })
+    throw new Error(`${a.file} holds no sound. Nothing filed, no take used`)
+  }
   const measured = M.dsp.measure(sound)
   const record = {
     key: t.key, kind: t.kind, take: number, round, file: path.basename(dest), sha256: sha(fs.readFileSync(dest)), filed: a.filed && a.filed !== true ? String(a.filed) : new Date().toISOString(),
