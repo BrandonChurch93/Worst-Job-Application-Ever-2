@@ -1,35 +1,35 @@
 {
   "folder": "cursor-model",
-  "pushed": "2026-11-25T15:00:32.179Z",
-  "commit": "48cd3d04b139c96b354e976fdcafa1c0a9bac0dc",
+  "pushed": "2026-11-25T15:38:36.160Z",
+  "commit": "09fe46526c3d1140e5ac0d66763d86aa87c1c95f",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Sheet cursor-damage: approved on the left, this build on the right, review tier",
-      "time": "2026-11-25T15:00:10.908Z",
+      "caption": "Still key-step1-tug-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-25T15:37:57.963Z",
       "by": "cursor-model",
-      "from": "out/work/compare/compare-cursor-damage.jpg"
+      "from": "out/work/stills/key-step1-tug-hd-review.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Acting and damage sheets at review beside the approved sheets, branch 48cd3d0",
-      "time": "2026-11-25T15:00:30.573Z",
+      "caption": "cursor-acting at review beside the approved sheet, commit 09fe465: cleaner enamel, deeper heat, ember ring on the laser hole, darker stone, wetter melt",
+      "time": "2026-11-25T15:38:34.499Z",
       "by": "cursor-model",
-      "from": "out/work/cursor-model/r3-sheets.jpg"
+      "from": "out/work/cursor-model/r4-acting.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "The cursor in step1-fire at review, four times enlarged, approved on the left",
-      "time": "2026-11-25T15:00:30.816Z",
+      "caption": "cursor-damage at review beside the approved sheet, commit 09fe465: cut faces of strips are cream and not black, scorch at the approved size, punch is a hole through",
+      "time": "2026-11-25T15:38:34.752Z",
       "by": "cursor-model",
-      "from": "out/work/cursor-model/r3-fire.jpg"
+      "from": "out/work/cursor-model/r4-damage.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Five kinds of harm in the model's own sweep, approved above",
-      "time": "2026-11-25T15:00:31.051Z",
+      "caption": "the cursor at three times page size in the step1-fire and step1-tug stills at review, commit 09fe465",
+      "time": "2026-11-25T15:38:35.003Z",
       "by": "cursor-model",
-      "from": "out/work/cursor-model/r3-harm.jpg"
+      "from": "out/work/cursor-model/r4-keys.jpg"
     }
   ]
 }
