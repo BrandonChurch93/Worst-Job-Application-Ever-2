@@ -202,6 +202,20 @@ export class Geo {
     return this.slab([[x0, y0], [x1, y0], [x1, y1], [x0, y1]], z0, z1, col, { along: o.along ?? (x1 - x0 >= y1 - y0 ? [1, 0, 0] : [0, 1, 0]), ...o })
   }
 
+  // Bare metal is darker where it turns away from the lamps above it and looks at its own shadow on the floor.
+  turn(low: number, skip: number[] = []): this {
+    for (let i = 0; i < this.vertices; i++) {
+      const fin = Math.floor(this.t[i * 2]! * 16)
+      if (skip.includes(fin)) continue
+      const k = Math.min(1, Math.max(0, (this.n[i * 3 + 2]! - 0.25) / 0.5))
+      const f = low + (1 - low) * k * k * (3 - 2 * k)
+      this.c[i * 3] = this.c[i * 3]! * f
+      this.c[i * 3 + 1] = this.c[i * 3 + 1]! * f
+      this.c[i * 3 + 2] = this.c[i * 3 + 2]! * f
+    }
+    return this
+  }
+
   // Everything added since `from` is moved by the matrix.
   move(from: number, m: THREE.Matrix4): this {
     const v = new THREE.Vector3()
