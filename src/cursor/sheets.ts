@@ -18,8 +18,8 @@ const reach = (x: number, y: number, left: [number, number, number], right: [num
 
 // Standing idle, waving, holding, pulling, bracing to push. Hands in page pixels from the tip.
 const ARMS: { left: [number, number, number]; right: [number, number, number]; lean: number; grip: [number, number]; strain: number; squash: number }[] = [
-  { left: [-17, 76, 5], right: [50, 74, 5], lean: 0, grip: [0.3, 0.3], strain: 0, squash: 1 },
-  { left: [-15, -8, 12], right: [50, 74, 5], lean: -0.06, grip: [0, 0.3], strain: 0, squash: 1.06 },
+  { left: [-13, 67, 5], right: [47, 66, 5], lean: 0, grip: [0.3, 0.3], strain: 0, squash: 1 },
+  { left: [-15, -8, 12], right: [47, 66, 5], lean: -0.06, grip: [0, 0.3], strain: 0, squash: 1.06 },
   { left: [8, 60, 13], right: [36, 58, 13], lean: 0, grip: [1, 1], strain: 0, squash: 1 },
   { left: [64, 86, 9], right: [78, 74, 9], lean: -0.22, grip: [1, 1], strain: 0.9, squash: 1.1 },
   { left: [58, 26, 10], right: [62, 46, 10], lean: 0.12, grip: [0, 0], strain: 0.15, squash: 0.94 }
@@ -30,8 +30,8 @@ function acting(): CursorPose[] {
   const at = (i: number) => across(n, i, SHEET.acting.step)
   const y = SHEET.y
   return [
-    restPose(at(0), y, { acting: 'nervous', squash: 0.95, lean: -0.07, gulp: 0.45 }),
-    restPose(at(1), y + 10, { acting: 'shocked', squash: 1.36, lean: -0.08, z: hover + 14, reaction: 'doubleTake', reactionAt: 0.7 }),
+    restPose(at(0), y, { acting: 'nervous', squash: 0.95, lean: -0.07 }),
+    restPose(at(1), y - 20, { acting: 'shocked', squash: 1.36, lean: -0.08, z: hover + 6, reaction: 'doubleTake', reactionAt: 0.7 }),
     restPose(at(2), y, { acting: 'angry', squash: 1.03, lean: 0.08 }),
     restPose(at(3), y, { acting: 'scared', squash: 0.9, lean: -0.16, bend: -0.2 }),
     restPose(at(4), y, { acting: 'exhausted', squash: 0.78, lean: 0.14, bend: 0.45 }),

@@ -32,6 +32,8 @@ const GAIT: Record<Acting, { stiff: number; damp: number; stride: number; hop: n
 const SPRING = { squash: { k: 620, c: 26 }, lean: { k: 330, c: 17 }, bend: { k: 260, c: 13 }, sprout: { k: 2400, c: 58 } }
 const DRAG = { stride: 90, pulse: 0.2, lean: 0.34 }
 const ARM = { rest: 62, strain: 70, shed: 0.3 }
+// What the body can be drawn at: the springs may ask for more, the pose never does.
+const LIMIT = { short: 0.5, long: 1.5, lean: 0.8 }
 const GULP = { every: 2 * stepHz, steps: Math.round(0.55 * stepHz) }
 export const STRIPS = 9
 // Where a bolt strikes when nobody says where: the middle of the arrow's head, in the outline's units.
@@ -448,7 +450,7 @@ export class CursorBody {
     const arms = s.arms || shed
     const hands = s.arms ? s.hands : s.shedHands
     return {
-      x: s.x, y: s.y, z: s.z, squash: s.squash, lean: s.lean, spin: s.spin, acting: s.acting, reaction: s.reaction,
+      x: s.x, y: s.y, z: s.z, squash: Math.min(LIMIT.long, Math.max(LIMIT.short, s.squash)), lean: Math.min(LIMIT.lean, Math.max(-LIMIT.lean, s.lean)), spin: s.spin, acting: s.acting, reaction: s.reaction,
       reactionAt: s.reaction ? 1 - s.reactionLeft / REACTION_SECONDS[s.reaction] : 0,
       damage: s.damage.map((d) => d.kind), healing, arms: arms && hands !== null, hands: arms && hands ? [{ ...hands[0] }, { ...hands[1] }] : null, onPage: s.onPage, inBall: s.inBall, taken: s.taken !== null, scale: 1,
       bend: s.bend, feel: { ...s.feel }, gulp: s.gulp,
@@ -474,7 +476,7 @@ function pile(seed: number): LooseStrip[] {
     const h = (k: number) => hash01(i, k, seed)
     out.push({
       x: (h(1) - 0.5) * 8, y: 38 + h(2) * 12, z: 24 + h(3) * 30 + i * 2, rot: (h(4) - 0.5) * 0.3, tilt: (h(5) - 0.5) * 1.4,
-      vx: (i - (STRIPS - 1) / 2) * 9 + (h(6) - 0.5) * 50, vy: -(250 + h(7) * 90), vz: -90, vr: (i - (STRIPS - 1) / 2) * 0.55 + (h(8) - 0.5) * 2.6, vt: (h(9) - 0.5) * 10, rest: false
+      vx: (i - (STRIPS - 1) / 2) * 15 + (h(6) - 0.5) * 22, vy: -(250 + h(7) * 34), vz: -90, vr: (i - (STRIPS - 1) / 2) * 0.8 + (h(8) - 0.5) * 1.3, vt: (h(9) - 0.5) * 10, rest: false
     })
   }
   return out
@@ -527,7 +529,7 @@ function drop(p: LooseStrip, i: number): void {
 // Where a strip stands before it snaps true: a little out of line.
 export function askew(i: number, seed: number): Strip {
   const h = (k: number) => hash01(i, k + 20, seed)
-  return { x: (h(1) - 0.5) * 5, y: (h(2) - 0.5) * 13, z: i % 2 ? 2.4 : 0.6, rot: (h(3) - 0.5) * 0.07, tilt: 0 }
+  return { x: (h(1) - 0.5) * 3.4, y: (h(2) - 0.5) * 9, z: i % 2 ? 2 : 0.6, rot: (h(3) - 0.5) * 0.06, tilt: 0 }
 }
 
 const GATHER = { stand: 0.42, snap: 0.68, true: 0.76 }

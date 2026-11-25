@@ -108,7 +108,7 @@ class Limb {
     const dy = to.y - from.y
     const d = Math.max(1e-3, Math.hypot(dx, dy, to.z - from.z))
     const flat = Math.max(1e-3, Math.hypot(dx, dy))
-    const length = Math.min(ARM.rest, Math.max(14, d * 1.1))
+    const length = Math.min(ARM.rest, Math.max(14, d * 1.07))
     let px = -dy / flat
     let py = dx / flat
     const want = px * this.side * 0.857 - py * 0.514
