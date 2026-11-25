@@ -61,3 +61,23 @@ Parts `cursor-body` and `cursor-effects`. Branch `agent/cursor-model`. Owner of 
 ## Light: proposal
 
 `BodyModel.emit(out)` is in the contract. The body adds one emitter for a hot tip (orange red, power 0.06 times heat, reach 10 to 18 units) and one for each hole that still glows (orange, power 0.02 times glow squared, reach 5 units and 3 for each unit of radius), in the root's own space. The view calls it after `body.apply`, turns each by the body's turn, moves it to the page (page x = world x + 960, page y = 540 - world y) and passes it to `ctx.light`. The call in `src/cursor/view.ts` belongs to the owner of that file.
+
+## State at the limit
+
+MEASURED on commit 9fdffc0 on this VM, each with the command named:
+
+- `npm run still -- --sheet cursor-acting --format hd --tier review --force`: 13.4 s, 560026 triangles, 155 draw calls, no stand-in listed. The same at `--tier draft`: 6.5 s.
+- `npm run still -- --sheet cursor-damage --format hd --tier review --force`: 14.0 s, 525526 triangles, 111 draw calls, no stand-in listed.
+- `npm run still -- --sheet cursor-arms --format hd --tier review --force` (on 09fe465): 18.2 s, 1164530 triangles, 441 draw calls, no stand-in listed.
+- `npm run still -- --key step1-fire --format hd --tier review --force`: 21.7 s, 957523 triangles, 283 draw calls, no stand-in listed. At `--tier draft`: 10.9 s.
+- `npm run still -- --key step1-tug --format hd --tier review --force`: 20.6 s, 694583 triangles, 320 draw calls, no stand-in listed.
+- `npm run still -- --page pinball --beat pinball.launch --at 0.5` (on 09fe465): draws in 17.0 s, and its stand-in list names neither `cursor-body` nor `cursor-effects`.
+- One body is 4852 triangles and one draw call; its hole walls are one more draw call when a hole is open. Sweat is one instanced draw call (240 triangles a bead, at most 24), steam, smoke and dust one more (180 triangles a ball).
+
+Looks: more than the 40 allowed for a part were used on the body. Counting sweeps, sheets, keys and close crops, about 100 pictures were looked at across both parts. The body went past 40 at about 14:50, while the grey shards in the enamel were being traced.
+
+Least real, in my own judgment:
+
+1. What is seen through a hole is the page in the body's own shadow, a flat dark grey disc. On the approved sheet the body lies on the page and the hole shows lit paper. The hover is the config's and is not mine to change.
+2. The melt is a smooth cream lump with soft highlights. The approved one is a longer run with sharp wet highlights and brown in its folds. A try at fine ripples in the shader read as plaster and was taken out.
+3. At page size the enamel can read as pearl or chrome when the body is turned and stretched (the tug), because the wide picture of the lamp leaves part of the face. Sweat beads at page size are one or two pixels and read as specks.
