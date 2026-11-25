@@ -5,15 +5,15 @@ import { OUTLINE } from '../contract'
 export const AXIS: [number, number] = [0.409, 0.912]
 export const CENTRE: [number, number] = [4.2, 9.5]
 export const TOP = 2.3
-const ENAMEL_AT = 0.64
-const SHOULDER = 0.62
+const ENAMEL_AT = 0.76
+const SHOULDER = 0.44
 const RISE = 0.7
 const GROOVE = 1.4
 const SOFT = 6
 
 // The edge band's section: how far in from the outline, how high, in outline units.
 const BAND: [number, number][] = [
-  [0.08, 0], [0.015, 0.1], [0, 0.28], [0, 1.2], [0.035, 1.38], [0.12, 1.5], [0.26, 1.55], [0.44, 1.55], [0.54, 1.52], [0.6, GROOVE]
+  [0.08, 0], [0.015, 0.1], [0, 0.28], [0, 1.2], [0.04, 1.38], [0.14, 1.5], [0.31, 1.55], [0.53, 1.55], [0.65, 1.52], [0.72, GROOVE]
 ]
 const SHOULDER_TURNS = [0, 10, 22, 36, 52, 70]
 const RADII = [0.2, 0.3, 0.26, 0.3, 0.3, 0.26, 0.3]
