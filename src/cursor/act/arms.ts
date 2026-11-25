@@ -7,8 +7,12 @@ import type { ArmsLook, ArmsModel } from '../contract'
 // Sizes in page pixels. The arm is a rubber hose 7% of the body's height thick, the hand a fifth of it long.
 // A hose is `rest` long and never shorter. A hand nearer than that leaves the rest as slack: the hose leaves the body outward (`out`), bows round in one loop and comes to the hand along the line of its reach (`into`). A hand further away stretches it: it is still `taut` longer than the straight line, so it keeps a curve, and it thins by `thin` at full strain and by the root of its stretch. `most` is the longest a short reach may be for its length, so a hand that is still growing out does not throw a loop. An open hand that pushes bends back at the wrist by `wrist`; an open hand that hangs lets its fingers fall by `droop`.
 const H = config.cursor.heightPxAt1080
-export const ARM = { radius: H * 0.04, rest: 50, taut: 1.12, most: 2.1, out: 0.16, into: 0.3, ease: 0.45, thin: 0.12, along: 34, round: 12, grainPx: 64, wrist: 1, droop: 0.6, low: 0.15, rise: 0.55 }
-const HAND = { palm: [4.1, 3.7, 1.9], palmY: 3.6, finger: 1.15, joint: 3.2, joints: 8, curl: 0.5, knuckle: 0.65 }
+export const ARM = { radius: H * 0.04, rest: 48, taut: 1.18, most: 2.1, out: 0.16, into: 0.3, ease: 0.45, thin: 0.12, along: 34, round: 12, grainPx: 64, wrist: 1, droop: 0.6, low: 0.15, rise: 0.55, thick: 1.3, taper: 0.5, cuff: [1.3, 1.62, 1.62, 1.2] }
+const HAND = { palm: [4.5, 4, 2.3], palmY: 3.6, finger: 1.42, joint: 2.9, joints: 8, curl: 0.5, knuckle: 0.65 }
+// A hand that holds a sheet by its side edge: the arm leaves the shoulder outward and back (`side`, `back`), bends at an elbow and comes to the edge from outside the sheet (`into`). The two arms are not a pair: `lead` and `hand` set how far each elbow stands off at its shoulder end and at its hand end, first the left arm, then the right.
+const ELBOW = { lead: [1, 0.7], back: [0.4, 0.1], hand: [0.55, 1], side: 0.9, into: 0.3, least: 0.22 }
+// The same hand: the palm stands outside the edge, the fingers go down behind the sheet and the thumb lies on its face.
+const WRAP = { dive: 1.05, tip: 0.5, under: -1.4, thumb: [1.7, 5.2, 2.1], turn: 0.3, flat: 0.12 }
 
 export interface Arms extends ArmsModel {
   // How far the arms have grown, 0 to 1 and a little over: the hands swell with it.
@@ -17,6 +21,8 @@ export interface Arms extends ArmsModel {
   over: number
   // From the first shoulder to the second, a unit vector in the plane of the page: each hose bows away from the other.
   axis: [number, number]
+  // For each hand that holds a sheet by its side edge, the unit vector from that edge into the sheet. Null for a hand that holds nothing.
+  inward: [[number, number] | null, [number, number] | null]
 }
 
 let shared: { rubber: THREE.MeshPhysicalMaterial; grain: THREE.DataTexture; palm: THREE.BufferGeometry; joint: THREE.BufferGeometry } | null = null
@@ -27,12 +33,12 @@ function parts() {
   grain.repeat.set(2, 5)
   const rubber = studio(
     new THREE.MeshPhysicalMaterial({
-      color: new THREE.Color().setHex(0x1b1b1c, THREE.SRGBColorSpace),
-      roughness: 0.78,
+      color: new THREE.Color().setHex(0x222223, THREE.SRGBColorSpace),
+      roughness: 0.56,
       metalness: 0,
       normalMap: grain,
       normalScale: new THREE.Vector2(0.07, 0.07),
-      specularIntensity: 0.3
+      specularIntensity: 0.85
     })
   )
   const palm = new THREE.SphereGeometry(1, 20, 14).scale(HAND.palm[0]!, HAND.palm[1]!, HAND.palm[2]!)
@@ -54,6 +60,11 @@ class Limb {
   private c = new THREE.Vector3()
   private e = new THREE.Vector3()
   private lift = 0
+  private wrap = 0
+  private lx = 0
+  private ly = 0
+  private ax = 0
+  private ay = 0
   private p = new THREE.Vector3()
   private t = new THREE.Vector3()
   private n1 = new THREE.Vector3()
@@ -91,8 +102,11 @@ class Limb {
   }
 
   private bow(from: THREE.Vector3, to: THREE.Vector3, ex: number, ey: number, px: number, py: number, d: number, h: number): number {
-    this.c.set(from.x + px * h - ex * ARM.out * h, from.y + py * h - ey * ARM.out * h, 0)
-    this.e.set(to.x + px * h * ARM.ease - ex * ARM.into * d, to.y + py * h * ARM.ease - ey * ARM.into * d, 0)
+    const g = this.wrap
+    const lead = h * ELBOW.lead[this.slot]!
+    const hand = h * ELBOW.hand[this.slot]! + ELBOW.least * d
+    this.c.set(from.x + (px * h - ex * ARM.out * h) * (1 - g) + this.lx * lead * g, from.y + (py * h - ey * ARM.out * h) * (1 - g) + this.ly * lead * g, 0)
+    this.e.set(to.x + (px * h * ARM.ease - ex * ARM.into * d) * (1 - g) + this.ax * hand * g, to.y + (py * h * ARM.ease - ey * ARM.into * d) * (1 - g) + this.ay * hand * g, 0)
     let length = 0
     let x0 = from.x
     let y0 = from.y
@@ -107,7 +121,7 @@ class Limb {
     return length
   }
 
-  pose(d3: Draw, from: THREE.Vector3, to: THREE.Vector3, grip: number, strain: number, grown: number, axis: [number, number]): void {
+  pose(d3: Draw, from: THREE.Vector3, to: THREE.Vector3, grip: number, strain: number, grown: number, axis: [number, number], inward: [number, number] | null): void {
     const dx = to.x - from.x
     const dy = to.y - from.y
     const d = Math.max(1e-3, Math.hypot(dx, dy, to.z - from.z))
@@ -124,6 +138,16 @@ class Limb {
     }
     // An arm whose hand is on the far side of the body goes under it and comes out at the far edge: no arm lies over the white face.
     const across = Math.min(1, Math.max(0, (-this.side * (dx * axis[0] + dy * axis[1]) - 6) / 10))
+    this.wrap = inward ? grip : 0
+    if (inward) {
+      this.lx = this.side * axis[0] * ELBOW.side - ex * ELBOW.back[this.slot]!
+      this.ly = this.side * axis[1] * ELBOW.side - ey * ELBOW.back[this.slot]!
+      const ix = -inward[0] - ex * ELBOW.into
+      const iy = -inward[1] - ey * ELBOW.into
+      const il = Math.hypot(ix, iy) || 1
+      this.ax = ix / il
+      this.ay = iy / il
+    }
     this.lift = 0
     let lo = 0
     let hi = length
@@ -132,7 +156,7 @@ class Limb {
       if (this.bow(from, to, ex, ey, px, py, flat, mid) < length) lo = mid
       else hi = mid
     }
-    const h = lo * Math.min(1, Math.abs(want) * 3)
+    const h = lo * (Math.min(1, Math.abs(want) * 3) * (1 - this.wrap) + this.wrap)
     this.bow(from, to, ex, ey, px, py, flat, h)
     this.lift = (1 + h * 0.1) * (1 - across)
     const thin = Math.pow(Math.min(1, ARM.rest / length), 0.3) * (1 - ARM.thin * strain)
@@ -151,7 +175,8 @@ class Limb {
       this.n2.crossVectors(this.n1, this.t)
       // The shoulder end is closed to a round nose: an arm that starts on the body's face must not show an open tube.
       const nose = i === 0 ? 0.04 : i === 1 ? 0.6 : i === 2 ? 0.9 : 1
-      const r = ARM.radius * thin * (0.94 + 0.12 * u) * (0.35 + 0.65 * Math.min(1, grown)) * nose
+      const cuff = ARM.cuff[i - ARM.along + ARM.cuff.length - 1] ?? 1
+      const r = ARM.radius * thin * (ARM.thick - ARM.taper * u) * (0.35 + 0.65 * Math.min(1, grown)) * nose * cuff
       for (let j = 0; j <= ARM.round; j++) {
         const w = (j / ARM.round) * Math.PI * 2
         const cx = Math.cos(w)
@@ -198,11 +223,19 @@ class Limb {
     this.hand.position.copy(to)
     const size = (0.25 + 0.75 * Math.min(1.15, Math.max(0, grown))) * HAND_SCALE * (1 + FIST * grip)
     this.hand.scale.setScalar(size)
+    const w = this.wrap
+    const v = 1 - w
     for (const f of this.fingers) {
       const splay = f.open + (f.shut - f.open) * grip
-      f.base.position.set(f.x, f.y, f.thumb ? -0.4 * grip : 0)
-      f.base.rotation.set(f.thumb ? -0.9 * grip : -HAND.curl * grip - 0.14, f.thumb ? -0.5 * grip * this.side : 0, splay)
-      f.tip.rotation.x = f.thumb ? -0.9 * grip - 0.1 : -HAND.knuckle * grip - 0.22
+      if (f.thumb) {
+        f.base.position.set(f.x * v + WRAP.thumb[0]! * this.side * w, f.y * v + WRAP.thumb[1]! * w, -0.4 * grip * v + WRAP.thumb[2]! * w)
+        f.base.rotation.set(-0.9 * grip * v - WRAP.flat * w, -0.5 * grip * this.side * v, splay * v + WRAP.turn * this.side * w)
+        f.tip.rotation.x = (-0.9 * grip - 0.1) * v - WRAP.flat * w
+      } else {
+        f.base.position.set(f.x, f.y, WRAP.under * w)
+        f.base.rotation.set((-HAND.curl * grip - 0.14) * v - WRAP.dive * w, 0, splay)
+        f.tip.rotation.x = (-HAND.knuckle * grip - 0.22) * v - WRAP.tip * w
+      }
     }
     this.hand.updateMatrixWorld(true)
     d3.palms.setMatrixAt(this.slot, this.palm.matrixWorld)
@@ -213,7 +246,7 @@ class Limb {
   }
 }
 
-const HAND_SCALE = 1.05
+const HAND_SCALE = 1.3
 // A closed hand is a touch larger than an open one, so it is not lost on the sheet it holds.
 const FIST = 0.08
 
@@ -265,8 +298,9 @@ export const makeArms: (() => Arms) | null = () => {
     grown: 1,
     over: 0,
     axis: [1, 0],
+    inward: [null, null],
     apply(from: [THREE.Vector3, THREE.Vector3], to: [THREE.Vector3, THREE.Vector3], look: ArmsLook): void {
-      for (let i = 0; i < 2; i++) limbs[i]!.pose(draw, from[i]!, to[i]!, Math.min(1, Math.max(0, look.grip[i]!)), Math.min(1, Math.max(0, look.strain)), arms.grown, arms.axis)
+      for (let i = 0; i < 2; i++) limbs[i]!.pose(draw, from[i]!, to[i]!, Math.min(1, Math.max(0, look.grip[i]!)), Math.min(1, Math.max(0, look.strain)), arms.grown, arms.axis, arms.inward[i]!)
       position.needsUpdate = true
       normal.needsUpdate = true
       draw.palms.instanceMatrix.needsUpdate = true

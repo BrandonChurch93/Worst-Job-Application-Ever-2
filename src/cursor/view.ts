@@ -20,6 +20,8 @@ const half = config.table.ballPx / 2
 const HOLD = 4
 // An arm is rooted this share of the way in from the shoulder, so that it leaves from under the edge and never from beside it.
 const ROOT = 0.2
+// Two closed hands hold a sheet by its two side edges. Each stands `out` outside its edge, so that the palm is beside the sheet and the thumb on it. They are not level: one reaches `reach` further down its edge than the other, and it is the hand that is higher up the page, where a tilted sheet has the longer edge left. `tilt` is how fast the reach goes from one hand to the other as the sheet turns, `down` what each has when the sheet is square.
+const EDGE = { out: 6.5, down: [4, 0], reach: 10, tilt: 2, least: 12 }
 
 // One cursor made of its parts: the body, its effects and its arms, posed from what the cursor is doing.
 export class CursorView {
@@ -91,6 +93,23 @@ export class CursorView {
       // Let go: the hands spring back to the shoulders, fast at first, and the arms are gone under the body's edge.
       if (c.shed > 0) to.lerp(from, 1 - Math.pow(1 - c.shed, 3))
     }
+    const a = this.to[0]!
+    const b = this.to[1]!
+    const span = Math.hypot(b.x - a.x, b.y - a.y)
+    const held = Math.min(c.grip[0], c.grip[1]) * (c.shed > 0 ? 0 : 1)
+    if (held > 0 && span > EDGE.least) {
+      const ex = (b.x - a.x) / span
+      const ey = (b.y - a.y) / span
+      const away = (a.x + b.x - this.from[0]!.x - this.from[1]!.x) * -ey + (a.y + b.y - this.from[0]!.y - this.from[1]!.y) * ex < 0 ? -1 : 1
+      const high = Math.min(1, Math.max(0, 0.5 + ey * EDGE.tilt))
+      for (let i = 0; i < 2; i++) {
+        const side = i === 0 ? -1 : 1
+        const down = (EDGE.down[i]! + EDGE.reach * (i === 0 ? 1 - high : high)) * held * away
+        this.to[i]!.x += side * ex * EDGE.out * held - ey * down
+        this.to[i]!.y += side * ey * EDGE.out * held + ex * down
+      }
+      this.arms.inward = [[ex, ey], [-ex, -ey]]
+    } else this.arms.inward = [null, null]
     this.arms.grown = c.shed > 0 ? Math.pow(1 - c.shed, 1.5) : grown
     this.arms.over = c.z + 2 * (Math.max(this.from[0]!.z, this.from[1]!.z) - c.z)
     const ax = this.from[1]!.x - this.from[0]!.x
