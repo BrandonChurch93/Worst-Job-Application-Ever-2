@@ -46,13 +46,13 @@ function dropMaterial(): THREE.MeshPhysicalMaterial {
       vec3 wjaSide = wjaN - wjaV * dot( wjaN, wjaV );
       vec3 wjaLamp = normalize( wjaL - wjaV * dot( wjaL, wjaV ) );
       float wjaAway = -dot( wjaSide, wjaLamp );
-      float wjaGather = smoothstep( 0.2, 0.75, wjaAway ) * ( 1.0 - smoothstep( 0.82, 0.98, length( wjaSide ) ) );
+      float wjaGather = smoothstep( 0.1, 0.7, wjaAway ) * ( 1.0 - smoothstep( 0.84, 0.98, length( wjaSide ) ) );
       float wjaEdge = pow( 1.0 - wjaFacing, 1.7 );
       float wjaGlint = smoothstep( 0.9, 0.965, dot( reflect( -wjaV, wjaN ), wjaL ) );
       float wjaRim = pow( 1.0 - wjaFacing, 5.0 );
-      diffuseColor.a = 0.03 + 0.5 * wjaRim + 0.4 * smoothstep( 0.05, 0.85, -wjaAway ) * ( 1.0 - wjaRim );
+      diffuseColor.a = 0.05 + 0.62 * wjaRim + 0.5 * smoothstep( -0.1, 0.8, -wjaAway ) * ( 1.0 - wjaRim );
       outgoingLight *= 0.12 * ( 1.0 - 0.9 * wjaEdge );
-      outgoingLight += vec3( 0.5, 0.5, 0.47 ) * wjaGather + vec3( 2.6, 2.55, 2.45 ) * wjaGlint;
+      outgoingLight += vec3( 0.78, 0.78, 0.74 ) * wjaGather + vec3( 2.8, 2.75, 2.65 ) * wjaGlint;
       #include <opaque_fragment>
       `
     )
@@ -209,7 +209,7 @@ class Effects implements EffectsModel {
             break
           }
         }
-        const size = (0.3 + 0.62 * Math.pow(hash01(i, cycle, SEED + 5), 1.8)) * (0.8 + 0.2 * amount) * on * UNIT
+        const size = (0.4 + 0.7 * Math.pow(hash01(i, cycle, SEED + 5), 1.6)) * (0.8 + 0.2 * amount) * on * UNIT
         const flyer = hash01(i, cycle, SEED + 6) < 0.2
         let r = size
         let long = 1

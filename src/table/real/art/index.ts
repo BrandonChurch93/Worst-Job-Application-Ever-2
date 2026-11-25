@@ -19,11 +19,11 @@ const pictures = [...floors, ...masks, ...coats, lens, glow, relief]
 
 // The plate of a tier: its top face half a pixel above the zone's floor, the whole width of the page.
 const PLATE = { w: 1920, h: 1080, z: 0.5 }
-// What the print lies under: a hard clear coat, a little rougher where the coat map says the ball has run, with the orange peel of a sprayed lacquer.
+// What the print lies under: a hard clear coat, a little rougher where the coat map says the ball has run, with the orange peel of a sprayed lacquer. Where the coat map says leaf, the print is metal.
 const COAT = [
-  { roughness: 0.9, metalness: 0.0, coat: 1, coatRoughness: 0.08, peel: 0.045, specular: 0.25 },
-  { roughness: 0.95, metalness: 0.0, coat: 1, coatRoughness: 0.1, peel: 0.05, specular: 0.2 },
-  { roughness: 0.92, metalness: 0.0, coat: 1, coatRoughness: 0.09, peel: 0.05, specular: 0.25 }
+  { roughness: 0.48, leaf: true, coat: 1, peel: 0.045, specular: 0.25 },
+  { roughness: 0.95, leaf: false, coat: 1, peel: 0.05, specular: 0.2 },
+  { roughness: 0.92, leaf: false, coat: 1, peel: 0.05, specular: 0.25 }
 ]
 const WINDOW = { lift: 0.35, bump: 2.2, segments: 56, inset: 0.975 }
 
@@ -44,7 +44,8 @@ function plate(z: Zone): THREE.Mesh {
       new THREE.MeshPhysicalMaterial({
         map: floors[z.tier]!.texture(),
         roughness: c.roughness,
-        metalness: c.metalness,
+        metalness: c.leaf ? 1 : 0,
+        metalnessMap: c.leaf ? coats[z.tier]!.texture() : null,
         clearcoat: c.coat,
         clearcoatRoughness: 1,
         clearcoatRoughnessMap: coats[z.tier]!.texture(),
@@ -134,5 +135,5 @@ function drop(o: THREE.Object3D): void {
 }
 
 export const parts: Record<string, PartMaker | null> = {
-  'tier-art': whole('tier-art', { version: 'art-1', ready: () => pictures.every((p) => p.ready()), build, pose, drop })
+  'tier-art': whole('tier-art', { version: 'art-2', ready: () => pictures.every((p) => p.ready()), build, pose, drop })
 }
