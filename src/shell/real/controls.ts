@@ -37,15 +37,26 @@ function discUv(g: THREE.BufferGeometry, d: number): THREE.BufferGeometry {
   return g
 }
 
-const RIM = 2.4
+const RIM = 3.4
 
 // The aluminium sleeve of a pocket: a thin flat rim at the surface and a wall that leans in, down to what lies in the pocket.
 function sleeve(s: Shape, surface: number, lean: number): THREE.BufferGeometry {
   const top = surface - 0.2
+  const foot = RIM - 0.4 + lean * (top - 0.8)
   const points: ProfilePoint[] = [
-    [0.1, top - 0.7, true], [0.5, top, true], [RIM - 0.9, top, true], [RIM - 0.4, top - 0.45, true], [RIM - 0.4 + lean * (top - 0.45), 0, true], [RIM - 0.4 + lean * (top - 0.45), -0.4, true]
+    [0.1, top - 1.2, true], ...arc(0.1, top - 0.8, 1.1, 0.8, 4), ...bead(RIM - 1.4, top, 1, 0.8, 4).slice(1), [foot, 0, true], [foot, -0.4, true]
   ]
   return sweep(outlineOf(s, 0, 12), profile(points), false)
+}
+
+// The inner quarter of a rounded rim: from its flat top down to where the wall begins.
+function bead(inset: number, z: number, across: number, fall: number, steps: number): ProfilePoint[] {
+  const out: ProfilePoint[] = []
+  for (let i = 0; i <= steps; i++) {
+    const a = (i / steps) * (Math.PI / 2)
+    out.push([inset + across * Math.sin(a), z - fall * (1 - Math.cos(a))])
+  }
+  return out
 }
 
 const SOAK = 7
@@ -138,9 +149,12 @@ function field(s: Shape): THREE.Object3D {
   return root
 }
 
+const CROWN_RAIL = 1.2
+const CROWN_BUTTON = 1.3
+
 function rail(s: Shape): THREE.Object3D {
   const under = pocketCut(s).under
-  return mesh(shared(`rail:${dims(s)}`, () => sweep(outlineOf(s, 0.15, 16), profile([[0, -under, true], [0, -0.3, true], [0.3, 0, true]]))), materials().aluminium, false)
+  return mesh(shared(`rail:${dims(s)}`, () => sweep(outlineOf(s, 0.15, 16), profile([[0, -under, true], [0, -0.2, true], ...[0.8, 0.6, 0.4, 0.2, 0.05].map((t): ProfilePoint => [(s.h / 2) * (1 - t), -0.2 + CROWN_RAIL * (1 - t * t)])]))), materials().aluminium, false)
 }
 
 function socket(s: Shape): THREE.Object3D {
@@ -167,7 +181,7 @@ function progressButton(s: Shape, current: boolean): THREE.Object3D {
   const up = h - foot
   const d = s.w
   const points: ProfilePoint[] = current
-    ? [[0, foot - 0.5, true], [0, foot + up * 0.16], ...arc(0, foot + up * 0.16, 3.4, up * 0.2, 5).slice(1), [5.2, foot + up * 0.36], [5.6, foot + up * 0.4], [5.6, foot + up * 0.66], ...arc(5.6, foot + up * 0.66, 9, up * 0.34, 8).slice(1)]
+    ? [[0, foot - 0.5, true], [0, foot + up * 0.16], ...arc(0, foot + up * 0.16, 3.4, up * 0.2, 5).slice(1), [5.2, foot + up * 0.36], [5.6, foot + up * 0.4], [5.6, foot + up * 0.66], ...arc(5.6, foot + up * 0.66, 9, up * 0.34 - CROWN_BUTTON, 8).slice(1), ...[0.82, 0.64, 0.46, 0.28, 0.12].map((t): ProfilePoint => [d / 2 - (d / 2 - 14.6) * t, h - CROWN_BUTTON * t * t])]
     : [[0, foot - 0.5, true], [0, foot + up * 0.3, true], [3.2, foot + up * 0.62, true], [5.2, foot + up * 0.62, true], [5.2, foot + up * 0.84], ...arc(5.2, foot + up * 0.84, 1.6, up * 0.16, 4).slice(1)]
   const g = shared(`progress:${dims(s)}:${current}`, () => discUv(sweep(circle(d / 2, 72), profile(points)), d))
   return mesh(g, current ? m.orange : m.aluminiumTurned)
@@ -182,18 +196,19 @@ function rule(s: Shape): THREE.Object3D {
 
 const roundEnds = (s: Shape): Outline => outlineOf({ kind: 'capsule', w: s.w, h: s.h }, 0, 6)
 
-const FRAME = 2.2
+const FRAME = 3
 
 // A glass card standing on the page: an aluminium band round its foot and a slab with a wide rounded shoulder.
 function card(s: Shape): THREE.Object3D {
   const m = materials()
   const root = new THREE.Group()
   const h = s.z1 - s.z0
-  const rise = Math.min(h * 0.5, 6)
-  const across = Math.min(11, Math.min(s.w, s.h) / 4)
+  const rise = Math.min(h * 0.25, 3)
+  const across = Math.min(13, Math.min(s.w, s.h) / 4)
   const band = h - rise
-  root.add(mesh(shared(`cardFrame:${dims(s)}`, () => sweep(outlineOf(s, 0, 14), profile([[0, 0, true], [0, band - 0.5, true], [0.5, band, true], [FRAME - 0.4, band, true], [FRAME, band - 0.5, true], [FRAME, 0.2, true]]), false)), m.aluminium))
-  root.add(mesh(shared(`cardGlass:${dims(s)}`, () => sweep(outlineOf(s, FRAME - 0.3, 14), profile([[0, 0.05, true], [0, band], ...arc(0, band, across, rise, 10).slice(1)]))), m.glassThick))
+  root.add(mesh(shared(`cardFrame:${dims(s)}`, () => sweep(outlineOf(s, 0, 14), profile([[0, 0, true], [0, band - 0.9, true], ...arc(0, band - 0.9, 1.1, 0.9, 4).slice(1), ...bead(FRAME - 1.1, band, 1.1, 0.9, 4).slice(1), [FRAME, 0.2, true]]), false)), m.aluminium))
+  root.add(mesh(shared(`cardBevel:${dims(s)}`, () => sweep(outlineOf(s, FRAME - 0.3, 14), profile([[0, 0.05, true], [0, band - 0.4, true], [0.4, band, true], [across, h, true]]), false)), m.glassThick))
+  root.add(mesh(shared(`cardFace:${dims(s)}`, () => sweep(outlineOf(s, FRAME - 0.3 + across, 14), [{ inset: 0, z: h, out: 0, up: 1 }])), m.glassThick))
   if (s.id.endsWith('-zone')) root.add(dashes(s, h))
   return root
 }

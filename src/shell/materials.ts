@@ -56,13 +56,13 @@ export function grainHeights(size: number, seed: number): Float32Array {
     for (let i = 0; i < a.length; i++) a[i] = a[i]! - b[i]!
     return unit(a)
   }
-  const fine = band(0.55, 1.5)
-  const coarse = band(1.1, 2.8)
+  const fine = band(0.45, 1.1)
+  const coarse = band(0.9, 2.2)
   const h = new Float32Array(size * size)
   for (let i = 0; i < h.length; i++) {
     // Pits read as eggshell: the low side of the fine grain is pressed down, the high side is flattened.
     const f = fine[i]!
-    h[i] = 0.74 * (f < 0 ? f * 1.25 : f * 0.7) + 0.26 * coarse[i]!
+    h[i] = 0.8 * (f < 0 ? f * 1.3 : f * 0.65) + 0.2 * coarse[i]!
   }
   return unit(h)
 }
@@ -239,16 +239,16 @@ export function makeMaterials(seed: number): Materials {
   brushed.repeat.set(1 / 720, 1 / 420)
   const turned = turnedMaps(256, seed, 2.2)
   const physical = (o: THREE.MeshPhysicalMaterialParameters) => studio(new THREE.MeshPhysicalMaterial(o))
-  const ceramic = grained(physical({ color: srgb(0xecebe6), roughness: 0.74, metalness: 0, normalMap: grain, normalScale: new THREE.Vector2(0.12, 0.12), specularIntensity: 0.6 }), 0.5)
+  const ceramic = grained(physical({ color: srgb(0xecebe6), roughness: 0.74, metalness: 0, normalMap: grain, normalScale: new THREE.Vector2(0.09, 0.09), specularIntensity: 0.6 }), 0.5)
   const pocket = grained(physical({ color: srgb(0xdcdfdc), roughness: 0.8, metalness: 0, normalMap: grain, normalScale: new THREE.Vector2(0.08, 0.08), specularIntensity: 0.4 }), 0.3)
-  const glass = physical({ color: srgb(0xb3bfbd), roughness: 0.44, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8 })
-  const glassSunk = physical({ color: srgb(0xb3bfbd), roughness: 0.44, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8, vertexColors: true })
-  const glassThick = physical({ color: srgb(0xa7b0b1), roughness: 0.48, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8 })
+  const glass = physical({ color: srgb(0xc0cbc7), roughness: 0.44, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8 })
+  const glassSunk = physical({ color: srgb(0xc0cbc7), roughness: 0.44, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8, vertexColors: true })
+  const glassThick = physical({ color: srgb(0xa3acad), roughness: 0.48, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8 })
   const aluminium = physical({
-    color: srgb(0xb9bdc1), roughness: 0.3, metalness: 1, normalMap: brushed, normalScale: new THREE.Vector2(0.22, 0.22), anisotropy: 0.72, anisotropyRotation: Math.PI / 2
+    color: srgb(0xc4c8cb), roughness: 0.3, metalness: 1, normalMap: brushed, normalScale: new THREE.Vector2(0.22, 0.22), anisotropy: 0.72, anisotropyRotation: Math.PI / 2
   })
   const aluminiumTurned = physical({
-    color: srgb(0x8b9096), roughness: 0.24, metalness: 1, normalMap: turned.normal, normalScale: new THREE.Vector2(0.3, 0.3), anisotropy: 0.62, anisotropyMap: turned.direction
+    color: srgb(0x8b9096), roughness: 0.17, metalness: 1, normalMap: turned.normal, normalScale: new THREE.Vector2(0.3, 0.3), anisotropy: 0.85, anisotropyMap: turned.direction
   })
   const orange = physical({ color: srgb(0xc24400), roughness: 0.5, metalness: 0, clearcoat: 0.3, clearcoatRoughness: 0.09, specularIntensity: 0.8, specularColor: srgb(0xff9a52) })
   const gap = physical({ color: srgb(0x23211f), roughness: 0.85, metalness: 0, specularIntensity: 0.3 })
