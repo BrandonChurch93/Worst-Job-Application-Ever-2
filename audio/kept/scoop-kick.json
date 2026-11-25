@@ -1,0 +1,117 @@
+{
+  "id": "scoop-kick",
+  "kind": "cue",
+  "cue": "scoop-kick",
+  "variant": null,
+  "class": "hit",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A ball dropping in a hole and being kicked out by a solenoid",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A ball dropping into a hole in a pinball table and kicked out by a solenoid, a clunk then a sharp kick, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.6,
+    "loop": false,
+    "influence": null,
+    "call": 83
+  },
+  "askedSeconds": 0.6,
+  "cost": "7",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "20891f6c83d9cd94426f56ca0eac1d7213c03b056fea30a98d880b72d757428a",
+    "filed": "2026-11-25T18:16:21.138Z",
+    "measured": {
+      "seconds": 0.6,
+      "start": 0,
+      "end": 0.6,
+      "peakDb": -9.12,
+      "rmsDb": -30.14,
+      "lufs": -28.19,
+      "truePeakDb": -9.11,
+      "low": 0.163,
+      "mid": 0.827,
+      "high": 0.01,
+      "tailDb": -66.64,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.2,
+          "peakDb": -9.12
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.6,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -5,
+    "gainDb": 3.98,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.6,
+    "start": 0,
+    "end": 0.346,
+    "peakDb": -5,
+    "rmsDb": -23.85,
+    "lufs": -27.31,
+    "truePeakDb": -5,
+    "low": 0.161,
+    "mid": 0.83,
+    "high": 0.009,
+    "tailDb": -54.82,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.204,
+        "peakDb": -5
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+    "asks": 2,
+    "whole": 2,
+    "heard": "A hard ball drops into a mechanism and is immediately struck and ejected. / A ball dropping into a hole and being forcefully ejected by a mechanical mechanism.",
+    "madeOf": "metal / Metal and plastic",
+    "events": "2 / 2",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The audio features a sharp metallic click of a ball landing, instantly followed by a louder mechanical thud and rolling sound characteristic of a solenoid firing.",
+      "The recording consists of an initial clatter of a hard round object landing in a receptacle, followed shortly by a loud, sharp mechanical snap characteristic of a solenoid actuating."
+    ],
+    "heardRaisedByDb": 6.12
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "scoop-kick.wav",
+  "seconds": 0.6,
+  "sha256": "38673019b823baea09f7e5c362f5d3907227032f78e59e6b5e7e51dce6ca55e6"
+}

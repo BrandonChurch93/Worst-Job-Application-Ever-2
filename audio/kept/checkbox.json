@@ -1,0 +1,122 @@
+{
+  "id": "checkbox",
+  "kind": "cue",
+  "cue": "checkbox",
+  "variant": null,
+  "class": "tick",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A small crisp tick",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A small crisp tick, a tiny plastic switch clicking once, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 101
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "c044416d386748d20a55e389ffca1b9c1c179122d4c744d30108c8a623ae836d",
+    "filed": "2026-11-25T18:17:05.347Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0.004,
+      "end": 0.07,
+      "peakDb": -5.85,
+      "rmsDb": -29.62,
+      "lufs": -31.2,
+      "truePeakDb": -5.17,
+      "low": 0.001,
+      "mid": 0.154,
+      "high": 0.844,
+      "tailDb": -56.83,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0.01,
+          "end": 0.054,
+          "peakDb": -5.85
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0.004,
+    "trimEnd": 0.07,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 16.5,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -16,
+    "gainDb": -10.13,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.066,
+    "start": 0,
+    "end": 0.056,
+    "peakDb": -16,
+    "rmsDb": -39.05,
+    "lufs": -36.53,
+    "truePeakDb": -15.32,
+    "low": 0.001,
+    "mid": 0.154,
+    "high": 0.845,
+    "tailDb": -47.44,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0.006,
+        "end": 0.05,
+        "peakDb": -16
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
+    "asks": 6,
+    "whole": 1,
+    "heard": "A single short, crisp tick or click.",
+    "madeOf": "plastic or metal",
+    "events": "1",
+    "voice": null,
+    "voiceVotes": "0 yes, 1 no",
+    "word": null,
+    "wordVotes": "0 yes, 1 no",
+    "music": null,
+    "musicVotes": "0 yes, 1 no",
+    "melody": null,
+    "melodyVotes": "0 yes, 1 no",
+    "fits": null,
+    "fitsVotes": "1 yes, 0 no",
+    "basis": [
+      "The audio contains exactly one brief, sharp mechanical clicking sound."
+    ],
+    "heardRaisedByDb": 2.85
+  },
+  "why": "not judged by ear: 1 whole answers in 6 asks",
+  "forced": true,
+  "problems": [
+    "the listener left \"voice\" unanswered",
+    "the listener left \"word\" unanswered",
+    "the listener left \"music\" unanswered",
+    "the listener left \"melody\" unanswered",
+    "the listener left \"fits\" unanswered"
+  ],
+  "fixture": false,
+  "file": "checkbox.wav",
+  "seconds": 0.066,
+  "sha256": "34c8ca8f020c3e36ddc12eb24766207d73f5d1e6d565a462a9a1b7bda0a47581"
+}

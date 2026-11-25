@@ -1,0 +1,116 @@
+{
+  "id": "key-press.4",
+  "kind": "cue",
+  "cue": "key-press",
+  "variant": 4,
+  "class": "tick",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "One mechanical key cap, down and up",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "One mechanical keyboard key cap pressed down and released, a single crisp plastic click, very close microphone, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 44
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "5e67e9fcfe0595b24977f39937bb0c40e0064ea2b4253e5177a4aafe38316326",
+    "filed": "2026-11-25T18:13:31.496Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0.046,
+      "end": 0.17,
+      "peakDb": -0.74,
+      "rmsDb": -21.45,
+      "lufs": -21.04,
+      "truePeakDb": -0.25,
+      "low": 0.089,
+      "mid": 0.497,
+      "high": 0.414,
+      "tailDb": -55.2,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0.068,
+          "end": 0.14,
+          "peakDb": -0.74
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0.048,
+    "trimEnd": 0.17,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 30.5,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -16,
+    "gainDb": -15.66,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.122,
+    "start": 0.002,
+    "end": 0.106,
+    "peakDb": -16,
+    "rmsDb": -36.39,
+    "lufs": -34.68,
+    "truePeakDb": -15.65,
+    "low": 0.081,
+    "mid": 0.501,
+    "high": 0.418,
+    "tailDb": -45.52,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0.02,
+        "end": 0.092,
+        "peakDb": -16
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 2 whole, 1 void",
+    "asks": 3,
+    "whole": 2,
+    "heard": "A single press and release of a mechanical keyboard key. / A mechanical keyboard key is pressed down and released.",
+    "madeOf": "Plastic and metal / plastic and metal",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The recording contains the crisp, distinct double-click acoustic signature of a mechanical keyboard switch being pushed down and springing back up.",
+      "The audio contains the characteristic sharp, two-part click of a plastic mechanical switch being actuated."
+    ]
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "key-press.4.wav",
+  "seconds": 0.122,
+  "sha256": "740ca468c2a081ccdcb2ed464f36e04a0d53c508caa86818404ec8746249aa04"
+}

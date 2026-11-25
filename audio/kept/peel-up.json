@@ -1,0 +1,117 @@
+{
+  "id": "peel-up",
+  "kind": "cue",
+  "cue": "peel-up",
+  "variant": null,
+  "class": "tick",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "Something thin peeling off a smooth surface and popping back to shape",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "Something thin and rubbery peeling off a smooth glass surface and popping back to shape, a short peel then a small pop, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.6,
+    "loop": false,
+    "influence": null,
+    "call": 73
+  },
+  "askedSeconds": 0.6,
+  "cost": "7",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "edfd0791a80a2f3984b7d9a49010e265db7df19ea77f790e363896788de66f84",
+    "filed": "2026-11-25T18:15:25.326Z",
+    "measured": {
+      "seconds": 0.6,
+      "start": 0,
+      "end": 0.6,
+      "peakDb": -24.01,
+      "rmsDb": -44.14,
+      "lufs": -36.95,
+      "truePeakDb": -23.81,
+      "low": 0.016,
+      "mid": 0.23,
+      "high": 0.754,
+      "tailDb": -54.14,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.468,
+          "peakDb": -24.01
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.6,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -16,
+    "gainDb": 8.28,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.6,
+    "start": 0,
+    "end": 0.542,
+    "peakDb": -16,
+    "rmsDb": -35.46,
+    "lufs": -31.71,
+    "truePeakDb": -16,
+    "low": 0.005,
+    "mid": 0.232,
+    "high": 0.763,
+    "tailDb": -47.08,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0.002,
+        "end": 0.466,
+        "peakDb": -16
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 2 whole, 1 void",
+    "asks": 3,
+    "whole": 2,
+    "heard": "A thin object is peeled off a smooth surface and sharply pops back into shape. / A thin material peeling off a surface and then snapping or popping back into place.",
+    "madeOf": "plastic / plastic or rubber",
+    "events": "1 / 2",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The recording features a brief frictional peeling noise followed immediately by a sharp snap, characteristic of flexible plastic detaching.",
+      "The audio features a short, frictional sliding or unsticking noise followed immediately by a sharp, percussive snap."
+    ],
+    "heardRaisedByDb": 21.01
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "peel-up.wav",
+  "seconds": 0.6,
+  "sha256": "a5cf3aaafedb261a8f2e5e4e55a005aeddedf9c70cd9ecfc34d2598ef972b26b"
+}

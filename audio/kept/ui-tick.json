@@ -1,0 +1,116 @@
+{
+  "id": "ui-tick",
+  "kind": "cue",
+  "cue": "ui-tick",
+  "variant": null,
+  "class": "tick",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A small soft tick",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A small soft tick, a single tiny soft click, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 123
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "c88f2b68ce912bf9dccab44356a008b5167f74742c57cb808714dd55511537c2",
+    "filed": "2026-11-25T18:18:31.129Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0.158,
+      "end": 0.218,
+      "peakDb": -0.42,
+      "rmsDb": -23.14,
+      "lufs": -24.85,
+      "truePeakDb": -0.22,
+      "low": 0.002,
+      "mid": 0.334,
+      "high": 0.664,
+      "tailDb": -55.01,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0.178,
+          "end": 0.206,
+          "peakDb": -0.42
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0.172,
+    "trimEnd": 0.218,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 11.5,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -16,
+    "gainDb": -15.58,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.046,
+    "start": 0.002,
+    "end": 0.042,
+    "peakDb": -16,
+    "rmsDb": -36.96,
+    "lufs": -34.4,
+    "truePeakDb": -15.99,
+    "low": 0.001,
+    "mid": 0.334,
+    "high": 0.665,
+    "tailDb": -56.55,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0.006,
+        "end": 0.034,
+        "peakDb": -16
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+    "asks": 2,
+    "whole": 2,
+    "heard": "A single, short tick or click. / A single, short, soft tick or click is heard.",
+    "madeOf": "plastic or metal / plastic or metal",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The recording consists of one very brief, distinct ticking sound.",
+      "The recording contains a single, brief, high-frequency mechanical clicking or ticking sound with no vocal or musical elements."
+    ]
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "ui-tick.wav",
+  "seconds": 0.046,
+  "sha256": "b44a2571a430282f12d7136ca9577f424ad99f411a4b44184d53f502794361dd"
+}

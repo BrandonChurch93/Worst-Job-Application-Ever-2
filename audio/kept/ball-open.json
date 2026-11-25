@@ -1,0 +1,120 @@
+{
+  "id": "ball-open",
+  "kind": "cue",
+  "cue": "ball-open",
+  "variant": null,
+  "class": "hit",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A hard plastic shell cracking open and its two halves rattling on a hard floor",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A hard clear plastic shell cracking open and its two halves rattling on a hard floor, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.7,
+    "loop": false,
+    "influence": null,
+    "call": 100
+  },
+  "askedSeconds": 0.7,
+  "cost": "8",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "f3a0b702bc519d3e326026a2807d0e254cc21ad93b9d43ea21133439f732acd8",
+    "filed": "2026-11-25T18:17:02.906Z",
+    "measured": {
+      "seconds": 0.68,
+      "start": 0,
+      "end": 0.404,
+      "peakDb": -15.2,
+      "rmsDb": -46.98,
+      "lufs": -40.66,
+      "truePeakDb": -14.67,
+      "low": 0.001,
+      "mid": 0.22,
+      "high": 0.779,
+      "tailDb": -63.51,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0.012,
+          "end": 0.144,
+          "peakDb": -15.2
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0.01,
+    "trimEnd": 0.404,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 98.5,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -5,
+    "gainDb": 10.21,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.394,
+    "start": 0,
+    "end": 0.27,
+    "peakDb": -5,
+    "rmsDb": -35.02,
+    "lufs": -33.41,
+    "truePeakDb": -4.5,
+    "low": 0.001,
+    "mid": 0.22,
+    "high": 0.779,
+    "tailDb": -36.88,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0.002,
+        "end": 0.134,
+        "peakDb": -5
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
+    "asks": 6,
+    "whole": 0,
+    "heard": null,
+    "madeOf": null,
+    "events": null,
+    "voice": null,
+    "voiceVotes": "0 yes, 0 no",
+    "word": null,
+    "wordVotes": "0 yes, 0 no",
+    "music": null,
+    "musicVotes": "0 yes, 0 no",
+    "melody": null,
+    "melodyVotes": "0 yes, 0 no",
+    "fits": null,
+    "fitsVotes": "0 yes, 0 no",
+    "basis": [],
+    "heardRaisedByDb": 12.2
+  },
+  "why": "not judged by ear: 0 whole answers in 6 asks",
+  "forced": true,
+  "problems": [
+    "the listener left \"voice\" unanswered",
+    "the listener left \"word\" unanswered",
+    "the listener left \"music\" unanswered",
+    "the listener left \"melody\" unanswered",
+    "the listener left \"fits\" unanswered"
+  ],
+  "fixture": false,
+  "file": "ball-open.wav",
+  "seconds": 0.394,
+  "sha256": "a0d937e8f55b54b1f4433838bf8d460613dd5316fdcb8f1f6e7b17fcb042584c"
+}

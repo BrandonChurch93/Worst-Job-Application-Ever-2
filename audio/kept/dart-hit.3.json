@@ -1,0 +1,117 @@
+{
+  "id": "dart-hit.3",
+  "kind": "cue",
+  "cue": "dart-hit",
+  "variant": 3,
+  "class": "tick",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A small spark on metal",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "One small dart striking a metal plate, a tiny bright tick with a spark, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 111
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "68ec8f2bf5b028ecf83d5ad3cac8ea92c613b13fdbdca3e4f3f0bdba8ebf20f1",
+    "filed": "2026-11-25T18:18:00.709Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0,
+      "end": 0.48,
+      "peakDb": -55.08,
+      "rmsDb": -74.71,
+      "lufs": null,
+      "truePeakDb": -54.6,
+      "low": 0.381,
+      "mid": 0.429,
+      "high": 0.191,
+      "tailDb": -30.49,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.48,
+          "peakDb": -55.08
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.2,
+    "cutToSeconds": 0.2,
+    "fadeInMs": 3,
+    "fadeOutMs": 50,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -16,
+    "gainDb": 39.89,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.2,
+    "start": 0,
+    "end": 0.198,
+    "peakDb": -16,
+    "rmsDb": -32.57,
+    "lufs": -31.35,
+    "truePeakDb": -15.75,
+    "low": 0.167,
+    "mid": 0.572,
+    "high": 0.261,
+    "tailDb": -39.98,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.178,
+        "peakDb": -16
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+    "asks": 2,
+    "whole": 2,
+    "heard": "A brief, sharp snap or click is heard, resembling a tiny electrical discharge hitting a hard surface. / A single, brief, high-pitched metallic clink or strike.",
+    "madeOf": "Metal / Metal",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The audio contains a single short, sharp transient sound that perfectly aligns with the acoustic profile of a small spark.",
+      "The audio consists of a single, sharp, high-frequency impact sound that resonates briefly, characteristic of a tiny piece of metal being struck or a spark."
+    ],
+    "heardRaisedByDb": 52.08
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "dart-hit.3.wav",
+  "seconds": 0.2,
+  "sha256": "51706182d4640cc279fa78ce7da9751689addade6617606a00e00d89151f591b"
+}

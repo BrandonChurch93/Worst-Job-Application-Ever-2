@@ -4,7 +4,7 @@ This build may spend at most 10000 ElevenLabs credits in all, on every call of e
 
 The count is of this build's own calls, never of what the account has left: the account is shared with other builds. Every call goes through `npm run credits`, which writes its row here before it returns and makes no call that would pass the limit. A sound effect is never asked for without its length. `kit/addenda/001-sound-budget-and-narrator.md` sets these rules. This file is written by the tool from `audio/CREDITS.json`.
 
-Running total: 1917 of 10000. Calls: 125.
+Running total: 2183 of 10000. Calls: 139.
 
 ## Rates
 
@@ -140,3 +140,17 @@ Running total: 1917 of 10000. Calls: 125.
 | 123 | 2026-11-25T18:18:28Z | POST /v1/sound-generation | ui-tick take 1 | 0.5 s for a cue of 0.08 s | HTTP 200, 2.3 s | 6 | reported by the response | 1905 |
 | 124 | 2026-11-25T18:18:31Z | POST /v1/sound-generation | key-tap take 1 | 0.5 s for a cue of 0.1 s | HTTP 200, 2.4 s | 6 | reported by the response | 1911 |
 | 125 | 2026-11-25T18:18:34Z | POST /v1/sound-generation | ui-send take 1 | 0.5 s for a cue of 0.3 s | HTTP 200, 2.2 s | 6 | reported by the response | 1917 |
+| 126 | 2026-11-25T18:30:09Z | POST /v1/text-to-speech | line.live.idle.0 take 1, breaks of 1.3 s | 105 characters, stability 0.75, speed 0.7 | HTTP 200, 1.1 s | 37 | reported by the response | 1954 |
+| 127 | 2026-11-25T18:30:10Z | POST /v1/text-to-speech | line.live.idle.1 take 1, breaks of 1.9 s | 58 characters, stability 0.75, speed 0.7 | HTTP 200, 0.9 s | 21 | reported by the response | 1975 |
+| 128 | 2026-11-25T18:30:11Z | POST /v1/text-to-speech | line.live.hit.0 take 1, breaks of 0.0 s | 4 characters, stability 0.75, speed 0.7 | HTTP 200, 0.9 s | 2 | reported by the response | 1977 |
+| 129 | 2026-11-25T18:30:12Z | POST /v1/text-to-speech | line.live.hit.1 take 1, breaks of 0.0 s | 6 characters, stability 0.75, speed 0.7 | HTTP 200, 0.8 s | 3 | reported by the response | 1980 |
+| 130 | 2026-11-25T18:30:13Z | POST /v1/text-to-speech | line.live.hit.2 take 1, breaks of 1.1 s | 49 characters, stability 0.75, speed 0.7 | HTTP 200, 0.9 s | 17 | reported by the response | 1997 |
+| 131 | 2026-11-25T18:30:14Z | POST /v1/text-to-speech | line.live.hit.3 take 1, breaks of 1.0 s | 46 characters, stability 0.75, speed 0.7 | HTTP 200, 0.8 s | 15 | reported by the response | 2012 |
+| 132 | 2026-11-25T18:30:16Z | POST /v1/text-to-speech | line.live.slowTyping.0 take 1, breaks of 1.0 s | 44 characters, stability 0.75, speed 0.7 | HTTP 200, 0.8 s | 15 | reported by the response | 2027 |
+| 133 | 2026-11-25T18:30:17Z | POST /v1/text-to-speech | line.live.realKeyboard.0 take 1, breaks of 1.1 s | 54 characters, stability 0.75, speed 0.7 | HTTP 200, 1.0 s | 19 | reported by the response | 2046 |
+| 134 | 2026-11-25T18:30:18Z | POST /v1/text-to-speech | line.live.tugLost.0 take 1, breaks of 1.1 s | 53 characters, stability 0.75, speed 0.7 | HTTP 200, 0.9 s | 18 | reported by the response | 2064 |
+| 135 | 2026-11-25T18:30:19Z | POST /v1/text-to-speech | line.live.pinball.flipper.0 take 1, breaks of 1.0 s | 92 characters, stability 0.75, speed 0.7 | HTTP 200, 1.1 s | 31 | reported by the response | 2095 |
+| 136 | 2026-11-25T18:30:20Z | POST /v1/text-to-speech | line.live.boss.verify.0 take 1, breaks of 1.4 s | 50 characters, stability 0.75, speed 0.7 | HTTP 200, 0.9 s | 17 | reported by the response | 2112 |
+| 137 | 2026-11-25T18:30:22Z | POST /v1/text-to-speech | line.live.boss.slow.0 take 1, breaks of 1.4 s | 56 characters, stability 0.75, speed 0.7 | HTTP 200, 0.9 s | 20 | reported by the response | 2132 |
+| 138 | 2026-11-25T18:30:23Z | POST /v1/text-to-speech | line.live.skip.0 take 1, breaks of 1.0 s | 88 characters, stability 0.75, speed 0.7 | HTTP 200, 1.0 s | 29 | reported by the response | 2161 |
+| 139 | 2026-11-25T18:30:24Z | POST /v1/text-to-speech | line.live.watchFilm.0 take 1, breaks of 1.1 s | 60 characters, stability 0.75, speed 0.7 | HTTP 200, 0.8 s | 22 | reported by the response | 2183 |

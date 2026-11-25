@@ -1,0 +1,117 @@
+{
+  "id": "tier-fall",
+  "kind": "cue",
+  "cue": "tier-fall",
+  "variant": null,
+  "class": "hit",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A ball dropping down a short metal chute and landing on wood",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A ball dropping down a short metal chute and landing on a wooden board, a metallic rattle then a knock, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.8,
+    "loop": false,
+    "influence": null,
+    "call": 92
+  },
+  "askedSeconds": 0.8,
+  "cost": "9",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "674478fbacf6235798e2f04e1f1d37be41262558e8509c0de34c2f822b526887",
+    "filed": "2026-11-25T18:16:42.974Z",
+    "measured": {
+      "seconds": 0.8,
+      "start": 0,
+      "end": 0.518,
+      "peakDb": -17.94,
+      "rmsDb": -38.82,
+      "lufs": -37.48,
+      "truePeakDb": -16.6,
+      "low": 0.355,
+      "mid": 0.644,
+      "high": 0.001,
+      "tailDb": -56.17,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.238,
+          "peakDb": -17.94
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.518,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -5,
+    "gainDb": 12.57,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.518,
+    "start": 0,
+    "end": 0.404,
+    "peakDb": -5,
+    "rmsDb": -25.5,
+    "lufs": -28.97,
+    "truePeakDb": -5,
+    "low": 0.309,
+    "mid": 0.69,
+    "high": 0,
+    "tailDb": -52.23,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.24,
+        "peakDb": -5
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 6 asks, 2 whole, 4 void",
+    "asks": 6,
+    "whole": 2,
+    "heard": "A hard object rolls down a metallic surface and culminates in a hollow thump against a wooden surface. / A small solid object rolls down a metal slide and hits a wooden surface.",
+    "madeOf": "Metal and wood / Metal and wood",
+    "events": "2 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The audio consists of a continuous metallic rolling noise followed by a distinct wooden impact, perfectly aligning with a ball traversing a metal chute and hitting wood.",
+      "The audio contains a metallic rolling sound followed immediately by a wooden thud, which matches the described action."
+    ],
+    "heardRaisedByDb": 14.94
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "tier-fall.wav",
+  "seconds": 0.518,
+  "sha256": "e63033870835ebef9c62c0047122d1e7a4ce654c47e0bf924ff515974f62c687"
+}

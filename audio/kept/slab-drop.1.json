@@ -1,0 +1,117 @@
+{
+  "id": "slab-drop.1",
+  "kind": "cue",
+  "cue": "slab-drop",
+  "variant": 1,
+  "class": "hit",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A very heavy block landing flat on ceramic",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "One very heavy ceramic block landing flat on a ceramic floor, a single deep hard thud, close microphone, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.8,
+    "loop": false,
+    "influence": null,
+    "call": 56
+  },
+  "askedSeconds": 0.8,
+  "cost": "9",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "7585a7136674d4428719c6199baae6a059a527050a81a580c66dbd127993ad85",
+    "filed": "2026-11-25T18:13:58.128Z",
+    "measured": {
+      "seconds": 0.8,
+      "start": 0.058,
+      "end": 0.558,
+      "peakDb": -2.43,
+      "rmsDb": -19.83,
+      "lufs": -19.63,
+      "truePeakDb": -0.52,
+      "low": 0.764,
+      "mid": 0.235,
+      "high": 0,
+      "tailDb": -55.48,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0.07,
+          "end": 0.222,
+          "peakDb": -2.43
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0.062,
+    "trimEnd": 0.558,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -5,
+    "gainDb": -1.63,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.496,
+    "start": 0.002,
+    "end": 0.298,
+    "peakDb": -5,
+    "rmsDb": -20.83,
+    "lufs": -23.74,
+    "truePeakDb": -5,
+    "low": 0.657,
+    "mid": 0.343,
+    "high": 0,
+    "tailDb": -52.04,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0.008,
+        "end": 0.152,
+        "peakDb": -5
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 4 asks, 3 whole, 1 void",
+    "asks": 4,
+    "whole": 3,
+    "heard": "A heavy object makes a single, deep thud as it lands on a hard surface. / A single, abrupt thud of a solid object hitting a hard surface. / A heavy block lands flat on a hard surface.",
+    "madeOf": "solid material such as wood, stone, or dense rubber / Wood, plastic, or a similar dense material / Wood or stone and ceramic",
+    "events": "1 / 1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 1 no",
+    "basis": [
+      "The audio consists of a single, brief, low-frequency impact sound devoid of vocal or musical elements, which is consistent with a heavy, flat object striking a rigid floor.",
+      "The sound is a muted, dull impact that lacks the sharp, brittle resonance usually heard when a heavy object strikes ceramic.",
+      "The audio features a single, loud, flat impact sound with a slight resonance typical of a heavy object striking a hard floor like ceramic."
+    ]
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "slab-drop.1.wav",
+  "seconds": 0.496,
+  "sha256": "fe750b78ea872bee23753f849ab9b6c98bc906b215ad1b32ba93ad51708b970a"
+}

@@ -1,0 +1,122 @@
+{
+  "id": "bolt-hit.1",
+  "kind": "cue",
+  "cue": "bolt-hit",
+  "variant": 1,
+  "class": "hit",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A hot crack on plastic or ceramic",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "One hot sharp crack of a small energy bolt striking hard plastic, a single dry snap with a tiny sizzle, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 51
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "fa4f4f8ffe95b385e13c03889372c233753294940afeb17cf401e1969eef9b66",
+    "filed": "2026-11-25T18:13:47.708Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0.022,
+      "end": 0.152,
+      "peakDb": 0.97,
+      "rmsDb": -18.78,
+      "lufs": -17.62,
+      "truePeakDb": 1.21,
+      "low": 0.023,
+      "mid": 0.416,
+      "high": 0.561,
+      "tailDb": -57.78,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0.026,
+          "end": 0.124,
+          "peakDb": 0.97
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0.024,
+    "trimEnd": 0.152,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 32,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -5,
+    "gainDb": -6.05,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.128,
+    "start": 0,
+    "end": 0.11,
+    "peakDb": -5,
+    "rmsDb": -24.13,
+    "lufs": -21.76,
+    "truePeakDb": -4.95,
+    "low": 0.016,
+    "mid": 0.419,
+    "high": 0.565,
+    "tailDb": -46.83,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0.002,
+        "end": 0.098,
+        "peakDb": -5
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
+    "asks": 6,
+    "whole": 1,
+    "heard": "A single sharp crack or click.",
+    "madeOf": "plastic or ceramic",
+    "events": "1",
+    "voice": null,
+    "voiceVotes": "0 yes, 1 no",
+    "word": null,
+    "wordVotes": "0 yes, 1 no",
+    "music": null,
+    "musicVotes": "0 yes, 1 no",
+    "melody": null,
+    "melodyVotes": "0 yes, 1 no",
+    "fits": null,
+    "fitsVotes": "1 yes, 0 no",
+    "basis": [
+      "The audio consists of a solitary, brief, high-frequency transient sound matching the acoustic properties of hard plastic or ceramic snapping or being struck."
+    ]
+  },
+  "why": "clipped as delivered: true peak 1.21 dB; not judged by ear: 1 whole answers in 6 asks",
+  "forced": true,
+  "problems": [
+    "the listener left \"voice\" unanswered",
+    "the listener left \"word\" unanswered",
+    "the listener left \"music\" unanswered",
+    "the listener left \"melody\" unanswered",
+    "the listener left \"fits\" unanswered",
+    "the take is clipped: its true peak is 1.21 dB"
+  ],
+  "fixture": false,
+  "file": "bolt-hit.1.wav",
+  "seconds": 0.128,
+  "sha256": "c61df6c1d095e41faf8cc5d2e371261acee9208cfc2559435fc983075a9790fc"
+}

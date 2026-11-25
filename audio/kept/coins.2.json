@@ -1,0 +1,126 @@
+{
+  "id": "coins.2",
+  "kind": "cue",
+  "cue": "coins",
+  "variant": 2,
+  "class": "hit",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "Coins bursting out and scattering on a hard surface",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A burst of metal coins pouring out and scattering on a hard metal tray, bright clinking, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 1.5,
+    "loop": false,
+    "influence": null,
+    "call": 69
+  },
+  "askedSeconds": 1.5,
+  "cost": "17",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "2cce6a353512aff902d0583df54ce6c1a865e4111c2c9a68fce4340ea209ba50",
+    "filed": "2026-11-25T18:15:15.541Z",
+    "measured": {
+      "seconds": 1.48,
+      "start": 0,
+      "end": 1.4,
+      "peakDb": -7.28,
+      "rmsDb": -29.24,
+      "lufs": -22.25,
+      "truePeakDb": -7.23,
+      "low": 0.001,
+      "mid": 0.025,
+      "high": 0.974,
+      "tailDb": -31.26,
+      "hits": 2,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.172,
+          "peakDb": -15.37
+        },
+        {
+          "start": 0.234,
+          "end": 1.302,
+          "peakDb": -7.28
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 1.4,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -5,
+    "gainDb": 2.35,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 1.4,
+    "start": 0,
+    "end": 1.338,
+    "peakDb": -5,
+    "rmsDb": -26.71,
+    "lufs": -22.93,
+    "truePeakDb": -4.94,
+    "low": 0.001,
+    "mid": 0.025,
+    "high": 0.975,
+    "tailDb": -28.29,
+    "hits": 2,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.172,
+        "peakDb": -13.15
+      },
+      {
+        "start": 0.234,
+        "end": 1.302,
+        "peakDb": -5
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+    "asks": 2,
+    "whole": 2,
+    "heard": "Multiple metallic items drop and scatter across a hard surface. / A collection of metallic objects hits a hard surface and scatters.",
+    "madeOf": "Metal / Metal",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The rapid succession of sharp, metallic clinks and ringing perfectly matches the sound of coins hitting and scattering over a solid surface.",
+      "The sharp, overlapping metallic clinking sounds are highly characteristic of coins spilling out and bouncing across a hard floor or table."
+    ]
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "coins.2.wav",
+  "seconds": 1.4,
+  "sha256": "13f4a5c804b40d7689a568eefa8618f911ba5fef4ce74d6afb5312b5cde83dde"
+}

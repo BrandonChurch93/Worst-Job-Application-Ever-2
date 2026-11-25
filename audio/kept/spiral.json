@@ -1,0 +1,137 @@
+{
+  "id": "spiral",
+  "kind": "cue",
+  "cue": "spiral",
+  "variant": null,
+  "class": "mechanism",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A hard plastic ball rolling round and down a plastic spiral, slowing",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A hard plastic ball rolling round and round down a plastic spiral ramp, slowing as it goes, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 2,
+    "loop": false,
+    "influence": null,
+    "call": 94
+  },
+  "askedSeconds": 2,
+  "cost": "22",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "6a52875a2953d1c70740fe2ca36de31d289decc5170a749aab0b99fa314d906f",
+    "filed": "2026-11-25T18:16:48.477Z",
+    "measured": {
+      "seconds": 2,
+      "start": 0.108,
+      "end": 1.964,
+      "peakDb": -14.53,
+      "rmsDb": -44.2,
+      "lufs": -38.33,
+      "truePeakDb": -11.29,
+      "low": 0.118,
+      "mid": 0.88,
+      "high": 0.002,
+      "tailDb": -48.15,
+      "hits": 2,
+      "hitsAt": [
+        {
+          "start": 0.146,
+          "end": 1.052,
+          "peakDb": -14.53
+        },
+        {
+          "start": 1.154,
+          "end": 1.268,
+          "peakDb": -28.63
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0.132,
+    "trimEnd": 1.964,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -10,
+    "gainDb": 4.2,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 1.832,
+    "start": 0.002,
+    "end": 1.606,
+    "peakDb": -10,
+    "rmsDb": -39.5,
+    "lufs": -37.23,
+    "truePeakDb": -9.99,
+    "low": 0.092,
+    "mid": 0.906,
+    "high": 0.002,
+    "tailDb": -56.85,
+    "hits": 4,
+    "hitsAt": [
+      {
+        "start": 0.014,
+        "end": 0.41,
+        "peakDb": -19.36
+      },
+      {
+        "start": 0.474,
+        "end": 0.796,
+        "peakDb": -10
+      },
+      {
+        "start": 0.86,
+        "end": 0.918,
+        "peakDb": -34.29
+      },
+      {
+        "start": 1.022,
+        "end": 1.138,
+        "peakDb": -24.53
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 2 whole, 1 void",
+    "asks": 3,
+    "whole": 2,
+    "heard": "A hard ball rolls continuously along a resonant track. / A hard plastic ball is heard rolling around and down a plastic spiral, gradually slowing to a stop.",
+    "madeOf": "plastic / plastic",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The continuous, resonant rolling and rattling sound perfectly matches the acoustic profile of a hard ball moving down a plastic spiral track.",
+      "The conclusion is based on the continuous, hollow rattling and rolling noise that matches the acoustic profile of a hard plastic object moving along a plastic track."
+    ],
+    "heardRaisedByDb": 11.53
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "spiral.wav",
+  "seconds": 1.832,
+  "sha256": "4dda30fcf41e71f572b6b6d5a995f38ba0ccd6cf92e2cc75bba03458f7c3e04e"
+}

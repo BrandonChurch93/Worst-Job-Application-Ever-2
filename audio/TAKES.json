@@ -2333,26 +2333,32 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
-        "asks": 6,
-        "whole": 0,
-        "heard": null,
-        "madeOf": null,
-        "events": null,
-        "voice": null,
-        "voiceVotes": "0 yes, 0 no",
-        "word": null,
-        "wordVotes": "0 yes, 0 no",
-        "music": null,
-        "musicVotes": "0 yes, 0 no",
-        "melody": null,
-        "melodyVotes": "0 yes, 0 no",
-        "fits": null,
-        "fitsVotes": "0 yes, 0 no",
-        "basis": []
+        "by": "the audio evaluation tool: 3 asks, 2 whole, 1 void",
+        "asks": 3,
+        "whole": 2,
+        "heard": "A stiff card turning over on a hard surface. / A stiff card is flipped over and slaps against a hard surface.",
+        "madeOf": "Cardboard or thick paper and a hard material like wood. / Cardstock",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The short scrape followed by a firm tap matches the acoustic profile of a stiff card being flipped onto a table.",
+          "The audio consists of a single, quick, crisp impact sound that perfectly matches the acoustic profile of a stiff paper card hitting a solid table."
+        ],
+        "heardRaisedByDb": 18.45
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "card-flip"
+      ],
       "why": ""
     },
     {
@@ -2416,8 +2422,10 @@
           "The audio consists solely of the subtle, continuous ambient noise floor of a quiet space, with no distinct foreground sounds occurring."
         ]
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "room-tone"
+      ],
       "why": ""
     },
     {
@@ -2460,28 +2468,32 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
+        "by": "the audio evaluation tool: 6 asks, 2 whole, 4 void",
         "asks": 6,
-        "whole": 1,
-        "heard": "A single soft tap of a hard object against a ceramic surface.",
-        "madeOf": "enamel and ceramic",
-        "events": "1",
-        "voice": null,
-        "voiceVotes": "0 yes, 1 no",
-        "word": null,
-        "wordVotes": "0 yes, 1 no",
-        "music": null,
-        "musicVotes": "0 yes, 1 no",
-        "melody": null,
-        "melodyVotes": "0 yes, 1 no",
-        "fits": null,
-        "fitsVotes": "1 yes, 0 no",
+        "whole": 2,
+        "heard": "A single, high-pitched clink of a hard object striking another. / A single, clear tap of a hard object against a ceramic surface.",
+        "madeOf": "enamel and ceramic / enamel and ceramic",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
         "basis": [
-          "The audio consists of a single, brief, high-pitched clink that matches the acoustic profile of enamel striking ceramic."
-        ]
+          "The audio contains exactly one short, sharp, and high-pitched tap consistent with a small enamel object gently hitting a ceramic surface.",
+          "The audio consists of a single, distinct, resonant clink characteristic of a hard material like enamel gently striking a ceramic vessel, with no other sounds present."
+        ],
+        "heardRaisedByDb": 37.11
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "step.1"
+      ],
       "why": ""
     },
     {
@@ -2524,28 +2536,32 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
-        "asks": 6,
-        "whole": 1,
-        "heard": "A single, sharp, light tap of a hard object against a ceramic or glass surface.",
-        "madeOf": "ceramic and enamel",
-        "events": "1",
-        "voice": null,
-        "voiceVotes": "0 yes, 1 no",
-        "word": null,
-        "wordVotes": "0 yes, 1 no",
-        "music": null,
-        "musicVotes": "0 yes, 1 no",
-        "melody": null,
-        "melodyVotes": "0 yes, 1 no",
-        "fits": null,
-        "fitsVotes": "1 yes, 0 no",
+        "by": "the audio evaluation tool: 3 asks, 2 whole, 1 void",
+        "asks": 3,
+        "whole": 2,
+        "heard": "A single soft clink is heard. / A single soft clink or tap of a hard object against tableware.",
+        "madeOf": "enamel and ceramic / enamel and ceramic",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
         "basis": [
-          "The audio consists of a single, brief, high-pitched clink characteristic of hard materials like enamel and ceramic striking each other."
-        ]
+          "The audio consists of exactly one short, high-pitched percussive strike that matches the acoustic properties of enamel hitting ceramic.",
+          "The audio consists of exactly one short, high-pitched clinking sound that is highly characteristic of a light tap between hard materials such as enamel and ceramic."
+        ],
+        "heardRaisedByDb": 13.44
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "step.2"
+      ],
       "why": ""
     },
     {
@@ -2588,26 +2604,32 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
-        "asks": 6,
-        "whole": 0,
-        "heard": null,
-        "madeOf": null,
-        "events": null,
-        "voice": null,
-        "voiceVotes": "0 yes, 0 no",
-        "word": null,
-        "wordVotes": "0 yes, 0 no",
-        "music": null,
-        "musicVotes": "0 yes, 0 no",
-        "melody": null,
-        "melodyVotes": "0 yes, 0 no",
-        "fits": null,
-        "fitsVotes": "0 yes, 0 no",
-        "basis": []
+        "by": "the audio evaluation tool: 4 asks, 2 whole, 2 void",
+        "asks": 4,
+        "whole": 2,
+        "heard": "A single, sharp tap of a hard object against a ceramic surface. / A single, sharp clink is produced by a light impact between two hard, brittle surfaces.",
+        "madeOf": "enamel and ceramic / enamel and ceramic",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The audio consists of exactly one short, high-pitched clink that matches the acoustic profile of enamel striking ceramic.",
+          "The audio consists of exactly one short, high-pitched acoustic event that perfectly matches the resonant sound of enamel tapping against ceramic."
+        ],
+        "heardRaisedByDb": 45.93
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "step.3"
+      ],
       "why": ""
     },
     {
@@ -2671,8 +2693,10 @@
           "The audio contains exactly one short, distinct clink characteristic of hard materials like enamel and ceramic colliding."
         ]
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "step.4"
+      ],
       "why": ""
     },
     {
@@ -2715,26 +2739,32 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
-        "asks": 6,
-        "whole": 0,
-        "heard": null,
-        "madeOf": null,
-        "events": null,
-        "voice": null,
-        "voiceVotes": "0 yes, 0 no",
-        "word": null,
-        "wordVotes": "0 yes, 0 no",
-        "music": null,
-        "musicVotes": "0 yes, 0 no",
-        "melody": null,
-        "melodyVotes": "0 yes, 0 no",
-        "fits": null,
-        "fitsVotes": "0 yes, 0 no",
-        "basis": []
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "heard": "A sharp, quick click of a button being pressed. / A sharp mechanical click occurs as a button is pressed.",
+        "madeOf": "Plastic / plastic",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The recording contains a single, abrupt clicking sound characteristic of a plastic mechanism hitting a hard stop.",
+          "The short, distinct clicking sound corresponds to a plastic button being depressed and bottoming out."
+        ],
+        "heardRaisedByDb": 40.45
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "button-press"
+      ],
       "why": ""
     },
     {
@@ -2868,8 +2898,10 @@
           "The brief audio consists of a quick metallic slide terminating in a hard click, matching the description of a metal object moving and stopping."
         ]
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "keyboard-rise"
+      ],
       "why": ""
     },
     {
@@ -2915,7 +2947,7 @@
         "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
         "asks": 6,
         "whole": 1,
-        "heard": "A single mechanical key cap is pressed down and then springs back up.",
+        "heard": "A mechanical keyboard key is pressed down and then released.",
         "madeOf": "plastic and metal",
         "events": "2",
         "voice": null,
@@ -2929,12 +2961,15 @@
         "fits": null,
         "fitsVotes": "1 yes, 0 no",
         "basis": [
-          "The recording consists of two distinct, sharp clicks in rapid succession, characteristic of the downward stroke and upward release of a mechanical keyboard switch."
-        ]
+          "The sharp, rapid double-click sound is perfectly characteristic of the plastic stem and metal spring of a mechanical keyboard switch actuating and resetting."
+        ],
+        "heardRaisedByDb": 4.72
       },
-      "kept": false,
-      "keptAs": [],
-      "why": ""
+      "kept": true,
+      "keptAs": [
+        "key-press.1"
+      ],
+      "why": "not judged by ear: 1 whole answers in 6 asks"
     },
     {
       "key": "key-press.2",
@@ -3002,8 +3037,10 @@
           "The audio consists of a distinct two-part click characteristic of a mechanical keyboard switch being actuated and returning to its resting position."
         ]
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "key-press.2"
+      ],
       "why": ""
     },
     {
@@ -3067,8 +3104,10 @@
           "The audio consists of a sharp, tactile click followed immediately by a return clack, characteristic of a mechanical keyboard switch actuating."
         ]
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "key-press.3"
+      ],
       "why": ""
     },
     {
@@ -3132,8 +3171,10 @@
           "The audio contains the characteristic sharp, two-part click of a plastic mechanical switch being actuated."
         ]
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "key-press.4"
+      ],
       "why": ""
     },
     {
@@ -3197,8 +3238,10 @@
           "The recording features two distinct, sharp clicks characteristic of the downstroke and upstroke of a mechanical keyboard switch."
         ]
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "key-press.5"
+      ],
       "why": ""
     },
     {
@@ -3241,26 +3284,32 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
-        "asks": 6,
-        "whole": 0,
-        "heard": null,
-        "madeOf": null,
-        "events": null,
-        "voice": null,
-        "voiceVotes": "0 yes, 0 no",
-        "word": null,
-        "wordVotes": "0 yes, 0 no",
-        "music": null,
-        "musicVotes": "0 yes, 0 no",
-        "melody": null,
-        "melodyVotes": "0 yes, 0 no",
-        "fits": null,
-        "fitsVotes": "0 yes, 0 no",
-        "basis": []
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "heard": "A single mechanical keyboard key is pressed down and then released. / A mechanical keyboard key is pressed down and released.",
+        "madeOf": "Plastic and metal / Plastic and metal",
+        "events": "2 / 2",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The audio consists of two distinct, quick plastic clicks characteristic of a mechanical switch being actuated and springing back.",
+          "The recording features two sharp, consecutive clicks characteristic of a mechanical keyboard switch's downstroke and upstroke."
+        ],
+        "heardRaisedByDb": 46.15
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "key-press.6"
+      ],
       "why": ""
     },
     {
@@ -3303,26 +3352,32 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
-        "asks": 6,
-        "whole": 0,
-        "heard": null,
-        "madeOf": null,
-        "events": null,
-        "voice": null,
-        "voiceVotes": "0 yes, 0 no",
-        "word": null,
-        "wordVotes": "0 yes, 0 no",
-        "music": null,
-        "musicVotes": "0 yes, 0 no",
-        "melody": null,
-        "melodyVotes": "0 yes, 0 no",
-        "fits": null,
-        "fitsVotes": "0 yes, 0 no",
-        "basis": []
+        "by": "the audio evaluation tool: 4 asks, 2 whole, 2 void",
+        "asks": 4,
+        "whole": 2,
+        "heard": "A motorized servo whirs and engages with a distinct mechanical click. / A mechanical click of a latch opening followed by the distinct whirring of a small servo motor.",
+        "madeOf": "Metal and plastic / Metal and plastic",
+        "events": "2 / 2",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The recording features the high-pitched whine of a small electric motor followed by a physical clack, which perfectly matches the sound of a servo opening a hatch.",
+          "The audio consists of a sharp mechanical clack followed by the high-pitched buzzing rotation of an electric motor."
+        ],
+        "heardRaisedByDb": 31.39
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "turret-rise"
+      ],
       "why": ""
     },
     {
@@ -3365,27 +3420,32 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
-        "asks": 6,
-        "whole": 0,
-        "heard": null,
-        "madeOf": null,
-        "events": null,
-        "voice": null,
-        "voiceVotes": "0 yes, 0 no",
-        "word": null,
-        "wordVotes": "0 yes, 0 no",
-        "music": null,
-        "musicVotes": "0 yes, 0 no",
-        "melody": null,
-        "melodyVotes": "0 yes, 0 no",
-        "fits": null,
-        "fitsVotes": "0 yes, 0 no",
-        "basis": []
+        "by": "the audio evaluation tool: 5 asks, 2 whole, 3 void",
+        "asks": 5,
+        "whole": 2,
+        "heard": "A short, synthesized laser or energy weapon sound effect is heard. / A quick, synthesized laser blast or energy shot.",
+        "madeOf": "a digital synthesizer / electronic synthesizer or digital software",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The conclusion rests on hearing a single, quick electronic 'pew' matching the description of a small sci-fi energy blast, containing no speech or musical elements.",
+          "The audio features a single, fast descending electronic tone typical of a classic sci-fi small energy weapon sound effect."
+        ]
       },
-      "kept": false,
-      "keptAs": [],
-      "why": ""
+      "kept": true,
+      "keptAs": [
+        "bolt-fire.1"
+      ],
+      "why": "clipped as delivered: true peak 1.43 dB"
     },
     {
       "key": "bolt-fire.2",
@@ -3448,8 +3508,10 @@
           "The audio consists of a single, synthesized burst with a rapid downward pitch sweep typical of classic arcade laser shot sound effects."
         ]
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "bolt-fire.2"
+      ],
       "why": ""
     },
     {
@@ -3492,29 +3554,30 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
+        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
         "asks": 6,
-        "whole": 1,
-        "heard": "A short, synthesized sci-fi laser or energy weapon sound effect.",
-        "madeOf": "digital electronics and software",
-        "events": "1",
+        "whole": 0,
+        "heard": null,
+        "madeOf": null,
+        "events": null,
         "voice": null,
-        "voiceVotes": "0 yes, 1 no",
+        "voiceVotes": "0 yes, 0 no",
         "word": null,
-        "wordVotes": "0 yes, 1 no",
+        "wordVotes": "0 yes, 0 no",
         "music": null,
-        "musicVotes": "0 yes, 1 no",
+        "musicVotes": "0 yes, 0 no",
         "melody": null,
-        "melodyVotes": "0 yes, 1 no",
+        "melodyVotes": "0 yes, 0 no",
         "fits": null,
-        "fitsVotes": "1 yes, 0 no",
-        "basis": [
-          "The audio consists of a single, quick, synthesized descending pitch sweep characteristic of a small sci-fi energy blast."
-        ]
+        "fitsVotes": "0 yes, 0 no",
+        "basis": [],
+        "heardRaisedByDb": 18.19
       },
-      "kept": false,
-      "keptAs": [],
-      "why": ""
+      "kept": true,
+      "keptAs": [
+        "bolt-fire.3"
+      ],
+      "why": "not judged by ear: 0 whole answers in 6 asks"
     },
     {
       "key": "bolt-hit.1",
@@ -3556,27 +3619,31 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
+        "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
         "asks": 6,
-        "whole": 0,
-        "heard": null,
-        "madeOf": null,
-        "events": null,
+        "whole": 1,
+        "heard": "A single sharp crack or click.",
+        "madeOf": "plastic or ceramic",
+        "events": "1",
         "voice": null,
-        "voiceVotes": "0 yes, 0 no",
+        "voiceVotes": "0 yes, 1 no",
         "word": null,
-        "wordVotes": "0 yes, 0 no",
+        "wordVotes": "0 yes, 1 no",
         "music": null,
-        "musicVotes": "0 yes, 0 no",
+        "musicVotes": "0 yes, 1 no",
         "melody": null,
-        "melodyVotes": "0 yes, 0 no",
+        "melodyVotes": "0 yes, 1 no",
         "fits": null,
-        "fitsVotes": "0 yes, 0 no",
-        "basis": []
+        "fitsVotes": "1 yes, 0 no",
+        "basis": [
+          "The audio consists of a solitary, brief, high-frequency transient sound matching the acoustic properties of hard plastic or ceramic snapping or being struck."
+        ]
       },
-      "kept": false,
-      "keptAs": [],
-      "why": ""
+      "kept": true,
+      "keptAs": [
+        "bolt-hit.1"
+      ],
+      "why": "clipped as delivered: true peak 1.21 dB; not judged by ear: 1 whole answers in 6 asks"
     },
     {
       "key": "bolt-hit.2",
@@ -3618,27 +3685,32 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
+        "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
         "asks": 6,
-        "whole": 0,
-        "heard": null,
-        "madeOf": null,
-        "events": null,
+        "whole": 1,
+        "heard": "A single, sharp crack or click sound.",
+        "madeOf": "plastic or ceramic",
+        "events": "1",
         "voice": null,
-        "voiceVotes": "0 yes, 0 no",
+        "voiceVotes": "0 yes, 1 no",
         "word": null,
-        "wordVotes": "0 yes, 0 no",
+        "wordVotes": "0 yes, 1 no",
         "music": null,
-        "musicVotes": "0 yes, 0 no",
+        "musicVotes": "0 yes, 1 no",
         "melody": null,
-        "melodyVotes": "0 yes, 0 no",
+        "melodyVotes": "0 yes, 1 no",
         "fits": null,
-        "fitsVotes": "0 yes, 0 no",
-        "basis": []
+        "fitsVotes": "1 yes, 0 no",
+        "basis": [
+          "The audio contains a single, brief, high-frequency transient impact characteristic of a hard material like plastic or ceramic being struck or snapping, without any vocal or musical elements."
+        ],
+        "heardRaisedByDb": 14.98
       },
-      "kept": false,
-      "keptAs": [],
-      "why": ""
+      "kept": true,
+      "keptAs": [
+        "bolt-hit.2"
+      ],
+      "why": "not judged by ear: 1 whole answers in 6 asks"
     },
     {
       "key": "bolt-hit.3",
@@ -3680,26 +3752,32 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
-        "asks": 6,
-        "whole": 0,
-        "heard": null,
-        "madeOf": null,
-        "events": null,
-        "voice": null,
-        "voiceVotes": "0 yes, 0 no",
-        "word": null,
-        "wordVotes": "0 yes, 0 no",
-        "music": null,
-        "musicVotes": "0 yes, 0 no",
-        "melody": null,
-        "melodyVotes": "0 yes, 0 no",
-        "fits": null,
-        "fitsVotes": "0 yes, 0 no",
-        "basis": []
+        "by": "the audio evaluation tool: 3 asks, 2 whole, 1 void",
+        "asks": 3,
+        "whole": 2,
+        "heard": "A sharp, resonant cracking sound is heard. / A sharp, sudden cracking sound as if hard plastic or ceramic is snapping.",
+        "madeOf": "plastic or ceramic / plastic or ceramic",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The audio features a single, sudden, high-pitched snapping sound characteristic of a hard, brittle material fracturing.",
+          "The audio features a single, abrupt snap typical of a brittle material fracturing, containing no vocal or musical elements."
+        ],
+        "heardRaisedByDb": 18.73
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "bolt-hit.3"
+      ],
       "why": ""
     },
     {
@@ -3763,8 +3841,10 @@
           "The audio features a single, brief hissing and sizzling noise characteristic of a hot object or small flame being rapidly extinguished."
         ]
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "sizzle"
+      ],
       "why": ""
     },
     {
@@ -3807,29 +3887,30 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
+        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
         "asks": 6,
-        "whole": 1,
-        "heard": "A rapid burst of light, hollow plastic clicking and clattering.",
-        "madeOf": "plastic",
-        "events": "1",
+        "whole": 0,
+        "heard": null,
+        "madeOf": null,
+        "events": null,
         "voice": null,
-        "voiceVotes": "0 yes, 1 no",
+        "voiceVotes": "0 yes, 0 no",
         "word": null,
-        "wordVotes": "0 yes, 1 no",
+        "wordVotes": "0 yes, 0 no",
         "music": null,
-        "musicVotes": "0 yes, 1 no",
+        "musicVotes": "0 yes, 0 no",
         "melody": null,
-        "melodyVotes": "0 yes, 1 no",
+        "melodyVotes": "0 yes, 0 no",
         "fits": null,
-        "fitsVotes": "1 yes, 0 no",
-        "basis": [
-          "The audio consists of a single continuous flurry of high-pitched plastic impacts, characteristic of loose keyboard keycaps rattling against one another."
-        ]
+        "fitsVotes": "0 yes, 0 no",
+        "basis": [],
+        "heardRaisedByDb": 2.05
       },
-      "kept": false,
-      "keptAs": [],
-      "why": ""
+      "kept": true,
+      "keptAs": [
+        "keys-shuffle"
+      ],
+      "why": "not judged by ear: 0 whole answers in 6 asks"
     },
     {
       "key": "slab-drop.1",
@@ -3893,8 +3974,10 @@
           "The audio features a single, loud, flat impact sound with a slight resonance typical of a heavy object striking a hard floor like ceramic."
         ]
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "slab-drop.1"
+      ],
       "why": ""
     },
     {
@@ -4067,28 +4150,32 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
-        "asks": 6,
-        "whole": 1,
-        "heard": "A sheet of paper slides across a hard surface.",
-        "madeOf": "paper",
-        "events": "1",
-        "voice": null,
-        "voiceVotes": "0 yes, 1 no",
-        "word": null,
-        "wordVotes": "0 yes, 1 no",
-        "music": null,
-        "musicVotes": "0 yes, 1 no",
-        "melody": null,
-        "melodyVotes": "0 yes, 1 no",
-        "fits": null,
-        "fitsVotes": "1 yes, 0 no",
+        "by": "the audio evaluation tool: 3 asks, 2 whole, 1 void",
+        "asks": 3,
+        "whole": 2,
+        "heard": "A sheet of paper slides across a hard surface. / A sheet of paper slides continuously across a hard surface.",
+        "madeOf": "paper / paper",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
         "basis": [
-          "The continuous, lightweight friction sound is characteristic of paper dragging over a solid desk or table."
-        ]
+          "The recording consists of a single continuous friction sound characteristic of paper moving over a desk.",
+          "The continuous, light, and dry scraping noise is characteristic of paper friction against a solid object like a desk."
+        ],
+        "heardRaisedByDb": 11.64
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "paper-slide"
+      ],
       "why": ""
     },
     {
@@ -4152,8 +4239,10 @@
           "The audio features a continuous mechanical grinding and whirring sound characteristic of an electric shredder destroying paper."
         ]
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "shredder"
+      ],
       "why": ""
     },
     {
@@ -4217,8 +4306,10 @@
           "The distinct dry crinkling and straining noise strongly matches the physical acoustic properties of paper or cardboard being manipulated."
         ]
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "paper-strain"
+      ],
       "why": ""
     },
     {
@@ -4347,8 +4438,10 @@
           "The continuous scraping or sliding noise followed by a dull impact is characteristic of a drawer being pulled out to its limit."
         ]
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "row-open"
+      ],
       "why": ""
     },
     {
@@ -4391,26 +4484,32 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
-        "asks": 6,
-        "whole": 0,
-        "heard": null,
-        "madeOf": null,
-        "events": null,
-        "voice": null,
-        "voiceVotes": "0 yes, 0 no",
-        "word": null,
-        "wordVotes": "0 yes, 0 no",
-        "music": null,
-        "musicVotes": "0 yes, 0 no",
-        "melody": null,
-        "melodyVotes": "0 yes, 0 no",
-        "fits": null,
-        "fitsVotes": "0 yes, 0 no",
-        "basis": []
+        "by": "the audio evaluation tool: 3 asks, 2 whole, 1 void",
+        "asks": 3,
+        "whole": 2,
+        "heard": "A rotary phone dial is pulled around and released to spin back to its starting position. / A rotary phone dial is pulled round and released to spin back.",
+        "madeOf": "plastic and metal / Plastic and metal.",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The recording features the distinct mechanical clicking and spring-loaded return whir characteristic of a traditional rotary telephone dial.",
+          "The recording captures the distinct mechanical clicking and spring-loaded whirring characteristic of operating an old-fashioned rotary telephone."
+        ],
+        "heardRaisedByDb": 5.5
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "dial-wind"
+      ],
       "why": ""
     },
     {
@@ -4474,8 +4573,10 @@
           "The audio features the distinct, rhythmic mechanical ticking and whirring characteristic of an old rotary phone dial spinning back to its starting position."
         ]
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "dial-return"
+      ],
       "why": ""
     },
     {
@@ -4540,8 +4641,10 @@
           "The recording contains the distinct ratcheting sound of a heavy mechanical lever being pulled followed by a spring-loaded clunk upon release."
         ]
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "lever-pull"
+      ],
       "why": ""
     },
     {
@@ -4605,8 +4708,10 @@
           "The recording features a mechanical whirring sound followed by three distinct, heavy clicks as the spinning mechanisms lock into place."
         ]
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "reels-spin"
+      ],
       "why": ""
     },
     {
@@ -4670,8 +4775,10 @@
           "The sharp, rapid clinking and ringing sounds perfectly match the acoustic profile of multiple metallic items falling and bouncing together."
         ]
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "coins.1"
+      ],
       "why": ""
     },
     {
@@ -4740,8 +4847,10 @@
           "The sharp, overlapping metallic clinking sounds are highly characteristic of coins spilling out and bouncing across a hard floor or table."
         ]
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "coins.2"
+      ],
       "why": ""
     },
     {
@@ -4805,8 +4914,10 @@
           "The rapid, mechanical clicking noise is characteristic of a metal gear and pawl mechanism engaging during a single rotation."
         ]
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "crank-turn"
+      ],
       "why": ""
     },
     {
@@ -4875,8 +4986,10 @@
           "The recording consists of a single continuous mechanical clicking sequence that accelerates rapidly like a spinning crank, with no human voice or musical elements present."
         ]
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "crank-runaway"
+      ],
       "why": ""
     },
     {
@@ -4940,8 +5053,10 @@
           "The audio consists of a single, quick, wet impact noise that sounds like a comedic splat, lacking any vocal or musical characteristics."
         ]
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "flatten"
+      ],
       "why": ""
     },
     {
@@ -4983,9 +5098,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 2 whole, 1 void",
+        "asks": 3,
+        "whole": 2,
+        "heard": "A thin object is peeled off a smooth surface and sharply pops back into shape. / A thin material peeling off a surface and then snapping or popping back into place.",
+        "madeOf": "plastic / plastic or rubber",
+        "events": "1 / 2",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The recording features a brief frictional peeling noise followed immediately by a sharp snap, characteristic of flexible plastic detaching.",
+          "The audio features a short, frictional sliding or unsticking noise followed immediately by a sharp, percussive snap."
+        ],
+        "heardRaisedByDb": 21.01
+      },
+      "kept": true,
+      "keptAs": [
+        "peel-up"
+      ],
       "why": ""
     },
     {
@@ -5027,9 +5166,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 2 whole, 1 void",
+        "asks": 3,
+        "whole": 2,
+        "heard": "A short suck of air is followed by a hard plastic shell snapping shut with a click. / A short intake of air is immediately followed by a sharp click of a plastic shell snapping shut.",
+        "madeOf": "Plastic / hard plastic",
+        "events": "2 / 2",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The recording clearly contains an initial whoosh of air being sucked in, immediately followed by a sharp and distinct plastic snapping sound.",
+          "My answers rest on the acoustic presence of a quick suction sound followed by a sharp, high-frequency clack typical of hard plastic closing."
+        ],
+        "heardRaisedByDb": 4.32
+      },
+      "kept": true,
+      "keptAs": [
+        "ball-seal"
+      ],
       "why": ""
     },
     {
@@ -5071,9 +5234,34 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A hard plastic ball rolls rapidly down a plastic tube. / A rapid riffling or shuffling of a deck of cards or thick paper pages. / A hard plastic ball rolling rapidly down a corrugated plastic tube.",
+        "madeOf": "plastic / Paper or cardstock. / plastic",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 1 no",
+        "basis": [
+          "The recording features a continuous, rapid rattling noise consistent with a hard object moving quickly over the ridges inside a hollow plastic structure.",
+          "The audio consists of rapid, dry, successive clicks characteristic of stiff paper or cards being flipped quickly, rather than the resonant, continuous rumbling of a ball in a tube.",
+          "The audio consists of a fast, continuous series of hollow clicks, which matches the sound of a hard object hitting the ridges inside a plastic tube."
+        ],
+        "heardRaisedByDb": 20.5
+      },
+      "kept": true,
+      "keptAs": [
+        "tube-run"
+      ],
       "why": ""
     },
     {
@@ -5115,9 +5303,34 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 3 whole, 3 void",
+        "asks": 6,
+        "whole": 3,
+        "heard": "A sharp mechanical click, such as flipping a firm light switch or pressing a heavy button. / A distinct mechanical click is followed immediately by a low, fading electrical hum. / A mechanical relay clicks followed by a low, descending electrical hum.",
+        "madeOf": "plastic and metal / Metal and electrical components / Metal and electrical components.",
+        "events": "1 / 2 / 2",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 1 no",
+        "basis": [
+          "The audio contains only a brief, isolated mechanical click, completely lacking the low falling hum described in the provided line.",
+          "The sharp transient sound of a relay switch shutting off precedes a descending low-frequency drone characteristic of a large electrical load powering down.",
+          "The audio consists of a sharp mechanical click resembling a relay switch, followed by a low-pitched, fading hum that matches the description of lights dimming."
+        ],
+        "heardRaisedByDb": 16.95
+      },
+      "kept": true,
+      "keptAs": [
+        "lights-down"
+      ],
       "why": ""
     },
     {
@@ -5174,9 +5387,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "heard": "A pinball machine powers up with the sound of clicking relays, an electrical hum, and a mechanical bell chime. / A machine powers up with a sequence of clicking relays, a low electrical hum, and a chime of mechanical bells.",
+        "madeOf": "Metal, plastic, and electrical components / metal, plastic, and electronic components",
+        "events": "3 / 3",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The sequential sounds of mechanical clicks, a continuous low hum, and ringing bells perfectly match the description of an older pinball machine powering on.",
+          "The recording features distinct mechanical clicks, an electrical humming sound, and a bell chime, perfectly matching the description of a pinball machine turning on."
+        ],
+        "heardRaisedByDb": 9.77
+      },
+      "kept": true,
+      "keptAs": [
+        "power-on"
+      ],
       "why": ""
     },
     {
@@ -5218,9 +5455,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "heard": "A tensioned spring plunger is released and sharply strikes a hard plastic ball. / A spring-loaded plunger is pulled back with a ratcheting noise and suddenly released to strike a hard object.",
+        "madeOf": "metal and plastic / metal and plastic",
+        "events": "1 / 2",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The distinct metallic twang of a releasing spring followed immediately by a sharp, hollow impact closely matches the acoustic profile of a toy pinball plunger mechanism.",
+          "The distinct mechanical sound of a spring tensioning followed by a sharp, slightly hollow plastic impact exactly matches the described action of a toy plunger."
+        ],
+        "heardRaisedByDb": 14.69
+      },
+      "kept": true,
+      "keptAs": [
+        "plunger"
+      ],
       "why": ""
     },
     {
@@ -5262,9 +5523,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 2 whole, 4 void",
+        "asks": 6,
+        "whole": 2,
+        "heard": "A mechanical solenoid forcefully engages with a sharp clack alongside a ringing bell. / A single pinball machine pop bumper firing with a mechanical thwack and a bell ring.",
+        "madeOf": "metal and plastic / metal and plastic",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The audio features a distinct mechanical strike paired with a simultaneous bell tone, matching the acoustic profile of a pinball machine's pop bumper.",
+          "The description explicitly mentions one pop bumper firing, consisting of a solenoid thwack and a bell, which corresponds to a single mechanical event without speech or music."
+        ],
+        "heardRaisedByDb": 58.65
+      },
+      "kept": true,
+      "keptAs": [
+        "bumper.1"
+      ],
       "why": ""
     },
     {
@@ -5306,9 +5591,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 2 whole, 4 void",
+        "asks": 6,
+        "whole": 2,
+        "heard": "A sharp mechanical solenoid strike sounding simultaneously with a brief bell chime. / A mechanical solenoid thwacks and a metal bell rings, characteristic of a pinball machine pop bumper.",
+        "madeOf": "metal and plastic / Metal and plastic",
+        "events": "1 / 2",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The recording is a single composite sound of a mechanical clack and a high-pitched ding, perfectly matching a pinball pop bumper firing.",
+          "The recording consists of a sharp mechanical impact immediately accompanied by a resonant metallic chime, perfectly matching the description of a pop bumper firing."
+        ],
+        "heardRaisedByDb": 30.24
+      },
+      "kept": true,
+      "keptAs": [
+        "bumper.2"
+      ],
       "why": ""
     },
     {
@@ -5350,9 +5659,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
+      "listener": {
+        "by": "the audio evaluation tool: 5 asks, 2 whole, 3 void",
+        "asks": 5,
+        "whole": 2,
+        "heard": "A sharp mechanical thwack followed immediately by a ringing bell. / A sharp mechanical thwack of a solenoid firing accompanied by a brief bell ring.",
+        "madeOf": "metal / metal and plastic",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The audio consists of a single combined sound of an electromechanical strike and a bell chime, matching the description of a pinball pop bumper.",
+          "The audio consists of a single sharp mechanical impact paired simultaneously with a bell chime, characteristic of an electromechanical pinball machine's pop bumper."
+        ],
+        "heardRaisedByDb": 41.81
+      },
+      "kept": true,
+      "keptAs": [
+        "bumper.3"
+      ],
       "why": ""
     },
     {
@@ -5394,9 +5727,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
+      "listener": {
+        "by": "the audio evaluation tool: 5 asks, 2 whole, 3 void",
+        "asks": 5,
+        "whole": 2,
+        "heard": "A mechanical solenoid thwacks and simultaneously strikes a small bell. / A pinball pop bumper fires, producing a distinct mechanical thwack and a ringing bell.",
+        "madeOf": "Metal and plastic / metal and plastic",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The recording consists of a single composite sound featuring a sharp mechanical clack and a brief metallic ding, perfectly matching an electromechanical pinball machine pop bumper.",
+          "The sound consists of a simultaneous mechanical solenoid strike and a brief bell ring, which perfectly matches the action of a pinball pop bumper."
+        ],
+        "heardRaisedByDb": 0.75
+      },
+      "kept": true,
+      "keptAs": [
+        "bumper.4"
+      ],
       "why": ""
     },
     {
@@ -5438,9 +5795,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "heard": "A hard ball drops into a mechanism and is immediately struck and ejected. / A ball dropping into a hole and being forcefully ejected by a mechanical mechanism.",
+        "madeOf": "metal / Metal and plastic",
+        "events": "2 / 2",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The audio features a sharp metallic click of a ball landing, instantly followed by a louder mechanical thud and rolling sound characteristic of a solenoid firing.",
+          "The recording consists of an initial clatter of a hard round object landing in a receptacle, followed shortly by a loud, sharp mechanical snap characteristic of a solenoid actuating."
+        ],
+        "heardRaisedByDb": 6.12
+      },
+      "kept": true,
+      "keptAs": [
+        "scoop-kick"
+      ],
       "why": ""
     },
     {
@@ -5482,9 +5863,32 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 2 whole, 4 void",
+        "asks": 6,
+        "whole": 2,
+        "heard": "A sharp mechanical click and snap of an electrical switch or relay. / A sharp mechanical click followed immediately by a distinct electrical snap.",
+        "madeOf": "Metal and plastic / Metal, glass, and electronic components",
+        "events": "1 / 2",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The recording consists entirely of a crisp, mechanical clicking sound characteristic of a lamp switch or electrical relay being engaged.",
+          "The recording features two distinct sequential sounds: a metallic relay click and a sharp popping snap typical of a high-intensity lamp or flash igniting."
+        ]
+      },
+      "kept": true,
+      "keptAs": [
+        "flasher"
+      ],
       "why": ""
     },
     {
@@ -5526,9 +5930,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "heard": "A hard plastic ball rolls rapidly along a wire ramp. / A hard plastic ball rolls rapidly along a metallic wire ramp.",
+        "madeOf": "Plastic and metal / Plastic and metal.",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The continuous, rhythmic rumbling and vibrating sounds perfectly match a hard plastic object moving swiftly over a structured wire surface.",
+          "The continuous, fast-paced rattling and friction noises are characteristic of a solid plastic object moving over a rigid wire track."
+        ],
+        "heardRaisedByDb": 12.56
+      },
+      "kept": true,
+      "keptAs": [
+        "ramp-roll"
+      ],
       "why": ""
     },
     {
@@ -5570,10 +5998,32 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
-      "why": ""
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
+        "asks": 6,
+        "whole": 1,
+        "heard": "A single sharp impact of a hard object striking a solid surface.",
+        "madeOf": "metal and wood",
+        "events": "1",
+        "voice": null,
+        "voiceVotes": "0 yes, 1 no",
+        "word": null,
+        "wordVotes": "0 yes, 1 no",
+        "music": null,
+        "musicVotes": "0 yes, 1 no",
+        "melody": null,
+        "melodyVotes": "0 yes, 1 no",
+        "fits": null,
+        "fitsVotes": "1 yes, 0 no",
+        "basis": [
+          "The short percussive knock heard in the recording perfectly matches the acoustic characteristics of a heavy steel ball impacting a wooden surface."
+        ]
+      },
+      "kept": true,
+      "keptAs": [
+        "ball-drop"
+      ],
+      "why": "not judged by ear: 1 whole answers in 6 asks"
     },
     {
       "key": "flipper.1",
@@ -5614,9 +6064,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "heard": "A sharp mechanical click or snap, resembling a pinball flipper firing. / A single mechanical click of a pinball machine flipper engaging is heard.",
+        "madeOf": "Metal and plastic / Metal and plastic",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The recording consists of a single, quick mechanical actuation sound typical of a pinball machine flipper.",
+          "The answers rest on the single, distinct mechanical snapping sound characteristic of a solenoid-driven flipper."
+        ],
+        "heardRaisedByDb": 21.56
+      },
+      "kept": true,
+      "keptAs": [
+        "flipper.1"
+      ],
       "why": ""
     },
     {
@@ -5658,10 +6132,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
-      "why": ""
+      "listener": {
+        "by": "the audio evaluation tool: 4 asks, 2 whole, 2 void",
+        "asks": 4,
+        "whole": 2,
+        "heard": "A single mechanical flipper firing. / A sharp, mechanical clacking sound of a single pinball machine flipper firing.",
+        "madeOf": "Metal and plastic / Metal, plastic, and electromechanical parts",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The recording consists of one sharp, mechanical clacking sound that matches the actuation of a pinball flipper.",
+          "The recording consists of a single, brief electromechanical snap characteristic of a pinball flipper engaging."
+        ]
+      },
+      "kept": true,
+      "keptAs": [
+        "flipper.2"
+      ],
+      "why": "clipped as delivered: true peak 0.81 dB"
     },
     {
       "key": "flipper.3",
@@ -5702,9 +6199,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 2 whole, 1 void",
+        "asks": 3,
+        "whole": 2,
+        "heard": "A sharp, quick mechanical snap or impact sound. / A single mechanical clack of a pinball flipper firing.",
+        "madeOf": "Plastic and metal / metal and plastic",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The recording consists of a single, distinct mechanical clack that strongly resembles the sound of a pinball machine flipper engaging.",
+          "The audio contains one sharp, brief mechanical impact sound that matches the activation of a solenoid-driven flipper."
+        ],
+        "heardRaisedByDb": 26.98
+      },
+      "kept": true,
+      "keptAs": [
+        "flipper.3"
+      ],
       "why": ""
     },
     {
@@ -5746,9 +6267,34 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
+      "listener": {
+        "by": "the audio evaluation tool: 5 asks, 3 whole, 2 void",
+        "asks": 5,
+        "whole": 3,
+        "heard": "Two heavy glass doors slam shut one after the other. / A single heavy thud, such as a thick book dropping on a wooden surface or a wooden door slamming. / Two heavy glass doors slamming shut in quick succession.",
+        "madeOf": "Glass and metal / dense solid material, likely wood / glass and metal",
+        "events": "2 / 1 / 2",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 1 no",
+        "basis": [
+          "The recording consists of two loud, heavy impacts accompanied by a glassy reverberation, matching the sound of heavy glass doors closing.",
+          "The sound is a dull, dry impact that lacks the high-frequency ringing, resonance, or metallic rattling typically associated with heavy glass doors slamming.",
+          "The recording features two loud, heavy impacts with a resonant, glassy clunk typical of thick doors closing."
+        ],
+        "heardRaisedByDb": 1.74
+      },
+      "kept": true,
+      "keptAs": [
+        "doors-slam"
+      ],
       "why": ""
     },
     {
@@ -5795,7 +6341,30 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A rapid, descending sequence of metallic bell tones. / A ball rolls down a hollow surface and lands, accompanied by a descending cascade of bell chimes. / A small object rolls down a descending path, rapidly striking metallic elements to create a cascading, bell-like glissando.",
+        "madeOf": "metal / Metal and hard plastic or wood / Metal",
+        "events": "1 / 2 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": true,
+        "musicVotes": "2 yes, 1 no",
+        "melody": true,
+        "melodyVotes": "2 yes, 1 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The audio is a single continuous sound effect featuring a series of falling bell tones, characteristic of an arcade or pinball machine.",
+          "The audio contains the distinct physical rattling of a ball rolling along a channel, followed immediately by a downward run of tuned metallic bells, matching the description perfectly.",
+          "The distinct falling pitch of the rapid metallic strikes perfectly matches the description of a ball rolling down a drain with a falling tone of bells."
+        ],
+        "heardRaisedByDb": 6.43
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -5839,9 +6408,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 2 whole, 4 void",
+        "asks": 6,
+        "whole": 2,
+        "heard": "A hard object rolls down a metallic surface and culminates in a hollow thump against a wooden surface. / A small solid object rolls down a metal slide and hits a wooden surface.",
+        "madeOf": "Metal and wood / Metal and wood",
+        "events": "2 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The audio consists of a continuous metallic rolling noise followed by a distinct wooden impact, perfectly aligning with a ball traversing a metal chute and hitting wood.",
+          "The audio contains a metallic rolling sound followed immediately by a wooden thud, which matches the described action."
+        ],
+        "heardRaisedByDb": 14.94
+      },
+      "kept": true,
+      "keptAs": [
+        "tier-fall"
+      ],
       "why": ""
     },
     {
@@ -5883,9 +6476,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "heard": "A rising whooshing sound of air culminating in a distinct, soft pop. / A continuous rising whistling sound that abruptly ends with a soft pop.",
+        "madeOf": "Plastic and air / air and a tube",
+        "events": "2 / 2",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The recording consists of an upward-gliding airy noise followed immediately by a gentle popping sound, precisely matching the described pneumatic action.",
+          "The audio consists of an ascending airy tone resembling something traveling up a pipe, concluding with a distinct popping sound."
+        ],
+        "heardRaisedByDb": 7.61
+      },
+      "kept": true,
+      "keptAs": [
+        "lift"
+      ],
       "why": ""
     },
     {
@@ -5932,9 +6549,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 2 whole, 1 void",
+        "asks": 3,
+        "whole": 2,
+        "heard": "A hard ball rolls continuously along a resonant track. / A hard plastic ball is heard rolling around and down a plastic spiral, gradually slowing to a stop.",
+        "madeOf": "plastic / plastic",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The continuous, resonant rolling and rattling sound perfectly matches the acoustic profile of a hard ball moving down a plastic spiral track.",
+          "The conclusion is based on the continuous, hollow rattling and rolling noise that matches the acoustic profile of a hard plastic object moving along a plastic track."
+        ],
+        "heardRaisedByDb": 11.53
+      },
+      "kept": true,
+      "keptAs": [
+        "spiral"
+      ],
       "why": ""
     },
     {
@@ -5976,9 +6617,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "heard": "A mechanical spinner ticking rapidly and slowing down to a stop. / A mechanical pinball spinner is struck hard and rapidly ticks as it gradually spins down.",
+        "madeOf": "metal and plastic / Metal and plastic",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The recording contains a continuous series of rapid clicks that decrease in frequency, perfectly matching the sound of a struck pinball spinner winding down.",
+          "The audio features a fast, decelerating clicking noise characteristic of a spinning target on a pinball machine."
+        ],
+        "heardRaisedByDb": 9.06
+      },
+      "kept": true,
+      "keptAs": [
+        "spinner"
+      ],
       "why": ""
     },
     {
@@ -6020,9 +6685,32 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
+      "listener": {
+        "by": "the audio evaluation tool: 5 asks, 2 whole, 3 void",
+        "asks": 5,
+        "whole": 2,
+        "heard": "A single flat plastic clack is heard, characteristic of a pinball drop target being knocked down. / A single, sharp, flat clack of a plastic object being struck.",
+        "madeOf": "plastic and metal / plastic",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The audio consists solely of a short, distinct mechanical clack that perfectly matches the acoustic profile of a plastic drop target.",
+          "The audio contains exactly one quick, percussive sound with the hollow acoustic qualities of hard plastic, matching the provided description perfectly."
+        ]
+      },
+      "kept": true,
+      "keptAs": [
+        "drop-target.1"
+      ],
       "why": ""
     },
     {
@@ -6064,9 +6752,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
+      "listener": {
+        "by": "the audio evaluation tool: 5 asks, 2 whole, 3 void",
+        "asks": 5,
+        "whole": 2,
+        "heard": "A single, sharp, flat plastic clack. / A sharp, brief clack of a mechanical plastic piece snapping down.",
+        "madeOf": "Plastic / plastic and metal",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The recording consists of a single, brief, percussive impact sound that perfectly matches the acoustic profile of a plastic pinball drop target being struck.",
+          "The audio consists of a single, quick percussive impact that perfectly matches the sound of a flat plastic target being knocked down."
+        ],
+        "heardRaisedByDb": 22.41
+      },
+      "kept": true,
+      "keptAs": [
+        "drop-target.2"
+      ],
       "why": ""
     },
     {
@@ -6108,10 +6820,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
-      "why": ""
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
+        "asks": 6,
+        "whole": 1,
+        "heard": "A short rubber snap of a pinball slingshot firing.",
+        "madeOf": "rubber and metal",
+        "events": "1",
+        "voice": null,
+        "voiceVotes": "0 yes, 1 no",
+        "word": null,
+        "wordVotes": "0 yes, 1 no",
+        "music": null,
+        "musicVotes": "0 yes, 1 no",
+        "melody": null,
+        "melodyVotes": "0 yes, 1 no",
+        "fits": null,
+        "fitsVotes": "1 yes, 0 no",
+        "basis": [
+          "The sound is a single, brief snapping noise consistent with a rubber pinball mechanism activating."
+        ],
+        "heardRaisedByDb": 18.62
+      },
+      "kept": true,
+      "keptAs": [
+        "sling.1"
+      ],
+      "why": "not judged by ear: 1 whole answers in 6 asks"
     },
     {
       "key": "sling.2",
@@ -6152,10 +6887,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
-      "why": ""
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
+        "asks": 6,
+        "whole": 1,
+        "heard": "A short, snappy mechanical rubber strike occurs.",
+        "madeOf": "rubber and metal",
+        "events": "1",
+        "voice": null,
+        "voiceVotes": "0 yes, 1 no",
+        "word": null,
+        "wordVotes": "0 yes, 1 no",
+        "music": null,
+        "musicVotes": "0 yes, 1 no",
+        "melody": null,
+        "melodyVotes": "0 yes, 1 no",
+        "fits": null,
+        "fitsVotes": "1 yes, 0 no",
+        "basis": [
+          "The audio features a single, quick snap with a slight mechanical resonance, matching the description of a rubber pinball slingshot firing."
+        ],
+        "heardRaisedByDb": 19.93
+      },
+      "kept": true,
+      "keptAs": [
+        "sling.2"
+      ],
+      "why": "not judged by ear: 1 whole answers in 6 asks"
     },
     {
       "key": "ball-open",
@@ -6196,10 +6954,31 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
-      "why": ""
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
+        "asks": 6,
+        "whole": 0,
+        "heard": null,
+        "madeOf": null,
+        "events": null,
+        "voice": null,
+        "voiceVotes": "0 yes, 0 no",
+        "word": null,
+        "wordVotes": "0 yes, 0 no",
+        "music": null,
+        "musicVotes": "0 yes, 0 no",
+        "melody": null,
+        "melodyVotes": "0 yes, 0 no",
+        "fits": null,
+        "fitsVotes": "0 yes, 0 no",
+        "basis": [],
+        "heardRaisedByDb": 12.2
+      },
+      "kept": true,
+      "keptAs": [
+        "ball-open"
+      ],
+      "why": "not judged by ear: 0 whole answers in 6 asks"
     },
     {
       "key": "checkbox",
@@ -6240,10 +7019,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
-      "why": ""
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
+        "asks": 6,
+        "whole": 1,
+        "heard": "A single short, crisp tick or click.",
+        "madeOf": "plastic or metal",
+        "events": "1",
+        "voice": null,
+        "voiceVotes": "0 yes, 1 no",
+        "word": null,
+        "wordVotes": "0 yes, 1 no",
+        "music": null,
+        "musicVotes": "0 yes, 1 no",
+        "melody": null,
+        "melodyVotes": "0 yes, 1 no",
+        "fits": null,
+        "fitsVotes": "1 yes, 0 no",
+        "basis": [
+          "The audio contains exactly one brief, sharp mechanical clicking sound."
+        ],
+        "heardRaisedByDb": 2.85
+      },
+      "kept": true,
+      "keptAs": [
+        "checkbox"
+      ],
+      "why": "not judged by ear: 1 whole answers in 6 asks"
     },
     {
       "key": "button-crack",
@@ -6289,7 +7091,29 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "heard": "A hard plastic buckle or clip snapping shut. / A quick ripping or tearing sound, similar to Velcro being pulled apart or tape being ripped off.",
+        "madeOf": "Plastic / Fabric, plastic, or adhesive",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": false,
+        "fitsVotes": "0 yes, 2 no",
+        "basis": [
+          "The audio consists of a sharp, clean double-click typical of a plastic buckle closing, rather than the irregular sounds of cracking or tearing.",
+          "The audio consists of a single, brief tearing noise like Velcro or tape, without any brittle cracking sounds associated with ceramic."
+        ],
+        "heardRaisedByDb": 10.45
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -6338,9 +7162,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "heard": "Mechanical sounds of metal parts moving, sliding, and locking into place. / Metal plates and joints unfolding and locking with servo sounds.",
+        "madeOf": "Metal and mechanical components. / Metal",
+        "events": "3 / 3",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The recording consists of metallic clanking, scraping, and whirring noises characteristic of heavy machinery or robotic deployment.",
+          "The audio contains distinct metallic clanks and mechanical whirring sounds associated with robotic joints moving and locking."
+        ],
+        "heardRaisedByDb": 7.9
+      },
+      "kept": true,
+      "keptAs": [
+        "unfold"
+      ],
       "why": ""
     },
     {
@@ -6382,7 +7230,29 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "heard": "A short, fast-paced, and slightly silly piece of tense music plays. / A short, quirky, and slightly tense synthesized musical loop.",
+        "madeOf": "wood and metal / electronic software and synthesizers",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": true,
+        "musicVotes": "2 yes, 0 no",
+        "melody": true,
+        "melodyVotes": "2 yes, 0 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The recording consists of a single continuous loop of instrumental music played on a mallet instrument like a marimba, containing no voices or words, perfectly matching the provided description.",
+          "The recording is a single continuous clip of playful, video game-style background music with a clear melody and no vocals."
+        ],
+        "heardRaisedByDb": 8.62
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -6426,10 +7296,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
-      "why": ""
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
+        "asks": 6,
+        "whole": 1,
+        "heard": "A single, brief, high-pitched electronic ping or click.",
+        "madeOf": "electronic components and digital software",
+        "events": "1",
+        "voice": null,
+        "voiceVotes": "0 yes, 1 no",
+        "word": null,
+        "wordVotes": "0 yes, 1 no",
+        "music": null,
+        "musicVotes": "0 yes, 1 no",
+        "melody": null,
+        "melodyVotes": "0 yes, 1 no",
+        "fits": null,
+        "fitsVotes": "1 yes, 0 no",
+        "basis": [
+          "The recording consists of exactly one very short, high-frequency synthesized transient sound resembling a digital interface click."
+        ],
+        "heardRaisedByDb": 11.03
+      },
+      "kept": true,
+      "keptAs": [
+        "dart-fire.1"
+      ],
+      "why": "not judged by ear: 1 whole answers in 6 asks"
     },
     {
       "key": "dart-fire.2",
@@ -6470,9 +7363,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 2 whole, 1 void",
+        "asks": 3,
+        "whole": 2,
+        "heard": "A single, very brief and high-pitched synthetic click or zap. / A single, sharp, high-pitched mechanical click or pew sound is heard.",
+        "madeOf": "electronic circuitry and digital software / Metal and plastic",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The recording features one quick, bright, synthetic sound effect that closely resembles a tiny laser pew or a sharp UI click.",
+          "The recording contains a single, very brief, high-frequency mechanical snap resembling a tiny switch or striker."
+        ],
+        "heardRaisedByDb": 13.33
+      },
+      "kept": true,
+      "keptAs": [
+        "dart-fire.2"
+      ],
       "why": ""
     },
     {
@@ -6514,10 +7431,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
-      "why": ""
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
+        "asks": 6,
+        "whole": 1,
+        "heard": "A single, very brief and high-pitched synthetic sound effect is played.",
+        "madeOf": "digital software or electronic circuitry",
+        "events": "1",
+        "voice": null,
+        "voiceVotes": "0 yes, 1 no",
+        "word": null,
+        "wordVotes": "0 yes, 1 no",
+        "music": null,
+        "musicVotes": "0 yes, 1 no",
+        "melody": null,
+        "melodyVotes": "0 yes, 1 no",
+        "fits": null,
+        "fitsVotes": "1 yes, 0 no",
+        "basis": [
+          "The audio consists of exactly one short, synthesized, high-frequency blip that sounds like a tiny laser or user interface click."
+        ],
+        "heardRaisedByDb": 16.25
+      },
+      "kept": true,
+      "keptAs": [
+        "dart-fire.3"
+      ],
+      "why": "not judged by ear: 1 whole answers in 6 asks"
     },
     {
       "key": "dart-fire.4",
@@ -6558,10 +7498,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
-      "why": ""
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
+        "asks": 6,
+        "whole": 1,
+        "heard": "A short, high-pitched synthetic blip or pew sound.",
+        "madeOf": "electronic components and software",
+        "events": "1",
+        "voice": null,
+        "voiceVotes": "0 yes, 1 no",
+        "word": null,
+        "wordVotes": "0 yes, 1 no",
+        "music": null,
+        "musicVotes": "0 yes, 1 no",
+        "melody": null,
+        "melodyVotes": "0 yes, 1 no",
+        "fits": null,
+        "fitsVotes": "1 yes, 0 no",
+        "basis": [
+          "The recording contains a single, very brief, bright synthesized sound effect resembling a digital click or tiny laser."
+        ],
+        "heardRaisedByDb": 9.45
+      },
+      "kept": true,
+      "keptAs": [
+        "dart-fire.4"
+      ],
+      "why": "not judged by ear: 1 whole answers in 6 asks"
     },
     {
       "key": "dart-hit.1",
@@ -6602,10 +7565,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
-      "why": ""
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
+        "asks": 6,
+        "whole": 1,
+        "heard": "A single, extremely brief and sharp click resembling a spark.",
+        "madeOf": "electricity and metal",
+        "events": "1",
+        "voice": null,
+        "voiceVotes": "0 yes, 1 no",
+        "word": null,
+        "wordVotes": "0 yes, 1 no",
+        "music": null,
+        "musicVotes": "0 yes, 1 no",
+        "melody": null,
+        "melodyVotes": "0 yes, 1 no",
+        "fits": null,
+        "fitsVotes": "1 yes, 0 no",
+        "basis": [
+          "The recording consists of a fraction of a second of a high-frequency transient sound consistent with a tiny electric spark hitting a metallic surface."
+        ],
+        "heardRaisedByDb": 21.29
+      },
+      "kept": true,
+      "keptAs": [
+        "dart-hit.1"
+      ],
+      "why": "not judged by ear: 1 whole answers in 6 asks"
     },
     {
       "key": "dart-hit.2",
@@ -6646,9 +7632,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 2 whole, 1 void",
+        "asks": 3,
+        "whole": 2,
+        "heard": "A single, sharp, high-pitched metallic ping or spark. / A sharp, brief metallic clink or snapping sound.",
+        "madeOf": "metal / Metal",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The recording consists of one brief, high-frequency transient sound that resembles a tiny electrical spark or a light strike on a metallic surface.",
+          "The audio consists of a single, high-frequency metallic snap that sounds like a flint striker creating a spark."
+        ],
+        "heardRaisedByDb": 43.86
+      },
+      "kept": true,
+      "keptAs": [
+        "dart-hit.2"
+      ],
       "why": ""
     },
     {
@@ -6690,9 +7700,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "heard": "A brief, sharp snap or click is heard, resembling a tiny electrical discharge hitting a hard surface. / A single, brief, high-pitched metallic clink or strike.",
+        "madeOf": "Metal / Metal",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The audio contains a single short, sharp transient sound that perfectly aligns with the acoustic profile of a small spark.",
+          "The audio consists of a single, sharp, high-frequency impact sound that resonates briefly, characteristic of a tiny piece of metal being struck or a spark."
+        ],
+        "heardRaisedByDb": 52.08
+      },
+      "kept": true,
+      "keptAs": [
+        "dart-hit.3"
+      ],
       "why": ""
     },
     {
@@ -6734,7 +7768,26 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
+        "asks": 6,
+        "whole": 0,
+        "heard": null,
+        "madeOf": null,
+        "events": null,
+        "voice": null,
+        "voiceVotes": "0 yes, 0 no",
+        "word": null,
+        "wordVotes": "0 yes, 0 no",
+        "music": null,
+        "musicVotes": "0 yes, 0 no",
+        "melody": null,
+        "melodyVotes": "0 yes, 0 no",
+        "fits": null,
+        "fitsVotes": "0 yes, 0 no",
+        "basis": [],
+        "heardRaisedByDb": 42.63
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -6778,10 +7831,31 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
-      "why": ""
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
+        "asks": 6,
+        "whole": 0,
+        "heard": null,
+        "madeOf": null,
+        "events": null,
+        "voice": null,
+        "voiceVotes": "0 yes, 0 no",
+        "word": null,
+        "wordVotes": "0 yes, 0 no",
+        "music": null,
+        "musicVotes": "0 yes, 0 no",
+        "melody": null,
+        "melodyVotes": "0 yes, 0 no",
+        "fits": null,
+        "fitsVotes": "0 yes, 0 no",
+        "basis": [],
+        "heardRaisedByDb": 28.79
+      },
+      "kept": true,
+      "keptAs": [
+        "slab-fire.1"
+      ],
+      "why": "not judged by ear: 0 whole answers in 6 asks"
     },
     {
       "key": "slab-fire.2",
@@ -6822,10 +7896,31 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
-      "why": ""
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
+        "asks": 6,
+        "whole": 0,
+        "heard": null,
+        "madeOf": null,
+        "events": null,
+        "voice": null,
+        "voiceVotes": "0 yes, 0 no",
+        "word": null,
+        "wordVotes": "0 yes, 0 no",
+        "music": null,
+        "musicVotes": "0 yes, 0 no",
+        "melody": null,
+        "melodyVotes": "0 yes, 0 no",
+        "fits": null,
+        "fitsVotes": "0 yes, 0 no",
+        "basis": [],
+        "heardRaisedByDb": 12.99
+      },
+      "kept": true,
+      "keptAs": [
+        "slab-fire.2"
+      ],
+      "why": "not judged by ear: 0 whole answers in 6 asks"
     },
     {
       "key": "slab-fire.3",
@@ -6866,10 +7961,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
-      "why": ""
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
+        "asks": 6,
+        "whole": 1,
+        "heard": "A heavy wooden block forcefully strikes a hard surface.",
+        "madeOf": "wood",
+        "events": "1",
+        "voice": null,
+        "voiceVotes": "0 yes, 1 no",
+        "word": null,
+        "wordVotes": "0 yes, 1 no",
+        "music": null,
+        "musicVotes": "0 yes, 1 no",
+        "melody": null,
+        "melodyVotes": "0 yes, 1 no",
+        "fits": null,
+        "fitsVotes": "1 yes, 0 no",
+        "basis": [
+          "The recording consists of a single, resonant thud characteristic of a solid, dense object forcefully impacting a hard boundary."
+        ],
+        "heardRaisedByDb": 20.33
+      },
+      "kept": true,
+      "keptAs": [
+        "slab-fire.3"
+      ],
+      "why": "not judged by ear: 1 whole answers in 6 asks"
     },
     {
       "key": "popup.1",
@@ -6910,7 +8028,26 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
+        "asks": 6,
+        "whole": 0,
+        "heard": null,
+        "madeOf": null,
+        "events": null,
+        "voice": null,
+        "voiceVotes": "0 yes, 0 no",
+        "word": null,
+        "wordVotes": "0 yes, 0 no",
+        "music": null,
+        "musicVotes": "0 yes, 0 no",
+        "melody": null,
+        "melodyVotes": "0 yes, 0 no",
+        "fits": null,
+        "fitsVotes": "0 yes, 0 no",
+        "basis": [],
+        "heardRaisedByDb": 33.73
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -6954,7 +8091,28 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
+        "asks": 6,
+        "whole": 1,
+        "heard": "A flat panel snapping upright.",
+        "madeOf": "Plastic",
+        "events": "1",
+        "voice": null,
+        "voiceVotes": "0 yes, 1 no",
+        "word": null,
+        "wordVotes": "0 yes, 1 no",
+        "music": null,
+        "musicVotes": "0 yes, 1 no",
+        "melody": null,
+        "melodyVotes": "0 yes, 1 no",
+        "fits": null,
+        "fitsVotes": "1 yes, 0 no",
+        "basis": [
+          "The audio consists of a single, sharp clicking sound typical of a rigid panel locking into position."
+        ],
+        "heardRaisedByDb": 35.01
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -6998,9 +8156,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "heard": "A sharp snap is heard as a flat panel locks into an upright position. / A sharp snap or click, like a flat panel snapping upright.",
+        "madeOf": "plastic or wood / plastic or metal",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The recording consists of a single, brief impact sound characteristic of a rigid object snapping into place.",
+          "The recording consists of a single, quick snapping sound typical of a rigid object clicking into place."
+        ],
+        "heardRaisedByDb": 43.37
+      },
+      "kept": true,
+      "keptAs": [
+        "popup.3"
+      ],
       "why": ""
     },
     {
@@ -7042,9 +8224,32 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "heard": "A mechanical device powers down with a decelerating hum and comes to a complete stop with a distinct metallic clank. / A machine whirs to a halt, ending with a distinct mechanical clank.",
+        "madeOf": "metal / Metal and electronic components.",
+        "events": "2 / 2",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The audio consists of a motorized whirring sound that decreases in pitch and speed before ending with a sharp metallic impact, matching the provided description.",
+          "The audio features a pitch-descending whir characteristic of a motor stopping, followed immediately by a solid mechanical impact or clank."
+        ]
+      },
+      "kept": true,
+      "keptAs": [
+        "power-down"
+      ],
       "why": ""
     },
     {
@@ -7086,9 +8291,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "heard": "Tinny, low-fidelity electronic music plays continuously before abruptly cutting off. / Bland, tinny hold music plays through a phone speaker and cuts off abruptly.",
+        "madeOf": "Electronic circuitry and a speaker / electronic components and a speaker",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": true,
+        "musicVotes": "2 yes, 0 no",
+        "melody": true,
+        "melodyVotes": "2 yes, 0 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The recording features a muffled, synthesized instrumental track characteristic of telephone hold music that stops mid-note.",
+          "The recording features a continuous stream of low-quality, synthesized music typical of phone systems that suddenly stops mid-note."
+        ],
+        "heardRaisedByDb": 4.92
+      },
+      "kept": true,
+      "keptAs": [
+        "hold-music"
+      ],
       "why": ""
     },
     {
@@ -7130,9 +8359,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
+      "listener": {
+        "by": "the audio evaluation tool: 4 asks, 2 whole, 2 void",
+        "asks": 4,
+        "whole": 2,
+        "heard": "A sheet of paper is dropped and lands flat on a hard surface. / A single, sharp slap sound of a flat object striking a hard surface.",
+        "madeOf": "Paper / Paper",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The recording contains a single, light slapping sound with a brief rustle characteristic of paper hitting a solid object.",
+          "The recording consists of a brief, flat impact noise highly characteristic of a sheet of paper or a thin book landing flatly on a desk."
+        ],
+        "heardRaisedByDb": 32.33
+      },
+      "kept": true,
+      "keptAs": [
+        "letter-drop"
+      ],
       "why": ""
     },
     {
@@ -7174,9 +8427,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 2 whole, 4 void",
+        "asks": 6,
+        "whole": 2,
+        "heard": "A heavy rubber stamp is forcefully slammed down onto a hard desk. / A heavy rubber stamp is forcefully slammed onto a piece of paper on a desk.",
+        "madeOf": "Wood, rubber, paper, and hard desk material / Rubber, wood, metal, and paper",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The audio consists of a single, sharp, and resonant thud characteristic of a heavy stamp striking a solid wooden surface.",
+          "The audio features a single, distinct, and forceful thud consistent with a large stamp hitting a hard surface."
+        ],
+        "heardRaisedByDb": 36.57
+      },
+      "kept": true,
+      "keptAs": [
+        "stamp"
+      ],
       "why": ""
     },
     {
@@ -7218,9 +8495,32 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "heard": "A single, short tick or click. / A single, short, soft tick or click is heard.",
+        "madeOf": "plastic or metal / plastic or metal",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The recording consists of one very brief, distinct ticking sound.",
+          "The recording contains a single, brief, high-frequency mechanical clicking or ticking sound with no vocal or musical elements."
+        ]
+      },
+      "kept": true,
+      "keptAs": [
+        "ui-tick"
+      ],
       "why": ""
     },
     {
@@ -7262,10 +8562,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
-      "why": ""
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
+        "asks": 6,
+        "whole": 1,
+        "heard": "A single soft tap on a plastic computer keyboard.",
+        "madeOf": "plastic",
+        "events": "1",
+        "voice": null,
+        "voiceVotes": "0 yes, 1 no",
+        "word": null,
+        "wordVotes": "0 yes, 1 no",
+        "music": null,
+        "musicVotes": "0 yes, 1 no",
+        "melody": null,
+        "melodyVotes": "0 yes, 1 no",
+        "fits": null,
+        "fitsVotes": "1 yes, 0 no",
+        "basis": [
+          "The recording is a single, brief, and quiet mechanical click consistent with pressing a plastic computer key."
+        ],
+        "heardRaisedByDb": 15.14
+      },
+      "kept": true,
+      "keptAs": [
+        "key-tap"
+      ],
+      "why": "not judged by ear: 1 whole answers in 6 asks"
     },
     {
       "key": "ui-send",
@@ -7306,10 +8629,1017 @@
           }
         ]
       },
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 2 whole, 4 void",
+        "asks": 6,
+        "whole": 2,
+        "heard": "A short, synthesized two-note electronic notification sound is heard. / A brief, synthesized notification tone plays once.",
+        "madeOf": "digital code and electronic circuitry / digital data and electronic components",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The recording contains a brief, synthesized user interface alert commonly used as a message send tone, lacking any human speech or musical composition.",
+          "The audio contains a single, quick synthetic sound effect that functions as a digital user interface send tone."
+        ],
+        "heardRaisedByDb": 23.42
+      },
+      "kept": true,
+      "keptAs": [
+        "ui-send"
+      ],
+      "why": ""
+    },
+    {
+      "key": "line.live.idle.0",
+      "kind": "line",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "d12e224b1b37624de982f8c56b5f9f8515ca3b752a90ac755b2be53ee0d21477",
+      "filed": "2026-11-25T18:30:10.441Z",
+      "text": "The applicant has frozen. / A common defence. / It does not work.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1.3,
+        "sent": "The applicant has frozen. <break time=\"1.3s\" /> A common defence. <break time=\"1.3s\" /> It does not work.",
+        "call": 126
+      },
+      "askedSeconds": null,
+      "cost": "37",
+      "measured": {
+        "seconds": 8.22,
+        "start": 0.034,
+        "end": 8.048,
+        "peakDb": -3.48,
+        "rmsDb": -22.19,
+        "lufs": -19.67,
+        "truePeakDb": -3.46,
+        "low": 0.439,
+        "mid": 0.336,
+        "high": 0.225,
+        "tailDb": -22.53,
+        "hits": 6,
+        "hitsAt": [
+          {
+            "start": 0.038,
+            "end": 0.384,
+            "peakDb": -3.48
+          },
+          {
+            "start": 0.488,
+            "end": 1.898,
+            "peakDb": -3.96
+          },
+          {
+            "start": 3.404,
+            "end": 3.536,
+            "peakDb": -4.61
+          },
+          {
+            "start": 3.638,
+            "end": 5.028,
+            "peakDb": -3.64
+          },
+          {
+            "start": 6.564,
+            "end": 7.72,
+            "peakDb": -3.8
+          },
+          {
+            "start": 7.868,
+            "end": 8.018,
+            "peakDb": -17.52
+          }
+        ]
+      },
       "listener": null,
       "kept": false,
       "keptAs": [],
-      "why": ""
+      "why": "",
+      "line": {
+        "words": 11,
+        "seconds": 8.014,
+        "wordsPerSecond": 1.373,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 2,
+        "pausesFound": 2,
+        "pauses": [
+          1.478,
+          1.526
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": null,
+        "fits": true
+      }
+    },
+    {
+      "key": "line.live.idle.1",
+      "kind": "line",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "176e6dd556d0f37a86b73602df99841d397150de75bcec51bec7940a6ebf5e82",
+      "filed": "2026-11-25T18:30:11.613Z",
+      "text": "Take your time. / The job is not real.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1.9,
+        "sent": "Take your time. <break time=\"1.9s\" /> The job is not real.",
+        "call": 127
+      },
+      "askedSeconds": null,
+      "cost": "21",
+      "measured": {
+        "seconds": 5.016,
+        "start": 0.048,
+        "end": 4.848,
+        "peakDb": -4.33,
+        "rmsDb": -21.48,
+        "lufs": -19.75,
+        "truePeakDb": -3.81,
+        "low": 0.587,
+        "mid": 0.291,
+        "high": 0.122,
+        "tailDb": -17.59,
+        "hits": 2,
+        "hitsAt": [
+          {
+            "start": 0.054,
+            "end": 1.444,
+            "peakDb": -4.33
+          },
+          {
+            "start": 3.31,
+            "end": 4.81,
+            "peakDb": -5.4
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 8,
+        "seconds": 4.8,
+        "wordsPerSecond": 1.667,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 1,
+        "pausesFound": 1,
+        "pauses": [
+          1.862
+        ],
+        "paceHolds": false,
+        "pausesHold": true,
+        "room": null,
+        "fits": true
+      }
+    },
+    {
+      "key": "line.live.hit.0",
+      "kind": "line",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "2ec1f93da431026be966de27b8ec832d18d78142d60251f13758dcf6ba9c775a",
+      "filed": "2026-11-25T18:30:12.693Z",
+      "text": "Hit.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 0,
+        "sent": "Hit.",
+        "call": 128
+      },
+      "askedSeconds": null,
+      "cost": "2",
+      "measured": {
+        "seconds": 0.789,
+        "start": 0.03,
+        "end": 0.616,
+        "peakDb": -1.42,
+        "rmsDb": -16.75,
+        "lufs": -14.77,
+        "truePeakDb": -1.38,
+        "low": 0.141,
+        "mid": 0.422,
+        "high": 0.437,
+        "tailDb": -32.45,
+        "hits": 2,
+        "hitsAt": [
+          {
+            "start": 0.052,
+            "end": 0.28,
+            "peakDb": -1.42
+          },
+          {
+            "start": 0.392,
+            "end": 0.588,
+            "peakDb": -1.51
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 1,
+        "seconds": 0.586,
+        "wordsPerSecond": 1.706,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 0,
+        "pausesFound": 0,
+        "pauses": [],
+        "paceHolds": false,
+        "pausesHold": true,
+        "room": null,
+        "fits": true
+      }
+    },
+    {
+      "key": "line.live.hit.1",
+      "kind": "line",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "ba031b02c66471f98d5cb556e5c179a615eb3b6d0b5624d3f88272ba848e9d4a",
+      "filed": "2026-11-25T18:30:13.711Z",
+      "text": "Again.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 0,
+        "sent": "Again.",
+        "call": 129
+      },
+      "askedSeconds": null,
+      "cost": "3",
+      "measured": {
+        "seconds": 0.789,
+        "start": 0.024,
+        "end": 0.744,
+        "peakDb": -1.46,
+        "rmsDb": -17.69,
+        "lufs": -17.36,
+        "truePeakDb": -1.46,
+        "low": 0.496,
+        "mid": 0.468,
+        "high": 0.036,
+        "tailDb": -35.67,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.03,
+            "end": 0.714,
+            "peakDb": -1.46
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 1,
+        "seconds": 0.72,
+        "wordsPerSecond": 1.389,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 0,
+        "pausesFound": 0,
+        "pauses": [],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": null,
+        "fits": true
+      }
+    },
+    {
+      "key": "line.live.hit.2",
+      "kind": "line",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "8d59a5114c40bc74385493cb6062f996f0c4c61edb5d41e6c71f892fecf134ed",
+      "filed": "2026-11-25T18:30:14.847Z",
+      "text": "Still typing. / It has bills.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1.1,
+        "sent": "Still typing. <break time=\"1.1s\" /> It has bills.",
+        "call": 130
+      },
+      "askedSeconds": null,
+      "cost": "17",
+      "measured": {
+        "seconds": 3.669,
+        "start": 0.006,
+        "end": 3.49,
+        "peakDb": -5.15,
+        "rmsDb": -25.59,
+        "lufs": -23.81,
+        "truePeakDb": -5.09,
+        "low": 0.404,
+        "mid": 0.239,
+        "high": 0.357,
+        "tailDb": -18.19,
+        "hits": 3,
+        "hitsAt": [
+          {
+            "start": 0.016,
+            "end": 0.716,
+            "peakDb": -5.15
+          },
+          {
+            "start": 0.796,
+            "end": 1.03,
+            "peakDb": -14.21
+          },
+          {
+            "start": 2.334,
+            "end": 3.472,
+            "peakDb": -6.01
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 5,
+        "seconds": 3.484,
+        "wordsPerSecond": 1.435,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 1,
+        "pausesFound": 1,
+        "pauses": [
+          1.294
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": null,
+        "fits": true
+      }
+    },
+    {
+      "key": "line.live.hit.3",
+      "kind": "line",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "ae15d6b1938af79ceeabb1247c7b2e4f3ef5cfdda2dbd558f5ff970b42e2e537",
+      "filed": "2026-11-25T18:30:15.918Z",
+      "text": "Resilient. / Or desperate.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1,
+        "sent": "Resilient. <break time=\"1.0s\" /> Or desperate.",
+        "call": 131
+      },
+      "askedSeconds": null,
+      "cost": "15",
+      "measured": {
+        "seconds": 3.344,
+        "start": 0.028,
+        "end": 3.192,
+        "peakDb": -5.68,
+        "rmsDb": -25.02,
+        "lufs": -22.02,
+        "truePeakDb": -5.33,
+        "low": 0.453,
+        "mid": 0.314,
+        "high": 0.233,
+        "tailDb": -29.17,
+        "hits": 3,
+        "hitsAt": [
+          {
+            "start": 0.03,
+            "end": 1.106,
+            "peakDb": -7.51
+          },
+          {
+            "start": 2.268,
+            "end": 2.79,
+            "peakDb": -5.68
+          },
+          {
+            "start": 2.862,
+            "end": 3.136,
+            "peakDb": -20.32
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 3,
+        "seconds": 3.164,
+        "wordsPerSecond": 0.948,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 1,
+        "pausesFound": 1,
+        "pauses": [
+          1.146
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": null,
+        "fits": true
+      }
+    },
+    {
+      "key": "line.live.slowTyping.0",
+      "kind": "line",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "e58a36da319a3b5852cbfa0b49c3298edf513ccb50aa7ae7b9c60d5cab742240",
+      "filed": "2026-11-25T18:30:16.953Z",
+      "text": "One letter. / Well done.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1,
+        "sent": "One letter. <break time=\"1.0s\" /> Well done.",
+        "call": 132
+      },
+      "askedSeconds": null,
+      "cost": "15",
+      "measured": {
+        "seconds": 2.926,
+        "start": 0.022,
+        "end": 2.788,
+        "peakDb": -3.8,
+        "rmsDb": -22.06,
+        "lufs": -21.88,
+        "truePeakDb": -3.8,
+        "low": 0.751,
+        "mid": 0.229,
+        "high": 0.021,
+        "tailDb": -22.15,
+        "hits": 2,
+        "hitsAt": [
+          {
+            "start": 0.026,
+            "end": 0.794,
+            "peakDb": -3.8
+          },
+          {
+            "start": 1.972,
+            "end": 2.754,
+            "peakDb": -9.31
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 4,
+        "seconds": 2.766,
+        "wordsPerSecond": 1.446,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 1,
+        "pausesFound": 1,
+        "pauses": [
+          1.156
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": null,
+        "fits": true
+      }
+    },
+    {
+      "key": "line.live.realKeyboard.0",
+      "kind": "line",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "3407c412ca48e92e8bcce044846e7ac88fce3a2fd19633dda7960b54d6102a66",
+      "filed": "2026-11-25T18:30:18.169Z",
+      "text": "A real keyboard. / How optimistic.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1.1,
+        "sent": "A real keyboard. <break time=\"1.1s\" /> How optimistic.",
+        "call": 133
+      },
+      "askedSeconds": null,
+      "cost": "19",
+      "measured": {
+        "seconds": 3.808,
+        "start": 0.032,
+        "end": 3.666,
+        "peakDb": -4.14,
+        "rmsDb": -25.01,
+        "lufs": -22.62,
+        "truePeakDb": -3.95,
+        "low": 0.582,
+        "mid": 0.202,
+        "high": 0.216,
+        "tailDb": -22.04,
+        "hits": 4,
+        "hitsAt": [
+          {
+            "start": 0.04,
+            "end": 1.192,
+            "peakDb": -12.19
+          },
+          {
+            "start": 2.462,
+            "end": 2.848,
+            "peakDb": -10.91
+          },
+          {
+            "start": 2.976,
+            "end": 3.512,
+            "peakDb": -4.14
+          },
+          {
+            "start": 3.59,
+            "end": 3.632,
+            "peakDb": -18.59
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 5,
+        "seconds": 3.634,
+        "wordsPerSecond": 1.376,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 1,
+        "pausesFound": 1,
+        "pauses": [
+          1.258
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": null,
+        "fits": true
+      }
+    },
+    {
+      "key": "line.live.tugLost.0",
+      "kind": "line",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "0094a723ee2a9e0fdffc7ef295ea8a562bc86c0957f17e77c6f5614354e25046",
+      "filed": "2026-11-25T18:30:19.369Z",
+      "text": "The shredder / always eats first.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1.1,
+        "sent": "The shredder <break time=\"1.1s\" /> always eats first.",
+        "call": 134
+      },
+      "askedSeconds": null,
+      "cost": "18",
+      "measured": {
+        "seconds": 4.226,
+        "start": 0.038,
+        "end": 4.054,
+        "peakDb": -3.31,
+        "rmsDb": -21.64,
+        "lufs": -19.26,
+        "truePeakDb": -3.18,
+        "low": 0.392,
+        "mid": 0.309,
+        "high": 0.299,
+        "tailDb": -18.74,
+        "hits": 4,
+        "hitsAt": [
+          {
+            "start": 0.046,
+            "end": 1.062,
+            "peakDb": -4.79
+          },
+          {
+            "start": 2.244,
+            "end": 3.08,
+            "peakDb": -6.26
+          },
+          {
+            "start": 3.152,
+            "end": 3.874,
+            "peakDb": -3.31
+          },
+          {
+            "start": 3.956,
+            "end": 4.01,
+            "peakDb": -15.95
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 5,
+        "seconds": 4.016,
+        "wordsPerSecond": 1.245,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 1,
+        "pausesFound": 1,
+        "pauses": [
+          1.16
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": null,
+        "fits": true
+      }
+    },
+    {
+      "key": "line.live.pinball.flipper.0",
+      "kind": "line",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "3f44af4b29aa7dfacc9c4a34d9e1af5aeb1e63f857f72d7b5f31151b11b2c9d3",
+      "filed": "2026-11-25T18:30:20.759Z",
+      "text": "It found the flippers. / Hope / is a powerful thing.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1,
+        "sent": "It found the flippers. <break time=\"1.0s\" /> Hope <break time=\"1.0s\" /> is a powerful thing.",
+        "call": 135
+      },
+      "askedSeconds": null,
+      "cost": "31",
+      "measured": {
+        "seconds": 6.362,
+        "start": 0.048,
+        "end": 6.234,
+        "peakDb": -2.31,
+        "rmsDb": -21.34,
+        "lufs": -18.58,
+        "truePeakDb": -2.17,
+        "low": 0.546,
+        "mid": 0.157,
+        "high": 0.297,
+        "tailDb": -20.28,
+        "hits": 6,
+        "hitsAt": [
+          {
+            "start": 0.052,
+            "end": 1.064,
+            "peakDb": -7.14
+          },
+          {
+            "start": 1.164,
+            "end": 1.61,
+            "peakDb": -2.91
+          },
+          {
+            "start": 2.856,
+            "end": 3.134,
+            "peakDb": -8.02
+          },
+          {
+            "start": 3.278,
+            "end": 3.35,
+            "peakDb": -17.43
+          },
+          {
+            "start": 4.558,
+            "end": 4.846,
+            "peakDb": -2.31
+          },
+          {
+            "start": 4.954,
+            "end": 6.198,
+            "peakDb": -8.08
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 9,
+        "seconds": 6.186,
+        "wordsPerSecond": 1.455,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 2,
+        "pausesFound": 2,
+        "pauses": [
+          1.228,
+          1.188
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": null,
+        "fits": true
+      }
+    },
+    {
+      "key": "line.live.boss.verify.0",
+      "kind": "line",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "41c972552eb32de2ecfd6001dbc3aa2da31acc22a388f10b920f763100dde8f4",
+      "filed": "2026-11-25T18:30:21.937Z",
+      "text": "It claims to be human. / Bold.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1.4,
+        "sent": "It claims to be human. <break time=\"1.4s\" /> Bold.",
+        "call": 136
+      },
+      "askedSeconds": null,
+      "cost": "17",
+      "measured": {
+        "seconds": 4.18,
+        "start": 0.028,
+        "end": 4.008,
+        "peakDb": -4.29,
+        "rmsDb": -19.26,
+        "lufs": -19.86,
+        "truePeakDb": -4.21,
+        "low": 0.568,
+        "mid": 0.401,
+        "high": 0.032,
+        "tailDb": -24.04,
+        "hits": 2,
+        "hitsAt": [
+          {
+            "start": 0.034,
+            "end": 0.124,
+            "peakDb": -10.25
+          },
+          {
+            "start": 0.214,
+            "end": 3.984,
+            "peakDb": -4.29
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 6,
+        "seconds": 3.98,
+        "wordsPerSecond": 1.508,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 1,
+        "pausesFound": 0,
+        "pauses": [],
+        "paceHolds": true,
+        "pausesHold": false,
+        "room": null,
+        "fits": true
+      }
+    },
+    {
+      "key": "line.live.boss.slow.0",
+      "kind": "line",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "358e61bce4cd9b405e008b47c42071988fd6ee4a33ee5f10b56ecbfeaadc43ec",
+      "filed": "2026-11-25T18:30:23.133Z",
+      "text": "The button is winning. / The button.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1.4,
+        "sent": "The button is winning. <break time=\"1.4s\" /> The button.",
+        "call": 137
+      },
+      "askedSeconds": null,
+      "cost": "20",
+      "measured": {
+        "seconds": 3.715,
+        "start": 0.038,
+        "end": 3.608,
+        "peakDb": -1.77,
+        "rmsDb": -20.42,
+        "lufs": -18.95,
+        "truePeakDb": -1.73,
+        "low": 0.607,
+        "mid": 0.345,
+        "high": 0.047,
+        "tailDb": -21.93,
+        "hits": 4,
+        "hitsAt": [
+          {
+            "start": 0.048,
+            "end": 0.384,
+            "peakDb": -1.77
+          },
+          {
+            "start": 0.464,
+            "end": 1.336,
+            "peakDb": -5.12
+          },
+          {
+            "start": 2.934,
+            "end": 3.27,
+            "peakDb": -5.56
+          },
+          {
+            "start": 3.374,
+            "end": 3.574,
+            "peakDb": -11.17
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 6,
+        "seconds": 3.57,
+        "wordsPerSecond": 1.681,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 1,
+        "pausesFound": 1,
+        "pauses": [
+          1.582
+        ],
+        "paceHolds": false,
+        "pausesHold": true,
+        "room": null,
+        "fits": true
+      }
+    },
+    {
+      "key": "line.live.skip.0",
+      "kind": "line",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "51c4a164aec2cf7e8998f3cde7e2686c90963d14816383c28b94f9d7f84d877d",
+      "filed": "2026-11-25T18:30:24.375Z",
+      "text": "It skips ahead. / Efficient. / Still unemployed.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1,
+        "sent": "It skips ahead. <break time=\"1.0s\" /> Efficient. <break time=\"1.0s\" /> Still unemployed.",
+        "call": 138
+      },
+      "askedSeconds": null,
+      "cost": "29",
+      "measured": {
+        "seconds": 5.898,
+        "start": 0.03,
+        "end": 5.676,
+        "peakDb": -2.06,
+        "rmsDb": -22.66,
+        "lufs": -19.23,
+        "truePeakDb": -1.79,
+        "low": 0.355,
+        "mid": 0.194,
+        "high": 0.45,
+        "tailDb": -23.62,
+        "hits": 4,
+        "hitsAt": [
+          {
+            "start": 0.036,
+            "end": 0.464,
+            "peakDb": -2.06
+          },
+          {
+            "start": 0.54,
+            "end": 1.122,
+            "peakDb": -2.55
+          },
+          {
+            "start": 2.332,
+            "end": 3.098,
+            "peakDb": -8.25
+          },
+          {
+            "start": 4.23,
+            "end": 5.654,
+            "peakDb": -3.1
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 6,
+        "seconds": 5.646,
+        "wordsPerSecond": 1.063,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 2,
+        "pausesFound": 2,
+        "pauses": [
+          1.198,
+          1.122
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": null,
+        "fits": true
+      }
+    },
+    {
+      "key": "line.live.watchFilm.0",
+      "kind": "line",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "dc9a319010c54488684165a3827d7dfa3ed9962e2b8f52c03fdfba9de47e7032",
+      "filed": "2026-11-25T18:30:25.468Z",
+      "text": "It would rather watch. / Understandable.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1.1,
+        "sent": "It would rather watch. <break time=\"1.1s\" /> Understandable.",
+        "call": 139
+      },
+      "askedSeconds": null,
+      "cost": "22",
+      "measured": {
+        "seconds": 4.087,
+        "start": 0.028,
+        "end": 4.046,
+        "peakDb": -3.11,
+        "rmsDb": -22.01,
+        "lufs": -20.3,
+        "truePeakDb": -3.11,
+        "low": 0.508,
+        "mid": 0.293,
+        "high": 0.199,
+        "tailDb": -23.86,
+        "hits": 3,
+        "hitsAt": [
+          {
+            "start": 0.034,
+            "end": 1.224,
+            "peakDb": -5.42
+          },
+          {
+            "start": 1.364,
+            "end": 1.604,
+            "peakDb": -9.35
+          },
+          {
+            "start": 2.798,
+            "end": 4.018,
+            "peakDb": -3.11
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 5,
+        "seconds": 4.018,
+        "wordsPerSecond": 1.244,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 1,
+        "pausesFound": 1,
+        "pauses": [
+          1.188
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": null,
+        "fits": true
+      }
     }
   ]
 }

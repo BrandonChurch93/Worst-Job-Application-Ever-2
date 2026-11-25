@@ -1,0 +1,117 @@
+{
+  "id": "flipper.1",
+  "kind": "cue",
+  "cue": "flipper",
+  "variant": 1,
+  "class": "hit",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "One flipper firing",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "One pinball flipper firing, a single sharp solenoid snap and the slap of a plastic bat, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 87
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "47bb5d4fc5071160880b43c7bf30723663a53334f3f96854ffa854610e4dedf9",
+    "filed": "2026-11-25T18:16:31.215Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0,
+      "end": 0.48,
+      "peakDb": -24.56,
+      "rmsDb": -47.34,
+      "lufs": -38.61,
+      "truePeakDb": -20.39,
+      "low": 0.006,
+      "mid": 0.608,
+      "high": 0.386,
+      "tailDb": -57.41,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.202,
+          "peakDb": -24.56
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.2,
+    "cutToSeconds": 0.2,
+    "fadeInMs": 3,
+    "fadeOutMs": 50,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -5,
+    "gainDb": 19.58,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.2,
+    "start": 0,
+    "end": 0.192,
+    "peakDb": -5,
+    "rmsDb": -24.22,
+    "lufs": -21.7,
+    "truePeakDb": -5,
+    "low": 0.004,
+    "mid": 0.61,
+    "high": 0.386,
+    "tailDb": -46.91,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.16,
+        "peakDb": -5
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+    "asks": 2,
+    "whole": 2,
+    "heard": "A sharp mechanical click or snap, resembling a pinball flipper firing. / A single mechanical click of a pinball machine flipper engaging is heard.",
+    "madeOf": "Metal and plastic / Metal and plastic",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The recording consists of a single, quick mechanical actuation sound typical of a pinball machine flipper.",
+      "The answers rest on the single, distinct mechanical snapping sound characteristic of a solenoid-driven flipper."
+    ],
+    "heardRaisedByDb": 21.56
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "flipper.1.wav",
+  "seconds": 0.2,
+  "sha256": "5b65ebef5ed1577ddd7d77ee7a02cb7017562934921e03dd3a1ca9de73958d5f"
+}

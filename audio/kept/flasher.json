@@ -1,0 +1,116 @@
+{
+  "id": "flasher",
+  "kind": "cue",
+  "cue": "flasher",
+  "variant": null,
+  "class": "tick",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A relay click and the snap of a bright lamp",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "One electrical relay click and the snap of a bright flash lamp firing, a single short tick and snap, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 84
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "5d22a448b568b6c56d019b80aa38df439ae45342a4981da2073844f01a1ccd13",
+    "filed": "2026-11-25T18:16:23.429Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0,
+      "end": 0.422,
+      "peakDb": -1.32,
+      "rmsDb": -29.85,
+      "lufs": -23.45,
+      "truePeakDb": -0.66,
+      "low": 0.034,
+      "mid": 0.263,
+      "high": 0.703,
+      "tailDb": -49.66,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0.01,
+          "end": 0.058,
+          "peakDb": -1.32
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.4,
+    "cutToSeconds": 0.4,
+    "fadeInMs": 3,
+    "fadeOutMs": 100,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -16,
+    "gainDb": -14.6,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.4,
+    "start": 0.002,
+    "end": 0.142,
+    "peakDb": -16,
+    "rmsDb": -39.81,
+    "lufs": -41.09,
+    "truePeakDb": -15.57,
+    "low": 0.002,
+    "mid": 0.271,
+    "high": 0.726,
+    "tailDb": -51.1,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0.01,
+        "end": 0.058,
+        "peakDb": -16
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 6 asks, 2 whole, 4 void",
+    "asks": 6,
+    "whole": 2,
+    "heard": "A sharp mechanical click and snap of an electrical switch or relay. / A sharp mechanical click followed immediately by a distinct electrical snap.",
+    "madeOf": "Metal and plastic / Metal, glass, and electronic components",
+    "events": "1 / 2",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The recording consists entirely of a crisp, mechanical clicking sound characteristic of a lamp switch or electrical relay being engaged.",
+      "The recording features two distinct sequential sounds: a metallic relay click and a sharp popping snap typical of a high-intensity lamp or flash igniting."
+    ]
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "flasher.wav",
+  "seconds": 0.4,
+  "sha256": "e0616d850ad4efcbe631442e6384ba4fdf8d378b8979e7326810249b147f8517"
+}

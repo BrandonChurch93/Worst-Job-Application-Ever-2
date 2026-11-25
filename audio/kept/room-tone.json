@@ -1,0 +1,121 @@
+{
+  "id": "room-tone",
+  "kind": "cue",
+  "cue": "room-tone",
+  "variant": null,
+  "class": "tone",
+  "loop": true,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A quiet room. Air, nothing else. Loops",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "The air of a quiet empty carpeted office room at night, a very soft steady hush of air, no hum, no clicks, no events, nothing else, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 20,
+    "loop": true,
+    "influence": null,
+    "call": 33
+  },
+  "askedSeconds": 20,
+  "cost": "220",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "0d428f1f98497590d932b1f43f75c1cec2417c9c688bff0b7cf77e1d924d512f",
+    "filed": "2026-11-25T18:13:06.909Z",
+    "measured": {
+      "seconds": 20,
+      "start": 0,
+      "end": 20,
+      "peakDb": -58.67,
+      "rmsDb": -70.52,
+      "lufs": null,
+      "truePeakDb": -55.93,
+      "low": 0.967,
+      "mid": 0.028,
+      "high": 0.005,
+      "tailDb": -12.21,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 20,
+          "peakDb": -58.67
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 20,
+    "cutToSeconds": null,
+    "fadeInMs": 0,
+    "fadeOutMs": 0,
+    "lowCutHz": 60,
+    "levelMeasure": "rms",
+    "levelDb": -46,
+    "gainDb": 30.01,
+    "channels": 2,
+    "loop": {
+      "crossMs": 1000,
+      "seamStepDb": -34.99,
+      "seamLevelDb": 1.31,
+      "holds": true
+    }
+  },
+  "measured": {
+    "seconds": 19,
+    "start": 0,
+    "end": 19,
+    "peakDb": -33.24,
+    "rmsDb": -48.72,
+    "lufs": -44.89,
+    "truePeakDb": -29.85,
+    "low": 0.776,
+    "mid": 0.19,
+    "high": 0.034,
+    "tailDb": -14.26,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 19,
+        "peakDb": -33.24
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+    "asks": 2,
+    "whole": 2,
+    "heard": "A continuous, faint hiss of ambient room tone is heard. / The recording contains only a very faint, continuous room tone or silence.",
+    "madeOf": "air / air",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The recording contains only a steady, quiet hiss characteristic of ambient air circulation, which perfectly matches the description of a quiet room.",
+      "The audio consists solely of the subtle, continuous ambient noise floor of a quiet space, with no distinct foreground sounds occurring."
+    ]
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "room-tone.wav",
+  "seconds": 19,
+  "sha256": "d9bba95c281d99b0ee24aacb1f08e9dbf2274d202ce4ca4bd15256517c523af5"
+}
