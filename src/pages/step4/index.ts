@@ -55,6 +55,7 @@ export function makePage(): PageLogic {
     if (s.mode === 'film') return 'confirmed-film'
     return s.ticked < 0.3 + DOUBT_SECONDS ? 'doubt' : 'confirmed-live'
   }
+  const shut = (): number => L.fold * (1 - (s.ticked < 0 ? 0 : prog(s.ticked, 0.02, 0.3)))
   const feetOf = (f: Fight): { x: number; y: number; z: number }[] => f.feet.map((foot) => ({ x: foot.x, y: foot.y, z: foot.t >= 0 ? Math.sin(Math.PI * Math.min(1, foot.t)) * 16 : 0 }))
   const rigNow = (): Rig | null => {
     if (s.stage === 'unfold') return unfoldRig(s.t)
@@ -65,7 +66,7 @@ export function makePage(): PageLogic {
   }
   const groundAt = (x: number, y: number): number => {
     const p = { x, y }
-    let z = inBox(L.card, p) ? heights.card : 0
+    let z = inBox({ x: L.card.x, y: L.card.y, w: L.card.w, h: L.card.h - shut() }, p) ? heights.card : 0
     if ((s.stage === 'verify' || s.inSocket) && inBox(L.cap, p)) z = heights.button
     if (s.stage === 'press' && !s.inSocket && inBox(fallenBox, p, -24)) z = 16
     if (s.stage === 'fight' && s.fight) {
@@ -205,8 +206,19 @@ export function makePage(): PageLogic {
         over['health-label'] = { x: label.box[0]! + slide }
         over['health-track'] = { x: L.track.x + slide }
       }
+      const fold = shut()
+      if (fold >= L.fold) over['verify-rule'] = null
       const options: DrawOptions = { states, over }
+      const first = out.length
       drawLayout(out, L.tree, options)
+      if (fold > 0) {
+        for (let i = first; i < out.length; i++) {
+          const shape = out[i]!
+          if (shape.id === 'verify-card') shape.h -= fold
+          else if (shape.id === 'verify-fine') shape.y -= fold
+          else if (shape.id === 'verify-rule') shape.w *= 1 - fold / L.fold
+        }
+      }
       if (s.ticked >= 0) {
         const b = L.checkbox
         const z = heights.card + 4
