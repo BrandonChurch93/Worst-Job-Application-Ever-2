@@ -22,6 +22,15 @@ export const solo = (group: string | null): void => {
 }
 export const soloed = (): string | null => alone
 
+// The proof sheet asks for one group alone from outside the page: an event `wjl-solo` whose detail is the group's name, or null.
+if (typeof window !== 'undefined') {
+  window.addEventListener('wjl-solo', (e) => solo((e as CustomEvent<string | null>).detail ?? null))
+  window.addEventListener('wjl-groups', (e) => {
+    const d = (e as CustomEvent<{ zone: string; into: Set<string> }>).detail
+    for (const g of groupsOf(d.zone)) d.into.add(g.id)
+  })
+}
+
 const first = (ctx: RealContext, id: string, i: number, otherwise: number): number => {
   const v = ctx.byId.get(id)?.v
   return v !== undefined && v.length > i ? v[i]! : otherwise

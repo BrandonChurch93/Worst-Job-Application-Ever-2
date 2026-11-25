@@ -26,6 +26,7 @@ uniform sampler2D tMean;
 uniform float exposure;
 uniform float threshold;
 uniform float knee;
+uniform float depth;
 void main() {
   ivec2 size = textureSize( tMean, 0 );
   ivec2 base = ivec2( gl_FragCoord.xy ) * 2;
@@ -37,12 +38,12 @@ void main() {
       float l = max( c.r, max( c.g, c.b ) );
       float soft = clamp( l - threshold + knee, 0.0, 2.0 * knee );
       float over = max( soft * soft / ( 4.0 * knee + 0.00001 ), l - threshold );
-      sum += c * ( over / max( l, 0.0001 ) );
+      sum += c * pow( c / max( l, 0.0001 ), vec3( depth ) ) * ( over / max( l, 0.0001 ) );
     }
   }
   outColor = vec4( sum * 0.25, 1.0 );
 }`,
-    { tMean: { value: null }, exposure: { value: 1 }, threshold: { value: 1 }, knee: { value: 0.5 } }
+    { tMean: { value: null }, exposure: { value: 1 }, threshold: { value: 1 }, knee: { value: 0.5 }, depth: { value: 0 } }
   )
   private half = fullscreen(
     /* glsl */ `
@@ -96,6 +97,7 @@ void main() {
     b.exposure!.value = look.exposure
     b.threshold!.value = g.threshold
     b.knee!.value = g.knee
+    b.depth!.value = g.depth
     this.quad.draw(renderer, this.bright, this.down[0]!)
     for (let i = 1; i < levels; i++) {
       const from = this.down[i - 1]!
@@ -131,6 +133,7 @@ export class Post {
 uniform sampler2D tMean;
 uniform sampler2D tGlow;
 uniform float glow;
+uniform float cover;
 uniform float exposure;
 uniform float knee;
 uniform float saturation;
@@ -169,7 +172,11 @@ void main() {
     return;
   }
   c = max( c, vec3( 0.0 ) ) * exposure;
-  if ( glow > 0.0 ) c += texture( tGlow, vUv ).rgb * glow;
+  if ( glow > 0.0 ) {
+    vec3 g = texture( tGlow, vUv ).rgb * glow;
+    float behind = 1.0 - smoothstep( 1.25, 2.5, max( c.r, max( c.g, c.b ) ) );
+    c = c * ( 1.0 - cover * behind * min( 1.0, max( g.r, max( g.g, g.b ) ) ) ) + g;
+  }
   c = shoulder( c );
   float l = dot( c, vec3( 0.2126, 0.7152, 0.0722 ) );
   c = max( mix( vec3( l ), c, saturation ), vec3( 0.0 ) );
@@ -184,6 +191,7 @@ void main() {
         tMean: { value: null },
         tGlow: { value: null },
         glow: { value: 0 },
+        cover: { value: 0 },
         exposure: { value: look.exposure },
         knee: { value: look.knee },
         saturation: { value: look.saturation },
@@ -201,6 +209,7 @@ void main() {
     const spread = flat || encoded ? null : this.glow.draw(renderer, mean, size.x, size.y)
     u.tGlow!.value = spread
     u.glow!.value = spread ? look.glow.strength : 0
+    u.cover!.value = look.glow.cover
     u.tMean!.value = mean
     u.frame!.value = frame
     u.flat_!.value = flat ? 1 : 0

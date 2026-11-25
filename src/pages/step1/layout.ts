@@ -4,7 +4,7 @@ import { group, node, text } from '../../shell/layout'
 import { block } from '../../shell/metrics'
 import { button, buttonWidth, field, HEADER, LEFT, page, RIGHT, SCREEN_H, stepHead, TYPE } from '../../shell/parts'
 import { words } from '../../shell/words'
-import { CAP_TOP, DECK, DECK_TOP, HATCH, hatchCentre, legendKey, seats } from './keyboard'
+import { CAP_TOP, DECK, DECK_TOP, HATCH, hatchCentre, legendKey, seats, typed } from './keyboard'
 
 const sizes = config.scale.sizes
 const heights = config.scale.heights
@@ -20,7 +20,8 @@ export const ZONE = { x: LEFT, y: HEADER.contentY + 36, w: COL_W, h: FIELD_Y[2]!
 export const FORM_BOTTOM = ZONE.y + ZONE.h
 export const FIELDS = ['firstName', 'lastName', 'email'] as const
 export type FieldName = (typeof FIELDS)[number]
-export const LEGEND = { font: 'inter-500', px: 22, align: 'centre' as const }
+export const LEGEND = { font: 'inter-500', px: 26, align: 'centre' as const }
+export const LEGEND_WORD = { font: 'inter-500', px: 20, align: 'centre' as const }
 export const SLAB = { w: 440, h: 104 }
 export const SLAB_TYPE = { font: 'inter-600', px: 34, align: 'centre' as const }
 export const PAPER = { w: 220, h: 300 }
@@ -75,7 +76,8 @@ export function buildLayout(): LayoutNode {
   const keys: LayoutNode[] = seats.map((s) => {
     const key = legendKey(s.name)
     const enter = s.name === 'enter'
-    const children = key ? [text(`key-${s.name}-legend`, key, LEGEND, s.cx, s.cy - cap(LEGEND.font, LEGEND.px) / 2, { part: 'type', on: CAP_TOP, tone: enter ? 'inkLight' : 'ink' })] : []
+    const type = typed(s.name) === null ? LEGEND_WORD : LEGEND
+    const children = key ? [text(`key-${s.name}-legend`, key, type, s.cx, s.cy - cap(type.font, type.px) / 2, { part: 'type', on: CAP_TOP, tone: enter ? 'inkLight' : 'ink' })] : []
     return node(`key-${s.name}`, 'keycap', [s.x, s.y, s.w, s.h], { part: 'keyboard', r: 9, tone: enter ? 'accent' : 'raised', children })
   })
   const hatches: LayoutNode[] = ([0, 1] as const).map((side) => {

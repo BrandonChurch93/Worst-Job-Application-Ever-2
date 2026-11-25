@@ -275,7 +275,7 @@ export function pointerAt(plan: Plan, time: number): Pointer {
 const TUG_WIDE = { x: SLOT.cx - 600, y: SLOT.cy - 574, w: 1200, h: 675 }
 const TUG_CLOSE = { x: SLOT.cx - 500, y: SLOT.cy - 368, w: 1000, h: 562.5 }
 const TUG_TIGHT = { x: SLOT.cx - 300, y: SLOT.cy - 260, w: 600, h: 337.5 }
-export const CAMERA = { in: [21.1, 22.1] as [number, number], push: 4.6, tight: [25.2, 26.8] as [number, number], out: [27.6, 28.9] as [number, number] }
+export const CAMERA = { in: [21.1, 22.1] as [number, number], push: 4.6, tight: [24.35, 26.35] as [number, number], out: [27.6, 28.9] as [number, number] }
 
 export function filmCamera(time: number): CameraPose {
   const home = homePose(0)

@@ -38,7 +38,7 @@ uniform vec4 uHoles[${MAX_HOLES}];
 uniform vec4 uBurnt;
 float wjaRag( vec2 d, float burnt ) {
   float a = atan( d.y, d.x );
-  return 1.0 + ( 0.25 + 0.75 * burnt ) * ( 0.06 * sin( 3.0 * a + 1.3 ) + 0.04 * sin( 7.0 * a + 0.4 ) + 0.03 * sin( 11.0 * a + 2.1 ) );
+  return 1.0 + ( 0.25 + 0.3 * burnt ) * ( 0.06 * sin( 3.0 * a + 1.3 ) + 0.04 * sin( 7.0 * a + 0.4 ) + 0.03 * sin( 11.0 * a + 2.1 ) );
 }
 void wjaHoles( vec3 rest ) {
   for ( int i = 0; i < ${MAX_HOLES}; i ++ ) {
@@ -46,7 +46,7 @@ void wjaHoles( vec3 rest ) {
     if ( h.z <= 0.0 ) continue;
     vec2 d = rest.xy - h.xy;
     float k = clamp( rest.z / 2.3, 0.0, 1.0 );
-    float r = h.z * wjaRag( d, uBurnt[ i ] ) * mix( 0.85 + 0.15 * k, 0.24 + 0.76 * pow( k, 1.6 ), uBurnt[ i ] );
+    float r = h.z * wjaRag( d, uBurnt[ i ] ) * mix( 0.85 + 0.15 * k, 0.7 + 0.3 * pow( k, 1.6 ), uBurnt[ i ] );
     if ( dot( d, d ) < r * r ) discard;
   }
 }
@@ -77,6 +77,7 @@ uniform sampler2D uDetail;
 ${HOLE_COMMON}
 vec3 wjaGlow = vec3( 0.0 );
 float wjaRough = 0.3;
+float wjaFill = 0.0;
 float wjaCoat = 1.0;
 float wjaSpec = 1.0;
 float wjaCoatRough = 0.05;
@@ -137,6 +138,7 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
   if ( bare > 0.5 ) {
     vec3 clay = vec3( 0.84, 0.79, 0.68 ) * ( 0.84 + 0.2 * fine.g + 0.12 * mid.b );
     col = mix( edge, clay, smoothstep( 0.1, 0.42, vRest.z ) );
+    wjaGlow += col * 0.2;
     wjaRough = 0.92;
     wjaCoat = 0.0;
     wjaSpec = 0.3;
@@ -170,8 +172,8 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
   // Pale: the gloss dies and the body turns to stone, the black edge to grey.
   if ( pale > 0.0 ) {
     float speck = smoothstep( 0.62, 0.78, texture2D( uDetail, q / 0.83 + vec2( 0.31, 0.77 ) ).b );
-    vec3 stone = vec3( 0.70, 0.69, 0.655 ) * ( 0.9 + 0.14 * mid.b + 0.1 * fine.g ) * ( 1.0 - 0.3 * speck );
-    col = mix( col, mix( stone, stone * 0.93, ink ), pale );
+    vec3 stone = vec3( 0.63, 0.62, 0.59 ) * ( 0.9 + 0.14 * mid.b + 0.1 * fine.g ) * ( 1.0 - 0.3 * speck );
+    col = mix( col, mix( stone, stone * 0.74, ink ), pale );
     wjaRough = mix( wjaRough, 0.94, pale );
     wjaCoat *= 1.0 - pale;
     wjaTilt += grain * 1.6 * pale;
@@ -179,10 +181,10 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
 
   // Char: a black blistered crust that grows back from the tip, with a scorched brown fringe.
   if ( charred > 0.0 ) {
-    float front = charred * 7.5;
-    float ragged = along + ( wide.g - 0.5 ) * 3.0 + ( mid.b - 0.5 ) * 2.2 + ( fine.g - 0.5 ) * 0.7;
+    float front = charred * 4.3;
+    float ragged = along + ( wide.g - 0.5 ) * 2.0 + ( mid.b - 0.5 ) * 1.6 + ( fine.g - 0.5 ) * 0.6;
     float crust = smoothstep( front + 0.2, front - 0.3, ragged );
-    float soot = smoothstep( front + 3.4, front - 0.2, ragged );
+    float soot = smoothstep( front + 2.8, front - 0.2, ragged ) * smoothstep( 0.0, 0.12, charred );
     vec3 scorch = mix( vec3( 0.80, 0.52, 0.24 ), vec3( 0.36, 0.17, 0.06 ), soot );
     col = mix( col, col * scorch, pow( soot, 1.5 ) * ( 1.0 - crust ) * mix( 1.0, 0.55, ink ) );
     float blister = smoothstep( 0.5, 0.82, fine.b * 0.7 + mid.g * 0.5 );
@@ -195,8 +197,8 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
 
   // Heat: a glow inside the enamel that climbs from the tip.
   if ( heat > 0.0 ) {
-    float front = heat * 12.5;
-    float h = smoothstep( front + 1.2, front - 5.0, along + ( wide.g - 0.5 ) * 2.4 + ( mid.b - 0.5 ) * 1.2 );
+    float front = heat * 8.2;
+    float h = smoothstep( front + 1.0, front - 3.6, along + ( wide.g - 0.5 ) * 2.4 + ( mid.b - 0.5 ) * 1.2 ) * smoothstep( 0.0, 0.12, heat );
     vec3 ember = mix( vec3( 1.0, 0.82, 0.45 ), vec3( 1.25, 0.62, 0.08 ), smoothstep( 0.06, 0.3, h ) );
     ember = mix( ember, vec3( 1.2, 0.3, 0.02 ), smoothstep( 0.3, 0.58, h ) );
     ember = mix( ember, vec3( 0.74, 0.035, 0.012 ), smoothstep( 0.58, 0.96, h ) );
@@ -210,7 +212,8 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
   // Melt: the enamel runs over its own edge, wet and a little warmer.
   if ( melt > 0.0 ) {
     col = mix( col, col * vec3( 1.0, 0.975, 0.91 ), melt );
-    wjaRough = mix( wjaRough, 0.2, melt );
+    wjaRough = mix( wjaRough, 0.14, melt );
+    wjaCoatRough = mix( wjaCoatRough, 0.04, melt );
   }
 
   // Holes: a burn has soot round it and a lip that glows and cools; a punched one has a broken rim of bare clay.
@@ -221,26 +224,27 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
     vec2 d = q - hole.xy;
     float r = hole.z * wjaRag( d, burnt );
     float from = length( d ) / r + ( mid.g - 0.5 ) * 0.16 + ( fine.b - 0.5 ) * 0.14;
-    float soot = ( 1.0 - smoothstep( 1.1, 1.62, from ) ) * burnt;
-    float crust = ( 1.0 - smoothstep( 1.16, 1.32, from ) ) * burnt;
+    float soot = ( 1.0 - smoothstep( 1.18, 1.95, from ) ) * burnt;
+    float crust = ( 1.0 - smoothstep( 1.2, 1.42, from ) ) * burnt;
     col = mix( col, col * vec3( 0.3, 0.215, 0.14 ), soot * soot * 0.95 );
     col = mix( col, vec3( 0.014, 0.012, 0.010 ) + 0.03 * fine.g * mid.b, crust );
-    float chipAt = length( d ) / r + ( fine.g - 0.5 ) * 0.2 + ( mid.b - 0.5 ) * 0.14;
-    float chip = ( 1.0 - smoothstep( 1.3, 1.36, chipAt ) ) * ( 1.0 - burnt );
-    float nick = smoothstep( 1.26, 1.36, chipAt ) * ( 1.0 - smoothstep( 1.36, 1.5, chipAt ) ) * ( 1.0 - burnt );
+    float chipAt = length( d ) / r + ( wide.g - 0.5 ) * 0.1 + ( mid.b - 0.5 ) * 0.12;
+    float chip = ( 1.0 - smoothstep( 1.13, 1.17, chipAt ) ) * ( 1.0 - burnt );
+    float nick = smoothstep( 1.1, 1.17, chipAt ) * ( 1.0 - smoothstep( 1.17, 1.26, chipAt ) ) * ( 1.0 - burnt );
     vec3 clay = vec3( 0.86, 0.80, 0.68 ) * ( 0.72 + 0.5 * fine.b * mid.g + 0.16 * fine.g );
-    col = mix( col, clay * mix( 0.62, 1.0, smoothstep( 1.0, 1.3, chipAt ) ), chip );
-    col *= 1.0 - 0.22 * nick;
+    col = mix( col, clay * mix( 0.8, 1.06, smoothstep( 1.0, 1.15, chipAt ) ), chip );
+    col *= 1.0 - 0.1 * nick;
     float dull = max( max( crust, soot * 0.5 ), chip );
     wjaRough = mix( wjaRough, 0.95, dull );
     wjaCoat *= 1.0 - max( max( crust, soot * 0.7 ), chip );
     wjaSpec *= 1.0 - 0.8 * chip;
-    wjaTilt += grain * ( 4.0 * crust + 6.0 * chip );
-    float lip = ( 1.0 - smoothstep( 1.0, 1.16, from ) ) * hole.w * burnt;
-    float spark = smoothstep( 0.46, 0.72, fine.b * 0.6 + mid.g * 0.6 - 0.25 * ( 1.0 - hole.w ) );
-    float lee = 0.04 + 0.96 * smoothstep( 0.1, 0.95, dot( normalize( d ), vec2( -0.5, 0.86 ) ) );
-    wjaGlow += mix( vec3( 0.85, 0.07, 0.01 ), vec3( 1.25, 0.6, 0.12 ), hole.w * fine.g ) * lip * lee * ( 0.07 + 2.2 * spark );
+    wjaTilt += grain * ( 4.0 * crust + 2.0 * chip );
+    float lip = ( 1.0 - smoothstep( 1.04, 1.24, from ) ) * pow( hole.w, 0.7 ) * burnt;
+    float spark = smoothstep( 0.4, 0.68, fine.b * 0.6 + mid.g * 0.6 - 0.2 * ( 1.0 - hole.w ) );
+    float lee = 0.4 + 0.6 * smoothstep( -0.6, 0.9, dot( normalize( d ), vec2( -0.5, 0.86 ) ) );
+    wjaGlow += mix( vec3( 0.85, 0.07, 0.01 ), vec3( 1.25, 0.6, 0.12 ), hole.w * fine.g ) * lip * lee * ( 0.3 + 2.0 * spark );
   }
+  wjaFill = 0.6 * face;
   return col;
 }
 `
@@ -271,7 +275,7 @@ export function bodyMaterial(uniforms: BodyUniforms): THREE.MeshPhysicalMaterial
       .replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\nroughnessFactor = wjaRough;')
       .replace('#include <normal_fragment_maps>', '#include <normal_fragment_maps>\nnormal = normalize( normal + vAcross * wjaTilt.x + vDown * wjaTilt.y );')
       .replace('#include <clearcoat_normal_fragment_maps>', '#include <clearcoat_normal_fragment_maps>\nclearcoatNormal = normalize( clearcoatNormal + vAcross * wjaCoatTilt.x + vDown * wjaCoatTilt.y );')
-      .replace('#include <lights_physical_fragment>', '#include <lights_physical_fragment>\nmaterial.clearcoat = saturate( wjaCoat );\nmaterial.specularColor *= wjaSpec;\nmaterial.specularF90 *= wjaSpec;\nmaterial.clearcoatRoughness = max( wjaCoatRough, 0.0525 );')
+      .replace('#include <lights_physical_fragment>', '#include <lights_physical_fragment>\nmaterial.clearcoat = saturate( wjaCoat );\nmaterial.specularColor *= wjaSpec;\nmaterial.specularF90 *= wjaSpec;\nmaterial.clearcoatRoughness = max( wjaCoatRough, 0.0525 );\ntotalEmissiveRadiance += diffuseColor.rgb * wjaFill * ( 1.0 - dot( normal, normalize( ( viewMatrix * vec4( 0.0, 0.0, 1.0, 0.0 ) ).xyz ) ) );')
       .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\ntotalEmissiveRadiance += wjaGlow;')
   }
   m.customProgramCacheKey = () => 'wja-studio-cursor-body'

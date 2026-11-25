@@ -37,14 +37,14 @@ function discUv(g: THREE.BufferGeometry, d: number): THREE.BufferGeometry {
   return g
 }
 
-const RIM = 4.4
+const RIM = 3.2
 
 // The aluminium sleeve of a pocket: a thin flat rim at the surface and a wall that leans in, down to what lies in the pocket.
 function sleeve(s: Shape, surface: number, lean: number): THREE.BufferGeometry {
   const top = surface - pocketCut(s).lip - 0.2
   const foot = RIM - 0.4 + lean * (top - 0.5)
   const points: ProfilePoint[] = [
-    [0.1, top - 1.4, true], [0.1, top - 0.8, true], ...arc(0.1, top - 0.8, 1, 0.8, 4).slice(1), ...bead(RIM - 1.3, top, 1.3, 0.9, 4).slice(1), [foot, 0, true], [foot, -0.4, true]
+    [0.1, top - 1.4, true], [0.1, top - 0.8, true], ...arc(0.1, top - 0.8, 1, 0.8, 4).slice(1), ...bead(RIM - 1.5, top, 1.5, 1, 5).slice(1), [foot, 0, true], [foot, -0.4, true]
   ]
   return sweep(outlineOf(s, 0, 12), profile(points), false)
 }
@@ -64,6 +64,7 @@ const SOAK_HOLD = 2.5
 const SOAK_DEPTH = 0.62
 const BOUNCE = 0.2
 const BOUNCE_REACH = 10
+const GLINT = 0.2
 const SOAK_RINGS = [0, 1.5, 3, 5, 7.5, 10.5, 14, 18, 23, 29, 36]
 
 // One ring of a sunk face: a rounded rectangle with extra points along its straight sides, the same count for every ring.
@@ -114,7 +115,7 @@ function sunkGlass(s: Shape, inset: number, depth: number): THREE.BufferGeometry
     }
     return near
   }
-  const shade = (x: number, y: number): number => 1 - SOAK_DEPTH * Math.exp(-Math.max(0, reach(x, y, 1) * slope - depth - SOAK_HOLD) / SOAK) + BOUNCE * Math.exp(-(reach(x, y, -1) * slope) / BOUNCE_REACH)
+  const shade = (x: number, y: number): number => 1 - SOAK_DEPTH * Math.exp(-Math.max(0, reach(x, y, 1) * slope - depth - SOAK_HOLD) / SOAK) + BOUNCE * Math.exp(-(reach(x, y, -1) * slope) / BOUNCE_REACH) + GLINT * Math.exp(-Math.max(0, reach(x, y, -1) - 1) / 1.6)
   const pos: number[] = []
   const col: number[] = []
   const idx: number[] = []
@@ -146,7 +147,7 @@ function field(s: Shape): THREE.Object3D {
   const m = materials()
   const root = new THREE.Group()
   const surface = -s.z0
-  root.add(mesh(shared(`sleeve:${dims(s)}`, () => sleeve(s, surface, 0.22)), m.aluminiumEdge))
+  root.add(mesh(shared(`sleeve:${dims(s)}`, () => sleeve(s, surface, 0.22)), m.aluminiumSatin))
   const glass = mesh(shared(`fieldGlass:${dims(s)}`, () => sunkGlass(s, RIM - 0.6, surface)), m.glassSunk, false)
   root.add(glass)
   return root
@@ -213,8 +214,8 @@ const roundEnds = (s: Shape): Outline => outlineOf({ kind: 'capsule', w: s.w, h:
 
 const FRAME = 3
 const WASH = 0.2
-const EDGE = 0.4
-const LIFT = 0.16
+const EDGE = 1.15
+const LIFT = 0.05
 
 // A glass card is brighter toward the light and dimmer away from it: the wide soft picture of the light in its frosted face.
 // Laid in as vertex colour over the sunk glass's material, tinted to the thick glass's colour.
@@ -243,7 +244,7 @@ function washed(g: THREE.BufferGeometry, s: Shape, inset: number, shoulder: numb
     const gy = inside(x, y - 0.5) - inside(x, y + 0.5)
     const facing = (gx * lx + gy * ly) / (flat * (Math.hypot(gx, gy) || 1))
     // The shoulder on the light's side lies in the glass's own shade; the one on the far side lets the light out.
-    const v = (1 + (WASH * (x * lx + y * ly)) / (flat * reach)) * (1 + t * t * (3 - 2 * t) * (LIFT - EDGE * (facing < 0 ? facing * 1.5 : facing)))
+    const v = (1 + (WASH * (x * lx + y * ly)) / (flat * reach)) * (1 + t * t * (3 - 2 * t) * Math.max(-0.8, LIFT - EDGE * (facing < 0 ? facing * 0.65 : facing)))
     col.set([tint[0]! * v, tint[1]! * v, tint[2]! * v], i * 3)
   }
   g.setAttribute('color', new THREE.BufferAttribute(col, 3))
@@ -255,12 +256,12 @@ function card(s: Shape): THREE.Object3D {
   const m = materials()
   const root = new THREE.Group()
   const h = s.z1 - s.z0
-  const rise = Math.min(h * 0.2, 2)
+  const rise = Math.min(h * 0.1, 0.8)
   const across = Math.min(14, Math.min(s.w, s.h) / 4)
   const band = h - rise
   root.add(mesh(shared(`cardFrame:${dims(s)}`, () => sweep(outlineOf(s, 0, 14), profile([[0, 0, true], [0, band - 0.9, true], ...arc(0, band - 0.9, 1.1, 0.9, 4).slice(1), ...bead(FRAME - 1.1, band, 1.1, 0.9, 4).slice(1), [FRAME, 0.2, true]]), false)), m.aluminiumEdge))
   const steps = [0.03, 0.08, 0.16, 0.27, 0.4, 0.55, 0.7, 0.85, 1].map((t): ProfilePoint => [across * t, band + rise * Math.sin((t * Math.PI) / 2)])
-  root.add(mesh(shared(`cardGlass:${dims(s)}`, () => washed(sweep(outlineOf(s, FRAME - 0.3, 14), profile([[0, 0.05, true], [0, band - 0.4, true], [0.4, band, true], ...steps])), s, FRAME - 0.3, across)), m.glassSunk))
+  root.add(mesh(shared(`cardGlass:${dims(s)}`, () => washed(sweep(outlineOf(s, FRAME - 0.3, 14), profile([[0, 0.05, true], [0, band - 0.9, true], [0, band, true], ...steps])), s, FRAME - 0.3, across)), m.glassSunk))
   if (s.id.endsWith('-zone')) root.add(dashes(s, h))
   return root
 }

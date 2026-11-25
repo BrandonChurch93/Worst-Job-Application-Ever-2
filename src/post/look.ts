@@ -58,11 +58,15 @@ export const look = {
   glow: {
     threshold: 1.5,
     knee: 0.2,
-    strength: 0.8,
+    strength: 1.4,
+    // The spread light keeps the hue of its source and loses the white of it: 0 spreads the source's own colour.
+    depth: 0.8,
+    // How much of the picture behind it the glow hides where it is strong, so a warm halo reads on a pale surface.
+    cover: 0.9,
     // A surface that only sends light back is pressed softly under `surfaceMax` from `surfaceKnee` up, below the threshold.
     surfaceKnee: 0.95,
     surfaceMax: 1.25,
     // How much of the glow each wider ring of the spread carries, from the tightest to the widest.
-    rings: [1.0, 1.0, 0.8, 0.45, 0.15, 0.05] as number[]
+    rings: [1.0, 1.0, 0.6, 0.25, 0.08, 0.02] as number[]
   }
 }
