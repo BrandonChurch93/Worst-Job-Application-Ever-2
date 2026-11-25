@@ -6,7 +6,7 @@ import { block } from '../../shell/metrics'
 import { SCREEN_H } from '../../shell/parts'
 import { words } from '../../shell/words'
 import type { DrawList, GagInfo, Hint, PageContext, PageLogic, Pointer, Shape, StepIo, Tone } from '../../stage/types'
-import { CARD_H, CARD_R, careersLayout, FIRST_CARDS, MEDAL, perkStates, T, TICKER } from './layout'
+import { careersLayout, FIRST_CARDS, perkStates, T, TICKER } from './layout'
 import { CUES, pointerAt, REJECTED_CUES, type Marks } from './script'
 
 const dt = 1 / stepHz
@@ -14,7 +14,10 @@ const heights = config.scale.heights
 const hover = heights.cursorHover
 const skipAfter = config.live.skipLinkAfterSeconds
 
-export const FLIP_SECONDS = 0.6
+export const SLATS = 4
+const SLAT_SECONDS = 0.42
+const SLAT_GAP = 0.07
+export const FLIP_SECONDS = SLAT_SECONDS + (SLATS - 1) * SLAT_GAP
 export const TAPE_SPEED = 48
 export const TRAVEL = heights.button - 4
 const WIND = 0.34
@@ -128,7 +131,7 @@ export function makePage(): PageLogic {
 
   function surface(x: number, y: number): number {
     const p = { x, y }
-    for (let i = 0; i < perkCount; i++) if (inside(cards[i]!, p)) return heights.card
+    for (let i = 0; i < perkCount; i++) if (inside(cards[i]!, p)) return s.flip[i]! > 0 && s.flip[i]! < 1 ? turningTop(i) : heights.card
     for (let i = 0; i < caps.length; i++) if (inside(caps[i]!, p)) return capTop(i)
     for (const r of raised) {
       if (!inside(r.box, p)) continue
@@ -138,11 +141,10 @@ export function makePage(): PageLogic {
     return 0
   }
 
-  function openCard(i: number, io: StepIo, touched: boolean): void {
+  function openCard(i: number, io: StepIo): void {
     if (s.flip[i]! > 0) return
     s.flip[i] = dt / FLIP_SECONDS
     io.emit('card-flip', cards[i]!.cx, cards[i]!.cy, false)
-    if (touched) io.cursor.knock(0, 0, 240)
   }
 
   function startApply(button: number, io: StepIo): void {
@@ -213,7 +215,7 @@ export function makePage(): PageLogic {
           if (s.auto <= 0) {
             for (let i = 0; i < FIRST_CARDS; i++) {
               if (s.flip[i]! > 0) continue
-              openCard(i, io, false)
+              openCard(i, io)
               s.auto = AUTO_GAP
               break
             }
@@ -227,37 +229,54 @@ export function makePage(): PageLogic {
     }
   }
 
+  const slatTurn = (i: number, k: number): number => Math.PI * smooth((s.flip[i]! * FLIP_SECONDS - k * SLAT_GAP) / SLAT_SECONDS)
+
+  function turningTop(i: number): number {
+    const hs = cards[i]!.h / SLATS
+    let top = heights.card
+    for (let k = 0; k < SLATS; k++) top = Math.max(top, heights.card + hs * Math.abs(Math.sin(slatTurn(i, k))))
+    return top
+  }
+
   function turning(out: DrawList, i: number): void {
     const b = cards[i]!
     const n = cardNodes[i]!
     const st = perkStates(i)
-    const a = Math.PI * smooth(s.flip[i]!)
     const t = heights.card
-    const sin = Math.sin(a)
-    const cos = Math.cos(a)
-    const z0 = (b.h / 2) * Math.abs(sin) + Math.max(0, -t * cos)
-    out.push({ id: `${n.id}-turning`, part: 'perk-cards', kind: 'box', x: b.x, y: b.y, w: b.w, h: b.h, z0, z1: z0 + t, tone: 'glass', r: CARD_R, turnX: a })
-    const front = a < Math.PI / 2
-    for (const c of n.children ?? []) {
-      const isFront = c.states?.includes(st.shut) === true
-      if (isFront !== front) continue
-      const [cx, cy, cw, ch] = c.box as [number, number, number, number]
-      const off = b.cy - (cy + ch / 2)
-      let yw: number
-      let zw: number
-      let turn: number
-      if (front) {
-        yw = off * cos - t * sin
-        zw = z0 + off * sin + t * cos
-        turn = a
-      } else {
-        yw = off * cos
-        zw = z0 - off * sin
-        turn = a - Math.PI
+    const hs = b.h / SLATS
+    for (let k = 0; k < SLATS; k++) {
+      const a = slatTurn(i, k)
+      const sin = Math.sin(a)
+      const cos = Math.cos(a)
+      const top = b.y + k * hs
+      const mid = top + hs / 2
+      const z0 = (hs / 2) * Math.abs(sin) + Math.max(0, -t * cos)
+      out.push({ id: `${n.id}-slat-${k}`, part: 'perk-cards', kind: 'box', x: b.x, y: top + 1, w: b.w, h: hs - 2, z0, z1: z0 + t, tone: 'glass', r: 6, turnX: a, mechanism: true })
+      const front = a < Math.PI / 2
+      for (const c of n.children ?? []) {
+        const isFront = c.states?.includes(st.shut) === true
+        if (isFront !== front) continue
+        const [cx, cy, cw, ch] = c.box as [number, number, number, number]
+        const centre = cy + ch / 2
+        const owner = Math.min(SLATS - 1, Math.max(0, Math.floor((centre - b.y) / hs)))
+        if (owner !== k) continue
+        const off = mid - centre
+        let yw: number
+        let zw: number
+        let turn: number
+        if (front) {
+          yw = off * cos - t * sin
+          zw = z0 + off * sin + t * cos
+          turn = a
+        } else {
+          yw = off * cos
+          zw = z0 - off * sin
+          turn = a - Math.PI
+        }
+        const y = mid - yw - ch / 2
+        if (c.copy !== undefined && c.type !== undefined) out.push({ id: `${c.id}-turning`, part: 'type', kind: 'text', x: cx, y, w: cw, h: ch, z0: zw, z1: zw, tone: 'ink', words: c.copy, type: c.type, turnX: turn })
+        else out.push({ id: `${c.id}-turning`, part: 'perk-cards', kind: 'box', x: cx, y, w: cw, h: ch, z0: zw, z1: zw + 1, tone: (c.tone as Tone | undefined) ?? 'metal', turnX: turn, mechanism: true })
       }
-      const y = b.cy - yw - ch / 2
-      if (c.copy !== undefined && c.type !== undefined) out.push({ id: `${c.id}-turning`, part: 'type', kind: 'text', x: cx, y, w: cw, h: ch, z0: zw, z1: zw, tone: 'ink', words: c.copy, type: c.type, turnX: turn })
-      else out.push({ id: `${c.id}-turning`, part: 'perk-cards', kind: 'box', x: cx, y, w: cw, h: ch, z0: zw, z1: zw + 1, tone: (c.tone as Tone | undefined) ?? 'metal', turnX: turn })
     }
   }
 
@@ -316,7 +335,7 @@ export function makePage(): PageLogic {
       const walking = !io.cursor.inAir && !io.cursor.taken
       for (let i = 0; i < perkCount; i++) {
         const p = s.flip[i]!
-        if (p === 0 && walking && inside(cards[i]!, tip)) openCard(i, io, true)
+        if (p === 0 && walking && inside(cards[i]!, tip)) openCard(i, io)
         if (p > 0 && p < 1) {
           const next = Math.min(1, p + dt / FLIP_SECONDS)
           s.flip[i] = next
@@ -343,8 +362,7 @@ export function makePage(): PageLogic {
       for (let i = 0; i < caps.length; i++) if ((!s.apply || s.apply.button !== i) && s.sink[i]! > 0) s.sink[i] = Math.max(0, s.sink[i]! - dt / 0.14)
       stepPhases(io)
 
-      const ride = (io.cursor as unknown as { over?: (z: number) => void }).over
-      if (ride) ride.call(io.cursor, surface(io.cursor.x, io.cursor.y))
+      io.cursor.setGround(surface(io.cursor.x, io.cursor.y))
     },
     save: () => JSON.parse(JSON.stringify(s)),
     load(state) {
@@ -356,7 +374,7 @@ export function makePage(): PageLogic {
       BUTTONS.forEach((id, i) => {
         if (s.sink[i]! <= 0) return
         const z = capTop(i)
-        over[`${id}-cap`] = { z1: z }
+        over[`${id}-cap`] = { z1: z, mechanism: true }
         over[`${id}-label`] = { z0: z, z1: z }
       })
       drawLayout(out, layout, { states: page.states(), over })
@@ -400,6 +418,3 @@ export function makePage(): PageLogic {
   }
   return page
 }
-
-export const MEDAL_SIZE = MEDAL
-export const CARD_HEIGHT = CARD_H
