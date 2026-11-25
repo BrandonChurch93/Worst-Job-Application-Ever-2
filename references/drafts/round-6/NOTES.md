@@ -334,14 +334,14 @@ ROUTES, all clear to see: the ball drops in at the top centre straight onto the 
 - File: `references/drafts/round-6/G5-tier-street.png`
 - Model: `seedream_5`
 - Takes made: 4 of 4 allowed. Kept: take 3.
-- How it was made: Take 3 as generated, with one retouch after generation: the sign on the house at the bottom left came out as "Mom's Baskưtt"-like nonsense. The 512 px square round that house was cut out, sent back to the same model with the instruction to change only the lettering to `Mom's Basement` (prompt: `Reproduce this photograph exactly ... Change one thing only: the dark serif lettering on the cream sign plate. It now reads, on two lines, exactly: Mom's / Basement`), made twice, both spelled right, and the sign plate alone (148 by 92 px of the 2816 px original, feathered) was pasted back from the first one. Nothing else in the file was changed. The judge saw the retouched file. The retouch was not counted as a take.
+- How it was made: Take 3 as generated, with one retouch after generation: the sign on the house at the bottom left came out as "Mom's" over a second word of malformed letters, roughly "Baskutt". The 512 px square round that house was cut out, sent back to the same model with the instruction to change only the lettering to `Mom's Basement` (prompt: `Reproduce this photograph exactly ... Change one thing only: the dark serif lettering on the cream sign plate. It now reads, on two lines, exactly: Mom's / Basement`), made twice, both spelled right, and the sign plate alone (148 by 92 px of the 2816 px original, feathered) was pasted back from the first one. Nothing else in the file was changed. The judge saw the retouched file. The retouch was not counted as a take.
 - Reference images passed in, in order: `references/guides/round-6/guide-tier-street.png` (the unlabeled guide); `references/drafts/round-6/G7-clear-ball.png` (the kept G7); `references/drafts/round-6/G3-tier-corporate.png` (the kept G3).
 
 Takes:
 
 - Take 1. Misses: seen at a steep angle with dark margins, so the tier does not fill the frame; signs wrong: "You're Fire-" (cut off), "Student Loan", an unreadable "Mom's ..."; two tiny houses only. Judge: "amateur generated art", then named eight things. Failed.
 - Take 2 (made at the same time; same prompt plus a paragraph naming the routes). Seen from straight above. `You're Fired`, `Background Check`, `Student Loans` spelled right. Misses: "Mom's Ekōaier" and "Unemployment Offier"; four tiny houses near the top and none above the slingshots, five houses in all, not seven; no spinner to be seen; lift tube ends in a cap at the apron. Judge: "amateur generated (AI) art", then named seven things. Failed.
-- Take 3 (prompt rewritten for every fault the two judges named: two rows of three houses, large cream signs spelled letter by letter, cellar hatch as a hole in the outlane, office doorway two balls wide, plunger tip in the lane, wire ramp as two rails side by side with a stated way on and off, spiral as a wide clear half-pipe, straight lift tube, every launch lane arrow up). Seen from straight above, all counts right, four of five signs spelled right, the fifth wrong ("Mom's Baskưtt") and retouched as described above. Judge (on the retouched file): "Generated art (AI image), of the five options. Fairly confident, not certain", then named nine things. Failed. Kept as the best of four: the only take with every count right and every sign right after the retouch.
+- Take 3 (prompt rewritten for every fault the two judges named: two rows of three houses, large cream signs spelled letter by letter, cellar hatch as a hole in the outlane, office doorway two balls wide, plunger tip in the lane, wire ramp as two rails side by side with a stated way on and off, spiral as a wide clear half-pipe, straight lift tube, every launch lane arrow up). Seen from straight above, all counts right, four of five signs spelled right, the fifth wrong ("Mom's" over roughly "Baskutt") and retouched as described above. Judge (on the retouched file): "Generated art (AI image), of the five options. Fairly confident, not certain", then named nine things. Failed. Kept as the best of four: the only take with every count right and every sign right after the retouch.
 - Take 4 (made at the same time as take 3; the take 3 prompt plus the routes paragraph). Misses: seen at an angle with dark margins; "Enemployment Offer" and "Mom's Basenen"; houses scattered over the upper board. Judge: "amateur generated art (AI-generated)", then named ten things. Failed.
 
 The judge's answer on the kept take:
@@ -433,5 +433,81 @@ LETTERING: the only words anywhere in the image are these five signs, each a cre
 NOT IN THE IMAGE: no people, no hands, no faces, no cars with drivers; no cabinet, no legs, no room, no floor, no sheet of glass over the playfield; no fog, smoke, haze, lens flare or blur; not pixel art, not a flat illustration, not a cartoon, not a diorama, not a model railway.
 
 SCALE, with the ball as the unit: the frame is twenty balls wide and eleven tall. A flipper is three balls long. Every lane, every ramp and the lift tube are one and a half balls wide, so the ball fits in each of them with room to spare.
+```
+
+### G6 · The loader page
+
+- File: `references/drafts/round-6/G6-loader-page.png`
+- Model: `seedream_5`
+- Takes made: 3 of 3 allowed. Kept: take 2.
+- Reference images passed in, in order: `references/approved/page-look.png`; `references/approved/step2-dial.png`; `references/guides/round-6/guide-loader-page.png` (the unlabeled guide); `references/drafts/round-6/G7-clear-ball.png` (the kept G7).
+
+Takes:
+
+- Take 1. Passes as a page of the site: same ceramic, aluminum and orange, straight on, sharp; both lines of words right. Misses against the guide: the port sits too far left and is too big (centre about 0.80 of the way across, a quarter of the width), the ball is about 175 px across, the tube leaves at a slant toward the lower right, and the cover panels are two raised cards with round corners. Judge: "generated art (of the five options, that is the closest fit) ... a stock-style concept render is the runner-up", then named six things. Failed.
+- Take 2 (prompt changed: port position and size given in percent of the frame, ball one quarter of the ring, tube "perfectly vertical", cover panels described as tile joints). Follows the guide: port at the right, small ball, upright tube with three collars running off the bottom, flat seams. Both lines of words right. Judge: "Of the five options, the closest is a commercial video game ... But it does not read as a pinball game", then named six things. Failed. Kept.
+- Take 3 (made at the same time as take 2; a fresh wording with the sizes given in pixels). Misses: a second, larger ring-shaped recess appears behind the port; the ball is about 150 px across. Judge: "generated art is the best fit", then named eight things. Failed.
+
+The judge's answer on the kept take:
+
+> picture-0602.png — answers to the two questions. I viewed the full frame; my attempts to view zoomed crops failed, so fine-detail calls below are from the full-frame view only.
+>
+> What the image actually shows: a flat, top-down, off-white paper/ceramic-looking surface styled as a web form. Header text "The Worst Job Application Ever", a 5-step progress indicator made of metal studs joined by a rod (step 3 is a glossy orange button), heading "Step 3: Skills Assessment", and grey placeholder bars where body text would be. On the right is a brushed-metal circular dish holding a clear glass marble with a mouse-cursor arrow inside it, and a clear tube with metal collars running from the dish down off the bottom edge. The lower strip is divided into three blank rectangular panels by thin seams.
+>
+> Q1 — which is it most likely to be?
+> Of the five options, the closest is a commercial video game (a polished, product-rendered novelty/physics game where the cursor is a marble). But it does not read as a pinball game: there are no flippers, bumpers, plunger, targets, score display or playfield art. It also has mockup tells rather than captured-gameplay tells: placeholder grey bars instead of real copy, empty panels, and no HUD. My honest read is a high-finish rendered or generated concept frame for a game or video, not a screenshot of shipping gameplay.
+> - Not a top-budget film frame: no scene, characters, or cinematic depth; it is a flat UI layout.
+> - Not a stock image: too specific and titled.
+> - Not a textbook picture: no labels, callouts or diagram conventions.
+> - Not amateur-looking: text is crisp and correctly spelled, materials and shadows are consistent, layout is disciplined. If it is generated, it is not amateur in quality.
+>
+> Q2 — could a ball travel every lane and ramp visible?
+> There are no lanes or ramps in the image at all. The only ball path is one dish and one tube. Things that could not work, or are not shown working:
+> - Ball vs tube size: the marble looks about as wide as, or wider than, the tube's inner bore, so it likely would not fit down the tube.
+> - Dish-to-tube opening: the tube joins at a notch in the outer bezel, but the inner raised ring around the ball well appears continuous, so there is no visible gap for the ball to leave the well and enter the tube.
+> - No propulsion or return: nothing launches the ball (no plunger, flipper, kicker) and nothing brings it back to the dish. The tube exits the bottom of the frame, so its destination is unknown.
+> - The three bottom panels are flat seams, not walled lanes; a ball could not be guided by them.
+> - The 1–5 progress studs and connecting rod are buttons/indicator, not a ball track.
+> - The view is dead flat top-down, so there is no visible slope to make the ball roll anywhere.
+>
+> Confidence: high that it is not a recognizable pinball table and that no lanes/ramps exist; moderate on the ball-too-big-for-tube and closed-inner-ring points, since I could not zoom in.
+
+Judge result: FAILED. The judge's first answer was the nearest of any take to the first choice ("a commercial video game") but it said the picture "does not read as a pinball game", and it named six things on the second question (STATED by the judge). Kept at the limit of three takes. The two questions are about a pinball playfield; this image is the website's page with the machine hidden, so most of what the judge names (no flippers, no lanes, no slope) is what the brief asks for.
+
+What the kept take misses (MEASURED on the file unless marked):
+
+- The judge did not pass it (see above).
+- Ball size (MEASURED). About 126 px across on the 1920 px page. The brief says about 96.
+- Tube width (MEASURED). The tube's bore is about 82 px on the 1920 px page, two thirds of this ball's width, so this ball would not fit down this tube. The prompt asked for a tube a little wider than the ball.
+- Port. The aluminum ring has a notch at the bottom where the tube leaves, but a second, inner ring round the cup is unbroken there, so no opening from the cup into the tube can be seen.
+- Cover panels. Three panels, not the two in the guide: upright seams at about 0.19 and 0.45 of the width. The level seam starts at the left edge of the frame, not at the left margin.
+- Header. It is a separate band cut off by a hairline that runs the full width of the frame. On `page-look.png` the hairline has margins. The title is smaller than on `page-look.png` (0.29 of the page width against 0.38) and nearer the guide's bar (0.24).
+- Subline and paragraph are grey bars, which the brief allows: one bar for the subline, four for the paragraph.
+- Words (MEASURED at full size): `The Worst Job Application Ever` and `Step 3: Skills Assessment`, both spelled right, and the digits 1 to 5 on the five buttons with 3 on the orange one. No other letters or numbers found.
+
+Full prompt of the kept take:
+
+```text
+A screenshot of one page of a website, seen exactly straight on, 16:9, the page filling the whole frame. It is a page of the same website as REFERENCE IMAGE 1 and REFERENCE IMAGE 2, and must pass as the next page of that site: a physical-looking page made of matte off-white ceramic with a fine eggshell grain, with controls of bead-blasted brushed aluminum set into it, glossy orange enamel for the active part, dark grey lettering, soft short shadows, and one large soft light from the upper left. Copy their ceramic, their aluminum, their orange, their header, their typeface, their soft shadows and their light exactly.
+
+REFERENCE IMAGE 3 is a LAYOUT GUIDE made of flat coloured blocks. Follow it exactly for where each thing is and how big it is. Do not copy its flat colours or its flat look: every block stands for a real, solid, photographed part of the page, described below. REFERENCE IMAGE 4 shows a clear acrylic ball with a white arrow cursor sealed inside it, three times. Use it only for how that ball looks. This image has exactly one ball.
+
+THE HEADER, the same as in reference image 1. At the top left, the site title in dark grey sans-serif letters: "The Worst Job Application Ever". At the top right, the progress bar: five round buttons in a row joined by one slim aluminum bar, numbered 1, 2, 3, 4, 5. The third button, number 3, is glossy orange enamel, a little raised and lit. The other four are brushed aluminum. Under the header, one fine aluminum hairline runs across the page.
+
+LEFT SIDE, as in the guide. The heading in the same dark grey sans-serif as the heading in reference image 1: "Step 3: Skills Assessment". Under it, one short smooth strip of mid grey where a subline would be. Under that, four thin smooth strips of pale grey, the last one shorter, where one short paragraph would be. The strips are flat grey bars pressed very slightly into the ceramic. They carry no letters at all.
+
+RIGHT SIDE, exactly as in the guide: the loader port, close to the right edge of the page. One ring of brushed aluminum with a fine circular turned grain, set flush into the ceramic, with a soft shadow at its lower right edge. Its centre is far to the right: 88 percent of the way across the frame, and a little above the middle of the frame's height. Its outer width is 19 percent of the frame's width, no more: there is a clear margin of ceramic between the ring and the right edge of the page, and a wide empty stretch of ceramic between the paragraph bars and the ring. Inside the ring: a dark cup, a shallow round well of matte charcoal anodised metal with a slightly lighter flat floor. In the very centre of the cup sits the clear acrylic ball of reference image 4. The ball is small: its width is one quarter of the ring's outer width, one twentieth of the frame's width. The cup is much wider than the ball, with a broad dark floor showing all round it. Inside the ball lies the cursor, a solid white enamel arrow with a black edge, three quarters as long as the ball is wide, plain to see through the clear acrylic. A crisp highlight on the ball and a small soft shadow under it.
+
+THE TUBE, exactly as in the guide. One clear acrylic tube, a little wider than the ball, leaves the bottom of the ring at its centre line and runs straight down, perfectly vertical, parallel to the right edge of the page, and off the bottom edge of the frame. It does not slant and does not bend. It lies on the ceramic, held down by three slim brushed aluminum collars spaced evenly along it. It is empty and clear, with one crisp highlight along its length.
+
+LOWER PART, exactly as in the guide: cover panels. The lower fifth of the page is the same matte off-white ceramic, flush and flat, divided only by fine seams: one hairline groove runs level across the page from the left margin to just short of the tube; from it one hairline groove drops straight down off the bottom edge near the left margin, and one more drops straight down off the bottom edge a little left of the middle of the page. The seams are thin straight grooves with square corners, like the joints between ceramic tiles. The panels are not raised, have no rounded corners and cast no shadow. Nothing is on them: no control, no picture, no lettering.
+
+LIGHT: the website's clean light at full strength, as in reference image 1: bright, soft and even from the upper left, soft short shadows to the lower right, no window shapes, no bands, no dark corners.
+
+CAMERA: straight on, like a screenshot. No tilt, no perspective, no depth of field. Sharp from edge to edge.
+
+LETTERING: the only words in the image are "The Worst Job Application Ever" in the header and "Step 3: Skills Assessment" as the heading, spelled exactly like that, and the single digits 1, 2, 3, 4, 5 on the five progress buttons. There are no other letters or numbers anywhere: no labels, no captions, no button text, no paragraph text, no logo.
+
+NOT IN THE IMAGE: no people, no hands; no second cursor anywhere outside the ball; no pinball playfield, no flippers, no bumpers, no lamps, because the machine is hidden under the cover panels; no form fields, no sliders, no Submit button; no browser window, no address bar, no device, no desk; no fog, no blur.
 ```
 
