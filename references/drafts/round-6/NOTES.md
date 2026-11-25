@@ -848,3 +848,85 @@ LETTERING: the only words in the image are "You're Fired", once, on the sign pla
 NOT IN THE IMAGE: no people, no hands, no faces, no firefighters, no fire engine with a driver; no flames, no fire; no orange part, no wire and no ramp on or above the roof; no cabinet, no legs, no room, no floor, no sheet of glass over the playfield; no fog, no smoke, no haze, no lens flare; no second ball; not a cartoon, not an illustration, not a diorama.
 ```
 
+### G12 · The last save
+
+- File: `references/drafts/round-6/G12-last-save.png`
+- Model: `seedream_5`
+- Takes made: 3 of 3 allowed. Kept: take 2.
+- Reference images passed in, in order: `references/drafts/round-6/G5-tier-street.png` (the kept take of G5, the tier the shot is in, passed first); `references/drafts/round-6/G7-clear-ball.png` (the kept G7, passed second); No layout guide was passed: `references/guides/round-6/` has none for this view.
+
+Takes:
+
+- Take 1. The far buildings carried sign plates and one read "Student Lenns". `Mom's Basement` and `Unemployment Office` spelled right. Judge: "generated art", with a film frame as the look it sits closest to, then named things. Failed.
+- Take 2 (prompt changed: exactly two sign plates in the whole image; the far buildings out of focus with bare roofs; no ghost or trail of the ball). Both signs right, no other writing, all the things the brief lists are in frame. Judge: "Most likely a frame from a top-budget film" (about 60% film frame, 30% generated art), then named nine things. Failed. Kept as the best of three.
+- Take 3 (prompt changed: the two flippers not mirroring each other, the right one level at mid-swing; the ball one third as long as a flipper; the same signs). The ball came out larger, not smaller, and half-transparent spare spheres appear near the left end of the wire ramp and under the right flipper. Judge: "amateur generated art, with a film-style finish", then named things. Failed.
+
+The judge's answer on the kept take:
+
+> picture-1202.png — judged from viewing the full frame plus zoomed crops.
+>
+> Q1. Which is it most likely to be?
+> Most likely a frame from a top-budget film (high-end cinematic CG / miniature macro shot). Rough confidence: about 60% film frame, 30% generated art, 10% the rest combined.
+> - For film: very shallow depth of field with soft bokeh on the far half of the table, fine grain, a restrained teal/amber grade, motion blur on only the right flipper, convincing chrome, glass and worn-enamel materials, and clean legible custom lettering ("Mom's Basement", "Unemployment Office"). The glass ball with a mouse cursor inside and the career-as-pinball satire read as deliberate art direction.
+> - Not a pinball video game: no score, HUD or DMD, a low angle you could not play from, heavy lens blur, and a layout that is not playable.
+> - Not stock: far too specific a concept. Not a textbook picture: nothing is diagrammatic or labelled for teaching.
+> - Why generated art is the runner-up: the finish is well above amateur, but the table's mechanics do not hold together (below), which is the typical weakness of generated imagery.
+>
+> Q2. Could a ball really travel every lane and ramp? No. What could not work:
+> - Ball is oversized for the table. It is roughly 55% of a flipper's length (a real ball is about 35%), and nearly every passage is smaller than it.
+> - Left clear tube: its bore is well under half the ball's diameter, so the ball could never enter it. Neither end visibly connects to anything.
+> - "Mom's Basement" square hole: the opening is clearly narrower than the ball, so the ball could not drop in.
+> - Spiral tower (right): the gap between coil levels is about a third of the ball's diameter, the top is capped by clear discs, and there is no outer guard, so the ball can neither get in nor ride down it.
+> - Wire rail across the middle: no ramp leads up to it from the playfield, so no flipper shot can reach it. Its left end curls into a closed loop hanging in the air beside the tunnel, it is arched (highest in the centre) so a ball would stall rather than roll through, and its right end meets the side of the spiral rather than a track entrance.
+> - Tunnel under the red building: opening is low and about one ball wide at best, with no visible exit. Marginal, partly hidden and out of focus.
+> - Gap between the flipper tips is about the same width as the ball, so a centre drain into "Unemployment Office" would be a squeeze and could wedge instead of falling cleanly.
+> - Inlanes: the gaps between the wire guides and the slingshots are only about one ball wide, and the thin guide rails below them run underneath the flipper bases toward the apron, so a ball would be sent behind the flippers rather than onto them. This last point is my reading of the rail geometry, moderately confident.
+> - Lower right corner: no hole or outlet matching the left side; a ball there appears to end against the white apron slab.
+>
+> What would work: the straight central "road" lane up the middle, under the wire rail to the lit target at the back, and the flat lit inserts. No shooter lane or plunger is visible in frame, so I can't say how a ball would be launched.
+
+Judge result: FAILED. First answer: "a frame from a top-budget film", not a game screenshot (STATED). Under the narrow reading of the question's first option that is not the first answer; under the wide reading (game screenshot or film frame as one option) it is. See the choices at the end. Second answer: nine things named, which fails under either reading. Kept at the limit of three takes.
+
+What the kept take misses (MEASURED on the file unless marked):
+
+- The judge did not read it as a game screenshot: no score or display, a low angle "you could not play from", heavy lens blur (STATED).
+- Ball size (MEASURED). The ball is about half as long as a flipper (about 180 px against about 360 px on the 1920 px frame). A real ball is about a third. The judge puts it at 55%.
+- The right flipper is not clearly half way through its swing. The two flippers nearly mirror each other; the right one differs only by a short streak at its tip. The ball touches the right flipper, so it reads as resting on it more than falling.
+- Mom's cellar hatch, the square hole at the bottom left, is narrower than the ball (STATED; I see the same). The lift tube at the left edge is also narrower than the ball (STATED).
+- The gap between the flipper tips is about one ball wide (STATED). The prompt asked for one and a half.
+- Wire ramp, out of focus. Its left end closes in a loop in the air by the firehouse, it peaks over the road, and its right end meets the side of the garage spiral (STATED; inherited from the kept G5).
+- Garage spiral, out of focus: stacked rings with gaps much thinner than the ball (STATED; inherited from the kept G5).
+- Inlanes. The wire guides run on under the flipper bases (STATED with moderate confidence; I see the same). Inherited from the kept G5.
+- The lower right corner has no hatch or outlet to match the left; the right outlane ends at the apron (STATED).
+- The far buildings carry no signs. That was my choice after take 1 misspelled one, so `You're Fired`, `Background Check` and `Student Loans` are absent from this view.
+- Frame. Aluminum rail at both sides, the off-white ceramic apron across the bottom. The ceramic border outside the rail is not in the picture.
+- Words (MEASURED at full size): `Mom's Basement` on the roof of the house at the left and `Unemployment Office` on the plate over the drain, both spelled right. No other letters found. The middle insert is a clock face with small marks that may be numerals: too small to tell (UNKNOWN).
+
+Full prompt of the kept take:
+
+```text
+A frame from a finished commercial 3D pinball video game with photoreal graphics, in its low flipper camera. It looks exactly like a close photograph taken inside a real, physical pinball machine. 16:9.
+
+REFERENCE IMAGE 1 is the street tier of this pinball table seen from straight above. This shot is taken inside that same tier, low down at its bottom end, so its parts are the same parts in the same places: the same pair of glossy orange flippers with black rubber bands, the same two slingshots of road-sign yellow plastic with black chevrons, the same chrome wire lane guides and amber lamps in the inlanes and outlanes, the same three round lit inserts showing a ladder, a clock and hats, the same two rows of three tiny houses, one row above each slingshot, the same tiny house at the foot of the left outlane, the same off-white ceramic apron with the small grey office front at its centre, the same dark teal and navy printed street under a glossy clear coat, the same brushed aluminum side rails. REFERENCE IMAGE 2 shows the ball of this game three times: a clear acrylic ball with a white arrow cursor sealed inside it. Use it for how the ball and the cursor look. This image has exactly one ball.
+
+THE SHOT: the camera is low, just above the playfield, behind the bottom flippers and a little above them, at the player's end of the tier, looking up the tier along the board. A wide lens. The apron is nearest the camera at the bottom of the frame, the two flippers lie across the lower middle of the frame, and the board runs away up the frame to the buildings in the distance.
+
+BOTTOM OF THE FRAME, nearest the camera: the apron, a smooth band of matte off-white ceramic. At its centre the small grey office front, seen from above and behind, with its dark doorway facing up the tier toward the gap between the flippers: that doorway is the drain. Flat on the office's roof, facing the camera, one wide cream sign plate with a thin gold border and large dark serif letters: "Unemployment Office".
+
+THE FLIPPERS: the pair of glossy orange flippers, each three balls long, on steel shafts, with a black rubber band round each. The left flipper is at rest, pointing down toward the centre. The right flipper is half way through its swing upward, caught in the act: it is level, and its tip is streaked with a little motion blur. Between the two tips is the gap, one and a half balls wide.
+
+THE BALL: the clear acrylic ball is falling toward the gap between the flippers. It is just above the right flipper's tip, a little right of the centre line, one ball's width above the flipper, about one tenth of the frame's width across. The rising right flipper is about to catch it. Inside the ball the cursor, a solid white enamel arrow with a black edge, three quarters as long as the ball is wide, is tumbling a beat behind the roll, tipped over, clear of the wall. The arrow is plain to see through the clear acrylic. Crisp highlights from the lamps on the acrylic and a soft shadow under the ball. The cursor is only an arrow: no face, no eyes, no limbs.
+
+EITHER SIDE: above and outside each flipper, a slingshot: a triangle of road-sign yellow plastic with black chevron stripes on three posts with a rubber band, a lamp glowing inside it. Outside each slingshot the inlane and the outlane, divided by a chrome wire lane guide, each with two lit amber lamps set flush in the floor. At the far left, at the foot of the left outlane: one tiny cream house with a dark red roof, with a square steel-edged cellar hatch open in the board beside it. Flat on its roof, facing the camera, one cream sign plate with a thin gold border and large dark serif letters on two lines: "Mom's" over "Basement".
+
+BEYOND THE FLIPPERS: the three round lit inserts set flush in the board, glowing red, amber and white, with a ladder, a clock and hats. Above the left slingshot, one row of exactly three tiny houses side by side with pitched roofs and lit amber windows; above the right slingshot, one more row of exactly three. Six tiny houses in two rows. Farther up the tier, beyond the houses, the picture goes soft: a film camera's shallow focus. The bank with its stone columns, the red brick firehouse with its red dome lit, the parking garage with its clear spiral, the police station with its blue dome lit and the chrome wire ramp crossing over the road are smooth, out-of-focus shapes with glowing windows. In this shot these far buildings carry no sign plates at all: their roofs are bare.
+
+LIGHT: warm dusk. Every lamp is on: amber lane lamps, the lamps in the slingshots, the three inserts, the windows of the houses, the red and the blue dome far off. Sharp reflections in the clear coat. Clean air.
+
+FOCUS: the apron, the office front and its sign, the flippers, the ball, the slingshots and the six houses are all sharp. The far buildings are out of focus. Only the moving flipper's tip is streaked, by its own motion. The ball is sharp, with no ghost, no trail and no double image of it anywhere.
+
+LETTERING: the only words in the image are these two signs, spelled exactly, letter for letter: "Unemployment Office" (U-n-e-m-p-l-o-y-m-e-n-t, then O-f-f-i-c-e) on the roof of the office front at the bottom centre; "Mom's Basement" (M-o-m-apostrophe-s, then B-a-s-e-m-e-n-t) on the roof of the house at the left. There are exactly two sign plates in the whole image, those two. The bank, the firehouse, the police station and the parking garage have no sign plates and no writing of any kind, not even blurred writing. No other letters or numbers anywhere.
+
+NOT IN THE IMAGE: no people, no hands, no faces; no cabinet, no legs, no room, no floor, no sheet of glass over the playfield; no fog, no smoke, no haze, no lens flare; no second ball; not a cartoon, not an illustration, not a diorama, not a model railway.
+```
+
