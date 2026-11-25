@@ -218,10 +218,24 @@ export class LightRig {
     }
   }
 
+  // A part open at the back, a shell or a sheet, would throw the shadow of its far walls only. Both sides of every
+  // solid surface go into the shadow maps, so what the light sees first is what throws the shadow. Glass keeps its own rule.
+  private close(): void {
+    this.scene?.traverse((o) => {
+      const mesh = o as THREE.Mesh
+      if (!mesh.isMesh || !mesh.castShadow) return
+      for (const m of Array.isArray(mesh.material) ? mesh.material : [mesh.material]) {
+        if (!m || m.shadowSide !== null || m.transparent || (m as THREE.MeshPhysicalMaterial).transmission > 0) continue
+        m.shadowSide = THREE.DoubleSide
+      }
+    })
+  }
+
   // Puts the key at this sample's point of its area and the fill at this sample's point of the dome, each blurred by
   // the piece of the light it stands for, and turns this frame's emitters into the lamps of the pool.
   // `alone` is a picture of one sample: the light stays in the middle and the filter does all the softening.
   place(s: Sample, camera?: THREE.Camera, alone = s.count === 1): void {
+    if (alone || s.index === 0) this.close()
     const split = areaSplit(alone ? 1 : s.count)
     const r = Math.tan(look.key.radius)
     const d = this.v.copy(this.base).addScaledVector(this.axisU, s.light[0] * r * split.move).addScaledVector(this.axisV, s.light[1] * r * split.move).normalize()

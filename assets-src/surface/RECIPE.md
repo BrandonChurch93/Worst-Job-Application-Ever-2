@@ -16,7 +16,7 @@ MEASURED: `npx vitest run tests/surface.test.ts` (the test "holds four pictures 
 
 ## grain (1024 by 1024, RGBA, 4.00 MB)
 Made by: `grainHeights(size, seed)` and `grainNormalMap(size, seed, strength)` in `src/shell/materials.ts`.
-From: the seed, through `Random(seed, 'grain')` of `src/core/random.ts`. One number a texel, blurred three ways with a blur that wraps, so the picture tiles: 0.55 texels (the speckle), 1.1 texels (the pits) and 4 texels (the slow swell). The low side of the speckle is pressed down and the high side flattened, which is what reads as eggshell and not as sand.
+From: the seed, through `Random(seed, 'grain')` of `src/core/random.ts`. One number a texel, blurred with a blur that wraps, so the picture tiles. Two bands are kept, each the difference of two blurs so no slow lumps are left: 0.55 less 1.5 texels (the speckle) and 1.1 less 2.8 texels (the pits). The low side of the speckle is pressed down and the high side flattened, which is what reads as eggshell and not as sand.
 Prompt or command: `makeMaterials(config.seed)`; in the shader the picture is read twice, the second time turned 37 degrees and 1.118 times finer, so no repeat shows across a page. One texel is one page pixel.
 Takes: 290 ms on this machine (MEASURED, one run under vitest, 4 cores at 2.9 GHz).
 Why this one: the approved image has a speckle of 2 to 4 pixels with no direction and no bright spot. Slopes alone looked painted on, so the height in alpha also moves the roughness: pits are a little more matt.

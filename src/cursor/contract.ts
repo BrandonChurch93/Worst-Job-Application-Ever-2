@@ -15,7 +15,8 @@ export const SHOULDERS: [[number, number], [number, number]] = [[-0.2, 10.5], [8
 export const STRIP_AXIS: [number, number] = [0.409, 0.912]
 
 // A burn hole, in outline units. glow runs from 1, just burnt, to 0, cold.
-export interface Hole { x: number; y: number; r: number; glow: number }
+// burnt is 1 when left out: a hole burnt through, with a charred lip. At 0 it is a hole punched clean, with a broken rim of bare clay and no soot.
+export interface Hole { x: number; y: number; r: number; glow: number; burnt?: number }
 // Where one strip of a shredded body lies: page pixels away from its place in the whole body, and its turns in radians.
 // x runs right and y runs up the page, in the body root's own space, and z is off the page. rot turns the strip about z round its own centre. tilt rolls it about its own long axis.
 // The cuts run parallel to the tail, STRIP_AXIS, so that every strip is one piece. Strip 0 is the leftmost. All zeros is the cut body standing whole.

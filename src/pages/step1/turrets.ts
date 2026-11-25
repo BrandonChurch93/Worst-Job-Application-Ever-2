@@ -4,7 +4,7 @@ import type { DrawList, Emit } from '../../stage/types'
 const heights = config.scale.heights
 
 export const TURRET = {
-  riseSeconds: 0.5, period: 0.9, firstShot: 0.6, stagger: 0.45, windup: 0.35, boltSpeed: 1500, aimLag: 0.16, hitRadius: 42, scorchSeconds: 2.4, body: 92, barrel: 84, scorch: 24, bolt: 60, hatchShare: 0.3,
+  riseSeconds: 0.5, period: 0.9, firstShot: 0.6, stagger: 0.45, windup: 0.35, boltSpeed: 1500, aimLag: 0.16, hitRadius: 42, scorchSeconds: 2.4, body: 92, barrel: 84, scorch: 24, bolt: 60, hatchShare: 0.3, scorchFade: 0.4,
   muzzleHeight: heights.turret - 18
 }
 
@@ -124,6 +124,7 @@ export class Turrets {
         s.scorches.push({ id: b.id, x: b.tx, y: b.ty, z: b.z, left: TURRET.scorchSeconds })
       }
     }
+    if (!s.wanted) for (const c of s.scorches) c.left = Math.min(c.left, TURRET.scorchFade)
     for (const c of s.scorches) c.left -= dt
     s.scorches = s.scorches.filter((c) => c.left > 0)
     return hits
