@@ -222,8 +222,8 @@ export class Body implements BodyModel {
           a[i + 1] = p.y
           a[i + 2] = p.z
           const glow = clamp01(hole.glow)
-          const flick = 0.55 + 0.45 * Math.sin(ang * 5 + h * 2.1) * Math.sin(ang * 9 + 1.7)
-          const heat = r === 0 ? 2.2 : r === 1 ? 1.1 : r === 2 ? 0.25 : 0.03
+          const flick = Math.pow(0.5 + 0.5 * Math.sin(ang * 5 + h * 2.1) * Math.sin(ang * 9 + 1.7), 2.2)
+          const heat = r === 0 ? 0.25 : r === 1 ? 1.5 : r === 2 ? 0.5 : 0.03
           c[i] = 1.0 * heat * glow * glow * flick
           c[i + 1] = (r === 0 ? 0.42 : 0.12) * heat * glow * glow * flick
           c[i + 2] = 0.05 * heat * glow * glow * flick

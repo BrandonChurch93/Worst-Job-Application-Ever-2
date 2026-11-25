@@ -95,13 +95,13 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
   // Crazing: a web of hairline cracks, and each plate between them tipped a hair its own way.
   float crack = uMarks.x * face;
   if ( crack > 0.0 ) {
-    vec2 cq = q / 25.0 + vec2( 0.21, 0.37 );
+    vec2 cq = q / 62.0 + vec2( 0.21, 0.37 ) + ( wide.gb - 0.5 ) * 0.012;
     float c0 = texture2D( uDetail, cq ).r;
-    float line = 1.0 - smoothstep( 0.02, 0.1, c0 );
+    float line = 1.0 - smoothstep( 0.012, 0.045, c0 );
     float plate = texture2D( uDetail, cq ).a * 6.2832;
     float cx = texture2D( uDetail, cq + vec2( 0.004, 0.0 ) ).r - texture2D( uDetail, cq - vec2( 0.004, 0.0 ) ).r;
     float cy = texture2D( uDetail, cq + vec2( 0.0, 0.004 ) ).r - texture2D( uDetail, cq - vec2( 0.0, 0.004 ) ).r;
-    float near = 1.0 - smoothstep( 0.0, 0.4, c0 );
+    float near = 1.0 - smoothstep( 0.0, 0.2, c0 );
     wjaCoatTilt += crack * ( vec2( cos( plate ), sin( plate ) ) * 0.035 - vec2( cx, cy ) * near * 0.7 );
     wjaTilt += wjaCoatTilt;
     col *= 1.0 - 0.6 * crack * line;
@@ -120,8 +120,9 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
 
   // Pale: the gloss dies and the body turns to stone, the black edge to grey.
   if ( pale > 0.0 ) {
-    vec3 stone = vec3( 0.62, 0.61, 0.585 ) * ( 0.86 + 0.2 * mid.b + 0.12 * fine.g );
-    col = mix( col, mix( stone, stone * 0.74, ink ), pale );
+    float speck = smoothstep( 0.62, 0.78, texture2D( uDetail, q / 0.83 + vec2( 0.31, 0.77 ) ).b );
+    vec3 stone = vec3( 0.70, 0.69, 0.655 ) * ( 0.9 + 0.14 * mid.b + 0.1 * fine.g ) * ( 1.0 - 0.3 * speck );
+    col = mix( col, mix( stone, stone * 0.93, ink ), pale );
     wjaRough = mix( wjaRough, 0.94, pale );
     wjaCoat *= 1.0 - pale;
     wjaTilt += grain * 1.6 * pale;
@@ -144,18 +145,19 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
   if ( heat > 0.0 ) {
     float front = heat * 12.5;
     float h = smoothstep( front + 1.2, front - 5.0, along + ( wide.g - 0.5 ) * 2.4 + ( mid.b - 0.5 ) * 1.2 );
-    vec3 ember = mix( vec3( 1.0, 0.8, 0.42 ), vec3( 1.0, 0.5, 0.07 ), smoothstep( 0.08, 0.34, h ) );
-    ember = mix( ember, vec3( 0.96, 0.2, 0.02 ), smoothstep( 0.34, 0.62, h ) );
-    ember = mix( ember, vec3( 0.6, 0.03, 0.012 ), smoothstep( 0.62, 0.97, h ) );
-    float body = smoothstep( 0.0, 0.3, h ) * face;
-    col = mix( col, ember * 0.12, body );
-    wjaGlow += ember * body * ( 0.66 + 0.16 * mid.g );
-    wjaGlow += ember * h * ink * 0.05;
+    vec3 ember = mix( vec3( 1.0, 0.82, 0.45 ), vec3( 1.25, 0.62, 0.08 ), smoothstep( 0.06, 0.3, h ) );
+    ember = mix( ember, vec3( 1.2, 0.3, 0.02 ), smoothstep( 0.3, 0.58, h ) );
+    ember = mix( ember, vec3( 0.74, 0.035, 0.012 ), smoothstep( 0.58, 0.96, h ) );
+    float streak = 0.82 + 0.36 * mid.g * fine.b * 2.0;
+    float body = smoothstep( 0.0, 0.28, h ) * face;
+    col = mix( col, ember * 0.1, body );
+    wjaGlow += ember * body * 0.72 * streak;
+    wjaGlow += ember * h * ink * 0.1;
   }
 
   // Melt: the enamel runs over its own edge, wet and a little warmer.
   if ( melt > 0.0 ) {
-    col = mix( col, col * vec3( 1.0, 0.985, 0.94 ), melt );
+    col = mix( col, col * vec3( 1.0, 0.975, 0.91 ), melt );
     wjaRough = mix( wjaRough, 0.2, melt );
   }
 
@@ -166,14 +168,16 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
     vec2 d = q - hole.xy;
     float r = hole.z * wjaRag( d );
     float from = length( d ) / r + ( mid.g - 0.5 ) * 0.5 + ( fine.b - 0.5 ) * 0.25;
-    float soot = 1.0 - smoothstep( 1.0, 1.75, from );
-    float crust = 1.0 - smoothstep( 1.0, 1.32, from );
-    col = mix( col, col * vec3( 0.46, 0.3, 0.16 ), soot * 0.9 );
-    col = mix( col, vec3( 0.014, 0.012, 0.011 ), crust );
+    float soot = 1.0 - smoothstep( 1.2, 1.85, from );
+    float crust = 1.0 - smoothstep( 1.2, 1.5, from );
+    col = mix( col, col * vec3( 0.42, 0.27, 0.14 ), soot * soot * 0.95 );
+    col = mix( col, vec3( 0.016, 0.013, 0.011 ) + 0.035 * fine.g * mid.b, crust );
     wjaRough = mix( wjaRough, 0.95, max( crust, soot * 0.5 ) );
     wjaCoat *= 1.0 - max( crust, soot * 0.7 );
-    float rim = ( 1.0 - smoothstep( 1.0, 1.22, from ) ) * hole.w;
-    wjaGlow += mix( vec3( 0.9, 0.08, 0.01 ), vec3( 1.0, 0.5, 0.1 ), hole.w * fine.g ) * rim * rim * 2.4 * ( 0.4 + 1.2 * fine.b );
+    wjaTilt += grain * 4.0 * crust;
+    float lip = ( 1.0 - smoothstep( 1.0, 1.16, from ) ) * hole.w;
+    float spark = smoothstep( 0.42, 0.7, fine.b * 0.6 + mid.g * 0.6 - 0.25 * ( 1.0 - hole.w ) );
+    wjaGlow += mix( vec3( 0.85, 0.07, 0.01 ), vec3( 1.2, 0.55, 0.1 ), hole.w * fine.g ) * lip * ( 0.25 + 1.9 * spark );
   }
   return col;
 }

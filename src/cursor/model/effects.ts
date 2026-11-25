@@ -7,10 +7,10 @@ import { UNIT, type BodyModel, type EffectsLook, type EffectsModel } from '../co
 import { CENTRE, inside } from './shape'
 import { detailTexture } from './texture'
 
-const DROPS = 16
-const STEAM = 18
+const DROPS = 24
+const STEAM = 22
 const SMOKE_POINTS = 4
-const SMOKE_EACH = 9
+const SMOKE_EACH = 12
 const DUST = 22
 const PUFFS = STEAM + SMOKE_POINTS * SMOKE_EACH + DUST
 const SEED = config.seed
@@ -47,9 +47,9 @@ function dropMaterial(): THREE.MeshPhysicalMaterial {
       vec3 wjaLamp = normalize( wjaL - wjaV * dot( wjaL, wjaV ) );
       float wjaAway = -dot( wjaSide, wjaLamp );
       float wjaGather = smoothstep( 0.2, 0.75, wjaAway ) * ( 1.0 - smoothstep( 0.82, 0.98, length( wjaSide ) ) );
-      float wjaEdge = pow( 1.0 - wjaFacing, 2.5 );
-      float wjaGlint = smoothstep( 0.965, 0.992, dot( reflect( -wjaV, wjaN ), wjaL ) );
-      diffuseColor.a = 0.04 + 0.86 * wjaEdge + 0.34 * smoothstep( 0.05, 0.85, -wjaAway ) * ( 1.0 - wjaEdge );
+      float wjaEdge = pow( 1.0 - wjaFacing, 1.7 );
+      float wjaGlint = smoothstep( 0.95, 0.985, dot( reflect( -wjaV, wjaN ), wjaL ) );
+      diffuseColor.a = 0.05 + 0.9 * wjaEdge + 0.3 * smoothstep( 0.05, 0.85, -wjaAway ) * ( 1.0 - wjaEdge );
       outgoingLight += vec3( 0.55, 0.55, 0.52 ) * wjaGather + vec3( 2.4, 2.35, 2.25 ) * wjaGlint;
       #include <opaque_fragment>
       `
@@ -96,13 +96,13 @@ void main() {
   vec3 v = normalize( vV );
   vec3 l = normalize( ( viewMatrix * vec4( uKey, 0.0 ) ).xyz );
   float facing = clamp( dot( normalize( vRound ), v ), 0.0, 1.0 );
-  vec2 at = vAt.xy + vAt.z * vec2( 0.31, 0.17 );
+  vec2 at = vec2( vAt.x, vAt.y * 0.45 ) + vAt.z * vec2( 0.31, 0.17 );
   vec4 wide = texture2D( uDetail, at * 0.11 + vSeed.xy );
   vec4 fine = texture2D( uDetail, at * 0.34 + vSeed.yx * 1.7 );
   float cloud = clamp( ( wide.g * 0.6 + fine.b * 0.4 - 0.3 ) * 2.5, 0.0, 1.0 );
-  float dense = facing * facing;
-  float from = 0.06 + 0.8 * ( 1.0 - cloud );
-  float thick = smoothstep( from, from + 0.55, dense );
+  float dense = facing * ( 0.6 + 0.4 * facing );
+  float from = 0.03 + 0.62 * ( 1.0 - cloud );
+  float thick = smoothstep( from, from + 0.5, dense );
   float alpha = vTint.a * thick;
   if ( alpha < 0.003 ) discard;
   vec3 n = normalize( mix( vRound, vN, 0.5 ) );
@@ -154,7 +154,7 @@ class Effects implements EffectsModel {
     this.puffs.instanceMatrix.setUsage(THREE.DynamicDrawUsage)
     for (const mesh of [this.drops, this.puffs]) {
       mesh.frustumCulled = false
-      mesh.castShadow = false
+      mesh.castShadow = mesh === this.drops
       mesh.receiveShadow = false
       mesh.count = 0
       mesh.visible = false
@@ -200,18 +200,18 @@ class Effects implements EffectsModel {
         let y = 8
         for (let k = 0; k < 8; k++) {
           const hx = 0.5 + 10 * hash01(i * 31 + k, cycle, SEED + 3)
-          const hy = 1.5 + 16 * hash01(i * 31 + k, cycle, SEED + 4)
+          const hy = 1.5 + 13.5 * Math.pow(hash01(i * 31 + k, cycle, SEED + 4), 1.25)
           if (inside(hx, hy) > 0.85) {
             x = hx
             y = hy
             break
           }
         }
-        const size = (0.42 + 0.4 * hash01(i, cycle, SEED + 5)) * (0.8 + 0.2 * amount) * on * UNIT
-        const flyer = hash01(i, cycle, SEED + 6) < 0.34
+        const size = (0.3 + 0.62 * Math.pow(hash01(i, cycle, SEED + 5), 1.8)) * (0.8 + 0.2 * amount) * on * UNIT
+        const flyer = hash01(i, cycle, SEED + 6) < 0.2
         let r = size
         let long = 1
-        let high = 0.62
+        let high = 0.8
         let angle = 0
         if (flyer) {
           this.on(surface, CENTRE[0], CENTRE[1], this.a)
@@ -219,21 +219,21 @@ class Effects implements EffectsModel {
           const ox = p.x - this.a.x
           const oy = p.y - this.a.y
           const len = Math.max(1e-3, Math.hypot(ox, oy))
-          const far = (7 + 5 * hash01(i, cycle, SEED + 7)) * UNIT
+          const far = (2.5 + 3 * hash01(i, cycle, SEED + 7)) * UNIT
           const grow = smooth(t / 0.18)
           const w = clamp01((t - 0.18) / 0.5)
           const out = 1 - (1 - w) * (1 - w)
           const z0 = p.z
           p.x += (ox / len) * far * out
           p.y += (oy / len) * far * out - 1.5 * UNIT * w * w
-          p.z = z0 + (floor - z0) * w * w + 4 * UNIT * w * (1 - w) * 2
+          p.z = z0 + (floor - z0) * w * w + 2.5 * UNIT * w * (1 - w) * 2
           angle = Math.atan2(oy, ox) - Math.PI / 2
           long = 1 + 0.5 * Math.sin(Math.PI * w)
-          r = size * 0.8 * grow
+          r = size * 0.7 * grow
           if (t > 0.68) {
             const v = (t - 0.68) / 0.32
             p.z = floor
-            high = 0.62 - 0.4 * smooth(v * 3)
+            high = 0.8 - 0.55 * smooth(v * 3)
             r *= (1 + 0.25 * smooth(v * 3)) * (1 - smooth((v - 0.35) / 0.65))
           }
         } else {
@@ -256,7 +256,7 @@ class Effects implements EffectsModel {
             long = 1 + 0.3 * Math.sin(Math.PI * fall)
             if (fall >= 1) {
               const w = (v - 0.4) / 0.6
-              high = 0.62 - 0.42 * smooth(w * 3)
+              high = 0.8 - 0.55 * smooth(w * 3)
               r *= (1 + 0.3 * smooth(w * 3)) * (1 - smooth((w - 0.3) / 0.7))
             }
           }
@@ -285,25 +285,37 @@ class Effects implements EffectsModel {
     return n + 1
   }
 
+  // One rising column: its puffs follow one curling path, thin at the foot and wide at the head.
+  private plume(n: number, x: number, y: number, z: number, amount: number, time: number, count: number, high: number, period: number, thin: number, wide: number, dark: number, pale: number, dense: number, salt: number): number {
+    const a0 = hash01(salt, 51, SEED) * 6.28
+    const a1 = hash01(salt, 52, SEED) * 6.28
+    const lean = (hash01(salt, 53, SEED) - 0.35) * 0.22
+    const path = (h: number): number => Math.sin(h * 0.5 + a0 - time * 1.7) * 0.085 * h + Math.sin(h * 0.21 + a1 + time * 0.6) * 0.15 * h + lean * h
+    for (let i = 0; i < count; i++) {
+      const clock = time / period + i / count
+      const cycle = Math.floor(clock)
+      const t = clock - cycle
+      const h = high * Math.pow(t, 0.9)
+      const off = path(h)
+      const slope = (path(h + 0.2) - off) / 0.2
+      const jitter = (hash01(i, cycle, SEED + salt) - 0.5) * 0.7
+      const size = (thin + (wide - thin) * Math.pow(t, 1.25)) * (0.8 + 0.4 * hash01(i, cycle, SEED + salt + 1)) * UNIT
+      const long = 2.1 - 1.1 * t
+      const shade = dark + (pale - dark) * t
+      const alpha = amount * dense * smooth(t / 0.07) * Math.pow(1 - t, 0.7) * (1 - 0.35 * t * t)
+      n = this.puff(n, x + (off + jitter * size / UNIT * t) * UNIT, y + h * UNIT, z + (0.1 + 3.2 * t) * UNIT, size, size * long, size * 0.7, -Math.atan(slope), shade, shade * 1.005, shade * 1.02, alpha, salt * 13 + i * 7 + cycle * 3)
+    }
+    return n
+  }
+
   private cloud(look: EffectsLook, surface: Surface): void {
     let n = 0
     const steam = clamp01(look.steam)
     if (steam > 0.01) {
       TOPS.forEach((t, i) => this.on(surface, t[0], t[1], this.tops[i]!))
-      const sites = [...this.tops].sort((a, b) => b.y - a.y)
-      for (let i = 0; i < STEAM; i++) {
-        const period = 0.8 + 0.55 * hash01(i, 21, SEED)
-        const clock = look.time / period + hash01(i, 22, SEED)
-        const cycle = Math.floor(clock)
-        const t = clock - cycle
-        const site = sites[Math.floor(hash01(i, cycle, SEED + 23) * 5)]!
-        const lean = (hash01(i, cycle, SEED + 24) - 0.5) * 1.6
-        const rise = (5 + 4.5 * hash01(i, cycle, SEED + 25)) * Math.pow(t, 0.8)
-        const sway = Math.sin(t * 5 + hash01(i, cycle, SEED + 26) * 6.28) * 0.7 * t
-        const size = (0.45 + 1.5 * t) * (0.75 + 0.5 * hash01(i, cycle, SEED + 27)) * UNIT
-        const alpha = steam * 0.85 * smooth(t / 0.12) * Math.pow(1 - t, 1.4)
-        n = this.puff(n, site.x + (lean * t * 1.4 + sway) * UNIT, site.y + (rise + 0.4) * UNIT, site.z + (0.3 + 3 * t) * UNIT, size * 0.8, size * 1.5, size * 0.7, sway * 0.5, 0.9, 0.92, 0.95, alpha, i * 7 + cycle * 3)
-      }
+      let top = this.tops[0]!
+      for (const t of this.tops) if (t.y > top.y) top = t
+      n = this.plume(n, top.x, top.y - 2.2 * UNIT, top.z, steam, look.time, STEAM, 17, 1.9, 0.6, 4.2, 1.0, 1.0, 0.95, 3)
     }
     const points = Math.min(SMOKE_POINTS, look.smoke.length)
     for (let k = 0; k < points; k++) {
@@ -311,19 +323,7 @@ class Effects implements EffectsModel {
       const amount = clamp01(s.amount)
       if (amount <= 0.01) continue
       this.on(surface, s.x, s.y, this.a)
-      for (let i = 0; i < SMOKE_EACH; i++) {
-        const id = k * 40 + i
-        const period = 2.6 + 0.9 * hash01(id, 31, SEED)
-        const clock = look.time / period + i / SMOKE_EACH + 0.13 * hash01(id, 32, SEED)
-        const cycle = Math.floor(clock)
-        const t = clock - cycle
-        const rise = (8.5 + 3 * hash01(id, cycle, SEED + 33)) * Math.pow(t, 0.85)
-        const curl = Math.sin(t * 4.2 + hash01(k, 34, SEED) * 6.28 + look.time * 0.6) * 1.3 * t + 1.6 * t * t
-        const size = (0.5 + 2.5 * Math.pow(t, 0.8)) * (0.8 + 0.4 * hash01(id, cycle, SEED + 35)) * UNIT
-        const grey = 0.13 + 0.36 * t
-        const alpha = amount * 0.7 * smooth(t / 0.1) * Math.pow(1 - t, 1.25)
-        n = this.puff(n, this.a.x + curl * UNIT, this.a.y + (rise + 0.2) * UNIT, this.a.z + (0.1 + 4 * t) * UNIT, size, size * 1.25, size * 0.7, curl * 0.3, grey, grey * 0.98, grey * 0.96, alpha, id * 5 + cycle * 3)
-      }
+      n = this.plume(n, this.a.x, this.a.y, this.a.z, amount, look.time, SMOKE_EACH, 17, 4.8, 0.5, 3.8, 0.15, 0.5, 0.9, 40 + k * 9)
     }
     if (look.dust >= 0 && look.dust < 1) {
       const d = look.dust

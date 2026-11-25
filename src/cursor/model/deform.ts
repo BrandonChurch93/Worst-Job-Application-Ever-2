@@ -9,6 +9,8 @@ const smooth = (a: number, b: number, x: number): number => {
 const BEND_FROM = 4.5
 const BEND_TO = 20.2
 const BEND_TURN = 0.85
+const ROUND_WIDE = 1.15
+const ROUND_TOP = 2.12
 const PEEL_RADIUS = 9
 const PEEL_TURN = 1.0
 
@@ -19,6 +21,7 @@ export class Deform {
   puff = 0
   tremble = 0
   melt = 0
+  pale = 0
   flat = 0
   peel = 0
   gulp = -1
@@ -34,6 +37,7 @@ export class Deform {
     this.puff = clamp01(look.puff)
     this.tremble = clamp01(look.tremble)
     this.melt = clamp01(look.melt)
+    this.pale = clamp01(look.pale)
     this.flat = clamp01(look.flat)
     this.peel = clamp01(look.peel)
     this.gulp = look.gulp < 0 ? -1 : clamp01(look.gulp)
@@ -52,6 +56,12 @@ export class Deform {
     let y = y0
     let z = z0
     const up = z0 / TOP
+    const round = Math.max(smooth(0, 0.5, this.melt), this.pale)
+    if (round > 0 && inset < ROUND_WIDE) {
+      const k = 1 - Math.min(1, inset / ROUND_WIDE)
+      const target = z0 >= 1.2 ? ROUND_TOP * Math.sqrt(1 - k * k) : z0 * 0.32
+      z += (target - z) * round
+    }
     if (this.gulp >= 0) {
       const u = x * AXIS[0] + y * AXIS[1]
       const v = x * AXIS[1] - y * AXIS[0]
@@ -75,22 +85,29 @@ export class Deform {
       const far = Math.hypot(dx, dy)
       const ang = Math.atan2(dy, dx)
       const wob = 0.5 * Math.sin(3 * ang + 0.7) + 0.3 * Math.sin(5 * ang + 2.1) + 0.2 * Math.sin(8 * ang + 4.0)
-      const grow = 1 + 0.26 * f + (f * 0.11 * wob * far) / 8
+      const grow = 1 + 0.2 * f + (f * 0.2 * wob * far) / 8
       x = CENTRE[0] + dx * grow
       y = CENTRE[1] + dy * grow
       const lumps = Math.sin(x0 * 0.9 + 0.6) * Math.sin(y0 * 0.7 + 1.9) + 0.5 * Math.sin(x0 * 1.7 - y0 * 1.3)
-      z *= 1 - 0.78 * f
-      z += f * 0.2 * up * lumps * (1 - Math.exp(-inset / 0.8))
+      z *= 1 - 0.66 * f
+      z += f * 0.42 * up * lumps * (1 - Math.exp(-inset / 0.8))
     }
     if (this.melt > 0) {
       const m = this.melt
-      const low = smooth(3, 19, y0)
-      const run = smooth(0.05, 0.9, Math.sin(x0 * 1.15 + 0.9) * 0.65 + Math.sin(x0 * 2.1 + 2.2) * 0.35)
-      if (z0 > 1.2 && inset < 0.46) z += (1.2 + 0.2 * (inset / 0.45) - z) * smooth(0, 0.5, m)
-      y += m * (0.9 * low + 2.1 * low * low * run + 0.25 * Math.sin(x0 * 1.1 + 0.3))
-      x += m * (0.45 * Math.sin(y0 * 0.62 + 1.4) + 0.3 * low * (x0 - CENTRE[0]) * 0.35)
-      z *= 1 - 0.3 * m * (1 - 0.6 * low * run)
-      z += m * up * (0.28 * run * low + 0.14 * Math.sin(x0 * 1.3 + y0 * 0.8)) * (1 - Math.exp(-inset / 0.6))
+      const low = smooth(2, 19, y0)
+      const tail = smooth(11.5, 19, y0)
+      const dx = x - CENTRE[0]
+      const dy = y - CENTRE[1]
+      const ang = Math.atan2(dy, dx)
+      const wob = 0.6 * Math.sin(2 * ang + 0.9) + 0.4 * Math.sin(3 * ang + 2.6)
+      const grow = 1 + m * 0.09 * wob * (1 - tail)
+      x = CENTRE[0] + dx * grow
+      y = CENTRE[1] + dy * grow
+      y += m * (0.7 * low + 2.4 * tail)
+      x += m * (0.45 * Math.sin(y0 * 0.42 + 1.0) * (1 - tail) + 2.1 * tail * Math.sin((y0 - 11.5) * 0.5) + 0.5 * tail * (x0 - 7.5) * 0.4)
+      const fold = Math.sin(x0 * 0.55 + y0 * 0.38 + 0.5) * Math.sin(y0 * 0.31 - x0 * 0.2 + 1.2)
+      z *= 1 - 0.1 * m - 0.3 * m * tail
+      z += m * up * 0.42 * fold * (1 - Math.exp(-inset / 0.9)) * (1 - 0.5 * tail)
     }
     x *= this.wide
     y *= this.stretch
