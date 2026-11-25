@@ -91,7 +91,7 @@ export function kit(): Kit {
   speckle.repeat.set(1, 1)
   speckle.needsUpdate = true
   const cap = studio(
-    new THREE.MeshPhysicalMaterial({ color: srgb(0xe6dfd2), roughness: 0.56, metalness: 0, normalMap: speckle, normalScale: new THREE.Vector2(0.2, 0.2), specularIntensity: 0.55, clearcoat: 0.1, clearcoatRoughness: 0.5 })
+    new THREE.MeshPhysicalMaterial({ color: srgb(0xe6dfd2), roughness: 0.56, metalness: 0, normalMap: speckle, normalScale: new THREE.Vector2(0.12, 0.12), specularIntensity: 0.55, clearcoat: 0.1, clearcoatRoughness: 0.5 })
   )
   const seat = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x8a8782), roughness: 0.78, metalness: 0, specularIntensity: 0.3 }))
   const dark = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x201f1e), roughness: 0.55, metalness: 0.2, specularIntensity: 0.5 }))
@@ -104,8 +104,8 @@ export const CAP = { rise: config.scale.heights.keycap - config.scale.heights.ke
 // A keycap: a skirt that stands in its seat, walls that lean in, a soft shoulder and a dished top.
 // z = 0 is the crest of the rim, at the top of the key shape. The dish lies below it, so a flat legend at that height is never under the plastic.
 export function capGeometry(w: number, h: number, perCorner = 5): THREE.BufferGeometry {
-  const lean = 0.26
-  const round = 5
+  const lean = 0.38
+  const round = 4.2
   const zs = -round * (1 - Math.sin(lean))
   const foot = -CAP.rise + 0.5
   const taper = Math.tan(lean) * (zs - foot)
