@@ -14,12 +14,13 @@ export const SLAB_H = 64
 
 export const UNFOLD = { crack: 0.7, lift: 0.75, open: 1.3, plates: [1.3, 2.0], legs: [1.6, 2.5], cannons: [1.9, 2.9], shield: [2.5, 3.3], bar: [2.3, 3.3], end: 3.6 } as const
 export const COLLAPSE_SECONDS = 2
-export const WAKE_AFTER_TICK = { film: 1.6, live: 2.8 }
+export const WAKE_AFTER_TICK = { film: 1.6, live: 7, near: 2.2 }
 export const DOUBT_SECONDS = 1.7
 
 export const THRESHOLD = [75, 40, 0] as const
 export const CAPS = [12, 14.5, 13.5] as const
 export const RAMP = [3, 1.8, 6] as const
+export const FLOOR = [4, 4, 3] as const
 export const EXPIRED_GAIN = 10
 export const DART = { speed: 2300, damage: 3, life: 1.4 }
 export const SLAB = { speed: 880, windup: 0.45, rest: 1.5, out: 0.22, overshoot: 170, every: [1.1, 2.3, 0.85] as const, first: 0.4 }

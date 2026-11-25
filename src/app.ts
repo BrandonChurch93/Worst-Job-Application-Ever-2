@@ -30,6 +30,7 @@ export const pageUnits = config.film.units.map((u) => u.id)
 export const unitOfPart = (name: string): string => register.parts.find((p) => p.name === name)?.unit ?? 'site'
 
 const hd = formatById('hd')
+const LIVE_MULTISAMPLES = 4
 
 export class App {
   engine!: Engine
@@ -69,7 +70,7 @@ export class App {
     this.assets = assetSet(o.assets)
     await Promise.all([...FONTS.map((name) => loadFont(name)), preparePages()])
     App.check()
-    this.engine = new Engine(canvas, this.format.width, this.format.height, { preserve: o.capture, forceKind: o.forceKind })
+    this.engine = new Engine(canvas, this.format.width, this.format.height, { preserve: o.capture, forceKind: o.forceKind, multisamples: o.capture ? 0 : LIVE_MULTISAMPLES })
     this.engine.beforeSample = (shot, view) => applyView(view, shot.scene)
     this.environment = studioEnvironment(this.engine.renderer)
     this.view.scene.environment = this.environment
