@@ -96,3 +96,4 @@ Decisions, numbered on from 32.
 - The strips are flat ribbons of one tone; no curl or twist.
 - At the key the left arm goes under the body for a third of its length, and the lower third of the still frame is bare page.
 - Between 27.1 and 27.4 s the arms hang with the hands just over the rim above the machine while they spring back.
+- (Decision 45.) `TUG.least` 28, supersedes 38: at 26.4 s with 21 the lower hand of the tilted pair lay at the machine's north edge. The last haul leans 0.15 and not 0.51 (`TUG_CURVE` row 4.6), so the cursor still moves more than 5 px in every second with the longer least hold.

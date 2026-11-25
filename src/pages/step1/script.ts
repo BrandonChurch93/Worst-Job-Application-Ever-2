@@ -14,7 +14,7 @@ export const TIMES = {
   slabCount: 3, slabFirst: 0.4, slabEvery: 0.55, slabHang: 0.2, slabFall: 0.2, slabSettle: 0.12, slabLie: 0.25, slabLift: 0.18,
   paperSlide: 0.42, bite: 0.4, tugFilm: 5.06, lost: 0.3
 }
-export const TUG = { stiff: 2600, damp: 36, strainPx: 9.6, lead: 0.4, shoulder: { x: 14, y: 30 }, hands: 31, rateLag: 0.07, inside: 4, least: 21, reach: { rest: 43, min: 37, max: 52, bite: 26, haul: 70 } }
+export const TUG = { stiff: 2600, damp: 36, strainPx: 9.6, lead: 0.4, shoulder: { x: 14, y: 30 }, hands: 31, rateLag: 0.07, inside: 4, least: 28, reach: { rest: 43, min: 37, max: 52, bite: 26, haul: 70 } }
 export const SPOT = { x: -12, y: -14 }
 export const BITE = { x: SLOT.cx - PAPER.w / 2, y: SLOT.cy - PAPER.h + 11, jerk: 9, settle: 0.5, snap: 0.72 }
 export const HOOD = { y: SLOT.cy + 17, z: 26 }
@@ -48,7 +48,7 @@ export const RESUME = { walk: [19.9, 20.3] as [number, number], proud: 20.4, bes
 
 const TUG_CURVE: [number, number, number, number][] = [
   [0, 0.125, 0.2, 4], [0.3, 0.15, 0.14, 0], [0.8, 0.11, 0.28, 25], [1.05, 0.26, -0.12, 5], [1.55, 0.22, 0.42, 22], [1.8, 0.37, 0.06, 0], [2.3, 0.33, 0.52, 24],
-  [2.6, 0.48, 0.16, 1], [2.95, 0.455, 0.47, 17], [3.2, 0.44, 0.47, 18], [3.5, 0.6, -0.02, 3], [4, 0.56, 0.36, 25], [4.3, 0.72, 0.15, 3], [4.6, 0.68, 0.51, 18], [5.06, 0.95, 0, 3]
+  [2.6, 0.48, 0.16, 1], [2.95, 0.455, 0.47, 17], [3.2, 0.44, 0.47, 18], [3.5, 0.6, -0.02, 3], [4, 0.56, 0.36, 25], [4.3, 0.72, 0.15, 3], [4.6, 0.68, 0.15, 18], [5.06, 0.95, 0, 3]
 ]
 
 function tugAt(t: number, column: 1 | 2 | 3): number {
