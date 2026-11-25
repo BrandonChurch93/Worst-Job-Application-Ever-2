@@ -3,6 +3,7 @@ import { controls } from '../shell/real/controls'
 import { real as table } from '../table/real'
 import { ground } from '../shell/real/ground'
 import { type } from '../shell/real/type'
+import type { Shape } from '../stage/types'
 import type { PartMaker, Real } from './types'
 
 const parts: Record<string, PartMaker | null> = { shell: controls }
@@ -14,3 +15,11 @@ for (const page of [step1, table]) {
 }
 
 export const real: Real = { ground, type, parts }
+
+// How bright the website's own light is in a frame, 0 to 1: the anchors of the table's lights carry it. It counts once the table's lights are real, so a machine of stand-ins is never left in the dark.
+export const websiteLevel = (list: Shape[], lit = parts['table-lights'] !== null && parts['table-lights'] !== undefined): number => {
+  let level = 1
+  if (!lit) return level
+  for (const s of list) if (s.kind === 'anchor' && s.part === 'table-lights' && s.v !== undefined && s.v.length > 1) level = Math.min(level, s.v[1]!)
+  return level
+}
