@@ -189,7 +189,9 @@ First push of the fix round: `npm test` 71 files, 1146 tests passed; `npm run me
 
 Sixth batch, 19:56Z: `npm test` 77 files, 1201 tests passed. `npm run build`: built. `npm run bots`: all clear. `npm run measure -- --unit step1` at 19:51Z, with main merged: 8 green, 0 red (M3 now 1.2246 against 0.8). `cursor-damage` draft 857956 triangles, 111 draw calls, 7.2 to 7.6 s. `cursor-acting` draft 729766 triangles, 140 draw calls, 6.9 to 7.2 s. `step1-fire` draft 418889 triangles, 257 draw calls, 10.9 s; review 21.1 s (main changed the page since the table above). `step1-tug` draft 631617 triangles, 286 draw calls, 10.5 s.
 
-Last push, 20:17Z to 20:19Z, main 5a9e748 merged: `npm test` 79 files, 1224 tests passed. `npm run build`: built. `npm run bots`: all clear. `npm run measure -- --unit step1`: 8 green, 0 red (M3 1.4972 against 0.8, M9 1.73 px against 2). `cursor-damage` draft 7.5 s, review 15.7 s, 857956 triangles, 111 draw calls. `cursor-acting` draft 6.8 s, 729766 triangles, 140 draw calls. `step1-tug` draft 10.5 s, 676177 triangles, 309 draw calls. `step1-fire` draft 11.4 s, 438065 triangles, 271 draw calls. Textures: one 512 px RGBA detail texture, 1.0 MB, unchanged through the whole fix round.
+Head f2b9802, 20:26Z to 20:27Z, main 954bd89 merged: `npm test` 79 files, 1224 tests passed; `npm run build` built; `npm run bots` all clear; `npm run measure -- --unit step1` 8 green, 0 red (M3 1.4989 against 0.8, M9 0.65 px against 2).
+
+One push earlier, 20:17Z to 20:19Z, main 5a9e748 merged: `npm test` 79 files, 1224 tests passed. `npm run build`: built. `npm run bots`: all clear. `npm run measure -- --unit step1`: 8 green, 0 red (M3 1.4972 against 0.8, M9 1.73 px against 2). `cursor-damage` draft 7.5 s, review 15.7 s, 857956 triangles, 111 draw calls. `cursor-acting` draft 6.8 s, 729766 triangles, 140 draw calls. `step1-tug` draft 10.5 s, 676177 triangles, 309 draw calls. `step1-fire` draft 11.4 s, 438065 triangles, 271 draw calls. Textures: one 512 px RGBA detail texture, 1.0 MB, unchanged through the whole fix round.
 
 ### Not done yet
 
