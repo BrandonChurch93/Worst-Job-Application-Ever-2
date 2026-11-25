@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
 import { makePage } from '../src/pages/step2'
-import { pruned, ROWS, statesOf } from '../src/pages/step2/layout'
+import { DIAL, pruned, ROWS, statesOf } from '../src/pages/step2/layout'
 import { pages } from '../src/pages'
 import { layoutProblems, typeRegister } from '../src/shell/layout'
 import { hasWords } from '../src/shell/words'
@@ -42,6 +42,18 @@ describe('step 2, the layout', () => {
       }
     }
     expect(seen.size).toBeGreaterThan(40)
+  })
+
+  it('has the digits in the order of a real dial: 1 nearest the stop, 0 the longest way round', () => {
+    const deg = (rad: number) => Math.round((rad * 180) / Math.PI)
+    expect(deg(DIAL.stop)).toBe(30)
+    expect(deg(DIAL.holeAngle(1))).toBe(-30)
+    for (let k = 1; k <= 10; k++) {
+      expect(deg(DIAL.holeAngle(k)), String(k)).toBe(-30 * k)
+      expect(deg(DIAL.travel(k)), String(k)).toBe(deg(DIAL.stop) - deg(DIAL.holeAngle(k)))
+    }
+    expect(DIAL.digit(10)).toBe('0')
+    expect(deg(DIAL.holeAngle(10)) + 360).toBe(60)
   })
 
   it('names every word it shows by a key that exists, and uses all the copy of the step', () => {
