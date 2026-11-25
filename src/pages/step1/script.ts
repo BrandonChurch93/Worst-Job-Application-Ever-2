@@ -3,7 +3,7 @@ import { stream } from '../../core/random'
 import { HANDOFF, type Acting, type Reaction } from '../../cursor/body'
 import { frame, homePose, mixPose, smooth } from '../../stage/camera'
 import type { CameraPose, Pointer } from '../../stage/types'
-import { homePlaces, seatIndex, seats, shuffled } from './keyboard'
+import { DECK, homePlaces, seatIndex, seats, shuffled } from './keyboard'
 import { FIELD_X, FIELD_Y, PAPER, PAPER_REST, SLOT, ZONE } from './layout'
 
 const sizes = config.scale.sizes
@@ -23,23 +23,27 @@ export const PILE = { x: SLOT.cx - 20, y: SLOT.cy + 60 }
 export const SHRED = { in: 0.3, gone: 0.46, strips: 0.12, pile: 0.64, pileSeconds: 1.14, empty: 0.92, emptySeconds: 0.84, zip: 1.78, zipSeconds: 1.0, end: 2.8 }
 
 // The film's first name: every time is a second of the unit. The turrets are up at 3.52 and fire at 4.12, 4.57, 5.02, 5.47, 5.92, and so on.
-// 6.0 is the frame of the approved image: the shot of 5.02 has just landed on L, the shot of 5.47 is a hand's width from the cursor, the shot of 5.92 has left the barrel, and the cursor is in the air over the row above.
-// It lands, takes the pause for a win, and the shot of 6.82 hits it at 7.06.
+// 6.0 is the frame of the approved image: the shot of 5.02 has just landed on L, the shot of 5.47 is a hand's width from the cursor, the shot of 5.92 has left the barrel, and the cursor has snapped out of the way to the row above, a key short of 5 (short), and holds there, still.
+// It ducks flat and slides a key along, so the shot of 6.37 lands where it was. It stretches out of the duck, takes the pause for a win, and the shot of 6.82 hits it at 7.14: it is thrown across the board on to the bare deck by the right hatch and holds its shock there.
 export const FIRST = {
   tap: 1.5,
   keys: [[2.18, 2.56], [2.64, 2.97], [3.06, 3.25], [3.86, 4.1], [4.16, 4.3]] as [number, number][],
-  notice: 3.42, dodge: 3.86, cocky: [4.44, 4.68] as [number, number], proud: 4.8,
-  stand: 'w', aside: -34, see: 5.72, flee: [5.84, 6.06] as [number, number], fled: '5', smug: 6.34,
-  thrown: { x: 190, y: 60 }, shock: [7.18, 7.8] as [number, number],
-  after: [[7.8, 8.0], [8.06, 8.3], [8.36, 8.54], [8.6, 8.86], [8.92, 9.1], [9.16, 9.32]] as [number, number][],
+  notice: 3.42, dodge: 3.86, cocky: [4.38, 4.6] as [number, number], proud: 4.7,
+  stand: 'w', aside: -34, see: 5.46, flee: [5.62, 5.82] as [number, number], fled: '5', short: -64, past: 16, snap: 5.78, duck: 6.14, slide: [6.16, 6.28] as [number, number], smug: 6.62,
+  panel: { x: -150, y: 20 }, shock: [7.18, 7.92] as [number, number], flight: 0.2,
+  after: [[7.92, 8.0], [8.07, 8.3], [8.36, 8.54], [8.6, 8.86], [8.92, 9.1], [9.16, 9.32]] as [number, number][],
   enter: [9.4, 9.6] as [number, number]
 }
-export const LAST = { at: [10.3, 10.95, 11.55, 12.1, 12.62, 13.12, 13.62, 14.12], hunts: 3, enter: [14.34, 14.6] as [number, number] }
-export const MAIL = { first: 15.16, run: 15.5, every: 0.092, enter: 17.42 }
-export const DIVES = [{ x: 1088, y: 816 }, { x: 744, y: 944 }, { x: 940, y: 668 }]
-export const DIVE = { see: 0.05, start: 0.22, seconds: 0.16 }
-export const TRUDGE = { x: 150, y: -110, seconds: 0.8 }
-export const END = { lean: { x: -10, y: -30 }, stamp: 0.62, sag: 1.0 }
+// The last name: at each of the first hunts it pulls up off the keys on to the bare page above the deck (above), rears back there, and dives for the key where it is now.
+export const LAST = { at: [10.3, 10.95, 11.55, 12.1, 12.62, 13.12, 13.62, 14.12], hunts: 3, above: -50, up: [0.08, 0.16] as [number, number], dive: [0.09, 0.09, 0.14], enter: [14.34, 14.6] as [number, number] }
+// The email: one careful key, then it backs off it (wait, from the key) and waits there, nervous, for what the key will do. There is no bare place it can reach and leave again in the third of a second before the run without moving the time of a key.
+export const MAIL = { first: 15.16, run: 15.5, every: 0.092, enter: 17.42, wait: { x: -44, y: -40 }, back: [15.2, 15.26] as [number, number] }
+// The slabs: struck is how long after the click on Enter the key is struck, which is when the page starts to count.
+// Where it goes from the slabs: clear on to the bare page above the deck, then into the corner of the Email field, where it stays.
+export const DIVES = [{ x: 1100, y: 676 }, { x: 1716, y: FIELD_Y[2]! + 46 }]
+export const DIVE = { struck: 0.06, see: 0.07, start: 0.2, seconds: 0.16, jolt: 0.06, duck: 0.03 }
+export const TRUDGE = { x: 96, y: 84, seconds: 0.9 }
+export const END = { start: 0.05, sag: 0.34 }
 export const RESUME = { walk: [19.9, 20.3] as [number, number], proud: 20.4, beside: { x: 20, y: 6 }, grab: 21.06, hoist: [21.1, 21.16] as [number, number], carry: [21.18, 21.54] as [number, number], drop: 21.62 }
 
 const TUG_CURVE: [number, number, number, number][] = [
@@ -110,18 +114,19 @@ export function makePlan(seed: number, first: string, last: string, email: strin
   const nameOf = (ch: string): string => (ch === '@' ? 'at' : ch === '.' ? 'dot' : ch === ' ' ? 'space' : ch.toLowerCase())
   const enter = seatIndex.enter!
 
-  // step1.keyboard: set down, a strut to the field, a tap, and the page opens under it
+  // step1.keyboard: set down, a strut straight to the field, a pull back, a decided tap, held, and when the page opens under it a sharp lean back, held
   const field = { x: FIELD_X + 152, y: FIELD_Y[0]! + 36 + sizes.field / 2 + 4 }
   cue(0.52, { act: 'confident' })
-  to(1.02, 1.36, field.x, field.y, { arc: 44 })
-  cue(1.38, { react: 'anticipate' })
+  to(1.0, 1.34, field.x, field.y, { arc: 30, ease: 'line' })
+  cue(1.36, { react: 'tap' })
+  to(1.37, 1.44, field.x + 10, field.y + 12, { ease: 'out' })
+  to(1.45, 1.49, field.x, field.y, { ease: 'in' })
   click(FIRST.tap, 0.09)
-  to(1.62, 1.8, field.x - 26, field.y - 20, { ease: 'out' })
-  cue(1.66, { react: 'doubleTake' })
-  to(2.02, 2.14, field.x - 36, field.y - 34)
-  cue(2.04, { react: 'anticipate' })
+  cue(1.66, { react: 'rear' })
+  to(1.66, 1.76, field.x - 30, field.y - 26, { ease: 'out' })
+  cue(2.1, { react: 'anticipate' })
 
-  // step1.firstName: stomps, the turrets, a dodge, a leap clear, a cocky pause, the frame of the approved image, a second pause, the hit, the shock, the rest of the name
+  // step1.firstName: stomps, the turrets, a dodge, a leap clear, a cocky pause, a snap out of a shot's way (the frame of the approved image), a duck, a second pause, the hit, the shock, the rest of the name
   const keys = [...first].map(nameOf)
   const k = (i: number): number => seatIndex[keys[Math.min(i, keys.length - 1)]!]!
   const before = Math.min(FIRST.keys.length, keys.length)
@@ -136,28 +141,31 @@ export function makePlan(seed: number, first: string, last: string, email: strin
   }
   const stand = { x: keySpot(seatIndex[FIRST.stand]!).x + FIRST.aside, y: keySpot(seatIndex[FIRST.stand]!).y }
   const fled = keySpot(seatIndex[FIRST.fled]!)
+  const panel = { x: DECK.x + DECK.w + FIRST.panel.x, y: DECK.y + FIRST.panel.y }
   leap(FIRST.cocky[0], FIRST.cocky[1], stand.x, stand.y, { arc: 20 })
   cue(FIRST.proud, { act: 'proud' })
   cue(FIRST.proud + 0.06, { react: 'dustOff' })
   cue(FIRST.see, { react: 'anticipate' })
-  cue(FIRST.see + 0.02, { act: 'nervous' })
-  leap(FIRST.flee[0], FIRST.flee[1], fled.x, fled.y, { arc: 46, ease: 'smooth' })
+  cue(FIRST.see + 0.02, { act: 'plain' })
+  leap(FIRST.flee[0], FIRST.flee[1], fled.x + FIRST.short, fled.y, { arc: 46, ease: 'smooth' })
+  cue(FIRST.snap, { react: 'snap' })
+  cue(FIRST.duck, { react: 'duck' })
+  to(FIRST.slide[0], FIRST.slide[1], fled.x + FIRST.past, fled.y, { ease: 'out' })
   cue(FIRST.smug, { act: 'proud' })
-  cue(FIRST.smug + 0.06, { react: 'dustOff' })
-  to(FIRST.shock[0], FIRST.shock[0] + 0.16, fled.x + FIRST.thrown.x, fled.y + FIRST.thrown.y, { arc: 20, ease: 'out' })
-  cue(FIRST.shock[1] - 0.08, { react: 'flinch' })
+  to(FIRST.shock[0], FIRST.shock[0] + FIRST.flight, panel.x, panel.y, { arc: 26, ease: 'out' })
+  cue(FIRST.shock[1] - 0.1, { react: 'anticipate' })
   for (let i = before - 1; i < keys.length; i++) {
     const n = i - (before - 1)
     const slot = FIRST.after[Math.min(n, FIRST.after.length - 1)]!
     const late = Math.max(0, n - (FIRST.after.length - 1)) * 0.3
-    stomp(slot[0] + late, slot[1] + late, k(i), n === 0 ? { arc: 30 } : {})
+    stomp(slot[0] + late, slot[1] + late, k(i), n === 0 ? { arc: 30, ease: 'snap' } : {})
   }
   cue(FIRST.enter[0] - 0.08, { react: 'anticipate' })
   stomp(FIRST.enter[0], FIRST.enter[1], enter)
   cue(FIRST.enter[1] + 0.14, { act: 'confident' })
   cue(FIRST.enter[1] + 0.34, { react: 'dustOff' })
 
-  // step1.lastName: it goes where the letter was, finds it gone, and lands on it where it is now. Then it stops looking and stomps
+  // step1.lastName: the keys move, it pulls up off them on to the bare page, rears back, and dives for the letter where it is now. Then it stops looking and stomps
   const rng = stream('step1:shuffle', seed)
   let places = homePlaces()
   let was = places
@@ -169,9 +177,12 @@ export function makePlan(seed: number, first: string, last: string, email: strin
     if (i === 0) stomp(t - 0.34, t, places[key]!)
     else if (i <= LAST.hunts) {
       const old = keySpot(was[key]!)
-      leap(prev + 0.16, prev + 0.34, old.x, old.y, { arc: 22, ease: 'smooth' })
-      cue(prev + 0.36, { react: i === 1 ? 'doubleTake' : 'flinch' })
-      stomp(t - 0.2, t, places[key]!)
+      const now = keySpot(places[key]!)
+      leap(prev + LAST.up[0], prev + LAST.up[1], (old.x + now.x) / 2, DECK.y + LAST.above, { arc: 10, ease: 'out' })
+      cue(prev + LAST.up[0] + 0.02, { react: i === 2 ? 'doubleTake' : 'rear' })
+      const dive = LAST.dive[i - 1]!
+      if (i === 3) cue(t - dive - 0.12, { react: 'anticipate' })
+      stomp(t - dive, t, places[key]!, { arc: 14, ease: 'snap' })
     } else {
       cue(prev + 0.12, { react: 'flinch' })
       stomp(t - 0.26, t, places[key]!, { arc: 46 + i * 5 })
@@ -183,15 +194,16 @@ export function makePlan(seed: number, first: string, last: string, email: strin
   cue(LAST.enter[0] - 0.1, { react: 'anticipate' })
   stomp(LAST.enter[0], LAST.enter[1], enter, { arc: 84 })
 
-  // step1.email: one careful key, nothing happens, then the whole address in one run and a proud Enter
+  // step1.email: one careful key, a flinch, a step back and a nervous wait, nothing happens, then the whole address in one run and a proud Enter
   const mail = [...email].map(nameOf)
   const a = keySpot(seatIndex[mail[0]!]!)
-  cue(LAST.enter[1] + 0.08, { act: 'nervous' })
+  cue(LAST.enter[1] + 0.06, { act: 'nervous' })
   to(LAST.enter[1] + 0.1, MAIL.first - 0.18, a.x + 44, a.y - 30, { arc: 30 })
   to(MAIL.first - 0.12, MAIL.first - 0.02, a.x, a.y, { ease: 'out' })
   click(MAIL.first)
   cue(MAIL.first + 0.06, { react: 'flinch' })
-  cue(MAIL.run - 0.1, { act: 'confident' })
+  to(MAIL.back[0], MAIL.back[1], a.x + MAIL.wait.x, a.y + MAIL.wait.y, { ease: 'out' })
+  cue(MAIL.run - 0.02, { act: 'confident' })
   let t = MAIL.run
   for (let i = 1; i < mail.length; i++) {
     const p = keySpot(seatIndex[mail[i]!]!)
@@ -204,13 +216,20 @@ export function makePlan(seed: number, first: string, last: string, email: strin
   stomp(submit - 0.12, submit, enter, { arc: 70 })
   cue(submit + 0.05, { act: 'proud' })
   cue(submit + 0.1, { react: 'dustOff' })
-  for (let n = 0; n < TIMES.slabCount; n++) {
-    const at = submit + TIMES.slabFirst + n * TIMES.slabEvery
-    const d = DIVES[n % DIVES.length]!
-    cue(at + DIVE.see, { react: 'doubleTake' })
-    cue(at + DIVE.start, { react: 'jump' })
-    to(at + DIVE.start, at + DIVE.start + DIVE.seconds, d.x, d.y, { arc: 36, ease: 'out' })
-  }
+  // The slabs: a start at the first, a stretched leap clear of it on to the bare page, a jump as it lands, a cower as the second hangs over it, a second leap into the corner of the Email field, a jump as that one lands, a cower there as the third hangs, and a flat duck as it lands a hand away. It stays scared
+  const slab = (n: number): number => submit + DIVE.struck + TIMES.slabFirst + n * TIMES.slabEvery
+  const landed = TIMES.slabHang + TIMES.slabFall
+  cue(slab(0) + DIVE.see, { react: 'startle' })
+  cue(slab(0) + DIVE.start, { react: 'jump' })
+  leap(slab(0) + DIVE.start, slab(0) + DIVE.start + DIVE.seconds, DIVES[0]!.x, DIVES[0]!.y, { arc: 44, ease: 'out', hop: false })
+  cue(slab(0) + landed + DIVE.jolt, { react: 'startle' })
+  cue(slab(1) + DIVE.see, { react: 'cower' })
+  cue(slab(1) + DIVE.start, { react: 'jump' })
+  leap(slab(1) + DIVE.start, slab(1) + DIVE.start + DIVE.seconds, DIVES[1]!.x, DIVES[1]!.y, { arc: 40, ease: 'out', hop: false })
+  cue(slab(1) + landed + DIVE.jolt, { react: 'startle' })
+  cue(slab(2) + DIVE.see, { react: 'cower' })
+  cue(slab(2) + landed + DIVE.duck, { react: 'duck' })
+  cue(slab(2) + landed + DIVE.duck, { act: 'scared' })
 
   // step1.resume: it walks to its paper, stands beside it proud and dusts itself off, and only then lifts it and carries it over
   const grab = { x: PAPER_REST.x + PAPER.w - 12, y: PAPER_REST.y + 8 }
@@ -231,17 +250,12 @@ export function makePlan(seed: number, first: string, last: string, email: strin
     to(Math.max(free, at - 0.05), at, p.x, p.y, { ease: 'line' })
   }
 
-  // step1.shredded: where it comes back together, and a tired drag toward the form it has to fill in again
+  // step1.shredded: where it comes back together. It starts at what the form says, sags, and drags itself a little way off the slot, where it stays bent and low
   const whole = lost + TIMES.lost + SHRED.end
   to(lost + 0.1, lost + 0.2, PILE.x, PILE.y, { ease: 'out' })
-  cue(whole + 0.06, { react: 'doubleTake' })
-  to(whole + 0.14, whole + 0.24, PILE.x + END.lean.x, PILE.y + END.lean.y, { ease: 'out' })
-  cue(whole + 0.2, { act: 'shocked' })
-  cue(whole + END.stamp - 0.08, { react: 'anticipate' })
-  cue(whole + END.stamp, { act: 'angry' })
-  leap(whole + END.stamp, whole + END.stamp + 0.18, PILE.x + END.lean.x, PILE.y + END.lean.y, { arc: 30 })
+  cue(whole + END.start, { react: 'startle' })
   cue(whole + END.sag, { act: 'exhausted' })
-  to(whole + END.sag, whole + END.sag + TRUDGE.seconds, PILE.x + TRUDGE.x, PILE.y + TRUDGE.y, { arc: -10 })
+  to(whole + END.sag + 0.06, whole + END.sag + 0.06 + TRUDGE.seconds, PILE.x + TRUDGE.x, PILE.y + TRUDGE.y, { arc: -8, ease: 'out' })
   cues.sort((p, q) => p.at - q.at)
   return { moves, clicks, cues, drop: RESUME.drop, bite, lost }
 }

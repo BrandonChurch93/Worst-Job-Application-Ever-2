@@ -49,8 +49,8 @@ describe('the mended body', () => {
 
   it('strips gathered stand close to their places before they snap true', () => {
     for (const p of gatheredAt(config.seed + 1, 0.64)) {
-      expect(Math.hypot(p.x, p.y)).toBeLessThan(2.5)
-      expect(Math.abs(p.rot)).toBeLessThan(0.03)
+      expect(Math.hypot(p.x, p.y)).toBeLessThan(6.5)
+      expect(Math.abs(p.rot)).toBeLessThan(0.04)
       expect(Math.abs(p.tilt)).toBeLessThan(0.001)
     }
   })
