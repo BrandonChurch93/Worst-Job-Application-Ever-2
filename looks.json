@@ -1,35 +1,35 @@
 {
   "folder": "boss",
-  "pushed": "2026-11-25T10:02:18.279Z",
-  "commit": "cef2792adf024b827532ac15ff65fb2b48f74229",
+  "pushed": "2026-11-25T10:43:15.933Z",
+  "commit": "d44c036b87178fa48105faa3da2dccb2754bcc90",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still still-rest-step4-preview-draft: draft tier, preview, view beauty",
-      "time": "2026-11-25T10:02:09.106Z",
-      "by": "boss",
-      "from": "out/work/stills/still-rest-step4-preview-draft.png"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "Still key-boss-fight-preview-draft: draft tier, preview, view beauty",
-      "time": "2026-11-25T10:02:13.042Z",
-      "by": "boss",
-      "from": "out/work/stills/key-boss-fight-preview-draft.png"
-    },
-    {
-      "file": "look-3.jpg",
-      "caption": "Still key-boss-down-preview-draft: draft tier, preview, view beauty",
-      "time": "2026-11-25T10:02:16.584Z",
-      "by": "boss",
-      "from": "out/work/stills/key-boss-down-preview-draft.png"
-    },
-    {
-      "file": "look-4.jpg",
       "caption": "Six film moments after the merge of main cef0562: answer, unfold, slabs, pop-ups, last stand, press",
       "time": "2026-11-25T10:02:16.884Z",
       "by": "boss",
       "from": "out/work/filmQ.png"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Still still-rest-step4-preview-draft: draft tier, preview, view beauty",
+      "time": "2026-11-25T10:41:56.618Z",
+      "by": "boss",
+      "from": "out/work/stills/still-rest-step4-preview-draft.png"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Step 4 at rest at d44c036: the closed verify card is the layout tree's own box (M5 0 px)",
+      "time": "2026-11-25T10:43:14.514Z",
+      "by": "boss",
+      "from": "out/work/stills/still-rest-step4-preview-draft.png"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "3.7 to 5.2 s: the card opens on the tick (moved for 0.3 s), then the open card is drawn from the tree",
+      "time": "2026-11-25T10:43:14.746Z",
+      "by": "boss",
+      "from": "out/work/filmR.png"
     }
   ]
 }
