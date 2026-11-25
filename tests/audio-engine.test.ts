@@ -84,11 +84,10 @@ function fixtureSite(): { index: SoundIndex; files: Map<string, Uint8Array | nul
   return { index, files }
 }
 
-function serve(index: unknown, files: Map<string, Uint8Array | null> = new Map()) {
+function serve(files: Map<string, Uint8Array | null> = new Map()) {
   vi.stubGlobal('fetch', async (url: string) => {
     fetched.push(url)
     const name = url.replace('./audio/', '')
-    if (name === 'index.json') return index === null ? { ok: false, status: 404 } : { ok: true, json: async () => index }
     const bytes = files.get(name)
     if (!bytes) return { ok: false, status: 404 }
     return { ok: true, arrayBuffer: async () => bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.length) }
@@ -112,8 +111,8 @@ afterEach(() => {
 
 describe('before the first click', () => {
   it('makes nothing, fetches nothing and plays nothing', () => {
-    serve(fixtureSite().index, fixtureSite().files)
-    const s = makeSound({ base: './audio/' })
+    serve(fixtureSite().files)
+    const s = makeSound({ base: './audio/', index: fixtureSite().index })
     s.event(hit('step'), 'live')
     s.beat(beatId, 'film')
     s.trigger('idle')
@@ -131,16 +130,10 @@ describe('before the first click', () => {
 })
 
 describe('with no sound to play', () => {
-  const silent = async (index: unknown) => {
-    serve(index)
-    const s = makeSound({ base: './audio' })
-    let changes = 0
-    s.onChange(() => changes++)
-    await s.unlock()
+  const quiet = (s: ReturnType<typeof makeSound>) => {
     expect(s.available()).toBe(false)
     expect(s.state()).toBe('silent')
     expect(s.backend()).toBe('none')
-    expect(changes).toBe(2)
     s.event(hit('step', true), 'live')
     s.beat(beatId, 'live')
     s.trigger('idle')
@@ -154,33 +147,46 @@ describe('with no sound to play', () => {
     expect(errors).not.toHaveBeenCalled()
   }
 
-  it('runs silent on an index that lists nothing, as the repository ships it', async () => {
-    await silent(read('public', 'audio', 'index.json'))
-    expect(fetched).toEqual(['./audio/index.json'])
-  })
-
-  it('runs silent when the index is not there', async () => {
-    await silent(null)
+  it('is silent from the start on the index the repository ships, which lists nothing', async () => {
+    const shipped = read('public', 'audio', 'index.json')
+    expect(shipped.sfx.length + shipped.loops.length + shipped.lines.length).toBe(0)
+    serve()
+    const s = makeSound({ base: './audio' })
+    let changes = 0
+    s.onChange(() => changes++)
+    expect(s.available()).toBe(false)
+    await expect(s.unlock()).resolves.toBeUndefined()
+    quiet(s)
+    expect(made.length).toBe(0)
+    expect(fetched).toEqual([])
+    expect(changes).toBe(0)
   })
 
   it('runs silent when the index names files that are not there', async () => {
-    await silent(fixtureSite().index)
+    serve()
+    const s = makeSound({ base: './audio', index: fixtureSite().index })
+    let changes = 0
+    s.onChange(() => changes++)
+    expect(s.available()).toBe(true)
+    await s.unlock()
+    quiet(s)
+    expect(changes).toBe(2)
+    expect(fetched).toEqual(['./audio/sfx.bin'])
   })
 
   it('runs silent when the request itself fails', async () => {
     vi.stubGlobal('fetch', async () => { throw new Error('offline') })
-    const s = makeSound({ base: './audio/' })
+    const s = makeSound({ base: './audio/', index: fixtureSite().index })
     await expect(s.unlock()).resolves.toBeUndefined()
-    expect(s.available()).toBe(false)
-    expect(errors).not.toHaveBeenCalled()
+    quiet(s)
   })
 
   it('runs silent in a browser with no way to play sound', async () => {
     vi.stubGlobal('window', { setTimeout, clearTimeout })
-    serve(fixtureSite().index, fixtureSite().files)
-    const s = makeSound({ base: './audio/' })
+    serve(fixtureSite().files)
+    const s = makeSound({ base: './audio/', index: fixtureSite().index })
     await s.unlock()
-    expect(s.available()).toBe(false)
+    quiet(s)
     expect(fetched).toEqual([])
   })
 })
@@ -188,8 +194,8 @@ describe('with no sound to play', () => {
 describe('with sound', () => {
   const ready = async () => {
     const site = fixtureSite()
-    serve(site.index, site.files)
-    const s = makeSound({ base: './audio/' })
+    serve(site.files)
+    const s = makeSound({ base: './audio/', index: site.index })
     await s.unlock()
     return { s, ctx: made[0]! }
   }
@@ -198,7 +204,7 @@ describe('with sound', () => {
     const { s, ctx } = await ready()
     await s.unlock()
     expect(made.length).toBe(1)
-    expect(fetched.filter((u) => u.endsWith('index.json')).length).toBe(1)
+    expect(fetched.filter((u) => u.endsWith('index.json')).length).toBe(0)
     expect(fetched.filter((u) => u.endsWith('sfx.bin')).length).toBe(1)
     expect(s.available()).toBe(true)
     expect(s.state()).toBe('ready')

@@ -1,11 +1,13 @@
 // The site's sound engine. It is loaded only in the modes live, film and loop, and only main.ts may import it.
 // Nothing here is created, fetched or played before unlock(), which the visitor's first click calls.
+// The index of the sound files is part of the build, so the engine knows from the start whether there is any sound to play.
 import { config } from '../config'
 import { narration } from '../copy'
 import { wallSeconds } from '../ui/clock'
 import { eventCues, filmLineId, liveKeysFor, liveLineId, loopCues, pickVariant, stopEvents } from './cues'
 import { DUCK, LIVE, db } from './levels'
 import { duckSpans, Narrator, type Booking } from './narrator'
+import shipped from '../../public/audio/index.json'
 
 export type SoundMode = 'live' | 'film'
 export type SoundState = 'locked' | 'loading' | 'ready' | 'silent'
@@ -239,13 +241,15 @@ function makeBackend(): Backend | null {
   return typeof Audio === 'function' ? elementBackend() : null
 }
 
-export function makeSound(o: { base: string }): SoundApi {
+export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
   const base = o.base.endsWith('/') ? o.base : `${o.base}/`
   const audio = config.audio
   const film = narration.film as Record<string, { at: number; text: string }[]>
   const live = narration.liveOnly as Record<string, unknown>
   const narrator = new Narrator({ minGap: audio.liveNarratorMinGapSeconds, lineGap: audio.lineGapSeconds, beatLate: LIVE.beatLateSeconds, liveLate: LIVE.liveLateSeconds })
-  let state: SoundState = 'locked'
+  const index = o.index ?? (shipped as unknown as SoundIndex)
+  const lists = index.sfx.length + index.loops.length + index.lines.length > 0
+  let state: SoundState = lists ? 'locked' : 'silent'
   let backend: Backend | null = null
   let unlocking: Promise<void> | null = null
   let isMuted = false
@@ -269,30 +273,22 @@ export function makeSound(o: { base: string }): SoundApi {
   const applyLevel = () => backend?.master(isMuted ? 0 : level)
 
   async function load(b: Backend): Promise<void> {
-    const res = await fetch(`${base}index.json`)
-    if (!res.ok) return
-    const index = (await res.json()) as SoundIndex
-    const jobs: Promise<void>[] = []
     const keep = (id: string, secs: number) => (ok: boolean) => {
       if (!ok) return
       loaded.add(id)
       lengths.set(id, secs)
     }
     if (index.pack && index.sfx.length) {
-      jobs.push((async () => {
-        const pack = await fetch(`${base}${index.pack!.file}`)
-        if (!pack.ok) return
-        const bytes = await pack.arrayBuffer()
-        await Promise.all(index.sfx.map((s) => b.add(s.id, bytes.slice(s.at, s.at + s.bytes), s.mime).then(keep(s.id, s.seconds))))
-      })())
+      const pack = await fetch(`${base}${index.pack.file}`)
+      if (!pack.ok) return
+      const bytes = await pack.arrayBuffer()
+      await Promise.all(index.sfx.map((s) => b.add(s.id, bytes.slice(s.at, s.at + s.bytes), s.mime).then(keep(s.id, s.seconds))))
     }
-    for (const f of [...index.loops, ...index.lines]) {
-      jobs.push((async () => {
-        const file = await fetch(`${base}${f.file}`)
-        if (!file.ok) return
-        await b.add(f.id, await file.arrayBuffer(), f.mime).then(keep(f.id, f.seconds))
-      })())
-    }
+    const jobs = [...index.loops, ...index.lines].map(async (f) => {
+      const file = await fetch(`${base}${f.file}`)
+      if (!file.ok) return
+      await b.add(f.id, await file.arrayBuffer(), f.mime).then(keep(f.id, f.seconds))
+    })
     await Promise.allSettled(jobs)
   }
 
@@ -346,6 +342,7 @@ export function makeSound(o: { base: string }): SoundApi {
     available: () => state !== 'silent',
     unlock() {
       if (unlocking) return unlocking
+      if (!lists) return (unlocking = Promise.resolve())
       unlocking = (async () => {
         setState('loading')
         let ok = false

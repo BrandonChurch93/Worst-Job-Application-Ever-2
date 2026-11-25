@@ -405,6 +405,162 @@ export async function sheet(P, c, M, out) {
   return { file: out, count: records.length }
 }
 
+// The engine in a real browser, on a page of its own, with the sound files of this root beside it.
+// It proves what a test with a stand-in cannot: that the browser decodes the pack, and that nothing happens before the first click.
+export async function engineInBrowser(P, c) {
+  const { build } = await import('vite')
+  const { serve } = await import('./lib/serve.mjs')
+  const { launch } = await import('./lib/browser.mjs')
+  const dir = at('out', 'work', 'audio', 'harness')
+  fs.rmSync(dir, { recursive: true, force: true })
+  fs.mkdirSync(dir, { recursive: true })
+  await build({ root: at(), configFile: false, logLevel: 'silent', publicDir: false, build: { outDir: dir, emptyOutDir: false, target: 'es2022', minify: false, lib: { entry: at('src', 'audio', 'index.ts'), formats: ['es'], fileName: () => 'engine.js' } } })
+  const html = (index) => `<!doctype html><meta charset="utf-8"><title>harness</title><body><button id="go">go</button><script type="module">
+const Real = window.AudioContext
+window.contexts = []
+window.taps = []
+window.AudioContext = class extends Real {
+  constructor(...a) {
+    super(...a)
+    window.contexts.push(this)
+    const tap = this.createAnalyser()
+    tap.fftSize = 2048
+    window.taps.push(tap)
+    const out = this.destination
+    const connect = AudioNode.prototype.connect
+    AudioNode.prototype.connect = function (to, ...rest) {
+      if (to === out) connect.call(this, tap)
+      return connect.call(this, to, ...rest)
+    }
+  }
+}
+const { makeSound } = await import('./engine.js')
+window.sound = makeSound({ base: './audio/', index: ${JSON.stringify(index)} })
+document.getElementById('go').addEventListener('click', () => { window.unlocked = window.sound.unlock() }, { once: true })
+window.level = () => {
+  const tap = window.taps[0]
+  if (!tap) return 0
+  const d = new Float32Array(tap.fftSize)
+  tap.getFloatTimeDomainData(d)
+  let top = 0
+  for (const v of d) top = Math.max(top, Math.abs(v))
+  return top
+}
+window.ready = true
+</script>`
+  const empty = path.join(dir, 'no-audio')
+  fs.mkdirSync(empty, { recursive: true })
+  const index = fs.existsSync(path.join(P.pub, 'index.json')) ? readJson(path.join(P.pub, 'index.json')) : null
+  const nothing = { version: 1, sampleRate: c.audio.sampleRate, pack: null, sfx: [], loops: [], lines: [], totalBytes: 0 }
+  const lists = Boolean(index) && index.sfx.length + index.loops.length + index.lines.length > 0
+  const { browser, version } = await launch(['--autoplay-policy=user-gesture-required'])
+  const runs = []
+  const visit = async (name, folder, given, act) => {
+    fs.writeFileSync(path.join(dir, 'index.html'), html(given))
+    const site = await serve(dir, { mounts: { '/audio/': folder } })
+    const page = await browser.newPage()
+    const requests = []
+    const consoleLines = []
+    const errors = []
+    page.on('request', (r) => requests.push(new URL(r.url()).pathname))
+    page.on('console', (m) => { if ((m.type() === 'error' || m.type() === 'warning') && !String(m.location().url).endsWith('/favicon.ico')) consoleLines.push(`${m.type()}: ${m.text()} ${new URL(m.location().url || site.url).pathname}`) })
+    page.on('pageerror', (e) => errors.push(String(e.message)))
+    try {
+      await page.goto(`${site.url}/index.html`)
+      await page.waitForFunction('window.ready === true')
+      await page.evaluate(() => {
+        window.sound.event({ name: 'step', x: 960, y: 540, hitsCursor: false }, 'live')
+        window.sound.beat('marketing.stroll', 'film')
+        window.sound.trigger('idle')
+      })
+      await page.waitForTimeout(300)
+      const before = await page.evaluate(() => ({ contexts: window.contexts.length, state: window.sound.state(), available: window.sound.available() }))
+      const soundRequestsBefore = requests.filter((r) => r.startsWith('/audio/')).length
+      await page.click('#go')
+      await page.evaluate(() => window.unlocked)
+      const after = await page.evaluate(() => ({ contexts: window.contexts.length, state: window.sound.state(), available: window.sound.available(), backend: window.sound.backend(), context: window.contexts[0] ? window.contexts[0].state : 'none' }))
+      const extra = act ? await act(page) : {}
+      runs.push({ name, before, soundRequestsBefore, after, soundRequests: requests.filter((r) => r.startsWith('/audio/')).length, console: consoleLines, errors, ...extra })
+    } finally {
+      await page.close()
+      await site.close()
+    }
+  }
+  try {
+    if (lists) await visit('with the sound files of this root', P.pub, index, async (page) => {
+      const state = await page.evaluate(() => window.sound.state())
+      if (state !== 'ready') return { heard: null }
+      const listen = async (ms) => {
+        let top = 0
+        const steps = Math.ceil(ms / 20)
+        for (let i = 0; i < steps; i++) {
+          top = Math.max(top, await page.evaluate(() => window.level()))
+          await page.waitForTimeout(20)
+        }
+        return Number(top.toFixed(5))
+      }
+      const tone = await listen(300)
+      await page.evaluate(() => window.sound.event({ name: 'button-press', x: 960, y: 540, hitsCursor: false }, 'film'))
+      const effect = await listen(300)
+      await page.evaluate(() => window.sound.beat('marketing.stroll', 'film'))
+      const line = await listen(1200)
+      await page.evaluate(() => window.sound.setMuted(true))
+      await page.waitForTimeout(200)
+      const muted = await listen(200)
+      await page.evaluate(() => { window.sound.setMuted(false); window.sound.stop() })
+      return { heard: { tone, effect, line, muted } }
+    })
+    await visit('with an index that lists nothing', empty, nothing)
+    if (lists) await visit('with the sound files removed and the index still naming them', empty, index)
+  } finally {
+    await browser.close()
+  }
+  const out = { browser: version, lists, runs }
+  writeJson(at('out', 'work', 'audio', 'browser.json'), out)
+  return out
+}
+
+// The built site in a real browser, in live mode: what it starts and asks for before and after the first click.
+export async function siteInBrowser(dir = at('dist')) {
+  const { serve } = await import('./lib/serve.mjs')
+  const { launch } = await import('./lib/browser.mjs')
+  if (!fs.existsSync(path.join(dir, 'index.html'))) return { built: false }
+  const site = await serve(dir)
+  const { browser, version } = await launch(['--autoplay-policy=user-gesture-required'])
+  try {
+    const page = await browser.newPage({ viewport: { width: 1280, height: 720 } })
+    const requests = []
+    const consoleLines = []
+    const errors = []
+    page.on('request', (r) => requests.push(new URL(r.url()).pathname))
+    page.on('console', (m) => { if (m.type() === 'error' && !String(m.location().url).endsWith('/favicon.ico')) consoleLines.push(`${m.text()} ${m.location().url ? new URL(m.location().url).pathname : ''}`.trim()) })
+    page.on('pageerror', (e) => errors.push(String(e.message)))
+    await page.addInitScript(() => {
+      window.__sound = { contexts: 0, plays: 0 }
+      const Real = window.AudioContext
+      if (Real) window.AudioContext = class extends Real { constructor(...a) { super(...a); window.__sound.contexts++ } }
+      const play = HTMLMediaElement.prototype.play
+      HTMLMediaElement.prototype.play = function (...a) { window.__sound.plays++; return play.apply(this, a) }
+    })
+    await page.goto(`${site.url}/index.html?mode=live`)
+    await page.waitForTimeout(4000)
+    const sound = (r) => /\/audio\//.test(r)
+    const look = () => page.evaluate(() => ({
+      contexts: window.__sound.contexts, plays: window.__sound.plays,
+      failShown: Boolean(document.getElementById('fail')) && !document.getElementById('fail').hidden,
+      control: [...document.querySelectorAll('button[aria-label="Sound"]')].filter((b) => b.getClientRects().length > 0 && getComputedStyle(b).visibility !== 'hidden').length
+    }))
+    const before = { ...(await look()), soundRequests: requests.filter(sound).length }
+    await page.mouse.click(640, 360)
+    await page.waitForTimeout(2500)
+    const after = { ...(await look()), soundRequests: requests.filter(sound).length }
+    return { built: true, browser: version, before, after, console: consoleLines, errors }
+  } finally {
+    await browser.close()
+    await site.close()
+  }
+}
+
 // Stand-in sounds made with ffmpeg, so every step can be run before a take exists. They are never committed and never shipped.
 export async function fixtures(a, c, M) {
   const dir = at('out', 'work', 'audio', 'fixtures')
@@ -500,6 +656,12 @@ async function main() {
   const M = await modules()
   try {
     if (a.fixtures) await fixtures(a, c, M)
+    else if (a.browser) {
+      const r = await engineInBrowser(P, c)
+      for (const run of r.runs) console.log(`browser: ${run.name}: before the click ${run.before.contexts} audio contexts and ${run.soundRequestsBefore} requests for sound; after it state ${run.after.state}, available ${run.after.available}, backend ${run.after.backend}, ${run.soundRequests} requests, ${run.errors.length} errors, ${run.console.length} console lines${run.heard ? `; heard: room tone ${run.heard.tone}, effect ${run.heard.effect}, line ${run.heard.line}, muted ${run.heard.muted}` : ''}`)
+      console.log(`browser: ${r.browser}. Written to out/work/audio/browser.json`)
+      if (a.site) console.log(`site: ${JSON.stringify(await siteInBrowser())}`)
+    }
     else if (a.check) {
       const { soundChecks } = await import('./mix.mjs')
       const { logic } = await import('./lib/logic.mjs')
