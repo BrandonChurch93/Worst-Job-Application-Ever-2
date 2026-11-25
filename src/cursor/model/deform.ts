@@ -125,7 +125,7 @@ export class Deform {
       const fold = Math.sin(x0 * 0.55 + y0 * 0.38 + 0.5) * Math.sin(y0 * 0.31 - x0 * 0.2 + 1.2)
       z *= 1 - 0.1 * m - 0.3 * m * tail
       const ripple = Math.sin(x0 * 1.7 + y0 * 1.15 + 0.4) * Math.sin(y0 * 1.45 - x0 * 0.8 + 2.1)
-      z += m * up * (0.46 * fold + 0.07 * ripple) * (1 - Math.exp(-inset / 0.9)) * (1 - 0.5 * tail)
+      z += m * up * (0.46 * fold + 0.02 * ripple) * (1 - Math.exp(-inset / 0.9)) * (1 - 0.5 * tail)
     }
     x *= this.wide
     y *= this.stretch
