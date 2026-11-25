@@ -5,6 +5,7 @@ import type { PartMaker, RealContext } from '../../../real/types'
 import type { Shape } from '../../../stage/types'
 import { ask } from '../assets'
 import { zoneAt } from '../../draw'
+import { table } from '../../layout'
 import { lit } from '../light'
 import { zone } from '../zone'
 import { backFragment, decalFragment, decalVertex, dropFragment, dropVertex, frontFragment, shellVertex } from './glsl'
@@ -20,6 +21,7 @@ const PLUG = 0.085
 const SOFT_DIR = new THREE.Vector3(-0.66, 0.56, 0.5).normalize()
 const KEY_AWAY = new THREE.Vector2(0.52, -0.5).normalize()
 const TIERS = ['corporate', 'office', 'street']
+const FLATS: Record<string, number> = { 'corporate.carpet': 0xa3161c }
 const floors = TIERS.map((id) => ask(`table/art/${id}.webp`, { colour: true }))
 
 // What the page tells the maker about the ball, on the shape's `v`: the share it is closed, the seconds since it closed, how much it sweats.
@@ -174,6 +176,9 @@ const lightUniforms = (): Record<string, THREE.IUniform> => ({
   uArt: { value: null },
   uArtOn: { value: 0 },
   uBallUv: { value: new THREE.Vector2(0.5, 0.5) },
+  uFlat: { value: new THREE.Vector4(0, 0, 0, 0) },
+  uBlock: { value: new THREE.Vector4(0, 0, 0, 0) },
+  uFlatCol: { value: new THREE.Color(0, 0, 0) },
   uDrop: { value: 0 },
   uTrue: { value: 0 },
   uPlugTurn: { value: 0 },
@@ -321,6 +326,27 @@ function pose(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   u.uArtOn!.value = ready ? 1 : 0
   ;(u.uGround!.value as THREE.Vector3).setScalar(L.tier ? 0.3 : 0.45)
   ;(u.uBallUv!.value as THREE.Vector2).set(cx / 1920, 1 - (cy - L.zone.top) / 1080)
+  const flat = table.flats.find((f) => f.tier === L.zone.tier && FLATS[f.id] !== undefined)
+  if (flat) {
+    const b = config.table.ballPx
+    ;(u.uFlat!.value as THREE.Vector4).set((flat.box[0] + flat.box[2] / 2) * b - cx, cy - (flat.box[1] + flat.box[3] / 2) * b, (flat.box[2] / 2) * b, (flat.box[3] / 2) * b)
+    ;(u.uFlatCol!.value as THREE.Color).setHex(FLATS[flat.id]!)
+  } else (u.uFlat!.value as THREE.Vector4).set(0, 0, 0, 0)
+  const B = config.table.ballPx
+  let near = Infinity
+  ;(u.uBlock!.value as THREE.Vector4).set(0, 0, 0, 0)
+  for (const m of table.models) {
+    if (m.tier !== L.zone.tier) continue
+    const mx = (m.box[0] + m.box[2] / 2) * B - cx
+    const my = cy - (m.box[1] + m.box[3] / 2) * B
+    const hw = (m.box[2] / 2) * B
+    const hh = (m.box[3] / 2) * B
+    const far = Math.hypot(Math.max(0, Math.abs(mx) - hw), Math.max(0, Math.abs(my) - hh))
+    if (far < near) {
+      near = far
+      ;(u.uBlock!.value as THREE.Vector4).set(mx, my, hw, hh)
+    }
+  }
   u.uDrop!.value = L.drop
   u.uTrue!.value = debug.grade === 'true' ? 1 : 0
   u.uOpen!.value = open
@@ -331,7 +357,7 @@ function pose(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
 
   const lift = -L.drop
   own.decal.visible = L.tier && lift < r * 6
-  own.decal.position.set(0, 0, L.drop + 1.2)
+  own.decal.position.set(0, 0, L.drop + 3.4)
   const shade = d.uShade!.value as THREE.Vector4[]
   const spot = d.uSpot!.value as THREE.Vector3[]
   const lum = (c: number[]): number => 0.25 * c[0]! + 0.6 * c[1]! + 0.15 * c[2]!
