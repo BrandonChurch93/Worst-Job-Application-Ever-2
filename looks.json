@@ -1,35 +1,35 @@
 {
   "folder": "marketing",
-  "pushed": "2026-11-25T10:12:07.799Z",
-  "commit": "57b9edb3853fb99d2cb2fc156e6d8941103801a5",
+  "pushed": "2026-11-25T10:39:10.068Z",
+  "commit": "385f658cc8b00b9bea8c212bb34f959423b984bb",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Perk card half open at 2.30 s: one slab turning over about its long axis in its well, the cursor riding the raised edge",
-      "time": "2026-11-25T10:12:05.966Z",
+      "caption": "Still sw-8-preview-draft: draft tier, preview, view beauty",
+      "time": "2026-11-25T10:36:56.341Z",
       "by": "marketing",
-      "from": "out/work/stills/slab-0.05-preview-draft.png"
+      "from": "out/work/stills/sw-8-preview-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Perk card past half at 2.51 s: the same slab, its back with the fine print coming up",
-      "time": "2026-11-25T10:12:06.211Z",
+      "caption": "Still shade-2.483-preview-draft: draft tier, preview, view beauty",
+      "time": "2026-11-25T10:39:08.395Z",
       "by": "marketing",
-      "from": "out/work/stills/slab-0.085-preview-draft.png"
+      "from": "out/work/stills/shade-2.483-preview-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Perk card open and at rest at 2.78 s: the layout's own card, as in the key marketing-top",
-      "time": "2026-11-25T10:12:06.440Z",
+      "caption": "Perk card at 2.467 s, the darkest full frame of the back now (level 118 of 255); with the old ease the back stayed under 150 for 8 frames, now 3",
+      "time": "2026-11-25T10:39:08.740Z",
       "by": "marketing",
-      "from": "out/work/stills/slab-0.13-preview-draft.png"
+      "from": "out/work/stills/sw-4-preview-draft.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Film sheet 0 to 6.67 s: the three cards turn over one by one",
-      "time": "2026-11-25T10:12:06.671Z",
+      "caption": "Perk card at 2.500 s: the back at level 174, words clear, 4 frames after edge-on",
+      "time": "2026-11-25T10:39:08.982Z",
       "by": "marketing",
-      "from": "out/work/sheets/sheet-unit-marketing-1of2-preview-draft.jpg"
+      "from": "out/work/stills/sw-6-preview-draft.png"
     }
   ]
 }
