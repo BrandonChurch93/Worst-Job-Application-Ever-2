@@ -1,35 +1,35 @@
 {
   "folder": "acting",
-  "pushed": "2026-11-25T19:22:48.489Z",
-  "commit": "a1412e31df3e5a60c85839f338f45e34ca959d1b",
+  "pushed": "2026-11-25T20:00:13.864Z",
+  "commit": "774e1c8a602e35706d532f425c3b8ffdea21f3fb",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "The acting sheet beside the approved one: Shocked no longer over-stretched (1.36 to 1.14)",
-      "time": "2026-11-25T19:22:46.710Z",
+      "caption": "Key step1-fire: approved on the left, this build on the right, draft tier, with crops of cursor, keys, hatch, keyboardDeck.corner, field.start, type, progressButton, chip, card.corner",
+      "time": "2026-11-25T19:59:35.222Z",
       "by": "acting",
-      "from": "out/work/compare/compare-cursor-acting.jpg"
+      "from": "out/work/compare/compare-step1-fire.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "step1.lastName: three pull-ups on to the bare page right of the note, rear held, dive",
-      "time": "2026-11-25T19:22:46.953Z",
+      "caption": "Consecutive frames of the hit on the cursor: the event bolt-hit at 0:19.80 in step1.firstName, draft tier, preview",
+      "time": "2026-11-25T20:00:07.057Z",
       "by": "acting",
-      "from": "out/work/sheets/sheet-beat-step1_lastName-preview-draft.jpg"
+      "from": "out/work/sheets/sheet-motion-hit-preview-draft.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "step1.email: picture 2 is the nervous wait on the bare strip above the board; then run, slabs, hide",
-      "time": "2026-11-25T19:22:47.193Z",
+      "caption": "The key at 6.0 s beside the approved image: the cursor stands scorched on the hot key H in the middle letter rows, the field still reads five letters (774e1c8)",
+      "time": "2026-11-25T20:00:12.485Z",
       "by": "acting",
-      "from": "out/work/sheets/sheet-beat-step1_email-preview-draft.jpg"
+      "from": "out/work/compare/compare-step1-fire.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Close on the film: rears of the last name (10.52 to 11.90 s) and the nervous wait (15.40, 15.46 s), before the last lean fix",
-      "time": "2026-11-25T19:22:47.426Z",
+      "caption": "The hit motion sheet: the bolt lands at 5.813 s, squash, shove, back upright on H (774e1c8)",
+      "time": "2026-11-25T20:00:12.706Z",
       "by": "acting",
-      "from": "out/work/looks/files/20261125192247-close-rears-wait.jpg"
+      "from": "out/work/sheets/sheet-motion-hit-preview-draft.jpg"
     }
   ]
 }
