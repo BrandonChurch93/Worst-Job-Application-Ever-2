@@ -43,7 +43,9 @@ const dirty = git('status', '--porcelain', '--', 'src', 'config', 'content', 'pu
 if (dirty && !a['allow-dirty']) stop(`a pack is of a commit, and these are not committed:\n${dirty}`)
 const commit = git('rev-parse', 'HEAD')
 const tier = a.tier && a.tier !== true ? String(a.tier) : 'draft'
-const plan = packPlan(cfg, { role, round, unit })
+const cache = dirty ? null : at('out', 'work', 'packs', 'cache', commit.slice(0, 12), tier)
+const facts = roles[role].facts ? await (await import('./lib/pack-look.mjs')).lookFacts(cfg, unit, cache) : null
+const plan = packPlan(cfg, { role, round, unit, facts })
 for (const s of plan.sets) for (const f of s.files) if (!neutral(f.name) || BANNED.test(f.heading)) stop(`"${f.name}", "${f.heading}" is not a neutral name`)
 
 const info = buildInfo(at())
@@ -62,7 +64,7 @@ const { buildPack } = await import('./lib/pack-build.mjs')
 const t0 = process.hrtime.bigint()
 fs.rmSync(dir, { recursive: true, force: true })
 fs.mkdirSync(dir, { recursive: true })
-const built = await buildPack(cfg, plan, { tier, log: (line) => console.log(`pack: ${line}`) })
+const built = await buildPack(cfg, plan, { tier, cache, log: (line) => console.log(`pack: ${line}`) })
 const edge = cfg.critics.maxImageLongEdgePx
 const key = { ...stamp, browser: built.browser, files: {} }
 const manifest = { stamp, format: FORMAT, longEdgeMostPx: edge, filesMostPerCritic: cfg.critics.maxFilesPerMessage, sets: [] }
