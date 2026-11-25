@@ -6,7 +6,7 @@ import { block } from '../../shell/metrics'
 import { SCREEN_H, TYPE } from '../../shell/parts'
 import { homeDistance, smooth } from '../../stage/camera'
 import type { CameraPose, DrawList, Emit, GagInfo, Hint, Mode, PageContext, PageLogic, Pointer, Shape, StepIo } from '../../stage/types'
-import { CAP_TOP, DECK, DECK_TOP, hatchCentre, homePlaces, keyAt, onDeck, seatIndex, seats, shuffled, TRAVEL, typed } from './keyboard'
+import { CAP_TOP, DECK, DECK_TOP, hatchCentre, homePlaces, keyAt, onDeck, seatIndex, seats, shuffled, TIP, tipOf, TRAVEL, typed } from './keyboard'
 import { slotShapes } from './real/shredderShape'
 import { buildLayout, FIELDS, PAPER, PAPER_LINES, PAPER_REST, PAPER_TITLE, SLAB, SLOT, uploadGlyph, ZONE, type FieldName } from './layout'
 import { BITE, filmCamera, FRINGE, HOOD, makePlan, PILE, pointerAt, raised, RESUME, SHRED, START, TIMES, TUG, tugCurve, tugReach, type Plan } from './script'
@@ -97,6 +97,7 @@ interface State {
   shakeAmp: number
   thud: number
   thudKey: number
+  thudLean: { x: number; y: number }
   sinceShuffle: number
   burst: { x: number; y: number }
   caret: number
@@ -157,7 +158,7 @@ export function makePage(): PageLogic {
     mode, seed, time: 0, phase: 'rest', phaseTime: 0, board: 0, boardUp: false, values: { firstName: '', lastName: '', email: '' }, places: homePlaces(), from: homePlaces(), shuffle: 1, blocks: false,
     rng: stream('step1:shuffle', seed).state(), shuffles: 0, shuffledAt: 0, queue: [], keyDown: {}, drum: 0, shock: 0, slabs: [], slabDue: [], slabClear: -1, accepted: false, slow: 0, slowFired: false, realFired: false,
     paper: { on: false, slide: 0, x: PAPER_REST.x, y: SCREEN_H + 20, held: false, dx: 0, dy: 0, feed: -1, fx: 0, fy: 0, vx: 0, vy: 0 }, slot: 0, tug: { t: 0, amount: 0, most: 0, cool: 0, gx: SLOT.cx, gy: SLOT.cy - PAPER.h, reach: TUG.reach.rest, rate: 0, pull: 0, vx: 0, vy: 0, hx: SLOT.cx, hy: SLOT.cy - PAPER.h },
-    lost: -1, singe: 0, armed: false, seat: 9, shake: 9, shakeAt: { x: 0, y: 0 }, struckAt: { x: 0, y: 0 }, shakeAmp: 1, thud: 9, thudKey: -1, sinceShuffle: 9, burst: { x: DECK.x + DECK.w / 2, y: DECK.y + DECK.h / 2 }, caret: 9, glow: 9, spin: 0, turn: 0, kept: null,
+    lost: -1, singe: 0, armed: false, seat: 9, shake: 9, shakeAt: { x: 0, y: 0 }, struckAt: { x: 0, y: 0 }, shakeAmp: 1, thud: 9, thudKey: -1, thudLean: { x: 0, y: 1 }, sinceShuffle: 9, burst: { x: DECK.x + DECK.w / 2, y: DECK.y + DECK.h / 2 }, caret: 9, glow: 9, spin: 0, turn: 0, kept: null,
     shred: 0, received: false, pressed: -1, skipped: false, cleaned: false, done: false, cue: 0, cx: START.x, cy: START.y, acted: null
   })
   let s = fresh('live', config.seed)
@@ -344,6 +345,7 @@ export function makePage(): PageLogic {
       s.queue = []
       s.thud = 0
       s.thudKey = keyAt(s.places, body.x, body.y)
+      s.thudLean = { x: -h.dx, y: -h.dy }
       s.shake = 0
       s.shakeAmp = THUD.shake
       s.shakeAt = { x: body.x, y: body.y }
@@ -852,10 +854,13 @@ export function makePage(): PageLogic {
           const away = at.moved || s.places[key] !== key || shaken
           const seen = top > 0 || at.y >= mouth + LEGEND_CLEAR
           const depth = clamp(press / TRAVEL, 0, 1)
-          over[`key-${seat.name}`] = { x: at.x, y: at.y, z0: DECK_TOP + off + hop, z1: top, mechanism: top >= heights.machineMinTop, moved: away, ...(down ? { tone: 'pocket' as const } : {}), v: [depth, hop, at.moved ? fl.air : 0, heat] }
+          const lean = pinned || at.moved ? 0 : down ? TIP.press * clamp(struck, -1, 1) : key === s.thudKey ? TIP.rad * tipOf(s.thud) : 0
+          const tipX = lean * (down ? 0 : s.thudLean.x) * Math.min(1, SLAB_HOP.wide / seat.w)
+          const tipY = lean * (down ? 1 : s.thudLean.y)
+          over[`key-${seat.name}`] = { x: at.x, y: at.y, z0: DECK_TOP + off + hop, z1: top, mechanism: top >= heights.machineMinTop, moved: away, ...(down ? { tone: 'pocket' as const } : {}), v: [depth, hop, at.moved ? fl.air : 0, heat, tipY, tipX] }
           const legend = boxOf(layout, `key-${seat.name}`)
           const label = seat.name === 'space' ? null : boxOf(layout, `key-${seat.name}-legend`)
-          if (label) over[`key-${seat.name}-legend`] = !seen ? null : { x: label.x + (at.x - legend.x), y: label.y + (at.y - legend.y), z0: top, z1: top, moved: away }
+          if (label) over[`key-${seat.name}-legend`] = !seen ? null : { x: label.x + (at.x - legend.x) - TIP.lever * tipX, y: label.y + (at.y - legend.y) - TIP.lever * tipY, z0: top, z1: top, moved: away }
           spots.push({ x: at.x, y: at.y, w: seat.w, h: seat.h, top, air: at.moved && fl.air > 0 })
         })
         if (spots.some((p) => p.air)) {

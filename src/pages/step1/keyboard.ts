@@ -40,6 +40,13 @@ export const typed = (name: string): string | null => (data.types as Record<stri
 export const CAP_TOP = heights.keycap
 export const DECK_TOP = heights.keyboardDeck
 export const TRAVEL = heights.keyTravel
+export const TIP = { rad: 0.36, hold: 0.034, seconds: 0.15, lever: 12, press: 0.14, shade: 44 }
+export const tipOf = (e: number): number => {
+  if (e < 0 || e >= TIP.seconds) return 0
+  if (e < TIP.hold) return 1
+  const t = (e - TIP.hold) / (TIP.seconds - TIP.hold)
+  return Math.cos(t * Math.PI * 1.5) * (1 - t) ** 1.5
+}
 
 const REACH = PITCH * 2.3
 
