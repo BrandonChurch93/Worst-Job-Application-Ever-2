@@ -1,0 +1,264 @@
+import * as THREE from 'three'
+import type { RealContext } from '../../../real/types'
+import { BALL, COLS, MID, TH, TIERS, TIER_Y, railOf, table } from '../../layout'
+import { localBalls, type Zone } from '../zone'
+import { Geo, type V2 } from './geo'
+import { Screws, TONE, aluOf, mesh, paintOf, screwOf, steelOf } from './mats'
+
+// What the walls of a tier are made to, in page pixels.
+const WALL = { height: 60, seg: 56, chamfer: 2.5, strip: [30, 54] as V2, stripOut: 0.9 }
+const RAIL = { chamfer: 3, channel: 17, channelDepth: 3, ledge: 18, ledgeDrop: 7, gap: 1.2, joint: 1.4, screwStep: 1.5, cradle: 62.5, tubeUp: 48 }
+const CROSS = { lower: 0.3, upper: 0.12, throat: 0.75, mouth: 1.2, tunnel: 122 }
+
+export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
+  const k = z.tier
+  const name = TIERS[k]!
+  const H = -z.floor
+  const A = new Geo()
+  const P = new Geo()
+  const S = new Geo()
+  const screws = new Screws()
+  const at = (u: number, v: number): V2 => {
+    const p = localBalls(z, u, TIER_Y[k]! + v)
+    return [p[0], p[1]]
+  }
+  const X = (u: number): number => at(u, 0)[0]
+  const Y = (v: number): number => at(0, v)[1]
+  const turnOf = (x: number, y: number): number => (((x * 12.9898 + y * 78.233) % 6.283) + 6.283) % 6.283
+  const c = RAIL.chamfer
+  const xb = X(COLS.border)
+  const xa = X(COLS.liftA)
+  const xl = X(COLS.liftB)
+  const xL = X(COLS.left)
+  const xR = X(COLS.right)
+  const xr = X(COLS.launchA)
+  const xc = X(COLS.launchB)
+  const xe = X(COLS.railB)
+  const xf = X(COLS.feed)
+  const yT = Y(0)
+  const yB = Y(TH)
+
+  // The border of the page runs on down both sides of the well, with a hair of shadow between it and the rail.
+  P.box(X(0), xb - RAIL.gap, yB, yT, 0, H, TONE.ceramic, { along: [0, 1, 0] })
+  P.box(xe + RAIL.gap, X(20), yB, yT, 0, H, TONE.ceramic, { along: [0, 1, 0] })
+  P.box(xb - RAIL.gap, xb, yB, yT, 0, H - 2.4, TONE.gap, { along: [0, 1, 0] })
+  P.box(xe, xe + RAIL.gap, yB, yT, 0, H - 2.4, TONE.gap, { along: [0, 1, 0] })
+
+  // Each rail is two lengths of one extrusion, met at a joint with a hair's gap.
+  const lengths = (v0: number, v1: number, joint: number): [number, number][] => {
+    const j = Y(joint)
+    return joint > v0 && joint < v1 ? [[Y(v1), j - RAIL.joint / 2], [j + RAIL.joint / 2, Y(v0)]] : [[Y(v1), Y(v0)]]
+  }
+  const land0 = xb + c
+  const land1 = xa - RAIL.ledge
+  const mid = (land0 + land1) / 2
+  const left: V2[] = [[xb, 0], [xb, H - c], [land0, H], [mid - RAIL.channel - 3, H], [mid - RAIL.channel, H - RAIL.channelDepth], [mid + RAIL.channel, H - RAIL.channelDepth], [mid + RAIL.channel + 3, H], [land1, H], [land1, H - RAIL.ledgeDrop], [xa - c, H - RAIL.ledgeDrop], [xa, H - RAIL.ledgeDrop - c], [xa, 0]]
+  for (const [y0, y1] of lengths(0, TH, 5.6)) A.prism(left, [0, y0], [0, y1], TONE.alu)
+  P.box(xb, xa, Y(5.6) - RAIL.joint / 2, Y(5.6) + RAIL.joint / 2, 0, H - 4, TONE.gap, { along: [0, 1, 0] })
+  for (let v = RAIL.screwStep / 2; v < TH; v += RAIL.screwStep) screws.add(mid, Y(v), H - RAIL.channelDepth, 1, turnOf(mid, v))
+  for (let v = RAIL.screwStep; v < TH; v += RAIL.screwStep * 2) screws.add((land1 + xa) / 2, Y(v), H - RAIL.ledgeDrop, 0.8, turnOf(xa, v))
+
+  // The right rail is a cradle: the feed tube lies in a round bed along its top.
+  const feed = railOf('feed').points
+  const dive = k === 2 ? feed[4]![1] - TIER_Y[k]! - 0.6 : TH
+  const half = Math.sqrt(RAIL.cradle * RAIL.cradle - RAIL.tubeUp * RAIL.tubeUp)
+  const t0 = Math.asin(half / RAIL.cradle)
+  const right: V2[] = [[xc, 0], [xc, H - c], [xc + c, H], [xf - half, H]]
+  for (let i = 1; i < 12; i++) {
+    const t = -t0 + (2 * t0 * i) / 12
+    right.push([xf + RAIL.cradle * Math.sin(t), H + RAIL.tubeUp - RAIL.cradle * Math.cos(t)])
+  }
+  right.push([xf + half, H], [xe - c, H], [xe, H - c], [xe, 0])
+  for (const [y0, y1] of lengths(0, dive, 5.6)) A.prism(right, [0, y0], [0, y1], TONE.alu)
+  P.box(xc, xe, Y(5.6) - RAIL.joint / 2, Y(5.6) + RAIL.joint / 2, 0, H - 4, TONE.gap, { along: [0, 1, 0] })
+  for (let v = RAIL.screwStep / 2; v < dive - 0.2; v += RAIL.screwStep) {
+    screws.add((xc + c + xf - half) / 2, Y(v), H, 0.9, turnOf(xc, v))
+    screws.add((xe - c + xf + half) / 2, Y(v), H, 0.9, turnOf(xe, v))
+  }
+  if (dive < TH) {
+    // Where the tube dives to the plunger the rail is a shell: an outer wall and a dark pocket.
+    A.prism([[xe - 20, 0], [xe - 20, H - c], [xe - 20 + c, H], [xe - c, H], [xe, H - c], [xe, 0]], [0, yB], [0, Y(dive)], TONE.alu)
+    P.box(xc, xe - 20, yB, Y(dive), 0, 1.2, TONE.pocket)
+  }
+
+  // The low walls between the lanes and the floor, in the lengths the layout gives, with a strip of bright steel where the ball strikes.
+  const wall = (x0: number, x1: number, v0: number, v1: number, face: 1 | -1): void => {
+    if (v1 - v0 < 0.08) return
+    const w = WALL.chamfer
+    A.prism([[x0, 0], [x0, WALL.height - w], [x0 + w, WALL.height], [x1 - w, WALL.height], [x1, WALL.height - w], [x1, 0]], [0, Y(v1)], [0, Y(v0)], TONE.alu)
+    const xs = face > 0 ? x1 : x0
+    S.box(Math.min(xs, xs + face * WALL.stripOut), Math.max(xs, xs + face * WALL.stripOut), Y(v1) + 3, Y(v0) - 3, WALL.strip[0], WALL.strip[1], [1, 1, 1], { along: [0, 1, 0] })
+    const xm = (x0 + x1) / 2
+    trim(xm, Y(v1) + 4, xm, Y(v0) - 4, face)
+    for (let v = Math.ceil(v0 / RAIL.screwStep) * RAIL.screwStep + RAIL.screwStep / 2; v < v1 - 0.2; v += RAIL.screwStep * 2) if (k !== 1) screws.add(xm + (k === 0 ? 4.5 : 0), Y(v), WALL.height, 0.62, turnOf(xm, v))
+  }
+  // What marks the tier: a line of brass let into the top of the walls, a strip of grey laminate, or a kerb at their foot.
+  const trim = (x0: number, y0: number, x1: number, y1: number, face: 1 | -1): void => {
+    if (k === 0) A.box(x0 - 3.6, x0 - 1.2, y0, y1, WALL.height - 0.4, WALL.height + 0.35, TONE.brass, { along: [0, 1, 0] })
+    if (k === 1) P.box(x0 - 5.2, x0 + 5.2, y0, y1, WALL.height - 0.4, WALL.height + 0.8, TONE.laminate, { along: [0, 1, 0], bevel: 0.6 })
+    if (k === 2) {
+      const xs = x0 + face * 9.6
+      const a = Math.min(xs, xs + face * 7)
+      const b = Math.max(xs, xs + face * 7)
+      const sign0 = Y(6.9)
+      const sign1 = Y(5.3)
+      const plain = (p: number, q: number): void => {
+        if (q - p > 1) P.box(a, b, p, q, 0, 9, TONE.kerb, { along: [0, 1, 0], bevel: 1.6 })
+      }
+      plain(y0, Math.min(y1, sign0))
+      plain(Math.max(y0, sign1), y1)
+      const s0 = Math.max(y0, sign0)
+      const s1 = Math.min(y1, sign1)
+      let i = 0
+      for (let y = s0; y < s1 - 0.5; y += 12.8, i++) P.box(a, b, y, Math.min(s1, y + 12.8), 0, 9, i % 2 === 0 ? TONE.kerbYellow : TONE.kerbBlack, { along: [0, 1, 0], bevel: 1.6 })
+    }
+  }
+  const launch = railOf('launch').points
+  let throat: [number, number] | null = null
+  if (k === 0) {
+    for (let i = 1; i < launch.length; i++) {
+      const p = launch[i - 1]!
+      const q = launch[i]!
+      if ((p[0] - COLS.right) * (q[0] - COLS.right) < 0) {
+        const v = p[1] + ((q[1] - p[1]) * (COLS.right - p[0])) / (q[0] - p[0]) - TIER_Y[k]!
+        throat = [CROSS.lower, v + 0.62]
+      }
+    }
+  }
+  for (const s of table.segs) {
+    if (s.tier !== k) continue
+    const v0 = Math.min(s.a[1], s.b[1]) - TIER_Y[k]!
+    const v1 = Math.max(s.a[1], s.b[1]) - TIER_Y[k]!
+    if (s.id.startsWith(`${name}.wall.left`)) wall(xl, xL, v0, v1, 1)
+    if (s.id === `${name}.wall.right`) wall(xR, xr, throat ? throat[1] : v0, v1, -1)
+  }
+
+  // The top of the tier.
+  const top = CROSS.lower * BALL
+  if (k === 0) {
+    A.prism([[0, 0], [0, H], [top - c, H], [top, H - c], [top, 0]], [xa, yT], [xc, yT], TONE.alu, [false, false])
+    A.box(xL + 8, xR - 8, yT - top / 2 - 1.2, yT - top / 2 + 1.2, H - 0.4, H + 0.35, TONE.brass)
+    for (let u = COLS.left + 0.75; u < COLS.right; u += RAIL.screwStep) screws.add(X(u), yT - 7, H, 0.8, turnOf(u, 1))
+    // The throat: the launch lane turns into the top lane round a corner block cut to the ball's way.
+    const cu = COLS.right - 0.3
+    const cv = CROSS.lower + 2
+    const loop: V2[] = [at(cu, CROSS.lower), at(COLS.launchB, CROSS.lower), at(COLS.launchB, cv)]
+    for (let i = 1; i < 16; i++) {
+      const t = (i / 16) * (Math.PI / 2)
+      loop.push(at(cu + 2 * Math.cos(t), cv - 2 * Math.sin(t)))
+    }
+    A.slab(loop, 0, H, TONE.alu, { bevel: c })
+    for (let i = 1; i < 16; i++) {
+      const t0s = ((i - 0.5) / 16) * (Math.PI / 2)
+      const t1s = ((i + 0.5) / 16) * (Math.PI / 2)
+      const p = at(cu + 2 * Math.cos(t0s), cv - 2 * Math.sin(t0s))
+      const q = at(cu + 2 * Math.cos(t1s), cv - 2 * Math.sin(t1s))
+      const nx = -Math.cos((t0s + t1s) / 2)
+      const ny = -Math.sin((t0s + t1s) / 2)
+      S.face([[p[0] + nx * 0.9, p[1] + ny * 0.9, WALL.strip[0]], [q[0] + nx * 0.9, q[1] + ny * 0.9, WALL.strip[0]], [q[0] + nx * 0.9, q[1] + ny * 0.9, WALL.strip[1]], [p[0] + nx * 0.9, p[1] + ny * 0.9, WALL.strip[1]]], [nx, ny, 0], [q[0] - p[0], q[1] - p[1], 0], [1, 1, 1])
+    }
+    screws.add(...at(COLS.launchB - 0.35, CROSS.lower + 0.35), H, 1, 0.4).add(...at(COLS.launchB - 0.3, CROSS.lower + 1.5), H, 1, 1.1).add(...at(COLS.right + 0.4, CROSS.lower + 0.12), H, 0.8, 2.0)
+  } else {
+    // The cross rail: the wall the tier above ends on, with the chute's throat cut through it, and the step of the floor under it.
+    const h = BALL + WALL.seg
+    const cross: V2[] = [[0, 0], [0, h - c], [c, h], [top - c, h], [top, h - c], [top, 0]]
+    A.prism(cross, [xL, yT], [X(MID - CROSS.throat), yT], TONE.alu)
+    A.prism(cross, [X(MID + CROSS.throat), yT], [xR, yT], TONE.alu)
+    A.box(xa, xL, yT - 4, yT, 0, BALL, TONE.aluDark)
+    A.box(xR, xc, yT - 4, yT, 0, BALL, TONE.aluDark)
+    A.box(X(MID - CROSS.throat), X(MID + CROSS.throat), yT - 4, yT, 0, BALL * 0.42, TONE.aluDark)
+    S.box(xL + 6, X(MID - CROSS.throat) - 6, yT - top - WALL.stripOut, yT - top, WALL.strip[0], WALL.strip[1], [1, 1, 1])
+    S.box(X(MID + CROSS.throat) + 6, xR - 6, yT - top - WALL.stripOut, yT - top, WALL.strip[0], WALL.strip[1], [1, 1, 1])
+    for (let u = COLS.left + 0.75; u < COLS.right; u += RAIL.screwStep) if (Math.abs(u - MID) > CROSS.throat + 0.3) screws.add(X(u), yT - top / 2, h, 0.8, turnOf(u, 2))
+    const r = 0.5
+    const fillet: V2[] = [at(COLS.right, CROSS.lower), at(COLS.right, CROSS.lower + r)]
+    for (let i = 1; i <= 8; i++) {
+      const t = (i / 8) * (Math.PI / 2)
+      fillet.push(at(COLS.right - r + r * Math.cos(t), CROSS.lower + r - r * Math.sin(t)))
+    }
+    A.slab(fillet, 0, WALL.height, TONE.alu, { bevel: WALL.chamfer })
+  }
+
+  // The foot of the tier.
+  const low = CROSS.upper * BALL
+  if (k < 2) {
+    const bar: V2[] = [[0, 0], [0, WALL.seg - c], [c, WALL.seg], [low, WALL.seg], [low, 0]]
+    A.prism(bar, [xL, yB + low], [X(MID - CROSS.mouth), yB + low], TONE.alu)
+    A.prism(bar, [X(MID + CROSS.mouth), yB + low], [xR, yB + low], TONE.alu)
+  } else {
+    const bar: V2[] = [[0, 0], [0, H - c], [c, H], [low, H], [low, 0]]
+    A.prism(bar, [xa, yB + low], [X(MID - CROSS.mouth), yB + low], TONE.alu)
+    A.prism(bar, [X(MID + CROSS.mouth), yB + low], [xc, yB + low], TONE.alu)
+    A.box(X(MID - CROSS.mouth), X(MID + CROSS.mouth), yB, yB + low, CROSS.tunnel, H, TONE.alu, { bottom: true })
+    P.box(X(MID - CROSS.mouth), X(MID + CROSS.mouth), yB, yB + 1.5, 0, CROSS.tunnel, TONE.pocket)
+    S.box(xL + 6, X(MID - CROSS.mouth) - 6, yB + low, yB + low + WALL.stripOut, WALL.strip[0], WALL.strip[1], [1, 1, 1])
+    S.box(X(MID + CROSS.mouth) + 6, xR - 6, yB + low, yB + low + WALL.stripOut, WALL.strip[0], WALL.strip[1], [1, 1, 1])
+  }
+
+  // The shoulders: a rim of wall round each lower corner, turned posts where the lengths meet.
+  const posts = new Map<string, V2>()
+  for (const s of table.segs) {
+    if (s.tier !== k || !/\.(shoulder\.step|shoulder\.edge|mouth\.side|outlane\.side)\./.test(s.id)) continue
+    const a = at(s.a[0], s.a[1] - TIER_Y[k]!)
+    const b = at(s.b[0], s.b[1] - TIER_Y[k]!)
+    const w = 5.76
+    const w2 = WALL.chamfer
+    A.prism([[-w, 0], [-w, WALL.seg - w2], [-w + w2, WALL.seg], [w - w2, WALL.seg], [w, WALL.seg - w2], [w, 0]], a, b, TONE.alu, [false, false])
+    if (k === 0 && s.id.includes('shoulder.edge')) {
+      const d = Math.hypot(b[0] - a[0], b[1] - a[1])
+      const from = A.vertices
+      A.box(8, d - 8, -1.2, 1.2, WALL.seg - 0.4, WALL.seg + 0.35, TONE.brass)
+      A.move(from, new THREE.Matrix4().makeTranslation(a[0], a[1], 0).multiply(new THREE.Matrix4().makeRotationZ(Math.atan2(b[1] - a[1], b[0] - a[0]))))
+    }
+    posts.set(`${a[0].toFixed(1)},${a[1].toFixed(1)}`, a)
+    if (b[1] > yB + 2) posts.set(`${b[0].toFixed(1)},${b[1].toFixed(1)}`, b)
+  }
+  for (const p of posts.values()) {
+    A.lathe([[7.4, 0], [7.4, WALL.seg], [6.2, WALL.seg + 2.2], [2.6, WALL.seg + 2.2]], p[0], p[1], 14, TONE.alu)
+    screws.add(p[0], p[1], WALL.seg + 2.2, 0.58, turnOf(p[0], p[1]))
+  }
+
+  // The right shoulder holds the display: a dark seat round its pocket.
+  const d = table.displays.find((x) => x.tier === k)
+  if (d) {
+    const a = at(d.box[0], d.box[1] - TIER_Y[k]!)
+    const b = at(d.box[0] + d.box[2], d.box[1] + d.box[3] - TIER_Y[k]!)
+    const m = 6
+    const hgt = 35
+    const x0 = a[0]
+    const x1 = b[0]
+    const y0 = b[1]
+    const y1 = a[1]
+    P.box(x0 - m, x1 + m, y1, y1 + m, 0, hgt, TONE.bezel, { bevel: 1.6 })
+    P.box(x0 - m, x1 + m, y0 - m, y0, 0, hgt, TONE.bezel, { bevel: 1.6 })
+    P.box(x0 - m, x0, y0, y1, 0, hgt, TONE.bezel, { bevel: 1.6, along: [0, 1, 0] })
+    P.box(x1, x1 + m, y0, y1, 0, hgt, TONE.bezel, { bevel: 1.6, along: [0, 1, 0] })
+    P.box(x0, x1, y0, y1, 0, 1.4, TONE.pocket)
+    for (const [sx, sy] of [[x0 - m / 2, y0 - m / 2], [x1 + m / 2, y0 - m / 2], [x0 - m / 2, y1 + m / 2], [x1 + m / 2, y1 + m / 2]] as V2[]) screws.add(sx, sy, hgt, 0.5, turnOf(sx, sy))
+  }
+
+  // The left shoulder carries the mark of the tier: three pips of enamel at the top, two in the middle, one on the street.
+  {
+    const a = at(7.15, 10.62)
+    const b = at(8.25, 11.04)
+    A.box(a[0], b[0], b[1], a[1], 0, 5, TONE.aluBright, { bevel: 1.4 })
+    const n = 3 - k
+    const cy = (a[1] + b[1]) / 2
+    const cx = (a[0] + b[0]) / 2
+    for (let i = 0; i < n; i++) {
+      const px = cx + (i - (n - 1) / 2) * 22
+      P.lathe([[8.4, 5.0], [8.4, 5.5], [7.2, 5.5]], px, cy, 20, TONE.enamelRing)
+      P.lathe([[7.2, 5.5], [5.4, 6.3], [0, 6.5]], px, cy, 20, TONE.enamel)
+    }
+    screws.add(a[0] + 7, cy, 5, 0.55, 0.3).add(b[0] - 7, cy, 5, 0.55, 1.3)
+  }
+
+  const o = new THREE.Group()
+  o.name = `table-frame.${z.id}`
+  o.add(mesh(A, aluOf(z), `table-frame.metal.${z.id}`, { cast: true }))
+  o.add(mesh(P, paintOf(z), `table-frame.paint.${z.id}`))
+  if (S.vertices > 0) o.add(mesh(S, steelOf(z), `table-frame.wear.${z.id}`))
+  const sc = screws.mesh(screwOf(z), `table-frame.screws.${z.id}`)
+  if (sc) o.add(sc)
+  return o
+}
