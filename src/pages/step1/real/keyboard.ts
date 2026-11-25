@@ -6,7 +6,7 @@ import type { Shape } from '../../../stage/types'
 import { DECK, HATCH, hatchCentre, seats } from '../keyboard'
 import { BRUSH, CAP, capGeometry, kit, lit, scaleUv } from './keyboard-kit'
 
-export const DECK_LOOK = { chamfer: 2.4, depth: 84, corner: 5, field: 7, fieldLip: 1.1, fieldDepth: CAP.skirt + 2.2, hatchHole: HATCH / 2 - 2 }
+export const DECK_LOOK = { chamfer: 3.4, depth: 84, corner: 5, field: 7, fieldLip: 1.1, fieldDepth: CAP.skirt + 2.2, hatchHole: HATCH / 2 - 2 }
 
 const capKey = (w: number, h: number): string => `${Math.round(w * 4) / 4}x${Math.round(h * 4) / 4}`
 const capGeometries = new Map<string, THREE.BufferGeometry>()
@@ -21,7 +21,7 @@ const capShape = (w: number, h: number): THREE.BufferGeometry => {
 }
 
 const CORE = 0.6
-const SHADE = { soft: 0.16, dark: 0.44, spread: 0.25, over: 3, clear: 4.5, core: 0.74, x: 1.8, y: 1.67, least: 0.6, rest: 10, tight: 0.6, grow: -6 }
+const SHADE = { soft: 0.16, dark: 0.52, spread: 0.25, over: 3, clear: 4.5, core: 0.74, x: 1.8, y: 1.67, least: 0.6, rest: 11, tight: 0.6, grow: -6 }
 
 // The shadow a cap in the air leaves on the bed: a soft dark patch with no picture, its edge fading to nothing.
 function shadeGeometry(): THREE.BufferGeometry {

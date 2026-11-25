@@ -2,7 +2,7 @@
 
 Every picture here is made in code when the page starts. No file is downloaded and none is stored in the repository.
 
-The fix round added no picture. What it added is geometry and numbers only, so the texture memory of these parts did not grow.
+The fix round added no picture. Round 5 redrew one, the scorch picture, at the same size (see the end of this file), so the texture memory of these parts did not grow.
 
 ## Speckle normal picture of the caps (no longer used by the caps)
 
@@ -29,4 +29,13 @@ The fix round added no picture. What it added is geometry and numbers only, so t
 - Prompt or command: none.
 - Takes: no picture. 0 px, 0 MB.
 - Why this one: the caps no longer cast on each other at rest (that was the mottle), so a cap in the air gets its real shadow from a plain box instead.
+- Date: 2026-11-25
+
+## Bullet hole picture (the scorch picture, redrawn in round 5)
+
+- Made by: `scorchPicture` in `src/pages/step1/real/turret-fx.ts`, when the page starts.
+- From: nothing. Arithmetic on the pixel's distance and bearing from the centre, with seeded noise from `src/core/random.ts` for the ragged rim and the singe.
+- Prompt or command: none.
+- Takes: one picture, 256 by 256 px, RGBA, 0.33 MB with mipmaps. It replaces the earlier scorch picture of the same size, so the memory did not grow.
+- Why this one: a hole has a wall, a torn raised rim and metal at its foot. The light in the picture comes from the upper left like the page's key light, so the mark is laid without turning.
 - Date: 2026-11-25
