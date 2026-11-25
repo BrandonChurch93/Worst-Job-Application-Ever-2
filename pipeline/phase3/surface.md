@@ -85,3 +85,53 @@ A new material: add it to `Materials` and `makeMaterials` in `src/shell/material
 - The same normal picture looks three times stronger when its features get finer, because slope is height over width. Change one, retune the other.
 - A flat glossy face that looks straight up shows the picture of whatever is overhead. With a bright overhead that adds white to every channel and orange turns pink; tinting the reflection is cleaner than weakening it.
 - In a view from straight above a vertical wall has no pixels. The liner of a field leans so its inner wall is seen and can carry the dark upper edge and the bright lower lip.
+
+## Fix round
+
+Owner of this round: glass (`surface_fixer`), branch `agent/glass`, 2026-11-25. Files changed: `src/shell/materials.ts`, `src/shell/real/controls.ts`, `assets-src/surface/RECIPE.md`, this file.
+
+### What the approved images show that a quick look misses (my five lines, MEASURED with columns of pixels through `references/approved/step1-tug.png` and `page-look.png`)
+
+1. Highlight position. The card has no highlight on its face. Its brightest pixels are a line one pixel wide on the lower and right edges (239 where the face is 185), just inside the dark rim; the upper and left edges carry no such line.
+2. Bevel width. From the outer edge of the card: a dark warm rim 2 to 3 px, a shoulder that ramps over about 14 px, then the engraved dashes at 22 to 26 px. Inside the dashes the face is a separate panel.
+3. Gap darkness. The rim on the light's side is near (114, 105, 95) and never under 72; the rim away from the light is near (108, 104, 99). Nothing on the card is as dark as the 50 to 60 the build had in its field rims.
+4. Edge behaviour. The shoulder toward the light is the darkest part of the glass (72 to 77) and the panel under it stays dark for another 15 px (102 to 144) before it recovers to the face (189): the slab shades itself there. The shoulder away from the light is lighter than the face (197 to 217).
+5. Shadow. The card's shadow on the page is gone in about 8 px and has no hard core: far shorter than a 12 px slab would throw under this key (29 px). A field's upper inner shadow ramps over 16 px from 110 to 175 and never goes under 92.
+
+### What was built
+
+- The card (`card()` in `controls.ts`, `slabbed()` in `materials.ts`). The geometry is a low aluminium band (`aluminiumRim`, 3.4 high, 2.7 wide, with a chamfer out and a flat top), a slab with a wall, a tight round of 1.8 and a ground bevel that rises `min(h * 0.3, 3.6)` over 12.5 px, and, for an upload zone, a flat band up to 27.5 px from the edge and a panel sunk 0.5 inside the dashed line (the panel is at the card's height exactly, so the type and the chip stand where the layout says). Each vertex carries where it lies on the card (`slab`, `slabEdge`); the material works out the rest for every pixel, so it holds at any distance and costs no triangles.
+- In the material: the shoulder toward the light is shaded to 0.5 and the one away from it lifted by 0.16; the panel is shaded where the light enters (a soft dip of 0.4 that follows the two edges on the light's side); the page's grain is read under the slab and shifted by the slope of the face (`bend` 26 px), so it bends in a narrow band at the bevel and is stronger where the glass is thin; a slow cloud moves the colour by 3 percent; the frost is two fine readings of the grain's slopes with hairline marks from the brushed picture laid 20 degrees off the page's axes; sparse bright points come from the difference of two readings of the height; a wide sheen is added to the reflected light across the face, falling toward the light's side, 0.6 of it tied to the shadow so that it is not the shadow's own shape.
+- The shade of the form is laid on the finished light (`outgoingLight`), not on the matt colour. On the matt colour it moved the shoulder only from 169 to 137 (MEASURED in `page-look`), because the coat's reflection is not touched by it.
+- The glass throws no shadow of its own; only the band does. MEASURED in `page-look` at hd, row 500 across the right edge: the shadow is 6 px wide (60, 95, 98, 100, 98, 140, then page), where it was 14.
+- The ground. Pits 0.16 (was 0.45), coarse swell 0.07 (was 0.2), strength 0.04 (was 0.046), colour 0xf0f0ed (was 0xebebe7); up close the fine readings carry more (`CLOSE_TOOTH` 2.85, was 1.7). Nothing is painted in to light or darken the page.
+- Fields. `RIM` 2.6 (was 3.2), the liner is lighter and less of a mirror (`aluminiumSatin` 0xc9ccce, metalness 0.35), the soak is 0.3 deep over 7 px (was 0.5 over 4.5), the glint 0.14.
+- Browse files. The cap stands in a seat: a satin collar 2.4 wide and 2.2 high let into the glass, a dark clearance of 1.1 inside it, the cap rising from that. The collar throws the tight shadow, the cap the longer soft one.
+- Orange: 0xb94503, roughness 0.57, coat 0.14 at roughness 0.36 (was 0xc24400, 0.5, 0.3 at 0.09). One material, so the Enter key, the active step and the action button all moved. Steel face of the other steps: 0x9da1a6 at roughness 0.3 (was 0x8e9399 at 0.2).
+- For keys_fixer (asked by message, critic R4-2 #4): the focus ring's spill goes 0.8 to 2.4 with `v[0]` (was 0.8 to 1.3) and the core line lifts by 0.7 of itself. At `v[0]` = 0 nothing changes.
+
+- After the first push. A field's inner shadow: frosted glass carries light sideways, so `glassSunk` gets back 0.3 of its matt light where a shadow lies on it (`lightFilled`, `SUNK_FILL`). MEASURED, column x=1300 of `page-look` hd: the glass under the upper wall reads 102, 105, 111, 129, 151 where it read 59, 71, 79, 113, 147 (approved 133, 115, 110, 109, 123, 143). The liner's rim now stands 0.7 under the page (it stood 2.4 under), its wall leans 0.12, and a field's lip in the ground is 1.4 (was 2.2). One dark line 1 px wide is left outside the rim on the light's side (69): it is the ground's lip in its own shade.
+- The Browse cap's edge is a round of radius 6 that starts 40 degrees up from its wall, so no part of it looks at the floor and the black line round it is gone.
+
+- After the Builder's look at the close view (18:57Z: the frost read as bright grit). At the tug camera the bright points are off (they fade out with the camera's closeness, `near`), the frost's slopes are 0.35 of what they are at home, and the tooth is laid on the matt light only: the page's own fine reading under the slab (`tooth` 0.19), which lightens and darkens alike and cannot sparkle. The ground's close tooth is `CLOSE_TOOTH` 3.1. MEASURED on the review still with the tool's own function (`node out/work/hf.mjs`): M3 0.8512; glass region 0.0044, page region 0.0124, so the glass is now the quieter of the two.
+
+### Numbers (MEASURED)
+
+- M3, `npm run measure -- --unit step1 --tier review`: 0.8853 on `step1-tug` at the first push and 0.8835 at the second, all eight measures green both times, where 0.8 is the least (it was 0.68 on main, STATED in the brief). `step1-fire` is green in the same run; 1.26 was read from its review still before the last changes of the ground and the orange (`node out/work/hf.mjs`, the tool's own function), not again after.
+- On the way: the first card alone gave 0.85 at draft and 0.56 at review, because review averages 8 samples a pixel and detail under a pixel wide is lost. What carries the number is detail 2 px wide: the frost read at 3.0 texels a page pixel (glass region 0.0034 to 0.0054) and the ground's tooth up close (0.0040 to 0.0106). The glass alone does not carry it: both are needed. (Not measured apart; from the regions' shares the frame would stand near 0.75 with the ground left as it was. That is an estimate.)
+- The same run: M1, M2, M3, M4, M5, M6, M7, M9 green. M4 turned red once (type on the orange 4.31 where 4.5 is the least) with a lighter orange, 0xc64c08; with 0xb94503 it is 4.67.
+- `npm run still -- --key step1-tug --format hd --tier draft`: before 618027 triangles, 295 draw calls, 11.7 s; after 599811 triangles, 286 draw calls, 11.2 s. Review: 23.7 s.
+- Textures: none added. The card reads the grain (1024 px, 4.00 MB) and the brushed picture (512 px, 1.00 MB) that were already there. Total still 5.50 MB.
+
+### Decisions
+
+- The card is opaque geometry that paints what glass would show. Real transmission was measured by the last owner at 7.3 s and 122 draw calls against 4.5 s and 84, and it hides the shadows that fall on the glass.
+- The approved `step1-tug.png` is the whole page and the build's key frame is three times closer, so M3 on that key compares a close view with a far one. The number is reached with a fine tooth on paper and glass, never with pores: both were looked at in the review still at native size.
+- Tuning looks used on the card: 13 of 40.
+- `npm run counts -- --key step1-tug --live low` after: 75 draw calls (limit 300), 162313 triangles. Before, with main's two files put back for one run: 74 draw calls, 161437 triangles.
+
+### Still least real
+
+1. The frost up close is a little too even and sparkles more than etched glass does.
+2. The page's grain seen through the slab does not move against the face when the camera moves: it is a reading shifted by the slope, not a second layer at depth.
+3. The Browse cap is still darker and glossier at its rim than the approved pill, and its shadow is longer.
