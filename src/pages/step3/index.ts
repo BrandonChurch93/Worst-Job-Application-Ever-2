@@ -98,10 +98,11 @@ const fresh = (): State => ({ mode: 'live', time: 0, t: 0, phase: 'wait', pull: 
 const flips = (take as unknown as { flips: [string, number, number][] }).flips
 const held = (side: string, time: number): boolean => flips.some((f) => f[0] === side && time >= f[1] && time < f[2])
 
+const STREET = 0.95
 const tierPose = (k: number): CameraPose => homePose(px(TIER_Y[k]!), px(floorZ(k)))
 const streetPose = (): CameraPose => {
   const f = px(floorZ(2))
-  const p = homePose(px(TIER_Y[2]! + 0.95), f)
+  const p = homePose(px(TIER_Y[2]! + STREET), f)
   return { ...p, eye: [p.eye[0], p.eye[1], f + (p.eye[2] - f) * 1.05] }
 }
 const fov = (name: string): number => (config.cameras as Record<string, { fovDeg?: number }>)[name]?.fovDeg ?? config.cameras.home.fovDeg
@@ -201,9 +202,9 @@ export function makePage(): PageLogic {
     }
     if (b.mode === 'hold' && b.hold === 'plunger') return { scroll: px(Y2 + LOW), floor: px(floorZ(2)) }
     const k = b.mode === 'rail' && b.rail.startsWith('chute.') ? TIERS.indexOf(b.rail.slice(6) as never) + 1 : b.mode === 'rail' && b.rail.startsWith('lift.') ? tierAt(railOf(b.rail).points[3]![1]) : tierAt(Math.max(Y0, Math.min(APRON_Y - 0.01, b.y)))
-    return { scroll: px(TIER_Y[k]!), floor: px(floorZ(k)) }
+    return { scroll: px(TIER_Y[k]! + (k === 2 ? STREET : 0)), floor: px(floorZ(k)) }
   }
-  const railPose = (back = 2.4, up = 4.6, ahead = 1.0, lift = 0.5): CameraPose => {
+  const railPose = (back = 2.4, up = 4.6, ahead = 1.0, lift = 0.5, wide = 0): CameraPose => {
     const b = ball()
     let vx = b.vx
     let vy = b.vy
@@ -223,12 +224,12 @@ export function makePage(): PageLogic {
     const sp = Math.hypot(vx, vy) || 1
     const dx = vx / sp
     const dy = vy / sp
-    return { eye: toWorld(px(b.x - dx * back), px(b.y - dy * back), px(b.z + up)), target: toWorld(px(b.x + dx * ahead), px(b.y + dy * ahead), px(b.z + lift)), up: [0, 0, 1], fov: fov('rail') }
+    return { eye: toWorld(px(b.x - dx * back), px(b.y - dy * back), px(b.z + up)), target: toWorld(px(b.x + dx * ahead), px(b.y + dy * ahead), px(b.z + lift)), up: [0, 0, 1], fov: fov('rail') + wide }
   }
   const ridePose = (): CameraPose => {
     const b = ball()
     const u = b.mode === 'rail' && b.rail === 'launch' ? smooth(Math.min(1, b.s / 7)) : b.mode === 'hold' ? 0 : 1
-    return railPose(0.8 + 2.6 * u, 4.4 - 1.0 * u, 1.0 + 1.5 * u, 0.5)
+    return railPose(0.7 + 2.7 * u, 2.6 + 0.8 * u, 0.95 + 1.55 * u, 0.5, 36 * (1 - u))
   }
   const follow = (): CameraPose => homePose(s.scroll, s.floor)
   const named = (name: string): CameraPose | null => (name === 'follow' ? follow() : name === 'rail' ? railPose() : name === 'ride' ? ridePose() : NAMED[name] ?? null)

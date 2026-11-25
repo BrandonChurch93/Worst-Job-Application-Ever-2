@@ -29,6 +29,15 @@ export const boardAt = (y: number, h: number, off: number): { y: number; z: numb
   return { y: px(MARQUEE_Y + MARQUEE_H - 0.25) - d * BOARD.cos + off * BOARD.sin - h / 2, z: BOARD.base + d * BOARD.sin + off * BOARD.cos }
 }
 
+function beside(points: P3[], off: number): P3[] {
+  return points.map((q, i) => {
+    const a = points[Math.max(0, i - 1)]!
+    const b = points[Math.min(points.length - 1, i + 1)]!
+    const d = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1
+    return [q[0] - ((b[1] - a[1]) / d) * off, q[1] + ((b[0] - a[0]) / d) * off, q[2]] as P3
+  })
+}
+
 let fixed: Shape[] | null = null
 
 export function fixedShapes(): Shape[] {
@@ -93,7 +102,13 @@ export function fixedShapes(): Shape[] {
     const wire = r.id === 'ladder' || r.id === 'highway' || r.id === 'spiral'
     const part = r.id === 'ladder' ? 'model-ladder' : wire ? 'ramps' : r.id.startsWith('lift') ? 'lift' : r.id === 'feed' ? 'loader' : 'table-hardware'
     if (r.id === 'launch' || r.id.startsWith('lift')) continue
-    tube(out, `rail.${r.id}`, part, r.points, wire ? 0.16 : 1.24, wire ? 'metal' : 'glass', wire ? -8 : -4)
+    if (r.id === 'ladder' || r.id === 'highway') {
+      tube(out, `rail.${r.id}.a`, part, beside(r.points, 0.36), 0.12, 'metal', 4)
+      tube(out, `rail.${r.id}.b`, part, beside(r.points, -0.36), 0.12, 'metal', 4)
+      r.points.forEach((q, i) => {
+        if (i > 0 && i < r.points.length - 1) out.push(bar(`rail.${r.id}.tie.${i}`, part, [beside(r.points, 0.36)[i]![0], beside(r.points, 0.36)[i]![1]], [beside(r.points, -0.36)[i]![0], beside(r.points, -0.36)[i]![1]], 0.08, px(q[2]) - 6, px(q[2]), 'metal'))
+      })
+    } else tube(out, `rail.${r.id}`, part, r.points, wire ? 0.16 : 1.24, wire ? 'metal' : 'glass', wire ? -8 : -4)
   }
   out.push(box('lift.door.office', 'lift', [COLS.left - 0.2, TIER_Y[1]! + 4.5, 0.2, 0.3], px(floorZ(1)), px(floorZ(1)) + 70, 'accent'))
   out.push(box('lift.door.office.2', 'lift', [COLS.left - 0.2, TIER_Y[1]! + 5.6, 0.2, 0.3], px(floorZ(1)), px(floorZ(1)) + 70, 'accent'))
