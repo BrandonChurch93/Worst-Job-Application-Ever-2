@@ -1,0 +1,35 @@
+{
+  "folder": "glass",
+  "pushed": "2026-11-25T18:47:08.862Z",
+  "commit": "88684783482974c85801adaebbc35e2844d2edab",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "step1-tug: approved left, agent/glass 8868478 right, draft tier, with crops",
+      "time": "2026-11-25T18:47:07.106Z",
+      "by": "glass",
+      "from": "out/work/report/glass-compare-step1-tug.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "page-look: approved left, agent/glass 8868478 right, draft tier, with crops",
+      "time": "2026-11-25T18:47:07.336Z",
+      "by": "glass",
+      "from": "out/work/report/glass-compare-page-look.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Glass edge: approved at home (top), build at home draft (middle), build at the tug key review tier, native pixels doubled (bottom)",
+      "time": "2026-11-25T18:47:07.570Z",
+      "by": "glass",
+      "from": "out/work/report/glass-edge.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Field well: approved (top), build draft (bottom), native pixels doubled",
+      "time": "2026-11-25T18:47:07.800Z",
+      "by": "glass",
+      "from": "out/work/report/glass-field-well.jpg"
+    }
+  ]
+}
