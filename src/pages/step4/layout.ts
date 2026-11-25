@@ -10,7 +10,7 @@ import type { BannerPlan, Box, PopupPlan, SlabPlan, WeaponPlan } from '../../bos
 const heights = config.scale.heights
 const sizes = config.scale.sizes
 
-export const SLAB_TYPE = { font: 'inter-600', px: 22 }
+export const SLAB_TYPE = { font: 'inter-600', px: 26 }
 export const SLAB_KEYS = copy.step4.errorSlabs.map((_, i) => `copy:step4.errorSlabs.${i}`)
 export const POPUPS = copy.step4.popups.map((p, i) => ({ title: `copy:step4.popups.${i}.title`, buttons: p.buttons.map((_, j) => `copy:step4.popups.${i}.buttons.${j}`) }))
 export const BANNER_KEY = 'copy:step4.errorSlabs.2'

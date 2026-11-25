@@ -12,7 +12,7 @@ Unit `boss`, page `step4`. Logic in `src/pages/step4/`, the boss in `src/boss/`,
 - The health bar sits where a subline would sit (step 4 has no subline in the copy): the label `copy:step4.bossHealthLabel` and a recessed track with a raised fill, the whole width of the content. It is a layout node with the state `fight`, so the layout check sees it.
 - `copy:step4.defeated` is centred under the fallen button, state `down`.
 - The three pop-ups stand in one column beside the card, on the card's top line, with even gaps, between the cursor's side of the page and the boss.
-- The six error slabs, the three pop-ups with their buttons and the banner are layout nodes in an over layer (state `fight`), so every word is in the type register and the check sees their sizes. They are drawn by the fight where they are in play.
+- The six error slabs, the three pop-ups with their buttons and the banner are layout nodes in an over layer (state `fight`), so every word is in the type register and the check sees their sizes. They are drawn by the fight where they are in play. The slab words are set at 26 px, the size of a button label, so they can be read in flight.
 
 ## The beats
 
@@ -33,7 +33,7 @@ Unit `boss`, page `step4`. Logic in `src/pages/step4/`, the boss in `src/boss/`,
 - A slab aims at where the cursor was when the cannon wound up (0.45 s before it fires), flies flat and upright with a small tilt so its words stay readable, as in the approved picture, and stops. A hit scorches the cursor, knocks it back and is followed by a dust off. The scorch is the cursor body's own and heals by itself. After a hit the cursor is safe for 1.2 s.
 - A pop-up blocks darts. Three darts break it. A click on one of its buttons closes it at once (event `popup-close`, silent) and fires no dart.
 - The last stand: 0.3 s after health 40 the boss emits `session-expired`, raises the banner `copy:step4.errorSlabs.2`, takes 10 health back, then fires faster and raises pop-ups again.
-- The banner stands above the boss with a gap, on the content line. The boss holds still under it until it is gone.
+- The banner stands above the boss with a gap, on the content line. The boss holds still under it until it is gone. It comes and goes at its full size with its words on, like the pop-ups.
 - In the first phase the boss walks a small loop round the place the approved picture `boss-fight` has it.
 - Pop-ups fill their column from the top. A pop-up rises out of the page and sinks back into it at its full size with its words on; a spent slab sinks the same way. Nothing on the page is ever a blank plate.
 - A dart is a small arrow with a short trail, the stand-in for the kit's tiny cursor dart.
