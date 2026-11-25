@@ -45,6 +45,7 @@ Agent `tug_fixer`, branch `agent/tug`. Started 16:42 UTC.
 29. The shade of the bend at the mouth a little deeper and wider (`MOUTH.bent` 0.24, `fold` 15, `soft` 7), seen at review tier beside the one before.
 30. The lines of text on the sheet a softer grey (`INK.bar` 0x7c7c80 to 0x8c8c90), nearer the approved image's; at the key they still read as lines, seen at review tier. The ticks the strips keep of them are paler with it.
 31. An arm is rooted 0.2 of the way in from its shoulder (`ROOT` in `view.ts`, was 0.09). At the key the left arm left the body at the very point of the wing and read as a spike drawn on from the outline; now it comes out from under the edge at its full width.
+32. An arm stays at the height of its root for the first 0.15 of its length and rises to the hand over the next 0.55 (`ARM.low`, `ARM.rise`). Before, it rose from the root at once and came up through the white face at the end of the stem (seen at 22.6 s at review tier, six times its size, with `ROOT` at 0.09 and at 0.2).
 
 ## M3 and the camera
 
