@@ -1,8 +1,8 @@
 # Status pictures
 
-Time: 2026-11-25T15:18Z. Phase 3, status 28.
+Time: 2026-11-25T15:40Z. Phase 3, status 29.
 
-1. `01-compare-step1-fire-fourth.jpg`: Keyboard under fire: your approved picture on the left, the build on the right at the low tier. The deck is now bright and the cursor is knocked over by the hit. Still short: the turrets and their bolts, the upload glyph, the wobble on the keycap edges.
-2. `02-compare-step1-tug-second.jpg`: The tug of war: your approved picture on the left, the build on the right at the low tier. The camera is pushed in as the kit asks, the sheet is taut between the hands and the rollers, and the shredder stands above the page.
-3. `03-hit-close.jpg`: The hit, close: your approved picture on the left, the build on the right at the review tier, made by the cursor's acting agent. The burn hole, the scorch on the key and the knocked pose are there; the keycap edges are not yet clean.
-4. `04-office-floor-beside-approved.jpg`: The Office tier: your approved picture on the left, the build on the right, made by the floor's agent. The printed floor is real; the cups, cubicles, flippers and frame are still grey stand-ins.
+1. `01-keyboard-beside-approved-after-fixes.jpg`: The keyboard under fire: your approved picture above, the build below at the review tier, made by the keyboard's agent after the 15:32Z list. Stepped barrels with a bore, even keycap rims, brighter bolts. Your caps are still softer and more dished.
+2. `02-tug-beside-approved.jpg`: The tug of war: your approved picture on the left, the build on the right at the review tier, made by the scene's agent. The camera is pushed in as the kit asks; the shredder stands out of its opened slot; the upload glyph is still missing.
+3. `03-cursor-acting-beside-approved.jpg`: The cursor's acting sheet: yours on the left, the build on the right at the review tier, made by the cursor's modeller. Nervous, shocked, angry, scared, exhausted, hit by a laser. The ground's grain is too rough at this closeness.
+4. `04-corporate-lit-by-its-lamps.jpg`: Tier 3 of the pinball machine: your approved picture on the left, the build on the right at the low tier, made by the lamps' agent. The printed floor is lit only by the machine's lamps; every standing part is still a grey stand-in.

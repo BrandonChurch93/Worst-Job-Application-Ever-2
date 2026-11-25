@@ -174,7 +174,7 @@ describe('the textures of the surface', () => {
 
   it('keeps every material name and no surface pure black or pure white', () => {
     const m = makeMaterials(config.seed) as unknown as Record<string, { color?: { r: number; g: number; b: number } }>
-    for (const name of ['ceramic', 'pocket', 'glass', 'glassThick', 'glassSunk', 'aluminium', 'aluminiumTurned', 'aluminiumEdge', 'orange', 'gap', 'ink', 'inkOnOrange', 'enamel', 'edge', 'smoked', 'paper', 'red', 'keycap', 'steel', 'rubber']) {
+    for (const name of ['ceramic', 'pocket', 'glass', 'glassThick', 'glassSunk', 'aluminium', 'aluminiumTurned', 'aluminiumEdge', 'aluminiumSatin', 'orange', 'gap', 'ink', 'inkOnOrange', 'enamel', 'edge', 'smoked', 'paper', 'red', 'keycap', 'steel', 'rubber']) {
       const c = m[name]?.color
       expect(c, name).toBeDefined()
       expect(c!.r + c!.g + c!.b, name).toBeGreaterThan(0)

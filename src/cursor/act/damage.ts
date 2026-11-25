@@ -9,7 +9,7 @@ export const LIFE = {
   burn: { punched: 0.04, cold: 0.42, flake: [0.44, 0.6], smokeEnd: 0.6, close: 0.64, radius: 1.4, clean: 2.15 },
   scorched: { fade: 0.4, smokeEnd: 0.75 },
   flattened: { pressed: 0.05, peel: 0.5, refill: 0.78, crackEnd: 0.95 },
-  reassembled: { seam: 0.76 }
+  reassembled: { seam: 0.76, firm: 0.88 }
 }
 const TIP = { x: 0.7, y: 1.6 }
 
@@ -40,8 +40,11 @@ export function woundOf(w: Wound, look: Parameters<LookMaker>[1], pose: Paramete
     b.crack = Math.max(b.crack, ramp(u, 0, L.pressed) * (1 - smooth(ramp(u, L.refill - 0.08, L.crackEnd))))
     b.stretch *= 1 + 0.16 * Math.sin(Math.PI * refill)
   } else if (w.kind === 'shredded') {
+    b.melt = 0
     if (pose.strips) b.strips = pose.strips.map((p) => ({ ...p }))
   } else {
+    // Strips do not sag: a tired body melts only once its seams are closing, or the tape and the seams are lost in the droop.
+    b.melt *= smooth(ramp(u, LIFE.reassembled.firm, 1))
     const whole = !pose.strips || pose.strips.every((p) => p.x === 0 && p.y === 0 && p.z === 0 && p.rot === 0 && p.tilt === 0)
     if (whole) b.seam = Math.max(b.seam, 1 - smooth(ramp(u, LIFE.reassembled.seam, 1)))
     else b.strips = pose.strips!.map((p) => ({ ...p }))
