@@ -198,6 +198,7 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
   let mode = ''
   let hasFilm: boolean | null = null
   let skipDue: boolean | null = null
+  let backing = ''
   let heading = ''
   let step = -1
   let playing: boolean | null = null
@@ -222,6 +223,11 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
       }
       if (m === 'live') {
         liveSound.update()
+        const under = api.backing ? api.backing() : 'page'
+        if (under !== backing) {
+          backing = under
+          root.dataset.backing = under
+        }
         const due = api.skipOffered()
         if (due !== skipDue) {
           skipDue = due

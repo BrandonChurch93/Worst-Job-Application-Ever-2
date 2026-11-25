@@ -56,6 +56,8 @@ export interface InterfaceApi {
   film?: FilmApi
   // The wall time of the last drawn frame in seconds, for the level picker.
   frameSeconds(): number
+  // Optional. What lies under the live controls now: the pale page, or something dark such as a tier of the table. Left out, it is the page.
+  backing?(): 'page' | 'dark'
   // Optional. True while the page takes typed letters: the M key then belongs to the page, and the menu opens with Alt and M.
   typing?(): boolean
 }
