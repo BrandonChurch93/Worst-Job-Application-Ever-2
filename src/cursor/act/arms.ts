@@ -10,7 +10,7 @@ const H = config.cursor.heightPxAt1080
 export const ARM = { radius: H * 0.04, rest: 43, taut: 1.15, most: 2.1, out: 0.16, into: 0.3, ease: 0.45, thin: 0.12, along: 34, round: 12, grainPx: 64, wrist: 2.5, droop: 0.6, low: 0.15, rise: 0.55, thick: 1.3, taper: 0.4, cuff: [1.3, 1.62, 1.62, 1.2] }
 const HAND = { palm: [4.5, 4, 2.3], palmY: 3.6, finger: 1.42, joint: 2.9, joints: 8, curl: 0.5, knuckle: 0.65 }
 // A hand that holds a sheet by its side edge: the arm leaves the shoulder outward and back (`side`, `back`), bends at an elbow and comes to the edge from outside the sheet (`into`). The two arms are not a pair: `lead` and `hand` set how far each elbow stands off at its shoulder end and at its hand end, first the left arm, then the right.
-const ELBOW = { lead: [0.8, 0.7], back: [0.4, 0.1], hand: [0.55, 1], side: 0.9, into: 0.3, least: 0.22 }
+const ELBOW = { lead: [0.8, 0.7], back: [0.4, 0.1], hand: [0.55, 1], side: 0.6, into: 0.3, least: 0.22 }
 // The same hand: the palm stands outside the edge, the fingers go down behind the sheet and the thumb lies on its face.
 // An open hand: the two arms hang and reach each in its own way, the left with the wider bow. An open hand that reaches past the far side of the body goes over the white face: the arm swings `swing` out round the body's edge, is `clear` over the face by `up` of its length and stays there.
 const OPEN = { lead: [1.1, 0.72], ease: [0.3, 0.62], swing: 9, clear: 1.5, up: 0.17, root: 8.5, turn: 0.24 }
@@ -39,7 +39,7 @@ function parts() {
       roughness: 0.56,
       metalness: 0,
       normalMap: grain,
-      normalScale: new THREE.Vector2(0.04, 0.04),
+      normalScale: new THREE.Vector2(0.07, 0.07),
       specularIntensity: 0.85
     })
   )
@@ -187,7 +187,7 @@ class Limb {
     const h = lo * (Math.min(1, Math.abs(want) * 3) * (1 - this.wrap) + this.wrap)
     this.bow(from, to, ex, ey, px, py, flat, h)
     this.lift = (1 + h * 0.1) * (1 - across)
-    const thin = Math.pow(Math.min(1, ARM.rest / length), 0.3) * (1 - ARM.thin * strain)
+    const thin = Math.pow(Math.min(1, ARM.rest / length), 0.2) * (1 - ARM.thin * strain)
     const pos = d3.position.array as Float32Array
     const nor = d3.normal.array as Float32Array
     let k = this.slot * RINGS * RING * 3
