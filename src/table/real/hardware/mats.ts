@@ -139,6 +139,9 @@ const STREAK = /* glsl */ `
 }
 `
 
+// How the wall of a clear tube shows where it turns away from the eye: bright over the dark table, dark over the pale page.
+const EDGE = { table: 4.2, page: 0.3 }
+
 const clear = new Map<string, THREE.MeshPhysicalMaterial>()
 
 // Clear acrylic: nothing in the middle but what glints, bright where the wall turns away from the eye.
@@ -150,9 +153,10 @@ export const tubeOf = (z: Zone, base: number): THREE.MeshPhysicalMaterial => {
   const made = m
   m.onBeforeCompile = (shader, renderer) => {
     room.call(made, shader, renderer)
-    shader.fragmentShader = shader.fragmentShader.replace(
+    shader.uniforms.hwEdgeGain = { value: z.id === 'last' ? EDGE.page : EDGE.table }
+    shader.fragmentShader = 'uniform float hwEdgeGain;\n' + shader.fragmentShader.replace(
       '#include <tonemapping_fragment>',
-      'float hwEdge = pow( 1.0 - abs( dot( normalize( vViewPosition ), normalize( normal ) ) ), 2.4 );\ngl_FragColor.rgb *= mix( 1.0, 4.2, hwEdge );\n' + STREAK + 'gl_FragColor.a = clamp( diffuseColor.a + hwEdge * 0.55 + dot( gl_FragColor.rgb, vec3( 0.3333 ) ) * 0.22, 0.0, 1.0 );\n#include <tonemapping_fragment>'
+      'float hwEdge = pow( 1.0 - abs( dot( normalize( vViewPosition ), normalize( normal ) ) ), 2.4 );\ngl_FragColor.rgb *= mix( 1.0, hwEdgeGain, hwEdge );\n' + STREAK + 'gl_FragColor.a = clamp( diffuseColor.a + hwEdge * 0.55 + dot( gl_FragColor.rgb, vec3( 0.3333 ) ) * 0.22, 0.0, 1.0 );\n#include <tonemapping_fragment>'
     )
   }
   m.customProgramCacheKey = () => 'wja-studio-hardware-clear'
