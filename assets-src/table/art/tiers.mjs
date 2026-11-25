@@ -2,9 +2,9 @@
 import { along, arc, arrow, beside, chevron, dirDeg, dist, dot, el, f, footprint, g, lerp, line, path, polar, poly, rays, rect, ring, rng, shape, star, stroke } from './lib.mjs'
 
 export const PAL = {
-  corporate: { base: '#081229', base2: '#0f2147', key: '#c9a551', fine: '#a78a45', pale: '#ecd797', under: '#070f27', dark: '#040a1a', lane: '#102249', accent: '#27468a', soft: '#1b3466' },
-  office: { base: '#647b73', base2: '#3b5452', key: '#c9b684', fine: '#a99a6e', pale: '#e2d6b0', under: '#33494a', dark: '#1c2c2c', lane: '#8ea398', accent: '#7d968f', soft: '#69817a' },
-  street: { base: '#0f2433', base2: '#17323d', key: '#dde4e1', fine: '#86a9b0', pale: '#f0f1e9', under: '#0a1a26', dark: '#050e15', lane: '#1d4250', accent: '#d8b53b', soft: '#234a58' }
+  corporate: { base: '#081229', base2: '#0f2147', key: '#c9a551', fine: '#a78a45', pale: '#ecd797', under: '#070f27', dark: '#040a1a', lane: '#060e22', accent: '#27468a', soft: '#1b3466' },
+  office: { base: '#60736a', base2: '#4c6058', key: '#c9b684', fine: '#a99a6e', pale: '#e2d6b0', under: '#33494a', dark: '#1c2c2c', lane: '#33494a', accent: '#7d968f', soft: '#69817a' },
+  street: { base: '#0f2433', base2: '#234b57', key: '#dde4e1', fine: '#86a9b0', pale: '#f0f1e9', under: '#0a1a26', dark: '#050e15', lane: '#0b1c28', accent: '#d8b53b', soft: '#234a58' }
 }
 
 // One tier of the layout in its own frame: u across, v down from the top of the tier, in balls.
@@ -495,8 +495,8 @@ export function street(D, seed) {
   const C = D.COLS
   const road = D.flats.find((a) => a.id.endsWith('road')).box
   const paint = pal.key
-  const kerb = '#2b5560'
-  const kerb2 = '#356874'
+  const kerb = '#183640'
+  const kerb2 = '#2c5a66'
   const roads = []
   const rx0 = road[0]
   const rx1 = road[0] + road[2]
@@ -610,7 +610,7 @@ export function street(D, seed) {
   }
   const clipId = 'field-street'
   defs.push(el('clipPath', { id: clipId }, rect(C.left, 0.3, C.right - C.left, D.H - 0.3, { fill: '#000' })))
-  return { pal, defs, ground: [g({ mask: 'url(#keep-street)', opacity: 0.38 }, plots)], top: [lanes, g({ 'clip-path': `url(#${clipId})` }, [roads, lots, holes]), local, answers, insertsPrint(D, pal)] }
+  return { pal, defs, ground: [g({ mask: 'url(#keep-street)', opacity: 0.26 }, plots)], top: [lanes, g({ 'clip-path': `url(#${clipId})` }, [roads, lots, holes]), local, answers, insertsPrint(D, pal)] }
 }
 
 // The guide: the tier from straight above with every lane, wall, post, footprint, insert and flipper as plain lines.
