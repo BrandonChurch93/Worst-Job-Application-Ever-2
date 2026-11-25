@@ -468,7 +468,7 @@ export function makePage(): PageLogic {
       io.cursor.setArms(false)
       if (s.mode === 'live') io.emit('tug-lost', SLOT.cx, SLOT.cy, true)
       io.cursor.take('shredder')
-      io.cursor.drive(SLOT.cx - BODY.x, SLOT.cy - 40, 2)
+      io.cursor.drive(SLOT.cx - BODY.x, SLOT.cy - 84, heights.card + 6)
       io.cursor.react('recoil')
       act(io, 'scared')
       s.lost = 0
@@ -725,7 +725,7 @@ export function makePage(): PageLogic {
         const u = clamp((b.t - TIMES.slabHang) / TIMES.slabFall, 0, 1)
         const v = clamp((b.t - TIMES.slabHang - TIMES.slabFall) / TIMES.slabSettle, 0, 1)
         const w = s.slabClear < 0 ? 0 : clamp(s.slabClear / TIMES.slabLift, 0, 1)
-        return b.base + SLAB_HIGH * (1 - u * u) + 16 * (1 - smooth(b.t / (TIMES.slabHang * 0.7))) - TRAVEL * Math.min(1, v * 4) - 3 * Math.sin(Math.PI * v) * (1 - v) + SLAB_HIGH * w * w
+        return b.base + SLAB_HIGH * (1 - u * u) + 16 * (1 - smooth(b.t / (TIMES.slabHang * 0.7))) - TRAVEL * Math.min(1, v * 4) + 1.2 * Math.sin(Math.PI * clamp(((v - 0.25) * TIMES.slabSettle) / 0.06, 0, 1)) + SLAB_HIGH * w * w
       }
       const slabV = (b: { landed: boolean; since: number }): number[] => [b.since, b.landed ? Math.max(0, 1 - b.since / SHAKE.seconds) : 0]
       const first = s.slabs[0]
