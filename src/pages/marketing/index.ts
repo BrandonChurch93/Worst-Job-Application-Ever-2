@@ -18,6 +18,7 @@ const skipAfter = config.live.skipLinkAfterSeconds
 export const FLIP_SECONDS = 0.63
 const PIT_CLEAR = 8
 const TURN_SHARP = 5
+const tapeSpeed = 120
 const BACK_TONES: [number, Tone][] = [[0.648, 'glass'], [0.553, 'page'], [0.47, 'raised'], [0.418, 'paper'], [0, 'light']]
 const REJECTED_SETTLE = 1.7
 export const TRAVEL = heights.button - 4
@@ -99,7 +100,6 @@ export function makePage(): PageLogic {
     item.at = tapeLength
     tapeLength += item.w + TICKER.gap
   }
-  const tapeSpeed = (tapeLength - tapeItems[tapeItems.length - 1]!.at) / applyBeat.from
   const afterKey = 'copy:marketing.tickerAfterRejection'
   const afterW = block(T.tape.font, words(afterKey), T.tape.px).width
   const afterCount = Math.ceil((TICKER.w + afterW) / (afterW + TICKER.gap)) + 1

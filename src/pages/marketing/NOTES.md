@@ -37,9 +37,9 @@ Phase 2 blockout. Stand-in shapes only. Every word is a key of `content/copy.jso
 ## Film timing (page seconds)
 
 - 0.25 to 1.85 stroll in from the left margin (steps at about 1.0 and 1.4).
-- 2.2 card 0, double take about 2.7; 4.2 card 1; 5.9 card 2. On each card the cursor stands in the bottom right corner, clear of the words.
-- 8 to 11 past the medallion (`proud`, dust off) and to a stand right of the hero button by 10.7. The key `marketing-top` is at 11.0.
-- 12.06 the pointer flicks to the cap and presses while the body still stands beside it, so the jump is a real leap; `button-press` about 12.97, the stage turns the page at 13.5.
+- The three perk visits fill the beat: `card-flip` at 2.10 (card 0, double take about 2.7), 4.31 (card 1) and 6.35 (card 2), so the last fine print lies open at about 7.0. On each card the cursor stands in the bottom right corner, clear of the words.
+- 7.8 to 8.7 it steps up the last card to admire it (`proud`, dust off at 8.2), 8.7 to 10.9 it turns and walks, `confident`, past the top of the card to its stand right of the hero button. The ticker runs at 120 px a second (`tapeSpeed`), so new words enter the strip all through the beat; its offset is 0 at 11.0, where the key `marketing-top` is taken with the cursor at the stand.
+- 11.0 it crouches (`anticipate`), 11.2 to 11.6 it bounds back 150 px for a run-up (`jump`), 11.86 the pointer flicks to the cap and presses while the body still stands back, so the page winds it up and leaps it on to the button: `button-press` about 12.77, the stage turns the page at 13.5. No walk in this beat.
 
 ## Other
 
