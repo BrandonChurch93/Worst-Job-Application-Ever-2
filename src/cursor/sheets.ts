@@ -7,7 +7,7 @@ const hover = config.scale.heights.cursorHover
 const seed = config.seed
 
 // Each sheet shows its states in the order of its approved image, straight on, with the camera pushed in: the cursor's own size never changes.
-const SHEET = { acting: { step: 60, zoom: 5.2 }, damage: { step: 72, zoom: 5.2 }, arms: { zoom: 2.9, y: 470, mid: [952, 606] }, y: 508 }
+const SHEET = { acting: { step: 60, zoom: 5.2 }, damage: { step: 72, zoom: 5.2 }, arms: { zoom: 2.66, y: 470, mid: [952, 606] }, y: 508 }
 
 const across = (n: number, i: number, step: number): number => 960 + (i - (n - 1) / 2) * step - 22
 
@@ -22,11 +22,11 @@ const PAPER = { w: 220, h: 300, hands: 52, edge: 5, tall: config.scale.heights.p
 // Standing idle, waving, holding, pulling, bracing to push. Hands in page pixels from the tip.
 // A pose with a sheet names where the middle of the sheet's top edge is from the tip: its hands are on that edge.
 const ARMS: { x: number; y: number; left: [number, number, number]; right: [number, number, number]; lean: number; grip: [number, number]; strain: number; squash: number; sheet?: { name: string; x: number; y: number; z: number; rot: number; pull: number } }[] = [
-  { x: 660, y: 0, left: [-13, 67, 5], right: [47, 66, 5], lean: 0, grip: [0.3, 0.3], strain: 0, squash: 1 },
-  { x: 748, y: 0, left: [-15, -8, 12], right: [47, 66, 5], lean: -0.06, grip: [0, 0.3], strain: 0, squash: 1.06 },
-  { x: 858, y: -4, left: [0, 0, 0], right: [0, 0, 0], lean: 0, grip: [1, 1], strain: 0, squash: 1, sheet: { name: 'holding', x: 22, y: 84, z: 1, rot: 0, pull: 0 } },
-  { x: 1066, y: -18, left: [0, 0, 0], right: [0, 0, 0], lean: -0.2, grip: [1, 1], strain: 0.9, squash: 1.1, sheet: { name: 'pulling', x: 18, y: 112, z: 3, rot: 0.07, pull: 1 } },
-  { x: 1204, y: 0, left: [58, 26, 10], right: [62, 46, 10], lean: 0.12, grip: [0, 0], strain: 0.15, squash: 0.94 }
+  { x: 648, y: 0, left: [-13, 67, 5], right: [47, 66, 5], lean: 0, grip: [0.3, 0.3], strain: 0, squash: 1 },
+  { x: 736, y: 0, left: [-15, -8, 12], right: [47, 66, 5], lean: -0.06, grip: [0, 0.3], strain: 0, squash: 1.06 },
+  { x: 846, y: -4, left: [0, 0, 0], right: [0, 0, 0], lean: 0, grip: [1, 1], strain: 0, squash: 1, sheet: { name: 'holding', x: 22, y: 84, z: 1, rot: 0, pull: 0 } },
+  { x: 1080, y: -18, left: [0, 0, 0], right: [0, 0, 0], lean: -0.2, grip: [1, 1], strain: 0.9, squash: 1.1, sheet: { name: 'pulling', x: 18, y: 112, z: 3, rot: 0.07, pull: 1 } },
+  { x: 1216, y: 0, left: [58, 26, 10], right: [62, 46, 10], lean: 0.12, grip: [0, 0], strain: 0.15, squash: 0.94 }
 ]
 
 function held(x: number, y: number, sheet: NonNullable<(typeof ARMS)[number]['sheet']>): { hands: [Place, Place]; shape: DrawList[number] } {
