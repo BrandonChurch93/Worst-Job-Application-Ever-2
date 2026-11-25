@@ -93,6 +93,7 @@ Branch `agent/type`. Looks branch `agent/type-looks`. Part made real: `type`.
 | 32 | `npm run still -- --key step1-fire --tier review --format hd --force` | ink under and on glass a step darker and cooler (`0x262827`): prompt 45 45 44 against 39 42 39 approved, value 43 44 42 against 40 36 31 |
 | 33 | `npm run still -- --key step1-fire --tier review --format hd --force` on main 3c334e4 (header at the approved sizes) with the runs as sheets | the picture reads the same; 421 draw calls |
 | 34 | `npm run still -- --key step1-fire --tier review --format hd --force` | legends lighter and warm as approved: 76 66 57 against 82 72 61 |
+| 35 | `npm run still -- --key step1-fire --tier draft --format hd --force` (10.6 s, 845,162 triangles, 286 draw calls) | a run whose words are made while the page runs (`runtime:`) is drawn alone, so a changing score or display never sets a whole sheet again; the picture is the same |
 Checks that are not tuning looks: `--key tier-corporate` and `--key table-wide` at draft (the signs of the table, flat and standing, are all set by this maker), `--id rest-step1 --diag type`, one draft still in each of the seven beats of step 1, one of each of `--page marketing`, `step2`, `boss`, `decision`.
 
 ## What I learned
@@ -112,6 +113,8 @@ Checks that are not tuning looks: `--key tier-corporate` and `--key table-wide` 
 - Shimmer: the regions of the title, the subline, the Resume label and the helper line differ by 0 between `--at 0.3` and `--at 0.6` of `step1.firstName` at hd draft.
 
 ## Seen and not mine
+
+- M4 red on main 55caf90, MEASURED `npm run measure -- --unit step1`: "Enter" 1.21 against 4.5. The Enter cap is in the cream caps mesh by vertex colour (keyboard 0eda37c) and the harness reads the ground as the material's colour. The picture was right. Settled by keyboard 5400f7b (the Enter cap is its own orange mesh again): MEASURED on main ddf26ba with this branch, every measure of step 1 passes, M4 at 4.64.
 
 - The chip: settled. A chip or a button of tone `metal` is the smoked capsule of the surface and its label is set light whatever tone the layout gives.
 - Sizes, MEASURED in the approved images at 1920 (width of a line of dark pixels, ours as the ruler) and sent to the Builder, who owns `TYPE` in `src/shell/parts.ts`: the title is inter-600 at 46 to 48 px there (ours 28), the heading inter-display-600 at 40 to 43 px (ours 60), the chip label about 22 px (ours 18). Labels, subline, value, legends and "Enter" are within 5%.

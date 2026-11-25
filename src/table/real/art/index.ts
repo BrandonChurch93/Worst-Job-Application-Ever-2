@@ -127,6 +127,7 @@ function windowsOf(z: Zone): THREE.Mesh {
     shader.fragmentShader = shader.fragmentShader.replace('#include <common>', '#include <common>\nvarying float vWjaGlow;').replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\ntotalEmissiveRadiance *= vWjaGlow;')
   }
   material.customProgramCacheKey = () => 'wja-studio-art-window'
+  material.userData.lit = true
   lit(material, z)
   material.name = `tier-art.windows.${z.id}`
   const mesh = new THREE.Mesh(geometry, material)
@@ -188,5 +189,5 @@ function drop(o: THREE.Object3D): void {
 }
 
 export const parts: Record<string, PartMaker | null> = {
-  'tier-art': whole('tier-art', { version: 'art-3', ready: () => pictures.every((p) => p.ready()), build, pose, drop })
+  'tier-art': whole('tier-art', { version: 'art-4', ready: () => pictures.every((p) => p.ready()), build, pose, drop })
 }

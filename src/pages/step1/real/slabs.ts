@@ -127,10 +127,12 @@ export const slabs: PartMaker | null = {
     return makeSlab(s.w, s.h, s.r ?? 0, s.z1 - s.z0)
   },
   pose(o, s) {
-    // The landing rings through the block for a moment: a hair of tilt that dies with the impact the page reports.
+    // The landing rings through the block for a moment: a slow rock on its long axis that dies fast with the impact the
+    // page reports. Its label is laid flat by the type maker, so the rock stays under 1 px at the face's edge.
     const hit = s.v && s.v.length > 1 ? s.v[1]! : 0
     const t = s.v && s.v.length > 0 ? s.v[0]! : 0
-    o.rotation.x += hit * 0.012 * Math.cos(t * 70)
-    o.rotation.y += hit * 0.006 * Math.sin(t * 55)
+    const ring = hit * hit
+    o.rotation.x += ring * 0.028 * Math.cos(t * 52)
+    o.rotation.y += ring * 0.007 * Math.sin(t * 41)
   }
 }
