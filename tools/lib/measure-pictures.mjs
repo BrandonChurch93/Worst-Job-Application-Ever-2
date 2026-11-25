@@ -3,7 +3,8 @@ import fs from 'node:fs'
 import path from 'node:path'
 import sharp from 'sharp'
 import { at } from './paths.mjs'
-import { openSession, still } from './capture.mjs'
+import crypto from 'node:crypto'
+import { openSession, renderJob, still } from './capture.mjs'
 import { rawOf } from './image.mjs'
 import { bareFloor, edgeCount, highFrequencyEnergy, m1, m2, m3, m8, notYet, tierCameras } from './measure-core.mjs'
 
@@ -138,4 +139,26 @@ export async function openPictures({ format, tier, views, ranges }) {
       if (session) await session.close()
     }
   }
+}
+
+// The check that a view never changes what `beauty` draws: after each view, the beauty still of the same moment is byte equal to the one made before any view.
+export async function viewsLeaveBeauty({ format, tier, views, specs, frames }) {
+  const session = await openSession({ format, assets: 'full' })
+  const sha = (png) => crypto.createHash('sha256').update(png).digest('hex')
+  const rows = []
+  try {
+    const jobs = [...specs.map((x) => ({ name: x.name, job: { kind: 'still', spec: { ...x.spec, tier } } })), ...frames.map((f) => ({ name: `film frame ${f}`, job: { kind: 'film', frame: f, tier } }))]
+    for (const { name, job } of jobs) {
+      const before = sha(await renderJob(session, { ...job, diag: 'beauty' }))
+      for (const view of views) {
+        if (view === 'beauty') continue
+        const drawn = sha(await renderJob(session, { ...job, diag: view }))
+        const after = sha(await renderJob(session, { ...job, diag: 'beauty' }))
+        rows.push({ still: name, view, same: after === before, drawsSomethingElse: drawn !== before, before, after })
+      }
+    }
+  } finally {
+    await session.close()
+  }
+  return rows
 }

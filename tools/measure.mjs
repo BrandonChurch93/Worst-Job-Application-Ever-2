@@ -18,17 +18,18 @@ const allUnits = [...pageUnits, 'film']
 function usage(why) {
   console.error(`measure: ${why}`)
   console.error(`usage: npm run measure -- --unit <${allUnits.join(' | ')} | all> [--only M4,M5] [--tier ${Object.keys(c.tiers).join(' | ')}] [--format ${Object.values(c.formats).map((f) => f.id).join(' | ')}] [--max-lines 40]`)
+  console.error('       npm run measure -- --views [--tier T] [--format F]: after every view, the beauty still is byte equal to the one before it')
   process.exit(1)
 }
 
-if (!a.unit || a.unit === true) usage('give --unit')
-if (a.unit !== 'all' && !allUnits.includes(a.unit)) usage(`no unit called "${a.unit}"`)
+if (!a.views && (!a.unit || a.unit === true)) usage('give --unit, or --views for the check that no view changes beauty')
+if (!a.views && a.unit !== 'all' && !allUnits.includes(a.unit)) usage(`no unit called "${a.unit}"`)
 if (!c.tiers[tier]) usage(`no tier called "${tier}"`)
 if (!Object.values(c.formats).some((f) => f.id === format)) usage(`no format called "${format}"`)
 const only = a.only && a.only !== true ? String(a.only).toUpperCase().split(',').map((s) => s.trim()).filter(Boolean) : null
 if (only) for (const id of only) if (!MEASURES.includes(id)) usage(`no measure called "${id}"`)
 const maxLines = a['max-lines'] && a['max-lines'] !== true ? Number(a['max-lines']) : 40
-const units = a.unit === 'all' ? allUnits : [a.unit]
+const units = a.views ? [] : a.unit === 'all' ? allUnits : [a.unit]
 
 let s = null
 let pictures = null
@@ -103,7 +104,26 @@ try {
   s.views = [...viewsOf.views]
   s.ranges = { texel: viewsOf.TEXEL_RANGE, coc: viewsOf.COC_RANGE }
   const info = buildInfo(at())
-  console.log(`measure: tier ${tier}, format ${format}${tier === judgedTier ? '' : ` (a judged still is rendered at ${judgedTier}: these numbers are from ${tier})`}, engine ${info.engineHash}`)
+  if (a.views) {
+    const { viewsLeaveBeauty } = await import('./lib/measure-pictures.mjs')
+    const wanted = [...s.views]
+    const keys = c.keys.filter((k) => k.camera === 'home').slice(0, 1).concat(c.keys.filter((k) => isTierCamera(k.camera, c)).slice(0, 1))
+    const struck = []
+    const film = s.showcase.film()
+    for (let i = 0; i < film.frameCount && !struck.length; i++) if (s.showcase.filmState(i).events.length) struck.push(i)
+    const rows = await viewsLeaveBeauty({ format, tier, views: wanted, specs: keys.map((k) => ({ name: `key:${k.id}`, spec: { page: k.unit, beat: k.beat, at: k.at, camera: k.camera } })), frames: struck })
+    const changed = rows.filter((r) => !r.same)
+    const idle = rows.filter((r) => !r.drawsSomethingElse)
+    console.log(`measure: the views, tier ${tier}, format ${format}, engine ${info.engineHash}`)
+    console.log(`${changed.length ? 'FAIL' : 'pass'}  views  ${rows.length} views drawn over ${new Set(rows.map((r) => r.still)).size} moments: beauty differs after ${changed.length} of them; ${idle.length} drew the same bytes as beauty`)
+    for (const r of changed) console.log(`      ${r.still}, after ${r.view}: beauty is ${r.after.slice(0, 12)} against ${r.before.slice(0, 12)} before`)
+    for (const r of idle) console.log(`      ${r.still}, ${r.view}: the view's picture is byte equal to beauty`)
+    const file = at('out', 'work', 'measures', 'views.json')
+    writeJson(file, { tier, format, engineHash: info.engineHash, sharedHash: info.sharedHash, pageHashes: info.pageHashes, exit: changed.length ? 2 : 0, rows })
+    console.log(`record: ${path.relative(at(), file)}`)
+    status = changed.length ? 2 : 0
+  }
+  if (!a.views) console.log(`measure: tier ${tier}, format ${format}${tier === judgedTier ? '' : ` (a judged still is rendered at ${judgedTier}: these numbers are from ${tier})`}, engine ${info.engineHash}`)
   for (const unit of units) {
     const { stills, results } = await measureUnit(unit)
     console.log(`\nunit ${unit}: ${stills.length ? `${stills.length} judged stills` : 'the frames of the film'}`)
@@ -122,7 +142,7 @@ try {
     for (const u of summary) console.log(`  ${u.unit.padEnd(10)} ${u.results.map((r) => `${r.id} ${r.status === 'pass' ? 'pass' : r.status === 'fail' ? 'FAIL' : 'not yet'}`).join(', ')}`)
   }
   const all = summary.flatMap((u) => u.results)
-  console.log(`\nmeasure: ${all.filter((r) => r.status === 'pass').length} green, ${all.filter((r) => r.status === 'fail').length} red, ${all.filter((r) => r.status === 'notyet').length} not yet`)
+  if (!a.views) console.log(`\nmeasure: ${all.filter((r) => r.status === 'pass').length} green, ${all.filter((r) => r.status === 'fail').length} red, ${all.filter((r) => r.status === 'notyet').length} not yet`)
 } catch (e) {
   console.error(`measure: could not do its work: ${e && e.stack ? e.stack : e}`)
   status = 1
