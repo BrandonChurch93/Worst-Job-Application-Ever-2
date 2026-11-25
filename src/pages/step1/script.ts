@@ -14,7 +14,7 @@ export const TIMES = {
   slabCount: 3, slabFirst: 0.4, slabEvery: 0.55, slabHang: 0.2, slabFall: 0.2, slabSettle: 0.12, slabLie: 0.25, slabLift: 0.18,
   paperSlide: 0.42, bite: 0.4, tugFilm: 5.06, lost: 0.3
 }
-export const TUG = { stiff: 2600, damp: 36, strainPx: 9.6, lead: 0.4, shoulder: { x: 14, y: 30 }, hands: 31, rateLag: 0.07, inside: 10, least: 10, reach: { rest: 37, min: 31, max: 47, bite: 26, haul: 70 } }
+export const TUG = { stiff: 2600, damp: 36, strainPx: 9.6, lead: 0.4, shoulder: { x: 14, y: 30 }, hands: 31, rateLag: 0.07, inside: 4, least: 10, reach: { rest: 37, min: 31, max: 47, bite: 26, haul: 70 } }
 export const SPOT = { x: -12, y: -14 }
 export const BITE = { x: SLOT.cx - PAPER.w / 2, y: SLOT.cy - PAPER.h + 3 }
 export const HOOD = { y: SLOT.cy + 17, z: 26 }
