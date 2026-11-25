@@ -23,17 +23,23 @@ Phase 2 blockout. Stand-in shapes only. Every word is a key of `content/copy.jso
 - Perk card: when the cursor tip enters a card it turns over as four slats, like a departure board, and stays open. Event `card-flip` at the start. A whole card turning about its long axis would stand 248 px high and throw the cursor; slats stand 74 px, and the cursor rides on top by `cursor.setGround`. Nothing hurts the cursor.
 - With a still or wrong pointer the three first-screen cards open by themselves from 20 s into the perks phase (`live.skipLinkAfterSeconds`), half a second apart.
 - Double take: once, when the "Unlimited PTO" card shows its fine print with the cursor on it.
-- Apply: a press on any of the three caps (`nav-cta`, `hero-cta`, `final-cta`). The page takes the cursor (about 1.2 s, far under the 8 s limit), it backs off 30 px, jumps 84 px high onto the right part of the cap, `button-press` on landing, the cap sinks 10 px with the label and the cursor on it, `done()` 0.3 s later. `skip()` does the same on the hero button.
+- Apply: a press on any of the three caps (`nav-cta`, `hero-cta`, `final-cta`). The page takes the cursor (about 1.2 s, far under the 8 s limit), it backs off 44 px, jumps 96 px high onto the right part of the cap, clear of the label, `button-press` on landing, the cap sinks 10 px with the label and the cursor on it, `done()` 0.3 s later. `skip()` does the same on the hero button.
 - Variant `rejected`: ticker repeats `copy:marketing.tickerAfterRejection`, footer shows `copy:step5.closing` in place of the plot twist, cards still turn, the buttons sink and come back, `done()` stays false, `gag()` is null, the cursor acts `exhausted`.
 
 ## Differences from the brief, told to the Builder
 
+- The kit names a perk card as one slab that turns over on its long axis, or a face that slides aside. Here it is four slats, each turning on its long axis, for the reason given above.
 - `hint()` points at the first unopened first-screen card during the stroll and perks phases, and at the hero button from the ticker phase on (with a pulsing press). Reason: the bots walk to the hint, and the keen bot has to reach the perks and ticker gags before the press ends the page. In the rejected variant it points at the hero button without a press.
 - The cursor rides surfaces with `cursor.setGround` (on `main` since f6c1585), so it stands on cards, caps and medallions and is not hidden under them.
 
 ## Film timing (page seconds)
 
 - 0.25 to 1.85 stroll in from the left margin (steps at about 1.0 and 1.4).
-- 2.2 card 0, double take about 2.7; 4.2 card 1; 5.9 card 2.
+- 2.2 card 0, double take about 2.7; 4.2 card 1; 5.9 card 2. On each card the cursor stands in the bottom right corner, clear of the words.
 - 8 to 11 past the medallion (`proud`, dust off) and to a stand right of the hero button by 10.7. The key `marketing-top` is at 11.0.
-- 12.3 press, `button-press` about 13.06, the stage turns the page at 13.5.
+- 12.06 the pointer flicks to the cap and presses while the body still stands beside it, so the jump is a real leap; `button-press` about 12.97, the stage turns the page at 13.5.
+
+## Other
+
+- The ticker is closed-form: its offset is a function of the page time, 36 px a second, set so that an item starts at the window's left pad at 11.0 s (the key) and, after the rejection, at 1.7 s.
+- `field()` of the shell sets a value at the pocket floor (z -6); the blockout draws a pocket as a thin plate on the page, so the value would be under the page. The page lifts `wait-value` onto the plate in `draw`.

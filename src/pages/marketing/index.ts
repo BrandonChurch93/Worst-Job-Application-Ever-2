@@ -20,11 +20,12 @@ const SLAT_GAP = 0.07
 export const FLIP_SECONDS = SLAT_SECONDS + (SLATS - 1) * SLAT_GAP
 const REJECTED_SETTLE = 1.7
 export const TRAVEL = heights.button - 4
-const WIND = 0.34
-const JUMP = 0.42
+const WIND = 0.45
+const BACK = 44
+const JUMP = 0.46
 const SINK = 0.09
 const HOLD = 0.3
-const JUMP_HEIGHT = 84
+const JUMP_HEIGHT = 96
 const AUTO_GAP = 0.5
 const BUTTONS = ['nav-cta', 'hero-cta', 'final-cta'] as const
 const HERO = 1
@@ -37,7 +38,6 @@ interface State {
   time: number
   scroll: number
   scrollTo: number
-  tape: number
   flip: number[]
   phase: number
   phaseTime: number
@@ -97,7 +97,7 @@ export function makePage(): PageLogic {
     item.at = tapeLength
     tapeLength += item.w + TICKER.gap
   }
-  const tapeSpeed = (tapeLength - tapeItems[tapeItems.length - 2]!.at) / applyBeat.from
+  const tapeSpeed = (tapeLength - tapeItems[tapeItems.length - 1]!.at) / applyBeat.from
   const afterKey = 'copy:marketing.tickerAfterRejection'
   const afterW = block(T.tape.font, words(afterKey), T.tape.px).width
   const afterCount = Math.ceil((TICKER.w + afterW) / (afterW + TICKER.gap)) + 1
@@ -111,15 +111,15 @@ export function makePage(): PageLogic {
   const marks: Marks = {
     start,
     lane: { x: 430, y: 598 },
-    cards: [0, 1, 2].map((i) => ({ x: cards[i]!.x + cards[i]!.w - 96, y: cards[i]!.y + 24 })),
-    off: { x: cards[2]!.cx - 30, y: cards[2]!.y - 44 },
+    cards: [0, 1, 2].map((i) => ({ x: cards[i]!.x + cards[i]!.w - 72, y: cards[i]!.y + 178 })),
+    off: { x: cards[2]!.x + cards[2]!.w - 60, y: cards[2]!.y - 44 },
     medal: { x: boxOf(layout, 'award-0').x - 96, y: boxOf(layout, 'award-0').cy + 56 },
     stand: { x: hero.x + hero.w + 92, y: hero.cy - 2 },
     press: { x: hero.x + hero.w * 0.76, y: hero.cy - 4 }
   }
 
   const s: State = {
-    mode: 'live', variant: '', time: 0, scroll: 0, scrollTo: 0, tape: 0, flip: Array(perkCount).fill(0), phase: 0, phaseTime: 0, auto: 0, took: false, shock: 0,
+    mode: 'live', variant: '', time: 0, scroll: 0, scrollTo: 0, flip: Array(perkCount).fill(0), phase: 0, phaseTime: 0, auto: 0, took: false, shock: 0,
     sink: BUTTONS.map(() => 0), apply: null, skipAsked: false, done: false, cue: 0, base: 'confident'
   }
   const rejected = (): boolean => s.variant === 'rejected'
@@ -173,7 +173,7 @@ export function makePage(): PageLogic {
         dy /= d
       }
       const u = smooth(a.t / WIND)
-      io.cursor.drive(a.fx + dx * 30 * u, a.fy + dy * 30 * u, hover + surface(a.fx, a.fy))
+      io.cursor.drive(a.fx + dx * BACK * u, a.fy + dy * BACK * u, hover + surface(a.fx, a.fy))
       a.jx = io.cursor.x
       a.jy = io.cursor.y
       return
@@ -286,10 +286,11 @@ export function makePage(): PageLogic {
     out.push({ id: 'ticker-tape', part: 'ticker', kind: 'box', x: TICKER.x, y: TICKER.y + 4, w: TICKER.w, h: TICKER.h - 8, z0: TICKER.floor, z1: TICKER.tape, tone: 'paper' })
     const items = rejected() ? afterItems : tapeItems
     const length = rejected() ? afterLength : tapeLength
+    const tape = (rejected() ? s.time - REJECTED_SETTLE : s.time - applyBeat.from) * tapeSpeed
     const left = TICKER.x
     const right = TICKER.x + TICKER.w
     for (const item of items) {
-      let rel = mod(item.at - s.tape, length)
+      let rel = mod(item.at - tape, length)
       if (rel + item.w + TICKER.gap > length) rel -= length
       const x = left + TICKER.pad + rel
       if (x + item.w > left && x < right) {
@@ -305,7 +306,7 @@ export function makePage(): PageLogic {
     reset(ctx: PageContext) {
       const after = ctx.variant === 'rejected'
       Object.assign(s, {
-        mode: ctx.mode, variant: ctx.variant, time: 0, scroll: 0, scrollTo: 0, tape: after ? mod(-REJECTED_SETTLE * tapeSpeed, afterLength) : mod(-applyBeat.from * tapeSpeed, tapeLength), flip: Array(perkCount).fill(0),
+        mode: ctx.mode, variant: ctx.variant, time: 0, scroll: 0, scrollTo: 0, flip: Array(perkCount).fill(0),
         phase: after ? phaseSeconds.length : 0, phaseTime: 0, auto: 0, took: false, shock: 0, sink: BUTTONS.map(() => 0), apply: null, skipAsked: false, done: false, cue: 0,
         base: after ? 'exhausted' : 'confident'
       } satisfies State)
@@ -318,7 +319,6 @@ export function makePage(): PageLogic {
         const gap = s.scrollTo - s.scroll
         s.scroll = Math.abs(gap) < 0.05 ? s.scrollTo : s.scroll + gap * Math.min(1, dt * 16)
       }
-      s.tape = mod(s.tape + tapeSpeed * dt, rejected() ? afterLength : tapeLength)
 
       if (s.mode === 'film') {
         const cues = rejected() ? REJECTED_CUES : CUES
@@ -370,7 +370,7 @@ export function makePage(): PageLogic {
       Object.assign(s, JSON.parse(JSON.stringify(state)) as State)
     },
     draw(out: DrawList) {
-      const over: Record<string, Partial<Shape> | null> = {}
+      const over: Record<string, Partial<Shape> | null> = { 'wait-value': { z0: 0.08, z1: 0.08 } }
       for (let i = 0; i < perkCount; i++) if (s.flip[i]! > 0 && s.flip[i]! < 1) over[`perk-${i}`] = null
       BUTTONS.forEach((id, i) => {
         if (s.sink[i]! <= 0) return
