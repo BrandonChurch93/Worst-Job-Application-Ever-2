@@ -1,35 +1,35 @@
 {
   "folder": "step1",
-  "pushed": "2026-11-25T11:16:06.936Z",
-  "commit": "75ffcc53860fa651ae7677b02e0070c1b72557ae",
+  "pushed": "2026-11-25T12:21:27.417Z",
+  "commit": "05de29dc2c8c52a2c628863ec9b2f795d093383e",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Unit 18.25 s: the first slab lies beside the typed address, not on it",
-      "time": "2026-11-25T11:16:05.110Z",
+      "caption": "Contact sheet, the beat step1.firstName: 12 frames from 0:16.00 to 0:23.97, draft tier, preview",
+      "time": "2026-11-25T12:20:47.485Z",
       "by": "step1",
-      "from": "out/work/stills/step1-step1_email-0p65-film-preview-draft.png"
+      "from": "out/work/sheets/sheet-beat-step1_firstName-preview-draft.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Unit 18.78 s: the second slab lands on the keys where the cursor stood",
-      "time": "2026-11-25T11:16:05.341Z",
+      "caption": "Contact sheet, the beat step1.email: 12 frames from 0:29.00 to 0:33.97, draft tier, preview",
+      "time": "2026-11-25T12:20:57.292Z",
       "by": "step1",
-      "from": "out/work/stills/step1-step1_email-0p756-film-preview-draft.png"
+      "from": "out/work/sheets/sheet-beat-step1_email-preview-draft.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Unit 29.6 s: the hold after the reset, front-on, fields empty, the message in the resume card",
-      "time": "2026-11-25T11:16:05.574Z",
+      "caption": "Contact sheet, the beat step1.resume: 12 frames from 0:34.00 to 0:35.97, draft tier, preview",
+      "time": "2026-11-25T12:21:05.849Z",
       "by": "step1",
-      "from": "out/work/stills/step1-step1_shredded-0p36-film-preview-draft.png"
+      "from": "out/work/sheets/sheet-beat-step1_resume-preview-draft.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Rest: Continue drawn light while the form is empty",
-      "time": "2026-11-25T11:16:05.799Z",
+      "caption": "Contact sheet, the beat step1.tug: 12 frames from 0:36.00 to 0:42.23, draft tier, preview",
+      "time": "2026-11-25T12:21:14.901Z",
       "by": "step1",
-      "from": "out/work/stills/still-rest-step1-preview-draft.png"
+      "from": "out/work/sheets/sheet-beat-step1_tug-preview-draft.jpg"
     }
   ]
 }
