@@ -306,9 +306,11 @@ interface ScorchData {
   tall: number
   turn: number
   at: [number, number]
+  sparks: THREE.Mesh[]
+  sparkMaterial: THREE.MeshBasicMaterial
 }
 
-const SCORCH = { size: 62, smoke: 4, smokeSeconds: 1.5, shoulder: 4.5, core: 14 }
+const SCORCH = { size: 62, smoke: 4, smokeSeconds: 1.5, shoulder: 4.5, core: 14, sparks: 9, sparkSeconds: 0.55, fall: 900, ember: 0.35, snap: 36 }
 
 function makeScorch(s: Shape): THREE.Object3D {
   const f = fx()
@@ -334,12 +336,19 @@ function makeScorch(s: Shape): THREE.Object3D {
     smokeMaterials.push(m)
     root.add(puff)
   }
-  const data: ScorchData = { mark, geometry, material, smoke, smokeMaterials, seed, wide, tall: wide * (0.85 + 0.25 * hash01(seed, 3, 4)), turn: hash01(seed, 5, 6) * Math.PI * 2, at: [0, 0] }
+  const sparkMaterial = new THREE.MeshBasicMaterial({ color: new THREE.Color(...GLOW.chargeHigh), toneMapped: false })
+  const sparks: THREE.Mesh[] = []
+  for (let i = 0; i < SCORCH.sparks; i++) {
+    const spark = overlay(new THREE.Mesh(f.orb, sparkMaterial), 20 + i)
+    sparks.push(spark)
+    root.add(spark)
+  }
+  const data: ScorchData = { mark, geometry, material, smoke, smokeMaterials, sparks, sparkMaterial, seed, wide, tall: wide * (0.85 + 0.25 * hash01(seed, 3, 4)), turn: hash01(seed, 5, 6) * Math.PI * 2, at: [0, 0] }
   root.userData.scorch = data
   return root
 }
 
-// A scorch lies on the top of the cap it struck and ends at that cap's shoulder: a burn does not hang over a gap.
+// A scorch lies on the top of the cap it struck, or of the nearest cap when it struck a gap, and ends at that cap's shoulder.
 function layScorch(d: ScorchData, s: Shape, ctx: RealContext): void {
   const cx = s.x + s.w / 2
   const cy = s.y + s.h / 2
@@ -350,14 +359,21 @@ function layScorch(d: ScorchData, s: Shape, ctx: RealContext): void {
   let x1 = reach
   let y0 = -reach
   let y1 = reach
+  let cap: Shape | null = null
+  let near = SCORCH.snap
   for (const c of ctx.list) {
-    if (c.role !== 'keycap' || c.kind === 'text') continue
-    if (cx < c.x || cx > c.x + c.w || cy < c.y || cy > c.y + c.h || Math.abs(c.z1 - s.z0) > 3) continue
+    if (c.role !== 'keycap' || c.kind === 'text' || Math.abs(c.z1 - s.z0) > 3) continue
+    const far = Math.hypot(Math.max(c.x - cx, 0, cx - c.x - c.w), Math.max(c.y - cy, 0, cy - c.y - c.h))
+    if (far >= near) continue
+    near = far
+    cap = c
+  }
+  if (cap) {
     const e = SCORCH.shoulder
-    const left = c.x + e - cx
-    const right = c.x + c.w - e - cx
-    const low = -(c.y + c.h - e - cy)
-    const high = -(c.y + e - cy)
+    const left = cap.x + e - cx
+    const right = cap.x + cap.w - e - cx
+    const low = -(cap.y + cap.h - e - cy)
+    const high = -(cap.y + e - cy)
     const m = Math.min(SCORCH.core, (right - left) / 2, (high - low) / 2)
     ox = Math.min(right - m, Math.max(left + m, 0))
     oy = Math.min(high - m, Math.max(low + m, 0))
@@ -365,7 +381,6 @@ function layScorch(d: ScorchData, s: Shape, ctx: RealContext): void {
     x1 = Math.min(ox + reach, right)
     y0 = Math.max(oy - reach, low)
     y1 = Math.min(oy + reach, high)
-    break
   }
   d.at = [ox, oy]
   d.mark.visible = x1 > x0 && y1 > y0
@@ -389,8 +404,23 @@ function poseScorch(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const age = (1 - left) * TURRET.scorchSeconds
   layScorch(d, s, ctx)
   d.material.opacity = smooth((left * TURRET.scorchSeconds) / TURRET.scorchFade)
-  const ember = Math.exp(-age / 0.18)
-  d.material.color.setRGB(1 + 8 * ember, 1 + 8 * ember, 1 + 2 * ember)
+  const ember = Math.exp(-age / SCORCH.ember)
+  const spent = age / SCORCH.sparkSeconds
+  d.sparkMaterial.color.setRGB(...mix(GLOW.chargeHigh, GLOW.boltTail, Math.min(1, spent)))
+  d.sparks.forEach((spark, i) => {
+    const out = 50 + 130 * hash01(i, d.seed, 31)
+    const up = 150 + 170 * hash01(i, d.seed, 32)
+    const t = age * (0.8 + 0.4 * hash01(i, d.seed, 33))
+    const z = 2 + up * t - (SCORCH.fall / 2) * t * t
+    spark.visible = spent < 1 && z > 0 && left * TURRET.scorchSeconds > TURRET.scorchFade
+    if (!spark.visible) return
+    const a = hash01(i, d.seed, 34) * Math.PI * 2
+    const long = 1.2 + 3.2 * (1 - spent)
+    spark.position.set(d.at[0] + Math.cos(a) * out * t, d.at[1] + Math.sin(a) * out * t, z)
+    spark.rotation.set(0, -Math.atan2(up - SCORCH.fall * t, out), a, 'ZYX')
+    spark.scale.set(long, 0.85, 0.85)
+  })
+  d.material.color.setRGB(1 + 6 * ember, 1 + 6 * ember, 1 + ember)
   d.smoke.forEach((puff, i) => {
     const u = age / SCORCH.smokeSeconds - i * 0.12
     puff.visible = u > 0 && u < 1 && left * TURRET.scorchSeconds > TURRET.scorchFade
@@ -445,6 +475,7 @@ export const turrets: PartMaker = {
     const c = o.userData.scorch as ScorchData | undefined
     if (c) {
       c.material.dispose()
+      c.sparkMaterial.dispose()
       c.geometry.dispose()
       for (const m of c.smokeMaterials) m.dispose()
     }
