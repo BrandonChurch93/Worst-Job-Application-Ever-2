@@ -1,35 +1,35 @@
 {
   "folder": "hardware",
-  "pushed": "2026-11-25T16:55:44.048Z",
-  "commit": "ae23685dc2d6b8c4e9b49adef2d46cd6a6fce320",
+  "pushed": "2026-11-25T17:13:20.714Z",
+  "commit": "7b5e6f0cc00c6c2d730f3c34125713ec7648ac91",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Corporate top left: orange elbow with seam and flange screws, clear tube with collars, roof wires and top guide",
-      "time": "2026-11-25T16:49:31.562Z",
+      "caption": "Corporate beside the approved image: clear lift tube with bright edges, orange elbow, steel wire guides, pockets",
+      "time": "2026-11-25T17:13:18.897Z",
       "by": "hardware",
-      "from": "out/work/hw/03-corporate-elbow-guides.jpg"
+      "from": "out/work/hw/07-corporate-beside-approved.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Office tier: rubber band round the three slingshot posts, push pin lane post, one wire for lane guide and return rail, outhole pocket",
-      "time": "2026-11-25T16:49:31.792Z",
+      "caption": "Whole machine: the three lift tubes with collars and orange elbows at the left, the plunger with its spring and orange knob at the lower right",
+      "time": "2026-11-25T17:13:19.137Z",
       "by": "hardware",
-      "from": "out/work/hw/04-office-band-post-wire.jpg"
+      "from": "out/work/hw/06-table-wide.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Still key-tier-office-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-25T16:53:50.615Z",
+      "caption": "Corporate, draft: lift tube, collars, clamps, elbow with flange screws, wire guides with welded legs, lane post with brass finial",
+      "time": "2026-11-25T17:13:19.414Z",
       "by": "hardware",
-      "from": "out/work/stills/key-tier-office-hd-review.png"
+      "from": "out/work/hw/08-corporate-lift-wires.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Office, review tier: the lift's orange elbow with flange screws, clear tube with collars, and the orange door flap in its steel frame on the wall face",
-      "time": "2026-11-25T16:55:42.862Z",
+      "caption": "Street foot, draft: plunger housing screwed to the apron, rod, clip, coil spring, orange knob",
+      "time": "2026-11-25T17:13:19.647Z",
       "by": "hardware",
-      "from": "out/work/hw/05-office-door-elbow-review.jpg"
+      "from": "out/work/hw/09-street-plunger.jpg"
     }
   ]
 }
