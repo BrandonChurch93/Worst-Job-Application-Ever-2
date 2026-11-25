@@ -46,7 +46,7 @@ function starPicture(seed: number): THREE.DataTexture {
     dir.push((i / rays) * Math.PI * 2 + (hash01(i, 1, seed) - 0.5) * 0.5)
     len.push(0.35 + 0.6 * hash01(i, 2, seed))
   }
-  return picture(128, false, (u, v) => {
+  return picture(256, false, (u, v) => {
     const r = Math.hypot(u, v)
     const a = Math.atan2(v, u)
     let ray = 0
@@ -76,7 +76,7 @@ function puffPicture(seed: number): THREE.DataTexture {
 
 // A scorch: a small charred pit with a ragged edge, a wide singed halo that goes from dark brown to tan, ash flecks.
 function scorchPicture(seed: number): THREE.DataTexture {
-  return picture(128, true, (u, v) => {
+  return picture(256, true, (u, v) => {
     const r = Math.hypot(u, v)
     const a = Math.atan2(v, u)
     const ragged = noise(Math.cos(a) * 2.4 + 5, Math.sin(a) * 2.4 + 5, seed) * 0.5 + noise(Math.cos(a) * 6 + 9, Math.sin(a) * 6 + 9, seed + 3) * 0.3
