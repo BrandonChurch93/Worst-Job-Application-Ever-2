@@ -69,6 +69,10 @@ No sound is kept. `public/audio/index.json` lists nothing, the engine reports `a
 21. The site calls `unlock()` at the first press. Some browsers, phones above all, let sound start only at the end of a touch or at a click. So once unlocked, the sound graph is asked to run again at every `pointerup`, `touchend`, `click` and `keydown` for as long as it is not running. Nothing listens before `unlock()`. MEASURED in Chromium only: what Safari on a phone does is UNKNOWN.
 22. `share`, the press on the share control of the last page, plays `button-press`. `popup-close` is silent on purpose and is listed as such in `silentEvents`. `npm run sound` with no flag reads every event name the pages emit and names each one that has no cue, stops nothing, sets off no line and is not listed as silent. It is a line of the tool and not a test, because a missing sound must not turn `npm test` red for another builder.
 
+## Where the kit and the code differ
+
+`kit/05-ARCHITECTURE.md` says under "Hashes and records" that commits which touch only sound change no hash. `tools/lib/hashes.mjs` puts every file of `src/` outside the page folders into the engine hash, `src/audio/` too, so a change to the sound engine makes every kept picture stale. `src/audio/NEEDS.patch` leaves `src/audio/` out of the engine hash. Sound changes no pixel: check A3 renders a judged still with the audio code in the build and with it blocked, and the two are byte equal. The sound files and their index are in `public/audio/` and were never in the hash.
+
 ## Where the brief and the kit differ
 
 Nothing found that changes the work. One point to know: the brief names a `skip` event for the live line, and `skip` is not a cue of `audio.sfx`, so a skip speaks a line and plays no effect.
