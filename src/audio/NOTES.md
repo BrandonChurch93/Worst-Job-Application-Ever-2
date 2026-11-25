@@ -67,6 +67,7 @@ No sound is kept. `public/audio/index.json` lists nothing, the engine reports `a
 19. A take past the limit is still filed, with a warning, because it was made and paid for and the log must show it. Check A8 then fails. The tool never asks a service for a take, so it cannot refuse the spending, only show it.
 20. While the page is hidden the engine holds: the sound graph is suspended and carries on from the same point when the page is back, so a line is never spoken to a tab nobody looks at. With plain audio elements everything is stopped instead, and the tone starts again at the next event.
 21. The site calls `unlock()` at the first press. Some browsers, phones above all, let sound start only at the end of a touch or at a click. So once unlocked, the sound graph is asked to run again at every `pointerup`, `touchend`, `click` and `keydown` for as long as it is not running. Nothing listens before `unlock()`. MEASURED in Chromium only: what Safari on a phone does is UNKNOWN.
+22. `share`, the press on the share control of the last page, plays `button-press`. `popup-close` is silent on purpose and is listed as such in `silentEvents`. `npm run sound` with no flag reads every event name the pages emit and names each one that has no cue, stops nothing, sets off no line and is not listed as silent. It is a line of the tool and not a test, because a missing sound must not turn `npm test` red for another builder.
 
 ## Where the brief and the kit differ
 
