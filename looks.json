@@ -1,35 +1,35 @@
 {
   "folder": "glass",
-  "pushed": "2026-11-25T19:04:15.319Z",
-  "commit": "dce5526ce9c1867664fd705c254946c24a74ad60",
+  "pushed": "2026-11-25T19:31:14.000Z",
+  "commit": "1d54dbaf0d284df7d233afa70b7f93a14915061d",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-step1-tug-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-25T19:00:35.851Z",
+      "caption": "Sheet page-look: approved on the left, this build on the right, draft tier, with crops of button, field.start, progressButton, type, cursor",
+      "time": "2026-11-25T19:25:11.447Z",
       "by": "glass",
-      "from": "out/work/stills/key-step1-tug-hd-review.png"
+      "from": "out/work/compare/compare-page-look.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Tug close view at review tier after the satin change: no bright points in the frost, glass quieter than the page, M3 0.851",
-      "time": "2026-11-25T19:02:22.275Z",
+      "caption": "Sheet page-look: approved on the left, this build on the right, draft tier, with crops of button, field.start, progressButton, type, cursor",
+      "time": "2026-11-25T19:30:53.772Z",
       "by": "glass",
-      "from": "out/work/report/glass-tug-review.jpg"
+      "from": "out/work/compare/compare-page-look.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Key step1-tug: approved on the left, this build on the right, review tier, with crops of cursor, paper, paper.below, chip, card.glass",
-      "time": "2026-11-25T19:03:59.095Z",
+      "caption": "Card at home, approved above and build below, after shading the slab to the approved card as measured patch by patch; Browse pill satin on a glass collar",
+      "time": "2026-11-25T19:31:12.657Z",
       "by": "glass",
-      "from": "out/work/compare/compare-step1-tug.jpg"
+      "from": "out/work/report/glass-card-ab.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Tug key at review tier beside the approved image after the satin change: frost has no bright points; M3 0.851 by the tool's own function",
-      "time": "2026-11-25T19:04:14.033Z",
+      "caption": "Page look beside the approved image at 1d54dba",
+      "time": "2026-11-25T19:31:12.887Z",
       "by": "glass",
-      "from": "out/work/report/glass-satin-compare.jpg"
+      "from": "out/work/report/glass-compare-page-look.jpg"
     }
   ]
 }
