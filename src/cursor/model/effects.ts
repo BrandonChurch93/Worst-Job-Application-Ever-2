@@ -329,7 +329,7 @@ class Effects implements EffectsModel {
       const amount = clamp01(s.amount)
       if (amount <= 0.01) continue
       this.on(surface, s.x, s.y, this.a)
-      n = this.plume(n, this.a.x, this.a.y, this.a.z, amount, look.time, SMOKE_EACH, 2, 17, 4.8, 0.22, 2.9, 0.34, 0.7, 0.5, 40 + k * 9)
+      n = this.plume(n, this.a.x, this.a.y, this.a.z, amount, look.time, SMOKE_EACH, 2, 17, 4.8, 0.3, 2.6, 0.5, 0.8, 0.95, 40 + k * 9)
     }
     if (look.dust >= 0 && look.dust < 1) {
       const d = look.dust

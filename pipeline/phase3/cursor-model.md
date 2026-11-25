@@ -133,16 +133,38 @@ Branch `agent/damage`. Owner of this section: the damage fix agent. Every number
 - Cracks, second batch (`material.ts`). Each crack has a lit lip and a dark lip either side of a darker hairline gap, a little clay tint in the gap.
 - Holes, second batch (`material.ts`, `body.ts`). Laser: halo wider and softer, bore greyer ash, ember accents sharper and fewer.
 - Heat, third batch (`material.ts`). The glow shows from heat 0.3 and is full at 0.6. In the beat `step1.tug` the acting side sends heat 0.28 (angry, dimmed while busy): the tip glowed orange there and the approved tug image has a clean white tip.
+- Ribbons, fourth batch (`strips.ts`, `body.ts`, `contract.ts`, `act/damage.ts`). `BodyLook` has an optional `ribbon`. With `ribbon` 1 a loose strip is a flat ribbon of even width with square cut ends, lengthened to at least half the longest strip (`RIBBON`), and only the two outer strips carry the black rim. `applyStrips(strips, ribbon)` blends each strip from its place in the body to its ribbon (positions, ink, inset, normals). The shredded state sends `ribbon` 1.
+- Strips beside each other, fourth batch (`act/damage.ts`, `BESIDE`). A strip within 7 to 16 px of its place has its offset turned onto `STRIP_AXIS`, so the mended body is even strips side by side with hairline seams and not a scatter. `LIFE.reassembled = { seam: 0.87, firm: 0.93 }`.
+- Tape, fourth and fifth batch (`act/tape.ts`). Three narrow bands across the head, the waist and the stem, each with its own turn. Pale film `0xe8e2cf`, roughness 0.3, frost 0.3, a sheen band, creases, crisp edges, a glint on one corner. The corner lift is drawn: a raised corner broke the height limit in `tests/cursor-act-mend.test.ts`.
+- Bore, fourth and fifth batch (`material.ts`, `body.ts`). A punched hole narrows to 70 percent toward the page (`BORE = 0.7`), so its wall is seen from above: cream clay, lit on the side that faces the lamp, shaded on the other, a chipped lip by angle. `emit()` adds one small pale emitter down each clean bore (`BORE_LIGHT = { power: 0.0035, reach: 3.4 }`): it lights the page under the hole and the far wall. None while the body is in strips.
+- Laser hole, fifth batch (`material.ts`, `body.ts`). The lip is one continuous ember, orange, brighter where it flickers, with a warm halo on the face; the wall glows from the lip down.
+- Heat, fifth and sixth batch (`material.ts`, `body.ts`). Front at `heat * 8.8`, band `front + 0.7` to `front - 4.0`: a tight deep red at the tip that grades through orange to the white face. The emitter at the tip is 0.022 per unit of heat, where it was 0.06: the page no longer turns orange around the head.
+- Scorch, fifth batch (`material.ts`, `effects.ts`). Crust front at `charred * 7.4`, soot to `front + 1.3`, coal embers along the crust's edge. Smoke paler and thinner.
+- Scared, fourth and fifth batch (`material.ts`). Stone `(0.7, 0.695, 0.675)`, lighter than before. The dark rim is back as a thin line, `clamp(1.5 * fwidth(vInset), 0.24, 0.5)` wide.
+- Cracks, fifth batch (`material.ts`). Cells of 4.2 units where they were larger, each plate tipped a little (coat tilt 0.05, lip tilt 0.9) so the highlight breaks at each crack, a darker gap, a tone per plate.
+- Drops, fifth and sixth batch (`effects.ts`). 26 beads, 0.5 to 1.5 units, 22 percent of them thrown onto the page, more opaque at the rim.
+- Exhausted, sixth batch (`deform.ts`, `material.ts`). 90 percent of the pose's squash is given back while melted (65 before). The tip and the two wing corners are dulled round, the wings droop further, the stem runs longer. Soft brown veins run down the length of the body, written in the material from the body's own coordinates, no texture.
+- Film size, seventh batch, after the R9 cards (the arrow is about 20 px tall there). Mend (`body.ts`, `act/tape.ts`): a strip turns from a loose ribbon into its own slice of the arrow over the way to its place, 64 px out to 12 px (`LOOSE`), where it was 22 to 9; the tapes are 4.8 to 5.4 px wide, paler and brighter (frost 0.37), and go on from 0.30 to 0.44 of the mend. A first try at 5.6 to 6.8 px and frost 0.44 hid the arrow's rim on the sheet. Burn hole (`act/damage.ts`, `material.ts`): radius 1.85 units burnt and 1.9 clean, where it was 1.55 and 1.75; the black crust reaches 1.4 radii and the soot ring is darker.
+- Exhausted, seventh batch (`deform.ts`, `material.ts`). The droop is in the outline: the tip bows over to one side and sinks (`bow`), the body spreads by 9 percent across, and half of the pose's squash is given back, so the body is lower. The veins are at half strength.
+- Flattened, seventh batch (`material.ts`), by the Builder's ruling of 20:07Z. Crack cells of 11 units: one or two faint hairlines. Plates barely tip (0.012), so the face keeps one long highlight. The outline stays wavy inside one dark rim.
+- Heat light, last batch (`body.ts`). The orange emitter at the tip follows the same threshold as the glow: none up to heat 0.3, full from 0.6. At heat 0.28 in the tug beat it left a faint pink spot on the tip.
 - `act/damage.ts`: `seamCount` reads `pose.strips.length`, or `STRIPS` from `src/cursor/body.ts` when there are no strips. The number is written nowhere in my files.
-- `sheets.ts`, `damage()` only: `LIE = 0.6`, every damaged body on the sheet lies on the page, as on the approved sheet.
+- `sheets.ts`, `damage()` only: `LIE = 0.6`, every damaged body on the sheet lies on the page, as on the approved sheet. `PILE = { x: 33, y: 62 }` moves the shredded pile so it sits in its own cell, level with the other four.
 
 ### Decisions
 
 19. The slant is a shear of the body, not a camera move: the camera is not mine, and the approved images all show the wall on the lower right.
 20. Loose slivers are thinner than the whole body. It is the one place where the body's thickness is not constant. The alternative, slats 2.3 high, was looked at and read as splinters.
 21. A melted body gives back most of the pose's squash. The acting state still sends 0.8; the melt itself carries the slump.
-22. The page seen through a hole stays in the body's shadow. The engine's shadow filter searches up to 40 texels (about 20 page pixels) for blockers; a hole is about 11 px wide, so the light patch it lets through is averaged away. This is the engine, not the body. The brief accepts the page's shadow seen through.
+22. The page seen through a hole stays in the body's shadow as far as the engine's shadow goes; since the fifth batch the body lights it a little itself (decision 27). The engine's shadow filter searches up to 40 texels (about 20 page pixels) for blockers; a hole is about 11 px wide, so the light patch it lets through is averaged away. This is the engine, not the body. The brief accepts the page's shadow seen through.
 23. The shadow's length is the hover (4 px) plus the body's thickness (8.5 px) under the engine's light angle. The body does not make a trail of its own. A shorter cast needs a lower hover or a steeper key light, neither of which is mine.
+24. Heat shows only from 0.3. The acting side sends 0.28 in the tug beat and the approved tug image has a white tip.
+25. Loose strips are ribbons lengthened to at least half the longest strip. True slivers of the head are 2 units long and read as crumbs.
+26. A strip near its place is laid along the strips' own axis by `act/damage.ts`, whatever step the pose sends.
+27. Daylight down a bore is an emitter of the body. Two bores make two emitters; with the hot tip and the glowing hole the test in `tests/cursor-model.test.ts` counts 4. The engine's pool is 6.
+28. The flattened outline stays wavy with a thick rim, as on the approved sheet. The critic asked for a crisp outline (R3-1 issue 3); the Builder ruled at 20:07Z that the wavy outline stands.
+29. A strip is a slice of the arrow from 64 px out, not 22: at film size a bundle of plain ribbons does not read as the cursor. The shredded pile itself stays ribbons (`ribbon` 1).
+30. Exhausted gives back half of the squash, not 90 percent: the Builder asked for the droop in the outline, lower and wider.
 
 ### Agreed with the acting fixer
 
@@ -163,11 +185,23 @@ Branch `agent/damage`. Owner of this section: the damage fix agent. Every number
 
 The triangle counts of the sheets rose mostly with the 15 strips (the acting fixer's count, merged from main) and the page's own changes on main; the body's share is 2090 triangles per cursor. Draw calls did not change.
 
-`npm test`: 71 files, 1146 tests passed. `npm run build`: built. `npm run bots`: all clear. `npm run measure -- --unit step1`: 7 green, 1 red (M3 on `step1-tug`, 0.6676 against 0.8, red on main before this branch).
+First push of the fix round: `npm test` 71 files, 1146 tests passed; `npm run measure -- --unit step1` 7 green, 1 red (M3 on `step1-tug`, 0.6676 against 0.8, red on main before this branch).
+
+Sixth batch, 19:56Z: `npm test` 77 files, 1201 tests passed. `npm run build`: built. `npm run bots`: all clear. `npm run measure -- --unit step1` at 19:51Z, with main merged: 8 green, 0 red (M3 now 1.2246 against 0.8). `cursor-damage` draft 857956 triangles, 111 draw calls, 7.2 to 7.6 s. `cursor-acting` draft 729766 triangles, 140 draw calls, 6.9 to 7.2 s. `step1-fire` draft 418889 triangles, 257 draw calls, 10.9 s; review 21.1 s (main changed the page since the table above). `step1-tug` draft 631617 triangles, 286 draw calls, 10.5 s.
+
+Last push, 20:17Z to 20:19Z, main 5a9e748 merged: `npm test` 79 files, 1224 tests passed. `npm run build`: built. `npm run bots`: all clear. `npm run measure -- --unit step1`: 8 green, 0 red (M3 1.4972 against 0.8, M9 1.73 px against 2). `cursor-damage` draft 7.5 s, review 15.7 s, 857956 triangles, 111 draw calls. `cursor-acting` draft 6.8 s, 729766 triangles, 140 draw calls. `step1-tug` draft 10.5 s, 676177 triangles, 309 draw calls. `step1-fire` draft 11.4 s, 438065 triangles, 271 draw calls. Textures: one 512 px RGBA detail texture, 1.0 MB, unchanged through the whole fix round.
 
 ### Not done yet
 
-- Tape: no lifted geometry. The lift is drawn (edges and shadow), the film is one flat strip.
-- Cracks: lips are drawn in the material. The shell is not cut into separate pieces with real gaps.
-- Laser rim: reads as a brown ring more than a thick ragged crust.
-- Bead shadows are the engine's and are faint at page size.
+- Tape: no lifted geometry. The corner lift is drawn (edges, glint and shadow), the film is flat. The bands are paler and wider than on the approved sheet.
+- Cracks: lips are drawn in the material. The shell is not cut into separate pieces with real gaps, and there are no chips at the outline.
+- Punched hole: the arrow's shadow on the page has no lit gap under the hole (decision 22: the engine's filter averages it away).
+- Exhausted: no long drips off the wings and the stem. The stem's end reads as a short tube, and the bowed tip has a small pinched nub.
+- Mend: before 0.18 of its length the strips have not stood and it is a bundle of ribbons; the standing is `gather` in `src/cursor/body.ts`, the acting side's.
+- Fire key: the orange light over the struck key and the cursor is not the body's emitter (MEASURED: with the hole's emitter at power 0 the still is the same). Under it the cursor's face is orange and its hole reads as a pale ring. Dimming the fresh lip and wall by 70 percent was tried at 20:20Z and changed nothing that could be seen: the pale inside is the lit key seen through the bore. It was taken out again.
+- Scared: matte, no gloss, a little darker than approved.
+- Nervous: fewer and less varied drops than approved; their shadows are the engine's and faint.
+- Scorched: the crust is smoother than approved and the smoke fainter.
+- Laser rim: thinner and dimmer than the approved ember ring.
+- Tug (R1-1 issue 7): the face's cream colour is the shared enamel; only the rim and gloss were touched.
+- Shredded: the fan is wider than approved; its spread is the acting side's `lie()`.

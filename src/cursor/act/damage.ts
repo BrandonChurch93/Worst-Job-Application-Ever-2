@@ -6,7 +6,7 @@ const smooth = (t: number): number => t * t * (3 - 2 * t)
 
 // The shares of a kind of damage's life at which each thing happens. A heal is always seen: nothing switches back.
 export const LIFE = {
-  burn: { punched: 0.04, cold: 0.42, flake: [0.44, 0.6], smokeEnd: 0.6, close: 0.64, radius: 1.55, clean: 1.75 },
+  burn: { punched: 0.04, cold: 0.42, flake: [0.44, 0.6], smokeEnd: 0.6, close: 0.64, radius: 1.85, clean: 1.9 },
   scorched: { reach: 0.62, fade: 0.4, smokeEnd: 0.75 },
   flattened: { pressed: 0.05, peel: 0.5, refill: 0.78, crackEnd: 0.95 },
   reassembled: { seam: 0.87, firm: 0.93 }
