@@ -11,7 +11,7 @@ import { EMIT, fx, GLOW, overlay } from './turret-fx'
 const heights = config.scale.heights
 
 export const TURRET_LOOK = {
-  collar: 46, head: 40, boss: 27, axis: -16, muzzle: 92, sunk: 9, socket: 56, socketDepth: 36, bezel: 63.5, door: 58, doorDrop: 2.2,
+  collar: 46, head: 40, axis: -17, muzzle: 98, sunk: 9, socket: 56, socketDepth: 36, bezel: 63.5, door: 58, doorDrop: 2.2,
   flashSeconds: 0.05, steam: 6, sparks: 8
 }
 
@@ -67,22 +67,15 @@ function slot(w: number, h: number): [number, number][] {
 function geometries(): Shared {
   if (shared) return shared
   const L = TURRET_LOOK
-  const collar = turn([[L.collar, -112], [L.collar, -47.5], [L.collar - 1.6, -45.9], [L.head + 1.2, -45.9], [L.head + 1.2, -50]], 56, 4)
+  const collar = turn([[L.collar, -112], [L.collar, -48], [L.collar - 2, -46], [L.head + 1.2, -46], [L.head + 1.2, -50]], 56, 4)
   const headParts: THREE.BufferGeometry[] = [
-    turn([[L.head, -56], [L.head, -30], [L.head - 0.9, -29.2], [L.head - 0.9, -27.8], [L.head, -27], [L.head, -5], [L.head - 2.6, -2.4], [L.boss + 1.2, -2.4], [L.boss, -1.2], [L.boss, -0.9], [L.boss - 0.9, 0], [9, 0], [8.2, -0.8], [0, -0.8]], 56, 4)
+    turn([[L.head, -56], [L.head, -30], [L.head - 0.9, -29.2], [L.head - 0.9, -27.8], [L.head, -27], [L.head, -5.5], [L.head - 5, -0.9], [L.head - 6.2, 0], [13, 0], [12.4, -0.6], [0, -0.6]], 56, 4)
   ]
   const headDark: THREE.BufferGeometry[] = []
-  for (let i = 0; i < 6; i++) {
-    const a = Math.PI / 6 + (i / 6) * Math.PI * 2
-    const x = Math.cos(a) * 33
-    const y = Math.sin(a) * 33
-    headParts.push(place(turn([[2.7, -2.4], [2.7, -1.5], [2.2, -1.1], [0, -1.1]], 12, 1), x, y, 0))
-    headDark.push(place(turn([[1.25, -1.05], [0, -1.05]], 6, 1), x, y, 0))
-  }
-  for (let i = -1; i <= 1; i++) headDark.push(place(flat(slot(15 - Math.abs(i) * 3, 2.4), 0.04), -15, i * 5.2, 0))
-  headDark.push(place(turn([[16.6, 0], [16.6, 4.5], [15.2, 5.2], [15.2, 0]], 24, 1), 0, 0, 0).rotateY(Math.PI / 2).translate(L.head - 1.5, 0, L.axis))
-  const barrel = along(turn([[14.5, 24], [14.5, 49], [13.2, 50.3], [10.6, 50.3], [10.6, 53], [9.8, 53.7], [9.8, 75], [12.6, 76.2], [12.6, 79.5], [11.8, 80.2], [11.8, 81.6], [12.6, 82.3], [12.6, 90.4], [11.2, L.muzzle], [7.4, L.muzzle]], 28, 2))
-  const barrelDark = along(turn([[7.4, L.muzzle], [7.4, 78], [0, 78]], 20, 1))
+  for (let i = -1; i <= 1; i++) headDark.push(place(flat(slot(16 - Math.abs(i) * 3, 2.6), 0.04), -21, i * 5.6, 0))
+  headDark.push(place(turn([[17.4, 0], [17.4, 4.5], [16, 5.2], [16, 0]], 24, 1), 0, 0, 0).rotateY(Math.PI / 2).translate(L.head - 1.5, 0, L.axis))
+  const barrel = along(turn([[15.4, 24], [15.4, 45], [14.4, 46], [13.4, 46], [10.6, 83], [12.9, 84.2], [12.9, 87.4], [12.1, 88.1], [12.1, 89.5], [12.9, 90.2], [12.9, 96.4], [11.6, L.muzzle], [7.8, L.muzzle]], 28, 2))
+  const barrelDark = along(turn([[7.8, L.muzzle], [7.8, 84], [0, 84]], 20, 1))
   const bezel = turn([[L.bezel, -0.2], [L.bezel - 1.1, 0.9], [L.socket + 1.6, 0.9], [L.socket, -0.6]], 64, 5)
   const socket = merge([turn([[L.socket, -0.6], [L.socket, -L.socketDepth], [0, -L.socketDepth]], 48, 1)])
   const half = circle(L.door, 64)
@@ -100,6 +93,7 @@ interface TurretData {
   head: THREE.Group
   barrel: THREE.Group
   metal: THREE.MeshPhysicalMaterial
+  steel: THREE.MeshPhysicalMaterial
   charge: THREE.Mesh
   chargeMaterial: THREE.MeshBasicMaterial
   sparks: THREE.Mesh[]
@@ -118,13 +112,18 @@ function makeTurret(s: Shape): THREE.Object3D {
   const rise = new THREE.Group()
   const head = new THREE.Group()
   const barrel = new THREE.Group()
-  const metal = k.turned.clone()
-  metal.onBeforeCompile = k.turned.onBeforeCompile
-  metal.customProgramCacheKey = k.turned.customProgramCacheKey
-  metal.emissive = new THREE.Color(0, 0, 0)
+  const own = (from: THREE.MeshPhysicalMaterial): THREE.MeshPhysicalMaterial => {
+    const m = from.clone()
+    m.onBeforeCompile = from.onBeforeCompile
+    m.customProgramCacheKey = from.customProgramCacheKey
+    m.emissive = new THREE.Color(0, 0, 0)
+    return m
+  }
+  const metal = own(k.turned)
+  const steel = own(k.barrel)
   rise.add(new THREE.Mesh(g.collar, metal))
   head.add(new THREE.Mesh(g.head, metal), new THREE.Mesh(g.headDark, k.dark))
-  barrel.add(new THREE.Mesh(g.barrel, metal), new THREE.Mesh(g.barrelDark, k.dark))
+  barrel.add(new THREE.Mesh(g.barrel, steel), new THREE.Mesh(g.barrelDark, k.dark))
   barrel.position.z = TURRET_LOOK.axis
   head.add(barrel)
   rise.add(head)
@@ -153,7 +152,7 @@ function makeTurret(s: Shape): THREE.Object3D {
     steamMaterials.push(m)
     rise.add(puff)
   }
-  const data: TurretData = { rise, head, barrel, metal, charge, chargeMaterial, sparks, flash, flashMaterial, steam, steamMaterials, seed: hashName(s.id) & 0xffff }
+  const data: TurretData = { rise, head, barrel, metal, steel, charge, chargeMaterial, sparks, flash, flashMaterial, steam, steamMaterials, seed: hashName(s.id) & 0xffff }
   root.userData.turret = data
   return root
 }
@@ -212,6 +211,7 @@ function poseTurret(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
 
   const glow = heat * (0.85 + 0.15 * Math.sin(ctx.time * 2.3 + d.seed))
   d.metal.emissive.setRGB(GLOW.hot[0] * glow, GLOW.hot[1] * glow, GLOW.hot[2] * glow)
+  d.steel.emissive.setRGB(GLOW.hot[0] * glow * 1.6, GLOW.hot[1] * glow * 1.6, GLOW.hot[2] * glow * 1.6)
   if (heat > 0.02) ctx.light({ x: cx, y: cy, z: s.z1 + 6, colour: EMIT.hot.colour, power: EMIT.hot.power * glow, reach: EMIT.hot.reach })
   d.steam.forEach((puff, i) => {
     puff.visible = heat > 0.02
@@ -371,6 +371,7 @@ export const turrets: PartMaker = {
     const t = o.userData.turret as TurretData | undefined
     if (t) {
       t.metal.dispose()
+      t.steel.dispose()
       t.chargeMaterial.dispose()
       t.flashMaterial.dispose()
       for (const m of t.steamMaterials) m.dispose()
