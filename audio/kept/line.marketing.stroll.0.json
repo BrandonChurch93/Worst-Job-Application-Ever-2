@@ -1,0 +1,204 @@
+{
+  "id": "line.marketing.stroll.0",
+  "kind": "line",
+  "cue": null,
+  "variant": null,
+  "class": "voice",
+  "loop": false,
+  "beat": "marketing.stroll",
+  "liveKey": null,
+  "group": null,
+  "describes": null,
+  "index": 0,
+  "words": "Here we find / the applicant. / Rent is due.",
+  "text": "Here we find / the applicant. / Rent is due.",
+  "prompt": null,
+  "settings": {
+    "speed": 0.7,
+    "stability": 0.75,
+    "breakSeconds": 1,
+    "sent": "Here we find <break time=\"1.0s\" /> the applicant. <break time=\"1.0s\" /> Rent is due.",
+    "call": 13
+  },
+  "askedSeconds": null,
+  "cost": "27",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "1fe2637a031dfa9914fe0da698bd8c3df5d56b05bdefbb67e1cda37633a36a1f",
+    "filed": "2026-11-25T18:05:35.681Z",
+    "measured": {
+      "seconds": 5.341,
+      "start": 0.044,
+      "end": 5.174,
+      "peakDb": -1.17,
+      "rmsDb": -23.24,
+      "lufs": -21.23,
+      "truePeakDb": -1.12,
+      "low": 0.379,
+      "mid": 0.562,
+      "high": 0.059,
+      "tailDb": -23.96,
+      "hits": 5,
+      "hitsAt": [
+        {
+          "start": 0.064,
+          "end": 1.024,
+          "peakDb": -1.17
+        },
+        {
+          "start": 2.144,
+          "end": 2.454,
+          "peakDb": -4.24
+        },
+        {
+          "start": 2.546,
+          "end": 2.954,
+          "peakDb": -13.92
+        },
+        {
+          "start": 3.026,
+          "end": 3.092,
+          "peakDb": -14.45
+        },
+        {
+          "start": 4.278,
+          "end": 5.132,
+          "peakDb": -4.66
+        }
+      ]
+    },
+    "line": {
+      "words": 8,
+      "seconds": 5.13,
+      "wordsPerSecond": 1.559,
+      "maxWordsPerSecond": 1.6,
+      "pauseMarks": 2,
+      "pausesFound": 2,
+      "pauses": [
+        1.11,
+        1.18
+      ],
+      "paceHolds": true,
+      "pausesHold": true,
+      "room": 5.12,
+      "fits": false,
+      "beatSeconds": 2
+    }
+  },
+  "chain": {
+    "trimStart": 0.052,
+    "trimEnd": 5.174,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 80,
+    "levelMeasure": "lufs",
+    "levelDb": -18,
+    "gainDb": 3.27,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 5.122,
+    "start": 0,
+    "end": 5.094,
+    "peakDb": 3.72,
+    "rmsDb": -20.21,
+    "lufs": -18,
+    "truePeakDb": 3.73,
+    "low": 0.342,
+    "mid": 0.595,
+    "high": 0.063,
+    "tailDb": -26.27,
+    "hits": 7,
+    "hitsAt": [
+      {
+        "start": 0.012,
+        "end": 0.95,
+        "peakDb": 3.72
+      },
+      {
+        "start": 2.094,
+        "end": 2.402,
+        "peakDb": -0.36
+      },
+      {
+        "start": 2.494,
+        "end": 2.61,
+        "peakDb": -9.17
+      },
+      {
+        "start": 2.678,
+        "end": 2.802,
+        "peakDb": -12.84
+      },
+      {
+        "start": 2.874,
+        "end": 2.902,
+        "peakDb": -22.83
+      },
+      {
+        "start": 2.974,
+        "end": 3.038,
+        "peakDb": -11.15
+      },
+      {
+        "start": 4.226,
+        "end": 5.036,
+        "peakDb": 0.61
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 8 asks, 1 whole, 7 void",
+    "asks": 8,
+    "whole": 1,
+    "transcript": "Here we find the applicant. Rent is due.",
+    "transcripts": [
+      "Here we find the applicant. Rent is due.",
+      "Here we find the applicant. Rent is due.",
+      "Here we find the applicant. Rent is due."
+    ],
+    "transcriptAgreed": "3 of 3",
+    "attitudes": [
+      "aloof and demanding"
+    ],
+    "accents": [
+      "American"
+    ],
+    "pitches": [
+      "low"
+    ],
+    "whisper": null,
+    "whisperVotes": "0 yes, 1 no",
+    "laugh": null,
+    "laughVotes": "0 yes, 1 no",
+    "warmth": null,
+    "warmthVotes": "0 yes, 1 no",
+    "excitement": null,
+    "excitementVotes": "0 yes, 1 no",
+    "unimpressedAndSmug": null,
+    "unimpressedAndSmugVotes": "1 yes, 0 no",
+    "basis": [
+      "The speaker's flat, deliberate delivery and lack of emotional warmth suggest a low-pitched, unimpressed, and smug demeanor.",
+      "The speaker's delivery is flat and condescending, lacking warmth or excitement, which conveys a distinctly smug and unimpressed demeanor.",
+      "The flat, documentary-style delivery lacks warmth or excitement, conveying instead a cold, superior, and demanding tone."
+    ]
+  },
+  "why": "too long for its place: 5.13 s in 5.12 s, over by 0.010 s; tone not judged: 1 whole answers in 8 asks",
+  "forced": true,
+  "problems": [
+    "the listener left \"whisper\" unanswered",
+    "the listener left \"laugh\" unanswered",
+    "the listener left \"warmth\" unanswered",
+    "the listener left \"excitement\" unanswered",
+    "the listener left \"unimpressedAndSmug\" unanswered",
+    "it is 5.13 s long and its place in the film has 5.12 s"
+  ],
+  "fixture": false,
+  "file": "line.marketing.stroll.0.wav",
+  "seconds": 5.122,
+  "sha256": "8232bf603fd3c8de1af2b9b10e6841eaf5c690aaf2fff36172271d4f3cf1e66a"
+}

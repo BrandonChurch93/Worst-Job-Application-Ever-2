@@ -15,6 +15,10 @@ const ACTING_LEAST_SECONDS = 0.25
 const ACTING_SHOWN_SECONDS = 1.5
 const TURN_BEFORE = 6
 const TURN_AFTER = 78
+// Seconds from the event page-turn to the knock of the slab on its seat: TURN_HALF * (1 + TURN.seat) of src/stage. A test holds the two together.
+export const TURN_SEATS = 0.8
+// Where the sheet of the seat looks: the step counter and the slab's top edge, which every page of the form has.
+const TURN_WINDOW = [1500, 0]
 const CROP = { columns: 3, tileH: 340 }
 const TEXT = { columns: 2, tileH: 270 }
 const ACT = { columns: 3, tileH: 320 }
@@ -147,6 +151,11 @@ function motionGroups(cfg, unit, facts) {
   const start = facts.turn === null ? u.last - Math.round(fps / 2) : facts.turn
   const frames = spread(Math.max(0, start - TURN_BEFORE), Math.min(plan.frameCount - 1, start + TURN_AFTER), count, step)
   const turn = [{ kind: 'look-sheet', unit, turn: start, frames, heading: `The page turn that ends the page: ${range(frames, fps)}` }]
+  if (facts.turn !== null) {
+    const seat = Math.min(plan.frameCount - 1, start + Math.round(TURN_SEATS * fps))
+    const landing = around(seat, count, step, start, plan.frameCount - 1)
+    turn.push({ kind: 'hit-sheet', unit, hit: 'slab seats', at: seat, window: TURN_WINDOW, frames: landing, heading: `Consecutive frames as the turned slab seats at ${timeLabel(seat, fps)}, the top right of the picture at its real size: ${range(landing, fps)}` })
+  }
   return [{ id: 'beats', items: across }, { id: 'hits', items: hits }, { id: 'turn', items: turn }]
 }
 
@@ -495,7 +504,7 @@ export async function buildLook({ cfg, session, files, built, about, tier, log, 
     await use(hd)
     const s = await session.page.evaluate((i) => window.showcase.filmState(i), f.at)
     const e = s.events.find((x) => (f.hit === 'hit on the arrow' ? x.hitsCursor : x.name === f.hit))
-    const c = e ? [e.x, e.y] : [s.cursor.x, s.cursor.y]
+    const c = f.window ?? (e ? [e.x, e.y] : [s.cursor.x, s.cursor.y])
     const win = windowRound(point(c[0], c[1]), actW, ACT.tileH, hd.width, hd.height)
     const tiles = []
     for (const frame of f.frames) tiles.push({ png: await cut(await frameOf(frame, hd, filmTier), win), label: timeLabel(frame, fps) })

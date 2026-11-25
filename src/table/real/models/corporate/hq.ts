@@ -69,6 +69,7 @@ function curtain(S: Geo, G: Geo, a: V2, b: V2, z0: number, z1: number, rnd: Rand
   const n: V3 = [0, -1, 0]
   const al: V3 = [1, 0, 0]
   moved(G, place(a[0], a[1], 0, turn), () => {
+    const pane = G.vertices
     fin(G, o.hall ? FINISH.polished : FINISH.stone, () => {
       for (let j = 0; j < floors; j++) {
         let run = 0
@@ -128,6 +129,7 @@ function curtain(S: Geo, G: Geo, a: V2, b: V2, z0: number, z1: number, rnd: Rand
         }
       }
     }, o.hall ? HALL : 1)
+    if (!o.hall) G.grade(pane, (x, _y, zz) => 0.72 + 0.6 * bump(x - 0.5 * (zz - z0), len * 0.3, Math.max(40, len * 0.3)))
   })
   moved(S, place(a[0], a[1], 0, turn), () => {
     fin(S, FINISH.brushed, () => {
@@ -175,9 +177,31 @@ function leaf(): Geo {
       }
       const h = (k: number): RGB => warmLamp(k / HALL)
       sheet(g, (u, v) => [st + (W - 2 * st) * u, y, kick + (H - 7 - kick) * v], [0, s, 0], [1, 0, 0], 4, 10, (u, v) => 0.16 + 0.62 * bump(v, 0.46, 0.34) * (0.66 + 0.34 * bump(u, 0.8, 0.5)) + 0.14 * bump(v, 0.95, 0.08))
-      quad(st + 5, W - st - 5, H - 30, H - 24, h(1.1), 0.05)
-      quad(st + 9, W - st - 9, H - 44, H - 40, h(0.8), 0.05)
-      quad(st + 12, W - st - 12, H - 55, H - 52.6, h(0.55), 0.05)
+      const X = (u: number): number => st + (W - 2 * st) * u
+      const Z = (v: number): number => kick + (H - 7 - kick) * v
+      const room = (u0: number, u1: number, v0: number, v1: number, k: number, out = 0.05): void => quad(X(u0), X(u1), Z(v0), Z(v1), h(k), out)
+      const line = (u0: number, v0: number, u1: number, v1: number, w: number, k: number): void => {
+        const yy = y + s * 0.05
+        g.face([[X(u0), yy, Z(v0)], [X(u1), yy, Z(v1)], [X(u1), yy, Z(v1 + w)], [X(u0), yy, Z(v0 + w)]], [0, s, 0], [1, 0, 0], h(k))
+      }
+      room(0.44, 1, 0.33, 0.74, 0.5)
+      room(0.6, 0.94, 0.33, 0.68, 0.2, 0.1)
+      room(0.63, 0.91, 0.33, 0.655, 0.4, 0.15)
+      room(0.764, 0.776, 0.33, 0.655, 0.18, 0.2)
+      room(0.72, 0.82, 0.69, 0.715, 1.2, 0.1)
+      room(0.47, 0.55, 0.33, 0.74, 0.34, 0.1)
+      line(0, 0.1, 0.44, 0.33, 0.012, 0.2)
+      line(0, 0.985, 0.44, 0.74, 0.012, 0.24)
+      room(0.14, 0.27, 0.21, 0.87, 0.3)
+      room(0.165, 0.245, 0.4, 0.6, 0.85, 0.1)
+      room(0.62, 0.92, 0.1, 0.3, 0.62)
+      room(0.72, 0.82, 0.03, 0.09, 0.5)
+      room(0.3, 0.62, 0.925, 0.95, 1.15)
+      room(0.8, 1, 0.925, 0.95, 1.15)
+      room(0.42, 0.62, 0.855, 0.872, 0.95)
+      room(0.82, 0.98, 0.855, 0.872, 0.95)
+      room(0.5, 0.63, 0.795, 0.806, 0.8)
+      room(0.85, 0.96, 0.795, 0.806, 0.8)
     }
   }, HALL)
   fin(g, FINISH.polished, () => {
@@ -223,10 +247,12 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
     fin(S, FINISH.stone, () => {
       S.box(-HW, HW, F, B, 0, 6, shade(TONE.graphite, 0.8), { bevel: 1.2 })
     })
+    const piers = S.vertices
     fin(S, FINISH.brushed, () => {
       S.box(-HW, -HW + 14, F - 2, F + 6, 6, pz0, STEEL_DARK, { bevel: 1.5 })
       S.box(HW - 14, HW, F - 2, F + 6, 6, pz0, STEEL_DARK, { bevel: 1.5 })
     })
+    S.grade(piers, (_x, _y, zz) => 0.72 + 0.4 * Math.max(0, Math.min(1, (zz - 6) / (pz0 - 6))))
     fin(S, FINISH.satin, () => {
       S.box(-HW + 0.6, -vw, F + 0.6, B - 0.6, 6, pz1, TONE.graphite)
       S.box(vw, HW - 0.6, F + 0.6, B - 0.6, 6, pz1, TONE.graphite)
@@ -234,6 +260,7 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
       S.box(-vw, vw, F + 0.6, vb, dh + 4, pz1, TONE.graphite, { bottom: true })
     })
     // The fascia over the lobby, with the plate the name stands on, and the canopy over the doors.
+    const band = S.vertices
     fin(S, FINISH.brushed, () => {
       S.box(-HW - 1, HW + 1, F - 4, F + 1, pz0, pz1 - 0.4, STEEL_DARK, { bevel: 1, bottom: true })
       S.box(-dw - 19.2, dw + 19.2, F - 9.6, F - 4, pz0 + 2, pz1 - 2, shade(STEEL, 0.8), { bottom: true })
@@ -243,6 +270,8 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
       S.box(-fx - 3, fx + 3, F - 11.4, F - 4, pz0 - 0.4, pz0 + 2.6, STEEL, { bevel: 0.8, bottom: true })
       S.box(-dw - 22, dw + 22, F - 26, F, dh + 4, pz0 - 0.4, STEEL, { bevel: 1.4, bottom: true })
     })
+    // Brushed steel under lamps that stand over it: bright at its upper edge, dark at its lip.
+    S.grade(band, (_x, _y, zz) => 0.66 + 0.5 * Math.max(0, Math.min(1, (zz - pz0) / (pz1 - pz0))) ** 1.5)
     for (const s of [-1, 1]) screw(S, s * (dw + 12), F - 9.6, (pz0 + pz1) / 2, 2, STEEL, [0, -1, 0])
     fin(S, FINISH.polished, () => {
       for (const zz of [pz0 + 0.8, pz1 - 3.2]) {

@@ -54,7 +54,7 @@ export function garage(b: Buckets, z: Zone): void {
   const base = S.base
   const top = S.base + S.h
   const pitch = SPIRAL.pitch * BALL
-  const con = TONE.concrete
+  const con = shade(TONE.concrete, 1.34)
   const pts = tube(z)
   const N = 96
   const step = (Math.PI * 2) / N
@@ -79,8 +79,12 @@ export function garage(b: Buckets, z: Zone): void {
   levels.push([top - 0.5 * BALL, top - cap])
   slim.push(false)
   const has: boolean[][] = levels.map(([z0, z1]) => Array.from({ length: N }, (_, i) => free((i + 0.5) * step, z0, z1, step / 2)))
-  levels.forEach(([z0, z1], li) => {
-    const row = has[li]!
+
+  // The lengths of beam that are left, and the pieces of pier that are left: eight piers round the ring, each cut where the tube passes.
+  type Run = { li: number; i: number; n: number; whole: boolean; held: boolean }
+  type Pier = { k: number; lo: number; hi: number; held: boolean }
+  const runs: Run[] = []
+  has.forEach((row, li) => {
     if (row.every((v) => !v)) return
     let start = row.findIndex((v, i) => v && !row[(i + N - 1) % N])
     const whole = start < 0
@@ -95,43 +99,18 @@ export function garage(b: Buckets, z: Zone): void {
       }
       let n = 0
       while (n < N && row[(i + n) % N] && done + n < N) n++
-      const a0 = i * step
-      const a1 = (i + n) * step
-      const rim = li === levels.length - 1
-      const thin = slim[li]!
-      const ri = thin ? Ri + 1.6 : Ri
-      const ro = thin ? Ro - 1.6 : Ro
-      g.lathe([[ri, z0], [ro, z0], [ro, z1 - 1.2], [ro - 1.2, z1], [ri + 1.2, z1], [ri, z1 - 1.2], [ri, z0]], cx, cy, n, (k) => (k === 0 ? shade(con, 0.7) : k === 3 ? shade(con, 1.08) : con), { arc: [a0, a1], kind: KIND.concrete })
-      // A dark joint cast into the outer face, and on the rim a steel coping.
-      if (!thin) g.lathe([[Ro + 0.15, z0 + (z1 - z0) * 0.3], [Ro + 0.15, z0 + (z1 - z0) * 0.3 + 1.1]], cx, cy, n, shade(con, 0.38), { arc: [a0, a1] })
-      if (rim) b.metal.lathe([[Ri - 0.3, z1], [Ro + 0.3, z1], [Ro + 0.3, z1 + 1.4], [Ri - 0.3, z1 + 1.4], [Ri - 0.3, z1]], cx, cy, n, TONE.steel, { arc: [a0, a1] })
-      if (!whole) {
-        for (const [a, s] of [[a0, -1], [a1, 1]] as const) {
-          const c = Math.cos(a)
-          const sn = Math.sin(a)
-          const q: V3[] = [[cx + c * ri, cy + sn * ri, z0], [cx + c * ro, cy + sn * ro, z0], [cx + c * ro, cy + sn * ro, z1], [cx + c * ri, cy + sn * ri, z1]]
-          g.face(s > 0 ? q : [...q].reverse(), shade(con, 0.9), KIND.concrete)
-        }
-      }
-      // A strip lamp under the beam in each bay, lit, on the inner edge.
-      for (let k = 0; !thin && k + 3 < n; k += 6) {
-        const a = a0 + (k + 3) * step
-        const m = b.glow.mark()
-        b.glow.box(Ri + 0.6, Ri + 2.6, -8, 8, z0 - 1.6, z0 - 0.2, [1.5, 1.4, 1.1], { under: true, skip: 't' })
-        b.glow.place(m, cx, cy, 0, a)
-      }
+      runs.push({ li, i, n, whole, held: false })
       i += n
       done += n
     }
   })
-
-  // The columns, eight round the ring, none on the open side: a ribbed pier from the lowest beam to a cap over the rim, left out where the tube passes.
   const cols = 8
   const half = 11
   const rib = 3
   const fin = 2
   const piece = 6
   const angle = (k: number): number => ((k + 0.5) / cols) * Math.PI * 2
+  const piers: Pier[] = []
   for (let k = 0; k < cols; k++) {
     const a = angle(k)
     const w = half / Rm
@@ -141,15 +120,69 @@ export function garage(b: Buckets, z: Zone): void {
       while (lo < top && !clear(lo, Math.min(top, lo + piece))) lo += piece
       let hi = lo
       while (hi < top && clear(hi, Math.min(top, hi + piece))) hi = Math.min(top, hi + piece)
-      if (hi - lo >= 18) {
-        const m = g.mark()
-        g.box(Ri, Ro + rib, -half, half, lo, hi, con, { kind: KIND.concrete, under: true, bevel: 0.8 })
-        for (const s of [-1, 1]) g.box(Ro + rib - 0.5, Ro + rib + fin, s > 0 ? half - 5.5 : -half + 0.8, s > 0 ? half - 0.8 : -half + 5.5, lo + 1.5, hi - 1.5, shade(con, 1.04), { kind: KIND.concrete, under: true, skip: 'l' })
-        if (hi >= top - 0.01) g.box(Ri - 0.0, Ro + rib + fin + 0.6, -half - 1.6, half + 1.6, top - 2.4, top, shade(con, 1.08), { kind: KIND.concrete, under: true, bevel: 0.6 })
-        g.place(m, cx, cy, 0, a)
-      }
+      if (hi - lo >= 18) piers.push({ k, lo, hi, held: k === 0 || k === cols - 1 })
       lo = hi + piece
     }
+  }
+
+  // Nothing hangs in the air: a length of beam or a piece of pier is built only if it is joined, through beams and piers, to one of the two piers that the stanchions carry.
+  const joined = (r: Run, p: Pier): boolean => {
+    const [z0, z1] = levels[r.li]!
+    if (z1 < p.lo + 2 || z0 > p.hi - 2) return false
+    const at = (((angle(p.k) / step - r.i) % N) + N) % N
+    return at > 0.5 && at < r.n - 0.5
+  }
+  for (let grew = true; grew; ) {
+    grew = false
+    for (const r of runs) {
+      for (const p of piers) {
+        if (r.held === p.held || !joined(r, p)) continue
+        r.held = true
+        p.held = true
+        grew = true
+      }
+    }
+  }
+
+  for (const r of runs) {
+    if (!r.held) continue
+    const [z0, z1] = levels[r.li]!
+    const n = r.n
+    const a0 = r.i * step
+    const a1 = (r.i + n) * step
+    const rim = r.li === levels.length - 1
+    const thin = slim[r.li]!
+    const ri = thin ? Ri + 1.6 : Ri
+    const ro = thin ? Ro - 1.6 : Ro
+    g.lathe([[ri, z0], [ro, z0], [ro, z1 - 1.2], [ro - 1.2, z1], [ri + 1.2, z1], [ri, z1 - 1.2], [ri, z0]], cx, cy, n, (k) => (k === 0 ? shade(con, 0.86) : k === 3 ? shade(con, 1.08) : con), { arc: [a0, a1], kind: KIND.concrete })
+    // A dark joint cast into the outer face, and on the rim a steel coping.
+    if (!thin) g.lathe([[Ro + 0.15, z0 + (z1 - z0) * 0.3], [Ro + 0.15, z0 + (z1 - z0) * 0.3 + 1.1]], cx, cy, n, shade(con, 0.38), { arc: [a0, a1] })
+    if (rim) b.metal.lathe([[Ri - 0.3, z1], [Ro + 0.3, z1], [Ro + 0.3, z1 + 1.4], [Ri - 0.3, z1 + 1.4], [Ri - 0.3, z1]], cx, cy, n, TONE.steel, { arc: [a0, a1] })
+    if (!r.whole) {
+      for (const [a, sg] of [[a0, -1], [a1, 1]] as const) {
+        const c = Math.cos(a)
+        const sn = Math.sin(a)
+        const q: V3[] = [[cx + c * ri, cy + sn * ri, z0], [cx + c * ro, cy + sn * ro, z0], [cx + c * ro, cy + sn * ro, z1], [cx + c * ri, cy + sn * ri, z1]]
+        g.face(sg > 0 ? q : [...q].reverse(), shade(con, 0.9), KIND.concrete)
+      }
+    }
+    // A strip lamp under the beam in each bay, lit, on the inner edge.
+    for (let k = 0; !thin && k + 3 < n; k += 6) {
+      const a = a0 + (k + 3) * step
+      const m = b.glow.mark()
+      b.glow.box(Ri + 0.6, Ri + 2.6, -8, 8, z0 - 1.6, z0 - 0.2, [1.5, 1.4, 1.1], { under: true, skip: 't' })
+      b.glow.place(m, cx, cy, 0, a)
+    }
+  }
+
+  // The piers: ribbed on the outer face, with a cap where one reaches the rim.
+  for (const p of piers) {
+    if (!p.held) continue
+    const m = g.mark()
+    g.box(Ri, Ro + rib, -half, half, p.lo, p.hi, con, { kind: KIND.concrete, under: true, bevel: 0.8 })
+    for (const sg of [-1, 1]) g.box(Ro + rib - 0.5, Ro + rib + fin, sg > 0 ? half - 5.5 : -half + 0.8, sg > 0 ? half - 0.8 : -half + 5.5, p.lo + 1.5, p.hi - 1.5, shade(con, 1.04), { kind: KIND.concrete, under: true, skip: 'l' })
+    if (p.hi >= top - 0.01) g.box(Ri, Ro + rib + fin + 0.6, -half - 1.6, half + 1.6, top - 2.4, top, shade(con, 1.08), { kind: KIND.concrete, under: true, bevel: 0.6 })
+    g.place(m, cx, cy, 0, angle(p.k))
   }
 
   // Carried on the right wall: a steel stanchion stands on the wall's top behind each of the two piers nearest it, with an arm to the pier at every deck.
@@ -166,7 +199,7 @@ export function garage(b: Buckets, z: Zone): void {
     b.metal.box(px - post - 3.4, px + post + 3.4, y - post - 3.4, y + post + 3.4, WALL_TOP, WALL_TOP + 2, TONE.steel, { bevel: 0.5 })
     for (const [sx, sy] of [[-1, -1], [1, 1], [-1, 1], [1, -1]] as const) b.screws.push([px + sx * (post + 1.5), y + sy * (post + 1.5), WALL_TOP + 2, 0.9])
     levels.forEach(([z0], li) => {
-      if (slim[li]) return
+      if (slim[li] || !piers.some((p) => p.held && p.k === (k + cols) % cols && p.lo <= z0 + 2 && p.hi >= z0 + 20)) return
       b.metal.box(x, px + post, y - 2.8, y + 2.8, z0 + 8, z0 + 12, TONE.steel, { under: true, bevel: 0.6 })
       b.metal.box(x, x + 1.6, y - 6.5, y + 6.5, z0 + 2, z0 + 20, TONE.steel, { under: true })
     })

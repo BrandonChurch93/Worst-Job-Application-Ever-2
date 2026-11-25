@@ -135,7 +135,8 @@ const STREAK = /* glsl */ `
 	float hwF = dot( hwR, hwD );
 	vec2 hwP = vec2( dot( hwR, hwX ), dot( hwR, cross( hwD, hwX ) ) ) / max( hwF, 0.001 );
 	float hwWin = step( 0.0, hwF ) * ( 1.0 - smoothstep( 0.3, 0.48, abs( hwP.x ) ) ) * ( 1.0 - smoothstep( 0.15, 0.31, abs( hwP.y ) ) );
-	gl_FragColor.rgb += vec3( 0.8, 0.86, 0.88 ) * hwWin * 0.75;
+	float hwHalo = step( 0.0, hwF ) * ( 1.0 - smoothstep( 0.3, 0.95, length( hwP * vec2( 0.55, 1.0 ) ) ) );
+	gl_FragColor.rgb += vec3( 0.8, 0.86, 0.88 ) * ( hwWin * 0.75 + hwHalo * 0.2 );
 }
 `
 
@@ -156,7 +157,7 @@ export const tubeOf = (z: Zone, base: number): THREE.MeshPhysicalMaterial => {
     shader.uniforms.hwEdgeGain = { value: z.id === 'last' ? EDGE.page : EDGE.table }
     shader.fragmentShader = 'uniform float hwEdgeGain;\n' + shader.fragmentShader.replace(
       '#include <tonemapping_fragment>',
-      'float hwEdge = pow( 1.0 - abs( dot( normalize( vViewPosition ), normalize( normal ) ) ), 2.4 );\ngl_FragColor.rgb *= mix( 1.0, hwEdgeGain, hwEdge );\n' + STREAK + 'gl_FragColor.a = clamp( diffuseColor.a + hwEdge * 0.55 + dot( gl_FragColor.rgb, vec3( 0.3333 ) ) * 0.22, 0.0, 1.0 );\n#include <tonemapping_fragment>'
+      'float hwEdge = pow( 1.0 - abs( dot( normalize( vViewPosition ), normalize( normal ) ) ), 1.9 );\ngl_FragColor.rgb *= mix( 1.0, hwEdgeGain, hwEdge );\n' + STREAK + 'gl_FragColor.a = clamp( diffuseColor.a + hwEdge * 0.55 + dot( gl_FragColor.rgb, vec3( 0.3333 ) ) * 0.22, 0.0, 1.0 );\n#include <tonemapping_fragment>'
     )
   }
   m.customProgramCacheKey = () => 'wja-studio-hardware-clear'

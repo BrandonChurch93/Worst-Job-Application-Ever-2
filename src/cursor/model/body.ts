@@ -4,7 +4,7 @@ import { hash01 } from '../../core/random'
 import { UNIT, type BodyLook, type BodyModel, type StripPose } from '../contract'
 import { Deform } from './deform'
 import { MAX_HOLES, bodyDepthMaterial, bodyMaterial, bodyUniforms, charMaterial, type BodyUniforms } from './material'
-import { AXIS, domeAt, heightAt, inside, softInside, solid } from './shape'
+import { AXIS, heightAt, inside, solid } from './shape'
 import { cutBand, stripSet, type StripSet } from './strips'
 
 const HOLE_SEGMENTS = 48
@@ -15,6 +15,8 @@ const smooth01 = (v: number): number => {
 }
 const rag = (a: number, burnt: number): number => 1 + (0.25 + 0.3 * burnt) * (0.06 * Math.sin(3 * a + 1.3) + 0.04 * Math.sin(7 * a + 0.4) + 0.03 * Math.sin(11 * a + 2.1))
 const clamp01 = (v: number): number => Math.min(1, Math.max(0, v))
+// A strip out of its place by more than a few pixels is a loose sliver, and lies thin.
+const LOOSE = { thin: 0.6, from: 4, to: 14, arm: 40 }
 
 export class Body implements BodyModel {
   readonly root = new THREE.Group()
@@ -85,10 +87,12 @@ export class Body implements BodyModel {
   }
 
   apply(look: BodyLook): void {
-    const key = JSON.stringify(look)
+    const turn = this.root.rotation.z
+    const key = JSON.stringify(look) + turn.toFixed(3)
     if (key === this.last) return
     this.last = key
     this.deform.set(look)
+    this.deform.lean(turn)
     const u = this.uniforms
     u.uState.value.set(clamp01(look.pale), clamp01(look.heat), clamp01(look.char), clamp01(look.melt))
     u.uShape.value.set(clamp01(look.flat), 0, 0, 0)
@@ -128,40 +132,6 @@ export class Body implements BodyModel {
     }
     pos.needsUpdate = true
     g.computeVertexNormals()
-    const nor = g.getAttribute('normal') as THREE.BufferAttribute
-    const b = nor.array as Float32Array
-    const e = 0.05
-    const d = this.deform
-    for (let i = 0, n = s.inset.length; i < n; i++) {
-      if (s.ink[i] !== 0) continue
-      const x = s.rest[i * 3]!
-      const y = s.rest[i * 3 + 1]!
-      d.point(x + e, y, domeAt(x + e, y), softInside(x + e, y), p)
-      let tx = p.x
-      let ty = p.y
-      let tz = p.z
-      d.point(x - e, y, domeAt(x - e, y), softInside(x - e, y), p)
-      tx -= p.x
-      ty -= p.y
-      tz -= p.z
-      d.point(x, y + e, domeAt(x, y + e), softInside(x, y + e), p)
-      let ux = p.x
-      let uy = p.y
-      let uz = p.z
-      d.point(x, y - e, domeAt(x, y - e), softInside(x, y - e), p)
-      ux -= p.x
-      uy -= p.y
-      uz -= p.z
-      const nx = uy * tz - uz * ty
-      const ny = uz * tx - ux * tz
-      const nz = ux * ty - uy * tx
-      const len = Math.hypot(nx, ny, nz)
-      if (len < 1e-9) continue
-      b[i * 3] = nx / len
-      b[i * 3 + 1] = ny / len
-      b[i * 3 + 2] = nz / len
-    }
-    nor.needsUpdate = true
   }
 
   private applyStrips(strips: StripPose[]): void {
@@ -194,8 +164,10 @@ export class Body implements BodyModel {
     const count = set.count
     const sum = new Float64Array(count * 4)
     const p = this.p
+    const keep = strips.map((s) => 1 - LOOSE.thin * smooth01((Math.hypot(s.x, s.y) + Math.abs(s.rot) * LOOSE.arm - LOOSE.from) / (LOOSE.to - LOOSE.from)))
     for (let i = 0; i < n; i++) {
       this.deform.point(set.rest[i * 4]!, set.rest[i * 4 + 1]!, set.rest[i * 4 + 2]!, set.rest[i * 4 + 3]!, p)
+      this.deform.thin(p, keep[set.strip[i]!]!)
       a[i * 3] = p.x
       a[i * 3 + 1] = p.y
       a[i * 3 + 2] = p.z
@@ -275,12 +247,14 @@ export class Body implements BodyModel {
           const lee = 0.3 + 0.7 * side
           const heat = (r === 0 ? 0.1 : r === 1 ? 0.9 : r === 2 ? 0.45 : 0.02) * lee
           const burnt = clamp01(hole.burnt ?? 1)
-          const lit = glow * glow * flick * burnt
+          const lit = Math.pow(glow, 1.3) * (0.25 + 1.4 * flick) * burnt
           const facing = clamp01(0.5 + 0.5 * (Math.cos(ang) * 0.5 + Math.sin(ang) * 0.86))
-          const bare = (1 - burnt) * (0.66 - 0.3 * HOLE_ROWS[r]!) * (0.38 + 0.62 * facing) * (0.88 + 0.24 * hash01(j, r, 7 + h))
-          c[i] = 1.0 * heat * lit + bare * 0.84
-          c[i + 1] = (r === 0 ? 0.42 : 0.12) * heat * lit + bare * 0.78
-          c[i + 2] = 0.05 * heat * lit + bare * 0.66
+          const grit = 0.82 + 0.36 * hash01(j, r, 7 + h)
+          const bare = (1 - burnt) * (0.86 - 0.22 * HOLE_ROWS[r]!) * (0.5 + 0.5 * facing) * grit
+          const ash = burnt * (0.07 + 0.2 * facing) * (0.4 + 0.6 * HOLE_ROWS[r]!) * grit
+          c[i] = 1.0 * heat * lit + bare * 0.84 + ash * 0.9
+          c[i + 1] = (r === 0 ? 0.5 : 0.2) * heat * lit + bare * 0.78 + ash * 0.78
+          c[i + 2] = 0.05 * heat * lit + bare * 0.66 + ash * 0.66
         }
       }
     }

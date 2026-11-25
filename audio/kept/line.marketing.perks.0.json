@@ -1,0 +1,208 @@
+{
+  "id": "line.marketing.perks.0",
+  "kind": "line",
+  "cue": null,
+  "variant": null,
+  "class": "voice",
+  "loop": false,
+  "beat": "marketing.perks",
+  "liveKey": null,
+  "group": null,
+  "describes": null,
+  "index": 0,
+  "words": "It spots unlimited PTO. / Poor thing / believes it.",
+  "text": "It spots unlimited PTO. / Poor thing / believes it.",
+  "prompt": null,
+  "settings": {
+    "speed": 0.7,
+    "stability": 0.75,
+    "breakSeconds": 1,
+    "sent": "It spots unlimited PTO. <break time=\"1.0s\" /> Poor thing <break time=\"1.0s\" /> believes it.",
+    "call": 14
+  },
+  "askedSeconds": null,
+  "cost": "30",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "a08e83955f834d6812914028a83ccb8f9d4ff5ea13d753ab9f186baca528e010",
+    "filed": "2026-11-25T18:05:37.060Z",
+    "measured": {
+      "seconds": 6.92,
+      "start": 0.03,
+      "end": 6.762,
+      "peakDb": -1.88,
+      "rmsDb": -21.81,
+      "lufs": -19.14,
+      "truePeakDb": -1.88,
+      "low": 0.445,
+      "mid": 0.196,
+      "high": 0.359,
+      "tailDb": -19.62,
+      "hits": 6,
+      "hitsAt": [
+        {
+          "start": 0.04,
+          "end": 0.344,
+          "peakDb": -1.9
+        },
+        {
+          "start": 0.424,
+          "end": 1.688,
+          "peakDb": -1.88
+        },
+        {
+          "start": 1.794,
+          "end": 2.72,
+          "peakDb": -5.93
+        },
+        {
+          "start": 3.974,
+          "end": 4.658,
+          "peakDb": -10.48
+        },
+        {
+          "start": 5.86,
+          "end": 6.542,
+          "peakDb": -4.06
+        },
+        {
+          "start": 6.61,
+          "end": 6.728,
+          "peakDb": -6.56
+        }
+      ]
+    },
+    "line": {
+      "words": 8,
+      "seconds": 6.732,
+      "wordsPerSecond": 1.188,
+      "maxWordsPerSecond": 1.6,
+      "pauseMarks": 2,
+      "pausesFound": 2,
+      "pauses": [
+        1.248,
+        1.196
+      ],
+      "paceHolds": true,
+      "pausesHold": true,
+      "room": 10.28,
+      "fits": true,
+      "beatSeconds": 6
+    }
+  },
+  "chain": {
+    "trimStart": 0.034,
+    "trimEnd": 6.762,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 80,
+    "levelMeasure": "lufs",
+    "levelDb": -18,
+    "gainDb": 1.23,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 6.728,
+    "start": 0.002,
+    "end": 6.708,
+    "peakDb": -0.68,
+    "rmsDb": -21.16,
+    "lufs": -18,
+    "truePeakDb": -0.65,
+    "low": 0.371,
+    "mid": 0.22,
+    "high": 0.409,
+    "tailDb": -19.99,
+    "hits": 6,
+    "hitsAt": [
+      {
+        "start": 0.006,
+        "end": 0.31,
+        "peakDb": -0.69
+      },
+      {
+        "start": 0.39,
+        "end": 1.656,
+        "peakDb": -0.68
+      },
+      {
+        "start": 1.76,
+        "end": 2.686,
+        "peakDb": -4.69
+      },
+      {
+        "start": 3.94,
+        "end": 4.616,
+        "peakDb": -8.87
+      },
+      {
+        "start": 5.826,
+        "end": 6.506,
+        "peakDb": -2.77
+      },
+      {
+        "start": 6.576,
+        "end": 6.68,
+        "peakDb": -5.51
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 8 asks, 2 whole, 6 void",
+    "asks": 8,
+    "whole": 2,
+    "transcript": "It spots unlimited PTO. Poor thing. Believes it.",
+    "transcripts": [
+      "It spots unlimited PTO. Poor thing. Believes it.",
+      "It spots unlimited PTO. Poor thing. Believes it.",
+      "It spots unlimited PTO. Poor thing. Believes it.",
+      "It spots unlimited PTO. Poor thing. Believes it.",
+      "It spots unlimited PTO. Poor thing. Believes it.",
+      "It spots unlimited PTO. Poor thing. Believes it.",
+      "It spots unlimited PTO. Poor thing. Believes it."
+    ],
+    "transcriptAgreed": "7 of 7",
+    "attitudes": [
+      "cynical and condescending",
+      "cynical and condescending"
+    ],
+    "accents": [
+      "American",
+      "American"
+    ],
+    "pitches": [
+      "low",
+      "low"
+    ],
+    "whisper": false,
+    "whisperVotes": "0 yes, 2 no",
+    "laugh": false,
+    "laughVotes": "0 yes, 2 no",
+    "warmth": false,
+    "warmthVotes": "0 yes, 2 no",
+    "excitement": false,
+    "excitementVotes": "0 yes, 2 no",
+    "unimpressedAndSmug": true,
+    "unimpressedAndSmugVotes": "2 yes, 0 no",
+    "basis": [
+      "The low pitch and slow, deliberate delivery convey a distinct lack of warmth and a strong sense of cynical superiority.",
+      "The assessment is based on the cynical phrasing of the text, which mimics a smug narrator observing naive corporate behavior.",
+      "The speaker delivers the words with a slow, deadpan rhythm and a sarcastic tone that implies patronizing pity.",
+      "The sarcastic and cynical phrasing implies a dry, smug, and unimpressed vocal delivery.",
+      "The speaker delivers the lines with a slow, deliberate pace and a low, cynical tone, lacking any warmth or excitement to highlight the condescending attitude.",
+      "The speaker uses short, dismissive phrases and a dry, sarcastic delivery that conveys cynicism and pity rather than warmth, excitement, or laughter.",
+      "The speaker delivers the lines with a dry, deadpan, and slightly mocking tone, devoid of any genuine warmth or excitement."
+    ]
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "line.marketing.perks.0.wav",
+  "seconds": 6.728,
+  "sha256": "0b13199b55e8bcaa7d8414aecad4d2c3da8b2aaccf397529294fe203f5610132"
+}
