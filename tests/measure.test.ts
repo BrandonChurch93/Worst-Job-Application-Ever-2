@@ -216,7 +216,7 @@ describe('M8, crowded tiers', () => {
     const kinds = new Uint8Array(w).fill(1)
     kinds[0] = 2
     kinds[20] = 0
-    expect(bareFloor(kinds, w, 1, 5)).toEqual({ floor: 20, bare: 14 })
+    expect(bareFloor(kinds, w, 1, 5)).toEqual({ floor: 20, bare: 14, open: 19 })
     const d = distanceSquared(Uint8Array.from([0, 0, 0, 0, 1, 0, 0, 0, 0]), 3, 3)
     expect([...d]).toEqual([2, 1, 2, 1, 0, 1, 2, 1, 2])
   })

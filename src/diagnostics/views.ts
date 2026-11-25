@@ -38,7 +38,7 @@ export function standInColour(name: string): [number, number, number] {
 export function idColour(name: string): [number, number, number] {
   const h = hashName(name)
   const hue = ((h & 1023) / 1024) * 6
-  const low = 0.1 + 0.55 * (((h >>> 10) & 255) / 255)
+  const low = 0.02 + 0.33 * (((h >>> 10) & 255) / 255)
   const f = hue - Math.floor(hue)
   const up = low + (1 - low) * f
   const down = low + (1 - low) * (1 - f)

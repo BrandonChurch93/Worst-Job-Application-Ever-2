@@ -39,7 +39,7 @@ const summary = []
 async function picturesFor() {
   if (pictures) return pictures
   const { openPictures } = await import('./lib/measure-pictures.mjs')
-  pictures = await openPictures({ format, tier, views: s.views })
+  pictures = await openPictures({ format, tier, views: s.views, ranges: s.ranges })
   return pictures
 }
 
@@ -99,7 +99,9 @@ async function measureUnit(unit) {
 
 try {
   s = await state()
-  s.views = [...(await s.load('/src/diagnostics/views.ts')).views]
+  const viewsOf = await s.load('/src/diagnostics/views.ts')
+  s.views = [...viewsOf.views]
+  s.ranges = { texel: viewsOf.TEXEL_RANGE, coc: viewsOf.COC_RANGE }
   const info = buildInfo(at())
   console.log(`measure: tier ${tier}, format ${format}${tier === judgedTier ? '' : ` (a judged still is rendered at ${judgedTier}: these numbers are from ${tier})`}, engine ${info.engineHash}`)
   for (const unit of units) {

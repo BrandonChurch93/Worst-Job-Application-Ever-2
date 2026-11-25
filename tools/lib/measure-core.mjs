@@ -434,15 +434,17 @@ export function distanceSquared(marked, width, height) {
 export function bareFloor(kinds, width, height, radius) {
   const marked = new Uint8Array(width * height)
   let floor = 0
+  let open = 0
   for (let i = 0; i < marked.length; i++) {
     if (kinds[i] === 2) marked[i] = 1
+    if (kinds[i] === 1) open++
     if (kinds[i] !== 0) floor++
   }
   const d = distanceSquared(marked, width, height)
   let bare = 0
   const far = radius * radius
   for (let i = 0; i < marked.length; i++) if (kinds[i] === 1 && d[i] > far) bare++
-  return { floor, bare }
+  return { floor, bare, open }
 }
 
 const show = (v) => (Array.isArray(v) ? `[${v.join(', ')}]` : v === null || v === undefined ? 'nothing' : String(v))
