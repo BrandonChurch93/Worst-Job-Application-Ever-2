@@ -115,6 +115,12 @@ describe('crops', () => {
     expect(windowRound([1900, 1070, 20, 10], 696, 187, 1920, 1080)).toEqual([1224, 893, 696, 187])
     expect(windowRound([950, 535, 20, 10], 696, 187, 1920, 1080)).toEqual([612, 447, 696, 187])
   })
+  it('shows the left end of a run wider than the window, with ground before it', () => {
+    expect(windowRound([128, 400, 1200, 24], 696, 187, 1920, 1080, true)).toEqual([104, 319, 696, 187])
+    expect(windowRound([128, 400, 640, 24], 696, 187, 1920, 1080, true)).toEqual([100, 319, 696, 187])
+    expect(windowRound([10, 400, 1200, 24], 696, 187, 1920, 1080, true)).toEqual([0, 319, 696, 187])
+    expect(windowRound([128, 400, 1200, 24], 696, 187, 1920, 1080)).toEqual([380, 319, 696, 187])
+  })
   it('picks the smallest type, then the least contrast outside that window', () => {
     const runs = [
       { key: 'a', text: 'Head', box: [100, 100, 600, 60], px: 48, contrast: 9 },
