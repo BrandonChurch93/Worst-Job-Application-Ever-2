@@ -152,7 +152,7 @@ export class Stage {
       page.skip()
     }
     if (this.phase !== 'end') {
-      page.step({ step: this.pageStep, time: this.pageTime, dt, pointer, pressed: pointer.down && !this.down, released: !pointer.down && this.down, cursor: this.cursor, emit, mode: this.o.mode })
+      page.step({ step: this.pageStep, time: this.pageTime, elapsed: this.time, dt, pointer, pressed: pointer.down && !this.down, released: !pointer.down && this.down, cursor: this.cursor, emit, mode: this.o.mode })
       const gag = page.gag()
       if (gag) this.reached.add(gag)
       const inBeat = this.o.mode === 'live' || (this.index === 0 && this.pageTime >= armsBeat.from && this.pageTime < armsBeat.to)
