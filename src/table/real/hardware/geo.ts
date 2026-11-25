@@ -248,6 +248,21 @@ export class Geo {
     return this
   }
 
+  // What was added since `from` and lies on a ball round a centre takes the ball's own smooth turn, so no ring shows on it.
+  round(from: number, cx: number, cy: number, cz: number, r: number, slack: number): this {
+    for (let i = from; i < this.vertices; i++) {
+      const x = this.p[i * 3]! - cx
+      const y = this.p[i * 3 + 1]! - cy
+      const z = this.p[i * 3 + 2]! - cz
+      const l = Math.hypot(x, y, z)
+      if (l < 1e-6 || Math.abs(l - r) > slack) continue
+      this.n[i * 3] = x / l
+      this.n[i * 3 + 1] = y / l
+      this.n[i * 3 + 2] = z / l
+    }
+    return this
+  }
+
   // A ball, or a part of one, round a centre.
   ball(cx: number, cy: number, cz: number, r: number, segs: number, col: RGB, from = -Math.PI / 2, to = Math.PI / 2): this {
     const rows = Math.max(3, Math.round(segs / 2))
@@ -257,17 +272,7 @@ export class Geo {
       outline.push([Math.max(0, r * Math.cos(a)), r * Math.sin(a)])
     }
     const first = this.vertices
-    this.lathe(outline, cx, cy, segs, col, cz)
-    for (let i = first; i < this.vertices; i++) {
-      const x = this.p[i * 3]! - cx
-      const y = this.p[i * 3 + 1]! - cy
-      const z = this.p[i * 3 + 2]! - cz
-      const l = Math.hypot(x, y, z) || 1
-      this.n[i * 3] = x / l
-      this.n[i * 3 + 1] = y / l
-      this.n[i * 3 + 2] = z / l
-    }
-    return this
+    return this.lathe(outline, cx, cy, segs, col, cz).round(first, cx, cy, cz, r, r * 0.01)
   }
 
   // How far every vertex from `from` to `to` moves when a thing is fully moved: one morph of the mesh.

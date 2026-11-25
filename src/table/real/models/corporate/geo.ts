@@ -49,6 +49,21 @@ export class Geo {
     return this
   }
 
+  // A flat face of four points whose colour runs from corner to corner.
+  blend(points: [V3, V3, V3, V3], normal: V3, along: V3, cols: [RGB, RGB, RGB, RGB]): this {
+    const from = this.vertices
+    this.face(points, normal, along, cols[0])
+    const flip = dot(cross(sub(points[1], points[0]), sub(points[2], points[0])), unit(normal)) < 0
+    const order = flip ? [0, 2, 1, 0, 3, 2] : [0, 1, 2, 0, 2, 3]
+    order.forEach((k, i) => {
+      const col = cols[k]!
+      this.c[(from + i) * 3] = col[0]
+      this.c[(from + i) * 3 + 1] = col[1]
+      this.c[(from + i) * 3 + 2] = col[2]
+    })
+    return this
+  }
+
   // A closed outline of (side, height) pulled from a to b on the page. The side runs to the right of the way from a to b.
   prism(outline: V2[], a: V2, b: V2, col: RGB | ((edge: number) => RGB), caps: [boolean, boolean] = [true, true], base = 0): this {
     const len = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1

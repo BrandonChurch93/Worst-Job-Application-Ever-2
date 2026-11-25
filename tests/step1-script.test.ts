@@ -209,7 +209,7 @@ describe('step 1: the script of the film', () => {
     }
   })
 
-  it('holds the tug frame left of the field column on the intake and the outlet, and closes to about 462 px of page after the key picture', () => {
+  it('holds the tug frame left of the field column on the intake and the outlet, is close by 2.4 s into the tug, 560 to 680 px of page at the key picture, and about 520 px after it', () => {
     const page = film().page
     let gutter = Infinity
     let widest = 0
@@ -217,10 +217,14 @@ describe('step 1: the script of the film', () => {
     for (let now = CAMERA.in[1]; now <= CAMERA.out[0]; now += 0.05) {
       const cam = page.camera('film', now)!
       const wide = (1920 * 200) / (projectPage(cam, SLOT.cx + 100, SLOT.cy, 0).x - projectPage(cam, SLOT.cx - 100, SLOT.cy, 0).x)
-      if (now >= CAMERA.closer[1]) {
+      if (now >= CAMERA.creep[1]) {
         widest = Math.max(widest, wide)
         closest = Math.min(closest, wide)
       } else expect(wide, now.toFixed(2)).toBeLessThan(980)
+      if (now >= CAMERA.closer[1] && now <= CAMERA.key) {
+        expect(wide, now.toFixed(2)).toBeGreaterThan(560)
+        expect(wide, now.toFixed(2)).toBeLessThan(680)
+      }
       for (const y of [ZONE.y, ZONE.y + ZONE.h, SLOT.cy]) {
         gutter = Math.min(gutter, projectPage(cam, FIELD_X - 16, y, 0).x - 1920)
         expect(projectPage(cam, FIELD_X - 16, y, 0).x, now.toFixed(2)).toBeGreaterThan(1920 - 0.01)
@@ -231,9 +235,9 @@ describe('step 1: the script of the film', () => {
         expect(Math.min(on.x, 1920 - on.x, on.y, 1080 - on.y), now.toFixed(2)).toBeGreaterThan(100)
       }
     }
-    expect(CAMERA.closer[0]).toBeGreaterThan(25.125)
-    expect(widest).toBeLessThan(480)
-    expect(closest).toBeGreaterThan(440)
+    expect(CAMERA.closer[1]).toBeLessThanOrEqual(22.03 + 2.4)
+    expect(widest).toBeLessThan(540)
+    expect(closest).toBeGreaterThan(500)
     expect((config.cursor.heightPxAt1080 * 1920) / widest / 1080).toBeGreaterThan(0.22)
     console.log(`tug frame: ${closest.toFixed(0)} to ${widest.toFixed(0)} px of page wide once it has closed, the line before the field column ${gutter.toFixed(0)} px outside the right edge`)
   })

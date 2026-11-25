@@ -89,6 +89,9 @@ const shared = /* glsl */ `
 uniform sampler2D uArt;
 uniform float uArtOn;
 uniform vec2 uBallUv;
+uniform vec4 uFlat;
+uniform vec4 uBlock;
+uniform vec3 uFlatCol;
 uniform float uDrop;
 uniform float uTrue;
 uniform float uPlugTurn;
@@ -140,22 +143,26 @@ export const frontFragment = /* glsl */ `
 ${head}
 ${shared}
 
-vec3 floorAt( vec3 from, vec3 dir ) {
-	if ( dir.z > - 0.04 ) return surround( dir ) + softbox( dir, 0.1 ) * 0.6;
+vec4 floorAt( vec3 from, vec3 dir ) {
+	if ( dir.z > - 0.04 ) return vec4( surround( dir ) + softbox( dir, 0.1 ) * 0.6, 0.0 );
 	float t = ( uDrop - from.z ) / dir.z;
 	vec2 hit = from.xy + dir.xy * t;
 	vec2 uv = uBallUv + hit / vec2( 1920.0, 1080.0 );
 	vec3 art = mix( uGround, texture2D( uArt, uv ).rgb, uArtOn );
 	float inside = mix( 1.0, step( abs( uv.x - 0.5 ), 0.5 ) * step( abs( uv.y - 0.5 ), 0.5 ), uArtOn );
-	float fade = exp( - length( hit ) / ( uR * 16.0 ) );
+	vec2 onFlat = step( abs( hit - uFlat.xy ), uFlat.zw );
+	art = mix( art, uFlatCol, onFlat.x * onFlat.y );
+	float fade = 1.0 - smoothstep( uR * 3.0, uR * 9.0, length( hit ) );
 	vec3 glow = vec3( 0.0 );
 	for ( int i = 0; i < LAMPS; i ++ ) {
 		float q = length( hit - uLampPos[ i ].xy );
-		float disc = 1.0 - smoothstep( 30.0, 46.0, q );
-		glow += uLampCol[ i ].rgb * uLampCol[ i ].w * ( disc * ( 0.75 + 0.25 * sin( q * 0.9 ) ) + 0.25 * exp( - q * q / 9000.0 ) );
+		float disc = 1.0 - smoothstep( 44.0, 54.0, q );
+		glow += uLampCol[ i ].rgb * uLampCol[ i ].w * ( disc * ( 0.75 + 0.25 * sin( q * 0.9 ) ) + 0.12 * exp( - q * q / 9000.0 ) );
 	}
 	float shade = 1.0 - 0.45 * exp( - dot( hit, hit ) / ( uR * uR * 1.1 ) );
-	return mix( surround( dir ), art * uFloor * shade + glow, inside * fade );
+	vec2 onBlock = step( abs( hit - uBlock.xy ), uBlock.zw );
+	float open = inside * fade * ( 1.0 - onBlock.x * onBlock.y );
+	return vec4( mix( surround( dir ), art * uFloor * shade + glow, open ), open );
 }
 
 void main() {
@@ -181,22 +188,24 @@ void main() {
 	vec3 N2 = normalize( Pout - C );
 	vec3 T2 = refract( T, - N2, 1.49 );
 	if ( dot( T2, T2 ) < 0.5 ) T2 = reflect( T, - N2 );
-	vec3 bent = floorAt( Pout, T2 );
+	vec4 seen = floorAt( Pout, T2 );
+	vec3 bent = seen.rgb;
+	float known = mix( 0.34, 1.0, seen.a );
 
 	vec3 gather = vec3( 0.0 );
 	for ( int i = 0; i < LAMPS; i ++ ) gather += uLampLit[ i ] * ( 1.0 - uLampCol[ i ].w ) * pow( max( dot( - normalize( uLampPos[ i ] - C ), Np ), 0.0 ), 5.0 );
 
 	float band = smoothstep( RIN - 0.012, RIN + 0.012, rho );
 	float lens = smoothstep( 0.42, RIN, rho );
-	float aIn = mix( 0.05, 0.5, lens * lens );
-	float alpha = mix( mix( aIn, 0.93, band ), mix( 0.03, 0.34, band ), uTrue ) * mix( 0.7, 1.0, uArtOn );
+	float aIn = mix( 0.05, 0.5 * known, lens * lens );
+	float alpha = mix( mix( aIn, 0.93 * known, band ), mix( 0.03, 0.34, band ), uTrue ) * mix( 0.7, 1.0, uArtOn );
 	vec3 col = ( bent * mix( 1.0, 1.25, band ) + ( gather * 0.3 + uHaze + uSoft * 0.06 ) * band ) * alpha;
 
 	vec3 Ni = normalize( N + 0.1 * Np );
 	vec3 Ri = reflect( - V, Ni );
 	vec3 refl = softbox( R, 0.03 ) * SOFT * ( 0.1 + 0.5 * pow( 1.0 - ndv, 2.0 ) );
 	refl += softbox( Ri, 0.16 ) * SOFT * 0.04;
-	refl += floorAt( vP, R ) * F * 0.9;
+	refl += floorAt( vP, R ).rgb * F * 0.9;
 	refl += lampsIn( R, vP, 1.0 ) * ( 0.07 + 0.9 * F );
 	refl += lampsIn( Ri, vP, 0.7 ) * 0.035;
 	col += refl;
@@ -209,7 +218,7 @@ void main() {
 	col += lip * ( softbox( reflect( - V, normalize( N - 0.6 * Np ) ), 0.25 ) * SOFT * 0.05 + gather * 0.3 );
 
 	col *= 1.0 - 0.22 * smoothstep( 0.9, 0.96, rho );
-	float edge = smoothstep( 0.95, 0.992, rho );
+	float edge = smoothstep( 0.958, 0.993, rho );
 	col = mix( col, col * 0.22, edge * 0.85 );
 	alpha = mix( alpha, 0.97, edge * 0.8 );
 

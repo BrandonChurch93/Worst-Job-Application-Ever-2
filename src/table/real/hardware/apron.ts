@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { APRON_Y, BALL, PLUNGER, railOf } from '../../layout'
 import { localBalls, type Zone } from '../zone'
-import { Geo, type V3 } from './geo'
+import { Geo, type V2, type V3 } from './geo'
 import { TUBE, clamp, coil, collar, frameAt, lengthOf, rounded, shells } from './kit'
 import { FIN, Screws, TONE, shade } from './mats'
 
@@ -35,7 +35,7 @@ export function plunger(z: Zone): Geo {
   const moving = G.vertices
   const r = PLUNGE.knob
   from = G.vertices
-  G.f(FIN.gloss).lathe([[0, -r], [r * 0.34, -r * 0.94], [r * 0.64, -r * 0.77], [r * 0.87, -r * 0.5], [r * 0.98, -r * 0.2], [r, 0.08 * r], [r * 0.93, r * 0.36], [r * 0.74, r * 0.62], [r * 0.5, r * 0.8], [r * 0.5, r * 0.92], [r * 0.6, r * 0.97], [r * 0.6, r * 1.1], [r * 0.4, r * 1.2], [r * 0.36, r * 1.4]], 0, 0, 18, TONE.orange)
+  G.f(FIN.gloss).lathe([[0, -r], [r * 0.34, -r * 0.94], [r * 0.64, -r * 0.77], [r * 0.87, -r * 0.5], [r * 0.98, -r * 0.2], [r, 0.08 * r], [r * 0.93, r * 0.36], [r * 0.74, r * 0.62], [r * 0.5, r * 0.8], [r * 0.5, r * 0.92], [r * 0.6, r * 0.97], [r * 0.6, r * 1.1], [r * 0.4, r * 1.2], [r * 0.36, r * 1.4]], 0, 0, 28, TONE.knob).round(from, 0, 0, 0, r, r * 0.045)
   G.f(FIN.rubber).lathe([[r * 0.36, r * 1.4], [r * 0.48, r * 1.4], [r * 0.52, r * 1.47], [r * 0.52, r * 1.62], [r * 0.48, r * 1.7], [5.5, r * 1.7]], 0, 0, 16, TONE.rubberBlack)
   G.move(from, turn(yk))
   const clip = face + PLUNGE.spring
@@ -55,6 +55,8 @@ export function plunger(z: Zone): Geo {
   return G
 }
 
+export const PORT = { clear: 20, step: 4, gap: 3, land: 20, far: 46, thick: 2.4, cuts: 10 }
+
 export interface Drain { G: Geo; C: Geo; S: Screws }
 
 // The clear tube the ball leaves by, where it shows on the last screen.
@@ -66,13 +68,52 @@ export function drain(z: Zone): Drain {
   const path = rounded(pts, TUBE.bend)
   shells(C, path)
   const length = lengthOf(path)
-  for (let s = TUBE.collarStep * 0.5; s < length - 20; s += TUBE.collarStep) {
+  const crown = (q: number): number => (frameAt(path, q)?.at.z ?? 0) + TUBE.outer
+  let a = 0
+  while (a < length && crown(a) < 0) a += PORT.step
+  let b = a
+  while (b < length && crown(b) < PORT.clear) b += PORT.step
+  const gland = b + PORT.gap + TUBE.collar / 2 + 2
+  for (let s = gland; s < length - 20; s += TUBE.collarStep) {
     const f = frameAt(path, s)
-    if (f && f.at.z > -TUBE.outer) collar(G, S, f)
+    if (f) collar(G, S, f)
     const g = frameAt(path, s + TUBE.collarStep / 2)
     if (g && g.flat && s + TUBE.collarStep / 2 < length - 30 && g.at.z > 20 && g.at.z < 90) clamp(G, S, g, 0)
   }
   const f = frameAt(path, length - TUBE.collar / 2 - 0.5)
   if (f) collar(G, S, f)
+
+  // Where the tube comes up through the page: a steel plate screwed to the page, a long dark slot in it that the tube rises out of.
+  if (b > a && b < length) {
+    const edge = (q: number, w: number | null, side: number): V2 => {
+      const g = frameAt(path, q)!
+      const sx = g.m.elements[0]!
+      const sy = g.m.elements[1]!
+      const l = Math.hypot(sx, sy) || 1
+      const half = w ?? Math.sqrt(Math.max(0, TUBE.outer * TUBE.outer - g.at.z * g.at.z)) + PORT.gap
+      return [g.at.x + (side * half * sx) / l, g.at.y + (side * half * sy) / l]
+    }
+    const wide = TUBE.outer + PORT.land
+    const g = frameAt(path, b)!
+    const tl = Math.hypot(g.m.elements[8]!, g.m.elements[9]!) || 1
+    const tx = g.m.elements[8]! / tl
+    const ty = g.m.elements[9]! / tl
+    const corner = (along: number, side: number): V2 => [g.at.x + tx * along - ty * side * wide, g.at.y + ty * along + tx * side * wide]
+    G.f(FIN.zinc).slab([corner(a - b - PORT.land, 1), corner(PORT.far, 1), corner(PORT.far, -1), corner(a - b - PORT.land, -1)], 0.2, PORT.thick, shade(TONE.zinc, 0.5), { bevel: 0.8 })
+    const up: V2[] = []
+    const down: V2[] = []
+    for (let i = 0; i <= PORT.cuts; i++) {
+      const q = a + ((b + PORT.gap - a) * i) / PORT.cuts
+      up.push(edge(q, null, 1))
+      down.push(edge(q, null, -1))
+    }
+    G.f(FIN.dark).slab([...up, ...down.reverse()], PORT.thick - 0.4, PORT.thick + 0.1, TONE.pocketDeep, { sides: false })
+    for (const along of [a - b - PORT.land + 9, PORT.far - 9]) {
+      for (const side of [-1, 1]) {
+        const c = corner(along, side * (1 - 9 / wide))
+        S.add(c[0], c[1], PORT.thick, 0.7)
+      }
+    }
+  }
   return { G, C, S }
 }

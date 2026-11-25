@@ -1,12 +1,10 @@
 import * as THREE from 'three'
 import type { RealContext } from '../../../real/types'
-import { materials } from '../../../shell/materials'
-import { lit } from '../light'
 import { local, localOf, shapesIn, type Zone } from '../zone'
 import { Geo, roundedLoop, type V2 } from './geo'
 import { Screws, TONE, aluOf, clearOf, mesh, paintOf, screwOf } from './mats'
 
-const SLAB = { height: 16, bevel: 3.2, corner: 10 }
+const SLAB = { height: 16, bevel: 3.2, corner: 10, inlay: 9, line: 1.5, grain: 0.03 }
 const CARD = { cover: 12, thick: 2.6, lift: 1.4 }
 
 export function apron(z: Zone, ctx: RealContext): THREE.Object3D {
@@ -30,6 +28,11 @@ export function apron(z: Zone, ctx: RealContext): THREE.Object3D {
     if (!s) continue
     const top = id === 'apron-right' && card ? card.z0 : Math.max(SLAB.height, s.z1)
     C.slab(roundedLoop(s.x0, s.x1, s.y0, s.y1, SLAB.corner, 5), 0, top, TONE.ceramic, { bevel: SLAB.bevel })
+    // A fine brass line is let into the face of each slab, just inside its bevel.
+    const n = SLAB.inlay
+    const w = SLAB.line / 2
+    for (const y of [s.y0 + n, s.y1 - n]) A.box(s.x0 + n - w, s.x1 - n + w, y - w, y + w, top - 0.4, top + 0.12, TONE.brass, { along: [1, 0, 0] })
+    for (const x of [s.x0 + n, s.x1 - n]) A.box(x - w, x + w, s.y0 + n + w, s.y1 - n - w, top - 0.4, top + 0.12, TONE.brass, { along: [0, 1, 0] })
     C.map(0, (x, y) => [x + 960, z.top + z.height / 2 - y])
     P.slab(roundedLoop(s.x0 - 1.4, s.x1 + 1.4, s.y0 - 1.4, s.y1 + 1.4, SLAB.corner + 1.4, 5), 0, 0.5, TONE.gap, { sides: false })
   }
@@ -66,8 +69,7 @@ export function apron(z: Zone, ctx: RealContext): THREE.Object3D {
     for (let i = 0; i < 4; i++) screws.add(p[0] + 44.3 * Math.cos(Math.PI / 4 + (i * Math.PI) / 2), cy + 44.3 * Math.sin(Math.PI / 4 + (i * Math.PI) / 2), 5, 0.56, i)
   }
   if (C.vertices > 0) {
-    const m = lit(materials().ceramic, z)
-    o.add(mesh(C, m, `table-frame.ceramic.${z.id}`, { cast: true }))
+    o.add(mesh(C, paintOf(z, 'slab', SLAB.grain), `table-frame.ceramic.${z.id}`, { cast: true }))
   }
   if (A.vertices > 0) o.add(mesh(A, aluOf(z), `table-frame.metal.${z.id}`, { cast: true }))
   if (P.vertices > 0) o.add(mesh(P, paintOf(z), `table-frame.paint.${z.id}`))
