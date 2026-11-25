@@ -1,8 +1,9 @@
 import * as THREE from 'three'
 import type { RealContext } from '../../../../real/types'
-import { railOf } from '../../../layout'
+import { railOf, table } from '../../../layout'
 import { localBalls, type Zone } from '../../zone'
 import { Geo, type V2, type V3 } from './geo'
+import { WEDGE } from './wedges'
 import { FINISH, drop as free, fin, hex, matsOf, mesh, moved, place, screw, shade } from './mats'
 
 // The wire ramp, as agreed with the owner of the ramps: the rail's height is the underside of the ball.
@@ -47,83 +48,175 @@ export function buildLadder(z: Zone, _ctx: RealContext): THREE.Object3D {
     const t: V2 = [(b[0] - a[0]) / l, (b[1] - a[1]) / l]
     return { p: pos(s), t, r: [t[1], -t[0]] }
   }
-  // Where the way up and the way down run side by side, a wire of one may not stand in the path of a ball on the other.
-  const crowded = (q: V3, s: number): boolean => {
-    for (let k = 0; k <= L; k += 12) {
-      if (Math.abs(k - s) < 260) continue
-      const c = pos(k)
-      if (Math.hypot(c[0] - q[0], c[1] - q[1]) < WIRE.clear && Math.abs(c[2] + WIRE.centre - q[2]) < 70) return true
+  const pts: V3[] = []
+  for (let k = 0; k <= L; k += 6) pts.push(pos(k))
+  const near = (q: V3, from = 0, to = pts.length): { d: number; s: number } => {
+    let d = Infinity
+    let s = 0
+    for (let i = from; i < to; i++) {
+      const c = pts[i]!
+      const l = Math.hypot(c[0] - q[0], c[1] - q[1])
+      if (l < d) {
+        d = l
+        s = i * 6
+      }
     }
-    return false
+    return { d, s }
   }
-  const off = (a: At, lat: number, up: number): V3 => [a.p[0] + a.r[0] * lat, a.p[1] + a.r[1] * lat, a.p[2] + up]
-  const wire = (lat: number, up: number, segs: number): void => {
+  // The way up and the way down run closer than two lanes: the two are one frame, and a wire stands only where it is on the edge of both.
+  const free = (q: V3, need: number): boolean => near(q).d >= need - 2
+  let area = 0
+  for (let i = 0; i < pts.length; i++) {
+    const c = pts[i]!
+    const n = pts[(i + 1) % pts.length]!
+    area += c[0] * n[1] - n[0] * c[1]
+  }
+  const out = area > 0 ? 1 : -1
+  const foot: V3 = [(raw[0]![0] + raw[raw.length - 1]![0]) / 2, (raw[0]![1] + raw[raw.length - 1]![1]) / 2, 0]
+  let apex = 0
+  let far = 0
+  pts.forEach((c, i) => {
+    const l = Math.hypot(c[0] - foot[0], c[1] - foot[1])
+    if (l > far) {
+      far = l
+      apex = i
+    }
+  })
+  const sApex = apex * 6
+  const mate = (s: number): At => at(near(pos(s), Math.min(pts.length - 1, apex + 4), pts.length).s)
+  const inTri = (q: V3 | V2, a: V2, b: V2, c: V2): boolean => {
+    const e = (u: V2, v: V2): number => (q[0] - u[0]) * (v[1] - u[1]) - (q[1] - u[1]) * (v[0] - u[0])
+    const d0 = e(a, b)
+    const d1 = e(b, c)
+    const d2 = e(c, a)
+    return (d0 >= 0 && d1 >= 0 && d2 >= 0) || (d0 <= 0 && d1 <= 0 && d2 <= 0)
+  }
+  const plates = (grow: number): V2[][] => table.slings.filter((g) => g.tier === z.tier).map((g) => {
+    const c = [g.a, g.b, g.c].map((v) => localBalls(z, v[0], v[1])) as unknown as V2[]
+    const m: V2 = [(c[0]![0] + c[1]![0] + c[2]![0]) / 3, (c[0]![1] + c[1]![1] + c[2]![1]) / 3]
+    return c.map((v) => {
+      const l = Math.hypot(v[0] - m[0], v[1] - m[1]) || 1
+      return [v[0] + ((v[0] - m[0]) / l) * grow, v[1] + ((v[1] - m[1]) / l) * grow] as V2
+    })
+  })
+  const over = plates(22)
+  const wide = plates((WIRE.foot + 4) * 2)
+  // No wire may lie in the marble of a sling plate it passes over.
+  const clear = WEDGE.under + WEDGE.thick + WIRE.r + 1.6
+  const off = (a: At, lat: number, up: number): V3 => {
+    const q: V3 = [a.p[0] + a.r[0] * lat, a.p[1] + a.r[1] * lat, a.p[2] + up]
+    if (q[2] < clear && over.some((t) => inTri(q, t[0]!, t[1]!, t[2]!))) q[2] = clear
+    return q
+  }
+  const bead = (q: V3, r = WIRE.weld): void => {
+    F.lathe([[0, -r * 0.5], [r, -r * 0.25], [r, r * 0.25], [0, r * 0.5]], q[0], q[1], 7, shade(STEEL, 0.8), q[2])
+  }
+  const wire = (lat: number, up: number, need: number): void => {
     let line: V3[] = []
-    let last: V3 | null = null
     const end = (): void => {
-      if (line.length > 1) S.pipe(line, WIRE.r, segs, STEEL)
-      if (line.length > 1) for (const q of [line[0]!, line[line.length - 1]!]) S.lathe([[0, -WIRE.r], [WIRE.r, 0], [0, WIRE.r]], q[0], q[1], 5, STEEL, q[2])
+      if (line.length > 2) {
+        S.pipe(line, WIRE.r, 6, STEEL)
+        for (const q of [line[0]!, line[line.length - 1]!]) S.lathe([[0, -WIRE.r], [WIRE.r, 0], [0, WIRE.r]], q[0], q[1], 5, STEEL, q[2])
+      }
       line = []
     }
-    for (let s = 0; s <= L; s += 15) {
+    for (let s = 0; s <= L; s += 10) {
       const a = at(s)
       const q = off(a, lat, up)
-      if (crowded(q, s)) {
+      if (!free(q, need)) {
         end()
-        last = null
         continue
       }
+      const last = line[line.length - 1]
       if (last && (q[0] - last[0]) * a.t[0] + (q[1] - last[1]) * a.t[1] < 1.5) continue
       line.push(q)
-      last = q
     }
     end()
   }
+  const blocked = (q: V3): boolean => {
+    const reach = WIRE.foot + 4
+    if (wide.some((t) => inTri(q, t[0]!, t[1]!, t[2]!))) return true
+    const round = (c: [number, number], r: number): boolean => {
+      const l = localBalls(z, c[0], c[1])
+      return Math.hypot(l[0] - q[0], l[1] - q[1]) < r * 96 + reach
+    }
+    for (const g of table.posts) if (g.tier === z.tier && round(g.c, g.r)) return true
+    for (const g of table.inserts) if (g.tier === z.tier && round(g.c, g.r)) return true
+    for (const g of table.lamps) if (g.tier === z.tier && round(g.c, 0.2)) return true
+    for (const g of table.models) {
+      if (g.tier !== z.tier) continue
+      const c0 = localBalls(z, g.box[0], g.box[1])
+      const c1 = localBalls(z, g.box[0] + g.box[2], g.box[1] + g.box[3])
+      if (q[0] > Math.min(c0[0], c1[0]) - reach && q[0] < Math.max(c0[0], c1[0]) + reach && q[1] > Math.min(c0[1], c1[1]) - reach && q[1] < Math.max(c0[1], c1[1]) + reach) return true
+    }
+    return false
+  }
+  const hoop = (a: At, from: number, to: number, n: number): V3[] => {
+    const line: V3[] = []
+    for (let k = 0; k <= n; k++) {
+      const th = from + ((to - from) * k) / n
+      line.push(off(a, out * Math.sin(th) * WIRE.hoop, WIRE.centre - Math.cos(th) * WIRE.hoop))
+    }
+    return line
+  }
+  const stand = (from: V3, a: At): void => {
+    if (from[2] < 12) return
+    const feet: V3[] = from[2] > 96 ? [[from[0] + a.t[0] * 20, from[1] + a.t[1] * 20, 0], [from[0] - a.t[0] * 20, from[1] - a.t[1] * 20, 0]] : [[from[0], from[1], 0]]
+    for (const f of feet) {
+      S.pipe([from, [f[0], f[1], 2]], WIRE.r, 5, STEEL)
+      S.lathe([[WIRE.foot, 0], [WIRE.foot, 1.7], [WIRE.foot - 0.8, 2.5], [4.6, 2.5], [WIRE.r, 5.2]], f[0], f[1], 14, shade(STEEL, 0.92))
+      for (const side of [-7, 7]) screw(F, f[0] + a.r[0] * side, f[1] + a.r[1] * side, 2.5, 2.6, shade(STEEL, 0.85))
+    }
+    bead(from, WIRE.weld + 0.6)
+  }
   fin(S, FINISH.polished, () => {
-    wire(-WIRE.under, WIRE.underUp, 6)
-    wire(WIRE.under, WIRE.underUp, 6)
-    wire(-WIRE.side, WIRE.sideUp, 6)
-    wire(WIRE.side, WIRE.sideUp, 6)
-    // A rung every half ball.
+    wire(out * WIRE.under, WIRE.underUp, WIRE.under)
+    wire(out * WIRE.side, WIRE.sideUp, WIRE.side)
+    wire(-out * WIRE.under, WIRE.underUp, WIRE.under)
+    // A rung every half ball: across one lane where the two stand apart, across both where they run as one.
     for (let s = WIRE.rung / 2; s < L; s += WIRE.rung) {
       const a = at(s)
-      const l = off(a, -WIRE.under, WIRE.underUp - 1.2)
-      const r = off(a, WIRE.under, WIRE.underUp - 1.2)
-      if (crowded(l, s) || crowded(r, s)) continue
+      const l = off(a, out * WIRE.under, WIRE.underUp - 1.4)
+      let r = off(a, -out * WIRE.under, WIRE.underUp - 1.4)
+      if (!free(r, WIRE.under)) {
+        if (s > sApex - 30) continue
+        r = off(mate(s), out * WIRE.under, WIRE.underUp - 1.4)
+      }
       S.pipe([l, r], 2.1, 5, shade(STEEL, 0.94))
-      for (const q of [l, r]) F.lathe([[0, -1.6], [WIRE.weld, -0.8], [WIRE.weld, 0.8], [0, 1.6]], q[0], q[1], 7, shade(STEEL, 0.8), q[2])
+      bead(l)
+      bead(r)
     }
-    // A hoop round the outside of the four wires, and under it a leg down to a foot on the floor.
-    for (let s = WIRE.hoops / 2 + 24; s < L - 30; s += WIRE.hoops) {
+    // A cradle under both lanes from one outer guide wire to the other, and under it a leg down to a foot on the floor.
+    for (let s0 = 96; s0 < sApex - 60; s0 += WIRE.hoops) {
+      let s = s0
+      for (const d of [0, 24, -24, 48, -48, 72]) {
+        const a = at(s0 + d)
+        const b = mate(s0 + d)
+        const m: V3 = [(a.p[0] + b.p[0]) / 2, (a.p[1] + b.p[1]) / 2, 0]
+        s = s0 + d
+        if (!blocked(m) && !blocked([m[0] + a.t[0] * 20, m[1] + a.t[1] * 20, 0]) && !blocked([m[0] - a.t[0] * 20, m[1] - a.t[1] * 20, 0])) break
+      }
       const a = at(s)
-      const pt = (th: number): V3 => off(a, Math.sin(th) * WIRE.hoop, WIRE.centre - Math.cos(th) * WIRE.hoop)
-      const low = pt(0)
-      if (low[2] < 9 || crowded(low, s)) continue
-      const arc: V3[] = []
-      const n = 8
-      let lo = -n
-      let hi = n
-      for (let k = 1; k <= n; k++) if (crowded(pt((k / n) * 1.72), s)) {
-        hi = k - 1
-        break
-      }
-      for (let k = -1; k >= -n; k--) if (crowded(pt((k / n) * 1.72), s)) {
-        lo = k + 1
-        break
-      }
-      for (let k = lo; k <= hi; k++) arc.push(pt((k / n) * 1.72))
-      if (arc.length > 1) S.pipe(arc, WIRE.hoopR, 5, STEEL)
-      for (const [lat, up] of [[-WIRE.under, WIRE.underUp], [WIRE.under, WIRE.underUp], [-WIRE.side, WIRE.sideUp], [WIRE.side, WIRE.sideUp]] as V2[]) {
-        const q = off(a, lat, up)
-        if (!crowded(q, s)) F.lathe([[0, -1.8], [WIRE.weld, -0.9], [WIRE.weld, 0.9], [0, 1.8]], q[0] + a.r[0] * Math.sign(lat) * 1.6, q[1] + a.r[1] * Math.sign(lat) * 1.6, 7, shade(STEEL, 0.8), q[2] - 1.5)
-      }
-      const feet: V3[] = low[2] > 96 ? [off(a, -20, -a.p[2]), off(a, 20, -a.p[2])] : [off(a, 0, -a.p[2])]
-      for (const f of feet) {
-        S.pipe([low, [f[0], f[1], 2]], WIRE.r, 5, STEEL)
-        S.lathe([[WIRE.foot, 0], [WIRE.foot, 2.5], [4.6, 2.5], [WIRE.r, 5.2]], f[0], f[1], 12, shade(STEEL, 0.92))
-        for (const side of [-7, 7]) screw(F, f[0] + a.r[0] * side, f[1] + a.r[1] * side, 2.5, 3, shade(STEEL, 0.85))
-      }
+      const b = mate(s)
+      const up = hoop(a, 1.72, 0, 7)
+      const down = hoop(b, 0, 1.72, 7)
+      S.pipe([...up, ...down], WIRE.hoopR, 5, STEEL)
+      const u = up[up.length - 1]!
+      const d = down[0]!
+      stand([(u[0] + d[0]) / 2, (u[1] + d[1]) / 2, (u[2] + d[2]) / 2], a)
+      for (const [w, lat, h] of [[a, WIRE.side, WIRE.sideUp], [a, WIRE.under, WIRE.underUp], [b, WIRE.side, WIRE.sideUp], [b, WIRE.under, WIRE.underUp]] as [At, number, number][]) bead(off(w, out * (lat + 1.6), h - 1.5))
     }
+    // Round the turn at the top the cradles stand on their own.
+    for (const s of [sApex - 44, sApex + 44]) {
+      const a = at(s)
+      const line = hoop(a, 1.72, -0.5, 9)
+      S.pipe(line, WIRE.hoopR, 5, STEEL)
+      for (const [lat, h] of [[WIRE.side, WIRE.sideUp], [WIRE.under, WIRE.underUp]] as V2[]) bead(off(a, out * (lat + 1.6), h - 1.5))
+    }
+    const top = at(sApex)
+    const crown = hoop(top, 1.72, 0, 7)
+    S.pipe(crown, WIRE.hoopR, 5, STEEL)
+    stand(crown[crown.length - 1]!, { p: top.p, t: top.r, r: top.t })
   })
   F.map(0, () => [(FINISH.polished + 0.5) / 8, 0.5])
   // The flap at the foot, where a ball leaves the floor for the wires.

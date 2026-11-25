@@ -5,7 +5,7 @@ import { localBalls, type Zone } from '../../zone'
 import { Geo, type V3 } from './geo'
 import { FINISH, TONE, drop as free, fin, hex, matsOf, mesh, moved, place, screw, shade } from './mats'
 
-export const NOTE = { leaf: 44, wide: 28, paper: 31, hinge: 4, lean: 0.34, rest: 0.3 }
+export const NOTE = { leaf: 44, wide: 30, paper: 32, hinge: 4, lean: 0.3, rest: 0.62 }
 
 interface Built { leaves: THREE.InstancedMesh; tick: THREE.Mesh; at: { id: string; p: V3; turn: number }[] }
 const built = new WeakMap<THREE.Object3D, Built>()
@@ -107,12 +107,12 @@ export function poseNotes(o: THREE.Object3D, _z: Zone, ctx: RealContext | null):
   if (!b) return
   b.at.forEach((n, i) => {
     const t = ctx?.byId.get(n.id)?.v?.[1] ?? 9
-    let a = NOTE.rest
+    let a = NOTE.rest + (i - 1) * 0.045
     if (t < 2.2) {
       a += NOTE.lean * Math.min(1, t / 0.035) * Math.exp(-t * 3.4) * Math.cos(t * 17.5)
       a += 0.02 * Math.exp(-t * 1.6) * Math.sin(t * 61 + i)
     }
-    Q.setFromAxisAngle(UP, n.turn)
+    Q.setFromAxisAngle(UP, n.turn + (i - 1) * 0.07 + (i === 1 ? -0.05 : 0))
     Q2.setFromAxisAngle(X, -a)
     M.compose(P.set(n.p[0], n.p[1], n.p[2]), Q.multiply(Q2), ONE)
     b.leaves.setMatrixAt(i, M)
