@@ -20,7 +20,7 @@ export function garage(b: Buckets, z: Zone): void {
   const pitch = (top - 6) / decks
   const slab = 5
   const core = R * 0.36
-  const con: RGB = TONE.concrete
+  const con: RGB = shade(TONE.concrete, 0.72)
 
   const ring = (r: number, n = 48): V2[] => {
     const out: V2[] = []
@@ -50,7 +50,7 @@ export function garage(b: Buckets, z: Zone): void {
     }
     g.lathe([[R, zt], [R, zt + 10], [R - 2.4, zt + 10], [R - 2.4, zt]], cx, cy, 56, shade(con, 1.08), { kind: KIND.concrete })
     // The lit wall of the ramp behind the deck, seen between the decks.
-    if (d < decks) b.glow.lathe([[core + 0.3, zt + 1], [core + 0.3, zt + pitch - slab - 1]], cx, cy, 24, [0.42, 0.36, 0.27])
+    if (d < decks) b.glow.lathe([[core + 0.3, zt + 1], [core + 0.3, zt + pitch - slab - 1]], cx, cy, 24, [0.15, 0.12, 0.085])
     // Bay lines, radial, and a ring line where the lane runs.
     const bays = 12
     for (let k = 0; k < bays; k++) {

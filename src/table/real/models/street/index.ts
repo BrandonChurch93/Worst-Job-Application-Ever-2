@@ -14,7 +14,7 @@ import { HATCH, moms, type Moms } from './moms'
 import { police } from './police'
 import { roadSign, streetThings } from './things'
 
-const VERSION = 'street-models-6'
+const VERSION = 'street-models-8'
 
 // Everything the seven parts are built from in one zone, made once and shared: each part keeps the meshes that are its own.
 interface Street {
@@ -148,8 +148,8 @@ const fire = whole('model-firehouse', {
     const frame = k.frame as THREE.Mesh
     frame.position.set(Math.sin(ctx.time * 71) * 0.9 * d.shake, 0, Math.abs(Math.sin(ctx.time * 53)) * 1.1 * d.shake)
     const red = levels(ctx, z).byName.red ?? 0
-    ;(k.lens as THREE.MeshPhysicalMaterial).emissiveIntensity = 0.22 + 0.95 * red
-    ;(k.glow as THREE.MeshStandardMaterial).emissiveIntensity = 0.3 + 2.4 * red
+    ;(k.lens as THREE.MeshPhysicalMaterial).emissiveIntensity = 0.1 + 0.5 * red
+    ;(k.glow as THREE.MeshStandardMaterial).emissiveIntensity = 0.3 + 3 * red
     ;(k.turn as THREE.Mesh).rotation.z = red > 0.6 ? ctx.time * 8.5 : 0.6
   }
 })
@@ -175,8 +175,8 @@ const cops = whole('model-police', {
     const k = kept.get(o)
     if (!k) return
     const blue = levels(ctx, z).byName.blue ?? 0
-    ;(k.lens as THREE.MeshPhysicalMaterial).emissiveIntensity = 0.22 + 0.95 * blue
-    ;(k.glow as THREE.MeshStandardMaterial).emissiveIntensity = 0.3 + 2.4 * blue
+    ;(k.lens as THREE.MeshPhysicalMaterial).emissiveIntensity = 0.1 + 0.5 * blue
+    ;(k.glow as THREE.MeshStandardMaterial).emissiveIntensity = 0.3 + 3 * blue
     ;(k.turn as THREE.Mesh).rotation.z = blue > 0.6 ? -ctx.time * 8.5 : 2.2
   }
 })
@@ -206,7 +206,7 @@ const park = whole('model-garage', {
   pose(o, z, ctx) {
     const k = kept.get(o)
     if (!k) return
-    ;(k.glow as THREE.MeshStandardMaterial).emissiveIntensity = 0.25 + 2.4 * (levels(ctx, z).byName.windows ?? 0)
+    ;(k.glow as THREE.MeshStandardMaterial).emissiveIntensity = 0.2 + 1.05 * (levels(ctx, z).byName.windows ?? 0)
   }
 })
 
