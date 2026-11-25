@@ -32,6 +32,10 @@ Unit `boss`, page `step4`. Logic in `src/pages/step4/`, the boss in `src/boss/`,
 - A slab aims at where the cursor was when the cannon wound up (0.45 s before it fires), flies flat and upright with a small tilt so its words stay readable, as in the approved picture, and stops. A hit scorches the cursor, knocks it back and is followed by a dust off. The scorch is the cursor body's own and heals by itself. After a hit the cursor is safe for 1.2 s.
 - A pop-up blocks darts. Three darts break it. A click on one of its buttons closes it at once (event `popup-close`, silent) and fires no dart.
 - The last stand: 0.3 s after health 40 the boss emits `session-expired`, raises the banner `copy:step4.errorSlabs.2`, takes 10 health back, then fires faster and raises pop-ups again.
+- The banner stands above the boss with a gap, on the content line. The boss holds still under it until it is gone.
+- In the first phase the boss walks a small loop round the place the approved picture `boss-fight` has it.
+- Pop-ups fill their column from the top. A pop-up rises out of the page and sinks back into it at its full size with its words on; a spent slab sinks the same way. Nothing on the page is ever a blank plate.
+- A dart is a small arrow with a short trail, the stand-in for the kit's tiny cursor dart.
 - From `boss.collapse` on nothing can hit the cursor: slabs, pop-ups and darts are cleared in the same step as `power-down`. `done()` waits for the cursor to be whole.
 - `boss-slow` is emitted once, in the live site only, when the fight has run `live.bossSlowSeconds` and the boss is above half its health. The brief says "once at `live.bossSlowSeconds`"; the kit (`kit/03-METHOD.md`, the live site) adds "with the boss above half its health". The kit wins.
 - `skip()`: before the button breaks out, the button is pressed in its socket. After that the boss is beaten on the spot, collapses and presses itself. Longest time from skip to the next page, measured in the tests: under `live.controlTakenMaxSeconds`.
@@ -46,7 +50,9 @@ Unit `boss`, page `step4`. Logic in `src/pages/step4/`, the boss in `src/boss/`,
 ## The film
 
 - The pointer path and the clicks are in `src/pages/step4/script.ts`, a pure function of time. Events measured with `npx vitest run tests/boss.test.ts`: `checkbox` 3.80 s, `button-crack` 6.11, `unfold` 6.71, first `slab-fire` 9.86, first `popup` 16.20, `session-expired` 22.07, `power-down` 27.10, `button-press` 30.50.
-- The cursor is hit twice in the film, at 14.06 s and 19.60 s, and is whole again before the collapse.
+- The cursor is hit twice in the film, at 14.13 s and 19.60 s, and is whole again before the collapse.
+- After the tick the cursor steps to the right inside the card so the answer under the rule can be read, then goes to press Submit. The button cracks out of its socket as the cursor reaches it.
+- During the collapse the cursor drags itself to the lower left of the fallen button, where the approved picture `boss-down` has it. In `boss.press` it drags itself the last steps onto the button's left end and presses there, so the word on the button and the line under it stay readable the whole time.
 
 ## Events
 
