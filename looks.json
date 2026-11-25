@@ -1,35 +1,35 @@
 {
   "folder": "cursor-act",
-  "pushed": "2026-11-25T14:18:41.918Z",
-  "commit": "7e5cbd30c664546358f071a622defda175560a5c",
+  "pushed": "2026-11-25T14:23:55.454Z",
+  "commit": "b41cd235464d17152f7953e7bc03123079b9a2b9",
   "looks": [
     {
       "file": "look-1.jpg",
       "caption": "Sheet cursor-arms: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-25T14:18:13.760Z",
+      "time": "2026-11-25T14:21:59.753Z",
       "by": "cursor-act",
       "from": "out/work/compare/compare-cursor-arms.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Acting sheet beside the approved one, with the merged body, effects and surface: sweat, heat, steam, grey scared, melted exhausted, burnt hole",
-      "time": "2026-11-25T14:18:40.166Z",
-      "by": "cursor-act",
-      "from": "out/work/compare/compare-cursor-acting.jpg"
-    },
-    {
-      "file": "look-3.jpg",
-      "caption": "Damage sheet beside the approved one: the pile fanned open strip by strip, tape on the reassembled body",
-      "time": "2026-11-25T14:18:40.430Z",
+      "caption": "Sheet cursor-damage: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-25T14:23:53.005Z",
       "by": "cursor-act",
       "from": "out/work/compare/compare-cursor-damage.jpg"
     },
     {
-      "file": "look-4.jpg",
-      "caption": "Arms sheet beside the approved one: thicker arms, larger hands, no paper yet",
-      "time": "2026-11-25T14:18:40.661Z",
+      "file": "look-3.jpg",
+      "caption": "Arms sheet beside the approved one: holding and pulling now grip the real resume sheet at its true size",
+      "time": "2026-11-25T14:23:53.281Z",
       "by": "cursor-act",
       "from": "out/work/compare/compare-cursor-arms.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Damage sheet beside the approved one: flat fanned pile, taped reassembly, clean punched hole",
+      "time": "2026-11-25T14:23:53.524Z",
+      "by": "cursor-act",
+      "from": "out/work/compare/compare-cursor-damage.jpg"
     }
   ]
 }
