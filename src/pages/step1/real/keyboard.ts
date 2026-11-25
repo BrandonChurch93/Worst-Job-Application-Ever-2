@@ -21,7 +21,7 @@ const capShape = (w: number, h: number): THREE.BufferGeometry => {
 }
 
 const CORE = 0.6
-const SHADE = { soft: 0.16, dark: 0.4, x: 1.8, y: 1.67, least: 0.6 }
+const SHADE = { soft: 0.16, dark: 0.4, x: 1.8, y: 1.67, least: 0.6, rest: 10, tight: 0.6, grow: -6 }
 
 // The shadow a cap in the air leaves on the bed: a soft dark patch with no picture, its edge fading to nothing.
 function shadeGeometry(): THREE.BufferGeometry {
@@ -252,6 +252,11 @@ function poseDeck(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
     if (hop > SHADE.least) {
       matrix.makeScale(c.w - 6, c.h - 6, 1)
       matrix.setPosition(at.x + hop * SHADE.x, at.y - hop * SHADE.y, floor)
+      data.shades.setMatrixAt(patches++, matrix)
+    } else {
+      const off = SHADE.rest * (1 - SHADE.tight * Math.min(1, Math.max(0, c.v && c.v.length > 0 ? c.v[0]! : 0)))
+      matrix.makeScale(c.w + SHADE.grow, c.h + SHADE.grow * 1.4, 1)
+      matrix.setPosition(at.x + off, at.y - off, floor)
       data.shades.setMatrixAt(patches++, matrix)
     }
     if (hop > GHOST.least) {

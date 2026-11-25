@@ -122,10 +122,18 @@ Owner: `/root/keys_fixer`, branch `agent/keys`. It answers the round 3 issues R4
 5. `SHAKE.px` is 5.5, under the 6 that `tests/step1-script.test.ts` (not mine) allows.
 6. The stray mark between Q and W in the key still: decision 22 above stands (the arrow's tip and tail over two legends). In motion the same reading came from legends showing through overlapping caps, which is fixed by hiding covered legends.
 
+### Second pass (the Builder's order of 18:45Z)
+
+7. Scorch marks are small crisp pits off the legends. The picture (`scorchPicture`, still 256 px, 0.33 MB, no memory added) has a charred pit with a hard ragged edge and a narrow brown ring in place of the wide halo; the mark is 54 px (`SCORCH.size`), was 62. `layScorch` keeps the pit's middle `SCORCH.legend` 24 px to the side of the middle of a letter cap, 52 px on a cap with a word, and leaves it where the bolt struck on the space bar. The side is the side the bolt struck, by the mark's seed when it struck dead centre.
+8. Impact flash on the hit frame. When a bolt hits the cursor the page draws a shape `scorch-9000N` with `v[1] = 1` at the place of the hit for `STRIKE.seconds` 0.5 s. The scorch maker draws it as a strike only: no mark and no smoke, a star flare of 96 to 186 px for 0.1 s and the sparks. It stays where the hit was while the cursor is thrown clear.
+9. A soft shade of each cap on the bed. Every seated cap now has one patch of the `shades` mesh, 6 px smaller than the cap and moved `SHADE.rest` 10 px along the key light, so the gap below and right of a cap is darker than the gap above and left. It tightens to 4 px while the key is down (`SHADE.tight`). It is geometry only and no cap casts on another cap, so the mottle does not come back. MEASURED: draft still of `step1-fire`, draw calls 280 (was 279), triangles 488097 (was 487287).
+10. Bolts are thin streaks (the Builder's point 4). Head 13 by 3.6 px (was 22 by 5.4) at glow 10, 6.5, 3 (was 16, 10, 4.5); orange tail 2.6 px thick and up to 168 px long (was 6 px and 112); the white-hot core 1.5 px thick (was 3). The light a bolt throws on the caps is unchanged.
+11. The field's rim: `/root/surface_fixer` applied `0.8 + 1.6 v` and a core lift of `1 + 0.7 v` in `controls.ts` on `agent/glass` (04debbf). STATED by them; I look at it on a motion sheet once it is on main.
+
 ### Not reached
 
-- The red-brown scorch beside a legend still reads as a mark on the legend at sheet size. It should be a small dark pit.
-- The field's rim pulse is in the numbers and is weak in the picture: the glow material of the focus ring is in `src/shell/real/controls.ts` (surface fixer). Asked for `0.8 + 1.6 v` in place of `0.8 + 0.5 v`.
+- The landing frame of a slab falls between two sheet samples; what shows it afterwards is the pressed keys under the slab only.
+- The pit's brown ring is narrow and reads nearly black at sheet size.
 
 ### MEASURED (2026-11-25, on the working tree of the first fix commit, main at ed12811)
 
@@ -140,4 +148,4 @@ Owner: `/root/keys_fixer`, branch `agent/keys`. It answers the round 3 issues R4
 
 ### Tuning looks
 
-Of 40 each in the fix round: keyboard 12, turrets 0, slabs 2.
+Of 40 each in the fix round: keyboard 15, turrets 3, slabs 2.

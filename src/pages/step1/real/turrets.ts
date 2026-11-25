@@ -278,12 +278,12 @@ function makeBolt(): THREE.Object3D {
   const root = new THREE.Group()
   const len = TURRET.bolt
   const head = overlay(new THREE.Mesh(f.head, f.headMaterial), 6)
-  head.scale.set(22, 5.4, 5.4)
-  head.position.set(len / 2 - 11, 0, 8)
+  head.scale.set(13, 3.6, 3.6)
+  head.position.set(len / 2 - 8, 0, 8)
   const tails = overlay(new THREE.InstancedMesh(f.tail, f.tailMaterial, 2), 4) as THREE.InstancedMesh
   tails.frustumCulled = false
-  tails.setColorAt(0, new THREE.Color(1.5, 1.5, 1.5))
-  tails.setColorAt(1, new THREE.Color(4.4, 9, 22))
+  tails.setColorAt(0, new THREE.Color(1.1, 1.1, 1.1))
+  tails.setColorAt(1, new THREE.Color(2.4, 5, 12))
   root.add(tails, head)
   const data: BoltData = { head, tails }
   root.userData.bolt = data
@@ -295,8 +295,8 @@ function poseBolt(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const born = s.v ? Math.min(1, Math.max(0, s.v[1] ?? 1)) : 1
   const flick = 0.92 + 0.08 * Math.sin(ctx.time * 140 + (hashName(s.id) & 255))
   v3.set(TURRET.bolt / 2 - 12, 0, 8)
-  d.tails.setMatrixAt(0, m4.compose(v3, q4.identity(), w3.set(30 + 82 * born, 6 * flick, 6 * flick)))
-  d.tails.setMatrixAt(1, m4.compose(v3, q4, w3.set(16 + 44 * born, 3, 3)))
+  d.tails.setMatrixAt(0, m4.compose(v3, q4.identity(), w3.set(44 + 124 * born, 2.6 * flick, 2.6 * flick)))
+  d.tails.setMatrixAt(1, m4.compose(v3, q4, w3.set(20 + 50 * born, 1.5, 1.5)))
   d.tails.instanceMatrix.needsUpdate = true
   const a = s.rot ?? 0
   const half = TURRET.bolt / 2 - 9
@@ -320,7 +320,7 @@ interface ScorchData {
   flareMaterial: THREE.MeshBasicMaterial
 }
 
-const SCORCH = { size: 62, smoke: 2, smokeSeconds: 1.5, shoulder: 9, core: 14, sparks: 9, sparkSeconds: 0.55, fall: 900, ember: 0.35, snap: 36, flareSeconds: 0.1 }
+const SCORCH = { size: 54, smoke: 2, smokeSeconds: 1.5, shoulder: 9, core: 11, legend: 24, word: 52, bar: 400, wide: 112, sparks: 9, sparkSeconds: 0.55, fall: 900, ember: 0.35, snap: 36, flareSeconds: 0.1 }
 
 function makeScorch(s: Shape): THREE.Object3D {
   const f = fx()
@@ -387,6 +387,9 @@ function layScorch(d: ScorchData, s: Shape, ctx: RealContext): void {
     const high = -(cap.y + e - cy)
     const m = Math.min(SCORCH.core, (right - left) / 2, (high - low) / 2)
     ox = Math.min(right - m, Math.max(left + m, 0))
+    const mid = (left + right) / 2
+    const keep = cap.w > SCORCH.bar ? 0 : Math.min(cap.w > SCORCH.wide ? SCORCH.word : SCORCH.legend, (right - left) / 2 - m)
+    if (keep > 0 && Math.abs(ox - mid) < keep) ox = mid + (ox > mid || (ox === mid && (d.seed & 1) === 1) ? keep : -keep)
     oy = Math.min(high - m, Math.max(low + m, 0))
     x0 = Math.max(ox - reach, left)
     x1 = Math.min(ox + reach, right)
@@ -413,14 +416,18 @@ function poseScorch(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const d = o.userData.scorch as ScorchData
   const left = s.v ? s.v[0]! : 1
   const age = (1 - left) * TURRET.scorchSeconds
-  layScorch(d, s, ctx)
+  const strike = (s.v?.[1] ?? 0) > 0
+  if (strike) {
+    d.at = [0, 0]
+    d.mark.visible = false
+  } else layScorch(d, s, ctx)
   d.material.opacity = smooth((left * TURRET.scorchSeconds) / TURRET.scorchFade)
   const ember = Math.exp(-age / SCORCH.ember)
   const spent = age / SCORCH.sparkSeconds
   const struck = age / SCORCH.flareSeconds
   d.flare.visible = struck < 1 && left * TURRET.scorchSeconds > TURRET.scorchFade
   if (d.flare.visible) {
-    const size = 54 + 50 * struck
+    const size = (strike ? 96 : 54) + (strike ? 90 : 50) * struck
     d.flare.position.set(d.at[0], d.at[1], 3)
     d.flare.scale.set(size, size, 1)
     d.flareMaterial.color.setRGB(...mix(GLOW.chargeHigh, [0, 0, 0], struck ** 0.7))
@@ -441,7 +448,7 @@ function poseScorch(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   d.material.color.setRGB(1 + 6 * ember, 1 + 6 * ember, 1 + ember)
   d.smoke.forEach((puff, i) => {
     const u = age / SCORCH.smokeSeconds - i * 0.22
-    puff.visible = u > 0 && u < 1 && left * TURRET.scorchSeconds > TURRET.scorchFade
+    puff.visible = !strike && u > 0 && u < 1 && left * TURRET.scorchSeconds > TURRET.scorchFade
     if (!puff.visible) return
     const sway = Math.sin(u * 5 + i * 1.9 + d.seed) * 7 * u
     const size = 12 + 34 * u

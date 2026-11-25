@@ -41,6 +41,7 @@ const SLAB_OUT = { every: 0.06, pop: 0.12, up: 100, wait: 0.04, fly: 0.3, far: 1
 const PRESS = 0.24
 const HOLD = 0.1
 const TAP = { seconds: 0.16, hold: 0.03, depth: 0.55 }
+const STRIKE = { seconds: 0.5, id: 90000, z: 96 }
 const THUD = { seconds: 0.26, hold: 0.07, shake: 0.4 }
 const PULSE = { hold: 0.05, fade: 0.3 }
 const FLIGHT = { ripple: 0.09, jitter: 0.025, seconds: 0.165, crouch: 0.035, low: 24, high: 64, perPx: 0.1, seat: 0.09, jolt: 2.6, rattle: 1.6, clear: 5 }
@@ -906,6 +907,7 @@ export function makePage(): PageLogic {
       }
       if (!s.received) for (const [i, g] of glyph.entries()) out.push({ id: `resume-glyph-${i}`, part: 'shell', kind: 'box', x: g.x, y: g.y, w: g.w, h: g.h, z0: heights.card, z1: heights.card + 0.4, r: 1.5, rot: g.rot, tone: 'ink' })
       if (s.board > 0) turrets.draw(out, off)
+      if (s.board > 0 && s.thud < STRIKE.seconds && turrets.s.hits > 0) out.push({ id: `scorch-${STRIKE.id + turrets.s.hits}`, part: 'turrets', kind: 'disc', x: s.shakeAt.x, y: s.shakeAt.y, w: 0, h: 0, z0: STRIKE.z + off, z1: STRIKE.z + off, tone: 'dark', v: [1 - s.thud / TURRET.scorchSeconds, 1] })
       if (s.slot > 0) {
         const open = smooth(s.slot)
         const jaw: [number, number, number] = [open, s.turn, s.phase === 'tug' ? s.tug.rate : s.phase === 'shredded' && s.shred < SHRED.pile ? 1 / TIMES.lost : 0]
