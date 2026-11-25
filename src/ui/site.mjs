@@ -137,6 +137,21 @@ const fail = (page) => page.evaluate(() => (document.getElementById('fail').hidd
   await page.context().close()
 }
 {
+  const page = await open('')
+  const before = await page.evaluate(() => document.querySelector('#controls [data-mode]').dataset.backing)
+  const box = await page.locator('#controls a').boundingBox()
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2)
+  for (let i = 0; i < 6; i++) {
+    await page.mouse.wheel(0, 120)
+    await page.waitForTimeout(400)
+  }
+  await page.waitForTimeout(2500)
+  const after = await page.evaluate(() => document.querySelector('#controls [data-mode]').dataset.backing)
+  check('live: a wheel turned over the row scrolls the page, and the row gets its capsule when content passes under it', before === 'page' && after !== 'page', `${before} then ${after}`)
+  await shot(page, 'site-scrolled')
+  await page.context().close()
+}
+{
   const page = await open('', { reducedMotion: 'reduce' })
   const controls = await seen(page)
   const mode = await page.evaluate(() => document.querySelector('#controls [data-mode]')?.dataset.mode)

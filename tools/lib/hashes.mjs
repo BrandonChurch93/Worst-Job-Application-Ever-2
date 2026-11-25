@@ -40,7 +40,8 @@ function hashFiles(root, files) {
 
 export function engineHash(root) {
   const pageFolders = Object.values(unitFolders).flat().map((f) => path.join(root, f) + path.sep)
-  const src = walk(path.join(root, 'src')).filter((f) => !pageFolders.some((p) => f.startsWith(p)))
+  const sound = path.join(root, 'src', 'audio') + path.sep
+  const src = walk(path.join(root, 'src')).filter((f) => !f.startsWith(sound) && !pageFolders.some((p) => f.startsWith(p)))
   const files = [...src, ...walk(path.join(root, 'config')), ...walk(path.join(root, 'content'))]
   const lock = path.join(root, 'package-lock.json')
   if (fs.existsSync(lock)) files.push(lock)
