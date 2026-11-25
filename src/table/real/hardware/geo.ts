@@ -202,6 +202,20 @@ export class Geo {
     return this.slab([[x0, y0], [x1, y0], [x1, y1], [x0, y1]], z0, z1, col, { along: o.along ?? (x1 - x0 >= y1 - y0 ? [1, 0, 0] : [0, 1, 0]), ...o })
   }
 
+  // Bare metal is darker where it turns away from the lamps above it and looks at its own shadow on the floor.
+  turn(low: number, skip: number[] = []): this {
+    for (let i = 0; i < this.vertices; i++) {
+      const fin = Math.floor(this.t[i * 2]! * 16)
+      if (skip.includes(fin)) continue
+      const k = Math.min(1, Math.max(0, (this.n[i * 3 + 2]! - 0.25) / 0.5))
+      const f = low + (1 - low) * k * k * (3 - 2 * k)
+      this.c[i * 3] = this.c[i * 3]! * f
+      this.c[i * 3 + 1] = this.c[i * 3 + 1]! * f
+      this.c[i * 3 + 2] = this.c[i * 3 + 2]! * f
+    }
+    return this
+  }
+
   // Everything added since `from` is moved by the matrix.
   move(from: number, m: THREE.Matrix4): this {
     const v = new THREE.Vector3()
@@ -234,6 +248,21 @@ export class Geo {
     return this
   }
 
+  // What was added since `from` and lies on a ball round a centre takes the ball's own smooth turn, so no ring shows on it.
+  round(from: number, cx: number, cy: number, cz: number, r: number, slack: number): this {
+    for (let i = from; i < this.vertices; i++) {
+      const x = this.p[i * 3]! - cx
+      const y = this.p[i * 3 + 1]! - cy
+      const z = this.p[i * 3 + 2]! - cz
+      const l = Math.hypot(x, y, z)
+      if (l < 1e-6 || Math.abs(l - r) > slack) continue
+      this.n[i * 3] = x / l
+      this.n[i * 3 + 1] = y / l
+      this.n[i * 3 + 2] = z / l
+    }
+    return this
+  }
+
   // A ball, or a part of one, round a centre.
   ball(cx: number, cy: number, cz: number, r: number, segs: number, col: RGB, from = -Math.PI / 2, to = Math.PI / 2): this {
     const rows = Math.max(3, Math.round(segs / 2))
@@ -242,7 +271,8 @@ export class Geo {
       const a = from + ((to - from) * i) / rows
       outline.push([Math.max(0, r * Math.cos(a)), r * Math.sin(a)])
     }
-    return this.lathe(outline, cx, cy, segs, col, cz)
+    const first = this.vertices
+    return this.lathe(outline, cx, cy, segs, col, cz).round(first, cx, cy, cz, r, r * 0.01)
   }
 
   // How far every vertex from `from` to `to` moves when a thing is fully moved: one morph of the mesh.

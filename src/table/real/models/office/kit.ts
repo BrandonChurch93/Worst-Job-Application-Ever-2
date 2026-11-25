@@ -64,6 +64,8 @@ export class Kit {
   private flips: boolean[] = []
   private flip = false
   private v = new THREE.Vector3()
+  // How far the normals of what follows lean up, so that upright cloth takes the light from above as a soft thing does.
+  up = 0
 
   get triangles(): number {
     return this.p.length / 9
@@ -98,6 +100,10 @@ export class Kit {
     this.v.set(a[0], a[1], a[2]).applyMatrix4(this.m)
     this.p.push(this.v.x, this.v.y, this.v.z)
     this.v.set(n[0], n[1], n[2]).transformDirection(this.m)
+    if (this.up > 0 && this.v.z > -0.5) {
+      this.v.z += this.up
+      this.v.normalize()
+    }
     this.n.push(this.v.x, this.v.y, this.v.z)
     this.c.push(col[0], col[1], col[2])
     this.s.push(surf[0], surf[1], surf[2])
@@ -352,6 +358,34 @@ export interface Mats {
   level: { value: number }
 }
 
+// The grain of a surface, from where it is on its own object: fibres on what is soft, streaks along what is brushed, smudges on what shines. It fades out where a pixel is wider than the grain, so nothing shimmers from far off.
+const GRAIN = `
+float wjoHash( vec3 p ) {
+	p = fract( p * 0.3183099 + 0.1 );
+	p *= 17.0;
+	return fract( p.x * p.y * p.z * ( p.x + p.y + p.z ) );
+}
+float wjoNoise( vec3 x ) {
+	vec3 i = floor( x );
+	vec3 f = fract( x );
+	f = f * f * ( 3.0 - 2.0 * f );
+	return mix( mix( mix( wjoHash( i ), wjoHash( i + vec3( 1.0, 0.0, 0.0 ) ), f.x ), mix( wjoHash( i + vec3( 0.0, 1.0, 0.0 ) ), wjoHash( i + vec3( 1.0, 1.0, 0.0 ) ), f.x ), f.y ),
+		mix( mix( wjoHash( i + vec3( 0.0, 0.0, 1.0 ) ), wjoHash( i + vec3( 1.0, 0.0, 1.0 ) ), f.x ), mix( wjoHash( i + vec3( 0.0, 1.0, 1.0 ) ), wjoHash( i + vec3( 1.0, 1.0, 1.0 ) ), f.x ), f.y ), f.z );
+}
+`
+const GRAIN_COLOUR = `
+	float wjoWide = length( fwidth( vObj ) );
+	float wjoNear = 1.0 - smoothstep( 0.35, 1.1, wjoWide );
+	float wjoMid = 1.0 - smoothstep( 2.0, 6.0, wjoWide );
+	float wjoSoft = smoothstep( 0.7, 0.95, vSurf.x ) * ( 1.0 - vSurf.y );
+	float wjoCloth = smoothstep( 0.94, 0.965, vSurf.x ) * ( 1.0 - vSurf.y );
+	float wjoFine = ( wjoNoise( vObj * 2.1 ) - 0.5 ) * wjoNear;
+	float wjoSmudge = ( wjoNoise( vObj * 0.13 + 7.0 ) - 0.5 ) * wjoMid;
+	float wjoStreak = ( wjoNoise( vec3( vObj.x * 0.045, vObj.y * 2.6, vObj.z * 2.6 ) ) - 0.5 ) * wjoNear;
+	float wjoWeave = ( sin( vObj.x * 3.6 ) + sin( vObj.y * 3.6 ) + sin( vObj.z * 3.6 ) ) * wjoNear;
+	diffuseColor.rgb *= 1.0 + wjoSoft * 0.2 * wjoFine + 0.08 * wjoSmudge + vSurf.y * 0.14 * wjoStreak + wjoCloth * 0.05 * wjoWeave;
+`
+
 const made = new Map<string, Mats>()
 
 // The materials of the office models, one set for a zone. One opaque material carries every finish: each vertex says how rough, how metal and how coated it is.
@@ -364,14 +398,15 @@ export function matsOf(z: Zone): Mats {
   const inner = solid.onBeforeCompile
   solid.onBeforeCompile = function (shader, renderer) {
     inner.call(solid, shader, renderer)
-    shader.vertexShader = ('attribute vec3 aSurf;\nvarying vec3 vSurf;\n' + shader.vertexShader).replace('#include <begin_vertex>', '#include <begin_vertex>\n\tvSurf = aSurf;')
-    shader.fragmentShader = ('varying vec3 vSurf;\n' + shader.fragmentShader)
-      .replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\n\troughnessFactor = clamp( vSurf.x, 0.04, 1.0 );')
+    shader.vertexShader = ('attribute vec3 aSurf;\nvarying vec3 vSurf;\nvarying vec3 vObj;\n' + shader.vertexShader).replace('#include <begin_vertex>', '#include <begin_vertex>\n\tvSurf = aSurf;\n\tvObj = position;')
+    shader.fragmentShader = ('varying vec3 vSurf;\nvarying vec3 vObj;\n' + GRAIN + shader.fragmentShader)
+      .replace('#include <color_fragment>', '#include <color_fragment>\n' + GRAIN_COLOUR)
+      .replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\n\troughnessFactor = clamp( vSurf.x + wjoSmudge * 0.16 * ( 1.0 - wjoSoft ) + vSurf.y * wjoStreak * 0.2, 0.04, 1.0 );')
       .replace('#include <metalnessmap_fragment>', '#include <metalnessmap_fragment>\n\tmetalnessFactor = clamp( vSurf.y, 0.0, 1.0 );')
       .replace('#include <lights_physical_fragment>', '#include <lights_physical_fragment>\n\t#ifdef USE_CLEARCOAT\n\tmaterial.clearcoat = clamp( vSurf.z, 0.0, 1.0 );\n\t#endif')
   }
   const key = solid.customProgramCacheKey
-  solid.customProgramCacheKey = () => `${key.call(solid)}|office-surf`
+  solid.customProgramCacheKey = () => `${key.call(solid)}|office-surf-2`
 
   const clear = new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.05, metalness: 0, transparent: true, opacity: 0.34, depthWrite: false, clearcoat: 1, clearcoatRoughness: 0.04, specularIntensity: 1, side: THREE.DoubleSide })
   clear.name = `office.clear.${z.id}`

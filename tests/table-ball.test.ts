@@ -122,6 +122,27 @@ describe('the clear ball', () => {
     expect(read()).toBe(first)
   })
 
+  test('on the carpet the bent floor is the carpet, and the footprint of the nearest model is not floor', () => {
+    const carpet = table.flats.find((f) => f.id === 'corporate.carpet')!
+    const B = config.table.ballPx
+    const cx = (carpet.box[0] + carpet.box[2] / 2) * B
+    const cy = (carpet.box[1] + 0.5) * B
+    const on = ball(cx, cy, -96)
+    const o = maker.make(on, ctx)
+    maker.pose!(o, on, ctx)
+    const u = (meshesOf(o).find((m) => m.name === 'ball.front')!.material as THREE.ShaderMaterial).uniforms
+    const flat = u.uFlat!.value as THREE.Vector4
+    expect(flat.x).toBeCloseTo(0, 4)
+    expect(flat.y).toBeCloseTo(-(carpet.box[3] / 2 - 0.5) * B, 4)
+    expect(flat.z).toBeCloseTo((carpet.box[2] / 2) * B, 4)
+    expect((u.uFlatCol!.value as THREE.Color).r).toBeGreaterThan((u.uFlatCol!.value as THREE.Color).b * 3)
+    const block = u.uBlock!.value as THREE.Vector4
+    expect(block.z * block.w).toBeGreaterThan(0)
+    expect(meshesOf(o).find((m) => m.name === 'ball.shadow')!.position.z).toBeGreaterThan(3)
+    maker.pose!(o, office, ctx)
+    expect((u.uFlat!.value as THREE.Vector4).z).toBe(0)
+  })
+
   test('it rolls: one width to the right turns it two radians, and the turn has length one', () => {
     const a = rollAt(0, 0, 48)
     const b = rollAt(96, 0, 48)
@@ -137,6 +158,10 @@ describe('the clear ball', () => {
     expect(L.lamps.length).toBeLessThanOrEqual(LAMPS)
     for (let i = 1; i < L.lamps.length; i++) expect(L.lamps[i]!.amount).toBeLessThanOrEqual(L.lamps[i - 1]!.amount)
     expect(L.lamps[0]!.colour[2]).toBeGreaterThan(L.lamps[0]!.colour[0])
+    for (const l of L.lamps) {
+      expect(l.shine).toBeGreaterThan(0)
+      expect(l.shine).toBeLessThanOrEqual(l.window ? 0.9 * 6 : 26)
+    }
     const dark = lightAt(office, { ...ctx, list: fixedShapes(), byId: new Map() })
     expect(dark.lamps.length).toBe(0)
     expect(lightAt(ball(960, 600, 0), ctx).tier).toBe(false)
