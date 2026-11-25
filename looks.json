@@ -1,33 +1,33 @@
 {
   "folder": "cursor-act",
-  "pushed": "2026-11-25T14:23:55.454Z",
-  "commit": "b41cd235464d17152f7953e7bc03123079b9a2b9",
+  "pushed": "2026-11-25T14:53:41.073Z",
+  "commit": "5a7e5365db4bf8d551e66a3c356b40b91d413588",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Sheet cursor-arms: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-25T14:21:59.753Z",
+      "caption": "Key step1-tug at review tier beside the approved image",
+      "time": "2026-11-25T14:49:20.814Z",
       "by": "cursor-act",
-      "from": "out/work/compare/compare-cursor-arms.jpg"
+      "from": "out/work/compare/compare-step1-tug.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Sheet cursor-damage: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-25T14:23:53.005Z",
+      "caption": "Sheet cursor-damage: approved on the left, this build on the right, review tier",
+      "time": "2026-11-25T14:49:51.543Z",
       "by": "cursor-act",
       "from": "out/work/compare/compare-cursor-damage.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Arms sheet beside the approved one: holding and pulling now grip the real resume sheet at its true size",
-      "time": "2026-11-25T14:23:53.281Z",
+      "caption": "Sheet cursor-damage: approved on the left, this build on the right, review tier",
+      "time": "2026-11-25T14:51:17.725Z",
       "by": "cursor-act",
-      "from": "out/work/compare/compare-cursor-arms.jpg"
+      "from": "out/work/compare/compare-cursor-damage.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Damage sheet beside the approved one: flat fanned pile, taped reassembly, clean punched hole",
-      "time": "2026-11-25T14:23:53.524Z",
+      "caption": "Damage sheet at review tier beside the approved image: clear tape, crater burn, bare cut faces",
+      "time": "2026-11-25T14:53:40.029Z",
       "by": "cursor-act",
       "from": "out/work/compare/compare-cursor-damage.jpg"
     }
