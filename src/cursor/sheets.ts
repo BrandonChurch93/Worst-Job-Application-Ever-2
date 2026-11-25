@@ -30,7 +30,7 @@ const ROW = { x: SLOT.cx - 16 - 3 * SHEET.arms.step, y: SLOT.cy - 132, pull: { x
 const ARMS: { x: number; y: number; left: [number, number, number]; right: [number, number, number]; lean: number; grip: [number, number]; strain: number; squash: number; sheet?: { name: string; x: number; y: number; z: number; pull: number } }[] = [
   { x: 0, y: 0, left: [-13, 70, 4], right: [45, 70, 4], lean: 0, grip: [0.25, 0.25], strain: 0, squash: 1 },
   { x: 0, y: 0, left: [-17, -4, 12], right: [45, 68, 4], lean: -0.06, grip: [0, 0.25], strain: 0, squash: 1.05 },
-  { x: -12, y: -2, left: [0, 0, 0], right: [0, 0, 0], lean: 0, grip: [1, 1], strain: 0.1, squash: 1, sheet: { name: 'holding', x: 46, y: 30, z: PAPER.front, pull: 0 } },
+  { x: -18, y: -2, left: [0, 0, 0], right: [0, 0, 0], lean: 0, grip: [1, 1], strain: 0.1, squash: 1, sheet: { name: 'holding', x: 42, y: 30, z: PAPER.front, pull: 0 } },
   { x: ROW.pull.x, y: ROW.pull.y, left: [0, 0, 0], right: [0, 0, 0], lean: -0.2, grip: [1, 1], strain: 0.85, squash: 1.1, sheet: { name: 'pulling', x: 24, y: ROW.pull.from, z: 3, pull: 1 } },
   { x: 6, y: 0, left: [60, 24, 9], right: [63, 47, 9], lean: 0.12, grip: [0, 0], strain: 0.9, squash: 0.94 }
 ]
