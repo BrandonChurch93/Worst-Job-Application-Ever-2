@@ -110,7 +110,7 @@ All are blended between sim steps by the stage. A length never changes for an id
 | `resume-paper` | `[lift, bite, amount, pull, lx, ly, rx, ry, vx, vy, hands]` | lift: px above the page. bite 0 to 1: how far the feed into the slot has gone, 1 in the tug. amount 0 to 1: how much of the sheet the shredder has. pull 0 to 1: strain between the hands and the slot. lx, ly, rx, ry: page px of the left and right hand; with no arms both are the point the cursor holds. vx, vy: px per second of the held end. hands: 1 while two hands hold it. |
 | `resume-paper-line-<i>` | `[eaten]` | 1 once the line is past the slot. An eaten line and the eaten title are drawn at the slot, 30 px under the page, so the count of shapes never changes. |
 | `shredder-jaw-0`, `shredder-jaw-1` | `[open, turn, feed]` | open 0 to 1. turn: radians, summed in `step`, 14 rad/s in the tug and 30 rad/s while it eats the cursor, with 0.3 s of lag. feed: change of amount per second. |
-| `strip-<i>` | `[u, ink]` | u 0 to 1: its way from the hood to the pile. ink 1: a strip of the cursor, dark; 0: a strip of paper. |
+| `strip-<i>` | `[u, ink]` | u 0 to 1: its way out of the hood. ink 1: a strip of the cursor, dark, which goes to the pile (`PILE`, 176 px under the slot) and zips into the cursor; 0: a strip of paper, which hangs in a heap 56 px under the hood (`HEAP`) and is drawn back under the hood in 0.3 s (`TIDY`) once the message shows. |
 | `field-focus` | `[glow]` | 1 on a typed or erased character, 0 after 0.25 s. |
 | `field-caret` | `[jump]` | px above its line, after a slab lands. |
 
