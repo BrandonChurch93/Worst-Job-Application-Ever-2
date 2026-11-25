@@ -132,8 +132,8 @@ export const EMIT = {
   flash: { colour: [1, 0.5, 0.15] as [number, number, number], power: 0.6, reach: 160 },
   charge: { colour: [1, 0.45, 0.12] as [number, number, number], power: 0.3, reach: 110 },
   hot: { colour: [1, 0.12, 0.03] as [number, number, number], power: 0.35, reach: 140 },
-  ember: { colour: [1, 0.36, 0.08] as [number, number, number], power: 0.3, reach: 70 },
-  struck: { colour: [1, 0.3, 0.06] as [number, number, number], power: 0.28, reach: 64 },
+  ember: { colour: [1, 0.36, 0.08] as [number, number, number], power: 0.16, reach: 52 },
+  struck: { colour: [1, 0.3, 0.06] as [number, number, number], power: 0.14, reach: 48 },
   tip: { colour: [1, 0.42, 0.1] as [number, number, number], power: 0.12, reach: 60 }
 }
 
