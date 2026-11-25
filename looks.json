@@ -1,35 +1,35 @@
 {
   "folder": "audio",
-  "pushed": "2026-11-25T10:35:17.256Z",
-  "commit": "8ff5a2d04413bb49544e26e1a60dbefddfd1c276",
+  "pushed": "2026-11-25T11:10:28.536Z",
+  "commit": "b5f2d4d21fc54ee969fa52c505f14fdc5c50750e",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "The stand-in mix on the cut list of main: 625 cues and 37 lines, -14 LUFS, true peak -3.88 dB, same bytes twice",
-      "time": "2026-11-25T09:42:19.499Z",
-      "by": "audio",
-      "from": "out/work/audio/mix-fixtures-1200.png"
-    },
-    {
-      "file": "look-2.jpg",
       "caption": "The stand-in mix on the cut list of main at e970ef5: 664 cues and 37 lines, -14 LUFS, true peak -1.91 dB, same bytes twice. Stand-ins made with ffmpeg, not takes",
       "time": "2026-11-25T10:00:00.513Z",
       "by": "audio",
       "from": "out/work/audio/mix-fixtures-1200.png"
     },
     {
-      "file": "look-3.jpg",
+      "file": "look-2.jpg",
       "caption": "The stand-in mix on the cut list of main at 89fe48f: 662 cues and 37 lines, -14 LUFS, true peak -2.62 dB. Stand-ins made with ffmpeg, never committed, no take exists",
       "time": "2026-11-25T10:35:15.993Z",
       "by": "audio",
       "from": "out/work/audio/mix-fixtures-1200.png"
     },
     {
-      "file": "look-4.jpg",
+      "file": "look-3.jpg",
       "caption": "Film A on the site built with stand-in sounds, in its opening: each letter now has its key tap, set on the sound clock ahead of the picture. Measured: 78 sounds heard over the opening, the mix lays 78, no room tone until it ends. Sound changes no pixel",
       "time": "2026-11-25T10:35:16.223Z",
       "by": "audio",
       "from": "out/work/audio/film-a-opening.png"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "The stand-in mix on the cut list of main at 559f6fa: 662 cues and 37 lines on 153 s, -14 LUFS, true peak -2.63 dB, sha256 02797e36fdefa7a8. Stand-ins made with ffmpeg, never committed; no take exists and the mix on main is silent",
+      "time": "2026-11-25T11:10:27.556Z",
+      "by": "audio",
+      "from": "out/work/audio/mix-fixtures-1200.png"
     }
   ]
 }
