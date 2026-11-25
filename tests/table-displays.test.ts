@@ -53,7 +53,7 @@ describe('the score', () => {
     const cols = columns(d)
     expect(cols[0]).toBe(scoreLeft(6))
     expect(cols[cols.length - 1]).toBe(COLS - PACE.scoreRight - 1)
-    expect(scoreLeft(6)).toBeGreaterThan(COLS / 2 - 8)
+    expect(scoreLeft(6)).toBeGreaterThan(PACE.scoreRight * 4)
   })
   test('a change moves only the numerals that changed', () => {
     const before = grid({ kind: 'score', digits: '042500', since: 9, before: null })
@@ -73,7 +73,7 @@ describe('the score', () => {
     expect(keyOf({ kind: 'score', digits: '042600', since: PACE.roll, before: '042500' })).toBe(keyOf({ kind: 'score', digits: '042600', since: 9, before: null }))
   })
   test('the roll is over in two frames of the film', () => {
-    expect(PACE.roll).toBeLessThanOrEqual(2 / 30 + 1e-9)
+    expect(PACE.roll).toBeLessThanOrEqual(2 / 60 + 1e-9)
   })
 })
 
@@ -98,10 +98,12 @@ describe('a mode', () => {
       expect(lit(grid({ kind: 'mode', name: m.insert, line: m.display, t: end + 1e-6 }))).toBe(0)
       expect(lit(grid({ kind: 'mode', name: m.insert, line: m.display, t: end - 0.5 }))).toBeGreaterThan(0)
     }
-    const step = 1 / 30
+    const step = 1 / 60
     const moves: number[] = []
     for (let i = 0; i < 90; i++) moves.push(scrolled(PACE.hold + (i + 1) * step) - scrolled(PACE.hold + i * step))
-    expect(Math.max(...moves) - Math.min(...moves)).toBeLessThanOrEqual(1)
+    expect(Math.max(...moves) - Math.min(...moves)).toBe(0)
+    expect(moves[0]).toBe(PACE.dotsPerSecond / 60)
+    expect(Number.isInteger(moves[0])).toBe(true)
     const a = grid({ kind: 'mode', name: '', line: modes[0]!.display, t: PACE.hold + 2 })
     const b = grid({ kind: 'mode', name: '', line: modes[0]!.display, t: PACE.hold + 2 + 10 / PACE.dotsPerSecond })
     for (let y = 0; y < ROWS; y++) for (let x = 20; x < COLS - 1; x++) expect(b[y * COLS + x - 10]).toBe(a[y * COLS + x])

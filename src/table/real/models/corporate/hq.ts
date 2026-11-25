@@ -9,15 +9,15 @@ import { Geo, type RGB, type V2, type V3 } from './geo'
 import { FINISH, TONE, drop as free, fin, hex, matsOf, mesh, moved, place, poseGlow, screw, shade, signBoard, smooth, textAt } from './mats'
 
 const SEED = 20261125
-const FLOOR = 20.5
-const COL = 17
+const FLOOR = 27
+const COL = 24
 const WHITE: RGB = [1, 0.9, 0.72]
 const COOL: RGB = [WHITE[0] / colours.CORPORATE_WINDOW[0], WHITE[1] / colours.CORPORATE_WINDOW[1], WHITE[2] / colours.CORPORATE_WINDOW[2]]
-const STEEL = hex(0x93a5c4)
-const STEEL_DARK = hex(0x6b7a94)
-const PORTAL = hex(0x8f7748)
+const STEEL = hex(0x9ca8bd)
+const STEEL_DARK = hex(0x727d8f)
+const PORTAL = hex(0x7a6238)
 const ROOF = hex(0x474c55)
-const BRIGHT = hex(0xc3cede)
+const BRIGHT = hex(0xbac4d4)
 const HALL = 4
 const warmLamp = (k: number): RGB => [COOL[0] * k, COOL[1] * k * 0.92, COOL[2] * k * 0.79]
 // The light of the hall seen through its glass: amber where it is dim, cream where it is bright.
@@ -59,7 +59,7 @@ const model = (id: string) => {
 // A wall of glass from a to b: lit rooms behind dark panes, a fin at every column and a band at every floor. The outside is to the right of the way from a to b.
 function curtain(S: Geo, G: Geo, a: V2, b: V2, z0: number, z1: number, rnd: Random, o: { floor?: number; col?: number; lit?: number; gold?: number; fin?: number; rise?: number; hall?: boolean } = {}): void {
   const len = Math.hypot(b[0] - a[0], b[1] - a[1])
-  const cols = Math.max(1, Math.round(len / (o.col ?? COL)))
+  const cols = o.gold ? Math.max(2, 2 * Math.round(len / (2 * (o.col ?? COL)))) : Math.max(1, Math.round(len / (o.col ?? COL)))
   const floors = Math.max(1, Math.round((z1 - z0) / (o.floor ?? FLOOR)))
   const cw = len / cols
   const fh = (z1 - z0) / floors
@@ -76,6 +76,7 @@ function curtain(S: Geo, G: Geo, a: V2, b: V2, z0: number, z1: number, rnd: Rand
         let warm = 1
         let cool = 1
         let off = 0
+        let kind = 0
         for (let i = 0; i < cols; i++) {
           if (run <= 0) {
             run = 1 + rnd.int(4)
@@ -83,6 +84,7 @@ function curtain(S: Geo, G: Geo, a: V2, b: V2, z0: number, z1: number, rnd: Rand
             warm = rnd.range(0.72, 1.12)
             cool = rnd.next() < 0.2 ? 1.25 : 1
             off = rnd.range(-0.07, 0.07)
+            kind = rnd.int(4)
           }
           run--
           const s0 = i * cw
@@ -99,9 +101,9 @@ function curtain(S: Geo, G: Geo, a: V2, b: V2, z0: number, z1: number, rnd: Rand
             const side = i === 0 ? 0 : i === cols - 1 ? 1 : 0.5
             sheet(G, (u, v) => [s0 + cw * u, 0, f0 + fh * v], n, al, 2, 8, (u, v) => (0.1 + 0.4 * bump(v, 0.48, 0.3) * warm + 0.16 * bump(v, 0.93, 0.1) + 0.08 * bump(v, 0.04, 0.08)) * (1 - 0.3 * Math.abs(u - side)))
             rect(0.12, 0.88, 0.9, 0.935, h(1.1), 0.12)
-            rect(0.2, 0.8, 0.83, 0.86, h(0.8), 0.12)
-            rect(0.27, 0.73, 0.78, 0.8, h(0.55), 0.12)
-            rect(0.33, 0.67, 0.745, 0.758, h(0.4), 0.12)
+            rect(0.24, 0.76, 0.82, 0.842, h(0.6), 0.12)
+            rect(0, 1, 0.07, 0.22, h(0.07), 0.12)
+            rect(0, 1, 0.22, 0.236, h(0.5), 0.14)
             continue
           }
           if (!on) {
@@ -109,16 +111,20 @@ function curtain(S: Geo, G: Geo, a: V2, b: V2, z0: number, z1: number, rnd: Rand
             continue
           }
           const k = warm
-          const blind = rnd.next() < 0.08
+          const blind = rnd.next() < 0.04
           const room = (q: number): RGB => [COOL[0] * q * k * 0.5, COOL[1] * q * k * 0.9, COOL[2] * q * k * 1.1 * cool]
-          rect(0, 1, 0.56, 1, blind ? lamp(0.11 * k) : lamp(0.075 * k, cool))
-          rect(0, 1, 0.3, 0.56, blind ? lamp(0.11 * k) : room(0.05))
-          rect(0, 1, 0, 0.3, rnd.next() < 0.5 ? room(0.018) : room(0.03))
-          if (!blind) {
-            rect(0.14 + off, 0.86 + off, 0.8, 0.9, lamp(1.15 * k, cool), 0.12)
-            rect(0.27 + off, 0.73 + off, 0.66, 0.71, lamp(0.7 * k, cool), 0.12)
-            rect(0.36 + off, 0.64 + off, 0.58, 0.61, lamp(0.42 * k, cool), 0.12)
-          }
+          rect(0, 1, 0.52, 1, blind ? lamp(0.09 * k) : room(0.085))
+          rect(0, 1, 0.24, 0.52, blind ? lamp(0.09 * k) : room(0.05))
+          rect(0, 1, 0, 0.24, rnd.next() < 0.5 ? room(0.018) : room(0.03))
+          if (blind) continue
+          // The ceiling of the room, seen from below: rows of lamps, smaller the deeper they hang.
+          const rows: [number, number, number, number, number][] = [[0.87, 0.935, 2, 0.3, 1.15], [0.735, 0.785, 3, 0.19, 0.75], [0.64, 0.672, 4, 0.13, 0.45]]
+          rows.slice(0, kind === 2 ? 1 : kind === 3 ? 2 : 3).forEach((r) => {
+            for (let q = 0; q < r[2]; q++) {
+              const c = (q + 0.5) / r[2] + off * 0.5
+              rect(c - r[3] / 2, c + r[3] / 2, r[0], r[1], lamp(r[4] * k, cool), 0.12)
+            }
+          })
         }
       }
     }, o.hall ? HALL : 1)
@@ -127,17 +133,17 @@ function curtain(S: Geo, G: Geo, a: V2, b: V2, z0: number, z1: number, rnd: Rand
     fin(S, FINISH.brushed, () => {
       for (let j = 0; j <= floors; j++) {
         const f = z0 + j * fh
-        S.box(0, len, -1.2, 0.4, f - 0.9, f + 0.9, STEEL_DARK, { bottom: true })
+        S.box(0, len, -1.2, 0.4, f - 0.8, f + 0.8, shade(STEEL_DARK, 0.8), { bottom: true })
       }
       for (let i = 0; i <= cols; i++) {
-        if (o.gold && i % o.gold === 0) continue
+        if (o.gold && (i - cols / 2) % o.gold === 0) continue
         const s = i * cw
-        S.box(s - 1.15, s + 1.15, -depth * 0.7, 0.4, z0, z1, STEEL)
+        S.box(s - 0.9, s + 0.9, -depth * 0.7, 0.4, z0, z1, STEEL_DARK)
       }
     })
     if (!o.gold) return
     fin(S, FINISH.polished, () => {
-      for (let i = 0; i <= cols; i += o.gold!) {
+      for (let i = (cols / 2) % o.gold!; i <= cols; i += o.gold!) {
         const s = i * cw
         S.box(s - 1.5, s + 1.5, -depth * 0.7, 0.4, z0, z1, STEEL)
         S.box(s - 0.7, s + 0.7, -depth * 1.35, -depth * 0.7, z0, z1 + (o.rise ?? 0), BRIGHT)
@@ -230,7 +236,7 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
     // The fascia over the lobby, with the plate the name stands on, and the canopy over the doors.
     fin(S, FINISH.brushed, () => {
       S.box(-HW - 1, HW + 1, F - 4, F + 1, pz0, pz1 - 0.4, STEEL_DARK, { bevel: 1, bottom: true })
-      S.box(-dw - 19.2, dw + 19.2, F - 9.6, F - 4, pz0 + 2, pz1 - 2, STEEL, { bottom: true })
+      S.box(-dw - 19.2, dw + 19.2, F - 9.6, F - 4, pz0 + 2, pz1 - 2, shade(STEEL, 0.8), { bottom: true })
       const fx = dw + 19.2
       for (const s of [-1, 1]) S.box(s > 0 ? fx : -fx - 3, s > 0 ? fx + 3 : -fx, F - 11.4, F - 4, pz0, pz1, STEEL, { bevel: 0.8, bottom: true })
       S.box(-fx - 3, fx + 3, F - 11.4, F - 4, pz1 - 2.6, pz1 + 0.4, STEEL, { bevel: 0.8, bottom: true })
@@ -283,8 +289,8 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
   const lobby = { floor: pz0 - 6, col: 19, lit: 1, gold: 0, fin: 3.2, hall: true }
   curtain(W, G, [X(-HW + 14), F], [X(-dw - 17), F], 6, pz0, rnd, lobby)
   curtain(W, G, [X(dw + 17), F], [X(HW - 14), F], 6, pz0, rnd, lobby)
-  curtain(W, G, [X(HW), F], [X(HW), B], 6, pz1, rnd, { gold: 5 })
-  curtain(W, G, [X(-HW), B], [X(-HW), F], 6, pz1, rnd, { gold: 5 })
+  curtain(W, G, [X(HW), F], [X(HW), B], 6, pz1, rnd, { gold: 3 })
+  curtain(W, G, [X(-HW), B], [X(-HW), F], 6, pz1, rnd, { gold: 3 })
 
   // The tower: three steps back, each with its own coping, flush at the front.
   const steps = [
@@ -348,9 +354,9 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
   paving(HW, B, pz1, HW - 16, F + 8)
   for (const st of steps) {
     moved(S, place(cx, 0, 0), () => fin(S, FINISH.satin, () => S.box(-st.hx + 0.6, st.hx - 0.6, F + 0.6, st.yb, st.z0, st.z1, TONE.graphite)))
-    curtain(W, G, [X(-st.hx), F], [X(st.hx), F], st.z0 + 2.2, st.z1 - 2.2, rnd, { gold: 5, rise: st.rise, fin: 3.6 })
-    curtain(W, G, [X(st.hx), F], [X(st.hx), st.yb], st.z0 + 2.2, st.z1 - 2.2, rnd, { gold: 5, rise: st.rise })
-    curtain(W, G, [X(-st.hx), st.yb], [X(-st.hx), F], st.z0 + 2.2, st.z1 - 2.2, rnd, { gold: 5, rise: st.rise })
+    curtain(W, G, [X(-st.hx), F], [X(st.hx), F], st.z0 + 2.2, st.z1 - 2.2, rnd, { gold: 3, rise: st.rise, fin: 3.6 })
+    curtain(W, G, [X(st.hx), F], [X(st.hx), st.yb], st.z0 + 2.2, st.z1 - 2.2, rnd, { gold: 3, rise: st.rise })
+    curtain(W, G, [X(-st.hx), st.yb], [X(-st.hx), F], st.z0 + 2.2, st.z1 - 2.2, rnd, { gold: 3, rise: st.rise })
     coping(st.hx, st.yb, st.z1)
   }
   paving(steps[0]!.hx, steps[0]!.yb, steps[0]!.z1, steps[1]!.hx, F + 8)

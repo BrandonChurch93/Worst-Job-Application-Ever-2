@@ -76,7 +76,7 @@ describe('the hardware of the table', () => {
         for (let i = 0; i < c.count; i++) {
           const sum = c.getX(i) + c.getY(i) + c.getZ(i)
           expect(sum).toBeGreaterThan(0.004)
-          if ((m.material as THREE.Material).name.startsWith('hardware.')) expect(sum).toBeLessThan(2.95)
+          if ((m.material as THREE.Material).name.startsWith('hardware.')) expect(Math.min(c.getX(i), c.getY(i), c.getZ(i))).toBeLessThan(0.98)
         }
       }
     }
