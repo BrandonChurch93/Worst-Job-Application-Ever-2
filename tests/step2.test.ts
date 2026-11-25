@@ -115,10 +115,47 @@ describe('step 2, the film', () => {
       t.seek(at)
       expect(t.page.gag(), String(at)).toBe(gag)
     }
-    for (const at of [1, 8.1, 14, 20]) {
+    for (const at of [1, 8.1, 13.9, 20]) {
       t.seek(at)
       expect(t.page.states(), String(at)).toContain('rest')
     }
+  })
+
+  it('stands on the approved keys: two digits dialled at 3.2 s, three segments lit at 15.2 s', () => {
+    const t = film()
+    const shapes = (): Shape[] => {
+      const list: Shape[] = []
+      t.page.draw(list)
+      return list
+    }
+    t.seek(3.2)
+    const typed = shapes().filter((x) => x.kind === 'text' && x.words === 'runtime:step2.phone')
+    expect(typed.length).toBe(1)
+    expect(typed[0]!.text).toBe('(555) 01')
+    expect(hasWords('data:step2.phone.prefix')).toBe(true)
+    expect(t.page.volume!()).toBe(1)
+    t.seek(15.2)
+    const lit = shapes().filter((x) => /^meter-\d+$/.test(x.id) && x.tone === 'accent').map((x) => x.id)
+    expect(lit).toEqual(['meter-1', 'meter-2', 'meter-3'])
+    expect(t.page.volume!()).toBeCloseTo(0.3, 5)
+  })
+
+  it('sets the volume of the site with the crank: full before the row, low when it opens, full at the end', () => {
+    const t = film()
+    let last = 0
+    let low = 1
+    for (let at = 0; at <= 20.4; at += 0.05) {
+      t.seek(at)
+      const v = t.page.volume!()
+      expect(v, at.toFixed(2)).toBeGreaterThanOrEqual(0.1)
+      expect(v, at.toFixed(2)).toBeLessThanOrEqual(1)
+      if (at < 13.9) expect(v, at.toFixed(2)).toBe(1)
+      if (at > 14.1) expect(v, at.toFixed(2)).toBeGreaterThanOrEqual(last - 1e-9)
+      if (at > 14.1) last = v
+      low = Math.min(low, v)
+    }
+    expect(low).toBeCloseTo(0.1, 5)
+    expect(last).toBe(1)
   })
 
   it('heals every hurt inside the limit and hands the cursor on whole', () => {
@@ -207,6 +244,26 @@ describe('step 2, live', () => {
       expect(l.cursor.taken, String(at)).toBe(false)
       expect(l.cursor.damaged, String(at)).toBe(false)
     }
+  })
+
+  it('heals a flat cursor in sight before the page turns, when Continue comes early', () => {
+    const l = live(new BotDriver('clumsy', config.seed))
+    while (!names(l).includes('flatten') && l.time < 60) l.advance(1)
+    expect(names(l)).toContain('flatten')
+    l.advance(stepHz)
+    expect(l.cursor.damaged).toBe(true)
+    l.page.skip()
+    let healedAt = -1
+    const from = l.time
+    while (l.page.id === 'step2' && l.time < from + 5) {
+      l.advance(1)
+      if (healedAt < 0 && !l.cursor.damaged) healedAt = l.time - from
+    }
+    expect(l.page.id).toBe('step3')
+    expect(healedAt).toBeGreaterThan(0.1)
+    expect(healedAt).toBeLessThan(1.5)
+    expect(l.cursor.damaged).toBe(false)
+    expect(names(l)).toContain('peel-up')
   })
 
   it('continues exactly after load(save())', () => {
