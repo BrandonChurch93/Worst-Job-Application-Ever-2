@@ -185,30 +185,31 @@ All MEASURED on 2026-11-25 from `package.json` and `package-lock.json` after a c
 
 Seconds per sample and per picture at each format and tier, the fixed cost of starting a render, the time of one simulated second, the time of a search for a take, and what the films and the loop would take. Updated in Phases 0, 2 and 3. Every new kind of job adds its real time here when it ends.
 
-Measured by `npm run budget` on the scene of `step1` as it stands (38862 triangles, 60 draw calls a sample), on space-sandbox: 2 cores, Intel(R) Xeon(R) Processor @ 2.90GHz, software rendering, target `float`. Engine `ff323a6eb56953a5`. One render process.
+Measured by `npm run budget` on the scene of `step1` as it stands (72684 triangles, 248 draw calls a sample), on space-sandbox: 2 cores, Intel(R) Xeon(R) Processor @ 2.90GHz, software rendering, target `float`. Engine `7dcd58a586ce4b9b`. One render process.
 
 | Format | Size | Open the page | Cold first picture | Start cost | Per sample | Fixed per picture | Still, draft | Still, review | Still, final | One simulated second |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `preview` | 960 by 540 | 1.3 s | 5.2 s | 5.2 s | 0.67 s | 0.02 s | 1.4 s | 5.4 s | 15.9 s (predicted 16.1 s) | 0.2 ms |
-| `hd` | 1920 by 1080 | 1.3 s | 8.5 s | 5.5 s | 2.10 s | 0.15 s | 4.4 s | 17.0 s | 51.1 s (predicted 50.7 s) | 0.8 ms |
-| `uhd` | 3840 by 2160 | 1.4 s | 20.0 s | 5.9 s | 7.44 s | 0.59 s | 15.5 s | 60.1 s | 179.2 s predicted | 0.4 ms |
+| `preview` | 960 by 540 | 1.1 s | 3.9 s | 4.3 s | 0.31 s | 0.05 s | 0.7 s | 2.5 s | 6.9 s (predicted 7.5 s) | 1.8 ms |
+| `hd` | 1920 by 1080 | 1.0 s | 5.3 s | 4.4 s | 0.85 s | 0.28 s | 2.0 s | 7.0 s | 20.6 s (predicted 20.6 s) | 2.3 ms |
+| `uhd` | 3840 by 2160 | 1.2 s | 10.6 s | 5.1 s | 3.08 s | 0.52 s | 6.7 s | 25.2 s | 74.4 s predicted | 2.3 ms |
 
 What the films and the loop would take on one VM like this one, from the time of a film frame (measured at `draft`, the other tiers from the cost of a sample). Film B is 153 s, the loop 8 s at 60 frames a second.
 
 | Format | Tier | Film frame | Film B frames | Film B | Loop frames | Loop |
 | --- | --- | --- | --- | --- | --- | --- |
-| `preview` | draft | 1.4 s | 4590 at 30 fps | 1.7 h | 480 | 0.2 h |
-| `preview` | review | 5.4 s | 4590 at 30 fps | 6.8 h | 480 | 0.7 h |
-| `preview` | final | 16.1 s | 4590 at 30 fps | 20 h | 480 | 2.1 h |
-| `hd` | draft | 4.4 s | 9180 at 60 fps | 11 h | 480 | 0.6 h |
-| `hd` | review | 17.0 s | 9180 at 60 fps | 43 h | 480 | 2.3 h |
-| `hd` | final | 50.7 s | 9180 at 60 fps | 129 h | 480 | 6.8 h |
-| `uhd` | draft | 15.9 s | 9180 at 60 fps | 40 h | 480 | 2.1 h |
-| `uhd` | review | 60.5 s | 9180 at 60 fps | 154 h | 480 | 8.1 h |
-| `uhd` | final | 179.6 s | 9180 at 60 fps | 458 h | 480 | 24 h |
+| `preview` | draft | 0.9 s | 4590 at 30 fps | 1.1 h | 480 | 0.1 h |
+| `preview` | review | 2.7 s | 4590 at 30 fps | 3.5 h | 480 | 0.4 h |
+| `preview` | final | 7.7 s | 4590 at 30 fps | 9.8 h | 480 | 1.0 h |
+| `hd` | draft | 2.5 s | 9180 at 60 fps | 6.4 h | 480 | 0.3 h |
+| `hd` | review | 7.6 s | 9180 at 60 fps | 19 h | 480 | 1.0 h |
+| `hd` | final | 21.1 s | 9180 at 60 fps | 54 h | 480 | 2.8 h |
+| `uhd` | draft | 8.8 s | 9180 at 60 fps | 23 h | 480 | 1.2 h |
+| `uhd` | review | 27.3 s | 9180 at 60 fps | 70 h | 480 | 3.6 h |
+| `uhd` | final | 76.6 s | 9180 at 60 fps | 195 h | 480 | 10 h |
 
 - PSNR between VMs (step 16), MEASURED 2026-11-25T06:57:23Z. The same still, `step1` at rest, hd, review tier, commit db0e360, engine `ff323a6eb56953a5`, browser 147.0.7727.15, rendered on this VM (2 cores) and on two fresh sandbox VMs (4 cores each), which cloned, ran `npm ci` and `npm run build`, and returned the PNG untouched. This VM against sandbox A: identical, 0 pixels differ. This VM against sandbox B: identical, 0 pixels differ. A against B: identical, 0 pixels differ. All three files have the sha256 `b66aa3eb5485c192095b43519f696509e5bec658c7b029f7877ccee9606e7650`. The floor, `quality.crossMachineMinPsnr`, is 45 dB. The files are in `out/work/psnr/`.
 - A sandbox VM, MEASURED on both by `node tools/budget.mjs --formats preview,hd` on the same scene (4 cores, the same processor model): at hd a sample takes 1.10 and 1.11 s, a review still 9.0 and 9.2 s, a final still 27.3 and 27.8 s, a film frame at draft 2.4 s; at preview a sample takes 0.35 and 0.38 s, a final still 8.6 s, a film frame at draft 0.7 s; opening the page takes 1.0 to 1.1 s and a cold first picture 3.2 s at preview and 4.9 to 5.1 s at hd. A sandbox VM is about twice as fast as this one, so film renders are planned on sandbox VMs: from these numbers film B at hd and 60 frames a second is about 6 h of one sandbox VM at draft, 23 h at review and 70 h at final, to be divided by the number of VMs. The scene is the spike, 38862 triangles and 60 draw calls a sample; the real pages will cost more, and this table is measured again in Phases 2 and 3.
+- Phase 2, step 12, MEASURED 2026-11-25T12:03Z: the two tables above were measured again on the blockout scene of `step1` (the code of dc7215c, engine `7dcd58a586ce4b9b`, 72684 triangles and 248 draw calls a sample). Against Phase 0's spike scene at hd: a sample 0.85 s (was 2.10 s), a review still 7.0 s (was 17.0 s), a final still 20.6 s (was 51.1 s), a film frame at draft 2.5 s (was 4.4 s). The blockout has stand-in materials and no finished light, so these are the low end: the table is measured once more when the look lock has its first finished picture.
 
 ## Judged list
 
