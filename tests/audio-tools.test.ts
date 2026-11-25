@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { FAMILY_LINE, HOLD_LINE, lineNumbers as numbersOf, listenerFindings, promptLine, target } from '../tools/sound.mjs'
+import { FAMILY_LINE, HOLD_LINE, cueLines, lineNumbers as numbersOf, listenerFindings, listenerSheet, promptLine, target } from '../tools/sound.mjs'
 import * as cues from '../src/audio/cues'
 import * as copy from '../src/copy'
 
@@ -80,6 +80,42 @@ describe('what the listener says', () => {
     const hold = target({ cue: 'hold-music' }, cfg, cues)
     expect(listenerFindings(hold, { ...clean, music: true, melody: true }).holds).toBe(true)
     expect(listenerFindings(hold, { ...clean, music: true, voice: true }).holds).toBe(false)
+  })
+})
+
+describe('the questions the listener gets', () => {
+  const line = target({ line: `${beat}:${index}` }, cfg, cues)
+  const effect = target({ cue: 'button-press' }, cfg, cues)
+
+  it('has one describing line for every cue of the config, read from the kit', () => {
+    const lines: Record<string, string> = cueLines()
+    for (const s of cfg.audio.sfx) expect(lines[s.id], s.id).toMatch(/^[A-Z].{8,}/)
+    expect(Object.keys(lines).length).toBe(cfg.audio.sfx.length)
+    expect(new Set([lines['ui-tick'], lines['key-tap'], lines['ui-send']]).size).toBe(3)
+  })
+
+  it('never tells the listener the line it has to write down', () => {
+    const sheet = listenerSheet(line, undefined)
+    const said = text.split(/\s+/).filter((w) => w !== mark).slice(0, 2).join(' ')
+    expect(sheet.questions.join(' ')).not.toContain(said)
+  })
+
+  it('asks an effect against its describing line', () => {
+    const lines: Record<string, string> = cueLines()
+    expect(listenerSheet(effect, lines['button-press']).questions.join(' ')).toContain(lines['button-press'])
+  })
+
+  it('hands out an answers file that does not hold until every question is answered', () => {
+    for (const t of [line, effect]) {
+      const sheet = listenerSheet(t, 'x')
+      const f = listenerFindings(t, sheet.answers)
+      expect(f.answered).toBe(true)
+      expect(f.holds).toBe(false)
+      expect(f.why.some((w: string) => w.includes('unanswered'))).toBe(true)
+    }
+    expect(listenerFindings(effect, { voice: false, word: false, music: false, melody: false }).holds).toBe(false)
+    expect(listenerFindings(effect, { voice: false, word: false, music: false, melody: false, fits: true, sameRoom: false }).holds).toBe(false)
+    expect(listenerFindings(effect, { voice: false, word: false, music: false, melody: false, fits: true, sameRoom: null }).holds).toBe(true)
   })
 })
 
