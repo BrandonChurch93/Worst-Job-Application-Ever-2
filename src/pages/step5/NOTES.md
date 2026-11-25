@@ -15,7 +15,7 @@ Unit `decision`, page `step5`. Files: `layout.ts` (the page and its places), `ti
 - Whole again. The Builder added: the cursor is whole by the first frame of the page that follows, and no damage lasts longer than `cursor.damageHealSeconds`. The heal is 3.4 s. A press of the button (or a skip) while the cursor is still flat shortens the heal to 0.33 s, so the cursor is whole before `done()`.
 - Film timing. The stage leaves a page when `done()` turns true. The film pointer presses at 9.3 s (inside `decision.metrics`), `done()` at 9.75 s, so `page-turn` comes at 9.75 s, inside the tolerance of `decision.reset` (10 to 12 s less 0.25 s).
 - The wait panel title is `copy:transitions.step5`. 01-FILM names the line, and the copy of step 5 has no such line.
-- "Your Time" is `filmSeconds()` in film mode (02:33). On the live site it is the seconds since the stage started, `io.elapsed` (see NEEDS.patch, accepted by the Builder), with `io.time` as the fallback.
+- "Your Time" is `filmSeconds()` in film mode (02:33). On the live site it is the seconds since the stage started, `io.elapsed`, with `io.time` as the fallback. `elapsed` was asked for as `NEEDS.patch`, the Builder put it on `main`, and the patch file is removed.
 - The stamp block is wider than its mark, so the flat cursor lies beside the word and does not cover it.
 - The cursor presses the right end of the button, clear of its label.
 - The share link swaps itself for the share line (`copy:step5.shareText` with `{time}` filled, shown as `runtime:step5.shareText`) and emits `share`, which has no sound cue. The app may copy the line to the clipboard on that event.
@@ -23,6 +23,10 @@ Unit `decision`, page `step5`. Files: `layout.ts` (the page and its places), `ti
 - The cursor stands on what is under it (`cursor.setGround`): 12 on a panel, 14 on the button, 1 on the letter.
 - Live way out: a pointer that never moves or does the wrong thing still gets the whole story by time alone, and 20 s (`live.skipLinkAfterSeconds`) after the button is up the page takes the cursor for at most 1.95 s, presses its own button and lets go. `skip()` settles the story and presses at once.
 - `hint()` sends a capable visitor to read the letter where the stamp lands, then to the button.
+
+## Seen, not mine to change
+
+- A stand-in shape that floats above the page (the stamp block in the air, the letter while it drops) casts a hollow shadow in the blockout view: only its side walls throw one. A shape that rests on the page is right. The cause is in the blockout view, not in this page. The stamp flies at 200 to 220 and is carried at 120, under the 320 the lamps cover.
 
 ## Not done
 
