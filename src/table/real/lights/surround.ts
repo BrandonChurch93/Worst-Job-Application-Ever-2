@@ -40,7 +40,7 @@ export function surroundPixels(z: Zone): Float32Array {
       const y = ey
       const zz = ez
       const haze = Math.exp(-Math.abs(zz) * 5.5)
-      const below = zz < 0 ? 0.05 + 0.07 * Math.min(1, -zz * 3) : 0
+      const below = zz < 0 ? 0.08 + 0.12 * Math.min(1, -zz * 3) : 0
       let r = 0.004 + fill[0] * (0.02 * haze + below)
       let g = 0.004 + fill[1] * (0.02 * haze + below)
       let b = 0.005 + fill[2] * (0.02 * haze + below)
