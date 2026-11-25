@@ -74,19 +74,20 @@ Read this before generating or building anything. Each of these was tried.
 
 | Round | Folder | Images | Becomes |
 | --- | --- | --- | --- |
-| 6, the pinball machine | `references/drafts/round-6/` | Eleven images, G1 to G11. The brief is `references/BRIEF-round-6.md`. The layout guides are in `references/guides/round-6/` | The `table-` keys, and a sheet for the clear ball |
+| 6, the pinball machine | `references/drafts/round-6/` | Twelve images, G1 to G12. The brief is `references/BRIEF-round-6.md`. The layout guides are in `references/guides/round-6/` | The keys for step 3, and a sheet for the clear ball |
 
-What changed on November 24, from Brandon, and is in the brief but not yet in the kit:
+What changed on November 24, from Brandon. It is in the brief and not yet in the kit:
 
+- The arcade machine is scrapped. The bar is a pinball video game that has shipped. The machine is now a three-tier table, one screen to a tier, each with its own flippers and a centerpiece: Corporate at the top, the Office in the middle, the Street at the bottom. The ball is launched to the top and falls a tier at a time into the Unemployment Office. The format comes from a long line of tall, multi-tier pinball video games. The layout, the art and the theme are our own.
 - The cursor is sealed inside a clear ball, and that ball is the pinball. This replaces the earlier ruling in the table above that it stays a bare arrow: inside a clear ball it can still be seen and can still act.
-- The machine is big and is built into a tall Step 3 page. There is no cabinet on legs. The cursor is taken in at a loader port on the first screen.
+- The machine is built into a tall Step 3 page. There is no cabinet. The cursor is taken in at a loader port on the first screen.
 - The camera pulls back to show the whole machine, pushes in on the part where the ball is, follows it, and rides above it on the wire ramp.
 
 After Brandon approves round 6:
 
 1. This file is updated.
-2. `kit/01-FILM.md`, `kit/02-SUBJECT.md`, `kit/03-METHOD.md` and the config are brought into line with the three changes above.
-3. The approved images are copied to `references/approved/`, and the `table-` keys in the config are set to match them, lose their `pending` mark and get their settled lines.
+2. `kit/01-FILM.md`, `kit/02-SUBJECT.md`, `kit/03-METHOD.md` and the config are brought into line with the changes above: the beats of step 3, the parts of the table, its cameras and its keys.
+3. The approved images are copied to `references/approved/`, and the keys for step 3 in the config are set to match them and get their settled lines.
 4. `references/approved/contact-sheet.jpg` and `references/approved/MANIFEST.sha256` are made.
 5. `references.pendingRounds` in the config is emptied.
 6. The kit is audited once more and the kickoff prompt is handed over.
