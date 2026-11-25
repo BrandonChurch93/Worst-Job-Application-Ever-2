@@ -36,6 +36,28 @@ export const fall = (d: number, reach: number): number => {
 
 const FILL = colours.FILL
 
+export const BOXES = 4
+
+// The light of the zone's lamps on a place away from the ball, for the walls the ball shows bent in its own wall.
+export function washAt(z: Zone, ctx: RealContext, x: number, y: number, height: number): RGB {
+  const groups = groupsOf(z)
+  const out: RGB = [0, 0, 0]
+  if (groups.length === 0) return out
+  const L = levels(ctx, z)
+  for (const g of groups) {
+    const level = L.groups[g.index]!
+    if (level <= 0.01 || g.name.startsWith('insert.')) continue
+    for (const src of g.sources) {
+      const e = src.power * level * fall(Math.max(40, Math.hypot(src.x - x, src.y - y, src.z - height)), src.reach)
+      for (let c = 0; c < 3; c++) out[c]! += g.colour[c]! * e
+    }
+  }
+  const fill = FILL[z.id] ?? [0.6, 0.6, 0.62]
+  const website = levels(ctx, zoneNamed('marquee')).website
+  for (let c = 0; c < 3; c++) out[c] = Math.min(1.5, out[c]! * 0.8 + fill[c]! * (0.45 * L.general + 0.3 * L.flash) + 0.5 * website)
+  return out
+}
+
 // Every lamp of the zone the ball is in, as the ball sees it, brightest first. Read only from the lights owner's groups and levels.
 export function lightAt(s: Shape, ctx: RealContext): Light {
   const cx = s.x + s.w / 2

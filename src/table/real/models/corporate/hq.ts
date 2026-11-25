@@ -113,7 +113,7 @@ function curtain(S: Geo, G: Geo, a: V2, b: V2, z0: number, z1: number, rnd: Rand
           const k = warm
           const blind = rnd.next() < 0.04
           const room = (q: number): RGB => [COOL[0] * q * k * 0.5, COOL[1] * q * k * 0.9, COOL[2] * q * k * 1.1 * cool]
-          rect(0, 1, 0.52, 1, blind ? lamp(0.09 * k) : lamp(0.07 * k, cool))
+          rect(0, 1, 0.52, 1, blind ? lamp(0.09 * k) : room(0.085))
           rect(0, 1, 0.24, 0.52, blind ? lamp(0.09 * k) : room(0.05))
           rect(0, 1, 0, 0.24, rnd.next() < 0.5 ? room(0.018) : room(0.03))
           if (blind) continue

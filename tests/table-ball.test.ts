@@ -136,10 +136,15 @@ describe('the clear ball', () => {
     expect(flat.y).toBeCloseTo(-(carpet.box[3] / 2 - 0.5) * B, 4)
     expect(flat.z).toBeCloseTo((carpet.box[2] / 2) * B, 4)
     expect((u.uFlatCol!.value as THREE.Color).r).toBeGreaterThan((u.uFlatCol!.value as THREE.Color).b * 3)
-    const block = u.uBlock!.value as THREE.Vector4
-    expect(block.z * block.w).toBeGreaterThan(0)
-    expect(meshesOf(o).find((m) => m.name === 'ball.shadow')!.position.z).toBeGreaterThan(3)
+    const boxes = u.uBoxAt!.value as THREE.Vector4[]
+    const walls = u.uBoxCol!.value as THREE.Vector4[]
+    expect(boxes[0]!.z * boxes[0]!.w).toBeGreaterThan(0)
+    expect(walls[0]!.w).toBeCloseTo(table.models.find((m) => m.id === 'corporate.hq')!.h * B, 4)
+    expect(walls[0]!.x + walls[0]!.y + walls[0]!.z).toBeGreaterThan(0)
+    const shadow = meshesOf(o).find((m) => m.name === 'ball.shadow')!
+    expect(shadow.position.z - (u.uDrop!.value as number)).toBeCloseTo(5.6, 4)
     maker.pose!(o, office, ctx)
+    expect(shadow.position.z - (u.uDrop!.value as number)).toBeCloseTo(3.4, 4)
     expect((u.uFlat!.value as THREE.Vector4).z).toBe(0)
   })
 
