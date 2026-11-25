@@ -1,0 +1,138 @@
+{
+  "round": 2,
+  "commit": "125609b",
+  "ran": "M1 to M10 on every unit, npm run measure -- --unit all, draft tier",
+  "units": {
+    "marketing": {
+      "tier": "draft",
+      "format": "hd",
+      "engineHash": "7dcd58a586ce4b9b",
+      "exit": 0,
+      "green": [
+        "M1",
+        "M3",
+        "M4",
+        "M5",
+        "M6",
+        "M7",
+        "M9"
+      ],
+      "red": [],
+      "notYet": [
+        "M2"
+      ]
+    },
+    "step1": {
+      "tier": "draft",
+      "format": "hd",
+      "engineHash": "7dcd58a586ce4b9b",
+      "exit": 2,
+      "green": [
+        "M1",
+        "M4",
+        "M5",
+        "M6",
+        "M7",
+        "M9"
+      ],
+      "red": [
+        "M3"
+      ],
+      "notYet": [
+        "M2"
+      ]
+    },
+    "step2": {
+      "tier": "draft",
+      "format": "hd",
+      "engineHash": "7dcd58a586ce4b9b",
+      "exit": 2,
+      "green": [
+        "M1",
+        "M4",
+        "M5",
+        "M6",
+        "M7",
+        "M9"
+      ],
+      "red": [
+        "M3"
+      ],
+      "notYet": [
+        "M2"
+      ]
+    },
+    "pinball": {
+      "tier": "draft",
+      "format": "hd",
+      "engineHash": "7dcd58a586ce4b9b",
+      "exit": 2,
+      "green": [
+        "M1",
+        "M4",
+        "M5",
+        "M6",
+        "M7",
+        "M9",
+        "M10"
+      ],
+      "red": [
+        "M3",
+        "M8"
+      ],
+      "notYet": [
+        "M2"
+      ]
+    },
+    "boss": {
+      "tier": "draft",
+      "format": "hd",
+      "engineHash": "7dcd58a586ce4b9b",
+      "exit": 2,
+      "green": [
+        "M1",
+        "M4",
+        "M5",
+        "M6",
+        "M7",
+        "M9"
+      ],
+      "red": [
+        "M3"
+      ],
+      "notYet": [
+        "M2"
+      ]
+    },
+    "decision": {
+      "tier": "draft",
+      "format": "hd",
+      "engineHash": "7dcd58a586ce4b9b",
+      "exit": 0,
+      "green": [
+        "M1",
+        "M3",
+        "M4",
+        "M5",
+        "M6",
+        "M7",
+        "M9"
+      ],
+      "red": [],
+      "notYet": [
+        "M2"
+      ]
+    },
+    "film": {
+      "tier": "draft",
+      "format": "hd",
+      "engineHash": "7dcd58a586ce4b9b",
+      "exit": 0,
+      "green": [
+        "M7"
+      ],
+      "red": [],
+      "notYet": []
+    }
+  }
+}

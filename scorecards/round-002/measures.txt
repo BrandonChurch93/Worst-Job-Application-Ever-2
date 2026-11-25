@@ -1,0 +1,97 @@
+measure: tier draft, format hd (a judged still is rendered at final: these numbers are from draft), engine 7dcd58a586ce4b9b
+
+unit marketing: 5 judged stills
+pass  M1  5 stills: 0 invalid values; 0 bare of 29980 edge pixels in 5 stills from home; the cursor outside the frame in 0
+not yet  M2  no textured pixel in any of the 5 stills: nothing in this unit carries a texture yet
+pass  M3  1 keys: the least ratio of fine detail to the approved image 0.8371, the least allowed 0.8
+pass  M4  754 runs of type in 5 stills: the smallest 18 px (least 14), the least contrast 5.22 (least 4.5)
+pass  M5  348 parts in 5 stills: the furthest 0 px from the layout tree, the most allowed 2; 0 left out as moved by a gag
+pass  M6  5 stills from home with the cursor at rest and 0 from a tier camera: the furthest 0 px from its size, the most allowed 6
+pass  M7  840 frames read: no event strikes the cursor in them
+pass  M9  185 of 348 parts checked in 5 stills from home: the furthest 0 px from its size or height, the most allowed 2
+record: out/work/measures/marketing.json
+
+unit step1: 7 judged stills
+pass  M1  7 stills: 0 invalid values; 0 bare of 11992 edge pixels in 2 stills from home; the cursor outside the frame in 0
+not yet  M2  no textured pixel in any of the 7 stills: nothing in this unit carries a texture yet
+FAIL  M3  2 keys: the least ratio of fine detail to the approved image 0.2562, the least allowed 0.8
+      key:step1-tug: fine detail against the approved image at the same size: 0.2562 against 0.8
+pass  M4  103 runs of type in 3 stills: the smallest 18 px (least 14), the least contrast 5.22 (least 4.5)
+pass  M5  88 parts in 3 stills: the furthest 0 px from the layout tree, the most allowed 2; 5 left out as moved by a gag
+pass  M6  2 stills from home with the cursor at rest and 0 from a tier camera: the furthest 0 px from its size, the most allowed 6
+pass  M7  1920 frames read, 3 events strike the cursor: 0 further from it than its own height in the picture, 0 with no change of damage or acting and no reaction starting on that frame or the next
+pass  M9  70 of 74 parts checked in 2 stills from home: the furthest 0 px from its size or height, the most allowed 2
+record: out/work/measures/step1.json
+
+unit step2: 5 judged stills
+pass  M1  5 stills: 0 invalid values; 0 bare of 23984 edge pixels in 4 stills from home; the cursor outside the frame in 0
+not yet  M2  no textured pixel in any of the 5 stills: nothing in this unit carries a texture yet
+FAIL  M3  3 keys: the least ratio of fine detail to the approved image 0.6212, the least allowed 0.8
+      key:step2-rest: fine detail against the approved image at the same size: 0.6212 against 0.8
+      key:step2-dial: fine detail against the approved image at the same size: 0.6412 against 0.8
+      key:step2-crank: fine detail against the approved image at the same size: 0.7099 against 0.8
+pass  M4  79 runs of type in 4 stills: the smallest 18 px (least 14), the least contrast 5.22 (least 4.5)
+pass  M5  62 parts in 4 stills: the furthest 0 px from the layout tree, the most allowed 2; 2 left out as moved by a gag
+pass  M6  4 stills from home with the cursor at rest and 0 from a tier camera: the furthest 0 px from its size, the most allowed 6
+pass  M7  1260 frames read, 3 events strike the cursor: 0 further from it than its own height in the picture, 0 with no change of damage or acting and no reaction starting on that frame or the next
+pass  M9  53 of 64 parts checked in 4 stills from home: the furthest 0 px from its size or height, the most allowed 2
+record: out/work/measures/step2.json
+
+unit pinball: 14 judged stills
+pass  M1  14 stills: 0 invalid values; 0 bare of 17988 edge pixels in 3 stills from home; the cursor outside the frame in 0
+not yet  M2  no textured pixel in any of the 14 stills: nothing in this unit carries a texture yet
+FAIL  M3  10 keys: the least ratio of fine detail to the approved image 0.3813, the least allowed 0.8
+      key:tier-corporate: fine detail against the approved image at the same size: 0.3813 against 0.8
+      key:lobby-doors: fine detail against the approved image at the same size: 0.5375 against 0.8
+      key:tier-office: fine detail against the approved image at the same size: 0.4132 against 0.8
+      key:tier-street: fine detail against the approved image at the same size: 0.4945 against 0.8
+pass  M4  342 runs of type in 11 stills: the smallest 16 px (least 14), the least contrast 5 (least 4.5)
+pass  M5  110 parts in 11 stills: the furthest 0 px from the layout tree, the most allowed 2; 0 left out as moved by a gag
+pass  M6  2 stills from home with the cursor at rest and 3 from a tier camera: the furthest 3.75 px from its size, the most allowed 6
+pass  M7  2520 frames read, 19 events strike the cursor: 0 further from it than its own height in the picture, 0 with no change of damage or acting and no reaction starting on that frame or the next
+FAIL  M8  corporate 27 parts, 0.1823 bare; office 26 parts, 0.2139 bare; street 31 parts, 0.1497 bare (at least 24 parts, at most 0.08 bare)
+      key:tier-corporate, corporate: floor pixels further than table.bareDistanceFraction (0.02) of the tier's width from any standing part, insert or printed line: 0.1823 against 0.08 (of 2060578)
+      key:tier-office, office: floor pixels further than table.bareDistanceFraction (0.02) of the tier's width from any standing part, insert or printed line: 0.2139 against 0.08 (of 2062163)
+      key:tier-street, street: floor pixels further than table.bareDistanceFraction (0.02) of the tier's width from any standing part, insert or printed line: 0.1497 against 0.08 (of 2062656)
+pass  M9  18 of 20 parts checked in 2 stills from home: the furthest 0 px from its size or height, the most allowed 2
+pass  M10  65 openings, the narrowest 1.25 balls (least 1.25); 16 rails; 17 holds; the lift has 2 doors and 2 elbows; display characters 15.37 px in the tier stills (least 14); npm run paths ended with code 0: paths: all clear
+record: out/work/measures/pinball.json
+
+unit boss: 4 judged stills
+pass  M1  4 stills: 0 invalid values; 0 bare of 17988 edge pixels in 3 stills from home; the cursor outside the frame in 0
+not yet  M2  no textured pixel in any of the 4 stills: nothing in this unit carries a texture yet
+FAIL  M3  2 keys: the least ratio of fine detail to the approved image 0.6405, the least allowed 0.8
+      key:boss-fight: fine detail against the approved image at the same size: 0.6405 against 0.8
+      key:boss-down: fine detail against the approved image at the same size: 0.6826 against 0.8
+pass  M4  42 runs of type in 3 stills: the smallest 18 px (least 14), the least contrast 5 (least 4.5)
+pass  M5  31 parts in 3 stills: the furthest 0 px from the layout tree, the most allowed 2; 0 left out as moved by a gag
+pass  M6  3 stills from home with the cursor at rest and 0 from a tier camera: the furthest 0 px from its size, the most allowed 6
+pass  M7  1920 frames read, 2 events strike the cursor: 0 further from it than its own height in the picture, 0 with no change of damage or acting and no reaction starting on that frame or the next
+pass  M9  26 of 31 parts checked in 3 stills from home: the furthest 0 px from its size or height, the most allowed 2
+record: out/work/measures/boss.json
+
+unit decision: 2 judged stills
+pass  M1  2 stills: 0 invalid values; 0 bare of 11992 edge pixels in 2 stills from home; the cursor outside the frame in 0
+not yet  M2  no textured pixel in any of the 2 stills: nothing in this unit carries a texture yet
+pass  M3  1 keys: the least ratio of fine detail to the approved image 0.8477, the least allowed 0.8
+pass  M4  32 runs of type in 2 stills: the smallest 20 px (least 14), the least contrast 5.94 (least 4.5)
+pass  M5  26 parts in 2 stills: the furthest 0 px from the layout tree, the most allowed 2; 0 left out as moved by a gag
+pass  M6  2 stills from home with the cursor at rest and 0 from a tier camera: the furthest 0 px from its size, the most allowed 6
+pass  M7  720 frames read, 2 events strike the cursor: 0 further from it than its own height in the picture, 0 with no change of damage or acting and no reaction starting on that frame or the next
+pass  M9  22 of 26 parts checked in 2 stills from home: the furthest 0 px from its size or height, the most allowed 2
+record: out/work/measures/decision.json
+
+unit film: the frames of the film
+pass  M7  9180 frames read, 29 events strike the cursor: 0 further from it than its own height in the picture, 0 with no change of damage or acting and no reaction starting on that frame or the next
+record: out/work/measures/film.json
+
+summary
+  marketing  M1 pass, M2 not yet, M3 pass, M4 pass, M5 pass, M6 pass, M7 pass, M9 pass
+  step1      M1 pass, M2 not yet, M3 FAIL, M4 pass, M5 pass, M6 pass, M7 pass, M9 pass
+  step2      M1 pass, M2 not yet, M3 FAIL, M4 pass, M5 pass, M6 pass, M7 pass, M9 pass
+  pinball    M1 pass, M2 not yet, M3 FAIL, M4 pass, M5 pass, M6 pass, M7 pass, M8 FAIL, M9 pass, M10 pass
+  boss       M1 pass, M2 not yet, M3 FAIL, M4 pass, M5 pass, M6 pass, M7 pass, M9 pass
+  decision   M1 pass, M2 not yet, M3 pass, M4 pass, M5 pass, M6 pass, M7 pass, M9 pass
+  film       M7 pass
+
+measure: 40 green, 5 red, 6 not yet
