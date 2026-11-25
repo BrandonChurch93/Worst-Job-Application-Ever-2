@@ -23,7 +23,7 @@ import { loadFont } from './shell/type'
 import type { QualityId } from './core/quality'
 import { homePose, project, toWorld } from './stage/camera'
 import { filmFlow, filmOptions, ScriptDriver, Stage, StillDriver, TURN_HALF, type Frame } from './stage/stage'
-import type { CameraPose, PageLogic, Shape } from './stage/types'
+import type { CameraPose, PageLogic, Shape, Tone } from './stage/types'
 
 export interface StillSpec { page: string; beat?: string; at?: number; scroll?: number; camera: string; tier: string; sheet?: string; interface?: boolean; touchOnly?: boolean; live?: string }
 
@@ -184,7 +184,9 @@ export class App {
     const stage = spec.beat ? this.film(spec.page) : this.rest(spec.page)
     const time = this.momentOf(spec)
     const page = stage.page
-    const at = stage.frameAt(time)
+    const made = stage.frameAt(time)
+    const open: Record<string, Tone> = { 'continue-cap': 'accent', 'continue-label': 'inkLight' }
+    const at: Frame = spec.sheet === 'page-look' ? { ...made, list: made.list.map((x) => (open[x.id] ? { ...x, tone: open[x.id] } : x)) } : made
     const down = !spec.beat && spec.scroll && spec.camera === 'home' ? spec.scroll * Math.max(0, page.height - hd.height) : 0
     const lower = (c: CursorPose): CursorPose => ({ ...c, y: c.y + down })
     const frame: Frame = down ? { ...at, cursor: lower(at.cursor), cursors: at.cursors?.map(lower) } : at
