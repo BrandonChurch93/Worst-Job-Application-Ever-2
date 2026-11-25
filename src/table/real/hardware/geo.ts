@@ -256,7 +256,18 @@ export class Geo {
       const a = from + ((to - from) * i) / rows
       outline.push([Math.max(0, r * Math.cos(a)), r * Math.sin(a)])
     }
-    return this.lathe(outline, cx, cy, segs, col, cz)
+    const first = this.vertices
+    this.lathe(outline, cx, cy, segs, col, cz)
+    for (let i = first; i < this.vertices; i++) {
+      const x = this.p[i * 3]! - cx
+      const y = this.p[i * 3 + 1]! - cy
+      const z = this.p[i * 3 + 2]! - cz
+      const l = Math.hypot(x, y, z) || 1
+      this.n[i * 3] = x / l
+      this.n[i * 3 + 1] = y / l
+      this.n[i * 3 + 2] = z / l
+    }
+    return this
   }
 
   // How far every vertex from `from` to `to` moves when a thing is fully moved: one morph of the mesh.

@@ -1,11 +1,11 @@
 import * as THREE from 'three'
-import { BALL, COLS, table } from '../../layout'
+import { BALL, COLS, LANE_RAMP, TH, TIERS, table } from '../../layout'
 import type { Zone } from '../zone'
 import { Geo, type V2, type V3 } from './geo'
 import { TUBE, clamp, collar, frameAt, lengthOf, shells, spot } from './kit'
 import { FIN, Screws, TONE, shade } from './mats'
 
-export const LIFT = { centre: TUBE.outer + 1.5, foot: 10.55, elbowOut: 66, bend: 0.75 * BALL, lean: 0, swing: 1.25, decay: 4, beat: 7 }
+export const LIFT = { centre: TUBE.outer + 1.5, foot: 10.55, cup: 12 / BALL, elbowOut: 66, bend: 0.75 * BALL, lean: 0, swing: 1.25, decay: 4, beat: 7 }
 export const DOOR = { high: 88 }
 
 export interface Lift { G: Geo; C: Geo; S: Screws; flap: Geo | null; hinge: V3 }
@@ -20,7 +20,8 @@ export function lift(z: Zone): Lift {
   const elbow = table.openings.find((o) => o.tier === k && o.id.endsWith('.elbow'))
   const door = table.openings.find((o) => o.tier === k && o.id.endsWith('.lift.door'))
   const v = (y: number): number => y - (z.top / BALL)
-  const base = spot(z, COLS.lift, LIFT.foot)
+  // Over a tier that sends balls up, the cup stands against the housing the lift rises in, its closed end just inside it.
+  const base = spot(z, COLS.lift, k < TIERS.length - 1 ? TH - LANE_RAMP.lift - LIFT.cup : LIFT.foot)
   let top: V3
   let bendPath: V3[] = []
   if (elbow) {

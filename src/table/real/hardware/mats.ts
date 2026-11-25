@@ -73,7 +73,7 @@ function finishes(): THREE.DataTexture {
   return palette
 }
 
-// What polished metal sends back is what it sees: a dim room overhead with a window and one small lamp in it, the lit walls round the horizon, the floor of its tier below and its own shadow straight under it. The smoother the metal the more of this it shows.
+// What polished metal sends back is what it sees: a softly lit ceiling with a window and one small lamp in it, the dark walls of the cabinet round the horizon, the floor of its tier below and its own shadow straight under it. The smoother the metal the more of this it shows.
 const MIRROR = /* glsl */ `
 {
 	float hwGloss = metalnessFactor * ( 1.0 - smoothstep( 0.04, 0.4, roughnessFactor ) );
@@ -88,9 +88,10 @@ const MIRROR = /* glsl */ `
 		float hwWin = step( 0.0, hwF ) * ( 1.0 - smoothstep( 0.39 - hwSoft, 0.39 + hwSoft, abs( hwP.x ) ) ) * ( 1.0 - smoothstep( 0.23 - hwSoft, 0.23 + hwSoft, abs( hwP.y ) ) );
 		hwWin *= mix( smoothstep( 0.012, 0.03, abs( hwP.x ) ), 1.0, smoothstep( 0.03, 0.08, roughnessFactor ) );
 		float hwLamp = smoothstep( 0.965 - hwSoft * 0.3, 0.99, dot( hwR, vec3( 0.58, -0.33, 0.744 ) ) );
-		float hwSky = 0.22 + 2.6 * exp( - 6.5 * max( hwR.z, 0.0 ) );
-		vec3 hwLow = mix( vec3( 0.25 ), hwFloor * ( 2.5 - 1.2 * min( 1.0, - 2.0 * hwR.z ) ), smoothstep( -0.98, -0.7, hwR.z ) );
-		vec3 hwRoom = mix( hwLow, vec3( hwSky ), smoothstep( -0.05, 0.05, hwR.z ) );
+		float hwSky = 0.8 + 1.7 * smoothstep( -0.3, 0.95, hwF );
+		vec3 hwLow = hwFloor * mix( 0.22, 1.0, smoothstep( -1.0, -0.3, hwR.z ) ) * ( 1.3 + 1.6 * smoothstep( -0.2, 0.9, dot( hwR.xy, vec2( -0.5, 0.86 ) ) ) );
+		float hwWall = 1.0 - smoothstep( 0.02, 0.1 + hwSoft, abs( hwR.z + 0.02 ) );
+		vec3 hwRoom = mix( mix( hwLow, vec3( hwSky ), smoothstep( -0.03, 0.03, hwR.z ) ), vec3( 0.3 ), hwWall );
 		diffuseColor.rgb *= mix( vec3( 1.0 ), hwRoom + hwWin * 14.0 + hwLamp * 7.0, hwGloss );
 	}
 }
@@ -121,6 +122,19 @@ export const metalOf = (z: Zone): THREE.MeshPhysicalMaterial => {
   return m
 }
 
+// The window of the room on clear acrylic: on a tube it is drawn out into one long bright line down the wall that faces it.
+const STREAK = /* glsl */ `
+{
+	vec3 hwR = normalize( ( wjaViewInverse * vec4( reflect( - normalize( vViewPosition ), normalize( normal ) ), 0.0 ) ).xyz );
+	vec3 hwD = vec3( -0.66, 0.56, 0.5 );
+	vec3 hwX = vec3( 0.647, 0.763, 0.0 );
+	float hwF = dot( hwR, hwD );
+	vec2 hwP = vec2( dot( hwR, hwX ), dot( hwR, cross( hwD, hwX ) ) ) / max( hwF, 0.001 );
+	float hwWin = step( 0.0, hwF ) * ( 1.0 - smoothstep( 0.3, 0.48, abs( hwP.x ) ) ) * ( 1.0 - smoothstep( 0.15, 0.31, abs( hwP.y ) ) );
+	gl_FragColor.rgb += vec3( 0.8, 0.86, 0.88 ) * hwWin * 0.75;
+}
+`
+
 const clear = new Map<string, THREE.MeshPhysicalMaterial>()
 
 // Clear acrylic: nothing in the middle but what glints, bright where the wall turns away from the eye.
@@ -134,7 +148,7 @@ export const tubeOf = (z: Zone, base: number): THREE.MeshPhysicalMaterial => {
     room.call(made, shader, renderer)
     shader.fragmentShader = shader.fragmentShader.replace(
       '#include <tonemapping_fragment>',
-      'float hwEdge = pow( 1.0 - abs( dot( normalize( vViewPosition ), normalize( normal ) ) ), 2.4 );\ngl_FragColor.rgb *= mix( 1.0, 4.2, hwEdge );\ngl_FragColor.a = clamp( diffuseColor.a + hwEdge * 0.55 + dot( gl_FragColor.rgb, vec3( 0.3333 ) ) * 0.22, 0.0, 1.0 );\n#include <tonemapping_fragment>'
+      'float hwEdge = pow( 1.0 - abs( dot( normalize( vViewPosition ), normalize( normal ) ) ), 2.4 );\ngl_FragColor.rgb *= mix( 1.0, 4.2, hwEdge );\n' + STREAK + 'gl_FragColor.a = clamp( diffuseColor.a + hwEdge * 0.55 + dot( gl_FragColor.rgb, vec3( 0.3333 ) ) * 0.22, 0.0, 1.0 );\n#include <tonemapping_fragment>'
     )
   }
   m.customProgramCacheKey = () => 'wja-studio-hardware-clear'
