@@ -408,6 +408,8 @@ describe('the slabs and the typed address', () => {
     const hits = (p: { x: number; y: number; w: number; h: number }, q: { x: number; y: number; w: number; h: number }): boolean => p.x < q.x + q.w && q.x < p.x + p.w && p.y < q.y + q.h && q.y < p.y + p.h
     const places = new Map<string, string>()
     const lows = new Map<string, number>()
+    const falls = new Map<string, number>()
+    let air = 0
     let frames = 0
     let most = 0
     for (let i = 0; i < at(20); i++) {
@@ -426,27 +428,34 @@ describe('the slabs and the typed address', () => {
       bodies.forEach((slab, n) => {
         const label = list.find((q) => q.id === `${slab.id}-label`)!
         expect(label.words).toBe('copy:step1.emailError')
-        expect(hits(slab, value)).toBe(false)
-        expect(hits(slab, pocket)).toBe(false)
-        expect(slab.y).toBeGreaterThanOrEqual(DECK.y)
+        if (st.slabs[n]!.landed) {
+          expect(hits(slab, value)).toBe(false)
+          expect(hits(slab, pocket)).toBe(false)
+          expect(slab.y).toBeGreaterThanOrEqual(DECK.y)
+        }
         expect(label.x).toBeGreaterThan(slab.x)
         expect(label.x).toBeLessThan(slab.x + slab.w)
         expect(label.y).toBeGreaterThan(slab.y)
         expect(label.y).toBeLessThan(slab.y + slab.h)
         expect(label.z0).toBe(slab.z1)
-        if (st.slabClear < 0) {
+        if (st.slabClear < 0 && st.slabs[n]!.landed) {
           const place = `${slab.x},${slab.y}`
           expect(places.get(slab.id) ?? place, slab.id).toBe(place)
           places.set(slab.id, place)
           expect(slab.z0, slab.id).toBeLessThanOrEqual((lows.get(slab.id) ?? Infinity) + 6)
           lows.set(slab.id, Math.min(lows.get(slab.id) ?? Infinity, slab.z0))
-          if (st.slabs[n]!.landed) expect(slab.z0 - lows.get(slab.id)!).toBeLessThanOrEqual(6)
+          expect(slab.z0 - lows.get(slab.id)!).toBeLessThanOrEqual(6)
+        } else if (st.slabClear < 0) {
+          expect(slab.z0, slab.id).toBeLessThan(falls.get(slab.id) ?? Infinity)
+          falls.set(slab.id, slab.z0)
+          air++
         }
       })
       frames++
     }
     expect(frames).toBeGreaterThan(300)
     expect(most).toBe(3)
+    expect(air).toBeGreaterThanOrEqual(12)
     expect(new Set(places.values()).size).toBe(3)
     expect(a.events.filter((e) => e.name === 'slab-drop').length).toBe(3)
     expect(a.events.filter((e) => e.name === 'slab-drop').every((e) => !e.hitsCursor)).toBe(true)
