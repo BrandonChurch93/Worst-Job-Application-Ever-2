@@ -25,27 +25,25 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 22, 2026-11-25T12:53Z, Phase 2.
+Status 23, 2026-11-25T13:26Z, Phase 3.
 
-1. `out/stills/status/01-film-sheet-boss.jpg`: The film, sheet 5 of 6: the boss, 1:49 to 2:21. The checkbox, the transformation, three phases, the boss down.
-2. `out/stills/status/02-film-sheet-decision.jpg`: The film, sheet 6 of 6: the decision, 2:21 to 2:33. The wait, the letter, the stamp, the careers page again.
-3. `out/stills/status/03-six-page-layouts.jpg`: The six page layouts on one sheet, at rest: careers page, steps 1 to 5.
-4. `out/stills/status/04-compare-step1-fire.jpg`: Step 1 under fire: your approved picture on the left, the grey blockout on the right. The look lock closes this gap.
+1. `out/stills/status/01-compare-step1-fire-start.jpg`: Step 1 under fire: your approved picture on the left, the starting point of the look lock on the right.
+2. `out/stills/status/02-standins-step1-fire.jpg`: The same frame and its stand-in view. Tinted means not real yet: the shell and type, the keyboard and turrets, the cursor.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 3, tick 57 at 2026-11-25T12:58:39Z, allowance: build
-time used in this phase: 0.09 h of its box of 8.00 h
-time used under the allowance in force: 7.43 h of 36.00 h allowed
-time used: 7.43 of 36.00 hours before the review
+clock: phase 3, tick 60 at 2026-11-25T13:26:09Z, allowance: build
+time used in this phase: 0.55 h of its box of 8.00 h
+time used under the allowance in force: 7.89 h of 36.00 h allowed
+time used: 7.89 of 36.00 hours before the review
 extra rounds: yes
 half point: not reached
 box end: not reached
 budget report: not due
-minutes since the last status: 5
+minutes since the last status: 0
 ```
 
 ## Phases
@@ -406,6 +404,10 @@ One line each: the date, the decision, the reason, and the config key if one was
 - 2026-11-25T13:12Z · Phase 3, addenda. `kit/addenda/` holds only its README: no addendum applies.
 - 2026-11-25T13:12Z · Phase 3, how nine owners work at once. A stand-in becomes real through a maker its owner writes in its own file: `src/real/types.ts` (the types), `src/real/index.ts` (the registry), `src/shell/view.ts` (the view, which was `src/shell/blockout.ts`; it draws the maker's object where a maker answers and the stand-in where none does), `src/cursor/contract.ts` and `src/cursor/view.ts` (the cursor in five parts). The draw list gained `role` (the layout kind) and `v` (numbers a page hands its maker, blended between sim steps), and a frame carries its time. The rule is written in `src/stage/CONTRACT.md` under "Making a part real". Each owner fills one file that already exists and exports null, so no two agents edit the same file and main stays green while they work.
 - 2026-11-25T13:12Z · The test of the review page said the page holds no script at all. The page holds one since 12:57Z: it asks again for a film or a sound the host refused. The kit asks for plain HTML with no framework, which this is. The test now allows one inline script that names no address and cannot reach the network (no `fetch`, no `XMLHttpRequest`, no `import()`, no `WebSocket`, no `sendBeacon`). The commit of 12:57Z went out with this test red; nothing was published from a red build of the site, since the site's own tests were green.
+- 2026-11-25T13:26Z · Phase 3, step 2: nine build agents started at 13:24Z, each a sandbox agent on the default model, each on its own branch `agent/<folder>` with a looks branch `agent/<folder>-looks`: `surface_mason`, `type_setter`, `light_keeper`, `cursor_modeller`, `cursor_actor`, `keyboard_smith`, `slab_maker`, `step1_director`, `gate_keeper` (their files are under "Running agents"). The kit names the first five and the builders of step 1's elements; the Builder split the cursor in two owners (the body with its effects; the acting with damage and arms) and step 1's elements in three (keyboard with turrets; slabs with paper and shredder; the script), so that no two agents own one file, and added one agent for the gate checks this phase needs and the gate tool lacks. Each brief names the approved images of its part, repeats the three rules, gives the limits, and carries its kit sections word for word as a file attached to the message, cut from the kit by line numbers, with the line numbers written in the brief as well. Limit 3 hours each (`budget.buildAgentMaxHours`); first complete version wanted by 14:40Z.
+- 2026-11-25T13:26Z · Phase 3: `page-turn` stays the Builder's part. It lives in `src/stage/` and `src/shell/view.ts`, which are frozen for the agents: the turn with mass, the knock, the shiver and the cursor's jump. The slab's edge and back come from the surface's owner through the ground maker.
+- 2026-11-25T13:26Z · Phase 3, found while writing the seam and given to the gate agent: `tools/gate.mjs` has no G13, G15 or G16; `info().textureMb` answers the constant 0; five parts of the register (`materials`, `light-engine`, `page-turn`, `cursor-effects`, `acting-step1`) have no recorded files and no stand-in hash, so G13's second test cannot be made for them. The gate agent writes the three checks, the texture measure, and a way to record the files of those five parts against the stand-in commit d0f83c8.
+- 2026-11-25T13:26Z · Phase 3: `studio()` and the light law moved from `src/shell/materials.ts` to `src/post/studio.ts`, and `materials()` became one shared set seeded by `config.seed`, so that the light has one owner (`light_keeper`) and the materials another (`surface_mason`). The picture does not change. Type contrast and `App.groundOf` still read the blockout `TONES` of `src/shell/view.ts`: they move to the real materials at integration.
 
 ## Notes from Brandon
 
@@ -519,6 +521,15 @@ Each with its name, its folders, its branch and its looks branch, when it starte
 | `film_renderer_step1` | render, sandbox | the film chunk of `step1`: 960 frames, `draft`, `formats.preview`, from 42e6c7d; changes no file | none: the chunk came back attached to its message | 2026-11-25T12:29Z | 12:54Z | released 12:37Z: MEASURED 960 frames at 0.46 s a frame on 4 cores, 7.7 min, exit 0, 16.48 MB, sha256 58a951c4 checked here, hashes of the build matched; taken into the film at 12:42Z |
 | `film_renderer_pinball` | render, sandbox | the film chunk of `pinball`: 1260 frames, `draft`, `formats.preview`, from 42e6c7d; changes no file | none: the chunk came back attached to its message | 2026-11-25T12:29Z | 13:04Z | released 12:42Z: MEASURED 1260 frames at 0.56 s a frame on 4 cores, 12.1 min, exit 0, 21.36 MB, sha256 6e243538 checked here, hashes of the build matched; taken into the film at 12:42Z |
 | `film_renderer_boss` | render, sandbox | the film chunk of `boss`: 960 frames, `draft`, `formats.preview`, from 42e6c7d; changes no file | none: the chunk came back attached to its message | 2026-11-25T12:29Z | 12:54Z | released 12:37Z: MEASURED 960 frames at 0.43 s a frame on 4 cores, 7.2 min, exit 0, 16.57 MB, sha256 7bb15fcb checked here, hashes of the build matched; taken into the film at 12:42Z |
+| `surface_mason` | build, sandbox, Phase 3 | `src/shell/materials.ts`, `src/shell/solids.ts`, `src/shell/real/ground.ts`, `src/shell/real/controls.ts`; parts `shell`, `materials`; its tests `tests/<folder>*.test.ts`, its notes under `pipeline/phase3/` | `agent/surface`, looks `agent/surface-looks` | 2026-11-25T13:24:20Z | 16:24Z | started 13:24Z from 4b65361; first complete version wanted by 14:40Z |
+| `type_setter` | build, sandbox, Phase 3 | `src/shell/type.ts`, `src/shell/metrics.ts`, `src/shell/real/type.ts`; part `type`; its tests `tests/<folder>*.test.ts`, its notes under `pipeline/phase3/` | `agent/type`, looks `agent/type-looks` | 2026-11-25T13:24:20Z | 16:24Z | started 13:24Z from 4b65361; first complete version wanted by 14:40Z |
+| `light_keeper` | build, sandbox, Phase 3 | `src/core/renderer.ts`, `sampler.ts`, `accumulator.ts`, `src/post/`; part `light-engine`; its tests `tests/<folder>*.test.ts`, its notes under `pipeline/phase3/` | `agent/light`, looks `agent/light-looks` | 2026-11-25T13:24:20Z | 16:24Z | started 13:24Z from 4b65361; first complete version wanted by 14:40Z |
+| `cursor_modeller` | build, sandbox, Phase 3 | `src/cursor/contract.ts`, `src/cursor/model/`; parts `cursor-body`, `cursor-effects`; its tests `tests/<folder>*.test.ts`, its notes under `pipeline/phase3/` | `agent/cursor-model`, looks `agent/cursor-model-looks` | 2026-11-25T13:24:20Z | 16:24Z | started 13:24Z from 4b65361; first complete version wanted by 14:40Z |
+| `cursor_actor` | build, sandbox, Phase 3 | `src/cursor/body.ts`, `sheets.ts`, `view.ts`, `src/cursor/act/`; parts `cursor-acting`, `cursor-damage`, `cursor-arms`; its tests `tests/<folder>*.test.ts`, its notes under `pipeline/phase3/` | `agent/cursor-act`, looks `agent/cursor-act-looks` | 2026-11-25T13:24:20Z | 16:24Z | started 13:24Z from 4b65361; first complete version wanted by 14:40Z |
+| `keyboard_smith` | build, sandbox, Phase 3 | `src/pages/step1/keyboard.ts`, `keyboard.json`, `turrets.ts`, `fire.ts`, `real/keyboard.ts`, `real/turrets.ts`; parts `keyboard`, `turrets`; its tests `tests/<folder>*.test.ts`, its notes under `pipeline/phase3/` | `agent/keyboard`, looks `agent/keyboard-looks` | 2026-11-25T13:24:20Z | 16:24Z | started 13:24Z from 4b65361; first complete version wanted by 14:40Z |
+| `slab_maker` | build, sandbox, Phase 3 | `src/pages/step1/real/slabs.ts`, `real/paper.ts`, `real/shredder.ts`; parts `slabs`, `paper`, `shredder`; its tests `tests/<folder>*.test.ts`, its notes under `pipeline/phase3/` | `agent/slabs`, looks `agent/slabs-looks` | 2026-11-25T13:24:20Z | 16:24Z | started 13:24Z from 4b65361; first complete version wanted by 14:40Z |
+| `step1_director` | build, sandbox, Phase 3 | `src/pages/step1/index.ts`, `script.ts`, `layout.ts`, `NOTES.md`, `tests/step1*.test.ts`; part `acting-step1`; its tests `tests/<folder>*.test.ts`, its notes under `pipeline/phase3/` | `agent/step1-script`, looks `agent/step1-script-looks` | 2026-11-25T13:24:20Z | 16:24Z | started 13:24Z from 4b65361; first complete version wanted by 14:40Z |
+| `gate_keeper` | build, sandbox, Phase 3 | `tools/gate.mjs`, `tools/parts.mjs`, `tools/HARNESS-NOTES.md`, `src/capture/showcase.ts`, `tests/gate*.test.ts`: the checks G13, G15, G16; its tests `tests/<folder>*.test.ts`, its notes under `pipeline/phase3/` | `agent/gate`, looks `agent/gate-looks` | 2026-11-25T13:24:20Z | 14:40Z, whole | started 13:24Z from 4b65361; first complete version wanted by 14:40Z |
 
 Ten build agents, the most the kit allows beside six critic slots. Each brief names the approved images of its part, gives its sections of the kit word for word, and repeats the three rules. First complete versions wanted by 10:45Z to 10:50Z. A build agent silent for 45 minutes is replaced once from its branch. The Builder keeps for itself: `tools/parts.mjs`, `simcache.mjs`, `pack.mjs`, `measure.mjs`, `hostcheck.mjs`, the gate checks, the diagnostic views, `src/main.ts`, `src/app.ts` and the frame interface.
 

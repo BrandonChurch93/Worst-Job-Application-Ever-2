@@ -1,40 +1,8 @@
 import * as THREE from 'three'
 import { config } from '../config'
 import { hash01 } from '../core/random'
-import { look } from '../post/look'
-
-const shared = { envDiffuse: { value: look.envDiffuse }, keySpecular: { value: look.keySpecular } }
-
-const dirStart = '#if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )'
-function patchedBegin(): string {
-  const chunk = THREE.ShaderChunk.lights_fragment_begin
-  const at = chunk.indexOf(dirStart)
-  const end = chunk.indexOf('#pragma unroll_loop_end', at)
-  if (at < 0 || end < 0) throw new Error('The light code of this three.js release is not the one this build was written for')
-  const stop = end + '#pragma unroll_loop_end'.length
-  const before = '\n\tvec3 wjaSpec0 = reflectedLight.directSpecular;\n\t#ifdef USE_CLEARCOAT\n\tvec3 wjaCoat0 = clearcoatSpecularDirect;\n\t#endif\n'
-  const after = '\n\treflectedLight.directSpecular = mix( wjaSpec0, reflectedLight.directSpecular, wjaKeySpecular );\n\t#ifdef USE_CLEARCOAT\n\tclearcoatSpecularDirect = mix( wjaCoat0, clearcoatSpecularDirect, wjaKeySpecular );\n\t#endif\n'
-  return chunk.slice(0, at + dirStart.length) + before + chunk.slice(at + dirStart.length, stop) + after + chunk.slice(stop)
-}
-function patchedMaps(): string {
-  const chunk = THREE.ShaderChunk.lights_fragment_maps
-  const line = 'iblIrradiance += getIBLIrradiance( geometryNormal );'
-  if (!chunk.includes(line)) throw new Error('The light code of this three.js release is not the one this build was written for')
-  return chunk.replace(line, 'iblIrradiance += wjaEnvDiffuse * getIBLIrradiance( geometryNormal );')
-}
-
-// The studio rule: lamps with shadows give the diffuse light, the studio's reflection gives the highlights.
-export function studio<T extends THREE.MeshStandardMaterial>(material: T): T {
-  material.onBeforeCompile = (shader) => {
-    shader.uniforms.wjaEnvDiffuse = shared.envDiffuse
-    shader.uniforms.wjaKeySpecular = shared.keySpecular
-    shader.fragmentShader =
-      'uniform float wjaEnvDiffuse;\nuniform float wjaKeySpecular;\n' +
-      shader.fragmentShader.replace('#include <lights_fragment_begin>', patchedBegin()).replace('#include <lights_fragment_maps>', patchedMaps())
-  }
-  material.customProgramCacheKey = () => 'wja-studio'
-  return material
-}
+import { config } from '../config'
+import { studio } from '../post/studio'
 
 const srgb = (hex: number) => new THREE.Color().setHex(hex, THREE.SRGBColorSpace)
 
@@ -155,4 +123,11 @@ let set: Materials | null = null
 export function materials(): Materials {
   set ??= makeMaterials(config.seed)
   return set
+}
+
+let made: Materials | null = null
+// The one set of materials every part shares, so the orange is the same orange everywhere.
+export function materials(): Materials {
+  made ??= makeMaterials(config.seed)
+  return made
 }
