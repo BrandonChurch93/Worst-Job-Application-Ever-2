@@ -1,35 +1,35 @@
 {
   "folder": "step1-script",
-  "pushed": "2026-11-25T15:45:42.176Z",
-  "commit": "6df5400da3e838be1b3ac7677b2dcb0773a6cc49",
+  "pushed": "2026-11-25T15:58:27.032Z",
+  "commit": "7efbaddd995af06c473696df92769f75b1081094",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key step1-tug: approved on the left, this build on the right, review tier, with crops of cursor, paper, paper.below, chip, card.glass, field.start",
-      "time": "2026-11-25T15:44:49.712Z",
+      "caption": "Still step1-step1_firstName-0p5-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-25T15:53:16.301Z",
       "by": "step1-script",
-      "from": "out/work/compare/compare-step1-tug.jpg"
+      "from": "out/work/stills/step1-step1_firstName-0p5-hd-review.png"
     },
     {
       "file": "look-2.jpg",
+      "caption": "Still step1-step1_tug-0p5-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T15:53:29.704Z",
+      "by": "step1-script",
+      "from": "out/work/stills/step1-step1_tug-0p5-hd-draft.png"
+    },
+    {
+      "file": "look-3.jpg",
       "caption": "Key step1-fire: approved on the left, this build on the right, review tier, with crops of cursor, keys, hatch, keyboardDeck.corner, field.start, type, progressButton, chip, card.corner",
-      "time": "2026-11-25T15:45:18.678Z",
+      "time": "2026-11-25T15:58:10.488Z",
       "by": "step1-script",
       "from": "out/work/compare/compare-step1-fire.jpg"
     },
     {
-      "file": "look-3.jpg",
-      "caption": "key step1-tug beside the approved image at 6df5400: the whole drop zone, the upload glyph, strips under the hood",
-      "time": "2026-11-25T15:45:40.486Z",
-      "by": "step1-script",
-      "from": "out/work/report/step1-script-tug-beside-approved-3.jpg"
-    },
-    {
       "file": "look-4.jpg",
-      "caption": "key step1-fire beside the approved image at 6df5400: the upload glyph, the note clear of the card, legends at 26 and 20 px",
-      "time": "2026-11-25T15:45:40.731Z",
+      "caption": "step1-fire at 7efbadd beside the approved image: the cursor has fled up and right to the 5 key, one bolt in the air by F, burn on K",
+      "time": "2026-11-25T15:58:25.605Z",
       "by": "step1-script",
-      "from": "out/work/report/step1-script-fire-beside-approved-4.jpg"
+      "from": "out/work/report/step1-script-fire-beside-approved-5.jpg"
     }
   ]
 }
