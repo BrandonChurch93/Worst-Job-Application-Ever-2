@@ -36,3 +36,18 @@ Owner: corporate. Branch: `agent/corporate`. Code: `src/table/real/models/corpor
 ## Measured
 
 See the report at the end of this file.
+
+### First complete version (commit d7fd6fb, 16:54 UTC)
+
+| Fact | Value | Command |
+| --- | --- | --- |
+| MEASURED tests | 63 files, 1064 tests pass | `npm test` |
+| MEASURED build | built | `npm run build` |
+| MEASURED bots | all clear | `npm run bots` |
+| MEASURED colour calls of the seven models, low quality | 13 (HQ 3, beach 3, boardroom 2, revolving door 2, ladder 1, notes 1, wedges 1) | `npm run build && npm run counts -- --key tier-corporate --live low` |
+| MEASURED triangles of the seven, colour and shadow passes, low quality | 43763 in `tier-corporate` (HQ 15800, boardroom 8432, ladder 5712, beach 4903, revolving door 4424, wedges 3604, notes 888) | same |
+| MEASURED `tier-corporate` whole frame, low quality | before (main, all seven stand-ins): UNKNOWN at low, not taken; after: 188 draw calls, 221039 triangles | same |
+| MEASURED `table-wide` whole frame, low quality | after: 475 draw calls, 299795 triangles (175 calls over the limit of 300, with other owners' stand-ins still in) | `npm run counts -- --key table-wide --live low` |
+| MEASURED `tier-corporate` draft still | before: 27.3 s, 350412 triangles, 802 draw calls; after: 30.4 s, 530984 triangles, 679 draw calls | `npm run still -- --key tier-corporate --format hd --tier draft` |
+| MEASURED `tier-corporate` review still | 54.2 s, 537066 triangles, 697 draw calls | `npm run still -- --key tier-corporate --format hd --tier review --force` |
+| MEASURED asset sets of this tier | 0 MB in `assets-src/table/corporate/`, `public/assets/table/corporate/`, `assets-full/table/corporate/` (nothing in them) | `du -sh` |
