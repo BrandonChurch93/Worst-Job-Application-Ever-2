@@ -74,21 +74,21 @@ function puffPicture(seed: number): THREE.DataTexture {
   })
 }
 
-// A scorch: a small charred pit with a ragged edge, a wide singed halo that goes from dark brown to tan, ash flecks.
+// A scorch: a small charred pit with a crisp ragged edge, a narrow singed ring from dark brown to tan, a few ash flecks.
 function scorchPicture(seed: number): THREE.DataTexture {
   return picture(256, true, (u, v) => {
     const r = Math.hypot(u, v)
     const a = Math.atan2(v, u)
     const ragged = noise(Math.cos(a) * 2.4 + 5, Math.sin(a) * 2.4 + 5, seed) * 0.5 + noise(Math.cos(a) * 6 + 9, Math.sin(a) * 6 + 9, seed + 3) * 0.3
-    const edge = 0.13 + ragged * 0.17
-    const reach = 0.62 + ragged * 0.34
-    const char = 1 - smooth((r - edge) / 0.15)
-    const halo = (1 - smooth((r - edge * 0.6) / (reach - edge * 0.6))) ** 0.7
+    const edge = 0.27 + ragged * 0.12
+    const reach = edge + 0.2 + ragged * 0.3
+    const char = 1 - smooth((r - edge) / 0.06)
+    const halo = (1 - smooth((r - edge * 0.8) / (reach - edge * 0.8))) ** 1.3
     const fine = noise(u * 22, v * 22, seed + 11)
     const cloud = noise(u * 7 + 3, v * 7 + 8, seed + 17)
-    const ash = char * smooth((fine - 0.62) / 0.2) * 0.13
-    const speck = fine > 0.8 && r < 0.85 ? (fine - 0.8) * 3 * (1 - r) : 0
-    const alpha = Math.max(char * 0.97, halo * (0.55 + cloud * 0.4), speck) * smooth((1 - r) / 0.1)
+    const ash = char * smooth((fine - 0.62) / 0.2) * 0.1
+    const speck = fine > 0.84 && r < 0.8 ? (fine - 0.84) * 3 * (1 - r) : 0
+    const alpha = Math.max(char * 0.97, halo * (0.5 + cloud * 0.3), speck) * smooth((1 - r) / 0.1)
     const t = Math.min(1, halo * 1.15)
     const red = 0.66 * (1 - t) + 0.42 * t
     const green = 0.38 * (1 - t) + 0.16 * t
@@ -98,7 +98,7 @@ function scorchPicture(seed: number): THREE.DataTexture {
 }
 
 export const GLOW = {
-  boltHead: [16, 10, 4.5] as [number, number, number],
+  boltHead: [10, 6.5, 3] as [number, number, number],
   boltTail: [3.2, 1.0, 0.18] as [number, number, number],
   flash: [9, 3.6, 0.9] as [number, number, number],
   chargeLow: [6, 2.5, 0.6] as [number, number, number],

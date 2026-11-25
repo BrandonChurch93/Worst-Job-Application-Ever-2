@@ -242,19 +242,19 @@ export class Body implements BodyModel {
           a[i + 1] = p.y
           a[i + 2] = p.z
           const glow = clamp01(hole.glow)
-          const flick = Math.pow(0.5 + 0.5 * Math.sin(ang * 5 + h * 2.1) * Math.sin(ang * 9 + 1.7), 2.2)
+          const flick = Math.pow(0.5 + 0.5 * Math.sin(ang * 5 + h * 2.1) * Math.sin(ang * 9 + 1.7), 3.4)
           const side = smooth01((Math.cos(ang) * -0.5 + Math.sin(ang) * 0.86 - 0.1) / 0.9)
           const lee = 0.3 + 0.7 * side
           const heat = (r === 0 ? 0.1 : r === 1 ? 0.9 : r === 2 ? 0.45 : 0.02) * lee
           const burnt = clamp01(hole.burnt ?? 1)
-          const lit = Math.pow(glow, 1.3) * (0.25 + 1.4 * flick) * burnt
+          const lit = Math.pow(glow, 1.3) * (0.08 + 2.4 * flick) * burnt
           const facing = clamp01(0.5 + 0.5 * (Math.cos(ang) * 0.5 + Math.sin(ang) * 0.86))
           const grit = 0.82 + 0.36 * hash01(j, r, 7 + h)
           const bare = (1 - burnt) * (0.86 - 0.22 * HOLE_ROWS[r]!) * (0.5 + 0.5 * facing) * grit
-          const ash = burnt * (0.07 + 0.2 * facing) * (0.4 + 0.6 * HOLE_ROWS[r]!) * grit
-          c[i] = 1.0 * heat * lit + bare * 0.84 + ash * 0.9
-          c[i + 1] = (r === 0 ? 0.5 : 0.2) * heat * lit + bare * 0.78 + ash * 0.78
-          c[i + 2] = 0.05 * heat * lit + bare * 0.66 + ash * 0.66
+          const ash = burnt * (0.1 + 0.3 * facing) * (0.45 + 0.55 * HOLE_ROWS[r]!) * grit
+          c[i] = 1.0 * heat * lit + bare * 0.84 + ash * 0.8
+          c[i + 1] = (r === 0 ? 0.5 : 0.24) * heat * lit + bare * 0.78 + ash * 0.76
+          c[i + 2] = 0.05 * heat * lit + bare * 0.66 + ash * 0.7
         }
       }
     }

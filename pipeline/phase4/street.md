@@ -51,18 +51,21 @@ All of it is code: `geo.ts` (a builder of triangles with a place, a normal, a co
 
 ## Measured
 
-All on 25 November 2026, on `agent/street` after the merge of origin/main ed12811, unless a line says otherwise.
+All on 25 November 2026, on `agent/street` at 98209c4 (origin/main ed12811 merged in), unless a line says otherwise.
 
-- `npm test`: 71 files, 1146 tests passed. `npm run build`: built. `npm run bots`: "bots: all clear". (18:25 UTC)
-- `npm run build && npm run counts -- --key table-wide --live low`: 220 draw calls, 541949 triangles. The same command on origin/main ed12811 with the stand-ins of c04c10f in place of this folder: 237 draw calls, 482491 triangles.
-- `npm run counts -- --key tier-street --live low`: 120 draw calls, 347268 triangles. With the stand-ins: 137 draw calls, 287810 triangles.
-- Rows of the street models in both keys (calls, triangles): firehouse 6, 48078 (the painted mesh of all seven, in the colour and the shadow pass); road signs 4, 2736; moms 3, 2982; police 2, 1108; bank 1, 4138; garage 1, 1120. In the colour pass: 5, 2, 2, 2, 1, 1, and the screws of the houses.
+- `npm test`: 71 files, 1146 tests passed. `npm run build`: built. `npm run bots`: "bots: all clear". (18:41 UTC)
+- `npm run build && npm run counts -- --key table-wide --live low`: 220 draw calls, 543877 triangles. The same command on origin/main ed12811 with the stand-ins of c04c10f in place of this folder: 237 draw calls, 482491 triangles.
+- `npm run counts -- --key tier-street --live low`: 120 draw calls, 349196 triangles. With the stand-ins: 137 draw calls, 287810 triangles.
+- Rows of the street models in both keys (calls, triangles): firehouse 6, 50106 (the painted mesh of all seven, in the colour and the shadow pass); road signs 4, 2736; moms 3, 2982; police 2, 1108; bank 1, 4038; garage 1, 1120. The screws of the houses are `fine` and have no row at level low. In the colour pass: 5, 2, 2, 2, 1, 1, and the screws of the houses.
 - Asset sets: 0 MB in `public/assets/table/street/`, `assets-full/table/street/` and `assets-src/table/street/`: there are no files.
-- One draft still: `npm run still -- --key tier-street --format hd --tier draft --force`, 30.7 s; `last-save` 40.1 s. One review still: `npm run still -- --key last-save --format hd --tier review --force`, 72.6 s.
+- One draft still: `npm run still -- --key tier-street --format hd --tier draft --force`, 30.7 s; `last-save` 40.2 s. One review still: `npm run still -- --key last-save --format hd --tier review --force`, 72.6 s.
 - `npm run sheet -- --beat pinball.fired --tier draft`: 12 pictures in 79.0 s.
 
 ## Known faults
 
+- From close up the six houses are still plain: walls of one tone, windows without depth at that size, roofs of one sheet. They are 0.5 balls wide, and they are what a critic would call a model railway.
+- From straight above the garage reads as rings of concrete with the clear spiral inside, not as a building: it has no roof, since the highway comes in over its rim.
+
 - From straight above (`tier-street`) the garage's rim, 5.6 balls up, stands in front of the right half of the police sign. The frame is where the layout puts it; the sign is the type owner's. Reported to the Builder.
-- The machine's triangle count is over the kit's limit as a whole (541949 against 150000). The street models add 59458 of them, of which about half is the painted mesh drawn a second time for its shadow.
+- The machine's triangle count is over the kit's limit as a whole (543877 against 150000). The street models add 61386 of them over the stand-ins, of which about half is the painted mesh drawn a second time for its shadow.
 - In `last-save` the outer upright faces of the garage, high over the lamps, are almost unlit: (37,35,33) in sRGB for a concrete of 0.46 linear. Paint cannot mend it. Asked of the lights owner.

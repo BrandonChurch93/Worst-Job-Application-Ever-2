@@ -41,22 +41,26 @@ export const CAP_TOP = heights.keycap
 export const DECK_TOP = heights.keyboardDeck
 export const TRAVEL = heights.keyTravel
 
+const REACH = PITCH * 2.3
+
 export function shuffled(places: number[], rng: Random): number[] {
-  const out = places.slice()
-  const order = rng.shuffle(letterSeats.map((i) => places[i]!))
-  letterSeats.forEach((key, n) => {
-    out[key] = order[n]!
-  })
-  let moved = 0
-  letterSeats.forEach((key) => {
-    if (out[key] !== places[key]) moved++
-  })
-  if (moved < letterSeats.length / 2) {
-    const first = out[letterSeats[0]!]!
-    for (let n = 0; n < letterSeats.length - 1; n++) out[letterSeats[n]!] = out[letterSeats[n + 1]!]!
-    out[letterSeats[letterSeats.length - 1]!] = first
+  const order = rng.shuffle(letterSeats.slice())
+  const to = new Map<number, number>()
+  const near = (a: number, b: number): boolean => Math.hypot(seats[a]!.cx - seats[b]!.cx, seats[a]!.cy - seats[b]!.cy) <= REACH
+  for (const a of order) {
+    if (to.has(a)) continue
+    const free = order.filter((b) => b !== a && !to.has(b) && near(a, b))
+    if (free.length) {
+      const b = rng.pick(free)
+      to.set(a, b)
+      to.set(b, a)
+      continue
+    }
+    const b = rng.pick(order.filter((c) => c !== a && near(a, c)))
+    to.set(a, to.get(b)!)
+    to.set(b, a)
   }
-  return out
+  return places.map((seat) => to.get(seat) ?? seat)
 }
 
 export function keyAt(places: number[], x: number, y: number): number {

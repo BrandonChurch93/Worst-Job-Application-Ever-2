@@ -38,7 +38,7 @@ Every texture here is made in code at start, from `config.seed`. No file is down
 - From: the seed
 - Prompt or command: none
 - Takes: under 0.05 s
-- Why this one: moulded matte rubber is never smooth; a fine grain breaks the sheen along the tube and over the mitt so the black holds a shape under the key light and never reads as a drawn line. It repeats 2 by 5 along an arm
+- Why this one: moulded matte rubber is never smooth; a fine grain breaks the sheen along the tube and over the mitt so the black holds a shape under the key light and never reads as a drawn line. It is shown at 0.07 (`normalScale`) under a sheen of 0.25: more of either gave the arms a pale ragged edge at the close view. It repeats 2 by 5 along an arm
 - Size: 64 by 64 px, 0.02 MB
 - Date: 2026-11-25
 
