@@ -1,15 +1,19 @@
+import { config } from '../../../config'
 import { SCORE_H, SCORE_W, TEXT_DOWN, TEXT_UP, dot, glyph, score, type Glyph } from './font'
 
 // The grid of every display, and what one grid shows at one moment. No three.js here: the tests run it in Node.
 export const COLS = 128
 export const ROWS = 30
 
+// A frame of the film: the line moves by whole dots in each one, and a changed numeral is in place two of them later.
+const FPS = config.film.fps
+
 export const PACE = {
   // A mode: the insert's name is held, then the line runs from right to left at an even pace, then the score is back.
   hold: 1.5,
-  dotsPerSecond: 84,
+  dotsPerSecond: 2 * FPS,
   // A numeral that changes rolls up into place in this time: two frames of the film.
-  roll: 2 / 30,
+  roll: 2 / FPS,
   // The hint: the left button, then the right, once a second between them.
   hintPeriod: 1,
   hintLit: 0.38,
@@ -114,7 +118,7 @@ export const lineWidth = (line: string): number => widthOf(line) * 2
 export const scrollSeconds = (line: string): number => (COLS + lineWidth(line)) / PACE.dotsPerSecond
 export const modeSeconds = (line: string): number => PACE.hold + scrollSeconds(line)
 // How far the line has run, in whole dots, at a time since the mode was lit.
-export const scrolled = (t: number): number => Math.max(0, Math.floor((t - PACE.hold) * PACE.dotsPerSecond))
+export const scrolled = (t: number): number => Math.max(0, Math.floor((t - PACE.hold) * PACE.dotsPerSecond + 1e-6))
 
 function blit(out: Uint8Array, s: Strip, x0: number, y0: number, level = 255): void {
   const xa = Math.max(0, x0)
