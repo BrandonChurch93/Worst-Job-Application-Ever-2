@@ -50,9 +50,9 @@ Unit `boss`, page `step4`. Logic in `src/pages/step4/`, the boss in `src/boss/`,
 
 ## Events
 
-Named as the cue where there is one: `checkbox`, `button-crack`, `unfold`, `dart-fire`, `dart-hit`, `slab-fire`, `slab-drop`, `popup`, `power-down`, `button-press`. Without a cue: `session-expired` (the beat's event), `popup-close`, `boss-slow` (the narrator's trigger).
+Named as the cue where there is one: `checkbox`, `button-crack`, `unfold`, `dart-fire`, `dart-hit`, `slab-fire`, `slab-drop`, `popup`, `power-down`, `button-press`. Without a cue of their own: `session-expired` (the beat's event), `popup-close`, `boss-slow` (the narrator's trigger).
 
-`src/audio/cues.ts` does not list the boss cues yet. `NEEDS.patch` adds them.
+`src/audio/cues.ts` on `main` lists the boss cues since the sound builder's table was merged, so `NEEDS.patch` is gone. In that table `session-expired` plays the `popup` cue, and the narrator's live lines `boss.verify` and `boss.slow` hang on the events `checkbox` and `boss-slow`.
 
 ## The cursor's ground
 

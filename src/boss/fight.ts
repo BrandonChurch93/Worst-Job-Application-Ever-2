@@ -45,7 +45,7 @@ export interface Fight {
 }
 
 const START = [HEALTH, THRESHOLD[0], THRESHOLD[1] + EXPIRED_GAIN] as const
-const POPUP_ORDER = [1, 0, 2] as const
+const POPUP_ORDER = [0, 1, 2] as const
 const SLAB_HALF = 56
 
 export const cursorCentre = (c: { x: number; y: number }): { x: number; y: number } => ({ x: c.x + 18, y: c.y + 32 })
