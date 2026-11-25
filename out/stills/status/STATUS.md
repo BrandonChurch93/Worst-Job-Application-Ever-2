@@ -1,8 +1,8 @@
 # Status pictures
 
-Time: 2026-11-25T16:04Z. Phase 3, status 30.
+Time: 2026-11-25T16:46Z. Phase 3, status 32.
 
-1. `01-round-3-keyboard-still.jpg`: The keyboard under fire as round 3 judged it: the build at the review tier, commit cacc69d. All five jurors who saw only this picture called it a web 3D demo.
-2. `02-cursor-damage-beside-approved.jpg`: Five kinds of damage: your approved sheet above, the build below at the review tier, as the critics saw them. Named by them: coarse ground, too few strips, flat yellow tape, a weak scorch, a hole that reads as a printed dot, cracks that read as ink.
-3. `03-page-text-and-controls.jpg`: Text and controls of step 1 at rest at their real size, the build at the review tier, from the page critic's pack. Its score: 6.
-4. `04-tug-new-frame-beside-approved.jpg`: The tug of war after the round's commit: your approved picture on the left, the build on the right at the review tier, made by the scene's agent and not merged yet. The upload glyph is in, the frame holds the whole drop zone, strips hang from the shredder. Slivers of the right column still show at the edge.
+1. `01-fire-key-on-main.jpg`: The key step1-fire on main at the review tier, drawn 16:33Z. MEASURED: 41.6 s, 1,016,487 triangles, 293 draw calls.
+2. `02-arms-beside-approved.jpg`: The arms sheet: yours on the left, main on the right. The sheet is three times the arrow, the hands hang on its top edge, there is no slit. This is what the tug fixer starts from.
+3. `03-floors-final.jpg`: The floor artwork agent's last picture: your three approved tiers on the left, the build's three floors from straight above on the right. The grey blocks are models other agents are making now.
+4. `04-page-beside-approved.jpg`: The page at rest: yours on the left, the build on the right, with crops at their real size underneath. The build's grain is coarser and deeper than yours, its field rims heavier.
