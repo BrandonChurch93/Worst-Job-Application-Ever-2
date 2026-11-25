@@ -572,7 +572,7 @@ const CUTS: { x: number; y: number; half: number }[] = (() => {
 })()
 
 // Where a strip comes to lie: the pile is the arrow fanned open, every strip swung about its top end, slid along itself and pushed apart from its neighbours, each on its own layer.
-const FAN = { away: [34, -58], pinch: [14, -10], pull: 0.18, from: -0.38, to: 0.42, wobble: 0.12, stagger: 16, across: 2.1 }
+const FAN = { away: [34, -58], pinch: [14, -10], pull: 0.18, from: -0.38, to: 0.42, wobble: 0.12, stagger: 6, across: 0.9 }
 
 function lie(i: number, seed: number): Strip {
   const h = (k: number) => hash01(i, k + 40, seed)
