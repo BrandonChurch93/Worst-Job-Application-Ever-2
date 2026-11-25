@@ -381,7 +381,31 @@ function folderBytes(dir) {
 }
 const made = folderBytes(outDir)
 const rel = (p) => path.relative(root, p).split(path.sep).join('/')
+
+// The workspace hosting opens one file for each published folder, so the review page is
+// published a second time from a copy of dist/ whose entry is review.html.
+const mirror = at('out', 'work', 'publish', 'review')
+fs.rmSync(mirror, { recursive: true, force: true })
+fs.mkdirSync(path.dirname(mirror), { recursive: true })
+function mirrorInto(from, to) {
+  fs.mkdirSync(to, { recursive: true })
+  for (const e of fs.readdirSync(from, { withFileTypes: true })) {
+    const src = path.join(from, e.name)
+    const dst = path.join(to, e.name)
+    if (e.isDirectory()) mirrorInto(src, dst)
+    else {
+      try {
+        fs.linkSync(src, dst)
+      } catch {
+        fs.copyFileSync(src, dst)
+      }
+    }
+  }
+}
+mirrorInto(dist, mirror)
+const whole = folderBytes(dist)
 for (const i of leftOut) console.log(`review: left out ${rel(i.src)}, ${size(i.bytes)}`)
 if (stillTooLarge) console.log(`review: still over ${maxMb} MB with every video left out`)
 console.log(`review: ${rel(outDir)}/ holds ${made.count} file${made.count === 1 ? '' : 's'}, ${size(made.bytes)}`)
 console.log(`review: ${rel(pageFile)} is ${size(fs.statSync(pageFile).size)}`)
+console.log(`review: dist/ is ${whole.count} files, ${size(whole.bytes)} in all, and ${rel(mirror)}/ is its copy to publish with review.html as the entry`)

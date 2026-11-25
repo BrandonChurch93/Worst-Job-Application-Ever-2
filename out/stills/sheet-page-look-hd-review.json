@@ -1,0 +1,42 @@
+{
+  "what": {
+    "still": {
+      "page": "step1",
+      "camera": "sheet",
+      "tier": "review",
+      "sheet": "page-look"
+    }
+  },
+  "engineHash": "ff323a6eb56953a5",
+  "pageHashes": {
+    "step1": "d92e95918a4bd086"
+  },
+  "format": "hd",
+  "tier": "review",
+  "assets": "full",
+  "diagnostic": "beauty",
+  "browser": "147.0.7727.15",
+  "machine": {
+    "host": "space-sandbox",
+    "cores": 2,
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.90GHz",
+    "memoryMb": 7958,
+    "platform": "linux 6.1.155",
+    "node": "v20.20.2"
+  },
+  "seconds": 21.339,
+  "invalidValues": 0,
+  "standIns": [
+    {
+      "name": "spike-scene",
+      "unit": "step1"
+    }
+  ],
+  "counts": {
+    "triangles": 38862,
+    "drawCalls": 60
+  },
+  "problems": [],
+  "sha256": "b66aa3eb5485c192095b43519f696509e5bec658c7b029f7877ccee9606e7650",
+  "keptFrom": "out/work/stills/sheet-page-look-hd-review.png"
+}

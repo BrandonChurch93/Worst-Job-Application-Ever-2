@@ -15,8 +15,8 @@ The Builder's memory. Read it at the start of every task and after every compact
 - Continuations: 0
 - Extensions: 0
 - Extension step: none
-- Site URL: none
-- Review page: none
+- Site URL: https://www.perplexity.ai/computer/a/the-worst-job-application-ever-PX4JqBxjQQOurzN2dfCrOg
+- Review page: https://www.perplexity.ai/computer/a/the-worst-job-application-ever-11C.YCwbSEaDnRs_ar70Dw (the review page is published as its own app, because the workspace hosting opens one file for each published folder; inside it "Open it" leads to the site, each step, film mode, the loop and the probe)
 - Repo is private: no. MEASURED 2026-11-25T05:38Z with the repo host's own answer (isPrivate false). `repo.expectPrivate` is true, so the two disagree. The first status said so
 - Sound files: not committed, because the repo is public. Recipes, settings, measurements and listener answers are committed as text. The files stay in the workspace and in the published site, and one archive of every kept file is attached with each status that follows new sounds and with the `REVIEW` block. `.gitignore` keeps them out
 - Portfolio link: not set
@@ -25,25 +25,25 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 4, 2026-11-25T06:41Z, Phase 0.
+Status 5, 2026-11-25T07:06Z, Phase 0.
 
-1. `out/stills/status/01-spike-first.jpg`: First picture from the engine: the spike scene at 1920 by 1080, 8 samples. Every part of it is a stand-in to measure with, and the look is not tuned yet.
-2. `out/stills/status/02-review-page.jpg`: The review page builder, run on test inputs: the header and latest status, the open it row and the sound board, the cue list, the card. The colour bars are test films.
+1. `out/stills/status/01-spike-beside-approved.jpg`: The approved page look on the left, the spike on the right at the same framing. The spike is a stand-in that proves the engine, not the look: it is too warm, lit too flat, the orange is pale, the glass has no bright rim and the buttons have no numbers or rail. The look is built in Phase 3.
+2. `out/stills/status/02-review-page-published.jpg`: The published review page, opened from the hosted copy in a fresh browser. It holds the latest status pictures, links into the site, and empty places for the sound board, the films, the card, the comparisons and the motion sheets.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 0, tick 14 at 2026-11-25T06:46:39Z, allowance: build
-time used in this phase: 1.23 h of its box of 3.00 h
-time used under the allowance in force: 1.23 h of 36.00 h allowed
-time used: 1.23 of 36.00 hours before the review
+clock: phase 0, tick 18 at 2026-11-25T07:06:57Z, allowance: build
+time used in this phase: 1.57 h of its box of 3.00 h
+time used under the allowance in force: 1.57 h of 36.00 h allowed
+time used: 1.57 of 36.00 hours before the review
 extra rounds: yes
-half point: not reached
+half point: reached
 box end: not reached
 budget report: not due
-minutes since the last status: 5
+minutes since the last status: 0
 ```
 
 ## Phases
@@ -92,6 +92,7 @@ All MEASURED on 2026-11-25 unless a line says otherwise.
 - Extensions. 30 are present here and 20 of them are portable by the public table in `references/terms/webgl-extensions.json`. Present here and not portable, so used only behind a test: `EXT_conservative_depth`, `EXT_disjoint_timer_query_webgl2`, `NV_shader_noperspective_interpolation`, `OES_sample_variables`, `OES_shader_multisample_interpolation`, `OVR_multiview2`, `WEBGL_clip_cull_distance`, `WEBGL_multi_draw`, `WEBGL_polygon_mode`, `WEBGL_stencil_texturing`. Portable by the table and not present under software rendering here: `OES_texture_half_float_linear`, `EXT_texture_norm16`.
 - Detached process. MEASURED 06:10:33Z to 06:11:01Z: a process started detached in one scripted step (`(set -m; cmd >log 2>&1 &)`) wrote a line every two seconds for 28 s after that step had returned at 06:10:34Z, and ended by itself. So a long render can run detached and be polled, and it is never left running without a line under "Running jobs".
 - Physics between machines. MEASURED 06:09Z here and 06:12Z on a fresh sandbox VM by `npm run physics:test` (`tools/physics-test.mjs`, scene in `tools/lib/physics-sim.mjs`): ten seconds, 2400 steps at 240 a second, six balls, three bumpers, guides, a flipper swung on a schedule and nudges on a schedule, every number a literal with no trigonometry. The hash covers every ball's place, turn and speed four times a second across the whole ten seconds, so it covers the path and not only where the balls came to rest. Hash `0c856ed2607acbace5ae9117b5f9998da51172cf808cab1f7a0fd49d1f126365`, and the library's own snapshot of the world `28135597ff7d6d0d3257e6970918190d52cbae4563c4ff8bed4011841408e830`. Equal in Node run twice, equal in Node and in the browser, on this VM (2 cores) and on the sandbox VM (4 cores, its own clone at commit `09594e4`, `npm ci` in 3 s with no browser download). Both VMs report the same processor model, Intel Xeon at 2.90 GHz, so this proves two machines of one kind. A different processor is UNKNOWN here; the library's build is the one its makers state is the same on every machine. First try passed, so the library is `@dimforge/rapier2d-deterministic-compat` 0.21.0 and the named fallback is not needed. UNKNOWN and expected to differ, as `kit/05-ARCHITECTURE.md` says: Brandon's machine has another browser build, and the pinball take is checked there before a long render.
+- The browser binary. MEASURED 06:50Z: the file named `chrome-headless-shell` in this workspace is a link to the full Chrome for Testing binary (`chromium-1217/chrome-linux64/chrome`), run headless. The sandbox VMs list the same two folders. So "headless shell" in earlier lines means that binary, and every record carries its version, 147.0.7727.15.
 
 ## Tool record
 
@@ -132,7 +133,7 @@ Every line says whether it is MEASURED here, STATED by a tool's own description,
 - Image models that can be called. STATED by the tool's own description, with one size MEASURED: two OpenAI image models (the tool names them `gpt_image_2_6_flare` and `gpt_image_2_6_sunburst`), up to 5 reference pictures each; two Google image models (`nano_banana_2_1`, `nano_banana_pro`), up to 14 reference pictures each; one ByteDance image model (`seedream_5`), up to 10 reference pictures, MEASURED in an earlier round of this project to return 2816 by 1584. UNKNOWN until a call is made in this build: the largest size the OpenAI and Google models return. Each generated picture's size is measured when it is made and written into its row of `ASSETS.md`.
 - Video models. STATED: five can be called (`veo_3_1_fast`, `veo_3_1`, `seedance_2_0`, `seedance_2_5`, `minimax_h3`). The build does not use them: every frame of the films is rendered from the site itself.
 - Image to 3D. MEASURED by looking through the tool list: there is no tool that turns a picture into a model. Every model is built by script, as `kit/03-METHOD.md` says.
-- App hosting. STATED: a publish tool takes a built folder and gives one public address that stays the same when published again. The largest site it accepts is UNKNOWN until the first publish in step 17, and is measured then and at every publish after it.
+- App hosting, MEASURED 2026-11-25T07:06:40Z at the first publish (step 17). The publish tool takes a folder and one entry file and gives an address of the form `https://www.perplexity.ai/computer/a/<name>`. It is private to Brandon until he shares it from that page, and publishing the same folder again updates it in place (the second publish kept the address). The tool takes a picture of the entry page before it accepts the upload, and refuses an entry page that shows nothing. Three facts that shape the build: (1) a folder named `build` is not uploaded at all (14 of 15 files went up and the bundle was missing), so the hashed files are in `bundle/`; (2) the address opens the entry file only, so `<url>/review.html` does not exist here, and the review page is published a second time as its own app from `out/work/publish/review/`, a copy of `dist/` with `review.html` as the entry, which `npm run review` makes; (3) on the uploaded copy, opened in a fresh browser context by `npm run hosted`: `index.html` draws the canvas, `review.html` shows its 4 pictures and 7 parts, its first "Open it" link leads to `index.html`, a JSON file fetched by script arrives whole (192230 of 192230 bytes) and a JPEG fetched by script arrives whole (110797 of 110797 bytes) and is readable from an image element with `crossOrigin` set. That copy was opened through the tool's own 24 hour test address. What the permanent address does with a binary file fetched by script is UNKNOWN from here, because only Brandon can open it, and the hosting guide STATES it fails, so the loaders keep to text files and page elements. Size accepted so far: 15 files, 2.9 MB. The largest size it accepts is still UNKNOWN and is measured as the review page grows; the guide STATES 500 MB.
 
 ## Pinned versions
 
@@ -179,7 +180,30 @@ All MEASURED on 2026-11-25 from `package.json` and `package-lock.json` after a c
 
 Seconds per sample and per picture at each format and tier, the fixed cost of starting a render, the time of one simulated second, the time of a search for a take, and what the films and the loop would take. Updated in Phases 0, 2 and 3. Every new kind of job adds its real time here when it ends.
 
-none
+Measured by `npm run budget` on the scene of `step1` as it stands (38862 triangles, 60 draw calls a sample), on space-sandbox: 2 cores, Intel(R) Xeon(R) Processor @ 2.90GHz, software rendering, target `float`. Engine `ff323a6eb56953a5`. One render process.
+
+| Format | Size | Open the page | Cold first picture | Start cost | Per sample | Fixed per picture | Still, draft | Still, review | Still, final | One simulated second |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `preview` | 960 by 540 | 1.3 s | 5.2 s | 5.2 s | 0.67 s | 0.02 s | 1.4 s | 5.4 s | 15.9 s (predicted 16.1 s) | 0.2 ms |
+| `hd` | 1920 by 1080 | 1.3 s | 8.5 s | 5.5 s | 2.10 s | 0.15 s | 4.4 s | 17.0 s | 51.1 s (predicted 50.7 s) | 0.8 ms |
+| `uhd` | 3840 by 2160 | 1.4 s | 20.0 s | 5.9 s | 7.44 s | 0.59 s | 15.5 s | 60.1 s | 179.2 s predicted | 0.4 ms |
+
+What the films and the loop would take on one VM like this one, from the time of a film frame (measured at `draft`, the other tiers from the cost of a sample). Film B is 153 s, the loop 8 s at 60 frames a second.
+
+| Format | Tier | Film frame | Film B frames | Film B | Loop frames | Loop |
+| --- | --- | --- | --- | --- | --- | --- |
+| `preview` | draft | 1.4 s | 4590 at 30 fps | 1.7 h | 480 | 0.2 h |
+| `preview` | review | 5.4 s | 4590 at 30 fps | 6.8 h | 480 | 0.7 h |
+| `preview` | final | 16.1 s | 4590 at 30 fps | 20 h | 480 | 2.1 h |
+| `hd` | draft | 4.4 s | 9180 at 60 fps | 11 h | 480 | 0.6 h |
+| `hd` | review | 17.0 s | 9180 at 60 fps | 43 h | 480 | 2.3 h |
+| `hd` | final | 50.7 s | 9180 at 60 fps | 129 h | 480 | 6.8 h |
+| `uhd` | draft | 15.9 s | 9180 at 60 fps | 40 h | 480 | 2.1 h |
+| `uhd` | review | 60.5 s | 9180 at 60 fps | 154 h | 480 | 8.1 h |
+| `uhd` | final | 179.6 s | 9180 at 60 fps | 458 h | 480 | 24 h |
+
+- PSNR between VMs (step 16), MEASURED 2026-11-25T06:57:23Z. The same still, `step1` at rest, hd, review tier, commit db0e360, engine `ff323a6eb56953a5`, browser 147.0.7727.15, rendered on this VM (2 cores) and on two fresh sandbox VMs (4 cores each), which cloned, ran `npm ci` and `npm run build`, and returned the PNG untouched. This VM against sandbox A: identical, 0 pixels differ. This VM against sandbox B: identical, 0 pixels differ. A against B: identical, 0 pixels differ. All three files have the sha256 `b66aa3eb5485c192095b43519f696509e5bec658c7b029f7877ccee9606e7650`. The floor, `quality.crossMachineMinPsnr`, is 45 dB. The files are in `out/work/psnr/`.
+- A sandbox VM, MEASURED on both by `node tools/budget.mjs --formats preview,hd` on the same scene (4 cores, the same processor model): at hd a sample takes 1.10 and 1.11 s, a review still 9.0 and 9.2 s, a final still 27.3 and 27.8 s, a film frame at draft 2.4 s; at preview a sample takes 0.35 and 0.38 s, a final still 8.6 s, a film frame at draft 0.7 s; opening the page takes 1.0 to 1.1 s and a cold first picture 3.2 s at preview and 4.9 to 5.1 s at hd. A sandbox VM is about twice as fast as this one, so film renders are planned on sandbox VMs: from these numbers film B at hd and 60 frames a second is about 6 h of one sandbox VM at draft, 23 h at review and 70 h at final, to be divided by the number of VMs. The scene is the spike, 38862 triangles and 60 draw calls a sample; the real pages will cost more, and this table is measured again in Phases 2 and 3.
 
 ## Judged list
 
@@ -224,6 +248,10 @@ One line each: the date, the decision, the reason, and the config key if one was
 - 2026-11-25. Startup validation now also names these keys when one is missing, because code reads them: `budget.afterReviewHours`, `budget.reserveHours`, `budget.reviewRoundHours`, `budget.continueHours`, `budget.extendHours`, `budget.statusMaxGapMinutes`, `export.files`, `film.hookSeconds`, `status.maxPictures`, `status.minGapMinutes`, `scale.sizes`, `scale.grid`, `scale.heights`, `scale.kinds`, `live.quality`, `lookLockUnit`. The list grows with every key the code comes to read.
 - 2026-11-25. The review page is built after the build for the workspace hosting, because the build empties `dist/`. A build for `host.name` is a fresh build without it.
 - 2026-11-25. Shadows: lamps that cast shadows give diffuse light only, and the highlights come from the studio's reflection. Reason: a lamp's own sharp highlight ignores the lamp's size, and the reflection carries the shape of one large soft key. The key is moved over its area per sample and the fill over a half sphere per sample, so both shadows are soft by averaging.
+- 2026-11-25T06:57:23Z. The built files with a hash in their name go to `dist/build/`, not `dist/assets/`, so the long cache lifetime in `vercel.json` covers only them and never the web asset set under `dist/assets/`, whose names carry no hash.
+- 2026-11-25T06:57:23Z. Hosting here. The workspace's hosting gives a private address that only Brandon can reach, and it is updated in place at every publish. A permanent public address on this hosting can only be made after the visitor picks its name in a form, and this build asks no questions, so none is made: the public home of the site stays `host.name`, as the kit plans. Listed under "For Brandon to decide".
+- 2026-11-25T06:57:23Z. What this hosting does to a site, STATED by its guide and to be MEASURED at the first publish: a script may fetch text files only (JSON, JS, HTML); a binary file fetched by script is redirected and fails, while pictures, video and sound loaded through page elements work. No local storage of any kind. Links out of the site open a new tab. So: geometry and type ship as JSON, textures load through image elements, the physics library is the build with its code inlined, and the sound pack is one that a page element or a text file can carry. This is decided now so no page is built on a loader that works on one host and not the other.
+- 2026-11-25T07:06:40Z. Two addresses, not one. The kit expects the review page at `<url>/review.html`. The workspace hosting opens one entry file for each published folder, so the site is published from `dist/` and the review page from a copy of it with `review.html` as the entry. Every status gives both. `npm run hosted -- --url <address>` is the check that the published copy plays, and it is run after each publish on the tool's own test address.
 
 ## Notes from Brandon
 
@@ -263,6 +291,7 @@ none
 - The ElevenLabs account has 1 credit left of 131000 until 2026-12-23. The narrator and the effects cannot be made until credits are added. If credits appear while the build runs, sound work starts at once. If they do not, the site and the review cut are silent and the first line of the `REVIEW` block says so.
 - The approved images were made with `seedream_5`. Its maker's terms do not clearly allow outputs in a published video or on a public website, and they do not forbid it. The workspace's list of third-party models has no row for that maker, so which terms reach those pictures is unknown. The build uses the approved images as the kit says. Nothing waits on this. Details: `ASSETS.md`, "Generated images".
 - The free plan of `host.name` is worded for personal or non-commercial use. Whether this portfolio piece fits that is for you to judge before it goes live there. Details: `references/terms/hosting-vercel.md`, section 6.
+- A permanent public address for the review build. The workspace's hosting keeps the published site private to you. If you want it public before it goes to `host.name`, name the address you want in the thread and it will be published there.
 
 ## Running jobs
 

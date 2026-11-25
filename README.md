@@ -8,7 +8,14 @@ This repo holds the build kit. Perplexity Computer builds the site, the films an
 
 ## Status
 
-Ready to build. The kit is written and every reference image is approved. `references/STATUS.md` is the record of what was approved, what was rejected and why. `kit/10-KICKOFF.md` has the prompt that starts the build.
+The build is running. `kit/PROGRESS.md` is its log: the phase, the clock, every decision and every measurement.
+
+- The site as it stands: https://www.perplexity.ai/computer/a/the-worst-job-application-ever-PX4JqBxjQQOurzN2dfCrOg
+- The review page, where everything plays: https://www.perplexity.ai/computer/a/the-worst-job-application-ever-11C.YCwbSEaDnRs_ar70Dw
+
+Both addresses are on the build workspace's hosting and open for Brandon only, until he shares them. They are updated in place as the build goes on.
+
+The kit is written and every reference image is approved. `references/STATUS.md` is the record of what was approved, what was rejected and why. `kit/10-KICKOFF.md` has the prompt that starts the build.
 
 ## Where things are
 

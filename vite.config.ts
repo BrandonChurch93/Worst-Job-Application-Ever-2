@@ -11,7 +11,7 @@ export default defineConfig({
   publicDir: 'public',
   plugins: [buildInfoPlugin(root)],
   css: { modules: { localsConvention: 'camelCaseOnly' } },
-  build: { outDir: 'dist', emptyOutDir: true, target: 'es2022', assetsInlineLimit: 0, sourcemap: false, chunkSizeWarningLimit: 6000 },
+  build: { outDir: 'dist', assetsDir: 'bundle', emptyOutDir: true, target: 'es2022', assetsInlineLimit: 0, sourcemap: false, chunkSizeWarningLimit: 6000 },
   server: { port: 5173, strictPort: false },
   test: { include: ['tests/**/*.test.ts'], environment: 'node', testTimeout: 20000 }
 })

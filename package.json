@@ -21,7 +21,8 @@
     "compare": "node tools/compare.mjs",
     "crops": "node tools/crops.mjs",
     "status": "node tools/status.mjs",
-    "keep": "node tools/keep.mjs"
+    "keep": "node tools/keep.mjs",
+    "hosted": "node tools/hosted.mjs"
   },
   "dependencies": {
     "@dimforge/rapier2d-deterministic-compat": "0.21.0",
