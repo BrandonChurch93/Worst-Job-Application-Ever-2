@@ -41,7 +41,7 @@ npm run mix -- --final                          audio/final/film-b.wav
 
 No sound is kept. `public/audio/index.json` lists nothing, the engine reports `available() === false`, and `npm run mix` writes a silent file of the film's exact length. The day takes exist, the commands above file them, keep them, pack them and mix them with no code change. That path has been run end to end on fixtures.
 
-`src/main.ts` does not load the engine yet. The wiring it needs is in `src/audio/WIRING.md`.
+`src/main.ts` does not load the engine yet. The wiring it needs is in `src/audio/WIRING.md`. `src/audio/TRY-WIRING.patch` is a stand-in wiring, not for merging: applied to a working copy it loads the engine and mounts the interface with empty answers, which is how the site checks were run before the real wiring existed. Remove the file once `src/main.ts` loads the engine.
 
 ## Decisions
 
@@ -58,7 +58,7 @@ No sound is kept. `public/audio/index.json` lists nothing, the engine reports `a
 11. A loop stops at its stop event, at `page-turn`, or after 30 s. Hold music is cut dead, with no fade, after `audio.holdMusicSeconds` or at its stop event.
 12. Variants are cut from one take where the level falls 30 dB under the take's peak for 60 ms. `--hits 1,3,4` picks which hits become the variants, `--slots 2` keeps one hit as one named variant.
 13. `npm run mix` reads `cut/CUTLIST.json` when it holds `events` with a `name` and a `frame`, `seconds` or `step` each, and optionally `lines` with `beat`, `index` and `frame` or `start`. Anything else, and it says so and reads the stage.
-14. `npm run sound -- --check` opens a browser. It builds the engine onto a page of its own in `out/work/audio/harness/` and measures what it makes and asks for before and after a click, with the sound files of the root, with an index that lists nothing, and with the files removed. Once `src/main.ts` loads the engine it also opens the built site in live mode and measures the same there. Until then A1, A4 and A11 say "not yet" and give the engine's numbers. `npm run sound -- --browser` runs the browser part alone, and with fixtures (`--root out/work/audio/fixture-run`) it also listens: the level of the room tone, of an effect, of a line, and of the output when muted.
+14. `npm run sound -- --check` opens a browser, twice. First the engine alone: it is built onto a page of its own in `out/work/audio/harness/` and measured before and after a click, with the sound files of the root, with plain audio elements, with an index that lists nothing, and with the files removed. Then, once a file of the site loads the engine, the built site itself: what it makes and asks for before its first picture and before the first click (A1, A4), the sound control by a pointer click, by Tab, Enter and Space, with the level heard at the output in each state (A2), the site with every sound file answered as not found (A11), and one judged still in capture mode rendered with the audio code in the build and with it blocked, compared by sha256 (A3). Until the site loads the engine those five say "not yet" and give the engine's numbers. With `--root` the site is built again into `out/work/audio/site/` with the index and the files of that root, so the whole site can be checked with stand-ins. `npm run sound -- --browser` runs the engine part alone, `--browser --site` both.
 15. The prompt line of the kit ends every effect prompt the tool records. For hold music the words about music are left out.
 
 ## Where the brief and the kit differ
