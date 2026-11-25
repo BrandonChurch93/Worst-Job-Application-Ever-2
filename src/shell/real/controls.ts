@@ -173,7 +173,7 @@ let coreMaterial: THREE.MeshBasicMaterial | null = null
 // The ring of light round a field in focus: a thin bright line on the rim and its spill on the page and on the glass.
 function focusRing(f: Shape): THREE.Object3D {
   const root = new THREE.Group()
-  coreMaterial ??= new THREE.MeshBasicMaterial({ color: new THREE.Color(2.6, 1.05, 0.34), toneMapped: false })
+  coreMaterial ??= new THREE.MeshBasicMaterial({ color: new THREE.Color(1.5, 0.42, 0.07), toneMapped: false })
   glowMaterial ??= new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })
   const outline = outlineOf(f, 0, 12)
   const core = mesh(shared(`focusCore:${dims(f)}`, () => sweep(outline, profile([[-0.9, 0, true], [-0.5, 0.7], [0.9, 0.9], [2.0, 0.7], [2.4, 0, true]]), false)), coreMaterial, false)
@@ -185,7 +185,7 @@ function focusRing(f: Shape): THREE.Object3D {
     const n = outline.count
     const colour = new Float32Array(steps.length * n * 3)
     steps.forEach(([, , a], k) => {
-      for (let i = 0; i < n; i++) colour.set([0.95 * a, 0.3 * a, 0.06 * a], (k * n + i) * 3)
+      for (let i = 0; i < n; i++) colour.set([0.55 * a, 0.14 * a, 0.02 * a], (k * n + i) * 3)
     })
     g.setAttribute('color', new THREE.BufferAttribute(colour, 3))
     return g
