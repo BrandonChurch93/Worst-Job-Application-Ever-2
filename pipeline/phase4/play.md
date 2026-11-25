@@ -25,7 +25,7 @@ Agreed with tier3_modeller, who builds the ladder. All numbers are page pixels (
 ## Agreed with other owners
 
 - tier3_modeller: the wire recipe above.
-- tier1_modeller: first agreed for the old layout (a core drum inside the trough). After the Builder's new layout of 17:28 UTC the garage is a round frame outside the trough, 1.525 balls from the middle. My trough: clear width 1.25 balls (the width of the opening `street.spiral.turn`), walls 4 thick and 33 tall with a rolled lip 3.6 tall to 137 px from the middle, its floor 3 under the rail's height, three turns from 5.4 balls down to 1.5, then a straight tail to its open end 1.3 balls over the right inlane. A clear newel of radius 9 stands in the middle from the lowest turn to the top and does not reach the floor. Their frame is concrete from 137.3 px (inner face) to 146.4 px, with 16 columns and four ring beams. Clear tabs reach out from my wall to 137.3 px at every quarter turn, where a column stands. I draw the parking dashes. Nothing of mine stands on the floor under the garage.
+- tier1_modeller: first agreed for the old layout (a core drum inside the trough). After the Builder's new layout of 17:28 UTC the garage is a round frame outside the trough, 1.525 balls from the middle. My trough: clear width 1.25 balls (the width of the opening `street.spiral.turn`), walls 4 thick and 33 tall with a rolled lip 3.6 tall to 137 px from the middle, its floor 3 under the rail's height, three turns from 5.4 balls down to 1.5, then a straight tail to its open end 1.3 balls over the right inlane. A clear newel of radius 12 stands in the middle from the lowest turn to the top and does not reach the floor. Round the helix the newel is the trough's inner wall; the trough has an inner wall of its own only on its two straight ends. Their frame is concrete from 137.3 px (inner face) to 146.4 px, with 16 columns and four ring beams. Clear tabs reach out from my wall to 137.3 px at every quarter turn, where a column stands. Nothing of mine stands on the floor under the garage.
 
 ## Decisions
 
@@ -44,6 +44,7 @@ Agreed with tier3_modeller, who builds the ladder. All numbers are page pixels (
 - The trough starts under the end of the highway, at the height of the helix's first point, with a closed back, and stops one point before the rail's end, because the last piece of the rail is the ball's fall to the inlane.
 - The last four balls of the highway have no post: every place under them is nearer than 1.25 balls to the gap at the police station's foot. The track's end lies inside the mouth of the trough.
 - The trestles are not in the physics. A ball on the floor can pass through a leg. The Builder owns the physics and has this on the list.
+- No parking dashes on the trough's floor: seen from above, with the newel in the middle, they read as the ticks of a clock face. The approved image has a plain clear trough.
 - The trough's floor has alpha 0.035, its walls 0.09 and its lip 0.78, so the turns show by their lips and things behind stay clear. Light that falls on a clear wall adds to its alpha only where the wall already shows.
 
 ## What I learned
