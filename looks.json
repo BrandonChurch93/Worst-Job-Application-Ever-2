@@ -1,35 +1,35 @@
 {
   "folder": "light",
-  "pushed": "2026-11-25T15:17:20.162Z",
-  "commit": "7ebb23906f8aa2617cafe6a20a38822af0615f70",
+  "pushed": "2026-11-25T15:39:12.729Z",
+  "commit": "79c3ccdcca32d861fd02e7060f506534702a3c1f",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Progress buttons: approved on top, the build before in the middle, the build with the lower key and the studio floor below. Shadows are longer and softer, lower right rims are silver",
-      "time": "2026-11-25T15:17:18.277Z",
+      "caption": "Still key-step1-fire-hd-live-medium: live:medium tier, hd, view beauty",
+      "time": "2026-11-25T15:39:01.780Z",
       "by": "light",
-      "from": "out/work/light/stepper-ab2.jpg"
+      "from": "out/work/stills/key-step1-fire-hd-live-medium.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Approved, build before, build after: the page as a floor in the studio picture keeps the lower right rim of turned buttons silver",
-      "time": "2026-11-25T15:17:18.515Z",
+      "caption": "Still key-step1-fire-hd-live-low: live:low tier, hd, view beauty",
+      "time": "2026-11-25T15:39:10.895Z",
       "by": "light",
-      "from": "out/work/light/floor-ab.jpg"
+      "from": "out/work/stills/key-step1-fire-hd-live-low.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "step1-fire at review beside approved, key at 0.36 up, radius 0.15",
-      "time": "2026-11-25T15:17:18.751Z",
+      "caption": "Bolt, field ring and second bolt at real size: approved left, build before in the middle, build now right. White core, orange halo",
+      "time": "2026-11-25T15:39:11.237Z",
       "by": "light",
-      "from": "out/work/compare/compare-step1-fire.jpg"
+      "from": "out/work/light/glow-ab4.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "step1-fire through the live path: high on top, low below. Low draws the key's shadow pass alone and is as bright",
-      "time": "2026-11-25T15:17:19.068Z",
+      "caption": "step1-fire at review with the new halo, lower key and studio floor",
+      "time": "2026-11-25T15:39:11.502Z",
       "by": "light",
-      "from": "out/work/light/levels-high-low.jpg"
+      "from": "out/work/light/fire-v9.jpg"
     }
   ]
 }
