@@ -16,7 +16,7 @@ Every picture here is made in code when the page starts. No file is downloaded a
 - Made by: `starPicture(config.seed + 401)` in `src/pages/step1/real/turret-fx.ts`
 - From: nothing. A hot core, nine thin rays of unequal length and direction from `hash01`, a faint haze.
 - Prompt or command: none. It is built by `fx()` on first use.
-- Takes: one. 128 x 128 px, RGBA 8 bit, 0.06 MB, 0.08 MB with its mipmaps. Grey, drawn additively in the flash colour.
+- Takes: one. 256 x 256 px, RGBA 8 bit, 0.25 MB, 0.33 MB with its mipmaps. Grey, drawn additively in the flash colour.
 - Why this one: the approved flash is a star of thin unequal rays and not a round glow. The glow round it is left to the post chain.
 - Date: 2026-11-25
 
@@ -34,7 +34,7 @@ Every picture here is made in code when the page starts. No file is downloaded a
 - Made by: `scorchPicture(config.seed + 403)` in `src/pages/step1/real/turret-fx.ts`
 - From: nothing. A charred middle with a ragged edge, a brown ring that thins out, a few specks, all from value noise.
 - Prompt or command: none.
-- Takes: one. 128 x 128 px, RGBA 8 bit, sRGB, 0.06 MB, 0.08 MB with its mipmaps. Each scorch turns and stretches it by its own name.
+- Takes: one. 256 x 256 px, RGBA 8 bit, sRGB, 0.25 MB, 0.33 MB with its mipmaps. Each scorch turns and stretches it by its own name.
 - Why this one: the approved scorch is irregular and has a brown ring. A plain dark disc reads as a sticker.
 - Date: 2026-11-25
 
@@ -47,4 +47,4 @@ Every picture here is made in code when the page starts. No file is downloaded a
 - Why this one: moulded plastic has a fine even speckle and the page already has one.
 - Date: 2026-11-25
 
-Total of my own pictures: 1.14 MB, 1.52 MB with mipmaps.
+Total of my own pictures: 1.52 MB, 2.02 MB with mipmaps.

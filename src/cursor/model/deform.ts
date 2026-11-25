@@ -12,6 +12,7 @@ const BEND_TURN = 0.85
 const ROUND_WIDE = 1.15
 const ROUND_TOP = 2.12
 const PEEL_RADIUS = 9
+const POINTS: [number, number][] = [[0, 0], [0, 16.2], [11.8, 11.6]]
 const PEEL_TURN = 1.0
 
 // Turns a point of the body at rest, in outline units, into where it is now, in page pixels in the body's own space.
@@ -82,8 +83,8 @@ export class Deform {
       const f = this.flat
       const dx = x - CENTRE[0]
       const dy = y - CENTRE[1]
-      const far = Math.hypot(dx, dy)
       const ang = Math.atan2(dy, dx)
+      const far = Math.hypot(dx, dy)
       const wob = 0.5 * Math.sin(3 * ang + 0.7) + 0.3 * Math.sin(5 * ang + 2.1) + 0.2 * Math.sin(8 * ang + 4.0)
       const grow = 1 + 0.16 * f + (f * 0.09 * wob * far) / 8
       x = CENTRE[0] + dx * grow
@@ -102,15 +103,29 @@ export class Deform {
       const dy = y - CENTRE[1]
       const ang = Math.atan2(dy, dx)
       const wob = 0.6 * Math.sin(2 * ang + 0.9) + 0.4 * Math.sin(3 * ang + 2.6)
-      const far = Math.hypot(dx, dy)
-      const grow = 1 + m * 0.09 * wob * (1 - tail) - m * 0.05 * Math.max(0, far - 5.2) * (1 - tail)
-      x = CENTRE[0] + dx * grow
-      y = CENTRE[1] + dy * grow
+      const wing = smooth(6.5, 10.5, y0) * (1 - smooth(11.5, 13.5, y0))
+      let blunt = 0
+      for (const c of POINTS) {
+        const cx = x0 - c[0]
+        const cy = y0 - c[1]
+        blunt += Math.exp(-(cx * cx + cy * cy) / 3.2)
+      }
+      const grow = (1 + m * 0.07 * wob * (1 - tail)) * (1 - m * 0.115 * Math.min(1, blunt))
+      x = CENTRE[0] + dx * grow * (1 - 0.2 * m * wing)
+      y = CENTRE[1] + dy * grow + m * 0.16 * wing * Math.abs(dx)
       y += m * (0.7 * low + 2.4 * tail + 0.3 * Math.sin(x0 * 0.85 + 1.4) * (1 - tail))
-      x += m * ((0.45 * Math.sin(y0 * 0.42 + 1.0) + 0.3 * Math.sin(y0 * 0.95 + 0.3)) * (1 - tail) + 2.1 * tail * Math.sin((y0 - 11.5) * 0.5) + 0.5 * tail * (x0 - 7.5) * 0.4)
+      x += m * ((0.45 * Math.sin(y0 * 0.42 + 1.0) + 0.3 * Math.sin(y0 * 0.95 + 0.3)) * (1 - tail) + 0.9 * tail * Math.sin((y0 - 11.5) * 0.62) + 2.6 * tail * tail)
+      const u0 = x0 * AXIS[0] + y0 * AXIS[1]
+      const v0 = x0 * AXIS[1] - y0 * AXIS[0]
+      const end = clamp01((u0 - 18.85) / 1.3)
+      const lobe = (1 + 0.35 * smooth(16.6, 18.8, u0)) * Math.sqrt(Math.max(0.03, 1 - end * end)) - 1
+      const dv = m * v0 * lobe * smooth(15.2, 16.8, u0) * (1 - smooth(1.8, 2.6, Math.abs(v0)))
+      x += dv * AXIS[1]
+      y -= dv * AXIS[0]
       const fold = Math.sin(x0 * 0.55 + y0 * 0.38 + 0.5) * Math.sin(y0 * 0.31 - x0 * 0.2 + 1.2)
       z *= 1 - 0.1 * m - 0.3 * m * tail
-      z += m * up * 0.42 * fold * (1 - Math.exp(-inset / 0.9)) * (1 - 0.5 * tail)
+      const ripple = Math.sin(x0 * 1.7 + y0 * 1.15 + 0.4) * Math.sin(y0 * 1.45 - x0 * 0.8 + 2.1)
+      z += m * up * (0.3 * fold + 0.05 * ripple) * (1 - Math.exp(-inset / 0.9)) * (1 - 0.5 * tail)
     }
     x *= this.wide
     y *= this.stretch

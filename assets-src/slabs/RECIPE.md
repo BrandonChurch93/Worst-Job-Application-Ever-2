@@ -8,7 +8,7 @@ Every texture here is made in code at start, from `config.seed`. No file is down
 - From: nothing but the seed, through `hash01` of `src/core/random.ts`
 - Prompt or command: none; it is built when the first sheet is made. `npx vitest run tests/slabs-textures.test.ts` checks it
 - Takes: under 0.1 s
-- Why this one: about 3100 short bent strands, pale and dark, over two faint clouds and a grain of 2%. It tiles, one tile is 150 page pixels, and it stays between 80% and 100% grey so the paper is never pure white
+- Why this one: about 3100 short bent strands, pale and dark, over two faint clouds and a grain of 2%. It tiles, one tile is 108 page pixels (4.7 texels a page pixel, so it holds at the close camera of the tug), and it stays between 80% and 100% grey so the paper is never pure white
 - Size: 512 by 512 px, 1.33 MB
 - Date: 2026-11-25
 

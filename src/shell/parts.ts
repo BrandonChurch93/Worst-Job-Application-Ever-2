@@ -50,7 +50,7 @@ export function header(current: number): LayoutNode[] {
     buttons.push(node(`progress-${i}`, kind, [c.x - d / 2, c.y - d / 2, d, d], { part: 'shell', shape: 'disc', floor: heights.progressRail, over: true, children: [label] }))
   }
   rail.children = buttons
-  const rule = node('header-rule', 'rule', [LEFT, HEADER.ruleY, RIGHT - LEFT, 2], { part: 'shell' })
+  const rule = node('header-rule', 'rule', [LEFT, HEADER.ruleY - 2, RIGHT - LEFT, 6], { part: 'shell' })
   return [title, rail, rule]
 }
 

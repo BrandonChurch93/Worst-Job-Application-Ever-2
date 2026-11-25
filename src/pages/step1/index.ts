@@ -22,7 +22,7 @@ const IDLE_SHUFFLE = 5
 const HOUSING = 44
 const DROP = CAP_TOP + 8
 const SWING = 0.12
-const SHAKE = { seconds: 0.25, px: 2.2, reach: 320, hop: 8 }
+const SHAKE = { seconds: 0.25, px: 4.5, reach: 460, hop: 15 }
 const RATTLE = { seconds: 0.22, px: 2.4 }
 const JAW = { tug: 14, shred: 30, lag: 0.3 }
 const NEAR = 130
@@ -493,7 +493,7 @@ export function makePage(): PageLogic {
     if (s.kept) {
       const u = (s.shred - SHRED.empty) / SHRED.emptySeconds
       WIPE.forEach((f, i) => {
-        const left = 1 - clamp(u * 2 - i * 0.5, 0, 1)
+        const left = 1 - clamp(u * WIPE.length - i, 0, 1)
         const n = Math.ceil(s.kept![f].length * left)
         if (n < s.values[f].length) s.glow = 0
         s.values[f] = s.kept![f].slice(0, n)
@@ -708,7 +708,7 @@ export function makePage(): PageLogic {
           const rattle = !down && s.seat < RATTLE.seconds ? RATTLE.px * hash01(key, 2, 17) * Math.sin(Math.PI * clamp((s.seat - 0.08 * hash01(key, 4, 17)) / (RATTLE.seconds - 0.08), 0, 1)) : 0
           const hop = (at.moved ? Math.sin(Math.PI * u) * (18 + 14 * hash01(key, s.shuffles, 11)) : 0) + kick + rattle
           const wave = s.drum > 0 ? Math.max(0, Math.sin((0.8 - s.drum) * 14 - (seat.cx - DECK.x) / 160)) * TRAVEL : 0
-          const press = (down ? TRAVEL : 0) + wave
+          const press = (down || pinned ? TRAVEL : 0) + wave
           const top = CAP_TOP + off + hop - press
           const away = at.moved || s.places[key] !== key || shaken
           const seen = top > 0 || at.y >= mouth + LEGEND_CLEAR
@@ -725,7 +725,7 @@ export function makePage(): PageLogic {
         const u = clamp((b.t - TIMES.slabHang) / TIMES.slabFall, 0, 1)
         const v = clamp((b.t - TIMES.slabHang - TIMES.slabFall) / TIMES.slabSettle, 0, 1)
         const w = s.slabClear < 0 ? 0 : clamp(s.slabClear / TIMES.slabLift, 0, 1)
-        return b.base + SLAB_HIGH * (1 - u * u) + 16 * (1 - smooth(b.t / (TIMES.slabHang * 0.7))) + 5 * Math.sin(Math.PI * v) * (1 - v) + SLAB_HIGH * w * w
+        return b.base + SLAB_HIGH * (1 - u * u) + 16 * (1 - smooth(b.t / (TIMES.slabHang * 0.7))) - TRAVEL * Math.min(1, v * 4) - 3 * Math.sin(Math.PI * v) * (1 - v) + SLAB_HIGH * w * w
       }
       const slabV = (b: { landed: boolean; since: number }): number[] => [b.since, b.landed ? Math.max(0, 1 - b.since / SHAKE.seconds) : 0]
       const first = s.slabs[0]

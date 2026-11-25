@@ -20,6 +20,15 @@ const capShape = (w: number, h: number): THREE.BufferGeometry => {
   return g
 }
 
+const CORE = 0.6
+let core: THREE.BufferGeometry | null = null
+const coreShape = (w: number, h: number): THREE.BufferGeometry => {
+  if (core) return core
+  core = capGeometry(w - CORE * 2, h - CORE * 2)
+  core.translate(0, 0, -CORE)
+  return core
+}
+
 const isCap = (s: Shape): boolean => s.role === 'keycap' && s.kind !== 'text'
 const isEnter = (s: Shape): boolean => s.id === 'key-enter'
 
@@ -78,14 +87,13 @@ function deckGeometry(w: number, h: number): { metal: THREE.BufferGeometry; seat
   return { metal: scaleUv(merge(metal), 1 / BRUSH.u, 1 / BRUSH.v), seat: merge(dark) }
 }
 
-interface CapSlot { mesh: THREE.InstancedMesh; index: number }
-interface DeckData { plate: THREE.Group; caps: Map<string, CapSlot>; meshes: THREE.InstancedMesh[]; owned: THREE.BufferGeometry[] }
+interface CapSlot { start: number; count: number; from: Float32Array; facing: Float32Array; pose: [number, number, number, number, number]; leaned: boolean }
+interface DeckData { plate: THREE.Group; caps: Map<string, CapSlot>; body: THREE.Mesh; accent: THREE.Mesh | null; owned: THREE.BufferGeometry[] }
 
-const m4 = new THREE.Matrix4()
 const quat = new THREE.Quaternion()
 const euler = new THREE.Euler()
 const at = new THREE.Vector3()
-const one = new THREE.Vector3(1, 1, 1)
+const v3 = new THREE.Vector3()
 
 // A cap in the air leans a few degrees, by its name. It sinks by what the lean lifts under its legend, so the flat legend is never under the plastic.
 const tumble = (s: Shape, hop: number): number => {
@@ -106,48 +114,126 @@ function makeDeck(s: Shape, ctx: RealContext): THREE.Object3D {
   const root = new THREE.Group()
   const plate = new THREE.Group()
   const g = deckGeometry(s.w, s.h)
-  plate.add(new THREE.Mesh(g.metal, k.deck), new THREE.Mesh(g.seat, k.seat))
+  const bed = new THREE.Mesh(g.seat, k.bed)
+  plate.add(new THREE.Mesh(g.metal, k.deck), bed)
   root.add(plate)
-  const groups = new Map<string, Shape[]>()
-  for (const c of ctx.list) {
-    if (!isCap(c)) continue
-    const key = (isEnter(c) ? 'accent:' : 'cap:') + capKey(c.w, c.h)
-    const list = groups.get(key)
-    if (list) list.push(c)
-    else groups.set(key, [c])
-  }
+  const cream = ctx.list.filter(isCap)
+  const enter = cream.find(isEnter)
+  const total = cream.reduce((n, c) => n + (isEnter(c) ? coreShape(c.w, c.h) : capShape(c.w, c.h)).getAttribute('position').count, 0)
+  const position = new Float32Array(total * 3)
+  const normal = new Float32Array(total * 3)
+  const uv = new Float32Array(total * 2)
+  const index: number[] = []
   const caps = new Map<string, CapSlot>()
-  const meshes: THREE.InstancedMesh[] = []
-  for (const [key, list] of groups) {
-    const first = list[0]!
-    const mesh = new THREE.InstancedMesh(capShape(first.w, first.h), key.startsWith('accent') ? k.orange : k.cap, list.length)
-    mesh.frustumCulled = false
-    list.forEach((c, index) => caps.set(c.id, { mesh, index }))
-    meshes.push(mesh)
-    root.add(mesh)
+  let start = 0
+  for (const c of cream) {
+    const shape = isEnter(c) ? coreShape(c.w, c.h) : capShape(c.w, c.h)
+    const from = shape.getAttribute('position').array as Float32Array
+    const facing = shape.getAttribute('normal').array as Float32Array
+    const count = from.length / 3
+    normal.set(facing, start * 3)
+    uv.set(shape.getAttribute('uv').array as Float32Array, start * 2)
+    for (const i of shape.getIndex()!.array) index.push(start + i)
+    caps.set(c.id, { start, count, from, facing, pose: [NaN, 0, 0, 0, 0], leaned: false })
+    start += count
+  }
+  const all = new THREE.BufferGeometry()
+  const spots = new THREE.BufferAttribute(position, 3)
+  const faces = new THREE.BufferAttribute(normal, 3)
+  spots.setUsage(THREE.DynamicDrawUsage)
+  faces.setUsage(THREE.DynamicDrawUsage)
+  all.setAttribute('position', spots)
+  all.setAttribute('normal', faces)
+  all.setAttribute('uv', new THREE.BufferAttribute(uv, 2))
+  all.setIndex(index)
+  const body = new THREE.Mesh(all, k.cap)
+  body.frustumCulled = false
+  root.add(body)
+  let accent: THREE.Mesh | null = null
+  if (enter) {
+    accent = new THREE.Mesh(capShape(enter.w, enter.h), k.orange)
+    accent.frustumCulled = false
+    root.add(accent)
   }
   lit(root)
-  const data: DeckData = { plate, caps, meshes, owned: [g.metal, g.seat] }
+  bed.castShadow = false
+  if (accent) accent.castShadow = false
+  const data: DeckData = { plate, caps, body, accent, owned: [g.metal, g.seat, all] }
   root.userData.deck = data
   return root
 }
 
+// Every cap is one stretch of one mesh. The Enter is the shared orange over a core in that mesh, and the core casts its shadow. A cap that moved since the last frame has its stretch written again, the others are left.
 function poseDeck(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const data = o.userData.deck as DeckData
   data.plate.position.z = s.z1 - s.z0
   const cx = s.x + s.w / 2
   const cy = s.y + s.h / 2
-  for (const mesh of data.meshes) mesh.count = 0
-  for (const [id, slot] of data.caps) {
-    const c = ctx.byId.get(id)
-    if (!c) continue
+  const spots = data.body.geometry.getAttribute('position') as THREE.BufferAttribute
+  const faces = data.body.geometry.getAttribute('normal') as THREE.BufferAttribute
+  const p = spots.array as Float32Array
+  const n = faces.array as Float32Array
+  let moved = false
+  let turned = false
+  const place = (c: Shape): boolean => {
     const hop = Math.max(0, c.v && c.v.length > 1 ? c.v[1]! : c.z0 - s.z1)
     const sink = tumble(c, hop)
     at.set(c.x + c.w / 2 - cx, -(c.y + c.h / 2 - cy), c.z1 - s.z0 - sink)
-    slot.mesh.setMatrixAt(slot.index, m4.compose(at, quat, one))
-    slot.mesh.count = Math.max(slot.mesh.count, slot.index + 1)
+    return hop > 0.01
   }
-  for (const mesh of data.meshes) mesh.instanceMatrix.needsUpdate = true
+  for (const [id, slot] of data.caps) {
+    const c = ctx.byId.get(id)
+    const to = slot.start * 3
+    if (!c) {
+      if (!Number.isNaN(slot.pose[0])) {
+        p.fill(0, to, to + slot.count * 3)
+        slot.pose[0] = NaN
+        moved = true
+      }
+      continue
+    }
+    const leaning = place(c)
+    const was = slot.pose
+    if (was[0] === at.x && was[1] === at.y && was[2] === at.z && was[3] === quat.x && was[4] === quat.y) continue
+    slot.pose = [at.x, at.y, at.z, quat.x, quat.y]
+    moved = true
+    if (!leaning) {
+      for (let i = 0; i < slot.count * 3; i += 3) {
+        p[to + i] = slot.from[i]! + at.x
+        p[to + i + 1] = slot.from[i + 1]! + at.y
+        p[to + i + 2] = slot.from[i + 2]! + at.z
+      }
+      if (slot.leaned) {
+        n.set(slot.facing, to)
+        slot.leaned = false
+        turned = true
+      }
+      continue
+    }
+    for (let i = 0; i < slot.count * 3; i += 3) {
+      v3.set(slot.from[i]!, slot.from[i + 1]!, slot.from[i + 2]!).applyQuaternion(quat)
+      p[to + i] = v3.x + at.x
+      p[to + i + 1] = v3.y + at.y
+      p[to + i + 2] = v3.z + at.z
+      v3.set(slot.facing[i]!, slot.facing[i + 1]!, slot.facing[i + 2]!).applyQuaternion(quat)
+      n[to + i] = v3.x
+      n[to + i + 1] = v3.y
+      n[to + i + 2] = v3.z
+    }
+    slot.leaned = true
+    turned = true
+  }
+  if (moved) spots.needsUpdate = true
+  if (turned) faces.needsUpdate = true
+  if (data.accent) {
+    const c = ctx.byId.get('key-enter')
+    data.accent.visible = !!c
+    if (c) {
+      place(c)
+      data.accent.position.copy(at)
+      data.accent.quaternion.copy(quat)
+    }
+  }
 }
 
 function makeLoneCap(s: Shape): THREE.Object3D {
@@ -160,7 +246,7 @@ function makeLoneCap(s: Shape): THREE.Object3D {
   return root
 }
 
-// The deck, its seats and every cap on it are one object: the caps are instanced, one mesh for each size of cap.
+// The deck, its bed and every cap on it are one object: the caps are one mesh of one draw, the orange Enter a second that casts no shadow of its own.
 export const keyboard: PartMaker = {
   key(s, ctx) {
     if (s.kind === 'text' || s.kind === 'well') return null
@@ -179,6 +265,5 @@ export const keyboard: PartMaker = {
     const data = o.userData.deck as DeckData | undefined
     if (!data) return
     for (const g of data.owned) g.dispose()
-    for (const mesh of data.meshes) mesh.dispose()
   }
 }

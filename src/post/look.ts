@@ -4,10 +4,10 @@ export const look = {
   background: [0.012, 0.012, 0.014] as [number, number, number],
   key: {
     // Toward the light, from the page: upper left, toward the viewer. It sets where the shadows fall.
-    direction: [-0.65, 0.6, 0.45] as [number, number, number],
+    direction: [-0.65, 0.6, 0.36] as [number, number, number],
     // Half the angle the light's area takes up, seen from the page, in radians. It sets how fast a shadow softens with height.
-    radius: 0.13,
-    intensity: 4.55,
+    radius: 0.15,
+    intensity: 5.47,
     colour: [1.0, 0.975, 0.945] as [number, number, number],
     // Where the light stands over the middle of the view, in page pixels: x right, y up the page, z toward the viewer.
     // It sets how the light falls off across the page, lighter at the upper left.
@@ -39,7 +39,10 @@ export const look = {
     direction: [-0.52, 0.5, 0.69] as [number, number, number],
     // How much of the studio's reflection a surface loses where the key does not reach it, and where the fill does not.
     shadeKey: 0.7,
-    shadeFill: 0.6
+    shadeFill: 0.6,
+    // The page seen from below the horizon in the reflection, and how much of it a face above the page keeps where the key does not reach it.
+    floor: [0.4, 0.385, 0.36] as [number, number, number],
+    floorKept: 1
   },
   // How much of the studio's light a surface takes as plain diffuse light with no shadow in it.
   envDiffuse: 0.05,
