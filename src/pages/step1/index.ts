@@ -33,7 +33,7 @@ const EATEN = -30
 const HEAP = { y: 20, spread: 34 }
 const TIDY = 0.3
 const WIPE: FieldName[] = ['email', 'lastName', 'firstName']
-const SLAB_FALL = { seconds: 0.1, high: 1200, thrown: 0.3, amp: 1.5, sight: 0.6 }
+const SLAB_FALL = { seconds: 0.1, high: 1200, thrown: 0.3, amp: 1.05, sight: 0.6 }
 const SLAB_LAND = TIMES.slabHang + TIMES.slabFall
 const SLAB_HOP = { high: 34, reach: 280, seconds: 0.16, speed: 6000, wide: 90 }
 const SLAB_GAP = 8
@@ -43,9 +43,10 @@ const PRESS = 0.24
 const HOLD = 0.1
 const TAP = { seconds: 0.2, hold: 0.05, depth: 1, shake: 0.22 }
 const STRIKE = { seconds: 1.5, id: 90000, z: 96 }
-const THUD = { seconds: 0.26, hold: 0.07, shake: 0.4, hop: 0.15 }
+const THUD = { seconds: 0.17, hold: 0.085, shake: 0.7, hop: 9, reach: 260, toss: 0.1, speed: 6000 }
 const PULSE = { hold: 0.05, fade: 0.3 }
-const FLIGHT = { over: 1.25, under: 0.75, ripple: 0.09, jitter: 0.025, seconds: 0.165, crouch: 0.035, low: 24, high: 64, perPx: 0.1, seat: 0.09, jolt: 2.6, rattle: 1.6, clear: 5 }
+const FLIGHT = { over: 1.25, under: 0.75, ripple: 0.17, span: 800, jitter: 0.02, seconds: 0.2, rise: 0.58, crouch: 0.035, low: 24, high: 64, perPx: 0.1, seat: 0.09, jolt: 4, land: 2.2, rattle: 1.6, clear: 5 }
+const SEATED = FLIGHT.crouch + FLIGHT.ripple + FLIGHT.jitter + FLIGHT.seconds
 const LEGEND_CLEAR = 0
 
 type Phase = 'rest' | 'keyboard' | 'firstName' | 'lastName' | 'email' | 'slabs' | 'resume' | 'tug' | 'shredded' | 'received'
@@ -188,7 +189,7 @@ export function makePage(): PageLogic {
   const launchOf = (key: number): number => {
     const a = seats[s.from[key]!]!
     const far = Math.hypot(a.cx - s.burst.x, a.cy - s.burst.y)
-    return FLIGHT.crouch + Math.min(FLIGHT.ripple, (far / 900) * FLIGHT.ripple) + FLIGHT.jitter * hash01(key, s.shuffles, 23)
+    return FLIGHT.crouch + Math.min(1, far / FLIGHT.span) * FLIGHT.ripple + FLIGHT.jitter * hash01(key, s.shuffles, 23)
   }
   const flightOf = (key: number): { u: number; air: number; bow: number; high: number; crouch: number; seat: number; t: number } => {
     const t = s.sinceShuffle
@@ -200,7 +201,8 @@ export function makePage(): PageLogic {
     const far = Math.hypot(to.cx - from.cx, to.cy - from.cy)
     const high = Math.min(FLIGHT.high, FLIGHT.low + far * FLIGHT.perPx) * (s.places[key]! > s.from[key]! ? FLIGHT.over : FLIGHT.under)
     const crouch = t < start ? clamp((t - (start - FLIGHT.crouch)) / FLIGHT.crouch, 0, 1) : 0
-    return { u: a + 0.12 * Math.sin(2 * Math.PI * a), air: Math.sin(Math.PI * a) ** 0.75, bow: Math.sin(Math.PI * a), high, crouch, seat: spring(t - start - FLIGHT.seconds, 0.012, FLIGHT.seat), t: t - start }
+    const air = a < FLIGHT.rise ? 1 - (1 - a / FLIGHT.rise) ** 2 : 1 - ((a - FLIGHT.rise) / (1 - FLIGHT.rise)) ** 2
+    return { u: a + 0.12 * Math.sin(2 * Math.PI * a), air, bow: Math.sin(Math.PI * a), high, crouch, seat: spring(t - start - FLIGHT.seconds, 0.017, FLIGHT.seat), t: t - start }
   }
   const openKeyboard = (io: StepIo): void => {
     s.boardUp = true
@@ -278,8 +280,8 @@ export function makePage(): PageLogic {
     if (s.drum > 0) s.drum = Math.max(0, s.drum - io.dt)
     if (s.shuffle < 1) {
       s.shuffle = Math.min(1, s.shuffle + io.dt / TIMES.shuffleSeconds)
-      if (s.shuffle >= 1) s.blocks = false
     }
+    if (s.blocks && s.shuffle >= 1 && s.sinceShuffle >= SEATED) s.blocks = false
     const typing = s.phase === 'firstName' || s.phase === 'lastName' || s.phase === 'email'
     if (io.pressed && s.board >= 1 && !s.blocks && (typing || s.phase === 'slabs')) {
       const key = keyAt(s.places, io.pointer.x, io.pointer.y)
@@ -798,9 +800,10 @@ export function makePage(): PageLogic {
         const h = DECK.h * smooth(s.board / 0.3)
         const mouth = DECK.y + DECK.h - h
         if (h >= 2) out.push({ id: 'keyboard-well', part: 'keyboard', kind: 'well', x: DECK.x, y: mouth, w: DECK.w, h, z0: WELL, z1: 0, tone: 'dark' })
-        const hit = s.shake < SHAKE.seconds ? 1 - s.shake / SHAKE.seconds : 0
-        const landing = FLIGHT.crouch + FLIGHT.ripple * 0.5 + FLIGHT.seconds
-        const shake = hit * hit * SHAKE.px * s.shakeAmp * Math.cos(s.shake * 58) + ring(s.sinceShuffle - FLIGHT.crouch, -FLIGHT.jolt) + ring(s.sinceShuffle - landing, FLIGHT.jolt)
+        const shakes = s.shakeAmp === THUD.shake ? THUD.seconds : SHAKE.seconds
+        const hit = s.shake < shakes ? 1 - s.shake / shakes : 0
+        const landing = s.sinceShuffle - FLIGHT.crouch - FLIGHT.seconds
+        const shake = hit * hit * SHAKE.px * s.shakeAmp * Math.cos(s.shake * 58) + ring(s.sinceShuffle - FLIGHT.crouch, -FLIGHT.jolt) + ring(landing, FLIGHT.land) + ring(landing - FLIGHT.ripple * 0.35, -FLIGHT.land) + ring(landing - FLIGHT.ripple * 0.7, FLIGHT.land) + ring(landing - FLIGHT.ripple, -FLIGHT.land)
         const shaken = Math.abs(shake) > 0.01
         over['keyboard-deck'] = { y: DECK.y + shake, z0: WELL, z1: DECK_TOP + off, ...(shaken ? { moved: true } : {}), v: [s.board, Math.max(0, off), shake] }
         for (const side of [0, 1]) over[`hatch-${side}`] = { y: hatchY[side]! + shake, z0: DECK_TOP + off, z1: DECK_TOP + 0.6 + off, ...(shaken ? { moved: true } : {}) }
@@ -821,9 +824,10 @@ export function makePage(): PageLogic {
           const pinned = pin !== 0
           const edge = Math.hypot(Math.max(0, Math.abs(at.x + seat.w / 2 - s.shakeAt.x) - SLAB.w / 2), Math.max(0, Math.abs(at.y + seat.h / 2 - s.shakeAt.y) - SLAB.h / 2))
           const toss = clamp((s.shake - edge / SLAB_HOP.speed) / SLAB_HOP.seconds, 0, 1)
-          const kick = pinned || down ? 0 : s.shakeAmp === SLAB_FALL.amp ? (edge < SLAB_HOP.reach ? SLAB_HOP.high * Math.min(1, SLAB_HOP.wide / seat.w) * (1 - edge / SLAB_HOP.reach) ** 1.5 * 4 * toss * (1 - toss) : 0) : far < SHAKE.reach ? SHAKE.hop * (s.shakeAmp === THUD.shake ? THUD.hop : s.shakeAmp) * (1 - far / SHAKE.reach) * Math.sin(Math.PI * clamp((s.shake - far / 2600) / 0.2, 0, 1)) : 0
+          const kick = pinned || down ? 0 : s.shakeAmp === SLAB_FALL.amp ? (edge < SLAB_HOP.reach ? SLAB_HOP.high * Math.min(1, SLAB_HOP.wide / seat.w) * (1 - edge / SLAB_HOP.reach) ** 1.5 * 4 * toss * (1 - toss) : 0) : s.shakeAmp === THUD.shake ? (far < THUD.reach && key !== s.thudKey ? THUD.hop * Math.min(1, SLAB_HOP.wide / seat.w) * (1 - far / THUD.reach) * Math.sin(Math.PI * clamp((s.shake - far / THUD.speed) / THUD.toss, 0, 1)) : 0) : far < SHAKE.reach ? SHAKE.hop * s.shakeAmp * (1 - far / SHAKE.reach) * Math.sin(Math.PI * clamp((s.shake - far / 2600) / 0.2, 0, 1)) : 0
           const rattle = !down && s.seat < RATTLE.seconds ? RATTLE.px * hash01(key, 2, 17) * Math.sin(Math.PI * clamp((s.seat - 0.08 * hash01(key, 4, 17)) / (RATTLE.seconds - 0.08), 0, 1)) : 0
-          const stir = !at.moved && !down && fl.t > 0 && fl.t < 0.1 ? FLIGHT.rattle * (0.4 + 0.6 * hash01(key, s.shuffles, 29)) * Math.sin((Math.PI * fl.t) / 0.1) : 0
+          const jar = fl.t > FLIGHT.seconds ? fl.t - FLIGHT.seconds : fl.t
+          const stir = !at.moved && !down && jar > 0 && jar < 0.1 ? FLIGHT.rattle * (0.4 + 0.6 * hash01(key, s.shuffles, 29)) * Math.sin((Math.PI * jar) / 0.1) : 0
           const hop = (at.moved ? fl.air * fl.high : 0) + kick + rattle + stir
           const wave = s.drum > 0 ? Math.max(0, Math.sin((0.8 - s.drum) * 14 - (seat.cx - DECK.x) / 160)) * TRAVEL : 0
           let heat = 0
