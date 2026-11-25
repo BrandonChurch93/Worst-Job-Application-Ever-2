@@ -1,0 +1,35 @@
+{
+  "folder": "acting",
+  "pushed": "2026-11-25T19:22:48.489Z",
+  "commit": "a1412e31df3e5a60c85839f338f45e34ca959d1b",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "The acting sheet beside the approved one: Shocked no longer over-stretched (1.36 to 1.14)",
+      "time": "2026-11-25T19:22:46.710Z",
+      "by": "acting",
+      "from": "out/work/compare/compare-cursor-acting.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "step1.lastName: three pull-ups on to the bare page right of the note, rear held, dive",
+      "time": "2026-11-25T19:22:46.953Z",
+      "by": "acting",
+      "from": "out/work/sheets/sheet-beat-step1_lastName-preview-draft.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "step1.email: picture 2 is the nervous wait on the bare strip above the board; then run, slabs, hide",
+      "time": "2026-11-25T19:22:47.193Z",
+      "by": "acting",
+      "from": "out/work/sheets/sheet-beat-step1_email-preview-draft.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Close on the film: rears of the last name (10.52 to 11.90 s) and the nervous wait (15.40, 15.46 s), before the last lean fix",
+      "time": "2026-11-25T19:22:47.426Z",
+      "by": "acting",
+      "from": "out/work/looks/files/20261125192247-close-rears-wait.jpg"
+    }
+  ]
+}
