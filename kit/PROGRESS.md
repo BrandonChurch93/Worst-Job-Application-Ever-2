@@ -37,15 +37,15 @@ Status 13, 2026-11-25T09:56Z, Phase 2.
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 2, tick 41 at 2026-11-25T09:56:35Z, allowance: build
-time used in this phase: 2.30 h of its box of 6.50 h
-time used under the allowance in force: 4.40 h of 36.00 h allowed
-time used: 4.40 of 36.00 hours before the review
+clock: phase 2, tick 42 at 2026-11-25T10:06:39Z, allowance: build
+time used in this phase: 2.47 h of its box of 6.50 h
+time used under the allowance in force: 4.57 h of 36.00 h allowed
+time used: 4.57 of 36.00 hours before the review
 extra rounds: yes
 half point: not reached
 box end: not reached
 budget report: not due
-minutes since the last status: 0
+minutes since the last status: 10
 ```
 
 ## Phases
@@ -427,16 +427,17 @@ Each with its name, its folders, its branch and its looks branch, when it starte
 
 | Agent | Kind | Owns | Branch | Started | Limit | Last seen |
 | --- | --- | --- | --- | --- | --- | --- |
-| `pinball_builder` | build, sandbox | `src/table/`, `src/pages/step3/`, `tools/paths.mjs`, `tools/take.mjs`, `cut/TABLE-TAKE.json` | `agent/pinball` | 2026-11-25T08:41:30Z | 11:41Z | started |
-| `step1_builder` | build, sandbox | `src/pages/step1/` | `agent/step1` | 2026-11-25T08:41:30Z | 11:41Z | started |
-| `step2_builder` | build, sandbox | `src/pages/step2/` | `agent/step2` | 2026-11-25T08:41:30Z | 11:41Z | started |
-| `boss_builder` | build, sandbox | `src/pages/step4/`, `src/boss/` | `agent/boss` | 2026-11-25T08:41:30Z | 11:41Z | started |
-| `marketing_builder` | build, sandbox | `src/pages/marketing/` | `agent/marketing` | 2026-11-25T08:41:30Z | 11:41Z | started |
-| `step5_builder` | build, sandbox | `src/pages/step5/` | `agent/step5` | 2026-11-25T08:41:30Z | 11:41Z | started |
-| `harness_builder` | build, sandbox | `tools/film.mjs`, `seq.mjs`, `sheet.mjs`, `loop.mjs`, `render-local.mjs`, `stress.mjs` | `agent/harness` | 2026-11-25T08:49:20Z | 11:49Z | started |
-| `film_builder` | build, sandbox | `src/film/`, `tools/cut.mjs`, `cut/CUTLIST.json`, `cut/CUES.md`, `cut/SHOTS.md` | `agent/film` | 2026-11-25T08:49:20Z | 11:49Z | started |
-| `interface_builder` | build, sandbox | `src/ui/`, `src/probe/` | `agent/ui` | 2026-11-25T08:49:20Z | 11:49Z | started |
-| `sound_builder` | build, sandbox | `src/audio/`, `tools/sound.mjs`, `tools/mix.mjs`, `audio/`, `public/audio/` | `agent/audio` | 2026-11-25T08:49:20Z | 11:49Z | started |
+| `pinball_builder` | build, sandbox | `src/table/`, `src/pages/step3/`, `tools/paths.mjs`, `tools/take.mjs`, `cut/TABLE-TAKE.json` | `agent/pinball` | 2026-11-25T08:41:30Z | 11:40Z | 09:52Z push; improving until its limit; fourth take search allowed for the last-save key |
+| `step1_builder` | build, sandbox | `src/pages/step1/` | `agent/step1` | 2026-11-25T08:41:30Z | 11:41Z | released 10:12Z: its part is merged, nothing more asked |
+| `step2_builder` | build, sandbox | `src/pages/step2/` | `agent/step2` | 2026-11-25T08:41:30Z | 11:41Z | released 10:12Z: its part is merged, nothing more asked |
+| `boss_builder` | build, sandbox | `src/pages/step4/`, `src/boss/` | `agent/boss` | 2026-11-25T08:41:30Z | 11:41Z | released 10:12Z: its part is merged, nothing more asked |
+| `marketing_builder` | build, sandbox | `src/pages/marketing/` | `agent/marketing` | 2026-11-25T08:41:30Z | 11:40Z | 10:03Z asked: the perk card as one slab; answer by 11:10Z if it cannot |
+| `step5_builder` | build, sandbox | `src/pages/step5/` | `agent/step5` | 2026-11-25T08:41:30Z | 11:41Z | released 10:12Z: its part is merged, nothing more asked |
+| `harness_builder` | build, sandbox | `tools/film.mjs`, `seq.mjs`, `sheet.mjs`, `loop.mjs`, `render-local.mjs`, `stress.mjs` | `agent/harness` | 2026-11-25T08:49:20Z | 11:49Z | 10:12Z new work: keep --film, parts, simcache, hostcheck |
+| `film_builder` | build, sandbox | `src/film/`, `tools/cut.mjs`, `cut/CUTLIST.json`, `cut/CUES.md`, `cut/SHOTS.md` | `agent/film` | 2026-11-25T08:49:20Z | 11:49Z | released 10:12Z: its part is merged, nothing more asked |
+| `interface_builder` | build, sandbox | `src/ui/`, `src/probe/` | `agent/ui` | 2026-11-25T08:49:20Z | 11:49Z | 10:06Z report 3; cannot push (sign-in from its VM fails), code complete at 68549d0 |
+| `sound_builder` | build, sandbox | `src/audio/`, `tools/sound.mjs`, `tools/mix.mjs`, `audio/`, `public/audio/` | `agent/audio` | 2026-11-25T08:49:20Z | 11:49Z | 10:08Z; start() and stop() merged at b6aea13 |
+| `measure_builder` | build, sandbox | `tools/measure.mjs`, `tools/lib/measure-*.mjs`, `src/diagnostics/` | `agent/measure` | 2026-11-25T10:12:00Z | 13:00Z | started |
 
 Ten build agents, the most the kit allows beside six critic slots. Each brief names the approved images of its part, gives its sections of the kit word for word, and repeats the three rules. First complete versions wanted by 10:45Z to 10:50Z. A build agent silent for 45 minutes is replaced once from its branch. The Builder keeps for itself: `tools/parts.mjs`, `simcache.mjs`, `pack.mjs`, `measure.mjs`, `hostcheck.mjs`, the gate checks, the diagnostic views, `src/main.ts`, `src/app.ts` and the frame interface.
 
