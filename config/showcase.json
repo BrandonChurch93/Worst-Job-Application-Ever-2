@@ -151,7 +151,7 @@
   },
   "cursor": { "heightPxAt1080": 70, "sizeTolerancePx": 6, "damageHealSeconds": 4, "armsOnlyInBeat": "step1.tug" },
   "cameras": {
-    "home": { "fovDeg": 12, "fovMinDeg": 6, "fovMaxDeg": 20, "note": "the page, straight on, filling the frame" },
+    "home": { "fovDeg": 20, "fovMinDeg": 6, "fovMaxDeg": 20, "note": "the page, straight on, filling the frame; moved once at the look lock from 12 to 20, the wide end of its limits, to bring the lean of standing parts toward the approved keyboard picture" },
     "sheet": { "fovDeg": 12, "note": "straight on and close, for the cursor and boss sheets" },
     "table-wide": { "fovDeg": 35, "note": "the whole machine from the player's end, fitted to its approved image" },
     "table-map": { "fovDeg": 12, "note": "the whole machine from straight above, rendered 1080 wide by 1920 tall" },
