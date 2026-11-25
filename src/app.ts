@@ -12,6 +12,7 @@ import { cursorSheet } from './cursor/sheets'
 import { EVENT_TRAIL, applyView, isView, type ViewContext, type ViewEvent } from './diagnostics/views'
 import { makeLoop, makeOpening, type FilmPiece, type LoopPiece, type OpeningPiece } from './film'
 import { pages, preparePages, unitPages } from './pages'
+import { loadTable } from './table/real/assets'
 import { look } from './post/look'
 import { studioEnvironment } from './post/studio'
 import { PageView, TONES } from './shell/view'
@@ -70,7 +71,7 @@ export class App {
   async start(canvas: HTMLCanvasElement, o: { format: string; assets: string; capture: boolean; forceKind?: TargetKind }): Promise<void> {
     this.format = formatById(o.format)
     this.assets = assetSet(o.assets)
-    await Promise.all([...FONTS.map((name) => loadFont(name)), preparePages()])
+    await Promise.all([...FONTS.map((name) => loadFont(name)), preparePages(), loadTable(this.assets)])
     App.check()
     this.engine = new Engine(canvas, this.format.width, this.format.height, { preserve: o.capture, forceKind: o.forceKind, multisamples: o.capture ? 0 : LIVE_MULTISAMPLES })
     this.engine.beforeSample = (_shot, view) => (view === 'beauty' ? undefined : applyView(view, this.viewContext()))
