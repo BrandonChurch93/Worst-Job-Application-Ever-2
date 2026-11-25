@@ -9,13 +9,13 @@ const feel = (f: Partial<Feel>): Feel => ({ stretch: 1, lean: 0, bend: 0, puff: 
 
 export const FEEL: Record<Acting, Feel> = {
   plain: feel({}),
-  confident: feel({ stretch: 1.08, lean: 0.14, puff: 0.2, bounce: 0.09 }),
+  confident: feel({ stretch: 1.12, lean: 0.22, puff: 0.3, bounce: 0.1 }),
   nervous: feel({ stretch: 0.92, lean: -0.12, tremble: 0.5, sweat: 1 }),
   shocked: feel({ stretch: 1.2, lean: -0.08, tremble: 0.15 }),
   angry: feel({ stretch: 1.03, lean: 0.17, puff: 0.35, tremble: 0.3, heat: 1, steam: 1 }),
   scared: feel({ stretch: 0.86, lean: -0.44, bend: -0.3, pale: 1, tremble: 0.7 }),
-  proud: feel({ stretch: 1.14, lean: 0.24, puff: 0.8, bounce: 0.04 }),
-  exhausted: feel({ stretch: 0.74, lean: -0.4, bend: 0.55, melt: 0.6 })
+  proud: feel({ stretch: 1.18, lean: 0.3, puff: 0.9, bounce: 0.04 }),
+  exhausted: feel({ stretch: 0.8, lean: -0.3, bend: 0.4, melt: 0.6 })
 }
 
 // Seconds for each number to cover most of the way to a new state.
@@ -41,10 +41,10 @@ export function reactionPose(name: Reaction, u: number, dir: number): ReactionPo
       if (u < 0.36) return at(0, -0.2, -0.2)
       if (u < 0.52) return at(-0.14, 0.34, 0.3)
       return u < 0.86 ? at(0.44) : at(0)
+    // One short frame bent away from the blow, then tall and laid back the way the blow went, and held there: one settle, no swing back through upright.
     case 'recoil':
-      if (u < 0.08) return at(-0.6, 0.1 * dir, 0, 0.8 * dir)
-      if (u < 0.145) return at(0.3, 0.06 * dir)
-      return u < 0.305 ? at(-0.16, 0) : u < 0.94 ? at(0, -0.34, -0.52) : at(0)
+      if (u < 0.08) return at(-0.6, 0.1 * dir, 0, 0.5 * dir)
+      return u < 0.94 ? at(0.1, 0.5 * dir, 0.12 * dir) : at(0)
     case 'dustOff':
       return at(0.08, 0.22 * Math.sin(u * Math.PI * 8) * (1 - ramp(u, 0.7, 1)), 0, 0, 0.35 * (1 - ramp(u, 0.8, 1)))
     case 'jump':
@@ -58,17 +58,23 @@ export function reactionPose(name: Reaction, u: number, dir: number): ReactionPo
     // Small and low under what is coming down.
     case 'cower':
       return u < 0.86 ? at(-0.3, -0.3, -0.36, -0.5) : at(0)
-    // A sharp backward lean, held.
+    // A start upward, then small, low and laid back, held: the body packed down away from what came up in front of it.
     case 'rear':
-      return u < 0.08 ? at(-0.2, 0.2) : u < 0.84 ? at(0.24, -0.5, -0.5) : at(0)
+      return u < 0.1 ? at(0.3, 0.1) : u < 0.9 ? at(-0.4, -0.44, -0.36, -0.5) : at(0)
     // A sideways snap out of a shot's way: the tip thrown up and over, held.
     case 'snap':
-      return u < 0.8 ? at(0.1, 0.2, 0.62) : at(0)
-    // A dart for cover: a long reach on the way, then small, low and leaning away from what it left, held.
+      return u < 0.9 ? at(0.1, 0.2, 0.62) : at(0)
+    // A dart for cover: a long reach on the way, then upright and still where it stops, so the tremble and the beads are what is seen.
     case 'dart':
-      return u < 0.3 ? at(0.3, -0.3) : at(-0.3, -0.36, -0.4, -0.5)
-    // A decided tap: back, down, held.
+      return u < 0.3 ? at(0.3, -0.3) : at(-0.06, -0.2, -0.16)
+    // A decided tap: drawn back and up, struck long into the field, then a proud settle, held.
     case 'tap':
-      return u < 0.3 ? at(-0.3, -0.3, -0.16) : u < 0.86 ? at(0.2, 0.3, 0.12) : at(0)
+      return u < 0.32 ? at(-0.36, -0.4, -0.3) : u < 0.52 ? at(0.4, 0.3, 0.2) : u < 0.9 ? at(-0.14, 0.2, 0.1, 0, 0.4) : at(0)
+    // Temper: packed down, swollen and pushed forward over its tip, held and shaking.
+    case 'fume':
+      return u < 0.12 ? at(0.2, -0.1) : u < 0.9 ? at(-0.3, 0.3, 0.34, 0.3, 0.7) : at(0)
+    // A stamp: up tall, then driven flat into what it stands on, held.
+    case 'stamp':
+      return u < 0.2 ? at(0.4, -0.1) : u < 0.9 ? at(-0.5, 0.2, 0.16, 0, 0.5) : at(0)
   }
 }
