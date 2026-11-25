@@ -5,7 +5,7 @@ import { DECK } from '../src/pages/step1/keyboard'
 import { LAST, MAIL } from '../src/pages/step1/script'
 import { filmFlow, filmOptions, ScriptDriver, Stage } from '../src/stage/stage'
 
-test('the nervous wait of the email and the rears of the last name are held on the bare page above the board', () => {
+test('the nervous wait of the email, the rear and the temper of the last name are held on the bare page above the board', () => {
   const s = new Stage({ mode: 'film', flow: filmFlow('step1'), pages, driver: new ScriptDriver(), film: filmOptions('step1') })
   const want = [LAST.at[0]! + 0.5, LAST.at[2]! + 0.36, MAIL.run - 0.06]
   const seen: { y: number; x: number; speed: number; lean: number }[] = []
@@ -21,6 +21,8 @@ test('the nervous wait of the email and the rears of the last name are held on t
     expect(p.y).toBeLessThan(DECK.y - 20)
     expect(p.x).toBeGreaterThan(LAST.clear - 30)
     expect(p.speed).toBeLessThan(300)
-    expect(p.lean).toBeLessThan(-0.3)
   }
+  expect(seen[0]!.lean).toBeLessThan(-0.3)
+  expect(seen[1]!.lean).toBeGreaterThan(0.3)
+  expect(seen[2]!.lean).toBeLessThan(-0.3)
 })

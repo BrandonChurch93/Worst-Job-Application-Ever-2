@@ -15,7 +15,7 @@ const PEEL_RADIUS = 9
 const POINTS: [number, number, number, number][] = [[0, 0, 0.035, 9], [0, 16.2, 0.06, 5], [11.8, 11.6, 0.07, 5]]
 const PEEL_TURN = 1.0
 // The body stands a little out of plumb, as a thing photographed from just off its axis: its face sits up and to the left of its foot, so the dark wall shows on the side away from the lamp.
-export const SLANT = 0.17
+export const SLANT = 0.24
 
 // Turns a point of the body at rest, in outline units, into where it is now, in page pixels in the body's own space.
 export class Deform {
