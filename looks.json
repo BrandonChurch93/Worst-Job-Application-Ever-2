@@ -1,35 +1,35 @@
 {
   "folder": "tug2",
-  "pushed": "2026-11-25T19:34:10.274Z",
-  "commit": "44cf977628f85759dd53dc9828bd841a358ad859",
+  "pushed": "2026-11-25T20:08:59.183Z",
+  "commit": "23d078ba3097460fe43ddc4695a10b9e2fe5cd35",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Contact sheet, the beat step1.tug: 12 frames from 0:36.00 to 0:42.23, draft tier, preview",
-      "time": "2026-11-25T19:31:24.883Z",
+      "caption": "Key step1-tug at review tier beside the approved image: one still frame 620 px wide, slot at the drop zone's rim, small hands with fingers, close shadow",
+      "time": "2026-11-25T20:08:57.299Z",
       "by": "tug2",
-      "from": "out/work/sheets/sheet-beat-step1_tug-preview-draft.jpg"
+      "from": "out/work/compare/compare-step1-tug.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Key step1-tug: approved on the left, this build on the right, draft tier, with crops of cursor, paper, paper.below, chip, card.glass",
-      "time": "2026-11-25T19:34:08.705Z",
+      "caption": "The beat step1.tug, 12 frames at draft: the camera does not move, the bite comes before the arms",
+      "time": "2026-11-25T20:08:57.529Z",
       "by": "tug2",
-      "from": "out/work/compare/compare-step1-tug.jpg"
+      "from": "out/work/sheets/sheet-beat-step1_tug-preview-draft.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "step1-tug beside the approved image: the arms are rubber hoses with slack (first version, b9f466d)",
-      "time": "2026-11-25T19:34:08.934Z",
+      "caption": "21.80, 21.92, 21.99, 22.10, 22.25 s: the cursor steps over the sheet, the sheet is jerked into the mouth, then the arms come out",
+      "time": "2026-11-25T20:08:57.756Z",
       "by": "tug2",
-      "from": "out/work/compare/compare-step1-tug.jpg"
+      "from": "out/work/looks/files/20261125200857-bite-strip.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Twelve frames across the tug with the new hoses",
-      "time": "2026-11-25T19:34:09.151Z",
+      "caption": "Sheet cursor-arms at draft beside the approved image: hoses with slack, hands with separate fingers",
+      "time": "2026-11-25T20:08:57.980Z",
       "by": "tug2",
-      "from": "out/work/sheets/sheet-beat-step1_tug-preview-draft.jpg"
+      "from": "out/work/compare/compare-cursor-arms.jpg"
     }
   ]
 }
