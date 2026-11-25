@@ -25,6 +25,7 @@ export interface Showcase {
   film(): { frameCount: number; units: { id: string; first: number; last: number }[]; beats: { id: string; first: number; last: number }[]; lines: { beat: string; first: number; last: number }[] }
   filmState(frameIndex: number): { unit: string; beat: string; camera: number[]; cursor: CursorState; events: { name: string; x: number; y: number; hitsCursor: boolean }[]; standIns: string[] }
   renderFilmFrame(frameIndex: number, tier: string): Promise<void>
+  useCheckpoint(unit: string, saved: unknown): void
   opening(): { frameCount: number; seconds: number; marks: { typing: number; level: number; build: number } }
   renderOpeningFrame(frameIndex: number, tier?: string): Promise<void>
   loop(): { frameCount: number; scene: string }
@@ -109,6 +110,9 @@ export function makeShowcase(app: App, ready: Promise<void>): Showcase {
       const parts = new Set<string>(['shell', 'cursor-body'])
       for (const s of frame.list) parts.add(s.part)
       return { unit, beat: b.id, camera: [...pose.eye, ...pose.target, pose.fov], cursor: app.cursorState(frame.cursor, pose), events, standIns: [...parts].sort() }
+    },
+    useCheckpoint(unit, saved) {
+      app.useCheckpoint(unit, saved)
     },
     async renderFilmFrame(frameIndex, tier) {
       await ready
