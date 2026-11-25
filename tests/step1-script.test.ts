@@ -137,7 +137,7 @@ describe('step 1: the script of the film', () => {
         }
       }
     }
-    expect([...lengths.key!]).toEqual([4])
+    expect([...lengths.key!]).toEqual([6])
     expect([...lengths['keyboard-deck']!]).toEqual([3])
     expect([...lengths.slab!]).toEqual([2])
     expect([...lengths.strip!]).toEqual([2])

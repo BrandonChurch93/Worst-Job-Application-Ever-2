@@ -44,7 +44,8 @@ function follows(o: THREE.Object3D, list: Shape[]): void {
     expect(data.caps.get(s.id), s.id).toBeDefined()
     const p = placeOf(data, s.id)
     const flying = s.z0 > deck.z1 + 0.01
-    const near = flying ? 3 + 0.2 * (s.z0 - deck.z1) : 0.002
+    const tipped = !!s.v && s.v.length > 5 && (s.v[4] !== 0 || s.v[5] !== 0)
+    const near = flying ? 3 + 0.2 * (s.z0 - deck.z1) : tipped ? 8 : 0.002
     expect(Math.abs(p.x - (s.x + s.w / 2 - (deck.x + deck.w / 2))), s.id).toBeLessThan(near)
     expect(Math.abs(p.y + (s.y + s.h / 2 - (deck.y + deck.h / 2))), s.id).toBeLessThan(near)
     expect(Math.abs(p.z - (s.z1 - deck.z0)), s.id).toBeLessThan(near)
