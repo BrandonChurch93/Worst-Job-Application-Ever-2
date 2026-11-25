@@ -1,35 +1,35 @@
 {
   "folder": "type",
-  "pushed": "2026-11-25T14:24:01.990Z",
-  "commit": "b75cb1e261cc3e919fa02890941efeb597d39d58",
+  "pushed": "2026-11-25T14:33:39.850Z",
+  "commit": "a5ec0f8b7383a8e2d916dabb9087861bebcf606a",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key step1-fire: approved on the left, this build on the right, review tier",
-      "time": "2026-11-25T14:20:26.183Z",
-      "by": "type",
-      "from": "out/work/compare/compare-step1-fire.jpg"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "Type beside the approved step1-fire among the real parts, six crops at native size: title, numerals, field value, legends, white on orange, chip (hd review, 20 degree lens)",
-      "time": "2026-11-25T14:24:00.420Z",
-      "by": "type",
-      "from": "out/work/study/look-type-crops-2.png"
-    },
-    {
-      "file": "look-3.jpg",
       "caption": "step1-fire beside the approved image, review tier, main 77d4dc7 with type",
       "time": "2026-11-25T14:24:00.646Z",
       "by": "type",
       "from": "out/work/study/look-compare-fire-2.jpg"
     },
     {
-      "file": "look-4.jpg",
+      "file": "look-2.jpg",
       "caption": "page-look beside the approved sheet, review tier (before the matte numeral floor)",
       "time": "2026-11-25T14:24:00.869Z",
       "by": "type",
       "from": "out/work/study/look-compare-page-look-2.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Still key-step1-fire-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-25T14:30:36.634Z",
+      "by": "type",
+      "from": "out/work/stills/key-step1-fire-hd-review.png"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Type at review tier, six crops beside the approved step1-fire (left approved, right ours), after the ink moved into the material colour so M4 reads the real ink",
+      "time": "2026-11-25T14:33:38.641Z",
+      "by": "type",
+      "from": "out/work/study/look-type-crops.png"
     }
   ]
 }
