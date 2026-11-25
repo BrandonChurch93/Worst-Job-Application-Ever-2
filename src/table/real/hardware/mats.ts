@@ -38,7 +38,7 @@ export const TONE = {
   rubberWorn: hex(0xbdb8aa),
   rubberBlack: hex(0x222223),
   orange: hex(0xc24400),
-  knob: hex(0xe85a10),
+  knob: [3.0, 0.3, 0.012] as RGB,
   orangeSeam: hex(0xa83a00),
   grey: hex(0x8e9398),
   greyDark: hex(0x5c6066),
