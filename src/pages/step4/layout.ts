@@ -10,7 +10,7 @@ import type { BannerPlan, Box, PopupPlan, SlabPlan, WeaponPlan } from '../../bos
 const heights = config.scale.heights
 const sizes = config.scale.sizes
 
-export const SLAB_TYPE = { font: 'inter-600', px: 22 }
+export const SLAB_TYPE = { font: 'inter-600', px: 26 }
 export const SLAB_KEYS = copy.step4.errorSlabs.map((_, i) => `copy:step4.errorSlabs.${i}`)
 export const POPUPS = copy.step4.popups.map((p, i) => ({ title: `copy:step4.popups.${i}.title`, buttons: p.buttons.map((_, j) => `copy:step4.popups.${i}.buttons.${j}`) }))
 export const BANNER_KEY = 'copy:step4.errorSlabs.2'
@@ -27,6 +27,7 @@ export interface Step4Layout {
   track: Box
   weapons: WeaponPlan
   defeated: Box
+  fold: number
 }
 
 export function makeLayout(): Step4Layout {
@@ -137,6 +138,7 @@ export function makeLayout(): Step4Layout {
   const b = (id: string): Box => boxOf(tree, id)
   return {
     tree, card: b('verify-card'), checkbox: b('verify-box'), checkRow: b('verify-row'), socket: b('submit'), cap: b('submit-cap'), track: b('health-track'),
-    weapons: { slabs: slabPlans, popups: popupPlans, banner, slabType: SLAB_TYPE, bannerType: BANNER_TYPE, titleType }, defeated: b('defeated')
+    weapons: { slabs: slabPlans, popups: popupPlans, banner, slabType: SLAB_TYPE, bannerType: BANNER_TYPE, titleType }, defeated: b('defeated'),
+    fold: cardY + cardH - pad - (b('verify-row').y + b('verify-row').h)
   }
 }

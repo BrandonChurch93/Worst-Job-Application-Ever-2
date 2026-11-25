@@ -7,10 +7,10 @@ import { button, buttonWidth, HEADER, LEFT, page, RIGHT, stepHead, TYPE } from '
 import { words } from '../../shell/words'
 import { frame, homePose, mixPose, smooth, toWorld } from '../../stage/camera'
 import { TURN_HALF } from '../../stage/stage'
-import type { CameraPose, DrawList, GagInfo, Hint, PageContext, PageLogic, Pointer, SheetFrame, StepIo, TableState } from '../../stage/types'
+import type { CameraPose, Collider, DrawList, GagInfo, Hint, PageContext, PageLogic, Pointer, SheetFrame, StepIo, TableState } from '../../stage/types'
 import take from '../../../cut/TABLE-TAKE.json'
 import { fixedShapes, movingShapes } from '../../table/draw'
-import { APRON_Y, BALL, LAST_Y, MARQUEE_Y, MID, OUTLET, PAGE_H, PORT, TH, TIERS, TIER_Y, floorZ, holdOf, railLength, railOf, table, tierAt } from '../../table/layout'
+import { APRON_Y, BALL, FLIP, LAST_Y, MARQUEE_Y, MID, OUTLET, PAGE_H, PORT, TH, TIERS, TIER_Y, floorZ, holdOf, railLength, railOf, table, tierAt } from '../../table/layout'
 import { Machine, prepare as startPhysics, type MachineState, type TableEvent } from '../../table/physics'
 
 export const prepare = (): Promise<void> => startPhysics()
@@ -24,7 +24,7 @@ const px = (v: number): number => v * BALL
 
 export const T = {
   arrive: 0.8, seal: 2.4, tube: 3.3, lightsDown: 4.0, powerOn: 5.2, atPlunger: 8.3, plunger: 9.4, onTable: 10.85, doorKick: 13.2, doorOpen: 14.1, lobbyEnd: 14.9, inboxOn: 18.3, inboxBy: 19.1,
-  drops: [20.0, 20.35, 20.7], eject: 21.4, officeOpen: 24.6, officeBy: 25.2, firedBy: 27.2, scoopKick: 28.5, flapOn: 29.6, flapBy: 30.8, highwayEnd: 32.7, spiralEnd: 34.2, streetOpen: 37.3, streetBy: 37.9,
+  drops: [20.0, 20.35, 20.7], eject: 21.4, officeOpen: 24.6, officeBy: 25.2, firedBy: 27.2, scoopKick: 28.5, flapOn: 29.6, flapBy: 30.8, highwayEnd: 32.7, spiralEnd: 34.6, streetOpen: 37.3, streetBy: 37.9,
   press: seconds - TURN_HALF - 0.5
 }
 const MODES: { at: number; tier: number; mode: number }[] = [
@@ -44,8 +44,8 @@ function buildLayout(): LayoutNode {
   const my = px(MARQUEE_Y)
   kids.push(node('marquee', 'marquee', [312, my + 24, 1296, 336], {
     part: 'marquee', shape: 'none', children: [
-      text('marquee-title', 'copy:step3.table.title', { font: 'inter-display-600', px: 128, align: 'centre' }, 960, my + 70, { part: 'marquee', on: 41, tone: 'inkLight' }),
-      text('marquee-score', 'runtime:score', { font: 'inter-600', px: 44, align: 'centre', wrap: 420 }, 960, my + 250, { part: 'displays', on: 41, tone: 'inkLight' })
+      text('marquee-title', 'copy:step3.table.title', { font: 'inter-display-600', px: 128, align: 'centre' }, 960, my + 70, { part: 'marquee', on: 41, tone: 'inkLight', states: ['on'] }),
+      text('marquee-score', 'runtime:score', { font: 'inter-600', px: 44, align: 'centre', wrap: 420 }, 960, my + 250, { part: 'displays', on: 41, tone: 'inkLight', states: ['on'] })
     ]
   }))
   for (let k = 0; k < 3; k++) {
@@ -59,7 +59,7 @@ function buildLayout(): LayoutNode {
     }
     for (const n of table.inserts) {
       if (n.tier !== k) continue
-      kids.push(text(`insert-label.${n.id}`, `copy:step3.table.modes.${n.mode}.insert`, { font: 'inter-500', px: 15, align: 'centre', wrap: 138, lead: 19 }, px(n.c[0]), px(n.c[1] + n.r + 0.08), { part: 'table-lights', on: f + 4, tone: light ? 'inkLight' : 'ink' }))
+      kids.push(text(`insert-label.${n.id}`, `copy:step3.table.modes.${n.mode}.insert`, { font: 'inter-500', px: 18, align: 'centre', wrap: 160, lead: 22 }, px(n.c[0]), px(n.c[1] + n.r + 0.08), { part: 'table-lights', on: f + 4, tone: light ? 'inkLight' : 'ink' }))
     }
     const d = table.displays[k]!
     for (const n of table.inserts) {
@@ -110,13 +110,15 @@ const NAMED: Record<string, CameraPose> = {
   'table-lobby': look('table-lobby', [MID + 3.6, Y0 + 7.9, 1.5], [MID - 0.5, Y0 + 4.6, -0.2]),
   'table-replyall': look('table-replyall', [MID + 2, Y1 + 15.5, 14], [MID + 1.2, Y1 + 5.4, -2]),
   'table-fired': look('table-fired', [8.2, Y2 + 8.0, 0.8], [4.8, Y2 + 3.5, -2.2]),
-  'table-save': look('table-save', [MID + 0.2, Y2 + 13.5, 9], [MID, Y2 + 8.4, -3])
+  'table-save': look('table-save', [MID, Y2 + 14.0, 10.5], [MID, Y2 + 6.8, -3])
 }
 const FILM: [number, string][] = [
-  [0, 'follow'], [5.0, 'table-wide'], [9.5, 'follow'], [11.2, 'tier-3'], [13.0, 'table-lobby'], [14.3, 'follow'], [20.6, 'table-replyall'], [22.6, 'follow'], [27.2, 'table-fired'], [28.8, 'follow'],
+  [0, 'follow'], [4.2, 'table-wide'], [8.2, 'follow'], [11.2, 'tier-3'], [13.0, 'table-lobby'], [14.3, 'follow'], [20.6, 'table-replyall'], [22.6, 'follow'], [27.2, 'table-fired'], [28.8, 'follow'],
   [31.0, 'rail'], [33.0, 'follow'], [34.3, 'table-save'], [36.6, 'follow']
 ]
 const BLEND = 0.6
+const WAKE = 0.35
+const LOW = 2.4
 
 export function makePage(): PageLogic {
   const layout = buildLayout()
@@ -125,6 +127,7 @@ export function makePage(): PageLogic {
   const start = { x: 1180, y: 760 }
   const port = { x: px(PORT.x), y: px(PORT.y) }
   const outlet = { x: px(OUTLET.x), y: px(OUTLET.y) }
+  const PORT_TOP = 28
   const lastScroll = PAGE_H - 1080
   let s = fresh()
   let m: Machine | null = null
@@ -134,7 +137,13 @@ export function makePage(): PageLogic {
   }
   const gagAt = (t: number): string => (beats.find((b) => t < b.to) ?? beats[beats.length - 1]!).id
   const ball = () => machine().balls[0]!
-  const lit = (): boolean[] => table.inserts.map((n) => MODES.some((x) => x.mode === n.mode && s.t >= x.at && s.phase !== 'wait' && s.phase !== 'pull'))
+  const powered = (): boolean => s.said.includes('power-on')
+  const drawn = (): number => {
+    const b = ball()
+    return b.mode === 'hold' && b.hold === 'plunger' && s.t < T.plunger ? Math.max(0, Math.min(1, (s.t - T.atPlunger) / (T.plunger - T.atPlunger - 0.15))) : 0
+  }
+  const glow = (): boolean[] => [0, 1, 2].map((k) => powered() && s.t >= T.powerOn + k * WAKE)
+  const lit = (): boolean[] => table.inserts.map((n) => (powered() && s.t >= T.powerOn + n.tier * WAKE && s.t < T.powerOn + n.tier * WAKE + 0.6) || MODES.some((x) => x.mode === n.mode && s.t >= x.at && s.phase !== 'wait' && s.phase !== 'pull'))
   const modeOf = (k: number): number | null => {
     let out: number | null = null
     if (s.phase === 'wait' || s.phase === 'pull') return null
@@ -143,9 +152,11 @@ export function makePage(): PageLogic {
   }
   const activeStates = (): string[] => {
     const out = [s.phase === 'result' ? 'result' : s.phase === 'wait' ? 'rest' : 'play']
+    if (powered()) out.push('on')
+    const lamps = glow()
     for (let k = 0; k < 3; k++) {
       const mode = modeOf(k)
-      out.push(mode === null ? `score${k}` : `mode${mode}`)
+      if (lamps[k]) out.push(mode === null ? `score${k}` : `mode${mode}`)
     }
     return out
   }
@@ -164,9 +175,10 @@ export function makePage(): PageLogic {
       const y = px(b.y)
       const inTier = b.y >= Y0 && b.y < APRON_Y && b.rail !== 'feed'
       if (b.rail === 'launch' && b.y < Y0 + TH) return { scroll: px(Y0), floor: px(floorZ(0)) }
-      if (b.rail === 'feed' && b.y > Y2 + 2) return { scroll: px(Y2), floor: px(floorZ(2)) }
+      if (b.rail === 'feed' && b.y > Y2 + 2) return { scroll: px(Y2 + LOW), floor: px(floorZ(2)) }
       return { scroll: Math.max(0, Math.min(lastScroll, y - 540)), floor: inTier ? px(floorZ(tierAt(b.y))) : 0 }
     }
+    if (b.mode === 'hold' && b.hold === 'plunger') return { scroll: px(Y2 + LOW), floor: px(floorZ(2)) }
     const k = b.mode === 'rail' && b.rail.startsWith('chute.') ? TIERS.indexOf(b.rail.slice(6) as never) + 1 : b.mode === 'rail' && b.rail.startsWith('lift.') ? tierAt(railOf(b.rail).points[3]![1]) : tierAt(Math.max(Y0, Math.min(APRON_Y - 0.01, b.y)))
     return { scroll: px(TIER_Y[k]!), floor: px(floorZ(k)) }
   }
@@ -361,7 +373,7 @@ export function makePage(): PageLogic {
         for (const e of events) emitTable(io, e)
         s.score = mc.score
         const b = ball()
-        io.cursor.place(px(b.x), px(b.y), px(b.z))
+        io.cursor.place(px(b.x), px(b.y), px(b.z) + BALL / 2)
         if (b.mode === 'hold' && b.hold === 'outlet') {
           s.opened += dt
           if (s.opened >= 0.2) {
@@ -396,6 +408,10 @@ export function makePage(): PageLogic {
           if (s.hold > 0.25) s.done = true
         }
       }
+      if (s.phase !== 'sealed') {
+        const on = [port, outlet].some((c) => Math.hypot(io.cursor.x + 8 - c.x, io.cursor.y + 14 - c.y) < px(OUTLET.ring) / 2 + 12)
+        io.cursor.setGround(on ? PORT_TOP : 0)
+      }
       const to = target()
       const rate = Math.min(1, dt / (live.tierTravelSeconds / 4))
       const cap = 4200 * dt
@@ -415,7 +431,7 @@ export function makePage(): PageLogic {
       const mc = machine()
       drawLayout(out, layout, { states: activeStates(), runtime: { score: scoreText() }, over: s.pressed ? { 'go-cap': { z1: config.scale.heights.button - config.scale.heights.keyTravel } } : {} })
       for (const shape of fixedShapes()) out.push(shape)
-      for (const shape of movingShapes(mc, lit(), false)) out.push(shape)
+      for (const shape of movingShapes(mc, lit(), false, glow(), drawn())) out.push(shape)
     },
     scroll: () => s.scroll,
     view: () => (s.floor === 0 ? null : follow()),
@@ -433,7 +449,7 @@ export function makePage(): PageLogic {
     script(time: number): Pointer {
       const flipLeft = held('L', time)
       const flipRight = held('R', time)
-      if (time < T.press - 1.2) {
+      if (time < T.streetBy) {
         const u = smooth(Math.min(1, Math.max(0, (time - TURN_HALF - 0.1) / 1.2)))
         return { x: HANDOFF.x + (port.x - 40 - HANDOFF.x) * u, y: HANDOFF.y + (port.y + 30 - HANDOFF.y) * u, down: false, flipLeft, flipRight }
       }
@@ -480,11 +496,41 @@ export function makePage(): PageLogic {
         sealed: [...table.sealed]
       }
     },
+    colliders(): Collider[] {
+      const mc = machine()
+      const out: Collider[] = []
+      const add = (id: string, kind: Collider['kind'], tier: number, points: number[], o: { r?: number; closed?: boolean; z?: number } = {}): void => {
+        const on = Math.min(2, Math.max(0, tier))
+        const c: Collider = { id, kind, tier: TIERS[tier] ?? 'machine', points: points.map((v) => px(v)), z: o.z ?? px(floorZ(on)) }
+        if (o.r !== undefined) c.r = px(o.r)
+        if (o.closed) c.closed = true
+        out.push(c)
+      }
+      const corners = (b: number[]): number[] => [b[0]!, b[1]!, b[0]! + b[2]!, b[1]!, b[0]! + b[2]!, b[1]! + b[3]!, b[0]!, b[1]! + b[3]!]
+      for (const g of table.segs) add(g.id, 'wall', g.tier, [...g.a, ...g.b])
+      for (const p of table.posts) add(p.id, 'post', p.tier, [...p.c], { r: p.r })
+      for (const b of table.bumpers) add(b.id, 'bumper', b.tier, [...b.c], { r: b.r })
+      for (const g of table.slings) add(g.id, 'sling', g.tier, [...g.a, ...g.b, ...g.c], { closed: true })
+      for (const m of table.models) if (m.solid) add(m.id, 'model', m.tier, m.round ? [m.box[0] + m.box[2] / 2, m.box[1] + m.box[3] / 2] : corners(m.box), m.round ? { r: m.box[2] / 2 } : { closed: true })
+      for (const t of table.targets) if (t.kind !== 'drop' || !mc.down[t.index]) add(t.id, 'target', t.tier, corners(t.box), { closed: true })
+      for (const f of table.flippers) {
+        const a = (mc.flipperAngle(f.side) * Math.PI) / 180
+        const dir = f.side === 'left' ? 1 : -1
+        add(f.id, 'flipper', f.tier, [...f.pivot, f.pivot[0] + dir * FLIP.length * Math.cos(a), f.pivot[1] + FLIP.length * Math.sin(a)], { r: FLIP.radius })
+      }
+      for (const h of table.holds) add(h.id, 'hold', h.tier, [...h.c], { r: h.r })
+      for (const o of table.openings) add(o.id, 'opening', o.tier, [...o.a, ...o.b])
+      for (const r of table.rails) add(r.id, 'rail', tierAt(r.points[0]![1]), r.points.flatMap((q) => [q[0], q[1]]), { z: px(r.points.reduce((sum, q) => sum + q[2], 0) / r.points.length) })
+      mc.balls.forEach((b, i) => {
+        if (b.mode !== 'none') add(i === 0 ? 'ball.clear' : `ball.steel.${i}`, 'body', b.tier, [b.x, b.y], { r: 0.5, z: px(b.z) })
+      })
+      return out
+    },
     sheet(id: string): SheetFrame | null {
       if (id === 'clear-ball') {
         const mc = machine()
         const list: DrawList = []
-        drawLayout(list, layout, { states: ['play', 'mode0', 'score0', 'score2'], runtime: { score: scoreText() } })
+        drawLayout(list, layout, { states: ['play', 'on', 'mode0', 'score0', 'score2'], runtime: { score: scoreText() } })
         for (const shape of fixedShapes()) list.push(shape)
         for (const shape of movingShapes(mc, table.inserts.map(() => true), true)) list.push(shape)
         const f = px(floorZ(1))
@@ -494,12 +540,12 @@ export function makePage(): PageLogic {
           { x: MID + 1.3, y: Y1 + 5.95, lift: 0, pose: { acting: 'shocked', damage: ['flattened'] } }
         ]
         spots.forEach((p, i) => list.push({ id: `sheet-ball-${i + 1}`, part: 'clear-ball', kind: 'ball', x: px(p.x - 0.5), y: px(p.y - 0.5), w: BALL, h: BALL, z0: f + px(p.lift), z1: f + px(p.lift) + BALL, tone: 'glass' }))
-        return { list, cursors: spots.map((p) => restPose(px(p.x), px(p.y), { z: f + px(p.lift), inBall: true, taken: true, ...p.pose })), view: frame({ x: px(6.6), y: px(Y1 + 4.7), w: px(6.4), h: px(5.2) }, 1, f, fov('sheet')) }
+        return { list, cursors: spots.map((p) => restPose(px(p.x), px(p.y), { z: f + px(p.lift) + BALL / 2, inBall: true, taken: true, ...p.pose })), view: frame({ x: px(6.6), y: px(Y1 + 4.7), w: px(6.4), h: px(5.2) }, 1, f, fov('sheet')) }
       }
       if (id !== 'table-map') return null
       const mc = machine()
       const list: DrawList = []
-      drawLayout(list, layout, { states: ['play', 'mode5', 'mode0', 'mode3'], runtime: { score: scoreText() } })
+      drawLayout(list, layout, { states: ['play', 'on', 'mode5', 'mode0', 'mode3'], runtime: { score: scoreText() } })
       for (const shape of fixedShapes()) list.push(shape)
       for (const shape of movingShapes(mc, table.inserts.map(() => true), true)) list.push(shape)
       const top = px(MARQUEE_Y)

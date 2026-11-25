@@ -32,8 +32,8 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | `pinball.replyAll` | 86.000 | 5160 | 5579 | `ball-drop` | 87.000 | 5220 | yes |
 | `pinball.fired` | 93.000 | 5580 | 5789 | `scoop-kick` | 95.508 | 5730 | yes |
 | `pinball.highway` | 96.500 | 5790 | 6059 | `ramp-roll` | 97.996 | 5879 | yes |
-| `pinball.save` | 101.000 | 6060 | 6239 | `flipper-save` | 102.121 | 6127 | yes |
-| `pinball.drain` | 104.000 | 6240 | 6539 | `drain` | 105.517 | 6331 | yes |
+| `pinball.save` | 101.000 | 6060 | 6239 | `flipper-save` | 102.529 | 6151 | yes |
+| `pinball.drain` | 104.000 | 6240 | 6539 | `drain` | 104.875 | 6292 | yes |
 | `boss.verify` | 109.000 | 6540 | 6839 | `checkbox` | 112.800 | 6768 | yes |
 | `boss.unfold` | 114.000 | 6840 | 7079 | `unfold` | 115.708 | 6942 | yes |
 | `boss.slabs` | 118.000 | 7080 | 7499 | `slab-fire` | 118.862 | 7131 | yes |
@@ -48,7 +48,7 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 
 ## Events with a cue
 
-679 of the film's 679 events have a cue in the table of events to cues. A cue starts on the frame of its event.
+677 of the film's 677 events have a cue in the table of events to cues. A cue starts on the frame of its event.
 
 | Time s | Frame | Beat | Event | Cue | Hits the cursor |
 | --- | --- | --- | --- | --- | --- |
@@ -534,14 +534,12 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | 96.750 | 5805 | `pinball.highway` | `flasher` | `flasher` | no |
 | 97.996 | 5879 | `pinball.highway` | `ramp-roll` | `ramp-roll` | no |
 | 99.717 | 5983 | `pinball.highway` | `spiral` | `spiral` | no |
-| 102.121 | 6127 | `pinball.save` | `flipper` | `flipper` | no |
-| 102.121 | 6127 | `pinball.save` | `flipper-save` | `flipper` | no |
-| 103.013 | 6180 | `pinball.save` | `flasher` | `flasher` | no |
-| 104.487 | 6269 | `pinball.drain` | `flipper` | `flipper` | no |
-| 105.517 | 6331 | `pinball.drain` | `drain` | `drain` | no |
-| 106.704 | 6402 | `pinball.drain` | `ball-open` | `ball-open` | yes |
-| 106.704 | 6402 | `pinball.drain` | `flatten` | `flatten` | yes |
-| 107.208 | 6432 | `pinball.drain` | `peel-up` | `peel-up` | yes |
+| 102.529 | 6151 | `pinball.save` | `flipper` | `flipper` | no |
+| 102.529 | 6151 | `pinball.save` | `flipper-save` | `flipper` | no |
+| 104.875 | 6292 | `pinball.drain` | `drain` | `drain` | no |
+| 106.063 | 6363 | `pinball.drain` | `ball-open` | `ball-open` | yes |
+| 106.063 | 6363 | `pinball.drain` | `flatten` | `flatten` | yes |
+| 106.567 | 6394 | `pinball.drain` | `peel-up` | `peel-up` | yes |
 | 108.000 | 6480 | `pinball.drain` | `button-press` | `button-press` | no |
 | 108.500 | 6510 | `pinball.drain` | `page-turn` | `page-turn` | no |
 | 109.950 | 6597 | `boss.verify` | `step` | `step` | no |
@@ -555,9 +553,9 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | 112.683 | 6761 | `boss.verify` | `step` | `step` | no |
 | 112.800 | 6768 | `boss.verify` | `checkbox` | `checkbox` | no |
 | 112.800 | 6768 | `boss.verify` | `step` | `step` | no |
-| 113.313 | 6798 | `boss.verify` | `step` | `step` | no |
-| 113.417 | 6805 | `boss.verify` | `step` | `step` | no |
-| 113.529 | 6811 | `boss.verify` | `step` | `step` | no |
+| 113.158 | 6789 | `boss.verify` | `step` | `step` | no |
+| 113.250 | 6795 | `boss.verify` | `step` | `step` | no |
+| 113.346 | 6800 | `boss.verify` | `step` | `step` | no |
 | 114.621 | 6877 | `boss.unfold` | `step` | `step` | no |
 | 114.758 | 6885 | `boss.unfold` | `step` | `step` | no |
 | 114.912 | 6894 | `boss.unfold` | `step` | `step` | no |
@@ -604,7 +602,7 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | 126.183 | 7571 | `boss.popups` | `dart-fire` | `dart-fire` | no |
 | 126.321 | 7579 | `boss.popups` | `dart-hit` | `dart-hit` | no |
 | 126.463 | 7587 | `boss.popups` | `dart-fire` | `dart-fire` | no |
-| 126.492 | 7589 | `boss.popups` | `slab-drop` | `slab-drop` | no |
+| 126.471 | 7588 | `boss.popups` | `slab-drop` | `slab-drop` | no |
 | 126.600 | 7596 | `boss.popups` | `popup` | `popup` | no |
 | 126.600 | 7596 | `boss.popups` | `dart-hit` | `dart-hit` | no |
 | 126.721 | 7603 | `boss.popups` | `dart-hit` | `dart-hit` | no |

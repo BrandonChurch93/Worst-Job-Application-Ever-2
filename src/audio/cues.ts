@@ -65,10 +65,14 @@ export const eventCues: Record<string, string> = {
   'hold-music': 'hold-music',
   'letter-drop': 'letter-drop',
   'stamp': 'stamp',
+  'share': 'button-press',
   'ui-tick': 'ui-tick',
   'key-tap': 'key-tap',
   'ui-send': 'ui-send'
 }
+
+// Events that are left without a sound on purpose.
+export const silentEvents: string[] = ['popup-close']
 
 // An event that ends a sound that would otherwise run on. A page turn ends every running loop but the room tone.
 export const stopEvents: Record<string, string[]> = {
@@ -206,4 +210,25 @@ export function pickVariant(cue: string, count: number, variants: number, has: (
   if (!ids.length) return null
   const at = variantAt(count, ids.length)
   return { id: ids[at.variant]!, cents: v > 1 ? PITCH_CENTS[count % PITCH_CENTS.length]! : 0 }
+}
+
+export interface OpeningPlan {
+  prompt: string
+  charsPerSecond: number
+  levelOpens: number
+  levelPicks: number
+  sendPressed: number
+  linesDone: number[]
+}
+
+// The sounds of film A's prompt opening, from its own times: a key tap for each letter as it shows, a tick when the level control opens,
+// when the level is picked and as each line of the build screen is ticked off, and the send tone as the send control goes down.
+export function openingEvents(o: OpeningPlan, fps: number): { name: string; frame: number; x: number }[] {
+  const frame = (t: number) => Math.max(0, Math.ceil(t * fps - 1e-6))
+  const out: { name: string; frame: number; x: number }[] = []
+  for (let i = 0; i < o.prompt.length; i++) out.push({ name: 'key-tap', frame: frame(i / o.charsPerSecond), x: 960 })
+  for (const t of [o.levelOpens, o.levelPicks]) out.push({ name: 'ui-tick', frame: frame(t), x: 960 })
+  out.push({ name: 'ui-send', frame: frame(o.sendPressed), x: 960 })
+  for (const t of o.linesDone) out.push({ name: 'ui-tick', frame: frame(t), x: 960 })
+  return out
 }

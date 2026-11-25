@@ -92,6 +92,11 @@ if (fs.existsSync(path.join(dist, 'review.html'))) {
       const broken = imgs.filter((i) => !i.naturalWidth).map((i) => i.getAttribute('src'))
       const links = [...document.querySelectorAll('#open a')].map((l) => l.getAttribute('href'))
       const played = [...document.querySelectorAll('video, audio')]
+      for (const m of played) {
+        if (m.preload !== 'none' || m.readyState >= 1) continue
+        m.preload = 'metadata'
+        m.load()
+      }
       await Promise.all(played.map((m) => (m.readyState >= 1 || m.error ? null : new Promise((done) => { m.onloadedmetadata = m.onerror = done; setTimeout(done, 30000) }))))
       const media = played.map((m) => ({ src: m.getAttribute('src'), seconds: Number.isFinite(m.duration) ? Math.round(m.duration * 100) / 100 : null, error: m.error ? m.error.code : null }))
       return { images: imgs.length, broken, links, media, parts: [...document.querySelectorAll('main section')].map((s) => s.id) }

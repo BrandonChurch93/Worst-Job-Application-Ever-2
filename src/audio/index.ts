@@ -3,8 +3,9 @@
 // The index of the sound files is part of the build, so the engine knows from the start whether there is any sound to play.
 import { config } from '../config'
 import { narration } from '../copy'
+import { openingFrames, openingTimes } from '../film/opening'
 import { wallSeconds } from '../ui/clock'
-import { eventCues, filmLineId, liveKeysFor, liveLineId, loopCues, pickVariant, stopEvents } from './cues'
+import { eventCues, filmLineId, liveKeysFor, liveLineId, loopCues, openingEvents, pickVariant, stopEvents } from './cues'
 import { DUCK, LIVE, db } from './levels'
 import { duckSpans, Narrator, type Booking } from './narrator'
 import shipped from '../../public/audio/index.json'
@@ -22,6 +23,8 @@ export interface SoundApi {
   event(e: { name: string; x: number; y: number; hitsCursor: boolean }, mode: SoundMode): void
   beat(id: string, mode: SoundMode): void
   trigger(name: string): void
+  opening(from: number, to: number): void
+  start(): void
   stop(): void
   state(): SoundState
   backend(): 'graph' | 'elements' | 'none'
@@ -43,6 +46,7 @@ interface Backend {
   readonly kind: 'graph' | 'elements'
   now(): number
   resume(): void
+  hold(on: boolean): boolean
   add(id: string, bytes: ArrayBuffer, mime: string): Promise<boolean>
   play(id: string, o: PlayOptions): Voice | null
   duck(spans: { from: number; to: number }[], low: number): void
@@ -61,10 +65,18 @@ function graphBackend(Maker: ContextMaker): Backend {
   for (const b of Object.values(buses)) b.connect(out)
   const buffers = new Map<string, AudioBuffer>()
   const voices = new Set<Voice>()
+  let held = false
+  const resume = () => { if (!held && ctx.state !== 'running') void ctx.resume().catch(() => undefined) }
+  if (typeof window.addEventListener === 'function') for (const name of LIVE.wakeEvents) window.addEventListener(name, resume, true)
   return {
     kind: 'graph',
     now: () => ctx.currentTime,
-    resume: () => { if (ctx.state !== 'running') void ctx.resume().catch(() => undefined) },
+    resume,
+    hold(on) {
+      held = on
+      void (on ? ctx.suspend() : ctx.resume()).catch(() => undefined)
+      return true
+    },
     add: (id, bytes) => new Promise<boolean>((done) => {
       const ok = (b: AudioBuffer) => {
         buffers.set(id, b)
@@ -164,6 +176,7 @@ function elementBackend(): Backend {
     kind: 'elements',
     now: () => wallSeconds(),
     resume: () => undefined,
+    hold: () => false,
     add: (id, bytes, mime) => new Promise<boolean>((done) => {
       const el = new Audio()
       el.preload = 'auto'
@@ -262,6 +275,11 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
   let isMuted = false
   let level = 1
   let tone: Voice | null = null
+  let flowing = true
+  let lead = false
+  let filmAt = 0
+  let aheadTo = -1
+  let prelude: { at: number; cue: string; x: number }[] | null = null
   const listeners: (() => void)[] = []
   const loaded = new Set<string>()
   const lengths = new Map<string, number>()
@@ -278,6 +296,16 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
     for (const l of listeners) l()
   }
   const applyLevel = () => backend?.master(isMuted ? 0 : level)
+  let watching = false
+  const watchPage = () => {
+    if (watching || typeof document === 'undefined') return
+    watching = true
+    document.addEventListener('visibilitychange', () => {
+      if (!backend) return
+      const away = document.visibilityState === 'hidden'
+      if (!backend.hold(away) && away) api.stop()
+    })
+  }
 
   async function load(b: Backend): Promise<void> {
     const keep = (id: string, secs: number) => (ok: boolean) => {
@@ -300,7 +328,7 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
   }
 
   const startTone = () => {
-    if (state !== 'ready' || !backend || tone || !loaded.has('room-tone')) return
+    if (state !== 'ready' || !backend || tone || !flowing || lead || !loaded.has('room-tone')) return
     tone = backend.play('room-tone', { bus: 'tone', when: backend.now(), cents: 0, pan: 0, loop: true })
   }
 
@@ -309,11 +337,11 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
     running.delete(cue)
   }
 
-  const playCue = (cue: string, x: number) => {
+  const playCue = (cue: string, x: number, when?: number) => {
     const b = backend!
-    const now = b.now()
+    const now = Math.max(when ?? 0, b.now())
     const last = lastPlay.get(cue)
-    if (last !== undefined && now - last < LIVE.sameCueSeconds) return
+    if (last !== undefined && Math.abs(now - last) < LIVE.sameCueSeconds) return
     lastPlay.set(cue, now)
     const spec = audio.sfx.find((s) => s.id === cue) as { id: string; seconds: number; variants?: number } | undefined
     const count = counts.get(cue) ?? 0
@@ -332,6 +360,21 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
     if (loop) stopCue(cue)
     const voice = b.play(pick.id, { bus: 'fx', when: now, cents: pick.cents, pan, loop, until, fade })
     if (voice) running.set(cue, [...(running.get(cue) ?? []).slice(-7), voice])
+  }
+
+  const ahead = (from: number) => {
+    if (state !== 'ready' || !backend || !flowing) return
+    const fps = config.film.fps
+    if (!prelude) {
+      const t = openingTimes()
+      const plan = { prompt: config.intro.prompt, charsPerSecond: config.intro.charsPerSecond, levelOpens: t.levelOpens, levelPicks: t.levelPicks, sendPressed: t.held, linesDone: t.lines.map((l) => l.done) }
+      prelude = openingEvents(plan, fps).map((e) => ({ at: e.frame / fps, cue: eventCues[e.name] ?? '', x: e.x }))
+    }
+    const lo = aheadTo < 0 ? from : aheadTo
+    const hi = filmAt + LIVE.aheadSeconds
+    const now = backend.now()
+    for (const s of prelude) if (s.cue && s.at >= lo && s.at < hi) playCue(s.cue, s.x, now + s.at - filmAt)
+    aheadTo = Math.max(lo, hi)
   }
 
   const reduck = () => {
@@ -369,6 +412,7 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
           backend = null
         }
         setState(ok ? 'ready' : 'silent')
+        if (ok) watchPage()
         startTone()
       })()
       return unlocking
@@ -386,6 +430,7 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
     event(e, mode) {
       if (state !== 'ready' || !backend) return
       backend.resume()
+      flowing = true
       startTone()
       for (const cue of stopEvents[e.name] ?? []) stopCue(cue)
       if (e.name === 'page-turn') for (const cue of loopCues) if (cue !== 'room-tone') stopCue(cue)
@@ -395,10 +440,11 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
     },
     beat(id, _mode) {
       if (state !== 'ready' || !backend) return
+      flowing = true
+      startTone()
       const b = config.film.beats.find((x) => x.id === id)
       const lines = film[id]
       if (!b || !lines) return
-      startTone()
       const now = backend.now()
       const wanted = lines.map((l, i) => ({ id: filmLineId(id, i), offset: l.at * (b.to - b.from), seconds: lengths.get(filmLineId(id, i)) ?? 0 })).filter((l) => loaded.has(l.id))
       const plan = narrator.beat(now, id, wanted)
@@ -424,7 +470,31 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
       speak(booking)
       reduck()
     },
+    opening(from, to) {
+      lead = to < openingFrames() / config.film.fps
+      filmAt = to
+      if (lead && tone) {
+        tone.stop(0.03)
+        tone = null
+      }
+      if (state !== 'ready' || !backend || to <= from) return
+      backend.resume()
+      flowing = true
+      startTone()
+      ahead(from)
+    },
+    start() {
+      flowing = true
+      if (state !== 'ready' || !backend) return
+      backend.resume()
+      startTone()
+      if (lead) ahead(filmAt)
+    },
     stop() {
+      flowing = false
+      lead = false
+      aheadTo = -1
+      lastPlay.clear()
       narrator.clear()
       speaking.clear()
       running.clear()

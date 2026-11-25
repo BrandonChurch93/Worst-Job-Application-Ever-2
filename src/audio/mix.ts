@@ -1,5 +1,7 @@
 // The film's sound, laid out from the events of the film. Pure arithmetic: the same inputs give the same samples.
 import { eventCues, loopCues, pickVariant, stopEvents } from './cues'
+
+export { openingEvents, type OpeningPlan } from './cues'
 import { master, repitch, type Mastered, type Sound } from './dsp'
 import { DUCK, LIVE, MIX, db } from './levels'
 import { duckAt, duckSpans } from './narrator'
@@ -19,6 +21,12 @@ export interface MixInput {
   holdMusicSeconds: number
   targetLufs: number
   truePeakDb: number
+  toneFromFrame?: number
+}
+
+// Film A is the opening and then film B unchanged: every event and line of film B moves back by the opening's frames.
+export function behindOpening<T extends { frame: number }>(list: T[], openingFrames: number): T[] {
+  return list.map((e) => ({ ...e, frame: e.frame + openingFrames }))
 }
 
 export interface Placed { kind: 'cue' | 'line' | 'tone'; event: string; cue: string; id: string; frame: number; sample: number; seconds: number; cents: number; pan: number }
@@ -138,11 +146,13 @@ export function mixFilm(o: MixInput): MixResult {
     const n = room.channels[0]!.length
     const l = room.channels[0]!
     const r = room.channels[1] ?? l
-    for (let i = 0; i < length; i++) {
-      tone[0]![i] = l[i % n]!
-      tone[1]![i] = r[i % n]!
+    const first = Math.min(length, at(o.toneFromFrame ?? 0))
+    for (let i = first; i < length; i++) {
+      const g = first > 0 ? Math.min(1, (i - first) / fadeLen) : 1
+      tone[0]![i] = l[(i - first) % n]! * g
+      tone[1]![i] = r[(i - first) % n]! * g
     }
-    placed.push({ kind: 'tone', event: 'always', cue: 'room-tone', id: 'room-tone', frame: 0, sample: 0, seconds: o.seconds, cents: 0, pan: 0 })
+    placed.push({ kind: 'tone', event: 'always', cue: 'room-tone', id: 'room-tone', frame: o.toneFromFrame ?? 0, sample: first, seconds: (length - first) / sr, cents: 0, pan: 0 })
   } else missingCues.add('room-tone')
 
   const spans = duckSpans(spoken, DUCK.attackSeconds, DUCK.releaseSeconds)
