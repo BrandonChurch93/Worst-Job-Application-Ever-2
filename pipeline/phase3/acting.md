@@ -48,3 +48,28 @@ Read from close looks at 1920 px wide (film frames cut round the cursor) and fro
 - Round 4, the Builder's word of 20:07Z (a pose has to change the outline by a third to be read at 20 px): after the hit the recoil lasts 0.62 s, and from 6.0 s to 6.33 s the arrow is held knocked over on its side (turn 0.52, lean 0.34) on the hot key with the hole in view. At 6.0 s itself it is still upright (spin 0.12). It leaves at 6.335 s; the next shot lands on H at 6.433 s, 92 px behind it. The beat sheet of the first name takes a frame at 6.33 s, so the held pose is on it.
 - A red I made and could not clear in my files: `npm run measure -- --unit step1` gives M9 red on 8107d4f's parent a6a6029 (22 key caps in the still `step1-fire` stand 44.5 to 45.6 px above the page against 36 to 42 within 2). The page makes the caps within 460 px of a hit hop for up to 0.38 s, and the hit is now 0.19 s before the key frame. A hit early enough for the hop to be over (by 5.62 s) would take the fifth letter out of the field before 6.0 s. The Builder has the three ways out (accept; `THUD.shake` 0.4 to 0.2 in the page, not my file; the hit back after 6.0 s).
 
+
+## Fix round 3
+
+Owner: acting_closer, branch `agent/acting3`, 21:23Z to 22:50Z on 2026-11-25. Round 5's issues R9-1 1 to 5, 7 to 10, 12; R9-2 3 to 7, 9, 10, 14; R4-2 1; R1-2 15.
+
+### What a sheet of twelve frames sees
+
+MEASURED (`npm run sheet -- --beat step1.<beat> --tier draft`): the frames of a beat stand at its start plus k times (its length less one frame) over 11. For the first name that is every 0.72 s (2.0, 2.72, 3.45, 4.17, 4.90, 5.62, 6.35, 7.07, 7.80, 8.52, 9.25, 9.97), for the last name and the email every 0.45 s, for the keyboard every 0.18 s, for the shredded beat every 0.34 s. At the sheet's size the arrow is about 20 px tall. A pose is read only when it is held across one of those instants and changes the outline as a whole: where it stands, how tall it is, which way it is laid.
+
+### Decisions
+
+- No event of the page moved. MEASURED: the list of every event of the film of step 1 except `bolt-hit` and `step`, with its step, is the same on `main` 9443fc4 and on this branch (81 events, `diff` empty; the list is written by a trace test kept out of the repo).
+- The first second of `step1.keyboard` is the stage's set-down from the air (frozen): the body stands on the page from 1.0 s and the tap is at 1.5 s. In that half second: one long strut hop past the field (`STRUT`, 0.17 s, a squash where it lands), drawn back and up (`tap`, from 1.32 s), struck long into the field at 1.5 s, a proud settle, and at 1.64 s, when the board comes up, a new `rear`: a start upward, then packed down small and laid back, held to 2.1 s (squash 0.63 to 0.79, lean and turn 0.55 to 0.7 together).
+- Confident stands taller and leans further into its way (`FEEL.confident`: stretch 1.12, lean 0.22, puff 0.3). Proud is taller and fuller still (1.18, 0.3, 0.9): the cocky stand on H from 4.7 s to the hit is a held pose of its own and lies on the frames of 4.90 s and 5.62 s.
+- The hit (5.813 s): one short frame squashed and bent away (`HIT.bend` 0.8 to 0.5 so the outline stays whole), then tall and laid back the way the blow went, and held there to 6.33 s. Before, the body went over to 0.62, came back to 0.12 at 6.0 s and went over again to 0.52: three turns in 0.3 s, which is what read as torn. Now the turn goes out once (`TUMBLE.far` 0.8 to 0.6, for the squash only, `share` 0.145 to 0.08) and settles: at 6.0 s speed 19 px/s, spin 0.11 (the script's test of the key frame wants under 0.2), lean 0.36 on its way to 0.45, squash 1.32.
+- The dodge after the hit (`snap`) is held 0.72 s, to the duck at 7.14 s, so it lies on the frame of 7.07 s.
+- The last name: at each hunt the keys throw it (`flinch` 0.03 s after the key, a toss of `LAST.toss`), it is in the air over the bare page for about 0.3 s, and the three holds differ: a rear, a double take, then temper (a new reaction `fume`: packed down, swollen, pushed forward over its tip, shaking). After the hunts each stomp is answered by `fume` in place of a flinch, and Enter by a new `stamp`.
+- The email: after Enter it is nervous, still on the key, for 0.45 s before the first slab hangs (the page sets proud when the key is struck; the cue comes 0.04 s after). It turns scared when it sees the first slab, so the dives go at a scared body's pace. The wait after the first key (`dart`) now ends upright and still, so the tremble and the beads are what is seen, not a dodge.
+- The end: the pile stirs in its last 0.42 s on the page (`STIR`: each strip at rest twitches about its place and lifts a little, more and more), then stands. The cower at the wiped form is gone: it turned the body 50 degrees and squashed it to 0.63, and with the melt that was the blob. Exhausted is now stretch 0.8, lean 0.3, bend 0.4, melt 0.4 (was 0.74, 0.4, 0.55, 0.6): it sags and stays an arrow, then drags itself in two pulls.
+- The paper fixer was asked to hold the tug frame through the mend and declined (a test holds the camera at home from the form's message at 28.96 s, and the message would be cut). The stand and the zip play at home size.
+
+### Tests changed, each for a number of mine
+
+- `tests/acting-wait.test.ts`: the third hold of the last name is temper now, leaned forward (over 0.3), not a rear.
+- `tests/cursor-act-knock.test.ts`: the body turns the way the bolt went within 0.06 s (over 0.2, was over 0.5 within 0.12 s) and then holds laid back that way.

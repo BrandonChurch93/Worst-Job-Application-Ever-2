@@ -5,7 +5,7 @@ import { FEEL, FEEL_EASE, FEEL_KEYS, freshFeel, reactionPose, type Feel } from '
 import { OUTLINE, STRIP_AXIS, UNIT } from './contract'
 
 export const ACTING = ['plain', 'confident', 'nervous', 'shocked', 'angry', 'scared', 'proud', 'exhausted'] as const
-export const REACTIONS = ['anticipate', 'flinch', 'doubleTake', 'recoil', 'dustOff', 'jump', 'duck', 'startle', 'cower', 'rear', 'snap', 'tap', 'dart'] as const
+export const REACTIONS = ['anticipate', 'flinch', 'doubleTake', 'recoil', 'dustOff', 'jump', 'duck', 'startle', 'cower', 'rear', 'snap', 'tap', 'dart', 'fume', 'stamp'] as const
 export const DAMAGE = ['burn', 'shredded', 'reassembled', 'flattened', 'scorched'] as const
 export type Acting = (typeof ACTING)[number]
 export type Reaction = (typeof REACTIONS)[number]
@@ -17,7 +17,7 @@ const dt = 1 / stepHz
 const hover = config.scale.heights.cursorHover
 const healSeconds = config.cursor.damageHealSeconds
 const takenMax = config.live.controlTakenMaxSeconds
-const REACTION_SECONDS: Record<Reaction, number> = { anticipate: 0.35, flinch: 0.3, doubleTake: 0.7, recoil: 0.62, dustOff: 0.9, jump: 0.5, duck: 0.55, startle: 0.42, cower: 0.62, rear: 0.6, snap: 0.5, tap: 0.42, dart: 0.34 }
+const REACTION_SECONDS: Record<Reaction, number> = { anticipate: 0.35, flinch: 0.3, doubleTake: 0.7, recoil: 0.62, dustOff: 0.9, jump: 0.5, duck: 0.55, startle: 0.42, cower: 0.62, rear: 0.6, snap: 0.8, tap: 0.42, dart: 0.34, fume: 0.44, stamp: 0.5 }
 // Layer 1, where it goes. rock is how far it tips from tip to heel corner on each hop, dip how deep it squashes on each footfall.
 // The walk is plain, the strut confident and proud, the tiptoe nervous and scared, the drag exhausted.
 const GAIT: Record<Acting, { stiff: number; damp: number; stride: number; hop: number; top: number; rock: number; dip: number }> = {
@@ -35,10 +35,10 @@ const DART = { fall: 9000 }
 // A rear gets to its place fast, so the lean is held there.
 const REAR = { settle: 0.36 }
 // The frame of a hit: the body is short and bent away from the blow at once, with no spring to build it, and stands a body's width along the blow, clear of the flash.
-const HIT = { squash: 0.58, bend: 0.8, shove: 60, lift: 0.7 }
+const HIT = { squash: 0.58, bend: 0.5, shove: 60, lift: 0.7 }
 const SPRING = { squash: { k: 620, c: 26 }, lean: { k: 330, c: 17 }, bend: { k: 260, c: 13 }, sprout: { k: 2400, c: 58 } }
 // A hit knocks the body over, past upright onto its other shoulder, and it swings back: the knocked cursor of the approved fire image.
-const TUMBLE = { far: 0.8, share: 0.145, out: { k: 900, c: 60 }, back: { k: 900, c: 58 } }
+const TUMBLE = { far: 0.6, share: 0.08, out: { k: 900, c: 60 }, back: { k: 900, c: 58 } }
 // Thrown through the air it goes tip first: the arrow turns toward the way it flies, most when that is up or to the right. tip is the angle its tip points at rest.
 const DIVE = { tip: 2.09, far: 1.25, high: [5, 18] as [number, number], fast: [150, 400] as [number, number] }
 const DRAG = { stride: 90, pulse: 0.2, lean: 0.34 }
@@ -206,7 +206,7 @@ export class CursorBody {
     this.s.dir = this.s.vx < -40 ? -1 : this.s.vx > 40 ? 1 : this.s.dir
     if (name === 'jump' && !this.s.aloft) this.s.vz = Math.max(this.s.vz, 420)
     if (name === 'startle' && !this.s.aloft) this.s.vz = Math.max(this.s.vz, 300)
-    if (name === 'flinch' || name === 'duck' || name === 'cower') this.s.squashV -= 4
+    if (name === 'flinch' || name === 'duck' || name === 'cower' || name === 'stamp') this.s.squashV -= 4
     if (name === 'recoil') {
       this.s.squash = Math.min(this.s.squash, HIT.squash)
       this.s.squashV = 0
@@ -449,7 +449,7 @@ export class CursorBody {
     s.squashV += (SPRING.squash.k * (stretch - s.squash) - SPRING.squash.c * s.squashV) * dt
     s.squash = Math.min(1.6, Math.max(0.35, s.squash + s.squashV * dt))
     const free = !s.air && s.taken === null && !s.inBall
-    const flying = free && s.reaction !== 'rear' && s.reaction !== 'dart' ? smooth01((s.z - floor - DIVE.high[0]) / (DIVE.high[1] - DIVE.high[0])) * smooth01((now - DIVE.fast[0]) / (DIVE.fast[1] - DIVE.fast[0])) : 0
+    const flying = free && s.reaction !== 'rear' && s.reaction !== 'dart' && s.reaction !== 'fume' ? smooth01((s.z - floor - DIVE.high[0]) / (DIVE.high[1] - DIVE.high[0])) * smooth01((now - DIVE.fast[0]) / (DIVE.fast[1] - DIVE.fast[0])) : 0
     const knocked = s.reaction === 'recoil' && pose && 1 - s.reactionLeft / REACTION_SECONDS.recoil < TUMBLE.share
     const over = (knocked ? TUMBLE.far * s.dir : flying > 0 ? DIVE.far * Math.sin(DIVE.tip - Math.atan2(-s.vy, s.vx)) * flying : 0) + (pose ? pose.turn : 0)
     const swing = over !== 0 ? TUMBLE.out : TUMBLE.back
@@ -488,6 +488,9 @@ export class CursorBody {
           const was = s.strips.every((p) => p.x === 0 && p.y === 0 && p.z === 0 && p.rot === 0)
           gather(s.strips, s.seed + s.shreds, 1 - back.left / back.whole)
           if (!was && s.strips.every((p) => p.x === 0 && p.y === 0 && p.z === 0 && p.rot === 0)) s.squashV += 3.4
+        } else if (shreds) {
+          fall(s.strips)
+          stir(s.strips, shreds.left)
         } else if (s.damage.some((d) => d.kind === 'shredded')) fall(s.strips)
         else s.strips = null
       }
@@ -632,6 +635,19 @@ function drop(p: LooseStrip, i: number): void {
     p.tilt = 0
     p.rest = true
   }
+}
+
+// The pile stirs before it stands: in its last moments on the page each strip at rest twitches about its place and lifts a little, more and more.
+const STIR = { seconds: 0.42, rot: 0.11, lift: 5, rate: 34 }
+function stir(strips: LooseStrip[], left: number): void {
+  if (left > STIR.seconds) return
+  const u = 1 - Math.max(0, left) / STIR.seconds
+  strips.forEach((p, i) => {
+    if (!p.rest) return
+    const wave = Math.sin(u * STIR.rate + i * 2.4)
+    p.rot = p.tr + STIR.rot * u * wave
+    p.z = layer(i) + STIR.lift * u * Math.abs(wave)
+  })
 }
 
 // Where a strip stands before it snaps true: out of line, every other strip a step up or down its own length, so the ends make a ragged comb that reads from far.
