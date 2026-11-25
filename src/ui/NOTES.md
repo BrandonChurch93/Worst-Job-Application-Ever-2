@@ -17,7 +17,6 @@
 | `dev.html`, `dev.ts` | The interface over a grey box or a still, with a made-up site. Not part of the built site |
 | `shots.mjs`, `check.mjs` | Pictures of the dev page, and a run that drives it as a visitor would |
 | `site.mjs` | A run that drives the wired site itself: `node src/ui/site.mjs --shots --probe` |
-| `NEEDS.patch` | A change asked of the Builder in `src/main.ts` |
 | `../probe/index.ts` | The probe page: `mountProbe(host, run)`, `PROBE_SCENES`, `ProbeRunner` |
 | `../probe/stats.ts` | The numbers and the block of plain text. Pure logic |
 | `../probe/labels.ts` | The words of the probe page. For Brandon to approve |
@@ -43,3 +42,6 @@
 
 - `parts/PARTS.json`: the parts `interface` and `quality-levels` draw no shape on the stage. They are DOM and logic, so no shape carries them.
 - The controls follow the picture's rectangle. On the tall pages the row lies over whatever has scrolled under the top of the screen: the site says so with `backing()`.
+- Taken by the Builder on main (e970ef5): a visitor who asks for less motion and gives no mode gets the film. It was asked as `NEEDS.patch`, which is gone now.
+- Over one of the controls the system's pointer shows, because they are real links and buttons. The stage's cursor waits where it left the picture. Whether the stage should hide its cursor meanwhile is the Builder's to say.
+- The words of the ticker on the careers page are drawn outside its well, left of x 128 and right of x 1792. It is the page's, and it shows beside the film's bar.
