@@ -19,7 +19,7 @@ const smooth01 = (v: number): number => {
 const rag = (a: number, burnt: number): number => 1 + (0.25 + 0.3 * burnt) * (0.06 * Math.sin(3 * a + 1.3) + 0.04 * Math.sin(7 * a + 0.4) + 0.03 * Math.sin(11 * a + 2.1))
 const clamp01 = (v: number): number => Math.min(1, Math.max(0, v))
 // A strip out of its place by more than a few pixels is a loose sliver, and lies thin.
-const LOOSE = { thin: 0.8, from: 9, to: 22, arm: 40 }
+const LOOSE = { thin: 0.8, from: 12, to: 64, arm: 40 }
 
 export class Body implements BodyModel {
   readonly root = new THREE.Group()

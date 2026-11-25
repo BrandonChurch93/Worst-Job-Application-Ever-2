@@ -242,9 +242,9 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
     vec2 d = q - hole.xy;
     float r = hole.z * wjaRag( d, burnt );
     float from = length( d ) / r + ( mid.g - 0.5 ) * 0.16 + ( fine.b - 0.5 ) * 0.14;
-    float soot = ( 1.0 - smoothstep( 1.12, 2.5, from ) ) * burnt;
-    float crust = ( 1.0 - smoothstep( 1.1, 1.3, from + ( wide.b - 0.5 ) * 0.25 + ( fine.g - 0.5 ) * 0.2 ) ) * burnt;
-    col = mix( col, col * vec3( 0.34, 0.235, 0.15 ), soot * soot * 0.9 );
+    float soot = ( 1.0 - smoothstep( 1.12, 2.3, from ) ) * burnt;
+    float crust = ( 1.0 - smoothstep( 1.16, 1.4, from + ( wide.b - 0.5 ) * 0.25 + ( fine.g - 0.5 ) * 0.2 ) ) * burnt;
+    col = mix( col, col * vec3( 0.2, 0.13, 0.08 ), min( 1.0, soot * soot * 1.15 ) );
     col = mix( col, vec3( 0.014, 0.012, 0.010 ) + 0.03 * fine.g * mid.b, crust );
     float turn = atan( d.y, d.x ) + float( i ) * 1.7;
     float bite = sin( turn + 0.6 ) * sin( turn * 3.0 + 1.9 ) + 0.3 * sin( turn * 7.0 + 0.4 );
