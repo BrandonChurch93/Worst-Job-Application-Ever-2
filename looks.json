@@ -1,0 +1,35 @@
+{
+  "folder": "acting3",
+  "pushed": "2026-11-25T21:45:36.990Z",
+  "commit": "901eae755775d3fec152eb35fd829e68c8c63b2a",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "step1.keyboard after a7bb397: hop to the field 1.0 to 1.17 s, wind and strike, reared hold after the keyboard rises",
+      "time": "2026-11-25T21:45:35.179Z",
+      "by": "acting3",
+      "from": "out/work/sheets/sheet-beat-step1_keyboard-preview-draft.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "step1.firstName after a7bb397: held recoil on the struck key at 6.0 s, held poses between the dashes",
+      "time": "2026-11-25T21:45:35.434Z",
+      "by": "acting3",
+      "from": "out/work/sheets/sheet-beat-step1_firstName-preview-draft.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "step1.shredded after a7bb397: pile stirs before the zip, exhausted droop and trudge at home size",
+      "time": "2026-11-25T21:45:35.661Z",
+      "by": "acting3",
+      "from": "out/work/sheets/sheet-beat-step1_shredded-preview-draft.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "key step1-fire at 6.0 s beside the approved image, draft: the arrow whole and still on the struck key",
+      "time": "2026-11-25T21:45:35.883Z",
+      "by": "acting3",
+      "from": "out/work/compare/compare-step1-fire.jpg"
+    }
+  ]
+}
