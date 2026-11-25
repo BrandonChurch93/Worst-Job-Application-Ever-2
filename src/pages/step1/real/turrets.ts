@@ -11,7 +11,7 @@ import { EMIT, fx, GLOW, overlay } from './turret-fx'
 const heights = config.scale.heights
 
 export const TURRET_LOOK = {
-  collar: 46, head: 40, axis: -17, muzzle: 98, sunk: 9, socket: 56, socketDepth: 36, bezel: 63.5, door: 58, doorDrop: 2.2,
+  collar: 46, head: 40, axis: -19, muzzle: 116, lift: 0.17, sunk: 9, socket: 56, socketDepth: 36, bezel: 63.5, door: 58, doorDrop: 2.2,
   flashSeconds: 0.05, steam: 6, sparks: 8
 }
 
@@ -81,9 +81,8 @@ function geometries(): Shared {
     turn([[L.head, -56], [L.head, -30], [L.head - 0.9, -29.2], [L.head - 0.9, -27.8], [L.head, -27], [L.head, -fillet], ...crown], 56, 4)
   ]
   const headDark: THREE.BufferGeometry[] = []
-  headDark.push(place(turn([[17.4, 0], [17.4, 4.5], [16, 5.2], [16, 0]], 24, 1), 0, 0, 0).rotateY(Math.PI / 2).translate(L.head - 1.5, 0, L.axis))
-  const barrel = along(turn([[15.4, 24], [15.4, 45], [14.4, 46], [13.4, 46], [10.6, 83], [12.9, 84.2], [12.9, 87.4], [12.1, 88.1], [12.1, 89.5], [12.9, 90.2], [12.9, 96.4], [11.6, L.muzzle], [7.8, L.muzzle]], 28, 2))
-  const barrelDark = along(turn([[7.8, L.muzzle], [7.8, 84], [0, 84]], 20, 1))
+  const barrel = along(turn([[18.5, 20], [18.5, 50], [17.5, 51], [15.2, 51], [15.2, 60], [14.4, 60.6], [14.4, 62], [15.2, 62.6], [15.2, 94], [18, 95.2], [18, 100], [17.2, 100.7], [17.2, 102.3], [18, 103], [18, 113.6], [16.6, L.muzzle], [12, L.muzzle]], 32, 2))
+  const barrelDark = along(turn([[12, L.muzzle], [12, 92], [0, 92]], 24, 1))
   const bezel = turn([[L.bezel, -0.2], [L.bezel - 1.1, 0.9], [L.socket + 1.6, 0.9], [L.socket, -0.6]], 64, 5)
   const socket = merge([turn([[L.socket, -0.6], [L.socket, -L.socketDepth], [0, -L.socketDepth]], 48, 1)])
   const half = circle(L.door, 64)
@@ -136,6 +135,7 @@ function makeTurret(s: Shape): THREE.Object3D {
   head.add(new THREE.Mesh(g.head, metal), slots)
   barrel.add(new THREE.Mesh(g.barrel, steel), bore)
   barrel.position.z = TURRET_LOOK.axis
+  barrel.rotation.y = -TURRET_LOOK.lift
   head.add(barrel)
   rise.add(head)
   root.add(rise)
@@ -184,9 +184,10 @@ function poseTurret(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const cx = s.x + s.w / 2
   const cy = s.y + s.h / 2
   const tip = TURRET_LOOK.muzzle + 2 + d.barrel.position.x
-  const mx = cx + Math.cos(a) * tip
-  const my = cy + Math.sin(a) * tip
-  const mz = s.z0 + d.rise.position.z + TURRET_LOOK.axis
+  const flat = tip * Math.cos(TURRET_LOOK.lift)
+  const mx = cx + Math.cos(a) * flat
+  const my = cy + Math.sin(a) * flat
+  const mz = s.z0 + d.rise.position.z + TURRET_LOOK.axis + tip * Math.sin(TURRET_LOOK.lift)
 
   d.charge.visible = charge > 0.02
   d.sparks.visible = false
@@ -274,10 +275,12 @@ function makeBolt(): THREE.Object3D {
   const root = new THREE.Group()
   const len = TURRET.bolt
   const head = overlay(new THREE.Mesh(f.head, f.headMaterial), 6)
-  head.scale.set(9, 3.8, 3.8)
+  head.scale.set(13, 5.4, 5.4)
   head.position.set(len / 2 - 11, 0, 8)
   const tails = overlay(new THREE.InstancedMesh(f.tail, f.tailMaterial, 2), 4) as THREE.InstancedMesh
   tails.frustumCulled = false
+  tails.setColorAt(0, new THREE.Color(1.5, 1.5, 1.5))
+  tails.setColorAt(1, new THREE.Color(4.4, 9, 22))
   root.add(tails, head)
   const data: BoltData = { head, tails }
   root.userData.bolt = data
@@ -289,8 +292,8 @@ function poseBolt(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const born = s.v ? Math.min(1, Math.max(0, s.v[1] ?? 1)) : 1
   const flick = 0.92 + 0.08 * Math.sin(ctx.time * 140 + (hashName(s.id) & 255))
   v3.set(TURRET.bolt / 2 - 12, 0, 8)
-  d.tails.setMatrixAt(0, m4.compose(v3, q4.identity(), w3.set(30 + 82 * born, 3.8 * flick, 3.8 * flick)))
-  d.tails.setMatrixAt(1, m4.compose(v3, q4, w3.set(14 + 34 * born, 2.2, 2.2)))
+  d.tails.setMatrixAt(0, m4.compose(v3, q4.identity(), w3.set(30 + 82 * born, 6 * flick, 6 * flick)))
+  d.tails.setMatrixAt(1, m4.compose(v3, q4, w3.set(16 + 44 * born, 3, 3)))
   d.tails.instanceMatrix.needsUpdate = true
   const a = s.rot ?? 0
   const half = TURRET.bolt / 2 - 9
@@ -310,9 +313,11 @@ interface ScorchData {
   at: [number, number]
   sparks: THREE.InstancedMesh
   sparkMaterial: THREE.MeshBasicMaterial
+  flare: THREE.Mesh
+  flareMaterial: THREE.MeshBasicMaterial
 }
 
-const SCORCH = { size: 62, smoke: 2, smokeSeconds: 1.5, shoulder: 4.5, core: 14, sparks: 9, sparkSeconds: 0.55, fall: 900, ember: 0.35, snap: 36 }
+const SCORCH = { size: 62, smoke: 2, smokeSeconds: 1.5, shoulder: 5.5, core: 14, sparks: 9, sparkSeconds: 0.55, fall: 900, ember: 0.35, snap: 36, flareSeconds: 0.1 }
 
 function makeScorch(s: Shape): THREE.Object3D {
   const f = fx()
@@ -342,7 +347,11 @@ function makeScorch(s: Shape): THREE.Object3D {
   const sparks = overlay(new THREE.InstancedMesh(f.orb, sparkMaterial, SCORCH.sparks), 20) as THREE.InstancedMesh
   sparks.frustumCulled = false
   root.add(sparks)
-  const data: ScorchData = { mark, geometry, material, smoke, smokeMaterials, sparks, sparkMaterial, seed, wide, tall: wide * (0.85 + 0.25 * hash01(seed, 3, 4)), turn: hash01(seed, 5, 6) * Math.PI * 2, at: [0, 0] }
+  const flareMaterial = f.flashMaterial.clone()
+  const flare = overlay(new THREE.Mesh(f.quad, flareMaterial), 30)
+  flare.rotation.z = hash01(seed, 7, 8) * Math.PI * 2
+  root.add(flare)
+  const data: ScorchData = { mark, geometry, material, smoke, smokeMaterials, sparks, sparkMaterial, flare, flareMaterial, seed, wide, tall: wide * (0.85 + 0.25 * hash01(seed, 3, 4)), turn: hash01(seed, 5, 6) * Math.PI * 2, at: [0, 0] }
   root.userData.scorch = data
   return root
 }
@@ -405,6 +414,14 @@ function poseScorch(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   d.material.opacity = smooth((left * TURRET.scorchSeconds) / TURRET.scorchFade)
   const ember = Math.exp(-age / SCORCH.ember)
   const spent = age / SCORCH.sparkSeconds
+  const struck = age / SCORCH.flareSeconds
+  d.flare.visible = struck < 1 && left * TURRET.scorchSeconds > TURRET.scorchFade
+  if (d.flare.visible) {
+    const size = 54 + 50 * struck
+    d.flare.position.set(d.at[0], d.at[1], 3)
+    d.flare.scale.set(size, size, 1)
+    d.flareMaterial.color.setRGB(...mix(GLOW.chargeHigh, [0, 0, 0], struck ** 0.7))
+  }
   d.sparkMaterial.color.setRGB(...mix(GLOW.chargeHigh, GLOW.boltTail, Math.min(1, spent)))
   d.sparks.visible = spent < 1 && left * TURRET.scorchSeconds > TURRET.scorchFade
   for (let i = 0; d.sparks.visible && i < SCORCH.sparks; i++) {
@@ -474,6 +491,7 @@ export const turrets: PartMaker = {
     if (c) {
       c.material.dispose()
       c.sparkMaterial.dispose()
+      c.flareMaterial.dispose()
       c.geometry.dispose()
       for (const m of c.smokeMaterials) m.dispose()
     }

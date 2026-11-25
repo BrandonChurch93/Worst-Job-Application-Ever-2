@@ -42,7 +42,7 @@ function bandAt(d: number): number {
 function enamelAt(d: number): number {
   const e = Math.max(0, d - ENAMEL_AT)
   const k = Math.min(1, e / SHOULDER)
-  return GROOVE + RISE * Math.sqrt(1 - (1 - k) * (1 - k)) + 0.09 * smooth(SHOULDER * 0.5, 3.0, e)
+  return GROOVE + RISE * Math.sqrt(1 - (1 - k) * (1 - k)) + 0.035 * smooth(SHOULDER * 0.5, 1.8, e)
 }
 
 const N = OUTLINE.length
