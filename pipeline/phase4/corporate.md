@@ -68,7 +68,7 @@ See the report at the end of this file.
 | MEASURED asset sets of this tier | 0 MB in `assets-src/table/corporate/`, `public/assets/table/corporate/`, `assets-full/table/corporate/` (nothing in them) | `du -sh` |
 | MEASURED asset sets of this tier | the three folders do not exist: 0 MB | `du -sh assets-src/table/corporate public/assets/table/corporate assets-full/table/corporate` |
 
-### Final version (18:30 UTC, main merged at fde6688)
+### Final version (18:25 UTC, main merged at fde6688)
 
 | Fact | Value | Command |
 | --- | --- | --- |
