@@ -43,10 +43,17 @@ describe('a record against the commits in which every part was a stand-in', () =
     expect(r.hashAt).toEqual({ 'src/real/x.ts': B, 'src/x.ts': A })
     expect(r.hash).toBe(hashOfBytes(['src/real/x.ts', 'src/x.ts'], reader(untouched)))
   })
-  it('makes no hash of a file that no such commit holds, nor of no files', () => {
+  it('records a file that no such commit holds as absent, with no bytes, and makes no hash of no files', () => {
     const r = anchoredRecord(['src/x.ts', 'src/new.ts'], [A, B], show)
     expect(r.absent).toEqual(['src/new.ts'])
-    expect(r.hash).toBeNull()
+    expect(r.hashAt).toEqual({ 'src/new.ts': 'absent', 'src/x.ts': A })
+    const none = (f: string) => (f === 'src/new.ts' ? Buffer.alloc(0) : reader(untouched)(f))
+    expect(r.hash).toBe(hashOfBytes(['src/new.ts', 'src/x.ts'], none))
+    const part = { name: 'p', state: 'finished', files: r.files, standInHash: r.hash, hashAt: r.hashAt }
+    expect(recordedAgain(part, show)).toBe(r.hash)
+    expect(standInTests(part, hashFacts(part, none, show, [A, B])).join(' ')).toMatch(/test 2: its files .* are byte for byte/)
+    expect(standInTests(part, hashFacts(part, (f: string) => (f === 'src/new.ts' ? null : none(f)), show, [A, B])).join(' ')).toMatch(/test 2: src\/new\.ts is recorded for it and gone/)
+    expect(standInTests(part, hashFacts(part, (f: string) => (f === 'src/new.ts' ? Buffer.from('export const turn = 1') : none(f)), show, [A, B]))).toEqual([])
     expect(anchoredRecord([], [A, B], show).hash).toBeNull()
   })
   it('can be made again from what it names', () => {

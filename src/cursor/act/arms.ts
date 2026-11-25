@@ -114,7 +114,9 @@ class Limb {
       if (this.n1.lengthSq() < 1e-6) this.n1.set(1, 0, 0)
       this.n1.normalize()
       this.n2.crossVectors(this.n1, this.t)
-      const r = ARM.radius * thin * (0.9 + 0.2 * u) * (0.35 + 0.65 * Math.min(1, grown))
+      // The shoulder end is closed to a round nose: an arm that starts on the body's face must not show an open tube.
+      const nose = i === 0 ? 0.04 : i === 1 ? 0.72 : 1
+      const r = ARM.radius * thin * (0.9 + 0.2 * u) * (0.35 + 0.65 * Math.min(1, grown)) * nose
       for (let j = 0; j <= ARM.round; j++) {
         const w = (j / ARM.round) * Math.PI * 2
         const cx = Math.cos(w)
