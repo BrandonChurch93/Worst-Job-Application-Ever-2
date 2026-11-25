@@ -1,35 +1,35 @@
 {
   "folder": "pinball",
-  "pushed": "2026-11-25T09:54:42.940Z",
-  "commit": "470806a6c06bdf1285600d53a085861f613380e3",
+  "pushed": "2026-11-25T10:12:04.316Z",
+  "commit": "61fc2701c7d4a12d48243ac7663b10fe621cafd0",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key last-save at 35.5 s: the whole Street tier from the player's end, the ball flying back up after the save, the cursor on the ball",
-      "time": "2026-11-25T09:54:41.142Z",
+      "caption": "Still pinball-pinball_drain-0p62-film-preview-draft: draft tier, preview, view beauty",
+      "time": "2026-11-25T10:10:40.356Z",
+      "by": "pinball",
+      "from": "out/work/stills/pinball-pinball_drain-0p62-film-preview-draft.png"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Key last-save at 35.5 s after the fourth take search: the ball is caught on the right flipper",
+      "time": "2026-11-25T10:12:02.733Z",
       "by": "pinball",
       "from": "out/work/stills/key-last-save-preview-draft.png"
     },
     {
-      "file": "look-2.jpg",
-      "caption": "Film at 9.26 s, beat launch: the ball at the plunger, the knob drawn back, bottom right",
-      "time": "2026-11-25T09:54:41.384Z",
-      "by": "pinball",
-      "from": "out/work/stills/pinball-pinball_launch-0p42-film-preview-draft.png"
-    },
-    {
       "file": "look-3.jpg",
-      "caption": "Sheet clear-ball: at rest on a flipper, in flight, flattened beside a bumper",
-      "time": "2026-11-25T09:54:41.655Z",
+      "caption": "Drain beat at 39.3 s: the cursor lies flattened on the outlet port, now standing on the port and not hidden in it",
+      "time": "2026-11-25T10:12:02.977Z",
       "by": "pinball",
-      "from": "out/work/stills/sheet-clear-ball-preview-draft.png"
+      "from": "out/work/stills/pinball-pinball_drain-0p46-film-preview-draft.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Key table-wide at 8.0 s: the machine powered, title and score on the marquee",
-      "time": "2026-11-25T09:54:41.895Z",
+      "caption": "Film sheet 4 of 4, 32.1 s to 42 s: highway, last save with the new take, drain, result card",
+      "time": "2026-11-25T10:12:03.209Z",
       "by": "pinball",
-      "from": "out/work/stills/key-table-wide-preview-draft.png"
+      "from": "out/work/sheets/sheet-unit-pinball-4of4-preview-draft.jpg"
     }
   ]
 }
