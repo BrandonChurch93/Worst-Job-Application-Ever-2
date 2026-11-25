@@ -84,7 +84,23 @@ interface Rig {
   barMarks: Mark[]
   titleMesh: THREE.Mesh
   ring: number[]
+  cast: THREE.MeshDepthMaterial
+  sink: { value: number }
   was: string
+}
+
+// What throws the fed sheet's shadow lies a little under what is seen, so a sheet that leans away from the light
+// does not shade itself in teeth.
+const SINK = 1.6
+function caster(sink: { value: number }): THREE.MeshDepthMaterial {
+  const m = new THREE.MeshDepthMaterial({ side: THREE.DoubleSide })
+  m.onBeforeCompile = (shader) => {
+    shader.uniforms.uSink = sink
+    shader.vertexShader = shader.vertexShader
+      .replace('#include <common>', '#include <common>\nuniform float uSink;\nattribute float aSide;')
+      .replace('#include <begin_vertex>', '#include <begin_vertex>\n  transformed -= normalize(normal) * (aSide * uSink);')
+  }
+  return m
 }
 
 function ringOf(nx: number, ny: number): number[] {
@@ -102,6 +118,10 @@ function bodyGeometry(ring: number[]): THREE.BufferGeometry {
   const m = ring.length
   const count = n * 2 + m * 2
   const g = new THREE.BufferGeometry()
+  const side = new Float32Array(count)
+  side.fill(1, 0, n)
+  side.fill(-1, n, n * 2)
+  g.setAttribute('aSide', new THREE.BufferAttribute(side, 1))
   const uv = new Float32Array(count * 2)
   for (let j = 0; j < ny; j++) {
     for (let i = 0; i < nx; i++) {
@@ -294,6 +314,9 @@ export const paper: PartMaker = {
     const sheetMesh = new THREE.Mesh(body, mat.sheet)
     sheetMesh.castShadow = true
     sheetMesh.receiveShadow = true
+    const sink = { value: 0 }
+    const cast = caster(sink)
+    sheetMesh.customDepthMaterial = cast
     const titleMesh = new THREE.Mesh(title, mat.print)
     titleMesh.receiveShadow = true
     titleMesh.userData.type = TITLE_KEY
@@ -303,7 +326,7 @@ export const paper: PartMaker = {
     for (const c of group.children) c.frustumCulled = false
     const rig: Rig = {
       sheet: { nx: GRID.nx, ny: GRID.ny, pos: new Float32Array(GRID.nx * GRID.ny * 3), nor: new Float32Array(GRID.nx * GRID.ny * 3), abuse: 0, out: 1 },
-      body, title, bars, titleMarks: t.marks, barMarks: b.marks, titleMesh, ring, was: ''
+      body, title, bars, titleMarks: t.marks, barMarks: b.marks, titleMesh, ring, cast, sink, was: ''
     }
     group.userData.rig = rig
     return group
@@ -315,6 +338,7 @@ export const paper: PartMaker = {
     o.rotation.set(0, 0, 0)
     const q = sheetIn(s, ctx)
     shape(rig, q)
+    rig.sink.value = SINK * clamp(q.bite, 0, 1)
     rig.titleMesh.visible = s.id !== 'resume-paper' || ownTitle(ctx, q.bite > 0.5)
   },
   drop(o) {
@@ -322,5 +346,6 @@ export const paper: PartMaker = {
     rig.body.dispose()
     rig.title.dispose()
     rig.bars.dispose()
+    rig.cast.dispose()
   }
 }
