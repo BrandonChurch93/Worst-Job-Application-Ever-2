@@ -159,7 +159,7 @@ for (let k = 0; k < 3; k++) {
   open(k, 'feed.tube', [COLS.feed - 0.625, 5], [COLS.feed + 0.625, 5])
   holds.push({ id: `${name}.gate`, tier: k, kind: 'gate', c: at(k, MID, 11.05), r: 1.2, releases: true })
   const picks = t.inserts.filter((n) => n.tier === name)
-  const spots: V[] = [[8.35, 6.5], [MID, 7.15], [11.65, 6.5]]
+  const spots: V[] = [[8.35, 6.2], [MID, 7.35], [11.65, 6.2]]
   picks.forEach((n, i) => inserts.push({ id: `${name}.insert.${i + 1}`, tier: k, c: at(k, spots[i]![0], spots[i]![1]), r: 0.55, mode: n.mode, picture: n.picture, index: inserts.length }))
   displays.push({ id: `${name}.display`, tier: k, box: [12.0, TIER_Y[k]! + 10.35, t.displayWidthBalls, t.displayHeightBalls] })
   for (let i = 0; i < 7; i++) lamps.push({ id: `${name}.top.lamp.${i + 1}`, tier: k, c: at(k, 4.3 + i * 1.9, 1.05), group: `${name}.general`, arrow: [-1, 0] })

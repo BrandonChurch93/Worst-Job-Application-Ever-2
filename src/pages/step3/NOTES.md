@@ -81,7 +81,7 @@ Phase 2, engine and blockout. Everything here is a stand-in shape with working l
 
 - Power on: the marquee title and the score appear, the tiers wake one after the other 0.35 s apart, each tier's inserts flash for 0.6 s, the lamps go from the pocket tone to the light tone and grow. A display shows only when its tier is awake.
 - The plunger rod and knob draw back between 8.3 s and 9.4 s and snap forward at the launch.
-- Inserts sit at 8.35, 10 and 11.65 balls across, clear of the raised flippers and the slings. Their labels are 18 px.
+- Inserts sit at 8.35, 10 and 11.65 balls across (6.2, 7.35 and 6.2 down), clear of the raised flippers, the slings, the revolving door and the third bumper. Their labels are 18 px and stay readable under a raised flipper.
 - At the outlet the cursor stands on the port (28 px up, through `cursor.setGround`), lies flattened for half a second, peels up and walks to the button. The film's pointer waits at the outlet until then.
 
 ## Sheets

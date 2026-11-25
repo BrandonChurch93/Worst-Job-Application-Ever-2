@@ -77,7 +77,7 @@ export function fixedShapes(): Shape[] {
     if (h.tier < 0 || h.tier > 2 || h.kind === 'gate' || h.kind === 'plunger') continue
     const f = px(floorZ(h.tier))
     if (h.id === 'corporate.revolving') {
-      out.push(disc(`hold.${h.id}`, 'model-hq', h.c, h.r, f + 60, f + 66, 'glass'), disc(`hold.${h.id}.post`, 'model-hq', h.c, 0.12, f, f + 110, 'metal'))
+      out.push(disc(`hold.${h.id}`, 'model-hq', h.c, h.r - 0.07, f + 60, f + 66, 'glass'), disc(`hold.${h.id}.post`, 'model-hq', h.c, 0.12, f, f + 110, 'metal'))
     } else if (h.id !== 'corporate.doors') out.push(disc(`hold.${h.id}`, 'table-hardware', h.c, h.r + 0.08, f, f + 3, 'pocket'))
   }
   for (const r of table.rails) {
