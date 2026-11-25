@@ -3,7 +3,7 @@ import { config } from '../src/config'
 import { makeLoop, makeOpening } from '../src/film'
 import { BODY, cursorAt, fireScene, fireScript, fireTrack, LOOP_SECONDS } from '../src/film/fire'
 import { cropOf, cursorBox, inside, threatOf } from '../src/film/loop'
-import { buildLayout, openingFrames, openingSeconds, openingTimes, promptLayout, typedAt, LEVEL_SECONDS, SEND_SECONDS } from '../src/film/opening'
+import { buildLayout, openingFrames, openingSeconds, openingTimes, promptLayout, typedAt, typedLines, LEVEL_SECONDS, SEND_SECONDS } from '../src/film/opening'
 import { layoutProblems, typeRegister } from '../src/shell/layout'
 import { hasWords, words } from '../src/shell/words'
 
@@ -52,7 +52,7 @@ describe('the opening of film A', () => {
       for (const s of opening.frame(i).list) {
         if (s.kind !== 'text') continue
         if (s.words!.startsWith('runtime:')) {
-          expect(intro.prompt.startsWith(s.text!)).toBe(true)
+          expect(intro.prompt.startsWith(s.text!.replace(/\n/g, ' '))).toBe(true)
           continue
         }
         expect(allowed.has(s.words!), s.words).toBe(true)
@@ -67,7 +67,7 @@ describe('the opening of film A', () => {
   it('shows the whole prompt before it is sent and every line of intro.steps by the end', () => {
     const t = openingTimes()
     const before = opening.frame(Math.floor(t.sent * fps) - 1)
-    expect(before.list.find((s) => s.id === 'prompt-typed')!.text).toBe(intro.prompt)
+    expect(before.list.find((s) => s.id === 'prompt-typed')!.text!.replace(/\n/g, ' ')).toBe(intro.prompt)
     expect(before.list.some((s) => s.words === 'intro.reasoningLevel' && s.id === 'level-word')).toBe(true)
     const last = opening.frame(opening.frameCount - 1)
     for (let i = 0; i < intro.steps.length; i++) {
@@ -75,6 +75,18 @@ describe('the opening of film A', () => {
       expect(last.list.some((s) => s.id === `build-done-${i}`)).toBe(true)
     }
     expect(last.list.some((s) => s.words === 'intro.title')).toBe(true)
+  })
+
+  it('never moves a typed word to another line: the line breaks are those of the whole prompt', () => {
+    const whole = typedLines(intro.prompt)
+    expect(whole.join(' ')).toBe(intro.prompt)
+    expect(whole.length).toBeGreaterThan(1)
+    for (let n = 1; n <= intro.prompt.length; n++) {
+      const lines = typedLines(intro.prompt.slice(0, n))
+      expect(lines.length).toBeGreaterThan(0)
+      lines.forEach((l, i) => expect(whole[i]!.startsWith(l), `${n}: ${l}`).toBe(true))
+      for (let i = 0; i < lines.length - 1; i++) expect(lines[i]).toBe(whole[i])
+    }
   })
 
   it('starts on a finished picture: frame 0 has the screen, the input, the caret, the level control and the send button', () => {
