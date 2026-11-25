@@ -4,6 +4,7 @@ import { restLook, SHOULDERS, UNIT, type BodyLook, type EffectsLook } from '../s
 import type { Emitter } from '../src/real/types'
 import { makeBody } from '../src/cursor/model/body'
 import { makeEffects } from '../src/cursor/model/effects'
+import { SLANT } from '../src/cursor/model/deform'
 import { heightAt, inside, solid, volume } from '../src/cursor/model/shape'
 import { stripSet } from '../src/cursor/model/strips'
 import { detailData } from '../src/cursor/model/texture'
@@ -122,8 +123,9 @@ describe('the cursor body model', () => {
     const tail0 = at(8.2, 18.3)
     const tip0 = at(0.6, 1.2)
     const shoulder0 = at(SHOULDERS[1][0], SHOULDERS[1][1])
-    expect(tail0.x / UNIT).toBeCloseTo(8.2, 1)
-    expect(-tail0.y / UNIT).toBeCloseTo(18.3, 1)
+    const lean = (SLANT * tail0.z) / UNIT
+    expect(tail0.x / UNIT + lean).toBeCloseTo(8.2, 1)
+    expect(-tail0.y / UNIT + lean).toBeCloseTo(18.3, 1)
     b.apply(body({ bend: 1 }))
     const tail1 = at(8.2, 18.3)
     const tip1 = at(0.6, 1.2)
@@ -142,7 +144,8 @@ describe('the cursor body model', () => {
     const b = makeBody!()
     const v = new THREE.Vector3()
     b.apply(body({ stretch: 1.4 }))
-    expect(-b.anchor(4.2, 9.5, v).y / UNIT).toBeCloseTo(9.5 * 1.4, 1)
+    b.anchor(4.2, 9.5, v)
+    expect((-v.y + SLANT * v.z) / UNIT).toBeCloseTo(9.5 * 1.4, 1)
     b.apply(body())
     const z = b.anchor(4.2, 9.5, v).z
     b.apply(body({ puff: 1 }))
