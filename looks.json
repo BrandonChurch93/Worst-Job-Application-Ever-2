@@ -1,0 +1,35 @@
+{
+  "folder": "keys-look",
+  "pushed": "2026-11-25T21:43:47.520Z",
+  "commit": "b7894016ea6b514a6be2ade5f322ee38d03e7b6f",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "step1-fire, approved left, build right: pale satin deck with a rolled rim, ivory caps, domed turrets",
+      "time": "2026-11-25T21:43:45.732Z",
+      "by": "keys-look",
+      "from": "out/work/looks/files/20261125214345-p1-compare.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "The keyboard at 6.0 s: approved above, build below",
+      "time": "2026-11-25T21:43:45.970Z",
+      "by": "keys-look",
+      "from": "out/work/looks/files/20261125214345-p1-keyboard.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Left turret at native size: approved left, build right. The bolt rides above the Caps Lock legend",
+      "time": "2026-11-25T21:43:46.205Z",
+      "by": "keys-look",
+      "from": "out/work/looks/files/20261125214346-p1-turret.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Keys and marks at native size: approved left, build right",
+      "time": "2026-11-25T21:43:46.444Z",
+      "by": "keys-look",
+      "from": "out/work/looks/files/20261125214346-p1-keys.jpg"
+    }
+  ]
+}
