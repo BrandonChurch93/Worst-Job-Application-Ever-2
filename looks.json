@@ -1,0 +1,35 @@
+{
+  "folder": "tug2",
+  "pushed": "2026-11-25T19:34:10.274Z",
+  "commit": "44cf977628f85759dd53dc9828bd841a358ad859",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Contact sheet, the beat step1.tug: 12 frames from 0:36.00 to 0:42.23, draft tier, preview",
+      "time": "2026-11-25T19:31:24.883Z",
+      "by": "tug2",
+      "from": "out/work/sheets/sheet-beat-step1_tug-preview-draft.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Key step1-tug: approved on the left, this build on the right, draft tier, with crops of cursor, paper, paper.below, chip, card.glass",
+      "time": "2026-11-25T19:34:08.705Z",
+      "by": "tug2",
+      "from": "out/work/compare/compare-step1-tug.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "step1-tug beside the approved image: the arms are rubber hoses with slack (first version, b9f466d)",
+      "time": "2026-11-25T19:34:08.934Z",
+      "by": "tug2",
+      "from": "out/work/compare/compare-step1-tug.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Twelve frames across the tug with the new hoses",
+      "time": "2026-11-25T19:34:09.151Z",
+      "by": "tug2",
+      "from": "out/work/sheets/sheet-beat-step1_tug-preview-draft.jpg"
+    }
+  ]
+}
