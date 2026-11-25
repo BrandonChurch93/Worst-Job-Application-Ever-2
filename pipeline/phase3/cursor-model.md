@@ -218,7 +218,8 @@ What was wrong, seen beside `cursor-damage.png` at native size: a flat face with
 
 What the shell is now (`shape.ts`):
 
-- One section, from the page up: the foot tucked 0.34 under the outline (`FOOT`), a full round out to the outline at z 0.62 and over to the crown at z 2.0, a 0.05 groove (`BEAD`), then the enamel in one roll 0.62 wide (`SHOULDER`, 39 degrees at the lip, easing to level by the power `ROLL`), then a dome of 0.1 that starts 2.0 in (`DOME`, `DOME_AT`), further in than the stem is wide, so the stem's top is level. `TOP` stays 2.3. The first push had the crown at 1.76 and the roll 1.0 wide: in the close frame of the tug and on the sheet the wide roll read as a bevel, with a dent round each notch where the roll wraps the corner.
+- One section, from the page up: the foot tucked 0.34 under the outline (`FOOT`), a full round out to the outline at z 0.62 and over to the crown at z 1.76, a 0.05 groove (`BEAD`), then the enamel in one roll 1.0 wide (`SHOULDER`, 41 degrees at the lip, easing to level by the power `ROLL`), then a dome of 0.1 to the middle (`DOME`). `TOP` stays 2.3.
+- Tried and taken back out: a crown at 2.0, a roll 0.62 wide and a dome starting 2.0 in (commit ce3a9a3). It made the stem's top level and the wall higher, but it left a larger plain face on the two keys. MEASURED at the review tier on the tree merged with main db41bef: M3 0.8211 with it, 0.8224 without it (main 0.8224); the crown and dome start alone, with the roll kept 1.0 wide, 0.8204. The numbers of the first push stand.
 - The dome is a height field over the whole face, `enamelAt(domeInside(x, y))`. Near the outline it is the true distance; from 0.9 in it blends to a distance every edge has a say in (a power mean, `POWER` 5), so no ridge runs down the stem, into the nose or into the wings.
 - Corners: nose 0.5, wings 0.62, notches 0.36, tail 0.9 (`RADII`), eleven points to an arc. The inner rings keep their own radius (`ownRadius`) and one centre law, so the band has no mitred black wedge at the nose.
 - `GROW` 0.22: the rounded form stands 0.22 outside the outline, so its rounded corners still reach the outline's corners. MEASURED with the body at rest: 18.93 units tall (the outline is 19), where plain rounding of the outline gave 18.12. The configured height holds; the arrow is 1.6 px wider at 70 px.
@@ -264,6 +265,6 @@ One number of a test changed (`tests/cursor-model.test.ts`, the anchor on a flat
 
 ### What is still wrong with the shell
 
-- On the sheet at review size the roll still reads as a band of its own tone, with an arc round each notch. The height view shows the form is as designed, one roll into a level top; the tone is how the finish lights a tilted face (its fill term and what the gloss reflects). Told to the finisher; not changed here.
+- On the sheet at review size the roll reads as a band of its own tone, a bevel more than a dome, with a dent round each notch where the roll wraps the corner. A narrower roll cures some of it and costs fine detail on the keys (above), so it is not taken. The rest of the tone is how the finish lights a tilted face (its fill term and what the gloss reflects). Told to the finisher.
 - The black wall is thinner on the lit side than approved, and the stem is slimmer: the outline is the contract's.
 - No dense dark contact (above).

@@ -11,14 +11,12 @@ const INK_AT = 0.56
 const BEAD = { in: 0.09, deep: 0.05 }
 // The rounded form stands this far outside the outline, so that its rounded corners still reach the outline's own: the arrow keeps its configured height.
 const GROW = 0.22
-const SHOULDER = 0.62
+const SHOULDER = 1.0
 const FOOT = { in: 0.34, tall: 0.62 }
-const CROWN = 2
+const CROWN = 1.76
 const DOME = 0.1
-// The dome starts further in than the stem is wide, so the stem's top is level and no crease runs down it.
-const DOME_AT = { from: 2.0, over: 1.6 }
 const RISE = TOP - CROWN - DOME
-const ROLL = 2
+const ROLL = 2.2
 const SOFT = 6
 const POWER = 5
 const BLEND = { from: 0.9, over: 0.5 }
@@ -64,7 +62,7 @@ function bandAt(d: number): number {
 // How high the enamel stands where the distance in from the outline is d: one soft roll up from the band, then a shallow dome to the middle.
 function enamelAt(d: number): number {
   const k = Math.min(1, Math.max(0, d - ENAMEL_AT) / SHOULDER)
-  return CROWN - BEAD.deep + (RISE + BEAD.deep) * (1 - Math.pow(1 - k, ROLL)) + DOME * smooth01((d - DOME_AT.from) / DOME_AT.over)
+  return CROWN - BEAD.deep + (RISE + BEAD.deep) * (1 - Math.pow(1 - k, ROLL)) + DOME * smooth01((d - 1.2) / 2.2)
 }
 
 // How high the underside of the band stands at a distance in from the outline, as the finish is told it: the foot is tucked under.
