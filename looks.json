@@ -1,0 +1,35 @@
+{
+  "folder": "displays",
+  "pushed": "2026-11-25T16:41:20.357Z",
+  "commit": "f3e5c17a4f95654a8dc940efb2e6c82593aa243c",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "tier-street draft beside the approved image: the street display in its seat, score right aligned",
+      "time": "2026-11-25T16:41:18.638Z",
+      "by": "displays",
+      "from": "out/work/looks-src/d1-compare-street.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "street display at 4 times: mask holes, beads, lit numerals, smoked pane with dust at the edge",
+      "time": "2026-11-25T16:41:18.866Z",
+      "by": "displays",
+      "from": "out/work/looks-src/d1-street-score.png"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "office display at 4 times: a mode line running at twice the text size (forced for the look)",
+      "time": "2026-11-25T16:41:19.109Z",
+      "by": "displays",
+      "from": "out/work/looks-src/d1-office-line.png"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "corporate display at 4 times: the hint, left button and left bat lit (forced for the look)",
+      "time": "2026-11-25T16:41:19.341Z",
+      "by": "displays",
+      "from": "out/work/looks-src/d1-corporate-hint.png"
+    }
+  ]
+}
