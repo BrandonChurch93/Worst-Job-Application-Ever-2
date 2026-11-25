@@ -7,7 +7,7 @@ const hover = config.scale.heights.cursorHover
 const seed = config.seed
 
 // Each sheet shows its states in the order of its approved image, straight on, with the camera pushed in: the cursor's own size never changes.
-const SHEET = { acting: { step: 66, zoom: 4.5 }, damage: { step: 72, zoom: 5.2 }, arms: { step: 94, zoom: 3.9 }, y: 508 }
+const SHEET = { acting: { step: 60, zoom: 5.2 }, damage: { step: 72, zoom: 5.2 }, arms: { step: 94, zoom: 3.9 }, y: 508 }
 
 const across = (n: number, i: number, step: number): number => 960 + (i - (n - 1) / 2) * step - 22
 
@@ -48,7 +48,7 @@ function damage(): CursorPose[] {
     restPose(at(0), y, { ...wound('shredded', 0.8), strips: pileAt(seed + 1, 2) }),
     restPose(at(1), y, { ...wound('reassembled', 0.64), strips: gatheredAt(seed + 1, 0.64) }),
     restPose(at(2), y, { ...wound('scorched', 0.15) }),
-    restPose(at(3), y, { ...wound('burn', 0.52) }),
+    restPose(at(3), y, { ...wound('burn', 0.63) }),
     restPose(at(4), y, { ...wound('flattened', 0.3), squash: 0.96 })
   ]
 }
