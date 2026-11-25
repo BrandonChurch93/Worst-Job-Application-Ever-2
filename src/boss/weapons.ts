@@ -62,7 +62,13 @@ export function drawWeapons(out: DrawList, f: Fight, plan: WeaponPlan): void {
     const rot = Math.atan2(d.dy, d.dx)
     const n = Math.hypot(d.dx, d.dy) || 1
     out.push({ id: `dart-${d.n}-trail`, part, kind: 'capsule', x: d.x - 46 * d.dx / n - 34, y: d.y - 46 * d.dy / n - 3, w: 68, h: 6, z0: 40, z1: 44, tone: 'raised', rot })
-    out.push({ id: `dart-${d.n}`, part, kind: 'capsule', x: d.x - 22, y: d.y - 7, w: 44, h: 14, z0: 40, z1: 50, tone: 'light', rot })
+    out.push({ id: `dart-${d.n}`, part, kind: 'capsule', x: d.x - 22, y: d.y - 5, w: 44, h: 10, z0: 40, z1: 50, tone: 'light', rot })
+    for (const side of [-1, 1]) {
+      const br = rot + side * 0.62
+      const bx = d.x + 24 * d.dx / n - 12 * Math.cos(br)
+      const by = d.y + 24 * d.dy / n - 12 * Math.sin(br)
+      out.push({ id: `dart-${d.n}-barb-${side}`, part, kind: 'capsule', x: bx - 15, y: by - 5, w: 30, h: 10, z0: 40, z1: 50, tone: 'light', rot: br })
+    }
   }
   for (const s of f.sparks) {
     const u = s.t / 0.22
