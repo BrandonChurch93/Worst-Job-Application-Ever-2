@@ -1,35 +1,35 @@
 {
   "folder": "type",
-  "pushed": "2026-11-25T13:58:30.359Z",
-  "commit": "b56122a56c168acc92173f0f98ddc29133db84ff",
+  "pushed": "2026-11-25T14:24:01.990Z",
+  "commit": "b75cb1e261cc3e919fa02890941efeb597d39d58",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Type beside the approved step1-fire, five crops: title, numerals, field value, legends, white on dark (build at uhd review)",
-      "time": "2026-11-25T13:58:28.565Z",
+      "caption": "Key step1-fire: approved on the left, this build on the right, review tier",
+      "time": "2026-11-25T14:20:26.183Z",
       "by": "type",
-      "from": "out/work/study/look-type-crops.png"
+      "from": "out/work/compare/compare-step1-fire.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "page-look beside the approved sheet, review tier, real type on stand-in surfaces",
-      "time": "2026-11-25T13:58:28.789Z",
+      "caption": "Type beside the approved step1-fire among the real parts, six crops at native size: title, numerals, field value, legends, white on orange, chip (hd review, 20 degree lens)",
+      "time": "2026-11-25T14:24:00.420Z",
       "by": "type",
-      "from": "out/work/study/look-compare-page-look.jpg"
+      "from": "out/work/study/look-type-crops-2.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "step1-fire beside the approved image, review tier",
-      "time": "2026-11-25T13:58:29.008Z",
+      "caption": "step1-fire beside the approved image, review tier, main 77d4dc7 with type",
+      "time": "2026-11-25T14:24:00.646Z",
       "by": "type",
-      "from": "out/work/study/look-compare-fire.jpg"
+      "from": "out/work/study/look-compare-fire-2.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "rest-step1, diag type: every run inside its box, black on white",
-      "time": "2026-11-25T13:58:29.234Z",
+      "caption": "page-look beside the approved sheet, review tier (before the matte numeral floor)",
+      "time": "2026-11-25T14:24:00.869Z",
       "by": "type",
-      "from": "out/work/study/look-diag-type.png"
+      "from": "out/work/study/look-compare-page-look-2.jpg"
     }
   ]
 }
