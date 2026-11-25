@@ -1,8 +1,6 @@
 # Status pictures
 
-Time: 2026-11-25T07:57Z. Phase 2, status 8.
+Time: 2026-11-25T08:18Z. Phase 2, status 9.
 
-1. `01-roughcut-beats-3.jpg`: The rough cut, one frame from the middle of each beat: the last beats
-2. `02-roughcut-beats-2.jpg`: The rough cut, one frame from the middle of each beat: the second half
-3. `03-roughcut-beats-1.jpg`: The rough cut, one frame from the middle of each beat: the first half
-4. `04-review-page-look.jpg`: The review page builder on test inputs: header and latest status, the open it row and sound board, the cue list, the card. The colour bars are test films.
+1. `01-blockout-frame-step1.jpg`: The new frame drawing step 1 at rest, in plain grey stand-in shapes: the shared header, the numbered progress buttons, the heading and one button. The fields and the keyboard are not built yet.
+2. `02-blockout-frame-decision.jpg`: The same frame at a moment of the film, in step 5: the script has walked the cursor to the button. The letter and the stamp are not built yet.

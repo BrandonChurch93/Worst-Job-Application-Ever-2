@@ -25,22 +25,20 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 8, 2026-11-25T07:57Z, Phase 2.
+Status 9, 2026-11-25T08:18Z, Phase 2.
 
-1. `out/stills/status/01-roughcut-beats-3.jpg`: The rough cut, one frame from the middle of each beat: the last beats
-2. `out/stills/status/02-roughcut-beats-2.jpg`: The rough cut, one frame from the middle of each beat: the second half
-3. `out/stills/status/03-roughcut-beats-1.jpg`: The rough cut, one frame from the middle of each beat: the first half
-4. `out/stills/status/04-review-page-look.jpg`: The review page builder on test inputs: header and latest status, the open it row and sound board, the cue list, the card. The colour bars are test films.
+1. `out/stills/status/01-blockout-frame-step1.jpg`: The new frame drawing step 1 at rest, in plain grey stand-in shapes: the shared header, the numbered progress buttons, the heading and one button. The fields and the keyboard are not built yet.
+2. `out/stills/status/02-blockout-frame-decision.jpg`: The same frame at a moment of the film, in step 5: the script has walked the cursor to the button. The letter and the stamp are not built yet.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 2, tick 30 at 2026-11-25T07:57:14Z, allowance: build
-time used in this phase: 0.31 h of its box of 6.50 h
-time used under the allowance in force: 2.41 h of 36.00 h allowed
-time used: 2.41 of 36.00 hours before the review
+clock: phase 2, tick 31 at 2026-11-25T08:18:46Z, allowance: build
+time used in this phase: 0.67 h of its box of 6.50 h
+time used under the allowance in force: 2.77 h of 36.00 h allowed
+time used: 2.77 of 36.00 hours before the review
 extra rounds: yes
 half point: not reached
 box end: not reached
