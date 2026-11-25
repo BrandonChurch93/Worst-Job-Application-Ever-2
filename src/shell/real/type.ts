@@ -6,9 +6,9 @@ import { materials } from '../materials'
 import { block, font, measure } from '../metrics'
 import { words } from '../words'
 
-// What the type lies on decides how it is set: sunk print, flat print, raised print or a cut.
+// What the type lies on decides how it is set: sunk print, flat print or raised print.
 export type Ground = 'page' | 'cap' | 'glass' | 'paper' | 'metal' | 'smoked' | 'gloss'
-export type Setting = 'sunk' | 'flat' | 'raised' | 'cut'
+export type Setting = 'sunk' | 'flat' | 'raised'
 
 type Rgb = [number, number, number]
 
@@ -173,14 +173,13 @@ export function setRun(spec: RunSpec): RunData {
   let k = 0
   const lean = st.lean
   const up = Math.sqrt(1 - lean * lean)
-  const grow = st.setting === 'cut' ? Math.min(2, Math.max(0.6, spec.px / 28)) : 1
   if (bands > 0) {
     for (const { g, x, y } of placed) {
       for (const c of g.contours) {
         const n = c.p.length / 2
         const base = v
         for (let r = 0; r <= bands; r++) {
-          const d = r === 0 ? 0 : rings[r - 1]!.d * grow
+          const d = r === 0 ? 0 : rings[r - 1]!.d
           const a = r === 0 ? rings[0]!.a : r < bands ? rings[r]!.a : 0
           const col = rings[Math.min(r, bands - 1)]!.c
           for (let i = 0; i < n; i++) {
@@ -239,7 +238,6 @@ export function setRun(spec: RunSpec): RunData {
 
 const lin = (c: THREE.Color): Rgb => [c.r, c.g, c.b]
 const hex = (h: number): Rgb => lin(new THREE.Color().setHex(h, THREE.SRGBColorSpace))
-const mix = (a: Rgb, b: Rgb, t: number): Rgb => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t]
 
 const INK = 0x302e2b
 const INK_WARM = 0x3f352a
@@ -247,28 +245,26 @@ const INK_SOFT = 0x67625c
 const SOFT_FONT = 'inter-400'
 const INK_LIGHT = 0xfdf3e6
 const LIP = 0xf2efe8
-const CUT_FLOOR = 0x1d1e21
+const INK_ON_METAL = 0x232427
 
 let styleSet: Record<string, Style> | null = null
 
 // The settings of the type, one for each pair of what it lies on and what its ink is.
 export function styles(): Record<string, Style> {
   if (styleSet) return styleSet
-  const mat = materials()
   const ink = hex(INK)
   const warm = hex(INK_WARM)
   const soft = hex(INK_SOFT)
   const light = hex(INK_LIGHT)
   const lip = hex(LIP)
-  const metal = lin(mat.aluminium.color)
-  const floor = hex(CUT_FLOOR)
+  const onMetal = hex(INK_ON_METAL)
   styleSet = {
     'page:ink': { setting: 'sunk', fill: ink, lean: 0.5, rings: [{ d: 0.3, a: 0.8, c: ink }, { d: 0.9, a: 0.5, c: lip }] },
     'page:soft': { setting: 'sunk', fill: soft, lean: 0.5, rings: [{ d: 0.3, a: 0.8, c: soft }, { d: 0.9, a: 0.5, c: lip }] },
     'cap:ink': { setting: 'sunk', fill: warm, lean: 0.42, rings: [{ d: 0.3, a: 0.8, c: warm }, { d: 0.8, a: 0.4, c: lip }] },
     'glass:ink': { setting: 'flat', fill: ink, lean: 0, rings: [{ d: 0.45, a: 0.85, c: ink }] },
     'paper:ink': { setting: 'flat', fill: ink, lean: 0, rings: [{ d: 0.5, a: 0.8, c: ink }] },
-    'metal:ink': { setting: 'cut', fill: floor, lean: 0.6, rings: [{ d: 0.5, a: 1, c: mix(metal, floor, 0.55) }, { d: 0.95, a: 0.5, c: metal }] },
+    'metal:ink': { setting: 'flat', fill: onMetal, lean: 0, rings: [{ d: 0.4, a: 0.9, c: onMetal }] },
     'gloss:ink': { setting: 'flat', fill: ink, lean: 0, rings: [{ d: 0.45, a: 0.85, c: ink }] },
     'page:light': { setting: 'raised', fill: light, lean: -0.5, rings: [{ d: 0.4, a: 0.85, c: light }] },
     'gloss:light': { setting: 'raised', fill: light, lean: -0.55, rings: [{ d: 0.4, a: 0.85, c: light }] }
@@ -340,15 +336,14 @@ function kit(name: string): Kit {
   if (hit) return hit
   const style = styles()[name]!
   const setting = style.setting
-  const cut = setting === 'cut'
   const make = (over: boolean): THREE.MeshPhysicalMaterial => {
     const m = studio(
       new THREE.MeshPhysicalMaterial({
         color: new THREE.Color().setRGB(style.fill[0], style.fill[1], style.fill[2]),
         vertexColors: true,
-        roughness: cut ? 0.5 : setting === 'raised' ? 0.5 : 0.62,
+        roughness: setting === 'raised' ? 0.5 : 0.62,
         metalness: 0,
-        specularIntensity: cut ? 0.35 : 0.15
+        specularIntensity: 0.15
       })
     )
     m.name = `type-${name}${over ? '-over' : ''}`
