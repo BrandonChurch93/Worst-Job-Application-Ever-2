@@ -10,23 +10,38 @@ import { HEADER } from '../../shell/parts'
 const FIELD_Y = HEADER.contentY
 
 export const START = { x: 1180, y: 800 }
-export const TIMES = { riseSeconds: 0.8, sinkSeconds: 0.6, turretDelay: 0.3, shuffleSeconds: 0.32, pressWait: 0.16, slabFirst: 0.4, slabEvery: 0.55, slabFall: 0.22, slabLie: 0.2, slabLift: 0.13, paperSlide: 0.5, bite: 0.4, tugFilm: 5.2 }
-export const TUG = { stiff: 2600, damp: 36, strainPx: 50, grip: { x: 18, y: 78 }, reach: 320 }
+export const TIMES = { riseSeconds: 0.8, sinkSeconds: 0.6, turretDelay: 0.3, shuffleSeconds: 0.32, pressWait: 0.16, slabCount: 3, slabFirst: 0.4, slabEvery: 0.55, slabFall: 0.2, slabSettle: 0.12, slabLie: 0.22, slabLift: 0.13, paperSlide: 0.5, bite: 0.4, tugFilm: 5.2 }
+export const TUG = { stiff: 2600, damp: 36, strainPx: 50, shoulder: { x: 14, y: 30 }, hands: 52, rateLag: 0.07, reach: { rest: 78, min: 50, max: 150, bite: 190, haul: 260 } }
 export const SPOT = { x: -12, y: -14 }
 export const BITE = { x: SLOT.cx - PAPER.w / 2, y: SLOT.cy - PAPER.h + 8 }
 export const PILE = { x: SLOT.cx - 20, y: SLOT.cy + 64 }
 
-const TUG_CURVE: [number, number][] = [[0, 0.06], [0.7, 0.2], [1.25, 0.13], [2.05, 0.33], [2.5, 0.26], [3.3, 0.48], [3.7, 0.42], [4.4, 0.68], [4.65, 0.66], [5.2, 0.93]]
+export const FIRST = {
+  before: [[2.3, 2.45, 2.6], [2.76, 2.9, 3.32], [3.45, 3.5, 3.8], [4.0, 4.05, 4.4], [4.55, 4.6, 4.9], [5.02, 5.08, 5.2], [5.3, 5.36, 6.34]] as [number, number, number][],
+  after: [[7.44, 7.5, 7.72], [7.9, 7.95, 8.36], [8.5, 8.55, 8.75], [8.85, 8.9, 9.3]] as [number, number, number][],
+  dodge: 3.3, duck: 4.4, cocky: 5.5, shock: [6.46, 7.24] as [number, number], thrown: { x: 260, y: -128 }
+}
+export const SLAB_LEAD = 0.05
+export const DIVE = { start: 0, seconds: 0.14 }
 
-export function tugCurve(t: number): number {
-  if (t <= 0) return TUG_CURVE[0]![1]
+const TUG_CURVE: [number, number, number, number][] = [
+  [0, 0.05, 0.3, 14], [0.35, 0.22, 0.08, 8], [0.95, 0.16, -0.5, 44], [1.3, 0.36, -0.12, 10], [1.95, 0.3, 0.55, 46], [2.3, 0.5, 0.18, 10],
+  [2.95, 0.44, -0.6, 48], [3.25, 0.63, -0.2, 10], [3.85, 0.58, 0.6, 50], [4.15, 0.77, 0.22, 12], [4.65, 0.73, -0.45, 46], [5.2, 0.95, 0, 6]
+]
+
+function tugAt(t: number, column: 1 | 2 | 3): number {
+  if (t <= 0) return TUG_CURVE[0]![column]
   for (let i = 1; i < TUG_CURVE.length; i++) {
     const a = TUG_CURVE[i - 1]!
     const b = TUG_CURVE[i]!
-    if (t <= b[0]) return a[1] + (b[1] - a[1]) * smooth((t - a[0]) / (b[0] - a[0]))
+    if (t <= b[0]) return a[column] + (b[column] - a[column]) * smooth((t - a[0]) / (b[0] - a[0]))
   }
-  return TUG_CURVE[TUG_CURVE.length - 1]![1]
+  return TUG_CURVE[TUG_CURVE.length - 1]![column]
 }
+
+export const tugCurve = (t: number): number => tugAt(t, 1)
+
+export const tugReach = (rate: number): number => Math.min(TUG.reach.max, Math.max(TUG.reach.min, TUG.reach.rest + rate * (rate > 0 ? TUG.reach.bite : TUG.reach.haul)))
 
 export interface Cue { at: number; act?: Acting; react?: Reaction }
 
@@ -60,29 +75,30 @@ export function makePlan(seed: number, first: string, last: string, email: strin
   cues.push({ at: 0.55, act: 'confident' }, { at: 1.3, react: 'anticipate' }, { at: 2.35, react: 'doubleTake' })
 
   const firstKeys = [...first].map(nameOf)
-  const cockyAfter = Math.min(7, firstKeys.length)
-  let t = 2.45
+  const enter = seatIndex.enter!
+  const cockyAfter = Math.min(FIRST.before.length, firstKeys.length)
+  const stand = (seat: number, from: number, at: number, to: number) => {
+    const p = keySpot(seat)
+    hold(from, to, p.x, p.y)
+    click(at)
+  }
   for (let i = 0; i < cockyAfter; i++) {
-    tap(t, seatIndex[firstKeys[i]!]!)
-    t += 0.5
+    const [from, at, to] = FIRST.before[i]!
+    stand(seatIndex[firstKeys[i]!]!, from, at, to)
   }
   const cocky = keySpot(seatIndex[firstKeys[cockyAfter - 1]!]!)
-  hold(t - 0.3, 6.4, cocky.x, cocky.y)
-  cues.push({ at: 5.62, act: 'proud' }, { at: 5.7, react: 'dustOff' })
-  go(6.75, cocky.x - 150, cocky.y - 70)
-  go(7.2, cocky.x - 150, cocky.y - 70)
-  cues.push({ at: 7.3, act: 'nervous' })
-  t = 7.5
+  hold(FIRST.shock[0], FIRST.shock[1], cocky.x + FIRST.thrown.x, cocky.y + FIRST.thrown.y)
+  cues.push({ at: FIRST.dodge, react: 'jump' }, { at: FIRST.duck, react: 'flinch' }, { at: FIRST.cocky, act: 'proud' }, { at: FIRST.cocky + 0.08, react: 'dustOff' })
   for (let i = cockyAfter - 1; i < firstKeys.length; i++) {
-    tap(t, seatIndex[firstKeys[i]!]!)
-    t += 0.45
+    const [from, at, to] = FIRST.after[Math.min(i - cockyAfter + 1, FIRST.after.length - 1)]!
+    const late = Math.max(0, i - cockyAfter + 1 - (FIRST.after.length - 1)) * 0.5
+    stand(seatIndex[firstKeys[i]!]!, from + late, at + late, to + late)
   }
-  const enter = seatIndex.enter!
   tap(9.8, enter, 0.25, 0.1)
 
   const rng = stream('step1:shuffle', seed)
   let places = homePlaces()
-  t = 10.3
+  let t = 10.3
   for (const ch of [...last].map(nameOf)) {
     tap(t, places[seatIndex[ch]!]!, 0.12, 0.06)
     places = shuffled(places, rng)
@@ -97,13 +113,15 @@ export function makePlan(seed: number, first: string, last: string, email: strin
   }
   const submit = t + 0.02
   tap(submit, enter, 0.04, 0.04)
-  const e = submit + 0.1
-  const fy = FIELD_Y + 2 * FIELD_PITCH + 36 + config.scale.sizes.field / 2
-  hold(e + 0.28, e + 0.42, 1560, fy)
-  hold(e + 0.58, e + 0.9, 1420, 800)
-  hold(e + 1.06, e + 1.46, 1640, fy)
-  hold(e + 1.62, e + 2.3, 1420, 800)
-
+  const e = submit + SLAB_LEAD
+  const spots = [keySpot(enter), keySpot(seatIndex.w!), keySpot(seatIndex.space!), keySpot(seatIndex.u!)]
+  for (let n = 0; n < TIMES.slabCount; n++) {
+    const from = spots[n]!
+    const to = spots[n + 1]!
+    const at = e + TIMES.slabFirst + n * TIMES.slabEvery
+    go(at + DIVE.start, from.x, from.y)
+    hold(at + DIVE.start + DIVE.seconds, at + TIMES.slabEvery - 0.1, to.x, to.y)
+  }
   const grab = { x: PAPER_REST.x + PAPER.w - 62, y: PAPER_REST.y + 24 }
   const drop = 21.85
   hold(20.88, 21.02, grab.x, grab.y)
@@ -127,13 +145,11 @@ export function makePlan(seed: number, first: string, last: string, email: strin
 
 function tugPoint(tau: number): { x: number; y: number } {
   const amount = tugCurve(tau)
-  const before = tugCurve(tau - 0.12)
-  const gaining = amount < before
-  const lean = 0.3 + 0.16 * Math.sin(tau * 1.3) + (gaining ? 0.08 : 0)
-  const strain = 16 + 9 * Math.sin(tau * 6.1) + (gaining ? 22 : 0) + (amount > 0.6 ? 10 : 0)
-  const rest = PAPER.h * (1 - amount)
-  const far = rest + strain * (1 + TUG.stiff / 480)
-  return { x: SLOT.cx - Math.sin(lean) * far - TUG.grip.x, y: SLOT.cy - Math.cos(lean) * far - TUG.grip.y }
+  const reach = tugReach((tugCurve(tau + 0.03) - tugCurve(tau - 0.03)) / 0.06)
+  const lean = tugAt(tau, 2)
+  const strain = tugAt(tau, 3) + 4 * Math.sin(tau * 23)
+  const far = PAPER.h * (1 - amount) + strain * (1 + TUG.stiff / 480) + reach
+  return { x: SLOT.cx - Math.sin(lean) * far - TUG.shoulder.x, y: SLOT.cy - Math.cos(lean) * far - TUG.shoulder.y }
 }
 
 export function pointerAt(plan: Plan, time: number): Pointer {
@@ -160,7 +176,7 @@ export function pointerAt(plan: Plan, time: number): Pointer {
   return { x, y, down }
 }
 
-const TUG_FRAME = { x: 90, y: 300, w: 880, h: 495 }
+const TUG_FRAME = { x: 130, y: 226, w: 960, h: 540 }
 
 export function filmCamera(time: number): CameraPose {
   const home = homePose(0)

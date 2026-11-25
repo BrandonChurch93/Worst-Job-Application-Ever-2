@@ -402,35 +402,176 @@ describe('the scene of the card loop', () => {
 })
 
 describe('the slabs and the typed address', () => {
-  it('never rests a slab over the typed address: every slab box stays clear of the value box', () => {
+  it('drops each slab straight down onto the keys, leaves it where it landed and never covers the address or its field', () => {
     const a = film()
     const hits = (p: { x: number; y: number; w: number; h: number }, q: { x: number; y: number; w: number; h: number }): boolean => p.x < q.x + q.w && q.x < p.x + p.w && p.y < q.y + q.h && q.y < p.y + p.h
-    const places = new Set<string>()
+    const places = new Map<string, string>()
+    const lows = new Map<string, number>()
     let frames = 0
+    let most = 0
     for (let i = 0; i < at(20); i++) {
       a.advance(1)
-      const st = a.page.save() as { slab: { landed: boolean } | null }
-      if (!st.slab) continue
+      const st = a.page.save() as { slabs: { landed: boolean }[]; slabClear: number; values: Record<string, string> }
+      if (!st.slabs.length) continue
       const list: DrawList = []
       a.page.draw(list)
-      const slab = list.find((q) => q.id === 'email-slab')!
-      const label = list.find((q) => q.id === 'email-slab-label')!
+      const bodies = list.filter((q) => /^email-slab(-\d)?$/.test(q.id))
+      expect(bodies.length).toBe(st.slabs.length)
+      most = Math.max(most, bodies.length)
       const drawn = list.find((q) => q.id === 'email-value')!
-      const value = { x: drawn.x, y: drawn.y, w: block(TYPE.value.font, (a.page.save() as { values: Record<string, string> }).values.email!, TYPE.value.px).width, h: drawn.h }
+      const pocket = list.find((q) => q.id === 'email-pocket')!
+      const value = { x: drawn.x, y: drawn.y, w: block(TYPE.value.font, st.values.email!, TYPE.value.px).width, h: drawn.h }
       expect(value.w).toBeGreaterThan(250)
-      expect(hits(slab, value)).toBe(false)
-      expect(slab.x - (value.x + value.w) >= 16 || slab.y - (value.y + value.h) >= 16).toBe(true)
-      expect(label.x).toBeGreaterThan(slab.x)
-      expect(label.x).toBeLessThan(slab.x + slab.w)
-      expect(label.y).toBeGreaterThan(slab.y)
-      expect(label.y).toBeLessThan(slab.y + slab.h)
-      places.add(`${Math.round(slab.x)},${Math.round(slab.y)}`)
+      bodies.forEach((slab, n) => {
+        const label = list.find((q) => q.id === `${slab.id}-label`)!
+        expect(label.words).toBe('copy:step1.emailError')
+        expect(hits(slab, value)).toBe(false)
+        expect(hits(slab, pocket)).toBe(false)
+        expect(slab.y).toBeGreaterThanOrEqual(DECK.y)
+        expect(label.x).toBeGreaterThan(slab.x)
+        expect(label.x).toBeLessThan(slab.x + slab.w)
+        expect(label.y).toBeGreaterThan(slab.y)
+        expect(label.y).toBeLessThan(slab.y + slab.h)
+        expect(label.z0).toBe(slab.z1)
+        const place = `${slab.x},${slab.y}`
+        expect(places.get(slab.id) ?? place, slab.id).toBe(place)
+        places.set(slab.id, place)
+        if (st.slabClear < 0) {
+          expect(slab.z0, slab.id).toBeLessThanOrEqual((lows.get(slab.id) ?? Infinity) + 6)
+          lows.set(slab.id, Math.min(lows.get(slab.id) ?? Infinity, slab.z0))
+          if (st.slabs[n]!.landed) expect(slab.z0 - lows.get(slab.id)!).toBeLessThanOrEqual(6)
+        }
+      })
       frames++
     }
     expect(frames).toBeGreaterThan(300)
+    expect(most).toBe(3)
+    expect(new Set(places.values()).size).toBe(3)
     expect(a.events.filter((e) => e.name === 'slab-drop').length).toBe(3)
     expect(a.events.filter((e) => e.name === 'slab-drop').every((e) => !e.hitsCursor)).toBe(true)
-    expect(places.size).toBeGreaterThanOrEqual(2)
+  })
+})
+
+describe('the fixes after round 2 of the blockout', () => {
+  it('fights the tug in every second: paper left, the place of the cursor and the stretch of the arms all change', () => {
+    const a = film()
+    const rows: { amount: number; x: number; y: number; arm: number }[] = []
+    for (let i = 0; i < at(28.2); i++) {
+      a.advance(1)
+      const st = a.page.save() as { phase: string; tug: { amount: number; reach: number } }
+      if (st.phase === 'tug') rows.push({ amount: st.tug.amount, x: a.cursor.x, y: a.cursor.y, arm: st.tug.reach })
+    }
+    const second = stepHz
+    expect(rows.length).toBeGreaterThan(5 * second)
+    for (let i = 0; i + second < rows.length; i += 6) {
+      const p = rows[i]!
+      const q = rows[i + second]!
+      expect(q.amount - p.amount, `paper ${i}`).toBeGreaterThan(0.08)
+      expect(Math.hypot(q.x - p.x, q.y - p.y), `cursor ${i}`).toBeGreaterThan(25)
+    }
+    for (let i = 0; i + second < rows.length; i += 6) {
+      const span = rows.slice(i, i + second).map((r) => r.arm)
+      expect(Math.max(...span) - Math.min(...span), `arms ${i}`).toBeGreaterThan(40)
+    }
+    let backs = 0
+    for (let i = 1; i < rows.length; i++) if (rows[i]!.amount < rows[i - 1]!.amount && rows[i - 1]!.amount >= (rows[i - 2]?.amount ?? 0)) backs++
+    expect(backs).toBeGreaterThanOrEqual(4)
+  })
+
+  it('takes the hit after a cocky pause, holds the shock and rests on the finished name', () => {
+    const a = film()
+    let hit = -1
+    let full = -1
+    let pressed = 0
+    for (let i = 0; i < at(10); i++) {
+      a.advance(1)
+      const now = (i + 1) / stepHz
+      const st = a.page.save() as { values: Record<string, string>; keyDown: Record<string, number> }
+      if (hit < 0 && a.events.some((e) => e.name === 'bolt-hit-cursor')) hit = now
+      if (st.values.firstName === config.applicant.filmFirstName) full = full < 0 ? now : full
+      else full = -1
+      const list: DrawList = []
+      if (i % 4 === 0) {
+        a.page.draw(list)
+        for (const [name] of Object.entries(st.keyDown)) {
+          const key = list.find((q) => q.id === `key-${name}`)!
+          expect(key.tone).toBe('pocket')
+          expect(key.z1).toBe(config.scale.heights.keycap - config.scale.heights.keyTravel)
+          pressed++
+        }
+      }
+    }
+    expect(hit).toBeGreaterThan(5.9)
+    expect(hit).toBeLessThan(6.6)
+    expect(a.pageTime).toBeGreaterThan(0)
+    expect(full).toBeGreaterThan(hit + 1.5)
+    expect(full).toBeLessThanOrEqual(9.5)
+    expect(pressed).toBeGreaterThan(40)
+  })
+
+  it('draws a bolt as a short light capsule with a dark edge and a scorch as a small round mark', () => {
+    const t = makeTurrets()
+    t.raise(() => {})
+    let bolts = 0
+    let marks = 0
+    for (let i = 0; i < stepHz * 4; i++) {
+      t.step(1 / stepHz, { x: 900 + 300 * Math.sin(i / 20), y: 880 }, true, () => {})
+      const out: DrawList = []
+      t.draw(out)
+      for (const b of t.s.bolts) {
+        const core = out.find((q) => q.id === `bolt-${b.id}`)!
+        const edge = out.find((q) => q.id === `bolt-${b.id}-edge`)!
+        expect(core.tone).toBe('light')
+        expect(edge.tone).toBe('dark')
+        expect(core.w).toBeLessThanOrEqual(64)
+        expect(edge.w).toBeGreaterThan(core.w)
+        expect(edge.h).toBeGreaterThan(core.h)
+        expect(out.indexOf(edge)).toBeLessThan(out.indexOf(core))
+        bolts++
+      }
+      for (const c of out.filter((q) => q.id.startsWith('scorch-'))) {
+        expect(c.kind).toBe('disc')
+        expect(c.w).toBeLessThanOrEqual(TURRET.scorch)
+        expect(c.w).toBe(c.h)
+        marks++
+      }
+    }
+    expect(bolts).toBeGreaterThan(10)
+    expect(marks).toBeGreaterThan(10)
+  })
+
+  it('sinks the deck, the keys and their legends as one body: no legend without its key', () => {
+    const a = film()
+    let sinking = 0
+    for (let i = 0; i < at(21); i++) {
+      a.advance(1)
+      const st = a.page.save() as { board: number; boardUp: boolean }
+      if (st.boardUp || st.board <= 0) continue
+      const list: DrawList = []
+      a.page.draw(list)
+      const well = list.find((q) => q.id === 'keyboard-well')
+      if (well) {
+        expect(well.x).toBe(DECK.x)
+        expect(well.w).toBe(DECK.w)
+      }
+      for (const seat of seats) {
+        const key = list.find((q) => q.id === `key-${seat.name}`)
+        const legend = list.find((q) => q.id === `key-${seat.name}-legend`)
+        if (legend) {
+          expect(key, seat.name).toBeDefined()
+          expect(legend.z0).toBe(key!.z1)
+        }
+        if (key && key.z1 <= 0) expect(well && key.y >= well.y, seat.name).toBe(true)
+      }
+      sinking++
+    }
+    expect(sinking).toBeGreaterThan(100)
+  })
+
+  it('does not move the cursor of the film before the page has set it down', () => {
+    const page = makePage()
+    const first = page.script(0)
+    for (let t = 0; t <= 0.6; t += 1 / stepHz) expect(page.script(t)).toEqual(first)
   })
 })
 
