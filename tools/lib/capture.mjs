@@ -180,7 +180,7 @@ export async function renderJob(session, job) {
   await session.page.evaluate(async (j) => {
     window.showcase.setDiagnostic(j.diag || 'beauty')
     if (j.kind === 'film') await window.showcase.renderFilmFrame(j.frame, j.tier)
-    else if (j.kind === 'opening') await window.showcase.renderOpeningFrame(j.frame)
+    else if (j.kind === 'opening') await window.showcase.renderOpeningFrame(j.frame, j.tier)
     else if (j.kind === 'loop') await window.showcase.renderLoopFrame(j.frame, j.tier)
     else await window.showcase.renderStill(j.spec)
   }, job)

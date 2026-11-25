@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { config } from '../src/config'
 import { makeLoop, makeOpening } from '../src/film'
-import { boltFlights, cursorAt, cursorTrack, fireScene, fireScript, LOOP_SECONDS, TRACK_DELAY } from '../src/film/fire'
+import { BODY, cursorAt, fireScene, fireScript, fireTrack, LOOP_SECONDS } from '../src/film/fire'
 import { cropOf, cursorBox, inside, threatOf } from '../src/film/loop'
-import { buildLayout, openingFrames, openingSeconds, openingTimes, promptLayout, typedAt, LEVEL_SECONDS, SEND_SECONDS } from '../src/film/opening'
+import { buildLayout, openingFrames, openingSeconds, openingTimes, promptLayout, typedAt, typedLines, LEVEL_SECONDS, SEND_SECONDS } from '../src/film/opening'
 import { layoutProblems, typeRegister } from '../src/shell/layout'
 import { hasWords, words } from '../src/shell/words'
 
@@ -52,7 +52,7 @@ describe('the opening of film A', () => {
       for (const s of opening.frame(i).list) {
         if (s.kind !== 'text') continue
         if (s.words!.startsWith('runtime:')) {
-          expect(intro.prompt.startsWith(s.text!)).toBe(true)
+          expect(intro.prompt.startsWith(s.text!.replace(/\n/g, ' '))).toBe(true)
           continue
         }
         expect(allowed.has(s.words!), s.words).toBe(true)
@@ -67,7 +67,7 @@ describe('the opening of film A', () => {
   it('shows the whole prompt before it is sent and every line of intro.steps by the end', () => {
     const t = openingTimes()
     const before = opening.frame(Math.floor(t.sent * fps) - 1)
-    expect(before.list.find((s) => s.id === 'prompt-typed')!.text).toBe(intro.prompt)
+    expect(before.list.find((s) => s.id === 'prompt-typed')!.text!.replace(/\n/g, ' ')).toBe(intro.prompt)
     expect(before.list.some((s) => s.words === 'intro.reasoningLevel' && s.id === 'level-word')).toBe(true)
     const last = opening.frame(opening.frameCount - 1)
     for (let i = 0; i < intro.steps.length; i++) {
@@ -75,6 +75,18 @@ describe('the opening of film A', () => {
       expect(last.list.some((s) => s.id === `build-done-${i}`)).toBe(true)
     }
     expect(last.list.some((s) => s.words === 'intro.title')).toBe(true)
+  })
+
+  it('never moves a typed word to another line: the line breaks are those of the whole prompt', () => {
+    const whole = typedLines(intro.prompt)
+    expect(whole.join(' ')).toBe(intro.prompt)
+    expect(whole.length).toBeGreaterThan(1)
+    for (let n = 1; n <= intro.prompt.length; n++) {
+      const lines = typedLines(intro.prompt.slice(0, n))
+      expect(lines.length).toBeGreaterThan(0)
+      lines.forEach((l, i) => expect(whole[i]!.startsWith(l), `${n}: ${l}`).toBe(true))
+      for (let i = 0; i < lines.length - 1; i++) expect(lines[i]).toBe(whole[i])
+    }
   })
 
   it('starts on a finished picture: frame 0 has the screen, the input, the caret, the level control and the send button', () => {
@@ -146,7 +158,8 @@ describe('the card loop', () => {
     const before = loop.frame(frames - 2).cursor
     const stride = Math.hypot(last.x - before.x, last.y - before.y)
     expect(Math.hypot(a.x - last.x, a.y - last.y)).toBeLessThan(stride * 2 + 2)
-    expect(cursorTrack().seam).toBeLessThan(1e-6)
+    expect(fireTrack().seam).toBeLessThan(1e-6)
+    expect(fireTrack().turretSeam).toBeLessThan(1e-6)
   })
 
   it('has only periods that divide its length: the cursor, every key, every bolt and every mark come round after 8 s', () => {
@@ -157,14 +170,14 @@ describe('the card loop', () => {
       expect(loop.state(i + frames)).toEqual(loop.state(i))
     }
     expect(fireScene(1.25)).toEqual(fireScene(0.25))
-    for (const f of boltFlights()) {
-      expect(f.seconds).toBeGreaterThan(0.1)
-      expect(f.seconds).toBeLessThan(LOOP_SECONDS)
-    }
-    expect(fireScript.markSeconds).toBeLessThan(LOOP_SECONDS)
+    expect(fireScript.scorchSeconds).toBeLessThan(LOOP_SECONDS)
     const ids = new Map<string, number>()
     for (let i = 0; i < frames; i++) for (const s of loop.frame(i).list) ids.set(s.id, (ids.get(s.id) ?? 0) + 1)
-    for (const b of fireScript.bolts) expect(ids.get(`fire-${b.id}`)).toBeGreaterThan(5)
+    fireScript.shots.forEach((_, n) => expect(ids.get(`bolt-${n}`), `bolt ${n}`).toBeGreaterThan(5))
+    expect(ids.get('turret-0')).toBe(frames)
+    expect(ids.get('turret-1')).toBe(frames)
+    expect(ids.get('turret-0-charge')).toBeGreaterThan(10)
+    expect(ids.get('keyboard-deck')).toBe(frames)
   })
 
   it('keeps the cursor and what it is up against inside a centred 4:3 crop and a centred square crop on every frame', () => {
@@ -189,22 +202,41 @@ describe('the card loop', () => {
     }
   })
 
-  it('plays fair: a turret fires at where the cursor was, a dodged bolt lands where the cursor no longer is, and one bolt hits', () => {
-    for (const f of boltFlights()) {
-      const aimed = cursorAt(f.fire - TRACK_DELAY)
-      const there = cursorAt(f.plan.land)
-      const gone = Math.hypot(there.x + 18 - f.to.x, there.y + 30 - f.to.y)
-      if (f.plan.hits) expect(gone).toBeLessThan(4)
-      else {
-        expect(Math.hypot(aimed.x - f.to.x, aimed.y - f.to.y), f.plan.id).toBeLessThan(60)
-        expect(gone, f.plan.id).toBeGreaterThan(70)
-      }
-    }
-    expect(fireScript.bolts.filter((b) => b.hits).length).toBe(1)
-    const hit = fireScript.hit.land
+  it('plays fair: the turrets of step 1 aim and fire by their own rules, a dodged bolt lands where the cursor no longer is, and one bolt hits', () => {
+    const t = fireTrack()
+    const stepHz = config.sim.stepHz
+    expect(t.fires.map((s) => s / stepHz)).toEqual(fireScript.shots.map((b) => expect.closeTo(b.fire, 1)))
+    expect(t.landings.length).toBe(fireScript.shots.length)
+    expect(t.landings.filter((l) => l.hit).length).toBe(1)
+    t.landings.forEach((l, n) => {
+      const shot = fireScript.shots[n]!
+      expect(l.hit, `shot ${n}`).toBe(shot.hits)
+      expect(l.from, `shot ${n}`).toBe(shot.turret)
+      const locked = cursorAt(shot.fire - fireScript.windup - 0.1)
+      expect(Math.hypot(locked.x + BODY.x - l.x, locked.y + BODY.y - l.y), `shot ${n} is aimed at where the cursor was`).toBeLessThan(90)
+      const there = cursorAt(l.step / stepHz)
+      const gone = Math.hypot(there.x + BODY.x - l.x, there.y + BODY.y - l.y)
+      if (l.hit) expect(gone).toBeLessThanOrEqual(fireScript.hitRadius)
+      else expect(gone, `shot ${n}`).toBeGreaterThan(fireScript.hitRadius * 2)
+    })
+    const hit = t.landings.find((l) => l.hit)!.step / stepHz
     expect(cursorAt(hit + 0.1).damage).toEqual(['burn'])
     expect(cursorAt(hit - 0.01).damage).toEqual([])
     expect(cursorAt(0).damage).toEqual([])
+  })
+
+  it('types one letter of the film name and loses it to the bolt that hits, so the field comes round too', () => {
+    const name = config.applicant.filmFirstName
+    const kept = name.slice(0, fireScript.kept)
+    const hit = fireTrack().landings.find((l) => l.hit)!.step / config.sim.stepHz
+    expect(fireScene(0).typed).toBe(kept)
+    expect(fireScene((hit - 0.05) / LOOP_SECONDS).typed).toBe(name.slice(0, fireScript.kept + 1))
+    expect(fireScene((hit + 0.05) / LOOP_SECONDS).typed).toBe(kept)
+    const press = fireScript.hops.find((h) => h.press)!
+    const down = fireScene((press.leave + fireScript.hopSeconds + 0.05) / LOOP_SECONDS)
+    expect(down.pressed).toBe(fireScript.typedKey)
+    const cap = (list: typeof down.list) => list.find((s) => s.id === `key-${fireScript.typedKey}`)!
+    expect(cap(down.list).z1).toBeLessThan(cap(fireScene(0).list).z1)
   })
 
   it('has one cursor with no arms, one size and no face to give', () => {
@@ -218,8 +250,11 @@ describe('the card loop', () => {
     }
   })
 
-  it('marks its own shapes as stand-ins of the keyboard and the turrets', () => {
-    const parts = new Set(loop.frame(100).list.filter((s) => s.id.startsWith('fire-')).map((s) => s.part))
-    expect([...parts].sort()).toEqual(['keyboard', 'turrets'])
+  it('draws the page of step 1 with its own keyboard and turrets, and adds no shape of its own', () => {
+    const list = loop.frame(100).list
+    expect(list.some((s) => s.id.startsWith('fire-'))).toBe(false)
+    expect(new Set(list.filter((s) => s.id.startsWith('turret-') || s.id.startsWith('bolt-') || s.id.startsWith('scorch-')).map((s) => s.part))).toEqual(new Set(['turrets']))
+    expect(list.find((s) => s.id === 'key-x')?.part).toBe('keyboard')
+    expect(new Set(list.map((s) => s.id)).size).toBe(list.length)
   })
 })

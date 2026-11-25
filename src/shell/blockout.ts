@@ -41,6 +41,8 @@ const q = (v: number): number => Math.round(v * 4) / 4
 
 interface Arrow { group: THREE.Group; body: THREE.Mesh; rim: THREE.Mesh; mark: THREE.Mesh; strips: THREE.Group; sweat: THREE.Group; arms: THREE.Group; limbs: THREE.Mesh[]; fists: THREE.Mesh[] }
 
+const ORDER = { ground: -1000000, cursor: 1000000 }
+
 export class BlockoutView {
   readonly scene = new THREE.Scene()
   private pivot = new THREE.Group()
@@ -148,6 +150,9 @@ export class BlockoutView {
       fists.push(fist)
       arms.add(limb, fist)
     }
+    const base = ORDER.cursor + this.arrows.length * 64
+    let part = 0
+    for (const root of [group, arms]) root.traverse((o) => (o.renderOrder = (o as THREE.Group).isGroup ? base : part++))
     this.scene.add(group, arms)
     return { group, body, rim, mark, strips, sweat, arms, limbs, fists }
   }
@@ -245,6 +250,7 @@ export class BlockoutView {
       mesh.castShadow = true
       mesh.receiveShadow = true
       mesh.userData.standIn = g.part
+      mesh.renderOrder = ORDER.ground + this.slab.children.length
       this.slab.add(mesh)
     }
   }
@@ -254,7 +260,7 @@ export class BlockoutView {
     o.rotation.set(s.turnX ?? 0, s.turnY ?? 0, -(s.rot ?? 0))
   }
 
-  private solid(s: Shape): void {
+  private solid(s: Shape, order: number): void {
     let entry = this.solids.get(s.id)
     if (!entry) {
       const mesh = new THREE.Mesh(this.unitBox, this.tone(s.tone))
@@ -283,6 +289,7 @@ export class BlockoutView {
       mesh.scale.set(1, 1, 1)
     }
     mesh.visible = true
+    mesh.renderOrder = order
     mesh.userData.standIn = s.part
     mesh.userData.shape = s.id
     entry.seen = this.tick
@@ -295,7 +302,7 @@ export class BlockoutView {
     return this.wells.some((w) => x >= w.x && x <= w.x + w.w && y >= w.y && y <= w.y + w.h)
   }
 
-  private text(s: Shape): void {
+  private text(s: Shape, order: number): void {
     const type = s.type!
     const said = words(s.words!, s.text)
     const key = `${s.words}|${said}|${type.font}|${type.px}|${type.wrap ?? ''}|${type.align ?? ''}|${type.lead ?? ''}|${s.tone}|${q(s.w)}`
@@ -325,6 +332,7 @@ export class BlockoutView {
       entry.key = key
     }
     this.place(entry.group, s, (s.z1 < 0 && !this.sunk(s) ? 0.07 : s.z1) + 0.09)
+    entry.group.children.forEach((child, i) => (child.renderOrder = order + i / 1024))
     entry.group.visible = true
     entry.seen = this.tick
   }
@@ -385,11 +393,13 @@ export class BlockoutView {
     this.pivot.position.set(0, -f.scroll, 0)
     this.sheet.position.set(0, f.scroll, 0)
     this.pivot.rotation.x = f.turn
+    let order = 0
     for (const s of f.list) {
+      order++
       if (s.kind === 'well') continue
       if (turning && !s.fixed && (s.y + s.h < top || s.y > top + tall)) continue
-      if (s.kind === 'text') this.text(s)
-      else this.solid(s)
+      if (s.kind === 'text') this.text(s, order)
+      else this.solid(s, order)
     }
     for (const [id, e] of this.solids) {
       if (e.seen === this.tick) continue

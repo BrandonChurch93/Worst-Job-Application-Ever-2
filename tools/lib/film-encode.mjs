@@ -9,7 +9,7 @@ const GB = 1024 * 1024 * 1024
 export const MB = 1024 * 1024
 
 export function ffmpeg(words, what) {
-  const r = spawnSync('ffmpeg', ['-y', '-hide_banner', '-loglevel', 'error', ...words], { encoding: 'utf8', maxBuffer: 64 * MB })
+  const r = spawnSync('ffmpeg', ['-nostdin', '-y', '-hide_banner', '-loglevel', 'error', ...words], { encoding: 'utf8', maxBuffer: 64 * MB })
   if (r.error) throw new Error(`${what}: ffmpeg could not be run: ${r.error.message}`)
   if (r.status !== 0) throw new Error(`${what}: ffmpeg ended with ${r.status}\n${(r.stderr || '').trim().split('\n').slice(-6).join('\n')}`)
 }
@@ -100,14 +100,14 @@ const countPng = (dir) => {
 }
 
 // How many rendered frames wait on disk under the frame folders of the render commands.
-export const framesOnDisk = () => ['film', 'loop', 'local', 'stress'].reduce((n, d) => n + countPng(at('out', 'work', d, 'frames')), 0)
+export const framesOnDisk = () => ['film', 'loop', 'render-local/film', 'render-local/proof', 'stress'].reduce((n, d) => n + countPng(at('out', 'work', d, 'frames')), 0)
 
 // Every render command starts here. Under the limit it deletes old output under out/work/, oldest kind first, and checks again.
 export function checkDisk(name, keep = []) {
   const min = config().sandbox.minFreeDiskGb
   let free = freeGb()
   if (free >= min) return free
-  const old = [['film', 'frames'], ['loop', 'frames'], ['local', 'frames'], ['stress', 'frames'], ['seq'], ['determinism'], ['roughcut'], ['stress'], ['crops'], ['stills']]
+  const old = [['film', 'frames'], ['loop', 'frames'], ['render-local', 'film', 'frames'], ['render-local', 'proof', 'frames'], ['stress', 'frames'], ['seq'], ['determinism'], ['roughcut'], ['stress'], ['crops'], ['stills']]
   for (const o of old) {
     const dir = at('out', 'work', ...o)
     if (!fs.existsSync(dir) || keep.some((k) => path.resolve(k).startsWith(dir))) continue
