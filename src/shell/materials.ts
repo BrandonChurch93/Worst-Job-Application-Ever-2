@@ -208,6 +208,34 @@ function grained<T extends THREE.MeshStandardMaterial>(material: T, rough: numbe
   })
 }
 
+const stretchGlsl = `
+#ifdef USE_ENVMAP
+vec3 wjaStretched( const in vec3 viewDir, const in vec3 normal, const in float roughness, const in vec3 along, const in float anisotropy ) {
+	vec3 sum = vec3( 0.0 );
+	float total = 0.0;
+	for ( int i = -4; i <= 4; i ++ ) {
+		float t = float( i ) / 4.0;
+		float w = exp( -2.0 * t * t );
+		sum += w * getIBLRadiance( viewDir, normalize( normal + along * ( t * anisotropy * 0.3 ) ), roughness );
+		total += w;
+	}
+	return sum / total;
+}
+#endif
+`
+
+// A brushed face mirrors the room stretched across its brushing. The stock code only bends the mirror when the face is seen from the side,
+// so a turned face seen from above showed no fan of light. This reads the room along the stretch instead.
+function stretched<T extends THREE.MeshPhysicalMaterial>(material: T): T {
+  return also(material, 'stretched', (shader) => {
+    const call = 'getIBLAnisotropyRadiance( geometryViewDir, geometryNormal, material.roughness, material.anisotropyB, material.anisotropy )'
+    if (!shader.fragmentShader.includes(call) || !shader.fragmentShader.includes('void main() {')) throw new Error('The light code of this three.js release is not the one this build was written for')
+    shader.fragmentShader = shader.fragmentShader
+      .replace('void main() {', `${stretchGlsl}\nvoid main() {`)
+      .replace(call, 'wjaStretched( geometryViewDir, geometryNormal, material.roughness, material.anisotropyT, material.anisotropy )')
+  })
+}
+
 export interface Materials {
   ceramic: THREE.MeshPhysicalMaterial
   pocket: THREE.MeshPhysicalMaterial
@@ -245,11 +273,11 @@ export function makeMaterials(seed: number): Materials {
   const glassSunk = physical({ color: srgb(0xc0cbc7), roughness: 0.44, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8, vertexColors: true })
   const glassThick = physical({ color: srgb(0xa3acad), roughness: 0.48, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8 })
   const aluminium = physical({
-    color: srgb(0xc4c8cb), roughness: 0.3, metalness: 1, normalMap: brushed, normalScale: new THREE.Vector2(0.22, 0.22), anisotropy: 0.72, anisotropyRotation: Math.PI / 2
+    color: srgb(0xb9bdc1), roughness: 0.3, metalness: 1, normalMap: brushed, normalScale: new THREE.Vector2(0.22, 0.22), anisotropy: 0.72, anisotropyRotation: Math.PI / 2
   })
-  const aluminiumTurned = physical({
-    color: srgb(0x8b9096), roughness: 0.17, metalness: 1, normalMap: turned.normal, normalScale: new THREE.Vector2(0.3, 0.3), anisotropy: 0.85, anisotropyMap: turned.direction
-  })
+  const aluminiumTurned = stretched(physical({
+    color: srgb(0x8e9399), roughness: 0.2, metalness: 1, normalMap: turned.normal, normalScale: new THREE.Vector2(0.16, 0.16), anisotropy: 0.85, anisotropyMap: turned.direction
+  }))
   const orange = physical({ color: srgb(0xc24400), roughness: 0.5, metalness: 0, clearcoat: 0.3, clearcoatRoughness: 0.09, specularIntensity: 0.8, specularColor: srgb(0xff9a52) })
   const gap = physical({ color: srgb(0x23211f), roughness: 0.85, metalness: 0, specularIntensity: 0.3 })
   const ink = physical({ color: srgb(0x2a2927), roughness: 0.48, metalness: 0, specularIntensity: 0.2 })
