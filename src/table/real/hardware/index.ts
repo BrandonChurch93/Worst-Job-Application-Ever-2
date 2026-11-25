@@ -13,6 +13,8 @@ import { GATE, SLING, tier } from './tier'
 export const VERSION = 'hardware-1'
 const STEEL_BALLS = 8
 const TURN = 0.34
+// The lift's rings stand upright and are seen on their flat faces from the player's end, so they keep more of their tone.
+const RING = 0.62
 const SOFT = [FIN.rubber, FIN.gloss, FIN.satin]
 const tubeOf = (z: Zone): THREE.Material => clearTube(z, TUBE.opacity)
 
@@ -120,7 +122,7 @@ function buildLift(z: Zone): THREE.Object3D {
   o.name = `lift.${z.id}`
   const m = metalOf(z)
   const l = lift(z)
-  o.add(mesh(l.G.turn(TURN, SOFT), m, 'lift.static', { cast: true }))
+  o.add(mesh(l.G.turn(RING, SOFT), m, 'lift.static', { cast: true }))
   const tube = mesh(l.C, tubeOf(z), 'lift.tube')
   tube.renderOrder = 3
   o.add(tube)
