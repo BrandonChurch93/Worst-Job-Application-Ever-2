@@ -1,5 +1,5 @@
 diff --git a/tests/step2.test.ts b/tests/step2.test.ts
-index 2741e39..87f704c 100644
+index 2741e39..660a6d7 100644
 --- a/tests/step2.test.ts
 +++ b/tests/step2.test.ts
 @@ -201,8 +201,9 @@ describe('step 2, live', () => {
@@ -9,7 +9,7 @@ index 2741e39..87f704c 100644
 +      if (l.page.id !== 'step2') continue
        l.page.skip()
 -      l.advance(3 * stepHz)
-+      for (let n = 0; n < 3 * stepHz && l.page.id !== 'step3'; n++) l.advance(1)
++      for (let n = 0; n < 3 * stepHz && (l.page.id as string) !== 'step3'; n++) l.advance(1)
        expect(l.page.id, String(at)).toBe('step3')
        expect(l.cursor.taken, String(at)).toBe(false)
        expect(l.cursor.damaged, String(at)).toBe(false)
