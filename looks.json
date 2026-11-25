@@ -1,35 +1,35 @@
 {
   "folder": "hardware",
-  "pushed": "2026-11-25T18:24:35.587Z",
-  "commit": "c47e4de1d69858ac89538fd44d940a1e2be0be1d",
+  "pushed": "2026-11-25T18:39:01.341Z",
+  "commit": "62e881ca9d7193bb64733af32dea48836b24e4a1",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Office lift after the ruling (left): one shaft with steel rings, an orange scoop clipped to it, the orange elbow leaving sideways; approved image on the right",
-      "time": "2026-11-25T18:24:33.794Z",
+      "caption": "Key table-wide: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-25T18:38:59.547Z",
       "by": "hardware",
-      "from": "out/work/hw/19-office-lift-scoop-beside-approved.jpg"
+      "from": "out/work/compare/compare-table-wide.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "The lift in the wide view: one shaft through the street housing and past the office elbow to the corporate tier, no cups between tiers",
-      "time": "2026-11-25T18:24:34.028Z",
+      "caption": "Office lift at review quality (left) beside the approved image: one shaft, steel rings, orange scoop clipped to it, orange elbow, the shaft carrying on past the elbow",
+      "time": "2026-11-25T18:38:59.861Z",
       "by": "hardware",
-      "from": "out/work/hw/20-lift-one-shaft-wide.jpg"
+      "from": "out/work/hw/22-office-lift-review-beside-approved.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Whole table, draft, beside the approved image",
-      "time": "2026-11-25T18:24:34.272Z",
+      "caption": "The lift in the wide view after the last push: one shaft, nothing breaking the housing roofs, a soft sheen on the acrylic",
+      "time": "2026-11-25T18:39:00.096Z",
       "by": "hardware",
-      "from": "out/work/hw/21-table-wide-beside-approved.jpg"
+      "from": "out/work/hw/23-lift-one-shaft-wide.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Steel balls at review quality beside the approved image: polished steel with a window, a lamp and the floor colour",
-      "time": "2026-11-25T18:24:34.512Z",
+      "caption": "Whole table, draft, beside the approved image, at commit 62e881c",
+      "time": "2026-11-25T18:39:00.327Z",
       "by": "hardware",
-      "from": "out/work/hw/15-steel-balls-review-beside-approved.jpg"
+      "from": "out/work/hw/24-table-wide-beside-approved.jpg"
     }
   ]
 }
