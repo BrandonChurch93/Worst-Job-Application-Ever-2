@@ -1,0 +1,35 @@
+{
+  "folder": "cursor-form",
+  "pushed": "2026-11-25T21:43:30.827Z",
+  "commit": "53985acdee1066c381b6cb85e86f866a2fb3aa5e",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "cursor-damage beside the approved sheet, draft: the shell is rounded; strips and flattened not yet touched",
+      "time": "2026-11-25T21:43:29.042Z",
+      "by": "cursor-form",
+      "from": "out/work/looks/files/20261125214329-compare-cursor-damage.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "cursor-acting beside the approved sheet, draft: the shell; exhausted not yet touched",
+      "time": "2026-11-25T21:43:29.263Z",
+      "by": "cursor-form",
+      "from": "out/work/looks/files/20261125214329-compare-cursor-acting.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Punched arrow: approved left, this build at review right",
+      "time": "2026-11-25T21:43:29.507Z",
+      "by": "cursor-form",
+      "from": "out/work/looks/files/20261125214329-punch6.png"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "step1-tug beside the approved frame, draft",
+      "time": "2026-11-25T21:43:29.783Z",
+      "by": "cursor-form",
+      "from": "out/work/looks/files/20261125214329-compare-step1-tug.jpg"
+    }
+  ]
+}
