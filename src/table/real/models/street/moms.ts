@@ -25,7 +25,7 @@ export function moms(b: Buckets, z: Zone, ctx: RealContext): Moms {
   const trim = TONE.white
   const roof = rgb(0x6e2723)
 
-  g.box(S.x0, S.x1, S.yf, S.yb, 0, 2.6, TONE.stone, { bevel: 0.8, top: rgb(0x4f6b3c), topKind: KIND.stucco })
+  g.box(S.x0, S.x1, S.yf, S.yb, 0, 2.6, TONE.stoneDark, { bevel: 0.8, top: rgb(0x34472c), topKind: KIND.stucco })
   b.screws.push([S.x0 + 1.5, S.yf + 1.5, 2.6, 1.1], [S.x1 - 1.5, S.yf + 1.5, 2.6, 1.1], [S.x1 - 1.5, S.yb - 1.5, 2.6, 1.1])
 
   const x0 = S.x0 + 5
@@ -92,35 +92,35 @@ export function moms(b: Buckets, z: Zone, ctx: RealContext): Moms {
   const half = HATCH.half
   const hy = HATCH.long / 2
   const t = 5
-  const wood = TONE.wood
+  const wood = TONE.concrete
   const fm = g.mark()
   const rail = (sx: number): void => {
     const xa = sx < 0 ? -half - t : half
     const xb = xa + t
     const lo = HATCH.low
     const hi = HATCH.high
-    g.quad([xa, -hy - t, hi], [xb, -hy - t, hi], [xb, hy + t, lo], [xa, hy + t, lo], wood, KIND.board)
-    g.quad([xa, hy + t, 0], [xa, -hy - t, 0], [xa, -hy - t, hi], [xa, hy + t, lo], shade(wood, 0.85), KIND.board)
-    g.quad([xb, -hy - t, 0], [xb, hy + t, 0], [xb, hy + t, lo], [xb, -hy - t, hi], shade(wood, 0.85), KIND.board)
+    g.quad([xa, -hy - t, hi], [xb, -hy - t, hi], [xb, hy + t, lo], [xa, hy + t, lo], wood, KIND.concrete)
+    g.quad([xa, hy + t, 0], [xa, -hy - t, 0], [xa, -hy - t, hi], [xa, hy + t, lo], shade(wood, 0.85), KIND.concrete)
+    g.quad([xb, -hy - t, 0], [xb, hy + t, 0], [xb, hy + t, lo], [xb, -hy - t, hi], shade(wood, 0.85), KIND.concrete)
   }
   rail(-1)
   rail(1)
-  g.box(-half - t, half + t, -hy - t, -hy, 0, HATCH.high, wood, { kind: KIND.board, skip: 'lr', bevel: 0.5 })
-  g.box(-half - t, half + t, hy, hy + t, 0, HATCH.low, wood, { kind: KIND.board, skip: 'lr', bevel: 0.8 })
+  g.box(-half - t, half + t, -hy - t, -hy, 0, HATCH.high, wood, { kind: KIND.concrete, skip: 'lr', bevel: 0.5 })
+  g.box(-half - t, half + t, hy, hy + t, 0, HATCH.low, wood, { kind: KIND.concrete, skip: 'lr', bevel: 0.8 })
   g.place(fm, at[0], at[1], 0, 0)
   for (const sx of [-1, 1]) for (const sy of [-1, 1]) b.screws.push([at[0] + sx * (half + t / 2), at[1] + sy * (hy - 6), sy < 0 ? HATCH.high - 0.5 : HATCH.low + 0.4, 1.3])
 
-  // One door: five boards side by side, two battens underneath, two strap hinges and a ring pull.
+  // One door: a plate of painted steel with a raised tread, an angle round its edge, two ribs, two strap hinges and a ring pull.
   const d = new Geo()
   const w = half - 0.6
-  const n = 5
-  for (let k = 0; k < n; k++) {
-    const a = 0.5 + (k * (w - 0.5)) / n
-    const c = 0.5 + ((k + 1) * (w - 0.5)) / n
-    d.box(a + 0.25, c - 0.25, -hy + 0.5, hy - 0.5, 0, HATCH.thick, shade(wood, 0.9 + 0.06 * ((k * 3) % 4)), { under: true, bevel: 0.45, kind: KIND.plain })
-  }
+  const plate = rgb(0x4a5a52)
+  d.box(0.5, w, -hy + 0.5, hy - 0.5, 0, HATCH.thick, plate, { under: true, kind: KIND.sheeting })
+  d.box(0.5, w, -hy + 0.5, -hy + 3, HATCH.thick, HATCH.thick + 0.9, shade(plate, 0.8), { bevel: 0.3, kind: KIND.gloss })
+  d.box(0.5, w, hy - 3, hy - 0.5, HATCH.thick, HATCH.thick + 0.9, shade(plate, 0.8), { bevel: 0.3, kind: KIND.gloss })
+  d.box(w - 2.5, w, -hy + 3, hy - 3, HATCH.thick, HATCH.thick + 0.9, shade(plate, 0.8), { bevel: 0.3, kind: KIND.gloss, skip: 'fb' })
+  for (const ry of [-12, 12]) d.box(4, w - 16, ry - 1.3, ry + 1.3, HATCH.thick, HATCH.thick + 1.1, shade(plate, 0.9), { bevel: 0.5, kind: KIND.gloss })
   for (const sy of [-1, 1]) {
-    d.box(2.5, w - 2.5, sy * 34 - 4, sy * 34 + 4, -1.8, 0, TONE.woodDark, { under: true, skip: 't' })
+    d.box(2.5, w - 2.5, sy * 34 - 1.5, sy * 34 + 1.5, -2.4, 0, shade(plate, 0.6), { under: true, skip: 't' })
     d.box(-0.6, 40, sy * 34 - 2.4, sy * 34 + 2.4, HATCH.thick, HATCH.thick + 0.8, TONE.iron, { bevel: 0.3, kind: KIND.gloss })
     d.lathe([[0, 0], [1.5, 0], [1.5, 1.2], [0, 1.2]], 40, sy * 34, 10, TONE.iron, { base: HATCH.thick, kind: KIND.gloss })
     d.rod([0, sy * 34 - 4.5, HATCH.thick * 0.5], [0, sy * 34 + 4.5, HATCH.thick * 0.5], 1.5, 10, TONE.iron, KIND.gloss)

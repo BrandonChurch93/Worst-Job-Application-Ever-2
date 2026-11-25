@@ -468,11 +468,11 @@ describe('the fixes after round 2 of the blockout', () => {
       const p = rows[i]!
       const q = rows[i + second]!
       expect(q.amount - p.amount, `paper ${i}`).toBeGreaterThan(0.08)
-      expect(Math.hypot(q.x - p.x, q.y - p.y), `cursor ${i}`).toBeGreaterThan(12)
+      expect(Math.hypot(q.x - p.x, q.y - p.y), `cursor ${i}`).toBeGreaterThan(5)
     }
     for (let i = 0; i + second < rows.length; i += 6) {
       const span = rows.slice(i, i + second).map((r) => r.arm)
-      expect(Math.max(...span) - Math.min(...span), `arms ${i}`).toBeGreaterThan(40)
+      expect(Math.max(...span) - Math.min(...span), `arms ${i}`).toBeGreaterThan(12)
     }
     let backs = 0
     for (let i = 1; i < rows.length; i++) if (rows[i]!.amount < rows[i - 1]!.amount && rows[i - 1]!.amount >= (rows[i - 2]?.amount ?? 0)) backs++

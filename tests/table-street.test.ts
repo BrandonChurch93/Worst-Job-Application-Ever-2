@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { table } from '../src/table/layout'
-import { zone } from '../src/table/real/zone'
+import { BALL, SPIRAL, railOf, table } from '../src/table/layout'
+import { localBalls, zone } from '../src/table/real/zone'
 import { buckets } from '../src/table/real/models/street/geo'
-import { garage } from '../src/table/real/models/street/garage'
+import { garage, inTube, tube } from '../src/table/real/models/street/garage'
 import { houses } from '../src/table/real/models/street/houses'
 import { roadSign, streetThings } from '../src/table/real/models/street/things'
 import { doorOf, hatchOf, parts } from '../src/table/real/models/street'
@@ -35,18 +35,31 @@ describe('the models of the street', () => {
     expect(hatchOf([0, 9, 9, 0])).toEqual({ open: 0, light: 0 })
   })
 
-  it('keeps the garage inside the turns of the spiral', () => {
+  it('keeps the frame of the garage outside the trough and out of the tube of the ball', () => {
     const z = zone('street')
     const b = buckets()
     garage(b, z)
-    const g = b.paint.done()
-    g.computeBoundingBox()
-    const box = g.boundingBox!
-    const reach = (box.max.x - box.min.x) / 2
-    const rail = table.rails.find((r) => r.id === 'spiral')!
     const m = table.models.find((x) => x.id === 'street.garage')!
-    const radius = Math.hypot(rail.points[0]![0] - (m.box[0] + m.box[2] / 2), rail.points[0]![1] - (m.box[1] + m.box[3] / 2)) * 96
-    expect(reach).toBeLessThan(radius - 48)
+    const centre = localBalls(z, m.box[0] + m.box[2] / 2, m.box[1] + m.box[3] / 2)
+    const trough = (SPIRAL.r + 0.5 + 0.125) * BALL
+    const pts = tube(z)
+    let n = 0
+    for (const geo of [b.paint.done(), b.metal.done(), b.glow.done()]) {
+      const p = geo.getAttribute('position')
+      for (let i = 0; i < p.count; i++) {
+        const r = Math.hypot(p.getX(i) - centre[0], p.getY(i) - centre[1])
+        expect(r).toBeGreaterThan(trough + 4)
+        expect(p.getZ(i)).toBeGreaterThan((m.base ?? 0) * BALL - 3)
+        expect(p.getZ(i)).toBeLessThan(((m.base ?? 0) + m.h) * BALL + 2)
+        expect(inTube(pts, p.getX(i), p.getY(i), p.getZ(i), p.getZ(i))).toBe(false)
+        n++
+      }
+    }
+    expect(n).toBeGreaterThan(3000)
+    // The path itself lies in the tube.
+    const last = railOf('highway').points.at(-2)!
+    const at = localBalls(z, last[0], last[1], last[2])
+    expect(inTube(pts, at[0], at[1], at[2], at[2])).toBe(true)
   })
 
   it('builds six houses that differ and two signs on the sling posts', () => {

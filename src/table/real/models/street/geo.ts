@@ -20,7 +20,7 @@ const unit = (a: V3): V3 => {
 }
 
 // The kinds of surface the paint material knows: the third number of the `face` attribute.
-export const KIND = { plain: 0, brick: 1, block: 2, concrete: 3, shingle: 4, board: 5, stucco: 6, gloss: 7, sheeting: 8, tar: 9 }
+export const KIND = { plain: 0, brick: 1, block: 2, concrete: 3, shingle: 4, board: 5, stucco: 6, gloss: 7, sheeting: 8, tar: 9, painted: 10 }
 
 // Triangles with a place, a normal, a colour and a `face` attribute: two coordinates in page pixels along the face and the kind of surface.
 export class Geo {
@@ -54,10 +54,11 @@ export class Geo {
   face(points: V3[], col: RGB, kind = 0, normal?: V3): this {
     const nn = normal ? unit(normal) : unit(cross(sub(points[1]!, points[0]!), sub(points[2]!, points[0]!)))
     const at = this.uv(nn)
+    const flat = Math.abs(nn[2]) > 0.5 ? kind + 0.25 : kind
     for (let i = 1; i < points.length - 1; i++) {
       for (const q of [points[0]!, points[i]!, points[i + 1]!]) {
         const w = at(q)
-        this.push(q, nn, col, w[0], w[1], kind)
+        this.push(q, nn, col, w[0], w[1], flat)
       }
     }
     return this

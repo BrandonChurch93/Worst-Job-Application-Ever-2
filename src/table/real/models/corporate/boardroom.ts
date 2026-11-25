@@ -54,10 +54,10 @@ export function buildBoardroom(z: Zone, _ctx: RealContext): THREE.Object3D {
     // The floor of the room: a dark carpet in a brass edge.
     fin(S, FINISH.brushed, () => S.slab(roundedLoop(-hw, hw, -hd, hd, 5, 3), 0, 2.2, TONE.brassDark, { bevel: 0.7 }))
     fin(S, FINISH.cloth, () => {
-      S.slab(roundedLoop(-hw + 2.5, hw - 2.5, -hd + 2.5, hd - 2.5, 3.5, 3), 2.2, 2.9, hex(0x23303f), { bevel: 0.3 })
+      S.slab(roundedLoop(-hw + 2.5, hw - 2.5, -hd + 2.5, hd - 2.5, 3.5, 3), 2.2, 2.9, hex(0x34455e), { bevel: 0.3 })
       for (let k = 0; k < 9; k++) {
         const y = -hd + 8 + ((hd * 2 - 16) * k) / 8
-        S.box(-hw + 6, hw - 6, y - 0.5, y + 0.5, 2.9, 2.98, hex(0x2f4054))
+        S.box(-hw + 6, hw - 6, y - 0.5, y + 0.5, 2.9, 2.98, hex(0x43587a))
       }
     })
     // The table: two pedestals, an apron and a top of dark wood with a light line let into it.
@@ -89,9 +89,9 @@ export function buildBoardroom(z: Zone, _ctx: RealContext): THREE.Object3D {
       S.slab(loop(0), ROOM.top - ROOM.slab, ROOM.top, TONE.wood, { bevel: 1.3, bottom: true, along: [0, 1, 0] })
       S.slab(loop(5), ROOM.top, ROOM.top + 0.05, TONE.woodLight, { sides: false, along: [0, 1, 0] })
       S.slab(loop(6.2), ROOM.top, ROOM.top + 0.1, shade(TONE.wood, 1.12), { sides: false, along: [0, 1, 0] })
-      for (let k = 0; k < 7; k++) {
+      for (let k = 0; k < 11; k++) {
         const x = rnd.range(-tw + 9, tw - 9)
-        S.box(x, x + rnd.range(0.5, 2.2), -tl + 9, tl - 9, ROOM.top + 0.1, ROOM.top + 0.14, shade(TONE.wood, rnd.range(0.8, 1.3)), { along: [0, 1, 0] })
+        S.box(x, x + rnd.range(0.5, 2.2), -tl + 9, tl - 9, ROOM.top + 0.1, ROOM.top + 0.14, shade(TONE.wood, rnd.range(0.72, 1.4)), { along: [0, 1, 0] })
       }
     })
   })
@@ -113,10 +113,10 @@ export function buildBoardroom(z: Zone, _ctx: RealContext): THREE.Object3D {
       })
     })
     // Each place: a closed folder a little askew and a glass of water.
-    const pitch = (tl * 2 - 16) / ROOM.places
+    const pitch = (tl * 2 - 22) / ROOM.places
     for (const s of [-1, 1]) {
       for (let k = 0; k < ROOM.places; k++) {
-        const y = -tl + 8 + pitch * (k + 0.5)
+        const y = -tl + 13 + pitch * (k + 0.5)
         const x = s * (tw - 12.5)
         moved(D, place(x + rnd.range(-1, 1), y + rnd.range(-1.5, 1.5), T, (s > 0 ? 0 : Math.PI) + rnd.range(-0.16, 0.16)), () => {
           fin(D, FINISH.satin, () => {
@@ -143,12 +143,12 @@ export function buildBoardroom(z: Zone, _ctx: RealContext): THREE.Object3D {
   chairs.name = `boardroom.chairs.${z.id}`
   chairs.castShadow = true
   chairs.receiveShadow = true
-  const pitch = (tl * 2 - 16) / ROOM.places
+  const pitch = (tl * 2 - 22) / ROOM.places
   const M = new THREE.Matrix4()
   let i = 0
   for (const s of [-1, 1]) {
     for (let k = 0; k < ROOM.places; k++) {
-      const y = cy - tl + 8 + pitch * (k + 0.5) + rnd.range(-2.2, 2.2)
+      const y = cy - tl + 13 + pitch * (k + 0.5) + rnd.range(-2, 2)
       const x = cx + s * (tw + 9.5 + rnd.range(-2, 1))
       chairs.setMatrixAt(i++, M.copy(place(x, y, 2.9, (s > 0 ? Math.PI : 0) + rnd.range(-0.3, 0.3))).scale(SCALE))
     }
