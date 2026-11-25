@@ -1,6 +1,5 @@
 # Status pictures
 
-Time: 2026-11-25T06:00Z. Phase 0, status 2.
+Time: 2026-11-25T06:17Z. Phase 0, status 3.
 
-1. `01-reading-test.jpg`: The reading test given to one fresh agent per model family. At 1400 px every family read numerals 5 to 7 px tall, and larger pictures arrived downscaled.
-2. `02-sound-test-take.jpg`: The one narrator take the quota allowed: the word Behold in the saved voice, 0.60 s. A test, not a kept sound.
+1. `01-physics-test.jpg`: The physics test: six balls for ten seconds at 240 steps a second, with three bumpers and a flipper. The same hash came back from Node, from the browser and from a second VM.
