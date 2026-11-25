@@ -12,6 +12,7 @@
 | `touch.ts`, `touch.module.css` | The message page for a touch-only device |
 | `words.ts` | Every key of the copy and the config the interface shows |
 | `names.ts` | The names of the four controls that show an icon and no word. For Brandon to approve |
+| `glyphs.ts`, `outline.ts` | The words of the controls, drawn from the baked outlines of the stage's fonts |
 | `icons.ts` | The five icons, drawn in code |
 | `dev.html`, `dev.ts` | The interface over a grey box or a still, with a made-up site. Not part of the built site |
 | `shots.mjs`, `check.mjs` | Pictures of the dev page, and a run that drives it as a visitor would |
@@ -33,10 +34,10 @@
 10. Dark backing. Over a tier of the table dark type cannot be read. The optional `api.backing()` gives `dark` there and the row turns pale on a dark capsule.
 11. The probe. The slowest one percent is one over the mean time of the slowest hundredth of the frames. The level the site would pick is the best level whose slowest scene still holds that level's `minFps`, and the last level if none does. The card's name is read from a context of its own with `WEBGL_debug_renderer_info`, unless the runner gives `graphicsCard()`. The page starts measuring when it is mounted.
 12. The names file holds four names: `Sound`, `Play`, `Position in the film`, `Back to the application`. Play and pause are one toggle with one name and `aria-pressed`. Sound is one toggle with `aria-pressed`, true when sound is on.
-13. The words of the probe page are in `src/probe/labels.ts`. The probe is a measuring tool for Brandon and not a page of the site.
+13. The type. The site ships its fonts as baked outlines in `public/fonts/*.json`, which the DOM cannot use as a font. So `glyphs.ts` draws each word as an inline SVG from those same outlines, with the stage's own kerning, in `inter-500` for the controls and in the shell's fonts for the touch message. The word itself stays in the page as text, hidden from the eye, for a screen reader and for the search of the browser. Until the outlines have loaded, or if they do not load, the word shows as plain text in the system's sans serif. The clock of the film is set with every digit as wide as the widest, so the bar does not shift each second.
+14. The words of the probe page are in `src/probe/labels.ts`. The probe is a measuring tool for Brandon and not a page of the site.
 
 ## Open
 
-- The type of the controls. The site ships its fonts as baked outlines in `public/fonts/*.json`, which the DOM cannot use, so the controls name `Inter` first and fall back to the system's sans serif. To be in the page's type on every machine the DOM needs Inter 500 and 600 as a web font, or the words drawn from the baked outlines.
 - `parts/PARTS.json`: the parts `interface` and `quality-levels` draw no shape on the stage. They are DOM and logic, so no shape carries them.
 - The controls follow the picture's rectangle. On the tall pages the row lies over whatever has scrolled under the top of the screen.

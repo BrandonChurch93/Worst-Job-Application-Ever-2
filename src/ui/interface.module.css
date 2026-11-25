@@ -87,6 +87,10 @@
   text-underline-offset: 0.22em;
 }
 
+.link svg {
+  background: linear-gradient(currentColor, currentColor) no-repeat 0 calc(100% - 0.07em) / 100% 1px;
+}
+
 .icon:hover,
 .link:hover {
   color: var(--ink);

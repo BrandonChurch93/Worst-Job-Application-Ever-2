@@ -1,4 +1,5 @@
 import { config } from '../config'
+import { draw } from './glyphs'
 import css from './touch.module.css'
 import { word } from './words'
 
@@ -12,23 +13,23 @@ export function mountTouchMessage(host: HTMLElement): { destroy(): void } {
   head.className = css.header!
   const site = document.createElement('p')
   site.className = css.site!
-  site.textContent = word('title')
+  draw(site, word('title'), 'inter-600', { wrap: true })
   head.append(site)
   const body = document.createElement('section')
   body.className = css.body!
   const title = document.createElement('h1')
   title.className = css.title!
-  title.textContent = word('touchTitle')
+  draw(title, word('touchTitle'), 'inter-display-600', { wrap: true })
   const words = document.createElement('p')
   words.className = css.words!
-  words.textContent = word('touchBody')
+  draw(words, word('touchBody'), 'inter-400', { wrap: true })
   body.append(title, words)
   const address = portfolioAddress()
   if (address) {
     const link = document.createElement('a')
     link.className = css.link!
     link.href = address
-    link.textContent = word('touchLink')
+    draw(link, word('touchLink'), 'inter-600', { wrap: true })
     body.append(link)
   }
   page.append(head, body)

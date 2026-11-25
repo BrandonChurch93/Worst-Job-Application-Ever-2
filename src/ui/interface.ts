@@ -2,6 +2,7 @@ import { config } from '../config'
 import { quality as qualityOf } from '../core/quality'
 import type { InterfaceApi, Mounted } from './api'
 import { clockText } from './device'
+import { draw } from './glyphs'
 import { icon, setIcon } from './icons'
 import css from './interface.module.css'
 import { mountMenu } from './menu'
@@ -10,6 +11,7 @@ import { makeQualityPicker, type QualityPicker } from './picker'
 import { word } from './words'
 
 const PAGE_W = 1920
+const TYPE = 'inter-500'
 const HIDE_AFTER_MS = 2600
 const SEEK_KEY_SECONDS = 5
 
@@ -96,11 +98,11 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
   const liveSound = soundButton(api, live)
   const film = el('a', css.link, live)
   film.href = '?mode=film'
-  film.textContent = word('watchFilm')
+  draw(film, word('watchFilm'), TYPE)
   press(film, () => api.watchFilm())
   const skip = el('button', css.link, live)
   skip.type = 'button'
-  skip.textContent = word('skip')
+  draw(skip, word('skip'), TYPE)
   skip.hidden = true
   press(skip, () => api.skip())
 
@@ -254,7 +256,7 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
           const label = `${clockText(t)} / ${clockText(f.seconds)}`
           if (label !== shownTime) {
             shownTime = label
-            time.textContent = label
+            draw(time, label, TYPE, { tabular: true })
           }
           const value = Math.round(t * 10) / 10
           if (!dragging && value !== shownValue) {
