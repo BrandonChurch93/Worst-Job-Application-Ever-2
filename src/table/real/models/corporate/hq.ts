@@ -69,6 +69,7 @@ function curtain(S: Geo, G: Geo, a: V2, b: V2, z0: number, z1: number, rnd: Rand
   const n: V3 = [0, -1, 0]
   const al: V3 = [1, 0, 0]
   moved(G, place(a[0], a[1], 0, turn), () => {
+    const pane = G.vertices
     fin(G, o.hall ? FINISH.polished : FINISH.stone, () => {
       for (let j = 0; j < floors; j++) {
         let run = 0
@@ -128,6 +129,7 @@ function curtain(S: Geo, G: Geo, a: V2, b: V2, z0: number, z1: number, rnd: Rand
         }
       }
     }, o.hall ? HALL : 1)
+    if (!o.hall) G.grade(pane, (x, _y, zz) => 0.72 + 0.6 * bump(x - 0.5 * (zz - z0), len * 0.3, Math.max(40, len * 0.3)))
   })
   moved(S, place(a[0], a[1], 0, turn), () => {
     fin(S, FINISH.brushed, () => {
