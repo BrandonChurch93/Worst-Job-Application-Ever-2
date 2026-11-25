@@ -10,7 +10,7 @@ import type { TargetKind } from './core/accumulator'
 import { restPose, type CursorPose } from './cursor/body'
 import { cursorSheet } from './cursor/sheets'
 import { applyView, views } from './diagnostics/views'
-import { pages, unitPages } from './pages'
+import { pages, preparePages, unitPages } from './pages'
 import { look } from './post/look'
 import { BlockoutView, TONES } from './shell/blockout'
 import { layoutProblems } from './shell/layout'
@@ -65,7 +65,7 @@ export class App {
   async start(canvas: HTMLCanvasElement, o: { format: string; assets: string; capture: boolean; forceKind?: TargetKind }): Promise<void> {
     this.format = formatById(o.format)
     this.assets = assetSet(o.assets)
-    await Promise.all(FONTS.map((name) => loadFont(name)))
+    await Promise.all([...FONTS.map((name) => loadFont(name)), preparePages()])
     App.check()
     this.engine = new Engine(canvas, this.format.width, this.format.height, { preserve: o.capture, forceKind: o.forceKind })
     this.engine.beforeSample = (shot, view) => applyView(view, shot.scene)

@@ -8,5 +8,7 @@ export async function logic() {
   const load = (file) => server.ssrLoadModule(file)
   const metrics = await load('/src/shell/metrics.ts')
   for (const name of metrics.FONTS) metrics.registerFont(name, JSON.parse(fs.readFileSync(at('public', 'fonts', `${name}.json`), 'utf8')))
+  const { preparePages } = await load('/src/pages/index.ts')
+  await preparePages()
   return { load, close: () => server.close() }
 }

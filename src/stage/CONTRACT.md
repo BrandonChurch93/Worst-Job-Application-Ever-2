@@ -13,6 +13,8 @@ This is how a page plugs into the one stage. Everything named here is plain Type
 
 `src/pages/<page>/index.ts` exports `makePage(): PageLogic`, as `src/stage/types.ts` types it. It is called after the fonts are loaded, so it may measure type. `src/pages/stub.ts` is a whole page in 76 lines: read it first.
 
+A page module may also export `prepare(): Promise<void>`. It is awaited once before any page is made, in the browser, in the tests and in the tools: the place to start a library that starts asynchronously, such as the physics.
+
 - `layout` is the tree of the page at rest and of every run of type it can ever show. Build it with `src/shell/layout.ts` and `src/shell/parts.ts`. `layoutProblems` must find nothing in it: nothing outside the page, nothing overlapping, the parts of a row or a column sharing an edge and standing at equal gaps.
 - `gags` lists the page's gags in order. A gag's `id` is the id of its beat in `film.beats`, and its `event` is that beat's event.
 - `reset(ctx)` puts the page in its first state. `ctx.mode` is `live` or `film`. In film mode `ctx.applicant` holds the applicant from the config. `ctx.variant` is `''`, or `rejected` for the careers page after the rejection.
