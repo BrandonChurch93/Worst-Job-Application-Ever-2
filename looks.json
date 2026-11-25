@@ -1,35 +1,35 @@
 {
   "folder": "pinball",
-  "pushed": "2026-11-25T10:47:45.476Z",
-  "commit": "93b7c842c15700398515fbc7691e388f94130fe0",
+  "pushed": "2026-11-25T11:19:28.966Z",
+  "commit": "4f7ed66f23e92e11ddb7a7572f2c70c3b8d578ac",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-tier-office-preview-draft: draft tier, preview, view beauty",
-      "time": "2026-11-25T10:45:48.690Z",
+      "caption": "pinball.launch, film 8.9 to 10.85 s: one ride behind the ball from the plunger up the launch lane to the top lane of tier 3",
+      "time": "2026-11-25T11:19:27.009Z",
       "by": "pinball",
-      "from": "out/work/stills/key-tier-office-preview-draft.png"
+      "from": "out/work/look-launch.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Still key-tier-street-preview-draft: draft tier, preview, view beauty",
-      "time": "2026-11-25T10:45:52.804Z",
+      "caption": "Keys last-save and lobby-doors (left) beside their approved images (right)",
+      "time": "2026-11-25T11:19:27.236Z",
       "by": "pinball",
-      "from": "out/work/stills/key-tier-street-preview-draft.png"
+      "from": "out/work/look-save-lobby.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Key tier-corporate: each insert label on a paper plate, dark ink",
-      "time": "2026-11-25T10:47:43.617Z",
+      "caption": "Sheet table-map and key tier-street (left) beside their approved images (right)",
+      "time": "2026-11-25T11:19:27.539Z",
       "by": "pinball",
-      "from": "out/work/stills/key-tier-corporate-preview-draft.png"
+      "from": "out/work/look-map-street.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Key tier-street: insert labels on plates, the road-sign slings",
-      "time": "2026-11-25T10:47:43.996Z",
+      "caption": "Film 32.47 s and 32.83 s of pinball.highway (top), key rail-cam beside its approved image (bottom)",
+      "time": "2026-11-25T11:19:27.883Z",
       "by": "pinball",
-      "from": "out/work/stills/key-tier-street-preview-draft.png"
+      "from": "out/work/look-rail.png"
     }
   ]
 }
