@@ -1,35 +1,35 @@
 {
   "folder": "keys",
-  "pushed": "2026-11-25T18:41:36.638Z",
-  "commit": "97c3e142543d959e2e06c6936fce42fcacc51df4",
+  "pushed": "2026-11-25T18:53:20.488Z",
+  "commit": "f5db6af91b7da2ff226d977b93dcc46f62af7795",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Keys fix round: step1-fire, approved on the left, this build on the right, review tier",
-      "time": "2026-11-25T18:41:34.962Z",
+      "caption": "Consecutive frames of the hit on the cursor: the event bolt-hit at 0:21.13 in step1.firstName, draft tier, preview",
+      "time": "2026-11-25T18:52:33.923Z",
+      "by": "keys",
+      "from": "out/work/sheets/sheet-motion-hit-preview-draft.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Key step1-fire: approved on the left, this build on the right, review tier, with crops of cursor, keys, hatch, keyboardDeck.corner, field.start, type, progressButton, chip, card.corner",
+      "time": "2026-11-25T18:53:02.609Z",
       "by": "keys",
       "from": "out/work/compare/compare-step1-fire.jpg"
     },
     {
-      "file": "look-2.jpg",
-      "caption": "Keys fix round: the caps, approved above, this build below, review tier",
-      "time": "2026-11-25T18:41:35.192Z",
-      "by": "keys",
-      "from": "out/work/keys/keys-crop.jpg"
-    },
-    {
       "file": "look-3.jpg",
-      "caption": "Keys fix round: the shuffle in step1.lastName, caps launched and seated, draft tier",
-      "time": "2026-11-25T18:41:35.432Z",
+      "caption": "Keys second pass: approved above, this build below: pits off the legends, thin bolts, a shade under each cap, review tier",
+      "time": "2026-11-25T18:53:19.129Z",
       "by": "keys",
-      "from": "out/work/sheets/sheet-beat-step1_lastName-preview-draft.jpg"
+      "from": "out/work/keys/keys-crop-2.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Keys fix round: the slabs in step1.email, one an error, none cut, leaving sideways, draft tier",
-      "time": "2026-11-25T18:41:35.654Z",
+      "caption": "Keys second pass: the hit, a star flash where the bolt strikes the cursor from frame 1268, draft tier",
+      "time": "2026-11-25T18:53:19.362Z",
       "by": "keys",
-      "from": "out/work/sheets/sheet-beat-step1_email-preview-draft.jpg"
+      "from": "out/work/sheets/sheet-motion-hit-preview-draft.jpg"
     }
   ]
 }
