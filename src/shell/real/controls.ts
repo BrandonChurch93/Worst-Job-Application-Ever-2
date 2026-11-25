@@ -64,6 +64,7 @@ const SOAK_HOLD = 2.5
 const SOAK_DEPTH = 0.62
 const BOUNCE = 0.2
 const BOUNCE_REACH = 10
+const GLINT = 0.2
 const SOAK_RINGS = [0, 1.5, 3, 5, 7.5, 10.5, 14, 18, 23, 29, 36]
 
 // One ring of a sunk face: a rounded rectangle with extra points along its straight sides, the same count for every ring.
@@ -114,7 +115,7 @@ function sunkGlass(s: Shape, inset: number, depth: number): THREE.BufferGeometry
     }
     return near
   }
-  const shade = (x: number, y: number): number => 1 - SOAK_DEPTH * Math.exp(-Math.max(0, reach(x, y, 1) * slope - depth - SOAK_HOLD) / SOAK) + BOUNCE * Math.exp(-(reach(x, y, -1) * slope) / BOUNCE_REACH)
+  const shade = (x: number, y: number): number => 1 - SOAK_DEPTH * Math.exp(-Math.max(0, reach(x, y, 1) * slope - depth - SOAK_HOLD) / SOAK) + BOUNCE * Math.exp(-(reach(x, y, -1) * slope) / BOUNCE_REACH) + GLINT * Math.exp(-Math.max(0, reach(x, y, -1) - 1) / 1.6)
   const pos: number[] = []
   const col: number[] = []
   const idx: number[] = []

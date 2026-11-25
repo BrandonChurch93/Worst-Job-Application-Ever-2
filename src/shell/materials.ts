@@ -293,7 +293,7 @@ export function makeMaterials(seed: number): Materials {
     color: srgb(0x8e9399), roughness: 0.2, metalness: 1, normalMap: turned.normal, normalScale: new THREE.Vector2(0.06, 0.06), anisotropy: 0.85, anisotropyMap: turned.direction
   }))
   const aluminiumEdge = physical({ color: srgb(0xc6cacd), roughness: 0.38, metalness: 0.62 })
-  const aluminiumSatin = physical({ color: srgb(0x90949a), roughness: 0.55, metalness: 0.35 })
+  const aluminiumSatin = physical({ color: srgb(0x9ca0a5), roughness: 0.5, metalness: 0.4 })
   const orange = physical({ color: srgb(0xc24400), roughness: 0.5, metalness: 0, clearcoat: 0.3, clearcoatRoughness: 0.09, specularIntensity: 0.8, specularColor: srgb(0xff9a52) })
   const gap = physical({ color: srgb(0x23211f), roughness: 0.85, metalness: 0, specularIntensity: 0.3 })
   const ink = physical({ color: srgb(0x2a2927), roughness: 0.48, metalness: 0, specularIntensity: 0.2 })
