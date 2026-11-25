@@ -191,6 +191,7 @@ export function makePage(): PageLogic {
       const over: Record<string, Partial<Shape> | null> = { 'fight-type': null }
       const loose = s.stage !== 'verify' && !s.inSocket
       if (loose) over['submit-cap'] = null
+      if (s.cracked && !s.inSocket) over.submit = null
       else if (s.pressed >= 0) over['submit-cap'] = { z1: heights.button - heights.keyTravel }
       if (loose) {
         const u = s.stage === 'unfold' ? s.t : UNFOLD.end
