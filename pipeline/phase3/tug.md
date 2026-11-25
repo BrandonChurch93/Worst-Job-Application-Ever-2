@@ -116,14 +116,14 @@ Tests changed, each where a number of mine changed: `tests/step1.test.ts` and `t
 54. The thumb dents are where `/root/arms_fixer` lays the thumbs (its message of 21:40): 3.5 px inside each side edge, the left 0.1 of the sheet's length under the top corner, the right 0.06. `TUG.hands` is unchanged.
 55. The print is finer and lighter: the title ink is 0x606166 (it was 0x2b2a28), the bars 0xa3a4a8 (0x8c8c90) and 0.8 px high (1.1), the lines between them 0.6 px. The title stays 14 px: it is the smallest type the measure allows. The print rides 0.5 px over the sheet (`PRINT_LIFT`, it was 0.12) so no fold comes through it.
 56. The frame of the machine (`EAR` in `real/shredder.ts`): an anodised plate (0x8f939a, roughness 0.55, darker than the housing) at each end of the opening, 6.6 px wide, flush with the page (0.36 px proud), a 0.32 px dark seam round it and two socket screws through it. The two panels run between the plates. A plate grows out from the opening's end as the panels part, so nothing shows on the page at rest. The dark line round a panel's foot is 0.4 px (it was 1), a seam and not a border.
-57. The strips (`TIP` in `real/shredder.ts`): the free end of each rolls up off the page by 1.3 to 3.9 radians, from 0.4 to 0.62 of its length, each from its own numbers; the twist along a strip is up to 1.3 radians (it was 0.45). A strip is 36 segments (it was 26). The shadow of each is its own: the strips mesh casts.
+57. The strips (`TIP` in `real/shredder.ts`): the free end of each rolls up off the page by 1.3 to 3.9 radians, from 0.4 to 0.62 of its length, each from its own numbers; the twist along a strip is up to 1.3 radians (it was 0.45). A strip is 36 segments (it was 26). The shadow of each is its own: the strips mesh casts. A strip comes out up to 0.17 radians askew (`STRIP.askew` 0.44 in `index.ts`, it was 0.2) and sways up to 0.07 of its length (0.035), so the strips cross.
 58. Item 4 is answered in part only. The frame cannot go up or in: the cursor's pile at 28.2 s reaches 143 px under the slot and the frame's lower edge is 144 px under it, and the Builder's note of round 4 and `tests/step1-script.test.ts` hold the frame still between the move in and the move out. What fills the lower part now is the curled strips with their shadows and the two plates.
 
 Still wrong, looked at in the compare of `step1-tug` and the sheets of `step1.resume` and `step1.tug` at the draft tier:
 
 - The sheet is smaller in the frame than the approved one. Its folds now have a dark side and a crest, but the left one is faint and none is a hard crease as in the approved image.
 - The title is still the heaviest thing on the sheet: at 14 px it is three quarters of the sheet's width. The approved title is a third of it.
-- The strips' rolled ends are short and read as nubs at the film's size; the strips still hang in one straight comb under the hood.
+- The strips' rolled ends are short and read as nubs at the film's size.
 - The lower fifth of the key frame is bare page.
 - At the pickup the grabbing hand crosses the card's rim. The two stamps of the temper are small at the sheet's size.
 
