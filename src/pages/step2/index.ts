@@ -478,6 +478,14 @@ export function makePage(): PageLogic {
 
   function press(io: StepIo): void {
     s.pressed = true
+    if (io.cursor.damaged) {
+      io.cursor.heal()
+      if (s.crank.hit && !s.crank.peeled) {
+        s.crank.peeled = true
+        io.emit('peel-up', io.cursor.x, io.cursor.y, true)
+      }
+      if (s.mode === 'live') io.cursor.act('plain')
+    }
     io.emit('button-press', go.cx, go.cy, false)
   }
 

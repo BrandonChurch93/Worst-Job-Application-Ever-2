@@ -192,20 +192,20 @@ describe('step 2, live', () => {
       expect(seen.filter((n) => n === 'crank-turn').length, bot).toBe(config.live.step2.crankTurnsBeforeItRunsAway)
       for (const n of ['dial-fling', 'lever-pull', 'coins', 'crank-runaway', 'button-press']) expect(seen, `${bot} ${n}`).toContain(n)
       expect(s.time, bot).toBeLessThan(60)
+      expect(s.cursor.damaged, bot).toBe(false)
       expect(s.longestIgnored.pointer, bot).toBeLessThanOrEqual(config.live.controlTakenMaxSeconds)
     }
   })
 
   it('plays its ending when the step is skipped, from any moment', () => {
     for (const at of [0.5, 3, 6.2, 12, 17]) {
-      const s = film()
       const l = live(new BotDriver('keen', config.seed))
       l.advance(Math.round(at * stepHz))
       l.page.skip()
       l.advance(3 * stepHz)
       expect(l.page.id, String(at)).toBe('step3')
       expect(l.cursor.taken, String(at)).toBe(false)
-      void s
+      expect(l.cursor.damaged, String(at)).toBe(false)
     }
   })
 
