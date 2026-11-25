@@ -45,6 +45,7 @@ export interface PartRow { part: string; names: string[]; made: string; meshes: 
 export interface PartCounts { rows: PartRow[]; shadows: string[]; total: { calls: number; triangles: number }; renderer: { drawCalls: number; triangles: number }; other: { calls: number; triangles: number } }
 
 type Rgb = [number, number, number]
+type Rgba = [number, number, number, number]
 
 const screenBox = (pose: CameraPose, x: number, y: number, w: number, h: number, z: number): number[] => {
   const at = [[x, y], [x + w, y], [x, y + h], [x + w, y + h]].map((p) => projectPage(pose, p[0]!, p[1]!, z))
@@ -327,8 +328,8 @@ const shown = (o: THREE.Object3D): boolean => {
 
 const srgbToLinear = (v: number): number => (v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)
 
-// The colour a picture gives a surface at one place, when the picture is made of numbers this code can read.
-function mapColour(map: THREE.Texture | null | undefined, uv: THREE.Vector2 | undefined): Rgb | null {
+// The colour and the cover a picture gives a surface at one place, when the picture is made of numbers this code can read.
+function mapTexel(map: THREE.Texture | null | undefined, uv: THREE.Vector2 | undefined): Rgba | null {
   const image = map?.image as { data?: ArrayLike<number>; width?: number; height?: number } | undefined
   if (!map || !uv || !image?.data || !image.width || !image.height) return null
   const data = image.data
@@ -340,17 +341,40 @@ function mapColour(map: THREE.Texture | null | undefined, uv: THREE.Vector2 | un
   const i = (Math.min(image.height - 1, Math.floor(w * image.height)) * image.width + Math.min(image.width - 1, Math.floor(u * image.width))) * channels
   const scale = data instanceof Float32Array || data instanceof Uint16Array ? 1 : 1 / 255
   const c: Rgb = [data[i]! * scale, data[i + 1]! * scale, data[i + 2]! * scale]
-  return map.colorSpace === THREE.SRGBColorSpace ? [srgbToLinear(c[0]), srgbToLinear(c[1]), srgbToLinear(c[2])] : c
+  const a = channels >= 4 ? data[i + 3]! * scale : 1
+  return map.colorSpace === THREE.SRGBColorSpace ? [srgbToLinear(c[0]), srgbToLinear(c[1]), srgbToLinear(c[2]), a] : [c[0], c[1], c[2], a]
 }
 
-interface Surface { colour: Rgb; through: number; tint: boolean }
+interface Surface { colour: Rgb; cover: number; through: number; tint: boolean; adds: boolean }
+
+// The colour the corners of the face give a place on it, when the material takes its colour from them, times the colour of the copy when the mesh is drawn many times.
+export function cornerColour(mesh: THREE.Mesh, hit: THREE.Intersection, material: THREE.Material | undefined): Rgba | null {
+  const colour = material?.vertexColors ? (mesh.geometry.getAttribute('color') as THREE.BufferAttribute | undefined) : undefined
+  const weight = (hit as { barycoord?: THREE.Vector3 }).barycoord
+  const out: Rgba = [1, 1, 1, 1]
+  let found = false
+  if (colour && hit.face && weight) {
+    const corner = [hit.face.a, hit.face.b, hit.face.c]
+    const w = [weight.x, weight.y, weight.z]
+    for (let k = 0; k < Math.min(4, colour.itemSize); k++) out[k] = corner.reduce((sum, v, j) => sum + w[j]! * colour.getComponent(v, k), 0)
+    found = true
+  }
+  const copies = (mesh as unknown as THREE.InstancedMesh).instanceColor
+  if (copies && hit.instanceId !== undefined) {
+    for (let k = 0; k < 3; k++) out[k]! *= copies.getComponent(hit.instanceId, k)
+    found = true
+  }
+  return found ? out : null
+}
 
 // The colour a material has in linear light: its colour, times its colour picture where one is set, plus what it gives off.
-export function surfaceOf(material: THREE.Material | undefined, uv?: THREE.Vector2): Surface | null {
+// `cover` is how much of that colour it lays down at the place: its opacity times the alpha of its pictures and of its corners' colours. A material that adds its light hides nothing under it.
+export function surfaceOf(material: THREE.Material | undefined, uv?: THREE.Vector2, corners?: Rgba | null): Surface | null {
   const m = material as (THREE.MeshPhysicalMaterial & { visible: boolean }) | undefined
   if (!m || m.visible === false || !m.color || !m.color.isColor) return null
-  const texel = mapColour(m.map, uv) ?? [1, 1, 1]
-  const colour: Rgb = [m.color.r * texel[0], m.color.g * texel[1], m.color.b * texel[2]]
+  const texel = mapTexel(m.map, uv) ?? [1, 1, 1, 1]
+  const tint: Rgba = corners ?? [1, 1, 1, 1]
+  const colour: Rgb = [m.color.r * texel[0] * tint[0], m.color.g * texel[1] * tint[1], m.color.b * texel[2] * tint[2]]
   if (m.emissive && m.emissive.isColor) {
     const k = m.emissiveIntensity ?? 1
     colour[0] += m.emissive.r * k
@@ -358,38 +382,54 @@ export function surfaceOf(material: THREE.Material | undefined, uv?: THREE.Vecto
     colour[2] += m.emissive.b * k
   }
   const clear = typeof m.transmission === 'number' && m.transmission > 0
-  const through = clear ? Math.min(1, m.transmission) : m.transparent ? 1 - Math.min(1, Math.max(0, m.opacity)) : 0
-  return { colour, through, tint: clear }
+  const alpha = texel[3] * tint[3] * (mapTexel(m.alphaMap, uv)?.[1] ?? 1)
+  const cut = m.alphaTest > 0 ? (alpha >= m.alphaTest ? 1 : 0) : 1
+  const cover = clear ? 1 - Math.min(1, m.transmission) : m.transparent ? Math.min(1, Math.max(0, m.opacity)) * alpha * cut : cut
+  const adds = m.transparent === true && m.blending === THREE.AdditiveBlending
+  return { colour, cover, through: adds ? 1 : 1 - cover, tint: clear, adds }
 }
 
 const materialAt = (mesh: THREE.Mesh, index: number | undefined): THREE.Material | undefined => (Array.isArray(mesh.material) ? mesh.material[index ?? 0] : mesh.material)
 const isCursor = (data: Record<string, unknown>): boolean => String(data.part ?? data.standIn ?? '').startsWith('cursor')
 
-// What lies under a place, seen along `down` from `from`: the first surface that is neither type nor the cursor, and what shows through it when it is clear. Null when nothing lies there: the place is off the page.
-function groundAt(scene: THREE.Scene, ray: THREE.Raycaster, from: THREE.Vector3, down: THREE.Vector3): Rgb | null {
-  ray.set(from, down)
-  const colour: Rgb = [0, 0, 0]
+// What lies under a place on the top of a run of type, seen along `down`: the first surface no higher than `LIFT` over the place that is neither type nor the cursor, and what shows through it when it is clear. Null when nothing lies there: the place is off the page.
+// `glow` is the light that materials over the place add to it: it falls on the type and on the ground alike. Light added under the place falls on the ground only.
+function groundAt(scene: THREE.Scene, ray: THREE.Raycaster, top: THREE.Vector3, down: THREE.Vector3): { ground: Rgb; glow: Rgb } | null {
+  ray.set(top.clone().addScaledVector(down, -HIGH), down)
+  const ground: Rgb = [0, 0, 0]
+  const glow: Rgb = [0, 0, 0]
   let weight: Rgb = [1, 1, 1]
   let layers = 0
+  let closed = false
   for (const hit of ray.intersectObject(scene, true)) {
     const mesh = hit.object as THREE.Mesh
     if (!mesh.isMesh || mesh.userData.type !== undefined || isCursor(mesh.userData) || !shown(mesh)) continue
-    const s = surfaceOf(materialAt(mesh, hit.face?.materialIndex), hit.uv)
+    const height = HIGH - hit.distance
+    const material = materialAt(mesh, hit.face?.materialIndex)
+    const s = surfaceOf(material, hit.uv, cornerColour(mesh, hit, material))
     if (!s) continue
-    const own = 1 - s.through
-    for (let i = 0; i < 3; i++) colour[i]! += weight[i]! * own * s.colour[i]!
+    if (s.adds) {
+      for (let i = 0; i < 3; i++) (height >= 0 ? glow : ground)[i]! += (height >= 0 ? 1 : weight[i]!) * s.cover * s.colour[i]!
+      continue
+    }
+    if (height > LIFT) continue
+    for (let i = 0; i < 3; i++) ground[i]! += weight[i]! * s.cover * s.colour[i]!
     layers++
-    if (s.through <= 0 || layers >= 6) return colour
+    if (s.through <= 0 || layers >= 6) {
+      closed = true
+      break
+    }
     weight = [0, 1, 2].map((i) => weight[i]! * s.through * (s.tint ? s.colour[i]! : 1)) as Rgb
   }
   if (!layers) return null
   const back = look.background as unknown as number[]
-  for (let i = 0; i < 3; i++) colour[i]! += weight[i]! * (back[i] ?? 0)
-  return colour
+  for (let i = 0; i < 3; i++) ground[i]! += (closed ? 0 : weight[i]! * (back[i] ?? 0)) + glow[i]!
+  return { ground, glow }
 }
 
 const SAMPLES = [0.1, 0.3, 0.5, 0.7, 0.9]
 const LIFT = 0.5
+const HIGH = 1000
 
 // The box of a mesh in the frame of its shape: x along the line of type, z out of the surface it lies on.
 function boxIn(mesh: THREE.Mesh, toShape: THREE.Quaternion): THREE.Box3 {
@@ -455,14 +495,17 @@ export function typeContrasts(scene: THREE.Scene, list: Shape[]): Map<string, { 
     const box = boxIn(mesh, back)
     if (box.isEmpty()) continue
     const down = new THREE.Vector3(0, 0, -1).applyQuaternion(turn)
-    const ink = luminance(inkOf.colour)
     const grounds: number[] = []
+    const inks: number[] = []
     for (const k of SAMPLES) {
-      const under = groundAt(scene, ray, new THREE.Vector3(box.min.x + (box.max.x - box.min.x) * k, (box.min.y + box.max.y) / 2, box.max.z + LIFT).applyQuaternion(turn), down)
-      if (under) grounds.push(luminance(under))
+      const under = groundAt(scene, ray, new THREE.Vector3(box.min.x + (box.max.x - box.min.x) * k, (box.min.y + box.max.y) / 2, box.max.z).applyQuaternion(turn), down)
+      if (!under) continue
+      grounds.push(luminance(under.ground))
+      inks.push(luminance([inkOf.colour[0] + under.glow[0], inkOf.colour[1] + under.glow[1], inkOf.colour[2] + under.glow[2]]))
     }
     if (!grounds.length) continue
     const ground = median(grounds)
+    const ink = median(inks)
     out.set(s.id, { contrast: ratio(ink, ground), ink, ground })
   }
   return out

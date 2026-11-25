@@ -76,6 +76,20 @@ describe('the colour a material really has', () => {
     expect(glass.through).toBeCloseTo(0.9, 6)
     expect(glass.tint).toBe(true)
   })
+  it('reads the cover of a material from its pictures, and lets one that adds its light hide nothing', () => {
+    const map = new THREE.DataTexture(Uint8Array.from([255, 255, 255, 255, 255, 255, 255, 0]), 2, 1)
+    const mark = new THREE.MeshBasicMaterial({ map, transparent: true })
+    expect(surfaceOf(mark, new THREE.Vector2(0.25, 0.5))!.through).toBe(0)
+    expect(surfaceOf(mark, new THREE.Vector2(0.75, 0.5))!.through).toBe(1)
+    const alphaMap = new THREE.DataTexture(Uint8Array.from([0, 255, 0, 255, 0, 0, 0, 255]), 2, 1)
+    const puff = new THREE.MeshBasicMaterial({ alphaMap, transparent: true, opacity: 0.5 })
+    expect(surfaceOf(puff, new THREE.Vector2(0.25, 0.5))!.through).toBe(0.5)
+    expect(surfaceOf(puff, new THREE.Vector2(0.75, 0.5))!.through).toBe(1)
+    const glow = surfaceOf(new THREE.MeshBasicMaterial({ color: new THREE.Color(0.3, 0.3, 0.3), transparent: true, blending: THREE.AdditiveBlending }))!
+    expect(glow.adds).toBe(true)
+    expect(glow.cover).toBe(1)
+    expect(glow.through).toBe(1)
+  })
 })
 
 describe('the contrast of a run of type', () => {
@@ -112,6 +126,33 @@ describe('the contrast of a run of type', () => {
   })
   it('does not take other type or the cursor for the ground', () => {
     const got = typeContrasts(scene(flat(2000, 2000, 0, grey(0.8)), flat(300, 300, 1, grey(0.5), { standIn: 'cursor-body' }), flat(300, 300, 1.5, grey(0.4), { type: 'copy:b' }), flat(120, 40, 2, grey(0.02), { type: 'copy:a', shape: 'label' })), [run()]).get('label')!
+    expect(got.ground).toBeCloseTo(0.8, 6)
+  })
+  it('counts light added under the type on the ground only, and light added over it on both', () => {
+    const glowing = (v: number) => new THREE.MeshBasicMaterial({ color: new THREE.Color(v, v, v), transparent: true, blending: THREE.AdditiveBlending })
+    const type = () => flat(120, 40, 2, grey(0.02), { type: 'copy:a', shape: 'label' })
+    const dark = typeContrasts(scene(flat(2000, 2000, 0, grey(0.8)), flat(300, 300, 1, glowing(0)), type()), [run()]).get('label')!
+    expect(dark.ground).toBeCloseTo(0.8, 6)
+    expect(dark.contrast).toBeCloseTo(wcag(0.02, 0.8), 6)
+    const under = typeContrasts(scene(flat(2000, 2000, 0, grey(0.8)), flat(300, 300, 1, glowing(0.3)), type()), [run()]).get('label')!
+    expect(under.ground).toBeCloseTo(1.1, 6)
+    expect(under.ink).toBeCloseTo(0.02, 6)
+    const over = typeContrasts(scene(flat(2000, 2000, 0, grey(0.8)), flat(300, 300, 40, glowing(0.3)), type()), [run()]).get('label')!
+    expect(over.ground).toBeCloseTo(1.1, 6)
+    expect(over.ink).toBeCloseTo(0.32, 6)
+    expect(over.contrast).toBeCloseTo(wcag(0.32, 1.1), 6)
+    expect(over.contrast).toBeLessThan(under.contrast)
+  })
+  it('reads the light a glow adds from the colours of its corners', () => {
+    const glow = flat(300, 300, 1, new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, blending: THREE.AdditiveBlending }))
+    glow.geometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(12).fill(0.1), 3))
+    const got = typeContrasts(scene(flat(2000, 2000, 0, grey(0.8)), glow, flat(120, 40, 2, grey(0.02), { type: 'copy:a', shape: 'label' })), [run()]).get('label')!
+    expect(got.ground).toBeCloseTo(0.9, 6)
+    expect(got.ink).toBeCloseTo(0.02, 6)
+  })
+  it('sees the ground through the clear part of a picture laid over it', () => {
+    const mark = new THREE.MeshBasicMaterial({ map: new THREE.DataTexture(Uint8Array.from([0, 0, 0, 0]), 1, 1), transparent: true })
+    const got = typeContrasts(scene(flat(2000, 2000, 0, grey(0.8)), flat(300, 300, 1, mark), flat(120, 40, 2, grey(0.02), { type: 'copy:a', shape: 'label' })), [run()]).get('label')!
     expect(got.ground).toBeCloseTo(0.8, 6)
   })
   it('gives nothing for a run the scene holds no mesh for, or one that lies over nothing', () => {
