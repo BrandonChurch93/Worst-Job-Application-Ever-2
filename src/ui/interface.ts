@@ -73,7 +73,7 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
     window.addEventListener(type, fn, capture)
     off.push(() => window.removeEventListener(type, fn, capture))
   }
-  for (const type of ['pointerdown', 'pointerup', 'mousedown', 'mouseup', 'click', 'dblclick', 'contextmenu', 'wheel'] as const) {
+  for (const type of ['pointerdown', 'pointerup', 'mousedown', 'mouseup', 'click', 'dblclick', 'contextmenu'] as const) {
     root.addEventListener(type, (e) => e.stopPropagation())
   }
 
@@ -180,6 +180,7 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
     }
     const f = api.film
     if (api.mode() !== 'film' || !f) return
+    if (e.target instanceof Node && bar.contains(e.target)) return
     if (e.key === ' ' || e.key === 'k') {
       toggle()
       wake()
