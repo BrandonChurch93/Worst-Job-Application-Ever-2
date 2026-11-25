@@ -55,6 +55,7 @@ export class BlockoutView {
   private unitBall = new THREE.SphereGeometry(0.5, 32, 20)
   private slab = new THREE.Group()
   private slabKey = ''
+  private wells: Shape[] = []
   private arrows: Arrow[] = []
   private tick = 0
   private pageId = ''
@@ -287,6 +288,13 @@ export class BlockoutView {
     entry.seen = this.tick
   }
 
+  // A pocket is drawn flat in this view, so type that sits on a pocket's floor is lifted to the flat pocket's top. Type in a real well stays down.
+  private sunk(s: Shape): boolean {
+    const x = s.x + s.w / 2
+    const y = s.y + s.h / 2
+    return this.wells.some((w) => x >= w.x && x <= w.x + w.w && y >= w.y && y <= w.y + w.h)
+  }
+
   private text(s: Shape): void {
     const type = s.type!
     const said = words(s.words!, s.text)
@@ -316,7 +324,7 @@ export class BlockoutView {
       })
       entry.key = key
     }
-    this.place(entry.group, s, s.z1 + 0.09)
+    this.place(entry.group, s, (s.z1 < 0 && !this.sunk(s) ? 0.07 : s.z1) + 0.09)
     entry.group.visible = true
     entry.seen = this.tick
   }
@@ -373,6 +381,7 @@ export class BlockoutView {
     const top = turning ? f.scroll : 0
     const tall = turning ? 1080 : size.height
     this.ground(f.list, size.width, top, tall)
+    this.wells = f.list.filter((s) => s.kind === 'well')
     this.pivot.position.set(0, -f.scroll, 0)
     this.sheet.position.set(0, f.scroll, 0)
     this.pivot.rotation.x = f.turn
