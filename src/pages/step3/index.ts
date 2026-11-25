@@ -1,11 +1,11 @@
 import { config, stepHz } from '../../config'
 import type { LayoutNode } from '../../copy'
-import { HANDOFF } from '../../cursor/body'
+import { HANDOFF, restPose, type CursorPose } from '../../cursor/body'
 import { boxOf, drawLayout, node, text } from '../../shell/layout'
 import { block } from '../../shell/metrics'
 import { button, buttonWidth, HEADER, LEFT, page, RIGHT, stepHead, TYPE } from '../../shell/parts'
 import { words } from '../../shell/words'
-import { homePose, mixPose, smooth, toWorld } from '../../stage/camera'
+import { frame, homePose, mixPose, smooth, toWorld } from '../../stage/camera'
 import { TURN_HALF } from '../../stage/stage'
 import type { CameraPose, DrawList, GagInfo, Hint, PageContext, PageLogic, Pointer, SheetFrame, StepIo, TableState } from '../../stage/types'
 import take from '../../../cut/TABLE-TAKE.json'
@@ -106,15 +106,15 @@ const Y1 = TIER_Y[1]!
 const Y2 = TIER_Y[2]!
 const NAMED: Record<string, CameraPose> = {
   'tier-3': tierPose(0), 'tier-2': tierPose(1), 'tier-1': tierPose(2),
-  'table-wide': look('table-wide', [MID, APRON_Y + 20, 17], [MID, Y1 + 3.5, -2]),
-  'table-lobby': look('table-lobby', [MID + 2.4, Y0 + 9.2, 0.4], [MID, Y0 + 4.6, 0.3]),
+  'table-wide': look('table-wide', [MID, APRON_Y + 15.5, 15.5], [MID, APRON_Y - 10.6, -1.2]),
+  'table-lobby': look('table-lobby', [MID + 3.6, Y0 + 7.9, 1.5], [MID - 0.5, Y0 + 4.6, -0.2]),
   'table-replyall': look('table-replyall', [MID + 2, Y1 + 15.5, 14], [MID + 1.2, Y1 + 5.4, -2]),
-  'table-fired': look('table-fired', [7.6, Y2 + 7.6, -1.3], [4.7, Y2 + 3.6, -2.3]),
-  'table-save': look('table-save', [MID + 0.5, Y2 + 17.5, 3.2], [MID, Y2 + 7.2, -3])
+  'table-fired': look('table-fired', [8.2, Y2 + 8.0, 0.8], [4.8, Y2 + 3.5, -2.2]),
+  'table-save': look('table-save', [MID + 0.2, Y2 + 13.5, 9], [MID, Y2 + 8.4, -3])
 }
 const FILM: [number, string][] = [
   [0, 'follow'], [5.0, 'table-wide'], [9.5, 'follow'], [11.2, 'tier-3'], [13.0, 'table-lobby'], [14.3, 'follow'], [20.6, 'table-replyall'], [22.6, 'follow'], [27.2, 'table-fired'], [28.8, 'follow'],
-  [31.0, 'rail'], [33.0, 'follow'], [35.0, 'table-save'], [36.6, 'follow']
+  [31.0, 'rail'], [33.0, 'follow'], [34.3, 'table-save'], [36.6, 'follow']
 ]
 const BLEND = 0.6
 
@@ -481,6 +481,21 @@ export function makePage(): PageLogic {
       }
     },
     sheet(id: string): SheetFrame | null {
+      if (id === 'clear-ball') {
+        const mc = machine()
+        const list: DrawList = []
+        drawLayout(list, layout, { states: ['play', 'mode0', 'score0', 'score2'], runtime: { score: scoreText() } })
+        for (const shape of fixedShapes()) list.push(shape)
+        for (const shape of movingShapes(mc, table.inserts.map(() => true), true)) list.push(shape)
+        const f = px(floorZ(1))
+        const spots: { x: number; y: number; lift: number; pose: Partial<CursorPose> }[] = [
+          { x: 7.68, y: Y1 + 8.84, lift: 0, pose: { acting: 'nervous' } },
+          { x: 8.3, y: Y1 + 5.6, lift: 0.7, pose: { acting: 'scared', lean: 0.3 } },
+          { x: MID + 1.3, y: Y1 + 5.95, lift: 0, pose: { acting: 'shocked', damage: ['flattened'] } }
+        ]
+        spots.forEach((p, i) => list.push({ id: `sheet-ball-${i + 1}`, part: 'clear-ball', kind: 'ball', x: px(p.x - 0.5), y: px(p.y - 0.5), w: BALL, h: BALL, z0: f + px(p.lift), z1: f + px(p.lift) + BALL, tone: 'glass' }))
+        return { list, cursors: spots.map((p) => restPose(px(p.x), px(p.y), { z: f + px(p.lift), inBall: true, taken: true, ...p.pose })), view: frame({ x: px(6.6), y: px(Y1 + 4.7), w: px(6.4), h: px(5.2) }, 1, f, fov('sheet')) }
+      }
       if (id !== 'table-map') return null
       const mc = machine()
       const list: DrawList = []
