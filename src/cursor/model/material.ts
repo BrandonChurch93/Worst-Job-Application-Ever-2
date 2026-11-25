@@ -206,7 +206,7 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
   // Heat: a glow inside the enamel that climbs from the tip.
   if ( heat > 0.0 ) {
     float front = heat * 9.6;
-    float h = smoothstep( front + 1.0, front - 3.6, along + ( wide.g - 0.5 ) * 2.4 + ( mid.b - 0.5 ) * 1.2 ) * smoothstep( 0.0, 0.12, heat );
+    float h = smoothstep( front + 1.0, front - 3.6, along + ( wide.g - 0.5 ) * 2.4 + ( mid.b - 0.5 ) * 1.2 ) * smoothstep( 0.3, 0.6, heat );
     vec3 ember = mix( vec3( 1.0, 0.82, 0.45 ), vec3( 1.25, 0.62, 0.08 ), smoothstep( 0.06, 0.3, h ) );
     ember = mix( ember, vec3( 1.2, 0.3, 0.02 ), smoothstep( 0.3, 0.58, h ) );
     ember = mix( ember, vec3( 0.74, 0.035, 0.012 ), smoothstep( 0.58, 0.96, h ) );

@@ -128,7 +128,11 @@ Branch `agent/damage`. Owner of this section: the damage fix agent. Every number
 - Deform (`deform.ts`). Stone gets one soft roll from wall to face, no groove. Melt: corner pulls reduced, the stem alone runs, wiggles and turns up in a hook, and 65% of the pose's squash is given back while melted so the outline stays an arrow (R9-2 issue 1). Flattened: corners pulled in by the melt's `POINTS`, wider undulation.
 - Strips (`body.ts`, `LOOSE`). A strip more than 4 to 14 px out of its place lies at 40% of the body's thickness, taken off about its foot (`Deform.thin`). In place it has the full thickness. Without this a sliver is 0.8 unit wide and 2.3 high and reads as a slat with a long shadow.
 - Effects (`effects.ts`). Sweat: 15 beads (24 before), 0.42 to 1.2 units, spread over the whole face. Steam: three wisps from fixed places on the right of the heated face, faint at the foot, so they rise over the page and not over the glow. Smoke a little wider.
-- Tape (`act/tape.ts`): near clear, opacity 0.3. Not yet rebuilt: see below.
+- Tape (`act/tape.ts`), second batch. One strip mesh with a 2.2 px margin and an attribute `aTape` (distance from the start, distance to the end, distance across, half width). Its own material passes through `studio()`: frosted clear film (frost 0.24), a bright edge toward the lamp, a dark edge away from it, pinked ends, and a small soft shadow in the margin. The split lines stay legible through it.
+- Page size, second batch (`material.ts`, `effects.ts`). Ink reach is `clamp(3.4 * fwidth(vInset), 0.545, 0.92)`: about 3.5 px of black rim at 70 px. Wall coat 0.32 and spec 0.3, so the rim stays black and not grey. Beads fade when they are small on screen (`wjaSmall`), so the face at page size stays clean.
+- Cracks, second batch (`material.ts`). Each crack has a lit lip and a dark lip either side of a darker hairline gap, a little clay tint in the gap.
+- Holes, second batch (`material.ts`, `body.ts`). Laser: halo wider and softer, bore greyer ash, ember accents sharper and fewer.
+- Heat, third batch (`material.ts`). The glow shows from heat 0.3 and is full at 0.6. In the beat `step1.tug` the acting side sends heat 0.28 (angry, dimmed while busy): the tip glowed orange there and the approved tug image has a clean white tip.
 - `act/damage.ts`: `seamCount` reads `pose.strips.length`, or `STRIPS` from `src/cursor/body.ts` when there are no strips. The number is written nowhere in my files.
 - `sheets.ts`, `damage()` only: `LIE = 0.6`, every damaged body on the sheet lies on the page, as on the approved sheet.
 
@@ -163,7 +167,7 @@ The triangle counts of the sheets rose mostly with the 15 strips (the acting fix
 
 ### Not done yet
 
-- Tape with thickness, lifted edges, glints and contact shadows: only its colour and opacity changed.
-- Cracks as a split shell with exposed sidewalls: still a line and a tipped plate, now hairline.
-- Laser bore lighter, soft halo: only the rim's embers changed.
+- Tape: no lifted geometry. The lift is drawn (edges and shadow), the film is one flat strip.
+- Cracks: lips are drawn in the material. The shell is not cut into separate pieces with real gaps.
+- Laser rim: reads as a brown ring more than a thick ragged crust.
 - Bead shadows are the engine's and are faint at page size.
