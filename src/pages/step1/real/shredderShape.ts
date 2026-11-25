@@ -4,15 +4,18 @@ import { SLOT } from '../layout'
 
 const heights = config.scale.heights
 
-// The cassette that stands over the slot, in page pixels round the slot's centre. y runs down the page.
+// The cassette that comes up through the slot, in page pixels round the slot's centre. y runs down the page, z up.
+// It is no wider than the slot, so it can pass through it; its chute swings out and reaches south once it is up.
 export const CASSETTE = {
   top: heights.machineMinTop + 2,
-  roller: { r: 10, north: -9, south: 9, z: heights.machineMinTop + 2 - 10, pitch: 6, disc: 2.6, hub: 6.2, teeth: 7 },
-  lip: { y0: -25, y1: -15, top: 7 },
-  hood: { y0: 21, y1: 44 },
-  block: { w: 14, y0: -25, y1: 44 },
-  half: SLOT.w / 2,
-  sink: 46
+  half: SLOT.w / 2 - 2,
+  deep: SLOT.h / 2 - 1.4,
+  cheek: 14,
+  wall: 1.6,
+  roller: { r: 6.6, root: 5.2, hub: 3.3, north: -5.9, south: 5.9, z: heights.machineMinTop + 2 - 7.4, pitch: 6, disc: 2.4, teeth: 7 },
+  chute: { z: heights.machineMinTop + 1, len: 28, more: 15, thick: 1.3, slope: 0.5 },
+  floor: 13,
+  sink: heights.machineMinTop + 16
 }
 
 export const smooth = (t: number): number => {
@@ -34,6 +37,11 @@ export function riseOf(open: number): number {
   const over = 1 + 0.06 * Math.sin(Math.PI * Math.min(1, u / 0.85)) * (u < 0.85 ? 1 : 0)
   return u >= 1 ? 1 : (1 - Math.pow(1 - Math.min(1, u / 0.85), 3)) * over
 }
+
+// The chute hangs down the south wall while the cassette travels, swings out when it is up, then reaches.
+export const chuteOf = (open: number): number => smooth((open - 0.86) / 0.14)
+export const chuteAngle = (c: number): number => Math.PI / 2 + (CASSETTE.chute.slope - Math.PI / 2) * smooth(c / 0.7)
+export const chuteReach = (c: number): number => CASSETTE.chute.more * smooth((c - 0.5) / 0.5)
 
 // The crest of the north roller: where a sheet that is fed leaves the air and wraps the steel.
 export const crest = (rise: number): { x: number; y: number; z: number } => ({

@@ -20,11 +20,12 @@ export function red(): THREE.MeshPhysicalMaterial {
     grain.repeat.set(1 / 90, 1 / 90)
     redMade = studio(
       new THREE.MeshPhysicalMaterial({
-        color: srgb(0xb3211b),
-        roughness: 0.46,
+        color: srgb(0xa3120f),
+        roughness: 0.5,
         metalness: 0,
-        clearcoat: 1,
-        clearcoatRoughness: 0.09,
+        specularIntensity: 0.6,
+        clearcoat: 0.7,
+        clearcoatRoughness: 0.14,
         clearcoatNormalMap: grain,
         clearcoatNormalScale: new THREE.Vector2(0.05, 0.05),
         envMapIntensity: 1.05
