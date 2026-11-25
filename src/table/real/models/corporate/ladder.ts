@@ -218,6 +218,10 @@ export function buildLadder(z: Zone, _ctx: RealContext): THREE.Object3D {
     S.pipe(crown, WIRE.hoopR, 5, STEEL)
     stand(crown[crown.length - 1]!, { p: top.p, t: top.r, r: top.t })
   })
+  // Polished wire shows the dark of the room in its flanks and the lamps along its top.
+  const chrome = (_x: number, _y: number, nz: number): number => 0.36 + 0.64 * Math.pow(Math.max(0, nz), 1.6)
+  S.tint(0, chrome)
+  F.tint(0, chrome)
   F.map(0, () => [(FINISH.polished + 0.5) / 8, 0.5])
   // The flap at the foot, where a ball leaves the floor for the wires.
   const a0 = raw[0]!

@@ -223,10 +223,12 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
     fin(S, FINISH.stone, () => {
       S.box(-HW, HW, F, B, 0, 6, shade(TONE.graphite, 0.8), { bevel: 1.2 })
     })
+    const piers = S.vertices
     fin(S, FINISH.brushed, () => {
       S.box(-HW, -HW + 14, F - 2, F + 6, 6, pz0, STEEL_DARK, { bevel: 1.5 })
       S.box(HW - 14, HW, F - 2, F + 6, 6, pz0, STEEL_DARK, { bevel: 1.5 })
     })
+    S.grade(piers, (_x, _y, zz) => 0.72 + 0.4 * Math.max(0, Math.min(1, (zz - 6) / (pz0 - 6))))
     fin(S, FINISH.satin, () => {
       S.box(-HW + 0.6, -vw, F + 0.6, B - 0.6, 6, pz1, TONE.graphite)
       S.box(vw, HW - 0.6, F + 0.6, B - 0.6, 6, pz1, TONE.graphite)
@@ -234,6 +236,7 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
       S.box(-vw, vw, F + 0.6, vb, dh + 4, pz1, TONE.graphite, { bottom: true })
     })
     // The fascia over the lobby, with the plate the name stands on, and the canopy over the doors.
+    const band = S.vertices
     fin(S, FINISH.brushed, () => {
       S.box(-HW - 1, HW + 1, F - 4, F + 1, pz0, pz1 - 0.4, STEEL_DARK, { bevel: 1, bottom: true })
       S.box(-dw - 19.2, dw + 19.2, F - 9.6, F - 4, pz0 + 2, pz1 - 2, shade(STEEL, 0.8), { bottom: true })
@@ -243,6 +246,8 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
       S.box(-fx - 3, fx + 3, F - 11.4, F - 4, pz0 - 0.4, pz0 + 2.6, STEEL, { bevel: 0.8, bottom: true })
       S.box(-dw - 22, dw + 22, F - 26, F, dh + 4, pz0 - 0.4, STEEL, { bevel: 1.4, bottom: true })
     })
+    // Brushed steel under lamps that stand over it: bright at its upper edge, dark at its lip.
+    S.grade(band, (_x, _y, zz) => 0.66 + 0.5 * Math.max(0, Math.min(1, (zz - pz0) / (pz1 - pz0))) ** 1.5)
     for (const s of [-1, 1]) screw(S, s * (dw + 12), F - 9.6, (pz0 + pz1) / 2, 2, STEEL, [0, -1, 0])
     fin(S, FINISH.polished, () => {
       for (const zz of [pz0 + 0.8, pz1 - 3.2]) {
