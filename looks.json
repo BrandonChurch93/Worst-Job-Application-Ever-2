@@ -1,35 +1,35 @@
 {
   "folder": "marketing",
-  "pushed": "2026-11-25T09:16:12.442Z",
-  "commit": "c5ebf0f17d2d05424fdf3f25e38df0c349768f48",
+  "pushed": "2026-11-25T09:25:11.941Z",
+  "commit": "a4299d86ad3e359db4aa19c9560149b197bd7f8d",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "marketing.perks at 3.2 s: the Unlimited PTO card is open, the cursor stands in its bottom right corner clear of the words",
-      "time": "2026-11-25T09:16:10.624Z",
+      "caption": "Still decision-decision_reset-0p85-preview-draft: draft tier, preview, view beauty",
+      "time": "2026-11-25T09:24:57.433Z",
       "by": "marketing",
-      "from": "out/work/stills/pk-1-preview-draft.png"
+      "from": "out/work/stills/decision-decision_reset-0p85-preview-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "marketing.apply at 12.7 s: the leap from beside the big button onto its cap",
-      "time": "2026-11-25T09:16:10.855Z",
+      "caption": "Ticker beat at 9.0 s: the tape is cut off at the window on both sides, the cursor walks past without looking down",
+      "time": "2026-11-25T09:25:10.251Z",
       "by": "marketing",
-      "from": "out/work/stills/ap-2-preview-draft.png"
+      "from": "out/work/stills/seq-6-preview-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "marketing-perks (scroll 0.25): last perk row with the closing line, and the awards",
-      "time": "2026-11-25T09:16:11.077Z",
+      "caption": "After the rejection: tape reads tickerAfterRejection, the cursor stands by the Apply button",
+      "time": "2026-11-25T09:25:10.489Z",
       "by": "marketing",
-      "from": "out/work/stills/still-marketing-perks-preview-draft.png"
+      "from": "out/work/stills/decision-decision_reset-0p85-preview-draft.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "marketing-foot (scroll 1): the final call to action and the footer",
-      "time": "2026-11-25T09:16:11.304Z",
+      "caption": "Scroll 0.78: process steps, wait field with its value shown, questions",
+      "time": "2026-11-25T09:25:10.723Z",
       "by": "marketing",
-      "from": "out/work/stills/still-marketing-foot-preview-draft.png"
+      "from": "out/work/stills/scroll-0.78-preview-draft.png"
     }
   ]
 }
