@@ -130,12 +130,24 @@ describe('the makers of the table', () => {
     const moving = movingShapes(m, table.inserts.map(() => false), true, [true, false, true], 0, false, 0.18)
     const mine = moving.filter((s) => s.kind === 'anchor')
     expect(mine.map((s) => s.id)).toEqual(LIT_ZONES.map((z) => anchorId('table-lights', z)))
-    expect(mine.map((s) => s.v)).toEqual([[1, 0.18], [1, 0.18], [0, 0.18], [1, 0.18]])
+    expect(mine.map((s) => s.v)).toEqual([[1, 0.18, 0, 0, 0], [1, 0.18, 0, 0, 0], [0, 0.18, 0, 0, 0], [1, 0.18, 0, 0.35, 0.35]])
     const flipper = moving.find((s) => s.id.startsWith('flipper.'))!
     expect(Math.abs(flipper.v![0]!)).toBeLessThan(1)
     expect(Math.abs(flipper.v![0]!)).toBeGreaterThan(0.3)
-    for (const id of ['plunger.rod', 'hq.door.left']) expect(moving.find((s) => s.id === id)!.v).toEqual([0])
-    for (const s of moving) if (/^(target|lamp|insert)\./.test(s.id)) expect(s.v!.length).toBe(1)
+    expect(moving.find((s) => s.id === 'plunger.rod')!.v).toEqual([0])
+    expect(moving.find((s) => s.id === 'hq.door.left')!.v).toEqual([0, 9, 9])
+    for (const s of moving) if (/^(target|lamp|insert)\./.test(s.id)) expect(s.v!.length).toBe(s.id.startsWith('target.') ? 2 : 1)
+    const state = (id: string): number[] => moving.find((s) => s.id === id)!.v!
+    expect(state('bumper.office.bumper.1')).toEqual([9])
+    expect(state('sling.corporate.sling.left.3')).toEqual([9])
+    expect(state('hold.corporate.revolving')).toEqual([0, 9, 9])
+    expect(state('model.street.firehouse')).toEqual([0, 9, 9])
+    expect(state('model.street.mom')).toEqual([0, 9, 9, 1])
+    expect(state('gate.0')).toEqual([1])
+    expect(state('flap.highway')).toEqual([1])
+    expect(state('lift.door.office')).toEqual([9])
+    const fixed = fixedShapes().map((s) => s.id)
+    for (const s of moving) expect(fixed.includes(s.id), s.id).toBe(false)
   })
 
   test('a material passes through the hook of the lights and comes back the same material', () => {
