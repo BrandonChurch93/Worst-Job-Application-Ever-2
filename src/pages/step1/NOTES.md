@@ -57,3 +57,9 @@ Blockout phase. Stand-in shapes, working logic.
 - `fire.ts` gives `makeTurrets()` and `drawFire(out, { typed, pressed, turrets })`: the page with the keyboard up, First name holding `typed`, the keys named in `pressed` down, and the given turrets with their bolts and marks. Key names are those of `keyboard.json`.
 - The cursor grabs the paper by its top right corner, clear of the title.
 - The film camera pushes in on the resume card and the slot from 21.6 s and is home again by 30.1 s.
+
+## For the measures
+
+- A part that a gag has taken from its place in the layout tree carries `moved: true` for as long as it is away: the paper and its lines while it slides, is carried, fed or tugged; a slab; a key and its legend while it sits on another seat or flies to one. A part at rest on the tree does not carry it.
+- `mechanism` is on the keycaps, the turrets and the shredder housing, and only while the part stands at least `machineMinTop` high. The deck, the slab, the paper and the upper lip of the slot are not mechanisms.
+- `strips-zip` is emitted with hitsCursor false: the strips fly to the pile, they do not strike the cursor.
