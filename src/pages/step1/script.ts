@@ -10,7 +10,7 @@ const sizes = config.scale.sizes
 
 export const START = { x: 1180, y: 800 }
 export const TIMES = {
-  riseSeconds: 0.8, sinkSeconds: 0.6, turretDelay: 0.22, shuffleSeconds: 0.32, pressWait: 0.16,
+  riseSeconds: 0.8, sinkSeconds: 0.6, turretDelay: 0.72, shuffleSeconds: 0.32, pressWait: 0.16,
   slabCount: 3, slabFirst: 0.4, slabEvery: 0.55, slabHang: 0.2, slabFall: 0.2, slabSettle: 0.12, slabLie: 0.25, slabLift: 0.18,
   paperSlide: 0.42, bite: 0.4, tugFilm: 5.06, lost: 0.3
 }
@@ -21,16 +21,17 @@ export const HOOD = { y: SLOT.cy + 44, z: 8 }
 export const PILE = { x: SLOT.cx - 20, y: SLOT.cy + 176 }
 export const SHRED = { in: 0.3, gone: 0.34, strips: 0.12, pile: 0.78, pileSeconds: 1.0, empty: 1.3, emptySeconds: 0.5, zip: 1.78, zipSeconds: 1.0, end: 2.8 }
 
-// The film's first name: every time is a second of the unit. The turrets are up at 3.02 and fire at 3.62, 4.07, 4.52, 4.97, 5.42, 5.87, and so on.
-// The shot of 5.42 is aimed while the cursor stands proud and hits it at 5.89, so 6.0, the frame of the approved image, has the burn, the recoil and the next bolt in the air.
-// It scrambles clear from 6.02, and the shot of 5.87 lands where it stood.
+// The film's first name: every time is a second of the unit. The turrets are up at 3.52 and fire at 4.12, 4.57, 5.02, 5.47, 5.92, and so on.
+// 6.0 is the frame of the approved image: the shot of 5.02 has just landed on L, the shot of 5.47 is a hand's width from the cursor, the shot of 5.92 has left the barrel, and the cursor is in the air over the row above.
+// It lands, takes the pause for a win, and the shot of 6.82 hits it at 7.06.
 export const FIRST = {
   tap: 1.5,
-  keys: [[2.18, 2.56], [2.64, 2.97], [3.06, 3.25], [3.7, 4.05], [4.28, 4.4]] as [number, number][],
-  notice: 3.34, dodge: 3.7, duck: 4.08, cocky: [4.44, 4.64] as [number, number], proud: 4.74,
-  stand: { x: 972, y: 826 }, thrown: { x: 196, y: -84 }, shock: [6.02, 6.7] as [number, number],
-  after: [[6.7, 6.92], [7.0, 7.32], [7.42, 7.62], [7.72, 8.0], [8.1, 8.3], [8.38, 8.56]] as [number, number][],
-  enter: [8.68, 8.9] as [number, number]
+  keys: [[2.18, 2.56], [2.64, 2.97], [3.06, 3.25], [3.86, 4.1], [4.16, 4.3]] as [number, number][],
+  notice: 3.42, dodge: 3.86, cocky: [4.44, 4.68] as [number, number], proud: 4.8,
+  stand: 'w', aside: -34, see: 5.72, flee: [5.84, 6.06] as [number, number], fled: '4', smug: 6.34,
+  thrown: { x: 190, y: 60 }, shock: [7.18, 7.8] as [number, number],
+  after: [[7.8, 8.0], [8.06, 8.3], [8.36, 8.54], [8.6, 8.86], [8.92, 9.1], [9.16, 9.32]] as [number, number][],
+  enter: [9.4, 9.6] as [number, number]
 }
 export const LAST = { at: [10.3, 10.95, 11.55, 12.1, 12.62, 13.12, 13.62, 14.12], hunts: 3, enter: [14.34, 14.6] as [number, number] }
 export const MAIL = { first: 15.16, run: 15.5, every: 0.092, enter: 17.42 }
@@ -118,7 +119,7 @@ export function makePlan(seed: number, first: string, last: string, email: strin
   to(2.02, 2.14, field.x - 36, field.y - 34)
   cue(2.04, { react: 'anticipate' })
 
-  // step1.firstName: stomps, the turrets, a dodge, a duck, a cocky pause, the hit, the shock, the rest of the name
+  // step1.firstName: stomps, the turrets, a dodge, a leap clear, a cocky pause, the frame of the approved image, a second pause, the hit, the shock, the rest of the name
   const keys = [...first].map(nameOf)
   const k = (i: number): number => seatIndex[keys[Math.min(i, keys.length - 1)]!]!
   const before = Math.min(FIRST.keys.length, keys.length)
@@ -128,18 +129,20 @@ export function makePlan(seed: number, first: string, last: string, email: strin
     if (i === 2) {
       cue(FIRST.notice, { react: 'doubleTake' })
       cue(FIRST.notice + 0.1, { act: 'nervous' })
-      cue(FIRST.dodge - 0.1, { react: 'anticipate' })
-    }
-    if (i === 3) {
-      const p = keySpot(k(3))
-      cue(FIRST.duck, { react: 'flinch' })
-      to(FIRST.duck, FIRST.duck + 0.1, p.x - 10, p.y + 12, { ease: 'out' })
+      cue(FIRST.dodge - 0.14, { react: 'anticipate' })
     }
   }
-  leap(FIRST.cocky[0], FIRST.cocky[1], FIRST.stand.x, FIRST.stand.y, { arc: 40 })
+  const stand = { x: keySpot(seatIndex[FIRST.stand]!).x + FIRST.aside, y: keySpot(seatIndex[FIRST.stand]!).y }
+  const fled = keySpot(seatIndex[FIRST.fled]!)
+  leap(FIRST.cocky[0], FIRST.cocky[1], stand.x, stand.y, { arc: 84 })
   cue(FIRST.proud, { act: 'proud' })
   cue(FIRST.proud + 0.06, { react: 'dustOff' })
-  to(FIRST.shock[0], FIRST.shock[0] + 0.16, FIRST.stand.x + FIRST.thrown.x, FIRST.stand.y + FIRST.thrown.y, { arc: 20, ease: 'out' })
+  cue(FIRST.see, { react: 'anticipate' })
+  cue(FIRST.see + 0.02, { act: 'nervous' })
+  leap(FIRST.flee[0], FIRST.flee[1], fled.x, fled.y, { arc: 46, ease: 'smooth' })
+  cue(FIRST.smug, { act: 'proud' })
+  cue(FIRST.smug + 0.06, { react: 'dustOff' })
+  to(FIRST.shock[0], FIRST.shock[0] + 0.16, fled.x + FIRST.thrown.x, fled.y + FIRST.thrown.y, { arc: 20, ease: 'out' })
   cue(FIRST.shock[1] - 0.08, { react: 'flinch' })
   for (let i = before - 1; i < keys.length; i++) {
     const n = i - (before - 1)

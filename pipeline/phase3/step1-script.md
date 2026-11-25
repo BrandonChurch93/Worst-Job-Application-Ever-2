@@ -19,7 +19,7 @@ Times are seconds of the unit. Events are read from a run of the stage in film m
 | Beat | Seconds | What is played | Event |
 | --- | --- | --- | --- |
 | `step1.keyboard` | 0 to 2 | lands at 0.96, struts to First name, taps it at 1.5, the deck rises with a start, a swing past its seat and a rattle of keys | `keyboard-rise` 1.50 |
-| `step1.firstName` | 2 to 10 | turrets rise, P e r typed between shots, a dodge, a duck, "l", then it stands proud and still for over a second, is hit, holds the shock, scrambles clear, types the name to the end, Enter 8.9 | `bolt-hit-cursor` 5.89 |
+| `step1.firstName` | 2 to 10 | P e r typed, the hatches open at 3.03, a double take, the left turret charges and it leaps to "p" as the shot leaves, "l", a leap clear across the board to W where it stands proud for over a second; at 5.72 it sees the bolts and jumps for the row above (the key picture at 6.0); it lands, takes the pause for a win, is hit at 7.08, holds the shock to 7.8, types the name to the end, Enter 9.6 | `bolt-hit-cursor` 7.08 |
 | `step1.lastName` | 10 to 15 | eight keys, the board shuffles after each, three hunts with a look first, Enter | `keys-shuffle` 10.37 and seven more |
 | `step1.email` | 15 to 20 | one slow key, then a run, Enter, three slabs hang and fall, three dives, the third off the keyboard | `slab-drop` 18.31, 18.86, 19.41 |
 | `step1.resume` | 20 to 22 | the deck sinks, the paper slides out with friction, a look, a walk, a grab, a carry on an arc, a drop | `paper-slide` 20.45 |
@@ -29,7 +29,7 @@ Times are seconds of the unit. Events are read from a run of the stage in film m
 ## Decisions
 
 1. The helper of First name sits under its field at the left, and Last name and Email are moved down by `HELPER_ROOM`, 34 px. `FIELD_GAP` went from 16 to 12 so the form still ends above the note and the deck.
-2. The one hit of the film is the shot of 5.42 s, which lands at 5.89 s. The key picture `step1-fire` is the frame at 6.0 s, so it shows the burn 0.1 s old, "Perpl" still in the field and the next bolt in the air, as approved. The letter burns away 0.2 s after the hit (`SINGE`).
+2. The key picture `step1-fire` is the frame at 6.0 s and the script is timed to it (the Builder asked): the turrets rise 0.72 s into the beat (`TIMES.turretDelay`), so they fire at 4.125, 4.575, 5.025, 5.475 and 5.925. At 6.0 the bolt of 5.475 is 66 px from its target on the W cap and 130 px from the cursor, the bolt of 5.925 has left the left barrel, the bolt of 5.025 landed 0.33 s before near K, the cursor is in the air on its way to the 4, "Perpl" is in the field and the focus ring is lit. The one hit of the film is the shot of 6.825, which lands at 7.075 while the cursor stands proud a second time. The letter burns away 0.2 s after the hit (`SINGE`). `tests/step1-script.test.ts` holds the frame.
 3. The cursor is still for over a second before the hit and for 0.6 s in the shock. A pose needs a hold to be read.
 4. The click on First name waits until the cursor stands on the page. The test "clicks the field only once the cursor stands on the page" holds it.
 5. The landing of a slab shakes the deck, the keys and the hatches in the plane of the page by at most 2.2 px for 0.25 s. The `home` camera is the Builder's and is not moved. Slabs that lie do not shake.
