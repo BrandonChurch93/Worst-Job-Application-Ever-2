@@ -185,7 +185,7 @@ function progressButton(s: Shape, current: boolean): THREE.Object3D {
   const d = s.w
   const points: ProfilePoint[] = current
     ? [[0, foot - 0.5, true], [0, foot + up * 0.16], ...arc(0, foot + up * 0.16, 3.4, up * 0.2, 5).slice(1), [5.2, foot + up * 0.36], [5.6, foot + up * 0.4], [5.6, foot + up * 0.66], ...arc(5.6, foot + up * 0.66, 9, up * 0.34 - CROWN_BUTTON, 8).slice(1), ...[0.82, 0.64, 0.46, 0.28, 0.12].map((t): ProfilePoint => [d / 2 - (d / 2 - 14.6) * t, h - CROWN_BUTTON * t * t])]
-    : [[0, foot - 0.5, true], [0, foot + up * 0.3, true], [3.2, foot + up * 0.62, true], [5.2, foot + up * 0.62, true], [5.2, foot + up * 0.84], ...arc(5.2, foot + up * 0.84, 1.6, up * 0.16, 4).slice(1)]
+    : [[0, foot - 0.5, true], [0, foot + up * 0.6, true], ...arc(0, foot + up * 0.6, 4.2, up * 0.22, 6).slice(1), [4.4, foot + up * 0.74, true], [5.4, foot + up * 0.74, true], [5.6, h - 0.5, true], [6.2, h, true]]
   const g = shared(`progress:${dims(s)}:${current}`, () => discUv(sweep(circle(d / 2, 72), profile(points)), d))
   return mesh(g, current ? m.orange : m.aluminiumTurned)
 }
@@ -200,11 +200,21 @@ function rule(s: Shape): THREE.Object3D {
 const roundEnds = (s: Shape): Outline => outlineOf({ kind: 'capsule', w: s.w, h: s.h }, 0, 6)
 
 const FRAME = 3
-const WASH = 0.15
+const WASH = 0.2
+const EDGE = 0.4
+const LIFT = 0.16
 
 // A glass card is brighter toward the light and dimmer away from it: the wide soft picture of the light in its frosted face.
 // Laid in as vertex colour over the sunk glass's material, tinted to the thick glass's colour.
-function washed(g: THREE.BufferGeometry, s: Shape): THREE.BufferGeometry {
+function washed(g: THREE.BufferGeometry, s: Shape, inset: number, shoulder: number): THREE.BufferGeometry {
+  const hw = s.w / 2 - inset
+  const hh = s.h / 2 - inset
+  const round = Math.max(0.6, (s.r ?? 0) - inset)
+  const inside = (x: number, y: number): number => {
+    const qx = Math.abs(x) - (hw - round)
+    const qy = Math.abs(y) - (hh - round)
+    return round - Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) - Math.min(Math.max(qx, qy), 0)
+  }
   const m = materials()
   const [lx, ly] = look.key.direction
   const flat = Math.hypot(lx, ly) || 1
@@ -213,7 +223,15 @@ function washed(g: THREE.BufferGeometry, s: Shape): THREE.BufferGeometry {
   const pos = g.getAttribute('position')
   const col = new Float32Array(pos.count * 3)
   for (let i = 0; i < pos.count; i++) {
-    const v = 1 + (WASH * (pos.getX(i) * lx + pos.getY(i) * ly)) / (flat * reach)
+    const x = pos.getX(i)
+    const y = pos.getY(i)
+    const d = inside(x, y)
+    const t = Math.min(1, Math.max(0, 1 - d / shoulder))
+    const gx = inside(x - 0.5, y) - inside(x + 0.5, y)
+    const gy = inside(x, y - 0.5) - inside(x, y + 0.5)
+    const facing = (gx * lx + gy * ly) / (flat * (Math.hypot(gx, gy) || 1))
+    // The shoulder on the light's side lies in the glass's own shade; the one on the far side lets the light out.
+    const v = (1 + (WASH * (x * lx + y * ly)) / (flat * reach)) * (1 + t * t * (3 - 2 * t) * (LIFT - EDGE * (facing < 0 ? facing * 1.5 : facing)))
     col.set([tint[0]! * v, tint[1]! * v, tint[2]! * v], i * 3)
   }
   g.setAttribute('color', new THREE.BufferAttribute(col, 3))
@@ -225,12 +243,12 @@ function card(s: Shape): THREE.Object3D {
   const m = materials()
   const root = new THREE.Group()
   const h = s.z1 - s.z0
-  const rise = Math.min(h * 0.25, 3)
-  const across = Math.min(13, Math.min(s.w, s.h) / 4)
+  const rise = Math.min(h * 0.2, 2)
+  const across = Math.min(14, Math.min(s.w, s.h) / 4)
   const band = h - rise
-  root.add(mesh(shared(`cardFrame:${dims(s)}`, () => sweep(outlineOf(s, 0, 14), profile([[0, 0, true], [0, band - 0.9, true], ...arc(0, band - 0.9, 1.1, 0.9, 4).slice(1), ...bead(FRAME - 1.1, band, 1.1, 0.9, 4).slice(1), [FRAME, 0.2, true]]), false)), m.aluminium))
-  root.add(mesh(shared(`cardBevel:${dims(s)}`, () => washed(sweep(outlineOf(s, FRAME - 0.3, 14), profile([[0, 0.05, true], [0, band - 0.4, true], [0.4, band, true], [across, h, true]]), false), s)), m.glassSunk))
-  root.add(mesh(shared(`cardFace:${dims(s)}`, () => washed(sweep(outlineOf(s, FRAME - 0.3 + across, 14), [{ inset: 0, z: h, out: 0, up: 1 }]), s)), m.glassSunk))
+  root.add(mesh(shared(`cardFrame:${dims(s)}`, () => sweep(outlineOf(s, 0, 14), profile([[0, 0, true], [0, band - 0.9, true], ...arc(0, band - 0.9, 1.1, 0.9, 4).slice(1), ...bead(FRAME - 1.1, band, 1.1, 0.9, 4).slice(1), [FRAME, 0.2, true]]), false)), m.aluminiumEdge))
+  const steps = [0.03, 0.08, 0.16, 0.27, 0.4, 0.55, 0.7, 0.85, 1].map((t): ProfilePoint => [across * t, band + rise * Math.sin((t * Math.PI) / 2)])
+  root.add(mesh(shared(`cardGlass:${dims(s)}`, () => washed(sweep(outlineOf(s, FRAME - 0.3, 14), profile([[0, 0.05, true], [0, band - 0.4, true], [0.4, band, true], ...steps])), s, FRAME - 0.3, across)), m.glassSunk))
   if (s.id.endsWith('-zone')) root.add(dashes(s, h))
   return root
 }
