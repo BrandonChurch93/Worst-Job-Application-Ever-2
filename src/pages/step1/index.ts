@@ -32,7 +32,7 @@ const WIPE: FieldName[] = ['email', 'lastName', 'firstName']
 const SLAB_HIGH = 110
 const SLAB_GAP = 8
 const PRESS = 0.24
-const LEGEND_CLEAR = 24
+const LEGEND_CLEAR = 0
 
 type Phase = 'rest' | 'keyboard' | 'firstName' | 'lastName' | 'email' | 'slabs' | 'resume' | 'tug' | 'shredded' | 'received'
 const GAG: Record<Phase, string> = {
