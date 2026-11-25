@@ -53,6 +53,9 @@ Times are seconds of the unit. Events are read from a run of the stage in film m
 23. Legends: a single letter, digit or sign is set at 26 px and a word (Tab, Shift, Enter) at 20 px, the sizes the type owner measured on the approved image (cap heights 19 and 15 px).
 24. After the loss the body is driven over the card (6 px above its face, 84 px up the page from the slot) for the 0.3 s before the shredder has it, so it is seen whole with its arms gone, not cut by the plate: seen by the cursor's actor. The knock at the loss stays `recoil`, which now turns the body as it is yanked.
 25. The tug camera at the key still (25.125 s) frames about 900 px of the page, so the cursor is 149 px tall in a 1920 frame (was 128). MEASURED with `npm run measure -- --unit step1 --only M3` at four widths of frame: 1054 px 1.3387 (the least of the two keys), 949 px 1.1363, 902 px 1.008, 852 px 0.8635, 600 px 0.6701 (red). 902 px is the closest with room to spare; the push to 600 px comes after the key still, by 26.35 s.
+26. Builder, 15:32: the tug camera shows the whole drop zone, the paper from the hands to the slot, the rollers and the strips. It pushes in for 2.7 s to a 928 px frame and holds; the 600 px push is gone and decision 25 is replaced. MEASURED `npm run measure -- --unit step1`: M3 1.2816. The cursor is 145 px tall in the 1920 frame.
+27. Builder, 15:32: an upload glyph (an arrow rising out of an open tray, 64 px wide, 3 px line, ink) above the prompt of the drop zone, as six boxes of the shell on the face of the card, hidden once the resume is received. The prompt and the Browse chip move down 38 px so the three are centred in the zone. No part of another owner was needed.
+28. Slab owner, 15:36: paper strips hang under the hood from the first bite and never go back in; at the key still six hang with u from 0.30 to 0.34.
 
 ## Agreed with other owners
 
