@@ -99,22 +99,27 @@ const flips = (take as unknown as { flips: [string, number, number][] }).flips
 const held = (side: string, time: number): boolean => flips.some((f) => f[0] === side && time >= f[1] && time < f[2])
 
 const tierPose = (k: number): CameraPose => homePose(px(TIER_Y[k]!), px(floorZ(k)))
+const streetPose = (): CameraPose => {
+  const f = px(floorZ(2))
+  const p = homePose(px(TIER_Y[2]! + 0.95), f)
+  return { ...p, eye: [p.eye[0], p.eye[1], f + (p.eye[2] - f) * 1.05] }
+}
 const fov = (name: string): number => (config.cameras as Record<string, { fovDeg?: number }>)[name]?.fovDeg ?? config.cameras.home.fovDeg
 const look = (name: string, eye: [number, number, number], at: [number, number, number]): CameraPose => ({ eye: toWorld(px(eye[0]), px(eye[1]), px(eye[2])), target: toWorld(px(at[0]), px(at[1]), px(at[2])), up: [0, 0, 1], fov: fov(name) })
 const Y0 = TIER_Y[0]!
 const Y1 = TIER_Y[1]!
 const Y2 = TIER_Y[2]!
 const NAMED: Record<string, CameraPose> = {
-  'tier-3': tierPose(0), 'tier-2': tierPose(1), 'tier-1': tierPose(2),
+  'tier-3': tierPose(0), 'tier-2': tierPose(1), 'tier-1': streetPose(),
   'table-wide': look('table-wide', [MID, APRON_Y + 15.5, 15.5], [MID, APRON_Y - 10.6, -1.2]),
-  'table-lobby': look('table-lobby', [MID + 2.0, Y0 + 13.6, 8.4], [MID + 0.1, Y0 + 4.4, 1.0]),
+  'table-lobby': look('table-lobby', [MID + 3.6, Y0 + 8.9, 1.3], [MID + 0.1, Y0 + 4.5, 0.6]),
   'table-replyall': look('table-replyall', [MID + 2, Y1 + 15.5, 14], [MID + 1.2, Y1 + 5.4, -2]),
   'table-fired': look('table-fired', [8.2, Y2 + 8.0, 0.8], [4.8, Y2 + 3.5, -2.2]),
-  'table-save': look('table-save', [MID, Y2 + 14.0, 10.5], [MID, Y2 + 6.8, -3])
+  'table-save': look('table-save', [MID, Y2 + 13.8, 6.9], [MID, Y2 + 7.7, -3])
 }
 const FILM: [number, string][] = [
-  [0, 'follow'], [4.2, 'table-wide'], [8.2, 'follow'], [11.2, 'tier-3'], [13.0, 'table-lobby'], [14.3, 'follow'], [20.6, 'table-replyall'], [22.6, 'follow'], [27.2, 'table-fired'], [28.8, 'follow'],
-  [31.0, 'rail'], [33.0, 'follow'], [34.3, 'table-save'], [36.6, 'follow']
+  [0, 'follow'], [4.2, 'table-wide'], [8.2, 'follow'], [8.5, 'ride'], [11.0, 'tier-3'], [13.0, 'table-lobby'], [14.3, 'follow'], [20.6, 'table-replyall'], [22.6, 'follow'], [27.2, 'table-fired'], [28.8, 'follow'],
+  [31.0, 'rail'], [32.2, 'follow'], [34.3, 'table-save'], [36.6, 'follow']
 ]
 const BLEND = 0.6
 const WAKE = 0.35
@@ -187,7 +192,7 @@ export function makePage(): PageLogic {
     const k = b.mode === 'rail' && b.rail.startsWith('chute.') ? TIERS.indexOf(b.rail.slice(6) as never) + 1 : b.mode === 'rail' && b.rail.startsWith('lift.') ? tierAt(railOf(b.rail).points[3]![1]) : tierAt(Math.max(Y0, Math.min(APRON_Y - 0.01, b.y)))
     return { scroll: px(TIER_Y[k]!), floor: px(floorZ(k)) }
   }
-  const railPose = (): CameraPose => {
+  const railPose = (back = 2.4, up = 4.6, ahead = 1.0, lift = 0.5): CameraPose => {
     const b = ball()
     let vx = b.vx
     let vy = b.vy
@@ -197,14 +202,25 @@ export function makePage(): PageLogic {
       const p1 = railAt(r, Math.min(railLength(r), b.s + 2.2))
       vx = p1.x - p0.x
       vy = p1.y - p0.y
+    } else if (b.mode === 'hold' && b.hold === 'plunger') {
+      vx = 0
+      vy = -1
+    } else if (s.t < T.onTable + 1) {
+      vx = 0
+      vy = 1
     }
     const sp = Math.hypot(vx, vy) || 1
     const dx = vx / sp
     const dy = vy / sp
-    return { eye: toWorld(px(b.x - dx * 2.4), px(b.y - dy * 2.4), px(b.z + 4.6)), target: toWorld(px(b.x + dx * 1.0), px(b.y + dy * 1.0), px(b.z + 0.5)), up: [0, 0, 1], fov: fov('rail') }
+    return { eye: toWorld(px(b.x - dx * back), px(b.y - dy * back), px(b.z + up)), target: toWorld(px(b.x + dx * ahead), px(b.y + dy * ahead), px(b.z + lift)), up: [0, 0, 1], fov: fov('rail') }
+  }
+  const ridePose = (): CameraPose => {
+    const b = ball()
+    const u = b.mode === 'rail' && b.rail === 'launch' ? smooth(Math.min(1, b.s / 7)) : b.mode === 'hold' ? 0 : 1
+    return railPose(0.8 + 2.6 * u, 4.4 - 1.0 * u, 1.0 + 1.5 * u, 0.5)
   }
   const follow = (): CameraPose => homePose(s.scroll, s.floor)
-  const named = (name: string): CameraPose | null => (name === 'follow' ? follow() : name === 'rail' ? railPose() : NAMED[name] ?? null)
+  const named = (name: string): CameraPose | null => (name === 'follow' ? follow() : name === 'rail' ? railPose() : name === 'ride' ? ridePose() : NAMED[name] ?? null)
 
   const filmPose = (time: number): CameraPose => {
     let i = 0
@@ -579,12 +595,15 @@ export function makePage(): PageLogic {
       drawLayout(list, layout, { states: ['play', 'on', 'mode5', 'mode0', 'mode3'], runtime: { score: scoreText() } })
       for (const shape of fixedShapes()) list.push(shape)
       for (const shape of plates) list.push(shape)
+      const top = px(MARQUEE_Y - 0.3)
+      const tall = px(APRON_Y + 2.6 - MARQUEE_Y + 0.3)
       for (const shape of movingShapes(mc, table.inserts.map(() => true), true)) list.push(shape)
-      const top = px(MARQUEE_Y)
-      const tall = px(APRON_Y + 2 - MARQUEE_Y)
+      const inside = list.filter((x) => !x.id.startsWith('rail.') || (x.y >= top && x.y + x.h <= top + tall))
+      list.length = 0
+      for (const shape of inside) list.push(shape)
       const f = fov('table-map')
       const c = toWorld(960, top + tall / 2, 0)
-      const need = Math.max(tall, (1920 * 1920) / 1080) / 0.98
+      const need = Math.max(tall, (1920 * 1920) / 1080) / 0.96
       return { list, cursors: [], view: { eye: [c[0], c[1], need / 2 / Math.tan((f * Math.PI) / 360)], target: c, fov: f }, width: 1080, height: 1920 }
     }
   }
