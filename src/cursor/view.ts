@@ -18,6 +18,8 @@ export const cursorReal = { body: whole, effects: makeEffects !== null, acting: 
 const half = config.table.ballPx / 2
 // A closed hand rides this far above where it holds, so that the fingers lie on what is held and not inside it.
 const HOLD = 7
+// An arm is rooted this share of the way in from the shoulder, so that it leaves from under the edge and never from beside it.
+const ROOT = 0.09
 
 // One cursor made of its parts: the body, its effects and its arms, posed from what the cursor is doing.
 export class CursorView {
@@ -80,7 +82,8 @@ export class CursorView {
       const s = SHOULDERS[i]!
       const from = this.from[i]!
       const to = this.to[i]!
-      this.body.root.localToWorld(this.body.anchor(s[0], s[1], from))
+      const o = SHOULDERS[1 - i]!
+      this.body.root.localToWorld(this.body.anchor(s[0] + (o[0] - s[0]) * ROOT, s[1], from))
       this.root.worldToLocal(from)
       const h = hands[i]!
       to.set(h.x - 960, 540 - h.y, h.z + HOLD * c.grip[i]!)

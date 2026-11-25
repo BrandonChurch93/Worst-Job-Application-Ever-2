@@ -2,7 +2,7 @@ import { config } from '../../config'
 import { copy, type LayoutNode } from '../../copy'
 import { boxOf, column, group, node, row, text } from '../../shell/layout'
 import { block } from '../../shell/metrics'
-import { button, buttonWidth, HEADER, LEFT, page, RIGHT, SCREEN_H, stepHead, TYPE } from '../../shell/parts'
+import { button, buttonWidth, LEFT, page, RIGHT, SCREEN_H, stepHead, TYPE } from '../../shell/parts'
 import { words } from '../../shell/words'
 import { ARENA, FALLEN, HOME, SLAB_H, SOCKET } from '../../boss/plan'
 import type { BannerPlan, Box, PopupPlan, SlabPlan, WeaponPlan } from '../../boss/weapons'
@@ -32,9 +32,12 @@ export interface Step4Layout {
   rule: Box
 }
 
+const CONTENT_Y = 336
+const SUBLINE_Y = 266
+
 export function makeLayout(): Step4Layout {
   const cardX = LEFT
-  const cardY = HEADER.contentY
+  const cardY = CONTENT_Y
   const cardW = 680
   const pad = 32
   const on = { part: 'type', on: heights.card }
@@ -70,7 +73,7 @@ export function makeLayout(): Step4Layout {
 
   const labelBlock = block(TYPE.label.font, words('copy:step4.bossHealthLabel'), TYPE.label.px)
   const trackH = 26
-  const trackY = HEADER.sublineY - 4
+  const trackY = SUBLINE_Y - 4
   const health = row(
     'health',
     LEFT,
@@ -110,7 +113,7 @@ export function makeLayout(): Step4Layout {
   const titleCap = block(titleType.font, 'X', titleType.px).cap
   const popH = popPad + titleCap + 22 + sizes.button + 10 + popPad - 6
   const right = HOME.x - 260
-  const tops = [HEADER.contentY, HEADER.contentY + popH + 16, HEADER.contentY + (popH + 16) * 2]
+  const tops = [CONTENT_Y, CONTENT_Y + popH + 16, CONTENT_Y + (popH + 16) * 2]
   const insets = [0, 0, 0]
   const popupPlans: PopupPlan[] = []
   const popupNodes = POPUPS.map((p, i) => {

@@ -356,7 +356,8 @@ const checks = {
     const units = [...pageUnits, 'site', 'film']
     const lost = unknownUnits(named, units)
     if (lost.length) return { pass: false, note: `no unit called ${lost.join(', ')}. The units are ${units.join(', ')}`, detail: [] }
-    const register = readJson(at('parts', 'PARTS.json'))
+    const registerFile = a.register && a.register !== true ? path.resolve(String(a.register)) : at('parts', 'PARTS.json')
+    const register = readJson(registerFile)
     const covered = coveredUnits({ states: unitStates(fs.readFileSync(at('kit', 'PROGRESS.md'), 'utf8')), named, phase, units })
     if (!covered.length) return { pass: true, note: 'stand-ins: no unit is marked finished in kit/PROGRESS.md and none was named with --unit, so the check covers no part', detail: [] }
     const parts = register.parts.filter((p) => covered.some((u) => u.unit === p.unit))
@@ -461,7 +462,7 @@ const checks = {
     }
     const red = rows.filter((r) => r.why.length)
     writeJson(at('out', 'work', 'gate', 'G13.json'), { covered, anchors, framesRead, pictures: judged.map((j) => j.id), filmPictures: moments.map((m) => m.frame), unreadPixels: unread, parts: rows })
-    return { pass: red.length === 0, note: `stand-ins: ${parts.length} parts of ${covered.map((u) => `${u.unit} (${u.why})`).join(', ')}; ${red.length ? `${red.length} still a stand-in: ${red.map((r) => r.name).join(', ')}` : 'none is a stand-in by the three tests'}; read ${framesRead} film frames at ${c.film.previewFps} a second and ${pictures + filmPictures} pictures of the standins view at one sample a pixel (${pictures} keys, sheets and judged stills, ${filmPictures} moments of the film, one a second, through the film's camera)${unread ? `, in which ${unread} pixels are no flag colour and no ground` : ''}`, detail }
+    return { pass: red.length === 0, note: `stand-ins${a.register && a.register !== true ? ` (a trial on the register ${path.relative(at(), registerFile)}, not parts/PARTS.json)` : ''}: ${parts.length} parts of ${covered.map((u) => `${u.unit} (${u.why})`).join(', ')}; ${red.length ? `${red.length} still a stand-in: ${red.map((r) => r.name).join(', ')}` : 'none is a stand-in by the three tests'}; read ${framesRead} film frames at ${c.film.previewFps} a second and ${pictures + filmPictures} pictures of the standins view at one sample a pixel (${pictures} keys, sheets and judged stills, ${filmPictures} moments of the film, one a second, through the film's camera)${unread ? `, in which ${unread} pixels are no flag colour and no ground` : ''}`, detail }
   },
 
   async G15() {

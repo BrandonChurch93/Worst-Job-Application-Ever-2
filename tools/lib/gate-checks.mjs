@@ -126,6 +126,7 @@ export function standInTests(part, facts = {}) {
   else if (facts.hashNow === null) why.push('test 2: the hash of its files today cannot be made')
   else if (facts.hashNow === part.standInHash) why.push(`test 2: its files (${part.files.join(' ')}) are byte for byte what they were when it was recorded as a stand-in`)
   else if (same) why.push(`test 2: its files (${part.files.join(' ')}) are byte for byte what they were at ${same.commit.slice(0, 7)}, when every part was a stand-in. The hash recorded for it is older than that, so differing from it shows nothing`)
+  else if (!part.hashAt) why.push(`test 2: its record names no commit, so it was not taken from the commits in which every part was a stand-in. A file it names may have changed since for a reason that has nothing to do with the part, and differing from such a hash shows nothing (npm run parts -- --record ${part.name} --files a,b --replace)`)
   const frames = facts.frames
   if (frames && frames.count > 0) why.push(`test 3: the page reports it as a stand-in in ${frames.count} of ${frames.of} film frames, first in frame ${frames.first} (${frames.beats.join(', ')})`)
   const lit = (facts.pixels ?? []).filter((p) => p.pixels > 0)
