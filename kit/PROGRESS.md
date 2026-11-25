@@ -4,7 +4,7 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 ## Status
 
-- Build: not started
+- Build: in progress
 - Phase: 0
 - Review: not reached
 - Review round: none
@@ -37,7 +37,7 @@ none
 
 | Phase | State | Started | Done | Commit | Gate evidence |
 | --- | --- | --- | --- | --- | --- |
-| 0 Ground truth | not started | | | | |
+| 0 Ground truth | in progress | 2026-11-25T05:32Z | | | |
 | 1 The rough cut | not started | | | | |
 | 2 Engine and blockout | not started | | | | |
 | 3 The look lock | not started | | | | |
@@ -203,4 +203,4 @@ none
 
 One entry per task: when it started, what state it found, what it did, where it stopped.
 
-none
+- Task 1, started 2026-11-25T05:32:34Z. Found: build not started, references approved (manifest checks out, 19 keys, 8 sheets, no pending round), no addenda. Read AGENTS.md and the kit in its reading order. Began Phase 0.
