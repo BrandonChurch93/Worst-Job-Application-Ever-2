@@ -3352,6 +3352,1131 @@
       "kept": false,
       "keptAs": [],
       "why": ""
+    },
+    {
+      "key": "slab-drop.3",
+      "kind": "cue",
+      "cue": "slab-drop",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "14263f4c7dbec78eeea6f9369be1ecfda239b2d355e226e59546c8d75604dfae",
+      "filed": "2026-11-25T18:14:47.363Z",
+      "prompt": "One very heavy ceramic block landing flat on a ceramic floor, a single deep hard thud, close microphone, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.8,
+        "loop": false,
+        "influence": null,
+        "call": 58
+      },
+      "askedSeconds": 0.8,
+      "cost": "9",
+      "measured": {
+        "seconds": 0.8,
+        "start": 0,
+        "end": 0.8,
+        "peakDb": -26.2,
+        "rmsDb": -40.11,
+        "lufs": -44.49,
+        "truePeakDb": -25.24,
+        "low": 0.99,
+        "mid": 0.01,
+        "high": 0,
+        "tailDb": -50.53,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.6,
+            "peakDb": -26.2
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "paper-slide",
+      "kind": "cue",
+      "cue": "paper-slide",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "e32c7ad0fe2c118b02733635d550cd627a3891bd1c8c3a2e90e8769e97ecf004",
+      "filed": "2026-11-25T18:14:49.491Z",
+      "prompt": "One sheet of paper sliding across a hard smooth desk, a single short soft hiss, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.6,
+        "loop": false,
+        "influence": null,
+        "call": 59
+      },
+      "askedSeconds": 0.6,
+      "cost": "7",
+      "measured": {
+        "seconds": 0.6,
+        "start": 0,
+        "end": 0.6,
+        "peakDb": -14.64,
+        "rmsDb": -28.84,
+        "lufs": -21.67,
+        "truePeakDb": -14.05,
+        "low": 0.001,
+        "mid": 0.077,
+        "high": 0.922,
+        "tailDb": -59.39,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.518,
+            "peakDb": -14.64
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "shredder",
+      "kind": "cue",
+      "cue": "shredder",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "a8261788c685ef9618a5c4987103bde38454c96f06074535f664de120723ec7f",
+      "filed": "2026-11-25T18:14:52.937Z",
+      "prompt": "A small office paper shredder running steadily under load, its motor grinding through paper, a constant whirr, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 4,
+        "loop": true,
+        "influence": null,
+        "call": 60
+      },
+      "askedSeconds": 4,
+      "cost": "44",
+      "measured": {
+        "seconds": 4,
+        "start": 0,
+        "end": 4,
+        "peakDb": -8.8,
+        "rmsDb": -22.43,
+        "lufs": -16.73,
+        "truePeakDb": -7.92,
+        "low": 0.191,
+        "mid": 0.569,
+        "high": 0.24,
+        "tailDb": -14.29,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 4,
+            "peakDb": -8.8
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "paper-strain",
+      "kind": "cue",
+      "cue": "paper-strain",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "8c907a29d1ff83201dda1d0e865d1f9a6b48562fc8b5feb3b12dabf92d320092",
+      "filed": "2026-11-25T18:14:55.379Z",
+      "prompt": "A sheet of paper pulled tight between two grips, creaking and straining, quiet dry fibrous creaks, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 1.5,
+        "loop": false,
+        "influence": null,
+        "call": 61
+      },
+      "askedSeconds": 1.5,
+      "cost": "17",
+      "measured": {
+        "seconds": 1.48,
+        "start": 0,
+        "end": 1.48,
+        "peakDb": -29.79,
+        "rmsDb": -60.72,
+        "lufs": -52.38,
+        "truePeakDb": -29.49,
+        "low": 0.059,
+        "mid": 0.383,
+        "high": 0.558,
+        "tailDb": -48.62,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.184,
+            "end": 0.834,
+            "peakDb": -29.79
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "strips-zip",
+      "kind": "cue",
+      "cue": "strips-zip",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "8ea8f81c656bae7492bf3a1b07cd8a237820229037c4779c2ef839cdecac53cc",
+      "filed": "2026-11-25T18:14:57.656Z",
+      "prompt": "Many thin paper strips zipping back together quickly, a fast rising papery zip, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 1,
+        "loop": false,
+        "influence": null,
+        "call": 62
+      },
+      "askedSeconds": 1,
+      "cost": "11",
+      "measured": {
+        "seconds": 1,
+        "start": 0,
+        "end": 0.692,
+        "peakDb": -14.81,
+        "rmsDb": -31.45,
+        "lufs": -23.74,
+        "truePeakDb": -12.12,
+        "low": 0.004,
+        "mid": 0.633,
+        "high": 0.363,
+        "tailDb": -48.08,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.428,
+            "peakDb": -14.81
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "row-open",
+      "kind": "cue",
+      "cue": "row-open",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "65860b989ccaafa49514e36e634c657d2d86c989d4dfb490afc3f5aa610a89e5",
+      "filed": "2026-11-25T18:15:00.245Z",
+      "prompt": "A small drawer mechanism sliding open and stopping with a soft thunk, a single short movement, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.6,
+        "loop": false,
+        "influence": null,
+        "call": 63
+      },
+      "askedSeconds": 0.6,
+      "cost": "7",
+      "measured": {
+        "seconds": 0.6,
+        "start": 0,
+        "end": 0.6,
+        "peakDb": -23.19,
+        "rmsDb": -44.98,
+        "lufs": -40.08,
+        "truePeakDb": -22.95,
+        "low": 0.266,
+        "mid": 0.641,
+        "high": 0.093,
+        "tailDb": -38.29,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.49,
+            "peakDb": -23.19
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "dial-wind",
+      "kind": "cue",
+      "cue": "dial-wind",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "4f94540322d11d1fa945abd87fcd362b9a04bc73dabdd8809a659c6caeb58482",
+      "filed": "2026-11-25T18:15:02.582Z",
+      "prompt": "A rotary telephone dial pulled round by a finger against its spring, a single ratcheting pull, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.8,
+        "loop": false,
+        "influence": null,
+        "call": 64
+      },
+      "askedSeconds": 0.8,
+      "cost": "9",
+      "measured": {
+        "seconds": 0.8,
+        "start": 0,
+        "end": 0.38,
+        "peakDb": -8.5,
+        "rmsDb": -34.36,
+        "lufs": -29.51,
+        "truePeakDb": -8.39,
+        "low": 0.066,
+        "mid": 0.524,
+        "high": 0.41,
+        "tailDb": -52.11,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.104,
+            "peakDb": -8.5
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "dial-return",
+      "kind": "cue",
+      "cue": "dial-return",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "18aa42ca999fba09de3a47b0c09246974eb1dd35ea10235f5ae95c384eb4cacd",
+      "filed": "2026-11-25T18:15:05.560Z",
+      "prompt": "A rotary telephone dial let go and running back to rest, a fast mechanical purr ending in a soft stop, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.9,
+        "loop": false,
+        "influence": null,
+        "call": 65
+      },
+      "askedSeconds": 0.9,
+      "cost": "10",
+      "measured": {
+        "seconds": 0.88,
+        "start": 0,
+        "end": 0.804,
+        "peakDb": -2.1,
+        "rmsDb": -30.04,
+        "lufs": -24.21,
+        "truePeakDb": -2.05,
+        "low": 0.001,
+        "mid": 0.928,
+        "high": 0.071,
+        "tailDb": -58.14,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.002,
+            "end": 0.636,
+            "peakDb": -2.1
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "lever-pull",
+      "kind": "cue",
+      "cue": "lever-pull",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "5163205369db745c5374f71e01fb85f64029e806c04c29dc0e49e64f51c23b72",
+      "filed": "2026-11-25T18:15:08.627Z",
+      "prompt": "A mechanical slot machine lever pulled down and released, a heavy metal ratchet and a spring clunk, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.7,
+        "loop": false,
+        "influence": null,
+        "call": 66
+      },
+      "askedSeconds": 0.7,
+      "cost": "8",
+      "measured": {
+        "seconds": 0.68,
+        "start": 0,
+        "end": 0.272,
+        "peakDb": -12.11,
+        "rmsDb": -33.22,
+        "lufs": -29.05,
+        "truePeakDb": -11.54,
+        "low": 0.006,
+        "mid": 0.395,
+        "high": 0.599,
+        "tailDb": -52.62,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.224,
+            "peakDb": -12.11
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "reels-spin",
+      "kind": "cue",
+      "cue": "reels-spin",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "cebe4086264c9a025cf624bef9468034bcad3a740e015942aaff7525a320aed9",
+      "filed": "2026-11-25T18:15:11.476Z",
+      "prompt": "Three mechanical slot machine reels spinning with a whirr and stopping one after another with three separate clunks, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 2.5,
+        "loop": false,
+        "influence": null,
+        "call": 67
+      },
+      "askedSeconds": 2.5,
+      "cost": "28",
+      "measured": {
+        "seconds": 2.48,
+        "start": 0,
+        "end": 2.428,
+        "peakDb": -11.36,
+        "rmsDb": -31.58,
+        "lufs": -25.65,
+        "truePeakDb": -8.08,
+        "low": 0.181,
+        "mid": 0.565,
+        "high": 0.254,
+        "tailDb": -44.89,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 2.098,
+            "peakDb": -11.36
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "coins.1",
+      "kind": "cue",
+      "cue": "coins",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "65df4b5fb71102683a4a996e9596bd923210e1028ef16c91913996f7651bae55",
+      "filed": "2026-11-25T18:15:13.739Z",
+      "prompt": "A burst of metal coins pouring out and scattering on a hard metal tray, bright clinking, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 1.5,
+        "loop": false,
+        "influence": null,
+        "call": 68
+      },
+      "askedSeconds": 1.5,
+      "cost": "17",
+      "measured": {
+        "seconds": 1.48,
+        "start": 0,
+        "end": 1.264,
+        "peakDb": -5.57,
+        "rmsDb": -25.13,
+        "lufs": -18.04,
+        "truePeakDb": -5.46,
+        "low": 0.001,
+        "mid": 0.024,
+        "high": 0.975,
+        "tailDb": -41.08,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 1.156,
+            "peakDb": -5.57
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "coins.2",
+      "kind": "cue",
+      "cue": "coins",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "2cce6a353512aff902d0583df54ce6c1a865e4111c2c9a68fce4340ea209ba50",
+      "filed": "2026-11-25T18:15:15.541Z",
+      "prompt": "A burst of metal coins pouring out and scattering on a hard metal tray, bright clinking, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 1.5,
+        "loop": false,
+        "influence": null,
+        "call": 69
+      },
+      "askedSeconds": 1.5,
+      "cost": "17",
+      "measured": {
+        "seconds": 1.48,
+        "start": 0,
+        "end": 1.4,
+        "peakDb": -7.28,
+        "rmsDb": -29.24,
+        "lufs": -22.25,
+        "truePeakDb": -7.23,
+        "low": 0.001,
+        "mid": 0.025,
+        "high": 0.974,
+        "tailDb": -31.26,
+        "hits": 2,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.172,
+            "peakDb": -15.37
+          },
+          {
+            "start": 0.234,
+            "end": 1.302,
+            "peakDb": -7.28
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "crank-turn",
+      "kind": "cue",
+      "cue": "crank-turn",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "f9ad1bd16fa2a15d067e316b1f24d4c689790f047097eaa6a65da50286a7a55f",
+      "filed": "2026-11-25T18:15:17.918Z",
+      "prompt": "One turn of a small geared metal hand crank, ratcheting clicks, a single turn, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.8,
+        "loop": false,
+        "influence": null,
+        "call": 70
+      },
+      "askedSeconds": 0.8,
+      "cost": "9",
+      "measured": {
+        "seconds": 0.8,
+        "start": 0.002,
+        "end": 0.672,
+        "peakDb": -1.91,
+        "rmsDb": -25.93,
+        "lufs": -20.06,
+        "truePeakDb": -1.81,
+        "low": 0.001,
+        "mid": 0.077,
+        "high": 0.922,
+        "tailDb": -26.91,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.008,
+            "end": 0.65,
+            "peakDb": -1.91
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "crank-runaway",
+      "kind": "cue",
+      "cue": "crank-runaway",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "32a25dfb9fa668b8c79c54e00e9e1a88f49b48483fbef7ceb749ad46cbffac29",
+      "filed": "2026-11-25T18:15:20.469Z",
+      "prompt": "A small geared metal hand crank spinning faster and faster out of control, its ratchet clicks speeding up into a rattle, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 2,
+        "loop": false,
+        "influence": null,
+        "call": 71
+      },
+      "askedSeconds": 2,
+      "cost": "22",
+      "measured": {
+        "seconds": 2,
+        "start": 0.002,
+        "end": 1.756,
+        "peakDb": -8.56,
+        "rmsDb": -34.08,
+        "lufs": -28.22,
+        "truePeakDb": -7.89,
+        "low": 0,
+        "mid": 0.166,
+        "high": 0.834,
+        "tailDb": -29.76,
+        "hits": 2,
+        "hitsAt": [
+          {
+            "start": 0.008,
+            "end": 1.618,
+            "peakDb": -8.56
+          },
+          {
+            "start": 1.696,
+            "end": 1.72,
+            "peakDb": -12.13
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "flatten",
+      "kind": "cue",
+      "cue": "flatten",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "c09a1c4d4435dd5192eaa26673efb4fd96e2c25d0fe5f1f0b18b13f9e16ac397",
+      "filed": "2026-11-25T18:15:23.056Z",
+      "prompt": "A short wet flat comic splat, something soft slapped flat on a hard tile, a single splat, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 72
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -24.71,
+        "rmsDb": -48.03,
+        "lufs": -40.47,
+        "truePeakDb": -23.24,
+        "low": 0.073,
+        "mid": 0.586,
+        "high": 0.342,
+        "tailDb": -45.98,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.19,
+            "peakDb": -24.71
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "peel-up",
+      "kind": "cue",
+      "cue": "peel-up",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "edfd0791a80a2f3984b7d9a49010e265db7df19ea77f790e363896788de66f84",
+      "filed": "2026-11-25T18:15:25.326Z",
+      "prompt": "Something thin and rubbery peeling off a smooth glass surface and popping back to shape, a short peel then a small pop, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.6,
+        "loop": false,
+        "influence": null,
+        "call": 73
+      },
+      "askedSeconds": 0.6,
+      "cost": "7",
+      "measured": {
+        "seconds": 0.6,
+        "start": 0,
+        "end": 0.6,
+        "peakDb": -24.01,
+        "rmsDb": -44.14,
+        "lufs": -36.95,
+        "truePeakDb": -23.81,
+        "low": 0.016,
+        "mid": 0.23,
+        "high": 0.754,
+        "tailDb": -54.14,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.468,
+            "peakDb": -24.01
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "ball-seal",
+      "kind": "cue",
+      "cue": "ball-seal",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "bd4c53980af25551d56879cfa2817bd9f0979877426f5f5cdb039a5a1d149eec",
+      "filed": "2026-11-25T18:15:27.984Z",
+      "prompt": "A short suck of air, then a hard clear plastic shell snapping shut with one firm click, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 1,
+        "loop": false,
+        "influence": null,
+        "call": 74
+      },
+      "askedSeconds": 1,
+      "cost": "11",
+      "measured": {
+        "seconds": 1,
+        "start": 0,
+        "end": 0.326,
+        "peakDb": -7.32,
+        "rmsDb": -22.07,
+        "lufs": -19.22,
+        "truePeakDb": -6.56,
+        "low": 0.001,
+        "mid": 0.511,
+        "high": 0.488,
+        "tailDb": -39.79,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.3,
+            "peakDb": -7.32
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "tube-run",
+      "kind": "cue",
+      "cue": "tube-run",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "2d4799c13e49e038ea7157aef17bd01da309bcec2b890a8188dad4e7e26f00ce",
+      "filed": "2026-11-25T18:15:30.540Z",
+      "prompt": "A hard plastic ball rolling fast down a hollow plastic tube, a rattling hollow roll, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 1.5,
+        "loop": false,
+        "influence": null,
+        "call": 75
+      },
+      "askedSeconds": 1.5,
+      "cost": "17",
+      "measured": {
+        "seconds": 1.48,
+        "start": 0,
+        "end": 1.48,
+        "peakDb": -23.5,
+        "rmsDb": -44.4,
+        "lufs": -41.64,
+        "truePeakDb": -23.41,
+        "low": 0.324,
+        "mid": 0.675,
+        "high": 0.001,
+        "tailDb": -40.88,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.014,
+            "end": 1.34,
+            "peakDb": -23.5
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "lights-down",
+      "kind": "cue",
+      "cue": "lights-down",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "a10a7f432eca6485393f8af66904c77f7b9180c324ecba14f09f96486f362a7e",
+      "filed": "2026-11-25T18:15:33.232Z",
+      "prompt": "The lights of a big room dimming, a low electrical hum falling in pitch and one relay clack, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 1.5,
+        "loop": false,
+        "influence": null,
+        "call": 76
+      },
+      "askedSeconds": 1.5,
+      "cost": "17",
+      "measured": {
+        "seconds": 1.48,
+        "start": 0,
+        "end": 1.48,
+        "peakDb": -19.95,
+        "rmsDb": -36.46,
+        "lufs": -41.97,
+        "truePeakDb": -19.81,
+        "low": 0.957,
+        "mid": 0.03,
+        "high": 0.013,
+        "tailDb": -32.89,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 1.412,
+            "peakDb": -19.95
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "power-on",
+      "kind": "cue",
+      "cue": "power-on",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "33cc241b4faa36346ef83d3b16e8072766b9a17b64f35317ea9569ec716df06c",
+      "filed": "2026-11-25T18:15:36.314Z",
+      "prompt": "A pinball machine powering up, relays clacking, a transformer hum rising, then a short start up chime struck on mechanical bells, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 2.5,
+        "loop": false,
+        "influence": null,
+        "call": 77
+      },
+      "askedSeconds": 2.5,
+      "cost": "28",
+      "measured": {
+        "seconds": 2.48,
+        "start": 0,
+        "end": 2.234,
+        "peakDb": -12.77,
+        "rmsDb": -34.98,
+        "lufs": -26.84,
+        "truePeakDb": -12,
+        "low": 0.087,
+        "mid": 0.514,
+        "high": 0.4,
+        "tailDb": -54.16,
+        "hits": 4,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.148,
+            "peakDb": -26.4
+          },
+          {
+            "start": 0.306,
+            "end": 0.592,
+            "peakDb": -29.59
+          },
+          {
+            "start": 0.656,
+            "end": 0.732,
+            "peakDb": -31.03
+          },
+          {
+            "start": 0.814,
+            "end": 1.81,
+            "peakDb": -12.77
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "plunger",
+      "kind": "cue",
+      "cue": "plunger",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "dd5ad6762a092ea9b5517df2da1cc85d61473787cdaea5be31aab73d1bf8a9a2",
+      "filed": "2026-11-25T18:15:38.615Z",
+      "prompt": "A pinball spring plunger pulled back and released, the spring twanging and the rod knocking into a hard plastic ball, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.8,
+        "loop": false,
+        "influence": null,
+        "call": 78
+      },
+      "askedSeconds": 0.8,
+      "cost": "9",
+      "measured": {
+        "seconds": 0.8,
+        "start": 0,
+        "end": 0.8,
+        "peakDb": -17.69,
+        "rmsDb": -36.83,
+        "lufs": -32.63,
+        "truePeakDb": -17.35,
+        "low": 0.105,
+        "mid": 0.804,
+        "high": 0.091,
+        "tailDb": -65.37,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.448,
+            "peakDb": -17.69
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "bumper.1",
+      "kind": "cue",
+      "cue": "bumper",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "f224b7f920b1942eb6374a9d9e8876fcc6ffd0e8ee438f410564b960c4b7e0bb",
+      "filed": "2026-11-25T18:15:41.296Z",
+      "prompt": "One pinball pop bumper firing, a sharp solenoid thwack with a single bell ding, one hit, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 79
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -61.65,
+        "rmsDb": -76.66,
+        "lufs": null,
+        "truePeakDb": -59.15,
+        "low": 0.484,
+        "mid": 0.322,
+        "high": 0.194,
+        "tailDb": -24.56,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.48,
+            "peakDb": -61.65
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "bumper.2",
+      "kind": "cue",
+      "cue": "bumper",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "2d178e527cd15dbd470d274766dda5a75ab8ea41ef7010946d634ec382bf9297",
+      "filed": "2026-11-25T18:15:43.319Z",
+      "prompt": "One pinball pop bumper firing, a sharp solenoid thwack with a single bell ding, one hit, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 80
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -33.24,
+        "rmsDb": -55.65,
+        "lufs": -49.68,
+        "truePeakDb": -31.98,
+        "low": 0.079,
+        "mid": 0.795,
+        "high": 0.126,
+        "tailDb": -51.54,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.224,
+            "peakDb": -33.24
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "bumper.3",
+      "kind": "cue",
+      "cue": "bumper",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "129fc24261e5beb439aa29a842cc015dfec5a74d2cfb236c31f5a64ef7950132",
+      "filed": "2026-11-25T18:15:45.352Z",
+      "prompt": "One pinball pop bumper firing, a sharp solenoid thwack with a single bell ding, one hit, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 81
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -44.81,
+        "rmsDb": -63.15,
+        "lufs": -59.62,
+        "truePeakDb": -44.79,
+        "low": 0.155,
+        "mid": 0.834,
+        "high": 0.011,
+        "tailDb": -40.11,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.258,
+            "peakDb": -44.81
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "bumper.4",
+      "kind": "cue",
+      "cue": "bumper",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "766c10ebd2d9306d39b98235e1eb37c87b3fbfddafb604fa0db49f04a0661973",
+      "filed": "2026-11-25T18:15:47.533Z",
+      "prompt": "One pinball pop bumper firing, a sharp solenoid thwack with a single bell ding, one hit, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 82
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.194,
+        "peakDb": -3.75,
+        "rmsDb": -28.02,
+        "lufs": -27.1,
+        "truePeakDb": -3.6,
+        "low": 0.026,
+        "mid": 0.845,
+        "high": 0.129,
+        "tailDb": -54.14,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.114,
+            "peakDb": -3.75
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
     }
   ]
 }

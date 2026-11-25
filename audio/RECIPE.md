@@ -503,3 +503,253 @@ Takes used: 1 of 3.
 | 1 | build | 2026-11-25T18:14:00.392Z | 0.8 s | -24.58 dB | -44.11 LUFS | 1 | 9 | no |  |
 
 Prompt: One very heavy ceramic block landing flat on a ceramic floor, a single deep hard thud, close microphone, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### slab-drop.3
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:14:47.363Z | 0.8 s | -26.2 dB | -44.49 LUFS | 1 | 9 | no |  |
+
+Prompt: One very heavy ceramic block landing flat on a ceramic floor, a single deep hard thud, close microphone, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### paper-slide
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:14:49.491Z | 0.6 s | -14.64 dB | -21.67 LUFS | 1 | 7 | no |  |
+
+Prompt: One sheet of paper sliding across a hard smooth desk, a single short soft hiss, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### shredder
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:14:52.937Z | 4 s | -8.8 dB | -16.73 LUFS | 1 | 44 | no |  |
+
+Prompt: A small office paper shredder running steadily under load, its motor grinding through paper, a constant whirr, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### paper-strain
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:14:55.379Z | 1.48 s | -29.79 dB | -52.38 LUFS | 1 | 17 | no |  |
+
+Prompt: A sheet of paper pulled tight between two grips, creaking and straining, quiet dry fibrous creaks, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### strips-zip
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:14:57.656Z | 1 s | -14.81 dB | -23.74 LUFS | 1 | 11 | no |  |
+
+Prompt: Many thin paper strips zipping back together quickly, a fast rising papery zip, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### row-open
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:15:00.245Z | 0.6 s | -23.19 dB | -40.08 LUFS | 1 | 7 | no |  |
+
+Prompt: A small drawer mechanism sliding open and stopping with a soft thunk, a single short movement, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### dial-wind
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:15:02.582Z | 0.8 s | -8.5 dB | -29.51 LUFS | 1 | 9 | no |  |
+
+Prompt: A rotary telephone dial pulled round by a finger against its spring, a single ratcheting pull, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### dial-return
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:15:05.560Z | 0.88 s | -2.1 dB | -24.21 LUFS | 1 | 10 | no |  |
+
+Prompt: A rotary telephone dial let go and running back to rest, a fast mechanical purr ending in a soft stop, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### lever-pull
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:15:08.627Z | 0.68 s | -12.11 dB | -29.05 LUFS | 1 | 8 | no |  |
+
+Prompt: A mechanical slot machine lever pulled down and released, a heavy metal ratchet and a spring clunk, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### reels-spin
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:15:11.476Z | 2.48 s | -11.36 dB | -25.65 LUFS | 1 | 28 | no |  |
+
+Prompt: Three mechanical slot machine reels spinning with a whirr and stopping one after another with three separate clunks, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### coins.1
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:15:13.739Z | 1.48 s | -5.57 dB | -18.04 LUFS | 1 | 17 | no |  |
+
+Prompt: A burst of metal coins pouring out and scattering on a hard metal tray, bright clinking, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### coins.2
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:15:15.541Z | 1.48 s | -7.28 dB | -22.25 LUFS | 2 | 17 | no |  |
+
+Prompt: A burst of metal coins pouring out and scattering on a hard metal tray, bright clinking, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### crank-turn
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:15:17.918Z | 0.8 s | -1.91 dB | -20.06 LUFS | 1 | 9 | no |  |
+
+Prompt: One turn of a small geared metal hand crank, ratcheting clicks, a single turn, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### crank-runaway
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:15:20.469Z | 2 s | -8.56 dB | -28.22 LUFS | 2 | 22 | no |  |
+
+Prompt: A small geared metal hand crank spinning faster and faster out of control, its ratchet clicks speeding up into a rattle, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### flatten
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:15:23.056Z | 0.48 s | -24.71 dB | -40.47 LUFS | 1 | 6 | no |  |
+
+Prompt: A short wet flat comic splat, something soft slapped flat on a hard tile, a single splat, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### peel-up
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:15:25.326Z | 0.6 s | -24.01 dB | -36.95 LUFS | 1 | 7 | no |  |
+
+Prompt: Something thin and rubbery peeling off a smooth glass surface and popping back to shape, a short peel then a small pop, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### ball-seal
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:15:27.984Z | 1 s | -7.32 dB | -19.22 LUFS | 1 | 11 | no |  |
+
+Prompt: A short suck of air, then a hard clear plastic shell snapping shut with one firm click, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### tube-run
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:15:30.540Z | 1.48 s | -23.5 dB | -41.64 LUFS | 1 | 17 | no |  |
+
+Prompt: A hard plastic ball rolling fast down a hollow plastic tube, a rattling hollow roll, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### lights-down
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:15:33.232Z | 1.48 s | -19.95 dB | -41.97 LUFS | 1 | 17 | no |  |
+
+Prompt: The lights of a big room dimming, a low electrical hum falling in pitch and one relay clack, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### power-on
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:15:36.314Z | 2.48 s | -12.77 dB | -26.84 LUFS | 4 | 28 | no |  |
+
+Prompt: A pinball machine powering up, relays clacking, a transformer hum rising, then a short start up chime struck on mechanical bells, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### plunger
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:15:38.615Z | 0.8 s | -17.69 dB | -32.63 LUFS | 1 | 9 | no |  |
+
+Prompt: A pinball spring plunger pulled back and released, the spring twanging and the rod knocking into a hard plastic ball, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### bumper.1
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:15:41.296Z | 0.48 s | -61.65 dB | null LUFS | 1 | 6 | no |  |
+
+Prompt: One pinball pop bumper firing, a sharp solenoid thwack with a single bell ding, one hit, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### bumper.2
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:15:43.319Z | 0.48 s | -33.24 dB | -49.68 LUFS | 1 | 6 | no |  |
+
+Prompt: One pinball pop bumper firing, a sharp solenoid thwack with a single bell ding, one hit, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### bumper.3
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:15:45.352Z | 0.48 s | -44.81 dB | -59.62 LUFS | 1 | 6 | no |  |
+
+Prompt: One pinball pop bumper firing, a sharp solenoid thwack with a single bell ding, one hit, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### bumper.4
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:15:47.533Z | 0.48 s | -3.75 dB | -27.1 LUFS | 1 | 6 | no |  |
+
+Prompt: One pinball pop bumper firing, a sharp solenoid thwack with a single bell ding, one hit, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice

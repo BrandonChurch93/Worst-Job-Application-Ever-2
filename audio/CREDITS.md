@@ -4,7 +4,7 @@ This build may spend at most 10000 ElevenLabs credits in all, on every call of e
 
 The count is of this build's own calls, never of what the account has left: the account is shared with other builds. Every call goes through `npm run credits`, which writes its row here before it returns and makes no call that would pass the limit. A sound effect is never asked for without its length. `kit/addenda/001-sound-budget-and-narrator.md` sets these rules. This file is written by the tool from `audio/CREDITS.json`.
 
-Running total: 1115 of 10000. Calls: 57.
+Running total: 1449 of 10000. Calls: 82.
 
 ## Rates
 
@@ -72,3 +72,28 @@ Running total: 1115 of 10000. Calls: 57.
 | 55 | 2026-11-25T18:13:53Z | POST /v1/sound-generation | keys-shuffle take 1 | 0.7 s | HTTP 200, 1.9 s | 8 | reported by the response | 1097 |
 | 56 | 2026-11-25T18:13:55Z | POST /v1/sound-generation | slab-drop.1 take 1, variant 1 of 3 | 0.8 s | HTTP 200, 2.3 s | 9 | reported by the response | 1106 |
 | 57 | 2026-11-25T18:13:58Z | POST /v1/sound-generation | slab-drop.2 take 1, variant 2 of 3 | 0.8 s | HTTP 200, 2.1 s | 9 | reported by the response | 1115 |
+| 58 | 2026-11-25T18:14:45Z | POST /v1/sound-generation | slab-drop.3 take 1, variant 3 of 3 | 0.8 s | HTTP 200, 1.4 s | 9 | reported by the response | 1124 |
+| 59 | 2026-11-25T18:14:47Z | POST /v1/sound-generation | paper-slide take 1 | 0.6 s | HTTP 200, 1.9 s | 7 | reported by the response | 1131 |
+| 60 | 2026-11-25T18:14:49Z | POST /v1/sound-generation | shredder take 1 | 4 s, a loop | HTTP 200, 3.2 s | 44 | reported by the response | 1175 |
+| 61 | 2026-11-25T18:14:53Z | POST /v1/sound-generation | paper-strain take 1 | 1.5 s | HTTP 200, 2.2 s | 17 | reported by the response | 1192 |
+| 62 | 2026-11-25T18:14:55Z | POST /v1/sound-generation | strips-zip take 1 | 1 s | HTTP 200, 2.1 s | 11 | reported by the response | 1203 |
+| 63 | 2026-11-25T18:14:57Z | POST /v1/sound-generation | row-open take 1 | 0.6 s | HTTP 200, 2.4 s | 7 | reported by the response | 1210 |
+| 64 | 2026-11-25T18:15:00Z | POST /v1/sound-generation | dial-wind take 1 | 0.8 s | HTTP 200, 2.1 s | 9 | reported by the response | 1219 |
+| 65 | 2026-11-25T18:15:02Z | POST /v1/sound-generation | dial-return take 1 | 0.9 s | HTTP 200, 2.8 s | 10 | reported by the response | 1229 |
+| 66 | 2026-11-25T18:15:05Z | POST /v1/sound-generation | lever-pull take 1 | 0.7 s | HTTP 200, 2.8 s | 8 | reported by the response | 1237 |
+| 67 | 2026-11-25T18:15:08Z | POST /v1/sound-generation | reels-spin take 1 | 2.5 s | HTTP 200, 2.6 s | 28 | reported by the response | 1265 |
+| 68 | 2026-11-25T18:15:11Z | POST /v1/sound-generation | coins.1 take 1, variant 1 of 2 | 1.5 s | HTTP 200, 2.0 s | 17 | reported by the response | 1282 |
+| 69 | 2026-11-25T18:15:13Z | POST /v1/sound-generation | coins.2 take 1, variant 2 of 2 | 1.5 s | HTTP 200, 1.6 s | 17 | reported by the response | 1299 |
+| 70 | 2026-11-25T18:15:15Z | POST /v1/sound-generation | crank-turn take 1 | 0.8 s | HTTP 200, 2.2 s | 9 | reported by the response | 1308 |
+| 71 | 2026-11-25T18:15:18Z | POST /v1/sound-generation | crank-runaway take 1 | 2 s | HTTP 200, 2.3 s | 22 | reported by the response | 1330 |
+| 72 | 2026-11-25T18:15:20Z | POST /v1/sound-generation | flatten take 1 | 0.5 s for a cue of 0.4 s | HTTP 200, 2.4 s | 6 | reported by the response | 1336 |
+| 73 | 2026-11-25T18:15:23Z | POST /v1/sound-generation | peel-up take 1 | 0.6 s | HTTP 200, 2.1 s | 7 | reported by the response | 1343 |
+| 74 | 2026-11-25T18:15:25Z | POST /v1/sound-generation | ball-seal take 1 | 1 s | HTTP 200, 2.3 s | 11 | reported by the response | 1354 |
+| 75 | 2026-11-25T18:15:28Z | POST /v1/sound-generation | tube-run take 1 | 1.5 s | HTTP 200, 2.2 s | 17 | reported by the response | 1371 |
+| 76 | 2026-11-25T18:15:30Z | POST /v1/sound-generation | lights-down take 1 | 1.5 s | HTTP 200, 2.5 s | 17 | reported by the response | 1388 |
+| 77 | 2026-11-25T18:15:33Z | POST /v1/sound-generation | power-on take 1 | 2.5 s | HTTP 200, 2.8 s | 28 | reported by the response | 1416 |
+| 78 | 2026-11-25T18:15:36Z | POST /v1/sound-generation | plunger take 1 | 0.8 s | HTTP 200, 2.1 s | 9 | reported by the response | 1425 |
+| 79 | 2026-11-25T18:15:38Z | POST /v1/sound-generation | bumper.1 take 1, variant 1 of 4 | 0.5 s for a cue of 0.3 s | HTTP 200, 2.5 s | 6 | reported by the response | 1431 |
+| 80 | 2026-11-25T18:15:41Z | POST /v1/sound-generation | bumper.2 take 1, variant 2 of 4 | 0.5 s for a cue of 0.3 s | HTTP 200, 1.8 s | 6 | reported by the response | 1437 |
+| 81 | 2026-11-25T18:15:43Z | POST /v1/sound-generation | bumper.3 take 1, variant 3 of 4 | 0.5 s for a cue of 0.3 s | HTTP 200, 1.8 s | 6 | reported by the response | 1443 |
+| 82 | 2026-11-25T18:15:45Z | POST /v1/sound-generation | bumper.4 take 1, variant 4 of 4 | 0.5 s for a cue of 0.3 s | HTTP 200, 2.0 s | 6 | reported by the response | 1449 |

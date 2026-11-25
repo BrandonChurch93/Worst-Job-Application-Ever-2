@@ -1,7 +1,8 @@
 // The listening jobs of a batch and what becomes of their answers.
 //   node tools/lib/sound-listen.mjs jobs --batch NAME [--ids ID,ID] [--kind line|cue]   writes out/work/audio/listen/NAME.json, one job for the newest take of each id without answers
 //   node tools/lib/sound-listen.mjs apply --batch NAME                                   reads NAME-answers.json, settles each take's answers and files them with the take
-// An answer is whole only if it answers every question and does not say it was given no sound. Two whole answers settle a take; where they
+// An answer is whole only if it answers every question, does not say it was given no sound and, for a voice, names an accent and a pitch.
+// MEASURED 2026-11-25: about one ask in four reaches the tool as sound. The rest get the words only, or nothing, and are void. Two whole answers settle a take; where they
 // disagree on a yes or no that decides the take, the majority of the whole answers decides, and a tie counts against the take.
 import fs from 'node:fs'
 import path from 'node:path'
@@ -14,7 +15,9 @@ export const LINE_KEYS = ['whisper', 'laugh', 'warmth', 'excitement', 'unimpress
 export const CUE_KEYS = ['voice', 'word', 'music', 'melody', 'fits']
 
 export const linePrompt = () => [
-  'This is a short voice recording. Answer from the recording. Reply with one JSON object and nothing else, with exactly these keys:',
+  'This is a short voice recording. If no audio reached you, reply with only NO_AUDIO. Otherwise answer from the sound of the recording and reply with one JSON object and nothing else, with exactly these keys:',
+  '"accent": the accent of the speaker in a word or two, or "unknown" if you cannot hear it.',
+  '"pitch": "low", "middle" or "high", or "unknown" if you cannot hear it.',
   '"whisper": true or false. Is any of it whispered?',
   '"laugh": true or false. Is there a laugh?',
   '"warmth": true or false. Does the speaker sound warm?',
@@ -26,7 +29,7 @@ export const linePrompt = () => [
 ].join('\n')
 
 export const cuePrompt = (describes) => [
-  'This is a short sound recording. Answer from the recording. Reply with one JSON object and nothing else, with exactly these keys:',
+  'This is a short sound recording. If no audio reached you, reply with only NO_AUDIO. Otherwise answer from the sound of the recording and reply with one JSON object and nothing else, with exactly these keys:',
   '"heard": what is heard, in one sentence.',
   '"madeOf": what the thing that makes the sound is made of.',
   '"events": a number. How many separate events are there?',
@@ -48,7 +51,8 @@ export function parseAnswer(report, kind) {
   const keys = kind === 'line' ? LINE_KEYS : CUE_KEYS
   const complete = Boolean(json) && keys.every((k) => typeof json[k] === 'boolean') && (kind === 'line' ? typeof json.transcript === 'string' && json.transcript.trim().length > 0 : typeof json.heard === 'string' && json.heard.trim().length > 0)
   const outside = m ? text.replace(m[0], '') : text
-  const saysNoSound = VOID.test(`${outside} ${json?.basis ?? ''}`)
+  const unheard = kind === 'line' && Boolean(json) && !(typeof json.accent === 'string' && json.accent.trim() && !/unknown|unclear|n\/a|cannot|none/i.test(json.accent) && typeof json.pitch === 'string' && /low|middle|mid|high|deep/i.test(json.pitch))
+  const saysNoSound = /NO_AUDIO/.test(text) || unheard || VOID.test(`${outside} ${json?.basis ?? ''}`)
   return { json, whole: complete && !saysNoSound, complete, saysNoSound }
 }
 
@@ -68,20 +72,12 @@ export function settle(reports, kind) {
     out.transcripts = scripts
     out.transcriptAgreed = top ? `${top[1]} of ${scripts.length}` : '0 of 0'
     out.attitudes = whole.map((w) => w.attitude).filter(Boolean)
+    out.accents = whole.map((w) => w.accent)
+    out.pitches = whole.map((w) => w.pitch)
   } else {
     out.heard = whole.map((w) => w.heard).join(' / ') || null
     out.madeOf = whole.map((w) => w.madeOf).join(' / ') || null
     out.events = whole.map((w) => w.events).join(' / ') || null
-  }
-  if (kind === 'line') {
-    // MEASURED 2026-11-25: asked neutrally to describe a voice, the tool answers that it was given no audio and only the words.
-    // So its yes and no about how a voice sounds are guesses from the words. They are kept as claims and settle nothing.
-    out.toneHeard = false
-    out.toneClaims = Object.fromEntries(keys.map((k) => [k, `${parsed.filter((p) => p.json && p.json[k] === true).length} yes, ${parsed.filter((p) => p.json && p.json[k] === false).length} no`]))
-    out.claimedFromSound = whole.length
-    for (const k of keys) out[k] = null
-    out.basis = parsed.filter((p) => p.json?.basis).map((p) => p.json.basis)
-    return out
   }
   for (const k of keys) {
     const yes = whole.filter((w) => w[k] === true).length
@@ -116,7 +112,7 @@ function main() {
       const name = `sm-${t.key.replace(/[^a-z0-9]+/gi, '-')}-t${t.take}${path.extname(t.file)}`
       fs.copyFileSync(src, path.join(dir, name))
       const cue = t.kind === 'cue' ? (t.cue ?? t.key) : null
-      jobs.push({ id: t.key, take: t.take, kind: t.kind, file: path.join(dir, name), prompt: t.kind === 'line' ? linePrompt() : cuePrompt(lines[cue] ?? cue), decides: t.kind === 'line' ? LINE_KEYS : CUE_KEYS.filter((k) => !(musical(cue) && (k === 'music' || k === 'melody'))) })
+      jobs.push({ id: t.key, take: t.take, kind: t.kind, file: path.join(dir, name), prompt: t.kind === 'line' ? linePrompt() : cuePrompt(lines[cue] ?? cue), voidSource: VOID.source, decides: t.kind === 'line' ? LINE_KEYS : CUE_KEYS.filter((k) => !(musical(cue) && (k === 'music' || k === 'melody'))) })
     }
     writeJson(path.join(dir, `${batch}.json`), jobs)
     console.log(`listen: ${jobs.length} jobs written to out/work/audio/listen/${batch}.json`)
