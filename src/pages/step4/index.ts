@@ -55,6 +55,7 @@ export function makePage(): PageLogic {
     if (s.mode === 'film') return 'confirmed-film'
     return s.ticked < 0.3 + DOUBT_SECONDS ? 'doubt' : 'confirmed-live'
   }
+  const shut = (): number => L.fold * (1 - (s.ticked < 0 ? 0 : prog(s.ticked, 0.02, 0.3)))
   const feetOf = (f: Fight): { x: number; y: number; z: number }[] => f.feet.map((foot) => ({ x: foot.x, y: foot.y, z: foot.t >= 0 ? Math.sin(Math.PI * Math.min(1, foot.t)) * 16 : 0 }))
   const rigNow = (): Rig | null => {
     if (s.stage === 'unfold') return unfoldRig(s.t)
@@ -65,7 +66,7 @@ export function makePage(): PageLogic {
   }
   const groundAt = (x: number, y: number): number => {
     const p = { x, y }
-    let z = inBox(L.card, p) ? heights.card : 0
+    let z = inBox({ x: L.card.x, y: L.card.y, w: L.card.w, h: L.card.h - shut() }, p) ? heights.card : 0
     if ((s.stage === 'verify' || s.inSocket) && inBox(L.cap, p)) z = heights.button
     if (s.stage === 'press' && !s.inSocket && inBox(fallenBox, p, -24)) z = 16
     if (s.stage === 'fight' && s.fight) {
@@ -202,11 +203,26 @@ export function makePage(): PageLogic {
       const slide = s.stage === 'unfold' ? (1 - prog(s.t, UNFOLD.bar[0], UNFOLD.bar[1])) * -1760 : 0
       if (slide !== 0) {
         const label = L.tree.children!.find((c) => c.id === 'health')!.children![0]!
-        over['health-label'] = { x: label.box[0]! + slide }
-        over['health-track'] = { x: L.track.x + slide }
+        over['health-label'] = { x: label.box[0]! + slide, moved: true }
+        over['health-track'] = { x: L.track.x + slide, moved: true }
       }
       const options: DrawOptions = { states, over }
+      const first = out.length
       drawLayout(out, L.tree, options)
+      const open = L.fold - shut()
+      if (open > 0 && states[0] === 'rest') {
+        for (let i = first; i < out.length; i++) {
+          const shape = out[i]!
+          if (shape.id === 'verify-card') {
+            shape.h += open
+            shape.moved = true
+          } else if (shape.id === 'verify-fine') {
+            shape.y += open
+            shape.moved = true
+          }
+        }
+        out.push({ id: 'verify-rule', part: 'verify-card', kind: 'box', x: L.rule.x, y: L.rule.y, w: L.rule.w * (open / L.fold), h: L.rule.h, z0: heights.card, z1: heights.card + heights.rule, tone: 'metal', moved: true })
+      }
       if (s.ticked >= 0) {
         const b = L.checkbox
         const z = heights.card + 4

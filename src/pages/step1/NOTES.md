@@ -57,3 +57,11 @@ Blockout phase. Stand-in shapes, working logic.
 - `fire.ts` gives `makeTurrets()` and `drawFire(out, { typed, pressed, turrets })`: the page with the keyboard up, First name holding `typed`, the keys named in `pressed` down, and the given turrets with their bolts and marks. Key names are those of `keyboard.json`.
 - The cursor grabs the paper by its top right corner, clear of the title.
 - The film camera pushes in on the resume card and the slot from 21.6 s and is home again by 30.1 s.
+
+## For the measures
+
+- A part that a gag has taken from its place in the layout tree carries `moved: true` for as long as it is away: the paper and its lines while it slides, is carried, fed or tugged; a slab; a key and its legend while it sits on another seat or flies to one. A part at rest on the tree does not carry it.
+- `mechanism` is on the keycaps, the turrets and the shredder housing, and only while the part stands at least `machineMinTop` high. The deck, the slab, the paper and the upper lip of the slot are not mechanisms.
+- A keycap node has no `floor`: the still's state gives a part's height as its top less its node's floor, and scale.heights.keycap (42) is a height above the page, not above the deck. The key shape still stands on the deck: each draw sets its `z0` to the deck top.
+- Left for the Builder, in `NEEDS.patch`, not applied on this branch: `src/capture/showcase.ts` takes a node's floor from its top even when the floor is under the page, so a progress button on its rail (floor -3) reads 13 for 10 and a button cap in its socket (floor -4) reads 18 for 14, on every page. Taking only a floor above the page from the top turns M9 green for this unit.
+- `strips-zip` is emitted with hitsCursor false: the strips fly to the pile, they do not strike the cursor.

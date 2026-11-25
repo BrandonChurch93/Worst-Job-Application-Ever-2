@@ -35,11 +35,11 @@ export const progressCentre = (step: number): { x: number; y: number } => ({ x: 
 
 export function header(current: number): LayoutNode[] {
   const d = sizes.progressButton
-  const pad = 14
+  const channel = Math.round(d / 8) * 2
   const first = progressCentre(1)
   const last = progressCentre(5)
   const title = text('header-title', 'copy:site.title', TYPE.title, LEFT, HEADER.titleY, { part: 'shell' })
-  const rail = node('progress-rail', 'progressRail', [first.x - d / 2 - pad, first.y - d / 2 - pad, last.x - first.x + d + pad * 2, d + pad * 2], { part: 'shell', shape: 'capsule' })
+  const rail = node('progress-rail', 'progressRail', [first.x, first.y - channel / 2, last.x - first.x, channel], { part: 'shell', shape: 'capsule' })
   const buttons: LayoutNode[] = []
   for (let i = 1; i <= 5; i++) {
     const c = progressCentre(i)

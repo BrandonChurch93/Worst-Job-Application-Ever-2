@@ -9,7 +9,7 @@ import { Engine, LightRig, type Shot } from './core/renderer'
 import type { TargetKind } from './core/accumulator'
 import { restPose, type CursorPose } from './cursor/body'
 import { cursorSheet } from './cursor/sheets'
-import { applyView, views } from './diagnostics/views'
+import { EVENT_TRAIL, applyView, isView, type ViewContext, type ViewEvent } from './diagnostics/views'
 import { makeLoop, makeOpening, type FilmPiece, type LoopPiece, type OpeningPiece } from './film'
 import { pages, preparePages, unitPages } from './pages'
 import { look } from './post/look'
@@ -24,7 +24,7 @@ import type { CameraPose, PageLogic, Shape } from './stage/types'
 
 export interface StillSpec { page: string; beat?: string; at?: number; scroll?: number; camera: string; tier: string; sheet?: string; interface?: boolean; touchOnly?: boolean; live?: string }
 
-export interface CursorState { x: number; y: number; heightPx: number; screenHeightPx: number; worldScale: number; acting: string; damage: string[]; arms: boolean; onPage: boolean; inBall: boolean; ballScreenPx: number }
+export interface CursorState { x: number; y: number; heightPx: number; screenHeightPx: number; worldScale: number; acting: string; reaction: string | null; reactionAt: number; damage: string[]; arms: boolean; onPage: boolean; inBall: boolean; ballScreenPx: number }
 
 export const pageUnits = config.film.units.map((u) => u.id)
 export const unitOfPart = (name: string): string => register.parts.find((p) => p.name === name)?.unit ?? 'site'
@@ -39,6 +39,8 @@ export class App {
   tier = 'draft'
   assets: AssetSet = 'web'
   diagnostic = 'beauty'
+  private shown: { frame: Frame; page: PageLogic | null; pose: CameraPose } | null = null
+  private marks: ViewEvent[] = []
   readonly view = new BlockoutView()
   readonly rig = new LightRig()
   readonly camera = new THREE.PerspectiveCamera()
@@ -71,10 +73,12 @@ export class App {
     await Promise.all([...FONTS.map((name) => loadFont(name)), preparePages()])
     App.check()
     this.engine = new Engine(canvas, this.format.width, this.format.height, { preserve: o.capture, forceKind: o.forceKind, multisamples: o.capture ? 0 : LIVE_MULTISAMPLES })
-    this.engine.beforeSample = (shot, view) => applyView(view, shot.scene)
+    this.engine.beforeSample = (_shot, view) => (view === 'beauty' ? undefined : applyView(view, this.viewContext()))
     this.environment = studioEnvironment(this.engine.renderer)
     this.view.scene.environment = this.environment
     this.view.scene.environmentIntensity = look.envIntensity
+    this.rig.key.name = 'key'
+    this.rig.dome.name = 'dome'
     this.rig.addTo(this.view.scene)
   }
 
@@ -84,8 +88,29 @@ export class App {
   }
 
   setDiagnostic(view: string): void {
-    if (!(views as readonly string[]).includes(view)) throw new Error(`No diagnostic view called "${view}"`)
+    if (!isView(view)) throw new Error(`No diagnostic view called "${view}"`)
     this.diagnostic = view
+  }
+
+  // What a diagnostic view is given: the scene, and what the frame on show is made of.
+  viewContext(): ViewContext {
+    const page = this.shown?.page ?? null
+    return {
+      scene: this.view.scene, camera: this.camera, width: this.engine.width, height: this.engine.height, pose: this.shown?.pose ?? null,
+      layout: page?.layout ?? null, list: this.shown?.frame.list ?? [], events: this.marks, lights: [this.rig.key, this.rig.dome],
+      table: () => page?.tableState?.() ?? null, colliders: () => page?.colliders?.() ?? [],
+    }
+  }
+
+  // The events of the frame at `time` and of the half second before it, for the `events` view. Age counts film frames: 0 is this frame.
+  private mark(stage: Stage | null, time: number): void {
+    this.marks = []
+    if (!stage || this.diagnostic !== 'events') return
+    const per = stepHz / config.film.fps
+    const to = this.stepOf(time) + per
+    const page = stage.frameAt(time).page
+    if (stage.step < to) stage.advance(to - stage.step)
+    this.marks = stage.eventsBetween(to - (EVENT_TRAIL + 1) * per, to).filter((e) => e.page === page).map((e) => ({ name: e.name, x: e.x, y: e.y, hitsCursor: e.hitsCursor, age: Math.max(0, Math.floor((to - 1 - e.step) / per)) }))
   }
 
   private unit(unit: string): void {
@@ -144,8 +169,11 @@ export class App {
     if (sheet) return sheet
     const stage = spec.beat ? this.film(spec.page) : this.rest(spec.page)
     const time = this.momentOf(spec)
-    const frame = stage.frameAt(time)
     const page = stage.page
+    const at = stage.frameAt(time)
+    const down = !spec.beat && spec.scroll && spec.camera === 'home' ? spec.scroll * Math.max(0, page.height - hd.height) : 0
+    const lower = (c: CursorPose): CursorPose => ({ ...c, y: c.y + down })
+    const frame: Frame = down ? { ...at, cursor: lower(at.cursor), cursors: at.cursors?.map(lower) } : at
     return { frame, page, pose: this.poseFor(spec.camera, page, frame, time, spec.scroll) }
   }
 
@@ -174,6 +202,7 @@ export class App {
 
   put(frame: Frame, page: { width: number; height: number }, pose: CameraPose, size?: { width: number; height: number }): void {
     this.view.apply(frame, size ?? { width: page.width, height: page.height })
+    this.shown = { frame, page: 'layout' in page ? (page as PageLogic) : null, pose }
     const cy = pose.target[1]
     this.view.focus = -cy
     this.rig.setBounds(this.view.bounds())
@@ -195,6 +224,7 @@ export class App {
     const width = entry?.width ? Math.round(entry.width * k) : this.format.width
     const height = entry?.height ? Math.round(entry.height * k) : this.format.height
     this.engine.setSize(width, height)
+    this.mark(spec.beat && !spec.sheet ? this.film(spec.page) : null, this.momentOf(spec))
     this.put(frame, page, pose, size)
     this.setCamera(pose, width, height)
     this.tier = spec.tier
@@ -216,6 +246,10 @@ export class App {
     return { unit: last.id, time: last.seconds }
   }
 
+  useCheckpoint(unit: string, saved: unknown): void {
+    this.film(unit).restore(saved)
+  }
+
   filmFrame(unit: string, time: number): { frame: Frame; pose: CameraPose; page: PageLogic } {
     const stage = this.film(unit)
     const frame = stage.frameAt(time)
@@ -233,6 +267,7 @@ export class App {
       this.put(f.frame, f.page, f.pose)
       this.setCamera(f.pose)
     }
+    this.mark(this.film(unit), time)
     pose(0)
     await this.engine.picture(this.shot(pose), { samples: tierSamples(tier), frame: frameIndex + 1, diagnostic: this.diagnostic })
     this.note(unit)
@@ -258,6 +293,7 @@ export class App {
       this.put(piece.frame(i), piece.size, view, piece.size)
       this.setCamera(view)
     }
+    this.mark(null, 0)
     pose(0)
     await this.engine.picture(this.shot(pose), { samples: tierSamples(tier), frame: seed, diagnostic: this.diagnostic })
   }
@@ -266,7 +302,7 @@ export class App {
     const p = project(pose, toWorld(c.x, c.y, c.z), hd.width, hd.height)
     const heightPx = config.cursor.heightPxAt1080 * c.scale
     return {
-      x: p.x, y: p.y, heightPx, screenHeightPx: heightPx * p.pxPerUnit, worldScale: c.scale, acting: c.acting, damage: [...c.damage], arms: c.arms, onPage: c.onPage, inBall: c.inBall,
+      x: p.x, y: p.y, heightPx, screenHeightPx: heightPx * p.pxPerUnit, worldScale: c.scale, acting: c.acting, reaction: c.reaction, reactionAt: c.reactionAt, damage: [...c.damage], arms: c.arms, onPage: c.onPage, inBall: c.inBall,
       ballScreenPx: c.inBall ? config.table.ballPx * p.pxPerUnit : 0
     }
   }

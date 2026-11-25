@@ -68,6 +68,7 @@ export interface Shape {
   mechanism?: boolean
   fixed?: boolean
   pocket?: boolean
+  moved?: boolean
 }
 
 export type DrawList = Shape[]
@@ -118,6 +119,16 @@ export interface TableState {
   sealed: string[]
 }
 
+export interface Collider {
+  id: string
+  kind: 'wall' | 'post' | 'bumper' | 'sling' | 'flipper' | 'model' | 'target' | 'rail' | 'hold' | 'opening' | 'body'
+  tier: string
+  points: number[]
+  z: number
+  r?: number
+  closed?: boolean
+}
+
 export interface SheetFrame {
   list: DrawList
   cursors: CursorPose[]
@@ -151,6 +162,7 @@ export interface PageLogic {
   ignoring(): boolean
   states(): string[]
   tableState?(): TableState
+  colliders?(): Collider[]
   sheet?(id: string): SheetFrame | null
   typing?(): boolean
   volume?(): number

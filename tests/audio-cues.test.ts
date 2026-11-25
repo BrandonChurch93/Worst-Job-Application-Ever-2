@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { PITCH_CENTS, cueClass, eventCues, filmLineId, liveKeysFor, liveLineId, liveTriggers, loopCues, pickVariant, stopEvents, variantAt, variantId } from '../src/audio/cues'
+import { PITCH_CENTS, cueClass, eventCues, filmLineId, liveKeysFor, liveLineId, liveTriggers, loopCues, pickVariant, silentEvents, stopEvents, variantAt, variantId } from '../src/audio/cues'
 
 const read = (...p: string[]) => JSON.parse(readFileSync(path.join(process.cwd(), ...p), 'utf8'))
 const cfg: any = read('config', 'showcase.json')
@@ -22,6 +22,12 @@ describe('the table of events to cues', () => {
 
   it('plays a cue on the event named exactly as the cue', () => {
     for (const id of ids) expect(eventCues[id], id).toBe(id)
+  })
+
+  it('lists what is silent on purpose, and gives none of it a cue', () => {
+    expect(silentEvents).toContain('popup-close')
+    for (const name of silentEvents) expect(eventCues[name], name).toBeUndefined()
+    expect(eventCues.share).toBe('button-press')
   })
 
   it('maps every event a beat of the film names', () => {

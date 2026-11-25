@@ -121,11 +121,37 @@ export function listenerFindings(t, listener) {
     if (want !== got) why.push(`the listener wrote "${listener.transcript ?? ''}", which is not the line`)
     for (const k of ['whisper', 'laugh', 'warmth', 'excitement']) if (listener[k] === true) why.push(`the listener heard ${k}`)
     if (listener.unimpressedAndSmug === false) why.push('the listener did not hear an unimpressed, slightly smug speaker')
+    for (const k of ['whisper', 'laugh', 'warmth', 'excitement', 'unimpressedAndSmug']) if (typeof listener[k] !== 'boolean') why.push(`the listener left "${k}" unanswered`)
   } else {
     for (const k of ['voice', 'word', 'music', 'melody']) if (listener[k] === true && !(t.id === 'hold-music' && (k === 'music' || k === 'melody'))) why.push(`the listener heard ${k === 'word' ? 'a word' : k === 'voice' ? 'a voice' : k}`)
     if (listener.fits === false) why.push('the listener says it does not fit the line that describes the cue')
+    if (listener.sameRoom === false) why.push('the listener says it does not belong in the same room as the kept sounds')
+    for (const k of ['voice', 'word', 'music', 'melody', 'fits']) if (typeof listener[k] !== 'boolean') why.push(`the listener left "${k}" unanswered`)
   }
   return { answered: true, holds: why.length === 0, why }
+}
+
+// The same fixed questions for every take, and the answers file as it is handed back. null is a question nobody has answered.
+export function listenerSheet(t, describes) {
+  if (t.kind === 'line') {
+    return {
+      questions: [
+        'Write down what is said, word for word, with nothing added. You are not told the line.',
+        'Is any of it whispered?', 'Is there a laugh?', 'Does the speaker sound warm?', 'Does the speaker sound excited?',
+        'Does the speaker sound unimpressed and a little smug?'
+      ],
+      answers: { by: null, transcript: null, whisper: null, laugh: null, warmth: null, excitement: null, unimpressedAndSmug: null }
+    }
+  }
+  return {
+    questions: [
+      'What is heard?', 'What is it made of?', 'How many separate events are there?',
+      'Is there a voice?', 'Is there a word?', 'Is there music?', 'Is there a melody?',
+      `Does it fit this line: ${describes ?? 'the line that describes the cue'}`,
+      'Only when two takes of other cues are kept and played first: do the three belong in the same room?'
+    ],
+    answers: { by: null, heard: null, madeOf: null, events: null, voice: null, word: null, music: null, melody: null, fits: null, sameRoom: null }
+  }
 }
 
 function writeRecipe(P, ledger, c) {
@@ -150,6 +176,21 @@ function saveLedger(P, ledger, c) {
   writeRecipe(P, ledger, c)
 }
 
+// The one line that describes each cue, from the table of kit/03-METHOD.md: what is heard.
+export function cueLines(file = at('kit', '03-METHOD.md')) {
+  const out = {}
+  if (!fs.existsSync(file)) return out
+  const part = fs.readFileSync(file, 'utf8').split(/^### The effects$/m)[1]?.split(/^### /m)[0] ?? ''
+  for (const row of part.split('\n')) {
+    const cells = row.split('|').map((x) => x.trim())
+    if (cells.length < 5 || !/^(`[a-z0-9-]+`(, )?)+$/.test(cells[1])) continue
+    const ids = [...cells[1].matchAll(/`([a-z0-9-]+)`/g)].map((m) => m[1])
+    const parts = ids.length > 1 ? cells[2].split(', ') : [cells[2]]
+    ids.forEach((id, i) => { out[id] = parts.length === ids.length ? parts[i].replace(/^./, (ch) => ch.toUpperCase()) : cells[2] })
+  }
+  return out
+}
+
 const readMaybe = (v) => (v && v !== true ? (fs.existsSync(v) ? fs.readFileSync(v, 'utf8').trim() : String(v)) : null)
 const jsonMaybe = (v) => {
   const s = readMaybe(v)
@@ -168,8 +209,20 @@ export async function fileTake(a, P, c, M, quiet = false) {
   fs.mkdirSync(dir, { recursive: true })
   const ext = path.extname(a.file) || '.bin'
   const dest = path.join(dir, `take-${number}${ext}`)
+  const same = mine.find((x) => x.sha256 === sha(fs.readFileSync(a.file)))
+  if (same) throw new Error(`${a.file} is already filed as ${t.key} take ${same.take}. Nothing filed, no take used`)
   fs.copyFileSync(a.file, dest)
-  const sound = decodeFile(dest, c.audio.sampleRate)
+  let sound
+  try {
+    sound = decodeFile(dest, c.audio.sampleRate)
+  } catch (e) {
+    fs.rmSync(dest, { force: true })
+    throw new Error(`${a.file} could not be read as sound. Nothing filed, no take used. ${e.message.split('\n')[0]}`)
+  }
+  if (!sound.channels[0]?.length) {
+    fs.rmSync(dest, { force: true })
+    throw new Error(`${a.file} holds no sound. Nothing filed, no take used`)
+  }
   const measured = M.dsp.measure(sound)
   const record = {
     key: t.key, kind: t.kind, take: number, round, file: path.basename(dest), sha256: sha(fs.readFileSync(dest)), filed: a.filed && a.filed !== true ? String(a.filed) : new Date().toISOString(),
@@ -269,8 +322,8 @@ export async function keepTake(a, P, c, M, quiet = false) {
     const bytes = M.dsp.encodeWav(m.sound, 24)
     fs.writeFileSync(path.join(P.kept, `${m.id}.wav`), bytes)
     writeJson(path.join(P.kept, `${m.id}.json`), {
-      id: m.id, kind: t.kind, cue: t.kind === 'cue' ? t.id : null, variant: t.variants > 1 ? m.variant + 1 : null, class: t.cls, loop: t.loop,
-      beat: t.beat ?? null, liveKey: t.liveKey ?? null, index: t.kind === 'line' ? t.index : null,
+      id: m.id, kind: t.kind === 'line' && t.liveKey ? 'live-line' : t.kind, cue: t.kind === 'cue' ? t.id : null, variant: t.variants > 1 ? m.variant + 1 : null, class: t.cls, loop: t.loop,
+      beat: t.beat ?? null, liveKey: t.liveKey ?? null, group: t.liveKey ?? null, describes: t.kind === 'cue' ? cueLines()[t.id] ?? null : null, index: t.kind === 'line' ? t.index : null,
       words: t.kind === 'line' ? t.text : null, text: t.kind === 'line' ? t.text : null, prompt: take.prompt ?? null, settings: take.settings ?? null, askedSeconds: take.askedSeconds, cost: take.cost,
       take: { number: take.take, round: take.round, file: take.file, sha256: take.sha256, filed: take.filed, measured: take.measured, line: take.line ?? null },
       chain: m.record, measured: M.dsp.measure(m.sound), listener: take.listener ?? null, why, forced, problems, fixture: Boolean(a.fixture),
@@ -312,9 +365,22 @@ export function keptSounds(P, M) {
   return { sounds, absent }
 }
 
+// One row for each sound file under public/audio, so that every file the site ships is named.
+function shippedRows(P, head) {
+  const file = path.join(P.pub, 'index.json')
+  const index = fs.existsSync(file) ? readJson(file) : null
+  if (!index || index.sfx.length + index.loops.length + index.lines.length === 0) return []
+  const made = 'Made by `npm run sound -- --pack` from'
+  const rows = []
+  if (index.pack) rows.push(`| \`public/audio/${index.pack.file}\` | The ${index.sfx.length} short sounds of the site in one file | ${made} the kept sounds of \`audio/kept/\` named in the index | \`public/audio/index.json\` |`)
+  for (const f of [...index.loops, ...index.lines]) rows.push(`| \`public/audio/${f.file}\` | The site's copy of \`${f.id}\` | ${made} \`audio/kept/${f.id}.wav\` | \`audio/kept/${f.id}.json\` |`)
+  return ['## What the site ships', '', ...head, ...rows]
+}
+
 function writeAssetRows(P) {
-  const rows = keptRecords(P).map((r) => `| \`audio/kept/${r.file}\` | ${r.kind === 'line' ? `Narrator line: ${r.words}` : `Sound effect \`${r.cue}\`${r.variant ? `, variant ${r.variant}` : ''}`} | Generated with the sound tool, take ${r.take.number} (${r.take.round}) | \`audio/kept/${r.id}.json\` |`)
-  const text = ['# Rows for ASSETS.md', '', 'One row for each kept sound. `npm run sound` writes this file. The Builder copies the rows under "Generated sounds" in `ASSETS.md`.', '', '| File | What it is | How it was made | Record |', '| --- | --- | --- | --- |', ...rows, ''].join('\n')
+  const rows = keptRecords(P).map((r) => `| \`audio/kept/${r.file}\` | ${r.kind !== 'cue' ? `Narrator line: ${r.words}` : `Sound effect \`${r.cue}\`${r.variant ? `, variant ${r.variant}` : ''}`} | Generated with the sound tool, take ${r.take.number} (${r.take.round}) | \`audio/kept/${r.id}.json\` |`)
+  const head = ['| File | What it is | How it was made | Record |', '| --- | --- | --- | --- |']
+  const text = ['# Rows for ASSETS.md', '', 'One row for each kept sound, and after `--pack` one for each sound file the site ships. `npm run sound` writes this file. The Builder copies the rows under "Generated sounds" in `ASSETS.md`.', '', ...head, ...rows, '', ...shippedRows(P, head), ''].join('\n')
   fs.mkdirSync(P.audio, { recursive: true })
   fs.writeFileSync(path.join(P.audio, 'ASSETS-ROWS.md'), text)
 }
@@ -331,7 +397,7 @@ export function pack(P, c, M, quiet = false) {
   let offset = 0
   for (const r of records) {
     const wav = path.join(P.kept, r.file)
-    if (r.kind === 'line') {
+    if (r.kind !== 'cue') {
       const bytes = encode(wav, ['-ac', '1', '-c:a', 'libmp3lame', '-b:a', '64k', '-id3v2_version', '0', '-f', 'mp3'])
       const file = `${r.id}.mp3`
       fs.writeFileSync(path.join(P.pub, file), bytes)
@@ -354,6 +420,7 @@ export function pack(P, c, M, quiet = false) {
   }
   index.totalBytes = offset + [...index.loops, ...index.lines].reduce((s, f) => s + f.bytes, 0)
   writeJson(path.join(P.pub, 'index.json'), index)
+  if (records.length || fs.existsSync(path.join(P.audio, 'ASSETS-ROWS.md'))) writeAssetRows(P)
   const mb = index.totalBytes / 1048576
   if (!quiet) {
     console.log(`packed: ${index.sfx.length} short sounds in one file, ${index.loops.length} loops, ${index.lines.length} narrator lines, ${mb.toFixed(2)} MB of ${c.audio.appMaxMb} MB, in ${rel(P.pub)}`)
@@ -397,7 +464,7 @@ export async function sheet(P, c, M, out) {
     svg += `<rect x="${x0}" y="${y0}" width="${cw - 8}" height="${ch - 8}" rx="6" fill="#26282d"/>`
     svg += `<text x="${x0 + 8}" y="${y0 + 18}" font-family="sans-serif" font-size="12" fill="#e9e6df">${esc(r.id)}</text>`
     svg += `<text x="${x0 + cw - 16}" y="${y0 + 18}" font-family="sans-serif" font-size="12" fill="#9fa3ab" text-anchor="end">${r.seconds.toFixed(2)} s</text>`
-    svg += `<path d="${d}" stroke="${r.kind === 'line' ? '#e9a15b' : '#8fb6d9'}" stroke-width="1" fill="none"/>`
+    svg += `<path d="${d}" stroke="${r.kind !== 'cue' ? '#e9a15b' : '#8fb6d9'}" stroke-width="1" fill="none"/>`
   })
   svg += '</svg>'
   fs.mkdirSync(path.dirname(out), { recursive: true })
@@ -585,13 +652,22 @@ export async function siteInBrowser(dir = at('dist'), o = {}) {
     page.on('pageerror', (e) => errors.push(String(e.message)))
     if (block) await page.route(block, (route) => route.fulfill({ status: 404, body: 'not found' }))
     await page.addInitScript(() => {
-      window.__sound = { contexts: 0, plays: 0, taps: [] }
+      window.__sound = { contexts: 0, plays: 0, taps: [], running: new Set(), made: [], shots: 0 }
+      const startSource = AudioBufferSourceNode.prototype.start
+      AudioBufferSourceNode.prototype.start = function (...r) {
+        const node = this
+        window.__sound.running.add(node)
+        if (!node.loop) window.__sound.shots++
+        node.addEventListener('ended', () => window.__sound.running.delete(node))
+        return startSource.apply(this, r)
+      }
       const Real = window.AudioContext
       if (Real) {
         window.AudioContext = class extends Real {
           constructor(...a) {
             super(...a)
             window.__sound.contexts++
+            window.__sound.made.push(this)
             const tap = this.createAnalyser()
             tap.fftSize = 2048
             window.__sound.taps.push(tap)
@@ -705,6 +781,125 @@ export async function siteInBrowser(dir = at('dist'), o = {}) {
     out.removed = { started: gone.started, before: goneBefore, after: await gone.look(), console: gone.consoleLines, errors: gone.errors }
     await gone.context.close()
 
+    if (after.control > 0) {
+      const film = await visit('mode=film', { wait: 1200 })
+      const page = film.page
+      const read = async (what) => ({ what, ...(await page.evaluate(() => ({ level: window.__sound.made[0]?.state === 'running' ? window.__level() : null, sources: window.__sound.running.size, toneLoops: [...window.__sound.running].filter((n) => n.loop).length, context: window.__sound.made[0]?.state ?? 'none' }))) })
+      const playButton = await page.evaluate(() => {
+        const b = [...document.querySelectorAll('button[aria-label]')].find((x) => !/sound/i.test(x.getAttribute('aria-label')) && x.hasAttribute('aria-pressed') && x.getClientRects().length > 0)
+        if (b) b.setAttribute('data-play-check', '1')
+        return Boolean(b)
+      })
+      const position = await page.evaluate(() => {
+        const r = [...document.querySelectorAll('input[type="range"]')].find((x) => x.getClientRects().length > 0)
+        if (r) r.setAttribute('data-position-check', '1')
+        return r ? { min: Number(r.min || 0), max: Number(r.max || 0) } : null
+      })
+      const steps = []
+      if (playButton && position) {
+        const press = () => page.click('[data-play-check]')
+        const seek = (v) => page.evaluate((value) => {
+          const r = document.querySelector('[data-position-check]')
+          r.value = String(value)
+          r.dispatchEvent(new Event('input', { bubbles: true }))
+          r.dispatchEvent(new Event('change', { bubbles: true }))
+        }, v)
+        const hide = (state) => page.evaluate((v) => {
+          Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => v })
+          document.dispatchEvent(new Event('visibilitychange'))
+        }, state)
+        await page.keyboard.press('Shift')
+        await page.waitForTimeout(2500)
+        steps.push(await read('playing'))
+        await press()
+        await page.waitForTimeout(400)
+        steps.push(await read('paused'))
+        await press()
+        await page.waitForTimeout(200)
+        steps.push(await read('playing again'))
+        await seek(position.min + (position.max - position.min) * 0.4)
+        await page.waitForTimeout(200)
+        steps.push(await read('after a seek while playing'))
+        await hide('hidden')
+        await page.waitForTimeout(400)
+        steps.push(await read('page hidden'))
+        await hide('visible')
+        await page.waitForTimeout(400)
+        steps.push(await read('page back'))
+        await press()
+        await page.waitForTimeout(300)
+        await seek(position.min + (position.max - position.min) * 0.1)
+        await page.waitForTimeout(400)
+        steps.push(await read('after a seek while paused'))
+      }
+      out.film = { started: film.started, playButton, position: Boolean(position), steps, errors: film.errors, console: film.consoleLines }
+      await film.context.close()
+
+      const a = await visit('mode=film&which=a', { wait: 300 })
+      const M = await (await import('./lib/logic.mjs')).logic()
+      let lead = null
+      let laid = null
+      let ahead = 0
+      try {
+        const o = await M.load('/src/film/opening.ts')
+        const cues = await M.load('/src/audio/cues.ts')
+        ahead = (await M.load('/src/audio/levels.ts')).LIVE.aheadSeconds
+        const t = o.openingTimes()
+        lead = o.openingFrames() / c.film.fps
+        laid = cues.openingEvents({ prompt: c.intro.prompt, charsPerSecond: c.intro.charsPerSecond, levelOpens: t.levelOpens, levelPicks: t.levelPicks, sendPressed: t.held, linesDone: t.lines.map((l) => l.done) }, c.film.fps).length
+      } finally {
+        await M.close()
+      }
+      const bar = await a.page.evaluate(() => {
+        const r = [...document.querySelectorAll('input[type="range"]')].find((x) => x.getClientRects().length > 0)
+        if (r) r.setAttribute('data-position-check', '1')
+        return r ? { min: Number(r.min || 0), max: Number(r.max || 0) } : null
+      })
+      const opening = { started: a.started, position: Boolean(bar), openingSeconds: lead, laid, heard: null, toneLoopsInTheOpening: null, toneLoopsAfterIt: null, errors: a.errors, console: a.consoleLines }
+      if (bar && lead !== null) {
+        const now = () => a.page.evaluate(() => ({ at: Number(document.querySelector('[data-position-check]').value), shots: window.__sound.shots, tone: [...window.__sound.running].filter((n) => n.loop).length }))
+        const button = await a.page.evaluate(() => {
+          const b = [...document.querySelectorAll('button[aria-label]')].find((x) => !/sound/i.test(x.getAttribute('aria-label')) && x.hasAttribute('aria-pressed') && x.getClientRects().length > 0)
+          if (b) b.setAttribute('data-play-check', '1')
+          return Boolean(b)
+        })
+        await a.page.keyboard.press('Shift')
+        await a.page.waitForTimeout(1500)
+        if (button) {
+          await a.page.click('[data-play-check]')
+          await a.page.waitForTimeout(300)
+        }
+        const from = (await now()).shots
+        await a.page.evaluate((value) => {
+          const r = document.querySelector('[data-position-check]')
+          r.value = String(value)
+          r.dispatchEvent(new Event('input', { bubbles: true }))
+          r.dispatchEvent(new Event('change', { bubbles: true }))
+        }, bar.min)
+        if (button) await a.page.click('[data-play-check]')
+        const unit = (bar.max - bar.min) / (lead + c.film.units.reduce((n, u) => n + u.seconds, 0))
+        let tone = 0
+        let last = await now()
+        for (let i = 0; i < 400 && last.at < bar.min + (lead - ahead) * unit; i++) {
+          tone = Math.max(tone, last.tone)
+          await a.page.waitForTimeout(50)
+          last = await now()
+        }
+        opening.toneLoopsInTheOpening = tone
+        opening.heard = last.shots - from
+        opening.heardBy = Number(((last.at - bar.min) / unit).toFixed(2))
+        let end = await now()
+        for (let i = 0; i < 200 && end.at < bar.min + (lead + 0.3) * unit; i++) {
+          await a.page.waitForTimeout(50)
+          end = await now()
+        }
+        opening.toneLoopsAfterIt = end.tone
+        opening.endedAt = Number(((end.at - bar.min) / unit).toFixed(2))
+      }
+      out.filmA = opening
+      await a.context.close()
+    }
+
     if (o.still !== false && c.stills.length) {
       const { readCanvas, stillFrom } = await import('./lib/capture.mjs')
       const id = o.still && o.still !== true ? o.still : c.stills[0].id
@@ -777,7 +972,7 @@ export async function fixtures(a, c, M) {
     }
     const file = make(`cue-${s.id}`, expr, secs)
     await fileTake({ cue: s.id, file, prompt: `A fixture made with ffmpeg, not a take. ${promptLine(s.id)}`, cost: '0', filed: 'fixture', root }, P, c, M, true)
-    await keepTake({ cue: s.id, force: true, fixture: true, why: 'a fixture, kept so the tools can be run', root }, P, c, M, true)
+    await keepTake({ cue: s.id, force: true, fixture: true, why: 'a fixture, kept so the tools can be run', listener: a.answered ? JSON.stringify({ by: 'a stand-in answer, nobody listened', voice: false, word: false, music: s.id === 'hold-music', melody: s.id === 'hold-music', fits: true }) : undefined, root }, P, c, M, true)
     made++
   }
   const lines = []
@@ -800,13 +995,35 @@ export async function fixtures(a, c, M) {
     }
     const file = make(`line-${t.id}`, parts.join('+'), at0 - pause + 0.15)
     await fileTake({ line: name, file, cost: '0', filed: 'fixture', root }, P, c, M, true)
-    await keepTake({ line: name, force: true, fixture: true, why: 'a fixture, kept so the tools can be run', root }, P, c, M, true)
+    await keepTake({ line: name, force: true, fixture: true, why: 'a fixture, kept so the tools can be run', listener: a.answered ? JSON.stringify({ by: 'a stand-in answer, nobody listened', transcript: t.text, whisper: false, laugh: false, warmth: false, excitement: false, unimpressedAndSmug: true }) : undefined, root }, P, c, M, true)
     made++
   }
+  if (a.answered) fs.copyFileSync(path.join(P.audio, 'ASSETS-ROWS.md'), path.join(path.dirname(P.audio), 'ASSETS.md'))
   const index = pack(P, c, M, true)
   console.log(`fixtures: ${made} stand-in sounds made with ffmpeg in ${rel(dir)}, filed, kept and packed under ${rel(path.resolve(root))}`)
   console.log(`fixtures: ${index.sfx.length} short sounds, ${index.loops.length} loops, ${index.lines.length} lines, ${(index.totalBytes / 1048576).toFixed(2)} MB. They are not takes: nothing here is committed or shipped`)
   return P
+}
+
+// Every event name the pages emit, read from the source, with what the sound side does with it.
+export function emittedEvents(M) {
+  const found = new Map()
+  const walk = (dir) => {
+    for (const f of fs.readdirSync(dir, { withFileTypes: true })) {
+      const p = path.join(dir, f.name)
+      if (f.isDirectory()) {
+        if (path.relative(at(), p) !== path.join('src', 'audio')) walk(p)
+      } else if (f.name.endsWith('.ts')) {
+        const text = fs.readFileSync(p, 'utf8')
+        const passesOn = /const say = [^\n]*io\.emit\(/.test(text)
+        for (const m of text.matchAll(/\b(io\.emit|say)\(\s*'([a-z0-9-]+)'/g)) if (m[1] === 'io.emit' || passesOn) found.set(m[2], path.relative(at(), p))
+      }
+    }
+  }
+  walk(at('src'))
+  const live = new Set(Object.values(M.cues.liveTriggers).map((t) => (t.on === 'event' ? t.event : '')))
+  const unknown = [...found].filter(([name]) => !M.cues.eventCues[name] && !M.cues.stopEvents[name] && !live.has(name) && !M.cues.silentEvents.includes(name))
+  return { count: found.size, unknown: unknown.map(([name, file]) => `${name} (${file})`) }
 }
 
 function status(P, c, M) {
@@ -820,6 +1037,8 @@ function status(P, c, M) {
   const missing = want.filter((w) => !kept.has(w.id))
   console.log(`sound: ${want.length - missing.length} of ${want.length} sounds kept (${c.audio.sfx.length} cues with their variants, and the narrator's lines). ${ledger.takes.length} takes filed`)
   if (missing.length) console.log(`sound: not kept yet: ${missing.slice(0, 12).map((m) => m.id).join(', ')}${missing.length > 12 ? `, and ${missing.length - 12} more` : ''}`)
+  const e = emittedEvents(M)
+  console.log(`sound: the pages emit ${e.count} events by name. ${e.unknown.length ? `With no cue, no stop, no line and not listed as silent in src/audio/cues.ts: ${e.unknown.join(', ')}` : 'Each has a cue, stops one, sets off a line or is listed as silent on purpose'}`)
   console.log('sound: --cue ID --file F files a take, --line BEAT:N --file F files a line, --keep keeps one, --pack builds what the site ships, --sheet draws the kept sounds, --check runs the sound checks, --fixtures makes stand-ins to test with')
 }
 
@@ -863,6 +1082,11 @@ async function main() {
       const t = target(a, c, M.cues)
       const used = readLedger(P).takes.filter((x) => x.key === t.key).length
       console.log(`${t.key}: ${used} of ${t.max} takes used. ${t.kind === 'cue' ? `${t.seconds} s, class ${t.cls}, ${t.variants} variant${t.variants === 1 ? '' : 's'}. Every prompt ends with: ${promptLine(t.id)}` : `Words: ${t.text}`}`)
+      const describes = t.kind === 'cue' ? cueLines()[t.id] : undefined
+      if (describes) console.log(`What is heard: ${describes}`)
+      const sheet = listenerSheet(t, describes)
+      console.log(`The listener's questions, the same for every take:\n${sheet.questions.map((q, i) => `  ${i + 1}. ${q}`).join('\n')}`)
+      console.log(`The answers go back as a file, with --listener FILE:\n${JSON.stringify(sheet.answers)}`)
     } else status(P, c, M)
   } finally {
     await closeModules()

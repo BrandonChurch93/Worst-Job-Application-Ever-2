@@ -175,7 +175,7 @@ try {
   const ctx = context(session)
   const film = await session.page.evaluate(() => window.showcase.film())
   if (film.frameCount !== ctx.plan.frameCount || JSON.stringify(film.units) !== JSON.stringify(ctx.plan.units)) throw new Error('the film the site reports is not the film the config gives')
-  if (range && !clip(range.first, range.last, ctx.step)) throw new Error(`no frame between ${range.first} and ${range.last} is rendered at ${ctx.rate} a second: every ${ctx.step}th frame is`)
+  if (range && !clip(range.first, range.last, ctx.step)) throw new Error(`no frame between ${range.first} and ${range.last} is rendered at ${ctx.rate} a second: one frame in ${ctx.step} is`)
   let opening = null
   if (which === 'a') {
     const o = await ask(session, 'opening')

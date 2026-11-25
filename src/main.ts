@@ -178,12 +178,14 @@ function play(first: PlayMode): void {
   if (!stepped) {
     void import('./audio/index').then(({ makeSound }) => {
       sound = makeSound({ base: `${import.meta.env.BASE_URL}audio/` })
+      if (!flowing()) sound.stop()
       const unlock = () => void sound?.unlock()
       window.addEventListener('pointerdown', unlock, { once: true, capture: true })
       window.addEventListener('keydown', unlock, { once: true, capture: true })
     })
   }
   const soundMode = () => (now === 'live' ? 'live' : 'film')
+  const flowing = () => now !== 'film' || playing
 
   const botName = params.get('bot')
   if (botName && !BOTS.includes(botName)) throw new Error(`No bot called "${botName}"`)
@@ -220,6 +222,11 @@ function play(first: PlayMode): void {
   const quiet = () => {
     sound?.stop()
     heardTo = T
+    if (opening) sound?.opening(T, T)
+  }
+  const midBeat = () => {
+    const b = beats.reduce<{ id: string; at: number } | null>((best, x) => (x.at < T && (!best || x.at > best.at) ? x : best), null)
+    if (b) sound?.beat(b.id, 'film', T - b.at)
   }
   const film = {
     seconds: total,
@@ -229,6 +236,9 @@ function play(first: PlayMode): void {
       if (T >= total - 1 / fps) T = 0
       playing = true
       heardTo = T
+      if (opening) sound?.opening(T, T)
+      sound?.start()
+      midBeat()
     },
     pause() {
       playing = false
@@ -237,6 +247,10 @@ function play(first: PlayMode): void {
     seek(seconds: number) {
       T = Math.min(total, Math.max(0, seconds))
       quiet()
+      if (playing) {
+        sound?.start()
+        midBeat()
+      }
     }
   }
   const filmMoment = (t: number): { unit: string; time: number } => (oneUnit ? { unit: oneUnit, time: Math.min(t, body) } : app.filmMomentAt(t))
@@ -251,6 +265,7 @@ function play(first: PlayMode): void {
   }
   const filmSound = (from: number, to: number) => {
     if (!sound || to <= from) return
+    if (opening) sound.opening(from, to)
     for (const b of beats) if (b.at >= from && b.at < to) sound.beat(b.id, 'film')
     if (to <= lead) return
     const a = filmMoment(Math.max(0, from - lead))
@@ -310,6 +325,8 @@ function play(first: PlayMode): void {
       playing = !lessMotion()
     }
     if (next === 'live') sent = stage.events.length
+    if (opening && next === 'film') sound?.opening(0, 0)
+    if (flowing()) sound?.start()
     if (record) {
       const q = new URLSearchParams(location.search)
       if (next === 'live') q.delete('mode')
@@ -346,6 +363,7 @@ function play(first: PlayMode): void {
       base = Math.min(5, Math.max(0, Math.round(step)))
       stage = makeStage()
       sound?.stop()
+      if (flowing()) sound?.start()
       sent = 0
       gags = 0
       entry = -1
@@ -499,7 +517,10 @@ function play(first: PlayMode): void {
     } else if (now === 'film') {
       if (playing) {
         T = Math.min(total, T + Math.min(0.5, dt))
-        if (T >= total) playing = false
+        if (T >= total) {
+          playing = false
+          quiet()
+        }
       }
       draw()
       if (playing) {

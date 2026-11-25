@@ -56,6 +56,9 @@ Phase 2, engine and blockout. Everything here is a stand-in shape with working l
 - A run is kept only if every beat event is inside its beat. Among those the score prefers fewer balls brought in by the director, a save made by a flip and more bumper hits.
 - The state of a search is kept in `out/work/take-search.json`, so a stopped search goes on where it stopped. After `quality.takeSearchMaxRuns` searches the command only replays the kept take.
 - All three searches are used. Search 1 ran with a fault in the hint for the right flipper and kept 3 flips. Search 2 ran after the fix and kept run 8 with 10 flips. Search 3 found nothing better.
+- Search 4 was allowed by the Builder (10:03 UTC) for one thing: the key `last-save` at 35.5 s must show the ball caught by a flipper. `npm run take -- --allow 4 --from 34` keeps the eight flips before 34 s as they were and searches only the flips after. A run earns more when the ball is on a flipper at 35.5 s. Kept: run 5, 9 flips, the last one the right flipper at 35.53 s.
+- For this the ball leaves the spiral 0.4 s later (`T.spiralEnd` 34.2 to 34.6). What moved: `flipper-save` 35.12 s to 35.53 s, `drain` 38.52 s to 37.88 s. The other eight events did not move. All ten are inside their beats.
+- `npm run take -- --check` also says whether the ball is on a flipper at the key.
 
 ## Needs
 
@@ -65,10 +68,22 @@ Phase 2, engine and blockout. Everything here is a stand-in shape with working l
 
 - `tier-1`, `tier-2`, `tier-3`: the home camera moved to the tier, at home's distance from its floor.
 - `table-wide`, `table-lobby`, `table-replyall`, `table-fired`, `table-save`: fixed poses, set by eye against the approved images. To be refitted when the models exist.
-- `rail`: above and behind the ball, looking a little ahead.
+- `rail`: above and behind the ball, looking a little ahead. Its heading is the chord of the rail from 1.6 balls behind the ball to 2.2 ahead, so it does not jump at the joints of the rail. The whole ball is in the frame.
 - `film`: a list of times and camera names, blended over 0.6 s.
 - The site sets a camera's near plane at 1500 px in front of its target, so a fixed pose keeps its target within 1500 px of the nearest thing it must show. `table-wide` lost the Street tier until its target was moved toward the eye.
 - The wells are deep (the Street floor is 288 px down), so a low camera cannot see the flippers. `table-save` is steep for that reason.
+
+- `table-lobby` looks down from the south-east at about 38 degrees, far enough back to hold the top of the HQ box. The approved image is a low close view of the doors. In the blockout a low view shows a blank wall, because the sign is type on the top of the box. To be refitted low when the model has a sign on its front.
+- `table-save` shows the whole Street tier from above the apron, so the flippers, the inserts and the drain are in one picture.
+- Film order: follow, `table-wide` at 4.2 s, follow at 8.2, `tier-3` at 11.2, `table-lobby` at 13.0, follow at 14.3, `table-replyall` at 20.6, follow at 22.6, `table-fired` at 27.2, follow at 28.8, `rail` at 31.0, follow at 33.0, `table-save` at 34.3, follow at 36.6.
+- While the ball is at the plunger or low on the feed rail the follow camera scrolls 2.4 balls further down, so the knob is in the frame.
+
+## What shows the state
+
+- Power on: the marquee title and the score appear, the tiers wake one after the other 0.35 s apart, each tier's inserts flash for 0.6 s, the lamps go from the pocket tone to the light tone and grow. A display shows only when its tier is awake.
+- The plunger rod and knob draw back between 8.3 s and 9.4 s and snap forward at the launch.
+- Inserts sit at 8.35, 10 and 11.65 balls across (6.2, 7.35 and 6.2 down), clear of the raised flippers, the slings, the revolving door and the third bumper. Their labels are 18 px and stay readable under a raised flipper.
+- At the outlet the cursor stands on the port (28 px up, through `cursor.setGround`), lies flattened for half a second, peels up and walks to the button. The film's pointer waits at the outlet until then.
 
 ## Sheets
 
@@ -77,8 +92,16 @@ Phase 2, engine and blockout. Everything here is a stand-in shape with working l
 
 ## Open
 
+- Each insert has its name beside it as a small label (`copy:step3.table.modes.N.insert`), because the moulded pictures do not exist yet and the copy has to be shown. The kit says an insert carries no words: when the pictures exist the names move to where the kit puts them.
 - The models are boxes. Signs are type on top of the boxes.
 - Lights down and power on change no light yet: the blockout has no dusk.
-- Key `last-save` (35.5 s): the kept take flips at 35.12 s and the ball has left the `table-save` frame by 35.5 s. A fix needs a later flip and a new take, and the three searches are used.
-- The ball's tone `glass` renders opaque in the blockout, so the cursor inside it cannot be seen.
+- The ball's tone `glass` renders opaque in the blockout. That is the shell's view and stays. The cursor is placed at the ball's centre, so the blockout draws it on top of the ball.
 - The merge commit `71827b8` has no trailer. It was pushed before this was seen and history is not rewritten.
+
+## Round 1 measures (10:40 to 10:55 UTC)
+
+- M4: each insert label now lies on a paper plate 3 px above the tier floor, dark ink, the same in every state of the insert. MEASURED: least contrast 5 against 4.5.
+- M7 places: a table event is emitted at the point of the page plane that the camera of that step sees the ball through, not at the ball's own x and y. The tier floors lie one to three balls under the page plane and the stage places an event at height 0, so the plain x and y landed up to 769 px from the ball in the picture (scoop-kick under the rail camera blend). A height in `io.emit` would be the clean fix: that is the stage's.
+- M7 changes: every bumper strike calls `cursor.react('flinch')`; the scoop kick, a steel ball striking the cursor's ball and the gate save call `cursor.react('recoil')`. The doors keep `hurt('flattened')` and `act('shocked')`. The ball's path does not read the cursor: `npm run take -- --check` is unchanged.
+- Parts: flags `model-coffee-machine`, `model-moms` (the register's names). New flags on stand-ins: `model-revolving-door` (glass disc and post), `model-ladder` (the ladder rail), `model-notes` (the three standups), `model-wedges`, `model-staplers`, `model-road-signs` (the slings of tier 3, 2, 1). `npm run parts -- --check` exits 0.
+- Live run on main 89fe48f in the repo's headless browser at 1280 by 720: the alternating left click and right Shift reached step 4 in 205 s of wall time (software drawing), 257 flips, no page error. A second run held each input for 0.6 s on the Corporate tier and compared pictures: left Shift and the left button move the left flipper, right Shift and the right button move the right flipper.

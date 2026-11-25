@@ -9,6 +9,7 @@ import { buildInfo } from './hashes.mjs'
 import { addLook } from './looks.mjs'
 import { chunkName, filmPlan, frameCountOf, framesIn, parsePiece, pieceName, piecesOf, sameBuild, stepOf, tile, timeLabel, unitsShown } from './film-plan.mjs'
 import { clock, encodeFrames, join, probe, seconds, took } from './film-encode.mjs'
+import { nearest, readCheckpoint, readIndex, sameBuild as sameSim } from './film-simcache.mjs'
 
 // What draws one frame of each kind of run.
 export const sources = {
@@ -98,6 +99,30 @@ async function look(ctx, kind, piece, frame, png) {
   console.log(`${ctx.name}: look written, ${path.relative(at(), file)}`)
 }
 
+// Hands the page the checkpoint nearest before a frame of the film, so a piece that starts inside a page does not replay the page from its start.
+// Does nothing when there are no checkpoints of this build or the page does not take one.
+export async function handCheckpoint(ctx, frame) {
+  if (ctx.sim === undefined) {
+    const index = readIndex(at('out', 'work', 'simcache'))
+    ctx.sim = index && sameSim(index, buildInfo(at())) ? index : null
+    ctx.simUsed = 0
+  }
+  if (!ctx.sim) return null
+  const unit = Object.keys(ctx.sim.units).filter((u) => ctx.sim.units[u] <= frame).sort((x, y) => ctx.sim.units[y] - ctx.sim.units[x])[0]
+  const c = unit ? nearest(ctx.sim, unit, frame) : null
+  if (!c || c.step === 0) return null
+  const saved = readCheckpoint(at('out', 'work', 'simcache'), c)
+  if (saved === null) return null
+  const taken = await ctx.session.page.evaluate(([u, text]) => {
+    if (typeof window.showcase.useCheckpoint !== 'function') return false
+    window.showcase.useCheckpoint(u, JSON.parse(text))
+    return true
+  }, [unit, saved])
+  if (!taken) return null
+  ctx.simUsed++
+  return c
+}
+
 // Renders one piece and encodes it. Frames already on disk from a run that was stopped are kept when they are of this build.
 export async function renderPiece(ctx, kind, piece) {
   const source = sources[kind]
@@ -118,7 +143,9 @@ export async function renderPiece(ctx, kind, piece) {
   fs.mkdirSync(dir, { recursive: true })
   writeJson(note, record)
   const t0 = clock()
+  let told = t0
   let kept = 0
+  let handed = false
   for (let k = 0; k < frames.length; k++) {
     const file = path.join(dir, `${String(k).padStart(6, '0')}.png`)
     if (fs.existsSync(file)) {
@@ -129,6 +156,11 @@ export async function renderPiece(ctx, kind, piece) {
       ctx.stopped = true
       return { file: out, stopped: true, done: k, of: frames.length }
     }
+    if (kind === 'film' && !handed) {
+      handed = true
+      const c = await handCheckpoint(ctx, frames[k])
+      if (c) console.log(`${ctx.name}: ${piece.unit} from frame ${frames[k]} starts at the checkpoint of frame ${c.frame}`)
+    }
     const f0 = clock()
     await source.draw(ctx.session.page, frames[k], ctx.tier, ctx.diag)
     const png = await readCanvas(ctx.session.page)
@@ -136,6 +168,11 @@ export async function renderPiece(ctx, kind, piece) {
     fs.renameSync(`${file}.part`, file)
     ctx.rendered++
     ctx.renderSeconds += seconds(f0)
+    if (seconds(told) >= 60 && k < frames.length - 1) {
+      const each = seconds(t0) / (k + 1 - kept)
+      console.log(`${ctx.name}: ${piece.unit}, frame ${frames[k]}, ${k + 1} of the ${frames.length} of this piece, ${each.toFixed(2)} s a frame, about ${took(each * (frames.length - k - 1))} left in it`)
+      told = clock()
+    }
     await look(ctx, kind, piece, frames[k], png)
   }
   const renderSeconds = seconds(t0)

@@ -3,7 +3,8 @@ import path from 'node:path'
 import { createHash } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
 import { chain, encodeWav, decodeWav, loudness, peak, truePeakDb, type Sound } from '../src/audio/dsp'
-import { frameSample, mixFilm, panGains, type MixInput } from '../src/audio/mix'
+import { behindOpening, frameSample, mixFilm, openingEvents, panGains, type MixInput } from '../src/audio/mix'
+import { openingFrames, openingTimes, typedAt } from '../src/film/opening'
 import { DUCK, LIVE, MIX, db, toDb } from '../src/audio/levels'
 import { cueClass, filmLineId } from '../src/audio/cues'
 import { ScriptDriver, Stage, wholeFilmFlow } from '../src/stage/stage'
@@ -216,5 +217,50 @@ describe('the film itself', () => {
     expect(r.sound.channels[0]!.length).toBe(seconds * 8000)
     expect(r.mastered.silent).toBe(true)
     expect(r.missingLines.length).toBe(lines.length)
+  })
+})
+
+describe('film A, the opening and then film B', () => {
+  const t = openingTimes()
+  const plan = { prompt: cfg.intro.prompt as string, charsPerSecond: cfg.intro.charsPerSecond as number, levelOpens: t.levelOpens, levelPicks: t.levelPicks, sendPressed: t.held, linesDone: t.lines.map((l) => l.done) }
+  const events = openingEvents(plan, FPS)
+  const lead = openingFrames()
+
+  it('taps a key on the frame each letter of the prompt first shows', () => {
+    const taps = events.filter((e) => e.name === 'key-tap')
+    expect(taps.length).toBe(plan.prompt.length)
+    taps.forEach((e, i) => {
+      expect(typedAt(e.frame / FPS).length).toBe(i + 1)
+      if (e.frame > 0) expect(typedAt((e.frame - 1) / FPS).length).toBeLessThanOrEqual(i)
+    })
+  })
+
+  it('ticks at the level control and at each line of the build screen, and sends once, all inside the opening', () => {
+    expect(events.filter((e) => e.name === 'ui-tick').length).toBe(2 + cfg.intro.steps.length)
+    const send = events.filter((e) => e.name === 'ui-send')
+    expect(send.length).toBe(1)
+    expect(send[0]!.frame).toBe(Math.ceil(t.held * FPS - 1e-6))
+    expect(send[0]!.frame).toBeGreaterThan(Math.max(...events.filter((e) => e.name === 'key-tap').map((e) => e.frame)))
+    for (const e of events) expect(e.frame).toBeLessThan(lead)
+  })
+
+  it('lays film B behind the opening unchanged, with the room tone starting where the opening ends', () => {
+    const b = shortFilm()
+    const filmB = mixFilm(b)
+    const a = mixFilm({ ...b, seconds: lead / FPS + b.seconds, events: [...events, ...behindOpening(b.events, lead)], lines: behindOpening(b.lines, lead), toneFromFrame: lead })
+    expect(a.sound.channels[0]!.length).toBe(Math.round((lead / FPS + b.seconds) * SR))
+    const own = a.placed.filter((p) => p.frame < lead)
+    expect(own.length).toBe(events.length)
+    expect(own.every((p) => ['key-tap', 'ui-tick', 'ui-send'].includes(p.cue))).toBe(true)
+    const rest = a.placed.filter((p) => p.kind !== 'tone' && p.frame >= lead)
+    const wanted = filmB.placed.filter((p) => p.kind !== 'tone')
+    expect(rest.map((p) => [p.id, p.frame - lead, p.cents])).toEqual(wanted.map((p) => [p.id, p.frame, p.cents]))
+    const tone = a.placed.find((p) => p.kind === 'tone')!
+    expect(tone.frame).toBe(lead)
+    expect(tone.sample).toBe(frameSample(lead, FPS, SR))
+    const quiet = mixFilm({ ...b, seconds: lead / FPS + 1, events: [], lines: [], toneFromFrame: lead })
+    const first = frameSample(lead, FPS, SR)
+    expect(peak(quiet.sound.channels[0]!, 0, first)).toBe(0)
+    expect(peak(quiet.sound.channels[0]!, first + SR / 10)).toBeGreaterThan(0)
   })
 })

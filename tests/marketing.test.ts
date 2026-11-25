@@ -254,6 +254,41 @@ describe('the careers page', () => {
     expect(s.page.done()).toBe(false)
   })
 
+  it('turns a perk card over as one piece in its well, and carries the cursor no higher than half the card', () => {
+    const s = film()
+    const card = config.scale.heights.card
+    let turningSteps = 0
+    let top = 0
+    for (let step = 0; step < seconds(8); step++) {
+      s.advance(1)
+      if (step % 8 !== 0) continue
+      const list = drawn(s)
+      const slabs = list.filter((i) => /^perk-\d+-slab-/.test(i.id))
+      if (slabs.length === 0) continue
+      turningSteps++
+      const ids = new Set(slabs.map((i) => i.id.replace(/-slab-.*$/, '')))
+      for (const id of ids) {
+        const mine = slabs.filter((i) => i.id.startsWith(`${id}-slab-`))
+        const pit = list.filter((i) => i.id === `${id}-pit`)
+        expect(pit.length, id).toBe(1)
+        expect(pit[0]!.kind).toBe('well')
+        expect(mine.map((i) => i.id).sort()).toEqual([`${id}-slab-back`, `${id}-slab-front`])
+        for (const m of mine) {
+          expect([m.w, m.h]).toEqual([pit[0]!.w, pit[0]!.h])
+          expect(m.z1 - m.z0).toBeCloseTo(card, 6)
+        }
+        expect(-pit[0]!.z0).toBeGreaterThan(pit[0]!.h / 2)
+        expect(list.some((i) => i.id === id)).toBe(false)
+      }
+      top = Math.max(top, (s.cursor.save() as { ground: number }).ground)
+    }
+    expect(turningSteps).toBeGreaterThan(FIRST_CARDS * 10)
+    expect(top).toBeGreaterThan(card + 40)
+    expect(top).toBeLessThanOrEqual(card + 248 / 2)
+    expect(s.events.some((e) => e.hitsCursor)).toBe(false)
+    expect(s.cursor.pose().damage).toEqual([])
+  })
+
   it('never ends in the rejected variant: the buttons sink and come back', () => {
     const page = makePage()
     let cap: number[] = []

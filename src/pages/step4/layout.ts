@@ -10,11 +10,12 @@ import type { BannerPlan, Box, PopupPlan, SlabPlan, WeaponPlan } from '../../bos
 const heights = config.scale.heights
 const sizes = config.scale.sizes
 
-export const SLAB_TYPE = { font: 'inter-600', px: 22 }
+export const SLAB_TYPE = { font: 'inter-600', px: 26 }
 export const SLAB_KEYS = copy.step4.errorSlabs.map((_, i) => `copy:step4.errorSlabs.${i}`)
 export const POPUPS = copy.step4.popups.map((p, i) => ({ title: `copy:step4.popups.${i}.title`, buttons: p.buttons.map((_, j) => `copy:step4.popups.${i}.buttons.${j}`) }))
 export const BANNER_KEY = 'copy:step4.errorSlabs.2'
 export const BANNER_TYPE = { font: 'inter-600', px: 30 }
+export const OPEN = ['confirmed-film', 'doubt', 'confirmed-live']
 
 
 export interface Step4Layout {
@@ -27,6 +28,8 @@ export interface Step4Layout {
   track: Box
   weapons: WeaponPlan
   defeated: Box
+  fold: number
+  rule: Box
 }
 
 export function makeLayout(): Step4Layout {
@@ -42,7 +45,10 @@ export function makeLayout(): Step4Layout {
       row('verify-row', x, y, 18, [
         (rx, ry) => node('verify-box', 'checkbox', [rx, ry, 44, 44], { part: 'verify-card', r: 9, floor: heights.card, height: heights.card + 4, tone: 'light' }),
         (rx, ry) => text('verify-label', 'copy:step4.verify.checkbox', TYPE.value, rx, ry + (44 - block(TYPE.value.font, 'X', TYPE.value.px).cap) / 2, on)
-      ]),
+      ])
+  ])
+  const shutH = inner.box[3]! + pad * 2
+  const foot = column('verify-foot', cardX + pad, cardY + pad + inner.box[3]! + 28, 28, [
     (x, y) => node('verify-rule', 'divider', [x, y, cardW - pad * 2, 2], { part: 'verify-card', floor: heights.card, height: heights.card + heights.rule, tone: 'metal' }),
     (x, y) =>
       group('verify-answer', [
@@ -51,10 +57,13 @@ export function makeLayout(): Step4Layout {
         text('verify-confirmed-live', 'copy:step4.verify.confirmedLive', TYPE.label, x, y, { ...on, states: ['confirmed-live'] })
       ])
   ])
-  const cardH = inner.box[3]! + pad * 2
-  const card = node('verify-card', 'card', [cardX, cardY, cardW, cardH], { part: 'verify-card', r: 22, children: [inner] })
-  const fine = text('verify-fine', 'copy:step4.verify.finePrint', { ...TYPE.helper, wrap: cardW }, cardX, cardY + cardH + 20, { part: 'type' })
-  const verify = group('verify', [card, fine])
+  const cardH = shutH + 28 + foot.box[3]!
+  const fineType = { ...TYPE.helper, wrap: cardW }
+  const cardShut = node('verify-card', 'card', [cardX, cardY, cardW, shutH], { part: 'verify-card', r: 22, states: ['rest'] })
+  const cardOpen = node('verify-card-open', 'card', [cardX, cardY, cardW, cardH], { part: 'verify-card', r: 22, states: OPEN, children: [foot] })
+  const fineShut = text('verify-fine', 'copy:step4.verify.finePrint', fineType, cardX, cardY + shutH + 20, { part: 'type', states: ['rest'] })
+  const fineOpen = text('verify-fine-open', 'copy:step4.verify.finePrint', fineType, cardX, cardY + cardH + 20, { part: 'type', states: OPEN })
+  const verify = group('verify', [cardShut, cardOpen, inner, fineShut, fineOpen])
 
   const w = 288
   const submit = button('submit', SOCKET.x - w / 2, SOCKET.y - sizes.button / 2, w, 'copy:step4.submit', { part: 'shell' })
@@ -136,7 +145,8 @@ export function makeLayout(): Step4Layout {
   const tree = page('step4', SCREEN_H, [...stepHead(4), health, verify, submit, defeated, fightType])
   const b = (id: string): Box => boxOf(tree, id)
   return {
-    tree, card: b('verify-card'), checkbox: b('verify-box'), checkRow: b('verify-row'), socket: b('submit'), cap: b('submit-cap'), track: b('health-track'),
-    weapons: { slabs: slabPlans, popups: popupPlans, banner, slabType: SLAB_TYPE, bannerType: BANNER_TYPE, titleType }, defeated: b('defeated')
+    tree, card: b('verify-card-open'), checkbox: b('verify-box'), checkRow: b('verify-row'), socket: b('submit'), cap: b('submit-cap'), track: b('health-track'),
+    weapons: { slabs: slabPlans, popups: popupPlans, banner, slabType: SLAB_TYPE, bannerType: BANNER_TYPE, titleType }, defeated: b('defeated'),
+    fold: cardH - shutH, rule: b('verify-rule')
   }
 }

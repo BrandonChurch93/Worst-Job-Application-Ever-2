@@ -2,11 +2,12 @@ import { beat, config, stepHz } from '../../config'
 import { copy, type LayoutNode } from '../../copy'
 import type { Acting } from '../../cursor/body'
 import { boxOf, drawLayout, find } from '../../shell/layout'
+import { look } from '../../post/look'
 import { block } from '../../shell/metrics'
 import { SCREEN_H } from '../../shell/parts'
 import { words } from '../../shell/words'
 import type { DrawList, GagInfo, Hint, PageContext, PageLogic, Pointer, Shape, StepIo, Tone } from '../../stage/types'
-import { careersLayout, FIRST_CARDS, perkStates, T, TICKER } from './layout'
+import { CARD_R, careersLayout, FIRST_CARDS, perkStates, T, TICKER } from './layout'
 import { CUES, pointerAt, REJECTED_CUES, type Marks } from './script'
 
 const dt = 1 / stepHz
@@ -14,10 +15,10 @@ const heights = config.scale.heights
 const hover = heights.cursorHover
 const skipAfter = config.live.skipLinkAfterSeconds
 
-export const SLATS = 4
-const SLAT_SECONDS = 0.42
-const SLAT_GAP = 0.07
-export const FLIP_SECONDS = SLAT_SECONDS + (SLATS - 1) * SLAT_GAP
+export const FLIP_SECONDS = 0.63
+const PIT_CLEAR = 8
+const TURN_SHARP = 5
+const BACK_TONES: [number, Tone][] = [[0.648, 'glass'], [0.553, 'page'], [0.47, 'raised'], [0.418, 'paper'], [0, 'light']]
 const REJECTED_SETTLE = 1.7
 export const TRAVEL = heights.button - 4
 const WIND = 0.45
@@ -236,54 +237,40 @@ export function makePage(): PageLogic {
     }
   }
 
-  const slatTurn = (i: number, k: number): number => Math.PI * smooth((s.flip[i]! * FLIP_SECONDS - k * SLAT_GAP) / SLAT_SECONDS)
+  const turnOf = (i: number): number => Math.PI * (0.5 + (0.5 * Math.tanh(TURN_SHARP * (s.flip[i]! - 0.5))) / Math.tanh(TURN_SHARP / 2))
 
-  function turningTop(i: number): number {
-    const hs = cards[i]!.h / SLATS
-    let top = heights.card
-    for (let k = 0; k < SLATS; k++) top = Math.max(top, heights.card + hs * Math.abs(Math.sin(slatTurn(i, k))))
-    return top
+  const keyLength = Math.hypot(...look.key.direction)
+  const keyY = look.key.direction[1] / keyLength
+  const keyZ = look.key.direction[2] / keyLength
+
+  function backTone(a: number): Tone {
+    const lit = Math.max(0, -keyY * Math.sin(a) - keyZ * Math.cos(a))
+    return BACK_TONES.find(([from]) => lit >= from)![1]
   }
+
+  const turningTop = (i: number): number => heights.card + (cards[i]!.h / 2) * Math.abs(Math.sin(turnOf(i)))
 
   function turning(out: DrawList, i: number): void {
     const b = cards[i]!
     const n = cardNodes[i]!
     const st = perkStates(i)
-    const t = heights.card
-    const hs = b.h / SLATS
-    for (let k = 0; k < SLATS; k++) {
-      const a = slatTurn(i, k)
-      const sin = Math.sin(a)
-      const cos = Math.cos(a)
-      const top = b.y + k * hs
-      const mid = top + hs / 2
-      const z0 = (hs / 2) * Math.abs(sin) + Math.max(0, -t * cos)
-      out.push({ id: `${n.id}-slat-${k}`, part: 'perk-cards', kind: 'box', x: b.x, y: top + 1, w: b.w, h: hs - 2, z0, z1: z0 + t, tone: 'glass', r: 6, turnX: a, mechanism: true })
-      const front = a < Math.PI / 2
-      for (const c of n.children ?? []) {
-        const isFront = c.states?.includes(st.shut) === true
-        if (isFront !== front) continue
-        const [cx, cy, cw, ch] = c.box as [number, number, number, number]
-        const centre = cy + ch / 2
-        const owner = Math.min(SLATS - 1, Math.max(0, Math.floor((centre - b.y) / hs)))
-        if (owner !== k) continue
-        const off = mid - centre
-        let yw: number
-        let zw: number
-        let turn: number
-        if (front) {
-          yw = off * cos - t * sin
-          zw = z0 + off * sin + t * cos
-          turn = a
-        } else {
-          yw = off * cos
-          zw = z0 - off * sin
-          turn = a - Math.PI
-        }
-        const y = mid - yw - ch / 2
-        if (c.copy !== undefined && c.type !== undefined) out.push({ id: `${c.id}-turning`, part: 'type', kind: 'text', x: cx, y, w: cw, h: ch, z0: zw, z1: zw, tone: 'ink', words: c.copy, type: c.type, turnX: turn })
-        else out.push({ id: `${c.id}-turning`, part: 'perk-cards', kind: 'box', x: cx, y, w: cw, h: ch, z0: zw, z1: zw + 1, tone: (c.tone as Tone | undefined) ?? 'metal', turnX: turn, mechanism: true })
-      }
+    const half = heights.card / 2
+    const a = turnOf(i)
+    const sin = Math.sin(a)
+    const cos = Math.cos(a)
+    const slab = { part: 'perk-cards', kind: 'box', x: b.x, w: b.w, h: b.h, tone: 'glass', r: CARD_R, mechanism: true } as const
+    out.push({ id: `${n.id}-pit`, part: 'perk-cards', kind: 'well', x: b.x, y: b.y, w: b.w, h: b.h, z0: -(b.h / 2 + PIT_CLEAR), z1: 0, tone: 'pocket', mechanism: true })
+    out.push({ ...slab, id: `${n.id}-slab-front`, y: b.y + half * sin, z0: half * (1 - cos), z1: half * (1 - cos) + heights.card, turnX: -a })
+    out.push({ ...slab, tone: backTone(a), id: `${n.id}-slab-back`, y: b.y - half * sin, z0: half * (1 + cos), z1: half * (1 + cos) + heights.card, turnX: Math.PI - a })
+    for (const c of n.children ?? []) {
+      const front = c.states?.includes(st.shut) === true
+      const [cx, cy, cw, ch] = c.box as [number, number, number, number]
+      const v = cy + ch / 2 - b.cy
+      const y = b.cy + (front ? v * cos - half * sin : -v * cos + half * sin) - ch / 2
+      const z = half + (front ? v * sin + half * cos : -v * sin - half * cos)
+      const turnX = front ? -a : Math.PI - a
+      if (c.copy !== undefined && c.type !== undefined) out.push({ id: `${c.id}-turning`, part: 'type', kind: 'text', x: cx, y, w: cw, h: ch, z0: z, z1: z, tone: 'ink', words: c.copy, type: c.type, turnX })
+      else out.push({ id: `${c.id}-turning`, part: 'perk-cards', kind: 'box', x: cx, y, w: cw, h: ch, z0: z, z1: z + 1, tone: (c.tone as Tone | undefined) ?? 'metal', turnX, mechanism: true })
     }
   }
 
