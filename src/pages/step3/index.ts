@@ -126,6 +126,7 @@ const BLEND = 0.6
 const TURN = 1.5707963267948966
 const WAKE = 0.35
 const DUSK = config.table.pageDuskLevel
+const ASLEEP = 0.25
 const LOW = 2.4
 
 export function makePage(): PageLogic {
@@ -168,6 +169,8 @@ export function makePage(): PageLogic {
   const glow = (): boolean[] => [0, 1, 2].map((k) => powered() && s.t >= T.powerOn + k * WAKE)
   // How bright the website's own light is: full on the page, down to dusk by the time the machine wakes, and up again once the ball leaves by the drain.
   const website = (): number => 1 - (1 - DUSK) * smooth(s.dim)
+  // How bright each tier's general lighting is: a wave down the tiers when the machine wakes, and a slow dim once the ball has left by the drain.
+  const general = (): number[] => [0, 1, 2].map((k) => (powered() ? smooth((s.t - T.powerOn - k * WAKE) / WAKE) * (s.t > T.powerOn + 3 * WAKE ? ASLEEP + (1 - ASLEEP) * smooth(s.dim) : 1) : 0))
   const lit = (): boolean[] => table.inserts.map((n) => (powered() && s.t >= T.powerOn + n.tier * WAKE && s.t < T.powerOn + n.tier * WAKE + 0.6) || MODES.some((x) => x.mode === n.mode && s.t >= x.at && s.phase !== 'wait' && s.phase !== 'pull'))
   const modeOf = (k: number): number | null => {
     let out: number | null = null
@@ -503,7 +506,7 @@ export function makePage(): PageLogic {
       drawLayout(out, layout, { states: activeStates(), runtime: { score: scoreText() }, over: s.pressed ? { ...stood, 'go-cap': { z1: config.scale.heights.button - config.scale.heights.keyTravel } } : stood })
       for (const shape of fixedShapes()) out.push(shape)
       for (const shape of plates) out.push(shape)
-      for (const shape of movingShapes(mc, lit(), false, glow(), drawn(), s.shut, website())) out.push(shape)
+      for (const shape of movingShapes(mc, lit(), false, general(), drawn(), s.shut, website())) out.push(shape)
       out.push(hqPlate)
     },
     scroll: () => s.scroll,

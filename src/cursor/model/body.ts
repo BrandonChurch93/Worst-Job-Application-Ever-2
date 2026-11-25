@@ -43,6 +43,7 @@ export class Body implements BodyModel {
     g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(s.rest.length), 3).setUsage(THREE.DynamicDrawUsage))
     g.setAttribute('normal', new THREE.BufferAttribute(new Float32Array(s.rest.length), 3).setUsage(THREE.DynamicDrawUsage))
     g.setAttribute('aRest', new THREE.BufferAttribute(s.rest, 3))
+    g.setAttribute('aInset', new THREE.BufferAttribute(s.inset, 1))
     g.setAttribute('aInk', new THREE.BufferAttribute(s.ink, 1))
     g.setIndex(new THREE.BufferAttribute(s.index, 1))
     this.whole = this.mesh(g, this.material)
@@ -89,6 +90,7 @@ export class Body implements BodyModel {
     this.deform.set(look)
     const u = this.uniforms
     u.uState.value.set(clamp01(look.pale), clamp01(look.heat), clamp01(look.char), clamp01(look.melt))
+    u.uShape.value.set(clamp01(look.flat), 0, 0, 0)
     const crack = Math.max(clamp01(look.crack ?? 0), 0)
     const seamCount = look.strips ? look.strips.length : Math.max(1, Math.round(look.seamCount ?? 9))
     u.uMarks.value.set(crack, look.strips ? 0 : clamp01(look.seam ?? 0), seamCount, look.time)
@@ -136,12 +138,15 @@ export class Body implements BodyModel {
       g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(n * 3), 3).setUsage(THREE.DynamicDrawUsage))
       g.setAttribute('normal', new THREE.BufferAttribute(new Float32Array(n * 3), 3).setUsage(THREE.DynamicDrawUsage))
       const rest = new Float32Array(n * 3)
+      const inset = new Float32Array(n)
       for (let i = 0; i < n; i++) {
+        inset[i] = set.rest[i * 4 + 3]!
         rest[i * 3] = set.rest[i * 4]!
         rest[i * 3 + 1] = set.rest[i * 4 + 1]!
         rest[i * 3 + 2] = set.rest[i * 4 + 2]!
       }
       g.setAttribute('aRest', new THREE.BufferAttribute(rest, 3))
+      g.setAttribute('aInset', new THREE.BufferAttribute(inset, 1))
       g.setAttribute('aInk', new THREE.BufferAttribute(set.ink, 1))
     }
     this.whole.visible = false
