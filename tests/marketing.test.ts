@@ -306,6 +306,60 @@ describe('the careers page', () => {
     expect(JSON.stringify(drawn(b))).toBe(JSON.stringify(drawn(a)))
   })
 
+  it('scrolls to a section when a link of the top bar is pressed', () => {
+    const { layout, sections, height } = careersLayout()
+    const box = (id: string): number[] => {
+      let found: number[] = []
+      const walk = (n: { id: string; box: number[]; children?: unknown[] }): void => {
+        if (n.id === id) found = n.box
+        for (const c of (n.children ?? []) as { id: string; box: number[] }[]) walk(c)
+      }
+      walk(layout)
+      return found
+    }
+    const wanted = [sections.final!, sections.awards!, sections.perks!]
+    wanted.forEach((top, i) => {
+      const b = box(`nav-link-${i}`)
+      const at = { x: b[0]! + b[2]! / 2, y: b[1]! + b[3]! / 2 }
+      let pressed = false
+      const s = live({
+        name: 'bot',
+        input(v: DriverView): Pointer {
+          if (v.time < 0.5 || pressed) return { x: at.x, y: Math.max(10, at.y - v.scroll), down: false }
+          pressed = true
+          return { x: at.x, y: at.y, down: true }
+        }
+      })
+      s.advance(seconds(3))
+      const scroll = s.page.scroll()
+      expect(scroll, `link ${i}`).toBeGreaterThan(0)
+      expect(scroll, `link ${i}`).toBeLessThanOrEqual(height - 1080)
+      expect(top - scroll, `link ${i}`).toBeGreaterThan(0)
+      expect(top - scroll, `link ${i}`).toBeLessThan(200)
+      expect(s.page.done()).toBe(false)
+    })
+  })
+
+  it('keeps the tape inside its window: a run that crosses an edge keeps its box centre in the well, so the page hides the rest', () => {
+    const s = film()
+    let crossing = 0
+    for (let i = 0; i < 52; i++) {
+      s.advance(seconds(0.25))
+      const list = drawn(s)
+      const well = list.find((d) => d.id === 'ticker-well')!
+      const runs = list.filter((d) => d.kind === 'text' && d.id.startsWith('ticker-'))
+      expect(runs.length).toBeGreaterThan(2)
+      for (const r of runs) {
+        const centre = r.x + r.w / 2
+        expect(centre, r.id).toBeGreaterThanOrEqual(well.x)
+        expect(centre, r.id).toBeLessThanOrEqual(well.x + well.w)
+        expect(r.z1).toBeLessThan(0)
+        if (r.w === 2) crossing++
+      }
+    }
+    expect(crossing).toBeGreaterThan(0)
+  })
+
   it('lets every bot finish, and the keen one reach every gag of the page', () => {
     const seed = config.seed
     const keen = runBot(pages, 'keen', seed)

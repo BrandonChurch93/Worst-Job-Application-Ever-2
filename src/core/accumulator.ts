@@ -44,8 +44,8 @@ export function targetKind(renderer: THREE.WebGLRenderer): TargetKind {
   return 'byte'
 }
 
-function makeTarget(w: number, h: number, type: THREE.TextureDataType, depth: boolean): THREE.WebGLRenderTarget {
-  const t = new THREE.WebGLRenderTarget(w, h, { type, format: THREE.RGBAFormat, depthBuffer: depth, stencilBuffer: false, magFilter: THREE.NearestFilter, minFilter: THREE.NearestFilter, generateMipmaps: false })
+function makeTarget(w: number, h: number, type: THREE.TextureDataType, depth: boolean, multisamples = 0): THREE.WebGLRenderTarget {
+  const t = new THREE.WebGLRenderTarget(w, h, { type, format: THREE.RGBAFormat, depthBuffer: depth, stencilBuffer: false, magFilter: THREE.NearestFilter, minFilter: THREE.NearestFilter, generateMipmaps: false, samples: multisamples })
   t.texture.colorSpace = type === THREE.UnsignedByteType ? THREE.SRGBColorSpace : THREE.NoColorSpace
   return t
 }
@@ -64,13 +64,13 @@ export class Accumulator {
   width: number
   height: number
 
-  constructor(private renderer: THREE.WebGLRenderer, width: number, height: number, forced?: TargetKind) {
+  constructor(private renderer: THREE.WebGLRenderer, width: number, height: number, forced?: TargetKind, multisamples = 0) {
     this.kind = forced ?? targetKind(renderer)
     this.width = width
     this.height = height
     const sampleType = this.kind === 'byte' ? THREE.UnsignedByteType : THREE.HalfFloatType
     const meanType = this.kind === 'float' ? THREE.FloatType : sampleType
-    this.sample = makeTarget(width, height, sampleType, true)
+    this.sample = makeTarget(width, height, sampleType, true, multisamples)
     this.means = [makeTarget(width, height, meanType, false), makeTarget(width, height, meanType, false)]
     this.stats = makeTarget(64, 36, this.kind === 'byte' ? THREE.UnsignedByteType : meanType, false)
     this.stats.texture.colorSpace = THREE.NoColorSpace

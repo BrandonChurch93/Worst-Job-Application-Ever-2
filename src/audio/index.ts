@@ -413,6 +413,7 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
       if (state !== 'ready' || !backend) return
       const list = live[name]
       if (!Array.isArray(list) || !list.length) return
+      startTone()
       const count = liveCounts.get(name) ?? 0
       const index = count % list.length
       const id = liveLineId(name, index)

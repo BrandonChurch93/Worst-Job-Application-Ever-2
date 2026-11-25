@@ -22,9 +22,9 @@ export const MEDAL_H = 10
 export const HERO_W = 460
 export const TICKER = { x: LEFT, y: 984, w: WIDTH, h: 56, floor: -6, tape: -5, pad: 28, gap: 64 }
 export const FIRST_CARDS = 3
-const SECTION = 160
-const HEAD_TO_CONTENT = 148
-const FOOT = 120
+const SECTION = 170
+const HEAD_TO_CONTENT = 140
+const FOOT = 128
 
 export const T = {
   display: { font: 'inter-display-600', px: 68, lead: 84 },
