@@ -1,6 +1,6 @@
 import type { StepIo } from '../stage/types'
 import { CANNON_OFF, FOOT_OFF, smooth } from './body'
-import { ARENA, BODY, CAPS, FLOOR, DART, EXPIRED_GAIN, HEALTH, HIT, HOME, POPUP, RAMP, SLAB, SLOW_SECONDS, THRESHOLD } from './plan'
+import { ARENA, BODY, CAPS, FLOOR, DART, EXPIRED_GAIN, HEALTH, HIT, HOME, LAST_CLEAR, POPUP, RAMP, SLAB, SLOW_SECONDS, THRESHOLD } from './plan'
 
 export interface SlabSize { w: number; h: number }
 export interface Rect { x: number; y: number; w: number; h: number }
@@ -45,7 +45,7 @@ export interface Fight {
 }
 
 const START = [HEALTH, THRESHOLD[0], THRESHOLD[1] + EXPIRED_GAIN] as const
-const POPUP_ORDER = [0, 1, 2] as const
+const POPUP_ORDER = [2, 1, 0] as const
 const SLAB_HALF = 56
 
 export const cursorCentre = (c: { x: number; y: number }): { x: number; y: number } => ({ x: c.x + 18, y: c.y + 32 })
@@ -79,6 +79,19 @@ const inside = (r: Rect, x: number, y: number, grow = 0): boolean => x >= r.x - 
 export const muzzle = (f: Fight, i: number): { x: number; y: number } => ({ x: f.x + CANNON_OFF[i]![0] - 70, y: f.y + CANNON_OFF[i]![1] })
 
 export const bannerUp = (f: Fight): boolean => f.expired >= 0 && f.expired < 1.5
+export const spent = (f: Fight): boolean => f.phase === 2 && f.expired >= 1.5 && f.health <= LAST_CLEAR
+const quiet = (f: Fight): boolean => bannerUp(f) || (f.phase === 2 && f.expired < 0) || spent(f)
+
+function clearPage(f: Fight): void {
+  for (const p of f.popups) if (p.closing < 0) p.closing = 0
+  for (const s of f.slabs) {
+    if (s.state !== 2) {
+      s.state = 2
+      s.t = 0
+    }
+  }
+  f.windup = -1
+}
 
 function wander(f: Fight): { x: number; y: number; speed: number } {
   if (f.phase === 0) return { x: HOME.x - 50 + 60 * Math.sin(f.clock * 0.6), y: HOME.y - 10 + 80 * Math.sin(f.clock * 0.5 + 2.9), speed: 130 }
@@ -174,9 +187,10 @@ function slabs(f: Fight, io: StepIo, arena: Arena): void {
       fire(f, io, arena)
       f.nextSlab = SLAB.every[f.phase]!
     }
-  } else if (!bannerUp(f) && !(f.phase === 2 && f.expired < 0)) {
+  } else if (!quiet(f)) {
     f.nextSlab -= dt
-    if (f.nextSlab <= 0) {
+    const one = f.phase === 0 || (f.slabs.length === 0 && !f.popups.some((p) => p.t < POPUP.read))
+    if (f.nextSlab <= 0 && one) {
       f.windup = 0
       f.aim = { x: c.x, y: c.y }
     }
@@ -206,7 +220,7 @@ function slabs(f: Fight, io: StepIo, arena: Arena): void {
         s.state = 1
         s.t = 0
       }
-    } else if (s.state === 1 && s.t >= SLAB.rest) {
+    } else if (s.state === 1 && s.t >= (f.phase === 0 ? SLAB.rest : SLAB.restLate)) {
       s.state = 2
       s.t = 0
     }
@@ -227,13 +241,15 @@ function popups(f: Fight, io: StepIo, arena: Arena): boolean {
     }
   }
   f.popups = f.popups.filter((p) => p.closing < POPUP.close)
-  if (f.phase === 0 || bannerUp(f) || (f.phase === 2 && f.expired < 0)) return used
+  if (f.phase === 0 || quiet(f)) return used
   f.popupDue -= dt
   if (f.popupDue <= 0) {
     const free = POPUP_ORDER.filter((slot) => !f.popups.some((p) => p.slot === slot))
-    const first = f.phase === 1 && f.popupCount < POPUP_ORDER.length
-    if (free.length && (first || f.phase === 2)) {
-      const slot = free[0]!
+    const first = f.phase === 1 && f.popupCount < POPUP_ORDER.length && f.health > THRESHOLD[1] + DART.damage
+    const one = f.windup < 0 && !f.slabs.some((s) => s.state === 0)
+    if (free.length && one && (first || f.phase === 2)) {
+      const want = POPUP_ORDER[f.popupCount % POPUP_ORDER.length]!
+      const slot = free.includes(want) ? want : free[0]!
       const box = arena.popups[slot]!.box
       f.popups.push({ slot, hp: POPUP.hp, t: 0, closing: -1 })
       f.popupCount++
@@ -297,6 +313,7 @@ export function stepFight(f: Fight, io: StepIo, arena: Arena): void {
   if (f.phase === 2) {
     if (f.expired < 0 && f.phaseClock >= 0.3) {
       f.expired = 0
+      clearPage(f)
       io.emit('session-expired', f.x, f.y, false)
       io.cursor.react('doubleTake')
     } else if (f.expired >= 0) {
@@ -304,6 +321,7 @@ export function stepFight(f: Fight, io: StepIo, arena: Arena): void {
       f.expired += dt
     }
   }
+  if (spent(f)) clearPage(f)
   walk(f, dt)
   slabs(f, io, arena)
   const used = popups(f, io, arena)
@@ -323,6 +341,7 @@ export function stepFight(f: Fight, io: StepIo, arena: Arena): void {
       f.phaseClock = 0
       f.popupDue = POPUP.first
       f.nextSlab = f.phase === 2 ? 0.5 : Math.max(f.nextSlab, 0.9)
+      f.windup = -1
     }
   }
 }
