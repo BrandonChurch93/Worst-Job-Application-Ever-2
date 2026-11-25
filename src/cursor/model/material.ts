@@ -34,6 +34,9 @@ export function bodyUniforms(): BodyUniforms {
 }
 
 const HOLE_COMMON = /* glsl */ `
+#ifndef WJA_HOLE_WIDE
+#define WJA_HOLE_WIDE 1.0
+#endif
 uniform vec4 uHoles[${MAX_HOLES}];
 uniform vec4 uBurnt;
 float wjaRag( vec2 d, float burnt ) {
@@ -46,7 +49,7 @@ void wjaHoles( vec3 rest ) {
     if ( h.z <= 0.0 ) continue;
     vec2 d = rest.xy - h.xy;
     float k = clamp( rest.z / 2.3, 0.0, 1.0 );
-    float r = h.z * wjaRag( d, uBurnt[ i ] ) * mix( 0.85 + 0.15 * k, 0.7 + 0.3 * pow( k, 1.6 ), uBurnt[ i ] );
+    float r = WJA_HOLE_WIDE * h.z * wjaRag( d, uBurnt[ i ] ) * mix( 0.85 + 0.15 * k, 0.7 + 0.3 * pow( k, 1.6 ), uBurnt[ i ] );
     if ( dot( d, d ) < r * r ) discard;
   }
 }
@@ -124,15 +127,14 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
     texture2D( uDetail, q / 1.9 + vec2( e, 0.0 ) ).g - texture2D( uDetail, q / 1.9 - vec2( e, 0.0 ) ).g,
     texture2D( uDetail, q / 1.9 + vec2( 0.0, e ) ).g - texture2D( uDetail, q / 1.9 - vec2( 0.0, e ) ).g );
   float bare = step( 1.5, vInk );
-  float reach = clamp( 3.7 * fwidth( vInset ), 0.5, 0.86 );
-  float ink = max( smoothstep( 0.3, 0.7, vInk ), 1.0 - smoothstep( reach - 0.05, reach + 0.03, vInset ) ) * ( 1.0 - bare ) * ( 1.0 - smoothstep( 0.0, 0.55, melt ) );
-  ink *= 1.0 - max( uShape.x * smoothstep( 0.2, 0.34, vInset ), uShape.y * smoothstep( 0.24, 0.34, vInset ) );
+  float reach = clamp( 1.9 * fwidth( vInset ), 0.545, 0.7 );
+  float ink = max( smoothstep( 0.3, 0.7, vInk ), 1.0 - smoothstep( reach - 0.03, reach + 0.03, vInset ) ) * ( 1.0 - bare ) * ( 1.0 - smoothstep( 0.0, 0.55, melt ) );
   float face = 1.0 - ink;
-  vec3 col = mix( enamel, edge * 0.5, ink );
-  wjaRough = mix( 0.3, 0.42, ink );
-  wjaCoatRough = mix( 0.09, 0.2, ink );
-  wjaCoat = mix( 1.0, 0.22, ink );
-  wjaSpec = mix( 1.0, 0.22, ink );
+  vec3 col = mix( enamel, edge * 0.62, ink );
+  wjaRough = mix( 0.3, 0.46, ink );
+  wjaCoatRough = mix( 0.09, 0.26, ink );
+  wjaCoat = mix( 1.0, 0.55, ink );
+  wjaSpec = mix( 1.0, 0.4, ink );
 
   // A cut face: bare fired clay, with the dark of the edge band only at its foot.
   if ( bare > 0.5 ) {
@@ -149,13 +151,13 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
   float crack = uMarks.x * face;
   if ( crack > 0.0 ) {
     vec3 cell = wjaCells( q / 6.6 + vec2( 0.37, 0.61 ) + ( mid.gb - 0.5 ) * 0.16 + ( wide.gb - 0.5 ) * 0.3 );
-    float thin = 0.0035 + 0.004 * fine.g;
+    float thin = 0.0016 + 0.002 * fine.g;
     float line = 1.0 - smoothstep( thin, thin + max( fwidth( cell.x ) * 1.2, 0.002 ), cell.x );
     float plate = cell.y * 6.2832;
     float near = 1.0 - smoothstep( 0.0, 0.05, cell.x );
     wjaCoatTilt += crack * vec2( cos( plate ), sin( plate ) ) * 0.016;
     wjaTilt += wjaCoatTilt;
-    col *= 1.0 - crack * ( 0.45 * line + 0.04 * near );
+    col *= 1.0 - crack * ( 0.3 * line + 0.05 * near );
     wjaCoat *= 1.0 - 0.8 * crack * line;
   }
 
@@ -172,11 +174,12 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
   // Pale: the gloss dies and the body turns to stone, the black edge to grey.
   if ( pale > 0.0 ) {
     float speck = smoothstep( 0.62, 0.78, texture2D( uDetail, q / 0.83 + vec2( 0.31, 0.77 ) ).b );
-    vec3 stone = vec3( 0.58, 0.57, 0.545 ) * ( 0.9 + 0.14 * mid.b + 0.1 * fine.g ) * ( 1.0 - 0.12 * speck );
-    col = mix( col, mix( stone, stone * 0.74, ink ), pale );
-    wjaRough = mix( wjaRough, 0.94, pale );
+    vec3 stone = vec3( 0.71, 0.705, 0.685 ) * ( 0.93 + 0.08 * mid.b + 0.08 * fine.g ) * ( 1.0 - 0.1 * speck );
+    col = mix( col, mix( stone, stone * 0.78, ink ), pale );
+    wjaRough = mix( wjaRough, 0.96, pale );
     wjaCoat *= 1.0 - pale;
-    wjaTilt += grain * 0.6 * pale;
+    wjaSpec *= 1.0 - 0.85 * pale;
+    wjaTilt += grain * 1.1 * pale;
   }
 
   // Char: a black blistered crust that grows back from the tip, with a scorched brown fringe.
@@ -184,7 +187,7 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
     float front = charred * 7.0;
     float ragged = along + ( wide.g - 0.5 ) * 2.0 + ( mid.b - 0.5 ) * 1.6 + ( fine.g - 0.5 ) * 0.6;
     float crust = smoothstep( front + 0.2, front - 0.3, ragged );
-    float soot = smoothstep( front + 2.8, front - 0.2, ragged ) * smoothstep( 0.0, 0.12, charred );
+    float soot = smoothstep( front + 1.5, front - 0.1, ragged ) * smoothstep( 0.0, 0.12, charred );
     vec3 scorch = mix( vec3( 0.80, 0.52, 0.24 ), vec3( 0.36, 0.17, 0.06 ), soot );
     col = mix( col, col * scorch, pow( soot, 1.5 ) * ( 1.0 - crust ) * mix( 1.0, 0.55, ink ) );
     float blister = smoothstep( 0.5, 0.82, fine.b * 0.7 + mid.g * 0.5 );
@@ -225,7 +228,7 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
     float r = hole.z * wjaRag( d, burnt );
     float from = length( d ) / r + ( mid.g - 0.5 ) * 0.16 + ( fine.b - 0.5 ) * 0.14;
     float soot = ( 1.0 - smoothstep( 1.18, 1.95, from ) ) * burnt;
-    float crust = ( 1.0 - smoothstep( 1.2, 1.42, from ) ) * burnt;
+    float crust = ( 1.0 - smoothstep( 1.1, 1.3, from ) ) * burnt;
     col = mix( col, col * vec3( 0.3, 0.215, 0.14 ), soot * soot * 0.95 );
     col = mix( col, vec3( 0.014, 0.012, 0.010 ) + 0.03 * fine.g * mid.b, crust );
     float chipAt = length( d ) / r + ( wide.g - 0.5 ) * 0.1 + ( mid.b - 0.5 ) * 0.12;
@@ -242,9 +245,9 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
     float lip = ( 1.0 - smoothstep( 1.04, 1.24, from ) ) * pow( hole.w, 0.7 ) * burnt;
     float spark = smoothstep( 0.4, 0.68, fine.b * 0.6 + mid.g * 0.6 - 0.2 * ( 1.0 - hole.w ) );
     float lee = 0.4 + 0.6 * smoothstep( -0.6, 0.9, dot( normalize( d ), vec2( -0.5, 0.86 ) ) );
-    wjaGlow += mix( vec3( 0.85, 0.07, 0.01 ), vec3( 1.25, 0.6, 0.12 ), hole.w * fine.g ) * lip * lee * ( 0.3 + 2.0 * spark );
+    wjaGlow += mix( vec3( 1.0, 0.13, 0.015 ), vec3( 1.45, 0.72, 0.14 ), fine.g * ( 0.4 + 0.6 * hole.w ) ) * lip * lee * ( 0.25 + 2.6 * spark );
   }
-  wjaFill = 0.6 * face;
+  wjaFill = 0.9 * face;
   return col;
 }
 `
@@ -289,7 +292,7 @@ export function bodyDepthMaterial(uniforms: BodyUniforms): THREE.MeshDepthMateri
     shader.uniforms.uHoles = uniforms.uHoles
     shader.uniforms.uBurnt = uniforms.uBurnt
     shader.vertexShader = 'attribute vec3 aRest;\nvarying vec3 vRest;\n' + shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\nvRest = aRest;')
-    shader.fragmentShader = 'varying vec3 vRest;\n' + HOLE_COMMON + shader.fragmentShader.replace('#include <clipping_planes_fragment>', '#include <clipping_planes_fragment>\nwjaHoles( vec3( vRest.xy, 0.0 ) );')
+    shader.fragmentShader = '#define WJA_HOLE_WIDE 1.6\nvarying vec3 vRest;\n' + HOLE_COMMON + shader.fragmentShader.replace('#include <clipping_planes_fragment>', '#include <clipping_planes_fragment>\nwjaHoles( vec3( vRest.xy, 2.3 ) );')
   }
   m.customProgramCacheKey = () => 'wja-cursor-body-depth'
   return m

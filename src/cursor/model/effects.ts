@@ -15,7 +15,7 @@ const DUST = 22
 const PUFFS = STEAM + SMOKE_POINTS * SMOKE_EACH + DUST
 const SEED = config.seed
 const HOVER = config.scale.heights.cursorHover
-const TOPS: [number, number][] = [[0.5, 1.2], [0.7, 3.6], [2.2, 3.4], [0.8, 6.4], [3.8, 5.6], [5.6, 8.2], [0.8, 10], [9.2, 10.6]]
+const WISPS: [number, number, number][] = [[1.5, 4.4, 15], [3.3, 6.6, 12.5], [1.9, 7.6, 10]]
 
 const clamp01 = (v: number): number => Math.min(1, Math.max(0, v))
 const smooth = (v: number): number => {
@@ -129,7 +129,6 @@ class Effects implements EffectsModel {
   private a = new THREE.Vector3()
   private cos = 1
   private sin = 0
-  private tops: THREE.Vector3[] = TOPS.map(() => new THREE.Vector3())
 
   constructor() {
     const bead = new THREE.SphereGeometry(1, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2)
@@ -192,7 +191,7 @@ class Effects implements EffectsModel {
       const floor = -HOVER + 0.05
       const p = this.p
       for (let i = 0; i < DROPS; i++) {
-        const on = clamp01(amount * (DROPS + 1) - i)
+        const on = clamp01(amount * (DROPS + 1) * 1.5 - i)
         if (on <= 0) continue
         const period = 1.5 + 1.3 * hash01(i, 1, SEED)
         const clock = look.time / period + hash01(i, 2, SEED)
@@ -201,15 +200,15 @@ class Effects implements EffectsModel {
         let x = 2.6
         let y = 8
         for (let k = 0; k < 8; k++) {
-          const hy = 4 + 11 * Math.pow(hash01(i * 31 + k, cycle, SEED + 4), 0.7)
-          const hx = 1.5 + (Math.min(hy, 11.5) * 0.85 - 2.6) * hash01(i * 31 + k, cycle, SEED + 3)
-          if (inside(hx, hy) > 1.5) {
+          const hy = 3 + 11.5 * hash01(i * 31 + k, cycle, SEED + 4)
+          const hx = 0.9 + (Math.min(hy, 11.4) * 0.98 - 1.8) * hash01(i * 31 + k, cycle, SEED + 3)
+          if (inside(hx, hy) > 0.95) {
             x = hx
             y = hy
             break
           }
         }
-        const size = (0.4 + 0.7 * Math.pow(hash01(i, cycle, SEED + 5), 1.6)) * (0.8 + 0.2 * amount) * on * UNIT
+        const size = (0.34 + 0.8 * Math.pow(hash01(i, cycle, SEED + 5), 2.2)) * (0.8 + 0.2 * amount) * on * UNIT
         const flyer = hash01(i, cycle, SEED + 6) < 0.12
         let r = size
         let long = 1
@@ -297,7 +296,7 @@ class Effects implements EffectsModel {
       const s = i % strands
       const j = Math.floor(i / strands)
       const path = (h: number): number =>
-        (lean + 0.07) * h + (0.05 * h + 0.015 * h * h) * Math.sin(h * (0.5 + 0.13 * s) + a0 + s * 2.2 - time * 1.6) + 0.13 * h * Math.sin(h * 0.21 + a1 + time * 0.55)
+        (lean + 0.07) * h + (0.05 * h + 0.024 * h * h) * Math.sin(h * (0.55 + 0.15 * s) + a0 + s * 2.2 - time * 1.6) + 0.16 * h * Math.sin(h * 0.23 + a1 + time * 0.55)
       const clock = time / period + (j + 0.41 * s) / each
       const cycle = Math.floor(clock)
       const t = clock - cycle
@@ -317,10 +316,11 @@ class Effects implements EffectsModel {
     let n = 0
     const steam = clamp01(look.steam)
     if (steam > 0.01) {
-      TOPS.forEach((t, i) => this.on(surface, t[0], t[1], this.tops[i]!))
-      let top = this.tops[0]!
-      for (const t of this.tops) if (t.y > top.y) top = t
-      n = this.plume(n, top.x, top.y - 2.2 * UNIT, top.z, steam, look.time, STEAM, 3, 15, 1.9, 0.32, 2.6, 1.0, 1.0, 0.86, 3)
+      // Wisps leave the heated face itself, each from its own place, and curl before they thin.
+      WISPS.forEach((w, i) => {
+        this.on(surface, w[0], w[1], this.a)
+        n = this.plume(n, this.a.x, this.a.y, this.a.z, steam, look.time, STEAM / WISPS.length, 2, w[2], 1.9 + 0.3 * i, 0.2, 2.1, 1.0, 1.0, 0.8, 3 + i * 5)
+      })
     }
     const points = Math.min(SMOKE_POINTS, look.smoke.length)
     for (let k = 0; k < points; k++) {
@@ -328,7 +328,7 @@ class Effects implements EffectsModel {
       const amount = clamp01(s.amount)
       if (amount <= 0.01) continue
       this.on(surface, s.x, s.y, this.a)
-      n = this.plume(n, this.a.x, this.a.y, this.a.z, amount, look.time, SMOKE_EACH, 2, 17, 4.8, 0.3, 2.4, 0.16, 0.46, 0.62, 40 + k * 9)
+      n = this.plume(n, this.a.x, this.a.y, this.a.z, amount, look.time, SMOKE_EACH, 2, 17, 4.8, 0.26, 3.1, 0.2, 0.52, 0.56, 40 + k * 9)
     }
     if (look.dust >= 0 && look.dust < 1) {
       const d = look.dust

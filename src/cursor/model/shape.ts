@@ -5,32 +5,34 @@ import { OUTLINE } from '../contract'
 export const AXIS: [number, number] = [0.409, 0.912]
 export const CENTRE: [number, number] = [4.2, 9.5]
 export const TOP = 2.3
-const ENAMEL_AT = 0.52
-const SHOULDER = 0.6
-const RISE = 0.66
-const GROOVE = 1.48
+const ENAMEL_AT = 0.56
+const SHOULDER = 0.66
+const GROOVE = 1.82
+const RISE = TOP - GROOVE
 const SOFT = 6
+const WALL_TOP = 1.18
+const WALL_WIDE = 0.5
+const CROWN = 1.93
 
 // The edge band's section: how far in from the outline, how high, in outline units.
-const BAND: [number, number][] = [
-  [0.08, 0], [0.015, 0.1], [0, 0.28], [0, 1.2], [0.03, 1.38], [0.1, 1.5], [0.21, 1.56], [0.36, 1.56], [0.45, 1.54], [0.5, GROOVE]
-]
-const SHOULDER_TURNS = [0, 10, 22, 36, 52, 70]
-const RADII = [0.2, 0.3, 0.26, 0.3, 0.3, 0.26, 0.3]
-const ARC = 7
+const BAND: [number, number][] = [[0.2, 0], [0.09, 0.04], [0.025, 0.14], [0, 0.32], [0, 0.62], [0, WALL_TOP]]
+for (const turn of [14, 28, 42, 56, 70, 82, 90]) {
+  const a = (turn * Math.PI) / 180
+  BAND.push([WALL_WIDE * (1 - Math.cos(a)), WALL_TOP + (CROWN - WALL_TOP) * Math.sin(a)])
+}
+BAND.push([ENAMEL_AT - 0.03, CROWN - 0.05], [ENAMEL_AT - 0.005, GROOVE])
+const WALL_FROM = 5
+const SHOULDER_TURNS = [0, 10, 20, 31, 43, 56, 70, 90]
+const RADII = [0.24, 0.42, 0.3, 0.4, 0.4, 0.3, 0.42]
+const ARC = 9
 const SPACING = 0.75
 
-export const shoulderInset = (turnDeg: number): number => ENAMEL_AT + SHOULDER * (1 - Math.cos((turnDeg * Math.PI) / 180))
-
-const smooth = (a: number, b: number, x: number): number => {
-  const t = Math.min(1, Math.max(0, (x - a) / (b - a)))
-  return t * t * (3 - 2 * t)
-}
+export const shoulderInset = (turnDeg: number): number => ENAMEL_AT + (SHOULDER * turnDeg) / 90
 
 // How high the edge band stands at a distance in from the outline.
 function bandAt(d: number): number {
-  if (d <= 0) return 1.2
-  for (let i = 3; i < BAND.length - 1; i++) {
+  if (d <= 0) return WALL_TOP
+  for (let i = WALL_FROM; i < BAND.length - 1; i++) {
     const a = BAND[i]!
     const b = BAND[i + 1]!
     if (d <= b[0]) return a[1] + ((b[1] - a[1]) * (d - a[0])) / Math.max(1e-6, b[0] - a[0])
@@ -42,7 +44,7 @@ function bandAt(d: number): number {
 function enamelAt(d: number): number {
   const e = Math.max(0, d - ENAMEL_AT)
   const k = Math.min(1, e / SHOULDER)
-  return GROOVE + RISE * Math.sqrt(1 - (1 - k) * (1 - k)) + 0.035 * smooth(SHOULDER * 0.5, 1.8, e)
+  return GROOVE + RISE * Math.sin((k * Math.PI) / 2)
 }
 
 const N = OUTLINE.length
@@ -88,7 +90,7 @@ export function ring(t: number): [number, number][] {
     const b = EDGES[i]!
     const r = RADII[i]!
     const convex = CONVEX[i]!
-    const own = t >= ENAMEL_AT - 1e-6 ? Math.min(0.4, 0.26 + 0.18 * (t - ENAMEL_AT)) : 0
+    const own = t >= ENAMEL_AT - 1e-6 ? Math.max(0.05, Math.min(0.42, 0.3 + 0.16 * (t - ENAMEL_AT), 1.4 - t)) : 0
     const radius = convex ? Math.max(own, r - t) : r + t
     const c = convex ? (own > 0 ? miter(i, t + radius) : miter(i, Math.max(t, r))) : miter(i, -r)
     const sign = convex ? -1 : 1
@@ -146,14 +148,14 @@ export function softInside(x: number, y: number): number {
 
 // How high the enamel stands over a point, by the smoothed distance alone: the dome with no crease, for the directions it faces.
 export function domeAt(x: number, y: number): number {
-  return enamelAt(softInside(x, y))
+  return enamelAt(Math.max(inside(x, y), softInside(x, y)))
 }
 
 // How high the top of the body stands over a point of the outline's plane.
 export function heightAt(x: number, y: number): number {
   const d = inside(x, y)
   if (d < ENAMEL_AT) return bandAt(d)
-  return enamelAt(softInside(x, y))
+  return enamelAt(d)
 }
 
 export interface Solid {
@@ -220,10 +222,9 @@ export function solid(): Solid {
   const index: number[] = []
   for (const row of rows) {
     for (const p of ring(row.t)) {
-      const soft = row.z < 0 ? softInside(p[0], p[1]) : row.t
-      xs.push(p[0], p[1], row.z < 0 ? enamelAt(soft) : row.z)
+      xs.push(p[0], p[1], row.z < 0 ? enamelAt(row.t) : row.z)
       inks.push(row.ink)
-      insets.push(Math.max(0, soft))
+      insets.push(Math.max(0, row.t))
     }
   }
   const signed = (a: number, b: number, c: number): number =>
@@ -275,10 +276,9 @@ export function solid(): Solid {
       if (d < reach + 0.45) continue
       pts.push([x, y])
       names.push(xs.length / 3)
-      const soft = softInside(x, y)
-      xs.push(x, y, enamelAt(soft))
+      xs.push(x, y, TOP)
       inks.push(0)
-      insets.push(soft)
+      insets.push(Math.max(d, softInside(x, y)))
     }
   }
   const face = triangulate(pts)
