@@ -61,3 +61,19 @@ Written by frame, who started first. All numbers are page pixels (96 px is one b
 - The `launch` and lift rails climbed in a straight line through each tier, under the floor plates. Mended by the Builder in `layout.ts` (`LANE_RAMP`); the frame's ramp and housing follow it.
 - In the office tier `lift.office` runs up the lift lane through the place of the orange bend that ends `lift.street` (both at 2.3 balls across, 0.4 to 1.7 balls below the tier line).
 - The apron and the loader are not among the lit zones (`LIT` in `lights/groups.ts` is marquee, corporate, office, street), so the apron takes only the page's own light. In `table-wide` its near white slabs draw at 92 where the approved image has them at 159.
+
+## Measured at frame-9
+
+All MEASURED on the tree of 55106ee, `npm run build && npm run counts -- --key K --live low`, the frame's own rows (meshes, colour pass, shadow pass, calls, triangles):
+
+| key | table-frame | loader | marquee | whole frame, calls | whole scene, calls |
+| --- | --- | --- | --- | --- | --- |
+| table-wide | 13, 13, 5, 18, 12802 | 11, 10, 4, 14, 27534 | 3, 3, 1, 4, 2120 | 36 | 225 |
+| tier-corporate | 7, 6, 3, 9, 8036 | 7, 4, 5, 9, 16822 | 3, 3, 1, 4, 2120 | 22 | 122 |
+| tier-office | 11, 9, 5, 14, 11374 | 5, 3, 3, 6, 12528 | 1, 0, 1, 1, 758 | 21 | 153 |
+| tier-street | 11, 10, 5, 15, 10822 | 3, 2, 2, 4, 10968 | none in view | 19 | 121 |
+
+- Triangles of the whole frame in `table-wide`: 42456 of the 90000 allowed.
+- Before the frame was built (stand-ins everywhere, `/tmp/counts0`): table-wide 620 calls, tier-corporate 294, tier-office 388, tier-street 376.
+- Assets (`du -sb`): web set 65310 bytes, full set 142746 bytes, sources 2121878 bytes. One generated picture ships, take 1 of the 6 allowed.
+- Stills of `tier-corporate` at hd with `--force`, wall time of the whole command: draft 38.6 s, review 65.5 s.
