@@ -38,9 +38,10 @@ const SLAB_LAND = TIMES.slabHang + TIMES.slabFall
 const SLAB_HOP = { high: 34, reach: 280, seconds: 0.16, speed: 6000, wide: 90 }
 const SLAB_GAP = 8
 const SLAB_CLEAR = 14
-const SLAB_OUT = { every: 0.06, pop: 0.12, up: 100, wait: 0.04, fly: 0.3, far: 1900, spring: 0.16 }
+const SLAB_OUT = { every: 0.13, pop: 0.07, up: 100, pull: 30, wait: 0.09, fly: 0.15, far: 1900, spring: 0.16 }
 const PRESS = 0.24
 const HOLD = 0.1
+const DOWN = { seconds: 0.02, first: 0.5 }
 const TAP = { seconds: 0.2, hold: 0.05, depth: 1, shake: 0.22 }
 const STRIKE = { seconds: 1.5, id: 90000, z: 96, over: 1.46 }
 const THUD = { seconds: 0.17, hold: 0.085, shake: 0.7, hop: 9, reach: 260, toss: 0.1, speed: 6000 }
@@ -123,6 +124,7 @@ const spring = (e: number, hold: number, total: number): number => {
   const t = (e - hold) / (total - hold)
   return Math.cos(t * Math.PI * 1.5) * (1 - t) ** 1.5
 }
+const stroke = (e: number): number => (e >= 0 && e < DOWN.seconds ? DOWN.first + (1 - DOWN.first) * (e / DOWN.seconds) : spring(e, HOLD, PRESS))
 const ring = (t: number, px: number): number => (t < 0 || t > 0.3 ? 0 : px * Math.exp(-t * 16) * Math.cos(t * 58))
 const inside = (b: { x: number; y: number; w: number; h: number }, x: number, y: number, pad = 0): boolean => x >= b.x - pad && x <= b.x + b.w + pad && y >= b.y - pad && y <= b.y + b.h + pad
 
@@ -630,7 +632,7 @@ export function makePage(): PageLogic {
     if (s.board <= 0 || !onDeck(io.cursor.x, io.cursor.y)) return 0
     const key = keyAt(s.places, io.cursor.x, io.cursor.y)
     const down = key >= 0 ? s.keyDown[seats[key]!.name] : undefined
-    const top = key >= 0 ? CAP_TOP - (down ? TRAVEL * Math.max(0, spring(PRESS - down, HOLD, PRESS)) : 0) : DECK_TOP
+    const top = key >= 0 ? CAP_TOP - (down ? TRAVEL * Math.max(0, stroke(PRESS - down)) : 0) : DECK_TOP
     return Math.max(0, top + lift(s.board))
   }
 
@@ -839,7 +841,7 @@ export function makePage(): PageLogic {
             const age = TURRET.scorchSeconds - c.left
             if (age < TAP.seconds) tap = TAP.depth * spring(age, TAP.hold, TAP.seconds)
           }
-          const struck = down ? spring(PRESS - down, HOLD, PRESS) : key === s.thudKey ? spring(s.thud, THUD.hold, THUD.seconds) : 0
+          const struck = down ? stroke(PRESS - down) : key === s.thudKey ? spring(s.thud, THUD.hold, THUD.seconds) : 0
           const held = pinned ? pin : struck !== 0 ? struck : tap
           const sunk = clamp(held + (at.moved ? fl.crouch * 0.5 + fl.seat * 0.6 : 0), -0.25, 1)
           const press = sunk * TRAVEL + wave
@@ -870,7 +872,7 @@ export function makePage(): PageLogic {
         const fall = SLAB_FALL.high * (1 - u) * (1 + (1 - SLAB_FALL.thrown) * u)
         const e = s.slabClear < 0 ? 0 : Math.max(0, s.slabClear - n * SLAB_OUT.every)
         const pop = SLAB_OUT.up * (1 - (1 - Math.min(1, e / SLAB_OUT.pop)) ** 2)
-        const fly = e <= SLAB_OUT.wait ? 0 : SLAB_OUT.far * ((e - SLAB_OUT.wait) / SLAB_OUT.fly) ** 2
+        const fly = (e <= SLAB_OUT.wait ? 0 : SLAB_OUT.far * ((e - SLAB_OUT.wait) / SLAB_OUT.fly) ** 2) - SLAB_OUT.pull * smooth(clamp(e / SLAB_OUT.pop, 0, 1))
         const z = b.base - TRAVEL + fall + pop
         const lean = (SLAB_FALL.sight * fall) / homeDistance()
         return { x: b.x + (b.x + SLAB.w / 2 < 960 ? -fly : fly) - (b.x + SLAB.w / 2 - 960) * lean, y: b.y - (b.y + SLAB.h / 2 - SCREEN_H / 2) * lean, z }

@@ -27,7 +27,7 @@ class Hover implements Driver {
 }
 
 describe('the keys answer what strikes them', () => {
-  it('puts a struck cap at the bottom of its travel in the frame of the strike, springs it past its rest and seats it again', () => {
+  it('puts a struck cap half way down or lower in the frame of the strike and at the bottom of its travel in the next, springs it past its rest and seats it again', () => {
     const s = film()
     const rows = new Map<string, number[]>()
     let known: Record<string, number> = {}
@@ -47,7 +47,8 @@ describe('the keys answer what strikes them', () => {
     }
     expect(rows.size).toBeGreaterThanOrEqual(config.applicant.filmFirstName.length)
     for (const [name, z] of rows) {
-      expect(z[0], name).toBe(heights.keycap - heights.keyTravel)
+      expect(z[0], name).toBeLessThanOrEqual(heights.keycap - heights.keyTravel / 2)
+      expect(Math.min(...z.slice(0, 3)), name).toBe(heights.keycap - heights.keyTravel)
       expect(Math.max(...z), name).toBeGreaterThan(heights.keycap + 0.5)
       expect(Math.max(...z), name).toBeLessThan(heights.keycap + 2)
       expect(z[z.length - 1], name).toBeGreaterThanOrEqual(heights.keycap)
