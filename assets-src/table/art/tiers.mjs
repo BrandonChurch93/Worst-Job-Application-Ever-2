@@ -29,7 +29,7 @@ export function tierOf(L, k) {
     bumpers: t.bumpers.filter((s) => s.tier === k).map((s) => ({ ...s, c: p(s.c) })),
     slings: t.slings.filter((s) => s.tier === k).map((s) => ({ ...s, a: p(s.a), b: p(s.b), c: p(s.c) })),
     targets: t.targets.filter((s) => s.tier === k).map((s) => ({ ...s, box: box(s.box) })),
-    inserts: t.inserts.filter((s) => s.tier === k).map((s) => ({ ...s, c: p(s.c) })),
+    inserts: t.inserts.filter((s) => s.tier === k).map((s) => ({ ...s, c: p(s.c), lines: L.cardLines ? L.cardLines(s.mode) : 1 })),
     flippers: t.flippers.filter((s) => s.tier === k).map((s) => ({ ...s, pivot: p(s.pivot) })),
     holds: t.holds.filter((s) => s.tier === k).map((s) => ({ ...s, c: p(s.c) })),
     openings: t.openings.filter((s) => s.tier === k).map((s) => ({ ...s, a: p(s.a), b: p(s.b) })),
@@ -52,8 +52,8 @@ export const shoulder = (D, side) => {
   return [[o, 8.0], [6.5, 8.62], [6.5, 9.1], [8.8, 10.8], [8.8, D.H], [o, D.H]].map((q) => [side.m(q[0]), q[1]])
 }
 
-// The card under an insert, where the lights' part lays the mode's name.
-export const cardOf = (n) => [n.c[0] - 1.02, n.c[1] + n.r + 0.07, 2.04, 0.74]
+// The card under an insert, where the lights' part lays the plate with the mode's name: as tall as the plate's one or two lines, with a narrow margin.
+export const cardOf = (n) => [n.c[0] - 1.0, n.c[1] + n.r, 2.0, 0.24 + 0.23 * (n.lines ?? 1)]
 
 function banks(D) {
   const by = new Map()
