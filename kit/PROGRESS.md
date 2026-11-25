@@ -25,22 +25,22 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 28, 2026-11-25T15:18Z, Phase 3.
+Status 29, 2026-11-25T15:40Z, Phase 3.
 
-1. `out/stills/status/01-compare-step1-fire-fourth.jpg`: Keyboard under fire: your approved picture on the left, the build on the right at the low tier. The deck is now bright and the cursor is knocked over by the hit. Still short: the turrets and their bolts, the upload glyph, the wobble on the keycap edges.
-2. `out/stills/status/02-compare-step1-tug-second.jpg`: The tug of war: your approved picture on the left, the build on the right at the low tier. The camera is pushed in as the kit asks, the sheet is taut between the hands and the rollers, and the shredder stands above the page.
-3. `out/stills/status/03-hit-close.jpg`: The hit, close: your approved picture on the left, the build on the right at the review tier, made by the cursor's acting agent. The burn hole, the scorch on the key and the knocked pose are there; the keycap edges are not yet clean.
-4. `out/stills/status/04-office-floor-beside-approved.jpg`: The Office tier: your approved picture on the left, the build on the right, made by the floor's agent. The printed floor is real; the cups, cubicles, flippers and frame are still grey stand-ins.
+1. `out/stills/status/01-keyboard-beside-approved-after-fixes.jpg`: The keyboard under fire: your approved picture above, the build below at the review tier, made by the keyboard's agent after the 15:32Z list. Stepped barrels with a bore, even keycap rims, brighter bolts. Your caps are still softer and more dished.
+2. `out/stills/status/02-tug-beside-approved.jpg`: The tug of war: your approved picture on the left, the build on the right at the review tier, made by the scene's agent. The camera is pushed in as the kit asks; the shredder stands out of its opened slot; the upload glyph is still missing.
+3. `out/stills/status/03-cursor-acting-beside-approved.jpg`: The cursor's acting sheet: yours on the left, the build on the right at the review tier, made by the cursor's modeller. Nervous, shocked, angry, scared, exhausted, hit by a laser. The ground's grain is too rough at this closeness.
+4. `out/stills/status/04-corporate-lit-by-its-lamps.jpg`: Tier 3 of the pinball machine: your approved picture on the left, the build on the right at the low tier, made by the lamps' agent. The printed floor is lit only by the machine's lamps; every standing part is still a grey stand-in.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 3, tick 67 at 2026-11-25T15:18:46Z, allowance: build
-time used in this phase: 2.43 h of its box of 8.00 h
-time used under the allowance in force: 9.77 h of 36.00 h allowed
-time used: 9.77 of 36.00 hours before the review
+clock: phase 3, tick 68 at 2026-11-25T15:40:17Z, allowance: build
+time used in this phase: 2.79 h of its box of 8.00 h
+time used under the allowance in force: 10.13 h of 36.00 h allowed
+time used: 10.13 of 36.00 hours before the review
 extra rounds: yes
 half point: not reached
 box end: not reached
