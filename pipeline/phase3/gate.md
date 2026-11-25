@@ -85,5 +85,5 @@ Read at full size from `references/approved/page-look.png` (crops at three times
 ## Not done
 
 - G13 reads the pixels of one film moment a second, not of every film frame. Between two moments it has the page's word in every frame of the preview rate. A still is never drawn in the middle of a page turn, so the frames of a turn have the page's word only.
-- The texture count cannot read one texture of the renderer, the target it keeps for materials that let light through (three 0.187, `transmissionRenderTarget`; `src/shell/materials.ts` has a material with `transmission: 1`). It is counted at the size of the picture, half float, with a full chain: 21.1 MB at hd, 84.4 at uhd.
+- The texture count reads every texture the renderer holds on step 1 today (34 of 34, MEASURED with a probe on the browser's own calls). A texture it cannot reach on another page is counted at the size of the picture, so the number errs upward.
 - The contrast does not read a colour picture that is an image or a canvas, only one made of numbers. Such a material is read by its colour alone.

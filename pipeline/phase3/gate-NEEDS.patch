@@ -1,9 +1,9 @@
 diff --git a/src/app.ts b/src/app.ts
-index d56339c..4c73fc8 100644
+index b1ab45d..1d8a4df 100644
 --- a/src/app.ts
 +++ b/src/app.ts
-@@ -14,7 +14,7 @@ import { makeLoop, makeOpening, type FilmPiece, type LoopPiece, type OpeningPiec
- import { pages, preparePages, unitPages } from './pages'
+@@ -15,7 +15,7 @@ import { pages, preparePages, unitPages } from './pages'
+ import { loadTable } from './table/real/assets'
  import { look } from './post/look'
  import { studioEnvironment } from './post/studio'
 -import { PageView, TONES } from './shell/view'
@@ -11,7 +11,7 @@ index d56339c..4c73fc8 100644
  import { layoutProblems } from './shell/layout'
  import { FONTS } from './shell/metrics'
  import { loadFont } from './shell/type'
-@@ -313,22 +313,6 @@ export class App {
+@@ -314,22 +314,6 @@ export class App {
      return { x: p.x, y: p.y }
    }
  
