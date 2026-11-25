@@ -93,3 +93,9 @@ Open, for whoever comes next:
 2. Pulling paper: no feed slit is in the sheet's draw list. Add the slot shape of step 1 to the list in `arms()` of `src/cursor/sheets.ts` under the pulling pose and set `pull` so the sheet bends into it.
 3. Bracing: the hands are placed by `left` and `right` in `ARMS` (page px from the tip and a height); the wrist follows the arm's end tangent in `Limb.pose` of `src/cursor/act/arms.ts`, there is no bend back at the wrist. A wrist angle per pose is the missing number.
 4. An upper arm over the white face: the shoulders are `anchor()` points of the body, `ROOT` 0.09 of the way in from the side (`src/cursor/view.ts`). Moving them to the edge band needs the anchor from cursor_modeller.
+
+Also from round 3, asked by cursor_modeller:
+
+1. Done: exhausted sends no sweat (`FEEL.exhausted` in `src/cursor/act/feel.ts`), so the melt has no beads.
+2. Done on the two sheets only: a body with a hole lies at z 1, not at hover, so the page seen through the hole is less in the body's own shadow. On the page the cursor keeps its hover.
+3. Open: a shredded pile of 14 to 16 narrow slivers. The model cuts as many strips as `StripPose` entries are sent; the pile, the fan and the mend in `src/cursor/body.ts` are written for nine (3 long, 6 short) and the tests in `tests/cursor-act.test.ts` and `tests/cursor-act-mend.test.ts` count nine.
