@@ -67,8 +67,8 @@ vec4 wsSurface( vec3 face ) {
 		h = ( 1.0 - c.x ) * 0.12 + grain * 0.3;
 	} else if ( kind == 2.0 ) {
 		vec2 c = wsCells( uv, vec2( 22.0, 9.6 ), 0.5, 1.3 );
-		tone = vec3( 0.84 + 0.22 * c.y + 0.1 * grain ) * ( 1.0 - 0.26 * c.x );
-		h = ( 1.0 - c.x ) * 0.7 + grain * 0.3;
+		tone = vec3( 0.84 + 0.22 * c.y + 0.1 * grain ) * ( 1.0 - 0.2 * c.x );
+		h = ( 1.0 - c.x ) * 0.3 + grain * 0.35;
 	} else if ( kind == 3.0 ) {
 		vec2 c = wsCells( uv, vec2( 400.0, 7.0 ), 0.37, 0.7 );
 		float stain = wsNoise( vec2( uv.x * 0.11, uv.y * 0.035 ) );
@@ -102,15 +102,15 @@ vec4 wsSurface( vec3 face ) {
 	} else if ( kind == 9.0 ) {
 		float speck = wsNoise( uv * 1.1 );
 		tone = vec3( 0.86 + 0.12 * speck * speck ) * ( 0.74 + 0.4 * wsNoise( uv * 0.06 ) ) * ( 0.9 + 0.2 * wsNoise( uv * 0.4 ) );
-		h = speck * 0.3;
+		h = speck * 0.1;
 	} else {
 		tone = vec3( 0.95 + 0.08 * grain );
 	}
 	if ( kind == 1.0 || kind == 2.0 || kind == 3.0 || kind == 5.0 || kind == 6.0 || kind == 10.0 ) {
 		float stain = wsNoise( uv * 0.05 + 3.7 ) * 0.6 + wsNoise( vec2( uv.x * 0.31, uv.y * 0.045 ) ) * 0.4;
-		float foot = smoothstep( -1.0, 15.0, uv.y + 5.0 * wsNoise( uv * 0.21 ) );
+		float foot = smoothstep( -2.0, 24.0, uv.y + 9.0 * wsNoise( uv * 0.16 ) );
 		float streak = wsNoise( vec2( uv.x * 0.45, uv.y * 0.022 ) );
-		tone *= ( 0.7 + 0.42 * stain ) * mix( 1.0, 0.78 + 0.3 * streak, upright ) * mix( 1.0, mix( 0.6, 1.0, foot ), upright );
+		tone *= ( 0.7 + 0.42 * stain ) * mix( 1.0, 0.78 + 0.3 * streak, upright ) * mix( 1.0, mix( 0.45, 1.0, foot ), upright );
 		wsOver.a *= mix( 1.0, 0.75 + 0.25 * foot, upright );
 	}
 	return vec4( tone, h );
@@ -120,7 +120,7 @@ vec4 wsSurface( vec3 face ) {
 // The moulded and painted plastic of the models: one material for the zone, a colour for each vertex and a kind of surface for each face.
 export function paintOf(z: Zone): THREE.MeshPhysicalMaterial {
   const m = studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.6, metalness: 0, specularIntensity: 0.5, clearcoat: 0.22, clearcoatRoughness: 0.38 }))
-  over(m, 'wja-studio-street-paint-7', (shader) => {
+  over(m, 'wja-studio-street-paint-8', (shader) => {
     shader.vertexShader = 'attribute vec3 face;\nvarying vec3 vWsFace;\n' + shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n\tvWsFace = face;')
     shader.fragmentShader =
       'varying vec3 vWsFace;\n' +
@@ -153,11 +153,11 @@ export function glowOf(z: Zone, name: string, colour: [number, number, number]):
 export function lensOf(z: Zone, name: string, colour: [number, number, number]): THREE.MeshPhysicalMaterial {
   const m = studio(
     new THREE.MeshPhysicalMaterial({
-      color: new THREE.Color(colour[0] * 0.8 + 0.02, colour[1] * 0.45 + 0.01, colour[2] * 0.8 + 0.02),
+      color: new THREE.Color(colour[0] * 0.55 + 0.01, colour[1] * 0.3 + 0.005, colour[2] * 0.55 + 0.01),
       roughness: 0.12,
       metalness: 0,
       transparent: true,
-      opacity: 0.95,
+      opacity: 0.84,
       clearcoat: 1,
       clearcoatRoughness: 0.05,
       emissive: new THREE.Color(colour[0], colour[1], colour[2]),
