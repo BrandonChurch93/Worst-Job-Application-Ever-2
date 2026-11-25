@@ -47,16 +47,20 @@ function unit(h: Float32Array): Float32Array {
 
 const PIT_FROM = 0.7
 const PIT_DEPTH = 1
+const COARSE = 0.34
 const TOOTH = 0.07
 const GRAIN_PER_PIXEL = 2
 const FROST = 0.022
-const CLOSE_FALL = 2.8
+const PAGE_PITS = 0.45
+const PAGE_COARSE = 0.2
+const PAGE_GRAIN = 0.046
+const CLOSE_FALL = 1.5
 const CLOSE_FLOOR = 0.03
-const CLOSE_TOOTH = 0.9
-const CLOSE_EASE = 0.6
+const CLOSE_TOOTH = 1.7
+const MOTTLE = 0.035
 
 // The eggshell grain as heights, one number a texel, with a mean of nought and a spread of one. The size is a power of two and the picture tiles.
-export function grainHeights(size: number, seed: number): Float32Array {
+export function grainHeights(size: number, seed: number, pits = PIT_DEPTH, lumps = COARSE): Float32Array {
   const rnd = new Random(seed, 'grain')
   const white = new Float32Array(size * size)
   for (let i = 0; i < white.length; i++) white[i] = rnd.next() - 0.5
@@ -75,7 +79,7 @@ export function grainHeights(size: number, seed: number): Float32Array {
     // Pits read as eggshell: only the low places of the fine grain are kept as pits, the rest is nearly flat.
     // The tooth is finer than a page pixel: it shows only when the camera comes close or the picture is larger.
     const f = fine[i]!
-    h[i] = -PIT_DEPTH * Math.max(0, -f - PIT_FROM) + 0.22 * f + 0.34 * coarse[i]! + TOOTH * tooth[i]!
+    h[i] = -pits * Math.max(0, -f - PIT_FROM) + 0.22 * f + lumps * coarse[i]! + TOOTH * tooth[i]!
   }
   return unit(h)
 }
@@ -113,8 +117,8 @@ function dataTexture(data: Uint8Array, size: number, repeat: boolean): THREE.Dat
 }
 
 // The grain of the ceramic: its slopes in red, green and blue and its height in alpha. It tiles.
-export function grainNormalMap(size: number, seed: number, strength: number): THREE.DataTexture {
-  return dataTexture(normalsOf(grainHeights(size, seed), size, strength), size, true)
+export function grainNormalMap(size: number, seed: number, strength: number, pits = PIT_DEPTH, lumps = COARSE): THREE.DataTexture {
+  return dataTexture(normalsOf(grainHeights(size, seed, pits, lumps), size, strength), size, true)
 }
 
 // Straight brushing: fine lines that run along u, each a little uneven along its length, and a few strays.
@@ -202,26 +206,36 @@ const grainGlsl = `
 uniform mat4 projectionMatrix;
 #endif
 float wjaGrainHeight = 0.0;
+float wjaMottle = 0.0;
+float wjaOctave( float texel ) {
+	return smoothstep( 0.22, 0.45, texel ) * max( pow( max( 2.0 * texel, 1.0 ), -CLOSE_FALL ), CLOSE_FLOOR );
+}
 vec3 wjaGrain( vec2 uv ) {
-	float close = projectionMatrix[ 1 ][ 1 ] * 540.0 / ( isOrthographic ? 1.0 : max( vViewPosition.z, 1.0 ) );
-	float relief = clamp( pow( max( close, 1.0 ), -CLOSE_FALL ), CLOSE_FLOOR, 1.0 );
+	float close = max( projectionMatrix[ 1 ][ 1 ] * 540.0 / ( isOrthographic ? 1.0 : max( vViewPosition.z, 1.0 ) ), 1.0 );
+	float relief = max( pow( close, -CLOSE_FALL ), CLOSE_FLOOR );
 	vec4 a = texture2D( normalMap, uv );
 	vec2 uvB = mat2( 0.7986, 0.6018, -0.6018, 0.7986 ) * uv * 1.1180 + vec2( 0.371, 0.113 );
 	vec4 b = texture2D( normalMap, uvB );
 	vec2 tilt = mat2( 0.7986, -0.6018, 0.6018, 0.7986 ) * ( b.xy * 2.0 - 1.0 );
-	float nearer = log2( max( close, 1.0 ) );
 	vec2 uvD = mat2( 0.4540, 0.8910, -0.8910, 0.4540 ) * uv * 2.0 + vec2( 0.173, 0.591 );
-	vec2 once = a.xy - texture2D( normalMap, uv, 2.0 ).xy;
-	vec2 twice = mat2( 0.4540, -0.8910, 0.8910, 0.4540 ) * ( texture2D( normalMap, uvD ).xy - texture2D( normalMap, uvD, 2.0 ).xy );
-	vec2 fine = 2.0 * clamp( nearer / 0.8, 0.0, 1.0 ) * mix( 1.0, CLOSE_EASE, clamp( ( nearer - 0.9 ) / 0.7, 0.0, 1.0 ) ) * mix( once, twice, clamp( nearer - 1.0, 0.0, 1.0 ) );
+	vec2 uvE = mat2( -0.3090, 0.9511, -0.9511, -0.3090 ) * uv * 4.0 + vec2( 0.731, 0.297 );
+	vec2 uvF = mat2( 0.9659, 0.2588, -0.2588, 0.9659 ) * uv * 8.0 + vec2( 0.419, 0.857 );
+	vec2 d = mat2( 0.4540, -0.8910, 0.8910, 0.4540 ) * ( texture2D( normalMap, uvD ).xy - texture2D( normalMap, uvD, 2.0 ).xy );
+	vec2 e = mat2( -0.3090, -0.9511, 0.9511, -0.3090 ) * ( texture2D( normalMap, uvE ).xy - texture2D( normalMap, uvE, 2.0 ).xy );
+	vec2 f = mat2( 0.9659, -0.2588, 0.2588, 0.9659 ) * ( texture2D( normalMap, uvF ).xy - texture2D( normalMap, uvF, 2.0 ).xy );
+	vec2 fine = 2.0 * ( wjaOctave( 0.25 * close ) * d + wjaOctave( 0.125 * close ) * e + wjaOctave( 0.0625 * close ) * f );
 	wjaGrainHeight = relief * ( a.a + b.a - 1.0 );
+	vec2 uvM = mat2( 0.8829, 0.4695, -0.4695, 0.8829 ) * uv;
+	wjaMottle = 2.3 * ( texture2D( normalMap, uvM * 0.125 + vec2( 0.613, 0.277 ), 2.0 ).a - 0.5 ) + 1.5 * ( texture2D( normalMap, uvM.yx * 0.25 + vec2( 0.211, 0.671 ), 2.0 ).a - 0.5 );
 	return normalize( vec3( relief * ( a.xy * 2.0 - 1.0 + 0.5 * tilt ) + CLOSE_TOOTH * fine, a.z * 2.0 - 1.0 ) );
 }
-`.replace(/CLOSE_FALL/g, CLOSE_FALL.toFixed(3)).replace(/CLOSE_FLOOR/g, CLOSE_FLOOR.toFixed(3)).replace(/CLOSE_TOOTH/g, CLOSE_TOOTH.toFixed(3)).replace(/CLOSE_EASE/g, CLOSE_EASE.toFixed(3))
+`.replace(/CLOSE_FALL/g, CLOSE_FALL.toFixed(3)).replace(/CLOSE_FLOOR/g, CLOSE_FLOOR.toFixed(3)).replace(/CLOSE_TOOTH/g, CLOSE_TOOTH.toFixed(3))
 
 // Two layers of one grain picture, the second turned and larger, so no repeat shows across a page. The height also moves the roughness.
-// The relief falls as the camera comes nearer than the page's own size. What takes its place is only the finest part of the same picture
-// (the picture less its own blurred copy), so close up the face keeps a tooth a pixel or two wide and no bump throws a shade of its own.
+// The same picture is read three more times, each twice as fine as the one before and each less its own blurred copy. A reading comes in
+// when its texel nears half a pixel in the picture and falls away as the camera goes on in, and so does the first. So the tooth stays
+// a pixel or two wide however near the camera stands, and what was tooth further out is left as a faint unevenness under it.
+// Two blurred readings of the height, far larger, shade the colour by a hair: the faint clouding a fired face has.
 function grained<T extends THREE.MeshStandardMaterial>(material: T, rough: number): T {
   return also(material, `grain-${rough}`, (shader) => {
     const sample = 'texture2D( normalMap, vNormalMapUv ).xyz * 2.0 - 1.0'
@@ -229,7 +243,7 @@ function grained<T extends THREE.MeshStandardMaterial>(material: T, rough: numbe
     if (!chunk.includes(`vec3 mapN = ${sample}`)) throw new Error('The normal code of this three.js release is not the one this build was written for')
     shader.fragmentShader = shader.fragmentShader
       .replace('#include <normalmap_pars_fragment>', `#include <normalmap_pars_fragment>\n${grainGlsl}`)
-      .replace('#include <normal_fragment_maps>', `${chunk.replace(`vec3 mapN = ${sample}`, 'vec3 mapN = wjaGrain( vNormalMapUv )')}\n\troughnessFactor = clamp( roughnessFactor - wjaGrainHeight * ${rough.toFixed(3)}, 0.06, 1.0 );\n`)
+      .replace('#include <normal_fragment_maps>', `${chunk.replace(`vec3 mapN = ${sample}`, 'vec3 mapN = wjaGrain( vNormalMapUv )')}\n\troughnessFactor = clamp( roughnessFactor - wjaGrainHeight * ${rough.toFixed(3)}, 0.06, 1.0 );\n\tdiffuseColor.rgb *= 1.0 + ${MOTTLE.toFixed(4)} * wjaMottle;\n`)
   })
 }
 
@@ -289,7 +303,7 @@ export interface Materials {
 
 export function makeMaterials(seed: number): Materials {
   // Two texels of grain are one page pixel: the surface's coordinates are page pixels.
-  const grain = grainNormalMap(1024, seed, 0.5 * GRAIN_PER_PIXEL)
+  const grain = grainNormalMap(1024, seed, 0.5 * GRAIN_PER_PIXEL, PAGE_PITS, PAGE_COARSE)
   grain.repeat.set(GRAIN_PER_PIXEL / 1024, GRAIN_PER_PIXEL / 1024)
   // The glass reads the same picture again, finer and far weaker: the frost of its face. It shares the picture, so it costs no memory.
   const frost = grain.clone()
@@ -299,7 +313,7 @@ export function makeMaterials(seed: number): Materials {
   brushed.repeat.set(1 / 720, 1 / 420)
   const turned = turnedMaps(256, seed, 2.2)
   const physical = (o: THREE.MeshPhysicalMaterialParameters) => studio(new THREE.MeshPhysicalMaterial(o))
-  const ceramic = grained(physical({ color: srgb(0xecebe6), roughness: 0.74, metalness: 0, normalMap: grain, normalScale: new THREE.Vector2(0.075, 0.075), specularIntensity: 0.6 }), 0.5)
+  const ceramic = grained(physical({ color: srgb(0xebebe7), roughness: 0.74, metalness: 0, normalMap: grain, normalScale: new THREE.Vector2(PAGE_GRAIN, PAGE_GRAIN), specularIntensity: 0.6 }), 0.5)
   const pocket = grained(physical({ color: srgb(0xdcdfdc), roughness: 0.8, metalness: 0, normalMap: grain, normalScale: new THREE.Vector2(0.08, 0.08), specularIntensity: 0.4 }), 0.3)
   const glass = physical({ color: srgb(0xbdc5c2), roughness: 0.44, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8, ...frosted })
   const glassSunk = physical({ color: srgb(0xbdc5c2), roughness: 0.44, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8, vertexColors: true, ...frosted })

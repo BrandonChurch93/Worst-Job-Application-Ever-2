@@ -1,0 +1,22 @@
+diff --git a/src/pages/step3/index.ts b/src/pages/step3/index.ts
+index 926cc7e..5947845 100644
+--- a/src/pages/step3/index.ts
++++ b/src/pages/step3/index.ts
+@@ -454,7 +454,7 @@ export function makePage(): PageLogic {
+         for (const e of events) emitTable(io, e)
+         s.score = mc.score
+         const b = ball()
+-        io.cursor.place(px(b.x), px(b.y), px(b.z) + BALL / 2)
++        io.cursor.place(px(b.x), px(b.y), px(b.z))
+         if (b.mode === 'hold' && b.hold === 'outlet') {
+           s.opened += dt
+           if (s.opened >= 0.2) {
+@@ -618,7 +618,7 @@ export function makePage(): PageLogic {
+           { x: MID + 1.3, y: Y1 + 5.95, lift: 0, pose: { acting: 'shocked', damage: ['flattened'] } }
+         ]
+         spots.forEach((p, i) => list.push({ id: `sheet-ball-${i + 1}`, part: 'clear-ball', kind: 'ball', x: px(p.x - 0.5), y: px(p.y - 0.5), w: BALL, h: BALL, z0: f + px(p.lift), z1: f + px(p.lift) + BALL, tone: 'glass' }))
+-        return { list, cursors: spots.map((p) => restPose(px(p.x), px(p.y), { z: f + px(p.lift) + BALL / 2, inBall: true, taken: true, ...p.pose })), view: frame({ x: px(6.6), y: px(Y1 + 4.7), w: px(6.4), h: px(5.2) }, 1, f, fov('sheet')) }
++        return { list, cursors: spots.map((p) => restPose(px(p.x), px(p.y), { z: f + px(p.lift), inBall: true, taken: true, ...p.pose })), view: frame({ x: px(6.6), y: px(Y1 + 4.7), w: px(6.4), h: px(5.2) }, 1, f, fov('sheet')) }
+       }
+       if (id !== 'table-map') return null
+       const mc = machine()
