@@ -49,6 +49,8 @@ export const MARGIN = 16
 const WRAP = 1.12
 const FEED = 18
 const NIP = 1.3
+// The sheet comes up out of the mouth steeply and lies over toward the hands: a bend by the cutters, tallest a quarter of the way up.
+const KNEE = { tall: 16, rise: 0.35, peak: Math.pow(0.35 / 1.35, 0.35) * (1 - 0.35 / 1.35) }
 const KW = 72
 const KH = 96
 
@@ -337,13 +339,14 @@ function solveDrawn(q: SheetIn, into?: Sheet): Sheet {
         const wr = 1.1 * q.pull * (1 - e) * Math.cos((Math.PI * 3 * (a - W / 2)) / grip + 0.6)
         const ds = F / NS
         const dt = MARGIN / NT
+        const knee = (KNEE.tall / KNEE.peak) * hands * (1 - 0.4 * q.pull)
         for (let k = 0; k <= NS + NT; k++) {
           const s = k <= NS ? k * ds : F + (k - NS) * dt
           const t = Math.min(1, s / F)
           const env = Math.sin(Math.PI * Math.pow(t, 0.8))
           const start = smooth(s / 16)
           zc[k] = g0 * creaseAt(K, a / W, (bCrest - s) / L) * start * (1 - 0.7 * hands * (1 - smooth(Math.abs(F - s) / 22)))
-          zk[k] = (curl + wr) * Math.pow(Math.max(0, env), 0.7) + (k > NS ? 0.012 * (s - F) * (s - F) : 0)
+          zk[k] = (curl + wr) * Math.pow(Math.max(0, env), 0.7) + (k > NS ? 0.012 * (s - F) * (s - F) : 0) + knee * Math.pow(t, KNEE.rise) * (1 - t)
         }
         const run = (hh: number, gs: number): number => {
           let atGrip = 0
@@ -466,7 +469,7 @@ function solveDrawn(q: SheetIn, into?: Sheet): Sheet {
     hold(out, da, db, 3)
     normals(out)
   }
-  level(out, 0.45)
+  level(out, 0.3)
   if (bite > 0) calm(out, crestAt, db, bite)
   return out
 }

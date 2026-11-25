@@ -88,13 +88,10 @@ export class CursorView {
       const h = hands[i]!
       to.set(h.x - 960, 540 - h.y, h.z + HOLD * c.grip[i]!)
       to.lerpVectors(from, to, Math.min(1.12, grown))
-      // Torn off: the shoulder end lets go and trails after the hand, which sinks with what it holds.
-      if (c.shed > 0) {
-        from.lerp(to, c.shed * c.shed)
-        to.z -= 30 * c.shed
-      }
+      // Let go: the hands spring back to the shoulders, fast at first, and the arms are gone under the body's edge.
+      if (c.shed > 0) to.lerp(from, 1 - Math.pow(1 - c.shed, 3))
     }
-    this.arms.grown = c.shed > 0 ? 1 - 0.5 * c.shed : grown
+    this.arms.grown = c.shed > 0 ? Math.pow(1 - c.shed, 1.5) : grown
     this.arms.over = c.z + 2 * (Math.max(this.from[0]!.z, this.from[1]!.z) - c.z)
     this.arms.apply(this.from, this.to, look.arms)
   }
