@@ -85,8 +85,25 @@ See the report at the end of this file.
 
 The whole-frame numbers hold every owner's parts as they stood on main at that time, so the rise in triangles between the first and the final version is mostly theirs (the type alone is 111560 at low).
 
+### After the report of 18:30 (18:47 UTC, three more commits)
+
+| Fact | Value | Command |
+| --- | --- | --- |
+| MEASURED gates | tsc clean, 1146 tests pass, build OK, bots all clear | `npx tsc --noEmit -p . && npm test && npm run build && npm run bots` |
+| MEASURED colour calls of the seven, low quality | 13 of 14, unchanged | `npm run build && npm run counts -- --key tier-corporate --live low` |
+| MEASURED triangles of the HQ, colour and shadow passes, low quality | 20884 (was 20644); the other six unchanged, so 58241 for the seven | same |
+| MEASURED triangles of the seven as built, once each | 45316, of which 34831 not fine | the count of `tests/table-corporate.test.ts`, printed once |
+| MEASURED whole frame, low quality | `tier-corporate` 121 calls, 347772 triangles; `lobby-doors` 137 calls, 372935 triangles; `table-wide` 220 calls, 541723 triangles | `npm run counts -- --key <key> --live low` |
+| MEASURED stills | `tier-corporate` draft 37.7 s, 922967 triangles, 597 calls; `lobby-doors` draft 34.4 s, 985687 triangles, 621 calls; `lobby-doors` review 65.0 s, 998353 triangles, 625 calls | `npm run still -- --key <key> --format hd --tier draft` and `--tier review --force` |
+
+UNKNOWN: why the whole frames at low hold a few hundred triangles fewer than at 18:25 while the HQ holds 240 more. Not looked into.
+
+What changed: the wall of dark glass takes a broad sheen (`Geo.grade` over the panes of each wall); the door leaves show a hall in one-point view behind the glass (back wall, a lift with its lamp, a lit side panel, three rows of ceiling lamps, a pale floor) in place of three lamp bars; the marble of the wedges went from 0xe6ebf5 to 0xc9cfdc so the veins hold under the sling lamp.
+
+Tried and taken back: turning the shading normal of the notes' paper upward by 0.55 rad. MEASURED by eye in one draft still: no visible change, the notes stand in the shade of the left wall, so the light is the cause and not the paper.
+
 ## The three least real things
 
 1. The tower from the low camera still reads as a model of a building lit evenly: the panes have no reflection of the lamps and the floor in them, and the steel has no streak of highlight, because the glass is drawn as light and not as glass over a room.
-2. The lobby glass and the door leaves are flat cream sheets with lamp bars: there is no room behind them with depth, lift doors or a floor that the eye can read.
+2. The lobby glass beside the doors is still a flat cream sheet with lamp bars and a desk line. The door leaves now show a drawn hall, but it is a flat drawing on the glass: it does not shift as the camera moves.
 3. The ladder from straight above is a flat cage of even grey wire; the approved image shows a chrome ramp with hard highlights and a deep shadow under it. The notes are dim olive leaves under the boardroom's shade.
