@@ -1,0 +1,172 @@
+{
+  "id": "line.decision.metrics.0",
+  "kind": "line",
+  "cue": null,
+  "variant": null,
+  "class": "voice",
+  "loop": false,
+  "beat": "decision.metrics",
+  "liveKey": null,
+  "group": null,
+  "describes": null,
+  "index": 0,
+  "words": "It will apply again tomorrow. / They always do.",
+  "text": "It will apply again tomorrow. / They always do.",
+  "prompt": null,
+  "settings": {
+    "speed": 0.7,
+    "stability": 0.75,
+    "breakSeconds": 1.9,
+    "sent": "It will apply again tomorrow. <break time=\"1.9s\" /> They always do.",
+    "call": 32
+  },
+  "askedSeconds": null,
+  "cost": "25",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "f9a3550ca60e297a86e569cf8ea3fa4d316387431e3304ced75398c3f208ddb9",
+    "filed": "2026-11-25T18:06:01.421Z",
+    "measured": {
+      "seconds": 5.898,
+      "start": 0.016,
+      "end": 5.758,
+      "peakDb": -4.05,
+      "rmsDb": -22.66,
+      "lufs": -21.69,
+      "truePeakDb": -4.05,
+      "low": 0.702,
+      "mid": 0.22,
+      "high": 0.078,
+      "tailDb": -18.6,
+      "hits": 3,
+      "hitsAt": [
+        {
+          "start": 0.026,
+          "end": 0.506,
+          "peakDb": -4.05
+        },
+        {
+          "start": 0.574,
+          "end": 2.302,
+          "peakDb": -5.48
+        },
+        {
+          "start": 4.354,
+          "end": 5.694,
+          "peakDb": -5.72
+        }
+      ]
+    },
+    "line": {
+      "words": 8,
+      "seconds": 5.742,
+      "wordsPerSecond": 1.393,
+      "maxWordsPerSecond": 1.6,
+      "pauseMarks": 1,
+      "pausesFound": 1,
+      "pauses": [
+        2.046
+      ],
+      "paceHolds": true,
+      "pausesHold": true,
+      "room": null,
+      "fits": true,
+      "beatSeconds": 4
+    }
+  },
+  "chain": {
+    "trimStart": 0.022,
+    "trimEnd": 5.758,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 80,
+    "levelMeasure": "lufs",
+    "levelDb": -18,
+    "gainDb": 4.54,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 5.736,
+    "start": 0.002,
+    "end": 5.706,
+    "peakDb": -0.64,
+    "rmsDb": -19.66,
+    "lufs": -18,
+    "truePeakDb": -0.28,
+    "low": 0.579,
+    "mid": 0.31,
+    "high": 0.112,
+    "tailDb": -18.87,
+    "hits": 3,
+    "hitsAt": [
+      {
+        "start": 0.004,
+        "end": 0.484,
+        "peakDb": -0.93
+      },
+      {
+        "start": 0.552,
+        "end": 2.28,
+        "peakDb": -0.64
+      },
+      {
+        "start": 4.332,
+        "end": 5.666,
+        "peakDb": -0.71
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 8 asks, 1 whole, 7 void",
+    "asks": 8,
+    "whole": 1,
+    "transcript": "It will apply again tomorrow. They always do.",
+    "transcripts": [
+      "It will apply again tomorrow. They always do.",
+      "It will apply again tomorrow. They always do.",
+      "It will apply again tomorrow. They always do."
+    ],
+    "transcriptAgreed": "3 of 3",
+    "attitudes": [
+      "cynical and matter-of-fact"
+    ],
+    "accents": [
+      "American"
+    ],
+    "pitches": [
+      "low"
+    ],
+    "whisper": null,
+    "whisperVotes": "0 yes, 1 no",
+    "laugh": null,
+    "laughVotes": "0 yes, 1 no",
+    "warmth": null,
+    "warmthVotes": "0 yes, 1 no",
+    "excitement": null,
+    "excitementVotes": "0 yes, 1 no",
+    "unimpressedAndSmug": null,
+    "unimpressedAndSmugVotes": "1 yes, 0 no",
+    "basis": [
+      "The speaker uses a deep, steady voice with a slow, deliberate delivery that lacks warmth or excitement, conveying a cynical tone.",
+      "The flat, downward inflection and slow, deliberate pacing convey a sense of superiority and a lack of enthusiasm.",
+      "The confident, flat delivery of the lines suggests a knowing lack of surprise and a hint of superiority without any warmth or excitement."
+    ]
+  },
+  "why": "tone not judged: 1 whole answers in 8 asks",
+  "forced": true,
+  "problems": [
+    "the listener left \"whisper\" unanswered",
+    "the listener left \"laugh\" unanswered",
+    "the listener left \"warmth\" unanswered",
+    "the listener left \"excitement\" unanswered",
+    "the listener left \"unimpressedAndSmug\" unanswered"
+  ],
+  "fixture": false,
+  "file": "line.decision.metrics.0.wav",
+  "seconds": 5.736,
+  "sha256": "db4898c7ba09a2223b3815a3c88e29be4edc8e49bdcfa9768387597f1f0c1562"
+}

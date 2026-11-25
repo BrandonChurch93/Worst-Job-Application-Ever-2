@@ -107,6 +107,60 @@ export const liveTriggers: Record<string, LiveTrigger> = {
   'watchFilm': { on: 'call' }
 }
 
+// The page each unit of the film is on the live site. An event of the stage carries the page it happened on.
+export const unitPage: Record<string, string> = { 'marketing': 'marketing', 'step1': 'step1', 'step2': 'step2', 'pinball': 'step3', 'boss': 'step4', 'decision': 'step5' }
+
+// What sets each line of the film off on the live site, by beat and by the line's place in the beat.
+// event: the first event of that name on the line's page. gag: the stage reporting that the line's own beat is reached.
+// standIn names the event that is wanted and does not exist yet: pipeline/sound/NEEDS.md lists each one.
+export type FilmLive =
+  | { on: 'event'; event: string }
+  | { on: 'gag'; standIn?: string }
+
+export const filmLive: Record<string, FilmLive> = {
+  'marketing.stroll.0': { on: 'event', event: 'step' },
+  'marketing.perks.0': { on: 'event', event: 'card-flip' },
+  'step1.firstName.0': { on: 'event', event: 'keyboard-rise' },
+  'step1.firstName.1': { on: 'event', event: 'bolt-hit-cursor' },
+  'step1.email.0': { on: 'event', event: 'slab-drop' },
+  'step1.tug.0': { on: 'event', event: 'arms-out' },
+  'step2.dial.0': { on: 'gag' },
+  'step2.crank.0': { on: 'gag' },
+  'pinball.seal.0': { on: 'event', event: 'ball-seal' },
+  'pinball.launch.0': { on: 'event', event: 'plunger' },
+  'pinball.lobby.0': { on: 'gag', standIn: 'carpet-roll' },
+  'pinball.coffee.0': { on: 'event', event: 'bumper' },
+  'pinball.replyAll.0': { on: 'gag', standIn: 'inbox-take' },
+  'pinball.fired.0': { on: 'gag', standIn: 'firehouse-take' },
+  'pinball.drain.0': { on: 'event', event: 'drain' },
+  'boss.verify.0': { on: 'event', event: 'checkbox' },
+  'boss.slabs.0': { on: 'event', event: 'slab-fire' },
+  'boss.lastStand.0': { on: 'event', event: 'session-expired' },
+  'decision.letter.0': { on: 'event', event: 'stamp' },
+  'decision.metrics.0': { on: 'gag', standIn: 'metrics-card' }
+}
+
+export const filmLiveKey = (beat: string, index: number): string => `${beat}.${index}`
+
+// The lines of the film an event of the stage sets off: those tied to that event whose beat is on the page the event came from.
+export function filmKeysForEvent(name: string, page: string, unitOfBeat: (beat: string) => string | undefined): string[] {
+  const out: string[] = []
+  for (const [key, t] of Object.entries(filmLive)) {
+    if (t.on !== 'event' || t.event !== name) continue
+    const unit = unitOfBeat(key.slice(0, key.lastIndexOf('.')))
+    if (unit !== undefined && unitPage[unit] === page) out.push(key)
+  }
+  return out
+}
+
+// The lines of the film a beat sets off when the stage reports that it is reached.
+export function filmKeysForGag(beat: string): string[] {
+  return Object.entries(filmLive).filter(([key, t]) => t.on === 'gag' && key.slice(0, key.lastIndexOf('.')) === beat).map(([key]) => key)
+}
+
+// Live lines that belong to no page: a page turn does not take them back.
+export const pagelessLive: string[] = ['idle', 'skip', 'watchFilm']
+
 // The live lines an event of the stage sets off, in table order.
 export function liveKeysFor(e: { name: string; hitsCursor: boolean }, seen: Set<string>): string[] {
   const out: string[] = []

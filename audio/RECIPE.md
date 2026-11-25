@@ -50,7 +50,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:05:35.681Z | 5.341 s | -1.17 dB | -21.23 LUFS | 5 | 27 | no |  |
+| 1 | build | 2026-11-25T18:05:35.681Z | 5.341 s | -1.17 dB | -21.23 LUFS | 5 | 27 | yes, as line.marketing.stroll.0 | too long for its place: 5.13 s in 5.12 s, over by 0.010 s; tone not judged: 1 whole answers in 8 asks |
 
 Words: Here we find / the applicant. / Rent is due.
 
@@ -60,7 +60,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:05:37.060Z | 6.92 s | -1.88 dB | -19.14 LUFS | 6 | 30 | no |  |
+| 1 | build | 2026-11-25T18:05:37.060Z | 6.92 s | -1.88 dB | -19.14 LUFS | 6 | 30 | yes, as line.marketing.perks.0 |  |
 
 Words: It spots unlimited PTO. / Poor thing / believes it.
 
@@ -70,7 +70,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:05:38.537Z | 5.433 s | -2.67 dB | -20.28 LUFS | 3 | 29 | no |  |
+| 1 | build | 2026-11-25T18:05:38.537Z | 5.433 s | -2.67 dB | -20.28 LUFS | 3 | 29 | yes, as line.step1.firstName.0 | too long for its place: 5.346 s in 4.5 s, over by 0.846 s; tone not judged: 1 whole answers in 8 asks |
 
 Words: First name. / Under fire. / Standard onboarding.
 
@@ -90,7 +90,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:05:41.273Z | 9.706 s | -3.98 dB | -21.68 LUFS | 8 | 40 | no |  |
+| 1 | build | 2026-11-25T18:05:41.273Z | 9.706 s | -3.98 dB | -21.68 LUFS | 8 | 40 | yes, as line.step1.email.0 | too long for its place: 9.508 s in 7.325 s, over by 2.183 s; tone not judged: 1 whole answers in 8 asks |
 
 Words: A valid email. / Rejected. / The system / is working as designed.
 
@@ -100,7 +100,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:05:42.706Z | 8.081 s | -2.15 dB | -19.03 LUFS | 5 | 35 | no |  |
+| 1 | build | 2026-11-25T18:05:42.706Z | 8.081 s | -2.15 dB | -19.03 LUFS | 5 | 35 | yes, as line.step1.tug.0 | tone not judged: 0 whole answers in 8 asks |
 
 Words: It fights for the resume. / Two pages. / One of them is true.
 
@@ -110,7 +110,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:05:44.408Z | 6.037 s | -3.57 dB | -19.67 LUFS | 4 | 31 | no |  |
+| 1 | build | 2026-11-25T18:05:44.408Z | 6.037 s | -3.57 dB | -19.67 LUFS | 4 | 31 | yes, as line.step2.dial.0 | tone not judged: 0 whole answers in 8 asks |
 
 Words: A rotary phone. / The applicant / has never seen one.
 
@@ -130,7 +130,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:05:47.066Z | 6.92 s | -4.3 dB | -18.78 LUFS | 6 | 32 | no |  |
+| 1 | build | 2026-11-25T18:05:47.066Z | 6.92 s | -4.3 dB | -18.78 LUFS | 6 | 32 | yes, as line.pinball.seal.0 | tone not judged: 1 whole answers in 8 asks |
 
 Words: The skills assessment. / No skills / will be assessed.
 
@@ -140,7 +140,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:05:48.292Z | 3.251 s | -3.42 dB | -20.26 LUFS | 3 | 14 | no |  |
+| 1 | build | 2026-11-25T18:05:48.292Z | 3.251 s | -3.42 dB | -20.26 LUFS | 3 | 14 | yes, as line.pinball.launch.0 | too long for its place: 3.094 s in 2.7 s, over by 0.394 s; tone not judged: 0 whole answers in 8 asks |
 
 Words: A career. / In reverse.
 
@@ -150,7 +150,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:05:49.565Z | 3.808 s | -2.92 dB | -19 LUFS | 4 | 19 | no |  |
+| 1 | build | 2026-11-25T18:05:49.565Z | 3.808 s | -2.92 dB | -19 LUFS | 4 | 19 | yes, as line.pinball.lobby.0 | tone not judged: 0 whole answers in 10 asks |
 
 Words: Corporate headquarters. / So close.
 
@@ -160,7 +160,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:05:50.805Z | 4.087 s | -2.83 dB | -20.86 LUFS | 3 | 17 | no |  |
+| 1 | build | 2026-11-25T18:05:50.805Z | 4.087 s | -2.83 dB | -20.86 LUFS | 3 | 17 | yes, as line.pinball.coffee.0 | tone not judged: 0 whole answers in 8 asks |
 
 Words: It runs on coffee / and fear.
 
@@ -170,7 +170,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:05:52.358Z | 3.111 s | -5.26 dB | -26.63 LUFS | 4 | 15 | no |  |
+| 1 | build | 2026-11-25T18:05:52.358Z | 3.111 s | -5.26 dB | -26.63 LUFS | 4 | 15 | yes, as line.pinball.replyAll.0 |  |
 
 Words: Someone / hit reply all.
 
@@ -180,7 +180,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:05:53.597Z | 5.759 s | -2.61 dB | -22.28 LUFS | 3 | 28 | no |  |
+| 1 | build | 2026-11-25T18:05:53.597Z | 5.759 s | -2.61 dB | -22.28 LUFS | 3 | 28 | yes, as line.pinball.fired.0 | tone not judged: 0 whole answers in 8 asks |
 
 Words: Fired. / Before it was hired. / A new record.
 
@@ -190,7 +190,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:05:55.128Z | 4.783 s | -3.96 dB | -20.2 LUFS | 2 | 23 | no |  |
+| 1 | build | 2026-11-25T18:05:55.128Z | 4.783 s | -3.96 dB | -20.2 LUFS | 2 | 23 | yes, as line.pinball.drain.0 | tone not judged: 0 whole answers in 8 asks |
 
 Words: The unemployment office. / It knows the way.
 
@@ -200,7 +200,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:05:56.274Z | 5.387 s | -3.21 dB | -20.92 LUFS | 4 | 26 | no |  |
+| 1 | build | 2026-11-25T18:05:56.274Z | 5.387 s | -3.21 dB | -20.92 LUFS | 4 | 26 | yes, as line.boss.verify.0 |  |
 
 Words: Not a robot, / it claims. / We will see.
 
@@ -210,7 +210,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:05:57.883Z | 8.313 s | -2.71 dB | -19.59 LUFS | 13 | 37 | no |  |
+| 1 | build | 2026-11-25T18:05:57.883Z | 8.313 s | -2.71 dB | -19.59 LUFS | 13 | 37 | yes, as line.boss.slabs.0 |  |
 
 Words: The submit button fights back. / Even it / does not want this job.
 
@@ -220,7 +220,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:05:58.979Z | 3.669 s | -4.29 dB | -20.92 LUFS | 5 | 17 | no |  |
+| 1 | build | 2026-11-25T18:05:58.979Z | 3.669 s | -4.29 dB | -20.92 LUFS | 5 | 17 | yes, as line.boss.lastStand.0 | tone not judged: 0 whole answers in 8 asks |
 
 Words: Session expired. / A classic.
 
@@ -230,7 +230,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:06:00.204Z | 3.529 s | -3.59 dB | -18.33 LUFS | 3 | 17 | no |  |
+| 1 | build | 2026-11-25T18:06:00.204Z | 3.529 s | -3.59 dB | -18.33 LUFS | 3 | 17 | yes, as line.decision.letter.0 |  |
 
 Words: Rejected. / In under a second.
 
@@ -240,7 +240,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:06:01.421Z | 5.898 s | -4.05 dB | -21.69 LUFS | 3 | 25 | no |  |
+| 1 | build | 2026-11-25T18:06:01.421Z | 5.898 s | -4.05 dB | -21.69 LUFS | 3 | 25 | yes, as line.decision.metrics.0 | tone not judged: 1 whole answers in 8 asks |
 
 Words: It will apply again tomorrow. / They always do.
 

@@ -61,41 +61,46 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
-        "asks": 2,
-        "whole": 2,
+        "by": "the audio evaluation tool: 8 asks, 1 whole, 7 void",
+        "asks": 8,
+        "whole": 1,
         "transcript": "Here we find the applicant. Rent is due.",
         "transcripts": [
           "Here we find the applicant. Rent is due.",
+          "Here we find the applicant. Rent is due.",
           "Here we find the applicant. Rent is due."
         ],
-        "transcriptAgreed": "2 of 2",
+        "transcriptAgreed": "3 of 3",
         "attitudes": [
-          "condescending and authoritative",
-          "condescending and authoritative"
+          "aloof and demanding"
         ],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 2,
+        "accents": [
+          "American"
+        ],
+        "pitches": [
+          "low"
+        ],
         "whisper": null,
+        "whisperVotes": "0 yes, 1 no",
         "laugh": null,
+        "laughVotes": "0 yes, 1 no",
         "warmth": null,
+        "warmthVotes": "0 yes, 1 no",
         "excitement": null,
+        "excitementVotes": "0 yes, 1 no",
         "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "1 yes, 0 no",
         "basis": [
+          "The speaker's flat, deliberate delivery and lack of emotional warmth suggest a low-pitched, unimpressed, and smug demeanor.",
           "The speaker's delivery is flat and condescending, lacking warmth or excitement, which conveys a distinctly smug and unimpressed demeanor.",
           "The flat, documentary-style delivery lacks warmth or excitement, conveying instead a cold, superior, and demanding tone."
         ]
       },
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "kept": true,
+      "keptAs": [
+        "line.marketing.stroll.0"
+      ],
+      "why": "too long for its place: 5.13 s in 5.12 s, over by 0.010 s; tone not judged: 1 whole answers in 8 asks",
       "line": {
         "words": 8,
         "seconds": 5.13,
@@ -179,40 +184,56 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
-        "asks": 2,
+        "by": "the audio evaluation tool: 8 asks, 2 whole, 6 void",
+        "asks": 8,
         "whole": 2,
         "transcript": "It spots unlimited PTO. Poor thing. Believes it.",
         "transcripts": [
           "It spots unlimited PTO. Poor thing. Believes it.",
+          "It spots unlimited PTO. Poor thing. Believes it.",
+          "It spots unlimited PTO. Poor thing. Believes it.",
+          "It spots unlimited PTO. Poor thing. Believes it.",
+          "It spots unlimited PTO. Poor thing. Believes it.",
+          "It spots unlimited PTO. Poor thing. Believes it.",
           "It spots unlimited PTO. Poor thing. Believes it."
         ],
-        "transcriptAgreed": "2 of 2",
+        "transcriptAgreed": "7 of 7",
         "attitudes": [
           "cynical and condescending",
-          "cynical, condescending, and sarcastic"
+          "cynical and condescending"
         ],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 2,
-        "whisper": null,
-        "laugh": null,
-        "warmth": null,
-        "excitement": null,
-        "unimpressedAndSmug": null,
+        "accents": [
+          "American",
+          "American"
+        ],
+        "pitches": [
+          "low",
+          "low"
+        ],
+        "whisper": false,
+        "whisperVotes": "0 yes, 2 no",
+        "laugh": false,
+        "laughVotes": "0 yes, 2 no",
+        "warmth": false,
+        "warmthVotes": "0 yes, 2 no",
+        "excitement": false,
+        "excitementVotes": "0 yes, 2 no",
+        "unimpressedAndSmug": true,
+        "unimpressedAndSmugVotes": "2 yes, 0 no",
         "basis": [
+          "The low pitch and slow, deliberate delivery convey a distinct lack of warmth and a strong sense of cynical superiority.",
+          "The assessment is based on the cynical phrasing of the text, which mimics a smug narrator observing naive corporate behavior.",
+          "The speaker delivers the words with a slow, deadpan rhythm and a sarcastic tone that implies patronizing pity.",
+          "The sarcastic and cynical phrasing implies a dry, smug, and unimpressed vocal delivery.",
+          "The speaker delivers the lines with a slow, deliberate pace and a low, cynical tone, lacking any warmth or excitement to highlight the condescending attitude.",
           "The speaker uses short, dismissive phrases and a dry, sarcastic delivery that conveys cynicism and pity rather than warmth, excitement, or laughter.",
           "The speaker delivers the lines with a dry, deadpan, and slightly mocking tone, devoid of any genuine warmth or excitement."
         ]
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "line.marketing.perks.0"
+      ],
       "why": "",
       "line": {
         "words": 8,
@@ -282,41 +303,46 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
-        "asks": 2,
-        "whole": 2,
+        "by": "the audio evaluation tool: 8 asks, 1 whole, 7 void",
+        "asks": 8,
+        "whole": 1,
         "transcript": "First name. Under fire. Standard onboarding.",
         "transcripts": [
           "First name. Under fire. Standard onboarding.",
+          "First name. Under fire. Standard onboarding.",
           "First name under fire standard onboarding."
         ],
-        "transcriptAgreed": "2 of 2",
+        "transcriptAgreed": "3 of 3",
         "attitudes": [
-          "detached, unimpressed, and smug",
-          "unimpressed, dry, and smug"
+          "serious and factual"
         ],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 2,
+        "accents": [
+          "American"
+        ],
+        "pitches": [
+          "low"
+        ],
         "whisper": null,
+        "whisperVotes": "0 yes, 1 no",
         "laugh": null,
+        "laughVotes": "0 yes, 1 no",
         "warmth": null,
+        "warmthVotes": "0 yes, 1 no",
         "excitement": null,
+        "excitementVotes": "0 yes, 1 no",
         "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "0 yes, 1 no",
         "basis": [
+          "The speaker delivers the phrases with a steady, low-pitched tone, lacking any laughter, whispering, or emotional warmth.",
           "The speaker's delivery is flat, clinical, and somewhat arrogant, showing no signs of warmth, excitement, laughter, or whispering.",
           "The speaker's flat, detached delivery completely lacks warmth or excitement, resulting in an aloof and smugly unimpressed tone."
         ]
       },
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "kept": true,
+      "keptAs": [
+        "line.step1.firstName.0"
+      ],
+      "why": "too long for its place: 5.346 s in 4.5 s, over by 0.846 s; tone not judged: 1 whole answers in 8 asks",
       "line": {
         "words": 6,
         "seconds": 5.346,
@@ -390,33 +416,42 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 2 asks, 1 whole, 1 void",
-        "asks": 2,
-        "whole": 1,
-        "transcript": "Hit It keeps typing It has bills",
+        "by": "the audio evaluation tool: 6 asks, 2 whole, 4 void",
+        "asks": 6,
+        "whole": 2,
+        "transcript": "Hit. It keeps typing. It has bills.",
         "transcripts": [
+          "Hit. It keeps typing. It has bills.",
+          "Hit. It keeps typing. It has bills.",
           "Hit It keeps typing It has bills",
           "Hit It keeps typing It has bills"
         ],
-        "transcriptAgreed": "2 of 2",
+        "transcriptAgreed": "4 of 4",
         "attitudes": [
-          "unimpressed and cynical"
+          "deadpan and matter-of-fact",
+          "serious and detached"
         ],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 1,
-        "whisper": null,
-        "laugh": null,
-        "warmth": null,
-        "excitement": null,
-        "unimpressedAndSmug": null,
+        "accents": [
+          "American",
+          "American"
+        ],
+        "pitches": [
+          "middle",
+          "low"
+        ],
+        "whisper": false,
+        "whisperVotes": "0 yes, 2 no",
+        "laugh": false,
+        "laughVotes": "0 yes, 2 no",
+        "warmth": false,
+        "warmthVotes": "0 yes, 2 no",
+        "excitement": false,
+        "excitementVotes": "0 yes, 2 no",
+        "unimpressedAndSmug": false,
+        "unimpressedAndSmugVotes": "0 yes, 2 no",
         "basis": [
+          "The analysis is based on a neutral, steady delivery of the short sentences without noticeable emotional inflection or vocal variation.",
+          "The analysis is based on the speaker's low-pitched, flat delivery which lacks any warmth or excitement.",
           "The text describes a mundane, reluctant action driven by financial necessity, which inherently implies a flat, unenthusiastic, and slightly cynical tone.",
           "The speaker delivers the lines with a flat, deadpan intonation completely devoid of warmth or excitement, resulting in an unimpressed and smug tone."
         ]
@@ -517,41 +552,48 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
-        "asks": 2,
-        "whole": 2,
+        "by": "the audio evaluation tool: 8 asks, 1 whole, 7 void",
+        "asks": 8,
+        "whole": 1,
         "transcript": "A valid email rejected. The system is working as designed.",
         "transcripts": [
           "A valid email rejected. The system is working as designed.",
+          "A valid email rejected. The system is working as designed.",
+          "A valid email rejected. The system is working as designed.",
           "A valid email rejected. The system is working as designed."
         ],
-        "transcriptAgreed": "2 of 2",
+        "transcriptAgreed": "4 of 4",
         "attitudes": [
-          "cynical and sarcastic",
-          "smug, dismissive, and bureaucratic"
+          "deadpan, cynical, and smug"
         ],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 2,
+        "accents": [
+          "American"
+        ],
+        "pitches": [
+          "low"
+        ],
         "whisper": null,
+        "whisperVotes": "0 yes, 1 no",
         "laugh": null,
+        "laughVotes": "0 yes, 1 no",
         "warmth": null,
+        "warmthVotes": "0 yes, 1 no",
         "excitement": null,
+        "excitementVotes": "0 yes, 1 no",
         "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "1 yes, 0 no",
         "basis": [
+          "The slow pacing and flat, low-pitched delivery typically associated with this phrasing indicate a cynical, unimpressed, and smug tone.",
+          "The speaker delivers the technical irony with a low, unenthusiastic tone and a complete lack of warmth, projecting a clear sense of smug detachment.",
           "The speaker delivers the ironic statement with a slow, flat tone that highlights the absurdity of the situation without any warmth or excitement.",
           "The answers rest on the flat, unapologetic delivery of a frustrating technical outcome being framed as an intended feature, which inherently conveys a cold and smug tone."
         ]
       },
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "kept": true,
+      "keptAs": [
+        "line.step1.email.0"
+      ],
+      "why": "too long for its place: 9.508 s in 7.325 s, over by 2.183 s; tone not judged: 1 whole answers in 8 asks",
       "line": {
         "words": 10,
         "seconds": 9.508,
@@ -631,38 +673,40 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 2 asks, 0 whole, 2 void",
-        "asks": 2,
+        "by": "the audio evaluation tool: 8 asks, 0 whole, 8 void",
+        "asks": 8,
         "whole": 0,
         "transcript": "It fights for the resume. Two pages. One of them is true.",
         "transcripts": [
           "It fights for the resume. Two pages. One of them is true.",
+          "It fights for the resume. Two pages. One of them is true.",
           "It fights for the resume. Two pages. One of them is true."
         ],
-        "transcriptAgreed": "2 of 2",
+        "transcriptAgreed": "3 of 3",
         "attitudes": [],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 0,
+        "accents": [],
+        "pitches": [],
         "whisper": null,
+        "whisperVotes": "0 yes, 0 no",
         "laugh": null,
+        "laughVotes": "0 yes, 0 no",
         "warmth": null,
+        "warmthVotes": "0 yes, 0 no",
         "excitement": null,
+        "excitementVotes": "0 yes, 0 no",
         "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "0 yes, 0 no",
         "basis": [
+          "The cynical and sarcastic nature of the statement implies a flat, dismissive delivery that sounds unimpressed.",
           "The cynical, deadpan nature of the statement implies a dry, smug, and unimpressed delivery devoid of warmth, excitement, or laughter.",
           "Since no actual audio is present, the assessment relies on the inherent cynicism of the provided text, which strongly implies a dry, unimpressed, and smug delivery rather than warmth or excitement."
         ]
       },
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "kept": true,
+      "keptAs": [
+        "line.step1.tug.0"
+      ],
+      "why": "tone not judged: 0 whole answers in 8 asks",
       "line": {
         "words": 12,
         "seconds": 7.816,
@@ -736,40 +780,42 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 2 asks, 1 whole, 1 void",
-        "asks": 2,
-        "whole": 1,
+        "by": "the audio evaluation tool: 8 asks, 0 whole, 8 void",
+        "asks": 8,
+        "whole": 0,
         "transcript": "A rotary phone. The applicant has never seen one.",
         "transcripts": [
           "A rotary phone. The applicant has never seen one.",
+          "A rotary phone. The applicant has never seen one.",
+          "A rotary phone. The applicant has never seen one.",
           "A rotary phone. The applicant has never seen one."
         ],
-        "transcriptAgreed": "2 of 2",
-        "attitudes": [
-          "smug and condescending"
-        ],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 1,
+        "transcriptAgreed": "4 of 4",
+        "attitudes": [],
+        "accents": [],
+        "pitches": [],
         "whisper": null,
+        "whisperVotes": "0 yes, 0 no",
         "laugh": null,
+        "laughVotes": "0 yes, 0 no",
         "warmth": null,
+        "warmthVotes": "0 yes, 0 no",
         "excitement": null,
+        "excitementVotes": "0 yes, 0 no",
         "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "0 yes, 0 no",
         "basis": [
+          "The statement highlights the applicant's lack of familiarity with an older piece of technology, carrying an inherently smug and unimpressed implication.",
+          "While the exact acoustic features cannot be heard, the semantic content of the statement inherently conveys a dry, dismissive, and smug attitude regarding the applicant's unfamiliarity with older technology.",
           "The speaker delivers the observation with a dry, flat cadence that suggests a sense of superiority regarding the applicant's unfamiliarity with older technology.",
           "The short, blunt sentences and judgmental observation about the applicant's inexperience with older technology strongly imply a dry, smug delivery."
         ]
       },
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "kept": true,
+      "keptAs": [
+        "line.step2.dial.0"
+      ],
+      "why": "tone not judged: 0 whole answers in 8 asks",
       "line": {
         "words": 9,
         "seconds": 5.864,
@@ -848,9 +894,9 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 4 asks, 1 whole, 3 void",
-        "asks": 4,
-        "whole": 1,
+        "by": "the audio evaluation tool: 10 asks, 0 whole, 10 void",
+        "asks": 10,
+        "whole": 0,
         "transcript": "Volume all the way up. It will regret that.",
         "transcripts": [
           "Volume all the way up. It will regret that.",
@@ -859,23 +905,19 @@
           "Volume all the way up. It will regret that."
         ],
         "transcriptAgreed": "4 of 4",
-        "attitudes": [
-          "cold and threatening"
-        ],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 4 no",
-          "laugh": "0 yes, 4 no",
-          "warmth": "0 yes, 4 no",
-          "excitement": "0 yes, 4 no",
-          "unimpressedAndSmug": "4 yes, 0 no"
-        },
-        "claimedFromSound": 1,
+        "attitudes": [],
+        "accents": [],
+        "pitches": [],
         "whisper": null,
+        "whisperVotes": "0 yes, 0 no",
         "laugh": null,
+        "laughVotes": "0 yes, 0 no",
         "warmth": null,
+        "warmthVotes": "0 yes, 0 no",
         "excitement": null,
+        "excitementVotes": "0 yes, 0 no",
         "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "0 yes, 0 no",
         "basis": [
           "The speaker's threatening statement conveys a cold, confident demeanor without any warmth, excitement, or laughter.",
           "Since no audio file was provided, the answers rest on the semantic content of the text, which implies a cold, confident, and unimpressed delivery.",
@@ -968,40 +1010,48 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 2 asks, 1 whole, 1 void",
-        "asks": 2,
+        "by": "the audio evaluation tool: 8 asks, 1 whole, 7 void",
+        "asks": 8,
         "whole": 1,
         "transcript": "The skills assessment. No skills will be assessed.",
         "transcripts": [
           "The skills assessment. No skills will be assessed.",
+          "The skills assessment. No skills will be assessed.",
+          "The skills assessment. No skills will be assessed.",
           "The skills assessment. No skills. Will be assessed."
         ],
-        "transcriptAgreed": "2 of 2",
+        "transcriptAgreed": "4 of 4",
         "attitudes": [
-          "deadpan, dry, and sarcastic"
+          "deadpan and bureaucratic"
         ],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 1,
+        "accents": [
+          "American"
+        ],
+        "pitches": [
+          "middle"
+        ],
         "whisper": null,
+        "whisperVotes": "0 yes, 1 no",
         "laugh": null,
+        "laughVotes": "0 yes, 1 no",
         "warmth": null,
+        "warmthVotes": "0 yes, 1 no",
         "excitement": null,
+        "excitementVotes": "0 yes, 1 no",
         "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "1 yes, 0 no",
         "basis": [
+          "The measured, flat delivery of a contradictory statement gives the voice a decidedly dry, smug, and uninterested quality.",
+          "The deliberate, flat pacing used to deliver the contradictory statement conveys a highly sarcastic and smug tone.",
           "The inherent irony and brevity of the contradictory statement strongly suggest a flat, deadpan, and mildly smug delivery.",
           "The cynical phrasing and fragmented sentence structure strongly suggest a dry, sarcastic delivery that is entirely devoid of warmth or enthusiasm."
         ]
       },
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "kept": true,
+      "keptAs": [
+        "line.pinball.seal.0"
+      ],
+      "why": "tone not judged: 1 whole answers in 8 asks",
       "line": {
         "words": 8,
         "seconds": 6.698,
@@ -1070,8 +1120,8 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 2 asks, 0 whole, 2 void",
-        "asks": 2,
+        "by": "the audio evaluation tool: 8 asks, 0 whole, 8 void",
+        "asks": 8,
         "whole": 0,
         "transcript": "A career In reverse",
         "transcripts": [
@@ -1080,28 +1130,28 @@
         ],
         "transcriptAgreed": "2 of 2",
         "attitudes": [],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 0,
+        "accents": [],
+        "pitches": [],
         "whisper": null,
+        "whisperVotes": "0 yes, 0 no",
         "laugh": null,
+        "laughVotes": "0 yes, 0 no",
         "warmth": null,
+        "warmthVotes": "0 yes, 0 no",
         "excitement": null,
+        "excitementVotes": "0 yes, 0 no",
         "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "0 yes, 0 no",
         "basis": [
           "The conclusions about the sound of the voice rest on the deliberate pacing and dry articulation that would naturally accompany such a critical statement.",
           "Because no actual audio was provided, the assessment relies on the inherently derogatory nature of the text, which implies a dry, smug, and unimpressed delivery devoid of warmth or excitement."
         ]
       },
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "kept": true,
+      "keptAs": [
+        "line.pinball.launch.0"
+      ],
+      "why": "too long for its place: 3.094 s in 2.7 s, over by 0.394 s; tone not judged: 0 whole answers in 8 asks",
       "line": {
         "words": 4,
         "seconds": 3.094,
@@ -1174,8 +1224,8 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 4 asks, 0 whole, 4 void",
-        "asks": 4,
+        "by": "the audio evaluation tool: 10 asks, 0 whole, 10 void",
+        "asks": 10,
         "whole": 0,
         "transcript": "Corporate headquarters. So close.",
         "transcripts": [
@@ -1186,20 +1236,18 @@
         ],
         "transcriptAgreed": "4 of 4",
         "attitudes": [],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 4 no",
-          "laugh": "0 yes, 4 no",
-          "warmth": "0 yes, 4 no",
-          "excitement": "0 yes, 4 no",
-          "unimpressedAndSmug": "1 yes, 3 no"
-        },
-        "claimedFromSound": 0,
+        "accents": [],
+        "pitches": [],
         "whisper": null,
+        "whisperVotes": "0 yes, 0 no",
         "laugh": null,
+        "laughVotes": "0 yes, 0 no",
         "warmth": null,
+        "warmthVotes": "0 yes, 0 no",
         "excitement": null,
+        "excitementVotes": "0 yes, 0 no",
         "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "0 yes, 0 no",
         "basis": [
           "Because no actual audio file was provided, these vocal characteristics are best-guess inferences based solely on the textual context and the specific questions asked.",
           "Since no audio file was provided in the prompt, these vocal characteristics were inferred purely from the semantic content and likely dramatic tone of the text.",
@@ -1207,9 +1255,11 @@
           "Since no actual audio was provided, these vocal characteristics are estimated based on the likely dramatic context of the written transcript."
         ]
       },
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "kept": true,
+      "keptAs": [
+        "line.pinball.lobby.0"
+      ],
+      "why": "tone not judged: 0 whole answers in 10 asks",
       "line": {
         "words": 4,
         "seconds": 3.674,
@@ -1277,40 +1327,38 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 2 asks, 1 whole, 1 void",
-        "asks": 2,
-        "whole": 1,
+        "by": "the audio evaluation tool: 8 asks, 0 whole, 8 void",
+        "asks": 8,
+        "whole": 0,
         "transcript": "It runs on coffee and fear.",
         "transcripts": [
           "It runs on coffee and fear.",
           "It runs on coffee and fear."
         ],
         "transcriptAgreed": "2 of 2",
-        "attitudes": [
-          "deadpan and cynical"
-        ],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 1,
+        "attitudes": [],
+        "accents": [],
+        "pitches": [],
         "whisper": null,
+        "whisperVotes": "0 yes, 0 no",
         "laugh": null,
+        "laughVotes": "0 yes, 0 no",
         "warmth": null,
+        "warmthVotes": "0 yes, 0 no",
         "excitement": null,
+        "excitementVotes": "0 yes, 0 no",
         "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "0 yes, 0 no",
         "basis": [
           "The assessment relies on the inherently dry, exhausted, and sarcastic tone required to deliver this cynical punchline effectively.",
           "Because no actual audio was provided, the vocal traits are inferred from the inherently dry and cynical humor of the written text."
         ]
       },
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "kept": true,
+      "keptAs": [
+        "line.pinball.coffee.0"
+      ],
+      "why": "tone not judged: 0 whole answers in 8 asks",
       "line": {
         "words": 6,
         "seconds": 3.944,
@@ -1383,40 +1431,50 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 3 asks, 2 whole, 1 void",
-        "asks": 3,
+        "by": "the audio evaluation tool: 5 asks, 2 whole, 3 void",
+        "asks": 5,
         "whole": 2,
         "transcript": "Someone hit reply all.",
         "transcripts": [
           "Someone hit reply all.",
+          "Someone hit reply all.",
+          "Someone hit reply all.",
           "Someone hit reply all."
         ],
-        "transcriptAgreed": "2 of 2",
+        "transcriptAgreed": "4 of 4",
         "attitudes": [
           "deadpan and cynical",
-          "smug and cynical"
+          "cynical and exasperated"
         ],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 2,
-        "whisper": null,
-        "laugh": null,
-        "warmth": null,
-        "excitement": null,
-        "unimpressedAndSmug": null,
+        "accents": [
+          "American",
+          "American"
+        ],
+        "pitches": [
+          "low",
+          "middle"
+        ],
+        "whisper": false,
+        "whisperVotes": "0 yes, 2 no",
+        "laugh": false,
+        "laughVotes": "0 yes, 2 no",
+        "warmth": false,
+        "warmthVotes": "0 yes, 2 no",
+        "excitement": false,
+        "excitementVotes": "0 yes, 2 no",
+        "unimpressedAndSmug": true,
+        "unimpressedAndSmugVotes": "2 yes, 0 no",
         "basis": [
+          "The speaker's flat intonation and low pitch convey a sense of cynical amusement at an email mistake.",
+          "The flat, cynical delivery of a common workplace blunder conveys a distinct lack of warmth and a mildly smug, unimpressed tone.",
           "The flat, unenthusiastic delivery lacks warmth or excitement, indicating a smug and unimpressed reaction to a classic workplace mistake.",
           "The speaker's delivery is flat and deadpan, conveying a cynical observation of someone else's mistake without any warmth or enthusiasm."
         ]
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "line.pinball.replyAll.0"
+      ],
       "why": "",
       "line": {
         "words": 4,
@@ -1485,41 +1543,40 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
-        "asks": 2,
-        "whole": 2,
+        "by": "the audio evaluation tool: 8 asks, 0 whole, 8 void",
+        "asks": 8,
+        "whole": 0,
         "transcript": "Fired before it was hired. A new record.",
         "transcripts": [
           "Fired before it was hired. A new record.",
+          "Fired before it was hired. A new record.",
           "Fired before it was hired. A new record."
         ],
-        "transcriptAgreed": "2 of 2",
-        "attitudes": [
-          "cynical and sarcastic",
-          "dry, cynical, and sarcastic"
-        ],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 2,
+        "transcriptAgreed": "3 of 3",
+        "attitudes": [],
+        "accents": [],
+        "pitches": [],
         "whisper": null,
+        "whisperVotes": "0 yes, 0 no",
         "laugh": null,
+        "laughVotes": "0 yes, 0 no",
         "warmth": null,
+        "warmthVotes": "0 yes, 0 no",
         "excitement": null,
+        "excitementVotes": "0 yes, 0 no",
         "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "0 yes, 0 no",
         "basis": [
+          "The speaker delivers the line with a flat, low-pitched intonation and a deliberate cadence that conveys a clearly unimpressed and sarcastic demeanor.",
           "The speaker delivers the line with a dry, flat tone that conveys heavy sarcasm and a distinct lack of genuine enthusiasm.",
           "The speaker delivers the lines with a flat, low-energy tone that conveys sarcastic amusement rather than genuine excitement or warmth."
         ]
       },
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "kept": true,
+      "keptAs": [
+        "line.pinball.fired.0"
+      ],
+      "why": "tone not judged: 0 whole answers in 8 asks",
       "line": {
         "words": 8,
         "seconds": 5.544,
@@ -1583,40 +1640,38 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 2 asks, 1 whole, 1 void",
-        "asks": 2,
-        "whole": 1,
+        "by": "the audio evaluation tool: 8 asks, 0 whole, 8 void",
+        "asks": 8,
+        "whole": 0,
         "transcript": "The unemployment office. It knows the way.",
         "transcripts": [
           "The unemployment office. It knows the way.",
           "The unemployment office. It knows the way."
         ],
         "transcriptAgreed": "2 of 2",
-        "attitudes": [
-          "dry and cynical"
-        ],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 1,
+        "attitudes": [],
+        "accents": [],
+        "pitches": [],
         "whisper": null,
+        "whisperVotes": "0 yes, 0 no",
         "laugh": null,
+        "laughVotes": "0 yes, 0 no",
         "warmth": null,
+        "warmthVotes": "0 yes, 0 no",
         "excitement": null,
+        "excitementVotes": "0 yes, 0 no",
         "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "0 yes, 0 no",
         "basis": [
           "The flat, unenthusiastic intonation and sarcastic nature of the remark convey a smug and unimpressed tone devoid of warmth, excitement, or laughter.",
           "The delivery is inferred to be a deadpan, sarcastic joke about joblessness, marked by a flat tone completely devoid of enthusiasm or warmth."
         ]
       },
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "kept": true,
+      "keptAs": [
+        "line.pinball.drain.0"
+      ],
+      "why": "tone not judged: 0 whole answers in 8 asks",
       "line": {
         "words": 7,
         "seconds": 4.558,
@@ -1689,37 +1744,50 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 2 asks, 0 whole, 2 void",
-        "asks": 2,
-        "whole": 0,
-        "transcript": "Not a robot. It claims. We will see.",
+        "by": "the audio evaluation tool: 8 asks, 2 whole, 6 void",
+        "asks": 8,
+        "whole": 2,
+        "transcript": "Not a robot, it claims. We will see.",
         "transcripts": [
+          "Not a robot, it claims. We will see.",
+          "Not a robot, it claims. We will see.",
           "Not a robot. It claims. We will see.",
           "Not a robot. It claims. We will see."
         ],
-        "transcriptAgreed": "2 of 2",
-        "attitudes": [],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 0,
-        "whisper": null,
-        "laugh": null,
-        "warmth": null,
-        "excitement": null,
-        "unimpressedAndSmug": null,
+        "transcriptAgreed": "4 of 4",
+        "attitudes": [
+          "skeptical and cynical",
+          "suspicious and cynical"
+        ],
+        "accents": [
+          "American",
+          "American"
+        ],
+        "pitches": [
+          "low",
+          "low"
+        ],
+        "whisper": false,
+        "whisperVotes": "0 yes, 2 no",
+        "laugh": false,
+        "laughVotes": "0 yes, 2 no",
+        "warmth": false,
+        "warmthVotes": "0 yes, 2 no",
+        "excitement": false,
+        "excitementVotes": "0 yes, 2 no",
+        "unimpressedAndSmug": true,
+        "unimpressedAndSmugVotes": "2 yes, 0 no",
         "basis": [
+          "The speaker uses a deep, slow, and deliberate tone that conveys doubt and a lack of enthusiasm.",
+          "The low pitch and deliberate, slow pacing convey a strong sense of skepticism and smug superiority without any warmth or excitement.",
           "The text expresses overt doubt and challenges a claim, which inherently suggests a cynical, suspicious, and unimpressed tone.",
           "The analysis rests on the textual cues 'It claims' and 'We will see', which inherently suggest a cold, skeptical, and cynical tone rather than warmth or excitement."
         ]
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "line.boss.verify.0"
+      ],
       "why": "",
       "line": {
         "words": 8,
@@ -1839,40 +1907,50 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
-        "asks": 2,
+        "by": "the audio evaluation tool: 6 asks, 2 whole, 4 void",
+        "asks": 6,
         "whole": 2,
         "transcript": "The submit button fights back. Even it does not want this job.",
         "transcripts": [
           "The submit button fights back. Even it does not want this job.",
+          "The submit button fights back. Even it does not want this job.",
+          "The submit button fights back. Even it does not want this job.",
           "The submit button fights back. Even it does not want this job."
         ],
-        "transcriptAgreed": "2 of 2",
+        "transcriptAgreed": "4 of 4",
         "attitudes": [
-          "cynical and deadpan",
-          "cynical, deadpan, and weary"
+          "cynical and weary",
+          "cynical, deadpan, and unamused"
         ],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 2,
-        "whisper": null,
-        "laugh": null,
-        "warmth": null,
-        "excitement": null,
-        "unimpressedAndSmug": null,
+        "accents": [
+          "American",
+          "British"
+        ],
+        "pitches": [
+          "low",
+          "low"
+        ],
+        "whisper": false,
+        "whisperVotes": "0 yes, 2 no",
+        "laugh": false,
+        "laughVotes": "0 yes, 2 no",
+        "warmth": false,
+        "warmthVotes": "0 yes, 2 no",
+        "excitement": false,
+        "excitementVotes": "0 yes, 2 no",
+        "unimpressedAndSmug": true,
+        "unimpressedAndSmugVotes": "2 yes, 0 no",
         "basis": [
+          "The flat intonation, deliberate pacing, and low pitch convey a distinct sense of sarcastic weariness.",
+          "The speaker's low pitch, slow pacing, and flat inflection convey a distinct lack of enthusiasm and a cynical attitude.",
           "The speaker delivers the lines with a slow, flat, and cynical tone, completely lacking in warmth, excitement, laughter, or whispering.",
           "The speaker delivers the lines with a flat, deliberate, and low-energy intonation that highlights a cynical, unimpressed demeanor without any warmth or excitement."
         ]
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "line.boss.slabs.0"
+      ],
       "why": "",
       "line": {
         "words": 12,
@@ -1952,8 +2030,8 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 2 asks, 0 whole, 2 void",
-        "asks": 2,
+        "by": "the audio evaluation tool: 8 asks, 0 whole, 8 void",
+        "asks": 8,
         "whole": 0,
         "transcript": "Session expired. A classic.",
         "transcripts": [
@@ -1962,28 +2040,28 @@
         ],
         "transcriptAgreed": "2 of 2",
         "attitudes": [],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 0,
+        "accents": [],
+        "pitches": [],
         "whisper": null,
+        "whisperVotes": "0 yes, 0 no",
         "laugh": null,
+        "laughVotes": "0 yes, 0 no",
         "warmth": null,
+        "warmthVotes": "0 yes, 0 no",
         "excitement": null,
+        "excitementVotes": "0 yes, 0 no",
         "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "0 yes, 0 no",
         "basis": [
           "The brief, sarcastic remark about a technical annoyance implies a flat, deadpan delivery lacking any warmth or excitement.",
           "The brief, sarcastic reaction to a common technical annoyance implies a flat, cynical tone lacking any genuine warmth or excitement."
         ]
       },
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "kept": true,
+      "keptAs": [
+        "line.boss.lastStand.0"
+      ],
+      "why": "tone not judged: 0 whole answers in 8 asks",
       "line": {
         "words": 4,
         "seconds": 3.512,
@@ -2051,39 +2129,50 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 2 asks, 1 whole, 1 void",
-        "asks": 2,
-        "whole": 1,
-        "transcript": "rejected In under a second.",
+        "by": "the audio evaluation tool: 6 asks, 2 whole, 4 void",
+        "asks": 6,
+        "whole": 2,
+        "transcript": "Rejected. In under a second.",
         "transcripts": [
+          "Rejected. In under a second.",
+          "Rejected. In under a second.",
           "rejected In under a second.",
           "Rejected. In under a second."
         ],
-        "transcriptAgreed": "2 of 2",
+        "transcriptAgreed": "4 of 4",
         "attitudes": [
-          "dismissive and smug"
+          "dismissive and smug",
+          "smug and dismissive"
         ],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 1,
-        "whisper": null,
-        "laugh": null,
-        "warmth": null,
-        "excitement": null,
-        "unimpressedAndSmug": null,
+        "accents": [
+          "American",
+          "American"
+        ],
+        "pitches": [
+          "low",
+          "low"
+        ],
+        "whisper": false,
+        "whisperVotes": "0 yes, 2 no",
+        "laugh": false,
+        "laughVotes": "0 yes, 2 no",
+        "warmth": false,
+        "warmthVotes": "0 yes, 2 no",
+        "excitement": false,
+        "excitementVotes": "0 yes, 2 no",
+        "unimpressedAndSmug": true,
+        "unimpressedAndSmugVotes": "2 yes, 0 no",
         "basis": [
+          "The low pitch, deliberate pacing, and downward inflection create a cold, dismissive tone.",
+          "The answers rest on the speaker's deep, flat intonation and blunt, measured pacing which convey a sense of dismissive confidence.",
           "The brevity and semantic content of the phrase strongly imply a smug, unimpressed, and dismissive delivery lacking warmth or excitement.",
           "The speaker's flat, brief delivery and emphasis on the speed of the rejection project a cynical and arrogant demeanor."
         ]
       },
-      "kept": false,
-      "keptAs": [],
+      "kept": true,
+      "keptAs": [
+        "line.decision.letter.0"
+      ],
       "why": "",
       "line": {
         "words": 5,
@@ -2152,41 +2241,46 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
-        "asks": 2,
-        "whole": 2,
+        "by": "the audio evaluation tool: 8 asks, 1 whole, 7 void",
+        "asks": 8,
+        "whole": 1,
         "transcript": "It will apply again tomorrow. They always do.",
         "transcripts": [
           "It will apply again tomorrow. They always do.",
+          "It will apply again tomorrow. They always do.",
           "It will apply again tomorrow. They always do."
         ],
-        "transcriptAgreed": "2 of 2",
+        "transcriptAgreed": "3 of 3",
         "attitudes": [
-          "dismissive and cynical",
-          "cynical and resigned"
+          "cynical and matter-of-fact"
         ],
-        "toneHeard": false,
-        "toneClaims": {
-          "whisper": "0 yes, 2 no",
-          "laugh": "0 yes, 2 no",
-          "warmth": "0 yes, 2 no",
-          "excitement": "0 yes, 2 no",
-          "unimpressedAndSmug": "2 yes, 0 no"
-        },
-        "claimedFromSound": 2,
+        "accents": [
+          "American"
+        ],
+        "pitches": [
+          "low"
+        ],
         "whisper": null,
+        "whisperVotes": "0 yes, 1 no",
         "laugh": null,
+        "laughVotes": "0 yes, 1 no",
         "warmth": null,
+        "warmthVotes": "0 yes, 1 no",
         "excitement": null,
+        "excitementVotes": "0 yes, 1 no",
         "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "1 yes, 0 no",
         "basis": [
+          "The speaker uses a deep, steady voice with a slow, deliberate delivery that lacks warmth or excitement, conveying a cynical tone.",
           "The flat, downward inflection and slow, deliberate pacing convey a sense of superiority and a lack of enthusiasm.",
           "The confident, flat delivery of the lines suggests a knowing lack of surprise and a hint of superiority without any warmth or excitement."
         ]
       },
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "kept": true,
+      "keptAs": [
+        "line.decision.metrics.0"
+      ],
+      "why": "tone not judged: 1 whole answers in 8 asks",
       "line": {
         "words": 8,
         "seconds": 5.742,
