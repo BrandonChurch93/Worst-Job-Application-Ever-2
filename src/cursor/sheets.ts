@@ -58,7 +58,8 @@ function held(x: number, y: number, sheet: NonNullable<(typeof ARMS)[number]['sh
 
 function acting(): CursorPose[] {
   const n = 6
-  const at = (i: number) => across(n, i, SHEET.acting.step)
+  const row = { step: 55, mid: 945 }
+  const at = (i: number) => row.mid + (i - (n - 1) / 2) * row.step
   const y = SHEET.y
   return [
     restPose(at(0), y, { acting: 'nervous', squash: 0.95, lean: 0.08 }),
