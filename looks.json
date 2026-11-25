@@ -1,35 +1,35 @@
 {
   "folder": "cursor-act",
-  "pushed": "2026-11-25T15:56:34.240Z",
-  "commit": "b36e3308112bb85ef0cd5d266f3bcfc88108e25f",
+  "pushed": "2026-11-25T16:01:12.020Z",
+  "commit": "defb7660ce0f415a180fc85fbcc74e3f29aedf59",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key step1-fire: approved on the left, this build on the right, review tier, with crops of cursor, keys, hatch, keyboardDeck.corner, field.start, type, progressButton, chip, card.corner",
-      "time": "2026-11-25T15:53:32.212Z",
+      "caption": "Sheet cursor-arms: approved on the left, this build on the right, review tier",
+      "time": "2026-11-25T16:00:27.356Z",
       "by": "cursor-act",
-      "from": "out/work/compare/compare-step1-fire.jpg"
+      "from": "out/work/compare/compare-cursor-arms.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Still step1-step1_firstName-0p668-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-25T15:55:31.775Z",
+      "caption": "Sheet cursor-damage: approved on the left, this build on the right, review tier",
+      "time": "2026-11-25T16:01:10.060Z",
       "by": "cursor-act",
-      "from": "out/work/stills/step1-step1_firstName-0p668-hd-review.png"
+      "from": "out/work/compare/compare-cursor-damage.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Damage sheet beside the approved one at review: the scorch is a burnt tip again (reach 0.62 with the model's scale put back)",
-      "time": "2026-11-25T15:56:32.873Z",
+      "caption": "Acting sheet beside the approved one at review, on defb766",
+      "time": "2026-11-25T16:01:10.481Z",
       "by": "cursor-act",
-      "from": "out/work/report/damage-beside-approved.jpg"
+      "from": "out/work/report/acting-beside-approved.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Approved fire key (left), the one hit at 7.3 s knocked over with burn and smoke (middle), the key frame at 6.0 s in flight tip up and right (right)",
-      "time": "2026-11-25T15:56:33.113Z",
+      "caption": "Arms sheet beside the approved one at review, on defb766: the paper is the real resume sheet at true size",
+      "time": "2026-11-25T16:01:10.720Z",
       "by": "cursor-act",
-      "from": "out/work/report/fire-hit-beside-approved.jpg"
+      "from": "out/work/report/arms-beside-approved.jpg"
     }
   ]
 }
