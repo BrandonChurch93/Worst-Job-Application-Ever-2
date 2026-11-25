@@ -1,8 +1,8 @@
 # Status pictures
 
-Time: 2026-11-25T11:57Z. Phase 2, status 18.
+Time: 2026-11-25T12:06Z. Phase 2, status 19.
 
-1. `01-round2-pinball-close-cameras.jpg`: What the critic of round 2 saw: the five close cameras of the pinball machine. Camera 9 (bottom) and camera 6 (top right) are the two severe issues.
-2. `02-round2-pinball-whole-and-tiers.jpg`: The whole machine and its three tiers from above. In the first view the tower stands in front of the title board.
-3. `03-round2-step1-tug.jpg`: Step 1, the tug of war, 0:36 to 0:42, twelve frames in order: from 0:36.6 to 0:40.5 the paper hardly moves.
-4. `04-round2-boss-popups.jpg`: The boss fight, 2:05 to 2:21, twelve frames in order: the pop-ups follow each other at the same weight until the boss breaks.
+1. `01-declined-step2-rest.jpg`: Step 2 at rest. Left: your approved picture. Right: the blockout. Labels at the left, controls at the right in both.
+2. `02-declined-step3-loader-page.jpg`: Step 3 at rest. Left: your approved picture. Right: the blockout. The loader port at the right edge, its tube running off the screen.
+3. `03-declined-step4-submit-place.jpg`: The boss fight. Left: your approved picture. Right: the blockout as judged. The socket at bottom centre is kept; how it is drawn is being fixed.
+4. `04-declined-step1-form-place.jpg`: Step 1 under fire. Left: your approved picture. Right: the blockout as judged. Form in the upper half, keyboard below.

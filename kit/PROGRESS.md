@@ -25,22 +25,22 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 18, 2026-11-25T11:57Z, Phase 2.
+Status 19, 2026-11-25T12:06Z, Phase 2.
 
-1. `out/stills/status/01-round2-pinball-close-cameras.jpg`: What the critic of round 2 saw: the five close cameras of the pinball machine. Camera 9 (bottom) and camera 6 (top right) are the two severe issues.
-2. `out/stills/status/02-round2-pinball-whole-and-tiers.jpg`: The whole machine and its three tiers from above. In the first view the tower stands in front of the title board.
-3. `out/stills/status/03-round2-step1-tug.jpg`: Step 1, the tug of war, 0:36 to 0:42, twelve frames in order: from 0:36.6 to 0:40.5 the paper hardly moves.
-4. `out/stills/status/04-round2-boss-popups.jpg`: The boss fight, 2:05 to 2:21, twelve frames in order: the pop-ups follow each other at the same weight until the boss breaks.
+1. `out/stills/status/01-declined-step2-rest.jpg`: Step 2 at rest. Left: your approved picture. Right: the blockout. Labels at the left, controls at the right in both.
+2. `out/stills/status/02-declined-step3-loader-page.jpg`: Step 3 at rest. Left: your approved picture. Right: the blockout. The loader port at the right edge, its tube running off the screen.
+3. `out/stills/status/03-declined-step4-submit-place.jpg`: The boss fight. Left: your approved picture. Right: the blockout as judged. The socket at bottom centre is kept; how it is drawn is being fixed.
+4. `out/stills/status/04-declined-step1-form-place.jpg`: Step 1 under fire. Left: your approved picture. Right: the blockout as judged. Form in the upper half, keyboard below.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 2, tick 47 at 2026-11-25T11:57:47Z, allowance: build
-time used in this phase: 4.32 h of its box of 6.50 h
-time used under the allowance in force: 6.42 h of 36.00 h allowed
-time used: 6.42 of 36.00 hours before the review
+clock: phase 2, tick 49 at 2026-11-25T12:06:59Z, allowance: build
+time used in this phase: 4.47 h of its box of 6.50 h
+time used under the allowance in force: 6.57 h of 36.00 h allowed
+time used: 6.57 of 36.00 hours before the review
 extra rounds: yes
 half point: reached
 box end: not reached
@@ -443,6 +443,7 @@ Each with its unit, its severity, the still, the critic's words, what was tried 
 - Unit `step1`, carried to the look lock (Phase 3), major, round 2 issue 8 (reviewer-03, still `scorecards/round-002/stills/set-C-01.jpg`). The critic, on the line beside First name and the notice over the keyboard: "at delivery size these lines are too small and faint to read, but they carry the jokes". MEASURED at 1920 by 1080: the smallest type of step 1 is 18 px (least allowed 14) and its least contrast 5.22 (least allowed 4.5), M4 green. The critic read the lines in a sheet cell about a fifth of that size; the critic who saw the page at real size raised nothing on them. Tried: no change. To try in Phase 3: judge both lines at real size in the look lock's type pictures; if a critic cannot read them there, raise them inside the type scale of `kit/04-LOOK.md` and give the notice room above the keyboard.
 - Unit `pinball`, carried to Phase 4, major, round 2 issues 3 and 13 (reviewer-03 and reviewer-02, still `scorecards/round-002/stills/set-C-09.jpg`, camera 5). The critics: "the cursor sits on top of the ball, not inside it" and "the cursor covers the ball". The cursor rides sealed inside a clear ball (a stated choice, approved `clear-ball.png`); the stand-in ball is grey and solid with the cursor drawn at it. Tried: nothing, the clear ball is material work. To do in Phase 4: the ball as glass with the cursor inside it, judged against `clear-ball.png` from the rail camera and the ride.
 - Unit `pinball`, carried to Phase 4, minor, round 2 issue 12 (reviewer-03, still `scorecards/round-002/stills/set-C-10.jpg`). The critic: "at map scale the labels are too small to read". The map is drawn 1080 by 1920 and the pack showed it at 0.73 of that. Tried: no change. To do in Phase 4 with the printed layer: the plates of `table-map.png` at their approved size, read at real size.
+- Unit `step1`, carried to the look lock (Phase 3), low, seen by the Builder at 12:06Z in `npm run compare -- --key step1-fire`: in approved `step1-fire.png` the helper of First name (`step1.firstName.helper`) sits under the field at the left, in small type of the accent colour; the blockout draws it at the right end of the label's row. Kit/02 gives no place for it, so the approved image decides. To do in Phase 3 with the form's layout: the helper under the field, the two fields below it moved down by its line, then the key compared again. It bears on round 2 issue 8 (the small lines of step 1).
 
 ## Counts
 
