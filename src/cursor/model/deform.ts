@@ -9,7 +9,8 @@ const smooth = (a: number, b: number, x: number): number => {
 const BEND_FROM = 4.5
 const BEND_TO = 20.2
 const BEND_TURN = 0.85
-const PEEL_RADIUS = 5.5
+const PEEL_RADIUS = 9
+const PEEL_TURN = 1.0
 
 // Turns a point of the body at rest, in outline units, into where it is now, in page pixels in the body's own space.
 export class Deform {
@@ -84,8 +85,9 @@ export class Deform {
     if (this.melt > 0) {
       const m = this.melt
       const low = smooth(3, 19, y0)
-      const run = Math.pow(Math.max(0, Math.sin(x0 * 1.55 + 0.9) * 0.6 + Math.sin(x0 * 2.9 + 2.2) * 0.4), 2)
-      y += m * (0.9 * low + 3.4 * low * low * run + 0.25 * Math.sin(x0 * 1.1 + 0.3))
+      const run = smooth(0.05, 0.9, Math.sin(x0 * 1.15 + 0.9) * 0.65 + Math.sin(x0 * 2.1 + 2.2) * 0.35)
+      if (z0 > 1.2 && inset < 0.46) z += (1.2 + 0.2 * (inset / 0.45) - z) * smooth(0, 0.5, m)
+      y += m * (0.9 * low + 2.1 * low * low * run + 0.25 * Math.sin(x0 * 1.1 + 0.3))
       x += m * (0.45 * Math.sin(y0 * 0.62 + 1.4) + 0.3 * low * (x0 - CENTRE[0]) * 0.35)
       z *= 1 - 0.3 * m * (1 - 0.6 * low * run)
       z += m * up * (0.28 * run * low + 0.14 * Math.sin(x0 * 1.3 + y0 * 0.8)) * (1 - Math.exp(-inset / 0.6))
@@ -112,11 +114,12 @@ export class Deform {
     if (this.peel > 0) {
       const u = x * AXIS[0] + y * AXIS[1]
       const v = x * AXIS[1] - y * AXIS[0]
-      const hinge = 21 - this.peel * 15
+      const hinge = 22 - this.peel * 14
       if (u > hinge) {
-        const a = (u - hinge) / PEEL_RADIUS
-        const u1 = hinge + (PEEL_RADIUS - z) * Math.sin(a)
-        z = PEEL_RADIUS - (PEEL_RADIUS - z) * Math.cos(a)
+        const a = Math.min(PEEL_TURN, (u - hinge) / PEEL_RADIUS)
+        const more = u - hinge - a * PEEL_RADIUS
+        const u1 = hinge + (PEEL_RADIUS - z) * Math.sin(a) + more * Math.cos(a)
+        z = PEEL_RADIUS - (PEEL_RADIUS - z) * Math.cos(a) + more * Math.sin(a)
         x = u1 * AXIS[0] + v * AXIS[1]
         y = u1 * AXIS[1] - v * AXIS[0]
       }
