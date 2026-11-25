@@ -58,7 +58,7 @@ export function makeShowcase(app: App, ready: Promise<void>): Showcase {
         standIns.push(...l.page.standIns())
         textureMb[l.page.id] = l.page.textureBytes() / 1048576
       }
-      return { fps, format: app.format.id, tier: app.tier, assets: app.assets, engineHash: build.engineHash, pageHashes: build.pageHashes, standIns, modules: { film: [], live: [] }, counts, textureMb, versions: build.versions }
+      return { fps, format: app.format.id, tier: app.tier, assets: app.assets, engineHash: build.engineHash, pageHashes: build.pageHashes, standIns, modules: { film: [], live: [] }, counts, textureMb, versions: { ...build.versions, target: app.engine.kind } }
     },
     async setFormat(id) {
       await ready

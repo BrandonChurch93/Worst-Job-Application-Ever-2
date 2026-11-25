@@ -76,7 +76,7 @@ export function samples(count: number): Sample[] {
       lens: count === 1 ? [0, 0] : squareToDisk(e[0], e[1]),
       // In order of time, so the stage only ever steps forward inside one picture.
       shutter: (i + 0.5) / count,
-      dome: [d[0] * ds, d[1] * ds, dz]
+      dome: count === 1 ? [0, 0, 1] : [d[0] * ds, d[1] * ds, dz]
     })
   }
   cache.set(count, out)

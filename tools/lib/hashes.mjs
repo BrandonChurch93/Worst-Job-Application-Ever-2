@@ -105,7 +105,20 @@ export function buildInfoPlugin(root) {
     },
     load(loaded) {
       if (loaded !== '\0' + id) return null
-      return `export default ${JSON.stringify(buildInfo(root))}`
+      const info = buildInfo(root)
+      // The harness reads this to know which state of the source the build in dist/ was made from.
+      const note = path.join(root, 'out', 'work', 'build-info.json')
+      fs.mkdirSync(path.dirname(note), { recursive: true })
+      fs.writeFileSync(note, JSON.stringify({ engineHash: info.engineHash, pageHashes: info.pageHashes }, null, 2) + '\n')
+      return `export default ${JSON.stringify(info)}`
     }
   }
+}
+
+// True when dist/ was built from the source as it is now.
+export function buildIsCurrent(root) {
+  const note = path.join(root, 'out', 'work', 'build-info.json')
+  if (!fs.existsSync(note) || !fs.existsSync(path.join(root, 'dist', 'index.html'))) return false
+  const built = JSON.parse(fs.readFileSync(note, 'utf8'))
+  return built.engineHash === engineHash(root) && JSON.stringify(built.pageHashes) === JSON.stringify(pageHashes(root))
 }

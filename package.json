@@ -14,7 +14,14 @@
     "caps": "node tools/caps.mjs",
     "physics:test": "node tools/physics-test.mjs",
     "still": "node tools/still.mjs",
-    "review": "node tools/review.mjs"
+    "review": "node tools/review.mjs",
+    "determinism": "node tools/determinism.mjs",
+    "gate": "node tools/gate.mjs",
+    "budget": "node tools/budget.mjs",
+    "compare": "node tools/compare.mjs",
+    "crops": "node tools/crops.mjs",
+    "status": "node tools/status.mjs",
+    "keep": "node tools/keep.mjs"
   },
   "dependencies": {
     "@dimforge/rapier2d-deterministic-compat": "0.21.0",

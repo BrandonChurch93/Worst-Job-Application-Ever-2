@@ -1,0 +1,10 @@
+{
+  "about": "Where each kind of part lies in an approved image, as fractions of its width and height: left, top, width, height. Read off the image by eye. npm run compare cuts its matching crops from these.",
+  "page-look": {
+    "button": [0.37, 0.82, 0.27, 0.13],
+    "field": [0.505, 0.335, 0.2, 0.1],
+    "progressButton": [0.52, 0.03, 0.17, 0.115],
+    "type": [0.06, 0.2, 0.2, 0.075],
+    "cursor": [0.655, 0.855, 0.06, 0.1]
+  }
+}

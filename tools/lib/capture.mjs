@@ -1,11 +1,12 @@
 // One capture session: the built site in `capture` mode, in the headless browser, driven through window.showcase.
+import { execFileSync } from 'node:child_process'
 import crypto from 'node:crypto'
 import fs from 'node:fs'
 import path from 'node:path'
 import { at, config, readJson, writeJson } from './paths.mjs'
 import { launch, machine } from './browser.mjs'
 import { serve } from './serve.mjs'
-import { buildInfo, unitFolders } from './hashes.mjs'
+import { buildInfo, buildIsCurrent, unitFolders } from './hashes.mjs'
 
 export const formatOf = (id) => {
   const c = config()
@@ -13,12 +14,35 @@ export const formatOf = (id) => {
   throw new Error(`No format called "${id}"`)
 }
 
-export async function openSession({ format = 'hd', assets = 'full', target = null, mode = 'capture', query = '' } = {}) {
-  if (!fs.existsSync(at('dist', 'index.html'))) throw new Error('No build in dist/. Run `npm run build` first.')
+// Builds the site again when the source has changed since dist/ was made, so no picture comes from a stale build.
+export function ensureBuild() {
+  if (buildIsCurrent(at())) return
+  execFileSync('npx', ['vite', 'build'], { cwd: at(), stdio: ['ignore', 'ignore', 'inherit'] })
+  if (!buildIsCurrent(at())) throw new Error('The build in dist/ does not match the source after building')
+}
+
+// `allowExtensions` limits what the page can get from WebGL to a list of names, and notes what it asked for.
+export async function openSession({ format = 'hd', assets = 'full', target = null, mode = 'capture', query = '', allowExtensions = null } = {}) {
+  ensureBuild()
   const server = await serve(at('dist'), { mounts: { '/assets-full/': at('assets-full') } })
   const { browser, version } = await launch()
   const f = formatOf(format)
   const context = await browser.newContext({ viewport: { width: Math.min(f.width, 1920), height: Math.min(f.height, 1080) }, deviceScaleFactor: 1 })
+  if (allowExtensions) {
+    await context.addInitScript((list) => {
+      const allow = new Set(list)
+      const asked = (window.__asked = {})
+      const get = WebGL2RenderingContext.prototype.getExtension
+      const all = WebGL2RenderingContext.prototype.getSupportedExtensions
+      WebGL2RenderingContext.prototype.getExtension = function (name) {
+        asked[name] = allow.has(name)
+        return allow.has(name) ? get.call(this, name) : null
+      }
+      WebGL2RenderingContext.prototype.getSupportedExtensions = function () {
+        return (all.call(this) || []).filter((n) => allow.has(n))
+      }
+    }, allowExtensions)
+  }
   const page = await context.newPage()
   const problems = []
   page.on('pageerror', (e) => problems.push(String(e && e.message ? e.message : e)))
@@ -142,4 +166,14 @@ export async function still(session, a, { force = false, dir = 'stills' } = {}) 
   const extra = { seconds: Number(seconds.toFixed(3)), invalidValues: stats.invalidValues, standIns: info.standIns, counts: info.counts[spec.page], problems: [...session.problems] }
   writeRecord(file, record, extra)
   return { file, reused: false, record: { ...record, ...extra } }
+}
+
+// Renders one job, a still or a film frame, and gives back the canvas as PNG bytes.
+export async function renderJob(session, job) {
+  await session.page.evaluate(async (j) => {
+    window.showcase.setDiagnostic(j.diag || 'beauty')
+    if (j.kind === 'film') await window.showcase.renderFilmFrame(j.frame, j.tier)
+    else await window.showcase.renderStill(j.spec)
+  }, job)
+  return readCanvas(session.page)
 }
