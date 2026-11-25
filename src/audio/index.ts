@@ -167,8 +167,15 @@ function elementBackend(): Backend {
     add: (id, bytes, mime) => new Promise<boolean>((done) => {
       const el = new Audio()
       el.preload = 'auto'
-      el.oncanplaythrough = () => done(true)
-      el.onerror = () => done(false)
+      const wait = window.setTimeout(() => done(false), LIVE.elementLoadSeconds * 1000)
+      el.oncanplaythrough = () => {
+        window.clearTimeout(wait)
+        done(true)
+      }
+      el.onerror = () => {
+        window.clearTimeout(wait)
+        done(false)
+      }
       el.src = URL.createObjectURL(new Blob([bytes], { type: mime }))
       elements.set(id, { el, bus: 'fx', timers: [] })
     }),

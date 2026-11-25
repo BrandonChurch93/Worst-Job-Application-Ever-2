@@ -144,7 +144,7 @@ export async function soundChecks(a, P, c, M) {
   const engine = await engineInBrowser(P, c)
   const live = wired && !P.scratch ? await siteInBrowser() : null
   const siteNote = P.scratch ? 'The site is not measured on a scratch root' : !wired ? notWired : live && !live.built ? 'The site is not built. Run npm run build' : ''
-  const early = engine.runs.filter((r) => r.before.contexts > 0 || r.soundRequestsBefore > 0)
+  const early = engine.runs.filter((r) => r.before.contexts > 0 || r.before.plays > 0 || r.soundRequestsBefore > 0)
   const engineFact = `on a page of its own in a browser the engine made ${engine.runs.reduce((n, r) => n + r.before.contexts, 0)} audio contexts and asked for ${engine.runs.reduce((n, r) => n + r.soundRequestsBefore, 0)} sound files before the first click, over ${engine.runs.length} visits, with events, a beat and a trigger sent to it first`
   if (early.length) add('A1', 'fail', `the engine starts before the first click: ${engineFact}`, { engine: engine.runs.map((r) => ({ name: r.name, before: r.before })) })
   else if (live && live.built) {

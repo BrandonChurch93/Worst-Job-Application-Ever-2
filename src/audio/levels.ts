@@ -46,6 +46,8 @@ export const DUCK = {
 }
 
 export const LIVE = {
+  // A plain audio element that has not become playable after this long counts as not loaded.
+  elementLoadSeconds: 5,
   // A line of a beat may start this late and still be spoken. Later than that it is dropped.
   beatLateSeconds: 1.5,
   // A live line is about what happened just now, so it may wait this long and no longer.

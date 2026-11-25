@@ -415,7 +415,7 @@ export async function engineInBrowser(P, c) {
   fs.rmSync(dir, { recursive: true, force: true })
   fs.mkdirSync(dir, { recursive: true })
   await build({ root: at(), configFile: false, logLevel: 'silent', publicDir: false, build: { outDir: dir, emptyOutDir: false, target: 'es2022', minify: false, lib: { entry: at('src', 'audio', 'index.ts'), formats: ['es'], fileName: () => 'engine.js' } } })
-  const html = (index) => `<!doctype html><meta charset="utf-8"><title>harness</title><body><button id="go">go</button><script type="module">
+  const html = (index, graph = true) => `<!doctype html><meta charset="utf-8"><title>harness</title><body><button id="go">go</button><script type="module">
 const Real = window.AudioContext
 window.contexts = []
 window.taps = []
@@ -434,6 +434,10 @@ window.AudioContext = class extends Real {
     }
   }
 }
+window.plays = 0
+const play = HTMLMediaElement.prototype.play
+HTMLMediaElement.prototype.play = function (...a) { window.plays++; return play.apply(this, a) }
+if (!${graph}) { window.AudioContext = undefined; window.webkitAudioContext = undefined }
 const { makeSound } = await import('./engine.js')
 window.sound = makeSound({ base: './audio/', index: ${JSON.stringify(index)} })
 document.getElementById('go').addEventListener('click', () => { window.unlocked = window.sound.unlock() }, { once: true })
@@ -455,8 +459,8 @@ window.ready = true
   const lists = Boolean(index) && index.sfx.length + index.loops.length + index.lines.length > 0
   const { browser, version } = await launch(['--autoplay-policy=user-gesture-required'])
   const runs = []
-  const visit = async (name, folder, given, act) => {
-    fs.writeFileSync(path.join(dir, 'index.html'), html(given))
+  const visit = async (name, folder, given, act, graph = true) => {
+    fs.writeFileSync(path.join(dir, 'index.html'), html(given, graph))
     const site = await serve(dir, { mounts: { '/audio/': folder } })
     const page = await browser.newPage()
     const requests = []
@@ -474,7 +478,7 @@ window.ready = true
         window.sound.trigger('idle')
       })
       await page.waitForTimeout(300)
-      const before = await page.evaluate(() => ({ contexts: window.contexts.length, state: window.sound.state(), available: window.sound.available() }))
+      const before = await page.evaluate(() => ({ contexts: window.contexts.length, plays: window.plays, state: window.sound.state(), available: window.sound.available() }))
       const soundRequestsBefore = requests.filter((r) => r.startsWith('/audio/')).length
       await page.click('#go')
       await page.evaluate(() => window.unlocked)
@@ -510,6 +514,19 @@ window.ready = true
       await page.evaluate(() => { window.sound.setMuted(false); window.sound.stop() })
       return { heard: { tone, effect, line, muted } }
     })
+    if (lists) await visit('with plain audio elements, the fallback', P.pub, index, async (page) => {
+      const state = await page.evaluate(() => window.sound.state())
+      if (state !== 'ready') return { played: null }
+      const before = await page.evaluate(() => window.plays)
+      await page.evaluate(() => {
+        window.sound.event({ name: 'button-press', x: 960, y: 540, hitsCursor: false }, 'film')
+        window.sound.beat('marketing.stroll', 'film')
+      })
+      await page.waitForTimeout(600)
+      const played = await page.evaluate(() => window.plays)
+      await page.evaluate(() => window.sound.stop())
+      return { played: { roomTone: before, afterAnEffectAndALine: played } }
+    }, false)
     await visit('with an index that lists nothing', empty, nothing)
     if (lists) await visit('with the sound files removed and the index still naming them', empty, index)
   } finally {
@@ -658,7 +675,7 @@ async function main() {
     if (a.fixtures) await fixtures(a, c, M)
     else if (a.browser) {
       const r = await engineInBrowser(P, c)
-      for (const run of r.runs) console.log(`browser: ${run.name}: before the click ${run.before.contexts} audio contexts and ${run.soundRequestsBefore} requests for sound; after it state ${run.after.state}, available ${run.after.available}, backend ${run.after.backend}, ${run.soundRequests} requests, ${run.errors.length} errors, ${run.console.length} console lines${run.heard ? `; heard: room tone ${run.heard.tone}, effect ${run.heard.effect}, line ${run.heard.line}, muted ${run.heard.muted}` : ''}`)
+      for (const run of r.runs) console.log(`browser: ${run.name}: before the click ${run.before.contexts} audio contexts and ${run.soundRequestsBefore} requests for sound; after it state ${run.after.state}, available ${run.after.available}, backend ${run.after.backend}, ${run.soundRequests} requests, ${run.errors.length} errors, ${run.console.length} console lines${run.heard ? `; heard: room tone ${run.heard.tone}, effect ${run.heard.effect}, line ${run.heard.line}, muted ${run.heard.muted}` : ''}${run.played ? `; elements played: ${run.played.roomTone} for the room tone, ${run.played.afterAnEffectAndALine} after an effect and a line` : ''}`)
       console.log(`browser: ${r.browser}. Written to out/work/audio/browser.json`)
       if (a.site) console.log(`site: ${JSON.stringify(await siteInBrowser())}`)
     }
