@@ -16,6 +16,7 @@ const MAIN = { w: 472, h: 68, up: 88, floor: 0.9, proud: 6, glassUnder: 1.6, mas
 const GLASS = { smoke: [0.0, 0.0, 0.0] as const, dust: [0.05, 0.047, 0.042] as const, clear: 0.36, dusty: 0.6, edge: 2.4, corner: 7, haze: 0.07 }
 const LINER = { thick: 0.3, tone: [0.014, 0.013, 0.012] as const }
 const SWEEP = { every: 9, takes: 2.6 }
+const MIRROR = { spots: 8, away: 250, near: 300, deep: 26, gain: 0.1, size: 3, grows: 2.5 }
 
 interface Seat { matrix: THREE.Matrix4; w: number; h: number; glass: number; mask: number; dotsUnder: number; pitch: number }
 
@@ -145,8 +146,15 @@ const body = /* glsl */ `
 	wjdNear += vec3( 0.0042, 0.0038, 0.0034 ) * wjdLight.y * ( 1.0 - wjdHole );
 	vec2 wjdG = wjdP + wjdLean * wjdDeep.y;
 	float wjdTight = wjdField( wjdG );
-	float wjdWide = 0.25 * ( wjdField( wjdG + vec2( 1.7, 0.0 ) ) + wjdField( wjdG - vec2( 1.7, 0.0 ) ) + wjdField( wjdG + vec2( 0.0, 1.7 ) ) + wjdField( wjdG - vec2( 0.0, 1.7 ) ) );
-	vec3 wjdHalo = wjdAmber * ( 0.085 * wjdTight + 0.07 * wjdWide ) * wjdLight.x;
+	float wjdWide = 0.0;
+	float wjdWider = 0.0;
+	for ( int k = 0; k < 8; k ++ ) {
+		float a = 0.7853982 * float( k );
+		vec2 d = vec2( cos( a ), sin( a ) );
+		wjdWide += wjdField( wjdG + d * 1.6 );
+		wjdWider += wjdField( wjdG + vec2( d.x * 0.9239 - d.y * 0.3827, d.x * 0.3827 + d.y * 0.9239 ) * 3.3 );
+	}
+	vec3 wjdHalo = wjdAmber * ( 0.1 * wjdTight + 0.015 * wjdWide + 0.011 * wjdWider ) * wjdLight.x;
 	vec3 wjdCoarse = ( wjdAmber * 1.05 + wjdHot * 0.3 ) * 0.5 * wjdField( wjdQ ) * wjdLight.x * wjdSweep + wjdAmber * 0.006 * wjdLight.y * wjdRows;
 	totalEmissiveRadiance = mix( wjdNear, wjdCoarse, wjdFar ) + wjdHalo;
 }
@@ -180,7 +188,7 @@ function dotMaterial(z: Zone, u: Uniforms): THREE.MeshStandardMaterial {
 let finish: THREE.DataTexture | null = null
 const finishOf = (): THREE.DataTexture => {
   if (!finish) {
-    finish = new THREE.DataTexture(new Uint8Array([0, 224, 0, 255, 0, 14, 0, 255]), 2, 1, THREE.RGBAFormat, THREE.UnsignedByteType)
+    finish = new THREE.DataTexture(new Uint8Array([0, 224, 0, 255, 0, 26, 0, 255]), 2, 1, THREE.RGBAFormat, THREE.UnsignedByteType)
     finish.magFilter = finish.minFilter = THREE.NearestFilter
     finish.colorSpace = THREE.NoColorSpace
     finish.generateMipmaps = false
@@ -189,7 +197,31 @@ const finishOf = (): THREE.DataTexture => {
   return finish
 }
 
-function housingMaterial(z: Zone): THREE.MeshPhysicalMaterial {
+interface Mirror { spots: THREE.Vector4[]; colour: THREE.Vector3; tint: readonly [number, number, number] }
+
+// The pane is taken to bulge a hair, as a pressed pane does: the lamps of the tier stand in it small and in a row, the near ones larger, and they slide as the camera moves.
+function mirrorOf(z: Zone, s: Seat): Mirror {
+  const group = groupsOf(z).find((g) => g.name === 'general') ?? groupsOf(z).find((g) => g.name === 'panel')
+  const back = s.matrix.clone().invert()
+  const found: { q: THREE.Vector4; gain: number }[] = []
+  const seen = new Set<string>()
+  for (const src of group ? group.sources : []) {
+    const p = new THREE.Vector3(src.x, src.y, src.z).applyMatrix4(back)
+    const key = `${Math.round(p.x)},${Math.round(p.y)}`
+    if (seen.has(key)) continue
+    seen.add(key)
+    const far = Math.hypot(p.x, p.y)
+    const gain = Math.min(1, MIRROR.near / Math.max(1, far))
+    const q = new THREE.Vector4(((s.w / 2 - 4) * p.x) / (far + MIRROR.away), ((s.h / 2 - 2) * p.y) / (far + MIRROR.away), MIRROR.size + MIRROR.grows * gain, gain)
+    found.push({ q, gain })
+  }
+  found.sort((a, b) => b.gain - a.gain)
+  const spots: THREE.Vector4[] = []
+  for (let i = 0; i < MIRROR.spots; i++) spots.push(found[i] ? found[i]!.q : new THREE.Vector4(0, 0, 1, 0))
+  return { spots, colour: new THREE.Vector3(), tint: group ? group.colour : [0, 0, 0] }
+}
+
+function housingMaterial(z: Zone, mirror: Mirror): THREE.MeshPhysicalMaterial {
   const m = new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 1, metalness: 0, roughnessMap: finishOf(), specularIntensity: 1, transparent: true, premultipliedAlpha: false })
   m.blending = THREE.CustomBlending
   m.blendEquation = THREE.AddEquation
@@ -197,7 +229,32 @@ function housingMaterial(z: Zone): THREE.MeshPhysicalMaterial {
   m.blendDst = THREE.OneMinusSrcAlphaFactor
   m.blendSrcAlpha = THREE.OneFactor
   m.blendDstAlpha = THREE.OneMinusSrcAlphaFactor
-  return lit(studio(m), z)
+  lit(studio(m), z)
+  const inner = m.onBeforeCompile
+  m.onBeforeCompile = function (shader, renderer) {
+    inner.call(m, shader, renderer)
+    shader.uniforms.wjgSpots = { value: mirror.spots }
+    shader.uniforms.wjgColour = { value: mirror.colour }
+    shader.vertexShader = ('varying vec2 vWjgAt;\nvarying vec3 vWjgEye;\n' + shader.vertexShader).replace('#include <begin_vertex>', '#include <begin_vertex>\n\tvWjgAt = position.xy;\n\tvWjgEye = ( inverse( modelMatrix ) * vec4( cameraPosition, 1.0 ) ).xyz - position;')
+    shader.fragmentShader = (`uniform vec4 wjgSpots[ ${MIRROR.spots} ];\nuniform vec3 wjgColour;\nvarying vec2 vWjgAt;\nvarying vec3 vWjgEye;\n` + shader.fragmentShader).replace(
+      '#include <lights_fragment_end>',
+      `#include <lights_fragment_end>
+{
+	vec3 wjgE = normalize( vWjgEye );
+	vec2 wjgP = vWjgAt + wjgE.xy / max( wjgE.z, 0.25 ) * ${MIRROR.deep.toFixed(1)};
+	float wjgSum = 0.0;
+	for ( int i = 0; i < ${MIRROR.spots}; i ++ ) {
+		vec2 d = ( wjgP - wjgSpots[ i ].xy ) / wjgSpots[ i ].z;
+		float r = dot( d, d );
+		wjgSum += wjgSpots[ i ].w * ( exp( - r ) + 0.3 * exp( - r / 7.0 ) );
+	}
+	reflectedLight.indirectSpecular += wjgColour * wjgSum * step( roughnessFactor, 0.5 );
+}`
+    )
+  }
+  const key = m.customProgramCacheKey
+  m.customProgramCacheKey = () => `${key.call(m)}|wjd-pane`
+  return m
 }
 
 class Mesh {
@@ -269,7 +326,7 @@ function housing(s: Seat): THREE.BufferGeometry {
   return m.geometry()
 }
 
-interface Built { u: Uniforms; score: boolean }
+interface Built { u: Uniforms; mirror: Mirror }
 const built = new WeakMap<THREE.Object3D, Built>()
 
 function build(z: Zone, ctx: RealContext): THREE.Object3D {
@@ -294,11 +351,12 @@ function build(z: Zone, ctx: RealContext): THREE.Object3D {
   quad.name = `displays.${z.id}.dots`
   quad.userData.lightGroup = group ? group.id : `${z.id}.display`
   inner.add(quad)
-  const box = new THREE.Mesh(housing(s), housingMaterial(z))
+  const mirror = mirrorOf(z, s)
+  const box = new THREE.Mesh(housing(s), housingMaterial(z, mirror))
   box.name = `displays.${z.id}.housing`
   box.receiveShadow = true
   inner.add(box)
-  built.set(o, { u, score: false })
+  built.set(o, { u, mirror })
   return o
 }
 
@@ -308,6 +366,8 @@ function pose(o: THREE.Object3D, z: Zone, ctx: RealContext): void {
   const score = show(ctx)
   const L = levels(ctx, z)
   b.u.light.set(L.byName.display ?? 0, Math.min(1, 0.55 * L.website + 0.6 * L.general + 0.3 * L.flash), 0, 0)
+  const lamps = (L.byName.general ?? L.byName.panel ?? L.general) * MIRROR.gain
+  b.mirror.colour.set(b.mirror.tint[0] * lamps, b.mirror.tint[1] * lamps, b.mirror.tint[2] * lamps)
   const at = (((ctx.time % SWEEP.every) + SWEEP.every) % SWEEP.every) / SWEEP.takes
   b.u.deep.z = score && at < 1 ? -24 + at * (COLS + 48) : -1000
 }
