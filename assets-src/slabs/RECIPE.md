@@ -15,7 +15,7 @@ Every texture here is made in code at start, from `config.seed`. No file is down
 ## paper creases (normal picture, in memory only)
 
 - Made by: `creaseMap(512, 704, config.seed + 1907, 220, 300, 5)` in `src/pages/step1/real/paperStock.ts`
-- From: the 22 folds of `creaseExact` in `paperSolve.ts`, the same folds the grid of the sheet is bent by
+- From: the 42 folds of `creaseExact` (34 across the sheet, 8 fanning from the grips) in `paperSolve.ts`, the same folds the grid of the sheet is bent by
 - Prompt or command: none; built with the first sheet
 - Takes: about 0.2 s
 - Why this one: the grid of 35 by 51 points cannot hold a sharp ridge; this picture holds the ridges of the same folds, so shading and shape agree. Its strength follows how hard the sheet has been used
