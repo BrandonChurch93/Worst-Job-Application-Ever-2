@@ -1,35 +1,35 @@
 {
   "folder": "hardware",
-  "pushed": "2026-11-25T16:49:32.799Z",
-  "commit": "ec3f89590ee29c959b4cee9a5aa8b65fb612d59d",
+  "pushed": "2026-11-25T16:55:44.048Z",
+  "commit": "ae23685dc2d6b8c4e9b49adef2d46cd6a6fce320",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Corporate tier beside the approved image: real posts, wire guides, pockets, lift tube with collars and the orange elbow (tier models are still stand-ins)",
-      "time": "2026-11-25T16:49:31.033Z",
-      "by": "hardware",
-      "from": "out/work/hw/01-corporate-beside-approved.jpg"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "Street tier foot: plunger with coil spring and orange knob on the apron, outholes, Mom's hatch, lane wires, bollard cap, lift tube with cup and clamps",
-      "time": "2026-11-25T16:49:31.275Z",
-      "by": "hardware",
-      "from": "out/work/hw/02-street-foot-plunger-lift.jpg"
-    },
-    {
-      "file": "look-3.jpg",
       "caption": "Corporate top left: orange elbow with seam and flange screws, clear tube with collars, roof wires and top guide",
       "time": "2026-11-25T16:49:31.562Z",
       "by": "hardware",
       "from": "out/work/hw/03-corporate-elbow-guides.jpg"
     },
     {
-      "file": "look-4.jpg",
+      "file": "look-2.jpg",
       "caption": "Office tier: rubber band round the three slingshot posts, push pin lane post, one wire for lane guide and return rail, outhole pocket",
       "time": "2026-11-25T16:49:31.792Z",
       "by": "hardware",
       "from": "out/work/hw/04-office-band-post-wire.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Still key-tier-office-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-25T16:53:50.615Z",
+      "by": "hardware",
+      "from": "out/work/stills/key-tier-office-hd-review.png"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Office, review tier: the lift's orange elbow with flange screws, clear tube with collars, and the orange door flap in its steel frame on the wall face",
+      "time": "2026-11-25T16:55:42.862Z",
+      "by": "hardware",
+      "from": "out/work/hw/05-office-door-elbow-review.jpg"
     }
   ]
 }
