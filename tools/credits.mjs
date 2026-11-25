@@ -220,9 +220,12 @@ function post(c, ledger, call, a) {
     cost = reported
     how = 'reported by the response'
     if (delta !== null) how += `; the account's usage moved by ${delta} across the call`
-  } else if (delta !== null) {
-    cost = Math.max(0, delta)
+  } else if (delta !== null && delta > 0) {
+    cost = delta
     how = `measured: the account's usage read ${before.used} straight before and ${after.used} straight after`
+  } else if (status === 200 && !ledger.rates[call.kind]) {
+    cost = Math.ceil(units * WORST[call.kind])
+    how = 'not reported, and the account\'s usage did not move across the call: counted at the dearest known rate'
   } else if (status === 200) {
     cost = Math.ceil(units * (call.kind === 'speech' ? ledger.rates.speech.perCharacter : ledger.rates.effect.perSecond))
     how = 'by the measured rate'
@@ -230,7 +233,7 @@ function post(c, ledger, call, a) {
     cost = 0
     how = 'the call failed and reported no cost'
   }
-  if (status === 200 && cost > 0 && !ledger.rates[call.kind]) {
+  if (status === 200 && cost > 0 && !ledger.rates[call.kind] && !how.startsWith('not reported')) {
     const per = Number((cost / units).toFixed(4))
     ledger.rates[call.kind] = call.kind === 'speech'
       ? { perCharacter: per, how: `MEASURED ${time} on call ${n}: ${cost} credits for ${units} characters, ${how}.` }

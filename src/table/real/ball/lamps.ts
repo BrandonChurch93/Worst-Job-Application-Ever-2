@@ -65,8 +65,8 @@ export function lightAt(s: Shape, ctx: RealContext): Light {
         if (e <= 0.002) continue
         const down = Math.hypot(x, y, src.z)
         const f = src.power * level * fall(down, src.reach) * (src.z / (down || 1))
-        for (let c = 0; c < 3; c++) floor[c]! += g.colour[c]! * f
         const window = g.name.startsWith('insert.')
+        for (let c = 0; c < 3; c++) floor[c]! += g.colour[c]! * f * (window ? 0.3 : 1)
         all.push({ x, y, z: zz, colour: g.colour, amount: e, shine: window ? 0.9 * level : Math.min(26, 14 * level * Math.max(0.6, src.power / 0.3)), window })
       }
     }
