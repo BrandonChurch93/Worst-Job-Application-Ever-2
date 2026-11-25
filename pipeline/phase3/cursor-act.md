@@ -79,3 +79,17 @@ Damage is a list of wounds, each with the share of its life that has passed (`Cu
 7. `npm run still -- --sheet cursor-damage --format hd --tier draft` and `npm run compare -- --sheet cursor-damage`.
 8. Call it from the page: `io.cursor.hurt('<kind>')`, then `npm run sheet -- --beat <the beat> --tier draft` to see hit, reaction, settle and heal in order.
 9. `npm test && npm run build && npm run bots`.
+
+## Round 3 issues on the arms sheet: what was done and what is open
+
+Done on the last push (looked at once each at review, not scored by a critic):
+
+1. Fingers: the three fingers sit closer (`lay` in `src/cursor/act/arms.ts`, x 2.5, splay 0.11) and an open hand curls a little (0.14 and 0.22 radians), the thumb opens less (0.95). Idle, waving and bracing all draw from these numbers.
+2. Holding and pulling: the hands are 68 px apart on the top edge (`PAPER.hands` 34 in `src/cursor/sheets.ts`) and the body stands nearer the sheet (68 and 100 px from the tip), so the arms are short arcs.
+
+Open, for whoever comes next:
+
+1. Holding paper: the sheet is the real resume sheet at true size (220 by 300 px beside a 70 px cursor), so it cannot be held in front of the arrow by its two sides. Wanted: a small sheet. Either slab_maker gives `resume-paper:<name>` a size, or the pose draws a small sheet of its own under `src/cursor/act/`.
+2. Pulling paper: no feed slit is in the sheet's draw list. Add the slot shape of step 1 to the list in `arms()` of `src/cursor/sheets.ts` under the pulling pose and set `pull` so the sheet bends into it.
+3. Bracing: the hands are placed by `left` and `right` in `ARMS` (page px from the tip and a height); the wrist follows the arm's end tangent in `Limb.pose` of `src/cursor/act/arms.ts`, there is no bend back at the wrist. A wrist angle per pose is the missing number.
+4. An upper arm over the white face: the shoulders are `anchor()` points of the body, `ROOT` 0.09 of the way in from the side (`src/cursor/view.ts`). Moving them to the edge band needs the anchor from cursor_modeller.
