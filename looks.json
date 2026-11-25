@@ -1,0 +1,35 @@
+{
+  "folder": "cursor-act",
+  "pushed": "2026-11-25T13:49:31.772Z",
+  "commit": "fe7f43494f30c644d88e7a0e56772833818f4cf1",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Sheet cursor-acting beside the approved image, draft tier, on the first real body: acting, damage and arms are real, sweat, steam and smoke wait for the effects",
+      "time": "2026-11-25T13:49:29.812Z",
+      "by": "cursor-act",
+      "from": "out/work/compare/compare-cursor-acting.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Sheet cursor-damage beside the approved image, draft tier, on the first real body: acting, damage and arms are real, sweat, steam and smoke wait for the effects",
+      "time": "2026-11-25T13:49:30.045Z",
+      "by": "cursor-act",
+      "from": "out/work/compare/compare-cursor-damage.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Sheet cursor-arms beside the approved image, draft tier, on the first real body: acting, damage and arms are real, sweat, steam and smoke wait for the effects",
+      "time": "2026-11-25T13:49:30.290Z",
+      "by": "cursor-act",
+      "from": "out/work/compare/compare-cursor-arms.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "The tug across its beat, draft tier: arms sprout, strain, the body braces",
+      "time": "2026-11-25T13:49:30.515Z",
+      "by": "cursor-act",
+      "from": "out/work/sheets/sheet-beat-step1_tug-preview-draft.jpg"
+    }
+  ]
+}
