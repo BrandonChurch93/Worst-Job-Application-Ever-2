@@ -25,22 +25,22 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 17, 2026-11-25T11:36Z, Phase 2.
+Status 18, 2026-11-25T11:57Z, Phase 2.
 
-1. `out/stills/status/01-step1-shredded-after-fix.jpg`: The end of step 1, 0:42 to 0:46, twelve frames in order: the strips leave the shredder, the form empties and says the resume was received, and that holds for 2.5 s before the page turns.
-2. `out/stills/status/02-pinball-launch-ride.jpg`: The launch, 1:15 to 1:18, twelve frames in order: the camera comes down to the plunger, then stays behind the ball, close at first and opening as the ball climbs the lane to the top tier.
-3. `out/stills/status/03-film-screen-bar-under.jpg`: The film screen on main now: the picture whole, the bar in its own strip underneath.
-4. `out/stills/status/04-live-links-step1.jpg`: Live mode on step 1 after 20 s: the two links at the top left, larger than before and clear of the title.
+1. `out/stills/status/01-round2-pinball-close-cameras.jpg`: What the critic of round 2 saw: the five close cameras of the pinball machine. Camera 9 (bottom) and camera 6 (top right) are the two severe issues.
+2. `out/stills/status/02-round2-pinball-whole-and-tiers.jpg`: The whole machine and its three tiers from above. In the first view the tower stands in front of the title board.
+3. `out/stills/status/03-round2-step1-tug.jpg`: Step 1, the tug of war, 0:36 to 0:42, twelve frames in order: from 0:36.6 to 0:40.5 the paper hardly moves.
+4. `out/stills/status/04-round2-boss-popups.jpg`: The boss fight, 2:05 to 2:21, twelve frames in order: the pop-ups follow each other at the same weight until the boss breaks.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 2, tick 46 at 2026-11-25T11:36:41Z, allowance: build
-time used in this phase: 3.97 h of its box of 6.50 h
-time used under the allowance in force: 6.07 h of 36.00 h allowed
-time used: 6.07 of 36.00 hours before the review
+clock: phase 2, tick 47 at 2026-11-25T11:57:47Z, allowance: build
+time used in this phase: 4.32 h of its box of 6.50 h
+time used under the allowance in force: 6.42 h of 36.00 h allowed
+time used: 6.42 of 36.00 hours before the review
 extra rounds: yes
 half point: reached
 box end: not reached
