@@ -164,8 +164,8 @@ export function rounded(points: V3[], bend: number, steps = 8): V3[] {
 
 // The two shells of the clear tube along a path.
 export function shells(C: Geo, path: V3[]): void {
-  C.pipe(path, TUBE.outer, TUBE.sides, [1, 1, 1])
-  C.pipe(path, TUBE.outer - TUBE.wall, TUBE.sides, [1, 1, 1], true)
+  C.pipe(path, TUBE.outer, TUBE.sides, TONE.clear)
+  C.pipe(path, TUBE.outer - TUBE.wall, TUBE.sides, TONE.clear, true)
 }
 
 // A coil spring along z from 0 to `long`.

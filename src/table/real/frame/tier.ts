@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import type { RealContext } from '../../../real/types'
 import { BALL, COLS, MID, TH, TIERS, TIER_Y, railOf, table } from '../../layout'
 import { localBalls, type Zone } from '../zone'
-import { Geo, type V2 } from './geo'
+import { Geo, grooved, type V2 } from './geo'
 import { Screws, TONE, aluOf, mesh, paintOf, screwOf, steelOf } from './mats'
 
 // What the walls of a tier are made to, in page pixels.
@@ -60,7 +60,7 @@ export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
   const land1 = xa - RAIL.ledge
   const mid = (land0 + land1) / 2
   const left: V2[] = [[xb, 0], [xb, H - c], [land0, H], [mid - RAIL.channel - 3, H], [mid - RAIL.channel, H - RAIL.channelDepth], [mid + RAIL.channel, H - RAIL.channelDepth], [mid + RAIL.channel + 3, H], [land1, H], [land1, H - RAIL.ledgeDrop], [xa - c, H - RAIL.ledgeDrop], [xa, H - RAIL.ledgeDrop - c], ...reveal(xa, -1), [xa, 0]]
-  for (const [y0, y1] of lengths(0, TH, 5.6)) A.prism(left, [0, y0], [0, y1], TONE.alu)
+  for (const [y0, y1] of lengths(0, TH, 5.6)) A.prism(left, [0, y0], [0, y1], grooved(left, [xa - RAIL.revealDeep], TONE.alu, TONE.gap))
   P.box(xb, xa, Y(5.6) - RAIL.joint / 2, Y(5.6) + RAIL.joint / 2, 0, H - 4, TONE.gap, { along: [0, 1, 0] })
   for (let v = RAIL.screwStep / 2; v < TH; v += RAIL.screwStep) screws.add(mid, Y(v), H - RAIL.channelDepth, 1, turnOf(mid, v))
   for (let v = RAIL.screwStep; v < TH; v += RAIL.screwStep * 2) screws.add((land1 + xa) / 2, Y(v), H - RAIL.ledgeDrop, 0.8, turnOf(xa, v))
@@ -76,7 +76,7 @@ export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
     right.push([xf + RAIL.cradle * Math.sin(t), H + RAIL.tubeUp - RAIL.cradle * Math.cos(t)])
   }
   right.push([xf + half, H], [xe - c, H], [xe, H - c], [xe, 0])
-  for (const [y0, y1] of lengths(0, dive, 5.6)) A.prism(right, [0, y0], [0, y1], TONE.alu)
+  for (const [y0, y1] of lengths(0, dive, 5.6)) A.prism(right, [0, y0], [0, y1], grooved(right, [xc + RAIL.revealDeep], TONE.alu, TONE.gap))
   P.box(xc, xe, Y(5.6) - RAIL.joint / 2, Y(5.6) + RAIL.joint / 2, 0, H - 4, TONE.gap, { along: [0, 1, 0] })
   for (let v = RAIL.screwStep / 2; v < dive - 0.2; v += RAIL.screwStep) {
     screws.add((xc + c + xf - half) / 2, Y(v), H, 0.9, turnOf(xc, v))
@@ -143,7 +143,8 @@ export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
   // The top of the tier.
   const top = CROSS.lower * BALL
   if (k === 0) {
-    A.prism([[0, 0], [0, H], [top - c, H], [top, H - c], ...reveal(top, -1), [top, 0]], [xa, yT], [xc, yT], TONE.alu, [false, false])
+    const head: V2[] = [[0, 0], [0, H], [top - c, H], [top, H - c], ...reveal(top, -1), [top, 0]]
+    A.prism(head, [xa, yT], [xc, yT], grooved(head, [top - RAIL.revealDeep], TONE.alu, TONE.gap), [false, false])
     A.box(xL + 8, xR - 8, yT - top / 2 - 1.2, yT - top / 2 + 1.2, H - 0.4, H + 0.35, TONE.brass)
     for (let u = COLS.left + 0.75; u < COLS.right; u += RAIL.screwStep) screws.add(X(u), yT - 7, H, 0.8, turnOf(u, 1))
     // The throat: the launch lane turns into the top lane round a corner block cut to the ball's way.
@@ -172,7 +173,7 @@ export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
     const g = STEP.groove
     const in0 = top - STEP.back
     const cross: V2[] = [[0, 0], [0, h - c], [c, h], [in0 - c, h], [in0, h - c], [in0, BALL + STEP.rise], [top - STEP.rise, BALL + STEP.rise], [top, BALL], [top, g + STEP.grooveWide], [top - STEP.grooveDeep, g + STEP.grooveWide - 1.2], [top - STEP.grooveDeep, g + 1.2], [top, g], [top, 0]]
-    const tone = (edge: number): [number, number, number] => (edge === 4 || edge >= 7 ? TONE.aluDark : TONE.alu)
+    const tone = (edge: number): [number, number, number] => (edge === 9 ? TONE.gap : edge === 4 || edge >= 7 ? TONE.aluDark : TONE.alu)
     A.prism(cross, [xL, yT], [X(MID - CROSS.throat), yT], tone)
     A.prism(cross, [X(MID + CROSS.throat), yT], [xR, yT], tone)
     A.box(xa, xL, yT - 4, yT, 0, BALL, TONE.aluDark)

@@ -6,7 +6,7 @@ import { creaseExact } from './paperSolve'
 
 const srgb = (hex: number) => new THREE.Color().setHex(hex, THREE.SRGBColorSpace)
 
-export const STOCK = { seed: config.seed + 1907, fibrePx: 512, creaseW: 512, creaseH: 704, fibreTile: 108 }
+export const STOCK = { seed: config.seed + 1907, fibrePx: 512, creaseW: 512, creaseH: 704, fibreTile: 54, drawn: 220 }
 
 // Paper fibre: short pale and dark strands laid every way over a faint cloud, as a colour picture that tiles.
 export function fibreMap(size: number, seed: number): THREE.DataTexture {
@@ -119,8 +119,8 @@ export function stock(sheetW: number, sheetL: number): Stock {
   if (made) return made
   const fibre = fibreMap(STOCK.fibrePx, STOCK.seed)
   fibre.repeat.set(sheetW / STOCK.fibreTile, sheetL / STOCK.fibreTile)
-  const crease = creaseMap(STOCK.creaseW, STOCK.creaseH, STOCK.seed, sheetW, sheetL, 5)
-  const base = { color: srgb(0xe9eaed), roughness: 0.9, metalness: 0, specularIntensity: 0.35, side: THREE.DoubleSide }
+  const crease = creaseMap(STOCK.creaseW, STOCK.creaseH, STOCK.seed, STOCK.drawn, (STOCK.drawn * sheetL) / sheetW, 5)
+  const base = { color: srgb(0xf3f3f1), roughness: 0.9, metalness: 0, specularIntensity: 0.35, side: THREE.DoubleSide }
   const sheet = studio(new THREE.MeshPhysicalMaterial({ ...base, map: fibre, normalMap: crease, normalScale: new THREE.Vector2(0.2, 0.2) }))
   const strip = studio(new THREE.MeshPhysicalMaterial({ ...base, vertexColors: true }))
   const print = studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0.78, metalness: 0, specularIntensity: 0.3, vertexColors: true, side: THREE.DoubleSide }))

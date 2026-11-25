@@ -1,13 +1,16 @@
 import { config } from '../config'
 import { homePose } from '../stage/camera'
 import type { DrawList, PageLogic, SheetFrame } from '../stage/types'
+import { PAPER as SHEET_OF_STEP1, SLOT } from '../pages/step1/layout'
+import { slotShapes } from '../pages/step1/real/shredderShape'
+import { TUG } from '../pages/step1/script'
 import { gatheredAt, pileAt, restPose, STRIKE, type CursorPose, type Place } from './body'
 
 const hover = config.scale.heights.cursorHover
 const seed = config.seed
 
 // Each sheet shows its states in the order of its approved image, straight on, with the camera pushed in: the cursor's own size never changes.
-const SHEET = { acting: { step: 60, zoom: 5.2 }, damage: { step: 72, zoom: 5.2 }, arms: { zoom: 2.66, y: 470, mid: [952, 606] }, y: 508 }
+const SHEET = { acting: { step: 60, zoom: 5.2 }, damage: { step: 72, zoom: 5.2 }, arms: { zoom: 3.6, step: 100 }, y: 508 }
 
 const across = (n: number, i: number, step: number): number => 960 + (i - (n - 1) / 2) * step - 22
 
@@ -16,30 +19,41 @@ const reach = (x: number, y: number, left: [number, number, number], right: [num
   { x: x + right[0], y: y + right[1], z: right[2] }
 ]
 
-// The resume sheet of the tug, at its true size beside the cursor: flat on the page, held by its top edge.
-const PAPER = { w: 220, h: 300, hands: 34, edge: 5, tall: config.scale.heights.paper }
+// The resume sheet of the tug, at its true size beside the cursor, held by its two sides near the top corners.
+const PAPER = { w: SHEET_OF_STEP1.w, h: SHEET_OF_STEP1.h, hands: TUG.hands, edge: 5, tall: config.scale.heights.paper, front: hover + 13 }
+
+// The row stands round step 1's own slot: the pulling pose, the fourth, feeds its sheet to it.
+const ROW = { x: SLOT.cx - 16 - 3 * SHEET.arms.step, y: SLOT.cy - 132, pull: { x: -10, y: -6, from: 84, in: 0.34 } }
 
 // Standing idle, waving, holding, pulling, bracing to push. Hands in page pixels from the tip.
-// A pose with a sheet names where the middle of the sheet's top edge is from the tip: its hands are on that edge.
-const ARMS: { x: number; y: number; left: [number, number, number]; right: [number, number, number]; lean: number; grip: [number, number]; strain: number; squash: number; sheet?: { name: string; x: number; y: number; z: number; rot: number; pull: number } }[] = [
-  { x: 628, y: 0, left: [-13, 67, 5], right: [47, 66, 5], lean: 0, grip: [0.3, 0.3], strain: 0, squash: 1 },
-  { x: 704, y: 0, left: [-15, -8, 12], right: [38, 62, 5], lean: -0.06, grip: [0, 0.3], strain: 0, squash: 1.06 },
-  { x: 846, y: -4, left: [0, 0, 0], right: [0, 0, 0], lean: 0, grip: [1, 1], strain: 0, squash: 1, sheet: { name: 'holding', x: 22, y: 68, z: 1, rot: 0, pull: 0 } },
-  { x: 1080, y: -18, left: [0, 0, 0], right: [0, 0, 0], lean: -0.2, grip: [1, 1], strain: 0.9, squash: 1.1, sheet: { name: 'pulling', x: 18, y: 100, z: 3, rot: 0.07, pull: 1 } },
-  { x: 1216, y: 0, left: [58, 26, 10], right: [62, 46, 10], lean: 0.12, grip: [0, 0], strain: 0.15, squash: 0.94 }
+// A pose with a sheet names where the middle of the sheet's top edge is from the tip: its hands are on the two sides just under that edge.
+const ARMS: { x: number; y: number; left: [number, number, number]; right: [number, number, number]; lean: number; grip: [number, number]; strain: number; squash: number; sheet?: { name: string; x: number; y: number; z: number; pull: number } }[] = [
+  { x: 0, y: 0, left: [-13, 70, 4], right: [45, 70, 4], lean: 0, grip: [0.25, 0.25], strain: 0, squash: 1 },
+  { x: 0, y: 0, left: [-17, -4, 12], right: [45, 68, 4], lean: -0.06, grip: [0, 0.25], strain: 0, squash: 1.05 },
+  { x: 0, y: -2, left: [0, 0, 0], right: [0, 0, 0], lean: 0, grip: [1, 1], strain: 0.1, squash: 1, sheet: { name: 'holding', x: 15, y: 50, z: PAPER.front, pull: 0 } },
+  { x: ROW.pull.x, y: ROW.pull.y, left: [0, 0, 0], right: [0, 0, 0], lean: -0.2, grip: [1, 1], strain: 0.85, squash: 1.1, sheet: { name: 'pulling', x: 24, y: ROW.pull.from, z: 3, pull: 1 } },
+  { x: 6, y: 0, left: [60, 24, 9], right: [63, 47, 9], lean: 0.12, grip: [0, 0], strain: 0.9, squash: 0.94 }
 ]
 
-function held(x: number, y: number, sheet: NonNullable<(typeof ARMS)[number]['sheet']>): { hands: [Place, Place]; shape: DrawList[number] } {
+function held(x: number, y: number, sheet: NonNullable<(typeof ARMS)[number]['sheet']>): { hands: [Place, Place]; shapes: DrawList } {
   const mx = x + sheet.x
   const my = y + sheet.y
-  const c = Math.cos(sheet.rot)
-  const n = Math.sin(sheet.rot)
+  const fed = sheet.pull > 0
+  const whole = fed ? Math.hypot(SLOT.cx - mx, SLOT.cy - my) : PAPER.h
+  const rot = fed ? Math.atan2(SLOT.cy - my, SLOT.cx - mx) - Math.PI / 2 : 0
+  const c = Math.cos(rot)
+  const n = Math.sin(rot)
   const z = sheet.z + PAPER.edge
-  const hands: [Place, Place] = [{ x: mx - c * PAPER.hands, y: my - n * PAPER.hands, z }, { x: mx + c * PAPER.hands, y: my + n * PAPER.hands, z }]
-  const cx = mx - n * (PAPER.h / 2)
-  const cy = my + c * (PAPER.h / 2)
-  const v = [0, 0, 0, sheet.pull, hands[0].x, hands[0].y, hands[1].x, hands[1].y, 0, 0, 1]
-  return { hands, shape: { id: `resume-paper:${sheet.name}`, part: 'paper', kind: 'box', x: cx - PAPER.w / 2, y: cy - PAPER.h / 2, w: PAPER.w, h: PAPER.h, z0: sheet.z, z1: sheet.z + PAPER.tall, rot: sheet.rot, tone: 'paper', moved: true, v } }
+  const down = fed ? 0 : PAPER.edge + 3
+  const at = (side: number): Place => ({ x: mx + side * c * PAPER.hands - n * down, y: my + side * n * PAPER.hands + c * down, z })
+  const hands: [Place, Place] = [at(-1), at(1)]
+  const cx = mx - n * (whole / 2)
+  const cy = my + c * (whole / 2)
+  const amount = fed ? 1 - whole / PAPER.h : 0
+  const v = [fed ? sheet.z : 0, fed ? 1 : 0, amount, sheet.pull, hands[0].x, hands[0].y, hands[1].x, hands[1].y, 0, 0, 1]
+  const shapes: DrawList = fed ? slotShapes([1, 0.4, 0]) : []
+  shapes.push({ id: fed ? 'resume-paper' : `resume-paper:${sheet.name}`, part: 'paper', kind: 'box', x: cx - PAPER.w / 2, y: cy - whole / 2, w: PAPER.w, h: whole, z0: sheet.z, z1: sheet.z + PAPER.tall, rot, tone: 'paper', moved: true, v })
+  return { hands, shapes }
 }
 
 function acting(): CursorPose[] {
@@ -72,11 +86,12 @@ function damage(): CursorPose[] {
 
 function arms(): { cursors: CursorPose[]; list: DrawList } {
   const list: DrawList = []
-  const cursors = ARMS.map((a) => {
-    const y = SHEET.arms.y + a.y
-    const grip = a.sheet ? held(a.x, y, a.sheet) : null
-    if (grip) list.push(grip.shape)
-    return restPose(a.x, y, { arms: true, lean: a.lean, squash: a.squash, grip: a.grip, strain: a.strain, sprout: 1, hands: grip ? grip.hands : reach(a.x, y, a.left, a.right) })
+  const cursors = ARMS.map((a, i) => {
+    const x = ROW.x + i * SHEET.arms.step + a.x
+    const y = ROW.y + a.y
+    const grip = a.sheet ? held(x, y, a.sheet) : null
+    if (grip) list.push(...grip.shapes)
+    return restPose(x, y, { arms: true, lean: a.lean, squash: a.squash, grip: a.grip, strain: a.strain, sprout: 1, hands: grip ? grip.hands : reach(x, y, a.left, a.right) })
   })
   return { cursors, list }
 }
@@ -85,7 +100,7 @@ export function cursorSheet(id: string, page: PageLogic): SheetFrame | null {
   void page
   const view = homePose(0)
   const shot = (zoom: number, mid = [960, 540]) => ({ ...view, eye: [mid[0]! - 960, 540 - mid[1]!, view.eye[2] / zoom] as [number, number, number], target: [mid[0]! - 960, 540 - mid[1]!, 0] as [number, number, number] })
-  if (id === 'cursor-arms') return { ...arms(), view: shot(SHEET.arms.zoom, SHEET.arms.mid) }
+  if (id === 'cursor-arms') return { ...arms(), view: shot(SHEET.arms.zoom, [ROW.x + 2 * SHEET.arms.step + 18, ROW.y + 62]) }
   if (id === 'cursor-damage') return { list: [], cursors: damage(), view: shot(SHEET.damage.zoom) }
   if (id === 'cursor-acting') return { list: [], cursors: acting(), view: shot(SHEET.acting.zoom) }
   return null

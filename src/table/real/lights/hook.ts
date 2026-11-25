@@ -44,6 +44,11 @@ const body = /* glsl */ `
 	}
 	wjlCut = max( wjlCut, 0.0 );
 	float wjlUp = max( wjlP.z, 0.0 );
+	#ifdef WJL_GLASS
+	float wjlClear = 0.25;
+	#else
+	float wjlClear = 1.0;
+	#endif
 	float wjlWall = 1.0 - smoothstep( 0.3, 0.9, wjlN.z );
 	float wjlTop = 1.0 - wjlWall;
 	float wjlShine = 1.0 - smoothstep( 0.9, 0.995, wjlN.z ) * ( 1.0 - smoothstep( 4.0, 16.0, wjlUp ) );
@@ -55,23 +60,23 @@ const body = /* glsl */ `
 		if ( c.r + c.g + c.b <= 0.0 ) continue;
 		vec4 at = wjlAt[ i ];
 		if ( at.w > 2.5 ) {
-			wjlField += c * ( 0.34 + 0.5 * min( 1.6, wjlPhi[ 0 ] ) ) * wjlInside * ( 0.58 + 0.42 * wjlN.z );
+			wjlField += c * ( 0.34 + 0.5 * min( 1.6, wjlPhi[ 0 ] ) ) * wjlInside * wjlClear * ( 0.58 + 0.42 * wjlN.z );
 			continue;
 		}
-		float amount = wjlPhi[ i ] * wjlInside;
+		float amount = wjlPhi[ i ] * wjlInside * wjlClear;
 		if ( at.w < 0.5 ) {
-			wjlField += c * amount * ( 0.58 + 0.42 * wjlN.z ) / ( 1.0 + wjlUp * wjlUp * at.z );
+			wjlField += c * amount * ( 0.34 + 0.66 * max( wjlN.z, 0.0 ) ) / ( 1.0 + wjlUp * wjlUp * at.z );
 			continue;
 		}
 		vec3 from = at.xyz;
 		if ( at.w > 1.5 ) {
 			from = vec3( wjlP.xy + wjlToward * at.z * wjlRun, at.z + wjlUp * wjlTop );
 			amount *= wjlCut / ( 1.0 + wjlTop * wjlUp * wjlUp * ${(1 / (170 * 170)).toExponential(4)} );
-			amount = mix( amount, 0.6 * amount / ( 1.0 + 1.5 * amount ), wjlWall );
+			amount = mix( amount, 0.6 * amount / ( 1.0 + 1.5 * amount ), max( wjlWall, smoothstep( 40.0, 100.0, wjlUp ) ) );
 		}
 		vec3 low = vec3( from.xy - wjlP.xy, at.z );
 		vec3 to = from - wjlP;
-		amount *= ( dot( low, low ) + ${(BODY * BODY).toFixed(1)} ) / ( dot( to, to ) + ${(BODY * BODY).toFixed(1)} );
+		amount *= min( ( dot( low, low ) + ${(BODY * BODY).toFixed(1)} ) / ( dot( to, to ) + ${(BODY * BODY).toFixed(1)} ), at.w > 1.5 ? 1.4 : 8.0 );
 		wjlLight.direction = normalize( ( viewMatrix * vec4( to, 0.0 ) ).xyz );
 		wjlLight.color = c * amount * PI;
 		vec3 wjlGloss = reflectedLight.directSpecular;
@@ -107,12 +112,15 @@ const skips = (m: THREE.Material): boolean => m.userData.unlit === true || (m.us
 
 const seen = new WeakSet<THREE.Material>()
 
-function patch(shader: THREE.WebGLProgramParametersWithUniforms, s: ZoneLight, light: boolean, own: boolean): void {
+// Clear glass sends back almost none of a lamp's light as a matte thing does: it shows the lamps in its reflection.
+const glass = (m: THREE.Material): boolean => m.transparent === true && m.opacity < 0.5
+
+function patch(shader: THREE.WebGLProgramParametersWithUniforms, s: ZoneLight, light: boolean, own: boolean, clear: boolean): void {
   if (shader.fragmentShader.includes('wjlEnv')) return
   const lights = light && shader.fragmentShader.includes(END)
   if (!lights && !own) return
   Object.assign(shader.uniforms, s.uniforms)
-  let f = pars + (lights ? shader.fragmentShader.replace(END, body + END) : shader.fragmentShader)
+  let f = (clear ? '#define WJL_GLASS\n' : '') + pars + (lights ? shader.fragmentShader.replace(END, body + END) : shader.fragmentShader)
   if (own) {
     if (f.includes('( envMapIntensity * wjaEnvOwn )')) f = f.replaceAll('( envMapIntensity * wjaEnvOwn )', '( wjaEnvOwn * wjlEnv )')
     else if (f.includes('#include <envmap_physical_pars_fragment>')) f = f.replace('#include <envmap_physical_pars_fragment>', THREE.ShaderChunk.envmap_physical_pars_fragment.replaceAll('* envMapIntensity', '* ( envMapIntensity * wjlEnv )'))
@@ -138,7 +146,7 @@ export const hook: ((m: THREE.Material, z: Zone) => void) | null = (m, z) => {
     } finally {
       depth--
     }
-    if (depth === 0) patch(shader, s, !skips(m), standard && (m as THREE.MeshStandardMaterial).envMap === surroundOf(z))
+    if (depth === 0) patch(shader, s, !skips(m), standard && (m as THREE.MeshStandardMaterial).envMap === surroundOf(z), glass(m))
   }
   const key = (): string => {
     const f = keys[keys.length - 1 - keyDepth]
@@ -149,7 +157,7 @@ export const hook: ((m: THREE.Material, z: Zone) => void) | null = (m, z) => {
     } finally {
       keyDepth--
     }
-    return keyDepth === 0 ? `${k}|wjl${skips(m) ? 0 : 1}${standard ? 1 : 0}` : k
+    return keyDepth === 0 ? `${k}|wjl${skips(m) ? 0 : 1}${standard ? 1 : 0}${glass(m) ? 1 : 0}` : k
   }
   Object.defineProperty(m, 'onBeforeCompile', { configurable: true, enumerable: true, get: () => compile, set: (f: (typeof compiles)[number]) => { if (f !== compile) compiles.push(f) } })
   Object.defineProperty(m, 'customProgramCacheKey', { configurable: true, enumerable: true, get: () => key, set: (f: (typeof keys)[number]) => { if (f !== key) keys.push(f) } })
