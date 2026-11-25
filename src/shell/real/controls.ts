@@ -3,7 +3,7 @@ import type { PartMaker, RealContext } from '../../real/types'
 import type { Shape, Tone } from '../../stage/types'
 import { look } from '../../post/look'
 import { materials, type Materials } from '../materials'
-import { arc, circle, outlineOf, pocketCut, profile, roundedRect, sweep, type Outline, type ProfilePoint } from '../solids'
+import { arc, circle, outlineOf, pocketCut, profile, roundedRect, sweep, type Outline, type ProfilePoint, type Ring } from '../solids'
 
 const q = (v: number): number => Math.round(v * 4) / 4
 const geometries = new Map<string, THREE.BufferGeometry>()
@@ -60,10 +60,10 @@ function bead(inset: number, z: number, across: number, fall: number, steps: num
   return out
 }
 
-const SOAK = 7
+const SOAK = 8.5
 const SOAK_HOLD = 2.5
-const SOAK_DEPTH = 0.24
-const BOUNCE = 0.2
+const SOAK_DEPTH = 0.4
+const BOUNCE = 0.24
 const BOUNCE_REACH = 10
 const GLINT = 0.14
 const SOAK_RINGS = [0, 1.5, 3, 5, 7.5, 10.5, 14, 18, 23, 29, 36]
@@ -160,7 +160,7 @@ const CROWN_RAIL = 1.2
 const CROWN_BUTTON = 1.3
 const FOOT_RING = 6
 const SHOULDER = 13
-const FLANGE = 5.6
+const FLANGE = 4.4
 
 function rail(s: Shape): THREE.Object3D {
   const under = pocketCut(s).under
@@ -176,30 +176,59 @@ function socket(s: Shape): THREE.Object3D {
   return root
 }
 
-const SEAT = 2.4
-const SEAT_RISE = 1.2
+const CHIP_SHADE = 9
+const CHIP_SHADE_DEPTH = 0.36
+const CHIP_CROWN = 0.5
+let shadeMaterial: THREE.MeshBasicMaterial | undefined
+
+function chipShade(s: Shape): THREE.Mesh {
+  shadeMaterial ??= new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, blending: THREE.CustomBlending, blendSrc: THREE.DstColorFactor, blendDst: THREE.ZeroFactor, depthWrite: false, toneMapped: false })
+  const reach = CHIP_SHADE
+  const around = { kind: s.kind, w: s.w + reach * 2, h: s.h + reach * 2, r: (s.r ?? 0) + reach }
+  const g = shared(`chipShade:${dims(s)}`, () => {
+    const rings: Ring[] = []
+    for (let i = 0; i <= 9; i++) rings.push({ inset: (reach * i) / 9 + (i === 9 ? 1.5 : 0), z: 0, out: 0, up: 1 })
+    const geo = sweep(outlineOf(around, 0, 18), rings)
+    const at = geo.getAttribute('position')
+    const colour = new Float32Array(at.count * 3)
+    const r = Math.min(s.w, s.h) / 2
+    for (let i = 0; i < at.count; i++) {
+      const qx = Math.max(Math.abs(at.getX(i)) - (s.w / 2 - r), 0)
+      const qy = Math.max(Math.abs(at.getY(i)) - (s.h / 2 - r), 0)
+      const far = Math.min(1, Math.max(0, (Math.hypot(qx, qy) - r + 1.5) / (reach + 1.5)))
+      const v = 1 - CHIP_SHADE_DEPTH * (1 - far) * (1 - far)
+      colour[i * 3] = v
+      colour[i * 3 + 1] = v
+      colour[i * 3 + 2] = v
+    }
+    geo.setAttribute('color', new THREE.BufferAttribute(colour, 3))
+    return geo
+  })
+  const shade = new THREE.Mesh(g, shadeMaterial)
+  shade.position.set(reach * 0.42, -reach * 0.4, 0.06)
+  shade.renderOrder = 1
+  return shade
+}
 
 function capsule(s: Shape, round: number): THREE.Object3D {
   const h = s.z1 - s.z0
   const r = Math.min(round, h * 0.6, Math.min(s.w, s.h) / 2 - 1)
-  if (s.role !== 'chip') return mesh(shared(`cap:${dims(s)}:${round}`, () => sweep(outlineOf(s, 0, 18), profile([[0, 0, true], [0, h - r], ...arc(0, h - r, r, r, 8).slice(1)]))), toneMaterial(s.tone))
+  if (s.role !== 'chip') return mesh(shared(`cap:${dims(s)}:${round}`, () => sweep(outlineOf(s, 0, 18), profile([[0, 0, true], [0, h - r], ...arc(0, h - r, r, r, 8).slice(1)]))), s.tone === 'metal' ? materials().waiting : toneMaterial(s.tone))
   // A chip's edge is a wide soft round that starts 40 degrees up from its wall, so no part of it looks at the floor.
   const from = (40 * Math.PI) / 180
-  const big = Math.min(6, Math.min(s.w, s.h) / 2 - 1)
-  const soft: ProfilePoint[] = [[0, 0, true], [0, h - big + big * Math.sin(from), true]]
+  const big = Math.min(4.5, Math.min(s.w, s.h) / 2 - 1)
+  const top = h - CHIP_CROWN
+  const soft: ProfilePoint[] = [[0, 0, true], [0, top - big + big * Math.sin(from), true]]
   for (let i = 1; i <= 8; i++) {
     const t = from + ((Math.PI / 2 - from) * i) / 8
-    soft.push([big * (Math.cos(from) - Math.cos(t)), h - big + big * Math.sin(t)])
+    soft.push([big * (Math.cos(from) - Math.cos(t)), top - big + big * Math.sin(t)])
   }
-  const cap = mesh(shared(`chipCap:${dims(s)}`, () => sweep(outlineOf(s, 0, 18), profile(soft))), toneMaterial(s.tone))
-  // A chip stands in a seat: a low glass collar, a narrow dark clearance inside it, and the cap rising out of that.
+  const edge = big * Math.cos(from)
+  const half = Math.min(s.w, s.h) / 2
+  for (const t of [0.75, 0.5, 0.25, 0.05]) soft.push([half - (half - edge) * t, top + CHIP_CROWN * (1 - t * t)])
   const root = new THREE.Group()
-  const out = SEAM + SEAT
-  const around = { kind: s.kind, w: s.w + out * 2, h: s.h + out * 2, r: (s.r ?? 0) + out }
-  const collar: ProfilePoint[] = [[0, 0, true], [0.5, SEAT_RISE - 0.5, true], [1, SEAT_RISE, true], [SEAT - 0.5, SEAT_RISE, true], [SEAT, SEAT_RISE - 0.5, true], [SEAT, 0.1, true]]
-  root.add(mesh(shared(`seatCollar:${dims(s)}`, () => sweep(outlineOf(around, 0, 18), profile(collar), false)), materials().glassThick))
-  root.add(mesh(shared(`seat:${dims(s)}`, () => sweep(outlineOf(around, SEAT - 0.1, 18), [{ inset: 0, z: 0.12, out: 0, up: 1 }])), materials().cardSeal, false))
-  root.add(cap)
+  root.add(chipShade(s))
+  root.add(mesh(shared(`chipCap:${dims(s)}`, () => sweep(outlineOf(s, 0, 18), profile(soft))), materials().chip))
   return root
 }
 
