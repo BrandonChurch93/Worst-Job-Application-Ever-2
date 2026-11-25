@@ -1,16 +1,16 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { bareFloor, distanceSquared, edgeCount, exitCode, grouped, highFrequencyEnergy, isTierCamera, lines, m1, m10, m2, m3, m4, m5, m6, m7, m8, m9, measuresOf, notYet, restAndKeys, result, stillsOf, tierCameras } from '../tools/lib/measure-core.mjs'
+import { bareFloor, cursorChanges, distanceSquared, edgeCount, exitCode, grouped, highFrequencyEnergy, isTierCamera, lines, m1, m10, m2, m3, m4, m5, m6, m7, m8, m9, measuresOf, notYet, restAndKeys, result, stillsOf, tierCameras } from '../tools/lib/measure-core.mjs'
 
 const root = path.resolve(__dirname, '..')
 const c = JSON.parse(fs.readFileSync(path.join(root, 'config/showcase.json'), 'utf8'))
 
-type Cursor = { x: number; y: number; heightPx: number; screenHeightPx: number; worldScale: number; acting: string; damage: string[]; arms: boolean; onPage: boolean; inBall: boolean; ballScreenPx: number }
+type Cursor = { x: number; y: number; heightPx: number; screenHeightPx: number; worldScale: number; acting: string; damage: string[]; arms: boolean; onPage: boolean; inBall: boolean; ballScreenPx: number; reaction?: string | null; reactionAt?: number }
 const cursor = (o: Partial<Cursor> = {}): Cursor => ({ x: 960, y: 540, heightPx: c.cursor.heightPxAt1080, screenHeightPx: c.cursor.heightPxAt1080, worldScale: 1, acting: 'plain', damage: [], arms: false, onPage: true, inBall: false, ballScreenPx: 0, ...o })
 const part = (o: Record<string, unknown> = {}) => ({ id: 'a', kind: 'panel', planned: [100, 100, 200, 80], drawn: [100, 100, 200, 80], plannedHeight: null, height: 0, mechanism: false, ...o })
 const run = (o: Record<string, unknown> = {}) => ({ key: 'copy:a', text: 'A', box: [0, 0, 100, 20], px: c.layout.minTextPx, contrast: c.layout.minTextContrast, ...o })
-const still = (o: { layout?: unknown[]; type?: unknown[]; cursor?: Cursor; name?: string; camera?: string } = {}) => ({ name: o.name ?? 'still:x', camera: o.camera ?? 'home', state: { layout: o.layout ?? [], type: o.type ?? [], cursor: o.cursor ?? cursor() } })
+const still = (o: { layout?: unknown[]; type?: unknown[]; cursor?: Cursor; name?: string; camera?: string; rest?: boolean } = {}) => ({ name: o.name ?? 'still:x', camera: o.camera ?? 'home', rest: o.rest ?? false, state: { layout: o.layout ?? [], type: o.type ?? [], cursor: o.cursor ?? cursor() } })
 
 describe('which measures and which stills a unit gets', () => {
   it('gives the pages M1 to M7 and M9, the pinball page M8 and M10 as well, and the film M7 alone', () => {
@@ -139,6 +139,22 @@ describe('M5, layout', () => {
     expect(r.status).toBe('fail')
     expect(r.failing[0].what).toContain('right')
   })
+  it('leaves out a part a gag has moved, and says how many and which', () => {
+    const r = m5([still({ name: 'key:tug', layout: [part(), part({ id: 'paper', drawn: [600, 100, 200, 80], moved: true })] })], c)
+    expect(r.status).toBe('pass')
+    expect(r.numbers.parts).toBe(1)
+    expect(r.numbers.leftOutAsMoved).toEqual([{ still: 'key:tug', part: 'paper' }])
+    expect(r.summary).toContain('1 left out as moved by a gag')
+  })
+  it('is red for a moved part in a still of the page at rest, wherever it is drawn', () => {
+    const r = m5([still({ rest: true, layout: [part(), part({ id: 'paper', moved: true })] })], c)
+    expect(r.status).toBe('fail')
+    expect(r.failing[0]).toMatchObject({ part: 'paper', value: 'moved' })
+    expect(r.numbers.leftOutAsMoved).toEqual([])
+  })
+  it('still judges a part that says it is not moved', () => {
+    expect(m5([still({ layout: [part({ drawn: [600, 100, 200, 80], moved: false })] })], c).status).toBe('fail')
+  })
 })
 
 describe('M6, the cursor\'s size', () => {
@@ -178,6 +194,24 @@ describe('M7, contact', () => {
     const r = m7([quiet(9), hit(10, 960 + far, 540), quiet(11, { acting: 'shocked' })], 10, 11)
     expect(r.status).toBe('fail')
     expect(r.failing[0]).toMatchObject({ frame: 10, event: 'bolt', value: far, limit: c.cursor.heightPxAt1080 })
+  })
+  it('is green when a reaction begins on the frame of the hit or the next', () => {
+    expect(m7([quiet(9), hit(10, 960, 540, { reaction: 'flinch', reactionAt: 0 }), quiet(11, { reaction: 'flinch', reactionAt: 0.1 })], 10, 11).status).toBe('pass')
+    expect(m7([quiet(9, { reaction: null }), hit(10, 960, 540, { reaction: null }), quiet(11, { reaction: 'flinch', reactionAt: 0 })], 10, 11).status).toBe('pass')
+  })
+  it('is green when one reaction gives way to another, and when the same one starts again', () => {
+    expect(m7([quiet(9, { reaction: 'flinch', reactionAt: 0.5 }), hit(10, 960, 540, { reaction: 'jump', reactionAt: 0 }), quiet(11, { reaction: 'jump', reactionAt: 0.1 })], 10, 11).status).toBe('pass')
+    expect(m7([quiet(9, { reaction: 'flinch', reactionAt: 0.6 }), hit(10, 960, 540, { reaction: 'flinch', reactionAt: 0.7 }), quiet(11, { reaction: 'flinch', reactionAt: 0.05 })], 10, 11).status).toBe('pass')
+  })
+  it('is red when a reaction only runs on, or only ends', () => {
+    expect(m7([quiet(9, { reaction: 'flinch', reactionAt: 0.5 }), hit(10, 960, 540, { reaction: 'flinch', reactionAt: 0.6 }), quiet(11, { reaction: 'flinch', reactionAt: 0.7 })], 10, 11).status).toBe('fail')
+    expect(m7([quiet(9, { reaction: 'flinch', reactionAt: 0.9 }), hit(10, 960, 540, { reaction: 'flinch', reactionAt: 1 }), quiet(11, { reaction: null })], 10, 11).status).toBe('fail')
+  })
+  it('reads a change of the cursor between two frames', () => {
+    expect(cursorChanges(cursor(), cursor())).toBe(false)
+    expect(cursorChanges(cursor(), cursor({ damage: ['burn'] }))).toBe(true)
+    expect(cursorChanges(cursor({ reaction: 'flinch', reactionAt: 1 }), cursor({ reaction: null }))).toBe(false)
+    expect(cursorChanges(cursor(), cursor({ reaction: 'flinch' }))).toBe(true)
   })
   it('is red for a hit the cursor does not answer', () => {
     const r = m7([quiet(9), hit(10, 960, 540), quiet(11)], 10, 11)

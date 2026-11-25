@@ -121,14 +121,20 @@ export function m4(stills, c) {
 const edges = (b) => [b[0], b[1], b[0] + b[2], b[1] + b[3]]
 const EDGE = ['left', 'top', 'right', 'bottom']
 
-// M5. stills: [{ name, state }]
+// M5. stills: [{ name, rest, state }]. A part with `moved` true is in a gag's hands: it is left out and counted, and in a still of a page at rest it is itself a fault.
 export function m5(stills, c) {
   const limit = c.layout.tolerancePx
   const failing = []
+  const moved = []
   let parts = 0
   let worst = 0
   for (const s of stills) {
     for (const p of s.state.layout) {
+      if (p.moved === true) {
+        if (s.rest) failing.push({ still: s.name, part: p.id, kind: p.kind, what: 'the part says a gag has moved it, in a still of the page at rest', value: 'moved', limit: 'in its place' })
+        else moved.push({ still: s.name, part: p.id })
+        continue
+      }
       parts++
       const a = edges(p.planned)
       const b = edges(p.drawn)
@@ -145,8 +151,8 @@ export function m5(stills, c) {
       if (off > limit) failing.push({ still: s.name, part: p.id, kind: p.kind, what: `its ${EDGE[which]} edge is off the layout tree`, value: r2(off), limit, planned: p.planned.map(r2), drawn: p.drawn.map(r2) })
     }
   }
-  if (!parts) return notYet('M5', `no part of a layout tree in the ${stills.length} stills read`)
-  return result('M5', failing, `${parts} parts in ${stills.length} stills: the furthest ${r2(worst)} px from the layout tree, the most allowed ${limit}`, { stills: stills.length, parts, worstPx: r2(worst), limit })
+  if (!parts && !failing.length) return notYet('M5', `no part of a layout tree in the ${stills.length} stills read`, { leftOutAsMoved: moved })
+  return result('M5', failing, `${parts} parts in ${stills.length} stills: the furthest ${r2(worst)} px from the layout tree, the most allowed ${limit}; ${moved.length} left out as moved by a gag`, { stills: stills.length, parts, worstPx: r2(worst), limit, leftOutAsMoved: moved })
 }
 
 // M6. stills: [{ name, camera, state }]
@@ -186,6 +192,16 @@ export function m6(stills, c) {
 
 const carriage = (k) => `${k.acting}|${k.damage.join(',')}`
 
+// Whether the cursor changes from one frame to the next: its acting or its damage differs, a reaction begins or gives way to another, or the same reaction starts again. A reaction that only ends is no change.
+export function cursorChanges(a, b) {
+  if (carriage(a) !== carriage(b)) return true
+  const from = a.reaction ?? null
+  const to = b.reaction ?? null
+  if (to === null) return false
+  if (from !== to) return true
+  return (b.reactionAt ?? 0) < (a.reactionAt ?? 0)
+}
+
 // M7. frames: [{ index, beat, cursor, events }] in order, with one frame before and one after where the film has them.
 // first and last bound the frames whose events are judged.
 export function m7(frames, first, last) {
@@ -199,7 +215,7 @@ export function m7(frames, first, last) {
     if (f.index < first || f.index > last) continue
     const before = frames[n - 1]
     const after = frames[n + 1]
-    const changed = (before !== undefined && carriage(before.cursor) !== carriage(f.cursor)) || (after !== undefined && carriage(after.cursor) !== carriage(f.cursor))
+    const changed = (before !== undefined && cursorChanges(before.cursor, f.cursor)) || (after !== undefined && cursorChanges(f.cursor, after.cursor))
     for (const e of f.events) {
       if (!e.hitsCursor) continue
       hits++
@@ -212,13 +228,13 @@ export function m7(frames, first, last) {
       }
       if (!changed) {
         unmoved++
-        failing.push({ frame: f.index, beat: f.beat, event: e.name, what: 'the cursor\'s damage or acting state does not change on that frame or the next', value: carriage(f.cursor), limit: 'a change', next: after ? carriage(after.cursor) : null })
+        failing.push({ frame: f.index, beat: f.beat, event: e.name, what: 'the cursor\'s damage or acting state does not change on that frame or the next, and no reaction starts', value: carriage(f.cursor), limit: 'a change', reaction: f.cursor.reaction ?? null, next: after ? carriage(after.cursor) : null })
       }
     }
   }
   const read = frames.filter((f) => f.index >= first && f.index <= last).length
   if (!hits) return result('M7', [], `${read} frames read: no event strikes the cursor in them`, { frames: read, hits: 0 })
-  return result('M7', failing, `${read} frames read, ${hits} events strike the cursor: ${far} further from it than its own height in the picture, ${unmoved} with no change of damage or acting on that frame or the next`, { frames: read, hits, tooFar: far, noChange: unmoved, worstOverPx: r2(Math.max(0, worst)) })
+  return result('M7', failing, `${read} frames read, ${hits} events strike the cursor: ${far} further from it than its own height in the picture, ${unmoved} with no change of damage or acting and no reaction starting on that frame or the next`, { frames: read, hits, tooFar: far, noChange: unmoved, worstOverPx: r2(Math.max(0, worst)) })
 }
 
 // M8. tiers: [{ id, standingParts, coverage: { floor, bare } | null, still }]
