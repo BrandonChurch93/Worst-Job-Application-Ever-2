@@ -267,13 +267,13 @@ function makeBolt(): THREE.Object3D {
   const root = new THREE.Group()
   const len = TURRET.bolt
   const head = overlay(new THREE.Mesh(f.head, f.headMaterial), 6)
-  head.scale.set(11, 5.2, 5.2)
+  head.scale.set(9, 3.8, 3.8)
   head.position.set(len / 2 - 11, 0, 8)
   const tail = overlay(new THREE.Mesh(f.tail, f.tailMaterial), 4)
-  tail.scale.set(88, 5.4, 5.4)
+  tail.scale.set(112, 3.8, 3.8)
   tail.position.set(len / 2 - 12, 0, 8)
   const core = overlay(new THREE.Mesh(f.tail, f.tailMaterial), 5)
-  core.scale.set(40, 3.2, 3.2)
+  core.scale.set(48, 2.2, 2.2)
   core.position.set(len / 2 - 12, 0, 8)
   root.add(tail, core, head)
   const data: BoltData = { head, tail, core }
@@ -285,8 +285,8 @@ function poseBolt(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const d = o.userData.bolt as BoltData
   const born = s.v ? Math.min(1, Math.max(0, s.v[1] ?? 1)) : 1
   const flick = 0.92 + 0.08 * Math.sin(ctx.time * 140 + (hashName(s.id) & 255))
-  d.tail.scale.set(30 + 62 * born, 5.4 * flick, 5.4 * flick)
-  d.core.scale.set(14 + 26 * born, 3.2, 3.2)
+  d.tail.scale.set(30 + 82 * born, 3.8 * flick, 3.8 * flick)
+  d.core.scale.set(14 + 34 * born, 2.2, 2.2)
   const a = s.rot ?? 0
   const half = TURRET.bolt / 2 - 9
   ctx.light({ x: s.x + s.w / 2 + Math.cos(a) * half, y: s.y + s.h / 2 + Math.sin(a) * half, z: s.z0 + 8, colour: EMIT.bolt.colour, power: EMIT.bolt.power * flick, reach: EMIT.bolt.reach, shadow: true })
@@ -304,7 +304,7 @@ interface ScorchData {
   turn: number
 }
 
-const SCORCH = { size: 52, smoke: 4, smokeSeconds: 1.5, shoulder: 4.5, core: 14 }
+const SCORCH = { size: 62, smoke: 4, smokeSeconds: 1.5, shoulder: 4.5, core: 14 }
 
 function makeScorch(s: Shape): THREE.Object3D {
   const f = fx()
