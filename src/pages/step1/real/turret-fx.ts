@@ -88,7 +88,7 @@ function scorchPicture(seed: number): THREE.DataTexture {
     const splinter = noise(ca * 11 + 21, sa * 11 + 21, seed + 5) ** 2
     const hole = 0.25 + ragged * 0.1
     const rim = hole + 0.07 + splinter * 0.13
-    const reach = rim + 0.26 + ragged * 0.3
+    const reach = rim + 0.2 + ragged * 0.26
     const toLight = ca * lx + sa * ly
     const fine = noise(u * 22, v * 22, seed + 11)
     const cloud = noise(u * 7 + 3, v * 7 + 8, seed + 17)
@@ -98,16 +98,17 @@ function scorchPicture(seed: number): THREE.DataTexture {
     const onRim = (1 - inside) * (1 - smooth((r - rim) / 0.04))
     const ridge = smooth(0.5 + 0.62 * toLight)
     const cast = (1 - inside) * (1 - onRim) * (1 - smooth((r - rim) / 0.12)) * Math.max(0, -toLight)
-    const halo = (1 - smooth((r - rim * 0.9) / (reach - rim * 0.9))) ** 0.6
-    const t = Math.min(1, halo * 1.15)
+    const halo = (1 - smooth((r - rim * 0.9) / (reach - rim * 0.9))) ** 1.1
+    const t = Math.min(1, halo * 1.4)
+    const burnt = smooth((noise(ca * 4 + 31, sa * 4 + 31, seed + 23) - 0.38) / 0.3) * (1 - 0.55 * smooth((r - hole - 0.05) / 0.1))
     const soot = 1 - 0.4 * smooth((fine - 0.58) / 0.2)
-    let red = mix(mix(0.6, 0.24, t), 0.09, cast * 0.75)
-    let green = mix(mix(0.34, 0.1, t), 0.065, cast * 0.75)
-    let blue = mix(mix(0.13, 0.03, t), 0.05, cast * 0.75)
-    let alpha = Math.max(halo * (0.75 + cloud * 0.2), cast * 0.6) * smooth((1 - r) / 0.1)
-    red = mix(red, mix(0.46, 1, ridge) * soot, onRim)
-    green = mix(green, mix(0.4, 0.975, ridge) * soot, onRim)
-    blue = mix(blue, mix(0.31, 0.92, ridge) * soot, onRim)
+    let red = mix(mix(0.6, 0.13, t), 0.07, cast * 0.75)
+    let green = mix(mix(0.34, 0.06, t), 0.05, cast * 0.75)
+    let blue = mix(mix(0.13, 0.025, t), 0.04, cast * 0.75)
+    let alpha = Math.max(Math.min(1, halo * 1.3) * (0.8 + cloud * 0.2), cast * 0.6) * smooth((1 - r) / 0.1)
+    red = mix(red, mix(mix(0.4, 0.93, ridge) * soot, 0.1 + 0.16 * ridge, burnt), onRim)
+    green = mix(green, mix(mix(0.34, 0.88, ridge) * soot, 0.06 + 0.09 * ridge, burnt), onRim)
+    blue = mix(blue, mix(mix(0.26, 0.76, ridge) * soot, 0.04 + 0.04 * ridge, burnt), onRim)
     alpha = Math.max(alpha, onRim * 0.97)
     red = mix(red, 0.03 + wall * 0.6 + metal * 0.2, inside)
     green = mix(green, 0.028 + wall * 0.54 + metal * 0.21, inside)
@@ -118,7 +119,7 @@ function scorchPicture(seed: number): THREE.DataTexture {
 }
 
 export const GLOW = {
-  boltHead: [10, 6.5, 3] as [number, number, number],
+  boltHead: [12, 7.5, 3.3] as [number, number, number],
   boltTail: [3.2, 1.0, 0.18] as [number, number, number],
   flash: [9, 3.6, 0.9] as [number, number, number],
   chargeLow: [6, 2.5, 0.6] as [number, number, number],
@@ -128,7 +129,7 @@ export const GLOW = {
 
 export const EMIT = {
   bolt: { colour: [1, 0.4, 0.09] as [number, number, number], power: 0.3, reach: 110 },
-  flash: { colour: [1, 0.5, 0.15] as [number, number, number], power: 0.9, reach: 220 },
+  flash: { colour: [1, 0.5, 0.15] as [number, number, number], power: 0.6, reach: 160 },
   charge: { colour: [1, 0.45, 0.12] as [number, number, number], power: 0.3, reach: 110 },
   hot: { colour: [1, 0.12, 0.03] as [number, number, number], power: 0.35, reach: 140 },
   ember: { colour: [1, 0.36, 0.08] as [number, number, number], power: 0.5, reach: 130 },

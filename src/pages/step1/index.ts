@@ -40,7 +40,7 @@ const SLAB_IN = { seconds: 0.05, from: 900, dip: 5, settle: 0.08 }
 const SLAB_OUT = { every: 0.06, pop: 0.12, up: 100, wait: 0.04, fly: 0.3, far: 1900, spring: 0.16 }
 const PRESS = 0.24
 const HOLD = 0.1
-const TAP = { seconds: 0.16, hold: 0.03, depth: 0.55 }
+const TAP = { seconds: 0.2, hold: 0.05, depth: 1, shake: 0.22 }
 const STRIKE = { seconds: 1.5, id: 90000, z: 96 }
 const THUD = { seconds: 0.26, hold: 0.07, shake: 0.4, hop: 0.15 }
 const PULSE = { hold: 0.05, fade: 0.3 }
@@ -89,6 +89,7 @@ interface State {
   seat: number
   shake: number
   shakeAt: { x: number; y: number }
+  struckAt: { x: number; y: number }
   shakeAmp: number
   thud: number
   thudKey: number
@@ -151,7 +152,7 @@ export function makePage(): PageLogic {
     mode, seed, time: 0, phase: 'rest', phaseTime: 0, board: 0, boardUp: false, values: { firstName: '', lastName: '', email: '' }, places: homePlaces(), from: homePlaces(), shuffle: 1, blocks: false,
     rng: stream('step1:shuffle', seed).state(), shuffles: 0, shuffledAt: 0, queue: [], keyDown: {}, drum: 0, shock: 0, slabs: [], slabClear: -1, accepted: false, slow: 0, slowFired: false, realFired: false,
     paper: { on: false, slide: 0, x: PAPER_REST.x, y: SCREEN_H + 20, held: false, dx: 0, dy: 0, feed: -1, fx: 0, fy: 0, vx: 0, vy: 0 }, slot: 0, tug: { t: 0, amount: 0, most: 0, cool: 0, gx: SLOT.cx, gy: SLOT.cy - PAPER.h, reach: TUG.reach.rest, rate: 0, pull: 0, vx: 0, vy: 0, hx: SLOT.cx, hy: SLOT.cy - PAPER.h },
-    lost: -1, singe: 0, armed: false, seat: 9, shake: 9, shakeAt: { x: 0, y: 0 }, shakeAmp: 1, thud: 9, thudKey: -1, sinceShuffle: 9, burst: { x: DECK.x + DECK.w / 2, y: DECK.y + DECK.h / 2 }, caret: 9, glow: 9, spin: 0, turn: 0, kept: null,
+    lost: -1, singe: 0, armed: false, seat: 9, shake: 9, shakeAt: { x: 0, y: 0 }, struckAt: { x: 0, y: 0 }, shakeAmp: 1, thud: 9, thudKey: -1, sinceShuffle: 9, burst: { x: DECK.x + DECK.w / 2, y: DECK.y + DECK.h / 2 }, caret: 9, glow: 9, spin: 0, turn: 0, kept: null,
     shred: 0, received: false, pressed: -1, skipped: false, cleaned: false, done: false, cue: 0, cx: START.x, cy: START.y, acted: null
   })
   let s = fresh('live', config.seed)
@@ -318,6 +319,11 @@ export function makePage(): PageLogic {
     const emit: Emit = (name, x, y, hit) => {
       io.emit(name, x, y, hit)
       if (name === 'bolt-hit' && !hit && s.shock <= 0 && s.acted !== 'proud' && Math.hypot(x - body.x, y - body.y) < NEAR) io.cursor.react('flinch')
+      if (name === 'bolt-hit' && !hit && s.shake >= SHAKE.seconds && onDeck(x, y)) {
+        s.shake = 0
+        s.shakeAmp = TAP.shake
+        s.shakeAt = { x, y }
+      }
     }
     const hits = turrets.step(io.dt, body, exposed, emit)
     for (const h of hits) {
@@ -335,6 +341,7 @@ export function makePage(): PageLogic {
       s.shake = 0
       s.shakeAmp = THUD.shake
       s.shakeAt = { x: body.x, y: body.y }
+      s.struckAt = { x: body.x, y: body.y }
       s.glow = 0
       s.caret = 0
     }
@@ -803,7 +810,7 @@ export function makePage(): PageLogic {
           s.slabs.forEach((b, n) => {
             if (!b.landed || !(at.x < b.x + SLAB.w && at.x + seat.w > b.x && at.y < b.y + SLAB.h && at.y + seat.h > b.y)) return
             const e = s.slabClear < 0 ? -1 : s.slabClear - n * SLAB_OUT.every
-            pin = Math.max(pin, e < 0 ? Math.min(1, b.since / 0.03) : spring(e, 0, SLAB_OUT.spring))
+            pin = Math.max(pin, e < 0 ? 1 : spring(e, 0, SLAB_OUT.spring))
           })
           const pinned = pin !== 0
           const kick = !pinned && !down && far < SHAKE.reach ? SHAKE.hop * (s.shakeAmp === THUD.shake ? THUD.hop : s.shakeAmp) * (1 - far / SHAKE.reach) * Math.sin(Math.PI * clamp((s.shake - far / 2600) / 0.2, 0, 1)) : 0
@@ -851,7 +858,7 @@ export function makePage(): PageLogic {
         const e = s.slabClear < 0 ? 0 : Math.max(0, s.slabClear - n * SLAB_OUT.every)
         const pop = SLAB_OUT.up * (1 - (1 - Math.min(1, e / SLAB_OUT.pop)) ** 2)
         const fly = e <= SLAB_OUT.wait ? 0 : SLAB_OUT.far * ((e - SLAB_OUT.wait) / SLAB_OUT.fly) ** 2
-        const z = b.base + SLAB_HIGH * (1 - u ** 3) + come - TRAVEL * Math.min(1, v * 4) + 1.2 * Math.sin(Math.PI * clamp(((v - 0.25) * TIMES.slabSettle) / 0.06, 0, 1)) + pop
+        const z = b.base + SLAB_HIGH * (1 - u ** 3) + come - TRAVEL * Math.min(1, v * 8) + pop
         return { x: b.x + (b.x + SLAB.w / 2 < 960 ? -fly : fly), z }
       }
       const slabV = (b: { landed: boolean; since: number }): number[] => [b.since, b.landed ? Math.max(0, 1 - b.since / SHAKE.seconds) : 0]
@@ -909,7 +916,7 @@ export function makePage(): PageLogic {
       }
       if (!s.received) for (const [i, g] of glyph.entries()) out.push({ id: `resume-glyph-${i}`, part: 'shell', kind: 'box', x: g.x, y: g.y, w: g.w, h: g.h, z0: heights.card, z1: heights.card + 0.4, r: 1.5, rot: g.rot, tone: 'ink' })
       if (s.board > 0) turrets.draw(out, off)
-      if (s.board > 0 && s.thud < STRIKE.seconds && turrets.s.hits > 0) out.push({ id: `scorch-${STRIKE.id + turrets.s.hits}`, part: 'turrets', kind: 'disc', x: s.shakeAt.x, y: s.shakeAt.y, w: 0, h: 0, z0: STRIKE.z + off, z1: STRIKE.z + off, tone: 'dark', v: [1 - s.thud / TURRET.scorchSeconds, 1, STRIKE.z - CAP_TOP] })
+      if (s.board > 0 && s.thud < STRIKE.seconds && turrets.s.hits > 0) out.push({ id: `scorch-${STRIKE.id + turrets.s.hits}`, part: 'turrets', kind: 'disc', x: s.struckAt.x, y: s.struckAt.y, w: 0, h: 0, z0: STRIKE.z + off, z1: STRIKE.z + off, tone: 'dark', v: [1 - s.thud / TURRET.scorchSeconds, 1, STRIKE.z - CAP_TOP] })
       if (s.slot > 0) {
         const open = smooth(s.slot)
         const jaw: [number, number, number] = [open, s.turn, s.phase === 'tug' ? s.tug.rate : s.phase === 'shredded' && s.shred < SHRED.pile ? 1 / TIMES.lost : 0]

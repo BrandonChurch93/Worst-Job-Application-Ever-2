@@ -90,8 +90,8 @@ describe('the real keyboard', () => {
     const data = o.userData.deck as DeckData
     const meshes: THREE.Mesh[] = []
     o.traverse((c) => { if ((c as THREE.Mesh).isMesh) meshes.push(c as THREE.Mesh) })
-    expect(meshes.length).toBe(6)
-    expect(meshes.filter((m) => m.castShadow).length).toBe(2)
+    expect(meshes.length).toBe(7)
+    expect(meshes.filter((m) => m.castShadow).length).toBe(3)
     expect(data.body.castShadow).toBe(false)
     expect(data.body.receiveShadow).toBe(true)
     expect(data.accent!.castShadow).toBe(false)

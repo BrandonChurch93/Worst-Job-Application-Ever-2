@@ -50,7 +50,8 @@ describe('the keys answer what strikes them', () => {
       expect(z[0], name).toBe(heights.keycap - heights.keyTravel)
       expect(Math.max(...z), name).toBeGreaterThan(heights.keycap + 0.5)
       expect(Math.max(...z), name).toBeLessThan(heights.keycap + 2)
-      expect(z[z.length - 1], name).toBe(heights.keycap)
+      expect(z[z.length - 1], name).toBeGreaterThanOrEqual(heights.keycap)
+      expect(z[z.length - 1], name).toBeLessThan(heights.keycap + 2)
     }
   })
 

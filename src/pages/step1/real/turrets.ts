@@ -12,7 +12,7 @@ const heights = config.scale.heights
 
 export const TURRET_LOOK = {
   collar: 46, head: 40, axis: -19, muzzle: 116, lift: 0.17, stowed: 62, clear: 0.72, sunk: 9, socket: 56, socketDepth: 36, bezel: 63.5, door: 58, doorDrop: 2.2,
-  flashSeconds: 0.05, steam: 6, sparks: 8
+  flashSeconds: 0.034, steam: 6, sparks: 8
 }
 
 const smooth = (t: number) => {
@@ -217,7 +217,7 @@ function poseTurret(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   if (flashing) {
     const t = since / TURRET_LOOK.flashSeconds
     const power = (1 - t) ** 1.5
-    const size = 86 + 44 * t
+    const size = 24 + 8 * t
     d.flash.scale.set(size, size, 1)
     d.flash.rotation.z = hash01(Math.round(v[7] ?? 0), 13, d.seed) * Math.PI * 2
     d.flashMaterial.color.setRGB(GLOW.flash[0] * power, GLOW.flash[1] * power, GLOW.flash[2] * power)
@@ -278,7 +278,7 @@ function makeBolt(): THREE.Object3D {
   const root = new THREE.Group()
   const len = TURRET.bolt
   const head = overlay(new THREE.Mesh(f.head, f.headMaterial), 6)
-  head.scale.set(13, 3.6, 3.6)
+  head.scale.set(8, 3, 3)
   head.position.set(len / 2 - 8, 0, 8)
   const tails = overlay(new THREE.InstancedMesh(f.tail, f.tailMaterial, 2), 4) as THREE.InstancedMesh
   tails.frustumCulled = false
@@ -295,8 +295,8 @@ function poseBolt(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const born = s.v ? Math.min(1, Math.max(0, s.v[1] ?? 1)) : 1
   const flick = 0.92 + 0.08 * Math.sin(ctx.time * 140 + (hashName(s.id) & 255))
   v3.set(TURRET.bolt / 2 - 12, 0, 8)
-  d.tails.setMatrixAt(0, m4.compose(v3, q4.identity(), w3.set(44 + 124 * born, 2.6 * flick, 2.6 * flick)))
-  d.tails.setMatrixAt(1, m4.compose(v3, q4, w3.set(20 + 50 * born, 1.5, 1.5)))
+  d.tails.setMatrixAt(0, m4.compose(v3, q4.identity(), w3.set(30 + 62 * born, 2.6 * flick, 2.6 * flick)))
+  d.tails.setMatrixAt(1, m4.compose(v3, q4, w3.set(16 + 34 * born, 1.4, 1.4)))
   d.tails.instanceMatrix.needsUpdate = true
   const a = s.rot ?? 0
   const half = TURRET.bolt / 2 - 9
@@ -322,7 +322,7 @@ interface ScorchData {
   hotMaterial: THREE.MeshBasicMaterial
 }
 
-const SCORCH = { size: 58, smoke: 3, smokeSeconds: 1.5, hotSeconds: 0.55, hotSize: 120, shoulder: 9, core: 11, legend: 27, word: 52, bar: 400, wide: 112, sparks: 9, sparkSeconds: 0.55, fall: 900, ember: 0.35, snap: 36, flareSeconds: 0.1, ride: 16 }
+const SCORCH = { size: 52, smoke: 3, smokeSeconds: 1.5, hotSeconds: 0.55, hotSize: 150, shoulder: 9, core: 13, legend: 27, word: 52, bar: 400, wide: 112, sparks: 9, sparkSeconds: 0.55, fall: 900, ember: 0.35, snap: 36, flareSeconds: 0.1, ride: 16 }
 
 function makeScorch(s: Shape): THREE.Object3D {
   const f = fx()
@@ -342,7 +342,7 @@ function makeScorch(s: Shape): THREE.Object3D {
   const smokeMaterials: THREE.MeshBasicMaterial[] = []
   for (let i = 0; i < SCORCH.smoke; i++) {
     const m = f.puffMaterial.clone()
-    m.color.setRGB(0.42, 0.4, 0.38)
+    m.color.setRGB(0.38, 0.365, 0.35)
     const puff = overlay(new THREE.Mesh(f.quad, m), 10 + i)
     smoke.push(puff)
     smokeMaterials.push(m)
@@ -461,7 +461,7 @@ function poseScorch(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
     const size = SCORCH.hotSize * (0.8 + 0.2 * warm)
     d.hot.position.set(0, 0, 1.5 - drop)
     d.hot.scale.set(size, size, 1)
-    d.hotMaterial.color.setRGB(...mix([0, 0, 0], GLOW.boltTail, 0.75 * warm))
+    d.hotMaterial.color.setRGB(...mix([0, 0, 0], GLOW.boltTail, 0.42 * warm))
   }
   const lamp = strike ? EMIT.struck : EMIT.ember
   if (alive && warm > 0.06) ctx.light({ x: s.x + s.w / 2 + d.at[0], y: s.y + s.h / 2 - d.at[1], z: s.z0 - drop + 22, colour: lamp.colour, power: lamp.power * warm, reach: lamp.reach })
@@ -470,11 +470,11 @@ function poseScorch(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
     puff.visible = u > 0 && u < 1 && alive
     if (!puff.visible) return
     const sway = Math.sin(u * 6 + i * 1.9 + d.seed) * 9 * u
-    const size = 9 + 20 * u
-    puff.position.set(d.at[0] + sway - 8 * u, d.at[1] + 6 + 64 * u, 4 + 70 * u - drop * (1 - u))
-    puff.scale.set(size, size * 1.9, 1)
+    const size = 15 + 24 * u
+    puff.position.set(d.at[0] + sway - 8 * u, d.at[1] + 6 + 80 * u ** 0.6, 4 + 70 * u)
+    puff.scale.set(size, size * 2.1, 1)
     puff.rotation.z = (hash01(i, d.seed, 21) - 0.5) * 0.7 + sway * 0.02
-    d.smokeMaterials[i]!.opacity = 0.44 * smooth(u / 0.12) * (1 - u) ** 1.4
+    d.smokeMaterials[i]!.opacity = 0.8 * smooth(u / 0.08) * (1 - u) ** 1.4
   })
 }
 
