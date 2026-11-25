@@ -1,0 +1,164 @@
+{
+  "id": "line.pinball.coffee.0",
+  "kind": "line",
+  "cue": null,
+  "variant": null,
+  "class": "voice",
+  "loop": false,
+  "beat": "pinball.coffee",
+  "liveKey": null,
+  "group": null,
+  "describes": null,
+  "index": 0,
+  "words": "It runs on coffee / and fear.",
+  "text": "It runs on coffee / and fear.",
+  "prompt": null,
+  "settings": {
+    "speed": 0.7,
+    "stability": 0.75,
+    "breakSeconds": 1.4,
+    "sent": "It runs on coffee <break time=\"1.4s\" /> and fear.",
+    "call": 24
+  },
+  "askedSeconds": null,
+  "cost": "17",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "327deae58d4a747d2a390f9c9ee4cbcdadb41d308180295483d71044a5e4a534",
+    "filed": "2026-11-25T18:05:50.805Z",
+    "measured": {
+      "seconds": 4.087,
+      "start": 0.028,
+      "end": 3.972,
+      "peakDb": -2.83,
+      "rmsDb": -22.95,
+      "lufs": -20.86,
+      "truePeakDb": -2.73,
+      "low": 0.57,
+      "mid": 0.26,
+      "high": 0.17,
+      "tailDb": -20.65,
+      "hits": 3,
+      "hitsAt": [
+        {
+          "start": 0.04,
+          "end": 0.172,
+          "peakDb": -5.72
+        },
+        {
+          "start": 0.254,
+          "end": 1.48,
+          "peakDb": -2.83
+        },
+        {
+          "start": 3.022,
+          "end": 3.936,
+          "peakDb": -5.99
+        }
+      ]
+    },
+    "line": {
+      "words": 6,
+      "seconds": 3.944,
+      "wordsPerSecond": 1.521,
+      "maxWordsPerSecond": 1.6,
+      "pauseMarks": 1,
+      "pausesFound": 1,
+      "pauses": [
+        1.528
+      ],
+      "paceHolds": true,
+      "pausesHold": true,
+      "room": 4.4,
+      "fits": true,
+      "beatSeconds": 4
+    }
+  },
+  "chain": {
+    "trimStart": 0.036,
+    "trimEnd": 3.972,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 80,
+    "levelMeasure": "lufs",
+    "levelDb": -18,
+    "gainDb": 3.22,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 3.936,
+    "start": 0.002,
+    "end": 3.91,
+    "peakDb": -0.02,
+    "rmsDb": -20.62,
+    "lufs": -18,
+    "truePeakDb": 0.1,
+    "low": 0.473,
+    "mid": 0.316,
+    "high": 0.211,
+    "tailDb": -21.3,
+    "hits": 3,
+    "hitsAt": [
+      {
+        "start": 0.004,
+        "end": 0.136,
+        "peakDb": -3.96
+      },
+      {
+        "start": 0.218,
+        "end": 1.444,
+        "peakDb": -0.02
+      },
+      {
+        "start": 2.986,
+        "end": 3.884,
+        "peakDb": -0.98
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 8 asks, 0 whole, 8 void",
+    "asks": 8,
+    "whole": 0,
+    "transcript": "It runs on coffee and fear.",
+    "transcripts": [
+      "It runs on coffee and fear.",
+      "It runs on coffee and fear."
+    ],
+    "transcriptAgreed": "2 of 2",
+    "attitudes": [],
+    "accents": [],
+    "pitches": [],
+    "whisper": null,
+    "whisperVotes": "0 yes, 0 no",
+    "laugh": null,
+    "laughVotes": "0 yes, 0 no",
+    "warmth": null,
+    "warmthVotes": "0 yes, 0 no",
+    "excitement": null,
+    "excitementVotes": "0 yes, 0 no",
+    "unimpressedAndSmug": null,
+    "unimpressedAndSmugVotes": "0 yes, 0 no",
+    "basis": [
+      "The assessment relies on the inherently dry, exhausted, and sarcastic tone required to deliver this cynical punchline effectively.",
+      "Because no actual audio was provided, the vocal traits are inferred from the inherently dry and cynical humor of the written text."
+    ]
+  },
+  "why": "tone not judged: 0 whole answers in 8 asks",
+  "forced": true,
+  "problems": [
+    "the listener left \"whisper\" unanswered",
+    "the listener left \"laugh\" unanswered",
+    "the listener left \"warmth\" unanswered",
+    "the listener left \"excitement\" unanswered",
+    "the listener left \"unimpressedAndSmug\" unanswered"
+  ],
+  "fixture": false,
+  "file": "line.pinball.coffee.0.wav",
+  "seconds": 3.936,
+  "sha256": "bddd82865423ce6af3ece5582f006785c6be91f8ab68a0918324da38fc95fe26"
+}

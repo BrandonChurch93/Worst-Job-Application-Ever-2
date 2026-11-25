@@ -32,14 +32,14 @@
       { "at": 0, "text": "Here we find / the applicant. / Rent is due.", "live": "the careers page first appears and the visitor moves the mouse" }
     ],
     "marketing.perks": [
-      { "at": 0.57, "text": "It spots unlimited PTO. / Poor thing / believes it.", "live": "the cursor first touches a perk card" }
+      { "at": 0.58, "text": "It spots unlimited PTO. / Poor thing / believes it.", "live": "the cursor first touches a perk card" }
     ],
     "marketing.ticker": [],
     "marketing.apply": [],
     "step1.keyboard": [],
     "step1.firstName": [
       { "at": 0, "text": "First name. / Under fire. / Standard onboarding.", "live": "the visitor clicks the First name field" },
-      { "at": 0.6, "text": "Hit. / It keeps typing. / It has bills.", "live": "the first bolt hits the cursor" }
+      { "at": 0.72, "text": "Hit. / It keeps typing. / It has bills.", "live": "the first bolt hits the cursor" }
     ],
     "step1.lastName": [],
     "step1.email": [

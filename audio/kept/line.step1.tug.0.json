@@ -1,0 +1,187 @@
+{
+  "id": "line.step1.tug.0",
+  "kind": "line",
+  "cue": null,
+  "variant": null,
+  "class": "voice",
+  "loop": false,
+  "beat": "step1.tug",
+  "liveKey": null,
+  "group": null,
+  "describes": null,
+  "index": 0,
+  "words": "It fights for the resume. / Two pages. / One of them is true.",
+  "text": "It fights for the resume. / Two pages. / One of them is true.",
+  "prompt": null,
+  "settings": {
+    "speed": 0.7,
+    "stability": 0.75,
+    "breakSeconds": 1.4,
+    "sent": "It fights for the resume. <break time=\"1.4s\" /> Two pages. <break time=\"1.4s\" /> One of them is true.",
+    "call": 18
+  },
+  "askedSeconds": null,
+  "cost": "35",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "eed53b661af77d94307ac3ec12e3f48f64586e346eddb77f8b9eabafa7078123",
+    "filed": "2026-11-25T18:05:42.706Z",
+    "measured": {
+      "seconds": 8.081,
+      "start": 0.03,
+      "end": 7.846,
+      "peakDb": -2.15,
+      "rmsDb": -22.14,
+      "lufs": -19.03,
+      "truePeakDb": -2.11,
+      "low": 0.484,
+      "mid": 0.175,
+      "high": 0.341,
+      "tailDb": -19.16,
+      "hits": 5,
+      "hitsAt": [
+        {
+          "start": 0.036,
+          "end": 0.656,
+          "peakDb": -7.44
+        },
+        {
+          "start": 0.728,
+          "end": 2.02,
+          "peakDb": -2.15
+        },
+        {
+          "start": 3.684,
+          "end": 3.956,
+          "peakDb": -4.34
+        },
+        {
+          "start": 4.03,
+          "end": 4.862,
+          "peakDb": -4.5
+        },
+        {
+          "start": 6.48,
+          "end": 7.766,
+          "peakDb": -3.63
+        }
+      ]
+    },
+    "line": {
+      "words": 12,
+      "seconds": 7.816,
+      "wordsPerSecond": 1.535,
+      "maxWordsPerSecond": 1.6,
+      "pauseMarks": 2,
+      "pausesFound": 2,
+      "pauses": [
+        1.634,
+        1.608
+      ],
+      "paceHolds": true,
+      "pausesHold": true,
+      "room": 11.075,
+      "fits": true,
+      "beatSeconds": 6.25
+    }
+  },
+  "chain": {
+    "trimStart": 0.03,
+    "trimEnd": 7.846,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 80,
+    "levelMeasure": "lufs",
+    "levelDb": -18,
+    "gainDb": 1.3,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 7.816,
+    "start": 0,
+    "end": 7.784,
+    "peakDb": -0.85,
+    "rmsDb": -21.75,
+    "lufs": -18,
+    "truePeakDb": -0.81,
+    "low": 0.366,
+    "mid": 0.212,
+    "high": 0.422,
+    "tailDb": -19.72,
+    "hits": 5,
+    "hitsAt": [
+      {
+        "start": 0.006,
+        "end": 0.628,
+        "peakDb": -4.78
+      },
+      {
+        "start": 0.698,
+        "end": 1.996,
+        "peakDb": -0.85
+      },
+      {
+        "start": 3.654,
+        "end": 3.928,
+        "peakDb": -2.92
+      },
+      {
+        "start": 4,
+        "end": 4.832,
+        "peakDb": -3.19
+      },
+      {
+        "start": 6.452,
+        "end": 7.734,
+        "peakDb": -2.35
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 8 asks, 0 whole, 8 void",
+    "asks": 8,
+    "whole": 0,
+    "transcript": "It fights for the resume. Two pages. One of them is true.",
+    "transcripts": [
+      "It fights for the resume. Two pages. One of them is true.",
+      "It fights for the resume. Two pages. One of them is true.",
+      "It fights for the resume. Two pages. One of them is true."
+    ],
+    "transcriptAgreed": "3 of 3",
+    "attitudes": [],
+    "accents": [],
+    "pitches": [],
+    "whisper": null,
+    "whisperVotes": "0 yes, 0 no",
+    "laugh": null,
+    "laughVotes": "0 yes, 0 no",
+    "warmth": null,
+    "warmthVotes": "0 yes, 0 no",
+    "excitement": null,
+    "excitementVotes": "0 yes, 0 no",
+    "unimpressedAndSmug": null,
+    "unimpressedAndSmugVotes": "0 yes, 0 no",
+    "basis": [
+      "The cynical and sarcastic nature of the statement implies a flat, dismissive delivery that sounds unimpressed.",
+      "The cynical, deadpan nature of the statement implies a dry, smug, and unimpressed delivery devoid of warmth, excitement, or laughter.",
+      "Since no actual audio is present, the assessment relies on the inherent cynicism of the provided text, which strongly implies a dry, unimpressed, and smug delivery rather than warmth or excitement."
+    ]
+  },
+  "why": "tone not judged: 0 whole answers in 8 asks",
+  "forced": true,
+  "problems": [
+    "the listener left \"whisper\" unanswered",
+    "the listener left \"laugh\" unanswered",
+    "the listener left \"warmth\" unanswered",
+    "the listener left \"excitement\" unanswered",
+    "the listener left \"unimpressedAndSmug\" unanswered"
+  ],
+  "fixture": false,
+  "file": "line.step1.tug.0.wav",
+  "seconds": 7.816,
+  "sha256": "b63298775f1e861d349b33f8213bc175375ae0ce87e6d494fd1968830e3d5fe9"
+}

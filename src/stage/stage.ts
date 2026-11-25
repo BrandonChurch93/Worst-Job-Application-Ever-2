@@ -2,7 +2,7 @@ import { beat, config, stepHz } from '../config'
 import { blendPose, CursorBody, HANDOFF, type CursorPose } from '../cursor/body'
 import { BotDriver, type BotName, type BotRun } from './bots'
 import { homePose, smooth } from './camera'
-import { arriveTurn, leaveTurn } from './turn'
+import { arriveTurn, leaveTurn, shiverSeconds, TURN } from './turn'
 import type { CameraPose, Driver, DrawList, FlowEntry, Mode, PageLogic, PageMaker, Pointer, Shape, StageEvent } from './types'
 
 export * from './types'
@@ -43,7 +43,7 @@ interface Saved {
   cursor: unknown
 }
 
-export interface Frame { list: DrawList; cursor: CursorPose; turn: number; scroll: number; page: string; view: CameraPose | null; cursors?: CursorPose[]; time?: number }
+export interface Frame { list: DrawList; cursor: CursorPose; turn: number; scroll: number; page: string; view: CameraPose | null; cursors?: CursorPose[]; time?: number; settle?: number }
 
 const applicant = { firstName: config.applicant.filmFirstName, lastName: config.applicant.filmLastName, email: config.applicant.filmEmail }
 
@@ -130,6 +130,14 @@ export class Stage {
     if (this.phase === 'leave') return leaveTurn(u)
     if (this.phase === 'end') return Math.PI / 2
     return 0
+  }
+
+  private settledFor(): number | undefined {
+    const seat = TURN.seat * turnSteps
+    if (this.phase === 'arrive') return (this.phaseStep - seat) / stepHz
+    if (this.phase !== 'play' || this.pageStep - this.phaseStep !== turnSteps) return undefined
+    const t = (this.phaseStep + turnSteps - seat) / stepHz
+    return t < shiverSeconds ? t : undefined
   }
 
   private one(): void {
@@ -271,6 +279,8 @@ export class Stage {
     const list: DrawList = []
     if (this.phase !== 'end') this.page.draw(list)
     const made: Frame = { list, cursor: this.cursor.pose(), turn: this.turnAt(), scroll: this.page.scroll(), page: this.page.id, view: this.page.view(), time: this.step / stepHz }
+    const settle = this.settledFor()
+    if (settle !== undefined) made.settle = settle
     this.frames.set(this.step, made)
     if (this.frames.size > 12) {
       const oldest = Math.min(...this.frames.keys())
@@ -339,7 +349,10 @@ export function blendFrames(a: Frame, b: Frame, t: number): Frame {
     return out
   })
   const view = a.view && b.view ? { ...b.view, eye: b.view.eye.map((v, i) => a.view!.eye[i]! + (v - a.view!.eye[i]!) * t) as [number, number, number], target: b.view.target.map((v, i) => a.view!.target[i]! + (v - a.view!.target[i]!) * t) as [number, number, number], fov: a.view.fov + (b.view.fov - a.view.fov) * t } : b.view
-  return { list, cursor: blendPose(a.cursor, b.cursor, t), turn: a.turn + (b.turn - a.turn) * t, scroll: a.scroll + (b.scroll - a.scroll) * t, page: b.page, view, time: (a.time ?? 0) + ((b.time ?? 0) - (a.time ?? 0)) * t }
+  const out: Frame = { list, cursor: blendPose(a.cursor, b.cursor, t), turn: a.turn + (b.turn - a.turn) * t, scroll: a.scroll + (b.scroll - a.scroll) * t, page: b.page, view, time: (a.time ?? 0) + ((b.time ?? 0) - (a.time ?? 0)) * t }
+  const settle = a.settle !== undefined && b.settle !== undefined ? a.settle + (b.settle - a.settle) * t : b.settle
+  if (settle !== undefined) out.settle = settle
+  return out
 }
 
 export const liveView = (f: Frame): CameraPose => f.view ?? homePose(f.scroll)
