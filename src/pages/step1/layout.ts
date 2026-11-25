@@ -28,7 +28,7 @@ export const PAPER_REST = { x: 1000, y: 748 }
 export const PAPER_TITLE = { font: 'inter-600', px: 28 }
 export const PAPER_LINES = [0.3, 0.38, 0.46, 0.54, 0.66, 0.74, 0.82]
 export const SLOT = { w: 300, h: 26, cx: ZONE.x + ZONE.w * 0.62, cy: FORM_BOTTOM + 30 }
-export const NOTE_Y = FORM_BOTTOM + 14
+export const NOTE_Y = FORM_BOTTOM + 24
 export const CONTINUE_Y = DECK.y + 10
 
 const cap = (font: string, px: number): number => block(font, 'X', px).cap

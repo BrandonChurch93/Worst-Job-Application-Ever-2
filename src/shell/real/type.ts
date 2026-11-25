@@ -240,7 +240,7 @@ const lin = (c: THREE.Color): Rgb => [c.r, c.g, c.b]
 const hex = (h: number): Rgb => lin(new THREE.Color().setHex(h, THREE.SRGBColorSpace))
 
 const INK = 0x302e2b
-const INK_WARM = 0x3f352a
+const INK_WARM = 0x52473c
 const INK_SOFT = 0x67625c
 const SOFT_FONT = 'inter-400'
 const INK_LIGHT = 0xfdf3e6

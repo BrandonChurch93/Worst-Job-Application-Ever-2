@@ -340,9 +340,9 @@ class Effects implements EffectsModel {
         const ang = ((i + 0.7 * hash01(i, 41, SEED)) / DUST) * Math.PI * 2
         const from = (4.4 + 2.6 * Math.abs(Math.sin(ang)) + 1.6 * hash01(i, 44, SEED)) * UNIT
         const reach = from + (2 + 5 * hash01(i, 42, SEED)) * UNIT * ease
-        const size = (1.1 + 2.4 * ease) * (0.6 + 0.8 * hash01(i, 43, SEED)) * UNIT
-        const alpha = 0.72 * smooth(d / 0.07) * Math.pow(1 - d, 1.5)
-        n = this.puff(n, cx + Math.cos(ang) * reach, cy + Math.sin(ang) * reach, -HOVER + 0.4 * UNIT * ease, size * 1.25, size, size * 0.42, ang, 0.6, 0.56, 0.5, alpha, 400 + i)
+        const size = (1.7 + 3.0 * ease) * (0.6 + 0.8 * hash01(i, 43, SEED)) * UNIT
+        const alpha = 0.46 * smooth(d / 0.07) * Math.pow(1 - d, 1.5)
+        n = this.puff(n, cx + Math.cos(ang) * reach, cy + Math.sin(ang) * reach, -HOVER + 0.4 * UNIT * ease, size * 1.45, size, size * 0.36, ang, 0.74, 0.7, 0.64, alpha, 400 + i)
       }
     }
     this.puffs.count = n
