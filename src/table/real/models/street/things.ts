@@ -181,7 +181,7 @@ export function streetThings(b: Buckets, z: Zone): void {
   // Between Mom's house and the row of houses below it: the shelter, by the kerb, and a car parked beside it.
   const gapY = (mom.yf + lyb) / 2
   shelter(b, mom.x1 + 40, lyb + 22, 0)
-  car(b, mom.cx - 6, gapY - 1, 0, rgb(0x2f5f8f))
+  car(b, mom.cx - 6, gapY - 1, 0, rgb(0x24364e))
   hydrant(b, mom.x1 + 8, mom.yf + 4)
   lamp(b, mom.x1 + 6, mom.yb - 4, Math.PI, 56)
   lamp(b, lx1 + 14, left[0]!.cy, Math.PI * 0.75, 56)
@@ -189,7 +189,7 @@ export function streetThings(b: Buckets, z: Zone): void {
   const rx0 = Math.min(...right.map((s) => s.x0))
   const rx1 = Math.max(...right.map((s) => s.x1))
   const ryf = right[0]!.yf
-  car(b, (rx0 + rx1) / 2 + 22, ryf - 15, Math.PI, rgb(0x3e6b4c))
+  car(b, (rx0 + rx1) / 2 + 22, ryf - 15, Math.PI, rgb(0x4a2422))
   hydrant(b, rx0 + 6, ryf - 9)
   lamp(b, rx0 + 10, right[0]!.yb + 16, Math.PI * 0.8, 56)
   lamp(b, rx1 - 3, ryf - 12, 0, 56)

@@ -101,7 +101,7 @@ export function garage(b: Buckets, z: Zone): void {
       const thin = slim[li]!
       const ri = thin ? Ri + 1.6 : Ri
       const ro = thin ? Ro - 1.6 : Ro
-      g.lathe([[ri, z0], [ro, z0], [ro, z1 - 1.2], [ro - 1.2, z1], [ri + 1.2, z1], [ri, z1 - 1.2], [ri, z0]], cx, cy, n, (k) => (k === 0 ? shade(con, 0.7) : k === 3 ? shade(con, 1.08) : con), { arc: [a0, a1], kind: KIND.concrete })
+      g.lathe([[ri, z0], [ro, z0], [ro, z1 - 1.2], [ro - 1.2, z1], [ri + 1.2, z1], [ri, z1 - 1.2], [ri, z0]], cx, cy, n, (k) => (k === 0 ? shade(con, 0.86) : k === 3 ? shade(con, 1.08) : con), { arc: [a0, a1], kind: KIND.concrete })
       // A dark joint cast into the outer face, and on the rim a steel coping.
       if (!thin) g.lathe([[Ro + 0.15, z0 + (z1 - z0) * 0.3], [Ro + 0.15, z0 + (z1 - z0) * 0.3 + 1.1]], cx, cy, n, shade(con, 0.38), { arc: [a0, a1] })
       if (rim) b.metal.lathe([[Ri - 0.3, z1], [Ro + 0.3, z1], [Ro + 0.3, z1 + 1.4], [Ri - 0.3, z1 + 1.4], [Ri - 0.3, z1]], cx, cy, n, TONE.steel, { arc: [a0, a1] })

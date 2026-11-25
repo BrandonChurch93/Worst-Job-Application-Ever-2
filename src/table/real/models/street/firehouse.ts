@@ -36,6 +36,9 @@ export interface Firehouse {
   beacon: V3
 }
 
+// The paint of the engine bay behind the door: a deep oxide red.
+const BAY: [number, number, number] = [0.15, 0.03, 0.026]
+
 export const DOOR = { w: 104, h: 55, depth: 4 }
 
 export function firehouse(b: Buckets, z: Zone, ctx: RealContext): Firehouse {
@@ -96,10 +99,10 @@ export function firehouse(b: Buckets, z: Zone, ctx: RealContext): Firehouse {
       const d0 = DOOR.depth + 3
       const d1 = 52
       const zc = doorHole.z + doorHole.h
-      g.quad([a, d0, 3], [a, d1, 3], [a, d1, zc], [a, d0, zc], TONE.inside)
-      g.quad([c, d1, 3], [c, d0, 3], [c, d0, zc], [c, d1, zc], TONE.inside)
-      g.quad([a, d1, 3], [c, d1, 3], [c, d1, zc], [a, d1, zc], shade(TONE.inside, 0.8))
-      g.quad([a, d1, zc], [c, d1, zc], [c, d0, zc], [a, d0, zc], shade(TONE.inside, 0.6))
+      g.quad([a, d0, 3], [a, d1, 3], [a, d1, zc], [a, d0, zc], BAY)
+      g.quad([c, d1, 3], [c, d0, 3], [c, d0, zc], [c, d1, zc], BAY)
+      g.quad([a, d1, 3], [c, d1, 3], [c, d1, zc], [a, d1, zc], shade(BAY, 0.7))
+      g.quad([a, d1, zc], [c, d1, zc], [c, d0, zc], [a, d0, zc], shade(BAY, 0.5))
       // Hose racks on the back wall of the bay: three red bars.
       for (let k = 0; k < 3; k++) g.box(a + 14 + k * 28, a + 34 + k * 28, d1 - 2, d1, 26, 30, TONE.red, { skip: 'b', under: true, kind: KIND.gloss })
     }
