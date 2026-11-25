@@ -2,27 +2,19 @@ import * as THREE from 'three'
 import type { PartMaker, RealContext } from '../../../real/types'
 import { BALL, PLUNGER, TIER_Y } from '../../layout'
 import { zoneAt } from '../../draw'
-import { clearOf } from '../frame/mats'
 import { local, whole, type Zone } from '../zone'
 import { PLUNGE, drain, plunger } from './apron'
 import { Geo } from './geo'
 import { TUBE } from './kit'
 import { LIFT, lift } from './lift'
-import { FIN, TONE, drop, mesh, metalOf } from './mats'
+import { FIN, TONE, drop, mesh, metalOf, tubeOf as clearTube } from './mats'
 import { GATE, SLING, tier } from './tier'
 
 export const VERSION = 'hardware-1'
 const STEEL_BALLS = 8
-
-const clear = new Map<string, THREE.Material>()
-const tubeOf = (z: Zone): THREE.Material => {
-  let m = clear.get(z.id)
-  if (!m) {
-    m = clearOf(z, 'tube', TUBE.opacity)
-    clear.set(z.id, m)
-  }
-  return m
-}
+const TURN = 0.34
+const SOFT = [FIN.rubber, FIN.gloss, FIN.satin]
+const tubeOf = (z: Zone): THREE.Material => clearTube(z, TUBE.opacity)
 
 const part = (o: THREE.Object3D, name: string): THREE.Object3D | undefined => o.children.find((c) => c.name === name)
 const since = (ctx: RealContext, id: string): number => ctx.byId.get(id)?.v?.[0] ?? 9
@@ -33,10 +25,10 @@ function buildHardware(z: Zone): THREE.Object3D {
   const m = metalOf(z)
   if (z.tier >= 0) {
     const t = tier(z)
-    o.add(mesh(t.G, m, 'hardware.static', { cast: true }))
+    o.add(mesh(t.G.turn(TURN, SOFT), m, 'hardware.static', { cast: true }))
     const all = t.S.mesh(m, 'hardware.screws')
     if (all) o.add(all)
-    if (t.F.vertices > 0) o.add(mesh(t.F, m, 'hardware.fine', { fine: true }))
+    if (t.F.vertices > 0) o.add(mesh(t.F.turn(TURN, SOFT), m, 'hardware.fine', { fine: true }))
     const band = mesh(t.B, m, 'hardware.bands', { cast: true })
     band.userData.slings = t.slings
     o.add(band)
@@ -59,11 +51,11 @@ function buildHardware(z: Zone): THREE.Object3D {
     balls.frustumCulled = false
     o.add(balls)
   } else if (z.id === 'apron') {
-    const p = mesh(plunger(z), m, 'hardware.plunger', { cast: true })
+    const p = mesh(plunger(z).turn(TURN, SOFT), m, 'hardware.plunger', { cast: true })
     o.add(p)
   } else if (z.id === 'last') {
     const d = drain(z)
-    o.add(mesh(d.G, m, 'hardware.static', { cast: true }))
+    o.add(mesh(d.G.turn(TURN, SOFT), m, 'hardware.static', { cast: true }))
     const tube = mesh(d.C, tubeOf(z), 'hardware.tube')
     tube.renderOrder = 3
     o.add(tube)
@@ -128,7 +120,7 @@ function buildLift(z: Zone): THREE.Object3D {
   o.name = `lift.${z.id}`
   const m = metalOf(z)
   const l = lift(z)
-  o.add(mesh(l.G, m, 'lift.static', { cast: true }))
+  o.add(mesh(l.G.turn(TURN, SOFT), m, 'lift.static', { cast: true }))
   const tube = mesh(l.C, tubeOf(z), 'lift.tube')
   tube.renderOrder = 3
   o.add(tube)

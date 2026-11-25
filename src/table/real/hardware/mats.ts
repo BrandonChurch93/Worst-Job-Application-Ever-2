@@ -15,21 +15,21 @@ export const shade = (c: RGB, k: number): RGB => [c[0] * k, c[1] * k, c[2] * k]
 export const FIN = { steel: 0, alu: 1, brass: 2, rubber: 3, gloss: 4, dark: 5, zinc: 6, satin: 7, chrome: 8 }
 // Clear coat, roughness, metalness of each finish.
 const FINISH: [number, number, number][] = [
-  [0, 0.16, 0.85],
-  [0, 0.36, 0.6],
-  [0, 0.24, 0.86],
+  [0, 0.09, 1],
+  [0, 0.34, 0.85],
+  [0, 0.22, 0.95],
   [0, 0.9, 0],
   [1, 0.34, 0],
-  [0, 0.52, 0.45],
-  [0, 0.38, 0.66],
+  [0, 0.5, 0.6],
+  [0, 0.38, 0.92],
   [0, 0.5, 0],
   [0, 0.035, 1]
 ]
 
 export const TONE = {
-  steel: hex(0xe3e6ea),
-  steelDim: hex(0xb9bec4),
-  alu: hex(0xd3d6d9),
+  steel: hex(0xd0d4d8),
+  steelDim: hex(0xa9aeb4),
+  alu: hex(0xcfd3d6),
   aluDark: hex(0x9da2a8),
   brass: hex(0xd0a858),
   brassDark: hex(0x9a7636),
@@ -50,7 +50,8 @@ export const TONE = {
   pocketWall: hex(0x4a4e54),
   zinc: hex(0xc4c8cc),
   slot: hex(0x2a2b2e),
-  chrome: hex(0xf2f3f5)
+  chrome: hex(0xd6d9dc),
+  clear: hex(0xdfe8ea)
 }
 
 let palette: THREE.DataTexture | null = null
@@ -82,6 +83,29 @@ export const metalOf = (z: Zone): THREE.MeshPhysicalMaterial => {
   m = lit(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 1, metalness: 1, clearcoat: 1, clearcoatRoughness: 0.07, roughnessMap: map, metalnessMap: map, clearcoatMap: map })), z)
   m.name = `hardware.${z.id}`
   made.set(z.id, m)
+  return m
+}
+
+const clear = new Map<string, THREE.MeshPhysicalMaterial>()
+
+// Clear acrylic: nothing in the middle but what glints, bright where the wall turns away from the eye.
+export const tubeOf = (z: Zone, base: number): THREE.MeshPhysicalMaterial => {
+  let m = clear.get(z.id)
+  if (m) return m
+  m = studio(new THREE.MeshPhysicalMaterial({ color: 0x6a747a, roughness: 0.05, metalness: 0, transparent: true, opacity: base, depthWrite: false, specularIntensity: 1, clearcoat: 1, clearcoatRoughness: 0.04 }))
+  const room = m.onBeforeCompile
+  const made = m
+  m.onBeforeCompile = (shader, renderer) => {
+    room.call(made, shader, renderer)
+    shader.fragmentShader = shader.fragmentShader.replace(
+      '#include <tonemapping_fragment>',
+      'float hwEdge = pow( 1.0 - abs( dot( normalize( vViewPosition ), normalize( normal ) ) ), 2.4 );\ngl_FragColor.rgb *= mix( 1.0, 4.2, hwEdge );\ngl_FragColor.a = clamp( diffuseColor.a + hwEdge * 0.55 + dot( gl_FragColor.rgb, vec3( 0.3333 ) ) * 0.22, 0.0, 1.0 );\n#include <tonemapping_fragment>'
+    )
+  }
+  m.customProgramCacheKey = () => 'wja-studio-hardware-clear'
+  m = lit(m, z)
+  m.name = `hardware.tube.${z.id}`
+  clear.set(z.id, m)
   return m
 }
 
