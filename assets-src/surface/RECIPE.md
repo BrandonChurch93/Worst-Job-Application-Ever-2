@@ -22,10 +22,12 @@ Takes: 290 ms on this machine (MEASURED once under vitest with two bands, 4 core
 Why this one: the approved image has a speckle of 2 to 4 pixels with no direction and no bright spot: small separate pits on a nearly flat face. Slopes alone looked painted on, so the height in alpha also moves the roughness: pits are a little more matt. At one texel a page pixel the grain was soft in the master and in every close view; at two the same picture stays sharp, and the tooth band is what a close view lands on. MEASURED on a clean patch at review tier with one texel a pixel, spread of the grey after taking off a 6 pixel blur: approved 6.4, that build 5.8.
 Date: 2026-11-25
 
+Fix round, 2026-11-25: for the page the pits are laid at `PAGE_PITS` 0.16 and the soft swell at `PAGE_COARSE` 0.07 (they were 0.45 and 0.2), the strength on the ceramic is `PAGE_GRAIN` 0.04, and up close the fine readings carry `CLOSE_TOOTH` 2.85. Why: the critics read the coarser grain as stucco; the approved page has a tooth one to two pixels wide and no lumps. Size and megabytes are unchanged.
+
 ## frost (the grain picture again, no memory of its own)
 Made by: `grain.clone()` in `makeMaterials`, `src/shell/materials.ts`. It shares the grain's picture on the card, so it adds nothing to the megabytes.
 From: the grain picture above.
-Prompt or command: laid at 5 repeats in 1024 page pixels with a strength of `FROST` 0.022 on `glass`, `glassThick` and `glassSunk`. `glassCard` carries the grain picture itself at the page's own size and a strength of 0.03, so the page's tooth is faintly in a card.
+Prompt or command: laid at 5 repeats in 1024 page pixels with a strength of `FROST` 0.022 on `glass`, `glassThick` and `glassSunk`. `glassCard` has its own readings, see the slab below.
 Takes: nothing to make.
 Why this one: glass with no slopes at all read as plastic sheet at full size. At this strength no grain can be picked out, the sheen only loses its last hard edge. The first try, coarser and stronger, read as orange peel.
 Date: 2026-11-25
@@ -44,4 +46,12 @@ From: the seed, through `Random(seed, 'turned')`: one height for each ring round
 Prompt or command: `makeMaterials(config.seed)`; laid once across the face of a progress button (the face carries coordinates from 0 to 1).
 Takes: under 20 ms for the pair (MEASURED as part of `makeMaterials`, 356 ms in all, of which the grain is 290).
 Why this one: the approved progress buttons show a bow-tie of light that turns with the face. That needs the highlight stretched along rings, which a straight brushing cannot give. The material reads the room nine times along the ring's direction (`stretched` in `materials.ts`), because the stock stretch only shows on a face seen from the side.
+Date: 2026-11-25
+
+## slab of the glass card (no picture of its own, no memory of its own)
+Made by: `slabbed(material, grain, brushed, key)` in `src/shell/materials.ts`, on `glassCard`; the place of each point on its card is laid into the geometry by `placed()` in `src/shell/real/controls.ts`.
+From: the grain picture (1024 by 1024, 4.00 MB) and the brushed picture (512 by 512, 1.00 MB) above, read again. Nothing is added to the megabytes.
+Prompt or command: `makeMaterials(config.seed)`. The grain is read five times: under the slab at the page's own two texels a page pixel, shifted 26 px along the slope of the face (the page's tooth, bent at the bevel); twice far larger and blurred (the cloud, 3 percent of the colour); at 3.0 and at 2.3 texels a page pixel, turned 35 degrees (the frost, strength 0.034, less at home than up close). The brushed picture is read once, turned 20 degrees, at strength 0.007 (hairline polishing marks). Bright points are where the height of one fine reading stands 0.3 over the other.
+Takes: nothing to make.
+Why this one: the card of the third round read as an opaque grey panel with sandpaper on it. Glass that is frosted shows three things at once: what lies under it, softened; its own slow unevenness; and a tooth too fine to pick out at home. The first frost, at 7.1 texels a page pixel, was lost in the 8 samples a pixel of the review tier (M3 0.56); at 2.3 alone it read as pebbled bathroom glass (M3 0.79); at 3.0 with a little of 2.3 it is fine and holds (M3 0.885).
 Date: 2026-11-25
