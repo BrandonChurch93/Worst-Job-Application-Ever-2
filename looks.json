@@ -1,33 +1,33 @@
 {
   "folder": "corporate",
-  "pushed": "2026-11-25T17:44:21.080Z",
-  "commit": "8fbfed909e70605e85cdbd9a6aa1a03bc23b90d7",
+  "pushed": "2026-11-25T18:29:32.673Z",
+  "commit": "9885ab4e5fc09349ef03f441a69e0cc0fe9e00d1",
   "looks": [
     {
       "file": "look-1.jpg",
       "caption": "Key lobby-doors: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-25T17:43:25.415Z",
+      "time": "2026-11-25T18:26:32.039Z",
       "by": "corporate",
       "from": "out/work/compare/compare-lobby-doors.jpg"
     },
     {
       "file": "look-2.jpg",
       "caption": "Key tier-corporate: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-25T17:44:19.471Z",
+      "time": "2026-11-25T18:27:38.339Z",
       "by": "corporate",
       "from": "out/work/compare/compare-tier-corporate.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Lobby doors beside the approved image: lit hall behind the glass, steel fins, teal panes",
-      "time": "2026-11-25T17:44:19.746Z",
+      "caption": "Lobby doors beside the approved image: teal panes with rows of ceiling lamps, lit hall glass, graded steel fascia",
+      "time": "2026-11-25T18:29:31.303Z",
       "by": "corporate",
       "from": "out/work/compare/compare-lobby-doors.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Corporate tier beside the approved image: paved roofs, lit skylight, feathered palm, smooth sand",
-      "time": "2026-11-25T17:44:19.997Z",
+      "caption": "Corporate tier beside the approved image: paved roofs with plant, the ladder with a rung every quarter ball, feathered palm",
+      "time": "2026-11-25T18:29:31.551Z",
       "by": "corporate",
       "from": "out/work/compare/compare-tier-corporate.jpg"
     }
