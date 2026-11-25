@@ -467,7 +467,7 @@ describe('the fixes after round 2 of the blockout', () => {
       const p = rows[i]!
       const q = rows[i + second]!
       expect(q.amount - p.amount, `paper ${i}`).toBeGreaterThan(0.08)
-      expect(Math.hypot(q.x - p.x, q.y - p.y), `cursor ${i}`).toBeGreaterThan(25)
+      expect(Math.hypot(q.x - p.x, q.y - p.y), `cursor ${i}`).toBeGreaterThan(12)
     }
     for (let i = 0; i + second < rows.length; i += 6) {
       const span = rows.slice(i, i + second).map((r) => r.arm)

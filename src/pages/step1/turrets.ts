@@ -4,7 +4,7 @@ import type { DrawList, Emit } from '../../stage/types'
 const heights = config.scale.heights
 
 export const TURRET = {
-  riseSeconds: 0.5, period: 0.9, firstShot: 0.6, stagger: 0.45, windup: 0.35, boltSpeed: 1500, aimLag: 0.16, hitRadius: 42, scorchSeconds: 1.6, body: 92, barrel: 84, scorch: 24, bolt: 60,
+  riseSeconds: 0.5, period: 0.9, firstShot: 0.6, stagger: 0.45, windup: 0.35, boltSpeed: 1500, aimLag: 0.16, hitRadius: 42, scorchSeconds: 2.4, body: 92, barrel: 84, scorch: 24, bolt: 60,
   muzzleHeight: heights.turret - 18
 }
 

@@ -21,7 +21,7 @@ const LIE = heights.card + 9
 const IDLE_SHUFFLE = 5
 const HOUSING = 44
 const SHRED = { zip: 1.1, reset: 1.5, end: 1.6 }
-const SLAB_HIGH = 200
+const SLAB_HIGH = 110
 const SLAB_GAP = 8
 const PRESS = 0.24
 
