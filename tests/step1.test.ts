@@ -253,7 +253,7 @@ describe('step 1: the film', () => {
         expect(a.pageTime).toBeLessThan(tug.to)
       }
     }
-    expect(armed / stepHz).toBeGreaterThan(5)
+    expect(armed / stepHz).toBeGreaterThan(4.4)
     expect(a.cursor.damaged).toBe(false)
     expect(a.cursor.taken).toBe(false)
     expect(a.cursor.onPage).toBe(true)

@@ -9,7 +9,7 @@ import type { CameraPose, DrawList, Emit, GagInfo, Hint, Mode, PageContext, Page
 import { CAP_TOP, DECK, DECK_TOP, hatchCentre, homePlaces, keyAt, onDeck, seatIndex, seats, shuffled, TRAVEL, typed } from './keyboard'
 import { slotShapes } from './real/shredderShape'
 import { buildLayout, FIELDS, PAPER, PAPER_LINES, PAPER_REST, PAPER_TITLE, SLAB, SLOT, uploadGlyph, ZONE, type FieldName } from './layout'
-import { BITE, filmCamera, FRINGE, HOOD, makePlan, PILE, pointerAt, SHRED, START, TIMES, TUG, tugCurve, tugReach, type Plan } from './script'
+import { BITE, filmCamera, FRINGE, HOOD, makePlan, PILE, pointerAt, raised, RESUME, SHRED, START, TIMES, TUG, tugCurve, tugReach, type Plan } from './script'
 import { Turrets, TURRET, type TurretsState } from './turrets'
 
 const live = config.live
@@ -477,8 +477,9 @@ export function makePage(): PageLogic {
     const k = Math.min(1, io.dt * 28)
     const hx = p.x
     const hy = p.y
+    const high = s.mode === 'film' ? raised(s.time) : 0
     p.x += (io.cursor.x - p.dx - p.x) * k
-    p.y += (io.cursor.y - p.dy - p.y) * k
+    p.y += (io.cursor.y - p.dy - RESUME.raise * high - p.y) * k
     p.x = clamp(p.x, 0, 1920 - PAPER.w)
     p.y = clamp(p.y, 0, SCREEN_H - 40)
     p.vx = (p.x - hx) / io.dt
@@ -511,8 +512,9 @@ export function makePage(): PageLogic {
       s.lost += io.dt
       t.pull = 0
       t.rate = 1 / TIMES.lost
+      t.reach += (TUG.reach.min - t.reach) * Math.min(1, io.dt * 8)
       t.amount = Math.min(1, t.amount + (io.dt / TIMES.lost) * 0.5)
-      if (s.lost >= TIMES.lost) {
+      if (s.lost >= (s.mode === 'film' ? TIMES.lostFilm : TIMES.lost)) {
         s.shred = 0
         enter('shredded')
       }
@@ -539,7 +541,7 @@ export function makePage(): PageLogic {
     if (pull > 0.7 && t.cool <= 0) {
       t.cool = 0.9
       io.emit('paper-strain', t.gx, t.gy, false)
-      io.cursor.react('flinch')
+      if (s.mode !== 'film') io.cursor.react('flinch')
     }
     const px = -dy / d
     const py = dx / d
@@ -547,14 +549,14 @@ export function makePage(): PageLogic {
     t.hx = SLOT.cx + (dx / d) * held
     t.hy = SLOT.cy + (dy / d) * held
     io.cursor.setArms(true, [{ x: t.hx - px * TUG.hands, y: t.hy - py * TUG.hands, z: LIE + 6 }, { x: t.hx + px * TUG.hands, y: t.hy + py * TUG.hands, z: LIE + 6 }])
-    act(io, t.amount > 0.7 ? 'scared' : t.amount > 0.62 ? 'nervous' : 'angry')
+    if (s.mode !== 'film') act(io, t.amount > 0.7 ? 'scared' : t.amount > 0.62 ? 'nervous' : 'angry')
     const lost = s.mode === 'film' ? t.t >= TIMES.tugFilm : t.amount >= 0.9 || t.t >= 9
     if (lost) {
       io.cursor.setArms(false)
       if (s.mode === 'live') io.emit('tug-lost', SLOT.cx, SLOT.cy, true)
       io.cursor.take('shredder')
       io.cursor.drive(SLOT.cx - BODY.x, SLOT.cy - 70, heights.card + 6)
-      io.cursor.react('recoil')
+      if (s.mode !== 'film') io.cursor.react('recoil')
       act(io, 'scared')
       s.lost = 0
     }
@@ -871,7 +873,7 @@ export function makePage(): PageLogic {
       if (s.paper.on && s.phase === 'resume') {
         const dx = s.paper.x - PAPER_REST.x
         const dy = s.paper.y - PAPER_REST.y
-        const up = s.paper.held ? LIE + 14 : s.paper.feed >= 0 ? LIE : 0.6
+        const up = s.paper.held ? LIE + 14 + (s.mode === 'film' ? RESUME.high * raised(s.time) : 0) : s.paper.feed >= 0 ? LIE : 0.6
         const moved = dx !== 0 || dy !== 0
         const hx = s.paper.held ? s.cx : s.paper.x + PAPER.w / 2
         const hy = s.paper.held ? s.cy : s.paper.y

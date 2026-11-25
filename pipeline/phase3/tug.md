@@ -97,3 +97,17 @@ Decisions, numbered on from 32.
 - At the key the left arm goes under the body for a third of its length, and the lower third of the still frame is bare page.
 - Between 27.1 and 27.4 s the arms hang with the hands just over the rim above the machine while they spring back.
 - (Decision 45.) `TUG.least` 28, supersedes 38: at 26.4 s with 21 the lower hand of the tilted pair lay at the machine's north edge. The last haul leans 0.15 and not 0.51 (`TUG_CURVE` row 4.6), so the cursor still moves more than 5 px in every second with the longer least hold.
+
+## Fix round 3, 25 November, branch agent/paper
+
+Decisions, numbered on from 46.
+
+46. The pickup, the proud hold and the carry play inside the tug frame. `PAPER_REST` is 640, 678 (it was 1078, 854): the sheet slides in under the drop zone's lower rim, left of the slot. The camera goes in between 20.3 and 21.1 s (it was 20.9 to 21.95), so the crouch at 20.78, the heave at 20.99 and the hold are seen at the size of the tug. At home size the arrow is 17 px tall on a sheet of twelve frames and no pose reads.
+47. `RESUME` (script.ts): a wind-up where it stands at 19.9, a strut from 20.04 to 20.42 to the right of where the sheet comes in, an eager tap at 20.5, a crouch at 20.78, the grip at 20.96 on the middle of the sheet's right edge (`hold`), a heave with a hop from 20.99 to 21.07, a dip of 9 px under the weight to 21.14, `proud` from 21.0 with the dust-off at 21.1, the sheet held 34 px up over the grip and 16 px higher off the page (`raise`, `high`, `raised()`) and still until 21.36, a strut to the slot to 21.54, a stop over it, the drop at 21.62 as before.
+48. The tug's temper (`TEMPER`): two stamps (a hop and a tap, 22.24 and 24.12) and a wind-up before each haul (22.3, 23.0, 23.76, 24.56). In the film the page no longer sets the state from the amount and no longer flinches at each strain: the flinch read as protecting itself. Nothing is cued in the half second before the key picture at 25.125.
+49. Scared is held before the loss: the big bite at 25.22 to 25.5, a start at 25.3 and `scared` from 25.32, the body turned back twice (25.62, 26.06) and held while the sheet stands at 0.61 to 0.655, a small win back to 0.63 at 26.22, then the sheet goes in 0.32 s.
+50. The loss is at 26.54 (`TIMES.tugFilm` 4.52, it was 5.06) and the body stays lost until 27.38 (`TIMES.lostFilm` 0.84; live keeps 0.3): thrown back at 26.54, small, low and turned away from 27.0, pale. The shredder takes it at 27.38 as before, so `SHRED` and every time after it stand.
+51. The frame's top is 205 px over the slot (it was 191): 14 px less bare page under the machine. No further: at 230 the cursor's pile at 28.2 s is cut by the lower edge.
+52. Declined to `/root/acting_closer`: holding the tug frame until 30.25 s. `tests/step1.test.ts` holds the camera at home once the form says the resume was received, and the message would be cut by the frame.
+
+Tests changed, each where a number of mine changed: `tests/step1.test.ts` and `tests/cursor-act.test.ts`, the arms are out for more than 4.4 s (it was 5: the tug is 4.52 s).

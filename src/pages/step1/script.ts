@@ -12,7 +12,7 @@ export const START = { x: 1180, y: 800 }
 export const TIMES = {
   riseSeconds: 0.8, sinkSeconds: 0.6, turretDelay: 0.72, shuffleSeconds: 0.32, pressWait: 0.16,
   slabCount: 3, slabFirst: 0.4, slabEvery: 0.55, slabHang: 0.2, slabFall: 0.2, slabSettle: 0.12, slabLie: 0.25, slabLift: 0.18,
-  paperSlide: 0.42, bite: 0.4, tugFilm: 5.06, lost: 0.3
+  paperSlide: 0.42, bite: 0.4, tugFilm: 4.52, lost: 0.3, lostFilm: 0.84
 }
 export const TUG = { stiff: 2600, damp: 36, strainPx: 9.6, lead: 0.4, shoulder: { x: 14, y: 30 }, hands: 31, rateLag: 0.07, inside: 4, least: 28, reach: { rest: 43, min: 37, max: 52, bite: 26, haul: 70 } }
 export const SPOT = { x: -12, y: -14 }
@@ -44,11 +44,20 @@ export const DIVES = [{ x: 1100, y: 676 }, { x: 1716, y: FIELD_Y[2]! + 46 }]
 export const DIVE = { struck: 0.06, see: [0.04, 0.07], start: [0.12, 0.2], seconds: 0.16, jolt: 0.06, duck: 0.03 }
 export const TRUDGE = { x: 96, y: 84, first: [0.42, 0.62] as [number, number], share: 0.42, second: [0.8, 1.02] as [number, number] }
 export const END = { sag: 0.03 }
-export const RESUME = { walk: [19.9, 20.3] as [number, number], proud: 20.4, beside: { x: 20, y: 6 }, grab: 21.06, hoist: [21.1, 21.16] as [number, number], carry: [21.18, 21.54] as [number, number], drop: 21.62 }
+// The resume: a wind-up where it stands, a strut to the place under the drop zone where the sheet comes in, an eager start as it arrives, a crouch on its corner, a heave that tips the body back and a dip under its weight,
+// the sheet held up high and still with the chest out, a strut to the slot with it, and a short stop over the slot before it lets go.
+export const RESUME = {
+  leave: 19.9, walk: [20.04, 20.42] as [number, number], eager: 20.5, beside: { x: 22, y: 10 }, step: [20.8, 20.88] as [number, number], crouch: 20.78, grab: 20.96,
+  hold: { x: 5, y: 46 }, raise: 34, high: 16,
+  hoist: [20.99, 21.07] as [number, number], up: { x: -10, y: -50 }, dip: [21.08, 21.14] as [number, number], weight: 9, proud: 21.0, dust: 21.1,
+  carry: [21.36, 21.54] as [number, number], drop: 21.62
+}
+// The temper of the tug: a stamp as the sheet is caught, a wind-up before each haul, a second stamp, and nothing in the half second before the key picture. Then the big bite: a start, and it stands scared and still, pulled thin, until the sheet goes.
+export const TEMPER = { stamps: [22.24, 24.12], stamp: 330, hauls: [22.3, 23.0, 23.76, 24.56], scared: 25.3, back: [25.62, 26.06], lost: [0, 0.46] as [number, number] }
 
 const TUG_CURVE: [number, number, number, number][] = [
   [0, 0.125, 0.2, 4], [0.3, 0.15, 0.14, 0], [0.8, 0.11, 0.28, 25], [1.05, 0.26, -0.12, 5], [1.55, 0.22, 0.42, 22], [1.8, 0.37, 0.06, 0], [2.3, 0.33, 0.52, 24],
-  [2.6, 0.48, 0.16, 1], [2.95, 0.455, 0.47, 17], [3.2, 0.44, 0.47, 18], [3.5, 0.6, -0.02, 3], [4, 0.56, 0.36, 25], [4.3, 0.72, 0.15, 3], [4.6, 0.68, 0.15, 18], [5.06, 0.95, 0, 3]
+  [2.6, 0.48, 0.16, 1], [2.95, 0.455, 0.47, 17], [3.2, 0.44, 0.47, 18], [3.48, 0.6, 0.1, 5], [3.62, 0.61, 0.1, 22], [3.9, 0.655, 0.12, 20], [4.2, 0.63, 0.13, 25], [4.52, 0.95, 0, 3]
 ]
 
 function tugAt(t: number, column: 1 | 2 | 3): number {
@@ -227,16 +236,21 @@ export function makePlan(seed: number, first: string, last: string, email: strin
   cue(slab(2) + landed + DIVE.duck, { react: 'duck' })
   cue(slab(2) + landed + DIVE.duck, { act: 'scared' })
 
-  // step1.resume: it walks to its paper, stands beside it proud and dusts itself off, and only then lifts it and carries it over
-  const grab = { x: PAPER_REST.x + PAPER.w - 12, y: PAPER_REST.y + 8 }
+  // step1.resume: a wind-up, a strut to where its paper comes in, an eager start, a crouch on the corner, a heave, the sheet held up proud and still, a strut to the slot, a stop over it
+  const grab = { x: PAPER_REST.x + PAPER.w - RESUME.hold.x, y: PAPER_REST.y + RESUME.hold.y }
+  cue(RESUME.leave, { react: 'anticipate' })
+  cue(RESUME.leave + 0.02, { act: 'confident' })
   to(RESUME.walk[0], RESUME.walk[1], PAPER_REST.x + PAPER.w + RESUME.beside.x, PAPER_REST.y + RESUME.beside.y, { arc: -34 })
-  cue(RESUME.proud, { act: 'proud' })
-  cue(RESUME.proud + 0.02, { react: 'dustOff' })
-  to(RESUME.grab - 0.14, RESUME.grab - 0.03, grab.x, grab.y, { ease: 'out' })
-  cue(RESUME.grab - 0.1, { react: 'anticipate' })
+  cue(RESUME.eager, { react: 'tap' })
+  cue(RESUME.crouch, { react: 'anticipate' })
+  to(RESUME.step[0], RESUME.step[1], grab.x, grab.y, { ease: 'out' })
   clicks.push([RESUME.grab, RESUME.drop])
-  to(RESUME.hoist[0], RESUME.hoist[1], grab.x - 6, grab.y - 20, { ease: 'out' })
-  to(RESUME.carry[0], RESUME.carry[1], BITE.x + (grab.x - PAPER_REST.x), BITE.y - BITE.jerk - 14 + (grab.y - PAPER_REST.y), { arc: 52 })
+  cue(RESUME.hoist[0], { hop: 150 })
+  to(RESUME.hoist[0], RESUME.hoist[1], grab.x + RESUME.up.x, grab.y + RESUME.up.y, { ease: 'out' })
+  cue(RESUME.proud, { act: 'proud' })
+  to(RESUME.dip[0], RESUME.dip[1], grab.x + RESUME.up.x, grab.y + RESUME.up.y + RESUME.weight, { ease: 'out' })
+  cue(RESUME.dust, { react: 'dustOff' })
+  to(RESUME.carry[0], RESUME.carry[1], BITE.x + (grab.x - PAPER_REST.x), BITE.y - BITE.jerk - 14 + (grab.y - PAPER_REST.y), { arc: 26 })
 
   // step1.tug: the paper's curve places the pointer, so the body leans, loses ground and wins a little of it back
   const bite = RESUME.drop + TIMES.bite
@@ -247,9 +261,19 @@ export function makePlan(seed: number, first: string, last: string, email: strin
     const p = tugPoint(at - bite)
     to(Math.max(free, at - 0.05), at, p.x, p.y, { ease: 'line' })
   }
+  for (const at of TEMPER.stamps) {
+    cue(at, { hop: TEMPER.stamp })
+    cue(at + 0.02, { react: 'tap' })
+  }
+  for (const at of TEMPER.hauls) cue(at, { react: 'anticipate' })
+  cue(TEMPER.scared, { react: 'startle' })
+  for (const at of TEMPER.back) cue(at, { react: 'rear' })
+  cue(TEMPER.scared + 0.02, { act: 'scared' })
+  cue(lost + TEMPER.lost[0], { react: 'recoil' })
+  cue(lost + TEMPER.lost[1], { react: 'cower' })
 
   // step1.shredded: where it comes back together. It sags at what the form says and stays down, then drags itself off the slot in two pulls with a stop between, bent and low
-  const whole = lost + TIMES.lost + SHRED.end
+  const whole = lost + TIMES.lostFilm + SHRED.end
   to(lost + 0.1, lost + 0.2, PILE.x, PILE.y, { ease: 'out' })
   cue(whole + END.sag, { react: 'cower' })
   cue(whole + END.sag, { act: 'exhausted' })
@@ -266,6 +290,11 @@ function tugPoint(tau: number): { x: number; y: number } {
   const strain = (tugAt(tau, 3) + 4 * Math.sin(tau * 23)) * TUG.lead
   const far = Math.max(TUG.least, PAPER.h * (1 - amount) - TUG.inside) + strain * (1 + TUG.stiff / 480) + reach
   return { x: SLOT.cx - Math.sin(lean) * far - TUG.shoulder.x, y: SLOT.cy - Math.cos(lean) * far - TUG.shoulder.y }
+}
+
+// How far the held sheet is raised over the place it is gripped: up as it is heaved, held, and down again on the way to the slot.
+export function raised(time: number): number {
+  return smooth((time - RESUME.hoist[0]) / 0.1) * (1 - smooth((time - RESUME.carry[0] - 0.03) / (RESUME.carry[1] - RESUME.carry[0] - 0.03)))
 }
 
 export function pointerAt(plan: Plan, time: number): Pointer {
@@ -289,9 +318,9 @@ export function pointerAt(plan: Plan, time: number): Pointer {
 
 // The film camera in the tug: one straight move in, one still frame, one straight move out. The eye goes down one line from home to the frame with one ease on all of it and looks straight down the whole way, so one point of the page keeps its place on the screen. The frame holds the drop zone's lower rim, the slot, the machine, the whole cursor with its arms and where the pile lands, and stands still from before the first bite until the pile is down.
 const TUG_EDGE = FIELD_X - 16
-const TUG_FRAME = { w: 620, mid: SLOT.cx + 4, top: SLOT.cy - 191 }
+const TUG_FRAME = { w: 620, mid: SLOT.cx + 4, top: SLOT.cy - 205 }
 const tugFrame = (): { x: number; y: number; w: number; h: number } => ({ x: Math.min(TUG_EDGE - TUG_FRAME.w, TUG_FRAME.mid - TUG_FRAME.w / 2), y: TUG_FRAME.top, w: TUG_FRAME.w, h: (TUG_FRAME.w * 9) / 16 })
-export const CAMERA = { in: [20.9, 21.95] as [number, number], key: 25.125, out: [28.3, 29.1] as [number, number] }
+export const CAMERA = { in: [20.3, 21.1] as [number, number], key: 25.125, out: [28.3, 29.1] as [number, number] }
 const glide = (t: number): number => {
   const u = Math.min(1, Math.max(0, t))
   return u * u * u * (u * (u * 6 - 15) + 10)
