@@ -25,22 +25,22 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 36, 2026-11-25T18:22Z, Phase 3.
+Status 37, 2026-11-25T18:50Z, Phase 3.
 
-1. `out/stills/status/01-last-save-beside-approved.jpg`: The last save: your approved image on the left, main at merge 16 on the right, draft tier. The build is brighter and flatter, its camera higher and wider, its cabinet unlit grey.
-2. `out/stills/status/02-office-tier-beside-approved.jpg`: The office tier: your approved image on the left, main at merge 16 on the right, draft tier. Your view is tilted and dark with depth; the build looks straight down. The orange scoop of the one lift tube is at the top left.
-3. `out/stills/status/03-sheet-across-the-tug.jpg`: Twelve frames across the tug, draft tier, made by the tug fixer on its own tree at 17:55Z: wide for the arrival and the first grab, close by 2.4 s, the cursor pulled through the shredder at the end.
-4. `out/stills/status/04-main-display-close.jpg`: The main display in the frame's seat, seen close on the lobby-doors camera at twice the size, draft tier, made by the display maker on its own tree at 18:07Z: one lit dot per hole behind a smoked pane, a line running.
+1. `out/stills/status/01-the-slab-seats-twelve-consecutive-frames.jpg`: Main with the shiver, draft tier, rendered 18:42Z. Frames 2772 to 2794 of the film, two frames apart, the top right of the picture at its real size, as the turned slab seats on step 2's page (a stand-in page until Phase 4). Tiles 1 to 3: the slab's top edge comes down to the frame. From tile 5 the shadows of the step counter jump out, then settle by the last row. Still wrong: the hop shows only in the shadows; seen from straight in front the dots themselves move by under 2 px.
+2. `out/stills/status/02-the-tug-key-beside-the-approved-image.jpg`: Main at e27eb27, draft tier, rendered 18:49Z. Left approved, right built, with crops below. Still wrong: the built camera is far closer than the approved picture, which shows the whole page (the tug has its own close camera; a critic's wish for the whole page stays declined); the cursor is small with short arms where the approved one is large with long looping arms; the card's glass here is still the old one, the new one is on the surface fixer's branch.
+3. `out/stills/status/03-the-cursor-s-damage-states-beside-the-approved-s.jpg`: From the cursor fixer's own tree, sent 18:44Z; that commit is in merge 17. Top row approved, bottom row built. The body is now white and glossy with a dark side wall. Still wrong: the shredded strips are tapered spikes where the approved are flat ribbons with square ends; the reassembled body shows almost no tape; the hole shows a dark disc where the approved shows a lit bore.
+4. `out/stills/status/04-the-keyboard-beside-the-approved-crop.jpg`: From the keys fixer's own tree, sent 18:42Z, not on main yet. Top approved, bottom built. The caps are now an even matte cream. Still wrong: the caps throw no shade on the bed, so the field reads flat; the scorches are soft smudges on the legends where the approved has small crisp pits; the bolt is a fat orange blob where the approved is a thin streak with a bright head; the arrow reads grey and glassy where the approved is white with a black rim.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 3, tick 78 at 2026-11-25T18:22:22Z, allowance: build
-time used in this phase: 5.49 h of its box of 8.00 h
-time used under the allowance in force: 12.83 h of 36.00 h allowed
-time used: 12.83 of 36.00 hours before the review
+clock: phase 3, tick 80 at 2026-11-25T18:50:09Z, allowance: build
+time used in this phase: 5.95 h of its box of 8.00 h
+time used under the allowance in force: 13.29 h of 36.00 h allowed
+time used: 13.29 of 36.00 hours before the review
 extra rounds: yes
 half point: reached
 box end: not reached
