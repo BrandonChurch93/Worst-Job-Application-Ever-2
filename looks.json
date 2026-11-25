@@ -1,35 +1,35 @@
 {
   "folder": "tug",
-  "pushed": "2026-11-25T17:29:01.100Z",
-  "commit": "d6f6f0e127a6a768f7e36c4d1173f82270f4f513",
+  "pushed": "2026-11-25T17:55:20.403Z",
+  "commit": "c9baec4e61ae08f86f98acdd10433bde8f3bbbe3",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-step1-tug-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-25T17:26:55.072Z",
+      "caption": "Key step1-tug: approved on the left, this build on the right, draft tier, with crops of cursor, paper, paper.below, chip, card.glass",
+      "time": "2026-11-25T17:55:03.074Z",
       "by": "tug",
-      "from": "out/work/stills/key-step1-tug-hd-review.png"
+      "from": "out/work/compare/compare-step1-tug.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Key picture step1-tug beside the approved image: sheet 64 by 88 px, slot 96 px, frame 972 px of page wide, draft tier",
-      "time": "2026-11-25T17:28:59.529Z",
+      "caption": "Tug key at 25.125 s in the close view (frame 620 px wide) beside the approved image, draft tier",
+      "time": "2026-11-25T17:55:18.880Z",
       "by": "tug",
-      "from": "out/work/report/tug-compare-step1-tug.jpg"
+      "from": "out/work/report/tug2-compare.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Sheet cursor-arms beside the approved image: five poses round step 1's own slot, arms with elbows, no cuff, draft tier",
-      "time": "2026-11-25T17:28:59.771Z",
+      "caption": "Sheet across the tug: wide for the arrival and the first grab, close by 2.4 s, the cursor seen going into the shredder",
+      "time": "2026-11-25T17:55:19.110Z",
       "by": "tug",
-      "from": "out/work/report/tug-compare-cursor-arms.jpg"
+      "from": "out/work/report/tug2-sheet.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Twelve pictures across the beat step1.tug: the 972 px frame to the key picture, then the push to 462 px, held on the intake and the outlet",
-      "time": "2026-11-25T17:29:00.004Z",
+      "caption": "Tug key, review tier, crop: strips narrow and apart, each its own length and angle",
+      "time": "2026-11-25T17:55:19.332Z",
       "by": "tug",
-      "from": "out/work/report/tug-sheet-across-the-tug.jpg"
+      "from": "out/work/report/tug2-key-close.jpg"
     }
   ]
 }
