@@ -1,35 +1,35 @@
 {
   "folder": "play",
-  "pushed": "2026-11-25T16:53:40.112Z",
-  "commit": "7b41517698e1527fe07d336f84a8d83220098264",
+  "pushed": "2026-11-25T17:07:08.827Z",
+  "commit": "71c5b8f8bd240003f860c8ac44c50317e36adf6e",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "reply-all: approved left, this build right. Three paper cups with lid, sleeve, ring on two rods and skirt; flippers with rubber band",
-      "time": "2026-11-25T16:53:38.253Z",
+      "caption": "reply-all: approved left, this build right (draft). Cups with lid, sleeve, ring and skirt; flippers with band and boss",
+      "time": "2026-11-25T17:07:06.956Z",
       "by": "play",
-      "from": "out/work/compare/compare-reply-all.jpg"
+      "from": "out/work/report/play-reply-all-compare.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "tier-street: approved left, this build right. Wire highway with hoops and brackets, flap, clear spiral, spinner, street drop bank, flippers",
-      "time": "2026-11-25T16:53:38.492Z",
+      "caption": "tier-street: approved left, this build right (draft). Wire highway, flap, clear spiral, spinner, drop bank",
+      "time": "2026-11-25T17:07:07.183Z",
       "by": "play",
-      "from": "out/work/compare/compare-tier-street.jpg"
+      "from": "out/work/report/play-tier-street-compare.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "last-save: approved left, this build right. Street flippers, highway and spiral from the low camera",
-      "time": "2026-11-25T16:53:38.728Z",
+      "caption": "reply-all crop: the three cups close",
+      "time": "2026-11-25T17:07:07.419Z",
       "by": "play",
-      "from": "out/work/compare/compare-last-save.jpg"
+      "from": "out/work/report/play-cups-close.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "pinball.coffee sheet: flippers turn with their shapes, a struck cup flashes",
-      "time": "2026-11-25T16:53:38.997Z",
+      "caption": "tier-street crop: highway with hoops, welds and brackets, spiral, spinner",
+      "time": "2026-11-25T17:07:07.648Z",
       "by": "play",
-      "from": "out/work/sheets/sheet-beat-pinball_coffee-preview-draft.jpg"
+      "from": "out/work/report/play-highway-close.jpg"
     }
   ]
 }
