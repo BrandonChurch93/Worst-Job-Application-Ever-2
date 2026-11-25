@@ -1,35 +1,35 @@
 {
   "folder": "boss",
-  "pushed": "2026-11-25T09:45:42.032Z",
-  "commit": "c6723d41b09f98e986dff0977609081cfc7f0189",
+  "pushed": "2026-11-25T09:54:08.248Z",
+  "commit": "04ce535bdecc4134c4df2c2cf44f81b4727bfd5a",
   "looks": [
     {
       "file": "look-1.jpg",
       "caption": "The live site's own path with the bot keen driving, seed 20261124: 12 moments of its run of 25.0 s",
-      "time": "2026-11-25T09:41:57.701Z",
+      "time": "2026-11-25T09:46:33.864Z",
       "by": "boss",
       "from": "out/work/sheets/sheet-live-keen_20261124-preview-live.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Still still-rest-step4-preview-draft: draft tier, preview, view beauty",
-      "time": "2026-11-25T09:44:29.479Z",
+      "caption": "Still key-boss-fight-preview-draft: draft tier, preview, view beauty",
+      "time": "2026-11-25T09:51:26.894Z",
       "by": "boss",
-      "from": "out/work/stills/still-rest-step4-preview-draft.png"
+      "from": "out/work/stills/key-boss-fight-preview-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Step 4 at rest: the verify card is closed under the checkbox row, fine print right under it, Submit in its socket",
-      "time": "2026-11-25T09:45:40.630Z",
+      "caption": "Last stand 22.2 to 25.5 s: the Session expired banner stands above the boss at full size, then the third pop-up returns",
+      "time": "2026-11-25T09:54:06.833Z",
       "by": "boss",
-      "from": "out/work/stills/still-rest-step4-preview-draft.png"
+      "from": "out/work/filmM.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Film 3.7 to 5.2 s: the tick opens the card, the rule draws, the answer appears, the cursor steps aside",
-      "time": "2026-11-25T09:45:40.864Z",
+      "caption": "Key frame boss-fight at the current commit",
+      "time": "2026-11-25T09:54:07.062Z",
       "by": "boss",
-      "from": "out/work/filmJ.png"
+      "from": "out/work/stills/key-boss-fight-preview-draft.png"
     }
   ]
 }
