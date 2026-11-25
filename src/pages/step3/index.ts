@@ -127,6 +127,7 @@ export function makePage(): PageLogic {
   const start = { x: 1180, y: 760 }
   const port = { x: px(PORT.x), y: px(PORT.y) }
   const outlet = { x: px(OUTLET.x), y: px(OUTLET.y) }
+  const PORT_TOP = 28
   const lastScroll = PAGE_H - 1080
   let s = fresh()
   let m: Machine | null = null
@@ -406,6 +407,10 @@ export function makePage(): PageLogic {
           s.hold += dt
           if (s.hold > 0.25) s.done = true
         }
+      }
+      if (s.phase !== 'sealed') {
+        const on = [port, outlet].some((c) => Math.hypot(io.cursor.x + 8 - c.x, io.cursor.y + 14 - c.y) < px(OUTLET.ring) / 2 + 12)
+        io.cursor.setGround(on ? PORT_TOP : 0)
       }
       const to = target()
       const rate = Math.min(1, dt / (live.tierTravelSeconds / 4))
