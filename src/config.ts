@@ -19,7 +19,9 @@ const DEEP_KEYS = ['film.fps', 'film.previewFps', 'film.shutterDegrees', 'film.m
   'formats.master.width', 'formats.master.height', 'formats.hd.width', 'formats.hd.height', 'formats.preview.width', 'formats.preview.height',
   'tiers.draft.samplesPerFrame', 'tiers.review.samplesPerFrame', 'tiers.final.samplesPerFrame', 'cursor.heightPxAt1080', 'cursor.armsOnlyInBeat', 'cameras.home.fovDeg',
   'sim.stepHz', 'sim.checkpointSeconds', 'audio.sfx', 'audio.narratorMaxWordsPerSecond', 'audio.lineGapSeconds', 'budget.runHours', 'budget.phaseHours',
-  'deliver.cardLoop.fps', 'deliver.cardLoop.seconds', 'deliver.cardLoop.candidates', 'references.approved', 'quality.passScore', 'critics.maxImageLongEdgePx']
+  'deliver.cardLoop.fps', 'deliver.cardLoop.seconds', 'deliver.cardLoop.candidates', 'references.approved', 'quality.passScore', 'critics.maxImageLongEdgePx',
+  'budget.afterReviewHours', 'budget.reserveHours', 'budget.reviewRoundHours', 'budget.continueHours', 'budget.extendHours', 'budget.statusMaxGapMinutes', 'export.files',
+  'film.hookSeconds', 'status.maxPictures', 'status.minGapMinutes', 'scale.sizes', 'scale.grid', 'scale.heights', 'scale.kinds', 'live.quality', 'lookLockUnit']
 
 const get = (o: unknown, path: string): unknown => path.split('.').reduce<unknown>((v, k) => (v !== null && typeof v === 'object' ? (v as Record<string, unknown>)[k] : undefined), o)
 const near = (a: number, b: number) => Math.abs(a - b) < 1e-9

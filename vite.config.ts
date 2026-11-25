@@ -1,7 +1,6 @@
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
-// @ts-expect-error plain module shared with the harness
 import { buildInfoPlugin } from './tools/lib/hashes.mjs'
 
 const root = path.dirname(fileURLToPath(import.meta.url))

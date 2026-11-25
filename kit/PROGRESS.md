@@ -34,15 +34,15 @@ Status 3, 2026-11-25T06:17Z, Phase 0.
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 0, tick 11 at 2026-11-25T06:22:17Z, allowance: build
-time used in this phase: 0.83 h of its box of 3.00 h
-time used under the allowance in force: 0.83 h of 36.00 h allowed
-time used: 0.83 of 36.00 hours before the review
+clock: phase 0, tick 12 at 2026-11-25T06:35:15Z, allowance: build
+time used in this phase: 1.04 h of its box of 3.00 h
+time used under the allowance in force: 1.04 h of 36.00 h allowed
+time used: 1.04 of 36.00 hours before the review
 extra rounds: yes
 half point: not reached
 box end: not reached
 budget report: not due
-minutes since the last status: 4
+minutes since the last status: 17
 ```
 
 ## Phases
@@ -268,7 +268,9 @@ none
 
 Each with its name, its folders, its branch and its looks branch, when it started, its limit, and what it has pushed.
 
-none
+Each with its name, its folders, its branch and its looks branch, when it started, its limit, and what it has pushed.
+
+- `harness_test_writer`, a build agent in its own sandbox VM. Files: `tests/` and `tools/review.mjs`. Branch `agent/tests`, no looks branch (it returns one look with its report). Started 2026-11-25T06:27Z, limit 35 minutes. Job: the unit tests for the clock and for startup validation, and the review page builder. Pushed so far: nothing.
 
 ## Rounds
 

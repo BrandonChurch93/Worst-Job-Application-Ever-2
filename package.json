@@ -5,12 +5,16 @@
   "type": "module",
   "description": "The Worst Job Application Ever: one website, delivered as a live site and as a film",
   "scripts": {
+    "build": "tsc --noEmit && vite build",
+    "test": "vitest run",
     "clock": "node tools/clock.mjs",
     "look": "node tools/look.mjs",
     "progress": "node tools/progress.mjs",
     "status:post": "node tools/status-post.mjs",
     "caps": "node tools/caps.mjs",
-    "physics:test": "node tools/physics-test.mjs"
+    "physics:test": "node tools/physics-test.mjs",
+    "still": "node tools/still.mjs",
+    "review": "node tools/review.mjs"
   },
   "dependencies": {
     "@dimforge/rapier2d-deterministic-compat": "0.21.0",

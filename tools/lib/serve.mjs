@@ -10,11 +10,19 @@ const types = {
   '.wav': 'audio/wav', '.ogg': 'audio/ogg', '.bin': 'application/octet-stream', '.glb': 'model/gltf-binary', '.ktx2': 'image/ktx2', '.txt': 'text/plain'
 }
 
-export function serve(dir, { port = 0 } = {}) {
-  const base = path.resolve(dir)
+// `mounts` maps a URL prefix to another folder, so files that are not shipped can be fetched beside the site.
+export function serve(dir, { port = 0, mounts = {} } = {}) {
+  const home = path.resolve(dir)
   const server = http.createServer((req, res) => {
     let rel = decodeURIComponent(new URL(req.url, 'http://x').pathname)
     if (rel.endsWith('/')) rel += 'index.html'
+    let base = home
+    for (const [prefix, folder] of Object.entries(mounts)) {
+      if (rel.startsWith(prefix)) {
+        base = path.resolve(folder)
+        rel = rel.slice(prefix.length - 1)
+      }
+    }
     const file = path.join(base, rel)
     if (!file.startsWith(base) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) {
       res.writeHead(404)
