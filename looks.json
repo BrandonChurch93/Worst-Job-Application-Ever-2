@@ -1,35 +1,35 @@
 {
   "folder": "glass3",
-  "pushed": "2026-11-25T22:01:51.472Z",
-  "commit": "28de457cd43f6e8220c966988874e973077810fd",
+  "pushed": "2026-11-25T22:31:53.452Z",
+  "commit": "6f88ff9fc6bf16af2f53445d56fff3382cd7be2f",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Sheet page-look: approved on the left, this build on the right, review tier, with crops of button, field.start, progressButton, type, cursor",
-      "time": "2026-11-25T21:59:00.339Z",
+      "caption": "Still key-step1-fire-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-25T22:30:02.139Z",
       "by": "glass3",
-      "from": "out/work/compare/compare-page-look.jpg"
+      "from": "out/work/stills/key-step1-fire-hd-review.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Sheet page-look: approved on the left, this build on the right, review tier, with crops of button, field.start, progressButton, type, cursor",
-      "time": "2026-11-25T22:01:25.421Z",
-      "by": "glass3",
-      "from": "out/work/compare/compare-page-look.jpg"
-    },
-    {
-      "file": "look-3.jpg",
-      "caption": "glass3 second push: page-look, approved left, build right: half the grain, the orange Continue in its bezel",
-      "time": "2026-11-25T22:01:50.158Z",
+      "caption": "glass3 last push: page-look, approved left, build right: half the grain, the open Continue in its bezel, the card under the new light",
+      "time": "2026-11-25T22:31:51.694Z",
       "by": "glass3",
       "from": "out/work/cmp-page-look-1200.jpg"
     },
     {
-      "file": "look-4.jpg",
-      "caption": "glass3 second push: the glass card, approved left, build right, with the pocket round Browse files",
-      "time": "2026-11-25T22:01:50.386Z",
+      "file": "look-3.jpg",
+      "caption": "glass3 last push: the glass card, approved left, build right: one plate, the rule under the glass, a fine frost, the pocket round Browse files",
+      "time": "2026-11-25T22:31:51.922Z",
       "by": "glass3",
       "from": "out/work/card-pair.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "glass3 last push: step1-tug, approved left, build right: the sandblast of the glass up close",
+      "time": "2026-11-25T22:31:52.203Z",
+      "by": "glass3",
+      "from": "out/work/cmp-step1-tug-1200.jpg"
     }
   ]
 }
