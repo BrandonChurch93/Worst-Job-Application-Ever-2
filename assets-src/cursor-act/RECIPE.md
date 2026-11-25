@@ -22,7 +22,7 @@ Date: 2026-11-25
 Made by: `src/cursor/act/feel.ts`, `src/cursor/act/acting.ts`, `src/cursor/act/damage.ts` and the sim in `src/cursor/body.ts`
 From: no input file
 Prompt or command: none. These parts send numbers to the body and the effects, which draw them
-Takes: about 20 looks of the 40 allowed for the acting part
+Takes: about 28 looks of the 40 allowed for the acting part
 Why this one: see `pipeline/phase3/cursor-act.md`
 Date: 2026-11-25
 
@@ -30,6 +30,6 @@ Date: 2026-11-25
 Made by: `makeTape()` in `src/cursor/act/tape.ts`
 From: no input file. `TAPE` at the top of that file holds the two pieces: where each crosses the body in outline units, its turn, half length and half width in px
 Prompt or command: none. Each piece is a ribbon of 30 segments laid over the body's own height, one mesh and one draw for both, a see-through matte material through `studio()`. To see it: `npm run still -- --sheet cursor-damage --format hd --tier draft`
-Takes: about 34 looks of the 40 allowed for the damage part, the tape among them
+Takes: about 38 looks of the 40 allowed for the damage part, the tape among them
 Why this one: two short crossing lengths of pale tape, as on the reassembled cursor of `references/approved/cursor-damage.png`
 Date: 2026-11-25

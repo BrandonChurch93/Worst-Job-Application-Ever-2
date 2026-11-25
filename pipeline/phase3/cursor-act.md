@@ -5,7 +5,7 @@ Branch `agent/cursor-act`. Parts: `cursor-acting`, `cursor-damage`, `cursor-arms
 ## What the approved images show
 
 1. Where the highlight sits: one soft broad band along the upper left of the white face, a hand's width in from the edge, and a second thinner one on the dark edge band itself. On the arms it is a faint long streak on the upper side of the tube, never a hard line: the rubber is matte.
-2. How wide the bevel is: the dark edge band is 6 to 8 percent of the body's width, with a rounded shoulder of about a third of that between the face and the band. An arm is about 3 percent of the body's height thick, the cuff ring half as thick again.
+2. How wide the bevel is: the dark edge band is 6 to 8 percent of the body's width, with a rounded shoulder of about a third of that between the face and the band. An arm is about 7 percent of the body's height thick, the cuff ring half as thick again.
 3. How dark the gap is: the contact shadow under the body is tight and close to black for a few pixels at the lower right, then a soft wide shadow. Between fingers, and between a hand and the paper it holds, the gap is nearly as dark as the rubber. Between strips of a reassembled body it is a hairline, not a slot.
 4. What the edge does: the face rolls over into the band, it does not meet it at a crease. The rim of a burn hole is raised, charred black, and glows orange on its inner lip. The cut edge of a strip is clean and pale. The edge of a flattened body is thin and its face is crazed with fine cracks.
 5. What the states do: nervous is short with beads of sweat, shocked is stretched tall off the page, angry is red to orange from the tip with steam, scared is pale matte stone leaning away, exhausted sags and runs, the hole lets the page show through. Arms leave from the sides of the head, bow under their own slack and end in a hand a fifth of the body's height.
@@ -54,6 +54,7 @@ Damage is a list of wounds, each with the share of its life that has passed (`Cu
 - slab_maker: a shape of part `paper` with id `resume-paper:<name>` is a sheet of its own. With `v = [0, 0, 0, pull, lx, ly, rx, ry, 0, 0, 1]` it lies flat at the box given (220 by 300), `pull` 0 is clean and 1 is creased with the dog ear. It reads no other shape when it is not bitten. The held edge is 5 px above the sheet's `z0`.
 - step1_director: when the tug is lost the page calls `setArms(false)` and the gag stays `step1.tug` for 0.3 s more (`TIMES.lost`), so the torn off arms are seen. The body is brought nearer the sheet: hands about 70 px from the shoulders in the key still.
 - step1_director: no names change in `ACTING`, `REACTIONS`, `DAMAGE`. Gaits come with the acting state. Gulp is automatic under nervous. The body braces by itself while arms are on. Asked for 1.0 s of `shredded` and 1.0 s of `reassembled` in place of 0.45 and 0.6.
+- step1_director (7efbadd): after the tug is lost the body is held whole over the card for the 0.3 s, then dives, and `recoil` stays at the loss. The flee before the one hit goes up and to the right, so the turn of decision 22 lays the cursor tip up and to the right in the key frame at 6.0 s; the one hit is at 7.138 s.
 
 ## One more beat of acting
 
