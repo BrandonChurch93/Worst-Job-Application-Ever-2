@@ -4,7 +4,7 @@ import type { Checks, Config } from '../src/config'
 import { eventCues } from '../src/audio/cues'
 import { approvedFiles } from '../tools/lib/hashes.mjs'
 
-const checks: Checks = { approved: approvedFiles(process.cwd()), eventCues }
+const checks: Checks & { approved: string[] } = { approved: approvedFiles(process.cwd()) ?? [], eventCues }
 const clone = (): any => structuredClone(config)
 const problems = (c: any, k: Checks = checks) => configProblems(c as Config, k)
 const naming = (list: string[], ...words: string[]) => list.filter((p) => words.every((w) => p.includes(w)))
