@@ -106,3 +106,68 @@ Not reached, for the fix agent, with where I would change it:
 7. Scorch (issue 7). After 9fdffc0 the crust is back. Still to do in `material.ts`, char block: caramel band is too wide (`smoothstep(front + 2.8, front - 0.2, ragged)`: try `front + 1.6`), crust has no relief (add `wjaTilt += grain * 3.0 * soot`).
 8. Melt (issue 11). The clear drops are sweat: the actor sends `sweat: 0.25` with exhausted (`src/cursor/act/feel.ts` line 18); told to the actor. Apex and stem: `deform.ts` `POINTS` pull the three corners; add a fourth entry for the tail end with a sideways pull to make the hook, and lower the tip's 0.115 pull so the apex is not abrupt.
 9. Arms (issue 12) are the actor's. A cuff where an arm leaves the shell would be a small dark ring at the contract's `anchor` point: a torus in `body.ts` placed with the contract's `anchor(x, y, out)`, not started.
+
+## Fix round
+
+Branch `agent/damage`. Owner of this section: the damage fix agent. Every number marked MEASURED was run on this branch on the build machine (4 cores), with the command beside it.
+
+### What the approved images show, written down before any code
+
+1. Highlight. The face is an even bright off-white with one broad soft sheen. A thin bright line sits on the upper left rim and a soft grey shade on the lower right shoulder. No hard specular spots.
+2. Bevel and wall. A soft roll about 0.6 to 0.7 unit wide. The glossy black sidewall shows about 0.8 unit wide on the lower right and bottom and about 0.2 unit on the upper left, as an object photographed just off its axis. Every corner is rounded.
+3. Gap. A crisp darker hairline between white and black, not a space.
+4. Shadow and edge. Densest right under the lower right wall, then a short soft cast about one body thickness long (about 2 units). No long trail. The damaged bodies lie on the page.
+5. States. Sweat is about 14 beads of 3 sizes over the face and just beyond, each with a dark lower right rim and a pinpoint glint. Angry is deep red at the tip through orange and yellow into white over about 45% of the head, with a ragged front, a glow on the page and soft white wisps from mid face. Scared is an even light grey matte stone with a soft edge. Exhausted is glossy cream, still an arrow, wavy, the stem ending in a hook. The laser hole shows light page through a ragged black rim with orange embers and a brown halo. Shredded is about 12 narrow even slivers in a loose fan. Tape is clear and matte with barely visible edges. The scorch crust covers the top 1.5 units with a 0.3 unit caramel line. The punched hole shows lit page and a raw beige crumbly wall. Flattened keeps a thick black edge with hairline low contrast cracks and broad undulations.
+
+### What was changed
+
+- Body section (`shape.ts`). The band is a rounded foot, a vertical wall to 1.18, a quarter round crown to (0.5, 1.93), a dip to a groove at 1.82, then a sine shoulder up to a flat face at 2.3. The dark wall is geometry 0.5 unit wide, never a stroke. Ring rows use the true inset, which removed the grey ridges. Corner radii are larger everywhere but the tip, which stays small so the height test (18.6 to 19.01 units) holds. 4852 triangles before (STATED in the notes above), 6942 after (MEASURED, `solid().index.length / 3` in a throwaway vitest file).
+- Normals (`body.ts`, `strips.ts`). All from `computeVertexNormals`. The analytic dome normals are gone.
+- Slant (`deform.ts`, `SLANT = 0.17`, `lean(turn)`). The body is sheared so its face sits up and left of its foot in page space whatever the root's turn: the black wall shows on the lower right as on the approved sheets. The anchor points move with it; two anchor expectations in `tests/cursor-model.test.ts` were corrected.
+- Material (`material.ts`). The ink rule keeps the edge about 3 px wide at page size (`reach = clamp(2.8 * fwidth(vInset), 0.545, 0.82)`) and exactly the wall at sheet size. Wall: colour `edge * 0.62`, roughness 0.46, coat 0.55. Page bounce on the face 0.9. Cracks thinner and fainter. Scorch: crust `charred * 5.6`, caramel band 0.95 wide where it was 2.8. Heat front `heat * 9.6`. Stone `(0.47, 0.465, 0.45)`, no gloss, its wall the same stone. Melt colour warmer. Shadow material: holes 1.6 times wider (`WJA_HOLE_WIDE`), so more light falls through.
+- Deform (`deform.ts`). Stone gets one soft roll from wall to face, no groove. Melt: corner pulls reduced, the stem alone runs, wiggles and turns up in a hook, and 65% of the pose's squash is given back while melted so the outline stays an arrow (R9-2 issue 1). Flattened: corners pulled in by the melt's `POINTS`, wider undulation.
+- Strips (`body.ts`, `LOOSE`). A strip more than 4 to 14 px out of its place lies at 40% of the body's thickness, taken off about its foot (`Deform.thin`). In place it has the full thickness. Without this a sliver is 0.8 unit wide and 2.3 high and reads as a slat with a long shadow.
+- Effects (`effects.ts`). Sweat: 15 beads (24 before), 0.42 to 1.2 units, spread over the whole face. Steam: three wisps from fixed places on the right of the heated face, faint at the foot, so they rise over the page and not over the glow. Smoke a little wider.
+- Tape (`act/tape.ts`), second batch. One strip mesh with a 2.2 px margin and an attribute `aTape` (distance from the start, distance to the end, distance across, half width). Its own material passes through `studio()`: frosted clear film (frost 0.24), a bright edge toward the lamp, a dark edge away from it, pinked ends, and a small soft shadow in the margin. The split lines stay legible through it.
+- Page size, second batch (`material.ts`, `effects.ts`). Ink reach is `clamp(3.4 * fwidth(vInset), 0.545, 0.92)`: about 3.5 px of black rim at 70 px. Wall coat 0.32 and spec 0.3, so the rim stays black and not grey. Beads fade when they are small on screen (`wjaSmall`), so the face at page size stays clean.
+- Cracks, second batch (`material.ts`). Each crack has a lit lip and a dark lip either side of a darker hairline gap, a little clay tint in the gap.
+- Holes, second batch (`material.ts`, `body.ts`). Laser: halo wider and softer, bore greyer ash, ember accents sharper and fewer.
+- Heat, third batch (`material.ts`). The glow shows from heat 0.3 and is full at 0.6. In the beat `step1.tug` the acting side sends heat 0.28 (angry, dimmed while busy): the tip glowed orange there and the approved tug image has a clean white tip.
+- `act/damage.ts`: `seamCount` reads `pose.strips.length`, or `STRIPS` from `src/cursor/body.ts` when there are no strips. The number is written nowhere in my files.
+- `sheets.ts`, `damage()` only: `LIE = 0.6`, every damaged body on the sheet lies on the page, as on the approved sheet.
+
+### Decisions
+
+19. The slant is a shear of the body, not a camera move: the camera is not mine, and the approved images all show the wall on the lower right.
+20. Loose slivers are thinner than the whole body. It is the one place where the body's thickness is not constant. The alternative, slats 2.3 high, was looked at and read as splinters.
+21. A melted body gives back most of the pose's squash. The acting state still sends 0.8; the melt itself carries the slump.
+22. The page seen through a hole stays in the body's shadow. The engine's shadow filter searches up to 40 texels (about 20 page pixels) for blockers; a hole is about 11 px wide, so the light patch it lets through is averaged away. This is the engine, not the body. The brief accepts the page's shadow seen through.
+23. The shadow's length is the hover (4 px) plus the body's thickness (8.5 px) under the engine's light angle. The body does not make a trail of its own. A shorter cast needs a lower hover or a steeper key light, neither of which is mine.
+
+### Agreed with the acting fixer
+
+`STRIPS` is 15 on main. I read the count from the pose. They send `melt` 0.6 for the tired body in the beats and were asked to send no sweat with exhausted. The pose of the `cursor-acting` sheet stays theirs.
+
+### MEASURED
+
+| What | Command | Before (main 1c5f745) | After |
+| --- | --- | --- | --- |
+| `cursor-damage` draft | `npm run still -- --sheet cursor-damage --format hd --tier draft` | about 7 s, 111 draw calls | 7.2 s, 857836 triangles, 111 draw calls |
+| `cursor-damage` review | same with `--tier review --force` | not run | 15.6 s |
+| `cursor-acting` draft | `npm run still -- --sheet cursor-acting --format hd --tier draft` | 7.4 s, 534826 triangles, 140 draw calls | 6.7 s, 690166 triangles, 140 draw calls |
+| `step1-fire` draft | `npm run still -- --key step1-fire --format hd --tier draft` | 11.7 s, 1016487 triangles, 293 draw calls | 11.3 s, 1019037 triangles, 293 draw calls |
+| `step1-tug` draft | `npm run still -- --key step1-tug --format hd --tier draft` | 11.1 s, 618027 triangles, 295 draw calls | 10.9 s, 649377 triangles, 295 draw calls |
+| body solid | `solid().index.length / 3` | 4852 (STATED) | 6942 |
+| 15 strips | `stripSet(15).strip.length / 3` | not run | 17980 |
+| textures | read from `texture.ts` | 1.0 MB (one 512 px RGBA) | 1.0 MB, unchanged |
+
+The triangle counts of the sheets rose mostly with the 15 strips (the acting fixer's count, merged from main) and the page's own changes on main; the body's share is 2090 triangles per cursor. Draw calls did not change.
+
+`npm test`: 71 files, 1146 tests passed. `npm run build`: built. `npm run bots`: all clear. `npm run measure -- --unit step1`: 7 green, 1 red (M3 on `step1-tug`, 0.6676 against 0.8, red on main before this branch).
+
+### Not done yet
+
+- Tape: no lifted geometry. The lift is drawn (edges and shadow), the film is one flat strip.
+- Cracks: lips are drawn in the material. The shell is not cut into separate pieces with real gaps.
+- Laser rim: reads as a brown ring more than a thick ragged crust.
+- Bead shadows are the engine's and are faint at page size.
