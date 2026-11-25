@@ -13,9 +13,9 @@ export const TAPE = {
   on: [0.4, 0.56] as [number, number],
   off: [0.8, 0.97] as [number, number],
   pieces: [
-    { x: 3.4, y: 5.6, turn: 0.16, half: 20, wide: 5.4, cut: 2.2, late: 0 },
-    { x: 5.0, y: 10.4, turn: -0.12, half: 27, wide: 5.8, cut: -1.8, late: 0.03 },
-    { x: 8.3, y: 16.0, turn: 0.3, half: 15, wide: 5.0, cut: 1.6, late: 0.06 }
+    { x: 3.2, y: 6.0, turn: 0.2, half: 19, wide: 4.2, cut: 2.2, late: 0 },
+    { x: 5.2, y: 10.6, turn: -0.14, half: 27, wide: 4.6, cut: -1.8, late: 0.03 },
+    { x: 8.3, y: 16.2, turn: 0.32, half: 14, wide: 3.8, cut: 1.6, late: 0.06 }
   ]
 }
 
@@ -34,7 +34,7 @@ function within(x: number, y: number): boolean {
 // Clear matte tape: a faint frost over what it covers, a thin bright line on the edges toward the lamp, a thin dark one on the edges away from it,
 // pinked ends, one corner of the far end that never stuck down and catches the light, and a small soft shadow just outside the edges that face away from the lamp.
 function tapeMaterial(): THREE.MeshPhysicalMaterial {
-  const m = studio(new THREE.MeshPhysicalMaterial({ color: 0xe4dcc2, roughness: 0.3, metalness: 0, specularIntensity: 1, transparent: true, opacity: 1, depthWrite: false, side: THREE.DoubleSide }))
+  const m = studio(new THREE.MeshPhysicalMaterial({ color: 0xe8e2cf, roughness: 0.3, metalness: 0, specularIntensity: 1, transparent: true, opacity: 1, depthWrite: false, side: THREE.DoubleSide }))
   const law = m.onBeforeCompile
   m.onBeforeCompile = (shader, renderer) => {
     law.call(m, shader, renderer)
@@ -53,7 +53,7 @@ function tapeMaterial(): THREE.MeshPhysicalMaterial {
       float wjaBright = wjaRim * smoothstep( 0.1, 0.9, -wjaLee ) * wjaRun;
       float wjaDark = wjaRim * smoothstep( 0.1, 0.9, wjaLee );
       float wjaCast = ( 1.0 - wjaBody ) * ( 1.0 - smoothstep( 0.0, ${(2.0).toFixed(1)}, wjaOut ) ) * smoothstep( -0.1, 0.8, wjaLee );
-      float wjaFrost = 0.5 + 0.07 * sin( vTape.x * 0.37 + vTape.z * 1.7 );
+      float wjaFrost = 0.3 + 0.06 * sin( vTape.x * 0.37 + vTape.z * 1.7 );
       float wjaBand = ( vTape.z / vTape.w + 0.38 ) / 0.2;
       float wjaSheen = wjaBody * exp( -wjaBand * wjaBand ) * ( 0.45 + 0.55 * sin( vTape.x * 0.29 + 0.7 ) * sin( vTape.x * 0.11 + 2.1 ) );
       float wjaFold = sin( vTape.x * 0.9 + vTape.z * 1.3 + 2.0 * sin( vTape.x * 0.13 ) );

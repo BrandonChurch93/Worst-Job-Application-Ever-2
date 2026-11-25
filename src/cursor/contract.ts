@@ -47,8 +47,6 @@ export interface BodyLook {
   strips: StripPose[] | null
   // 1 when the strips are loose ribbons whatever their places: even in width, square at the ends, lying thin. Left out, each strip is a ribbon by how far it is from its place.
   ribbon?: number
-  // 1 when each strip in its place still ends square at its own length, so the outline is stepped. 0 or left out, the strips make the true outline.
-  square?: number
   // Faint hairline seams on a whole body where the strips were cut: the reassembled body as it fades. With strips null it is drawn for seamCount strips.
   seam: number
   seamCount: number

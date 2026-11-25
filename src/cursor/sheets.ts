@@ -74,7 +74,7 @@ function acting(): CursorPose[] {
 const LIE = 0.6
 
 // The pile lies down the page and to the right of where the body was cut: the sheet sets the body back by that much, so the pile is in its cell.
-const PILE = { x: 34, y: 58 }
+const PILE = { x: 33, y: 62 }
 
 function damage(): CursorPose[] {
   const n = 5

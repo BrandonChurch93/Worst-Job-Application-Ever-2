@@ -114,7 +114,7 @@ export class Body implements BodyModel {
       } else u.uHoles.value[i]!.set(0, 0, 0, 0)
     }
     this.heat = clamp01(look.heat)
-    if (look.strips && look.strips.length > 0) this.applyStrips(look.strips, clamp01(look.ribbon ?? 0), clamp01(look.square ?? 0))
+    if (look.strips && look.strips.length > 0) this.applyStrips(look.strips, clamp01(look.ribbon ?? 0))
     else this.applyWhole()
     this.applyWalls(look)
   }
@@ -137,7 +137,7 @@ export class Body implements BodyModel {
     g.computeVertexNormals()
   }
 
-  private applyStrips(strips: StripPose[], ribbon: number, square: number): void {
+  private applyStrips(strips: StripPose[], ribbon: number): void {
     const set = stripSet(strips.length)
     const g = this.cut.geometry
     if (this.set !== set) {
@@ -174,13 +174,10 @@ export class Body implements BodyModel {
     const inks = inkAt.array as Float32Array
     const r = set.rest
     const o = set.ribbon
-    const q = set.square
     for (let i = 0; i < n; i++) {
       const l = loose[set.strip[i]!]!
       const inset = r[i * 4 + 3]! + (o[i * 4 + 3]! - r[i * 4 + 3]!) * l
-      const x = r[i * 4]! + (q[i * 2]! - r[i * 4]!) * square
-      const y = r[i * 4 + 1]! + (q[i * 2 + 1]! - r[i * 4 + 1]!) * square
-      this.deform.point(x + (o[i * 4]! - x) * l, y + (o[i * 4 + 1]! - y) * l, r[i * 4 + 2]! + (o[i * 4 + 2]! - r[i * 4 + 2]!) * l, inset, p)
+      this.deform.point(r[i * 4]! + (o[i * 4]! - r[i * 4]!) * l, r[i * 4 + 1]! + (o[i * 4 + 1]! - r[i * 4 + 1]!) * l, r[i * 4 + 2]! + (o[i * 4 + 2]! - r[i * 4 + 2]!) * l, inset, p)
       this.deform.thin(p, 1 - LOOSE.thin * l)
       insets[i] = inset
       inks[i] = set.ink[i]! + (set.ribbonInk[i]! - set.ink[i]!) * l

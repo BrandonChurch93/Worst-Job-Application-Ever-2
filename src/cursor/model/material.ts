@@ -192,10 +192,10 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
 
   // Char: a black blistered crust that grows back from the tip, with a scorched brown fringe.
   if ( charred > 0.0 ) {
-    float front = charred * 5.6;
+    float front = charred * 7.4;
     float ragged = along + ( wide.g - 0.5 ) * 2.0 + ( mid.b - 0.5 ) * 1.6 + ( fine.g - 0.5 ) * 0.6;
     float crust = smoothstep( front + 0.2, front - 0.3, ragged );
-    float soot = smoothstep( front + 0.95, front - 0.1, ragged ) * smoothstep( 0.0, 0.12, charred );
+    float soot = smoothstep( front + 1.3, front - 0.1, ragged ) * smoothstep( 0.0, 0.12, charred );
     vec3 scorch = mix( vec3( 0.80, 0.52, 0.24 ), vec3( 0.36, 0.17, 0.06 ), soot );
     col = mix( col, col * scorch, pow( soot, 1.5 ) * ( 1.0 - crust ) * mix( 1.0, 0.55, ink ) );
     float blister = smoothstep( 0.5, 0.82, fine.b * 0.7 + mid.g * 0.5 );

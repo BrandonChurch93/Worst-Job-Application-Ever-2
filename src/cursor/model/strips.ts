@@ -13,8 +13,6 @@ export interface StripSet {
   width: number
   // The same corners as a loose ribbon: even in width, square at its ends, flat on top. x, y, z and the distance in from the outline, then the ink and the direction faced.
   ribbon: Float32Array
-  // x and y of the same corners with each strip's ends cut square at its own length, the rim kept: a strip laid back in its place before it is whole.
-  square: Float32Array
   ribbonInk: Float32Array
   ribbonNormal: Float32Array
 }
@@ -74,11 +72,7 @@ function clip(poly: Corner[], limit: number, keepAbove: boolean, cut: Corner[]):
   return out
 }
 
-const RIBBON = { least: 0.5, samples: 9, step: 0.02, foot: 0.5, crown: 0.06, roll: 0.26, rim: 2.2, splay: 0.045, jump: [2.0, 3.0] as [number, number] }
-const near = (d: number): number => {
-  const t = Math.min(1, Math.max(0, (Math.abs(d) - RIBBON.jump[0]) / (RIBBON.jump[1] - RIBBON.jump[0])))
-  return 1 - t * t * (3 - 2 * t)
-}
+const RIBBON = { least: 0.5, samples: 9, step: 0.02, foot: 0.5, crown: 0.06, roll: 0.26, rim: 2.2, splay: 0.045 }
 
 // Where the outline starts and ends along the tail, on lines across each strip.
 function reaches(count: number, from: number, width: number): { lo: Float32Array; hi: Float32Array; start: Float32Array; end: Float32Array } {
@@ -181,7 +175,6 @@ export function stripSet(count: number): StripSet {
   }
   const total = strip.length
   const ribbon = new Float32Array(total * 4)
-  const square = new Float32Array(total * 2)
   const ribbonInk = new Float32Array(total)
   const ribbonNormal = new Float32Array(total * 3)
   const reach = reaches(count, band.from, band.width)
@@ -200,12 +193,6 @@ export function stripSet(count: number): StripSet {
     const hi = reach.hi[k * m + j]! * (1 - w) + reach.hi[k * m + j + 1]! * w
     const t = hi - lo > 0.02 ? Math.min(1, Math.max(0, (al - lo) / (hi - lo))) : 0.5
     const to = reach.start[k]! + t * (reach.end[k]! - reach.start[k]!)
-    const mid = (m - 1) >> 1
-    const dLo = reach.lo[k * m + mid]! - lo
-    const dHi = reach.hi[k * m + mid]! - hi
-    const sq = al + dLo * (1 - t) * near(dLo) + dHi * t * near(dHi)
-    square[i * 2] = sq * AXIS[0] + (x * AXIS[1] - y * AXIS[0]) * AXIS[1]
-    square[i * 2 + 1] = sq * AXIS[1] - (x * AXIS[1] - y * AXIS[0]) * AXIS[0]
     const u = ((v - band.from) / band.width - k) * 2 - 1
     const cap = ink[i]! > 1.5
     const up = Math.min(1, z / RIBBON.foot)
@@ -229,7 +216,7 @@ export function stripSet(count: number): StripSet {
       ribbonNormal[i * 3 + 2] = 1 / len
     }
   }
-  const set: StripSet = { count, rest: new Float32Array(rest), ink: new Float32Array(ink), normal: new Float32Array(normal), strip: new Uint16Array(strip), from: band.from, width: band.width, ribbon, square, ribbonInk, ribbonNormal }
+  const set: StripSet = { count, rest: new Float32Array(rest), ink: new Float32Array(ink), normal: new Float32Array(normal), strip: new Uint16Array(strip), from: band.from, width: band.width, ribbon, ribbonInk, ribbonNormal }
   sets.set(count, set)
   return set
 }
