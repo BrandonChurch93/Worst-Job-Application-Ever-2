@@ -25,21 +25,22 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 16, 2026-11-25T11:15Z, Phase 2.
+Status 17, 2026-11-25T11:36Z, Phase 2.
 
-1. `out/stills/status/01-boss-popups-after-fix.jpg`: The Submit fight after the fix, 2:05 to 2:11, twelve frames in order: a pop-up rises and is shot down, a slab is thrown and hits, the next pop-up, the next slab. One thing to watch at a time.
-2. `out/stills/status/02-boss-last-stand-after-fix.jpg`: The last stand, 2:11 to 2:16: Session expired clears the page, the bar jumps back, one last pop-up, then the boss alone with its bar and the cursor before it breaks apart.
-3. `out/stills/status/03-step2-rest-rail.jpg`: Step 2 at rest on main now. The step indicator is a narrow rail joining the five buttons and ends at the content edge, level with the rule and with Continue.
+1. `out/stills/status/01-step1-shredded-after-fix.jpg`: The end of step 1, 0:42 to 0:46, twelve frames in order: the strips leave the shredder, the form empties and says the resume was received, and that holds for 2.5 s before the page turns.
+2. `out/stills/status/02-pinball-launch-ride.jpg`: The launch, 1:15 to 1:18, twelve frames in order: the camera comes down to the plunger, then stays behind the ball, close at first and opening as the ball climbs the lane to the top tier.
+3. `out/stills/status/03-film-screen-bar-under.jpg`: The film screen on main now: the picture whole, the bar in its own strip underneath.
+4. `out/stills/status/04-live-links-step1.jpg`: Live mode on step 1 after 20 s: the two links at the top left, larger than before and clear of the title.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 2, tick 45 at 2026-11-25T11:15:43Z, allowance: build
-time used in this phase: 3.62 h of its box of 6.50 h
-time used under the allowance in force: 5.72 h of 36.00 h allowed
-time used: 5.72 of 36.00 hours before the review
+clock: phase 2, tick 46 at 2026-11-25T11:36:41Z, allowance: build
+time used in this phase: 3.97 h of its box of 6.50 h
+time used under the allowance in force: 6.07 h of 36.00 h allowed
+time used: 6.07 of 36.00 hours before the review
 extra rounds: yes
 half point: reached
 box end: not reached

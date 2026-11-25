@@ -1,7 +1,8 @@
 # Status pictures
 
-Time: 2026-11-25T11:15Z. Phase 2, status 16.
+Time: 2026-11-25T11:36Z. Phase 2, status 17.
 
-1. `01-boss-popups-after-fix.jpg`: The Submit fight after the fix, 2:05 to 2:11, twelve frames in order: a pop-up rises and is shot down, a slab is thrown and hits, the next pop-up, the next slab. One thing to watch at a time.
-2. `02-boss-last-stand-after-fix.jpg`: The last stand, 2:11 to 2:16: Session expired clears the page, the bar jumps back, one last pop-up, then the boss alone with its bar and the cursor before it breaks apart.
-3. `03-step2-rest-rail.jpg`: Step 2 at rest on main now. The step indicator is a narrow rail joining the five buttons and ends at the content edge, level with the rule and with Continue.
+1. `01-step1-shredded-after-fix.jpg`: The end of step 1, 0:42 to 0:46, twelve frames in order: the strips leave the shredder, the form empties and says the resume was received, and that holds for 2.5 s before the page turns.
+2. `02-pinball-launch-ride.jpg`: The launch, 1:15 to 1:18, twelve frames in order: the camera comes down to the plunger, then stays behind the ball, close at first and opening as the ball climbs the lane to the top tier.
+3. `03-film-screen-bar-under.jpg`: The film screen on main now: the picture whole, the bar in its own strip underneath.
+4. `04-live-links-step1.jpg`: Live mode on step 1 after 20 s: the two links at the top left, larger than before and clear of the title.
