@@ -12,7 +12,7 @@ const BEND_TURN = 0.85
 const ROUND_WIDE = 1.15
 const ROUND_TOP = 2.12
 const PEEL_RADIUS = 9
-const POINTS: [number, number, number, number][] = [[0, 0, 0.1, 3.6], [0, 16.2, 0.11, 3.2], [11.8, 11.6, 0.12, 3.2]]
+const POINTS: [number, number, number, number][] = [[0, 0, 0.035, 9], [0, 16.2, 0.06, 5], [11.8, 11.6, 0.07, 5]]
 const PEEL_TURN = 1.0
 // The body stands a little out of plumb, as a thing photographed from just off its axis: its face sits up and to the left of its foot, so the dark wall shows on the side away from the lamp.
 export const SLANT = 0.17
@@ -46,6 +46,13 @@ export class Deform {
     this.slantY = -(-n * wx + c * wy)
   }
 
+  // A sliver cut loose lies thinner than the whole body stands: keep is the share of the thickness left, taken off about the foot.
+  thin(out: { x: number; y: number; z: number }, keep: number): void {
+    out.x -= this.slantX * out.z * (1 - keep)
+    out.y += this.slantY * out.z * (1 - keep)
+    out.z *= keep
+  }
+
   set(look: BodyLook): void {
     this.stretch = Math.min(2.2, Math.max(0.3, look.stretch))
     this.bend = Math.min(1.2, Math.max(-1.2, look.bend))
@@ -57,6 +64,8 @@ export class Deform {
     this.peel = clamp01(look.peel)
     this.gulp = look.gulp < 0 ? -1 : clamp01(look.gulp)
     this.time = look.time
+    // A melting body slumps by its own running, not by being pressed short: most of the pose's squash is given back, or the arrow reads as a cap on a stalk.
+    this.stretch += (1 - this.stretch) * 0.65 * this.melt
     this.wide = 1 / Math.sqrt(this.stretch)
     const t = look.time
     const k = this.tremble
@@ -72,10 +81,14 @@ export class Deform {
     let z = z0
     const up = z0 / TOP
     const round = smooth(0, 0.5, this.melt)
-    if (round > 0 && inset < ROUND_WIDE) {
+    if (inset < ROUND_WIDE) {
       const k = 1 - Math.min(1, inset / ROUND_WIDE)
-      const target = z0 >= 1.2 ? ROUND_TOP * Math.sqrt(1 - k * k) : z0 * 0.32
-      z += (target - z) * round
+      if (round > 0) {
+        const target = z0 >= 1.2 ? ROUND_TOP * Math.sqrt(1 - k * k) : z0 * 0.32
+        z += (target - z) * round
+      }
+      // Stone has no groove and no bevel line: one soft roll from the wall up to the face.
+      if (this.pale > 0 && z0 >= 1.2) z += (TOP * (1 - 0.42 * Math.pow(k, 2.5)) - z) * this.pale * (1 - round)
     }
     if (this.gulp >= 0) {
       const u = x * AXIS[0] + y * AXIS[1]
@@ -135,11 +148,11 @@ export class Deform {
       const grow = (1 + m * 0.045 * wob * (1 - stem)) * (1 - m * Math.min(0.2, blunt))
       x = CENTRE[0] + dx * grow
       y = CENTRE[1] + dy * grow
-      y += m * (0.5 * low + 0.7 * droop + 0.22 * Math.sin(x0 * 0.85 + 1.4) * (1 - stem))
-      x += m * (0.32 * Math.sin(y0 * 0.42 + 1.0) + 0.2 * Math.sin(y0 * 0.95 + 0.3)) * (1 - stem)
+      y += m * (0.3 * low + 0.4 * droop + 0.16 * Math.sin(x0 * 0.85 + 1.4) * (1 - stem))
+      x += m * (0.2 * Math.sin(y0 * 0.42 + 1.0) + 0.14 * Math.sin(y0 * 0.95 + 0.3)) * (1 - stem)
       // The stem runs a little longer, leans to the right and turns up at its end in a soft hook.
       const du = m * (1.1 * t - 1.5 * t * t * t * t)
-      const dv = m * (0.5 * Math.sin(t * 3.4) * (1 - t) + 2.7 * t * t * t)
+      const dv = m * (0.45 * Math.sin(t * 5.2) * (1 - t) + 1.25 * t * t * t)
       x += du * AXIS[0] + dv * AXIS[1]
       y += du * AXIS[1] - dv * AXIS[0]
       const end = clamp01((u0 - 18.85) / 1.3)

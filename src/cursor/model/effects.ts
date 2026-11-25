@@ -7,7 +7,7 @@ import { UNIT, type BodyModel, type EffectsLook, type EffectsModel } from '../co
 import { CENTRE, inside } from './shape'
 import { detailTexture } from './texture'
 
-const DROPS = 24
+const DROPS = 15
 const STEAM = 54
 const SMOKE_POINTS = 4
 const SMOKE_EACH = 26
@@ -15,7 +15,7 @@ const DUST = 22
 const PUFFS = STEAM + SMOKE_POINTS * SMOKE_EACH + DUST
 const SEED = config.seed
 const HOVER = config.scale.heights.cursorHover
-const WISPS: [number, number, number][] = [[1.5, 4.4, 15], [3.3, 6.6, 12.5], [1.9, 7.6, 10]]
+const WISPS: [number, number, number][] = [[3.1, 4.6, 15], [5.4, 6.9, 12.5], [6.9, 8.6, 10]]
 
 const clamp01 = (v: number): number => Math.min(1, Math.max(0, v))
 const smooth = (v: number): number => {
@@ -191,7 +191,7 @@ class Effects implements EffectsModel {
       const floor = -HOVER + 0.05
       const p = this.p
       for (let i = 0; i < DROPS; i++) {
-        const on = clamp01(amount * (DROPS + 1) * 1.5 - i)
+        const on = clamp01(amount * (DROPS + 1) - i)
         if (on <= 0) continue
         const period = 1.5 + 1.3 * hash01(i, 1, SEED)
         const clock = look.time / period + hash01(i, 2, SEED)
@@ -208,7 +208,7 @@ class Effects implements EffectsModel {
             break
           }
         }
-        const size = (0.34 + 0.8 * Math.pow(hash01(i, cycle, SEED + 5), 2.2)) * (0.8 + 0.2 * amount) * on * UNIT
+        const size = (0.42 + 0.78 * Math.pow(hash01(i, cycle, SEED + 5), 1.9)) * (0.8 + 0.2 * amount) * on * UNIT
         const flyer = hash01(i, cycle, SEED + 6) < 0.12
         let r = size
         let long = 1
@@ -306,7 +306,7 @@ class Effects implements EffectsModel {
       const size = (thin + (wide - thin) * Math.pow(t, 1.5)) * (0.8 + 0.4 * hash01(i, cycle, SEED + salt + 1)) * UNIT
       const long = 3.4 - 1.6 * t
       const shade = dark + (pale - dark) * t
-      const alpha = amount * dense * smooth(t / 0.06) * Math.pow(1 - t, 0.8) * (1 - 0.3 * t * t)
+      const alpha = amount * dense * smooth(t / (thin < 0.25 ? 0.22 : 0.06)) * Math.pow(1 - t, 0.8) * (1 - 0.3 * t * t)
       n = this.puff(n, x + off * UNIT, y + h * UNIT, z + (0.1 + 3.2 * t + 0.5 * s * t) * UNIT, size, size * long, size * 0.7, -Math.atan(slope), shade, shade * 1.005, shade * 1.02, alpha, salt * 13 + i * 7 + cycle * 3)
     }
     return n
@@ -319,7 +319,7 @@ class Effects implements EffectsModel {
       // Wisps leave the heated face itself, each from its own place, and curl before they thin.
       WISPS.forEach((w, i) => {
         this.on(surface, w[0], w[1], this.a)
-        n = this.plume(n, this.a.x, this.a.y, this.a.z, steam, look.time, STEAM / WISPS.length, 2, w[2], 1.9 + 0.3 * i, 0.2, 2.1, 1.0, 1.0, 0.8, 3 + i * 5)
+        n = this.plume(n, this.a.x, this.a.y, this.a.z, steam, look.time, STEAM / WISPS.length, 2, w[2], 1.9 + 0.3 * i, 0.2, 2.1, 1.0, 1.0, 0.62, 3 + i * 5)
       })
     }
     const points = Math.min(SMOKE_POINTS, look.smoke.length)

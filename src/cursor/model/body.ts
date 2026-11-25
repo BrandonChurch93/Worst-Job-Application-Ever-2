@@ -15,6 +15,8 @@ const smooth01 = (v: number): number => {
 }
 const rag = (a: number, burnt: number): number => 1 + (0.25 + 0.3 * burnt) * (0.06 * Math.sin(3 * a + 1.3) + 0.04 * Math.sin(7 * a + 0.4) + 0.03 * Math.sin(11 * a + 2.1))
 const clamp01 = (v: number): number => Math.min(1, Math.max(0, v))
+// A strip out of its place by more than a few pixels is a loose sliver, and lies thin.
+const LOOSE = { thin: 0.6, from: 4, to: 14, arm: 40 }
 
 export class Body implements BodyModel {
   readonly root = new THREE.Group()
@@ -162,8 +164,10 @@ export class Body implements BodyModel {
     const count = set.count
     const sum = new Float64Array(count * 4)
     const p = this.p
+    const keep = strips.map((s) => 1 - LOOSE.thin * smooth01((Math.hypot(s.x, s.y) + Math.abs(s.rot) * LOOSE.arm - LOOSE.from) / (LOOSE.to - LOOSE.from)))
     for (let i = 0; i < n; i++) {
       this.deform.point(set.rest[i * 4]!, set.rest[i * 4 + 1]!, set.rest[i * 4 + 2]!, set.rest[i * 4 + 3]!, p)
+      this.deform.thin(p, keep[set.strip[i]!]!)
       a[i * 3] = p.x
       a[i * 3 + 1] = p.y
       a[i * 3 + 2] = p.z
