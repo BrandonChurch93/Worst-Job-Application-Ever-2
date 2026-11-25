@@ -464,6 +464,53 @@ describe('the live narrator inside the sound engine, on a fake clock', () => {
     expect(source(none.ctx, 'line.marketing.stroll.0')[0]!.started).toBeCloseTo(20 + narration.film['marketing.stroll'][0].at * 2, 9)
   })
 
+  it('says the button is winning once, at the first event of a fight that has lasted longer than the fight of the film', async () => {
+    const beat = (id: string) => cfg.film.beats.find((x: any) => x.id === id)
+    const fight = beat('boss.collapse').from - beat('boss.unfold').from
+    expect(fight).toBeGreaterThan(0)
+    const id = liveLineId('boss.slow', 0)
+    const { s, ctx } = await ready()
+    ctx.currentTime = 100
+    s.event(ev('unfold', 'step4'), 'live')
+    ctx.currentTime = 100 + fight - 0.01
+    s.event(ev('slab-drop', 'step4'), 'live')
+    expect(source(ctx, id).length).toBe(0)
+    ctx.currentTime = 100 + fight
+    s.event(ev('slab-drop', 'step4'), 'live')
+    expect(source(ctx, id).map((x) => x.started)).toEqual([100 + fight])
+    ctx.currentTime += far + fight
+    s.event(ev('slab-drop', 'step4'), 'live')
+    expect(source(ctx, id).length).toBe(1)
+  })
+
+  it.each(['power-down', 'skip', 'page-turn'])('does not say the button is winning when the fight ends in time by %s', async (end) => {
+    const beat = (id: string) => cfg.film.beats.find((x: any) => x.id === id)
+    const fight = beat('boss.collapse').from - beat('boss.unfold').from
+    const { s, ctx } = await ready()
+    ctx.currentTime = 100
+    s.event(ev('unfold', 'step4'), 'live')
+    ctx.currentTime = 100 + fight - 1
+    s.event(ev(end, 'step4'), 'live')
+    ctx.currentTime = 100 + fight + 1
+    s.event(ev('slab-drop', 'step4'), 'live')
+    expect(source(ctx, liveLineId('boss.slow', 0)).length).toBe(0)
+  })
+
+  it('leaves the button is winning to the page once the page reports it itself', async () => {
+    const beat = (id: string) => cfg.film.beats.find((x: any) => x.id === id)
+    const fight = beat('boss.collapse').from - beat('boss.unfold').from
+    const id = liveLineId('boss.slow', 0)
+    const { s, ctx } = await ready()
+    ctx.currentTime = 100
+    s.event(ev('unfold', 'step4'), 'live')
+    ctx.currentTime = 110
+    s.event(ev('boss-slow', 'step4'), 'live')
+    expect(source(ctx, id).map((x) => x.started)).toEqual([110])
+    ctx.currentTime = 100 + fight + far
+    s.event(ev('slab-drop', 'step4'), 'live')
+    expect(source(ctx, id).length).toBe(1)
+  })
+
   it('leaves the film as it was: its lines are placed by their beats and events set none off', async () => {
     const { s, ctx } = await ready()
     ctx.currentTime = 10

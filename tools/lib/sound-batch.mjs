@@ -107,7 +107,7 @@ async function main() {
       const prompts = readJson(at('audio', 'PROMPTS.json')).cues
       const max = a.max && a.max !== true ? Number(a.max) : 25
       let made = 0
-      for (const s of c.audio.sfx) {
+      for (const s of M.cues.allCues(c.audio.sfx)) {
         const variants = s.variants ?? 1
         for (let v = 0; v < variants; v++) {
           const id = M.cues.variantId(s.id, v, variants)

@@ -1,0 +1,29 @@
+{
+ "critic": "R8",
+ "score": 8,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "lower right of the form when the keyboard is open",
+   "what": "The keyboard takes over the Continue button’s former location, leaving no visible way to dismiss the keyboard or advance. Enter reads as a typing key, not as the next-step action.",
+   "fix": "Keep Continue visible in a stable action area or give the keyboard an explicit Done control that restores it."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "Browse files in the drop zone and Continue at lower right",
+   "what": "Both actions use pale labels on gray faces. The labels are legible at native size, but Browse files in particular looks muted and the two buttons do not clearly distinguish the primary next-step action from the secondary upload action.",
+   "fix": "Increase label-to-face contrast on both buttons and give the enabled Continue action a distinct treatment from Browse files."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "the shredder beneath the bottom edge of the resume drop zone",
+   "what": "There is a visible strip of untouched page between the drop-zone rim and the shredder. The mechanism looks like a separate object mounted below the field rather than part of the upload control coming out of the page.",
+   "fix": "Connect the shredder to a visible opening or fold-out mount in the drop-zone rim so its overlap and shadow show where it emerges."
+  }
+ ]
+}

@@ -4,10 +4,10 @@ import { studio } from '../../post/studio'
 import { grainNormalMap } from '../../shell/materials'
 import type { ArmsLook, ArmsModel } from '../contract'
 
-// Sizes in page pixels. The arm is 7% of the body's height thick, the hand a fifth of it long.
-// An arm is `rest` long: nearer than that it bows out at the elbow by what is left over, up to `slack` of the reach, and `elbow` is how sharply it bends there (1 is an even bow). An open hand that pushes bends back at the wrist by `wrist`; an open hand that hangs lets its fingers fall by `droop`.
+// Sizes in page pixels. The arm is a rubber hose 7% of the body's height thick, the hand a fifth of it long.
+// A hose is `rest` long and never shorter. A hand nearer than that leaves the rest as slack: the hose leaves the body outward (`out`), bows round in one loop and comes to the hand along the line of its reach (`into`). A hand further away stretches it: it is still `taut` longer than the straight line, so it keeps a curve, and it thins by `thin` at full strain and by the root of its stretch. `most` is the longest a short reach may be for its length, so a hand that is still growing out does not throw a loop. An open hand that pushes bends back at the wrist by `wrist`; an open hand that hangs lets its fingers fall by `droop`.
 const H = config.cursor.heightPxAt1080
-export const ARM = { radius: H * 0.038, rest: 46, along: 22, round: 10, grainPx: 64, slack: 1.25, elbow: 2.2, wrist: 1, droop: 0.6, low: 0.15, rise: 0.55 }
+export const ARM = { radius: H * 0.04, rest: 50, taut: 1.12, most: 2.1, out: 0.16, into: 0.3, ease: 0.45, thin: 0.12, along: 34, round: 12, grainPx: 64, wrist: 1, droop: 0.6, low: 0.15, rise: 0.55 }
 const HAND = { palm: [4.6, 4.7, 2.7], palmY: 4.8, finger: 1.5, joint: 3.1, joints: 8 }
 
 export interface Arms extends ArmsModel {
@@ -15,6 +15,8 @@ export interface Arms extends ArmsModel {
   grown: number
   // The height of the body's top face, in the same space as the shoulders.
   over: number
+  // From the first shoulder to the second, a unit vector in the plane of the page: each hose bows away from the other.
+  axis: [number, number]
 }
 
 let shared: { rubber: THREE.MeshPhysicalMaterial; grain: THREE.DataTexture; palm: THREE.BufferGeometry; joint: THREE.BufferGeometry } | null = null
@@ -53,6 +55,8 @@ class Limb {
   private palm = new THREE.Object3D()
   private fingers: Finger[] = []
   private c = new THREE.Vector3()
+  private e = new THREE.Vector3()
+  private lift = 0
   private p = new THREE.Vector3()
   private t = new THREE.Vector3()
   private n1 = new THREE.Vector3()
@@ -78,53 +82,79 @@ class Limb {
     }
   }
 
-  private at(out: THREE.Vector3, u: number, from: THREE.Vector3, to: THREE.Vector3, z0: number): void {
-    const a = (1 - u) * (1 - u)
-    const b = 2 * u * (1 - u) * ARM.elbow
-    const c = u * u
-    const k = 1 / (a + b + c)
+  private at(out: THREE.Vector3, u: number, from: THREE.Vector3, to: THREE.Vector3): void {
+    const v = 1 - u
+    const a = v * v * v
+    const b = 3 * v * v * u
+    const c = 3 * v * u * u
+    const d = u * u * u
     const w = Math.min(1, Math.max(0, (u - ARM.low) / ARM.rise))
-    out.set((a * from.x + b * this.c.x + c * to.x) * k, (a * from.y + b * this.c.y + c * to.y) * k, z0 + ((a * z0 + b * this.c.z + c * to.z) * k - z0) * w * w * (3 - 2 * w))
+    const z = from.z + (to.z - from.z) * u + this.lift * 4 * u * v
+    out.set(a * from.x + b * this.c.x + c * this.e.x + d * to.x, a * from.y + b * this.c.y + c * this.e.y + d * to.y, from.z + (z - from.z) * w * w * (3 - 2 * w))
   }
 
-  pose(d3: Draw, from: THREE.Vector3, to: THREE.Vector3, grip: number, strain: number, grown: number, over: number): void {
+  private bow(from: THREE.Vector3, to: THREE.Vector3, ex: number, ey: number, px: number, py: number, d: number, h: number): number {
+    this.c.set(from.x + px * h - ex * ARM.out * h, from.y + py * h - ey * ARM.out * h, 0)
+    this.e.set(to.x + px * h * ARM.ease - ex * ARM.into * d, to.y + py * h * ARM.ease - ey * ARM.into * d, 0)
+    let length = 0
+    let x0 = from.x
+    let y0 = from.y
+    let z0 = from.z
+    for (let i = 1; i <= 16; i++) {
+      this.at(this.p, i / 16, from, to)
+      length += Math.hypot(this.p.x - x0, this.p.y - y0, this.p.z - z0)
+      x0 = this.p.x
+      y0 = this.p.y
+      z0 = this.p.z
+    }
+    return length
+  }
+
+  pose(d3: Draw, from: THREE.Vector3, to: THREE.Vector3, grip: number, strain: number, grown: number, axis: [number, number]): void {
     const dx = to.x - from.x
     const dy = to.y - from.y
     const d = Math.max(1e-3, Math.hypot(dx, dy, to.z - from.z))
     const flat = Math.max(1e-3, Math.hypot(dx, dy))
-    const length = Math.min(ARM.rest, Math.max(14, d * ARM.slack))
-    let px = -dy / flat
-    let py = dx / flat
-    const want = px * this.side * 0.857 - py * 0.514
+    const ex = dx / flat
+    const ey = dy / flat
+    const length = Math.min(d * ARM.most, Math.max(ARM.rest, d * ARM.taut))
+    let px = -ey
+    let py = ex
+    const want = (px * axis[0] + py * axis[1]) * this.side * 0.857 + py * 0.514
     if (want < 0) {
       px = -px
       py = -py
     }
-    const sag = Math.sqrt((3 * d * Math.max(0, length - d)) / 8) * (1 - 0.5 * strain) * Math.min(1, Math.abs(want) * 3) + 0.035 * d
-    const out = (sag * (1 + ARM.elbow)) / ARM.elbow
-    this.c.set((from.x + to.x) / 2 + px * out, (from.y + to.y) / 2 + py * out, (from.z + to.z) / 2 + 1 + sag * 0.12)
     // An arm whose hand is on the far side of the body goes under it and comes out at the far edge: no arm lies over the white face.
-    const across = Math.min(1, Math.max(0, (-this.side * dx - 6) / 10))
-    const z0 = from.z
-    if (across > 0) this.c.z = Math.min(this.c.z, from.z + (1 - across) * (this.c.z - from.z))
-    void over
-    const thin = Math.max(0.95, Math.sqrt(Math.min(1, ARM.rest / d))) * (1 - 0.05 * strain)
+    const across = Math.min(1, Math.max(0, (-this.side * (dx * axis[0] + dy * axis[1]) - 6) / 10))
+    this.lift = 0
+    let lo = 0
+    let hi = length
+    for (let i = 0; i < 14; i++) {
+      const mid = (lo + hi) / 2
+      if (this.bow(from, to, ex, ey, px, py, flat, mid) < length) lo = mid
+      else hi = mid
+    }
+    const h = lo * Math.min(1, Math.abs(want) * 3)
+    this.bow(from, to, ex, ey, px, py, flat, h)
+    this.lift = (1 + h * 0.1) * (1 - across)
+    const thin = Math.pow(Math.min(1, ARM.rest / length), 0.3) * (1 - ARM.thin * strain)
     const pos = d3.position.array as Float32Array
     const nor = d3.normal.array as Float32Array
     let k = this.slot * RINGS * RING * 3
     for (let i = 0; i <= ARM.along; i++) {
       const u = i / ARM.along
-      this.at(this.t, Math.min(1, u + 0.02), from, to, z0)
-      this.at(this.p, Math.max(0, u - 0.02), from, to, z0)
+      this.at(this.t, Math.min(1, u + 0.015), from, to)
+      this.at(this.p, Math.max(0, u - 0.015), from, to)
       this.t.sub(this.p).normalize()
-      this.at(this.p, u, from, to, z0)
+      this.at(this.p, u, from, to)
       this.n1.set(this.t.y, -this.t.x, 0)
       if (this.n1.lengthSq() < 1e-6) this.n1.set(1, 0, 0)
       this.n1.normalize()
       this.n2.crossVectors(this.n1, this.t)
       // The shoulder end is closed to a round nose: an arm that starts on the body's face must not show an open tube.
-      const nose = i === 0 ? 0.04 : i === 1 ? 0.72 : 1
-      const r = ARM.radius * thin * (0.9 + 0.2 * u) * (0.35 + 0.65 * Math.min(1, grown)) * nose
+      const nose = i === 0 ? 0.04 : i === 1 ? 0.6 : i === 2 ? 0.9 : 1
+      const r = ARM.radius * thin * (0.94 + 0.12 * u) * (0.35 + 0.65 * Math.min(1, grown)) * nose
       for (let j = 0; j <= ARM.round; j++) {
         const w = (j / ARM.round) * Math.PI * 2
         const cx = Math.cos(w)
@@ -141,7 +171,11 @@ class Limb {
         k += 3
       }
     }
-    this.t.set(to.x - this.c.x, to.y - this.c.y, (to.z - this.c.z) * 0.5).normalize()
+    this.at(this.t, 1, from, to)
+    this.at(this.p, 0.9, from, to)
+    this.t.sub(this.p)
+    this.t.z *= 0.5
+    this.t.normalize()
     const open = 1 - grip
     const hang = open * (1 - strain) * ARM.droop * Math.max(0, -this.t.y)
     const back = Math.min(1, open * strain * ARM.wrist)
@@ -233,8 +267,9 @@ export const makeArms: (() => Arms) | null = () => {
     root,
     grown: 1,
     over: 0,
+    axis: [1, 0],
     apply(from: [THREE.Vector3, THREE.Vector3], to: [THREE.Vector3, THREE.Vector3], look: ArmsLook): void {
-      for (let i = 0; i < 2; i++) limbs[i]!.pose(draw, from[i]!, to[i]!, Math.min(1, Math.max(0, look.grip[i]!)), Math.min(1, Math.max(0, look.strain)), arms.grown, arms.over)
+      for (let i = 0; i < 2; i++) limbs[i]!.pose(draw, from[i]!, to[i]!, Math.min(1, Math.max(0, look.grip[i]!)), Math.min(1, Math.max(0, look.strain)), arms.grown, arms.axis)
       position.needsUpdate = true
       normal.needsUpdate = true
       draw.palms.instanceMatrix.needsUpdate = true

@@ -30,7 +30,7 @@ const ROW = { x: SLOT.cx - 16 - 3 * SHEET.arms.step, y: SLOT.cy - 132, pull: { x
 const ARMS: { x: number; y: number; left: [number, number, number]; right: [number, number, number]; lean: number; grip: [number, number]; strain: number; squash: number; sheet?: { name: string; x: number; y: number; z: number; pull: number } }[] = [
   { x: 0, y: 0, left: [-13, 70, 4], right: [45, 70, 4], lean: 0, grip: [0.25, 0.25], strain: 0, squash: 1 },
   { x: 0, y: 0, left: [-17, -4, 12], right: [45, 68, 4], lean: -0.06, grip: [0, 0.25], strain: 0, squash: 1.05 },
-  { x: -12, y: -2, left: [0, 0, 0], right: [0, 0, 0], lean: 0, grip: [1, 1], strain: 0.1, squash: 1, sheet: { name: 'holding', x: 46, y: 30, z: PAPER.front, pull: 0 } },
+  { x: -18, y: -2, left: [0, 0, 0], right: [0, 0, 0], lean: 0, grip: [1, 1], strain: 0.1, squash: 1, sheet: { name: 'holding', x: 42, y: 30, z: PAPER.front, pull: 0 } },
   { x: ROW.pull.x, y: ROW.pull.y, left: [0, 0, 0], right: [0, 0, 0], lean: -0.2, grip: [1, 1], strain: 0.85, squash: 1.1, sheet: { name: 'pulling', x: 24, y: ROW.pull.from, z: 3, pull: 1 } },
   { x: 6, y: 0, left: [60, 24, 9], right: [63, 47, 9], lean: 0.12, grip: [0, 0], strain: 0.9, squash: 0.94 }
 ]
@@ -62,7 +62,7 @@ function acting(): CursorPose[] {
   const y = SHEET.y
   return [
     restPose(at(0), y, { acting: 'nervous', squash: 0.95, lean: 0.08 }),
-    restPose(at(1), y - 20, { acting: 'shocked', squash: 1.36, lean: 0.08, z: hover + 6, reaction: 'doubleTake', reactionAt: 0.7 }),
+    restPose(at(1), y - 20, { acting: 'shocked', squash: 1.14, lean: 0.08, z: hover + 6, reaction: 'doubleTake', reactionAt: 0.7 }),
     restPose(at(2), y, { acting: 'angry', squash: 1.03, lean: 0.1 }),
     restPose(at(3), y, { acting: 'scared', squash: 0.9, lean: 0.06, bend: -0.1 }),
     restPose(at(4), y, { acting: 'exhausted', squash: 0.8, lean: 0.1, bend: 0.15 }),
@@ -73,13 +73,16 @@ function acting(): CursorPose[] {
 // On the approved sheet every damaged body lies on the page.
 const LIE = 0.6
 
+// The pile lies down the page and to the right of where the body was cut: the sheet sets the body back by that much, so the pile is in its cell.
+const PILE = { x: 33, y: 62 }
+
 function damage(): CursorPose[] {
   const n = 5
   const at = (i: number) => across(n, i, SHEET.damage.step)
   const y = SHEET.y
   const wound = (kind: CursorPose['damage'][number], life: number) => ({ damage: [kind], healing: life, wounds: [{ kind, at: life, x: STRIKE.x, y: STRIKE.y }] })
   return [
-    restPose(at(0), y, { ...wound('shredded', 0.8), strips: pileAt(seed + 1, 2), z: LIE }),
+    restPose(at(0) - PILE.x, y - PILE.y, { ...wound('shredded', 0.8), strips: pileAt(seed + 1, 2), z: LIE }),
     restPose(at(1), y, { ...wound('reassembled', 0.64), strips: gatheredAt(seed + 1, 0.64), z: LIE }),
     restPose(at(2), y, { ...wound('scorched', 0.15), z: LIE }),
     restPose(at(3), y, { ...wound('burn', 0.63), z: LIE }),

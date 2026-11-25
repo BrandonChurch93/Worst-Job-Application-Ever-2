@@ -12,12 +12,12 @@ const drawn = (s: Stage): DrawList => {
 }
 
 describe('the strike of a bolt on the cursor', () => {
-  it('draws one flash where the hit was, from the frame of the hit, for half a second, with no mark', () => {
+  it('draws one flash where the hit was, from the frame of the hit, for a second and a half, with no mark', () => {
     const s = film()
     const seen: { frame: number; x: number; y: number; left: number }[] = []
     let hitFrame = -1
     let hits = 0
-    for (let i = 0; i < Math.round(9.5 * stepHz); i++) {
+    for (let i = 0; i < Math.round(10 * stepHz); i++) {
       s.advance(1)
       const st = s.page.save() as { thud: number; shock: number }
       if (hitFrame < 0 && st.thud < 1 / stepHz + 1e-9 && st.shock > 0) hitFrame = Math.floor(i / frame)
@@ -29,8 +29,8 @@ describe('the strike of a bolt on the cursor', () => {
     expect(hitFrame).toBeGreaterThan(0)
     expect(hits).toBe(1)
     expect(seen[0]!.frame).toBe(hitFrame)
-    expect(seen.length).toBeGreaterThanOrEqual(28)
-    expect(seen.length).toBeLessThanOrEqual(31)
+    expect(seen.length).toBeGreaterThanOrEqual(88)
+    expect(seen.length).toBeLessThanOrEqual(91)
     for (const m of seen) {
       expect(m.x).toBe(seen[0]!.x)
       expect(m.y).toBe(seen[0]!.y)

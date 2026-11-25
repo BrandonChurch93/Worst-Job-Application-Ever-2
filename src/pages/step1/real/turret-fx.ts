@@ -74,26 +74,46 @@ function puffPicture(seed: number): THREE.DataTexture {
   })
 }
 
-// A scorch: a small charred pit with a crisp ragged edge, a narrow singed ring from dark brown to tan, a few ash flecks.
+// A bullet hole seen from straight above, lit from the upper left: a dark shaft with the deck's metal faint at its foot, the far wall lit, a raised splintered rim of cap plastic, a singe that fades outward.
 function scorchPicture(seed: number): THREE.DataTexture {
+  const lx = -0.735
+  const ly = 0.678
+  const mix = (a: number, b: number, t: number) => a + (b - a) * t
   return picture(256, true, (u, v) => {
     const r = Math.hypot(u, v)
     const a = Math.atan2(v, u)
-    const ragged = noise(Math.cos(a) * 2.4 + 5, Math.sin(a) * 2.4 + 5, seed) * 0.5 + noise(Math.cos(a) * 6 + 9, Math.sin(a) * 6 + 9, seed + 3) * 0.3
-    const edge = 0.27 + ragged * 0.12
-    const reach = edge + 0.2 + ragged * 0.3
-    const char = 1 - smooth((r - edge) / 0.06)
-    const halo = (1 - smooth((r - edge * 0.8) / (reach - edge * 0.8))) ** 1.3
+    const ca = Math.cos(a)
+    const sa = Math.sin(a)
+    const ragged = noise(ca * 2.4 + 5, sa * 2.4 + 5, seed) * 0.5 + noise(ca * 6 + 9, sa * 6 + 9, seed + 3) * 0.3
+    const splinter = noise(ca * 11 + 21, sa * 11 + 21, seed + 5) ** 2
+    const hole = 0.25 + ragged * 0.1
+    const rim = hole + 0.07 + splinter * 0.13
+    const reach = rim + 0.26 + ragged * 0.3
+    const toLight = ca * lx + sa * ly
     const fine = noise(u * 22, v * 22, seed + 11)
     const cloud = noise(u * 7 + 3, v * 7 + 8, seed + 17)
-    const ash = char * smooth((fine - 0.62) / 0.2) * 0.1
-    const speck = fine > 0.84 && r < 0.8 ? (fine - 0.84) * 3 * (1 - r) : 0
-    const alpha = Math.max(char * 0.97, halo * (0.5 + cloud * 0.3), speck) * smooth((1 - r) / 0.1)
+    const inside = 1 - smooth((r - hole) / 0.035)
+    const wall = smooth((r - hole * 0.5) / (hole * 0.5)) * Math.max(0, -toLight) ** 0.8
+    const metal = (1 - smooth((r - hole * 0.2) / (hole * 0.35))) * (0.7 + 0.3 * fine)
+    const onRim = (1 - inside) * (1 - smooth((r - rim) / 0.04))
+    const ridge = smooth(0.5 + 0.62 * toLight)
+    const cast = (1 - inside) * (1 - onRim) * (1 - smooth((r - rim) / 0.12)) * Math.max(0, -toLight)
+    const halo = (1 - smooth((r - rim * 0.9) / (reach - rim * 0.9))) ** 0.6
     const t = Math.min(1, halo * 1.15)
-    const red = 0.66 * (1 - t) + 0.42 * t
-    const green = 0.38 * (1 - t) + 0.16 * t
-    const blue = 0.15 * (1 - t) + 0.04 * t
-    return [red * (1 - char) + (0.04 + ash) * char, green * (1 - char) + (0.036 + ash) * char, blue * (1 - char) + (0.033 + ash) * char, alpha]
+    const soot = 1 - 0.4 * smooth((fine - 0.58) / 0.2)
+    let red = mix(mix(0.6, 0.24, t), 0.09, cast * 0.75)
+    let green = mix(mix(0.34, 0.1, t), 0.065, cast * 0.75)
+    let blue = mix(mix(0.13, 0.03, t), 0.05, cast * 0.75)
+    let alpha = Math.max(halo * (0.75 + cloud * 0.2), cast * 0.6) * smooth((1 - r) / 0.1)
+    red = mix(red, mix(0.46, 1, ridge) * soot, onRim)
+    green = mix(green, mix(0.4, 0.975, ridge) * soot, onRim)
+    blue = mix(blue, mix(0.31, 0.92, ridge) * soot, onRim)
+    alpha = Math.max(alpha, onRim * 0.97)
+    red = mix(red, 0.03 + wall * 0.6 + metal * 0.2, inside)
+    green = mix(green, 0.028 + wall * 0.54 + metal * 0.21, inside)
+    blue = mix(blue, 0.026 + wall * 0.44 + metal * 0.225, inside)
+    alpha = Math.max(alpha, inside)
+    return [red, green, blue, alpha]
   })
 }
 
@@ -110,7 +130,9 @@ export const EMIT = {
   bolt: { colour: [1, 0.4, 0.09] as [number, number, number], power: 0.3, reach: 110 },
   flash: { colour: [1, 0.5, 0.15] as [number, number, number], power: 0.9, reach: 220 },
   charge: { colour: [1, 0.45, 0.12] as [number, number, number], power: 0.3, reach: 110 },
-  hot: { colour: [1, 0.12, 0.03] as [number, number, number], power: 0.35, reach: 140 }
+  hot: { colour: [1, 0.12, 0.03] as [number, number, number], power: 0.35, reach: 140 },
+  ember: { colour: [1, 0.36, 0.08] as [number, number, number], power: 0.5, reach: 130 },
+  struck: { colour: [1, 0.3, 0.06] as [number, number, number], power: 0.8, reach: 170 }
 }
 
 export interface Fx {

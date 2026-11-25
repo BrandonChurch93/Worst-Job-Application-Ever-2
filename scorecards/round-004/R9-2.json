@@ -1,0 +1,139 @@
+{
+ "critic": "R9",
+ "score": 5,
+ "pass": false,
+ "model": "gpt_6_2_sol",
+ "set": "B: one sheet across each acting state",
+ "reads": [
+  {
+   "file": "set-B-01.png",
+   "read": "Cautious and hesitant, it appears beside the form, pauses by Email, then ventures up to select First name."
+  },
+  {
+   "file": "set-B-02.png",
+   "read": "Startled and wary, it jumps upward and flinches sideways as a shot scorches the W key just below it."
+  },
+  {
+   "file": "set-B-03.png",
+   "read": "Shocked, it is hit and left with a round hole, then freezes as the turret swivels toward it and darts away when the muzzle lights."
+  },
+  {
+   "file": "set-B-04.png",
+   "read": "Panicked, the wounded arrow zigzags over the keyboard and ducks past more shots."
+  },
+  {
+   "file": "set-B-05.png",
+   "read": "It looks briefly relieved when the email is accepted, then purposeful as it spots the résumé and starts to pick it up."
+  },
+  {
+   "file": "set-B-06.png",
+   "read": "Determined but struggling, it hauls the résumé to the upload area and rocks back and forth trying to get it in."
+  },
+  {
+   "file": "set-B-07.png",
+   "read": "Strained and then alarmed, it sweats, buckles, and is pulled down into the slot below the upload area."
+  },
+  {
+   "file": "set-B-08.png",
+   "read": "Dazed, it seems to be shredded into strips, then pulls back into its arrow shape and drifts clear of the slot."
+  }
+ ],
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-B-06.png",
+   "where": "from the second panel onward, below and beside the arrowhead",
+   "what": "The arrow sprouts black arms ending in conspicuous mitten-like gloved hands to grip the résumé. The limbs change its silhouette and the gloves violate the character rule.",
+   "fix": "Remove the arms and gloves; catch a corner of the résumé in the arrow’s inner notch, and show its weight by bowing the shaft and making the page lag behind each pull."
+  },
+  {
+   "severity": "severe",
+   "file": "set-B-07.png",
+   "where": "first two rows, below the enlarged arrowhead",
+   "what": "The black appendages carry across the close-up, and a rounded black glove is visible as the arrow buckles in the second row.",
+   "fix": "Remove the appendages completely and put the effort and collapse into the arrow’s bend, tip angle, and shaft compression."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01.png",
+   "where": "Email hold through the final First name selection",
+   "what": "The nearly rigid hold establishes a pointer parked beside a field, but not a strong emotional pose. The move and selection have much clearer direction than anticipation or reaction.",
+   "fix": "Give the arrow a brief lean away, then a deliberate tip-first aim, with a short compression and recover on contact with First name."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03.png",
+   "where": "first row, around the impact near keys 5 and 6",
+   "what": "The shot and the later hole are legible, but the actual impact pose is broken into overlapping silhouettes. The new wound only reads securely after the arrow reaches the turret, without a distinct beat for the arrow to register it.",
+   "fix": "Use a single compressed recoil pose at contact, then hold a tilted clear silhouette with the hole visible before it bolts."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-04.png",
+   "where": "the middle and lower keyboard rows during the chase",
+   "what": "The course changes sell flight, but the quick poses frequently blur together and there is little separation between a dodge, a flinch, and the next glide. This makes some shots read as background effects rather than events the character reacts to.",
+   "fix": "Give one near miss a clean low squash, hold it briefly, and follow with a sharply elongated escape pose along the opposite vector."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-05.png",
+   "where": "the acceptance line and the approach to the résumé",
+   "what": "The acceptance text carries the emotional change. The arrow moves on without a legible release from tension, and its neutral hover near the paper could be routine pointer travel.",
+   "fix": "Hold a visible release at acceptance, then pivot and dip deliberately toward the paper before lifting it."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-07.png",
+   "where": "last two rows at the lower frame edge",
+   "what": "The crop reduces the character to a tip before the slot is fully established, interrupting the silhouette at the moment the arrow needs to show resistance and loss of control.",
+   "fix": "Reframe to include the full arrow and slot for a beat, show it bracing away from the opening, then stretch its shaft into the pull."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-08.png",
+   "where": "first three rows below the slot",
+   "what": "The arrow disappears into an ambiguous bundle of strips for much of the sheet. When the recognizable silhouette returns, it drifts away without a distinct dazed recovery pose.",
+   "fix": "Keep one readable arrowhead in the breakup or give the fragments a recognizable arrow-shaped arrangement, then hold a bent, off-axis pose before it steadies."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01.png",
+   "where": "the whole sheet",
+   "what": "did not read: confident reads as cautious and hesitant.",
+   "fix": "A straight, quick line to the field, a small bounce on arrival and a firm tap, with no pause on the way.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-04.png",
+   "where": "the whole sheet",
+   "what": "did not read: nervous reads as panicked.",
+   "fix": "A held beat in clear space with the beads of sweat large enough to see and a small shake, before it moves on at an even pace.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-05.png",
+   "where": "the whole sheet",
+   "what": "did not read: proud reads as relieved, then purposeful.",
+   "fix": "Tall beside the resume with the sheet held up for a held beat before it sets off, and a strut in the walk.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-06.png",
+   "where": "the whole sheet",
+   "what": "did not read: angry reads as determined, and the tug reads as trying to get the sheet in.",
+   "fix": "The red tip and the steam of anger visible in the frame, the body leaning away from the slot with the sheet taut toward it.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-08.png",
+   "where": "the whole sheet",
+   "what": "did not read: exhausted reads as dazed, and the arrow drifts clear rather than drags itself.",
+   "fix": "After the mend it sags and stays down for a held beat, then trudges off low and slow with a stop on the way.",
+   "by": "builder"
+  }
+ ]
+}
