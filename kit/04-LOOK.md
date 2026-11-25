@@ -178,7 +178,7 @@ The blind judges of round 6 used the word miniature for eight of the twelve imag
 
 1. Light it from its own lamps only and let the surround go dark.
 2. Add the clear coat: sharp reflections of lamps and parts in the floor.
-3. Let light bleed: an insert colours the post beside it, a flasher whites out its corner for a frame.
+3. Let light bleed: an insert colours the post beside it, a beacon or a hit flash whites out its corner for a frame.
 4. Put a real lens on it: shallow focus up close, highlights that bloom.
 5. Add the smallest wear a well kept machine has: a faint ball trail in the clear coat, dust in a corner. Only here, never on the pages.
 

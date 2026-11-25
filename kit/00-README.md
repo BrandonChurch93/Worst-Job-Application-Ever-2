@@ -31,7 +31,9 @@ Read `AGENTS.md` at the repo root before this file.
 | Any word on a page | `content/copy.json`. It beats every approved image and every kit file |
 | Any word the narrator speaks | `content/narration.json` |
 | How a picture should look | The approved image for that key or sheet, then `kit/04-LOOK.md` |
-| A point listed under `settled` for a key or a sheet, or under `settledAll`, in the config | The kit. On that one point it beats the approved image |
+| A point listed under `settled` for a key or a sheet, under `settledUnit` for its unit, or under `settledAll`, in the config | The kit. On that one point it beats the approved image |
+| Any size, or any height off the page | `scale` in the config and "One scale" in `kit/02-SUBJECT.md`. They beat every approved image |
+| How a ball gets on and off any part of the pinball machine | "Ball paths" in `kit/02-SUBJECT.md`. It beats every approved image |
 | What a page holds, what an object is, how a gag goes, what the cursor may and may not do | `kit/02-SUBJECT.md` |
 | The order of events and their timing | `kit/01-FILM.md` and `film.beats`. After the review, the kept takes of the narrator may move a beat inside its limits, and Brandon's notes decide the rest |
 | How a part is made | `kit/03-METHOD.md`, unless the ladder in `kit/04-LOOK.md` has moved you to another technique |
@@ -63,7 +65,7 @@ Read `AGENTS.md` at the repo root before this file.
 | The page surface | The ceramic slab that every page is. The camera looks straight down at it |
 | Shell | What every step shares: the surface, the header, the progress bar, the heading, the subline |
 | Control | A field, a button, a card, a row: a physical part a visitor can use |
-| Layout tree | The one description of where every part of a page sits, in page pixels at 1920 by 1080. Geometry, type and the checks all read it |
+| Layout tree | The one description of where every part of a page sits, in page pixels on a page 1920 wide. Geometry, type and the checks all read it |
 | Page pixel | One pixel of a page seen from the `home` camera in `formats.hd` |
 | The cursor | The hero: the white enamel arrow. Never "the pointer" |
 | The pointer | The position the cursor is being asked to go to: the visitor's mouse in live mode, the script in film mode |

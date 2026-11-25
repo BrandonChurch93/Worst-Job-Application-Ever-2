@@ -13,6 +13,7 @@
     "tierWidthBalls": 20,
     "tierHeightBalls": 11.25,
     "tierStepBalls": 1,
+    "topFloorDepthBalls": 1,
     "marqueeHeightBalls": 4,
     "flipperBalls": 3,
     "flipperGapBalls": 1.5,
@@ -154,9 +155,18 @@
     "sheet": { "fovDeg": 12, "note": "straight on and close, for the cursor and boss sheets" },
     "table-wide": { "fovDeg": 35, "note": "the whole machine from the player's end, fitted to its approved image" },
     "table-map": { "fovDeg": 12, "note": "the whole machine from straight above, rendered 1080 wide by 1920 tall" },
-    "tier-3": { "fovDeg": 12, "note": "the home camera moved down the page to the corporate tier: the same lens and distance, the tier filling the frame" },
-    "tier-2": { "fovDeg": 12, "note": "the home camera moved down the page to the office tier: the same lens and distance, the tier filling the frame" },
-    "tier-1": { "fovDeg": 12, "note": "the home camera moved down the page to the street tier: the same lens and distance, the tier filling the frame" },
+    "tier-3": {
+      "like": "home",
+      "note": "the home camera moved down the page to the corporate tier: cameras.home.fovDeg, at home's distance from that tier's floor, the tier filling the frame"
+    },
+    "tier-2": {
+      "like": "home",
+      "note": "the home camera moved down the page to the office tier: cameras.home.fovDeg, at home's distance from that tier's floor, the tier filling the frame"
+    },
+    "tier-1": {
+      "like": "home",
+      "note": "the home camera moved down the page to the street tier: cameras.home.fovDeg, at home's distance from that tier's floor, the tier filling the frame"
+    },
     "rail": { "fovDeg": 40, "note": "riding above the ball on a wire ramp, looking down and a little ahead, fitted to its approved image" },
     "table-lobby": { "fovDeg": 35, "note": "fitted to its approved image" },
     "table-replyall": { "fovDeg": 30, "note": "fitted to its approved image" },
@@ -225,7 +235,7 @@
       "image": "references/approved/step1-fire.png",
       "settled": [
         "The image sinks the keyboard in a well. In the build the keyboard is a deck that stands scale.heights.keyboardDeck above the page, with the keys on top of it and a shadow on the page.",
-        "The image puts each turret in a well beside the keys. In the build each turret rises from a hatch in the top of the deck, at its end.",
+        "The image puts each turret in a well beside the keys. In the build each turret rises from a hatch in the top of the deck, at its end, to scale.heights.turret.",
         "The image cuts the bottom key row off. The build shows all five rows on the deck.",
         "The image shows three bolts in flight. The number in flight is not fixed."
       ]
@@ -461,6 +471,7 @@
     { "id": "rest-step1", "unit": "step1", "camera": "home" },
     { "id": "rest-step2", "unit": "step2", "camera": "home" },
     { "id": "rest-step3", "unit": "pinball", "camera": "home" },
+    { "id": "step3-result", "unit": "pinball", "beat": "pinball.drain", "at": 1, "scroll": 1, "camera": "home" },
     { "id": "rest-step4", "unit": "boss", "camera": "home" },
     { "id": "rest-step5", "unit": "decision", "camera": "home" },
     { "id": "screen-live", "unit": "site", "camera": "home", "interface": true },
@@ -627,21 +638,19 @@
   },
   "links": { "portfolioWork": "" },
   "scale": {
-    "about": "Sizes and heights in page pixels at 1920 by 1080. A height is how far the top of a part stands above the page surface. A negative height is the floor of a pocket. Every part of a kind has the same size and height on every page. No size is taken from an image.",
+    "about": "Sizes and heights in page pixels at 1920 wide. A height is how far the top of a part stands above the page surface. A negative height is the floor of a pocket. Every part of a kind has the same size and height on every page. No size is taken from an image.",
     "sizes": {
-      "contentLeft": 128,
-      "contentRight": 1792,
+      "aboutSizes": "field, button and heroButton are heights. progressButton is a diameter. keycapMin is the least short side of any key.",
+      "field": 64,
+      "button": 72,
+      "heroButton": 96,
       "progressButton": 76,
-      "progressPitch": 172,
-      "fieldHeight": 64,
-      "buttonHeight": 72,
-      "heroButtonHeight": 96,
-      "minKeyShortSide": 56,
-      "keyGap": 8
+      "keycapMin": 56
     },
+    "grid": { "aboutGrid": "Used by the layout trees. Measure M5 checks where parts are.", "contentLeft": 128, "contentRight": 1792, "progressPitch": 172, "keyGap": 8 },
     "heights": {
       "rule": 2,
-      "rail": -3,
+      "progressRail": -3,
       "progressButton": 10,
       "progressButtonCurrent": 18,
       "field": -6,
@@ -653,11 +662,27 @@
       "keyboardDeck": 24,
       "keycap": 42,
       "keyTravel": 6,
-      "turretRaised": 96,
+      "turret": 96,
       "machineTray": -8,
       "machineMinTop": 30,
       "cursorHover": 4
     },
+    "kinds": [
+      "rule",
+      "progressRail",
+      "progressButton",
+      "progressButtonCurrent",
+      "field",
+      "buttonSocket",
+      "button",
+      "card",
+      "paper",
+      "slab",
+      "keyboardDeck",
+      "keycap",
+      "turret",
+      "machineTray"
+    ],
     "tolerancePx": 2
   },
   "settledUnit": {
