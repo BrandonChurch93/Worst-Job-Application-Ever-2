@@ -12,9 +12,10 @@ export const hex = (h: number): RGB => {
 export const shade = (c: RGB, k: number): RGB => [c[0] * k, c[1] * k, c[2] * k]
 
 export const TONE = {
-  alu: hex(0xd3d6d9),
+  alu: hex(0xdde0e3),
   aluDark: hex(0xa3a7ac),
-  aluBright: hex(0xe6e8ea),
+  aluDeep: hex(0x777b80),
+  aluBright: hex(0xeceef0),
   brass: hex(0xc9a45c),
   ceramic: hex(0xecebe6),
   gap: hex(0x23211f),
@@ -27,7 +28,8 @@ export const TONE = {
   enamel: hex(0xe9e4d6),
   enamelRing: hex(0x2a2c30),
   paper: hex(0xf3efe6),
-  vent: hex(0x141516)
+  vent: hex(0x141516),
+  stand: hex(0x4a4d52)
 }
 
 const own = <T extends THREE.Material>(m: T, name: string): T => {
@@ -36,29 +38,42 @@ const own = <T extends THREE.Material>(m: T, name: string): T => {
   return m
 }
 
+// The shell's brushed picture again, drawn finer: a rail is seen from closer than the page's own metal. It shares the picture, so it costs no memory.
+const fineOf = new WeakMap<THREE.Texture, THREE.Texture>()
+const fine = (src: THREE.Texture): THREE.Texture => {
+  let t = fineOf.get(src)
+  if (!t) {
+    t = src.clone()
+    t.repeat.set(src.repeat.x * 1.6, src.repeat.y * 3.2)
+    t.needsUpdate = true
+    fineOf.set(src, t)
+  }
+  return t
+}
+
 export const aluOf = (z: Zone, name = 'alu'): THREE.MeshPhysicalMaterial => {
   const src = materials().aluminium
-  return own(lit(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.36, metalness: 0.72, normalMap: src.normalMap, normalScale: new THREE.Vector2(0.22, 0.22), anisotropy: 0.72, anisotropyRotation: Math.PI / 2 })), z), `frame.${name}.${z.id}`)
+  return own(lit(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.4, metalness: 0.4, normalMap: src.normalMap ? fine(src.normalMap) : null, normalScale: new THREE.Vector2(0.15, 0.15), anisotropy: 0.72, anisotropyRotation: Math.PI / 2 })), z), `frame.${name}.${z.id}`)
 }
 
 export const paintOf = (z: Zone, name = 'paint'): THREE.MeshPhysicalMaterial => {
   const src = materials().ceramic
-  return own(lit(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.66, metalness: 0, normalMap: src.normalMap, normalScale: new THREE.Vector2(0.085, 0.085), specularIntensity: 0.55 })), z), `frame.${name}.${z.id}`)
+  return own(lit(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.66, metalness: 0, normalMap: src.normalMap, normalScale: new THREE.Vector2(0.035, 0.035), specularIntensity: 0.55 })), z), `frame.${name}.${z.id}`)
 }
 
-export const steelOf = (z: Zone): THREE.MeshPhysicalMaterial => own(lit(studio(new THREE.MeshPhysicalMaterial({ color: 0xc9cdd1, roughness: 0.17, metalness: 1 })), z), `frame.steel.${z.id}`)
+export const steelOf = (z: Zone): THREE.MeshPhysicalMaterial => own(lit(studio(new THREE.MeshPhysicalMaterial({ color: 0xe2e5e8, roughness: 0.2, metalness: 0.55 })), z), `frame.steel.${z.id}`)
 
 export const screwOf = (z: Zone): THREE.MeshPhysicalMaterial => own(lit(studio(new THREE.MeshPhysicalMaterial({ color: 0xaeb2b6, roughness: 0.32, metalness: 1, vertexColors: true })), z), `frame.screw.${z.id}`)
 
-// Clear plastic with no light passed through it: thin where it is seen straight on, bright where it turns away and wherever a lamp shines in it.
+// Clear plastic with no light passed through it: thin where it is seen straight on, bright where it turns away and wherever a lamp shines in it, with the dark line a clear wall shows just inside its edge.
 export const clearOf = (z: Zone, name = 'clear', base = 0.06): THREE.MeshPhysicalMaterial => {
-  const m = studio(new THREE.MeshPhysicalMaterial({ color: 0xdfe8ea, roughness: 0.06, metalness: 0, transparent: true, opacity: base, depthWrite: false, specularIntensity: 1, clearcoat: 1, clearcoatRoughness: 0.04 }))
+  const m = studio(new THREE.MeshPhysicalMaterial({ color: 0x8a9296, roughness: 0.06, metalness: 0, transparent: true, opacity: base, depthWrite: false, specularIntensity: 1, clearcoat: 1, clearcoatRoughness: 0.04 }))
   const room = m.onBeforeCompile
   m.onBeforeCompile = (shader, renderer) => {
     room.call(m, shader, renderer)
     shader.fragmentShader = shader.fragmentShader.replace(
       '#include <tonemapping_fragment>',
-      'float wjfEdge = pow( 1.0 - abs( dot( normalize( vViewPosition ), normalize( normal ) ) ), 2.2 );\ngl_FragColor.a = clamp( diffuseColor.a + wjfEdge * 0.5 + dot( outgoingLight, vec3( 0.3333 ) ) * 0.22, 0.0, 1.0 );\n#include <tonemapping_fragment>'
+      'float wjfTurn = 1.0 - abs( dot( normalize( vViewPosition ), normalize( normal ) ) );\nfloat wjfEdge = pow( wjfTurn, 1.6 );\nfloat wjfDark = smoothstep( 0.6, 0.78, wjfTurn ) * ( 1.0 - smoothstep( 0.86, 0.96, wjfTurn ) );\ngl_FragColor.rgb *= 1.0 - 0.72 * wjfDark;\ngl_FragColor.a = clamp( diffuseColor.a + wjfEdge * 0.62 + wjfDark * 0.22 + dot( outgoingLight, vec3( 0.3333 ) ) * 0.45, 0.0, 1.0 );\n#include <tonemapping_fragment>'
     )
   }
   m.customProgramCacheKey = () => 'wja-studio-frame-clear'
