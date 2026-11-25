@@ -11,6 +11,16 @@ Every sound of the site and the film is made the same way. This file is its log.
 
 A cue has at most `audio.maxTakesPerCue` takes, a line at most `audio.narratorMaxTakesPerLine`. A take past that is still filed, since it was made and paid for: the tool warns, the log shows it, and check A8 fails.
 
+## The listener's questions
+
+`npm run sound -- --cue ID` and `npm run sound -- --line BEAT:N` print them with the answers file to fill in. They are the same for every take.
+
+An effect: what is heard, what it is made of, how many separate events there are, whether there is a voice, a word, music or a melody, and whether it fits the one line that describes the cue. That line is the cue's row in the table of `kit/03-METHOD.md` and is kept in the sound's record as `describes`. After two kept takes of other cues, also whether the three belong in the same room. The answers file: `by`, `heard`, `madeOf`, `events`, and yes or no for `voice`, `word`, `music`, `melody`, `fits`, `sameRoom`.
+
+A line of the narrator: the listener is not told the line and writes down what is said, then says whether there is a whisper, a laugh, warmth or excitement, and whether the speaker sounds unimpressed and a little smug. The answers file: `by`, `transcript`, and yes or no for `whisper`, `laugh`, `warmth`, `excitement`, `unimpressedAndSmug`.
+
+A question left unanswered counts against the take. `sameRoom` alone may stay open.
+
 ## The chain
 
 Trim the silence, a short fade in, a fade out, a low cut, then the level of the sound's class. The numbers are in `src/audio/levels.ts`.
