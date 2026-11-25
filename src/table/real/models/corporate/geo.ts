@@ -238,6 +238,28 @@ export class Geo {
     return this
   }
 
+  // The colour of everything added since `from` is scaled by a rule of the way its surface faces.
+  tint(from: number, k: (nx: number, ny: number, nz: number) => number): this {
+    for (let i = from; i < this.vertices; i++) {
+      const f = k(this.n[i * 3]!, this.n[i * 3 + 1]!, this.n[i * 3 + 2]!)
+      this.c[i * 3] = this.c[i * 3]! * f
+      this.c[i * 3 + 1] = this.c[i * 3 + 1]! * f
+      this.c[i * 3 + 2] = this.c[i * 3 + 2]! * f
+    }
+    return this
+  }
+
+  // The colour of everything added since `from` is scaled by a rule of the place.
+  grade(from: number, k: (x: number, y: number, z: number) => number): this {
+    for (let i = from; i < this.vertices; i++) {
+      const f = k(this.p[i * 3]!, this.p[i * 3 + 1]!, this.p[i * 3 + 2]!)
+      this.c[i * 3] = this.c[i * 3]! * f
+      this.c[i * 3 + 1] = this.c[i * 3 + 1]! * f
+      this.c[i * 3 + 2] = this.c[i * 3 + 2]! * f
+    }
+    return this
+  }
+
   done(): THREE.BufferGeometry {
     const g = new THREE.BufferGeometry()
     g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(this.p), 3))

@@ -14,7 +14,7 @@ import { HATCH, moms, type Moms } from './moms'
 import { police } from './police'
 import { roadSign, streetThings } from './things'
 
-const VERSION = 'street-models-13'
+const VERSION = 'street-models-21'
 
 // Everything the seven parts are built from in one zone, made once and shared: each part keeps the meshes that are its own.
 interface Street {
@@ -69,12 +69,12 @@ const ease = (t: number): number => {
   return u * u * (3 - 2 * u)
 }
 
-// How far the firehouse door is raised, 0 shut to 1 fully up, and how hard its frame shakes. It hangs low at rest, runs up as a ball is caught, stays up while the ball is held and fired out, then comes down again.
+// How far the firehouse door is raised, 0 shut to 1 fully up, and how hard its frame shakes. It stands raised at rest with its lowest panel in the opening, runs right up as a ball is caught, stays up while the ball is held and fired out, then comes down again.
 export function doorOf(v: number[]): { raise: number; shake: number } {
   const held = (v[0] ?? 0) > 0.5
   const sinceIn = v[1] ?? 9
   const sinceOut = v[2] ?? 9
-  const rest = 0.35
+  const rest = 0.86
   const up = 0.95
   if (held) {
     const t = sinceIn

@@ -36,6 +36,9 @@ export interface Firehouse {
   beacon: V3
 }
 
+// The paint of the engine bay behind the door: a deep oxide red.
+const BAY: [number, number, number] = [0.15, 0.03, 0.026]
+
 export const DOOR = { w: 104, h: 55, depth: 4 }
 
 export function firehouse(b: Buckets, z: Zone, ctx: RealContext): Firehouse {
@@ -96,10 +99,10 @@ export function firehouse(b: Buckets, z: Zone, ctx: RealContext): Firehouse {
       const d0 = DOOR.depth + 3
       const d1 = 52
       const zc = doorHole.z + doorHole.h
-      g.quad([a, d0, 3], [a, d1, 3], [a, d1, zc], [a, d0, zc], TONE.inside)
-      g.quad([c, d1, 3], [c, d0, 3], [c, d0, zc], [c, d1, zc], TONE.inside)
-      g.quad([a, d1, 3], [c, d1, 3], [c, d1, zc], [a, d1, zc], shade(TONE.inside, 0.8))
-      g.quad([a, d1, zc], [c, d1, zc], [c, d0, zc], [a, d0, zc], shade(TONE.inside, 0.6))
+      g.quad([a, d0, 3], [a, d1, 3], [a, d1, zc], [a, d0, zc], BAY)
+      g.quad([c, d1, 3], [c, d0, 3], [c, d0, zc], [c, d1, zc], BAY)
+      g.quad([a, d1, 3], [c, d1, 3], [c, d1, zc], [a, d1, zc], shade(BAY, 0.7))
+      g.quad([a, d1, zc], [c, d1, zc], [c, d0, zc], [a, d0, zc], shade(BAY, 0.5))
       // Hose racks on the back wall of the bay: three red bars.
       for (let k = 0; k < 3; k++) g.box(a + 14 + k * 28, a + 34 + k * 28, d1 - 2, d1, 26, 30, TONE.red, { skip: 'b', under: true, kind: KIND.gloss })
     }
@@ -108,30 +111,23 @@ export function firehouse(b: Buckets, z: Zone, ctx: RealContext): Firehouse {
   g.quad([x0 + 7, yf + 7, deck], [x1 - 7, yf + 7, deck], [x1 - 7, yb - 7, deck], [x0 + 7, yb - 7, deck], TONE.roof, KIND.tar)
   parapet(g, x0, x1, yf, yb, deck, top, 8, TONE.stone, TONE.stonePale, KIND.stucco)
 
-  // The hose tower at the back left corner.
-  const tx0 = x0 + 9
-  const tx1 = tx0 + 44
-  const ty1 = yb - 9
-  const ty0 = ty1 - 44
-  const ttop = top + 40
+  // The stair head at the back left corner: a low rendered box with a louvre and a capped flat roof, as the small units on the approved roof are.
+  const tx0 = x0 + 10
+  const tx1 = tx0 + 34
+  const ty1 = yb - 10
+  const ty0 = ty1 - 28
+  const ttop = top + 9
   walls(b, tx0, tx1, ty0, ty1, deck, (side, W) => {
-    const louvre: Hole = { x: W / 2 - 9, z: ttop - deck - 28, w: 18, h: 18 }
+    const louvre: Hole = { x: W / 2 - 8, z: ttop - deck - 15, w: 16, h: 10.5 }
     const open = side === 'front' || side === 'right'
-    wallFace(g, 0, W, 0, ttop - deck, open ? [louvre] : [], TONE.brick, KIND.brick)
+    wallFace(g, 0, W, 0, ttop - deck, open ? [louvre] : [], TONE.stone, KIND.stucco)
     if (!open) return
-    reveal(g, louvre, 3, shade(TONE.brick, 0.6))
-    g.quad([louvre.x, 3, louvre.z], [louvre.x + louvre.w, 3, louvre.z], [louvre.x + louvre.w, 3, louvre.z + louvre.h], [louvre.x, 3, louvre.z + louvre.h], TONE.dark)
-    for (let k = 0; k < 5; k++) g.quad([louvre.x, 0.4, louvre.z + 1 + k * 3.5], [louvre.x + louvre.w, 0.4, louvre.z + 1 + k * 3.5], [louvre.x + louvre.w, 2.6, louvre.z + 3.4 + k * 3.5], [louvre.x, 2.6, louvre.z + 3.4 + k * 3.5], TONE.stoneDark)
-    g.box(louvre.x - 2, louvre.x + louvre.w + 2, -1.4, 0, louvre.z + louvre.h, louvre.z + louvre.h + 3.5, TONE.stonePale, { skip: 'b', under: true })
+    reveal(g, louvre, 2.5, shade(TONE.stone, 0.6))
+    g.quad([louvre.x, 2.5, louvre.z], [louvre.x + louvre.w, 2.5, louvre.z], [louvre.x + louvre.w, 2.5, louvre.z + louvre.h], [louvre.x, 2.5, louvre.z + louvre.h], TONE.dark)
+    for (let k = 0; k < 3; k++) g.quad([louvre.x, 0.4, louvre.z + 0.8 + k * 3.3], [louvre.x + louvre.w, 0.4, louvre.z + 0.8 + k * 3.3], [louvre.x + louvre.w, 2.2, louvre.z + 3.2 + k * 3.3], [louvre.x, 2.2, louvre.z + 3.2 + k * 3.3], TONE.stoneDark)
   })
-  g.box(tx0 - 2.5, tx1 + 2.5, ty0 - 2.5, ty1 + 2.5, ttop, ttop + 3.5, TONE.stonePale, { bevel: 1, under: true })
-  const mx = (tx0 + tx1) / 2
-  const my = (ty0 + ty1) / 2
-  const peak: V3 = [mx, my, ttop + 13]
-  const cs: V3[] = [[tx0 - 1, ty0 - 1, ttop + 3.5], [tx1 + 1, ty0 - 1, ttop + 3.5], [tx1 + 1, ty1 + 1, ttop + 3.5], [tx0 - 1, ty1 + 1, ttop + 3.5]]
-  for (let k = 0; k < 4; k++) g.face([cs[k]!, cs[(k + 1) % 4]!, peak], TONE.roof, KIND.shingle)
-  b.metal.rod([mx, my, ttop + 12], [mx, my, ttop + 22], 0.9, 8, TONE.brass)
-  b.metal.lathe([[0, 0], [2.2, 1.2], [2.2, 3], [0, 4.4]], mx, my, 12, TONE.brass, { base: ttop + 21 })
+  g.box(tx0 - 2, tx1 + 2, ty0 - 2, ty1 + 2, ttop, ttop + 2.6, TONE.stonePale, { bevel: 0.8, under: true })
+  g.box(tx0 + 3, tx1 - 3, ty0 + 3, ty1 - 3, ttop + 2.6, ttop + 3.2, TONE.roof, { kind: KIND.tar, skip: 'b' })
 
   // What stands on the roof: a hatch, a cooling unit, two vents.
   const hx = x1 - 50
