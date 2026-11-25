@@ -70,17 +70,20 @@ function acting(): CursorPose[] {
   ]
 }
 
+// On the approved sheet every damaged body lies on the page.
+const LIE = 0.6
+
 function damage(): CursorPose[] {
   const n = 5
   const at = (i: number) => across(n, i, SHEET.damage.step)
   const y = SHEET.y
   const wound = (kind: CursorPose['damage'][number], life: number) => ({ damage: [kind], healing: life, wounds: [{ kind, at: life, x: STRIKE.x, y: STRIKE.y }] })
   return [
-    restPose(at(0), y, { ...wound('shredded', 0.8), strips: pileAt(seed + 1, 2) }),
-    restPose(at(1), y, { ...wound('reassembled', 0.64), strips: gatheredAt(seed + 1, 0.64) }),
-    restPose(at(2), y, { ...wound('scorched', 0.15) }),
-    restPose(at(3), y, { ...wound('burn', 0.63), z: 1 }),
-    restPose(at(4), y, { ...wound('flattened', 0.3), squash: 0.96 })
+    restPose(at(0), y, { ...wound('shredded', 0.8), strips: pileAt(seed + 1, 2), z: LIE }),
+    restPose(at(1), y, { ...wound('reassembled', 0.64), strips: gatheredAt(seed + 1, 0.64), z: LIE }),
+    restPose(at(2), y, { ...wound('scorched', 0.15), z: LIE }),
+    restPose(at(3), y, { ...wound('burn', 0.63), z: LIE }),
+    restPose(at(4), y, { ...wound('flattened', 0.3), squash: 0.96, z: LIE })
   ]
 }
 

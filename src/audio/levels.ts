@@ -52,6 +52,10 @@ export const LIVE = {
   beatLateSeconds: 1.5,
   // A live line is about what happened just now, so it may wait this long and no longer.
   liveLateSeconds: 0.4,
+  // How long a line of the live site may wait for its turn, in seconds, by what set it off. When its start would be later than this after
+  // its trigger, its moment has passed and it is dropped. A line whose key is not here waits liveLateSeconds.
+  // film: a line of the film, said once in a visit at its own trigger. The others are the keys of liveOnly in content/narration.json.
+  waitSeconds: { 'film': 10, 'hit': 0.4, 'idle': 4, 'slowTyping': 2, 'realKeyboard': 4, 'tugLost': 3, 'pinball.flipper': 4, 'boss.verify': 4, 'boss.slow': 6, 'skip': 4, 'watchFilm': 3 } as Record<string, number>,
   // The same cue set off twice within this time sounds once.
   sameCueSeconds: 0.012,
   // A loop that nothing stops ends by itself after this long.

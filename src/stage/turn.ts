@@ -50,3 +50,17 @@ export function arriveTurn(u: number): number {
 export function seatedAt(): number {
   return TURN.seat
 }
+
+export const SHIVER = { hop: 9, slide: 3, beat: 0.085, fade: 0.09, beats: 4, loose: 0.5, spread: 0.1 } as const
+
+const shiverLasts = SHIVER.beat * SHIVER.beats
+
+export const shiverSeconds = shiverLasts + SHIVER.spread
+
+const swing = (seconds: number): number => (seconds > 0 && seconds < shiverLasts ? Math.exp(-seconds / SHIVER.fade) * Math.sin((Math.PI * seconds) / SHIVER.beat) : 0)
+
+export const shiverAt = (seconds: number): number => SHIVER.hop * Math.abs(swing(seconds))
+
+export const rattleAt = (seconds: number): number => SHIVER.slide * swing(seconds)
+
+export const shiverDelay = (down: number): number => SHIVER.spread * Math.min(1, Math.max(0, down))

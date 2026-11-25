@@ -51,7 +51,7 @@ export function makeTape(): Tape {
   const geometry = new THREE.BufferGeometry()
   geometry.setAttribute('position', position)
   geometry.setIndex(index)
-  const material = studio(new THREE.MeshPhysicalMaterial({ color: 0xdccf9f, roughness: 0.2, metalness: 0, specularIntensity: 1, transparent: true, opacity: 0.46, depthWrite: false, side: THREE.DoubleSide }))
+  const material = studio(new THREE.MeshPhysicalMaterial({ color: 0xeeebe2, roughness: 0.34, metalness: 0, specularIntensity: 1, transparent: true, opacity: 0.3, depthWrite: false, side: THREE.DoubleSide }))
   const mesh = new THREE.Mesh(geometry, material)
   mesh.castShadow = false
   mesh.receiveShadow = true

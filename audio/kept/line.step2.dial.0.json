@@ -1,0 +1,184 @@
+{
+  "id": "line.step2.dial.0",
+  "kind": "line",
+  "cue": null,
+  "variant": null,
+  "class": "voice",
+  "loop": false,
+  "beat": "step2.dial",
+  "liveKey": null,
+  "group": null,
+  "describes": null,
+  "index": 0,
+  "words": "A rotary phone. / The applicant / has never seen one.",
+  "text": "A rotary phone. / The applicant / has never seen one.",
+  "prompt": null,
+  "settings": {
+    "speed": 0.7,
+    "stability": 0.75,
+    "breakSeconds": 1,
+    "sent": "A rotary phone. <break time=\"1.0s\" /> The applicant <break time=\"1.0s\" /> has never seen one.",
+    "call": 19
+  },
+  "askedSeconds": null,
+  "cost": "31",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "3c0e0f504ba9453918cbdd3bb97042e9ad6fb63b645a1dfa1cb2c8f098829f96",
+    "filed": "2026-11-25T18:05:44.408Z",
+    "measured": {
+      "seconds": 6.037,
+      "start": 0.03,
+      "end": 5.894,
+      "peakDb": -3.57,
+      "rmsDb": -21.86,
+      "lufs": -19.67,
+      "truePeakDb": -3.52,
+      "low": 0.49,
+      "mid": 0.329,
+      "high": 0.181,
+      "tailDb": -19.12,
+      "hits": 4,
+      "hitsAt": [
+        {
+          "start": 0.032,
+          "end": 1.304,
+          "peakDb": -6.01
+        },
+        {
+          "start": 2.476,
+          "end": 2.794,
+          "peakDb": -3.57
+        },
+        {
+          "start": 2.87,
+          "end": 3.502,
+          "peakDb": -4.57
+        },
+        {
+          "start": 4.64,
+          "end": 5.85,
+          "peakDb": -3.79
+        }
+      ]
+    },
+    "line": {
+      "words": 9,
+      "seconds": 5.864,
+      "wordsPerSecond": 1.535,
+      "maxWordsPerSecond": 1.6,
+      "pauseMarks": 2,
+      "pausesFound": 2,
+      "pauses": [
+        1.154,
+        1.128
+      ],
+      "paceHolds": true,
+      "pausesHold": true,
+      "room": 11.7,
+      "fits": true,
+      "beatSeconds": 6
+    }
+  },
+  "chain": {
+    "trimStart": 0.03,
+    "trimEnd": 5.894,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 80,
+    "levelMeasure": "lufs",
+    "levelDb": -18,
+    "gainDb": 1.77,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 5.864,
+    "start": 0,
+    "end": 5.834,
+    "peakDb": -0.49,
+    "rmsDb": -20.64,
+    "lufs": -18,
+    "truePeakDb": -0.49,
+    "low": 0.423,
+    "mid": 0.371,
+    "high": 0.207,
+    "tailDb": -21.7,
+    "hits": 5,
+    "hitsAt": [
+      {
+        "start": 0.004,
+        "end": 1.272,
+        "peakDb": -1.86
+      },
+      {
+        "start": 2.446,
+        "end": 2.764,
+        "peakDb": -0.49
+      },
+      {
+        "start": 2.84,
+        "end": 3.254,
+        "peakDb": -8.74
+      },
+      {
+        "start": 3.32,
+        "end": 3.472,
+        "peakDb": -2.78
+      },
+      {
+        "start": 4.61,
+        "end": 5.794,
+        "peakDb": -2.03
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 8 asks, 0 whole, 8 void",
+    "asks": 8,
+    "whole": 0,
+    "transcript": "A rotary phone. The applicant has never seen one.",
+    "transcripts": [
+      "A rotary phone. The applicant has never seen one.",
+      "A rotary phone. The applicant has never seen one.",
+      "A rotary phone. The applicant has never seen one.",
+      "A rotary phone. The applicant has never seen one."
+    ],
+    "transcriptAgreed": "4 of 4",
+    "attitudes": [],
+    "accents": [],
+    "pitches": [],
+    "whisper": null,
+    "whisperVotes": "0 yes, 0 no",
+    "laugh": null,
+    "laughVotes": "0 yes, 0 no",
+    "warmth": null,
+    "warmthVotes": "0 yes, 0 no",
+    "excitement": null,
+    "excitementVotes": "0 yes, 0 no",
+    "unimpressedAndSmug": null,
+    "unimpressedAndSmugVotes": "0 yes, 0 no",
+    "basis": [
+      "The statement highlights the applicant's lack of familiarity with an older piece of technology, carrying an inherently smug and unimpressed implication.",
+      "While the exact acoustic features cannot be heard, the semantic content of the statement inherently conveys a dry, dismissive, and smug attitude regarding the applicant's unfamiliarity with older technology.",
+      "The speaker delivers the observation with a dry, flat cadence that suggests a sense of superiority regarding the applicant's unfamiliarity with older technology.",
+      "The short, blunt sentences and judgmental observation about the applicant's inexperience with older technology strongly imply a dry, smug delivery."
+    ]
+  },
+  "why": "tone not judged: 0 whole answers in 8 asks",
+  "forced": true,
+  "problems": [
+    "the listener left \"whisper\" unanswered",
+    "the listener left \"laugh\" unanswered",
+    "the listener left \"warmth\" unanswered",
+    "the listener left \"excitement\" unanswered",
+    "the listener left \"unimpressedAndSmug\" unanswered"
+  ],
+  "fixture": false,
+  "file": "line.step2.dial.0.wav",
+  "seconds": 5.864,
+  "sha256": "20d7ad6ada0d19271937dcdf0151504452387c78aa46491ff8ef5385b20cc730"
+}

@@ -1,11 +1,12 @@
 // The listening jobs of a batch and what becomes of their answers.
-//   node tools/lib/sound-listen.mjs jobs --batch NAME [--ids ID,ID] [--kind line|cue]   writes out/work/audio/listen/NAME.json, one job for the newest take of each id without answers
+//   node tools/lib/sound-listen.mjs jobs --batch NAME [--ids ID,ID] [--kind line|cue] [--loud: the copy the listener gets is raised to a peak of -3 dB]   writes out/work/audio/listen/NAME.json, one job for the newest take of each id without answers
 //   node tools/lib/sound-listen.mjs apply --batch NAME                                   reads NAME-answers.json, settles each take's answers and files them with the take
 // An answer is whole only if it answers every question, does not say it was given no sound and, for a voice, names an accent and a pitch.
 // MEASURED 2026-11-25: about one ask in four reaches the tool as sound. The rest get the words only, or nothing, and are void. Two whole answers settle a take; where they
 // disagree on a yes or no that decides the take, the majority of the whole answers decides, and a tie counts against the take.
 import fs from 'node:fs'
 import path from 'node:path'
+import { execFileSync } from 'node:child_process'
 import { args, at, config, readJson, writeJson } from './paths.mjs'
 import { cueLines, places, readLedger, musical } from '../sound.mjs'
 
@@ -110,9 +111,11 @@ function main() {
       if (a.kind && a.kind !== true && t.kind !== a.kind) continue
       const src = path.join(P.takes, t.key, t.file)
       const name = `sm-${t.key.replace(/[^a-z0-9]+/gi, '-')}-t${t.take}${path.extname(t.file)}`
-      fs.copyFileSync(src, path.join(dir, name))
+      const lift = a.loud && Number.isFinite(t.measured?.peakDb) ? Math.max(0, -3 - t.measured.peakDb) : 0
+      if (lift > 0.5) execFileSync('ffmpeg', ['-hide_banner', '-loglevel', 'error', '-y', '-i', src, '-af', `volume=${lift.toFixed(2)}dB`, '-b:a', '192k', path.join(dir, name)])
+      else fs.copyFileSync(src, path.join(dir, name))
       const cue = t.kind === 'cue' ? (t.cue ?? t.key) : null
-      jobs.push({ id: t.key, take: t.take, kind: t.kind, file: path.join(dir, name), prompt: t.kind === 'line' ? linePrompt() : cuePrompt(lines[cue] ?? cue), voidSource: VOID.source, decides: t.kind === 'line' ? LINE_KEYS : CUE_KEYS.filter((k) => !(musical(cue) && (k === 'music' || k === 'melody'))) })
+      jobs.push({ liftDb: lift > 0.5 ? Number(lift.toFixed(2)) : 0, id: t.key, take: t.take, kind: t.kind, file: path.join(dir, name), prompt: t.kind === 'line' ? linePrompt() : cuePrompt(lines[cue] ?? cue), voidSource: VOID.source, decides: t.kind === 'line' ? LINE_KEYS : CUE_KEYS.filter((k) => !(musical(cue) && (k === 'music' || k === 'melody'))) })
     }
     writeJson(path.join(dir, `${batch}.json`), jobs)
     console.log(`listen: ${jobs.length} jobs written to out/work/audio/listen/${batch}.json`)
@@ -124,6 +127,7 @@ function main() {
     for (const j of jobs) {
       const reports = answers[`${j.id}#${j.take}`] ?? []
       const s = settle(reports, j.kind)
+      if (j.liftDb) s.heardRaisedByDb = j.liftDb
       const take = ledger.takes.find((t) => t.key === j.id && t.take === j.take)
       if (!take) continue
       take.listener = s
