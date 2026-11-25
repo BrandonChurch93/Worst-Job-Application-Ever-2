@@ -1,0 +1,430 @@
+{
+  "role": "R3",
+  "round": 3,
+  "unit": "step1",
+  "commit": "cacc69d1da930ab0131714b14a44f5a9718c41ff",
+  "tier": "review",
+  "engineHash": "9019d0fe14dc01f2",
+  "sharedHash": "d2cdf1ded46e55e1",
+  "pageHashes": {
+    "step1": "e7a1ea67d96a652d",
+    "step2": "55cb277c9b082808",
+    "marketing": "c46c984d2df73782",
+    "pinball": "c9adeea06f31761d",
+    "boss": "f7b68d3ef704e243",
+    "decision": "08e4b1401a38f867"
+  },
+  "browser": "147.0.7727.15",
+  "files": {
+    "set-A-01.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "judged",
+      "heading": "Picture 1 of 7. The page at one moment",
+      "still": {
+        "page": "step1",
+        "beat": "step1.firstName",
+        "at": 0.5,
+        "camera": "home",
+        "tier": "review"
+      },
+      "from": {
+        "key": "step1-fire"
+      },
+      "format": "hd",
+      "tier": "review",
+      "scale": 0.7292
+    },
+    "set-A-02.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "judged",
+      "heading": "Picture 2 of 7. The page at one moment",
+      "still": {
+        "page": "step1",
+        "beat": "step1.tug",
+        "at": 0.5,
+        "camera": "film",
+        "tier": "review"
+      },
+      "from": {
+        "key": "step1-tug"
+      },
+      "format": "hd",
+      "tier": "review",
+      "scale": 0.7292
+    },
+    "set-A-03.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "judged",
+      "heading": "Picture 3 of 7. A sheet of parts: the page's materials, type, header and shadows",
+      "still": {
+        "page": "step1",
+        "camera": "sheet",
+        "tier": "review",
+        "sheet": "page-look"
+      },
+      "from": {
+        "sheet": "page-look"
+      },
+      "format": "hd",
+      "tier": "review",
+      "scale": 0.7292
+    },
+    "set-A-04.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "judged",
+      "heading": "Picture 4 of 7. A sheet of parts: the arms, in five poses",
+      "still": {
+        "page": "step1",
+        "camera": "sheet",
+        "tier": "review",
+        "sheet": "cursor-arms"
+      },
+      "from": {
+        "sheet": "cursor-arms"
+      },
+      "format": "hd",
+      "tier": "review",
+      "scale": 0.7292
+    },
+    "set-A-05.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "judged",
+      "heading": "Picture 5 of 7. A sheet of parts: five kinds of damage",
+      "still": {
+        "page": "step1",
+        "camera": "sheet",
+        "tier": "review",
+        "sheet": "cursor-damage"
+      },
+      "from": {
+        "sheet": "cursor-damage"
+      },
+      "format": "hd",
+      "tier": "review",
+      "scale": 0.7292
+    },
+    "set-A-06.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "judged",
+      "heading": "Picture 6 of 7. A sheet of parts: sweat, anger, fear, exhaustion and the burn hole",
+      "still": {
+        "page": "step1",
+        "camera": "sheet",
+        "tier": "review",
+        "sheet": "cursor-acting"
+      },
+      "from": {
+        "sheet": "cursor-acting"
+      },
+      "format": "hd",
+      "tier": "review",
+      "scale": 0.7292
+    },
+    "set-A-07.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "judged",
+      "heading": "Picture 7 of 7. The page at rest",
+      "still": {
+        "page": "step1",
+        "camera": "home",
+        "tier": "review"
+      },
+      "from": {
+        "id": "rest-step1"
+      },
+      "format": "hd",
+      "tier": "review",
+      "scale": 0.7292
+    },
+    "set-A-08.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "surface-crops",
+      "heading": "Surfaces and objects at their real size, cut from a picture of this set: the page at one moment",
+      "still": {
+        "page": "step1",
+        "beat": "step1.firstName",
+        "at": 0.5,
+        "camera": "home",
+        "tier": "review"
+      },
+      "from": {
+        "key": "step1-fire"
+      },
+      "crops": [
+        {
+          "part": "cursor",
+          "window": [
+            444,
+            605,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "keycap",
+          "window": [
+            136,
+            597,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "keyboardDeck.corner",
+          "window": [
+            0,
+            559,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "hatch",
+          "window": [
+            0,
+            725,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "hatch.other",
+          "window": [
+            1459,
+            725,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "enter",
+          "window": [
+            1297,
+            727,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "keyboardDeck.front",
+          "window": [
+            730,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "chip",
+          "window": [
+            297,
+            347,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "card.glass",
+          "window": [
+            701,
+            488,
+            461,
+            340
+          ]
+        }
+      ],
+      "format": "hd",
+      "tier": "review"
+    },
+    "set-A-09.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "surface-crops",
+      "heading": "Surfaces and objects at their real size, cut from a picture of this set: the page at one moment",
+      "still": {
+        "page": "step1",
+        "beat": "step1.tug",
+        "at": 0.5,
+        "camera": "film",
+        "tier": "review"
+      },
+      "from": {
+        "key": "step1-tug"
+      },
+      "crops": [
+        {
+          "part": "cursor",
+          "window": [
+            578,
+            119,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "paper",
+          "window": [
+            682,
+            445,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "paper.below",
+          "window": [
+            682,
+            696,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "chip",
+          "window": [
+            521,
+            250,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "card.glass",
+          "window": [
+            1385,
+            553,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "field",
+          "window": [
+            1459,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "surface.low",
+          "window": [
+            0,
+            733,
+            461,
+            340
+          ]
+        }
+      ],
+      "format": "hd",
+      "tier": "review"
+    },
+    "set-A-10.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "surface-crops",
+      "heading": "Surfaces and objects at their real size, cut from a picture of this set: the page at rest",
+      "still": {
+        "page": "step1",
+        "camera": "home",
+        "tier": "review"
+      },
+      "from": {
+        "id": "rest-step1"
+      },
+      "crops": [
+        {
+          "part": "surface",
+          "window": [
+            1335,
+            71,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "card.glass",
+          "window": [
+            701,
+            488,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "progressButton",
+          "window": [
+            922,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "button",
+          "window": [
+            1459,
+            610,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "type",
+          "window": [
+            890,
+            251,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            950,
+            630,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "card.contact",
+          "window": [
+            0,
+            488,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "field",
+          "window": [
+            964,
+            198,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "header",
+          "window": [
+            103,
+            0,
+            461,
+            340
+          ]
+        }
+      ],
+      "format": "hd",
+      "tier": "review"
+    }
+  }
+}
