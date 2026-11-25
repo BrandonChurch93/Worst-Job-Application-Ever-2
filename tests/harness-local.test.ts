@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { filmPlan, loopPlan, seqName, seqRunName, webSize } from '../tools/lib/film-plan.mjs'
+import { filmPlan, loopPlan, seamFrames, seqName, seqRunName, webSize } from '../tools/lib/film-plan.mjs'
 import { chromePlaces, isSoftware, mixFor, opener, proofRange } from '../tools/lib/film-local.mjs'
 import { cropBox, stressKeys, stressMoments, stressName } from '../tools/lib/film-stress.mjs'
 
@@ -69,6 +69,13 @@ describe('the card loop', () => {
     expect(w.height % 2).toBe(0)
     expect(Math.abs(w.width / w.height - hd.width / hd.height)).toBeLessThan(0.01)
     expect(webSize(960, 540, 1280)).toEqual({ width: 960, height: 540 })
+  })
+
+  it('is looked at over its seam: the last three pictures, then the first three', () => {
+    expect(seamFrames(240)).toEqual([237, 238, 239, 0, 1, 2])
+    expect(seamFrames(4)).toEqual([2, 3, 0, 1])
+    const f = seamFrames(loopPlan(cfg).frames)
+    expect(f.filter((n: number, k: number) => k > 0 && n < f[k - 1])).toEqual([0])
   })
 })
 
