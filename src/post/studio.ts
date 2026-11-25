@@ -150,7 +150,10 @@ function patchFalloff(): void {
 function patchHeights(): void {
   const knee = look.shadowHeights.knee.toFixed(2)
   const keep = look.shadowHeights.keep.toFixed(4)
-  const low = (v: string) => `${v}.z = min( ${v}.z, ${knee} ) + max( ${v}.z - ${knee}, 0.0 ) * ${keep};`
+  const from = look.shadowHeights.from.toFixed(2)
+  const span = (look.shadowHeights.knee - look.shadowHeights.from).toFixed(4)
+  const lift = look.shadowHeights.lift.toFixed(4)
+  const low = (v: string) => `${v}.z = min( ${v}.z, ${knee} ) + clamp( ( ${v}.z - ${from} ) / ${span}, 0.0, 1.0 ) * ${lift} + max( ${v}.z - ${knee}, 0.0 ) * ${keep};`
   const depth = THREE.ShaderLib.depth.vertexShader
   if (depth.includes('WJA_LOW')) return
   const project = '#include <project_vertex>'
