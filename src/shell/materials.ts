@@ -49,6 +49,10 @@ const PIT_FROM = 0.7
 const TOOTH = 0.07
 const GRAIN_PER_PIXEL = 2
 const FROST = 0.022
+const CLOSE_FALL = 2.8
+const CLOSE_FLOOR = 0.03
+const CLOSE_TOOTH = 0.9
+const CLOSE_EASE = 0.6
 
 // The eggshell grain as heights, one number a texel, with a mean of nought and a spread of one. The size is a power of two and the picture tiles.
 export function grainHeights(size: number, seed: number): Float32Array {
@@ -193,18 +197,30 @@ function also<T extends THREE.Material>(material: T, name: string, patch: (shade
 }
 
 const grainGlsl = `
+#ifndef USE_TRANSMISSION
+uniform mat4 projectionMatrix;
+#endif
 float wjaGrainHeight = 0.0;
 vec3 wjaGrain( vec2 uv ) {
+	float close = projectionMatrix[ 1 ][ 1 ] * 540.0 / ( isOrthographic ? 1.0 : max( vViewPosition.z, 1.0 ) );
+	float relief = clamp( pow( max( close, 1.0 ), -CLOSE_FALL ), CLOSE_FLOOR, 1.0 );
 	vec4 a = texture2D( normalMap, uv );
 	vec2 uvB = mat2( 0.7986, 0.6018, -0.6018, 0.7986 ) * uv * 1.1180 + vec2( 0.371, 0.113 );
 	vec4 b = texture2D( normalMap, uvB );
 	vec2 tilt = mat2( 0.7986, -0.6018, 0.6018, 0.7986 ) * ( b.xy * 2.0 - 1.0 );
-	wjaGrainHeight = a.a + b.a - 1.0;
-	return normalize( vec3( a.xy * 2.0 - 1.0 + 0.5 * tilt, a.z * 2.0 - 1.0 ) );
+	float nearer = log2( max( close, 1.0 ) );
+	vec2 uvD = mat2( 0.4540, 0.8910, -0.8910, 0.4540 ) * uv * 2.0 + vec2( 0.173, 0.591 );
+	vec2 once = a.xy - texture2D( normalMap, uv, 2.0 ).xy;
+	vec2 twice = mat2( 0.4540, -0.8910, 0.8910, 0.4540 ) * ( texture2D( normalMap, uvD ).xy - texture2D( normalMap, uvD, 2.0 ).xy );
+	vec2 fine = 2.0 * clamp( nearer / 0.8, 0.0, 1.0 ) * mix( 1.0, CLOSE_EASE, clamp( ( nearer - 0.9 ) / 0.7, 0.0, 1.0 ) ) * mix( once, twice, clamp( nearer - 1.0, 0.0, 1.0 ) );
+	wjaGrainHeight = relief * ( a.a + b.a - 1.0 );
+	return normalize( vec3( relief * ( a.xy * 2.0 - 1.0 + 0.5 * tilt ) + CLOSE_TOOTH * fine, a.z * 2.0 - 1.0 ) );
 }
-`
+`.replace(/CLOSE_FALL/g, CLOSE_FALL.toFixed(3)).replace(/CLOSE_FLOOR/g, CLOSE_FLOOR.toFixed(3)).replace(/CLOSE_TOOTH/g, CLOSE_TOOTH.toFixed(3)).replace(/CLOSE_EASE/g, CLOSE_EASE.toFixed(3))
 
 // Two layers of one grain picture, the second turned and larger, so no repeat shows across a page. The height also moves the roughness.
+// The relief falls as the camera comes nearer than the page's own size. What takes its place is only the finest part of the same picture
+// (the picture less its own blurred copy), so close up the face keeps a tooth a pixel or two wide and no bump throws a shade of its own.
 function grained<T extends THREE.MeshStandardMaterial>(material: T, rough: number): T {
   return also(material, `grain-${rough}`, (shader) => {
     const sample = 'texture2D( normalMap, vNormalMapUv ).xyz * 2.0 - 1.0'
