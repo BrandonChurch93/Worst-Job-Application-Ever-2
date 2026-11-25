@@ -62,9 +62,16 @@
       "name": "page-turn",
       "unit": "step1",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/stage/stage.ts",
+        "src/stage/turn.ts"
+      ],
+      "standInHash": "e88c90a73015c219c21c33d0176c78d0b9c8dffe8e154c1be8b59d33452554ba",
+      "commit": "f05a91829596ebdecf09b4c20b47fe6dc1151e48",
+      "hashAt": {
+        "src/stage/stage.ts": "729ee568a01a9cf67a8e72e9d6b9d0484d32519f",
+        "src/stage/turn.ts": "absent"
+      }
     },
     {
       "name": "cursor-body",

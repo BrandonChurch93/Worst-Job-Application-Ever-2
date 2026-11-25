@@ -38,6 +38,7 @@ function discUv(g: THREE.BufferGeometry, d: number): THREE.BufferGeometry {
 }
 
 const RIM = 3.2
+const SEAM = 1.1
 
 // The aluminium sleeve of a pocket: a thin flat rim at the surface and a wall that leans in, down to what lies in the pocket.
 function sleeve(s: Shape, surface: number, lean: number): THREE.BufferGeometry {
@@ -61,7 +62,7 @@ function bead(inset: number, z: number, across: number, fall: number, steps: num
 
 const SOAK = 4.5
 const SOAK_HOLD = 2.5
-const SOAK_DEPTH = 0.62
+const SOAK_DEPTH = 0.5
 const BOUNCE = 0.2
 const BOUNCE_REACH = 10
 const GLINT = 0.2
@@ -147,7 +148,9 @@ function field(s: Shape): THREE.Object3D {
   const m = materials()
   const root = new THREE.Group()
   const surface = -s.z0
-  root.add(mesh(shared(`sleeve:${dims(s)}`, () => sleeve(s, surface, 0.22)), m.aluminiumSatin))
+  const liner = mesh(shared(`sleeve:${dims(s)}`, () => sleeve(s, surface, 0.22)), m.aluminiumSatin)
+  liner.receiveShadow = false
+  root.add(liner)
   const glass = mesh(shared(`fieldGlass:${dims(s)}`, () => sunkGlass(s, RIM - 0.6, surface)), m.glassSunk, false)
   root.add(glass)
   return root
@@ -177,7 +180,12 @@ function capsule(s: Shape, round: number): THREE.Object3D {
   const h = s.z1 - s.z0
   const r = Math.min(round, h * 0.6, Math.min(s.w, s.h) / 2 - 1)
   const g = shared(`cap:${dims(s)}:${round}`, () => sweep(outlineOf(s, 0, 18), profile([[0, 0, true], [0, h - r], ...arc(0, h - r, r, r, 8).slice(1)])))
-  return mesh(g, toneMaterial(s.tone))
+  const cap = mesh(g, toneMaterial(s.tone))
+  if (s.role !== 'chip') return cap
+  const root = new THREE.Group()
+  root.add(mesh(shared(`seat:${dims(s)}`, () => sweep(outlineOf({ kind: s.kind, w: s.w + SEAM * 2, h: s.h + SEAM * 2, r: s.r }, 0, 18), [{ inset: 0, z: 0.12, out: 0, up: 1 }])), materials().gap, false))
+  root.add(cap)
+  return root
 }
 
 // A step's button. The current one is moulded plastic: a wide foot and a domed cap. The others are turned on a lathe:
@@ -261,7 +269,7 @@ function card(s: Shape): THREE.Object3D {
   const band = h - rise
   root.add(mesh(shared(`cardFrame:${dims(s)}`, () => sweep(outlineOf(s, 0, 14), profile([[0, 0, true], [0, band - 0.9, true], ...arc(0, band - 0.9, 1.1, 0.9, 4).slice(1), ...bead(FRAME - 1.1, band, 1.1, 0.9, 4).slice(1), [FRAME, 0.2, true]]), false)), m.aluminiumEdge))
   const steps = [0.03, 0.08, 0.16, 0.27, 0.4, 0.55, 0.7, 0.85, 1].map((t): ProfilePoint => [across * t, band + rise * Math.sin((t * Math.PI) / 2)])
-  root.add(mesh(shared(`cardGlass:${dims(s)}`, () => washed(sweep(outlineOf(s, FRAME - 0.3, 14), profile([[0, 0.05, true], [0, band - 0.9, true], [0, band, true], ...steps])), s, FRAME - 0.3, across)), m.glassSunk))
+  root.add(mesh(shared(`cardGlass:${dims(s)}`, () => washed(sweep(outlineOf(s, FRAME - 0.3, 14), profile([[0, 0.05, true], [0, band - 0.9, true], [0, band, true], ...steps])), s, FRAME - 0.3, across)), m.glassCard))
   if (s.id.endsWith('-zone')) root.add(dashes(s, h))
   return root
 }

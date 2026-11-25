@@ -285,6 +285,7 @@ function screws(at: [number, number][], z: number): { heads: THREE.BufferGeometr
 }
 
 const PANEL = { thick: 3.6, lift: 0.3, clear: 1 }
+const SEAT = 1.1
 
 interface Cassette {
   lift: THREE.Group
@@ -294,6 +295,7 @@ interface Cassette {
   reach: THREE.Mesh
   panelN: THREE.Mesh
   panelS: THREE.Mesh
+  seat: THREE.Mesh
   geometries: THREE.BufferGeometry[]
 }
 
@@ -367,10 +369,17 @@ function makeCassette(): THREE.Group {
 
   // The two panels that close the slot. They are the page's own ceramic, so shut they are two tiles with a seam.
   // Open, they have come up out of the slot and lie on the page either side of it, their thickness showing.
-  const panel = (y0: number, y1: number): THREE.Mesh => add(root, block(-SLOT.w / 2, SLOT.w / 2, y0, y1, -0.2 - PANEL.thick, -0.2, 0.5), m.ceramic, true)
+  const panel = (y0: number, y1: number): THREE.Mesh => {
+    const tile = add(root, block(-SLOT.w / 2, SLOT.w / 2, y0, y1, -0.2 - PANEL.thick, -0.2, 0.5), m.ceramic, true)
+    // The dark line a tile lying on the page has round its foot.
+    add(tile, strip(block(-SLOT.w / 2 - SEAT, SLOT.w / 2 + SEAT, y0 - SEAT, y1 + SEAT, -0.2 - PANEL.thick - 0.2, -0.2 - PANEL.thick + 0.25, 0.01)), shade(), false)
+    return tile
+  }
   const panelN = panel(0, SLOT.h / 2)
   const panelS = panel(-SLOT.h / 2, 0)
-  const rig: Cassette = { lift, north, south, chute, reach, panelN, panelS, geometries }
+  // The cutout the cassette stands in: the dark of the opening round it, a hair wider than the slot.
+  const seat = add(root, strip(block(-SLOT.w / 2 - SEAT, SLOT.w / 2 + SEAT, -SLOT.h / 2 - SEAT, SLOT.h / 2 + SEAT, -0.4, 0.07, 0.01)), shade(), false)
+  const rig: Cassette = { lift, north, south, chute, reach, panelN, panelS, seat, geometries }
   root.userData.rig = rig
   return root
 }
@@ -384,6 +393,7 @@ function poseCassette(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const p = panelsOf(open)
   rig.lift.position.z = -C.sink * (1 - rise)
   rig.lift.visible = p > 0.5
+  rig.seat.visible = rig.lift.visible
   const turn = s.v && s.v.length > 1 ? s.v[1]! : ctx.time * 9
   rig.north.rotation.x = turn
   rig.south.rotation.x = -turn
@@ -401,6 +411,10 @@ const MAX = 16
 const RIBBON = 7.6
 
 interface Strips { geometry: THREE.BufferGeometry; was: string }
+
+const face = new Float32Array(SEG * 3)
+// What a strip keeps of a rule of the sheet: a tick paler than the rule, as the cut edge frays it.
+const RULE = INK.bar.clone().lerp(INK.paper, 0.35)
 
 function makeStrips(): THREE.Group {
   const g = new THREE.BufferGeometry()
@@ -482,6 +496,8 @@ function poseStrips(o: THREE.Object3D, ctx: RealContext): void {
     const waves = 0.8 + 1.4 * hash01(n, 6, seed)
     const phase = hash01(n, 7, seed) * 2
     const sag = curl < 0 ? (1 - Math.cos(curl * len * 0.5)) / -curl : 0
+    // A strip leaves the hood at the hood's height and its free end comes to rest on the page, so its shadow meets it there.
+    const high = Math.max(0, s.z0 - 1.2)
     const ring = (t: number, o: number[]): void => {
       const d = (t - 0.5) * len
       const along = Math.sin(curl * d) / curl
@@ -498,7 +514,7 @@ function poseStrips(o: THREE.Object3D, ctx: RealContext): void {
       const side = sway * Math.sin(Math.PI * (t * waves + phase))
       const mx = cx + ax * along + wx * side
       const my = cy + ay * along + wy * side
-      const mz = s.z0 + 0.4 + up + Math.abs(uz) * RIBBON * 0.5
+      const mz = s.z0 - high * 0.92 * smooth(t * 1.25) + 0.4 + up + Math.abs(uz) * RIBBON * 0.5
       o[0] = mx - ux * RIBBON * 0.5
       o[1] = my - uy * RIBBON * 0.5
       o[2] = mz - uz * RIBBON * 0.5
@@ -519,12 +535,13 @@ function poseStrips(o: THREE.Object3D, ctx: RealContext): void {
     }
     const a = new Array<number>(9).fill(0)
     const b = new Array<number>(9).fill(0)
+    const first = k
     for (let i = 0; i < SEG; i++) {
       ring(i / SEG, a)
       ring((i + 1) / SEG, b)
       const d = (i + 0.5) * (len / SEG) + off
-      const marked = ink ? (d % 11) < 6.2 && hash01(n, Math.floor(d / 11), seed + 9) < 0.7 : (d % 24) < 3.3
-      const c = marked ? (ink ? INK.title : INK.bar) : INK.paper
+      const marked = ink ? (d % 11) < 6.2 && hash01(n, Math.floor(d / 11), seed + 9) < 0.7 : (d % 24) < Math.min(3.3, len / SEG)
+      const c = marked ? (ink ? INK.title : RULE) : INK.paper
       put(a[0]!, a[1]!, a[2]!, 0, 0, 1, c)
       put(a[3]!, a[4]!, a[5]!, 0, 0, 1, c)
       put(b[0]!, b[1]!, b[2]!, 0, 0, 1, c)
@@ -567,6 +584,23 @@ function poseStrips(o: THREE.Object3D, ctx: RealContext): void {
         nor[o + q * 3] = fx
         nor[o + q * 3 + 1] = fy
         nor[o + q * 3 + 2] = fz
+      }
+    }
+    // A ribbon of paper bends, it has no facets: each ring takes the mean of the two faces that meet on it.
+    for (let i = 0; i < SEG; i++) face.set(nor.subarray((first + i * 4) * 3, (first + i * 4) * 3 + 3), i * 3)
+    for (let i = 0; i < SEG; i++) {
+      for (let end = 0; end < 2; end++) {
+        const j = Math.min(SEG - 1, Math.max(0, i + (end === 0 ? -1 : 1)))
+        const x = face[i * 3]! + face[j * 3]!
+        const y = face[i * 3 + 1]! + face[j * 3 + 1]!
+        const z = face[i * 3 + 2]! + face[j * 3 + 2]!
+        const l = Math.hypot(x, y, z) || 1
+        for (let q = 0; q < 2; q++) {
+          const at = (first + i * 4 + end * 2 + q) * 3
+          nor[at] = x / l
+          nor[at + 1] = y / l
+          nor[at + 2] = z / l
+        }
       }
     }
   }

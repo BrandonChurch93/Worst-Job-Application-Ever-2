@@ -182,6 +182,9 @@ Live frame time: UNKNOWN on the merged page. `npm run budget` was last run on th
 
 - After the lower key, the studio floor and the tighter glow: MEASURED `npm run determinism -- --format preview`: pass, 12 pictures identical across two fresh loads and two orders. MEASURED through the Builder's wiring, `npm run still -- --key step1-fire --format hd --live <level> --force`: high 286 draw calls, medium 214, low 109.
 
+- Round 3, critics' issues 1 and 3 (long grey wedges from the arrow, arms, hands and turrets): shadows are worked out in a world where everything above `look.shadowHeights.knee` (24 px) keeps only `keep` (0.2) of its height above it. It is done in two places in `src/post/studio.ts` (`patchHeights`): the vertex shader of the depth material that draws the shadow maps, and the place where a surface works out where it lies in a directional light's shadow map. Lamps (point lights) are untouched. MEASURED on step1-fire at review: the smears on W, D and Shift are gone, the arrow's shadow is short and close; the drop zone's face is unchanged (luminance 173.7 before and after, crop 300,400 200x80). With the knee at 10 px the drop zone's face went 17 levels darker (155.5); the cause was not found, so the knee stays above the slab. Not looked at with this change: the step1-tug still, the arms and hands, the other pages.
+- Round 3, issue 2 (the glass slab's shadow hard and dark at the lower right): not reached. It is the key's shadow of the slab's solid body: sharp because the body is low (the filter is tight near a contact), dark because a caster hides all of the key. What would fix it: the slab's owner lowers or insets the solid that casts, or the light gives glass casters a share of the light (not built).
+
 ## What is not done
 
 - The approved shadows are still a little wider and softer than the build's on tall parts.

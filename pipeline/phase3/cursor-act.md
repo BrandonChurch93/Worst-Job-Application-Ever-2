@@ -5,7 +5,7 @@ Branch `agent/cursor-act`. Parts: `cursor-acting`, `cursor-damage`, `cursor-arms
 ## What the approved images show
 
 1. Where the highlight sits: one soft broad band along the upper left of the white face, a hand's width in from the edge, and a second thinner one on the dark edge band itself. On the arms it is a faint long streak on the upper side of the tube, never a hard line: the rubber is matte.
-2. How wide the bevel is: the dark edge band is 6 to 8 percent of the body's width, with a rounded shoulder of about a third of that between the face and the band. An arm is about 3 percent of the body's height thick, the cuff ring half as thick again.
+2. How wide the bevel is: the dark edge band is 6 to 8 percent of the body's width, with a rounded shoulder of about a third of that between the face and the band. An arm is about 7 percent of the body's height thick, the cuff ring half as thick again.
 3. How dark the gap is: the contact shadow under the body is tight and close to black for a few pixels at the lower right, then a soft wide shadow. Between fingers, and between a hand and the paper it holds, the gap is nearly as dark as the rubber. Between strips of a reassembled body it is a hairline, not a slot.
 4. What the edge does: the face rolls over into the band, it does not meet it at a crease. The rim of a burn hole is raised, charred black, and glows orange on its inner lip. The cut edge of a strip is clean and pale. The edge of a flattened body is thin and its face is crazed with fine cracks.
 5. What the states do: nervous is short with beads of sweat, shocked is stretched tall off the page, angry is red to orange from the tip with steam, scared is pale matte stone leaning away, exhausted sags and runs, the hole lets the page show through. Arms leave from the sides of the head, bow under their own slack and end in a hand a fifth of the body's height.
@@ -39,12 +39,13 @@ Damage is a list of wounds, each with the share of its life that has passed (`Cu
 13. A reassembled body is held by two lengths of matte tape (`src/cursor/act/tape.ts`, one draw, no texture). Each is rolled on from one end once the strips stand, and pulled off from the other end as the seams fade. Reason: askew strips alone read as a broken cursor, not as a mended one.
 14. A burn hole flakes clean before it closes: `burnt` goes from 1 to 0 over shares 0.44 to 0.60 of its life, the hole closes from 0.64. The damage sheet shows it at 0.63, the punched hole of the approved image. The acting sheet shows it at 0.2, burnt and glowing.
 15. A closed hand rides 7 px above the height the page gives it (`HOLD` in `src/cursor/view.ts`), so the fingers lie on the sheet and not inside it.
+16. The arms sheet draws the real resume sheet, at its true size of 220 by 300 px, in the poses holding and pulling. So the sheet's camera is pushed in less than on the other two (2.9 against 5.2) and the cursors are smaller in it than in the approved image, where the paper is drawn smaller than it is in the film.
 17. While the arms are out, an angry cursor shows 28 percent of its heat and no steam (`BUSY` in `src/cursor/act/acting.ts`). Reason: in the key still of the tug the approved cursor is white, and steam 19 s after the burn read as the singe still smoking.
 18. Limits on stretch and lean are leaned into, not hit (`soft` in `src/cursor/body.ts`): stretch stays inside 0.55 to 1.4, lean right inside 0.34, lean left inside 0.6. Leaning right stops short of 0.42, where the arrow stands upright on its tail and stops reading as a cursor. A clenched fist is drawn 1.4 times the size of the open hand, or it is lost on the sheet it holds. An arm is rooted 9 percent in from the shoulder so it leaves from under the edge.
-19. A hit knocks the body over (`TUMBLE` in `src/cursor/body.ts`): a `recoil` turns it 1.25 radians the way the bolt was going within about 0.1 s, holds it for 60 percent of the reaction and swings it back on a softer spring. It is carried in `spin` of the pose, apart from `lean`, so the soft limit on lean stays. Reason: in `references/approved/step1-fire.png` the struck cursor lies on its other shoulder, tip up and to the right. A lean of 0.3 to 0.6 only stood it upright, which read as an arrow pointing up; past upright it reads as a cursor knocked over. Seen in key `step1-fire` at 6.0 s and in stills at 6.1, 6.2, 6.3 and 6.45 s (knocked, in the air, swinging back, standing).
+19. A hit knocks the body over (`TUMBLE` in `src/cursor/body.ts`): a `recoil` turns it 1 radian the way the bolt was going (with the lean of its flight on top the tip points about 45 degrees up, as approved; 1.25 laid it flat) within about 0.1 s, holds it for 60 percent of the reaction and swings it back on a softer spring. It is carried in `spin` of the pose, apart from `lean`, so the soft limit on lean stays. Reason: in `references/approved/step1-fire.png` the struck cursor lies on its other shoulder, tip up and to the right. A lean of 0.3 to 0.6 only stood it upright, which read as an arrow pointing up; past upright it reads as a cursor knocked over. Seen in key `step1-fire` at 6.0 s and in stills at 6.1, 6.2, 6.3 and 6.45 s (knocked, in the air, swinging back, standing).
 20. A shredded body does not melt, and a reassembled one melts only in the last 12 percent of its mend (`LIFE.reassembled.firm` in `src/cursor/act/damage.ts`). Reason: the page asks for `exhausted` at the moment the strips zip together, and the droop hid the seams and the tape, so the mend read as a blob. The tape is placed through `body.anchor()`, so it stays on the body when the body is stretched or bent.
-21. A scorch reaches `LIFE.scorched.reach` 0.62 of the model's full char (the crust stops under a third of the way down the head) and draws back to the tip as it heals. Reason: the approved damage sheet burns the tip black, not the head.
-16. The arms sheet draws the real resume sheet, at its true size of 220 by 300 px, in the poses holding and pulling. So the sheet's camera is pushed in less than on the other two (2.9 against 5.2) and the cursors are smaller in it than in the approved image, where the paper is drawn smaller than it is in the film.
+21. A scorch sends char 0.62 at its worst (`LIFE.scorched.reach`) and the crust draws back to the tip as it heals. Agreed with cursor_modeller: 0.62 draws the burnt tip of the approved damage sheet (a crust of about 4.3 units with a brown fringe); char 1 is a crust over 40 percent of the head, kept for a worse burn.
+22. Thrown through the air the cursor goes tip first (`DIVE` in `src/cursor/body.ts`): when it is more than 5 px off its floor and faster than 150 px a second, `spin` turns the tip toward the way it flies, at most 1.25 radians, by the sine of the angle between the two, so a flight tail first leaves it alone and nothing jumps. Reason: the approved fire image shows the flying cursor turned, tip leading. Measured in the film of step 1 at 6.0 s: the flee is nearly straight up, the turn is 0.36 radians.
 
 ## Agreed with other owners
 
@@ -53,6 +54,7 @@ Damage is a list of wounds, each with the share of its life that has passed (`Cu
 - slab_maker: a shape of part `paper` with id `resume-paper:<name>` is a sheet of its own. With `v = [0, 0, 0, pull, lx, ly, rx, ry, 0, 0, 1]` it lies flat at the box given (220 by 300), `pull` 0 is clean and 1 is creased with the dog ear. It reads no other shape when it is not bitten. The held edge is 5 px above the sheet's `z0`.
 - step1_director: when the tug is lost the page calls `setArms(false)` and the gag stays `step1.tug` for 0.3 s more (`TIMES.lost`), so the torn off arms are seen. The body is brought nearer the sheet: hands about 70 px from the shoulders in the key still.
 - step1_director: no names change in `ACTING`, `REACTIONS`, `DAMAGE`. Gaits come with the acting state. Gulp is automatic under nervous. The body braces by itself while arms are on. Asked for 1.0 s of `shredded` and 1.0 s of `reassembled` in place of 0.45 and 0.6.
+- step1_director (7efbadd): after the tug is lost the body is held whole over the card for the 0.3 s, then dives, and `recoil` stays at the loss. The flee before the one hit goes up and to the right, so the turn of decision 22 lays the cursor tip up and to the right in the key frame at 6.0 s; the one hit is at 7.138 s.
 
 ## One more beat of acting
 
@@ -77,3 +79,23 @@ Damage is a list of wounds, each with the share of its life that has passed (`Cu
 7. `npm run still -- --sheet cursor-damage --format hd --tier draft` and `npm run compare -- --sheet cursor-damage`.
 8. Call it from the page: `io.cursor.hurt('<kind>')`, then `npm run sheet -- --beat <the beat> --tier draft` to see hit, reaction, settle and heal in order.
 9. `npm test && npm run build && npm run bots`.
+
+## Round 3 issues on the arms sheet: what was done and what is open
+
+Done on the last push (looked at once each at review, not scored by a critic):
+
+1. Fingers: the three fingers sit closer (`lay` in `src/cursor/act/arms.ts`, x 2.5, splay 0.11) and an open hand curls a little (0.14 and 0.22 radians), the thumb opens less (0.95). Idle, waving and bracing all draw from these numbers.
+2. Holding and pulling: the hands are 68 px apart on the top edge (`PAPER.hands` 34 in `src/cursor/sheets.ts`) and the body stands nearer the sheet (68 and 100 px from the tip), so the arms are short arcs.
+
+Open, for whoever comes next:
+
+1. Holding paper: the sheet is the real resume sheet at true size (220 by 300 px beside a 70 px cursor), so it cannot be held in front of the arrow by its two sides. Wanted: a small sheet. Either slab_maker gives `resume-paper:<name>` a size, or the pose draws a small sheet of its own under `src/cursor/act/`.
+2. Pulling paper: no feed slit is in the sheet's draw list. Add the slot shape of step 1 to the list in `arms()` of `src/cursor/sheets.ts` under the pulling pose and set `pull` so the sheet bends into it.
+3. Bracing: the hands are placed by `left` and `right` in `ARMS` (page px from the tip and a height); the wrist follows the arm's end tangent in `Limb.pose` of `src/cursor/act/arms.ts`, there is no bend back at the wrist. A wrist angle per pose is the missing number.
+4. An upper arm over the white face: the shoulders are `anchor()` points of the body, `ROOT` 0.09 of the way in from the side (`src/cursor/view.ts`). Moving them to the edge band needs the anchor from cursor_modeller.
+
+Also from round 3, asked by cursor_modeller:
+
+1. Done: exhausted sends no sweat (`FEEL.exhausted` in `src/cursor/act/feel.ts`), so the melt has no beads.
+2. Done on the two sheets only: a body with a hole lies at z 1, not at hover, so the page seen through the hole is less in the body's own shadow. On the page the cursor keeps its hover.
+3. Open: a shredded pile of 14 to 16 narrow slivers. The model cuts as many strips as `StripPose` entries are sent; the pile, the fan and the mend in `src/cursor/body.ts` are written for nine (3 long, 6 short) and the tests in `tests/cursor-act.test.ts` and `tests/cursor-act-mend.test.ts` count nine.

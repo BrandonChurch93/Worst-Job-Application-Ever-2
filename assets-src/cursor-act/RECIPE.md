@@ -14,7 +14,7 @@ Date: 2026-11-25
 Made by: `makeArms()` in `src/cursor/act/arms.ts`
 From: no input file. `ARM` and `HAND` at the top of that file hold every size, all as shares of `cursor.heightPxAt1080`
 Prompt or command: none. Both arms are one tube mesh of 22 by 10 segments each, redrawn each frame from shoulder to hand; the palms, the cuff rings and the finger joints are three instanced meshes. Four draws for the pair. An arm is 7 percent of the body's height thick and widens to the wrist
-Takes: about 16 looks of the 40 allowed
+Takes: about 27 looks of the 40 allowed
 Why this one: thin matte arms with a ring at the wrist and a hand of three fingers and a thumb, as in `references/approved/cursor-arms.png`
 Date: 2026-11-25
 
@@ -22,7 +22,7 @@ Date: 2026-11-25
 Made by: `src/cursor/act/feel.ts`, `src/cursor/act/acting.ts`, `src/cursor/act/damage.ts` and the sim in `src/cursor/body.ts`
 From: no input file
 Prompt or command: none. These parts send numbers to the body and the effects, which draw them
-Takes: one
+Takes: about 28 looks of the 40 allowed for the acting part
 Why this one: see `pipeline/phase3/cursor-act.md`
 Date: 2026-11-25
 
@@ -30,6 +30,6 @@ Date: 2026-11-25
 Made by: `makeTape()` in `src/cursor/act/tape.ts`
 From: no input file. `TAPE` at the top of that file holds the two pieces: where each crosses the body in outline units, its turn, half length and half width in px
 Prompt or command: none. Each piece is a ribbon of 30 segments laid over the body's own height, one mesh and one draw for both, a see-through matte material through `studio()`. To see it: `npm run still -- --sheet cursor-damage --format hd --tier draft`
-Takes: about 6 looks of the 40 allowed for the damage part
+Takes: about 38 looks of the 40 allowed for the damage part, the tape among them
 Why this one: two short crossing lengths of pale tape, as on the reassembled cursor of `references/approved/cursor-damage.png`
 Date: 2026-11-25
