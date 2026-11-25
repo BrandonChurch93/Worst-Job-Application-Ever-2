@@ -1,35 +1,35 @@
 {
   "folder": "hardware",
-  "pushed": "2026-11-25T17:13:20.714Z",
-  "commit": "7b5e6f0cc00c6c2d730f3c34125713ec7648ac91",
+  "pushed": "2026-11-25T17:48:07.004Z",
+  "commit": "92ec9580ae6b9c7b7595106b8d592a46c8f28ea0",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Corporate beside the approved image: clear lift tube with bright edges, orange elbow, steel wire guides, pockets",
-      "time": "2026-11-25T17:13:18.897Z",
+      "caption": "Steel balls on the office tier beside the approved reply-all image (approved left, build right, draft): chrome now mirrors a window, a lamp, a band of wall and the floor",
+      "time": "2026-11-25T17:48:04.823Z",
       "by": "hardware",
-      "from": "out/work/hw/07-corporate-beside-approved.jpg"
+      "from": "out/work/hw/10-steel-balls-beside-approved.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Whole machine: the three lift tubes with collars and orange elbows at the left, the plunger with its spring and orange knob at the lower right",
-      "time": "2026-11-25T17:13:19.137Z",
+      "caption": "Office lift tube close: clear wall, window streak, steel collars with their screws",
+      "time": "2026-11-25T17:48:05.099Z",
       "by": "hardware",
-      "from": "out/work/hw/06-table-wide.jpg"
+      "from": "out/work/hw/11-office-lift-tube-collars.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Corporate, draft: lift tube, collars, clamps, elbow with flange screws, wire guides with welded legs, lane post with brass finial",
-      "time": "2026-11-25T17:13:19.414Z",
+      "caption": "Office tier, draft: posts, wire guides, lift elbow and door, chrome steel finish",
+      "time": "2026-11-25T17:48:05.346Z",
       "by": "hardware",
-      "from": "out/work/hw/08-corporate-lift-wires.jpg"
+      "from": "out/work/hw/12-office-tier.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Street foot, draft: plunger housing screwed to the apron, rod, clip, coil spring, orange knob",
-      "time": "2026-11-25T17:13:19.647Z",
+      "caption": "Street tier beside the approved image (approved left, build right, draft): lift tube and cup at left, plunger with spring and orange knob at lower right",
+      "time": "2026-11-25T17:48:05.647Z",
       "by": "hardware",
-      "from": "out/work/hw/09-street-plunger.jpg"
+      "from": "out/work/hw/13-street-beside-approved.jpg"
     }
   ]
 }
