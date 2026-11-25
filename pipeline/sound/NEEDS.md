@@ -50,19 +50,4 @@ It would be the twelfth and last cue `audio.extraCuesMax` allows.
 
 ## The rows of audio.sfx
 
-`config/` is the Builder's. The eleven rows are in `pipeline/sound/NEEDS-sfx.patch`, a `git diff` of `config/showcase.json` that applies on main. Once it is on main the sound agent moves the eleven from `extraCues` into `eventCues` in `src/audio/cues.ts`, so that the cut's field `cue` names them too.
-
-## Lines tied to the stage's report of a beat, where an event would be exact too
-
-These need nothing. They are listed so the choice is known.
-
-| Line | Trigger in Brandon's words | Tied to | Why not the event |
-| --- | --- | --- | --- |
-| `step2.dial` 0 | the Contact number row opens | the stage reporting the beat `step2.dial` | `row-open` is emitted for all three rows and carries no row. The page reports the beat `step2.dial` in the same step in which row 0 opens. |
-| `step2.crank` 0 | the Audio volume row opens | the stage reporting the beat `step2.crank` | the same, for row 2. |
-
-## Triggers that cannot be heard as written
-
-| Line | Trigger in Brandon's words | What happens |
-| --- | --- | --- |
-| `marketing.stroll` 0 | the careers page first appears and the visitor moves the mouse | A browser lets no sound start before the first click. The line is tied to the first `step` event on the page `marketing` that reaches the engine once it is unlocked, so a visitor who moves the mouse and has not clicked hears nothing, and hears the line at the first step after the first click. |
+Done. The Builder put `pipeline/sound/NEEDS-sfx.patch` on main in 9267c2b, and the eleven are in `eventCues` of `src/audio/cues.ts` since.

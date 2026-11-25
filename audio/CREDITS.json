@@ -1781,6 +1781,16 @@
       "answer": "HTTP 200, 2.1 s",
       "cost": 11,
       "how": "reported by the response"
+    },
+    {
+      "n": 178,
+      "time": "2026-11-25T20:06:01Z",
+      "endpoint": "POST /v1/text-to-speech",
+      "what": "line.live.tugLost.0 take 2, breaks of 1.1 s",
+      "asked": "53 characters, stability 0.75, speed 0.7",
+      "answer": "HTTP 200, 0.8 s",
+      "cost": 18,
+      "how": "reported by the response"
     }
   ]
 }

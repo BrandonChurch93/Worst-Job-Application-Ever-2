@@ -9545,8 +9545,8 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 18 asks, 0 whole, 18 void",
-        "asks": 18,
+        "by": "the audio evaluation tool: 24 asks, 0 whole, 24 void",
+        "asks": 24,
         "whole": 0,
         "transcript": null,
         "transcripts": [],
@@ -12994,6 +12994,101 @@
       "kept": false,
       "keptAs": [],
       "why": ""
+    },
+    {
+      "key": "line.live.tugLost.0",
+      "kind": "line",
+      "take": 2,
+      "round": "build",
+      "file": "take-2.mp3",
+      "sha256": "9656e116766e228a75072641b39fac83714c77363e5f30c9141f8fff74a10194",
+      "filed": "2026-11-25T20:06:02.082Z",
+      "text": "The shredder / always eats first.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1.1,
+        "sent": "The shredder <break time=\"1.1s\" /> always eats first.",
+        "call": 178
+      },
+      "askedSeconds": null,
+      "cost": "18",
+      "measured": {
+        "seconds": 4.04,
+        "start": 0.04,
+        "end": 3.874,
+        "peakDb": -2.86,
+        "rmsDb": -20.63,
+        "lufs": -18.12,
+        "truePeakDb": -2.69,
+        "low": 0.36,
+        "mid": 0.343,
+        "high": 0.297,
+        "tailDb": -18.83,
+        "hits": 4,
+        "hitsAt": [
+          {
+            "start": 0.046,
+            "end": 0.878,
+            "peakDb": -3.7
+          },
+          {
+            "start": 2.106,
+            "end": 2.916,
+            "peakDb": -3.37
+          },
+          {
+            "start": 2.98,
+            "end": 3.72,
+            "peakDb": -2.86
+          },
+          {
+            "start": 3.788,
+            "end": 3.84,
+            "peakDb": -15.96
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
+        "asks": 6,
+        "whole": 0,
+        "transcript": null,
+        "transcripts": [],
+        "transcriptAgreed": "0 of 0",
+        "attitudes": [],
+        "accents": [],
+        "pitches": [],
+        "whisper": null,
+        "whisperVotes": "0 yes, 0 no",
+        "laugh": null,
+        "laughVotes": "0 yes, 0 no",
+        "warmth": null,
+        "warmthVotes": "0 yes, 0 no",
+        "excitement": null,
+        "excitementVotes": "0 yes, 0 no",
+        "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "0 yes, 0 no",
+        "basis": []
+      },
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 5,
+        "seconds": 3.834,
+        "wordsPerSecond": 1.304,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 1,
+        "pausesFound": 1,
+        "pauses": [
+          1.208
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": null,
+        "fits": true
+      }
     }
   ]
 }
