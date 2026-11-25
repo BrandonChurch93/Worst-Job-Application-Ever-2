@@ -40,7 +40,10 @@ The logic, the script of the film and the numbers the makers of the real parts r
 
 - The paper sticks to the cursor on a click, so click then click works as well as a drag.
 - The paper and the hands ride above the resume card, so nothing is hidden by it.
-- The hands sit on the paper: the points in `resume-paper` are kept at most `300 * (1 - amount) - 34` px from the slot (`HOLD`), so the sheet never has to stretch.
+- The hands sit on the paper: the points in `resume-paper` are kept at most `300 * (1 - amount) - 34` px from the slot (`TUG.inside`), so the sheet never has to stretch.
+- The hands are 128 px apart across the sheet (`TUG.hands`, 64 each side of the middle). `lx, ly` is the hand on the cursor's left as seen from above the slot, the same hand as the first arm.
+- The strain is measured from the hands: the paper is taut when the hands are `300 * (1 - amount) - 34` px from the slot, and slack when nearer. The shoulder stays `TUG.reach` from the hands, 42 to 92 px: short while the cursor hauls, long while the shredder bites.
+- In the film the shredder gains about 0.11 of the sheet in each cycle of a bite and a haul (`TUG_CURVE`: seconds, amount, lean in radians, strain in px). At the middle of the beat 0.44 of the sheet is gone, so the title still shows, as in the approved image.
 - A line of the sheet that the shredder has eaten is parked at the slot under the page (z -30) with `v = [1]`, so the count of shapes does not change.
 - No control is taken during the tug. The cursor is tethered to the paper by a knock, never held.
 - A live tug is lost at the far end or after 9 s.
