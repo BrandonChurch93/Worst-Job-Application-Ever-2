@@ -39,7 +39,9 @@ export const lightLaw = {
   // No surface sends back more light than this, so only a thing that gives off light is bright enough to glow.
   cap: { value: new THREE.Vector2(look.glow.surfaceKnee, look.glow.surfaceMax) },
   // Where the key stands, in world units, and the square of its distance to the middle of the view.
-  keyAt: { value: new THREE.Vector4(0, 0, 1, 1) }
+  keyAt: { value: new THREE.Vector4(0, 0, 1, 1) },
+  // The studio's reflection is dimmer where the key or the fill is in shadow: a pocket's wall hides the soft light too.
+  shade: { value: new THREE.Vector2(look.studio.shadeKey, look.studio.shadeFill) }
 }
 
 const fail = () => new Error('The light code of this three.js release is not the one this build was written for')
@@ -158,13 +160,27 @@ function patchedBegin(): string {
     '\tvec3 wjaToKey = wjaKeyAt.xyz - ( wjaViewInverse * vec4( - vViewPosition, 1.0 ) ).xyz;\n\tfloat wjaNear = wjaKeyAt.w / dot( wjaToKey, wjaToKey );\n\tfloat wjaFall = wjaNear * sqrt( wjaNear );\n'
   const after = '\n\treflectedLight.directSpecular = mix( wjaSpec0, reflectedLight.directSpecular, wjaKeySpecular );\n\t#ifdef USE_CLEARCOAT\n\tclearcoatSpecularDirect = mix( wjaCoat0, clearcoatSpecularDirect, wjaKeySpecular );\n\t#endif\n'
   const fall = info + '\n\t\t#if UNROLLED_LOOP_INDEX == 0\n\t\tdirectLight.color *= wjaFall;\n\t\t#endif\n'
-  return chunk.slice(0, at + dirStart.length) + before + loop.replace(info, fall) + after + chunk.slice(stop)
+  const shadowed = 'directLight.color *= ( directLight.visible && receiveShadow ) ? getShadow('
+  if (!loop.includes(shadowed)) throw fail()
+  const lit = 'wjaLit = ( directLight.visible && receiveShadow ) ? getShadow('
+  const tail = 'vDirectionalShadowCoord[ i ] ) : 1.0;'
+  if (!loop.includes(tail)) throw fail()
+  const open =
+    tail +
+    '\n\t\tdirectLight.color *= wjaLit;\n\t\t#if UNROLLED_LOOP_INDEX == 0\n\t\twjaOpen *= mix( 1.0, wjaLit * saturate( dot( geometryNormal, directLight.direction ) * 3.0 + 0.5 ), wjaShade.x );\n\t\t#else\n\t\twjaOpen *= mix( 1.0, wjaLit, wjaShade.y );\n\t\t#endif\n'
+  return chunk.slice(0, at) + '\tfloat wjaOpen = 1.0;\n\tfloat wjaLit = 1.0;\n' + dirStart + before + loop.replace(info, fall).replace(shadowed, lit).replace(tail, open) + after + chunk.slice(stop)
 }
 function patchedMaps(): string {
   const chunk = THREE.ShaderChunk.lights_fragment_maps
   const line = 'iblIrradiance += getIBLIrradiance( geometryNormal );'
   if (!chunk.includes(line)) throw fail()
-  return chunk.replace(line, 'iblIrradiance += wjaEnvDiffuse * getIBLIrradiance( geometryNormal );')
+  const mirror = 'radiance += iblRadiance;'
+  const coat = 'clearcoatRadiance += getIBLRadiance( geometryViewDir, geometryClearcoatNormal, material.clearcoatRoughness );'
+  if (!chunk.includes(mirror) || !chunk.includes(coat)) throw fail()
+  return chunk
+    .replace(line, 'iblIrradiance += wjaEnvDiffuse * wjaOpen * getIBLIrradiance( geometryNormal );')
+    .replace(mirror, 'radiance += iblRadiance * wjaOpen;')
+    .replace(coat, 'clearcoatRadiance += wjaOpen * getIBLRadiance( geometryViewDir, geometryClearcoatNormal, material.clearcoatRoughness );')
 }
 
 // The scene's environment is drawn at one strength for every surface. This gives each material its own share of it back.
@@ -193,9 +209,10 @@ export function studio<T extends THREE.MeshStandardMaterial>(material: T): T {
     shader.uniforms.wjaViewInverse = lightLaw.viewInverse
     shader.uniforms.wjaKeyAt = lightLaw.keyAt
     shader.uniforms.wjaCap = lightLaw.cap
+    shader.uniforms.wjaShade = lightLaw.shade
     shader.uniforms.wjaEnvOwn = { get value() { return material.envMapIntensity } } as THREE.IUniform
     shader.fragmentShader =
-      'uniform float wjaEnvDiffuse;\nuniform float wjaKeySpecular;\nuniform mat4 wjaViewInverse;\nuniform vec4 wjaKeyAt;\nuniform float wjaEnvOwn;\nuniform vec2 wjaCap;\n' +
+      'uniform float wjaEnvDiffuse;\nuniform float wjaKeySpecular;\nuniform mat4 wjaViewInverse;\nuniform vec4 wjaKeyAt;\nuniform float wjaEnvOwn;\nuniform vec2 wjaCap;\nuniform vec2 wjaShade;\n' +
       shader.fragmentShader.replace('#include <opaque_fragment>', capped + '#include <opaque_fragment>').replace('#include <lights_fragment_begin>', patchedBegin()).replace('#include <lights_fragment_maps>', patchedMaps()).replace('#include <envmap_physical_pars_fragment>', patchedEnv())
   }
   material.customProgramCacheKey = () => 'wja-studio'
