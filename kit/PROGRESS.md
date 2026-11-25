@@ -25,22 +25,22 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 25, 2026-11-25T14:10Z, Phase 3.
+Status 26, 2026-11-25T14:32Z, Phase 3.
 
-1. `out/stills/status/01-compare-step1-fire-first-merge.jpg`: Keyboard under fire: your approved picture on the left, the first merge of the real parts on the right. Flat light, flat deck, no long shadows yet.
-2. `out/stills/status/02-compare-step1-tug-first-merge.jpg`: The tug of war: approved on the left, the first merge on the right, from the film's camera. The sheet knots at the slot and the arms are thin lines; both are being reworked.
-3. `out/stills/status/03-cursor-acting-under-approved.jpg`: The cursor's acting states: your approved sheet above, the build's cursor below, in its owner's own test light.
-4. `out/stills/status/04-compare-page-look-first-merge.jpg`: The page at rest with crops at full size: approved on the left, the build on the right. Fields, progress buttons and the cursor still lack depth and shadow.
+1. `out/stills/status/01-compare-step1-fire-second-merge.jpg`: Keyboard under fire: your approved picture on the left, the merged build on the right, at the 20 degree lens. The page light now falls off like yours; the bolts and sparks of the judged moment are not there yet.
+2. `out/stills/status/02-bolt-and-its-light.jpg`: A bolt at full size, from the light owner's test: a travelling streak with a bright head that warms the caps beside it, and the scorch marks earlier bolts left.
+3. `out/stills/status/03-compare-step1-tug-second-merge.jpg`: The tug of war: approved on the left, the merged build on the right, from the film's camera. The sheet now hangs from the cursor's hands with a soft shadow; the arms are still too thin.
+4. `out/stills/status/04-compare-page-look-second-merge.jpg`: The page at rest with crops at full size: approved on the left, the build on the right. Brushed metal, ceramic grain and falloff are close; pockets, long shadows and the cursor's shadow are not.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 3, tick 64 at 2026-11-25T14:10:23Z, allowance: build
-time used in this phase: 1.29 h of its box of 8.00 h
-time used under the allowance in force: 8.63 h of 36.00 h allowed
-time used: 8.63 of 36.00 hours before the review
+clock: phase 3, tick 65 at 2026-11-25T14:32:02Z, allowance: build
+time used in this phase: 1.65 h of its box of 8.00 h
+time used under the allowance in force: 8.99 h of 36.00 h allowed
+time used: 8.99 of 36.00 hours before the review
 extra rounds: yes
 half point: not reached
 box end: not reached
@@ -447,6 +447,8 @@ One line each: the date, the decision, the reason, and the config key if one was
 - 14:03Z, Phase 3, the gate agent and `src/capture/showcase.ts`. Its change there (the twelve largest textures listed with the count, render targets counted as targets) is inside what it owns and is merged as it came.
 - 14:12Z, Phase 3, the one move of the home lens. `cameras.home.fovDeg` moved from 12 to 20, the wide end of its limits (6 to 20), once, as `kit/03-METHOD.md` allows at the look lock. It was done before step 4 of the phase and not during it, so that every agent tunes its part under the lens the film will use. MEASURED in the approved `step1-fire` at full size: the front wall of a key shows 12 to 15 px under its top on every row, where the build's cap stands 18 px above its deck, a lean of about 35 degrees; a straight-on lens gives at the keyboard's rows 5 to 6 degrees at 12 and 8 to 10 degrees at 20, so the approved picture leans more than any lens inside the limits and the fit is the limit. MEASURED on the merged tree, `npm run still -- --key step1-fire --tier review` before and after: the turret shows its side and each cap a wider front wall, the page itself is unchanged (a flat page fills the frame the same at any lens), the deck's lower edge stays inside the frame. The home distance goes from 5138 to 3062 page px. 965 of 965 tests pass after the move. The three tier cameras follow it, as the kit says. No further move of this number in this build.
 - 2026-11-25 14:25Z, Phase 3: the website's own light in the machine is now a number the page of step 3 carries (`v[1]` of the `table-lights` anchors): down to `table.pageDuskLevel` over the 1.2 s before the machine wakes, held while the ball is inside, up again over 1.2 s once the ball leaves by the drain, never dimmed by a skip; the two sheets of the machine are drawn at the dusk level. The app turns the key light, the fill and the studio's reflections down by it (`websiteLevel` in `src/real/index.ts`), and only once the part `table-lights` is real, so a machine of stand-ins is never left dark. Why: kit/02 "Light in the machine" asks for it and `table.pageDuskLevel` was read by nothing (MEASURED: no use in `src` before this). Test: `tests/pinball.test.ts`, 966 of 966 pass.
+- 2026-11-25T14:35Z. The state of everything that moves in the machine now rides in the draw list, before any table part is built on it. Why: a part made real is a pure function of its shapes, so a bumper that must kick, a door that must slam and a lamp that must flash need to be told when, and the grey stand-ins carried only up or down. What changed: the physics records the sim time of every event by its place; the page of step 3 puts on each mover's shape the seconds since it was struck, went in, went out, slammed or opened (9 when never or longer ago), so an owner makes its own curve and keeps no clock; the anchors of `table-lights` carry five levels (general lighting as a wave down the tiers on waking and a dim to a quarter when the ball has drained, the website's own light, a flash on every hit, the red and the blue beacon). `src/stage/CONTRACT.md` under "Making the table real" lists every value. MEASURED: 968 of 968 tests (the tests of the take and of save and load among them), build passes, bots all clear.
+- 2026-11-25T14:35Z. The strobe of "Reply All" is held to 2.5 swells a second, and no light in the machine may flash more than three times a second. Why: the kit asks for "the whole office tier strobing", and a full-screen strobe faster than three a second is the known threshold for photosensitive seizures; a site that anyone can open keeps under it. The flash on a hit is a single pulse that falls over a quarter of a second, not a train.
 
 ## Notes from Brandon
 
