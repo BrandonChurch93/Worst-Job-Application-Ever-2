@@ -6,6 +6,7 @@ import { isAnchor, local, localBalls, localOf, whole, zone, zoneOf, zones } from
 import { LIT_ZONES, ZONES, anchorId, fixedShapes, movingShapes, zoneAt } from '../src/table/draw'
 import { Machine, prepare } from '../src/table/physics'
 import { lit } from '../src/table/real/light'
+import { ask, askedFiles } from '../src/table/real/assets'
 import { BALL, TIERS, TIER_Y, floorZ, table } from '../src/table/layout'
 import { standInsOf } from '../src/shell/view'
 import type { Frame } from '../src/stage/stage'
@@ -131,6 +132,15 @@ describe('the makers of the table', () => {
   test('a material passes through the hook of the lights and comes back the same material', () => {
     const material = new THREE.MeshStandardMaterial()
     expect(lit(material, zone('street'))).toBe(material)
+  })
+
+  test('a picture is named from table/ on, asked for one way only, and not ready before it is loaded', () => {
+    expect(() => ask('art/floor.webp', { colour: true })).toThrow(/table\//)
+    const a = ask('table/test/floor.webp', { colour: true })
+    expect(a.ready()).toBe(false)
+    expect(() => a.texture()).toThrow(/not loaded/)
+    expect(() => ask('table/test/floor.webp', { colour: false })).toThrow(/two ways/)
+    expect(askedFiles()).toContain('table/test/floor.webp')
   })
 
   test('the zones of the helper are the zones of the draw list', () => {
