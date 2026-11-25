@@ -52,8 +52,13 @@ export function apron(z: Zone, ctx: RealContext): THREE.Object3D {
     const h = plate.h / 2
     const t = plate.z1 - plate.z0
     A.slab(roundedLoop(p[0] - w - 3, p[0] + w + 3, p[1] - h - 3, p[1] + h + 3, 7, 4), 0, t - 1.2, TONE.brass, { bevel: 1 })
-    A.slab(roundedLoop(p[0] - w, p[0] + w, p[1] - h, p[1] + h, 5, 4), 0, t, TONE.alu, { bevel: 1.2 })
-    for (const sx of [-w + 9, w - 9]) for (const sy of [-h + 9, h - 9]) screws.add(p[0] + sx, p[1] + sy, t, 0.66, sx + sy * 0.61)
+    P.slab(roundedLoop(p[0] - w, p[0] + w, p[1] - h, p[1] + h, 5, 4), 0, t, TONE.enamel, { bevel: 1.2 })
+    // Two grey blocks carry the plate either side of the drain's mouth, each with a screw.
+    for (const side of [-1, 1]) {
+      const bx = p[0] + side * (w - 13)
+      A.box(bx - 13, bx + 13, p[1] - h - 30, p[1] - h - 3, 0, t - 1.6, TONE.aluDark, { bevel: 1.4, along: [0, 1, 0] })
+      screws.add(bx, p[1] - h - 16, t - 1.6, 0.8, side * 0.9)
+    }
     const cy = p[1] - h - 52
     const ring: V2[] = [[50, 0], [50, 3.2], [47.5, 5], [41, 5], [38, 2.2], [38, 0.8]]
     A.lathe(ring, p[0], cy, 40, TONE.alu)
