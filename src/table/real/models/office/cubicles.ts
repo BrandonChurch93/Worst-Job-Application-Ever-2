@@ -23,13 +23,16 @@ const C = {
   grey: hex(0x8b8f93),
   dark: hex(0x2b2c30),
   screen: hex(0x0c0f14),
-  key: hex(0x3a3c41),
+  key: hex(0xd9d3c2),
+  keyBed: hex(0xb9b3a2),
+  base: hex(0x8d9298),
+  bezel: hex(0x3b3d42),
   paper: hex(0xebe7dc),
   cork: hex(0xa98558),
   notes: [hex(0xe9d95a), hex(0x8fc7e8), hex(0xe58aa8), hex(0x9fd58a)] as RGB[],
   pin: hex(0xb3202a),
   mugs: [hex(0xe9e6dd), hex(0x27406b), hex(0x3f6b4c), hex(0xd9c24a), hex(0x2f7f86), hex(0x7b4a6e)] as RGB[],
-  seats: [hex(0xd8c29c), hex(0xb9ae96), hex(0xcdb48e), hex(0x6f8fae), hex(0xdcc8a4), hex(0xc4ab86)] as RGB[],
+  seats: [hex(0x6a8fbf), hex(0x55a39c), hex(0xa06a98), hex(0x8aa868), hex(0x858d98), hex(0x5674b0)] as RGB[],
   lamps: [hex(0x2a2c30), hex(0x3d5a48), hex(0x2a2c30), hex(0x8a8d91), hex(0x27406b), hex(0x2a2c30)] as RGB[],
   cabinet: hex(0xc4c0ac),
   cooler: hex(0xdcdad2),
@@ -75,11 +78,11 @@ function chair(k: Kit, seat: RGB): void {
   for (let i = 0; i < 5; i++) {
     const a = (i / 5) * Math.PI * 2
     k.at(0, 0, 0, a)
-    k.box(6.4, 0, 2.6, 12, 2.4, 1.8, C.dark, SURF.plastic, 0.6)
+    k.box(6.4, 0, 2.6, 12, 2.4, 1.8, C.base, SURF.zinc, 0.6)
     k.cyl(11.6, 0, 0, 1.9, 2.8, C.dark, SURF.rubber, 8, 0.6)
     k.back()
   }
-  k.cyl(0, 0, 2.6, 3, 2.6, C.dark, SURF.plastic, 10, 0.6)
+  k.cyl(0, 0, 2.6, 3, 2.6, C.base, SURF.zinc, 10, 0.6)
   k.cyl(0, 0, 5, 1.4, 9, C.steel, SURF.chrome, 8, 0.2)
   k.fine = false
   k.poly(rrect(17.5, 17, 5, 3), 13.6, 1.6, C.dark, SURF.plastic, 0.5)
@@ -109,10 +112,10 @@ function chair(k: Kit, seat: RGB): void {
 }
 
 function monitor(k: Kit): V3 {
-  k.poly(rrect(13, 8.5, 2.5, 2), 0, 1.1, C.dark, SURF.plastic, 0.5)
-  k.box(0, 1.6, 1, 3, 1.6, 9, C.dark, SURF.plastic, 0.5)
+  k.poly(rrect(13, 8.5, 2.5, 2), 0, 1.1, C.bezel, SURF.plastic, 0.5)
+  k.box(0, 1.6, 1, 3, 1.6, 9, C.bezel, SURF.plastic, 0.5)
   k.at(0, 0.4, 8.6, 0, -0.2)
-  k.box(0, 0, 0, 29, 2.2, 18.5, C.dark, SURF.plastic, 0.7)
+  k.box(0, 0, 0, 29, 2.2, 18.5, C.bezel, SURF.plastic, 0.7)
   k.flat([[-13.3, -1.14, 1.5], [13.3, -1.14, 1.5], [13.3, -1.14, 17.3], [-13.3, -1.14, 17.3]], [0, -1, 0], C.screen, SURF.gloss)
   k.box(0, 1.6, 5, 12, 1.6, 9, shade(C.dark, 1.3), SURF.plastic, 0.6)
   const led = k.where([11, -1.4, 0.8])
@@ -121,11 +124,11 @@ function monitor(k: Kit): V3 {
 }
 
 function keyboard(k: Kit): void {
-  k.box(0, 0, 0, 22, 8, 1.3, C.dark, SURF.plastic, 0.4)
+  k.box(0, 0, 0, 22, 8, 1.3, C.keyBed, SURF.plastic, 0.4)
   for (let row = 1; row < 4; row++) for (const [x, w] of [[-5.2, 9.6], [5.2, 9.6]]) k.box(x!, -2.7 + row * 1.8, 1.3, w!, 1.35, 0.5, C.key, SURF.plastic, 0)
   for (const [x, w] of [[-8.4, 3.2], [0, 12.1], [8.4, 3.2]]) k.box(x!, -2.7, 1.3, w!, 1.35, 0.5, C.key, SURF.plastic, 0)
   k.at(16.5, -0.5, 0)
-  k.poly(rrect(4, 6.4, 1.9, 2), 0, 1.7, shade(C.dark, 1.2), SURF.plastic, 0.9)
+  k.poly(rrect(4, 6.4, 1.9, 2), 0, 1.7, C.key, SURF.plastic, 0.9)
   k.back()
 }
 
