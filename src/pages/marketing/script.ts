@@ -13,7 +13,7 @@ export interface Marks {
 
 interface Key { t: number; x: number; y: number }
 
-export const PRESS_AT = 12.3
+export const PRESS_AT = 12.06
 export const PRESS_FOR = 0.15
 
 export function path(m: Marks): Key[] {
@@ -26,8 +26,8 @@ export function path(m: Marks): Key[] {
     { t: 6.2, x: c.x, y: c.y }, { t: 7.25, x: c.x, y: c.y },
     { t: 7.95, ...m.off },
     { t: 8.85, ...m.medal }, { t: 9.5, ...m.medal },
-    { t: 10.7, ...m.stand }, { t: 11.7, ...m.stand },
-    { t: 12.2, ...m.press }
+    { t: 10.7, ...m.stand }, { t: 12, ...m.stand },
+    { t: PRESS_AT, ...m.press }
   ]
 }
 
@@ -62,7 +62,7 @@ export const CUES: Cue[] = [
   { at: 0, act: 'confident' },
   { at: 8.9, act: 'proud', react: 'dustOff' },
   { at: 9.5, act: 'confident' },
-  { at: 11.4, react: 'anticipate' }
+  { at: 11.3, react: 'anticipate' }
 ]
 
 export const REJECTED_CUES: Cue[] = [{ at: 0, act: 'exhausted' }]

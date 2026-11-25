@@ -18,7 +18,7 @@ Unit `boss`, page `step4`. Logic in `src/pages/step4/`, the boss in `src/boss/`,
 | Gag | Starts | Ends by itself |
 | --- | --- | --- |
 | `boss.verify` | page start | the box ticks itself after `live.skipLinkAfterSeconds` |
-| `boss.unfold` | 1.6 s after the tick in the film, 2.8 s in the live site | 3.6 s, authored |
+| `boss.unfold` | 1.6 s after the tick in the film. In the live site when the pointer comes to Submit, 2.2 s after the tick at the earliest, and by itself 7 s after the tick (2.2 s if the box ticked itself) | 3.6 s, authored |
 | `boss.slabs` | the boss is whole | health 75, or 12 s |
 | `boss.popups` | health 75 | health 40, or 14.5 s |
 | `boss.lastStand` | health 40 | health 0, or 13.5 s |
@@ -27,6 +27,7 @@ Unit `boss`, page `step4`. Logic in `src/pages/step4/`, the boss in `src/boss/`,
 
 - The fight is a state machine in `src/boss/fight.ts`. It has no drawing code and no library. The longest fight is 12 + 14.5 + 13.5 = 40 s, inside `live.boss.maxSeconds`.
 - The boss tires: each phase has a health ceiling that falls to the phase's end in its last seconds. A visitor who does nothing still sees every phase.
+- The boss also has a health floor that falls through each phase in 4, 4 and 3 s, so the fastest clicker still sees each phase for that long. The film never touches it.
 - One click is one dart. A dart leaves the cursor's tip and flies at the boss, so a click anywhere counts. This keeps the fight fair for a wrong pointer and keeps the pointer free at all times: the page never takes control.
 - A slab aims at where the cursor was when the cannon wound up (0.45 s before it fires), flies flat and upright with a small tilt so its words stay readable, as in the approved picture, and stops. A hit scorches the cursor, knocks it back and is followed by a dust off. The scorch is the cursor body's own and heals by itself. After a hit the cursor is safe for 1.2 s.
 - A pop-up blocks darts. Three darts break it. A click on one of its buttons closes it at once (event `popup-close`, silent) and fires no dart.
@@ -39,16 +40,20 @@ Unit `boss`, page `step4`. Logic in `src/pages/step4/`, the boss in `src/boss/`,
 
 - Legs: four capsules from under the cap.
 - Cannons: the progress buttons of steps 1 and 2 leave the header and fly to the boss. Their places in the header stay empty until the page is left.
-- Shield: step 4 has no input field, so a field-sized plate slides in from the right edge of the page.
+- Shield: step 4 has no input field, so a glass plate slides out from under the body to its place in front of the boss.
 - Plates: two halves of the button's own socket ring.
 
 ## The film
 
-- The pointer path and the clicks are in `src/pages/step4/script.ts`, a pure function of time. Events measured with `npx vitest run tests/boss.test.ts`: `checkbox` 3.80 s, `button-crack` 6.11, `unfold` 6.71, first `slab-fire` 9.86, first `popup` 16.20, `session-expired` 22.07, `power-down` 27.23, `button-press` 30.50.
+- The pointer path and the clicks are in `src/pages/step4/script.ts`, a pure function of time. Events measured with `npx vitest run tests/boss.test.ts`: `checkbox` 3.80 s, `button-crack` 6.11, `unfold` 6.71, first `slab-fire` 9.86, first `popup` 16.20, `session-expired` 22.07, `power-down` 27.10, `button-press` 30.50.
 - The cursor is hit twice in the film, at 14.06 s and 19.60 s, and is whole again before the collapse.
 
 ## Events
 
-Named as the cue where there is one: `checkbox`, `button-crack`, `unfold`, `dart-fire`, `dart-hit`, `slab-fire`, `slab-drop`, `popup`, `power-down`, `button-press`. Without a cue: `session-expired` (the beat's event), `popup-close`, `boss-slow` (the narrator's trigger).
+Named as the cue where there is one: `checkbox`, `button-crack`, `unfold`, `dart-fire`, `dart-hit`, `slab-fire`, `slab-drop`, `popup`, `power-down`, `button-press`. Without a cue of their own: `session-expired` (the beat's event), `popup-close`, `boss-slow` (the narrator's trigger).
 
-`src/audio/cues.ts` does not list the boss cues yet. `NEEDS.patch` adds them.
+`src/audio/cues.ts` on `main` lists the boss cues since the sound builder's table was merged, so `NEEDS.patch` is gone. In that table `session-expired` plays the `popup` cue, and the narrator's live lines `boss.verify` and `boss.slow` hang on the events `checkbox` and `boss-slow`.
+
+## The cursor's ground
+
+The cursor stands on what is under its tip (`cursor.setGround`): 12 on the verify card and on a raised pop-up, 14 on Submit in its socket, 16 on a slab that has landed and on the fallen button. A slab in flight passes over it.

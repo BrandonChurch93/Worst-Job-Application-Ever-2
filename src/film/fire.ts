@@ -1,118 +1,73 @@
 import { config, stepHz } from '../config'
-import { blendPose, CursorBody, type CursorPose } from '../cursor/body'
-import type { DrawList, Shape } from '../stage/types'
+import { blendPose, CursorBody, type Acting, type CursorPose, type Reaction } from '../cursor/body'
+import { drawFire, fireSurface, makeTurrets } from '../pages/step1/fire'
+import { seatIndex, seats, TRAVEL, type Seat } from '../pages/step1/keyboard'
+import { SPOT } from '../pages/step1/script'
+import { TURRET, type Turrets, type TurretsState } from '../pages/step1/turrets'
+import type { DrawList } from '../stage/types'
 import type { Box } from './piece'
-
-const heights = config.scale.heights
-const grid = config.scale.grid
-const sizes = config.scale.sizes
 
 export const LOOP_SECONDS = config.deliver.cardLoop.seconds
 export const LOOP_STEPS = Math.round(LOOP_SECONDS * stepHz)
-const SETTLE_PERIODS = 3
+const SETTLE_PERIODS = 4
 const dt = 1 / stepHz
 
-const KEY_H = sizes.keycapMin
-const GAP = grid.keyGap
-const KEY_W = 96
-const PITCH = KEY_W + GAP
-const ROWS = 5
-const DECK_PAD = 20
-const FIELD = { x: 320, w: 1280 }
-export const DECK: Box = { x: grid.contentLeft, y: 1080 - 64 - (ROWS * KEY_H + (ROWS - 1) * GAP + DECK_PAD * 2), w: grid.contentRight - grid.contentLeft, h: ROWS * KEY_H + (ROWS - 1) * GAP + DECK_PAD * 2 }
-const TURRET_D = 84
-const HATCH_D = 116
-const BARREL = { length: 72, width: 22 }
-export const BOLT = { length: 64, width: 12, head: 20, speed: 1100 }
-const MARK = { size: 46, seconds: 2 }
-export const TRACK_DELAY = 0.25
-const PRESS_SECONDS = 0.14
 export const CURSOR_BOX = { left: 14, top: 14, w: 76, h: 100 }
-
-export interface Key { id: string; x: number; y: number; w: number; h: number; cx: number; cy: number; tone: 'raised' | 'accent' }
-
-function keyRows(): Key[] {
-  const out: Key[] = []
-  const rowY = (r: number) => DECK.y + DECK_PAD + r * (KEY_H + GAP)
-  const put = (r: number, id: string, x: number, w: number, tone: 'raised' | 'accent' = 'raised') => {
-    out.push({ id, x, y: rowY(r), w, h: KEY_H, cx: x + w / 2, cy: rowY(r) + KEY_H / 2, tone })
-    return x + w + GAP
-  }
-  const run = (r: number, x: number, ids: string) => {
-    for (const ch of ids) x = put(r, ch, x, KEY_W)
-    return x
-  }
-  const end = FIELD.x + FIELD.w
-  let x = run(0, FIELD.x, '1234567890')
-  put(0, 'backspace', x, end - x)
-  const tab = FIELD.w - 10 * PITCH
-  x = put(1, 'tab', FIELD.x, tab)
-  run(1, x, 'qwertyuiop')
-  const caps = 160
-  x = put(2, 'caps', FIELD.x, caps)
-  x = run(2, x, 'asdfghjkl')
-  put(2, 'enter', x, end - x, 'accent')
-  const shift = (FIELD.w - 7 * PITCH - GAP) / 2
-  x = put(3, 'shift-left', FIELD.x, shift)
-  x = run(3, x, 'zxcvbnm')
-  put(3, 'shift-right', x, end - x)
-  x = put(4, 'at', FIELD.x, KEY_W)
-  x = put(4, 'space', x, FIELD.w - 2 * PITCH)
-  put(4, 'dot', x, KEY_W)
-  return out
-}
-
-export const KEYS = keyRows()
-const keyOf = (id: string): Key => {
-  const k = KEYS.find((x) => x.id === id)
-  if (!k) throw new Error(`The stand-in keyboard has no key "${id}"`)
-  return k
-}
-
-export const TURRETS = [
-  { id: 'left', x: DECK.x + 96, y: DECK.y + DECK.h / 2 },
-  { id: 'right', x: DECK.x + DECK.w - 96, y: DECK.y + DECK.h / 2 }
-] as const
-
-interface Hop { leave: number; key: string; press: boolean }
+export const BODY = { x: 14, y: 26 }
 const HOP_SECONDS = 0.3
+const PRESS_SECONDS = 0.14
+const SHOCK_SECONDS = 0.9
+const KNOCK = { along: 900, up: 380 }
+const BOLT_LENGTH = 58
+const BOLT_HEAD = 18
+const SCORCH = 30
+
+const NAME = config.applicant.filmFirstName
+const KEPT = 6
+const TYPED_KEY = NAME[KEPT]!.toLowerCase()
+
+interface Hop { leave: number; key: string; press: boolean; jump: boolean }
 
 const HOPS: Hop[] = [
-  { leave: -0.15, key: 'e', press: true },
-  { leave: 0.8, key: 'k', press: true },
-  { leave: 1.75, key: 's', press: true },
-  { leave: 2.65, key: 't', press: true },
-  { leave: 3.7, key: 'v', press: false },
-  { leave: 4.95, key: 'u', press: true },
-  { leave: 5.95, key: 'f', press: true },
-  { leave: 6.9, key: 'j', press: true }
+  { leave: -0.15, key: 'h', press: false, jump: true },
+  { leave: 0.85, key: 'r', press: false, jump: true },
+  { leave: 1.75, key: TYPED_KEY, press: true, jump: true },
+  { leave: 3.75, key: 'g', press: false, jump: false },
+  { leave: 4.35, key: 'u', press: false, jump: true },
+  { leave: 5.35, key: 'e', press: false, jump: true },
+  { leave: 6.2, key: 'k', press: false, jump: true },
+  { leave: 7.0, key: 'c', press: false, jump: true }
 ]
 
-export interface BoltPlan { id: string; turret: 0 | 1; key: string; land: number; hits: boolean }
+export interface Shot { turret: 0 | 1; fire: number; at: string; hits: boolean }
 
-const BOLTS: BoltPlan[] = [
-  { id: 'bolt-0', turret: 0, key: 'e', land: 1.05, hits: false },
-  { id: 'bolt-1', turret: 1, key: 'k', land: 2.0, hits: false },
-  { id: 'bolt-2', turret: 0, key: 's', land: 2.9, hits: false },
-  { id: 'bolt-3', turret: 1, key: 't', land: 3.7, hits: true },
-  { id: 'bolt-4', turret: 0, key: 'v', land: 5.2, hits: false },
-  { id: 'bolt-5', turret: 1, key: 'u', land: 6.2, hits: false },
-  { id: 'bolt-6', turret: 0, key: 'f', land: 7.15, hits: false },
-  { id: 'bolt-7', turret: 1, key: 'j', land: 8.05, hits: false }
+const SHOTS: Shot[] = [
+  { turret: 0, fire: 0.05, at: 'c', hits: false },
+  { turret: 1, fire: 1.05, at: 'h', hits: false },
+  { turret: 1, fire: 1.95, at: 'r', hits: false },
+  { turret: 0, fire: 3.41, at: TYPED_KEY, hits: true },
+  { turret: 0, fire: 4.55, at: 'g', hits: false },
+  { turret: 1, fire: 5.55, at: 'u', hits: false },
+  { turret: 0, fire: 6.4, at: 'e', hits: false },
+  { turret: 1, fire: 7.2, at: 'k', hits: false }
 ]
 
-const HIT = BOLTS.find((b) => b.hits)!
-const CUES: { at: number; run: (c: CursorBody) => void }[] = [
-  ...HOPS.map((h) => ({ at: h.leave, run: (c: CursorBody) => c.react(h.leave === HIT.land ? 'recoil' : 'jump') })),
-  { at: HIT.land - 0.25, run: (c) => c.act('scared') },
-  { at: HIT.land - 0.2, run: (c) => c.react('flinch') },
-  { at: HIT.land, run: (c) => { c.hurt('burn'); c.knock(-260, 340, 260) } },
-  { at: HIT.land + 1.0, run: (c) => { c.act('nervous'); c.react('dustOff') } }
+const CUES: { at: number; act?: Acting; react?: Reaction }[] = [
+  ...HOPS.filter((h) => h.jump).map((h) => ({ at: h.leave, react: 'jump' as Reaction })),
+  { at: 2.2, act: 'proud' },
+  { at: 2.3, react: 'dustOff' }
 ]
 
 const wrap = (t: number): number => ((t % LOOP_SECONDS) + LOOP_SECONDS) % LOOP_SECONDS
 const stepOf = (t: number): number => Math.round(wrap(t) * stepHz) % LOOP_STEPS
 const since = (t: number, from: number): number => wrap(t - from)
+
+const seatOf = (key: string): Seat => {
+  const i = seatIndex[key]
+  if (i === undefined) throw new Error(`The keyboard of step 1 has no key "${key}"`)
+  return seats[i]!
+}
+const seatAt = (x: number, y: number): Seat | null => seats.find((k) => x >= k.x && x <= k.x + k.w && y >= k.y && y <= k.y + k.h) ?? null
 
 export function pointerAt(time: number): { x: number; y: number } {
   const t = wrap(time)
@@ -125,142 +80,189 @@ export function pointerAt(time: number): { x: number; y: number } {
       best = h
     }
   }
-  const k = keyOf(best.key)
-  return { x: k.cx, y: k.cy }
+  const k = seatOf(best.key)
+  return { x: k.cx + SPOT.x, y: k.cy + SPOT.y }
 }
 
-export interface Track { poses: CursorPose[]; seam: number }
+export interface Moment { cursor: CursorPose; turrets: TurretsState; typed: string; pressed: string | null }
+export interface Landing { step: number; hit: boolean; x: number; y: number; from: 0 | 1 }
+export interface Track { moments: Moment[]; seam: number; turretSeam: number; landings: Landing[]; fires: number[] }
 
 let track: Track | null = null
 
-export function cursorTrack(): Track {
+const copy = <T>(v: T): T => JSON.parse(JSON.stringify(v)) as T
+
+export function fireTrack(): Track {
   if (track) return track
-  const cues = new Map<number, ((c: CursorBody) => void)[]>()
+  const cues = new Map<number, typeof CUES>()
   for (const c of CUES) {
     const s = stepOf(c.at)
-    cues.set(s, [...(cues.get(s) ?? []), c.run])
+    cues.set(s, [...(cues.get(s) ?? []), c])
   }
+  const presses = new Map<number, Hop>()
+  for (const h of HOPS) if (h.press) presses.set(stepOf(h.leave + HOP_SECONDS), h)
+  const fireSteps: [number[], number[]] = [[], []]
+  for (const b of SHOTS) fireSteps[b.turret].push(stepOf(b.fire))
+  const until = (turret: 0 | 1, s: number): number => Math.min(...fireSteps[turret].map((f) => ((((f - s - 1) % LOOP_STEPS) + LOOP_STEPS) % LOOP_STEPS) + 1))
+
+  const turrets = makeTurrets()
+  turrets.s.wanted = true
+  turrets.s.up = 1
   const body = new CursorBody()
   const first = pointerAt(0)
   body.reset(first.x, first.y)
-  body.setGround(heights.keycap)
+  body.setGround(fireSurface(first.x, first.y))
   body.act('nervous')
-  const emit = (): void => undefined
-  const poses: CursorPose[] = []
-  let before: CursorPose[] = []
+  let typed = NAME.slice(0, KEPT)
+  let pressed: string | null = null
+  let pressLeft = 0
+  let shock = 0
+  let landings: Landing[] = []
+  let fires: number[] = []
+  let moments: Moment[] = []
+  let before: Moment[] = []
   for (let p = 0; p < SETTLE_PERIODS; p++) {
-    before = poses.slice()
-    poses.length = 0
+    before = moments
+    moments = []
+    landings = []
+    fires = []
     for (let s = 0; s < LOOP_STEPS; s++) {
-      poses.push(body.pose())
-      for (const run of cues.get(s) ?? []) run(body)
-      body.step(pointerAt(s * dt), emit, false)
+      const t = copy(turrets.s)
+      for (const b of t.bolts) b.id %= SHOTS.length
+      for (const c of t.scorches) c.id %= SHOTS.length
+      moments.push({ cursor: body.pose(), turrets: { ...t, nextId: 0, hits: 0, heat: 0 }, typed, pressed })
+      for (const c of cues.get(s) ?? []) {
+        if (c.act) body.act(c.act)
+        if (c.react) body.react(c.react)
+      }
+      const press = presses.get(s)
+      if (press) {
+        typed += NAME[typed.length] ?? ''
+        pressed = press.key
+        pressLeft = PRESS_SECONDS
+      }
+      if (pressLeft > 0) {
+        pressLeft -= dt
+        if (pressLeft <= 0) pressed = null
+      }
+      const at = body.pose()
+      const under = seatAt(at.x, at.y)
+      body.setGround(fireSurface(at.x, at.y) - (under && under.name === pressed ? TRAVEL : 0))
+      body.step(pointerAt(s * dt), () => undefined, false)
+      const now = body.pose()
+      turrets.s.clock = 0
+      turrets.s.next = [until(0, s) * dt, until(1, s) * dt]
+      const flying = new Map(turrets.s.bolts.map((b) => [b.id, b]))
+      const count = turrets.s.bolts.length
+      const hits = turrets.step(dt, { x: now.x + BODY.x, y: now.y + BODY.y }, true, () => undefined)
+      turrets.s.hits = 0
+      turrets.s.overheated = false
+      for (const b of turrets.s.bolts) flying.delete(b.id)
+      if (turrets.s.bolts.length > count - flying.size) fires.push(s)
+      for (const b of flying.values()) landings.push({ step: s, hit: hits.length > 0, x: b.tx, y: b.ty, from: b.from as 0 | 1 })
+      for (const h of hits) {
+        body.hurt('burn')
+        body.knock(h.dx * KNOCK.along, h.dy * KNOCK.along, KNOCK.up)
+        body.react('recoil')
+        body.act('shocked')
+        shock = SHOCK_SECONDS
+        typed = typed.slice(0, -1)
+      }
+      if (shock > 0) {
+        shock -= dt
+        if (shock <= 0) body.act('nervous')
+      }
     }
   }
   let seam = 0
+  let turretSeam = 0
   for (let s = 0; s < LOOP_STEPS; s++) {
     const a = before[s]!
-    const b = poses[s]!
-    seam = Math.max(seam, Math.abs(a.x - b.x), Math.abs(a.y - b.y), Math.abs(a.z - b.z), Math.abs(a.squash - b.squash), Math.abs(a.lean - b.lean), Math.abs(a.healing - b.healing))
+    const b = moments[s]!
+    seam = Math.max(seam, Math.abs(a.cursor.x - b.cursor.x), Math.abs(a.cursor.y - b.cursor.y), Math.abs(a.cursor.z - b.cursor.z), Math.abs(a.cursor.squash - b.cursor.squash), Math.abs(a.cursor.lean - b.cursor.lean), Math.abs(a.cursor.healing - b.cursor.healing))
+    if (a.typed !== b.typed || a.pressed !== b.pressed || a.turrets.bolts.length !== b.turrets.bolts.length || a.turrets.scorches.length !== b.turrets.scorches.length) turretSeam = Infinity
+    else {
+      a.turrets.bolts.forEach((x, i) => {
+        const y = b.turrets.bolts[i]!
+        turretSeam = Math.max(turretSeam, Math.abs(x.tx - y.tx), Math.abs(x.ty - y.ty), Math.abs(x.age - y.age), Math.abs(x.id - y.id))
+      })
+      a.turrets.scorches.forEach((x, i) => {
+        const y = b.turrets.scorches[i]!
+        turretSeam = Math.max(turretSeam, Math.abs(x.x - y.x), Math.abs(x.y - y.y), Math.abs(x.left - y.left))
+      })
+      for (const i of [0, 1]) turretSeam = Math.max(turretSeam, Math.abs(a.turrets.angle[i]! - b.turrets.angle[i]!))
+    }
   }
-  track = { poses, seam }
+  track = { moments, seam, turretSeam, landings, fires }
   return track
 }
 
-export function cursorAt(time: number): CursorPose {
-  const { poses } = cursorTrack()
+const split = (time: number): { n: number; alpha: number } => {
   const s = wrap(time) * stepHz
-  const n = Math.floor(s + 1e-7) % LOOP_STEPS
-  const a = poses[n]!
-  const alpha = Math.min(1, Math.max(0, s - Math.floor(s + 1e-7)))
-  if (alpha < 1e-6) return a
-  return blendPose(a, poses[(n + 1) % LOOP_STEPS]!, alpha)
+  const whole = Math.floor(s + 1e-7)
+  const alpha = Math.min(1, Math.max(0, s - whole))
+  return { n: whole % LOOP_STEPS, alpha: alpha < 1e-6 ? 0 : alpha }
 }
 
-export interface Flight { plan: BoltPlan; fire: number; seconds: number; from: { x: number; y: number }; to: { x: number; y: number }; angle: number }
-
-let flights: Flight[] | null = null
-
-export function boltFlights(): Flight[] {
-  if (flights) return flights
-  flights = BOLTS.map((plan) => {
-    const t = TURRETS[plan.turret]
-    const k = keyOf(plan.key)
-    const to = plan.hits ? { x: cursorAt(plan.land).x + 18, y: cursorAt(plan.land).y + 30 } : { x: k.cx, y: k.cy }
-    const angle = Math.atan2(to.y - t.y, to.x - t.x)
-    const from = { x: t.x + Math.cos(angle) * (BARREL.length + 10), y: t.y + Math.sin(angle) * (BARREL.length + 10) }
-    const seconds = Math.hypot(to.x - from.x, to.y - from.y) / BOLT.speed
-    return { plan, fire: plan.land - seconds, seconds, from, to, angle }
-  })
-  return flights
+export function cursorAt(time: number): CursorPose {
+  const { moments } = fireTrack()
+  const { n, alpha } = split(time)
+  const a = moments[n]!.cursor
+  return alpha === 0 ? a : blendPose(a, moments[(n + 1) % LOOP_STEPS]!.cursor, alpha)
 }
+
+export function turretsAt(time: number): TurretsState {
+  const { moments } = fireTrack()
+  const { n, alpha } = split(time)
+  const t = copy(moments[n]!.turrets)
+  if (alpha === 0) return t
+  const more = alpha * dt
+  for (const b of t.bolts) b.age = Math.min(b.flight, b.age + more)
+  for (const c of t.scorches) c.left = Math.max(dt, c.left - more)
+  t.clock += more
+  return t
+}
+
+let drawn: Turrets | null = null
 
 const boxAround = (cx: number, cy: number, w: number, h: number): Box => ({ x: cx - w / 2, y: cy - h / 2, w, h })
 
 export interface Threat { id: string; kind: 'bolt' | 'mark'; box: Box }
-export interface FireScene { list: DrawList; threats: Threat[]; pressed: string | null; aims: [number, number] }
+export interface FireScene { list: DrawList; threats: Threat[]; pressed: string | null; typed: string; aims: [number, number]; turrets: TurretsState }
 
-export function aimAt(turret: 0 | 1, time: number): number {
-  const c = cursorAt(time - TRACK_DELAY)
-  const t = TURRETS[turret]
-  return Math.atan2(c.y + 30 - t.y, c.x + 18 - t.x)
+export function threatsOf(t: TurretsState): Threat[] {
+  const out: Threat[] = []
+  for (const b of t.bolts) {
+    const u = Math.min(1, b.age / b.flight)
+    const hx = b.x0 + (b.tx - b.x0) * u
+    const hy = b.y0 + (b.ty - b.y0) * u
+    const a = Math.atan2(b.ty - b.y0, b.tx - b.x0)
+    const tx = hx - Math.cos(a) * BOLT_LENGTH
+    const ty = hy - Math.sin(a) * BOLT_LENGTH
+    const pad = BOLT_HEAD / 2
+    out.push({ id: `bolt-${b.id}`, kind: 'bolt', box: { x: Math.min(hx, tx) - pad, y: Math.min(hy, ty) - pad, w: Math.abs(hx - tx) + pad * 2, h: Math.abs(hy - ty) + pad * 2 } })
+  }
+  for (const c of t.scorches) {
+    const d = SCORCH * Math.min(1, c.left / (TURRET.scorchSeconds * 0.6))
+    if (d > 1) out.push({ id: `scorch-${c.id}`, kind: 'mark', box: boxAround(c.x, c.y, d, d) })
+  }
+  return out
 }
+
+let last: { time: number; scene: FireScene } | null = null
 
 export function fireScene(phase: number): FireScene {
   const time = wrap(phase * LOOP_SECONDS)
+  if (last && last.time === time) return last.scene
+  const m = fireTrack().moments[split(time).n]!
+  const turrets = turretsAt(time)
+  drawn ??= makeTurrets()
+  drawn.load(turrets)
   const list: DrawList = []
-  const threats: Threat[] = []
-  const part = 'keyboard'
-  list.push({ id: 'fire-deck', part, kind: 'box', x: DECK.x, y: DECK.y, w: DECK.w, h: DECK.h, z0: 0, z1: heights.keyboardDeck, tone: 'metal', r: 24, mechanism: true })
-  let pressed: string | null = null
-  for (const h of HOPS) {
-    if (!h.press) continue
-    const a = since(time, h.leave + HOP_SECONDS)
-    if (a < PRESS_SECONDS) pressed = h.key
-  }
-  for (const k of KEYS) {
-    const down = k.id === pressed ? heights.keyTravel : 0
-    list.push({ id: `fire-key-${k.id}`, part, kind: 'box', x: k.x, y: k.y, w: k.w, h: k.h, z0: heights.keyboardDeck, z1: heights.keycap - down, tone: k.tone, r: 10 })
-  }
-  const aims: [number, number] = [aimAt(0, time), aimAt(1, time)]
-  TURRETS.forEach((t, i) => {
-    const a = aims[i]!
-    const turrets = 'turrets'
-    list.push({ id: `fire-hatch-${t.id}`, part: turrets, kind: 'disc', ...boxAround(t.x, t.y, HATCH_D, HATCH_D), z0: heights.keyboardDeck, z1: heights.keyboardDeck + 1, tone: 'dark' })
-    list.push({ id: `fire-turret-${t.id}`, part: turrets, kind: 'disc', ...boxAround(t.x, t.y, TURRET_D, TURRET_D), z0: heights.keyboardDeck, z1: heights.turret, tone: 'raised', mechanism: true })
-    const reach = BARREL.length / 2 + 14
-    list.push({ id: `fire-barrel-${t.id}`, part: turrets, kind: 'capsule', ...boxAround(t.x + Math.cos(a) * reach, t.y + Math.sin(a) * reach, BARREL.length, BARREL.width), z0: heights.turret - 34, z1: heights.turret - 10, tone: 'dark', rot: a })
-  })
-  for (const f of boltFlights()) {
-    const age = since(time, f.fire)
-    if (age < f.seconds) {
-      const u = age / f.seconds
-      const hx = f.from.x + (f.to.x - f.from.x) * u
-      const hy = f.from.y + (f.to.y - f.from.y) * u
-      const cx = hx - Math.cos(f.angle) * (BOLT.length / 2)
-      const cy = hy - Math.sin(f.angle) * (BOLT.length / 2)
-      const z = heights.keycap + 14
-      const streak: Shape = { id: `fire-${f.plan.id}`, part: 'turrets', kind: 'capsule', ...boxAround(cx, cy, BOLT.length, BOLT.width), z0: z, z1: z + BOLT.width, tone: 'accent', rot: f.angle }
-      const head: Shape = { id: `fire-${f.plan.id}-head`, part: 'turrets', kind: 'ball', ...boxAround(hx, hy, BOLT.head, BOLT.head), z0: z - 4, z1: z - 4 + BOLT.head, tone: 'light' }
-      list.push(streak, head)
-      const tx = hx - Math.cos(f.angle) * BOLT.length
-      const ty = hy - Math.sin(f.angle) * BOLT.length
-      const pad = BOLT.head / 2
-      threats.push({ id: f.plan.id, kind: 'bolt', box: { x: Math.min(hx, tx) - pad, y: Math.min(hy, ty) - pad, w: Math.abs(hx - tx) + pad * 2, h: Math.abs(hy - ty) + pad * 2 } })
-    }
-    if (f.plan.hits) continue
-    const left = age - f.seconds
-    if (left >= 0 && left < MARK.seconds) {
-      const size = MARK.size * (1 - left / MARK.seconds)
-      const k = keyOf(f.plan.key)
-      const top = (k.id === pressed ? heights.keycap - heights.keyTravel : heights.keycap) + 0.2
-      if (size > 1) {
-        list.push({ id: `fire-${f.plan.id}-mark`, part: 'turrets', kind: 'disc', ...boxAround(f.to.x, f.to.y, size, size), z0: top, z1: top + 0.6, tone: 'dark' })
-        threats.push({ id: `${f.plan.id}-mark`, kind: 'mark', box: boxAround(f.to.x, f.to.y, size, size) })
-      }
-    }
-  }
-  return { list, threats, pressed, aims }
+  drawFire(list, { typed: m.typed, pressed: m.pressed ? [m.pressed] : [], turrets: drawn, time })
+  const scene: FireScene = { list, threats: threatsOf(turrets), pressed: m.pressed, typed: m.typed, aims: [turrets.angle[0], turrets.angle[1]], turrets }
+  last = { time, scene }
+  return scene
 }
 
-export const fireScript = { hops: HOPS, bolts: BOLTS, hit: HIT, hopSeconds: HOP_SECONDS, markSeconds: MARK.seconds }
+export const fireScript = { hops: HOPS, shots: SHOTS, hopSeconds: HOP_SECONDS, name: NAME, kept: KEPT, typedKey: TYPED_KEY, hitRadius: TURRET.hitRadius, scorchSeconds: TURRET.scorchSeconds, windup: TURRET.windup }
