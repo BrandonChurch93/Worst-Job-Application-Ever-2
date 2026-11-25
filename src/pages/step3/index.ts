@@ -75,7 +75,7 @@ function buildLayout(): LayoutNode {
       part: 'table-frame', floor: 16, height: 17, tone: 'paper', children: [centred('apron-card-words', 'copy:step3.table.apronCard', { font: 'inter-500', px: 18 }, 1348, ay + 96, { part: 'type', on: 18 })]
     })]
   }))
-  kids.push(centred('drain-label', 'copy:step3.table.buildings.drain', { font: 'inter-600', px: 18 }, 960, ay + 48, { part: 'table-frame', on: 7, tone: 'inkLight' }))
+  kids.push(centred('drain-label', 'copy:step3.table.buildings.drain', { font: 'inter-600', px: 18 }, 960, ay + 48, { part: 'table-frame', on: 7, tone: 'ink' }))
   const ly = px(LAST_Y)
   kids.push(node('outlet-port', 'port', [px(OUTLET.x - OUTLET.ring / 2), px(OUTLET.y - OUTLET.ring / 2), px(OUTLET.ring), px(OUTLET.ring)], { part: 'loader', shape: 'none' }))
   kids.push(node('result', 'card', [560, ly + 255, RIGHT - 560, 236], {
@@ -454,7 +454,7 @@ export function makePage(): PageLogic {
         for (const e of events) emitTable(io, e)
         s.score = mc.score
         const b = ball()
-        io.cursor.place(px(b.x), px(b.y), px(b.z) + BALL / 2)
+        io.cursor.place(px(b.x), px(b.y), px(b.z))
         if (b.mode === 'hold' && b.hold === 'outlet') {
           s.opened += dt
           if (s.opened >= 0.2) {
@@ -618,7 +618,7 @@ export function makePage(): PageLogic {
           { x: MID + 1.3, y: Y1 + 5.95, lift: 0, pose: { acting: 'shocked', damage: ['flattened'] } }
         ]
         spots.forEach((p, i) => list.push({ id: `sheet-ball-${i + 1}`, part: 'clear-ball', kind: 'ball', x: px(p.x - 0.5), y: px(p.y - 0.5), w: BALL, h: BALL, z0: f + px(p.lift), z1: f + px(p.lift) + BALL, tone: 'glass' }))
-        return { list, cursors: spots.map((p) => restPose(px(p.x), px(p.y), { z: f + px(p.lift) + BALL / 2, inBall: true, taken: true, ...p.pose })), view: frame({ x: px(6.6), y: px(Y1 + 4.7), w: px(6.4), h: px(5.2) }, 1, f, fov('sheet')) }
+        return { list, cursors: spots.map((p) => restPose(px(p.x), px(p.y), { z: f + px(p.lift), inBall: true, taken: true, ...p.pose })), view: frame({ x: px(6.6), y: px(Y1 + 4.7), w: px(6.4), h: px(5.2) }, 1, f, fov('sheet')) }
       }
       if (id !== 'table-map') return null
       const mc = machine()

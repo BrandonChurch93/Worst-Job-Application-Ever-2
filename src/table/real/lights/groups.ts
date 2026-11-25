@@ -70,15 +70,15 @@ function build(z: Zone): Group[] {
   const lampAt = (l: { c: [number, number] }, wide: boolean): Source => at(l.c[0], l.c[1], wide ? LAMP.wideZ : LAMP.z, wide ? LAMP.widePower : LAMP.power, (wide ? LAMP.wideReach : LAMP.reach) / BALL)
   const rail = lamps.filter((l) => l.arrow)
   const lane = lamps.filter((l) => !l.arrow)
-  const both = (list: typeof lamps): Source[] => [...list.map((l) => lampAt(l, false)), ...list.map((l) => lampAt(l, true))]
+  const both = (list: typeof lamps, gain = 1): Source[] => [...list.map((l) => lampAt(l, false)), ...list.map((l) => lampAt(l, true))].map((s) => ({ ...s, power: s.power * gain }))
   const inserts = table.inserts.filter((n) => n.tier === k)
   // Under each sling plastic stands a lamp that lights the floor round it and the flipper before it.
   const slings: Source[] = table.slings.filter((s) => s.tier === k).map((s) => at((s.a[0] + s.b[0] + s.c[0]) / 3, (s.a[1] + s.b[1] + s.c[1]) / 3, 30, 0.6, 2.7, `sling.${s.id}`))
   const insert = (n: Insert, i: number): void => add(`insert.${i + 1}`, 1, linear(insertColour(n)), [at(n.c[0], n.c[1], 40, 1.0, 3.6)], true)
   const d = table.displays[k]!
-  const display = (): void => add('display', 0, C.DISPLAY_AMBER, [0.2, 0.5, 0.8].map((f) => at(d.box[0] + d.box[2] * f, d.box[1] + d.box[3] * 0.4, 40, 0.5, 3.6)))
+  const display = (): void => add('display', 0, C.DISPLAY_AMBER, [0.2, 0.5, 0.8].map((f) => at(d.box[0] + d.box[2] * f, d.box[1] + d.box[3] * 0.4, 34, 0.22, 2.4)))
   if (z.id === 'corporate') {
-    add('general', 2, C.CORPORATE_COLD_WHITE, both(rail))
+    add('general', 2, C.CORPORATE_COLD_WHITE, both(rail, 1.3))
     add('lanes', 2, C.CORPORATE_GOLD, [...both(lane), ...slings])
     inserts.forEach(insert)
     for (const p of table.posts) if (p.tier === k && p.lamp) add(p.id.slice(p.id.indexOf('.') + 1), 1, C.CORPORATE_GLOBE, [at(p.c[0], p.c[1], 46, 1.2, 5.2, `post.${p.id}`)], true)
@@ -93,7 +93,7 @@ function build(z: Zone): Group[] {
     display()
     add('flash', 0, C.CORPORATE_FLASH, [])
   } else if (z.id === 'office') {
-    add('general', 2, C.OFFICE_FLUORESCENT, both(rail).map((s) => ({ ...s, power: s.power * 0.8 })))
+    add('general', 2, C.OFFICE_FLUORESCENT, both(rail, 0.8))
     inserts.forEach(insert)
     table.bumpers.filter((b) => b.tier === k).forEach((b, i) => add(`bumper.${i + 1}`, 1, C.OFFICE_BUMPER, [at(b.c[0], b.c[1], 58, 1.1, 4.2, `bumper.${b.id}`)], true))
     const coffee = model('office.coffee')
@@ -101,7 +101,7 @@ function build(z: Zone): Group[] {
     display()
     add('flash', 0, C.OFFICE_FLASH, [])
   } else {
-    add('general', 2, C.STREET_DUSK, both(rail))
+    add('general', 2, C.STREET_DUSK, both(rail, 1.35))
     add('lanes', 2, C.STREET_SODIUM, [...both(lane), ...slings])
     inserts.forEach(insert)
     const fire = model('street.firehouse')
