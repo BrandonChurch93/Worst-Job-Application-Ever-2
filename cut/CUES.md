@@ -8,17 +8,17 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 
 | Beat | Start s | First frame | Last frame | Event | Event s | Event frame | Inside |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `marketing.stroll` | 0.000 | 0 | 119 | `step` | 1.000 | 60 | yes |
+| `marketing.stroll` | 0.000 | 0 | 119 | `step` | 0.971 | 58 | yes |
 | `marketing.perks` | 2.000 | 120 | 479 | `card-flip` | 2.104 | 126 | yes |
 | `marketing.ticker` | 8.000 | 480 | 659 | none |  |  |  |
 | `marketing.apply` | 11.000 | 660 | 839 | `page-turn` | 13.500 | 810 | yes |
-| `step1.keyboard` | 14.000 | 840 | 959 | `keyboard-rise` | 15.083 | 905 | yes |
-| `step1.firstName` | 16.000 | 960 | 1439 | `bolt-hit-cursor` | 20.283 | 1217 | yes |
-| `step1.lastName` | 24.000 | 1440 | 1739 | `keys-shuffle` | 24.300 | 1458 | yes |
-| `step1.email` | 29.000 | 1740 | 2039 | `slab-drop` | 32.108 | 1926 | yes |
-| `step1.resume` | 34.000 | 2040 | 2159 | `paper-slide` | 34.167 | 2050 | yes |
-| `step1.tug` | 36.000 | 2160 | 2534 | `arms-out` | 36.254 | 2175 | yes |
-| `step1.shredded` | 42.250 | 2535 | 2759 | `strips-zip` | 42.558 | 2553 | yes |
+| `step1.keyboard` | 14.000 | 840 | 959 | `keyboard-rise` | 15.500 | 930 | yes |
+| `step1.firstName` | 16.000 | 960 | 1439 | `bolt-hit-cursor` | 19.808 | 1188 | yes |
+| `step1.lastName` | 24.000 | 1440 | 1739 | `keys-shuffle` | 24.367 | 1462 | yes |
+| `step1.email` | 29.000 | 1740 | 2039 | `slab-drop` | 32.304 | 1938 | yes |
+| `step1.resume` | 34.000 | 2040 | 2159 | `paper-slide` | 34.442 | 2066 | yes |
+| `step1.tug` | 36.000 | 2160 | 2534 | `arms-out` | 36.025 | 2161 | yes |
+| `step1.shredded` | 42.250 | 2535 | 2759 | `strips-zip` | 43.171 | 2590 | yes |
 | `step2.open` | 46.000 | 2760 | 2879 | none |  |  |  |
 | `step2.dial` | 48.000 | 2880 | 3239 | `dial-fling` | 51.575 | 3094 | yes |
 | `step2.slot` | 54.000 | 3240 | 3599 | `coins` | 57.962 | 3477 | yes |
@@ -33,7 +33,7 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | `pinball.fired` | 93.000 | 5580 | 5789 | `scoop-kick` | 95.508 | 5730 | yes |
 | `pinball.highway` | 96.500 | 5790 | 6059 | `ramp-roll` | 97.996 | 5879 | yes |
 | `pinball.save` | 101.000 | 6060 | 6239 | `flipper-save` | 102.529 | 6151 | yes |
-| `pinball.drain` | 104.000 | 6240 | 6539 | `drain` | 104.875 | 6292 | yes |
+| `pinball.drain` | 104.000 | 6240 | 6539 | `drain` | 104.563 | 6273 | yes |
 | `boss.verify` | 109.000 | 6540 | 6839 | `checkbox` | 112.800 | 6768 | yes |
 | `boss.unfold` | 114.000 | 6840 | 7079 | `unfold` | 115.708 | 6942 | yes |
 | `boss.slabs` | 118.000 | 7080 | 7499 | `slab-fire` | 118.862 | 7131 | yes |
@@ -48,423 +48,406 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 
 ## Events with a cue
 
-705 of the film's 705 events have a cue in the table of events to cues. A cue starts on the frame of its event.
+689 of the film's 689 events have a cue in the table of events to cues. A cue starts on the frame of its event.
 
 | Time s | Frame | Beat | Event | Cue | Hits the cursor |
 | --- | --- | --- | --- | --- | --- |
-| 1.000 | 60 | `marketing.stroll` | `step` | `step` | no |
-| 1.358 | 81 | `marketing.stroll` | `step` | `step` | no |
+| 0.971 | 58 | `marketing.stroll` | `step` | `step` | no |
+| 1.296 | 77 | `marketing.stroll` | `step` | `step` | no |
 | 2.104 | 126 | `marketing.perks` | `card-flip` | `card-flip` | no |
-| 2.233 | 134 | `marketing.perks` | `step` | `step` | no |
-| 2.454 | 147 | `marketing.perks` | `step` | `step` | no |
+| 2.217 | 133 | `marketing.perks` | `step` | `step` | no |
+| 2.404 | 144 | `marketing.perks` | `step` | `step` | no |
 | 4.313 | 258 | `marketing.perks` | `card-flip` | `card-flip` | no |
-| 4.325 | 259 | `marketing.perks` | `step` | `step` | no |
-| 4.454 | 267 | `marketing.perks` | `step` | `step` | no |
-| 4.575 | 274 | `marketing.perks` | `step` | `step` | no |
-| 4.713 | 282 | `marketing.perks` | `step` | `step` | no |
+| 4.317 | 259 | `marketing.perks` | `step` | `step` | no |
+| 4.433 | 266 | `marketing.perks` | `step` | `step` | no |
+| 4.546 | 272 | `marketing.perks` | `step` | `step` | no |
+| 4.662 | 279 | `marketing.perks` | `step` | `step` | no |
+| 4.846 | 290 | `marketing.perks` | `step` | `step` | no |
 | 6.350 | 381 | `marketing.perks` | `card-flip` | `card-flip` | no |
-| 6.362 | 381 | `marketing.perks` | `step` | `step` | no |
-| 6.479 | 388 | `marketing.perks` | `step` | `step` | no |
-| 6.596 | 395 | `marketing.perks` | `step` | `step` | no |
-| 6.725 | 403 | `marketing.perks` | `step` | `step` | no |
-| 9.600 | 576 | `marketing.ticker` | `step` | `step` | no |
-| 9.771 | 586 | `marketing.ticker` | `step` | `step` | no |
-| 9.912 | 594 | `marketing.ticker` | `step` | `step` | no |
-| 10.046 | 602 | `marketing.ticker` | `step` | `step` | no |
-| 10.179 | 610 | `marketing.ticker` | `step` | `step` | no |
-| 10.317 | 619 | `marketing.ticker` | `step` | `step` | no |
-| 10.467 | 628 | `marketing.ticker` | `step` | `step` | no |
-| 10.654 | 639 | `marketing.ticker` | `step` | `step` | no |
-| 11.567 | 694 | `marketing.apply` | `step` | `step` | no |
+| 6.350 | 381 | `marketing.perks` | `step` | `step` | no |
+| 6.463 | 387 | `marketing.perks` | `step` | `step` | no |
+| 6.567 | 394 | `marketing.perks` | `step` | `step` | no |
+| 6.679 | 400 | `marketing.perks` | `step` | `step` | no |
+| 6.846 | 410 | `marketing.perks` | `step` | `step` | no |
+| 9.583 | 575 | `marketing.ticker` | `step` | `step` | no |
+| 9.742 | 584 | `marketing.ticker` | `step` | `step` | no |
+| 9.879 | 592 | `marketing.ticker` | `step` | `step` | no |
+| 10.004 | 600 | `marketing.ticker` | `step` | `step` | no |
+| 10.125 | 607 | `marketing.ticker` | `step` | `step` | no |
+| 10.246 | 614 | `marketing.ticker` | `step` | `step` | no |
+| 10.375 | 622 | `marketing.ticker` | `step` | `step` | no |
+| 10.525 | 631 | `marketing.ticker` | `step` | `step` | no |
+| 10.713 | 642 | `marketing.ticker` | `step` | `step` | no |
+| 11.546 | 692 | `marketing.apply` | `step` | `step` | no |
 | 12.771 | 766 | `marketing.apply` | `button-press` | `button-press` | no |
 | 13.500 | 810 | `marketing.apply` | `page-turn` | `page-turn` | no |
-| 14.838 | 890 | `step1.keyboard` | `step` | `step` | no |
-| 15.083 | 905 | `step1.keyboard` | `keyboard-rise` | `keyboard-rise` | no |
-| 15.637 | 938 | `step1.keyboard` | `step` | `step` | no |
-| 15.796 | 947 | `step1.keyboard` | `step` | `step` | no |
-| 15.946 | 956 | `step1.keyboard` | `step` | `step` | no |
-| 16.117 | 967 | `step1.firstName` | `step` | `step` | no |
-| 16.188 | 971 | `step1.firstName` | `turret-rise` | `turret-rise` | no |
-| 16.188 | 971 | `step1.firstName` | `turret-rise` | `turret-rise` | no |
-| 16.450 | 987 | `step1.firstName` | `key-press` | `key-press` | no |
-| 16.692 | 1001 | `step1.firstName` | `step` | `step` | no |
-| 16.717 | 1003 | `step1.firstName` | `step` | `step` | no |
-| 16.738 | 1004 | `step1.firstName` | `step` | `step` | no |
-| 16.754 | 1005 | `step1.firstName` | `step` | `step` | no |
-| 16.775 | 1006 | `step1.firstName` | `step` | `step` | no |
-| 16.800 | 1008 | `step1.firstName` | `step` | `step` | no |
-| 16.837 | 1010 | `step1.firstName` | `step` | `step` | no |
-| 16.900 | 1014 | `step1.firstName` | `key-press` | `key-press` | no |
-| 17.288 | 1037 | `step1.firstName` | `bolt-fire` | `bolt-fire` | no |
-| 17.500 | 1050 | `step1.firstName` | `key-press` | `key-press` | no |
-| 17.550 | 1053 | `step1.firstName` | `step` | `step` | no |
-| 17.738 | 1064 | `step1.firstName` | `bolt-fire` | `bolt-fire` | no |
-| 17.792 | 1067 | `step1.firstName` | `bolt-hit` | `bolt-hit` | no |
-| 17.908 | 1074 | `step1.firstName` | `step` | `step` | no |
-| 17.942 | 1076 | `step1.firstName` | `step` | `step` | no |
+| 15.200 | 912 | `step1.keyboard` | `step` | `step` | no |
+| 15.354 | 921 | `step1.keyboard` | `step` | `step` | no |
+| 15.500 | 930 | `step1.keyboard` | `keyboard-rise` | `keyboard-rise` | no |
+| 16.387 | 983 | `step1.firstName` | `step` | `step` | no |
+| 16.446 | 986 | `step1.firstName` | `step` | `step` | no |
+| 16.492 | 989 | `step1.firstName` | `step` | `step` | no |
+| 16.533 | 992 | `step1.firstName` | `step` | `step` | no |
+| 16.579 | 994 | `step1.firstName` | `step` | `step` | no |
+| 16.629 | 997 | `step1.firstName` | `key-press` | `key-press` | no |
+| 16.792 | 1007 | `step1.firstName` | `step` | `step` | no |
+| 16.842 | 1010 | `step1.firstName` | `step` | `step` | no |
+| 16.879 | 1012 | `step1.firstName` | `step` | `step` | no |
+| 16.917 | 1015 | `step1.firstName` | `step` | `step` | no |
+| 16.950 | 1017 | `step1.firstName` | `step` | `step` | no |
+| 16.992 | 1019 | `step1.firstName` | `step` | `step` | no |
+| 17.021 | 1021 | `step1.firstName` | `turret-rise` | `turret-rise` | no |
+| 17.021 | 1021 | `step1.firstName` | `turret-rise` | `turret-rise` | no |
+| 17.033 | 1022 | `step1.firstName` | `key-press` | `key-press` | no |
+| 17.267 | 1036 | `step1.firstName` | `key-press` | `key-press` | no |
+| 17.296 | 1037 | `step1.firstName` | `step` | `step` | no |
 | 17.967 | 1078 | `step1.firstName` | `step` | `step` | no |
-| 17.992 | 1079 | `step1.firstName` | `step` | `step` | no |
-| 18.021 | 1081 | `step1.firstName` | `step` | `step` | no |
-| 18.067 | 1084 | `step1.firstName` | `step` | `step` | no |
-| 18.071 | 1084 | `step1.firstName` | `key-press` | `key-press` | no |
-| 18.188 | 1091 | `step1.firstName` | `bolt-fire` | `bolt-fire` | no |
-| 18.242 | 1094 | `step1.firstName` | `bolt-hit` | `bolt-hit` | no |
-| 18.558 | 1113 | `step1.firstName` | `step` | `step` | no |
-| 18.596 | 1115 | `step1.firstName` | `bolt-hit` | `bolt-hit` | no |
-| 18.600 | 1116 | `step1.firstName` | `key-press` | `key-press` | no |
-| 18.637 | 1118 | `step1.firstName` | `bolt-fire` | `bolt-fire` | no |
-| 18.738 | 1124 | `step1.firstName` | `bolt-hit` | `bolt-hit` | no |
-| 18.983 | 1139 | `step1.firstName` | `step` | `step` | no |
-| 19.008 | 1140 | `step1.firstName` | `step` | `step` | no |
-| 19.029 | 1141 | `step1.firstName` | `step` | `step` | no |
-| 19.054 | 1143 | `step1.firstName` | `step` | `step` | no |
-| 19.083 | 1145 | `step1.firstName` | `bolt-fire` | `bolt-fire` | no |
-| 19.087 | 1145 | `step1.firstName` | `step` | `step` | no |
-| 19.100 | 1146 | `step1.firstName` | `key-press` | `key-press` | no |
-| 19.333 | 1160 | `step1.firstName` | `step` | `step` | no |
-| 19.387 | 1163 | `step1.firstName` | `key-press` | `key-press` | no |
-| 19.533 | 1172 | `step1.firstName` | `bolt-fire` | `bolt-fire` | no |
-| 19.829 | 1189 | `step1.firstName` | `bolt-hit` | `bolt-hit` | no |
-| 19.896 | 1193 | `step1.firstName` | `bolt-hit` | `bolt-hit` | no |
-| 19.983 | 1199 | `step1.firstName` | `bolt-fire` | `bolt-fire` | no |
-| 20.283 | 1217 | `step1.firstName` | `bolt-hit` | `bolt-hit` | yes |
-| 20.283 | 1217 | `step1.firstName` | `bolt-hit-cursor` | `bolt-hit` | yes |
-| 20.283 | 1217 | `step1.firstName` | `sizzle` | `sizzle` | yes |
-| 20.433 | 1226 | `step1.firstName` | `bolt-fire` | `bolt-fire` | no |
-| 20.446 | 1226 | `step1.firstName` | `step` | `step` | no |
-| 20.483 | 1229 | `step1.firstName` | `step` | `step` | no |
-| 20.567 | 1234 | `step1.firstName` | `step` | `step` | no |
-| 20.883 | 1253 | `step1.firstName` | `bolt-fire` | `bolt-fire` | no |
-| 21.017 | 1261 | `step1.firstName` | `bolt-hit` | `bolt-hit` | no |
-| 21.225 | 1273 | `step1.firstName` | `bolt-hit` | `bolt-hit` | no |
-| 21.333 | 1280 | `step1.firstName` | `bolt-fire` | `bolt-fire` | no |
-| 21.363 | 1281 | `step1.firstName` | `step` | `step` | no |
-| 21.396 | 1283 | `step1.firstName` | `step` | `step` | no |
-| 21.425 | 1285 | `step1.firstName` | `step` | `step` | no |
-| 21.454 | 1287 | `step1.firstName` | `step` | `step` | no |
-| 21.492 | 1289 | `step1.firstName` | `step` | `step` | no |
-| 21.542 | 1292 | `step1.firstName` | `key-press` | `key-press` | no |
-| 21.554 | 1293 | `step1.firstName` | `step` | `step` | no |
-| 21.750 | 1305 | `step1.firstName` | `bolt-hit` | `bolt-hit` | no |
-| 21.783 | 1307 | `step1.firstName` | `bolt-fire` | `bolt-fire` | no |
-| 21.808 | 1308 | `step1.firstName` | `step` | `step` | no |
+| 17.996 | 1079 | `step1.firstName` | `step` | `step` | no |
+| 18.017 | 1081 | `step1.firstName` | `step` | `step` | no |
+| 18.033 | 1082 | `step1.firstName` | `step` | `step` | no |
+| 18.050 | 1083 | `step1.firstName` | `step` | `step` | no |
+| 18.071 | 1084 | `step1.firstName` | `step` | `step` | no |
+| 18.087 | 1085 | `step1.firstName` | `step` | `step` | no |
+| 18.104 | 1086 | `step1.firstName` | `step` | `step` | no |
+| 18.121 | 1087 | `step1.firstName` | `bolt-fire` | `bolt-fire` | no |
+| 18.121 | 1087 | `step1.firstName` | `step` | `step` | no |
+| 18.137 | 1088 | `step1.firstName` | `step` | `step` | no |
+| 18.158 | 1089 | `step1.firstName` | `step` | `step` | no |
+| 18.183 | 1091 | `step1.firstName` | `step` | `step` | no |
+| 18.229 | 1093 | `step1.firstName` | `step` | `step` | no |
+| 18.258 | 1095 | `step1.firstName` | `key-press` | `key-press` | no |
+| 18.308 | 1098 | `step1.firstName` | `step` | `step` | no |
+| 18.363 | 1101 | `step1.firstName` | `step` | `step` | no |
+| 18.400 | 1104 | `step1.firstName` | `key-press` | `key-press` | no |
+| 18.475 | 1108 | `step1.firstName` | `step` | `step` | no |
+| 18.533 | 1112 | `step1.firstName` | `step` | `step` | no |
+| 18.538 | 1112 | `step1.firstName` | `bolt-hit` | `bolt-hit` | no |
+| 18.567 | 1114 | `step1.firstName` | `step` | `step` | no |
+| 18.571 | 1114 | `step1.firstName` | `bolt-fire` | `bolt-fire` | no |
+| 18.592 | 1115 | `step1.firstName` | `step` | `step` | no |
+| 18.617 | 1117 | `step1.firstName` | `step` | `step` | no |
+| 18.646 | 1118 | `step1.firstName` | `step` | `step` | no |
+| 18.688 | 1121 | `step1.firstName` | `step` | `step` | no |
+| 18.813 | 1128 | `step1.firstName` | `bolt-hit` | `bolt-hit` | no |
+| 19.021 | 1141 | `step1.firstName` | `bolt-fire` | `bolt-fire` | no |
+| 19.471 | 1168 | `step1.firstName` | `bolt-fire` | `bolt-fire` | no |
+| 19.675 | 1180 | `step1.firstName` | `bolt-hit` | `bolt-hit` | no |
+| 19.808 | 1188 | `step1.firstName` | `bolt-hit` | `bolt-hit` | yes |
+| 19.808 | 1188 | `step1.firstName` | `bolt-hit-cursor` | `bolt-hit` | yes |
+| 19.808 | 1188 | `step1.firstName` | `sizzle` | `sizzle` | yes |
+| 19.917 | 1195 | `step1.firstName` | `bolt-fire` | `bolt-fire` | no |
+| 20.367 | 1222 | `step1.firstName` | `bolt-fire` | `bolt-fire` | no |
+| 20.429 | 1225 | `step1.firstName` | `bolt-hit` | `bolt-hit` | no |
+| 20.433 | 1226 | `step1.firstName` | `step` | `step` | no |
+| 20.721 | 1243 | `step1.firstName` | `bolt-hit` | `bolt-hit` | no |
+| 20.817 | 1249 | `step1.firstName` | `bolt-fire` | `bolt-fire` | no |
+| 21.233 | 1274 | `step1.firstName` | `step` | `step` | no |
+| 21.267 | 1276 | `step1.firstName` | `bolt-fire` | `bolt-fire` | no |
+| 21.267 | 1276 | `step1.firstName` | `step` | `step` | no |
+| 21.300 | 1278 | `step1.firstName` | `step` | `step` | no |
+| 21.308 | 1278 | `step1.firstName` | `bolt-hit` | `bolt-hit` | no |
+| 21.354 | 1281 | `step1.firstName` | `step` | `step` | no |
+| 21.717 | 1303 | `step1.firstName` | `bolt-fire` | `bolt-fire` | no |
+| 21.721 | 1303 | `step1.firstName` | `bolt-hit` | `bolt-hit` | no |
+| 21.762 | 1305 | `step1.firstName` | `step` | `step` | no |
+| 21.779 | 1306 | `step1.firstName` | `step` | `step` | no |
+| 21.796 | 1307 | `step1.firstName` | `step` | `step` | no |
+| 21.813 | 1308 | `step1.firstName` | `step` | `step` | no |
 | 21.829 | 1309 | `step1.firstName` | `step` | `step` | no |
 | 21.846 | 1310 | `step1.firstName` | `step` | `step` | no |
-| 21.863 | 1311 | `step1.firstName` | `step` | `step` | no |
-| 21.879 | 1312 | `step1.firstName` | `step` | `step` | no |
+| 21.867 | 1312 | `step1.firstName` | `step` | `step` | no |
+| 21.883 | 1313 | `step1.firstName` | `step` | `step` | no |
 | 21.900 | 1314 | `step1.firstName` | `step` | `step` | no |
 | 21.917 | 1315 | `step1.firstName` | `step` | `step` | no |
 | 21.933 | 1316 | `step1.firstName` | `step` | `step` | no |
-| 21.950 | 1317 | `step1.firstName` | `step` | `step` | no |
-| 21.967 | 1318 | `step1.firstName` | `step` | `step` | no |
-| 21.988 | 1319 | `step1.firstName` | `step` | `step` | no |
-| 22.012 | 1320 | `step1.firstName` | `step` | `step` | no |
-| 22.050 | 1323 | `step1.firstName` | `step` | `step` | no |
-| 22.071 | 1324 | `step1.firstName` | `key-press` | `key-press` | no |
-| 22.142 | 1328 | `step1.firstName` | `step` | `step` | no |
-| 22.212 | 1332 | `step1.firstName` | `bolt-hit` | `bolt-hit` | no |
-| 22.233 | 1334 | `step1.firstName` | `bolt-fire` | `bolt-fire` | no |
-| 22.458 | 1347 | `step1.firstName` | `step` | `step` | no |
-| 22.483 | 1349 | `step1.firstName` | `step` | `step` | no |
-| 22.508 | 1350 | `step1.firstName` | `step` | `step` | no |
-| 22.533 | 1352 | `step1.firstName` | `step` | `step` | no |
-| 22.567 | 1354 | `step1.firstName` | `step` | `step` | no |
-| 22.592 | 1355 | `step1.firstName` | `key-press` | `key-press` | no |
-| 22.613 | 1356 | `step1.firstName` | `step` | `step` | no |
-| 22.688 | 1361 | `step1.firstName` | `bolt-fire` | `bolt-fire` | no |
-| 22.767 | 1366 | `step1.firstName` | `bolt-hit` | `bolt-hit` | no |
-| 22.883 | 1373 | `step1.firstName` | `step` | `step` | no |
-| 22.921 | 1375 | `step1.firstName` | `key-press` | `key-press` | no |
+| 21.954 | 1317 | `step1.firstName` | `step` | `step` | no |
+| 21.975 | 1318 | `step1.firstName` | `step` | `step` | no |
+| 22.008 | 1320 | `step1.firstName` | `step` | `step` | no |
+| 22.046 | 1322 | `step1.firstName` | `key-press` | `key-press` | no |
+| 22.067 | 1324 | `step1.firstName` | `bolt-hit` | `bolt-hit` | no |
+| 22.071 | 1324 | `step1.firstName` | `step` | `step` | no |
+| 22.167 | 1330 | `step1.firstName` | `bolt-fire` | `bolt-fire` | no |
+| 22.179 | 1330 | `step1.firstName` | `step` | `step` | no |
+| 22.208 | 1332 | `step1.firstName` | `step` | `step` | no |
+| 22.229 | 1333 | `step1.firstName` | `step` | `step` | no |
+| 22.246 | 1334 | `step1.firstName` | `step` | `step` | no |
+| 22.262 | 1335 | `step1.firstName` | `step` | `step` | no |
+| 22.279 | 1336 | `step1.firstName` | `step` | `step` | no |
+| 22.296 | 1337 | `step1.firstName` | `step` | `step` | no |
+| 22.313 | 1338 | `step1.firstName` | `step` | `step` | no |
+| 22.333 | 1340 | `step1.firstName` | `step` | `step` | no |
+| 22.354 | 1341 | `step1.firstName` | `step` | `step` | no |
+| 22.383 | 1343 | `step1.firstName` | `step` | `step` | no |
+| 22.404 | 1344 | `step1.firstName` | `key-press` | `key-press` | no |
+| 22.421 | 1345 | `step1.firstName` | `step` | `step` | no |
+| 22.475 | 1348 | `step1.firstName` | `step` | `step` | no |
+| 22.525 | 1351 | `step1.firstName` | `step` | `step` | no |
+| 22.571 | 1354 | `step1.firstName` | `step` | `step` | no |
+| 22.617 | 1357 | `step1.firstName` | `bolt-fire` | `bolt-fire` | no |
+| 22.633 | 1358 | `step1.firstName` | `step` | `step` | no |
+| 22.700 | 1362 | `step1.firstName` | `key-press` | `key-press` | no |
+| 22.721 | 1363 | `step1.firstName` | `step` | `step` | no |
+| 22.729 | 1363 | `step1.firstName` | `bolt-hit` | `bolt-hit` | no |
+| 22.746 | 1364 | `step1.firstName` | `step` | `step` | no |
+| 22.767 | 1366 | `step1.firstName` | `step` | `step` | no |
+| 22.788 | 1367 | `step1.firstName` | `step` | `step` | no |
+| 22.804 | 1368 | `step1.firstName` | `step` | `step` | no |
+| 22.821 | 1369 | `step1.firstName` | `step` | `step` | no |
+| 22.837 | 1370 | `step1.firstName` | `step` | `step` | no |
+| 22.854 | 1371 | `step1.firstName` | `step` | `step` | no |
+| 22.871 | 1372 | `step1.firstName` | `step` | `step` | no |
+| 22.892 | 1373 | `step1.firstName` | `step` | `step` | no |
+| 22.913 | 1374 | `step1.firstName` | `step` | `step` | no |
+| 22.938 | 1376 | `step1.firstName` | `step` | `step` | no |
 | 22.988 | 1379 | `step1.firstName` | `step` | `step` | no |
-| 23.137 | 1388 | `step1.firstName` | `bolt-fire` | `bolt-fire` | no |
-| 23.342 | 1400 | `step1.firstName` | `bolt-hit` | `bolt-hit` | no |
-| 23.425 | 1405 | `step1.firstName` | `step` | `step` | no |
-| 23.458 | 1407 | `step1.firstName` | `step` | `step` | no |
-| 23.475 | 1408 | `step1.firstName` | `bolt-hit` | `bolt-hit` | no |
-| 23.488 | 1409 | `step1.firstName` | `step` | `step` | no |
-| 23.508 | 1410 | `step1.firstName` | `step` | `step` | no |
-| 23.533 | 1412 | `step1.firstName` | `step` | `step` | no |
-| 23.563 | 1413 | `step1.firstName` | `step` | `step` | no |
-| 23.587 | 1415 | `step1.firstName` | `bolt-fire` | `bolt-fire` | no |
+| 23.021 | 1381 | `step1.firstName` | `key-press` | `key-press` | no |
+| 23.054 | 1383 | `step1.firstName` | `step` | `step` | no |
+| 23.067 | 1384 | `step1.firstName` | `bolt-fire` | `bolt-fire` | no |
+| 23.083 | 1385 | `step1.firstName` | `step` | `step` | no |
+| 23.113 | 1386 | `step1.firstName` | `step` | `step` | no |
+| 23.142 | 1388 | `step1.firstName` | `step` | `step` | no |
+| 23.179 | 1390 | `step1.firstName` | `key-press` | `key-press` | no |
+| 23.183 | 1391 | `step1.firstName` | `step` | `step` | no |
+| 23.250 | 1395 | `step1.firstName` | `bolt-hit` | `bolt-hit` | no |
+| 23.363 | 1401 | `step1.firstName` | `step` | `step` | no |
+| 23.367 | 1402 | `step1.firstName` | `key-press` | `key-press` | no |
+| 23.479 | 1408 | `step1.firstName` | `step` | `step` | no |
+| 23.521 | 1411 | `step1.firstName` | `bolt-fire` | `bolt-fire` | no |
+| 23.521 | 1411 | `step1.firstName` | `step` | `step` | no |
+| 23.550 | 1413 | `step1.firstName` | `step` | `step` | no |
+| 23.571 | 1414 | `step1.firstName` | `step` | `step` | no |
+| 23.592 | 1415 | `step1.firstName` | `bolt-hit` | `bolt-hit` | no |
 | 23.592 | 1415 | `step1.firstName` | `step` | `step` | no |
-| 23.646 | 1418 | `step1.firstName` | `step` | `step` | no |
-| 23.800 | 1428 | `step1.firstName` | `key-press` | `key-press` | no |
-| 24.029 | 1441 | `step1.lastName` | `step` | `step` | no |
-| 24.067 | 1444 | `step1.lastName` | `step` | `step` | no |
-| 24.096 | 1445 | `step1.lastName` | `step` | `step` | no |
+| 23.617 | 1417 | `step1.firstName` | `step` | `step` | no |
+| 23.637 | 1418 | `step1.firstName` | `step` | `step` | no |
+| 23.667 | 1420 | `step1.firstName` | `step` | `step` | no |
+| 23.717 | 1423 | `step1.firstName` | `step` | `step` | no |
+| 23.721 | 1423 | `step1.firstName` | `key-press` | `key-press` | no |
+| 24.087 | 1445 | `step1.lastName` | `bolt-hit` | `bolt-hit` | no |
 | 24.125 | 1447 | `step1.lastName` | `step` | `step` | no |
-| 24.133 | 1448 | `step1.lastName` | `bolt-hit` | `bolt-hit` | no |
-| 24.154 | 1449 | `step1.lastName` | `step` | `step` | no |
-| 24.188 | 1451 | `step1.lastName` | `step` | `step` | no |
-| 24.246 | 1454 | `step1.lastName` | `step` | `step` | no |
-| 24.300 | 1458 | `step1.lastName` | `key-press` | `key-press` | no |
-| 24.300 | 1458 | `step1.lastName` | `keys-shuffle` | `keys-shuffle` | no |
-| 24.542 | 1472 | `step1.lastName` | `step` | `step` | no |
-| 24.608 | 1476 | `step1.lastName` | `step` | `step` | no |
-| 24.663 | 1479 | `step1.lastName` | `step` | `step` | no |
-| 24.729 | 1483 | `step1.lastName` | `step` | `step` | no |
-| 24.883 | 1493 | `step1.lastName` | `key-press` | `key-press` | no |
-| 24.883 | 1493 | `step1.lastName` | `keys-shuffle` | `keys-shuffle` | no |
-| 25.137 | 1508 | `step1.lastName` | `step` | `step` | no |
-| 25.204 | 1512 | `step1.lastName` | `step` | `step` | no |
-| 25.271 | 1516 | `step1.lastName` | `step` | `step` | no |
-| 25.363 | 1521 | `step1.lastName` | `step` | `step` | no |
-| 25.462 | 1527 | `step1.lastName` | `key-press` | `key-press` | no |
-| 25.462 | 1527 | `step1.lastName` | `keys-shuffle` | `keys-shuffle` | no |
-| 25.825 | 1549 | `step1.lastName` | `step` | `step` | no |
-| 26.042 | 1562 | `step1.lastName` | `key-press` | `key-press` | no |
-| 26.042 | 1562 | `step1.lastName` | `keys-shuffle` | `keys-shuffle` | no |
-| 26.337 | 1580 | `step1.lastName` | `step` | `step` | no |
-| 26.421 | 1585 | `step1.lastName` | `step` | `step` | no |
+| 24.175 | 1450 | `step1.lastName` | `step` | `step` | no |
+| 24.212 | 1452 | `step1.lastName` | `step` | `step` | no |
+| 24.254 | 1455 | `step1.lastName` | `step` | `step` | no |
+| 24.292 | 1457 | `step1.lastName` | `step` | `step` | no |
+| 24.337 | 1460 | `step1.lastName` | `step` | `step` | no |
+| 24.367 | 1462 | `step1.lastName` | `key-press` | `key-press` | no |
+| 24.367 | 1462 | `step1.lastName` | `keys-shuffle` | `keys-shuffle` | no |
+| 24.408 | 1464 | `step1.lastName` | `step` | `step` | no |
+| 24.421 | 1465 | `step1.lastName` | `step` | `step` | no |
+| 24.429 | 1465 | `step1.lastName` | `step` | `step` | no |
+| 24.438 | 1466 | `step1.lastName` | `step` | `step` | no |
+| 24.446 | 1466 | `step1.lastName` | `step` | `step` | no |
+| 24.454 | 1467 | `step1.lastName` | `step` | `step` | no |
+| 24.462 | 1467 | `step1.lastName` | `step` | `step` | no |
+| 24.475 | 1468 | `step1.lastName` | `step` | `step` | no |
+| 24.483 | 1469 | `step1.lastName` | `step` | `step` | no |
+| 24.492 | 1469 | `step1.lastName` | `step` | `step` | no |
+| 24.508 | 1470 | `step1.lastName` | `step` | `step` | no |
+| 24.529 | 1471 | `step1.lastName` | `step` | `step` | no |
+| 24.975 | 1498 | `step1.lastName` | `step` | `step` | no |
+| 25.004 | 1500 | `step1.lastName` | `key-press` | `key-press` | no |
+| 25.004 | 1500 | `step1.lastName` | `keys-shuffle` | `keys-shuffle` | no |
+| 25.075 | 1504 | `step1.lastName` | `step` | `step` | no |
+| 25.100 | 1506 | `step1.lastName` | `step` | `step` | no |
+| 25.125 | 1507 | `step1.lastName` | `step` | `step` | no |
+| 25.150 | 1509 | `step1.lastName` | `step` | `step` | no |
+| 25.188 | 1511 | `step1.lastName` | `step` | `step` | no |
+| 25.529 | 1531 | `step1.lastName` | `step` | `step` | no |
+| 25.583 | 1535 | `step1.lastName` | `step` | `step` | no |
+| 25.617 | 1537 | `step1.lastName` | `key-press` | `key-press` | no |
+| 25.617 | 1537 | `step1.lastName` | `keys-shuffle` | `keys-shuffle` | no |
+| 25.658 | 1539 | `step1.lastName` | `step` | `step` | no |
+| 25.671 | 1540 | `step1.lastName` | `step` | `step` | no |
+| 25.683 | 1541 | `step1.lastName` | `step` | `step` | no |
+| 25.692 | 1541 | `step1.lastName` | `step` | `step` | no |
+| 25.700 | 1542 | `step1.lastName` | `step` | `step` | no |
+| 25.708 | 1542 | `step1.lastName` | `step` | `step` | no |
+| 25.721 | 1543 | `step1.lastName` | `step` | `step` | no |
+| 25.729 | 1543 | `step1.lastName` | `step` | `step` | no |
+| 25.746 | 1544 | `step1.lastName` | `step` | `step` | no |
+| 25.762 | 1545 | `step1.lastName` | `step` | `step` | no |
+| 26.079 | 1564 | `step1.lastName` | `step` | `step` | no |
+| 26.117 | 1567 | `step1.lastName` | `key-press` | `key-press` | no |
+| 26.117 | 1567 | `step1.lastName` | `keys-shuffle` | `keys-shuffle` | no |
 | 26.512 | 1590 | `step1.lastName` | `step` | `step` | no |
-| 26.621 | 1597 | `step1.lastName` | `key-press` | `key-press` | no |
-| 26.621 | 1597 | `step1.lastName` | `keys-shuffle` | `keys-shuffle` | no |
-| 26.842 | 1610 | `step1.lastName` | `step` | `step` | no |
-| 26.887 | 1613 | `step1.lastName` | `step` | `step` | no |
-| 26.921 | 1615 | `step1.lastName` | `step` | `step` | no |
-| 26.954 | 1617 | `step1.lastName` | `step` | `step` | no |
+| 26.563 | 1593 | `step1.lastName` | `step` | `step` | no |
+| 26.604 | 1596 | `step1.lastName` | `step` | `step` | no |
+| 26.646 | 1598 | `step1.lastName` | `step` | `step` | no |
+| 26.667 | 1600 | `step1.lastName` | `key-press` | `key-press` | no |
+| 26.667 | 1600 | `step1.lastName` | `keys-shuffle` | `keys-shuffle` | no |
 | 26.983 | 1619 | `step1.lastName` | `step` | `step` | no |
-| 27.012 | 1620 | `step1.lastName` | `step` | `step` | no |
-| 27.046 | 1622 | `step1.lastName` | `step` | `step` | no |
-| 27.087 | 1625 | `step1.lastName` | `step` | `step` | no |
-| 27.150 | 1629 | `step1.lastName` | `step` | `step` | no |
-| 27.204 | 1632 | `step1.lastName` | `key-press` | `key-press` | no |
-| 27.204 | 1632 | `step1.lastName` | `keys-shuffle` | `keys-shuffle` | no |
-| 27.500 | 1650 | `step1.lastName` | `step` | `step` | no |
-| 27.579 | 1654 | `step1.lastName` | `step` | `step` | no |
-| 27.675 | 1660 | `step1.lastName` | `step` | `step` | no |
-| 27.783 | 1667 | `step1.lastName` | `key-press` | `key-press` | no |
-| 27.783 | 1667 | `step1.lastName` | `keys-shuffle` | `keys-shuffle` | no |
-| 28.079 | 1684 | `step1.lastName` | `step` | `step` | no |
-| 28.158 | 1689 | `step1.lastName` | `step` | `step` | no |
-| 28.254 | 1695 | `step1.lastName` | `step` | `step` | no |
-| 28.363 | 1701 | `step1.lastName` | `key-press` | `key-press` | no |
-| 28.363 | 1701 | `step1.lastName` | `keys-shuffle` | `keys-shuffle` | no |
-| 28.554 | 1713 | `step1.lastName` | `step` | `step` | no |
-| 28.596 | 1715 | `step1.lastName` | `step` | `step` | no |
-| 28.625 | 1717 | `step1.lastName` | `step` | `step` | no |
-| 28.658 | 1719 | `step1.lastName` | `step` | `step` | no |
-| 28.700 | 1722 | `step1.lastName` | `step` | `step` | no |
-| 28.767 | 1726 | `step1.lastName` | `step` | `step` | no |
-| 28.783 | 1727 | `step1.lastName` | `key-press` | `key-press` | no |
+| 27.021 | 1621 | `step1.lastName` | `step` | `step` | no |
+| 27.050 | 1623 | `step1.lastName` | `step` | `step` | no |
+| 27.079 | 1624 | `step1.lastName` | `step` | `step` | no |
+| 27.104 | 1626 | `step1.lastName` | `step` | `step` | no |
+| 27.137 | 1628 | `step1.lastName` | `step` | `step` | no |
+| 27.163 | 1629 | `step1.lastName` | `key-press` | `key-press` | no |
+| 27.163 | 1629 | `step1.lastName` | `keys-shuffle` | `keys-shuffle` | no |
+| 27.667 | 1660 | `step1.lastName` | `key-press` | `key-press` | no |
+| 27.667 | 1660 | `step1.lastName` | `keys-shuffle` | `keys-shuffle` | no |
+| 28.000 | 1680 | `step1.lastName` | `step` | `step` | no |
+| 28.054 | 1683 | `step1.lastName` | `step` | `step` | no |
+| 28.108 | 1686 | `step1.lastName` | `step` | `step` | no |
+| 28.167 | 1690 | `step1.lastName` | `key-press` | `key-press` | no |
+| 28.167 | 1690 | `step1.lastName` | `keys-shuffle` | `keys-shuffle` | no |
+| 28.458 | 1707 | `step1.lastName` | `step` | `step` | no |
+| 28.496 | 1709 | `step1.lastName` | `step` | `step` | no |
+| 28.525 | 1711 | `step1.lastName` | `step` | `step` | no |
+| 28.550 | 1713 | `step1.lastName` | `step` | `step` | no |
+| 28.579 | 1714 | `step1.lastName` | `step` | `step` | no |
+| 28.608 | 1716 | `step1.lastName` | `step` | `step` | no |
+| 28.650 | 1719 | `step1.lastName` | `key-press` | `key-press` | no |
+| 28.654 | 1719 | `step1.lastName` | `step` | `step` | no |
+| 28.796 | 1727 | `step1.lastName` | `step` | `step` | no |
+| 28.821 | 1729 | `step1.lastName` | `step` | `step` | no |
+| 28.837 | 1730 | `step1.lastName` | `step` | `step` | no |
+| 28.854 | 1731 | `step1.lastName` | `step` | `step` | no |
+| 28.871 | 1732 | `step1.lastName` | `step` | `step` | no |
+| 28.887 | 1733 | `step1.lastName` | `step` | `step` | no |
+| 28.904 | 1734 | `step1.lastName` | `step` | `step` | no |
+| 28.921 | 1735 | `step1.lastName` | `step` | `step` | no |
 | 28.942 | 1736 | `step1.lastName` | `step` | `step` | no |
-| 28.967 | 1738 | `step1.lastName` | `step` | `step` | no |
-| 28.988 | 1739 | `step1.lastName` | `step` | `step` | no |
-| 29.004 | 1740 | `step1.email` | `step` | `step` | no |
-| 29.021 | 1741 | `step1.email` | `step` | `step` | no |
-| 29.038 | 1742 | `step1.email` | `step` | `step` | no |
-| 29.054 | 1743 | `step1.email` | `step` | `step` | no |
-| 29.071 | 1744 | `step1.email` | `step` | `step` | no |
-| 29.087 | 1745 | `step1.email` | `step` | `step` | no |
-| 29.108 | 1746 | `step1.email` | `step` | `step` | no |
-| 29.133 | 1748 | `step1.email` | `step` | `step` | no |
-| 29.150 | 1749 | `step1.email` | `key-press` | `key-press` | no |
-| 29.221 | 1753 | `step1.email` | `step` | `step` | no |
-| 29.233 | 1754 | `step1.email` | `step` | `step` | no |
+| 28.958 | 1737 | `step1.lastName` | `step` | `step` | no |
+| 28.975 | 1738 | `step1.lastName` | `step` | `step` | no |
+| 28.992 | 1739 | `step1.lastName` | `step` | `step` | no |
+| 29.008 | 1740 | `step1.email` | `step` | `step` | no |
+| 29.025 | 1741 | `step1.email` | `step` | `step` | no |
+| 29.042 | 1742 | `step1.email` | `step` | `step` | no |
+| 29.058 | 1743 | `step1.email` | `step` | `step` | no |
+| 29.075 | 1744 | `step1.email` | `step` | `step` | no |
+| 29.096 | 1745 | `step1.email` | `step` | `step` | no |
+| 29.117 | 1747 | `step1.email` | `step` | `step` | no |
+| 29.146 | 1748 | `step1.email` | `step` | `step` | no |
+| 29.171 | 1750 | `step1.email` | `key-press` | `key-press` | no |
+| 29.200 | 1752 | `step1.email` | `step` | `step` | no |
+| 29.229 | 1753 | `step1.email` | `step` | `step` | no |
 | 29.246 | 1754 | `step1.email` | `step` | `step` | no |
-| 29.258 | 1755 | `step1.email` | `step` | `step` | no |
-| 29.271 | 1756 | `step1.email` | `step` | `step` | no |
+| 29.262 | 1755 | `step1.email` | `step` | `step` | no |
 | 29.288 | 1757 | `step1.email` | `step` | `step` | no |
-| 29.300 | 1758 | `step1.email` | `step` | `step` | no |
-| 29.313 | 1758 | `step1.email` | `step` | `step` | no |
-| 29.325 | 1759 | `step1.email` | `step` | `step` | no |
-| 29.342 | 1760 | `step1.email` | `step` | `step` | no |
-| 29.358 | 1761 | `step1.email` | `step` | `step` | no |
-| 29.383 | 1763 | `step1.email` | `key-press` | `key-press` | no |
-| 29.383 | 1763 | `step1.email` | `step` | `step` | no |
-| 29.387 | 1763 | `step1.email` | `key-press` | `key-press` | no |
-| 29.479 | 1768 | `step1.email` | `step` | `step` | no |
-| 29.517 | 1771 | `step1.email` | `key-press` | `key-press` | no |
-| 29.521 | 1771 | `step1.email` | `step` | `step` | no |
-| 29.592 | 1775 | `step1.email` | `key-press` | `key-press` | no |
-| 29.596 | 1775 | `step1.email` | `step` | `step` | no |
-| 29.663 | 1779 | `step1.email` | `step` | `step` | no |
-| 29.679 | 1780 | `step1.email` | `step` | `step` | no |
-| 29.692 | 1781 | `step1.email` | `step` | `step` | no |
-| 29.708 | 1782 | `step1.email` | `step` | `step` | no |
-| 29.721 | 1783 | `step1.email` | `step` | `step` | no |
-| 29.742 | 1784 | `step1.email` | `step` | `step` | no |
+| 29.500 | 1770 | `step1.email` | `step` | `step` | no |
+| 29.508 | 1770 | `step1.email` | `step` | `step` | no |
+| 29.517 | 1771 | `step1.email` | `step` | `step` | no |
+| 29.525 | 1771 | `step1.email` | `step` | `step` | no |
+| 29.542 | 1772 | `step1.email` | `step` | `step` | no |
+| 29.558 | 1773 | `step1.email` | `step` | `step` | no |
+| 29.575 | 1774 | `step1.email` | `step` | `step` | no |
+| 29.592 | 1775 | `step1.email` | `step` | `step` | no |
+| 29.625 | 1777 | `step1.email` | `step` | `step` | no |
+| 29.658 | 1779 | `step1.email` | `key-press` | `key-press` | no |
+| 29.671 | 1780 | `step1.email` | `step` | `step` | no |
 | 29.754 | 1785 | `step1.email` | `key-press` | `key-press` | no |
-| 29.767 | 1786 | `step1.email` | `step` | `step` | no |
 | 29.792 | 1787 | `step1.email` | `step` | `step` | no |
-| 29.817 | 1789 | `step1.email` | `step` | `step` | no |
-| 29.829 | 1789 | `step1.email` | `key-press` | `key-press` | no |
-| 29.863 | 1791 | `step1.email` | `step` | `step` | no |
-| 29.892 | 1793 | `step1.email` | `step` | `step` | no |
-| 29.904 | 1794 | `step1.email` | `step` | `step` | no |
-| 29.917 | 1795 | `step1.email` | `step` | `step` | no |
-| 29.933 | 1796 | `step1.email` | `step` | `step` | no |
-| 29.946 | 1796 | `step1.email` | `step` | `step` | no |
-| 29.967 | 1798 | `step1.email` | `step` | `step` | no |
-| 29.983 | 1799 | `step1.email` | `key-press` | `key-press` | no |
-| 30.008 | 1800 | `step1.email` | `step` | `step` | no |
-| 30.058 | 1803 | `step1.email` | `key-press` | `key-press` | no |
-| 30.058 | 1803 | `step1.email` | `step` | `step` | no |
-| 30.096 | 1805 | `step1.email` | `step` | `step` | no |
-| 30.108 | 1806 | `step1.email` | `step` | `step` | no |
-| 30.125 | 1807 | `step1.email` | `step` | `step` | no |
-| 30.137 | 1808 | `step1.email` | `step` | `step` | no |
-| 30.150 | 1809 | `step1.email` | `step` | `step` | no |
-| 30.163 | 1809 | `step1.email` | `step` | `step` | no |
-| 30.179 | 1810 | `step1.email` | `step` | `step` | no |
-| 30.212 | 1812 | `step1.email` | `step` | `step` | no |
+| 29.846 | 1790 | `step1.email` | `key-press` | `key-press` | no |
+| 29.850 | 1791 | `step1.email` | `step` | `step` | no |
+| 29.875 | 1792 | `step1.email` | `step` | `step` | no |
+| 29.900 | 1794 | `step1.email` | `step` | `step` | no |
+| 29.925 | 1795 | `step1.email` | `step` | `step` | no |
+| 29.938 | 1796 | `step1.email` | `key-press` | `key-press` | no |
+| 29.950 | 1797 | `step1.email` | `step` | `step` | no |
+| 29.975 | 1798 | `step1.email` | `step` | `step` | no |
+| 30.029 | 1801 | `step1.email` | `key-press` | `key-press` | no |
+| 30.029 | 1801 | `step1.email` | `step` | `step` | no |
+| 30.063 | 1803 | `step1.email` | `step` | `step` | no |
+| 30.087 | 1805 | `step1.email` | `step` | `step` | no |
+| 30.117 | 1807 | `step1.email` | `step` | `step` | no |
+| 30.121 | 1807 | `step1.email` | `key-press` | `key-press` | no |
+| 30.171 | 1810 | `step1.email` | `step` | `step` | no |
+| 30.212 | 1812 | `step1.email` | `key-press` | `key-press` | no |
+| 30.217 | 1813 | `step1.email` | `key-press` | `key-press` | no |
+| 30.221 | 1813 | `step1.email` | `step` | `step` | no |
 | 30.242 | 1814 | `step1.email` | `step` | `step` | no |
-| 30.258 | 1815 | `step1.email` | `step` | `step` | no |
-| 30.275 | 1816 | `step1.email` | `step` | `step` | no |
-| 30.300 | 1818 | `step1.email` | `key-press` | `key-press` | no |
-| 30.300 | 1818 | `step1.email` | `step` | `step` | no |
-| 30.317 | 1819 | `step1.email` | `key-press` | `key-press` | no |
-| 30.358 | 1821 | `step1.email` | `step` | `step` | no |
-| 30.413 | 1824 | `step1.email` | `step` | `step` | no |
-| 30.421 | 1825 | `step1.email` | `key-press` | `key-press` | no |
-| 30.458 | 1827 | `step1.email` | `step` | `step` | no |
-| 30.483 | 1829 | `step1.email` | `key-press` | `key-press` | no |
-| 30.504 | 1830 | `step1.email` | `step` | `step` | no |
-| 30.546 | 1832 | `step1.email` | `step` | `step` | no |
-| 30.558 | 1833 | `step1.email` | `step` | `step` | no |
-| 30.571 | 1834 | `step1.email` | `step` | `step` | no |
-| 30.587 | 1835 | `step1.email` | `step` | `step` | no |
-| 30.600 | 1836 | `step1.email` | `step` | `step` | no |
-| 30.613 | 1836 | `step1.email` | `step` | `step` | no |
-| 30.629 | 1837 | `step1.email` | `step` | `step` | no |
+| 30.267 | 1816 | `step1.email` | `step` | `step` | no |
+| 30.288 | 1817 | `step1.email` | `step` | `step` | no |
+| 30.350 | 1821 | `step1.email` | `step` | `step` | no |
+| 30.396 | 1823 | `step1.email` | `key-press` | `key-press` | no |
+| 30.408 | 1824 | `step1.email` | `step` | `step` | no |
+| 30.488 | 1829 | `step1.email` | `key-press` | `key-press` | no |
+| 30.521 | 1831 | `step1.email` | `step` | `step` | no |
+| 30.579 | 1834 | `step1.email` | `key-press` | `key-press` | no |
+| 30.604 | 1836 | `step1.email` | `step` | `step` | no |
+| 30.625 | 1837 | `step1.email` | `step` | `step` | no |
 | 30.646 | 1838 | `step1.email` | `step` | `step` | no |
-| 30.663 | 1839 | `step1.email` | `step` | `step` | no |
-| 30.679 | 1840 | `step1.email` | `step` | `step` | no |
-| 30.700 | 1842 | `step1.email` | `step` | `step` | no |
-| 30.725 | 1843 | `step1.email` | `step` | `step` | no |
-| 30.742 | 1844 | `step1.email` | `key-press` | `key-press` | no |
-| 30.746 | 1844 | `step1.email` | `key-press` | `key-press` | no |
-| 30.792 | 1847 | `step1.email` | `step` | `step` | no |
-| 30.833 | 1850 | `step1.email` | `step` | `step` | no |
-| 30.846 | 1850 | `step1.email` | `key-press` | `key-press` | no |
-| 30.867 | 1852 | `step1.email` | `step` | `step` | no |
+| 30.667 | 1840 | `step1.email` | `step` | `step` | no |
+| 30.671 | 1840 | `step1.email` | `key-press` | `key-press` | no |
+| 30.688 | 1841 | `step1.email` | `step` | `step` | no |
+| 30.708 | 1842 | `step1.email` | `step` | `step` | no |
+| 30.733 | 1844 | `step1.email` | `step` | `step` | no |
+| 30.762 | 1845 | `step1.email` | `key-press` | `key-press` | no |
+| 30.858 | 1851 | `step1.email` | `key-press` | `key-press` | no |
+| 30.858 | 1851 | `step1.email` | `step` | `step` | no |
 | 30.883 | 1853 | `step1.email` | `step` | `step` | no |
-| 30.896 | 1853 | `step1.email` | `step` | `step` | no |
-| 30.908 | 1854 | `step1.email` | `step` | `step` | no |
+| 30.904 | 1854 | `step1.email` | `step` | `step` | no |
 | 30.925 | 1855 | `step1.email` | `step` | `step` | no |
-| 30.942 | 1856 | `step1.email` | `step` | `step` | no |
-| 30.962 | 1857 | `step1.email` | `key-press` | `key-press` | no |
-| 30.971 | 1858 | `step1.email` | `step` | `step` | no |
-| 30.992 | 1859 | `step1.email` | `step` | `step` | no |
-| 31.008 | 1860 | `step1.email` | `step` | `step` | no |
-| 31.021 | 1861 | `step1.email` | `step` | `step` | no |
-| 31.033 | 1862 | `step1.email` | `step` | `step` | no |
-| 31.046 | 1862 | `step1.email` | `step` | `step` | no |
-| 31.063 | 1863 | `step1.email` | `step` | `step` | no |
-| 31.096 | 1865 | `step1.email` | `step` | `step` | no |
-| 31.113 | 1866 | `step1.email` | `step` | `step` | no |
-| 31.125 | 1867 | `step1.email` | `step` | `step` | no |
-| 31.137 | 1868 | `step1.email` | `step` | `step` | no |
+| 30.950 | 1857 | `step1.email` | `key-press` | `key-press` | no |
+| 30.975 | 1858 | `step1.email` | `step` | `step` | no |
+| 31.000 | 1860 | `step1.email` | `step` | `step` | no |
+| 31.025 | 1861 | `step1.email` | `step` | `step` | no |
+| 31.042 | 1862 | `step1.email` | `key-press` | `key-press` | no |
+| 31.075 | 1864 | `step1.email` | `step` | `step` | no |
+| 31.104 | 1866 | `step1.email` | `step` | `step` | no |
+| 31.133 | 1868 | `step1.email` | `key-press` | `key-press` | no |
 | 31.154 | 1869 | `step1.email` | `step` | `step` | no |
-| 31.167 | 1870 | `step1.email` | `step` | `step` | no |
-| 31.179 | 1870 | `step1.email` | `key-press` | `key-press` | no |
-| 31.200 | 1872 | `step1.email` | `step` | `step` | no |
-| 31.221 | 1873 | `step1.email` | `step` | `step` | no |
-| 31.233 | 1874 | `step1.email` | `step` | `step` | no |
-| 31.246 | 1874 | `step1.email` | `step` | `step` | no |
-| 31.262 | 1875 | `step1.email` | `step` | `step` | no |
-| 31.275 | 1876 | `step1.email` | `step` | `step` | no |
-| 31.292 | 1877 | `step1.email` | `key-press` | `key-press` | no |
-| 31.300 | 1878 | `step1.email` | `step` | `step` | no |
-| 31.350 | 1881 | `step1.email` | `step` | `step` | no |
-| 31.387 | 1883 | `step1.email` | `step` | `step` | no |
-| 31.400 | 1884 | `step1.email` | `key-press` | `key-press` | no |
-| 31.408 | 1884 | `step1.email` | `key-press` | `key-press` | no |
-| 31.446 | 1886 | `step1.email` | `step` | `step` | no |
-| 31.475 | 1888 | `step1.email` | `step` | `step` | no |
-| 31.504 | 1890 | `step1.email` | `key-press` | `key-press` | no |
-| 31.512 | 1890 | `step1.email` | `step` | `step` | no |
-| 32.025 | 1921 | `step1.email` | `step` | `step` | no |
-| 32.054 | 1923 | `step1.email` | `step` | `step` | no |
-| 32.087 | 1925 | `step1.email` | `step` | `step` | no |
-| 32.108 | 1926 | `step1.email` | `slab-drop` | `slab-drop` | no |
-| 32.112 | 1926 | `step1.email` | `step` | `step` | no |
-| 32.125 | 1927 | `step1.email` | `step` | `step` | no |
+| 31.183 | 1871 | `step1.email` | `step` | `step` | no |
+| 31.217 | 1873 | `step1.email` | `step` | `step` | no |
+| 31.225 | 1873 | `step1.email` | `key-press` | `key-press` | no |
+| 31.308 | 1878 | `step1.email` | `step` | `step` | no |
+| 31.317 | 1879 | `step1.email` | `key-press` | `key-press` | no |
+| 31.358 | 1881 | `step1.email` | `key-press` | `key-press` | no |
+| 31.442 | 1886 | `step1.email` | `step` | `step` | no |
+| 31.496 | 1889 | `step1.email` | `key-press` | `key-press` | no |
+| 31.500 | 1890 | `step1.email` | `step` | `step` | no |
+| 32.096 | 1925 | `step1.email` | `step` | `step` | no |
 | 32.138 | 1928 | `step1.email` | `step` | `step` | no |
-| 32.150 | 1929 | `step1.email` | `step` | `step` | no |
-| 32.171 | 1930 | `step1.email` | `step` | `step` | no |
-| 32.204 | 1932 | `step1.email` | `step` | `step` | no |
-| 32.567 | 1954 | `step1.email` | `step` | `step` | no |
-| 32.592 | 1955 | `step1.email` | `step` | `step` | no |
-| 32.617 | 1957 | `step1.email` | `step` | `step` | no |
-| 32.642 | 1958 | `step1.email` | `step` | `step` | no |
-| 32.658 | 1959 | `step1.email` | `slab-drop` | `slab-drop` | no |
-| 32.696 | 1961 | `step1.email` | `step` | `step` | no |
-| 33.112 | 1986 | `step1.email` | `step` | `step` | no |
-| 33.138 | 1988 | `step1.email` | `step` | `step` | no |
-| 33.158 | 1989 | `step1.email` | `step` | `step` | no |
-| 33.179 | 1990 | `step1.email` | `step` | `step` | no |
-| 33.208 | 1992 | `step1.email` | `slab-drop` | `slab-drop` | no |
-| 33.208 | 1992 | `step1.email` | `step` | `step` | no |
-| 34.167 | 2050 | `step1.resume` | `paper-slide` | `paper-slide` | no |
-| 35.292 | 2117 | `step1.resume` | `step` | `step` | no |
-| 35.396 | 2123 | `step1.resume` | `step` | `step` | no |
-| 35.492 | 2129 | `step1.resume` | `step` | `step` | no |
-| 35.608 | 2136 | `step1.resume` | `step` | `step` | no |
-| 36.254 | 2175 | `step1.tug` | `shredder` | `shredder` | no |
-| 36.254 | 2175 | `step1.tug` | `arms-out` | `paper-strain` | no |
-| 36.304 | 2178 | `step1.tug` | `step` | `step` | no |
-| 36.350 | 2181 | `step1.tug` | `step` | `step` | no |
-| 36.413 | 2184 | `step1.tug` | `step` | `step` | no |
-| 36.567 | 2194 | `step1.tug` | `step` | `step` | no |
-| 36.704 | 2202 | `step1.tug` | `step` | `step` | no |
-| 36.900 | 2214 | `step1.tug` | `paper-strain` | `paper-strain` | no |
-| 36.913 | 2214 | `step1.tug` | `step` | `step` | no |
-| 37.075 | 2224 | `step1.tug` | `step` | `step` | no |
-| 37.279 | 2236 | `step1.tug` | `step` | `step` | no |
-| 37.392 | 2243 | `step1.tug` | `step` | `step` | no |
-| 37.504 | 2250 | `step1.tug` | `step` | `step` | no |
-| 37.883 | 2273 | `step1.tug` | `step` | `step` | no |
-| 37.896 | 2273 | `step1.tug` | `paper-strain` | `paper-strain` | no |
-| 38.046 | 2282 | `step1.tug` | `step` | `step` | no |
-| 38.250 | 2295 | `step1.tug` | `step` | `step` | no |
-| 38.375 | 2302 | `step1.tug` | `step` | `step` | no |
-| 38.471 | 2308 | `step1.tug` | `step` | `step` | no |
-| 38.587 | 2315 | `step1.tug` | `step` | `step` | no |
-| 38.638 | 2318 | `step1.tug` | `step` | `step` | no |
-| 38.842 | 2330 | `step1.tug` | `step` | `step` | no |
-| 38.942 | 2336 | `step1.tug` | `step` | `step` | no |
-| 39.038 | 2342 | `step1.tug` | `step` | `step` | no |
-| 39.046 | 2342 | `step1.tug` | `paper-strain` | `paper-strain` | no |
-| 39.183 | 2351 | `step1.tug` | `step` | `step` | no |
-| 39.358 | 2361 | `step1.tug` | `step` | `step` | no |
-| 39.413 | 2364 | `step1.tug` | `step` | `step` | no |
-| 39.496 | 2369 | `step1.tug` | `step` | `step` | no |
-| 39.592 | 2375 | `step1.tug` | `step` | `step` | no |
-| 39.712 | 2382 | `step1.tug` | `step` | `step` | no |
-| 39.829 | 2389 | `step1.tug` | `step` | `step` | no |
-| 39.925 | 2395 | `step1.tug` | `step` | `step` | no |
-| 40.050 | 2403 | `step1.tug` | `step` | `step` | no |
-| 40.067 | 2404 | `step1.tug` | `paper-strain` | `paper-strain` | no |
-| 40.158 | 2409 | `step1.tug` | `step` | `step` | no |
-| 40.221 | 2413 | `step1.tug` | `step` | `step` | no |
-| 40.275 | 2416 | `step1.tug` | `step` | `step` | no |
-| 40.367 | 2422 | `step1.tug` | `step` | `step` | no |
-| 40.542 | 2432 | `step1.tug` | `step` | `step` | no |
-| 40.708 | 2442 | `step1.tug` | `step` | `step` | no |
-| 40.888 | 2453 | `step1.tug` | `step` | `step` | no |
-| 40.971 | 2458 | `step1.tug` | `paper-strain` | `paper-strain` | no |
-| 41.054 | 2463 | `step1.tug` | `step` | `step` | no |
-| 41.233 | 2474 | `step1.tug` | `step` | `step` | no |
-| 41.408 | 2484 | `step1.tug` | `step` | `step` | no |
-| 42.558 | 2553 | `step1.shredded` | `strips-zip` | `strips-zip` | no |
+| 32.179 | 1930 | `step1.email` | `step` | `step` | no |
+| 32.304 | 1938 | `step1.email` | `slab-drop` | `slab-drop` | no |
+| 32.692 | 1961 | `step1.email` | `step` | `step` | no |
+| 32.704 | 1962 | `step1.email` | `step` | `step` | no |
+| 32.717 | 1963 | `step1.email` | `step` | `step` | no |
+| 32.729 | 1963 | `step1.email` | `step` | `step` | no |
+| 32.737 | 1964 | `step1.email` | `step` | `step` | no |
+| 32.750 | 1965 | `step1.email` | `step` | `step` | no |
+| 32.763 | 1965 | `step1.email` | `step` | `step` | no |
+| 32.775 | 1966 | `step1.email` | `step` | `step` | no |
+| 32.792 | 1967 | `step1.email` | `step` | `step` | no |
+| 32.817 | 1969 | `step1.email` | `step` | `step` | no |
+| 32.854 | 1971 | `step1.email` | `slab-drop` | `slab-drop` | no |
+| 33.404 | 2004 | `step1.email` | `slab-drop` | `slab-drop` | no |
+| 34.083 | 2045 | `step1.resume` | `step` | `step` | no |
+| 34.142 | 2048 | `step1.resume` | `step` | `step` | no |
+| 34.196 | 2051 | `step1.resume` | `step` | `step` | no |
+| 34.254 | 2055 | `step1.resume` | `step` | `step` | no |
+| 34.354 | 2061 | `step1.resume` | `step` | `step` | no |
+| 34.442 | 2066 | `step1.resume` | `paper-slide` | `paper-slide` | no |
+| 35.362 | 2121 | `step1.resume` | `step` | `step` | no |
+| 35.438 | 2126 | `step1.resume` | `step` | `step` | no |
+| 35.525 | 2131 | `step1.resume` | `step` | `step` | no |
+| 36.025 | 2161 | `step1.tug` | `shredder` | `shredder` | no |
+| 36.025 | 2161 | `step1.tug` | `arms-out` | `arms-out` | no |
+| 36.587 | 2195 | `step1.tug` | `paper-strain` | `paper-strain` | no |
+| 37.492 | 2249 | `step1.tug` | `paper-strain` | `paper-strain` | no |
+| 38.396 | 2303 | `step1.tug` | `paper-strain` | `paper-strain` | no |
+| 39.300 | 2358 | `step1.tug` | `paper-strain` | `paper-strain` | no |
+| 40.442 | 2426 | `step1.tug` | `paper-strain` | `paper-strain` | no |
+| 43.171 | 2590 | `step1.shredded` | `strips-zip` | `strips-zip` | no |
 | 45.500 | 2730 | `step1.shredded` | `page-turn` | `page-turn` | no |
 | 46.533 | 2792 | `step2.open` | `step` | `step` | no |
-| 46.558 | 2793 | `step2.open` | `step` | `step` | no |
-| 46.579 | 2794 | `step2.open` | `step` | `step` | no |
-| 46.608 | 2796 | `step2.open` | `step` | `step` | no |
-| 46.654 | 2799 | `step2.open` | `step` | `step` | no |
-| 47.746 | 2864 | `step2.open` | `step` | `step` | no |
+| 46.554 | 2793 | `step2.open` | `step` | `step` | no |
+| 46.575 | 2794 | `step2.open` | `step` | `step` | no |
+| 46.596 | 2795 | `step2.open` | `step` | `step` | no |
+| 46.629 | 2797 | `step2.open` | `step` | `step` | no |
+| 47.729 | 2863 | `step2.open` | `step` | `step` | no |
+| 47.862 | 2871 | `step2.open` | `step` | `step` | no |
 | 47.883 | 2873 | `step2.open` | `row-open` | `row-open` | no |
-| 48.192 | 2891 | `step2.dial` | `step` | `step` | no |
-| 48.271 | 2896 | `step2.dial` | `step` | `step` | no |
+| 48.183 | 2891 | `step2.dial` | `step` | `step` | no |
+| 48.254 | 2895 | `step2.dial` | `step` | `step` | no |
 | 48.333 | 2900 | `step2.dial` | `dial-wind` | `dial-wind` | no |
 | 48.642 | 2918 | `step2.dial` | `dial-return` | `dial-return` | no |
 | 48.992 | 2939 | `step2.dial` | `dial-wind` | `dial-wind` | no |
 | 49.100 | 2946 | `step2.dial` | `dial-return` | `dial-return` | no |
+| 50.013 | 3000 | `step2.dial` | `step` | `step` | no |
 | 50.250 | 3015 | `step2.dial` | `dial-wind` | `dial-wind` | no |
 | 50.813 | 3048 | `step2.dial` | `dial-return` | `dial-return` | no |
-| 51.575 | 3094 | `step2.dial` | `dial-fling` | `dial-return` | yes |
+| 51.575 | 3094 | `step2.dial` | `dial-fling` | `dial-fling` | yes |
 | 53.712 | 3222 | `step2.dial` | `step` | `step` | no |
 | 53.754 | 3225 | `step2.dial` | `step` | `step` | no |
 | 53.783 | 3227 | `step2.dial` | `step` | `step` | no |
@@ -489,24 +472,25 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | 55.367 | 3322 | `step2.slot` | `lever-pull` | `lever-pull` | no |
 | 55.367 | 3322 | `step2.slot` | `reels-spin` | `reels-spin` | no |
 | 57.962 | 3477 | `step2.slot` | `coins` | `coins` | yes |
-| 58.138 | 3488 | `step2.slot` | `step` | `step` | no |
-| 58.188 | 3491 | `step2.slot` | `step` | `step` | no |
-| 58.242 | 3494 | `step2.slot` | `step` | `step` | no |
-| 58.313 | 3498 | `step2.slot` | `step` | `step` | no |
-| 58.458 | 3507 | `step2.slot` | `step` | `step` | no |
-| 58.521 | 3511 | `step2.slot` | `step` | `step` | no |
-| 58.571 | 3514 | `step2.slot` | `step` | `step` | no |
-| 58.621 | 3517 | `step2.slot` | `step` | `step` | no |
-| 58.671 | 3520 | `step2.slot` | `step` | `step` | no |
-| 58.729 | 3523 | `step2.slot` | `step` | `step` | no |
-| 58.833 | 3530 | `step2.slot` | `step` | `step` | no |
+| 58.133 | 3488 | `step2.slot` | `step` | `step` | no |
+| 58.183 | 3491 | `step2.slot` | `step` | `step` | no |
+| 58.229 | 3493 | `step2.slot` | `step` | `step` | no |
+| 58.288 | 3497 | `step2.slot` | `step` | `step` | no |
+| 58.429 | 3505 | `step2.slot` | `step` | `step` | no |
+| 58.504 | 3510 | `step2.slot` | `step` | `step` | no |
+| 58.558 | 3513 | `step2.slot` | `step` | `step` | no |
+| 58.604 | 3516 | `step2.slot` | `step` | `step` | no |
+| 58.654 | 3519 | `step2.slot` | `step` | `step` | no |
+| 58.712 | 3522 | `step2.slot` | `step` | `step` | no |
+| 58.788 | 3527 | `step2.slot` | `step` | `step` | no |
 | 59.617 | 3577 | `step2.slot` | `step` | `step` | no |
-| 59.671 | 3580 | `step2.slot` | `step` | `step` | no |
+| 59.667 | 3580 | `step2.slot` | `step` | `step` | no |
 | 59.712 | 3582 | `step2.slot` | `step` | `step` | no |
 | 59.754 | 3585 | `step2.slot` | `step` | `step` | no |
 | 59.796 | 3587 | `step2.slot` | `step` | `step` | no |
 | 59.842 | 3590 | `step2.slot` | `step` | `step` | no |
-| 59.896 | 3593 | `step2.slot` | `step` | `step` | no |
+| 59.892 | 3593 | `step2.slot` | `step` | `step` | no |
+| 59.996 | 3599 | `step2.slot` | `step` | `step` | no |
 | 60.000 | 3600 | `step2.crank` | `row-open` | `row-open` | no |
 | 60.275 | 3616 | `step2.crank` | `step` | `step` | no |
 | 60.333 | 3620 | `step2.crank` | `step` | `step` | no |
@@ -521,11 +505,11 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | 61.487 | 3689 | `step2.crank` | `step` | `step` | no |
 | 61.525 | 3691 | `step2.crank` | `step` | `step` | no |
 | 61.592 | 3695 | `step2.crank` | `step` | `step` | no |
-| 62.471 | 3748 | `step2.crank` | `step` | `step` | no |
-| 62.517 | 3751 | `step2.crank` | `step` | `step` | no |
-| 62.558 | 3753 | `step2.crank` | `step` | `step` | no |
-| 62.600 | 3756 | `step2.crank` | `step` | `step` | no |
-| 62.667 | 3760 | `step2.crank` | `step` | `step` | no |
+| 62.467 | 3748 | `step2.crank` | `step` | `step` | no |
+| 62.513 | 3750 | `step2.crank` | `step` | `step` | no |
+| 62.550 | 3753 | `step2.crank` | `step` | `step` | no |
+| 62.587 | 3755 | `step2.crank` | `step` | `step` | no |
+| 62.633 | 3758 | `step2.crank` | `step` | `step` | no |
 | 62.796 | 3767 | `step2.crank` | `flatten` | `flatten` | yes |
 | 65.796 | 3947 | `step2.crank` | `peel-up` | `peel-up` | no |
 | 66.300 | 3978 | `step2.continue` | `button-press` | `button-press` | no |
@@ -583,11 +567,11 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | 97.996 | 5879 | `pinball.highway` | `ramp-roll` | `ramp-roll` | no |
 | 99.717 | 5983 | `pinball.highway` | `spiral` | `spiral` | no |
 | 102.529 | 6151 | `pinball.save` | `flipper` | `flipper` | no |
-| 102.529 | 6151 | `pinball.save` | `flipper-save` | `flipper` | no |
-| 104.875 | 6292 | `pinball.drain` | `drain` | `drain` | no |
-| 106.063 | 6363 | `pinball.drain` | `ball-open` | `ball-open` | yes |
-| 106.063 | 6363 | `pinball.drain` | `flatten` | `flatten` | yes |
-| 106.567 | 6394 | `pinball.drain` | `peel-up` | `peel-up` | yes |
+| 102.529 | 6151 | `pinball.save` | `flipper-save` | `flipper-save` | no |
+| 104.563 | 6273 | `pinball.drain` | `drain` | `drain` | no |
+| 105.750 | 6345 | `pinball.drain` | `ball-open` | `ball-open` | yes |
+| 105.750 | 6345 | `pinball.drain` | `flatten` | `flatten` | yes |
+| 106.254 | 6375 | `pinball.drain` | `peel-up` | `peel-up` | yes |
 | 108.000 | 6480 | `pinball.drain` | `button-press` | `button-press` | no |
 | 108.500 | 6510 | `pinball.drain` | `page-turn` | `page-turn` | no |
 | 109.950 | 6597 | `boss.verify` | `step` | `step` | no |
@@ -601,12 +585,12 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | 112.683 | 6761 | `boss.verify` | `step` | `step` | no |
 | 112.800 | 6768 | `boss.verify` | `checkbox` | `checkbox` | no |
 | 112.800 | 6768 | `boss.verify` | `step` | `step` | no |
-| 113.158 | 6789 | `boss.verify` | `step` | `step` | no |
-| 113.250 | 6795 | `boss.verify` | `step` | `step` | no |
-| 113.346 | 6800 | `boss.verify` | `step` | `step` | no |
-| 114.621 | 6877 | `boss.unfold` | `step` | `step` | no |
-| 114.758 | 6885 | `boss.unfold` | `step` | `step` | no |
-| 114.912 | 6894 | `boss.unfold` | `step` | `step` | no |
+| 113.150 | 6789 | `boss.verify` | `step` | `step` | no |
+| 113.233 | 6794 | `boss.verify` | `step` | `step` | no |
+| 113.321 | 6799 | `boss.verify` | `step` | `step` | no |
+| 114.612 | 6876 | `boss.unfold` | `step` | `step` | no |
+| 114.737 | 6884 | `boss.unfold` | `step` | `step` | no |
+| 114.867 | 6892 | `boss.unfold` | `step` | `step` | no |
 | 115.108 | 6906 | `boss.unfold` | `button-crack` | `button-crack` | no |
 | 115.346 | 6920 | `boss.unfold` | `step` | `step` | no |
 | 115.450 | 6927 | `boss.unfold` | `step` | `step` | no |
@@ -616,14 +600,14 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | 118.900 | 7134 | `boss.slabs` | `dart-fire` | `dart-fire` | no |
 | 119.342 | 7160 | `boss.slabs` | `dart-hit` | `dart-hit` | no |
 | 119.563 | 7173 | `boss.slabs` | `dart-fire` | `dart-fire` | no |
-| 119.654 | 7179 | `boss.slabs` | `step` | `step` | no |
+| 119.638 | 7178 | `boss.slabs` | `step` | `step` | no |
 | 120.004 | 7200 | `boss.slabs` | `dart-hit` | `dart-hit` | no |
 | 120.221 | 7213 | `boss.slabs` | `dart-fire` | `dart-fire` | no |
 | 120.329 | 7219 | `boss.slabs` | `slab-drop` | `slab-drop` | no |
 | 120.421 | 7225 | `boss.slabs` | `slab-fire` | `slab-fire` | no |
 | 120.658 | 7239 | `boss.slabs` | `dart-hit` | `dart-hit` | no |
 | 120.883 | 7253 | `boss.slabs` | `dart-fire` | `dart-fire` | no |
-| 121.179 | 7270 | `boss.slabs` | `step` | `step` | no |
+| 121.167 | 7270 | `boss.slabs` | `step` | `step` | no |
 | 121.317 | 7279 | `boss.slabs` | `dart-hit` | `dart-hit` | no |
 | 121.542 | 7292 | `boss.slabs` | `dart-fire` | `dart-fire` | no |
 | 121.854 | 7311 | `boss.slabs` | `slab-drop` | `slab-drop` | no |
@@ -638,7 +622,7 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | 123.537 | 7412 | `boss.slabs` | `slab-fire` | `slab-fire` | no |
 | 123.925 | 7435 | `boss.slabs` | `dart-hit` | `dart-hit` | no |
 | 124.183 | 7451 | `boss.slabs` | `dart-fire` | `dart-fire` | no |
-| 124.217 | 7453 | `boss.slabs` | `step` | `step` | no |
+| 124.200 | 7452 | `boss.slabs` | `step` | `step` | no |
 | 124.575 | 7474 | `boss.slabs` | `dart-hit` | `dart-hit` | no |
 | 124.821 | 7489 | `boss.slabs` | `slab-drop` | `slab-drop` | no |
 | 124.875 | 7492 | `boss.slabs` | `popup` | `popup` | no |
@@ -684,7 +668,7 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | 130.500 | 7830 | `boss.popups` | `dart-hit` | `dart-hit` | no |
 | 130.700 | 7842 | `boss.popups` | `dart-hit` | `dart-hit` | no |
 | 130.883 | 7853 | `boss.popups` | `dart-hit` | `dart-hit` | no |
-| 131.183 | 7871 | `boss.lastStand` | `session-expired` | `popup` | no |
+| 131.183 | 7871 | `boss.lastStand` | `session-expired` | `session-expired` | no |
 | 132.992 | 7979 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
 | 133.412 | 8004 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
 | 133.425 | 8005 | `boss.lastStand` | `step` | `step` | no |
@@ -760,44 +744,27 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 
 ## Narrator lines
 
-37 lines, 0 with a kept take. The end of a line with no kept take is the soonest it can end at audio.narratorMaxWordsPerSecond, marked "estimate".
+20 lines, 20 with a kept take. The end of a line with no kept take is the soonest it can end at audio.narratorMaxWordsPerSecond, marked "estimate".
 
 | Line | Beat | Start s | Start frame | End s | Last frame | Length | Gap to next s | Text |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `line.marketing.stroll.0` | `marketing.stroll` | 0.000 | 0 | 1.875 | 112 | estimate | 0.725 | Behold. / The applicant. |
-| `line.marketing.perks.0` | `marketing.perks` | 2.600 | 156 | 10.100 | 605 | estimate | 0.900 | It sees unlimited PTO / and believes it. / The fine print / goes unread. |
-| `line.marketing.apply.0` | `marketing.apply` | 11.000 | 660 | 13.500 | 809 | estimate | 2.500 | And so / it applies. |
-| `line.step1.firstName.0` | `step1.firstName` | 16.000 | 960 | 20.375 | 1222 | estimate | 0.425 | Step one. / Its own name. / Under fire. |
-| `line.step1.firstName.1` | `step1.firstName` | 20.800 | 1248 | 23.300 | 1397 | estimate | 0.700 | Shot. / On field one. |
-| `line.step1.lastName.0` | `step1.lastName` | 24.000 | 1440 | 28.375 | 1702 | estimate | 0.625 | The keys moved. / It did not notice. |
-| `line.step1.email.0` | `step1.email` | 29.000 | 1740 | 33.375 | 2002 | estimate | 0.625 | A valid email. / Rejected. / As is tradition. |
-| `line.step1.resume.0` | `step1.resume` | 34.000 | 2040 | 35.875 | 2152 | estimate | 0.438 | Ah. / The resume. |
-| `line.step1.tug.0` | `step1.tug` | 36.313 | 2179 | 38.813 | 2328 | estimate | 0.625 | It grows arms. / Desperate. |
-| `line.step1.tug.1` | `step1.tug` | 39.438 | 2366 | 41.938 | 2515 | estimate | 0.312 | The shredder / always wins. |
-| `line.step1.shredded.0` | `step1.shredded` | 42.250 | 2535 | 44.750 | 2684 | estimate | 1.250 | Now type it again. |
-| `line.step2.open.0` | `step2.open` | 46.000 | 2760 | 47.875 | 2872 | estimate | 0.425 | Personal details. / Simple. |
-| `line.step2.dial.0` | `step2.dial` | 48.300 | 2898 | 52.675 | 3160 | estimate | 1.325 | A phone. / From before it was born. |
-| `line.step2.slot.0` | `step2.slot` | 54.000 | 3240 | 59.000 | 3539 | estimate | 1.000 | Its birthday / is now a gamble. / It loses. |
-| `line.step2.crank.0` | `step2.crank` | 60.000 | 3600 | 65.625 | 3937 | estimate | 1.575 | Volume. / All the way up. / It will regret that. |
-| `line.pinball.seal.0` | `pinball.seal` | 67.200 | 4032 | 69.075 | 4144 | estimate | 2.325 | The skills assessment. |
-| `line.pinball.reveal.0` | `pinball.reveal` | 71.400 | 4284 | 73.900 | 4433 | estimate | 1.100 | A career. / In reverse. |
-| `line.pinball.launch.0` | `pinball.launch` | 75.000 | 4500 | 77.500 | 4649 | estimate | 0.500 | Welcome to the grind. |
-| `line.pinball.lobby.0` | `pinball.lobby` | 78.000 | 4680 | 80.500 | 4829 | estimate | 1.500 | Corporate headquarters. / So close. |
-| `line.pinball.coffee.0` | `pinball.coffee` | 82.000 | 4920 | 84.500 | 5069 | estimate | 1.850 | Coffee. / It solves nothing. |
-| `line.pinball.replyAll.0` | `pinball.replyAll` | 86.350 | 5181 | 88.850 | 5330 | estimate | 1.000 | Someone / hit reply all. |
-| `line.pinball.replyAll.1` | `pinball.replyAll` | 89.850 | 5391 | 92.350 | 5540 | estimate | 0.650 | Everyone / is now involved. |
-| `line.pinball.fired.0` | `pinball.fired` | 93.000 | 5580 | 96.125 | 5767 | estimate | 0.375 | The firehouse. / It is fired. |
-| `line.pinball.highway.0` | `pinball.highway` | 96.500 | 5790 | 100.250 | 6014 | estimate | 0.750 | The commute. / Two hours. / Each way. |
-| `line.pinball.save.0` | `pinball.save` | 101.000 | 6060 | 103.500 | 6209 | estimate | 0.500 | Saved. / Unpaid, of course. |
-| `line.pinball.drain.0` | `pinball.drain` | 104.000 | 6240 | 107.750 | 6464 | estimate | 1.500 | The unemployment office. / Where it belongs. |
-| `line.boss.verify.0` | `boss.verify` | 109.250 | 6555 | 113.625 | 6817 | estimate | 0.375 | A robot? / It says no. / It lies. |
-| `line.boss.unfold.0` | `boss.unfold` | 114.000 | 6840 | 117.125 | 7027 | estimate | 0.875 | The button / has had enough. |
-| `line.boss.slabs.0` | `boss.slabs` | 118.000 | 7080 | 123.625 | 7417 | estimate | 1.375 | It fights back / the only way it knows. / Clicking. |
-| `line.boss.popups.0` | `boss.popups` | 125.000 | 7500 | 127.500 | 7649 | estimate | 3.500 | Pop-ups. / The coward's weapon. |
-| `line.boss.lastStand.0` | `boss.lastStand` | 131.000 | 7860 | 133.500 | 8009 | estimate | 2.500 | Session expired. / A classic. |
-| `line.boss.collapse.0` | `boss.collapse` | 136.000 | 8160 | 137.875 | 8272 | estimate | 0.575 | It wins. / Barely. |
-| `line.boss.press.0` | `boss.press` | 138.450 | 8307 | 140.325 | 8419 | estimate | 0.675 | It may submit. |
-| `line.decision.wait.0` | `decision.wait` | 141.000 | 8460 | 142.875 | 8572 | estimate | 0.525 | Now we wait. |
-| `line.decision.letter.0` | `decision.letter` | 143.400 | 8604 | 145.900 | 8753 | estimate | 1.100 | Or not. / Rejected. / Instantly. |
-| `line.decision.metrics.0` | `decision.metrics` | 147.000 | 8820 | 150.125 | 9007 | estimate | 0.875 | It accepts. / It always does. |
-| `line.decision.reset.0` | `decision.reset` | 151.000 | 9060 | 152.875 | 9172 | estimate |  | Look. / Still hiring. |
+| `line.marketing.stroll.0` | `marketing.stroll` | 0.000 | 0 | 5.122 | 306 | take | 0.358 | Here we find / the applicant. / Rent is due. |
+| `line.marketing.perks.0` | `marketing.perks` | 5.480 | 329 | 12.208 | 731 | take | 3.792 | It spots unlimited PTO. / Poor thing / believes it. |
+| `line.step1.firstName.0` | `step1.firstName` | 16.000 | 960 | 21.344 | 1280 | take | 0.416 | First name. / Under fire. / Standard onboarding. |
+| `line.step1.firstName.1` | `step1.firstName` | 21.760 | 1306 | 26.944 | 1616 | take | 2.056 | Hit. / It keeps typing. / It has bills. |
+| `line.step1.email.0` | `step1.email` | 29.000 | 1740 | 36.472 | 2187 | take | 0.309 | A valid email. / Rejected. / The system / is working as designed. |
+| `line.step1.tug.0` | `step1.tug` | 36.781 | 2207 | 44.597 | 2675 | take | 3.403 | It fights for the resume. / Two pages. / One of them is true. |
+| `line.step2.dial.0` | `step2.dial` | 48.000 | 2880 | 53.864 | 3231 | take | 6.136 | A rotary phone. / The applicant / has never seen one. |
+| `line.step2.crank.0` | `step2.crank` | 60.000 | 3600 | 66.454 | 3986 | take | 0.746 | Volume. / All the way up. / It will regret that. |
+| `line.pinball.seal.0` | `pinball.seal` | 67.200 | 4032 | 73.896 | 4433 | take | 1.104 | The skills assessment. / No skills / will be assessed. |
+| `line.pinball.launch.0` | `pinball.launch` | 75.000 | 4500 | 78.092 | 4685 | take | -0.092 | A career. / In reverse. |
+| `line.pinball.lobby.0` | `pinball.lobby` | 78.000 | 4680 | 81.672 | 4899 | take | 0.328 | Corporate headquarters. / So close. |
+| `line.pinball.coffee.0` | `pinball.coffee` | 82.000 | 4920 | 85.936 | 5155 | take | 0.764 | It runs on coffee / and fear. |
+| `line.pinball.replyAll.0` | `pinball.replyAll` | 86.700 | 5202 | 89.662 | 5379 | take | 3.338 | Someone / hit reply all. |
+| `line.pinball.fired.0` | `pinball.fired` | 93.000 | 5580 | 98.540 | 5911 | take | 5.460 | Fired. / Before it was hired. / A new record. |
+| `line.pinball.drain.0` | `pinball.drain` | 104.000 | 6240 | 108.558 | 6512 | take | 0.442 | The unemployment office. / It knows the way. |
+| `line.boss.verify.0` | `boss.verify` | 109.000 | 6540 | 114.220 | 6852 | take | 3.780 | Not a robot, / it claims. / We will see. |
+| `line.boss.slabs.0` | `boss.slabs` | 118.000 | 7080 | 126.038 | 7561 | take | 4.962 | The submit button fights back. / Even it / does not want this job. |
+| `line.boss.lastStand.0` | `boss.lastStand` | 131.000 | 7860 | 134.512 | 8070 | take | 8.488 | Session expired. / A classic. |
+| `line.decision.letter.0` | `decision.letter` | 143.000 | 8580 | 146.474 | 8787 | take | 0.526 | Rejected. / In under a second. |
+| `line.decision.metrics.0` | `decision.metrics` | 147.000 | 8820 | 152.736 | 9163 | take |  | It will apply again tomorrow. / They always do. |
