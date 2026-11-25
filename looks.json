@@ -1,35 +1,35 @@
 {
   "folder": "tug",
-  "pushed": "2026-11-25T17:55:20.403Z",
-  "commit": "c9baec4e61ae08f86f98acdd10433bde8f3bbbe3",
+  "pushed": "2026-11-25T18:34:07.567Z",
+  "commit": "ccfb2eb46bdac4425cc0a92bb178a14cf35a3bc8",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key step1-tug: approved on the left, this build on the right, draft tier, with crops of cursor, paper, paper.below, chip, card.glass",
-      "time": "2026-11-25T17:55:03.074Z",
+      "caption": "The tug key beside the approved image: the cursor leans to the right only, clear of the Browse files chip",
+      "time": "2026-11-25T18:34:05.761Z",
       "by": "tug",
-      "from": "out/work/compare/compare-step1-tug.jpg"
+      "from": "out/work/report/tug3-compare.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Tug key at 25.125 s in the close view (frame 620 px wide) beside the approved image, draft tier",
-      "time": "2026-11-25T17:55:18.880Z",
+      "caption": "The key at review tier, three times its size: the arms as smooth rubber, the bend and the lines of the sheet",
+      "time": "2026-11-25T18:34:06.016Z",
       "by": "tug",
-      "from": "out/work/report/tug2-compare.jpg"
+      "from": "out/work/report/tug3-key-close.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Sheet across the tug: wide for the arrival and the first grab, close by 2.4 s, the cursor seen going into the shredder",
-      "time": "2026-11-25T17:55:19.110Z",
+      "caption": "The loss, 27.4 to 27.8 s: the cursor goes down the mouth, no part of it shows below the machine",
+      "time": "2026-11-25T18:34:06.247Z",
       "by": "tug",
-      "from": "out/work/report/tug2-sheet.jpg"
+      "from": "out/work/report/tug3-loss.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Tug key, review tier, crop: strips narrow and apart, each its own length and angle",
-      "time": "2026-11-25T17:55:19.332Z",
+      "caption": "The beat step1.tug, twelve frames at draft tier",
+      "time": "2026-11-25T18:34:06.472Z",
       "by": "tug",
-      "from": "out/work/report/tug2-key-close.jpg"
+      "from": "out/work/report/tug3-sheet.jpg"
     }
   ]
 }
