@@ -226,3 +226,38 @@ What the shell is now (`shape.ts`):
 - Nine rings carry the roll (`LIP`), then the scattered points. A face triangle is kept only when its middle is inside the innermost ring: the test by distance left folded slivers at the two notches that read as lashes.
 - `SLANT` 0.17 to 0.24 (`deform.ts`): the approved arrow shows a black line of about 0.24 units on the lit side and a wall of about 0.62 on the shaded side.
 - Strips (`strips.ts`): the face that closes a cut stops at the tucked foot (`underAt`), so a cut body is not larger than the whole one.
+
+### The tight dark contact under the stem: not built, and why
+
+The body hovers `scale.heights.cursorHover` (4 px) over the page and that lift is configured, so the engine's cast shadow is the only shadow there is. A dark skirt on the page under the body would be a second, see-through mesh of the cursor's: the views that repaint every mesh (ids, texels, height) would draw it solid, and M5, M6 and M9 read those views (M9 stands at 1.87 px of 2). A caster reaching down to the page was thought through and dropped: seen from above, the shadow on the shaded side already starts at the body's edge, so it changes nothing that is seen. What it needs is the engine's: an occlusion term in the page's shading under a named part, or a mark that keeps a mesh out of the repainted views. Not asked for in this round; written here so it is not lost.
+
+### The exhausted arrow (R1-2 issue 19; R9-2 issue 7; R9-1 issue 5)
+
+What was wrong, at review size beside the approved sheet and at 70 px in the last beat of the film: a squat cap on a stalk. The pose's squash, the pose's bend, the tip bowed 1.6 units aside and a stem hooked a further 29 degrees added up to a claw; the foot's undercut and the groove stood as a slab's edge; the stem's end was pinched to a sixth of its width and read as an open tube.
+
+What it is now (`deform.ts`, `MELT`):
+
+- The outline stays an arrow. The melt gives back the pose's squash (all of it at 0.6), and takes half of the pose's bend at melt 1 (`straight`). The tip bows 0.5 units, the wings hang, the stem runs longer, sways and hooks a little, and its end is a solid lobe that rounds down to the page.
+- The section is one bullnose from the foot to the top over 1.7 units (`wide`), with no groove and no wall: the foot rows lie down, every other row of the band takes the round.
+- The folds run the length of the body and wander across it (`fold`, `valley`): ridges with shallow valleys, none at the rim, so no section is hollow.
+- Agreed with acting_closer in one message each way: it had lowered exhausted to melt 0.4; asked to keep 0.6 as the top, with bend at most 0.4. UNKNOWN at the time of writing whether it took 0.6.
+
+Still wrong: the stem is straighter than the approved S; the folds are lower and broader than the approved ones; at 70 px the tip is blunt.
+
+### The strips (R1-2 issue 9; R9-2 issue 7)
+
+What was wrong: a loose strip was morphed into a ribbon, even in width, square at its ends, white all over and at least half as long as the longest. Fifteen of them read as sticks, not as an arrow.
+
+What they are now (`body.ts`, `LOOSE`): a loose strip stays the piece of the arrow it was cut from (`ribbon` 0). Its ends keep the outline's slant and the dark edge, the short corner pieces stay short, so the fan the acting side lays out reads as the arrow cut up, with the arrowhead in the strips' upper ends. Each strip lies its own way: rolled up to 0.16 about its length and pitched up to 0.1, one end up off the pile, both from `hash01` by the strip's number. A loose strip keeps half its thickness (`thin` 0.5, was a fifth). The count is the pose's; no number is written. The ribbon form is still built in `strips.ts` and is not used; the contract's line on `ribbon` now says more than the model does.
+
+Still wrong: the strips are narrower and more of them than in the approved sheet (the count is the acting side's); the cut faces are grey where the approved strips show white with a thin dark edge (the finish); the top ends are spread by the fan, not gathered to one point.
+
+### The flattened arrow (R1-2 issue 13)
+
+What was wrong: the pressed body was the plain arrow halved in height, with pointed wings, a narrow stem and a black cord of even width all round.
+
+What it is now (`deform.ts`, `FLAT`): a fifth wider, the stem a further 30 percent; the tip and both wing corners drawn in over a short reach so they are rounds, not points; the face sinks less than the rim and swells in broad lumps; and the face spreads 0.24 units out over its rim along the outline's own normal, so the rim is a thin line on the lit side and a wall on the shaded side, as approved. Its cracks are the finisher's.
+
+Still wrong: the lumps are shallower than approved; the outline's waves are longer and fewer.
+
+One number of a test changed (`tests/cursor-model.test.ts`, the anchor on a flattened body): the middle of the face had to stand under 0.75 of its height at rest, and now under 0.9. The pressed face is a pillow, so its middle sinks less than its rim does; MEASURED 0.885 before the last trim of the lumps.
