@@ -497,7 +497,7 @@ Each with its name, its folders, its branch and its looks branch, when it starte
 | `reviewer_06` | critic R4 blockout, sandbox, Claude | set C of round 2, 10 pictures | none | 2026-11-25T11:45Z | 12:30Z | answered by 11:46Z: 6, two severe, seven major, three minor; finished |
 | `pinball_fixer` | build, sandbox | `src/table/`, `src/pages/step3/`, `cut/TABLE-TAKE.json`, the table's entries under `cameras` in the config | `agent/pinball` | 2026-11-25T11:55Z | 12:35Z | started 11:55Z on six issues of round 2: the save and lobby cameras first |
 | `step1_fixer` | build, sandbox | `src/pages/step1/` | `agent/step1` | 2026-11-25T11:55Z | 12:35Z | started 11:55Z on four issues of round 2: the tug, the first name under fire, the slabs, the keyboard's exit |
-| `boss_fixer` | build, sandbox | `src/pages/step4/`, `src/boss/` | `agent/boss` | 2026-11-25T11:55Z | 12:35Z | started 11:55Z on two issues of round 2: the empty socket and the escalation |
+| `boss_fixer` | build, sandbox | `src/pages/step4/`, `src/boss/` | `agent/boss` | 2026-11-25T11:55Z | 12:35Z | reported done 12:11Z at e1041e8 (4 commits; its looks at 81e3bf8 looked at by the Builder 12:13Z); released; the merge is checked on main once the running render ends |
 
 Ten build agents, the most the kit allows beside six critic slots. Each brief names the approved images of its part, gives its sections of the kit word for word, and repeats the three rules. First complete versions wanted by 10:45Z to 10:50Z. A build agent silent for 45 minutes is replaced once from its branch. The Builder keeps for itself: `tools/parts.mjs`, `simcache.mjs`, `pack.mjs`, `measure.mjs`, `hostcheck.mjs`, the gate checks, the diagnostic views, `src/main.ts`, `src/app.ts` and the frame interface.
 
