@@ -1,0 +1,61 @@
+# Surface: the slab, the shell's controls, the shared materials
+
+Owner: surface_mason. Branch `agent/surface`. Files: `src/shell/materials.ts`, `src/shell/solids.ts`, `src/shell/real/ground.ts`, `src/shell/real/controls.ts`, `tests/surface.test.ts`, `assets-src/surface/RECIPE.md`.
+
+## What the approved images show that a quick look misses
+
+1. Highlight position. No material has a bright spot in the middle of a face. The ceramic has none at all; the aluminium has one band that lies across the brushing; the orange plastic has its light along the upper left edge of the face and a thin bright line on the moulded radius; the glass has only a wide soft sheen that is strongest toward the upper left.
+2. Bevel width. The lips are narrow and they are not all the same: the pocket of a field rounds over in about 1 pixel, the aluminium liner inside it is about 2 pixels, the glass card has a wide shoulder of about 14 pixels inside a metal rim of 2, and the button's bezel ring is about 5.
+3. Gap darkness. Where two parts meet there is a dark line, and it is never black: the ring between button and bezel and the groove round a progress button's face are a warm dark grey near (60, 58, 55), darkest in a line one or two pixels wide.
+4. Edge behaviour. Every edge that faces the light (upper left) is dark on its inner wall and throws a soft shadow down and right; the edge that faces away (lower right) carries a thin bright line. The field shows it best: dark upper inner wall with a shadow onto the glass, bright lower inner lip.
+5. The glass is not see-through and not green. Its body is a cool grey, near (188, 193, 189) in a field and (176, 180, 179) in the card, with no grain to be seen; the dashed line of the upload zone is engraved 22 to 26 pixels in from the rim and is darker than the face, not lighter.
+
+## One more control in each of the four materials
+
+A control is a shape in a page's draw list with `part: 'shell'`. Its `role` picks the build in `src/shell/real/controls.ts`; its `tone` picks the material; its heights are its own `z0` and `z1`. Words come from `content/copy.json` by key.
+
+Ceramic (a new pocket in the slab):
+1. In the page's layout add a shape with `pocket: true`, `z0` below 0 and `z1: 0`. The slab cuts the pocket by itself: `cutsOf` in `src/shell/real/ground.ts` reads every shape that carries `pocket`.
+2. If the pocket needs room under the part, add its role to `pocketCut` in `src/shell/solids.ts` (the `under` number).
+3. `npx vitest run tests/surface.test.ts` (the pocket test walks the draw list of step 1; add the new page's states to `states()` if it is on another page).
+4. `npm run still -- --page <page> --format hd --tier draft --diag height` and look: the pocket is darker than the page by its depth.
+
+Frosted glass (a new card or field):
+1. Add a shape with `role: 'card'` (stands on the page, `z0: 0`) or `role: 'field'` with `pocket: true` (sunk, top at `z1: 0`, glass at `z0`).
+2. For another form, add a function beside `card` in `controls.ts` that sweeps `outlineOf(s, inset)` along a `profile([...])` and uses `materials().glass` (thin) or `materials().glassThick` (a slab of 12), and a `case` for its role in `make`.
+3. `npm run still -- --page <page> --format hd --tier draft` then `npm run compare -- --sheet page-look --tier draft --format hd`.
+
+Brushed aluminium (a new rail, rule, bezel or turned button):
+1. Add a shape with `role: 'rule'`, `'progressRail'` (with `pocket: true`), `'progressButton'` or `'buttonSocket'`.
+2. For another form, sweep a profile in `controls.ts` with `materials().aluminium`; mark a profile point `true` where the edge is crisp. A face that is turned on a lathe takes `materials().aluminiumTurned` and coordinates from 0 to 1 across the face (see `progressButton`).
+3. The brushing runs along the page's x. A part that must be brushed the other way needs coordinates turned a quarter, not a new material.
+4. `npm run still -- --page <page> --format hd --tier draft --diag ids` to see the part is one object, then the beauty still.
+
+Glossy plastic (a new button):
+1. Add a shape with `role: 'button'`, `'heroButton'` or `'chip'` and `tone: 'accent'` (orange), `'danger'` (red) or `'metal'` (smoked grey). Seat it in a `role: 'buttonSocket'` shape with `pocket: true` for the bezel and the dark ring.
+2. Its label is a `text` shape 0.05 above the button's `z1`; the top of the button is flat at `z1` for that reason.
+3. `npm run still -- --page <page> --format hd --tier draft` and `npm run compare -- --sheet page-look --tier review --format hd`.
+
+A new material: add it to `Materials` and `makeMaterials` in `src/shell/materials.ts`, through `physical(...)` so it passes `studio()`; add its name to the list in `tests/surface.test.ts`. Add, never rename.
+
+## Decisions
+
+- The slab is two things. What a page's layout fixes (the pockets) is built once for a key and kept. What moves (the openings: keyboard well, shredder slot) is one mesh whose buffers are refilled in `pose` only when the openings change, so an opening that slides open costs no build and no new geometry object.
+- Openings are real geometry with floors and walls, not a cut in a shader: the diagnostic views swap materials and would lose a cut.
+- The slab is 28 thick, or 10 more than the deepest opening when that is more. Its underside is closed with an unlit dark sheet so a page turn never shows through.
+- Heights are the shape's. The only numbers of mine are how far a pocket goes under its part (`pocketCut`: field 5, rail 1.5, socket 0.6) so the part has a floor to stand on.
+- The field's glass has its top exactly at the shape's `z0` (agreed with type_setter, who draws the value on it). The glass throws no shadow.
+- The glass is real transmission. It doubles the opaque draw calls of a frame that shows glass (MEASURED below). If the budget needs them back, the fallback is the same colour without transmission.
+- Cards use a second glass, `glassThick`: the approved card is darker than a field's glass, (176, 180, 179) against (188, 193, 189).
+- `aluminiumTurned` is a second aluminium for lathe-turned faces: its highlight is stretched along rings from a direction picture.
+- `material.envMapIntensity` does nothing in this three.js release when the scene has an environment (MEASURED by type_setter). Reflection strength is set with `specularIntensity`, and for the orange with a warm `specularColor`, which is what took the pink out of it.
+- The focus ring of a field is unlit additive geometry on the liner's rim, not a light: it must look the same in every tier.
+- A shell shape with a role this file does not know still gets a real plate in its tone's material, so no page falls back to a stand-in because of a new role.
+- Words of the shell (`header-title`) are the type setter's: `controls.key` gives null for text, the view passes it to the type maker.
+
+## What I learned
+
+- Grain strength must be judged at native size beside the crop. At half size every grain looks right.
+- The same normal picture looks three times stronger when its features get finer, because slope is height over width. Change one, retune the other.
+- A flat glossy face that looks straight up shows the picture of whatever is overhead. With a bright overhead that adds white to every channel and orange turns pink; tinting the reflection is cleaner than weakening it.
+- In a view from straight above a vertical wall has no pixels. The liner of a field leans so its inner wall is seen and can carry the dark upper edge and the bright lower lip.
