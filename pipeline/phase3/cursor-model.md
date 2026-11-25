@@ -109,7 +109,7 @@ Not reached, for the fix agent, with where I would change it:
 
 ## Fix round
 
-Branch `agent/damage`. Owner of this section: the damage fix agent. Every number marked MEASURED was run on this branch on the build machine (4 cores, software rendering), with the command beside it.
+Branch `agent/damage`. Owner of this section: the damage fix agent. Every number marked MEASURED was run on this branch on the build machine (4 cores), with the command beside it.
 
 ### What the approved images show, written down before any code
 
