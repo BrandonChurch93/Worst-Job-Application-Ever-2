@@ -111,6 +111,22 @@ function grain(id, size, cell) {
   return sharp(data, { raw: { width: size, height: size, channels: 3 } }).png().toBuffer()
 }
 
+// How many lines the name of a mode takes on its plate: the page sets it at 18 px in 160 px, about 9.6 px a letter.
+const copy = JSON.parse(fs.readFileSync(at('content', 'copy.json'), 'utf8'))
+function cardLines(mode) {
+  const words = String(copy.step3.table.modes[mode].insert).split(' ')
+  let lines = 1
+  let run = 0
+  for (const w of words) {
+    const add = (run > 0 ? 1 : 0) + w.length
+    if (run > 0 && (run + add) * 9.6 > 160) {
+      lines++
+      run = w.length
+    } else run += add
+  }
+  return lines
+}
+
 const DRAW = { corporate: (D) => corporate(D), office: (D) => office(D, SEED + 101), street: (D) => street(D, SEED + 202) }
 
 async function art(L, k, set) {
@@ -204,6 +220,7 @@ async function coat(L, k, file, w, gilded) {
 
 async function main() {
   const L = await layout()
+  L.cardLines = cardLines
   const only = arg('only')
   const tiers = arg('tier') ? [L.TIERS.indexOf(arg('tier'))] : [0, 1, 2]
   const sets = arg('set') ? [arg('set')] : ['web', 'full']
