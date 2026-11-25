@@ -68,6 +68,7 @@ export interface Shape {
   mechanism?: boolean
   fixed?: boolean
   pocket?: boolean
+  moved?: boolean
 }
 
 export type DrawList = Shape[]
