@@ -445,7 +445,7 @@ export class CursorBody {
     s.squashV += (SPRING.squash.k * (stretch - s.squash) - SPRING.squash.c * s.squashV) * dt
     s.squash = Math.min(1.6, Math.max(0.35, s.squash + s.squashV * dt))
     const free = !s.air && s.taken === null && !s.inBall
-    const flying = free ? smooth01((s.z - floor - DIVE.high[0]) / (DIVE.high[1] - DIVE.high[0])) * smooth01((now - DIVE.fast[0]) / (DIVE.fast[1] - DIVE.fast[0])) : 0
+    const flying = free && s.reaction !== 'rear' && s.reaction !== 'dart' ? smooth01((s.z - floor - DIVE.high[0]) / (DIVE.high[1] - DIVE.high[0])) * smooth01((now - DIVE.fast[0]) / (DIVE.fast[1] - DIVE.fast[0])) : 0
     const knocked = s.reaction === 'recoil' && pose && 1 - s.reactionLeft / REACTION_SECONDS.recoil < TUMBLE.share
     const over = (knocked ? TUMBLE.far * s.dir : flying > 0 ? DIVE.far * Math.sin(DIVE.tip - Math.atan2(-s.vy, s.vx)) * flying : 0) + (pose ? pose.turn : 0)
     const swing = over !== 0 ? TUMBLE.out : TUMBLE.back
