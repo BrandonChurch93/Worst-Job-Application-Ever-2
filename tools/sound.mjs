@@ -652,12 +652,13 @@ export async function siteInBrowser(dir = at('dist'), o = {}) {
     page.on('pageerror', (e) => errors.push(String(e.message)))
     if (block) await page.route(block, (route) => route.fulfill({ status: 404, body: 'not found' }))
     await page.addInitScript(() => {
-      window.__sound = { contexts: 0, plays: 0, taps: [], running: new Set(), made: [], shots: 0 }
+      window.__sound = { contexts: 0, plays: 0, taps: [], running: new Set(), made: [], shots: 0, log: [] }
       const startSource = AudioBufferSourceNode.prototype.start
       AudioBufferSourceNode.prototype.start = function (...r) {
         const node = this
         window.__sound.running.add(node)
         if (!node.loop) window.__sound.shots++
+        window.__sound.log.push({ ahead: (r[0] ?? 0) - node.context.currentTime, seconds: node.buffer?.duration ?? 0, loop: node.loop })
         node.addEventListener('ended', () => window.__sound.running.delete(node))
         return startSource.apply(this, r)
       }
@@ -796,6 +797,7 @@ export async function siteInBrowser(dir = at('dist'), o = {}) {
         return r ? { min: Number(r.min || 0), max: Number(r.max || 0) } : null
       })
       const steps = []
+      let seekInto = null
       if (playButton && position) {
         const press = () => page.click('[data-play-check]')
         const seek = (v) => page.evaluate((value) => {
@@ -831,8 +833,28 @@ export async function siteInBrowser(dir = at('dist'), o = {}) {
         await seek(position.min + (position.max - position.min) * 0.1)
         await page.waitForTimeout(400)
         steps.push(await read('after a seek while paused'))
+        const said = JSON.parse(fs.readFileSync(at('content', 'narration.json'), 'utf8')).film
+        const listed = path.join(dir, 'audio', 'index.json')
+        const lengths = new Map((fs.existsSync(listed) ? JSON.parse(fs.readFileSync(listed, 'utf8')).lines : []).map((l) => [l.id, l.seconds]))
+        const two = c.film.beats.find((b) => (said[b.id] ?? []).length >= 2 && said[b.id][1].at > said[b.id][0].at && lengths.has(`line.${b.id}.1`))
+        if (two) {
+          const total = c.film.units.reduce((n, u) => n + u.seconds, 0)
+          const beatAt = c.film.units.slice(0, c.film.units.findIndex((u) => u.id === two.unit)).reduce((n, u) => n + u.seconds, 0) + two.from
+          const span = two.to - two.from
+          const second = said[two.id][1].at * span
+          const filmAt = () => page.evaluate(() => Number(document.querySelector('[data-position-check]').value)).then((v) => ((v - position.min) / (position.max - position.min)) * total)
+          await seek(position.min + ((position.max - position.min) * (beatAt + (said[two.id][0].at * span + second) / 2)) / total)
+          await page.waitForTimeout(300)
+          const into = (await filmAt()) - beatAt
+          const before = await page.evaluate(() => window.__sound.log.length)
+          await press()
+          await page.waitForTimeout(300)
+          const booked = (await page.evaluate((n) => window.__sound.log.slice(n), before)).filter((x) => !x.loop && x.ahead > 0.3)
+          await press()
+          seekInto = { beat: two.id, secondsIntoTheBeat: Number(into.toFixed(2)), lineStillToCome: `line.${two.id}.1`, wantedIn: Number((second - into).toFixed(2)), lineSeconds: lengths.get(`line.${two.id}.1`), booked: booked.map((x) => ({ in: Number(x.ahead.toFixed(2)), seconds: Number(x.seconds.toFixed(2)) })) }
+        }
       }
-      out.film = { started: film.started, playButton, position: Boolean(position), steps, errors: film.errors, console: film.consoleLines }
+      out.film = { started: film.started, playButton, position: Boolean(position), steps, seekInto, errors: film.errors, console: film.consoleLines }
       await film.context.close()
 
       const a = await visit('mode=film&which=a', { wait: 300 })
