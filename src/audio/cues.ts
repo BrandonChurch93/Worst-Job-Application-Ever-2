@@ -65,11 +65,22 @@ export const eventCues: Record<string, string> = {
   'share': 'button-press',
   'ui-tick': 'ui-tick',
   'key-tap': 'key-tap',
-  'ui-send': 'ui-send'
+  'ui-send': 'ui-send',
+  'tug-lost': 'tug-lost',
+  'arms-out': 'arms-out',
+  'dial-fling': 'dial-fling',
+  'flipper-save': 'flipper-save',
+  'session-expired': 'session-expired',
+  'popup-close': 'popup-close',
+  'carpet-roll': 'carpet-roll',
+  'inbox-take': 'inbox-take',
+  'firehouse-take': 'firehouse-take',
+  'metrics-card': 'metrics-card',
+  'skip': 'skip'
 }
 
 // Cues the build added, inside audio.extraCuesMax, for contacts that had no sound of their own. Each plays on the event of its own name.
-// They are kept apart from the table above until audio.sfx holds their rows: audio/EXTRA-CUES.json says the same, and a test holds the two together.
+// audio.sfx holds their rows and the table above names them; audio/EXTRA-CUES.json says the same, and a test holds the two together.
 export const extraCues: { id: string; seconds: number; event: string }[] = [
   { id: 'tug-lost', seconds: 0.6, event: 'tug-lost' },
   { id: 'arms-out', seconds: 0.5, event: 'arms-out' },
