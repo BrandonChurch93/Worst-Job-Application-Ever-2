@@ -4,7 +4,7 @@ This build may spend at most 10000 ElevenLabs credits in all, on every call of e
 
 The count is of this build's own calls, never of what the account has left: the account is shared with other builds. Every call goes through `npm run credits`, which writes its row here before it returns and makes no call that would pass the limit. A sound effect is never asked for without its length. `kit/addenda/001-sound-budget-and-narrator.md` sets these rules. This file is written by the tool from `audio/CREDITS.json`.
 
-Running total: 1449 of 10000. Calls: 82.
+Running total: 1756 of 10000. Calls: 107.
 
 ## Rates
 
@@ -97,3 +97,28 @@ Running total: 1449 of 10000. Calls: 82.
 | 80 | 2026-11-25T18:15:41Z | POST /v1/sound-generation | bumper.2 take 1, variant 2 of 4 | 0.5 s for a cue of 0.3 s | HTTP 200, 1.8 s | 6 | reported by the response | 1437 |
 | 81 | 2026-11-25T18:15:43Z | POST /v1/sound-generation | bumper.3 take 1, variant 3 of 4 | 0.5 s for a cue of 0.3 s | HTTP 200, 1.8 s | 6 | reported by the response | 1443 |
 | 82 | 2026-11-25T18:15:45Z | POST /v1/sound-generation | bumper.4 take 1, variant 4 of 4 | 0.5 s for a cue of 0.3 s | HTTP 200, 2.0 s | 6 | reported by the response | 1449 |
+| 83 | 2026-11-25T18:16:18Z | POST /v1/sound-generation | scoop-kick take 1 | 0.6 s | HTTP 200, 2.0 s | 7 | reported by the response | 1456 |
+| 84 | 2026-11-25T18:16:21Z | POST /v1/sound-generation | flasher take 1 | 0.5 s for a cue of 0.4 s | HTTP 200, 2.0 s | 6 | reported by the response | 1462 |
+| 85 | 2026-11-25T18:16:23Z | POST /v1/sound-generation | ramp-roll take 1 | 2 s | HTTP 200, 2.4 s | 22 | reported by the response | 1484 |
+| 86 | 2026-11-25T18:16:26Z | POST /v1/sound-generation | ball-drop take 1 | 0.5 s | HTTP 200, 2.5 s | 6 | reported by the response | 1490 |
+| 87 | 2026-11-25T18:16:28Z | POST /v1/sound-generation | flipper.1 take 1, variant 1 of 3 | 0.5 s for a cue of 0.2 s | HTTP 200, 2.1 s | 6 | reported by the response | 1496 |
+| 88 | 2026-11-25T18:16:31Z | POST /v1/sound-generation | flipper.2 take 1, variant 2 of 3 | 0.5 s for a cue of 0.2 s | HTTP 200, 2.1 s | 6 | reported by the response | 1502 |
+| 89 | 2026-11-25T18:16:33Z | POST /v1/sound-generation | flipper.3 take 1, variant 3 of 3 | 0.5 s for a cue of 0.2 s | HTTP 200, 1.7 s | 6 | reported by the response | 1508 |
+| 90 | 2026-11-25T18:16:35Z | POST /v1/sound-generation | doors-slam take 1 | 0.6 s | HTTP 200, 2.0 s | 7 | reported by the response | 1515 |
+| 91 | 2026-11-25T18:16:37Z | POST /v1/sound-generation | drain take 1 | 1.2 s | HTTP 200, 2.4 s | 13 | reported by the response | 1528 |
+| 92 | 2026-11-25T18:16:40Z | POST /v1/sound-generation | tier-fall take 1 | 0.8 s | HTTP 200, 2.3 s | 9 | reported by the response | 1537 |
+| 93 | 2026-11-25T18:16:43Z | POST /v1/sound-generation | lift take 1 | 1 s | HTTP 200, 2.4 s | 11 | reported by the response | 1548 |
+| 94 | 2026-11-25T18:16:45Z | POST /v1/sound-generation | spiral take 1 | 2 s | HTTP 200, 2.5 s | 22 | reported by the response | 1570 |
+| 95 | 2026-11-25T18:16:48Z | POST /v1/sound-generation | spinner take 1 | 0.8 s | HTTP 200, 2.0 s | 9 | reported by the response | 1579 |
+| 96 | 2026-11-25T18:16:50Z | POST /v1/sound-generation | drop-target.1 take 1, variant 1 of 2 | 0.5 s for a cue of 0.3 s | HTTP 200, 2.4 s | 6 | reported by the response | 1585 |
+| 97 | 2026-11-25T18:16:54Z | POST /v1/sound-generation | drop-target.2 take 1, variant 2 of 2 | 0.5 s for a cue of 0.3 s | HTTP 200, 1.7 s | 6 | reported by the response | 1591 |
+| 98 | 2026-11-25T18:16:56Z | POST /v1/sound-generation | sling.1 take 1, variant 1 of 2 | 0.5 s for a cue of 0.25 s | HTTP 200, 2.5 s | 6 | reported by the response | 1597 |
+| 99 | 2026-11-25T18:16:58Z | POST /v1/sound-generation | sling.2 take 1, variant 2 of 2 | 0.5 s for a cue of 0.25 s | HTTP 200, 1.5 s | 6 | reported by the response | 1603 |
+| 100 | 2026-11-25T18:17:00Z | POST /v1/sound-generation | ball-open take 1 | 0.7 s | HTTP 200, 2.0 s | 8 | reported by the response | 1611 |
+| 101 | 2026-11-25T18:17:02Z | POST /v1/sound-generation | checkbox take 1 | 0.5 s for a cue of 0.2 s | HTTP 200, 2.2 s | 6 | reported by the response | 1617 |
+| 102 | 2026-11-25T18:17:05Z | POST /v1/sound-generation | button-crack take 1 | 1 s | HTTP 200, 2.0 s | 11 | reported by the response | 1628 |
+| 103 | 2026-11-25T18:17:07Z | POST /v1/sound-generation | unfold take 1 | 2 s | HTTP 200, 2.3 s | 22 | reported by the response | 1650 |
+| 104 | 2026-11-25T18:17:10Z | POST /v1/sound-generation | boss-loop take 1 | 8 s, a loop | HTTP 200, 4.0 s | 88 | reported by the response | 1738 |
+| 105 | 2026-11-25T18:17:15Z | POST /v1/sound-generation | dart-fire.1 take 1, variant 1 of 4 | 0.5 s for a cue of 0.15 s | HTTP 200, 2.5 s | 6 | reported by the response | 1744 |
+| 106 | 2026-11-25T18:17:17Z | POST /v1/sound-generation | dart-fire.2 take 1, variant 2 of 4 | 0.5 s for a cue of 0.15 s | HTTP 200, 1.8 s | 6 | reported by the response | 1750 |
+| 107 | 2026-11-25T18:17:19Z | POST /v1/sound-generation | dart-fire.3 take 1, variant 3 of 4 | 0.5 s for a cue of 0.15 s | HTTP 200, 1.9 s | 6 | reported by the response | 1756 |

@@ -4477,6 +4477,1126 @@
       "kept": false,
       "keptAs": [],
       "why": ""
+    },
+    {
+      "key": "scoop-kick",
+      "kind": "cue",
+      "cue": "scoop-kick",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "20891f6c83d9cd94426f56ca0eac1d7213c03b056fea30a98d880b72d757428a",
+      "filed": "2026-11-25T18:16:21.138Z",
+      "prompt": "A ball dropping into a hole in a pinball table and kicked out by a solenoid, a clunk then a sharp kick, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.6,
+        "loop": false,
+        "influence": null,
+        "call": 83
+      },
+      "askedSeconds": 0.6,
+      "cost": "7",
+      "measured": {
+        "seconds": 0.6,
+        "start": 0,
+        "end": 0.6,
+        "peakDb": -9.12,
+        "rmsDb": -30.14,
+        "lufs": -28.19,
+        "truePeakDb": -9.11,
+        "low": 0.163,
+        "mid": 0.827,
+        "high": 0.01,
+        "tailDb": -66.64,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.2,
+            "peakDb": -9.12
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "flasher",
+      "kind": "cue",
+      "cue": "flasher",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "5d22a448b568b6c56d019b80aa38df439ae45342a4981da2073844f01a1ccd13",
+      "filed": "2026-11-25T18:16:23.429Z",
+      "prompt": "One electrical relay click and the snap of a bright flash lamp firing, a single short tick and snap, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 84
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.422,
+        "peakDb": -1.32,
+        "rmsDb": -29.85,
+        "lufs": -23.45,
+        "truePeakDb": -0.66,
+        "low": 0.034,
+        "mid": 0.263,
+        "high": 0.703,
+        "tailDb": -49.66,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.01,
+            "end": 0.058,
+            "peakDb": -1.32
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "ramp-roll",
+      "kind": "cue",
+      "cue": "ramp-roll",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "18709f8d2b50568e9317e96daad13c021e25cca7c5ed62852c6ab90f2af2aaca",
+      "filed": "2026-11-25T18:16:26.107Z",
+      "prompt": "A hard plastic ball rolling fast along a steel wire ramp of a pinball table, a ringing metallic roll, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 2,
+        "loop": false,
+        "influence": null,
+        "call": 85
+      },
+      "askedSeconds": 2,
+      "cost": "22",
+      "measured": {
+        "seconds": 2,
+        "start": 0,
+        "end": 1.934,
+        "peakDb": -15.56,
+        "rmsDb": -35.84,
+        "lufs": -31.22,
+        "truePeakDb": -15.44,
+        "low": 0.022,
+        "mid": 0.957,
+        "high": 0.021,
+        "tailDb": -44.96,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 1.674,
+            "peakDb": -15.56
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "ball-drop",
+      "kind": "cue",
+      "cue": "ball-drop",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "b98fd1023bc955cda72d7965ada1d1e1b208f1b21c9bb4bf9852be62fc41cd40",
+      "filed": "2026-11-25T18:16:28.891Z",
+      "prompt": "One steel ball dropping onto a wooden board, a single hard knock, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 86
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0.002,
+        "end": 0.356,
+        "peakDb": -1.19,
+        "rmsDb": -27.34,
+        "lufs": -25.45,
+        "truePeakDb": -1.18,
+        "low": 0.234,
+        "mid": 0.765,
+        "high": 0.002,
+        "tailDb": -46.83,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.116,
+            "end": 0.162,
+            "peakDb": -1.19
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "flipper.1",
+      "kind": "cue",
+      "cue": "flipper",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "47bb5d4fc5071160880b43c7bf30723663a53334f3f96854ffa854610e4dedf9",
+      "filed": "2026-11-25T18:16:31.215Z",
+      "prompt": "One pinball flipper firing, a single sharp solenoid snap and the slap of a plastic bat, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 87
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -24.56,
+        "rmsDb": -47.34,
+        "lufs": -38.61,
+        "truePeakDb": -20.39,
+        "low": 0.006,
+        "mid": 0.608,
+        "high": 0.386,
+        "tailDb": -57.41,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.202,
+            "peakDb": -24.56
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "flipper.2",
+      "kind": "cue",
+      "cue": "flipper",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "18f5633c56d4133ee435f5b2422e52a415dc723787bc91bf30e477cb65764198",
+      "filed": "2026-11-25T18:16:33.640Z",
+      "prompt": "One pinball flipper firing, a single sharp solenoid snap and the slap of a plastic bat, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 88
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.108,
+        "peakDb": 0.6,
+        "rmsDb": -23.91,
+        "lufs": -23.97,
+        "truePeakDb": 0.81,
+        "low": 0.007,
+        "mid": 0.594,
+        "high": 0.398,
+        "tailDb": -54.82,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.006,
+            "end": 0.046,
+            "peakDb": 0.6
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "flipper.3",
+      "kind": "cue",
+      "cue": "flipper",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "6dbef90a0c443dfa3172e8d01c86706de943eb6a3b04e429da58bf7d04585bc0",
+      "filed": "2026-11-25T18:16:35.613Z",
+      "prompt": "One pinball flipper firing, a single sharp solenoid snap and the slap of a plastic bat, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 89
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -29.98,
+        "rmsDb": -54.51,
+        "lufs": -47.42,
+        "truePeakDb": -28.84,
+        "low": 0.007,
+        "mid": 0.498,
+        "high": 0.494,
+        "tailDb": -54.52,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.156,
+            "peakDb": -29.98
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "doors-slam",
+      "kind": "cue",
+      "cue": "doors-slam",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "1b5d7a7be66b4528bee59ab7ccd9beca514bf66e196b789397652458f3472287",
+      "filed": "2026-11-25T18:16:37.797Z",
+      "prompt": "Two heavy glass doors slamming shut together, one deep slam with a rattle of glass in metal frames, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.6,
+        "loop": false,
+        "influence": null,
+        "call": 90
+      },
+      "askedSeconds": 0.6,
+      "cost": "7",
+      "measured": {
+        "seconds": 0.6,
+        "start": 0,
+        "end": 0.406,
+        "peakDb": -4.74,
+        "rmsDb": -24.52,
+        "lufs": -21.63,
+        "truePeakDb": -3.78,
+        "low": 0.545,
+        "mid": 0.43,
+        "high": 0.025,
+        "tailDb": -54.76,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.186,
+            "peakDb": -4.74
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "drain",
+      "kind": "cue",
+      "cue": "drain",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "4ad356168b77ab0d8f64e193593516cc54621ed546e64cc800bcb66480920719",
+      "filed": "2026-11-25T18:16:40.450Z",
+      "prompt": "A pinball rolling down the drain and dropping into the trough with a clunk, with a falling run of mechanical bells, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 1.2,
+        "loop": false,
+        "influence": null,
+        "call": 91
+      },
+      "askedSeconds": 1.2,
+      "cost": "13",
+      "measured": {
+        "seconds": 1.2,
+        "start": 0,
+        "end": 0.934,
+        "peakDb": -9.43,
+        "rmsDb": -32.35,
+        "lufs": -31.52,
+        "truePeakDb": -9.42,
+        "low": 0.05,
+        "mid": 0.899,
+        "high": 0.051,
+        "tailDb": -54.15,
+        "hits": 2,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.516,
+            "peakDb": -9.43
+          },
+          {
+            "start": 0.648,
+            "end": 0.806,
+            "peakDb": -20.62
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "tier-fall",
+      "kind": "cue",
+      "cue": "tier-fall",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "674478fbacf6235798e2f04e1f1d37be41262558e8509c0de34c2f822b526887",
+      "filed": "2026-11-25T18:16:42.974Z",
+      "prompt": "A ball dropping down a short metal chute and landing on a wooden board, a metallic rattle then a knock, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.8,
+        "loop": false,
+        "influence": null,
+        "call": 92
+      },
+      "askedSeconds": 0.8,
+      "cost": "9",
+      "measured": {
+        "seconds": 0.8,
+        "start": 0,
+        "end": 0.518,
+        "peakDb": -17.94,
+        "rmsDb": -38.82,
+        "lufs": -37.48,
+        "truePeakDb": -16.6,
+        "low": 0.355,
+        "mid": 0.644,
+        "high": 0.001,
+        "tailDb": -56.17,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.238,
+            "peakDb": -17.94
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "lift",
+      "kind": "cue",
+      "cue": "lift",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "7931c4ffe6e074b838b0cfe6d5c85daea35419ac8c707b6a74c1a9c0421f1790",
+      "filed": "2026-11-25T18:16:45.628Z",
+      "prompt": "A ball sucked up a tube by air, a rising whoosh of air ending in a soft pop at the top, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 1,
+        "loop": false,
+        "influence": null,
+        "call": 93
+      },
+      "askedSeconds": 1,
+      "cost": "11",
+      "measured": {
+        "seconds": 1,
+        "start": 0,
+        "end": 1,
+        "peakDb": -10.61,
+        "rmsDb": -30.27,
+        "lufs": -23.41,
+        "truePeakDb": -7.77,
+        "low": 0.016,
+        "mid": 0.616,
+        "high": 0.368,
+        "tailDb": -63.67,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.288,
+            "peakDb": -10.61
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "spiral",
+      "kind": "cue",
+      "cue": "spiral",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "6a52875a2953d1c70740fe2ca36de31d289decc5170a749aab0b99fa314d906f",
+      "filed": "2026-11-25T18:16:48.477Z",
+      "prompt": "A hard plastic ball rolling round and round down a plastic spiral ramp, slowing as it goes, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 2,
+        "loop": false,
+        "influence": null,
+        "call": 94
+      },
+      "askedSeconds": 2,
+      "cost": "22",
+      "measured": {
+        "seconds": 2,
+        "start": 0.108,
+        "end": 1.964,
+        "peakDb": -14.53,
+        "rmsDb": -44.2,
+        "lufs": -38.33,
+        "truePeakDb": -11.29,
+        "low": 0.118,
+        "mid": 0.88,
+        "high": 0.002,
+        "tailDb": -48.15,
+        "hits": 2,
+        "hitsAt": [
+          {
+            "start": 0.146,
+            "end": 1.052,
+            "peakDb": -14.53
+          },
+          {
+            "start": 1.154,
+            "end": 1.268,
+            "peakDb": -28.63
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "spinner",
+      "kind": "cue",
+      "cue": "spinner",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "dd13eb78ac779de7fdfb631cb6ea123095f7736950e8b9fd065d9fd965467188",
+      "filed": "2026-11-25T18:16:50.730Z",
+      "prompt": "A pinball spinner target hit hard and spinning down, fast metallic ticking that slows, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.8,
+        "loop": false,
+        "influence": null,
+        "call": 95
+      },
+      "askedSeconds": 0.8,
+      "cost": "9",
+      "measured": {
+        "seconds": 0.8,
+        "start": 0,
+        "end": 0.458,
+        "peakDb": -12.06,
+        "rmsDb": -34.74,
+        "lufs": -31.12,
+        "truePeakDb": -11.92,
+        "low": 0.018,
+        "mid": 0.459,
+        "high": 0.523,
+        "tailDb": -54.45,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.384,
+            "peakDb": -12.06
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "drop-target.1",
+      "kind": "cue",
+      "cue": "drop-target",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "4b62011bc29aa54901c31706aae8bee9b08703f510e9f26da1647b5a08813b56",
+      "filed": "2026-11-25T18:16:53.749Z",
+      "prompt": "One pinball drop target knocked down, a single flat plastic clack, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 96
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.182,
+        "peakDb": -2.53,
+        "rmsDb": -22.07,
+        "lufs": -21.75,
+        "truePeakDb": -2.51,
+        "low": 0.033,
+        "mid": 0.949,
+        "high": 0.018,
+        "tailDb": -54.32,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.1,
+            "peakDb": -2.53
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "drop-target.2",
+      "kind": "cue",
+      "cue": "drop-target",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "2deef8a3870955e64a34034cfd5e7b0b9c6ac87d64441222a23873b9c2af9ed8",
+      "filed": "2026-11-25T18:16:55.949Z",
+      "prompt": "One pinball drop target knocked down, a single flat plastic clack, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 97
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -25.41,
+        "rmsDb": -47.63,
+        "lufs": -43.39,
+        "truePeakDb": -25.1,
+        "low": 0.098,
+        "mid": 0.876,
+        "high": 0.026,
+        "tailDb": -57.09,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.114,
+            "peakDb": -25.41
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "sling.1",
+      "kind": "cue",
+      "cue": "sling",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "5b74fd3dd6f2151941fb9eea5cdeed83d733402410f3243d51b51844916140ce",
+      "filed": "2026-11-25T18:16:58.830Z",
+      "prompt": "One pinball slingshot firing, a single short rubber snap, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 98
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -21.62,
+        "rmsDb": -44.9,
+        "lufs": -37.09,
+        "truePeakDb": -19.62,
+        "low": 0.014,
+        "mid": 0.761,
+        "high": 0.225,
+        "tailDb": -58.61,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.16,
+            "peakDb": -21.62
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "sling.2",
+      "kind": "cue",
+      "cue": "sling",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "8bc9de4e139d8bd01858df3fb5e1a8866c93e5df8e2ea8e66ac252dde1005d33",
+      "filed": "2026-11-25T18:17:00.658Z",
+      "prompt": "One pinball slingshot firing, a single short rubber snap, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 99
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -22.93,
+        "rmsDb": -44.57,
+        "lufs": -39.28,
+        "truePeakDb": -22.72,
+        "low": 0.018,
+        "mid": 0.816,
+        "high": 0.167,
+        "tailDb": -60.72,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.172,
+            "peakDb": -22.93
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "ball-open",
+      "kind": "cue",
+      "cue": "ball-open",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "f3a0b702bc519d3e326026a2807d0e254cc21ad93b9d43ea21133439f732acd8",
+      "filed": "2026-11-25T18:17:02.906Z",
+      "prompt": "A hard clear plastic shell cracking open and its two halves rattling on a hard floor, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.7,
+        "loop": false,
+        "influence": null,
+        "call": 100
+      },
+      "askedSeconds": 0.7,
+      "cost": "8",
+      "measured": {
+        "seconds": 0.68,
+        "start": 0,
+        "end": 0.404,
+        "peakDb": -15.2,
+        "rmsDb": -46.98,
+        "lufs": -40.66,
+        "truePeakDb": -14.67,
+        "low": 0.001,
+        "mid": 0.22,
+        "high": 0.779,
+        "tailDb": -63.51,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.012,
+            "end": 0.144,
+            "peakDb": -15.2
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "checkbox",
+      "kind": "cue",
+      "cue": "checkbox",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "c044416d386748d20a55e389ffca1b9c1c179122d4c744d30108c8a623ae836d",
+      "filed": "2026-11-25T18:17:05.347Z",
+      "prompt": "A small crisp tick, a tiny plastic switch clicking once, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 101
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0.004,
+        "end": 0.07,
+        "peakDb": -5.85,
+        "rmsDb": -29.62,
+        "lufs": -31.2,
+        "truePeakDb": -5.17,
+        "low": 0.001,
+        "mid": 0.154,
+        "high": 0.844,
+        "tailDb": -56.83,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.01,
+            "end": 0.054,
+            "peakDb": -5.85
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "button-crack",
+      "kind": "cue",
+      "cue": "button-crack",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "48503f825b3d4f230ead552c4b703429cf046ae653979242c779713c758dca2e",
+      "filed": "2026-11-25T18:17:07.701Z",
+      "prompt": "Hard plastic and ceramic cracking and splintering as a large button tears loose from its housing, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 1,
+        "loop": false,
+        "influence": null,
+        "call": 102
+      },
+      "askedSeconds": 1,
+      "cost": "11",
+      "measured": {
+        "seconds": 1,
+        "start": 0.022,
+        "end": 0.916,
+        "peakDb": -13.45,
+        "rmsDb": -43.01,
+        "lufs": -36.02,
+        "truePeakDb": -13.11,
+        "low": 0.003,
+        "mid": 0.424,
+        "high": 0.573,
+        "tailDb": -52.31,
+        "hits": 2,
+        "hitsAt": [
+          {
+            "start": 0.114,
+            "end": 0.182,
+            "peakDb": -13.45
+          },
+          {
+            "start": 0.332,
+            "end": 0.504,
+            "peakDb": -15.87
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "unfold",
+      "kind": "cue",
+      "cue": "unfold",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "8339bd3630f3b7713d2c7f2843a3638d5c50fd292b23c4f80ec1b259d98e2bfa",
+      "filed": "2026-11-25T18:17:10.421Z",
+      "prompt": "Metal plates and joints unfolding and locking into place one after another with small servo motors whirring, a machine putting itself together, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 2,
+        "loop": false,
+        "influence": null,
+        "call": 103
+      },
+      "askedSeconds": 2,
+      "cost": "22",
+      "measured": {
+        "seconds": 2,
+        "start": 0,
+        "end": 1.868,
+        "peakDb": -10.9,
+        "rmsDb": -39.9,
+        "lufs": -31.5,
+        "truePeakDb": -10.73,
+        "low": 0.008,
+        "mid": 0.422,
+        "high": 0.57,
+        "tailDb": -51.37,
+        "hits": 2,
+        "hitsAt": [
+          {
+            "start": 0.004,
+            "end": 0.362,
+            "peakDb": -10.9
+          },
+          {
+            "start": 1.098,
+            "end": 1.204,
+            "peakDb": -33.1
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "boss-loop",
+      "kind": "cue",
+      "cue": "boss-loop",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "9fec3c925eaf1f99e6b5e159e9b252b84a9d77a4ba38e50cd7995cbcff88c611",
+      "filed": "2026-11-25T18:17:14.932Z",
+      "prompt": "A short loop of tense, slightly silly fight music, a fast plucked string and staccato bassoon figure over a snare drum march, comic cartoon chase tension, steady tempo, close and dry, recorded in a quiet room, real materials, no voice",
+      "settings": {
+        "seconds": 8,
+        "loop": true,
+        "influence": null,
+        "call": 104
+      },
+      "askedSeconds": 8,
+      "cost": "88",
+      "measured": {
+        "seconds": 8,
+        "start": 0,
+        "end": 8,
+        "peakDb": -11.62,
+        "rmsDb": -27.78,
+        "lufs": -25.39,
+        "truePeakDb": -11.57,
+        "low": 0.186,
+        "mid": 0.813,
+        "high": 0.001,
+        "tailDb": -15.79,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 8,
+            "peakDb": -11.62
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "dart-fire.1",
+      "kind": "cue",
+      "cue": "dart-fire",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "5f4a7fdd0ac7b404f99a72b936bbd52370a1b005fc48b3341cc8e03ff19182e3",
+      "filed": "2026-11-25T18:17:17.624Z",
+      "prompt": "One tiny bright pew, almost a click, a very small toy dart launcher firing once, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 105
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.27,
+        "peakDb": -14.03,
+        "rmsDb": -42.13,
+        "lufs": -35.82,
+        "truePeakDb": -11.79,
+        "low": 0.009,
+        "mid": 0.222,
+        "high": 0.769,
+        "tailDb": -54.01,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.006,
+            "end": 0.108,
+            "peakDb": -14.03
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "dart-fire.2",
+      "kind": "cue",
+      "cue": "dart-fire",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "90f711e7e0cca19711e01acabdaba44991cda1bb4685cea7e21a57c9e86bdaff",
+      "filed": "2026-11-25T18:17:19.657Z",
+      "prompt": "One tiny bright pew, almost a click, a very small toy dart launcher firing once, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 106
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.386,
+        "peakDb": -16.33,
+        "rmsDb": -44.01,
+        "lufs": -37.5,
+        "truePeakDb": -14.35,
+        "low": 0.005,
+        "mid": 0.47,
+        "high": 0.525,
+        "tailDb": -54.46,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.008,
+            "end": 0.062,
+            "peakDb": -16.33
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "dart-fire.3",
+      "kind": "cue",
+      "cue": "dart-fire",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "71fa8dc14923733e413f88ca6aca1f3ab1470f3bda96f4d72853d39d3380cb40",
+      "filed": "2026-11-25T18:17:21.765Z",
+      "prompt": "One tiny bright pew, almost a click, a very small toy dart launcher firing once, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 107
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.444,
+        "peakDb": -19.25,
+        "rmsDb": -47.16,
+        "lufs": -40.71,
+        "truePeakDb": -18.95,
+        "low": 0.003,
+        "mid": 0.449,
+        "high": 0.549,
+        "tailDb": -52.98,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.012,
+            "end": 0.138,
+            "peakDb": -19.25
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
     }
   ]
 }
