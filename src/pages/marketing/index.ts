@@ -110,7 +110,7 @@ export function makePage(): PageLogic {
   const marks: Marks = {
     start,
     lane: { x: 430, y: 598 },
-    cards: [0, 1, 2].map((i) => ({ x: cards[i]!.cx - 12, y: cards[i]!.cy - 34 })),
+    cards: [0, 1, 2].map((i) => ({ x: cards[i]!.x + cards[i]!.w - 96, y: cards[i]!.y + 24 })),
     off: { x: cards[2]!.cx - 30, y: cards[2]!.y - 44 },
     medal: { x: boxOf(layout, 'award-0').x - 96, y: boxOf(layout, 'award-0').cy + 56 },
     stand: { x: hero.x + hero.w + 92, y: hero.cy - 2 },
@@ -123,7 +123,7 @@ export function makePage(): PageLogic {
   }
   const rejected = (): boolean => s.variant === 'rejected'
   const capTop = (i: number): number => heights.button - TRAVEL * smooth(s.sink[i]!)
-  const landing = (i: number): { x: number; y: number } => ({ x: caps[i]!.cx - 20, y: caps[i]!.cy - 32 })
+  const landing = (i: number): { x: number; y: number } => ({ x: caps[i]!.cx + Math.min(150, caps[i]!.w / 2 - 70), y: caps[i]!.cy - 32 })
   const firstOpen = (): boolean => {
     for (let i = 0; i < FIRST_CARDS; i++) if (s.flip[i]! < 1) return false
     return true

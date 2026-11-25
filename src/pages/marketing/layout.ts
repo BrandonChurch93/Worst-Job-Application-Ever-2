@@ -22,8 +22,9 @@ export const MEDAL_H = 10
 export const HERO_W = 460
 export const TICKER = { x: LEFT, y: 984, w: WIDTH, h: 56, floor: -6, tape: -5, pad: 28, gap: 64 }
 export const FIRST_CARDS = 3
-const SECTION = 136
-const HEAD_TO_CONTENT = 140
+const SECTION = 160
+const HEAD_TO_CONTENT = 148
+const FOOT = 120
 
 export const T = {
   display: { font: 'inter-display-600', px: 68, lead: 84 },
@@ -294,7 +295,9 @@ function footer(y: number): Section {
   const nodes: LayoutNode[] = [node('footer-rule', 'rule', [LEFT, y, WIDTH, 2], { part: PAGE })]
   const top = y + 64
   const brand = text('footer-brand', 'copy:marketing.footer.brand', TYPE.title, LEFT, top, type)
-  const taglineY = top + cap(TYPE.title) + 24
+  const aboutY = top + cap(TYPE.title) + 28
+  const about = text('footer-about', 'copy:marketing.hero.sublineLong', { ...TYPE.helper, wrap: 640, lead: 28 }, LEFT, aboutY, type)
+  const taglineY = aboutY + about.box[3]! + 28
   const tagline = text('footer-tagline', 'copy:marketing.footer.tagline', { ...TYPE.helper, wrap: 560 }, LEFT, taglineY, type)
   const notRealY = taglineY + cap(TYPE.helper) + 20
   const notReal = text('footer-not-real', 'copy:marketing.footer.notReal', TYPE.helper, LEFT, notRealY, type)
@@ -307,7 +310,7 @@ function footer(y: number): Section {
   const twistY = top + bottom.box[3]! + 36
   const twist = text('footer-plot-twist', 'copy:marketing.footer.plotTwist', small, rx, twistY, { ...type, states: ['hiring'] })
   const closing = text('footer-closing', 'copy:step5.closing', small, rx, twistY, { ...type, states: ['rejected'] })
-  nodes.push(brand, tagline, notReal, credit, bottom, twist, closing)
+  nodes.push(brand, about, tagline, notReal, credit, bottom, twist, closing)
   const end = Math.max(creditY + cap(TYPE.label), twistY + Math.max(twist.box[3]!, closing.box[3]!))
   return { nodes, bottom: end }
 }
@@ -322,8 +325,8 @@ export function careersLayout(): Careers {
     sections[name] = y
     const s = make(y)
     nodes.push(group(`section-${name}`, s.nodes))
-    y = s.bottom + (name === 'final' ? 96 : name === 'footer' ? 0 : SECTION)
+    y = s.bottom + (name === 'footer' ? 0 : SECTION)
   }
-  const height = Math.ceil(y + 96)
+  const height = Math.ceil(y + FOOT)
   return { layout: page('marketing', height, nodes), height, sections }
 }
