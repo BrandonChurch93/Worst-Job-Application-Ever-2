@@ -474,6 +474,7 @@ const checks = {
     let pictures = 0
     const sets = Object.keys(c.assetSets)
     const formatOfSet = (set) => (set === 'full' ? c.formats.master.id : c.formats.hd.id)
+    const filmPath = (set, s) => set === 'full' && s.id === 'rest'
     for (const set of sets) {
       const session = await openSession({ format: formatOfSet(set), assets: set })
       try {
@@ -485,11 +486,13 @@ const checks = {
                 await window.showcase.renderStill(spec)
                 const i = window.showcase.info()
                 return { counts: i.counts[spec.page], mb: i.textureMb[spec.page], textures: i.textures?.[spec.page] ?? null }
-              }, set === 'full' && s.id === 'rest' ? s.spec : { ...s.spec, live: level })
-              pictures++
-              const n = (p.counts[level] ??= { triangles: 0, drawCalls: 0, at: s.id, callsAt: s.id })
-              if (got.counts.triangles > n.triangles) Object.assign(n, { triangles: got.counts.triangles, at: s.id })
-              if (got.counts.drawCalls > n.drawCalls) Object.assign(n, { drawCalls: got.counts.drawCalls, callsAt: s.id })
+              }, filmPath(set, s) ? s.spec : { ...s.spec, live: level })
+              if (!filmPath(set, s)) {
+                pictures++
+                const n = (p.counts[level] ??= { triangles: 0, drawCalls: 0, at: s.id, callsAt: s.id })
+                if (got.counts.triangles > n.triangles) Object.assign(n, { triangles: got.counts.triangles, at: s.id })
+                if (got.counts.drawCalls > n.drawCalls) Object.assign(n, { drawCalls: got.counts.drawCalls, callsAt: s.id })
+              }
               if (p.textureMb[set] === undefined || got.mb > p.textureMb[set]) {
                 p.textureMb[set] = got.mb
                 p.textures[set] = { ...got.textures, at: s.id, format: session.format.id }
