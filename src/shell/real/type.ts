@@ -241,8 +241,10 @@ const lin = (c: THREE.Color): Rgb => [c.r, c.g, c.b]
 const hex = (h: number): Rgb => lin(new THREE.Color().setHex(h, THREE.SRGBColorSpace))
 const mix = (a: Rgb, b: Rgb, t: number): Rgb => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t]
 
-const INK = 0x24272a
+const INK = 0x302e2b
 const INK_WARM = 0x3f352a
+const INK_SOFT = 0x67625c
+const SOFT_FONT = 'inter-400'
 const INK_LIGHT = 0xfdf3e6
 const LIP = 0xf2efe8
 const CUT_FLOOR = 0x1d1e21
@@ -255,12 +257,14 @@ export function styles(): Record<string, Style> {
   const mat = materials()
   const ink = hex(INK)
   const warm = hex(INK_WARM)
+  const soft = hex(INK_SOFT)
   const light = hex(INK_LIGHT)
   const lip = hex(LIP)
   const metal = lin(mat.aluminium.color)
   const floor = hex(CUT_FLOOR)
   styleSet = {
     'page:ink': { setting: 'sunk', fill: ink, lean: 0.5, rings: [{ d: 0.3, a: 0.8, c: ink }, { d: 0.9, a: 0.5, c: lip }] },
+    'page:soft': { setting: 'sunk', fill: soft, lean: 0.5, rings: [{ d: 0.3, a: 0.8, c: soft }, { d: 0.9, a: 0.5, c: lip }] },
     'cap:ink': { setting: 'sunk', fill: warm, lean: 0.42, rings: [{ d: 0.3, a: 0.8, c: warm }, { d: 0.8, a: 0.4, c: lip }] },
     'glass:ink': { setting: 'flat', fill: ink, lean: 0, rings: [{ d: 0.45, a: 0.85, c: ink }] },
     'paper:ink': { setting: 'flat', fill: ink, lean: 0, rings: [{ d: 0.5, a: 0.8, c: ink }] },
@@ -272,11 +276,12 @@ export function styles(): Record<string, Style> {
   return styleSet
 }
 
-export function styleName(ground: Ground, tone: string): string {
+// The regular weight on the page is the quiet voice (sublines, helpers, body) and takes the softer ink.
+export function styleName(ground: Ground, tone: string, font = ''): string {
   if (ground === 'smoked') return 'gloss:light'
   const inkName = tone === 'inkLight' || tone === 'light' ? 'light' : 'ink'
   if (inkName === 'light') return ground === 'gloss' || ground === 'metal' ? 'gloss:light' : 'page:light'
-  return `${ground}:ink`
+  return ground === 'page' && font === SOFT_FONT ? 'page:soft' : `${ground}:ink`
 }
 
 const GROUND_OF_TONE: Record<string, Ground> = { metal: 'metal', accent: 'gloss', danger: 'gloss', dark: 'gloss', glass: 'glass', raised: 'cap', light: 'cap', paper: 'paper', page: 'page', pocket: 'page' }
@@ -426,13 +431,13 @@ export const type: PartMaker = {
   key(s, ctx) {
     if (s.kind !== 'text' || !s.type || !s.words) return null
     const t = s.type
-    const name = styleName(groundOf(s, ctx), s.tone)
+    const name = styleName(groundOf(s, ctx), s.tone, t.font)
     const said = s.words.startsWith('runtime:') ? '' : words(s.words)
     return `${name}|${t.font}|${t.px}|${t.wrap ?? ''}|${t.align ?? ''}|${t.lead ?? ''}|${q(s.w)}|${q(s.h)}|${s.words}|${said}`
   },
   make(s, ctx) {
     const ground = groundOf(s, ctx)
-    const name = styleName(ground, s.tone)
+    const name = styleName(ground, s.tone, s.type!.font)
     const style = styles()[name]!
     const said = words(s.words!, s.text)
     const over = ground === 'glass'
