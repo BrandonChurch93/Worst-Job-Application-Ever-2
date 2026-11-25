@@ -1,35 +1,35 @@
 {
   "folder": "step1-script",
-  "pushed": "2026-11-25T15:30:40.789Z",
-  "commit": "5cf4ce814319acd6f8920bd63f75be516cfc6e28",
+  "pushed": "2026-11-25T15:45:42.176Z",
+  "commit": "6df5400da3e838be1b3ac7677b2dcb0773a6cc49",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key step1-tug: approved on the left, this build on the right, review tier",
-      "time": "2026-11-25T15:27:40.223Z",
+      "caption": "Key step1-tug: approved on the left, this build on the right, review tier, with crops of cursor, paper, paper.below, chip, card.glass, field.start",
+      "time": "2026-11-25T15:44:49.712Z",
       "by": "step1-script",
       "from": "out/work/compare/compare-step1-tug.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Key step1-fire: approved on the left, this build on the right, review tier",
-      "time": "2026-11-25T15:30:39.207Z",
+      "caption": "Key step1-fire: approved on the left, this build on the right, review tier, with crops of cursor, keys, hatch, keyboardDeck.corner, field.start, type, progressButton, chip, card.corner",
+      "time": "2026-11-25T15:45:18.678Z",
       "by": "step1-script",
       "from": "out/work/compare/compare-step1-fire.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "key step1-tug beside the approved image at 5cf4ce8: the film camera frames about 900 px at the key still",
-      "time": "2026-11-25T15:30:39.466Z",
+      "caption": "key step1-tug beside the approved image at 6df5400: the whole drop zone, the upload glyph, strips under the hood",
+      "time": "2026-11-25T15:45:40.486Z",
       "by": "step1-script",
-      "from": "out/work/report/step1-script-tug-beside-approved-2.jpg"
+      "from": "out/work/report/step1-script-tug-beside-approved-3.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "key step1-fire beside the approved image at 5cf4ce8: legends at 26 and 20 px, two bolts in the air, sparks on K",
-      "time": "2026-11-25T15:30:39.698Z",
+      "caption": "key step1-fire beside the approved image at 6df5400: the upload glyph, the note clear of the card, legends at 26 and 20 px",
+      "time": "2026-11-25T15:45:40.731Z",
       "by": "step1-script",
-      "from": "out/work/report/step1-script-fire-beside-approved-3.jpg"
+      "from": "out/work/report/step1-script-fire-beside-approved-4.jpg"
     }
   ]
 }
