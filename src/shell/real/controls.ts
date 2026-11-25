@@ -218,6 +218,42 @@ function chipShade(s: Shape): THREE.Mesh {
   return shade
 }
 
+const CHIP_REVEAL = 2.6
+const CHIP_LIP = 1.2
+const CHIP_FLOOR = 0.64
+const CHIP_WALL = 0.3
+const CHIP_GLINT = 0.85
+const CHIP_SHADOW = 0.12
+
+// The pocket a chip sits in, drawn on the glass as light and shade: a lip, a wall that is lit on the side that faces the key and dark on the other, and a floor in shadow.
+function chipPocket(s: Shape): THREE.Mesh {
+  shadeMaterial ??= new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, blending: THREE.CustomBlending, blendSrc: THREE.DstColorFactor, blendDst: THREE.ZeroFactor, depthWrite: false, toneMapped: false })
+  const reach = CHIP_REVEAL + CHIP_LIP
+  const around = { kind: s.kind, w: s.w + reach * 2, h: s.h + reach * 2, r: (s.r ?? 0) + reach }
+  const g = shared(`chipPocket:${dims(s)}`, () => {
+    const outline = outlineOf(around, 0, 18)
+    const steps: [number, number, number][] = [[0, 1, 0], [CHIP_LIP * 0.5, 1, 0.1], [CHIP_LIP, 0.84, CHIP_WALL], [CHIP_LIP + 0.9, CHIP_FLOOR + 0.08, CHIP_WALL * 0.8], [reach, CHIP_FLOOR, CHIP_WALL * 0.4], [reach + 1.2, CHIP_FLOOR, 0]]
+    const geo = sweep(outline, steps.map(([inset]) => ({ inset, z: 0, out: 1, up: 0 })), false)
+    const nor = geo.getAttribute('normal')
+    const colour = new Float32Array(nor.count * 3)
+    for (let i = 0; i < nor.count; i++) {
+      const [, level, lit] = steps[Math.floor(i / outline.count)]!
+      const d = (nor.getX(i) * 0.724 - nor.getY(i) * 0.69) * lit
+      const v = level + (d > 0 ? d : d * 1.5)
+      colour[i * 3] = v
+      colour[i * 3 + 1] = v
+      colour[i * 3 + 2] = v
+      nor.setXYZ(i, 0, 0, 1)
+    }
+    geo.setAttribute('color', new THREE.BufferAttribute(colour, 3))
+    return geo
+  })
+  const pocket = new THREE.Mesh(g, shadeMaterial)
+  pocket.position.set(0, 0, 0.05)
+  pocket.renderOrder = 1
+  return pocket
+}
+
 function capsule(s: Shape, round: number): THREE.Object3D {
   const h = s.z1 - s.z0
   if (s.role !== 'chip') {
@@ -227,7 +263,7 @@ function capsule(s: Shape, round: number): THREE.Object3D {
     const rise = Math.min(BUTTON_SHOULDER * 0.8, h * 0.45)
     const top = h - BUTTON_CROWN
     const points: ProfilePoint[] = [[0, 0, true], [0, top - rise], ...arc(0, top - rise, wide, rise, 10).slice(1), ...[0.75, 0.5, 0.25, 0.05].map((t): ProfilePoint => [half - (half - wide) * t, top + BUTTON_CROWN * (1 - t * t)])]
-    return mesh(shared(`cap:${dims(s)}:${round}`, () => sweep(outlineOf(s, 0, 18), profile(points))), s.tone === 'metal' || s.tone === 'accent' ? materials().orange : toneMaterial(s.tone))
+    return mesh(shared(`cap:${dims(s)}:${round}`, () => sweep(outlineOf(s, 0, 18), profile(points))), s.tone === 'metal' ? materials().waiting : toneMaterial(s.tone))
   }
   // A chip's edge is a wide soft round that starts 40 degrees up from its wall, so no part of it looks at the floor.
   const from = (40 * Math.PI) / 180
@@ -242,8 +278,22 @@ function capsule(s: Shape, round: number): THREE.Object3D {
   const half = Math.min(s.w, s.h) / 2
   for (const t of [0.75, 0.5, 0.25, 0.05]) soft.push([half - (half - edge) * t, top + CHIP_CROWN * (1 - t * t)])
   const root = new THREE.Group()
+  root.add(chipPocket(s))
   root.add(chipShade(s))
-  root.add(mesh(shared(`chipCap:${dims(s)}`, () => sweep(outlineOf(s, 0, 18), profile(soft))), materials().chip))
+  root.add(mesh(shared(`chipCap:${dims(s)}`, () => {
+    const geo = sweep(outlineOf(s, 0, 18), profile(soft))
+    const nor = geo.getAttribute('normal')
+    const colour = new Float32Array(nor.count * 3)
+    for (let i = 0; i < nor.count; i++) {
+      const d = nor.getY(i) * 0.69 - nor.getX(i) * 0.724
+      const v = 1 + (d > 0 ? CHIP_GLINT * d * d : CHIP_SHADOW * d)
+      colour[i * 3] = v
+      colour[i * 3 + 1] = v
+      colour[i * 3 + 2] = v
+    }
+    geo.setAttribute('color', new THREE.BufferAttribute(colour, 3))
+    return geo
+  }), materials().chip))
   return root
 }
 

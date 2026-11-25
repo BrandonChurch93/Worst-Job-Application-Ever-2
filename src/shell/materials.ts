@@ -59,7 +59,9 @@ const CLOSE_FALL = 1.5
 const CLOSE_FLOOR = 0.03
 const CLOSE_TOOTH = 2.85
 const SHEET_TOOTH = 0.4
-const HOME_TOOTH = 2.3
+const HOME_TOOTH = 0.9
+const FIBRE = 7
+const HOME_GAIN = 0.45
 const MOTTLE = 0.015
 
 // The eggshell grain as heights, one number a texel, with a mean of nought and a spread of one. The size is a power of two and the picture tiles.
@@ -233,9 +235,15 @@ vec3 wjaGrain( vec2 uv ) {
 	wjaGrainHeight = relief * ( a.a + b.a - 1.0 );
 	vec2 uvM = mat2( 0.8829, 0.4695, -0.4695, 0.8829 ) * uv;
 	wjaMottle = 2.3 * ( texture2D( normalMap, uvM * 0.125 + vec2( 0.613, 0.277 ), 2.0 ).a - 0.5 ) + 1.5 * ( texture2D( normalMap, uvM.yx * 0.25 + vec2( 0.211, 0.671 ), 2.0 ).a - 0.5 );
-	return normalize( vec3( relief * ( a.xy * 2.0 - 1.0 + 0.5 * tilt ) + tooth * fine + HOME_TOOTH * relief * c, a.z * 2.0 - 1.0 ) );
+	vec2 uvG = mat2( 0.5736, 0.8192, -0.8192, 0.5736 ) * uv * vec2( 0.25, 0.9 ) + vec2( 0.137, 0.733 );
+	vec2 g = vec2( 0.25, 0.9 ) * ( texture2D( normalMap, uvG ).xy - texture2D( normalMap, uvG, 2.0 ).xy );
+	vec2 uvH = mat2( 0.7431, 0.6691, -0.6691, 0.7431 ) * uv * vec2( 0.2, 1.1 ) + vec2( 0.613, 0.291 );
+	vec2 h = vec2( 0.2, 1.1 ) * ( texture2D( normalMap, uvH ).xy - texture2D( normalMap, uvH, 2.0 ).xy );
+	vec2 fibre = mat2( 0.5736, -0.8192, 0.8192, 0.5736 ) * g + 0.7 * ( mat2( 0.7431, -0.6691, 0.6691, 0.7431 ) * h );
+	float home = mix( HOME_GAIN, 1.0, smoothstep( 1.5, 2.4, close ) );
+	return normalize( vec3( home * ( relief * ( a.xy * 2.0 - 1.0 + 0.5 * tilt ) + tooth * fine + relief * ( HOME_TOOTH * c + FIBRE * fibre ) ), a.z * 2.0 - 1.0 ) );
 }
-`.replace(/CLOSE_FALL/g, CLOSE_FALL.toFixed(3)).replace(/CLOSE_FLOOR/g, CLOSE_FLOOR.toFixed(3)).replace(/CLOSE_TOOTH/g, CLOSE_TOOTH.toFixed(3)).replace(/SHEET_TOOTH/g, SHEET_TOOTH.toFixed(3)).replace(/HOME_TOOTH/g, HOME_TOOTH.toFixed(3))
+`.replace(/CLOSE_FALL/g, CLOSE_FALL.toFixed(3)).replace(/CLOSE_FLOOR/g, CLOSE_FLOOR.toFixed(3)).replace(/CLOSE_TOOTH/g, CLOSE_TOOTH.toFixed(3)).replace(/SHEET_TOOTH/g, SHEET_TOOTH.toFixed(3)).replace(/HOME_TOOTH/g, HOME_TOOTH.toFixed(3)).replace(/FIBRE/g, FIBRE.toFixed(3)).replace(/HOME_GAIN/g, HOME_GAIN.toFixed(3))
 
 // Two layers of one grain picture, the second turned and larger, so no repeat shows across a page. The height also moves the roughness.
 // The same picture is read three more times, each twice as fine as the one before and each less its own blurred copy. A reading comes in
@@ -441,7 +449,7 @@ export function makeMaterials(seed: number): Materials {
   brushed.repeat.set(1 / 720, 1 / 420)
   const turned = turnedMaps(256, seed, 2.2)
   const physical = (o: THREE.MeshPhysicalMaterialParameters) => studio(new THREE.MeshPhysicalMaterial(o))
-  const ceramic = grained(physical({ color: srgb(0xf1efea), roughness: 0.74, metalness: 0, normalMap: grain, normalScale: new THREE.Vector2(PAGE_GRAIN, PAGE_GRAIN), specularIntensity: 0.6 }), 0.5)
+  const ceramic = grained(physical({ color: srgb(0xf2f1ee), roughness: 0.74, metalness: 0, normalMap: grain, normalScale: new THREE.Vector2(PAGE_GRAIN, PAGE_GRAIN), specularIntensity: 0.6 }), 0.5)
   const pocket = grained(physical({ color: srgb(0xdcdfdc), roughness: 0.8, metalness: 0, normalMap: grain, normalScale: new THREE.Vector2(0.08, 0.08), specularIntensity: 0.4 }), 0.3)
   const glass = physical({ color: srgb(0xbdc5c2), roughness: 0.44, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8, ...frosted })
   const glassSunk = lightFilled(physical({ color: srgb(0xd0d8d9), roughness: 0.44, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8, vertexColors: true, ...frosted }), SUNK_FILL)
@@ -456,7 +464,7 @@ export function makeMaterials(seed: number): Materials {
   const aluminiumEdge = physical({ color: srgb(0xd0d4d7), roughness: 0.34, metalness: 0.8 })
   const cardSeal = physical({ color: srgb(0x6f7071), roughness: 0.7, metalness: 0 })
   const aluminiumSatin = physical({ color: srgb(0xb7bbbe), roughness: 0.3, metalness: 0.8 })
-  const orange = physical({ color: srgb(0xb94503), roughness: 0.5, metalness: 0, clearcoat: 0.85, clearcoatRoughness: 0.17, specularIntensity: 0.8, specularColor: srgb(0xff9a52) })
+  const orange = physical({ color: srgb(0xbc4610), roughness: 0.5, metalness: 0, clearcoat: 0.85, clearcoatRoughness: 0.17, specularIntensity: 0.8, specularColor: srgb(0xff9a52) })
   const chrome = physical({ color: srgb(0xdfe1e3), roughness: 0.16, metalness: 1 })
   const railSatin = physical({ color: srgb(0xd2d6d9), roughness: 0.36, metalness: 0.85, normalMap: brushed, normalScale: new THREE.Vector2(0.2, 0.2), anisotropy: 0.6, anisotropyRotation: Math.PI / 2 })
   const gap = physical({ color: srgb(0x23211f), roughness: 0.85, metalness: 0, specularIntensity: 0.3 })
@@ -465,8 +473,8 @@ export function makeMaterials(seed: number): Materials {
   const enamel = physical({ color: srgb(0xf7f5f0), roughness: 0.3, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.05 })
   const edge = physical({ color: srgb(0x1b1a19), roughness: 0.35, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.08 })
   const smoked = physical({ color: srgb(0x676d75), roughness: 0.55, metalness: 0, clearcoat: 0.5, clearcoatRoughness: 0.32, specularIntensity: 0.7 })
-  const chip = physical({ color: srgb(0x646a72), roughness: 0.6, metalness: 0, clearcoat: 0.35, clearcoatRoughness: 0.45, specularIntensity: 0.6 })
-  const waiting = physical({ color: srgb(0x4c5158), roughness: 0.7, metalness: 0, clearcoat: 0.15, clearcoatRoughness: 0.5, specularIntensity: 0.5 })
+  const chip = physical({ color: srgb(0x666c74), roughness: 0.56, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.3, specularIntensity: 0.6, vertexColors: true })
+  const waiting = physical({ color: srgb(0x5b6168), roughness: 0.5, metalness: 0, clearcoat: 0.85, clearcoatRoughness: 0.17, specularIntensity: 0.8, specularColor: srgb(0xc9d6e2), sheen: 0.5, sheenRoughness: 0.4, sheenColor: srgb(0x8f9aa6) })
   const paper = physical({ color: srgb(0xf3efe6), roughness: 0.9, metalness: 0, specularIntensity: 0.25, side: THREE.DoubleSide })
   const red = physical({ color: srgb(0xc22a1e), roughness: 0.42, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.1 })
   const keycap = physical({ color: srgb(0xece4d4), roughness: 0.52, metalness: 0, clearcoat: 0.25, clearcoatRoughness: 0.4 })
