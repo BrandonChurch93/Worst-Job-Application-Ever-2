@@ -16,7 +16,7 @@ export const TIMES = {
 }
 export const TUG = { stiff: 2600, damp: 36, strainPx: 9.6, lead: 0.4, shoulder: { x: 14, y: 30 }, hands: 31, rateLag: 0.07, inside: 4, least: 21, reach: { rest: 43, min: 37, max: 52, bite: 26, haul: 70 } }
 export const SPOT = { x: -12, y: -14 }
-export const BITE = { x: SLOT.cx - PAPER.w / 2, y: SLOT.cy - PAPER.h + 3 }
+export const BITE = { x: SLOT.cx - PAPER.w / 2, y: SLOT.cy - PAPER.h + 11, jerk: 9, settle: 0.5, snap: 0.72 }
 export const HOOD = { y: SLOT.cy + 17, z: 26 }
 export const FRINGE = { from: 0.12, step: 0.03, rate: 1.2, most: 0.34 }
 export const PILE = { x: SLOT.cx - 20, y: SLOT.cy + 60 }
@@ -47,7 +47,7 @@ export const END = { start: 0.05, sag: 0.34 }
 export const RESUME = { walk: [19.9, 20.3] as [number, number], proud: 20.4, beside: { x: 20, y: 6 }, grab: 21.06, hoist: [21.1, 21.16] as [number, number], carry: [21.18, 21.54] as [number, number], drop: 21.62 }
 
 const TUG_CURVE: [number, number, number, number][] = [
-  [0, 0.05, 0.2, 4], [0.3, 0.15, 0.14, 0], [0.8, 0.11, 0.28, 25], [1.05, 0.26, -0.12, 5], [1.55, 0.22, 0.42, 22], [1.8, 0.37, 0.06, 0], [2.3, 0.33, 0.52, 24],
+  [0, 0.125, 0.2, 4], [0.3, 0.15, 0.14, 0], [0.8, 0.11, 0.28, 25], [1.05, 0.26, -0.12, 5], [1.55, 0.22, 0.42, 22], [1.8, 0.37, 0.06, 0], [2.3, 0.33, 0.52, 24],
   [2.6, 0.48, 0.16, 1], [2.95, 0.455, 0.47, 17], [3.2, 0.44, 0.47, 18], [3.5, 0.6, -0.02, 3], [4, 0.56, 0.36, 25], [4.3, 0.72, 0.15, 3], [4.6, 0.68, 0.51, 18], [5.06, 0.95, 0, 3]
 ]
 
@@ -240,11 +240,13 @@ export function makePlan(seed: number, first: string, last: string, email: strin
   cue(RESUME.grab - 0.1, { react: 'anticipate' })
   clicks.push([RESUME.grab, RESUME.drop])
   to(RESUME.hoist[0], RESUME.hoist[1], grab.x - 6, grab.y - 20, { ease: 'out' })
-  to(RESUME.carry[0], RESUME.carry[1], BITE.x + (grab.x - PAPER_REST.x), BITE.y - 14 + (grab.y - PAPER_REST.y), { arc: 52 })
+  to(RESUME.carry[0], RESUME.carry[1], BITE.x + (grab.x - PAPER_REST.x), BITE.y - BITE.jerk - 14 + (grab.y - PAPER_REST.y), { arc: 52 })
 
   // step1.tug: the paper's curve places the pointer, so the body leans, loses ground and wins a little of it back
   const bite = RESUME.drop + TIMES.bite
   const lost = bite + TIMES.tugFilm
+  const over = tugPoint(0)
+  to(RESUME.drop + 0.03, bite - 0.05, over.x, over.y, { arc: 10, ease: 'out' })
   for (let at = bite + 0.15; at < lost; at += 0.05) {
     const p = tugPoint(at - bite)
     to(Math.max(free, at - 0.05), at, p.x, p.y, { ease: 'line' })
@@ -288,20 +290,19 @@ export function pointerAt(plan: Plan, time: number): Pointer {
   return { x: s.x0 + (s.x1 - s.x0) * u + s.side * bulge, y: s.y0 + (s.y1 - s.y0) * u - s.arc * bulge, down }
 }
 
-// The film camera in the tug: a window of the page for a moment. It eases from home to a wide frame for the shredder's arrival and the first grab, then pushes in once, with an ease, to a close frame on the cursor, its arms, the sheet and the mouth, and is there well before the key picture of 25.125. From the key picture it creeps closer and a little down as the sheet gets short, holds on the intake and the outlet while the cursor goes through and the strips drop, and only then pulls out. Its right edge stays left of the field column, so no word of that column is cut.
+// The film camera in the tug: one straight move in, one still frame, one straight move out. The eye goes down one line from home to the frame with one ease on all of it and looks straight down the whole way, so one point of the page keeps its place on the screen. The frame holds the drop zone's lower rim, the slot, the machine, the whole cursor with its arms and where the pile lands, and stands still from before the first bite until the pile is down.
 const TUG_EDGE = FIELD_X - 16
-const TUG_FRAMES = { wide: 972, key: 590, close: 556, mid: SLOT.cx + 4, high: 250, top: SLOT.cy - 153, low: SLOT.cy - 153, end: SLOT.cy - 153 }
-const tugFrame = (w: number, top: number): { x: number; y: number; w: number; h: number } => ({ x: Math.min(TUG_EDGE - w, TUG_FRAMES.mid - w / 2), y: top, w, h: (w * 9) / 16 })
-export const CAMERA = { in: [21.1, 22.1] as [number, number], closer: [23.1, 24.4] as [number, number], key: 25.125, creep: [25.125, 27.0] as [number, number], down: [27.1, 27.8] as [number, number], out: [28.3, 29.1] as [number, number] }
+const TUG_FRAME = { w: 620, mid: SLOT.cx + 4, top: SLOT.cy - 191 }
+const tugFrame = (): { x: number; y: number; w: number; h: number } => ({ x: Math.min(TUG_EDGE - TUG_FRAME.w, TUG_FRAME.mid - TUG_FRAME.w / 2), y: TUG_FRAME.top, w: TUG_FRAME.w, h: (TUG_FRAME.w * 9) / 16 })
+export const CAMERA = { in: [20.9, 21.95] as [number, number], key: 25.125, out: [28.3, 29.1] as [number, number] }
+const glide = (t: number): number => {
+  const u = Math.min(1, Math.max(0, t))
+  return u * u * u * (u * (u * 6 - 15) + 10)
+}
 
 export function filmCamera(time: number): CameraPose {
   const home = homePose(0)
   if (time <= CAMERA.in[0] || time >= CAMERA.out[1]) return home
-  const closer = smooth((time - CAMERA.closer[0]) / (CAMERA.closer[1] - CAMERA.closer[0]))
-  const creep = smooth((time - CAMERA.creep[0]) / (CAMERA.creep[1] - CAMERA.creep[0]))
-  const w = TUG_FRAMES.wide + (TUG_FRAMES.key - TUG_FRAMES.wide) * closer + (TUG_FRAMES.close - TUG_FRAMES.key) * creep
-  const down = smooth((time - CAMERA.down[0]) / (CAMERA.down[1] - CAMERA.down[0]))
-  const top = TUG_FRAMES.high + (TUG_FRAMES.top - TUG_FRAMES.high) * closer + (TUG_FRAMES.low - TUG_FRAMES.top) * creep + (TUG_FRAMES.end - TUG_FRAMES.low) * down
-  const u = smooth((time - CAMERA.in[0]) / (CAMERA.in[1] - CAMERA.in[0])) * (1 - smooth((time - CAMERA.out[0]) / (CAMERA.out[1] - CAMERA.out[0])))
-  return mixPose(home, frame(tugFrame(w, top)), u)
+  const u = glide((time - CAMERA.in[0]) / (CAMERA.in[1] - CAMERA.in[0])) * (1 - glide((time - CAMERA.out[0]) / (CAMERA.out[1] - CAMERA.out[0])))
+  return mixPose(home, frame(tugFrame()), u)
 }

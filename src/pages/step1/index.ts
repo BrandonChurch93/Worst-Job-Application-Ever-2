@@ -430,12 +430,14 @@ export function makePage(): PageLogic {
     }
     if (p.feed >= 0) {
       p.feed += io.dt
-      const u = smooth(p.feed / TIMES.bite)
+      const share = p.feed / TIMES.bite
+      const u = smooth(share / BITE.settle)
+      const snap = clamp((share - BITE.snap) / (1 - BITE.snap), 0, 1)
       const to = paperTarget()
       const wx = p.x
       const wy = p.y
       p.x = lerp(p.fx, to.x, u)
-      p.y = lerp(p.fy, to.y, u)
+      p.y = lerp(p.fy, to.y - BITE.jerk, u) + BITE.jerk * snap * snap
       p.vx = (p.x - wx) / io.dt
       p.vy = (p.y - wy) / io.dt
       if (p.feed >= TIMES.bite) {
