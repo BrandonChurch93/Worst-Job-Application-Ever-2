@@ -1,35 +1,35 @@
 {
   "folder": "marketing",
-  "pushed": "2026-11-25T10:39:10.068Z",
-  "commit": "385f658cc8b00b9bea8c212bb34f959423b984bb",
+  "pushed": "2026-11-25T11:15:45.114Z",
+  "commit": "922f1175e4dd613f605da8e7a5b48bb38c2c34ed",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still sw-8-preview-draft: draft tier, preview, view beauty",
-      "time": "2026-11-25T10:36:56.341Z",
+      "caption": "Still sec-13-preview-draft: draft tier, preview, view beauty",
+      "time": "2026-11-25T11:12:47.901Z",
       "by": "marketing",
-      "from": "out/work/stills/sw-8-preview-draft.png"
+      "from": "out/work/stills/sec-13-preview-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Still shade-2.483-preview-draft: draft tier, preview, view beauty",
-      "time": "2026-11-25T10:39:08.395Z",
+      "caption": "Still key-marketing-top-preview-draft: draft tier, preview, view beauty",
+      "time": "2026-11-25T11:15:40.487Z",
       "by": "marketing",
-      "from": "out/work/stills/shade-2.483-preview-draft.png"
+      "from": "out/work/stills/key-marketing-top-preview-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Perk card at 2.467 s, the darkest full frame of the back now (level 118 of 255); with the old ease the back stayed under 150 for 8 frames, now 3",
-      "time": "2026-11-25T10:39:08.740Z",
+      "caption": "Key marketing-top: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-25T11:15:43.720Z",
       "by": "marketing",
-      "from": "out/work/stills/sw-4-preview-draft.png"
+      "from": "out/work/compare/compare-marketing-top.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Perk card at 2.500 s: the back at level 174, words clear, 4 frames after edge-on",
-      "time": "2026-11-25T10:39:08.982Z",
+      "caption": "The film at 6, 7, 8, 9, 10, 11, 12, 13 s (rows left to right): third card opens near 7, admire at 8, walk at 9 and 10, stand at 11, run-up at 12, on the button at 13; the tape runs all through",
+      "time": "2026-11-25T11:15:43.977Z",
       "by": "marketing",
-      "from": "out/work/stills/sw-6-preview-draft.png"
+      "from": "out/work/looks/files/20261125111543-seconds-6-13.png"
     }
   ]
 }
