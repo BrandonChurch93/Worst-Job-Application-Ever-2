@@ -44,6 +44,7 @@ Agent `tug_fixer`, branch `agent/tug`. Started 16:42 UTC.
 28. The cut edge of the sheet takes 0.8 of the sheet's shade (`MOUTH.edge`). It is thinner than a pixel and faced the light, so it sparkled as a dotted line along the left and top of the sheet at both tiers.
 29. The shade of the bend at the mouth a little deeper and wider (`MOUTH.bent` 0.24, `fold` 15, `soft` 7), seen at review tier beside the one before.
 30. The lines of text on the sheet a softer grey (`INK.bar` 0x7c7c80 to 0x8c8c90), nearer the approved image's; at the key they still read as lines, seen at review tier. The ticks the strips keep of them are paler with it.
+31. An arm is rooted 0.2 of the way in from its shoulder (`ROOT` in `view.ts`, was 0.09). At the key the left arm left the body at the very point of the wing and read as a spike drawn on from the outline; now it comes out from under the edge at its full width.
 
 ## M3 and the camera
 
