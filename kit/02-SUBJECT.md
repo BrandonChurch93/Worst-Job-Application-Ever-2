@@ -1,6 +1,6 @@
 # 02 · The page, the cursor and everything that hurts it
 
-Three things are on screen: the page, the cursor, and whatever the page is doing to the cursor. This file describes all three. The approved images show them. Where words and an approved image disagree, the image wins.
+Three things are on screen: the page, the cursor, and whatever the page is doing to the cursor. This file describes all three. The approved images show them. Where words and an approved image disagree, the image wins, except on a settled difference. `kit/06-ASSETS.md` has that rule.
 
 A key written as `copy:` followed by a path is a string in `content/copy.json`. Every other key is in `config/showcase.json`.
 
@@ -15,7 +15,7 @@ A key written as `copy:` followed by a path is a string in `content/copy.json`. 
 
 ## What the page is made of
 
-The approved image is `references.approved.pageLook`.
+The approved image is the sheet `page-look`, at `references.approved.pageLook`.
 
 | Part | Material |
 | --- | --- |
@@ -34,7 +34,7 @@ The approved image is `references.approved.pageLook`.
 ## Light
 
 - One soft key light from the upper left. Every part casts a clear, soft contact shadow down and to the right.
-- The approved lighting is `references.approved.lighting`: clean and even.
+- The approved lighting is `references.approved.lighting`: clean and even. The round 5 keys have the same light.
 - No window shadows and no diagonal bands of light or shade across the page. Three earlier reference images had them and they are not the target.
 - Shadows may be a little deeper than the page look image. That depth is what made the realistic references read as real.
 
@@ -115,7 +115,7 @@ The copy for every page is in `content/copy.json` under the key named for it. Us
 
 ### The careers page · unit `marketing`
 
-Copy: `copy:marketing`. Reference: round 5, image M1. Pending.
+Copy: `copy:marketing`. Approved image: key `marketing-top`.
 
 - A one-page careers site for `employer.name`. Cheerful, corporate and sincere.
 - What is on it, top to bottom: the top bar, the hero with the big "Apply for a Job" button, the perk cards, the awards, the testimonials, the comparison table, the five-step process, the questions, the final call to action, the footer. A ticker strip runs along the bottom of the first screen.
@@ -129,7 +129,7 @@ Copy: `copy:marketing`. Reference: round 5, image M1. Pending.
 
 ### Step 1, About You · unit `step1`
 
-Copy: `copy:step1`. Reference: round 5, image K1. Pending. The round 4 version was rejected: no layout discipline, beams instead of bolts, a keyboard with keys missing.
+Copy: `copy:step1`. Approved images: keys `step1-fire` and `step1-tug`. The round 4 version was rejected: no layout discipline, beams instead of bolts, a keyboard with keys missing.
 
 **Layout**
 
@@ -176,7 +176,7 @@ Copy: `copy:step1`. Reference: round 5, image K1. Pending. The round 4 version w
 
 ### Step 2, Personal Details · unit `step2`
 
-Copy: `copy:step2`. References: round 5, images D1, D2 and D3. Pending. The look of the three machines is approved in `references.approved.machines`. That image showed all three at once, which is no longer the layout.
+Copy: `copy:step2`. Approved images: keys `step2-rest`, `step2-dial` and `step2-crank`, and the sheet `machines` for the look of all three machines. The sheet shows all three at once, which is no longer the layout. No approved image shows the slot machine open inside its row: it follows the sheet for its look and the dial and crank keys for how a machine sits in its panel.
 
 **Layout**
 
@@ -204,14 +204,14 @@ Copy: `copy:step2`. References: round 5, images D1, D2 and D3. Pending. The look
 
 ### Step 3, Skills Assessment · unit `pinball`
 
-Copy: `copy:step3`. Reference: round 6, images G1 to G8. Pending. See "The pinball machine" below.
+Copy: `copy:step3`. Approved images: the eight `table-` keys, from reference round 6. Pending until `references/STATUS.md` says otherwise. See "The pinball machine" below.
 
 - The page shows the heading and `copy:transitions.step3`. Then the page splits and the cabinet rises.
 - When the scene is over the cabinet sinks back into the page and the page shows the result card, `copy:step3.result`.
 
 ### Step 4, Submit · unit `boss`
 
-Copy: `copy:step4`. References: round 5, images B1, B2 and B3. Pending. See "The boss" below.
+Copy: `copy:step4`. Approved images: the sheet `boss-stages` and keys `boss-fight` and `boss-down`. See "The boss" below.
 
 - Before the fight the page holds two things: the Human Verification card and the Submit button in its socket.
 - The checkbox answers differently in each mode. In the film the AI ticks it and the card shows `copy:step4.verify.confirmedFilm`. On the live site the visitor ticks it truthfully, the card shows `copy:step4.verify.doubtLive`, then `copy:step4.verify.confirmedLive`.
@@ -219,7 +219,7 @@ Copy: `copy:step4`. References: round 5, images B1, B2 and B3. Pending. See "The
 
 ### Step 5, Decision · unit `decision`
 
-Copy: `copy:step5`. Reference: round 5, image R1. Pending. The round 4 version was rejected: empty and unbalanced.
+Copy: `copy:step5`. Approved image: key `decision`. The round 4 version was rejected: empty and unbalanced.
 
 **Layout**
 
@@ -307,7 +307,7 @@ The centerpiece. The part people will remember and the part to spend the most on
 
 ## The boss
 
-References: round 5, images B1, B2 and B3. Pending.
+Approved images: the sheet `boss-stages` and keys `boss-fight` and `boss-down`.
 
 ### What it is
 
@@ -319,7 +319,8 @@ References: round 5, images B1, B2 and B3. Pending.
 
 ### The fight
 
-- A health bar sits under the header, in the page's own style: a recessed aluminum track with a glossy orange fill, labeled `copy:step4.bossHealthLabel`.
+- A health bar slides in under the step heading, in the place the subline held, in the page's own style: a recessed aluminum track with a glossy orange fill, labeled `copy:step4.bossHealthLabel`.
+- The socket is at the bottom center of the page, as the approved images show it.
 - The cursor fights with the only thing it has. Every click fires a tiny glowing white cursor dart.
 - `live.boss.phases` phases, each a different kind of fight:
 

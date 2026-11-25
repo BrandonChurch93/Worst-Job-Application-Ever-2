@@ -1,0 +1,12 @@
+node_modules
+dist/
+out/work/
+references/cache/
+*.blend
+*.blend1
+.env
+.env.*
+.vercel
+.DS_Store
+*.log
+__pycache__/

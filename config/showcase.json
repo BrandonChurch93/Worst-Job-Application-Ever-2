@@ -1,27 +1,20 @@
 {
   "name": "The Worst Job Application Ever",
   "slug": "worst-job-application",
-  "status": "planning",
   "seed": 20261124,
-  "repo": {
-    "url": "https://github.com/BrandonChurch93/Worst-Job-Application-Ever-2",
-    "branch": "main"
-  },
-  "employer": {
-    "name": "Mandatory Optional Overtime"
-  },
-  "table": {
-    "name": "The Daily Grind"
-  },
-  "applicant": {
-    "filmFirstName": "Perplexity",
-    "filmLastName": "Computer",
-    "filmEmail": "applicant@example.com"
-  },
+  "repo": { "url": "https://github.com/BrandonChurch93/Worst-Job-Application-Ever-2", "branch": "main", "expectPrivate": true, "maxFileMb": 95, "maxTreeGb": 2, "maxPushGb": 1 },
+  "host": { "name": "Vercel", "maxShippedMb": 95, "maxFileMb": 20, "firstLoadMaxMb": 16, "maxBuildMinutes": 20 },
+  "employer": { "name": "Mandatory Optional Overtime" },
+  "table": { "name": "The Daily Grind", "minStandingParts": 60, "maxBareFraction": 0.08, "inserts": 9, "slopeDeg": 6.5, "bareDistanceFraction": 0.02 },
+  "applicant": { "filmFirstName": "Perplexity", "filmLastName": "Computer", "filmEmail": "applicant@example.com" },
   "film": {
-    "fps": 30,
+    "fps": 60,
+    "previewFps": 30,
+    "shutterDegrees": 180,
     "hookSeconds": 2,
-    "promptOpeningSeconds": 9,
+    "unitTuneFraction": 0.2,
+    "beatToleranceSeconds": 0.25,
+    "maxSeconds": 165,
     "units": [
       { "id": "marketing", "seconds": 14 },
       { "id": "step1", "seconds": 32 },
@@ -31,96 +24,512 @@
       { "id": "decision", "seconds": 12 }
     ],
     "beats": [
-      { "id": "marketing.stroll", "unit": "marketing", "from": 0, "to": 2 },
-      { "id": "marketing.perks", "unit": "marketing", "from": 2, "to": 8 },
-      { "id": "marketing.ticker", "unit": "marketing", "from": 8, "to": 11 },
-      { "id": "marketing.apply", "unit": "marketing", "from": 11, "to": 14 },
-
-      { "id": "step1.keyboard", "unit": "step1", "from": 0, "to": 2 },
-      { "id": "step1.firstName", "unit": "step1", "from": 2, "to": 10 },
-      { "id": "step1.lastName", "unit": "step1", "from": 10, "to": 15 },
-      { "id": "step1.email", "unit": "step1", "from": 15, "to": 20 },
-      { "id": "step1.resume", "unit": "step1", "from": 20, "to": 22 },
-      { "id": "step1.tug", "unit": "step1", "from": 22, "to": 29 },
-      { "id": "step1.shredded", "unit": "step1", "from": 29, "to": 32 },
-
-      { "id": "step2.open", "unit": "step2", "from": 0, "to": 2 },
-      { "id": "step2.dial", "unit": "step2", "from": 2, "to": 8 },
-      { "id": "step2.slot", "unit": "step2", "from": 8, "to": 14 },
-      { "id": "step2.crank", "unit": "step2", "from": 14, "to": 20 },
-      { "id": "step2.continue", "unit": "step2", "from": 20, "to": 21 },
-
-      { "id": "pinball.rise", "unit": "pinball", "from": 0, "to": 6 },
-      { "id": "pinball.launch", "unit": "pinball", "from": 6, "to": 9 },
-      { "id": "pinball.coffee", "unit": "pinball", "from": 9, "to": 14 },
-      { "id": "pinball.firehouse", "unit": "pinball", "from": 14, "to": 18 },
-      { "id": "pinball.highway", "unit": "pinball", "from": 18, "to": 22 },
-      { "id": "pinball.replyAll", "unit": "pinball", "from": 22, "to": 30 },
-      { "id": "pinball.save", "unit": "pinball", "from": 30, "to": 33 },
-      { "id": "pinball.hq", "unit": "pinball", "from": 33, "to": 36 },
-      { "id": "pinball.drain", "unit": "pinball", "from": 36, "to": 40 },
-
-      { "id": "boss.verify", "unit": "boss", "from": 0, "to": 5 },
-      { "id": "boss.unfold", "unit": "boss", "from": 5, "to": 9 },
-      { "id": "boss.slabs", "unit": "boss", "from": 9, "to": 16 },
-      { "id": "boss.popups", "unit": "boss", "from": 16, "to": 22 },
-      { "id": "boss.lastStand", "unit": "boss", "from": 22, "to": 27 },
-      { "id": "boss.collapse", "unit": "boss", "from": 27, "to": 29 },
-      { "id": "boss.press", "unit": "boss", "from": 29, "to": 32 },
-
-      { "id": "decision.wait", "unit": "decision", "from": 0, "to": 2 },
-      { "id": "decision.letter", "unit": "decision", "from": 2, "to": 6 },
-      { "id": "decision.metrics", "unit": "decision", "from": 6, "to": 10 },
-      { "id": "decision.reset", "unit": "decision", "from": 10, "to": 12 }
+      { "id": "marketing.stroll", "unit": "marketing", "from": 0, "to": 2, "event": "step" },
+      { "id": "marketing.perks", "unit": "marketing", "from": 2, "to": 8, "event": "card-flip" },
+      { "id": "marketing.ticker", "unit": "marketing", "from": 8, "to": 11, "event": null },
+      { "id": "marketing.apply", "unit": "marketing", "from": 11, "to": 14, "event": "page-turn" },
+      { "id": "step1.keyboard", "unit": "step1", "from": 0, "to": 2, "event": "keyboard-rise" },
+      { "id": "step1.firstName", "unit": "step1", "from": 2, "to": 10, "event": "bolt-hit-cursor" },
+      { "id": "step1.lastName", "unit": "step1", "from": 10, "to": 15, "event": "keys-shuffle" },
+      { "id": "step1.email", "unit": "step1", "from": 15, "to": 20, "event": "slab-drop" },
+      { "id": "step1.resume", "unit": "step1", "from": 20, "to": 22, "event": "paper-slide" },
+      { "id": "step1.tug", "unit": "step1", "from": 22, "to": 29, "event": "arms-out" },
+      { "id": "step1.shredded", "unit": "step1", "from": 29, "to": 32, "event": "strips-zip" },
+      { "id": "step2.open", "unit": "step2", "from": 0, "to": 2, "event": null },
+      { "id": "step2.dial", "unit": "step2", "from": 2, "to": 8, "event": "dial-fling" },
+      { "id": "step2.slot", "unit": "step2", "from": 8, "to": 14, "event": "coins" },
+      { "id": "step2.crank", "unit": "step2", "from": 14, "to": 20, "event": "flatten" },
+      { "id": "step2.continue", "unit": "step2", "from": 20, "to": 21, "event": "button-press" },
+      { "id": "pinball.rise", "unit": "pinball", "from": 0, "to": 6, "event": "power-on" },
+      { "id": "pinball.launch", "unit": "pinball", "from": 6, "to": 9, "event": "plunger" },
+      { "id": "pinball.coffee", "unit": "pinball", "from": 9, "to": 14, "event": "bumper" },
+      { "id": "pinball.firehouse", "unit": "pinball", "from": 14, "to": 18, "event": "scoop-kick" },
+      { "id": "pinball.highway", "unit": "pinball", "from": 18, "to": 22, "event": "ramp-roll" },
+      { "id": "pinball.replyAll", "unit": "pinball", "from": 22, "to": 30, "event": "ball-drop" },
+      { "id": "pinball.save", "unit": "pinball", "from": 30, "to": 33, "event": "flipper-save" },
+      { "id": "pinball.hq", "unit": "pinball", "from": 33, "to": 36, "event": "doors-slam" },
+      { "id": "pinball.drain", "unit": "pinball", "from": 36, "to": 40, "event": "drain" },
+      { "id": "boss.verify", "unit": "boss", "from": 0, "to": 5, "event": "checkbox" },
+      { "id": "boss.unfold", "unit": "boss", "from": 5, "to": 9, "event": "unfold" },
+      { "id": "boss.slabs", "unit": "boss", "from": 9, "to": 16, "event": "slab-fire" },
+      { "id": "boss.popups", "unit": "boss", "from": 16, "to": 22, "event": "popup" },
+      { "id": "boss.lastStand", "unit": "boss", "from": 22, "to": 27, "event": "session-expired" },
+      { "id": "boss.collapse", "unit": "boss", "from": 27, "to": 29, "event": "power-down" },
+      { "id": "boss.press", "unit": "boss", "from": 29, "to": 32, "event": "button-press" },
+      { "id": "decision.wait", "unit": "decision", "from": 0, "to": 2, "event": "hold-music" },
+      { "id": "decision.letter", "unit": "decision", "from": 2, "to": 6, "event": "stamp" },
+      { "id": "decision.metrics", "unit": "decision", "from": 6, "to": 10, "event": "button-press" },
+      { "id": "decision.reset", "unit": "decision", "from": 10, "to": 12, "event": "page-turn" }
     ]
   },
-  "cursor": {
-    "heightPxAt1080": 70,
-    "damageHealSeconds": 4,
-    "armsOnlyInBeat": "step1.tug"
+  "intro": {
+    "prompt": "Build the worst job application ever made. Then fill it out yourself.",
+    "reasoningLevel": "Max",
+    "maxSeconds": 12,
+    "charsPerSecond": 14,
+    "readHoldSeconds": 1,
+    "stepSeconds": 0.7,
+    "endHoldSeconds": 1,
+    "title": "Building the worst job application ever",
+    "steps": [
+      "Designing a careers page with fine print",
+      "Installing turrets on the keyboard",
+      "Feeding the resume to a shredder",
+      "Building a pinball machine nobody asked for",
+      "Teaching the Submit button to fight back",
+      "Rejecting the applicant"
+    ]
   },
+  "formats": {
+    "master": { "id": "uhd", "width": 3840, "height": 2160 },
+    "hd": { "id": "hd", "width": 1920, "height": 1080 },
+    "preview": { "id": "preview", "width": 960, "height": 540 }
+  },
+  "platform": { "name": "X", "standardAccountMaxSeconds": 140, "maxFileMb": 512 },
+  "export": {
+    "container": "mp4",
+    "videoCodec": "h264",
+    "bitrateMbps": 20,
+    "audioCodec": "aac",
+    "audioKbps": 256,
+    "proofSeconds": 1,
+    "local": { "container": "mov", "videoCodec": "prores_422_hq", "testSeconds": 10 },
+    "files": {
+      "filmA": "worst-job-application-with-prompt",
+      "filmB": "worst-job-application",
+      "previewA": "preview-a.mp4",
+      "previewB": "preview-b.mp4",
+      "reviewCut": "review-cut.mp4",
+      "cardLoop": "card-loop.mp4",
+      "cardLoopWeb": "card-loop-web.mp4",
+      "cardStill": "card-still.jpg"
+    }
+  },
+  "previewFilm": { "bitrateMbps": 4 },
+  "tiers": {
+    "draft": { "samplesPerFrame": 2 },
+    "review": { "samplesPerFrame": 8 },
+    "final": { "samplesPerFrame": 24 }
+  },
+  "cursor": { "heightPxAt1080": 70, "sizeTolerancePx": 6, "damageHealSeconds": 4, "armsOnlyInBeat": "step1.tug" },
+  "cameras": {
+    "home": { "fovDeg": 12, "fovMinDeg": 6, "fovMaxDeg": 20, "note": "the page, straight on, filling the frame" },
+    "sheet": { "fovDeg": 12, "note": "straight on and close, for the cursor and boss sheets" },
+    "table-top": { "fovDeg": 20, "note": "the whole playfield from directly above" },
+    "table-player": { "fovDeg": 35, "note": "where a player stands, looking down the playfield" },
+    "table-play": { "fovDeg": 30, "note": "the steady play view of the live site" },
+    "table-backbox": { "fovDeg": 35, "note": "fitted to its approved image" },
+    "table-hq": { "fovDeg": 35, "note": "fitted to its approved image" },
+    "table-firehouse": { "fovDeg": 35, "note": "fitted to its approved image" },
+    "table-coffee": { "fovDeg": 35, "note": "fitted to its approved image" },
+    "table-flippers": { "fovDeg": 35, "note": "fitted to its approved image" },
+    "table-highway": { "fovDeg": 35, "note": "fitted to its approved image" }
+  },
+  "layout": { "tolerancePx": 2, "minTextPx": 14, "minTextContrast": 4.5 },
+  "sim": { "stepHz": 240, "checkpointSeconds": 1 },
   "live": {
-    "step1": {
-      "minChars": 3,
-      "hitsBeforeTurretsOverheat": 3
+    "defaultQuality": "auto",
+    "quality": {
+      "high": { "pixelRatioCap": 2, "shadowMapPx": 4096, "softShadows": "accumulated at rest", "glass": "refracting", "particleFraction": 1.0, "minFps": 50 },
+      "medium": { "pixelRatioCap": 1.5, "shadowMapPx": 2048, "softShadows": "filtered", "glass": "refracting", "particleFraction": 0.6, "minFps": 40 },
+      "low": { "pixelRatioCap": 1, "shadowMapPx": 1024, "softShadows": "baked", "glass": "frosted, no refraction", "particleFraction": 0.3, "minFps": 30 }
     },
-    "step2": {
-      "dialDigitsBeforeItGivesUp": 3,
-      "crankTurnsBeforeItRunsAway": 3
-    },
-    "pinball": {
-      "sceneSeconds": 45,
-      "extraBallsInReplyAll": 2
-    },
-    "boss": {
-      "phases": 3,
-      "maxSeconds": 45
-    },
+    "step1": { "minChars": 3, "hitsBeforeTurretsOverheat": 3 },
+    "step2": { "dialDigitsBeforeItGivesUp": 3, "crankTurnsBeforeItRunsAway": 3 },
+    "pinball": { "sceneSeconds": 45, "extraBallsInReplyAll": 2 },
+    "boss": { "phases": 3, "maxSeconds": 45 },
     "skipLinkAfterSeconds": 20,
-    "controlTakenMaxSeconds": 8
+    "controlTakenMaxSeconds": 8,
+    "loadWaitSeconds": 4,
+    "bots": ["keen", "clumsy", "random", "skipper"],
+    "botSeeds": 5,
+    "botMaxSeconds": 600
   },
-  "audio": {
-    "narratorVoice": "Worst-Job-Application-Ever",
-    "music": false,
-    "holdMusicSeconds": 2
+  "perf": {
+    "probeSeconds": 8,
+    "maxTriangles": { "high": 3000000, "medium": 1500000, "low": 700000 },
+    "maxDrawCalls": { "high": 600, "medium": 450, "low": 300 }
   },
-  "deliver": {
-    "cardLoopSeconds": 8,
-    "cuts": ["with-prompt", "without-prompt"]
+  "assetSets": {
+    "web": { "pageMapWidth": 4096, "tableArtWidth": 4096, "maxTextureMb": 700 },
+    "full": { "pageMapWidth": 8192, "tableArtWidth": 8192, "maxTextureMb": 2400 }
   },
-  "links": {
-    "portfolioWork": ""
-  },
+  "units": [
+    { "id": "step1", "kind": "page", "phase": 3 },
+    { "id": "pinball", "kind": "page", "phase": 4 },
+    { "id": "boss", "kind": "page", "phase": 4 },
+    { "id": "step2", "kind": "page", "phase": 4 },
+    { "id": "marketing", "kind": "page", "phase": 4 },
+    { "id": "decision", "kind": "page", "phase": 4 },
+    { "id": "site", "kind": "whole", "phase": 5 },
+    { "id": "film", "kind": "films", "phase": 6 }
+  ],
+  "lookLockUnit": "step1",
+  "buildOrderAfterLookLock": ["pinball", "boss", "step2", "marketing", "decision"],
+  "settledAll": [
+    "The cursor's size comes from cursor.heightPxAt1080. Several images draw it larger or smaller.",
+    "Every word comes from content/copy.json. Where an image misspells a word or changes punctuation, the copy wins.",
+    "The page fills the frame evenly. A darker slab edge along the border of an image is not part of the page.",
+    "The light is clean. A band of window light or shade across an image is not part of the look."
+  ],
+  "keys": [
+    { "id": "marketing-top", "unit": "marketing", "beat": "marketing.apply", "at": 0, "camera": "home", "image": "references/approved/marketing-top.png", "settled": [] },
+    {
+      "id": "step1-fire",
+      "unit": "step1",
+      "beat": "step1.firstName",
+      "at": 0.5,
+      "camera": "home",
+      "image": "references/approved/step1-fire.png",
+      "settled": [
+        "The image cuts the bottom key row off at the tray edge. The build shows all five rows inside the tray, with a lower rim.",
+        "The image shows three bolts in flight. The number in flight is not fixed."
+      ]
+    },
+    {
+      "id": "step1-tug",
+      "unit": "step1",
+      "beat": "step1.tug",
+      "at": 0.5,
+      "camera": "film",
+      "image": "references/approved/step1-tug.png",
+      "settled": [
+        "The image shows the old field labels and a salary slider and Submit button. The build shows the step 1 page.",
+        "The image shows no keyboard. In the build the keyboard has slid away before this beat."
+      ]
+    },
+    { "id": "step2-rest", "unit": "step2", "beat": "step2.open", "at": 0.5, "camera": "home", "image": "references/approved/step2-rest.png", "settled": [] },
+    {
+      "id": "step2-dial",
+      "unit": "step2",
+      "beat": "step2.dial",
+      "at": 0.2,
+      "camera": "home",
+      "image": "references/approved/step2-dial.png",
+      "settled": ["The image's dial numerals are wrong. The build's dial reads 1 to 9 and then 0, in order."]
+    },
+    {
+      "id": "step2-crank",
+      "unit": "step2",
+      "beat": "step2.crank",
+      "at": 0.2,
+      "camera": "home",
+      "image": "references/approved/step2-crank.png",
+      "settled": ["The image leaves the input empty. The build shows the level as a percentage."]
+    },
+    {
+      "id": "boss-fight",
+      "unit": "boss",
+      "beat": "boss.slabs",
+      "at": 0.5,
+      "camera": "home",
+      "image": "references/approved/boss-fight.png",
+      "settled": ["The image shows a spark on the shield with no dart at it. In the build every spark has a dart."]
+    },
+    {
+      "id": "boss-down",
+      "unit": "boss",
+      "beat": "boss.collapse",
+      "at": 1,
+      "camera": "home",
+      "image": "references/approved/boss-down.png",
+      "settled": ["The image's cursor stands upright. In the build it sags, exhausted.", "The image's button is scorched but not dented. In the build it is also dented."]
+    },
+    {
+      "id": "decision",
+      "unit": "decision",
+      "beat": "decision.metrics",
+      "at": 0.3,
+      "camera": "home",
+      "image": "references/approved/decision.png",
+      "settled": [
+        "The image draws the stamp block in a three-quarter view. In the build it is seen straight on like everything else.",
+        "The image's cursor is cracked but not flat. In the build it is flattened."
+      ]
+    },
+    {
+      "id": "table-top",
+      "unit": "pinball",
+      "beat": "pinball.rise",
+      "at": 1,
+      "camera": "table-top",
+      "image": "references/approved/table-top.png",
+      "settled": [],
+      "pending": true
+    },
+    {
+      "id": "table-player",
+      "unit": "pinball",
+      "beat": "pinball.rise",
+      "at": 1,
+      "camera": "table-player",
+      "image": "references/approved/table-player.png",
+      "settled": [],
+      "pending": true
+    },
+    {
+      "id": "table-backbox",
+      "unit": "pinball",
+      "beat": "pinball.rise",
+      "at": 1,
+      "camera": "table-backbox",
+      "image": "references/approved/table-backbox.png",
+      "settled": [],
+      "pending": true
+    },
+    {
+      "id": "table-coffee",
+      "unit": "pinball",
+      "beat": "pinball.coffee",
+      "at": 0.5,
+      "camera": "table-coffee",
+      "image": "references/approved/table-coffee.png",
+      "settled": [],
+      "pending": true
+    },
+    {
+      "id": "table-firehouse",
+      "unit": "pinball",
+      "beat": "pinball.firehouse",
+      "at": 0.6,
+      "camera": "table-firehouse",
+      "image": "references/approved/table-firehouse.png",
+      "settled": [],
+      "pending": true
+    },
+    {
+      "id": "table-highway",
+      "unit": "pinball",
+      "beat": "pinball.highway",
+      "at": 0.5,
+      "camera": "table-highway",
+      "image": "references/approved/table-highway.png",
+      "settled": [],
+      "pending": true
+    },
+    {
+      "id": "table-flippers",
+      "unit": "pinball",
+      "beat": "pinball.save",
+      "at": 0.5,
+      "camera": "table-flippers",
+      "image": "references/approved/table-flippers.png",
+      "settled": [],
+      "pending": true
+    },
+    {
+      "id": "table-hq",
+      "unit": "pinball",
+      "beat": "pinball.hq",
+      "at": 0.6,
+      "camera": "table-hq",
+      "image": "references/approved/table-hq.png",
+      "settled": [],
+      "pending": true
+    }
+  ],
+  "sheets": [
+    {
+      "id": "page-look",
+      "unit": "step1",
+      "image": "references/approved/page-look.png",
+      "shows": "the page's materials, type, header and shadows",
+      "settled": ["The image shows the old field set and a Submit button. It is the target for materials, type, the header and the shadows, not for which fields a page holds."]
+    },
+    {
+      "id": "cursor-arms",
+      "unit": "step1",
+      "image": "references/approved/cursor-arms.png",
+      "shows": "the arms, in five poses",
+      "settled": ["The image was photographed at an angle. It defines the arms, not the camera."]
+    },
+    { "id": "cursor-damage", "unit": "step1", "image": "references/approved/cursor-damage.png", "shows": "five kinds of damage", "settled": [] },
+    {
+      "id": "cursor-acting",
+      "unit": "step1",
+      "image": "references/approved/cursor-acting.png",
+      "shows": "sweat, anger, fear, exhaustion and the burn hole",
+      "settled": [
+        "The image has bands of window light across it. The build's light is clean.",
+        "The image's shocked pose did not read. That state follows the words in kit/02-SUBJECT.md."
+      ]
+    },
+    {
+      "id": "machines",
+      "unit": "step2",
+      "image": "references/approved/machines.png",
+      "shows": "the dial, the slot machine and the crank",
+      "settled": ["The image shows all three machines open at once. In the build one row is open at a time."]
+    },
+    {
+      "id": "boss-stages",
+      "unit": "boss",
+      "image": "references/approved/boss-stages.png",
+      "shows": "the Submit button becoming the boss, in four stages",
+      "settled": ["The image's cannon discs carry no numerals. In the build they are the numbered buttons of the progress bar."]
+    }
+  ],
+  "stills": [
+    { "id": "rest-marketing", "unit": "marketing", "scroll": 0, "camera": "home" },
+    { "id": "marketing-perks", "unit": "marketing", "scroll": 0.25, "camera": "home" },
+    { "id": "marketing-proof", "unit": "marketing", "scroll": 0.5, "camera": "home" },
+    { "id": "marketing-foot", "unit": "marketing", "scroll": 1, "camera": "home" },
+    { "id": "rest-step1", "unit": "step1", "camera": "home" },
+    { "id": "rest-step2", "unit": "step2", "camera": "home" },
+    { "id": "rest-step3", "unit": "pinball", "camera": "home" },
+    { "id": "rest-step4", "unit": "boss", "camera": "home" },
+    { "id": "rest-step5", "unit": "decision", "camera": "home" },
+    { "id": "screen-live", "unit": "site", "camera": "home", "interface": true },
+    { "id": "screen-touch", "unit": "site", "camera": "home", "interface": true, "touchOnly": true }
+  ],
   "references": {
     "approved": {
-      "pageLook": "references/drafts/round-3/P1-soft-touch-ceramic.png",
-      "cursorArms": "references/drafts/round-3/C1-arms.png",
-      "cursorDamage": "references/drafts/round-3/C4-damage.png",
-      "tugOfWar": "references/drafts/round-3/S1-shredder-tug-of-war.png",
-      "cursorActing": "references/drafts/round-4/E1-cursor-emotions.png",
-      "machines": "references/drafts/round-4/D1-wrong-machines.png",
-      "lighting": "references/drafts/round-4/D1-wrong-machines.png"
+      "pageLook": "references/approved/page-look.png",
+      "lighting": "references/approved/machines.png",
+      "cursorArms": "references/approved/cursor-arms.png",
+      "cursorDamage": "references/approved/cursor-damage.png",
+      "cursorActing": "references/approved/cursor-acting.png",
+      "tugOfWar": "references/approved/step1-tug.png"
     },
-    "pendingRounds": ["references/drafts/round-5", "references/drafts/round-6"]
-  }
+    "pendingRounds": ["references/drafts/round-6"]
+  },
+  "detail": { "focusCocPx": 1.5, "minTexelsPerPixel": 1.0, "maxSoftPixelFraction": 0.02, "minSharpnessRatio": 0.8 },
+  "assets": { "maxTakesPerAsset": 6, "maxTuningLooksPerPart": 40, "maxStudySources": 12 },
+  "audio": {
+    "narratorVoice": "Worst-Job-Application-Ever",
+    "narratorMaxWordsPerSecond": 1.6,
+    "music": false,
+    "holdMusicSeconds": 2,
+    "sampleRate": 48000,
+    "maxTakesPerCue": 3,
+    "filmLoudnessLufs": -14,
+    "truePeakDb": -1,
+    "duckDb": 8,
+    "appMaxMb": 14,
+    "sfx": [
+      { "id": "room-tone", "seconds": 20 },
+      { "id": "step", "seconds": 0.15, "variants": 4 },
+      { "id": "card-flip", "seconds": 0.5 },
+      { "id": "button-press", "seconds": 0.4 },
+      { "id": "page-turn", "seconds": 1.2 },
+      { "id": "keyboard-rise", "seconds": 1 },
+      { "id": "key-press", "seconds": 0.15, "variants": 6 },
+      { "id": "turret-rise", "seconds": 0.6 },
+      { "id": "bolt-fire", "seconds": 0.4, "variants": 3 },
+      { "id": "bolt-hit", "seconds": 0.4, "variants": 3 },
+      { "id": "sizzle", "seconds": 1.2 },
+      { "id": "keys-shuffle", "seconds": 0.7 },
+      { "id": "slab-drop", "seconds": 0.8, "variants": 3 },
+      { "id": "paper-slide", "seconds": 0.6 },
+      { "id": "shredder", "seconds": 4 },
+      { "id": "paper-strain", "seconds": 1.5 },
+      { "id": "strips-zip", "seconds": 1 },
+      { "id": "row-open", "seconds": 0.6 },
+      { "id": "dial-wind", "seconds": 0.8 },
+      { "id": "dial-return", "seconds": 0.9 },
+      { "id": "lever-pull", "seconds": 0.7 },
+      { "id": "reels-spin", "seconds": 2.5 },
+      { "id": "coins", "seconds": 1.5, "variants": 2 },
+      { "id": "crank-turn", "seconds": 0.8 },
+      { "id": "crank-runaway", "seconds": 2 },
+      { "id": "flatten", "seconds": 0.4 },
+      { "id": "peel-up", "seconds": 0.6 },
+      { "id": "page-split", "seconds": 2 },
+      { "id": "cabinet-rise", "seconds": 3 },
+      { "id": "power-on", "seconds": 2.5 },
+      { "id": "plunger", "seconds": 0.8 },
+      { "id": "bumper", "seconds": 0.3, "variants": 4 },
+      { "id": "scoop-kick", "seconds": 0.6 },
+      { "id": "flasher", "seconds": 0.4 },
+      { "id": "ramp-roll", "seconds": 2 },
+      { "id": "ball-drop", "seconds": 0.5 },
+      { "id": "flipper", "seconds": 0.2, "variants": 3 },
+      { "id": "doors-slam", "seconds": 0.6 },
+      { "id": "drain", "seconds": 1.2 },
+      { "id": "checkbox", "seconds": 0.2 },
+      { "id": "button-crack", "seconds": 1 },
+      { "id": "unfold", "seconds": 2 },
+      { "id": "dart-fire", "seconds": 0.15, "variants": 4 },
+      { "id": "dart-hit", "seconds": 0.2, "variants": 4 },
+      { "id": "slab-fire", "seconds": 0.5, "variants": 3 },
+      { "id": "popup", "seconds": 0.4, "variants": 3 },
+      { "id": "power-down", "seconds": 1.8 },
+      { "id": "hold-music", "seconds": 4 },
+      { "id": "letter-drop", "seconds": 0.5 },
+      { "id": "stamp", "seconds": 0.6 },
+      { "id": "ui-tick", "seconds": 0.08 },
+      { "id": "key-tap", "seconds": 0.1 },
+      { "id": "ui-send", "seconds": 0.3 }
+    ],
+    "narratorMaxTakesPerLine": 3,
+    "lineGapSeconds": 0.3,
+    "liveNarratorMinGapSeconds": 6,
+    "contactSyncFrames": 1
+  },
+  "quality": {
+    "passScore": 9,
+    "blockoutPass": 7,
+    "blockoutMaxRounds": 2,
+    "lookLockMaxRounds": 5,
+    "pinballMaxRounds": 5,
+    "maxRoundsPerUnit": 3,
+    "siteMaxRounds": 2,
+    "polishMaxRounds": 2,
+    "filmMaxRounds": 2,
+    "plateauRounds": 2,
+    "recordRoundMaxRuns": 2,
+    "gauntletMaxPasses": 2,
+    "gateFixMaxAttempts": 5,
+    "compressionStressMbps": 5,
+    "jury": { "jurors": 5, "maxShareGap": 0.2, "stillsPerUnit": 4 },
+    "crossMachineMinPsnr": 45,
+    "takeSearchMaxRuns": 3
+  },
+  "critics": { "maxImageLongEdgePx": 1400, "contactSheetFrames": 12, "phonePreviewWidthPx": 400, "maxFilesPerMessage": 10 },
+  "status": { "minGapMinutes": 10, "maxPictures": 4, "pictureLongEdgePx": 1200 },
+  "budget": {
+    "runHours": 36,
+    "phaseHours": { "0": 3, "1": 0.5, "2": 6.5, "3": 8, "4": 14, "5": 4 },
+    "afterReviewHours": 12,
+    "reserveHours": { "5": 2, "6": 6 },
+    "reviewRoundHours": 3,
+    "continueHours": 12,
+    "extendHours": 8,
+    "wrapUpMinutes": 20,
+    "floorFixMinutes": 90,
+    "statusMaxGapMinutes": 30,
+    "jobOverrunFactor": 2,
+    "agentWaitMinutes": 45,
+    "buildAgentMaxHours": 3,
+    "defaultJobMinutes": 30,
+    "toolRetryMax": 3
+  },
+  "sandbox": {
+    "stepTimeoutMinutes": 10,
+    "chunkBudgetMinutes": 7,
+    "previewFilmMaxHours": 2,
+    "reviewCutMaxHours": 1.5,
+    "cardLoopMaxHours": 1,
+    "maxRenderProcesses": 1,
+    "maxFramesOnDisk": 450,
+    "minFreeDiskGb": 3,
+    "maxDownloadGb": 2,
+    "maxAgents": 16,
+    "criticSlots": 6
+  },
+  "deliver": {
+    "sandboxMaster": false,
+    "cuts": ["with-prompt", "without-prompt"],
+    "cardLoop": {
+      "seconds": 8,
+      "fps": 30,
+      "scene": "auto",
+      "candidates": ["step1-fire", "table-coffee", "boss-fight"],
+      "format": "hd",
+      "pickJurors": 5,
+      "webWidth": 1280,
+      "webBitrateMbps": 3
+    }
+  },
+  "links": { "portfolioWork": "" }
 }

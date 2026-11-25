@@ -2,18 +2,52 @@
 
 Brandon approves pictures before anything is built. This file is the record. It is updated after every reference round.
 
-When the set is complete, the approved images are copied to `references/approved/` with a `MANIFEST.sha256`. Until that folder exists, no build may start.
+Approved images are copied to `references/approved/` under the names the config uses. `MANIFEST.sha256` is written there when the set is complete. Until that file exists, and until `references.pendingRounds` in the config is empty, no build may start.
 
 ## Approved
 
-| What | Image | What it settles | What it does not settle |
+Fifteen images. Brandon approved the first six on November 23 and 24, and the nine from round 5 on November 24. His words on round 5: probably the best we are going to get with image generation.
+
+A key is a still the build has to match. A sheet is a picture of several states, matched state by state.
+
+| File in `references/approved/` | Came from | Kind | What it settles |
 | --- | --- | --- | --- |
-| The page look | `references/drafts/round-3/P1-soft-touch-ceramic.png` | Materials, color, type, the header and progress bar, the weight of the shadows, the straight-on view | The fields on it. Step 1 now has First name, Last name and Email, and no salary slider |
-| The cursor's arms | `references/drafts/round-3/C1-arms.png` | Thin matte black rubber arms with small simple hands | The camera. The sheet was shot at an angle. And the arms appear in one beat only |
-| The cursor's damage | `references/drafts/round-3/C4-damage.png` | Shredded, reassembled, scorched, punched, flattened | How long it lasts. Damage heals in seconds |
-| The tug of war | `references/drafts/round-3/S1-shredder-tug-of-war.png` | The shredder slot, the pose, the paper | The cursor's size. It is larger here than on the page. The camera pushes in. The cursor does not grow |
-| The cursor's acting | `references/drafts/round-4/E1-cursor-emotions.png` | Sweat, the red tip and steam, the pale stony fear, the melted exhaustion, the laser hole | The lighting. It has window shadow bands, which are not the target. "Shocked" is only a taller arrow and comes from animation |
-| The three machines | `references/drafts/round-4/D1-wrong-machines.png` | The look of the rotary dial, the slot machine and the hand crank. Also the clean lighting | The layout. The machines now appear one at a time, inside the row that was clicked |
+| `page-look.png` | round 3, P1 | Sheet | Materials, color, type, the header and progress bar, the weight of the shadows, the straight-on view |
+| `cursor-arms.png` | round 3, C1 | Sheet | Thin matte black rubber arms with small simple hands |
+| `cursor-damage.png` | round 3, C4 | Sheet | Shredded, reassembled, scorched, punched, flattened |
+| `cursor-acting.png` | round 4, E1 | Sheet | Sweat, the red tip and steam, the pale stony fear, the melted exhaustion, the burn hole |
+| `machines.png` | round 4, D1 | Sheet | The look of the rotary dial, the slot machine and the hand crank. Also the clean lighting |
+| `boss-stages.png` | round 5, B1 | Sheet | The Submit button becoming the boss, in four stages |
+| `marketing-top.png` | round 5, M1 | Key `marketing-top` | The first screen of the careers page |
+| `step1-fire.png` | round 5, K1 | Key `step1-fire` | Step 1 with the keyboard docked, the turrets up and bolts in flight |
+| `step1-tug.png` | round 3, S1 | Key `step1-tug` | The shredder slot, the pose, the paper |
+| `step2-rest.png` | round 5, D1 | Key `step2-rest` | Step 2 with three plain rows, closed |
+| `step2-dial.png` | round 5, D2 | Key `step2-dial` | The Contact number row open, the rotary dial risen |
+| `step2-crank.png` | round 5, D3 | Key `step2-crank` | The Audio volume row open, the crank and the meter |
+| `boss-fight.png` | round 5, B2 | Key `boss-fight` | The fight: the boss, the health bar, the slabs, the darts |
+| `boss-down.png` | round 5, B3 | Key `boss-down` | The beaten button lying outside its socket |
+| `decision.png` | round 5, R1 | Key `decision` | The two-column rejection page |
+
+### Where the build differs from these pictures on purpose
+
+Image generation got some things wrong. Each one is a settled difference: on that point the kit wins and the picture does not. The lines live in the config, under `settledAll`, under each key's `settled`, and under each sheet's `settled`. `kit/06-ASSETS.md` has the rule.
+
+| Image | What is wrong in it | What the build does |
+| --- | --- | --- |
+| All of them | The cursor is drawn at sizes from about 40 to 160 pixels | One size, from `cursor.heightPxAt1080` |
+| All of them | Words are sometimes misspelled or punctuated wrongly. `boss-down.png` reads "I am not a rabot". `marketing-top.png` has mismatched quote marks | Every word comes from `content/copy.json` |
+| `step2-rest.png`, `step2-dial.png`, `step2-crank.png` | A dark slab edge runs along the border of the frame | The page fills the frame evenly |
+| `cursor-acting.png` and two rejected images | Bands of window light | Clean, even light |
+| `step1-fire.png` | The bottom key row is cut off by the tray edge, with no lower rim. Three bolts are in flight | All five rows sit inside the tray. The number of bolts in flight is not fixed |
+| `step1-tug.png` | It shows the round 3 page: old labels, a salary slider, a Submit button, no keyboard | The step 1 page, with the keyboard already slid away |
+| `step2-dial.png` | The dial's numerals are wrong | 1 to 9 and then 0, in order |
+| `step2-crank.png` | The input is empty | The input shows the level as a percentage |
+| `boss-stages.png` | The cannon discs carry no numerals | They are the numbered buttons of the progress bar |
+| `boss-fight.png` | A spark on the shield with no dart at it | Every spark has a dart |
+| `boss-down.png` | The cursor stands upright. The button is scorched but not dented | The cursor sags. The button is dented too |
+| `decision.png` | The stamp block is drawn in a three-quarter view. The cursor is cracked but not flat | The block is seen straight on. The cursor is flattened |
+| `machines.png` | All three machines are open at once | One row is open at a time |
+| `cursor-arms.png` | Photographed at an angle | It defines the arms, not the camera |
 
 ## Rejected, and why
 
@@ -38,20 +72,19 @@ Read this before generating or building anything. Each of these was tried.
 
 ## Pending
 
-Two reference rounds are running. Their prompts were given to Computer on November 24.
+| Round | Folder | Images | Becomes |
+| --- | --- | --- | --- |
+| 6, the pinball machine | `references/drafts/round-6/` | G1 the master view from above. G2 player's eye. G3 the backbox. G4 to G8 close shots inside the machine | Keys `table-top`, `table-player`, `table-backbox`, `table-hq`, `table-firehouse`, `table-coffee`, `table-flippers`, `table-highway` |
 
-| Round | Folder | Images |
-| --- | --- | --- |
-| 5, the pages | `references/drafts/round-5/` | M1 careers page. K1 step 1. D1, D2, D3 step 2 closed and open. B1, B2, B3 the boss. R1 the decision page |
-| 6, the pinball machine | `references/drafts/round-6/` | G1 the master view from above. G2 player's eye. G3 the backbox. G4 to G8 close shots inside the machine |
-
-After Brandon approves them:
+After Brandon approves round 6:
 
 1. This file is updated.
-2. The approved set is copied to `references/approved/` and hashed.
-3. The rest of the build kit is written against it.
+2. The eight images are copied to `references/approved/` and the eight `table-` keys in the config lose their `pending` mark and get their settled lines.
+3. `references/approved/contact-sheet.jpg` and `references/approved/MANIFEST.sha256` are made.
+4. `references.pendingRounds` in the config is emptied.
+5. The kit is audited and the kickoff prompt is handed over.
 
 ## Not pictures, but still to approve
 
-- The sound board: every effect and every narrator line, with takes. Made at the start of the build, approved before sound is built in.
-- The narrator's lines in `content/narration.json`.
+- The sound board: every effect and every narrator line, with its kept take. Brandon hears it at the review stop, before the films are cut.
+- The narrator's lines in `content/narration.json`. A draft.

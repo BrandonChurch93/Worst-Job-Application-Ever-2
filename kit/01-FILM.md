@@ -1,6 +1,6 @@
 # 01 · The film and the live site
 
-Status: written before the last reference rounds are approved. `references/STATUS.md` says what is approved and what is pending.
+`references/STATUS.md` says which reference images are approved and which are pending.
 
 A key written as `copy:` followed by a path is a string in `content/copy.json`. Every other key is in `config/showcase.json`.
 
@@ -61,9 +61,10 @@ A real web page, made of real things, that is out to get you.
 `deliver.cuts` lists two versions of the film.
 
 - `without-prompt` starts on the marketing page.
-- `with-prompt` opens with the team's prompt screens before the marketing page: the prompt is typed, then the build screen with its checklist. That opening lasts `film.promptOpeningSeconds` seconds and is added on top of the unit times.
-- The prompt and the checklist text are an open decision. See "Decisions waiting on Brandon".
-- A viewer must be able to read the prompt before it is sent and read the checklist as it fills. Both were too fast on an earlier film.
+- `with-prompt` opens with the team's prompt screens before the marketing page: the prompt in `intro.prompt` is typed, the reasoning level is set to `intro.reasoningLevel`, the prompt is sent, then the build screen shows `intro.title` and fills in the lines of `intro.steps`. That opening is at most `intro.maxSeconds` seconds and is added on top of the unit times.
+- The prompt and the checklist text are a default Brandon may change. See "Decisions waiting on Brandon".
+- A viewer must be able to read the prompt before it is sent and read the checklist as it fills. Both were too fast on an earlier film. The speeds are `intro.charsPerSecond`, `intro.readHoldSeconds`, `intro.stepSeconds` and `intro.endHoldSeconds`.
+- This document calls the `without-prompt` cut film B and the `with-prompt` cut film A.
 
 ## Unit by unit
 
@@ -165,14 +166,15 @@ This is a directed scene with cuts. The camera leaves the screenshot view and go
 - All sound is made with ElevenLabs through Computer's connector: the narrator and every effect.
 - There is no music score. `audio.music` is false.
 - One exception that belongs to the page: tinny hold music for `audio.holdMusicSeconds` seconds in `decision.wait`, cut off mid-note.
-- The narrator is `audio.narratorVoice`, a nature documentary voice. The lines are in `content/narration.json`.
+- The narrator is the voice saved in Brandon's ElevenLabs account under the name in `audio.narratorVoice`. It speaks like a nature documentary: slowly, with a pause every few words. It is smug and it looks down on the applicant. The lines and the rules for them are in `content/narration.json`.
+- The narrator speaks on the live site too. There it is talking about the visitor.
 - The bar for effects is the foley of a top animated short or a AAA game:
   - Every visible contact has a sound, on the frame it happens.
   - Materials sound like what they are. Plastic clicks, paper tears, metal rings, ceramic knocks.
   - A quiet room tone sits under everything, so silence never sounds dead.
   - Repeated sounds vary. Ten key presses are ten different takes.
   - The narrator is never fought by an effect. Effects duck under a line.
-- Sound is approved before it is built in. The Builder makes a sound board, one page that plays every effect and every narrator line with its takes, and Brandon approves it. The audio on his earlier showcases was weak because nobody set a bar or approved it first.
+- Sound is approved before the films are cut to it. The Builder makes a sound board, one page that plays every effect and every narrator line with its kept take, and Brandon hears it at the review stop. The audio on his earlier showcases was weak because nobody set a bar or approved it first.
 - The live site has a mute button and starts silent until the visitor's first click, because a browser does not let a page start sound by itself.
 
 ## Portfolio deliverables
@@ -181,7 +183,7 @@ Every showcase is also a piece on Brandon's portfolio.
 
 - The film, in both cuts.
 - The card still: one screenshot for the portfolio card.
-- The card loop: a seamless clip `deliver.cardLoopSeconds` seconds long that starts on the card still. One interesting shot, never a montage.
+- The card loop: a seamless clip `deliver.cardLoop.seconds` seconds long that starts on the card still. One interesting shot, never a montage. `deliver.cardLoop.candidates` names the three scenes it may show, each by the key that shows it. `kit/07-QUALITY-BAR.md` says how one is picked. It is delivered in the format `deliver.cardLoop.format` at `deliver.cardLoop.fps` frames a second, with a smaller web copy `deliver.cardLoop.webWidth` pixels wide at `deliver.cardLoop.webBitrateMbps`.
 - The live site, hosted from this repo with no secrets and no sign-in.
 - The post text, in the pattern the team's recent posts use: one plain opening sentence, a short run of what you can do with it, then a reply with the link.
 
@@ -203,7 +205,7 @@ Each has a default. The default stands unless he changes it.
 | --- | --- |
 | The employer's name on the careers page | `employer.name`, his own from 2025 |
 | The rejection line | His line and the AI line merged, in `copy:step5.letter.body` |
-| The prompt typed in the `with-prompt` cut | "Build the worst job application ever made. Then fill it out yourself." Computer builds it and then has to suffer through its own work |
+| The prompt typed in the `with-prompt` cut | `intro.prompt`. Computer builds it and then has to suffer through its own work |
 | The applicant's name and email in the film | `applicant` in the config |
 | The narrator's lines | The draft in `content/narration.json` |
 | Jokes that name real companies | Left out. Listed in `copy:heldBack` |
@@ -213,7 +215,7 @@ Each has a default. The default stands unless he changes it.
 
 ## What the Builder may tune
 
-- The beat times inside a unit, to make a gag land. A unit's total may move by up to a fifth.
+- The beat times inside a unit, to make a gag land and to fit the narrator's kept takes. A unit's total may move by up to `film.unitTuneFraction` of itself. The whole of film B stays at or under `film.maxSeconds`.
 - The cursor's acting, as long as it stays inside the rules in `kit/02-SUBJECT.md`.
 - The camera pushes on the pages and the exact framing of the pinball shots.
 - Every change is made in the config and logged.
