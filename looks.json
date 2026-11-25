@@ -1,0 +1,35 @@
+{
+  "folder": "arms",
+  "pushed": "2026-11-25T21:42:03.516Z",
+  "commit": "b4a1270da42f53a4644070286348837c052fc4f8",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Key step1-tug: approved on the left, this build on the right, draft tier, with crops of cursor, paper, paper.below, chip, card.glass",
+      "time": "2026-11-25T21:41:20.269Z",
+      "by": "arms",
+      "from": "out/work/compare/compare-step1-tug.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Sheet cursor-arms: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-25T21:41:32.273Z",
+      "by": "arms",
+      "from": "out/work/compare/compare-cursor-arms.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "The tug key beside the approved image: staggered hands on the sheet's side edges, bent arms, tube shading (draft tier)",
+      "time": "2026-11-25T21:42:02.132Z",
+      "by": "arms",
+      "from": "out/work/compare/compare-step1-tug.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "The arms sheet beside the approved sheet: five poses, tapered tubes, cuffs, larger hands (draft tier)",
+      "time": "2026-11-25T21:42:02.372Z",
+      "by": "arms",
+      "from": "out/work/compare/compare-cursor-arms.jpg"
+    }
+  ]
+}
