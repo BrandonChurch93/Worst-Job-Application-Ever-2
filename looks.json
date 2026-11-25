@@ -1,35 +1,35 @@
 {
   "folder": "type",
-  "pushed": "2026-11-25T15:10:34.345Z",
-  "commit": "66e5523738a9912169f80bdced568f09464f8932",
+  "pushed": "2026-11-25T15:41:49.187Z",
+  "commit": "b053ff220920d3ec8a2c1e1d57d5190ce5b096a4",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still marketing-rest-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-25T15:06:48.461Z",
+      "caption": "Still still-rest-step1-hd-draft-type: draft tier, hd, view type",
+      "time": "2026-11-25T15:41:25.590Z",
       "by": "type",
-      "from": "out/work/stills/marketing-rest-hd-draft.png"
+      "from": "out/work/stills/still-rest-step1-hd-draft-type.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Key step1-fire: approved on the left, this build on the right, review tier",
-      "time": "2026-11-25T15:09:58.270Z",
+      "caption": "step1-fire at review tier beside the approved image, with native size crops, at b053ff2",
+      "time": "2026-11-25T15:41:47.464Z",
       "by": "type",
-      "from": "out/work/compare/compare-step1-fire.jpg"
+      "from": "out/work/study/final-compare.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Still key-step1-fire-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-25T15:10:11.989Z",
+      "caption": "label, value under glass and helper at 2x: approved above, this build below; the helper now in the soft ink",
+      "time": "2026-11-25T15:41:47.690Z",
       "by": "type",
-      "from": "out/work/stills/key-step1-fire-hd-draft.png"
+      "from": "out/work/study/final-field2x.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "step1-fire at review tier beside the approved image, with the header at the approved sizes, the two inks, print on metal, and the runs batched into sheets (298 draw calls at draft)",
-      "time": "2026-11-25T15:10:33.147Z",
+      "caption": "rest-step1 --diag type: every run inside its box",
+      "time": "2026-11-25T15:41:47.925Z",
       "by": "type",
-      "from": "out/work/study/look-type-fire-compare.jpg"
+      "from": "out/work/study/final-diag-type.png"
     }
   ]
 }
