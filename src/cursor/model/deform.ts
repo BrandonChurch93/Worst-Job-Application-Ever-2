@@ -1,5 +1,5 @@
 import { UNIT, type BodyLook } from '../contract'
-import { AXIS, CENTRE, TOP, UNDER_TOP } from './shape'
+import { AXIS, CENTRE, TOP, UNDER_TOP, inside } from './shape'
 
 const clamp01 = (v: number): number => Math.min(1, Math.max(0, v))
 const smooth = (a: number, b: number, x: number): number => {
@@ -17,6 +17,8 @@ const PEEL_TURN = 1.0
 // The body stands a little out of plumb, as a thing photographed from just off its axis: its face sits up and to the left of its foot, so the dark wall shows on the side away from the lamp.
 export const SLANT = 0.24
 // A melting body: how much of the pose's squash it gives back, how its section rounds, how its stem runs, sways and hooks, how its tip bows, how its wings hang and how its folds stand.
+// A flattened body: how much wider it lies, how its stem spreads, how its outline waves, how its corners round, how its rim sinks and how its face lumps.
+const FLAT = { wide: 0.2, stem: 0.3, wave: 0.14, corner: 3.2, cornerMost: 0.24, cornerWide: 0.5, sink: 0.42, lump: 1.3, valley: 0.3, roll: 0.8, over: 0.24, overAt: 0.56, overTo: 1.6 }
 const MELT = { back: 1.7, wide: 0.55, foot: 0.32, run: 3.6, pull: 1.6, sway: 0.9, hook: 0.9, lift: 0.25, bowAlong: 0.4, bowAcross: 0.8, hang: 1.1, straight: 0.5, lobe: 0.6, dull: 0.18, tip: 0.07, dullWide: 3.2, wave: 2.1, thin: 0.08, fold: 1.05, valley: 0.3 }
 
 // Turns a point of the body at rest, in outline units, into where it is now, in page pixels in the body's own space.
@@ -114,21 +116,41 @@ export class Deform {
     }
     if (this.flat > 0) {
       const f = this.flat
+      const u0 = x0 * AXIS[0] + y0 * AXIS[1]
+      const v0 = x0 * AXIS[1] - y0 * AXIS[0]
+      // The stem spreads most: it is the narrowest part, and a pressed arrow is nearly as wide there as its wings are deep.
+      const stem = (1 - smooth(1.75, 2.9, Math.abs(v0))) * smooth(12.4, 14.4, u0)
+      x += f * FLAT.stem * v0 * stem * AXIS[1]
+      y -= f * FLAT.stem * v0 * stem * AXIS[0]
+      // The pressed face spreads out over its rim.
+      if (inset > 0.02 && inset < FLAT.overTo) {
+        const e = 0.05
+        const gx = inside(x0 + e, y0) - inside(x0 - e, y0)
+        const gy = inside(x0, y0 + e) - inside(x0, y0 - e)
+        const g = Math.hypot(gx, gy)
+        if (g > 1e-6) {
+          const over = f * FLAT.over * (inset < FLAT.overAt ? smooth(0, FLAT.overAt, inset) : 1 - smooth(FLAT.overAt, FLAT.overTo, inset))
+          x -= (gx / g) * over
+          y -= (gy / g) * over
+        }
+      }
       const dx = x - CENTRE[0]
       const dy = y - CENTRE[1]
       const ang = Math.atan2(dy, dx)
       const far = Math.hypot(dx, dy)
       const wob = 0.5 * Math.sin(3 * ang + 0.7) + 0.3 * Math.sin(5 * ang + 2.1) + 0.2 * Math.sin(8 * ang + 4.0)
       let soft = 0
-      for (const c of POINTS) soft += c[2] * Math.exp(-((x0 - c[0]) * (x0 - c[0]) + (y0 - c[1]) * (y0 - c[1])) / (c[3] * 1.6))
-      const grow = (1 + 0.16 * f + (f * 0.14 * wob * far) / 8) * (1 - f * Math.min(0.2, 1.3 * soft))
+      for (const c of POINTS) soft += c[2] * Math.exp(-((x0 - c[0]) * (x0 - c[0]) + (y0 - c[1]) * (y0 - c[1])) / (c[3] * FLAT.cornerWide))
+      const grow = (1 + FLAT.wide * f + (f * FLAT.wave * wob * far) / 8) * (1 - f * Math.min(FLAT.cornerMost, FLAT.corner * soft))
       x = CENTRE[0] + dx * grow
       y = CENTRE[1] + dy * grow
       x += f * (0.3 * Math.sin(y0 * 0.72 + 1.0) + 0.1 * Math.sin(y0 * 1.5 + x0 * 0.6 + 2.2))
       y += f * (0.3 * Math.sin(x0 * 0.78 + 2.0) + 0.1 * Math.sin(x0 * 1.4 - y0 * 0.5 + 0.4))
-      const lumps = Math.sin(x0 * 0.62 + 0.6) * Math.sin(y0 * 0.5 + 1.9) + 0.4 * Math.sin(x0 * 1.1 - y0 * 0.9)
-      z *= 1 - 0.5 * f
-      z += f * 0.5 * up * lumps * (1 - Math.exp(-inset / 1.1))
+      // The face stays a pillow: it sinks a little and swells in broad lumps that stand over the rim, so the rim is a thin line on the lit side.
+      const lumps = 0.5 + 0.5 * Math.sin(x0 * 0.62 + 0.6) * Math.sin(y0 * 0.5 + 1.9) + 0.2 * Math.sin(x0 * 1.1 - y0 * 0.9)
+      const face = 1 - Math.exp(-inset / FLAT.roll)
+      z *= 1 - FLAT.sink * f * (1 - 0.6 * face)
+      z += f * FLAT.lump * up * (lumps - FLAT.valley) * face
     }
     if (this.melt > 0) {
       const m = this.melt
