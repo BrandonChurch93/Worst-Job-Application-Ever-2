@@ -28,11 +28,13 @@ const JAW = { tug: 14, shred: 30, lag: 0.3 }
 const NEAR = 130
 const SINGE = 0.2
 const EATEN = -30
+const HEAP = { y: 56, spread: 104 }
+const TIDY = 0.3
 const WIPE: FieldName[] = ['email', 'lastName', 'firstName']
 const SLAB_HIGH = 110
 const SLAB_GAP = 8
 const PRESS = 0.24
-const LEGEND_CLEAR = 24
+const LEGEND_CLEAR = 0
 
 type Phase = 'rest' | 'keyboard' | 'firstName' | 'lastName' | 'email' | 'slabs' | 'resume' | 'tug' | 'shredded' | 'received'
 const GAG: Record<Phase, string> = {
@@ -538,8 +540,8 @@ export function makePage(): PageLogic {
   const strips = (out: DrawList): void => {
     if (s.phase !== 'shredded' && s.phase !== 'received') return
     const t = s.phase === 'received' ? SHRED.end + s.phaseTime : s.shred
-    const gone = s.phase === 'received' ? smooth((s.phaseTime - 0.3) / 0.5) : 0
-    if (gone >= 1) return
+    const back = s.phase === 'received' ? smooth(s.phaseTime / TIDY) : 0
+    if (back >= 1) return
     for (let i = 0; i < STRIPS; i++) {
       const ink = i % 3 === 1
       if (ink && t >= SHRED.pile) continue
@@ -551,12 +553,12 @@ export function makePage(): PageLogic {
       const lane = (i - (STRIPS - 1) / 2) / ((STRIPS - 1) / 2)
       const x0 = SLOT.cx + lane * SLOT.w * 0.38
       const y0 = HOOD.y - len / 2 + out0 * (len + 8)
-      const tx = PILE.x + BODY.x + lane * 92 + (hash01(i, 3, s.seed) - 0.5) * 18
-      const ty = PILE.y + 4 + (hash01(i, 5, s.seed) - 0.5) * 44
-      const x = lerp(x0, tx, fall)
-      const y = lerp(y0, ty, fall) + gone * 30
-      const z = HOOD.z * (1 - fall) + Math.sin(Math.PI * fall) * 18
-      out.push({ id: `strip-${i}`, part: 'shredder', kind: 'box', x: x - 5, y: y - len / 2, w: 10, h: len * (1 - gone), z0: z + 0.4 + i * 0.12 * fall, z1: z + 1.4 + i * 0.12 * fall, rot: (hash01(i, 7, s.seed) - 0.5) * 1.1 * fall, tone: ink ? 'dark' : 'paper', v: [u, ink ? 1 : 0] })
+      const tx = ink ? PILE.x + BODY.x + lane * 26 : SLOT.cx + lane * HEAP.spread + (hash01(i, 3, s.seed) - 0.5) * 18
+      const ty = ink ? PILE.y + BODY.y + (hash01(i, 5, s.seed) - 0.5) * 12 : HOOD.y + HEAP.y + (hash01(i, 5, s.seed) - 0.5) * 24
+      const x = lerp(lerp(x0, tx, fall), x0, back)
+      const y = lerp(lerp(y0, ty, fall), HOOD.y - len / 2 - 4, back)
+      const z = (HOOD.z * (1 - fall) + Math.sin(Math.PI * fall) * 18) * (1 - back) + HOOD.z * back
+      out.push({ id: `strip-${i}`, part: 'shredder', kind: 'box', x: x - 5, y: y - len / 2, w: 10, h: len, z0: z + 0.4 + i * 0.12 * fall, z1: z + 1.4 + i * 0.12 * fall, rot: (hash01(i, 7, s.seed) - 0.5) * 1.1 * fall * (1 - back), tone: ink ? 'dark' : 'paper', v: [u, ink ? 1 : 0] })
     }
   }
 
@@ -655,7 +657,7 @@ export function makePage(): PageLogic {
       const eating = s.phase === 'tug' || (s.phase === 'shredded' && s.shred < SHRED.pile)
       s.spin += ((eating ? (s.phase === 'tug' && s.lost < 0 ? JAW.tug : JAW.shred) : 0) - s.spin) * Math.min(1, io.dt / JAW.lag)
       s.turn += s.spin * io.dt
-      const slotOpen = (s.phase === 'resume' && s.paper.feed >= 0) || s.phase === 'tug' || s.phase === 'shredded'
+      const slotOpen = (s.phase === 'resume' && s.paper.feed >= 0) || s.phase === 'tug' || s.phase === 'shredded' || (s.phase === 'received' && s.phaseTime < TIDY && !s.skipped)
       s.slot = clamp(s.slot + ((slotOpen ? 1 : -1) * io.dt) / 0.25, 0, 1)
 
       if (s.phase === 'rest') {

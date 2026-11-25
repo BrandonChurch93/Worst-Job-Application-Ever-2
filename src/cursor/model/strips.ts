@@ -90,7 +90,7 @@ export function stripSet(count: number): StripSet {
     if (a.z < 1e-4 && b.z < 1e-4) return
     const nx = AXIS[1] * sign
     const ny = AXIS[0] * sign
-    const mk = (c: Corner, z: number): Corner => ({ ...c, z, ink: 1, nx, ny, nz: 0 })
+    const mk = (c: Corner, z: number): Corner => ({ ...c, z, ink: 2, nx, ny, nz: 0 })
     const quad = [mk(a, a.z), mk(b, b.z), mk(b, 0), mk(a, 0)]
     // Seen from outside the strip, the face's corners run anticlockwise.
     const ex = quad[1]!.x - quad[0]!.x
