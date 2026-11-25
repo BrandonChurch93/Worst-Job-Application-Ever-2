@@ -4,6 +4,7 @@ import type { Emitter, RealContext } from '../real/types'
 import { actingLook } from './act/acting'
 import { makeArms, type Arms } from './act/arms'
 import { damageLook } from './act/damage'
+import { makeTape, type Tape } from './act/tape'
 import type { CursorPose } from './body'
 import { restLook, SHOULDERS, UNIT, type BodyModel, type EffectsModel } from './contract'
 import { makeBody } from './model/body'
@@ -15,6 +16,8 @@ const whole = makeBody !== null
 export const cursorReal = { body: whole, effects: makeEffects !== null, acting: whole && actingLook !== null, damage: whole && damageLook !== null, arms: whole && makeArms !== null }
 
 const half = config.table.ballPx / 2
+// A closed hand rides this far above where it holds, so that the fingers lie on what is held and not inside it.
+const HOLD = 7
 
 // One cursor made of its parts: the body, its effects and its arms, posed from what the cursor is doing.
 export class CursorView {
@@ -23,6 +26,7 @@ export class CursorView {
   private body: BodyModel | null = makeBody ? makeBody() : null
   private effects: EffectsModel | null = makeEffects ? makeEffects() : null
   private arms: Arms | null = makeArms ? makeArms() : null
+  private tape: Tape | null = makeBody ? makeTape() : null
   private from: [THREE.Vector3, THREE.Vector3] = [new THREE.Vector3(), new THREE.Vector3()]
   private to: [THREE.Vector3, THREE.Vector3] = [new THREE.Vector3(), new THREE.Vector3()]
   private lit: Emitter[] = []
@@ -32,6 +36,7 @@ export class CursorView {
     this.root.add(this.at)
     if (this.body) this.at.add(this.body.root)
     if (this.effects) this.at.add(this.effects.root)
+    if (this.tape) this.at.add(this.tape.root)
     if (this.arms) this.root.add(this.arms.root)
   }
 
@@ -51,6 +56,11 @@ export class CursorView {
       this.body.apply(look.body)
     }
     if (this.effects && this.body) this.effects.apply(look.effects, this.body, turn)
+    if (this.tape && this.body) {
+      const back = c.wounds.find((w) => w.kind === 'reassembled')
+      this.tape.root.rotation.set(0, 0, turn)
+      this.tape.apply(back ? back.at : 0, this.body, c.strips ? Math.max(0, ...c.strips.map((p) => p.z)) : 0)
+    }
     if (this.body?.emit) {
       this.root.updateMatrixWorld(true)
       this.lit.length = 0
@@ -73,7 +83,7 @@ export class CursorView {
       this.body.root.localToWorld(this.body.anchor(s[0], s[1], from))
       this.root.worldToLocal(from)
       const h = hands[i]!
-      to.set(h.x - 960, 540 - h.y, h.z)
+      to.set(h.x - 960, 540 - h.y, h.z + HOLD * c.grip[i]!)
       to.lerpVectors(from, to, Math.min(1.12, grown))
       // Torn off: the shoulder end lets go and trails after the hand, which sinks with what it holds.
       if (c.shed > 0) {
@@ -90,5 +100,6 @@ export class CursorView {
     this.body?.dispose()
     this.effects?.dispose()
     this.arms?.dispose()
+    this.tape?.dispose()
   }
 }
