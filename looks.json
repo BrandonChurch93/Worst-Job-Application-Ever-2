@@ -1,35 +1,35 @@
 {
   "folder": "acting3",
-  "pushed": "2026-11-25T22:09:21.288Z",
-  "commit": "6dd241b76811139eef31d23ed1cc81a7bd2a963c",
+  "pushed": "2026-11-25T22:22:44.588Z",
+  "commit": "eebc1de4c5185cbb92834682e0c834943e806cbc",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Consecutive frames of the hit on the cursor: the event bolt-hit at 0:19.80 in step1.firstName, review tier, preview",
-      "time": "2026-11-25T22:05:43.974Z",
+      "caption": "the hit at full size, 5.82, 5.83, 5.85, 5.88 s above and 5.93, 6.0, 6.17, 6.3 s below: knocked a key to the left clear of the flash, whole, then back and held",
+      "time": "2026-11-25T22:22:42.696Z",
       "by": "acting3",
-      "from": "out/work/sheets/sheet-motion-hit-preview-review.jpg"
+      "from": "out/work/acting3-hit-strip.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Sheet cursor-acting: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-25T22:09:19.802Z",
+      "caption": "key step1-fire at review beside the approved image, on the merge with main db41bef",
+      "time": "2026-11-25T22:22:43.005Z",
       "by": "acting3",
-      "from": "out/work/compare/compare-cursor-acting.jpg"
+      "from": "out/work/compare/compare-step1-fire.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "the acting sheet beside the approved image: the row's outer gutters 0.067 and 0.064 of the width (approved 0.068 and 0.049), sizes and poses unchanged",
-      "time": "2026-11-25T22:09:20.038Z",
+      "caption": "step1.shredded on the merge: the tighter fan of the pile, the sagged arrow that stays an arrow",
+      "time": "2026-11-25T22:22:43.239Z",
       "by": "acting3",
-      "from": "out/work/compare/compare-cursor-acting.jpg"
+      "from": "out/work/sheets/sheet-beat-step1_shredded-preview-draft.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "the hit at review tier: the arrow stands a key to the left of the flash for 0.07 s, squashed and whole, then comes back and holds its recoil",
-      "time": "2026-11-25T22:09:20.266Z",
+      "caption": "step1.firstName on the merge with main db41bef",
+      "time": "2026-11-25T22:22:43.472Z",
       "by": "acting3",
-      "from": "out/work/sheets/sheet-motion-hit-preview-review.jpg"
+      "from": "out/work/sheets/sheet-beat-step1_firstName-preview-draft.jpg"
     }
   ]
 }
