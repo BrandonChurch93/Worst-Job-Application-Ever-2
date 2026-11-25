@@ -387,7 +387,7 @@ function poseCassette(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
 
 const SEG = 26
 const MAX = 16
-const RIBBON = 6.5
+const RIBBON = 7.6
 
 interface Strips { geometry: THREE.BufferGeometry; was: string }
 
@@ -467,6 +467,9 @@ function poseStrips(o: THREE.Object3D, ctx: RealContext): void {
     const curl = (0.016 + 0.03 * hash01(n, 1, seed)) * (hash01(n, 2, seed) < 0.25 ? -0.5 : 1)
     const twist = (hash01(n, 3, seed) - 0.5) * 1.5
     const off = hash01(n, 4, seed) * 24
+    const sway = len * (0.02 + 0.05 * hash01(n, 5, seed))
+    const waves = 0.8 + 1.4 * hash01(n, 6, seed)
+    const phase = hash01(n, 7, seed) * 2
     const sag = curl < 0 ? (1 - Math.cos(curl * len * 0.5)) / -curl : 0
     const ring = (t: number, o: number[]): void => {
       const d = (t - 0.5) * len
@@ -481,8 +484,9 @@ function poseStrips(o: THREE.Object3D, ctx: RealContext): void {
       const ux = wx * cr + ax * -tu * sr
       const uy = wy * cr + ay * -tu * sr
       const uz = ta * sr
-      const mx = cx + ax * along
-      const my = cy + ay * along
+      const side = sway * Math.sin(Math.PI * (t * waves + phase))
+      const mx = cx + ax * along + wx * side
+      const my = cy + ay * along + wy * side
       const mz = s.z0 + 0.4 + up + Math.abs(uz) * RIBBON * 0.5
       o[0] = mx - ux * RIBBON * 0.5
       o[1] = my - uy * RIBBON * 0.5
@@ -508,7 +512,7 @@ function poseStrips(o: THREE.Object3D, ctx: RealContext): void {
       ring(i / SEG, a)
       ring((i + 1) / SEG, b)
       const d = (i + 0.5) * (len / SEG) + off
-      const marked = ink ? (d % 11) < 6.2 && hash01(n, Math.floor(d / 11), seed + 9) < 0.7 : (d % 24) < 4.6
+      const marked = ink ? (d % 11) < 6.2 && hash01(n, Math.floor(d / 11), seed + 9) < 0.7 : (d % 24) < 3.3
       const c = marked ? (ink ? INK.title : INK.bar) : INK.paper
       put(a[0]!, a[1]!, a[2]!, 0, 0, 1, c)
       put(a[3]!, a[4]!, a[5]!, 0, 0, 1, c)
@@ -534,6 +538,19 @@ function poseStrips(o: THREE.Object3D, ctx: RealContext): void {
         fx /= fl
         fy /= fl
         fz /= fl
+      }
+      if (fz < 0) {
+        // Turned over: the quad is wound the other way, so its lit side and its shadow side are the ones that face up.
+        for (const at of [o, o + 6]) {
+          for (let c = 0; c < 3; c++) {
+            const keep = pos[at + c]!
+            pos[at + c] = pos[at + 3 + c]!
+            pos[at + 3 + c] = keep
+          }
+        }
+        fx = -fx
+        fy = -fy
+        fz = -fz
       }
       for (let q = 0; q < 4; q++) {
         nor[o + q * 3] = fx
