@@ -32,7 +32,7 @@ const GAIT: Record<Acting, { stiff: number; damp: number; stride: number; hop: n
 }
 const SPRING = { squash: { k: 620, c: 26 }, lean: { k: 330, c: 17 }, bend: { k: 260, c: 13 }, sprout: { k: 2400, c: 58 } }
 // A hit knocks the body over, past upright onto its other shoulder, and it swings back: the knocked cursor of the approved fire image.
-const TUMBLE = { far: 1.25, share: 0.6, out: { k: 900, c: 60 }, back: { k: 300, c: 27 } }
+const TUMBLE = { far: 1, share: 0.6, out: { k: 900, c: 60 }, back: { k: 300, c: 27 } }
 // Thrown through the air it goes tip first: the arrow turns toward the way it flies, most when that is up or to the right. tip is the angle its tip points at rest.
 const DIVE = { tip: 2.09, far: 1.25, high: [5, 18] as [number, number], fast: [150, 400] as [number, number] }
 const DRAG = { stride: 90, pulse: 0.2, lean: 0.34 }
