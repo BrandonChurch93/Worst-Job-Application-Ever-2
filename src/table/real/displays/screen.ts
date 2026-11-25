@@ -1,21 +1,25 @@
+import { config } from '../../../config'
 import { SCORE_H, SCORE_W, TEXT_DOWN, TEXT_UP, dot, glyph, score, type Glyph } from './font'
 
 // The grid of every display, and what one grid shows at one moment. No three.js here: the tests run it in Node.
 export const COLS = 128
 export const ROWS = 30
 
+// A frame of the film: the line moves by whole dots in each one, and a changed numeral is in place two of them later.
+const FPS = config.film.fps
+
 export const PACE = {
   // A mode: the insert's name is held, then the line runs from right to left at an even pace, then the score is back.
   hold: 1.5,
-  dotsPerSecond: 84,
+  dotsPerSecond: 2 * FPS,
   // A numeral that changes rolls up into place in this time: two frames of the film.
-  roll: 2 / 30,
+  roll: 2 / FPS,
   // The hint: the left button, then the right, once a second between them.
   hintPeriod: 1,
   hintLit: 0.38,
   // The faint burn of the first and last columns, out of 255.
   burn: 16,
-  scoreGap: 2,
+  scoreGap: 5,
   scoreRight: 4
 }
 
@@ -114,7 +118,7 @@ export const lineWidth = (line: string): number => widthOf(line) * 2
 export const scrollSeconds = (line: string): number => (COLS + lineWidth(line)) / PACE.dotsPerSecond
 export const modeSeconds = (line: string): number => PACE.hold + scrollSeconds(line)
 // How far the line has run, in whole dots, at a time since the mode was lit.
-export const scrolled = (t: number): number => Math.max(0, Math.floor((t - PACE.hold) * PACE.dotsPerSecond))
+export const scrolled = (t: number): number => Math.max(0, Math.floor((t - PACE.hold) * PACE.dotsPerSecond + 1e-6))
 
 function blit(out: Uint8Array, s: Strip, x0: number, y0: number, level = 255): void {
   const xa = Math.max(0, x0)
@@ -168,7 +172,7 @@ function drawMode(out: Uint8Array, name: string, line: string, t: number): void 
 }
 
 // The hint: a computer mouse seen from above, between the two flippers it works, each button and its flipper lit in turn.
-const MOUSE = { cx: 63.5, top: 1, foot: 28, half: 9.2, split: 12, wheel: [4, 9] as [number, number] }
+const MOUSE = { cx: 63.5, top: 1, foot: 28, half: 10.2, split: 12, wheel: [4, 8] as [number, number] }
 
 const inMouse = (x: number, y: number): boolean => {
   const cy = (MOUSE.top + MOUSE.foot) / 2
@@ -200,13 +204,13 @@ function drawHint(out: Uint8Array, t: number): void {
       let v = 0
       if (inMouse(x, y)) {
         const edge = !inMouse(x - 1, y) || !inMouse(x + 1, y) || !inMouse(x, y - 1) || !inMouse(x, y + 1)
-        const seam = y === MOUSE.split || (y < MOUSE.split && (x === 63 || x === 64))
-        const wheel = (x === 63 || x === 64) && y >= MOUSE.wheel[0] && y <= MOUSE.wheel[1]
-        const button = y < MOUSE.split - 1 && !edge && !seam && !inMouseEdge(x, y)
-        if (edge || (seam && !wheel)) v = 255
-        else if (button && x < 63 && leftOn) v = 255
-        else if (button && x > 64 && rightOn) v = 255
-        else if (wheel) v = 0
+        const mid = x === 63 || x === 64
+        const wheel = mid && y >= MOUSE.wheel[0] && y <= MOUSE.wheel[1]
+        const seam = y === MOUSE.split || (y < MOUSE.split && mid && (y < MOUSE.wheel[0] - 1 || y > MOUSE.wheel[1] + 1))
+        const button = y < MOUSE.split - 1 && !inMouseEdge(x, y)
+        if (edge || seam || wheel) v = 255
+        else if (button && x < 62 && leftOn) v = 255
+        else if (button && x > 65 && rightOn) v = 255
       } else {
         for (const side of [-1, 1]) {
           const d = bat(x, y, side)
