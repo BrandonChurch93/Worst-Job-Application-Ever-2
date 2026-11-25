@@ -47,6 +47,10 @@ Written by frame, who started first. All numbers are page pixels (96 px is one b
 - The beam the marquee is hinged on is a ribbed aluminium extrusion (16 thick, a groove every 15 px on both faces), in the darker tone. It was a plain dark block, and from the foot of the table it read as a blank black wall under the marquee.
 - The plaque of the left shoulder is placed from the layout's `mouth.side.left` (0.55 balls in from it, 0.21 above its foot), not from typed places.
 
+- The launch lane's climb (Builder's ruling of 17:36Z, rails changed in `layout.ts`): at the top of the street and office tiers the cross rail is open over the launch lane, and a ramp stands on the tier's floor between the lane's walls. Its top is read from `railOf('launch')` over the last `LANE_RAMP.run` balls before the tier line and meets the upper floor flush there. It is the darker aluminium with two strips of bright steel for the ball, four screws, a tongue of steel 9 px long at its foot and a dark line where the tongue meets the floor. Nothing of the frame stands in the lane for 2 balls past a tier line (a test holds this).
+- Over the lift lane the cross rail is a closed housing as tall as the cross rail (1 ball and 56 px), `LANE.house` = 0.8 balls deep along the lane in the street tier, with a dark plate on its face that the tube runs into. In the office tier the lift's orange bend stands in the top 0.4 to 1.7 balls of the lane, so the housing there stops 0.14 balls short of the bend's opening (0.26 balls deep) and the bend hides the rest of the rise.
+- The frame builds no sunk lane and cuts nothing of another owner's: the first attempt at this (a sunk ramp with the art plate and the page's well cut) was dropped on the ruling and never committed.
+
 ## For the owner of the lights
 
 - The marquee's face is the mesh `marquee.face.marquee` with `userData.lightGroup = 'marquee.panel'` and `material.userData.lit = true`. Its emissive level is `0.05 + 0.95 * level('panel')`. Nothing else of the marquee gives light.
@@ -54,6 +58,6 @@ Written by frame, who started first. All numbers are page pixels (96 px is one b
 
 ## Found, not the frame's to mend
 
-- The `launch` rail climbs in a straight line through each tier, so a ball in the launch lane lies under the floor plate of the middle and top tiers for most of its way.
-- The lift rails do the same in the lift lane.
+- The `launch` and lift rails climbed in a straight line through each tier, under the floor plates. Mended by the Builder in `layout.ts` (`LANE_RAMP`); the frame's ramp and housing follow it.
+- In the office tier `lift.office` runs up the lift lane through the place of the orange bend that ends `lift.street` (both at 2.3 balls across, 0.4 to 1.7 balls below the tier line).
 - The apron and the loader are not among the lit zones (`LIT` in `lights/groups.ts` is marquee, corporate, office, street), so the apron takes only the page's own light. In `table-wide` its near white slabs draw at 92 where the approved image has them at 159.
