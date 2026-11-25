@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { BALL, SPIRAL, railOf, table } from '../src/table/layout'
+import { BALL, COLS, SPIRAL, railOf, table } from '../src/table/layout'
 import { localBalls, zone } from '../src/table/real/zone'
 import { buckets } from '../src/table/real/models/street/geo'
 import { garage, inTube, tube } from '../src/table/real/models/street/garage'
@@ -49,7 +49,8 @@ describe('the models of the street', () => {
       for (let i = 0; i < p.count; i++) {
         const r = Math.hypot(p.getX(i) - centre[0], p.getY(i) - centre[1])
         expect(r).toBeGreaterThan(trough + 4)
-        expect(p.getZ(i)).toBeGreaterThan((m.base ?? 0) * BALL - 3)
+        // Under its base the garage has only the two stanchions that stand on the right wall.
+        if (p.getZ(i) < (m.base ?? 0) * BALL - 3) expect(p.getX(i)).toBeGreaterThan(localBalls(z, COLS.right, 0)[0])
         expect(p.getZ(i)).toBeLessThan(((m.base ?? 0) + m.h) * BALL + 2)
         expect(inTube(pts, p.getX(i), p.getY(i), p.getZ(i), p.getZ(i))).toBe(false)
         n++

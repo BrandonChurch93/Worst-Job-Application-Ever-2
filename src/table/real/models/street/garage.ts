@@ -24,6 +24,9 @@ export function tube(z: Zone): V4[] {
   return out
 }
 
+// The top of the low wall of the tier over its floor, as the frame builds it.
+const WALL_TOP = 60
+
 // How far the tube reaches from the path: the ball's radius and half the layout's clearance to the side, the clearance over the path, and the trough under it.
 export const REACH = { side: (0.5 + config.table.minClearanceBalls / 10) * BALL, over: config.table.minClearanceBalls * BALL, under: 0.14 * BALL }
 
@@ -61,10 +64,20 @@ export function garage(b: Buckets, z: Zone): void {
     return true
   }
 
-  // The ring beams: one under each turn of the spiral and a deeper one at the rim. Each is left out where the tube crosses it.
+  // The ring beams: a deck edge under each turn of the spiral, a slimmer rail beam half way to the next, and a deeper one at the rim. Each is left out where the tube crosses it.
   const levels: [number, number][] = []
-  for (let zz = base; zz + pitch < top - 1; zz += pitch) levels.push([zz, zz + 0.27 * BALL])
-  levels.push([top - 0.42 * BALL, top])
+  const slim: boolean[] = []
+  const cap = 4
+  for (let zz = base; zz + pitch < top - 1; zz += pitch) {
+    levels.push([zz, zz + 0.34 * BALL])
+    slim.push(false)
+    if (zz + pitch * 1.5 < top - 1) {
+      levels.push([zz + pitch * 0.5 + 0.1 * BALL, zz + pitch * 0.5 + 0.3 * BALL])
+      slim.push(true)
+    }
+  }
+  levels.push([top - 0.5 * BALL, top - cap])
+  slim.push(false)
   const has: boolean[][] = levels.map(([z0, z1]) => Array.from({ length: N }, (_, i) => free((i + 0.5) * step, z0, z1, step / 2)))
   levels.forEach(([z0, z1], li) => {
     const row = has[li]!
@@ -85,20 +98,23 @@ export function garage(b: Buckets, z: Zone): void {
       const a0 = i * step
       const a1 = (i + n) * step
       const rim = li === levels.length - 1
-      g.lathe([[Ri, z0], [Ro, z0], [Ro, z1 - 1.2], [Ro - 1.2, z1], [Ri + 1.2, z1], [Ri, z1 - 1.2], [Ri, z0]], cx, cy, n, (k) => (k === 0 ? shade(con, 0.7) : k === 3 ? shade(con, 1.08) : con), { arc: [a0, a1], kind: KIND.concrete })
+      const thin = slim[li]!
+      const ri = thin ? Ri + 1.6 : Ri
+      const ro = thin ? Ro - 1.6 : Ro
+      g.lathe([[ri, z0], [ro, z0], [ro, z1 - 1.2], [ro - 1.2, z1], [ri + 1.2, z1], [ri, z1 - 1.2], [ri, z0]], cx, cy, n, (k) => (k === 0 ? shade(con, 0.7) : k === 3 ? shade(con, 1.08) : con), { arc: [a0, a1], kind: KIND.concrete })
       // A dark joint cast into the outer face, and on the rim a steel coping.
-      g.lathe([[Ro + 0.15, z0 + (z1 - z0) * 0.3], [Ro + 0.15, z0 + (z1 - z0) * 0.3 + 1.1]], cx, cy, n, shade(con, 0.38), { arc: [a0, a1] })
+      if (!thin) g.lathe([[Ro + 0.15, z0 + (z1 - z0) * 0.3], [Ro + 0.15, z0 + (z1 - z0) * 0.3 + 1.1]], cx, cy, n, shade(con, 0.38), { arc: [a0, a1] })
       if (rim) b.metal.lathe([[Ri - 0.3, z1], [Ro + 0.3, z1], [Ro + 0.3, z1 + 1.4], [Ri - 0.3, z1 + 1.4], [Ri - 0.3, z1]], cx, cy, n, TONE.steel, { arc: [a0, a1] })
       if (!whole) {
         for (const [a, s] of [[a0, -1], [a1, 1]] as const) {
           const c = Math.cos(a)
           const sn = Math.sin(a)
-          const q: V3[] = [[cx + c * Ri, cy + sn * Ri, z0], [cx + c * Ro, cy + sn * Ro, z0], [cx + c * Ro, cy + sn * Ro, z1], [cx + c * Ri, cy + sn * Ri, z1]]
+          const q: V3[] = [[cx + c * ri, cy + sn * ri, z0], [cx + c * ro, cy + sn * ro, z0], [cx + c * ro, cy + sn * ro, z1], [cx + c * ri, cy + sn * ri, z1]]
           g.face(s > 0 ? q : [...q].reverse(), shade(con, 0.9), KIND.concrete)
         }
       }
       // A strip lamp under the beam in each bay, lit, on the inner edge.
-      for (let k = 0; k + 3 < n; k += 6) {
+      for (let k = 0; !thin && k + 3 < n; k += 6) {
         const a = a0 + (k + 3) * step
         const m = b.glow.mark()
         b.glow.box(Ri + 0.6, Ri + 2.6, -8, 8, z0 - 1.6, z0 - 0.2, [1.5, 1.4, 1.1], { under: true, skip: 't' })
@@ -109,58 +125,52 @@ export function garage(b: Buckets, z: Zone): void {
     }
   })
 
-  // The columns, one every sixteenth of the round, cast in pieces from beam to beam and left out where the tube passes.
-  const cols = 16
-  const half = 7
+  // The columns, eight round the ring, none on the open side: a ribbed pier from the lowest beam to a cap over the rim, left out where the tube passes.
+  const cols = 8
+  const half = 11
+  const rib = 3
+  const fin = 2
+  const piece = 6
+  const angle = (k: number): number => ((k + 0.5) / cols) * Math.PI * 2
   for (let k = 0; k < cols; k++) {
-    const a = (k / cols) * Math.PI * 2
-    const at = Math.round(a / step) % N
-    for (let li = 0; li < levels.length - 1; li++) {
-      const z0 = levels[li]![1]
-      const z1 = levels[li + 1]![0]
-      const lower = has[li]![at]! && has[li]![(at + N - 1) % N]!
-      const upper = has[li + 1]![at]! && has[li + 1]![(at + N - 1) % N]!
-      if (!lower && !upper) continue
-      let lo = z0
-      let hi = z1
-      const piece = 6
-      if (!upper) while (hi > lo && !free(a, hi - piece, hi, half / Rm)) hi -= piece
-      if (!lower) while (lo < hi && !free(a, lo, lo + piece, half / Rm)) lo += piece
-      if (hi - lo < 18 || !free(a, lo, hi, half / Rm)) continue
-      const m = g.mark()
-      g.box(Ri, Ro, -half, half, lo, hi, con, { kind: KIND.concrete, skip: upper && lower ? 't' : '', under: !lower })
-      // A haunch under the upper beam.
-      if (upper) g.box(Ri + 0.4, Ro - 0.4, -half - 3, half + 3, hi - 5, hi, shade(con, 1.05), { under: true, skip: 't' })
-      g.place(m, cx, cy, 0, a)
-      // A guard rail of steel tube from this column to the next, over the beam below.
-      const next = ((k + 1) / cols) * Math.PI * 2
-      const rz = z0 + 0.2 * BALL
-      if (lower) {
-        const parts = 4
-        for (let j = 0; j < parts; j++) {
-          const p = a + ((next - a) * j) / parts
-          const q = a + ((next - a) * (j + 1)) / parts
-          if (!free((p + q) / 2, rz - 2, rz + 2, (q - p) / 2)) continue
-          if (!has[li]![Math.floor(((p + q) / 2) / step) % N]) continue
-          b.metal.rod([cx + Math.cos(p) * Rm, cy + Math.sin(p) * Rm, rz], [cx + Math.cos(q) * Rm, cy + Math.sin(q) * Rm, rz], 1.1, 5, TONE.steel, 0, false)
-        }
+    const a = angle(k)
+    const w = half / Rm
+    const clear = (z0: number, z1: number): boolean => free(a, z0, z1, w) && !inTube(pts, cx + Math.cos(a) * (Ro + rib + fin), cy + Math.sin(a) * (Ro + rib + fin), z0, z1, margin)
+    let lo = base
+    while (lo < top) {
+      while (lo < top && !clear(lo, Math.min(top, lo + piece))) lo += piece
+      let hi = lo
+      while (hi < top && clear(hi, Math.min(top, hi + piece))) hi = Math.min(top, hi + piece)
+      if (hi - lo >= 18) {
+        const m = g.mark()
+        g.box(Ri, Ro + rib, -half, half, lo, hi, con, { kind: KIND.concrete, under: true, bevel: 0.8 })
+        for (const s of [-1, 1]) g.box(Ro + rib - 0.5, Ro + rib + fin, s > 0 ? half - 5.5 : -half + 0.8, s > 0 ? half - 0.8 : -half + 5.5, lo + 1.5, hi - 1.5, shade(con, 1.04), { kind: KIND.concrete, under: true, skip: 'l' })
+        if (hi >= top - 0.01) g.box(Ri - 0.0, Ro + rib + fin + 0.6, -half - 1.6, half + 1.6, top - 2.4, top, shade(con, 1.08), { kind: KIND.concrete, under: true, bevel: 0.6 })
+        g.place(m, cx, cy, 0, a)
       }
+      lo = hi + piece
     }
   }
 
-  // Hung from the right wall: a steel bracket at each beam under the three columns nearest the wall, bolted through.
+  // Carried on the right wall: a steel stanchion stands on the wall's top behind each of the two piers nearest it, with an arm to the pier at every deck.
   const wall = localBalls(z, COLS.right, 0)[0]
-  levels.forEach(([z0, z1]) => {
-    for (const k of [-1, 0, 1]) {
-      const a = (k / cols) * Math.PI * 2
-      const x = cx + Math.cos(a) * Ro
-      const y = cy + Math.sin(a) * Ro
-      if (wall - x < 0.5) continue
-      b.metal.box(x - 1.5, wall, y - 4.5, y + 4.5, z0 + 2, z0 + 5, TONE.steel, { under: true, bevel: 0.6 })
-      b.metal.box(x - 1.5, x, y - 6.5, y + 6.5, z0 + 1, Math.min(z1 - 2, z0 + 20), TONE.steel, { under: true, skip: 'r' })
-      b.screws.push([x - 1.5, y - 4.2, z0 + 12, 1.2], [x - 1.5, y + 4.2, z0 + 12, 1.2])
-    }
-  })
+  const far = localBalls(z, COLS.launchA, 0)[0]
+  const px = (wall + far) / 2
+  const post = Math.min(4.2, (far - wall) / 2 - 2)
+  for (const k of [-1, 0]) {
+    const a = angle(k)
+    const y = cy + Math.sin(a) * (Ro + rib)
+    const x = cx + Math.cos(a) * (Ro + rib) - 1
+    if (px - x < 2 || post < 2) continue
+    b.metal.box(px - post, px + post, y - post, y + post, WALL_TOP - 20, top - 0.2 * BALL, TONE.steel, { bevel: 0.7 })
+    b.metal.box(px - post - 3.4, px + post + 3.4, y - post - 3.4, y + post + 3.4, WALL_TOP, WALL_TOP + 2, TONE.steel, { bevel: 0.5 })
+    for (const [sx, sy] of [[-1, -1], [1, 1], [-1, 1], [1, -1]] as const) b.screws.push([px + sx * (post + 1.5), y + sy * (post + 1.5), WALL_TOP + 2, 0.9])
+    levels.forEach(([z0], li) => {
+      if (slim[li]) return
+      b.metal.box(x, px + post, y - 2.8, y + 2.8, z0 + 8, z0 + 12, TONE.steel, { under: true, bevel: 0.6 })
+      b.metal.box(x, x + 1.6, y - 6.5, y + 6.5, z0 + 2, z0 + 20, TONE.steel, { under: true })
+    })
+  }
 
   // Tied to the police station: a steel angle from the lowest beam to the top of its front wall.
   const police = site(z, 'street.police')
