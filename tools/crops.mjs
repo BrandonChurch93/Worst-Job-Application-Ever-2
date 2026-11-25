@@ -37,7 +37,7 @@ for (const part of state.layout) {
   wanted.push({ name: `${part.kind} (${part.id})`, box: px(part.drawn), kind: part.kind })
 }
 const runs = [...state.type].sort((x, y) => x.px - y.px)
-if (runs.length) wanted.push({ name: `the smallest type, ${runs[0].px.toFixed(1)} px: ${runs[0].key}`, box: px(runs[0].box) })
+if (runs.length) wanted.push({ name: `the smallest type, ${runs[0].px.toFixed(1)} px`, about: runs[0].key, box: px(runs[0].box) })
 const standing = state.layout.filter((p) => p.height > 0).sort((x, y) => y.height - x.height)[0]
 if (standing) {
   const b = px(standing.drawn)
@@ -74,7 +74,7 @@ for (let s = 0; s * perSheet < wanted.length; s++) {
   fs.mkdirSync(path.dirname(file), { recursive: true })
   const size = await sheet(rows, file, { gap })
   fs.writeFileSync(file.replace(/\.jpg$/, '.json'), JSON.stringify({ ...out.record, crops: { still: path.relative(at(), out.file), parts: group.map((w) => w.name), width: size.width, height: size.height } }, null, 2) + '\n')
-  addLook(file, `Crops at native size from ${base}: ${group.map((w) => w.name).join('; ')}`)
+  addLook(file, `Crops at native size from ${base}: ${group.map((w) => (w.about ? `${w.name} (${w.about})` : w.name)).join('; ')}`)
   files.push(file)
   console.log(`crops: ${path.relative(at(), file)} (${size.width} by ${size.height}): ${group.map((w) => w.name).join('; ')}`)
 }

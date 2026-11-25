@@ -34,7 +34,13 @@ export const psnrText = (v) => (v === Infinity ? 'identical' : `${v.toFixed(2)} 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
 // A strip of plain text as a picture, for labels on harness sheets.
-export function label(text, width, height = 26, { size = 15, fill = '#ece7dd', ground = '#1b1b1d' } = {}) {
+export function label(words, width, height = 26, { size: asked = 15, fill = '#ece7dd', ground = '#1b1b1d' } = {}) {
+  const room = width - 16
+  const wide = (t, s) => t.length * s * 0.6
+  let size = asked
+  while (size > 11 && wide(String(words), size) > room) size -= 1
+  let text = String(words)
+  if (wide(text, size) > room) text = text.slice(0, Math.max(4, Math.floor(room / (size * 0.6)) - 1)).trimEnd() + '\u2026'
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><rect width="100%" height="100%" fill="${ground}"/><text x="8" y="${Math.round(height * 0.7)}" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="${size}" fill="${fill}">${esc(text)}</text></svg>`
   return sharp(Buffer.from(svg)).png().toBuffer()
 }

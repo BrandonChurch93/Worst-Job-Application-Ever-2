@@ -252,7 +252,7 @@ const section = (id, body) => `<section id="${id}"><h2>${esc(parts.find((p) => p
 const rows = (list) => `<ol class="rows">${list.join('\n')}</ol>`
 
 const latest = statusPictures.length
-  ? `<p class="soft">${statusHead ? `Status ${esc(statusHead[3])}, Phase ${esc(statusHead[2])}, ${esc(statusHead[1])}.` : 'No time was written down with these pictures.'}</p>\n${statusPictures.map(image).join('\n')}`
+  ? `<p class="soft">${statusHead ? `Status ${esc(statusHead[3])}, posted in phase ${esc(statusHead[2])} at ${esc(statusHead[1])}.` : 'No time was written down with these pictures.'}</p>\n${statusPictures.map(image).join('\n')}`
   : none
 
 const openIt = `<ul class="links">${links.map(([to, label]) => `<li><a href="${esc(to)}">${esc(label)}</a></li>`).join('')}</ul>`

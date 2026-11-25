@@ -34,15 +34,15 @@ Status 6, 2026-11-25T07:11Z, Phase 0.
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 0, tick 21 at 2026-11-25T07:11:31Z, allowance: build
-time used in this phase: 1.65 h of its box of 3.00 h
-time used under the allowance in force: 1.65 h of 36.00 h allowed
-time used: 1.65 of 36.00 hours before the review
+clock: phase 0, tick 22 at 2026-11-25T07:16:01Z, allowance: build
+time used in this phase: 1.72 h of its box of 3.00 h
+time used under the allowance in force: 1.72 h of 36.00 h allowed
+time used: 1.72 of 36.00 hours before the review
 extra rounds: yes
 half point: reached
 box end: not reached
 budget report: not due
-minutes since the last status: 0
+minutes since the last status: 4
 ```
 
 ## Phases
@@ -133,6 +133,7 @@ Every line says whether it is MEASURED here, STATED by a tool's own description,
 - Video models. STATED: five can be called (`veo_3_1_fast`, `veo_3_1`, `seedance_2_0`, `seedance_2_5`, `minimax_h3`). The build does not use them: every frame of the films is rendered from the site itself.
 - Image to 3D. MEASURED by looking through the tool list: there is no tool that turns a picture into a model. Every model is built by script, as `kit/03-METHOD.md` says.
 - App hosting, MEASURED 2026-11-25T07:06:40Z at the first publish (step 17). The publish tool takes a folder and one entry file and gives an address of the form `https://www.perplexity.ai/computer/a/<name>`. It is private to Brandon until he shares it from that page, and publishing the same folder again updates it in place (the second publish kept the address). The tool takes a picture of the entry page before it accepts the upload, and refuses an entry page that shows nothing. Three facts that shape the build: (1) a folder named `build` is not uploaded at all (14 of 15 files went up and the bundle was missing), so the hashed files are in `bundle/`; (2) the address opens the entry file only, so `<url>/review.html` does not exist here, and the review page is published a second time as its own app from `out/work/publish/review/`, a copy of `dist/` with `review.html` as the entry, which `npm run review` makes; (3) on the uploaded copy, opened in a fresh browser context by `npm run hosted`: `index.html` draws the canvas, `review.html` shows its 4 pictures and 7 parts, its first "Open it" link leads to `index.html`, a JSON file fetched by script arrives whole (192230 of 192230 bytes) and a JPEG fetched by script arrives whole (110797 of 110797 bytes) and is readable from an image element with `crossOrigin` set. That copy was opened through the tool's own 24 hour test address. What the permanent address does with a binary file fetched by script is UNKNOWN from here, because only Brandon can open it, and the hosting guide STATES it fails, so the loaders keep to text files and page elements. Size accepted so far: 15 files, 2.9 MB. The largest size it accepts is still UNKNOWN and is measured as the review page grows; the guide STATES 500 MB.
+- Publishing order. MEASURED 2026-11-25T07:15Z: the two apps are two uploads of two folders. When `npm run review` is run again after one folder has been uploaded, the hosted check finds the older picture on that copy (153558 bytes hosted against 152116 on disk). The rule: run `npm run review` last, then upload both folders, then run `npm run hosted`. The publish tool also looks at the entry page before it accepts it: at this publish it refused the review page for a caption that ran past its tile, so `tools/lib/image.mjs` now shrinks or shortens a label that would not fit.
 
 ## Pinned versions
 
