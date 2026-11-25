@@ -211,7 +211,7 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
 
   // Melt: the enamel runs over its own edge, wet and a little warmer.
   if ( melt > 0.0 ) {
-    col = mix( col, col * vec3( 1.0, 0.975, 0.91 ), melt );
+    col = mix( col, col * vec3( 1.0, 0.962, 0.875 ), melt );
     wjaRough = mix( wjaRough, 0.14, melt );
     wjaCoatRough = mix( wjaCoatRough, 0.04, melt );
   }
