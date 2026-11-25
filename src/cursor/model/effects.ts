@@ -320,7 +320,7 @@ class Effects implements EffectsModel {
       TOPS.forEach((t, i) => this.on(surface, t[0], t[1], this.tops[i]!))
       let top = this.tops[0]!
       for (const t of this.tops) if (t.y > top.y) top = t
-      n = this.plume(n, top.x, top.y - 2.2 * UNIT, top.z, steam, look.time, STEAM, 3, 17, 1.9, 0.5, 3.7, 1.0, 1.0, 0.95, 3)
+      n = this.plume(n, top.x, top.y - 2.2 * UNIT, top.z, steam, look.time, STEAM, 3, 17, 1.9, 0.42, 3.2, 1.0, 1.0, 0.88, 3)
     }
     const points = Math.min(SMOKE_POINTS, look.smoke.length)
     for (let k = 0; k < points; k++) {
