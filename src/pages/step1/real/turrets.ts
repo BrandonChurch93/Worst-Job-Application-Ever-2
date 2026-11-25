@@ -94,6 +94,7 @@ interface TurretData {
   barrel: THREE.Group
   metal: THREE.MeshPhysicalMaterial
   steel: THREE.MeshPhysicalMaterial
+  cool: [THREE.Color, THREE.Color]
   charge: THREE.Mesh
   chargeMaterial: THREE.MeshBasicMaterial
   sparks: THREE.Mesh[]
@@ -147,12 +148,13 @@ function makeTurret(s: Shape): THREE.Object3D {
   const steamMaterials: THREE.MeshBasicMaterial[] = []
   for (let i = 0; i < TURRET_LOOK.steam; i++) {
     const m = f.puffMaterial.clone()
+    m.color.setRGB(1, 1, 1)
     const puff = overlay(new THREE.Mesh(f.quad, m), 3 + i)
     steam.push(puff)
     steamMaterials.push(m)
     rise.add(puff)
   }
-  const data: TurretData = { rise, head, barrel, metal, steel, charge, chargeMaterial, sparks, flash, flashMaterial, steam, steamMaterials, seed: hashName(s.id) & 0xffff }
+  const data: TurretData = { rise, head, barrel, metal, steel, cool: [metal.color.clone(), steel.color.clone()], charge, chargeMaterial, sparks, flash, flashMaterial, steam, steamMaterials, seed: hashName(s.id) & 0xffff }
   root.userData.turret = data
   return root
 }
@@ -211,7 +213,9 @@ function poseTurret(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
 
   const glow = heat * (0.85 + 0.15 * Math.sin(ctx.time * 2.3 + d.seed))
   d.metal.emissive.setRGB(GLOW.hot[0] * glow, GLOW.hot[1] * glow, GLOW.hot[2] * glow)
-  d.steel.emissive.setRGB(GLOW.hot[0] * glow * 1.6, GLOW.hot[1] * glow * 1.6, GLOW.hot[2] * glow * 1.6)
+  d.steel.emissive.setRGB(GLOW.hot[0] * glow * 2.2, GLOW.hot[1] * glow * 3.2, GLOW.hot[2] * glow * 2.2)
+  d.metal.color.copy(d.cool[0]).multiplyScalar(1 - 0.94 * heat)
+  d.steel.color.copy(d.cool[1]).multiplyScalar(1 - 0.94 * heat)
   if (heat > 0.02) ctx.light({ x: cx, y: cy, z: s.z1 + 6, colour: EMIT.hot.colour, power: EMIT.hot.power * glow, reach: EMIT.hot.reach })
   d.steam.forEach((puff, i) => {
     puff.visible = heat > 0.02
@@ -219,11 +223,11 @@ function poseTurret(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
     const u = (ctx.time * 0.42 + i / TURRET_LOOK.steam + hash01(i, 17, d.seed)) % 1
     const sway = Math.sin(ctx.time * 1.7 + i * 2.1 + d.seed) * (6 + 14 * u)
     const from = hash01(i, 19, d.seed) * Math.PI * 2
-    const size = 26 + 70 * u
-    puff.position.set(Math.cos(from) * 16 + sway - 18 * u, Math.sin(from) * 16 + 64 * u, 6 + 110 * u)
+    const size = 30 + 84 * u
+    puff.position.set(Math.cos(from) * 18 + sway + (d.seed & 1 ? -1 : 1) * 30 * u, Math.sin(from) * 18 + 96 * u, 6 + 110 * u)
     puff.scale.set(size, size, 1)
     puff.rotation.z = from + u * 1.3
-    d.steamMaterials[i]!.opacity = 0.34 * heat * smooth(u / 0.18) * (1 - u) ** 1.3
+    d.steamMaterials[i]!.opacity = 0.62 * heat * smooth(u / 0.18) * (1 - u) ** 1.3
   })
 }
 
@@ -322,7 +326,7 @@ function poseScorch(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const d = o.userData.scorch as ScorchData
   const left = s.v ? s.v[0]! : 1
   const age = (1 - left) * TURRET.scorchSeconds
-  d.material.opacity = smooth(left / 0.45)
+  d.material.opacity = smooth((left * TURRET.scorchSeconds) / TURRET.scorchFade)
   const ember = Math.exp(-age / 0.18)
   d.material.color.setRGB(1 + 9 * ember, 1 + 3.2 * ember, 1 + 0.6 * ember)
   d.smoke.forEach((puff, i) => {
