@@ -9,7 +9,8 @@ import { look } from '../post/look'
 import { standInsOf, TONES } from '../shell/view'
 import { plannedHeight, typeRegister, walk } from '../shell/layout'
 import { words } from '../shell/words'
-import type { Shape, TableState } from '../stage/types'
+import { projectPage } from '../stage/camera'
+import type { CameraPose, Shape, TableState } from '../stage/types'
 
 export type { StillSpec, CursorState }
 
@@ -23,7 +24,7 @@ export interface Showcase {
   countParts(spec: StillSpec): Promise<PartCounts>
   pictureStats(): { invalidValues: number }
   typeRegister(page: string): { key: string; text: string; states: string[]; made: 'copy' | 'config' | 'runtime' }[]
-  stillState(spec: StillSpec): { layout: { id: string; kind: string; planned: number[]; drawn: number[]; plannedHeight: number | null; height: number; mechanism: boolean; moved: boolean }[]; type: { key: string; text: string; box: number[]; px: number; contrast: number; ink: number; ground: number; contrastFrom: ContrastFrom }[]; cursor: CursorState }
+  stillState(spec: StillSpec): { layout: { id: string; kind: string; planned: number[]; drawn: number[]; screen: number[]; plannedHeight: number | null; height: number; mechanism: boolean; moved: boolean }[]; type: { key: string; text: string; box: number[]; screen: number[]; px: number; contrast: number; ink: number; ground: number; contrastFrom: ContrastFrom }[]; cursor: CursorState }
   tableState(): TableState
   film(): { frameCount: number; units: { id: string; first: number; last: number }[]; beats: { id: string; first: number; last: number }[]; lines: { beat: string; first: number; last: number }[] }
   filmState(frameIndex: number): { unit: string; beat: string; camera: number[]; cursor: CursorState; events: { name: string; x: number; y: number; hitsCursor: boolean }[]; standIns: string[] }
@@ -44,6 +45,13 @@ export interface PartRow { part: string; names: string[]; made: string; meshes: 
 export interface PartCounts { rows: PartRow[]; shadows: string[]; total: { calls: number; triangles: number }; renderer: { drawCalls: number; triangles: number }; other: { calls: number; triangles: number } }
 
 type Rgb = [number, number, number]
+
+const screenBox = (pose: CameraPose, x: number, y: number, w: number, h: number, z: number): number[] => {
+  const at = [[x, y], [x + w, y], [x, y + h], [x + w, y + h]].map((p) => projectPage(pose, p[0]!, p[1]!, z))
+  const xs = at.map((p) => p.x)
+  const ys = at.map((p) => p.y)
+  return [Math.min(...xs), Math.min(...ys), Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys)]
+}
 const MB = 1048576
 
 const ratio = (a: number, b: number): number => (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05)
@@ -540,11 +548,11 @@ export function makeShowcase(app: App, ready: Promise<void>): Showcase {
     stillState(spec) {
       const { frame, pose, page, size } = app.still(spec)
       const drawn = new Map(frame.list.map((s) => [s.id, s]))
-      const layout: { id: string; kind: string; planned: number[]; drawn: number[]; plannedHeight: number | null; height: number; mechanism: boolean; moved: boolean }[] = []
+      const layout: { id: string; kind: string; planned: number[]; drawn: number[]; screen: number[]; plannedHeight: number | null; height: number; mechanism: boolean; moved: boolean }[] = []
       walk(page.layout, (n) => {
         const s = drawn.get(n.id)
         if (!s || s.kind === 'text' || s.kind === 'well') return
-        layout.push({ id: n.id, kind: n.kind, planned: [...n.box], drawn: [s.x, s.y, s.w, s.h], plannedHeight: plannedHeight(n.kind), height: s.pocket ? s.z0 : s.z1, mechanism: s.mechanism === true, moved: s.moved === true })
+        layout.push({ id: n.id, kind: n.kind, planned: [...n.box], drawn: [s.x, s.y, s.w, s.h], screen: screenBox(pose, s.x, s.y, s.w, s.h, s.pocket ? s.z0 : s.z1), plannedHeight: plannedHeight(n.kind), height: s.pocket ? s.z0 : s.z1, mechanism: s.mechanism === true, moved: s.moved === true })
       })
       let real = new Map<string, { contrast: number; ink: number; ground: number }>()
       try {
@@ -554,7 +562,7 @@ export function makeShowcase(app: App, ready: Promise<void>): Showcase {
         real = new Map()
       }
       const type = frame.list.filter((s) => s.kind === 'text').map((s) => {
-        const run = { key: s.words!, text: words(s.words!, s.text), box: [s.x, s.y, s.w, s.h], px: s.type!.px }
+        const run = { key: s.words!, text: words(s.words!, s.text), box: [s.x, s.y, s.w, s.h], screen: screenBox(pose, s.x, s.y, s.w, s.h, s.z1), px: s.type!.px }
         const hit = real.get(s.id)
         if (hit) return { ...run, contrast: hit.contrast, ink: hit.ink, ground: hit.ground, contrastFrom: 'materials' as ContrastFrom }
         const ink = TONES[s.tone]

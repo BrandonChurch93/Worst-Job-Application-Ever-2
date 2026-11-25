@@ -21,6 +21,7 @@ function steel(): THREE.MeshPhysicalMaterial {
 }
 
 let brushedMade: THREE.MeshPhysicalMaterial | null = null
+let hoodMade: THREE.MeshPhysicalMaterial | null = null
 let brushMap: THREE.DataTexture | null = null
 
 // Fine lines along x, as a roughness picture: the brushing of the housing's faces.
@@ -59,6 +60,16 @@ function brushing(): THREE.DataTexture {
 function brushed(): THREE.MeshPhysicalMaterial {
   brushedMade ??= studio(new THREE.MeshPhysicalMaterial({ color: materials().aluminium.color, roughness: 0.5, metalness: 1, roughnessMap: brushing(), anisotropy: 0.75, anisotropyRotation: 0 }))
   return brushedMade
+}
+
+// The hood leans away from the key, where the studio's reflection is dimmed for every surface. Bare metal has nothing
+// but its reflection to show, so the hood takes a larger share of it and keeps its band of light.
+function hoodMetal(): THREE.MeshPhysicalMaterial {
+  if (!hoodMade) {
+    hoodMade = studio(brushed().clone())
+    hoodMade.envMapIntensity = 4
+  }
+  return hoodMade
 }
 
 // The inside of the cassette under the rollers: anodised dark, so the machine is lit from above and dark below.
@@ -349,11 +360,11 @@ function makeCassette(): THREE.Group {
   const chute = new THREE.Group()
   chute.position.set(0, -C.deep, C.chute.z)
   lift.add(chute)
-  add(chute, sheetMetal(-inner + 0.6, inner - 0.6, arcRun(HOOD.cy, HOOD.cz, HOOD.r, HOOD.from, HOOD.to, 0), C.chute.thick), brushed())
+  add(chute, sheetMetal(-inner + 0.6, inner - 0.6, arcRun(HOOD.cy, HOOD.cz, HOOD.r, HOOD.from, HOOD.to, 0), C.chute.thick), hoodMetal())
   const slide = new THREE.Group()
   slide.position.set(0, HOOD.cy, HOOD.cz)
   chute.add(slide)
-  const reach = add(slide, sheetMetal(-inner + 4, inner - 4, arcRun(0, 0, HOOD.r - C.chute.thick - 0.35, HOOD.to - HOOD.more - 0.08, HOOD.to + 0.02, 1.25), C.chute.thick), brushed())
+  const reach = add(slide, sheetMetal(-inner + 4, inner - 4, arcRun(0, 0, HOOD.r - C.chute.thick - 0.35, HOOD.to - HOOD.more - 0.08, HOOD.to + 0.02, 1.25), C.chute.thick), hoodMetal())
 
   // The two panels that close the slot. They are the page's own ceramic, so shut they are two tiles with a seam.
   const panel = (y0: number, y1: number): THREE.Mesh => add(root, block(-SLOT.w / 2, SLOT.w / 2, y0, y1, -2.6, -0.2, 0.35), m.ceramic, false)

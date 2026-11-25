@@ -60,6 +60,8 @@ export interface Kit {
   deck: THREE.MeshPhysicalMaterial
   turned: THREE.MeshPhysicalMaterial
   barrel: THREE.MeshPhysicalMaterial
+  bed: THREE.MeshPhysicalMaterial
+  field: THREE.MeshPhysicalMaterial
   cap: THREE.MeshPhysicalMaterial
   orange: THREE.MeshPhysicalMaterial
   seat: THREE.MeshPhysicalMaterial
@@ -81,10 +83,12 @@ export function kit(): Kit {
     out.anisotropyRotation = 0
     return out
   }
-  const deck = metal(0.42, 0.8, 0.22)
-  deck.color.multiply(new THREE.Color(0.36, 0.375, 0.41))
+  const deck = metal(0.52, 0.45, 0.22)
+  deck.color.multiply(new THREE.Color(0.95, 0.96, 0.98))
   const turned = metal(0.42, 0.4, 0.14)
   turned.color.multiply(new THREE.Color(0.5, 0.515, 0.54))
+  const bed = metal(0.55, 0.5, 0.12)
+  bed.color.multiply(new THREE.Color(0.8, 0.81, 0.83))
   const barrel = metal(0.34, 0.6, 0.14)
   barrel.color.multiply(new THREE.Color(0.3, 0.31, 0.33))
   const speckle = m.textures[0]!.clone()
@@ -93,9 +97,11 @@ export function kit(): Kit {
   const cap = studio(
     new THREE.MeshPhysicalMaterial({ color: srgb(0xe6dfd2), roughness: 0.56, metalness: 0, normalMap: speckle, normalScale: new THREE.Vector2(0.12, 0.12), specularIntensity: 0.55, clearcoat: 0.1, clearcoatRoughness: 0.5 })
   )
+  const field = studio(cap.clone())
+  field.vertexColors = true
   const seat = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x8a8782), roughness: 0.78, metalness: 0, specularIntensity: 0.3 }))
   const dark = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x201f1e), roughness: 0.55, metalness: 0.2, specularIntensity: 0.5 }))
-  made = { brushed, deck, turned, barrel, cap, orange: m.orange, seat, dark }
+  made = { brushed, deck, turned, barrel, bed, field, cap, orange: m.orange, seat, dark }
   return made
 }
 
