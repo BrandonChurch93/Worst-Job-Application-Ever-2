@@ -61,7 +61,7 @@ export function gridOf(unit, step, maxFrames) {
 }
 
 // The pieces of a page that a range touches, each cut down to the range.
-export function piecesOf(unit, step, maxFrames, range = null) {
+export function piecesOf(unit, step, maxFrames, range) {
   const grid = gridOf(unit, step, maxFrames)
   if (!range) return grid
   const out = []
@@ -101,7 +101,7 @@ const tail = (format, tier, diag) => `${format}-${tier}${diag && diag !== 'beaut
 
 export const pieceName = (unit, first, last, format, tier, diag) => `${unit}-${pad(first)}-${pad(last)}-${tail(format, tier, diag)}`
 export const chunkName = (unit, format, tier, diag) => `${unit}-${tail(format, tier, diag)}`
-export const filmName = (which, format, tier, diag, range = null) => `film-${which}-${tail(format, tier, diag)}${range ? `-${pad(range.first)}-${pad(range.last)}` : ''}`
+export const filmName = (which, format, tier, diag, range) => `film-${which}-${tail(format, tier, diag)}${range ? `-${pad(range.first)}-${pad(range.last)}` : ''}`
 export const seqName = (frame, format, tier, diag) => `frame-${pad(frame)}-${tail(format, tier, diag)}`
 export const loopPieceName = (first, last, format, tier) => `loop-${pad(first)}-${pad(last)}-${tail(format, tier)}`
 
