@@ -8,8 +8,8 @@ import { Geo, type RGB, type V2, type V3 } from './geo'
 import { FINISH, TONE, drop as free, fin, matsOf, mesh, moved, place, poseGlow, screw, shade, signBoard, smooth, textAt } from './mats'
 
 const SEED = 20261125
-const FLOOR = 15.2
-const COL = 21
+const FLOOR = 18.4
+const COL = 25
 const LEAF = { thick: 4.8, lift: 1.5, open: 1.53, slam: 0.09 }
 const VEST = { deep: 96, out: 5.8 }
 
@@ -34,7 +34,7 @@ function curtain(S: Geo, G: Geo, a: V2, b: V2, z0: number, z1: number, rnd: Rand
   const floors = Math.max(1, Math.round((z1 - z0) / (o.floor ?? FLOOR)))
   const cw = len / cols
   const fh = (z1 - z0) / floors
-  const share = o.lit ?? 0.8
+  const share = o.lit ?? 0.66
   const depth = o.fin ?? 3
   const turn = Math.atan2(b[1] - a[1], b[0] - a[0])
   const n: V3 = [0, -1, 0]
@@ -60,14 +60,16 @@ function curtain(S: Geo, G: Geo, a: V2, b: V2, z0: number, z1: number, rnd: Rand
             G.face([[s0, 0, f0 + fh * u0], [s1, 0, f0 + fh * u0], [s1, 0, f0 + fh * u1], [s0, 0, f0 + fh * u1]], n, al, c)
           }
           if (!on) {
-            band(0, 1, [0.016, 0.022, 0.034])
+            band(0, 1, [0.012, 0.02, 0.036])
             continue
           }
           const k = warm * rnd.range(0.9, 1.05)
-          const cool = rnd.next() < 0.18 ? 1.5 : 1
-          band(0.74, 1, [1.25 * k, 1.25 * k, 1.2 * k * cool])
-          band(0.3, 0.74, [0.42 * k, 0.4 * k, 0.37 * k * cool])
-          band(0, 0.3, rnd.next() < 0.4 ? [0.05, 0.05, 0.055] : [0.16 * k, 0.15 * k, 0.14 * k])
+          const cool = rnd.next() < 0.18 ? 1.35 : 1
+          const blind = rnd.next() < 0.16
+          band(0.96, 1, [0.06, 0.06, 0.065])
+          band(0.8, 0.96, [0.92 * k, 0.92 * k, 0.86 * k * cool])
+          band(0.36, 0.8, blind ? [0.34 * k, 0.32 * k, 0.28 * k] : [0.12 * k, 0.115 * k, 0.108 * k * cool])
+          band(0, 0.36, rnd.next() < 0.4 ? [0.03, 0.035, 0.045] : [0.085 * k, 0.08 * k, 0.075 * k])
         }
       }
     })
@@ -76,14 +78,14 @@ function curtain(S: Geo, G: Geo, a: V2, b: V2, z0: number, z1: number, rnd: Rand
     fin(S, FINISH.brushed, () => {
       for (let j = 0; j <= floors; j++) {
         const f = z0 + j * fh
-        S.box(0, len, -1.5, 0.4, f - 1.25, f + 1.25, TONE.steelDark, { bottom: true })
+        S.box(0, len, -1.5, 0.4, f - 1.25, f + 1.25, TONE.steel, { bottom: true })
       }
     })
     fin(S, FINISH.polished, () => {
       for (let i = 0; i <= cols; i++) {
         const gold = o.gold ? i % o.gold === 0 : false
         const s = i * cw
-        const w = gold ? 1.5 : 0.9
+        const w = gold ? 1.1 : 0.9
         S.box(s - w, s + w, -(gold ? depth : depth * 0.55), 0.4, z0, z1 + (gold ? (o.rise ?? 0) : 0), gold ? TONE.gold : TONE.steel)
       }
     })
@@ -133,6 +135,7 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
   const o = new THREE.Group()
   const S = new Geo()
   const G = new Geo()
+  const W = new Geo()
   const rnd = new Random(SEED, 'corporate.hq.windows')
   const p0 = localBalls(z, m.box[0], m.box[1])
   const p1 = localBalls(z, m.box[0] + m.box[2], m.box[1] + m.box[3])
@@ -198,30 +201,30 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
   // The lobby behind the doors: lit stone, two lift doors and a lit ceiling.
   moved(G, place(cx, 0, 0), () => {
     fin(G, FINISH.stone, () => {
-      const wall: RGB = [0.5, 0.46, 0.4]
+      const wall: RGB = [0.24, 0.22, 0.19]
       G.face([[-vw, F, 0], [-vw, vb, 0], [-vw, vb, dh + 4], [-vw, F, dh + 4]], [1, 0, 0], [0, 1, 0], wall)
       G.face([[vw, F, 0], [vw, vb, 0], [vw, vb, dh + 4], [vw, F, dh + 4]], [-1, 0, 0], [0, 1, 0], wall)
       G.face([[-vw, vb, 0], [vw, vb, 0], [vw, vb, dh + 4], [-vw, vb, dh + 4]], [0, -1, 0], [1, 0, 0], wall)
-      G.face([[-vw, F, dh + 4], [vw, F, dh + 4], [vw, vb, dh + 4], [-vw, vb, dh + 4]], [0, 0, -1], [1, 0, 0], [0.5, 0.5, 0.5])
+      G.face([[-vw, F, dh + 4], [vw, F, dh + 4], [vw, vb, dh + 4], [-vw, vb, dh + 4]], [0, 0, -1], [1, 0, 0], [0.3, 0.3, 0.3])
       for (const s of [-1, 1]) {
         G.face([[s * 62 - 22, vb - 0.4, 3], [s * 62 + 22, vb - 0.4, 3], [s * 62 + 22, vb - 0.4, 104], [s * 62 - 22, vb - 0.4, 104]], [0, -1, 0], [1, 0, 0], [0.2, 0.15, 0.08])
         G.face([[s * 62 - 0.8, vb - 0.8, 3], [s * 62 + 0.8, vb - 0.8, 3], [s * 62 + 0.8, vb - 0.8, 104], [s * 62 - 0.8, vb - 0.8, 104]], [0, -1, 0], [1, 0, 0], [0.03, 0.03, 0.03])
         G.face([[s * 62 - 8, vb - 0.8, 110], [s * 62 + 8, vb - 0.8, 110], [s * 62 + 8, vb - 0.8, 116], [s * 62 - 8, vb - 0.8, 116]], [0, -1, 0], [1, 0, 0], [1.6, 1.5, 1.3])
-        G.face([[s * 40 - 12, F + 14, dh + 3.6], [s * 40 + 12, F + 14, dh + 3.6], [s * 40 + 12, vb - 14, dh + 3.6], [s * 40 - 12, vb - 14, dh + 3.6]], [0, 0, -1], [1, 0, 0], [1.9, 1.85, 1.7])
+        G.face([[s * 40 - 12, F + 14, dh + 3.6], [s * 40 + 12, F + 14, dh + 3.6], [s * 40 + 12, vb - 14, dh + 3.6], [s * 40 - 12, vb - 14, dh + 3.6]], [0, 0, -1], [1, 0, 0], [1.25, 1.2, 1.1])
       }
-      G.face([[-20, vb - 0.4, 20], [20, vb - 0.4, 20], [20, vb - 0.4, 120], [-20, vb - 0.4, 120]], [0, -1, 0], [1, 0, 0], [0.95, 0.9, 0.8])
-      G.face([[-vw, vb - 0.4, dh - 8], [vw, vb - 0.4, dh - 8], [vw, vb - 0.4, dh + 2], [-vw, vb - 0.4, dh + 2]], [0, -1, 0], [1, 0, 0], [1.5, 1.45, 1.3])
+      G.face([[-20, vb - 0.4, 20], [20, vb - 0.4, 20], [20, vb - 0.4, 120], [-20, vb - 0.4, 120]], [0, -1, 0], [1, 0, 0], [0.5, 0.47, 0.42])
+      G.face([[-vw, vb - 0.4, dh - 8], [vw, vb - 0.4, dh - 8], [vw, vb - 0.4, dh + 2], [-vw, vb - 0.4, dh + 2]], [0, -1, 0], [1, 0, 0], [0.9, 0.87, 0.8])
       // The lit soffit of the canopy.
-      G.face([[-dw - 16, F - 22, dh + 3.9], [dw + 16, F - 22, dh + 3.9], [dw + 16, F - 7, dh + 3.9], [-dw - 16, F - 7, dh + 3.9]], [0, 0, -1], [1, 0, 0], [1.5, 1.45, 1.3])
+      G.face([[-dw - 16, F - 22, dh + 3.9], [dw + 16, F - 22, dh + 3.9], [dw + 16, F - 7, dh + 3.9], [-dw - 16, F - 7, dh + 3.9]], [0, 0, -1], [1, 0, 0], [1.1, 1.06, 0.96])
     })
   })
 
   // The lobby's glass, either side of the portal.
-  const lobby = { floor: (pz0 - 6) / 2, col: 20, lit: 1, gold: 1, fin: 3.2 }
-  curtain(S, G, [X(-HW + 20), F], [X(-dw - 17), F], 6, pz0, rnd, lobby)
-  curtain(S, G, [X(dw + 17), F], [X(HW - 20), F], 6, pz0, rnd, lobby)
-  curtain(S, G, [X(HW), F], [X(HW), B], 6, pz1, rnd, { gold: 3 })
-  curtain(S, G, [X(-HW), B], [X(-HW), F], 6, pz1, rnd, { gold: 3 })
+  const lobby = { floor: (pz0 - 6) / 2, col: 20, lit: 1, gold: 0, fin: 3.2 }
+  curtain(W, G, [X(-HW + 20), F], [X(-dw - 17), F], 6, pz0, rnd, lobby)
+  curtain(W, G, [X(dw + 17), F], [X(HW - 20), F], 6, pz0, rnd, lobby)
+  curtain(W, G, [X(HW), F], [X(HW), B], 6, pz1, rnd, { gold: 4 })
+  curtain(W, G, [X(-HW), B], [X(-HW), F], 6, pz1, rnd, { gold: 4 })
 
   // The tower: three steps back, each with its own coping, flush at the front.
   const steps = [
@@ -244,9 +247,9 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
   coping(HW, B, pz1)
   for (const st of steps) {
     moved(S, place(cx, 0, 0), () => fin(S, FINISH.satin, () => S.box(-st.hx + 0.6, st.hx - 0.6, F + 0.6, st.yb, st.z0, st.z1, TONE.graphite)))
-    curtain(S, G, [X(-st.hx), F], [X(st.hx), F], st.z0 + 2.2, st.z1 - 2.2, rnd, { gold: 2, rise: st.rise, fin: 3.6 })
-    curtain(S, G, [X(st.hx), F], [X(st.hx), st.yb], st.z0 + 2.2, st.z1 - 2.2, rnd, { gold: 2, rise: st.rise })
-    curtain(S, G, [X(-st.hx), st.yb], [X(-st.hx), F], st.z0 + 2.2, st.z1 - 2.2, rnd, { gold: 2, rise: st.rise })
+    curtain(W, G, [X(-st.hx), F], [X(st.hx), F], st.z0 + 2.2, st.z1 - 2.2, rnd, { gold: 4, rise: st.rise, fin: 3.6 })
+    curtain(W, G, [X(st.hx), F], [X(st.hx), st.yb], st.z0 + 2.2, st.z1 - 2.2, rnd, { gold: 4, rise: st.rise })
+    curtain(W, G, [X(-st.hx), st.yb], [X(-st.hx), F], st.z0 + 2.2, st.z1 - 2.2, rnd, { gold: 4, rise: st.rise })
     coping(st.hx, st.yb, st.z1)
   }
 
@@ -317,7 +320,7 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
   // The board the name stands on, at the front edge of the crown.
   const h0 = 22
   const sign = textAt(ctx, z, 'sign.corporate.hq', { c: [cx, F + 8 + (h0 / 2) * 0.866, top + 6 + h0 / 4], w: 150, h: h0, tilt: 0.5235987755982988 })
-  signBoard(S, sign.c, sign.w, sign.h, sign.tilt, s3.z1 + 2.2, TONE.gold, TONE.nickel)
+  signBoard(S, sign.c, sign.w, sign.h, sign.tilt, s3.z1 + 2.2, TONE.steel, TONE.nickel)
 
   // The carpet: pile with a bound edge, brass rods across it at even steps.
   const carpet = table.flats.find((f) => f.id === 'corporate.carpet')
@@ -349,6 +352,7 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
 
   o.add(mesh(S, mats.solid, `hq.solid.${z.id}`, { cast: true }))
   o.add(mesh(G, mats.glow, `hq.glow.${z.id}`, { group: mats.group }))
+  o.add(mesh(W, mats.solid, `hq.frame.${z.id}`, { fine: true }))
   const doors = new THREE.InstancedMesh(leaf().done(), mats.solid, 2)
   doors.name = `hq.doors.${z.id}`
   doors.castShadow = true

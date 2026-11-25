@@ -16,21 +16,19 @@ function chair(): Geo {
   fin(g, FINISH.polished, () => {
     for (let k = 0; k < 5; k++) {
       const a = (k / 5) * Math.PI * 2 + 0.3
-      g.pipe([[0, 0, 5.4], [Math.cos(a) * 11, Math.sin(a) * 11, 3]], 1.25, 6, TONE.steel)
-      g.lathe([[1.9, 0], [1.9, 2.6], [0, 3]], Math.cos(a) * 11, Math.sin(a) * 11, 6, TONE.rubber)
+      g.pipe([[0, 0, 5.4], [Math.cos(a) * 11.5, Math.sin(a) * 11.5, 1.6]], 1.3, 4, TONE.steel)
     }
-    g.lathe([[2.6, 4], [2.6, 7], [1.5, 8], [1.5, ROOM.seat - 9], [3.4, ROOM.seat - 7], [3.4, ROOM.seat - 5]], 0, 0, 10, TONE.steel)
-    for (const s of [-1, 1]) g.pipe([[-5.5, s * 11.2, ROOM.seat - 2], [-5.5, s * 11.2, ROOM.seat + 12], [-3, s * 11.2, ROOM.seat + 14.5], [7, s * 11.2, ROOM.seat + 14.5]], 1, 6, TONE.steel)
+    g.lathe([[2.6, 4], [1.5, 8], [1.5, ROOM.seat - 8], [3.4, ROOM.seat - 5]], 0, 0, 6, TONE.steel)
+    for (const s of [-1, 1]) g.pipe([[-5.5, s * 11.2, ROOM.seat - 2], [-5.5, s * 11.2, ROOM.seat + 13], [7, s * 11.2, ROOM.seat + 14.5]], 1, 4, TONE.steel)
   })
   fin(g, FINISH.leather, () => {
-    g.slab(roundedLoop(-10.5, 11, -10.5, 10.5, 3.2, 3), ROOM.seat - 5, ROOM.seat, TONE.leather, { bevel: 1.6, bottom: true })
-    g.slab(roundedLoop(-8.5, 9.5, -8.6, 8.6, 2.6, 3), ROOM.seat, ROOM.seat + 1.6, shade(TONE.leather, 1.5), { bevel: 1.2 })
-    for (const s of [-1, 1]) g.box(-4.5, 7.5, s * 11.2 - 1.9, s * 11.2 + 1.9, ROOM.seat + 14.5, ROOM.seat + 16.6, TONE.leather, { bevel: 0.8, bottom: true })
+    g.slab(roundedLoop(-10.5, 11, -10.5, 10.5, 3.2, 2), ROOM.seat - 5, ROOM.seat + 1, TONE.leather, { bevel: 1.8, bottom: true, top: shade(TONE.leather, 1.5) })
+    for (const s of [-1, 1]) g.box(-4.5, 7.5, s * 11.2 - 1.9, s * 11.2 + 1.9, ROOM.seat + 14.5, ROOM.seat + 16.6, TONE.leather)
     // The back: a padded slab leaning away, in three stitched rolls.
     moved(g, place(-9.2, 0, ROOM.seat - 1, 0, 0, -0.16), () => {
       const h = ROOM.back - ROOM.seat + 1
-      g.slab(roundedLoop(-2.4, 2.2, -10.4, 10.4, 2, 3), 0, h, TONE.leather, { bevel: 1.6, bottom: true })
-      for (let k = 0; k < 3; k++) g.box(2.2, 3.5, -8.8, 8.8, 6 + k * (h - 10) / 3, 6 + (k + 1) * (h - 10) / 3 - 1.2, shade(TONE.leather, 1.5), { bevel: 0.9, bottom: true })
+      g.slab(roundedLoop(-2.4, 2.2, -10.4, 10.4, 2, 2), 0, h, TONE.leather, { bevel: 1.6 })
+      for (let k = 0; k < 3; k++) g.box(2.2, 3.5, -8.8, 8.8, 6 + k * (h - 10) / 3, 6 + (k + 1) * (h - 10) / 3 - 1.2, shade(TONE.leather, 1.5))
     })
   })
   return g
@@ -42,6 +40,7 @@ export function buildBoardroom(z: Zone, _ctx: RealContext): THREE.Object3D {
   const mats = matsOf(z)
   const o = new THREE.Group()
   const S = new Geo()
+  const D = new Geo()
   const rnd = new Random(SEED, 'boardroom')
   const a = localBalls(z, m.box[0], m.box[1] + m.box[3])
   const b = localBalls(z, m.box[0] + m.box[2], m.box[1])
@@ -95,20 +94,22 @@ export function buildBoardroom(z: Zone, _ctx: RealContext): THREE.Object3D {
         S.box(x, x + rnd.range(0.5, 2.2), -tl + 9, tl - 9, ROOM.top + 0.1, ROOM.top + 0.14, shade(TONE.wood, rnd.range(0.8, 1.3)), { along: [0, 1, 0] })
       }
     })
+  })
+  moved(D, place(cx, cy, 0), () => {
     const T = ROOM.top + 0.14
     // The speaker phone: three arms round a dark dome with a ring of holes.
-    moved(S, place(0, 0, T, 0.35), () => {
-      fin(S, FINISH.satin, () => {
+    moved(D, place(0, 0, T, 0.35), () => {
+      fin(D, FINISH.satin, () => {
         for (let k = 0; k < 3; k++) {
-          moved(S, place(0, 0, 0, (k * Math.PI * 2) / 3), () => {
-            S.slab([[2, -3.2], [10.5, -2.2], [12, 0], [10.5, 2.2], [2, 3.2]], 0, 1.6, TONE.graphite, { bevel: 0.6 })
-            S.box(8.2, 10.2, -0.9, 0.9, 1.6, 1.75, hex(0x54c08a))
+          moved(D, place(0, 0, 0, (k * Math.PI * 2) / 3), () => {
+            D.slab([[2, -3.2], [10.5, -2.2], [12, 0], [10.5, 2.2], [2, 3.2]], 0, 1.6, TONE.graphite, { bevel: 0.6 })
+            D.box(8.2, 10.2, -0.9, 0.9, 1.6, 1.75, hex(0x54c08a))
           })
         }
-        S.lathe([[5.6, 0], [5.6, 1.6], [4.6, 2.6], [0, 2.9]], 0, 0, 14, shade(TONE.graphite, 0.8))
+        D.lathe([[5.6, 0], [5.6, 1.6], [4.6, 2.6], [0, 2.9]], 0, 0, 14, shade(TONE.graphite, 0.8))
       })
-      fin(S, FINISH.matte, () => {
-        for (let k = 0; k < 8; k++) S.lathe([[0.55, 0], [0, 0.02]], Math.cos((k / 8) * Math.PI * 2) * 3.1, Math.sin((k / 8) * Math.PI * 2) * 3.1, 5, TONE.rubber, 2.72)
+      fin(D, FINISH.matte, () => {
+        for (let k = 0; k < 8; k++) D.lathe([[0.55, 0], [0, 0.02]], Math.cos((k / 8) * Math.PI * 2) * 3.1, Math.sin((k / 8) * Math.PI * 2) * 3.1, 5, TONE.rubber, 2.72)
       })
     })
     // Each place: a closed folder a little askew and a glass of water.
@@ -117,24 +118,25 @@ export function buildBoardroom(z: Zone, _ctx: RealContext): THREE.Object3D {
       for (let k = 0; k < ROOM.places; k++) {
         const y = -tl + 8 + pitch * (k + 0.5)
         const x = s * (tw - 12.5)
-        moved(S, place(x + rnd.range(-1, 1), y + rnd.range(-1.5, 1.5), T, (s > 0 ? 0 : Math.PI) + rnd.range(-0.16, 0.16)), () => {
-          fin(S, FINISH.satin, () => {
-            S.box(-5.2, 5.2, -7.2, 7.2, 0, 1.1, TONE.folder, { bevel: 0.3 })
-            S.box(-4.8, 4.9, -6.9, 6.9, 0.3, 0.8, TONE.white)
-            S.box(-5.2, -3.9, -7.2, 7.2, 1.1, 1.2, shade(TONE.folder, 0.7))
-            S.box(0.6, 3.6, -2.4, 2.4, 1.1, 1.2, TONE.white)
+        moved(D, place(x + rnd.range(-1, 1), y + rnd.range(-1.5, 1.5), T, (s > 0 ? 0 : Math.PI) + rnd.range(-0.16, 0.16)), () => {
+          fin(D, FINISH.satin, () => {
+            D.box(-5.2, 5.2, -7.2, 7.2, 0, 1.1, TONE.folder, { bevel: 0.3 })
+            D.box(-4.8, 4.9, -6.9, 6.9, 0.3, 0.8, TONE.white)
+            D.box(-5.2, -3.9, -7.2, 7.2, 1.1, 1.2, shade(TONE.folder, 0.7))
+            D.box(0.6, 3.6, -2.4, 2.4, 1.1, 1.2, TONE.white)
           })
-          fin(S, FINISH.polished, () => S.pipe([[4.3, -6, 1.5], [4.3, 3.5, 1.5]], 0.45, 5, TONE.steel))
+          fin(D, FINISH.polished, () => D.pipe([[4.3, -6, 1.5], [4.3, 3.5, 1.5]], 0.45, 5, TONE.steel))
         })
-        fin(S, FINISH.stone, () => {
+        fin(D, FINISH.stone, () => {
           const gx = s * (tw - 22.5) + rnd.range(-1, 1)
           const gy = y + pitch * 0.3 + rnd.range(-1, 1)
-          S.lathe([[1.9, 0], [2.4, 5.6], [2.05, 5.6], [1.7, 3.6], [0, 3.6]], gx, gy, 10, (i) => (i > 2 ? hex(0xbfe0ea) : hex(0xdfeaec)), T)
-          S.lathe([[3.3, 0], [3.3, 0.3], [0, 0.3]], gx, gy, 10, hex(0xcfc9b8), T)
+          D.lathe([[1.9, 0], [2.4, 5.6], [2.05, 5.6], [1.7, 3.6], [0, 3.6]], gx, gy, 10, (i) => (i > 2 ? hex(0xbfe0ea) : hex(0xdfeaec)), T)
+          D.lathe([[3.3, 0], [3.3, 0.3], [0, 0.3]], gx, gy, 10, hex(0xcfc9b8), T)
         })
       }
     }
   })
+  o.add(mesh(D, mats.solid, `boardroom.places.${z.id}`, { fine: true }))
   o.add(mesh(S, mats.solid, `boardroom.${z.id}`, { cast: true }))
   // Twelve empty chairs, six a side, no two quite in line.
   const chairs = new THREE.InstancedMesh(chair().done(), mats.solid, ROOM.places * 2)

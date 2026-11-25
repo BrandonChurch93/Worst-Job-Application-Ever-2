@@ -18,18 +18,19 @@ export function buildRevolving(z: Zone, _ctx: RealContext): THREE.Object3D {
   rotor.position.set(c[0], c[1], 0)
   const S = new Geo()
   const C = new Geo()
+  const F = new Geo()
   const top = DOOR.foot + DOOR.tall
   // The floor ring and the turned post: round, so they may turn with the rest and no one can tell.
   fin(S, FINISH.brushed, () => {
-    S.lathe([[DOOR.ring, 0], [DOOR.ring, 4.2], [DOOR.ring - 1.2, 5.2], [DOOR.ring - 7, 5.2], [DOOR.ring - 8, 4.2], [DOOR.ring - 8, 0]], 0, 0, 56, TONE.brass)
-    S.lathe([[24, 0], [24, 2.2], [22.5, 3.4], [15, 4.4], [12.5, 6.2], [12.5, 8], [9, 9.4], [DOOR.post, 10.2]], 0, 0, 32, (k) => (k % 2 ? TONE.brass : TONE.gold))
+    S.lathe([[DOOR.ring, 0], [DOOR.ring, 4.2], [DOOR.ring - 1.2, 5.2], [DOOR.ring - 7, 5.2], [DOOR.ring - 8, 4.2], [DOOR.ring - 8, 0]], 0, 0, 40, TONE.brass)
+    S.lathe([[24, 0], [24, 2.2], [22.5, 3.4], [15, 4.4], [12.5, 6.2], [12.5, 8], [9, 9.4], [DOOR.post, 10.2]], 0, 0, 20, (k) => (k % 2 ? TONE.brass : TONE.gold))
   })
   fin(S, FINISH.polished, () => {
     const mid = DOOR.foot + DOOR.tall / 2
-    S.lathe([[DOOR.post, 10.2], [DOOR.post, 16], [8.4, 17.2], [8.4, 19.6], [DOOR.post, 20.8], [DOOR.post - 0.9, mid - 4], [8, mid - 2.6], [8, mid + 2.6], [DOOR.post - 0.9, mid + 4], [DOOR.post, top - 9], [8.4, top - 7.6], [8.4, top - 5], [DOOR.post, top - 3.6], [DOOR.post, top + 1]], 0, 0, 24, TONE.gold)
-    S.lathe([[DOOR.post, top + 1], [11.5, top + 2], [12.5, top + 4.4], [11, top + 6.6], [6, top + 8.4], [3.4, top + 10], [3.8, top + 12.5], [2.4, top + 14.6], [0, top + 15.2]], 0, 0, 24, TONE.gold)
+    S.lathe([[DOOR.post, 10.2], [DOOR.post, 16], [8.4, 17.2], [8.4, 19.6], [DOOR.post, 20.8], [DOOR.post - 0.9, mid - 4], [8, mid - 2.6], [8, mid + 2.6], [DOOR.post - 0.9, mid + 4], [DOOR.post, top - 9], [8.4, top - 7.6], [8.4, top - 5], [DOOR.post, top - 3.6], [DOOR.post, top + 1]], 0, 0, 14, TONE.gold)
+    S.lathe([[DOOR.post, top + 1], [11.5, top + 2], [12.5, top + 4.4], [11, top + 6.6], [6, top + 8.4], [3.4, top + 10], [3.8, top + 12.5], [2.4, top + 14.6], [0, top + 15.2]], 0, 0, 14, TONE.gold)
   })
-  for (let k = 0; k < 8; k++) screw(S, Math.cos((k / 8) * Math.PI * 2 + 0.39) * (DOOR.ring - 4), Math.sin((k / 8) * Math.PI * 2 + 0.39) * (DOOR.ring - 4), 5.2, 1.5, TONE.brassDark)
+  for (let k = 0; k < 8; k++) screw(F, Math.cos((k / 8) * Math.PI * 2 + 0.39) * (DOOR.ring - 4), Math.sin((k / 8) * Math.PI * 2 + 0.39) * (DOOR.ring - 4), 5.2, 1.5, TONE.brassDark)
   const t = DOOR.thick / 2
   const r0 = DOOR.post + 1.5
   for (let k = 0; k < 4; k++) {
@@ -45,10 +46,10 @@ export function buildRevolving(z: Zone, _ctx: RealContext): THREE.Object3D {
         const bz = DOOR.foot + DOOR.tall * 0.46
         for (const s of [-1, 1]) {
           const y = s * (t + 4.2)
-          S.pipe([[r0 + 12, y, bz], [DOOR.reach - 9, y, bz]], 1.5, 8, TONE.gold)
+          S.pipe([[r0 + 12, y, bz], [DOOR.reach - 9, y, bz]], 1.5, 6, TONE.gold)
           for (const x of [r0 + 14, DOOR.reach - 11]) {
-            S.pipe([[x, s * t, bz], [x, y, bz]], 1.1, 6, TONE.brassDark)
-            moved(S, place(x, s * t, bz, 0, s > 0 ? -Math.PI / 2 : Math.PI / 2), () => S.lathe([[2.6, 0], [2.6, 0.7], [1.2, 1.1]], 0, 0, 8, TONE.gold))
+            S.pipe([[x, s * t, bz], [x, y, bz]], 1.1, 4, TONE.brassDark)
+            moved(F, m.clone().multiply(place(x, s * t, bz, 0, s > 0 ? -Math.PI / 2 : Math.PI / 2)), () => F.lathe([[2.6, 0], [2.6, 0.7], [1.2, 1.1]], 0, 0, 8, TONE.gold))
           }
           for (const x of [r0, DOOR.reach - 5.2]) S.box(x, x + 5.2, s > 0 ? t : -t - 0.5, s > 0 ? t + 0.5 : -t, bz - 1.2, bz + 1.2, TONE.gold)
         }
@@ -62,6 +63,7 @@ export function buildRevolving(z: Zone, _ctx: RealContext): THREE.Object3D {
     C.move(from, m)
   }
   rotor.add(mesh(S, mats.solid, `revolving.rotor.${z.id}`, { cast: true }))
+  rotor.add(mesh(F, mats.solid, `revolving.screws.${z.id}`, { fine: true }))
   rotor.add(mesh(C, mats.clear, `revolving.glass.${z.id}`, { order: 4 }))
   rotor.rotation.z = DOOR.rest
   o.add(rotor)

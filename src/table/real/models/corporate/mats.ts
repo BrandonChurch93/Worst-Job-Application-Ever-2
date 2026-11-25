@@ -21,15 +21,15 @@ const ROUGH_METAL: [number, number][] = [[0.13, 1], [0.34, 1], [0.2, 0], [0.82, 
 const uvOf = (f: Finish): V2 => [(f + 0.5) / ROUGH_METAL.length, 0.5]
 
 export const TONE = {
-  brass: hex(0xd2a750),
-  brassDark: hex(0xa67c34),
-  gold: hex(0xe0b865),
+  brass: hex(0xc4a873),
+  brassDark: hex(0x9b8252),
+  gold: hex(0xd8be88),
   steel: hex(0xc6cbd0),
   steelDark: hex(0x8d949b),
   graphite: hex(0x3a3f47),
   roof: hex(0x565c66),
-  stone: hex(0xb9b4a8),
-  nickel: hex(0xdad8d0),
+  stone: hex(0x9c9fa3),
+  nickel: hex(0xd3d7da),
   carpet: hex(0xa3161c),
   carpetEdge: hex(0x6e0d12),
   rubber: hex(0x1b1b1d),
@@ -79,7 +79,7 @@ export interface Mats {
   group: string | null
 }
 
-const GLOW = { windows: 1.55 }
+const GLOW = { windows: 1.25 }
 const made = new Map<string, Mats>()
 
 // The three materials of the tier's models, made once for a zone and shared by all seven.
@@ -100,7 +100,7 @@ export function matsOf(z: Zone): Mats {
   glow.userData.lit = true
   lit(glow, z)
   glow.name = `corporate.glow.${z.id}`
-  const clear = studio(new THREE.MeshPhysicalMaterial({ color: 0xe6eef0, roughness: 0.05, metalness: 0, transparent: true, opacity: 0.07, depthWrite: false, specularIntensity: 1, clearcoat: 1, clearcoatRoughness: 0.03, side: THREE.DoubleSide }))
+  const clear = studio(new THREE.MeshPhysicalMaterial({ color: 0xe6eef0, roughness: 0.05, metalness: 0, transparent: true, opacity: 0.07, depthWrite: false, specularIntensity: 1, clearcoat: 1, clearcoatRoughness: 0.03, side: THREE.DoubleSide, forceSinglePass: true }))
   const room2 = clear.onBeforeCompile
   clear.onBeforeCompile = (shader, renderer) => {
     room2.call(clear, shader, renderer)

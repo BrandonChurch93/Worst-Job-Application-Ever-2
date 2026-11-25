@@ -125,8 +125,8 @@ export function buildBeach(z: Zone, ctx: RealContext): THREE.Object3D {
     }, CASE.sun)
     // The sand, raked by the wind.
     fin(G, FINISH.cloth, () => {
-      const nx = 34
-      const ny = 20
+      const nx = 24
+      const ny = 14
       const y1 = shore - 4
       for (let i = 0; i < nx; i++) {
         for (let j = 0; j < ny; j++) {
@@ -147,7 +147,7 @@ export function buildBeach(z: Zone, ctx: RealContext): THREE.Object3D {
     // The palm: a trunk of rings that leans, a crown of fronds that hang.
     const foot: V3 = [-iw * 0.56, -id * 0.05, 0]
     foot[2] = ground(foot[0], foot[1]) - 1
-    const rings = 15
+    const rings = 10
     const tall = lid0 - foot[2] - 30
     const spine = (u: number): V3 => [foot[0] + 22 * u * u + 5 * Math.sin(u * 3), foot[1] - 3 * u, foot[2] + tall * u]
     fin(G, FINISH.matte, () => {
@@ -158,7 +158,7 @@ export function buildBeach(z: Zone, ctx: RealContext): THREE.Object3D {
         const d = new THREE.Vector3(q[0] - p[0], q[1] - p[1], q[2] - p[2])
         const len = d.length()
         const mq = new THREE.Matrix4().compose(new THREE.Vector3(...p), new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 0, 1), d.normalize()), new THREE.Vector3(1, 1, 1))
-        moved(G, mq, () => G.lathe([[r * 0.86, 0], [r * 1.08, len * 0.72], [r * 0.8, len * 1.02]], 0, 0, 9, (i) => (i ? shade(TONE.trunk, 0.62) : shade(TONE.trunk, k % 2 ? 1 : 0.88))))
+        moved(G, mq, () => G.lathe([[r * 0.86, 0], [r * 1.08, len * 0.72], [r * 0.8, len * 1.02]], 0, 0, 7, (i) => (i ? shade(TONE.trunk, 0.62) : shade(TONE.trunk, k % 2 ? 1 : 0.88))))
       }
       const head = spine(1)
       G.lathe([[2.2, -2], [4.2, 0.5], [3, 3.2], [0, 4.2]], head[0], head[1], 8, shade(TONE.trunk, 0.7), head[2])
@@ -173,11 +173,11 @@ export function buildBeach(z: Zone, ctx: RealContext): THREE.Object3D {
         const rise = rnd.range(0.2, 0.75)
         const dx = Math.cos(turn)
         const dy = Math.sin(turn)
-        const steps = 9
+        const steps = 6
         const rib = (u: number): V3 => [head[0] + dx * len * u, head[1] + dy * len * u, head[2] + 3 + len * (rise * u - (0.55 + rise) * u * u)]
         const path: V3[] = []
         for (let k = 0; k <= steps; k++) path.push(rib(k / steps))
-        G.pipe(path, 0.7, 4, shade(TONE.palmDark, 0.8))
+        G.pipe(path, 0.7, 3, shade(TONE.palmDark, 0.8))
         for (let k = 1; k <= steps; k++) {
           const u = k / steps
           const p = rib(u - 0.5 / steps)

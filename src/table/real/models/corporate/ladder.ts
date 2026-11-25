@@ -62,10 +62,10 @@ export function buildLadder(z: Zone, _ctx: RealContext): THREE.Object3D {
     let last: V3 | null = null
     const end = (): void => {
       if (line.length > 1) S.pipe(line, WIRE.r, segs, STEEL)
-      if (line.length > 1) for (const q of [line[0]!, line[line.length - 1]!]) S.lathe([[0, -WIRE.r], [WIRE.r * 0.8, -WIRE.r * 0.6], [WIRE.r, 0], [WIRE.r * 0.8, WIRE.r * 0.6], [0, WIRE.r]], q[0], q[1], 6, STEEL, q[2])
+      if (line.length > 1) for (const q of [line[0]!, line[line.length - 1]!]) S.lathe([[0, -WIRE.r], [WIRE.r, 0], [0, WIRE.r]], q[0], q[1], 5, STEEL, q[2])
       line = []
     }
-    for (let s = 0; s <= L; s += 9) {
+    for (let s = 0; s <= L; s += 15) {
       const a = at(s)
       const q = off(a, lat, up)
       if (crowded(q, s)) {
@@ -80,8 +80,8 @@ export function buildLadder(z: Zone, _ctx: RealContext): THREE.Object3D {
     end()
   }
   fin(S, FINISH.polished, () => {
-    wire(-WIRE.under, WIRE.underUp, 8)
-    wire(WIRE.under, WIRE.underUp, 8)
+    wire(-WIRE.under, WIRE.underUp, 6)
+    wire(WIRE.under, WIRE.underUp, 6)
     wire(-WIRE.side, WIRE.sideUp, 6)
     wire(WIRE.side, WIRE.sideUp, 6)
     // A rung every half ball.
@@ -90,7 +90,7 @@ export function buildLadder(z: Zone, _ctx: RealContext): THREE.Object3D {
       const l = off(a, -WIRE.under, WIRE.underUp - 1.2)
       const r = off(a, WIRE.under, WIRE.underUp - 1.2)
       if (crowded(l, s) || crowded(r, s)) continue
-      S.pipe([l, r], 2.1, 6, shade(STEEL, 0.94))
+      S.pipe([l, r], 2.1, 5, shade(STEEL, 0.94))
       for (const q of [l, r]) F.lathe([[0, -1.6], [WIRE.weld, -0.8], [WIRE.weld, 0.8], [0, 1.6]], q[0], q[1], 7, shade(STEEL, 0.8), q[2])
     }
     // A hoop round the outside of the four wires, and under it a leg down to a foot on the floor.
@@ -100,7 +100,7 @@ export function buildLadder(z: Zone, _ctx: RealContext): THREE.Object3D {
       const low = pt(0)
       if (low[2] < 9 || crowded(low, s)) continue
       const arc: V3[] = []
-      const n = 14
+      const n = 8
       let lo = -n
       let hi = n
       for (let k = 1; k <= n; k++) if (crowded(pt((k / n) * 1.72), s)) {
@@ -112,15 +112,15 @@ export function buildLadder(z: Zone, _ctx: RealContext): THREE.Object3D {
         break
       }
       for (let k = lo; k <= hi; k++) arc.push(pt((k / n) * 1.72))
-      if (arc.length > 1) S.pipe(arc, WIRE.hoopR, 6, STEEL)
+      if (arc.length > 1) S.pipe(arc, WIRE.hoopR, 5, STEEL)
       for (const [lat, up] of [[-WIRE.under, WIRE.underUp], [WIRE.under, WIRE.underUp], [-WIRE.side, WIRE.sideUp], [WIRE.side, WIRE.sideUp]] as V2[]) {
         const q = off(a, lat, up)
         if (!crowded(q, s)) F.lathe([[0, -1.8], [WIRE.weld, -0.9], [WIRE.weld, 0.9], [0, 1.8]], q[0] + a.r[0] * Math.sign(lat) * 1.6, q[1] + a.r[1] * Math.sign(lat) * 1.6, 7, shade(STEEL, 0.8), q[2] - 1.5)
       }
       const feet: V3[] = low[2] > 96 ? [off(a, -20, -a.p[2]), off(a, 20, -a.p[2])] : [off(a, 0, -a.p[2])]
       for (const f of feet) {
-        S.pipe([low, [f[0], f[1], 2]], WIRE.r, 6, STEEL)
-        S.lathe([[WIRE.foot, 0], [WIRE.foot, 1.8], [WIRE.foot - 0.8, 2.5], [4.6, 2.5], [3.6, 4.4], [WIRE.r, 5.2]], f[0], f[1], 18, shade(STEEL, 0.92))
+        S.pipe([low, [f[0], f[1], 2]], WIRE.r, 5, STEEL)
+        S.lathe([[WIRE.foot, 0], [WIRE.foot, 2.5], [4.6, 2.5], [WIRE.r, 5.2]], f[0], f[1], 12, shade(STEEL, 0.92))
         for (const side of [-7, 7]) screw(F, f[0] + a.r[0] * side, f[1] + a.r[1] * side, 2.5, 3, shade(STEEL, 0.85))
       }
     }
