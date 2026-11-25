@@ -1,35 +1,35 @@
 {
   "folder": "boss",
-  "pushed": "2026-11-25T09:05:58.064Z",
-  "commit": "3a165046d70fa55f1e569f822b68e6e0d85e264a",
+  "pushed": "2026-11-25T09:18:21.354Z",
+  "commit": "fc7d2af7279ed757e08ab3299ab7b8e39d873501",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Step 4 at rest: the verify card, fine print and Submit in its socket",
-      "time": "2026-11-25T09:05:56.315Z",
+      "caption": "Step 4 verify: the card, the ticked box about to be clicked, Submit in its socket",
+      "time": "2026-11-25T09:18:19.508Z",
       "by": "boss",
-      "from": "out/work/stills/boss-boss_verify-0p5-preview-draft.png"
+      "from": "out/work/stills/boss-boss_verify-0p74-preview-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "boss.slabs at 12.5 s: health bar, slabs flying flat, darts, the open socket",
-      "time": "2026-11-25T09:05:56.572Z",
-      "by": "boss",
-      "from": "out/work/stills/boss-boss_slabs-0p5-preview-draft.png"
-    },
-    {
-      "file": "look-3.jpg",
-      "caption": "boss.popups at 18.7 s: the pop-up column as shields",
-      "time": "2026-11-25T09:05:56.810Z",
+      "caption": "Step 4 pop-ups: two pop-ups in one column shield the boss, a slab in flight, health bar under the title",
+      "time": "2026-11-25T09:18:19.751Z",
       "by": "boss",
       "from": "out/work/stills/boss-boss_popups-0p45-preview-draft.png"
     },
     {
-      "file": "look-4.jpg",
-      "caption": "boss.collapse at 28 s: the boss in parts, the button fallen and smoking",
-      "time": "2026-11-25T09:05:57.034Z",
+      "file": "look-3.jpg",
+      "caption": "Step 4 last stand: the session expired banner over the boss, the cursor hurt and healing",
+      "time": "2026-11-25T09:18:19.989Z",
       "by": "boss",
-      "from": "out/work/stills/key-boss-down-preview-draft.png"
+      "from": "out/work/stills/boss-boss_lastStand-0p2-preview-draft.png"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Step 4 press: the fallen Submit with its line under it and the cursor on it",
+      "time": "2026-11-25T09:18:20.220Z",
+      "by": "boss",
+      "from": "out/work/stills/boss-boss_press-0p75-preview-draft.png"
     }
   ]
 }
