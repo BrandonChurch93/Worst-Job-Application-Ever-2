@@ -5,18 +5,20 @@ import { localBalls, localOf, type Zone } from '../../zone'
 import { Geo, KIND, mix, rgb, shade, type Buckets, type RGB, type V3 } from './geo'
 
 export const TONE = {
-  brick: rgb(0x93352a),
+  brick: rgb(0x7d3329),
   brickDark: rgb(0x6f261f),
-  stone: rgb(0xb4afa2),
-  stoneDark: rgb(0x8d897e),
-  stonePale: rgb(0xd9d2c0),
-  concrete: rgb(0xa9a8a1),
-  concreteDark: rgb(0x7c7c77),
-  roof: rgb(0x5d6062),
-  blue: rgb(0x40629c),
+  stone: rgb(0x878a8c),
+  stoneDark: rgb(0x696b6d),
+  stonePale: rgb(0x9fa1a2),
+  concrete: rgb(0x868c92),
+  concreteDark: rgb(0x696d70),
+  roof: rgb(0x66696b),
+  lime: rgb(0xd2cbb8),
+  blue: rgb(0x3b5b90),
   blueDark: rgb(0x2c4775),
   blueTrim: rgb(0x9db0cf),
   cream: rgb(0xefe8d6),
+  board: rgb(0xcdc6b4),
   door: rgb(0xe4dfd2),
   dark: rgb(0x191718),
   inside: rgb(0x231a18),
@@ -28,7 +30,7 @@ export const TONE = {
   black: rgb(0x151517),
   chrome: rgb(0xd9dce0),
   steel: rgb(0xaab0b6),
-  brass: rgb(0xd2a853),
+  brass: rgb(0xb08a45),
   bronze: rgb(0x8a6235),
   alu: rgb(0xc5c9cd),
   red: rgb(0xb3261e),
@@ -105,7 +107,7 @@ export function reveal(g: Geo, h: Hole, depth: number, col: RGB, kind = 0): void
   g.quad([x, depth, t], [x + w, depth, t], [x + w, 0, t], [x, 0, t], shade(col, 0.7), kind)
 }
 
-export interface WindowLook { depth?: number; frame: RGB; wall: RGB; sill?: RGB; lintel?: RGB; bars?: [number, number]; glow?: number; warm?: number; iron?: boolean; dark?: boolean }
+export interface WindowLook { depth?: number; frame: RGB; wall: RGB; sill?: RGB; lintel?: RGB; bars?: [number, number]; glow?: number; warm?: number; iron?: boolean; dark?: boolean; surround?: RGB; blind?: number }
 
 // A window in a hole of a wall face: its reveal, a lit pane at the back, a frame with glazing bars, a sill and a lintel.
 export function windowAt(b: Buckets, h: Hole, o: WindowLook): void {
@@ -145,6 +147,14 @@ export function windowAt(b: Buckets, h: Hole, o: WindowLook): void {
     b.paint.box(x, x + w, 0.4, 1.7, z + h.h * 0.3, z + h.h * 0.3 + 1, TONE.iron, { skip: 'blr', under: true, kind: KIND.gloss })
     b.paint.box(x, x + w, 0.4, 1.7, z + h.h * 0.7, z + h.h * 0.7 + 1, TONE.iron, { skip: 'blr', under: true, kind: KIND.gloss })
   }
+  if (o.blind) {
+    const bz = t - f - (h.h - 2 * f) * o.blind
+    g.box(x + f, x + w - f, d - 0.5, d - 0.3, bz, t - f, [0.62, 0.55, 0.42], { skip: 'blrt', under: true })
+  }
+  if (o.surround) {
+    g.box(x - 2.4, x, -1.2, 0, z, t, o.surround, { skip: 'b', bevel: 0.4 })
+    g.box(x + w, x + w + 2.4, -1.2, 0, z, t, o.surround, { skip: 'b', bevel: 0.4 })
+  }
   if (o.sill) g.box(x - 2, x + w + 2, -2.6, 0, z - 2.6, z, o.sill, { skip: 'b', under: true, bevel: 0.6 })
   if (o.lintel) g.box(x - 2, x + w + 2, -1.4, 0, t, t + 4, o.lintel, { skip: 'b', under: true })
 }
@@ -176,11 +186,11 @@ export function parapet(g: Geo, x0: number, x1: number, y0: number, y1: number, 
 
 // A beacon: a chromed base on a roof, in the metal bucket. Its lens and its reflector are meshes of their own.
 export function beaconBase(b: Buckets, x: number, y: number, z: number): void {
-  b.metal.lathe([[0, 0], [20, 0], [20, 2.5], [17.5, 4.5], [17.5, 7], [15.5, 8], [0, 8]], x, y, 28, TONE.chrome, { base: z })
+  b.metal.lathe([[0, 0], [22, 0], [22, 2.5], [19.6, 4.5], [19.6, 7], [17.5, 8], [0, 8]], x, y, 28, TONE.chrome, { base: z })
   b.metal.lathe([[2.2, 8], [2.2, 14], [0, 14]], x, y, 10, TONE.steel, { base: z })
   for (let i = 0; i < 4; i++) {
     const a = Math.PI / 4 + (i * Math.PI) / 2
-    b.screws.push([x + Math.cos(a) * 18.6, y + Math.sin(a) * 18.6, z + 2.5, 1.4])
+    b.screws.push([x + Math.cos(a) * 20.8, y + Math.sin(a) * 20.8, z + 2.5, 1.2])
   }
 }
 
@@ -188,23 +198,23 @@ export function beaconBase(b: Buckets, x: number, y: number, z: number): void {
 export function beaconLens(): THREE.BufferGeometry {
   const g = new Geo()
   const c: RGB = [1, 1, 1]
-  g.lathe([[14.6, 0], [14.6, 13], [14, 18], [12, 22.5], [8.5, 25.6], [4, 27], [0, 27.3]], 0, 0, 72, c, { base: 7, wave: [24, 0.07] })
-  g.lathe([[15.2, 0], [15.2, 1.6], [14.6, 1.6]], 0, 0, 36, c, { base: 7 })
+  g.lathe([[16.6, 0], [16.6, 15], [15.9, 21], [13.6, 26], [9.6, 29.6], [4.5, 31.2], [0, 31.5]], 0, 0, 72, c, { base: 7, wave: [28, 0.06] })
+  g.lathe([[17.3, 0], [17.3, 1.8], [16.6, 1.8]], 0, 0, 36, c, { base: 7 })
   return g.done()
 }
 
 // The reflector inside a beacon, round the origin: a curved mirror seen only from its bright side, and the bulb.
 export function beaconReflector(): THREE.BufferGeometry {
   const g = new Geo()
-  const c: RGB = [1, 1, 1]
+  const c: RGB = [0.6, 0.6, 0.6]
   const segs = 10
   for (let i = 0; i < segs; i++) {
     const a0 = -1.05 + (2.1 * i) / segs
     const a1 = -1.05 + (2.1 * (i + 1)) / segs
-    const at = (a: number, zz: number): [V3, V3] => [[-10 * Math.cos(a) + 3, 10 * Math.sin(a), zz], [Math.cos(a), -Math.sin(a), 0]]
-    g.smooth([at(a0, 9), at(a1, 9), at(a1, 27), at(a0, 27)], c)
+    const at = (a: number, zz: number): [V3, V3] => [[-11.5 * Math.cos(a) + 3.5, 11.5 * Math.sin(a), zz], [Math.cos(a), -Math.sin(a), 0]]
+    g.smooth([at(a0, 9), at(a1, 9), at(a1, 30), at(a0, 30)], c)
   }
-  g.lathe([[0, 12], [2.6, 13], [3.4, 16], [2.6, 19], [0, 20]], 0, 0, 10, c)
+  g.lathe([[0, 12], [2.6, 13], [3.4, 16], [2.6, 19], [0, 20]], 0, 0, 10, [2.4, 2.4, 2.4])
   return g.done()
 }
 
@@ -219,8 +229,8 @@ export function board(b: Buckets, z: Zone, ctx: RealContext, id: string, roof: n
   const m = new THREE.Matrix4().makeRotationX(turn).setPosition(c[0], c[1], c[2])
   const pm = b.paint.mark()
   const mm = b.metal.mark()
-  b.paint.box(-w, w, -h, h, -4.5, -1, TONE.cream, { kind: KIND.gloss, under: true })
-  const f = 2.4
+  b.paint.box(-w, w, -h, h, -4.5, -1, TONE.board, { kind: KIND.gloss, under: true })
+  const f = 1.7
   b.metal.box(-w - f, w + f, -h - f, -h, -5, 0.4, TONE.brass, { under: true, bevel: 0.7 })
   b.metal.box(-w - f, w + f, h, h + f, -5, 0.4, TONE.brass, { under: true, bevel: 0.7 })
   b.metal.box(-w - f, -w, -h, h, -5, 0.4, TONE.brass, { under: true, bevel: 0.7, skip: 'fb' })

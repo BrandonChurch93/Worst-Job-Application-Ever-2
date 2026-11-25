@@ -17,7 +17,7 @@ export const cursorReal = { body: whole, effects: makeEffects !== null, acting: 
 
 const half = config.table.ballPx / 2
 // A closed hand rides this far above where it holds, so that the fingers lie on what is held and not inside it.
-const HOLD = 7
+const HOLD = 4
 // An arm is rooted this share of the way in from the shoulder, so that it leaves from under the edge and never from beside it.
 const ROOT = 0.09
 
