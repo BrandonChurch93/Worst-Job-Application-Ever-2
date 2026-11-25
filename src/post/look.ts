@@ -45,9 +45,12 @@ export const look = {
   // after exposure spreads, so the page never glows. Sizes are shares of the picture's height.
   glow: {
     threshold: 1.5,
-    knee: 0.6,
+    knee: 0.2,
     strength: 0.5,
+    // A surface that only sends light back is pressed softly under `surfaceMax` from `surfaceKnee` up, below the threshold.
+    surfaceKnee: 0.95,
+    surfaceMax: 1.25,
     // How much of the glow each wider ring of the spread carries, from the tightest to the widest.
-    rings: [1.0, 0.8, 0.55, 0.35, 0.2, 0.1] as number[]
+    rings: [1.0, 0.9, 0.6, 0.3, 0.12, 0.05] as number[]
   }
 }

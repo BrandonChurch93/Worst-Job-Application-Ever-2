@@ -1,10 +1,10 @@
 import * as THREE from 'three'
 import { Accumulator, type TargetKind } from './accumulator'
-import { areaSplit, domeSpread, samples, type Sample } from './sampler'
+import { areaSplit, domeSpread, filterTaps, samples, type Sample } from './sampler'
 import { Post } from '../post/post'
 import { look } from '../post/look'
 import { chooseEmitters, lampIntensity } from '../post/emitters'
-import { EMITTER_BODY_PX, lightLaw } from '../post/studio'
+import { EMITTER_BODY_PX, lightLaw, shadowFilter } from '../post/studio'
 import type { Emitter } from '../real/types'
 
 // What the lamps must cover, in world units: the page and everything that stands on it.
@@ -141,7 +141,7 @@ export class LightRig {
 
   // Aims a lamp at the part of the page on show and fits its shadow map to it: square, so a texel is as wide as it is high.
   // `tan` is the tangent of half the angle of the piece of the light's area this sample stands for.
-  private aim(light: THREE.DirectionalLight, dx: number, dy: number, dz: number, tan: number, biasPx: number, s: Sample): void {
+  private aim(light: THREE.DirectionalLight, dx: number, dy: number, dz: number, tan: number, biasPx: number, s: Sample, alone: boolean): void {
     const b = this.bounds
     const r = this.rect
     const cx = (r.minX + r.maxX) / 2
@@ -186,7 +186,7 @@ export class LightRig {
     cam.updateProjectionMatrix()
     const depth = cam.far - cam.near
     light.shadow.bias = -biasPx / depth
-    light.shadow.radius = Math.floor((depth * tan) / texel) + Math.min(0.998, Math.max(0, s.phase))
+    light.shadow.radius = Math.floor((depth * tan) / texel) + (alone ? 0.5 : Math.min(0.998, Math.max(0, s.phase)))
   }
 
   private light(s: Sample, split: { move: number }): void {
@@ -229,17 +229,22 @@ export class LightRig {
     this.seen(camera)
     this.key.color.setRGB(...look.key.colour)
     this.key.intensity = look.key.intensity * this.level
-    this.aim(this.key, dx, dy, dz, r * split.blur, look.key.biasPx, s)
+    this.aim(this.key, dx, dy, dz, r * split.blur, look.key.biasPx, s, alone)
     this.dome.color.setRGB(...look.dome.colour)
     this.dome.intensity = look.dome.intensity * this.level
-    if (alone) this.aim(this.dome, 0, 0, 1, domeSpread(1), look.dome.biasPx, s)
-    else this.aim(this.dome, s.dome[0], s.dome[1], s.dome[2], domeSpread(s.count), look.dome.biasPx, s)
+    if (alone) this.aim(this.dome, 0, 0, 1, domeSpread(1), look.dome.biasPx, s, alone)
+    else this.aim(this.dome, s.dome[0], s.dome[1], s.dome[2], domeSpread(s.count), look.dome.biasPx, s, alone)
     const cx = (this.rect.minX + this.rect.maxX) / 2
     const cy = (this.rect.minY + this.rect.maxY) / 2
     const at = look.key.at
     lightLaw.keyAt.value.set(cx + at[0], cy + at[1], at[2], at[0] * at[0] + at[1] * at[1] + at[2] * at[2])
     lightLaw.envDiffuse.value = look.envDiffuse
     lightLaw.keySpecular.value = look.keySpecular
+    lightLaw.cap.value.set(look.glow.surfaceKnee, look.glow.surfaceMax)
+    const taps = filterTaps(alone ? 1 : s.count, shadowFilter.tapsPerPicture, shadowFilter.minTaps, shadowFilter.blurTaps)
+    const code = taps + 32 * (alone ? 1 : s.count)
+    this.key.shadow.intensity = code
+    this.dome.shadow.intensity = code
     this.light(s, split)
   }
 }

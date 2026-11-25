@@ -13,7 +13,7 @@ export interface Sample {
   shutter: number
   // A direction on the dome above the page, z up, spread evenly over the half sphere.
   dome: [number, number, number]
-  // Turns the taps of the shadow filter, from 0 to 1, so the mean of the samples has no pattern left in it.
+  // Which share of the shadow filter's taps this sample takes, from 0 to 1: every sample of a picture a different one.
   phase: number
   // Moves the shadow map inside one of its texels, each from -0.5 to 0.5.
   texel: [number, number]
@@ -69,6 +69,11 @@ export function domeSpread(count: number): number {
   return Math.min(DOME_MAX_TAN, tan * OVERLAP)
 }
 
+// How many taps of the shadow filter one sample takes, so a picture has about `perPicture` in all.
+export function filterTaps(count: number, perPicture: number, least: number, most: number): number {
+  return Math.min(most, Math.max(least, Math.round(perPicture / Math.max(1, count))))
+}
+
 const cache = new Map<number, Sample[]>()
 
 // The same pattern for every picture with this many samples, so soft shadows hold still from frame to frame.
@@ -82,7 +87,7 @@ export function samples(count: number): Sample[] {
   const domeOrder = order(count, rnd)
   const phaseOrder = order(count, rnd)
   const texelOrder = order(count, rnd)
-  offsets.push(rnd.next(), rnd.next(), rnd.next())
+  offsets.push(rnd.next(), rnd.next())
   const out: Sample[] = []
   for (let i = 0; i < count; i++) {
     const p = r2(i, offsets[0]!, offsets[1]!)
@@ -102,7 +107,7 @@ export function samples(count: number): Sample[] {
       // In order of time, so the stage only ever steps forward inside one picture.
       shutter: (i + 0.5) / count,
       dome: count === 1 ? [0, 0, 1] : [d[0] * ds, d[1] * ds, dz],
-      phase: frac(offsets[10]! + (phaseOrder[i]! + 0.5) / count),
+      phase: (phaseOrder[i]! + 0.5) / count,
       texel: count === 1 ? [0, 0] : [t[0] - 0.5, t[1] - 0.5]
     })
   }
