@@ -41,7 +41,7 @@ npm run mix -- --final                          audio/final/film-b.wav
 
 No sound is kept. `public/audio/index.json` lists nothing, the engine reports `available() === false`, and `npm run mix` writes a silent file of the film's exact length. The day takes exist, the commands above file them, keep them, pack them and mix them with no code change. That path has been run end to end on fixtures.
 
-`src/main.ts` does not load the engine yet. The wiring it needs is in `src/audio/WIRING.md`. `src/audio/TRY-WIRING.patch` is a stand-in wiring, not for merging: applied to a working copy it loads the engine and mounts the interface with empty answers, which is how the site checks were run before the real wiring existed. Remove the file once `src/main.ts` loads the engine.
+`src/main.ts` loads the engine by a dynamic import in the modes live, film and loop, since main f28f064. `src/audio/WIRING.md` says what the engine expects of that wiring.
 
 ## Decisions
 

@@ -1,6 +1,6 @@
 # Wiring the sound engine into the site
 
-`src/main.ts` is not the sound builder's file. This is what it needs. Nothing here is applied.
+`src/main.ts` is not the sound builder's file. This is what the engine expects of it. The Builder wired it on main at f28f064, and `npm run sound -- --check` measures the result in a browser.
 
 ```ts
 if (mode !== 'capture') {
@@ -26,16 +26,3 @@ The rules it keeps:
 4. `beat(id, mode)` is called when a beat starts. The engine places the beat's lines itself.
 5. The control is hidden when `available()` is false. With an index that lists nothing it is false from the start, so the control never shows and then goes. `setMuted`, `muted`, `setVolume` and `volume` serve the control.
 6. `stop()` when the page is left or the film is reset.
-
-## Trying it before the real wiring
-
-`src/audio/TRY-WIRING.patch` is a stand-in, not for merging. It loads the engine from `src/main.ts`, unlocks it at the first click or key, passes the stage's events on and mounts the interface with empty answers.
-
-```
-git apply src/audio/TRY-WIRING.patch
-npm run sound -- --fixtures
-npm run sound -- --check --root out/work/audio/fixture-run
-git checkout src/main.ts
-```
-
-With it applied the checks A1, A2, A3, A4 and A11 were measured on the site with stand-in sounds. The numbers are in the sound builder's report.
