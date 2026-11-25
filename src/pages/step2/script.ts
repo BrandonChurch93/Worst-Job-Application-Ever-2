@@ -62,10 +62,10 @@ const path: Seg[] = [
   line(T.lever, T.lever + 0.3, knob, pulled),
   line(T.lever + 0.3, T.lever + 0.45, pulled, pulled),
   line(T.lever + 0.45, T.lever + 0.9, pulled, watch),
-  line(T.lever + 0.9, 11.6, watch, { x: watch.x + 10, y: watch.y + 4 }),
-  line(11.6, 12.0, watch, { x: 1180, y: 850 }),
-  line(12.0, 12.6, { x: 1180, y: 850 }, { x: 800, y: 700 }),
-  line(12.6, 13.45, { x: 800, y: 700 }, { x: 760, y: 690 }),
+  line(T.lever + 0.9, 11.98, watch, { x: watch.x + 10, y: watch.y + 4 }),
+  line(11.98, 12.3, { x: watch.x + 10, y: watch.y + 4 }, { x: 1180, y: 850 }),
+  line(12.3, 12.8, { x: 1180, y: 850 }, { x: 800, y: 700 }),
+  line(12.8, 13.45, { x: 800, y: 700 }, { x: 760, y: 690 }),
   line(13.45, T.volume - 0.05, { x: 760, y: 690 }, field(2)),
   line(T.volume - 0.05, T.volume + 0.12, field(2), field(2)),
   line(T.volume + 0.12, T.crank - 0.05, field(2), grip),
@@ -104,14 +104,20 @@ export function pointerAt(time: number): Pointer {
   return { x: p.x, y: p.y, down: presses.some(([a, b]) => t >= a && t < b) }
 }
 
-const acts: [number, Acting][] = [
-  [0, 'confident'], [T.third + 0.56, 'shocked'], [6.5, 'nervous'], [9.5, 'plain'], [11.0, 'shocked'], [11.5, 'scared'], [13.3, 'angry'],
+export type Mark = 'fling' | 'strike'
+export type Marks = Partial<Record<Mark, number>>
+
+const acts: [number | Mark, Acting][] = [
+  [0, 'confident'], [T.third + 0.56, 'scared'], ['fling', 'shocked'], [6.5, 'nervous'], [9.5, 'plain'], [11.0, 'shocked'], ['strike', 'scared'], [13.3, 'angry'],
   [T.runaway, 'shocked'], [T.lean - 0.1, 'confident'], [16.95, 'exhausted'], [20.28, 'plain']
 ]
 
-export function actingAt(time: number): Acting {
+export function actingAt(time: number, marks: Marks = {}): Acting {
   let out: Acting = 'plain'
-  for (const [at, a] of acts) if (time >= at) out = a
+  for (const [at, a] of acts) {
+    const from = typeof at === 'number' ? at : marks[at]
+    if (from !== undefined && time >= from) out = a
+  }
   return out
 }
 

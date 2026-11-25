@@ -74,7 +74,7 @@ export function buildLayout(): LayoutNode {
     const key = legendKey(s.name)
     const enter = s.name === 'enter'
     const children = key ? [text(`key-${s.name}-legend`, key, LEGEND, s.cx, s.cy - cap(LEGEND.font, LEGEND.px) / 2, { part: 'type', on: CAP_TOP, tone: enter ? 'inkLight' : 'ink' })] : []
-    return node(`key-${s.name}`, 'keycap', [s.x, s.y, s.w, s.h], { part: 'keyboard', r: 9, floor: DECK_TOP, tone: enter ? 'accent' : 'raised', children })
+    return node(`key-${s.name}`, 'keycap', [s.x, s.y, s.w, s.h], { part: 'keyboard', r: 9, tone: enter ? 'accent' : 'raised', children })
   })
   const hatches: LayoutNode[] = ([0, 1] as const).map((side) => {
     const c = hatchCentre(side)
