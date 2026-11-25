@@ -1,0 +1,142 @@
+{
+ "critic": "R9",
+ "score": 5,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "A: one sheet across each of the seven beats",
+ "reads": [
+  {
+   "file": "set-A-01.png",
+   "beat": "step1.keyboard",
+   "read": "Tentative but willing to start; the application swings into view, and the arrow picks the first-name field, bringing up a keyboard.",
+   "meant": "The cursor taps the First name field and the keyboard slides up; it starts confident.",
+   "verdict": "did not read: what happened was read, the feeling was not (tentative, not confident)"
+  },
+  {
+   "file": "set-A-02.png",
+   "beat": "step1.firstName",
+   "read": "Startled, then determined; the arrow types its first name while shots cross the keyboard, then gets to Enter.",
+   "meant": "It types by stomping, dodges, ducks, gets cocky and takes a hit: a round burn hole, smoke, a moment of shock. It finishes the name.",
+   "verdict": "did not read: the hit and its burn hole are not in the read, nor the cockiness before it"
+  },
+  {
+   "file": "set-A-03.png",
+   "beat": "step1.lastName",
+   "read": "Flustered but persistent; the letter keys jump and rearrange under the arrow as it chases them to finish the last name.",
+   "meant": "The keys shuffle after every letter; it hunts, lands, the keys move again; its patience is thinner.",
+   "verdict": "read"
+  },
+  {
+   "file": "set-A-04.png",
+   "beat": "step1.email",
+   "read": "Confused, then wary; the arrow submits a complete email, gets a barrage of red Invalid email notices, and backs away before the form accepts it anyway.",
+   "meant": "A correct email; a heavy red slab drops and it dives clear, three times; the form gives in.",
+   "verdict": "read (the dives read as backing away: the critic's own issue 5 covers it)"
+  },
+  {
+   "file": "set-A-05.png",
+   "beat": "step1.resume",
+   "read": "Cautiously hopeful; the arrow drags its resume into the upload area, just as a metal slot rises to catch it.",
+   "meant": "The keyboard sinks, the page closes; the cursor fetches its paper resume, proud of it, and carries it to the drop zone.",
+   "verdict": "did not read: the feeling is cautious hope, not pride"
+  },
+  {
+   "file": "set-A-06.png",
+   "beat": "step1.tug",
+   "read": "Alarmed and straining; the arrow tugs against the shredder to save the resume, loses, and gets pulled down after it.",
+   "meant": "A shredder slot bites the paper; the cursor grows two thin black arms and pulls; a full tug of war, the shredder winning inch by inch.",
+   "verdict": "read"
+  },
+  {
+   "file": "set-A-07.png",
+   "beat": "step1.shredded",
+   "read": "Stunned and defeated; the arrow reappears beneath the shredded resume, watches the completed fields wipe themselves, and is left hanging below the edge as the page tips away.",
+   "meant": "Paper and cursor go through together; a pile of strips stirs, stands up and zips itself back into a cursor, misaligned, then true; the form asks for everything again.",
+   "verdict": "did not read: that the cursor itself was cut to strips and zipped back together is not in the read"
+  }
+ ],
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-A-06.png",
+   "where": "close-ups in rows 3 and 4, especially row 4, column 1",
+   "what": "Two black appendages visibly extend from the cursor to dark pads. When the pads plant on the shredder, the silhouette reads as a pair of bent legs with feet.",
+   "fix": "Keep the cursor appendage-free. Show the bare arrow snagging the paper with its tip, stretching away under tension and flattening at the intake before it disappears.",
+   "builder": "The fix as asked is declined: the arms are approved (references/approved/cursor-arms.png, step1-tug.png) and stated (kit/03: thin matte black rubber arms with small plain mitt hands). What it points at stays open as severe: the arms must read as arms, never as legs. Sent to the tug fixer: the hands hold the paper only and never plant on the machine, the arms leave the body at its shoulders and reach forward."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "rows 2 through 4, hovering beside the fields and selecting First name",
+   "what": "The arrow holds nearly its ordinary pointer silhouette through the setup, then glides onto the field. The form and keyboard do most of the acting; there is little visible decision or reaction to the keyboard coming up.",
+   "fix": "Give it a brief lean away before committing to the click, then a sharp reverse tilt and held beat at the keyboard reveal."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "rows 2 and 3 over the keyboard as the orange shots cross",
+   "what": "The flying shots are conspicuous, but the white arrow often blends into the pale keys and its reaction looks much like another hop between letters. There is no held recovery silhouette to distinguish dodging from typing.",
+   "fix": "Put the arrow in clean space for a distinct low duck or sideways snap ahead of a shot, stretch it out of that pose, and hold the recovery before it resumes typing."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "the key shuffles in row 1, column 2 and row 2, columns 2 and 3",
+   "what": "The moving keys swallow the small arrow's silhouette. It picks up typing again without an obvious recoil or frustrated pause, so the obstacle is clearer than the character's experience of it.",
+   "fix": "Pull the arrow above the key field on the first shuffle, hold a sharp backward lean to show surprise, then let it dive for the newly relocated key."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "the red alert barrage in row 3 and the beginning of row 4",
+   "what": "The warnings obscure the arrow during the initial rejection. When it becomes clear again, it rests beside the upload panel in much the same pointer shape, with no clear held reaction to either the rejection or acceptance.",
+   "fix": "Kick the arrow out to the side on the first alert, arrest it in a clear tilted silhouette while the alerts stack, then ease it out of that pose on acceptance."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "bottom row as the slot appears beneath the resume",
+   "what": "The first contact with the metal slot does not visibly change the arrow's angle or shape; it stays at the page corner like a normal drag indicator while the camera and prop communicate the danger.",
+   "fix": "Give it a small anticipatory tug and then a visibly arrested or stretched pose as the page catches, before the close-up struggle."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "rows 1 through 3 beneath the shredded strips as the fields clear",
+   "what": "The returning arrow is small and partly lost in the shreds and shadow. It settles into a near-standard pointer before the form tips, so defeat has no sustained, clean silhouette while the fields reset.",
+   "fix": "Separate it from the paper debris and hold a bent, lowered silhouette through the field wipe before letting it fall away."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "the whole sheet",
+   "what": "did not read: the read names a tentative arrow where the beat plays a confident one.",
+   "fix": "A strut with a bounce on the way in and a decided tap, held, before the keyboard answers.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "the whole sheet",
+   "what": "did not read: the hit, its burn hole and the cocky moment before it are not in the read.",
+   "fix": "Stage the hit in clear space over a dark part of the deck, with a squash, a held shocked pose and the hole and smoke readable at sheet size; play the cocky pose before it and hold it.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "the whole sheet",
+   "what": "did not read: the read names cautious hope where the beat plays pride in the resume.",
+   "fix": "The puff up and the dusting off beside the sheet before it lifts it, and a strut on the carry.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "the whole sheet",
+   "what": "did not read: that the cursor was cut to strips, and that the pile stands up and zips itself back into a cursor, is not in the read.",
+   "fix": "Show the strips of the arrow apart from the strips of the paper (their own place, a hold on the pile), then the stand and the zip large and slow enough to follow, misaligned for a held moment, then true.",
+   "by": "builder"
+  }
+ ]
+}
