@@ -18,8 +18,8 @@ const smooth01 = (v: number): number => {
 }
 const rag = (a: number, burnt: number): number => 1 + (0.25 + 0.3 * burnt) * (0.06 * Math.sin(3 * a + 1.3) + 0.04 * Math.sin(7 * a + 0.4) + 0.03 * Math.sin(11 * a + 2.1))
 const clamp01 = (v: number): number => Math.min(1, Math.max(0, v))
-// A strip out of its place by more than a few pixels is a loose sliver, and lies thin.
-const LOOSE = { thin: 0.8, from: 12, to: 64, arm: 40 }
+// A strip out of its place by more than a few pixels is a loose sliver, and lies thinner. It stays the piece of the arrow it was cut from: its ends keep the outline's slant and the dark edge. Each lies its own way: rolled a little about its length, one end up off the pile.
+const LOOSE = { thin: 0.5, ribbon: 0, from: 12, to: 64, arm: 40, roll: 0.16, pitch: 0.1, seed: 23 }
 
 export class Body implements BodyModel {
   readonly root = new THREE.Group()
@@ -41,6 +41,8 @@ export class Body implements BodyModel {
   private v = new THREE.Vector3()
   private long = new THREE.Vector3(AXIS[0], -AXIS[1], 0).normalize()
   private up = new THREE.Vector3(0, 0, 1)
+  private wide = new THREE.Vector3(AXIS[1], AXIS[0], 0).normalize()
+  private qy = new THREE.Quaternion()
 
   constructor() {
     const s = solid()
@@ -174,11 +176,16 @@ export class Body implements BodyModel {
     const inks = inkAt.array as Float32Array
     const r = set.rest
     const o = set.ribbon
+    const span = new Float64Array(count * 2)
+    for (let k = 0; k < count; k++) {
+      span[k * 2] = Infinity
+      span[k * 2 + 1] = -Infinity
+    }
     for (let i = 0; i < n; i++) {
-      const l = loose[set.strip[i]!]!
+      const l = loose[set.strip[i]!]! * LOOSE.ribbon
       const inset = r[i * 4 + 3]! + (o[i * 4 + 3]! - r[i * 4 + 3]!) * l
       this.deform.point(r[i * 4]! + (o[i * 4]! - r[i * 4]!) * l, r[i * 4 + 1]! + (o[i * 4 + 1]! - r[i * 4 + 1]!) * l, r[i * 4 + 2]! + (o[i * 4 + 2]! - r[i * 4 + 2]!) * l, inset, p)
-      this.deform.thin(p, 1 - LOOSE.thin * l)
+      this.deform.thin(p, 1 - LOOSE.thin * loose[set.strip[i]!]!)
       insets[i] = inset
       inks[i] = set.ink[i]! + (set.ribbonInk[i]! - set.ink[i]!) * l
       a[i * 3] = p.x
@@ -189,13 +196,21 @@ export class Body implements BodyModel {
       sum[k + 1] += p.y
       sum[k + 2] += p.z
       sum[k + 3] += 1
+      const along = p.x * this.long.x + p.y * this.long.y
+      span[k >> 1] = Math.min(span[k >> 1]!, along)
+      span[(k >> 1) + 1] = Math.max(span[(k >> 1) + 1]!, along)
     }
+    const lift = new Float64Array(count)
     const turn: THREE.Quaternion[] = []
     for (let k = 0; k < count; k++) {
       const pose = strips[k]!
-      this.q.setFromAxisAngle(this.long, pose.tilt)
+      const l = loose[k]!
+      const pitch = (hash01(k, 2, LOOSE.seed) - 0.5) * 2 * LOOSE.pitch * l
+      this.q.setFromAxisAngle(this.long, pose.tilt + (hash01(k, 1, LOOSE.seed) - 0.5) * 2 * LOOSE.roll * l)
       this.qz.setFromAxisAngle(this.up, pose.rot)
-      turn.push(this.qz.clone().multiply(this.q))
+      this.qy.setFromAxisAngle(this.wide, pitch)
+      turn.push(this.qz.clone().multiply(this.qy).multiply(this.q))
+      lift[k] = Math.abs(Math.sin(pitch)) * Math.max(0, span[k * 2 + 1]! - span[k * 2]!) * 0.5
     }
     const v = this.v
     for (let i = 0; i < n; i++) {
@@ -208,8 +223,8 @@ export class Body implements BodyModel {
       v.set(a[i * 3]! - cx, a[i * 3 + 1]! - cy, a[i * 3 + 2]! - cz).applyQuaternion(turn[k]!)
       a[i * 3] = v.x + cx + pose.x
       a[i * 3 + 1] = v.y + cy + pose.y
-      a[i * 3 + 2] = v.z + cz + pose.z
-      const l = loose[k]!
+      a[i * 3 + 2] = v.z + cz + pose.z + lift[k]!
+      const l = loose[k]! * LOOSE.ribbon
       const flat = set.ribbonNormal
       v.set(set.normal[i * 3]! + (flat[i * 3]! - set.normal[i * 3]!) * l, set.normal[i * 3 + 1]! + (flat[i * 3 + 1]! - set.normal[i * 3 + 1]!) * l, set.normal[i * 3 + 2]! + (flat[i * 3 + 2]! - set.normal[i * 3 + 2]!) * l).normalize().applyQuaternion(turn[k]!)
       b[i * 3] = v.x

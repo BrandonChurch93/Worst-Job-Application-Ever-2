@@ -1,5 +1,5 @@
 import { UNIT, type BodyLook } from '../contract'
-import { AXIS, CENTRE, TOP } from './shape'
+import { AXIS, CENTRE, TOP, UNDER_TOP } from './shape'
 
 const clamp01 = (v: number): number => Math.min(1, Math.max(0, v))
 const smooth = (a: number, b: number, x: number): number => {
@@ -16,6 +16,8 @@ const POINTS: [number, number, number, number][] = [[0, 0, 0.035, 9], [0, 16.2, 
 const PEEL_TURN = 1.0
 // The body stands a little out of plumb, as a thing photographed from just off its axis: its face sits up and to the left of its foot, so the dark wall shows on the side away from the lamp.
 export const SLANT = 0.24
+// A melting body: how much of the pose's squash it gives back, how its section rounds, how its stem runs, sways and hooks, how its tip bows, how its wings hang and how its folds stand.
+const MELT = { back: 1.7, wide: 0.55, foot: 0.32, run: 3.6, pull: 1.6, sway: 0.9, hook: 0.9, lift: 0.25, bowAlong: 0.4, bowAcross: 0.8, hang: 1.1, straight: 0.5, lobe: 0.6, dull: 0.18, tip: 0.07, dullWide: 3.2, wave: 2.1, thin: 0.08, fold: 1.05, valley: 0.3 }
 
 // Turns a point of the body at rest, in outline units, into where it is now, in page pixels in the body's own space.
 export class Deform {
@@ -65,7 +67,9 @@ export class Deform {
     this.gulp = look.gulp < 0 ? -1 : clamp01(look.gulp)
     this.time = look.time
     // A melting body slumps by its own running, not by being pressed short: most of the pose's squash is given back, or the arrow reads as a cap on a stalk.
-    this.stretch += (1 - this.stretch) * 0.5 * this.melt
+    this.stretch += (1 - this.stretch) * Math.min(1, MELT.back * this.melt)
+    // And it keeps the line of an arrow: a soft body curls less than a stiff one is asked to.
+    this.bend *= 1 - MELT.straight * this.melt
     this.wide = 1 / Math.sqrt(this.stretch)
     const t = look.time
     const k = this.tremble
@@ -81,14 +85,16 @@ export class Deform {
     let z = z0
     const up = z0 / TOP
     const round = smooth(0, 0.5, this.melt)
-    if (inset < ROUND_WIDE) {
-      const k = 1 - Math.min(1, inset / ROUND_WIDE)
+    const reach = ROUND_WIDE + MELT.wide * round
+    if (inset < reach) {
       if (round > 0) {
-        const target = z0 >= 1.2 ? ROUND_TOP * Math.sqrt(1 - k * k) : z0 * 0.32
+        const k = 1 - Math.min(1, inset / reach)
+        const foot = UNDER_TOP * MELT.foot
+        const target = z0 >= UNDER_TOP - 1e-4 ? foot + (ROUND_TOP - foot) * Math.sqrt(1 - k * k) : z0 * MELT.foot
         z += (target - z) * round
       }
       // Stone has no groove and no bevel line: one soft roll from the wall up to the face.
-      if (this.pale > 0 && z0 >= 1.2) z += (TOP * (1 - 0.42 * Math.pow(k, 2.5)) - z) * this.pale * (1 - round)
+      if (this.pale > 0 && z0 >= 1.2 && inset < ROUND_WIDE) z += (TOP * (1 - 0.42 * Math.pow(1 - Math.min(1, inset / ROUND_WIDE), 2.5)) - z) * this.pale * (1 - round)
     }
     if (this.gulp >= 0) {
       const u = x * AXIS[0] + y * AXIS[1]
@@ -138,7 +144,7 @@ export class Deform {
       const wob = 0.6 * Math.sin(2 * ang + 0.9) + 0.4 * Math.sin(5 * ang + 2.6)
       let blunt = 0
       let droop = 0
-      let dull = Math.exp(-(x0 * x0 + y0 * y0) / 2.2)
+      let dull = Math.exp(-(x0 * x0 + y0 * y0) / 2.2) * (MELT.tip / MELT.dull)
       for (const c of POINTS) {
         const cx = x0 - c[0]
         const cy = y0 - c[1]
@@ -146,33 +152,35 @@ export class Deform {
         blunt += c[2] * near
         if (c[1] > 1) {
           droop += near
-          dull += Math.exp(-(cx * cx + cy * cy) / 2.2)
+          dull += Math.exp(-(cx * cx + cy * cy) / MELT.dullWide)
         }
       }
-      const grow = (1 + m * 0.045 * wob * (1 - stem)) * (1 - m * Math.min(0.2, blunt) - m * 0.2 * dull)
+      const grow = (1 + m * 0.045 * wob * (1 - stem)) * (1 - m * Math.min(0.2, blunt) - m * MELT.dull * dull)
       x = CENTRE[0] + dx * grow
       y = CENTRE[1] + dy * grow
-      y += m * (0.3 * low + 0.9 * droop + 0.16 * Math.sin(x0 * 0.85 + 1.4) * (1 - stem))
-      x += m * (0.2 * Math.sin(y0 * 0.42 + 1.0) + 0.14 * Math.sin(y0 * 0.95 + 0.3)) * (1 - stem)
+      y += m * (0.3 * low + MELT.hang * droop + 0.16 * Math.sin(x0 * 0.85 + 1.4) * (1 - stem))
+      x += m * MELT.wave * (0.2 * Math.sin(y0 * 0.42 + 1.0) + 0.14 * Math.sin(y0 * 0.95 + 0.3)) * (1 - stem)
       // The stem runs a little longer, leans to the right and turns up at its end in a soft hook.
-      const du = m * (2.6 * t - 1.5 * t * t * t * t)
-      const dv = m * (0.45 * Math.sin(t * 5.2) * (1 - t) + 1.25 * t * t * t)
+      const du = m * (MELT.run * t - MELT.pull * t * t * t * t)
+      const dv = m * (MELT.hook * t * t * t - MELT.sway * Math.sin(Math.PI * t) * (1 - 0.5 * t))
       x += du * AXIS[0] + dv * AXIS[1]
       y += du * AXIS[1] - dv * AXIS[0]
       // The tip bows over to one side and sinks, and the whole body spreads: the droop is in the outline.
       const bow = smooth(8.5, 0, u0)
-      const tu = m * 1.4 * bow
-      const tv = m * (2.7 * bow * bow + 0.09 * v0 * (1 - stem))
+      const tu = m * MELT.bowAlong * bow
+      const tv = m * (MELT.bowAcross * bow * bow + 0.09 * v0 * (1 - stem))
       x += tu * AXIS[0] + tv * AXIS[1]
       y += tu * AXIS[1] - tv * AXIS[0]
       const end = clamp01((u0 - 18.85) / 1.3)
-      const lobe = (1 + 0.3 * smooth(16.6, 18.8, u0)) * Math.sqrt(Math.max(0.03, 1 - end * end)) - 1
+      const lobe = (1 + MELT.lobe * smooth(16.6, 18.8, u0)) * Math.sqrt(Math.max(0.2, 1 - end * end)) - 1
       const lv = m * v0 * lobe * smooth(15.2, 16.8, u0) * stem
       x += lv * AXIS[1]
       y -= lv * AXIS[0]
-      const fold = Math.sin(x0 * 0.55 + y0 * 0.38 + 0.5) * Math.sin(y0 * 0.31 - x0 * 0.2 + 1.2)
-      z *= 1 - 0.12 * m - 0.22 * m * t
-      z += m * up * 0.6 * fold * (1 - Math.exp(-inset / 0.9)) * (1 - 0.5 * t)
+      // Folds run the length of the body and wander across it: ridges of thick material, with shallow valleys between them and none at the rim.
+      const fold = 0.5 + 0.5 * Math.sin(v0 * 1.7 + 1.1 * Math.sin(u0 * 0.33 + 0.4) + 0.6)
+      z *= (1 - MELT.thin * m) * (1 - m * stem * (1 - Math.sqrt(Math.max(0.1, 1 - end * end))))
+      z += m * MELT.lift * smooth(0.72, 1, t) * (0.35 + 0.65 * up)
+      z += m * up * MELT.fold * (fold - MELT.valley) * (1 - Math.exp(-inset / 0.9))
     }
     x *= this.wide
     y *= this.stretch
