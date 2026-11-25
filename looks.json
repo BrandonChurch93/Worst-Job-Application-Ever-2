@@ -1,0 +1,35 @@
+{
+  "folder": "ball",
+  "pushed": "2026-11-25T16:54:27.895Z",
+  "commit": "442ca3a4974a259299c7ea52b9aefadbafb80a4f",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Sheet clear-ball, draft: approved on the left, the first clear ball on the right (no sweat number on the shape yet)",
+      "time": "2026-11-25T16:54:26.114Z",
+      "by": "ball",
+      "from": "out/work/compare/compare-clear-ball.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Clear ball, grade bend, sweat held at 0.6: the three sheet balls at real size, lobby-doors beside the approved crop, tier-office with the shadow and its bright spot",
+      "time": "2026-11-25T16:54:26.364Z",
+      "by": "ball",
+      "from": "out/work/ball/look-sheet-lobby.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Clear ball: top row grade true (one transmission drawing), bottom row the two halves opened to 0.6, sheet balls and rail-cam",
+      "time": "2026-11-25T16:54:26.614Z",
+      "by": "ball",
+      "from": "out/work/ball/look-true-open.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Clear ball in the six close keys at real size, draft, grade bend (before the softer far highlight)",
+      "time": "2026-11-25T16:54:26.850Z",
+      "by": "ball",
+      "from": "out/work/ball/look-keys.jpg"
+    }
+  ]
+}
