@@ -375,7 +375,7 @@ export function makePage(): PageLogic {
       io.cursor.place(PILE.x, PILE.y)
       io.cursor.setOnPage(true)
       io.cursor.hurt('shredded', 0.45)
-      io.emit('strips-zip', PILE.x + BODY.x, PILE.y + BODY.y, true)
+      io.emit('strips-zip', PILE.x + BODY.x, PILE.y + BODY.y, false)
     }
     if (crossed(1.9)) {
       io.cursor.hurt('reassembled', 0.6)
@@ -448,19 +448,19 @@ export function makePage(): PageLogic {
     const startV = whole - shown
     const at = (v: number, across: number): { x: number; y: number } => ({ x: t.gx + ux * v - uy * across, y: t.gy + uy * v + ux * across })
     const c = at(startV + shown / 2, 0)
-    out.push({ id: 'resume-paper', part: 'paper', kind: 'box', x: c.x - PAPER.w / 2, y: c.y - shown / 2, w: PAPER.w, h: shown, z0: LIE, z1: LIE + heights.paper, rot, tone: 'paper', mechanism: true })
+    out.push({ id: 'resume-paper', part: 'paper', kind: 'box', x: c.x - PAPER.w / 2, y: c.y - shown / 2, w: PAPER.w, h: shown, z0: LIE, z1: LIE + heights.paper, rot, tone: 'paper', moved: true })
     const rest = Math.max(36, PAPER.h * (1 - t.amount))
     const scale = whole / rest
     if (s.phase === 'tug' && rest > 70) {
       const p = at(30 * scale + 10, -PAPER.w / 2 + 24 + 50)
-      out.push({ id: 'resume-paper-title', part: 'type', kind: 'text', x: p.x - 50, y: p.y - 10, w: 100, h: 20, z0: LIE + 0.1 + heights.paper, z1: LIE + 0.1 + heights.paper, rot, tone: 'ink', words: 'copy:step1.resume.paperTitle', type: PAPER_TITLE })
+      out.push({ id: 'resume-paper-title', part: 'type', kind: 'text', x: p.x - 50, y: p.y - 10, w: 100, h: 20, z0: LIE + 0.1 + heights.paper, z1: LIE + 0.1 + heights.paper, rot, tone: 'ink', words: 'copy:step1.resume.paperTitle', type: PAPER_TITLE, moved: true })
     }
     PAPER_LINES.forEach((f, i) => {
       const v = f * PAPER.h
       if (v > rest - 12 || s.phase !== 'tug') return
       const w = (PAPER.w - 48) * (i === 3 || i === 6 ? 0.6 : 1)
       const p = at(v * scale, -(PAPER.w - 48 - w) / 2)
-      out.push({ id: `resume-paper-line-${i}`, part: 'paper', kind: 'box', x: p.x - w / 2, y: p.y - 4, w, h: 8, z0: LIE + heights.paper, z1: LIE + 0.4 + heights.paper, rot, tone: 'pocket' })
+      out.push({ id: `resume-paper-line-${i}`, part: 'paper', kind: 'box', x: p.x - w / 2, y: p.y - 4, w, h: 8, z0: LIE + heights.paper, z1: LIE + 0.4 + heights.paper, rot, tone: 'pocket', moved: true })
     })
   }
 
@@ -550,7 +550,7 @@ export function makePage(): PageLogic {
         const open = smooth(s.board / 0.3)
         const w = DECK.w * open
         out.push({ id: 'keyboard-well', part: 'keyboard', kind: 'well', x: DECK.x + (DECK.w - w) / 2, y: DECK.y, w, h: DECK.h, z0: WELL, z1: 0, tone: 'dark' })
-        over['keyboard-deck'] = { z0: WELL, z1: DECK_TOP + off, mechanism: true }
+        over['keyboard-deck'] = { z0: WELL, z1: DECK_TOP + off }
         for (const side of [0, 1]) over[`hatch-${side}`] = { z0: DECK_TOP + off, z1: DECK_TOP + 0.6 + off }
         const u = smooth(s.shuffle)
         seats.forEach((seat, key) => {
@@ -559,10 +559,11 @@ export function makePage(): PageLogic {
           const wave = s.drum > 0 ? Math.max(0, Math.sin((0.8 - s.drum) * 14 - (seat.cx - DECK.x) / 160)) * TRAVEL : 0
           const press = (s.keyDown[seat.name] ? TRAVEL : 0) + wave
           const top = CAP_TOP + off + hop - press
-          over[`key-${seat.name}`] = { x: at.x, y: at.y, z0: DECK_TOP + off + hop, z1: top, mechanism: true }
+          const away = at.moved || s.places[key] !== key
+          over[`key-${seat.name}`] = { x: at.x, y: at.y, z0: DECK_TOP + off + hop, z1: top, mechanism: top >= heights.machineMinTop, moved: away }
           const legend = boxOf(layout, `key-${seat.name}`)
           const label = seat.name === 'space' ? null : boxOf(layout, `key-${seat.name}-legend`)
-          if (label) over[`key-${seat.name}-legend`] = { x: label.x + (at.x - legend.x), y: label.y + (at.y - legend.y), z0: top, z1: top }
+          if (label) over[`key-${seat.name}-legend`] = { x: label.x + (at.x - legend.x), y: label.y + (at.y - legend.y), z0: top, z1: top, moved: away }
         })
       }
       if (s.slab) {
@@ -570,19 +571,20 @@ export function makePage(): PageLogic {
         const fall = 1 - smooth(b.t / TIMES.slabFall)
         const rise = smooth((b.t - TIMES.slabFall - TIMES.slabLie) / TIMES.slabLift)
         const z = 300 * fall * fall + 300 * rise * rise
-        over['email-slab'] = { x: b.x, z0: z, z1: z + heights.slab, mechanism: true }
-        over['email-slab-label'] = { x: slabLabel.x + (b.x - slabHome.x), z0: z + heights.slab, z1: z + heights.slab }
+        over['email-slab'] = { x: b.x, z0: z, z1: z + heights.slab, moved: true }
+        over['email-slab-label'] = { x: slabLabel.x + (b.x - slabHome.x), z0: z + heights.slab, z1: z + heights.slab, moved: true }
       }
       if (s.paper.on && s.phase === 'resume') {
         const dx = s.paper.x - PAPER_REST.x
         const dy = s.paper.y - PAPER_REST.y
         const up = s.paper.held ? LIE + 14 : s.paper.feed >= 0 ? LIE : 0.6
-        over['resume-paper'] = { x: s.paper.x, y: s.paper.y, z0: up, z1: up + heights.paper, mechanism: true }
+        const moved = dx !== 0 || dy !== 0
+        over['resume-paper'] = { x: s.paper.x, y: s.paper.y, z0: up, z1: up + heights.paper, moved }
         const title = boxOf(layout, 'resume-paper-title')
-        over['resume-paper-title'] = { x: title.x + dx, y: title.y + dy, z0: up + heights.paper + 0.1, z1: up + heights.paper + 0.1 }
+        over['resume-paper-title'] = { x: title.x + dx, y: title.y + dy, z0: up + heights.paper + 0.1, z1: up + heights.paper + 0.1, moved }
         PAPER_LINES.forEach((_, i) => {
           const line = boxOf(layout, `resume-paper-line-${i}`)
-          over[`resume-paper-line-${i}`] = { x: line.x + dx, y: line.y + dy, z0: up + heights.paper, z1: up + heights.paper + 0.4 }
+          over[`resume-paper-line-${i}`] = { x: line.x + dx, y: line.y + dy, z0: up + heights.paper, z1: up + heights.paper + 0.4, moved }
         })
       }
       for (const f of FIELDS) over[`${f}-value`] = { z0: 0.1, z1: 0.1 }
@@ -602,8 +604,8 @@ export function makePage(): PageLogic {
         const w = SLOT.w * smooth(s.slot)
         out.push({ id: 'shredder-slot', part: 'shredder', kind: 'well', x: SLOT.cx - w / 2, y: SLOT.cy - SLOT.h / 2, w, h: SLOT.h, z0: -44, z1: 0, tone: 'dark' })
         const spin = s.phase === 'tug' || s.phase === 'shredded' ? Math.sin(s.time * 40) * 1.5 : 0
-        out.push({ id: 'shredder-jaw-0', part: 'shredder', kind: 'capsule', x: SLOT.cx - w / 2 - 8 + spin, y: SLOT.cy - SLOT.h / 2 - 12, w: w + 16, h: 10, z0: 0, z1: 7, tone: 'metal', mechanism: true })
-        out.push({ id: 'shredder-jaw-1', part: 'shredder', kind: 'box', x: SLOT.cx - w / 2 - 14 - spin, y: SLOT.cy, w: w + 28, h: HOUSING, z0: 0, z1: LIE + heights.paper + 3, r: 8, tone: 'metal', mechanism: true })
+        out.push({ id: 'shredder-jaw-0', part: 'shredder', kind: 'capsule', x: SLOT.cx - w / 2 - 8 + spin, y: SLOT.cy - SLOT.h / 2 - 12, w: w + 16, h: 10, z0: 0, z1: 7, tone: 'metal' })
+        out.push({ id: 'shredder-jaw-1', part: 'shredder', kind: 'box', x: SLOT.cx - w / 2 - 14 - spin, y: SLOT.cy, w: w + 28, h: HOUSING, z0: 0, z1: heights.machineMinTop + 2, r: 8, tone: 'metal', mechanism: true })
       }
       if (s.phase === 'tug' || s.phase === 'shredded') tugPaper(out)
       strips(out)

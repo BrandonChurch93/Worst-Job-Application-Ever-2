@@ -143,15 +143,16 @@ export class Turrets {
         const p = this.at[i]!
         const top = this.base + (heights.turret - this.base) * s.up + lift
         const tone = s.overheated ? 'danger' : 'metal'
-        out.push({ id: `turret-${i}`, part: 'turrets', kind: 'disc', x: p.x - TURRET.body / 2, y: p.y - TURRET.body / 2, w: TURRET.body, h: TURRET.body, z0: this.base + lift, z1: top, tone, mechanism: true })
+        const stands = top >= heights.machineMinTop
+        out.push({ id: `turret-${i}`, part: 'turrets', kind: 'disc', x: p.x - TURRET.body / 2, y: p.y - TURRET.body / 2, w: TURRET.body, h: TURRET.body, z0: this.base + lift, z1: top, tone, mechanism: stands })
         const winding = s.lock[i] !== null
         const back = winding ? Math.min(1, (TURRET.windup - (s.next[i]! - s.clock)) / TURRET.windup) * 14 : 0
         const a = s.overheated ? (i === 0 ? 0.5 : Math.PI - 0.5) : s.angle[i]!
         const reach = TURRET.barrel / 2 + 14 - back
         const cx = p.x + Math.cos(a) * reach
         const cy = p.y + Math.sin(a) * reach
-        out.push({ id: `turret-${i}-barrel`, part: 'turrets', kind: 'capsule', x: cx - TURRET.barrel / 2, y: cy - 13, w: TURRET.barrel, h: 26, z0: top - 30, z1: top - 4, rot: a, tone: 'dark', mechanism: true })
-        out.push({ id: `turret-${i}-head`, part: 'turrets', kind: 'disc', x: p.x - 30, y: p.y - 30, w: 60, h: 60, z0: top, z1: top + 8, tone: s.overheated ? 'danger' : 'dark', mechanism: true })
+        out.push({ id: `turret-${i}-barrel`, part: 'turrets', kind: 'capsule', x: cx - TURRET.barrel / 2, y: cy - 13, w: TURRET.barrel, h: 26, z0: top - 30, z1: top - 4, rot: a, tone: 'dark', mechanism: stands })
+        out.push({ id: `turret-${i}-head`, part: 'turrets', kind: 'disc', x: p.x - 30, y: p.y - 30, w: 60, h: 60, z0: top, z1: top + 8, tone: s.overheated ? 'danger' : 'dark', mechanism: stands })
         if (winding) {
           const mx = p.x + Math.cos(a) * (TURRET.barrel + 20 - back)
           const my = p.y + Math.sin(a) * (TURRET.barrel + 20 - back)

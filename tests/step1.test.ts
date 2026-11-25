@@ -4,6 +4,7 @@ import { stream } from '../src/core/random'
 import { pages } from '../src/pages'
 import { makePage } from '../src/pages/step1'
 import { drawFire, makeTurrets } from '../src/pages/step1/fire'
+import { PAPER_REST } from '../src/pages/step1/layout'
 import { DECK, homePlaces, keyboardData, legendKey, seats, shuffled } from '../src/pages/step1/keyboard'
 import { Turrets, TURRET } from '../src/pages/step1/turrets'
 import { layoutProblems, typeRegister } from '../src/shell/layout'
@@ -395,6 +396,91 @@ describe('the scene of the card loop', () => {
     const again: DrawList = []
     drawFire(again, { typed: 'Perplex', pressed: ['e'], turrets })
     expect(again).toEqual(out)
+  })
+})
+
+describe('what the measures read', () => {
+  it('marks a part as moved only while a gag has taken it from its place in the layout tree', () => {
+    const a = film()
+    const seen = { paperAtRest: 0, paperAway: 0, keysAway: 0, slab: 0 }
+    for (let i = 0; i < at(31.9); i++) {
+      a.advance(1)
+      if (i % 6 !== 0) continue
+      const list: DrawList = []
+      a.page.draw(list)
+      for (const s of list) {
+        if (s.id === 'resume-paper' || s.id.startsWith('resume-paper-line-')) {
+          const paper = list.find((q) => q.id === 'resume-paper')!
+          const away = paper.x !== PAPER_REST.x || paper.y !== PAPER_REST.y
+          expect(Boolean(s.moved)).toBe(away)
+          if (away) seen.paperAway++
+          else seen.paperAtRest++
+        }
+        if (s.id === 'email-slab') {
+          expect(s.moved).toBe(true)
+          seen.slab++
+        }
+        if (/^key-[a-z0-9]+$/.test(s.id)) {
+          const seat = seats.find((q) => `key-${q.name}` === s.id)!
+          const away = Math.abs(s.x - seat.x) > 0.01 || Math.abs(s.y - seat.y) > 0.01
+          if (away) {
+            expect(s.moved).toBe(true)
+            seen.keysAway++
+          } else if (a.pageTime < 10) expect(Boolean(s.moved)).toBe(false)
+        }
+      }
+    }
+    expect(seen.paperAtRest).toBeGreaterThan(0)
+    expect(seen.paperAway).toBeGreaterThan(0)
+    expect(seen.keysAway).toBeGreaterThan(0)
+    expect(seen.slab).toBeGreaterThan(0)
+  })
+
+  it('calls the keycaps, the turrets and the shredder housing mechanisms, never the deck, each at least machineMinTop high', () => {
+    const a = film()
+    const least = config.scale.heights.machineMinTop
+    let keys = 0
+    for (let i = 0; i < at(31.9); i++) {
+      a.advance(1)
+      if (i % 6 !== 0) continue
+      const list: DrawList = []
+      a.page.draw(list)
+      for (const s of list) {
+        if (s.id === 'keyboard-deck') expect(Boolean(s.mechanism)).toBe(false)
+        if (!s.mechanism) continue
+        expect(s.z1).toBeGreaterThanOrEqual(s.id.endsWith('-barrel') ? least - 4 : least)
+        if (s.id.startsWith('key-')) keys++
+      }
+    }
+    expect(keys).toBeGreaterThan(1000)
+  })
+
+  it('stands a keycap on the deck and gives its top as a height above the page', () => {
+    const { keyboardDeck, keycap, keyTravel } = config.scale.heights
+    const out: DrawList = []
+    drawFire(out, { typed: 'Perplex', pressed: ['e'], turrets: makeTurrets() })
+    const names = new Set(seats.map((q) => `key-${q.name}`))
+    const keys = out.filter((s) => names.has(s.id))
+    expect(keys.length).toBe(seats.length)
+    for (const s of keys) {
+      expect(s.z0).toBe(keyboardDeck)
+      expect(s.z1).toBe(s.id === 'key-e' ? keycap - keyTravel : keycap)
+    }
+    const floors: string[] = []
+    const walk = (n: { id: string; kind: string; floor?: number; children?: unknown[] }): void => {
+      if (n.kind === 'keycap' && n.floor !== undefined) floors.push(n.id)
+      for (const c of n.children ?? []) walk(c as Parameters<typeof walk>[0])
+    }
+    walk(makePage().layout as Parameters<typeof walk>[0])
+    expect(floors).toEqual([])
+  })
+
+  it('says that the strips do not strike the cursor', () => {
+    const a = film()
+    a.advance(at(31.9))
+    const zip = a.events.filter((e) => e.name === 'strips-zip')
+    expect(zip.length).toBe(1)
+    expect(zip[0]!.hitsCursor).toBe(false)
   })
 })
 
