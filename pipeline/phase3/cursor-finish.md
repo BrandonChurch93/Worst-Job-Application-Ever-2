@@ -127,3 +127,45 @@ were large bubbles.
 
 Still wrong: the beads are faint on the white face at sheet size; the approved ones have a darker
 edge and a stronger shadow.
+
+## Item 4: scorch and tape
+
+Scorch, what was wrong: a flat matte black triangle with a faint fringe.
+
+- The crust is glossy lumps: roughness 0.26 on a lump and 0.9 between, stronger tilt of the normal
+  (12, was 7), pale glints on the lumps, a more crumbled edge (fine noise 1.1, was 0.6).
+- The fringe is narrow and amber: `(0.85, 0.48, 0.16)` at its outside to `(0.14, 0.05, 0.012)`
+  against the crust, 1.2 units wide, and it follows the crust with less noise than the crust has.
+- Found here: the item 6 change (coloured light made neutral on the face) also made the face's
+  own colour neutral, so the fringe, the heat's warm tint and the melt's tint were grayed. It now
+  divides the face's colour out before it takes the light's luma, and puts it back.
+
+Still wrong: the crust does not stand up from the body (the shell's form is not mine) and does
+not run down the left edge as on the approved sheet; the smoke is thinner than approved.
+
+Tape, what was wrong: wide frosted bands with saw teeth, far past the body.
+
+- Ends: teeth 0.22 high (was 1.1) on a slow uneven wave, so an end reads torn, not pinked.
+- Opacity: frost 0.2 (was 0.37), less sheen (0.4, was 0.8), a fainter cast shadow.
+- Shorter and narrower: halves 16, 23, 11 px (were 20, 28, 15), widths 4.4, 4.6, 4.2 (were 5.0,
+  5.4, 4.8). No test holds these numbers (MEASURED: `npm test` green).
+- The slat joints show through the tape.
+
+## Item 5: scared and the flattened cracks
+
+Scared, what was wrong: smooth gray with a regular grid of dots (the detail texture sampled at
+one small scale).
+
+- The dots are gone. Mottling comes from three scales of the texture together, pits from two, and
+  a slow warm and cool drift; the grain of the normal is stronger (0.5, was 0.22).
+
+Still wrong: the band still catches a bright line on the lamp side, so it is not fully matte;
+that is the fill term on the roll, see the form fixer's ask below.
+
+Cracks, what was wrong: one crack (the cells were 11 units wide, wider than the body).
+
+- A net: cells 4.2 units wide, and a finer set (1.9 units) that shows only near a main crack in
+  about half the plates, at 0.12 against 0.3, so it branches. Hairlines with the lit lip and the
+  slight tilt of each plate kept.
+
+Still wrong: the lines are a little paler and wavier than the approved ones.
