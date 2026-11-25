@@ -1,35 +1,35 @@
 {
   "folder": "office",
-  "pushed": "2026-11-25T17:36:06.475Z",
-  "commit": "0b32c65c9cecfd565f5a3a9f38c2d22ca2eaf386",
+  "pushed": "2026-11-25T18:20:10.816Z",
+  "commit": "a646d6a38b72986bb9703fc07f34036a1bf67f28",
   "looks": [
     {
       "file": "look-1.jpg",
       "caption": "Still key-reply-all-uhd-draft: draft tier, uhd, view beauty",
-      "time": "2026-11-25T17:35:02.186Z",
+      "time": "2026-11-25T18:19:39.908Z",
       "by": "office",
       "from": "out/work/stills/key-reply-all-uhd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Tier 2 beside the approved image after the second pass: taupe cubicles, dark crimson staplers, bronze coffee machine",
-      "time": "2026-11-25T17:36:04.632Z",
+      "caption": "Tier 2 beside the approved image at the end of the office work",
+      "time": "2026-11-25T18:20:08.901Z",
       "by": "office",
-      "from": "out/work/office/compare-tier-office-3.jpg"
+      "from": "out/work/office/compare-tier-office-5.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Crops of reply-all at uhd: cubicles, left stapler, coffee machine with inbox",
-      "time": "2026-11-25T17:36:04.875Z",
+      "caption": "Crops of reply-all at uhd at the end: cubicles, left stapler, coffee machine with inbox",
+      "time": "2026-11-25T18:20:09.157Z",
       "by": "office",
-      "from": "out/work/office/crops-3.jpg"
+      "from": "out/work/office/crops-5.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "reply-all key, draft, after the second pass of the office models",
-      "time": "2026-11-25T17:36:05.110Z",
+      "caption": "reply-all key, draft, at the end of the office work",
+      "time": "2026-11-25T18:20:09.396Z",
       "by": "office",
-      "from": "out/work/office/reply-all-3.jpg"
+      "from": "out/work/office/reply-all-5.jpg"
     }
   ]
 }
