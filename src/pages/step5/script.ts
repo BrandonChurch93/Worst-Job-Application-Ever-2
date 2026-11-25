@@ -18,7 +18,6 @@ export const CUES: Cue[] = [
 
 function keys(m: Marks): Key[] {
   const s = m.start
-  const read = { x: m.spot.x - 170, y: m.spot.y - 6 }
   const stamped = AT.decide + AT.slam[1]
   return [
     { t: 0, x: s.x, y: s.y },
@@ -29,9 +28,7 @@ function keys(m: Marks): Key[] {
     { t: 2.05, x: s.x - 8, y: s.y },
     { t: 2.3, x: s.x + 96, y: s.y + 22 },
     { t: 2.9, x: s.x + 96, y: s.y + 22 },
-    { t: 3.4, x: read.x, y: read.y },
-    { t: 3.55, x: read.x, y: read.y },
-    { t: 3.95, x: m.spot.x, y: m.spot.y },
+    { t: 3.5, x: m.spot.x, y: m.spot.y },
     { t: stamped + 3.55, x: m.spot.x, y: m.spot.y },
     { t: stamped + 3.9, x: m.spot.x + 18, y: m.spot.y + 40 },
     { t: 8.25, x: m.spot.x + 18, y: m.spot.y + 40 },
