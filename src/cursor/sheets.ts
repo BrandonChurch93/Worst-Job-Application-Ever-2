@@ -32,7 +32,7 @@ const ARMS: { x: number; y: number; left: [number, number, number]; right: [numb
   { x: -26, y: 0, left: [-19, -6, 12], right: [43, 66, 4], lean: -0.07, grip: [0, 0.25], strain: 0, squash: 1.05 },
   { x: -44, y: -2, left: [0, 0, 0], right: [0, 0, 0], lean: 0, grip: [1, 1], strain: 0.1, squash: 1, sheet: { name: 'holding', x: 46, y: 42, z: PAPER.front, pull: 0, turn: 0.13 } },
   { x: ROW.pull.x, y: ROW.pull.y, left: [0, 0, 0], right: [0, 0, 0], lean: -0.3, grip: [1, 1], strain: 0.85, squash: 1.1, sheet: { name: 'pulling', x: 20, y: ROW.pull.from, z: 3, pull: 1, turn: 0 } },
-  { x: -6, y: 0, left: [58, 23, 15], right: [58, 46, 9], lean: 0.14, grip: [0, 0], strain: 0.4, squash: 0.94 }
+  { x: -6, y: 0, left: [58, 47, 15], right: [58, 24, 9], lean: 0.14, grip: [0, 0], strain: 0.4, squash: 0.94 }
 ]
 
 function held(x: number, y: number, sheet: NonNullable<(typeof ARMS)[number]['sheet']>): { hands: [Place, Place]; shapes: DrawList } {
