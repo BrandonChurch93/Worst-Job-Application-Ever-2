@@ -4,7 +4,7 @@ import { along, arc, arrow, beside, chevron, dirDeg, dist, dot, el, f, footprint
 export const PAL = {
   corporate: { base: '#081229', base2: '#0f2147', key: '#c9a551', fine: '#a78a45', pale: '#ecd797', under: '#070f27', dark: '#040a1a', lane: '#060e22', accent: '#27468a', soft: '#1b3466' },
   office: { base: '#60736a', base2: '#4c6058', key: '#c9b684', fine: '#a99a6e', pale: '#e2d6b0', under: '#33494a', dark: '#1c2c2c', lane: '#33494a', accent: '#7d968f', soft: '#69817a' },
-  street: { base: '#0f2433', base2: '#234b57', key: '#dde4e1', fine: '#86a9b0', pale: '#f0f1e9', under: '#0a1a26', dark: '#050e15', lane: '#0b1c28', accent: '#d8b53b', soft: '#234a58' }
+  street: { base: '#0f2433', base2: '#234b57', key: '#dde4e1', fine: '#86a9b0', pale: '#f0f1e9', under: '#0a1a26', dark: '#050e15', lane: '#0b1c28', accent: '#d8b53b', soft: '#234a58', fan: '#6f959d', fan2: '#44707a' }
 }
 
 // One tier of the layout in its own frame: u across, v down from the top of the tier, in balls.
@@ -183,9 +183,11 @@ export function common(D, pal) {
     const a0 = md(side, rest)
     const a1 = md(side, D.FLIP.up)
     const L = D.FLIP.length
-    answers.push(arc(fl.pivot, L + 0.1, a0, a1, pal.key, 0.022), arc(fl.pivot, L + 0.17, a0, a1, pal.fine, 0.008))
-    answers.push(rays(fl.pivot, L - 0.75, L + 0.1, a0, a1, 21, pal.fine, 0.01).filter((_, i) => i % 2 === 1), rays(fl.pivot, L - 1.25, L + 0.1, a0, a1, 11, pal.key, 0.016))
-    answers.push(arc(fl.pivot, L - 1.25, a0, a1, pal.fine, 0.008), dot(fl.pivot, 0.4, pal.under), ring(fl.pivot, 0.36, pal.key, 0.025), ring(fl.pivot, 0.44, pal.fine, 0.008))
+    const fan = pal.fan ?? pal.key
+    const fan2 = pal.fan2 ?? pal.fine
+    answers.push(arc(fl.pivot, L + 0.1, a0, a1, fan, 0.022), arc(fl.pivot, L + 0.17, a0, a1, fan2, 0.008))
+    answers.push(rays(fl.pivot, L - 0.75, L + 0.1, a0, a1, 21, fan2, 0.01).filter((_, i) => i % 2 === 1), rays(fl.pivot, L - 1.25, L + 0.1, a0, a1, 11, fan, 0.016))
+    answers.push(arc(fl.pivot, L - 1.25, a0, a1, fan2, 0.008), dot(fl.pivot, 0.4, pal.under), ring(fl.pivot, 0.36, pal.key, 0.025), ring(fl.pivot, 0.44, pal.fine, 0.008))
     for (let a = 0; a < 360; a += 22.5) answers.push(line(polar(fl.pivot, 0.47, a), polar(fl.pivot, 0.53, a), pal.fine, 0.01))
 
     const sl = D.slings.find((x) => x.side === side.id)
@@ -355,7 +357,7 @@ export function corporate(D) {
     local.push(rays(c, 0.25, 1.15, a0, a1, 13, pal.key, 0.014), arc(c, 1.15, Math.min(a0, a1), Math.max(a0, a1), pal.key, 0.022), arc(c, 1.22, Math.min(a0, a1), Math.max(a0, a1), pal.fine, 0.008), arc(c, 0.25, Math.min(a0, a1), Math.max(a0, a1), pal.fine, 0.012), dot(c, 0.05, pal.pale))
   }
   const { lanes, answers } = common(D, pal)
-  return { pal, defs, ground: [], top: [lanes, g({ mask: 'url(#keep-corporate)', opacity: 0.4 }, filler), local, answers, insertsPrint(D, pal)] }
+  return { pal, defs, ground: [], top: [lanes, g({ mask: 'url(#keep-corporate)', opacity: 0.3 }, filler), local, answers, insertsPrint(D, pal)] }
 }
 
 export function office(D, seed) {
@@ -370,8 +372,8 @@ export function office(D, seed) {
   const low = D.bumpers.reduce((m, q) => (q.c[1] > m.c[1] ? q : m), D.bumpers[0])
   const band = [low.c[1] - 0.8, low.c[1] + 0.9]
   const tile = (C.right - D.MID - half) / 2
-  const cream = '#cfc8b1'
-  const cream2 = '#c6bfa8'
+  const cream = '#c4c0b0'
+  const cream2 = '#bbb7a7'
   const tan = '#8f8662'
   // Broad carpet tiles in two greens, chequered, and a pale walkway down the middle and across under the cups.
   const us = [D.MID - half - 2 * tile, D.MID - half - tile, D.MID + half, D.MID + half + tile]
