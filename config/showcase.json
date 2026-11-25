@@ -165,7 +165,7 @@
     },
     "tier-1": {
       "like": "home",
-      "note": "the home camera moved down the page to the street tier: cameras.home.fovDeg, at home's distance from that tier's floor, the tier filling the frame"
+      "note": "the home camera moved down the page to the street tier: cameras.home.fovDeg, a little lower and a little further than home's distance from that tier's floor, so the apron edge and the Unemployment Office plate are in the frame as approved tier-street.png has them"
     },
     "rail": { "fovDeg": 40, "note": "riding above the ball on a wire ramp, looking down and a little ahead, fitted to its approved image" },
     "table-lobby": { "fovDeg": 35, "note": "fitted to its approved image" },
