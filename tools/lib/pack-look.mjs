@@ -84,10 +84,13 @@ const keysOf = (cfg, unit) => cfg.keys.filter((k) => k.unit === unit)
 const sheetsOf = (cfg, unit) => cfg.sheets.filter((s) => s.unit === unit)
 const restsOf = (cfg, unit) => cfg.stills.filter((s) => s.unit === unit && !s.interface)
 
+// A key seen through any camera but home shows part of its page, and its heading says so.
+const momentWords = (k) => (k.camera === 'home' ? 'The page at one moment' : 'Part of the page at one moment, seen close')
+
 // The judged stills of a unit, in the list's order: keys, sheets, stills.
 export function judgedOf(cfg, unit) {
   return [
-    ...keysOf(cfg, unit).map((k) => ({ from: { key: k.id }, words: 'The page at one moment' })),
+    ...keysOf(cfg, unit).map((k) => ({ from: { key: k.id }, words: momentWords(k) })),
     ...sheetsOf(cfg, unit).map((s) => ({ from: { sheet: s.id }, words: `A sheet of parts: ${s.shows}` })),
     ...restsOf(cfg, unit).map((s) => ({ from: { id: s.id }, words: s.scroll ? 'The page at rest, scrolled' : 'The page at rest' }))
   ]
@@ -149,7 +152,7 @@ function motionGroups(cfg, unit, facts) {
 
 function pageGroups(cfg, unit) {
   const rests = restsOf(cfg, unit).map((s) => ({ kind: 'judged', from: { id: s.id }, heading: s.scroll ? 'The page at rest, scrolled' : 'The page at rest' }))
-  const keys = keysOf(cfg, unit).map((k, i) => ({ kind: 'judged', from: { key: k.id }, heading: `The page at one moment, ${i + 1} of ${keysOf(cfg, unit).length}` }))
+  const keys = keysOf(cfg, unit).map((k, i) => ({ kind: 'judged', from: { key: k.id }, heading: `${momentWords(k)}, ${i + 1} of ${keysOf(cfg, unit).length}` }))
   const crops = restsOf(cfg, unit).filter((s) => !s.scroll).map((s) => ({ kind: 'text-crops', from: { id: s.id }, heading: 'Text and controls of the page at rest, at their real size' }))
   return [{ id: 'page', items: [...rests, ...keys, ...crops] }]
 }
