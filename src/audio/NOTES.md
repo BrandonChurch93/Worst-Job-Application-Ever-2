@@ -14,7 +14,7 @@ The sound side of the build. Owner: the sound builder. Branch `agent/audio`.
 | `src/audio/index.ts` | The site's sound engine: `makeSound({ base })`. |
 | `tools/sound.mjs` | `npm run sound`. |
 | `tools/mix.mjs` | `npm run mix`, and the sound checks A1 to A11. |
-| `tests/audio-*.test.ts` | Cues, chain, mix, narrator, engine. |
+| `tests/audio-*.test.ts` | Cues, chain, mix, narrator, engine, and the tool's reading of a name, of the listener's answers and of a line's numbers. |
 
 ## The commands
 
@@ -68,6 +68,7 @@ No sound is kept. `public/audio/index.json` lists nothing, the engine reports `a
 20. While the page is hidden the engine holds: the sound graph is suspended and carries on from the same point when the page is back, so a line is never spoken to a tab nobody looks at. With plain audio elements everything is stopped instead, and the tone starts again at the next event.
 21. The site calls `unlock()` at the first press. Some browsers, phones above all, let sound start only at the end of a touch or at a click. So once unlocked, the sound graph is asked to run again at every `pointerup`, `touchend`, `click` and `keydown` for as long as it is not running. Nothing listens before `unlock()`. MEASURED in Chromium only: what Safari on a phone does is UNKNOWN.
 22. `share`, the press on the share control of the last page, plays `button-press`. `popup-close` is silent on purpose and is listed as such in `silentEvents`. `npm run sound` with no flag reads every event name the pages emit and names each one that has no cue, stops nothing, sets off no line and is not listed as silent. It is a line of the tool and not a test, because a missing sound must not turn `npm test` red for another builder.
+23. `npm run sound -- --fixtures --answered --root DIR` makes the stand-ins with a stand-in answer of the listener on each and a table of rows in `DIR/ASSETS.md`, so the whole path can be seen to pass before a take exists: on such a folder all eleven checks pass. The answers say in their own words that nobody listened. With `--root` check A5 reads the rows from that folder, without it from `ASSETS.md`.
 
 ## Where the kit and the code differed
 

@@ -235,7 +235,8 @@ export async function soundChecks(a, P, c, M) {
 
   if (!records.length) add('A5', 'not yet', 'no sound is kept')
   else {
-    const assets = fs.existsSync(at('ASSETS.md')) ? fs.readFileSync(at('ASSETS.md'), 'utf8') : ''
+    const assetsFile = P.scratch ? path.join(path.dirname(P.audio), 'ASSETS.md') : at('ASSETS.md')
+    const assets = fs.existsSync(assetsFile) ? fs.readFileSync(assetsFile, 'utf8') : ''
     const bad = []
     for (const r of records) {
       const lacks = []

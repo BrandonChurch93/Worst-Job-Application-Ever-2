@@ -852,7 +852,7 @@ export async function fixtures(a, c, M) {
     }
     const file = make(`cue-${s.id}`, expr, secs)
     await fileTake({ cue: s.id, file, prompt: `A fixture made with ffmpeg, not a take. ${promptLine(s.id)}`, cost: '0', filed: 'fixture', root }, P, c, M, true)
-    await keepTake({ cue: s.id, force: true, fixture: true, why: 'a fixture, kept so the tools can be run', root }, P, c, M, true)
+    await keepTake({ cue: s.id, force: true, fixture: true, why: 'a fixture, kept so the tools can be run', listener: a.answered ? JSON.stringify({ by: 'a stand-in answer, nobody listened', voice: false, word: false, music: s.id === 'hold-music', melody: s.id === 'hold-music', fits: true }) : undefined, root }, P, c, M, true)
     made++
   }
   const lines = []
@@ -875,9 +875,10 @@ export async function fixtures(a, c, M) {
     }
     const file = make(`line-${t.id}`, parts.join('+'), at0 - pause + 0.15)
     await fileTake({ line: name, file, cost: '0', filed: 'fixture', root }, P, c, M, true)
-    await keepTake({ line: name, force: true, fixture: true, why: 'a fixture, kept so the tools can be run', root }, P, c, M, true)
+    await keepTake({ line: name, force: true, fixture: true, why: 'a fixture, kept so the tools can be run', listener: a.answered ? JSON.stringify({ by: 'a stand-in answer, nobody listened', transcript: t.text, whisper: false, laugh: false, warmth: false, excitement: false, unimpressedAndSmug: true }) : undefined, root }, P, c, M, true)
     made++
   }
+  if (a.answered) fs.copyFileSync(path.join(P.audio, 'ASSETS-ROWS.md'), path.join(path.dirname(P.audio), 'ASSETS.md'))
   const index = pack(P, c, M, true)
   console.log(`fixtures: ${made} stand-in sounds made with ffmpeg in ${rel(dir)}, filed, kept and packed under ${rel(path.resolve(root))}`)
   console.log(`fixtures: ${index.sfx.length} short sounds, ${index.loops.length} loops, ${index.lines.length} lines, ${(index.totalBytes / 1048576).toFixed(2)} MB. They are not takes: nothing here is committed or shipped`)
