@@ -1,0 +1,11 @@
+{
+  "about": "Cues that are not in the table of kit/03-METHOD.md section 12. Addendum 001 added boss-loop and lets the Builder add up to audio.extraCuesMax more where a visible contact in the finished site has no sound. Each is also in audio.sfx and logged in kit/PROGRESS.md with its prompt.",
+  "cues": [
+    {
+      "id": "boss-loop",
+      "heard": "A short loop of tense, slightly silly fight music. Loops",
+      "playedBy": "The boss battle, from the boss unfolding to its collapse",
+      "addedBy": "kit/addenda/001-sound-budget-and-narrator.md"
+    }
+  ]
+}
