@@ -94,12 +94,20 @@ export class Deform {
     }
     if (this.melt > 0) {
       const m = this.melt
-      const low = smooth(3, 19, y0)
-      const run = smooth(0.05, 0.9, Math.sin(x0 * 1.15 + 0.9) * 0.65 + Math.sin(x0 * 2.1 + 2.2) * 0.35)
-      y += m * (0.9 * low + 2.1 * low * low * run + 0.25 * Math.sin(x0 * 1.1 + 0.3))
-      x += m * (0.45 * Math.sin(y0 * 0.62 + 1.4) + 0.3 * low * (x0 - CENTRE[0]) * 0.35)
-      z *= 1 - 0.3 * m * (1 - 0.6 * low * run)
-      z += m * up * (0.28 * run * low + 0.14 * Math.sin(x0 * 1.3 + y0 * 0.8)) * (1 - Math.exp(-inset / 0.6))
+      const low = smooth(2, 19, y0)
+      const tail = smooth(11.5, 19, y0)
+      const dx = x - CENTRE[0]
+      const dy = y - CENTRE[1]
+      const ang = Math.atan2(dy, dx)
+      const wob = 0.6 * Math.sin(2 * ang + 0.9) + 0.4 * Math.sin(3 * ang + 2.6)
+      const grow = 1 + m * 0.09 * wob * (1 - tail)
+      x = CENTRE[0] + dx * grow
+      y = CENTRE[1] + dy * grow
+      y += m * (0.7 * low + 2.4 * tail)
+      x += m * (0.45 * Math.sin(y0 * 0.42 + 1.0) * (1 - tail) + 2.1 * tail * Math.sin((y0 - 11.5) * 0.5) + 0.5 * tail * (x0 - 7.5) * 0.4)
+      const fold = Math.sin(x0 * 0.55 + y0 * 0.38 + 0.5) * Math.sin(y0 * 0.31 - x0 * 0.2 + 1.2)
+      z *= 1 - 0.1 * m - 0.3 * m * tail
+      z += m * up * 0.42 * fold * (1 - Math.exp(-inset / 0.9)) * (1 - 0.5 * tail)
     }
     x *= this.wide
     y *= this.stretch

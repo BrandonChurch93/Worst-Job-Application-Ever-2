@@ -20,8 +20,8 @@ export const SETS: Record<string, CellSet> = {
       { name: 'shocked', body: { stretch: 1.3 } },
       { name: 'angry', body: { heat: 0.62, puff: 0.3 }, effects: { steam: 1 } },
       { name: 'scared', body: { pale: 1, tremble: 0.6 } },
-      { name: 'exhausted', body: { melt: 1 } },
-      { name: 'hit by a laser', body: { holes: [{ x: 4.2, y: 8.2, r: 1.9, glow: 0.8 }] }, effects: { smoke: [{ x: 4.6, y: 7, amount: 1 }] } }
+      { name: 'exhausted', body: { melt: 1, stretch: 0.8, bend: 0.15 } },
+      { name: 'hit by a laser', body: { holes: [{ x: 4.2, y: 8.2, r: 2.15, glow: 0.8 }] }, effects: { smoke: [{ x: 4.6, y: 7, amount: 1 }] } }
     ]
   },
   // The five states of the approved sheet cursor-damage, in its order.

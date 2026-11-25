@@ -7,7 +7,7 @@ import { UNIT, type BodyModel, type EffectsLook, type EffectsModel } from '../co
 import { CENTRE, inside } from './shape'
 import { detailTexture } from './texture'
 
-const DROPS = 16
+const DROPS = 24
 const STEAM = 22
 const SMOKE_POINTS = 4
 const SMOKE_EACH = 12
@@ -200,15 +200,15 @@ class Effects implements EffectsModel {
         let y = 8
         for (let k = 0; k < 8; k++) {
           const hx = 0.5 + 10 * hash01(i * 31 + k, cycle, SEED + 3)
-          const hy = 1.5 + 16 * hash01(i * 31 + k, cycle, SEED + 4)
+          const hy = 1.5 + 13.5 * Math.pow(hash01(i * 31 + k, cycle, SEED + 4), 1.25)
           if (inside(hx, hy) > 0.85) {
             x = hx
             y = hy
             break
           }
         }
-        const size = (0.4 + 0.62 * Math.pow(hash01(i, cycle, SEED + 5), 1.6)) * (0.8 + 0.2 * amount) * on * UNIT
-        const flyer = hash01(i, cycle, SEED + 6) < 0.34
+        const size = (0.3 + 0.62 * Math.pow(hash01(i, cycle, SEED + 5), 1.8)) * (0.8 + 0.2 * amount) * on * UNIT
+        const flyer = hash01(i, cycle, SEED + 6) < 0.2
         let r = size
         let long = 1
         let high = 0.8
@@ -219,17 +219,17 @@ class Effects implements EffectsModel {
           const ox = p.x - this.a.x
           const oy = p.y - this.a.y
           const len = Math.max(1e-3, Math.hypot(ox, oy))
-          const far = (7 + 5 * hash01(i, cycle, SEED + 7)) * UNIT
+          const far = (2.5 + 3 * hash01(i, cycle, SEED + 7)) * UNIT
           const grow = smooth(t / 0.18)
           const w = clamp01((t - 0.18) / 0.5)
           const out = 1 - (1 - w) * (1 - w)
           const z0 = p.z
           p.x += (ox / len) * far * out
           p.y += (oy / len) * far * out - 1.5 * UNIT * w * w
-          p.z = z0 + (floor - z0) * w * w + 4 * UNIT * w * (1 - w) * 2
+          p.z = z0 + (floor - z0) * w * w + 2.5 * UNIT * w * (1 - w) * 2
           angle = Math.atan2(oy, ox) - Math.PI / 2
           long = 1 + 0.5 * Math.sin(Math.PI * w)
-          r = size * 0.8 * grow
+          r = size * 0.7 * grow
           if (t > 0.68) {
             const v = (t - 0.68) / 0.32
             p.z = floor
@@ -302,7 +302,7 @@ class Effects implements EffectsModel {
       const size = (thin + (wide - thin) * Math.pow(t, 1.25)) * (0.8 + 0.4 * hash01(i, cycle, SEED + salt + 1)) * UNIT
       const long = 2.1 - 1.1 * t
       const shade = dark + (pale - dark) * t
-      const alpha = amount * dense * smooth(t / 0.07) * Math.pow(1 - t, 1.15)
+      const alpha = amount * dense * smooth(t / 0.07) * Math.pow(1 - t, 0.7) * (1 - 0.35 * t * t)
       n = this.puff(n, x + (off + jitter * size / UNIT * t) * UNIT, y + h * UNIT, z + (0.1 + 3.2 * t) * UNIT, size, size * long, size * 0.7, -Math.atan(slope), shade, shade * 1.005, shade * 1.02, alpha, salt * 13 + i * 7 + cycle * 3)
     }
     return n
@@ -315,7 +315,7 @@ class Effects implements EffectsModel {
       TOPS.forEach((t, i) => this.on(surface, t[0], t[1], this.tops[i]!))
       let top = this.tops[0]!
       for (const t of this.tops) if (t.y > top.y) top = t
-      n = this.plume(n, top.x, top.y - 2.2 * UNIT, top.z, steam, look.time, STEAM, 13.5, 1.7, 0.6, 3.5, 0.95, 0.97, 0.85, 3)
+      n = this.plume(n, top.x, top.y - 2.2 * UNIT, top.z, steam, look.time, STEAM, 17, 1.9, 0.6, 4.2, 1.0, 1.0, 0.95, 3)
     }
     const points = Math.min(SMOKE_POINTS, look.smoke.length)
     for (let k = 0; k < points; k++) {
@@ -323,7 +323,7 @@ class Effects implements EffectsModel {
       const amount = clamp01(s.amount)
       if (amount <= 0.01) continue
       this.on(surface, s.x, s.y, this.a)
-      n = this.plume(n, this.a.x, this.a.y, this.a.z, amount, look.time, SMOKE_EACH, 14.5, 4.6, 0.5, 3.2, 0.17, 0.5, 0.8, 40 + k * 9)
+      n = this.plume(n, this.a.x, this.a.y, this.a.z, amount, look.time, SMOKE_EACH, 17, 4.8, 0.5, 3.8, 0.15, 0.5, 0.9, 40 + k * 9)
     }
     if (look.dust >= 0 && look.dust < 1) {
       const d = look.dust
