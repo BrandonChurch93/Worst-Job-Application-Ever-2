@@ -2,6 +2,7 @@ import { config } from '../config'
 import { quality as qualityOf } from '../core/quality'
 import type { InterfaceApi, Mounted } from './api'
 import { clockText } from './device'
+import { draw } from './glyphs'
 import { icon, setIcon } from './icons'
 import css from './interface.module.css'
 import { mountMenu } from './menu'
@@ -10,6 +11,7 @@ import { makeQualityPicker, type QualityPicker } from './picker'
 import { word } from './words'
 
 const PAGE_W = 1920
+const TYPE = 'inter-500'
 const HIDE_AFTER_MS = 2600
 const SEEK_KEY_SECONDS = 5
 
@@ -20,14 +22,10 @@ function el<K extends keyof HTMLElementTagNameMap>(tag: K, cls: string | undefin
   return e
 }
 
-// A control keeps the keys it uses itself. Every other key goes on to the page.
-function keep(control: HTMLElement, keys: string[]): void {
-  control.addEventListener('keydown', (e) => {
-    if (keys.includes(e.key)) e.stopPropagation()
-  })
-  control.addEventListener('keyup', (e) => {
-    if (keys.includes(e.key)) e.stopPropagation()
-  })
+// While a control has the focus, every key is its own and the browser's: none goes on to the page.
+function keep(control: HTMLElement): void {
+  control.addEventListener('keydown', (e) => e.stopPropagation())
+  control.addEventListener('keyup', (e) => e.stopPropagation())
 }
 
 // A click made with the pointer hands the keyboard back to the page.
@@ -38,7 +36,7 @@ function press(control: HTMLElement, act: () => void): void {
     act()
     if (e.detail > 0) control.blur()
   })
-  keep(control, ['Enter', ' '])
+  keep(control)
 }
 
 function soundButton(api: InterfaceApi, parent: HTMLElement): { button: HTMLButtonElement; update(): void } {
@@ -75,7 +73,7 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
     window.addEventListener(type, fn, capture)
     off.push(() => window.removeEventListener(type, fn, capture))
   }
-  for (const type of ['pointerdown', 'pointerup', 'mousedown', 'mouseup', 'click', 'dblclick', 'contextmenu', 'wheel'] as const) {
+  for (const type of ['pointerdown', 'pointerup', 'mousedown', 'mouseup', 'click', 'dblclick', 'contextmenu'] as const) {
     root.addEventListener(type, (e) => e.stopPropagation())
   }
 
@@ -96,15 +94,18 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
   const liveSound = soundButton(api, live)
   const film = el('a', css.link, live)
   film.href = '?mode=film'
-  film.textContent = word('watchFilm')
+  draw(film, word('watchFilm'), TYPE)
   press(film, () => api.watchFilm())
   const skip = el('button', css.link, live)
   skip.type = 'button'
-  skip.textContent = word('skip')
+  draw(skip, word('skip'), TYPE)
   skip.hidden = true
   press(skip, () => api.skip())
 
   const surface = el('div', css.surface, root)
+  const offer = el('div', css.offer, surface)
+  offer.setAttribute('aria-hidden', 'true')
+  offer.append(icon('play'))
   const bar = el('div', css.bar, root)
   const play = el('button', css.icon, bar)
   play.type = 'button'
@@ -139,7 +140,7 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
     dragging = false
     if (document.activeElement === position && !position.matches(':focus-visible')) position.blur()
   })
-  keep(position, ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown'])
+  keep(position)
 
   let timer = 0
   const wake = () => {
@@ -182,6 +183,7 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
     }
     const f = api.film
     if (api.mode() !== 'film' || !f) return
+    if (e.target instanceof Node && bar.contains(e.target)) return
     if (e.key === ' ' || e.key === 'k') {
       toggle()
       wake()
@@ -198,9 +200,11 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
   let mode = ''
   let hasFilm: boolean | null = null
   let skipDue: boolean | null = null
+  let backing = ''
   let heading = ''
   let step = -1
   let playing: boolean | null = null
+  let started: boolean | null = null
   let shownTime = ''
   let shownValue = -1
   const heard = new Set<string>()
@@ -222,6 +226,11 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
       }
       if (m === 'live') {
         liveSound.update()
+        const under = api.backing ? api.backing() : 'page'
+        if (under !== backing) {
+          backing = under
+          root.dataset.backing = under
+        }
         const due = api.skipOffered()
         if (due !== skipDue) {
           skipDue = due
@@ -245,10 +254,15 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
             wake()
           }
           const t = f.time()
+          const begun = now || t > 0
+          if (begun !== started) {
+            started = begun
+            root.dataset.started = String(begun)
+          }
           const label = `${clockText(t)} / ${clockText(f.seconds)}`
           if (label !== shownTime) {
             shownTime = label
-            time.textContent = label
+            draw(time, label, TYPE, { tabular: true })
           }
           const value = Math.round(t * 10) / 10
           if (!dragging && value !== shownValue) {
