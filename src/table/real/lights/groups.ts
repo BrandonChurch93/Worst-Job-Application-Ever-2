@@ -115,12 +115,12 @@ function build(z: Zone): Group[] {
       windows.push(at(m.box[0] + 0.6, y, 70, 0.55, 3.4, m.id), at(m.box[0] + m.box[2] - 0.6, y, 70, 0.55, 3.4, m.id))
     }
     const bank = model('street.bank')
-    windows.push(at(bank.box[0] + bank.box[2] + 0.35, centre(bank)[1], 50, 0.7, 3, bank.id), at(centre(bank)[0], bank.box[1] + bank.box[3] + 0.12, 50, 0.45, 2.6, bank.id))
+    windows.push(at(bank.box[0] + bank.box[2] + 0.35, centre(bank)[1], 70, 0.3, 3, bank.id), at(centre(bank)[0], bank.box[1] + bank.box[3] + 0.12, 70, 0.2, 2.6, bank.id))
     for (const m of table.models) if (m.tier === k && (m.part === 'model-houses' || m.part === 'model-moms')) windows.push(at(centre(m)[0], m.box[1] + m.box[3] + 0.1, 22, 0.22, 1.8, m.id))
     // The four street lamps of the shoulders stand where the owner of the street's models built them.
     for (const [u, v] of [[5.86, 9.06], [7.31, 10.59], [13.77, 9.0], [15.18, 10.15]] as [number, number][]) windows.push(at(u, TIER_Y[k]! + v, 60, 0.5, 2.5))
     const garage = model('street.garage')
-    windows.push(at(centre(garage)[0], centre(garage)[1], 40, 0.6, 3.2, garage.id))
+    windows.push(at(centre(garage)[0], centre(garage)[1], 110, 0.9, 3.2, garage.id))
     add('windows', 0, C.STREET_WINDOW, windows)
     display()
     add('flash', 0, C.STREET_FLASH, [])
