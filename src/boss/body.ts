@@ -84,8 +84,8 @@ export function unfoldRig(u: number): Rig {
     c.rot = (1 - e) * 2.4
   })
   const sh = prog(u, UNFOLD.shield[0], UNFOLD.shield[1])
-  rig.shield.x = mix(1980, rig.shield.x, sh)
-  rig.shield.k = sh > 0 ? 1 : 0
+  rig.shield.x = mix(at.x - 150, rig.shield.x, sh)
+  rig.shield.k = sh
   return rig
 }
 
@@ -157,7 +157,7 @@ export function drawRig(out: DrawList, rig: Rig, id = 'boss', pressed = 0): void
   if (rig.shield.k > 0.01) {
     const s = rig.shield
     const flat = lying(s.z)
-    out.push({ id: `${id}-shield`, part: body, kind: 'box', x: s.x - 20, y: s.y - 98, w: 40, h: 196, z0: flat ? 0 : 24 + s.z, z1: flat ? heights.card : 104 + s.z, tone: 'glass', rot: s.rot, r: 12 })
+    out.push({ id: `${id}-shield`, part: body, kind: 'box', x: s.x - 20, y: s.y - 98 * s.k, w: 40, h: 196 * s.k, z0: flat ? 0 : 24 + s.z, z1: flat ? heights.card : 104 + s.z, tone: 'glass', rot: s.rot, r: 12 })
   }
   rig.cannons.forEach((c, i) => {
     if (c.k <= 0.01) return

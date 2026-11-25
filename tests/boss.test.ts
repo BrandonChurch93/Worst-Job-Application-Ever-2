@@ -119,6 +119,7 @@ describe('step 4, the boss', () => {
     expect(stage.events.filter((e) => e.hitsCursor && e.step >= down.step)).toEqual([])
     const hits = stage.events.filter((e) => e.hitsCursor)
     expect(hits.length).toBeGreaterThan(0)
+    expect(hits.every((e) => e.step < down.step - 3 * stepHz)).toBe(true)
   })
 
   it.each([['a still pointer', still], ['a wrong pointer', wrong]])('ends every gag by itself with %s', (_name, driver) => {

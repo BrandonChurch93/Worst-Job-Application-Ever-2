@@ -1,6 +1,6 @@
 import type { StepIo } from '../stage/types'
 import { CANNON_OFF, FOOT_OFF, smooth } from './body'
-import { ARENA, BODY, CAPS, DART, EXPIRED_GAIN, HEALTH, HIT, HOME, POPUP, RAMP, SLAB, SLOW_SECONDS, THRESHOLD } from './plan'
+import { ARENA, BODY, CAPS, FLOOR, DART, EXPIRED_GAIN, HEALTH, HIT, HOME, POPUP, RAMP, SLAB, SLOW_SECONDS, THRESHOLD } from './plan'
 
 export interface SlabSize { w: number; h: number }
 export interface Rect { x: number; y: number; w: number; h: number }
@@ -68,6 +68,12 @@ export const ceiling = (phase: number, phaseClock: number): number => {
   return Math.max(to, from - ((from - to) * (phaseClock - (cap - ramp))) / ramp)
 }
 
+const floor = (f: Fight): number => {
+  const from = START[f.phase]!
+  const clock = f.phase === 2 ? f.expired - 0.8 : f.phaseClock
+  return from - ((from - THRESHOLD[f.phase]!) * Math.max(0, clock)) / FLOOR[f.phase]!
+}
+
 const inside = (r: Rect, x: number, y: number, grow = 0): boolean => x >= r.x - grow && x <= r.x + r.w + grow && y >= r.y - grow && y <= r.y + r.h + grow
 
 export const muzzle = (f: Fight, i: number): { x: number; y: number } => ({ x: f.x + CANNON_OFF[i]![0] - 70, y: f.y + CANNON_OFF[i]![1] })
@@ -75,9 +81,10 @@ export const muzzle = (f: Fight, i: number): { x: number; y: number } => ({ x: f
 export const bannerUp = (f: Fight): boolean => f.expired >= 0 && f.expired < 1.5
 
 function wander(f: Fight): { x: number; y: number; speed: number } {
-  if (f.phase === 0) return { x: HOME.x - 50 + 60 * Math.sin(f.clock * 0.6), y: HOME.y + 150 * Math.sin(f.clock * 0.5 + 0.4), speed: 130 }
+  if (f.phase === 0) return { x: HOME.x - 50 + 60 * Math.sin(f.clock * 0.6), y: HOME.y - 10 + 80 * Math.sin(f.clock * 0.5 + 2.9), speed: 130 }
   if (f.phase === 1) return { x: HOME.x, y: HOME.y, speed: 170 }
-  return { x: HOME.x - 60 + 80 * Math.sin(f.clock * 0.9), y: HOME.y + 170 * Math.sin(f.clock * 0.75), speed: bannerUp(f) ? 0 : 210 }
+  if (f.expired < 1.5) return { x: HOME.x, y: HOME.y + 24, speed: 170 }
+  return { x: HOME.x + 10 + 40 * Math.sin(f.clock * 0.9), y: HOME.y + 10 + 100 * Math.sin(f.clock * 0.75), speed: 210 }
 }
 
 function walk(f: Fight, dt: number): void {
@@ -263,7 +270,7 @@ function darts(f: Fight, io: StepIo, arena: Arena, used: boolean): void {
     const ey = (d.y - f.y) / BODY.ry
     if (ex * ex + ey * ey <= 1) {
       const open = !(f.phase === 2 && f.expired < 0.8)
-      if (open) f.health = Math.max(THRESHOLD[f.phase]!, f.health - DART.damage)
+      if (open) f.health = Math.max(THRESHOLD[f.phase]!, Math.min(f.health, floor(f)), f.health - DART.damage)
       f.flash = 0.12
       spark(f, d.x, d.y)
       io.emit('dart-hit', d.x, d.y, false)
