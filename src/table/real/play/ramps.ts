@@ -180,14 +180,14 @@ function spiral(z: Zone, b: Bag, clear: Bag): void {
   const top = TROUGH.tall
   const u = -TROUGH.under
   const c: [number, number] = [pts[1]!.x + SPIRAL.r * BALL, pts[1]!.y]
-  clear.add(sweep([[-h - t, u], [h + t, u], [h + t, u + t], [-h - t, u + t]], flat), CLEAR, undefined, 0.1)
+  clear.add(sweep([[-h - t, u], [h + t, u], [h + t, u + t], [-h - t, u + t]], flat), CLEAR, undefined, 0.035)
   for (const side of [-1, 1]) {
     const wall: V2[] = [[side * h, u + t], [side * (h + t), u + t], [side * (h + t), top], [side * (h + 1), top]]
     if (side < 0) wall.reverse()
-    clear.add(sweep(wall, flat), CLEAR, undefined, 0.13)
-    const lip: V2[] = [[side * (h - 1.5), top], [side * (h + t + 1), top], [side * (h + t + 1), top + 2.6], [side * (h - 1.5), top + 2.6]]
+    clear.add(sweep(wall, flat), CLEAR, undefined, 0.09)
+    const lip: V2[] = [[side * (h - 1.5), top], [side * (h + t + 1), top], [side * (h + t + 1), top + 3.6], [side * (h - 1.5), top + 3.6]]
     if (side < 0) lip.reverse()
-    clear.add(sweep(lip, flat), CLEAR_EDGE, undefined, 0.6)
+    clear.add(sweep(lip, flat), CLEAR_EDGE, undefined, 0.78)
     const foot: V2[] = [[side * (h + t - 3), u - 0.8], [side * (h + t + 0.6), u - 0.8], [side * (h + t + 0.6), u + 0.8], [side * (h + t - 3), u + 0.8]]
     if (side < 0) foot.reverse()
     clear.add(sweep(foot, flat), CLEAR_EDGE, undefined, 0.36)
@@ -228,7 +228,7 @@ interface Built { flap: THREE.Mesh | null; down: number }
 export const flapLift = (open: number): number => (1 - Math.max(0, Math.min(1, open))) * FLAP.lift
 
 export const ramps = whole('ramps', {
-  version: 'play-ramps-13',
+  version: 'play-ramps-14',
   build(z) {
     const g = new THREE.Group()
     g.name = `play.ramps.${z.id}`
