@@ -47,3 +47,25 @@ Owner: the maker of the office models. Branch `agent/office`. Parts: `model-coff
 
 - The mirror of a cubicle is made in the builder (`Kit.mirror`), which also turns the winding, so no mesh has a negative scale.
 - Triangles and draws are in the report to the Builder, with the commands.
+
+## Open for the next owner
+
+Work ended at 18:13 UTC on the Builder's word, before the limit. Everything in the brief is present and real. What a critic would still mark down, in order:
+
+1. Staplers. The arm now has a flat top with broad chamfers and reads as the approved one, but it is a plain shell: no pressed line round the nose, no maker's blank badge, and the hinge end is a plain rounded block. The last colour change (`0x54151c` arm, `0x4a1218` plate in `staplers.ts`) was pushed with the gates green but was not looked at in a still: check it in `reply-all` at uhd first, the target is the approved crimson, about (139, 43, 45) on the arm in the picture.
+2. Cubicles. The walls take light from above through leaned normals (`Kit.up = 0.75` in `wall`), which is a cheat: from a low camera the fabric may look flat. The cells are small from the key cameras, and the desks are thin. The cubicles cast no shadow (`cast: false` on `office.cubicles.body`); if the shadow owner softens the tier's shadow, try `cast: true` again.
+3. Coffee machine. The front (group heads, cups on the grille, gauge) is under the sign from the key cameras, which look straight down, so the model reads as a top plate with four rings. Steam is left out. The cups on the warmer are plain.
+4. Small standing things. They stand on the closed left shoulder, where the tier is dim: the cabinet reads as a box and the bin is nearly black. The plant has nineteen leaves and reads as a plant.
+5. Inbox. The tray is drawn level in `reply-all` at 0.2 and 0.5 of the beat, when no ball is held, so the tip and the slide were never seen in a still, only in the test `tests/table-office.test.ts`. Look at the beat between 19.1 s and 21.4 s of the pinball unit (`T.inboxBy` to `T.eject` in `src/pages/step3/index.ts`).
+
+How the folder is laid out:
+
+- `kit.ts`: the builder of triangles (`Kit`), the three materials of the zone (`matsOf`), the surface presets (`SURF`), the grain shader. To change the shader, change the cache key string `office-surf-2` as well.
+- `Kit.fine = true` sends what follows to the fine store of that kit; `cubicles.ts` gathers the fine stores of the coffee machine and the stapler bases with `takeFine` into `office.cubicles.trim`. `coffeeFine` and `staplerFine` build those kits a second time for that, so anything added to the coffee machine or the stapler bases inside a `k.fine = true` stretch lands in the fine mesh of the cubicles and nowhere else.
+- All screws of the tier are one instanced mesh, `office.screws`, built in `cubicles.ts` from `coffeeScrews`, `inboxScrews`, `staplerScrews`, `cubicleScrews`.
+- Looks tools: `/tmp` helpers are gone with the sandbox. Crop a uhd still of `reply-all` by hand: cubicles at about (90..320, 110..320) of 1430 by 804, left stapler (250..400, 330..540), coffee machine and inbox (930..1170, 130..400), small things (0..260, 560..804).
+
+Not agreed with anyone yet:
+
+- The posts of the slingshots, from the hardware owner, stand to 46 px under the plate. Seen in `reply-all`, the posts and the rubber band show under the plate as intended.
+- The lights owner was told where the button rings and the bezel light are (group `office.windows`); no answer was needed.
