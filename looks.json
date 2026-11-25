@@ -1,0 +1,35 @@
+{
+  "folder": "slabs",
+  "pushed": "2026-11-25T14:01:14.395Z",
+  "commit": "9c058365a3e9e557fc01ea98b3852cf0be58aed3",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "step1-tug, review tier: the approved sheet (left) beside the real sheet, title and cassette (right)",
+      "time": "2026-11-25T14:01:12.725Z",
+      "by": "slabs",
+      "from": "out/work/looks/files/20261125140112-01-paper-beside-approved.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "step1-tug, review tier: whole frame beside the approved image",
+      "time": "2026-11-25T14:01:12.948Z",
+      "by": "slabs",
+      "from": "out/work/looks/files/20261125140112-00-compare.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "step1.email at 0.85, review tier: three red slabs landed",
+      "time": "2026-11-25T14:01:13.176Z",
+      "by": "slabs",
+      "from": "out/work/looks/files/20261125140113-02-slabs.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "step1.shredded at 0.12, review tier: cassette with its chute out and the strips",
+      "time": "2026-11-25T14:01:13.399Z",
+      "by": "slabs",
+      "from": "out/work/looks/files/20261125140113-03-strips.jpg"
+    }
+  ]
+}
