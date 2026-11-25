@@ -30,7 +30,7 @@ export const FIRST = {
   keys: [[2.18, 2.56], [2.64, 2.97], [3.06, 3.25], [3.86, 4.1], [4.16, 4.3]] as [number, number][],
   notice: 3.42, dodge: 3.86, cocky: [4.38, 4.6] as [number, number], proud: 4.7,
   stand: 'w', aside: -34, see: 5.46, flee: [5.62, 5.82] as [number, number], fled: '5', short: -64, past: 16, snap: 5.78, duck: 6.14, slide: [6.16, 6.28] as [number, number], smug: 6.62,
-  panel: { x: -150, y: 20 }, shock: [7.18, 7.92] as [number, number], flight: 0.2,
+  panel: { x: -150, y: 20 }, shock: [7.165, 7.92] as [number, number], flight: 0.13,
   after: [[7.92, 8.0], [8.07, 8.3], [8.36, 8.54], [8.6, 8.86], [8.92, 9.1], [9.16, 9.32]] as [number, number][],
   enter: [9.4, 9.6] as [number, number]
 }
