@@ -149,6 +149,20 @@ export function creaseAt(f: Float32Array, u: number, v: number): number {
   return a + (b - a) * tx + (c - a) * ty + (a - b - c + d) * tx * ty
 }
 
+// How deep the folds stand is settled column by column, then evened out across the sheet so no column stands apart from the next.
+function even(v: Float32Array): void {
+  const n = v.length
+  const t = new Float32Array(n)
+  for (let round = 0; round < 3; round++) {
+    for (let i = 0; i < n; i++) {
+      let sum = 0
+      for (let k = -3; k <= 3; k++) sum += v[Math.min(n - 1, Math.max(0, i + k))]!
+      t[i] = sum / 7
+    }
+    v.set(t)
+  }
+}
+
 const NS = 56
 const NT = 6
 
@@ -258,141 +272,164 @@ export function solveSheet(q: SheetIn, into?: Sheet): Sheet {
   const zc = new Float32Array(NS + NT + 1)
   const zs = new Float32Array(NS + NT + 1)
   const arch = new Float32Array(NS + 1)
-  for (let k = 0; k <= NS; k++) arch[k] = Math.pow(Math.max(0, Math.sin(Math.PI * Math.pow(k / NS, 0.86))), 1.15)
+  for (let k = 0; k <= NS; k++) arch[k] = Math.pow(Math.max(0, Math.sin(Math.PI * Math.pow(k / NS, 1.0))), 1.3)
   const edgeFrom = grip / 2 + 6
   const fed = [0, 0, 0]
 
-  for (let i = 0; i < nx; i++) {
-    const a = i * da
-    let ux = 0
-    let uy = -1
-    let uz = 0
-    let nxn = 0
-    let nyn = 0
-    let nzn = 1
-    let c = 0
-    let h = 0
-    let scale = 1
-    const live = bite > 0 && Fm > 2
-    const F = clamp(Fm + skew * (a - W / 2), 2, L - MARGIN)
-    const bCrest = F + MARGIN
-    let wx = 0
-    let wy = 1
-    if (live) {
-      c = chord(a, d)
-      ux = d[0]! / c
-      uy = d[1]! / c
-      uz = d[2]! / c
-      const flat = Math.hypot(ux, uy) || 1
-      wx = -ux / flat
-      wy = -uy / flat
-      nxn = -uz * ux
-      nyn = -uz * uy
-      nzn = 1 - uz * uz
-      const nl = Math.hypot(nxn, nyn, nzn) || 1
-      nxn /= nl
-      nyn /= nl
-      nzn /= nl
-      const e = clamp((Math.abs(a - W / 2) - edgeFrom) / Math.max(1, W / 2 - edgeFrom), 0, 1)
-      const curl = (0.5 + 2.4 * q.pull) * e * e
-      const wr = 1.1 * q.pull * (1 - e) * Math.cos((Math.PI * 3 * (a - W / 2)) / grip + 0.6)
-      const ds = F / NS
-      const dt = MARGIN / NT
-      for (let k = 0; k <= NS + NT; k++) {
-        const s = k <= NS ? k * ds : F + (k - NS) * dt
-        const t = Math.min(1, s / F)
-        const env = Math.sin(Math.PI * Math.pow(t, 0.8))
-        const start = smooth(s / 16)
-        zc[k] = g0 * creaseAt(K, a / W, (bCrest - s) / L) * start * (1 - 0.7 * hands * (1 - smooth(Math.abs(F - s) / 22)))
-        zk[k] = (curl + wr) * Math.pow(Math.max(0, env), 0.7) + (k > NS ? 0.012 * (s - F) * (s - F) : 0)
-      }
-      const run = (hh: number, gs: number): number => {
-        let atGrip = 0
-        sig[0] = 0
-        zs[0] = gs * zc[0]! + zk[0]!
-        for (let k = 1; k <= NS + NT; k++) {
-          const step = k <= NS ? ds : dt
-          zs[k] = gs * zc[k]! + zk[k]! + (k <= NS ? hh * arch[k]! : 0)
-          const dz = zs[k]! - zs[k - 1]!
-          sig[k] = sig[k - 1]! + Math.sqrt(Math.max(step * step - dz * dz, 0.09 * step * step))
-          if (k === NS) atGrip = sig[k]!
+  const scales = new Float32Array(nx).fill(1)
+  for (let pass = 0; pass < 2; pass++) {
+    if (pass === 1) even(scales)
+    for (let i = 0; i < nx; i++) {
+      const a = i * da
+      let ux = 0
+      let uy = -1
+      let uz = 0
+      let nxn = 0
+      let nyn = 0
+      let nzn = 1
+      let c = 0
+      let h = 0
+      let scale = 1
+      const live = bite > 0 && Fm > 2
+      const F = clamp(Fm + skew * (a - W / 2), 2, L - MARGIN)
+      const bCrest = F + MARGIN
+      let wx = 0
+      let wy = 1
+      if (live) {
+        c = chord(a, d)
+        ux = d[0]! / c
+        uy = d[1]! / c
+        uz = d[2]! / c
+        const flat = Math.hypot(ux, uy) || 1
+        wx = -ux / flat
+        wy = -uy / flat
+        nxn = -uz * ux
+        nyn = -uz * uy
+        nzn = 1 - uz * uz
+        const nl = Math.hypot(nxn, nyn, nzn) || 1
+        nxn /= nl
+        nyn /= nl
+        nzn /= nl
+        const e = clamp((Math.abs(a - W / 2) - edgeFrom) / Math.max(1, W / 2 - edgeFrom), 0, 1)
+        const curl = (0.5 + 2.4 * q.pull) * e * e
+        const wr = 1.1 * q.pull * (1 - e) * Math.cos((Math.PI * 3 * (a - W / 2)) / grip + 0.6)
+        const ds = F / NS
+        const dt = MARGIN / NT
+        for (let k = 0; k <= NS + NT; k++) {
+          const s = k <= NS ? k * ds : F + (k - NS) * dt
+          const t = Math.min(1, s / F)
+          const env = Math.sin(Math.PI * Math.pow(t, 0.8))
+          const start = smooth(s / 16)
+          zc[k] = g0 * creaseAt(K, a / W, (bCrest - s) / L) * start * (1 - 0.7 * hands * (1 - smooth(Math.abs(F - s) / 22)))
+          zk[k] = (curl + wr) * Math.pow(Math.max(0, env), 0.7) + (k > NS ? 0.012 * (s - F) * (s - F) : 0)
         }
-        return atGrip
-      }
-      const want = Math.min(c, F)
-      const slack = Math.max(0, F - want)
-      let got = run(0, 1)
-      const allowed = slack / F + 0.03
-      const short = 1 - got / F
-      if (short > allowed) {
-        scale = Math.sqrt(allowed / short)
-        got = run(0, scale)
-        if (1 - got / F > allowed) {
-          scale *= Math.sqrt(allowed / (1 - got / F))
+        const run = (hh: number, gs: number): number => {
+          let atGrip = 0
+          sig[0] = 0
+          zs[0] = gs * zc[0]! + zk[0]!
+          for (let k = 1; k <= NS + NT; k++) {
+            const step = k <= NS ? ds : dt
+            zs[k] = gs * zc[k]! + zk[k]! + (k <= NS ? hh * arch[k]! : 0)
+            const dz = zs[k]! - zs[k - 1]!
+            sig[k] = sig[k - 1]! + Math.sqrt(Math.max(step * step - dz * dz, 0.09 * step * step))
+            if (k === NS) atGrip = sig[k]!
+          }
+          return atGrip
+        }
+        const want = Math.min(c, F)
+        const slack = Math.max(0, F - want)
+        let got = run(0, 1)
+        const allowed = slack / F + 0.03
+        const short = 1 - got / F
+        if (short > allowed) {
+          scale = Math.sqrt(allowed / short)
+          got = run(0, scale)
+          if (1 - got / F > allowed) {
+            scale *= Math.sqrt(allowed / (1 - got / F))
+            got = run(0, scale)
+          }
+        }
+        if (got > want && hands > 0) {
+          // Slack crumples the sheet before it lifts it: the folds deepen first, the arch takes what is left.
+          let lo = scale
+          let hi = scale * 2
+          for (let it = 0; it < 10; it++) {
+            const mid = (lo + hi) / 2
+            if (run(0, mid) > want) lo = mid
+            else hi = mid
+          }
+          scale = scale + (lo - scale) * hands
           got = run(0, scale)
         }
-      }
-      if (got > want && hands > 0) {
-        let lo = 0
-        let hi = Math.min(0.2 * F, 44)
-        for (let it = 0; it < 18; it++) {
-          const mid = (lo + hi) / 2
-          if (run(mid, scale) > want) lo = mid
-          else hi = mid
+        if (pass === 0) {
+          scales[i] = scale
+          continue
         }
-        h = lo * hands
-      }
-      got = run(h, scale)
-      const fit = hands > 0 ? Math.min(1.012, 1 + (want / got - 1) * hands) : 1
-      if (fit !== 1) for (let k = 0; k <= NS + NT; k++) sig[k] = sig[k]! * fit
-    }
-    for (let j = 0; j < ny; j++) {
-      const b = j * db
-      free(a, b, p)
-      let x = p[0]!
-      let y = p[1]!
-      let z = p[2]!
-      if (live) {
-        const s = bCrest - b
-        if (s >= 0) {
-          const ds = F / NS
-          let k: number
-          let t: number
-          if (s <= F) {
-            const f = s / ds
-            k = Math.min(NS - 1, Math.floor(f))
-            t = f - k
-          } else {
-            const f = (s - F) / (MARGIN / NT)
-            k = NS + Math.min(NT - 1, Math.floor(f))
-            t = f - (k - NS)
+        scale = scales[i]!
+        got = run(0, scale)
+        if (got > want && hands > 0) {
+          let lo = 0
+          let hi = Math.min(0.2 * F, 44)
+          for (let it = 0; it < 18; it++) {
+            const mid = (lo + hi) / 2
+            if (run(mid, scale) > want) lo = mid
+            else hi = mid
           }
-          const sg = sig[k]! + (sig[k + 1]! - sig[k]!) * t
-          const zz = zs[k]! + (zs[k + 1]! - zs[k]!) * t
-          fed[0] = q.cx + (a - W / 2) * sec + ux * sg + nxn * zz
-          fed[1] = q.cy + uy * sg + nyn * zz
-          fed[2] = crestZ + uz * sg + nzn * zz
-        } else {
-          const round = -s * wy
-          const phi = Math.min(round / R, WRAP)
-          const more = Math.min(16, Math.max(0, round - wrapLen))
-          fed[0] = q.cx + (a - W / 2) * sec - s * wx
-          fed[1] = q.cy + R * Math.sin(phi) + more * Math.cos(phi)
-          fed[2] = crestZ - R + R * Math.cos(phi) - more * Math.sin(phi)
+          h = lo * hands
         }
-        x += (fed[0]! - x) * bite
-        y += (fed[1]! - y) * bite
-        z += (fed[2]! - z) * bite
-      } else if (bite > 0) {
-        // Nothing is left out of the cutters: what remains of the grid is drawn in at the nip.
-        x += (q.cx + a - W / 2 - x) * bite
-        y += (q.cy + R * Math.sin(WRAP) + 16 * Math.cos(WRAP) - y) * bite
-        z += (crestZ - R + R * Math.cos(WRAP) - 16 * Math.sin(WRAP) - z) * bite
+        got = run(h, scale)
+        const fit = hands > 0 ? Math.min(1.012, 1 + (want / got - 1) * hands) : 1
+        if (fit !== 1) for (let k = 0; k <= NS + NT; k++) sig[k] = sig[k]! * fit
       }
-      const o = (j * nx + i) * 3
-      out.pos[o] = x - 960
-      out.pos[o + 1] = 540 - y
-      out.pos[o + 2] = z
+      if (pass === 0) continue
+      for (let j = 0; j < ny; j++) {
+        const b = j * db
+        free(a, b, p)
+        let x = p[0]!
+        let y = p[1]!
+        let z = p[2]!
+        if (live) {
+          const s = bCrest - b
+          if (s >= 0) {
+            const ds = F / NS
+            let k: number
+            let t: number
+            if (s <= F) {
+              const f = s / ds
+              k = Math.min(NS - 1, Math.floor(f))
+              t = f - k
+            } else {
+              const f = (s - F) / (MARGIN / NT)
+              k = NS + Math.min(NT - 1, Math.floor(f))
+              t = f - (k - NS)
+            }
+            const sg = sig[k]! + (sig[k + 1]! - sig[k]!) * t
+            const zz = zs[k]! + (zs[k + 1]! - zs[k]!) * t
+            fed[0] = q.cx + (a - W / 2) * sec + ux * sg + nxn * zz
+            fed[1] = q.cy + uy * sg + nyn * zz
+            fed[2] = crestZ + uz * sg + nzn * zz
+          } else {
+            const round = -s * wy
+            const phi = Math.min(round / R, WRAP)
+            const more = Math.min(16, Math.max(0, round - wrapLen))
+            fed[0] = q.cx + (a - W / 2) * sec - s * wx
+            fed[1] = q.cy + R * Math.sin(phi) + more * Math.cos(phi)
+            fed[2] = crestZ - R + R * Math.cos(phi) - more * Math.sin(phi)
+          }
+          x += (fed[0]! - x) * bite
+          y += (fed[1]! - y) * bite
+          z += (fed[2]! - z) * bite
+        } else if (bite > 0) {
+          // Nothing is left out of the cutters: what remains of the grid is drawn in at the nip.
+          x += (q.cx + a - W / 2 - x) * bite
+          y += (q.cy + R * Math.sin(WRAP) + 16 * Math.cos(WRAP) - y) * bite
+          z += (crestZ - R + R * Math.cos(WRAP) - 16 * Math.sin(WRAP) - z) * bite
+        }
+        const o = (j * nx + i) * 3
+        out.pos[o] = x - 960
+        out.pos[o + 1] = 540 - y
+        out.pos[o + 2] = z
+      }
     }
   }
   hold(out, da, db, 6)
@@ -523,7 +560,8 @@ export function stretchOf(s: Sheet, w: number, l: number): number {
   return worst
 }
 
-// A point of the sheet between the grid's points: where a printed mark lies, and which way the paper faces there.
+// A point of the sheet between the grid's points, on the same two triangles a cell is drawn with:
+// where a printed mark lies, and which way the paper faces there.
 export function sheetAt(s: Sheet, u: number, v: number, lift: number, o: Float32Array, at: number, n?: Float32Array): void {
   const { nx, ny, pos, nor } = s
   const x = clamp(u, 0, 1) * (nx - 1)
@@ -536,10 +574,11 @@ export function sheetAt(s: Sheet, u: number, v: number, lift: number, o: Float32
   const b = a + 3
   const c = a + nx * 3
   const d = c + 3
-  const w0 = (1 - tx) * (1 - ty)
-  const w1 = tx * (1 - ty)
-  const w2 = (1 - tx) * ty
-  const w3 = tx * ty
+  const near = tx + ty <= 1
+  const w0 = near ? 1 - tx - ty : 0
+  const w1 = near ? tx : 1 - ty
+  const w2 = near ? ty : 1 - tx
+  const w3 = near ? 0 : tx + ty - 1
   let px = 0
   let py = 0
   let pz = 0
