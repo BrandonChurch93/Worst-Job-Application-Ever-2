@@ -240,7 +240,7 @@ export function makeMaterials(seed: number): Materials {
     clearcoat: 0.7, clearcoatRoughness: 0.3, specularIntensity: 0.9
   })
   const glassThick = physical({
-    color: srgb(0xc9d1d4), roughness: 0.5, metalness: 0, transmission: 1, thickness: 12, ior: 1.46, attenuationColor: srgb(0xb9cbd4), attenuationDistance: 22,
+    color: srgb(0xcfd3d3), roughness: 0.5, metalness: 0, transmission: 1, thickness: 12, ior: 1.46, attenuationColor: srgb(0xc3cccc), attenuationDistance: 22,
     clearcoat: 0.7, clearcoatRoughness: 0.3, specularIntensity: 0.9
   })
   const aluminium = physical({
