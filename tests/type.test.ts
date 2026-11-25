@@ -1,5 +1,8 @@
+import * as THREE from 'three'
 import { describe, expect, it } from 'vitest'
-import { segmentsFor, setRun, styleName, styles, type RunSpec } from '../src/shell/real/type'
+import type { RealContext } from '../src/real/types'
+import { segmentsFor, setRun, Sheet, styleName, styles, type, type RunSpec } from '../src/shell/real/type'
+import type { Shape } from '../src/stage/types'
 
 const spec = (line: string, over: Partial<RunSpec> = {}): RunSpec => ({
   font: 'inter-500',
@@ -124,5 +127,77 @@ describe('type: the setting of a run', () => {
   it('spends more curve steps on larger type', () => {
     expect(segmentsFor(18)).toBeLessThan(segmentsFor(60))
     expect(segmentsFor(60)).toBeLessThanOrEqual(segmentsFor(200))
+  })
+})
+
+describe('type: the runs of a page as one sheet', () => {
+  const shape = (id: string, key: string, x: number, text?: string): Shape =>
+    ({ id, kind: 'text', part: 'type', tone: 'ink', x, y: 100, w: 300, h: 30, z0: 0, z1: 0, words: key, text, type: { font: 'inter-500', px: 22 } }) as unknown as Shape
+  const context = (list: Shape[]): RealContext => ({ page: 'step1', list, byId: new Map(list.map((s) => [s.id, s])), time: 0, scroll: 0, turning: false, width: 1920, top: 0, tall: 1080, light: () => undefined })
+  const set = (page: THREE.Group, s: Shape, ctx: RealContext): THREE.Object3D => {
+    const o = type.make(s, ctx)
+    page.add(o)
+    o.position.set(s.x + s.w / 2 - 960, 540 - (s.y + s.h / 2), s.z0)
+    type.pose!(o, s, ctx)
+    return o
+  }
+  const sheetOf = (page: THREE.Group): Sheet => page.children.find((c) => c instanceof Sheet) as Sheet
+  const part = (sheet: Sheet, from: number, to: number): number[] => Array.from((sheet.geometry.getAttribute('position').array as Float32Array).subarray(from, to))
+
+  it('draws every run of one setting as one mesh, and only the runs on show', () => {
+    const a = shape('a', 'runtime:test.a', 100, 'First name')
+    const b = shape('b', 'runtime:test.b', 600, 'Email')
+    const ctx = context([a, b])
+    const page = new THREE.Group()
+    const oa = set(page, a, ctx)
+    const ob = set(page, b, ctx)
+    page.updateMatrixWorld(true)
+    const sheets = page.children.filter((c) => c instanceof Sheet)
+    expect(sheets.length).toBe(1)
+    const sheet = sheetOf(page)
+    const both = sheet.geometry.getIndex()!.count
+    expect(sheet.visible).toBe(true)
+    oa.visible = false
+    page.updateMatrixWorld(true)
+    const one = sheet.geometry.getIndex()!.count
+    expect(one).toBeGreaterThan(0)
+    expect(one).toBeLessThan(both)
+    ob.visible = false
+    page.updateMatrixWorld(true)
+    expect(sheet.visible).toBe(false)
+    oa.visible = true
+    ob.visible = true
+    page.updateMatrixWorld(true)
+    expect(sheet.geometry.getIndex()!.count).toBe(both)
+    type.drop!(oa)
+    type.drop!(ob)
+    expect(page.children.some((c) => c instanceof Sheet)).toBe(false)
+  })
+
+  it('a changed word or a moved run changes only its own part of the sheet', () => {
+    const a = shape('a', 'runtime:test.a', 100, 'First name')
+    const b = shape('b', 'runtime:test.b', 600, 'Email')
+    const ctx = context([a, b])
+    const page = new THREE.Group()
+    const oa = set(page, a, ctx)
+    const ob = set(page, b, ctx)
+    page.updateMatrixWorld(true)
+    const sheet = sheetOf(page)
+    const total = sheet.geometry.getAttribute('position').array.length
+    const alone = setRun(spec('First name', { x: -150, y: 15 - 16 })).position.length
+    const first = part(sheet, 0, alone)
+    const second = part(sheet, alone, total)
+    ob.position.x += 40
+    page.updateMatrixWorld(true)
+    expect(part(sheet, 0, alone)).toEqual(first)
+    const moved = part(sheet, alone, total)
+    expect(moved.length).toBe(second.length)
+    for (let i = 0; i < moved.length; i += 3) expect(moved[i]! - second[i]!).toBeCloseTo(40, 3)
+    type.pose!(ob, { ...b, text: 'Emails' } as Shape, ctx)
+    page.updateMatrixWorld(true)
+    expect(part(sheet, 0, alone)).toEqual(first)
+    expect(sheet.geometry.getAttribute('position').array.length).toBeGreaterThan(total)
+    type.drop!(oa)
+    type.drop!(ob)
   })
 })
