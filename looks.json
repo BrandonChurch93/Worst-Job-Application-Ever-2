@@ -1,35 +1,35 @@
 {
   "folder": "light",
-  "pushed": "2026-11-25T15:39:12.729Z",
-  "commit": "79c3ccdcca32d861fd02e7060f506534702a3c1f",
+  "pushed": "2026-11-25T16:08:32.158Z",
+  "commit": "8a4373d34e7483ea8f40d41b7f993e0657f6307a",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-step1-fire-hd-live-medium: live:medium tier, hd, view beauty",
-      "time": "2026-11-25T15:39:01.780Z",
-      "by": "light",
-      "from": "out/work/stills/key-step1-fire-hd-live-medium.png"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "Still key-step1-fire-hd-live-low: live:low tier, hd, view beauty",
-      "time": "2026-11-25T15:39:10.895Z",
-      "by": "light",
-      "from": "out/work/stills/key-step1-fire-hd-live-low.png"
-    },
-    {
-      "file": "look-3.jpg",
-      "caption": "Bolt, field ring and second bolt at real size: approved left, build before in the middle, build now right. White core, orange halo",
-      "time": "2026-11-25T15:39:11.237Z",
-      "by": "light",
-      "from": "out/work/light/glow-ab4.png"
-    },
-    {
-      "file": "look-4.jpg",
       "caption": "step1-fire at review with the new halo, lower key and studio floor",
       "time": "2026-11-25T15:39:11.502Z",
       "by": "light",
       "from": "out/work/light/fire-v9.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Still key-step1-fire-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-25T16:03:11.746Z",
+      "by": "light",
+      "from": "out/work/stills/key-step1-fire-hd-review.png"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Still key-step1-fire-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-25T16:05:06.432Z",
+      "by": "light",
+      "from": "out/work/stills/key-step1-fire-hd-review.png"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "step1-fire, keyboard: before on top, with short shadows for tall things below. The smears on W, D and Shift are gone",
+      "time": "2026-11-25T16:08:30.855Z",
+      "by": "light",
+      "from": "out/work/light/tall-ab.jpg"
     }
   ]
 }
