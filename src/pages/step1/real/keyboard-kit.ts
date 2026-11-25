@@ -155,7 +155,7 @@ export function kit(): Kit {
   well.vertexColors = true
   const turned = metal(0.34, 0.7, 0.14)
   turned.color.multiply(new THREE.Color(0.66, 0.665, 0.68))
-  const chrome = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xa3a6ab), roughness: 0.38, metalness: 0.9 }))
+  const chrome = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x8e9196), roughness: 0.42, metalness: 0.9 }))
   const bed = metal(0.55, 0.5, 0.12)
   bed.color.multiply(new THREE.Color(0.3, 0.3, 0.31))
   const barrel = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xb4b7bb), roughness: 0.28, metalness: 0.92 }))

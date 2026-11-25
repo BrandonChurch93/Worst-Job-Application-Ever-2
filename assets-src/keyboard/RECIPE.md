@@ -32,9 +32,9 @@ Every picture here is made in code when the page starts. No file is downloaded a
 ## Scorch mark
 
 - Made by: `scorchPicture(config.seed + 403)` in `src/pages/step1/real/turret-fx.ts`
-- From: nothing. A ragged pit of black char, a sooty crust round it, a soft brown singe that fades outward, a few flecks of soot and the faintest lit far wall, all from value noise.
+- From: nothing. A ragged blot of black char with a pit in it, a crust that breaks into flecks, a brown singe that fades over a third of the radius and the faintest lit far wall, all from value noise.
 - Prompt or command: none.
-- Takes: three over the rounds (a dark blot with a brown ring; a bullet hole with a raised cream rim; this one). 256 x 256 px, RGBA 8 bit, sRGB, 0.25 MB, 0.33 MB with its mipmaps. Each scorch stretches it by its own name.
+- Takes: five over the rounds (a dark blot with a brown ring; a bullet hole with a raised cream rim; a soft pit that read as a black dot; a blot whose singe was too dark to read as brown; this one). 256 x 256 px, RGBA 8 bit, sRGB, 0.25 MB, 0.33 MB with its mipmaps. Each scorch stretches it by its own name.
 - Why this one: round 5 read the raised rim as a bright bronze ring. The approved marks are charred black with sooty edges and a brown burn that fades.
 - Date: 2026-11-25
 

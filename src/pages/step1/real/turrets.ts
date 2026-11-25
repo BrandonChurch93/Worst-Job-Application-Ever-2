@@ -11,7 +11,7 @@ import { EMIT, fx, GLOW, overlay } from './turret-fx'
 const heights = config.scale.heights
 
 export const TURRET_LOOK = {
-  collar: 46, head: 40, axis: -21, muzzle: 134, lift: 0.1, stowed: 80, dome: 10, crown: 2.4, tip: 32, lob: 18, clear: 0.72, sunk: 9, socket: 56, socketDepth: 20, bezel: 63.5, door: 58, doorDrop: 2.2,
+  collar: 46, head: 40, axis: -21, muzzle: 134, lift: 0.1, stowed: 80, dome: 10, crown: 2.4, tip: 32, lob: 26, lobShare: 0.085, clear: 0.72, sunk: 9, socket: 56, socketDepth: 20, bezel: 63.5, door: 58, doorDrop: 2.2, doorTone: 0.74,
   flashSeconds: 0.034, steam: 6, sparks: 8
 }
 
@@ -135,6 +135,7 @@ function geometries(): Shared {
   const lid = flat(pts, 0)
   const lu = lid.getAttribute('uv')
   for (let i = 0; i < lu.count; i++) lu.setXY(i, lid.getAttribute('position').getX(i) / BRUSH.u, lid.getAttribute('position').getY(i) / BRUSH.v)
+  lid.setAttribute('color', new THREE.BufferAttribute(new Float32Array(lu.count * 3).fill(L.doorTone), 3))
   shared = { collar, head: merge(headParts), headDark: merge(headDark), barrel, tip, barrelDark, bezel, socket, door: lid }
   return shared
 }
@@ -316,7 +317,7 @@ function makeHatch(): THREE.Object3D {
   const g = geometries()
   const root = new THREE.Group()
   root.add(new THREE.Mesh(g.bezel, k.turned), new THREE.Mesh(g.socket, k.dark))
-  const doors = new THREE.InstancedMesh(g.door, k.deck, 2)
+  const doors = new THREE.InstancedMesh(g.door, k.well, 2)
   doors.frustumCulled = false
   root.add(doors)
   lit(root, false, true)
@@ -362,7 +363,10 @@ function poseBolt(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const u = s.v ? Math.min(1, Math.max(0, s.v[0] ?? 0)) : 0
   const a = s.rot ?? 0
   const side = Math.cos(a) >= 0 ? 1 : -1
-  const lob = TURRET_LOOK.lob * Math.sqrt(Math.sin(Math.PI * u))
+  const from = ctx.byId.get(`turret-${side > 0 ? 0 : 1}`)
+  const gone = from ? Math.hypot(s.x + s.w / 2 + Math.cos(a) * TURRET.bolt * 0.5 - from.x - from.w / 2, s.y + s.h / 2 + Math.sin(a) * TURRET.bolt * 0.5 - from.y - from.h / 2) - TURRET.barrel : 0
+  const far = u > 0.02 && from ? Math.max(0, gone) / u : TURRET_LOOK.lob / TURRET_LOOK.lobShare
+  const lob = Math.min(TURRET_LOOK.lob, far * TURRET_LOOK.lobShare) * Math.sin(Math.PI * u) ** 0.4
   const flick = 0.92 + 0.08 * Math.sin(ctx.time * 140 + (hashName(s.id) & 255))
   d.head.position.set(TURRET.bolt / 2 - 8, side * lob, 10 + lob * 0.5)
   v3.set(TURRET.bolt / 2 - 12, side * lob, 10 + lob * 0.5)
@@ -392,7 +396,7 @@ interface ScorchData {
   hotMaterial: THREE.MeshBasicMaterial
 }
 
-const SCORCH = { size: 60, smoke: 3, smokeSeconds: 1.5, hotSeconds: 0.4, hotSize: 46, emberSize: 30, shoulder: 9, core: 13, legend: 30, word: 52, bar: 400, wide: 112, sparks: 6, sparkSeconds: 0.24, fall: 900, ember: 0.35, snap: 36, flareSeconds: 0.1, ride: 16, strikeSeconds: 1.5, strikeMark: 0.72 }
+const SCORCH = { size: 54, smoke: 3, smokeSeconds: 1.5, hotSeconds: 0.4, hotSize: 46, emberSize: 15, shoulder: 9, core: 13, legend: 30, word: 52, bar: 400, wide: 112, sparks: 6, sparkSeconds: 0.24, fall: 900, ember: 0.35, snap: 36, flareSeconds: 0.1, ride: 16, strikeSeconds: 1.5, strikeMark: 0.72 }
 
 function makeScorch(s: Shape): THREE.Object3D {
   const f = fx()
@@ -529,7 +533,7 @@ function poseScorch(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
     const size = (strike ? SCORCH.hotSize : SCORCH.emberSize) * (0.8 + 0.2 * warm)
     d.hot.position.set(strike ? 0 : d.at[0], strike ? 0 : d.at[1], 1.5 - drop)
     d.hot.scale.set(size, size, 1)
-    d.hotMaterial.color.setRGB(...mix([0, 0, 0], GLOW.boltTail, (strike ? 0.5 : 0.3) * warm))
+    d.hotMaterial.color.setRGB(...mix([0, 0, 0], GLOW.boltTail, (strike ? 0.5 : 0.16) * warm))
   }
   const lamp = strike ? EMIT.struck : EMIT.ember
   if (alive && warm > 0.06) ctx.light({ x: s.x + s.w / 2 + d.at[0], y: s.y + s.h / 2 - d.at[1], z: s.z0 - drop + 22, colour: lamp.colour, power: lamp.power * warm, reach: lamp.reach })
