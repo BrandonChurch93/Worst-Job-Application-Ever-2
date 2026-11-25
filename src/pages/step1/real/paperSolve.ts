@@ -47,6 +47,7 @@ export interface Sheet {
 export const GRID = { nx: 49, ny: 67 }
 export const MARGIN = 16
 const WRAP = 1.12
+const FEED = 18
 const KW = 72
 const KH = 96
 
@@ -174,7 +175,7 @@ export function solveSheet(q: SheetIn, into?: Sheet): Sheet {
   const L = q.l
   const bite = smooth(q.bite)
   const abuse = clamp(0.05 + bite * (0.3 + 0.5 * q.amount + 0.2 * q.pull) + (1 - bite) * 0.5 * q.pull * smooth(q.hands), 0, 1)
-  const g0 = 0.5 + 5 * abuse
+  const g0 = 0.5 + 3.4 * abuse
   out.abuse = abuse
 
   const cos = Math.cos(q.rot)
@@ -263,7 +264,7 @@ export function solveSheet(q: SheetIn, into?: Sheet): Sheet {
       sec = Math.sqrt(1 + skew * skew)
     }
   }
-  const F0 = L * (1 - q.amount) - MARGIN - wrapLen
+  const F0 = L * (1 - q.amount) - MARGIN - Math.max(wrapLen, FEED)
   const Fm = Math.min(L - MARGIN - wrapLen, F0 + (Math.max(F0, reach) - F0) * hands)
   out.out = clamp((Fm + MARGIN + wrapLen) / L, 0, 1)
 
@@ -352,7 +353,7 @@ export function solveSheet(q: SheetIn, into?: Sheet): Sheet {
         if (got > want && hands > 0) {
           // Slack crumples the sheet before it lifts it: the folds deepen first, the arch takes what is left.
           let lo = scale
-          let hi = scale * 2
+          let hi = scale * 1.6
           for (let it = 0; it < 10; it++) {
             const mid = (lo + hi) / 2
             if (run(0, mid) > want) lo = mid

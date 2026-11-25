@@ -16,11 +16,12 @@ export const PAGE_W = 1920
 export const SCREEN_H = 1080
 export const LEFT = grid.contentLeft
 export const RIGHT = grid.contentRight
-export const HEADER = { titleY: 66, progressY: 76, ruleY: 148, headingY: 196, sublineY: 266, contentY: 336 }
+export const HEADER = { titleY: 59, progressY: 76, ruleY: 148, headingY: 202, sublineY: 258, contentY: 300 }
 
 export const TYPE = {
+  pageTitle: { font: 'inter-600', px: 47 },
   title: { font: 'inter-600', px: 28 },
-  heading: { font: 'inter-display-600', px: 60 },
+  heading: { font: 'inter-display-600', px: 40 },
   subline: { font: 'inter-400', px: 24 },
   label: { font: 'inter-500', px: 22 },
   helper: { font: 'inter-400', px: 18 },
@@ -38,7 +39,7 @@ export function header(current: number): LayoutNode[] {
   const channel = Math.round(d / 8) * 2
   const first = progressCentre(1)
   const last = progressCentre(5)
-  const title = text('header-title', 'copy:site.title', TYPE.title, LEFT, HEADER.titleY, { part: 'shell' })
+  const title = text('header-title', 'copy:site.title', TYPE.pageTitle, LEFT, HEADER.titleY, { part: 'shell' })
   const rail = node('progress-rail', 'progressRail', [first.x, first.y - channel / 2, last.x - first.x, channel], { part: 'shell', shape: 'capsule' })
   const buttons: LayoutNode[] = []
   for (let i = 1; i <= 5; i++) {

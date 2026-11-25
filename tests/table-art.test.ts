@@ -64,11 +64,13 @@ describe('the printed floors', () => {
 
   test('no floor has a pixel of pure black or pure white', async () => {
     for (const id of TIERS) {
-      const s = await sharp(path.join(sets.web, `${id}.webp`)).stats()
-      const lo = Math.max(...s.channels.map((c) => c.min))
-      const hi = Math.min(...s.channels.map((c) => c.max))
-      expect(lo).toBeGreaterThan(0)
-      expect(hi).toBeLessThan(255)
+      const { data, info } = await sharp(path.join(sets.web, `${id}.webp`)).removeAlpha().raw().toBuffer({ resolveWithObject: true })
+      let pure = 0
+      for (let i = 0; i < data.length; i += info.channels) {
+        const sum = data[i]! + data[i + 1]! + data[i + 2]!
+        if (sum === 0 || sum === 765) pure++
+      }
+      expect(pure).toBe(0)
     }
   })
 })
