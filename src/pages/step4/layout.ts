@@ -27,6 +27,7 @@ export interface Step4Layout {
   track: Box
   weapons: WeaponPlan
   defeated: Box
+  fold: number
 }
 
 export function makeLayout(): Step4Layout {
@@ -137,6 +138,7 @@ export function makeLayout(): Step4Layout {
   const b = (id: string): Box => boxOf(tree, id)
   return {
     tree, card: b('verify-card'), checkbox: b('verify-box'), checkRow: b('verify-row'), socket: b('submit'), cap: b('submit-cap'), track: b('health-track'),
-    weapons: { slabs: slabPlans, popups: popupPlans, banner, slabType: SLAB_TYPE, bannerType: BANNER_TYPE, titleType }, defeated: b('defeated')
+    weapons: { slabs: slabPlans, popups: popupPlans, banner, slabType: SLAB_TYPE, bannerType: BANNER_TYPE, titleType }, defeated: b('defeated'),
+    fold: cardY + cardH - pad - (b('verify-row').y + b('verify-row').h)
   }
 }

@@ -5,6 +5,7 @@ Unit `boss`, page `step4`. Logic in `src/pages/step4/`, the boss in `src/boss/`,
 ## The form
 
 - Left column at x 128, the shell's content line at y 336: the verify card, 680 wide. Inside it one column with even gaps: title, body, the checkbox row (a 44 px box and its label), a rule, and the answer line.
+- Before the tick the card ends under the checkbox row and the fine print sits right under it, so the page at rest has no empty band. On the tick the card opens downward in 0.3 s: the rule draws itself, the answer appears under it and the fine print moves down with the card's edge. The layout tree holds the open card, which is what the layout check reads; the closed card is the same shapes with the fold taken off in `draw()`.
 - The answer line holds three texts in the same place, one for each state: `confirmed-film`, `doubt`, `confirmed-live`. In the film the tick is answered with `copy:step4.verify.confirmedFilm`. In the live site it is answered with `doubtLive` for 1.7 s and then `confirmedLive`.
 - The fine print is helper text under the card, on the card's left edge.
 - Submit is a real shell button, 288 wide, in its socket at the bottom centre of the page (960, 960). It is the control the boss grows out of.
