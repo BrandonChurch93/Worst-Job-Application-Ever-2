@@ -68,10 +68,19 @@ export class App {
     if (problems.length) fail(problems)
   }
 
-  async start(canvas: HTMLCanvasElement, o: { format: string; assets: string; capture: boolean; forceKind?: TargetKind }): Promise<void> {
+  // What a later page is built from, fetched after the first complete picture: a part is drawn by its stand-in until its pictures are in.
+  loadLater(): void {
+    if (this.later) return
+    this.later = loadTable(this.assets)
+    this.later.catch((e: unknown) => console.error(e))
+  }
+
+  private later: Promise<void> | null = null
+
+  async start(canvas: HTMLCanvasElement, o: { format: string; assets: string; capture: boolean; stepped?: boolean; forceKind?: TargetKind }): Promise<void> {
     this.format = formatById(o.format)
     this.assets = assetSet(o.assets)
-    await Promise.all([...FONTS.map((name) => loadFont(name)), preparePages(), loadTable(this.assets)])
+    await Promise.all([...FONTS.map((name) => loadFont(name)), preparePages(), o.capture || o.stepped ? loadTable(this.assets) : Promise.resolve()])
     App.check()
     this.engine = new Engine(canvas, this.format.width, this.format.height, { preserve: o.capture, forceKind: o.forceKind, multisamples: o.capture ? 0 : LIVE_MULTISAMPLES })
     this.engine.beforeSample = (_shot, view) => (view === 'beauty' ? undefined : applyView(view, this.viewContext()))
