@@ -14,7 +14,7 @@ import { HATCH, moms, type Moms } from './moms'
 import { police } from './police'
 import { roadSign, streetThings } from './things'
 
-const VERSION = 'street-models-22'
+const VERSION = 'street-models-23'
 
 // Everything the seven parts are built from in one zone, made once and shared: each part keeps the meshes that are its own.
 interface Street {
@@ -115,8 +115,18 @@ export function hatchOf(v: number[]): { open: number; light: number } {
 const m4 = new THREE.Matrix4()
 const m4b = new THREE.Matrix4()
 
+// What a build made is its own: every geometry is let go with it. Materials are shared by the zone and stay.
+const drop = (o: THREE.Object3D): void => {
+  o.traverse((x) => {
+    const g = (x as THREE.Mesh).geometry
+    if (g) g.dispose()
+  })
+  kept.delete(o)
+}
+
 const fire = whole('model-firehouse', {
   version: VERSION,
+  drop,
   build(z, ctx) {
     const s = streetOf(z, ctx)
     const o = new THREE.Group()
@@ -155,6 +165,7 @@ const fire = whole('model-firehouse', {
 
 const cops = whole('model-police', {
   version: VERSION,
+  drop,
   build(z, ctx) {
     const s = streetOf(z, ctx)
     const o = new THREE.Group()
@@ -182,6 +193,7 @@ const cops = whole('model-police', {
 
 const banks = whole('model-bank', {
   version: VERSION,
+  drop,
   build(z, ctx) {
     const s = streetOf(z, ctx)
     const o = new THREE.Group()
@@ -192,6 +204,7 @@ const banks = whole('model-bank', {
 
 const park = whole('model-garage', {
   version: VERSION,
+  drop,
   build(z, ctx) {
     const s = streetOf(z, ctx)
     const o = new THREE.Group()
@@ -211,6 +224,7 @@ const park = whole('model-garage', {
 
 const homes = whole('model-houses', {
   version: VERSION,
+  drop,
   build(z, ctx) {
     const s = streetOf(z, ctx)
     const o = new THREE.Group()
@@ -241,6 +255,7 @@ const hatchMatrix = (out: THREE.Matrix4, hinge: V3, tilt: number, side: number, 
 
 const mother = whole('model-moms', {
   version: VERSION,
+  drop,
   build(z, ctx) {
     const s = streetOf(z, ctx)
     const o = new THREE.Group()
@@ -270,6 +285,7 @@ const mother = whole('model-moms', {
 
 const signs = whole('model-road-signs', {
   version: VERSION,
+  drop,
   build(z, ctx) {
     const s = streetOf(z, ctx)
     const o = new THREE.Group()
