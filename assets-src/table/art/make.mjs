@@ -22,7 +22,7 @@ const SEED = config.seed
 // Where the corporate print is gold leaf, by rule: red above blue by more than `from`, full metal `over` further on.
 const FOIL = { from: 24, over: 50 }
 // How a painted base is used. Corporate: the marble is the floor itself. Office and street: only the light and dark of the painted material is laid over the drawn ground, so the tones stay those of the print.
-const PAINTED = { corporate: { as: 'base', brightness: 0.82, saturation: 1.05 }, office: { as: 'detail', gain: 1.5 }, street: { as: 'detail', gain: 1.6 } }
+const PAINTED = { corporate: { as: 'base', brightness: 1.0, saturation: 1.18 }, office: { as: 'detail', gain: 1.5 }, street: { as: 'detail', gain: 1.6 } }
 
 async function layout() {
   const server = await createServer({ root, configFile: at('vite.config.ts'), server: { middlewareMode: true, hmr: false, watch: null, ws: false }, appType: 'custom', logLevel: 'error', optimizeDeps: { noDiscovery: true, include: [] } })
