@@ -22,3 +22,13 @@ Decisions taken by the harness builder while building `film`, `seq`, `sheet`, `l
 - `--minutes M` stops cleanly after M minutes, prints `NOT FINISHED`, and exits 2. Exit 1 is kept for "cannot do its work".
 - `--by NAME` names who made the looks. A look is written every `status.minGapMinutes` of rendering.
 - Free disk is checked first. Under `sandbox.minFreeDiskGb` it deletes, in this order and stopping as soon as there is room: waiting frames, `seq`, `determinism`, `roughcut`, `stress`, `crops`, `stills`.
+
+## sheet
+
+- One sheet is at most `critics.contactSheetFrames` pictures and at most `critics.maxImageLongEdgePx` on its long edge. With 12 pictures of 16 by 9 that is 3 columns by 4 rows with tiles 461 px wide. A heading sits above the grid, a label under each picture: time in the film, beat, frame. Nothing is drawn over a picture.
+- Files: `out/work/sheets/sheet-<kind>-<id>-[NofM]-F-T.jpg`, each with a record beside it and one line in the look log. A sheet whose record matches this build is not rendered again (`--force` renders it anyway).
+- `--beat ID`: 12 frames spread evenly over the beat. `--unit ID`: one sheet for every 12 s of the page, the frames spread evenly (`--sheets N` sets the number). `--film`: one sheet for each page, 12 frames each (`--sheets N` spreads N sheets over the whole film instead). `--pages`: the six pages at rest through `renderRest`.
+- `--loop` and `--opening`: 12 frames spread over the loop or the opening. While they are not built the command says so and exits 1.
+- `--motion NAME`: the frame comes from the events of `filmState`, read in the browser without rendering. `hit` is the first event with `hitsCursor`, or whose name ends in `hit-cursor`; `page-turn` and `bumper` are the events of those names; `reassembly` is `strips-zip`; any other name is taken as an event name. `--nth K` takes the K-th, `--unit ID` looks in one page only. The sheet is 12 frames in a row at the preview rate with a third of them before the event; `--every-frame` uses every film frame.
+- `--live`: the live site's own mode with a bot as the driver (`--bot`, default the first of `live.bots`; `--seed`, default the `seed` of the config) and a clock that is stepped, not real time. 12 moments spread over the run's length, which is read from `out/work/bots.json` or given with `--seconds`. Labels are the run's time, the page and the last gag reached. This needs the change in `tools/HARNESS-NEEDS.patch` (applied on this branch as the `NEEDS:` commit): `src/main.ts` takes `&bot=NAME&seed=N&clock=steps` in live mode and offers `window.liveRun`.
+- The stub pages emit `bolt-hit-cursor` with `hitsCursor` false, so `hit` also goes by the name.

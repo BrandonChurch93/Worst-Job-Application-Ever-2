@@ -1,0 +1,76 @@
+diff --git a/src/main.ts b/src/main.ts
+index deb663d..77fcac8 100644
+--- a/src/main.ts
++++ b/src/main.ts
+@@ -4,15 +4,19 @@ import { stepHz } from './config'
+ import { copy } from './copy'
+ import { samples } from './core/sampler'
+ import { pages } from './pages'
++import { BotDriver, type BotName } from './stage/bots'
+ import { filmFlow, liveFlow, liveView, MouseDriver, ScriptDriver, Stage, wholeFilmFlow } from './stage/stage'
+ import type { Driver } from './stage/types'
+ import { wallSeconds } from './ui/clock'
+ import type { TargetKind } from './core/accumulator'
+ 
+ declare global {
+-  interface Window { showcase: Showcase }
++  interface Window { showcase: Showcase; liveRun?: { state(): LiveShot; advance(seconds: number): LiveShot } }
+ }
+ 
++interface LiveShot { time: number; page: string; gag: string | null; finished: boolean; png: string }
++
++const BOTS = ['keen', 'clumsy', 'random', 'skipper']
+ const MODES = ['live', 'film', 'loop', 'capture', 'probe']
+ const params = new URLSearchParams(location.search)
+ const mode = params.get('mode') ?? 'live'
+@@ -54,7 +58,9 @@ function makeStage(mouse: MouseDriver): Stage {
+   const flow = liveFlow()
+   const step = Number(params.get('step') ?? 0)
+   const from = step >= 1 && step <= 5 ? flow.slice(step) : flow
+-  const driver: Driver = mouse
++  const bot = params.get('bot')
++  if (bot && !BOTS.includes(bot)) throw new Error(`No bot called "${bot}"`)
++  const driver: Driver = bot ? new BotDriver(bot as BotName, Number(params.get('seed') ?? 1)) : mouse
+   return new Stage({ mode: 'live', flow: from, pages, driver })
+ }
+ 
+@@ -109,13 +115,7 @@ function play(): void {
+   let still = 0
+   let frame = 0
+   let before = ''
+-  const tick = () => {
+-    const now = wallSeconds()
+-    owed += Math.min(0.1, now - last)
+-    last = now
+-    const steps = Math.floor(owed * stepHz)
+-    owed -= steps / stepHz
+-    stage.advance(steps)
++  const draw = () => {
+     const f = stage.frameAt(stage.time)
+     const state = stage.hash()
+     still = state !== before ? 0 : Math.min(still + 1, restSamples.length)
+@@ -127,6 +127,24 @@ function play(): void {
+       app.setCamera(pose)
+       app.engine.frame(app.shot(), restSamples[still]!, still === 0, frame, app.diagnostic)
+     }
++  }
++  if (params.get('clock') === 'steps') {
++    const shot = (): LiveShot => {
++      before = ''
++      draw()
++      return { time: stage.time, page: stage.page.id, gag: stage.gagsReached.at(-1) ?? null, finished: stage.finished, png: canvas.toDataURL('image/png') }
++    }
++    window.liveRun = { state: shot, advance: (seconds) => { stage.advance(Math.round(seconds * stepHz)); return shot() } }
++    return
++  }
++  const tick = () => {
++    const now = wallSeconds()
++    owed += Math.min(0.1, now - last)
++    last = now
++    const steps = Math.floor(owed * stepHz)
++    owed -= steps / stepHz
++    stage.advance(steps)
++    draw()
+     requestAnimationFrame(tick)
+   }
+   requestAnimationFrame(tick)
