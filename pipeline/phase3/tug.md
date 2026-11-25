@@ -39,6 +39,10 @@ Agent `tug_fixer`, branch `agent/tug`. Started 16:42 UTC.
 23. M3 at the key is red at draft since 16 (0.68, least 0.8), reported to the Builder as red; not worked on, by the Builder's word.
 24. When the sheet is lost the arms spring back into the body: the hands run to the shoulders, fast at first, in 0.3 s. Before, the shoulder ends let go and the two arms trailed into the mouth after the sheet: for 0.2 s they were two loose black cables, which the brief forbids, and a cursor with its arms torn off is grimmer than the film is.
 25. The cursor leans to one side only, to the right of the slot (`TUG_CURVE`, lean 0.02 to -0.52 rad). With the lean going both ways the tip touched the Browse files chip at the key and covered the word files at 23.7 s. The hauls differ in how far they lean (0.28, 0.42, 0.52, 0.51, 0.36, 0.51) and in strain, so no second repeats; the test of a move of more than 5 px in every second passes with 7.5 px at the least (searched over the leans and strains with the test's own measure).
+26. The rubber of the arms and the mitts: sheen 0.8 to 0.25, grain 0.16 to 0.07, roughness 0.66 to 0.6. At the close view the high sheen and the strong grain gave each arm a pale ragged upper edge, a charcoal stroke; now a tube with one soft highlight along it.
+27. At the loss the cursor is driven to the mouth and no further (its body centre stops at the slot, it sinks from 0.2 of the way): before, its stem showed below the machine at 27.6 s.
+28. The cut edge of the sheet takes 0.8 of the sheet's shade (`MOUTH.edge`). It is thinner than a pixel and faced the light, so it sparkled as a dotted line along the left and top of the sheet at both tiers.
+29. The shade of the bend at the mouth a little deeper and wider (`MOUTH.bent` 0.24, `fold` 15, `soft` 7), seen at review tier beside the one before.
 
 ## M3 and the camera
 

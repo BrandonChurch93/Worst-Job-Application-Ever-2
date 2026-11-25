@@ -20,7 +20,7 @@ const BAR = { inset: PAPER.inset, tall: 1.1, pad: (PAPER.bar - 1.1) / 2, cells: 
 const BETWEEN = { tall: 1.1, wide: [0.94, 0.78, 1, 0.34, 0.88, 0.97, 0.6] }
 // The hood and the cutters keep the sky off the sheet where it goes in, and the sheet bends over to go down:
 // a deep shade at the mouth, and below the line of the bend the sheet is turned from the light.
-const MOUTH = { in: 0.5, near: 0.3, nearPx: 4, bent: 0.16, fold: 13, soft: 5, slant: 0.12, lit: 0.03, edge: 0.8 }
+const MOUTH = { in: 0.5, near: 0.3, nearPx: 4, bent: 0.24, fold: 15, soft: 7, slant: 0.12, lit: 0.03, edge: 0.8 }
 const WRAP_LEN = 1.12 * (UNIT.r + 0.7 * SIZE)
 
 const clamp = (v: number, lo: number, hi: number): number => Math.min(hi, Math.max(lo, v))
