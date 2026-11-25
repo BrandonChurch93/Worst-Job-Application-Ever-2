@@ -1,0 +1,12 @@
+{
+  "name": "worst-job-application",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "The Worst Job Application Ever: one website, delivered as a live site and as a film",
+  "scripts": {
+    "clock": "node tools/clock.mjs",
+    "look": "node tools/look.mjs",
+    "progress": "node tools/progress.mjs"
+  }
+}

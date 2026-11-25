@@ -10,3 +10,14 @@ references/cache/
 .DS_Store
 *.log
 __pycache__/
+audio/kept/*
+!audio/kept/*.json
+audio/mix/*
+!audio/mix/*.json
+!audio/mix/*.md
+audio/final/*
+!audio/final/*.json
+!audio/final/*.md
+public/audio/*
+!public/audio/*.json
+*.tsbuildinfo

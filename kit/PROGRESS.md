@@ -17,21 +17,33 @@ The Builder's memory. Read it at the start of every task and after every compact
 - Extension step: none
 - Site URL: none
 - Review page: none
-- Repo is private: not measured
-- Sound files: not decided
+- Repo is private: no. MEASURED 2026-11-25T05:38Z with the repo host's own answer (isPrivate false). `repo.expectPrivate` is true, so the two disagree. The first status said so
+- Sound files: not committed, because the repo is public. Recipes, settings, measurements and listener answers are committed as text. The files stay in the workspace and in the published site, and one archive of every kept file is attached with each status that follows new sounds and with the `REVIEW` block. `.gitignore` keeps them out
 - Portfolio link: not set
 
 ## Latest pictures
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-none
+Status 1, 2026-11-25T05:40Z, Phase 0.
+
+1. `out/stills/status/01-contact-sheet.jpg`: the approved reference images on one sheet, shown inline to prove the display method. Nothing has been rendered yet.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
-none
+```
+clock: phase 0, tick 3 at 2026-11-25T05:47:49Z, allowance: build
+time used in this phase: 0.25 h of its box of 3.00 h
+time used under the allowance in force: 0.25 h of 36.00 h allowed
+time used: 0.25 of 36.00 hours before the review
+extra rounds: yes
+half point: not reached
+box end: not reached
+budget report: not due
+minutes since the last status: 7
+```
 
 ## Phases
 
@@ -64,13 +76,34 @@ States: `not started`, `in progress`, `finished`.
 
 Measured in Phase 0: OS, cores, memory, disk, Node and npm, the browser and its version, the WebGL2 limits, the image limit, whether agents block, whether a detached process survives, what a sandbox agent can do, the PSNR between VMs.
 
-none
+All MEASURED on 2026-11-25 unless a line says otherwise.
+
+- OS: Ubuntu 26.04.1 LTS, kernel 6.1.155. 2 cores, 7957 MB memory, 20 GB disk with 12 GB free at the start, no graphics card.
+- Node v20.20.2, npm 10.8.2. `ffmpeg` and `ffprobe` are present at `/usr/bin` and run (step 6). Python 3 with PIL 13.0.0 and ImageMagick are present.
+- Machine boot id at the start: `df551acd-542a-4cfe-8bc6-11afd76c75c3`.
+- Browser, WebGL2 limits, image limit, agent tests and PSNR: see the lines added below as each is measured.
 
 ## Tool record
 
 What can be called here, and how each thing was done: the inline display method, the image models with their sizes and reference limits, a video model, an image-to-3D model, app hosting, the model families for agents and which can see and hear, the sound endpoints, the narrator's voice and how it was found, what makes it pause, its settings for a slow read, the audio evaluation tool, the prompt screen skill.
 
-none
+Every line says whether it is MEASURED here, STATED by a tool's own description, or UNKNOWN.
+
+- Inline display method. MEASURED 2026-11-25T05:40Z, works. Write one JSON file under `out/work/status/` shaped `{ "lines": [...], "pictures": [{ "caption", "src": "data:image/jpeg;base64,..." }], "links": [...] }`, each picture resized to at most `status.pictureLongEdgePx` on the long edge and saved as JPEG at quality 82. Show it with the inline visualization tool, passing the file as the data source named `gallery` in format json, with the widget code in `tools/assets/status-widget.html`. The widget reads `window.visualization.sources.gallery.data`, prints the lines, shows the pictures in a grid of two columns (one picture takes the full width, a click zooms) and prints the links as text. The same lines are posted as chat text.
+- Prompt screen skill. MEASURED: found on the first look in the workspace's skill list. Its name is `org:synthetic-query-typing` ("Render synthetic Computer UI for product-feature videos: query typing, thinking steps, thread results"). A second skill, `hyperframes`, composes video from HTML and is installed.
+- Sound access. MEASURED: there is no ElevenLabs connector tool in this workspace. ElevenLabs is reached through a saved credential for `api.elevenlabs.io`, called over plain HTTPS. Account: plan `creator`, status active.
+- Narrator voice. MEASURED: found on the first look by listing the account's voices. Name `Worst-Job-Application-Ever`, id `eFAEy5Egqu7dR7KfdpSZ`, category `generated`, saved settings stability 0.5, similarity 0.75, style 0, speed 1.0, speaker boost on. Its own description: male, late 50s, broad Australian accent, deep baritone at full speaking volume, slow wildlife documentary delivery with long pauses, smug, dry and condescending.
+- Sound quota. MEASURED 2026-11-25T05:42Z to 05:46Z: the account had 4 credits left of 131000 for this period (130996 used). The period resets on 2026-12-23T20:08Z. The limit cannot be extended from the API (`can_extend_character_limit` false). Calls made:
+  - Speech, 39 characters: refused, `quota_exceeded`, 17 credits needed, 4 left.
+  - Speech, the one word "Behold.": HTTP 200, an MP3 of 0.60 s, mono 44100 Hz, peak -4.3 dBFS, -18.7 LUFS. This is the one test line. It used 3 credits and left 1.
+  - Speech, third try: refused, `quota_exceeded`, 1 credit left.
+  - Sound effect, 0.5 s, three tries: each refused in about 0.5 s with `quota_exceeded`, 6 credits needed.
+  - So the voice exists and answers, and nothing more can be made until credits are added or the period resets. Under `budget.toolRetryMax` this is recorded and the build goes on. The quota is read again at the start of every phase and before any sound work, and sound work starts the moment calls succeed.
+- Speech endpoint. MEASURED: `POST /v1/text-to-speech/<voice id>` with `output_format=mp3_44100_128`. Models the account lists for speech: `eleven_v4`, `eleven_v4_turbo`, `eleven_v3`, `eleven_v3_conversational`, `eleven_multilingual_v2`, `eleven_flash_v2_5`, `eleven_turbo_v2_5`, `eleven_turbo_v2`, `eleven_flash_v2`. The test call named no model, so it used the endpoint's default. UNKNOWN: which model that default is, and how long a call takes for a full line.
+- Sound effect endpoint. MEASURED: `POST /v1/sound-generation` exists and answered with a quota refusal. UNKNOWN until credits exist: its shortest and longest length, its cost per second and its time per call. STATED by `AGENTS.md` from another build: about two seconds a call, near full level, a little silence in front.
+- Pause mark and slow-read settings. UNKNOWN: the three-way pause test and the speed test need speech calls and could not be made. They are the first thing done when credits exist.
+- Audio evaluation tool. MEASURED: it exists and takes one file of at most 20 MB with a prompt. On the 0.6 s test line it wrote down the word correctly ("Behold") and said it had only a transcript and could not hear tone, so its answers about delivery are UNKNOWN for now. A longer test with a sound that is not speech is to follow.
+- Other speech tool. STATED: a text to speech tool with stock voices exists. It is not the narrator and is not used for it, because Brandon chose the saved voice.
 
 ## Pinned versions
 
@@ -116,7 +149,8 @@ none
 
 One line each: the date, the decision, the reason, and the config key if one was written back.
 
-none
+- 2026-11-25. Sound files are not committed. Reason: the repo was measured public while `repo.expectPrivate` is true, and `AGENTS.md` under "Sound" says what is measured decides.
+- 2026-11-25. The ElevenLabs quota is used up (1 credit left of 131000, reset 2026-12-23). Decision: record it, say it in the next status so Brandon can add credits while the build runs, read the quota again at the start of every phase and before sound work, and keep every sound system ready. Sound never blocks. No other voice is picked for the narrator.
 
 ## Notes from Brandon
 
@@ -153,7 +187,7 @@ none
 
 ## For Brandon to decide
 
-none
+- The ElevenLabs account has 1 credit left of 131000 until 2026-12-23. The narrator and the effects cannot be made until credits are added. If credits appear while the build runs, sound work starts at once. If they do not, the site and the review cut are silent and the first line of the `REVIEW` block says so.
 
 ## Running jobs
 
