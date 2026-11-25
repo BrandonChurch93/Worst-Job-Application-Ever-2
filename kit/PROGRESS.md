@@ -199,7 +199,13 @@ none
 
 Each with its name, its folders, its branch and its looks branch, when it started, its limit, and what it has pushed.
 
-none
+- `waiter_01`. Shared VM. No folder, no branch. Started 2026-11-25T05:52Z. Limit 5 minutes. Job: wait two minutes and answer (the polling test of step 7).
+- `sandbox_probe`. Sandbox VM. Branch `agent/phase0-probe`, file `pipeline/phase0/sandbox-probe.md`. Started 05:52Z. Limit 20 minutes. Job: record its VM, clone the repo, return a video file as an attachment, push its branch.
+- `viewer_01` to `viewer_07`. Sandbox VMs, one per model family (GPT, Gemini, Claude, GLM, Kimi, Grok, DeepSeek). No folder, no branch. Started 05:52Z. Limit 15 minutes each. Job: read the image limit test pictures and the hearing test file, given as attachments only (steps 8 and 9).
+- `terms_images`. Shared VM. Folder `references/terms/` (files `images-*.md`). Started 05:52Z. Limit 30 minutes. Job: the output terms of each image model.
+- `terms_sound`. Shared VM. Folder `references/terms/` (file `sound-elevenlabs.md`). Started 05:52Z. Limit 30 minutes. Job: the sound tool's output terms for the Creator plan, three points.
+- `host_limits`. Shared VM. Folder `references/terms/` (file `hosting-vercel.md`). Started 05:52Z. Limit 30 minutes. Job: the hosting provider's current limits.
+- `webgl_table`. Shared VM. Folder `references/terms/` (files `webgl-extensions.md` and `.json`). Started 05:52Z. Limit 30 minutes. Job: a public table of WebGL extension support by browser.
 
 ## Rounds
 
