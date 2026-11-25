@@ -59,7 +59,7 @@ const CLOSE_FALL = 1.5
 const CLOSE_FLOOR = 0.03
 const CLOSE_TOOTH = 3.1
 const SHEET_TOOTH = 0.4
-const HOME_TOOTH = 2
+const HOME_TOOTH = 2.3
 const MOTTLE = 0.015
 
 // The eggshell grain as heights, one number a texel, with a mean of nought and a spread of one. The size is a power of two and the picture tiles.
@@ -227,7 +227,7 @@ vec3 wjaGrain( vec2 uv ) {
 	vec2 e = mat2( -0.3090, -0.9511, 0.9511, -0.3090 ) * ( texture2D( normalMap, uvE ).xy - texture2D( normalMap, uvE, 2.0 ).xy );
 	vec2 f = mat2( 0.9659, -0.2588, 0.2588, 0.9659 ) * ( texture2D( normalMap, uvF ).xy - texture2D( normalMap, uvF, 2.0 ).xy );
 	vec2 fine = 2.0 * ( wjaOctave( 0.25 * close ) * d + wjaOctave( 0.125 * close ) * e + wjaOctave( 0.0625 * close ) * f );
-	vec2 uvC = mat2( 0.9063, 0.4226, -0.4226, 0.9063 ) * uv * 0.6 + vec2( 0.527, 0.341 );
+	vec2 uvC = mat2( 0.9063, 0.4226, -0.4226, 0.9063 ) * uv * 0.8 + vec2( 0.527, 0.341 );
 	vec2 c = mat2( 0.9063, -0.4226, 0.4226, 0.9063 ) * ( texture2D( normalMap, uvC ).xy - texture2D( normalMap, uvC, 2.0 ).xy );
 	float tooth = mix( SHEET_TOOTH, CLOSE_TOOTH, smoothstep( 2.4, 2.9, close ) * ( 1.0 - smoothstep( 3.25, 3.65, close ) ) );
 	wjaGrainHeight = relief * ( a.a + b.a - 1.0 );
@@ -438,7 +438,7 @@ export function makeMaterials(seed: number): Materials {
   const aluminiumTurned = stretched(physical({
     color: srgb(0x92969b), roughness: 0.25, metalness: 1, normalMap: turned.normal, normalScale: new THREE.Vector2(0.06, 0.06), anisotropy: 0.85, anisotropyMap: turned.direction
   }))
-  const aluminiumEdge = physical({ color: srgb(0xc6cacd), roughness: 0.38, metalness: 0.62 })
+  const aluminiumEdge = physical({ color: srgb(0xd0d4d7), roughness: 0.34, metalness: 0.8 })
   const cardSeal = physical({ color: srgb(0x6f7071), roughness: 0.7, metalness: 0 })
   const aluminiumSatin = physical({ color: srgb(0x73777a), roughness: 0.34, metalness: 0.75 })
   const orange = physical({ color: srgb(0xb94503), roughness: 0.57, metalness: 0, clearcoat: 0.14, clearcoatRoughness: 0.36, specularIntensity: 0.6, specularColor: srgb(0xff9a52) })
