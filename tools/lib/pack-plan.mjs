@@ -2,6 +2,7 @@
 import fs from 'node:fs'
 import { at } from './paths.mjs'
 import { filmPlan, spread, stepOf, timeLabel } from './film-plan.mjs'
+import { lookRoles } from './pack-look.mjs'
 
 export const FORMAT = 'png'
 const LETTERS = 'ABCDEFGHJKLMNPQRSTUVWXYZ'
@@ -10,7 +11,8 @@ export const BANNED = /\b(render\w*|target\w*|approved|generated|final|draft|web
 export const setName = (index) => LETTERS[index]
 export const fileName = (set, n) => `set-${set}-${String(n).padStart(2, '0')}.${FORMAT}`
 export const roundName = (n) => `round-${String(n).padStart(3, '0')}`
-export const neutral = (name) => /^set-[A-Z]-\d{2}\.[a-z]+$/.test(name) && !BANNED.test(name)
+export const pairName = (set, n, side) => `set-${set}-${String(n).padStart(2, '0')}-${side}.${FORMAT}`
+export const neutral = (name) => /^set-[A-Z]-\d{2}(-[ab])?\.[a-z]+$/.test(name) && !BANNED.test(name)
 
 // What each pinball camera is for, from the camera column of the beat table in kit/01-FILM.md and the table of images in kit/06-ASSETS.md.
 export const cameraPurpose = {
@@ -104,17 +106,24 @@ export function splitGroups(groups, most) {
 }
 
 export const roles = {
-  'R4-blockout': { critic: 'R4', section: 'R4 blockout · Phase 2 only', unit: 'blockout', phase: 2, groups: blockoutGroups }
+  'R4-blockout': { critic: 'R4', section: 'R4 blockout · Phase 2 only', unit: 'blockout', phase: 2, groups: blockoutGroups },
+  ...lookRoles
 }
 
 // The whole plan of one pack: its sets, and for each file its neutral name and what it is.
-export function packPlan(cfg, { role, round, unit }) {
+export function packPlan(cfg, { role, round, unit, facts = null }) {
   const r = roles[role]
   if (!r) throw new Error(`No pack is defined for the role "${role}" yet. Defined: ${Object.keys(roles).join(', ')}`)
   if (unit && r.unit && unit !== r.unit) throw new Error(`The role ${role} judges the unit "${r.unit}", not "${unit}"`)
-  const sets = splitGroups(r.groups(cfg), cfg.critics.maxFilesPerMessage).map((s, i) => {
+  if (!r.unit && !unit) throw new Error(`The role ${role} needs --unit`)
+  const sets = splitGroups(r.groups(cfg, unit, facts), cfg.critics.maxFilesPerMessage).map((s, i) => {
     const name = setName(i)
-    return { set: name, critic: `reviewer-${String(i + 1).padStart(2, '0')}`, groups: s.groups, files: s.items.map((item, n) => ({ name: fileName(name, n + 1), ...item })) }
+    let n = 0
+    const files = s.items.map((item) => {
+      if (item.side !== 'b') n += 1
+      return { name: item.side ? pairName(name, n, item.side) : fileName(name, n), ...item }
+    })
+    return { set: name, critic: r.unit ? `reviewer-${String(i + 1).padStart(2, '0')}` : `${role}-${i + 1}`, groups: s.groups, files }
   })
   return { role, critic: r.critic, section: r.section, round, unit: unit || r.unit, sets }
 }
@@ -136,11 +145,14 @@ export function briefFor(plan, set, text = fs.readFileSync(at('kit', '07-QUALITY
   const format = lines.slice(open, shut + 1).join('\n')
   const rule = lines.slice(shut + 1).find((l) => l.startsWith('- `score` is'))
   const s = plan.sets.find((x) => x.set === set)
+  if (plan.critic === 'R2') return lines.find((l) => l.startsWith('> You will see one image.')).slice(2)
+  const settled = s.files.filter((f) => f.side === 'a' && f.settled).map((f) => ['Settled', `${f.name} and ${f.name.replace('-a.', '-b.')}`, ...f.settled.map((l) => `- ${l}`)].join('\n'))
   const part = plan.sets.length > 1 ? `Your ${s.files.length} files, ${s.files[0].name} to ${s.files[s.files.length - 1].name}, are one part of the pack. Judge what your files show.` : `Your ${s.files.length} files are ${s.files[0].name} to ${s.files[s.files.length - 1].name}.`
   return [
     sectionOf(text, plan.section),
     sectionOf(text, 'The severity scale'),
     ['### The return format', '', `Return one JSON object, with "critic" set to "${plan.critic}".`, '', format, '', rule].join('\n'),
+    ...settled,
     [part, 'Send that JSON object, and nothing else, as a message to /root.'].join('\n')
   ].join('\n\n')
 }

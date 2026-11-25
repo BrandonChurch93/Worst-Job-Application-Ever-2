@@ -22,7 +22,7 @@ export function wrap(words, room, size) {
   return lines
 }
 
-async function strip(words, width, size = 15) {
+export async function strip(words, width, size = 15) {
   const lines = wrap(words, width - 16, size)
   const pitch = size + 7
   const height = lines.length * pitch + 8
@@ -31,7 +31,7 @@ async function strip(words, width, size = 15) {
   return { png: await sharp(Buffer.from(svg)).png().toBuffer(), height }
 }
 
-const out = (parts, width, height) => sharp({ create: { width, height, channels: 3, background: GROUND } }).composite(parts).png({ compressionLevel: 9 }).toBuffer()
+export const out = (parts, width, height) => sharp({ create: { width, height, channels: 3, background: GROUND } }).composite(parts).png({ compressionLevel: 9 }).toBuffer()
 
 // One picture under its heading, made smaller only if it must be to fit.
 export async function single(png, heading, edge) {
@@ -79,7 +79,7 @@ export async function grid(tiles, heading, { edge, columns, tileW, tileH, labelS
 
 const WINDOW_MARGIN = 24
 
-const cut = (png, [x, y, w, h]) => sharp(png).removeAlpha().extract({ left: x, top: y, width: w, height: h }).png().toBuffer()
+export const cut = (png, [x, y, w, h]) => sharp(png).removeAlpha().extract({ left: x, top: y, width: w, height: h }).png().toBuffer()
 
 // A window of a fixed size round a box, kept inside the picture. With fromLeft, a box wider than the window shows its left end, with ground before it.
 export function windowRound(box, w, h, width, height, fromLeft = false) {
@@ -152,7 +152,7 @@ export function controlWindows(boxes, w, h, width, height, pad = 40) {
 }
 
 // Builds every file of a plan. Gives back, for each file, its PNG bytes and what the key file says of it.
-export async function buildPack(cfg, plan, { tier = 'draft', log = () => {} } = {}) {
+export async function buildPack(cfg, plan, { tier = 'draft', log = () => {}, cache = null } = {}) {
   const edge = cfg.critics.maxImageLongEdgePx
   const fps = cfg.film.fps
   const hd = cfg.formats.hd
@@ -278,6 +278,9 @@ export async function buildPack(cfg, plan, { tier = 'draft', log = () => {} } = 
       about.set(f.name, { cameras: specs, format: hd.id, tier })
       log(`${f.name}: ${tiles.length} camera${tiles.length > 1 ? 's' : ''}`)
     }
+
+    const { LOOK_KINDS, buildLook } = await import('./pack-look.mjs')
+    if (files.some((x) => LOOK_KINDS.includes(x.kind))) await buildLook({ cfg, session, files, built, about, tier, log, cache })
 
     const sheets = files.filter((x) => x.kind === 'film-sheet' || x.kind === 'beat-sheet')
     if (sheets.length) {
