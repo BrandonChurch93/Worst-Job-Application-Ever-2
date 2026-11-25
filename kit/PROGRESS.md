@@ -28,7 +28,7 @@ The pictures of the newest status, with their captions and the time. Files are i
 Status 10, 2026-11-25T08:42Z, Phase 2.
 
 1. `out/stills/status/01-blockout-cursor-arms.jpg`: Stand-in for the cursor's arms sheet: thin arms with round hands that reach to two places. The arms exist only in the tug of war of step 1.
-2. `out/stills/status/02-blockout-cursor-damage.jpg`: Stand-in for the damage sheet: a burn mark, shredded strips, the body at rest, a swollen state and a second burn. Every kind of damage heals inside four seconds.
+2. `out/stills/status/02-blockout-cursor-damage.jpg`: Stand-in for the damage sheet, left to right: burn, shredded, reassembled, flattened, scorched. Every kind of damage heals inside four seconds.
 3. `out/stills/status/03-blockout-cursor-acting.jpg`: Stand-in for the acting sheet: five ways the body carries itself, with sweat drops as small beads. The cursor has no face, so all acting is posture.
 
 ## Clock
@@ -36,15 +36,15 @@ Status 10, 2026-11-25T08:42Z, Phase 2.
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 2, tick 33 at 2026-11-25T08:42:07Z, allowance: build
-time used in this phase: 1.06 h of its box of 6.50 h
-time used under the allowance in force: 3.16 h of 36.00 h allowed
-time used: 3.16 of 36.00 hours before the review
+clock: phase 2, tick 34 at 2026-11-25T08:50:54Z, allowance: build
+time used in this phase: 1.21 h of its box of 6.50 h
+time used under the allowance in force: 3.31 h of 36.00 h allowed
+time used: 3.31 of 36.00 hours before the review
 extra rounds: yes
 half point: not reached
 box end: not reached
 budget report: not due
-minutes since the last status: 0
+minutes since the last status: 8
 ```
 
 ## Phases
@@ -213,7 +213,59 @@ What the films and the loop would take on one VM like this one, from the time of
 
 Every judged still and frame, with its unit. Computed as `kit/07-QUALITY-BAR.md` says. Entries are added, never removed.
 
-none
+Kept by `npm run judged -- --write`. Check G6 compares its ids with the computed list.
+
+45 stills and sheets:
+
+| Id | Unit | What | Frame |
+| --- | --- | --- | --- |
+| `key:marketing-top` | `marketing` | the key marketing-top: the careers page at 0 of the beat marketing.apply, from the camera home, in hd |  |
+| `key:step1-fire` | `step1` | the key step1-fire: step 1 at 0.5 of the beat step1.firstName, from the camera home, in hd |  |
+| `key:step1-tug` | `step1` | the key step1-tug: step 1 at 0.5 of the beat step1.tug, from the camera film, in hd |  |
+| `key:step2-rest` | `step2` | the key step2-rest: step 2 at 0.5 of the beat step2.open, from the camera home, in hd |  |
+| `key:step2-dial` | `step2` | the key step2-dial: step 2 at 0.2 of the beat step2.dial, from the camera home, in hd |  |
+| `key:step2-crank` | `step2` | the key step2-crank: step 2 at 0.2 of the beat step2.crank, from the camera home, in hd |  |
+| `key:loader-page` | `pinball` | the key loader-page: step 3 at 0.7 of the beat pinball.seal, from the camera home, in hd |  |
+| `key:table-wide` | `pinball` | the key table-wide: step 3 at 1 of the beat pinball.reveal, from the camera table-wide, in hd |  |
+| `key:tier-corporate` | `pinball` | the key tier-corporate: step 3 at 0.25 of the beat pinball.lobby, from the camera tier-3, in hd |  |
+| `key:lobby-doors` | `pinball` | the key lobby-doors: step 3 at 0.7 of the beat pinball.lobby, from the camera table-lobby, in hd |  |
+| `key:tier-office` | `pinball` | the key tier-office: step 3 at 0.6 of the beat pinball.coffee, from the camera tier-2, in hd |  |
+| `key:reply-all` | `pinball` | the key reply-all: step 3 at 0.3 of the beat pinball.replyAll, from the camera table-replyall, in hd |  |
+| `key:tier-street` | `pinball` | the key tier-street: step 3 at 0.15 of the beat pinball.fired, from the camera tier-1, in hd |  |
+| `key:youre-fired` | `pinball` | the key youre-fired: step 3 at 0.5 of the beat pinball.fired, from the camera table-fired, in hd |  |
+| `key:rail-cam` | `pinball` | the key rail-cam: step 3 at 0.5 of the beat pinball.highway, from the camera rail, in hd |  |
+| `key:last-save` | `pinball` | the key last-save: step 3 at 0.5 of the beat pinball.save, from the camera table-save, in hd |  |
+| `key:boss-fight` | `boss` | the key boss-fight: step 4 at 0.5 of the beat boss.slabs, from the camera home, in hd |  |
+| `key:boss-down` | `boss` | the key boss-down: step 4 at 1 of the beat boss.collapse, from the camera home, in hd |  |
+| `key:decision` | `decision` | the key decision: step 5 at 0.3 of the beat decision.metrics, from the camera home, in hd |  |
+| `sheet:page-look` | `step1` | the build's version of the sheet page-look, from the camera sheet |  |
+| `sheet:cursor-arms` | `step1` | the build's version of the sheet cursor-arms, from the camera sheet |  |
+| `sheet:cursor-damage` | `step1` | the build's version of the sheet cursor-damage, from the camera sheet |  |
+| `sheet:cursor-acting` | `step1` | the build's version of the sheet cursor-acting, from the camera sheet |  |
+| `sheet:machines` | `step2` | the build's version of the sheet machines, from the camera sheet |  |
+| `sheet:boss-stages` | `boss` | the build's version of the sheet boss-stages, from the camera sheet |  |
+| `sheet:clear-ball` | `pinball` | the build's version of the sheet clear-ball, from the camera sheet |  |
+| `sheet:table-map` | `pinball` | the build's version of the sheet table-map, from the camera table-map at 1080 by 1920 |  |
+| `still:rest-marketing` | `marketing` | the careers page, at rest, scrolled to 0, from home |  |
+| `still:marketing-perks` | `marketing` | the careers page, at rest, scrolled to 0.25, from home |  |
+| `still:marketing-proof` | `marketing` | the careers page, at rest, scrolled to 0.5, from home |  |
+| `still:marketing-foot` | `marketing` | the careers page, at rest, scrolled to 1, from home |  |
+| `still:rest-step1` | `step1` | step 1, at rest, from home |  |
+| `still:rest-step2` | `step2` | step 2, at rest, from home |  |
+| `still:rest-step3` | `pinball` | step 3, at rest, from home |  |
+| `still:step3-result` | `pinball` | step 3, at 1 of the beat pinball.drain, scrolled to 1, from home |  |
+| `still:rest-step4` | `boss` | step 4, at rest, from home |  |
+| `still:rest-step5` | `decision` | step 5, at rest, from home |  |
+| `still:screen-live` | `site` | the live screen, at rest, with the controls on, from home |  |
+| `still:screen-touch` | `site` | the live screen, at rest, with the controls on, as a touch screen sees it, from home |  |
+| `site:marketing` | `site` | the careers page at rest, drawn through the live site's own path at the high level, from home, in hd |  |
+| `site:step1` | `site` | step 1 at rest, drawn through the live site's own path at the high level, from home, in hd |  |
+| `site:step2` | `site` | step 2 at rest, drawn through the live site's own path at the high level, from home, in hd |  |
+| `site:pinball` | `site` | step 3 at rest, drawn through the live site's own path at the high level, from home, in hd |  |
+| `site:boss` | `site` | step 4 at rest, drawn through the live site's own path at the high level, from home, in hd |  |
+| `site:decision` | `site` | step 5 at rest, drawn through the live site's own path at the high level, from home, in hd |  |
+
+The film's part is added when `cut/CUTLIST.json` first exists.
 
 ## Look lock
 
@@ -269,6 +321,7 @@ One line each: the date, the decision, the reason, and the config key if one was
 - 2026-11-25T07:58Z, Phase 2, how the stage is built. (1) Everything that decides what happens is plain TypeScript with no three.js and no DOM: the stage, the cursor's body, every page's layout tree, gags and script, the machine's physics and director. So the same code runs in the browser and in Node, and the bots, the ball path test, the take search, the checkpoints, G12 and G17 run without a browser. (2) A page gives the stage a list of shapes for the moment it is in (each with its part's name, its box in page pixels, its bottom and top above the surface, and its words by key). One blockout view draws that list as flat grey solids with type. A part stops being a stand-in when its own view takes its shapes over. (3) Words are only ever named by key: a copy key, a config key, a key into a data file beside the code (the keyboard's legends, as kit/03-METHOD.md section 7 puts them, and the numerals of the progress bar and the dial), or a run made at run time (typed input, counters, the score display). A shape cannot carry a string written in code, which is what G11 asks. (4) Blockout type is set in Inter from the baked outlines, not in a system face: G11 and M4 read type as geometry, and a system face differs between machines and would break the rule that a computed picture is the same everywhere. (5) A page turn is a half turn out and a half turn in. The slab is edge on at the moment one page ends and the next begins, so every page still starts clean and a film unit can be rendered without the one before it. The cursor jumps to one fixed hand-off place above the page as the slab goes and lands from there.
 - 2026-11-25T08:33Z, Phase 2, the contract every part is built on (`src/stage/CONTRACT.md`). (1) Film timing: beat times count from the start of a unit; the first half second of every unit but the first is the page arriving with the cursor in the air at the hand-off place, and the last half second of every unit but the last is the page leaving. In film mode the stage starts the leave at the unit's seconds less half a second whatever the page says, so a unit is always exactly as long as `film.units` gives it. (2) While a page turns only the screen in view is drawn, so a tall page turns as one screen and not as a plank several screens long. (3) A still never shows a page in the middle of a turn: a still whose moment falls in a turn is taken at the nearest moment with the page flat. This moves one judged still, `step3-result`, from the last frame of `pinball.drain` to half a second before the end of the unit. (4) Finishing: the named fallback of kit/03-METHOD.md section 15 is taken for every gag from the start. Each gag has its own way out, and on top of it a plain timer plays the gag's ending once it has run for `live.skipLinkAfterSeconds`. (5) The page state is saved as plain JSON once a simulated second; seeking loads the nearest save and steps on. (6) The cursor's arms are part of its body: a gag gives two places on the page for the hands, and the view draws the arms from the body to them. The body drops the arms by itself outside `cursor.armsOnlyInBeat`. (7) A real opening in the slab is a shape of the kind `well`: the pinball machine's tiers and the ports are wells with their floors below the surface, and the slab is drawn as columns so the walls and the steps between tiers come by themselves. (8) Sheets: the three cursor sheets are made by `src/cursor/sheets.ts`; every other sheet is made by the page that owns it. (9) The button at the end of step 3 is `copy:step2.continue`, because the copy file has no continue of its own for step 3 and may not be edited. (10) The skip link is not offered on the careers page: it has no step to skip.
 - 2026-11-25T08:33Z, Phase 2, two harness faults found and fixed. (1) `npx tsc` failed on HEAD for an unused expect-error line in `tests/roughcut.test.ts`; removed. (2) A still of one page was reused after the shared drawing code changed, because the record of a picture named only the hash of its own page and the shared folders (`src/shell`, `src/cursor`, `src/post`) are counted in step 1's hash. MEASURED: a pinball still came back byte for byte the same after `src/shell/blockout.ts` was changed. Every record now also carries one hash over the shared folders, so such a picture is rendered again. Step 1's hash is as the kit defines it.
+- 2026-11-25T08:50Z. Briefs of the ten build agents. (1) The careers page is the one page that does not end by itself: it waits for a press of one of its three apply buttons, like a real page, and has no skip link. (2) Besides the beat events, a page reports an event for every contact that has a cue in `audio.sfx`, named exactly as the cue, so the table of events to cues stays one to one. (3) The narrator's live lines hang on events too: `slow-typing`, `real-keyboard`, `tug-lost` from step 1, `boss-slow` from step 4, the first `flipper` of a visit, `checkbox` in live mode, the stage's `skip`, and any event that hits the cursor for `hit`. (4) The copy has no word for a sound control or for play and pause. Those controls are icons with no visible word, and their names for assistive technology live in one data file, `src/ui/names.ts`. Listed under "For Brandon to decide" when the file exists. (5) `links.portfolioWork` is empty in the config, so the touch message draws no link until Brandon gives the address. (6) A page module may export `prepare()`, awaited once before any page is made: the physics library starts there.
 
 ## Notes from Brandon
 
@@ -323,14 +376,18 @@ Each with its name, its folders, its branch and its looks branch, when it starte
 
 | Agent | Kind | Owns | Branch | Started | Limit | Last seen |
 | --- | --- | --- | --- | --- | --- | --- |
-| `pinball_builder` | build, sandbox | `src/table/`, `src/pages/step3/`, `tools/paths.mjs`, `tools/take.mjs` | `agent/pinball` | 2026-11-25T08:41:30Z | 11:41Z | started |
+| `pinball_builder` | build, sandbox | `src/table/`, `src/pages/step3/`, `tools/paths.mjs`, `tools/take.mjs`, `cut/TABLE-TAKE.json` | `agent/pinball` | 2026-11-25T08:41:30Z | 11:41Z | started |
 | `step1_builder` | build, sandbox | `src/pages/step1/` | `agent/step1` | 2026-11-25T08:41:30Z | 11:41Z | started |
 | `step2_builder` | build, sandbox | `src/pages/step2/` | `agent/step2` | 2026-11-25T08:41:30Z | 11:41Z | started |
 | `boss_builder` | build, sandbox | `src/pages/step4/`, `src/boss/` | `agent/boss` | 2026-11-25T08:41:30Z | 11:41Z | started |
 | `marketing_builder` | build, sandbox | `src/pages/marketing/` | `agent/marketing` | 2026-11-25T08:41:30Z | 11:41Z | started |
 | `step5_builder` | build, sandbox | `src/pages/step5/` | `agent/step5` | 2026-11-25T08:41:30Z | 11:41Z | started |
+| `harness_builder` | build, sandbox | `tools/film.mjs`, `seq.mjs`, `sheet.mjs`, `loop.mjs`, `render-local.mjs`, `stress.mjs` | `agent/harness` | 2026-11-25T08:49:20Z | 11:49Z | started |
+| `film_builder` | build, sandbox | `src/film/`, `tools/cut.mjs`, `cut/CUTLIST.json`, `cut/CUES.md`, `cut/SHOTS.md` | `agent/film` | 2026-11-25T08:49:20Z | 11:49Z | started |
+| `interface_builder` | build, sandbox | `src/ui/`, `src/probe/` | `agent/ui` | 2026-11-25T08:49:20Z | 11:49Z | started |
+| `sound_builder` | build, sandbox | `src/audio/`, `tools/sound.mjs`, `tools/mix.mjs`, `audio/`, `public/audio/` | `agent/audio` | 2026-11-25T08:49:20Z | 11:49Z | started |
 
-Each brief names the approved images of its part, gives its sections of `kit/01-FILM.md`, `kit/02-SUBJECT.md` and `kit/03-METHOD.md` word for word, and repeats the three rules. First complete version wanted by 10:45Z. A build agent silent for 45 minutes is replaced once from its branch.
+Ten build agents, the most the kit allows beside six critic slots. Each brief names the approved images of its part, gives its sections of the kit word for word, and repeats the three rules. First complete versions wanted by 10:45Z to 10:50Z. A build agent silent for 45 minutes is replaced once from its branch. The Builder keeps for itself: `tools/parts.mjs`, `simcache.mjs`, `pack.mjs`, `measure.mjs`, `hostcheck.mjs`, the gate checks, the diagnostic views, `src/main.ts`, `src/app.ts` and the frame interface.
 
 ## Rounds
 
