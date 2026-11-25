@@ -4,9 +4,10 @@ import { beforeAll, describe, expect, it } from 'vitest'
 import { eventCues } from '../src/audio/cues'
 import { config, filmSeconds } from '../src/config'
 import { narration, timedLines } from '../src/copy'
-import { cuesText, equivalentMm, framing, makeCut, shotsText, type Cut } from '../src/film/cut'
+import { cuesText, equivalentMm, framing, makeCut, moveOf, shotsText, type Cut } from '../src/film/cut'
 import { pages, preparePages } from '../src/pages'
-import { frame, homePose } from '../src/stage/camera'
+import { frame, homePose, mixPose } from '../src/stage/camera'
+import type { CameraPose } from '../src/stage/types'
 
 const fps = config.film.fps
 let cut: Cut
@@ -177,6 +178,20 @@ describe('the cue sheet and the shot list', () => {
     const [tl, tr, br, bl] = f.corners as number[][]
     expect(tr![0]! - tl![0]!).toBeGreaterThan(br![0]! - bl![0]!)
     expect(tl![1]!).toBeLessThan(bl![1]!)
+  })
+
+  it('names the move of a shot from its framings', () => {
+    const wide = homePose(0)
+    const close = frame({ x: 480, y: 270, w: 960, h: 540 })
+    const run = (pose: (u: number) => CameraPose, n = 60) => Array.from({ length: n }, (_, i) => ({ pose: pose(i / (n - 1)), camera: 'home', page: 'p' }))
+    expect(moveOf(run(() => wide))).toEqual({ move: 'holds', cuts: [] })
+    expect(moveOf(run((u) => mixPose(wide, close, u))).move).toBe('pushes in')
+    expect(moveOf(run((u) => mixPose(close, wide, u))).move).toBe('eases out')
+    expect(moveOf(run((u) => homePose(600 * u))).move).toBe('follows')
+    expect(moveOf(run((u) => homePose(9 * Math.sin(u * 40) * (1 - u)))).move).toBe('holds, shakes')
+    expect(moveOf(run((u) => (u < 0.5 ? wide : close)))).toEqual({ move: 'holds, cuts once', cuts: [30] })
+    const turn = run((u) => (u < 0.5 ? wide : close)).map((s, i) => ({ ...s, page: i < 30 ? 'p' : 'q' }))
+    expect(moveOf(turn).cuts).toEqual([])
   })
 
   it('names a lens by the focal length with the same horizontal view on a 36 mm frame', () => {

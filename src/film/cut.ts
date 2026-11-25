@@ -94,47 +94,55 @@ export const equivalentMm = (fovDeg: number): number => round(18 / (Math.tan((fo
 
 const same = (a: CameraPose, b: CameraPose, eps = 1e-6): boolean => length(a.eye, b.eye) < eps && length(a.target, b.target) < eps && Math.abs(a.fov - b.fov) < eps
 
-interface Sample { pose: CameraPose; camera: string; page: string }
+export interface Sample { pose: CameraPose; camera: string; page: string }
 
-function moveOf(samples: Sample[]): { move: string; cuts: number[] } {
+const CUT_JUMP = 0.08
+const MOVE_LEAST = 0.02
+
+export function moveOf(samples: Sample[]): { move: string; cuts: number[] } {
   const frames = samples.map((s) => framing(s.pose))
+  const centre = (f: Framing) => ({ x: f.x + f.w / 2, y: f.y + f.h / 2 })
+  const apart = (a: Framing, b: Framing) => Math.hypot(centre(b).x - centre(a).x, centre(b).y - centre(a).y) / a.w
   const cuts: number[] = []
   for (let i = 1; i < samples.length; i++) {
     const a = frames[i - 1]!
     const b = frames[i]!
-    const jump = Math.hypot(b.x + b.w / 2 - a.x - a.w / 2, b.y + b.h / 2 - a.y - a.h / 2) / a.w
-    const zoom = Math.abs(Math.log(b.w / a.w))
-    if (samples[i]!.page === samples[i - 1]!.page && (samples[i]!.camera !== samples[i - 1]!.camera || jump > 0.08 || zoom > 0.08)) cuts.push(i)
+    if (samples[i]!.page === samples[i - 1]!.page && (apart(a, b) > CUT_JUMP || Math.abs(Math.log(b.w / a.w)) > CUT_JUMP)) cuts.push(i)
   }
-  const words: string[] = []
   const edges = [0, ...cuts, samples.length]
-  let held = true
-  let closer = false
-  let wider = false
-  let follows = false
+  const seen = { holds: false, follows: false, closer: false, wider: false, shakes: false }
   for (let e = 0; e + 1 < edges.length; e++) {
     const from = edges[e]!
     const to = edges[e + 1]! - 1
-    if (to <= from) continue
     const a = frames[from]!
     const b = frames[to]!
     let still = true
-    let travelled = 0
+    let furthest = 0
     for (let i = from + 1; i <= to; i++) {
       if (!same(samples[i]!.pose, samples[i - 1]!.pose)) still = false
-      travelled += Math.hypot(frames[i]!.x + frames[i]!.w / 2 - frames[i - 1]!.x - frames[i - 1]!.w / 2, frames[i]!.y + frames[i]!.h / 2 - frames[i - 1]!.y - frames[i - 1]!.h / 2)
+      furthest = Math.max(furthest, apart(a, frames[i]!))
     }
-    if (still) continue
-    held = false
-    if (b.w < a.w * 0.98) closer = true
-    if (b.w > a.w * 1.02) wider = true
-    if (travelled > a.w * 0.02) follows = true
+    if (still) {
+      seen.holds = true
+      continue
+    }
+    const closer = b.w < a.w * (1 - MOVE_LEAST)
+    const wider = b.w > a.w * (1 + MOVE_LEAST)
+    const travels = apart(a, b) > MOVE_LEAST || furthest > CUT_JUMP
+    if (closer) seen.closer = true
+    if (wider) seen.wider = true
+    if (travels) seen.follows = true
+    if (!closer && !wider && !travels) {
+      seen.holds = true
+      if (furthest > 0) seen.shakes = true
+    }
   }
-  if (held) words.push('holds')
-  if (follows) words.push('follows')
-  if (closer) words.push('pushes in')
-  if (wider) words.push('eases out')
-  if (!held && !follows && !closer && !wider) words.push('holds')
+  const words: string[] = []
+  if (seen.holds) words.push('holds')
+  if (seen.shakes) words.push('shakes')
+  if (seen.follows) words.push('follows')
+  if (seen.closer) words.push('pushes in')
+  if (seen.wider) words.push('eases out')
   if (cuts.length) words.push(cuts.length === 1 ? 'cuts once' : `cuts ${cuts.length} times`)
   return { move: words.join(', '), cuts }
 }
@@ -165,8 +173,11 @@ export function makeCut(pages: Record<string, PageMaker>, kept: KeptTake[] = [])
     const page = stage.page
     const time = stage.pageTime
     const film = page.camera('film', time)
-    const pose = film ?? page.view() ?? homePose(page.scroll())
-    let camera = film ? 'film' : page.view() ? 'view' : 'home'
+    const view = page.view()
+    const pose = film ?? view ?? homePose(page.scroll())
+    const home = homePose(page.scroll())
+    const likeHome = (p: CameraPose) => Math.abs(p.fov - home.fov) < 1e-6 && Math.abs(p.eye[0] - p.target[0]) < 1e-6 && Math.abs(p.eye[1] - p.target[1]) < 1e-6 && Math.abs(p.eye[2] - p.target[2] - (home.eye[2] - home.target[2])) < 1e-6
+    let camera = film ? 'film' : view && !likeHome(view) ? 'view' : 'home'
     if (film) {
       for (const n of cameras) {
         const named = page.camera(n, time)
@@ -175,7 +186,7 @@ export function makeCut(pages: Record<string, PageMaker>, kept: KeptTake[] = [])
           break
         }
       }
-      if (camera === 'film' && same(film, homePose(page.scroll()), 1e-3)) camera = 'home'
+      if (camera === 'film' && likeHome(film)) camera = 'home'
     }
     samples.push({ pose, camera, page: page.id })
     stage.advance(stepsPerFrame)
@@ -287,7 +298,7 @@ export function shotsText(list: CutList, shots: Shot[]): string {
   out.push('# Shots', '')
   out.push('Made by `npm run cut` from the film camera of each page (`page.camera(\'film\', time)`), and `home` where a page has none. Do not edit by hand.', '')
   out.push('- Camera: `home` is the page straight on, filling the frame. A name from `cameras` is given when the film camera sits exactly on it, `film` when it is somewhere of its own.')
-  out.push('- Move: holds, follows (the centre of the framing travels), pushes in (the framing gets narrower), eases out (it gets wider), cuts (the framing jumps between two frames of the same page).')
+  out.push('- Move: holds, shakes (it moves a little and comes back), follows (the centre of the framing travels), pushes in (the framing gets narrower), eases out (it gets wider), cuts (the framing jumps between two frames of the same page).')
   out.push('- Framing: the part of the page the frame shows, in page pixels, as x and y of its top left corner and its width by its height, at the height the camera looks at. For a camera that is not straight on: the four corners of the frame on that floor, top left, top right, bottom right, bottom left.')
   out.push('- Lens, for the pinball shots: the vertical field of view, and the focal length that gives the same horizontal view on a 36 mm wide frame. Focus: the distance in page pixels from the camera to what is sharp, the camera\'s own when it states one, and else its distance to the point it looks at.', '')
   for (const u of list.units) {

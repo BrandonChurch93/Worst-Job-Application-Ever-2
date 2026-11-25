@@ -41,14 +41,14 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | `boss.lastStand` | 131.000 | 7860 | 8159 | `session-expired` | 133.000 | 7980 | yes |
 | `boss.collapse` | 136.000 | 8160 | 8279 | `power-down` | 136.800 | 8208 | yes |
 | `boss.press` | 138.000 | 8280 | 8459 | `button-press` | 139.200 | 8352 | yes |
-| `decision.wait` | 141.000 | 8460 | 8579 | `hold-music` | 141.800 | 8508 | yes |
-| `decision.letter` | 143.000 | 8580 | 8819 | `stamp` | 144.600 | 8676 | yes |
-| `decision.metrics` | 147.000 | 8820 | 9059 | `button-press` | 148.600 | 8916 | yes |
-| `decision.reset` | 151.000 | 9060 | 9179 | `page-turn` | 151.450 | 9087 | yes |
+| `decision.wait` | 141.000 | 8460 | 8579 | `hold-music` | 141.400 | 8484 | yes |
+| `decision.letter` | 143.000 | 8580 | 8819 | `stamp` | 145.300 | 8718 | yes |
+| `decision.metrics` | 147.000 | 8820 | 9059 | `button-press` | 150.300 | 9018 | yes |
+| `decision.reset` | 151.000 | 9060 | 9179 | `page-turn` | 150.754 | 9045 | yes |
 
 ## Events with a cue
 
-37 of the film's 62 events have a cue in the table of events to cues. A cue starts on the frame of its event.
+58 of the film's 87 events have a cue in the table of events to cues. A cue starts on the frame of its event.
 
 | Time s | Frame | Beat | Event | Cue | Hits the cursor |
 | --- | --- | --- | --- | --- | --- |
@@ -80,15 +80,36 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | 139.200 | 8352 | `boss.press` | `button-press` | `button-press` | no |
 | 140.000 | 8400 | `boss.press` | `button-press` | `button-press` | no |
 | 140.500 | 8430 | `boss.press` | `page-turn` | `page-turn` | no |
+| 141.529 | 8491 | `decision.wait` | `step` | `step` | no |
 | 141.546 | 8492 | `decision.wait` | `step` | `step` | no |
+| 141.563 | 8493 | `decision.wait` | `step` | `step` | no |
 | 141.579 | 8494 | `decision.wait` | `step` | `step` | no |
-| 141.637 | 8498 | `decision.wait` | `step` | `step` | no |
-| 148.600 | 8916 | `decision.metrics` | `button-press` | `button-press` | no |
-| 151.200 | 9072 | `decision.reset` | `button-press` | `button-press` | no |
-| 151.450 | 9087 | `decision.reset` | `page-turn` | `page-turn` | no |
-| 152.496 | 9149 | `decision.reset` | `step` | `step` | no |
-| 152.529 | 9151 | `decision.reset` | `step` | `step` | no |
-| 152.588 | 9155 | `decision.reset` | `step` | `step` | no |
+| 141.596 | 8495 | `decision.wait` | `step` | `step` | no |
+| 141.621 | 8497 | `decision.wait` | `step` | `step` | no |
+| 141.646 | 8498 | `decision.wait` | `step` | `step` | no |
+| 141.692 | 8501 | `decision.wait` | `step` | `step` | no |
+| 142.146 | 8528 | `decision.wait` | `step` | `step` | no |
+| 142.762 | 8565 | `decision.wait` | `step` | `step` | no |
+| 143.325 | 8599 | `decision.letter` | `step` | `step` | no |
+| 144.075 | 8644 | `decision.letter` | `step` | `step` | no |
+| 144.121 | 8647 | `decision.letter` | `step` | `step` | no |
+| 144.158 | 8649 | `decision.letter` | `step` | `step` | no |
+| 144.192 | 8651 | `decision.letter` | `step` | `step` | no |
+| 144.221 | 8653 | `decision.letter` | `step` | `step` | no |
+| 144.254 | 8655 | `decision.letter` | `step` | `step` | no |
+| 144.283 | 8657 | `decision.letter` | `step` | `step` | no |
+| 144.313 | 8658 | `decision.letter` | `step` | `step` | no |
+| 144.346 | 8660 | `decision.letter` | `step` | `step` | no |
+| 144.387 | 8663 | `decision.letter` | `step` | `step` | no |
+| 144.446 | 8666 | `decision.letter` | `step` | `step` | no |
+| 144.783 | 8687 | `decision.letter` | `step` | `step` | no |
+| 144.863 | 8691 | `decision.letter` | `step` | `step` | no |
+| 144.950 | 8697 | `decision.letter` | `step` | `step` | no |
+| 150.300 | 9018 | `decision.metrics` | `button-press` | `button-press` | no |
+| 150.754 | 9045 | `decision.metrics` | `page-turn` | `page-turn` | no |
+| 151.800 | 9108 | `decision.reset` | `step` | `step` | no |
+| 151.833 | 9110 | `decision.reset` | `step` | `step` | no |
+| 151.892 | 9113 | `decision.reset` | `step` | `step` | no |
 
 ## Narrator lines
 
