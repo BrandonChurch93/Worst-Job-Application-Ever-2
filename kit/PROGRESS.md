@@ -25,22 +25,21 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 33, 2026-11-25T17:09Z, Phase 3.
+Status 34, 2026-11-25T17:28Z, Phase 3.
 
-1. `out/stills/status/01-page-surface-before-and-now.jpg`: The page's surface at its real size: your approved images, the build before, the build now. Top row from the home camera, bottom row in the tug's close frame. Review tier.
-2. `out/stills/status/02-office-tier-models.jpg`: The office tier from the Reply All camera, from the office modeller's report (draft tier): cubicles, coffee machine, inbox and staplers are real. The grey cups and balls are parts that were still stand-ins on its branch.
-3. `out/stills/status/03-corporate-tier-models.jpg`: The corporate tier from straight above, from the corporate modeller's report (review tier): headquarters, revolving door, beach case, boardroom, ladder, notes and wedges.
-4. `out/stills/status/04-street-tier-beside-approved.jpg`: The street tier: your approved image on the left, the street modeller's draft on the right. The build's camera looks straight down, yours is tilted. That camera is mine to rule.
+1. `out/stills/status/01-street-tier-new-spiral.jpg`: The street tier from straight above with the new layout, draft tier. Right: the spiral's three turns now stand 1.3 balls apart, so the top turn is nearer the camera and looks larger. The thin column inside is the old garage core, due to be rebuilt as the frame outside the trough.
+2. `out/stills/status/02-rail-cam-new-highway.jpg`: The rail camera riding the highway, draft tier: the ball on the wire track above the police station, the spiral's turns ahead.
+3. `out/stills/status/03-drop-zone-glass-approved-over-build.jpg`: The drop zone's glass at the same scale: your approved fire image above, the build below (review tier). The build's glass is the next thing I change.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 3, tick 72 at 2026-11-25T17:09:45Z, allowance: build
-time used in this phase: 4.28 h of its box of 8.00 h
-time used under the allowance in force: 11.62 h of 36.00 h allowed
-time used: 11.62 of 36.00 hours before the review
+clock: phase 3, tick 73 at 2026-11-25T17:28:21Z, allowance: build
+time used in this phase: 4.59 h of its box of 8.00 h
+time used under the allowance in force: 11.93 h of 36.00 h allowed
+time used: 11.93 of 36.00 hours before the review
 extra rounds: yes
 half point: reached
 box end: not reached
