@@ -1,0 +1,35 @@
+{
+  "folder": "light",
+  "pushed": "2026-11-25T14:18:59.749Z",
+  "commit": "430c1b45032c348102e1910c11f1fa2afa3d6ceb",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Key step1-fire: approved on the left, this build on the right, review tier",
+      "time": "2026-11-25T14:18:32.969Z",
+      "by": "light",
+      "from": "out/work/compare/compare-step1-fire.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Page look, review tier, beside the approved image: ceramic 231 upper left to 194 lower right (approved 234 to 198), soft shadows down right",
+      "time": "2026-11-25T14:18:57.738Z",
+      "by": "light",
+      "from": "out/work/light/r-page-look.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "step1-fire, review tier, beside the approved image: bolt and focus ring glow, the page does not",
+      "time": "2026-11-25T14:18:57.978Z",
+      "by": "light",
+      "from": "out/work/light/r-fire.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "step1-fire at 200 percent: the bolt lights the caps beside it, shadows between caps",
+      "time": "2026-11-25T14:18:58.250Z",
+      "by": "light",
+      "from": "out/work/light/r-bolt.jpg"
+    }
+  ]
+}
