@@ -64,13 +64,13 @@ function starPicture(seed: number): THREE.DataTexture {
   })
 }
 
-// A soft puff of steam or smoke: its alpha only.
+// A soft puff of steam or smoke: its alpha only, read from the green channel.
 function puffPicture(seed: number): THREE.DataTexture {
   return picture(64, false, (u, v) => {
     const r = Math.hypot(u, v)
     const n = noise(u * 2.2 + 7, v * 2.2 + 3, seed) * 0.6 + noise(u * 5 + 1, v * 5 + 9, seed + 5) * 0.4
     const a = smooth((1 - r - (1 - n) * 0.35) / 0.6)
-    return [1, 1, 1, a]
+    return [a, a, a, 1]
   })
 }
 
@@ -82,13 +82,13 @@ function scorchPicture(seed: number): THREE.DataTexture {
     const ragged = noise(Math.cos(a) * 2.4 + 5, Math.sin(a) * 2.4 + 5, seed) * 0.5 + noise(Math.cos(a) * 6 + 9, Math.sin(a) * 6 + 9, seed + 3) * 0.3
     const edge = 0.3 + ragged * 0.22
     const char = 1 - smooth((r - edge) / 0.1)
-    const ring = (1 - smooth((r - edge) / (0.62 - edge))) * 0.62
+    const ring = (1 - smooth((r - edge) / (0.7 - edge))) * 0.7
     const fine = noise(u * 22, v * 22, seed + 11)
     const speck = fine > 0.8 && r < 0.85 ? (fine - 0.8) * 3 * (1 - r) : 0
     const pit = smooth((0.16 - r) / 0.12) * 0.35
     const alpha = Math.max(char * 0.96, ring * (0.75 + fine * 0.25), speck) * smooth((1 - r) / 0.1)
     const k = char
-    return [0.33 * (1 - k) + 0.045 * k + pit * 0.05, 0.17 * (1 - k) + 0.04 * k + pit * 0.03, 0.07 * (1 - k) + 0.036 * k, alpha]
+    return [0.46 * (1 - k) + 0.05 * k + pit * 0.05, 0.25 * (1 - k) + 0.043 * k + pit * 0.03, 0.1 * (1 - k) + 0.038 * k, alpha]
   })
 }
 
@@ -152,6 +152,22 @@ function tailGeometry(length: number, radius: number, segments = 10, steps = 8):
   return g
 }
 
+// The head of a bolt: white hot on top, cooling to orange at its rim, as the camera above sees it.
+function headGeometry(): THREE.BufferGeometry {
+  const g = new THREE.SphereGeometry(1, 20, 12)
+  g.rotateX(Math.PI / 2)
+  const p = g.getAttribute('position')
+  const col = new Float32Array(p.count * 3)
+  for (let i = 0; i < p.count; i++) {
+    const t = smooth(Math.max(0, p.getZ(i)) / 0.75)
+    col[i * 3] = 0.42 + 0.58 * t
+    col[i * 3 + 1] = 0.16 + 0.84 * t
+    col[i * 3 + 2] = 0.05 + 0.95 * t
+  }
+  g.setAttribute('color', new THREE.BufferAttribute(col, 3))
+  return g
+}
+
 let made: Fx | null = null
 
 export function fx(): Fx {
@@ -164,10 +180,10 @@ export function fx(): Fx {
   made = {
     star, puff, scorch,
     quad: new THREE.PlaneGeometry(1, 1),
-    head: new THREE.SphereGeometry(1, 20, 12),
+    head: headGeometry(),
     tail: tailGeometry(1, 1),
     orb: new THREE.SphereGeometry(1, 16, 10),
-    headMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...GLOW.boltHead), toneMapped: false }),
+    headMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...GLOW.boltHead), vertexColors: true, toneMapped: false }),
     tailMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...GLOW.boltTail), vertexColors: true, ...add }),
     flashMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...GLOW.flash), map: star, ...add }),
     puffMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(0.8, 0.8, 0.8), alphaMap: puff, transparent: true, depthWrite: false, toneMapped: false }),

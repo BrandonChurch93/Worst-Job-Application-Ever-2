@@ -266,7 +266,7 @@ function makeBolt(): THREE.Object3D {
   head.scale.set(11, 5.2, 5.2)
   head.position.set(len / 2 - 11, 0, 8)
   const tail = overlay(new THREE.Mesh(f.tail, f.tailMaterial), 4)
-  tail.scale.set(88, 5, 5)
+  tail.scale.set(88, 5.4, 5.4)
   tail.position.set(len / 2 - 12, 0, 8)
   const core = overlay(new THREE.Mesh(f.tail, f.tailMaterial), 5)
   core.scale.set(40, 3.2, 3.2)
@@ -281,7 +281,7 @@ function poseBolt(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const d = o.userData.bolt as BoltData
   const born = s.v ? Math.min(1, Math.max(0, s.v[1] ?? 1)) : 1
   const flick = 0.92 + 0.08 * Math.sin(ctx.time * 140 + (hashName(s.id) & 255))
-  d.tail.scale.set(30 + 58 * born, 5 * flick, 5 * flick)
+  d.tail.scale.set(30 + 62 * born, 5.4 * flick, 5.4 * flick)
   d.core.scale.set(14 + 26 * born, 3.2, 3.2)
   const a = s.rot ?? 0
   const half = TURRET.bolt / 2 - 9

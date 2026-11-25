@@ -80,10 +80,10 @@ export function kit(): Kit {
     out.anisotropyRotation = 0
     return out
   }
-  const deck = metal(0.42, 0.8, 0.22)
-  deck.color.multiplyScalar(0.8)
+  const deck = metal(0.5, 0.8, 0.22)
+  deck.color.multiply(new THREE.Color(0.6, 0.62, 0.66))
   const turned = metal(0.36, 0.85, 0.18)
-  turned.color.multiplyScalar(0.72)
+  turned.color.multiplyScalar(0.62)
   const speckle = m.textures[0]!.clone()
   speckle.repeat.set(1, 1)
   speckle.needsUpdate = true
