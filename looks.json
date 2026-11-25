@@ -1,35 +1,35 @@
 {
   "folder": "displays",
-  "pushed": "2026-11-25T17:07:16.430Z",
-  "commit": "2f7db52d50c8adf2d568b388ea2d7e7540147639",
+  "pushed": "2026-11-25T18:07:19.764Z",
+  "commit": "4e3a9d5b199d463d83ff51b4acab775df685fdb8",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-tier-street-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-25T17:05:23.372Z",
+      "caption": "street display at 4 times after merge 13: numerals set wide, glow, lamps faint in the pane",
+      "time": "2026-11-25T18:07:17.913Z",
       "by": "displays",
-      "from": "out/work/stills/key-tier-street-hd-draft.png"
+      "from": "out/work/looks-src/d3-street-score-wide.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "street display at 4 times: wide glow round the lit numerals, the tier's lamps faint in the pane, sweep passing the middle numerals (forced)",
-      "time": "2026-11-25T17:07:14.780Z",
+      "caption": "main display in the frame's new seat, lobby-doors draft at twice the size, a line running",
+      "time": "2026-11-25T18:07:18.156Z",
       "by": "displays",
-      "from": "out/work/looks-src/d2-street-glow.png"
+      "from": "out/work/looks-src/d3-lobby-main.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "main display in the frame's new seat, table-wide draft, from a local merge of agent/frame (not on main yet)",
-      "time": "2026-11-25T17:07:15.012Z",
+      "caption": "office display from the side in rail-cam, draft",
+      "time": "2026-11-25T18:07:18.389Z",
       "by": "displays",
-      "from": "out/work/looks-src/d2-marquee-new-seat.png"
+      "from": "out/work/looks-src/d3-railcam-office.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "sheet of pinball.coffee: name held, then the line runs",
-      "time": "2026-11-25T17:07:15.248Z",
+      "caption": "the hint on the street display (forced): right button and right bat lit",
+      "time": "2026-11-25T18:07:18.622Z",
       "by": "displays",
-      "from": "out/work/sheets/sheet-beat-pinball_coffee-preview-draft.jpg"
+      "from": "out/work/looks-src/d3-street-hint.png"
     }
   ]
 }
