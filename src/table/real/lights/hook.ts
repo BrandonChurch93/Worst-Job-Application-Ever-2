@@ -66,7 +66,7 @@ const body = /* glsl */ `
 		if ( at.w > 1.5 ) {
 			from = vec3( wjlP.xy + wjlToward * at.z * wjlRun, at.z );
 			amount *= wjlCut;
-			amount = mix( amount, amount / ( 1.0 + 1.2 * amount ), wjlWall );
+			amount = mix( amount, 0.6 * amount / ( 1.0 + 1.5 * amount ), wjlWall );
 		}
 		vec3 low = from - vec3( wjlP.xy, 0.0 );
 		vec3 to = from - wjlP;
@@ -79,7 +79,7 @@ const body = /* glsl */ `
 		#endif
 		RE_Direct( wjlLight, geometryPosition, geometryNormal, geometryViewDir, geometryClearcoatNormal, material, reflectedLight );
 		if ( at.w > 1.5 ) {
-			reflectedLight.directSpecular = mix( wjlGloss, reflectedLight.directSpecular, wjlShine );
+			reflectedLight.directSpecular = mix( wjlGloss, reflectedLight.directSpecular, wjlShine * ( 1.0 - 0.6 * wjlWall ) );
 			#ifdef USE_CLEARCOAT
 			clearcoatSpecularDirect = mix( wjlCoat, clearcoatSpecularDirect, wjlShine );
 			#endif

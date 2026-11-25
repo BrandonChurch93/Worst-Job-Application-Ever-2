@@ -76,7 +76,7 @@ function build(z: Zone): Group[] {
   const slings: Source[] = table.slings.filter((s) => s.tier === k).map((s) => at((s.a[0] + s.b[0] + s.c[0]) / 3, (s.a[1] + s.b[1] + s.c[1]) / 3, 30, 0.6, 2.7, `sling.${s.id}`))
   const insert = (n: Insert, i: number): void => add(`insert.${i + 1}`, 1, linear(insertColour(n)), [at(n.c[0], n.c[1], 40, 1.0, 3.6)], true)
   const d = table.displays[k]!
-  const display = (): void => add('display', 0, C.DISPLAY_AMBER, [0.2, 0.5, 0.8].map((f) => at(d.box[0] + d.box[2] * f, d.box[1] + d.box[3] * 0.4, 40, 0.5, 3.6)))
+  const display = (): void => add('display', 0, C.DISPLAY_AMBER, [0.2, 0.5, 0.8].map((f) => at(d.box[0] + d.box[2] * f, d.box[1] + d.box[3] * 0.4, 34, 0.22, 2.4)))
   if (z.id === 'corporate') {
     add('general', 2, C.CORPORATE_COLD_WHITE, both(rail, 1.3))
     add('lanes', 2, C.CORPORATE_GOLD, [...both(lane), ...slings])
