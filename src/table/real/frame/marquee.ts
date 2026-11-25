@@ -101,8 +101,8 @@ export function marquee(z: Zone, ctx: RealContext): THREE.Object3D {
   const hinge = new THREE.Vector3(0, -h2 - r, -BOX.deep).applyMatrix4(toBoard)
   const lean = new THREE.Vector3(0, -h2 * 0.35, -BOX.deep).applyMatrix4(toBoard)
   const brace: V2[] = [[-(sp[1] - sh + 10), 9], [-(hinge.y - 2), Math.min(tall, hinge.z)], [-lean.y, lean.z], [-(sp[1] + sh - 16), 9]]
-  for (const bx of [-0.82, -0.28, 0.28, 0.82]) A.prism(brace, [sp[0] + bx * sw - 9, 0], [sp[0] + bx * sw + 9, 0], TONE.aluDark)
-  A.box(sp[0] - sw + 12, sp[0] + sw - 12, hinge.y - 7, hinge.y + 9, 9, Math.min(tall, hinge.z) - 2, TONE.aluDark, { bevel: 2 })
+  for (const bx of [-0.82, -0.28, 0.28, 0.82]) A.prism(brace, [sp[0] + bx * sw - 9, 0], [sp[0] + bx * sw + 9, 0], TONE.stand)
+  A.box(sp[0] - sw + 12, sp[0] + sw - 12, hinge.y - 7, hinge.y + 9, 9, Math.min(tall, hinge.z) - 2, TONE.stand, { bevel: 2 })
   for (let i = 0; i < 9; i++) for (const sy of [-sh + 9, sh - 9]) screws.add(sp[0] - sw + 18 + (i * (2 * sw - 36)) / 8, sp[1] + sy, 9, 1.25, i + sy)
 
   const pictures = skyline()

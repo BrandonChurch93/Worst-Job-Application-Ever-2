@@ -6,7 +6,7 @@ import { marquee, marqueePose } from './marquee'
 import { drop } from './mats'
 import { tier } from './tier'
 
-export const VERSION = 'frame-1'
+export const VERSION = 'frame-2'
 
 export const parts: Record<string, PartMaker | null> = {
   'table-frame': whole('table-frame', { version: VERSION, build: (z, ctx) => (z.tier >= 0 ? tier(z, ctx) : apron(z, ctx)), drop }),

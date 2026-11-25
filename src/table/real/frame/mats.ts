@@ -27,7 +27,8 @@ export const TONE = {
   enamel: hex(0xe9e4d6),
   enamelRing: hex(0x2a2c30),
   paper: hex(0xf3efe6),
-  vent: hex(0x141516)
+  vent: hex(0x141516),
+  stand: hex(0x4a4d52)
 }
 
 const own = <T extends THREE.Material>(m: T, name: string): T => {
@@ -38,7 +39,7 @@ const own = <T extends THREE.Material>(m: T, name: string): T => {
 
 export const aluOf = (z: Zone, name = 'alu'): THREE.MeshPhysicalMaterial => {
   const src = materials().aluminium
-  return own(lit(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.36, metalness: 0.72, normalMap: src.normalMap, normalScale: new THREE.Vector2(0.22, 0.22), anisotropy: 0.72, anisotropyRotation: Math.PI / 2 })), z), `frame.${name}.${z.id}`)
+  return own(lit(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.36, metalness: 0.58, normalMap: src.normalMap, normalScale: new THREE.Vector2(0.22, 0.22), anisotropy: 0.72, anisotropyRotation: Math.PI / 2 })), z), `frame.${name}.${z.id}`)
 }
 
 export const paintOf = (z: Zone, name = 'paint'): THREE.MeshPhysicalMaterial => {

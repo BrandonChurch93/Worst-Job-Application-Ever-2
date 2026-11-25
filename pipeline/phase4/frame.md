@@ -23,7 +23,7 @@ Written by frame, who started first. All numbers are page pixels (96 px is one b
 
 ## Decisions
 
-- The lit zones give metal only the light of the lamps and a dimmed reflection of the studio, so full metal reads near black from above. The frame's aluminium is the page's brushed aluminium (same grain picture, same anisotropy) with metalness 0.72 and roughness 0.36 and a lighter base, so it takes the lamps' light as the approved rails do. Colour rides on the corners, so brass, dark and bright aluminium are one drawing.
+- The lit zones give metal only the light of the lamps and a dimmed reflection of the studio, so full metal reads near black from above. The frame's aluminium is the page's brushed aluminium (same grain picture, same anisotropy) with metalness 0.58 and roughness 0.36 and a lighter base, so it takes the lamps' light as the approved rails do. Colour rides on the corners, so brass, dark and bright aluminium are one drawing.
 - A tier is four drawings: metal, paint (border ceramic, dark gaps, bezel, laminate, kerb, enamel), wear strips of bright steel, and one instanced mesh of screws. Budget is eight.
 - The border of the page (0.15 balls) is continued down both sides of each well as ceramic with a 1.2 px dark gap to the rail, because the well spans the whole width of the page.
 - The left rail: 3 px chamfers, a channel 34 wide and 3 deep along its top with a screw every 1.5 balls, a ledge 18 wide and 7 lower on the lane side, one joint with a 1.4 px gap at 5.6 balls.

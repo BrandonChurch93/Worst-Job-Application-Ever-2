@@ -56,9 +56,9 @@ export function skyline(): { art: THREE.DataTexture; glow: THREE.DataTexture } {
       const i = (y * w + x) * 3
       const horizon = Math.exp(-up * 3.4)
       const side = 0.86 + 0.14 * Math.cos(((x - w * 0.42) / w) * 3.2)
-      col[i] = mix(0.035, 0.74, horizon) * side
-      col[i + 1] = mix(0.06, 0.4, horizon * horizon) * side
-      col[i + 2] = mix(0.16, 0.3, horizon * 0.8)
+      col[i] = mix(0.03, 0.5, horizon) * side
+      col[i + 1] = mix(0.05, 0.26, horizon * horizon) * side
+      col[i + 2] = mix(0.14, 0.24, horizon * 0.8)
       lum[i] = col[i]! * 0.5
       lum[i + 1] = col[i + 1]! * 0.5
       lum[i + 2] = col[i + 2]! * 0.5

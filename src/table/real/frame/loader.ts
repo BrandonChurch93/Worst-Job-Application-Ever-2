@@ -8,6 +8,7 @@ import { Screws, TONE, aluOf, clearOf, mesh, screwOf } from './mats'
 // The one clear tube of the machine. The feed tube is built to it here; the drain tube and the lift tube are to be built to the same.
 export const TUBE = { outer: 59.5, wall: 4.5, sides: 24, opacity: 0.05, collar: 22, collarOut: 66, collarStep: 3.4 * BALL, clampStep: 3.4 * BALL, clampWide: 9, strap: 2.4, bend: 1.1 * BALL }
 const RING = { height: 26, lip: 6, floor: 3 }
+const BED = { height: 6, land: 5 }
 
 // The middle line of the tube on the page, in page pixels, its corners rounded.
 function line(): V3[] {
@@ -168,6 +169,19 @@ export function loader(z: Zone, _ctx: RealContext): THREE.Object3D {
     for (let s = Math.ceil((from + 30 - step / 2) / step) * step + step / 2 - from; s < length - 20; s += TUBE.clampStep) {
       const f = frameAt(path, s)
       if (f && f.flat && f.at.z - ground > 20 && f.at.z - ground < 90) clamp(A, screws, f, ground)
+    }
+    if (z.tier < 0) {
+      // Over the page the tube lies in a bed: two low rails of aluminium cut to its round.
+      const up = TUBE.outer + 0.6
+      const edge = (h: number): number => Math.sqrt(up * up - (BALL / 2 - h) * (BALL / 2 - h))
+      const bed: V2[] = [[edge(0), 0], [edge(3), 3], [edge(BED.height), BED.height], [edge(BED.height) + BED.land, BED.height], [edge(BED.height) + BED.land + 2, BED.height - 2], [edge(BED.height) + BED.land + 2, 0]]
+      for (let i = 1; i < path.length; i++) {
+        const a = path[i - 1]!
+        const b = path[i]!
+        if (Math.abs(a[2] - BALL / 2) > 1.5 || Math.abs(b[2] - BALL / 2) > 1.5) continue
+        A.prism(bed, [a[0], a[1]], [b[0], b[1]], TONE.alu, [false, false])
+        A.prism(bed.map((q) => [-q[0], q[1]] as V2), [a[0], a[1]], [b[0], b[1]], TONE.alu, [false, false])
+      }
     }
     if (first) {
       const f = frameAt(path, Math.min(length - 1, PORT.ring * BALL * 0.5 + TUBE.collar))
