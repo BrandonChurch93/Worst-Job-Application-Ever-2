@@ -65,3 +65,11 @@ Blockout phase. Stand-in shapes, working logic.
 - A keycap node has no `floor`: the still's state gives a part's height as its top less its node's floor, and scale.heights.keycap (42) is a height above the page, not above the deck. The key shape still stands on the deck: each draw sets its `z0` to the deck top.
 - Left for the Builder, in `NEEDS.patch`, not applied on this branch: `src/capture/showcase.ts` takes a node's floor from its top even when the floor is under the page, so a progress button on its rail (floor -3) reads 13 for 10 and a button cap in its socket (floor -4) reads 18 for 14, on every page. Taking only a floor above the page from the top turns M9 green for this unit.
 - `strips-zip` is emitted with hitsCursor false: the strips fly to the pile, they do not strike the cursor.
+
+## After round 1 of the blockout
+
+- The reset. In the film the tug lasts 5.2 s (22.25 to 27.45), the strips fly at 28.56, the fields empty and the message that asks for everything again shows at 28.96, and the page turns at 31.50: 2.54 s of hold. The camera is back home by 28.70 and stays there. The message is set in the hero type (32 px, weight 600) in the middle of the resume card.
+- The line between `step1.tug` and `step1.shredded` is 28.25, not 28. At 28 the narrator's line "The shredder / always wins." ends 0.2 s before the next line starts and `tests/content.test.ts` refuses it (0.3 s is the least). 28.25 is the first quarter second that passes.
+- The slabs. A slab never lands on the typed address. It is aimed at the cursor. If the cursor is on the field row and there is room right of the value (24 px clear), the slab lands on the field beside the value. Otherwise it lands on the keyboard, on top of the keys, where the cursor stands. In the film: beside the value, on the keys, beside the value.
+- Continue is drawn as step 2 draws its own: metal with dark type while the form is empty, accent with light type once the form can be sent. It stays under the fields, at the line the keyboard rises from.
+

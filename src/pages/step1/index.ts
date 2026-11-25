@@ -21,6 +21,7 @@ const LIE = heights.card + 9
 const IDLE_SHUFFLE = 5
 const HOUSING = 44
 const SHRED = { zip: 1.1, reset: 1.5, end: 1.6 }
+const SLAB_CLEAR = 24
 
 type Phase = 'rest' | 'keyboard' | 'firstName' | 'lastName' | 'email' | 'slabs' | 'resume' | 'tug' | 'shredded' | 'received'
 const GAG: Record<Phase, string> = {
@@ -49,7 +50,7 @@ interface State {
   keyDown: Record<string, number>
   drum: number
   shock: number
-  slab: { n: number; t: number; x: number; landed: boolean } | null
+  slab: { n: number; t: number; x: number; y: number; base: number; landed: boolean } | null
   accepted: boolean
   slow: number
   slowFired: boolean
@@ -81,6 +82,7 @@ export function makePage(): PageLogic {
   const values = Object.fromEntries(FIELDS.map((f) => [f, boxOf(layout, `${f}-value`)])) as Record<FieldName, ReturnType<typeof boxOf>>
   const slabHome = boxOf(layout, 'email-slab')
   const slabLabel = boxOf(layout, 'email-slab-label')
+  const emailValue = boxOf(layout, 'email-value')
   const go = boxOf(layout, 'continue-cap')
   const hatches: [{ x: number; y: number }, { x: number; y: number }] = [hatchCentre(0), hatchCentre(1)]
   const lift = (board: number): number => -(1 - smooth((board - 0.25) / 0.75)) * (CAP_TOP + 8)
@@ -237,12 +239,23 @@ export function makePage(): PageLogic {
     }
   }
 
+  const valueBox = (): { x: number; y: number; w: number; h: number } => ({ x: emailValue.x, y: pockets.email.y, w: block(TYPE.value.font, s.values.email, TYPE.value.px).width, h: pockets.email.h })
+
+  const slabAim = (io: StepIo): { x: number; y: number; base: number } => {
+    const cx = io.cursor.x + BODY.x - SLAB.w / 2
+    const cy = io.cursor.y + BODY.y
+    const p = pockets.email
+    const from = valueBox().x + valueBox().w + SLAB_CLEAR
+    const to = p.x + p.w - SLAB.w
+    if (cy < DECK.y && from <= to) return { x: clamp(cx, from, to), y: slabHome.y, base: 0 }
+    return { x: clamp(cx, DECK.x + 8, DECK.x + DECK.w - SLAB.w - 8), y: clamp(cy - SLAB.h / 2, DECK.y + 8, DECK.y + DECK.h - SLAB.h - 8), base: CAP_TOP }
+  }
+
   const stepSlabs = (io: StepIo): void => {
     const every = TIMES.slabEvery
     if (!s.slab) {
       if (s.phaseTime >= TIMES.slabFirst) {
-        const x = clamp(io.cursor.x + BODY.x - SLAB.w / 2, pockets.email.x, pockets.email.x + pockets.email.w - SLAB.w)
-        s.slab = { n: 0, t: 0, x, landed: false }
+        s.slab = { n: 0, t: 0, ...slabAim(io), landed: false }
       }
       return
     }
@@ -250,8 +263,8 @@ export function makePage(): PageLogic {
     b.t += io.dt
     if (!b.landed && b.t >= TIMES.slabFall) {
       b.landed = true
-      const under = inside({ x: b.x, y: slabHome.y, w: SLAB.w, h: SLAB.h }, io.cursor.x + BODY.x, io.cursor.y + BODY.y)
-      io.emit('slab-drop', b.x + SLAB.w / 2, slabHome.cy, under)
+      const under = inside({ x: b.x, y: b.y, w: SLAB.w, h: SLAB.h }, io.cursor.x + BODY.x, io.cursor.y + BODY.y)
+      io.emit('slab-drop', b.x + SLAB.w / 2, b.y + SLAB.h / 2, under)
       if (under) {
         io.cursor.hurt('flattened')
         io.cursor.react('flinch')
@@ -267,8 +280,7 @@ export function makePage(): PageLogic {
         enter('resume')
         act(io, 'proud')
       } else {
-        const x = clamp(io.cursor.x + BODY.x - SLAB.w / 2, pockets.email.x, pockets.email.x + pockets.email.w - SLAB.w)
-        s.slab = { n: b.n + 1, t: 0, x, landed: false }
+        s.slab = { n: b.n + 1, t: 0, ...slabAim(io), landed: false }
       }
     }
   }
@@ -571,9 +583,9 @@ export function makePage(): PageLogic {
         const b = s.slab
         const fall = 1 - smooth(b.t / TIMES.slabFall)
         const rise = smooth((b.t - TIMES.slabFall - TIMES.slabLie) / TIMES.slabLift)
-        const z = 300 * fall * fall + 300 * rise * rise
-        over['email-slab'] = { x: b.x, z0: z, z1: z + heights.slab, moved: true }
-        over['email-slab-label'] = { x: slabLabel.x + (b.x - slabHome.x), z0: z + heights.slab, z1: z + heights.slab, moved: true }
+        const z = b.base + 300 * fall * fall + 300 * rise * rise
+        over['email-slab'] = { x: b.x, y: b.y, z0: z, z1: z + heights.slab, moved: true }
+        over['email-slab-label'] = { x: slabLabel.x + (b.x - slabHome.x), y: slabLabel.y + (b.y - slabHome.y), z0: z + heights.slab, z1: z + heights.slab, moved: true }
       }
       if (s.paper.on && s.phase === 'resume') {
         const dx = s.paper.x - PAPER_REST.x
@@ -589,7 +601,11 @@ export function makePage(): PageLogic {
         })
       }
       for (const f of FIELDS) over[`${f}-value`] = { z0: 0.1, z1: 0.1 }
-      if (s.pressed >= 0) over['continue-cap'] = { z1: heights.button - TRAVEL }
+      if (s.received) {
+        const top = heights.button - (s.pressed >= 0 ? TRAVEL : 0)
+        over['continue-cap'] = { tone: 'accent', z1: top }
+        over['continue-label'] = { tone: 'inkLight', z0: top, z1: top }
+      }
       drawLayout(out, layout, { states: stateList(), over, runtime: { 'step1.firstName': s.values.firstName, 'step1.lastName': s.values.lastName, 'step1.email': s.values.email } })
       const field = FIELD_OF[s.phase]
       if (field) {

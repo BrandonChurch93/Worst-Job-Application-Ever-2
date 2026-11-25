@@ -100,10 +100,9 @@ export function makePlan(seed: number, first: string, last: string, email: strin
   const e = submit + 0.1
   const fy = FIELD_Y + 2 * FIELD_PITCH + 36 + config.scale.sizes.field / 2
   hold(e + 0.28, e + 0.42, 1560, fy)
-  hold(e + 0.58, e + 0.75, 1500, 780)
-  hold(e + 0.85, e + 0.97, 1300, fy)
-  hold(e + 1.13, e + 1.3, 1260, 780)
-  hold(e + 1.45, e + 2.3, 1420, 800)
+  hold(e + 0.58, e + 0.9, 1420, 800)
+  hold(e + 1.06, e + 1.46, 1640, fy)
+  hold(e + 1.62, e + 2.3, 1420, 800)
 
   const grab = { x: PAPER_REST.x + PAPER.w - 62, y: PAPER_REST.y + 24 }
   const drop = 21.85

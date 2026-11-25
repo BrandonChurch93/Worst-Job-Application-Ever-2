@@ -8,6 +8,8 @@ import { PAPER_REST } from '../src/pages/step1/layout'
 import { DECK, homePlaces, keyboardData, legendKey, seats, shuffled } from '../src/pages/step1/keyboard'
 import { Turrets, TURRET } from '../src/pages/step1/turrets'
 import { layoutProblems, typeRegister } from '../src/shell/layout'
+import { block } from '../src/shell/metrics'
+import { TYPE } from '../src/shell/parts'
 import { hasWords, words } from '../src/shell/words'
 import { filmFlow, filmOptions, ScriptDriver, Stage, type Driver, type DriverView, type DrawList, type Pointer } from '../src/stage/stage'
 import rawCopy from '../content/copy.json'
@@ -399,6 +401,39 @@ describe('the scene of the card loop', () => {
   })
 })
 
+describe('the slabs and the typed address', () => {
+  it('never rests a slab over the typed address: every slab box stays clear of the value box', () => {
+    const a = film()
+    const hits = (p: { x: number; y: number; w: number; h: number }, q: { x: number; y: number; w: number; h: number }): boolean => p.x < q.x + q.w && q.x < p.x + p.w && p.y < q.y + q.h && q.y < p.y + p.h
+    const places = new Set<string>()
+    let frames = 0
+    for (let i = 0; i < at(20); i++) {
+      a.advance(1)
+      const st = a.page.save() as { slab: { landed: boolean } | null }
+      if (!st.slab) continue
+      const list: DrawList = []
+      a.page.draw(list)
+      const slab = list.find((q) => q.id === 'email-slab')!
+      const label = list.find((q) => q.id === 'email-slab-label')!
+      const drawn = list.find((q) => q.id === 'email-value')!
+      const value = { x: drawn.x, y: drawn.y, w: block(TYPE.value.font, (a.page.save() as { values: Record<string, string> }).values.email!, TYPE.value.px).width, h: drawn.h }
+      expect(value.w).toBeGreaterThan(250)
+      expect(hits(slab, value)).toBe(false)
+      expect(slab.x - (value.x + value.w) >= 16 || slab.y - (value.y + value.h) >= 16).toBe(true)
+      expect(label.x).toBeGreaterThan(slab.x)
+      expect(label.x).toBeLessThan(slab.x + slab.w)
+      expect(label.y).toBeGreaterThan(slab.y)
+      expect(label.y).toBeLessThan(slab.y + slab.h)
+      places.add(`${Math.round(slab.x)},${Math.round(slab.y)}`)
+      frames++
+    }
+    expect(frames).toBeGreaterThan(300)
+    expect(a.events.filter((e) => e.name === 'slab-drop').length).toBe(3)
+    expect(a.events.filter((e) => e.name === 'slab-drop').every((e) => !e.hitsCursor)).toBe(true)
+    expect(places.size).toBeGreaterThanOrEqual(2)
+  })
+})
+
 describe('the hold after the shredder', () => {
   it('lands the reset at least 2 s before the page turns, seen front-on from home all the while', () => {
     const a = film()
@@ -420,6 +455,21 @@ describe('the hold after the shredder', () => {
     }
     expect(reset).toBeGreaterThan(28.25)
     expect(turn - reset).toBeGreaterThanOrEqual(2)
+  })
+})
+
+describe('the Continue button', () => {
+  it('is drawn light while the form is empty at rest and dark once the form can be sent', () => {
+    const a = film()
+    const tones = (): [string, string] => {
+      const list: DrawList = []
+      a.page.draw(list)
+      return [list.find((q) => q.id === 'continue-cap')!.tone, list.find((q) => q.id === 'continue-label')!.tone]
+    }
+    a.advance(at(0.3))
+    expect(tones()).toEqual(['metal', 'ink'])
+    a.advance(at(30.2) - at(0.3))
+    expect(tones()).toEqual(['accent', 'inkLight'])
   })
 })
 

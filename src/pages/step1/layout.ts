@@ -68,7 +68,8 @@ export function buildLayout(): LayoutNode {
   const accepted = text('email-accepted', 'copy:step1.emailAccepted', { ...TYPE.helper, align: 'right' }, RIGHT, HEADER.contentY + FIELD_PITCH * 2 + labelCap - helperCap, { part: 'type', states: ['accepted'] })
   const note = text('keyboard-note', 'copy:step1.keyboardNote', TYPE.helper, LEFT, NOTE_Y, { part: 'type', states: ['note'] })
   const w = buttonWidth('copy:step1.continue')
-  const go = button('continue', RIGHT - 5 - w, CONTINUE_Y + 5, w, 'copy:step1.continue', { part: 'shell', states: ['closed'] })
+  const go = button('continue', RIGHT - 5 - w, CONTINUE_Y + 5, w, 'copy:step1.continue', { part: 'shell', tone: 'metal', states: ['closed'] })
+  go.children![0]!.children![0]!.tone = 'ink'
 
   const keys: LayoutNode[] = seats.map((s) => {
     const key = legendKey(s.name)
