@@ -25,20 +25,21 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 23, 2026-11-25T13:26Z, Phase 3.
+Status 24, 2026-11-25T13:45Z, Phase 3.
 
-1. `out/stills/status/01-compare-step1-fire-start.jpg`: Step 1 under fire: your approved picture on the left, the starting point of the look lock on the right.
-2. `out/stills/status/02-standins-step1-fire.jpg`: The same frame and its stand-in view. Tinted means not real yet: the shell and type, the keyboard and turrets, the cursor.
+1. `out/stills/status/01-compare-tier-corporate-start.jpg`: Tier 3, Corporate: your approved picture on the left, the stand-in the table team starts from on the right.
+2. `out/stills/status/02-compare-tier-office-start.jpg`: Tier 2, The Office: approved on the left, today's stand-in on the right.
+3. `out/stills/status/03-compare-tier-street-start.jpg`: Tier 1, The Street: approved on the left, today's stand-in on the right.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 3, tick 60 at 2026-11-25T13:26:09Z, allowance: build
-time used in this phase: 0.55 h of its box of 8.00 h
-time used under the allowance in force: 7.89 h of 36.00 h allowed
-time used: 7.89 of 36.00 hours before the review
+clock: phase 3, tick 62 at 2026-11-25T13:45:58Z, allowance: build
+time used in this phase: 0.88 h of its box of 8.00 h
+time used under the allowance in force: 8.22 h of 36.00 h allowed
+time used: 8.22 of 36.00 hours before the review
 extra rounds: yes
 half point: not reached
 box end: not reached
@@ -501,7 +502,7 @@ How much of each limit in the table of `kit/07-QUALITY-BAR.md` has been used.
 | Searches for the pinball take | 4, the fourth logged as over the count at 10:00Z | 3 (`quality.takeSearchMaxRuns`) |
 | Replacements of an agent that ran past its limit | 0 | one per job |
 | Attempts to fix one machine check | 2 (M9 after the height reading, the progress rail) | 5 per round (`quality.gateFixMaxAttempts`) |
-| 12, at 13:34Z: the eight photographs of the look lock study and four photographs of real pinball machines | 12 (`assets.maxStudySources`): all used, none left |
+| Photographs and footage studied | 12, at 13:34Z: the eight photographs of the look lock study and four photographs of real pinball machines | 12 (`assets.maxStudySources`): all used, none left |
 
 ## Review items not done
 
