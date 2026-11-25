@@ -37,7 +37,8 @@ export const LAST = { at: [10.3, 10.95, 11.55, 12.1, 12.62, 13.12, 13.62, 14.12]
 export const MAIL = { first: 15.16, run: 15.5, every: 0.092, enter: 17.42 }
 export const DIVES = [{ x: 1088, y: 816 }, { x: 744, y: 944 }, { x: 940, y: 668 }]
 export const DIVE = { see: 0.05, start: 0.22, seconds: 0.16 }
-export const TRUDGE = { x: 150, y: -110, seconds: 1.0 }
+export const TRUDGE = { x: 150, y: -110, seconds: 0.8 }
+export const END = { lean: { x: -10, y: -30 }, stamp: 0.62, sag: 1.0 }
 export const RESUME = { look: 19.9, walk: [20.3, 20.72] as [number, number], grab: 20.92, hoist: [20.98, 21.06] as [number, number], carry: [21.1, 21.54] as [number, number], drop: 21.62 }
 
 const TUG_CURVE: [number, number, number, number][] = [
@@ -231,8 +232,13 @@ export function makePlan(seed: number, first: string, last: string, email: strin
   const whole = lost + TIMES.lost + SHRED.end
   to(lost + 0.1, lost + 0.2, PILE.x, PILE.y, { ease: 'out' })
   cue(whole + 0.06, { react: 'doubleTake' })
-  cue(whole + 0.4, { act: 'exhausted' })
-  to(whole + 0.4, whole + 0.4 + TRUDGE.seconds, PILE.x + TRUDGE.x, PILE.y + TRUDGE.y, { arc: -10 })
+  to(whole + 0.14, whole + 0.24, PILE.x + END.lean.x, PILE.y + END.lean.y, { ease: 'out' })
+  cue(whole + 0.2, { act: 'shocked' })
+  cue(whole + END.stamp - 0.08, { react: 'anticipate' })
+  cue(whole + END.stamp, { act: 'angry' })
+  leap(whole + END.stamp, whole + END.stamp + 0.18, PILE.x + END.lean.x, PILE.y + END.lean.y, { arc: 30 })
+  cue(whole + END.sag, { act: 'exhausted' })
+  to(whole + END.sag, whole + END.sag + TRUDGE.seconds, PILE.x + TRUDGE.x, PILE.y + TRUDGE.y, { arc: -10 })
   cues.sort((p, q) => p.at - q.at)
   return { moves, clicks, cues, drop: RESUME.drop, bite, lost }
 }
@@ -265,14 +271,17 @@ export function pointerAt(plan: Plan, time: number): Pointer {
   return { x: s.x0 + (s.x1 - s.x0) * u + s.side * bulge, y: s.y0 + (s.y1 - s.y0) * u - s.arc * bulge, down }
 }
 
-const TUG_WIDE = { x: 26, y: 150, w: 1200, h: 675 }
-const TUG_CLOSE = { x: 126, y: 356, w: 1000, h: 562.5 }
-export const CAMERA = { in: [21.1, 22.1] as [number, number], push: 4.6, out: [27.6, 28.9] as [number, number] }
+// The film camera in the tug: a window of the page for a moment. It pushes in slowly to the key picture at 25.125, which keeps as much fine detail in frame as the approved image has, and then goes right in as the sheet gets short.
+const TUG_WIDE = { x: SLOT.cx - 600, y: SLOT.cy - 574, w: 1200, h: 675 }
+const TUG_CLOSE = { x: SLOT.cx - 500, y: SLOT.cy - 368, w: 1000, h: 562.5 }
+const TUG_TIGHT = { x: SLOT.cx - 300, y: SLOT.cy - 260, w: 600, h: 337.5 }
+export const CAMERA = { in: [21.1, 22.1] as [number, number], push: 4.6, tight: [25.2, 26.8] as [number, number], out: [27.6, 28.9] as [number, number] }
 
 export function filmCamera(time: number): CameraPose {
   const home = homePose(0)
   if (time <= CAMERA.in[0] || time >= CAMERA.out[1]) return home
   const close = mixPose(frame(TUG_WIDE), frame(TUG_CLOSE), smooth((time - CAMERA.in[1]) / CAMERA.push))
+  const tight = mixPose(close, frame(TUG_TIGHT), smooth((time - CAMERA.tight[0]) / (CAMERA.tight[1] - CAMERA.tight[0])))
   const u = smooth((time - CAMERA.in[0]) / (CAMERA.in[1] - CAMERA.in[0])) * (1 - smooth((time - CAMERA.out[0]) / (CAMERA.out[1] - CAMERA.out[0])))
-  return mixPose(home, close, u)
+  return mixPose(home, tight, u)
 }

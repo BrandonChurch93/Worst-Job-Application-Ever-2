@@ -45,6 +45,8 @@ Times are seconds of the unit. Events are read from a run of the stage in film m
 12. Pile 1.0 s and reassembly 1.0 s, as cursor_actor asked.
 16. The strips of paper hang in a heap just under the hood and the strips of the cursor fall on to a pile 176 px under the slot, so the reassembly is seen in the open and not inside the paper. Once the message shows, the paper strips are drawn back under the hood in 0.3 s and the slot shuts.
 17. The number row and Backspace show their legends as soon as the well is open, as keyboard_smith reported them blank at 1.76 s.
+18. The film camera in the tug pushes in slowly to the key picture at 25.125 (a window 1051 px wide) and then right in to a window 600 px wide by 26.8, as the sheet gets short. The Builder asked for the cursor as large in frame as approved. MEASURED: with a window 716 px wide at the key picture M3 falls to 0.6134 against 0.8 (fine detail of `key:step1-tug`); at 1051 px it is 0.806. So the key picture keeps the wide window and the push comes after it.
+19. The end: whole at 30.18, a double take, it leans toward the message and freezes (shocked) for 0.4 s, stamps once in anger at 30.8, sags at 31.18 and starts its trudge toward the form as the page turns at 31.5.
 
 ## Agreed with other owners
 
