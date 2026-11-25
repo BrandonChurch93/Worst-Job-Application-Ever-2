@@ -141,6 +141,7 @@ function makeTurret(s: Shape): THREE.Object3D {
   lit(root)
   slots.castShadow = false
   bore.castShadow = false
+  head.traverse((m) => { m.castShadow = false })
   const chargeMaterial = new THREE.MeshBasicMaterial({ color: new THREE.Color(...GLOW.chargeLow), toneMapped: false })
   const charge = overlay(new THREE.Mesh(f.orb, chargeMaterial))
   charge.position.set(TURRET_LOOK.muzzle + 1, 0, 0)

@@ -157,6 +157,7 @@ function makeDeck(s: Shape, ctx: RealContext): THREE.Object3D {
   }
   lit(root)
   bed.castShadow = false
+  bed.receiveShadow = false
   if (accent) accent.castShadow = false
   const data: DeckData = { plate, caps, body, accent, owned: [g.metal, g.seat, all] }
   root.userData.deck = data
