@@ -1,33 +1,33 @@
 {
   "folder": "cursor-act",
-  "pushed": "2026-11-25T15:28:10.297Z",
-  "commit": "529224be9343f70748eae279634d0dedd5b6c6be",
+  "pushed": "2026-11-25T15:46:46.005Z",
+  "commit": "92ec67a1ed0f8cec9f40bbe85056a857298c74e2",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still step1-step1_shredded-0p42-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-25T15:24:35.869Z",
+      "caption": "Sheet cursor-damage: approved on the left, this build on the right, review tier",
+      "time": "2026-11-25T15:42:31.279Z",
       "by": "cursor-act",
-      "from": "out/work/stills/step1-step1_shredded-0p42-hd-review.png"
+      "from": "out/work/compare/compare-cursor-damage.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Sheet cursor-damage: approved on the left, this build on the right, review tier",
-      "time": "2026-11-25T15:24:53.506Z",
+      "caption": "Sheet cursor-acting: approved on the left, this build on the right, review tier",
+      "time": "2026-11-25T15:42:48.055Z",
       "by": "cursor-act",
-      "from": "out/work/compare/compare-cursor-damage.jpg"
+      "from": "out/work/compare/compare-cursor-acting.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Sheet cursor-damage: approved on the left, this build on the right, review tier",
-      "time": "2026-11-25T15:28:08.622Z",
+      "caption": "Acting sheet at review tier beside the approved image, with the model's rescaled heat",
+      "time": "2026-11-25T15:46:44.659Z",
       "by": "cursor-act",
-      "from": "out/work/compare/compare-cursor-damage.jpg"
+      "from": "out/work/compare/compare-cursor-acting.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Damage sheet at review tier beside the approved image, after the tape and the smaller charred hole",
-      "time": "2026-11-25T15:28:08.901Z",
+      "caption": "Damage sheet at review tier beside the approved image: scorch on the tip, smaller clean hole, tape",
+      "time": "2026-11-25T15:46:44.903Z",
       "by": "cursor-act",
       "from": "out/work/compare/compare-cursor-damage.jpg"
     }
