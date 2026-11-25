@@ -11,6 +11,7 @@ const HOLE_SEGMENTS = 48
 const HOLE_ROWS = [0, 0.3, 0.65, 1]
 // A punched bore narrows to this share of its mouth at the foot, so its wall is seen from above.
 const BORE = 0.7
+const BORE_LIGHT = { power: 0.0035, reach: 3.4 }
 const smooth01 = (v: number): number => {
   const t = Math.min(1, Math.max(0, v))
   return t * t * (3 - 2 * t)
@@ -34,7 +35,7 @@ export class Body implements BodyModel {
   private last = ''
   private p = { x: 0, y: 0, z: 0 }
   private heat = 0
-  private holes: { x: number; y: number; glow: number; r: number }[] = []
+  private holes: { x: number; y: number; glow: number; r: number; clean: number }[] = []
   private q = new THREE.Quaternion()
   private qz = new THREE.Quaternion()
   private v = new THREE.Vector3()
@@ -109,7 +110,7 @@ export class Body implements BodyModel {
       if (h && h.r > 0.02) {
         u.uHoles.value[i]!.set(h.x, h.y, h.r, clamp01(h.glow))
         u.uBurnt.value.setComponent(i, clamp01(h.burnt ?? 1))
-        this.holes.push({ x: h.x, y: h.y, glow: clamp01(h.glow), r: h.r })
+        this.holes.push({ x: h.x, y: h.y, glow: clamp01(h.glow), r: h.r, clean: look.strips ? 0 : smooth01(h.r / 1.2) })
       } else u.uHoles.value[i]!.set(0, 0, 0, 0)
     }
     this.heat = clamp01(look.heat)
@@ -264,13 +265,13 @@ export class Body implements BodyModel {
           const flick = Math.pow(0.5 + 0.5 * Math.sin(ang * 5 + h * 2.1) * Math.sin(ang * 9 + 1.7), 3.4)
           const side = smooth01((Math.cos(ang) * -0.5 + Math.sin(ang) * 0.86 - 0.1) / 0.9)
           const lee = 0.3 + 0.7 * side
-          const heat = (r === 0 ? 0.1 : r === 1 ? 0.9 : r === 2 ? 0.45 : 0.02) * lee
+          const heat = (r === 0 ? 0.9 : r === 1 ? 0.5 : r === 2 ? 0.12 : 0.02) * lee
           const burnt = clamp01(hole.burnt ?? 1)
-          const lit = Math.pow(glow, 1.3) * (0.08 + 2.4 * flick) * burnt
+          const lit = Math.pow(glow, 0.9) * (0.5 + 3.2 * flick) * burnt
           const facing = clamp01(0.5 + 0.5 * (Math.cos(ang) * 0.5 + Math.sin(ang) * 0.86))
           const grit = 0.82 + 0.36 * hash01(j, r, 7 + h)
           const bare = (1 - burnt) * (0.15 + 0.22 * Math.pow(facing, 1.5)) * (1 - 0.3 * HOLE_ROWS[r]!) * (0.72 + 0.56 * hash01(j, r, 7 + h))
-          const ash = burnt * (0.1 + 0.3 * facing) * (0.45 + 0.55 * HOLE_ROWS[r]!) * grit
+          const ash = burnt * (0.025 + 0.09 * facing) * (0.45 + 0.55 * HOLE_ROWS[r]!) * grit
           c[i] = 1.0 * heat * lit + bare * 0.84 + ash * 0.8
           c[i + 1] = (r === 0 ? 0.5 : 0.24) * heat * lit + bare * (0.66 + 0.1 * facing) + ash * 0.76
           c[i + 2] = 0.05 * heat * lit + bare * (0.42 + 0.18 * facing) + ash * 0.7
@@ -302,6 +303,11 @@ export class Body implements BodyModel {
       out.push({ x: this.p.x, y: this.p.y, z: this.p.z + 6 * UNIT, colour: [1, 0.3, 0.06], power: 0.06 * this.heat, reach: (10 + 8 * this.heat) * UNIT })
     }
     for (const h of this.holes) {
+      // Daylight comes down the bore: the page under it is seen, and the wall's far side is lit.
+      if (h.clean > 0.04) {
+        this.deform.point(h.x, h.y, 1.7, 2, this.p)
+        out.push({ x: this.p.x, y: this.p.y, z: this.p.z, colour: [1, 0.97, 0.92], power: BORE_LIGHT.power * h.clean, reach: BORE_LIGHT.reach * h.r * UNIT })
+      }
       if (h.glow < 0.04) continue
       this.deform.point(h.x, h.y, 2.4, 2, this.p)
       out.push({ x: this.p.x, y: this.p.y, z: this.p.z + 3.5 * UNIT, colour: [1, 0.42, 0.1], power: 0.02 * h.glow * h.glow, reach: (5 + 3 * h.r) * UNIT })

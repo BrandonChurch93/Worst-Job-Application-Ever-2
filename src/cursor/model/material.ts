@@ -150,19 +150,20 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
   // Crazing: a web of hairline cracks, and each plate between them tipped a hair its own way.
   float crack = uMarks.x * face;
   if ( crack > 0.0 ) {
-    vec3 cell = wjaCells( q / 6.6 + vec2( 0.37, 0.61 ) + ( mid.gb - 0.5 ) * 0.16 + ( wide.gb - 0.5 ) * 0.3 );
+    vec3 cell = wjaCells( q / 4.2 + vec2( 0.37, 0.61 ) + ( mid.gb - 0.5 ) * 0.16 + ( wide.gb - 0.5 ) * 0.3 );
     float thin = 0.0016 + 0.002 * fine.g;
     float line = 1.0 - smoothstep( thin, thin + max( fwidth( cell.x ) * 1.2, 0.002 ), cell.x );
     float plate = cell.y * 6.2832;
     float near = 1.0 - smoothstep( 0.0, 0.05, cell.x );
-    wjaCoatTilt += crack * vec2( cos( plate ), sin( plate ) ) * 0.016;
+    wjaCoatTilt += crack * vec2( cos( plate ), sin( plate ) ) * 0.05;
     wjaTilt += wjaCoatTilt;
     vec2 across = vec2( dFdx( cell.x ), -dFdy( cell.x ) );
     vec2 toGap = -across / max( length( across ), 1e-6 );
     float lip = ( 1.0 - smoothstep( thin, thin + 0.014, cell.x ) ) * ( 1.0 - line );
-    wjaTilt += crack * lip * toGap * 0.6;
-    col = mix( col, vec3( 0.80, 0.75, 0.65 ), crack * lip * 0.22 * smoothstep( 0.0, 0.8, dot( toGap, vec2( 0.6, 0.8 ) ) ) );
-    col *= 1.0 - crack * ( 0.42 * line + 0.05 * near );
+    wjaTilt += crack * lip * toGap * 0.9;
+    col = mix( col, vec3( 0.80, 0.75, 0.65 ), crack * lip * 0.1 * smoothstep( 0.0, 0.8, dot( toGap, vec2( 0.6, 0.8 ) ) ) );
+    col *= 1.0 - crack * ( 0.5 * line + 0.04 * near );
+    col *= 1.0 - crack * 0.035 * ( cell.z - 0.5 );
     wjaCoat *= 1.0 - 0.8 * crack * line;
   }
 
@@ -179,14 +180,14 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
   // Pale: the gloss dies and the body turns to stone. The black edge stays, as a thin dark line round it.
   if ( pale > 0.0 ) {
     float speck = smoothstep( 0.62, 0.78, texture2D( uDetail, q / 0.83 + vec2( 0.31, 0.77 ) ).b );
-    vec3 stone = vec3( 0.61, 0.606, 0.59 ) * ( 0.88 + 0.12 * wide.g + 0.08 * mid.b + 0.06 * fine.g ) * ( 1.0 - 0.16 * speck );
-    float thin = clamp( 1.5 * fwidth( vInset ), 0.3, 0.5 );
-    float line = ( 1.0 - smoothstep( thin - 0.1, thin + 0.06, vInset ) ) * ( 1.0 - bare );
+    vec3 stone = vec3( 0.7, 0.695, 0.675 ) * ( 0.88 + 0.12 * wide.g + 0.08 * mid.b + 0.06 * fine.g ) * ( 1.0 - 0.16 * speck );
+    float thin = clamp( 1.5 * fwidth( vInset ), 0.24, 0.5 );
+    float line = ( 1.0 - smoothstep( thin - 0.12, thin + 0.12, vInset ) ) * ( 1.0 - bare );
     col = mix( col, mix( stone, edge * 1.5 + vec3( 0.03, 0.028, 0.025 ), line ), pale );
     wjaRough = mix( wjaRough, 0.96, pale );
     wjaCoat *= 1.0 - pale;
     wjaSpec *= 1.0 - 0.85 * pale;
-    wjaTilt += grain * 0.6 * pale;
+    wjaTilt += grain * 0.22 * pale;
   }
 
   // Char: a black blistered crust that grows back from the tip, with a scorched brown fringe.
@@ -203,15 +204,17 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
     wjaCoat *= 1.0 - max( crust, soot * 0.6 );
     wjaSpec = mix( wjaSpec, 0.5 + 0.8 * blister, crust );
     wjaTilt += grain * 7.0 * crust;
+    float coal = crust * smoothstep( front - 1.3, front - 0.2, ragged ) * smoothstep( 0.6, 0.76, fine.b * 0.55 + mid.g * 0.6 );
+    wjaGlow += vec3( 1.3, 0.42, 0.05 ) * coal * 1.6;
   }
 
   // Heat: a glow inside the enamel that climbs from the tip.
   if ( heat > 0.0 ) {
-    float front = heat * 9.6;
-    float h = smoothstep( front + 1.0, front - 3.6, along + ( wide.g - 0.5 ) * 2.4 + ( mid.b - 0.5 ) * 1.2 ) * smoothstep( 0.3, 0.6, heat );
+    float front = heat * 7.4;
+    float h = smoothstep( front + 0.8, front - 4.6, along + ( wide.g - 0.5 ) * 2.4 + ( mid.b - 0.5 ) * 1.2 ) * smoothstep( 0.3, 0.6, heat );
     vec3 ember = mix( vec3( 1.0, 0.82, 0.45 ), vec3( 1.25, 0.62, 0.08 ), smoothstep( 0.06, 0.3, h ) );
-    ember = mix( ember, vec3( 1.2, 0.3, 0.02 ), smoothstep( 0.3, 0.58, h ) );
-    ember = mix( ember, vec3( 0.74, 0.035, 0.012 ), smoothstep( 0.58, 0.96, h ) );
+    ember = mix( ember, vec3( 1.2, 0.3, 0.02 ), smoothstep( 0.2, 0.42, h ) );
+    ember = mix( ember, vec3( 0.86, 0.04, 0.012 ), smoothstep( 0.42, 0.8, h ) );
     float streak = 0.82 + 0.36 * mid.g * fine.b * 2.0;
     float body = smoothstep( 0.0, 0.28, h ) * face;
     col = mix( col, ember * 0.1, body );
@@ -235,7 +238,7 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
     float r = hole.z * wjaRag( d, burnt );
     float from = length( d ) / r + ( mid.g - 0.5 ) * 0.16 + ( fine.b - 0.5 ) * 0.14;
     float soot = ( 1.0 - smoothstep( 1.12, 2.5, from ) ) * burnt;
-    float crust = ( 1.0 - smoothstep( 1.12, 1.4, from + ( wide.b - 0.5 ) * 0.25 ) ) * burnt;
+    float crust = ( 1.0 - smoothstep( 1.1, 1.3, from + ( wide.b - 0.5 ) * 0.25 + ( fine.g - 0.5 ) * 0.2 ) ) * burnt;
     col = mix( col, col * vec3( 0.34, 0.235, 0.15 ), soot * soot * 0.9 );
     col = mix( col, vec3( 0.014, 0.012, 0.010 ) + 0.03 * fine.g * mid.b, crust );
     float turn = atan( d.y, d.x ) + float( i ) * 1.7;
@@ -253,10 +256,11 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
     wjaCoat *= 1.0 - max( max( crust, soot * 0.7 ), chip );
     wjaSpec *= 1.0 - 0.8 * chip;
     wjaTilt += grain * ( 4.0 * crust + 2.0 * chip );
-    float lip = ( 1.0 - smoothstep( 1.04, 1.24, from ) ) * pow( hole.w, 0.7 ) * burnt;
-    float spark = smoothstep( 0.4, 0.68, fine.b * 0.6 + mid.g * 0.6 - 0.2 * ( 1.0 - hole.w ) );
+    float lip = ( 1.0 - smoothstep( 1.0, 1.26, from ) ) * pow( hole.w, 0.5 ) * burnt;
+    wjaGlow += vec3( 1.0, 0.36, 0.04 ) * 0.22 * hole.w * burnt * ( 1.0 - smoothstep( 1.1, 2.1, from ) ) * ( 1.0 - crust );
+    float spark = smoothstep( 0.46, 0.66, fine.b * 0.5 + mid.g * 0.7 - 0.2 * ( 1.0 - hole.w ) );
     float lee = 0.4 + 0.6 * smoothstep( -0.6, 0.9, dot( normalize( d ), vec2( -0.5, 0.86 ) ) );
-    wjaGlow += mix( vec3( 1.0, 0.13, 0.015 ), vec3( 1.45, 0.72, 0.14 ), fine.g * ( 0.4 + 0.6 * hole.w ) ) * lip * lee * ( 0.25 + 2.6 * spark );
+    wjaGlow += mix( vec3( 1.0, 0.13, 0.015 ), vec3( 1.45, 0.72, 0.14 ), fine.g * ( 0.4 + 0.6 * hole.w ) ) * lip * lee * ( 0.8 + 3.6 * spark );
   }
   wjaFill = 0.9 * mix( face, 0.3, pale );
   return col;

@@ -7,7 +7,7 @@ import { UNIT, type BodyModel, type EffectsLook, type EffectsModel } from '../co
 import { CENTRE, inside } from './shape'
 import { detailTexture } from './texture'
 
-const DROPS = 15
+const DROPS = 26
 const STEAM = 54
 const SMOKE_POINTS = 4
 const SMOKE_EACH = 26
@@ -209,8 +209,8 @@ class Effects implements EffectsModel {
             break
           }
         }
-        const size = (0.32 + 0.72 * Math.pow(hash01(i, cycle, SEED + 5), 2.1)) * (0.8 + 0.2 * amount) * on * UNIT
-        const flyer = hash01(i, cycle, SEED + 6) < 0.12
+        const size = (0.4 + 0.85 * Math.pow(hash01(i, cycle, SEED + 5), 1.9)) * (0.8 + 0.2 * amount) * on * UNIT
+        const flyer = hash01(i, cycle, SEED + 6) < 0.22
         let r = size
         let long = 1
         let high = 0.8
