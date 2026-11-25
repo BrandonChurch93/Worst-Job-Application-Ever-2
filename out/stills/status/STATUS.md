@@ -1,6 +1,8 @@
 # Status pictures
 
-Time: 2026-11-25T07:38Z. Phase 1, status 7.
+Time: 2026-11-25T07:57Z. Phase 2, status 8.
 
-1. `01-roughcut-boss-press.jpg`: The rough cut at 2:19, the beat boss.press: the boss is beaten and the cursor comes to press what is left of Submit. This is an approved image with a slow push, not the build.
-2. `02-roughcut-pinball-fired.jpg`: The rough cut at 1:35, the beat pinball.fired: the ball drops into the You're Fired building. An approved image, not the build.
+1. `01-roughcut-beats-3.jpg`: The rough cut, one frame from the middle of each beat: the last beats
+2. `02-roughcut-beats-2.jpg`: The rough cut, one frame from the middle of each beat: the second half
+3. `03-roughcut-beats-1.jpg`: The rough cut, one frame from the middle of each beat: the first half
+4. `04-review-page-look.jpg`: The review page builder on test inputs: header and latest status, the open it row and sound board, the cue list, the card. The colour bars are test films.

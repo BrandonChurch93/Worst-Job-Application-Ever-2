@@ -25,22 +25,24 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 7, 2026-11-25T07:38Z, Phase 1.
+Status 8, 2026-11-25T07:57Z, Phase 2.
 
-1. `out/stills/status/01-roughcut-boss-press.jpg`: The rough cut at 2:19, the beat boss.press: the boss is beaten and the cursor comes to press what is left of Submit. This is an approved image with a slow push, not the build.
-2. `out/stills/status/02-roughcut-pinball-fired.jpg`: The rough cut at 1:35, the beat pinball.fired: the ball drops into the You're Fired building. An approved image, not the build.
+1. `out/stills/status/01-roughcut-beats-3.jpg`: The rough cut, one frame from the middle of each beat: the last beats
+2. `out/stills/status/02-roughcut-beats-2.jpg`: The rough cut, one frame from the middle of each beat: the second half
+3. `out/stills/status/03-roughcut-beats-1.jpg`: The rough cut, one frame from the middle of each beat: the first half
+4. `out/stills/status/04-review-page-look.jpg`: The review page builder on test inputs: header and latest status, the open it row and sound board, the cue list, the card. The colour bars are test films.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 1, tick 27 at 2026-11-25T07:38:30Z, allowance: build
-time used in this phase: 0.37 h of its box of 0.50 h
-time used under the allowance in force: 2.10 h of 36.00 h allowed
-time used: 2.10 of 36.00 hours before the review
+clock: phase 2, tick 30 at 2026-11-25T07:57:14Z, allowance: build
+time used in this phase: 0.31 h of its box of 6.50 h
+time used under the allowance in force: 2.41 h of 36.00 h allowed
+time used: 2.41 of 36.00 hours before the review
 extra rounds: yes
-half point: reached
+half point: not reached
 box end: not reached
 budget report: not due
 minutes since the last status: 0
@@ -225,6 +227,7 @@ none
 The pause mark and the voice settings in use. For every line and every cue: takes made, which was kept and why, or why none. Which beats were moved to make room for a line. Where the files live.
 
 - Quota read at the start of Phase 1, MEASURED 2026-11-25T07:17Z from the sound service's own answer: plan `creator`, 130999 of 131000 characters used, 1 left, next reset 2026-12-23T20:08:44Z. Nothing can be made before the reset. Sound never blocks the build: every sound step is written, tested without a take, and waits for credits.
+- Quota read at the start of Phase 2, MEASURED 2026-11-25T07:56:58Z from the sound service's own answer: plan `creator`, 130999 of 131000 characters used, 1 left, next reset 2026-12-23T20:08:44Z. So step 9 of Phase 2 builds the sound side (`npm run sound`, `npm run mix`, the site's sound engine, the table of events to cues) and spends no take: no line under `film` and none of the nine first cues can be made on 1 credit. The gate line "every film line of the narrator has a first take, or the log says why not" is met by this entry: why not is the quota. Beat times are not moved, because no take exists to fit them to.
 
 ## The pinball machine
 
@@ -264,6 +267,7 @@ One line each: the date, the decision, the reason, and the config key if one was
 - 2026-11-25T07:30Z, Phase 1, the encode. h264 at constant quality 25, preset slow, a key frame every 2 seconds, with a cap of 19 MB so the file stays under `host.maxFileMb` on the review page. The first run at quality 23 came out at 20.0 million bytes (19.1 MB) and was refused by the cap. The kit sets no bitrate for the rough cut.
 - 2026-11-25T07:33Z, Phase 1 step 2, the order and the lengths. MEASURED: the timeline built from the plan was checked against `film.units` and `film.beats` by `faults()` in `tools/lib/roughcut.mjs`, which reports nothing: every beat is present once, in the config's order, with the config's first and last frame, the six units add up to 4590 frames, and no part overlaps or leaves a gap. The file was counted by decoding it: 4590 frames. One frame from every beat was looked at on the three sheets (40 parts across 36 beats) and each shows the image and the gag its beat names. The machine checks of Phase 0 were not run again for this gate because no site source changed after them; the unit tests were (248 pass, 13 of them new for the rough cut) and D1 was (pass).
 - 2026-11-25T07:41Z, Phase 1 step 4, which two frames the status shows. The first choice was the frame of `step1.tug`. The publish tool's own look at the review page refused the upload for it: the push on that beat is tight, so the heading on the left of the page loses its first letter at the frame edge, and the tool read the picture as clipped by the page. A reader could read it the same way, so the status shows `boss.press` and `pinball.fired`, two frames where nothing is cut through. The rough cut itself is unchanged: a push toward a gag takes the page's far edges out of frame, and its job is the order and the pace. The real cameras are placed in Phase 2.
+- 2026-11-25T07:58Z, Phase 2, how the stage is built. (1) Everything that decides what happens is plain TypeScript with no three.js and no DOM: the stage, the cursor's body, every page's layout tree, gags and script, the machine's physics and director. So the same code runs in the browser and in Node, and the bots, the ball path test, the take search, the checkpoints, G12 and G17 run without a browser. (2) A page gives the stage a list of shapes for the moment it is in (each with its part's name, its box in page pixels, its bottom and top above the surface, and its words by key). One blockout view draws that list as flat grey solids with type. A part stops being a stand-in when its own view takes its shapes over. (3) Words are only ever named by key: a copy key, a config key, a key into a data file beside the code (the keyboard's legends, as kit/03-METHOD.md section 7 puts them, and the numerals of the progress bar and the dial), or a run made at run time (typed input, counters, the score display). A shape cannot carry a string written in code, which is what G11 asks. (4) Blockout type is set in Inter from the baked outlines, not in a system face: G11 and M4 read type as geometry, and a system face differs between machines and would break the rule that a computed picture is the same everywhere. (5) A page turn is a half turn out and a half turn in. The slab is edge on at the moment one page ends and the next begins, so every page still starts clean and a film unit can be rendered without the one before it. The cursor jumps to one fixed hand-off place above the page as the slab goes and lands from there.
 
 ## Notes from Brandon
 
