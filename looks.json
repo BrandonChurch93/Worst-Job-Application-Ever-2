@@ -1,0 +1,35 @@
+{
+  "folder": "harness",
+  "pushed": "2026-11-25T09:07:33.581Z",
+  "commit": "d82a1915fba112a7e47cae7d44696cbc3c8e30ef",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "sheet --beat step1.firstName: 12 frames across the beat, labels under the pictures (stub pages)",
+      "time": "2026-11-25T09:07:31.719Z",
+      "by": "harness",
+      "from": "out/work/sheets/sheet-beat-step1_firstName-preview-draft.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "sheet --motion hit: the frame found from the events of filmState, 12 frames in a row round it",
+      "time": "2026-11-25T09:07:31.957Z",
+      "by": "harness",
+      "from": "out/work/sheets/sheet-motion-hit-preview-draft.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "sheet --pages: the six pages at rest",
+      "time": "2026-11-25T09:07:32.196Z",
+      "by": "harness",
+      "from": "out/work/sheets/sheet-pages-preview-draft.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "sheet --live: the live site's path with the bot keen driving and a stepped clock",
+      "time": "2026-11-25T09:07:32.441Z",
+      "by": "harness",
+      "from": "out/work/sheets/sheet-live-keen_20261124-preview-live.jpg"
+    }
+  ]
+}
