@@ -17,7 +17,7 @@ export function makeScript(L: Step4Layout): FilmScript {
     [9.45, 430, 880], [10.3, 430, 880], [10.75, 420, 700], [11.85, 420, 700], [12.3, 450, 900], [14.9, 450, 900], [15.3, 400, 720], [15.9, 400, 720],
     [16.8, 470, 900], [17.6, 500, 900], [18.2, 560, 860], [19.4, 560, 860], [19.9, 640, 880], [20.8, 1100, 944], [21.5, 1390, 946], [23.95, 1400, 946],
     [24.45, 1150, 940], [25.42, 1150, 940], [25.8, 1420, 950], [26.74, 1420, 950], [27.1, 1170, 940],
-    [27.4, 1380, 934], [29.1, 1380, 934], [30.2, FALLEN.x + 100, FALLEN.y + 28], [32, FALLEN.x + 100, FALLEN.y + 28]
+    [27.4, 1380, 934], [28.1, 1380, 934], [28.9, FALLEN.x - 194, FALLEN.y + 15], [29.5, FALLEN.x - 194, FALLEN.y + 15], [30.25, FALLEN.x + 100, FALLEN.y + 28], [32, FALLEN.x + 100, FALLEN.y + 28]
   ]
   const clicks: number[] = [tickAt]
   const burst = (from: number, to: number, every: number): void => {
@@ -54,7 +54,7 @@ export function makeScript(L: Step4Layout): FilmScript {
     { at: 4.7, name: 'doubleTake' },
     { at: 6.15, name: 'jump' },
     { at: 8.7, name: 'anticipate' },
-    { at: 29.0, name: 'anticipate' }
+    { at: 29.45, name: 'anticipate' }
   ]
   return { pointer, reactions, tickAt }
 }
