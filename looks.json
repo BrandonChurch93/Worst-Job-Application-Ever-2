@@ -1,35 +1,35 @@
 {
   "folder": "hardware",
-  "pushed": "2026-11-25T17:48:07.004Z",
-  "commit": "92ec9580ae6b9c7b7595106b8d592a46c8f28ea0",
+  "pushed": "2026-11-25T18:24:35.587Z",
+  "commit": "c47e4de1d69858ac89538fd44d940a1e2be0be1d",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Steel balls on the office tier beside the approved reply-all image (approved left, build right, draft): chrome now mirrors a window, a lamp, a band of wall and the floor",
-      "time": "2026-11-25T17:48:04.823Z",
+      "caption": "Office lift after the ruling (left): one shaft with steel rings, an orange scoop clipped to it, the orange elbow leaving sideways; approved image on the right",
+      "time": "2026-11-25T18:24:33.794Z",
       "by": "hardware",
-      "from": "out/work/hw/10-steel-balls-beside-approved.jpg"
+      "from": "out/work/hw/19-office-lift-scoop-beside-approved.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Office lift tube close: clear wall, window streak, steel collars with their screws",
-      "time": "2026-11-25T17:48:05.099Z",
+      "caption": "The lift in the wide view: one shaft through the street housing and past the office elbow to the corporate tier, no cups between tiers",
+      "time": "2026-11-25T18:24:34.028Z",
       "by": "hardware",
-      "from": "out/work/hw/11-office-lift-tube-collars.jpg"
+      "from": "out/work/hw/20-lift-one-shaft-wide.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Office tier, draft: posts, wire guides, lift elbow and door, chrome steel finish",
-      "time": "2026-11-25T17:48:05.346Z",
+      "caption": "Whole table, draft, beside the approved image",
+      "time": "2026-11-25T18:24:34.272Z",
       "by": "hardware",
-      "from": "out/work/hw/12-office-tier.jpg"
+      "from": "out/work/hw/21-table-wide-beside-approved.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Street tier beside the approved image (approved left, build right, draft): lift tube and cup at left, plunger with spring and orange knob at lower right",
-      "time": "2026-11-25T17:48:05.647Z",
+      "caption": "Steel balls at review quality beside the approved image: polished steel with a window, a lamp and the floor colour",
+      "time": "2026-11-25T18:24:34.512Z",
       "by": "hardware",
-      "from": "out/work/hw/13-street-beside-approved.jpg"
+      "from": "out/work/hw/15-steel-balls-review-beside-approved.jpg"
     }
   ]
 }
