@@ -31,6 +31,12 @@ export function blockersOf(z: Zone): Blocker[] {
   }
   for (const m of table.models) {
     if (m.tier !== k || m.base) continue
+    // The garage is a spiral of open decks round a core: only the core stands in a lamp's way.
+    if (m.part === 'model-garage') {
+      const p = localBalls(z, m.box[0] + m.box[2] / 2, m.box[1] + m.box[3] / 2)
+      out.push({ kind: 2, id: m.id, a: p[0], b: p[1], c: m.box[2] * BALL * 0.15, d: 0, h: m.h * BALL })
+      continue
+    }
     box(m.id, m.box[0], m.box[1], m.box[2], m.box[3], m.h * BALL)
   }
   const top = z.top / BALL

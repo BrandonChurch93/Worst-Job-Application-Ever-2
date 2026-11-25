@@ -9,10 +9,10 @@ import { hex, Kit, matsOf, meshOf, rrect, shade, SURF, type RGB, type Surf, type
 const C = {
   base: hex(0x232325),
   black: hex(0x1d1d1f),
-  bronze: hex(0x7a5a3c),
-  steel: hex(0xb7bbbf),
-  steelLight: hex(0xcdd0d3),
-  chrome: hex(0xdadcde),
+  bronze: hex(0x56473b),
+  steel: hex(0x7d848b),
+  steelLight: hex(0x959ba1),
+  chrome: hex(0xb4b8bc),
   slot: hex(0x121214),
   paper: hex(0xece8dd),
   sleeve: hex(0x8a6a4a),
@@ -29,7 +29,7 @@ const C = {
   rings: [[0.2, 1, 0.34], [1, 0.9, 0.24], [1, 0.14, 0.12], [0.92, 0.95, 1]] as RGB[]
 }
 
-const BRONZE: Surf = [0.36, 0.75, 0.3]
+const BRONZE: Surf = [0.4, 0.6, 0.3]
 const HEAD = { x: 77, back: 62, deck: -10, lip: -34, low: 100, slope: 138, top: 154 }
 const SLOPE = Math.atan2(HEAD.top - HEAD.slope, HEAD.deck - HEAD.lip)
 
@@ -155,7 +155,10 @@ export function buildCoffee(z: Zone, ctx: RealContext): THREE.Object3D {
   for (const sx of [-1, 1]) for (let i = 0; i < 7; i++) k.box(sx * 34, 10 + i * 5.6, HEAD.top + 1.2, 30, 2, 0.3, C.slot, SURF.matte, 0)
   k.lathe(0, 30, HEAD.top + 1.2, [[10, 0], [10, 2.4], [8.6, 3.4], [8.6, 4.6], [3, 5.2], [3, 7], [0, 7]], [C.chrome, C.chrome, C.black, C.black, C.black, C.black], [SURF.chrome, SURF.chrome, SURF.plastic, SURF.plastic, SURF.plastic, SURF.plastic], 20)
   for (const [cx, cy, n] of [[-42, 50, 2], [42, 50, 1]] as [number, number, number][]) {
-    for (let i = 0; i < n; i++) k.lathe(cx + i * 15, cy - i * 1.5, HEAD.top + 1.2, [[5.4, 0], [6.6, 1], [6.6, 2], [4.2, 7.4], [2.2, 8], [0, 8]], [C.paper, C.paper, C.paper, shade(C.paper, 0.95), shade(C.paper, 0.9)], SURF.gloss, 14, true)
+    for (let i = 0; i < n; i++) {
+      k.lathe(cx + i * 16, cy - i * 1.5, HEAD.top + 1.2, [[7.4, 0.4], [7.6, 1], [4, 1.5]], [C.paper, C.paper], SURF.gloss, 16)
+      k.lathe(cx + i * 16, cy - i * 1.5, HEAD.top + 2.2, [[3.4, 0], [5.4, 4], [5.9, 7], [5.2, 7], [4.6, 2.6], [0, 2.6]], [C.paper, C.paper, shade(C.paper, 0.96), shade(C.paper, 0.78), shade(C.paper, 0.7)], SURF.gloss, 16)
+    }
   }
 
   const sy = (HEAD.deck + HEAD.lip) / 2
@@ -188,7 +191,8 @@ export function buildCoffee(z: Zone, ctx: RealContext): THREE.Object3D {
   paperCup(k, 36, -45, 15.3, false)
 
   k.at(-98, 0, 4)
-  k.poly(rrect(33, 112, 5, 3), 0, 2.4, C.black, SURF.satin, 0.8)
+  k.poly(rrect(34, 114, 5, 3), 0, 2.4, shade(C.steel, 0.8), SURF.brushed, 0.8)
+  k.tube(rrect(31, 111, 4, 3).map((q) => [q[0], q[1], 3.4] as V3), 1, C.chrome, SURF.chrome, 5, true)
   cupStack(k, 0, 36, 2.4, 9)
   cupStack(k, 0.5, 11, 2.4, 5)
   k.lathe(0, -15, 2.4, [[8.4, 0], [9.4, 15], [8.6, 15], [8, 3], [0, 3]], [C.steel, C.steel, shade(C.steel, 0.6), C.slot], SURF.brushed, 16)
@@ -203,9 +207,9 @@ export function buildCoffee(z: Zone, ctx: RealContext): THREE.Object3D {
   c.box(0, 0, 0, 27, 60, 112, C.tank, SURF.glass, 1.6)
   c.box(0, 0, 2, 22.6, 55.6, 72, C.water, SURF.glass, 0.2)
   c.back()
-  for (const [w, d, x, y] of [[29, 3, 0, -29.5], [29, 3, 0, 29.5], [3, 62, -13, 0], [3, 62, 13, 0]] as number[][]) k.box(x!, y!, 118, w!, d!, 3.4, C.black, SURF.plastic, 0.8)
-  k.box(0, 14, 119, 27, 32, 2.6, C.black, SURF.plastic, 0.8)
-  k.box(0, -1, 121.6, 12, 3, 1.6, C.chrome, SURF.chrome, 0.5)
+  for (const [w, d, x, y] of [[29, 1.8, 0, -30.1], [29, 1.8, 0, 30.1], [1.8, 62, -13.6, 0], [1.8, 62, 13.6, 0]] as number[][]) k.box(x!, y!, 118, w!, d!, 3.4, shade(C.steel, 0.8), SURF.brushed, 0.6)
+  k.box(0, 21, 119.4, 27, 18, 2.2, C.black, SURF.plastic, 0.8)
+  k.box(0, 11, 121.6, 12, 2.6, 1.4, C.chrome, SURF.chrome, 0.5)
   k.box(-6, -30.6, 16, 2, 0.5, 96, C.mark, SURF.plastic, 0)
   for (let i = 0; i < 6; i++) k.box(-2.5, -30.6, 22 + i * 15, 6, 0.5, 1, C.mark, SURF.plastic, 0)
   k.box(0, -30.7, 96, 20, 0.6, 1.4, C.max, SURF.plastic, 0)

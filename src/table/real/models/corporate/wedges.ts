@@ -62,29 +62,36 @@ export function buildWedges(z: Zone, _ctx: RealContext): THREE.Object3D {
         const col = mix(TONE.marble, TONE.vein, dark)
         const steps = Math.max(3, Math.round(len / 7))
         for (let k = 0; k < steps; k++) {
-          a += rnd.range(-0.42, 0.42)
+          a += rnd.range(-0.3, 0.3) + (turn - a) * 0.25
           const q: V2 = [p[0] + Math.cos(a) * 7, p[1] + Math.sin(a) * 7]
           const w1 = Math.max(0.25, w * rnd.range(0.7, 1.25))
           if (inside(p, t) && inside(q, t)) {
             const nx = -Math.sin(a)
             const ny = Math.cos(a)
             const zz = top + 0.05 + deep
-            S.face([[p[0] - nx * w, p[1] - ny * w, zz], [q[0] - nx * w1, q[1] - ny * w1, zz], [q[0] + nx * w1, q[1] + ny * w1, zz], [p[0] + nx * w, p[1] + ny * w, zz]], [0, 0, 1], along, col)
+            const strip = (k0: number, k1: number, lift: number, c: typeof col): void => {
+              S.face([[p[0] - nx * w * k0, p[1] - ny * w * k0, zz + lift], [q[0] - nx * w1 * k0, q[1] - ny * w1 * k0, zz + lift], [q[0] + nx * w1 * k1, q[1] + ny * w1 * k1, zz + lift], [p[0] + nx * w * k1, p[1] + ny * w * k1, zz + lift]], [0, 0, 1], along, c)
+            }
+            if (deep < 0.03) {
+              strip(5.5, 3.4, -0.02, mix(TONE.marble, TONE.vein, dark * 0.22))
+              strip(2.2, 3, -0.01, mix(TONE.marble, TONE.vein, dark * 0.5))
+            }
+            strip(1, 1, 0, col)
           }
-          if (deep === 0 && k > 0 && rnd.next() < 0.3) vein(q, a + rnd.pick([-1, 1]) * rnd.range(0.5, 1.1), len * 0.4, w * 0.5, dark * 0.7, 0.02)
+          if (deep === 0 && k > 1 && rnd.next() < 0.13) vein(q, a + rnd.pick([-1, 1]) * rnd.range(0.5, 1.1), len * 0.45, w * 0.6, dark * 0.8, 0.02)
           p = q
           w = w1
         }
       }
-      for (let k = 0; k < 6; k++) {
-        const side = rnd.range(-70, 70)
+      for (let k = 0; k < 4; k++) {
+        const side = -60 + k * 40 + rnd.range(-12, 12)
         const start: V2 = [cx - Math.cos(grain) * 90 - Math.sin(grain) * side, cy - Math.sin(grain) * 90 + Math.cos(grain) * side]
-        vein(start, grain + rnd.range(-0.25, 0.25), 190, rnd.range(0.5, 1.5), rnd.range(0.35, 0.95), 0)
+        vein(start, grain + rnd.range(-0.25, 0.25), 190, rnd.range(0.9, 1.7), rnd.range(0.5, 0.85), 0)
       }
       for (let k = 0; k < 5; k++) {
         const side = rnd.range(-60, 60)
         const start: V2 = [cx - Math.cos(grain) * 90 - Math.sin(grain) * side, cy - Math.sin(grain) * 90 + Math.cos(grain) * side]
-        vein(start, grain + rnd.range(-0.5, 0.5), 190, rnd.range(2.5, 5), rnd.range(0.06, 0.14), 0.03)
+        vein(start, grain + rnd.range(-0.5, 0.5), 190, rnd.range(3, 7), rnd.range(0.05, 0.12), 0.03)
       }
     })
     for (const p of t) {

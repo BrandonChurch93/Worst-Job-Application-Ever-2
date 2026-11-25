@@ -5,18 +5,19 @@ import { grainNormalMap } from '../../shell/materials'
 import type { ArmsLook, ArmsModel } from '../contract'
 
 // Sizes in page pixels. The arm is 7% of the body's height thick, the hand a fifth of it long.
+// An arm is `rest` long: nearer than that it bows out at the elbow by what is left over, up to `slack` of the reach, and `elbow` is how sharply it bends there (1 is an even bow). An open hand that pushes bends back at the wrist by `wrist`; an open hand that hangs lets its fingers fall by `droop`.
 const H = config.cursor.heightPxAt1080
-export const ARM = { radius: H * 0.035, rest: 62, along: 22, round: 10, grainPx: 64, slack: 1.04 }
-const HAND = { palm: [4.6, 4.7, 2.7], palmY: 4.8, finger: 1.5, joint: 3.1, cuff: 2.5, cuffTube: 1.05, joints: 8 }
+export const ARM = { radius: H * 0.038, rest: 46, along: 22, round: 10, grainPx: 64, slack: 1.25, elbow: 2.2, wrist: 1, droop: 0.6 }
+const HAND = { palm: [4.6, 4.7, 2.7], palmY: 4.8, finger: 1.5, joint: 3.1, joints: 8 }
 
 export interface Arms extends ArmsModel {
   // How far the arms have grown, 0 to 1 and a little over: the hands swell with it.
   grown: number
-  // The height of the body's top face, in the same space as the shoulders: an arm that reaches across the body goes over it.
+  // The height of the body's top face, in the same space as the shoulders.
   over: number
 }
 
-let shared: { rubber: THREE.MeshPhysicalMaterial; grain: THREE.DataTexture; palm: THREE.BufferGeometry; joint: THREE.BufferGeometry; cuff: THREE.BufferGeometry } | null = null
+let shared: { rubber: THREE.MeshPhysicalMaterial; grain: THREE.DataTexture; palm: THREE.BufferGeometry; joint: THREE.BufferGeometry } | null = null
 
 function parts() {
   if (shared) return shared
@@ -24,7 +25,7 @@ function parts() {
   grain.repeat.set(2, 5)
   const rubber = studio(
     new THREE.MeshPhysicalMaterial({
-      color: new THREE.Color().setHex(0x262524, THREE.SRGBColorSpace),
+      color: new THREE.Color().setHex(0x1b1b1c, THREE.SRGBColorSpace),
       roughness: 0.66,
       metalness: 0,
       sheen: 0.8,
@@ -37,8 +38,7 @@ function parts() {
   )
   const palm = new THREE.SphereGeometry(1, 20, 14).scale(HAND.palm[0]!, HAND.palm[1]!, HAND.palm[2]!)
   const joint = new THREE.CapsuleGeometry(HAND.finger, HAND.joint, 4, 10).translate(0, HAND.joint / 2, 0)
-  const cuff = new THREE.TorusGeometry(HAND.cuff, HAND.cuffTube, 8, 18).rotateX(Math.PI / 2)
-  shared = { rubber, grain, palm, joint, cuff }
+  shared = { rubber, grain, palm, joint }
   return shared
 }
 
@@ -51,7 +51,6 @@ const RINGS = ARM.along + 1
 class Limb {
   readonly hand = new THREE.Group()
   private palm = new THREE.Object3D()
-  private cuff = new THREE.Object3D()
   private fingers: Finger[] = []
   private c = new THREE.Vector3()
   private p = new THREE.Vector3()
@@ -62,8 +61,7 @@ class Limb {
 
   constructor(private side: number, private slot: number) {
     this.palm.position.set(0, HAND.palmY, 0)
-    this.cuff.position.set(0, 0.3, 0)
-    this.hand.add(this.palm, this.cuff)
+    this.hand.add(this.palm)
     const lay: [number, number, number, number, number, boolean][] = [
       [-2.5, 7.4, 0.11, 0.04, 1, false], [0, 8.1, 0, 0, 1.12, false], [2.5, 7.4, -0.11, -0.04, 1, false], [3.6, 3.4, -0.95, -0.45, 0.86, true]
     ]
@@ -80,6 +78,14 @@ class Limb {
     }
   }
 
+  private at(out: THREE.Vector3, u: number, from: THREE.Vector3, to: THREE.Vector3, z0: number): void {
+    const a = (1 - u) * (1 - u)
+    const b = 2 * u * (1 - u) * ARM.elbow
+    const c = u * u
+    const k = 1 / (a + b + c)
+    out.set((a * from.x + b * this.c.x + c * to.x) * k, (a * from.y + b * this.c.y + c * to.y) * k, (a * z0 + b * this.c.z + c * to.z) * k)
+  }
+
   pose(d3: Draw, from: THREE.Vector3, to: THREE.Vector3, grip: number, strain: number, grown: number, over: number): void {
     const dx = to.x - from.x
     const dy = to.y - from.y
@@ -93,23 +99,24 @@ class Limb {
       px = -px
       py = -py
     }
-    const sag = Math.sqrt((3 * d * Math.max(0, length - d)) / 8) * (1 - 0.86 * strain) * Math.min(1, Math.abs(want) * 3) + 0.035 * d
-    this.c.set((from.x + to.x) / 2 + px * sag * 2, (from.y + to.y) / 2 + py * sag * 2, (from.z + to.z) / 2 + 1.5 + sag * 0.3)
-    // An arm whose hand is on the far side of the body is carried over the top face.
+    const sag = Math.sqrt((3 * d * Math.max(0, length - d)) / 8) * (1 - 0.5 * strain) * Math.min(1, Math.abs(want) * 3) + 0.035 * d
+    const out = (sag * (1 + ARM.elbow)) / ARM.elbow
+    this.c.set((from.x + to.x) / 2 + px * out, (from.y + to.y) / 2 + py * out, (from.z + to.z) / 2 + 1 + sag * 0.12)
+    // An arm whose hand is on the far side of the body goes under it and comes out at the far edge: no arm lies over the white face.
     const across = Math.min(1, Math.max(0, (-this.side * dx - 6) / 10))
-    const z0 = from.z + across * (over + ARM.radius * 0.6 - from.z)
-    if (across > 0) this.c.z = Math.max(this.c.z, z0 + across * (ARM.radius + 2 + Math.max(0, over - to.z) * 0.6))
+    const z0 = from.z
+    if (across > 0) this.c.z = Math.min(this.c.z, from.z + (1 - across) * (this.c.z - from.z))
+    void over
     const thin = Math.max(0.95, Math.sqrt(Math.min(1, ARM.rest / d))) * (1 - 0.05 * strain)
     const pos = d3.position.array as Float32Array
     const nor = d3.normal.array as Float32Array
     let k = this.slot * RINGS * RING * 3
     for (let i = 0; i <= ARM.along; i++) {
       const u = i / ARM.along
-      const a = (1 - u) * (1 - u)
-      const b = 2 * u * (1 - u)
-      const c = u * u
-      this.p.set(a * from.x + b * this.c.x + c * to.x, a * from.y + b * this.c.y + c * to.y, a * z0 + b * this.c.z + c * to.z)
-      this.t.set((1 - u) * (this.c.x - from.x) + u * (to.x - this.c.x), (1 - u) * (this.c.y - from.y) + u * (to.y - this.c.y), (1 - u) * (this.c.z - z0) + u * (to.z - this.c.z)).normalize()
+      this.at(this.t, Math.min(1, u + 0.02), from, to, z0)
+      this.at(this.p, Math.max(0, u - 0.02), from, to, z0)
+      this.t.sub(this.p).normalize()
+      this.at(this.p, u, from, to, z0)
       this.n1.set(this.t.y, -this.t.x, 0)
       if (this.n1.lengthSq() < 1e-6) this.n1.set(1, 0, 0)
       this.n1.normalize()
@@ -134,6 +141,22 @@ class Limb {
       }
     }
     this.t.set(to.x - this.c.x, to.y - this.c.y, (to.z - this.c.z) * 0.5).normalize()
+    const open = 1 - grip
+    const hang = open * (1 - strain) * ARM.droop * Math.max(0, -this.t.y)
+    const back = Math.min(1, open * strain * ARM.wrist)
+    if (hang > 0 || back > 0) {
+      const flatT = Math.hypot(this.t.x, this.t.y) || 1
+      let a = Math.atan2(this.t.y, this.t.x)
+      const turn = (goal: number, share: number): void => {
+        let by = goal - a
+        while (by > Math.PI) by -= Math.PI * 2
+        while (by < -Math.PI) by += Math.PI * 2
+        a += by * share
+      }
+      turn(-Math.PI / 2, hang)
+      turn(Math.PI / 2, back)
+      this.t.set(Math.cos(a) * flatT, Math.sin(a) * flatT, this.t.z).normalize()
+    }
     this.n1.set(this.t.y, -this.t.x, 0)
     if (this.n1.lengthSq() < 1e-6) this.n1.set(1, 0, 0)
     this.n1.normalize()
@@ -151,7 +174,6 @@ class Limb {
     }
     this.hand.updateMatrixWorld(true)
     d3.palms.setMatrixAt(this.slot, this.palm.matrixWorld)
-    d3.cuffs.setMatrixAt(this.slot, this.cuff.matrixWorld)
     this.fingers.forEach((f, i) => {
       d3.joints.setMatrixAt(this.slot * HAND.joints + i * 2, f.base.matrixWorld)
       d3.joints.setMatrixAt(this.slot * HAND.joints + i * 2 + 1, f.tip.matrixWorld)
@@ -159,13 +181,13 @@ class Limb {
   }
 }
 
-const HAND_SCALE = 1.18
+const HAND_SCALE = 1.05
 // A clenched fist bulges: without this a closed hand is half the size of an open one and is lost on the sheet it holds.
 const FIST = 0.4
 
-interface Draw { position: THREE.BufferAttribute; normal: THREE.BufferAttribute; palms: THREE.InstancedMesh; cuffs: THREE.InstancedMesh; joints: THREE.InstancedMesh }
+interface Draw { position: THREE.BufferAttribute; normal: THREE.BufferAttribute; palms: THREE.InstancedMesh; joints: THREE.InstancedMesh }
 
-// Two thin matte black rubber arms with small plain hands of three fingers and a thumb. Four draws for the pair: both tubes as one mesh, then the palms, the cuffs and the finger joints as instances.
+// Two thin matte black rubber arms with small plain hands of three fingers and a thumb. Three draws for the pair: both tubes as one mesh, then the palms and the finger joints as instances.
 export const makeArms: (() => Arms) | null = () => {
   const s = parts()
   const root = new THREE.Group()
@@ -203,7 +225,6 @@ export const makeArms: (() => Arms) | null = () => {
     position,
     normal,
     palms: add(new THREE.InstancedMesh(s.palm, s.rubber, 2)),
-    cuffs: add(new THREE.InstancedMesh(s.cuff, s.rubber, 2)),
     joints: add(new THREE.InstancedMesh(s.joint, s.rubber, 2 * HAND.joints))
   }
   const limbs = [new Limb(-1, 0), new Limb(1, 1)]
@@ -216,13 +237,11 @@ export const makeArms: (() => Arms) | null = () => {
       position.needsUpdate = true
       normal.needsUpdate = true
       draw.palms.instanceMatrix.needsUpdate = true
-      draw.cuffs.instanceMatrix.needsUpdate = true
       draw.joints.instanceMatrix.needsUpdate = true
     },
     dispose(): void {
       geometry.dispose()
       draw.palms.dispose()
-      draw.cuffs.dispose()
       draw.joints.dispose()
     }
   }

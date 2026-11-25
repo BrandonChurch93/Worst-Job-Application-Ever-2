@@ -168,7 +168,26 @@ function even(v: Float32Array): void {
 const NS = 56
 const NT = 6
 
+// The solver's lengths are those of a sheet DRAWN wide. A sheet of another width is the same sheet seen smaller:
+// what it is asked is brought to that size, solved there, and the answer brought back. Its bends and its normals are the same.
+export const DRAWN = 220
+const LENGTHS = ['w', 'l', 'x', 'y', 'bw', 'bh', 'z', 'lx', 'ly', 'rx', 'ry', 'hz', 'vx', 'vy', 'cx', 'cy', 'cz', 'r'] as const
 export function solveSheet(q: SheetIn, into?: Sheet): Sheet {
+  const k = q.w / DRAWN
+  if (Math.abs(k - 1) < 1e-9) return solveDrawn(q, into)
+  const at: SheetIn = { ...q }
+  for (const key of LENGTHS) at[key] = q[key] / k
+  const out = solveDrawn(at, into)
+  const p = out.pos
+  for (let i = 0; i < p.length; i += 3) {
+    p[i] = (p[i]! + 960) * k - 960
+    p[i + 1] = 540 + (p[i + 1]! - 540) * k
+    p[i + 2] = p[i + 2]! * k
+  }
+  return out
+}
+
+function solveDrawn(q: SheetIn, into?: Sheet): Sheet {
   const { nx, ny } = GRID
   const out: Sheet = into ?? { nx, ny, pos: new Float32Array(nx * ny * 3), nor: new Float32Array(nx * ny * 3), abuse: 0, out: 1 }
   const K = creaseField(q.seed)

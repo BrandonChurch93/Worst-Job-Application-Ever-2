@@ -142,7 +142,8 @@ const body = /* glsl */ `
 	float wjdR = length( fract( wjdQ ) - 0.5 );
 	float wjdBead = 1.0 - smoothstep( 0.3 - wjdW, 0.37 + wjdW, wjdR );
 	float wjdCore = exp( - wjdR * wjdR / 0.045 );
-	float wjdSweep = 1.0 + 0.22 * exp( - pow( ( wjdQ.x - wjdDeep.z ) / 11.0, 2.0 ) );
+	float wjdPass = exp( - pow( ( wjdQ.x - wjdDeep.z ) / 11.0, 2.0 ) );
+	float wjdSweep = 1.0 + 0.3 * wjdPass;
 	vec3 wjdHot = vec3( 1.0, 0.66, 0.26 );
 	vec3 wjdOn = ( wjdAmber * ( 0.55 + 2.7 * wjdCore ) + wjdHot * 1.5 * wjdCore * wjdCore ) * wjdSweep;
 	vec3 wjdOff = wjdAmber * ( ( 0.012 + 0.03 * wjdCore ) * wjdLight.y + 0.014 * wjdLight.x );
@@ -159,7 +160,7 @@ const body = /* glsl */ `
 		wjdWide += wjdField( wjdG + d * 1.6 );
 		wjdWider += wjdField( wjdG + vec2( d.x * 0.9239 - d.y * 0.3827, d.x * 0.3827 + d.y * 0.9239 ) * 3.3 );
 	}
-	vec3 wjdHalo = ( wjdAmber * ( 0.1 * wjdTight + 0.015 * wjdWide + 0.011 * wjdWider ) + wjdAmber * vec3( 1.0, 0.72, 0.5 ) * 0.32 * wjdGlow( wjdG ) * wjdRows ) * wjdLight.x;
+	vec3 wjdHalo = ( wjdAmber * ( 0.1 * wjdTight + 0.015 * wjdWide + 0.011 * wjdWider ) + wjdAmber * vec3( 1.0, 0.72, 0.5 ) * 0.32 * wjdGlow( wjdG ) * wjdRows ) * wjdLight.x * ( 1.0 + 0.9 * wjdPass );
 	vec3 wjdCoarse = ( wjdAmber * 1.05 + wjdHot * 0.3 ) * 0.8 * wjdField( wjdQ ) * wjdLight.x * wjdSweep + wjdAmber * 0.006 * wjdLight.y * wjdRows;
 	totalEmissiveRadiance = mix( wjdNear, wjdCoarse, wjdFar ) + wjdHalo;
 }
