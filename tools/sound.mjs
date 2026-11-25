@@ -81,7 +81,8 @@ export const readLedger = (P) => (fs.existsSync(ledgerFile(P)) ? readJson(ledger
 
 export const FAMILY_LINE = 'close and dry, recorded in a quiet room, real materials, no music, no melody, no voice'
 export const HOLD_LINE = 'close and dry, recorded in a quiet room, real materials, no voice'
-export const promptLine = (cue) => (cue === 'hold-music' ? HOLD_LINE : FAMILY_LINE)
+export const musical = (cue) => cue === 'hold-music' || cue === 'boss-loop'
+export const promptLine = (cue) => (musical(cue) ? HOLD_LINE : FAMILY_LINE)
 
 const spokenWords = (text, mark) => text.split(/\s+/).filter((w) => w.length > 0 && w !== mark)
 const plainWords = (text, mark) => spokenWords(text, mark).map((w) => w.toLowerCase().replace(/[^a-z0-9']/g, '')).filter(Boolean)
@@ -123,7 +124,7 @@ export function listenerFindings(t, listener) {
     if (listener.unimpressedAndSmug === false) why.push('the listener did not hear an unimpressed, slightly smug speaker')
     for (const k of ['whisper', 'laugh', 'warmth', 'excitement', 'unimpressedAndSmug']) if (typeof listener[k] !== 'boolean') why.push(`the listener left "${k}" unanswered`)
   } else {
-    for (const k of ['voice', 'word', 'music', 'melody']) if (listener[k] === true && !(t.id === 'hold-music' && (k === 'music' || k === 'melody'))) why.push(`the listener heard ${k === 'word' ? 'a word' : k === 'voice' ? 'a voice' : k}`)
+    for (const k of ['voice', 'word', 'music', 'melody']) if (listener[k] === true && !(musical(t.id) && (k === 'music' || k === 'melody'))) why.push(`the listener heard ${k === 'word' ? 'a word' : k === 'voice' ? 'a voice' : k}`)
     if (listener.fits === false) why.push('the listener says it does not fit the line that describes the cue')
     if (listener.sameRoom === false) why.push('the listener says it does not belong in the same room as the kept sounds')
     for (const k of ['voice', 'word', 'music', 'melody', 'fits']) if (typeof listener[k] !== 'boolean') why.push(`the listener left "${k}" unanswered`)
@@ -188,8 +189,12 @@ export function cueLines(file = at('kit', '03-METHOD.md')) {
     const parts = ids.length > 1 ? cells[2].split(', ') : [cells[2]]
     ids.forEach((id, i) => { out[id] = parts.length === ids.length ? parts[i].replace(/^./, (ch) => ch.toUpperCase()) : cells[2] })
   }
+  for (const x of extraCues()) out[x.id] = x.heard
   return out
 }
+
+// Cues the kit's table does not hold: the one an addendum added and the ones the build added inside audio.extraCuesMax.
+export const extraCues = (file = at('audio', 'EXTRA-CUES.json')) => (fs.existsSync(file) ? readJson(file).cues : [])
 
 const readMaybe = (v) => (v && v !== true ? (fs.existsSync(v) ? fs.readFileSync(v, 'utf8').trim() : String(v)) : null)
 const jsonMaybe = (v) => {
@@ -994,7 +999,7 @@ export async function fixtures(a, c, M) {
     }
     const file = make(`cue-${s.id}`, expr, secs)
     await fileTake({ cue: s.id, file, prompt: `A fixture made with ffmpeg, not a take. ${promptLine(s.id)}`, cost: '0', filed: 'fixture', root }, P, c, M, true)
-    await keepTake({ cue: s.id, force: true, fixture: true, why: 'a fixture, kept so the tools can be run', listener: a.answered ? JSON.stringify({ by: 'a stand-in answer, nobody listened', voice: false, word: false, music: s.id === 'hold-music', melody: s.id === 'hold-music', fits: true }) : undefined, root }, P, c, M, true)
+    await keepTake({ cue: s.id, force: true, fixture: true, why: 'a fixture, kept so the tools can be run', listener: a.answered ? JSON.stringify({ by: 'a stand-in answer, nobody listened', voice: false, word: false, music: musical(s.id), melody: musical(s.id), fits: true }) : undefined, root }, P, c, M, true)
     made++
   }
   const lines = []

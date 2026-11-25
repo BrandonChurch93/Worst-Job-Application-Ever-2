@@ -88,11 +88,11 @@ export function roadSign(z: Zone, s: Sling): { geo: Geo; rivets: V3[] } {
   const xs = tri.map((p) => p[0])
   const ys = tri.map((p) => p[1])
   const ym = Math.min(...ys) + (Math.max(...ys) - Math.min(...ys)) * 0.3
-  const t = 13
+  const t = 17
   const L = 200
   const lo = Math.min(...xs)
   const hi = Math.max(...xs)
-  for (let x = lo - 20; x < hi + 40; x += t * 2.1) {
+  for (let x = lo - 20; x < hi + 40; x += t * 2.25) {
     const tip = dir > 0 ? x : lo + hi - x
     for (const up of [1, -1]) {
       let arm: V2[] = [[tip, ym], [tip - dir * t, ym], [tip - dir * (t + L), ym + up * L], [tip - dir * L, ym + up * L]]

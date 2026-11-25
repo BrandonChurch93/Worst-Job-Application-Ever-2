@@ -5,7 +5,7 @@ export type RGB = [number, number, number]
 export const CORPORATE_COLD_WHITE: RGB = [0.78, 0.88, 1.0]
 export const CORPORATE_GOLD: RGB = [1.0, 0.62, 0.24]
 export const CORPORATE_GLOBE: RGB = [1.0, 0.93, 0.82]
-export const CORPORATE_WINDOW: RGB = [1.0, 0.74, 0.4]
+export const CORPORATE_WINDOW: RGB = [1.0, 0.83, 0.6]
 export const CORPORATE_FLASH: RGB = [0.92, 0.95, 1.0]
 
 // Tier 2, The Office: flat fluorescent white, a little green.
