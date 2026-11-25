@@ -19,6 +19,33 @@ export interface MixInput {
   holdMusicSeconds: number
   targetLufs: number
   truePeakDb: number
+  toneFromFrame?: number
+}
+
+export interface OpeningPlan {
+  prompt: string
+  charsPerSecond: number
+  levelOpens: number
+  levelPicks: number
+  sendPressed: number
+  linesDone: number[]
+}
+
+// The sounds of film A's prompt opening, from its own times: a key tap for each letter as it shows, a tick when the level control opens,
+// when the level is picked and as each line of the build screen is ticked off, and the send tone as the send control goes down.
+export function openingEvents(o: OpeningPlan, fps: number): FilmEvent[] {
+  const frame = (t: number) => Math.ceil(t * fps - 1e-6)
+  const out: FilmEvent[] = []
+  for (let i = 0; i < o.prompt.length; i++) out.push({ name: 'key-tap', frame: frame(i / o.charsPerSecond), x: 960 })
+  for (const t of [o.levelOpens, o.levelPicks]) out.push({ name: 'ui-tick', frame: frame(t), x: 960 })
+  out.push({ name: 'ui-send', frame: frame(o.sendPressed), x: 960 })
+  for (const t of o.linesDone) out.push({ name: 'ui-tick', frame: frame(t), x: 960 })
+  return out
+}
+
+// Film A is the opening and then film B unchanged: every event and line of film B moves back by the opening's frames.
+export function behindOpening<T extends { frame: number }>(list: T[], openingFrames: number): T[] {
+  return list.map((e) => ({ ...e, frame: e.frame + openingFrames }))
 }
 
 export interface Placed { kind: 'cue' | 'line' | 'tone'; event: string; cue: string; id: string; frame: number; sample: number; seconds: number; cents: number; pan: number }
@@ -138,11 +165,13 @@ export function mixFilm(o: MixInput): MixResult {
     const n = room.channels[0]!.length
     const l = room.channels[0]!
     const r = room.channels[1] ?? l
-    for (let i = 0; i < length; i++) {
-      tone[0]![i] = l[i % n]!
-      tone[1]![i] = r[i % n]!
+    const first = Math.min(length, at(o.toneFromFrame ?? 0))
+    for (let i = first; i < length; i++) {
+      const g = first > 0 ? Math.min(1, (i - first) / fadeLen) : 1
+      tone[0]![i] = l[(i - first) % n]! * g
+      tone[1]![i] = r[(i - first) % n]! * g
     }
-    placed.push({ kind: 'tone', event: 'always', cue: 'room-tone', id: 'room-tone', frame: 0, sample: 0, seconds: o.seconds, cents: 0, pan: 0 })
+    placed.push({ kind: 'tone', event: 'always', cue: 'room-tone', id: 'room-tone', frame: o.toneFromFrame ?? 0, sample: first, seconds: (length - first) / sr, cents: 0, pan: 0 })
   } else missingCues.add('room-tone')
 
   const spans = duckSpans(spoken, DUCK.attackSeconds, DUCK.releaseSeconds)

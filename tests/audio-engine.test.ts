@@ -44,6 +44,7 @@ class FakeContext {
   closed = false
   constructor() { made.push(this) }
   resume() { this.state = 'running'; return Promise.resolve() }
+  suspend() { this.state = 'suspended'; return Promise.resolve() }
   close() { this.closed = true; return Promise.resolve() }
   createGain() { const g = new Gain(); this.gains.push(g); return g }
   createStereoPanner() { return new Panner() }
@@ -119,6 +120,7 @@ describe('before the first click', () => {
     s.setVolume(0.5)
     s.setMuted(true)
     s.stop()
+    s.start()
     expect(made.length).toBe(0)
     expect(fetched).toEqual([])
     expect(s.state()).toBe('locked')
@@ -361,6 +363,119 @@ describe('with sound', () => {
     ctx.currentTime = 61
     s.event(hit('button-press'), 'film')
     expect(playsOf(ctx, 'room-tone').length).toBe(2)
+  })
+
+  it('is fully silent after stop() and has the room tone back at once at start()', async () => {
+    const { s, ctx } = await ready()
+    ctx.currentTime = 10
+    s.stop()
+    expect(playsOf(ctx, 'room-tone')[0]!.stopped).not.toBeNull()
+    ctx.currentTime = 20
+    s.trigger('idle')
+    expect(playsOf(ctx, 'room-tone').length).toBe(1)
+    s.start()
+    const tone = playsOf(ctx, 'room-tone')
+    expect(tone.length).toBe(2)
+    expect(tone[1]!.started).toBe(20)
+    expect(tone[1]!.loop).toBe(true)
+    expect(tone[1]!.stopped).toBeNull()
+    s.start()
+    s.event(hit('step'), 'film')
+    expect(playsOf(ctx, 'room-tone').length).toBe(2)
+  })
+
+  it('stopped before the first click, stays silent after it until start()', async () => {
+    const site = fixtureSite()
+    serve(site.files)
+    const s = makeSound({ base: './audio/', index: site.index })
+    s.start()
+    expect(made.length).toBe(0)
+    s.stop()
+    await s.unlock()
+    const ctx = made[0]!
+    expect(s.state()).toBe('ready')
+    expect(ctx.sources.length).toBe(0)
+    s.start()
+    expect(playsOf(ctx, 'room-tone').length).toBe(1)
+  })
+
+  it('holds its breath while the page is hidden and carries on when it is back', async () => {
+    const page = { visibilityState: 'visible', heard: [] as (() => void)[], addEventListener(name: string, f: () => void) { if (name === 'visibilitychange') this.heard.push(f) } }
+    vi.stubGlobal('document', page)
+    const quietSite = makeSound({ base: './audio/', index: { version: 1, pack: null, sfx: [], loops: [], lines: [] } })
+    await quietSite.unlock()
+    expect(page.heard.length).toBe(0)
+    const { s, ctx } = await ready()
+    expect(page.heard.length).toBe(1)
+    page.visibilityState = 'hidden'
+    page.heard[0]!()
+    expect(ctx.state).toBe('suspended')
+    s.event(hit('button-press'), 'live')
+    expect(ctx.state).toBe('suspended')
+    expect(playsOf(ctx, 'room-tone')[0]!.stopped).toBeNull()
+    page.visibilityState = 'visible'
+    page.heard[0]!()
+    expect(ctx.state).toBe('running')
+  })
+
+  it('asks the sound graph to run again at the end of a touch or a click, never while the page is hidden', async () => {
+    const heard = new Map<string, () => void>()
+    const page = { visibilityState: 'visible', back: null as (() => void) | null, addEventListener(_: string, f: () => void) { this.back = f } }
+    vi.stubGlobal('document', page)
+    vi.stubGlobal('window', { AudioContext: FakeContext, setTimeout, clearTimeout, addEventListener: (name: string, f: () => void) => heard.set(name, f) })
+    const site = fixtureSite()
+    serve(site.files)
+    const s = makeSound({ base: './audio/', index: site.index })
+    expect(heard.size).toBe(0)
+    await s.unlock()
+    const ctx = made[0]!
+    expect([...heard.keys()].sort()).toEqual([...LIVE.wakeEvents].sort())
+    for (const name of LIVE.wakeEvents) {
+      ctx.state = 'suspended'
+      heard.get(name)!()
+      expect(ctx.state, name).toBe('running')
+    }
+    page.visibilityState = 'hidden'
+    page.back!()
+    heard.get('click')!()
+    expect(ctx.state).toBe('suspended')
+  })
+
+  it('with plain audio elements stops what plays when the page is hidden', async () => {
+    const page = { visibilityState: 'visible', heard: [] as (() => void)[], addEventListener(name: string, f: () => void) { if (name === 'visibilitychange') this.heard.push(f) } }
+    vi.stubGlobal('document', page)
+    const playing = new Set<string>()
+    class El {
+      src = ''
+      loop = false
+      volume = 1
+      playbackRate = 1
+      currentTime = 0
+      preload = ''
+      onerror: (() => void) | null = null
+      private ready: (() => void) | null = null
+      set oncanplaythrough(f: () => void) { this.ready = f; queueMicrotask(() => this.ready?.()) }
+      play() { playing.add(this.src); return Promise.resolve() }
+      pause() { playing.delete(this.src) }
+    }
+    let n = 0
+    vi.stubGlobal('window', { setTimeout, clearTimeout })
+    vi.stubGlobal('Audio', El)
+    vi.stubGlobal('URL', { createObjectURL: () => `blob:${n++}`, revokeObjectURL: () => undefined })
+    const site = fixtureSite()
+    serve(site.files)
+    const s = makeSound({ base: './audio/', index: site.index })
+    await s.unlock()
+    expect(s.backend()).toBe('elements')
+    s.event(hit('button-press'), 'live')
+    expect(playing.size).toBe(2)
+    page.visibilityState = 'hidden'
+    page.heard[0]!()
+    expect(playing.size).toBe(0)
+    page.visibilityState = 'visible'
+    page.heard[0]!()
+    s.event(hit('checkbox'), 'film')
+    expect(playing.size).toBe(2)
   })
 })
 

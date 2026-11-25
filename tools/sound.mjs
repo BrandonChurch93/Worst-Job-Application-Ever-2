@@ -168,8 +168,20 @@ export async function fileTake(a, P, c, M, quiet = false) {
   fs.mkdirSync(dir, { recursive: true })
   const ext = path.extname(a.file) || '.bin'
   const dest = path.join(dir, `take-${number}${ext}`)
+  const same = mine.find((x) => x.sha256 === sha(fs.readFileSync(a.file)))
+  if (same) throw new Error(`${a.file} is already filed as ${t.key} take ${same.take}. Nothing filed, no take used`)
   fs.copyFileSync(a.file, dest)
-  const sound = decodeFile(dest, c.audio.sampleRate)
+  let sound
+  try {
+    sound = decodeFile(dest, c.audio.sampleRate)
+  } catch (e) {
+    fs.rmSync(dest, { force: true })
+    throw new Error(`${a.file} could not be read as sound. Nothing filed, no take used. ${e.message.split('\n')[0]}`)
+  }
+  if (!sound.channels[0]?.length) {
+    fs.rmSync(dest, { force: true })
+    throw new Error(`${a.file} holds no sound. Nothing filed, no take used`)
+  }
   const measured = M.dsp.measure(sound)
   const record = {
     key: t.key, kind: t.kind, take: number, round, file: path.basename(dest), sha256: sha(fs.readFileSync(dest)), filed: a.filed && a.filed !== true ? String(a.filed) : new Date().toISOString(),
@@ -809,6 +821,27 @@ export async function fixtures(a, c, M) {
   return P
 }
 
+// Every event name the pages emit, read from the source, with what the sound side does with it.
+export function emittedEvents(M) {
+  const found = new Map()
+  const walk = (dir) => {
+    for (const f of fs.readdirSync(dir, { withFileTypes: true })) {
+      const p = path.join(dir, f.name)
+      if (f.isDirectory()) {
+        if (path.relative(at(), p) !== path.join('src', 'audio')) walk(p)
+      } else if (f.name.endsWith('.ts')) {
+        const text = fs.readFileSync(p, 'utf8')
+        const passesOn = /const say = [^\n]*io\.emit\(/.test(text)
+        for (const m of text.matchAll(/\b(io\.emit|say)\(\s*'([a-z0-9-]+)'/g)) if (m[1] === 'io.emit' || passesOn) found.set(m[2], path.relative(at(), p))
+      }
+    }
+  }
+  walk(at('src'))
+  const live = new Set(Object.values(M.cues.liveTriggers).map((t) => (t.on === 'event' ? t.event : '')))
+  const unknown = [...found].filter(([name]) => !M.cues.eventCues[name] && !M.cues.stopEvents[name] && !live.has(name) && !M.cues.silentEvents.includes(name))
+  return { count: found.size, unknown: unknown.map(([name, file]) => `${name} (${file})`) }
+}
+
 function status(P, c, M) {
   const kept = new Set(keptRecords(P).map((r) => r.id))
   const ledger = readLedger(P)
@@ -820,6 +853,8 @@ function status(P, c, M) {
   const missing = want.filter((w) => !kept.has(w.id))
   console.log(`sound: ${want.length - missing.length} of ${want.length} sounds kept (${c.audio.sfx.length} cues with their variants, and the narrator's lines). ${ledger.takes.length} takes filed`)
   if (missing.length) console.log(`sound: not kept yet: ${missing.slice(0, 12).map((m) => m.id).join(', ')}${missing.length > 12 ? `, and ${missing.length - 12} more` : ''}`)
+  const e = emittedEvents(M)
+  console.log(`sound: the pages emit ${e.count} events by name. ${e.unknown.length ? `With no cue, no stop, no line and not listed as silent in src/audio/cues.ts: ${e.unknown.join(', ')}` : 'Each has a cue, stops one, sets off a line or is listed as silent on purpose'}`)
   console.log('sound: --cue ID --file F files a take, --line BEAT:N --file F files a line, --keep keeps one, --pack builds what the site ships, --sheet draws the kept sounds, --check runs the sound checks, --fixtures makes stand-ins to test with')
 }
 

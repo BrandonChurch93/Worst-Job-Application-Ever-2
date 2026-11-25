@@ -20,6 +20,7 @@ const LEVEL_OPENS = 0.05
 const LEVEL_PICKS = 0.25
 const LEVEL_CLOSES = 0.45
 const SEND_SINKS = 0.12
+const HEAD_TURN = Math.PI / 4
 
 const TYPE = {
   prompt: { font: 'inter-400', px: 68 },
@@ -113,7 +114,11 @@ export function promptLayout(): LayoutNode {
   const menu = node('level-menu', 'menu', [textX, menuY, PILL.w + 44, 3 * ROW + 12], { part: PART, tone: 'light', r: 24, height: MENU_Z, floor: PANEL_Z + 2, over: true, states: ['menu'], children: rows })
   const send = node('send', 'control', [sendX, sendY, SEND, SEND], {
     part: PART, shape: 'disc', tone: 'accent', height: CONTROL_Z, floor: PANEL_Z,
-    children: [node('send-mark', 'mark', [sendX + SEND / 2 - 6, sendY + 24, 12, SEND - 48], { part: PART, shape: 'capsule', tone: 'light', height: CONTROL_Z + 2, floor: CONTROL_Z })]
+    children: [
+      node('send-mark', 'mark', [sendX + SEND / 2 - 5, sendY + SEND / 2 - 20, 10, 44], { part: PART, shape: 'capsule', tone: 'light', height: CONTROL_Z + 2, floor: CONTROL_Z }),
+      node('send-head-a', 'mark', [sendX + SEND / 2 - 24, sendY + SEND / 2 - 17, 30, 10], { part: PART, shape: 'capsule', tone: 'light', height: CONTROL_Z + 2, floor: CONTROL_Z, over: true }),
+      node('send-head-b', 'mark', [sendX + SEND / 2 - 6, sendY + SEND / 2 - 17, 30, 10], { part: PART, shape: 'capsule', tone: 'light', height: CONTROL_Z + 2, floor: CONTROL_Z, over: true })
+    ]
   })
   const typed = text('prompt-typed', 'runtime:opening.prompt', { ...TYPE.prompt, wrap: WRAP }, textX, textY, { part: PART, on: PANEL_Z, runtime: intro.prompt })
   const caret = node('prompt-caret', 'caret', [textX, textY - 13, 5, capOf(TYPE.prompt) + 26], { part: PART, tone: 'accent', height: PANEL_Z + 2, floor: PANEL_Z, states: ['caret'], over: true })
@@ -180,6 +185,8 @@ export function makeOpening(): OpeningPiece {
         'prompt-caret': { x: textX + measure(TYPE.prompt.font, last, TYPE.prompt.px).width + 6, y: caretY + (lines.length - 1) * lead },
         send: { z1: CONTROL_Z - sink },
         'send-mark': { z0: CONTROL_Z - sink, z1: CONTROL_Z + 2 - sink },
+        'send-head-a': { z0: CONTROL_Z - sink, z1: CONTROL_Z + 2 - sink, rot: -HEAD_TURN },
+        'send-head-b': { z0: CONTROL_Z - sink, z1: CONTROL_Z + 2 - sink, rot: HEAD_TURN },
         level: { z1: CONTROL_Z - pressed }
       }
     })
