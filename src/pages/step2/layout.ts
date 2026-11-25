@@ -1,0 +1,181 @@
+import { config } from '../../config'
+import type { LayoutNode } from '../../copy'
+import { find, node, text } from '../../shell/layout'
+import { block } from '../../shell/metrics'
+import { button, buttonWidth, HEADER, LEFT, page, RIGHT, SCREEN_H, stepHead, TYPE } from '../../shell/parts'
+import { registerData, words } from '../../shell/words'
+import legends from './legends.json'
+
+registerData('step2', legends)
+
+const sizes = config.scale.sizes
+const heights = config.scale.heights
+
+export const ROWS = ['phone', 'birth', 'volume'] as const
+export type RowName = (typeof ROWS)[number]
+
+export const FX = 1000
+export const FW = RIGHT - FX
+export const FH = sizes.field
+export const ROW_Y = HEADER.contentY
+export const PITCH = 144
+export const TRAY_GAP = 12
+export const TRAY_H = 232
+export const SHIFT = TRAY_H + TRAY_GAP
+export const TRAY_Z = heights.machineTray
+export const TOP = heights.machineMinTop
+export const PAD = 24
+
+export const rowY = (i: number, low = false): number => ROW_Y + i * PITCH + (low ? SHIFT : 0)
+export const trayY = (i: number): number => rowY(i) + FH + TRAY_GAP
+
+const DEG = Math.PI / 180
+
+export const DIAL = {
+  r: 100, ring: 66, hole: 15, stop: 30 * DEG, first: -30 * DEG, pitch: 30 * DEG,
+  cx: FX + PAD + 100, cy: trayY(0) + TRAY_H / 2,
+  holeAngle: (k: number): number => -30 * DEG - 30 * DEG * (k - 1),
+  travel: (k: number): number => 60 * DEG + 30 * DEG * (k - 1),
+  digit: (k: number): string => String(k % 10)
+}
+
+const sy = trayY(1)
+export const SLOT = {
+  x: FX + PAD, y: sy + PAD, w: 336, h: 150,
+  reelW: 92, reelH: 106, reelGap: 12,
+  reelX: (r: number): number => FX + PAD + 18 + r * (92 + 12),
+  reelY: sy + PAD + 22,
+  leverX: FX + PAD + 336 + 34, knobY: sy + PAD + 30, pull: 96, knob: 44,
+  payX: FX + PAD + 60, payY: sy + PAD + 150 + 8, payW: 216, payH: 22,
+  strips: [Object.keys(legends.months).sort(), Object.keys(legends.days).sort(), Object.keys(legends.years).sort()] as string[][],
+  names: ['months', 'days', 'years'] as const,
+  film: ['07', '23', '1991']
+}
+
+const cy = trayY(2)
+export const CRANK = {
+  hx: FX + PAD + 86, hy: cy + 146, arm: 72, gripW: 56, gripH: 26, base: 100, hub: 40,
+  segW: 26, segH: 96, segGap: 12, segX: FX + PAD + 86 + 72 + 28 + 44, segY: cy + 146 - 48
+}
+
+export const REEL_TYPE = { font: 'inter-600', px: 34, align: 'centre' as const }
+export const DIAL_TYPE = { font: 'inter-600', px: 20, align: 'centre' as const }
+
+export const reelId = (r: number, legend: string): string => `reel-${r}-${legend}`
+
+function rowNodes(i: number, low: boolean): LayoutNode[] {
+  const name = ROWS[i]!
+  const id = low ? `${name}-low` : name
+  const y = rowY(i, low)
+  const here = i === 0 ? undefined : low ? [`${name}-low`] : ['rest', `${name}-up`]
+  const when = (cond: string): string[] => (i === 0 ? [`${name}-${cond}`] : [`${name}-${low ? 'low' : 'up'}-${cond}`])
+  const capY = y + (FH - block(TYPE.value.font, 'X', TYPE.value.px).cap) / 2
+  const value = (suffix: string, key: string, cond: string): LayoutNode =>
+    text(`${id}-${suffix}`, key, { ...TYPE.value, wrap: FW - 116 }, FX + PAD, capY, { part: 'type', on: heights.field, states: when(cond) })
+  const values: LayoutNode[] = []
+  if (name === 'phone') values.push(value('typed', 'runtime:step2.phone', 'typing'), value('value', 'copy:step2.rows.phone.gaveUp', 'done'))
+  if (name === 'birth') values.push(value('value', 'copy:step2.rows.birth.recorded', 'done'))
+  if (name === 'volume') values.push(value('typed', 'runtime:step2.volume', 'typing'), value('value', 'copy:step2.rows.volume.done', 'done'))
+  const chevron = node(`${id}-chevron`, 'chevron', [FX + FW - PAD - 28, y + (FH - 28) / 2, 28, 28], { part: 'rows', shape: 'none' })
+  const extra = here ? { states: here } : {}
+  return [
+    text(`${id}-label`, `copy:step2.rows.${name}.label`, TYPE.label, LEFT, y + 8, { part: 'type', ...extra }),
+    text(`${id}-helper`, `copy:step2.rows.${name}.helper`, TYPE.helper, LEFT, y + 42, { part: 'type', ...extra }),
+    node(`${id}-pocket`, 'field', [FX, y, FW, FH], { part: 'rows', r: 14, children: [...values, chevron], ...extra })
+  ]
+}
+
+function dialNodes(): LayoutNode[] {
+  const d = DIAL
+  const cap = block(DIAL_TYPE.font, '0', DIAL_TYPE.px).cap
+  const numerals: LayoutNode[] = []
+  for (let k = 1; k <= 10; k++) {
+    const a = d.holeAngle(k)
+    numerals.push(text(`dial-numeral-${d.digit(k)}`, `data:step2.dial.${d.digit(k)}`, DIAL_TYPE, d.cx + d.ring * Math.cos(a), d.cy + d.ring * Math.sin(a) - cap / 2, { part: 'type', on: TOP + 3 }))
+  }
+  const centre = node('dial-centre', 'dialCentre', [d.cx - 30, d.cy - 30, 60, 60], { part: 'dial', shape: 'disc', height: TOP + 16, floor: TOP + 2, tone: 'accent', mechanism: true })
+  const wheel = node('dial-wheel', 'dialWheel', [d.cx - d.r, d.cy - d.r, d.r * 2, d.r * 2], { part: 'dial', shape: 'disc', height: TOP + 2, floor: TRAY_Z, tone: 'metal', mechanism: true, children: [...numerals, centre] })
+  const prompt = text('dial-prompt', 'copy:step2.rows.phone.panel', TYPE.body, d.cx + d.r + 48, d.cy - block(TYPE.body.font, 'X', TYPE.body.px).cap / 2, { part: 'type', on: TRAY_Z, states: ['phone-panel'] })
+  return [wheel, prompt]
+}
+
+function slotNodes(): LayoutNode[] {
+  const s = SLOT
+  const reels: LayoutNode[] = []
+  const cap = block(REEL_TYPE.font, '0', REEL_TYPE.px).cap
+  for (let r = 0; r < 3; r++) {
+    const marks = s.strips[r]!.map((legend) =>
+      text(reelId(r, legend), `data:step2.${s.names[r]}.${legend}`, REEL_TYPE, s.reelX(r) + s.reelW / 2, s.reelY + (s.reelH - cap) / 2, { part: 'type', on: TOP + 14, states: [reelId(r, legend)] }))
+    reels.push(node(`slot-reel-${r}`, 'slotReel', [s.reelX(r), s.reelY, s.reelW, s.reelH], { part: 'slot', height: TOP + 14, floor: TOP + 10, tone: 'paper', r: 6, children: marks }))
+  }
+  const window = node('slot-window', 'slotWindow', [s.x + 10, s.y + 14, s.w - 20, s.h - 28], { part: 'slot', height: TOP + 10, floor: TOP + 8, tone: 'dark', r: 8, children: reels })
+  const cabinet = node('slot-cabinet', 'slotCabinet', [s.x, s.y, s.w, s.h], { part: 'slot', height: TOP + 8, floor: TRAY_Z, tone: 'metal', r: 12, mechanism: true, children: [window] })
+  const knob = node('slot-knob', 'slotKnob', [s.leverX - s.knob / 2, s.knobY - s.knob / 2, s.knob, s.knob], { part: 'slot', shape: 'disc', height: TOP + 40, floor: TOP + 12, tone: 'accent', mechanism: true })
+  const payout = node('slot-payout', 'slotPayout', [s.payX, s.payY, s.payW, s.payH], { part: 'slot', height: 6, floor: TRAY_Z, tone: 'dark', r: 6 })
+  const px = s.leverX + s.knob / 2 + 28
+  const wrap = FX + FW - PAD - px
+  const b = block(TYPE.body.font, words('copy:step2.rows.birth.panel'), TYPE.body.px, wrap)
+  const prompt = text('slot-prompt', 'copy:step2.rows.birth.panel', { ...TYPE.body, wrap }, px, sy + (TRAY_H - b.height) / 2, { part: 'type', on: TRAY_Z, states: ['birth-panel'] })
+  return [cabinet, knob, payout, prompt]
+}
+
+function crankNodes(): LayoutNode[] {
+  const c = CRANK
+  const prompt = text('crank-prompt', 'copy:step2.rows.volume.panel', TYPE.body, FX + PAD, cy + PAD, { part: 'type', on: TRAY_Z, states: ['volume-panel'] })
+  const base = node('crank-base', 'crankBase', [c.hx - c.base / 2, c.hy - c.base / 2, c.base, c.base], { part: 'crank', shape: 'disc', height: 18, floor: TRAY_Z, tone: 'metal' })
+  const arm = node('crank-arm', 'crankArm', [c.hx - 8, c.hy - 8, c.arm + 16, 16], { part: 'crank', shape: 'capsule', height: TOP + 6, floor: TOP - 4, tone: 'metal', mechanism: true, over: true })
+  const hub = node('crank-hub', 'crankHub', [c.hx - c.hub / 2, c.hy - c.hub / 2, c.hub, c.hub], { part: 'crank', shape: 'disc', height: TOP + 10, floor: 18, tone: 'raised', mechanism: true, over: true })
+  const grip = node('crank-grip', 'crankGrip', [c.hx + c.arm - c.gripW / 2, c.hy - c.gripH / 2, c.gripW, c.gripH], { part: 'crank', shape: 'capsule', height: TOP + 30, floor: TOP + 6, tone: 'accent', mechanism: true, over: true })
+  const segs: LayoutNode[] = []
+  for (let k = 0; k < 10; k++) segs.push(node(`meter-${k + 1}`, 'meterSegment', [c.segX + k * (c.segW + c.segGap), c.segY, c.segW, c.segH], { part: 'crank', shape: 'capsule', height: 12, floor: TRAY_Z, tone: 'glass' }))
+  const meter: LayoutNode = { id: 'meter', kind: 'row', box: [c.segX, c.segY, 10 * c.segW + 9 * c.segGap, c.segH], children: segs, flow: 'row', gap: c.segGap, part: 'crank' }
+  return [prompt, base, arm, hub, grip, meter]
+}
+
+export function buildLayout(): LayoutNode {
+  const machines = [dialNodes(), slotNodes(), crankNodes()]
+  const trays = ROWS.map((name, i) => node(`${name}-tray`, 'machineTray', [FX, trayY(i), FW, TRAY_H], { part: 'rows', r: 0, states: [`${name}-open`], children: machines[i]! }))
+  const rows: LayoutNode[] = []
+  for (let i = 0; i < 3; i++) {
+    rows.push(...rowNodes(i, false))
+    if (i > 0) rows.push(...rowNodes(i, true))
+  }
+  const w = buttonWidth('copy:step2.continue')
+  const by = SCREEN_H - 40 - sizes.button
+  const go = button('continue', RIGHT - w, by, w, 'copy:step2.continue', { part: 'shell', tone: 'metal' })
+  find(go, 'continue-label').tone = 'ink'
+  const note = text('note', 'copy:step2.note', TYPE.helper, LEFT, by + (sizes.button - block(TYPE.helper.font, 'X', TYPE.helper.px).cap) / 2, { part: 'type' })
+  return page('step2', SCREEN_H, [...stepHead(2), ...rows, ...trays, note, go])
+}
+
+export interface StateView { open: number; panel: boolean; done: boolean[]; typing: boolean[]; settled: string[] | null }
+
+export function statesOf(v: StateView): string[] {
+  const out: string[] = []
+  if (v.open < 0) out.push('rest')
+  for (let i = 0; i < 3; i++) {
+    const name = ROWS[i]!
+    const low = v.open >= 0 && v.open < i
+    const base = i === 0 ? name : `${name}-${low ? 'low' : 'up'}`
+    if (i > 0) out.push(base)
+    if (v.done[i]) out.push(`${base}-done`)
+    else if (v.typing[i]) out.push(`${base}-typing`)
+  }
+  if (v.open >= 0) {
+    out.push(`${ROWS[v.open]}-open`)
+    if (v.panel) out.push(`${ROWS[v.open]}-panel`)
+    if (v.open === 1 && v.settled) v.settled.forEach((legend, r) => out.push(reelId(r, legend)))
+  }
+  return out
+}
+
+export function pruned(tree: LayoutNode, states: string[]): LayoutNode {
+  const keep = (n: LayoutNode): LayoutNode | null => {
+    if (n.states && !n.states.some((s) => states.includes(s))) return null
+    const { states: _drop, children, ...rest } = n
+    void _drop
+    const kids = (children ?? []).map(keep).filter((c): c is LayoutNode => c !== null)
+    return children ? { ...rest, children: kids } : rest
+  }
+  return keep(tree)!
+}
