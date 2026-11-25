@@ -1,0 +1,129 @@
+{
+ "critic": "R9",
+ "score": 5,
+ "pass": false,
+ "model": "gpt_6_2_sol",
+ "set": "B: one sheet across each acting state",
+ "reads": [
+  {
+   "file": "set-B-01.png",
+   "read": "Tentative, then purposeful; the arrow appears beside the form, pauses by Email, then darts up and selects First name, which lights orange."
+  },
+  {
+   "file": "set-B-02.png",
+   "read": "Wary and then frozen; it skids onto the keyboard, squares up near H, and stays put while orange shots scorch nearby keys and close in."
+  },
+  {
+   "file": "set-B-03.png",
+   "read": "Shocked and hurt; a shot strikes it by H and burns a smoking hole through it. It hangs stunned, then jerks away from more incoming fire."
+  },
+  {
+   "file": "set-B-04.png",
+   "read": "Alarmed and scrambling; the wounded arrow narrowly avoids more fire, tumbles across the keyboard, and rushes toward the orange Enter key before veering away as it sparks."
+  },
+  {
+   "file": "set-B-05.png",
+   "read": "Determined and straining; it grabs the résumé sticking out of a slot and rocks from side to side, trying to wrestle the paper free as its tip glows."
+  },
+  {
+   "file": "set-B-06.png",
+   "read": "Desperate, then overwhelmed; it braces and tugs as the rollers pull in more of the résumé. The arrow buckles, the paper goes through in strips, and the arrow drops against the slot."
+  },
+  {
+   "file": "set-B-07.png",
+   "read": "Deflated and stunned; it jolts beneath the shredded paper, stalls, and ends up pale and crumpled as the scraps and slot retract."
+  }
+ ],
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-B-05.png",
+   "where": "from the upper middle panel onward, on both edges of the résumé",
+   "what": "The cursor sprouts black arms ending in distinct mitten-like gloved hands. The grips are plainly visible and change the silhouette from the established faceless pointer.",
+   "fix": "Remove the arms and hands. Anchor the résumé against the cursor tip or notch and show the effort through the cursor bending, leaning back, and recoiling against the paper’s resistance."
+  },
+  {
+   "severity": "severe",
+   "file": "set-B-06.png",
+   "where": "first ten panels, on both edges of the paper",
+   "what": "The conspicuous gloved hands persist through most of the shredder struggle and disappear when the arrow drops.",
+   "fix": "Keep contact through the bare cursor silhouette. Let the paper pull the tip down, flatten the whole arrow under load, and snap it back when the grip breaks."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02.png",
+   "where": "upright hold near H, from late in the first row through the last panel",
+   "what": "Nearby flashes and impacts mostly change the keys, not the arrow. Its long, nearly identical upright poses are as readable as a parked pointer as they are as freezing in fear.",
+   "fix": "Angle away from the first nearby blast, tuck into a shorter braced silhouette, then hold it. Add one small recoil or directional flick as fire crosses right beside the tip."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01.png",
+   "where": "Email hold and First name activation, especially the final four panels",
+   "what": "The first hold barely changes pose, and the field lights without a clear wind-up, contact squash, or settle. The interaction is clear but the cursor's feeling is not.",
+   "fix": "Hold a slight pullback aimed at the target, stretch into the field, and give the activation a brief compressed contact pose followed by a visible rebound."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-04.png",
+   "where": "the dash from the left letter keys to Enter, last row",
+   "what": "The escape direction is visible, but smears and position changes do most of the acting. The orange-key flash does not get a clearly posed recoil before the arrow veers off.",
+   "fix": "Keep one readable stretched approach pose, then show a short, sharply reversed silhouette at the flash before it bolts away."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-07.png",
+   "where": "third row into the final hold",
+   "what": "The dark outlined cursor shifts to a pale crumpled shape with little visible change of posture in between. The end reads as deflation, but the jump in finish makes it briefly look like a scrap rather than the same character.",
+   "fix": "Preserve the tip and notch through the crumple and show the arrow fold or sink over a few intervening frames before holding the spent pose."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01.png",
+   "where": "the whole sheet",
+   "what": "did not read: confident reads as tentative, then purposeful.",
+   "fix": "The upright stand, the slight bounce and the strut of Confident, held before the first move.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02.png",
+   "where": "the whole sheet",
+   "what": "did not read: proud reads as wary and then frozen.",
+   "fix": "The puff up and the dusting of Proud, held as a show before the shots close in.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-04.png",
+   "where": "the whole sheet",
+   "what": "did not read: nervous reads as alarmed and scrambling.",
+   "fix": "The beads of sweat, the small tremble and the gulp of Nervous held on a still arrow before it moves.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-05.png",
+   "where": "the whole sheet",
+   "what": "did not read: angry reads as determined and straining. The glowing tip is seen; the steam is not.",
+   "fix": "The red tip and the vented steam of Angry plain at the size of the sheet, with the pull acted as temper.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-06.png",
+   "where": "the whole sheet",
+   "what": "did not read: scared reads as desperate, then overwhelmed.",
+   "fix": "The pale, stony arrow leaning back of Scared held before the loss.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-07.png",
+   "where": "the whole sheet",
+   "what": "did not read: exhausted reads as deflated and stunned. The sag and the drag are not in the read.",
+   "fix": "The sag and the soft edges of Exhausted on a shape that stays an arrow, the drag and the slump against something held.",
+   "by": "builder"
+  }
+ ]
+}

@@ -1,0 +1,86 @@
+{
+ "critic": "R1",
+ "score": 5,
+ "pass": false,
+ "model": "gpt_6_2_sol",
+ "set": "A: the two keys, whole and in native crops, and the page look sheet, each beside its approved image",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-A-03-b.png",
+   "where": "full frame, especially the upload panel and missing page context",
+   "what": "The target keeps the whole Step 1 composition in view while the arrow handles the paper near the boundary between the upload panel and the form. The build cuts to a tight close-up: the panel bleeds off the top and left, its icon is cropped, the button dominates the left half, and neither header nor field column remains visible. This is a framing mismatch independent of the settled field set and part sizes.",
+   "fix": "Pull back to the full Step 1 framing and show the action in relation to both columns, retaining the configured part sizes and current fields."
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-04-b.png",
+   "where": "where the paper goes in, beneath the upload panel (also the full frame in A-03)",
+   "what": "The target has a narrow dark slit inset into the page, with the paper visibly disappearing into it. The build hangs a bright, exposed roller and brackets off the panel lip, with a curtain of strips already dangling beneath it; the paper reads as going through a surface-mounted device rather than into a slit.",
+   "fix": "At this key, show the paper entering a slim, dark, flush opening in the page. Keep exposed hardware and dangling output from overwhelming the entry silhouette."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04-b.png",
+   "where": "armed arrow and paper at the upload panel (also A-03)",
+   "what": "The target has a rounded ivory arrow with a deep dark sidewall and clear shadow on the panel. The build's bright ember-colored tip dominates the arrow, its face reads as sharply faceted chrome, its hands resemble rounded knobs, and its arms make an even loop. The sheet also leans the opposite way and looks sharply folded with a big diagonal title, rather than hanging with soft crumpling and an understated document hierarchy.",
+   "fix": "Use a clean ivory nose and softer coherent bevel, deepen the sidewall and thrown shadow, make the arms asymmetric with recognizable finger grips, and turn the sheet to hang toward the opening with broad soft creases and restrained title treatment."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "keyboard deck, keycaps and end hardware (also A-01)",
+   "what": "The approved scene reads as polished, shaped steel and rounded cream keycaps with deep warm edge shadows. The build's raised deck is allowed, but its silver face is a nearly uniform brushed rectangle, the ends read as shallow gray discs, and the flatter square caps have bright border strokes in place of rounded molded shoulders; the orange key loses its warm gloss as well.",
+   "fix": "Keep the raised deck, hatches and five rows. Give the metal shaped highlights and darker contact edges, the end hardware more curved and differentiated reflections, the caps rounded ivory surfaces and warmer dark undersides, and the orange key a tighter bright highlight."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "arrow and warm effects over the keys (also A-01)",
+   "what": "The arrow points up-left rather than up-right and looks chipped or split at its lower edge rather than like one intact glossy arrow with a concentrated dark hit mark. The target's bright warm traces illuminate nearby metal and caps; the build reads as two glowing ends, weak glints, and several evenly dark marks with little reflected warmth.",
+   "fix": "Match the arrow's tilt and coherent dark-edged shape without changing its configured size, concentrate its surface damage, and give the existing warm effects small bright cores and visible local bounce on the adjacent surfaces without fixing the number in flight."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "upload glass, inset dash, icon and Browse control (also A-02, A-04 and A-05)",
+   "what": "The target has a reflective rounded lip, a deep soft interior falloff along the top and left, a finer inset dash, and a dark pill that throws a substantial lower-right shadow. The build looks like a flat bluish slab with an evenly drawn frame and pale coarse dashes; the upload glyph is thinner and the button is broad and matte with a short outline-like shadow.",
+   "fix": "Give the glass a deep inside edge and a bright lower/right lip, soften and refine the dash, restore the firmer glyph stroke, and add a shaped highlight and directional falloff to the button while retaining configured dimensions."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "right-hand glass inputs and focused rim (also the neutral inputs in A-05)",
+   "what": "The inactive fields have a broad, nearly uniform top-to-bottom gray ramp and lose the target's rounded reflective edge and sidewall depth. The focus looks like a narrow digital orange keyline instead of a hot pale inner rim with an orange halo spilling onto the page.",
+   "fix": "Deepen the top/left inset shadow, add a soft bright lower/right glass edge, and separate the focused core from its warmer diffuse bloom."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "progress hardware, header rule and page ground (also A-01 and A-02)",
+   "what": "The progress circles and track are evenly gray and lose the target's bright upper-left and dark lower-right specular split, radial steel sheen, richer orange translucency and stronger directional shadows. The header rule is a low-profile gray line rather than a rounded reflective strip. The surrounding page has finer, lower-contrast grain and reads smoother and grayer than the target's warm off-white tactile surface.",
+   "fix": "Model the brushed steel and orange plastic with narrower bright glints, richer lower-right shadows and a more rounded divider. Bring back the warmer paper tone and irregular fine grain without introducing a light band or slab border."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "orange action button, lower right",
+   "what": "Ignoring the different control and position, the build's face is dark terracotta with a subdued highlight and its lettering is heavier. The target has a more luminous orange face, polished narrow lip, layered dark base and a fuller soft directional shadow.",
+   "fix": "Apply the target's brighter molded orange finish, layered polished rim, lighter lettering weight and firmer contact-to-soft shadow transition to the current button."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "idle cursor below form",
+   "what": "The build's blurred shadow extends distinctly farther down and right and separates from the arrow more than the compact target shadow, making the arrow look more elevated.",
+   "fix": "Tighten the idle cursor shadow toward the edge and shorten its throw without resizing the cursor."
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01-b.png",
+   "where": "title and small form text (also A-02 and A-05)",
+   "what": "The title baseline is higher relative to the header rule, and the small labels and helper text have a cooler, lighter appearance than the target's warmer charcoal.",
+   "fix": "Settle the title visually nearer the rule and warm and slightly darken the small text without changing the copy or configured part dimensions."
+  }
+ ]
+}

@@ -1,0 +1,109 @@
+{
+  "role": "R2",
+  "round": 6,
+  "unit": "step1",
+  "commit": "bd38dd5ebe889c21640ebe94e8ae076407901ef1",
+  "tier": "review",
+  "engineHash": "f53260b07e37d041",
+  "sharedHash": "dd95c22f49f6a5b3",
+  "pageHashes": {
+    "step1": "ac84b944a7c04b21",
+    "step2": "55cb277c9b082808",
+    "marketing": "c46c984d2df73782",
+    "pinball": "fd303e8468a6b766",
+    "boss": "f7b68d3ef704e243",
+    "decision": "08e4b1401a38f867"
+  },
+  "browser": "147.0.7727.15",
+  "files": {
+    "set-A-01.png": {
+      "set": "A",
+      "critic": "R2-1",
+      "kind": "jury",
+      "heading": "",
+      "judged": {
+        "key": "step1-fire"
+      },
+      "still": {
+        "page": "step1",
+        "beat": "step1.firstName",
+        "at": 0.5,
+        "camera": "home",
+        "tier": "review"
+      },
+      "format": "hd",
+      "tier": "review",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-02.png": {
+      "set": "A",
+      "critic": "R2-1",
+      "kind": "jury",
+      "heading": "",
+      "judged": {
+        "key": "step1-tug"
+      },
+      "still": {
+        "page": "step1",
+        "beat": "step1.tug",
+        "at": 0.5,
+        "camera": "film",
+        "tier": "review"
+      },
+      "format": "hd",
+      "tier": "review",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-03.png": {
+      "set": "A",
+      "critic": "R2-1",
+      "kind": "jury",
+      "heading": "",
+      "judged": {
+        "sheet": "page-look"
+      },
+      "still": {
+        "page": "step1",
+        "camera": "sheet",
+        "tier": "review",
+        "sheet": "page-look"
+      },
+      "format": "hd",
+      "tier": "review",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-04.png": {
+      "set": "A",
+      "critic": "R2-1",
+      "kind": "jury",
+      "heading": "",
+      "control": "step1-fire",
+      "image": "references/approved/step1-fire.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-05.png": {
+      "set": "A",
+      "critic": "R2-1",
+      "kind": "jury",
+      "heading": "",
+      "control": "step1-tug",
+      "image": "references/approved/step1-tug.png",
+      "size": [
+        1400,
+        788
+      ]
+    }
+  }
+}

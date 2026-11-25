@@ -1,0 +1,37 @@
+{
+ "critic": "R4",
+ "score": 7,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "B: one sheet of consecutive frames at each hit",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-B-02.png",
+   "where": "Enter and the first red plaque, 0:32.13–0:32.33",
+   "what": "The error reads, but its trigger does not. Enter looks unchanged in the two clear frames before the plaque covers it. The keyboard image jolts on arrival, but there is no readable key press or local contact reaction.",
+   "fix": "Show Enter bottoming out and springing back before it is covered. On the plaque's landing frame, let the keys beneath it compress slightly while the plaque stops, then hold the message still."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-04.png",
+   "where": "lower red plaque over the bottom key rows, 0:33.27–0:33.43",
+   "what": "The second plaque arrives as an oversized panel and snaps smaller into place. The surrounding keys and the plaque just above it stay fixed, so it reads as a graphic scaling into place rather than a heavy slab striking the keyboard.",
+   "fix": "Show the descending edge closing the gap to the keys. Tighten the contact shadow and give the bottom row a brief recoil on the exact frame the plaque stops."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01.png",
+   "where": "H key and arrow, 0:19.80–0:19.97",
+   "what": "The arrow kicks aside and the spark and scorch mark make the strike clear, but the H key looks seated in the same position throughout. The flash carries almost all of the keyboard's reaction.",
+   "fix": "Tip or depress the struck edge of H on the spark frame, then let the key spring back over the next few frames while retaining the scorch mark."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03.png",
+   "where": "white plaque lettering at 0:32.80 and 0:32.83",
+   "what": "The in-flight lettering breaks into several distinct offset outlines at native crop size instead of reading as one directional smear. It resolves in the hold, but the lettering appears to split across the two approach frames.",
+   "fix": "Blur the plaque and lettering together with continuous directional motion blur, then resolve both to a single sharp image on contact."
+  }
+ ]
+}

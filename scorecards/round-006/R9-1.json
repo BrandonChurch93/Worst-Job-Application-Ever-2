@@ -1,0 +1,107 @@
+{
+ "critic": "R9",
+ "score": 6,
+ "pass": false,
+ "model": "kimi_k3",
+ "set": "A: one sheet across each beat",
+ "reads": [
+  {
+   "file": "set-A-01.png",
+   "read": "purposeful, settling in to start the form; it has just arrived on the page and is about to enter its name"
+  },
+  {
+   "file": "set-A-02.png",
+   "read": "diligent and focused, tapping out its first name letter by letter on the on-screen keyboard, which is just beginning to misbehave"
+  },
+  {
+   "file": "set-A-03.png",
+   "read": "confused, then annoyed; the keyboard keeps scrambling and popping keys under its taps as it types its last name"
+  },
+  {
+   "file": "set-A-04.png",
+   "read": "uneasy turning to dismayed; after finishing the email address, red 'Invalid email' stickers spring up rejecting its work"
+  },
+  {
+   "file": "set-A-05.png",
+   "read": "hopeful, proudly carrying its resume toward the upload slot; it is about to hand it over"
+  },
+  {
+   "file": "set-A-06.png",
+   "read": "alarmed and struggling; tangled in a cord, it watches its resume get fed into the shredder below"
+  },
+  {
+   "file": "set-A-07.png",
+   "read": "drained and defeated; everything it entered is erased ('please re-enter all information manually') and it must start over"
+  }
+ ],
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-02.png, set-A-03.png, set-A-04.png",
+   "where": "the long typing passages on the on-screen keyboard",
+   "what": "the arrow simply slides from key to key like a plain pointer; there is no wind-up before a tap, no reaction when keys pop out, and no flinch or recoil when the red 'Invalid email' stickers hit — the feeling is carried by the keyboard graphics, not by the character",
+   "fix": "give the arrow a small anticipatory dip before each tap, a stretchy hop when crossing between rows, a startled shake-off when keys pop out, and a clear recoil-and-drooping hold when the error stickers appear"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-06.png",
+   "where": "the cord-tangle frames, especially frames 9-11 (bottom row, first two panels)",
+   "what": "the black looping cord wraps over the arrow's silhouette and muddies the pose, and in the late frames the arrow shrinks to a few pixels in the corner, nearly invisible against the drop zone — the struggle cannot be read at a glance",
+   "fix": "render the arrow on top of the cord with a clean rim, keep it at a readable size through the whole struggle, and give it distinct writhing poses rather than letting it fade out"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "first frame, and the matching edge-on page views (also mirrored at the end of set-A-07)",
+   "what": "the page is shown nearly edge-on and the arrow is a thin sliver; as the opening of the unit the character cannot be found at a glance, so the first beat has no readable pose",
+   "fix": "open on a readable top-down or near-frontal frame with the arrow clearly posed and lit against the panel, or hold the edge-on transition without the arrow in frame"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-05.png, set-A-07.png",
+   "where": "the resume carry and the closing deflation beat",
+   "what": "the carry has some squash when the resume feeds in, but there is no stretch on the fast moves, and the defeated ending is told by the page text rather than by a held, drooping pose of the arrow",
+   "fix": "stretch the arrow along the fast carry, then hold a tip-down droop for several frames before the page slides away"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "the whole sheet",
+   "what": "did not read: the keyboard that rises out of the page under the arrow is not in the read. The beat reads as an arrow that has just arrived and settles in to start the form.",
+   "fix": "The rise seen as a thing that happens to the arrow: the page opening under it, the arrow lifted or tipped back by the keyboard and held in a pose that answers it.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "the whole sheet",
+   "what": "did not read: the turrets, the bolts, the dodges, the cocky moment and the hit with its burn hole are not in the read. The beat reads as diligent typing on a keyboard that is just beginning to misbehave.",
+   "fix": "Each dodge and duck a held pose clear of the keys, the cocky pose held before the hit, and the hit answered by a held shock with the hole and its smoke plain at the size of the sheet.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "the whole sheet",
+   "what": "did not read: the slabs read as red stickers that spring up, not as heavy slabs that drop from above, and the dives clear of them are not in the read.",
+   "fix": "Each slab seen falling and landing with weight, and each dive a wind-up, a stretch and a landing held clear of the slab.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-06.png",
+   "where": "the whole sheet",
+   "what": "did not read: the pull is not in the read. The arms read as a cord the arrow is tangled in, and the arrow reads as watching its resume go into the shredder.",
+   "fix": "The arms read as arms: two hands seen gripping the sheet, the arrow leaning back against the pull with its weight behind it, and the sheet taut between the hands and the slot.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "the whole sheet",
+   "what": "did not read: the arrow drawn in, the pile of strips that stirs, stands up and zips itself back into the arrow are not in the read. The beat reads as drained and defeated because the form's words say everything was erased.",
+   "fix": "The pile, the stand and the zip larger in the frame and each held, the mended arrow out of line for a moment and then true, so the loss is told by the body and not by the page's text.",
+   "by": "builder"
+  }
+ ]
+}

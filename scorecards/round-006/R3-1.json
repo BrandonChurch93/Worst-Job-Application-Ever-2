@@ -1,0 +1,64 @@
+{
+ "critic": "R3",
+ "score": 7,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "burn marks on the R, U, H and K keys (also set-A-08, 'the arrow' and 'the deck's front edge' crops)",
+   "what": "the bullet holes are soft dark smudges with a faint orange halo painted on the keycap face. They have no depth, no torn rim and no wall going into the cap, so they read as stickers, not holes",
+   "fix": "cut a real crater: a dark core that falls off into the cap, a raised, scorched, ragged lip catching the light on the upper-left, a thin bright inner wall on the far side, and soot fanning out with the spark direction"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "fifth pose, the arms crossing the arrow",
+   "what": "the near arm is a straight, even-width rod laid across the arrow's face from a stub at the far left, with no shoulder or joint. It reads as a stick lying on top of the arrow and partly passing through its edge, not as an arm attached to it",
+   "fix": "root both arms at shoulder sockets on the arrow's sides, curve and taper them like the other poses, and give the arm over the face its own small contact shadow on the arrow"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "fifth arrow (cracked) and the cracks on the arrow's tail",
+   "what": "the cracks are thin, uniform grey drawn lines on a smooth surface. They have no gap, no offset between the pieces and no chipped edge",
+   "fix": "open the cracks into narrow dark gaps with a slight height step between the fragments, a light catch on one lip, and small chips where the cracks meet the outline"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "second arrow (taped), the tape strips",
+   "what": "the tape is smeared, semi-opaque blur with soft, undefined ends. It has no thickness, no edge and no gloss, so it reads as a smudge more than as strips of tape",
+   "fix": "give each strip crisp cut or torn ends, a faint raised edge with a thin shadow, a glossy specular streak, and slight wrinkles where it bridges the cuts"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "the resume drop zone glass, and its edge in the set-A-10 'glass at its edge' crop",
+   "what": "the glass is an even, frosted grey slab. Nothing of the page's paper texture or tone shows through or refracts at the edge, so it reads as a grey plastic panel and not as glass",
+   "fix": "let the paper grain show faintly through the slab, add a refracted offset band and a bright edge caustic along the bevel, and a slight cool tint gradient from the edge to the centre"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-06.png",
+   "where": "third arrow (anger), the hot tip",
+   "what": "the red-orange heat is a flat gradient with sprinkled yellow dots, pasted over the face. The bevel and gloss under it disappear",
+   "fix": "keep the bevel highlights through the glow, make the colour emissive from inside the material, and let it tint the outline and cast a little warm light on the page"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01.png",
+   "where": "the left turret's muzzle and its tracer over the Caps Lock key",
+   "what": "the muzzle is a uniformly glowing orange ring, and the tracer is a single soft streak. The streak casts no light on the keycap beneath it",
+   "fix": "darken the bore centre, add a hot-to-cool falloff on the ring, and put a small warm light pool on the keycap under the tracer"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-02.png",
+   "where": "the shredder body under the paper",
+   "what": "the bracket plates look surface-mounted on the page and the glass edge, with no recess into either, and the screws are flat dots",
+   "fix": "set the shredder into a slot cut through the glass rim, with a dark gap at the join, and give the screw heads a slot and a highlight"
+  }
+ ]
+}

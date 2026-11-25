@@ -1,0 +1,65 @@
+{
+ "critic": "R4",
+ "score": 7,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "A: one sheet across each beat, the page turn and the slab seating",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-01.png, set-A-08.png",
+   "where": "the resume drop zone, upper left, at 0:14.17 and 0:45.77 during the slab tilt",
+   "what": "while the slab is tilted, the drop zone's inset renders as black wedges in a bowtie shape. It reads as a broken render for a frame or two of every page turn, not as a recess seen at an angle",
+   "fix": "keep the inset's walls and shading correct under the slab's perspective (render the recess as geometry, or clamp the inner-shadow transform) so it stays a lit grey recess through the whole turn"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-09.png",
+   "where": "the hairline rule under the header, across the crop, frames 0:46.33 and 0:46.43 compared with their neighbours",
+   "what": "after the slab has seated, the thin rule changes weight from frame to frame, from single to doubled and thicker, so the line shimmers on a page that should be dead still",
+   "fix": "once seated, snap the slab to whole pixels with no residual subpixel scale, and draw the rule at a whole-pixel height so it renders the same in every frame"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-06.png",
+   "where": "the resume and shredder, lower right, 0:36.00 to 0:40.53",
+   "what": "for about 4.5 s the frames barely change: the cursor sways on a loop over the half-fed resume at an even, floaty pace, with no wind-up, tug or jolt. It is hard to tell without a caption whether the cursor is pulling the resume back or being dragged in, and the beat reads as a slow wobble with no mass",
+   "fix": "make it a few hard tugs, each with a wind-up, a snap and a jerk of the paper and shredder, then one decisive pull-in with a hold. Cut the dwell to about half"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "the form fields, right, 0:42.60 to 0:43.27",
+   "what": "the payoff, where the typed fields are wiped and Continue turns orange, happens during the blurred camera pull-out (Perplexity and Computer are still visible at 0:42.60, Perplex at 0:42.93, then everything is blank at 0:43.27). The wipe is never seen, and the button changes state mid-move",
+   "fix": "finish the pull-out and settle first, then clear the fields on screen with a visible beat (and a short hold), then light Continue"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "the keyboard, 0:24.47 to 0:28.97",
+   "what": "during the shuffle, the flying keys leave grey, dirty-looking smears below the board (0:25.80, 0:28.97), and the keys look scattered rather than thrown and landing. Nothing in the sheet shows a key landing and stopping dead in a socket",
+   "fix": "replace the smeared shadows with tight contact shadows that shrink as keys lift. Give each key an arc, then land it in its socket with a one-frame compression and a hard stop"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-02.png",
+   "where": "the keyboard keys, 0:18.90 to 0:23.23",
+   "what": "small dark specks appear on the keys while the side flippers light up. At this frame spacing it is not clear what they are (balls, marks or holes) or what the flippers are doing to them",
+   "fix": "make the moving pieces read clearly as steel balls with highlights and shadows, or add one frame where a flipper visibly strikes something"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-04.png",
+   "where": "the Invalid email toasts, 0:32.60 to 0:33.97",
+   "what": "the toasts pop in at full size with no anticipation or landing, and the one leaving at the right edge is a long red smear. They read as weightless overlays rather than objects hitting the page",
+   "fix": "drop each toast in with a fast entry and a small settle, and the page or field should react on impact. Shorten the exit blur"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-09.png",
+   "where": "the whole crop, 0:46.20 to 0:46.30",
+   "what": "the slab goes from soft and scaled up to seated in one step, and the seated frames show no settle or answer from the page. It stops, which suits a heavy slab, but there is no visible impact",
+   "fix": "on the landing frame, add a one-frame contact cue: a tightened shadow, a small compression, or a tick on the stepper studs"
+  }
+ ]
+}

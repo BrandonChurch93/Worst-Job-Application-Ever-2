@@ -1,0 +1,121 @@
+{
+ "critic": "R1",
+ "score": 5,
+ "pass": false,
+ "model": "kimi_k3",
+ "set": "B: the three sheets of the cursor (arms, damage, acting), each beside its approved sheet",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-B-02-b.png",
+   "where": "whole frame",
+   "what": "shot from nearly straight above, while -a is a low oblique three-quarter view with raking shadows and a receding surface",
+   "fix": "lower the camera to -a's oblique angle so the cursors sit in the surface with long shadows to the right"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03-b.png",
+   "where": "whole frame",
+   "what": "shot from nearly straight above, while -a is a low oblique three-quarter view with raking shadows",
+   "fix": "lower the camera to -a's oblique angle so the states sit in the surface with long shadows to the right"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01-b.png",
+   "where": "beneath each of the five poses",
+   "what": "the caption row under the poses is gone; -a carries a small grey label centred under each state",
+   "fix": "restore the caption strip under each pose, same size, weight, colour and centred placement as -a"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02-b.png",
+   "where": "beneath each of the five states",
+   "what": "the caption row under the states is gone; -a carries a small grey quoted label centred under each state",
+   "fix": "restore the caption strip under each state, same size, weight, colour and centred placement as -a"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03-b.png",
+   "where": "beneath each of the six states",
+   "what": "the caption row under the states is gone; -a carries a small grey label centred under each state",
+   "fix": "restore the caption strip under each state, same size, weight, colour and centred placement as -a"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01-b.png",
+   "where": "fourth pose, pulling paper",
+   "what": "the paper feeds through a metal printer-roller mechanism with screws; in -a the strip is pulled from a plain narrow slit in the page",
+   "fix": "remove the metal mechanism and let the paper emerge from a simple slit in the surface"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01-b.png",
+   "where": "fifth pose, bracing to push",
+   "what": "the body leans back with both hands raised beside its head, reading as falling or flailing; -a leans into the push with both arms extended straight ahead, palms out",
+   "fix": "lean the body forward in the push direction with arms straight and palms flat forward"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02-b.png",
+   "where": "second state, reassembled",
+   "what": "the pieces sit nearly flush with hairline cracks and tiny tape tabs at the edges; -a shows clearly separated shards bridged by wide clear tape strips across the face",
+   "fix": "open the seams between the shards and bridge them with two or three wide tape bands across the face"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02-b.png",
+   "where": "fifth state, flattened",
+   "what": "the warped body is covered in a crackle network; -a is smooth, glossy, melted-looking plastic",
+   "fix": "remove the craquelure and keep the surface smooth and glassy"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-01-b.png",
+   "where": "the two paper props",
+   "what": "the held and pulled sheets are creased and crumpled; -a's paper is clean and flat",
+   "fix": "flatten the paper and remove the creases, keeping the copy"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-02-b.png",
+   "where": "first state, shredded",
+   "what": "the pile reads dark, dominated by black shard edges; -a's strips lie white-face-up with only thin dark edges",
+   "fix": "lighten the pile so the white faces dominate"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-03-b.png",
+   "where": "first state, nervous",
+   "what": "only a few tiny droplets on the face; -a is covered in sweat beads with more drops scattered on the page beside it",
+   "fix": "add more and larger beads over the face and a few on the surface to the right"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-03-b.png",
+   "where": "sixth state, hit by a laser",
+   "what": "the hole's rim is charred black; -a's rim glows orange-hot",
+   "fix": "restore the glowing orange ring around the hole"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-03-b.png",
+   "where": "third state, angry",
+   "what": "the glow is speckled with bright spark dots; -a's glow is a smooth red-to-orange gradient up the tip",
+   "fix": "smooth the glow and drop the spark speckles"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-03-b.png",
+   "where": "fourth state, scared",
+   "what": "the body is smoother with a metallic bevel sheen; -a is rough matte stone",
+   "fix": "roughen it to a matte stone finish"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-03-b.png",
+   "where": "fifth state, exhausted",
+   "what": "the melted shape has lost the arrow tip and reads as a blob; -a keeps a clear arrowhead with a drooping tip",
+   "fix": "restore the arrowhead silhouette with a bent, drooping tip"
+  }
+ ]
+}

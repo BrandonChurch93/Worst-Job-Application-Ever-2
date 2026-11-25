@@ -1,0 +1,36 @@
+{
+ "critic": "R8",
+ "score": 7,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "below the Email field, where Continue sits at rest",
+   "what": "Opening the keyboard removes the only visible way to advance. The keyboard shows Enter but gives no indication that it closes the panel, commits the field, or advances the form.",
+   "fix": "Keep Continue visible when the keyboard is open, or give the keyboard an explicit close control that restores Continue without clearing the active field."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "the Last name label in the native-size field crop, and the same pattern above Email on the full page",
+   "what": "Each new label sits at least as close to the preceding field or helper as to its own input, making the form stack harder to scan.",
+   "fix": "Use a tighter label-to-input gap and a clearly larger gap between field groups, treating the first-name helper as part of its field."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "the Browse files button in the drop-zone crop",
+   "what": "The cream label is readable, but its contrast against the mid-gray key face is weak for the upload area's only button.",
+   "fix": "Darken the button face behind the lettering while retaining the bevel, and target at least 4.5:1 text contrast."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "the shredder mount at the bottom-right edge of the upload tray",
+   "what": "The tray's bevel continues unbroken behind the shredder, so the mechanism reads as a separate bracket beneath the tray rather than something emerging from it.",
+   "fix": "Interrupt the bevel at the mount and give the shredder a recessed opening with tight contact shadow where it meets the tray."
+  }
+ ]
+}

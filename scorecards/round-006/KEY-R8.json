@@ -1,0 +1,165 @@
+{
+  "role": "R8",
+  "round": 6,
+  "unit": "step1",
+  "commit": "bd38dd5ebe889c21640ebe94e8ae076407901ef1",
+  "tier": "review",
+  "engineHash": "f53260b07e37d041",
+  "sharedHash": "dd95c22f49f6a5b3",
+  "pageHashes": {
+    "step1": "ac84b944a7c04b21",
+    "step2": "55cb277c9b082808",
+    "marketing": "c46c984d2df73782",
+    "pinball": "fd303e8468a6b766",
+    "boss": "f7b68d3ef704e243",
+    "decision": "08e4b1401a38f867"
+  },
+  "browser": "147.0.7727.15",
+  "files": {
+    "set-A-01.png": {
+      "set": "A",
+      "critic": "R8-1",
+      "kind": "judged",
+      "heading": "The page at rest",
+      "still": {
+        "page": "step1",
+        "camera": "home",
+        "tier": "review"
+      },
+      "from": {
+        "id": "rest-step1"
+      },
+      "format": "hd",
+      "tier": "review",
+      "scale": 0.7292
+    },
+    "set-A-02.png": {
+      "set": "A",
+      "critic": "R8-1",
+      "kind": "judged",
+      "heading": "The page at one moment, 1 of 2",
+      "still": {
+        "page": "step1",
+        "beat": "step1.firstName",
+        "at": 0.5,
+        "camera": "home",
+        "tier": "review"
+      },
+      "from": {
+        "key": "step1-fire"
+      },
+      "format": "hd",
+      "tier": "review",
+      "scale": 0.7292
+    },
+    "set-A-03.png": {
+      "set": "A",
+      "critic": "R8-1",
+      "kind": "judged",
+      "heading": "Part of the page at one moment, seen close, 2 of 2",
+      "still": {
+        "page": "step1",
+        "beat": "step1.tug",
+        "at": 0.5,
+        "camera": "film",
+        "tier": "review"
+      },
+      "from": {
+        "key": "step1-tug"
+      },
+      "format": "hd",
+      "tier": "review",
+      "scale": 0.7292
+    },
+    "set-A-04.png": {
+      "set": "A",
+      "critic": "R8-1",
+      "kind": "text-crops",
+      "heading": "Text and controls of the page at rest, at their real size",
+      "still": {
+        "page": "step1",
+        "camera": "home",
+        "tier": "review"
+      },
+      "from": {
+        "id": "rest-step1"
+      },
+      "crops": [
+        {
+          "part": "header",
+          "window": [
+            79,
+            0,
+            696,
+            270
+          ]
+        },
+        {
+          "part": "progress",
+          "window": [
+            1004,
+            0,
+            696,
+            270
+          ]
+        },
+        {
+          "part": "heading",
+          "window": [
+            79,
+            115,
+            696,
+            270
+          ]
+        },
+        {
+          "part": "type",
+          "window": [
+            773,
+            286,
+            696,
+            270
+          ]
+        },
+        {
+          "part": "chip",
+          "window": [
+            179,
+            420,
+            696,
+            270
+          ]
+        },
+        {
+          "part": "field.whole",
+          "window": [
+            964,
+            233,
+            696,
+            270
+          ]
+        },
+        {
+          "part": "button",
+          "window": [
+            1224,
+            645,
+            696,
+            270
+          ]
+        },
+        {
+          "part": "card.corner",
+          "window": [
+            0,
+            200,
+            696,
+            270
+          ]
+        }
+      ],
+      "format": "hd",
+      "tier": "review"
+    }
+  }
+}
