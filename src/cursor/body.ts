@@ -34,7 +34,12 @@ const SPRING = { squash: { k: 620, c: 26 }, lean: { k: 330, c: 17 }, bend: { k: 
 const DRAG = { stride: 90, pulse: 0.2, lean: 0.34 }
 const ARM = { rest: 62, strain: 70, shed: 0.3 }
 // What the body can be drawn at: the springs may ask for more, the pose never does.
-const LIMIT = { short: 0.5, long: 1.5, lean: 0.8 }
+// Leaning right is held short of 0.42, where the arrow would stand upright on its tail and stop reading as a cursor.
+const LIMIT = { short: 0.55, long: 1.4, left: 0.6, right: 0.34 }
+// A limit that is leaned into, never hit: springs stacked on a hit still move the pose all the way.
+const soft = (v: number, limit: number): number => limit * Math.tanh(v / limit)
+const softSquash = (v: number): number => (v >= 1 ? 1 + soft(v - 1, LIMIT.long - 1) : 1 - soft(1 - v, 1 - LIMIT.short))
+const softLean = (v: number): number => (v >= 0 ? soft(v, LIMIT.right) : -soft(-v, LIMIT.left))
 const GULP = { every: 2 * stepHz, steps: Math.round(0.55 * stepHz) }
 export const STRIPS = 9
 // Where a bolt strikes when nobody says where: the middle of the arrow's head, in the outline's units.
@@ -451,7 +456,7 @@ export class CursorBody {
     const arms = s.arms || shed
     const hands = s.arms ? s.hands : s.shedHands
     return {
-      x: s.x, y: s.y, z: s.z, squash: Math.min(LIMIT.long, Math.max(LIMIT.short, s.squash)), lean: Math.min(LIMIT.lean, Math.max(-LIMIT.lean, s.lean)), spin: s.spin, acting: s.acting, reaction: s.reaction,
+      x: s.x, y: s.y, z: s.z, squash: softSquash(s.squash), lean: softLean(s.lean), spin: s.spin, acting: s.acting, reaction: s.reaction,
       reactionAt: s.reaction ? 1 - s.reactionLeft / REACTION_SECONDS[s.reaction] : 0,
       damage: s.damage.map((d) => d.kind), healing, arms: arms && hands !== null, hands: arms && hands ? [{ ...hands[0] }, { ...hands[1] }] : null, onPage: s.onPage, inBall: s.inBall, taken: s.taken !== null, scale: 1,
       bend: s.bend, feel: { ...s.feel }, gulp: s.gulp,
