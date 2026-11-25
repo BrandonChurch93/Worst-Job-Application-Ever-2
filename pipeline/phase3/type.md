@@ -89,6 +89,7 @@ Branch `agent/type`. Looks branch `agent/type-looks`. Part made real: `type`.
 | 29 | the same | ink `0x302e2b`, soft `0x67625c`: 50 48 45 and 97 91 85; six crops beside the approved image looked at |
 | 30 | `npm run still -- --key step1-fire --tier review --format hd --force` | numerals on metal as flat matte print: at 8x beside the approved numeral the lit lower wall is gone and the numeral reads as one dark shape |
 | 31 | `npm run still -- --key step1-fire --tier review --format uhd` (53.7 s, 747,688 triangles, 482 draw calls) | at 3840 the helper (18 px), the subline, the value under the glass and the legends are sharp and even; nothing to change |
+| 32 | `npm run still -- --key step1-fire --tier review --format hd --force` | ink under and on glass a step darker and cooler (`0x262827`): prompt 45 45 44 against 39 42 39 approved, value 43 44 42 against 40 36 31 |
 Checks that are not tuning looks: `--key tier-corporate` and `--key table-wide` at draft (the signs of the table, flat and standing, are all set by this maker), `--id rest-step1 --diag type`, one draft still in each of the seven beats of step 1, one of each of `--page marketing`, `step2`, `boss`, `decision`.
 
 ## What I learned
