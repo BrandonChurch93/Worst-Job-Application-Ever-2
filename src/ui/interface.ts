@@ -22,14 +22,10 @@ function el<K extends keyof HTMLElementTagNameMap>(tag: K, cls: string | undefin
   return e
 }
 
-// A control keeps the keys it uses itself. Every other key goes on to the page.
-function keep(control: HTMLElement, keys: string[]): void {
-  control.addEventListener('keydown', (e) => {
-    if (keys.includes(e.key)) e.stopPropagation()
-  })
-  control.addEventListener('keyup', (e) => {
-    if (keys.includes(e.key)) e.stopPropagation()
-  })
+// While a control has the focus, every key is its own and the browser's: none goes on to the page.
+function keep(control: HTMLElement): void {
+  control.addEventListener('keydown', (e) => e.stopPropagation())
+  control.addEventListener('keyup', (e) => e.stopPropagation())
 }
 
 // A click made with the pointer hands the keyboard back to the page.
@@ -40,7 +36,7 @@ function press(control: HTMLElement, act: () => void): void {
     act()
     if (e.detail > 0) control.blur()
   })
-  keep(control, ['Enter', ' '])
+  keep(control)
 }
 
 function soundButton(api: InterfaceApi, parent: HTMLElement): { button: HTMLButtonElement; update(): void } {
@@ -141,7 +137,7 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
     dragging = false
     if (document.activeElement === position && !position.matches(':focus-visible')) position.blur()
   })
-  keep(position, ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown'])
+  keep(position)
 
   let timer = 0
   const wake = () => {

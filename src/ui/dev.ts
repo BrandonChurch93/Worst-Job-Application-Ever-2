@@ -67,7 +67,7 @@ const api: InterfaceApi = {
   },
   frameSeconds: () => state.frame,
   typing: params.get('typing') ? () => true : undefined,
-  backing: () => (params.get('backing') === 'dark' ? 'dark' : 'page')
+  backing: () => (params.get('backing') === 'dark' ? 'dark' : params.get('backing') === 'light' ? 'light' : 'page')
 }
 
 if (view === 'touch' || (view === 'auto' && touchOnly())) {
@@ -83,7 +83,10 @@ if (view === 'touch' || (view === 'auto' && touchOnly())) {
   })
 } else {
   if (view === 'auto' && lessMotion()) state.mode = 'film'
-  const ui = mountInterface(document.body, api)
+  const host = document.createElement('div')
+  stage.before(host)
+  stage.tabIndex = 0
+  const ui = mountInterface(host, api)
   const tick = () => {
     const now = wallSeconds()
     state.frame = now - state.last
