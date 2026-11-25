@@ -20,7 +20,7 @@ Phase 2 blockout. Stand-in shapes only. Every word is a key of `content/copy.jso
 ## Gags
 
 - Phases, the same in live and film: stroll (2 s), perks (at least 6 s, and until the three first-screen cards are open), ticker (3 s), then idle (`gag()` is null). The page waits for the press.
-- Perk card: when the cursor tip enters a card it turns over as four slats, like a departure board, and stays open. Event `card-flip` at the start. A whole card turning about its long axis would stand 248 px high and throw the cursor; slats stand 74 px, and the cursor rides on top by `cursor.setGround`. Nothing hurts the cursor.
+- Perk card: when the cursor tip enters a card the whole slab turns over as one piece, about its long axis through its centre, and stays open. Event `card-flip` at the start, `FLIP_SECONDS` 0.63 as before. While it turns the card lies in a well `perk-i-pit` cut under it (half the card's height plus 8 deep), so the lower half has room. The slab is drawn as two plates back to back (`perk-i-slab-front`, `perk-i-slab-back`) because the shell's rounded plate has no under side; they share every edge and read as one slab. The shut words ride the front, the open words, the rule and the fine print ride the back. The raised edge stands at most half the card's height (124 px) above the card top; the cursor rides it up and down by `cursor.setGround`. Nothing hurts the cursor. Shut or open and at rest the card is the layout's own node, unchanged.
 - With a still or wrong pointer the three first-screen cards open by themselves from 20 s into the perks phase (`live.skipLinkAfterSeconds`), half a second apart.
 - Double take: once, when the "Unlimited PTO" card shows its fine print with the cursor on it.
 - Apply: a press on any of the three caps (`nav-cta`, `hero-cta`, `final-cta`). The page takes the cursor (about 1.2 s, far under the 8 s limit), it backs off 44 px, jumps 96 px high onto the right part of the cap, clear of the label, `button-press` on landing, the cap sinks 10 px with the label and the cursor on it, `done()` 0.3 s later. `skip()` does the same on the hero button.
@@ -28,7 +28,7 @@ Phase 2 blockout. Stand-in shapes only. Every word is a key of `content/copy.jso
 
 ## Differences from the brief, told to the Builder
 
-- The kit names a perk card as one slab that turns over on its long axis, or a face that slides aside. Here it is four slats, each turning on its long axis, for the reason given above.
+- The kit names a perk card as one slab that turns over on its long axis, or a face that slides aside. Here it is the first: one slab that turns over (the four slats of the first version are gone, asked by the Builder at 10:03 UTC).
 - `hint()` points at the first unopened first-screen card during the stroll and perks phases (and, once the three are open, at the stand beside the hero button, without a press), and at the hero button from the ticker phase on (with a pulsing press). Only the bots read `hint()`: nothing in `src/ui/` or `src/app.ts` draws it, so a visitor never sees it point at the bare page. Reason: the bots walk to the hint, and the keen bot has to reach the perks and ticker gags before the press ends the page. In the rejected variant it points at the hero button without a press.
 - The cursor rides surfaces with `cursor.setGround` (on `main` since f6c1585), so it stands on cards, caps and medallions and is not hidden under them.
 
