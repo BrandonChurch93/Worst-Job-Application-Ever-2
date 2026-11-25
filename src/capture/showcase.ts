@@ -20,6 +20,7 @@ export interface Showcase {
   setAssets(id: string): Promise<void>
   setDiagnostic(view: string): void
   renderStill(spec: StillSpec): Promise<void>
+  countParts(spec: StillSpec): Promise<PartCounts>
   pictureStats(): { invalidValues: number }
   typeRegister(page: string): { key: string; text: string; states: string[]; made: 'copy' | 'config' | 'runtime' }[]
   stillState(spec: StillSpec): { layout: { id: string; kind: string; planned: number[]; drawn: number[]; plannedHeight: number | null; height: number; mechanism: boolean; moved: boolean }[]; type: { key: string; text: string; box: number[]; px: number; contrast: number; ink: number; ground: number; contrastFrom: ContrastFrom }[]; cursor: CursorState }
@@ -38,6 +39,9 @@ export interface Showcase {
 export type ContrastFrom = 'materials' | 'stand-in tones'
 export interface TextureRow { what: string; width: number; height: number; mb: number; target: boolean }
 export interface TextureCount { mb: number; counted: number; held: number; assetMb: number; targetMb: number; unseenMb: number; largest?: TextureRow[] }
+
+export interface PartRow { part: string; names: string[]; made: string; meshes: number; colour: number; through: number; shadow: Record<string, number>; calls: number; triangles: number }
+export interface PartCounts { rows: PartRow[]; shadows: string[]; total: { calls: number; triangles: number }; renderer: { drawCalls: number; triangles: number }; other: { calls: number; triangles: number } }
 
 type Rgb = [number, number, number]
 const MB = 1048576
@@ -187,6 +191,125 @@ export function textureMemory(app: App, known: Map<THREE.Texture, boolean> = new
   const unseen = Math.max(0, held - gpu.size) * chainTexels(app.engine.width, app.engine.height, fullChain(app.engine.width, app.engine.height)) * texelBytes(THREE.RGBAFormat, THREE.HalfFloatType)
   const r = (bytes: number) => Number((bytes / MB).toFixed(3))
   return { mb: r(assets + targets + unseen), counted: gpu.size, held, assetMb: r(assets), targetMb: r(targets), unseenMb: r(unseen), largest: rows.slice(0, 12) }
+}
+
+// The row of the count by part a drawn object belongs to: the part of the shape it was made for, with the ground, the type and the cursor as rows of their own.
+export function rowOf(data: Record<string, unknown>): { part: string; name: string; made: 'real' | 'stand-in' | 'untagged' } {
+  const name = String(data.part ?? data.standIn ?? '')
+  const made = data.part !== undefined ? 'real' : data.standIn !== undefined ? 'stand-in' : 'untagged'
+  if (!name) return { part: 'untagged', name: 'untagged', made }
+  if (name.startsWith('cursor')) return { part: 'cursor', name, made }
+  if (data.type !== undefined) return { part: 'type', name, made }
+  if (data.shape === undefined) return { part: 'ground', name, made }
+  return { part: name, name, made }
+}
+
+interface DrawnObject { isInstancedMesh?: boolean; count?: number; isLine?: boolean; isPoints?: boolean }
+interface DrawnGeometry { index: { count: number } | null; attributes: { position?: { count: number } }; drawRange: { start: number; count: number }; isInstancedBufferGeometry?: boolean; instanceCount?: number }
+interface DrawnMaterial { transparent?: boolean; side?: number; forceSinglePass?: boolean; wireframe?: boolean }
+
+// What one object, with one group of its geometry, costs the renderer in one pass: the calls and triangles the renderer itself would count. Null when it draws nothing.
+export function drawn(o: DrawnObject, g: DrawnGeometry, group: { start: number; count: number } | null, m: DrawnMaterial | null, shadow: boolean): { calls: number; triangles: number } | null {
+  let start = g.drawRange.start
+  let end = g.drawRange.start + g.drawRange.count
+  if (group) {
+    start = Math.max(start, group.start)
+    end = Math.min(end, group.start + group.count)
+  }
+  const all = g.index ? g.index.count : g.attributes.position ? g.attributes.position.count : null
+  if (all !== null) {
+    start = Math.max(start, 0)
+    end = Math.min(end, all)
+  }
+  const count = end - start
+  if (count < 0 || count === Infinity) return null
+  const instances = o.isInstancedMesh ? o.count ?? 1 : g.isInstancedBufferGeometry ? g.instanceCount ?? 1 : 1
+  const twice = !shadow && m?.transparent === true && m.side === THREE.DoubleSide && m.forceSinglePass === false ? 2 : 1
+  const triangles = o.isLine || o.isPoints || m?.wireframe === true ? 0 : (count / 3) * instances
+  return { calls: twice, triangles: twice * triangles }
+}
+
+type Hook = (...a: unknown[]) => void
+
+// Counts what the renderer draws of one scene, by part, while `draw` runs: the renderer tells every object before it draws it, once for each group of its geometry, in the colour pass and in each shadow pass.
+// Only the first time the scene is drawn is counted, as info().counts does. `through` is the pass the renderer adds for materials that let light through.
+export async function countByPart(renderer: THREE.WebGLRenderer, scene: THREE.Scene, draw: () => Promise<void>): Promise<{ rows: PartRow[]; shadows: string[]; total: { calls: number; triangles: number } }> {
+  const proto = THREE.Object3D.prototype as unknown as { onBeforeRender: Hook; onBeforeShadow: Hook }
+  const rows = new Map<string, PartRow & { seen: Set<object>; kinds: Set<string> }>()
+  const lights = new Map<object, string>()
+  scene.traverse((o) => {
+    const l = o as unknown as { isLight?: boolean; shadow?: { camera: object }; name: string; type: string }
+    if (l.isLight && l.shadow) lights.set(l.shadow.camera, l.name || l.type)
+  })
+  const shadows: string[] = []
+  let renders = 0
+  let counting = false
+  let main: unknown = null
+  const note = (o: THREE.Object3D, pass: string, geometry: unknown, material: unknown, group: unknown): void => {
+    if (!counting || (geometry as { isBufferGeometry?: boolean } | null)?.isBufferGeometry !== true) return
+    const cost = drawn(o as DrawnObject, geometry as DrawnGeometry, (group as { start: number; count: number } | null) ?? null, material as DrawnMaterial | null, pass.startsWith('shadow '))
+    if (!cost) return
+    const of = rowOf(o.userData)
+    let row = rows.get(of.part)
+    if (!row) rows.set(of.part, (row = { part: of.part, names: [], made: '', meshes: 0, colour: 0, through: 0, shadow: {}, calls: 0, triangles: 0, seen: new Set(), kinds: new Set() }))
+    row.seen.add(o)
+    row.kinds.add(of.made)
+    if (!row.names.includes(of.name)) row.names.push(of.name)
+    if (pass === 'colour') row.colour += cost.calls
+    else if (pass === 'through') row.through += cost.calls
+    else {
+      const name = pass.slice(7)
+      if (!shadows.includes(name)) shadows.push(name)
+      row.shadow[name] = (row.shadow[name] ?? 0) + cost.calls
+    }
+    row.calls += cost.calls
+    row.triangles += cost.triangles
+  }
+  const colour = function (this: THREE.Object3D, _r: unknown, _s: unknown, _c: unknown, geometry: unknown, material: unknown, group: unknown): void {
+    note(this, renderer.getRenderTarget() === main ? 'colour' : 'through', geometry, material, group)
+  } as Hook
+  const shade = function (this: THREE.Object3D, _r: unknown, _o: unknown, _c: unknown, shadowCamera: unknown, geometry: unknown, material: unknown, group: unknown): void {
+    note(this, `shadow ${lights.get(shadowCamera as object) ?? 'unnamed light'}`, geometry, material, group)
+  } as Hook
+  const own: { o: THREE.Object3D; key: 'onBeforeRender' | 'onBeforeShadow'; was: Hook }[] = []
+  scene.traverse((o) => {
+    for (const key of ['onBeforeRender', 'onBeforeShadow'] as const) {
+      if (!Object.prototype.hasOwnProperty.call(o, key)) continue
+      const was = (o as unknown as Record<string, Hook>)[key]!
+      const counter = key === 'onBeforeRender' ? colour : shade
+      own.push({ o, key, was })
+      ;(o as unknown as Record<string, Hook>)[key] = function (this: THREE.Object3D, ...a: unknown[]): void {
+        counter.apply(this, a)
+        was.apply(this, a)
+      }
+    }
+  })
+  const before = { render: proto.onBeforeRender, shadow: proto.onBeforeShadow }
+  const render = renderer.render
+  proto.onBeforeRender = colour
+  proto.onBeforeShadow = shade
+  renderer.render = function (this: THREE.WebGLRenderer, s: THREE.Object3D, c: THREE.Camera): void {
+    if (s !== scene) return render.call(this, s, c)
+    renders++
+    main = renderer.getRenderTarget()
+    counting = renders === 1
+    try {
+      render.call(this, s, c)
+    } finally {
+      counting = false
+    }
+  }
+  try {
+    await draw()
+  } finally {
+    proto.onBeforeRender = before.render
+    proto.onBeforeShadow = before.shadow
+    delete (renderer as unknown as { render?: unknown }).render
+    for (const x of own) (x.o as unknown as Record<string, Hook>)[x.key] = x.was
+  }
+  const out = [...rows.values()].map(({ seen, kinds, ...r }) => ({ ...r, meshes: seen.size, made: [...kinds].sort().join(' and '), triangles: Math.round(r.triangles) }))
+  out.sort((a, b) => b.calls - a.calls || b.triangles - a.triangles || a.part.localeCompare(b.part))
+  return { rows: out, shadows: shadows.sort(), total: { calls: out.reduce((n, r) => n + r.calls, 0), triangles: out.reduce((n, r) => n + r.triangles, 0) } }
 }
 
 const shown = (o: THREE.Object3D): boolean => {
@@ -397,6 +520,14 @@ export function makeShowcase(app: App, ready: Promise<void>): Showcase {
       await ready
       await app.renderStill(spec)
       drew(spec.page)
+    },
+    async countParts(spec) {
+      await ready
+      await app.renderStill(spec)
+      const got = await countByPart(app.engine.renderer, app.view.scene, () => app.renderStill(spec))
+      drew(spec.page)
+      const told = app.countsOf(spec.page)
+      return { ...got, renderer: told, other: { calls: told.drawCalls - got.total.calls, triangles: Math.round(told.triangles) - got.total.triangles } }
     },
     pictureStats() {
       return { invalidValues: app.engine.invalidValues() }
