@@ -22,6 +22,8 @@ const TURN_WINDOW = [1500, 0]
 const CROP = { columns: 3, tileH: 340 }
 const TEXT = { columns: 2, tileH: 270 }
 const ACT = { columns: 3, tileH: 320 }
+const HEAD_ROOM = 90
+const LABEL_ROOM = 26
 
 const range = (frames, fps) => `${timeLabel(frames[0], fps)} to ${timeLabel(frames[frames.length - 1], fps)}`
 const tileWidth = (edge, columns) => Math.floor((edge - GAP * (columns - 1)) / columns)
@@ -200,6 +202,13 @@ export const lookRoles = {
   R4: { critic: 'R4', section: 'R4 · Motion', groups: motionGroups, facts: true },
   R8: { critic: 'R8', section: 'R8 · The page', groups: pageGroups },
   R9: { critic: 'R9', section: 'R9 · Acting', groups: actingGroups, facts: true }
+}
+
+// A hit sheet carries a heading and a time under every tile: its tiles are as tall as the long edge leaves room for.
+export function hitTileHeight(edge, count) {
+  const rows = Math.ceil(count / ACT.columns)
+  const room = Math.floor((edge - HEAD_ROOM - rows * LABEL_ROOM - GAP * rows) / rows)
+  return Math.min(ACT.tileH, room - (room % 2))
 }
 
 export const LOOK_KINDS = ['pair', 'pair-crops', 'judged', 'surface-crops', 'text-crops', 'look-sheet', 'hit-sheet', 'plain-sheet', 'acting-sheet', 'jury']
@@ -505,10 +514,11 @@ export async function buildLook({ cfg, session, files, built, about, tier, log, 
     const s = await session.page.evaluate((i) => window.showcase.filmState(i), f.at)
     const e = s.events.find((x) => (f.hit === 'hit on the arrow' ? x.hitsCursor : x.name === f.hit))
     const c = f.window ?? (e ? [e.x, e.y] : [s.cursor.x, s.cursor.y])
-    const win = windowRound(point(c[0], c[1]), actW, ACT.tileH, hd.width, hd.height)
+    const hitH = hitTileHeight(edge, f.frames.length)
+    const win = windowRound(point(c[0], c[1]), actW, hitH, hd.width, hd.height)
     const tiles = []
     for (const frame of f.frames) tiles.push({ png: await cut(await frameOf(frame, hd, filmTier), win), label: timeLabel(frame, fps) })
-    built.set(f.name, await sheetOf(tiles, { edge, columns: ACT.columns, tileW: actW, tileH: ACT.tileH, heading: f.heading }))
+    built.set(f.name, await sheetOf(tiles, { edge, columns: ACT.columns, tileW: actW, tileH: hitH, heading: f.heading }))
     about.set(f.name, { unit: f.unit, hit: f.hit, at: f.at, frames: f.frames, window: win, format: hd.id, tier: filmTier })
     log(`${f.name}: the ${f.hit} at frame ${f.at}`)
   }
