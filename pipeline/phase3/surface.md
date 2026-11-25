@@ -212,3 +212,11 @@ Owner of this round: glass3 (`surface_closer`), branch `agent/glass3`, 2026-11-2
 2. The stepper's discs: pale faces turned in rings where the approved ones are darker and brushed one way with a strong fan. M4 binds the face under the dark numeral (0x92969b is the floor).
 3. The page at home is now smoother than the approved page (spread 2.8 against 6.3 to 7.7 on clean patches): that is what R1 asked for, and beside the approved image it reads a little like plain card.
 - Also: the card's corner radius is tighter than the approved one (layout's); the card's shadow on the far side is a band 3 to 4 px wide where the approved one fades over about 12 px (the light's); the pocket round Browse files is 2 to 3 px wide at home and reads more as a dark line than as a pocket until the camera is close; the fibre in the page grain is hardly seen at home.
+
+### MEASURED at the last push (main 38ae907 merged in), my VM
+
+- `npm test`: 1236 passed (80 files). `npm run build`: built. `npm run bots`: all clear.
+- `npm run measure -- --unit step1 --tier review`: 8 green, 0 red. M2 0.0065 (most 0.02), M3 0.9528 (least 0.8; `step1-tug` 0.9528, `step1-fire` 1.1925), M4 14 px and 4.74 (least 4.5), M9 1.87 (most 2).
+- `npm run still -- --key step1-fire --format hd --tier draft --force`: 11.5 s in the tool's own count, 14.8 s by the clock; `--tier review --force`: 23.5 s and 26.7 s; 470467 triangles, 282 draw calls.
+- `npm run counts -- --key step1-fire --live low`: 125 draw calls, 234673 triangles on the merged tree. On my branch before main's merge of the eight pushes: 120 and 237123, against 120 and 236139 on main 14d8eed: the pocket of Browse files is one mesh and 984 triangles more, and the dashed rule's instanced mesh is gone.
+- Textures: none added or changed. 5.50 MB, the sum `tests/surface.test.ts` checks (4 bytes times 1024 squared, 512 squared and twice 256 squared).
