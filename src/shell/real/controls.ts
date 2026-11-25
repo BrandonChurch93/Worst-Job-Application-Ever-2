@@ -113,7 +113,7 @@ function card(s: Shape): THREE.Object3D {
   const across = Math.min(11, Math.min(s.w, s.h) / 4)
   const band = h - rise
   root.add(mesh(shared(`cardFrame:${dims(s)}`, () => sweep(outlineOf(s, 0, 14), profile([[0, 0, true], [0, band - 0.5, true], [0.5, band, true], [FRAME - 0.4, band, true], [FRAME, band - 0.5, true], [FRAME, 0.2, true]]), false)), m.aluminium))
-  root.add(mesh(shared(`cardGlass:${dims(s)}`, () => sweep(outlineOf(s, FRAME - 0.3, 14), profile([[0, 0.05, true], [0, band], ...arc(0, band, across, rise, 10).slice(1)]))), m.glass))
+  root.add(mesh(shared(`cardGlass:${dims(s)}`, () => sweep(outlineOf(s, FRAME - 0.3, 14), profile([[0, 0.05, true], [0, band], ...arc(0, band, across, rise, 10).slice(1)]))), m.glassThick))
   if (s.id.endsWith('-zone')) root.add(dashes(s, h))
   return root
 }

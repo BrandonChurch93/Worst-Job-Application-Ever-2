@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
 import { pages } from '../src/pages'
-import { carve, cutsOf, groundKey, openingsOf } from '../src/shell/real/ground'
+import { controls } from '../src/shell/real/controls'
+import { carve, cutsOf, ground, groundKey, openingsOf } from '../src/shell/real/ground'
 import { brushedHeights, grainHeights, makeMaterials } from '../src/shell/materials'
 import { pocketCut } from '../src/shell/solids'
 import { filmFlow, filmOptions, ScriptDriver, Stage, type DrawList } from '../src/stage/stage'
@@ -128,6 +129,20 @@ describe('the slab of step 1', () => {
   })
 })
 
+describe('the shell of step 1', () => {
+  it('is real in every state: the slab has a key and so has every shape of the shell that is not a word', () => {
+    for (const { name, list } of all) {
+      const ctx = { page: 'step1', list, byId: new Map(list.map((s) => [s.id, s])), time: 0, scroll: 0, turning: false, ...span, light: () => undefined }
+      expect(ground.key(ctx), name).not.toBeNull()
+      for (const s of list) {
+        if (s.part !== 'shell') continue
+        if (s.kind === 'text') expect(controls.key(s, ctx), `${name} ${s.id}`).toBeNull()
+        else expect(controls.key(s, ctx), `${name} ${s.id}`).not.toBeNull()
+      }
+    }
+  })
+})
+
 describe('the textures of the surface', () => {
   it('makes the same grain for the same seed and another for another', () => {
     const a = grainHeights(128, config.seed)
@@ -145,9 +160,21 @@ describe('the textures of the surface', () => {
     expect(Array.from(brushedHeights(64, 7))).not.toEqual(Array.from(brushedHeights(64, 8)))
   })
 
+  it('holds four pictures made from the seed, under 7 megabytes before their smaller copies', () => {
+    const m = makeMaterials(config.seed)
+    const sizes = m.textures.map((t) => {
+      const image = t.image as { data: Uint8Array; width: number; height: number }
+      return { side: image.width, bytes: image.data.length }
+    })
+    expect(sizes.map((s) => s.side)).toEqual([1024, 512, 256, 256])
+    const bytes = sizes.reduce((sum, s) => sum + s.bytes, 0)
+    expect(bytes).toBe(4 * (1024 * 1024 + 512 * 512 + 2 * 256 * 256))
+    expect(bytes / 1048576).toBeLessThan(7)
+  })
+
   it('keeps every material name and no surface pure black or pure white', () => {
     const m = makeMaterials(config.seed) as unknown as Record<string, { color?: { r: number; g: number; b: number } }>
-    for (const name of ['ceramic', 'pocket', 'glass', 'aluminium', 'aluminiumTurned', 'orange', 'gap', 'ink', 'inkOnOrange', 'enamel', 'edge', 'smoked', 'paper', 'red', 'keycap', 'steel', 'rubber']) {
+    for (const name of ['ceramic', 'pocket', 'glass', 'glassThick', 'aluminium', 'aluminiumTurned', 'orange', 'gap', 'ink', 'inkOnOrange', 'enamel', 'edge', 'smoked', 'paper', 'red', 'keycap', 'steel', 'rubber']) {
       const c = m[name]?.color
       expect(c, name).toBeDefined()
       expect(c!.r + c!.g + c!.b, name).toBeGreaterThan(0)
