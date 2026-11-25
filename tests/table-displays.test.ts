@@ -53,7 +53,7 @@ describe('the score', () => {
     const cols = columns(d)
     expect(cols[0]).toBe(scoreLeft(6))
     expect(cols[cols.length - 1]).toBe(COLS - PACE.scoreRight - 1)
-    expect(scoreLeft(6)).toBeGreaterThan(COLS / 2 - 8)
+    expect(scoreLeft(6)).toBeGreaterThan(PACE.scoreRight * 4)
   })
   test('a change moves only the numerals that changed', () => {
     const before = grid({ kind: 'score', digits: '042500', since: 9, before: null })
