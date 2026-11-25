@@ -23,7 +23,7 @@ const SEND_SINKS = 0.12
 
 const TYPE = {
   prompt: { font: 'inter-400', px: 68 },
-  level: { font: 'inter-500', px: 40 },
+  level: { font: 'inter-500', px: 52 },
   title: { font: 'inter-display-600', px: 80 },
   line: { font: 'inter-400', px: 52 }
 } satisfies Record<string, TypeSpec>
@@ -32,16 +32,16 @@ const SCREEN_Z = 2
 const PANEL_Z = 12
 const CONTROL_Z = 20
 const MENU_Z = 34
-const PANEL = { x: 216, y: 280, w: 1488, h: 416 }
+const PANEL = { x: 216, y: 312, w: 1488, h: 456 }
 const PAD = 64
 const WRAP = PANEL.w - PAD * 2
-const PILL = { w: 264, h: 80 }
-const SEND = 88
-const ROW = 80
+const PILL = { w: 320, h: 96 }
+const SEND = 96
+const ROW = 96
 const BAR = 16
 const MARK = 56
 const LINE_GAP = 32
-const BUILD = { top: 206, ruleGap: 36, listGap: 48 }
+const BUILD = { top: 220, ruleGap: 36, listGap: 48 }
 
 export interface OpeningTimes {
   typed: number
@@ -98,7 +98,7 @@ export function promptLayout(): LayoutNode {
   })
   const menuY = rowY + PILL.h + 12
   const rows: LayoutNode[] = []
-  const bars = [124, 170]
+  const bars = [150, 206]
   for (let i = 0; i < 3; i++) {
     const y = menuY + 10 + i * ROW
     const last = i === 2
