@@ -434,9 +434,10 @@ How much of each limit in the table of `kit/07-QUALITY-BAR.md` has been used.
 
 | What | Used | Limit |
 | --- | --- | --- |
-| 1 | 2 (`quality.blockoutMaxRounds`) |
-| 4, the fourth logged as over the count at 10:00Z | 3 (`quality.takeSearchMaxRuns`) |
-| 0 | one per job |
+| Blockout rounds in Phase 2 | 1 | 2 (`quality.blockoutMaxRounds`) |
+| Searches for the pinball take | 4, the fourth logged as over the count at 10:00Z | 3 (`quality.takeSearchMaxRuns`) |
+| Replacements of an agent that ran past its limit | 0 | one per job |
+| Attempts to fix one machine check | 2 (M9 after the height reading, the progress rail) | 5 per round (`quality.gateFixMaxAttempts`) |
 
 ## Review items not done
 
