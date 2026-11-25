@@ -62,7 +62,7 @@ function anchors(shapes: Shape[]): Shape[] {
     for (const t of table.targets) if (t.tier === k) want.add(`${t.id.startsWith('corporate.note') ? 'model-notes' : 'targets'} ${tier}`)
   })
   for (const part of ['marquee', 'displays']) want.add(`${part} marquee`)
-  for (const zone of ['first', 'last']) want.add(`loader ${zone}`)
+  for (const zone of ZONES) if (zone.id !== 'apron') want.add(`loader ${zone.id}`)
   for (const part of ['table-frame', 'table-hardware']) want.add(`${part} apron`)
   const out: Shape[] = []
   for (const z of ZONES) {
