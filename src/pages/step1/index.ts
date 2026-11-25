@@ -432,7 +432,6 @@ export function makePage(): PageLogic {
       t.amount = Math.min(1, t.amount + (io.dt / TIMES.lost) * 0.5)
       if (s.lost >= TIMES.lost) {
         s.shred = 0
-        io.cursor.drive(SLOT.cx - BODY.x, SLOT.cy - 16, -60)
         enter('shredded')
       }
       return
@@ -484,6 +483,10 @@ export function makePage(): PageLogic {
     s.shred += io.dt
     const crossed = (at: number): boolean => before < at && s.shred >= at
     s.tug.amount = Math.min(1, s.tug.amount + io.dt / 0.25)
+    if (s.shred < SHRED.gone) {
+      const u = s.shred / SHRED.gone
+      io.cursor.drive(SLOT.cx - BODY.x, lerp(SLOT.cy - 70, SLOT.cy - 16, smooth(u / 0.7)), lerp(heights.card + 6, -60, smooth((u - 0.3) / 0.7)))
+    }
     if (crossed(SHRED.gone)) io.cursor.setOnPage(false)
     if (crossed(SHRED.pile)) {
       io.cursor.place(PILE.x, PILE.y)

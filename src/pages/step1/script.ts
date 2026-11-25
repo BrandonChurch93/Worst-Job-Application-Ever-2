@@ -20,7 +20,7 @@ export const BITE = { x: SLOT.cx - PAPER.w / 2, y: SLOT.cy - PAPER.h + 3 }
 export const HOOD = { y: SLOT.cy + 17, z: 26 }
 export const FRINGE = { from: 0.12, step: 0.03, rate: 1.2, most: 0.34 }
 export const PILE = { x: SLOT.cx - 20, y: SLOT.cy + 60 }
-export const SHRED = { in: 0.3, gone: 0.34, strips: 0.12, pile: 0.78, pileSeconds: 1.0, empty: 0.92, emptySeconds: 0.84, zip: 1.78, zipSeconds: 1.0, end: 2.8 }
+export const SHRED = { in: 0.3, gone: 0.46, strips: 0.12, pile: 0.64, pileSeconds: 1.14, empty: 0.92, emptySeconds: 0.84, zip: 1.78, zipSeconds: 1.0, end: 2.8 }
 
 // The film's first name: every time is a second of the unit. The turrets are up at 3.52 and fire at 4.12, 4.57, 5.02, 5.47, 5.92, and so on.
 // 6.0 is the frame of the approved image: the shot of 5.02 has just landed on L, the shot of 5.47 is a hand's width from the cursor, the shot of 5.92 has left the barrel, and the cursor is in the air over the row above.
@@ -44,7 +44,7 @@ export const RESUME = { walk: [19.9, 20.3] as [number, number], proud: 20.4, bes
 
 const TUG_CURVE: [number, number, number, number][] = [
   [0, 0.05, -0.2, 4], [0.3, 0.15, -0.14, 0], [0.8, 0.11, -0.4, 24], [1.05, 0.26, -0.12, 4], [1.55, 0.22, 0.36, 24], [1.8, 0.37, 0.1, 4], [2.3, 0.33, -0.4, 25],
-  [2.6, 0.48, -0.1, 4], [3.2, 0.44, 0.4, 25], [3.5, 0.6, 0.12, 5], [4.0, 0.56, -0.36, 25], [4.3, 0.72, -0.1, 5], [4.6, 0.68, 0.22, 22], [5.06, 0.95, 0, 3]
+  [2.6, 0.48, -0.1, 4], [2.95, 0.455, 0.42, 25], [3.2, 0.44, 0.44, 26], [3.5, 0.6, 0.12, 5], [4.0, 0.56, -0.36, 25], [4.3, 0.72, -0.1, 5], [4.6, 0.68, 0.22, 22], [5.06, 0.95, 0, 3]
 ]
 
 function tugAt(t: number, column: 1 | 2 | 3): number {
@@ -274,20 +274,20 @@ export function pointerAt(plan: Plan, time: number): Pointer {
   return { x: s.x0 + (s.x1 - s.x0) * u + s.side * bulge, y: s.y0 + (s.y1 - s.y0) * u - s.arc * bulge, down }
 }
 
-// The film camera in the tug: a window of the page for a moment. One push with an ease from home to a close frame on the cursor, its arms, the sheet, the intake and the outlet, as wide as the fine detail allows at the key picture of 25.125 and closer after it. It drifts down as the sheet gets short, holds on the intake and the outlet while the cursor goes through and the strips drop, and only then pulls out. Its right edge stays left of the field column, so no word of that column is cut.
+// The film camera in the tug: a window of the page for a moment. It eases from home to a wide frame for the shredder's arrival and the first grab, then pushes in once, with an ease, to a close frame on the cursor, its arms, the sheet and the mouth, and is there well before the key picture of 25.125. From the key picture it creeps closer and a little down as the sheet gets short, holds on the intake and the outlet while the cursor goes through and the strips drop, and only then pulls out. Its right edge stays left of the field column, so no word of that column is cut.
 const TUG_EDGE = FIELD_X - 16
-const TUG_FRAMES = { wide: 972, key: 972, close: 462, mid: SLOT.cx + 4, high: 250, top: SLOT.cy - 182, low: SLOT.cy - 122 }
+const TUG_FRAMES = { wide: 972, key: 620, close: 520, mid: SLOT.cx + 4, high: 250, top: SLOT.cy - 238, low: SLOT.cy - 180, end: SLOT.cy - 162 }
 const tugFrame = (w: number, top: number): { x: number; y: number; w: number; h: number } => ({ x: Math.min(TUG_EDGE - w, TUG_FRAMES.mid - w / 2), y: top, w, h: (w * 9) / 16 })
-export const CAMERA = { in: [21.1, 22.1] as [number, number], key: 25.125, closer: [25.15, 26.15] as [number, number], down: [26.9, 28.1] as [number, number], out: [28.3, 29.1] as [number, number] }
+export const CAMERA = { in: [21.1, 22.1] as [number, number], closer: [23.1, 24.4] as [number, number], key: 25.125, creep: [25.125, 27.0] as [number, number], down: [27.1, 27.8] as [number, number], out: [28.3, 29.1] as [number, number] }
 
 export function filmCamera(time: number): CameraPose {
   const home = homePose(0)
   if (time <= CAMERA.in[0] || time >= CAMERA.out[1]) return home
-  const creep = smooth((time - CAMERA.in[1]) / (CAMERA.key - CAMERA.in[1]))
   const closer = smooth((time - CAMERA.closer[0]) / (CAMERA.closer[1] - CAMERA.closer[0]))
+  const creep = smooth((time - CAMERA.creep[0]) / (CAMERA.creep[1] - CAMERA.creep[0]))
+  const w = TUG_FRAMES.wide + (TUG_FRAMES.key - TUG_FRAMES.wide) * closer + (TUG_FRAMES.close - TUG_FRAMES.key) * creep
   const down = smooth((time - CAMERA.down[0]) / (CAMERA.down[1] - CAMERA.down[0]))
-  const w = TUG_FRAMES.wide + (TUG_FRAMES.key - TUG_FRAMES.wide) * creep + (TUG_FRAMES.close - TUG_FRAMES.key) * closer
-  const top = TUG_FRAMES.high + (TUG_FRAMES.top - TUG_FRAMES.high) * closer + (TUG_FRAMES.low - TUG_FRAMES.top) * down
+  const top = TUG_FRAMES.high + (TUG_FRAMES.top - TUG_FRAMES.high) * closer + (TUG_FRAMES.low - TUG_FRAMES.top) * creep + (TUG_FRAMES.end - TUG_FRAMES.low) * down
   const u = smooth((time - CAMERA.in[0]) / (CAMERA.in[1] - CAMERA.in[0])) * (1 - smooth((time - CAMERA.out[0]) / (CAMERA.out[1] - CAMERA.out[0])))
   return mixPose(home, frame(tugFrame(w, top)), u)
 }
