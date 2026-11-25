@@ -1,35 +1,35 @@
 {
   "folder": "keys",
-  "pushed": "2026-11-25T18:53:20.488Z",
-  "commit": "f5db6af91b7da2ff226d977b93dcc46f62af7795",
+  "pushed": "2026-11-25T18:59:48.311Z",
+  "commit": "967d2838bc236dd1bce91459830d49a8107395ef",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Consecutive frames of the hit on the cursor: the event bolt-hit at 0:21.13 in step1.firstName, draft tier, preview",
-      "time": "2026-11-25T18:52:33.923Z",
+      "caption": "Keys second pass: the hit, a star flash where the bolt strikes the cursor from frame 1268, draft tier",
+      "time": "2026-11-25T18:53:19.362Z",
       "by": "keys",
       "from": "out/work/sheets/sheet-motion-hit-preview-draft.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Key step1-fire: approved on the left, this build on the right, review tier, with crops of cursor, keys, hatch, keyboardDeck.corner, field.start, type, progressButton, chip, card.corner",
-      "time": "2026-11-25T18:53:02.609Z",
+      "caption": "Still step1-step1_lastName-0p094-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-25T18:55:11.039Z",
       "by": "keys",
-      "from": "out/work/compare/compare-step1-fire.jpg"
+      "from": "out/work/stills/step1-step1_lastName-0p094-hd-review.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Keys second pass: approved above, this build below: pits off the legends, thin bolts, a shade under each cap, review tier",
-      "time": "2026-11-25T18:53:19.129Z",
+      "caption": "Still step1-step1_lastName-0p094-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T18:56:13.074Z",
       "by": "keys",
-      "from": "out/work/keys/keys-crop-2.jpg"
+      "from": "out/work/stills/step1-step1_lastName-0p094-hd-draft.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Keys second pass: the hit, a star flash where the bolt strikes the cursor from frame 1268, draft tier",
-      "time": "2026-11-25T18:53:19.362Z",
+      "caption": "Keys: the shuffle in the air, step1.lastName at 0.094: crossing caps over and under, every top cap keeps its legend, draft tier",
+      "time": "2026-11-25T18:59:46.846Z",
       "by": "keys",
-      "from": "out/work/sheets/sheet-motion-hit-preview-draft.jpg"
+      "from": "out/work/keys/shuffle-mid.jpg"
     }
   ]
 }
