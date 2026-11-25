@@ -7,7 +7,7 @@ import { block, font, measure } from '../metrics'
 import { words } from '../words'
 
 // What the type lies on decides how it is set: sunk print, flat print, raised print or a cut.
-export type Ground = 'page' | 'cap' | 'glass' | 'paper' | 'metal' | 'gloss'
+export type Ground = 'page' | 'cap' | 'glass' | 'paper' | 'metal' | 'smoked' | 'gloss'
 export type Setting = 'sunk' | 'flat' | 'raised' | 'cut'
 
 type Rgb = [number, number, number]
@@ -240,7 +240,7 @@ const mix = (a: Rgb, b: Rgb, t: number): Rgb => [a[0] + (b[0] - a[0]) * t, a[1] 
 
 const INK = 0x28292b
 const INK_WARM = 0x342d26
-const INK_LIGHT = 0xf6f1e8
+const INK_LIGHT = 0xfbeede
 const LIP = 0xf2efe8
 const CUT_FLOOR = 0x1d1e21
 
@@ -270,6 +270,7 @@ export function styles(): Record<string, Style> {
 }
 
 export function styleName(ground: Ground, tone: string): string {
+  if (ground === 'smoked') return 'gloss:light'
   const inkName = tone === 'inkLight' || tone === 'light' ? 'light' : 'ink'
   if (inkName === 'light') return ground === 'gloss' || ground === 'metal' ? 'gloss:light' : 'page:light'
   return `${ground}:ink`
@@ -277,7 +278,10 @@ export function styleName(ground: Ground, tone: string): string {
 
 const GROUND_OF_TONE: Record<string, Ground> = { metal: 'metal', accent: 'gloss', danger: 'gloss', dark: 'gloss', glass: 'glass', raised: 'cap', light: 'cap', paper: 'paper', page: 'page', pocket: 'page' }
 
-const groundOfShape = (u: Shape): Ground => (u.role === 'field' ? 'glass' : (GROUND_OF_TONE[u.tone] ?? 'page'))
+const SMOKED_ROLES = new Set(['chip', 'button', 'heroButton'])
+
+// A chip or a button of tone metal is the smoked grey capsule of the surface, dark enough that only light type reads on it.
+const groundOfShape = (u: Shape): Ground => (u.role === 'field' ? 'glass' : u.tone === 'metal' && SMOKED_ROLES.has(u.role ?? '') ? 'smoked' : (GROUND_OF_TONE[u.tone] ?? 'page'))
 
 let seenList: Shape[] | null = null
 const seenGround = new Map<string, Ground>()
@@ -337,6 +341,10 @@ function kit(setting: Setting): Kit {
       })
     )
     m.name = `type-${setting}${over ? '-over' : ''}`
+    if (setting === 'sunk') {
+      m.normalMap = materials().ceramic.normalMap
+      m.normalScale.set(GRAIN, GRAIN)
+    }
     m.polygonOffset = true
     m.polygonOffsetFactor = -1
     m.polygonOffsetUnits = -2
@@ -357,6 +365,8 @@ function kit(setting: Setting): Kit {
   return made
 }
 
+const GRAIN = 0.3
+
 const q = (v: number): number => Math.round(v * 4) / 4
 
 interface Held { said: string; style: string; over: boolean }
@@ -371,6 +381,12 @@ function geometryOf(s: Shape, said: string, style: Style): THREE.BufferGeometry 
   geometry.setAttribute('position', new THREE.BufferAttribute(data.position, 3))
   geometry.setAttribute('normal', new THREE.BufferAttribute(data.normal, 3))
   geometry.setAttribute('color', new THREE.BufferAttribute(data.colour, 4))
+  const uv = new Float32Array((data.position.length / 3) * 2)
+  for (let i = 0, j = 0; i < data.position.length; i += 3, j += 2) {
+    uv[j] = data.position[i]!
+    uv[j + 1] = data.position[i + 1]!
+  }
+  geometry.setAttribute('uv', new THREE.BufferAttribute(uv, 2))
   geometry.setIndex(new THREE.BufferAttribute(data.index, 1))
   return geometry
 }
