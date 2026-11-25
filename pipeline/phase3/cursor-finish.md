@@ -169,3 +169,41 @@ Cracks, what was wrong: one crack (the cells were 11 units wide, wider than the 
   slight tilt of each plate kept.
 
 Still wrong: the lines are a little paler and wavier than the approved ones.
+
+## The new light (main e599fbb and after)
+
+- The shadow pass now lifts things between 6 and 12 px by `shadowHeights.from` and `lift`. My depth
+  material for the body (`bodyDepthMaterial`) reads the same band as `src/post/studio.ts`, so the
+  arrow's shadow follows the page's rule. Nothing in `src/post/` is changed.
+- The page seen through a punched hole went to an even gray disc under the longer shadow. The
+  share of the light let down a bore is 0.6 (was 0.5). Still wrong: the disc is flatter and
+  grayer than the approved one, where the lower right of the page inside is plainly lit.
+
+## The fill term and M3 (decision, measured)
+
+The form fixer asked for the fill to depend on the side, because the new roll of the enamel reads
+as a gray band with an arc round each notch. I wrote it (commit a83e58b: a face tilted from the
+lamp gets back the share it lost, the lit side gets nothing) and it does take the band away.
+
+It is taken back out. MEASURED at the review tier with
+`npm run measure -- --unit step1 --only M3,M4 --tier review`: main db41bef M3 0.8224, my branch
+with the new fill 0.8191. With the tool's own `highFrequencyEnergy` on the two stills, cell by
+cell (120 px), all of the loss is on the arrow in `step1-tug` (cells at 1200,360; 1320,360;
+1200,240): the even white face has less fine contrast than the banded one. With the old fill back
+the same still reads 0.8222, and the last 0.0002 was the softer flecks in the hot tip.
+
+- The fill term is the one main has. The band on the roll is therefore still there. The code of
+  the side dependent fill is in a83e58b for whoever takes it up with M3 in hand: it costs 0.0031
+  of M3 on `step1-tug`.
+- The flecks in the glowing tip are crisper and a little brighter (threshold 0.685 to 0.735,
+  strength 1.5; were 0.7 to 0.82 and 1.2). Still wrong: on the sheet they are coarser than the
+  approved sparks, which are fine points and thin veins.
+
+## The three things that still look least real
+
+1. The fresh laser hole at 70 px in `step1-fire` still reads as a ring: darker than before and
+   with the key seen through it, but a ring.
+2. The punched hole: the page inside is an even gray disc and the wall has less tooth than the
+   approved one.
+3. Angry: the flecks are blobs and the steam is two ribbons, where the approved picture has fine
+   sparks, a deep dark tip and a curling plume.

@@ -231,9 +231,9 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
     float body = smoothstep( 0.03, 0.36, h ) * face;
     col = mix( col, col * vec3( 1.0, 0.8, 0.5 ), warm * 0.8 );
     col = mix( col, ember * 0.12, body );
-    float vein = smoothstep( 0.7, 0.82, fine.b * 0.8 + mid.g * 0.4 ) * smoothstep( 0.15, 0.4, h ) * ( 1.0 - smoothstep( 0.8, 1.0, h ) );
+    float vein = smoothstep( 0.685, 0.735, fine.b * 0.8 + mid.g * 0.4 ) * smoothstep( 0.15, 0.4, h ) * ( 1.0 - smoothstep( 0.8, 1.0, h ) );
     wjaGlow += ember * body * ( 0.95 + 0.3 * mid.g );
-    wjaGlow += vec3( 1.5, 0.95, 0.3 ) * vein * face * 1.2;
+    wjaGlow += vec3( 1.5, 0.95, 0.3 ) * vein * face * 1.5;
     wjaGlow += ember * h * ink * 0.1;
     wjaCoat *= 1.0 - 0.88 * body;
     wjaSpec *= 1.0 - 0.8 * body;
@@ -327,7 +327,7 @@ export function bodyMaterial(uniforms: BodyUniforms): THREE.MeshPhysicalMaterial
       .replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\nroughnessFactor = wjaRough;')
       .replace('#include <normal_fragment_maps>', '#include <normal_fragment_maps>\nnormal = normalize( normal + vAcross * wjaTilt.x + vDown * wjaTilt.y );')
       .replace('#include <clearcoat_normal_fragment_maps>', '#include <clearcoat_normal_fragment_maps>\nclearcoatNormal = normalize( clearcoatNormal + vAcross * wjaCoatTilt.x + vDown * wjaCoatTilt.y );')
-      .replace('#include <lights_physical_fragment>', '#include <lights_physical_fragment>\nmaterial.clearcoat = saturate( wjaCoat );\nmaterial.specularColor *= wjaSpec;\nmaterial.specularF90 *= wjaSpec;\nmaterial.clearcoatRoughness = max( wjaCoatRough, 0.0525 );\n' + FILL_TERM + '')
+      .replace('#include <lights_physical_fragment>', '#include <lights_physical_fragment>\nmaterial.clearcoat = saturate( wjaCoat );\nmaterial.specularColor *= wjaSpec;\nmaterial.specularF90 *= wjaSpec;\nmaterial.clearcoatRoughness = max( wjaCoatRough, 0.0525 );\ntotalEmissiveRadiance += diffuseColor.rgb * wjaFill * ( 1.0 - dot( normal, normalize( ( viewMatrix * vec4( 0.0, 0.0, 1.0, 0.0 ) ).xyz ) ) );')
       .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\ntotalEmissiveRadiance += wjaGlow;')
       .replace('#include <aomap_fragment>', '#include <aomap_fragment>\nvec3 wjaTone = max( diffuseColor.rgb, vec3( 1e-4 ) );\nreflectedLight.directDiffuse = mix( reflectedLight.directDiffuse, wjaTone * vec3( 1.0, 0.975, 0.945 ) * dot( reflectedLight.directDiffuse / wjaTone, vec3( 0.25, 0.6, 0.15 ) ), 0.85 * wjaPlain );')
   }
