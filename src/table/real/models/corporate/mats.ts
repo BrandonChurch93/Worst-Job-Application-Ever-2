@@ -24,11 +24,11 @@ export const TONE = {
   brass: hex(0xc4a873),
   brassDark: hex(0x9b8252),
   gold: hex(0xd8be88),
-  steel: hex(0xc6cbd0),
-  steelDark: hex(0x8d949b),
+  steel: hex(0xb3bcc6),
+  steelDark: hex(0x7c8792),
   graphite: hex(0x3a3f47),
   roof: hex(0x565c66),
-  stone: hex(0x9c9fa3),
+  stone: hex(0x70757b),
   nickel: hex(0xd3d7da),
   carpet: hex(0xa3161c),
   carpetEdge: hex(0x6e0d12),
@@ -79,7 +79,7 @@ export interface Mats {
   group: string | null
 }
 
-const GLOW = { windows: 1.25 }
+const GLOW = { windows: 1.15 }
 const made = new Map<string, Mats>()
 
 // The three materials of the tier's models, made once for a zone and shared by all seven.
@@ -100,13 +100,13 @@ export function matsOf(z: Zone): Mats {
   glow.userData.lit = true
   lit(glow, z)
   glow.name = `corporate.glow.${z.id}`
-  const clear = studio(new THREE.MeshPhysicalMaterial({ color: 0xe6eef0, roughness: 0.05, metalness: 0, transparent: true, opacity: 0.07, depthWrite: false, specularIntensity: 1, clearcoat: 1, clearcoatRoughness: 0.03, side: THREE.DoubleSide, forceSinglePass: true }))
+  const clear = studio(new THREE.MeshPhysicalMaterial({ color: 0x77858a, roughness: 0.05, metalness: 0, transparent: true, opacity: 0.03, depthWrite: false, specularIntensity: 1, clearcoat: 1, clearcoatRoughness: 0.03, side: THREE.DoubleSide, forceSinglePass: true }))
   const room2 = clear.onBeforeCompile
   clear.onBeforeCompile = (shader, renderer) => {
     room2.call(clear, shader, renderer)
     shader.fragmentShader = shader.fragmentShader.replace(
       '#include <tonemapping_fragment>',
-      'float wjcEdge = pow( 1.0 - abs( dot( normalize( vViewPosition ), normalize( normal ) ) ), 2.4 );\ngl_FragColor.a = clamp( diffuseColor.a + wjcEdge * 0.55 + dot( outgoingLight, vec3( 0.3333 ) ) * 0.3, 0.0, 1.0 );\n#include <tonemapping_fragment>'
+      'float wjcEdge = pow( 1.0 - abs( dot( normalize( vViewPosition ), normalize( normal ) ) ), 3.0 );\ngl_FragColor.a = clamp( diffuseColor.a + wjcEdge * 0.6 + dot( outgoingLight, vec3( 0.3333 ) ) * 0.2, 0.0, 1.0 );\n#include <tonemapping_fragment>'
     )
   }
   const key2 = clear.customProgramCacheKey

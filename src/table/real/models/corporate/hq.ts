@@ -5,11 +5,17 @@ import { DOORS } from '../../../draw'
 import { BALL, table } from '../../../layout'
 import { localBalls, type Zone } from '../../zone'
 import { Geo, type RGB, type V2, type V3 } from './geo'
-import { FINISH, TONE, drop as free, fin, matsOf, mesh, moved, place, poseGlow, screw, shade, signBoard, smooth, textAt } from './mats'
+import { FINISH, TONE, drop as free, fin, hex, matsOf, mesh, moved, place, poseGlow, screw, shade, signBoard, smooth, textAt } from './mats'
 
 const SEED = 20261125
-const FLOOR = 18.4
-const COL = 25
+const FLOOR = 20.5
+const COL = 17
+const COOL: RGB = [1, 1.22, 1.8]
+const STEEL = hex(0x93a5c4)
+const STEEL_DARK = hex(0x6b7a94)
+const PORTAL = hex(0x8f7748)
+const warmLamp = (k: number): RGB => [k, 1.12 * k, 1.42 * k]
+const lamp = (k: number, blue = 1): RGB => [COOL[0] * k, COOL[1] * k, COOL[2] * k * blue]
 const LEAF = { thick: 4.8, lift: 1.5, open: 1.53, slam: 0.09 }
 const VEST = { deep: 96, out: 5.8 }
 
@@ -28,7 +34,7 @@ const model = (id: string) => {
 }
 
 // A wall of glass from a to b: lit rooms behind dark panes, a fin at every column and a band at every floor. The outside is to the right of the way from a to b.
-function curtain(S: Geo, G: Geo, a: V2, b: V2, z0: number, z1: number, rnd: Random, o: { floor?: number; col?: number; lit?: number; gold?: number; fin?: number; rise?: number } = {}): void {
+function curtain(S: Geo, G: Geo, a: V2, b: V2, z0: number, z1: number, rnd: Random, o: { floor?: number; col?: number; lit?: number; gold?: number; fin?: number; rise?: number; hall?: boolean } = {}): void {
   const len = Math.hypot(b[0] - a[0], b[1] - a[1])
   const cols = Math.max(1, Math.round(len / (o.col ?? COL)))
   const floors = Math.max(1, Math.round((z1 - z0) / (o.floor ?? FLOOR)))
@@ -45,31 +51,50 @@ function curtain(S: Geo, G: Geo, a: V2, b: V2, z0: number, z1: number, rnd: Rand
         let run = 0
         let on = false
         let warm = 1
+        let cool = 1
+        let off = 0
         for (let i = 0; i < cols; i++) {
           if (run <= 0) {
             run = 1 + rnd.int(4)
             on = rnd.next() < share
             warm = rnd.range(0.72, 1.12)
+            cool = rnd.next() < 0.2 ? 1.25 : 1
+            off = rnd.range(-0.07, 0.07)
           }
           run--
           const s0 = i * cw
           const s1 = s0 + cw
           const f0 = z0 + j * fh
           const f1 = f0 + fh
-          const band = (u0: number, u1: number, c: RGB): void => {
-            G.face([[s0, 0, f0 + fh * u0], [s1, 0, f0 + fh * u0], [s1, 0, f0 + fh * u1], [s0, 0, f0 + fh * u1]], n, al, c)
+          const rect = (x0: number, x1: number, u0: number, u1: number, c: RGB, out = 0): void => {
+            const xa = s0 + cw * x0
+            const xb = s0 + cw * x1
+            G.face([[xa, -out, f0 + fh * u0], [xb, -out, f0 + fh * u0], [xb, -out, f0 + fh * u1], [xa, -out, f0 + fh * u1]], n, al, c)
           }
-          if (!on) {
-            band(0, 1, [0.012, 0.02, 0.036])
+          if (o.hall) {
+            rect(0, 1, 0.7, 1, warmLamp(0.05))
+            rect(0, 1, 0.26, 0.7, warmLamp(0.085 * warm))
+            rect(0, 1, 0, 0.26, warmLamp(0.03))
+            rect(0.12, 0.88, 0.9, 0.935, warmLamp(0.95), 0.12)
+            rect(0.2, 0.8, 0.83, 0.86, warmLamp(0.7), 0.12)
+            rect(0.27, 0.73, 0.78, 0.8, warmLamp(0.45), 0.12)
+            rect(0.33, 0.67, 0.745, 0.758, warmLamp(0.3), 0.12)
+            rect(0.3, 0.7, 0.06, 0.1, warmLamp(0.09), 0.12)
             continue
           }
-          const k = warm * rnd.range(0.9, 1.05)
-          const cool = rnd.next() < 0.18 ? 1.35 : 1
-          const blind = rnd.next() < 0.16
-          band(0.96, 1, [0.06, 0.06, 0.065])
-          band(0.8, 0.96, [0.92 * k, 0.92 * k, 0.86 * k * cool])
-          band(0.36, 0.8, blind ? [0.34 * k, 0.32 * k, 0.28 * k] : [0.12 * k, 0.115 * k, 0.108 * k * cool])
-          band(0, 0.36, rnd.next() < 0.4 ? [0.03, 0.035, 0.045] : [0.085 * k, 0.08 * k, 0.075 * k])
+          if (!on) {
+            rect(0, 1, 0, 1, [0.008, 0.02, 0.05])
+            continue
+          }
+          const k = warm
+          const blind = rnd.next() < 0.08
+          rect(0, 1, 0.3, 1, blind ? lamp(0.075 * k) : [0.02 * k, 0.036 * k, 0.07 * k * cool])
+          rect(0, 1, 0, 0.3, rnd.next() < 0.5 ? [0.01, 0.022, 0.05] : [0.014 * k, 0.026 * k, 0.05 * k])
+          if (!blind) {
+            rect(0.14 + off, 0.86 + off, 0.78, 0.9, lamp(1.0 * k, cool), 0.12)
+            rect(0.27 + off, 0.73 + off, 0.63, 0.69, lamp(0.5 * k, cool), 0.12)
+            rect(0.36 + off, 0.64 + off, 0.53, 0.565, lamp(0.24 * k, cool), 0.12)
+          }
         }
       }
     })
@@ -78,15 +103,20 @@ function curtain(S: Geo, G: Geo, a: V2, b: V2, z0: number, z1: number, rnd: Rand
     fin(S, FINISH.brushed, () => {
       for (let j = 0; j <= floors; j++) {
         const f = z0 + j * fh
-        S.box(0, len, -1.5, 0.4, f - 1.25, f + 1.25, TONE.steel, { bottom: true })
+        S.box(0, len, -1.2, 0.4, f - 0.9, f + 0.9, STEEL_DARK, { bottom: true })
+      }
+      for (let i = 0; i <= cols; i++) {
+        if (o.gold && i % o.gold === 0) continue
+        const s = i * cw
+        S.box(s - 1.15, s + 1.15, -depth * 0.7, 0.4, z0, z1, STEEL)
       }
     })
+    if (!o.gold) return
     fin(S, FINISH.polished, () => {
-      for (let i = 0; i <= cols; i++) {
-        const gold = o.gold ? i % o.gold === 0 : false
+      for (let i = 0; i <= cols; i += o.gold!) {
         const s = i * cw
-        const w = gold ? 1.1 : 0.9
-        S.box(s - w, s + w, -(gold ? depth : depth * 0.55), 0.4, z0, z1 + (gold ? (o.rise ?? 0) : 0), gold ? TONE.gold : TONE.steel)
+        S.box(s - 1.5, s + 1.5, -depth * 0.7, 0.4, z0, z1, STEEL)
+        S.box(s - 0.7, s + 0.7, -depth * 1.35, -depth * 0.7, z0, z1 + (o.rise ?? 0), TONE.gold)
       }
     })
   })
@@ -98,34 +128,38 @@ function leaf(): Geo {
   const H = (DOORS.h - 0.05) * BALL
   const t = LEAF.thick / 2
   const z0 = LEAF.lift
+  const st = 6
+  const kick = 24
   fin(g, FINISH.brushed, () => {
-    g.box(0, 9, -t, t, z0, H, TONE.brass, { bottom: true })
-    g.box(W - 9, W, -t, t, z0, H, TONE.brass, { bottom: true })
-    g.box(9, W - 9, -t, t, H - 11, H, TONE.brass, { bottom: true })
-    g.box(9, W - 9, -t - 0.5, t + 0.5, z0, 32, TONE.brassDark, { bottom: true })
-    g.box(9, W - 9, -t + 0.6, t - 0.6, 82, 86, TONE.brass, { bottom: true })
+    g.box(0, st, -t, t, z0, H, TONE.brass, { bottom: true, bevel: 0.6 })
+    g.box(W - st, W, -t, t, z0, H, TONE.brass, { bottom: true, bevel: 0.6 })
+    g.box(st, W - st, -t, t, H - 7, H, TONE.brass, { bottom: true })
+    g.box(st, W - st, -t, t, z0, kick, TONE.brassDark, { bottom: true })
+  }, 0)
+  fin(g, FINISH.stone, () => {
+    for (const s of [-1, 1]) {
+      const y = s * 0.9
+      const quad = (x0: number, x1: number, a: number, b: number, c: RGB, out = 0): void => {
+        const yy = y + s * out
+        g.face([[x0, yy, a], [x1, yy, a], [x1, yy, b], [x0, yy, b]], [0, s, 0], [1, 0, 0], c)
+      }
+      quad(st, W - st, kick, H - 7, warmLamp(0.09))
+      quad(st, W - st, kick, kick + 26, warmLamp(0.045), 0.05)
+      quad(st + 5, W - st - 5, H - 30, H - 22, warmLamp(0.8), 0.05)
+      quad(st + 9, W - st - 9, H - 45, H - 41, warmLamp(0.45), 0.05)
+      quad(st + 12, W - st - 12, H - 55, H - 52.6, warmLamp(0.25), 0.05)
+    }
   })
   fin(g, FINISH.polished, () => {
     for (const s of [-1, 1]) {
-      const y0 = s > 0 ? t : -t - 1
-      g.box(9, W - 9, y0, y0 + 1, 32, 33.6, TONE.gold)
-      g.box(9, W - 9, y0, y0 + 1, H - 12.6, H - 11, TONE.gold)
-      g.box(9, 10.6, y0, y0 + 1, 33.6, H - 12.6, TONE.gold)
-      g.box(W - 10.6, W - 9, y0, y0 + 1, 33.6, H - 12.6, TONE.gold)
-      g.box(13, W - 13, s > 0 ? t + 0.5 : -t - 1.3, s > 0 ? t + 1.3 : -t - 0.5, 5, 28, shade(TONE.brass, 0.92), { bevel: 0.5 })
+      g.box(st + 3, W - st - 3, s > 0 ? t : -t - 0.9, s > 0 ? t + 0.9 : -t, 5, kick - 4, shade(TONE.brass, 0.92), { bevel: 0.5 })
       const hy = s * (t + 5.2)
-      g.lathe([[0, -2], [1.9, -1.2], [1.9, 69.2], [0, 70]], W - 17, hy, 8, TONE.gold, 46)
-      for (const hz of [52, 110]) g.box(W - 18.2, W - 15.8, Math.min(s * t, hy), Math.max(s * t, hy), hz - 1.2, hz + 1.2, TONE.brassDark, { bottom: true })
-      for (const sx of [14.5, W - 14.5]) for (const sz of [7.5, 25.5]) screw(g, sx, s * (t + 1.3), sz, 1.1, TONE.gold, [0, s, 0])
+      g.lathe([[0, -2], [1.7, -1.2], [1.7, 71.2], [0, 72]], W - st / 2, hy, 8, TONE.gold, 44)
+      for (const hz of [50, 110]) g.box(W - st / 2 - 1.1, W - st / 2 + 1.1, Math.min(s * t, hy), Math.max(s * t, hy), hz - 1.1, hz + 1.1, TONE.brassDark, { bottom: true })
+      for (const sx of [st + 5, W - st - 5]) for (const sz of [7.5, kick - 6.5]) screw(g, sx, s * (t + 0.9), sz, 1, TONE.gold, [0, s, 0])
+      g.box(st, W - st, s * 1.2 - 0.4, s * 1.2 + 0.4, 83, 85, TONE.brass)
     }
-    for (let i = 1; i <= 4; i++) {
-      const u = 9 + ((W - 18) * i) / 5
-      g.box(u - 0.6, u + 0.6, -0.7, 0.7, 86, H - 11, TONE.gold)
-      g.box(u - 0.6, u + 0.6, -0.7, 0.7, 32, 82, TONE.gold)
-    }
-    const mid = W / 2
-    for (const [dz, dw] of [[0, 20], [4, 13], [8, 6]] as V2[]) g.box(mid - dw, mid + dw, -1, 1, H - 22 - dz, H - 19.5 - dz, TONE.gold, { bottom: true })
-  })
+  }, 0)
   return g
 }
 
@@ -158,8 +192,10 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
     // The base plate and the body of the lobby floor, built round the vestibule behind the doors.
     fin(S, FINISH.stone, () => {
       S.box(-HW, HW, F, B, 0, 6, shade(TONE.graphite, 0.8), { bevel: 1.2 })
-      S.box(-HW, -HW + 20, F - 2, F + 6, 6, pz0, TONE.stone, { bevel: 1.5 })
-      S.box(HW - 20, HW, F - 2, F + 6, 6, pz0, TONE.stone, { bevel: 1.5 })
+    })
+    fin(S, FINISH.brushed, () => {
+      S.box(-HW, -HW + 14, F - 2, F + 6, 6, pz0, STEEL_DARK, { bevel: 1.5 })
+      S.box(HW - 14, HW, F - 2, F + 6, 6, pz0, STEEL_DARK, { bevel: 1.5 })
     })
     fin(S, FINISH.satin, () => {
       S.box(-HW + 0.6, -vw, F + 0.6, B - 0.6, 6, pz1, TONE.graphite)
@@ -169,15 +205,15 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
     })
     // The fascia over the lobby, with the plate the name stands on, and the canopy over the doors.
     fin(S, FINISH.brushed, () => {
-      S.box(-HW - 1, HW + 1, F - 4, F + 1, pz0, pz1 - 0.4, TONE.steel, { bevel: 1, bottom: true })
-      S.box(-dw - 19.2, dw + 19.2, F - 9.6, F - 4, pz0 + 2, pz1 - 2, TONE.nickel, { bottom: true })
+      S.box(-HW - 1, HW + 1, F - 4, F + 1, pz0, pz1 - 0.4, STEEL_DARK, { bevel: 1, bottom: true })
+      S.box(-dw - 19.2, dw + 19.2, F - 9.6, F - 4, pz0 + 2, pz1 - 2, STEEL, { bottom: true })
       const fx = dw + 19.2
-      for (const s of [-1, 1]) S.box(s > 0 ? fx : -fx - 3, s > 0 ? fx + 3 : -fx, F - 11.4, F - 4, pz0, pz1, TONE.steel, { bevel: 0.8, bottom: true })
-      S.box(-fx - 3, fx + 3, F - 11.4, F - 4, pz1 - 2.6, pz1 + 0.4, TONE.steel, { bevel: 0.8, bottom: true })
-      S.box(-fx - 3, fx + 3, F - 11.4, F - 4, pz0 - 0.4, pz0 + 2.6, TONE.steel, { bevel: 0.8, bottom: true })
-      S.box(-dw - 22, dw + 22, F - 26, F, dh + 4, pz0 - 0.4, TONE.steel, { bevel: 1.4, bottom: true })
+      for (const s of [-1, 1]) S.box(s > 0 ? fx : -fx - 3, s > 0 ? fx + 3 : -fx, F - 11.4, F - 4, pz0, pz1, STEEL, { bevel: 0.8, bottom: true })
+      S.box(-fx - 3, fx + 3, F - 11.4, F - 4, pz1 - 2.6, pz1 + 0.4, STEEL, { bevel: 0.8, bottom: true })
+      S.box(-fx - 3, fx + 3, F - 11.4, F - 4, pz0 - 0.4, pz0 + 2.6, STEEL, { bevel: 0.8, bottom: true })
+      S.box(-dw - 22, dw + 22, F - 26, F, dh + 4, pz0 - 0.4, STEEL, { bevel: 1.4, bottom: true })
     })
-    for (const s of [-1, 1]) screw(S, s * (dw + 12), F - 9.6, (pz0 + pz1) / 2, 2, TONE.steel, [0, -1, 0])
+    for (const s of [-1, 1]) screw(S, s * (dw + 12), F - 9.6, (pz0 + pz1) / 2, 2, STEEL, [0, -1, 0])
     fin(S, FINISH.polished, () => {
       for (const zz of [pz0 + 0.8, pz1 - 3.2]) {
         S.box(-HW - 1.6, -dw - 22.4, F - 5, F, zz, zz + 2, TONE.gold, { bottom: true })
@@ -187,12 +223,12 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
       // The brass portal round the doorway, in two steps.
       for (const s of [-1, 1]) {
         const a = s > 0 ? dw : -dw - 11
-        S.box(a, a + 11, F - 6, F + 4, 0, dh + 4, TONE.brass, { bevel: 1.2 })
+        S.box(a, a + 11, F - 6, F + 4, 0, dh + 4, PORTAL, { bevel: 1.2 })
         const c = s > 0 ? dw + 11 : -dw - 17
-        S.box(c, c + 6, F - 3, F + 4, 0, dh + 4, TONE.brassDark, { bevel: 0.8 })
+        S.box(c, c + 6, F - 3, F + 4, 0, dh + 4, shade(PORTAL, 0.8), { bevel: 0.8 })
       }
-      S.box(-dw, dw, F - 6, F + 4, dh - 4.6, dh + 4, TONE.brass, { bottom: true })
-      S.box(-dw - 1, dw + 1, F - 19.2, F + 4, 0, 2, TONE.brass, { bevel: 0.6 })
+      S.box(-dw, dw, F - 6, F + 4, dh - 4.6, dh + 4, PORTAL, { bottom: true })
+      S.box(-dw - 1, dw + 1, F - 19.2, F + 4, 0, 2, PORTAL, { bevel: 0.6 })
     })
     fin(S, FINISH.matte, () => S.box(-3, 3, F - 9, F - 5, 2, 5, TONE.rubber, { bevel: 1 }))
     fin(S, FINISH.cloth, () => S.box(-dw, dw, F + 4, vb, 0, 2.4, TONE.carpet))
@@ -201,30 +237,30 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
   // The lobby behind the doors: lit stone, two lift doors and a lit ceiling.
   moved(G, place(cx, 0, 0), () => {
     fin(G, FINISH.stone, () => {
-      const wall: RGB = [0.24, 0.22, 0.19]
+      const wall: RGB = lamp(0.085)
       G.face([[-vw, F, 0], [-vw, vb, 0], [-vw, vb, dh + 4], [-vw, F, dh + 4]], [1, 0, 0], [0, 1, 0], wall)
       G.face([[vw, F, 0], [vw, vb, 0], [vw, vb, dh + 4], [vw, F, dh + 4]], [-1, 0, 0], [0, 1, 0], wall)
       G.face([[-vw, vb, 0], [vw, vb, 0], [vw, vb, dh + 4], [-vw, vb, dh + 4]], [0, -1, 0], [1, 0, 0], wall)
-      G.face([[-vw, F, dh + 4], [vw, F, dh + 4], [vw, vb, dh + 4], [-vw, vb, dh + 4]], [0, 0, -1], [1, 0, 0], [0.3, 0.3, 0.3])
+      G.face([[-vw, F, dh + 4], [vw, F, dh + 4], [vw, vb, dh + 4], [-vw, vb, dh + 4]], [0, 0, -1], [1, 0, 0], lamp(0.1))
       for (const s of [-1, 1]) {
         G.face([[s * 62 - 22, vb - 0.4, 3], [s * 62 + 22, vb - 0.4, 3], [s * 62 + 22, vb - 0.4, 104], [s * 62 - 22, vb - 0.4, 104]], [0, -1, 0], [1, 0, 0], [0.2, 0.15, 0.08])
         G.face([[s * 62 - 0.8, vb - 0.8, 3], [s * 62 + 0.8, vb - 0.8, 3], [s * 62 + 0.8, vb - 0.8, 104], [s * 62 - 0.8, vb - 0.8, 104]], [0, -1, 0], [1, 0, 0], [0.03, 0.03, 0.03])
-        G.face([[s * 62 - 8, vb - 0.8, 110], [s * 62 + 8, vb - 0.8, 110], [s * 62 + 8, vb - 0.8, 116], [s * 62 - 8, vb - 0.8, 116]], [0, -1, 0], [1, 0, 0], [1.6, 1.5, 1.3])
-        G.face([[s * 40 - 12, F + 14, dh + 3.6], [s * 40 + 12, F + 14, dh + 3.6], [s * 40 + 12, vb - 14, dh + 3.6], [s * 40 - 12, vb - 14, dh + 3.6]], [0, 0, -1], [1, 0, 0], [1.25, 1.2, 1.1])
+        G.face([[s * 62 - 8, vb - 0.8, 110], [s * 62 + 8, vb - 0.8, 110], [s * 62 + 8, vb - 0.8, 116], [s * 62 - 8, vb - 0.8, 116]], [0, -1, 0], [1, 0, 0], lamp(1.1))
+        G.face([[s * 40 - 12, F + 14, dh + 3.6], [s * 40 + 12, F + 14, dh + 3.6], [s * 40 + 12, vb - 14, dh + 3.6], [s * 40 - 12, vb - 14, dh + 3.6]], [0, 0, -1], [1, 0, 0], lamp(0.95))
       }
-      G.face([[-20, vb - 0.4, 20], [20, vb - 0.4, 20], [20, vb - 0.4, 120], [-20, vb - 0.4, 120]], [0, -1, 0], [1, 0, 0], [0.5, 0.47, 0.42])
-      G.face([[-vw, vb - 0.4, dh - 8], [vw, vb - 0.4, dh - 8], [vw, vb - 0.4, dh + 2], [-vw, vb - 0.4, dh + 2]], [0, -1, 0], [1, 0, 0], [0.9, 0.87, 0.8])
+      G.face([[-20, vb - 0.4, 20], [20, vb - 0.4, 20], [20, vb - 0.4, 120], [-20, vb - 0.4, 120]], [0, -1, 0], [1, 0, 0], lamp(0.16))
+      G.face([[-vw, vb - 0.4, dh - 8], [vw, vb - 0.4, dh - 8], [vw, vb - 0.4, dh + 2], [-vw, vb - 0.4, dh + 2]], [0, -1, 0], [1, 0, 0], lamp(0.3))
       // The lit soffit of the canopy.
-      G.face([[-dw - 16, F - 22, dh + 3.9], [dw + 16, F - 22, dh + 3.9], [dw + 16, F - 7, dh + 3.9], [-dw - 16, F - 7, dh + 3.9]], [0, 0, -1], [1, 0, 0], [1.1, 1.06, 0.96])
+      for (const s of [-1, 0, 1]) G.face([[s * (dw - 6) - 14, F - 19, dh + 3.9], [s * (dw - 6) + 14, F - 19, dh + 3.9], [s * (dw - 6) + 14, F - 11, dh + 3.9], [s * (dw - 6) - 14, F - 11, dh + 3.9]], [0, 0, -1], [1, 0, 0], lamp(0.8))
     })
   })
 
   // The lobby's glass, either side of the portal.
-  const lobby = { floor: (pz0 - 6) / 2, col: 20, lit: 1, gold: 0, fin: 3.2 }
-  curtain(W, G, [X(-HW + 20), F], [X(-dw - 17), F], 6, pz0, rnd, lobby)
-  curtain(W, G, [X(dw + 17), F], [X(HW - 20), F], 6, pz0, rnd, lobby)
-  curtain(W, G, [X(HW), F], [X(HW), B], 6, pz1, rnd, { gold: 4 })
-  curtain(W, G, [X(-HW), B], [X(-HW), F], 6, pz1, rnd, { gold: 4 })
+  const lobby = { floor: pz0 - 6, col: 19, lit: 1, gold: 0, fin: 3.2, hall: true }
+  curtain(W, G, [X(-HW + 14), F], [X(-dw - 17), F], 6, pz0, rnd, lobby)
+  curtain(W, G, [X(dw + 17), F], [X(HW - 14), F], 6, pz0, rnd, lobby)
+  curtain(W, G, [X(HW), F], [X(HW), B], 6, pz1, rnd, { gold: 5 })
+  curtain(W, G, [X(-HW), B], [X(-HW), F], 6, pz1, rnd, { gold: 5 })
 
   // The tower: three steps back, each with its own coping, flush at the front.
   const steps = [
@@ -234,8 +270,8 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
   ]
   const coping = (hx: number, yb: number, zz: number): void => {
     moved(S, place(cx, 0, 0), () => {
-      fin(S, FINISH.brushed, () => S.box(-hx - 2.4, hx + 2.4, F - 2.4, yb + 2.4, zz - 2.2, zz + 2.2, TONE.steel, { bevel: 1.2, bottom: true }))
-      fin(S, FINISH.satin, () => S.box(-hx + 5, hx - 5, F + 5, yb - 5, zz + 2.2, zz + 2.7, TONE.roof))
+      fin(S, FINISH.brushed, () => S.box(-hx - 2.4, hx + 2.4, F - 2.4, yb + 2.4, zz - 2.2, zz + 2.2, STEEL, { bevel: 1.2, bottom: true }))
+      fin(S, FINISH.brushed, () => S.box(-hx + 5, hx - 5, F + 5, yb - 5, zz + 2.2, zz + 2.7, STEEL_DARK))
       fin(S, FINISH.polished, () => {
         S.box(-hx + 2.6, hx - 2.6, F + 2.6, F + 4, zz + 2.2, zz + 3.2, TONE.gold)
         S.box(-hx + 2.6, hx - 2.6, yb - 4, yb - 2.6, zz + 2.2, zz + 3.2, TONE.gold)
@@ -247,9 +283,9 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
   coping(HW, B, pz1)
   for (const st of steps) {
     moved(S, place(cx, 0, 0), () => fin(S, FINISH.satin, () => S.box(-st.hx + 0.6, st.hx - 0.6, F + 0.6, st.yb, st.z0, st.z1, TONE.graphite)))
-    curtain(W, G, [X(-st.hx), F], [X(st.hx), F], st.z0 + 2.2, st.z1 - 2.2, rnd, { gold: 4, rise: st.rise, fin: 3.6 })
-    curtain(W, G, [X(st.hx), F], [X(st.hx), st.yb], st.z0 + 2.2, st.z1 - 2.2, rnd, { gold: 4, rise: st.rise })
-    curtain(W, G, [X(-st.hx), st.yb], [X(-st.hx), F], st.z0 + 2.2, st.z1 - 2.2, rnd, { gold: 4, rise: st.rise })
+    curtain(W, G, [X(-st.hx), F], [X(st.hx), F], st.z0 + 2.2, st.z1 - 2.2, rnd, { gold: 5, rise: st.rise, fin: 3.6 })
+    curtain(W, G, [X(st.hx), F], [X(st.hx), st.yb], st.z0 + 2.2, st.z1 - 2.2, rnd, { gold: 5, rise: st.rise })
+    curtain(W, G, [X(-st.hx), st.yb], [X(-st.hx), F], st.z0 + 2.2, st.z1 - 2.2, rnd, { gold: 5, rise: st.rise })
     coping(st.hx, st.yb, st.z1)
   }
 
@@ -263,18 +299,18 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
         const x = s * (s1.hx - 15)
         for (let i = 0; i < 4; i++) {
           const y = F + 34 + i * 42
-          S.box(x - 9, x + 9, y - 12, y + 12, s1.z1 + 2.2, s1.z1 + 13, TONE.steelDark, { bevel: 1.4 })
+          S.box(x - 9, x + 9, y - 12, y + 12, s1.z1 + 2.2, s1.z1 + 13, STEEL_DARK, { bevel: 1.4 })
           S.lathe([[6.5, 0], [6.5, 1], [0, 1]], x, y, 14, shade(TONE.graphite, 0.5), s1.z1 + 13)
-          S.box(x - 0.8, x + 0.8, y - 6, y + 6, s1.z1 + 14, s1.z1 + 14.6, TONE.steel)
-          S.box(x - 6, x + 6, y - 0.8, y + 0.8, s1.z1 + 14, s1.z1 + 14.6, TONE.steel)
+          S.box(x - 0.8, x + 0.8, y - 6, y + 6, s1.z1 + 14, s1.z1 + 14.6, STEEL)
+          S.box(x - 6, x + 6, y - 0.8, y + 0.8, s1.z1 + 14, s1.z1 + 14.6, STEEL)
         }
       }
       for (let i = 0; i < 5; i++) {
         const x = -s1.hx + 40 + (i * (2 * s1.hx - 80)) / 4
-        S.box(x - 16, x + 16, s1.yb - 22, s1.yb - 8, s1.z1 + 2.2, s1.z1 + 10, TONE.steelDark, { bevel: 1.2 })
+        S.box(x - 16, x + 16, s1.yb - 22, s1.yb - 8, s1.z1 + 2.2, s1.z1 + 10, STEEL_DARK, { bevel: 1.2 })
       }
-      S.lathe([[9, 0], [9, 5], [7.5, 6.5], [0, 6.5]], -s3.hx + 22, F + 58, 16, TONE.steelDark, s3.z1 + 2.2)
-      S.lathe([[9, 0], [9, 5], [7.5, 6.5], [0, 6.5]], s3.hx - 22, F + 58, 16, TONE.steelDark, s3.z1 + 2.2)
+      S.lathe([[9, 0], [9, 5], [7.5, 6.5], [0, 6.5]], -s3.hx + 22, F + 58, 16, STEEL_DARK, s3.z1 + 2.2)
+      S.lathe([[9, 0], [9, 5], [7.5, 6.5], [0, 6.5]], s3.hx - 22, F + 58, 16, STEEL_DARK, s3.z1 + 2.2)
       S.lathe([[6, 0], [6, 0.6], [0, 0.6]], -s3.hx + 22, F + 58, 12, shade(TONE.graphite, 0.5), s3.z1 + 8.7)
       S.lathe([[6, 0], [6, 0.6], [0, 0.6]], s3.hx - 22, F + 58, 12, shade(TONE.graphite, 0.5), s3.z1 + 8.7)
     })
@@ -292,10 +328,10 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
       const ky0 = F + 84
       const ky1 = s3.yb - 12
       const kz = s3.z1 + 2.2
-      S.box(-kx - 3, kx + 3, ky0 - 3, ky0, kz, kz + 5, TONE.steel, { bevel: 0.8 })
-      S.box(-kx - 3, kx + 3, ky1, ky1 + 3, kz, kz + 5, TONE.steel, { bevel: 0.8 })
-      S.box(-kx - 3, -kx, ky0, ky1, kz, kz + 5, TONE.steel, { bevel: 0.8 })
-      S.box(kx, kx + 3, ky0, ky1, kz, kz + 5, TONE.steel, { bevel: 0.8 })
+      S.box(-kx - 3, kx + 3, ky0 - 3, ky0, kz, kz + 5, STEEL, { bevel: 0.8 })
+      S.box(-kx - 3, kx + 3, ky1, ky1 + 3, kz, kz + 5, STEEL, { bevel: 0.8 })
+      S.box(-kx - 3, -kx, ky0, ky1, kz, kz + 5, STEEL, { bevel: 0.8 })
+      S.box(kx, kx + 3, ky0, ky1, kz, kz + 5, STEEL, { bevel: 0.8 })
       for (let i = 1; i < 4; i++) S.box(-kx + (i * 2 * kx) / 4 - 0.8, -kx + (i * 2 * kx) / 4 + 0.8, ky0, ky1, kz, kz + 4.6, TONE.gold)
       S.box(-kx, kx, (ky0 + ky1) / 2 - 0.8, (ky0 + ky1) / 2 + 0.8, kz, kz + 4.6, TONE.gold)
     })
@@ -310,17 +346,17 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
         const k = rnd.range(0.75, 1.1)
         const x0 = -kx + (i * 2 * kx) / 4
         const y0 = ky0 + (j * (ky1 - ky0)) / 2
-        G.face([[x0, y0, kz], [x0 + (2 * kx) / 4, y0, kz], [x0 + (2 * kx) / 4, y0 + (ky1 - ky0) / 2, kz], [x0, y0 + (ky1 - ky0) / 2, kz]], [0, 0, 1], [1, 0, 0], [0.9 * k, 0.88 * k, 0.8 * k])
+        G.face([[x0, y0, kz], [x0 + (2 * kx) / 4, y0, kz], [x0 + (2 * kx) / 4, y0 + (ky1 - ky0) / 2, kz], [x0, y0 + (ky1 - ky0) / 2, kz]], [0, 0, 1], [1, 0, 0], lamp(0.5 * k))
       }
       // Small lamps on the second step that wash the crown.
-      for (const sx of [-1, 1]) for (let i = 0; i < 3; i++) G.lathe([[3.2, 0], [3.2, 2.4], [2.2, 3.4], [0, 3.6]], sx * (s2.hx - 12), F + 30 + i * 44, 10, [1.6, 1.55, 1.4], s2.z1 + 2.2)
+      for (const sx of [-1, 1]) for (let i = 0; i < 3; i++) G.lathe([[3.2, 0], [3.2, 2.4], [2.2, 3.4], [0, 3.6]], sx * (s2.hx - 12), F + 30 + i * 44, 10, lamp(1.2), s2.z1 + 2.2)
     })
   })
 
   // The board the name stands on, at the front edge of the crown.
   const h0 = 22
   const sign = textAt(ctx, z, 'sign.corporate.hq', { c: [cx, F + 8 + (h0 / 2) * 0.866, top + 6 + h0 / 4], w: 150, h: h0, tilt: 0.5235987755982988 })
-  signBoard(S, sign.c, sign.w, sign.h, sign.tilt, s3.z1 + 2.2, TONE.steel, TONE.nickel)
+  signBoard(S, sign.c, sign.w, sign.h, sign.tilt, s3.z1 + 2.2, STEEL, STEEL)
 
   // The carpet: pile with a bound edge, brass rods across it at even steps.
   const carpet = table.flats.find((f) => f.id === 'corporate.carpet')
@@ -353,7 +389,8 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
   o.add(mesh(S, mats.solid, `hq.solid.${z.id}`, { cast: true }))
   o.add(mesh(G, mats.glow, `hq.glow.${z.id}`, { group: mats.group }))
   o.add(mesh(W, mats.solid, `hq.frame.${z.id}`, { fine: true }))
-  const doors = new THREE.InstancedMesh(leaf().done(), mats.solid, 2)
+  const doors = new THREE.InstancedMesh(leaf().done(), mats.glow, 2)
+  if (mats.group) doors.userData.lightGroup = mats.group
   doors.name = `hq.doors.${z.id}`
   doors.castShadow = true
   doors.receiveShadow = true

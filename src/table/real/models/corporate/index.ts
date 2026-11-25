@@ -8,7 +8,7 @@ import { buildNotes, dropNotes, poseNotes } from './notes'
 import { buildRevolving, dropRevolving, poseRevolving } from './revolving'
 import { buildWedges, dropWedges } from './wedges'
 
-const VERSION = 'corporate-2'
+const VERSION = 'corporate-3'
 
 export const parts: Record<string, PartMaker | null> = {
   'model-hq': whole('model-hq', { version: VERSION, build: buildHq, pose: poseHq, drop: dropHq }),
