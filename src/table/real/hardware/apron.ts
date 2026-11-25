@@ -35,7 +35,7 @@ export function plunger(z: Zone): Geo {
   const moving = G.vertices
   const r = PLUNGE.knob
   from = G.vertices
-  G.f(FIN.gloss).lathe([[0, -r], [r * 0.34, -r * 0.94], [r * 0.64, -r * 0.77], [r * 0.87, -r * 0.5], [r * 0.98, -r * 0.2], [r, 0.08 * r], [r * 0.93, r * 0.36], [r * 0.74, r * 0.62], [r * 0.5, r * 0.8], [r * 0.5, r * 0.92], [r * 0.6, r * 0.97], [r * 0.6, r * 1.1], [r * 0.4, r * 1.2], [r * 0.36, r * 1.4]], 0, 0, 18, TONE.orange)
+  G.f(FIN.gloss).lathe([[0, -r], [r * 0.34, -r * 0.94], [r * 0.64, -r * 0.77], [r * 0.87, -r * 0.5], [r * 0.98, -r * 0.2], [r, 0.08 * r], [r * 0.93, r * 0.36], [r * 0.74, r * 0.62], [r * 0.5, r * 0.8], [r * 0.5, r * 0.92], [r * 0.6, r * 0.97], [r * 0.6, r * 1.1], [r * 0.4, r * 1.2], [r * 0.36, r * 1.4]], 0, 0, 28, TONE.knob).round(from, 0, 0, 0, r, r * 0.045)
   G.f(FIN.rubber).lathe([[r * 0.36, r * 1.4], [r * 0.48, r * 1.4], [r * 0.52, r * 1.47], [r * 0.52, r * 1.62], [r * 0.48, r * 1.7], [5.5, r * 1.7]], 0, 0, 16, TONE.rubberBlack)
   G.move(from, turn(yk))
   const clip = face + PLUNGE.spring
