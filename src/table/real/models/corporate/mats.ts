@@ -33,7 +33,7 @@ export const TONE = {
   carpet: hex(0xa3161c),
   carpetEdge: hex(0x6e0d12),
   rubber: hex(0x1b1b1d),
-  marble: hex(0xeeede8),
+  marble: hex(0xf7f6f2),
   vein: hex(0x8f9296),
   wood: hex(0x4a2a17),
   woodLight: hex(0x6b3d20),
@@ -93,7 +93,7 @@ export function matsOf(z: Zone): Mats {
   const room = glow.onBeforeCompile
   glow.onBeforeCompile = (shader, renderer) => {
     room.call(glow, shader, renderer)
-    shader.fragmentShader = shader.fragmentShader.replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\n#ifdef USE_COLOR\n\ttotalEmissiveRadiance *= vColor.rgb;\n#endif')
+    shader.fragmentShader = shader.fragmentShader.replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\n#ifdef USE_COLOR\n\ttotalEmissiveRadiance *= vColor.rgb * ( vRoughnessMapUv.y * 2.0 );\n#endif')
   }
   const key = glow.customProgramCacheKey
   glow.customProgramCacheKey = () => `${key.call(glow)}|corporate-glow`
@@ -126,11 +126,11 @@ export function poseGlow(z: Zone, ctx: RealContext): void {
   m.glow.emissiveIntensity = GLOW.windows * (levels(ctx, z).byName.windows ?? 0)
 }
 
-// Everything added inside `fn` takes one finish.
-export function fin(g: Geo, f: Finish, fn: () => void): void {
+// Everything added inside `fn` takes one finish. In the material that glows, `glow` is its share of the light.
+export function fin(g: Geo, f: Finish, fn: () => void, glow = 1): void {
   const from = g.vertices
   fn()
-  const uv = uvOf(f)
+  const uv: V2 = [uvOf(f)[0], glow / 2]
   g.map(from, () => uv)
 }
 
