@@ -11,6 +11,9 @@ import { CASSETTE, crest, openOf, riseOf } from './shredderShape'
 
 const TITLE_KEY = 'copy:step1.resume.paperTitle'
 const THICK = 0.9
+// The film's sheet is `resume-paper`. A sheet of any other frame is `resume-paper:<name>`.
+const isSheet = (id: string): boolean => id === 'resume-paper' || id.startsWith('resume-paper:')
+const CARRY = { from: 21, span: 14 }
 const BAR = { inset: 24, tall: 2.3, pad: 2.85, cells: 44, wide: [0.46, 1, 0.9, 0.62, 1, 0.84, 0.52] }
 const WRAP_LEN = 1.12 * (CASSETTE.roller.r + 0.7)
 
@@ -28,7 +31,7 @@ export function sheetIn(s: Shape, ctx: RealContext): SheetIn {
   }
   const v = s.v
   if (v && v.length >= 11) {
-    q.lift = v[0]!
+    q.lift = clamp((v[0]! - CARRY.from) / CARRY.span, 0, 1)
     q.bite = v[1]!
     q.amount = v[2]!
     q.pull = v[3]!
@@ -39,6 +42,12 @@ export function sheetIn(s: Shape, ctx: RealContext): SheetIn {
     q.vx = v[8]!
     q.vy = v[9]!
     q.hands = v[10]!
+    if ((q.rx - q.lx) * Math.cos(q.rot) + (q.ry - q.ly) * Math.sin(q.rot) < 0) {
+      q.lx = v[6]!
+      q.ly = v[7]!
+      q.rx = v[4]!
+      q.ry = v[5]!
+    }
   } else if (s.rot !== undefined) {
     const cos = Math.cos(s.rot)
     const sin = Math.sin(s.rot)
@@ -253,7 +262,7 @@ function shape(rig: Rig, q: SheetIn): void {
   lay(rig.title, rig.titleMarks, sheet, THICK + 0.22)
   lay(rig.bars, rig.barMarks, sheet, THICK + 0.22)
   const mat = stock(PAPER.w, PAPER.h)
-  mat.sheet.normalScale.setScalar(0.8 * (0.5 + 9 * sheet.abuse) / 5)
+  mat.sheet.normalScale.setScalar(0.1 + 0.55 * sheet.abuse)
 }
 
 // The sheet prints its own title. While the page still hands the title to the type maker, that one shows on the flat sheet
@@ -265,8 +274,7 @@ const ownTitle = (ctx: RealContext, bitten: boolean): boolean => {
 
 export const paper: PartMaker = {
   key(s) {
-    if (s.id === 'resume-paper') return 'paper'
-    return ''
+    return isSheet(s.id) ? 'paper' : ''
   },
   make() {
     const mat = stock(PAPER.w, PAPER.h)
@@ -295,13 +303,13 @@ export const paper: PartMaker = {
     return group
   },
   pose(o, s, ctx) {
-    if (s.id !== 'resume-paper') return
+    if (!isSheet(s.id)) return
     const rig = o.userData.rig as Rig
     o.position.set(0, 0, 0)
     o.rotation.set(0, 0, 0)
     const q = sheetIn(s, ctx)
     shape(rig, q)
-    rig.titleMesh.visible = ownTitle(ctx, q.bite > 0.5)
+    rig.titleMesh.visible = s.id !== 'resume-paper' || ownTitle(ctx, q.bite > 0.5)
   },
   drop(o) {
     const rig = o.userData.rig as Rig

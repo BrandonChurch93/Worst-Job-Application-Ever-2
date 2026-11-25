@@ -159,8 +159,8 @@ export function solveSheet(q: SheetIn, into?: Sheet): Sheet {
   const W = q.w
   const L = q.l
   const bite = smooth(q.bite)
-  const abuse = clamp(0.05 + bite * (0.4 + 0.9 * q.amount + 0.25 * q.pull), 0, 1)
-  const g0 = 0.5 + 9 * abuse
+  const abuse = clamp(0.05 + bite * (0.3 + 0.5 * q.amount + 0.2 * q.pull) + (1 - bite) * 0.5 * q.pull * smooth(q.hands), 0, 1)
+  const g0 = 0.5 + 5 * abuse
   out.abuse = abuse
 
   const cos = Math.cos(q.rot)
@@ -303,7 +303,7 @@ export function solveSheet(q: SheetIn, into?: Sheet): Sheet {
         const t = Math.min(1, s / F)
         const env = Math.sin(Math.PI * Math.pow(t, 0.8))
         const start = smooth(s / 16)
-        zc[k] = g0 * creaseAt(K, a / W, (bCrest - s) / L) * start
+        zc[k] = g0 * creaseAt(K, a / W, (bCrest - s) / L) * start * (1 - 0.7 * hands * (1 - smooth(Math.abs(F - s) / 22)))
         zk[k] = (curl + wr) * Math.pow(Math.max(0, env), 0.7) + (k > NS ? 0.012 * (s - F) * (s - F) : 0)
       }
       const run = (hh: number, gs: number): number => {
@@ -397,8 +397,9 @@ export function solveSheet(q: SheetIn, into?: Sheet): Sheet {
   }
   hold(out, da, db, 6)
   normals(out)
-  if (bite > 0.02) {
-    ear(out, W, L, bite * (0.55 + 0.45 * abuse))
+  const turned = Math.max(bite, q.pull * smooth(q.hands))
+  if (turned > 0.02) {
+    ear(out, W, L, turned * (0.55 + 0.45 * abuse))
     hold(out, da, db, 3)
     normals(out)
   }
