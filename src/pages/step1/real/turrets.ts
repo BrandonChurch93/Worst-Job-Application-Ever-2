@@ -480,7 +480,7 @@ function poseScorch(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
     if (!puff.visible) return
     const sway = Math.sin(u * 6 + i * 1.9 + d.seed) * 9 * u
     const size = 15 + 24 * u
-    puff.position.set(d.at[0] + sway - 8 * u, d.at[1] + 6 + 80 * u ** 0.6, 4 + 70 * u - drop * (1 - u))
+    puff.position.set(d.at[0] + sway - 8 * u, d.at[1] + 6 + 80 * u ** 0.6, 4 + 70 * u)
     puff.scale.set(size, size * 2.1, 1)
     puff.rotation.z = (hash01(i, d.seed, 21) - 0.5) * 0.7 + sway * 0.02
     d.smokeMaterials[i]!.opacity = 0.8 * smooth(u / 0.08) * (1 - u) ** 1.4
