@@ -1,0 +1,35 @@
+{
+  "folder": "glass3",
+  "pushed": "2026-11-25T21:39:41.224Z",
+  "commit": "67d7ecc429b7e5dc0b18c731c5d3bbf4c0e60449",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Sheet page-look: approved on the left, this build on the right, review tier, with crops of button, field.start, progressButton, type, cursor",
+      "time": "2026-11-25T21:35:40.333Z",
+      "by": "glass3",
+      "from": "out/work/compare/compare-page-look.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Key step1-fire: approved on the left, this build on the right, review tier, with crops of cursor, keys, hatch, keyboardDeck.corner, field.start, type, progressButton, chip, card.corner",
+      "time": "2026-11-25T21:36:11.673Z",
+      "by": "glass3",
+      "from": "out/work/compare/compare-step1-fire.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "glass3 first push: page-look, approved left, build right (review tier)",
+      "time": "2026-11-25T21:39:39.967Z",
+      "by": "glass3",
+      "from": "out/work/cmp-page-look-1200.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "glass3 first push: the glass card, approved left, build right: one plate, the dashed rule under the glass",
+      "time": "2026-11-25T21:39:40.199Z",
+      "by": "glass3",
+      "from": "out/work/card-pair.jpg"
+    }
+  ]
+}
