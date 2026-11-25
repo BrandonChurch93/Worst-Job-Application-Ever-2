@@ -43,6 +43,7 @@ interface Backend {
   readonly kind: 'graph' | 'elements'
   now(): number
   resume(): void
+  hold(on: boolean): boolean
   add(id: string, bytes: ArrayBuffer, mime: string): Promise<boolean>
   play(id: string, o: PlayOptions): Voice | null
   duck(spans: { from: number; to: number }[], low: number): void
@@ -61,10 +62,18 @@ function graphBackend(Maker: ContextMaker): Backend {
   for (const b of Object.values(buses)) b.connect(out)
   const buffers = new Map<string, AudioBuffer>()
   const voices = new Set<Voice>()
+  let held = false
+  const resume = () => { if (!held && ctx.state !== 'running') void ctx.resume().catch(() => undefined) }
+  if (typeof window.addEventListener === 'function') for (const name of LIVE.wakeEvents) window.addEventListener(name, resume, true)
   return {
     kind: 'graph',
     now: () => ctx.currentTime,
-    resume: () => { if (ctx.state !== 'running') void ctx.resume().catch(() => undefined) },
+    resume,
+    hold(on) {
+      held = on
+      void (on ? ctx.suspend() : ctx.resume()).catch(() => undefined)
+      return true
+    },
     add: (id, bytes) => new Promise<boolean>((done) => {
       const ok = (b: AudioBuffer) => {
         buffers.set(id, b)
@@ -164,6 +173,7 @@ function elementBackend(): Backend {
     kind: 'elements',
     now: () => wallSeconds(),
     resume: () => undefined,
+    hold: () => false,
     add: (id, bytes, mime) => new Promise<boolean>((done) => {
       const el = new Audio()
       el.preload = 'auto'
@@ -278,6 +288,16 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
     for (const l of listeners) l()
   }
   const applyLevel = () => backend?.master(isMuted ? 0 : level)
+  let watching = false
+  const watchPage = () => {
+    if (watching || typeof document === 'undefined') return
+    watching = true
+    document.addEventListener('visibilitychange', () => {
+      if (!backend) return
+      const away = document.visibilityState === 'hidden'
+      if (!backend.hold(away) && away) api.stop()
+    })
+  }
 
   async function load(b: Backend): Promise<void> {
     const keep = (id: string, secs: number) => (ok: boolean) => {
@@ -369,6 +389,7 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
           backend = null
         }
         setState(ok ? 'ready' : 'silent')
+        if (ok) watchPage()
         startTone()
       })()
       return unlocking

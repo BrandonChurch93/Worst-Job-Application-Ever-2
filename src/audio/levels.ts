@@ -58,7 +58,9 @@ export const LIVE = {
   loopMaxSeconds: 30,
   volumeRampSeconds: 0.03,
   // How far left or right of the middle a sound at the edge of the page sits, from 0 to 1.
-  panWidth: 0.35
+  panWidth: 0.35,
+  // Some browsers start sound only at the end of a touch or a click. The sound graph is asked to run again at each of these.
+  wakeEvents: ['pointerup', 'touchend', 'click', 'keydown']
 }
 
 export const MIX = {

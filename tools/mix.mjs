@@ -42,19 +42,43 @@ export async function filmPlan(c, M) {
 
 const planSha = (plan) => sha(Buffer.from(JSON.stringify([plan.seconds, plan.fps, plan.events, plan.lines])))
 
-export async function makeMix(P, c, M, out, name) {
-  const plan = await filmPlan(c, M)
+// Film A's plan: the opening's own sounds, then film B's plan moved back by the opening's frames. Null when the opening cannot be read.
+export async function filmPlanA(c, M) {
+  const b = await filmPlan(c, M)
+  const cutFile = at('cut', 'CUTLIST.json')
+  const cut = fs.existsSync(cutFile) ? readJson(cutFile) : {}
+  let events = null
+  let frames = cut.opening && Number.isFinite(cut.opening.frameCount) ? cut.opening.frameCount : null
+  let source = 'cut/CUTLIST.json'
+  if (cut.opening && Array.isArray(cut.opening.events) && cut.opening.events.every((e) => typeof e.name === 'string' && Number.isFinite(e.frame))) events = cut.opening.events.map((e) => ({ name: e.name, frame: e.frame, x: Number.isFinite(e.x) ? e.x : 960 }))
+  else {
+    try {
+      const o = await M.load('/src/film/opening.ts')
+      const t = o.openingTimes()
+      events = M.mix.openingEvents({ prompt: c.intro.prompt, charsPerSecond: c.intro.charsPerSecond, levelOpens: t.levelOpens, levelPicks: t.levelPicks, sendPressed: t.held, linesDone: t.lines.map((l) => l.done) }, b.fps)
+      if (frames === null) frames = o.openingFrames()
+      source = 'the times of src/film/opening.ts'
+    } catch (e) {
+      return { plan: null, why: `the opening's times could not be read: ${e.message}` }
+    }
+  }
+  if (frames === null) return { plan: null, why: 'the length of the opening is not known' }
+  return { plan: { source: `${b.source}, behind the opening from ${source}`, fps: b.fps, seconds: frames / b.fps + b.seconds, events: [...events, ...M.mix.behindOpening(b.events, frames)], lines: M.mix.behindOpening(b.lines, frames), toneFromFrame: frames, openingFrames: frames, openingEvents: events.length } }
+}
+
+export async function makeMix(P, c, M, out, name, given = null) {
+  const plan = given ?? (await filmPlan(c, M))
   const { sounds, absent } = keptSounds(P, M)
   const result = M.mix.mixFilm({
     sampleRate: c.audio.sampleRate, fps: plan.fps, seconds: plan.seconds, events: plan.events, lines: plan.lines, sounds, sfx: c.audio.sfx,
-    duckDb: c.audio.duckDb, holdMusicSeconds: c.audio.holdMusicSeconds, targetLufs: c.audio.filmLoudnessLufs, truePeakDb: c.audio.truePeakDb
+    duckDb: c.audio.duckDb, holdMusicSeconds: c.audio.holdMusicSeconds, targetLufs: c.audio.filmLoudnessLufs, truePeakDb: c.audio.truePeakDb, toneFromFrame: plan.toneFromFrame ?? 0
   })
   const bytes = M.dsp.encodeWav(result.sound, M.levels.MIX.bitsPerSample)
   fs.mkdirSync(path.dirname(out), { recursive: true })
   fs.writeFileSync(out, bytes)
   const fix = (v) => (Number.isFinite(v) ? Number(v.toFixed(2)) : null)
   const record = {
-    mix: name, file: path.basename(out), source: plan.source, planSha256: planSha(plan), seconds: plan.seconds, frames: Math.round(plan.seconds * plan.fps), fps: plan.fps, sampleRate: c.audio.sampleRate, bits: M.levels.MIX.bitsPerSample,
+    mix: name, file: path.basename(out), source: plan.source, planSha256: planSha(plan), ...(plan.openingFrames ? { openingFrames: plan.openingFrames, openingEvents: plan.openingEvents } : {}), seconds: plan.seconds, frames: Math.round(plan.seconds * plan.fps), fps: plan.fps, sampleRate: c.audio.sampleRate, bits: M.levels.MIX.bitsPerSample,
     samples: result.sound.channels[0].length, silent: result.mastered.silent, lufs: fix(result.mastered.lufs), truePeakDb: fix(result.mastered.truePeakDb), gainDb: fix(result.mastered.gainDb),
     targetLufs: c.audio.filmLoudnessLufs, ceilingDb: c.audio.truePeakDb, duckDb: c.audio.duckDb, bytes: bytes.length, sha256: sha(bytes),
     events: plan.events.length, mappedEvents: plan.events.filter((e) => M.cues.eventCues[e.name]).length, cuesLaid: result.placed.filter((p) => p.kind === 'cue').length, linesLaid: result.placed.filter((p) => p.kind === 'line').length,
@@ -350,8 +374,17 @@ async function main() {
     } else if (a.final) {
       const out = a.out && a.out !== true ? path.resolve(a.out) : path.join(P.final, 'film-b.wav')
       const r = await makeMix(P, c, M, out, 'film-b')
-      console.log('mix: film A is film B behind the prompt opening. Its opening has no events yet, so only film B is mixed')
       console.log(lastLine(r, out))
+      if (!(a.out && a.out !== true)) {
+        const A = await filmPlanA(c, M)
+        if (!A.plan) console.log(`mix: film A is not mixed, because ${A.why}`)
+        else {
+          const outA = path.join(P.final, 'film-a.wav')
+          const ra = await makeMix(P, c, M, outA, 'film-a', A.plan)
+          console.log(`mix: film A is the opening, ${A.plan.openingFrames} frames with ${A.plan.openingEvents} sounds of its own, and then film B unchanged`)
+          console.log(lastLine(ra, outA))
+        }
+      }
     } else {
       const out = a.out && a.out !== true ? path.resolve(a.out) : path.join(P.mix, 'review.wav')
       const r = await makeMix(P, c, M, out, 'review')
