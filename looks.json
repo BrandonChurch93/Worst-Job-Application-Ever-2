@@ -1,0 +1,35 @@
+{
+  "folder": "play",
+  "pushed": "2026-11-25T16:53:40.112Z",
+  "commit": "7b41517698e1527fe07d336f84a8d83220098264",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "reply-all: approved left, this build right. Three paper cups with lid, sleeve, ring on two rods and skirt; flippers with rubber band",
+      "time": "2026-11-25T16:53:38.253Z",
+      "by": "play",
+      "from": "out/work/compare/compare-reply-all.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "tier-street: approved left, this build right. Wire highway with hoops and brackets, flap, clear spiral, spinner, street drop bank, flippers",
+      "time": "2026-11-25T16:53:38.492Z",
+      "by": "play",
+      "from": "out/work/compare/compare-tier-street.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "last-save: approved left, this build right. Street flippers, highway and spiral from the low camera",
+      "time": "2026-11-25T16:53:38.728Z",
+      "by": "play",
+      "from": "out/work/compare/compare-last-save.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "pinball.coffee sheet: flippers turn with their shapes, a struck cup flashes",
+      "time": "2026-11-25T16:53:38.997Z",
+      "by": "play",
+      "from": "out/work/sheets/sheet-beat-pinball_coffee-preview-draft.jpg"
+    }
+  ]
+}
