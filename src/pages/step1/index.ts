@@ -42,7 +42,7 @@ const PRESS = 0.24
 const HOLD = 0.1
 const TAP = { seconds: 0.2, hold: 0.05, depth: 1, shake: 0.22 }
 const STRIKE = { seconds: 1.5, id: 90000, z: 96 }
-const THUD = { seconds: 0.26, hold: 0.07, shake: 0.4 }
+const THUD = { seconds: 0.26, hold: 0.07, shake: 0.4, hop: 0.15 }
 const PULSE = { hold: 0.05, fade: 0.3 }
 const FLIGHT = { over: 1.25, under: 0.75, ripple: 0.09, jitter: 0.025, seconds: 0.165, crouch: 0.035, low: 24, high: 64, perPx: 0.1, seat: 0.09, jolt: 2.6, rattle: 1.6, clear: 5 }
 const LEGEND_CLEAR = 0
@@ -811,7 +811,7 @@ export function makePage(): PageLogic {
             pin = Math.max(pin, e < 0 ? 1 : spring(e, 0, SLAB_OUT.spring))
           })
           const pinned = pin !== 0
-          const kick = !pinned && !down && far < SHAKE.reach ? SHAKE.hop * s.shakeAmp * (1 - far / SHAKE.reach) * Math.sin(Math.PI * clamp((s.shake - far / 2600) / 0.2, 0, 1)) : 0
+          const kick = !pinned && !down && far < SHAKE.reach ? SHAKE.hop * (s.shakeAmp === THUD.shake ? THUD.hop : s.shakeAmp) * (1 - far / SHAKE.reach) * Math.sin(Math.PI * clamp((s.shake - far / 2600) / 0.2, 0, 1)) : 0
           const rattle = !down && s.seat < RATTLE.seconds ? RATTLE.px * hash01(key, 2, 17) * Math.sin(Math.PI * clamp((s.seat - 0.08 * hash01(key, 4, 17)) / (RATTLE.seconds - 0.08), 0, 1)) : 0
           const stir = !at.moved && !down && fl.t > 0 && fl.t < 0.1 ? FLIGHT.rattle * (0.4 + 0.6 * hash01(key, s.shuffles, 29)) * Math.sin((Math.PI * fl.t) / 0.1) : 0
           const hop = (at.moved ? fl.air * fl.high : 0) + kick + rattle + stir
