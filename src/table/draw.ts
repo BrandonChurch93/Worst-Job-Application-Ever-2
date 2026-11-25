@@ -69,10 +69,6 @@ export function fixedShapes(): Shape[] {
     const f = px(floorZ(d.tier))
     out.push(box(`display.${d.id}`, 'displays', d.box, f, f + 30, 'dark'))
   }
-  for (const l of table.lamps) {
-    const f = px(floorZ(l.tier))
-    out.push(disc(`lamp.${l.id}`, 'table-lights', l.c, 0.1, f, f + 4, 'light'))
-  }
   for (const a of table.flats) {
     const f = px(floorZ(a.tier))
     out.push(box(`flat.${a.id}`, a.part, a.box, f, f + 3, a.tone as Tone))
@@ -96,8 +92,6 @@ export function fixedShapes(): Shape[] {
   out.push(box('lift.door.street', 'lift', [COLS.left - 0.2, TIER_Y[2]! + 1.7, 0.2, 0.3], px(floorZ(2)), px(floorZ(2)) + 70, 'accent'))
   out.push(disc('lift.elbow.corporate', 'lift', [COLS.lift, TIER_Y[0]! + 1.05], 0.7, px(floorZ(0)), px(floorZ(0)) + 100, 'accent'))
   out.push(disc('lift.elbow.office', 'lift', [COLS.lift, TIER_Y[1]! + 1.05], 0.7, px(floorZ(1)), px(floorZ(1)) + 100, 'accent'))
-  out.push(box('plunger.rod', 'table-hardware', [PLUNGER[0] - 0.08, PLUNGER[1] + 0.55, 0.16, 1.2], px(floorZ(2)) + 30, px(floorZ(2)) + 46, 'metal'))
-  out.push(disc('plunger.knob', 'table-hardware', [PLUNGER[0], APRON_Y + 0.75], 0.32, 0, 60, 'accent'))
   out.push(box('drain.plate', 'table-frame', [8.8, APRON_Y + 0.25, 2.4, 0.5], 0, 6, 'dark'))
   out.push(disc('flap.highway', 'ramps', [6.9, TIER_Y[2]! + 4.9], 0.3, px(floorZ(2)), px(floorZ(2)) + 5, 'metal'))
   out.push(box('marquee.back', 'marquee', [COLS.left, MARQUEE_Y + 0.25, COLS.right - COLS.left, MARQUEE_H - 0.5], 0, 40, 'dark'))
@@ -109,7 +103,7 @@ export function fixedShapes(): Shape[] {
   return out
 }
 
-export function movingShapes(m: Machine, lit: boolean[], hide: boolean): Shape[] {
+export function movingShapes(m: Machine, lit: boolean[], hide: boolean, glow: boolean[] = [true, true, true], pull = 0): Shape[] {
   const out: Shape[] = []
   for (const f of table.flippers) {
     const z = px(floorZ(f.tier))
@@ -122,6 +116,12 @@ export function movingShapes(m: Machine, lit: boolean[], hide: boolean): Shape[]
     const z = px(floorZ(t.tier))
     const up = t.kind !== 'drop' || !m.down[t.index]
     out.push(box(`target.${t.id}`, 'targets', t.box, z, z + (up ? 44 : 3), t.kind === 'spinner' ? 'metal' : 'paper'))
+  }
+  out.push(box('plunger.rod', 'table-hardware', [PLUNGER[0] - 0.08, PLUNGER[1] + 0.55 + pull * 0.45, 0.16, 1.2 + pull * 0.25], px(floorZ(2)) + 30, px(floorZ(2)) + 46, 'metal'))
+  out.push(disc('plunger.knob', 'table-hardware', [PLUNGER[0], APRON_Y + 0.75 + pull * 0.7], 0.32, 0, 60, 'accent'))
+  for (const l of table.lamps) {
+    const f = px(floorZ(l.tier))
+    out.push(disc(`lamp.${l.id}`, 'table-lights', l.c, glow[l.tier] ? 0.14 : 0.1, f, f + 4, glow[l.tier] ? 'light' : 'glass'))
   }
   for (const n of table.inserts) {
     const z = px(floorZ(n.tier))
