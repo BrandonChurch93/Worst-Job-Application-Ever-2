@@ -11,7 +11,7 @@ import { CASSETTE, crest, openOf, riseOf } from './shredderShape'
 
 const TITLE_KEY = 'copy:step1.resume.paperTitle'
 const THICK = 0.9
-const BAR = { inset: 24, tall: 3.2, pad: 2.4, cells: 44 }
+const BAR = { inset: 24, tall: 2.3, pad: 2.85, cells: 44, wide: [0.46, 1, 0.9, 0.62, 1, 0.84, 0.52] }
 const WRAP_LEN = 1.12 * (CASSETTE.roller.r + 0.7)
 
 const clamp = (v: number, lo: number, hi: number): number => Math.min(hi, Math.max(lo, v))
@@ -152,7 +152,7 @@ function barMarks(): { marks: Mark[]; index: number[] } {
   const marks: Mark[] = []
   const index: number[] = []
   PAPER_LINES.forEach((at, i) => {
-    const w = (PAPER.w - BAR.inset * 2) * (i === 3 || i === 6 ? 0.6 : 1)
+    const w = (PAPER.w - BAR.inset * 2) * (BAR.wide[i] ?? 1)
     const b0 = PAPER.h * at + BAR.pad
     const base = marks.length
     for (let k = 0; k <= BAR.cells; k++) {
@@ -253,7 +253,7 @@ function shape(rig: Rig, q: SheetIn): void {
   lay(rig.title, rig.titleMarks, sheet, THICK + 0.22)
   lay(rig.bars, rig.barMarks, sheet, THICK + 0.22)
   const mat = stock(PAPER.w, PAPER.h)
-  mat.sheet.normalScale.setScalar(0.08 + 0.55 * sheet.abuse)
+  mat.sheet.normalScale.setScalar(0.8 * (0.5 + 9 * sheet.abuse) / 5)
 }
 
 // The sheet prints its own title. While the page still hands the title to the type maker, that one shows on the flat sheet
