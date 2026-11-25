@@ -1,35 +1,35 @@
 {
   "folder": "frame",
-  "pushed": "2026-11-25T17:09:35.888Z",
-  "commit": "f8613b799fb2893f1892ff4eaa3810e122513cd7",
+  "pushed": "2026-11-25T17:54:40.931Z",
+  "commit": "567de76160803a6ac12dc661842ba121a5eac41b",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key rail-cam: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-25T17:08:40.150Z",
+      "caption": "Frame 9, the whole machine beside the approved image: rails, three tiers, apron slabs with the brass line, feed tube, marquee",
+      "time": "2026-11-25T17:54:39.135Z",
       "by": "frame",
-      "from": "out/work/compare/compare-rail-cam.jpg"
+      "from": "out/work/compare/compare-table-wide.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Key tier-office: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-25T17:09:12.835Z",
+      "caption": "Frame 9, the street tier from above beside the approved image: lane walls, the lift housing, the launch lane open at the tier line",
+      "time": "2026-11-25T17:54:39.380Z",
       "by": "frame",
-      "from": "out/work/compare/compare-tier-office.jpg"
+      "from": "out/work/compare/compare-tier-street.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Frame 6, tier-office beside the approved image: brushed side rails with a joint and screws, stepped cross rail at the top, laminate strip on the lane walls",
-      "time": "2026-11-25T17:09:34.473Z",
+      "caption": "Frame 9, the last save view beside the approved image: apron, drain mouth and the lower rails",
+      "time": "2026-11-25T17:54:39.631Z",
       "by": "frame",
-      "from": "out/work/compare/compare-tier-office.jpg"
+      "from": "out/work/compare/compare-last-save.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Frame 6, rail-cam beside the approved image: the lane wall with its dark groove and steel strike strip, the corner fillet",
-      "time": "2026-11-25T17:09:34.714Z",
+      "caption": "Frame 9, the launch ramp standing on the lower floor between the lane walls, the cross rail open over it, the feed tube and its collars",
+      "time": "2026-11-25T17:54:39.866Z",
       "by": "frame",
-      "from": "out/work/compare/compare-rail-cam.jpg"
+      "from": "out/work/compare/frame-ramp.jpg"
     }
   ]
 }
