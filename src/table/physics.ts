@@ -17,7 +17,7 @@ export interface BallState {
 export interface TableEvent { name: string; ball: number; id: string; x: number; y: number }
 export interface MachineState {
   snap: string; balls: BallState[]; flip: [number, number]; held: [boolean, boolean]; down: boolean[]; bank: number[]; cool: number[]; gate: boolean[]; on: Record<string, boolean>
-  mom: boolean; saves: number; magnet: [number, number, number] | null; score: number; steps: number
+  mom: boolean; saves: number; magnet: [number, number, number] | null; score: number; steps: number; last: Record<string, number>
 }
 
 const DEG = 0.017453292519943295
@@ -69,6 +69,7 @@ export class Machine {
   magnet: [number, number, number] | null = null
   score = 0
   steps = 0
+  last: Record<string, number> = {}
   events: TableEvent[] = []
 
   constructor() {
@@ -119,6 +120,7 @@ export class Machine {
     this.magnet = null
     this.score = 0
     this.steps = 0
+    this.last = {}
     this.events = []
   }
 
@@ -134,7 +136,7 @@ export class Machine {
   save(): MachineState {
     return {
       snap: toBase64(this.world.takeSnapshot()), balls: this.balls.map((b) => ({ ...b })), flip: [...this.flip], held: [...this.held], down: [...this.down], bank: [...this.bank], cool: [...this.cool], gate: [...this.gate],
-      on: { ...this.on }, mom: this.mom, saves: this.saves, magnet: this.magnet ? [...this.magnet] : null, score: this.score, steps: this.steps
+      on: { ...this.on }, mom: this.mom, saves: this.saves, magnet: this.magnet ? [...this.magnet] : null, score: this.score, steps: this.steps, last: { ...this.last }
     }
   }
 
@@ -155,6 +157,7 @@ export class Machine {
     this.magnet = s.magnet ? [...s.magnet] : null
     this.score = s.score
     this.steps = s.steps
+    this.last = { ...(s.last ?? {}) }
     this.events = []
   }
 
@@ -165,6 +168,18 @@ export class Machine {
   private say(name: string, ball: number, id: string): void {
     const b = this.balls[ball]!
     this.events.push({ name, ball, id, x: b.x, y: b.y })
+    this.last[id] = this.steps
+    this.last[`${name}:${id}`] = this.steps
+  }
+
+  // Seconds since a thing was last named in an event (`office.bumper.1`), or since one kind of event at it (`scoop-kick:street.firehouse`): 9 when that never was, or was longer ago.
+  since(key: string): number {
+    const at = this.last[key]
+    return at === undefined ? 9 : Math.min(9, (this.steps - at) * DT)
+  }
+
+  get seconds(): number {
+    return this.steps * DT
   }
 
   toPlane(i: number, x: number, y: number, vx: number, vy: number): void {
