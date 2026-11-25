@@ -1,0 +1,2208 @@
+{
+  "about": "Every take of every sound, as it was filed. The take files themselves are under out/work/audio/takes/ and are never committed.",
+  "takes": [
+    {
+      "key": "line.marketing.stroll.0",
+      "kind": "line",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "1fe2637a031dfa9914fe0da698bd8c3df5d56b05bdefbb67e1cda37633a36a1f",
+      "filed": "2026-11-25T18:05:35.681Z",
+      "text": "Here we find / the applicant. / Rent is due.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1,
+        "sent": "Here we find <break time=\"1.0s\" /> the applicant. <break time=\"1.0s\" /> Rent is due.",
+        "call": 13
+      },
+      "askedSeconds": null,
+      "cost": "27",
+      "measured": {
+        "seconds": 5.341,
+        "start": 0.044,
+        "end": 5.174,
+        "peakDb": -1.17,
+        "rmsDb": -23.24,
+        "lufs": -21.23,
+        "truePeakDb": -1.12,
+        "low": 0.379,
+        "mid": 0.562,
+        "high": 0.059,
+        "tailDb": -23.96,
+        "hits": 5,
+        "hitsAt": [
+          {
+            "start": 0.064,
+            "end": 1.024,
+            "peakDb": -1.17
+          },
+          {
+            "start": 2.144,
+            "end": 2.454,
+            "peakDb": -4.24
+          },
+          {
+            "start": 2.546,
+            "end": 2.954,
+            "peakDb": -13.92
+          },
+          {
+            "start": 3.026,
+            "end": 3.092,
+            "peakDb": -14.45
+          },
+          {
+            "start": 4.278,
+            "end": 5.132,
+            "peakDb": -4.66
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "transcript": "Here we find the applicant. Rent is due.",
+        "transcripts": [
+          "Here we find the applicant. Rent is due.",
+          "Here we find the applicant. Rent is due."
+        ],
+        "transcriptAgreed": "2 of 2",
+        "attitudes": [
+          "condescending and authoritative",
+          "condescending and authoritative"
+        ],
+        "toneHeard": false,
+        "toneClaims": {
+          "whisper": "0 yes, 2 no",
+          "laugh": "0 yes, 2 no",
+          "warmth": "0 yes, 2 no",
+          "excitement": "0 yes, 2 no",
+          "unimpressedAndSmug": "2 yes, 0 no"
+        },
+        "claimedFromSound": 2,
+        "whisper": null,
+        "laugh": null,
+        "warmth": null,
+        "excitement": null,
+        "unimpressedAndSmug": null,
+        "basis": [
+          "The speaker's delivery is flat and condescending, lacking warmth or excitement, which conveys a distinctly smug and unimpressed demeanor.",
+          "The flat, documentary-style delivery lacks warmth or excitement, conveying instead a cold, superior, and demanding tone."
+        ]
+      },
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 8,
+        "seconds": 5.13,
+        "wordsPerSecond": 1.559,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 2,
+        "pausesFound": 2,
+        "pauses": [
+          1.11,
+          1.18
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": 5.12,
+        "fits": false,
+        "beatSeconds": 2
+      }
+    },
+    {
+      "key": "line.marketing.perks.0",
+      "kind": "line",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "a08e83955f834d6812914028a83ccb8f9d4ff5ea13d753ab9f186baca528e010",
+      "filed": "2026-11-25T18:05:37.060Z",
+      "text": "It spots unlimited PTO. / Poor thing / believes it.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1,
+        "sent": "It spots unlimited PTO. <break time=\"1.0s\" /> Poor thing <break time=\"1.0s\" /> believes it.",
+        "call": 14
+      },
+      "askedSeconds": null,
+      "cost": "30",
+      "measured": {
+        "seconds": 6.92,
+        "start": 0.03,
+        "end": 6.762,
+        "peakDb": -1.88,
+        "rmsDb": -21.81,
+        "lufs": -19.14,
+        "truePeakDb": -1.88,
+        "low": 0.445,
+        "mid": 0.196,
+        "high": 0.359,
+        "tailDb": -19.62,
+        "hits": 6,
+        "hitsAt": [
+          {
+            "start": 0.04,
+            "end": 0.344,
+            "peakDb": -1.9
+          },
+          {
+            "start": 0.424,
+            "end": 1.688,
+            "peakDb": -1.88
+          },
+          {
+            "start": 1.794,
+            "end": 2.72,
+            "peakDb": -5.93
+          },
+          {
+            "start": 3.974,
+            "end": 4.658,
+            "peakDb": -10.48
+          },
+          {
+            "start": 5.86,
+            "end": 6.542,
+            "peakDb": -4.06
+          },
+          {
+            "start": 6.61,
+            "end": 6.728,
+            "peakDb": -6.56
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "transcript": "It spots unlimited PTO. Poor thing. Believes it.",
+        "transcripts": [
+          "It spots unlimited PTO. Poor thing. Believes it.",
+          "It spots unlimited PTO. Poor thing. Believes it."
+        ],
+        "transcriptAgreed": "2 of 2",
+        "attitudes": [
+          "cynical and condescending",
+          "cynical, condescending, and sarcastic"
+        ],
+        "toneHeard": false,
+        "toneClaims": {
+          "whisper": "0 yes, 2 no",
+          "laugh": "0 yes, 2 no",
+          "warmth": "0 yes, 2 no",
+          "excitement": "0 yes, 2 no",
+          "unimpressedAndSmug": "2 yes, 0 no"
+        },
+        "claimedFromSound": 2,
+        "whisper": null,
+        "laugh": null,
+        "warmth": null,
+        "excitement": null,
+        "unimpressedAndSmug": null,
+        "basis": [
+          "The speaker uses short, dismissive phrases and a dry, sarcastic delivery that conveys cynicism and pity rather than warmth, excitement, or laughter.",
+          "The speaker delivers the lines with a dry, deadpan, and slightly mocking tone, devoid of any genuine warmth or excitement."
+        ]
+      },
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 8,
+        "seconds": 6.732,
+        "wordsPerSecond": 1.188,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 2,
+        "pausesFound": 2,
+        "pauses": [
+          1.248,
+          1.196
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": 10.28,
+        "fits": true,
+        "beatSeconds": 6
+      }
+    },
+    {
+      "key": "line.step1.firstName.0",
+      "kind": "line",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "df124bfeadafa7906106ba753329af591385bf4a5cec7949e92c05981b80bb7b",
+      "filed": "2026-11-25T18:05:38.537Z",
+      "text": "First name. / Under fire. / Standard onboarding.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1,
+        "sent": "First name. <break time=\"1.0s\" /> Under fire. <break time=\"1.0s\" /> Standard onboarding.",
+        "call": 15
+      },
+      "askedSeconds": null,
+      "cost": "29",
+      "measured": {
+        "seconds": 5.433,
+        "start": 0.03,
+        "end": 5.376,
+        "peakDb": -2.67,
+        "rmsDb": -22.59,
+        "lufs": -20.28,
+        "truePeakDb": -2.54,
+        "low": 0.554,
+        "mid": 0.204,
+        "high": 0.242,
+        "tailDb": -22.3,
+        "hits": 3,
+        "hitsAt": [
+          {
+            "start": 0.04,
+            "end": 0.808,
+            "peakDb": -2.67
+          },
+          {
+            "start": 1.96,
+            "end": 2.804,
+            "peakDb": -7.01
+          },
+          {
+            "start": 3.954,
+            "end": 5.32,
+            "peakDb": -2.9
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "transcript": "First name. Under fire. Standard onboarding.",
+        "transcripts": [
+          "First name. Under fire. Standard onboarding.",
+          "First name under fire standard onboarding."
+        ],
+        "transcriptAgreed": "2 of 2",
+        "attitudes": [
+          "detached, unimpressed, and smug",
+          "unimpressed, dry, and smug"
+        ],
+        "toneHeard": false,
+        "toneClaims": {
+          "whisper": "0 yes, 2 no",
+          "laugh": "0 yes, 2 no",
+          "warmth": "0 yes, 2 no",
+          "excitement": "0 yes, 2 no",
+          "unimpressedAndSmug": "2 yes, 0 no"
+        },
+        "claimedFromSound": 2,
+        "whisper": null,
+        "laugh": null,
+        "warmth": null,
+        "excitement": null,
+        "unimpressedAndSmug": null,
+        "basis": [
+          "The speaker's delivery is flat, clinical, and somewhat arrogant, showing no signs of warmth, excitement, laughter, or whispering.",
+          "The speaker's flat, detached delivery completely lacks warmth or excitement, resulting in an aloof and smugly unimpressed tone."
+        ]
+      },
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 6,
+        "seconds": 5.346,
+        "wordsPerSecond": 1.122,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 2,
+        "pausesFound": 2,
+        "pauses": [
+          1.132,
+          1.128
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": 4.5,
+        "fits": false,
+        "beatSeconds": 8
+      }
+    },
+    {
+      "key": "line.step1.firstName.1",
+      "kind": "line",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "f1b5a90accf865565227964b9725048ee224af18e18bc096d770e1831687cc98",
+      "filed": "2026-11-25T18:05:39.807Z",
+      "text": "Hit. / It keeps typing. / It has bills.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1,
+        "sent": "Hit. <break time=\"1.0s\" /> It keeps typing. <break time=\"1.0s\" /> It has bills.",
+        "call": 16
+      },
+      "askedSeconds": null,
+      "cost": "25",
+      "measured": {
+        "seconds": 5.387,
+        "start": 0.026,
+        "end": 5.212,
+        "peakDb": -1.96,
+        "rmsDb": -21.68,
+        "lufs": -18.9,
+        "truePeakDb": -1.9,
+        "low": 0.481,
+        "mid": 0.215,
+        "high": 0.305,
+        "tailDb": -16.91,
+        "hits": 4,
+        "hitsAt": [
+          {
+            "start": 0.04,
+            "end": 0.438,
+            "peakDb": -5.84
+          },
+          {
+            "start": 1.656,
+            "end": 2.498,
+            "peakDb": -1.96
+          },
+          {
+            "start": 2.576,
+            "end": 2.838,
+            "peakDb": -13.39
+          },
+          {
+            "start": 4.06,
+            "end": 5.18,
+            "peakDb": -3.17
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 1 whole, 1 void",
+        "asks": 2,
+        "whole": 1,
+        "transcript": "Hit It keeps typing It has bills",
+        "transcripts": [
+          "Hit It keeps typing It has bills",
+          "Hit It keeps typing It has bills"
+        ],
+        "transcriptAgreed": "2 of 2",
+        "attitudes": [
+          "unimpressed and cynical"
+        ],
+        "toneHeard": false,
+        "toneClaims": {
+          "whisper": "0 yes, 2 no",
+          "laugh": "0 yes, 2 no",
+          "warmth": "0 yes, 2 no",
+          "excitement": "0 yes, 2 no",
+          "unimpressedAndSmug": "2 yes, 0 no"
+        },
+        "claimedFromSound": 1,
+        "whisper": null,
+        "laugh": null,
+        "warmth": null,
+        "excitement": null,
+        "unimpressedAndSmug": null,
+        "basis": [
+          "The text describes a mundane, reluctant action driven by financial necessity, which inherently implies a flat, unenthusiastic, and slightly cynical tone.",
+          "The speaker delivers the lines with a flat, deadpan intonation completely devoid of warmth or excitement, resulting in an unimpressed and smug tone."
+        ]
+      },
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 7,
+        "seconds": 5.186,
+        "wordsPerSecond": 1.35,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 2,
+        "pausesFound": 2,
+        "pauses": [
+          1.21,
+          1.202
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": 7.9,
+        "fits": true,
+        "beatSeconds": 8
+      }
+    },
+    {
+      "key": "line.step1.email.0",
+      "kind": "line",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "6b5253686269f5cb14f6c63f3f2935d3a3bfb2492e0156a7ff5cd3d0e60954d3",
+      "filed": "2026-11-25T18:05:41.273Z",
+      "text": "A valid email. / Rejected. / The system / is working as designed.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1,
+        "sent": "A valid email. <break time=\"1.0s\" /> Rejected. <break time=\"1.0s\" /> The system <break time=\"1.0s\" /> is working as designed.",
+        "call": 17
+      },
+      "askedSeconds": null,
+      "cost": "40",
+      "measured": {
+        "seconds": 9.706,
+        "start": 0.026,
+        "end": 9.534,
+        "peakDb": -3.98,
+        "rmsDb": -24.91,
+        "lufs": -21.68,
+        "truePeakDb": -3.87,
+        "low": 0.453,
+        "mid": 0.2,
+        "high": 0.347,
+        "tailDb": -19.8,
+        "hits": 8,
+        "hitsAt": [
+          {
+            "start": 0.036,
+            "end": 1.602,
+            "peakDb": -6.66
+          },
+          {
+            "start": 2.798,
+            "end": 3.218,
+            "peakDb": -6.2
+          },
+          {
+            "start": 3.372,
+            "end": 3.704,
+            "peakDb": -10.29
+          },
+          {
+            "start": 4.994,
+            "end": 5.868,
+            "peakDb": -3.98
+          },
+          {
+            "start": 7.046,
+            "end": 7.584,
+            "peakDb": -5.42
+          },
+          {
+            "start": 7.666,
+            "end": 8.042,
+            "peakDb": -7.45
+          },
+          {
+            "start": 8.156,
+            "end": 8.484,
+            "peakDb": -7.7
+          },
+          {
+            "start": 8.562,
+            "end": 9.498,
+            "peakDb": -4.3
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "transcript": "A valid email rejected. The system is working as designed.",
+        "transcripts": [
+          "A valid email rejected. The system is working as designed.",
+          "A valid email rejected. The system is working as designed."
+        ],
+        "transcriptAgreed": "2 of 2",
+        "attitudes": [
+          "cynical and sarcastic",
+          "smug, dismissive, and bureaucratic"
+        ],
+        "toneHeard": false,
+        "toneClaims": {
+          "whisper": "0 yes, 2 no",
+          "laugh": "0 yes, 2 no",
+          "warmth": "0 yes, 2 no",
+          "excitement": "0 yes, 2 no",
+          "unimpressedAndSmug": "2 yes, 0 no"
+        },
+        "claimedFromSound": 2,
+        "whisper": null,
+        "laugh": null,
+        "warmth": null,
+        "excitement": null,
+        "unimpressedAndSmug": null,
+        "basis": [
+          "The speaker delivers the ironic statement with a slow, flat tone that highlights the absurdity of the situation without any warmth or excitement.",
+          "The answers rest on the flat, unapologetic delivery of a frustrating technical outcome being framed as an intended feature, which inherently conveys a cold and smug tone."
+        ]
+      },
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 10,
+        "seconds": 9.508,
+        "wordsPerSecond": 1.052,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 3,
+        "pausesFound": 3,
+        "pauses": [
+          1.186,
+          1.286,
+          1.166
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": 7.325,
+        "fits": false,
+        "beatSeconds": 5
+      }
+    },
+    {
+      "key": "line.step1.tug.0",
+      "kind": "line",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "eed53b661af77d94307ac3ec12e3f48f64586e346eddb77f8b9eabafa7078123",
+      "filed": "2026-11-25T18:05:42.706Z",
+      "text": "It fights for the resume. / Two pages. / One of them is true.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1.4,
+        "sent": "It fights for the resume. <break time=\"1.4s\" /> Two pages. <break time=\"1.4s\" /> One of them is true.",
+        "call": 18
+      },
+      "askedSeconds": null,
+      "cost": "35",
+      "measured": {
+        "seconds": 8.081,
+        "start": 0.03,
+        "end": 7.846,
+        "peakDb": -2.15,
+        "rmsDb": -22.14,
+        "lufs": -19.03,
+        "truePeakDb": -2.11,
+        "low": 0.484,
+        "mid": 0.175,
+        "high": 0.341,
+        "tailDb": -19.16,
+        "hits": 5,
+        "hitsAt": [
+          {
+            "start": 0.036,
+            "end": 0.656,
+            "peakDb": -7.44
+          },
+          {
+            "start": 0.728,
+            "end": 2.02,
+            "peakDb": -2.15
+          },
+          {
+            "start": 3.684,
+            "end": 3.956,
+            "peakDb": -4.34
+          },
+          {
+            "start": 4.03,
+            "end": 4.862,
+            "peakDb": -4.5
+          },
+          {
+            "start": 6.48,
+            "end": 7.766,
+            "peakDb": -3.63
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 0 whole, 2 void",
+        "asks": 2,
+        "whole": 0,
+        "transcript": "It fights for the resume. Two pages. One of them is true.",
+        "transcripts": [
+          "It fights for the resume. Two pages. One of them is true.",
+          "It fights for the resume. Two pages. One of them is true."
+        ],
+        "transcriptAgreed": "2 of 2",
+        "attitudes": [],
+        "toneHeard": false,
+        "toneClaims": {
+          "whisper": "0 yes, 2 no",
+          "laugh": "0 yes, 2 no",
+          "warmth": "0 yes, 2 no",
+          "excitement": "0 yes, 2 no",
+          "unimpressedAndSmug": "2 yes, 0 no"
+        },
+        "claimedFromSound": 0,
+        "whisper": null,
+        "laugh": null,
+        "warmth": null,
+        "excitement": null,
+        "unimpressedAndSmug": null,
+        "basis": [
+          "The cynical, deadpan nature of the statement implies a dry, smug, and unimpressed delivery devoid of warmth, excitement, or laughter.",
+          "Since no actual audio is present, the assessment relies on the inherent cynicism of the provided text, which strongly implies a dry, unimpressed, and smug delivery rather than warmth or excitement."
+        ]
+      },
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 12,
+        "seconds": 7.816,
+        "wordsPerSecond": 1.535,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 2,
+        "pausesFound": 2,
+        "pauses": [
+          1.634,
+          1.608
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": 11.075,
+        "fits": true,
+        "beatSeconds": 6.25
+      }
+    },
+    {
+      "key": "line.step2.dial.0",
+      "kind": "line",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "3c0e0f504ba9453918cbdd3bb97042e9ad6fb63b645a1dfa1cb2c8f098829f96",
+      "filed": "2026-11-25T18:05:44.408Z",
+      "text": "A rotary phone. / The applicant / has never seen one.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1,
+        "sent": "A rotary phone. <break time=\"1.0s\" /> The applicant <break time=\"1.0s\" /> has never seen one.",
+        "call": 19
+      },
+      "askedSeconds": null,
+      "cost": "31",
+      "measured": {
+        "seconds": 6.037,
+        "start": 0.03,
+        "end": 5.894,
+        "peakDb": -3.57,
+        "rmsDb": -21.86,
+        "lufs": -19.67,
+        "truePeakDb": -3.52,
+        "low": 0.49,
+        "mid": 0.329,
+        "high": 0.181,
+        "tailDb": -19.12,
+        "hits": 4,
+        "hitsAt": [
+          {
+            "start": 0.032,
+            "end": 1.304,
+            "peakDb": -6.01
+          },
+          {
+            "start": 2.476,
+            "end": 2.794,
+            "peakDb": -3.57
+          },
+          {
+            "start": 2.87,
+            "end": 3.502,
+            "peakDb": -4.57
+          },
+          {
+            "start": 4.64,
+            "end": 5.85,
+            "peakDb": -3.79
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 1 whole, 1 void",
+        "asks": 2,
+        "whole": 1,
+        "transcript": "A rotary phone. The applicant has never seen one.",
+        "transcripts": [
+          "A rotary phone. The applicant has never seen one.",
+          "A rotary phone. The applicant has never seen one."
+        ],
+        "transcriptAgreed": "2 of 2",
+        "attitudes": [
+          "smug and condescending"
+        ],
+        "toneHeard": false,
+        "toneClaims": {
+          "whisper": "0 yes, 2 no",
+          "laugh": "0 yes, 2 no",
+          "warmth": "0 yes, 2 no",
+          "excitement": "0 yes, 2 no",
+          "unimpressedAndSmug": "2 yes, 0 no"
+        },
+        "claimedFromSound": 1,
+        "whisper": null,
+        "laugh": null,
+        "warmth": null,
+        "excitement": null,
+        "unimpressedAndSmug": null,
+        "basis": [
+          "The speaker delivers the observation with a dry, flat cadence that suggests a sense of superiority regarding the applicant's unfamiliarity with older technology.",
+          "The short, blunt sentences and judgmental observation about the applicant's inexperience with older technology strongly imply a dry, smug delivery."
+        ]
+      },
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 9,
+        "seconds": 5.864,
+        "wordsPerSecond": 1.535,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 2,
+        "pausesFound": 2,
+        "pauses": [
+          1.154,
+          1.128
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": 11.7,
+        "fits": true,
+        "beatSeconds": 6
+      }
+    },
+    {
+      "key": "line.step2.crank.0",
+      "kind": "line",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "40ba3764d1e12b7997a8201939a9f8b8a7640391527ec723ea99f80a357e6ae0",
+      "filed": "2026-11-25T18:05:45.642Z",
+      "text": "Volume. / All the way up. / It will regret that.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1,
+        "sent": "Volume. <break time=\"1.0s\" /> All the way up. <break time=\"1.0s\" /> It will regret that.",
+        "call": 20
+      },
+      "askedSeconds": null,
+      "cost": "29",
+      "measured": {
+        "seconds": 6.084,
+        "start": 0.014,
+        "end": 5.968,
+        "peakDb": -4.63,
+        "rmsDb": -20.04,
+        "lufs": -19.9,
+        "truePeakDb": -4.62,
+        "low": 0.548,
+        "mid": 0.444,
+        "high": 0.008,
+        "tailDb": -26.19,
+        "hits": 5,
+        "hitsAt": [
+          {
+            "start": 0.018,
+            "end": 3.058,
+            "peakDb": -4.63
+          },
+          {
+            "start": 3.16,
+            "end": 3.244,
+            "peakDb": -15.47
+          },
+          {
+            "start": 4.468,
+            "end": 5.372,
+            "peakDb": -5.12
+          },
+          {
+            "start": 5.54,
+            "end": 5.766,
+            "peakDb": -13.38
+          },
+          {
+            "start": 5.842,
+            "end": 5.934,
+            "peakDb": -12.22
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 4 asks, 1 whole, 3 void",
+        "asks": 4,
+        "whole": 1,
+        "transcript": "Volume all the way up. It will regret that.",
+        "transcripts": [
+          "Volume all the way up. It will regret that.",
+          "Volume all the way up. It will regret that.",
+          "Volume all the way up. It will regret that.",
+          "Volume all the way up. It will regret that."
+        ],
+        "transcriptAgreed": "4 of 4",
+        "attitudes": [
+          "cold and threatening"
+        ],
+        "toneHeard": false,
+        "toneClaims": {
+          "whisper": "0 yes, 4 no",
+          "laugh": "0 yes, 4 no",
+          "warmth": "0 yes, 4 no",
+          "excitement": "0 yes, 4 no",
+          "unimpressedAndSmug": "4 yes, 0 no"
+        },
+        "claimedFromSound": 1,
+        "whisper": null,
+        "laugh": null,
+        "warmth": null,
+        "excitement": null,
+        "unimpressedAndSmug": null,
+        "basis": [
+          "The speaker's threatening statement conveys a cold, confident demeanor without any warmth, excitement, or laughter.",
+          "Since no audio file was provided, the answers rest on the semantic content of the text, which implies a cold, confident, and unimpressed delivery.",
+          "Based on the text provided, the semantic content is threatening and confident, indicating a smug rather than warm or excited tone.",
+          "The assessment rests on the semantics of the provided text, which implies a confident, calculating, and smug demeanor without indications of warmth or laughter."
+        ]
+      },
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 9,
+        "seconds": 5.954,
+        "wordsPerSecond": 1.512,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 2,
+        "pausesFound": 1,
+        "pauses": [
+          1.208
+        ],
+        "paceHolds": true,
+        "pausesHold": false,
+        "room": 6.9,
+        "fits": true,
+        "beatSeconds": 6
+      }
+    },
+    {
+      "key": "line.pinball.seal.0",
+      "kind": "line",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "1558888fdd4d0e910f28f10db0f2a3ec4c3c910e6cb2a82bc1854549fe092f8e",
+      "filed": "2026-11-25T18:05:47.066Z",
+      "text": "The skills assessment. / No skills / will be assessed.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1,
+        "sent": "The skills assessment. <break time=\"1.0s\" /> No skills <break time=\"1.0s\" /> will be assessed.",
+        "call": 21
+      },
+      "askedSeconds": null,
+      "cost": "32",
+      "measured": {
+        "seconds": 6.92,
+        "start": 0.042,
+        "end": 6.74,
+        "peakDb": -4.3,
+        "rmsDb": -21.46,
+        "lufs": -18.78,
+        "truePeakDb": -4.26,
+        "low": 0.329,
+        "mid": 0.311,
+        "high": 0.361,
+        "tailDb": -19.23,
+        "hits": 6,
+        "hitsAt": [
+          {
+            "start": 0.046,
+            "end": 0.362,
+            "peakDb": -4.3
+          },
+          {
+            "start": 0.436,
+            "end": 1.796,
+            "peakDb": -4.56
+          },
+          {
+            "start": 2.912,
+            "end": 3.44,
+            "peakDb": -5.53
+          },
+          {
+            "start": 3.512,
+            "end": 4.18,
+            "peakDb": -9.76
+          },
+          {
+            "start": 5.324,
+            "end": 6.552,
+            "peakDb": -4.57
+          },
+          {
+            "start": 6.622,
+            "end": 6.704,
+            "peakDb": -16.24
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 1 whole, 1 void",
+        "asks": 2,
+        "whole": 1,
+        "transcript": "The skills assessment. No skills will be assessed.",
+        "transcripts": [
+          "The skills assessment. No skills will be assessed.",
+          "The skills assessment. No skills. Will be assessed."
+        ],
+        "transcriptAgreed": "2 of 2",
+        "attitudes": [
+          "deadpan, dry, and sarcastic"
+        ],
+        "toneHeard": false,
+        "toneClaims": {
+          "whisper": "0 yes, 2 no",
+          "laugh": "0 yes, 2 no",
+          "warmth": "0 yes, 2 no",
+          "excitement": "0 yes, 2 no",
+          "unimpressedAndSmug": "2 yes, 0 no"
+        },
+        "claimedFromSound": 1,
+        "whisper": null,
+        "laugh": null,
+        "warmth": null,
+        "excitement": null,
+        "unimpressedAndSmug": null,
+        "basis": [
+          "The inherent irony and brevity of the contradictory statement strongly suggest a flat, deadpan, and mildly smug delivery.",
+          "The cynical phrasing and fragmented sentence structure strongly suggest a dry, sarcastic delivery that is entirely devoid of warmth or enthusiasm."
+        ]
+      },
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 8,
+        "seconds": 6.698,
+        "wordsPerSecond": 1.194,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 2,
+        "pausesFound": 2,
+        "pauses": [
+          1.104,
+          1.138
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": 7.5,
+        "fits": true,
+        "beatSeconds": 4
+      }
+    },
+    {
+      "key": "line.pinball.launch.0",
+      "kind": "line",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "38d158bbbf7110e7f5efae2ec10c350583dbf94d63f9a594b2c6944567e2b11c",
+      "filed": "2026-11-25T18:05:48.292Z",
+      "text": "A career. / In reverse.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1,
+        "sent": "A career. <break time=\"1.0s\" /> In reverse.",
+        "call": 22
+      },
+      "askedSeconds": null,
+      "cost": "14",
+      "measured": {
+        "seconds": 3.251,
+        "start": 0.04,
+        "end": 3.134,
+        "peakDb": -3.42,
+        "rmsDb": -22.1,
+        "lufs": -20.26,
+        "truePeakDb": -3.27,
+        "low": 0.535,
+        "mid": 0.237,
+        "high": 0.229,
+        "tailDb": -14.73,
+        "hits": 3,
+        "hitsAt": [
+          {
+            "start": 0.048,
+            "end": 0.16,
+            "peakDb": -5.63
+          },
+          {
+            "start": 0.224,
+            "end": 0.88,
+            "peakDb": -9.75
+          },
+          {
+            "start": 2.032,
+            "end": 3.112,
+            "peakDb": -3.42
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 0 whole, 2 void",
+        "asks": 2,
+        "whole": 0,
+        "transcript": "A career In reverse",
+        "transcripts": [
+          "A career In reverse",
+          "A career in reverse."
+        ],
+        "transcriptAgreed": "2 of 2",
+        "attitudes": [],
+        "toneHeard": false,
+        "toneClaims": {
+          "whisper": "0 yes, 2 no",
+          "laugh": "0 yes, 2 no",
+          "warmth": "0 yes, 2 no",
+          "excitement": "0 yes, 2 no",
+          "unimpressedAndSmug": "2 yes, 0 no"
+        },
+        "claimedFromSound": 0,
+        "whisper": null,
+        "laugh": null,
+        "warmth": null,
+        "excitement": null,
+        "unimpressedAndSmug": null,
+        "basis": [
+          "The conclusions about the sound of the voice rest on the deliberate pacing and dry articulation that would naturally accompany such a critical statement.",
+          "Because no actual audio was provided, the assessment relies on the inherently derogatory nature of the text, which implies a dry, smug, and unimpressed delivery devoid of warmth or excitement."
+        ]
+      },
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 4,
+        "seconds": 3.094,
+        "wordsPerSecond": 1.293,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 1,
+        "pausesFound": 1,
+        "pauses": [
+          1.128
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": 2.7,
+        "fits": false,
+        "beatSeconds": 3
+      }
+    },
+    {
+      "key": "line.pinball.lobby.0",
+      "kind": "line",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "418a9f8db8653214f27f93292c347f7ab6b991e0634dd630cfb258281ff6856c",
+      "filed": "2026-11-25T18:05:49.565Z",
+      "text": "Corporate headquarters. / So close.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1,
+        "sent": "Corporate headquarters. <break time=\"1.0s\" /> So close.",
+        "call": 23
+      },
+      "askedSeconds": null,
+      "cost": "19",
+      "measured": {
+        "seconds": 3.808,
+        "start": 0.038,
+        "end": 3.712,
+        "peakDb": -2.92,
+        "rmsDb": -21.88,
+        "lufs": -19,
+        "truePeakDb": -2.8,
+        "low": 0.249,
+        "mid": 0.22,
+        "high": 0.531,
+        "tailDb": -15.69,
+        "hits": 4,
+        "hitsAt": [
+          {
+            "start": 0.046,
+            "end": 0.254,
+            "peakDb": -6.14
+          },
+          {
+            "start": 0.34,
+            "end": 1.476,
+            "peakDb": -3.52
+          },
+          {
+            "start": 2.58,
+            "end": 2.948,
+            "peakDb": -3.37
+          },
+          {
+            "start": 3.04,
+            "end": 3.688,
+            "peakDb": -2.92
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 4 asks, 0 whole, 4 void",
+        "asks": 4,
+        "whole": 0,
+        "transcript": "Corporate headquarters. So close.",
+        "transcripts": [
+          "Corporate headquarters. So close.",
+          "Corporate headquarters. So close.",
+          "Corporate headquarters. So close.",
+          "Corporate headquarters. So close."
+        ],
+        "transcriptAgreed": "4 of 4",
+        "attitudes": [],
+        "toneHeard": false,
+        "toneClaims": {
+          "whisper": "0 yes, 4 no",
+          "laugh": "0 yes, 4 no",
+          "warmth": "0 yes, 4 no",
+          "excitement": "0 yes, 4 no",
+          "unimpressedAndSmug": "1 yes, 3 no"
+        },
+        "claimedFromSound": 0,
+        "whisper": null,
+        "laugh": null,
+        "warmth": null,
+        "excitement": null,
+        "unimpressedAndSmug": null,
+        "basis": [
+          "Because no actual audio file was provided, these vocal characteristics are best-guess inferences based solely on the textual context and the specific questions asked.",
+          "Since no audio file was provided in the prompt, these vocal characteristics were inferred purely from the semantic content and likely dramatic tone of the text.",
+          "Since no actual audio recording was provided, the vocal characteristics are inferred entirely from the dramatic context of the provided text.",
+          "Since no actual audio was provided, these vocal characteristics are estimated based on the likely dramatic context of the written transcript."
+        ]
+      },
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 4,
+        "seconds": 3.674,
+        "wordsPerSecond": 1.089,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 1,
+        "pausesFound": 1,
+        "pauses": [
+          1.094
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": 3.7,
+        "fits": true,
+        "beatSeconds": 4
+      }
+    },
+    {
+      "key": "line.pinball.coffee.0",
+      "kind": "line",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "327deae58d4a747d2a390f9c9ee4cbcdadb41d308180295483d71044a5e4a534",
+      "filed": "2026-11-25T18:05:50.805Z",
+      "text": "It runs on coffee / and fear.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1.4,
+        "sent": "It runs on coffee <break time=\"1.4s\" /> and fear.",
+        "call": 24
+      },
+      "askedSeconds": null,
+      "cost": "17",
+      "measured": {
+        "seconds": 4.087,
+        "start": 0.028,
+        "end": 3.972,
+        "peakDb": -2.83,
+        "rmsDb": -22.95,
+        "lufs": -20.86,
+        "truePeakDb": -2.73,
+        "low": 0.57,
+        "mid": 0.26,
+        "high": 0.17,
+        "tailDb": -20.65,
+        "hits": 3,
+        "hitsAt": [
+          {
+            "start": 0.04,
+            "end": 0.172,
+            "peakDb": -5.72
+          },
+          {
+            "start": 0.254,
+            "end": 1.48,
+            "peakDb": -2.83
+          },
+          {
+            "start": 3.022,
+            "end": 3.936,
+            "peakDb": -5.99
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 1 whole, 1 void",
+        "asks": 2,
+        "whole": 1,
+        "transcript": "It runs on coffee and fear.",
+        "transcripts": [
+          "It runs on coffee and fear.",
+          "It runs on coffee and fear."
+        ],
+        "transcriptAgreed": "2 of 2",
+        "attitudes": [
+          "deadpan and cynical"
+        ],
+        "toneHeard": false,
+        "toneClaims": {
+          "whisper": "0 yes, 2 no",
+          "laugh": "0 yes, 2 no",
+          "warmth": "0 yes, 2 no",
+          "excitement": "0 yes, 2 no",
+          "unimpressedAndSmug": "2 yes, 0 no"
+        },
+        "claimedFromSound": 1,
+        "whisper": null,
+        "laugh": null,
+        "warmth": null,
+        "excitement": null,
+        "unimpressedAndSmug": null,
+        "basis": [
+          "The assessment relies on the inherently dry, exhausted, and sarcastic tone required to deliver this cynical punchline effectively.",
+          "Because no actual audio was provided, the vocal traits are inferred from the inherently dry and cynical humor of the written text."
+        ]
+      },
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 6,
+        "seconds": 3.944,
+        "wordsPerSecond": 1.521,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 1,
+        "pausesFound": 1,
+        "pauses": [
+          1.528
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": 4.4,
+        "fits": true,
+        "beatSeconds": 4
+      }
+    },
+    {
+      "key": "line.pinball.replyAll.0",
+      "kind": "line",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "23154962e3b476d1ecbbc0376e65357eb745d2b6c6fe9d62fdad361ce5bbf3f1",
+      "filed": "2026-11-25T18:05:52.358Z",
+      "text": "Someone / hit reply all.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1,
+        "sent": "Someone <break time=\"1.0s\" /> hit reply all.",
+        "call": 25
+      },
+      "askedSeconds": null,
+      "cost": "15",
+      "measured": {
+        "seconds": 3.111,
+        "start": 0.004,
+        "end": 2.972,
+        "peakDb": -5.26,
+        "rmsDb": -26.93,
+        "lufs": -26.63,
+        "truePeakDb": -5.15,
+        "low": 0.558,
+        "mid": 0.234,
+        "high": 0.208,
+        "tailDb": -24.63,
+        "hits": 4,
+        "hitsAt": [
+          {
+            "start": 0.018,
+            "end": 0.58,
+            "peakDb": -5.26
+          },
+          {
+            "start": 1.73,
+            "end": 1.876,
+            "peakDb": -7.7
+          },
+          {
+            "start": 2.02,
+            "end": 2.126,
+            "peakDb": -11.45
+          },
+          {
+            "start": 2.198,
+            "end": 2.928,
+            "peakDb": -11.06
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 2 whole, 1 void",
+        "asks": 3,
+        "whole": 2,
+        "transcript": "Someone hit reply all.",
+        "transcripts": [
+          "Someone hit reply all.",
+          "Someone hit reply all."
+        ],
+        "transcriptAgreed": "2 of 2",
+        "attitudes": [
+          "deadpan and cynical",
+          "smug and cynical"
+        ],
+        "toneHeard": false,
+        "toneClaims": {
+          "whisper": "0 yes, 2 no",
+          "laugh": "0 yes, 2 no",
+          "warmth": "0 yes, 2 no",
+          "excitement": "0 yes, 2 no",
+          "unimpressedAndSmug": "2 yes, 0 no"
+        },
+        "claimedFromSound": 2,
+        "whisper": null,
+        "laugh": null,
+        "warmth": null,
+        "excitement": null,
+        "unimpressedAndSmug": null,
+        "basis": [
+          "The flat, unenthusiastic delivery lacks warmth or excitement, indicating a smug and unimpressed reaction to a classic workplace mistake.",
+          "The speaker's delivery is flat and deadpan, conveying a cynical observation of someone else's mistake without any warmth or enthusiasm."
+        ]
+      },
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 4,
+        "seconds": 2.968,
+        "wordsPerSecond": 1.348,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 1,
+        "pausesFound": 1,
+        "pauses": [
+          1.116
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": 6,
+        "fits": true,
+        "beatSeconds": 7
+      }
+    },
+    {
+      "key": "line.pinball.fired.0",
+      "kind": "line",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "b486f8ad889d0c28ef06316e97524510840902435755d08b6de2cdecf900f08d",
+      "filed": "2026-11-25T18:05:53.597Z",
+      "text": "Fired. / Before it was hired. / A new record.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1,
+        "sent": "Fired. <break time=\"1.0s\" /> Before it was hired. <break time=\"1.0s\" /> A new record.",
+        "call": 26
+      },
+      "askedSeconds": null,
+      "cost": "28",
+      "measured": {
+        "seconds": 5.759,
+        "start": 0.012,
+        "end": 5.556,
+        "peakDb": -2.61,
+        "rmsDb": -24.79,
+        "lufs": -22.28,
+        "truePeakDb": -2.52,
+        "low": 0.643,
+        "mid": 0.163,
+        "high": 0.194,
+        "tailDb": -22.49,
+        "hits": 3,
+        "hitsAt": [
+          {
+            "start": 0.02,
+            "end": 0.716,
+            "peakDb": -6.37
+          },
+          {
+            "start": 1.982,
+            "end": 3.33,
+            "peakDb": -2.61
+          },
+          {
+            "start": 4.59,
+            "end": 5.512,
+            "peakDb": -11.17
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "transcript": "Fired before it was hired. A new record.",
+        "transcripts": [
+          "Fired before it was hired. A new record.",
+          "Fired before it was hired. A new record."
+        ],
+        "transcriptAgreed": "2 of 2",
+        "attitudes": [
+          "cynical and sarcastic",
+          "dry, cynical, and sarcastic"
+        ],
+        "toneHeard": false,
+        "toneClaims": {
+          "whisper": "0 yes, 2 no",
+          "laugh": "0 yes, 2 no",
+          "warmth": "0 yes, 2 no",
+          "excitement": "0 yes, 2 no",
+          "unimpressedAndSmug": "2 yes, 0 no"
+        },
+        "claimedFromSound": 2,
+        "whisper": null,
+        "laugh": null,
+        "warmth": null,
+        "excitement": null,
+        "unimpressedAndSmug": null,
+        "basis": [
+          "The speaker delivers the line with a dry, flat tone that conveys heavy sarcasm and a distinct lack of genuine enthusiasm.",
+          "The speaker delivers the lines with a flat, low-energy tone that conveys sarcastic amusement rather than genuine excitement or warmth."
+        ]
+      },
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 8,
+        "seconds": 5.544,
+        "wordsPerSecond": 1.443,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 2,
+        "pausesFound": 2,
+        "pauses": [
+          1.252,
+          1.238
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": 10.7,
+        "fits": true,
+        "beatSeconds": 3.5
+      }
+    },
+    {
+      "key": "line.pinball.drain.0",
+      "kind": "line",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "01501ecf01882e1fc86251a80c53b8adb6bcabe2b1d0392187a85ff80620a1dd",
+      "filed": "2026-11-25T18:05:55.128Z",
+      "text": "The unemployment office. / It knows the way.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1.6,
+        "sent": "The unemployment office. <break time=\"1.6s\" /> It knows the way.",
+        "call": 27
+      },
+      "askedSeconds": null,
+      "cost": "23",
+      "measured": {
+        "seconds": 4.783,
+        "start": 0.036,
+        "end": 4.594,
+        "peakDb": -3.96,
+        "rmsDb": -21.86,
+        "lufs": -20.2,
+        "truePeakDb": -3.88,
+        "low": 0.572,
+        "mid": 0.292,
+        "high": 0.136,
+        "tailDb": -20.95,
+        "hits": 2,
+        "hitsAt": [
+          {
+            "start": 0.04,
+            "end": 1.632,
+            "peakDb": -4.76
+          },
+          {
+            "start": 3.406,
+            "end": 4.55,
+            "peakDb": -3.96
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 1 whole, 1 void",
+        "asks": 2,
+        "whole": 1,
+        "transcript": "The unemployment office. It knows the way.",
+        "transcripts": [
+          "The unemployment office. It knows the way.",
+          "The unemployment office. It knows the way."
+        ],
+        "transcriptAgreed": "2 of 2",
+        "attitudes": [
+          "dry and cynical"
+        ],
+        "toneHeard": false,
+        "toneClaims": {
+          "whisper": "0 yes, 2 no",
+          "laugh": "0 yes, 2 no",
+          "warmth": "0 yes, 2 no",
+          "excitement": "0 yes, 2 no",
+          "unimpressedAndSmug": "2 yes, 0 no"
+        },
+        "claimedFromSound": 1,
+        "whisper": null,
+        "laugh": null,
+        "warmth": null,
+        "excitement": null,
+        "unimpressedAndSmug": null,
+        "basis": [
+          "The flat, unenthusiastic intonation and sarcastic nature of the remark convey a smug and unimpressed tone devoid of warmth, excitement, or laughter.",
+          "The delivery is inferred to be a deadpan, sarcastic joke about joblessness, marked by a flat tone completely devoid of enthusiasm or warmth."
+        ]
+      },
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 7,
+        "seconds": 4.558,
+        "wordsPerSecond": 1.536,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 1,
+        "pausesFound": 1,
+        "pauses": [
+          1.77
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": 4.7,
+        "fits": true,
+        "beatSeconds": 5
+      }
+    },
+    {
+      "key": "line.boss.verify.0",
+      "kind": "line",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "f8324df3ee5ed4adfbeddedd85e0230c44c2ecd86e51a78f32bf85f9caf7b203",
+      "filed": "2026-11-25T18:05:56.274Z",
+      "text": "Not a robot, / it claims. / We will see.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1,
+        "sent": "Not a robot, <break time=\"1.0s\" /> it claims. <break time=\"1.0s\" /> We will see.",
+        "call": 28
+      },
+      "askedSeconds": null,
+      "cost": "26",
+      "measured": {
+        "seconds": 5.387,
+        "start": 0.028,
+        "end": 5.25,
+        "peakDb": -3.21,
+        "rmsDb": -24.16,
+        "lufs": -20.92,
+        "truePeakDb": -3.09,
+        "low": 0.453,
+        "mid": 0.222,
+        "high": 0.325,
+        "tailDb": -17.28,
+        "hits": 4,
+        "hitsAt": [
+          {
+            "start": 0.034,
+            "end": 1.04,
+            "peakDb": -8.06
+          },
+          {
+            "start": 2.196,
+            "end": 2.29,
+            "peakDb": -11.75
+          },
+          {
+            "start": 2.424,
+            "end": 3.094,
+            "peakDb": -4.25
+          },
+          {
+            "start": 4.322,
+            "end": 5.204,
+            "peakDb": -3.21
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 0 whole, 2 void",
+        "asks": 2,
+        "whole": 0,
+        "transcript": "Not a robot. It claims. We will see.",
+        "transcripts": [
+          "Not a robot. It claims. We will see.",
+          "Not a robot. It claims. We will see."
+        ],
+        "transcriptAgreed": "2 of 2",
+        "attitudes": [],
+        "toneHeard": false,
+        "toneClaims": {
+          "whisper": "0 yes, 2 no",
+          "laugh": "0 yes, 2 no",
+          "warmth": "0 yes, 2 no",
+          "excitement": "0 yes, 2 no",
+          "unimpressedAndSmug": "2 yes, 0 no"
+        },
+        "claimedFromSound": 0,
+        "whisper": null,
+        "laugh": null,
+        "warmth": null,
+        "excitement": null,
+        "unimpressedAndSmug": null,
+        "basis": [
+          "The text expresses overt doubt and challenges a claim, which inherently suggests a cynical, suspicious, and unimpressed tone.",
+          "The analysis rests on the textual cues 'It claims' and 'We will see', which inherently suggest a cold, skeptical, and cynical tone rather than warmth or excitement."
+        ]
+      },
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 8,
+        "seconds": 5.222,
+        "wordsPerSecond": 1.532,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 2,
+        "pausesFound": 2,
+        "pauses": [
+          1.144,
+          1.214
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": 8.7,
+        "fits": true,
+        "beatSeconds": 5
+      }
+    },
+    {
+      "key": "line.boss.slabs.0",
+      "kind": "line",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "30ee9a63a040b554afff9314d7b0152d1e931def07cc22ed34159849b35e17e9",
+      "filed": "2026-11-25T18:05:57.883Z",
+      "text": "The submit button fights back. / Even it / does not want this job.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1.4,
+        "sent": "The submit button fights back. <break time=\"1.4s\" /> Even it <break time=\"1.4s\" /> does not want this job.",
+        "call": 29
+      },
+      "askedSeconds": null,
+      "cost": "37",
+      "measured": {
+        "seconds": 8.313,
+        "start": 0.036,
+        "end": 8.074,
+        "peakDb": -2.71,
+        "rmsDb": -22.02,
+        "lufs": -19.59,
+        "truePeakDb": -2.71,
+        "low": 0.511,
+        "mid": 0.224,
+        "high": 0.265,
+        "tailDb": -21,
+        "hits": 13,
+        "hitsAt": [
+          {
+            "start": 0.04,
+            "end": 0.684,
+            "peakDb": -2.71
+          },
+          {
+            "start": 0.862,
+            "end": 0.99,
+            "peakDb": -8.3
+          },
+          {
+            "start": 1.098,
+            "end": 1.596,
+            "peakDb": -8.68
+          },
+          {
+            "start": 1.662,
+            "end": 1.776,
+            "peakDb": -3.55
+          },
+          {
+            "start": 1.872,
+            "end": 2.172,
+            "peakDb": -9.5
+          },
+          {
+            "start": 2.294,
+            "end": 2.364,
+            "peakDb": -28
+          },
+          {
+            "start": 3.934,
+            "end": 4.458,
+            "peakDb": -9.61
+          },
+          {
+            "start": 4.58,
+            "end": 4.698,
+            "peakDb": -10.99
+          },
+          {
+            "start": 6.238,
+            "end": 6.652,
+            "peakDb": -3.91
+          },
+          {
+            "start": 6.722,
+            "end": 7.01,
+            "peakDb": -8.11
+          },
+          {
+            "start": 7.166,
+            "end": 7.408,
+            "peakDb": -4.03
+          },
+          {
+            "start": 7.488,
+            "end": 7.846,
+            "peakDb": -9.84
+          },
+          {
+            "start": 7.982,
+            "end": 8.04,
+            "peakDb": -22.39
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "transcript": "The submit button fights back. Even it does not want this job.",
+        "transcripts": [
+          "The submit button fights back. Even it does not want this job.",
+          "The submit button fights back. Even it does not want this job."
+        ],
+        "transcriptAgreed": "2 of 2",
+        "attitudes": [
+          "cynical and deadpan",
+          "cynical, deadpan, and weary"
+        ],
+        "toneHeard": false,
+        "toneClaims": {
+          "whisper": "0 yes, 2 no",
+          "laugh": "0 yes, 2 no",
+          "warmth": "0 yes, 2 no",
+          "excitement": "0 yes, 2 no",
+          "unimpressedAndSmug": "2 yes, 0 no"
+        },
+        "claimedFromSound": 2,
+        "whisper": null,
+        "laugh": null,
+        "warmth": null,
+        "excitement": null,
+        "unimpressedAndSmug": null,
+        "basis": [
+          "The speaker delivers the lines with a slow, flat, and cynical tone, completely lacking in warmth, excitement, laughter, or whispering.",
+          "The speaker delivers the lines with a flat, deliberate, and low-energy intonation that highlights a cynical, unimpressed demeanor without any warmth or excitement."
+        ]
+      },
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 12,
+        "seconds": 8.038,
+        "wordsPerSecond": 1.493,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 2,
+        "pausesFound": 2,
+        "pauses": [
+          1.534,
+          1.53
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": 12.7,
+        "fits": true,
+        "beatSeconds": 7
+      }
+    },
+    {
+      "key": "line.boss.lastStand.0",
+      "kind": "line",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "4afcbe7a8a733548139e4afae0fb39f274c969042b326d3b515ee2a3923d20d8",
+      "filed": "2026-11-25T18:05:58.979Z",
+      "text": "Session expired. / A classic.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1,
+        "sent": "Session expired. <break time=\"1.0s\" /> A classic.",
+        "call": 30
+      },
+      "askedSeconds": null,
+      "cost": "17",
+      "measured": {
+        "seconds": 3.669,
+        "start": 0,
+        "end": 3.512,
+        "peakDb": -4.29,
+        "rmsDb": -24.29,
+        "lufs": -20.92,
+        "truePeakDb": -4.29,
+        "low": 0.287,
+        "mid": 0.199,
+        "high": 0.514,
+        "tailDb": -29.78,
+        "hits": 5,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.782,
+            "peakDb": -4.29
+          },
+          {
+            "start": 0.85,
+            "end": 1.356,
+            "peakDb": -13.72
+          },
+          {
+            "start": 2.572,
+            "end": 2.624,
+            "peakDb": -8.87
+          },
+          {
+            "start": 2.706,
+            "end": 3.252,
+            "peakDb": -4.52
+          },
+          {
+            "start": 3.372,
+            "end": 3.458,
+            "peakDb": -12.26
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 0 whole, 2 void",
+        "asks": 2,
+        "whole": 0,
+        "transcript": "Session expired. A classic.",
+        "transcripts": [
+          "Session expired. A classic.",
+          "Session expired. A classic."
+        ],
+        "transcriptAgreed": "2 of 2",
+        "attitudes": [],
+        "toneHeard": false,
+        "toneClaims": {
+          "whisper": "0 yes, 2 no",
+          "laugh": "0 yes, 2 no",
+          "warmth": "0 yes, 2 no",
+          "excitement": "0 yes, 2 no",
+          "unimpressedAndSmug": "2 yes, 0 no"
+        },
+        "claimedFromSound": 0,
+        "whisper": null,
+        "laugh": null,
+        "warmth": null,
+        "excitement": null,
+        "unimpressedAndSmug": null,
+        "basis": [
+          "The brief, sarcastic remark about a technical annoyance implies a flat, deadpan delivery lacking any warmth or excitement.",
+          "The brief, sarcastic reaction to a common technical annoyance implies a flat, cynical tone lacking any genuine warmth or excitement."
+        ]
+      },
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 4,
+        "seconds": 3.512,
+        "wordsPerSecond": 1.139,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 1,
+        "pausesFound": 1,
+        "pauses": [
+          1.188
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": 11.7,
+        "fits": true,
+        "beatSeconds": 5
+      }
+    },
+    {
+      "key": "line.decision.letter.0",
+      "kind": "line",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "22b99e3296eda6596f4e3092bc0e96c331d6dbe334b9adc251440f8f7cf0cdb6",
+      "filed": "2026-11-25T18:06:00.204Z",
+      "text": "Rejected. / In under a second.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1.1,
+        "sent": "Rejected. <break time=\"1.1s\" /> In under a second.",
+        "call": 31
+      },
+      "askedSeconds": null,
+      "cost": "17",
+      "measured": {
+        "seconds": 3.529,
+        "start": 0.026,
+        "end": 3.5,
+        "peakDb": -3.59,
+        "rmsDb": -21.39,
+        "lufs": -18.33,
+        "truePeakDb": -3.56,
+        "low": 0.427,
+        "mid": 0.387,
+        "high": 0.185,
+        "tailDb": -26.9,
+        "hits": 3,
+        "hitsAt": [
+          {
+            "start": 0.03,
+            "end": 0.442,
+            "peakDb": -4.87
+          },
+          {
+            "start": 0.59,
+            "end": 0.884,
+            "peakDb": -13.47
+          },
+          {
+            "start": 2.154,
+            "end": 3.466,
+            "peakDb": -3.59
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 1 whole, 1 void",
+        "asks": 2,
+        "whole": 1,
+        "transcript": "rejected In under a second.",
+        "transcripts": [
+          "rejected In under a second.",
+          "Rejected. In under a second."
+        ],
+        "transcriptAgreed": "2 of 2",
+        "attitudes": [
+          "dismissive and smug"
+        ],
+        "toneHeard": false,
+        "toneClaims": {
+          "whisper": "0 yes, 2 no",
+          "laugh": "0 yes, 2 no",
+          "warmth": "0 yes, 2 no",
+          "excitement": "0 yes, 2 no",
+          "unimpressedAndSmug": "2 yes, 0 no"
+        },
+        "claimedFromSound": 1,
+        "whisper": null,
+        "laugh": null,
+        "warmth": null,
+        "excitement": null,
+        "unimpressedAndSmug": null,
+        "basis": [
+          "The brevity and semantic content of the phrase strongly imply a smug, unimpressed, and dismissive delivery lacking warmth or excitement.",
+          "The speaker's flat, brief delivery and emphasis on the speed of the rejection project a cynical and arrogant demeanor."
+        ]
+      },
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 5,
+        "seconds": 3.474,
+        "wordsPerSecond": 1.439,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 1,
+        "pausesFound": 1,
+        "pauses": [
+          1.252
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": 3.7,
+        "fits": true,
+        "beatSeconds": 4
+      }
+    },
+    {
+      "key": "line.decision.metrics.0",
+      "kind": "line",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "f9a3550ca60e297a86e569cf8ea3fa4d316387431e3304ced75398c3f208ddb9",
+      "filed": "2026-11-25T18:06:01.421Z",
+      "text": "It will apply again tomorrow. / They always do.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1.9,
+        "sent": "It will apply again tomorrow. <break time=\"1.9s\" /> They always do.",
+        "call": 32
+      },
+      "askedSeconds": null,
+      "cost": "25",
+      "measured": {
+        "seconds": 5.898,
+        "start": 0.016,
+        "end": 5.758,
+        "peakDb": -4.05,
+        "rmsDb": -22.66,
+        "lufs": -21.69,
+        "truePeakDb": -4.05,
+        "low": 0.702,
+        "mid": 0.22,
+        "high": 0.078,
+        "tailDb": -18.6,
+        "hits": 3,
+        "hitsAt": [
+          {
+            "start": 0.026,
+            "end": 0.506,
+            "peakDb": -4.05
+          },
+          {
+            "start": 0.574,
+            "end": 2.302,
+            "peakDb": -5.48
+          },
+          {
+            "start": 4.354,
+            "end": 5.694,
+            "peakDb": -5.72
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "transcript": "It will apply again tomorrow. They always do.",
+        "transcripts": [
+          "It will apply again tomorrow. They always do.",
+          "It will apply again tomorrow. They always do."
+        ],
+        "transcriptAgreed": "2 of 2",
+        "attitudes": [
+          "dismissive and cynical",
+          "cynical and resigned"
+        ],
+        "toneHeard": false,
+        "toneClaims": {
+          "whisper": "0 yes, 2 no",
+          "laugh": "0 yes, 2 no",
+          "warmth": "0 yes, 2 no",
+          "excitement": "0 yes, 2 no",
+          "unimpressedAndSmug": "2 yes, 0 no"
+        },
+        "claimedFromSound": 2,
+        "whisper": null,
+        "laugh": null,
+        "warmth": null,
+        "excitement": null,
+        "unimpressedAndSmug": null,
+        "basis": [
+          "The flat, downward inflection and slow, deliberate pacing convey a sense of superiority and a lack of enthusiasm.",
+          "The confident, flat delivery of the lines suggests a knowing lack of surprise and a hint of superiority without any warmth or excitement."
+        ]
+      },
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 8,
+        "seconds": 5.742,
+        "wordsPerSecond": 1.393,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 1,
+        "pausesFound": 1,
+        "pauses": [
+          2.046
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": null,
+        "fits": true,
+        "beatSeconds": 4
+      }
+    }
+  ]
+}

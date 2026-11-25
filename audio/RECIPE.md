@@ -4,7 +4,7 @@ Every sound of the site and the film is made the same way. This file is its log.
 
 ## The way a sound is made
 
-1. A take comes from the sound tool as a file. `npm run sound -- --cue ID --file F` measures it and files it under `out/work/audio/takes/`. A line of the narrator: `--line BEAT:N`.
+1. A take comes from the sound tool as a file. `npm run sound -- --cue ID --file F` measures it and files it under `out/work/audio/takes/`. A cue with variants: `--cue ID --variant N`. A line of the narrator: `--line BEAT:N`. Every take is paid for through `npm run credits` and no other way: `audio/CREDITS.md` is its ledger and `audio/PROMPTS.json` holds the prompt of every cue.
 2. A listener answers the questions about it. The answers go in with `--listener answers.json`.
 3. `npm run sound -- --cue ID --keep` runs the one chain and writes the kept sound to `audio/kept/` with its record beside it.
 4. `npm run sound -- --pack` builds what the site ships. `npm run mix` lays the film.
@@ -34,7 +34,7 @@ Trim the silence, a short fade in, a fade out, a low cut, then the level of the 
 | Hold music | peak -14 dB |
 | The narrator | -18 LUFS |
 
-A loop is crossfaded end into start, and its seam is checked by number. Variants are cut apart from one take.
+A loop is crossfaded end into start, and its seam is checked by number. A variant is its own call to the sound tool and its own take, made with the cue's prompt and filed with `--variant N` (`kit/addenda/001-sound-budget-and-narrator.md`). Only the stand-in fixtures still cut one file apart.
 
 ## The line that ends every effect prompt
 
@@ -42,3 +42,204 @@ close and dry, recorded in a quiet room, real materials, no music, no melody, no
 
 For hold music the words about music are left out.
 
+## Takes
+
+### line.marketing.stroll.0
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:05:35.681Z | 5.341 s | -1.17 dB | -21.23 LUFS | 5 | 27 | no |  |
+
+Words: Here we find / the applicant. / Rent is due.
+
+### line.marketing.perks.0
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:05:37.060Z | 6.92 s | -1.88 dB | -19.14 LUFS | 6 | 30 | no |  |
+
+Words: It spots unlimited PTO. / Poor thing / believes it.
+
+### line.step1.firstName.0
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:05:38.537Z | 5.433 s | -2.67 dB | -20.28 LUFS | 3 | 29 | no |  |
+
+Words: First name. / Under fire. / Standard onboarding.
+
+### line.step1.firstName.1
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:05:39.807Z | 5.387 s | -1.96 dB | -18.9 LUFS | 4 | 25 | no |  |
+
+Words: Hit. / It keeps typing. / It has bills.
+
+### line.step1.email.0
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:05:41.273Z | 9.706 s | -3.98 dB | -21.68 LUFS | 8 | 40 | no |  |
+
+Words: A valid email. / Rejected. / The system / is working as designed.
+
+### line.step1.tug.0
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:05:42.706Z | 8.081 s | -2.15 dB | -19.03 LUFS | 5 | 35 | no |  |
+
+Words: It fights for the resume. / Two pages. / One of them is true.
+
+### line.step2.dial.0
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:05:44.408Z | 6.037 s | -3.57 dB | -19.67 LUFS | 4 | 31 | no |  |
+
+Words: A rotary phone. / The applicant / has never seen one.
+
+### line.step2.crank.0
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:05:45.642Z | 6.084 s | -4.63 dB | -19.9 LUFS | 5 | 29 | no |  |
+
+Words: Volume. / All the way up. / It will regret that.
+
+### line.pinball.seal.0
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:05:47.066Z | 6.92 s | -4.3 dB | -18.78 LUFS | 6 | 32 | no |  |
+
+Words: The skills assessment. / No skills / will be assessed.
+
+### line.pinball.launch.0
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:05:48.292Z | 3.251 s | -3.42 dB | -20.26 LUFS | 3 | 14 | no |  |
+
+Words: A career. / In reverse.
+
+### line.pinball.lobby.0
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:05:49.565Z | 3.808 s | -2.92 dB | -19 LUFS | 4 | 19 | no |  |
+
+Words: Corporate headquarters. / So close.
+
+### line.pinball.coffee.0
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:05:50.805Z | 4.087 s | -2.83 dB | -20.86 LUFS | 3 | 17 | no |  |
+
+Words: It runs on coffee / and fear.
+
+### line.pinball.replyAll.0
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:05:52.358Z | 3.111 s | -5.26 dB | -26.63 LUFS | 4 | 15 | no |  |
+
+Words: Someone / hit reply all.
+
+### line.pinball.fired.0
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:05:53.597Z | 5.759 s | -2.61 dB | -22.28 LUFS | 3 | 28 | no |  |
+
+Words: Fired. / Before it was hired. / A new record.
+
+### line.pinball.drain.0
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:05:55.128Z | 4.783 s | -3.96 dB | -20.2 LUFS | 2 | 23 | no |  |
+
+Words: The unemployment office. / It knows the way.
+
+### line.boss.verify.0
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:05:56.274Z | 5.387 s | -3.21 dB | -20.92 LUFS | 4 | 26 | no |  |
+
+Words: Not a robot, / it claims. / We will see.
+
+### line.boss.slabs.0
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:05:57.883Z | 8.313 s | -2.71 dB | -19.59 LUFS | 13 | 37 | no |  |
+
+Words: The submit button fights back. / Even it / does not want this job.
+
+### line.boss.lastStand.0
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:05:58.979Z | 3.669 s | -4.29 dB | -20.92 LUFS | 5 | 17 | no |  |
+
+Words: Session expired. / A classic.
+
+### line.decision.letter.0
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:06:00.204Z | 3.529 s | -3.59 dB | -18.33 LUFS | 3 | 17 | no |  |
+
+Words: Rejected. / In under a second.
+
+### line.decision.metrics.0
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T18:06:01.421Z | 5.898 s | -4.05 dB | -21.69 LUFS | 3 | 25 | no |  |
+
+Words: It will apply again tomorrow. / They always do.
