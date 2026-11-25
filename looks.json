@@ -1,35 +1,35 @@
 {
   "folder": "lights",
-  "pushed": "2026-11-25T17:19:48.353Z",
-  "commit": "57bc1ed2d662a76a99f774e002613bc0d3fb2474",
+  "pushed": "2026-11-25T17:39:18.167Z",
+  "commit": "79de83682d4e6c7234bbcaca7dbe2f6b77369862",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key tier-office: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-25T17:19:46.555Z",
-      "by": "lights",
-      "from": "out/work/compare/compare-tier-office.jpg"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "Table wide beside the approved image, every owner's part merged: pools at each lamp, coloured tiers, dark surround inside the frame",
-      "time": "2026-11-25T17:19:46.817Z",
+      "caption": "Table wide beside the approved image, every part in: each tier in its own colour of light, pools at the lamps",
+      "time": "2026-11-25T17:39:16.174Z",
       "by": "lights",
       "from": "out/work/compare/compare-table-wide.jpg"
     },
     {
-      "file": "look-3.jpg",
-      "caption": "Street beside the approved image: dusk rail lamps, sodium lane lamps, red and blue beacons, lit windows",
-      "time": "2026-11-25T17:19:47.059Z",
+      "file": "look-2.jpg",
+      "caption": "Last save beside the approved image: a lamp over each bat, lit inserts throw light, beacons and windows light the street",
+      "time": "2026-11-25T17:39:16.424Z",
       "by": "lights",
-      "from": "out/work/compare/compare-tier-street.jpg"
+      "from": "out/work/compare/compare-last-save.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Lobby doors beside the approved image: opal globes, paler window light on the steel of the tower",
+      "time": "2026-11-25T17:39:16.669Z",
+      "by": "lights",
+      "from": "out/work/compare/compare-lobby-doors.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Office beside the approved image: green white rail lamps, bumper lamps, warm lane lamps, clear tube not washed out",
-      "time": "2026-11-25T17:19:47.304Z",
+      "caption": "Corporate proof sheet: all groups, then each group alone, last the flash",
+      "time": "2026-11-25T17:39:16.921Z",
       "by": "lights",
-      "from": "out/work/compare/compare-tier-office.jpg"
+      "from": "out/work/lights/sheet-corporate.jpg"
     }
   ]
 }
