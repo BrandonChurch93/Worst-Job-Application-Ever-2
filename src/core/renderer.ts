@@ -273,7 +273,7 @@ export class LightRig {
     lightLaw.envDiffuse.value = look.envDiffuse
     lightLaw.keySpecular.value = look.keySpecular
     lightLaw.cap.value.set(look.glow.surfaceKnee, look.glow.surfaceMax)
-    lightLaw.shade.value.set(look.studio.shadeKey, look.studio.shadeFill)
+    lightLaw.shade.value.set(look.studio.shadeKey, look.studio.shadeFill, look.studio.floorKept)
     const taps = filterTaps(alone ? 1 : s.count, shadowFilter.tapsPerPicture, shadowFilter.minTaps, shadowFilter.blurTaps)
     const code = taps + 32 * (alone ? 1 : s.count)
     this.key.shadow.intensity = code

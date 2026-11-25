@@ -61,7 +61,6 @@ export interface Kit {
   turned: THREE.MeshPhysicalMaterial
   barrel: THREE.MeshPhysicalMaterial
   bed: THREE.MeshPhysicalMaterial
-  field: THREE.MeshPhysicalMaterial
   cap: THREE.MeshPhysicalMaterial
   orange: THREE.MeshPhysicalMaterial
   seat: THREE.MeshPhysicalMaterial
@@ -97,11 +96,9 @@ export function kit(): Kit {
   const cap = studio(
     new THREE.MeshPhysicalMaterial({ color: srgb(0xe6dfd2), roughness: 0.56, metalness: 0, normalMap: speckle, normalScale: new THREE.Vector2(0.12, 0.12), specularIntensity: 0.55, clearcoat: 0.1, clearcoatRoughness: 0.5 })
   )
-  const field = studio(cap.clone())
-  field.vertexColors = true
   const seat = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x8a8782), roughness: 0.78, metalness: 0, specularIntensity: 0.3 }))
   const dark = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x201f1e), roughness: 0.55, metalness: 0.2, specularIntensity: 0.5 }))
-  made = { brushed, deck, turned, barrel, bed, field, cap, orange: m.orange, seat, dark }
+  made = { brushed, deck, turned, barrel, bed, cap, orange: m.orange, seat, dark }
   return made
 }
 
