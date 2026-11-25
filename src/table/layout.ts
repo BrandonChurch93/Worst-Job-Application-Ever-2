@@ -91,24 +91,20 @@ const dropBank = (k: number, id: string, u: number, v0: number, v1: number): voi
 }
 
 const LADDER: P3[] = [[12.3, 5.6, 0], [13.5, 5.1, 0.6], [15.2, 4.75, 1.2], [16.1, 5.1, 1.4], [15.9, 5.7, 1.2], [14.6, 5.75, 0.7], [13.0, 5.9, 0.2], [12.3, 6.0, 0]]
-const HIGHWAY: P3[] = [[6.9, 4.9, 0], [7.6, 4.2, 0.8], [10, 3.6, 1.5], [12.6, 3.9, 1.6], [14.6, 4.3, 1.7]]
-const GARAGE: V = [15.5, 5.0]
+const HIGHWAY: P3[] = [[6.9, 4.9, 0], [7.6, 4.2, 1.0], [9.0, 3.7, 2.2], [10.6, 3.5, 3.4], [12.2, 3.6, 4.5], [13.4, 3.95, 5.3], [14.1, 4.45, 5.65], [14.45, 5.0, 5.7]]
+const GARAGE: V = [15.2, 5.45]
+export const SPIRAL = { c: GARAGE, r: 0.75, pitch: t.minClearanceBalls + 0.05, under: t.minClearanceBalls + 0.05, tail: 0.2, perTurn: 24, frame: 1.525 }
+export const SPIRAL_TOP = SPIRAL.under + SPIRAL.tail + t.spiralTurns * SPIRAL.pitch
 
 function spiral(): P3[] {
-  const out: P3[] = []
-  const c = 0.8660254037844386
-  const s = 0.5
-  let dx = -0.9
-  let dy = -0.7
-  const steps = t.spiralTurns * 12
+  const out: P3[] = [HIGHWAY[HIGHWAY.length - 1]!]
+  const steps = t.spiralTurns * SPIRAL.perTurn
+  const drop = t.spiralTurns * SPIRAL.pitch
   for (let i = 0; i <= steps; i++) {
-    out.push([GARAGE[0] + dx, GARAGE[1] + dy, 1.7 - (1.5 * i) / steps])
-    const nx = dx * c - dy * s
-    const ny = dx * s + dy * c
-    dx = nx
-    dy = ny
+    const a = (i / SPIRAL.perTurn) * 2 * Math.PI
+    out.push([GARAGE[0] - SPIRAL.r * Math.cos(a), GARAGE[1] + SPIRAL.r * Math.sin(a), SPIRAL_TOP - (drop * i) / steps])
   }
-  out.push([14.65, 6.2, 0.1], [14.65, 6.6, 0])
+  out.push([14.5, 5.9, SPIRAL.under + SPIRAL.tail / 2], [14.6, 6.3, SPIRAL.under], [14.6, 6.7, 0])
   return out
 }
 
@@ -221,7 +217,7 @@ for (let k = 0; k < 3; k++) {
   dropBank(k, 'bank.drop', 4.25, 3.8, 4.9)
   model(k, 'police', 'model-police', [14.25, 2.3, 2.5, 1.5], 1.5, 'glass', { sign: 'copy:step3.table.buildings.police' })
   targets.push({ id: 'street.spinner', tier: k, kind: 'spinner', box: [13.2, TIER_Y[k]! + 2.95, 0.9, 0.1], n: [0, 1], index: targets.length })
-  model(k, 'garage', 'model-garage', [GARAGE[0] - 1.1, GARAGE[1] - 1.1, 2.2, 2.2], 1.0, 'raised', { solid: false, round: true, base: 1.3 })
+  model(k, 'garage', 'model-garage', [GARAGE[0] - SPIRAL.frame, GARAGE[1] - SPIRAL.frame, 2 * SPIRAL.frame, 2 * SPIRAL.frame], SPIRAL_TOP + 0.2 - SPIRAL.under, 'raised', { solid: false, round: true, base: SPIRAL.under })
   holds.push({ id: 'street.firehouse', tier: k, kind: 'scoop', c: at(k, 5.05, 4.35), r: 0.5, releases: true })
   holds.push({ id: 'street.mom', tier: k, kind: 'hatch', c: at(k, 3.95, 9.3), r: 0.5, releases: true })
   model(k, 'mom', 'model-moms', [4.8, 9.25, 1.0, 0.8], 0.8, 'raised', { solid: false, sign: 'copy:step3.table.buildings.outlane', signPx: 16 })
@@ -231,11 +227,11 @@ for (let k = 0; k < 3; k++) {
   }
   flats.push({ id: 'street.road', tier: k, part: 'tier-art', box: [9.6, TIER_Y[k]! + 0.3, 0.8, 8.2], tone: 'dark' })
   rails.push({ id: 'highway', from: 'street.highway.track', to: 'spiral', points: HIGHWAY.map((p) => [p[0], TIER_Y[k]! + p[1], p[2] + floorZ(k)] as P3), speed: 6, out: [0, 0] })
-  rails.push({ id: 'spiral', from: 'highway', to: 'street.inlane.right', points: spiral().map((p) => [p[0], TIER_Y[k]! + p[1], p[2] + floorZ(k)] as P3), speed: 9, out: [0, 3] })
+  rails.push({ id: 'spiral', from: 'highway', to: 'street.inlane.right', points: spiral().map((p) => [p[0], TIER_Y[k]! + p[1], p[2] + floorZ(k)] as P3), speed: 8, out: [0, 3] })
   open(k, 'firehouse.foot', [4.45, 4.9], [OUTLANE.inner, 6.2])
   open(k, 'police.foot', [14.25, 3.8], [13.95, 5.4])
   open(k, 'highway.track', [6.9, 4.275], [6.9, 5.525])
-  open(k, 'spiral.turn', [GARAGE[0] - 1.525, GARAGE[1]], [GARAGE[0] - 0.275, GARAGE[1]])
+  open(k, 'spiral.turn', [GARAGE[0] - SPIRAL.r - t.minClearanceBalls / 2, GARAGE[1]], [GARAGE[0] - SPIRAL.r + t.minClearanceBalls / 2, GARAGE[1]])
   open(k, 'chute.mouth', [MID - 0.75, 0.3], [MID + 0.75, 0.3])
   open(k, 'mom.hatch', [COLS.left, 9.3], [OUTLANE.inner, 9.3])
 }
@@ -280,6 +276,8 @@ export const table: Table = {
     'Outlanes are 1.4 balls wide and end in a hole that leads through the cross rail into the tier exit. The lower corners are solid shoulders and carry the display, the houses and the card.',
     'Bumpers are 1.5 balls across, set 3.0 and 2.83 balls apart, so every gap between them clears 1.25 balls.',
     'The garage, the ladder and the highway stand above the floor on supports: a ball on the floor passes under them.',
+    'The garage spiral turns table.spiralTurns times round a path 0.75 balls in radius, each turn 1.3 balls under the one above. Its top is 5.4 balls above the street floor and its open end 1.3 balls above the right inlane, where the ball drops off. The round frame of the garage stands outside the trough, 1.525 balls from its centre, clear of the police station and of the right wall.',
+    'The highway climbs from its flap on the street floor to 5.7 balls, turns down the page and ends over the top of the spiral.',
     'Gravity along the floor is 29.4 balls a second squared: a rolling 27 mm ball on a slope of table.slopeDeg.',
     'The apron is 2 balls deep. The loader port and the outlet port are 330 px rings with a 220 px cup.'
   ]
