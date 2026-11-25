@@ -99,7 +99,7 @@ class Limb {
       px = -px
       py = -py
     }
-    const sag = Math.sqrt((3 * d * Math.max(0, length - d)) / 8) * (1 - 0.8 * strain) * Math.min(1, Math.abs(want) * 3) + 0.035 * d
+    const sag = Math.sqrt((3 * d * Math.max(0, length - d)) / 8) * (1 - 0.5 * strain) * Math.min(1, Math.abs(want) * 3) + 0.035 * d
     const out = (sag * (1 + ARM.elbow)) / ARM.elbow
     this.c.set((from.x + to.x) / 2 + px * out, (from.y + to.y) / 2 + py * out, (from.z + to.z) / 2 + 1 + sag * 0.12)
     // An arm whose hand is on the far side of the body goes under it and comes out at the far edge: no arm lies over the white face.
