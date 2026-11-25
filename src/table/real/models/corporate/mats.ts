@@ -35,9 +35,9 @@ export const TONE = {
   rubber: hex(0x1b1b1d),
   marble: hex(0xf7f6f2),
   vein: hex(0x8f9296),
-  wood: hex(0x4a2a17),
-  woodLight: hex(0x6b3d20),
-  leather: hex(0x1c1d20),
+  wood: hex(0x6b3c20),
+  woodLight: hex(0xb08a4e),
+  leather: hex(0x2c2e33),
   paper: hex(0xf2df63),
   paperShade: hex(0xd9c13f),
   folder: hex(0x243a5c),
@@ -100,13 +100,13 @@ export function matsOf(z: Zone): Mats {
   glow.userData.lit = true
   lit(glow, z)
   glow.name = `corporate.glow.${z.id}`
-  const clear = studio(new THREE.MeshPhysicalMaterial({ color: 0x77858a, roughness: 0.05, metalness: 0, transparent: true, opacity: 0.03, depthWrite: false, specularIntensity: 1, clearcoat: 1, clearcoatRoughness: 0.03, side: THREE.DoubleSide, forceSinglePass: true }))
+  const clear = studio(new THREE.MeshPhysicalMaterial({ color: 0x77858a, roughness: 0.05, metalness: 0, transparent: true, opacity: 0.05, depthWrite: false, specularIntensity: 1, clearcoat: 1, clearcoatRoughness: 0.03, side: THREE.DoubleSide, forceSinglePass: true }))
   const room2 = clear.onBeforeCompile
   clear.onBeforeCompile = (shader, renderer) => {
     room2.call(clear, shader, renderer)
     shader.fragmentShader = shader.fragmentShader.replace(
       '#include <tonemapping_fragment>',
-      'float wjcEdge = pow( 1.0 - abs( dot( normalize( vViewPosition ), normalize( normal ) ) ), 3.0 );\ngl_FragColor.a = clamp( diffuseColor.a + wjcEdge * 0.6 + dot( outgoingLight, vec3( 0.3333 ) ) * 0.2, 0.0, 1.0 );\n#include <tonemapping_fragment>'
+      'float wjcEdge = pow( 1.0 - abs( dot( normalize( vViewPosition ), normalize( normal ) ) ), 3.0 );\ngl_FragColor.a = clamp( diffuseColor.a + wjcEdge * 0.6 + dot( outgoingLight, vec3( 0.3333 ) ) * 0.3, 0.0, 1.0 );\n#include <tonemapping_fragment>'
     )
   }
   const key2 = clear.customProgramCacheKey

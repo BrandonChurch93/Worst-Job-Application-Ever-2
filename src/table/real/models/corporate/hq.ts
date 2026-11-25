@@ -3,6 +3,7 @@ import type { RealContext } from '../../../../real/types'
 import { Random } from '../../../../core/random'
 import { DOORS } from '../../../draw'
 import { BALL, table } from '../../../layout'
+import { colours } from '../../lights'
 import { localBalls, type Zone } from '../../zone'
 import { Geo, type RGB, type V2, type V3 } from './geo'
 import { FINISH, TONE, drop as free, fin, hex, matsOf, mesh, moved, place, poseGlow, screw, shade, signBoard, smooth, textAt } from './mats'
@@ -10,11 +11,13 @@ import { FINISH, TONE, drop as free, fin, hex, matsOf, mesh, moved, place, poseG
 const SEED = 20261125
 const FLOOR = 20.5
 const COL = 17
-const COOL: RGB = [1, 1.22, 1.8]
+const WHITE: RGB = [1, 0.9, 0.72]
+const COOL: RGB = [WHITE[0] / colours.CORPORATE_WINDOW[0], WHITE[1] / colours.CORPORATE_WINDOW[1], WHITE[2] / colours.CORPORATE_WINDOW[2]]
 const STEEL = hex(0x93a5c4)
 const STEEL_DARK = hex(0x6b7a94)
 const PORTAL = hex(0x8f7748)
-const warmLamp = (k: number): RGB => [k, 1.12 * k, 1.42 * k]
+const ROOF = hex(0x2c323c)
+const warmLamp = (k: number): RGB => [COOL[0] * k, COOL[1] * k * 0.92, COOL[2] * k * 0.79]
 const lamp = (k: number, blue = 1): RGB => [COOL[0] * k, COOL[1] * k, COOL[2] * k * blue]
 const LEAF = { thick: 4.8, lift: 1.5, open: 1.53, slam: 0.09 }
 const VEST = { deep: 96, out: 5.8 }
@@ -271,7 +274,7 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
   const coping = (hx: number, yb: number, zz: number): void => {
     moved(S, place(cx, 0, 0), () => {
       fin(S, FINISH.brushed, () => S.box(-hx - 2.4, hx + 2.4, F - 2.4, yb + 2.4, zz - 2.2, zz + 2.2, STEEL, { bevel: 1.2, bottom: true }))
-      fin(S, FINISH.brushed, () => S.box(-hx + 5, hx - 5, F + 5, yb - 5, zz + 2.2, zz + 2.7, STEEL_DARK))
+      fin(S, FINISH.satin, () => S.box(-hx + 5, hx - 5, F + 5, yb - 5, zz + 2.2, zz + 2.7, ROOF))
       fin(S, FINISH.polished, () => {
         S.box(-hx + 2.6, hx - 2.6, F + 2.6, F + 4, zz + 2.2, zz + 3.2, TONE.gold)
         S.box(-hx + 2.6, hx - 2.6, yb - 4, yb - 2.6, zz + 2.2, zz + 3.2, TONE.gold)
@@ -280,7 +283,29 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
       })
     })
   }
+  const paving = (hx: number, yb: number, zz: number, hole: number, holeY: number): void => {
+    moved(W, place(cx, 0, 0), () => {
+      fin(W, FINISH.satin, () => {
+        const line = shade(ROOF, 1.5)
+        for (let x = -hx + 26; x < hx - 20; x += 24) {
+          if (Math.abs(x) < hole) {
+            W.box(x - 0.5, x + 0.5, F + 6, holeY, zz + 2.7, zz + 2.85, line)
+            continue
+          }
+          W.box(x - 0.5, x + 0.5, F + 6, yb - 6, zz + 2.7, zz + 2.85, line)
+        }
+        for (let y = F + 26; y < yb - 20; y += 24) {
+          if (y > holeY) {
+            for (const sx of [-1, 1]) W.box(sx > 0 ? hole : -hx + 6, sx > 0 ? hx - 6 : -hole, y - 0.5, y + 0.5, zz + 2.7, zz + 2.85, line)
+            continue
+          }
+          W.box(-hx + 6, hx - 6, y - 0.5, y + 0.5, zz + 2.7, zz + 2.85, line)
+        }
+      })
+    })
+  }
   coping(HW, B, pz1)
+  paving(HW, B, pz1, HW - 16, F + 8)
   for (const st of steps) {
     moved(S, place(cx, 0, 0), () => fin(S, FINISH.satin, () => S.box(-st.hx + 0.6, st.hx - 0.6, F + 0.6, st.yb, st.z0, st.z1, TONE.graphite)))
     curtain(W, G, [X(-st.hx), F], [X(st.hx), F], st.z0 + 2.2, st.z1 - 2.2, rnd, { gold: 5, rise: st.rise, fin: 3.6 })
@@ -288,6 +313,9 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
     curtain(W, G, [X(-st.hx), st.yb], [X(-st.hx), F], st.z0 + 2.2, st.z1 - 2.2, rnd, { gold: 5, rise: st.rise })
     coping(st.hx, st.yb, st.z1)
   }
+  paving(steps[0]!.hx, steps[0]!.yb, steps[0]!.z1, steps[1]!.hx, F + 8)
+  paving(steps[1]!.hx, steps[1]!.yb, steps[1]!.z1, steps[2]!.hx, F + 8)
+  paving(steps[2]!.hx, steps[2]!.yb, steps[2]!.z1, 48, F + 80)
 
   // What stands on the roofs: plant on the first step, lamps on the second, a skylight and two fans on the crown.
   const s1 = steps[0]!
@@ -343,10 +371,14 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
       const ky1 = s3.yb - 12
       const kz = s3.z1 + 5.4
       for (let i = 0; i < 4; i++) for (let j = 0; j < 2; j++) {
-        const k = rnd.range(0.75, 1.1)
-        const x0 = -kx + (i * 2 * kx) / 4
-        const y0 = ky0 + (j * (ky1 - ky0)) / 2
-        G.face([[x0, y0, kz], [x0 + (2 * kx) / 4, y0, kz], [x0 + (2 * kx) / 4, y0 + (ky1 - ky0) / 2, kz], [x0, y0 + (ky1 - ky0) / 2, kz]], [0, 0, 1], [1, 0, 0], lamp(0.5 * k))
+        const k = rnd.range(0.7, 1.1)
+        const w = (2 * kx) / 4
+        const d = (ky1 - ky0) / 2
+        const x0 = -kx + i * w
+        const y0 = ky0 + j * d
+        const dark = rnd.next() < 0.2
+        G.face([[x0, y0, kz], [x0 + w, y0, kz], [x0 + w, y0 + d, kz], [x0, y0 + d, kz]], [0, 0, 1], [1, 0, 0], dark ? [0.01, 0.022, 0.05] : [0.03 * k, 0.05 * k, 0.085 * k])
+        if (!dark) G.face([[x0 + w * 0.22, y0 + d * 0.3, kz + 0.1], [x0 + w * 0.78, y0 + d * 0.3, kz + 0.1], [x0 + w * 0.78, y0 + d * 0.7, kz + 0.1], [x0 + w * 0.22, y0 + d * 0.7, kz + 0.1]], [0, 0, 1], [1, 0, 0], lamp(0.8 * k))
       }
       // Small lamps on the second step that wash the crown.
       for (const sx of [-1, 1]) for (let i = 0; i < 3; i++) G.lathe([[3.2, 0], [3.2, 2.4], [2.2, 3.4], [0, 3.6]], sx * (s2.hx - 12), F + 30 + i * 44, 10, lamp(1.2), s2.z1 + 2.2)
