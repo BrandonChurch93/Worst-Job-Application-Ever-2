@@ -111,9 +111,11 @@ export function makeSlab(w: number, h: number, r: number, depth: number): THREE.
   const group = new THREE.Group()
   const body = new THREE.Mesh(g.body, red())
   body.castShadow = true
+  body.frustumCulled = false
   body.receiveShadow = true
   const base = new THREE.Mesh(g.base, under())
   base.castShadow = true
+  base.frustumCulled = false
   group.add(body, base)
   return group
 }
