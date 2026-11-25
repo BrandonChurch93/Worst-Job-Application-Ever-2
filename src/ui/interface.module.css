@@ -138,7 +138,7 @@
   gap: max(10px, calc(var(--u) * 20));
   padding: max(6px, calc(var(--u) * 10)) max(12px, calc(var(--u) * 24));
   border-radius: 999px;
-  background: rgba(30, 29, 27, 0.84);
+  background: rgba(30, 29, 27, 0.9);
   color: var(--light);
   pointer-events: auto;
   cursor: default;
