@@ -57,7 +57,7 @@ const PAGE_COARSE = 0.03
 const PAGE_GRAIN = 0.04
 const CLOSE_FALL = 1.5
 const CLOSE_FLOOR = 0.03
-const CLOSE_TOOTH = 3.1
+const CLOSE_TOOTH = 2.85
 const SHEET_TOOTH = 0.4
 const HOME_TOOTH = 2.3
 const MOTTLE = 0.015
@@ -229,7 +229,7 @@ vec3 wjaGrain( vec2 uv ) {
 	vec2 fine = 2.0 * ( wjaOctave( 0.25 * close ) * d + wjaOctave( 0.125 * close ) * e + wjaOctave( 0.0625 * close ) * f );
 	vec2 uvC = mat2( 0.9063, 0.4226, -0.4226, 0.9063 ) * uv * 0.8 + vec2( 0.527, 0.341 );
 	vec2 c = mat2( 0.9063, -0.4226, 0.4226, 0.9063 ) * ( texture2D( normalMap, uvC ).xy - texture2D( normalMap, uvC, 2.0 ).xy );
-	float tooth = mix( SHEET_TOOTH, CLOSE_TOOTH, smoothstep( 2.4, 2.9, close ) * ( 1.0 - smoothstep( 3.25, 3.65, close ) ) );
+	float tooth = mix( SHEET_TOOTH, CLOSE_TOOTH, smoothstep( 2.4, 2.9, close ) * ( 1.0 - smoothstep( 3.47, 3.6, close ) ) );
 	wjaGrainHeight = relief * ( a.a + b.a - 1.0 );
 	vec2 uvM = mat2( 0.8829, 0.4695, -0.4695, 0.8829 ) * uv;
 	wjaMottle = 2.3 * ( texture2D( normalMap, uvM * 0.125 + vec2( 0.613, 0.277 ), 2.0 ).a - 0.5 ) + 1.5 * ( texture2D( normalMap, uvM.yx * 0.25 + vec2( 0.211, 0.671 ), 2.0 ).a - 0.5 );

@@ -24,7 +24,7 @@ Date: 2026-11-25
 
 Fix round, 2026-11-25: for the page the pits are laid at `PAGE_PITS` 0.16 and the soft swell at `PAGE_COARSE` 0.07 (they were 0.45 and 0.2), the strength on the ceramic is `PAGE_GRAIN` 0.04, and up close the fine readings carry `CLOSE_TOOTH` 2.85. Why: the critics read the coarser grain as stucco; the approved page has a tooth one to two pixels wide and no lumps. Size and megabytes are unchanged.
 
-Round 5, 2026-11-25: the soft swell is `PAGE_COARSE` 0.03 and the tone mottle `MOTTLE` 0.015; at home the shader reads the picture a third time, 0.8 times as fine, at `HOME_TOOTH` 2.3; `CLOSE_TOOTH` 3.1 holds between 2.9 and 3.25 times closer than home and `SHEET_TOOTH` 0.4 holds elsewhere up close. Why: the critics read the page as cool, cloudy at home and coarse on the close sheets; MEASURED spread of a clean patch, home 5.73 against the approved 6.54, cursor sheet 2.56 against 2.95. Size and megabytes are unchanged.
+Round 5, 2026-11-25: the soft swell is `PAGE_COARSE` 0.03 and the tone mottle `MOTTLE` 0.015; at home the shader reads the picture a third time, 0.8 times as fine, at `HOME_TOOTH` 2.3; `CLOSE_TOOTH` 2.85 holds between 2.9 and 3.47 times closer than home (the tug's camera) and `SHEET_TOOTH` 0.4 holds elsewhere up close. Why: the critics read the page as cool, cloudy at home and coarse on the close sheets; MEASURED spread of a clean patch, home 5.73 against the approved 6.54, cursor sheet 2.56 against 2.95. Size and megabytes are unchanged.
 
 ## frost (the grain picture again, no memory of its own)
 Made by: `grain.clone()` in `makeMaterials`, `src/shell/materials.ts`. It shares the grain's picture on the card, so it adds nothing to the megabytes.
