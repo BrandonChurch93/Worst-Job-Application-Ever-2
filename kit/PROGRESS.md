@@ -25,26 +25,25 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 50, 2026-11-25T23:42Z, Phase 3.
+Status 51, 2026-11-25T23:58Z, Phase 3.
 
-1. `out/stills/status/01-fix-1-the-wipe-after-the-camera-settles.jpg`: Eight stills with the film camera from the agent's branch 9305fae, draft tier, at 28.91, 28.94, 29.10, 29.35, 29.60, 29.75, 29.98 and 30.02 s of the unit, made by the agent (987 px wide as sent). LOOKED AT by me. The fields are full while the camera comes home, then empty one at a time with the orange ring on the field being emptied, then Continue lights. Still wrong: the camera is home only two frames before the first letter goes; the cursor's reassembly at the lower left runs under the last half second of the wipe, so two things move at once; the pull-out is a third faster and its blur is not judged at the film tier.
-2. `out/stills/status/02-fix-2-the-struck-h-gives.jpg`: Nine crops round the key H from the agent's branch d3a3428, draft tier, at 5.80 to 5.95 s of the unit, cut at full size and doubled by the agent (1407 px, 1200 here). LOOKED AT by me. In the second to the fifth crop the cap is darker and narrower with its wall showing: it is tipped; from the sixth it is flat again and the scorch stays. Still wrong: the tip is about 20 degrees, far more than a real key gives, because smaller tips did not read at this size; the spark and the arrow cover half of the cap; the legend does not turn with the cap.
-3. `out/stills/status/03-fix-3-the-drop-zone-while-the-page-turns.jpg`: Film frames 850 (0:14.17, top) and 2746 (0:45.77, bottom) at the draft tier, cut out round the drop zone by me: left the build of round 6 (bd38dd5), right my work tree at 23:40Z, not committed. LOOKED AT by me. Wrong on the right: at 0:14.17 the glass card still carries two grey wedges, left and right of its middle; they are lighter than the black wedge on the left but they are still there. Bottom right, the card at 0:45.77 is even, and the long streak across the heading is the shadow of a step dot under a key that grazes the turned page.
+1. `out/stills/status/01-the-last-beat-of-step-1-on-the-merged-build.jpg`: A sheet across the beat `step1.shredded` (0:42.27 to 0:45.97 of the film), twelve frames, draft tier, from the merged tree 41faebf, made by me at 23:54Z (1399 px, 1200 here). The fields are full with the camera home at 0:42.93; Last name empties under its orange ring at 0:43.27, First name at 0:43.60; all three are empty at 0:43.93; the card says Resume received and Continue is orange at 0:44.30. Still wrong: the second frame is the camera's move out with its blur doubled on the type; the arrow mends itself at the lower left while the fields empty, so two things move at once; the arrow is small and pale in the last frames; the last frame is the page turn seen edge-on.
+2. `out/stills/status/02-the-struck-h-on-the-merged-build.jpg`: Three frames round the hit on H at 5.84, 5.89 and 6.00 s of the unit, film camera, draft tier, from the merged tree 41faebf, cut out at 300 by 160 px and doubled by me. Left: the cap of H is darker and narrower than G and J beside it, it is tipped. Middle: nearly back. Right: flat, with its scorch, and the arrow carries its hole and smoke. Still wrong: the tip is far more than a real key gives; the spark covers most of the cap, so the give is hard to see at real size; the legend does not turn with the cap; the holes on R and U read as dark smudges (R3-1 issue 1, open).
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 3, tick 107 at 2026-11-25T23:49:06Z, allowance: build
-time used in this phase: 10.93 h of its box of 8.00 h
-time used under the allowance in force: 18.28 h of 36.00 h allowed
-time used: 18.28 of 36.00 hours before the review
+clock: phase 3, tick 108 at 2026-11-25T23:58:24Z, allowance: build
+time used in this phase: 11.09 h of its box of 8.00 h
+time used under the allowance in force: 18.43 h of 36.00 h allowed
+time used: 18.43 of 36.00 hours before the review
 extra rounds: no
 half point: reached
 box end: reached
 budget report: not due
-minutes since the last status: 6
+minutes since the last status: 0
 ```
 
 ## Phases
