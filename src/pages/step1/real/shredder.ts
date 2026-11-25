@@ -402,6 +402,10 @@ const RIBBON = 7.6
 
 interface Strips { geometry: THREE.BufferGeometry; was: string }
 
+const face = new Float32Array(SEG * 3)
+// What a strip keeps of a rule of the sheet: a tick paler than the rule, as the cut edge frays it.
+const RULE = INK.bar.clone().lerp(INK.paper, 0.35)
+
 function makeStrips(): THREE.Group {
   const g = new THREE.BufferGeometry()
   const verts = MAX * SEG * 4
@@ -519,12 +523,13 @@ function poseStrips(o: THREE.Object3D, ctx: RealContext): void {
     }
     const a = new Array<number>(9).fill(0)
     const b = new Array<number>(9).fill(0)
+    const first = k
     for (let i = 0; i < SEG; i++) {
       ring(i / SEG, a)
       ring((i + 1) / SEG, b)
       const d = (i + 0.5) * (len / SEG) + off
-      const marked = ink ? (d % 11) < 6.2 && hash01(n, Math.floor(d / 11), seed + 9) < 0.7 : (d % 24) < 3.3
-      const c = marked ? (ink ? INK.title : INK.bar) : INK.paper
+      const marked = ink ? (d % 11) < 6.2 && hash01(n, Math.floor(d / 11), seed + 9) < 0.7 : (d % 24) < Math.min(3.3, len / SEG)
+      const c = marked ? (ink ? INK.title : RULE) : INK.paper
       put(a[0]!, a[1]!, a[2]!, 0, 0, 1, c)
       put(a[3]!, a[4]!, a[5]!, 0, 0, 1, c)
       put(b[0]!, b[1]!, b[2]!, 0, 0, 1, c)
@@ -567,6 +572,23 @@ function poseStrips(o: THREE.Object3D, ctx: RealContext): void {
         nor[o + q * 3] = fx
         nor[o + q * 3 + 1] = fy
         nor[o + q * 3 + 2] = fz
+      }
+    }
+    // A ribbon of paper bends, it has no facets: each ring takes the mean of the two faces that meet on it.
+    for (let i = 0; i < SEG; i++) face.set(nor.subarray((first + i * 4) * 3, (first + i * 4) * 3 + 3), i * 3)
+    for (let i = 0; i < SEG; i++) {
+      for (let end = 0; end < 2; end++) {
+        const j = Math.min(SEG - 1, Math.max(0, i + (end === 0 ? -1 : 1)))
+        const x = face[i * 3]! + face[j * 3]!
+        const y = face[i * 3 + 1]! + face[j * 3 + 1]!
+        const z = face[i * 3 + 2]! + face[j * 3 + 2]!
+        const l = Math.hypot(x, y, z) || 1
+        for (let q = 0; q < 2; q++) {
+          const at = (first + i * 4 + end * 2 + q) * 3
+          nor[at] = x / l
+          nor[at + 1] = y / l
+          nor[at + 2] = z / l
+        }
       }
     }
   }
