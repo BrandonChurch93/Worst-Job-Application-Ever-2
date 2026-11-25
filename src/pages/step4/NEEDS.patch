@@ -1,0 +1,19 @@
+diff --git a/src/audio/cues.ts b/src/audio/cues.ts
+index 50371a3..cb4580d 100644
+--- a/src/audio/cues.ts
++++ b/src/audio/cues.ts
+@@ -12,5 +12,13 @@ export const eventCues: Record<string, string> = {
+   'bolt-fire': 'bolt-fire',
+   'bolt-hit': 'bolt-hit',
+   'keys-shuffle': 'keys-shuffle',
+-  'slab-drop': 'slab-drop'
++  'slab-drop': 'slab-drop',
++  'checkbox': 'checkbox',
++  'button-crack': 'button-crack',
++  'unfold': 'unfold',
++  'dart-fire': 'dart-fire',
++  'dart-hit': 'dart-hit',
++  'slab-fire': 'slab-fire',
++  'popup': 'popup',
++  'power-down': 'power-down'
+ }
