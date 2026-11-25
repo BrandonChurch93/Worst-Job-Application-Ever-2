@@ -1,35 +1,35 @@
 {
   "folder": "surface",
-  "pushed": "2026-11-25T14:44:42.755Z",
-  "commit": "f7e1b3c38701215bdbd88c9bec36cbb29b8c5eaa",
+  "pushed": "2026-11-25T15:59:32.676Z",
+  "commit": "53d88517294ae0d0870721ebd7ba0b0b88aaf042",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key step1-tug: approved on the left, this build on the right, review tier",
-      "time": "2026-11-25T14:44:13.972Z",
+      "caption": "Page look at review tier: approved above, build below (d5511dc)",
+      "time": "2026-11-25T15:59:30.905Z",
       "by": "surface",
-      "from": "out/work/compare/compare-step1-tug.jpg"
+      "from": "out/work/report/a-page-look-pair.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Approved page-look above, this build below at review tier, after the lower key: glass card with shaded shoulder, field glass with the wall's soft shade, turned buttons with a fan of light",
-      "time": "2026-11-25T14:44:40.992Z",
+      "caption": "Progress buttons and the top of the page at 3 times: approved beside build",
+      "time": "2026-11-25T15:59:31.162Z",
       "by": "surface",
-      "from": "out/work/report/a-page-look.jpg"
+      "from": "out/work/report/b-buttons-fields-pair.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Three crops beside the approved image (left approved, right this build): card corner, turned progress button on its rail, card's far corner",
-      "time": "2026-11-25T14:44:41.235Z",
+      "caption": "Ceramic on the cursor acting sheet at 2 times: approved left, build right, grain eased by closeness",
+      "time": "2026-11-25T15:59:31.403Z",
       "by": "surface",
-      "from": "out/work/report/c-zoom.jpg"
+      "from": "out/work/report/c-grain-close-pair.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Both keys of step 1 beside their approved images at review tier, no stand-in listed",
-      "time": "2026-11-25T14:44:41.483Z",
+      "caption": "Tug key at review tier, 1 to 1: approved fields left, build card edge and fields right",
+      "time": "2026-11-25T15:59:31.638Z",
       "by": "surface",
-      "from": "out/work/report/b-keys.jpg"
+      "from": "out/work/report/d-tug-pair.jpg"
     }
   ]
 }
