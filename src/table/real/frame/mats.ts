@@ -12,9 +12,9 @@ export const hex = (h: number): RGB => {
 export const shade = (c: RGB, k: number): RGB => [c[0] * k, c[1] * k, c[2] * k]
 
 export const TONE = {
-  alu: hex(0xd3d6d9),
+  alu: hex(0xdde0e3),
   aluDark: hex(0xa3a7ac),
-  aluBright: hex(0xe6e8ea),
+  aluBright: hex(0xeceef0),
   brass: hex(0xc9a45c),
   ceramic: hex(0xecebe6),
   gap: hex(0x23211f),
@@ -37,9 +37,22 @@ const own = <T extends THREE.Material>(m: T, name: string): T => {
   return m
 }
 
+// The shell's brushed picture again, drawn finer: a rail is seen from closer than the page's own metal. It shares the picture, so it costs no memory.
+const fineOf = new WeakMap<THREE.Texture, THREE.Texture>()
+const fine = (src: THREE.Texture): THREE.Texture => {
+  let t = fineOf.get(src)
+  if (!t) {
+    t = src.clone()
+    t.repeat.set(src.repeat.x * 1.6, src.repeat.y * 3.2)
+    t.needsUpdate = true
+    fineOf.set(src, t)
+  }
+  return t
+}
+
 export const aluOf = (z: Zone, name = 'alu'): THREE.MeshPhysicalMaterial => {
   const src = materials().aluminium
-  return own(lit(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.36, metalness: 0.58, normalMap: src.normalMap, normalScale: new THREE.Vector2(0.22, 0.22), anisotropy: 0.72, anisotropyRotation: Math.PI / 2 })), z), `frame.${name}.${z.id}`)
+  return own(lit(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.4, metalness: 0.4, normalMap: src.normalMap ? fine(src.normalMap) : null, normalScale: new THREE.Vector2(0.15, 0.15), anisotropy: 0.72, anisotropyRotation: Math.PI / 2 })), z), `frame.${name}.${z.id}`)
 }
 
 export const paintOf = (z: Zone, name = 'paint'): THREE.MeshPhysicalMaterial => {
@@ -59,7 +72,7 @@ export const clearOf = (z: Zone, name = 'clear', base = 0.06): THREE.MeshPhysica
     room.call(m, shader, renderer)
     shader.fragmentShader = shader.fragmentShader.replace(
       '#include <tonemapping_fragment>',
-      'float wjfEdge = pow( 1.0 - abs( dot( normalize( vViewPosition ), normalize( normal ) ) ), 2.2 );\ngl_FragColor.a = clamp( diffuseColor.a + wjfEdge * 0.5 + dot( outgoingLight, vec3( 0.3333 ) ) * 0.22, 0.0, 1.0 );\n#include <tonemapping_fragment>'
+      'float wjfEdge = pow( 1.0 - abs( dot( normalize( vViewPosition ), normalize( normal ) ) ), 1.6 );\ngl_FragColor.a = clamp( diffuseColor.a + wjfEdge * 0.62 + dot( outgoingLight, vec3( 0.3333 ) ) * 0.45, 0.0, 1.0 );\n#include <tonemapping_fragment>'
     )
   }
   m.customProgramCacheKey = () => 'wja-studio-frame-clear'
