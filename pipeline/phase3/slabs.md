@@ -153,3 +153,40 @@ Looked at as draft stills of `step1.email` at 0.650 (the first slab down on Ente
 The landing is decision 20 in the "Fix round" of `pipeline/phase3/keyboard.md`: the caps under a slab bottom out on the landing frame, the slab stops with no bounce, and the fall, the moving shadow and the deck's jolt were already there. Looked at as draft stills of `step1.email` at 0.648 (the slab in the air, larger, its shadow off to the lower right) and 0.668 (down, the caps under it pressed and dark).
 
 Not done: R4-1 #7, the hold of 0.3 s and the pull back before a slab leaves. The time a slab lies (`TIMES.slabLie`, 0.25 s) is in the script and is not mine to move, and the slabs must be off before the resume beat, so the leaving was left as the Builder settled it at 19:17Z.
+
+## Fix round 3: the motion
+
+By `/root/keys_motion_fixer`, 2026-11-25. The numbers are in `src/pages/step1/index.ts`. Every MEASURED line names its command.
+
+### 1. The slab's fall (R4-2 issues 2, 3, 4; R9-1 issue 10)
+
+- No hang. A slab is aimed at the old time (`slabDue`) and is not drawn until `SLAB_FALL.seconds` 0.1 s (six frames) before it lands. The landing is at `SLAB_LAND` = `TIMES.slabHang + TIMES.slabFall` = 0.4 s after it is sent, as before. MEASURED by a walk of the film at 240 Hz that prints the events: `slab-drop` at 18.300, 18.850 and 19.400 s of the unit, the times of main.
+- The fall starts at `SLAB_FALL.high` 1200 px and is thrown: `fall = high * (1 - u) * (1 + (1 - thrown) * u)`, so it is fast from the first frame and faster at the end. The home camera stands 3062 px off with its near plane 1500 px in front of it, so nothing above about 1500 px is drawn: 1200 px gives a slab about 1.64 times its size in its first frame. Its place leans toward the middle of the screen by `sight` 0.6 of what the height would move it, so it shrinks onto its spot and does not slide in from a side.
+- It stops dead. There is no dip and no settle: on the landing frame the slab is at its rest height, the caps under it are at full travel and stay, the caps beside it are tossed from the slab's edge (`SLAB_HOP`: up to 34 px, within 280 px, down again in 0.16 s, less for a wide cap because the look maker tilts a cap in the air), and the deck takes one jolt (`SLAB_FALL.amp` 1.05 times `SHAKE.px`: `tests/step1-script.test.ts` holds it under 6 px).
+- The shadow. A caster above `maxZ` 320 of `src/shell/view.ts` is culled by its true place before the shadow pass lowers it, so the shadow showed in the last frame or two only. With `frustumCulled = false` on the slab's two meshes (`real/slabs.ts`, the Builder's proposal) the shadow is in the map through the whole fall. Looked at on the second slab, film frames 1965 to 1970 at draft (`out/work/frames.mjs`): no shadow in the page six frames before the landing, then a wide soft one far off down the light at five and four frames before, closing in under the slab in the last two. The first slab falls at the lower right corner of the page and its shadow falls off the page until the last two frames.
+
+### 2. The hit on the arrow (R4-2 issue 1)
+
+- `THUD = { seconds: 0.17, hold: 0.085, shake: 0.7, hop: 9, reach: 260, toss: 0.1, speed: 6000 }`. On the frame of the flash the struck cap is at full travel, it holds for five frames and is back, past its rest and seated, 0.17 s after the hit. The caps within 260 px hop up to 9 px and are down within 0.143 s. The deck's jolt is 0.7 of a slab's and lasts 0.17 s.
+- MEASURED by the same walk, reading every cap's top at 6.0 s: 0 px from rest (main: 1.87 px).
+- The hot patch of the strike now lies 0.04 px over the struck cap, under its legend (`STRIKE.over`), and rides up with the cap. Before, it hung 1.5 px over the rest height, over the legend.
+- What I learned: with H exactly at rest the reading of type (`typeContrasts`) sent three of its five rays onto a triangle of no area in the cap's top, whose weights sum to 0, and read the cap black: M4 1.14. On main H was still tilted and 1.85 px up at 6.0 s and the rays missed it. The Builder took the two line patch (main e599fbb). With the patch and the hot patch under the legend H reads 10.91.
+
+### 3. The shuffle (R4-1 issue 1)
+
+- `FLIGHT`: launches ripple out from the pressed key over `ripple` 0.17 s by distance (`span` 800 px), each cap is in the air `seconds` 0.2 s, rising over `rise` 0.58 of it while slowing and falling over the rest while speeding up, and stops in one frame into a short seat spring. The deck is kicked once at the launch (`jolt` 4 px) and rings four times as the wave lands (`land` 2.2 px). Caps that do not move stir at the launch and at the landing.
+- `SEATED` = crouch + ripple + jitter + seconds = 0.425 s. MEASURED by the walk: the shuffles start at 10.367, 11.004, 11.617, 12.117, 12.667, 13.162, 13.667 and 14.167 s and the next press is never less than 0.495 s later, so every cap is seated before the next press. `s.blocks` is let go only when the last cap is seated.
+
+### 4. Key travel (R4-1 issue 2)
+
+- `stroke`: a pressed cap is half way down or lower on the press frame (`DOWN.first` 0.5, the rest within 0.02 s), at the bottom on the next frame, held to 0.1 s, and springs back past its rest by 0.24 s. Before, it was at the bottom on the press frame. `tests/keys.test.ts` now asks for half travel or lower on the press frame and full travel within three frames.
+
+### 5. The slabs' leaving (R4-1 issue 3)
+
+- `SLAB_OUT = { every: 0.13, pop: 0.07, up: 100, pull: 30, wait: 0.09, fly: 0.15, far: 1900, spring: 0.16 }`. Each slab rises 100 px in 0.07 s while it pulls 30 px back against its way, holds a frame, then flies 1900 px off the nearer side in 0.15 s. A slab is past the edge about 0.13 s into its flight and the next starts its flight 0.13 s after it, so two are not in fast flight in one frame. All three are gone 0.5 s after the lift starts (before: 0.46 s).
+
+### Decisions
+
+1. The landing time, the event times and the press times did not move. Only what is drawn between them did.
+2. The slab leaves sideways as before (decision 2 above stands).
+3. Item 2 was held out of the first push because it read red in M4; it went in once the cause was known.
