@@ -1,35 +1,35 @@
 {
   "folder": "marketing",
-  "pushed": "2026-11-25T09:04:31.348Z",
-  "commit": "ca722c7ee307f87e655d9b3356b03a5c595f9f60",
+  "pushed": "2026-11-25T09:16:12.442Z",
+  "commit": "c5ebf0f17d2d05424fdf3f25e38df0c349768f48",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "rest-marketing: the first screen at rest, cards shut, cursor in the left margin",
-      "time": "2026-11-25T09:04:29.634Z",
+      "caption": "marketing.perks at 3.2 s: the Unlimited PTO card is open, the cursor stands in its bottom right corner clear of the words",
+      "time": "2026-11-25T09:16:10.624Z",
       "by": "marketing",
-      "from": "out/work/stills/still-rest-marketing-preview-draft.png"
+      "from": "out/work/stills/pk-1-preview-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "marketing.perks at 2.4 s: the Unlimited PTO card turns over as four slats under the cursor",
-      "time": "2026-11-25T09:04:29.865Z",
+      "caption": "marketing.apply at 12.7 s: the leap from beside the big button onto its cap",
+      "time": "2026-11-25T09:16:10.855Z",
       "by": "marketing",
-      "from": "out/work/stills/marketing-marketing_perks-0p07-preview-draft.png"
+      "from": "out/work/stills/ap-2-preview-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "key marketing-top at 11.0 s: three cards show their fine print, cursor stands by the big button",
-      "time": "2026-11-25T09:04:30.093Z",
+      "caption": "marketing-perks (scroll 0.25): last perk row with the closing line, and the awards",
+      "time": "2026-11-25T09:16:11.077Z",
       "by": "marketing",
-      "from": "out/work/stills/key-marketing-top-preview-draft.png"
+      "from": "out/work/stills/still-marketing-perks-preview-draft.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "marketing.apply at 13.1 s: the cursor has jumped on the big button, the cap is down",
-      "time": "2026-11-25T09:04:30.316Z",
+      "caption": "marketing-foot (scroll 1): the final call to action and the footer",
+      "time": "2026-11-25T09:16:11.304Z",
       "by": "marketing",
-      "from": "out/work/stills/marketing-marketing_apply-0p7-preview-draft.png"
+      "from": "out/work/stills/still-marketing-foot-preview-draft.png"
     }
   ]
 }
