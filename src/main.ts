@@ -177,12 +177,17 @@ function play(first: PlayMode): void {
 
   let sound: Sound | null = null
   if (!stepped) {
+    let touched = false
+    const unlock = () => {
+      touched = true
+      void sound?.unlock()
+    }
+    window.addEventListener('pointerdown', unlock, { capture: true })
+    window.addEventListener('keydown', unlock, { capture: true })
     void import('./audio/index').then(({ makeSound }) => {
       sound = makeSound({ base: `${import.meta.env.BASE_URL}audio/` })
       if (!flowing()) sound.stop()
-      const unlock = () => void sound?.unlock()
-      window.addEventListener('pointerdown', unlock, { once: true, capture: true })
-      window.addEventListener('keydown', unlock, { once: true, capture: true })
+      if (touched) void sound.unlock()
     })
   }
   const soundMode = () => (now === 'live' ? 'live' : 'film')
