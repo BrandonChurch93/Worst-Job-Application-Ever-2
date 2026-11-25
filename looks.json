@@ -1,35 +1,35 @@
 {
   "folder": "frame",
-  "pushed": "2026-11-25T16:40:27.125Z",
-  "commit": "706207d2cda7fb58056753f65ac53addff12f320",
+  "pushed": "2026-11-25T16:55:57.170Z",
+  "commit": "4d06f1749cdb004f3c752849ae26a6809318087b",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key tier-corporate: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-25T16:39:37.888Z",
+      "caption": "Still key-tier-street-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T16:53:09.269Z",
       "by": "frame",
-      "from": "out/work/compare/compare-tier-corporate.jpg"
+      "from": "out/work/stills/key-tier-street-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Key last-save: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-25T16:40:11.935Z",
+      "caption": "Key table-wide: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-25T16:55:44.449Z",
       "by": "frame",
-      "from": "out/work/compare/compare-last-save.jpg"
+      "from": "out/work/compare/compare-table-wide.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Frame 4, last-save beside the approved image: the drain plate is now ivory enamel in a brass edge with dark words",
-      "time": "2026-11-25T16:40:25.550Z",
+      "caption": "Frame 5, the loader port: approved image on the left, this build on the right. The ball lies in the cup and the tube leaves through a slot in a darker ring",
+      "time": "2026-11-25T16:55:55.498Z",
       "by": "frame",
-      "from": "out/work/compare/compare-last-save.jpg"
+      "from": "out/work/compare/frame-port.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Frame 4, tier-corporate beside the approved image: rails with a groove on the lane side, feed tube with a dark edge line seen from above",
-      "time": "2026-11-25T16:40:25.805Z",
+      "caption": "Frame 5, table-wide beside the approved image: stepped cross rails between the tiers, clear feed tube with clamps, enamel drain plate",
+      "time": "2026-11-25T16:55:55.756Z",
       "by": "frame",
-      "from": "out/work/compare/compare-tier-corporate.jpg"
+      "from": "out/work/compare/compare-table-wide.jpg"
     }
   ]
 }
