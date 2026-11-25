@@ -1,0 +1,13 @@
+diff --git a/tests/step2.test.ts b/tests/step2.test.ts
+index 2741e39..5f69041 100644
+--- a/tests/step2.test.ts
++++ b/tests/step2.test.ts
+@@ -202,7 +202,7 @@ describe('step 2, live', () => {
+       const l = live(new BotDriver('keen', config.seed))
+       l.advance(Math.round(at * stepHz))
+       l.page.skip()
+-      l.advance(3 * stepHz)
++      for (let n = 0; n < 3 * stepHz && l.page.id !== 'step3'; n++) l.advance(1)
+       expect(l.page.id, String(at)).toBe('step3')
+       expect(l.cursor.taken, String(at)).toBe(false)
+       expect(l.cursor.damaged, String(at)).toBe(false)

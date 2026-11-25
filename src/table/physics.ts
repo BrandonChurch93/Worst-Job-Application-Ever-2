@@ -528,7 +528,7 @@ export class Machine {
     return FLIP.rest + (FLIP.up - FLIP.rest) * pos
   }
 
-  wants(from = 1.2): [boolean, boolean] {
+  wants(from = 1.2, rising = -3): [boolean, boolean] {
     const b = this.balls[0]!
     const out: [boolean, boolean] = [false, false]
     if (b.mode !== 'plane') return out
@@ -541,8 +541,8 @@ export class Machine {
       const rx = b.x - px
       const ry = b.y - (y0 + FLIP.pivotV)
       const along = rx * ax + ry * ay
-      const above = -(rx * -ay * dir + ry * ax * dir) * dir
-      out[s] = along > from && along < FLIP.length + 0.3 && above > 0 && above < 1.0 && b.vy > -3
+      const above = rx * ay * dir - ry * 0.9063077870366499
+      out[s] = along > from && along < FLIP.length + 0.3 && above > 0 && above < 1.0 && b.vy > rising
     }
     return out
   }

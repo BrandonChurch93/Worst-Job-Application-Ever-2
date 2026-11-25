@@ -118,6 +118,7 @@ for (let k = 0; k < 3; k++) {
   seg(k, 'top', [L, 0.3], [mir(L), 0.3])
   seg(k, 'wall.right', [mir(L), 0.3], [mir(L), TH])
   if (k === 0) seg(k, 'wall.left', [L, 0.3], [L, TH])
+  if (k < 2) open(k, 'elbow', [L, 0.4], [L, 1.7])
   if (k === 1) {
     seg(k, 'wall.left.upper', [L, 0.3], [L, 4.5])
     seg(k, 'wall.left.lower', [L, 5.9], [L, TH])
@@ -186,7 +187,7 @@ for (let k = 0; k < 3; k++) {
   open(k, 'top.exit.left', [4.65, 2.5], [6.0, 2.15])
   open(k, 'top.exit.right', [12.9, 2.15], [14.2, 2.5])
   open(k, 'boardroom.foot', [4.65, 4.6], [OUTLANE.inner, 6.2])
-  rails.push({ id: 'ladder', from: 'corporate.ladder.foot', to: 'corporate.ladder.foot', points: LADDER.map((p) => [p[0], TIER_Y[k]! + p[1], p[2] + floorZ(k)] as P3), speed: 9, out: [-4, 2] })
+  rails.push({ id: 'ladder', from: 'corporate.ladder.track', to: 'corporate.ladder.track', points: LADDER.map((p) => [p[0], TIER_Y[k]! + p[1], p[2] + floorZ(k)] as P3), speed: 9, out: [-4, 2] })
   open(k, 'ladder.track', [12.3, 5.0], [12.3, 6.25])
 }
 
@@ -229,8 +230,8 @@ for (let k = 0; k < 3; k++) {
     model(k, `house.right.${i + 1}`, 'model-houses', [13.6 + i * 0.58, 9.35, 0.45, 0.45], 0.5, 'raised', { solid: false })
   }
   flats.push({ id: 'street.road', tier: k, part: 'tier-art', box: [9.6, TIER_Y[k]! + 0.3, 0.8, 8.2], tone: 'dark' })
-  rails.push({ id: 'highway', from: 'street.flap', to: 'street.garage', points: HIGHWAY.map((p) => [p[0], TIER_Y[k]! + p[1], p[2] + floorZ(k)] as P3), speed: 6, out: [0, 0] })
-  rails.push({ id: 'spiral', from: 'street.garage', to: 'street.inlane.right', points: spiral().map((p) => [p[0], TIER_Y[k]! + p[1], p[2] + floorZ(k)] as P3), speed: 9, out: [0, 3] })
+  rails.push({ id: 'highway', from: 'street.highway.track', to: 'spiral', points: HIGHWAY.map((p) => [p[0], TIER_Y[k]! + p[1], p[2] + floorZ(k)] as P3), speed: 6, out: [0, 0] })
+  rails.push({ id: 'spiral', from: 'highway', to: 'street.inlane.right', points: spiral().map((p) => [p[0], TIER_Y[k]! + p[1], p[2] + floorZ(k)] as P3), speed: 9, out: [0, 3] })
   open(k, 'firehouse.foot', [4.45, 4.9], [OUTLANE.inner, 6.2])
   open(k, 'police.foot', [14.25, 3.8], [13.95, 5.4])
   open(k, 'highway.track', [6.9, 4.275], [6.9, 5.525])
@@ -259,7 +260,7 @@ for (let k = 0; k < 3; k++) {
     const u = side === 'left' ? 3.95 : mir(3.95)
     rails.push({ id: `outlane.${name}.${side}`, from: `${name}.outlane.${side}`, to: `${name}.exit`, speed: 16, out: [0, 0], hidden: true, points: [[u, y + 10.6, zf(k)], [u, y + 11.45, zf(k)], [MID, y + 11.45, zf(k)], [MID, y + 11.05, zf(k)]] })
   }
-  if (k < 2) rails.push({ id: `chute.${name}`, from: `${name}.exit`, to: `${TIERS[k + 1]}.top`, speed: 4, out: [0.8, 4], points: [[MID, y + 11.05, zf(k)], [MID, y + TH + 0.3, zf(k + 1) + 0.6], [MID, y + TH + 0.9, zf(k + 1)]] })
+  if (k < 2) rails.push({ id: `chute.${name}`, from: `${name}.exit`, to: `${TIERS[k + 1]}.chute.mouth`, speed: 4, out: [0.8, 4], points: [[MID, y + 11.05, zf(k)], [MID, y + TH + 0.3, zf(k + 1) + 0.6], [MID, y + TH + 0.9, zf(k + 1)]] })
 }
 rails.push({
   id: 'drain', from: 'street.exit', to: 'outlet', speed: 7.5, out: [0, 0],

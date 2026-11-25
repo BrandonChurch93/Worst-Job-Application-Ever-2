@@ -95,7 +95,7 @@ interface State {
 
 const fresh = (): State => ({ mode: 'live', time: 0, t: 0, phase: 'wait', pull: 0, said: [], drops: 0, tows: 0, scroll: 0, floor: 0, opened: 0, result: 0, pressed: false, hold: 0, done: false, skipped: false, saved: false, score: 0 })
 
-const flips = (take as { flips: [string, number, number][] }).flips
+const flips = (take as unknown as { flips: [string, number, number][] }).flips
 const held = (side: string, time: number): boolean => flips.some((f) => f[0] === side && time >= f[1] && time < f[2])
 
 const tierPose = (k: number): CameraPose => homePose(px(TIER_Y[k]!), px(floorZ(k)))
@@ -187,7 +187,7 @@ export function makePage(): PageLogic {
     const say = (name: string, hits = false) => io.emit(name, x, y, hits)
     if (e.name === 'flipper') {
       io.emit('flipper', px(e.x), px(TIER_Y[ball().mode === 'none' ? 2 : ball().tier]! + 8.8), false)
-      const want = machine().wants(0.3)
+      const want = machine().wants(0.3, -60)
       if (gag === 'pinball.save' && !s.saved && (e.id === 'left' ? want[0] : want[1])) {
         s.saved = true
         io.emit('flipper-save', px(ball().x), px(ball().y), false)
@@ -255,6 +255,7 @@ export function makePage(): PageLogic {
     }
     if (b.mode === 'rail' && b.rail === 'launch') b.speed = Math.max(20, Math.min(60, (railLength(railOf('launch')) - b.s) / Math.max(0.05, T.onTable - t)))
     on['corporate.revolving'] = t < T.doorKick
+    on['corporate.doors'] = t < T.doorOpen
     if (b.mode === 'hold' && b.hold === 'corporate.revolving') {
       b.wait = t >= T.doorKick ? Math.min(b.wait, 0.05) : 1e9
     }
