@@ -1,35 +1,35 @@
 {
   "folder": "glass",
-  "pushed": "2026-11-25T19:56:30.071Z",
-  "commit": "7cf63b385c3b79b7cfd86e6e618bd5601329658f",
+  "pushed": "2026-11-25T20:12:41.140Z",
+  "commit": "2101f6f1546a85d164e59e82c079fe9236a6ade3",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Round 5, page tone and grain: approved home, build home, approved cursor sheet, build cursor sheet, clean patch at twice size",
-      "time": "2026-11-25T19:56:28.186Z",
+      "caption": "Round 5 second push, page grain: approved home, build home, approved cursor sheet, build cursor sheet, clean patch at twice size",
+      "time": "2026-11-25T20:12:39.339Z",
       "by": "glass",
-      "from": "out/work/report/r5-page-ab.jpg"
+      "from": "out/work/report/r5b-page-ab.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Round 5: approved Browse files, the build's Browse files, the build's waiting Continue",
-      "time": "2026-11-25T19:56:28.420Z",
+      "caption": "Round 5 second push: approved step1-fire left, the build's review still right",
+      "time": "2026-11-25T20:12:39.578Z",
       "by": "glass",
-      "from": "out/work/report/r5-browse-continue.jpg"
+      "from": "out/work/report/r5b-fire-ab.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Round 5, wells: approved left, build right, native size crop of the page-look sheet",
-      "time": "2026-11-25T19:56:28.657Z",
+      "caption": "Round 5 second push, discs and orange button: approved above, build below, from the step1-fire key at 2.9 times size",
+      "time": "2026-11-25T20:12:39.822Z",
       "by": "glass",
-      "from": "out/work/report/r5-wells-ab.jpg"
+      "from": "out/work/report/r5b-discs-fire-ab.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Round 5, discs: approved left, build right, native size crop of the page-look sheet",
-      "time": "2026-11-25T19:56:28.894Z",
+      "caption": "Round 5 second push: the tug key beside the approved image, review tier, on the merged tree",
+      "time": "2026-11-25T20:12:40.058Z",
       "by": "glass",
-      "from": "out/work/report/r5-discs-ab.jpg"
+      "from": "out/work/report/r5b-tug-compare.jpg"
     }
   ]
 }
