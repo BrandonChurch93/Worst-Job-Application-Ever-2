@@ -1,0 +1,127 @@
+{
+ "critic": "R1",
+ "score": 4,
+ "pass": false,
+ "model": "kimi_k3",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-B-01-b.png",
+   "where": "beneath each of the five cursors, along the lower third",
+   "what": "the five state captions present in -a are gone, leaving bare paper under the row",
+   "fix": "add the small grey labels under each state, centred beneath its cursor, at the same size, weight and colour as -a"
+  },
+  {
+   "severity": "severe",
+   "file": "set-B-02-b.png",
+   "where": "beneath the row of damaged cursors",
+   "what": "the five state captions from -a are missing",
+   "fix": "restore the five small grey labels centred under each state as in -a"
+  },
+  {
+   "severity": "severe",
+   "file": "set-B-03-b.png",
+   "where": "beneath the six cursors",
+   "what": "the six state captions from -a are missing",
+   "fix": "restore the six small grey labels under the states as in -a"
+  },
+  {
+   "severity": "severe",
+   "file": "set-B-02-b.png",
+   "where": "the left half of the row",
+   "what": "the five states no longer sit on one level line: the shredded pile has dropped to the lower left and the reassembled strips float above and right of it, so the row reads as two scattered clusters plus three",
+   "fix": "lift the shredded pile and lower the reassembled strips so all five states share one horizontal line with even spacing as in -a"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01-b.png",
+   "where": "the whole page",
+   "what": "the page is a cool grey with a coarse stippled grain; -a is a warm cream with a fine grain",
+   "fix": "warm the page towards cream and soften the grain to -a's fine, even texture"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02-b.png",
+   "where": "the whole page",
+   "what": "page tone and grain are cool and coarse against -a's warm smooth cream",
+   "fix": "match -a's warm tone and fine grain"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03-b.png",
+   "where": "the whole page",
+   "what": "page tone and grain are cool and coarse against -a's warm smooth cream",
+   "fix": "match -a's warm tone and fine grain"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01-b.png",
+   "where": "the shadows under every cursor",
+   "what": "shadows are long, dark and hard-edged, stretching to the lower right; -a's shadows are short, soft and pale, sitting close under the feet",
+   "fix": "shorten the shadows, soften their edges and lighten them until they read as -a's gentle contact shadows"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02-b.png",
+   "where": "the shadows under each piece",
+   "what": "long, dark, hard shadows to the lower right where -a has short soft ones",
+   "fix": "match -a's short, soft, pale shadows"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03-b.png",
+   "where": "the shadows under each cursor",
+   "what": "long, dark shadows to the lower right where -a's shadows stay short and soft under each cursor",
+   "fix": "shorten and soften the shadows to -a's contact shadows"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01-b.png",
+   "where": "the 'Pulling paper' state, fourth cursor",
+   "what": "the paper feeds through a metal roller bar with screws and a dark housing that hangs off the page; in -a the strip rises straight out of a slit in the page itself",
+   "fix": "remove the machine and let the paper emerge from a thin slit in the page as in -a"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01-b.png",
+   "where": "the 'Holding paper' state, third cursor",
+   "what": "the held sheet is a large printed page with a bold heading and a block of ruled lines covering the cursor's body; in -a it is a small blank card held low at the side",
+   "fix": "return it to a small blank card held low beside the body, with no printed heading or lines"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02-b.png",
+   "where": "the second state from the left",
+   "what": "the 'Reassembled' state is a loose fan of loose strips with tape scraps and does not read as a cursor; in -a the strips are taped back into a clear arrow silhouette",
+   "fix": "arrange and tape the strips into the arrow shape as in -a"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-03-b.png",
+   "where": "the last state, 'Hit by a laser'",
+   "what": "the hole's rim reads as a dark mechanical gear ring with a grey centre; in -a the rim is a glowing orange ember",
+   "fix": "give the rim -a's bright orange glow and burnt edge"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-03-b.png",
+   "where": "the third state, 'Angry'",
+   "what": "the hot zone spreads as a broad yellow-red flame over most of the face; in -a the heat is a concentrated red glow at the tip",
+   "fix": "pull the heat back to a tight red glow at the tip as in -a"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-03-b.png",
+   "where": "the first state, 'Nervous'",
+   "what": "only a few large glossy drops sit on the face; in -a many fine droplets speckle the cursor and scatter onto the page",
+   "fix": "add the fine scattered droplets around the cursor as in -a"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-02-b.png",
+   "where": "the middle state, 'Scorched'",
+   "what": "the tip reads chipped and broken with a shaggy char; in -a it is a neat burnt tip with a glowing ember and a thin wisp of smoke",
+   "fix": "restore the clean burnt tip with ember as in -a"
+  }
+ ]
+}

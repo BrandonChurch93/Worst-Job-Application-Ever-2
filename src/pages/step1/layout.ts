@@ -28,7 +28,7 @@ export const PAPER = { w: 64, h: 88, inset: 5, top: 14, bar: 2 }
 export const PAPER_REST = { x: 1078, y: 854 }
 export const PAPER_TITLE = { font: 'inter-600', px: 14 }
 export const PAPER_LINES = [0.36, 0.44, 0.52, 0.6, 0.7, 0.78, 0.86]
-export const SLOT = { w: 96, h: 10, cx: ZONE.x + ZONE.w * 0.62, cy: FORM_BOTTOM + 30 }
+export const SLOT = { w: 96, h: 10, cx: ZONE.x + ZONE.w * 0.84, cy: FORM_BOTTOM + 9 }
 export const NOTE_Y = FORM_BOTTOM + 24
 export const CONTINUE_Y = DECK.y + 10
 

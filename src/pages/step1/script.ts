@@ -14,7 +14,7 @@ export const TIMES = {
   slabCount: 3, slabFirst: 0.4, slabEvery: 0.55, slabHang: 0.2, slabFall: 0.2, slabSettle: 0.12, slabLie: 0.25, slabLift: 0.18,
   paperSlide: 0.42, bite: 0.4, tugFilm: 5.06, lost: 0.3
 }
-export const TUG = { stiff: 2600, damp: 36, strainPx: 9.6, lead: 0.4, shoulder: { x: 14, y: 30 }, hands: 31, rateLag: 0.07, inside: 4, least: 10, reach: { rest: 37, min: 31, max: 47, bite: 26, haul: 70 } }
+export const TUG = { stiff: 2600, damp: 36, strainPx: 9.6, lead: 0.4, shoulder: { x: 14, y: 30 }, hands: 31, rateLag: 0.07, inside: 4, least: 21, reach: { rest: 43, min: 37, max: 52, bite: 26, haul: 70 } }
 export const SPOT = { x: -12, y: -14 }
 export const BITE = { x: SLOT.cx - PAPER.w / 2, y: SLOT.cy - PAPER.h + 3 }
 export const HOOD = { y: SLOT.cy + 17, z: 26 }
@@ -47,8 +47,8 @@ export const END = { sag: 0.03 }
 export const RESUME = { walk: [19.9, 20.3] as [number, number], proud: 20.4, beside: { x: 20, y: 6 }, grab: 21.06, hoist: [21.1, 21.16] as [number, number], carry: [21.18, 21.54] as [number, number], drop: 21.62 }
 
 const TUG_CURVE: [number, number, number, number][] = [
-  [0, 0.05, -0.2, 4], [0.3, 0.15, -0.14, 0], [0.8, 0.11, -0.28, 25], [1.05, 0.26, 0.02, 5], [1.55, 0.22, -0.42, 22], [1.8, 0.37, -0.15, 0], [2.3, 0.33, -0.52, 24],
-  [2.6, 0.48, -0.16, 1], [2.95, 0.455, -0.51, 17], [3.2, 0.44, -0.51, 18], [3.5, 0.6, 0.02, 3], [4, 0.56, -0.36, 25], [4.3, 0.72, -0.15, 3], [4.6, 0.68, -0.51, 18], [5.06, 0.95, 0, 3]
+  [0, 0.05, 0.2, 4], [0.3, 0.15, 0.14, 0], [0.8, 0.11, 0.28, 25], [1.05, 0.26, -0.12, 5], [1.55, 0.22, 0.42, 22], [1.8, 0.37, 0.06, 0], [2.3, 0.33, 0.52, 24],
+  [2.6, 0.48, 0.16, 1], [2.95, 0.455, 0.47, 17], [3.2, 0.44, 0.47, 18], [3.5, 0.6, -0.02, 3], [4, 0.56, 0.36, 25], [4.3, 0.72, 0.15, 3], [4.6, 0.68, 0.51, 18], [5.06, 0.95, 0, 3]
 ]
 
 function tugAt(t: number, column: 1 | 2 | 3): number {
@@ -287,7 +287,7 @@ export function pointerAt(plan: Plan, time: number): Pointer {
 
 // The film camera in the tug: a window of the page for a moment. It eases from home to a wide frame for the shredder's arrival and the first grab, then pushes in once, with an ease, to a close frame on the cursor, its arms, the sheet and the mouth, and is there well before the key picture of 25.125. From the key picture it creeps closer and a little down as the sheet gets short, holds on the intake and the outlet while the cursor goes through and the strips drop, and only then pulls out. Its right edge stays left of the field column, so no word of that column is cut.
 const TUG_EDGE = FIELD_X - 16
-const TUG_FRAMES = { wide: 972, key: 620, close: 520, mid: SLOT.cx + 4, high: 250, top: SLOT.cy - 238, low: SLOT.cy - 180, end: SLOT.cy - 162 }
+const TUG_FRAMES = { wide: 972, key: 590, close: 556, mid: SLOT.cx + 4, high: 250, top: SLOT.cy - 153, low: SLOT.cy - 153, end: SLOT.cy - 153 }
 const tugFrame = (w: number, top: number): { x: number; y: number; w: number; h: number } => ({ x: Math.min(TUG_EDGE - w, TUG_FRAMES.mid - w / 2), y: top, w, h: (w * 9) / 16 })
 export const CAMERA = { in: [21.1, 22.1] as [number, number], closer: [23.1, 24.4] as [number, number], key: 25.125, creep: [25.125, 27.0] as [number, number], down: [27.1, 27.8] as [number, number], out: [28.3, 29.1] as [number, number] }
 

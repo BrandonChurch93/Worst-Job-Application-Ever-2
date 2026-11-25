@@ -591,10 +591,8 @@
           "The answers rest on the flat, unapologetic delivery of a frustrating technical outcome being framed as an intended feature, which inherently conveys a cold and smug tone."
         ]
       },
-      "kept": true,
-      "keptAs": [
-        "line.step1.email.0"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "too long for its place: 9.508 s in 7.325 s, over by 2.183 s; tone not judged: 1 whole answers in 8 asks",
       "line": {
         "words": 10,
@@ -9119,31 +9117,48 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
-        "asks": 6,
-        "whole": 0,
-        "transcript": null,
-        "transcripts": [],
-        "transcriptAgreed": "0 of 0",
-        "attitudes": [],
-        "accents": [],
-        "pitches": [],
-        "whisper": null,
-        "whisperVotes": "0 yes, 0 no",
-        "laugh": null,
-        "laughVotes": "0 yes, 0 no",
-        "warmth": null,
-        "warmthVotes": "0 yes, 0 no",
-        "excitement": null,
-        "excitementVotes": "0 yes, 0 no",
-        "unimpressedAndSmug": null,
-        "unimpressedAndSmugVotes": "0 yes, 0 no",
-        "basis": [],
+        "by": "the audio evaluation tool: 12 asks, 2 whole, 10 void",
+        "asks": 12,
+        "whole": 2,
+        "transcript": "Still typing. It has bills.",
+        "transcripts": [
+          "Still typing. It has bills.",
+          "Still typing. It has bills."
+        ],
+        "transcriptAgreed": "2 of 2",
+        "attitudes": [
+          "detached and deadpan",
+          "deadpan and serious"
+        ],
+        "accents": [
+          "American",
+          "American"
+        ],
+        "pitches": [
+          "low",
+          "low"
+        ],
+        "whisper": false,
+        "whisperVotes": "0 yes, 2 no",
+        "laugh": false,
+        "laughVotes": "0 yes, 2 no",
+        "warmth": false,
+        "warmthVotes": "0 yes, 2 no",
+        "excitement": false,
+        "excitementVotes": "0 yes, 2 no",
+        "unimpressedAndSmug": false,
+        "unimpressedAndSmugVotes": "1 yes, 1 no",
+        "basis": [
+          "The speaker delivers the lines with a deep, flat, and monotone voice, conveying a dry and unimpressed attitude without any excitement or warmth.",
+          "The speaker uses a deep, resonant, and monotone voice with a completely flat delivery."
+        ],
         "heardRaisedByDb": 2.15
       },
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "kept": true,
+      "keptAs": [
+        "line.live.hit.2"
+      ],
+      "why": "listener: not unimpressed and a little smug (1 yes, 1 no; [\"detached and deadpan\",\"deadpan and serious\"]). The Builder's ruling of 18:46Z: the listener's tone answers are not evidence",
       "line": {
         "words": 5,
         "seconds": 3.484,
@@ -9530,8 +9545,8 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
-        "asks": 6,
+        "by": "the audio evaluation tool: 18 asks, 0 whole, 18 void",
+        "asks": 18,
         "whole": 0,
         "transcript": null,
         "transcripts": [],
@@ -9551,9 +9566,11 @@
         "unimpressedAndSmugVotes": "0 yes, 0 no",
         "basis": []
       },
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "kept": true,
+      "keptAs": [
+        "line.live.tugLost.0"
+      ],
+      "why": "18 asks brought no whole answer; two answers that were cut off before their end both wrote the transcript The shredder always eats first, word for word, one of them saying it had no audio; pace 1.245 words a second and 1 pause of 1 measured",
       "line": {
         "words": 5,
         "seconds": 4.016,
@@ -10662,25 +10679,26 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 6 asks, 2 whole, 4 void",
-        "asks": 6,
-        "whole": 2,
-        "heard": "A single sharp tap of a small hard object against a surface. / A heavy block dropping flat onto a hard surface.",
-        "madeOf": "Hard material such as plastic, wood, or metal. / Wood, stone, or dense plastic and ceramic",
-        "events": "1 / 1",
+        "by": "the audio evaluation tool: 8 asks, 3 whole, 5 void",
+        "asks": 8,
+        "whole": 3,
+        "heard": "A single sharp tap of a small hard object against a surface. / A heavy block dropping flat onto a hard surface. / A single sharp strike on a wooden block.",
+        "madeOf": "Hard material such as plastic, wood, or metal. / Wood, stone, or dense plastic and ceramic / Wood",
+        "events": "1 / 1 / 1",
         "voice": false,
-        "voiceVotes": "0 yes, 2 no",
+        "voiceVotes": "0 yes, 3 no",
         "word": false,
-        "wordVotes": "0 yes, 2 no",
+        "wordVotes": "0 yes, 3 no",
         "music": false,
-        "musicVotes": "0 yes, 2 no",
+        "musicVotes": "0 yes, 3 no",
         "melody": false,
-        "melodyVotes": "0 yes, 2 no",
+        "melodyVotes": "0 yes, 3 no",
         "fits": false,
-        "fitsVotes": "1 yes, 1 no",
+        "fitsVotes": "1 yes, 2 no",
         "basis": [
           "The audio consists of a brief, high-frequency click indicative of a small, light object, completely lacking the loud, low-frequency thud expected from a heavy block.",
-          "The recording consists of a single, sharp, heavy thud characteristic of a solid block striking a hard, resonant surface."
+          "The recording consists of a single, sharp, heavy thud characteristic of a solid block striking a hard, resonant surface.",
+          "The audio features a single, hollow, resonant 'tock' typical of struck wood, which lacks the heavy impact and brittle acoustic properties of a block landing on ceramic."
         ],
         "heardRaisedByDb": 22.83
       },
@@ -10755,9 +10773,11 @@
         ],
         "heardRaisedByDb": 5.5
       },
-      "kept": false,
-      "keptAs": [],
-      "why": ""
+      "kept": true,
+      "keptAs": [
+        "strips-zip"
+      ],
+      "why": "three takes used and no take fits by the listener; take 2 is the only one heard as paper (flipping the pages of a book, 0 of 2 fits), take 1 was a metal zipper, take 3 a wrapper, a zipper or Velcro (0 of 3)"
     },
     {
       "key": "button-crack",
@@ -11190,31 +11210,43 @@
         ]
       },
       "listener": {
-        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
-        "asks": 6,
-        "whole": 0,
-        "transcript": null,
-        "transcripts": [],
-        "transcriptAgreed": "0 of 0",
-        "attitudes": [],
-        "accents": [],
-        "pitches": [],
+        "by": "the audio evaluation tool: 12 asks, 1 whole, 11 void",
+        "asks": 12,
+        "whole": 1,
+        "transcript": "Take your time. The job is not real.",
+        "transcripts": [
+          "Take your time. The job is not real."
+        ],
+        "transcriptAgreed": "1 of 1",
+        "attitudes": [
+          "calm and detached"
+        ],
+        "accents": [
+          "British"
+        ],
+        "pitches": [
+          "low"
+        ],
         "whisper": null,
-        "whisperVotes": "0 yes, 0 no",
+        "whisperVotes": "0 yes, 1 no",
         "laugh": null,
-        "laughVotes": "0 yes, 0 no",
+        "laughVotes": "0 yes, 1 no",
         "warmth": null,
-        "warmthVotes": "0 yes, 0 no",
+        "warmthVotes": "0 yes, 1 no",
         "excitement": null,
-        "excitementVotes": "0 yes, 0 no",
+        "excitementVotes": "0 yes, 1 no",
         "unimpressedAndSmug": null,
-        "unimpressedAndSmugVotes": "0 yes, 0 no",
-        "basis": [],
+        "unimpressedAndSmugVotes": "1 yes, 0 no",
+        "basis": [
+          "The speaker uses a slow, deliberate pace and a low, flat tone that lacks warmth or excitement, conveying a detached and slightly arrogant demeanor."
+        ],
         "heardRaisedByDb": 1.27
       },
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "kept": true,
+      "keptAs": [
+        "line.live.idle.1"
+      ],
+      "why": "tone not judged: 1 whole answers in 12 asks",
       "line": {
         "words": 8,
         "seconds": 5.162,
@@ -11405,10 +11437,45 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "listener": {
+        "by": "the audio evaluation tool: 5 asks, 1 whole, 4 void",
+        "asks": 5,
+        "whole": 1,
+        "transcript": "A valid email rejected the system is working as designed.",
+        "transcripts": [
+          "A valid email rejected the system is working as designed.",
+          "A valid email rejected, the system is working as designed."
+        ],
+        "transcriptAgreed": "2 of 2",
+        "attitudes": [
+          "deadpan and dismissive"
+        ],
+        "accents": [
+          "American"
+        ],
+        "pitches": [
+          "middle"
+        ],
+        "whisper": null,
+        "whisperVotes": "0 yes, 1 no",
+        "laugh": null,
+        "laughVotes": "0 yes, 1 no",
+        "warmth": null,
+        "warmthVotes": "0 yes, 1 no",
+        "excitement": null,
+        "excitementVotes": "0 yes, 1 no",
+        "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "1 yes, 0 no",
+        "basis": [
+          "The speaker delivers the ironic statement with a flat, measured tone that lacks warmth or excitement, conveying a distinctly smug and unimpressed attitude.",
+          "The speaker delivers the technical excuse with a steady, flat tone, indicating a deadpan dismissiveness devoid of any warmth or excitement."
+        ]
+      },
+      "kept": true,
+      "keptAs": [
+        "line.step1.email.0"
+      ],
+      "why": "the Builder's ruling of 19:11Z: take 2 is kept and the tug line moves 0.15 s later on main; transcript word for word in 2 of 2 answers that had one, 1 whole answer in 5 asks",
       "line": {
         "words": 10,
         "seconds": 7.47,
@@ -11651,9 +11718,34 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A heavy object forcefully drops and lands flat on a resonant hard surface. / A heavy object forcefully drops and lands flat on a hard, resonant surface. / A heavy solid block landing flatly with a loud thud on a hard floor.",
+        "madeOf": "dense material and ceramic / A dense solid material and ceramic. / Wood, concrete, or dense plastic impacting ceramic.",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The audio features a single, loud impact with a hard, slightly brittle resonance characteristic of a dense block striking a ceramic tile.",
+          "The audio consists of a single, loud, and sudden impact thud that matches the acoustic profile of a heavy mass striking a hard ceramic tile.",
+          "The audio consists of a single, forceful, heavy impact sound with the sharp, hard resonance characteristic of an object striking a ceramic tile surface."
+        ],
+        "heardRaisedByDb": 32.39
+      },
+      "kept": true,
+      "keptAs": [
+        "slab-drop.3"
+      ],
       "why": ""
     },
     {
@@ -11695,7 +11787,30 @@
           }
         ]
       },
-      "listener": null,
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A thin plastic wrapper is torn open. / A zipper is rapidly opened or closed. / A short, rapid ripping sound, much like a strip of Velcro being quickly pulled apart.",
+        "madeOf": "plastic / Metal or plastic and fabric / Nylon, plastic, or synthetic fabric",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": false,
+        "fitsVotes": "0 yes, 3 no",
+        "basis": [
+          "The recording contains a single, sharp sound of thin, crinkly material being ripped.",
+          "The fast, clicking friction sound is characteristic of interlocking zipper teeth.",
+          "The brief, abrasive tearing noise is characteristic of a single hook-and-loop fastener separating, rather than many paper strips zipping together."
+        ],
+        "heardRaisedByDb": 8.19
+      },
       "kept": false,
       "keptAs": [],
       "why": ""
@@ -11739,7 +11854,1143 @@
           }
         ]
       },
+      "listener": {
+        "by": "the audio evaluation tool: 5 asks, 3 whole, 2 void",
+        "asks": 5,
+        "whole": 3,
+        "heard": "A single, high-pitched metallic ping or spark sound. / A very brief and sharp metallic click or strike is heard. / A very brief, faint snapping or clicking sound.",
+        "madeOf": "metal / Metal / electricity and metal",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The audio features a singular, very brief, sharp metallic impact sound with a high-frequency ring.",
+          "The audio is a fraction-of-a-second high-pitched metallic transient that sounds exactly like a flint striker or lighter sparking against metal.",
+          "The recording contains a single, nearly instantaneous high-frequency snap that strongly resembles a tiny static discharge or electrical spark."
+        ],
+        "heardRaisedByDb": 42.01
+      },
+      "kept": true,
+      "keptAs": [
+        "dart-hit.4"
+      ],
+      "why": ""
+    },
+    {
+      "key": "slab-drop.2",
+      "kind": "cue",
+      "cue": "slab-drop",
+      "take": 3,
+      "round": "build",
+      "file": "take-3.mp3",
+      "sha256": "46d0e87d08a9b3ef2b56cbe43c1f7c8cf8811a76602aea974970e838b8d83788",
+      "filed": "2026-11-25T19:11:34.125Z",
+      "prompt": "One very heavy ceramic block landing flat on a ceramic floor, a single deep hard thud, close microphone, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.8,
+        "loop": false,
+        "influence": null,
+        "call": 161
+      },
+      "askedSeconds": 0.8,
+      "cost": "9",
+      "measured": {
+        "seconds": 0.8,
+        "start": 0.128,
+        "end": 0.34,
+        "peakDb": -6.62,
+        "rmsDb": -29.97,
+        "lufs": -27.83,
+        "truePeakDb": -6.53,
+        "low": 0.097,
+        "mid": 0.848,
+        "high": 0.055,
+        "tailDb": -54.11,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.134,
+            "end": 0.202,
+            "peakDb": -6.62
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 3 whole, 3 void",
+        "asks": 6,
+        "whole": 3,
+        "heard": "A solid object strikes a hard surface with a single, resonant thwack. / A very heavy block drops and lands flat on a hard ceramic surface. / A heavy object dropping onto a hard surface.",
+        "madeOf": "dense material such as wood, stone, or hard plastic / solid dense material and ceramic / solid material and ceramic",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The audio contains exactly one sharp, heavy impact sound with a brief, hard resonance, matching the acoustic profile of a dense block hitting ceramic.",
+          "The sound is a single, forceful impact that has the blunt, heavy acoustic characteristics of a solid block striking a hard, slightly resonant surface like ceramic tile.",
+          "The audio contains a single, solid impact followed by a short reverberation, consistent with a heavy block hitting a ceramic surface."
+        ],
+        "heardRaisedByDb": 3.62
+      },
+      "kept": true,
+      "keptAs": [
+        "slab-drop.2"
+      ],
+      "why": ""
+    },
+    {
+      "key": "tug-lost",
+      "kind": "cue",
+      "cue": "tug-lost",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "b8a3a2af08debcaf7a6730e18b09d4de368f120ed65bc41d3535eeeb6d582d29",
+      "filed": "2026-11-25T19:24:26.438Z",
+      "prompt": "One sheet of thick paper ripped out of a grip and torn in two in one fast pull, a sharp dry paper tear, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.6,
+        "loop": false,
+        "influence": null,
+        "call": 162
+      },
+      "askedSeconds": 0.6,
+      "cost": "7",
+      "measured": {
+        "seconds": 0.6,
+        "start": 0,
+        "end": 0.6,
+        "peakDb": -1.01,
+        "rmsDb": -16.77,
+        "lufs": -11.13,
+        "truePeakDb": -0.74,
+        "low": 0.005,
+        "mid": 0.329,
+        "high": 0.666,
+        "tailDb": -66.01,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.35,
+            "peakDb": -1.01
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "heard": "A single, quick tear of thick paper is heard. / A quick, sharp tear of thick paper or cardboard.",
+        "madeOf": "paper / Paper",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The audio features a single, sharp ripping noise consistent with tearing a sheet of thick paper.",
+          "The recording contains a single, rapid, harsh tearing sound that is highly characteristic of thick paper being forcefully ripped."
+        ]
+      },
+      "kept": true,
+      "keptAs": [
+        "tug-lost"
+      ],
+      "why": ""
+    },
+    {
+      "key": "arms-out",
+      "kind": "cue",
+      "cue": "arms-out",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "74428c041e2c698c7b23a80e07d71007ae63e8833680121cd169812848ff1090",
+      "filed": "2026-11-25T19:24:28.933Z",
+      "prompt": "Two small spring-loaded metal arms snapping out of a housing, two quick clicks close together, a light mechanical snap, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 163
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.13,
+        "peakDb": -1.34,
+        "rmsDb": -26.19,
+        "lufs": -24.84,
+        "truePeakDb": -1.18,
+        "low": 0.003,
+        "mid": 0.233,
+        "high": 0.765,
+        "tailDb": -56.6,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.052,
+            "peakDb": -1.34
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 4 asks, 2 whole, 2 void",
+        "asks": 4,
+        "whole": 2,
+        "heard": "A sharp clicking or snapping sound of a small mechanism. / A sharp, quick mechanical snapping sound of a spring-loaded mechanism is heard.",
+        "madeOf": "Metal / metal",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The recording contains a single, abrupt snap that sounds like small spring-loaded arms releasing.",
+          "The audio consists of a single, abrupt mechanical snap characteristic of a spring releasing, which perfectly matches the description of sprung arms snapping out."
+        ]
+      },
+      "kept": true,
+      "keptAs": [
+        "arms-out"
+      ],
+      "why": ""
+    },
+    {
+      "key": "dial-fling",
+      "kind": "cue",
+      "cue": "dial-fling",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "8a0d677c79ff223349be3810b13c5c1ca2bd7762ccf07915e7ffea86f96efad1",
+      "filed": "2026-11-25T19:24:31.752Z",
+      "prompt": "A rotary telephone dial hitting its metal stop hard at the end of its run back, one sharp metal knock with a short spring rattle after it, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.8,
+        "loop": false,
+        "influence": null,
+        "call": 164
+      },
+      "askedSeconds": 0.8,
+      "cost": "9",
+      "measured": {
+        "seconds": 0.8,
+        "start": 0,
+        "end": 0.634,
+        "peakDb": -8.94,
+        "rmsDb": -37.06,
+        "lufs": -30.27,
+        "truePeakDb": -8.76,
+        "low": 0.155,
+        "mid": 0.465,
+        "high": 0.379,
+        "tailDb": -57.21,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.004,
+            "end": 0.134,
+            "peakDb": -8.94
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "heard": "A rotary telephone dial spins back to its resting position and strikes the finger stop with a sharp click. / A rotary telephone dial spinning back and hitting its finger stop.",
+        "madeOf": "Plastic and metal / Plastic and metal",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The mechanical whirring and final, abrupt clack are characteristic of a spring-loaded rotary phone dial returning to its start position.",
+          "The recording features the mechanical whirring of a rotary dial returning to its resting position followed by a sharp click as it hits the stop."
+        ],
+        "heardRaisedByDb": 5.94
+      },
+      "kept": true,
+      "keptAs": [
+        "dial-fling"
+      ],
+      "why": ""
+    },
+    {
+      "key": "flipper-save",
+      "kind": "cue",
+      "cue": "flipper-save",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "8c0fc78c52c02d51575406233482756ba3c96459b9f2b603be294e4b5cb32a24",
+      "filed": "2026-11-25T19:24:34.411Z",
+      "prompt": "A pinball flipper snapping up and striking a steel ball hard, a solenoid clack with a solid steel knock on top, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 165
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0.026,
+        "end": 0.352,
+        "peakDb": -2.52,
+        "rmsDb": -28.59,
+        "lufs": -23.53,
+        "truePeakDb": -2.24,
+        "low": 0.005,
+        "mid": 0.419,
+        "high": 0.576,
+        "tailDb": -50.93,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.24,
+            "end": 0.302,
+            "peakDb": -2.52
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 5 asks, 2 whole, 3 void",
+        "asks": 5,
+        "whole": 2,
+        "heard": "A sharp click or clack of a mechanical device striking. / A mechanical flipper sharply strikes a steel ball.",
+        "madeOf": "metal and plastic / Metal and plastic",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The audio consists of a single, sharp mechanical clack consistent with a flipper hitting a steel ball.",
+          "The audio features a single, sharp metallic clack characteristic of a pinball machine flipper forcefully hitting a steel ball."
+        ]
+      },
+      "kept": true,
+      "keptAs": [
+        "flipper-save"
+      ],
+      "why": ""
+    },
+    {
+      "key": "session-expired",
+      "kind": "cue",
+      "cue": "session-expired",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "b651267df1e253cdc4ffc0699f780a906299766a629b14ec09b3a94eff287c54",
+      "filed": "2026-11-25T19:24:36.962Z",
+      "prompt": "A wide heavy ceramic panel dropping into place across a frame, one broad flat slam, larger and lower than a small panel, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.8,
+        "loop": false,
+        "influence": null,
+        "call": 166
+      },
+      "askedSeconds": 0.8,
+      "cost": "9",
+      "measured": {
+        "seconds": 0.8,
+        "start": 0,
+        "end": 0.8,
+        "peakDb": -1.09,
+        "rmsDb": -25.68,
+        "lufs": -19.53,
+        "truePeakDb": -0.72,
+        "low": 0.021,
+        "mid": 0.519,
+        "high": 0.46,
+        "tailDb": -71.6,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.144,
+            "peakDb": -1.09
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "heard": "A single, sharp click resembling a small latch or switch engaging. / A sharp, high-pitched metallic clinking or clicking sound is heard.",
+        "madeOf": "Metal or hard plastic / Metal",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": false,
+        "fitsVotes": "0 yes, 2 no",
+        "basis": [
+          "The audio consists of a brief, high-pitched mechanical click characteristic of a small, light object rather than a massive, heavy panel.",
+          "The recording consists of a single brief, high-pitched metallic impact, which lacks the heavy, low-frequency resonance that would be characteristic of a wide, heavy panel slamming."
+        ]
+      },
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "popup-close",
+      "kind": "cue",
+      "cue": "popup-close",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "08091616e0bcf3d7032795dc41fc6f781986d8c912bf247a6575fc838202022a",
+      "filed": "2026-11-25T19:24:39.663Z",
+      "prompt": "A small flat ceramic panel snapping shut flush into a frame, one short dull click, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 167
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -62.72,
+        "rmsDb": -72.99,
+        "lufs": null,
+        "truePeakDb": -62.48,
+        "low": 0.926,
+        "mid": 0.063,
+        "high": 0.011,
+        "tailDb": -20.48,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.48,
+            "peakDb": -62.72
+          }
+        ]
+      },
       "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "carpet-roll",
+      "kind": "cue",
+      "cue": "carpet-roll",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "3189892aa2a90fba0c13e28fa6c61d0f6cf5ff98b369d188408e026c64bc2830",
+      "filed": "2026-11-25T19:24:42.208Z",
+      "prompt": "A steel ball rolling off a hard floor onto thick carpet, the bright roll turning soft and muffled, then stopping, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 1,
+        "loop": false,
+        "influence": null,
+        "call": 168
+      },
+      "askedSeconds": 1,
+      "cost": "11",
+      "measured": {
+        "seconds": 1,
+        "start": 0,
+        "end": 0.866,
+        "peakDb": -14.83,
+        "rmsDb": -32.18,
+        "lufs": -28.76,
+        "truePeakDb": -13.32,
+        "low": 0.269,
+        "mid": 0.731,
+        "high": 0,
+        "tailDb": -50.04,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.7,
+            "peakDb": -14.83
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A metallic object rolls continuously across a hard surface before abruptly becoming muffled. / A small, hollow object rolling and rapidly wobbling to a complete stop on a hard surface. / A hard metallic object rapidly spinning and settling to a stop on a solid surface.",
+        "madeOf": "Metal / Plastic / metal",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": false,
+        "fitsVotes": "1 yes, 2 no",
+        "basis": [
+          "The recording features a hard, metallic rolling rumble that suddenly transitions into a muffled thud, matching the acoustic transition of an object moving from a hard floor to a sound-dampening carpet.",
+          "The recording features the high-pitched, hollow acoustic signature and rapid wobbling finish typical of a lightweight plastic ball settling on a hard surface, which directly contradicts the muffled, heavy sound a steel ball would make rolling onto thick carpet.",
+          "The audio features the characteristic accelerating rattle of a rigid circular object wobbling to a stop on a hard surface, lacking the muffled silence of rolling onto carpet."
+        ],
+        "heardRaisedByDb": 11.83
+      },
+      "kept": true,
+      "keptAs": [
+        "carpet-roll"
+      ],
+      "why": "three takes made and none holds: take 1 fits by 1 yes to 2 no (heard as a metal thing rolling on a hard floor and then going muffled), take 2 by 0 to 2 (liquid, or a coin settling), take 3 with the changed prompt by 0 to 2 (a coin or a light ball settling). Take 1 is the nearest to the row. The cue is silent until Phase 4 emits carpet-roll"
+    },
+    {
+      "key": "inbox-take",
+      "kind": "cue",
+      "cue": "inbox-take",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "1e47b8e104ab1a6dd3a086d19885d4786dfc52462a2ed259768d7541c1a0d065",
+      "filed": "2026-11-25T19:24:45.030Z",
+      "prompt": "A steel ball dropping into a shallow metal tray and settling, one metal clatter and a short rattle, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.6,
+        "loop": false,
+        "influence": null,
+        "call": 169
+      },
+      "askedSeconds": 0.6,
+      "cost": "7",
+      "measured": {
+        "seconds": 0.6,
+        "start": 0,
+        "end": 0.444,
+        "peakDb": -3.75,
+        "rmsDb": -32.93,
+        "lufs": -29.23,
+        "truePeakDb": -3.47,
+        "low": 0.001,
+        "mid": 0.681,
+        "high": 0.318,
+        "tailDb": -50.85,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.002,
+            "end": 0.264,
+            "peakDb": -3.75
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
+        "asks": 6,
+        "whole": 0,
+        "heard": null,
+        "madeOf": null,
+        "events": null,
+        "voice": null,
+        "voiceVotes": "0 yes, 0 no",
+        "word": null,
+        "wordVotes": "0 yes, 0 no",
+        "music": null,
+        "musicVotes": "0 yes, 0 no",
+        "melody": null,
+        "melodyVotes": "0 yes, 0 no",
+        "fits": null,
+        "fitsVotes": "0 yes, 0 no",
+        "basis": [],
+        "heardRaisedByDb": 0.75
+      },
+      "kept": true,
+      "keptAs": [
+        "inbox-take"
+      ],
+      "why": "not judged by ear: 0 whole answers in 6 asks"
+    },
+    {
+      "key": "firehouse-take",
+      "kind": "cue",
+      "cue": "firehouse-take",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "89460cc164e419875387d81ee0eaacd8289ab8396e3f5b6ae9c786d23e2bcde4",
+      "filed": "2026-11-25T19:24:47.677Z",
+      "prompt": "A steel ball dropping into a deep hole in a wooden board, a hollow knock and a short roll below, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.6,
+        "loop": false,
+        "influence": null,
+        "call": 170
+      },
+      "askedSeconds": 0.6,
+      "cost": "7",
+      "measured": {
+        "seconds": 0.6,
+        "start": 0,
+        "end": 0.6,
+        "peakDb": -12.99,
+        "rmsDb": -34.52,
+        "lufs": -32.58,
+        "truePeakDb": -12.98,
+        "low": 0.01,
+        "mid": 0.98,
+        "high": 0.01,
+        "tailDb": -41.92,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.304,
+            "peakDb": -12.99
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 4 asks, 2 whole, 2 void",
+        "asks": 4,
+        "whole": 2,
+        "heard": "A single resonant thud of a hard object hitting a hollow wooden cavity. / A steel ball drops into a deep hole within a wooden board.",
+        "madeOf": "metal and wood / Steel and wood",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The audio contains a single sharp impact with a hollow, wooden resonance consistent with a metal ball dropping into a deep hole.",
+          "The audio contains a distinct metallic strike followed by a hollow wooden resonance, matching the described action."
+        ],
+        "heardRaisedByDb": 9.99
+      },
+      "kept": true,
+      "keptAs": [
+        "firehouse-take"
+      ],
+      "why": ""
+    },
+    {
+      "key": "metrics-card",
+      "kind": "cue",
+      "cue": "metrics-card",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "846e5785a8306042c97e7635dcb2d6b76773f6b41da75f9ce10b56f2e270eb5c",
+      "filed": "2026-11-25T19:24:50.350Z",
+      "prompt": "A stiff card laid flat on a ceramic desk, a short slide and one soft flat tap, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 171
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.314,
+        "peakDb": -7.03,
+        "rmsDb": -30.09,
+        "lufs": -25.28,
+        "truePeakDb": -5.88,
+        "low": 0.014,
+        "mid": 0.828,
+        "high": 0.158,
+        "tailDb": -56.68,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.06,
+            "peakDb": -7.03
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
+        "asks": 6,
+        "whole": 0,
+        "heard": null,
+        "madeOf": null,
+        "events": null,
+        "voice": null,
+        "voiceVotes": "0 yes, 0 no",
+        "word": null,
+        "wordVotes": "0 yes, 0 no",
+        "music": null,
+        "musicVotes": "0 yes, 0 no",
+        "melody": null,
+        "melodyVotes": "0 yes, 0 no",
+        "fits": null,
+        "fitsVotes": "0 yes, 0 no",
+        "basis": [],
+        "heardRaisedByDb": 4.03
+      },
+      "kept": true,
+      "keptAs": [
+        "metrics-card"
+      ],
+      "why": "not judged by ear: 0 whole answers in 6 asks"
+    },
+    {
+      "key": "skip",
+      "kind": "cue",
+      "cue": "skip",
+      "take": 1,
+      "round": "build",
+      "file": "take-1.mp3",
+      "sha256": "56b04ef72469e4796a958ff825f924f4afa7a6ec7f81c4ad4dfd2dd14c221d30",
+      "filed": "2026-11-25T19:24:52.881Z",
+      "prompt": "One firm press of a wide plastic key bottoming out on a ceramic base, a single low click, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 172
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -17.92,
+        "rmsDb": -44.91,
+        "lufs": -39.53,
+        "truePeakDb": -14.93,
+        "low": 0.052,
+        "mid": 0.946,
+        "high": 0.002,
+        "tailDb": -63.84,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.046,
+            "peakDb": -17.92
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
+        "asks": 6,
+        "whole": 0,
+        "heard": null,
+        "madeOf": null,
+        "events": null,
+        "voice": null,
+        "voiceVotes": "0 yes, 0 no",
+        "word": null,
+        "wordVotes": "0 yes, 0 no",
+        "music": null,
+        "musicVotes": "0 yes, 0 no",
+        "melody": null,
+        "melodyVotes": "0 yes, 0 no",
+        "fits": null,
+        "fitsVotes": "0 yes, 0 no",
+        "basis": [],
+        "heardRaisedByDb": 14.92
+      },
+      "kept": true,
+      "keptAs": [
+        "skip"
+      ],
+      "why": "not judged by ear: 0 whole answers in 6 asks"
+    },
+    {
+      "key": "popup-close",
+      "kind": "cue",
+      "cue": "popup-close",
+      "take": 2,
+      "round": "build",
+      "file": "take-2.mp3",
+      "sha256": "2364bdcf9e3ca12ad7d7657533fce0371b636dbe09abb391e9fc106828de1c4a",
+      "filed": "2026-11-25T19:25:05.332Z",
+      "prompt": "A small flat ceramic panel snapping shut flush into a frame, one short dull click, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 173
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0.066,
+        "end": 0.17,
+        "peakDb": -1.64,
+        "rmsDb": -25.57,
+        "lufs": -25.57,
+        "truePeakDb": -1.23,
+        "low": 0.033,
+        "mid": 0.371,
+        "high": 0.596,
+        "tailDb": -55.27,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.07,
+            "end": 0.124,
+            "peakDb": -1.64
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 2 whole, 1 void",
+        "asks": 3,
+        "whole": 2,
+        "heard": "A sharp, quick snap or clack sound. / A single, sharp snapping sound of a hard object abruptly closing.",
+        "madeOf": "plastic or wood / plastic or wood",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The audio features a single, abrupt impact sound characteristic of two flat, hard surfaces snapping together.",
+          "The audio consists of exactly one brief, sharp, percussive click with no vocal or musical elements, matching the acoustic profile of a hard, flat panel snapping shut."
+        ]
+      },
+      "kept": true,
+      "keptAs": [
+        "popup-close"
+      ],
+      "why": ""
+    },
+    {
+      "key": "session-expired",
+      "kind": "cue",
+      "cue": "session-expired",
+      "take": 2,
+      "round": "build",
+      "file": "take-2.mp3",
+      "sha256": "3a85e1304744dd3eebffbfc62b25883c06235048e4c445dd5400bd000eb650db",
+      "filed": "2026-11-25T19:27:32.827Z",
+      "prompt": "A wide heavy ceramic panel dropping into place across a frame, one broad flat slam, larger and lower than a small panel, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.8,
+        "loop": false,
+        "influence": null,
+        "call": 174
+      },
+      "askedSeconds": 0.8,
+      "cost": "9",
+      "measured": {
+        "seconds": 0.8,
+        "start": 0,
+        "end": 0.492,
+        "peakDb": -2.26,
+        "rmsDb": -25.27,
+        "lufs": -21.67,
+        "truePeakDb": -0.26,
+        "low": 0.026,
+        "mid": 0.868,
+        "high": 0.107,
+        "tailDb": -51.49,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.002,
+            "end": 0.208,
+            "peakDb": -2.26
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "heard": "A ceramic or glass object is set down onto a hard surface. / A small ceramic or glass object clinking as it is set down on a hard surface.",
+        "madeOf": "ceramic or glass / ceramic or glass",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": false,
+        "fitsVotes": "0 yes, 2 no",
+        "basis": [
+          "The sharp, high-pitched clinking sound is characteristic of a small, hard dish or cup, lacking the deep, low-frequency thud of a heavy panel slamming.",
+          "The audio features a sharp, high-pitched, and brief resonant clink typical of small dishware, lacking the deep, loud thud that a wide heavy panel would produce."
+        ]
+      },
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "session-expired",
+      "kind": "cue",
+      "cue": "session-expired",
+      "take": 3,
+      "round": "build",
+      "file": "take-3.mp3",
+      "sha256": "29d62eee7252110524453a2b90b302f314609853323321565e99cb66555e10cb",
+      "filed": "2026-11-25T19:29:01.318Z",
+      "prompt": "A heavy stone slab dropped flat into a wide wooden frame, one deep low slam with weight, dull and broad, no ring, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.8,
+        "loop": false,
+        "influence": null,
+        "call": 175
+      },
+      "askedSeconds": 0.8,
+      "cost": "9",
+      "measured": {
+        "seconds": 0.8,
+        "start": 0,
+        "end": 0.8,
+        "peakDb": -33.95,
+        "rmsDb": -53.69,
+        "lufs": -55.69,
+        "truePeakDb": -33.22,
+        "low": 0.859,
+        "mid": 0.112,
+        "high": 0.028,
+        "tailDb": -49.82,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.564,
+            "peakDb": -33.95
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 4 asks, 2 whole, 2 void",
+        "asks": 4,
+        "whole": 2,
+        "heard": "A heavy door or panel slamming shut. / A heavy panel or door forcefully slamming shut.",
+        "madeOf": "wood / Metal or heavy wood",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 0 no",
+        "basis": [
+          "The audio consists of a single, forceful thud that strongly resembles a large, heavy wooden structure being closed with significant force.",
+          "The recording contains a single loud, resonant impact characteristic of a large, heavy structure being slammed firmly into a frame."
+        ],
+        "heardRaisedByDb": 30.95
+      },
+      "kept": true,
+      "keptAs": [
+        "session-expired"
+      ],
+      "why": ""
+    },
+    {
+      "key": "carpet-roll",
+      "kind": "cue",
+      "cue": "carpet-roll",
+      "take": 2,
+      "round": "build",
+      "file": "take-2.mp3",
+      "sha256": "49a7ce19078ae7c612bf75d3bdfd506c032a4db8bea986b8a5cca869b0b555a4",
+      "filed": "2026-11-25T19:29:03.285Z",
+      "prompt": "A steel ball rolling off a hard floor onto thick carpet, the bright roll turning soft and muffled, then stopping, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 1,
+        "loop": false,
+        "influence": null,
+        "call": 176
+      },
+      "askedSeconds": 1,
+      "cost": "11",
+      "measured": {
+        "seconds": 1,
+        "start": 0,
+        "end": 0.826,
+        "peakDb": -5.91,
+        "rmsDb": -22.27,
+        "lufs": -19.48,
+        "truePeakDb": -5.88,
+        "low": 0.069,
+        "mid": 0.929,
+        "high": 0.002,
+        "tailDb": -31.78,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.758,
+            "peakDb": -5.91
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "heard": "A rapid sound of liquid bubbling or pouring. / A small metal object like a coin or washer bouncing rapidly and settling on a hard surface.",
+        "madeOf": "Liquid / Metal",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": false,
+        "fitsVotes": "0 yes, 2 no",
+        "basis": [
+          "The recording features the distinct wet, bubbling acoustic signature of a liquid being poured, lacking any metallic or rolling characteristics.",
+          "The distinct pinging and accelerating bounce rate indicate a flat metallic object settling on a hard surface, rather than a rolling ball being muffled by carpet."
+        ],
+        "heardRaisedByDb": 2.91
+      },
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "carpet-roll",
+      "kind": "cue",
+      "cue": "carpet-roll",
+      "take": 3,
+      "round": "build",
+      "file": "take-3.mp3",
+      "sha256": "76cf1b38ac2f36091ac0677d1a6a23cfc93dca1a7b40992de8de9e761e002942",
+      "filed": "2026-11-25T19:30:14.585Z",
+      "prompt": "A heavy steel ball rolling onto thick carpet and slowing to a stop, a soft muffled low rumble, no bounce, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 1,
+        "loop": false,
+        "influence": null,
+        "call": 177
+      },
+      "askedSeconds": 1,
+      "cost": "11",
+      "measured": {
+        "seconds": 1,
+        "start": 0,
+        "end": 1,
+        "peakDb": -20.94,
+        "rmsDb": -37.53,
+        "lufs": -34.7,
+        "truePeakDb": -20.72,
+        "low": 0.836,
+        "mid": 0.164,
+        "high": 0,
+        "tailDb": -52.89,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.686,
+            "peakDb": -20.94
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+        "asks": 2,
+        "whole": 2,
+        "heard": "A small metallic object, likely a coin, spinning, wobbling, and finally settling flat on a hard surface. / A small, lightweight object, such as a ping pong ball, rapidly bouncing to a rest on a hard surface.",
+        "madeOf": "Metal / plastic",
+        "events": "1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 2 no",
+        "word": false,
+        "wordVotes": "0 yes, 2 no",
+        "music": false,
+        "musicVotes": "0 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 2 no",
+        "fits": false,
+        "fitsVotes": "0 yes, 2 no",
+        "basis": [
+          "The accelerating rattle and final sharp clack indicate a flat metallic object spinning down on a hard surface, rather than rolling onto a soft, sound-absorbing carpet.",
+          "The audio consists of an accelerating sequence of sharp, hollow taps typical of a bouncing ping pong ball settling, rather than a continuous rolling noise followed by a muffled carpet thud."
+        ],
+        "heardRaisedByDb": 17.94
+      },
       "kept": false,
       "keptAs": [],
       "why": ""

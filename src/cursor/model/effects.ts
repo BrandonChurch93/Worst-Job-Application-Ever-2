@@ -7,7 +7,7 @@ import { UNIT, type BodyModel, type EffectsLook, type EffectsModel } from '../co
 import { CENTRE, inside } from './shape'
 import { detailTexture } from './texture'
 
-const DROPS = 15
+const DROPS = 26
 const STEAM = 54
 const SMOKE_POINTS = 4
 const SMOKE_EACH = 26
@@ -51,7 +51,7 @@ function dropMaterial(): THREE.MeshPhysicalMaterial {
       float wjaSmall = smoothstep( 0.08, 0.4, fwidth( wjaFacing ) );
       float wjaGlint = smoothstep( 0.9, 0.965, dot( reflect( -wjaV, wjaN ), wjaL ) ) * ( 1.0 - 0.7 * wjaSmall );
       float wjaRim = pow( 1.0 - wjaFacing, 5.0 );
-      diffuseColor.a = 0.05 + ( 0.62 * wjaRim + 0.5 * smoothstep( -0.1, 0.8, -wjaAway ) * ( 1.0 - wjaRim ) ) * ( 1.0 - 0.72 * wjaSmall );
+      diffuseColor.a = 0.06 + ( 0.8 * wjaRim + 0.62 * smoothstep( -0.1, 0.8, -wjaAway ) * ( 1.0 - wjaRim ) ) * ( 1.0 - 0.72 * wjaSmall );
       outgoingLight *= 0.12 * ( 1.0 - 0.9 * wjaEdge );
       outgoingLight += vec3( 0.78, 0.78, 0.74 ) * wjaGather * ( 1.0 - 0.6 * wjaSmall ) + vec3( 2.8, 2.75, 2.65 ) * wjaGlint;
       #include <opaque_fragment>
@@ -209,8 +209,8 @@ class Effects implements EffectsModel {
             break
           }
         }
-        const size = (0.32 + 0.72 * Math.pow(hash01(i, cycle, SEED + 5), 2.1)) * (0.8 + 0.2 * amount) * on * UNIT
-        const flyer = hash01(i, cycle, SEED + 6) < 0.12
+        const size = (0.5 + 1.0 * Math.pow(hash01(i, cycle, SEED + 5), 1.9)) * (0.8 + 0.2 * amount) * on * UNIT
+        const flyer = hash01(i, cycle, SEED + 6) < 0.22
         let r = size
         let long = 1
         let high = 0.8
@@ -329,7 +329,7 @@ class Effects implements EffectsModel {
       const amount = clamp01(s.amount)
       if (amount <= 0.01) continue
       this.on(surface, s.x, s.y, this.a)
-      n = this.plume(n, this.a.x, this.a.y, this.a.z, amount, look.time, SMOKE_EACH, 2, 17, 4.8, 0.26, 3.1, 0.2, 0.52, 0.56, 40 + k * 9)
+      n = this.plume(n, this.a.x, this.a.y, this.a.z, amount, look.time, SMOKE_EACH, 2, 17, 4.8, 0.22, 2.9, 0.34, 0.7, 0.5, 40 + k * 9)
     }
     if (look.dust >= 0 && look.dust < 1) {
       const d = look.dust

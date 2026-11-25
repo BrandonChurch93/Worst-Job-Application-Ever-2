@@ -90,7 +90,7 @@ describe('the questions the listener gets', () => {
   it('has one describing line for every cue of the config, read from the kit', () => {
     const lines: Record<string, string> = cueLines()
     for (const s of cfg.audio.sfx) expect(lines[s.id], s.id).toMatch(/^[A-Z].{8,}/)
-    expect(Object.keys(lines).length).toBe(cfg.audio.sfx.length)
+    expect(Object.keys(lines).length).toBe(cues.allCues(cfg.audio.sfx).length)
     expect(new Set([lines['ui-tick'], lines['key-tap'], lines['ui-send']]).size).toBe(3)
   })
 

@@ -44,7 +44,7 @@ const DIVE = { tip: 2.09, far: 1.25, high: [5, 18] as [number, number], fast: [1
 const DRAG = { stride: 90, pulse: 0.2, lean: 0.34 }
 // The principles every move gets by itself: a pull back against the way it sets off, a stretch along the way while it travels, a squash where it stops.
 const MOVE = { off: 60, pull: 3, tip: 2.6, long: 0.3, per: 5200, land: 4.8 }
-const ARM = { rest: 34, strain: 13, shed: 0.3, snap: 0.035 }
+const ARM = { rest: 40, strain: 13, shed: 0.3, snap: 0.035, lean: 0.35, back: 0.45 }
 // What the body can be drawn at: the springs may ask for more, the pose never does.
 // Leaning right is held short of 0.42, where the arrow would stand upright on its tail and stop reading as a cursor.
 const LIMIT = { short: 0.55, long: 1.4, left: 0.6, right: 0.34 }
@@ -435,7 +435,7 @@ export class CursorBody {
       const pull = Math.max(0, Math.min(1, (far - ARM.rest) / ARM.strain))
       const was = s.strain
       s.strain += (pull - s.strain) * Math.min(1, dt * 18)
-      lean += Math.max(-0.7, Math.min(0.7, Math.atan2(hx, Math.max(20, hy)) * 0.85))
+      lean -= Math.max(-0.6, Math.min(0.6, Math.atan2(hx, Math.max(20, hy)) * (ARM.lean + ARM.back * s.strain)))
       stretch += 0.2 * s.strain - Math.min(0.3, (Math.max(0, was - s.strain) / dt) * ARM.snap)
       s.sproutV += (SPRING.sprout.k * (1 - s.sprout) - SPRING.sprout.c * s.sproutV) * dt
       s.sprout += s.sproutV * dt

@@ -1611,6 +1611,176 @@
       "answer": "HTTP 200, 1.9 s",
       "cost": 6,
       "how": "reported by the response"
+    },
+    {
+      "n": 161,
+      "time": "2026-11-25T19:11:32Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "slab-drop.2 take 3, variant 2 of 3",
+      "asked": "0.8 s",
+      "answer": "HTTP 200, 1.8 s",
+      "cost": 9,
+      "how": "reported by the response"
+    },
+    {
+      "n": 162,
+      "time": "2026-11-25T19:24:24Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "tug-lost take 1",
+      "asked": "0.6 s",
+      "answer": "HTTP 200, 2.0 s",
+      "cost": 7,
+      "how": "reported by the response"
+    },
+    {
+      "n": 163,
+      "time": "2026-11-25T19:24:26Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "arms-out take 1",
+      "asked": "0.5 s",
+      "answer": "HTTP 200, 2.0 s",
+      "cost": 6,
+      "how": "reported by the response"
+    },
+    {
+      "n": 164,
+      "time": "2026-11-25T19:24:29Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "dial-fling take 1",
+      "asked": "0.8 s",
+      "answer": "HTTP 200, 2.4 s",
+      "cost": 9,
+      "how": "reported by the response"
+    },
+    {
+      "n": 165,
+      "time": "2026-11-25T19:24:31Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "flipper-save take 1",
+      "asked": "0.5 s for a cue of 0.4 s",
+      "answer": "HTTP 200, 2.3 s",
+      "cost": 6,
+      "how": "reported by the response"
+    },
+    {
+      "n": 166,
+      "time": "2026-11-25T19:24:34Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "session-expired take 1",
+      "asked": "0.8 s",
+      "answer": "HTTP 200, 2.1 s",
+      "cost": 9,
+      "how": "reported by the response"
+    },
+    {
+      "n": 167,
+      "time": "2026-11-25T19:24:37Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "popup-close take 1",
+      "asked": "0.5 s for a cue of 0.3 s",
+      "answer": "HTTP 200, 2.3 s",
+      "cost": 6,
+      "how": "reported by the response"
+    },
+    {
+      "n": 168,
+      "time": "2026-11-25T19:24:39Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "carpet-roll take 1",
+      "asked": "1 s",
+      "answer": "HTTP 200, 2.2 s",
+      "cost": 11,
+      "how": "reported by the response"
+    },
+    {
+      "n": 169,
+      "time": "2026-11-25T19:24:42Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "inbox-take take 1",
+      "asked": "0.6 s",
+      "answer": "HTTP 200, 2.2 s",
+      "cost": 7,
+      "how": "reported by the response"
+    },
+    {
+      "n": 170,
+      "time": "2026-11-25T19:24:45Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "firehouse-take take 1",
+      "asked": "0.6 s",
+      "answer": "HTTP 200, 2.3 s",
+      "cost": 7,
+      "how": "reported by the response"
+    },
+    {
+      "n": 171,
+      "time": "2026-11-25T19:24:47Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "metrics-card take 1",
+      "asked": "0.5 s",
+      "answer": "HTTP 200, 2.2 s",
+      "cost": 6,
+      "how": "reported by the response"
+    },
+    {
+      "n": 172,
+      "time": "2026-11-25T19:24:50Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "skip take 1",
+      "asked": "0.5 s for a cue of 0.3 s",
+      "answer": "HTTP 200, 2.1 s",
+      "cost": 6,
+      "how": "reported by the response"
+    },
+    {
+      "n": 173,
+      "time": "2026-11-25T19:25:02Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "popup-close take 2",
+      "asked": "0.5 s for a cue of 0.3 s",
+      "answer": "HTTP 200, 2.2 s",
+      "cost": 6,
+      "how": "reported by the response"
+    },
+    {
+      "n": 174,
+      "time": "2026-11-25T19:27:30Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "session-expired take 2",
+      "asked": "0.8 s",
+      "answer": "HTTP 200, 1.8 s",
+      "cost": 9,
+      "how": "reported by the response"
+    },
+    {
+      "n": 175,
+      "time": "2026-11-25T19:28:56Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "session-expired take 3",
+      "asked": "0.8 s",
+      "answer": "HTTP 200, 4.5 s",
+      "cost": 9,
+      "how": "reported by the response"
+    },
+    {
+      "n": 176,
+      "time": "2026-11-25T19:29:01Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "carpet-roll take 2",
+      "asked": "1 s",
+      "answer": "HTTP 200, 1.6 s",
+      "cost": 11,
+      "how": "reported by the response"
+    },
+    {
+      "n": 177,
+      "time": "2026-11-25T19:30:12Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "carpet-roll take 3",
+      "asked": "1 s",
+      "answer": "HTTP 200, 2.1 s",
+      "cost": 11,
+      "how": "reported by the response"
     }
   ]
 }

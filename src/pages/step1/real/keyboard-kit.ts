@@ -83,19 +83,22 @@ export function kit(): Kit {
     out.anisotropyRotation = 0
     return out
   }
-  const deck = metal(0.52, 0.45, 0.22)
-  deck.color.multiply(new THREE.Color(0.95, 0.96, 0.98))
-  const turned = metal(0.42, 0.4, 0.14)
-  turned.color.multiply(new THREE.Color(0.5, 0.515, 0.54))
+  const deck = metal(0.46, 0.5, 0.1)
+  deck.color.multiply(new THREE.Color(0.84, 0.85, 0.875))
+  const turned = metal(0.36, 0.7, 0.16)
+  turned.color.multiply(new THREE.Color(0.38, 0.39, 0.415))
   const bed = metal(0.55, 0.5, 0.12)
   bed.color.multiply(new THREE.Color(0.9, 0.91, 0.93))
   const barrel = metal(0.34, 0.6, 0.14)
-  barrel.color.multiply(new THREE.Color(0.3, 0.31, 0.33))
-  const cap = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xefe9dd), roughness: 0.66, metalness: 0, specularIntensity: 0.4, vertexColors: true }))
+  barrel.color.multiply(new THREE.Color(0.2, 0.205, 0.22))
+  const cap = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xf0e6d3), roughness: 0.62, metalness: 0, specularIntensity: 0.45, vertexColors: true }))
   const lamp = studio(m.orange.clone())
   lamp.emissive = srgb(0xff5a08)
   lamp.emissiveIntensity = 0
-  const seat = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x8a8782), roughness: 0.78, metalness: 0, specularIntensity: 0.3 }))
+  lamp.roughness = 0.3
+  lamp.clearcoat = 0.6
+  lamp.clearcoatRoughness = 0.22
+  const seat = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x4c4a47), roughness: 0.78, metalness: 0, specularIntensity: 0.3 }))
   const dark = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x201f1e), roughness: 0.55, metalness: 0.2, specularIntensity: 0.5 }))
   made = { brushed, deck, turned, barrel, bed, cap, orange: m.orange, lamp, seat, dark }
   return made

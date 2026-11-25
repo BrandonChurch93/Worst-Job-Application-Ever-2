@@ -211,7 +211,7 @@ describe('step 1: the script of the film', () => {
     }
   })
 
-  it('holds the tug frame left of the field column on the intake and the outlet, is close by 2.4 s into the tug, 560 to 680 px of page at the key picture, and about 520 px after it', () => {
+  it('holds the tug frame left of the field column on the intake and the outlet, is close by 2.4 s into the tug, 560 to 680 px of page at the key picture, and about 556 px after it', () => {
     const page = film().page
     let gutter = Infinity
     let widest = 0
@@ -238,8 +238,8 @@ describe('step 1: the script of the film', () => {
       }
     }
     expect(CAMERA.closer[1]).toBeLessThanOrEqual(22.03 + 2.4)
-    expect(widest).toBeLessThan(540)
-    expect(closest).toBeGreaterThan(500)
+    expect(widest).toBeLessThan(570)
+    expect(closest).toBeGreaterThan(540)
     expect((config.cursor.heightPxAt1080 * 1920) / widest / 1080).toBeGreaterThan(0.22)
     console.log(`tug frame: ${closest.toFixed(0)} to ${widest.toFixed(0)} px of page wide once it has closed, the line before the field column ${gutter.toFixed(0)} px outside the right edge`)
   })

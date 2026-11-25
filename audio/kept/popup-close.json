@@ -1,0 +1,116 @@
+{
+  "id": "popup-close",
+  "kind": "cue",
+  "cue": "popup-close",
+  "variant": null,
+  "class": "tick",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A small flat panel snapping shut",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A small flat ceramic panel snapping shut flush into a frame, one short dull click, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 173
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 2,
+    "round": "build",
+    "file": "take-2.mp3",
+    "sha256": "2364bdcf9e3ca12ad7d7657533fce0371b636dbe09abb391e9fc106828de1c4a",
+    "filed": "2026-11-25T19:25:05.332Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0.066,
+      "end": 0.17,
+      "peakDb": -1.64,
+      "rmsDb": -25.57,
+      "lufs": -25.57,
+      "truePeakDb": -1.23,
+      "low": 0.033,
+      "mid": 0.371,
+      "high": 0.596,
+      "tailDb": -55.27,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0.07,
+          "end": 0.124,
+          "peakDb": -1.64
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0.088,
+    "trimEnd": 0.17,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 20.51,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -16,
+    "gainDb": -14,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.082,
+    "start": 0,
+    "end": 0.07,
+    "peakDb": -16,
+    "rmsDb": -38.17,
+    "lufs": -35.98,
+    "truePeakDb": -15.92,
+    "low": 0.016,
+    "mid": 0.383,
+    "high": 0.601,
+    "tailDb": -53.94,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.036,
+        "peakDb": -16
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 2 whole, 1 void",
+    "asks": 3,
+    "whole": 2,
+    "heard": "A sharp, quick snap or clack sound. / A single, sharp snapping sound of a hard object abruptly closing.",
+    "madeOf": "plastic or wood / plastic or wood",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The audio features a single, abrupt impact sound characteristic of two flat, hard surfaces snapping together.",
+      "The audio consists of exactly one brief, sharp, percussive click with no vocal or musical elements, matching the acoustic profile of a hard, flat panel snapping shut."
+    ]
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "popup-close.wav",
+  "seconds": 0.082,
+  "sha256": "eba9e99a9275e59d4ee4fc2c48ab51913b552d1717ec2feff5ca2b50ff692a2b"
+}

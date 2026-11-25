@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { PITCH_CENTS, cueClass, eventCues, filmLineId, liveKeysFor, liveLineId, liveTriggers, loopCues, pickVariant, silentEvents, stopEvents, variantAt, variantId } from '../src/audio/cues'
+import { PITCH_CENTS, allCues, cueClass, cueOfEvent, eventCues, extraCues, filmLineId, liveKeysFor, liveLineId, liveTriggers, loopCues, pickVariant, silentEvents, stopEvents, variantAt, variantId } from '../src/audio/cues'
 
 const read = (...p: string[]) => JSON.parse(readFileSync(path.join(process.cwd(), ...p), 'utf8'))
 const cfg: any = read('config', 'showcase.json')
@@ -16,24 +16,24 @@ describe('the table of events to cues', () => {
   })
 
   it('reaches every cue of audio.sfx from an event', () => {
-    const named = new Set(Object.values(eventCues))
+    const named = new Set([...Object.values(eventCues), ...extraCues.map((x) => x.id)])
     for (const id of ids) expect(named.has(id), id).toBe(true)
   })
 
   it('plays a cue on the event named exactly as the cue', () => {
-    for (const id of ids) expect(eventCues[id], id).toBe(id)
+    for (const id of allCues(sfx).map((c) => c.id)) expect(cueOfEvent(id), id).toBe(id)
   })
 
-  it('lists what is silent on purpose, and gives none of it a cue', () => {
-    expect(silentEvents).toContain('popup-close')
-    for (const name of silentEvents) expect(eventCues[name], name).toBeUndefined()
+  it('gives nothing that is silent on purpose a cue', () => {
+    for (const name of silentEvents) expect(cueOfEvent(name), name).toBeUndefined()
     expect(eventCues.share).toBe('button-press')
   })
 
   it('maps every event a beat of the film names', () => {
     const events: string[] = cfg.film.beats.map((b: any) => b.event).filter((e: unknown) => typeof e === 'string')
     expect(events.length).toBeGreaterThan(0)
-    for (const e of events) expect(ids, e).toContain(eventCues[e])
+    const every = allCues(sfx).map((c) => c.id)
+    for (const e of events) expect(every, e).toContain(cueOfEvent(e))
     expect(eventCues['bolt-hit-cursor']).toBe('bolt-hit')
   })
 
@@ -46,12 +46,48 @@ describe('the table of events to cues', () => {
     for (const id of ids) expect(['tone', 'tick', 'mechanism', 'hit', 'music'], id).toContain(cueClass[id])
     expect(cueClass['room-tone']).toBe('tone')
     expect(cueClass['hold-music']).toBe('music')
-    expect(Object.keys(cueClass).sort()).toEqual(ids.slice().sort())
+    for (const x of extraCues) expect(['tick', 'mechanism', 'hit'], x.id).toContain(cueClass[x.id])
+    expect(Object.keys(cueClass).sort()).toEqual(allCues(sfx).map((c) => c.id).sort())
   })
 
   it('imports nothing, so loading it in capture mode loads no audio code', () => {
     const text = readFileSync(path.join(process.cwd(), 'src', 'audio', 'cues.ts'), 'utf8')
     expect(/^\s*import\s/m.test(text)).toBe(false)
+  })
+})
+
+describe('the cues the build added', () => {
+  const file: any[] = read('audio', 'EXTRA-CUES.json').cues.filter((x: any) => typeof x.event === 'string')
+  const wired = ['tug-lost', 'arms-out', 'dial-fling', 'flipper-save', 'session-expired', 'popup-close', 'skip']
+  const waiting = ['carpet-roll', 'inbox-take', 'firehouse-take', 'metrics-card']
+
+  it('says the same as audio/EXTRA-CUES.json', () => {
+    expect(extraCues.map((x) => ({ id: x.id, seconds: x.seconds, event: x.event }))).toEqual(file.map((x) => ({ id: x.id, seconds: x.seconds, event: x.event })))
+    expect(extraCues.map((x) => x.id)).toEqual([...wired.slice(0, 6), ...waiting, 'skip'])
+  })
+
+  it('stays inside the number of added cues the config allows', () => {
+    expect(file.length).toBeLessThanOrEqual(cfg.audio.extraCuesMax)
+  })
+
+  it('plays each on the event of its own name and on no borrowed sound', () => {
+    for (const id of [...wired, ...waiting]) expect(cueOfEvent(id), id).toBe(id)
+    for (const id of [...wired, ...waiting]) if (!ids.includes(id)) expect(eventCues[id], id).toBeUndefined()
+  })
+
+  it('gives an event nobody named no cue', () => {
+    expect(cueOfEvent('count-run')).toBeUndefined()
+    expect(cueOfEvent('no-such-event')).toBeUndefined()
+  })
+
+  it('lists each cue once, before and after audio.sfx holds the added rows', () => {
+    const before = allCues(sfx).map((c) => c.id)
+    expect(new Set(before).size).toBe(before.length)
+    for (const x of extraCues) expect(before).toContain(x.id)
+    const held = [...sfx, ...extraCues.filter((x) => !ids.includes(x.id)).map((x) => ({ id: x.id, seconds: x.seconds }))]
+    const after = allCues(held).map((c) => c.id)
+    expect(after.length).toBe(new Set(after).size)
+    expect(after.slice().sort()).toEqual(before.slice().sort())
   })
 })
 

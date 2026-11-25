@@ -45,6 +45,8 @@ export interface BodyLook {
   holes: Hole[]
   // Null for a body in one piece. Otherwise the body is cut along its length into this many strips.
   strips: StripPose[] | null
+  // 1 when the strips are loose ribbons whatever their places: even in width, square at the ends, lying thin. Left out, each strip is a ribbon by how far it is from its place.
+  ribbon?: number
   // Faint hairline seams on a whole body where the strips were cut: the reassembled body as it fades. With strips null it is drawn for seamCount strips.
   seam: number
   seamCount: number
