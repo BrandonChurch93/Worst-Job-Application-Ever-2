@@ -7,10 +7,10 @@ import { hex, Kit, matsOf, meshOf, shade, SURF, type V2, type V3 } from './kit'
 const C = {
   red: hex(0x5e1219),
   plate: hex(0x3d0c11),
-  steel: hex(0x7c8187),
-  chrome: hex(0x8d9298),
+  steel: hex(0x6c7480),
+  chrome: hex(0x8a94a0),
   rubber: hex(0x222223),
-  staple: hex(0x9fa4a9),
+  staple: hex(0x8f98a3),
   dark: hex(0x2c2d30)
 }
 
@@ -92,6 +92,14 @@ function body(k: Kit, f: Frame): void {
     k.cyl(0, 0, 0, 3.4, 1.6, C.chrome, SURF.chrome, 12, 0.7)
     k.back()
   }
+  k.fine = true
+  const coil: V3[] = []
+  for (let i = 0; i <= 44; i++) {
+    const a = (i / 44) * Math.PI * 2 * 5.5
+    coil.push([PIN.x + 9 + Math.cos(a) * 2.6, -6 + (12 * i) / 44, 7.6 + Math.sin(a) * 2.6])
+  }
+  k.tube(coil, 0.5, C.chrome, SURF.steel, 4)
+  k.fine = false
   k.at(PIN.x, 0, PIN.z, 0, 0, -MAG)
   const ml = L - PIN.x - 14
   k.box(ml / 2 - 2, 0, -6.8, ml, 19, 1.6, C.chrome, SURF.chrome, 0.4)
@@ -100,7 +108,9 @@ function body(k: Kit, f: Frame): void {
   const row = ml * 0.62
   const x0 = ml - 5.4 - row
   const n = Math.floor(row / 1.5)
+  k.fine = true
   for (let i = 0; i < n; i++) k.box(x0 + i * 1.5 + 0.75, 0, -5.2, 1.05, 14.6, i % 2 ? 4.4 : 4.15, i % 3 ? C.staple : shade(C.staple, 0.82), SURF.steel, 0)
+  k.fine = false
   k.box(x0 - 4.5, 0, -5.2, 8, 15, 4.8, C.dark, SURF.plastic, 0.6)
   k.tube([[4, 0, -2.8], [x0 - 8.5, 0, -2.8]], 1.1, shade(C.steel, 0.8), SURF.steel, 5)
   k.back()
@@ -124,6 +134,16 @@ function arm(k: Kit, f: Frame): void {
   const xs: [number, number][] = [[-9.5, 0.5], [-8.6, 0.74], [-6.5, 0.92], [-3, 1], [L * 0.2, 1], [L * 0.45, 1], [L * 0.7, 1], [L - 12, 1], [L - 5, 0.97], [L - 1, 0.86], [L + 1.2, 0.66], [L + 2, 0.42]]
   k.loft(xs.map(([x, g]) => section(x, g, 1, 1, 5 * g)), C.red, SURF.enamel)
   k.box(L - 9, 0, -6.2, 5, 13, 2.4, C.chrome, SURF.chrome, 0.3)
+  for (const s of [-1, 1]) {
+    const seam: V3[] = []
+    for (let i = 0; i <= 8; i++) {
+      const x = -4 + ((L - 2) * i) / 8
+      seam.push([x, s * ((taper(f, x + PIN.x) - 1.6) + 0.15), -1.2])
+    }
+    k.tube(seam, 0.7, shade(C.red, 0.55), SURF.enamel, 4)
+  }
+  const band = section(L - 16, 1.1, 1, 1, 5).map((q) => [q[0], q[1], q[2]] as V3)
+  k.loft([band, band.map((q) => [q[0] + 2.2, q[1], q[2]] as V3)], C.chrome, SURF.chrome, false)
 }
 
 interface Built { arms: { mesh: THREE.Mesh; ids: string[]; turn: number }[] }
@@ -138,12 +158,8 @@ export function staplerScrews(z: Zone): [number, number, number][] {
   return out
 }
 
-export function buildStaplers(z: Zone): THREE.Object3D {
-  const mats = matsOf(z)
-  const root = new THREE.Group()
-  root.name = 'office.staplers'
+function bases(z: Zone): Kit {
   const k = new Kit()
-  const arms: Built['arms'] = []
   for (const g of slingsOf(z)) {
     const f = frameOf(z, g)
     const outline = plateOutline(f)
@@ -153,6 +169,21 @@ export function buildStaplers(z: Zone): THREE.Object3D {
     k.at(f.s[0], f.s[1], PLATE.z + PLATE.thick, f.turn)
     body(k, f)
     k.back()
+  }
+  return k
+}
+
+// The small trim of the staplers, for the one mesh of fine things of the tier.
+export const staplerFine = (z: Zone): Kit => bases(z)
+
+export function buildStaplers(z: Zone): THREE.Object3D {
+  const mats = matsOf(z)
+  const root = new THREE.Group()
+  root.name = 'office.staplers'
+  const k = bases(z)
+  const arms: Built['arms'] = []
+  for (const g of slingsOf(z)) {
+    const f = frameOf(z, g)
     const a = new Kit()
     arm(a, f)
     const mesh = meshOf(a.done(), mats.solid, `office.stapler.arm.${g.side}`, { cast: true })

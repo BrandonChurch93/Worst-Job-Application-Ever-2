@@ -37,7 +37,7 @@ export const TONE = {
   vein: hex(0x8f9296),
   wood: hex(0x6b3c20),
   woodLight: hex(0xb08a4e),
-  leather: hex(0x484c55),
+  leather: hex(0x5d5148),
   paper: hex(0xf2df63),
   paperShade: hex(0xd9c13f),
   folder: hex(0x243a5c),

@@ -157,7 +157,7 @@ export function lensOf(z: Zone, name: string, colour: [number, number, number]):
       roughness: 0.12,
       metalness: 0,
       transparent: true,
-      opacity: 0.84,
+      opacity: 0.9,
       clearcoat: 1,
       clearcoatRoughness: 0.05,
       emissive: new THREE.Color(colour[0], colour[1], colour[2]),

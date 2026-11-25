@@ -186,11 +186,11 @@ export function parapet(g: Geo, x0: number, x1: number, y0: number, y1: number, 
 
 // A beacon: a chromed base on a roof, in the metal bucket. Its lens and its reflector are meshes of their own.
 export function beaconBase(b: Buckets, x: number, y: number, z: number): void {
-  b.metal.lathe([[0, 0], [22, 0], [22, 2.5], [19.6, 4.5], [19.6, 7], [17.5, 8], [0, 8]], x, y, 28, TONE.chrome, { base: z })
+  b.metal.lathe([[0, 0], [24.5, 0], [24.5, 2.5], [22.2, 4.5], [22.2, 7], [20.2, 8], [0, 8]], x, y, 28, TONE.chrome, { base: z })
   b.metal.lathe([[2.2, 8], [2.2, 14], [0, 14]], x, y, 10, TONE.steel, { base: z })
   for (let i = 0; i < 4; i++) {
     const a = Math.PI / 4 + (i * Math.PI) / 2
-    b.screws.push([x + Math.cos(a) * 20.8, y + Math.sin(a) * 20.8, z + 2.5, 1.2])
+    b.screws.push([x + Math.cos(a) * 23.3, y + Math.sin(a) * 23.3, z + 2.5, 1.2])
   }
 }
 
@@ -198,8 +198,8 @@ export function beaconBase(b: Buckets, x: number, y: number, z: number): void {
 export function beaconLens(): THREE.BufferGeometry {
   const g = new Geo()
   const c: RGB = [1, 1, 1]
-  g.lathe([[16.6, 0], [16.6, 15], [15.9, 21], [13.6, 26], [9.6, 29.6], [4.5, 31.2], [0, 31.5]], 0, 0, 72, c, { base: 7, wave: [28, 0.06] })
-  g.lathe([[17.3, 0], [17.3, 1.8], [16.6, 1.8]], 0, 0, 36, c, { base: 7 })
+  g.lathe([[19.2, 0], [19.2, 18], [18.4, 25], [15.8, 31], [11.2, 35.4], [5.2, 37.4], [0, 37.8]], 0, 0, 72, c, { base: 7, wave: [28, 0.06] })
+  g.lathe([[20, 0], [20, 1.8], [19.2, 1.8]], 0, 0, 36, c, { base: 7 })
   return g.done()
 }
 

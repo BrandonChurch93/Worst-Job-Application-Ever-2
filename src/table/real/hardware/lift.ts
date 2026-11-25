@@ -5,7 +5,7 @@ import { Geo, type V2, type V3 } from './geo'
 import { TUBE, clamp, collar, frameAt, lengthOf, shells, spot } from './kit'
 import { FIN, Screws, TONE, shade } from './mats'
 
-export const LIFT = { centre: TUBE.outer + 1.5, foot: 10.55, cup: 12 / BALL, elbowOut: 66, bend: 0.75 * BALL, lean: 0, swing: 1.25, decay: 4, beat: 7 }
+export const LIFT = { centre: TUBE.outer + 1.5, foot: 10.55, cup: 12 / BALL, face: 2.1, elbowOut: 66, bend: 0.75 * BALL, lean: 0, swing: 1.25, decay: 4, beat: 7 }
 export const DOOR = { high: 88 }
 
 export interface Lift { G: Geo; C: Geo; S: Screws; flap: Geo | null; hinge: V3 }
@@ -47,8 +47,9 @@ export function lift(z: Zone): Lift {
   {
     const from = G.vertices
     const o = TUBE.outer
-    G.f(FIN.alu).lathe([[0, -11], [20, -10], [o - 14, -4], [o + 4, 0], [o + 7, 3], [o + 7, 11], [o + 4.6, 12.4], [o + 4.6, 15.6], [o + 7, 17], [o + 7, 28], [o + 5, 30], [o + 0.3, 30]], 0, 0, 20, (i) => (i === 6 ? TONE.aluDark : i < 3 ? shade(TONE.alu, 0.86) : TONE.alu))
+    G.f(FIN.alu).lathe([[0, -11], [16, -11], [18, -9], [18, -7.5], [o - 22, -7.5], [o - 20, -6], [o - 20, -4], [o + 2, -4], [o + 7, 1], [o + 7, 11], [o + 4.6, 12.4], [o + 4.6, 15.6], [o + 7, 17], [o + 7, 28], [o + 5, 30], [o + 0.3, 30]], 0, 0, 24, (i) => (i === 10 ? TONE.aluDark : i === 0 || i === 3 || i === 6 ? shade(TONE.alu, LIFT.face * (i === 3 ? 0.84 : 1)) : i < 8 ? shade(TONE.alu, 0.8) : TONE.alu))
     G.move(from, new THREE.Matrix4().makeRotationX(-Math.PI / 2).setPosition(base[0], base[1] - 4, zc))
+    S.add(base[0], base[1] - 15, zc, 0.9, new THREE.Vector3(0, -1, 0))
     for (const side of [-1, 1]) {
       const a = Math.PI / 2 + side * 0.55
       S.add(base[0] + (o + 7) * Math.cos(a), base[1] + 3, zc + (o + 7) * Math.sin(a), 0.62, new THREE.Vector3(Math.cos(a), 0, Math.sin(a)))

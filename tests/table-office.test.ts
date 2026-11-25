@@ -34,7 +34,7 @@ const triangles = (m: THREE.Mesh): number => {
 
 const built = {
   coffee: buildCoffee(z, ctxOf()),
-  cubicles: buildCubicles(z),
+  cubicles: buildCubicles(z, ctxOf()),
   inbox: buildInbox(z),
   staplers: buildStaplers(z)
 }
@@ -50,7 +50,7 @@ describe('the models of the office', () => {
     const fine = all.filter((m) => m.userData.fine).reduce((n, m) => n + triangles(m), 0)
     const rest = all.filter((m) => !m.userData.fine).reduce((n, m) => n + triangles(m), 0)
     expect(fine).toBeGreaterThan(0)
-    expect(rest).toBeLessThan(60000)
+    expect(rest).toBeLessThan(24000)
   })
 
   test('every material is one of the three of the zone, and what glows names a light group of the zone', () => {

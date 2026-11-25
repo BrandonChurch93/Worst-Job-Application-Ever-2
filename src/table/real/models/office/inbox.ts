@@ -10,7 +10,7 @@ const C = {
   housing: hex(0xcbbf9f),
   housingDark: hex(0xa89c7e),
   pad: hex(0x2b2b2c),
-  wire: hex(0xc4c8cc),
+  wire: hex(0x9aa3ad),
   white: hex(0xeeeae0),
   manila: hex(0xd3b073),
   kraft: hex(0xb99560),

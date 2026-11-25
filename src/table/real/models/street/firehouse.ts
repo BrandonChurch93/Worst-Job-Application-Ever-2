@@ -58,7 +58,7 @@ export function firehouse(b: Buckets, z: Zone, ctx: RealContext): Firehouse {
 
   const trim = shade(TONE.stoneDark, 0.72)
   const up: WindowLook = { frame: trim, wall: TONE.brick, sill: TONE.stone, lintel: TONE.stone, surround: TONE.stone, bars: [2, 3] }
-  const down: WindowLook = { frame: trim, wall: TONE.stone, sill: TONE.stonePale, lintel: TONE.stonePale, bars: [2, 2], warm: 0.35 }
+  const down: WindowLook = { frame: trim, wall: TONE.brick, sill: TONE.stone, lintel: TONE.stone, surround: TONE.stone, bars: [2, 2], warm: 0.35 }
   let n = 0
   const lum = (): number => [1, 0.72, 0.9, 0.5, 1, 0.8, 0.62, 0.95][n++ % 8]!
 
@@ -74,13 +74,13 @@ export function firehouse(b: Buckets, z: Zone, ctx: RealContext): Firehouse {
         lower.push({ x: 19 + k * 43, z: 22, w: 14, h: 22 })
       }
     }
-    wallFace(g, 0, W, 3, storey, lower, TONE.stone, KIND.block)
+    wallFace(g, 0, W, 3, storey, lower, TONE.brick, KIND.brick)
     wallFace(g, 0, W, storey, deck - 4, upper, TONE.brick, KIND.brick)
     band(g, -1.4, W + 1.4, 3, 8, 1.4, TONE.stoneDark, KIND.stucco)
-    band(g, -1.2, W + 1.2, storey - 2.5, storey + 1.5, 1.8, TONE.stonePale, KIND.stucco)
+    band(g, -1, W + 1, storey - 1.6, storey + 1.4, 1.3, TONE.stone, KIND.stucco)
     band(g, -3.4, W + 3.4, deck - 10, deck - 4, 3.4, TONE.stone, KIND.stucco)
     band(g, -1.6, W + 1.6, deck - 4, top - 3, 1.6, TONE.stone, KIND.stucco)
-    quoins(b, W, storey + 2, deck - 11, TONE.stone)
+    quoins(b, W, 8.5, deck - 11, TONE.stone)
     upper.forEach((h, k) => {
       const pole = side === 'front' && k === 1
       windowAt(b, h, pole ? { ...up, depth: 15, bars: [1, 1], glow: 1 } : { ...up, glow: lum(), blind: [0.3, 0, 0.45, 0.2, 0.55][(n + k) % 5]! })
@@ -193,7 +193,7 @@ export function firehouse(b: Buckets, z: Zone, ctx: RealContext): Firehouse {
   bend(fr + jw - ro, fo - ro, ro, 0, Math.PI / 2)
   bend(fl - jw + ro, fo - ro, ro, Math.PI / 2, Math.PI)
   const fm = frame.mark()
-  frame.slab(arch, 0, 3.6, TONE.stonePale, { kind: KIND.stucco })
+  frame.slab(arch, 0, 3.6, TONE.stone, { kind: KIND.stucco })
   frame.move(fm, new THREE.Matrix4().makeRotationX(Math.PI / 2))
   frame.box((fl + fr) / 2 - 6, (fl + fr) / 2 + 6, -5, 0, ft - 1, ft + 10.5, TONE.stone, { skip: 'b', under: true, bevel: 1, kind: KIND.stucco })
   for (const fx of [fl - 7, fr + 3]) frame.box(fx, fx + 4, -6, 0, 3, 13, TONE.yellow, { skip: 'b', bevel: 0.8, kind: KIND.gloss })

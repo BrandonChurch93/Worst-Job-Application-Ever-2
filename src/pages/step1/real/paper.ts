@@ -18,9 +18,16 @@ const CARRY = { from: 21, span: 14 }
 const BAR = { inset: PAPER.inset, tall: 1.1, pad: (PAPER.bar - 1.1) / 2, cells: 44, wide: [0.46, 1, 0.9, 0.62, 1, 0.84, 0.52] }
 // Between two of the layout's lines runs a thinner one, so the sheet reads as a page of close text.
 const BETWEEN = { tall: 1.1, wide: [0.94, 0.78, 1, 0.34, 0.88, 0.97, 0.6] }
+// The hood and the cutters keep the sky off the sheet where it goes in, and the sheet bends over to go down:
+// a deep shade at the mouth, and below the line of the bend the sheet is turned from the light.
+const MOUTH = { in: 0.5, near: 0.3, nearPx: 4, bent: 0.16, fold: 13, soft: 5, slant: 0.12, lit: 0.03 }
 const WRAP_LEN = 1.12 * (UNIT.r + 0.7 * SIZE)
 
 const clamp = (v: number, lo: number, hi: number): number => Math.min(hi, Math.max(lo, v))
+const smooth = (t: number): number => {
+  const u = clamp(t, 0, 1)
+  return u * u * (3 - 2 * u)
+}
 
 // What the sheet is asked to do this frame, read from the shape and from the mechanism it is fed to.
 export function sheetIn(s: Shape, ctx: RealContext): SheetIn {
@@ -164,6 +171,7 @@ function bodyGeometry(ring: number[]): THREE.BufferGeometry {
   g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(count * 3), 3))
   g.setAttribute('normal', new THREE.BufferAttribute(new Float32Array(count * 3), 3))
   g.setAttribute('uv', new THREE.BufferAttribute(uv, 2))
+  g.setAttribute('color', new THREE.BufferAttribute(new Float32Array(count * 3).fill(1), 3))
   g.setIndex(index)
   return g
 }
@@ -286,13 +294,27 @@ function shape(rig: Rig, q: SheetIn): void {
     o[t + 1] = o[b + 1] = y
     o[t + 2] = o[b + 2] = z
   }
+  const col = rig.body.getAttribute('color') as THREE.BufferAttribute
+  const c = col.array as Float32Array
+  const bite = clamp(q.bite, 0, 1)
+  const mouth = 540 - q.cy
+  const across = q.cx - 960
+  for (let v = 0; v < c.length; v += 3) {
+    const d = p[v + 1]! - mouth
+    const fold = d - (p[v]! - across) * MOUTH.slant
+    const below = 1 - smooth((fold - MOUTH.fold) / MOUTH.soft)
+    const crown = Math.exp(-Math.pow((fold - MOUTH.fold - MOUTH.soft) / MOUTH.soft, 2))
+    const shade = 1 - bite * (d < 0 ? MOUTH.in : MOUTH.near * Math.exp(-d / MOUTH.nearPx) + MOUTH.bent * below - MOUTH.lit * crown)
+    c[v] = c[v + 1] = c[v + 2] = shade
+  }
+  col.needsUpdate = true
   pos.needsUpdate = true
   nor.needsUpdate = true
   rig.body.computeBoundingSphere()
   lay(rig.title, rig.titleMarks, sheet, THICK + 0.12)
   lay(rig.bars, rig.barMarks, sheet, THICK + 0.12)
   const mat = stock(PAPER.w, PAPER.h)
-  mat.sheet.normalScale.setScalar(0.04 + 0.12 * sheet.abuse)
+  mat.sheet.normalScale.setScalar(0.08 + 0.3 * sheet.abuse)
 }
 
 // The sheet prints its own title. While the page still hands the title to the type maker, that one shows on the flat sheet
