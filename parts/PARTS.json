@@ -4,17 +4,43 @@
       "name": "shell",
       "unit": "step1",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/boss/body.ts",
+        "src/pages/marketing/layout.ts",
+        "src/pages/step1/fire.ts",
+        "src/pages/step1/index.ts",
+        "src/pages/step1/layout.ts",
+        "src/pages/step2/layout.ts",
+        "src/pages/step3/index.ts",
+        "src/pages/step4/layout.ts",
+        "src/pages/step5/layout.ts",
+        "src/pages/stub.ts",
+        "src/shell/blockout.ts",
+        "src/shell/layout.ts",
+        "src/shell/parts.ts"
+      ],
+      "standInHash": "dc37a96a0a1ccc0bac878a1f67a52480fbcc4731ea67eb9d98fddff301f22bfd",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "type",
       "unit": "step1",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/pages/marketing/index.ts",
+        "src/pages/marketing/layout.ts",
+        "src/pages/step1/index.ts",
+        "src/pages/step1/layout.ts",
+        "src/pages/step2/index.ts",
+        "src/pages/step2/layout.ts",
+        "src/pages/step3/index.ts",
+        "src/pages/step4/layout.ts",
+        "src/pages/step5/layout.ts",
+        "src/pages/stub.ts",
+        "src/shell/parts.ts"
+      ],
+      "standInHash": "f66117c26eee5354d3bf466e66797e9f2c4faf0d130018afd723097c76b128d8",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "materials",
@@ -44,33 +70,41 @@
       "name": "cursor-body",
       "unit": "step1",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/shell/blockout.ts"
+      ],
+      "standInHash": "cd07f63b0211e87b0dff6cfd714220d8e7ad6669fde6f5ddd68968398d740ff5",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "cursor-acting",
       "unit": "step1",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/shell/blockout.ts"
+      ],
+      "standInHash": "cd07f63b0211e87b0dff6cfd714220d8e7ad6669fde6f5ddd68968398d740ff5",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "cursor-damage",
       "unit": "step1",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/shell/blockout.ts"
+      ],
+      "standInHash": "cd07f63b0211e87b0dff6cfd714220d8e7ad6669fde6f5ddd68968398d740ff5",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "cursor-arms",
       "unit": "step1",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/shell/blockout.ts"
+      ],
+      "standInHash": "cd07f63b0211e87b0dff6cfd714220d8e7ad6669fde6f5ddd68968398d740ff5",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "cursor-effects",
@@ -84,41 +118,55 @@
       "name": "keyboard",
       "unit": "step1",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/pages/step1/fire.ts",
+        "src/pages/step1/index.ts",
+        "src/pages/step1/layout.ts"
+      ],
+      "standInHash": "2ba09be678b8df8de466ca8797da57b143661d08d27615b256b225edc09428b0",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "turrets",
       "unit": "step1",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/pages/step1/layout.ts",
+        "src/pages/step1/turrets.ts"
+      ],
+      "standInHash": "99219178e13ffdb7f99ec954c6b0d3462396a462766228d3b3e4ece9a8bcf5d1",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "slabs",
       "unit": "step1",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/pages/step1/layout.ts"
+      ],
+      "standInHash": "130cc4d39ce4aed1b0109f68fea0b30d8e4debcaa884c24bcc1f2914d58dae17",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "paper",
       "unit": "step1",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/pages/step1/index.ts",
+        "src/pages/step1/layout.ts"
+      ],
+      "standInHash": "5022727c883c29ff54eee52fbaf9fc8384c52f70bc01b3447546aac6d2a7b5dd",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "shredder",
       "unit": "step1",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/pages/step1/index.ts"
+      ],
+      "standInHash": "08deedf5cd077a57eb70ac30e7d555e4523ba53a5973812f6a52ec3397b73d96",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "acting-step1",
@@ -132,33 +180,44 @@
       "name": "rows",
       "unit": "step2",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/pages/step2/index.ts",
+        "src/pages/step2/layout.ts"
+      ],
+      "standInHash": "9353d3d9b8eeaad461a88c690cffde88320ab2b2b531344d747ba9406a4ba4a5",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "dial",
       "unit": "step2",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/pages/step2/index.ts",
+        "src/pages/step2/layout.ts"
+      ],
+      "standInHash": "9353d3d9b8eeaad461a88c690cffde88320ab2b2b531344d747ba9406a4ba4a5",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "slot",
       "unit": "step2",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/pages/step2/index.ts",
+        "src/pages/step2/layout.ts"
+      ],
+      "standInHash": "9353d3d9b8eeaad461a88c690cffde88320ab2b2b531344d747ba9406a4ba4a5",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "crank",
       "unit": "step2",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/pages/step2/layout.ts"
+      ],
+      "standInHash": "d2f8780fa85b28bb2fe711d9e8e51403b8e77d80b18f15eec7346b6bd608b656",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "acting-step2",
@@ -172,33 +231,43 @@
       "name": "careers-page",
       "unit": "marketing",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/pages/marketing/layout.ts"
+      ],
+      "standInHash": "5a85c32a9de3ec2a6efb0649a4470c9e3726ed359fc1acb9561fcc15a5430fcf",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "perk-cards",
       "unit": "marketing",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/pages/marketing/index.ts",
+        "src/pages/marketing/layout.ts"
+      ],
+      "standInHash": "50f5ee619525f9edc014782f0a6200c9b2cd4f18fe4ce8d6b945339715afbaca",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "ticker",
       "unit": "marketing",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/pages/marketing/index.ts",
+        "src/pages/marketing/layout.ts"
+      ],
+      "standInHash": "50f5ee619525f9edc014782f0a6200c9b2cd4f18fe4ce8d6b945339715afbaca",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "apply-button",
       "unit": "marketing",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/pages/marketing/layout.ts"
+      ],
+      "standInHash": "5a85c32a9de3ec2a6efb0649a4470c9e3726ed359fc1acb9561fcc15a5430fcf",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "acting-marketing",
@@ -212,113 +281,147 @@
       "name": "table-layout",
       "unit": "pinball",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/table/draw.ts"
+      ],
+      "standInHash": "189bc8169cf1e24f75f934b560359bdd0beb8e30870ccd229943d1ef1ef72aea",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "table-frame",
       "unit": "pinball",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/pages/step3/index.ts",
+        "src/table/draw.ts"
+      ],
+      "standInHash": "dcd2e7969e23cb52bfb9a5576b91dfa2f65c8cedb556466229fe18e4edbe0dbd",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "marquee",
       "unit": "pinball",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/pages/step3/index.ts",
+        "src/table/draw.ts"
+      ],
+      "standInHash": "dcd2e7969e23cb52bfb9a5576b91dfa2f65c8cedb556466229fe18e4edbe0dbd",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "loader",
       "unit": "pinball",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/pages/step3/index.ts",
+        "src/table/draw.ts"
+      ],
+      "standInHash": "dcd2e7969e23cb52bfb9a5576b91dfa2f65c8cedb556466229fe18e4edbe0dbd",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "tier-art",
       "unit": "pinball",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/table/layout.ts"
+      ],
+      "standInHash": "03348f4abe0e085234d0072835d8a86f6bc80910f5854cc155415713b5c75e50",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "table-hardware",
       "unit": "pinball",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/table/draw.ts"
+      ],
+      "standInHash": "189bc8169cf1e24f75f934b560359bdd0beb8e30870ccd229943d1ef1ef72aea",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "flippers",
       "unit": "pinball",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/table/draw.ts"
+      ],
+      "standInHash": "189bc8169cf1e24f75f934b560359bdd0beb8e30870ccd229943d1ef1ef72aea",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "bumpers",
       "unit": "pinball",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/table/draw.ts"
+      ],
+      "standInHash": "189bc8169cf1e24f75f934b560359bdd0beb8e30870ccd229943d1ef1ef72aea",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "targets",
       "unit": "pinball",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/table/draw.ts"
+      ],
+      "standInHash": "189bc8169cf1e24f75f934b560359bdd0beb8e30870ccd229943d1ef1ef72aea",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "ramps",
       "unit": "pinball",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/table/draw.ts"
+      ],
+      "standInHash": "189bc8169cf1e24f75f934b560359bdd0beb8e30870ccd229943d1ef1ef72aea",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "lift",
       "unit": "pinball",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/table/draw.ts"
+      ],
+      "standInHash": "189bc8169cf1e24f75f934b560359bdd0beb8e30870ccd229943d1ef1ef72aea",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "displays",
       "unit": "pinball",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/pages/step3/index.ts",
+        "src/table/draw.ts"
+      ],
+      "standInHash": "dcd2e7969e23cb52bfb9a5576b91dfa2f65c8cedb556466229fe18e4edbe0dbd",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "clear-ball",
       "unit": "pinball",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/pages/step3/index.ts",
+        "src/table/draw.ts"
+      ],
+      "standInHash": "dcd2e7969e23cb52bfb9a5576b91dfa2f65c8cedb556466229fe18e4edbe0dbd",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "table-lights",
       "unit": "pinball",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/pages/step3/index.ts",
+        "src/table/draw.ts"
+      ],
+      "standInHash": "dcd2e7969e23cb52bfb9a5576b91dfa2f65c8cedb556466229fe18e4edbe0dbd",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "table-physics",
@@ -348,9 +451,12 @@
       "name": "model-hq",
       "unit": "pinball",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/table/draw.ts",
+        "src/table/layout.ts"
+      ],
+      "standInHash": "f7d094becd9eb088aeeecf332df03fb891f61a04090db6dad46dd41a2071e9f7",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "model-revolving-door",
@@ -364,17 +470,21 @@
       "name": "model-beach",
       "unit": "pinball",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/table/layout.ts"
+      ],
+      "standInHash": "03348f4abe0e085234d0072835d8a86f6bc80910f5854cc155415713b5c75e50",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "model-boardroom",
       "unit": "pinball",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/table/layout.ts"
+      ],
+      "standInHash": "03348f4abe0e085234d0072835d8a86f6bc80910f5854cc155415713b5c75e50",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "model-ladder",
@@ -404,17 +514,21 @@
       "name": "model-cubicles",
       "unit": "pinball",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/table/layout.ts"
+      ],
+      "standInHash": "03348f4abe0e085234d0072835d8a86f6bc80910f5854cc155415713b5c75e50",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "model-inbox",
       "unit": "pinball",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/table/layout.ts"
+      ],
+      "standInHash": "03348f4abe0e085234d0072835d8a86f6bc80910f5854cc155415713b5c75e50",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "model-staplers",
@@ -428,41 +542,51 @@
       "name": "model-firehouse",
       "unit": "pinball",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/table/layout.ts"
+      ],
+      "standInHash": "03348f4abe0e085234d0072835d8a86f6bc80910f5854cc155415713b5c75e50",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "model-police",
       "unit": "pinball",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/table/layout.ts"
+      ],
+      "standInHash": "03348f4abe0e085234d0072835d8a86f6bc80910f5854cc155415713b5c75e50",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "model-bank",
       "unit": "pinball",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/table/layout.ts"
+      ],
+      "standInHash": "03348f4abe0e085234d0072835d8a86f6bc80910f5854cc155415713b5c75e50",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "model-garage",
       "unit": "pinball",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/table/layout.ts"
+      ],
+      "standInHash": "03348f4abe0e085234d0072835d8a86f6bc80910f5854cc155415713b5c75e50",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "model-houses",
       "unit": "pinball",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/table/layout.ts"
+      ],
+      "standInHash": "03348f4abe0e085234d0072835d8a86f6bc80910f5854cc155415713b5c75e50",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "model-moms",
@@ -500,41 +624,54 @@
       "name": "verify-card",
       "unit": "boss",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/pages/step4/index.ts",
+        "src/pages/step4/layout.ts"
+      ],
+      "standInHash": "87c67d03fdf25513a6443ff2483194e836fc07454a14c3d1f3e68ea015553613",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "boss-body",
       "unit": "boss",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/boss/body.ts"
+      ],
+      "standInHash": "a7123900b584f7c1922bb964604d0f494caa9cf2da307f1595c57ec2abd0ec95",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "boss-transform",
       "unit": "boss",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/boss/body.ts"
+      ],
+      "standInHash": "a7123900b584f7c1922bb964604d0f494caa9cf2da307f1595c57ec2abd0ec95",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "boss-weapons",
       "unit": "boss",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/boss/weapons.ts",
+        "src/pages/step4/layout.ts"
+      ],
+      "standInHash": "896763622c1d31886786891376f082facd5ac7151123f409004df3a5b9f5162f",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "health-bar",
       "unit": "boss",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/pages/step4/index.ts",
+        "src/pages/step4/layout.ts"
+      ],
+      "standInHash": "87c67d03fdf25513a6443ff2483194e836fc07454a14c3d1f3e68ea015553613",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "acting-boss",
@@ -548,33 +685,42 @@
       "name": "wait",
       "unit": "decision",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/pages/step5/layout.ts"
+      ],
+      "standInHash": "0389294ef1f5ea7b052cca2eb407eb3ec280e875f0775d81395ece891429af36",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "letter",
       "unit": "decision",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/pages/step5/layout.ts"
+      ],
+      "standInHash": "0389294ef1f5ea7b052cca2eb407eb3ec280e875f0775d81395ece891429af36",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "stamp",
       "unit": "decision",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/pages/step5/index.ts",
+        "src/pages/step5/layout.ts"
+      ],
+      "standInHash": "276500dde2e1b170f4c7832beafa7e0742081ce9a96e1d53e8843520f2b925e8",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "metrics",
       "unit": "decision",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/pages/step5/layout.ts"
+      ],
+      "standInHash": "0389294ef1f5ea7b052cca2eb407eb3ec280e875f0775d81395ece891429af36",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "acting-decision",
@@ -628,9 +774,11 @@
       "name": "opening",
       "unit": "film",
       "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "files": [
+        "src/film/opening.ts"
+      ],
+      "standInHash": "978a7fb83a5df3c86eee0d2fc7b8a7f91926682453cccbfd8b2d4252b214e2b5",
+      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
     },
     {
       "name": "loop",
