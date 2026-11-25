@@ -210,7 +210,7 @@ export function makePage(): PageLogic {
       const z = heights.paper
       const bar = (id: string, lx: number, ly: number, w: number, h: number): void => {
         const c = turned(mark, lx, ly)
-        bars.push({ id, part: 'stamp', kind: 'box', x: c.x - w / 2, y: c.y - h / 2, w, h, z0: z, z1: z + 0.06, tone: 'danger', rot: MARK_ROT })
+        bars.push({ id, part: 'stamp', kind: 'box', x: c.x - w / 2, y: c.y - h / 2, w, h, z0: z, z1: z + 0.06, tone: 'dark', rot: MARK_ROT })
       }
       bar('letter-mark-top', 0, -(mark.h - mark.bar) / 2, mark.w, mark.bar)
       bar('letter-mark-bottom', 0, (mark.h - mark.bar) / 2, mark.w, mark.bar)
@@ -288,7 +288,7 @@ export function makePage(): PageLogic {
           s.stamped = true
           s.jolt = s.n
           const hit = underStamp(cursor)
-          io.emit('stamp', mark.cx, mark.cy, hit)
+          io.emit('stamp', hit ? cursor.x : mark.cx, hit ? cursor.y : mark.cy, hit)
           if (hit) {
             cursor.hurt('flattened')
             io.emit('flatten', cursor.x, cursor.y, true)
@@ -343,12 +343,12 @@ export function makePage(): PageLogic {
       if (s.flat) {
         if (!cursor.damaged) {
           s.flat = false
-          if (!s.peeled) io.emit('peel-up', cursor.x, cursor.y, true)
+          if (!s.peeled) io.emit('peel-up', cursor.x, cursor.y, false)
           s.peeled = true
           cursor.act('exhausted')
         } else if (!s.peeled && cursor.pose().healing >= 0.82) {
           s.peeled = true
-          io.emit('peel-up', cursor.x, cursor.y, true)
+          io.emit('peel-up', cursor.x, cursor.y, false)
         }
       }
       cursor.setGround(groundAt(cursor.x, cursor.y))

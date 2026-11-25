@@ -1,0 +1,37 @@
+diff --git a/src/app.ts b/src/app.ts
+index d8e508a..9b04e8b 100644
+--- a/src/app.ts
++++ b/src/app.ts
+@@ -216,6 +216,10 @@ export class App {
+     return { unit: last.id, time: last.seconds }
+   }
+ 
++  useCheckpoint(unit: string, saved: unknown): void {
++    this.film(unit).restore(saved)
++  }
++
+   filmFrame(unit: string, time: number): { frame: Frame; pose: CameraPose; page: PageLogic } {
+     const stage = this.film(unit)
+     const frame = stage.frameAt(time)
+diff --git a/src/capture/showcase.ts b/src/capture/showcase.ts
+index c78b8b1..dd6df4b 100644
+--- a/src/capture/showcase.ts
++++ b/src/capture/showcase.ts
+@@ -25,6 +25,7 @@ export interface Showcase {
+   film(): { frameCount: number; units: { id: string; first: number; last: number }[]; beats: { id: string; first: number; last: number }[]; lines: { beat: string; first: number; last: number }[] }
+   filmState(frameIndex: number): { unit: string; beat: string; camera: number[]; cursor: CursorState; events: { name: string; x: number; y: number; hitsCursor: boolean }[]; standIns: string[] }
+   renderFilmFrame(frameIndex: number, tier: string): Promise<void>
++  useCheckpoint(unit: string, saved: unknown): void
+   opening(): { frameCount: number; seconds: number; marks: { typing: number; level: number; build: number } }
+   renderOpeningFrame(frameIndex: number, tier?: string): Promise<void>
+   loop(): { frameCount: number; scene: string }
+@@ -110,6 +111,9 @@ export function makeShowcase(app: App, ready: Promise<void>): Showcase {
+       for (const s of frame.list) parts.add(s.part)
+       return { unit, beat: b.id, camera: [...pose.eye, ...pose.target, pose.fov], cursor: app.cursorState(frame.cursor, pose), events, standIns: [...parts].sort() }
+     },
++    useCheckpoint(unit, saved) {
++      app.useCheckpoint(unit, saved)
++    },
+     async renderFilmFrame(frameIndex, tier) {
+       await ready
+       await app.renderFilmFrame(frameIndex, tier)
