@@ -1,0 +1,35 @@
+{
+  "folder": "film",
+  "pushed": "2026-11-25T09:04:50.296Z",
+  "commit": "7a49535c0199c3d7873eb0cda4a47221ec25bc59",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Opening of film A, frame 317: the prompt typed, the reasoning level control open on its one word. Stand-in, drawn by the builder's own scratch harness because npm run still has no opening yet",
+      "time": "2026-11-25T09:04:48.542Z",
+      "by": "film",
+      "from": "out/work/stills/film-opening-0317-preview-draft.png"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Opening of film A, frame 530: the build screen, three steps done and the fourth busy",
+      "time": "2026-11-25T09:04:48.773Z",
+      "by": "film",
+      "from": "out/work/stills/film-opening-0530-preview-draft.png"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Card loop, frame 0 (step1-fire from home): stand-in deck, keys, two turrets, a bolt in flight, a scorch mark, the cursor mid hop",
+      "time": "2026-11-25T09:04:49.049Z",
+      "by": "film",
+      "from": "out/work/stills/film-loop-0000-preview-draft.png"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Card loop, frame 240 (half way): the cursor just hit, with its burn, knocked down a row",
+      "time": "2026-11-25T09:04:49.276Z",
+      "by": "film",
+      "from": "out/work/stills/film-loop-0240-preview-draft.png"
+    }
+  ]
+}
