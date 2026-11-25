@@ -34,6 +34,7 @@ interface State {
 }
 
 const heights = config.scale.heights
+const REALLY = [0.7, 1.5] as const
 const PHASE_GAG = ['boss.slabs', 'boss.popups', 'boss.lastStand'] as const
 const SPOTS: [number, number][] = [[560, 800], [430, 640], [330, 900], [760, 900], [1150, 940], [1420, 950], [1690, 960]]
 
@@ -161,6 +162,14 @@ export function makePage(): PageLogic {
         if (f.phase !== before) {
           s.t = 0
           io.cursor.act('angry')
+        }
+        if (f.phase === 2 && f.expired >= 0) {
+          const was = f.expired - io.dt
+          if (f.expired >= REALLY[0] && was < REALLY[0]) io.cursor.act('exhausted')
+          if (f.expired >= REALLY[1] && was < REALLY[1]) {
+            io.cursor.act('angry')
+            io.cursor.react('anticipate')
+          }
         }
         if (f.over) toCollapse(io, rigNow()!)
       } else if (s.stage === 'collapse') {
