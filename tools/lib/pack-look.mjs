@@ -500,14 +500,14 @@ export async function buildLook({ cfg, session, files, built, about, tier, log, 
     const tiles = []
     const windows = []
     for (let i = 0; i < f.frames.length; i++) {
-      const png = await frameOf(f.frames[i], hd, 'draft')
+      const png = await frameOf(f.frames[i], hd, filmTier)
       const c = still ? mid : [xs[i], ys[i]]
       const win = windowRound(point(c[0], c[1]), winW, winH, hd.width, hd.height)
       tiles.push({ png: await cut(png, win), label: '' })
       windows.push(win)
     }
     built.set(f.name, await sheetOf(tiles, { edge, columns: ACT.columns, tileW: actW, tileH: ACT.tileH, labels: false, exact: winW === actW }))
-    about.set(f.name, { unit: f.unit, state: f.state, frames: f.frames, windows, windowFollowsTheArrow: !still, shownAt: Math.round((actW / winW) * 1000) / 1000, format: hd.id, tier: 'draft' })
+    about.set(f.name, { unit: f.unit, state: f.state, frames: f.frames, windows, windowFollowsTheArrow: !still, shownAt: Math.round((actW / winW) * 1000) / 1000, format: hd.id, tier: filmTier })
     log(`${f.name}: the acting state ${f.state}`)
   }
 
