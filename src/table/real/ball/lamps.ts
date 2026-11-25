@@ -74,9 +74,10 @@ export function lightAt(s: Shape, ctx: RealContext): Light {
   const fill = FILL[z.id] ?? [0.6, 0.6, 0.62]
   const general = L ? L.general : 0
   const flash = L ? L.flash : 0
-  for (let c = 0; c < 3; c++) floor[c] = Math.min(1.6, floor[c]! * 0.6 + fill[c]! * (0.6 * general + 0.3 * flash) + 0.75 * website)
+  for (let c = 0; c < 3; c++) floor[c] = Math.min(1.6, floor[c]! * 0.3 + fill[c]! * (0.6 * general + 0.3 * flash) + 0.75 * website)
   const up = 0.5 * general + 0.6 * flash
-  const soft: RGB = [website + fill[0]! * up, website + fill[1]! * up, website + fill[2]! * up]
+  const page = 0.55 * website
+  const soft: RGB = [page + fill[0]! * up, page + fill[1]! * up, page + fill[2]! * up]
   const dark = 0.012 + 0.05 * website
   const haze: RGB = [dark + fill[0]! * 0.02 * general, dark + fill[1]! * 0.02 * general, dark + fill[2]! * 0.02 * general]
   return { zone: z, tier, lamps: all.slice(0, LAMPS), floor, soft, haze, general, website, flash, drop: tier ? z.floor - s.z0 : 0 }

@@ -17,7 +17,7 @@ export const ORDER = { decal: 900000, back: 900001, sweat: 900002, core: 900003,
 const AROUND = 96
 const RINGS = 24
 const PLUG = 0.085
-const SOFT_DIR = new THREE.Vector3(-0.52, 0.5, 0.69).normalize()
+const SOFT_DIR = new THREE.Vector3(-0.66, 0.56, 0.5).normalize()
 const KEY_AWAY = new THREE.Vector2(0.52, -0.5).normalize()
 const TIERS = ['corporate', 'office', 'street']
 const floors = TIERS.map((id) => ask(`table/art/${id}.webp`, { colour: true }))
@@ -326,15 +326,15 @@ function pose(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
 
   const lift = -L.drop
   own.decal.visible = L.tier && lift < r * 6
-  own.decal.position.set(0, 0, L.drop + 0.6)
+  own.decal.position.set(0, 0, L.drop + 1.2)
   const shade = d.uShade!.value as THREE.Vector4[]
   const spot = d.uSpot!.value as THREE.Vector3[]
   const lum = (c: number[]): number => 0.25 * c[0]! + 0.6 * c[1]! + 0.15 * c[2]!
   const high = 1 / (1 + lift / (r * 2.5))
   const dim = 1 - 0.7 * open
   const key = Math.min(1, lum(L.soft) * 2.2)
-  shade[0]!.set(KEY_AWAY.x, KEY_AWAY.y, 0.8, 0.42 * key * high)
-  spot[0]!.set(L.soft[0] * 0.5 * high * dim, L.soft[1] * 0.5 * high * dim, L.soft[2] * 0.5 * high * dim)
+  shade[0]!.set(KEY_AWAY.x, KEY_AWAY.y, 1, 0.6 * key * high)
+  spot[0]!.set(L.soft[0] * 0.8 * high * dim, L.soft[1] * 0.8 * high * dim, L.soft[2] * 0.8 * high * dim)
   const low = L.lamps.filter((l) => l.z - L.drop > 16 && l.amount > 0.03 && Math.hypot(l.x, l.y) > r * 0.8)
   for (let i = 1; i < 3; i++) {
     const l = low[i - 1]

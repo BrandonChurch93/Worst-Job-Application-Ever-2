@@ -152,7 +152,7 @@ vec3 floorAt( vec3 from, vec3 dir ) {
 		vec2 q = hit - uLampPos[ i ].xy;
 		glow += uLampCol[ i ] * exp( - dot( q, q ) / 2600.0 ) * step( uLampPos[ i ].z - uDrop, 70.0 );
 	}
-	return mix( surround( dir ), art * uFloor + min( glow * 0.5, vec3( 1.6 ) ), inside * fade );
+	return mix( surround( dir ), art * uFloor + min( glow * 0.4, vec3( 0.9 ) ), inside * fade );
 }
 
 void main() {
@@ -187,11 +187,11 @@ void main() {
 	float lens = smoothstep( 0.42, RIN, rho );
 	float aIn = mix( 0.05, 0.5, lens * lens );
 	float alpha = mix( mix( aIn, 0.93, band ), mix( 0.03, 0.34, band ), uTrue );
-	vec3 col = ( bent * mix( 1.0, 1.25, band ) + gather * 0.5 * band + uHaze * band ) * alpha;
+	vec3 col = ( bent * mix( 1.0, 1.25, band ) + ( gather * 0.5 + uHaze + uSoft * 0.16 ) * band ) * alpha;
 
 	vec3 Ni = normalize( N + 0.1 * Np );
 	vec3 Ri = reflect( - V, Ni );
-	vec3 refl = softbox( R, 0.1 ) * SOFT * ( 0.17 + 0.4 * pow( 1.0 - ndv, 3.0 ) );
+	vec3 refl = softbox( R, 0.07 ) * SOFT * ( 0.05 + 0.5 * pow( 1.0 - ndv, 2.0 ) );
 	refl += softbox( Ri, 0.16 ) * SOFT * 0.05;
 	refl += surround( R ) * F;
 	refl += lampsIn( R, vP, 1.0 ) * ( 0.55 + 1.2 * F );
@@ -238,7 +238,7 @@ void main() {
 	float nb = clamp( - dot( N, V ), 0.0, 1.0 );
 	float F = 0.04 + 0.96 * pow( 1.0 - nb, 5.0 );
 	vec3 R = reflect( - V, N );
-	vec3 col = softbox( R, 0.14 ) * SOFT * ( 0.085 + 0.2 * pow( 1.0 - nb, 3.0 ) );
+	vec3 col = softbox( R, 0.4 ) * SOFT * ( 0.012 + 0.2 * pow( 1.0 - nb, 2.5 ) );
 	col += lampsIn( R, vP, 1.4 ) * ( 0.25 + 0.5 * F );
 	col += surround( R ) * F * 0.5;
 	float alpha = F * 0.25;
@@ -316,13 +316,14 @@ void main() {
 		float along = dot( q, d ) / ( uR * ( 0.78 + 0.42 * k ) );
 		float across = dot( q, side ) / ( uR * 0.8 );
 		float e = along * along + across * across;
-		keep *= 1.0 - uShade[ i ].w * ( 1.0 - smoothstep( 0.15, 1.5, e ) );
+		keep *= 1.0 - uShade[ i ].w * ( 1.0 - smoothstep( 0.3, 1.2, e ) );
 		vec2 s = vXY - d * ( uR * ( 0.42 + 0.3 * k ) + uLift * k );
 		float sa = dot( s, d ) / uR;
 		float sc = dot( s, side ) / uR;
-		float core = exp( - ( sa * sa / 0.05 + sc * sc / 0.018 ) );
+		float core = 1.6 * exp( - ( sa * sa / 0.03 + sc * sc / 0.012 ) ) + 0.35 * exp( - ( sa * sa / 0.22 + sc * sc / 0.07 ) );
 		float ray = 0.45 * exp( - ( sa * sa / 0.4 + sc * sc / 0.0022 ) ) + 0.28 * exp( - ( sa * sa / 0.005 + sc * sc / 0.16 ) );
-		float arc = 0.3 * exp( - pow( ( length( s ) / uR - 0.36 ) / 0.06, 2.0 ) ) * pow( max( dot( normalize( s + vec2( 1e-4 ) ), d ), 0.0 ), 3.0 );
+		float ring = ( length( s ) / uR - 0.36 ) / 0.06;
+		float arc = 0.3 * exp( - ring * ring ) * pow( max( dot( normalize( s + vec2( 1e-4 ) ), d ), 0.0 ), 3.0 );
 		c += uSpot[ i ] * ( core + ray + arc );
 	}
 	keep *= 1.0 - 0.5 * uNear * exp( - dot( vXY, vXY ) / ( uR * uR * 0.13 ) );
