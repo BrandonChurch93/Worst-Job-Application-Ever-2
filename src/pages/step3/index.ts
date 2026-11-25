@@ -71,7 +71,7 @@ function buildLayout(): LayoutNode {
   const ay = px(APRON_Y)
   kids.push(node('apron-left', 'slab', [312, ay + 24, 520, 144], { part: 'table-frame' }))
   kids.push(node('apron-right', 'slab', [1088, ay + 24, 520, 144], {
-    part: 'table-frame', children: [node('apron-card', 'paper', [1128, ay + 56, 440, 80], {
+    part: 'table-frame', children: [node('apron-card', 'apronCard', [1128, ay + 56, 440, 80], {
       part: 'table-frame', floor: 16, height: 17, tone: 'paper', children: [centred('apron-card-words', 'copy:step3.table.apronCard', { font: 'inter-500', px: 18 }, 1348, ay + 96, { part: 'type', on: 18 })]
     })]
   }))
