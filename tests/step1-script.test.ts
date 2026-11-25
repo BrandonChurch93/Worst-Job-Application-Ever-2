@@ -55,7 +55,7 @@ describe('step 1: the script of the film', () => {
     expect(st.turrets.bolts.length).toBeGreaterThanOrEqual(1)
     const near = st.turrets.scorches.filter((c) => Math.hypot(c.x - body.x, c.y - body.y) < 200)
     expect(near.length).toBeGreaterThanOrEqual(1)
-    expect(st.values.firstName).toBe(config.applicant.filmFirstName.slice(0, 4))
+    expect(st.values.firstName).toBe(config.applicant.filmFirstName.slice(0, 5))
     console.log(`the frame at 6.0: the cursor on the key ${seats[under]!.name}, body at ${body.x.toFixed(0)}, ${body.y.toFixed(0)}, ${near.length} burn near it, ${st.turrets.bolts.length} bolt in the air`)
   })
 

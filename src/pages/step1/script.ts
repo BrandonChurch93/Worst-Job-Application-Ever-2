@@ -29,9 +29,9 @@ export const FIRST = {
   tap: 1.5,
   keys: [[2.18, 2.56], [2.64, 2.97], [3.06, 3.25], [3.86, 4.1], [4.16, 4.3]] as [number, number][],
   notice: 3.42, dodge: 3.86, cocky: [4.42, 4.58] as [number, number], proud: 4.7,
-  stand: { x: 1174, y: 870 }, see: 6.2, flee: [6.28, 6.4] as [number, number], aside: { x: -170, y: -64 }, snap: 6.34,
-  duck: 7.2, slide: [7.22, 7.34] as [number, number], under: { x: -150, y: 64 }, up: 7.7,
-  after: [[7.775, 8.0], [8.07, 8.3], [8.36, 8.54], [8.6, 8.86], [8.92, 9.1], [9.16, 9.32]] as [number, number][],
+  stand: { x: 1072, y: 870 }, see: 6.335, flee: [6.335, 6.415] as [number, number], aside: { x: -170, y: -64 }, snap: 6.37,
+  duck: 7.14, slide: [7.16, 7.28] as [number, number], under: { x: -200, y: 64 }, up: 7.6,
+  after: [[7.716, 8.0], [8.07, 8.3], [8.36, 8.54], [8.6, 8.86], [8.92, 9.1], [9.16, 9.32]] as [number, number][],
   enter: [9.4, 9.6] as [number, number]
 }
 // The last name: at each of the first hunts it pulls up off the keys on to the bare page above the deck (above), rears back there, and dives for the key where it is now.
@@ -42,8 +42,8 @@ export const MAIL = { first: 15.16, run: 15.5, every: 0.092, enter: 17.42, wait:
 // Where it goes from the slabs: clear on to the bare page above the deck, then into the corner of the Email field, where it stays.
 export const DIVES = [{ x: 1100, y: 676 }, { x: 1716, y: FIELD_Y[2]! + 46 }]
 export const DIVE = { struck: 0.06, see: [0.04, 0.07], start: [0.12, 0.2], seconds: 0.16, jolt: 0.06, duck: 0.03 }
-export const TRUDGE = { x: 96, y: 84, seconds: 0.9 }
-export const END = { start: 0.05, sag: 0.34 }
+export const TRUDGE = { x: 96, y: 84, first: [0.42, 0.62] as [number, number], share: 0.42, second: [0.8, 1.02] as [number, number] }
+export const END = { sag: 0.03 }
 export const RESUME = { walk: [19.9, 20.3] as [number, number], proud: 20.4, beside: { x: 20, y: 6 }, grab: 21.06, hoist: [21.1, 21.16] as [number, number], carry: [21.18, 21.54] as [number, number], drop: 21.62 }
 
 const TUG_CURVE: [number, number, number, number][] = [
@@ -218,11 +218,11 @@ export function makePlan(seed: number, first: string, last: string, email: strin
   cue(slab(0) + DIVE.see[0]!, { react: 'startle' })
   cue(slab(0) + DIVE.start[0]!, { react: 'jump' })
   leap(slab(0) + DIVE.start[0]!, slab(0) + DIVE.start[0]! + DIVE.seconds, DIVES[0]!.x, DIVES[0]!.y, { arc: 44, ease: 'out', hop: false })
-  cue(slab(0) + landed + DIVE.jolt, { react: 'startle' })
+  cue(slab(0) + landed + DIVE.jolt, { react: 'cower' })
   cue(slab(1) + DIVE.see[1]!, { react: 'cower' })
   cue(slab(1) + DIVE.start[1]!, { react: 'jump' })
   leap(slab(1) + DIVE.start[1]!, slab(1) + DIVE.start[1]! + DIVE.seconds, DIVES[1]!.x, DIVES[1]!.y, { arc: 40, ease: 'out', hop: false })
-  cue(slab(1) + landed + DIVE.jolt, { react: 'startle' })
+  cue(slab(1) + landed + DIVE.jolt, { react: 'cower' })
   cue(slab(2) + DIVE.see[1]!, { react: 'cower' })
   cue(slab(2) + landed + DIVE.duck, { react: 'duck' })
   cue(slab(2) + landed + DIVE.duck, { act: 'scared' })
@@ -248,12 +248,13 @@ export function makePlan(seed: number, first: string, last: string, email: strin
     to(Math.max(free, at - 0.05), at, p.x, p.y, { ease: 'line' })
   }
 
-  // step1.shredded: where it comes back together. It starts at what the form says, sags, and drags itself a little way off the slot, where it stays bent and low
+  // step1.shredded: where it comes back together. It sags at what the form says and stays down, then drags itself off the slot in two pulls with a stop between, bent and low
   const whole = lost + TIMES.lost + SHRED.end
   to(lost + 0.1, lost + 0.2, PILE.x, PILE.y, { ease: 'out' })
-  cue(whole + END.start, { react: 'startle' })
+  cue(whole + END.sag, { react: 'cower' })
   cue(whole + END.sag, { act: 'exhausted' })
-  to(whole + END.sag + 0.06, whole + END.sag + 0.06 + TRUDGE.seconds, PILE.x + TRUDGE.x, PILE.y + TRUDGE.y, { arc: -8, ease: 'out' })
+  to(whole + TRUDGE.first[0], whole + TRUDGE.first[1], PILE.x + TRUDGE.x * TRUDGE.share, PILE.y + TRUDGE.y * TRUDGE.share, { ease: 'out' })
+  to(whole + TRUDGE.second[0], whole + TRUDGE.second[1], PILE.x + TRUDGE.x, PILE.y + TRUDGE.y, { ease: 'out' })
   cues.sort((p, q) => p.at - q.at)
   return { moves, clicks, cues, drop: RESUME.drop, bite, lost }
 }

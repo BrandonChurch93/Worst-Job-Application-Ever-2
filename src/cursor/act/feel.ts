@@ -42,8 +42,9 @@ export function reactionPose(name: Reaction, u: number, dir: number): ReactionPo
       if (u < 0.52) return at(-0.14, 0.34, 0.3)
       return u < 0.86 ? at(0.44) : at(0)
     case 'recoil':
-      if (u < 0.16) return at(-0.6, 0.1 * dir, 0, 0.8 * dir)
-      return u < 0.36 ? at(0.44, 0.06 * dir) : at(0, 0)
+      if (u < 0.08) return at(-0.6, 0.1 * dir, 0, 0.8 * dir)
+      if (u < 0.145) return at(0.3, 0.06 * dir)
+      return u < 0.305 ? at(-0.16, 0) : u < 0.94 ? at(0, -0.34, -0.52) : at(0)
     case 'dustOff':
       return at(0.08, 0.22 * Math.sin(u * Math.PI * 8) * (1 - ramp(u, 0.7, 1)), 0, 0, 0.35 * (1 - ramp(u, 0.8, 1)))
     case 'jump':

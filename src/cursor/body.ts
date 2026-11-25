@@ -17,7 +17,7 @@ const dt = 1 / stepHz
 const hover = config.scale.heights.cursorHover
 const healSeconds = config.cursor.damageHealSeconds
 const takenMax = config.live.controlTakenMaxSeconds
-const REACTION_SECONDS: Record<Reaction, number> = { anticipate: 0.35, flinch: 0.3, doubleTake: 0.7, recoil: 0.45, dustOff: 0.9, jump: 0.5, duck: 0.55, startle: 0.42, cower: 0.62, rear: 0.6, snap: 0.5, tap: 0.42, dart: 0.34 }
+const REACTION_SECONDS: Record<Reaction, number> = { anticipate: 0.35, flinch: 0.3, doubleTake: 0.7, recoil: 0.62, dustOff: 0.9, jump: 0.5, duck: 0.55, startle: 0.42, cower: 0.62, rear: 0.6, snap: 0.5, tap: 0.42, dart: 0.34 }
 // Layer 1, where it goes. rock is how far it tips from tip to heel corner on each hop, dip how deep it squashes on each footfall.
 // The walk is plain, the strut confident and proud, the tiptoe nervous and scared, the drag exhausted.
 const GAIT: Record<Acting, { stiff: number; damp: number; stride: number; hop: number; top: number; rock: number; dip: number }> = {
@@ -38,7 +38,7 @@ const REAR = { settle: 0.36 }
 const HIT = { squash: 0.58, bend: 0.8, shove: 60, lift: 0.7 }
 const SPRING = { squash: { k: 620, c: 26 }, lean: { k: 330, c: 17 }, bend: { k: 260, c: 13 }, sprout: { k: 2400, c: 58 } }
 // A hit knocks the body over, past upright onto its other shoulder, and it swings back: the knocked cursor of the approved fire image.
-const TUMBLE = { far: 1, share: 0.27, out: { k: 900, c: 60 }, back: { k: 620, c: 44 } }
+const TUMBLE = { far: 0.8, share: 0.145, out: { k: 900, c: 60 }, back: { k: 900, c: 58 } }
 // Thrown through the air it goes tip first: the arrow turns toward the way it flies, most when that is up or to the right. tip is the angle its tip points at rest.
 const DIVE = { tip: 2.09, far: 1.25, high: [5, 18] as [number, number], fast: [150, 400] as [number, number] }
 const DRAG = { stride: 90, pulse: 0.2, lean: 0.34 }
