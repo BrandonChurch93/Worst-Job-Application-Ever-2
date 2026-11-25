@@ -37,14 +37,13 @@ if (a.record !== undefined) {
   const lost = anchors.filter((c) => !c.full)
   if (lost.length) stop(`this clone does not hold the commit ${lost.map((c) => c.asked).join(', ')}, so no file can be read as it was then`)
   const rec = anchoredRecord(files, anchors.map((c) => c.full), (c, f) => showAt(at(), c, f))
-  if (rec.absent.length) stop(`${rec.absent.join(', ')} ${rec.absent.length === 1 ? 'is' : 'are'} in none of the commits ${anchors.map((c) => c.asked).join(', ')}: a file that did not exist while the part was a stand-in cannot show that the part changed. Name the files that held the stand-in`)
   part.files = rec.files
   part.standInHash = rec.hash
   part.hashAt = rec.hashAt
   part.commit = commit
   writeJson(file, register)
   const today = hashOf(at(), rec.files)
-  for (const f of rec.files) say(`${f} as it was at ${rec.hashAt[f].slice(0, 7)}`)
+  for (const f of rec.files) say(rec.absent.includes(f) ? `${f} is in none of the commits ${anchors.map((c) => c.asked).join(', ')}: recorded as absent, a file that was not there while the part was a stand-in. It differs as soon as it holds a byte, so name it only for a part that is made in a new file` : `${f} as it was at ${rec.hashAt[f].slice(0, 7)}`)
   say(`${name}: ${rec.files.length} file${rec.files.length === 1 ? '' : 's'} recorded with the hash ${rec.hash.slice(0, 12)}. The files today ${today === rec.hash ? 'are the same, so test 2 of G13 fails until one of them changes' : 'differ already'}. Wrote ${path.relative(at(), file)} in ${took(seconds(t0))}`)
   process.exit(0)
 }
