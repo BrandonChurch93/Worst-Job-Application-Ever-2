@@ -1,8 +1,8 @@
 # Status pictures
 
-Time: 2026-11-25T14:32Z. Phase 3, status 26.
+Time: 2026-11-25T14:52Z. Phase 3, status 27.
 
-1. `01-compare-step1-fire-second-merge.jpg`: Keyboard under fire: your approved picture on the left, the merged build on the right, at the 20 degree lens. The page light now falls off like yours; the bolts and sparks of the judged moment are not there yet.
-2. `02-bolt-and-its-light.jpg`: A bolt at full size, from the light owner's test: a travelling streak with a bright head that warms the caps beside it, and the scorch marks earlier bolts left.
-3. `03-compare-step1-tug-second-merge.jpg`: The tug of war: approved on the left, the merged build on the right, from the film's camera. The sheet now hangs from the cursor's hands with a soft shadow; the arms are still too thin.
-4. `04-compare-page-look-second-merge.jpg`: The page at rest with crops at full size: approved on the left, the build on the right. Brushed metal, ceramic grain and falloff are close; pockets, long shadows and the cursor's shadow are not.
+1. `01-compare-step1-fire-third.jpg`: Keyboard under fire: your approved picture on the left, the build on the right, with the header now at your sizes. Still short: no bolt in flight with sparks at this moment, the deck reads dark where your aluminum is bright, and the gaps between the keys are black.
+2. `02-floors-beside-approved.jpg`: The three tiers: your approved pictures on the left, the build on the right with the first printed floors under the grey stand-ins. Everything that stands on them is still to be made real.
+3. `03-sheet-first-name.jpg`: Twelve frames across the beat First name: the turrets rise from the deck, bolts cross the keys and leave scorch marks, and the cursor types between them.
+4. `04-sheet-tug.jpg`: Twelve frames across the tug of war: the shredder takes the sheet, the cursor grows arms and pulls, loses, and the strips fall.
