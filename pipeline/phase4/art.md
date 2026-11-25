@@ -17,6 +17,7 @@ Owner: the floor artist. Branch `agent/art`. Everything is made by `node assets-
 - Office: tiles of 1.5 balls from the left wall, pile stripes turned a quarter each tile, a pale walkway down the middle and one across, a seeded scatter of blank sheets, tabs, clips, bands and pins. No sheet has writing; rules on a sheet are plain lines.
 - Street: the avenue lies on `flat.street.road`; a cross street at v 4.45 to 5.15; zebra crossings and stop lines; two car parks; keep-clear hatching at the firehouse scoop; city blocks fill the rest.
 - Common to all: the top lane with chevrons the way the ball runs (to the left), the launch lane with chevrons up the page, lamp surrounds, inlane and outlane chevrons, sling keylines, flipper sweep fans, a star under each post, rings under bumpers, a foot line under each model, keylines round target banks, a panel round each display, a dark line and a keyline round each insert, and a keyline for the label card under each insert (2.04 by 0.74 balls, as the Builder asked).
+- Painted bases (image tool, `nano_banana_pro`, one take a floor): material only, no lines. The marble is the corporate floor itself; the carpet and the asphalt lend their light and dark to the drawn ground. The guide was not handed to the tool, because a painted line lands beside the layout. The drawn floors alone remain the fallback: delete `assets-src/table/art/painted/<tier>.png` and run the maker.
 - The coverage mask is made by rule (see the recipe): local contrast above a threshold.
 - The windows: one disc per insert, 0.35 px above the plate with a polygon offset, its picture from three atlases. Unlit it is dark glass in its colour; lit, its emissive rises from 0.05 to 1.55 with `insert.<id>.v[0]`. The window throws no light itself: colours and levels are exported from `src/table/real/art/inserts.ts` for the owner of the lights.
 - The base of a floor is dull (roughness 0.9 or more, specular 0.2) under a clear coat of roughness from the coat picture: the print is ink, the shine is the lacquer.
@@ -25,3 +26,32 @@ Owner: the floor artist. Branch `agent/art`. Everything is made by `node assets-
 ## Measured
 
 See the report at the end of this file; every number there names its command.
+
+## Report, first complete version (14:46 UTC, 2026-11-25)
+
+Branch `agent/art`, last commit `ba711dc` (this report added in the commit after it). Looks on `agent/art-looks`.
+
+Done: three printed floors in the machine (drawn layer on the layout, painted material under it), their coverage masks made by rule, the clear coat (one `MeshPhysicalMaterial` a tier through `studio()` and `lit()`, orange peel in the coat's normal, a faint ball trail in the coat's roughness, gold leaf as metal on the corporate floor), nine insert windows with moulded pictures that glow with `insert.<id>.v[0]`, the plainer print under the launch lane and the lift, tests, recipes.
+
+Not done: tuning under the real lights (none yet); the knot and the stack of hats read weakly; the office floor is greener and busier than the approved one; no look at the close keys (`lobby-doors`, `reply-all`, `youre-fired`, `last-save`).
+
+MEASURED (all at `--format hd`, full assets, on the build machine):
+
+| What | Before (part null, main 77d4dc7) | After (ba711dc) | Command |
+| --- | --- | --- | --- |
+| tier-corporate draft | 7.336 s, 175880 triangles, 653 draw calls | 14.499 s, 176052, 658 | `npm run still -- --key tier-corporate --format hd --tier draft --force` |
+| tier-office draft | 7.369 s, 173539, 753 | 16.961 s, 173677, 756 | same with `--key tier-office` |
+| tier-street draft | 6.621 s, 206971, 762 | 13.727 s, 207107, 764 | same with `--key tier-street` |
+| tier-office review | not measured | 30.541 s, 183593, 809 | `npm run still -- --key tier-office --format hd --tier review --force` |
+
+- With `--assets web` a draft still of tier-corporate took 10.6 s: about 3 s of the added time is the coat's shading over the whole frame and about 4 s is the 8192 wide pictures of the full set.
+- Asset sets: web 8.01 MB, full 25.54 MB (`du -sb public/assets/table/art assets-full/table/art`); largest file 9.30 MB (`assets-full/table/art/office.webp`, `ls -S -l`). The sources under `assets-src/table/art` are 25.45 MB, nearly all the three painted bases.
+- Bare floor (M8's rule, radius 38.4 px, from `--diag coverage` stills read with `bareFloor` of `tools/lib/measure-core.mjs`): corporate 0.0093, office 0.0000, street 0.0001, against a limit of 0.08.
+- `npm test`: 989 passed. `npm run build`: built. `npm run bots`: all clear.
+
+UNKNOWN: how the floors look under the table's own lights and with real parts on them; whether the windows' glow survives the grade; the cost of the coat in a film frame.
+
+The three things that still look least real:
+1. A grey veil over the dark floors: the coat reflects the bright stand-in room evenly, so the midnight blue reads slate and the marble hardly shows.
+2. The stationery of the office is flat print with no offset shade, and the carpet's stripes are too regular.
+3. The unlit windows are dull discs: no depth under the lens, no bright rim where the lens meets the floor.
