@@ -51,3 +51,9 @@ Blockout phase. Stand-in shapes, working logic.
 ## Known and worked around
 
 - The blockout draws field pockets flat and puts text at the field height, below the surface. Typed values were hidden. This page lifts its value text in `draw`. Any page with typed values meets the same thing.
+
+## For the film
+
+- `fire.ts` gives `makeTurrets()` and `drawFire(out, { typed, pressed, turrets })`: the page with the keyboard up, First name holding `typed`, the keys named in `pressed` down, and the given turrets with their bolts and marks. Key names are those of `keyboard.json`.
+- The cursor grabs the paper by its top right corner, clear of the title.
+- The film camera pushes in on the resume card and the slot from 21.6 s and is home again by 30.1 s.

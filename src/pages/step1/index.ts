@@ -403,6 +403,7 @@ export function makePage(): PageLogic {
   }
 
   const ground = (io: StepIo): number => {
+    if (s.paper.on && s.phase === 'resume' && inside({ x: s.paper.x - 30, y: s.paper.y - 30, w: PAPER.w + 60, h: PAPER.h + 60 }, io.cursor.x + BODY.x, io.cursor.y + BODY.y)) return (s.paper.held ? LIE + 14 : s.paper.feed >= 0 ? LIE : 0.6) + heights.paper + 1
     if (inside(ZONE, io.cursor.x + BODY.x, io.cursor.y + BODY.y)) return heights.card
     if (s.board <= 0 || !onDeck(io.cursor.x, io.cursor.y)) return 0
     const key = keyAt(s.places, io.cursor.x, io.cursor.y)
@@ -566,7 +567,7 @@ export function makePage(): PageLogic {
         const b = s.slab
         const fall = 1 - smooth(b.t / TIMES.slabFall)
         const rise = smooth((b.t - TIMES.slabFall - TIMES.slabLie) / TIMES.slabLift)
-        const z = 520 * fall * fall + 520 * rise * rise
+        const z = 300 * fall * fall + 300 * rise * rise
         over['email-slab'] = { x: b.x, z0: z, z1: z + heights.slab, mechanism: true }
         over['email-slab-label'] = { x: slabLabel.x + (b.x - slabHome.x), z0: z + heights.slab, z1: z + heights.slab }
       }

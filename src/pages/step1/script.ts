@@ -105,7 +105,7 @@ export function makePlan(seed: number, first: string, last: string, email: strin
   hold(e + 1.13, e + 1.3, 1260, 780)
   hold(e + 1.45, e + 2.3, 1420, 800)
 
-  const grab = { x: PAPER_REST.x + PAPER.w / 2 - 15, y: PAPER_REST.y + 27 }
+  const grab = { x: PAPER_REST.x + PAPER.w - 62, y: PAPER_REST.y + 24 }
   const drop = 21.85
   hold(20.88, 21.02, grab.x, grab.y)
   clicks.push([20.95, drop])
@@ -161,7 +161,7 @@ export function pointerAt(plan: Plan, time: number): Pointer {
   return { x, y, down }
 }
 
-const TUG_FRAME = { x: 160, y: 238, w: 880, h: 495 }
+const TUG_FRAME = { x: 160, y: 300, w: 880, h: 495 }
 
 export function filmCamera(time: number): CameraPose {
   const home = homePose(0)

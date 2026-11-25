@@ -3,6 +3,7 @@ import { config, stepHz } from '../src/config'
 import { stream } from '../src/core/random'
 import { pages } from '../src/pages'
 import { makePage } from '../src/pages/step1'
+import { drawFire, makeTurrets } from '../src/pages/step1/fire'
 import { DECK, homePlaces, keyboardData, legendKey, seats, shuffled } from '../src/pages/step1/keyboard'
 import { Turrets, TURRET } from '../src/pages/step1/turrets'
 import { layoutProblems, typeRegister } from '../src/shell/layout'
@@ -379,3 +380,21 @@ describe('step 1: live', () => {
     }
   })
 })
+
+describe('the scene of the card loop', () => {
+  it('draws the keyboard up, the typed name, a pressed key lower than the rest and the given turrets', () => {
+    const turrets = makeTurrets()
+    turrets.raise(() => {})
+    for (let i = 0; i < stepHz * 2; i++) turrets.step(1 / stepHz, { x: 900, y: 880 }, true, () => {})
+    const out: DrawList = []
+    drawFire(out, { typed: 'Perplex', pressed: ['e'], turrets })
+    const by = (id: string) => out.find((s) => s.id === id)!
+    expect(by('keyboard-deck')).toBeDefined()
+    expect(by('key-e').z1).toBeLessThan(by('key-r').z1)
+    expect(out.some((s) => s.part === 'turrets')).toBe(true)
+    const again: DrawList = []
+    drawFire(again, { typed: 'Perplex', pressed: ['e'], turrets })
+    expect(again).toEqual(out)
+  })
+})
+
