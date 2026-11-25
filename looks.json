@@ -1,35 +1,35 @@
 {
   "folder": "ui",
-  "pushed": "2026-11-25T09:43:51.662Z",
-  "commit": "7d7a0568dbf359e6dda360ffcd2bc3f602f8720a",
+  "pushed": "2026-11-25T09:51:40.207Z",
+  "commit": "28806ac38609d6a1c906d0ed27edd98adfd56ad4",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "The wired site, step 1 with the skip link due: the row sits above the title on the content column's left edge",
-      "time": "2026-11-25T09:43:49.920Z",
-      "by": "ui",
-      "from": "out/work/stills/site-skip-1200.png"
-    },
-    {
-      "file": "look-2.jpg",
       "caption": "The wired site in film mode: the bar now covers the whole ticker (y 978 to 1046) while it shows",
       "time": "2026-11-25T09:43:50.157Z",
       "by": "ui",
       "from": "out/work/stills/site-film-1200.png"
     },
     {
-      "file": "look-3.jpg",
+      "file": "look-2.jpg",
       "caption": "The wired site with reduced motion and no mode (with the NEEDS commit): the film waits at 0 with the play sign",
       "time": "2026-11-25T09:43:50.385Z",
       "by": "ui",
       "from": "out/work/stills/site-less-motion-1200.png"
     },
     {
-      "file": "look-4.jpg",
+      "file": "look-3.jpg",
       "caption": "The measuring page after a full run in the headless browser (software graphics, so the numbers are low)",
       "time": "2026-11-25T09:43:50.609Z",
       "by": "ui",
       "from": "out/work/stills/site-probe-1200.png"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "The wired site, careers page scrolled by a wheel turned over the row: the row takes its pale capsule while content passes under it",
+      "time": "2026-11-25T09:51:39.198Z",
+      "by": "ui",
+      "from": "out/work/stills/site-scrolled-1200.png"
     }
   ]
 }
