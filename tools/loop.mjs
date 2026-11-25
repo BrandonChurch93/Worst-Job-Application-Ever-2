@@ -4,9 +4,10 @@ import path from 'node:path'
 import sharp from 'sharp'
 import { args, at, config, readJson } from './lib/paths.mjs'
 import { openSession, readCanvas } from './lib/capture.mjs'
-import { difference, rawOf } from './lib/image.mjs'
+import { difference, psnrText, rawOf } from './lib/image.mjs'
 import { addLook } from './lib/looks.mjs'
-import { bitrateOf, clip, formatOfConfig, framesIn, loopPlan, tierOfConfig, webSize } from './lib/film-plan.mjs'
+import { bitrateOf, clip, formatOfConfig, framesIn, loopPlan, seamFrames, tierOfConfig, timeLabel, webSize } from './lib/film-plan.mjs'
+import { composeSheet } from './lib/film-sheet.mjs'
 import { checkDisk, clock, ffmpeg, probe, probeLine, seconds, took } from './lib/film-encode.mjs'
 import { ask, chunkOf, makeContext, matches, recordOf, renderUnit, sources, writeOut } from './lib/film-render.mjs'
 
@@ -95,6 +96,30 @@ async function seamOf(ctx) {
   return d.pixels === 0 ? 'identical' : `${d.pixels} pixels differ, the largest by ${d.largest}`
 }
 
+// The pictures on both sides of the seam, read from the written loop, and how much each differs from the one before it.
+async function seamSheet() {
+  const tmp = path.join(dir, 'chunks', 'seam')
+  fs.rmSync(tmp, { recursive: true, force: true })
+  fs.mkdirSync(tmp, { recursive: true })
+  const want = seamFrames(plan.frames)
+  const inFile = [...want].sort((x, y) => x - y)
+  ffmpeg(['-i', files.loop, '-vf', `select=${inFile.map((n) => `eq(n\\,${n})`).join('+')},scale=in_color_matrix=bt709:in_range=tv:out_range=pc:flags=accurate_rnd+full_chroma_int,format=rgb24`, '-fps_mode', 'passthrough', path.join(tmp, '%d.png')], 'reading the frames at the seam')
+  const fileOf = (n) => path.join(tmp, `${inFile.indexOf(n) + 1}.png`)
+  const raws = []
+  for (const n of want) raws.push(await rawOf(fileOf(n)))
+  const steps = want.slice(1).map((n, k) => ({ from: want[k], to: n, psnr: difference(raws[k], raws[k + 1]).psnr }))
+  const seam = steps.find((x) => x.to < x.from)
+  const beside = steps.filter((x) => x !== seam)
+  const tiles = want.map((n, k) => ({ png: fs.readFileSync(fileOf(n)), label: `${timeLabel(n, card.fps)}  picture ${n + 1} of ${plan.frames}${k === 0 ? '' : `  ${steps[k - 1] === seam ? 'over the seam' : 'step'} ${psnrText(steps[k - 1].psnr)}`}` }))
+  const out = path.join(dir, `card-loop-seam-${format.id}-${tier}.jpg`)
+  const g = await composeSheet(tiles, out, { edge: cfg.critics.maxImageLongEdgePx, heading: `The card loop at its seam: the last three pictures and the first three, ${format.id}, ${tier} tier`, columns: 3 })
+  fs.rmSync(tmp, { recursive: true, force: true })
+  const line = `the step over the seam ${psnrText(seam.psnr)} between its two pictures, the steps beside it ${beside.map((x) => psnrText(x.psnr)).join(', ')}`
+  addLook(out, `The card loop at its seam, the last three pictures and the first three: ${line}`, word(a.by) || 'builder')
+  say(`wrote ${rel(out)}, ${g.width} by ${g.height}: ${line}`)
+  if (seam.psnr < Math.min(...beside.map((x) => x.psnr))) say('the step over the seam is larger than every step beside it: look at the sheet')
+}
+
 let session = null
 let code = 0
 try {
@@ -107,7 +132,7 @@ try {
     const got = await ask(session, 'loop')
     if (!got.value) throw new Error(`${got.missing}, so there is no loop to render yet`)
     if (got.value.frameCount !== plan.frameCount) throw new Error(`the loop reports ${got.value.frameCount} frames, and deliver.cardLoop.seconds times film.fps is ${plan.frameCount}`)
-    say(`the scene ${got.value.scene}, ${plan.frames} frames at ${card.fps} a second, every ${plan.step}th of its ${plan.frameCount}, in ${format.id} at the ${tier} tier`)
+    say(`the scene ${got.value.scene}, ${plan.frames} frames at ${card.fps} a second, one frame in ${plan.step} of its ${plan.frameCount}, in ${format.id} at the ${tier} tier`)
   }
   if (!a.join) {
     const r = await renderUnit(ctx, 'loop', unit, range)
@@ -123,6 +148,7 @@ try {
     await cardStill(ctx)
     const seam = session ? await seamOf(ctx) : 'not checked, no browser was opened'
     deliver(ctx, chunk, seam)
+    await seamSheet()
     addLook(files.still, `The card still, frame 0 of the card loop, ${tier} tier, ${format.id}`, word(a.by) || 'builder')
     say(`the frame one past the last against frame 0: ${seam}`)
     if (session && seam !== 'identical') throw new Error('the loop does not close: the frame one past the last is not frame 0')

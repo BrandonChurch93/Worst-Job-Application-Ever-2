@@ -5,7 +5,7 @@ import { fresh, openSession, readCanvas, recordFor, writeRecord } from './lib/ca
 import { addLook } from './lib/looks.mjs'
 import { around, filmPlan, formatOfConfig, spread, stepOf, tierOfConfig, timeLabel, unitsShown } from './lib/film-plan.mjs'
 import { checkDisk, clock, seconds, took } from './lib/film-encode.mjs'
-import { ask } from './lib/film-render.mjs'
+import { ask, sources } from './lib/film-render.mjs'
 import { composeSheet, findMoment, momentOf, sheetName } from './lib/film-sheet.mjs'
 
 const a = args()
@@ -147,11 +147,7 @@ async function run() {
     if (reusable(name, units, what)) return
     const tiles = []
     for (const frame of frames) {
-      await session.page.evaluate(async ([m, n, t]) => {
-        window.showcase.setDiagnostic('beauty')
-        if (m === 'loop') await window.showcase.renderLoopFrame(n, t)
-        else await window.showcase.renderOpeningFrame(n)
-      }, [mode, frame, tier])
+      await sources[mode].draw(session.page, frame, tier, 'beauty')
       tiles.push({ png: await readCanvas(session.page), label: `${timeLabel(frame, fps)}  ${mode === 'loop' ? `the loop, ${got.value.scene}` : 'the opening'}  frame ${frame}` })
     }
     await write(name, units, what, `Across ${words}, ${tier} tier`, tiles, `Contact sheet across ${words}: ${frames.length} frames, ${tier} tier, ${format.id}`)
