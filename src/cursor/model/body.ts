@@ -91,7 +91,7 @@ export class Body implements BodyModel {
     this.deform.set(look)
     const u = this.uniforms
     u.uState.value.set(clamp01(look.pale), clamp01(look.heat), clamp01(look.char), clamp01(look.melt))
-    u.uShape.value.set(clamp01(look.flat), 0, 0, 0)
+    u.uShape.value.set(clamp01(look.flat), look.strips && look.strips.length > 0 ? 1 : 0, 0, 0)
     const crack = Math.max(clamp01(look.crack ?? 0), 0)
     const seamCount = look.strips ? look.strips.length : Math.max(1, Math.round(look.seamCount ?? 9))
     u.uMarks.value.set(crack, look.strips ? 0 : clamp01(look.seam ?? 0), seamCount, look.time)
