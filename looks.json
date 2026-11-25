@@ -1,35 +1,35 @@
 {
   "folder": "cursor-form",
-  "pushed": "2026-11-25T21:43:30.827Z",
-  "commit": "53985acdee1066c381b6cb85e86f866a2fb3aa5e",
+  "pushed": "2026-11-25T22:25:17.257Z",
+  "commit": "4da99b7b8f142dfbbb9fb5d5cde4147460ab4e6a",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "cursor-damage beside the approved sheet, draft: the shell is rounded; strips and flattened not yet touched",
-      "time": "2026-11-25T21:43:29.042Z",
+      "caption": "Damage sheet at review beside the approved one, final push 4da99b7: strips, flattened, shell under the new light",
+      "time": "2026-11-25T22:25:15.648Z",
       "by": "cursor-form",
-      "from": "out/work/looks/files/20261125214329-compare-cursor-damage.jpg"
+      "from": "out/work/looks/files/20261125222515-1-compare-cursor-damage.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "cursor-acting beside the approved sheet, draft: the shell; exhausted not yet touched",
-      "time": "2026-11-25T21:43:29.263Z",
+      "caption": "Acting sheet at review beside the approved one, final push 4da99b7: the exhausted arrow",
+      "time": "2026-11-25T22:25:15.880Z",
       "by": "cursor-form",
-      "from": "out/work/looks/files/20261125214329-compare-cursor-acting.jpg"
+      "from": "out/work/looks/files/20261125222515-2-compare-cursor-acting.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Punched arrow: approved left, this build at review right",
-      "time": "2026-11-25T21:43:29.507Z",
+      "caption": "Exhausted: approved, this build on the sheet, and in the film at 70 px (step1.shredded at 0.9)",
+      "time": "2026-11-25T22:25:16.120Z",
       "by": "cursor-form",
-      "from": "out/work/looks/files/20261125214329-punch6.png"
+      "from": "out/work/looks/files/20261125222516-3-exhausted.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "step1-tug beside the approved frame, draft",
-      "time": "2026-11-25T21:43:29.783Z",
+      "caption": "Shredded and flattened: approved beside this build, each pair at review",
+      "time": "2026-11-25T22:25:16.336Z",
       "by": "cursor-form",
-      "from": "out/work/looks/files/20261125214329-compare-step1-tug.jpg"
+      "from": "out/work/looks/files/20261125222516-4-shredded-flattened.jpg"
     }
   ]
 }
