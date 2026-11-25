@@ -539,7 +539,7 @@ function pile(seed: number): LooseStrip[] {
   return out
 }
 
-const layer = (i: number): number => 0.5 + ((i * 5) % STRIPS) * 0.85
+const layer = (i: number): number => 0.4 + ((i * 5) % STRIPS) * 0.36
 
 // One step of the loose strips: each falls, lands on the pile at its own layer, skids to its place in the fan and comes to rest.
 function fall(strips: LooseStrip[]): void {
@@ -586,7 +586,7 @@ function drop(p: LooseStrip, i: number): void {
 // Where a strip stands before it snaps true: a little out of line.
 export function askew(i: number, seed: number): Strip {
   const h = (k: number) => hash01(i, k + 20, seed)
-  return { x: (h(1) - 0.5) * 1.6, y: (h(2) - 0.5) * 5, z: i % 2 ? 1.6 : 0.5, rot: (h(3) - 0.5) * 0.045, tilt: 0 }
+  return { x: (h(1) - 0.5) * 1.2, y: (h(2) - 0.5) * 3.2, z: i % 2 ? 0.9 : 0.3, rot: (h(3) - 0.5) * 0.036, tilt: 0 }
 }
 
 const GATHER = { stand: 0.42, snap: 0.68, true: 0.76 }

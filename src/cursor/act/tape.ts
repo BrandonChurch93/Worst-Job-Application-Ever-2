@@ -11,8 +11,8 @@ export const TAPE = {
   on: [0.4, 0.56] as [number, number],
   off: [0.8, 0.97] as [number, number],
   pieces: [
-    { x: 4.3, y: 7.6, turn: 0.2, half: 25, wide: 6, cut: 2.2, late: 0 },
-    { x: 6.4, y: 13.2, turn: -0.26, half: 22, wide: 5.2, cut: -1.8, late: 0.05 }
+    { x: 4.3, y: 7.6, turn: 0.2, half: 27, wide: 6, cut: 2.2, late: 0 },
+    { x: 6.4, y: 13.2, turn: -0.26, half: 23, wide: 5.2, cut: -1.8, late: 0.05 }
   ]
 }
 
@@ -51,7 +51,7 @@ export function makeTape(): Tape {
   const geometry = new THREE.BufferGeometry()
   geometry.setAttribute('position', position)
   geometry.setIndex(index)
-  const material = studio(new THREE.MeshPhysicalMaterial({ color: 0xe2dbc4, roughness: 0.3, metalness: 0, specularIntensity: 0.7, transparent: true, opacity: 0.44, depthWrite: false, side: THREE.DoubleSide }))
+  const material = studio(new THREE.MeshPhysicalMaterial({ color: 0xd9cfae, roughness: 0.3, metalness: 0, specularIntensity: 0.7, transparent: true, opacity: 0.5, depthWrite: false, side: THREE.DoubleSide }))
   const mesh = new THREE.Mesh(geometry, material)
   mesh.castShadow = false
   mesh.receiveShadow = true
