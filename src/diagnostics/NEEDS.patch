@@ -1,0 +1,184 @@
+diff --git a/src/app.ts b/src/app.ts
+index d8e508a..78ada05 100644
+--- a/src/app.ts
++++ b/src/app.ts
+@@ -9,7 +9,7 @@ import { Engine, LightRig, type Shot } from './core/renderer'
+ import type { TargetKind } from './core/accumulator'
+ import { restPose, type CursorPose } from './cursor/body'
+ import { cursorSheet } from './cursor/sheets'
+-import { applyView, views } from './diagnostics/views'
++import { EVENT_TRAIL, applyView, isView, type ViewContext, type ViewEvent } from './diagnostics/views'
+ import { makeLoop, makeOpening, type FilmPiece, type LoopPiece, type OpeningPiece } from './film'
+ import { pages, preparePages, unitPages } from './pages'
+ import { look } from './post/look'
+@@ -39,6 +39,8 @@ export class App {
+   tier = 'draft'
+   assets: AssetSet = 'web'
+   diagnostic = 'beauty'
++  private shown: { frame: Frame; page: PageLogic | null; pose: CameraPose } | null = null
++  private marks: ViewEvent[] = []
+   readonly view = new BlockoutView()
+   readonly rig = new LightRig()
+   readonly camera = new THREE.PerspectiveCamera()
+@@ -71,10 +73,12 @@ export class App {
+     await Promise.all([...FONTS.map((name) => loadFont(name)), preparePages()])
+     App.check()
+     this.engine = new Engine(canvas, this.format.width, this.format.height, { preserve: o.capture, forceKind: o.forceKind, multisamples: o.capture ? 0 : LIVE_MULTISAMPLES })
+-    this.engine.beforeSample = (shot, view) => applyView(view, shot.scene)
++    this.engine.beforeSample = (_shot, view) => (view === 'beauty' ? undefined : applyView(view, this.viewContext()))
+     this.environment = studioEnvironment(this.engine.renderer)
+     this.view.scene.environment = this.environment
+     this.view.scene.environmentIntensity = look.envIntensity
++    this.rig.key.name = 'key'
++    this.rig.dome.name = 'dome'
+     this.rig.addTo(this.view.scene)
+   }
+ 
+@@ -84,10 +88,31 @@ export class App {
+   }
+ 
+   setDiagnostic(view: string): void {
+-    if (!(views as readonly string[]).includes(view)) throw new Error(`No diagnostic view called "${view}"`)
++    if (!isView(view)) throw new Error(`No diagnostic view called "${view}"`)
+     this.diagnostic = view
+   }
+ 
++  // What a diagnostic view is given: the scene, and what the frame on show is made of.
++  viewContext(): ViewContext {
++    const page = this.shown?.page ?? null
++    return {
++      scene: this.view.scene, camera: this.camera, width: this.engine.width, height: this.engine.height, pose: this.shown?.pose ?? null,
++      layout: page?.layout ?? null, list: this.shown?.frame.list ?? [], events: this.marks, lights: [this.rig.key, this.rig.dome],
++      table: () => page?.tableState?.() ?? null, colliders: () => page?.colliders?.() ?? [],
++    }
++  }
++
++  // The events of the frame at `time` and of the half second before it, for the `events` view. Age counts film frames: 0 is this frame.
++  private mark(stage: Stage | null, time: number): void {
++    this.marks = []
++    if (!stage || this.diagnostic !== 'events') return
++    const per = stepHz / config.film.fps
++    const to = this.stepOf(time) + per
++    if (stage.step < to) stage.advance(to - stage.step)
++    const page = stage.frameAt(time).page
++    this.marks = stage.eventsBetween(to - (EVENT_TRAIL + 1) * per, to).filter((e) => e.page === page).map((e) => ({ name: e.name, x: e.x, y: e.y, hitsCursor: e.hitsCursor, age: Math.max(0, Math.floor((to - 1 - e.step) / per)) }))
++  }
++
+   private unit(unit: string): void {
+     if (!pageUnits.includes(unit)) throw new Error(`No page called "${unit}"`)
+   }
+@@ -174,6 +199,7 @@ export class App {
+ 
+   put(frame: Frame, page: { width: number; height: number }, pose: CameraPose, size?: { width: number; height: number }): void {
+     this.view.apply(frame, size ?? { width: page.width, height: page.height })
++    this.shown = { frame, page: 'layout' in page ? (page as PageLogic) : null, pose }
+     const cy = pose.target[1]
+     this.view.focus = -cy
+     this.rig.setBounds(this.view.bounds())
+@@ -195,6 +221,7 @@ export class App {
+     const width = entry?.width ? Math.round(entry.width * k) : this.format.width
+     const height = entry?.height ? Math.round(entry.height * k) : this.format.height
+     this.engine.setSize(width, height)
++    this.mark(spec.beat && !spec.sheet ? this.film(spec.page) : null, this.momentOf(spec))
+     this.put(frame, page, pose, size)
+     this.setCamera(pose, width, height)
+     this.tier = spec.tier
+@@ -233,6 +260,7 @@ export class App {
+       this.put(f.frame, f.page, f.pose)
+       this.setCamera(f.pose)
+     }
++    this.mark(this.film(unit), time)
+     pose(0)
+     await this.engine.picture(this.shot(pose), { samples: tierSamples(tier), frame: frameIndex + 1, diagnostic: this.diagnostic })
+     this.note(unit)
+@@ -258,6 +286,7 @@ export class App {
+       this.put(piece.frame(i), piece.size, view, piece.size)
+       this.setCamera(view)
+     }
++    this.mark(null, 0)
+     pose(0)
+     await this.engine.picture(this.shot(pose), { samples: tierSamples(tier), frame: seed, diagnostic: this.diagnostic })
+   }
+diff --git a/src/pages/step3/index.ts b/src/pages/step3/index.ts
+index e59d1d0..4836ec2 100644
+--- a/src/pages/step3/index.ts
++++ b/src/pages/step3/index.ts
+@@ -7,10 +7,10 @@ import { button, buttonWidth, HEADER, LEFT, page, RIGHT, stepHead, TYPE } from '
+ import { words } from '../../shell/words'
+ import { frame, homePose, mixPose, smooth, toWorld } from '../../stage/camera'
+ import { TURN_HALF } from '../../stage/stage'
+-import type { CameraPose, DrawList, GagInfo, Hint, PageContext, PageLogic, Pointer, SheetFrame, StepIo, TableState } from '../../stage/types'
++import type { CameraPose, Collider, DrawList, GagInfo, Hint, PageContext, PageLogic, Pointer, SheetFrame, StepIo, TableState } from '../../stage/types'
+ import take from '../../../cut/TABLE-TAKE.json'
+ import { fixedShapes, movingShapes } from '../../table/draw'
+-import { APRON_Y, BALL, LAST_Y, MARQUEE_Y, MID, OUTLET, PAGE_H, PORT, TH, TIERS, TIER_Y, floorZ, holdOf, railLength, railOf, table, tierAt } from '../../table/layout'
++import { APRON_Y, BALL, FLIP, LAST_Y, MARQUEE_Y, MID, OUTLET, PAGE_H, PORT, TH, TIERS, TIER_Y, floorZ, holdOf, railLength, railOf, table, tierAt } from '../../table/layout'
+ import { Machine, prepare as startPhysics, type MachineState, type TableEvent } from '../../table/physics'
+ 
+ export const prepare = (): Promise<void> => startPhysics()
+@@ -491,6 +491,36 @@ export function makePage(): PageLogic {
+         sealed: [...table.sealed]
+       }
+     },
++    colliders(): Collider[] {
++      const mc = machine()
++      const out: Collider[] = []
++      const add = (id: string, kind: Collider['kind'], tier: number, points: number[], o: { r?: number; closed?: boolean; z?: number } = {}): void => {
++        const on = Math.min(2, Math.max(0, tier))
++        const c: Collider = { id, kind, tier: TIERS[tier] ?? 'machine', points: points.map((v) => px(v)), z: o.z ?? px(floorZ(on)) }
++        if (o.r !== undefined) c.r = px(o.r)
++        if (o.closed) c.closed = true
++        out.push(c)
++      }
++      const corners = (b: number[]): number[] => [b[0]!, b[1]!, b[0]! + b[2]!, b[1]!, b[0]! + b[2]!, b[1]! + b[3]!, b[0]!, b[1]! + b[3]!]
++      for (const g of table.segs) add(g.id, 'wall', g.tier, [...g.a, ...g.b])
++      for (const p of table.posts) add(p.id, 'post', p.tier, [...p.c], { r: p.r })
++      for (const b of table.bumpers) add(b.id, 'bumper', b.tier, [...b.c], { r: b.r })
++      for (const g of table.slings) add(g.id, 'sling', g.tier, [...g.a, ...g.b, ...g.c], { closed: true })
++      for (const m of table.models) if (m.solid) add(m.id, 'model', m.tier, m.round ? [m.box[0] + m.box[2] / 2, m.box[1] + m.box[3] / 2] : corners(m.box), m.round ? { r: m.box[2] / 2 } : { closed: true })
++      for (const t of table.targets) if (t.kind !== 'drop' || !mc.down[t.index]) add(t.id, 'target', t.tier, corners(t.box), { closed: true })
++      for (const f of table.flippers) {
++        const a = (mc.flipperAngle(f.side) * Math.PI) / 180
++        const dir = f.side === 'left' ? 1 : -1
++        add(f.id, 'flipper', f.tier, [...f.pivot, f.pivot[0] + dir * FLIP.length * Math.cos(a), f.pivot[1] + FLIP.length * Math.sin(a)], { r: FLIP.radius })
++      }
++      for (const h of table.holds) add(h.id, 'hold', h.tier, [...h.c], { r: h.r })
++      for (const o of table.openings) add(o.id, 'opening', o.tier, [...o.a, ...o.b])
++      for (const r of table.rails) add(r.id, 'rail', tierAt(r.points[0]![1]), r.points.flatMap((q) => [q[0], q[1]]), { z: px(r.points.reduce((sum, q) => sum + q[2], 0) / r.points.length) })
++      mc.balls.forEach((b, i) => {
++        if (b.mode !== 'none') add(i === 0 ? 'ball.clear' : `ball.steel.${i}`, 'body', b.tier, [b.x, b.y], { r: 0.5, z: px(b.z) })
++      })
++      return out
++    },
+     sheet(id: string): SheetFrame | null {
+       if (id === 'clear-ball') {
+         const mc = machine()
+diff --git a/src/stage/types.ts b/src/stage/types.ts
+index 466e2db..c27e9be 100644
+--- a/src/stage/types.ts
++++ b/src/stage/types.ts
+@@ -118,6 +118,16 @@ export interface TableState {
+   sealed: string[]
+ }
+ 
++export interface Collider {
++  id: string
++  kind: 'wall' | 'post' | 'bumper' | 'sling' | 'flipper' | 'model' | 'target' | 'rail' | 'hold' | 'opening' | 'body'
++  tier: string
++  points: number[]
++  z: number
++  r?: number
++  closed?: boolean
++}
++
+ export interface SheetFrame {
+   list: DrawList
+   cursors: CursorPose[]
+@@ -151,6 +161,7 @@ export interface PageLogic {
+   ignoring(): boolean
+   states(): string[]
+   tableState?(): TableState
++  colliders?(): Collider[]
+   sheet?(id: string): SheetFrame | null
+   typing?(): boolean
+   volume?(): number

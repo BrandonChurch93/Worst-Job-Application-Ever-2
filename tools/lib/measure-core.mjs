@@ -7,7 +7,9 @@ export const PICTURE_MEASURES = ['M1', 'M2', 'M3', 'M8']
 const r2 = (v) => Number(Number(v).toFixed(2))
 const r4 = (v) => Number(Number(v).toFixed(4))
 
+/** @param {string} id @param {any[]} failing @param {string} summary @param {Record<string, any>} [numbers] */
 export const result = (id, failing, summary, numbers = {}) => ({ id, status: failing.length ? 'fail' : 'pass', summary, numbers, failing })
+/** @param {string} id @param {string} why @param {Record<string, any>} [numbers] */
 export const notYet = (id, why, numbers = {}) => ({ id, status: 'notyet', summary: why, numbers, failing: [] })
 
 // Which measures a unit gets: the "Units" column of the table.
