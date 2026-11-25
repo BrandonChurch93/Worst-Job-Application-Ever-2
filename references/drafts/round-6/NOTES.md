@@ -83,7 +83,7 @@ The second answers are steady: the same faults are named by every judge of the s
 
 Words: every word in every kept file is on the allowed list and spelled right (MEASURED at full size on each file). Two of them were not spelled right by the model and were corrected afterwards: `Mom's Basement` in G5, and so in G2, and `Unemployment Office` in G1.
 
-Three things were blanked after generation, which is what the brief says to do with a sign that cannot be got right: marks like unreadable lettering on a small roof plate in G1, twelve mock numerals on the clock insert in G5 and G2, and a ruled texture like a printed page on the bank's roof in G8.
+Three things were blanked after generation, which is what the brief says to do with a sign that cannot be got right: marks like unreadable lettering on a small roof plate in G1, twelve mock numerals on the clock insert in G5 and G2, and a ruled texture like a printed page on the bank's roof in G8. One thing of that kind was left as generated: the clipboard insert in G3, and so in G2, is drawn with ruled lines like a checklist, with no letter to be read.
 
 Contact sheet: `references/drafts/round-6/contact-sheet.jpg`.
 
@@ -228,7 +228,7 @@ What the kept take misses (MEASURED on the file unless marked):
 - No plunger in frame (the plunger is in tier 1; the launch lane runs off the bottom of this frame as the guide shows).
 - Ceramic border. Not in frame. The edge of the picture is the aluminum rail, as in the guide for the tier views.
 - Focus (STATED by the judge as shallow depth of field). I see the whole frame as sharp at full size; UNKNOWN which is right.
-- Words (MEASURED at full size): `Corporate HQ` and `Retirement`, both spelled right. No other letters or numbers found.
+- Words (MEASURED at full size): `Corporate HQ` and `Retirement`, both spelled right. No other letters or numbers found. The clipboard insert is drawn with seven ruled lines, each with a small mark at its left end, like a checklist. No letter can be read in it (MEASURED at six times enlargement), and it was left as generated.
 
 Full prompt of the kept take:
 
@@ -564,7 +564,7 @@ What the kept take misses (MEASURED on the file unless marked):
 - Camera. Each tier was photographed with things leaning a little outward from its own centre, so in the join the buildings of each tier lean from three different centres, not from one.
 - Size. 2160 by 3840, twice the 1080 by 1920 of a 9:16 frame at this round's width.
 - Diorama (STATED by the judge). The brief's "Never" list names a diorama. The judge gives "miniature-diorama photorealism" as one of its reasons for calling the picture generated art.
-- Words (MEASURED at full size): `Corporate HQ`, `Retirement`, `Coffee`, `You're Fired`, `Background Check`, `Student Loans`, `Mom's Basement`, `Unemployment Office`. All eight are present and spelled right; `Mom's Basement` by the retouch described under G5. No other letters or numbers found. The street tier's clock face is plain: its mock numerals were smoothed away as described under G5.
+- Words (MEASURED at full size): `Corporate HQ`, `Retirement`, `Coffee`, `You're Fired`, `Background Check`, `Student Loans`, `Mom's Basement`, `Unemployment Office`. All eight are present and spelled right; `Mom's Basement` by the retouch described under G5. No other letters or numbers found. The street tier's clock face is plain: its mock numerals were smoothed away as described under G5. The clipboard insert carries the same ruled lines as in the kept G3, like a checklist, with no letter to be read.
 - Musts (MEASURED): three tiers, each with its own pair of flippers, in the order corporate, office, street from head to foot; no ball; no marquee; no people; no cabinet, legs, room or other machine; no real name or brand found.
 
 Full prompt of the kept take:
