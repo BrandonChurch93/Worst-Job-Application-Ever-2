@@ -666,7 +666,14 @@ export async function siteInBrowser(dir = at('dist'), o = {}) {
     page.on('pageerror', (e) => errors.push(String(e.message)))
     if (block) await page.route(block, (route) => route.fulfill({ status: 404, body: 'not found' }))
     await page.addInitScript(() => {
-      window.__sound = { contexts: 0, plays: 0, taps: [], running: new Set(), made: [], shots: 0, log: [] }
+      window.__sound = { contexts: 0, plays: 0, taps: [], running: new Set(), made: [], shots: 0, log: [], decodes: 0, decoded: 0, undecoded: 0, frames: 0 }
+      const tick = () => { window.__sound.frames++; requestAnimationFrame(tick) }
+      requestAnimationFrame(tick)
+      const decode = BaseAudioContext.prototype.decodeAudioData
+      BaseAudioContext.prototype.decodeAudioData = function (bytes, ok, no) {
+        window.__sound.decodes++
+        return decode.call(this, bytes, (x) => { window.__sound.decoded++; if (ok) ok(x) }, (e) => { window.__sound.undecoded++; if (no) no(e) })
+      }
       const startSource = AudioBufferSourceNode.prototype.start
       AudioBufferSourceNode.prototype.start = function (...r) {
         const node = this
@@ -720,6 +727,8 @@ export async function siteInBrowser(dir = at('dist'), o = {}) {
     const look = async () => ({
       ...(await page.evaluate(() => ({
         contexts: window.__sound.contexts, plays: window.__sound.plays,
+        context: window.__sound.made[0]?.state ?? 'none', decodes: window.__sound.decodes, decoded: window.__sound.decoded, undecoded: window.__sound.undecoded, sources: window.__sound.log.length, frames: window.__sound.frames,
+        soundButtons: [...document.querySelectorAll('button[aria-label]')].filter((b) => /sound/i.test(b.getAttribute('aria-label'))).map((b) => ({ hidden: b.hidden, boxes: b.getClientRects().length })),
         failShown: Boolean(document.getElementById('fail')) && !document.getElementById('fail').hidden,
         control: [...document.querySelectorAll('button[aria-label]')].filter((b) => b.querySelector('svg') && /sound/i.test(b.getAttribute('aria-label')) && b.getClientRects().length > 0 && getComputedStyle(b).visibility !== 'hidden').length
       }))),
