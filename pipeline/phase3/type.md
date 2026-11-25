@@ -31,12 +31,13 @@ Branch `agent/type`. Looks branch `agent/type-looks`. Part made real: `type`.
 ## Decisions
 
 - Geometry, not SDF. Sharp at 1920 and 3840 with the capture's accumulation and the live MSAA, no texture memory, and the edge can carry real normals so the lit side comes from the light and not from paint.
-- Ink is sRGB 24 25 27 (`0x18191b`) with `specularIntensity` 0.15 and roughness 0.62. MEASURED: the title core renders 36 36 36 at `--format uhd --tier review`; the approved core is 32 to 42. Never pure black.
+- Ink is sRGB 40 41 43 (`0x28292b`) with `specularIntensity` 0.15 and roughness 0.62; on keycaps a warmer 52 45 38 (`0x342d26`). MEASURED on `--key step1-fire --format uhd --tier review`: the mean of the darkest 8% of the title's box is 49 49 49, of the field value 50 50 51. The same measure on the approved images gives 53 52 51 (`step1-fire.png`) and 44 47 49 (`page-look.png`) for the title and 54 51 46 for the field value. Never pure black.
 - `material.envMapIntensity` does nothing in three 0.187 when the reflection comes from `scene.environment` (`node_modules/three/src/renderers/WebGLRenderer.js` near line 2749). MEASURED: black ink rendered 70 at 0.3 and at 0.08, and 28 with `specularIntensity` 0.2. I use `specularIntensity`. Told the Builder, surface_mason, light_keeper and keyboard_smith.
 - Type lies `HOVER` 0.05 above the `z1` of its shape, with polygon offset, receives shadow, casts none. It is an alpha-blended layer drawn in the opaque pass with depth write, so it is in the picture a transmissive part refracts. A run on glass is drawn after the glass, without depth write.
 - No part of a frame reads a clock or a random number. The maker reads only the shape and `ctx`.
 - Legends of keys (`key-<name>-legend`) are mine. Agreed with keyboard_smith: the floor of the dish is flat and exactly at the key's `z1`, 15 px in from the cap's edge, 64 by 26 px on a 1u cap. A flat legend 0.05 above `z1` lies on it. If a legend ever gets wider than cap width minus 30 or taller than 26 px I tell keyboard_smith. A flying cap tumbles a few degrees in the shuffle and the legend stays level: not visible from straight on.
-- Asked of surface_mason, no answer yet: the top of the glass in a field pocket exactly at `scale.heights.field`, and the top of a progress button flat at its `z1` under the numeral. The light edge of sunk type is a near-white lip (`0xf2efe8`) at alpha 0.6 fading to nothing over 0.7 px, so it brightens whatever it lies on and needs no colour from the surface. The walls of cut type take `materials().aluminium.color`, and their width follows the size of the type (times px / 28, held between 0.6 and 2).
+- Asked of surface_mason, no answer yet: the top of the glass in a field pocket exactly at `scale.heights.field`, and the top of a progress button flat at its `z1` under the numeral. Sunk type has a 0.3 px band of its own ink at alpha 0.8 (the soft edge of real print) and then a near-white lip (`0xf2efe8`) at alpha 0.5 fading to nothing at 0.9 px, so it brightens whatever it lies on and needs no colour from the surface. The walls of cut type take `materials().aluminium.color`, and their width follows the size of the type (times px / 28, held between 0.6 and 2).
+- Told by slab_maker: the resume sheet bends, so the paper maker sets `resume-paper-title` itself from the same outlines through `TypeRegister.set` and lays it on the bent sheet. The director is changing that shape to `part: 'paper'`. Until then my flat run shows and the paper's stays hidden. No objection.
 
 ## How a new page gets its type
 
@@ -68,6 +69,7 @@ Branch `agent/type`. Looks branch `agent/type-looks`. Part made real: `type`.
 | 15 | `npm run compare -- --key step1-tug --tier draft --format hd` | the word on the paper turns with the paper |
 | 16 | `npm run compare -- --key step1-fire --tier review --format hd` | for the report |
 
+| 17, 18, 19 | `npm run still -- --key step1-fire --format uhd --tier review --force`, three times | ink was too dark and too crisp beside the approved crops: ink raised from 24 to 40, a soft band of ink added at the edge, engraved lip weaker, legends warmer |
 Checks that are not tuning looks: `--id rest-step1 --diag type`, one draft still in each of the seven beats of step 1, one of each of `--page marketing`, `step2`, `boss`, `decision`.
 
 ## What I learned
@@ -78,8 +80,8 @@ Checks that are not tuning looks: `--id rest-step1 --diag type`, one draft still
 
 ## Measured (2026-11-25, this VM)
 
-- `npm run still -- --key step1-fire --format hd --tier draft`: 3.7 s, 126,858 triangles, 305 draw calls. With the stand-in type: 3.2 s, 84,708 triangles, 303 draw calls.
-- `npm run still -- --key step1-fire --format uhd --tier review --force`: 20.2 s, same triangles and draw calls.
+- `npm run still -- --key step1-fire --format hd --tier draft`: 3.7 s, 155,896 triangles, 305 draw calls. With the stand-in type: 3.2 s, 84,708 triangles, 303 draw calls.
+- `npm run still -- --key step1-fire --format uhd --tier review --force`: 19.6 s, same triangles and draw calls.
 - `npm run still -- --id rest-step1 --diag type`: 2.4 s, 47,401 triangles, 137 draw calls, every run inside its box.
 - Textures of the part: none, 0 MB.
 - `npm run measure -- --unit step1`: M4 pass, 103 runs, smallest 18 px, least contrast 5.22. `npm run gate -- --phase 3 --only G11`: pass.

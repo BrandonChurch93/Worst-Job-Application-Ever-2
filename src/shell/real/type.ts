@@ -238,7 +238,8 @@ const lin = (c: THREE.Color): Rgb => [c.r, c.g, c.b]
 const hex = (h: number): Rgb => lin(new THREE.Color().setHex(h, THREE.SRGBColorSpace))
 const mix = (a: Rgb, b: Rgb, t: number): Rgb => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t]
 
-const INK = 0x18191b
+const INK = 0x28292b
+const INK_WARM = 0x342d26
 const INK_LIGHT = 0xf6f1e8
 const LIP = 0xf2efe8
 const CUT_FLOOR = 0x1d1e21
@@ -250,16 +251,17 @@ export function styles(): Record<string, Style> {
   if (styleSet) return styleSet
   const mat = materials()
   const ink = hex(INK)
+  const warm = hex(INK_WARM)
   const light = hex(INK_LIGHT)
   const lip = hex(LIP)
   const metal = lin(mat.aluminium.color)
   const floor = hex(CUT_FLOOR)
   styleSet = {
-    'page:ink': { setting: 'sunk', fill: ink, lean: 0.5, rings: [{ d: 0.7, a: 0.6, c: lip }] },
-    'cap:ink': { setting: 'sunk', fill: ink, lean: 0.42, rings: [{ d: 0.6, a: 0.5, c: lip }] },
+    'page:ink': { setting: 'sunk', fill: ink, lean: 0.5, rings: [{ d: 0.3, a: 0.8, c: ink }, { d: 0.9, a: 0.5, c: lip }] },
+    'cap:ink': { setting: 'sunk', fill: warm, lean: 0.42, rings: [{ d: 0.3, a: 0.8, c: warm }, { d: 0.8, a: 0.4, c: lip }] },
     'glass:ink': { setting: 'flat', fill: ink, lean: 0, rings: [{ d: 0.45, a: 0.85, c: ink }] },
     'paper:ink': { setting: 'flat', fill: ink, lean: 0, rings: [{ d: 0.5, a: 0.8, c: ink }] },
-    'metal:ink': { setting: 'cut', fill: floor, lean: 0.6, rings: [{ d: 0.5, a: 1, c: mix(metal, floor, 0.55) }, { d: 0.95, a: 0.7, c: metal }] },
+    'metal:ink': { setting: 'cut', fill: floor, lean: 0.6, rings: [{ d: 0.5, a: 1, c: mix(metal, floor, 0.55) }, { d: 0.95, a: 0.5, c: metal }] },
     'gloss:ink': { setting: 'flat', fill: ink, lean: 0, rings: [{ d: 0.45, a: 0.85, c: ink }] },
     'page:light': { setting: 'raised', fill: light, lean: -0.5, rings: [{ d: 0.6, a: 1, c: light }] },
     'gloss:light': { setting: 'raised', fill: light, lean: -0.55, rings: [{ d: 0.7, a: 1, c: light }] }
