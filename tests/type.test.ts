@@ -145,8 +145,8 @@ describe('type: the runs of a page as one sheet', () => {
   const part = (sheet: Sheet, from: number, to: number): number[] => Array.from((sheet.geometry.getAttribute('position').array as Float32Array).subarray(from, to))
 
   it('draws every run of one setting as one mesh, and only the runs on show', () => {
-    const a = shape('a', 'runtime:test.a', 100, 'First name')
-    const b = shape('b', 'runtime:test.b', 600, 'Email')
+    const a = shape('a', 'copy:step1.fields.firstName.label', 100)
+    const b = shape('b', 'copy:step1.fields.email.label', 600)
     const ctx = context([a, b])
     const page = new THREE.Group()
     const oa = set(page, a, ctx)
@@ -174,9 +174,9 @@ describe('type: the runs of a page as one sheet', () => {
     expect(page.children.some((c) => c instanceof Sheet)).toBe(false)
   })
 
-  it('a changed word or a moved run changes only its own part of the sheet', () => {
-    const a = shape('a', 'runtime:test.a', 100, 'First name')
-    const b = shape('b', 'runtime:test.b', 600, 'Email')
+  it('a moved run, or a run set again with other words, changes only its own part of the sheet', () => {
+    const a = shape('a', 'copy:step1.fields.firstName.label', 100)
+    const b = shape('b', 'copy:step1.fields.email.label', 600)
     const ctx = context([a, b])
     const page = new THREE.Group()
     const oa = set(page, a, ctx)
@@ -193,11 +193,14 @@ describe('type: the runs of a page as one sheet', () => {
     const moved = part(sheet, alone, total)
     expect(moved.length).toBe(second.length)
     for (let i = 0; i < moved.length; i += 3) expect(moved[i]! - second[i]!).toBeCloseTo(40, 3)
-    type.pose!(ob, { ...b, text: 'Emails' } as Shape, ctx)
+    page.remove(ob)
+    type.drop!(ob)
+    const c = shape('b', 'copy:step1.fields.lastName.label', 600)
+    const oc = set(page, c, context([a, c]))
     page.updateMatrixWorld(true)
     expect(part(sheet, 0, alone)).toEqual(first)
     expect(sheet.geometry.getAttribute('position').array.length).toBeGreaterThan(total)
     type.drop!(oa)
-    type.drop!(ob)
+    type.drop!(oc)
   })
 })

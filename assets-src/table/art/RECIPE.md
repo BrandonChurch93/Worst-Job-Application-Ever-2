@@ -8,7 +8,7 @@ Every picture here is made by one command: `node assets-src/table/art/make.mjs` 
 - From: the layout (walls, lanes, posts, bumpers, slings, flippers, targets, models, displays, lamps, inserts, rails, holds, flats) and the seed
 - Prompt or command: `node assets-src/table/art/make.mjs --only art`
 - Takes: about 35 s for the web set and 150 s for the full set (MEASURED on the build machine)
-- Why this one: a drawn floor is exactly on the layout, so every line answers a part that stands there. Corporate is a sunburst of gold hairlines from the doors of the tower on blue marble; Office is carpet tile of one and a half balls with a pale walkway and loose stationery; Street is an avenue on the layout's road with a cross street, crossings, two car parks and city blocks
+- Why this one: a drawn floor is exactly on the layout, so every line answers a part that stands there. Corporate is a sunburst of gold hairlines from the doors of the tower on blue marble; Office is broad chequered carpet tile in two grey-greens with a wide pale walkway cross and a little loose stationery; Street is an avenue on the layout's road with a cross street, crossings, two car parks and faint paving
 - Size: web 4096 by 2304, full 8192 by 4608
 - Date: 2026-11-25
 
@@ -62,6 +62,6 @@ Every picture here is made by one command: `node assets-src/table/art/make.mjs` 
   - street: "Dark blue-black asphalt, the same deep navy blue as the road surface in the reference image. Fine aggregate, a few hairline cracks, two or three faint tar-sealed seams, subtle worn lighter patches, tiny pale specks of stone. No road markings at all."
   - common ending: "Perfectly flat surface seen exactly straight from above, like a flatbed scan. Evenly lit, no shadows, no highlights, no reflections, no vignette. No objects, no parts, no lines, no borders, no frame, no perspective. No text, no letters, no numbers, no logos. The material fills the whole image edge to edge. The image shows an area about half a metre wide, so the texture is fine and small in scale."
 - Takes: 1 of 6 for each floor, each kept. Each was looked at whole and in crops for letters, numbers and marks: none found
-- Why this one: corporate is the floor itself under the gold (darkened to 82%): real veins and clouding that a noise cannot give. Office and street lend only their light and dark (an overlay round mid grey, gain 1.5 and 1.6) to the drawn ground, so the pile and the grit are real and the tones stay those of the print
+- Why this one: corporate is the floor itself under the gold (its own brightness, saturation 1.18): real veins and clouding that a noise cannot give. Office and street lend only their light and dark (an overlay round mid grey, gain 1.5 and 2.6) to the drawn ground, so the pile and the grit are real and the tones stay those of the print
 - Size: 2752 by 1536, 6.4, 10.5 and 9.3 MB
 - Date: 2026-11-25

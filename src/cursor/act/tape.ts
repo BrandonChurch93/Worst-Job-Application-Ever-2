@@ -51,7 +51,7 @@ export function makeTape(): Tape {
   const geometry = new THREE.BufferGeometry()
   geometry.setAttribute('position', position)
   geometry.setIndex(index)
-  const material = studio(new THREE.MeshPhysicalMaterial({ color: 0xe2dcc6, roughness: 0.2, metalness: 0, specularIntensity: 1, transparent: true, opacity: 0.38, depthWrite: false, side: THREE.DoubleSide }))
+  const material = studio(new THREE.MeshPhysicalMaterial({ color: 0xdccf9f, roughness: 0.2, metalness: 0, specularIntensity: 1, transparent: true, opacity: 0.46, depthWrite: false, side: THREE.DoubleSide }))
   const mesh = new THREE.Mesh(geometry, material)
   mesh.castShadow = false
   mesh.receiveShadow = true
@@ -80,8 +80,10 @@ export function makeTape(): Tape {
             const s = s0 + ((s1 - s0) * i) / TAPE.along + (i === 0 || i === TAPE.along ? side * piece.cut : 0)
             const x = piece.x * UNIT + s * c - side * piece.wide * n
             const y = -piece.y * UNIT + s * n + side * piece.wide * c
-            high[i] = within(x / UNIT, -y / UNIT) ? body.anchor(x / UNIT, -y / UNIT, at).z * 2 + lift + TAPE.thick : TAPE.lie
-            position.setXYZ((p * rows + i) * 2 + e, x, y, 0)
+            // The tape is stuck to the body: it goes where the body's own point goes when the body is stretched, squashed or bent.
+            body.anchor(x / UNIT, -y / UNIT, at)
+            high[i] = within(x / UNIT, -y / UNIT) ? at.z * 2 + lift + TAPE.thick : TAPE.lie
+            position.setXYZ((p * rows + i) * 2 + e, at.x, at.y, 0)
           }
           for (let i = 0; i < rows; i++) soft[i] = Math.max(high[Math.max(0, i - 1)]!, high[i]!, high[Math.min(rows - 1, i + 1)]!)
           high.set(soft)

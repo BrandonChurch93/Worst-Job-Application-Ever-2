@@ -48,6 +48,7 @@ export const GRID = { nx: 49, ny: 67 }
 export const MARGIN = 16
 const WRAP = 1.12
 const FEED = 18
+const NIP = 1.3
 const KW = 72
 const KH = 96
 
@@ -413,11 +414,12 @@ export function solveSheet(q: SheetIn, into?: Sheet): Sheet {
             fed[2] = crestZ + uz * sg + nzn * zz
           } else {
             const round = -s * wy
-            const phi = Math.min(round / R, WRAP)
-            const more = Math.min(16, Math.max(0, round - wrapLen))
+            // Past the crest the sheet turns straight down into the nip, tighter than the grid can bend: what is drawn of it is a hair.
+            const phi = Math.min(round / NIP, Math.PI / 2)
+            const more = Math.min(16, Math.max(0, round - NIP * (Math.PI / 2)))
             fed[0] = q.cx + (a - W / 2) * sec - s * wx
-            fed[1] = q.cy + R * Math.sin(phi) + more * Math.cos(phi)
-            fed[2] = crestZ - R + R * Math.cos(phi) - more * Math.sin(phi)
+            fed[1] = q.cy + NIP * Math.sin(phi) + more * Math.cos(phi)
+            fed[2] = crestZ - NIP + NIP * Math.cos(phi) - more * Math.sin(phi)
           }
           x += (fed[0]! - x) * bite
           y += (fed[1]! - y) * bite
@@ -448,11 +450,10 @@ export function solveSheet(q: SheetIn, into?: Sheet): Sheet {
 }
 
 // A sheet fed askew crosses the crest on a slant, and the grid would shade that line in teeth. The rows by the crest
-// take the light as the row a little above them does, so the sheet goes over the roller as one clean bend.
+// and past it take the light as the row a little above them does: what is past the crest is a few pixels under the hood.
 function calm(s: Sheet, crestAt: Float32Array, db: number, bite: number): void {
   const { nx, ny, nor } = s
   const before = 2.5 * db
-  const after = 1.5 * db
   for (let i = 0; i < nx; i++) {
     const bc = crestAt[i]!
     if (bc < 0) continue
@@ -463,8 +464,7 @@ function calm(s: Sheet, crestAt: Float32Array, db: number, bite: number): void {
     const sz = nor[from + 2]!
     for (let j = js + 1; j < ny; j++) {
       const b = j * db
-      if (b > bc + after) break
-      const w = bite * (b < bc ? smooth((b - (bc - before)) / before) : 1 - smooth((b - bc) / after))
+      const w = bite * (b < bc ? smooth((b - (bc - before)) / before) : 1)
       const o = (j * nx + i) * 3
       const x = nor[o]! + (sx - nor[o]!) * w
       const y = nor[o + 1]! + (sy - nor[o + 1]!) * w
