@@ -42,6 +42,10 @@ A shape is `box`, `disc`, `capsule`, `ball`, `text` or `well`, at `x, y, w, h` i
 - `ball` is a sphere `w` across standing on `z0`.
 - `text` holds `words` and `type`, lies at `z1`, and has its top left at `x, y`: `y` is the top of the capitals.
 - `pocket: true` marks a shallow recess of the layout, such as a field. The blockout draws it as a flat darker patch.
+- A still's state gives each part's `height` as its top above the page surface, whatever it stands on. A part of the pinball machine that lies on another part takes a kind `scale.kinds` does not list, since the scale measure leaves the machine out.
+- `moved: true` says a gag holds the shape away from its place in the layout tree on this frame. The layout measure leaves it out and counts it. A shape at rest never carries it.
+- `mechanism: true` marks the working part of a machine, the part whose top the scale measure holds to `scale.heights.machineMinTop`. A deck or a housing is not one.
+- The cursor's state a still reports carries `reaction` and `reactionAt` beside `acting` and `damage`: the reaction playing and the share of it that has passed. A strike is answered when damage or acting changes, or a reaction starts or starts again, on the frame of the strike or the next.
 - `well` is a real opening in the slab, `x, y, w, h`, with its floor at `z0`. Things in it are ordinary shapes with negative heights. Wells may touch: where two meet the step between their floors is drawn.
 - `fixed: true` keeps a shape in the picture while the page turns. Everything else outside the screen in view is dropped during a turn.
 

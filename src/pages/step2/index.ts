@@ -1,7 +1,7 @@
 import { config, stepHz } from '../../config'
 import type { LayoutNode } from '../../copy'
 import { Random, stream } from '../../core/random'
-import { restPose } from '../../cursor/body'
+import { restPose, type Acting } from '../../cursor/body'
 import { boxOf, drawLayout, find, walk } from '../../shell/layout'
 import { measure } from '../../shell/metrics'
 import { SCREEN_H, TYPE } from '../../shell/parts'
@@ -9,7 +9,7 @@ import { words } from '../../shell/words'
 import { frame } from '../../stage/camera'
 import type { DrawList, GagInfo, Hint, PageContext, PageLogic, Pointer, Shape, SheetFrame, StepIo, Tone } from '../../stage/types'
 import { buildLayout, CRANK, DIAL, FH, FW, FX, PAD, reelId, ROWS, rowY, SHIFT, SLOT, statesOf, TOP, TRAY_H, TRAY_Z, trayY } from './layout'
-import { actingAt, LANDING, pointerAt, reactions } from './script'
+import { actingAt, LANDING, pointerAt, reactions, type Mark, type Marks } from './script'
 
 const dt = 1 / stepHz
 const LIMIT = config.live.skipLinkAfterSeconds
@@ -28,7 +28,7 @@ const RETURN = 18
 type RowPhase = 'closed' | 'opening' | 'ready' | 'ending' | 'closing'
 interface Coin { n: number; x: number; y: number; z: number; vx: number; vy: number; vz: number; rot: number; hit: boolean; still: boolean }
 interface DialState { a: number; k: number; phase: 'rest' | 'drag' | 'return' | 'whip' | 'fly' | 'over'; digits: string; w: number; left: number; x: number; y: number; z: number; vx: number; vy: number; vz: number; t: number }
-interface SlotState { p: number; pv: number; grab: boolean; phase: 'rest' | 'spin' | 'read' | 'pay' | 'over'; t: number; from: number[]; to: number[]; coins: Coin[]; spawned: number; cool: number }
+interface SlotState { p: number; pv: number; grab: boolean; phase: 'rest' | 'spin' | 'read' | 'pay' | 'over'; t: number; from: number[]; to: number[]; coins: Coin[]; spawned: number; cool: number; rang: boolean }
 interface CrankState { b: number; set: boolean; grab: boolean; total: number; turns: number; phase: 'rest' | 'runaway' | 'full' | 'over'; w: number; level: number; hit: boolean; hitAt: number; peeled: boolean; t: number; stuck: number; sx: number; sy: number }
 interface State {
   mode: 'live' | 'film'
@@ -52,6 +52,7 @@ interface State {
   finished: boolean
   skipping: boolean
   gripped: boolean
+  marks: Marks
   rng: number[]
 }
 
@@ -65,11 +66,11 @@ const mod = (a: number, m: number): number => ((a % m) + m) % m
 const mix = (a: number, b: number, t: number): number => a + (b - a) * t
 
 const freshDial = (): DialState => ({ a: 0, k: 0, phase: 'rest', digits: '', w: 0, left: 0, x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0, t: 0 })
-const freshSlot = (): SlotState => ({ p: 0, pv: 0, grab: false, phase: 'rest', t: 0, from: [0, 0, 0], to: [0, 0, 0], coins: [], spawned: 0, cool: 0 })
+const freshSlot = (): SlotState => ({ p: 0, pv: 0, grab: false, phase: 'rest', t: 0, from: [0, 0, 0], to: [0, 0, 0], coins: [], spawned: 0, cool: 0, rang: false })
 const freshCrank = (): CrankState => ({ b: CRANK.rest, set: false, grab: false, total: 0, turns: 0, phase: 'rest', w: 0, level: 0, hit: false, hitAt: -1, peeled: false, t: 0, stuck: 0, sx: 0, sy: 0 })
 const fresh = (mode: 'live' | 'film'): State => ({
   mode, time: 0, open: -1, phase: 'closed', spring: [0, 0, 0], springV: [0, 0, 0], lift: 0, rowT: 0, endT: 0, idle: 0, done: [false, false, false], px: 0, py: 0,
-  dial: freshDial(), slot: freshSlot(), crank: freshCrank(), pressed: false, hold: 0, finished: false, skipping: false, gripped: false, rng: []
+  dial: freshDial(), slot: freshSlot(), crank: freshCrank(), pressed: false, hold: 0, finished: false, skipping: false, gripped: false, marks: {}, rng: []
 })
 
 export const phoneMask = (digits: string): string => words('data:step2.phone.prefix') + digits
@@ -149,7 +150,7 @@ export function makePage(): PageLogic {
         d.w = 5
         d.left = d.a + TAU + mod(DIAL.holeAngle(d.k) + Math.PI / 2, TAU)
         io.cursor.take('dial')
-        if (s.mode === 'live') io.cursor.act('shocked')
+        if (s.mode === 'live') io.cursor.act('scared')
         return
       }
     } else if (d.a > 0.09) io.emit('dial-return', at.x, at.y, false)
@@ -193,6 +194,7 @@ export function makePage(): PageLogic {
       io.cursor.place(at.x, at.y, TOP + 6)
       if (d.left <= 1e-9) {
         io.emit('dial-fling', at.x, at.y, true)
+        mark(io, 'fling', 'shocked')
         d.phase = 'fly'
         d.x = at.x
         d.y = at.y
@@ -240,6 +242,11 @@ export function makePage(): PageLogic {
     }
   }
 
+  function mark(io: StepIo, name: Mark, live: Acting): void {
+    s.marks[name] = io.time
+    io.cursor.act(s.mode === 'film' ? actingAt(io.time, s.marks) : live)
+  }
+
   function stepCoins(io: StepIo): void {
     const sl = s.slot
     const c = io.cursor
@@ -254,6 +261,11 @@ export function makePage(): PageLogic {
       if (!coin.hit && coin.vz < 0 && coin.z < 46 && Math.hypot(coin.x - (c.x + 14), coin.y - (c.y + 28)) < 38 && !c.taken) {
         coin.hit = true
         c.knock(coin.vx * 0.1, coin.vy * 0.1, 70)
+        if (!sl.rang) {
+          sl.rang = true
+          io.emit('coins', c.x, c.y, true)
+          mark(io, 'strike', 'scared')
+        }
         if (sl.cool === 0) {
           c.react('flinch')
           sl.cool = 0.2
@@ -263,6 +275,10 @@ export function makePage(): PageLogic {
         coin.vz = 260
       }
       if (coin.z <= 0 && coin.vz < 0) {
+        if (!sl.rang) {
+          sl.rang = true
+          io.emit('coins', coin.x, coin.y, false)
+        }
         coin.z = 0
         coin.vz = -coin.vz > 140 ? -coin.vz * 0.42 : 0
         coin.vx *= 0.72
@@ -315,8 +331,7 @@ export function makePage(): PageLogic {
       if (sl.t >= 0.4) {
         sl.phase = 'pay'
         sl.t = 0
-        io.emit('coins', SLOT.payX + SLOT.payW / 2, SLOT.payY + SLOT.payH / 2, true)
-        if (s.mode === 'live') io.cursor.act('scared')
+        if (s.mode === 'live') io.cursor.act('shocked')
       }
     } else if (sl.phase === 'pay') {
       sl.t += dt
@@ -432,7 +447,7 @@ export function makePage(): PageLogic {
     }
     if (c.hit && !c.peeled && s.time >= c.hitAt + HEAL - 0.4) {
       c.peeled = true
-      io.emit('peel-up', io.cursor.x, io.cursor.y, true)
+      io.emit('peel-up', io.cursor.x, io.cursor.y, false)
       if (s.mode === 'live') io.cursor.act('plain')
     }
   }
@@ -500,7 +515,7 @@ export function makePage(): PageLogic {
       io.cursor.hurt('flattened', 0.3)
       if (s.crank.hit && !s.crank.peeled) {
         s.crank.peeled = true
-        io.emit('peel-up', io.cursor.x, io.cursor.y, true)
+        io.emit('peel-up', io.cursor.x, io.cursor.y, false)
       }
       if (s.mode === 'live') io.cursor.act('plain')
     }
@@ -521,7 +536,7 @@ export function makePage(): PageLogic {
       s.px = io.pointer.x
       s.py = io.pointer.y
       if (s.mode === 'film') {
-        io.cursor.act(actingAt(io.time))
+        io.cursor.act(actingAt(io.time, s.marks))
         for (const [at, name] of reactions) if (io.step === Math.round(at * stepHz)) io.cursor.react(name)
       }
       if (s.skipping && !s.pressed) {
@@ -707,14 +722,16 @@ export function makePage(): PageLogic {
     for (const part of parts[i]!) over[part.id] = part.text ? { z0: mix(TRAY_Z, part.top, L), z1: mix(TRAY_Z, part.top, L) } : { z0: mix(TRAY_Z, part.floor, L), z1: mix(TRAY_Z, part.top, L) }
     if (i === 1) {
       const knob = boxOf(layout, 'slot-knob')
-      Object.assign(over['slot-knob']!, { y: knob.y + SLOT.pull * clamp(m.slot.p, 0, 1) })
+      const p = clamp(m.slot.p, 0, 1)
+      Object.assign(over['slot-knob']!, { y: knob.y + SLOT.pull * p, ...(p > 0.002 ? { moved: true } : {}) })
     }
     if (i === 2) {
       const b = m.crank.b
       const arm = gripPlace(b, CRANK.arm / 2)
       const grip = gripPlace(b)
-      Object.assign(over['crank-arm']!, { x: arm.x - (CRANK.arm + 16) / 2, y: arm.y - 8, rot: b })
-      Object.assign(over['crank-grip']!, { x: grip.x - CRANK.gripW / 2, y: grip.y - CRANK.gripH / 2, rot: b })
+      const away = Math.abs(wrapPi(b - CRANK.rest)) > 0.002 ? { moved: true } : {}
+      Object.assign(over['crank-arm']!, { x: arm.x - (CRANK.arm + 16) / 2, y: arm.y - 8, rot: b, ...away })
+      Object.assign(over['crank-grip']!, { x: grip.x - CRANK.gripW / 2, y: grip.y - CRANK.gripH / 2, rot: b, ...away })
       const lit = Math.round(m.crank.level * 10)
       for (let k = 1; k <= 10; k++) Object.assign(over[`meter-${k}`]!, { tone: (k <= lit ? 'accent' : 'glass') as Tone, z1: mix(TRAY_Z, k <= lit ? 18 : 12, L) })
     }

@@ -61,9 +61,10 @@ export function fixedShapes(): Shape[] {
   }
   for (const s of table.slings) {
     const f = px(floorZ(s.tier))
-    out.push(bar(`sling.${s.id}.1`, 'table-hardware', s.a, s.b, 0.1, f, f + 44, 'raised'))
-    out.push(bar(`sling.${s.id}.2`, 'table-hardware', s.b, s.c, 0.1, f, f + 44, 'raised'))
-    out.push(bar(`sling.${s.id}.3`, 'table-hardware', s.a, s.c, 0.14, f, f + 44, 'danger'))
+    const part = s.tier === 0 ? 'model-wedges' : s.tier === 1 ? 'model-staplers' : 'model-road-signs'
+    out.push(bar(`sling.${s.id}.1`, part, s.a, s.b, 0.1, f, f + 44, 'raised'))
+    out.push(bar(`sling.${s.id}.2`, part, s.b, s.c, 0.1, f, f + 44, 'raised'))
+    out.push(bar(`sling.${s.id}.3`, part, s.a, s.c, 0.14, f, f + 44, 'danger'))
   }
   for (const d of table.displays) {
     const f = px(floorZ(d.tier))
@@ -77,13 +78,13 @@ export function fixedShapes(): Shape[] {
     if (h.tier < 0 || h.tier > 2 || h.kind === 'gate' || h.kind === 'plunger') continue
     const f = px(floorZ(h.tier))
     if (h.id === 'corporate.revolving') {
-      out.push(disc(`hold.${h.id}`, 'model-hq', h.c, h.r, f + 60, f + 66, 'glass'), disc(`hold.${h.id}.post`, 'model-hq', h.c, 0.12, f, f + 110, 'metal'))
+      out.push(disc(`hold.${h.id}`, 'model-revolving-door', h.c, h.r - 0.07, f + 60, f + 66, 'glass'), disc(`hold.${h.id}.post`, 'model-revolving-door', h.c, 0.12, f, f + 110, 'metal'))
     } else if (h.id !== 'corporate.doors') out.push(disc(`hold.${h.id}`, 'table-hardware', h.c, h.r + 0.08, f, f + 3, 'pocket'))
   }
   for (const r of table.rails) {
     if (r.hidden) continue
     const wire = r.id === 'ladder' || r.id === 'highway' || r.id === 'spiral'
-    const part = wire ? 'ramps' : r.id.startsWith('lift') ? 'lift' : r.id === 'feed' ? 'loader' : 'table-hardware'
+    const part = r.id === 'ladder' ? 'model-ladder' : wire ? 'ramps' : r.id.startsWith('lift') ? 'lift' : r.id === 'feed' ? 'loader' : 'table-hardware'
     if (r.id === 'launch' || r.id.startsWith('lift')) continue
     tube(out, `rail.${r.id}`, part, r.points, wire ? 0.16 : 1.24, wire ? 'metal' : 'glass', wire ? -8 : -4)
   }
@@ -115,7 +116,7 @@ export function movingShapes(m: Machine, lit: boolean[], hide: boolean, glow: bo
   for (const t of table.targets) {
     const z = px(floorZ(t.tier))
     const up = t.kind !== 'drop' || !m.down[t.index]
-    out.push(box(`target.${t.id}`, 'targets', t.box, z, z + (up ? 44 : 3), t.kind === 'spinner' ? 'metal' : 'paper'))
+    out.push(box(`target.${t.id}`, t.id.startsWith('corporate.note') ? 'model-notes' : 'targets', t.box, z, z + (up ? 44 : 3), t.kind === 'spinner' ? 'metal' : 'paper'))
   }
   out.push(box('plunger.rod', 'table-hardware', [PLUNGER[0] - 0.08, PLUNGER[1] + 0.55 + pull * 0.45, 0.16, 1.2 + pull * 0.25], px(floorZ(2)) + 30, px(floorZ(2)) + 46, 'metal'))
   out.push(disc('plunger.knob', 'table-hardware', [PLUNGER[0], APRON_Y + 0.75 + pull * 0.7], 0.32, 0, 60, 'accent'))

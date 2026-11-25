@@ -121,11 +121,37 @@ export function listenerFindings(t, listener) {
     if (want !== got) why.push(`the listener wrote "${listener.transcript ?? ''}", which is not the line`)
     for (const k of ['whisper', 'laugh', 'warmth', 'excitement']) if (listener[k] === true) why.push(`the listener heard ${k}`)
     if (listener.unimpressedAndSmug === false) why.push('the listener did not hear an unimpressed, slightly smug speaker')
+    for (const k of ['whisper', 'laugh', 'warmth', 'excitement', 'unimpressedAndSmug']) if (typeof listener[k] !== 'boolean') why.push(`the listener left "${k}" unanswered`)
   } else {
     for (const k of ['voice', 'word', 'music', 'melody']) if (listener[k] === true && !(t.id === 'hold-music' && (k === 'music' || k === 'melody'))) why.push(`the listener heard ${k === 'word' ? 'a word' : k === 'voice' ? 'a voice' : k}`)
     if (listener.fits === false) why.push('the listener says it does not fit the line that describes the cue')
+    if (listener.sameRoom === false) why.push('the listener says it does not belong in the same room as the kept sounds')
+    for (const k of ['voice', 'word', 'music', 'melody', 'fits']) if (typeof listener[k] !== 'boolean') why.push(`the listener left "${k}" unanswered`)
   }
   return { answered: true, holds: why.length === 0, why }
+}
+
+// The same fixed questions for every take, and the answers file as it is handed back. null is a question nobody has answered.
+export function listenerSheet(t, describes) {
+  if (t.kind === 'line') {
+    return {
+      questions: [
+        'Write down what is said, word for word, with nothing added. You are not told the line.',
+        'Is any of it whispered?', 'Is there a laugh?', 'Does the speaker sound warm?', 'Does the speaker sound excited?',
+        'Does the speaker sound unimpressed and a little smug?'
+      ],
+      answers: { by: null, transcript: null, whisper: null, laugh: null, warmth: null, excitement: null, unimpressedAndSmug: null }
+    }
+  }
+  return {
+    questions: [
+      'What is heard?', 'What is it made of?', 'How many separate events are there?',
+      'Is there a voice?', 'Is there a word?', 'Is there music?', 'Is there a melody?',
+      `Does it fit this line: ${describes ?? 'the line that describes the cue'}`,
+      'Only when two takes of other cues are kept and played first: do the three belong in the same room?'
+    ],
+    answers: { by: null, heard: null, madeOf: null, events: null, voice: null, word: null, music: null, melody: null, fits: null, sameRoom: null }
+  }
 }
 
 function writeRecipe(P, ledger, c) {
@@ -148,6 +174,21 @@ function writeRecipe(P, ledger, c) {
 function saveLedger(P, ledger, c) {
   writeJson(ledgerFile(P), ledger)
   writeRecipe(P, ledger, c)
+}
+
+// The one line that describes each cue, from the table of kit/03-METHOD.md: what is heard.
+export function cueLines(file = at('kit', '03-METHOD.md')) {
+  const out = {}
+  if (!fs.existsSync(file)) return out
+  const part = fs.readFileSync(file, 'utf8').split(/^### The effects$/m)[1]?.split(/^### /m)[0] ?? ''
+  for (const row of part.split('\n')) {
+    const cells = row.split('|').map((x) => x.trim())
+    if (cells.length < 5 || !/^(`[a-z0-9-]+`(, )?)+$/.test(cells[1])) continue
+    const ids = [...cells[1].matchAll(/`([a-z0-9-]+)`/g)].map((m) => m[1])
+    const parts = ids.length > 1 ? cells[2].split(', ') : [cells[2]]
+    ids.forEach((id, i) => { out[id] = parts.length === ids.length ? parts[i].replace(/^./, (ch) => ch.toUpperCase()) : cells[2] })
+  }
+  return out
 }
 
 const readMaybe = (v) => (v && v !== true ? (fs.existsSync(v) ? fs.readFileSync(v, 'utf8').trim() : String(v)) : null)
@@ -281,8 +322,8 @@ export async function keepTake(a, P, c, M, quiet = false) {
     const bytes = M.dsp.encodeWav(m.sound, 24)
     fs.writeFileSync(path.join(P.kept, `${m.id}.wav`), bytes)
     writeJson(path.join(P.kept, `${m.id}.json`), {
-      id: m.id, kind: t.kind, cue: t.kind === 'cue' ? t.id : null, variant: t.variants > 1 ? m.variant + 1 : null, class: t.cls, loop: t.loop,
-      beat: t.beat ?? null, liveKey: t.liveKey ?? null, index: t.kind === 'line' ? t.index : null,
+      id: m.id, kind: t.kind === 'line' && t.liveKey ? 'live-line' : t.kind, cue: t.kind === 'cue' ? t.id : null, variant: t.variants > 1 ? m.variant + 1 : null, class: t.cls, loop: t.loop,
+      beat: t.beat ?? null, liveKey: t.liveKey ?? null, group: t.liveKey ?? null, describes: t.kind === 'cue' ? cueLines()[t.id] ?? null : null, index: t.kind === 'line' ? t.index : null,
       words: t.kind === 'line' ? t.text : null, text: t.kind === 'line' ? t.text : null, prompt: take.prompt ?? null, settings: take.settings ?? null, askedSeconds: take.askedSeconds, cost: take.cost,
       take: { number: take.take, round: take.round, file: take.file, sha256: take.sha256, filed: take.filed, measured: take.measured, line: take.line ?? null },
       chain: m.record, measured: M.dsp.measure(m.sound), listener: take.listener ?? null, why, forced, problems, fixture: Boolean(a.fixture),
@@ -324,9 +365,22 @@ export function keptSounds(P, M) {
   return { sounds, absent }
 }
 
+// One row for each sound file under public/audio, so that every file the site ships is named.
+function shippedRows(P, head) {
+  const file = path.join(P.pub, 'index.json')
+  const index = fs.existsSync(file) ? readJson(file) : null
+  if (!index || index.sfx.length + index.loops.length + index.lines.length === 0) return []
+  const made = 'Made by `npm run sound -- --pack` from'
+  const rows = []
+  if (index.pack) rows.push(`| \`public/audio/${index.pack.file}\` | The ${index.sfx.length} short sounds of the site in one file | ${made} the kept sounds of \`audio/kept/\` named in the index | \`public/audio/index.json\` |`)
+  for (const f of [...index.loops, ...index.lines]) rows.push(`| \`public/audio/${f.file}\` | The site's copy of \`${f.id}\` | ${made} \`audio/kept/${f.id}.wav\` | \`audio/kept/${f.id}.json\` |`)
+  return ['## What the site ships', '', ...head, ...rows]
+}
+
 function writeAssetRows(P) {
-  const rows = keptRecords(P).map((r) => `| \`audio/kept/${r.file}\` | ${r.kind === 'line' ? `Narrator line: ${r.words}` : `Sound effect \`${r.cue}\`${r.variant ? `, variant ${r.variant}` : ''}`} | Generated with the sound tool, take ${r.take.number} (${r.take.round}) | \`audio/kept/${r.id}.json\` |`)
-  const text = ['# Rows for ASSETS.md', '', 'One row for each kept sound. `npm run sound` writes this file. The Builder copies the rows under "Generated sounds" in `ASSETS.md`.', '', '| File | What it is | How it was made | Record |', '| --- | --- | --- | --- |', ...rows, ''].join('\n')
+  const rows = keptRecords(P).map((r) => `| \`audio/kept/${r.file}\` | ${r.kind !== 'cue' ? `Narrator line: ${r.words}` : `Sound effect \`${r.cue}\`${r.variant ? `, variant ${r.variant}` : ''}`} | Generated with the sound tool, take ${r.take.number} (${r.take.round}) | \`audio/kept/${r.id}.json\` |`)
+  const head = ['| File | What it is | How it was made | Record |', '| --- | --- | --- | --- |']
+  const text = ['# Rows for ASSETS.md', '', 'One row for each kept sound, and after `--pack` one for each sound file the site ships. `npm run sound` writes this file. The Builder copies the rows under "Generated sounds" in `ASSETS.md`.', '', ...head, ...rows, '', ...shippedRows(P, head), ''].join('\n')
   fs.mkdirSync(P.audio, { recursive: true })
   fs.writeFileSync(path.join(P.audio, 'ASSETS-ROWS.md'), text)
 }
@@ -343,7 +397,7 @@ export function pack(P, c, M, quiet = false) {
   let offset = 0
   for (const r of records) {
     const wav = path.join(P.kept, r.file)
-    if (r.kind === 'line') {
+    if (r.kind !== 'cue') {
       const bytes = encode(wav, ['-ac', '1', '-c:a', 'libmp3lame', '-b:a', '64k', '-id3v2_version', '0', '-f', 'mp3'])
       const file = `${r.id}.mp3`
       fs.writeFileSync(path.join(P.pub, file), bytes)
@@ -366,6 +420,7 @@ export function pack(P, c, M, quiet = false) {
   }
   index.totalBytes = offset + [...index.loops, ...index.lines].reduce((s, f) => s + f.bytes, 0)
   writeJson(path.join(P.pub, 'index.json'), index)
+  if (records.length || fs.existsSync(path.join(P.audio, 'ASSETS-ROWS.md'))) writeAssetRows(P)
   const mb = index.totalBytes / 1048576
   if (!quiet) {
     console.log(`packed: ${index.sfx.length} short sounds in one file, ${index.loops.length} loops, ${index.lines.length} narrator lines, ${mb.toFixed(2)} MB of ${c.audio.appMaxMb} MB, in ${rel(P.pub)}`)
@@ -409,7 +464,7 @@ export async function sheet(P, c, M, out) {
     svg += `<rect x="${x0}" y="${y0}" width="${cw - 8}" height="${ch - 8}" rx="6" fill="#26282d"/>`
     svg += `<text x="${x0 + 8}" y="${y0 + 18}" font-family="sans-serif" font-size="12" fill="#e9e6df">${esc(r.id)}</text>`
     svg += `<text x="${x0 + cw - 16}" y="${y0 + 18}" font-family="sans-serif" font-size="12" fill="#9fa3ab" text-anchor="end">${r.seconds.toFixed(2)} s</text>`
-    svg += `<path d="${d}" stroke="${r.kind === 'line' ? '#e9a15b' : '#8fb6d9'}" stroke-width="1" fill="none"/>`
+    svg += `<path d="${d}" stroke="${r.kind !== 'cue' ? '#e9a15b' : '#8fb6d9'}" stroke-width="1" fill="none"/>`
   })
   svg += '</svg>'
   fs.mkdirSync(path.dirname(out), { recursive: true })
@@ -833,8 +888,11 @@ export async function siteInBrowser(dir = at('dist'), o = {}) {
         opening.toneLoopsInTheOpening = tone
         opening.heard = last.shots - from
         opening.heardBy = Number(((last.at - bar.min) / unit).toFixed(2))
-        await a.page.waitForTimeout(1500)
-        const end = await now()
+        let end = await now()
+        for (let i = 0; i < 200 && end.at < bar.min + (lead + 0.3) * unit; i++) {
+          await a.page.waitForTimeout(50)
+          end = await now()
+        }
         opening.toneLoopsAfterIt = end.tone
         opening.endedAt = Number(((end.at - bar.min) / unit).toFixed(2))
       }
@@ -1024,6 +1082,11 @@ async function main() {
       const t = target(a, c, M.cues)
       const used = readLedger(P).takes.filter((x) => x.key === t.key).length
       console.log(`${t.key}: ${used} of ${t.max} takes used. ${t.kind === 'cue' ? `${t.seconds} s, class ${t.cls}, ${t.variants} variant${t.variants === 1 ? '' : 's'}. Every prompt ends with: ${promptLine(t.id)}` : `Words: ${t.text}`}`)
+      const describes = t.kind === 'cue' ? cueLines()[t.id] : undefined
+      if (describes) console.log(`What is heard: ${describes}`)
+      const sheet = listenerSheet(t, describes)
+      console.log(`The listener's questions, the same for every take:\n${sheet.questions.map((q, i) => `  ${i + 1}. ${q}`).join('\n')}`)
+      console.log(`The answers go back as a file, with --listener FILE:\n${JSON.stringify(sheet.answers)}`)
     } else status(P, c, M)
   } finally {
     await closeModules()

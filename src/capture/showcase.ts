@@ -20,11 +20,12 @@ export interface Showcase {
   renderStill(spec: StillSpec): Promise<void>
   pictureStats(): { invalidValues: number }
   typeRegister(page: string): { key: string; text: string; states: string[]; made: 'copy' | 'config' | 'runtime' }[]
-  stillState(spec: StillSpec): { layout: { id: string; kind: string; planned: number[]; drawn: number[]; plannedHeight: number | null; height: number; mechanism: boolean }[]; type: { key: string; text: string; box: number[]; px: number; contrast: number }[]; cursor: CursorState }
+  stillState(spec: StillSpec): { layout: { id: string; kind: string; planned: number[]; drawn: number[]; plannedHeight: number | null; height: number; mechanism: boolean; moved: boolean }[]; type: { key: string; text: string; box: number[]; px: number; contrast: number }[]; cursor: CursorState }
   tableState(): TableState
   film(): { frameCount: number; units: { id: string; first: number; last: number }[]; beats: { id: string; first: number; last: number }[]; lines: { beat: string; first: number; last: number }[] }
   filmState(frameIndex: number): { unit: string; beat: string; camera: number[]; cursor: CursorState; events: { name: string; x: number; y: number; hitsCursor: boolean }[]; standIns: string[] }
   renderFilmFrame(frameIndex: number, tier: string): Promise<void>
+  useCheckpoint(unit: string, saved: unknown): void
   opening(): { frameCount: number; seconds: number; marks: { typing: number; level: number; build: number } }
   renderOpeningFrame(frameIndex: number, tier?: string): Promise<void>
   loop(): { frameCount: number; scene: string }
@@ -75,11 +76,11 @@ export function makeShowcase(app: App, ready: Promise<void>): Showcase {
     stillState(spec) {
       const { frame, pose, page } = app.still(spec)
       const drawn = new Map(frame.list.map((s) => [s.id, s]))
-      const layout: { id: string; kind: string; planned: number[]; drawn: number[]; plannedHeight: number | null; height: number; mechanism: boolean }[] = []
+      const layout: { id: string; kind: string; planned: number[]; drawn: number[]; plannedHeight: number | null; height: number; mechanism: boolean; moved: boolean }[] = []
       walk(page.layout, (n) => {
         const s = drawn.get(n.id)
         if (!s || s.kind === 'text' || s.kind === 'well') return
-        layout.push({ id: n.id, kind: n.kind, planned: [...n.box], drawn: [s.x, s.y, s.w, s.h], plannedHeight: plannedHeight(n.kind), height: s.pocket ? s.z0 : s.z1, mechanism: s.mechanism === true })
+        layout.push({ id: n.id, kind: n.kind, planned: [...n.box], drawn: [s.x, s.y, s.w, s.h], plannedHeight: plannedHeight(n.kind), height: s.pocket ? s.z0 : s.z1, mechanism: s.mechanism === true, moved: s.moved === true })
       })
       const type = frame.list.filter((s) => s.kind === 'text').map((s) => ({ key: s.words!, text: words(s.words!, s.text), box: [s.x, s.y, s.w, s.h], px: s.type!.px, contrast: ratio(TONES[s.tone], app.groundOf(frame.list, s)) }))
       return { layout, type, cursor: app.cursorState(frame.cursor, pose) }
@@ -109,6 +110,9 @@ export function makeShowcase(app: App, ready: Promise<void>): Showcase {
       const parts = new Set<string>(['shell', 'cursor-body'])
       for (const s of frame.list) parts.add(s.part)
       return { unit, beat: b.id, camera: [...pose.eye, ...pose.target, pose.fov], cursor: app.cursorState(frame.cursor, pose), events, standIns: [...parts].sort() }
+    },
+    useCheckpoint(unit, saved) {
+      app.useCheckpoint(unit, saved)
     },
     async renderFilmFrame(frameIndex, tier) {
       await ready

@@ -170,6 +170,52 @@ describe('step 2, the film', () => {
     expect(last).toBe(1)
   })
 
+  it('changes the cursor on the step of each strike, at the cursor, and calls nothing else a strike', () => {
+    const done = film()
+    done.seek(20.4)
+    const strikes = done.events.filter((e) => e.page === 'step2' && e.hitsCursor)
+    expect(strikes.map((e) => e.name)).toEqual(['dial-fling', 'coins', 'flatten'])
+    expect(done.events.filter((e) => e.page === 'step2' && e.name === 'coins').length).toBe(1)
+    const carriage = (s: Stage) => `${s.cursor.pose().acting}|${s.cursor.damaged}`
+    for (const e of strikes) {
+      const t = film()
+      t.advance(e.step - 1)
+      const before = carriage(t)
+      t.advance(2)
+      expect(carriage(t), e.name).not.toBe(before)
+      expect(Math.hypot(e.x - t.cursor.x, e.y - t.cursor.y), e.name).toBeLessThan(70)
+    }
+  })
+
+  it('marks the handle of the crank and the knob of the lever as moved only while they are away from their place', () => {
+    const t = film()
+    const boxes = new Map<string, number[]>()
+    const walkTree = (n: { id: string; box: number[]; children?: unknown[] }): void => {
+      boxes.set(n.id, n.box)
+      for (const c of (n.children ?? []) as { id: string; box: number[]; children?: unknown[] }[]) walkTree(c)
+    }
+    walkTree(makePage().layout as never)
+    const part = (id: string): Shape => {
+      const list: Shape[] = []
+      t.page.draw(list)
+      return list.find((x) => x.id === id)!
+    }
+    t.seek(14.44)
+    for (const id of ['crank-arm', 'crank-grip']) {
+      const shape = part(id)
+      expect(shape.moved, id).toBeUndefined()
+      const box = boxes.get(id)!
+      expect(Math.abs(shape.x - box[0]!), id).toBeLessThan(0.01)
+      expect(Math.abs(shape.y - box[1]!), id).toBeLessThan(0.01)
+    }
+    t.seek(15.2)
+    for (const id of ['crank-arm', 'crank-grip']) expect(part(id).moved, id).toBe(true)
+    t.seek(9.1)
+    expect(part('slot-knob').moved).toBeUndefined()
+    t.seek(9.35)
+    expect(part('slot-knob').moved).toBe(true)
+  })
+
   it('heals every hurt inside the limit and hands the cursor on whole', () => {
     const t = film()
     let hurtFor = 0

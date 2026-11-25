@@ -726,7 +726,7 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | 144.475 | 8668 | `decision.letter` | `step` | `step` | no |
 | 145.300 | 8718 | `decision.letter` | `stamp` | `stamp` | yes |
 | 145.300 | 8718 | `decision.letter` | `flatten` | `flatten` | yes |
-| 148.092 | 8885 | `decision.metrics` | `peel-up` | `peel-up` | yes |
+| 148.092 | 8885 | `decision.metrics` | `peel-up` | `peel-up` | no |
 | 150.300 | 9018 | `decision.metrics` | `button-press` | `button-press` | no |
 | 150.754 | 9045 | `decision.metrics` | `page-turn` | `page-turn` | no |
 
