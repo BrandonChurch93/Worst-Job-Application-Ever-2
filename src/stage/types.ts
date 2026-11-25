@@ -95,6 +95,7 @@ export type Emit = (name: string, x: number, y: number, hitsCursor?: boolean) =>
 export interface StepIo {
   step: number
   time: number
+  elapsed?: number
   dt: number
   pointer: Pointer
   pressed: boolean
@@ -151,6 +152,8 @@ export interface PageLogic {
   states(): string[]
   tableState?(): TableState
   sheet?(id: string): SheetFrame | null
+  typing?(): boolean
+  volume?(): number
 }
 
 export type PageMaker = () => PageLogic
