@@ -45,3 +45,5 @@
 - Taken by the Builder on main (e970ef5): a visitor who asks for less motion and gives no mode gets the film. It was asked as `NEEDS.patch`, which is gone now.
 - Over one of the controls the system's pointer shows, because they are real links and buttons. The stage's cursor waits where it left the picture. Whether the stage should hide its cursor meanwhile is the Builder's to say.
 - The words of the ticker on the careers page are drawn outside its well, left of x 128 and right of x 1792. It is the page's, and it shows beside the film's bar.
+- Set by the Builder: a device is touch-only only when it also takes touches (`navigator.maxTouchPoints` over 0 or a coarse pointer). A machine that reports no pointer at all gets the site.
+- Set by the Builder: both pointers stay over a control, the two pickers stay, the 12 px floor of the type stays.
