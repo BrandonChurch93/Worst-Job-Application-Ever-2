@@ -305,6 +305,7 @@ interface ScorchData {
   wide: number
   tall: number
   turn: number
+  at: [number, number]
 }
 
 const SCORCH = { size: 62, smoke: 4, smokeSeconds: 1.5, shoulder: 4.5, core: 14 }
@@ -333,7 +334,7 @@ function makeScorch(s: Shape): THREE.Object3D {
     smokeMaterials.push(m)
     root.add(puff)
   }
-  const data: ScorchData = { mark, geometry, material, smoke, smokeMaterials, seed, wide, tall: wide * (0.85 + 0.25 * hash01(seed, 3, 4)), turn: hash01(seed, 5, 6) * Math.PI * 2 }
+  const data: ScorchData = { mark, geometry, material, smoke, smokeMaterials, seed, wide, tall: wide * (0.85 + 0.25 * hash01(seed, 3, 4)), turn: hash01(seed, 5, 6) * Math.PI * 2, at: [0, 0] }
   root.userData.scorch = data
   return root
 }
@@ -366,6 +367,7 @@ function layScorch(d: ScorchData, s: Shape, ctx: RealContext): void {
     y1 = Math.min(oy + reach, high)
     break
   }
+  d.at = [ox, oy]
   d.mark.visible = x1 > x0 && y1 > y0
   if (!d.mark.visible) return
   const p = d.geometry.getAttribute('position') as THREE.BufferAttribute
@@ -388,14 +390,14 @@ function poseScorch(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   layScorch(d, s, ctx)
   d.material.opacity = smooth((left * TURRET.scorchSeconds) / TURRET.scorchFade)
   const ember = Math.exp(-age / 0.18)
-  d.material.color.setRGB(1 + 9 * ember, 1 + 3.2 * ember, 1 + 0.6 * ember)
+  d.material.color.setRGB(1 + 8 * ember, 1 + 8 * ember, 1 + 2 * ember)
   d.smoke.forEach((puff, i) => {
     const u = age / SCORCH.smokeSeconds - i * 0.12
     puff.visible = u > 0 && u < 1 && left * TURRET.scorchSeconds > TURRET.scorchFade
     if (!puff.visible) return
     const sway = Math.sin(u * 5 + i * 1.9 + d.seed) * 7 * u
     const size = 12 + 34 * u
-    puff.position.set(sway - 10 * u, 46 * u, 4 + 70 * u)
+    puff.position.set(d.at[0] + sway - 10 * u, d.at[1] + 46 * u, 4 + 70 * u)
     puff.scale.set(size, size * 1.25, 1)
     puff.rotation.z = hash01(i, d.seed, 21) * 6.28 + u
     d.smokeMaterials[i]!.opacity = 0.3 * smooth(u / 0.15) * (1 - u) ** 1.5
