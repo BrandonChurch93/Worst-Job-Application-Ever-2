@@ -55,8 +55,8 @@ export function decodeFile(file, sampleRate) {
 // What an id on the command line names.
 export function target(a, c, cues) {
   if (a.cue && a.cue !== true) {
-    const spec = c.audio.sfx.find((s) => s.id === a.cue)
-    if (!spec) throw new Error(`No cue called "${a.cue}" in audio.sfx`)
+    const spec = cues.allCues(c.audio.sfx).find((s) => s.id === a.cue)
+    if (!spec) throw new Error(`No cue called "${a.cue}" in audio.sfx or among the added cues`)
     const variants = spec.variants ?? 1
     if (a.variant && a.variant !== true && variants > 1) {
       const slot = Number(a.variant) - 1
@@ -1057,7 +1057,7 @@ export function emittedEvents(M) {
   }
   walk(at('src'))
   const live = new Set(Object.values(M.cues.liveTriggers).map((t) => (t.on === 'event' ? t.event : '')))
-  const unknown = [...found].filter(([name]) => !M.cues.eventCues[name] && !M.cues.stopEvents[name] && !live.has(name) && !M.cues.silentEvents.includes(name))
+  const unknown = [...found].filter(([name]) => !M.cues.cueOfEvent(name) && !M.cues.stopEvents[name] && !live.has(name) && !M.cues.silentEvents.includes(name))
   return { count: found.size, unknown: unknown.map(([name, file]) => `${name} (${file})`) }
 }
 
@@ -1066,11 +1066,11 @@ function status(P, c, M) {
   const ledger = readLedger(P)
   const n = narration()
   const want = []
-  for (const s of c.audio.sfx) for (let i = 0; i < (s.variants ?? 1); i++) want.push({ id: M.cues.variantId(s.id, i, s.variants ?? 1), key: s.id })
+  for (const s of M.cues.allCues(c.audio.sfx)) for (let i = 0; i < (s.variants ?? 1); i++) want.push({ id: M.cues.variantId(s.id, i, s.variants ?? 1), key: s.id })
   for (const [beat, list] of Object.entries(n.film)) list.forEach((_, k) => want.push({ id: M.cues.filmLineId(beat, k), key: M.cues.filmLineId(beat, k) }))
   for (const [key, list] of Object.entries(n.liveOnly)) if (Array.isArray(list)) list.forEach((_, k) => want.push({ id: M.cues.liveLineId(key, k), key: M.cues.liveLineId(key, k) }))
   const missing = want.filter((w) => !kept.has(w.id))
-  console.log(`sound: ${want.length - missing.length} of ${want.length} sounds kept (${c.audio.sfx.length} cues with their variants, and the narrator's lines). ${ledger.takes.length} takes filed`)
+  console.log(`sound: ${want.length - missing.length} of ${want.length} sounds kept (${M.cues.allCues(c.audio.sfx).length} cues with their variants, and the narrator's lines). ${ledger.takes.length} takes filed`)
   if (missing.length) console.log(`sound: not kept yet: ${missing.slice(0, 12).map((m) => m.id).join(', ')}${missing.length > 12 ? `, and ${missing.length - 12} more` : ''}`)
   const e = emittedEvents(M)
   console.log(`sound: the pages emit ${e.count} events by name. ${e.unknown.length ? `With no cue, no stop, no line and not listed as silent in src/audio/cues.ts: ${e.unknown.join(', ')}` : 'Each has a cue, stops one, sets off a line or is listed as silent on purpose'}`)

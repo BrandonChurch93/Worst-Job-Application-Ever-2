@@ -1,11 +1,110 @@
 {
-  "about": "Cues that are not in the table of kit/03-METHOD.md section 12. Addendum 001 added boss-loop and lets the Builder add up to audio.extraCuesMax more where a visible contact in the finished site has no sound. Each is also in audio.sfx and logged in kit/PROGRESS.md with its prompt.",
+  "about": "Cues that are not in the table of kit/03-METHOD.md section 12. Addendum 001 added boss-loop and lets the Builder add up to audio.extraCuesMax more where a visible contact in the finished site has no sound. Each is also in audio.sfx and logged in kit/PROGRESS.md with its prompt. The ones the build added carry their length, their event and their class here until audio.sfx on main has their rows: pipeline/sound/NEEDS-sfx.patch.",
   "cues": [
     {
       "id": "boss-loop",
       "heard": "A short loop of tense, slightly silly fight music. Loops",
       "playedBy": "The boss battle, from the boss unfolding to its collapse",
       "addedBy": "kit/addenda/001-sound-budget-and-narrator.md"
+    },
+    {
+      "id": "tug-lost",
+      "heard": "One sheet of thick paper torn out of a grip and ripped in two",
+      "playedBy": "Step 1 on the live site, when the shredder wins the tug and the page is pulled out of the grip",
+      "addedBy": "the Builder's ruling of 19:23Z, 25 November 2026, inside audio.extraCuesMax",
+      "seconds": 0.6,
+      "event": "tug-lost",
+      "class": "mechanism"
+    },
+    {
+      "id": "arms-out",
+      "heard": "Two small sprung arms snapping out",
+      "playedBy": "Step 1, when the arms come out to hold the page",
+      "addedBy": "the Builder's ruling of 19:23Z, 25 November 2026, inside audio.extraCuesMax",
+      "seconds": 0.5,
+      "event": "arms-out",
+      "class": "mechanism"
+    },
+    {
+      "id": "dial-fling",
+      "heard": "A telephone dial hitting its stop hard",
+      "playedBy": "Step 2, when the dial has run back and flings the cursor off",
+      "addedBy": "the Builder's ruling of 19:23Z, 25 November 2026, inside audio.extraCuesMax",
+      "seconds": 0.8,
+      "event": "dial-fling",
+      "class": "hit"
+    },
+    {
+      "id": "flipper-save",
+      "heard": "A flipper striking a steel ball hard",
+      "playedBy": "The pinball, when a flipper catches the ball at the last moment",
+      "addedBy": "the Builder's ruling of 19:23Z, 25 November 2026, inside audio.extraCuesMax",
+      "seconds": 0.4,
+      "event": "flipper-save",
+      "class": "hit"
+    },
+    {
+      "id": "session-expired",
+      "heard": "A wide heavy panel slamming into place",
+      "playedBy": "The boss battle, when every pop-up and slab sinks and the last banner comes up",
+      "addedBy": "the Builder's ruling of 19:23Z, 25 November 2026, inside audio.extraCuesMax",
+      "seconds": 0.8,
+      "event": "session-expired",
+      "class": "hit"
+    },
+    {
+      "id": "popup-close",
+      "heard": "A small flat panel snapping shut",
+      "playedBy": "The boss battle, when a click closes a pop-up",
+      "addedBy": "the Builder's ruling of 19:23Z, 25 November 2026, inside audio.extraCuesMax",
+      "seconds": 0.3,
+      "event": "popup-close",
+      "class": "tick"
+    },
+    {
+      "id": "carpet-roll",
+      "heard": "A steel ball rolling off a hard floor onto thick carpet",
+      "playedBy": "The pinball, when the ball rolls onto the red carpet of the lobby",
+      "addedBy": "the Builder's ruling of 19:23Z, 25 November 2026, inside audio.extraCuesMax",
+      "seconds": 1.0,
+      "event": "carpet-roll",
+      "class": "mechanism"
+    },
+    {
+      "id": "inbox-take",
+      "heard": "A steel ball dropping into a shallow metal tray",
+      "playedBy": "The pinball, when the inbox takes the ball",
+      "addedBy": "the Builder's ruling of 19:23Z, 25 November 2026, inside audio.extraCuesMax",
+      "seconds": 0.6,
+      "event": "inbox-take",
+      "class": "hit"
+    },
+    {
+      "id": "firehouse-take",
+      "heard": "A steel ball dropping into a deep hole in a wooden board",
+      "playedBy": "The pinball, when the ball drops into the firehouse",
+      "addedBy": "the Builder's ruling of 19:23Z, 25 November 2026, inside audio.extraCuesMax",
+      "seconds": 0.6,
+      "event": "firehouse-take",
+      "class": "hit"
+    },
+    {
+      "id": "metrics-card",
+      "heard": "A stiff card laid flat on a hard desk",
+      "playedBy": "The decision, when the metrics card appears",
+      "addedBy": "the Builder's ruling of 19:23Z, 25 November 2026, inside audio.extraCuesMax",
+      "seconds": 0.5,
+      "event": "metrics-card",
+      "class": "tick"
+    },
+    {
+      "id": "skip",
+      "heard": "One firm press of a wide plastic key",
+      "playedBy": "Any page of the live site, when the visitor presses skip",
+      "addedBy": "the Builder's ruling of 19:23Z, 25 November 2026, inside audio.extraCuesMax",
+      "seconds": 0.3,
+      "event": "skip",
+      "class": "tick"
     }
   ]
 }

@@ -1,0 +1,117 @@
+{
+  "id": "session-expired",
+  "kind": "cue",
+  "cue": "session-expired",
+  "variant": null,
+  "class": "hit",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A wide heavy panel slamming into place",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A heavy stone slab dropped flat into a wide wooden frame, one deep low slam with weight, dull and broad, no ring, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.8,
+    "loop": false,
+    "influence": null,
+    "call": 175
+  },
+  "askedSeconds": 0.8,
+  "cost": "9",
+  "take": {
+    "number": 3,
+    "round": "build",
+    "file": "take-3.mp3",
+    "sha256": "29d62eee7252110524453a2b90b302f314609853323321565e99cb66555e10cb",
+    "filed": "2026-11-25T19:29:01.318Z",
+    "measured": {
+      "seconds": 0.8,
+      "start": 0,
+      "end": 0.8,
+      "peakDb": -33.95,
+      "rmsDb": -53.69,
+      "lufs": -55.69,
+      "truePeakDb": -33.22,
+      "low": 0.859,
+      "mid": 0.112,
+      "high": 0.028,
+      "tailDb": -49.82,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.564,
+          "peakDb": -33.95
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.8,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -5,
+    "gainDb": 28.82,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.8,
+    "start": 0,
+    "end": 0.726,
+    "peakDb": -5,
+    "rmsDb": -28.86,
+    "lufs": -31.42,
+    "truePeakDb": -4.96,
+    "low": 0.624,
+    "mid": 0.299,
+    "high": 0.076,
+    "tailDb": -50.98,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.556,
+        "peakDb": -5
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 4 asks, 2 whole, 2 void",
+    "asks": 4,
+    "whole": 2,
+    "heard": "A heavy door or panel slamming shut. / A heavy panel or door forcefully slamming shut.",
+    "madeOf": "wood / Metal or heavy wood",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The audio consists of a single, forceful thud that strongly resembles a large, heavy wooden structure being closed with significant force.",
+      "The recording contains a single loud, resonant impact characteristic of a large, heavy structure being slammed firmly into a frame."
+    ],
+    "heardRaisedByDb": 30.95
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "session-expired.wav",
+  "seconds": 0.8,
+  "sha256": "b8f407e3c75eef61e7e3870bb80d82b1e6d3f2bdea2cb631ae478c790b1c5542"
+}

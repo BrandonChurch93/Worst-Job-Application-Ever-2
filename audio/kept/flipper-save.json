@@ -1,0 +1,116 @@
+{
+  "id": "flipper-save",
+  "kind": "cue",
+  "cue": "flipper-save",
+  "variant": null,
+  "class": "hit",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A flipper striking a steel ball hard",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A pinball flipper snapping up and striking a steel ball hard, a solenoid clack with a solid steel knock on top, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 165
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "8c0fc78c52c02d51575406233482756ba3c96459b9f2b603be294e4b5cb32a24",
+    "filed": "2026-11-25T19:24:34.411Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0.026,
+      "end": 0.352,
+      "peakDb": -2.52,
+      "rmsDb": -28.59,
+      "lufs": -23.53,
+      "truePeakDb": -2.24,
+      "low": 0.005,
+      "mid": 0.419,
+      "high": 0.576,
+      "tailDb": -50.93,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0.24,
+          "end": 0.302,
+          "peakDb": -2.52
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0.25,
+    "trimEnd": 0.352,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 25.6,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -5,
+    "gainDb": -2.3,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.102,
+    "start": 0,
+    "end": 0.088,
+    "peakDb": -5,
+    "rmsDb": -25.29,
+    "lufs": -23.02,
+    "truePeakDb": -4.9,
+    "low": 0.004,
+    "mid": 0.418,
+    "high": 0.578,
+    "tailDb": -52.32,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.052,
+        "peakDb": -5
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 5 asks, 2 whole, 3 void",
+    "asks": 5,
+    "whole": 2,
+    "heard": "A sharp click or clack of a mechanical device striking. / A mechanical flipper sharply strikes a steel ball.",
+    "madeOf": "metal and plastic / Metal and plastic",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The audio consists of a single, sharp mechanical clack consistent with a flipper hitting a steel ball.",
+      "The audio features a single, sharp metallic clack characteristic of a pinball machine flipper forcefully hitting a steel ball."
+    ]
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "flipper-save.wav",
+  "seconds": 0.1024,
+  "sha256": "d631f8bf0a3178bf7331f0821acd8a2350e81b7a84e3a1570f1b5601a935ac12"
+}

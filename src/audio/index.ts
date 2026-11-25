@@ -5,7 +5,7 @@ import { config } from '../config'
 import { narration } from '../copy'
 import { openingFrames, openingTimes } from '../film/opening'
 import { wallSeconds } from '../ui/clock'
-import { eventCues, filmKeysForEvent, filmKeysForGag, filmLive, filmLineId, liveKeysFor, liveLineId, loopCues, openingEvents, pagelessLive, pickVariant, stopEvents, unitPage } from './cues'
+import { allCues, cueOfEvent, eventCues, filmKeysForEvent, filmKeysForGag, filmLive, filmLineId, liveKeysFor, liveLineId, loopCues, openingEvents, pagelessLive, pickVariant, stopEvents, unitPage } from './cues'
 import { DUCK, LIVE, db } from './levels'
 import { duckSpans, LiveDesk, Narrator, type Booking } from './narrator'
 import shipped from '../../public/audio/index.json'
@@ -360,7 +360,7 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
     const last = lastPlay.get(cue)
     if (last !== undefined && Math.abs(now - last) < LIVE.sameCueSeconds) return
     lastPlay.set(cue, now)
-    const spec = audio.sfx.find((s) => s.id === cue) as { id: string; seconds: number; variants?: number } | undefined
+    const spec = allCues(audio.sfx as { id: string; seconds: number; variants?: number }[]).find((s) => s.id === cue)
     const count = counts.get(cue) ?? 0
     counts.set(cue, count + 1)
     const pick = pickVariant(cue, count, spec?.variants ?? 1, (id) => loaded.has(id))
@@ -487,7 +487,7 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
       startTone()
       for (const cue of stopEvents[e.name] ?? []) stopCue(cue)
       if (e.name === 'page-turn') for (const cue of loopCues) if (cue !== 'room-tone') stopCue(cue)
-      const cue = eventCues[e.name]
+      const cue = cueOfEvent(e.name)
       if (cue && cue !== 'room-tone') playCue(cue, e.x)
       if (mode !== 'live') return
       const page = e.page ?? desk.page

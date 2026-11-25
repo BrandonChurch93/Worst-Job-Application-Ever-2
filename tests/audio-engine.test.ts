@@ -60,9 +60,9 @@ class FakeContext {
 const beatId: string = Object.keys(narration.film).find((b) => narration.film[b].length >= 1 && cfg.film.beats.some((x: any) => x.id === b))!
 const beat = cfg.film.beats.find((x: any) => x.id === beatId)
 
-function fixtureSite(): { index: SoundIndex; files: Map<string, Uint8Array | null> } {
+function fixtureSite(more: string[] = []): { index: SoundIndex; files: Map<string, Uint8Array | null> } {
   const enc = new TextEncoder()
-  const short = ['step.1', 'step.2', 'step.3', 'step.4', 'button-press', 'hold-music', 'bolt-hit.1', 'bolt-hit.2', 'bolt-hit.3', 'flipper.1', 'flipper.2', 'flipper.3', 'checkbox', 'paper-strain', 'key-tap', 'ui-tick', 'ui-send']
+  const short = ['step.1', 'step.2', 'step.3', 'step.4', 'button-press', 'hold-music', 'bolt-hit.1', 'bolt-hit.2', 'bolt-hit.3', 'flipper.1', 'flipper.2', 'flipper.3', 'checkbox', 'paper-strain', 'key-tap', 'ui-tick', 'ui-send', ...more]
   const parts = short.map((id) => enc.encode(id))
   const pack = new Uint8Array(parts.reduce((s, p) => s + p.length, 0))
   const sfx: SoundIndex['sfx'] = []
@@ -214,8 +214,8 @@ describe('with no sound to play', () => {
 })
 
 describe('with sound', () => {
-  const ready = async () => {
-    const site = fixtureSite()
+  const ready = async (more: string[] = []) => {
+    const site = fixtureSite(more)
     serve(site.files)
     const s = makeSound({ base: './audio/', index: site.index })
     await s.unlock()
@@ -264,6 +264,41 @@ describe('with sound', () => {
     s.event(hit('no-such-event'), 'film')
     s.event(hit('card-flip'), 'film')
     expect(ctx.sources.filter((x) => x.buffer?.id === 'card-flip').length).toBe(0)
+  })
+
+  it('plays each added cue on its own event and no borrowed sound with it', async () => {
+    const wired = ['tug-lost', 'arms-out', 'dial-fling', 'flipper-save', 'session-expired', 'popup-close', 'skip']
+    const { s, ctx } = await ready(wired)
+    const short = () => ctx.sources.filter((x) => x.buffer && !x.buffer.id.startsWith('line.') && x.buffer.id !== 'room-tone').map((x) => x.buffer!.id)
+    wired.forEach((name, i) => {
+      ctx.currentTime = 2 + i
+      s.event(hit(name), 'film')
+    })
+    expect(short()).toEqual(wired)
+    expect(errors).not.toHaveBeenCalled()
+  })
+
+  it('plays nothing and throws nothing on an event with no cue, and on an added cue whose sound is not loaded', async () => {
+    const { s, ctx } = await ready()
+    const before = ctx.sources.length
+    ctx.currentTime = 2
+    for (const mode of ['film', 'live'] as const) {
+      for (const name of ['no-such-event', 'count-run', 'carpet-roll', 'inbox-take', 'firehouse-take', 'metrics-card', 'arms-out', 'popup-close']) {
+        expect(() => s.event(hit(name), mode)).not.toThrow()
+      }
+    }
+    expect(ctx.sources.length).toBe(before)
+    expect(errors).not.toHaveBeenCalled()
+  })
+
+  it('plays the cues that wait for their events as soon as the stage names them', async () => {
+    const waiting = ['carpet-roll', 'inbox-take', 'firehouse-take', 'metrics-card']
+    const { s, ctx } = await ready(waiting)
+    waiting.forEach((name, i) => {
+      ctx.currentTime = 2 + i
+      s.event(hit(name), 'live')
+    })
+    expect(ctx.sources.filter((x) => waiting.includes(x.buffer?.id ?? '')).map((x) => x.buffer!.id)).toEqual(waiting)
   })
 
   it('cuts the hold music dead at audio.holdMusicSeconds', async () => {

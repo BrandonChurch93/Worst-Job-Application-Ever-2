@@ -1,0 +1,120 @@
+{
+  "id": "inbox-take",
+  "kind": "cue",
+  "cue": "inbox-take",
+  "variant": null,
+  "class": "hit",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A steel ball dropping into a shallow metal tray",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A steel ball dropping into a shallow metal tray and settling, one metal clatter and a short rattle, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.6,
+    "loop": false,
+    "influence": null,
+    "call": 169
+  },
+  "askedSeconds": 0.6,
+  "cost": "7",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "1e47b8e104ab1a6dd3a086d19885d4786dfc52462a2ed259768d7541c1a0d065",
+    "filed": "2026-11-25T19:24:45.030Z",
+    "measured": {
+      "seconds": 0.6,
+      "start": 0,
+      "end": 0.444,
+      "peakDb": -3.75,
+      "rmsDb": -32.93,
+      "lufs": -29.23,
+      "truePeakDb": -3.47,
+      "low": 0.001,
+      "mid": 0.681,
+      "high": 0.318,
+      "tailDb": -50.85,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0.002,
+          "end": 0.264,
+          "peakDb": -3.75
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0.045,
+    "trimEnd": 0.444,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 99.69,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -5,
+    "gainDb": -1.43,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.399,
+    "start": 0,
+    "end": 0.364,
+    "peakDb": -5,
+    "rmsDb": -33.71,
+    "lufs": -31.31,
+    "truePeakDb": -4.85,
+    "low": 0.001,
+    "mid": 0.676,
+    "high": 0.323,
+    "tailDb": -54.94,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0.002,
+        "end": 0.218,
+        "peakDb": -5
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 6 asks, 0 whole, 6 void",
+    "asks": 6,
+    "whole": 0,
+    "heard": null,
+    "madeOf": null,
+    "events": null,
+    "voice": null,
+    "voiceVotes": "0 yes, 0 no",
+    "word": null,
+    "wordVotes": "0 yes, 0 no",
+    "music": null,
+    "musicVotes": "0 yes, 0 no",
+    "melody": null,
+    "melodyVotes": "0 yes, 0 no",
+    "fits": null,
+    "fitsVotes": "0 yes, 0 no",
+    "basis": [],
+    "heardRaisedByDb": 0.75
+  },
+  "why": "not judged by ear: 0 whole answers in 6 asks",
+  "forced": true,
+  "problems": [
+    "the listener left \"voice\" unanswered",
+    "the listener left \"word\" unanswered",
+    "the listener left \"music\" unanswered",
+    "the listener left \"melody\" unanswered",
+    "the listener left \"fits\" unanswered"
+  ],
+  "fixture": false,
+  "file": "inbox-take.wav",
+  "seconds": 0.3988,
+  "sha256": "afec7be47107f3193713997872ee33e730e1f75df214928bb290f6253096ce48"
+}

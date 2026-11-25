@@ -1345,3 +1345,118 @@ Takes used: 1 of 3.
 | 1 | build | 2026-11-25T18:30:25.468Z | 4.087 s | -3.11 dB | -20.3 LUFS | 3 | 22 | yes, as line.live.watchFilm.0 | tone not judged: 1 whole answers in 6 asks |
 
 Words: It would rather watch. / Understandable.
+
+### tug-lost
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T19:24:26.438Z | 0.6 s | -1.01 dB | -11.13 LUFS | 1 | 7 | yes, as tug-lost |  |
+
+Prompt: One sheet of thick paper ripped out of a grip and torn in two in one fast pull, a sharp dry paper tear, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### arms-out
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T19:24:28.933Z | 0.48 s | -1.34 dB | -24.84 LUFS | 1 | 6 | yes, as arms-out |  |
+
+Prompt: Two small spring-loaded metal arms snapping out of a housing, two quick clicks close together, a light mechanical snap, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### dial-fling
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T19:24:31.752Z | 0.8 s | -8.94 dB | -30.27 LUFS | 1 | 9 | yes, as dial-fling |  |
+
+Prompt: A rotary telephone dial hitting its metal stop hard at the end of its run back, one sharp metal knock with a short spring rattle after it, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### flipper-save
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T19:24:34.411Z | 0.48 s | -2.52 dB | -23.53 LUFS | 1 | 6 | yes, as flipper-save |  |
+
+Prompt: A pinball flipper snapping up and striking a steel ball hard, a solenoid clack with a solid steel knock on top, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### session-expired
+
+Takes used: 3 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T19:24:36.962Z | 0.8 s | -1.09 dB | -19.53 LUFS | 1 | 9 | no |  |
+| 2 | build | 2026-11-25T19:27:32.827Z | 0.8 s | -2.26 dB | -21.67 LUFS | 1 | 9 | no |  |
+| 3 | build | 2026-11-25T19:29:01.318Z | 0.8 s | -33.95 dB | -55.69 LUFS | 1 | 9 | yes, as session-expired |  |
+
+Prompt: A heavy stone slab dropped flat into a wide wooden frame, one deep low slam with weight, dull and broad, no ring, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### popup-close
+
+Takes used: 2 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T19:24:39.663Z | 0.48 s | -62.72 dB | null LUFS | 1 | 6 | no |  |
+| 2 | build | 2026-11-25T19:25:05.332Z | 0.48 s | -1.64 dB | -25.57 LUFS | 1 | 6 | yes, as popup-close |  |
+
+Prompt: A small flat ceramic panel snapping shut flush into a frame, one short dull click, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### carpet-roll
+
+Takes used: 3 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T19:24:42.208Z | 1 s | -14.83 dB | -28.76 LUFS | 1 | 11 | yes, as carpet-roll | three takes made and none holds: take 1 fits by 1 yes to 2 no (heard as a metal thing rolling on a hard floor and then going muffled), take 2 by 0 to 2 (liquid, or a coin settling), take 3 with the changed prompt by 0 to 2 (a coin or a light ball settling). Take 1 is the nearest to the row. The cue is silent until Phase 4 emits carpet-roll |
+| 2 | build | 2026-11-25T19:29:03.285Z | 1 s | -5.91 dB | -19.48 LUFS | 1 | 11 | no |  |
+| 3 | build | 2026-11-25T19:30:14.585Z | 1 s | -20.94 dB | -34.7 LUFS | 1 | 11 | no |  |
+
+Prompt: A heavy steel ball rolling onto thick carpet and slowing to a stop, a soft muffled low rumble, no bounce, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### inbox-take
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T19:24:45.030Z | 0.6 s | -3.75 dB | -29.23 LUFS | 1 | 7 | yes, as inbox-take | not judged by ear: 0 whole answers in 6 asks |
+
+Prompt: A steel ball dropping into a shallow metal tray and settling, one metal clatter and a short rattle, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### firehouse-take
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T19:24:47.677Z | 0.6 s | -12.99 dB | -32.58 LUFS | 1 | 7 | yes, as firehouse-take |  |
+
+Prompt: A steel ball dropping into a deep hole in a wooden board, a hollow knock and a short roll below, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### metrics-card
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T19:24:50.350Z | 0.48 s | -7.03 dB | -25.28 LUFS | 1 | 6 | yes, as metrics-card | not judged by ear: 0 whole answers in 6 asks |
+
+Prompt: A stiff card laid flat on a ceramic desk, a short slide and one soft flat tap, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### skip
+
+Takes used: 1 of 3.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | build | 2026-11-25T19:24:52.881Z | 0.48 s | -17.92 dB | -39.53 LUFS | 1 | 6 | yes, as skip | not judged by ear: 0 whole answers in 6 asks |
+
+Prompt: One firm press of a wide plastic key bottoming out on a ceramic base, a single low click, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice

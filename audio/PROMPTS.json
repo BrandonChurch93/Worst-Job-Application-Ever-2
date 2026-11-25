@@ -211,6 +211,60 @@
     },
     "ui-send": {
       "prompt": "A short soft send tone, a single gentle rising pop like a message being sent"
+    },
+    "tug-lost": {
+      "prompt": "One sheet of thick paper ripped out of a grip and torn in two in one fast pull, a sharp dry paper tear"
+    },
+    "arms-out": {
+      "prompt": "Two small spring-loaded metal arms snapping out of a housing, two quick clicks close together, a light mechanical snap"
+    },
+    "dial-fling": {
+      "prompt": "A rotary telephone dial hitting its metal stop hard at the end of its run back, one sharp metal knock with a short spring rattle after it",
+      "earlier": [
+        {
+          "prompt": "A rotary telephone dial spinning back to rest and hitting its stop hard, a fast ratchet whirr ending in one metal knock",
+          "takes": "none",
+          "why": "the event dial-fling comes at the stop, after dial-return has sounded the run back, so a whirr before the knock would put the knock late"
+        }
+      ]
+    },
+    "flipper-save": {
+      "prompt": "A pinball flipper snapping up and striking a steel ball hard, a solenoid clack with a solid steel knock on top"
+    },
+    "session-expired": {
+      "prompt": "A heavy stone slab dropped flat into a wide wooden frame, one deep low slam with weight, dull and broad, no ring",
+      "earlier": [
+        {
+          "prompt": "A wide heavy ceramic panel dropping into place across a frame, one broad flat slam, larger and lower than a small panel",
+          "takes": "1, 2",
+          "why": "both takes came out as a small sharp click or a small object set down, two whole answers each saying it does not fit, and their weight sits in the mid and high bands (low band 0.021 and 0.026 of the energy)"
+        }
+      ]
+    },
+    "popup-close": {
+      "prompt": "A small flat ceramic panel snapping shut flush into a frame, one short dull click"
+    },
+    "carpet-roll": {
+      "prompt": "A heavy steel ball rolling onto thick carpet and slowing to a stop, a soft muffled low rumble, no bounce",
+      "earlier": [
+        {
+          "prompt": "A steel ball rolling off a hard floor onto thick carpet, the bright roll turning soft and muffled, then stopping",
+          "takes": "1, 2",
+          "why": "take 1 was heard as a metal thing rolling on a hard floor (1 yes, 2 no on the fit), take 2 as liquid or a coin settling (0 yes, 2 no); the hard floor is dropped so that the whole second is the ball on carpet"
+        }
+      ]
+    },
+    "inbox-take": {
+      "prompt": "A steel ball dropping into a shallow metal tray and settling, one metal clatter and a short rattle"
+    },
+    "firehouse-take": {
+      "prompt": "A steel ball dropping into a deep hole in a wooden board, a hollow knock and a short roll below"
+    },
+    "metrics-card": {
+      "prompt": "A stiff card laid flat on a ceramic desk, a short slide and one soft flat tap"
+    },
+    "skip": {
+      "prompt": "One firm press of a wide plastic key bottoming out on a ceramic base, a single low click"
     }
   }
 }

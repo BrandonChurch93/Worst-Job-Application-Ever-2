@@ -1,0 +1,117 @@
+{
+  "id": "firehouse-take",
+  "kind": "cue",
+  "cue": "firehouse-take",
+  "variant": null,
+  "class": "hit",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A steel ball dropping into a deep hole in a wooden board",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A steel ball dropping into a deep hole in a wooden board, a hollow knock and a short roll below, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.6,
+    "loop": false,
+    "influence": null,
+    "call": 170
+  },
+  "askedSeconds": 0.6,
+  "cost": "7",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "89460cc164e419875387d81ee0eaacd8289ab8396e3f5b6ae9c786d23e2bcde4",
+    "filed": "2026-11-25T19:24:47.677Z",
+    "measured": {
+      "seconds": 0.6,
+      "start": 0,
+      "end": 0.6,
+      "peakDb": -12.99,
+      "rmsDb": -34.52,
+      "lufs": -32.58,
+      "truePeakDb": -12.98,
+      "low": 0.01,
+      "mid": 0.98,
+      "high": 0.01,
+      "tailDb": -41.92,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.304,
+          "peakDb": -12.99
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0.011,
+    "trimEnd": 0.6,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -5,
+    "gainDb": 8.09,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.589,
+    "start": 0,
+    "end": 0.374,
+    "peakDb": -5,
+    "rmsDb": -24.45,
+    "lufs": -26.34,
+    "truePeakDb": -4.98,
+    "low": 0.01,
+    "mid": 0.981,
+    "high": 0.01,
+    "tailDb": -52.77,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.294,
+        "peakDb": -5
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 4 asks, 2 whole, 2 void",
+    "asks": 4,
+    "whole": 2,
+    "heard": "A single resonant thud of a hard object hitting a hollow wooden cavity. / A steel ball drops into a deep hole within a wooden board.",
+    "madeOf": "metal and wood / Steel and wood",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The audio contains a single sharp impact with a hollow, wooden resonance consistent with a metal ball dropping into a deep hole.",
+      "The audio contains a distinct metallic strike followed by a hollow wooden resonance, matching the described action."
+    ],
+    "heardRaisedByDb": 9.99
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "firehouse-take.wav",
+  "seconds": 0.5887,
+  "sha256": "af34a6e50223ac86578151ad847acff9d16f8e4d5bfae4247113cc24b2335e7c"
+}

@@ -4,13 +4,13 @@ Kept by the sound agent on the branch `agent/sound`. A fact here is MEASURED (th
 
 The second half of this file, from "Every take" on, is written by `node tools/lib/sound-notes.mjs`. It holds every take with its call, its cost, its break N, its numbers, the listener's answers, whether it is kept, and every effect's prompt beside its takes.
 
-## Where things stand (19:20Z, 25 November 2026)
+## Where things stand (19:36Z, 25 November 2026)
 
-- MEASURED, `npm run credits`: 2533 of 10000 credits in 161 calls. All 161 calls answered 200. The limit of this stretch is 8000.
-- MEASURED, `npm run sound`: 128 of 128 sounds kept (62 cues with their variants, the 20 lines of the film, the 14 lines only the live site has). 150 takes filed.
-- MEASURED, `npm run sound -- --pack`: 91 short sounds in one file, 3 loops, 34 narrator lines, 5.20 MB of 14 MB.
-- MEASURED, `npx vitest run tests/audio tests/credits.test.ts`: 162 passed. `npx tsc --noEmit -p .`: clean.
-- Of the 128 kept, 53 are kept by force, each with its reason in `audio/kept/<id>.json` (`why`, `problems`). 29 of the 34 lines are forced, nearly all because the listener gave fewer than two whole answers on tone.
+- MEASURED, `npm run credits`: 2659 of 10000 credits in 177 calls. All 177 calls answered 200. The limit of this stretch is 8000; extras stop at 3500.
+- MEASURED, `npm run sound`: 139 of 139 sounds kept (73 cues with their variants, the 20 lines of the film, the 14 lines only the live site has). 166 takes filed.
+- MEASURED, `npm run sound -- --pack`: 102 short sounds in one file, 3 loops, 34 narrator lines, 5.42 MB of 14 MB.
+- MEASURED, `npx vitest run tests/audio tests/credits.test.ts`: 170 passed. `npx tsc --noEmit -p .`: clean.
+- Of the 139 kept, 57 are kept by force, each with its reason in `audio/kept/<id>.json` (`why`, `problems`). 29 of the 34 lines are forced, nearly all because the listener gave fewer than two whole answers on tone.
 - `npm run sound -- --check` last ran at 18:34Z: 7 pass, A2 and A5 fail, A6 and A9 not yet (there is no mix). The Builder fixed A2 on main (4324717) and copies the rows for A5. Not run again yet: the Builder asked for none between 19:15Z and 20:00Z.
 
 ## Decisions
@@ -30,6 +30,9 @@ The second half of this file, from "Every take" on, is written by `node tools/li
 13. "The button is winning" (`boss.slow`): the page emits no `boss-slow` yet. Until it does, the engine says the line once, at the first event or beat of the fight that comes after the fight has lasted as long as the film's own fight (`boss.collapse.from` minus `boss.unfold.from`, 22 s now), counted on the sound clock from the event `unfold`. `power-down`, a skip, a page turn or leaving the page ends the count. From the first `boss-slow` the page emits, the engine leaves the line to the page for the rest of the visit.
 14. The pack is not committed (the Builder's ruling of 19:11Z). `public/audio/index.json` is committed and carries the size and the sha256 of every file. `npm run sound -- --pack-check` compares `public/audio/` of the tree it runs in with the index committed at HEAD, file by file, and prints a pass or the list. The pack is copied to `/home/user/workspace/wja-scratch/sound/takes/public-audio/` after every pack.
 15. With the committed index and none of its files there, the engine runs silent and throws nothing (`tests/audio-engine.test.ts`, "runs silent and throws nothing on the committed index when none of its files is there").
+
+16. Eleven extra cues were made on the Builder's ruling of 19:23Z, each on the event of its own name. They are listed under "Extra cues". A second or third take was made only where a take failed: `popup-close` (silence), `session-expired` (does not fit, twice), `carpet-roll` (does not fit, three times).
+17. A retake of an effect the listener heard as something else may have its prompt made more exact; the earlier prompt stays in `audio/PROMPTS.json` under `earlier` with the takes it made. Done for `session-expired` take 3 and `carpet-roll` take 3.
 
 ## The live narrator, by number
 
@@ -79,37 +82,53 @@ MEASURED at 19:16Z against `content/narration.json` and `config/showcase.json` o
 
 ## The listener
 
-- The listener is the audio evaluation tool. MEASURED over all takes: 744 asks, 234 whole answers. The rest said no audio reached it or were cut off.
+- The listener is the audio evaluation tool. MEASURED over all takes: 797 asks, 259 whole answers. The rest said no audio reached it or were cut off.
 - It was least reliable between 19:02Z and 19:05Z: 1 whole answer in 30 asks.
 - `line.live.tugLost.0` got no whole answer in 18 asks. Two answers that were cut off before their end wrote the line word for word; one of them said it had no audio and worked from text. The take is kept by force on its numbers (4.016 s, 1.245 words a second, 1 pause of 1).
 - Tone words the listener used for kept lines include "deadpan", "cynical", "sarcastic", "detached", "ominous and threatening" (crank take 3), "abrupt and commanding" (hit 0). By the Builder's ruling they decide nothing.
 
 ## Moments with no sound
 
-- None of the 62 cues and none of the 34 lines is without a kept take.
-- STATED from the page code: `popup-close` is silent on purpose. `session-expired`, `arms-out`, `dial-fling`, `flipper-save` and `share` play another cue's sound (`popup`, `paper-strain`, `dial-return`, `flipper`, `button-press`). The proposed extra cues below would give some of them their own.
+- None of the 73 cues and none of the 34 lines is without a kept take.
+- STATED from the page code: no event is silent on purpose any more (`silentEvents` is empty). `share` plays `button-press`.
+- The cues `carpet-roll`, `inbox-take`, `firehouse-take` and `metrics-card` are packed and mapped to events of their own names. No page emits those events yet, so they are not heard until Phase 4. A test holds that an event with no cue, and an added cue whose sound is not loaded, play nothing and throw nothing (`tests/audio-engine.test.ts`).
+- `count-run`, the numbers of the metrics card counting up, has no sound and no event.
 - `marketing.stroll` cannot sound before the visitor's first click: a browser lets no sound start before it.
 
-## Extra cues proposed (none made)
+## Extra cues
 
-Up to 12 are allowed and none is made until the Builder says so. Each would be one call marked `--extra`. Seconds and credits at 12 a second, rounded as the ledger does.
+Eleven cues added on the Builder's ruling of 19:23Z, inside `audio.extraCuesMax` (12). Every call was made with `--extra`. MEASURED from the ledger: calls 162 to 177, 16 calls, 126 credits (2533 to 2659). The recipe line is added to the end of each prompt. Every take, kept or not, with its prompt, is under "Every take" below; an earlier prompt of a cue is in `audio/PROMPTS.json` under `earlier`.
 
-| # | Cue | Moment | Event today | Prompt (the recipe line is added at the end) | Seconds | Credits for one take |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 | `tug-lost` | step 1, live only: the shredder wins the tug and the page is pulled out of the grip | `tug-lost` exists, stops `paper-strain`, plays nothing | One sheet of thick paper ripped out of a grip and torn in two in one fast pull, a sharp dry paper tear | 0.6 | 7 |
-| 2 | `arms-out` | step 1: the cursor's arms come out to hold the page | `arms-out` exists, plays `paper-strain` | Two small spring-loaded metal arms snapping out of a housing, two quick clicks close together, a light mechanical snap | 0.5 | 6 |
-| 3 | `dial-fling` | step 2: the dial runs back and flings the cursor off | `dial-fling` exists, plays `dial-return` | A rotary telephone dial spinning back to rest and hitting its stop hard, a fast ratchet whirr ending in one metal knock | 0.8 | 10 |
-| 4 | `flipper-save` | pinball: a flipper catches the ball at the last moment | `flipper-save` exists, plays `flipper` | A pinball flipper snapping up and striking a steel ball hard, a solenoid clack with a solid steel knock on top | 0.4 | 5 |
-| 5 | `session-expired` | boss, last stand: every pop-up and slab sinks and the banner comes up | `session-expired` exists, plays `popup` | A wide heavy ceramic panel dropping into place across a frame, one broad flat slam, larger and lower than a small panel | 0.8 | 10 |
-| 6 | `popup-close` | boss: a click closes a pop-up | `popup-close` exists, silent | A small flat ceramic panel snapping shut flush into a frame, one short dull click | 0.3 | 4 |
-| 7 | `carpet-roll` | pinball: the ball rolls onto the red carpet of the lobby | no event yet (wanted in NEEDS.md) | A steel ball rolling off a hard floor onto thick carpet, the bright roll turning soft and muffled, then stopping | 1.0 | 12 |
-| 8 | `inbox-take` | pinball: the inbox takes the ball | no event yet | A steel ball dropping into a shallow metal tray and settling, one metal clatter and a short rattle | 0.6 | 7 |
-| 9 | `firehouse-take` | pinball: the ball drops into the firehouse | no event yet | A steel ball dropping into a deep hole in a wooden board, a hollow knock and a short roll below | 0.6 | 7 |
-| 10 | `metrics-card` | decision: the metrics card appears | no event yet | A stiff card laid flat on a ceramic desk, a short slide and one soft flat tap | 0.5 | 6 |
-| 11 | `count-run` | decision: the numbers on the metrics card count up | none; the page has the state `counting` | A small mechanical counter with number wheels running fast and stopping, a quick even ratchet of light clicks ending on one firmer click | 1.2 | 14 |
-| 12 | `skip` | any page, live only: the visitor presses skip | `skip` exists, plays nothing | One firm press of a wide plastic key bottoming out on a ceramic base, a single low click | 0.3 | 4 |
+| # | Cue | The row | Prompt of the kept take | Event | Length | Take kept | Class |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | `tug-lost` | One sheet of thick paper torn out of a grip and ripped in two | One sheet of thick paper ripped out of a grip and torn in two in one fast pull, a sharp dry paper tear | `tug-lost`: emitted by step 1 on the live site only; wired | 0.6 s set, 0.6 s kept | take 1 of 1 (call 162), kept. Listener: 2 asks, 2 whole, fits 2 yes, 0 no | mechanism |
+| 2 | `arms-out` | Two small sprung arms snapping out | Two small spring-loaded metal arms snapping out of a housing, two quick clicks close together, a light mechanical snap | `arms-out`: emitted by step 1; wired | 0.5 s set, 0.13 s kept | take 1 of 1 (call 163), kept. Listener: 4 asks, 2 whole, fits 2 yes, 0 no | mechanism |
+| 3 | `dial-fling` | A telephone dial hitting its stop hard | A rotary telephone dial hitting its metal stop hard at the end of its run back, one sharp metal knock with a short spring rattle after it | `dial-fling`: emitted by step 2; wired | 0.8 s set, 0.601 s kept | take 1 of 1 (call 164), kept. Listener: 2 asks, 2 whole, fits 2 yes, 0 no | hit |
+| 4 | `flipper-save` | A flipper striking a steel ball hard | A pinball flipper snapping up and striking a steel ball hard, a solenoid clack with a solid steel knock on top | `flipper-save`: emitted by the pinball; wired | 0.4 s set, 0.102 s kept | take 1 of 1 (call 165), kept. Listener: 5 asks, 2 whole, fits 2 yes, 0 no | hit |
+| 5 | `session-expired` | A wide heavy panel slamming into place | A heavy stone slab dropped flat into a wide wooden frame, one deep low slam with weight, dull and broad, no ring | `session-expired`: emitted by the boss page; wired | 0.8 s set, 0.8 s kept | take 3 of 3 (call 175), kept. Listener: 4 asks, 2 whole, fits 2 yes, 0 no | hit |
+| 6 | `popup-close` | A small flat panel snapping shut | A small flat ceramic panel snapping shut flush into a frame, one short dull click | `popup-close`: emitted by the boss page; wired | 0.3 s set, 0.082 s kept | take 2 of 2 (call 173), kept. Listener: 3 asks, 2 whole, fits 2 yes, 0 no | tick |
+| 7 | `carpet-roll` | A steel ball rolling off a hard floor onto thick carpet | A steel ball rolling off a hard floor onto thick carpet, the bright roll turning soft and muffled, then stopping | `carpet-roll`: not emitted yet (Phase 4); mapped, silent until then | 1.0 s set, 0.866 s kept | take 1 of 3 (call 168), kept by force: three takes made and none holds: take 1 fits by 1 yes to 2 no (heard as a metal thing rolling on a hard floor and then going muffled), take 2 by 0 to 2 (liquid, or a coin settling), take 3 with the changed prompt by 0 to 2 (a coin or a light ball settling). Take 1 is the nearest to the row. The cue is silent until Phase 4 emits carpet-roll. Listener: 3 asks, 3 whole, fits 1 yes, 2 no | mechanism |
+| 8 | `inbox-take` | A steel ball dropping into a shallow metal tray | A steel ball dropping into a shallow metal tray and settling, one metal clatter and a short rattle | `inbox-take`: not emitted yet (Phase 4); mapped, silent until then | 0.6 s set, 0.399 s kept | take 1 of 1 (call 169), kept by force: not judged by ear: 0 whole answers in 6 asks. Listener: 6 asks, 0 whole, fits 0 yes, 0 no | hit |
+| 9 | `firehouse-take` | A steel ball dropping into a deep hole in a wooden board | A steel ball dropping into a deep hole in a wooden board, a hollow knock and a short roll below | `firehouse-take`: not emitted yet (Phase 4); mapped, silent until then | 0.6 s set, 0.589 s kept | take 1 of 1 (call 170), kept. Listener: 4 asks, 2 whole, fits 2 yes, 0 no | hit |
+| 10 | `metrics-card` | A stiff card laid flat on a hard desk | A stiff card laid flat on a ceramic desk, a short slide and one soft flat tap | `metrics-card`: not emitted yet (Phase 4); mapped, silent until then | 0.5 s set, 0.312 s kept | take 1 of 1 (call 171), kept by force: not judged by ear: 0 whole answers in 6 asks. Listener: 6 asks, 0 whole, fits 0 yes, 0 no | tick |
+| 11 | `skip` | One firm press of a wide plastic key | One firm press of a wide plastic key bottoming out on a ceramic base, a single low click | `skip`: emitted by the stage on the live site; wired | 0.3 s set, 0.3 s kept | take 1 of 1 (call 172), kept by force: not judged by ear: 0 whole answers in 6 asks. Listener: 6 asks, 0 whole, fits 0 yes, 0 no | tick |
 
-One take of each is 92 credits. 7 to 11 need an event from the pages before they can be heard. The order I would make them in: 5, 1, 4, 3, 2, 6, 12, then 7 to 11 when their events exist.
+- The rows for `audio.sfx` are in `pipeline/sound/NEEDS-sfx.patch`, a diff of `config/showcase.json` that applies on main 4fbcdc7 (MEASURED: `git apply --check`). With the patch applied, `npx vitest run tests/audio tests/credits.test.ts tests/config.test.ts` passes (MEASURED at 19:33Z: 267 passed; the patch was then taken off again, `config/` is unchanged in this tree).
+- Until the rows are in `audio.sfx` the eleven live in `extraCues` of `src/audio/cues.ts`, apart from `eventCues`, because the app refuses to start when `eventCues` names a cue `audio.sfx` does not have. `cueOfEvent` reads both tables, and `allCues` lists each cue once whether or not the config has it. One thing follows: the field `cue` that `src/film/cut.ts` writes for an event reads `eventCues` alone, so it is empty for `arms-out`, `dial-fling`, `flipper-save` and `session-expired` until the eleven are moved into `eventCues`, which I do once the patch is on main. The engine and the mix do not read that field.
+- The borrowed sounds are gone: `arms-out` no longer plays `paper-strain`, `dial-fling` no longer `dial-return`, `flipper-save` no longer `flipper`, `session-expired` no longer `popup`. `share` still plays `button-press` (it was not in the list).
+- `dial-fling`: the prompt sent is not the one proposed at 19:21Z. The event comes at the stop, after `dial-return` has sounded the run back, so the proposed whirr before the knock would have put the knock late. STATED by the listener of take 1, 2 of 2: a dial spinning back and hitting its stop. MEASURED: the kept sound's peak is 6 ms from its start.
+- `flipper-save`: when a visitor's own flip makes the save, the page emits `flipper` and `flipper-save` in the same step, so the flipper's sound and this one start together. When the closed exit kicks the ball, `flipper-save` sounds alone.
+- `popup-close` take 1 was silence (MEASURED: peak -62.72 dB as delivered); take 2 is kept.
+- `session-expired`: takes 1 and 2 were heard as a small click and a small thing set down (fits 0 of 2 each). Take 3 has a changed prompt. MEASURED: it came at a peak of -33.95 dB and is raised 28.82 dB; the last 100 ms of the kept sound are at -62.58 dB RMS.
+- `arms-out` is of the class mechanism, which is not moved to its first contact. MEASURED: its peak is 21 ms after its start.
+- `inbox-take`, `metrics-card` and `skip` got no whole answer from the listener in 6 asks each. They are kept by force on their numbers and are not judged by ear.
+- `count-run` (the numbers counting up) is not made: the Builder ruled that it is not a contact and its event does not exist. It is open for step 5 in `pipeline/sound/NEEDS.md`.
+
+## For Brandon to decide
+
+- `strips-zip` (the shredded strips zipping out): take 2 is kept by force. It is the one effect of the cue table the listener says does not fit its row, after three takes. The takes and the listener's words are under "Every take".
+- `carpet-roll` (extra cue 7): take 1 is kept by force after three takes. The listener says none of the three fits: take 1 by 1 yes to 2 no, takes 2 and 3 by 0 to 2. It is not heard on the site until Phase 4 emits its event.
+- `dart-hit.4` (the fourth variant of the dart's hit): its noise floor is UNKNOWN by ear. The take came at a peak of -45.01 dB and the chain raises it 28.88 dB (`audio/kept/dart-hit.4.json`). MEASURED on `audio/kept/dart-hit.4.wav` against `audio/kept/dart-hit.1.wav`, both 0.2 s long and at a peak of -16 dB after the chain, with `ffmpeg -i F -af "atrim=start=0.1,astats=measure_overall=RMS_level+Peak_level:measure_perchannel=none" -f null -`: the last 100 ms of `dart-hit.4` are at -41.63 dB RMS (peak -27.86 dB), those of `dart-hit.1` at -64.53 dB RMS (peak -48.24 dB). So the tail of variant 4 is 22.9 dB louder than that of variant 1, 25.6 dB under its own peak. Whether that tail is the tick ringing or the raised floor is UNKNOWN.
 
 ## My mistakes
 
@@ -121,7 +140,7 @@ One take of each is 92 credits. 7 to 11 need an event from the pages before they
 
 This part is written by `node tools/lib/sound-notes.mjs` from `audio/TAKES.json` and `audio/kept/`. Do not edit it by hand: edit above it.
 
-150 takes: 25 of the film's lines, 19 of the lines only the live site has, 106 of effects.
+166 takes: 25 of the film's lines, 19 of the lines only the live site has, 122 of effects.
 
 A line is sent with every ` / ` of the script replaced by ` <break time="N.Ns" /> `, N being the number in the column Break N, the same at every mark of the line. Speed 0.7, stability 0.75, the default voice, no model named. The listener's words are STATED by the listener; every number is MEASURED by the chain.
 
@@ -856,3 +875,126 @@ Prompt of ui-send take 1:
 | Sound | Take | Call | Credits | Asked s | Loop | Peak dB as delivered | Listener | Kept |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `ui-send` | 1 | 125 | 6 | 0.5 | no | -26.42 | 6 asks, 2 whole; fits 2 yes, 0 no; voice 0 yes, 2 no; music 0 yes, 2 no; heard: A short, synthesized two-note electronic notification sound is heard. / A brief, synthesized notification tone plays once. | yes |
+
+### tug-lost
+
+Prompt of tug-lost take 1:
+
+> One sheet of thick paper ripped out of a grip and torn in two in one fast pull, a sharp dry paper tear, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+| Sound | Take | Call | Credits | Asked s | Loop | Peak dB as delivered | Listener | Kept |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `tug-lost` | 1 | 162 | 7 | 0.6 | no | -1.01 | 2 asks, 2 whole; fits 2 yes, 0 no; voice 0 yes, 2 no; music 0 yes, 2 no; heard: A single, quick tear of thick paper is heard. / A quick, sharp tear of thick paper or cardboard. | yes |
+
+### arms-out
+
+Prompt of arms-out take 1:
+
+> Two small spring-loaded metal arms snapping out of a housing, two quick clicks close together, a light mechanical snap, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+| Sound | Take | Call | Credits | Asked s | Loop | Peak dB as delivered | Listener | Kept |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `arms-out` | 1 | 163 | 6 | 0.5 | no | -1.34 | 4 asks, 2 whole; fits 2 yes, 0 no; voice 0 yes, 2 no; music 0 yes, 2 no; heard: A sharp clicking or snapping sound of a small mechanism. / A sharp, quick mechanical snapping sound of a spring-loaded mechanism is heard. | yes |
+
+### dial-fling
+
+Prompt of dial-fling take 1:
+
+> A rotary telephone dial hitting its metal stop hard at the end of its run back, one sharp metal knock with a short spring rattle after it, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+| Sound | Take | Call | Credits | Asked s | Loop | Peak dB as delivered | Listener | Kept |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `dial-fling` | 1 | 164 | 9 | 0.8 | no | -8.94 | 2 asks, 2 whole; fits 2 yes, 0 no; voice 0 yes, 2 no; music 0 yes, 2 no; heard: A rotary telephone dial spins back to its resting position and strikes the finger stop with a sharp click. / A rotary telephone dial spinning back and hitting its finger stop. | yes |
+
+### flipper-save
+
+Prompt of flipper-save take 1:
+
+> A pinball flipper snapping up and striking a steel ball hard, a solenoid clack with a solid steel knock on top, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+| Sound | Take | Call | Credits | Asked s | Loop | Peak dB as delivered | Listener | Kept |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `flipper-save` | 1 | 165 | 6 | 0.5 | no | -2.52 | 5 asks, 2 whole; fits 2 yes, 0 no; voice 0 yes, 2 no; music 0 yes, 2 no; heard: A sharp click or clack of a mechanical device striking. / A mechanical flipper sharply strikes a steel ball. | yes |
+
+### session-expired
+
+Prompt of session-expired take 1, session-expired take 2:
+
+> A wide heavy ceramic panel dropping into place across a frame, one broad flat slam, larger and lower than a small panel, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+Prompt of session-expired take 3:
+
+> A heavy stone slab dropped flat into a wide wooden frame, one deep low slam with weight, dull and broad, no ring, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+| Sound | Take | Call | Credits | Asked s | Loop | Peak dB as delivered | Listener | Kept |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `session-expired` | 1 | 166 | 9 | 0.8 | no | -1.09 | 2 asks, 2 whole; fits 0 yes, 2 no; voice 0 yes, 2 no; music 0 yes, 2 no; heard: A single, sharp click resembling a small latch or switch engaging. / A sharp, high-pitched metallic clinking or clicking sound is heard. | no |
+| `session-expired` | 2 | 174 | 9 | 0.8 | no | -2.26 | 2 asks, 2 whole; fits 0 yes, 2 no; voice 0 yes, 2 no; music 0 yes, 2 no; heard: A ceramic or glass object is set down onto a hard surface. / A small ceramic or glass object clinking as it is set down on a hard surface. | no |
+| `session-expired` | 3 | 175 | 9 | 0.8 | no | -33.95 | 4 asks, 2 whole; fits 2 yes, 0 no; voice 0 yes, 2 no; music 0 yes, 2 no; heard: A heavy door or panel slamming shut. / A heavy panel or door forcefully slamming shut. | yes |
+
+### popup-close
+
+Prompt of popup-close take 1, popup-close take 2:
+
+> A small flat ceramic panel snapping shut flush into a frame, one short dull click, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+| Sound | Take | Call | Credits | Asked s | Loop | Peak dB as delivered | Listener | Kept |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `popup-close` | 1 | 167 | 6 | 0.5 | no | -62.72 | not asked | no |
+| `popup-close` | 2 | 173 | 6 | 0.5 | no | -1.64 | 3 asks, 2 whole; fits 2 yes, 0 no; voice 0 yes, 2 no; music 0 yes, 2 no; heard: A sharp, quick snap or clack sound. / A single, sharp snapping sound of a hard object abruptly closing. | yes |
+
+### carpet-roll
+
+Prompt of carpet-roll take 1, carpet-roll take 2:
+
+> A steel ball rolling off a hard floor onto thick carpet, the bright roll turning soft and muffled, then stopping, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+Prompt of carpet-roll take 3:
+
+> A heavy steel ball rolling onto thick carpet and slowing to a stop, a soft muffled low rumble, no bounce, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+| Sound | Take | Call | Credits | Asked s | Loop | Peak dB as delivered | Listener | Kept |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `carpet-roll` | 1 | 168 | 11 | 1 | no | -14.83 | 3 asks, 3 whole; fits 1 yes, 2 no; voice 0 yes, 3 no; music 0 yes, 3 no; heard: A metallic object rolls continuously across a hard surface before abruptly becoming muffled. / A small, hollow object rolling and rapidly wobbling to a complete stop on a hard surface. / A hard metallic object rapidly spinning and settling to a stop on a solid surface. | yes, by force: three takes made and none holds: take 1 fits by 1 yes to 2 no (heard as a metal thing rolling on a hard floor and then going muffled), take 2 by 0 to 2 (liquid, or a coin settling), take 3 with the changed prompt by 0 to 2 (a coin or a light ball settling). Take 1 is the nearest to the row. The cue is silent until Phase 4 emits carpet-roll. Forced over: the listener says it does not fit the line that describes the cue |
+| `carpet-roll` | 2 | 176 | 11 | 1 | no | -5.91 | 2 asks, 2 whole; fits 0 yes, 2 no; voice 0 yes, 2 no; music 0 yes, 2 no; heard: A rapid sound of liquid bubbling or pouring. / A small metal object like a coin or washer bouncing rapidly and settling on a hard surface. | no |
+| `carpet-roll` | 3 | 177 | 11 | 1 | no | -20.94 | 2 asks, 2 whole; fits 0 yes, 2 no; voice 0 yes, 2 no; music 0 yes, 2 no; heard: A small metallic object, likely a coin, spinning, wobbling, and finally settling flat on a hard surface. / A small, lightweight object, such as a ping pong ball, rapidly bouncing to a rest on a hard surface. | no |
+
+### inbox-take
+
+Prompt of inbox-take take 1:
+
+> A steel ball dropping into a shallow metal tray and settling, one metal clatter and a short rattle, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+| Sound | Take | Call | Credits | Asked s | Loop | Peak dB as delivered | Listener | Kept |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `inbox-take` | 1 | 169 | 7 | 0.6 | no | -3.75 | 6 asks, 0 whole; fits 0 yes, 0 no; voice 0 yes, 0 no; music 0 yes, 0 no; heard: nothing | yes, by force: not judged by ear: 0 whole answers in 6 asks. Forced over: the listener left "voice" unanswered; the listener left "word" unanswered; the listener left "music" unanswered; the listener left "melody" unanswered; the listener left "fits" unanswered |
+
+### firehouse-take
+
+Prompt of firehouse-take take 1:
+
+> A steel ball dropping into a deep hole in a wooden board, a hollow knock and a short roll below, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+| Sound | Take | Call | Credits | Asked s | Loop | Peak dB as delivered | Listener | Kept |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `firehouse-take` | 1 | 170 | 7 | 0.6 | no | -12.99 | 4 asks, 2 whole; fits 2 yes, 0 no; voice 0 yes, 2 no; music 0 yes, 2 no; heard: A single resonant thud of a hard object hitting a hollow wooden cavity. / A steel ball drops into a deep hole within a wooden board. | yes |
+
+### metrics-card
+
+Prompt of metrics-card take 1:
+
+> A stiff card laid flat on a ceramic desk, a short slide and one soft flat tap, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+| Sound | Take | Call | Credits | Asked s | Loop | Peak dB as delivered | Listener | Kept |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `metrics-card` | 1 | 171 | 6 | 0.5 | no | -7.03 | 6 asks, 0 whole; fits 0 yes, 0 no; voice 0 yes, 0 no; music 0 yes, 0 no; heard: nothing | yes, by force: not judged by ear: 0 whole answers in 6 asks. Forced over: the listener left "voice" unanswered; the listener left "word" unanswered; the listener left "music" unanswered; the listener left "melody" unanswered; the listener left "fits" unanswered |
+
+### skip
+
+Prompt of skip take 1:
+
+> One firm press of a wide plastic key bottoming out on a ceramic base, a single low click, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+| Sound | Take | Call | Credits | Asked s | Loop | Peak dB as delivered | Listener | Kept |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `skip` | 1 | 172 | 6 | 0.5 | no | -17.92 | 6 asks, 0 whole; fits 0 yes, 0 no; voice 0 yes, 0 no; music 0 yes, 0 no; heard: nothing | yes, by force: not judged by ear: 0 whole answers in 6 asks. Forced over: the listener left "voice" unanswered; the listener left "word" unanswered; the listener left "music" unanswered; the listener left "melody" unanswered; the listener left "fits" unanswered |
