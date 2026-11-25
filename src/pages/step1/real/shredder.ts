@@ -20,6 +20,13 @@ function steel(): THREE.MeshPhysicalMaterial {
   return steelMade
 }
 
+// The cutters are ground tool steel: darker and duller than the polished shafts, so a row of them reads as one roller.
+let cutterMade: THREE.MeshPhysicalMaterial | null = null
+function cutterSteel(): THREE.MeshPhysicalMaterial {
+  cutterMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x7e8288), roughness: 0.46, metalness: 1 }))
+  return cutterMade
+}
+
 let brushedMade: THREE.MeshPhysicalMaterial | null = null
 let hoodMade: THREE.MeshPhysicalMaterial | null = null
 let brushMap: THREE.DataTexture | null = null
@@ -218,7 +225,7 @@ function rod(x0: number, x1: number, r: number, segments: number): THREE.BufferG
   return g.toNonIndexed()
 }
 
-// One roller: a shaft with hooked cutting discs along it, each turned a little from the last so the turning shows.
+// One roller: a shaft with hooked cutting discs along it, each turned an eighth of a tooth from the last, as cutters are stacked, so the turning shows as one slow spiral.
 function rollerGeometry(): THREE.BufferGeometry {
   const r = C.roller
   const pos: number[] = []
@@ -236,7 +243,7 @@ function rollerGeometry(): THREE.BufferGeometry {
   for (let k = 0; k < count; k++) {
     const x0 = first + k * r.pitch - r.disc / 2
     const x1 = x0 + r.disc
-    const phase = k * 0.618 * span
+    const phase = k * 0.125 * span
     for (let t = 0; t < r.teeth; t++) {
       tooth.forEach(([at, up], i) => {
         const a = phase + (t + at) * span
@@ -346,8 +353,8 @@ function makeCassette(): THREE.Group {
   const south = new THREE.Group()
   north.position.set(0, -C.roller.north, C.roller.z)
   south.position.set(C.roller.pitch / 2, -C.roller.south, C.roller.z)
-  const a = new THREE.Mesh(roller, steel())
-  const b = new THREE.Mesh(roller, steel())
+  const a = new THREE.Mesh(roller, cutterSteel())
+  const b = new THREE.Mesh(roller, cutterSteel())
   b.rotation.z = Math.PI
   for (const r of [a, b]) {
     r.castShadow = true
