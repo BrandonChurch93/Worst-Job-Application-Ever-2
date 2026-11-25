@@ -4,9 +4,9 @@ import { studio } from '../../post/studio'
 import { grainNormalMap } from '../../shell/materials'
 import type { ArmsLook, ArmsModel } from '../contract'
 
-// Sizes in page pixels. The arm is 4.4% of the body's height thick, the hand a fifth of it long.
+// Sizes in page pixels. The arm is 7% of the body's height thick, the hand a fifth of it long.
 const H = config.cursor.heightPxAt1080
-export const ARM = { radius: H * 0.027, rest: 62, along: 22, round: 10, grainPx: 64, slack: 1.04 }
+export const ARM = { radius: H * 0.035, rest: 62, along: 22, round: 10, grainPx: 64, slack: 1.04 }
 const HAND = { palm: [4.6, 4.7, 2.7], palmY: 4.8, finger: 1.5, joint: 3.1, cuff: 2.5, cuffTube: 1.05, joints: 8 }
 
 export interface Arms extends ArmsModel {
@@ -21,17 +21,17 @@ let shared: { rubber: THREE.MeshPhysicalMaterial; grain: THREE.DataTexture; palm
 function parts() {
   if (shared) return shared
   const grain = grainNormalMap(ARM.grainPx, config.seed + 7, 1.6)
-  grain.repeat.set(3, 9)
+  grain.repeat.set(2, 5)
   const rubber = studio(
     new THREE.MeshPhysicalMaterial({
-      color: new THREE.Color().setHex(0x1d1c1b, THREE.SRGBColorSpace),
-      roughness: 0.72,
+      color: new THREE.Color().setHex(0x262524, THREE.SRGBColorSpace),
+      roughness: 0.66,
       metalness: 0,
-      sheen: 0.55,
+      sheen: 0.8,
       sheenRoughness: 0.5,
-      sheenColor: new THREE.Color().setHex(0x6a6661, THREE.SRGBColorSpace),
+      sheenColor: new THREE.Color().setHex(0x8a8680, THREE.SRGBColorSpace),
       normalMap: grain,
-      normalScale: new THREE.Vector2(0.45, 0.45),
+      normalScale: new THREE.Vector2(0.16, 0.16),
       specularIntensity: 0.5
     })
   )
@@ -99,7 +99,7 @@ class Limb {
     const across = Math.min(1, Math.max(0, (-this.side * dx - 6) / 10))
     const z0 = from.z + across * (over + ARM.radius * 0.6 - from.z)
     if (across > 0) this.c.z = Math.max(this.c.z, z0 + across * (ARM.radius + 2 + Math.max(0, over - to.z) * 0.6))
-    const thin = Math.max(0.78, Math.sqrt(Math.min(1, ARM.rest / d))) * (1 - 0.14 * strain)
+    const thin = Math.max(0.95, Math.sqrt(Math.min(1, ARM.rest / d))) * (1 - 0.05 * strain)
     const pos = d3.position.array as Float32Array
     const nor = d3.normal.array as Float32Array
     let k = this.slot * RINGS * RING * 3
@@ -114,7 +114,7 @@ class Limb {
       if (this.n1.lengthSq() < 1e-6) this.n1.set(1, 0, 0)
       this.n1.normalize()
       this.n2.crossVectors(this.n1, this.t)
-      const r = ARM.radius * thin * (1.12 - 0.22 * u) * (0.35 + 0.65 * Math.min(1, grown))
+      const r = ARM.radius * thin * (0.9 + 0.2 * u) * (0.35 + 0.65 * Math.min(1, grown))
       for (let j = 0; j <= ARM.round; j++) {
         const w = (j / ARM.round) * Math.PI * 2
         const cx = Math.cos(w)
@@ -139,13 +139,13 @@ class Limb {
     this.basis.makeBasis(this.n1, this.t, this.n2)
     this.hand.quaternion.setFromRotationMatrix(this.basis)
     this.hand.position.copy(to)
-    const size = (0.25 + 0.75 * Math.min(1.15, Math.max(0, grown))) * HAND_SCALE
+    const size = (0.25 + 0.75 * Math.min(1.15, Math.max(0, grown))) * HAND_SCALE * (1 + FIST * grip)
     this.hand.scale.setScalar(size)
     for (const f of this.fingers) {
       const splay = f.open + (f.shut - f.open) * grip
       f.base.position.set(f.x, f.y, f.thumb ? -0.4 * grip : 0)
-      f.base.rotation.set(f.thumb ? -0.9 * grip : -1.25 * grip - 0.08, f.thumb ? -0.5 * grip * this.side : 0, splay)
-      f.tip.rotation.x = f.thumb ? -0.9 * grip - 0.1 : -1.45 * grip - 0.12
+      f.base.rotation.set(f.thumb ? -0.9 * grip : -0.95 * grip - 0.08, f.thumb ? -0.5 * grip * this.side : 0, splay)
+      f.tip.rotation.x = f.thumb ? -0.9 * grip - 0.1 : -1.1 * grip - 0.12
     }
     this.hand.updateMatrixWorld(true)
     d3.palms.setMatrixAt(this.slot, this.palm.matrixWorld)
@@ -158,6 +158,8 @@ class Limb {
 }
 
 const HAND_SCALE = 1.18
+// A clenched fist bulges: without this a closed hand is half the size of an open one and is lost on the sheet it holds.
+const FIST = 0.4
 
 interface Draw { position: THREE.BufferAttribute; normal: THREE.BufferAttribute; palms: THREE.InstancedMesh; cuffs: THREE.InstancedMesh; joints: THREE.InstancedMesh }
 

@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { AXIS, solid } from './shape'
+import { AXIS, domeAt, solid } from './shape'
 
 export interface StripSet {
   count: number
@@ -28,6 +28,18 @@ function normalsAtRest(): Float32Array {
   g.setIndex(new THREE.BufferAttribute(s.index, 1))
   g.computeVertexNormals()
   restNormals = new Float32Array(g.getAttribute('normal').array)
+  const e = 0.05
+  for (let i = 0; i < s.ink.length; i++) {
+    if (s.ink[i] !== 0) continue
+    const x = s.rest[i * 3]!
+    const y = s.rest[i * 3 + 1]!
+    const nx = -(domeAt(x + e, y) - domeAt(x - e, y)) / (2 * e)
+    const ny = (domeAt(x, y + e) - domeAt(x, y - e)) / (2 * e)
+    const len = Math.hypot(nx, ny, 1)
+    restNormals[i * 3] = nx / len
+    restNormals[i * 3 + 1] = ny / len
+    restNormals[i * 3 + 2] = 1 / len
+  }
   g.dispose()
   return restNormals
 }

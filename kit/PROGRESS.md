@@ -25,22 +25,22 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 26, 2026-11-25T14:32Z, Phase 3.
+Status 27, 2026-11-25T14:52Z, Phase 3.
 
-1. `out/stills/status/01-compare-step1-fire-second-merge.jpg`: Keyboard under fire: your approved picture on the left, the merged build on the right, at the 20 degree lens. The page light now falls off like yours; the bolts and sparks of the judged moment are not there yet.
-2. `out/stills/status/02-bolt-and-its-light.jpg`: A bolt at full size, from the light owner's test: a travelling streak with a bright head that warms the caps beside it, and the scorch marks earlier bolts left.
-3. `out/stills/status/03-compare-step1-tug-second-merge.jpg`: The tug of war: approved on the left, the merged build on the right, from the film's camera. The sheet now hangs from the cursor's hands with a soft shadow; the arms are still too thin.
-4. `out/stills/status/04-compare-page-look-second-merge.jpg`: The page at rest with crops at full size: approved on the left, the build on the right. Brushed metal, ceramic grain and falloff are close; pockets, long shadows and the cursor's shadow are not.
+1. `out/stills/status/01-compare-step1-fire-third.jpg`: Keyboard under fire: your approved picture on the left, the build on the right, with the header now at your sizes. Still short: no bolt in flight with sparks at this moment, the deck reads dark where your aluminum is bright, and the gaps between the keys are black.
+2. `out/stills/status/02-floors-beside-approved.jpg`: The three tiers: your approved pictures on the left, the build on the right with the first printed floors under the grey stand-ins. Everything that stands on them is still to be made real.
+3. `out/stills/status/03-sheet-first-name.jpg`: Twelve frames across the beat First name: the turrets rise from the deck, bolts cross the keys and leave scorch marks, and the cursor types between them.
+4. `out/stills/status/04-sheet-tug.jpg`: Twelve frames across the tug of war: the shredder takes the sheet, the cursor grows arms and pulls, loses, and the strips fall.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 3, tick 65 at 2026-11-25T14:32:02Z, allowance: build
-time used in this phase: 1.65 h of its box of 8.00 h
-time used under the allowance in force: 8.99 h of 36.00 h allowed
-time used: 8.99 of 36.00 hours before the review
+clock: phase 3, tick 66 at 2026-11-25T14:52:21Z, allowance: build
+time used in this phase: 1.99 h of its box of 8.00 h
+time used under the allowance in force: 9.33 h of 36.00 h allowed
+time used: 9.33 of 36.00 hours before the review
 extra rounds: yes
 half point: not reached
 box end: not reached
@@ -449,6 +449,9 @@ One line each: the date, the decision, the reason, and the config key if one was
 - 2026-11-25 14:25Z, Phase 3: the website's own light in the machine is now a number the page of step 3 carries (`v[1]` of the `table-lights` anchors): down to `table.pageDuskLevel` over the 1.2 s before the machine wakes, held while the ball is inside, up again over 1.2 s once the ball leaves by the drain, never dimmed by a skip; the two sheets of the machine are drawn at the dusk level. The app turns the key light, the fill and the studio's reflections down by it (`websiteLevel` in `src/real/index.ts`), and only once the part `table-lights` is real, so a machine of stand-ins is never left dark. Why: kit/02 "Light in the machine" asks for it and `table.pageDuskLevel` was read by nothing (MEASURED: no use in `src` before this). Test: `tests/pinball.test.ts`, 966 of 966 pass.
 - 2026-11-25T14:35Z. The state of everything that moves in the machine now rides in the draw list, before any table part is built on it. Why: a part made real is a pure function of its shapes, so a bumper that must kick, a door that must slam and a lamp that must flash need to be told when, and the grey stand-ins carried only up or down. What changed: the physics records the sim time of every event by its place; the page of step 3 puts on each mover's shape the seconds since it was struck, went in, went out, slammed or opened (9 when never or longer ago), so an owner makes its own curve and keeps no clock; the anchors of `table-lights` carry five levels (general lighting as a wave down the tiers on waking and a dim to a quarter when the ball has drained, the website's own light, a flash on every hit, the red and the blue beacon). `src/stage/CONTRACT.md` under "Making the table real" lists every value. MEASURED: 968 of 968 tests (the tests of the take and of save and load among them), build passes, bots all clear.
 - 2026-11-25T14:35Z. The strobe of "Reply All" is held to 2.5 swells a second, and no light in the machine may flash more than three times a second. Why: the kit asks for "the whole office tier strobing", and a full-screen strobe faster than three a second is the known threshold for photosensitive seizures; a site that anyone can open keeps under it. The flash on a hit is a single pulse that falls over a quarter of a second, not a train.
+- 2026-11-25T14:50Z · Phase 3, the steps' header set to the approved pictures. MEASURED on `references/approved/step1-fire.png`, `step2-rest.png`, `page-look.png` and `step1-tug.png` (rows of dark pixels between x 120 and 900): the site title is 44 to 48 px from cap top to descender, a font size of 46 to 49 px where the build had 28; the step heading is 36 to 40 px, a size of 37 to 41 where the build had 60; and on `step1-fire` the first label starts at y 301 where the build had 336. Set in `src/shell/parts.ts`: a type `pageTitle` (Inter 600 at 47 px) for the title of the five steps, the heading at 40 px, and `HEADER` at title 59, heading 202, subline 258, content 300. The progress row (76) and the rule (148) stay. The marketing page's brand keeps 28 px (its approved picture measures 30) and is centred on the row by its own cap height. Step 4 keeps a content top of 336 and a subline row of 266 as constants of its own in `src/pages/step4/layout.ts`: its film script is timed on those places (two tests of `tests/boss.test.ts` fail when they move), and its page is rebuilt against its own approved pictures in Phase 4.
+- 2026-11-25T14:50Z · Phase 3, how tuning looks are counted for a script. `assets.maxTuningLooksPerPart` is 40 for a part. The part `acting-step1` is seven beats, each with its own motion to tune, so its looks are counted for each beat: at most 40 for a beat. A contact sheet across a beat is one look.
+- 2026-11-25T14:50Z · Phase 3, found by the gate's agent and given out. (1) G3 is red on the merged step 1: one picture of twelve differs between two runs by 1 of 255 in about 99 pixels. Given to the light's owner, in whose files the cause must be. (2) The three levels of `live.quality` reach only the size of the shadow maps on the site and the sample count of a still: the renderer draws the same objects and the same shadow passes at every level, so G15 reads the same counts three times (356 draw calls for `step1-fire` against 300 at `low`). The light's owner adds `setLevel` to the rig; the Builder wires it to the still path and the site. (3) Draw calls are counted with the shadow passes, since the renderer's counter is reset once a picture. The machine in stand-ins draws 1034 in `table-wide`. Every table brief carries a budget of draw calls in the colour pass for its part in a zone, and the gate's agent adds a count by part (`npm run counts`) so an owner can see its share.
 
 ## Notes from Brandon
 

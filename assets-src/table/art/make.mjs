@@ -19,6 +19,10 @@ const config = JSON.parse(fs.readFileSync(at('config', 'showcase.json'), 'utf8')
 const SETS = { web: { dir: at('public', 'assets', 'table', 'art'), width: config.assetSets.web.tableArtWidth, data: 2048, quality: 88 }, full: { dir: at('assets-full', 'table', 'art'), width: config.assetSets.full.tableArtWidth, data: 4096, quality: 92 } }
 const MASK = { width: 2048, sigma: 9, threshold: 7 }
 const SEED = config.seed
+// Where the corporate print is gold leaf, by rule: red above blue by more than `from`, full metal `over` further on.
+const FOIL = { from: 24, over: 50 }
+// How a painted base is used. Corporate: the marble is the floor itself. Office and street: only the light and dark of the painted material is laid over the drawn ground, so the tones stay those of the print.
+const PAINTED = { corporate: { as: 'base', brightness: 0.82, saturation: 1.05 }, office: { as: 'detail', gain: 1.5 }, street: { as: 'detail', gain: 1.6 } }
 
 async function layout() {
   const server = await createServer({ root, configFile: at('vite.config.ts'), server: { middlewareMode: true, hmr: false, watch: null, ws: false }, appType: 'custom', logLevel: 'error', optimizeDeps: { noDiscovery: true, include: [] } })
@@ -118,24 +122,31 @@ async function art(L, k, set) {
   const d = DRAW[id](D)
   const layers = []
   const painted = path.join(here, 'painted', `${id}.png`)
-  const paintedOpacity = { corporate: 0.85, office: 0.5, street: 0.7 }[id]
-  if (fs.existsSync(painted)) {
-    const p = await sharp(painted).resize(w, h, { fit: 'fill', kernel: 'lanczos3' }).ensureAlpha(paintedOpacity).png().toBuffer()
-    layers.push({ input: p })
-  }
+  const has = fs.existsSync(painted)
   if (d.ground.length) layers.push({ input: Buffer.from(svg(w, h, d.defs, d.ground)) })
+  if (has && PAINTED[id].as === 'detail') {
+    const grey = sharp(painted).resize(w, h, { fit: 'fill', kernel: 'lanczos3' }).greyscale()
+    const mean = (await grey.clone().stats()).channels[0].mean
+    const gain = PAINTED[id].gain
+    layers.push({ input: await grey.linear(gain, 128 - gain * mean).toColourspace('srgb').png({ compressionLevel: 1 }).toBuffer(), blend: 'overlay' })
+  }
   layers.push({ input: await grain(id, 512, w > 4096 ? 2 : 1), tile: true, blend: 'soft-light' })
   layers.push({ input: Buffer.from(svg(w, h, d.defs, d.top)) })
-  const base = await ground(id, 1280, 720).resize(w, h, { kernel: 'cubic' }).png().toBuffer()
-  const out = await sharp(base, { limitInputPixels: false }).composite(layers).removeAlpha().toColourspace('srgb').png({ compressionLevel: 1 }).toBuffer()
+  const base = has && PAINTED[id].as === 'base' ? await sharp(painted).resize(w, h, { fit: 'fill', kernel: 'lanczos3' }).modulate({ brightness: PAINTED[id].brightness, saturation: PAINTED[id].saturation }).removeAlpha().png({ compressionLevel: 1 }).toBuffer() : await ground(id, 1280, 720).resize(w, h, { kernel: 'cubic' }).png().toBuffer()
+  const out = await sharp(base, { limitInputPixels: false }).composite(layers).removeAlpha().toColourspace('srgb').linear(0.972, 4).png({ compressionLevel: 1 }).toBuffer()
   fs.mkdirSync(S.dir, { recursive: true })
   await sharp(out, { limitInputPixels: false }).webp({ quality: S.quality, effort: 4, smartSubsample: true }).toFile(path.join(S.dir, `${id}.webp`))
-  await mask(out, path.join(S.dir, `${id}-mask.png`))
-  await coat(L, k, path.join(S.dir, `${id}-coat.png`), S.data)
+  const mh = Math.round((MASK.width * 9) / 16)
+  const design = await sharp({ create: { width: MASK.width, height: mh, channels: 3, background: PAL[id].base } })
+    .composite([...(d.ground.length ? [{ input: Buffer.from(svg(MASK.width, mh, d.defs, d.ground)) }] : []), { input: Buffer.from(svg(MASK.width, mh, d.defs, d.top)) }])
+    .png({ compressionLevel: 1 })
+    .toBuffer()
+  await mask(design, path.join(S.dir, `${id}-mask.png`))
+  await coat(L, k, path.join(S.dir, `${id}-coat.png`), S.data, id === 'corporate' ? out : null)
   return out
 }
 
-// The coverage mask, by rule: a place is printed where the finished art differs from its own neighbourhood (a blur of MASK.sigma texels at MASK.width wide) by more than MASK.threshold of 255 in luminance.
+// The coverage mask, by rule: a place is printed where the drawn design (the tone of the floor with every drawn layer, without the painted material and without the grain, which are not marks) differs from its own neighbourhood (a blur of MASK.sigma texels at MASK.width wide) by more than MASK.threshold of 255 in luminance.
 async function mask(artPng, file) {
   const w = MASK.width
   const h = Math.round((w * 9) / 16)
@@ -153,8 +164,8 @@ async function mask(artPng, file) {
   return white / out.length
 }
 
-// The clear coat's roughness in green (as three.js reads it): smooth everywhere, a little duller along the lines the ball runs most, where it has worn the lacquer.
-async function coat(L, k, file, w) {
+// The clear coat's roughness in green (as three.js reads it): smooth everywhere, a little duller along the lines the ball runs most, where it has worn the lacquer. Blue is how much of a place is metal leaf: the gold of the corporate floor, nothing on the others.
+async function coat(L, k, file, w, gilded) {
   const D = tierOf(L, k)
   const h = Math.round((w * 9) / 16)
   const lo = 14
@@ -176,6 +187,7 @@ async function coat(L, k, file, w) {
   paths.push(run(`M${m} 7.9 L${m} 11.25`, 0.5, 0.45))
   const body = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 20 11.25"><rect width="20" height="11.25" fill="#000"/><g filter="url(#b)">${paths.join('')}</g><defs><filter id="b" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="0.07"/></filter></defs></svg>`
   const trail = await sharp(Buffer.from(body)).greyscale().raw().toBuffer()
+  const gold = gilded ? await sharp(gilded, { limitInputPixels: false }).resize(w, h, { kernel: 'lanczos3' }).removeAlpha().raw().toBuffer() : null
   const out = Buffer.alloc(w * h * 3)
   for (let i = 0; i < w * h; i++) {
     const x = i % w
@@ -185,7 +197,7 @@ async function coat(L, k, file, w) {
     const g = lo + fine * (34 + scuff * 26) + (hash2(x >> 3, y >> 3, SEED + 91) - 0.5) * 5
     out[i * 3] = 128
     out[i * 3 + 1] = Math.max(4, Math.min(250, Math.round(g)))
-    out[i * 3 + 2] = Math.round(fine * 250)
+    out[i * 3 + 2] = gold ? Math.round(Math.max(0, Math.min(1, (gold[i * 3] - gold[i * 3 + 2] - FOIL.from) / FOIL.over)) * 250) : 0
   }
   await sharp(out, { raw: { width: w, height: h, channels: 3 } }).png({ compressionLevel: 9 }).toFile(file)
 }
