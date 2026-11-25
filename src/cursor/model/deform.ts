@@ -102,11 +102,12 @@ export class Deform {
       const dy = y - CENTRE[1]
       const ang = Math.atan2(dy, dx)
       const wob = 0.6 * Math.sin(2 * ang + 0.9) + 0.4 * Math.sin(3 * ang + 2.6)
-      const grow = 1 + m * 0.09 * wob * (1 - tail)
+      const far = Math.hypot(dx, dy)
+      const grow = 1 + m * 0.09 * wob * (1 - tail) - m * 0.05 * Math.max(0, far - 5.2) * (1 - tail)
       x = CENTRE[0] + dx * grow
       y = CENTRE[1] + dy * grow
-      y += m * (0.7 * low + 2.4 * tail)
-      x += m * (0.45 * Math.sin(y0 * 0.42 + 1.0) * (1 - tail) + 2.1 * tail * Math.sin((y0 - 11.5) * 0.5) + 0.5 * tail * (x0 - 7.5) * 0.4)
+      y += m * (0.7 * low + 2.4 * tail + 0.3 * Math.sin(x0 * 0.85 + 1.4) * (1 - tail))
+      x += m * ((0.45 * Math.sin(y0 * 0.42 + 1.0) + 0.3 * Math.sin(y0 * 0.95 + 0.3)) * (1 - tail) + 2.1 * tail * Math.sin((y0 - 11.5) * 0.5) + 0.5 * tail * (x0 - 7.5) * 0.4)
       const fold = Math.sin(x0 * 0.55 + y0 * 0.38 + 0.5) * Math.sin(y0 * 0.31 - x0 * 0.2 + 1.2)
       z *= 1 - 0.1 * m - 0.3 * m * tail
       z += m * up * 0.42 * fold * (1 - Math.exp(-inset / 0.9)) * (1 - 0.5 * tail)

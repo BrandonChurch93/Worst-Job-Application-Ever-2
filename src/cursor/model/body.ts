@@ -9,6 +9,10 @@ import { cutBand, stripSet, type StripSet } from './strips'
 
 const HOLE_SEGMENTS = 28
 const HOLE_ROWS = [0, 0.3, 0.65, 1]
+const smooth01 = (v: number): number => {
+  const t = Math.min(1, Math.max(0, v))
+  return t * t * (3 - 2 * t)
+}
 const rag = (a: number, burnt: number): number => 1 + (0.25 + 0.75 * burnt) * (0.06 * Math.sin(3 * a + 1.3) + 0.04 * Math.sin(7 * a + 0.4) + 0.03 * Math.sin(11 * a + 2.1))
 const clamp01 = (v: number): number => Math.min(1, Math.max(0, v))
 
@@ -218,14 +222,15 @@ export class Body implements BodyModel {
           const ey = hole.y + Math.sin(ang) * reach
           const d = Math.max(0, inside(ex, ey))
           const z = (heightAt(ex, ey) - 0.03) * (1 - HOLE_ROWS[r]!)
-          const k = reach * (0.74 + 0.26 * clamp01(z / 2.3)) * 1.012
+          const k = reach * (0.85 + 0.15 * clamp01(z / 2.3)) * 1.012
           this.deform.point(hole.x + Math.cos(ang) * k, hole.y + Math.sin(ang) * k, z, d, p)
           a[i] = p.x
           a[i + 1] = p.y
           a[i + 2] = p.z
           const glow = clamp01(hole.glow)
           const flick = Math.pow(0.5 + 0.5 * Math.sin(ang * 5 + h * 2.1) * Math.sin(ang * 9 + 1.7), 2.2)
-          const heat = r === 0 ? 0.25 : r === 1 ? 1.5 : r === 2 ? 0.5 : 0.03
+          const lee = 0.2 + 0.8 * smooth01((Math.cos(ang) * -0.5 + Math.sin(ang) * 0.86 + 0.5) / 1.3)
+          const heat = (r === 0 ? 0.12 : r === 1 ? 1.1 : r === 2 ? 0.3 : 0.02) * lee
           const burnt = clamp01(hole.burnt ?? 1)
           const lit = glow * glow * flick * burnt
           const bare = (1 - burnt) * (0.34 - 0.2 * HOLE_ROWS[r]!) * (0.8 + 0.4 * hash01(j, r, 7 + h))
