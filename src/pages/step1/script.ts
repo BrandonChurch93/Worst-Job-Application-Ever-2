@@ -28,10 +28,10 @@ export const SHRED = { in: 0.3, gone: 0.46, strips: 0.12, pile: 0.64, pileSecond
 export const FIRST = {
   tap: 1.5,
   keys: [[2.18, 2.56], [2.64, 2.97], [3.06, 3.25], [3.86, 4.1], [4.16, 4.3]] as [number, number][],
-  notice: 3.42, dodge: 3.86, cocky: [4.38, 4.6] as [number, number], proud: 4.7,
-  stand: 'w', aside: -34, see: 5.46, flee: [5.62, 5.82] as [number, number], fled: '5', short: -64, past: 16, snap: 5.78, duck: 6.14, slide: [6.16, 6.28] as [number, number], smug: 6.62,
-  panel: { x: -150, y: 20 }, shock: [7.165, 7.92] as [number, number], flight: 0.13,
-  after: [[7.92, 8.0], [8.07, 8.3], [8.36, 8.54], [8.6, 8.86], [8.92, 9.1], [9.16, 9.32]] as [number, number][],
+  notice: 3.42, dodge: 3.86, cocky: [4.42, 4.58] as [number, number], proud: 4.7,
+  stand: { x: 1174, y: 870 }, see: 6.2, flee: [6.28, 6.4] as [number, number], aside: { x: -170, y: -64 }, snap: 6.34,
+  duck: 7.2, slide: [7.22, 7.34] as [number, number], under: { x: -150, y: 64 }, up: 7.7,
+  after: [[7.775, 8.0], [8.07, 8.3], [8.36, 8.54], [8.6, 8.86], [8.92, 9.1], [9.16, 9.32]] as [number, number][],
   enter: [9.4, 9.6] as [number, number]
 }
 // The last name: at each of the first hunts it pulls up off the keys on to the bare page above the deck (above), rears back there, and dives for the key where it is now.
@@ -139,21 +139,17 @@ export function makePlan(seed: number, first: string, last: string, email: strin
       cue(FIRST.dodge - 0.14, { react: 'anticipate' })
     }
   }
-  const stand = { x: keySpot(seatIndex[FIRST.stand]!).x + FIRST.aside, y: keySpot(seatIndex[FIRST.stand]!).y }
-  const fled = keySpot(seatIndex[FIRST.fled]!)
-  const panel = { x: DECK.x + DECK.w + FIRST.panel.x, y: DECK.y + FIRST.panel.y }
+  const stand = FIRST.stand
+  const aside = { x: stand.x + FIRST.aside.x, y: stand.y + FIRST.aside.y }
   leap(FIRST.cocky[0], FIRST.cocky[1], stand.x, stand.y, { arc: 20 })
   cue(FIRST.proud, { act: 'proud' })
   cue(FIRST.proud + 0.06, { react: 'dustOff' })
   cue(FIRST.see, { react: 'anticipate' })
-  cue(FIRST.see + 0.02, { act: 'plain' })
-  leap(FIRST.flee[0], FIRST.flee[1], fled.x + FIRST.short, fled.y, { arc: 46, ease: 'smooth' })
+  leap(FIRST.flee[0], FIRST.flee[1], aside.x, aside.y, { arc: 30, ease: 'smooth', hop: false })
   cue(FIRST.snap, { react: 'snap' })
   cue(FIRST.duck, { react: 'duck' })
-  to(FIRST.slide[0], FIRST.slide[1], fled.x + FIRST.past, fled.y, { ease: 'out' })
-  cue(FIRST.smug, { act: 'proud' })
-  to(FIRST.shock[0], FIRST.shock[0] + FIRST.flight, panel.x, panel.y, { arc: 26, ease: 'out' })
-  cue(FIRST.shock[1] - 0.1, { react: 'anticipate' })
+  to(FIRST.slide[0], FIRST.slide[1], aside.x + FIRST.under.x, aside.y + FIRST.under.y, { ease: 'out' })
+  cue(FIRST.up, { react: 'anticipate' })
   for (let i = before - 1; i < keys.length; i++) {
     const n = i - (before - 1)
     const slot = FIRST.after[Math.min(n, FIRST.after.length - 1)]!

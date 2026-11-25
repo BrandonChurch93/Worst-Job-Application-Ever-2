@@ -34,11 +34,11 @@ const GAIT: Record<Acting, { stiff: number; damp: number; stride: number; hop: n
 const DART = { fall: 9000 }
 // A rear gets to its place fast, so the lean is held there.
 const REAR = { settle: 0.36 }
-// The frame of a hit: the body is short and bent away from the blow at once, with no spring to build it.
-const HIT = { squash: 0.58, bend: 0.8 }
+// The frame of a hit: the body is short and bent away from the blow at once, with no spring to build it, and stands a body's width along the blow, clear of the flash.
+const HIT = { squash: 0.58, bend: 0.8, shove: 60, lift: 0.7 }
 const SPRING = { squash: { k: 620, c: 26 }, lean: { k: 330, c: 17 }, bend: { k: 260, c: 13 }, sprout: { k: 2400, c: 58 } }
 // A hit knocks the body over, past upright onto its other shoulder, and it swings back: the knocked cursor of the approved fire image.
-const TUMBLE = { far: 1, share: 0.6, out: { k: 900, c: 60 }, back: { k: 300, c: 27 } }
+const TUMBLE = { far: 1, share: 0.27, out: { k: 900, c: 60 }, back: { k: 620, c: 44 } }
 // Thrown through the air it goes tip first: the arrow turns toward the way it flies, most when that is up or to the right. tip is the angle its tip points at rest.
 const DIVE = { tip: 2.09, far: 1.25, high: [5, 18] as [number, number], fast: [150, 400] as [number, number] }
 const DRAG = { stride: 90, pulse: 0.2, lean: 0.34 }
@@ -255,7 +255,7 @@ export class CursorBody {
     const s = this.s
     s.vx += vx
     s.vy += vy
-    s.vz += vz
+    s.vz += vz * (s.damage.some((w) => w.fresh && w.kind === 'burn') ? HIT.lift : 1)
     const d = Math.hypot(vx, vy)
     if (d < 1) return
     for (const w of s.damage) {
@@ -263,6 +263,10 @@ export class CursorBody {
       w.x = STRIKE.x - (vx / d) * STRIKE.reach * 0.6
       w.y = STRIKE.y - (vy / d) * STRIKE.reach * 0.6
       w.fresh = false
+      if (s.taken === null && !s.air && !s.inBall) {
+        s.x += (vx / d) * HIT.shove
+        s.y += (vy / d) * HIT.shove
+      }
     }
   }
 
@@ -631,11 +635,12 @@ function drop(p: LooseStrip, i: number): void {
 }
 
 // Where a strip stands before it snaps true: out of line, every other strip a step up or down its own length, so the ends make a ragged comb that reads from far.
-const ASKEW = { x: 1.6, y: 4, step: 3.4, rot: 0.05 }
-
+const ASKEW = { across: 0.7, along: 4, step: 3.4, rot: 0.05 }
 export function askew(i: number, seed: number): Strip {
   const h = (k: number) => hash01(i, k + 20, seed)
-  return { x: (h(1) - 0.5) * ASKEW.x, y: (i % 2 ? 1 : -1) * ASKEW.step + (h(2) - 0.5) * ASKEW.y, z: i % 2 ? 0.9 : 0.3, rot: (h(3) - 0.5) * ASKEW.rot, tilt: 0 }
+  const along = (i % 2 ? 1 : -1) * ASKEW.step + (h(2) - 0.5) * ASKEW.along
+  const across = (h(1) - 0.5) * ASKEW.across
+  return { x: along * STRIP_AXIS[0] + across * STRIP_AXIS[1], y: -along * STRIP_AXIS[1] + across * STRIP_AXIS[0], z: i % 2 ? 0.9 : 0.3, rot: (h(3) - 0.5) * ASKEW.rot, tilt: 0 }
 }
 
 const GATHER = { stand: 0.4, snap: 0.8, true: 0.87 }
