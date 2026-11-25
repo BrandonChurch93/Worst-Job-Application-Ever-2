@@ -241,7 +241,7 @@ const lin = (c: THREE.Color): Rgb => [c.r, c.g, c.b]
 const hex = (h: number): Rgb => lin(new THREE.Color().setHex(h, THREE.SRGBColorSpace))
 const mix = (a: Rgb, b: Rgb, t: number): Rgb => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t]
 
-const INK = 0x28292b
+const INK = 0x24272a
 const INK_WARM = 0x3f352a
 const INK_LIGHT = 0xfbeede
 const LIP = 0xf2efe8
@@ -339,8 +339,8 @@ function kit(setting: Setting): Kit {
         color: 0xffffff,
         vertexColors: true,
         roughness: cut ? 0.5 : setting === 'raised' ? 0.5 : 0.62,
-        metalness: cut ? 0.85 : 0,
-        specularIntensity: cut ? 1 : 0.15
+        metalness: 0,
+        specularIntensity: cut ? 0.35 : 0.15
       })
     )
     m.name = `type-${setting}${over ? '-over' : ''}`
@@ -376,7 +376,7 @@ function kit(setting: Setting): Kit {
   return made
 }
 
-const GRAIN = 0.3
+const GRAIN = 0.16
 
 // The shoulders are set in page pixels. A camera that comes nearer than the home view would widen them on screen, so they are drawn in by as much as it is nearer.
 const NEAR_GLSL = `

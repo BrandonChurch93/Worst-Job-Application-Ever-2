@@ -66,6 +66,21 @@ describe('type: one run', () => {
     }
   })
 
+  it('gives every shoulder vertex the way back to its outline, and no fill vertex any', () => {
+    const d = setRun(spec('Hg'))
+    expect(d.ring.length).toBe((d.position.length / 3) * 2)
+    let moved = 0
+    for (let i = 0; i < d.ring.length; i += 2) {
+      const far = Math.hypot(d.ring[i]!, d.ring[i + 1]!)
+      expect(far).toBeLessThan(4)
+      if (far > 0) {
+        moved++
+        expect(d.position[(i / 2) * 3 + 2]).toBe(0)
+      }
+    }
+    expect(moved).toBeGreaterThan(0)
+  })
+
   it('sets an empty run as no triangles', () => {
     const d = setRun(spec(''))
     expect(d.triangles).toBe(0)
@@ -95,7 +110,8 @@ describe('type: the setting of a run', () => {
     expect(styleName('gloss', 'inkLight')).toBe('gloss:light')
     expect(styleName('metal', 'inkLight')).toBe('gloss:light')
     expect(styleName('glass', 'ink')).toBe('glass:ink')
-    for (const g of ['page', 'cap', 'glass', 'paper', 'metal', 'gloss'] as const) {
+    expect(styleName('smoked', 'ink')).toBe('gloss:light')
+    for (const g of ['page', 'cap', 'glass', 'paper', 'metal', 'smoked', 'gloss'] as const) {
       expect(styles()[styleName(g, 'ink')]).toBeDefined()
       expect(styles()[styleName(g, 'inkLight')]).toBeDefined()
     }
