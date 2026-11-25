@@ -1,0 +1,42 @@
+{
+ "critic": "R4",
+ "score": 4,
+ "pass": false,
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-B-03.png",
+   "where": "the keyboard, red error badges across rows 2-4 (and continuing in set-B-02 and set-B-04)",
+   "what": "several 'Invalid email' badges are clipped mid-word by the keyboard edge or by other badges ('...d email', 'Invalid em...', 'Invalid er...'), reading as broken garbled text at normal viewing size and speed",
+   "fix": "never let badge text clip against a key edge or another badge; keep each badge fully inside clear space with its full label readable for its whole life on screen"
+  },
+  {
+   "severity": "severe",
+   "file": "set-B-01.png",
+   "where": "the claimed 'hit' across the whole sheet",
+   "what": "the hit is not legible: a tiny orange element hops between distant keys (Tab to Q to 4 to 3) between frames with no visible press, no key depression, and nothing on the page reacting; without the caption I could not tell what happened or that anything was hit",
+   "fix": "slow the presser into each key with a short wind-up, visibly depress the key on the contact frame, spring it back, and hold a beat so the field above ('Perpl' typing) reads as the consequence"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02.png",
+   "where": "the red 'Invalid email' badges as they appear, all four sheets",
+   "what": "badges pop in fully formed with no anticipation, squash or settle, then sit rigid; motion is even and weightless throughout, and the multiplying duplicates look hand-placed rather than mechanical",
+   "fix": "give each badge a 2-3 frame entrance with a slight overshoot and settle, remove the arbitrary duplication, and let only one clear badge answer each error moment"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03.png",
+   "where": "keyboard keys under every badge and key press, all sheets",
+   "what": "no contact response anywhere: keys never go down or spring back, and the form fields above never answer the event below; the page is frozen apart from the badges",
+   "fix": "on each contact frame, dip the struck key 1-2 px with a tightened shadow, rebound it on the next frame, and pulse or flash the affected field so the two things and the page all answer the hit"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-01.png",
+   "where": "the Enter key, lower right of the keyboard",
+   "what": "the orange Enter lamp sits identically lit in all 12 frames while action happens around it, so the busiest element on the board never participates in the moment",
+   "fix": "either dim it during this beat or tie its glow to an actual press so the lit key is part of the story, not static decoration"
+  }
+ ]
+}

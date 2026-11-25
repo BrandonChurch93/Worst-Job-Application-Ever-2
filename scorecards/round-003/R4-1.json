@@ -1,0 +1,35 @@
+{
+ "critic": "R4",
+ "score": 7,
+ "pass": false,
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "letter-key shuffle at 0:24.47 and 0:25.80–0:26.27",
+   "what": "Keycaps hover over the tray in overlapping layers, then the next sampled poses show them seated in a new layout. The exchange reads as a floating dissolve rather than springs launching and recapturing solid keys.",
+   "fix": "Give the caps quick, staggered spring launches and short, distinct paths back into their sockets. Snap each cap to a hard stop and give the tray a brief answering jolt."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "Enter and red error blocks at 0:31.70–0:33.97",
+   "what": "The error blocks are readable, but the sheet doesn't show them striking the keyboard or the keyboard reacting. All three are gone in the next sampled pose, so the gag reads as overlays appearing and clearing rather than blocks hitting and being removed.",
+   "fix": "Show Enter bottoming out, then stagger the blocks' fast approaches and hard stops. Depress or jolt the parts they hit, hold the pile, then give it a visible exit."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-06.png",
+   "where": "shredder and camera at 0:38.83–0:42.23",
+   "what": "The feed winds up clearly, but the push-in reframes the page around the shredder and the exit framing crops off the first strips. The decisive cut and the material coming out aren't readable together.",
+   "fix": "Keep a fixed camera axis for the straight push and pull, frame both the intake and outlet for the bite, and hold while the strips drop free."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-08.png",
+   "where": "page-turn landing at 0:46.30–0:46.67",
+   "what": "The edge-on silhouette gives the slab thickness, but it reaches the frontal pose with no visible seating beat before the pointer travels toward the next control. It reads more as a smooth rotation than a slab landing and arresting.",
+   "fix": "Give the incoming slab a decisive deceleration into a hard stop, a brief secondary response in the raised hardware, and a short still hold before the pointer moves again."
+  }
+ ]
+}
