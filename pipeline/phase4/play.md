@@ -20,12 +20,12 @@ Agreed with tier3_modeller, who builds the ladder. All numbers are page pixels (
 - Hoops: wire radius 2.2, an arc of radius 55.4 about the ball's middle, 104 degrees either side of straight down, so its lowest point is 7.4 under the rail's height. One every 2 balls on the highway (1.5 is fine for the ladder's rungs).
 - Weld bead: a flattened ball of radius 3.4 (1.25, 1.25, 0.8) at every crossing of a hoop and a wire, in a fine mesh.
 - Steel: colour 0xe9ecee, roughness 0.16, metalness 0.72. Full metal reads near black in the lit zones (see the frame's notes), so the wire keeps some colour of its own.
-- Bracket: one leg of radius 2.6 from the hoop's lowest point to a round foot plate (radius 14, 2.5 thick, two screw heads of radius 3 at 8 either side). Where the hoop is more than a ball up, two legs splayed 30 either side with a thin cross rod between them.
+- Bracket: one upright post from the hoop's lowest point to a round foot plate (radius 14, 2.5 thick, two screw heads of radius 3 at 8 either side). The post is a wire of radius 3.2 up to one ball, a turned post of radius 5 up to 2.5 balls and 6.2 above that, with a collar at its foot and a weld bead at its top. No post stands within 1.25 balls and 16 px of the openings `street.police.foot`, `street.inlane.right` or `street.outlane.right`.
 
 ## Agreed with other owners
 
 - tier3_modeller: the wire recipe above.
-- tier1_modeller: the garage is a core drum of radius 44 px with a ring beam on the right half. The spiral is an open clear trough that fills radius 53 to 165 px about the garage's middle, walls 4 thick and 33 tall, its floor 3 under the rail's height, from 163 px down to 19 px over three turns. It stands on no legs. Small clear tabs with one screw each reach in to the core drum. I draw the parking dashes on the channel's floor.
+- tier1_modeller: first agreed for the old layout (a core drum inside the trough). After the Builder's new layout of 17:28 UTC the garage is a round frame outside the trough, 1.525 balls from the middle. My trough: clear width 1.25 balls (the width of the opening `street.spiral.turn`), walls 4 thick and 33 tall with a lip to 137 px from the middle, its floor 3 under the rail's height, three turns from 5.4 balls down to 1.5, then a straight tail to its open end 1.3 balls over the right inlane. A clear newel of radius 9 stands in the middle from the lowest turn to the top and does not reach the floor. Their frame is concrete from 137.3 px (inner face) to 146.4 px, with 16 columns and four ring beams. Clear tabs reach out from my wall to 137.3 px at every quarter turn, where a column stands. I draw the parking dashes. Nothing of mine stands on the floor under the garage.
 
 ## Decisions
 
@@ -41,10 +41,12 @@ Agreed with tier3_modeller, who builds the ladder. All numbers are page pixels (
 - The spinner's axle is 31 above the floor. The flag hangs 4 off the axle, blue enamel with a pale star one side and bare steel the other. It turns 7 times in 1.5 s, slowing all the way, and stops flat (`spinnerTurn`).
 - The flap has no time on its shape, only open or shut, so it snaps between its two places.
 - The highway's path is a smooth curve through the layout's five points. The first 40 px have no side wires and no hoops, because the hoops would cut the floor there; the flap covers that stretch.
-- The spiral ends where its rail ends. The layout puts the ball out there with a speed straight down the page; no exit trough is built because the lowest turn passes over that line.
+- The trough starts under the end of the highway, at the height of the helix's first point, with a closed back, and stops one point before the rail's end, because the last piece of the rail is the ball's fall to the inlane.
+- The last four balls of the highway have no post: every place under them is nearer than 1.25 balls to the gap at the police station's foot. The track's end lies inside the mouth of the trough.
+- The posts are not in the physics. A ball on the floor can pass through one. They are thin and few (three or four) for that reason.
 
 ## What I learned
 
 - Surfaces above the lamps (about 44 px) get only the fill, so tall tops look grey. The cup lids need their glow to read as lit.
 - Full metal reads dark in the lit zones. Steel that must read as bright steel needs metalness near 0.7 and a pale colour.
-- The spiral's pitch in the layout is half a ball per turn, less than a ball and under `table.minClearanceBalls`. A ball on one turn passes through the turn above it. It looks right from above; from the rail camera it may not.
+- The spiral's pitch in the first layout was half a ball per turn. I told the Builder, who changed the layout to 1.3 balls a turn at 17:28 UTC. Reading every place from `railOf` meant the rebuild was the supports and the trough's ends, not the path.
