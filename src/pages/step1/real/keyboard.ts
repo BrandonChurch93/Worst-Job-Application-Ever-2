@@ -87,13 +87,18 @@ const euler = new THREE.Euler()
 const at = new THREE.Vector3()
 const one = new THREE.Vector3(1, 1, 1)
 
-const tumble = (s: Shape, hop: number): THREE.Quaternion => {
-  if (hop <= 0.01) return quat.identity()
+// A cap in the air leans a few degrees, by its name. It sinks by what the lean lifts under its legend, so the flat legend is never under the plastic.
+const tumble = (s: Shape, hop: number): number => {
+  if (hop <= 0.01) {
+    quat.identity()
+    return 0
+  }
   const n = hashName(s.id)
-  const a = ((n & 255) / 255 - 0.5) * 0.02 * hop
-  const b = (((n >> 8) & 255) / 255 - 0.5) * 0.02 * hop
-  const c = (((n >> 16) & 255) / 255 - 0.5) * 0.006 * hop
-  return quat.setFromEuler(euler.set(a, b, c))
+  const k = Math.min(hop, 32) * 0.0045
+  const a = ((n & 255) / 255 - 0.5) * k
+  const b = (((n >> 8) & 255) / 255 - 0.5) * k
+  quat.setFromEuler(euler.set(a, b, 0))
+  return (Math.abs(a) + Math.abs(b)) * 11
 }
 
 function makeDeck(s: Shape, ctx: RealContext): THREE.Object3D {
@@ -137,8 +142,9 @@ function poseDeck(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
     const c = ctx.byId.get(id)
     if (!c) continue
     const hop = Math.max(0, c.v && c.v.length > 1 ? c.v[1]! : c.z0 - s.z1)
-    at.set(c.x + c.w / 2 - cx, -(c.y + c.h / 2 - cy), c.z1 - s.z0)
-    slot.mesh.setMatrixAt(slot.index, m4.compose(at, tumble(c, hop), one))
+    const sink = tumble(c, hop)
+    at.set(c.x + c.w / 2 - cx, -(c.y + c.h / 2 - cy), c.z1 - s.z0 - sink)
+    slot.mesh.setMatrixAt(slot.index, m4.compose(at, quat, one))
     slot.mesh.count = Math.max(slot.mesh.count, slot.index + 1)
   }
   for (const mesh of data.meshes) mesh.instanceMatrix.needsUpdate = true

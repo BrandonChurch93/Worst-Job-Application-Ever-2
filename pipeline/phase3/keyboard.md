@@ -15,9 +15,9 @@ Parts made real: `keyboard`, `turrets`. Branch `agent/keyboard`. Looks: `agent/k
 | Thing | File | How |
 | --- | --- | --- |
 | Deck | `src/pages/step1/real/keyboard.ts` | One plate: top face with the key field and the two hatch holes cut out, a 2.4 px chamfer, walls 84 px deep so the sides are real through the whole rise. The key field is one pocket, 9.4 px deep, with a 1.1 px chamfered lip in aluminium and a dark floor. The shared aluminium, cloned, with a brushed normal picture and anisotropy. |
-| Caps | `src/pages/step1/real/keyboard.ts`, `keyboard-kit.ts` | One instanced mesh for each size of cap, the Enter in the shared orange. A cap is lofted rings: a skirt that stands in the field, a wall that leans in 0.24 rad, a shoulder of radius 3.6, a rim and a dish. Every frame each instance takes the place and the top of its key shape, so press, hop and shuffle are whatever the shapes say. A flying cap tumbles a few degrees, from its hop and its name. |
+| Caps | `src/pages/step1/real/keyboard.ts`, `keyboard-kit.ts` | One instanced mesh for each size of cap, the Enter in the shared orange. A cap is lofted rings: a skirt that stands in the field, a wall that leans in 0.26 rad, a shoulder of radius 5, a rim and a dish 0.5 deep. Every frame each instance takes the place and the top of its key shape, so press, hop and shuffle are whatever the shapes say. A flying cap leans up to 4 degrees, from its hop and its name, and sinks by what the lean lifts under its legend (at most 0.8 px). |
 | Hatches | `src/pages/step1/real/turrets.ts` | A turned bezel that stands 0.9 above the deck, a dark socket 36 deep, two half lids brushed like the deck that slide apart. How far open comes from `v[6]` of the turret shape. |
-| Turrets | `src/pages/step1/real/turrets.ts` | Turned parts with flat bands: a fixed collar, a head that turns, with a seam groove, a chamfer, a boss, six screws, three vent slots; a barrel with a sleeve, a gasket, a tube, a muzzle ring with a groove and a dark bore. It aims from `v[0], v[1]`, pulls back with the charge and kicks on the shot. |
+| Turrets | `src/pages/step1/real/turrets.ts` | Turned parts with flat bands: a fixed collar, a head that turns, with a seam groove, a 5 px chamfer, a shallow turned centre, three vent slots; a barrel in a darker steel with a sleeve, a gasket, a taper, a muzzle ring with a groove and a dark bore. It aims from `v[0], v[1]`, pulls back with the charge and kicks on the shot. |
 | Charge, flash | `src/pages/step1/real/turrets.ts`, `turret-fx.ts` | An orb at the muzzle that grows with `v[2]`, eight sparks that fall into it, a star for 0.05 s after the shot. Each asks `ctx.light` for a light. |
 | Bolt | same | A head that is white hot on top and orange at its rim, two additive cones for the tail. `ctx.light` with `shadow: true`. No painted halo and no painted streak: glow is the post chain's, the streak is the shutter's. |
 | Scorch | same | A decal with a ragged charred middle and a brown ring, turned by its name, an ember for the first 0.2 s, four smoke puffs for 1.5 s, fading with `v[0]`. |
@@ -48,7 +48,7 @@ Emissive meshes cast no shadow.
 ## Decisions
 
 1. The deck and all caps are one object, keyed on the deck shape. A key shape answers `''` while the deck is in the list, and a lone cap object otherwise. This is what lets the caps be instanced.
-2. The legend is the type maker's. The floor of the dish is flat and lies at the key shape's `z1`; the rim stands 0.45 px above it and the floor starts 15 px in from the edge. Agreed with /root/type_setter: nothing changes on their side.
+2. The legend is the type maker's. The crest of the rim is at the key shape's `z1` and the dish lies 0.5 px below it, so a flat legend at `z1` is never under the plastic and hovers at most 0.5 px, which a straight-down camera does not show. This is the first of the two ways /root/type_setter offered: nothing changes on their side.
 3. The field under the caps is one dark pocket and not sixty seats: from above the keyboard reads through its gaps, and sixty outlined seats read as embossed buttons (look 1 and 2 on the looks branch).
 4. The deck's clone of the shared aluminium is darker and a little blue (0.6, 0.62, 0.66 of the shared colour) and rougher (0.5): at the shared values the right end of the plate rendered at sRGB 244, lighter than the page.
 5. `material.envMapIntensity` does nothing in the pinned three (fact from /root/type_setter). The cap plastic and the dark parts use `specularIntensity`.
@@ -72,4 +72,6 @@ Emissive meshes cast no shadow.
 
 - A straight-down camera at 12 degrees shows no wall of a cap unless the wall leans. The lean is the bevel.
 - `alphaMap` reads the green channel. A picture with white colour and the shape in alpha draws as a solid square.
-- A rim of 1 px round a dish reads as an embossed button under a key light at 45 degrees. 0.45 px over 15 px reads as a moulded dish.
+- A rim of 1 px round a dish reads as an embossed button under a key light at 45 degrees. 0.5 px over 13 px reads as a moulded dish.
+- A dial is what a turret is from straight above if its top carries rings and screws. A plain turned top with one wide chamfer and a darker barrel reads as a cylinder.
+- In the film the turrets never overheat (MEASURED: a walk of the film in steps of 0.05 s finds heat 0 throughout). The glow and the steam show in a live run only.

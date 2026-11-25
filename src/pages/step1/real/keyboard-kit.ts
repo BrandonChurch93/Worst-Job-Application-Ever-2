@@ -59,6 +59,7 @@ export interface Kit {
   brushed: THREE.DataTexture
   deck: THREE.MeshPhysicalMaterial
   turned: THREE.MeshPhysicalMaterial
+  barrel: THREE.MeshPhysicalMaterial
   cap: THREE.MeshPhysicalMaterial
   orange: THREE.MeshPhysicalMaterial
   seat: THREE.MeshPhysicalMaterial
@@ -82,8 +83,10 @@ export function kit(): Kit {
   }
   const deck = metal(0.5, 0.8, 0.22)
   deck.color.multiply(new THREE.Color(0.6, 0.62, 0.66))
-  const turned = metal(0.36, 0.85, 0.18)
-  turned.color.multiplyScalar(0.62)
+  const turned = metal(0.4, 0.85, 0.18)
+  turned.color.multiply(new THREE.Color(0.5, 0.515, 0.54))
+  const barrel = metal(0.34, 0.6, 0.14)
+  barrel.color.multiply(new THREE.Color(0.3, 0.31, 0.33))
   const speckle = m.textures[0]!.clone()
   speckle.repeat.set(1, 1)
   speckle.needsUpdate = true
@@ -92,18 +95,18 @@ export function kit(): Kit {
   )
   const seat = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x8a8782), roughness: 0.78, metalness: 0, specularIntensity: 0.3 }))
   const dark = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x201f1e), roughness: 0.55, metalness: 0.2, specularIntensity: 0.5 }))
-  made = { brushed, deck, turned, cap, orange: m.orange, seat, dark }
+  made = { brushed, deck, turned, barrel, cap, orange: m.orange, seat, dark }
   return made
 }
 
-export const CAP = { rise: config.scale.heights.keycap - config.scale.heights.keyboardDeck, skirt: 7.2, rim: 0.45, dish: 15, corner: 10, tile: 96 }
+export const CAP = { rise: config.scale.heights.keycap - config.scale.heights.keyboardDeck, skirt: 7.2, rim: 0.5, dish: 13, corner: 10, tile: 96 }
 
 // A keycap: a skirt that stands in its seat, walls that lean in, a soft shoulder and a dished top.
-// z = 0 is the floor of the dish, where the legend lies.
+// z = 0 is the crest of the rim, at the top of the key shape. The dish lies below it, so a flat legend at that height is never under the plastic.
 export function capGeometry(w: number, h: number, perCorner = 5): THREE.BufferGeometry {
-  const lean = 0.24
-  const round = 3.6
-  const zs = CAP.rim - round * (1 - Math.sin(lean))
+  const lean = 0.26
+  const round = 5
+  const zs = -round * (1 - Math.sin(lean))
   const foot = -CAP.rise + 0.5
   const taper = Math.tan(lean) * (zs - foot)
   const rings: { inset: number; z: number }[] = [
@@ -111,12 +114,12 @@ export function capGeometry(w: number, h: number, perCorner = 5): THREE.BufferGe
     { inset: 0, z: foot },
     { inset: taper, z: zs }
   ]
-  for (let i = 1; i <= 4; i++) {
-    const a = lean + ((Math.PI / 2 - lean) * i) / 4
+  for (let i = 1; i <= 5; i++) {
+    const a = lean + ((Math.PI / 2 - lean) * i) / 5
     rings.push({ inset: taper + round * (Math.cos(lean) - Math.cos(a)), z: zs + round * (Math.sin(a) - Math.sin(lean)) })
   }
   const crest = rings[rings.length - 1]!.inset
-  for (const d of [2, 4.5, 7.5, 11, CAP.dish]) rings.push({ inset: crest + d, z: CAP.rim * (1 - smooth(d / CAP.dish)) })
+  for (const d of [2, 4.5, 7, 10, CAP.dish]) rings.push({ inset: crest + d, z: -CAP.rim * smooth(d / CAP.dish) })
   const n = (perCorner + 1) * 4
   const pos: number[] = []
   const uv: number[] = []
@@ -137,7 +140,7 @@ export function capGeometry(w: number, h: number, perCorner = 5): THREE.BufferGe
     }
   }
   const last = (rings.length - 1) * n
-  pos.push(0, 0, 0)
+  pos.push(0, 0, -CAP.rim)
   uv.push(0, 0)
   const centre = rings.length * n
   for (let i = 0; i < n; i++) idx.push(centre, last + i, last + ((i + 1) % n))

@@ -43,7 +43,9 @@ function follows(o: THREE.Object3D, list: Shape[]): void {
     const p = placeOf(slot!)
     expect(p.x).toBeCloseTo(s.x + s.w / 2 - (deck.x + deck.w / 2), 3)
     expect(p.y).toBeCloseTo(-(s.y + s.h / 2 - (deck.y + deck.h / 2)), 3)
-    expect(p.z).toBeCloseTo(s.z1 - deck.z0, 3)
+    const flying = s.z0 > deck.z1 + 0.01
+    if (flying) expect(Math.abs(p.z - (s.z1 - deck.z0))).toBeLessThan(1.2)
+    else expect(p.z).toBeCloseTo(s.z1 - deck.z0, 3)
   }
 }
 
