@@ -54,12 +54,15 @@ export function drawWeapons(out: DrawList, f: Fight, plan: WeaponPlan): void {
     const k = Math.min(prog(f.expired, 0, 0.16), 1 - prog(f.expired, 1.3, 1.5))
     const w = plan.banner.w * k
     const h = plan.banner.h * k
-    const y = Math.max(ARENA.y0 + 60, f.y - 196)
+    const y = Math.max(ARENA.y0 + 6 + plan.banner.h / 2, f.y - 208 - plan.banner.h / 2)
     out.push({ id: 'banner-up', part, kind: 'box', x: f.x - w / 2, y: y - h / 2, w, h, z0: 108, z1: 108 + heights.slab, tone: 'danger', r: 10 * k })
     if (k >= 0.98) out.push(label('banner-up-words', part, plan.banner.key, f.x, y, plan.bannerType, 108 + heights.slab, 'inkLight'))
   }
   for (const d of f.darts) {
-    out.push({ id: `dart-${d.n}`, part, kind: 'capsule', x: d.x - 15, y: d.y - 5, w: 30, h: 10, z0: 40, z1: 48, tone: 'light', rot: Math.atan2(d.dy, d.dx) })
+    const rot = Math.atan2(d.dy, d.dx)
+    const n = Math.hypot(d.dx, d.dy) || 1
+    out.push({ id: `dart-${d.n}-trail`, part, kind: 'capsule', x: d.x - 46 * d.dx / n - 34, y: d.y - 46 * d.dy / n - 3, w: 68, h: 6, z0: 40, z1: 44, tone: 'raised', rot })
+    out.push({ id: `dart-${d.n}`, part, kind: 'capsule', x: d.x - 22, y: d.y - 7, w: 44, h: 14, z0: 40, z1: 50, tone: 'light', rot })
   }
   for (const s of f.sparks) {
     const u = s.t / 0.22

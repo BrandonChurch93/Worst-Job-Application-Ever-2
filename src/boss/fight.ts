@@ -83,7 +83,8 @@ export const bannerUp = (f: Fight): boolean => f.expired >= 0 && f.expired < 1.5
 function wander(f: Fight): { x: number; y: number; speed: number } {
   if (f.phase === 0) return { x: HOME.x - 50 + 60 * Math.sin(f.clock * 0.6), y: HOME.y + 150 * Math.sin(f.clock * 0.5 + 0.4), speed: 130 }
   if (f.phase === 1) return { x: HOME.x, y: HOME.y, speed: 170 }
-  return { x: HOME.x + 10 + 40 * Math.sin(f.clock * 0.9), y: HOME.y - 20 + 120 * Math.sin(f.clock * 0.75), speed: bannerUp(f) ? 0 : 210 }
+  if (f.expired < 1.5) return { x: HOME.x, y: HOME.y + 24, speed: 170 }
+  return { x: HOME.x + 10 + 40 * Math.sin(f.clock * 0.9), y: HOME.y + 10 + 100 * Math.sin(f.clock * 0.75), speed: 210 }
 }
 
 function walk(f: Fight, dt: number): void {
