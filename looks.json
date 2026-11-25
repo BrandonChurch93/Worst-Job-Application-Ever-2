@@ -1,35 +1,35 @@
 {
   "folder": "boss",
-  "pushed": "2026-11-25T10:43:15.933Z",
-  "commit": "d44c036b87178fa48105faa3da2dccb2754bcc90",
+  "pushed": "2026-11-25T11:10:28.124Z",
+  "commit": "0781cc41debe4b88276a34c7274528bf57232bcc",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Six film moments after the merge of main cef0562: answer, unfold, slabs, pop-ups, last stand, press",
-      "time": "2026-11-25T10:02:16.884Z",
-      "by": "boss",
-      "from": "out/work/filmQ.png"
-    },
-    {
-      "file": "look-2.jpg",
       "caption": "Still still-rest-step4-preview-draft: draft tier, preview, view beauty",
       "time": "2026-11-25T10:41:56.618Z",
       "by": "boss",
       "from": "out/work/stills/still-rest-step4-preview-draft.png"
     },
     {
-      "file": "look-3.jpg",
+      "file": "look-2.jpg",
       "caption": "Step 4 at rest at d44c036: the closed verify card is the layout tree's own box (M5 0 px)",
       "time": "2026-11-25T10:43:14.514Z",
       "by": "boss",
       "from": "out/work/stills/still-rest-step4-preview-draft.png"
     },
     {
-      "file": "look-4.jpg",
+      "file": "look-3.jpg",
       "caption": "3.7 to 5.2 s: the card opens on the tick (moved for 0.3 s), then the open card is drawn from the tree",
       "time": "2026-11-25T10:43:14.746Z",
       "by": "boss",
       "from": "out/work/filmR.png"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Round 1 fix at 0781cc4: unit 16.7 to 27.3 s one second apart: one attack at a time, Session expired clears the page, the last 1.8 s is the boss, its bar and the cursor",
+      "time": "2026-11-25T11:10:26.831Z",
+      "by": "boss",
+      "from": "out/work/filmT.png"
     }
   ]
 }
