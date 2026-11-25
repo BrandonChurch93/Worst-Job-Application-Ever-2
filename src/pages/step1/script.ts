@@ -18,7 +18,7 @@ export const TUG = { stiff: 2600, damp: 36, strainPx: 24, shoulder: { x: 14, y: 
 export const SPOT = { x: -12, y: -14 }
 export const BITE = { x: SLOT.cx - PAPER.w / 2, y: SLOT.cy - PAPER.h + 8 }
 export const HOOD = { y: SLOT.cy + 44, z: 8 }
-export const PILE = { x: SLOT.cx - 20, y: SLOT.cy + 118 }
+export const PILE = { x: SLOT.cx - 20, y: SLOT.cy + 176 }
 export const SHRED = { in: 0.3, gone: 0.34, strips: 0.12, pile: 0.78, pileSeconds: 1.0, empty: 1.3, emptySeconds: 0.5, zip: 1.78, zipSeconds: 1.0, end: 2.8 }
 
 // The film's first name: every time is a second of the unit. The turrets are up at 3.02 and fire at 3.62, 4.07, 4.52, 4.97, 5.42, 5.87, and so on.
