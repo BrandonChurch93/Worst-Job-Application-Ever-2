@@ -1,35 +1,35 @@
 {
   "folder": "step1",
-  "pushed": "2026-11-25T09:27:00.755Z",
-  "commit": "97eae317592fcd0e7ee934ade89cb00e8675b30e",
+  "pushed": "2026-11-25T11:16:06.936Z",
+  "commit": "75ffcc53860fa651ae7677b02e0070c1b72557ae",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-step1-tug-preview-draft: draft tier, preview, view beauty",
-      "time": "2026-11-25T09:26:25.004Z",
+      "caption": "Unit 18.25 s: the first slab lies beside the typed address, not on it",
+      "time": "2026-11-25T11:16:05.110Z",
       "by": "step1",
-      "from": "out/work/stills/key-step1-tug-preview-draft.png"
+      "from": "out/work/stills/step1-step1_email-0p65-film-preview-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Key still step1-tug, new frame: whole resume card, the cursor with arms, the paper going into the shredder housing",
-      "time": "2026-11-25T09:26:59.424Z",
+      "caption": "Unit 18.78 s: the second slab lands on the keys where the cursor stood",
+      "time": "2026-11-25T11:16:05.341Z",
       "by": "step1",
-      "from": "out/work/stills/key-step1-tug-preview-draft.png"
+      "from": "out/work/stills/step1-step1_email-0p756-film-preview-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Last name at 0.2: the letter keys in mid air on their way to new seats",
-      "time": "2026-11-25T09:26:59.654Z",
+      "caption": "Unit 29.6 s: the hold after the reset, front-on, fields empty, the message in the resume card",
+      "time": "2026-11-25T11:16:05.574Z",
       "by": "step1",
-      "from": "out/work/stills/step1-step1_lastName-0p2-preview-draft.png"
+      "from": "out/work/stills/step1-step1_shredded-0p36-film-preview-draft.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Email at 0.66: an Invalid email slab has come down where the cursor was",
-      "time": "2026-11-25T09:26:59.882Z",
+      "caption": "Rest: Continue drawn light while the form is empty",
+      "time": "2026-11-25T11:16:05.799Z",
       "by": "step1",
-      "from": "out/work/stills/tl-08.png"
+      "from": "out/work/stills/still-rest-step1-preview-draft.png"
     }
   ]
 }
