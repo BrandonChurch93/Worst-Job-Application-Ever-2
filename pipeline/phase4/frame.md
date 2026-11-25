@@ -49,6 +49,7 @@ Written by frame, who started first. All numbers are page pixels (96 px is one b
 
 - The launch lane's climb (Builder's ruling of 17:36Z, rails changed in `layout.ts`): at the top of the street and office tiers the cross rail is open over the launch lane, and a ramp stands on the tier's floor between the lane's walls. Its top is read from `railOf('launch')` over the last `LANE_RAMP.run` balls before the tier line and meets the upper floor flush there. It is the darker aluminium with two strips of bright steel for the ball, four screws, a tongue of steel 9 px long at its foot and a dark line where the tongue meets the floor. Nothing of the frame stands in the lane for 2 balls past a tier line (a test holds this).
 - Over the lift lane the cross rail is a closed housing as tall as the cross rail (1 ball and 56 px), `LANE.house` = 0.8 balls deep along the lane in the street tier, with a dark plate on its face that the tube runs into. In the office tier the lift's orange bend stands in the top 0.4 to 1.7 balls of the lane, so the housing there stops 0.14 balls short of the bend's opening (0.26 balls deep) and the bend hides the rest of the rise.
+- Settled by the Builder at 18:17Z: the office throat stays 0.26 balls deep. There is one lift tube for the whole table with two doors, the office door is an orange scoop on its side, and no deeper housing is owed there. Aluminium stays at metalness 0.4 and roughness 0.4, and the one word in `frame-NEEDS.patch` is accepted.
 - The frame builds no sunk lane and cuts nothing of another owner's: the first attempt at this (a sunk ramp with the art plate and the page's well cut) was dropped on the ruling and never committed.
 
 ## For the owner of the lights
@@ -61,3 +62,19 @@ Written by frame, who started first. All numbers are page pixels (96 px is one b
 - The `launch` and lift rails climbed in a straight line through each tier, under the floor plates. Mended by the Builder in `layout.ts` (`LANE_RAMP`); the frame's ramp and housing follow it.
 - In the office tier `lift.office` runs up the lift lane through the place of the orange bend that ends `lift.street` (both at 2.3 balls across, 0.4 to 1.7 balls below the tier line).
 - The apron and the loader are not among the lit zones (`LIT` in `lights/groups.ts` is marquee, corporate, office, street), so the apron takes only the page's own light. In `table-wide` its near white slabs draw at 92 where the approved image has them at 159.
+
+## Measured at frame-9
+
+All MEASURED on the tree of 55106ee, `npm run build && npm run counts -- --key K --live low`, the frame's own rows (meshes, colour pass, shadow pass, calls, triangles):
+
+| key | table-frame | loader | marquee | whole frame, calls | whole scene, calls |
+| --- | --- | --- | --- | --- | --- |
+| table-wide | 13, 13, 5, 18, 12802 | 11, 10, 4, 14, 27534 | 3, 3, 1, 4, 2120 | 36 | 225 |
+| tier-corporate | 7, 6, 3, 9, 8036 | 7, 4, 5, 9, 16822 | 3, 3, 1, 4, 2120 | 22 | 122 |
+| tier-office | 11, 9, 5, 14, 11374 | 5, 3, 3, 6, 12528 | 1, 0, 1, 1, 758 | 21 | 153 |
+| tier-street | 11, 10, 5, 15, 10822 | 3, 2, 2, 4, 10968 | none in view | 19 | 121 |
+
+- Triangles of the whole frame in `table-wide`: 42456 of the 90000 allowed.
+- Before the frame was built (stand-ins everywhere, `/tmp/counts0`): table-wide 620 calls, tier-corporate 294, tier-office 388, tier-street 376.
+- Assets (`du -sb`): web set 65310 bytes, full set 142746 bytes, sources 2121878 bytes. One generated picture ships, take 1 of the 6 allowed.
+- Stills of `tier-corporate` at hd with `--force`, wall time of the whole command: draft 38.6 s, review 65.5 s.

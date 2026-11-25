@@ -58,6 +58,12 @@ export function target(a, c, cues) {
     const spec = c.audio.sfx.find((s) => s.id === a.cue)
     if (!spec) throw new Error(`No cue called "${a.cue}" in audio.sfx`)
     const variants = spec.variants ?? 1
+    if (a.variant && a.variant !== true && variants > 1) {
+      const slot = Number(a.variant) - 1
+      if (!(Number.isInteger(slot) && slot >= 0 && slot < variants)) throw new Error(`"${spec.id}" has variants 1 to ${variants}, not ${a.variant}`)
+      const key = cues.variantId(spec.id, slot, variants)
+      return { kind: 'cue', id: spec.id, key, seconds: spec.seconds, variants: 1, slot, of: variants, cls: cues.cueClass[spec.id], loop: cues.loopCues.includes(spec.id), max: c.audio.maxTakesPerCue, ids: [key] }
+    }
     return { kind: 'cue', id: spec.id, key: spec.id, seconds: spec.seconds, variants, cls: cues.cueClass[spec.id], loop: cues.loopCues.includes(spec.id), max: c.audio.maxTakesPerCue, ids: Array.from({ length: variants }, (_, i) => cues.variantId(spec.id, i, variants)) }
   }
   if (a.line && a.line !== true) {
@@ -158,7 +164,7 @@ export function listenerSheet(t, describes) {
 function writeRecipe(P, ledger, c) {
   const file = path.join(P.audio, 'RECIPE.md')
   const mark = '## Takes'
-  const head = fs.existsSync(file) ? fs.readFileSync(file, 'utf8').split(mark)[0] : '# The log of every sound\n\n'
+  const head = fs.existsSync(file) ? fs.readFileSync(file, 'utf8').split(/^## Takes$/m)[0] : '# The log of every sound\n\n'
   const lines = [mark, '']
   if (!ledger.takes.length) lines.push('No take has been filed.', '')
   const ids = [...new Set(ledger.takes.map((t) => t.key))]
@@ -205,6 +211,7 @@ const jsonMaybe = (v) => {
 
 export async function fileTake(a, P, c, M, quiet = false) {
   const t = target(a, c, M.cues)
+  if (t.variants > 1 && a.filed !== 'fixture') throw new Error(`"${t.id}" has ${t.variants} variants and a variant is its own take: say --variant N. Nothing filed, no take used`)
   if (!fs.existsSync(a.file)) throw new Error(`No such file: ${a.file}`)
   const ledger = readLedger(P)
   const mine = ledger.takes.filter((x) => x.key === t.key)
@@ -230,7 +237,7 @@ export async function fileTake(a, P, c, M, quiet = false) {
   }
   const measured = M.dsp.measure(sound)
   const record = {
-    key: t.key, kind: t.kind, take: number, round, file: path.basename(dest), sha256: sha(fs.readFileSync(dest)), filed: a.filed && a.filed !== true ? String(a.filed) : new Date().toISOString(),
+    key: t.key, kind: t.kind, cue: t.kind === 'cue' ? t.id : undefined, take: number, round, file: path.basename(dest), sha256: sha(fs.readFileSync(dest)), filed: a.filed && a.filed !== true ? String(a.filed) : new Date().toISOString(),
     prompt: t.kind === 'cue' ? readMaybe(a.prompt) : undefined, text: t.kind === 'line' ? t.text : undefined, settings: jsonMaybe(a.settings), askedSeconds: a.asked && a.asked !== true ? Number(a.asked) : null,
     cost: a.cost && a.cost !== true ? String(a.cost) : null, measured, listener: jsonMaybe(a.listener), kept: false, keptAs: [], why: ''
   }
@@ -257,7 +264,7 @@ export async function fileTake(a, P, c, M, quiet = false) {
   return record
 }
 
-function attachListener(a, P, c, M) {
+export function attachListener(a, P, c, M) {
   const t = target(a, c, M.cues)
   const ledger = readLedger(P)
   const mine = ledger.takes.filter((x) => x.key === t.key)
@@ -327,7 +334,7 @@ export async function keepTake(a, P, c, M, quiet = false) {
     const bytes = M.dsp.encodeWav(m.sound, 24)
     fs.writeFileSync(path.join(P.kept, `${m.id}.wav`), bytes)
     writeJson(path.join(P.kept, `${m.id}.json`), {
-      id: m.id, kind: t.kind === 'line' && t.liveKey ? 'live-line' : t.kind, cue: t.kind === 'cue' ? t.id : null, variant: t.variants > 1 ? m.variant + 1 : null, class: t.cls, loop: t.loop,
+      id: m.id, kind: t.kind === 'line' && t.liveKey ? 'live-line' : t.kind, cue: t.kind === 'cue' ? t.id : null, variant: t.of ? t.slot + 1 : t.variants > 1 ? m.variant + 1 : null, class: t.cls, loop: t.loop,
       beat: t.beat ?? null, liveKey: t.liveKey ?? null, group: t.liveKey ?? null, describes: t.kind === 'cue' ? cueLines()[t.id] ?? null : null, index: t.kind === 'line' ? t.index : null,
       words: t.kind === 'line' ? t.text : null, text: t.kind === 'line' ? t.text : null, prompt: take.prompt ?? null, settings: take.settings ?? null, askedSeconds: take.askedSeconds, cost: take.cost,
       take: { number: take.take, round: take.round, file: take.file, sha256: take.sha256, filed: take.filed, measured: take.measured, line: take.line ?? null },
