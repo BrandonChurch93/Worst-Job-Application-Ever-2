@@ -42,7 +42,7 @@ interface Saved {
   cursor: unknown
 }
 
-export interface Frame { list: DrawList; cursor: CursorPose; turn: number; scroll: number; page: string; view: CameraPose | null; cursors?: CursorPose[] }
+export interface Frame { list: DrawList; cursor: CursorPose; turn: number; scroll: number; page: string; view: CameraPose | null; cursors?: CursorPose[]; time?: number }
 
 const applicant = { firstName: config.applicant.filmFirstName, lastName: config.applicant.filmLastName, email: config.applicant.filmEmail }
 
@@ -269,7 +269,7 @@ export class Stage {
     if (hit) return hit
     const list: DrawList = []
     if (this.phase !== 'end') this.page.draw(list)
-    const made: Frame = { list, cursor: this.cursor.pose(), turn: this.turnAt(), scroll: this.page.scroll(), page: this.page.id, view: this.page.view() }
+    const made: Frame = { list, cursor: this.cursor.pose(), turn: this.turnAt(), scroll: this.page.scroll(), page: this.page.id, view: this.page.view(), time: this.step / stepHz }
     this.frames.set(this.step, made)
     if (this.frames.size > 12) {
       const oldest = Math.min(...this.frames.keys())
@@ -334,10 +334,11 @@ export function blendFrames(a: Frame, b: Frame, t: number): Frame {
       const v = s[k]
       if (typeof u === 'number' && typeof v === 'number' && u !== v) out[k] = u + (v - u) * t
     }
+    if (p.v && s.v && p.v.length === s.v.length) out.v = s.v.map((v, i) => p.v![i]! + (v - p.v![i]!) * t)
     return out
   })
   const view = a.view && b.view ? { ...b.view, eye: b.view.eye.map((v, i) => a.view!.eye[i]! + (v - a.view!.eye[i]!) * t) as [number, number, number], target: b.view.target.map((v, i) => a.view!.target[i]! + (v - a.view!.target[i]!) * t) as [number, number, number], fov: a.view.fov + (b.view.fov - a.view.fov) * t } : b.view
-  return { list, cursor: blendPose(a.cursor, b.cursor, t), turn: a.turn + (b.turn - a.turn) * t, scroll: a.scroll + (b.scroll - a.scroll) * t, page: b.page, view }
+  return { list, cursor: blendPose(a.cursor, b.cursor, t), turn: a.turn + (b.turn - a.turn) * t, scroll: a.scroll + (b.scroll - a.scroll) * t, page: b.page, view, time: (a.time ?? 0) + ((b.time ?? 0) - (a.time ?? 0)) * t }
 }
 
 export const liveView = (f: Frame): CameraPose => f.view ?? homePose(f.scroll)

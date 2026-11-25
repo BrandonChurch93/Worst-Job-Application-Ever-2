@@ -127,7 +127,12 @@ describe('the review page with nothing made yet', () => {
 
   it('is plain HTML that asks the network for nothing', () => {
     expect(html).not.toMatch(/https?:\/\//)
-    expect(html).not.toContain('<script')
+    const scripts = html.match(/<script[^>]*>[\s\S]*?<\/script>/g) ?? []
+    expect(scripts.length).toBeLessThanOrEqual(1)
+    for (const script of scripts) {
+      expect(script.startsWith('<script>')).toBe(true)
+      expect(script).not.toMatch(/fetch\(|XMLHttpRequest|import\s*\(|WebSocket|sendBeacon/)
+    }
     expect(html).not.toContain('<link')
     expect(html).not.toContain('@import')
     expect(html).not.toContain('url(')

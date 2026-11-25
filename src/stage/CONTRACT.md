@@ -98,9 +98,25 @@ A shape or a layout node never holds a string to show. It holds a key:
 
 The fourth critic round looks at stand-in pictures and judges only this: whether each page is laid out like a real web page, with aligned columns, even spacing and a clear order of importance; whether its text can be read; the order and pace of the beats; whether it is clear from the placeholders what each beat is; whether each pinball camera frames what it is for; and whether the controls are placed well and clear of the page's content.
 
+## Making a part real
+
+A stand-in is what `src/shell/view.ts` draws for a shape when nobody has made it: a grey solid, plain type. A part becomes real when its owner gives the view a maker for it. The view, the registry and the types are in `src/shell/view.ts`, `src/real/index.ts` and `src/real/types.ts`, and they are frozen: an owner fills its own file and nothing else.
+
+- A `PartMaker` answers three questions about one shape of the draw list. `key(s, ctx)`: null while this shape is still a stand-in, `''` when another shape's object draws it, otherwise a string that names everything the object is built from. `make(s, ctx)`: the object, a `THREE.Object3D`, built round the shape's centre on the page, with its own z = 0 at the shape's `z0`, x to the right and y up the page. `pose(o, s, ctx)`: called for every sample of every frame, it moves what moves and builds nothing.
+- The view puts the object at the shape's centre and `z0`, turns it by `rot`, `turnX` and `turnY`, and then calls `pose`, which may move it again. It builds the object once for each key and keeps it while the key stays the same, so a key never holds a number that changes every frame. What changes every frame goes through `pose`: read `s.z0`, `s.z1`, `s.v` and the other shapes in `ctx.byId`.
+- A page passes numbers to its maker in `v` on the shape: how far a key is down, where a barrel points, how charged it is. The stage blends `v` between sim steps like `x` and `y`, so they must be numbers that may be blended. `role` on a shape is the kind its layout node has: `field`, `button`, `keycap`.
+- A maker reads no clock and draws no random number. `ctx.time` is the frame's time in seconds, the same on every machine. Whatever flickers, drifts or sparks is a pure function of `ctx.time` and a seed.
+- A part that gives off light says so in `pose`: `ctx.light({ x, y, z, colour, power, reach })`, in page pixels and heights. The light rig turns that into light on the page for this frame.
+- A shape that is `text` goes to its part's maker first and, when that says null, to the type maker in `src/shell/real/type.ts`. So a part may set its own legends, or leave them to the type.
+- The slab is made by the `GroundMaker` in `src/shell/real/ground.ts`: the whole surface in world units, with a real pocket for every shape that carries `pocket: true` and a real opening for every `well`. While it is real, type on a pocket's floor lies at its own height.
+- A real mesh does not carry `userData.standIn`. The view writes `userData.part` and `userData.shape` on every mesh of a made object, and `userData.type` on those of a run of type, so the diagnostic views still find them. A mesh that must keep its own `renderOrder` sets `userData.order`.
+- The view frees nothing a maker made. `drop(o)` tells the maker the object is gone. Share geometry and materials between objects wherever you can: a keyboard is some sixty keys.
+- The cursor is made of five parts in `src/cursor/`: `model/body.ts`, `model/effects.ts`, `act/acting.ts`, `act/damage.ts`, `act/arms.ts`, put together by `src/cursor/view.ts` as `src/cursor/contract.ts` says. Each exports null until it is made, and the view draws the stand-in for what is missing.
+- `info().standIns` and `filmState().standIns` list a part while any shape of it is still drawn as a stand-in. Check G13 reads them and the `standins` view.
+
 ## Working on a part
 
-- Work in your own folders only. Never edit `package.json`, `content/`, `references/`, `kit/`, `config/`, `src/stage/`, `src/shell/`, `src/cursor/`, `src/core/`, `src/app.ts`, `src/main.ts` or another builder's folder. If you need something there, say so in a message and carry on with a workaround in your own folder.
+- Work in your own files only: your brief names them. Never edit `package.json`, `content/`, `references/`, `kit/`, `config/`, `src/stage/`, `src/real/`, `src/app.ts`, `src/main.ts` or another builder's files. If you need something there, say so in a message and carry on with a workaround in your own folder.
 - Every word a visitor reads comes from `content/copy.json` by key. The cursor has no face. A page must still pass as a real web page.
 - No em dashes and no added exclamation points in any file. Almost no code comments. No `Math.random`, `Date.now` or `performance.now` in anything a frame is computed from. No surface pure black or pure white.
 - Commit to your own branch and push it at least every thirty minutes, also when the work is half done. Merge `origin/main` into it before every push. Never force push.

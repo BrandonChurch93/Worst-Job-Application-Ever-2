@@ -2,6 +2,9 @@ import * as THREE from 'three'
 import { config } from '../config'
 import type { Bounds } from '../core/renderer'
 import type { CursorPose } from '../cursor/body'
+import { CursorView, cursorReal } from '../cursor/view'
+import { real } from '../real'
+import type { Emitter, PartMaker, RealContext } from '../real/types'
 import type { Frame } from '../stage/stage'
 import type { Shape, Tone } from '../stage/types'
 import { studio } from './materials'
@@ -43,13 +46,57 @@ interface Arrow { group: THREE.Group; body: THREE.Mesh; rim: THREE.Mesh; mark: T
 
 const ORDER = { ground: -1000000, cursor: 1000000 }
 
-export class BlockoutView {
+interface RealEntry { object: THREE.Object3D; key: string; maker: PartMaker; part: string; seen: number }
+
+const realKey = (s: Shape, ctx: RealContext): { maker: PartMaker; key: string } | null => {
+  const own = real.parts[s.part]
+  const mine = own ? own.key(s, ctx) : null
+  if (own && mine !== null) return { maker: own, key: mine }
+  if (s.kind !== 'text' || !real.type) return null
+  const set = real.type.key(s, ctx)
+  return set === null ? null : { maker: real.type, key: set }
+}
+
+const contextOf = (f: Frame, width: number, top: number, tall: number, light: (e: Emitter) => void): RealContext => {
+  const byId = new Map<string, Shape>()
+  for (const s of f.list) byId.set(s.id, s)
+  return { page: f.page, list: f.list, byId, time: f.time ?? 0, scroll: f.scroll, turning: Math.abs(f.turn) > 1e-6, width, top, tall, light }
+}
+
+// The parts of a frame that would be drawn as stand-ins, without drawing it.
+export function standInsOf(f: Frame, size: { width: number; height: number }): string[] {
+  const ctx = contextOf(f, size.width, 0, size.height, () => undefined)
+  const out = new Set<string>()
+  if (!real.ground || real.ground.key(ctx) === null) {
+    out.add('shell')
+    for (const s of f.list) if (s.kind === 'well') out.add(s.part)
+  }
+  for (const s of f.list) if (s.kind !== 'well' && realKey(s, ctx) === null) out.add(s.part)
+  for (const c of f.cursors ?? [f.cursor]) for (const name of cursorStandIns(c)) out.add(name)
+  return [...out]
+}
+
+function cursorStandIns(c: CursorPose): string[] {
+  const out: string[] = []
+  if (!cursorReal.body) out.push('cursor-body')
+  if (c.arms && c.hands && !cursorReal.arms) out.push('cursor-arms')
+  if (c.damage.length && !cursorReal.damage) out.push('cursor-damage')
+  if ((c.acting !== 'plain' || c.reaction) && !cursorReal.acting) out.push('cursor-acting')
+  return out
+}
+
+export class PageView {
   readonly scene = new THREE.Scene()
   private pivot = new THREE.Group()
   private sheet = new THREE.Group()
   private materials = new Map<Tone, THREE.MeshStandardMaterial>()
   private solids = new Map<string, { mesh: THREE.Mesh; key: string; seen: number }>()
   private texts = new Map<string, { group: THREE.Group; key: string; seen: number }>()
+  private reals = new Map<string, RealEntry>()
+  private realGround: { object: THREE.Object3D; key: string } | null = null
+  private models: CursorView[] = []
+  private lit: Emitter[] = []
+  private world = new THREE.Vector3()
   private geometry = new Cache<THREE.BufferGeometry>()
   private register = new TypeRegister()
   private unitBox = new THREE.BoxGeometry(1, 1, 1)
@@ -255,6 +302,62 @@ export class BlockoutView {
     }
   }
 
+  private tag(o: THREE.Object3D, part: string, order: number, extra: Record<string, unknown> = {}): void {
+    o.traverse((c) => {
+      const m = c as THREE.Mesh
+      if (!m.isMesh) return
+      m.userData.part ??= part
+      Object.assign(m.userData, extra)
+      if (m.userData.order === undefined) m.renderOrder = order
+    })
+  }
+
+  private made(s: Shape, hit: { maker: PartMaker; key: string }, order: number, ctx: RealContext): void {
+    let entry = this.reals.get(s.id)
+    if (entry && (entry.key !== hit.key || entry.maker !== hit.maker)) {
+      this.sheet.remove(entry.object)
+      entry.maker.drop?.(entry.object)
+      entry = undefined
+    }
+    if (!entry) {
+      entry = { object: hit.maker.make(s, ctx), key: hit.key, maker: hit.maker, part: s.part, seen: 0 }
+      this.reals.set(s.id, entry)
+      this.sheet.add(entry.object)
+    }
+    this.place(entry.object, s, s.z0)
+    this.tag(entry.object, s.part, order, s.kind === 'text' ? { shape: s.id, type: s.words } : { shape: s.id })
+    entry.object.visible = true
+    hit.maker.pose?.(entry.object, s, ctx)
+    entry.seen = this.tick
+  }
+
+  private realSlab(ctx: RealContext): boolean {
+    const maker = real.ground
+    const key = maker ? maker.key(ctx) : null
+    if (!maker || key === null) {
+      if (this.realGround) {
+        this.sheet.remove(this.realGround.object)
+        maker?.drop?.(this.realGround.object)
+        this.realGround = null
+      }
+      this.slab.visible = true
+      return false
+    }
+    if (this.realGround && this.realGround.key !== key) {
+      this.sheet.remove(this.realGround.object)
+      maker.drop?.(this.realGround.object)
+      this.realGround = null
+    }
+    if (!this.realGround) {
+      this.realGround = { object: maker.make(ctx), key }
+      this.sheet.add(this.realGround.object)
+      this.tag(this.realGround.object, 'shell', ORDER.ground)
+    }
+    maker.pose?.(this.realGround.object, ctx)
+    this.slab.visible = false
+    return true
+  }
+
   private place(o: THREE.Object3D, s: Shape, z: number): void {
     o.position.set(s.x + s.w / 2 - 960, 540 - (s.y + s.h / 2), z)
     o.rotation.set(s.turnX ?? 0, s.turnY ?? 0, -(s.rot ?? 0))
@@ -299,7 +402,7 @@ export class BlockoutView {
   private sunk(s: Shape): boolean {
     const x = s.x + s.w / 2
     const y = s.y + s.h / 2
-    return this.wells.some((w) => x >= w.x && x <= w.x + w.w && y >= w.y && y <= w.y + w.h)
+    return this.realGround !== null || this.wells.some((w) => x >= w.x && x <= w.x + w.w && y >= w.y && y <= w.y + w.h)
   }
 
   private text(s: Shape, order: number): void {
@@ -347,12 +450,12 @@ export class BlockoutView {
     a.group.rotation.set(0, 0, -c.lean - c.spin)
     const sq = Math.max(0.3, c.squash)
     a.group.scale.set(flat ? 1.35 : 1 / Math.sqrt(sq), flat ? 1.35 : sq, flat ? 0.25 : 1)
-    a.mark.visible = c.damage.includes('burn') || c.damage.includes('scorched')
-    a.strips.visible = shredded
-    a.body.visible = !shredded
-    a.rim.visible = !shredded
-    a.sweat.visible = c.acting === 'nervous' || c.acting === 'scared' || c.acting === 'exhausted'
-    const hands = c.onPage && c.arms ? c.hands : null
+    a.mark.visible = !cursorReal.damage && (c.damage.includes('burn') || c.damage.includes('scorched'))
+    a.strips.visible = !cursorReal.damage && shredded
+    a.body.visible = !cursorReal.body && !shredded
+    a.rim.visible = !cursorReal.body && !shredded
+    a.sweat.visible = !cursorReal.acting && (c.acting === 'nervous' || c.acting === 'scared' || c.acting === 'exhausted')
+    const hands = c.onPage && c.arms && !cursorReal.arms ? c.hands : null
     a.arms.visible = hands !== null
     if (!hands) return
     const sides = [-1, 1]
@@ -374,6 +477,11 @@ export class BlockoutView {
   apply(f: Frame, size: { width: number; height: number }): void {
     this.tick++
     if (f.page !== this.pageId) {
+      for (const e of this.reals.values()) {
+        this.sheet.remove(e.object)
+        e.maker.drop?.(e.object)
+      }
+      this.reals.clear()
       for (const e of this.solids.values()) this.sheet.remove(e.mesh)
       for (const e of this.texts.values()) {
         this.sheet.remove(e.group)
@@ -388,18 +496,37 @@ export class BlockoutView {
     const turning = Math.abs(f.turn) > 1e-6
     const top = turning ? f.scroll : 0
     const tall = turning ? 1080 : size.height
-    this.ground(f.list, size.width, top, tall)
-    this.wells = f.list.filter((s) => s.kind === 'well')
     this.pivot.position.set(0, -f.scroll, 0)
     this.sheet.position.set(0, f.scroll, 0)
     this.pivot.rotation.x = f.turn
+    this.pivot.updateMatrixWorld(true)
+    this.lit = []
+    const ctx = contextOf(f, size.width, top, tall, (e) => {
+      this.world.set(e.x - 960, 540 - e.y, e.z)
+      this.sheet.localToWorld(this.world)
+      this.lit.push({ ...e, x: this.world.x, y: this.world.y, z: this.world.z })
+    })
+    if (!this.realSlab(ctx)) this.ground(f.list, size.width, top, tall)
+    this.wells = f.list.filter((s) => s.kind === 'well')
     let order = 0
     for (const s of f.list) {
       order++
       if (s.kind === 'well') continue
       if (turning && !s.fixed && (s.y + s.h < top || s.y > top + tall)) continue
-      if (s.kind === 'text') this.text(s, order)
+      const hit = realKey(s, ctx)
+      if (hit) {
+        if (hit.key !== '') this.made(s, hit, order, ctx)
+      } else if (s.kind === 'text') this.text(s, order)
       else this.solid(s, order)
+    }
+    for (const [id, e] of this.reals) {
+      if (e.seen === this.tick) continue
+      e.object.visible = false
+      if (this.tick - e.seen > 240) {
+        this.sheet.remove(e.object)
+        e.maker.drop?.(e.object)
+        this.reals.delete(id)
+      }
     }
     for (const [id, e] of this.solids) {
       if (e.seen === this.tick) continue
@@ -428,7 +555,25 @@ export class BlockoutView {
         a.arms.visible = false
       }
     })
+    if (cursorReal.body) {
+      while (this.models.length < cursors.length) {
+        const model = new CursorView()
+        this.tag(model.root, 'cursor-body', ORDER.cursor + 4096 + this.models.length * 64)
+        this.scene.add(model.root)
+        this.models.push(model)
+      }
+      this.models.forEach((m, i) => {
+        const c = cursors[i]
+        m.root.visible = c !== undefined && c.onPage
+        if (c) m.apply(c, ctx)
+      })
+    }
     this.cursors = cursors
+  }
+
+  // The lights the parts gave off in the frame on show, in world units.
+  emitters(): Emitter[] {
+    return this.lit
   }
 
   bounds(reach = 1500): Bounds {
@@ -438,13 +583,12 @@ export class BlockoutView {
   }
 
   standIns(): string[] {
-    const out = new Set<string>(['shell', 'cursor-body'])
-    for (const m of this.slab.children) out.add(m.userData.standIn as string)
-    for (const c of this.cursors) {
-      if (c.arms && c.hands) out.add('cursor-arms')
-      if (c.damage.length) out.add('cursor-damage')
-      if (c.acting !== 'plain' || c.reaction) out.add('cursor-acting')
+    const out = new Set<string>()
+    if (!this.realGround) {
+      out.add('shell')
+      for (const m of this.slab.children) out.add(m.userData.standIn as string)
     }
+    for (const c of this.cursors) for (const name of cursorStandIns(c)) out.add(name)
     for (const e of this.solids.values()) if (e.seen === this.tick) out.add(e.mesh.userData.standIn as string)
     for (const e of this.texts.values()) if (e.seen === this.tick) for (const child of e.group.children) out.add(child.userData.standIn as string)
     return [...out]

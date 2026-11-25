@@ -3,6 +3,7 @@ import { Accumulator, type TargetKind } from './accumulator'
 import { samples, type Sample } from './sampler'
 import { Post } from '../post/post'
 import { look } from '../post/look'
+import type { Emitter } from '../real/types'
 
 // What the lamps must cover, in world units: the page and everything that stands on it.
 export interface Bounds { minX: number; maxX: number; minY: number; maxY: number; minZ: number; maxZ: number }
@@ -17,6 +18,7 @@ export class LightRig {
   private m = new THREE.Matrix4()
   private v = new THREE.Vector3()
   level = 1
+  emitters: Emitter[] = []
 
   constructor() {
     this.base.set(...look.key.direction).normalize()
@@ -50,6 +52,11 @@ export class LightRig {
 
   setBounds(b: Bounds): void {
     this.bounds = b
+  }
+
+  // The lights the parts give off in this frame, in world units.
+  setEmitters(list: Emitter[]): void {
+    this.emitters = list
   }
 
   private aim(light: THREE.DirectionalLight, dx: number, dy: number, dz: number): void {

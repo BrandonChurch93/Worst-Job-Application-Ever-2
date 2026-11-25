@@ -13,9 +13,9 @@ import { EVENT_TRAIL, applyView, isView, type ViewContext, type ViewEvent } from
 import { makeLoop, makeOpening, type FilmPiece, type LoopPiece, type OpeningPiece } from './film'
 import { pages, preparePages, unitPages } from './pages'
 import { look } from './post/look'
-import { BlockoutView, TONES } from './shell/blockout'
+import { studioEnvironment } from './post/studio'
+import { PageView, TONES } from './shell/view'
 import { layoutProblems } from './shell/layout'
-import { studioEnvironment } from './shell/materials'
 import { FONTS } from './shell/metrics'
 import { loadFont } from './shell/type'
 import { homePose, project, toWorld } from './stage/camera'
@@ -41,7 +41,7 @@ export class App {
   diagnostic = 'beauty'
   private shown: { frame: Frame; page: PageLogic | null; pose: CameraPose } | null = null
   private marks: ViewEvent[] = []
-  readonly view = new BlockoutView()
+  readonly view = new PageView()
   readonly rig = new LightRig()
   readonly camera = new THREE.PerspectiveCamera()
   private films = new Map<string, Stage>()
@@ -206,6 +206,7 @@ export class App {
     const cy = pose.target[1]
     this.view.focus = -cy
     this.rig.setBounds(this.view.bounds())
+    this.rig.setEmitters(this.view.emitters())
     for (const s of this.view.standIns()) this.seen.add(s)
   }
 

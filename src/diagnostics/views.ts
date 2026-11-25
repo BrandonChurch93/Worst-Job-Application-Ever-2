@@ -70,7 +70,7 @@ export type Cover = 'floor' | 'mark' | 'none'
 export function coverOf(data: Record<string, unknown>): Cover {
   const said = data.coverage as Cover | undefined
   if (said) return said
-  if (data.standIn === 'table-layout' && !data.shape && !data.type) return 'floor'
+  if ((data.part ?? data.standIn) === 'table-layout' && !data.shape && !data.type) return 'floor'
   return 'mark'
 }
 
@@ -300,7 +300,7 @@ export function applyView(view: string, ctx: ViewContext): (() => void) | void {
     })
   } else if (name === 'ids') {
     change.ground(0, 0, 0)
-    change.paint((m) => basic(...idColour((m.userData.standIn as string | undefined) ?? 'unnamed')))
+    change.paint((m) => basic(...idColour((m.userData.part as string | undefined) ?? (m.userData.standIn as string | undefined) ?? 'unnamed')))
   } else if (name === 'height') {
     change.ground(0, 0, 0.2)
     change.paint(() => heightShade())

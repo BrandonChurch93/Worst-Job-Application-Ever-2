@@ -69,6 +69,10 @@ export interface Shape {
   fixed?: boolean
   pocket?: boolean
   moved?: boolean
+  // What the layout tree calls this kind of thing: field, button, keycap. The makers of real parts read it.
+  role?: string
+  // Numbers a page hands to the maker of its part: how far a key is down, where a barrel points. They are blended between sim steps.
+  v?: number[]
 }
 
 export type DrawList = Shape[]

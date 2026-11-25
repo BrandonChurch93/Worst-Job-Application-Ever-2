@@ -4,7 +4,7 @@ import { config, filmSeconds, stepHz, unitStart } from '../config'
 import { narration, timedLines } from '../copy'
 import { assetSet } from '../core/assets'
 import { pages } from '../pages'
-import { TONES } from '../shell/blockout'
+import { standInsOf, TONES } from '../shell/view'
 import { plannedHeight, typeRegister, walk } from '../shell/layout'
 import { words } from '../shell/words'
 import type { TableState } from '../stage/types'
@@ -97,7 +97,7 @@ export function makeShowcase(app: App, ready: Promise<void>): Showcase {
     },
     filmState(frameIndex) {
       const { unit, time } = app.filmMoment(frameIndex)
-      const { frame, pose } = app.filmFrame(unit, time)
+      const { frame, pose, page } = app.filmFrame(unit, time)
       const stage = app.film(unit)
       const from = app.stepOf(time)
       const to = from + stepHz / fps
@@ -107,9 +107,7 @@ export function makeShowcase(app: App, ready: Promise<void>): Showcase {
         const p = app.eventPlace(pose, e.x, e.y)
         return { name: e.name, x: p.x, y: p.y, hitsCursor: e.hitsCursor }
       })
-      const parts = new Set<string>(['shell', 'cursor-body'])
-      for (const s of frame.list) parts.add(s.part)
-      return { unit, beat: b.id, camera: [...pose.eye, ...pose.target, pose.fov], cursor: app.cursorState(frame.cursor, pose), events, standIns: [...parts].sort() }
+      return { unit, beat: b.id, camera: [...pose.eye, ...pose.target, pose.fov], cursor: app.cursorState(frame.cursor, pose), events, standIns: standInsOf(frame, page).sort() }
     },
     useCheckpoint(unit, saved) {
       app.useCheckpoint(unit, saved)
