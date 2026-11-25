@@ -1,35 +1,35 @@
 {
   "folder": "keyboard",
-  "pushed": "2026-11-25T15:37:07.231Z",
-  "commit": "87cea35ac6fdd910504ed9a10397c37501925904",
+  "pushed": "2026-11-25T15:53:26.797Z",
+  "commit": "98fae6280c9d66b0d726666941c4cf3843f2d0a6",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still step1-step1_email-0p955-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-25T15:31:37.586Z",
+      "caption": "Still step1-step1_lastName-0p03-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T15:51:11.683Z",
       "by": "keyboard",
-      "from": "out/work/stills/step1-step1_email-0p955-hd-draft.png"
+      "from": "out/work/stills/step1-step1_lastName-0p03-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Still key-step1-fire-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-25T15:34:41.125Z",
+      "caption": "Approved above, review still of step1-fire below at 98fae62: softer caps, wider gaps, longer barrels, brighter bolts",
+      "time": "2026-11-25T15:53:24.223Z",
       "by": "keyboard",
-      "from": "out/work/stills/key-step1-fire-hd-review.png"
+      "from": "out/work/look-t-compare.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Review tier after the 15:32 issues: approved above, built below. Stepped barrel with a bore, even round cap shoulders, brighter bolts",
-      "time": "2026-11-25T15:37:05.723Z",
+      "caption": "Caps beside the approved at 1.4x: wide shoulder, shallow dish, 1.2 px inset",
+      "time": "2026-11-25T15:53:24.522Z",
       "by": "keyboard",
-      "from": "out/work/look-r-compare.jpg"
+      "from": "out/work/look-u-caps.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Left turret, its barrel and bore, a bolt leaving, cap shoulders, review tier",
-      "time": "2026-11-25T15:37:05.980Z",
+      "caption": "Right turret going down: barrel stowed inside the hatch, lids closing",
+      "time": "2026-11-25T15:53:24.781Z",
       "by": "keyboard",
-      "from": "out/work/look-s-left.jpg"
+      "from": "out/work/l68-down.jpg"
     }
   ]
 }
