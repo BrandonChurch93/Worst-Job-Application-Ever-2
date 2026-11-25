@@ -1,35 +1,35 @@
 {
   "folder": "glass",
-  "pushed": "2026-11-25T20:12:41.140Z",
-  "commit": "2101f6f1546a85d164e59e82c079fe9236a6ade3",
+  "pushed": "2026-11-25T20:21:51.316Z",
+  "commit": "564cce59d5423ebf8ddb156878fe01c453544c3a",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Round 5 second push, page grain: approved home, build home, approved cursor sheet, build cursor sheet, clean patch at twice size",
-      "time": "2026-11-25T20:12:39.339Z",
+      "caption": "Crops at native size from key-step1-tug-hd-review: the cursor; progressRail (progress-rail); progressButtonCurrent (progress-1); progressButton (progress-2); rule (header-rule); card (resume-zone); chip (resume-browse); field (firstName-pocket); buttonSocket (continue); button (continue-cap); paper (resume-paper); paperLine (resume-paper-line-0)",
+      "time": "2026-11-25T20:21:38.096Z",
       "by": "glass",
-      "from": "out/work/report/r5b-page-ab.jpg"
+      "from": "out/work/crops/crops-key-step1-tug-hd-review-1.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Round 5 second push: approved step1-fire left, the build's review still right",
-      "time": "2026-11-25T20:12:39.578Z",
+      "caption": "Crops at native size from key-step1-tug-hd-review: the smallest type, 14.0 px (copy:step1.resume.paperTitle); a contact shadow, under resume-paper-line-0; a glass edge, of firstName-pocket",
+      "time": "2026-11-25T20:21:38.365Z",
       "by": "glass",
-      "from": "out/work/report/r5b-fire-ab.jpg"
+      "from": "out/work/crops/crops-key-step1-tug-hd-review-2.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Round 5 second push, discs and orange button: approved above, build below, from the step1-fire key at 2.9 times size",
-      "time": "2026-11-25T20:12:39.822Z",
+      "caption": "Round 5 last push: the tug key beside the approved image, review tier, at 564cce5 with main 5a9e748 in",
+      "time": "2026-11-25T20:21:49.806Z",
       "by": "glass",
-      "from": "out/work/report/r5b-discs-fire-ab.jpg"
+      "from": "out/work/report/r5c-tug-compare.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Round 5 second push: the tug key beside the approved image, review tier, on the merged tree",
-      "time": "2026-11-25T20:12:40.058Z",
+      "caption": "Round 5 last push: native size crops of the tug key, the page's tooth and the glass at the key frame",
+      "time": "2026-11-25T20:21:50.063Z",
       "by": "glass",
-      "from": "out/work/report/r5b-tug-compare.jpg"
+      "from": "out/work/report/r5c-tug-crops.jpg"
     }
   ]
 }
