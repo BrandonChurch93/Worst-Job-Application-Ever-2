@@ -79,3 +79,20 @@ Decisions, numbered on from 32.
 41. The hands (R9-1 issue 1, R9-2 issues 1 and 2): no sheen, roughness 0.78, a flatter and smaller palm (8.2 by 7.4 px, it was 9.2 by 9.4), three fingers 2.3 px thick set 3 px apart with a splay that stays when shut, a shorter curl (`HAND.curl` 0.5, `knuckle` 0.65) so the fingers lie over the sheet's edge and are seen one by one, and a fist that swells 0.08 and not 0.4. About 14 px long, a fifth of the body. Arms removed: declined by the Builder.
 42. The bite comes first (R9-1 issue 9, R9-2 issue 12): the sheet settles on the mouth in the first half of the 0.4 s of the feed, 9 px short, holds, and is jerked down those 9 px in the last 0.11 s (`BITE.jerk`, `settle`, `snap`), so the tug starts with 0.125 of the sheet gone (first row of `TUG_CURVE`, it was 0.05). The cursor has let go at 21.62 and steps up over the sheet's top before the bite (one move of the pointer, 21.65 to 21.97 s), so the arms come out at 22.03 from over the sheet and reach down to it.
 43. The machine's shadow (R1-1 issue 2, R3-1 issue 10): the housing, the rollers and the hood no longer cast; a dark block inside the walls, 13 px high, casts in their place (`CAST` in `shredder.ts`), so the shadow stays close round the foot. The dark of the opening round the unit is 1 px wider than the slot (`SEAT`). The stage light is not touched. The strips still cast their own thin shadows.
+44. The sheet's creases (R1-1 issue 8, R3-1 on the sheet): four broad creases fixed to the stock (`CREASES` in `paper.ts`), each a line with a darker facet on one side and a lighter one on the other and a shallow valley along it, laid in the vertex colours like the bend, 0.09 to 0.16 of tone, shown while the hands hold the sheet. Seen at review tier at the key beside the frame before: the first strengths (0.04 to 0.075) did not show on a stock this bright.
+
+## Numbers of 25 November (MEASURED)
+
+- `npm run still -- --key step1-tug --format hd --tier draft`: 10.0 to 10.6 s, 676,981 triangles, 310 draw calls.
+- `npm run still -- --key step1-tug --format hd --tier review`: 20.5 to 22.0 s.
+- `npm run sheet -- --beat step1.tug --tier draft`: 27 to 29 s for 12 frames.
+- `npm run measure -- --unit step1 --tier review` on 158dd3d: 8 green, M3 0.9758, 2 min 13 s.
+- The key alone at review with the measure's `highFrequencyEnergy`: 1.02 at 590 px with the top at 514, 0.96 at 620 px with the top at 476.
+- No new texture: the arms keep the 64 px rubber grain (0.02 MB), the sheet's bend and creases and the machine's caster are geometry and vertex colour.
+
+## Still weak
+
+- The sheet's outline is straight: no buckled silhouette, no uneven edge, no thick turned corner in the tug (the dog ear shows only before the bite).
+- The strips are flat ribbons of one tone; no curl or twist.
+- At the key the left arm goes under the body for a third of its length, and the lower third of the still frame is bare page.
+- Between 27.1 and 27.4 s the arms hang with the hands just over the rim above the machine while they spring back.

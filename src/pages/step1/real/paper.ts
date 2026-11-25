@@ -24,6 +24,19 @@ const MOUTH = { in: 0.5, near: 0.36, nearPx: 4, bent: 0.3, fold: 15, soft: 7, sl
 // The held sheet hangs in one soft S between the hands and the mouth: it sags under the hands and comes up again before the bend.
 // From straight above a matte stock shows that only as tone, so it is laid in the sheet's colours: a broad soft valley across the sheet, on a slant, and the light the far flank of it takes.
 const BEND = { at: 0.56, wide: 0.19, deep: 0.13, lit: 0.035, crown: 0.86, crownWide: 0.1, slant: 0.22, grip: 0.055 }
+// The creases of a sheet that has been pulled at: each a line across the stock with a darker facet on one side and a lighter one on the other. Where, at what angle, how strong, how wide, how long, in shares of the sheet.
+const CREASES: [number, number, number, number, number, number][] = [[0.3, 0.26, 0.42, 0.16, 0.05, 0.4], [0.72, 0.44, -0.62, 0.14, 0.045, 0.34], [0.42, 0.66, 1.35, 0.12, 0.04, 0.3], [0.2, 0.52, -0.2, 0.09, 0.035, 0.22]]
+function creased(u: number, v: number): number {
+  let sum = 0
+  for (const [cu, cv, turn, deep, wide, long] of CREASES) {
+    const x = (u - cu) * (PAPER.w / PAPER.h)
+    const y = v - cv
+    const off = (-x * Math.sin(turn) + y * Math.cos(turn)) / wide
+    const run = (x * Math.cos(turn) + y * Math.sin(turn)) / long
+    sum += deep * (2.33 * off + 0.35) * Math.exp(-off * off - run * run)
+  }
+  return sum
+}
 const WRAP_LEN = 1.12 * (UNIT.r + 0.7 * SIZE)
 
 const clamp = (v: number, lo: number, hi: number): number => Math.min(hi, Math.max(lo, v))
@@ -314,7 +327,7 @@ function shape(rig: Rig, q: SheetIn): void {
     const k = (v / 3) * 2
     const t = (uvs[k + 1]! - top) / (foot - top) + (uvs[k]! - 0.5) * BEND.slant
     const sag = BEND.deep * Math.exp(-Math.pow((t - BEND.at) / BEND.wide, 2)) - BEND.lit * Math.exp(-Math.pow((t - BEND.crown) / BEND.crownWide, 2)) + BEND.grip * Math.exp(-Math.pow(Math.max(0, t) / 0.12, 2))
-    const shade = 1 - bite * (d < 0 ? MOUTH.in : MOUTH.near * Math.exp(-d / MOUTH.nearPx) + MOUTH.bent * below - MOUTH.lit * crown) - hung * sag
+    const shade = 1 - bite * (d < 0 ? MOUTH.in : MOUTH.near * Math.exp(-d / MOUTH.nearPx) + MOUTH.bent * below - MOUTH.lit * crown) - hung * (sag + creased(uvs[k]!, uvs[k + 1]!))
     c[v] = c[v + 1] = c[v + 2] = v < n * 6 ? shade : shade * MOUTH.edge
   }
   col.needsUpdate = true
