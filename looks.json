@@ -1,35 +1,35 @@
 {
   "folder": "acting",
-  "pushed": "2026-11-25T20:13:34.434Z",
-  "commit": "a6a60293dc5a2053ec08cf9e2e3eadc7bd9c9f57",
+  "pushed": "2026-11-25T20:17:35.835Z",
+  "commit": "8107d4ff3a80e22ade0fd61acc7308f36afd59e5",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "The key at 6.0 s beside the approved image: scorched on the hot key H, five letters in the field (a6a6029)",
-      "time": "2026-11-25T20:13:32.592Z",
-      "by": "acting",
-      "from": "out/work/compare/compare-step1-fire.jpg"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "The hit motion sheet: contact at 5.813 s, three squashed frames, the shove, back on H (a6a6029)",
-      "time": "2026-11-25T20:13:32.828Z",
-      "by": "acting",
-      "from": "out/work/sheets/sheet-motion-hit-preview-draft.jpg"
-    },
-    {
-      "file": "look-3.jpg",
       "caption": "The first name beat sheet: the frame at 6.33 s shows the arrow knocked over on the hot key (a6a6029)",
       "time": "2026-11-25T20:13:33.062Z",
       "by": "acting",
       "from": "out/work/sheets/sheet-beat-step1_firstName-preview-draft.jpg"
     },
     {
-      "file": "look-4.jpg",
+      "file": "look-2.jpg",
       "caption": "Close on the hit at 6.0, 6.2, 6.33 and 6.43 s: upright at the key, knocked over and held with the hole in view, clear of the next shot (a6a6029)",
       "time": "2026-11-25T20:13:33.290Z",
       "by": "acting",
       "from": "out/work/acting-hit-close.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Key step1-fire: approved on the left, this build on the right, draft tier, with crops of cursor, keys, hatch, keyboardDeck.corner, field.start, type, progressButton, chip, card.corner",
+      "time": "2026-11-25T20:17:24.673Z",
+      "by": "acting",
+      "from": "out/work/compare/compare-step1-fire.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "The key at 6.0 s beside the approved image on main 5a9e748's shorter shadows: scorched on the hot key H, five letters in the field (8107d4f)",
+      "time": "2026-11-25T20:17:34.781Z",
+      "by": "acting",
+      "from": "out/work/compare/compare-step1-fire.jpg"
     }
   ]
 }
