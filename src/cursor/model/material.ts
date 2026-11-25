@@ -337,7 +337,7 @@ export function bodyMaterial(uniforms: BodyUniforms): THREE.MeshPhysicalMaterial
 
 // The shadow's own material: it lets light through the holes. The light that comes down a bore is let fall on the page under the bore,
 // most of the way back along the light's own slant, so that what is seen through a hole is the page lit and not a disc of shade.
-const BORE_SHARE = 0.5
+const BORE_SHARE = 0.6
 const KEY = new THREE.Vector3(...picture.key.direction).normalize()
 // A face tilted away from the lamp gets back this share of the lamp's light it lost by tilting, and a face tilted toward it gets nothing.
 const FILL = (picture.key.intensity / Math.PI) * 0.8
@@ -355,7 +355,7 @@ export function bodyDepthMaterial(uniforms: BodyUniforms): THREE.MeshDepthMateri
         `#include <begin_vertex>
 vRest = aRest;
 vec4 wjaAt = modelMatrix * vec4( transformed, 1.0 );
-float wjaHigh = min( wjaAt.z, ${low.knee.toFixed(2)} ) + max( wjaAt.z - ${low.knee.toFixed(2)}, 0.0 ) * ${low.keep.toFixed(4)};
+float wjaHigh = min( wjaAt.z, ${low.knee.toFixed(2)} ) + clamp( ( wjaAt.z - ${low.from.toFixed(2)} ) / ${(low.knee - low.from).toFixed(4)}, 0.0, 1.0 ) * ${low.lift.toFixed(4)} + max( wjaAt.z - ${low.knee.toFixed(2)}, 0.0 ) * ${low.keep.toFixed(4)};
 vec3 wjaLamp = vec3( viewMatrix[ 0 ][ 2 ], viewMatrix[ 1 ][ 2 ], viewMatrix[ 2 ][ 2 ] );
 vec3 wjaOff = transpose( mat3( modelMatrix ) ) * vec3( wjaLamp.xy / max( wjaLamp.z, 0.05 ) * wjaHigh, 0.0 ) / dot( modelMatrix[ 0 ].xyz, modelMatrix[ 0 ].xyz );
 vShift = vec2( wjaOff.x, - wjaOff.y ) * ${(BORE_SHARE / UNIT).toFixed(5)};`
