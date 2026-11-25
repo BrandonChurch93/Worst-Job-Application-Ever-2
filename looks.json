@@ -1,35 +1,35 @@
 {
   "folder": "cursor-act",
-  "pushed": "2026-11-25T14:53:41.073Z",
-  "commit": "5a7e5365db4bf8d551e66a3c356b40b91d413588",
+  "pushed": "2026-11-25T15:07:44.802Z",
+  "commit": "7ce886b6096a1f563036918e4ba2468bc6b3cff6",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key step1-tug at review tier beside the approved image",
-      "time": "2026-11-25T14:49:20.814Z",
+      "caption": "Still step1-step1_firstName-0p53750-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T15:04:08.357Z",
       "by": "cursor-act",
-      "from": "out/work/compare/compare-step1-tug.jpg"
+      "from": "out/work/stills/step1-step1_firstName-0p53750-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Sheet cursor-damage: approved on the left, this build on the right, review tier",
-      "time": "2026-11-25T14:49:51.543Z",
+      "caption": "Still step1-step1_firstName-0p55625-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T15:04:22.400Z",
       "by": "cursor-act",
-      "from": "out/work/compare/compare-cursor-damage.jpg"
+      "from": "out/work/stills/step1-step1_firstName-0p55625-hd-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Sheet cursor-damage: approved on the left, this build on the right, review tier",
-      "time": "2026-11-25T14:51:17.725Z",
+      "caption": "Key step1-fire at review tier beside the approved image",
+      "time": "2026-11-25T15:07:43.408Z",
       "by": "cursor-act",
-      "from": "out/work/compare/compare-cursor-damage.jpg"
+      "from": "out/work/compare/compare-step1-fire.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Damage sheet at review tier beside the approved image: clear tape, crater burn, bare cut faces",
-      "time": "2026-11-25T14:53:40.029Z",
+      "caption": "Acting sheet at review tier beside the approved image",
+      "time": "2026-11-25T15:07:43.659Z",
       "by": "cursor-act",
-      "from": "out/work/compare/compare-cursor-damage.jpg"
+      "from": "out/work/compare/compare-cursor-acting.jpg"
     }
   ]
 }
