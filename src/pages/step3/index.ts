@@ -7,10 +7,10 @@ import { button, buttonWidth, HEADER, LEFT, page, RIGHT, stepHead, TYPE } from '
 import { words } from '../../shell/words'
 import { frame, homePose, mixPose, smooth, toWorld } from '../../stage/camera'
 import { TURN_HALF } from '../../stage/stage'
-import type { CameraPose, DrawList, GagInfo, Hint, PageContext, PageLogic, Pointer, SheetFrame, StepIo, TableState } from '../../stage/types'
+import type { CameraPose, Collider, DrawList, GagInfo, Hint, PageContext, PageLogic, Pointer, SheetFrame, StepIo, TableState } from '../../stage/types'
 import take from '../../../cut/TABLE-TAKE.json'
 import { fixedShapes, movingShapes } from '../../table/draw'
-import { APRON_Y, BALL, LAST_Y, MARQUEE_Y, MID, OUTLET, PAGE_H, PORT, TH, TIERS, TIER_Y, floorZ, holdOf, railAt, railLength, railOf, table, tierAt } from '../../table/layout'
+import { APRON_Y, BALL, FLIP, LAST_Y, MARQUEE_Y, MID, OUTLET, PAGE_H, PORT, TH, TIERS, TIER_Y, floorZ, holdOf, railAt, railLength, railOf, table, tierAt } from '../../table/layout'
 import { Machine, prepare as startPhysics, type MachineState, type TableEvent } from '../../table/physics'
 
 export const prepare = (): Promise<void> => startPhysics()
@@ -504,6 +504,36 @@ export function makePage(): PageLogic {
         holds: table.holds.map((h) => ({ id: h.id, releases: h.releases })),
         sealed: [...table.sealed]
       }
+    },
+    colliders(): Collider[] {
+      const mc = machine()
+      const out: Collider[] = []
+      const add = (id: string, kind: Collider['kind'], tier: number, points: number[], o: { r?: number; closed?: boolean; z?: number } = {}): void => {
+        const on = Math.min(2, Math.max(0, tier))
+        const c: Collider = { id, kind, tier: TIERS[tier] ?? 'machine', points: points.map((v) => px(v)), z: o.z ?? px(floorZ(on)) }
+        if (o.r !== undefined) c.r = px(o.r)
+        if (o.closed) c.closed = true
+        out.push(c)
+      }
+      const corners = (b: number[]): number[] => [b[0]!, b[1]!, b[0]! + b[2]!, b[1]!, b[0]! + b[2]!, b[1]! + b[3]!, b[0]!, b[1]! + b[3]!]
+      for (const g of table.segs) add(g.id, 'wall', g.tier, [...g.a, ...g.b])
+      for (const p of table.posts) add(p.id, 'post', p.tier, [...p.c], { r: p.r })
+      for (const b of table.bumpers) add(b.id, 'bumper', b.tier, [...b.c], { r: b.r })
+      for (const g of table.slings) add(g.id, 'sling', g.tier, [...g.a, ...g.b, ...g.c], { closed: true })
+      for (const m of table.models) if (m.solid) add(m.id, 'model', m.tier, m.round ? [m.box[0] + m.box[2] / 2, m.box[1] + m.box[3] / 2] : corners(m.box), m.round ? { r: m.box[2] / 2 } : { closed: true })
+      for (const t of table.targets) if (t.kind !== 'drop' || !mc.down[t.index]) add(t.id, 'target', t.tier, corners(t.box), { closed: true })
+      for (const f of table.flippers) {
+        const a = (mc.flipperAngle(f.side) * Math.PI) / 180
+        const dir = f.side === 'left' ? 1 : -1
+        add(f.id, 'flipper', f.tier, [...f.pivot, f.pivot[0] + dir * FLIP.length * Math.cos(a), f.pivot[1] + FLIP.length * Math.sin(a)], { r: FLIP.radius })
+      }
+      for (const h of table.holds) add(h.id, 'hold', h.tier, [...h.c], { r: h.r })
+      for (const o of table.openings) add(o.id, 'opening', o.tier, [...o.a, ...o.b])
+      for (const r of table.rails) add(r.id, 'rail', tierAt(r.points[0]![1]), r.points.flatMap((q) => [q[0], q[1]]), { z: px(r.points.reduce((sum, q) => sum + q[2], 0) / r.points.length) })
+      mc.balls.forEach((b, i) => {
+        if (b.mode !== 'none') add(i === 0 ? 'ball.clear' : `ball.steel.${i}`, 'body', b.tier, [b.x, b.y], { r: 0.5, z: px(b.z) })
+      })
+      return out
     },
     sheet(id: string): SheetFrame | null {
       if (id === 'clear-ball') {

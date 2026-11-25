@@ -40,7 +40,7 @@ if (a.first !== undefined || a.last !== undefined) {
   const first = word(a.first) ? Number(a.first) : 0
   const last = word(a.last) ? Number(a.last) : unit.last
   if (!Number.isInteger(first) || !Number.isInteger(last) || first < 0 || last < first || last > unit.last) stop(`--first and --last are frames of the loop, from 0 to ${unit.last}, with --first no later than --last`)
-  if (!clip(first, last, plan.step)) stop(`no frame between ${first} and ${last} is rendered at ${card.fps} a second: every ${plan.step}th frame is`)
+  if (!clip(first, last, plan.step)) stop(`no frame between ${first} and ${last} is rendered at ${card.fps} a second: one frame in ${plan.step} is`)
   range = { first, last }
 }
 const dir = at('out', 'work', 'loop')
@@ -111,7 +111,7 @@ async function seamSheet() {
   const seam = steps.find((x) => x.to < x.from)
   const beside = steps.filter((x) => x !== seam)
   const tiles = want.map((n, k) => ({ png: fs.readFileSync(fileOf(n)), label: `${timeLabel(n, card.fps)}  picture ${n + 1} of ${plan.frames}${k === 0 ? '' : `  ${steps[k - 1] === seam ? 'over the seam' : 'step'} ${psnrText(steps[k - 1].psnr)}`}` }))
-  const out = path.join(dir, `card-loop-seam-${format.id}-${tier}.jpg`)
+  const out = path.join(dir, `loop-seam-${format.id}-${tier}.jpg`)
   const g = await composeSheet(tiles, out, { edge: cfg.critics.maxImageLongEdgePx, heading: `The card loop at its seam: the last three pictures and the first three, ${format.id}, ${tier} tier`, columns: 3 })
   fs.rmSync(tmp, { recursive: true, force: true })
   const line = `the step over the seam ${psnrText(seam.psnr)} between its two pictures, the steps beside it ${beside.map((x) => psnrText(x.psnr)).join(', ')}`

@@ -116,7 +116,9 @@ const sheets = stillNames.filter((n) => /^sheet-/i.test(n)).map((n) => take(path
 const keptStills = stillNames.filter((n) => !/^(compare|sheet)-/i.test(n)).map((n) => take(path.join(stillsDir, n), 'stills', 'image', recordCaption(path.join(stillsDir, n)) || words(n)))
 
 const mixSrc = firstOf(...['wav', 'mp3', 'm4a'].map((e) => at('audio', 'mix', `review.${e}`)))
-const mix = mixSrc ? take(mixSrc, 'sound', 'audio', 'The review mix') : null
+const mixRecord = fs.existsSync(at('audio', 'mix', 'review.json')) ? JSON.parse(fs.readFileSync(at('audio', 'mix', 'review.json'), 'utf8')) : null
+const mixSilent = Boolean(mixRecord && mixRecord.silent)
+const mix = mixSrc && !mixSilent ? take(mixSrc, 'sound', 'audio', 'The review mix') : null
 
 const keptDir = at('audio', 'kept')
 const soundNames = names(keptDir, isSound)
@@ -260,7 +262,7 @@ const openIt = `<ul class="links">${links.map(([to, label]) => `<li><a href="${e
 const soundBoard = [
   '<h3>The review cut</h3>',
   reviewCut ? video(reviewCut) : `<p class="none">${NOT_MADE}</p>`,
-  mix ? `<h3>The review mix</h3>\n<div class="player wide">${audio(mix)}<span class="soft">${esc(path.basename(mix.src))}, ${size(mix.bytes)}</span></div>` : '',
+  mix ? `<h3>The review mix</h3>\n<div class="player wide">${audio(mix)}<span class="soft">${esc(path.basename(mix.src))}, ${size(mix.bytes)}</span></div>` : mixSilent ? '<h3>The review mix</h3>\n<p class="none">The review mix is silent, because no sound is kept yet. It is left out of this page until it holds a sound.</p>' : '',
   '<h3>The narrator</h3>',
   `<p class="soft">Every line of the film, in film order. The mark ${esc(narration.pauseMark ?? '/')} is a pause and is never spoken.</p>`,
   filmRows.length ? rows(filmRows) : none,
