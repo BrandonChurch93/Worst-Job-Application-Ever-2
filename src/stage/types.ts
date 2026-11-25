@@ -37,7 +37,8 @@ export interface DriverView {
 }
 
 export type Tone = 'page' | 'pocket' | 'raised' | 'metal' | 'accent' | 'danger' | 'paper' | 'dark' | 'glass' | 'light' | 'ink' | 'inkLight'
-export type ShapeKind = 'box' | 'disc' | 'capsule' | 'ball' | 'text' | 'well'
+// An anchor shows nothing by itself: it is a place, with no size, where the maker of a part may hang everything that part has in one zone of a page.
+export type ShapeKind = 'box' | 'disc' | 'capsule' | 'ball' | 'text' | 'well' | 'anchor'
 
 export interface TypeSpec {
   font: string

@@ -1,5 +1,5 @@
 import type { Shape, Tone } from '../stage/types'
-import { APRON_Y, BALL, COLS, FLIP, MARQUEE_H, MARQUEE_Y, MID, OUTLET, PLUNGER, PORT, TH, TIERS, TIER_Y, floorZ, table, type P3, type V } from './layout'
+import { APRON_H, APRON_Y, BALL, COLS, FLIP, LAST_Y, MARQUEE_H, MARQUEE_Y, MID, OUTLET, PLUNGER, PORT, SCREEN, TH, TIERS, TIER_Y, floorZ, table, type P3, type V } from './layout'
 import type { Machine } from './physics'
 
 const px = (v: number): number => v * BALL
@@ -39,6 +39,41 @@ function beside(points: P3[], off: number): P3[] {
 }
 
 let fixed: Shape[] | null = null
+
+// The zones of the page of step 3, from the top. An anchor spans its zone, so its object sits at the zone's middle, at the height of the zone's floor.
+export const ZONES: { id: string; y: number; h: number; z: number }[] = [
+  { id: 'first', y: 0, h: SCREEN, z: 0 },
+  { id: 'marquee', y: MARQUEE_Y, h: MARQUEE_H, z: 0 },
+  ...TIERS.map((id, k) => ({ id: id as string, y: TIER_Y[k]!, h: TH, z: floorZ(k) })),
+  { id: 'apron', y: APRON_Y, h: APRON_H, z: 0 },
+  { id: 'last', y: LAST_Y, h: SCREEN, z: 0 }
+]
+export const zoneAt = (y: number): string => (ZONES.find((z) => y < px(z.y + z.h)) ?? ZONES[ZONES.length - 1]!).id
+export const anchorId = (part: string, zone: string): string => `whole.${part}.${zone}`
+const anchor = (part: string, z: { id: string; y: number; h: number; z: number }): Shape => ({ id: anchorId(part, z.id), part, kind: 'anchor', x: 0, y: px(z.y), w: 1920, h: px(z.h), z0: px(z.z), z1: px(z.z), tone: 'dark' })
+// The anchors of the lights are not fixed: they come with the moving shapes and carry, in `v`, how bright the zone's general lighting is and how bright the website's own light is, each 0 to 1.
+export const LIT_ZONES = ['marquee', 'corporate', 'office', 'street']
+
+function anchors(shapes: Shape[]): Shape[] {
+  const want = new Set<string>()
+  for (const s of shapes) if (s.kind !== 'well') want.add(`${s.part} ${zoneAt(s.y + s.h / 2)}`)
+  TIERS.forEach((tier, k) => {
+    for (const part of ['tier-art', 'table-frame', 'table-hardware', 'flippers', 'lift', 'displays']) want.add(`${part} ${tier}`)
+    for (const t of table.targets) if (t.tier === k) want.add(`${t.id.startsWith('corporate.note') ? 'model-notes' : 'targets'} ${tier}`)
+  })
+  for (const part of ['marquee', 'displays']) want.add(`${part} marquee`)
+  for (const zone of ['first', 'last']) want.add(`loader ${zone}`)
+  for (const part of ['table-frame', 'table-hardware']) want.add(`${part} apron`)
+  const out: Shape[] = []
+  for (const z of ZONES) {
+    for (const pair of [...want].sort()) {
+      const [part, zone] = pair.split(' ') as [string, string]
+      if (zone !== z.id || part === 'table-lights') continue
+      out.push(anchor(part, z))
+    }
+  }
+  return out
+}
 
 export function fixedShapes(): Shape[] {
   if (fixed) return fixed
@@ -127,40 +162,45 @@ export function fixedShapes(): Shape[] {
     out.push(disc(`${id}.ring`, 'loader', [c.x, c.y], c.ring / 2, 0, 26, 'metal'))
     out.push(disc(`${id}.cup`, 'loader', [c.x, c.y], c.cup / 2, 26, 28, 'pocket'))
   }
-  fixed = out
-  return out
+  fixed = [...anchors(out), ...out]
+  return fixed
 }
 
-export function movingShapes(m: Machine, lit: boolean[], hide: boolean, glow: boolean[] = [true, true, true], pull = 0, shut = false): Shape[] {
+export function movingShapes(m: Machine, lit: boolean[], hide: boolean, glow: boolean[] = [true, true, true], pull = 0, shut = false, website = 1): Shape[] {
   const out: Shape[] = []
+  for (const z of ZONES) {
+    if (!LIT_ZONES.includes(z.id)) continue
+    const k = (TIERS as string[]).indexOf(z.id)
+    out.push({ ...anchor('table-lights', z), v: [k < 0 ? (glow.some(Boolean) ? 1 : 0) : glow[k] ? 1 : 0, website] })
+  }
   const hf = px(floorZ(0))
   const leaf = (DOORS.w - DOORS.seam) / 2
   const dy = TIER_Y[0]! + DOORS.y + 0.04
   for (const side of [0, 1]) {
     const b = shut ? [DOORS.x + side * (leaf + DOORS.seam), dy, leaf, 0.05] : [DOORS.x + side * (DOORS.w - 0.05), dy, 0.05, leaf]
-    out.push(box(`hq.door.${side === 0 ? 'left' : 'right'}`, 'model-hq', b, hf, hf + px(DOORS.h - 0.05), 'light'))
+    out.push({ ...box(`hq.door.${side === 0 ? 'left' : 'right'}`, 'model-hq', b, hf, hf + px(DOORS.h - 0.05), 'light'), v: [shut ? 1 : 0] })
   }
   for (const f of table.flippers) {
     const z = px(floorZ(f.tier))
     const a = m.flipperAngle(f.side) * DEG
     const dir = f.side === 'left' ? 1 : -1
     const tip: V = [f.pivot[0] + dir * FLIP.length * Math.cos(a), f.pivot[1] + FLIP.length * Math.sin(a)]
-    out.push(bar(`flipper.${f.id}`, 'flippers', f.pivot, tip, FLIP.radius * 2, z, z + 44, 'accent', 'capsule'))
+    out.push({ ...bar(`flipper.${f.id}`, 'flippers', f.pivot, tip, FLIP.radius * 2, z, z + 44, 'accent', 'capsule'), v: [a] })
   }
   for (const t of table.targets) {
     const z = px(floorZ(t.tier))
     const up = t.kind !== 'drop' || !m.down[t.index]
-    out.push(box(`target.${t.id}`, t.id.startsWith('corporate.note') ? 'model-notes' : 'targets', t.box, z, z + (up ? 44 : 3), t.kind === 'spinner' ? 'metal' : 'paper'))
+    out.push({ ...box(`target.${t.id}`, t.id.startsWith('corporate.note') ? 'model-notes' : 'targets', t.box, z, z + (up ? 44 : 3), t.kind === 'spinner' ? 'metal' : 'paper'), v: [up ? 1 : 0] })
   }
-  out.push(box('plunger.rod', 'table-hardware', [PLUNGER[0] - 0.08, PLUNGER[1] + 0.55 + pull * 0.45, 0.16, 1.2 + pull * 0.25], px(floorZ(2)) + 30, px(floorZ(2)) + 46, 'metal'))
-  out.push(disc('plunger.knob', 'table-hardware', [PLUNGER[0], APRON_Y + 0.75 + pull * 0.7], 0.32, 0, 60, 'accent'))
+  out.push({ ...box('plunger.rod', 'table-hardware', [PLUNGER[0] - 0.08, PLUNGER[1] + 0.55 + pull * 0.45, 0.16, 1.2 + pull * 0.25], px(floorZ(2)) + 30, px(floorZ(2)) + 46, 'metal'), v: [pull] })
+  out.push({ ...disc('plunger.knob', 'table-hardware', [PLUNGER[0], APRON_Y + 0.75 + pull * 0.7], 0.32, 0, 60, 'accent'), v: [pull] })
   for (const l of table.lamps) {
     const f = px(floorZ(l.tier))
-    out.push(disc(`lamp.${l.id}`, 'table-lights', l.c, glow[l.tier] ? 0.14 : 0.1, f, f + 4, glow[l.tier] ? 'light' : 'glass'))
+    out.push({ ...disc(`lamp.${l.id}`, 'table-lights', l.c, glow[l.tier] ? 0.14 : 0.1, f, f + 4, glow[l.tier] ? 'light' : 'glass'), v: [glow[l.tier] ? 1 : 0] })
   }
   for (const n of table.inserts) {
     const z = px(floorZ(n.tier))
-    out.push(disc(`insert.${n.id}`, 'table-lights', n.c, n.r, z, z + 3, lit[n.index] ? 'light' : 'glass'))
+    out.push({ ...disc(`insert.${n.id}`, 'table-lights', n.c, n.r, z, z + 3, lit[n.index] ? 'light' : 'glass'), v: [lit[n.index] ? 1 : 0] })
   }
   m.balls.forEach((b, i) => {
     if (b.mode === 'none' || (i === 0 && hide)) return
