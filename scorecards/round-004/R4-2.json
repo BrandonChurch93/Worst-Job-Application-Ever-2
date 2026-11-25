@@ -1,0 +1,37 @@
+{
+ "critic": "R4",
+ "score": 6,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "B: one sheet of consecutive frames at each hit",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-B-03.png",
+   "where": "center plaque and lower edge, 0:32.77–0:33.13",
+   "what": "The center ‘Invalid email’ slab is already covering the keys in the first frame. The next slab enters from below at 0:33.03, but the crop never clearly shows what brings it to a stop or which keys take its weight.",
+   "fix": "Frame the incoming slab and the receiving keys together. Give the slab a short accelerating approach, stop it sharply on contact, and show the keys depress before holding the settled pose."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02.png",
+   "where": "right side of keyboard beneath ‘Invalid email,’ 0:32.20–0:32.57",
+   "what": "The first frame already shows the plaque spanning the keyboard. The cursor leaves and the plaque and deck shift slightly, but those motions do not distinguish an actual landing from a floating warning graphic. The next red object is barely visible at the left edge.",
+   "fix": "Start the sheet earlier and keep the approaching block and its contact edge in view. Pin the motion to one impact frame with a local key reaction and a quick damped deck jolt."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-04.png",
+   "where": "lower plaque over V, B, N and M, 0:33.30–0:33.67",
+   "what": "Both slabs are already in place when the sheet starts. The lower row briefly changes how much of its lettering is exposed, but the keys do not visibly travel at contact. The frames read as a hold with a small jiggle rather than a heavy landing.",
+   "fix": "Include the last frames of approach and make the nearest keycaps bottom out under the slab on the landing frame, followed by a brief settle and the existing readable hold."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01.png",
+   "where": "5 key and adjacent keyboard deck, 0:21.10–0:21.27",
+   "what": "The incoming orange streak and spark burst identify the hit, but the 5 key appears to keep the same height and outline underneath. When the flash clears, the key and the deck give little physical evidence of contact.",
+   "fix": "On the first bright frame, depress or kick the 5 key and give the nearby deck a brief response. Let the key spring back while the sparks decay."
+  }
+ ]
+}

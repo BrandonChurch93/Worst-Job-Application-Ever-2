@@ -199,6 +199,12 @@ describe('the frames of a sheet', () => {
     expect(around(plan.frameCount - 1, n, step, 0, plan.frameCount - 1).at(-1)).toBe(plan.frameCount - 2)
   })
 
+  it('put a third of the frames before the moment, or half when a hit asks for its approach', () => {
+    expect(around(1200, 12, 2, 0, plan.frameCount - 1)[0]).toBe(1194)
+    expect(around(1200, 12, 2, 0, plan.frameCount - 1, 2)[0]).toBe(1190)
+    expect(around(1200, 12, 2, 0, plan.frameCount - 1, 2).at(-1)).toBe(1212)
+  })
+
   it('are labelled with their time in the film', () => {
     expect(timeLabel(0, 60)).toBe('0:00.00')
     expect(timeLabel(90, 60)).toBe('0:01.50')

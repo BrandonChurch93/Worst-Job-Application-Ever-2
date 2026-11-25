@@ -1,0 +1,58 @@
+{
+ "critic": "R4",
+ "score": 6,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "A: one sheet across each beat, the page turn and the slab seating",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-A-06.png",
+   "where": "whole frame, 0:36.00 to 0:41.10",
+   "what": "while zoomed in on the dropzone the camera wanders sideways and up and down to follow the cursor. The dropzone edge and the Browse files button jump to a different place in almost every frame (0:37.13, 0:37.70, 0:38.27, 0:39.40, 0:39.97, 0:40.53). It reads as a handheld or tracking camera rather than a straight push in, which breaks the rule that the camera only moves straight in and out on the pages",
+   "fix": "lock the camera to one axis while it is zoomed: push straight in to a fixed framing of the dropzone and shredder, hold that framing still through the whole shred, then pull straight out. Let the cursor and shredder move inside a still frame"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "0:35.27 to 0:35.97, the zoom in toward the resume dropzone",
+   "what": "the push in also drifts the page left and down, with the title sliding off the top left, so the move is a diagonal reframe rather than a straight dolly in. Over about 0.7 s it also has no visible wind-up or settle",
+   "fix": "put the zoom's centre on the dropzone so the move is purely straight in, ease it in with a short hold before it starts, and let it settle with a small decelerating overshoot at the end"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "0:42.27 to 0:43.27, the pull back out",
+   "what": "the pull out also slides sideways: the dropzone moves from the left to the centre and then back to the upper left, so it is a diagonal sweep rather than a straight move out",
+   "fix": "pull straight back along the same axis as the push in, and ease it to a dead stop on the full-page framing"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "under the cursor at 0:14.53 to 0:15.27, and again in set-A-08 at 0:45.53 to 0:46.80",
+   "what": "a soft grey smear sits below and to the right of the arrow, detached from it and lagging. It reads as a floating ghost or a smudge rather than a contact shadow, and it makes the cursor look weightless",
+   "fix": "tie the shadow tightly to the arrow with a small fixed offset and a hard edge. Only stretch it into motion blur on frames where the cursor actually moves fast"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "keyboard, 0:18.17 to 0:23.23",
+   "what": "small dark dots and orange glows scatter across the keys, and the paddles at each end swing, but you cannot tell from the frames which dot hit which key or why letters appear. The balls are too small to follow, and there is no clear frame where a ball strikes a key and that key goes down and springs back",
+   "fix": "use fewer, larger balls. On each strike show the hit key visibly sinking for 1 to 2 frames and springing back, with a flash at the point of contact, and hold the ball's change of direction for a frame so cause and effect are readable"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-03.png",
+   "where": "keyboard scramble, 0:24.47 and 0:25.80 to 0:26.27",
+   "what": "the keys lift and tumble as an even, floaty cloud and land back in place with no sign of impact. There is no stagger, bounce or settle, so they feel weightless",
+   "fix": "stagger the lift-off, give each key a short arc that falls under gravity, and land each one with a hard stop plus a 1-frame squash or a small rattle of the keyboard tray"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-04.png",
+   "where": "0:33.97, the toasts leaving to the right",
+   "what": "the stack of Invalid email toasts exits as one motion-blurred slab in a single frame, with no hold after the last toast lands. It is hard to see that they were dismissed rather than cut",
+   "fix": "hold the full stack for about 0.3 s, then send the toasts off one after another with a short anticipation pull to the left first"
+  }
+ ]
+}

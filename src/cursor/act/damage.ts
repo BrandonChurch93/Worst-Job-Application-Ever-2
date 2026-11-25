@@ -1,5 +1,5 @@
 import { STRIPS, type Wound } from '../body'
-import type { LookMaker } from '../contract'
+import { STRIP_AXIS, type LookMaker } from '../contract'
 
 const ramp = (u: number, a: number, b: number): number => Math.min(1, Math.max(0, (u - a) / (b - a)))
 const smooth = (t: number): number => t * t * (3 - 2 * t)
@@ -9,9 +9,10 @@ export const LIFE = {
   burn: { punched: 0.04, cold: 0.42, flake: [0.44, 0.6], smokeEnd: 0.6, close: 0.64, radius: 1.55, clean: 1.75 },
   scorched: { reach: 0.62, fade: 0.4, smokeEnd: 0.75 },
   flattened: { pressed: 0.05, peel: 0.5, refill: 0.78, crackEnd: 0.95 },
-  reassembled: { seam: 0.76, firm: 0.88 }
+  reassembled: { seam: 0.87, firm: 0.93 }
 }
 const TIP = { x: 0.7, y: 1.6 }
+const BESIDE = { keep: 0.14, step: 0.12, from: 7, to: 16 }
 
 export function woundOf(w: Wound, look: Parameters<LookMaker>[1], pose: Parameters<LookMaker>[0]): void {
   const b = look.body
@@ -42,13 +43,25 @@ export function woundOf(w: Wound, look: Parameters<LookMaker>[1], pose: Paramete
     b.stretch *= 1 + 0.16 * Math.sin(Math.PI * refill)
   } else if (w.kind === 'shredded') {
     b.melt = 0
-    if (pose.strips) b.strips = pose.strips.map((p) => ({ ...p }))
+    if (pose.strips) {
+      b.strips = pose.strips.map((p) => ({ ...p }))
+      b.ribbon = 1
+    }
   } else {
     // Strips do not sag: a tired body melts only once its seams are closing, or the tape and the seams are lost in the droop.
     b.melt *= smooth(ramp(u, LIFE.reassembled.firm, 1))
     const whole = !pose.strips || pose.strips.every((p) => p.x === 0 && p.y === 0 && p.z === 0 && p.rot === 0 && p.tilt === 0)
     if (whole) b.seam = Math.max(b.seam, 1 - smooth(ramp(u, LIFE.reassembled.seam, 1)))
-    else b.strips = pose.strips!.map((p) => ({ ...p }))
+    else {
+      // A strip laid back near its place lies beside its neighbours, not inside them: what is left of its way out of place runs along its own length.
+      b.strips = pose.strips!.map((p) => {
+        const far = smooth(ramp(Math.hypot(p.x, p.y), BESIDE.from, BESIDE.to))
+        const along = (p.x * STRIP_AXIS[0] - p.y * STRIP_AXIS[1]) * (BESIDE.step + (1 - BESIDE.step) * far)
+        const side = p.x * STRIP_AXIS[1] + p.y * STRIP_AXIS[0]
+        const keep = BESIDE.keep + (1 - BESIDE.keep) * far
+        return { ...p, x: along * STRIP_AXIS[0] + side * keep * STRIP_AXIS[1], y: -along * STRIP_AXIS[1] + side * keep * STRIP_AXIS[0], rot: p.rot * keep }
+      })
+    }
   }
 }
 

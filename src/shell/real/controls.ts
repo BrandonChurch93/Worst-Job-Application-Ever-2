@@ -177,7 +177,7 @@ function socket(s: Shape): THREE.Object3D {
 }
 
 const SEAT = 2.4
-const SEAT_RISE = 2.2
+const SEAT_RISE = 1.2
 
 function capsule(s: Shape, round: number): THREE.Object3D {
   const h = s.z1 - s.z0
@@ -192,13 +192,13 @@ function capsule(s: Shape, round: number): THREE.Object3D {
     soft.push([big * (Math.cos(from) - Math.cos(t)), h - big + big * Math.sin(t)])
   }
   const cap = mesh(shared(`chipCap:${dims(s)}`, () => sweep(outlineOf(s, 0, 18), profile(soft))), toneMaterial(s.tone))
-  // A chip stands in a seat: a low satin collar let into the glass, a narrow dark clearance inside it, and the cap rising out of that.
+  // A chip stands in a seat: a low glass collar, a narrow dark clearance inside it, and the cap rising out of that.
   const root = new THREE.Group()
   const out = SEAM + SEAT
   const around = { kind: s.kind, w: s.w + out * 2, h: s.h + out * 2, r: (s.r ?? 0) + out }
   const collar: ProfilePoint[] = [[0, 0, true], [0.5, SEAT_RISE - 0.5, true], [1, SEAT_RISE, true], [SEAT - 0.5, SEAT_RISE, true], [SEAT, SEAT_RISE - 0.5, true], [SEAT, 0.1, true]]
-  root.add(mesh(shared(`seatCollar:${dims(s)}`, () => sweep(outlineOf(around, 0, 18), profile(collar), false)), materials().aluminiumSatin))
-  root.add(mesh(shared(`seat:${dims(s)}`, () => sweep(outlineOf(around, SEAT - 0.1, 18), [{ inset: 0, z: 0.12, out: 0, up: 1 }])), materials().gap, false))
+  root.add(mesh(shared(`seatCollar:${dims(s)}`, () => sweep(outlineOf(around, 0, 18), profile(collar), false)), materials().glassThick))
+  root.add(mesh(shared(`seat:${dims(s)}`, () => sweep(outlineOf(around, SEAT - 0.1, 18), [{ inset: 0, z: 0.12, out: 0, up: 1 }])), materials().cardSeal, false))
   root.add(cap)
   return root
 }
@@ -235,9 +235,8 @@ function rule(s: Shape): THREE.Object3D {
 
 const roundEnds = (s: Shape): Outline => outlineOf({ kind: 'capsule', w: s.w, h: s.h }, 0, 6)
 
-const FRAME = 2.7
+const FRAME = 2.6
 const BEVEL = 12.5
-const PANEL = 27.5
 
 // Where each point of a slab lies on its card, for the glass's material: the place, the card's half size, its corner and whether a panel is sunk in it.
 function placed(g: THREE.BufferGeometry, s: Shape, panel: boolean): THREE.BufferGeometry {
@@ -253,7 +252,7 @@ function placed(g: THREE.BufferGeometry, s: Shape, panel: boolean): THREE.Buffer
   return g
 }
 
-// A glass card standing on the page: a thin aluminium band round its foot and a slab whose edge is ground to a wide bevel.
+// A glass card standing on the page: a thin dark seal round its foot and a slab whose edge is ground to a wide bevel.
 // An upload zone has a panel sunk a hair into its face, inside the engraved line. The light goes through the slab: only the band throws a shadow.
 function card(s: Shape): THREE.Object3D {
   const m = materials()
@@ -262,13 +261,11 @@ function card(s: Shape): THREE.Object3D {
   const zone = s.id.endsWith('-zone')
   const k = Math.min(1, Math.min(s.w, s.h) / 90)
   const rise = Math.min(h * 0.3, 3.6)
-  const lip = zone ? 0.5 : 0
-  const top = h + lip
+  const top = h
   const foot = top - rise
   const band = Math.min(3.4, Math.max(1, foot - 2.5))
-  root.add(mesh(shared(`cardFrame:${dims(s)}`, () => sweep(outlineOf(s, 0, 14), profile([[0, 0, true], [0, band - 1, true], [1, band, true], [FRAME - 0.7, band, true], [FRAME, band - 0.5, true], [FRAME, 0.2, true]]), false)), m.aluminiumRim))
+  root.add(mesh(shared(`cardFrame:${dims(s)}`, () => sweep(outlineOf(s, 0, 14), profile([[0, 0, true], [0, band - 0.5, true], [0.5, band, true], [FRAME - 0.4, band, true], [FRAME, band - 0.4, true], [FRAME, 0.2, true]]), false)), m.cardSeal))
   const points: ProfilePoint[] = [[0, 0.05, true], [0, foot - 1.8, true], ...arc(0, foot - 1.8, 1.8, 1.8, 5).slice(1), [1.8 + BEVEL * k * 0.5, foot + rise * 0.52], [1.8 + BEVEL * k - 1.2, top - 0.12], [1.8 + BEVEL * k, top - 0.02], [1.8 + BEVEL * k + 1.2, top]]
-  if (zone) points.push([PANEL - FRAME - 0.4, top], [PANEL - FRAME, top - 0.06], [PANEL - FRAME + 1, h + 0.06], [PANEL - FRAME + 1.6, h])
   root.add(mesh(shared(`cardGlass:${dims(s)}:${zone ? 1 : 0}`, () => placed(sweep(outlineOf(s, FRAME, 14), profile(points)), s, zone)), m.glassCard, false))
   if (zone) root.add(dashes(s, top))
   return root

@@ -5,7 +5,7 @@ import { config } from '../config'
 import { narration } from '../copy'
 import { openingFrames, openingTimes } from '../film/opening'
 import { wallSeconds } from '../ui/clock'
-import { eventCues, filmKeysForEvent, filmKeysForGag, filmLive, filmLineId, liveKeysFor, liveLineId, loopCues, openingEvents, pagelessLive, pickVariant, stopEvents, unitPage } from './cues'
+import { allCues, cueOfEvent, eventCues, filmKeysForEvent, filmKeysForGag, filmLive, filmLineId, liveKeysFor, liveLineId, loopCues, openingEvents, pagelessLive, pickVariant, stopEvents, unitPage } from './cues'
 import { DUCK, LIVE, db } from './levels'
 import { duckSpans, LiveDesk, Narrator, type Booking } from './narrator'
 import shipped from '../../public/audio/index.json'
@@ -33,10 +33,10 @@ export interface SoundApi {
 
 export interface SoundIndex {
   version: number
-  pack: { file: string; bytes: number } | null
+  pack: { file: string; bytes: number; sha256?: string } | null
   sfx: { id: string; at: number; bytes: number; seconds: number; mime: string }[]
-  loops: { id: string; file: string; seconds: number; mime: string }[]
-  lines: { id: string; file: string; seconds: number; mime: string }[]
+  loops: { id: string; file: string; seconds: number; mime: string; bytes?: number; sha256?: string }[]
+  lines: { id: string; file: string; seconds: number; mime: string; bytes?: number; sha256?: string }[]
 }
 
 type Bus = 'fx' | 'voice' | 'tone'
@@ -293,6 +293,19 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
   const speaking = new Map<Booking, Voice>()
   const liveCounts = new Map<string, number>()
   const seenOnce = new Set<string>()
+  const fightBeat = (id: string) => config.film.beats.find((b) => b.id === id)
+  const fightSeconds = (fightBeat('boss.collapse')?.from ?? 0) - (fightBeat('boss.unfold')?.from ?? 0)
+  let fightFrom: number | null = null
+  let fightReported = false
+  const watchFight = (name: string | null, page: string | null) => {
+    if (name === 'boss-slow') fightReported = true
+    if (page !== unitPage.boss || name === 'power-down' || name === 'skip' || name === 'page-turn') fightFrom = null
+    else if (name === 'unfold') fightFrom = backend!.now()
+    else if (fightFrom !== null && !fightReported && fightSeconds > 0 && backend!.now() - fightFrom >= fightSeconds) {
+      fightFrom = null
+      sayLive('boss.slow', page)
+    }
+  }
 
   const setState = (s: SoundState) => {
     if (state === s) return
@@ -347,7 +360,7 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
     const last = lastPlay.get(cue)
     if (last !== undefined && Math.abs(now - last) < LIVE.sameCueSeconds) return
     lastPlay.set(cue, now)
-    const spec = audio.sfx.find((s) => s.id === cue) as { id: string; seconds: number; variants?: number } | undefined
+    const spec = allCues(audio.sfx as { id: string; seconds: number; variants?: number }[]).find((s) => s.id === cue)
     const count = counts.get(cue) ?? 0
     counts.set(cue, count + 1)
     const pick = pickVariant(cue, count, spec?.variants ?? 1, (id) => loaded.has(id))
@@ -474,7 +487,7 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
       startTone()
       for (const cue of stopEvents[e.name] ?? []) stopCue(cue)
       if (e.name === 'page-turn') for (const cue of loopCues) if (cue !== 'room-tone') stopCue(cue)
-      const cue = eventCues[e.name]
+      const cue = cueOfEvent(e.name)
       if (cue && cue !== 'room-tone') playCue(cue, e.x)
       if (mode !== 'live') return
       const page = e.page ?? desk.page
@@ -485,6 +498,7 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
         for (const key of filmKeysForEvent(e.name, page, unitOfBeat)) sayFilm(key)
       }
       for (const key of liveKeysFor(e, seenOnce)) sayLive(key, page)
+      watchFight(e.name, page)
     },
     beat(id, _mode, into = 0) {
       if (state !== 'ready' || !backend) return
@@ -498,6 +512,7 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
         const page = pageOfBeat(id)
         if (page !== null) takeBack(desk.at(now, page))
         for (const key of filmKeysForGag(id)) sayFilm(key)
+        watchFight(null, page)
         return
       }
       const past = Math.max(0, Number.isFinite(into) ? into : 0)
@@ -542,6 +557,7 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
       lastPlay.clear()
       narrator.clear()
       desk.clear()
+      fightFrom = null
       speaking.clear()
       running.clear()
       tone = null

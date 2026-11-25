@@ -1,0 +1,158 @@
+{
+  "id": "line.live.idle.1",
+  "kind": "live-line",
+  "cue": null,
+  "variant": null,
+  "class": "voice",
+  "loop": false,
+  "beat": null,
+  "liveKey": "idle",
+  "group": "idle",
+  "describes": null,
+  "index": 1,
+  "words": "Take your time. / The job is not real.",
+  "text": "Take your time. / The job is not real.",
+  "prompt": null,
+  "settings": {
+    "speed": 0.7,
+    "stability": 0.75,
+    "breakSeconds": 2.4,
+    "sent": "Take your time. <break time=\"2.4s\" /> The job is not real.",
+    "call": 153
+  },
+  "askedSeconds": null,
+  "cost": "21",
+  "take": {
+    "number": 3,
+    "round": "build",
+    "file": "take-3.mp3",
+    "sha256": "899cf28370ccc3508d1c193cfcc347dae602ea7c352ed77242bb99bfa41de4dc",
+    "filed": "2026-11-25T18:44:55.752Z",
+    "measured": {
+      "seconds": 5.294,
+      "start": 0.014,
+      "end": 5.176,
+      "peakDb": -4.27,
+      "rmsDb": -23.9,
+      "lufs": -21.51,
+      "truePeakDb": -4.17,
+      "low": 0.584,
+      "mid": 0.261,
+      "high": 0.154,
+      "tailDb": -23.58,
+      "hits": 2,
+      "hitsAt": [
+        {
+          "start": 0.026,
+          "end": 0.966,
+          "peakDb": -4.27
+        },
+        {
+          "start": 3.582,
+          "end": 5.116,
+          "peakDb": -8.35
+        }
+      ]
+    },
+    "line": {
+      "words": 8,
+      "seconds": 5.162,
+      "wordsPerSecond": 1.55,
+      "maxWordsPerSecond": 1.6,
+      "pauseMarks": 1,
+      "pausesFound": 1,
+      "pauses": [
+        2.602
+      ],
+      "paceHolds": true,
+      "pausesHold": true,
+      "room": null,
+      "fits": true
+    }
+  },
+  "chain": {
+    "trimStart": 0.014,
+    "trimEnd": 5.176,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 80,
+    "levelMeasure": "lufs",
+    "levelDb": -18,
+    "gainDb": 3.77,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 5.162,
+    "start": 0.002,
+    "end": 5.128,
+    "peakDb": -0.52,
+    "rmsDb": -20.65,
+    "lufs": -18,
+    "truePeakDb": -0.41,
+    "low": 0.534,
+    "mid": 0.291,
+    "high": 0.175,
+    "tailDb": -24.68,
+    "hits": 2,
+    "hitsAt": [
+      {
+        "start": 0.012,
+        "end": 0.942,
+        "peakDb": -0.52
+      },
+      {
+        "start": 3.568,
+        "end": 5.096,
+        "peakDb": -4.17
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 12 asks, 1 whole, 11 void",
+    "asks": 12,
+    "whole": 1,
+    "transcript": "Take your time. The job is not real.",
+    "transcripts": [
+      "Take your time. The job is not real."
+    ],
+    "transcriptAgreed": "1 of 1",
+    "attitudes": [
+      "calm and detached"
+    ],
+    "accents": [
+      "British"
+    ],
+    "pitches": [
+      "low"
+    ],
+    "whisper": null,
+    "whisperVotes": "0 yes, 1 no",
+    "laugh": null,
+    "laughVotes": "0 yes, 1 no",
+    "warmth": null,
+    "warmthVotes": "0 yes, 1 no",
+    "excitement": null,
+    "excitementVotes": "0 yes, 1 no",
+    "unimpressedAndSmug": null,
+    "unimpressedAndSmugVotes": "1 yes, 0 no",
+    "basis": [
+      "The speaker uses a slow, deliberate pace and a low, flat tone that lacks warmth or excitement, conveying a detached and slightly arrogant demeanor."
+    ],
+    "heardRaisedByDb": 1.27
+  },
+  "why": "tone not judged: 1 whole answers in 12 asks",
+  "forced": true,
+  "problems": [
+    "the listener left \"whisper\" unanswered",
+    "the listener left \"laugh\" unanswered",
+    "the listener left \"warmth\" unanswered",
+    "the listener left \"excitement\" unanswered",
+    "the listener left \"unimpressedAndSmug\" unanswered"
+  ],
+  "fixture": false,
+  "file": "line.live.idle.1.wav",
+  "seconds": 5.162,
+  "sha256": "ce4a3fb12f5fcb1538fda25bc81f96f26ae0b71285e82600bbdc1e1da619f2aa"
+}

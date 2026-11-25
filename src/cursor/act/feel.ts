@@ -11,7 +11,7 @@ export const FEEL: Record<Acting, Feel> = {
   plain: feel({}),
   confident: feel({ stretch: 1.08, lean: 0.14, puff: 0.2, bounce: 0.09 }),
   nervous: feel({ stretch: 0.92, lean: -0.12, tremble: 0.5, sweat: 1 }),
-  shocked: feel({ stretch: 1.34, lean: -0.08, tremble: 0.15 }),
+  shocked: feel({ stretch: 1.2, lean: -0.08, tremble: 0.15 }),
   angry: feel({ stretch: 1.03, lean: 0.17, puff: 0.35, tremble: 0.3, heat: 1, steam: 1 }),
   scared: feel({ stretch: 0.86, lean: -0.44, bend: -0.3, pale: 1, tremble: 0.7 }),
   proud: feel({ stretch: 1.14, lean: 0.24, puff: 0.8, bounce: 0.04 }),
@@ -42,8 +42,8 @@ export function reactionPose(name: Reaction, u: number, dir: number): ReactionPo
       if (u < 0.52) return at(-0.14, 0.34, 0.3)
       return u < 0.86 ? at(0.44) : at(0)
     case 'recoil':
-      if (u < 0.18) return at(-0.6, 0.1 * dir, 0, 0.8 * dir)
-      return u < 0.55 ? at(0.44, 0.06 * dir, 0, -0.3 * dir) : at(0.1, 0.04 * dir)
+      if (u < 0.16) return at(-0.6, 0.1 * dir, 0, 0.8 * dir)
+      return u < 0.36 ? at(0.44, 0.06 * dir) : at(0, 0)
     case 'dustOff':
       return at(0.08, 0.22 * Math.sin(u * Math.PI * 8) * (1 - ramp(u, 0.7, 1)), 0, 0, 0.35 * (1 - ramp(u, 0.8, 1)))
     case 'jump':
@@ -63,6 +63,9 @@ export function reactionPose(name: Reaction, u: number, dir: number): ReactionPo
     // A sideways snap out of a shot's way: the tip thrown up and over, held.
     case 'snap':
       return u < 0.8 ? at(0.1, 0.2, 0.62) : at(0)
+    // A dart for cover: a long reach on the way, then small, low and leaning away from what it left, held.
+    case 'dart':
+      return u < 0.3 ? at(0.3, -0.3) : at(-0.3, -0.36, -0.4, -0.5)
     // A decided tap: back, down, held.
     case 'tap':
       return u < 0.3 ? at(-0.3, -0.3, -0.16) : u < 0.86 ? at(0.2, 0.3, 0.12) : at(0)

@@ -128,17 +128,27 @@ Owner: `/root/keys_fixer`, branch `agent/keys`. It answers the round 3 issues R4
 8. Impact flash on the hit frame. When a bolt hits the cursor the page draws a shape `scorch-9000N` with `v[1] = 1` at the place of the hit for `STRIKE.seconds` 0.5 s. The scorch maker draws it as a strike only: no mark and no smoke, a star flare of 96 to 186 px for 0.1 s and the sparks. It stays where the hit was while the cursor is thrown clear.
 9. A soft shade of each cap on the bed. Every seated cap now has one patch of the `shades` mesh, 6 px smaller than the cap and moved `SHADE.rest` 10 px along the key light, so the gap below and right of a cap is darker than the gap above and left. It tightens to 4 px while the key is down (`SHADE.tight`). It is geometry only and no cap casts on another cap, so the mottle does not come back. MEASURED: draft still of `step1-fire`, draw calls 280 (was 279), triangles 488097 (was 487287).
 10. Bolts are thin streaks (the Builder's point 4). Head 13 by 3.6 px (was 22 by 5.4) at glow 10, 6.5, 3 (was 16, 10, 4.5); orange tail 2.6 px thick and up to 168 px long (was 6 px and 112); the white-hot core 1.5 px thick (was 3). The light a bolt throws on the caps is unchanged.
-11. The field's rim: `/root/surface_fixer` applied `0.8 + 1.6 v` and a core lift of `1 + 0.7 v` in `controls.ts` on `agent/glass` (04debbf). STATED by them; I look at it on a motion sheet once it is on main.
+11. The field's rim: `/root/surface_fixer` applied `0.8 + 1.6 v` and a core lift of `1 + 0.7 v` in `controls.ts` on `agent/glass` (04debbf). It is on main since merge 19. MEASURED by two draft stills of `step1.firstName`, at 0.758 (the frame after the press of L, glow 1) and 0.7985 (0.34 s later, glow 0): the rim and its spill are plainly brighter on the press.
 
 12. In a swap one cap flies over and the other under: the cap that moves to a later seat flies at 1.25 of its height and the other at 0.75 (`FLIGHT.over`, `FLIGHT.under`), so two caps that cross are never at one height. Of two caps that overlap only the lower one loses its legend for those frames; before, both could, and blank caps flew. MEASURED by a review still of `step1.lastName` at 0.094 before (4 blank caps in the air) and a draft still after (none).
 
 13. A pit rides its cap. `layScorch` took a cap only if its top was within 3 px of the height the bolt struck at, so a cap that hopped in the tray's shake or dipped under a tap lost its pit: the mark stayed at the old height and was hidden inside the plastic. MEASURED: draft stills of `step1.firstName` at 0.644 and 0.650 (the hit and three frames later) showed three pits on W vanish in 0.05 s; with `SCORCH.ride` 16 px and the mark lifted to the cap's top they stay.
 14. The Enter lamp was looked at on the press: draft stills of `step1.email` at 0.492 (before, lamp dark) and 0.506 (Enter down, lamp lit).
 
+15. A cap in the air throws a clear shadow that leaves it as it rises (the Builder's note of 19:17Z). Above a hop of 4.5 px the cap's shade is no longer on the bed, where the caps round it hid it, but 3 px above the tops of the seated caps (`SHADE.over`), so it falls across the space bar, the number row, the seated neighbours and the gaps alike. It is two patches, a wide soft one and a core of 0.74 of its size, moved `hop x (1.8, 1.67)` along the key light and widened by a quarter of the hop. A cap above it hides it, which is right: that cap takes the real shadow of the ghost box. Tried first at 0.6 px above the tops: the caps that stir by 1.6 px showed the patch in their own dish (draft still, number row), hence 3 px and the threshold of 4.5.
+
+16. A bullet hole, not a dark spot (round 4, R3-1 #1). `scorchPicture` in `real/turret-fx.ts` now draws a hole seen from above under the page's light from the upper left: a dark shaft, the deck's metal faintly at its foot, a lit far wall, a raised splintered cream rim with a lit side and a shaded side, the rim's cast shadow on the cap and a brown singe that fades outward. The picture is the same 256 px and 0.33 MB, so no memory was added. The mark no longer turns (`turn: 0`), because the light in the picture has a side; its width and height still vary by seed. `SCORCH.size` 58, `SCORCH.legend` 27 so the rim clears the letter.
+
+17. The hot spot and the wisp sit under the cursor (round 4, R1-1 #3, the half that is mine; agreed with `/root/acting_fixer` at 19:51Z). The cursor's place at 6.0 s is the acting fixer's: it plans to stand on J, be hit there at about 5.61 s and stay through 6.0 s, with the right turret's next shot landing on the same spot. Mine is built to follow the cursor wherever the script puts it: the strike shape `scorch-9000N` now lives 1.5 s (`STRIKE.seconds`, was 0.5) and carries, at the place of the hit, a warm glow on the cap top that dies in about a second (`SCORCH.hotSeconds` 0.55, 120 px), a warm lamp (`EMIT.struck`) and a thin wisp of three puffs that rises from it. Every fresh hole also gives a short warm lamp (`EMIT.ember`) while its ember is alive, so the keys round the newest marks are the lit ones, and its smoke is a narrow wisp (three puffs, 1.9 times as tall as wide) instead of two round puffs. Since the turrets aim at the cursor the marks of that moment lie round it by construction. `tests/keys-strike.test.ts` holds the 1.5 s.
+
+18. Deck, caps and turret finish (round 4, R1-1 #4, #5, #6). Deck: roughness 0.46, anisotropy 0.5, brushing bump 0.1 (was 0.22), colour times (0.84, 0.85, 0.875), edge chamfer 3.4 px (was 2.4). Caps: `0xf0e6d3`, roughness 0.62, `SHADE.dark` 0.52 and `SHADE.rest` 11 for deeper lower seams. Enter: the shared orange with roughness 0.3 and a clear coat of 0.6 for a brighter rolloff. Turret: housing and hatch rim at colour times (0.38, 0.39, 0.415), roughness 0.36, anisotropy 0.7 for a directional brushed highlight; barrel times (0.2, 0.205, 0.22); socket `0x4c4a47` (was `0x8a8782`). This goes back on decision 4 of this round (the bright silver deck): round 4 asked for the darker satin metal of the approved image.
+
 ### Not reached
 
 - The landing frame of a slab falls between two sheet samples; what shows it afterwards is the pressed keys under the slab only.
-- The pit's brown ring is narrow and reads nearly black at sheet size.
+- At sheet size a hole reads as a dark dot with a pale rim; the wall and the metal at its foot show only close up.
+- The orange bounce of a discharge on the turret housing (R1-1 #6) is the muzzle lamp only; no reflection was added.
+- The caps' crown and corners (R1-1 #5) were not reshaped in round 5; only the colour, the gloss and the seams changed.
 
 ### MEASURED (2026-11-25, on the working tree of the first fix commit, main at ed12811)
 
@@ -153,4 +163,4 @@ Owner: `/root/keys_fixer`, branch `agent/keys`. It answers the round 3 issues R4
 
 ### Tuning looks
 
-Of 40 each in the fix round: keyboard 19, turrets 7, slabs 4.
+Of 40 each in the fix round: keyboard 25, turrets 11, slabs 4.

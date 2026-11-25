@@ -318,9 +318,11 @@ interface ScorchData {
   sparkMaterial: THREE.MeshBasicMaterial
   flare: THREE.Mesh
   flareMaterial: THREE.MeshBasicMaterial
+  hot: THREE.Mesh
+  hotMaterial: THREE.MeshBasicMaterial
 }
 
-const SCORCH = { size: 54, smoke: 2, smokeSeconds: 1.5, shoulder: 9, core: 11, legend: 24, word: 52, bar: 400, wide: 112, sparks: 9, sparkSeconds: 0.55, fall: 900, ember: 0.35, snap: 36, flareSeconds: 0.1, ride: 16 }
+const SCORCH = { size: 58, smoke: 3, smokeSeconds: 1.5, hotSeconds: 0.55, hotSize: 120, shoulder: 9, core: 11, legend: 27, word: 52, bar: 400, wide: 112, sparks: 9, sparkSeconds: 0.55, fall: 900, ember: 0.35, snap: 36, flareSeconds: 0.1, ride: 16 }
 
 function makeScorch(s: Shape): THREE.Object3D {
   const f = fx()
@@ -354,7 +356,11 @@ function makeScorch(s: Shape): THREE.Object3D {
   const flare = overlay(new THREE.Mesh(f.quad, flareMaterial), 30)
   flare.rotation.z = hash01(seed, 7, 8) * Math.PI * 2
   root.add(flare)
-  const data: ScorchData = { mark, geometry, material, smoke, smokeMaterials, sparks, sparkMaterial, flare, flareMaterial, seed, wide, tall: wide * (0.85 + 0.25 * hash01(seed, 3, 4)), turn: hash01(seed, 5, 6) * Math.PI * 2, at: [0, 0] }
+  const hotMaterial = f.flashMaterial.clone()
+  const hot = overlay(new THREE.Mesh(f.quad, hotMaterial), -6)
+  hot.visible = false
+  root.add(hot)
+  const data: ScorchData = { mark, geometry, material, smoke, smokeMaterials, sparks, sparkMaterial, flare, flareMaterial, hot, hotMaterial, seed, wide, tall: wide * (0.85 + 0.25 * hash01(seed, 3, 4)), turn: 0, at: [0, 0] }
   root.userData.scorch = data
   return root
 }
@@ -447,16 +453,28 @@ function poseScorch(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   }
   if (d.sparks.visible) d.sparks.instanceMatrix.needsUpdate = true
   d.material.color.setRGB(1 + 6 * ember, 1 + 6 * ember, 1 + ember)
+  const alive = left * TURRET.scorchSeconds > TURRET.scorchFade
+  const drop = strike ? (s.v?.[2] ?? 0) : 0
+  const warm = strike ? Math.exp(-age / SCORCH.hotSeconds) : ember
+  d.hot.visible = strike && alive && warm > 0.04
+  if (d.hot.visible) {
+    const size = SCORCH.hotSize * (0.8 + 0.2 * warm)
+    d.hot.position.set(0, 0, 1.5 - drop)
+    d.hot.scale.set(size, size, 1)
+    d.hotMaterial.color.setRGB(...mix([0, 0, 0], GLOW.boltTail, 0.75 * warm))
+  }
+  const lamp = strike ? EMIT.struck : EMIT.ember
+  if (alive && warm > 0.06) ctx.light({ x: s.x + s.w / 2 + d.at[0], y: s.y + s.h / 2 - d.at[1], z: s.z0 - drop + 22, colour: lamp.colour, power: lamp.power * warm, reach: lamp.reach })
   d.smoke.forEach((puff, i) => {
-    const u = age / SCORCH.smokeSeconds - i * 0.22
-    puff.visible = !strike && u > 0 && u < 1 && left * TURRET.scorchSeconds > TURRET.scorchFade
+    const u = age / SCORCH.smokeSeconds - i * 0.13
+    puff.visible = u > 0 && u < 1 && alive
     if (!puff.visible) return
-    const sway = Math.sin(u * 5 + i * 1.9 + d.seed) * 7 * u
-    const size = 12 + 34 * u
-    puff.position.set(d.at[0] + sway - 10 * u, d.at[1] + 46 * u, 4 + 70 * u)
-    puff.scale.set(size, size * 1.25, 1)
-    puff.rotation.z = hash01(i, d.seed, 21) * 6.28 + u
-    d.smokeMaterials[i]!.opacity = 0.36 * smooth(u / 0.15) * (1 - u) ** 1.5
+    const sway = Math.sin(u * 6 + i * 1.9 + d.seed) * 9 * u
+    const size = 9 + 20 * u
+    puff.position.set(d.at[0] + sway - 8 * u, d.at[1] + 6 + 64 * u, 4 + 70 * u - drop * (1 - u))
+    puff.scale.set(size, size * 1.9, 1)
+    puff.rotation.z = (hash01(i, d.seed, 21) - 0.5) * 0.7 + sway * 0.02
+    d.smokeMaterials[i]!.opacity = 0.44 * smooth(u / 0.12) * (1 - u) ** 1.4
   })
 }
 
@@ -505,6 +523,7 @@ export const turrets: PartMaker = {
       c.flareMaterial.dispose()
       c.geometry.dispose()
       for (const m of c.smokeMaterials) m.dispose()
+      c.hotMaterial.dispose()
     }
   }
 }

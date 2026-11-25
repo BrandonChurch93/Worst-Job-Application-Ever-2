@@ -1,0 +1,106 @@
+{
+ "critic": "R1",
+ "score": 5,
+ "pass": false,
+ "model": "gpt_6_2_sol",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-A-03-b.png",
+   "where": "the whole shot; also immediately clear in the set-A-04-b.png crop sheet",
+   "what": "The build is an extreme close-up of the upload zone. The target frames the paper action in a full view of the page with the header, progress rail, two-column form and breathing room intact. This is a framing difference, not a different cursor size or field set.",
+   "fix": "Pull the camera back to the full-page composition, retaining the configured object sizes and current step-one fields. Frame the action against the lower-right edge of the upload zone and adjacent column instead of letting the upload zone fill the frame."
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-03-b.png",
+   "where": "paper entry below the upload zone, including the corresponding set-A-04-b.png crop",
+   "what": "The target reads as a thin black slit cut into the page with the paper disappearing into it. The build shows a raised, exposed silver roller assembly, a fan of long strips, and a large blocklike shadow beneath it.",
+   "fix": "Hide the roller assembly below the page and keep the entry as a slim, dark cut with a tight rim. Hide the strips for this entry beat, or leave only brief traces close to the slit if needed later."
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-01-b.png",
+   "where": "cursor and key action, repeated in set-A-02-b.png",
+   "what": "The cursor is up at the number row and looks clean while the lit and charred marks are scattered around other keys. The target has a readable impact cluster at the cursor over the middle letter rows, with a scorch on the cursor face, a hot spot directly under it and a little rising smoke.",
+   "fix": "Move the cursor/action cluster into the middle of the letter bank at this beat. Put a small hot scorch on the cursor face and a coordinated glow and smoke wisp immediately below it. Keep the settled projectile count free."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "exposed keyboard deck, key surround and turret hatches; see set-A-02-b.png corners",
+   "what": "The flat light-gray deck with obvious horizontal stripes, thin square edges and nearly even illumination loses the target's darker, curved satin-metal reflections, occluded seams and localized warm flashes. This is a finish and lighting mismatch, not the raised deck or hatch architecture.",
+   "fix": "Keep the raised deck and all five rows. Fine down the brushing, give the edge and hatch rims a more polished bevel, deepen local occlusion and let warm light catch the metal near the flashes rather than uniformly lighting the deck."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "key caps and orange key",
+   "what": "The caps have flatter squarer tops, broad white edges and thin dark seams; the target has softly crowned, warmer ivory caps with deeper separation, subtle contact tint and warmer specular rolloff. The orange cap in the build is darker and less glossy across its face.",
+   "fix": "Soften the crown and corners, warm the ivory facing, retain a narrow top-left rim and deepen the lower seams. Add a brighter orange-red specular rolloff to the orange cap."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "turret close-up and neighboring key reflections",
+   "what": "The build's gunmetal reads as bright uniform radial shading on the round housing and a pale tubular barrel. The target has a more layered dark socket, broader directional brushing on the housing and a tight bright rim with orange bounce at the barrel and nearby keys.",
+   "fix": "Keep the specified hatches and heights but darken the concentric seams, make the brushed highlight directional, retain a tight top-left glint, and tie the local orange reflection to the discharge."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04-b.png",
+   "where": "arrow, arms and hand-to-paper contact",
+   "what": "The build shows a steel-edged, relatively straight angular arrow with one arm nearly horizontal and the opposite one reaching downward. The target has a rounder cream face, heavier dark side edge and paired bowed arms reaching forward and down as if pushing together.",
+   "fix": "Keep the settled cursor size, soften the ivory gloss over a darker raised side edge, and curve both arms down and forward with their hands gripping near the paper's upper corners."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04-b.png",
+   "where": "the sheet between the hands and the entry",
+   "what": "The build's sheet is a relatively taut, tidy diagonal card; the target looks like thin crumpled paper with broad wrinkling, uneven edges and a buckled shadowed lower area that folds into the slit.",
+   "fix": "Add larger irregular creases and a buckled silhouette, deepen the fold shadows near the entry, and sit the printed marks into the paper instead of having them read as a flat card face."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "header progress discs, rail and rule, also apparent in set-A-01-b.png",
+   "what": "The silver discs read as evenly lit pale flat badges, with a uniform gray track. The target has dark-to-bright spun-metal faces, thinner reflective lips, stronger lower-right shadows and a rail/rule that catches a finer top highlight. The active orange disc loses the bright honey-orange crown and darker second layer.",
+   "fix": "Use directional satin-metal reflections and a thin bright machined rim on the discs and rail. Bring the orange top into a warmer glossy highlight above a dark stacked rim and restore stronger, softer lower-right shadow falloff."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "upload glass, inset border and corners, also visible in sets A-01 and A-04",
+   "what": "The glass is flatter and more neutral gray with a broad cloudy bevel and very even rim. The target has a steel-blue frosted center, stronger localized darkening inside its top and left edges, and sharper silver shine around the rounded corners; the dashed seam is finer and more distinct.",
+   "fix": "Shift the glass slightly cooler, add localized inner occlusion with a thinner, brighter rounded edge, and make the dashed seam a clear but subtle line over the frost."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "right-column input wells; active input in set-A-01-b.png and sheet A-02",
+   "what": "The wells read as flat gray-green fills behind a narrow line. The target has deeper dark rolled upper-and-left edges, a clear cold highlight on the opposite rim and a less even frosted gradient. In the active state the build has a single faint orange seam rather than the target's bright narrow core and warm outer bloom.",
+   "fix": "Give the wells layered inner depth, strengthen the low rim reflection, and add a split luminous core and warm falloff for the active state without changing the fields or their configuration."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "upload button and the equivalent close-up in set-A-04-b.png",
+   "what": "The button looks like a flat-faced charcoal pill with a stark black perimeter, bold cream text and a short tight shadow. The target has softer, cool satin-metal shading and a more diffuse down-right shadow; its text feels less heavy.",
+   "fix": "Replace the hard border with a narrower metallic lip and gradient across the dome, soften and extend the down-right shadow, and lighten the label weight slightly."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "page surface and the light connecting the header, controls and arrow",
+   "what": "The build's mottling is soft and cloudy and the overall photo reads cooler and flatter. The target has a finer, more tactile ivory paper grain, richer contact darks and broader soft shadow tails that consistently trail down-right, with tighter highlights on machined pieces.",
+   "fix": "Use finer, less cloudy grain over a slightly warmer ivory base and tune directional light and shadow falloff across the common components. Do not add a slab edge or a window band."
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-05-b.png",
+   "where": "title and thin divider; also in set-A-01-b.png",
+   "what": "The shared title and progress controls ride a little higher above the divider than in the target; the title-to-rule spacing looks looser by direct comparison.",
+   "fix": "If the layout tree permits, slightly tighten the title-to-divider spacing while keeping the present header alignment and copy."
+  }
+ ]
+}
