@@ -25,26 +25,27 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 10, 2026-11-25T08:42Z, Phase 2.
+Status 11, 2026-11-25T09:03Z, Phase 2.
 
-1. `out/stills/status/01-blockout-cursor-arms.jpg`: Stand-in for the cursor's arms sheet: thin arms with round hands that reach to two places. The arms exist only in the tug of war of step 1.
-2. `out/stills/status/02-blockout-cursor-damage.jpg`: Stand-in for the damage sheet, left to right: burn, shredded, reassembled, flattened, scorched. Every kind of damage heals inside four seconds.
-3. `out/stills/status/03-blockout-cursor-acting.jpg`: Stand-in for the acting sheet: five ways the body carries itself, with sweat drops as small beads. The cursor has no face, so all acting is posture.
+1. `out/stills/status/01-blockout-step5-wait.jpg`: Step 5 blockout, 1.0 s in: the wait panel with the counter at 6-8 business months and the cursor standing below it.
+2. `out/stills/status/02-blockout-step5-stamp-falls.jpg`: Step 5 blockout, 4.2 s in: the letter is down, the metrics panel reads 00:00, and the stamp block comes down on the letter. The cursor is under the block.
+3. `out/stills/status/03-blockout-step5-stamped.jpg`: Step 5 blockout, 7.2 s in: REJECTED is on the letter, the cursor lies flattened beside the word, the block rests under the metrics panel and the three times have counted up.
+4. `out/stills/status/04-blockout-step5-accept.jpg`: Step 5 blockout, 9.4 s in: the cursor, whole again, presses Accept Rejection.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 2, tick 34 at 2026-11-25T08:50:54Z, allowance: build
-time used in this phase: 1.21 h of its box of 6.50 h
-time used under the allowance in force: 3.31 h of 36.00 h allowed
-time used: 3.31 of 36.00 hours before the review
+clock: phase 2, tick 36 at 2026-11-25T09:03:51Z, allowance: build
+time used in this phase: 1.42 h of its box of 6.50 h
+time used under the allowance in force: 3.52 h of 36.00 h allowed
+time used: 3.52 of 36.00 hours before the review
 extra rounds: yes
 half point: not reached
 box end: not reached
 budget report: not due
-minutes since the last status: 8
+minutes since the last status: 0
 ```
 
 ## Phases
