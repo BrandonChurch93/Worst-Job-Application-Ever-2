@@ -109,14 +109,18 @@ export function marquee(z: Zone, ctx: RealContext): THREE.Object3D {
     const x1 = x0 + (2 * w - 60) / 7 - 3
     A.pipe([[x0, -h2 - r - 4, -BOX.deep / 2], [x1, -h2 - r - 4, -BOX.deep / 2]], 8.5, 12, i % 2 === 0 ? TONE.alu : TONE.aluDark)
   }
+  // The picture sits inside a second, lower frame of bright aluminium.
+  const lip = (x0: number, x1: number, y0: number, y1: number, along: [number, number, number]): void => {
+    A.box(x0, x1, y0, y1, 0, BOX.innerProud, TONE.aluBright, { bevel: 1.6, along })
+  }
+  lip(-w, w, h2 - step, h2, [1, 0, 0])
+  lip(-w, w, p0, p0 + step, [1, 0, 0])
+  lip(-w, -w + step, p0 + step, h2 - step, [0, 1, 0])
+  lip(w - step, w, p0 + step, h2 - step, [0, 1, 0])
   A.move(body, toBoard)
   const inner = (x0: number, x1: number, y0: number, y1: number): void => {
     P.box(x0, x1, y0, y1, 0, BOX.innerProud, TONE.bezel, { bevel: 1.6 })
   }
-  inner(-w, w, h2 - step, h2)
-  inner(-w, w, p0, p0 + step)
-  inner(-w, -w + step, p0 + step, h2 - step)
-  inner(w - step, w, p0 + step, h2 - step)
   // The seat of the main display: a dark strip the whole width of the face.
   inner(-w, w, s1 - step, s1)
   inner(-w, w, s0, s0 + step)
