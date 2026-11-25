@@ -3,10 +3,11 @@ import type { RealContext } from '../../../../real/types'
 import { holdOf } from '../../../layout'
 import { localBalls, type Zone } from '../../zone'
 import { Geo, roundedLoop, type V2 } from './geo'
-import { FINISH, TONE, drop as free, fin, matsOf, mesh, moved, place, screw, shade } from './mats'
+import { FINISH, TONE, drop as free, fin, hex, matsOf, mesh, moved, place, screw, shade } from './mats'
 
 export const DOOR = { reach: 66, foot: 10, tall: 112, thick: 5, post: 6.5, ring: 70, rest: Math.PI / 4, turn: 0.85 }
 
+const EDGE = hex(0x9fc9c2)
 const built = new WeakMap<THREE.Object3D, THREE.Object3D>()
 
 export function buildRevolving(z: Zone, _ctx: RealContext): THREE.Object3D {
@@ -39,8 +40,9 @@ export function buildRevolving(z: Zone, _ctx: RealContext): THREE.Object3D {
       fin(S, FINISH.polished, () => {
         // A thin brass frame: a rail under, a rail over and a stile at the free edge, with a clamp at the post.
         S.box(r0, DOOR.reach, -t - 0.6, t + 0.6, DOOR.foot, DOOR.foot + 3, TONE.brass, { bevel: 0.5, bottom: true })
-        S.box(r0, DOOR.reach, -t - 0.6, t + 0.6, top - 3, top, TONE.brass, { bevel: 0.5, bottom: true })
-        S.box(DOOR.reach - 2.6, DOOR.reach, -t - 0.6, t + 0.6, DOOR.foot + 3, top - 3, TONE.brass, { bevel: 0.5 })
+        S.box(r0, DOOR.reach, -1.1, 1.1, top - 0.4, top + 1.2, TONE.brass, { bevel: 0.4 })
+        S.box(DOOR.reach - 0.4, DOOR.reach + 1.2, -1.1, 1.1, DOOR.foot + 3, top + 1.2, TONE.brass, { bevel: 0.4 })
+        for (const x of [r0 + 9, DOOR.reach - 7]) S.box(x - 3.2, x + 3.2, -t - 1, t + 1, top - 6.5, top + 1.6, TONE.brassDark, { bevel: 0.6, bottom: true })
         for (const zc of [DOOR.foot + 14, top - 14]) S.box(DOOR.post - 1, r0 + 6, -t - 1.6, t + 1.6, zc - 4, zc + 4, TONE.brassDark, { bevel: 0.7, bottom: true })
         // The push bar, on both faces.
         const bz = DOOR.foot + DOOR.tall * 0.46
@@ -55,10 +57,15 @@ export function buildRevolving(z: Zone, _ctx: RealContext): THREE.Object3D {
         }
       })
       fin(S, FINISH.matte, () => S.box(r0 + 3, DOOR.reach - 3, -1.6, 1.6, DOOR.foot - 2.2, DOOR.foot, TONE.rubber, { bottom: true }))
+      // The polished edge of the pane, which is all of the glass that is seen from over it.
+      fin(S, FINISH.stone, () => {
+        S.box(r0 + 0.6, DOOR.reach - 0.4, -t, t, top - 0.5, top - 0.3, EDGE, { bottom: false })
+        S.box(DOOR.reach - 0.6, DOOR.reach - 0.4, -t, t, DOOR.foot + 3, top - 0.5, EDGE)
+      })
     })
     // The pane: thick, clear, its edges polished and its corners rounded.
     const from = C.vertices
-    const pane: V2[] = roundedLoop(r0 + 0.6, DOOR.reach - 2.6, DOOR.foot + 3, top - 3, 2.2, 3)
+    const pane: V2[] = roundedLoop(r0 + 0.6, DOOR.reach - 0.6, DOOR.foot + 3, top - 0.5, 1.2, 2)
     C.prism(pane, [0, -t], [0, t], [1, 1, 1])
     C.move(from, m)
   }
