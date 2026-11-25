@@ -41,7 +41,7 @@ export function police(b: Buckets, z: Zone, ctx: RealContext): { beacon: V3 } {
       }
     }
     wallFace(g, 0, W, 3, plinth, side === 'front' ? [entry] : [], TONE.stone, KIND.block)
-    wallFace(g, 0, W, plinth, top - 3, side === 'front' ? [entry, ...lower, ...upper] : [...lower, ...upper], TONE.blue, KIND.brick)
+    wallFace(g, 0, W, plinth, top - 3, side === 'front' ? [entry, ...lower, ...upper] : [...lower, ...upper], TONE.blue, KIND.painted)
     band(g, -1.2, W + 1.2, plinth - 2, plinth + 1.2, 1.6, TONE.stonePale)
     band(g, -1.2, W + 1.2, storey, storey + 3.5, 1.6, TONE.stonePale)
     band(g, -2.4, W + 2.4, deck - 7, deck - 2, 2.8, TONE.stonePale)
@@ -88,7 +88,7 @@ export function police(b: Buckets, z: Zone, ctx: RealContext): { beacon: V3 } {
   // On the roof: a stair house with a door, a radio mast, a cooling unit and two vents.
   const sx0 = x0 + 12
   const sy1 = yb - 10
-  g.box(sx0, sx0 + 38, sy1 - 30, sy1, deck, deck + 24, TONE.blue, { kind: KIND.brick, top: TONE.roof, topKind: KIND.tar })
+  g.box(sx0, sx0 + 38, sy1 - 30, sy1, deck, deck + 24, TONE.blue, { kind: KIND.painted, top: TONE.roof, topKind: KIND.tar })
   g.box(sx0 - 1.5, sx0 + 39.5, sy1 - 31.5, sy1 + 1.5, deck + 24, deck + 26.5, TONE.stonePale, { under: true, bevel: 0.8 })
   g.box(sx0 + 39, sx0 + 39.8, sy1 - 22, sy1 - 10, deck, deck + 18, TONE.iron, { skip: 'l', kind: KIND.gloss })
   const mx = sx0 + 19
