@@ -17,7 +17,7 @@ export const cursorReal = { body: whole, effects: makeEffects !== null, acting: 
 
 const half = config.table.ballPx / 2
 // A closed hand rides this far above where it holds, so that the fingers lie on what is held and not inside it.
-const HOLD = 4
+const HOLD = 1
 // An arm is rooted this share of the way in from the shoulder, so that it leaves from under the edge and never from beside it.
 const ROOT = 0.2
 // Two closed hands hold a sheet by its two side edges. Each stands `out` outside its edge, so that the palm is beside the sheet and the thumb on it. They are not level: one reaches `reach` further down its edge than the other, and it is the hand that is higher up the page, where a tilted sheet has the longer edge left. `tilt` is how fast the reach goes from one hand to the other as the sheet turns, `down` what each has when the sheet is square.
