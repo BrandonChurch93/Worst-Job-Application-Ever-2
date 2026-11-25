@@ -1,35 +1,35 @@
 {
   "folder": "boss",
-  "pushed": "2026-11-25T09:41:01.589Z",
-  "commit": "ce9b34b458d10b5cb7beeced60b787e857c71c93",
+  "pushed": "2026-11-25T09:45:42.032Z",
+  "commit": "c6723d41b09f98e986dff0977609081cfc7f0189",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Contact sheet, the page boss, sheet 1 of 3: 12 frames from 1:49.00 to 1:59.03, draft tier, preview",
-      "time": "2026-11-25T09:39:12.097Z",
+      "caption": "The live site's own path with the bot keen driving, seed 20261124: 12 moments of its run of 25.0 s",
+      "time": "2026-11-25T09:41:57.701Z",
       "by": "boss",
-      "from": "out/work/sheets/sheet-unit-boss-1of3-preview-draft.jpg"
+      "from": "out/work/sheets/sheet-live-keen_20261124-preview-live.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Contact sheet, the page boss, sheet 2 of 3: 12 frames from 1:59.97 to 2:10.00, draft tier, preview",
-      "time": "2026-11-25T09:39:17.445Z",
+      "caption": "Still still-rest-step4-preview-draft: draft tier, preview, view beauty",
+      "time": "2026-11-25T09:44:29.479Z",
       "by": "boss",
-      "from": "out/work/sheets/sheet-unit-boss-2of3-preview-draft.jpg"
+      "from": "out/work/stills/still-rest-step4-preview-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Contact sheet, the page boss, sheet 3 of 3: 12 frames from 2:10.93 to 2:20.97, draft tier, preview",
-      "time": "2026-11-25T09:39:22.660Z",
+      "caption": "Step 4 at rest: the verify card is closed under the checkbox row, fine print right under it, Submit in its socket",
+      "time": "2026-11-25T09:45:40.630Z",
       "by": "boss",
-      "from": "out/work/sheets/sheet-unit-boss-3of3-preview-draft.jpg"
+      "from": "out/work/stills/still-rest-step4-preview-draft.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Step 4 press, new path: the cursor waits at the lower left (29 s), reads the line (29.9 s), drags itself onto the left end (30.2 s) and presses (30.7 s); the words stay clear",
-      "time": "2026-11-25T09:41:00.296Z",
+      "caption": "Film 3.7 to 5.2 s: the tick opens the card, the rule draws, the answer appears, the cursor steps aside",
+      "time": "2026-11-25T09:45:40.864Z",
       "by": "boss",
-      "from": "out/work/filmH.png"
+      "from": "out/work/filmJ.png"
     }
   ]
 }
