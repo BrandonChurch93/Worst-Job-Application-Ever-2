@@ -118,6 +118,7 @@ export async function renderPiece(ctx, kind, piece) {
   fs.mkdirSync(dir, { recursive: true })
   writeJson(note, record)
   const t0 = clock()
+  let told = t0
   let kept = 0
   for (let k = 0; k < frames.length; k++) {
     const file = path.join(dir, `${String(k).padStart(6, '0')}.png`)
@@ -136,6 +137,11 @@ export async function renderPiece(ctx, kind, piece) {
     fs.renameSync(`${file}.part`, file)
     ctx.rendered++
     ctx.renderSeconds += seconds(f0)
+    if (seconds(told) >= 60 && k < frames.length - 1) {
+      const each = seconds(t0) / (k + 1 - kept)
+      console.log(`${ctx.name}: ${piece.unit}, frame ${frames[k]}, ${k + 1} of the ${frames.length} of this piece, ${each.toFixed(2)} s a frame, about ${took(each * (frames.length - k - 1))} left in it`)
+      told = clock()
+    }
     await look(ctx, kind, piece, frames[k], png)
   }
   const renderSeconds = seconds(t0)
