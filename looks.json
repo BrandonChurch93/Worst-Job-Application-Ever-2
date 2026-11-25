@@ -1,0 +1,35 @@
+{
+  "folder": "step1-script",
+  "pushed": "2026-11-25T14:35:47.974Z",
+  "commit": "879992b3d3ac717b77455b4340907824db0c3634",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Key step1-tug at 879992b: approved on the left, this build on the right, review tier. Two hands on the title, the sheet taut to the slot, the camera pushed in",
+      "time": "2026-11-25T14:35:46.161Z",
+      "by": "step1-script",
+      "from": "out/work/report/step1-script-tug-beside-approved.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Key step1-fire at 879992b: approved on the left, this build on the right, review tier. The cursor just hit, scorches on the caps, the note under the card is half hidden by the deck (to fix)",
+      "time": "2026-11-25T14:35:46.392Z",
+      "by": "step1-script",
+      "from": "out/work/report/step1-script-fire-beside-approved.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Motion sheet of the reassembly at 879992b: the fields empty, the message shows, the cursor's strips zip together under the paper heap",
+      "time": "2026-11-25T14:35:46.677Z",
+      "by": "step1-script",
+      "from": "out/work/report/step1-script-motion-reassembly.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Motion sheet of the hit at 879992b: the bolt strikes at 5.89 s, the cursor is thrown and holds its shock",
+      "time": "2026-11-25T14:35:46.926Z",
+      "by": "step1-script",
+      "from": "out/work/report/step1-script-motion-hit.jpg"
+    }
+  ]
+}
