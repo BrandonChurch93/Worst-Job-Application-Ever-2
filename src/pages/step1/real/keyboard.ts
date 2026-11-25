@@ -6,7 +6,7 @@ import type { Shape } from '../../../stage/types'
 import { DECK, HATCH, hatchCentre, seats } from '../keyboard'
 import { BRUSH, CAP, capGeometry, kit, lit, scaleUv } from './keyboard-kit'
 
-export const DECK_LOOK = { chamfer: 3.4, depth: 84, corner: 5, field: 7, fieldLip: 1.1, fieldDepth: CAP.skirt + 2.2, hatchHole: HATCH / 2 - 2 }
+export const DECK_LOOK = { chamfer: 3.4, rim: 9, depth: 84, corner: 5, field: 7, fieldLip: 1.1, fieldDepth: CAP.skirt + 2.2, hatchHole: HATCH / 2 - 2 }
 
 const capKey = (w: number, h: number): string => `${Math.round(w * 4) / 4}x${Math.round(h * 4) / 4}`
 const capGeometries = new Map<string, THREE.BufferGeometry>()
@@ -61,10 +61,12 @@ const coreShape = (w: number, h: number): THREE.BufferGeometry => {
 const isCap = (s: Shape): boolean => s.role === 'keycap' && s.kind !== 'text'
 const isEnter = (s: Shape): boolean => s.id === 'key-enter'
 
-function deckGeometry(w: number, h: number): { metal: THREE.BufferGeometry; seat: THREE.BufferGeometry } {
+function deckGeometry(w: number, h: number): { metal: THREE.BufferGeometry; well: THREE.BufferGeometry; seat: THREE.BufferGeometry } {
   const c = DECK_LOOK.chamfer
   const outer = roundedRect(w, h, DECK_LOOK.corner, 8)
-  const face = new THREE.Shape(ringPath(outer, c, 0, 0).getPoints())
+  const face = new THREE.Shape(ringPath(outer, c + DECK_LOOK.rim, 0, 0).getPoints())
+  const band = new THREE.Shape(ringPath(outer, c, 0, 0).getPoints())
+  band.holes.push(ringPath(outer, c + DECK_LOOK.rim, 0, 0))
   const metal: THREE.BufferGeometry[] = []
   const dark: THREE.BufferGeometry[] = []
   const ox = DECK.x + DECK.w / 2
@@ -97,15 +99,18 @@ function deckGeometry(w: number, h: number): { metal: THREE.BufferGeometry; seat
     const at = hatchCentre(side)
     face.holes.push(ringPath(circle(DECK_LOOK.hatchHole, 48), 0, at.x - ox, -(at.y - oy)))
   }
-  const top = new THREE.ShapeGeometry(face)
-  const p = top.getAttribute('position')
-  const uvs = new Float32Array(p.count * 2)
-  for (let i = 0; i < p.count; i++) {
-    uvs[i * 2] = p.getX(i)
-    uvs[i * 2 + 1] = p.getY(i)
+  const flat = (shape: THREE.Shape): THREE.BufferGeometry => {
+    const top = new THREE.ShapeGeometry(shape)
+    const p = top.getAttribute('position')
+    const uvs = new Float32Array(p.count * 2)
+    for (let i = 0; i < p.count; i++) {
+      uvs[i * 2] = p.getX(i)
+      uvs[i * 2 + 1] = p.getY(i)
+    }
+    top.setAttribute('uv', new THREE.BufferAttribute(uvs, 2))
+    return top
   }
-  top.setAttribute('uv', new THREE.BufferAttribute(uvs, 2))
-  metal.push(top)
+  metal.push(flat(band))
   const wall: Ring[] = [
     { inset: 0, z: -DECK_LOOK.depth, out: 1, up: 0 },
     { inset: 0, z: -c, out: 1, up: 0 },
@@ -113,7 +118,7 @@ function deckGeometry(w: number, h: number): { metal: THREE.BufferGeometry; seat
     { inset: c, z: 0, out: 0.7071, up: 0.7071 }
   ]
   metal.push(sweep(outer, wall, false))
-  return { metal: scaleUv(merge(metal), 1 / BRUSH.u, 1 / BRUSH.v), seat: merge(dark) }
+  return { metal: scaleUv(merge(metal), 1 / BRUSH.u, 1 / BRUSH.v), well: scaleUv(merge([flat(face)]), 1 / BRUSH.u, 1 / BRUSH.v), seat: merge(dark) }
 }
 
 interface CapSlot { start: number; count: number; from: Float32Array; facing: Float32Array; pose: [number, number, number, number, number]; leaned: boolean; shade: number }
@@ -144,7 +149,7 @@ function makeDeck(s: Shape, ctx: RealContext): THREE.Object3D {
   const plate = new THREE.Group()
   const g = deckGeometry(s.w, s.h)
   const bed = new THREE.Mesh(g.seat, k.bed)
-  plate.add(new THREE.Mesh(g.metal, k.deck), bed)
+  plate.add(new THREE.Mesh(g.metal, k.deck), new THREE.Mesh(g.well, k.well), bed)
   root.add(plate)
   const cream = ctx.list.filter(isCap)
   const enter = cream.find(isEnter)
@@ -208,7 +213,7 @@ function makeDeck(s: Shape, ctx: RealContext): THREE.Object3D {
   ghosts.castShadow = true
   ghosts.receiveShadow = false
   root.add(ghosts)
-  const data: DeckData = { plate, caps, body, accent, shades, ghosts, owned: [g.metal, g.seat, all, patch, block] }
+  const data: DeckData = { plate, caps, body, accent, shades, ghosts, owned: [g.metal, g.well, g.seat, all, patch, block] }
   root.userData.deck = data
   return root
 }

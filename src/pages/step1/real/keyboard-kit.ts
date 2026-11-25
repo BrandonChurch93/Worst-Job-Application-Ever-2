@@ -58,6 +58,7 @@ export function brushedNormalMap(size: number, seed: number, strength: number): 
 export interface Kit {
   brushed: THREE.DataTexture
   deck: THREE.MeshPhysicalMaterial
+  well: THREE.MeshPhysicalMaterial
   turned: THREE.MeshPhysicalMaterial
   barrel: THREE.MeshPhysicalMaterial
   bed: THREE.MeshPhysicalMaterial
@@ -84,11 +85,13 @@ export function kit(): Kit {
     return out
   }
   const deck = metal(0.46, 0.5, 0.1)
-  deck.color.multiply(new THREE.Color(0.84, 0.85, 0.875))
+  deck.color.multiply(new THREE.Color(1, 1, 1.01))
+  const well = metal(0.5, 0.5, 0.1)
+  well.color.multiply(new THREE.Color(0.37, 0.38, 0.41))
   const turned = metal(0.36, 0.7, 0.16)
   turned.color.multiply(new THREE.Color(0.38, 0.39, 0.415))
   const bed = metal(0.55, 0.5, 0.12)
-  bed.color.multiply(new THREE.Color(0.9, 0.91, 0.93))
+  bed.color.multiply(new THREE.Color(0.36, 0.37, 0.395))
   const barrel = metal(0.34, 0.6, 0.14)
   barrel.color.multiply(new THREE.Color(0.2, 0.205, 0.22))
   const cap = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xf0e6d3), roughness: 0.62, metalness: 0, specularIntensity: 0.45, vertexColors: true }))
@@ -100,7 +103,7 @@ export function kit(): Kit {
   lamp.clearcoatRoughness = 0.22
   const seat = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x4c4a47), roughness: 0.78, metalness: 0, specularIntensity: 0.3 }))
   const dark = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x201f1e), roughness: 0.55, metalness: 0.2, specularIntensity: 0.5 }))
-  made = { brushed, deck, turned, barrel, bed, cap, orange: m.orange, lamp, seat, dark }
+  made = { brushed, deck, well, turned, barrel, bed, cap, orange: m.orange, lamp, seat, dark }
   return made
 }
 

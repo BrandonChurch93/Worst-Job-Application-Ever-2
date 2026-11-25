@@ -148,6 +148,7 @@ Owner: `/root/keys_fixer`, branch `agent/keys`. It answers the round 3 issues R4
 20. A slab lands dead (round 4, R4-2 #1, #2, #3; the Builder's note 1). What was already there since the first fix push and is in the sheets only if they start before the landing: the slab arrives 110 px up, hangs 0.2 s and falls 0.2 s with a cubic acceleration, its shadow from the key light lies about 200 px down and right while it hangs and closes under it as it falls, the deck jolts 5.5 px and dies in 0.25 s, and the caps round it hop. Changed now: the caps under the slab are at the bottom of their travel on the landing frame itself (they took 0.03 s), the slab sinks the key travel in 0.015 s and its 1.2 px bounce is gone. A purpose-made soft shadow that starts wide and tightens was not built.
 
 21. The bolts, ruled by the Builder at 20:15Z: longer, not fatter. Head 8 by 3 px at glow 12, 7.5, 3.3, tail 2.6 px thick and up to 92 px long with a core of 1.4 px, no halo; bolt lamp 0.3 over 110 px. The muzzle flash is 24 to 32 px across, lasts two frames (`TURRET_LOOK.flashSeconds` 0.034) and its lamp is 0.6 over 160 px. This replaces the bolt and flash sizes of decision 19; the dip of the struck cap and the tray's jolt of decision 19 stay. Looked at on the fire key: the blob over Caps Lock at 6.0 s is gone and the legend reads.
+22. The deck as a tray, by tone (Builder, 20:15Z): the flat top of the deck is drawn in two tones. A rim 9 px wide (`DECK_LOOK.rim`) and the chamfer stay in the light deck steel; the face inside the rim is the well, `metal(0.5, 0.5, 0.1)` at 0.37, 0.38, 0.41 of the shared aluminium, and the bed between the caps is 0.36, 0.37, 0.395. No new shape: the same flat face is split into two meshes so each can carry its tone, which costs one draw call; no texture is added. NOT DONE: the well's floor does not darken toward its walls and is not darker at the upper left; it is one flat tone. Looked at on the fire key beside the approved image: dark well, light narrow rim, caps and legends as before.
 
 ### Not reached
 
@@ -169,4 +170,4 @@ Owner: `/root/keys_fixer`, branch `agent/keys`. It answers the round 3 issues R4
 
 ### Tuning looks
 
-Of 40 each in the fix round: keyboard 25, turrets 20, slabs 5.
+Of 40 each in the fix round: keyboard 27, turrets 20, slabs 5.
