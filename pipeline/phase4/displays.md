@@ -47,3 +47,12 @@ One display is 2 draw calls and 82 triangles. The four together are 328 of the 4
 - STATED by the Builder: the mode shapes will carry `v[0]`, the seconds since the mode was lit. Until then `pick.ts` shows the newest mode of the ball's tier in a round on the frame's time: the name, the line, then four seconds of score.
 - The score shapes carry no time of the last change, so the roll of a changed numeral is built and tested but is not seen in the film. Wanted: `v = [seconds since the score last changed, the score before the change]`.
 - The shape `display.hint` with `v[0]` is not on the page yet. The picture is built and tested, and was looked at once by forcing it.
+
+## After the first report
+
+- The halo is two things: a tight ring of eight taps round each lit dot, and a wide warm glow read from the small pictures of the same grid. The second is what makes a numeral look lit and not printed.
+- The pane of a tier display carries small faint spots of the tier's general lamps, placed by where each lamp stands and sliding with the camera. The pane is taken to bulge a hair, so the spots are small and in a row. The main display has none: the marquee has no lamps of that kind.
+- The sweep lifts the glow more than the dot, since a lit dot is already at the top of what the screen shows. MEASURED by one forced still: it is seen as a wider glow round two numerals and nothing harsher.
+- `tests/table-displays-pick.test.ts` holds what is shown when: hint first, newest running mode, score after the line, the round used while the page gives no time.
+- Looked at `last-save` and `youre-fired`: no tier display is in frame in either, as in the approved images.
+- Looked at a sheet of `pinball.coffee`: the name is held, then the line runs, on the round used while the page gives no time.

@@ -24,11 +24,11 @@ export const LEGEND = { font: 'inter-500', px: 26, align: 'centre' as const }
 export const LEGEND_WORD = { font: 'inter-500', px: 20, align: 'centre' as const }
 export const SLAB = { w: 440, h: 104 }
 export const SLAB_TYPE = { font: 'inter-600', px: 34, align: 'centre' as const }
-export const PAPER = { w: 220, h: 300 }
-export const PAPER_REST = { x: 1000, y: 748 }
-export const PAPER_TITLE = { font: 'inter-600', px: 28 }
-export const PAPER_LINES = [0.3, 0.38, 0.46, 0.54, 0.66, 0.74, 0.82]
-export const SLOT = { w: 300, h: 26, cx: ZONE.x + ZONE.w * 0.62, cy: FORM_BOTTOM + 30 }
+export const PAPER = { w: 64, h: 88, inset: 5, top: 14, bar: 2 }
+export const PAPER_REST = { x: 1078, y: 854 }
+export const PAPER_TITLE = { font: 'inter-600', px: 14 }
+export const PAPER_LINES = [0.36, 0.44, 0.52, 0.6, 0.7, 0.78, 0.86]
+export const SLOT = { w: 96, h: 10, cx: ZONE.x + ZONE.w * 0.62, cy: FORM_BOTTOM + 30 }
 export const NOTE_Y = FORM_BOTTOM + 24
 export const CONTINUE_Y = DECK.y + 10
 
@@ -53,9 +53,9 @@ export function uploadGlyph(): { x: number; y: number; w: number; h: number; rot
 }
 
 export function paperNodes(x: number, y: number): LayoutNode[] {
-  const out: LayoutNode[] = [text('resume-paper-title', 'copy:step1.resume.paperTitle', PAPER_TITLE, x + 24, y + 30, { part: 'paper', on: heights.paper })]
+  const out: LayoutNode[] = [text('resume-paper-title', 'copy:step1.resume.paperTitle', PAPER_TITLE, x + PAPER.inset, y + PAPER.top, { part: 'paper', on: heights.paper })]
   PAPER_LINES.forEach((at, i) => {
-    out.push(node(`resume-paper-line-${i}`, 'paperLine', [x + 24, y + PAPER.h * at, (PAPER.w - 48) * (i === 3 || i === 6 ? 0.6 : 1), 8], { part: 'paper', height: heights.paper + 0.4, floor: heights.paper, tone: 'pocket' }))
+    out.push(node(`resume-paper-line-${i}`, 'paperLine', [x + PAPER.inset, y + PAPER.h * at, (PAPER.w - PAPER.inset * 2) * (i === 3 || i === 6 ? 0.6 : 1), PAPER.bar], { part: 'paper', height: heights.paper + 0.4, floor: heights.paper, tone: 'pocket' }))
   })
   return out
 }

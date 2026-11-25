@@ -1,19 +1,19 @@
 import type { RealContext } from '../../../../real/types'
 import type { Zone } from '../../zone'
-import type { Buckets, V3 } from './geo'
+import type { Buckets } from './geo'
 import { walls } from './firehouse'
-import { KIND, TONE, band, board, rgb, shade, site, wallFace, windowAt, type Hole } from './kit'
+import { KIND, TONE, band, board, mix, parapet, shade, site, wallFace, windowAt, type Hole } from './kit'
 
 export function bank(b: Buckets, z: Zone, ctx: RealContext): void {
   const S = site(z, 'street.bank')
   const g = b.paint
-  const stone = TONE.stonePale
+  const stone = shade(mix(TONE.stone, TONE.lime, 0.3), 0.9)
   const top = S.h
   const steps = 3
   const tread = 3.6
   const riser = 3
   const podium = 3 + steps * riser
-  const entab = 80
+  const entab = top - 31
   const roofFoot = entab + 12
 
   // The stepped base: each step runs round the front and the side that faces the table.
@@ -86,27 +86,12 @@ export function bank(b: Buckets, z: Zone, ctx: RealContext): void {
     const dx = ex0 + 3 + (k * (ex1 - ex0 - 9)) / 8
     g.box(dx, dx + 3, ey0 - 1, ey0, entab + 3.5, entab + 6.5, shade(stone, 0.96), { skip: 'b', under: true })
   }
-  const mx = (ex0 + ex1) / 2
-  const ridge = top - 2
-  const o = 1.6
-  const copper = rgb(0x6f8f83)
-  const a: V3 = [ex0 - o, ey0 - o, roofFoot]
-  const c: V3 = [ex1 + o, ey0 - o, roofFoot]
-  const d: V3 = [ex1 + o, ey1 + o, roofFoot]
-  const e: V3 = [ex0 - o, ey1 + o, roofFoot]
-  const r0: V3 = [mx, ey0 - o, ridge]
-  const r1: V3 = [mx, ey1 + o, ridge]
-  g.face([e, a, r0, r1], copper, KIND.board)
-  g.face([c, d, r1, r0], copper, KIND.board)
-  g.face([a, c, r0], stone)
-  g.face([d, e, r1], stone)
-  // The pediment's raking edge and its plain field, set back a little.
-  const rake = (p: V3, q: V3): void => {
-    g.face([p, q, [q[0], q[1] + 2.2, q[2]], [p[0], p[1] + 2.2, p[2]]], shade(stone, 1.06))
-  }
-  rake([ex0 - o, ey0 - o - 2.2, roofFoot + 2.6], [mx, ey0 - o - 2.2, ridge + 2.6])
-  rake([mx, ey0 - o - 2.2, ridge + 2.6], [ex1 + o, ey0 - o - 2.2, roofFoot + 2.6])
-  g.face([[ex0 - o, ey0 - o - 2.2, roofFoot], [ex1 + o, ey0 - o - 2.2, roofFoot], [ex1 + o, ey0 - o - 2.2, roofFoot + 2.6], [mx, ey0 - o - 2.2, ridge + 2.6], [ex0 - o, ey0 - o - 2.2, roofFoot + 2.6]], shade(stone, 1.03))
-  g.box(mx - 1, mx + 1, ey0 - o, ey1 + o, ridge - 0.4, ridge + 1, shade(copper, 0.85))
-  board(b, z, ctx, 'street.bank', ridge - 4)
+  // The attic over the cornice and a flat roof inside its parapet.
+  const deck = top - 8
+  g.box(ex0 + 1, ex1 - 1, ey0 + 1, ey1 - 1, roofFoot, top - 3, stone, { kind: KIND.block, skip: 't' })
+  g.quad([ex0 + 7, ey0 + 7, deck], [ex1 - 7, ey0 + 7, deck], [ex1 - 7, ey1 - 7, deck], [ex0 + 7, ey1 - 7, deck], TONE.roof, KIND.tar)
+  parapet(g, ex0 + 1, ex1 - 1, ey0 + 1, ey1 - 1, deck, top, 7, stone, shade(stone, 1.08), KIND.stucco)
+  g.box(ex1 - 30, ex1 - 16, ey1 - 26, ey1 - 14, deck, deck + 4.5, TONE.stoneDark, { bevel: 0.8 })
+  b.metal.lathe([[2.6, 0], [2.6, 6], [4, 7.2], [4, 8.4], [0, 9.6]], ex0 + 20, ey1 - 20, 12, TONE.alu, { base: deck })
+  board(b, z, ctx, 'street.bank', deck)
 }

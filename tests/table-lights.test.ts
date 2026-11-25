@@ -103,7 +103,7 @@ describe('the hook', () => {
     studio(m)
     const before = m.customProgramCacheKey
     m.customProgramCacheKey = () => `${before.call(m)}-own`
-    expect(m.customProgramCacheKey()).toMatch(/^wja-studio.*-own\|wjl11$/)
+    expect(m.customProgramCacheKey()).toMatch(/^wja-studio.*-own\|wjl110$/)
     const shader = { uniforms: {}, vertexShader: '', fragmentShader: 'void main() {\n#include <lights_fragment_begin>\n#include <lights_fragment_end>\n}' } as unknown as THREE.WebGLProgramParametersWithUniforms
     m.onBeforeCompile(shader, null as unknown as THREE.WebGLRenderer)
     expect(shader.fragmentShader).toContain('wjlCol')
@@ -113,15 +113,18 @@ describe('the hook', () => {
   it('leaves alone what gives light, what asks to be unlit and what stands in a zone without lamps', () => {
     const glow = new THREE.MeshStandardMaterial({ emissive: new THREE.Color(1, 0.5, 0.2), emissiveIntensity: 1 })
     hook!(glow, zone('corporate'))
-    expect(glow.customProgramCacheKey()).toMatch(/\|wjl01$/)
+    expect(glow.customProgramCacheKey()).toMatch(/\|wjl010$/)
     const asked = new THREE.MeshStandardMaterial({ emissive: new THREE.Color(1, 0.5, 0.2) })
     asked.userData.lit = true
     hook!(asked, zone('corporate'))
-    expect(asked.customProgramCacheKey()).toMatch(/\|wjl11$/)
+    expect(asked.customProgramCacheKey()).toMatch(/\|wjl110$/)
     const unlit = new THREE.MeshStandardMaterial()
     unlit.userData.unlit = true
     hook!(unlit, zone('corporate'))
-    expect(unlit.customProgramCacheKey()).toMatch(/\|wjl01$/)
+    expect(unlit.customProgramCacheKey()).toMatch(/\|wjl010$/)
+    const clear = new THREE.MeshPhysicalMaterial({ transparent: true, opacity: 0.1 })
+    hook!(clear, zone('office'))
+    expect(clear.customProgramCacheKey()).toMatch(/\|wjl111$/)
     const far = new THREE.MeshStandardMaterial()
     const compile = far.onBeforeCompile
     hook!(far, zone('apron'))

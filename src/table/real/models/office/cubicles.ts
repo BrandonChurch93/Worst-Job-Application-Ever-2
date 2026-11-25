@@ -9,18 +9,18 @@ import { hex, Kit, matsOf, meshOf, mix, rrect, screwGeometry, shade, SURF, type 
 import { staplerScrews } from './staplers'
 
 const C = {
-  slab: hex(0x3b4046),
-  carpet: hex(0x4d5660),
-  aisle: hex(0x5d6670),
-  fabric: [hex(0x9a8e7c), hex(0x8f8573), hex(0xa39783)] as RGB[],
-  frame: hex(0x8d9196),
-  cap: hex(0xa9adb1),
+  slab: hex(0x8f8774),
+  carpet: hex(0x938d7f),
+  aisle: hex(0xa39d8d),
+  fabric: [hex(0xc9bea5), hex(0xbfb399), hex(0xd1c7b0)] as RGB[],
+  frame: hex(0x9a9c9e),
+  cap: hex(0xd3c9b2),
   kick: hex(0x55585c),
-  wood: hex(0xb98a56),
-  woodEdge: hex(0x7a5836),
-  steel: hex(0xb4b8bc),
+  wood: hex(0xdcc096),
+  woodEdge: hex(0xa5855c),
+  steel: hex(0x8f9499),
   grey: hex(0x8b8f93),
-  dark: hex(0x1c1d20),
+  dark: hex(0x2b2c30),
   screen: hex(0x0c0f14),
   key: hex(0x3a3c41),
   paper: hex(0xebe7dc),
@@ -28,28 +28,29 @@ const C = {
   notes: [hex(0xe9d95a), hex(0x8fc7e8), hex(0xe58aa8), hex(0x9fd58a)] as RGB[],
   pin: hex(0xb3202a),
   mugs: [hex(0xe9e6dd), hex(0x27406b), hex(0x3f6b4c), hex(0xd9c24a), hex(0x2f7f86), hex(0x7b4a6e)] as RGB[],
-  seats: [hex(0x2c3340), hex(0x39424a), hex(0x2f4a55), hex(0x40363c), hex(0x2c3340), hex(0x364034)] as RGB[],
+  seats: [hex(0xd8c29c), hex(0xb9ae96), hex(0xcdb48e), hex(0x6f8fae), hex(0xdcc8a4), hex(0xc4ab86)] as RGB[],
   lamps: [hex(0x2a2c30), hex(0x3d5a48), hex(0x2a2c30), hex(0x8a8d91), hex(0x27406b), hex(0x2a2c30)] as RGB[],
-  cabinet: hex(0xa7a493),
+  cabinet: hex(0xc4c0ac),
   cooler: hex(0xdcdad2),
   bottle: [0.55, 0.78, 0.95] as RGB,
   cap2: hex(0x2c5f9e),
   bin: hex(0x33363a),
   pot: hex(0xd8d4c8),
   soil: hex(0x2b2118),
-  leaf: hex(0x5f7458),
-  dust: hex(0x8d968a),
+  leaf: hex(0x7a9a66),
+  dust: hex(0xa3ae9c),
   manila: hex(0xd3b073),
   led: [0.95, 0.8, 0.3] as RGB
 }
 
-const WALL = { t: 3.2, h: 60, base: 4 }
+const WALL = { t: 5.4, h: 60, base: 4 }
 const AISLE = 26
 
 function wall(k: Kit, a: V2, b: V2, r: Random): void {
   const len = Math.hypot(b[0] - a[0], b[1] - a[1])
   const rz = Math.atan2(b[1] - a[1], b[0] - a[0])
   k.at((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, WALL.base, rz)
+  k.up = 0.75
   k.box(0, 0, 0, len, WALL.t + 1.2, 6, C.kick, SURF.plastic, 0.6)
   const n = Math.max(1, Math.round(len / 36))
   const w = len / n
@@ -64,6 +65,7 @@ function wall(k: Kit, a: V2, b: V2, r: Random): void {
     cap.push([0, Math.cos(ang) * (WALL.t / 2 + 1.1), WALL.h - 3.2 + Math.sin(ang) * 3.2])
   }
   k.loft([cap.map((q) => [-len / 2 - 1.3, q[1], q[2]] as V3), cap.map((q) => [len / 2 + 1.3, q[1], q[2]] as V3)], C.cap, SURF.satin, true)
+  k.up = 0
   k.back()
 }
 
@@ -310,21 +312,56 @@ function small(k: Kit, f: Kit, c: Kit, z: Zone, r: Random): void {
     const [x, y] = at('plant')
     k.lathe(x, y, 0, [[9.5, 0], [10.2, 1.2], [13.6, 20], [14.6, 20.6], [14.6, 23.4], [12.6, 23.4], [12.2, 20.6], [0, 20.6]], [C.pot, C.pot, C.pot, shade(C.pot, 1.06), shade(C.pot, 0.9), shade(C.pot, 0.7), C.soil], [SURF.gloss, SURF.gloss, SURF.gloss, SURF.gloss, SURF.gloss, SURF.matte, SURF.matte], 18)
     k.lathe(x, y, 0, [[16, 0], [16.6, 1.6], [12, 2.2]], [shade(C.pot, 0.9), shade(C.pot, 0.96)], SURF.gloss, 18)
-    const n = 13
+    const n = 11
     for (let i = 0; i < n; i++) {
-      const a = (i / n) * Math.PI * 2 * 2.4 + r.range(-0.2, 0.2)
-      const lift = 0.35 + (i / n) * 0.75
-      leaf(f, x, y, 21, a, r.range(22, 34) * (1.1 - lift * 0.3), r.range(7, 10), lift, mix(C.leaf, C.dust, r.range(0.25, 0.6)))
+      const a = i * 2.39996 + r.range(-0.25, 0.25)
+      const lift = 0.3 + (i / n) * 0.95
+      leaf(f, x, y, 21, a, r.range(24, 33) * (1.12 - lift * 0.42), r.range(15, 20) * (1.05 - lift * 0.3), lift, mix(C.leaf, C.dust, r.range(0.2, 0.55)))
     }
+    f.cyl(x, y, 20.6, 1.6, 9, shade(C.leaf, 0.7), SURF.matte, 6, 0.3)
   }
 }
 
 function crumple(k: Kit, r: Random, x: number, y: number, z: number, s: number): void {
-  const prof: V2[] = [[0, 0]]
-  for (let i = 1; i < 4; i++) prof.push([Math.sin((i / 4) * Math.PI) * s * r.range(0.85, 1.1), (1 - Math.cos((i / 4) * Math.PI)) * s * 0.9])
-  prof.push([0, s * 1.8])
-  k.at(x, y, z, r.range(0, 6), r.range(-0.4, 0.4), r.range(-0.4, 0.4))
-  k.lathe(0, 0, 0, prof, shade(C.paper, r.range(0.9, 1)), SURF.paper, 6)
+  const around = 8
+  const rings = 4
+  const tone = shade(C.paper, r.range(0.9, 1))
+  const top: V3 = [r.range(-0.2, 0.2) * s, r.range(-0.2, 0.2) * s, s * r.range(1.75, 1.95)]
+  const foot: V3 = [0, 0, 0.05 * s]
+  const rows: V3[][] = []
+  for (let j = 1; j <= rings; j++) {
+    const lat = (j / (rings + 1)) * Math.PI
+    const row: V3[] = []
+    for (let i = 0; i < around; i++) {
+      const a = ((i + (j % 2) * 0.5) / around) * Math.PI * 2 + r.range(-0.18, 0.18)
+      const rad = s * r.range(0.66, 1.14)
+      row.push([Math.cos(a) * Math.sin(lat) * rad, Math.sin(a) * Math.sin(lat) * rad, s * 0.95 - Math.cos(lat) * rad * 0.92])
+    }
+    rows.push(row)
+  }
+  const face = (a: V3, b: V3, c: V3): void => {
+    const u: V3 = [b[0] - a[0], b[1] - a[1], b[2] - a[2]]
+    const v: V3 = [c[0] - a[0], c[1] - a[1], c[2] - a[2]]
+    let n: V3 = [u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0]]
+    const mid: V3 = [(a[0] + b[0] + c[0]) / 3, (a[1] + b[1] + c[1]) / 3, (a[2] + b[2] + c[2]) / 3 - s * 0.95]
+    if (n[0] * mid[0] + n[1] * mid[1] + n[2] * mid[2] < 0) n = [-n[0], -n[1], -n[2]]
+    const l = Math.hypot(n[0], n[1], n[2]) || 1
+    n = [n[0] / l, n[1] / l, n[2] / l]
+    k.tri(a, b, c, n, n, n, shade(tone, r.range(0.8, 1.04)), SURF.paper)
+  }
+  k.at(x, y, z, r.range(0, 6))
+  for (let i = 0; i < around; i++) {
+    const n = (i + 1) % around
+    face(top, rows[rings - 1]![i]!, rows[rings - 1]![n]!)
+    face(foot, rows[0]![i]!, rows[0]![n]!)
+    for (let j = 0; j < rings - 1; j++) {
+      const lo = rows[j]!
+      const hi = rows[j + 1]!
+      const skew = j % 2 === 0
+      face(lo[i]!, lo[n]!, skew ? hi[i]! : hi[n]!)
+      face(hi[i]!, hi[n]!, skew ? lo[n]! : lo[i]!)
+    }
+  }
   k.back()
 }
 
@@ -422,7 +459,7 @@ export function buildCubicles(z: Zone): THREE.Object3D {
 
   small(k, f, c, z, r)
 
-  root.add(meshOf(k.done(), mats.solid, 'office.cubicles.body', { cast: true }))
+  root.add(meshOf(k.done(), mats.solid, 'office.cubicles.body', { cast: false }))
   root.add(meshOf(f.done(), mats.solid, 'office.cubicles.trim', { fine: true }))
   const clear = meshOf(c.done(), mats.clear, 'office.cubicles.bottles')
   clear.renderOrder = 2
