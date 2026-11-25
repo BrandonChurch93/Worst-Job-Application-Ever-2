@@ -150,11 +150,11 @@ describe('with no sound to play', () => {
     expect(errors).not.toHaveBeenCalled()
   }
 
-  it('is silent from the start on the index the repository ships, which lists nothing', async () => {
+  it('is silent from the start on an index that lists nothing', async () => {
     const shipped = read('public', 'audio', 'index.json')
-    expect(shipped.sfx.length + shipped.loops.length + shipped.lines.length).toBe(0)
+    const empty = { ...shipped, pack: null, sfx: [], loops: [], lines: [] }
     serve()
-    const s = makeSound({ base: './audio' })
+    const s = makeSound({ base: './audio', index: empty })
     let changes = 0
     s.onChange(() => changes++)
     expect(s.available()).toBe(false)

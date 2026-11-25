@@ -1,0 +1,160 @@
+{
+  "id": "line.live.slowTyping.0",
+  "kind": "live-line",
+  "cue": null,
+  "variant": null,
+  "class": "voice",
+  "loop": false,
+  "beat": null,
+  "liveKey": "slowTyping",
+  "group": "slowTyping",
+  "describes": null,
+  "index": 0,
+  "words": "One letter. / Well done.",
+  "text": "One letter. / Well done.",
+  "prompt": null,
+  "settings": {
+    "speed": 0.7,
+    "stability": 0.75,
+    "breakSeconds": 1,
+    "sent": "One letter. <break time=\"1.0s\" /> Well done.",
+    "call": 132
+  },
+  "askedSeconds": null,
+  "cost": "15",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "e58a36da319a3b5852cbfa0b49c3298edf513ccb50aa7ae7b9c60d5cab742240",
+    "filed": "2026-11-25T18:30:16.953Z",
+    "measured": {
+      "seconds": 2.926,
+      "start": 0.022,
+      "end": 2.788,
+      "peakDb": -3.8,
+      "rmsDb": -22.06,
+      "lufs": -21.88,
+      "truePeakDb": -3.8,
+      "low": 0.751,
+      "mid": 0.229,
+      "high": 0.021,
+      "tailDb": -22.15,
+      "hits": 2,
+      "hitsAt": [
+        {
+          "start": 0.026,
+          "end": 0.794,
+          "peakDb": -3.8
+        },
+        {
+          "start": 1.972,
+          "end": 2.754,
+          "peakDb": -9.31
+        }
+      ]
+    },
+    "line": {
+      "words": 4,
+      "seconds": 2.766,
+      "wordsPerSecond": 1.446,
+      "maxWordsPerSecond": 1.6,
+      "pauseMarks": 1,
+      "pausesFound": 1,
+      "pauses": [
+        1.156
+      ],
+      "paceHolds": true,
+      "pausesHold": true,
+      "room": null,
+      "fits": true
+    }
+  },
+  "chain": {
+    "trimStart": 0.022,
+    "trimEnd": 2.788,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 80,
+    "levelMeasure": "lufs",
+    "levelDb": -18,
+    "gainDb": 4.77,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 2.766,
+    "start": 0.002,
+    "end": 2.738,
+    "peakDb": 1.73,
+    "rmsDb": -18.76,
+    "lufs": -18,
+    "truePeakDb": 1.73,
+    "low": 0.653,
+    "mid": 0.318,
+    "high": 0.029,
+    "tailDb": -24.04,
+    "hits": 2,
+    "hitsAt": [
+      {
+        "start": 0.006,
+        "end": 0.768,
+        "peakDb": 1.73
+      },
+      {
+        "start": 1.952,
+        "end": 2.692,
+        "peakDb": -5.61
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
+    "asks": 6,
+    "whole": 1,
+    "transcript": "One letter. Well done.",
+    "transcripts": [
+      "One letter. Well done.",
+      "One letter. Well done."
+    ],
+    "transcriptAgreed": "2 of 2",
+    "attitudes": [
+      "sarcastic and dismissive"
+    ],
+    "accents": [
+      "British"
+    ],
+    "pitches": [
+      "low"
+    ],
+    "whisper": null,
+    "whisperVotes": "0 yes, 1 no",
+    "laugh": null,
+    "laughVotes": "0 yes, 1 no",
+    "warmth": null,
+    "warmthVotes": "0 yes, 1 no",
+    "excitement": null,
+    "excitementVotes": "0 yes, 1 no",
+    "unimpressedAndSmug": null,
+    "unimpressedAndSmugVotes": "1 yes, 0 no",
+    "basis": [
+      "The short, clipped phrasing of the transcribed text strongly implies a dry, sarcastic, and unimpressed delivery.",
+      "The flat, slow delivery of the words lacks genuine enthusiasm, sounding highly sarcastic and slightly arrogant."
+    ],
+    "heardRaisedByDb": 0.8
+  },
+  "why": "tone not judged: 1 whole answers in 6 asks",
+  "forced": true,
+  "problems": [
+    "the listener left \"whisper\" unanswered",
+    "the listener left \"laugh\" unanswered",
+    "the listener left \"warmth\" unanswered",
+    "the listener left \"excitement\" unanswered",
+    "the listener left \"unimpressedAndSmug\" unanswered"
+  ],
+  "fixture": false,
+  "file": "line.live.slowTyping.0.wav",
+  "seconds": 2.766,
+  "sha256": "9a7d9c99b31a5a292162a4879eb870d441432e0b30c95a037594104c2abfa852"
+}

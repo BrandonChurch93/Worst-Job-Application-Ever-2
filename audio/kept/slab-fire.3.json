@@ -1,0 +1,122 @@
+{
+  "id": "slab-fire.3",
+  "kind": "cue",
+  "cue": "slab-fire",
+  "variant": 3,
+  "class": "hit",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A heavy block launched hard",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "One heavy stone block launched hard by a machine, a deep pneumatic thump and a short rush of air, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 115
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "756a9f4a3746f9eab839dd188b0c6a06033da7005d8ec96f0e81dbb9af55b4ce",
+    "filed": "2026-11-25T18:18:10.218Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0,
+      "end": 0.48,
+      "peakDb": -23.33,
+      "rmsDb": -36.82,
+      "lufs": -33.85,
+      "truePeakDb": -16.61,
+      "low": 0.988,
+      "mid": 0.011,
+      "high": 0.001,
+      "tailDb": -56.01,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.356,
+          "peakDb": -23.33
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.48,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -5,
+    "gainDb": 24.49,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.48,
+    "start": 0,
+    "end": 0.426,
+    "peakDb": -5,
+    "rmsDb": -17.62,
+    "lufs": -20.55,
+    "truePeakDb": -4.99,
+    "low": 0.961,
+    "mid": 0.037,
+    "high": 0.002,
+    "tailDb": -46.42,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.358,
+        "peakDb": -5
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
+    "asks": 6,
+    "whole": 1,
+    "heard": "A heavy wooden block forcefully strikes a hard surface.",
+    "madeOf": "wood",
+    "events": "1",
+    "voice": null,
+    "voiceVotes": "0 yes, 1 no",
+    "word": null,
+    "wordVotes": "0 yes, 1 no",
+    "music": null,
+    "musicVotes": "0 yes, 1 no",
+    "melody": null,
+    "melodyVotes": "0 yes, 1 no",
+    "fits": null,
+    "fitsVotes": "1 yes, 0 no",
+    "basis": [
+      "The recording consists of a single, resonant thud characteristic of a solid, dense object forcefully impacting a hard boundary."
+    ],
+    "heardRaisedByDb": 20.33
+  },
+  "why": "not judged by ear: 1 whole answers in 6 asks",
+  "forced": true,
+  "problems": [
+    "the listener left \"voice\" unanswered",
+    "the listener left \"word\" unanswered",
+    "the listener left \"music\" unanswered",
+    "the listener left \"melody\" unanswered",
+    "the listener left \"fits\" unanswered"
+  ],
+  "fixture": false,
+  "file": "slab-fire.3.wav",
+  "seconds": 0.48,
+  "sha256": "755bc4dc4476e9d96bb9ffc7f7f5b3e9261f87a27d274e367daf34ef4a56f1f1"
+}

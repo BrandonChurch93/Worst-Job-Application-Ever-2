@@ -1,0 +1,118 @@
+{
+  "id": "lights-down",
+  "kind": "cue",
+  "cue": "lights-down",
+  "variant": null,
+  "class": "mechanism",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A big room's lights dimming: a low falling hum and a relay",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "The lights of a big room dimming, a low electrical hum falling in pitch and one relay clack, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 1.5,
+    "loop": false,
+    "influence": null,
+    "call": 76
+  },
+  "askedSeconds": 1.5,
+  "cost": "17",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "a10a7f432eca6485393f8af66904c77f7b9180c324ecba14f09f96486f362a7e",
+    "filed": "2026-11-25T18:15:33.232Z",
+    "measured": {
+      "seconds": 1.48,
+      "start": 0,
+      "end": 1.48,
+      "peakDb": -19.95,
+      "rmsDb": -36.46,
+      "lufs": -41.97,
+      "truePeakDb": -19.81,
+      "low": 0.957,
+      "mid": 0.03,
+      "high": 0.013,
+      "tailDb": -32.89,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 1.412,
+          "peakDb": -19.95
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 1.48,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -10,
+    "gainDb": 10.36,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 1.48,
+    "start": 0,
+    "end": 1.438,
+    "peakDb": -10,
+    "rmsDb": -37.4,
+    "lufs": -36.81,
+    "truePeakDb": -9.84,
+    "low": 0.405,
+    "mid": 0.415,
+    "high": 0.181,
+    "tailDb": -36.53,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0.002,
+        "end": 1.362,
+        "peakDb": -10
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 6 asks, 3 whole, 3 void",
+    "asks": 6,
+    "whole": 3,
+    "heard": "A sharp mechanical click, such as flipping a firm light switch or pressing a heavy button. / A distinct mechanical click is followed immediately by a low, fading electrical hum. / A mechanical relay clicks followed by a low, descending electrical hum.",
+    "madeOf": "plastic and metal / Metal and electrical components / Metal and electrical components.",
+    "events": "1 / 2 / 2",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 1 no",
+    "basis": [
+      "The audio contains only a brief, isolated mechanical click, completely lacking the low falling hum described in the provided line.",
+      "The sharp transient sound of a relay switch shutting off precedes a descending low-frequency drone characteristic of a large electrical load powering down.",
+      "The audio consists of a sharp mechanical click resembling a relay switch, followed by a low-pitched, fading hum that matches the description of lights dimming."
+    ],
+    "heardRaisedByDb": 16.95
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "lights-down.wav",
+  "seconds": 1.48,
+  "sha256": "58afd359a8a352b031b05deef5436d093cbf3afae4a23152e4110c4132f6e22e"
+}

@@ -1,0 +1,122 @@
+{
+  "id": "dart-fire.4",
+  "kind": "cue",
+  "cue": "dart-fire",
+  "variant": 4,
+  "class": "tick",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A tiny bright pew, almost a click",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "One tiny bright pew, almost a click, a very small toy dart launcher firing once, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 108
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "2f8835c5efc1e6d2bf8fc5a35578dcbc8199626695a2fe6eedd6fed2620b2e7c",
+    "filed": "2026-11-25T18:17:54.689Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0,
+      "end": 0.48,
+      "peakDb": -12.45,
+      "rmsDb": -40.89,
+      "lufs": -31.42,
+      "truePeakDb": -8.82,
+      "low": 0.002,
+      "mid": 0.249,
+      "high": 0.749,
+      "tailDb": -62.91,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.034,
+          "peakDb": -12.45
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0.005,
+    "trimEnd": 0.155,
+    "cutToSeconds": 0.15,
+    "fadeInMs": 3,
+    "fadeOutMs": 37.5,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -16,
+    "gainDb": -3.55,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.15,
+    "start": 0,
+    "end": 0.134,
+    "peakDb": -16,
+    "rmsDb": -39.42,
+    "lufs": -36.7,
+    "truePeakDb": -15.46,
+    "low": 0.001,
+    "mid": 0.249,
+    "high": 0.75,
+    "tailDb": -53.91,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.03,
+        "peakDb": -16
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
+    "asks": 6,
+    "whole": 1,
+    "heard": "A short, high-pitched synthetic blip or pew sound.",
+    "madeOf": "electronic components and software",
+    "events": "1",
+    "voice": null,
+    "voiceVotes": "0 yes, 1 no",
+    "word": null,
+    "wordVotes": "0 yes, 1 no",
+    "music": null,
+    "musicVotes": "0 yes, 1 no",
+    "melody": null,
+    "melodyVotes": "0 yes, 1 no",
+    "fits": null,
+    "fitsVotes": "1 yes, 0 no",
+    "basis": [
+      "The recording contains a single, very brief, bright synthesized sound effect resembling a digital click or tiny laser."
+    ],
+    "heardRaisedByDb": 9.45
+  },
+  "why": "not judged by ear: 1 whole answers in 6 asks",
+  "forced": true,
+  "problems": [
+    "the listener left \"voice\" unanswered",
+    "the listener left \"word\" unanswered",
+    "the listener left \"music\" unanswered",
+    "the listener left \"melody\" unanswered",
+    "the listener left \"fits\" unanswered"
+  ],
+  "fixture": false,
+  "file": "dart-fire.4.wav",
+  "seconds": 0.15,
+  "sha256": "41949c41504c766f551f4975946f6e684a071cc10d7d623e11cae62d76d524f4"
+}

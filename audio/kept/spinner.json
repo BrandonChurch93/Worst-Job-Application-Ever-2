@@ -1,0 +1,117 @@
+{
+  "id": "spinner",
+  "kind": "cue",
+  "cue": "spinner",
+  "variant": null,
+  "class": "mechanism",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A pinball spinner hit hard and spinning down, ticking",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A pinball spinner target hit hard and spinning down, fast metallic ticking that slows, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.8,
+    "loop": false,
+    "influence": null,
+    "call": 95
+  },
+  "askedSeconds": 0.8,
+  "cost": "9",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "dd13eb78ac779de7fdfb631cb6ea123095f7736950e8b9fd065d9fd965467188",
+    "filed": "2026-11-25T18:16:50.730Z",
+    "measured": {
+      "seconds": 0.8,
+      "start": 0,
+      "end": 0.458,
+      "peakDb": -12.06,
+      "rmsDb": -34.74,
+      "lufs": -31.12,
+      "truePeakDb": -11.92,
+      "low": 0.018,
+      "mid": 0.459,
+      "high": 0.523,
+      "tailDb": -54.45,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.384,
+          "peakDb": -12.06
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.458,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 114.5,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -10,
+    "gainDb": 2.15,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.458,
+    "start": 0,
+    "end": 0.416,
+    "peakDb": -10,
+    "rmsDb": -32.18,
+    "lufs": -29.49,
+    "truePeakDb": -9.82,
+    "low": 0.018,
+    "mid": 0.458,
+    "high": 0.524,
+    "tailDb": -47.17,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.352,
+        "peakDb": -10
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+    "asks": 2,
+    "whole": 2,
+    "heard": "A mechanical spinner ticking rapidly and slowing down to a stop. / A mechanical pinball spinner is struck hard and rapidly ticks as it gradually spins down.",
+    "madeOf": "metal and plastic / Metal and plastic",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The recording contains a continuous series of rapid clicks that decrease in frequency, perfectly matching the sound of a struck pinball spinner winding down.",
+      "The audio features a fast, decelerating clicking noise characteristic of a spinning target on a pinball machine."
+    ],
+    "heardRaisedByDb": 9.06
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "spinner.wav",
+  "seconds": 0.458,
+  "sha256": "e1552876c64d625d7cbae2cd60109c536e2ddf5c2caf52b50ddd93bd44091284"
+}

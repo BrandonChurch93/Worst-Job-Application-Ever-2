@@ -1,0 +1,117 @@
+{
+  "id": "ball-seal",
+  "kind": "cue",
+  "cue": "ball-seal",
+  "variant": null,
+  "class": "mechanism",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A short suck of air, then a hard plastic shell snapping shut with a click",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A short suck of air, then a hard clear plastic shell snapping shut with one firm click, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 1,
+    "loop": false,
+    "influence": null,
+    "call": 74
+  },
+  "askedSeconds": 1,
+  "cost": "11",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "bd4c53980af25551d56879cfa2817bd9f0979877426f5f5cdb039a5a1d149eec",
+    "filed": "2026-11-25T18:15:27.984Z",
+    "measured": {
+      "seconds": 1,
+      "start": 0,
+      "end": 0.326,
+      "peakDb": -7.32,
+      "rmsDb": -22.07,
+      "lufs": -19.22,
+      "truePeakDb": -6.56,
+      "low": 0.001,
+      "mid": 0.511,
+      "high": 0.488,
+      "tailDb": -39.79,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.3,
+          "peakDb": -7.32
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.326,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 81.5,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -10,
+    "gainDb": -2.74,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.326,
+    "start": 0,
+    "end": 0.304,
+    "peakDb": -10,
+    "rmsDb": -24.55,
+    "lufs": -22.19,
+    "truePeakDb": -9.42,
+    "low": 0.001,
+    "mid": 0.509,
+    "high": 0.49,
+    "tailDb": -34.23,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0.002,
+        "end": 0.288,
+        "peakDb": -10
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 2 whole, 1 void",
+    "asks": 3,
+    "whole": 2,
+    "heard": "A short suck of air is followed by a hard plastic shell snapping shut with a click. / A short intake of air is immediately followed by a sharp click of a plastic shell snapping shut.",
+    "madeOf": "Plastic / hard plastic",
+    "events": "2 / 2",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The recording clearly contains an initial whoosh of air being sucked in, immediately followed by a sharp and distinct plastic snapping sound.",
+      "My answers rest on the acoustic presence of a quick suction sound followed by a sharp, high-frequency clack typical of hard plastic closing."
+    ],
+    "heardRaisedByDb": 4.32
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "ball-seal.wav",
+  "seconds": 0.326,
+  "sha256": "6c8f0e437f30cfe0eaa641126ef4e6bc9ffbcc2f81fc51ad33b1cb82c786ba67"
+}

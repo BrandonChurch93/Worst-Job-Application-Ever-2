@@ -103,13 +103,16 @@ export const lengthOf = (path: V3[]): number => {
 }
 
 // The collar of the one clear tube, as the frame's owner wrote it down: turned aluminium with a groove and two screws on top.
+// A ring's flat faces are what the player's end of the table sees of it, under the side wall's shade: they carry more of the tone.
+const TUBE_FACE = 1.9
+
 export function collar(G: Geo, S: Screws, f: { m: THREE.Matrix4 }, o: { long?: number; out?: number; tone?: RGB; fin?: number; screws?: boolean } = {}): void {
   const from = G.vertices
   const c = (o.long ?? TUBE.collar) / 2
   const r = o.out ?? TUBE.collarOut
   const tone = o.tone ?? TONE.alu
   const outline: V2[] = [[TUBE.outer + 0.2, -c], [r - 2, -c], [r, -c + 2], [r, -3.4], [r - 1.6, -2.4], [r - 1.6, 2.4], [r, 3.4], [r, c - 2], [r - 2, c], [TUBE.outer + 0.2, c]]
-  G.f(o.fin ?? FIN.alu).lathe(outline, 0, 0, 20, (i) => (i === 4 ? shade(tone, 0.72) : tone))
+  G.f(o.fin ?? FIN.alu).lathe(outline, 0, 0, 20, (i) => (i === 4 ? shade(tone, 0.72) : i === 0 || i === 8 ? shade(tone, TUBE_FACE) : tone))
   G.move(from, f.m)
   if (o.screws === false) return
   for (const side of [-1, 1]) {

@@ -1,0 +1,117 @@
+{
+  "id": "ui-send",
+  "kind": "cue",
+  "cue": "ui-send",
+  "variant": null,
+  "class": "tick",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A short send tone",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A short soft send tone, a single gentle rising pop like a message being sent, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 125
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "e32bbf438dd6b794cab946c75e3b7c72a7c9904c15ef0083af1662f8d53399be",
+    "filed": "2026-11-25T18:18:36.499Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0,
+      "end": 0.48,
+      "peakDb": -26.42,
+      "rmsDb": -45.85,
+      "lufs": -41.18,
+      "truePeakDb": -23.55,
+      "low": 0.007,
+      "mid": 0.989,
+      "high": 0.004,
+      "tailDb": -52.04,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.114,
+          "peakDb": -26.42
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.3,
+    "cutToSeconds": 0.3,
+    "fadeInMs": 3,
+    "fadeOutMs": 75,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -16,
+    "gainDb": 12.52,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.3,
+    "start": 0,
+    "end": 0.228,
+    "peakDb": -16,
+    "rmsDb": -30.81,
+    "lufs": -32.24,
+    "truePeakDb": -15.99,
+    "low": 0.007,
+    "mid": 0.991,
+    "high": 0.002,
+    "tailDb": -57.89,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.116,
+        "peakDb": -16
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 6 asks, 2 whole, 4 void",
+    "asks": 6,
+    "whole": 2,
+    "heard": "A short, synthesized two-note electronic notification sound is heard. / A brief, synthesized notification tone plays once.",
+    "madeOf": "digital code and electronic circuitry / digital data and electronic components",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The recording contains a brief, synthesized user interface alert commonly used as a message send tone, lacking any human speech or musical composition.",
+      "The audio contains a single, quick synthetic sound effect that functions as a digital user interface send tone."
+    ],
+    "heardRaisedByDb": 23.42
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "ui-send.wav",
+  "seconds": 0.3,
+  "sha256": "c66b943d0556f942d12162da212ec0e0c951f7ddfc09a8f0784eacaa2f54d75e"
+}
