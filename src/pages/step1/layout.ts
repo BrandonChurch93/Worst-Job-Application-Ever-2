@@ -34,6 +34,24 @@ export const CONTINUE_Y = DECK.y + 10
 
 const cap = (font: string, px: number): number => block(font, 'X', px).cap
 
+const BROWSE_H = 50
+export const GLYPH = { w: 64, h: 54, line: 3, gap: 22 }
+const promptTop = (): number => ZONE.y + (ZONE.h - (GLYPH.h + GLYPH.gap + cap(TYPE.body.font, TYPE.body.px) + 24 + BROWSE_H)) / 2 + GLYPH.h + GLYPH.gap
+export function uploadGlyph(): { x: number; y: number; w: number; h: number; rot: number }[] {
+  const top = promptTop() - GLYPH.gap - GLYPH.h
+  const stroke = (x0: number, y0: number, x1: number, y1: number): { x: number; y: number; w: number; h: number; rot: number } => {
+    const len = Math.hypot(x1 - x0, y1 - y0) + GLYPH.line
+    const flat = y0 === y1
+    const w = flat ? len : GLYPH.line
+    const h = flat ? GLYPH.line : len
+    return { x: ZONE.x + ZONE.w / 2 + (x0 + x1) / 2 - w / 2, y: top + (y0 + y1) / 2 - h / 2, w, h, rot: flat ? 0 : Math.atan2(x1 - x0, y0 - y1) }
+  }
+  return [
+    stroke(-GLYPH.w / 2, 36, -GLYPH.w / 2, GLYPH.h), stroke(-GLYPH.w / 2, GLYPH.h, GLYPH.w / 2, GLYPH.h), stroke(GLYPH.w / 2, GLYPH.h, GLYPH.w / 2, 36),
+    stroke(0, 40, 0, 2), stroke(0, 2, -14, 16), stroke(0, 2, 14, 16)
+  ]
+}
+
 export function paperNodes(x: number, y: number): LayoutNode[] {
   const out: LayoutNode[] = [text('resume-paper-title', 'copy:step1.resume.paperTitle', PAPER_TITLE, x + 24, y + 30, { part: 'paper', on: heights.paper })]
   PAPER_LINES.forEach((at, i) => {
@@ -46,9 +64,8 @@ export function buildLayout(): LayoutNode {
   const zoneLabel = text('resume-label', 'copy:step1.resume.label', TYPE.label, LEFT, HEADER.contentY, { part: 'type' })
   const promptCap = cap(TYPE.body.font, TYPE.body.px)
   const browseW = Math.round(block(TYPE.label.font, words('copy:step1.resume.browse'), TYPE.label.px).width + 64)
-  const browseH = 50
-  const stackH = promptCap + 24 + browseH
-  const promptY = ZONE.y + (ZONE.h - stackH) / 2
+  const browseH = BROWSE_H
+  const promptY = promptTop()
   const browseY = promptY + promptCap + 24
   const cx = ZONE.x + ZONE.w / 2
   const browse = node('resume-browse', 'chip', [cx - browseW / 2, browseY, browseW, browseH], {

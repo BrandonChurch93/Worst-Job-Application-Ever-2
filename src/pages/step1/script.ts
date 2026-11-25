@@ -4,7 +4,7 @@ import { HANDOFF, type Acting, type Reaction } from '../../cursor/body'
 import { frame, homePose, mixPose, smooth } from '../../stage/camera'
 import type { CameraPose, Pointer } from '../../stage/types'
 import { homePlaces, seatIndex, seats, shuffled } from './keyboard'
-import { FIELD_X, FIELD_Y, PAPER, PAPER_REST, SLOT } from './layout'
+import { FIELD_X, FIELD_Y, PAPER, PAPER_REST, SLOT, ZONE } from './layout'
 
 const sizes = config.scale.sizes
 
@@ -18,6 +18,7 @@ export const TUG = { stiff: 2600, damp: 36, strainPx: 24, shoulder: { x: 14, y: 
 export const SPOT = { x: -12, y: -14 }
 export const BITE = { x: SLOT.cx - PAPER.w / 2, y: SLOT.cy - PAPER.h + 8 }
 export const HOOD = { y: SLOT.cy + 44, z: 8 }
+export const FRINGE = { from: 0.12, step: 0.03, rate: 1.2, most: 0.34 }
 export const PILE = { x: SLOT.cx - 20, y: SLOT.cy + 176 }
 export const SHRED = { in: 0.3, gone: 0.34, strips: 0.12, pile: 0.78, pileSeconds: 1.0, empty: 0.92, emptySeconds: 0.84, zip: 1.78, zipSeconds: 1.0, end: 2.8 }
 
@@ -28,7 +29,7 @@ export const FIRST = {
   tap: 1.5,
   keys: [[2.18, 2.56], [2.64, 2.97], [3.06, 3.25], [3.86, 4.1], [4.16, 4.3]] as [number, number][],
   notice: 3.42, dodge: 3.86, cocky: [4.44, 4.68] as [number, number], proud: 4.8,
-  stand: 'w', aside: -34, see: 5.72, flee: [5.84, 6.06] as [number, number], fled: '4', smug: 6.34,
+  stand: 'w', aside: -34, see: 5.72, flee: [5.84, 6.06] as [number, number], fled: '5', smug: 6.34,
   thrown: { x: 190, y: 60 }, shock: [7.18, 7.8] as [number, number],
   after: [[7.8, 8.0], [8.06, 8.3], [8.36, 8.54], [8.6, 8.86], [8.92, 9.1], [9.16, 9.32]] as [number, number][],
   enter: [9.4, 9.6] as [number, number]
@@ -271,17 +272,16 @@ export function pointerAt(plan: Plan, time: number): Pointer {
   return { x: s.x0 + (s.x1 - s.x0) * u + s.side * bulge, y: s.y0 + (s.y1 - s.y0) * u - s.arc * bulge, down }
 }
 
-// The film camera in the tug: a window of the page for a moment. It pushes in slowly to the key picture at 25.125, which keeps as much fine detail in frame as the approved image has, and then goes right in as the sheet gets short.
-const TUG_WIDE = { x: SLOT.cx - 600, y: SLOT.cy - 574, w: 1200, h: 675 }
-const TUG_CLOSE = { x: SLOT.cx - 500, y: SLOT.cy - 368, w: 1000, h: 562.5 }
-const TUG_TIGHT = { x: SLOT.cx - 300, y: SLOT.cy - 260, w: 600, h: 337.5 }
-export const CAMERA = { in: [21.1, 22.1] as [number, number], push: 4.6, tight: [24.35, 26.35] as [number, number], out: [27.6, 28.9] as [number, number] }
+// The film camera in the tug: a window of the page for a moment. It pushes in to the whole drop zone with the slot, the rollers and the strips under the hood, and holds there through the key picture at 25.125. Its right edge stays in the gutter before the field column, so no label or field of that column is cut by the frame, and the label of the drop zone is whole. No closer: under about 850 px of page the frame has less fine detail than the approved image.
+const TUG_EDGE = FIELD_X - 16
+const TUG_WIDE = { x: TUG_EDGE - 1000, y: ZONE.y - 46, w: 1000, h: 562.5 }
+const TUG_CLOSE = { x: TUG_EDGE - 928, y: ZONE.y - 46, w: 928, h: 522 }
+export const CAMERA = { in: [21.1, 22.1] as [number, number], push: 2.7, out: [27.6, 28.9] as [number, number] }
 
 export function filmCamera(time: number): CameraPose {
   const home = homePose(0)
   if (time <= CAMERA.in[0] || time >= CAMERA.out[1]) return home
   const close = mixPose(frame(TUG_WIDE), frame(TUG_CLOSE), smooth((time - CAMERA.in[1]) / CAMERA.push))
-  const tight = mixPose(close, frame(TUG_TIGHT), smooth((time - CAMERA.tight[0]) / (CAMERA.tight[1] - CAMERA.tight[0])))
   const u = smooth((time - CAMERA.in[0]) / (CAMERA.in[1] - CAMERA.in[0])) * (1 - smooth((time - CAMERA.out[0]) / (CAMERA.out[1] - CAMERA.out[0])))
-  return mixPose(home, tight, u)
+  return mixPose(home, close, u)
 }
