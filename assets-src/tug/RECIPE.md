@@ -43,3 +43,5 @@ Every texture here is made in code at start, from `config.seed`. No file is down
 - Date: 2026-11-25
 
 Total: 3.51 MB.
+
+No texture for these two: the strips use the sheet's stock with an emissive lift of 0.14 so they stay paper white in the machine's shadow, and the shade of the bend at the mouth is written into the sheet's vertex colours.
