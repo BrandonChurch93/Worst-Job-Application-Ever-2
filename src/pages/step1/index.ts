@@ -598,7 +598,7 @@ export function makePage(): PageLogic {
         if (n < s.values[f].length) s.glow = 0
         s.values[f] = s.kept![f].slice(0, n)
       })
-      if (u >= 1) {
+      if (u >= 1 + SHRED.hold / SHRED.emptySeconds) {
         s.kept = null
         s.received = true
         s.values = { firstName: '', lastName: '', email: '' }
