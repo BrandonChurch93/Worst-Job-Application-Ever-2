@@ -25,24 +25,24 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 14, 2026-11-25T10:23Z, Phase 2.
+Status 15, 2026-11-25T10:53Z, Phase 2.
 
-1. `out/stills/status/01-blockout-perk-slab.jpg`: Careers page blockout at 2.30 s: the first perk card half way over, one slab turning in its well, with the cursor riding its raised edge.
-2. `out/stills/status/02-blockout-last-save.jpg`: Step 3 blockout, the key moment of the last save: the ball on the right flipper with the cursor in it, the three bumpers above.
-3. `out/stills/status/03-site-film-start.jpg`: Screenshot of the built site in film mode, stopped at its start: the play button, and the bar with play, the position in the film, the time and the way back to the application.
-4. `out/stills/status/04-site-live-careers.jpg`: Screenshot of the built site in live mode, the careers page at rest: the sound sign and the link to the film at the top left, clear of the page's header.
+1. `out/stills/status/01-round1-step1-last-beat.jpg`: What the critic judged: step 1's last beat, 0:43 to 0:46, twelve frames in order. The fields clear at 0:44.9 and the page starts to turn at 0:45.7.
+2. `out/stills/status/02-round1-submit-chase.jpg`: Film sheet 8 of 9, 2:05 to 2:21: the Submit chase and the boss falling apart. The critic's point is that the middle frames repeat one setup.
+3. `out/stills/status/03-round1-pinball-close-cameras.jpg`: The five close pinball cameras on the placeholder table. Cameras 6 and 9 were judged too high or too wide. Camera 7 matches the approved Reply All picture and stays.
+4. `out/stills/status/04-round1-step4-at-rest.jpg`: Step 4 at rest. Two critics wanted Submit moved up beside the card. It stays at the bottom centre, where the approved fight pictures show its socket.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 2, tick 43 at 2026-11-25T10:23:32Z, allowance: build
-time used in this phase: 2.75 h of its box of 6.50 h
-time used under the allowance in force: 4.85 h of 36.00 h allowed
-time used: 4.85 of 36.00 hours before the review
+clock: phase 2, tick 44 at 2026-11-25T10:53:53Z, allowance: build
+time used in this phase: 3.26 h of its box of 6.50 h
+time used under the allowance in force: 5.36 h of 36.00 h allowed
+time used: 5.36 of 36.00 hours before the review
 extra rounds: yes
-half point: not reached
+half point: reached
 box end: not reached
 budget report: not due
 minutes since the last status: 0
