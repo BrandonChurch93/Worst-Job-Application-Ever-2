@@ -22,7 +22,7 @@ Ceramic (a new pocket in the slab):
 
 Frosted glass (a new card or field):
 1. Add a shape with `role: 'card'` (stands on the page, `z0: 0`) or `role: 'field'` with `pocket: true` (sunk, top at `z1: 0`, glass at `z0`).
-2. For another form, add a function beside `card` in `controls.ts` that sweeps `outlineOf(s, inset)` along a `profile([...])` and uses `materials().glass` (thin) or `materials().glassThick` (a slab of 12), and a `case` for its role in `make`.
+2. For another form, add a function beside `card` in `controls.ts` that sweeps `outlineOf(s, inset)` along a `profile([...])` and uses `materials().glass` (a plate), `materials().glassThick` (a slab that stands on the page) or, for glass in a pocket, the face `sunkGlass(s, inset, depth)` gives with `materials().glassSunk`; then a `case` for its role in `make`.
 3. `npm run still -- --page <page> --format hd --tier draft` then `npm run compare -- --sheet page-look --tier draft --format hd`.
 
 Brushed aluminium (a new rail, rule, bezel or turned button):
@@ -45,8 +45,9 @@ A new material: add it to `Materials` and `makeMaterials` in `src/shell/material
 - The slab is 28 thick, or 10 more than the deepest opening when that is more. Its underside is closed with an unlit dark sheet so a page turn never shows through.
 - Heights are the shape's. The only numbers of mine are how far a pocket goes under its part (`pocketCut`: field 5, rail 1.5, socket 0.6) so the part has a floor to stand on.
 - The field's glass has its top exactly at the shape's `z0` (agreed with type_setter, who draws the value on it). The glass throws no shadow.
-- The glass is real transmission. It doubles the opaque draw calls of a frame that shows glass (MEASURED below). If the budget needs them back, the fallback is the same colour without transmission.
-- Cards use a second glass, `glassThick`: the approved card is darker than a field's glass, (176, 180, 179) against (188, 193, 189).
+- The glass is frosted and not see-through: a satin body with a soft coat, no transmission. Nothing on a page ever passes under glass, so real transmission bought nothing to see; it drew the opaque scene twice (MEASURED: `npm run still -- --id rest-step1 --format hd --tier draft` took 7.3 s and 122 draw calls with it, 4.5 s and 84 without) and it hid every shadow that fell on the glass, which is what made the fields read flat.
+- A field's glass (`glassSunk`) carries the shadow its pocket throws into its body as vertex colour. The key's own shadow at a depth of 6 is 4 pixels wide and the liner covers most of it; the approved field shows a soft dark band of about 20. In frosted glass the wall shadows the body of the glass under a point as well as its face, so the band is wider and softer than a shadow on a hard floor. `sunkGlass` in `controls.ts` works that share out for each vertex from `look.key.direction` and the pocket's depth, and adds the little light the lit wall on the far side gives back. If the key moves, the band moves with it at the next build.
+- Cards use a second glass, `glassThick`: the approved card is darker than a field's glass, (176, 180, 179) against (188, 193, 189). MEASURED in this build at review tier: card (178, 183, 182), field (183, 191, 187).
 - `aluminiumTurned` is a second aluminium for lathe-turned faces: its highlight is stretched along rings from a direction picture.
 - `material.envMapIntensity` does nothing in this three.js release when the scene has an environment (MEASURED by type_setter). Reflection strength is set with `specularIntensity`, and for the orange with a warm `specularColor`, which is what took the pink out of it.
 - The focus ring of a field is unlit additive geometry on the liner's rim, not a light: it must look the same in every tier.
@@ -55,6 +56,7 @@ A new material: add it to `Materials` and `makeMaterials` in `src/shell/material
 
 ## What I learned
 
+- White noise blurred is not grain: it keeps its slow lumps, and at half size the page looks like plaster. The grain is the difference of two blurs, so only the 2 to 4 pixel band is left.
 - Grain strength must be judged at native size beside the crop. At half size every grain looks right.
 - The same normal picture looks three times stronger when its features get finer, because slope is height over width. Change one, retune the other.
 - A flat glossy face that looks straight up shows the picture of whatever is overhead. With a bright overhead that adds white to every channel and orange turns pink; tinting the reflection is cleaner than weakening it.
