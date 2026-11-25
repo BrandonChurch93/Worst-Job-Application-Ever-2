@@ -1,33 +1,33 @@
 {
   "folder": "boss",
-  "pushed": "2026-11-25T12:09:20.692Z",
-  "commit": "9920231161fbc538ffa48050ec1917af27a475c1",
+  "pushed": "2026-11-25T12:11:26.524Z",
+  "commit": "e1041e83c6a1dce3ebf01ffcbdf05e106ce63d26",
   "looks": [
     {
       "file": "look-1.jpg",
       "caption": "Contact sheet, the beat boss.unfold: 12 frames from 1:54.00 to 1:57.97, draft tier, preview",
-      "time": "2026-11-25T12:08:27.313Z",
+      "time": "2026-11-25T12:10:56.672Z",
       "by": "boss",
       "from": "out/work/sheets/sheet-beat-boss_unfold-preview-draft.jpg"
     },
     {
       "file": "look-2.jpg",
       "caption": "Contact sheet, the beat boss.slabs: 12 frames from 1:58.00 to 2:04.97, draft tier, preview",
-      "time": "2026-11-25T12:08:36.540Z",
+      "time": "2026-11-25T12:11:06.119Z",
       "by": "boss",
       "from": "out/work/sheets/sheet-beat-boss_slabs-preview-draft.jpg"
     },
     {
       "file": "look-3.jpg",
       "caption": "Contact sheet, the beat boss.popups: 12 frames from 2:05.00 to 2:10.97, draft tier, preview",
-      "time": "2026-11-25T12:08:45.743Z",
+      "time": "2026-11-25T12:11:16.053Z",
       "by": "boss",
       "from": "out/work/sheets/sheet-beat-boss_popups-preview-draft.jpg"
     },
     {
       "file": "look-4.jpg",
       "caption": "Contact sheet, the beat boss.lastStand: 12 frames from 2:11.00 to 2:15.97, draft tier, preview",
-      "time": "2026-11-25T12:08:54.701Z",
+      "time": "2026-11-25T12:11:25.384Z",
       "by": "boss",
       "from": "out/work/sheets/sheet-beat-boss_lastStand-preview-draft.jpg"
     }
