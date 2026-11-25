@@ -12,7 +12,7 @@ export const START = { x: 1180, y: 800 }
 export const TIMES = {
   riseSeconds: 0.8, sinkSeconds: 0.6, turretDelay: 0.72, shuffleSeconds: 0.32, pressWait: 0.16,
   slabCount: 3, slabFirst: 0.4, slabEvery: 0.55, slabHang: 0.2, slabFall: 0.2, slabSettle: 0.12, slabLie: 0.25, slabLift: 0.18,
-  paperSlide: 0.42, bite: 0.4, tugFilm: 5.06, lost: 0.3
+  paperSlide: 0.42, bite: 0.4, tugFilm: 4.52, lost: 0.3, lostFilm: 0.84
 }
 export const TUG = { stiff: 2600, damp: 36, strainPx: 9.6, lead: 0.4, shoulder: { x: 14, y: 30 }, hands: 31, rateLag: 0.07, inside: 4, least: 28, reach: { rest: 43, min: 37, max: 52, bite: 26, haul: 70 } }
 export const SPOT = { x: -12, y: -14 }
@@ -35,20 +35,30 @@ export const FIRST = {
   enter: [9.4, 9.6] as [number, number]
 }
 // The last name: at each of the first hunts it pulls up off the keys on to the bare page above the deck (above), rears back there, and dives for the key where it is now.
-export const LAST = { at: [10.3, 10.95, 11.55, 12.1, 12.62, 13.12, 13.62, 14.12], hunts: 3, above: -50, clear: 820, up: [0.08, 0.16] as [number, number], dive: [0.09, 0.09, 0.14], enter: [14.34, 14.6] as [number, number] }
+export const LAST = { at: [10.3, 10.95, 11.55, 12.1, 12.62, 13.12, 13.62, 14.12], hunts: 3, above: -50, clear: 820, thrown: 0.03, toss: 400, temper: 0.04, up: [0.08, 0.16] as [number, number], dive: [0.09, 0.09, 0.14], enter: [14.34, 14.6] as [number, number] }
 // The email: one careful key, then it backs off it (wait, from the key) and waits there, nervous, for what the key will do. There is no bare place it can reach and leave again in the third of a second before the run without moving the time of a key.
 export const MAIL = { first: 15.16, run: 15.5, every: 0.092, enter: 17.42, wait: { x: 700, y: -46 }, back: [15.18, 15.24] as [number, number], go: 0.022, sure: 0.1 }
 // The slabs: struck is how long after the click on Enter the key is struck, which is when the page starts to count.
 // Where it goes from the slabs: clear on to the bare page above the deck, then into the corner of the Email field, where it stays.
 export const DIVES = [{ x: 1100, y: 676 }, { x: 1716, y: FIELD_Y[2]! + 46 }]
-export const DIVE = { struck: 0.06, see: [0.04, 0.07], start: [0.12, 0.2], seconds: 0.16, jolt: 0.06, duck: 0.03 }
+export const DIVE = { struck: 0.06, doubt: 0.04, see: [0.04, 0.07], start: [0.12, 0.2], seconds: 0.16, jolt: 0.06, duck: 0.03 }
 export const TRUDGE = { x: 96, y: 84, first: [0.42, 0.62] as [number, number], share: 0.42, second: [0.8, 1.02] as [number, number] }
 export const END = { sag: 0.03 }
-export const RESUME = { walk: [19.9, 20.3] as [number, number], proud: 20.4, beside: { x: 20, y: 6 }, grab: 21.06, hoist: [21.1, 21.16] as [number, number], carry: [21.18, 21.54] as [number, number], drop: 21.62 }
+export const STRUT = { hop: 300, seconds: 0.17, past: { x: 12, y: -8 }, wind: 1.32, back: { x: -22, y: 18 }, rear: 1.64 }
+// The resume: a wind-up where it stands, a strut to the place under the drop zone where the sheet comes in, an eager start as it arrives, a crouch on its corner, a heave that tips the body back and a dip under its weight,
+// the sheet held up high and still with the chest out, a strut to the slot with it, and a short stop over the slot before it lets go.
+export const RESUME = {
+  leave: 19.9, walk: [20.04, 20.42] as [number, number], eager: 20.5, beside: { x: 22, y: 10 }, step: [20.8, 20.88] as [number, number], crouch: 20.78, grab: 20.96,
+  hold: { x: 5, y: 46 }, raise: 34, high: 16,
+  hoist: [20.99, 21.07] as [number, number], up: { x: -10, y: -50 }, dip: [21.08, 21.14] as [number, number], weight: 9, proud: 21.0, dust: 21.1,
+  carry: [21.36, 21.54] as [number, number], drop: 21.62
+}
+// The temper of the tug: a stamp as the sheet is caught, a wind-up before each haul, a second stamp, and nothing in the half second before the key picture. Then the big bite: a start, and it stands scared and still, pulled thin, until the sheet goes.
+export const TEMPER = { stamps: [22.24, 24.12], stamp: 330, hauls: [22.3, 23.0, 23.76, 24.56], scared: 25.3, back: [25.62, 26.06], lost: [0, 0.46] as [number, number] }
 
 const TUG_CURVE: [number, number, number, number][] = [
   [0, 0.125, 0.2, 4], [0.3, 0.15, 0.14, 0], [0.8, 0.11, 0.28, 25], [1.05, 0.26, -0.12, 5], [1.55, 0.22, 0.42, 22], [1.8, 0.37, 0.06, 0], [2.3, 0.33, 0.52, 24],
-  [2.6, 0.48, 0.16, 1], [2.95, 0.455, 0.47, 17], [3.2, 0.44, 0.47, 18], [3.5, 0.6, -0.02, 3], [4, 0.56, 0.36, 25], [4.3, 0.72, 0.15, 3], [4.6, 0.68, 0.15, 18], [5.06, 0.95, 0, 3]
+  [2.6, 0.48, 0.16, 1], [2.95, 0.455, 0.47, 17], [3.2, 0.44, 0.47, 18], [3.48, 0.6, 0.1, 5], [3.62, 0.61, 0.1, 22], [3.9, 0.655, 0.12, 20], [4.2, 0.63, 0.13, 25], [4.52, 0.95, 0, 3]
 ]
 
 function tugAt(t: number, column: 1 | 2 | 3): number {
@@ -114,16 +124,17 @@ export function makePlan(seed: number, first: string, last: string, email: strin
   const nameOf = (ch: string): string => (ch === '@' ? 'at' : ch === '.' ? 'dot' : ch === ' ' ? 'space' : ch.toLowerCase())
   const enter = seatIndex.enter!
 
-  // step1.keyboard: set down, a strut straight to the field, a pull back, a decided tap, held, and when the page opens under it a sharp lean back, held
+  // step1.keyboard: set down, one long strut hop straight to the field and past it, a squash where it lands, drawn back and up, a tap struck long into the field, a proud settle, and when the page opens under it it packs down small and laid back, held
   const field = { x: FIELD_X + 152, y: FIELD_Y[0]! + 36 + sizes.field / 2 + 4 }
   cue(0.52, { act: 'confident' })
-  to(1.0, 1.34, field.x, field.y, { arc: 30, ease: 'line' })
-  cue(1.36, { react: 'tap' })
-  to(1.37, 1.44, field.x + 10, field.y + 12, { ease: 'out' })
+  cue(1.0, { hop: STRUT.hop })
+  to(1.0, 1.0 + STRUT.seconds, field.x + STRUT.past.x, field.y + STRUT.past.y, { arc: 34, ease: 'out' })
+  cue(STRUT.wind, { react: 'tap' })
+  to(STRUT.wind + 0.01, STRUT.wind + 0.09, field.x + STRUT.back.x, field.y + STRUT.back.y, { ease: 'out' })
   to(1.45, 1.49, field.x, field.y, { ease: 'in' })
   click(FIRST.tap, 0.09)
-  cue(1.66, { react: 'rear' })
-  to(1.66, 1.76, field.x - 30, field.y - 26, { ease: 'out' })
+  cue(STRUT.rear, { react: 'rear' })
+  to(STRUT.rear, STRUT.rear + 0.08, field.x - 34, field.y - 30, { ease: 'out' })
   cue(2.1, { react: 'anticipate' })
 
   // step1.firstName: stomps, the turrets, a dodge, a leap clear, a cocky pause, a snap out of a shot's way (the frame of the approved image), a duck, a second pause, the hit, the shock, the rest of the name
@@ -174,12 +185,14 @@ export function makePlan(seed: number, first: string, last: string, email: strin
     else if (i <= LAST.hunts) {
       const old = keySpot(was[key]!)
       const now = keySpot(places[key]!)
-      leap(prev + LAST.up[0], prev + LAST.up[1], Math.max(LAST.clear, (old.x + now.x) / 2), DECK.y + LAST.above, { arc: 10, ease: 'out' })
-      cue(prev + LAST.up[0] + 0.02, { react: i === 2 ? 'doubleTake' : 'rear' })
+      cue(prev + LAST.thrown, { react: 'flinch' })
+      cue(prev + LAST.up[0], { hop: LAST.toss })
+      leap(prev + LAST.up[0], prev + LAST.up[1], Math.max(LAST.clear, (old.x + now.x) / 2), DECK.y + LAST.above, { arc: 10, ease: 'out', hop: false })
+      cue(prev + LAST.up[0] + 0.02, { react: i === 1 ? 'rear' : i === 2 ? 'doubleTake' : 'fume' })
       const dive = LAST.dive[i - 1]!
       stomp(t - dive, t, places[key]!, { arc: 14, ease: 'snap' })
     } else {
-      cue(prev + 0.12, { react: 'flinch' })
+      cue(prev + LAST.temper, { react: 'fume' })
       stomp(t - 0.26, t, places[key]!, { arc: 46 + i * 5 })
     }
     if (i === LAST.hunts) cue(t + 0.2, { act: 'angry' })
@@ -188,6 +201,7 @@ export function makePlan(seed: number, first: string, last: string, email: strin
   })
   cue(LAST.enter[0] - 0.1, { react: 'anticipate' })
   stomp(LAST.enter[0], LAST.enter[1], enter, { arc: 84 })
+  cue(LAST.enter[1] + 0.01, { react: 'stamp' })
 
   // step1.email: one careful key, a flinch, a step back and a nervous wait, nothing happens, then the whole address in one run and a proud Enter
   const mail = [...email].map(nameOf)
@@ -210,12 +224,12 @@ export function makePlan(seed: number, first: string, last: string, email: strin
   const submit = Math.max(MAIL.enter, t + 0.1)
   cue(submit - 0.16, { react: 'anticipate' })
   stomp(submit - 0.12, submit, enter, { arc: 70 })
-  cue(submit + 0.05, { act: 'proud' })
-  cue(submit + 0.1, { react: 'dustOff' })
+  cue(submit + DIVE.struck + DIVE.doubt, { act: 'nervous' })
   // The slabs: a start at the first, a stretched leap clear of it on to the bare page, a jump as it lands, a cower as the second hangs over it, a second leap into the corner of the Email field, a jump as that one lands, a cower there as the third hangs, and a flat duck as it lands a hand away. It stays scared
   const slab = (n: number): number => submit + DIVE.struck + TIMES.slabFirst + n * TIMES.slabEvery
   const landed = TIMES.slabHang + TIMES.slabFall
   cue(slab(0) + DIVE.see[0]!, { react: 'startle' })
+  cue(slab(0) + DIVE.see[0]!, { act: 'scared' })
   cue(slab(0) + DIVE.start[0]!, { react: 'jump' })
   leap(slab(0) + DIVE.start[0]!, slab(0) + DIVE.start[0]! + DIVE.seconds, DIVES[0]!.x, DIVES[0]!.y, { arc: 44, ease: 'out', hop: false })
   cue(slab(0) + landed + DIVE.jolt, { react: 'cower' })
@@ -227,16 +241,21 @@ export function makePlan(seed: number, first: string, last: string, email: strin
   cue(slab(2) + landed + DIVE.duck, { react: 'duck' })
   cue(slab(2) + landed + DIVE.duck, { act: 'scared' })
 
-  // step1.resume: it walks to its paper, stands beside it proud and dusts itself off, and only then lifts it and carries it over
-  const grab = { x: PAPER_REST.x + PAPER.w - 12, y: PAPER_REST.y + 8 }
+  // step1.resume: a wind-up, a strut to where its paper comes in, an eager start, a crouch on the corner, a heave, the sheet held up proud and still, a strut to the slot, a stop over it
+  const grab = { x: PAPER_REST.x + PAPER.w - RESUME.hold.x, y: PAPER_REST.y + RESUME.hold.y }
+  cue(RESUME.leave, { react: 'anticipate' })
+  cue(RESUME.leave + 0.02, { act: 'confident' })
   to(RESUME.walk[0], RESUME.walk[1], PAPER_REST.x + PAPER.w + RESUME.beside.x, PAPER_REST.y + RESUME.beside.y, { arc: -34 })
-  cue(RESUME.proud, { act: 'proud' })
-  cue(RESUME.proud + 0.02, { react: 'dustOff' })
-  to(RESUME.grab - 0.14, RESUME.grab - 0.03, grab.x, grab.y, { ease: 'out' })
-  cue(RESUME.grab - 0.1, { react: 'anticipate' })
+  cue(RESUME.eager, { react: 'tap' })
+  cue(RESUME.crouch, { react: 'anticipate' })
+  to(RESUME.step[0], RESUME.step[1], grab.x, grab.y, { ease: 'out' })
   clicks.push([RESUME.grab, RESUME.drop])
-  to(RESUME.hoist[0], RESUME.hoist[1], grab.x - 6, grab.y - 20, { ease: 'out' })
-  to(RESUME.carry[0], RESUME.carry[1], BITE.x + (grab.x - PAPER_REST.x), BITE.y - BITE.jerk - 14 + (grab.y - PAPER_REST.y), { arc: 52 })
+  cue(RESUME.hoist[0], { hop: 150 })
+  to(RESUME.hoist[0], RESUME.hoist[1], grab.x + RESUME.up.x, grab.y + RESUME.up.y, { ease: 'out' })
+  cue(RESUME.proud, { act: 'proud' })
+  to(RESUME.dip[0], RESUME.dip[1], grab.x + RESUME.up.x, grab.y + RESUME.up.y + RESUME.weight, { ease: 'out' })
+  cue(RESUME.dust, { react: 'dustOff' })
+  to(RESUME.carry[0], RESUME.carry[1], BITE.x + (grab.x - PAPER_REST.x), BITE.y - BITE.jerk - 14 + (grab.y - PAPER_REST.y), { arc: 26 })
 
   // step1.tug: the paper's curve places the pointer, so the body leans, loses ground and wins a little of it back
   const bite = RESUME.drop + TIMES.bite
@@ -247,11 +266,20 @@ export function makePlan(seed: number, first: string, last: string, email: strin
     const p = tugPoint(at - bite)
     to(Math.max(free, at - 0.05), at, p.x, p.y, { ease: 'line' })
   }
+  for (const at of TEMPER.stamps) {
+    cue(at, { hop: TEMPER.stamp })
+    cue(at + 0.02, { react: 'tap' })
+  }
+  for (const at of TEMPER.hauls) cue(at, { react: 'anticipate' })
+  cue(TEMPER.scared, { react: 'startle' })
+  for (const at of TEMPER.back) cue(at, { react: 'rear' })
+  cue(TEMPER.scared + 0.02, { act: 'scared' })
+  cue(lost + TEMPER.lost[0], { react: 'recoil' })
+  cue(lost + TEMPER.lost[1], { react: 'cower' })
 
-  // step1.shredded: where it comes back together. It sags at what the form says and stays down, then drags itself off the slot in two pulls with a stop between, bent and low
-  const whole = lost + TIMES.lost + SHRED.end
+  // step1.shredded: where it comes back together. It sags at what the form says and stays an arrow, then drags itself off the slot in two pulls with a stop between, bent and low
+  const whole = lost + TIMES.lostFilm + SHRED.end
   to(lost + 0.1, lost + 0.2, PILE.x, PILE.y, { ease: 'out' })
-  cue(whole + END.sag, { react: 'cower' })
   cue(whole + END.sag, { act: 'exhausted' })
   to(whole + TRUDGE.first[0], whole + TRUDGE.first[1], PILE.x + TRUDGE.x * TRUDGE.share, PILE.y + TRUDGE.y * TRUDGE.share, { ease: 'out' })
   to(whole + TRUDGE.second[0], whole + TRUDGE.second[1], PILE.x + TRUDGE.x, PILE.y + TRUDGE.y, { ease: 'out' })
@@ -266,6 +294,11 @@ function tugPoint(tau: number): { x: number; y: number } {
   const strain = (tugAt(tau, 3) + 4 * Math.sin(tau * 23)) * TUG.lead
   const far = Math.max(TUG.least, PAPER.h * (1 - amount) - TUG.inside) + strain * (1 + TUG.stiff / 480) + reach
   return { x: SLOT.cx - Math.sin(lean) * far - TUG.shoulder.x, y: SLOT.cy - Math.cos(lean) * far - TUG.shoulder.y }
+}
+
+// How far the held sheet is raised over the place it is gripped: up as it is heaved, held, and down again on the way to the slot.
+export function raised(time: number): number {
+  return smooth((time - RESUME.hoist[0]) / 0.1) * (1 - smooth((time - RESUME.carry[0] - 0.03) / (RESUME.carry[1] - RESUME.carry[0] - 0.03)))
 }
 
 export function pointerAt(plan: Plan, time: number): Pointer {
@@ -289,9 +322,9 @@ export function pointerAt(plan: Plan, time: number): Pointer {
 
 // The film camera in the tug: one straight move in, one still frame, one straight move out. The eye goes down one line from home to the frame with one ease on all of it and looks straight down the whole way, so one point of the page keeps its place on the screen. The frame holds the drop zone's lower rim, the slot, the machine, the whole cursor with its arms and where the pile lands, and stands still from before the first bite until the pile is down.
 const TUG_EDGE = FIELD_X - 16
-const TUG_FRAME = { w: 620, mid: SLOT.cx + 4, top: SLOT.cy - 191 }
+const TUG_FRAME = { w: 620, mid: SLOT.cx + 4, top: SLOT.cy - 205 }
 const tugFrame = (): { x: number; y: number; w: number; h: number } => ({ x: Math.min(TUG_EDGE - TUG_FRAME.w, TUG_FRAME.mid - TUG_FRAME.w / 2), y: TUG_FRAME.top, w: TUG_FRAME.w, h: (TUG_FRAME.w * 9) / 16 })
-export const CAMERA = { in: [20.9, 21.95] as [number, number], key: 25.125, out: [28.3, 29.1] as [number, number] }
+export const CAMERA = { in: [20.3, 21.1] as [number, number], key: 25.125, out: [28.3, 29.1] as [number, number] }
 const glide = (t: number): number => {
   const u = Math.min(1, Math.max(0, t))
   return u * u * u * (u * (u * 6 - 15) + 10)
