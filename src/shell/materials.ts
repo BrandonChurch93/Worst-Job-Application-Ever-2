@@ -216,7 +216,7 @@ vec3 wjaStretched( const in vec3 viewDir, const in vec3 normal, const in float r
 	for ( int i = -4; i <= 4; i ++ ) {
 		float t = float( i ) / 4.0;
 		float w = exp( -2.0 * t * t );
-		sum += w * getIBLRadiance( viewDir, normalize( normal + along * ( t * anisotropy * 0.3 ) ), roughness );
+		sum += w * getIBLRadiance( viewDir, normalize( normal + along * ( t * anisotropy * 0.26 ) ), roughness );
 		total += w;
 	}
 	return sum / total;
@@ -244,6 +244,7 @@ export interface Materials {
   glassSunk: THREE.MeshPhysicalMaterial
   aluminium: THREE.MeshPhysicalMaterial
   aluminiumTurned: THREE.MeshPhysicalMaterial
+  aluminiumEdge: THREE.MeshPhysicalMaterial
   orange: THREE.MeshPhysicalMaterial
   gap: THREE.MeshPhysicalMaterial
   ink: THREE.MeshPhysicalMaterial
@@ -269,15 +270,16 @@ export function makeMaterials(seed: number): Materials {
   const physical = (o: THREE.MeshPhysicalMaterialParameters) => studio(new THREE.MeshPhysicalMaterial(o))
   const ceramic = grained(physical({ color: srgb(0xecebe6), roughness: 0.74, metalness: 0, normalMap: grain, normalScale: new THREE.Vector2(0.09, 0.09), specularIntensity: 0.6 }), 0.5)
   const pocket = grained(physical({ color: srgb(0xdcdfdc), roughness: 0.8, metalness: 0, normalMap: grain, normalScale: new THREE.Vector2(0.08, 0.08), specularIntensity: 0.4 }), 0.3)
-  const glass = physical({ color: srgb(0xb8c0be), roughness: 0.44, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8 })
-  const glassSunk = physical({ color: srgb(0xb8c0be), roughness: 0.44, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8, vertexColors: true })
-  const glassThick = physical({ color: srgb(0xa3acad), roughness: 0.48, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8 })
+  const glass = physical({ color: srgb(0xbdc5c2), roughness: 0.44, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8 })
+  const glassSunk = physical({ color: srgb(0xbdc5c2), roughness: 0.44, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8, vertexColors: true })
+  const glassThick = physical({ color: srgb(0x9aa3a4), roughness: 0.48, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8 })
   const aluminium = physical({
     color: srgb(0xb9bdc1), roughness: 0.3, metalness: 1, normalMap: brushed, normalScale: new THREE.Vector2(0.22, 0.22), anisotropy: 0.72, anisotropyRotation: Math.PI / 2
   })
   const aluminiumTurned = stretched(physical({
-    color: srgb(0x8e9399), roughness: 0.2, metalness: 1, normalMap: turned.normal, normalScale: new THREE.Vector2(0.16, 0.16), anisotropy: 0.85, anisotropyMap: turned.direction
+    color: srgb(0x8e9399), roughness: 0.2, metalness: 1, normalMap: turned.normal, normalScale: new THREE.Vector2(0.06, 0.06), anisotropy: 0.85, anisotropyMap: turned.direction
   }))
+  const aluminiumEdge = physical({ color: srgb(0xb9bdc1), roughness: 0.3, metalness: 1 })
   const orange = physical({ color: srgb(0xc24400), roughness: 0.5, metalness: 0, clearcoat: 0.3, clearcoatRoughness: 0.09, specularIntensity: 0.8, specularColor: srgb(0xff9a52) })
   const gap = physical({ color: srgb(0x23211f), roughness: 0.85, metalness: 0, specularIntensity: 0.3 })
   const ink = physical({ color: srgb(0x2a2927), roughness: 0.48, metalness: 0, specularIntensity: 0.2 })
@@ -296,7 +298,7 @@ export function makeMaterials(seed: number): Materials {
     m.polygonOffsetUnits = -2
   }
   return {
-    ceramic, pocket, glass, glassThick, glassSunk, aluminium, aluminiumTurned, orange, gap, ink, inkOnOrange, enamel, edge, smoked, paper, red, keycap, steel, rubber,
+    ceramic, pocket, glass, glassThick, glassSunk, aluminium, aluminiumTurned, aluminiumEdge, orange, gap, ink, inkOnOrange, enamel, edge, smoked, paper, red, keycap, steel, rubber,
     textures: [grain, brushed, turned.normal, turned.direction]
   }
 }
