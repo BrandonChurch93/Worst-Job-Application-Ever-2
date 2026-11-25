@@ -22,7 +22,7 @@ const capShape = (w: number, h: number): THREE.BufferGeometry => {
 }
 
 const CORE = 0.6
-const SHADE = { soft: 0.16, dark: 0.52, spread: 0.25, over: 3, clear: 4.5, core: 0.74, x: 1.8, y: 1.67, least: 0.6, rest: 11, tight: 0.6, grow: -6 }
+const SHADE = { soft: 0.16, dark: 0.44, spread: 0.25, over: 3, clear: 4.5, core: 0.74, x: 1.8, y: 1.67, least: 0.6, rest: 6.5, tight: 0.6, grow: -6 }
 
 // The shadow a cap in the air leaves on the bed: a soft dark patch with no picture, its edge fading to nothing.
 function shadeGeometry(): THREE.BufferGeometry {
@@ -62,12 +62,26 @@ const coreShape = (w: number, h: number): THREE.BufferGeometry => {
 const isCap = (s: Shape): boolean => s.role === 'keycap' && s.kind !== 'text'
 const isEnter = (s: Shape): boolean => s.id === 'key-enter'
 
+// The part of an outline on one side of an upright line. The field of the keys takes the whole height of the deck, so the face is the two ends beside it.
+function cut(pts: THREE.Vector2[], x: number, sign: 1 | -1): THREE.Vector2[] {
+  const out: THREE.Vector2[] = []
+  for (let i = 0; i < pts.length; i++) {
+    const a = pts[i]!
+    const b = pts[(i + 1) % pts.length]!
+    const da = (x - a.x) * sign
+    const db = (x - b.x) * sign
+    if (da >= 0) out.push(a)
+    if (da >= 0 !== db >= 0) out.push(new THREE.Vector2(x, a.y + ((b.y - a.y) * da) / (da - db)))
+  }
+  return out.filter((p, i) => i === 0 || p.distanceTo(out[i - 1]!) > 1e-6)
+}
+
 function deckGeometry(w: number, h: number): { metal: THREE.BufferGeometry; well: THREE.BufferGeometry; seat: THREE.BufferGeometry } {
   const R = DECK_LOOK.roll
   const edge = R + DECK_LOOK.rim
   const inner = edge + DECK_LOOK.groove
   const outer = roundedRect(w, h, DECK_LOOK.corner, 10)
-  const face = new THREE.Shape(ringPath(outer, inner, 0, 0).getPoints())
+  const ring = ringPath(outer, inner, 0, 0).getPoints()
   const metal: THREE.BufferGeometry[] = []
   const dark: THREE.BufferGeometry[] = []
   const ox = DECK.x + DECK.w / 2
@@ -87,7 +101,8 @@ function deckGeometry(w: number, h: number): { metal: THREE.BufferGeometry; well
   const field = roundedRect(x1 - x0 + f * 2, y1 - y0 + f * 2, CAP.corner + f, 6)
   const fx = (x0 + x1) / 2 - ox
   const fy = -((y0 + y1) / 2 - oy)
-  face.holes.push(ringPath(field, -l, fx, fy))
+  const reach = (x1 - x0) / 2 + f + l
+  const ends = [new THREE.Shape(cut(ring, fx - reach, 1)), new THREE.Shape(cut(ring, fx + reach, -1))]
   metal.push(translate(sweep(field, [
     { inset: -l, z: 0, out: -0.7071, up: 0.7071 },
     { inset: 0, z: -l, out: -0.7071, up: 0.7071 }
@@ -98,7 +113,7 @@ function deckGeometry(w: number, h: number): { metal: THREE.BufferGeometry; well
   ], true), fx, fy))
   for (const side of [0, 1] as const) {
     const at = hatchCentre(side)
-    face.holes.push(ringPath(circle(DECK_LOOK.hatchHole, 48), 0, at.x - ox, -(at.y - oy)))
+    ends[side]!.holes.push(ringPath(circle(DECK_LOOK.hatchHole, 48), 0, at.x - ox, -(at.y - oy)))
   }
   const flat = (shape: THREE.Shape): THREE.BufferGeometry => {
     const top = new THREE.ShapeGeometry(shape)
@@ -130,7 +145,7 @@ function deckGeometry(w: number, h: number): { metal: THREE.BufferGeometry; well
     { inset: inner, z: 0, out: gd / gl, up: gh / gl }
   )
   metal.push(sweep(outer, wall, false))
-  const well = refine(flat(face), DECK_LOOK.cell)
+  const well = refine(merge(ends.map(flat)), DECK_LOOK.cell)
   const at = well.getAttribute('position')
   const tone = new Float32Array(at.count * 3)
   for (let i = 0; i < at.count; i++) tone.fill(sheen(at.getX(i) / w + 0.5, at.getY(i) / h + 0.5, config.seed + 307), i * 3, i * 3 + 3)
@@ -214,7 +229,7 @@ function makeDeck(s: Shape, ctx: RealContext): THREE.Object3D {
   bed.receiveShadow = false
   if (accent) accent.castShadow = false
   body.castShadow = false
-  shadeMaterial ??= new THREE.MeshBasicMaterial({ color: new THREE.Color(0.012, 0.011, 0.01), vertexColors: true, transparent: true, opacity: SHADE.dark, depthWrite: false, toneMapped: false })
+  shadeMaterial ??= new THREE.MeshBasicMaterial({ color: new THREE.Color(0.012, 0.014, 0.02), vertexColors: true, transparent: true, opacity: SHADE.dark, depthWrite: false, toneMapped: false })
   const patch = shadeGeometry()
   const shades = new THREE.InstancedMesh(patch, shadeMaterial, cream.length * 2)
   shades.count = 0

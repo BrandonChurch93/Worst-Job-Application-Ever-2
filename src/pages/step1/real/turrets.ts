@@ -11,7 +11,7 @@ import { EMIT, fx, GLOW, overlay } from './turret-fx'
 const heights = config.scale.heights
 
 export const TURRET_LOOK = {
-  collar: 46, head: 40, axis: -21, muzzle: 134, lift: 0.1, stowed: 80, dome: 27, tip: 30, lob: 18, clear: 0.72, sunk: 9, socket: 56, socketDepth: 36, bezel: 63.5, door: 58, doorDrop: 2.2,
+  collar: 46, head: 40, axis: -21, muzzle: 134, lift: 0.1, stowed: 80, dome: 10, crown: 2.4, tip: 32, lob: 18, clear: 0.72, sunk: 9, socket: 56, socketDepth: 20, bezel: 63.5, door: 58, doorDrop: 2.2,
   flashSeconds: 0.034, steam: 6, sparks: 8
 }
 
@@ -109,23 +109,24 @@ function geometries(): Shared {
   const L = TURRET_LOOK
   const collar = turn([[L.collar, -112], [L.collar, -48], [L.collar - 2, -46], [L.head + 1.2, -46], [L.head + 1.2, -50]], 56, 4)
   const crown: [number, number][] = []
-  for (let i = 1; i <= 12; i++) {
-    const t = (i / 12) * (Math.PI / 2)
-    crown.push([L.head * Math.cos(t), -L.dome + L.dome * Math.sin(t)])
+  for (let i = 1; i <= 8; i++) {
+    const t = (i / 8) * (Math.PI / 2)
+    crown.push([L.head - L.dome * (1 - Math.cos(t)), -L.dome - L.crown + L.dome * Math.sin(t)])
   }
+  crown.push([(L.head - L.dome) / 2, -L.crown / 3], [0, 0])
   const headParts: THREE.BufferGeometry[] = [
-    turn([[L.head, -56], [L.head, -34], [L.head - 0.9, -33.2], [L.head - 0.9, -31.8], [L.head, -31], [L.head, -L.dome]], 56, 4),
-    smoothTurn([[L.head, -L.dome], ...crown], 56)
+    turn([[L.head, -56], [L.head, -34], [L.head - 0.9, -33.2], [L.head - 0.9, -31.8], [L.head, -31], [L.head, -L.dome - L.crown]], 56, 4),
+    smoothTurn([[L.head, -L.dome - L.crown], ...crown], 56)
   ]
   const headDark: THREE.BufferGeometry[] = []
   const m = L.muzzle
   const barrel = merge([
-    along(turn([[16, 26], [16, 46], [15, 47.2], [12.8, 47.2], [12.8, 52], [12, 52.6], [12, 54], [12.8, 54.6]], 32, 2)),
-    along(smoothTurn([[12.8, 54.6], [9, m - 16]], 32)),
-    along(turn([[9, m - 16], [11.2, m - 14.8], [11.2, m - 9]], 32, 2))
+    along(turn([[19, 26], [19, 46], [18, 47.2], [15.6, 47.2], [15.6, 52], [14.8, 52.6], [14.8, 54], [15.6, 54.6]], 32, 2)),
+    along(smoothTurn([[15.6, 54.6], [11.4, m - 17]], 32)),
+    along(turn([[11.4, m - 17], [13.8, m - 15.8], [13.8, m - 10]], 32, 2))
   ])
-  const tip = along(turn([[11.2, m - 9], [11.2, m - 1], [10.2, m], [6.2, m]], 32, 1))
-  const barrelDark = along(turn([[6.2, m], [6.2, m - 26], [0, m - 26]], 24, 1))
+  const tip = along(turn([[13.8, m - 10], [13.8, m - 1], [12.6, m], [8, m]], 32, 1))
+  const barrelDark = along(turn([[8, m], [8, m - 26], [0, m - 26]], 24, 1))
   const bezel = turn([[L.bezel, -0.2], [L.bezel - 1.1, 0.9], [L.socket + 1.6, 0.9], [L.socket, -0.6]], 64, 5)
   const socket = merge([turn([[L.socket, -0.6], [L.socket, -L.socketDepth], [0, -L.socketDepth]], 48, 1)])
   const half = circle(L.door, 64)
@@ -175,7 +176,7 @@ function makeTurret(s: Shape): THREE.Object3D {
   }
   const metal = own(k.chrome)
   const steel = own(k.barrel)
-  rise.add(new THREE.Mesh(g.collar, k.collar))
+  rise.add(new THREE.Mesh(g.collar, k.dark))
   const slots = new THREE.Mesh(g.headDark, k.dark)
   const bore = new THREE.Mesh(g.barrelDark, k.dark)
   head.add(new THREE.Mesh(g.head, metal), slots)
@@ -314,7 +315,7 @@ function makeHatch(): THREE.Object3D {
   const k = kit()
   const g = geometries()
   const root = new THREE.Group()
-  root.add(new THREE.Mesh(g.bezel, k.turned), new THREE.Mesh(g.socket, k.seat))
+  root.add(new THREE.Mesh(g.bezel, k.turned), new THREE.Mesh(g.socket, k.dark))
   const doors = new THREE.InstancedMesh(g.door, k.deck, 2)
   doors.frustumCulled = false
   root.add(doors)
@@ -391,7 +392,7 @@ interface ScorchData {
   hotMaterial: THREE.MeshBasicMaterial
 }
 
-const SCORCH = { size: 46, smoke: 3, smokeSeconds: 1.5, hotSeconds: 0.4, hotSize: 46, emberSize: 30, shoulder: 9, core: 11, legend: 27, word: 52, bar: 400, wide: 112, sparks: 6, sparkSeconds: 0.24, fall: 900, ember: 0.35, snap: 36, flareSeconds: 0.1, ride: 16, strikeSeconds: 1.5, strikeMark: 0.72 }
+const SCORCH = { size: 60, smoke: 3, smokeSeconds: 1.5, hotSeconds: 0.4, hotSize: 46, emberSize: 30, shoulder: 9, core: 13, legend: 30, word: 52, bar: 400, wide: 112, sparks: 6, sparkSeconds: 0.24, fall: 900, ember: 0.35, snap: 36, flareSeconds: 0.1, ride: 16, strikeSeconds: 1.5, strikeMark: 0.72 }
 
 function makeScorch(s: Shape): THREE.Object3D {
   const f = fx()

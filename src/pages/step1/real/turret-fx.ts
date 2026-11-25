@@ -83,38 +83,35 @@ function haloPicture(): THREE.DataTexture {
   })
 }
 
-// A burn seen from straight above: a ragged pit of black char, a sooty crust round it, a soft brown singe that fades outward and a few flecks of soot.
+// A burn seen from straight above: a ragged blot of black char with a pit in it, a sooty crust that breaks into flecks, a brown singe that fades outward.
 function scorchPicture(seed: number): THREE.DataTexture {
   const mix = (a: number, b: number, t: number) => a + (b - a) * t
   return picture(256, true, (u, v) => {
     const r = Math.hypot(u, v)
-    const a = Math.atan2(v, u)
-    const ca = Math.cos(a)
-    const sa = Math.sin(a)
-    const ragged = noise(ca * 2.2 + 5, sa * 2.2 + 5, seed) * 0.6 + noise(ca * 6 + 9, sa * 6 + 9, seed + 3) * 0.4
-    const fine = noise(u * 26, v * 26, seed + 11)
-    const cloud = noise(u * 6 + 3, v * 6 + 8, seed + 17)
-    const pit = 0.2 + ragged * 0.12
-    const crust = pit + 0.06 + noise(ca * 9 + 21, sa * 9 + 21, seed + 5) * 0.12
-    const reach = crust + 0.26 + ragged * 0.2
-    const inside = 1 - smooth((r - pit) / 0.03)
-    const char = (1 - smooth((r - crust) / 0.07)) * (0.72 + 0.28 * smooth((fine - 0.3) / 0.3))
-    const singe = (1 - smooth((r - pit) / (reach - pit))) ** 1.7 * (0.75 + 0.25 * cloud)
-    const fleck = smooth((noise(u * 34 + 2, v * 34 + 6, seed + 29) - 0.8) / 0.08) * (1 - smooth((r - reach) / 0.2)) * 0.7
-    const wall = inside * smooth((r - pit * 0.45) / (pit * 0.55)) * Math.max(0, ca * 0.735 - sa * 0.678) * 0.11
-    const ash = inside * (0.02 * fine)
-    let red = mix(0.36, 0.2, singe)
-    let green = mix(0.21, 0.1, singe)
-    let blue = mix(0.1, 0.045, singe)
-    let alpha = singe * 0.78
-    red = mix(red, 0.055, char)
-    green = mix(green, 0.044, char)
-    blue = mix(blue, 0.036, char)
-    alpha = Math.max(alpha, char * 0.96, fleck)
-    red = mix(red, 0.026 + wall + ash, inside)
-    green = mix(green, 0.023 + wall * 0.92 + ash, inside)
-    blue = mix(blue, 0.021 + wall * 0.8 + ash, inside)
-    alpha = Math.max(alpha, inside) * smooth((1 - r) / 0.12)
+    const n1 = noise(u * 3.1 + 5, v * 3.1 + 5, seed)
+    const n2 = noise(u * 7.5 + 9, v * 7.5 + 9, seed + 3)
+    const n3 = noise(u * 19 + 2, v * 19 + 6, seed + 5)
+    const fine = noise(u * 40, v * 40, seed + 11)
+    const rr = r + (n1 - 0.5) * 0.26 + (n2 - 0.5) * 0.16 + (n3 - 0.5) * 0.07
+    const pit = 1 - smooth((rr - 0.2) / 0.035)
+    const char = 1 - smooth((rr - 0.36 - 0.05 * fine) / 0.035)
+    const crumb = smooth((n3 * 0.6 + fine * 0.4 - 0.62) / 0.06) * (1 - smooth((rr - 0.62) / 0.12))
+    const singe = (1 - smooth((rr - 0.3) / 0.5)) ** 1.5
+    const wall = pit * smooth((rr - 0.06) / 0.14) * Math.max(0, (u * 0.735 - v * 0.678) / Math.max(r, 0.001)) * 0.1
+    const ash = 0.035 * fine * (1 - pit)
+    let red = mix(0.5, 0.2, singe)
+    let green = mix(0.29, 0.095, singe)
+    let blue = mix(0.12, 0.04, singe)
+    let alpha = singe * (0.62 + 0.2 * n2)
+    const dark = Math.max(char, crumb * 0.85)
+    red = mix(red, 0.06 + ash, dark)
+    green = mix(green, 0.048 + ash, dark)
+    blue = mix(blue, 0.04 + ash, dark)
+    alpha = Math.max(alpha, char * 0.97, crumb * 0.8)
+    red = mix(red, 0.022 + wall, pit)
+    green = mix(green, 0.02 + wall * 0.92, pit)
+    blue = mix(blue, 0.019 + wall * 0.8, pit)
+    alpha = Math.max(alpha, pit) * smooth((1 - r) / 0.12)
     return [red, green, blue, alpha]
   })
 }

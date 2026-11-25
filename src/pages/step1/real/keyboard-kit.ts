@@ -64,8 +64,8 @@ export function sheen(u: number, v: number, seed: number): number {
     return hash01(i, salt, seed) + (hash01(i + 1, salt, seed) - hash01(i, salt, seed)) * t
   }
   const band = Math.exp(-(((u - 0.045) / 0.05) ** 2)) * 0.17 - Math.exp(-(((u - 0.115) / 0.03) ** 2)) * 0.05 + Math.exp(-(((u - 0.955) / 0.05) ** 2)) * 0.1
-  const soft = (wave(u, 7, 21) - 0.5) * 0.13 + (wave(u, 19, 22) - 0.5) * 0.06
-  const fall = 0.05 * (v - 0.5) - 0.16 * (u - 0.5)
+  const soft = (wave(u, 7, 21) - 0.5) * 0.2 + (wave(u, 19, 22) - 0.5) * 0.08
+  const fall = 0.04 * (v - 0.5) - 0.18 * (u - 0.5)
   return Math.min(1, Math.max(0, 0.78 + band + soft + fall))
 }
 
@@ -122,7 +122,6 @@ export interface Kit {
   well: THREE.MeshPhysicalMaterial
   turned: THREE.MeshPhysicalMaterial
   chrome: THREE.MeshPhysicalMaterial
-  collar: THREE.MeshPhysicalMaterial
   barrel: THREE.MeshPhysicalMaterial
   bed: THREE.MeshPhysicalMaterial
   cap: THREE.MeshPhysicalMaterial
@@ -156,9 +155,7 @@ export function kit(): Kit {
   well.vertexColors = true
   const turned = metal(0.34, 0.7, 0.14)
   turned.color.multiply(new THREE.Color(0.66, 0.665, 0.68))
-  const collar = metal(0.4, 0.7, 0.14)
-  collar.color.multiply(new THREE.Color(0.3, 0.305, 0.32))
-  const chrome = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xd4d6d9), roughness: 0.24, metalness: 0.9 }))
+  const chrome = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xa3a6ab), roughness: 0.38, metalness: 0.9 }))
   const bed = metal(0.55, 0.5, 0.12)
   bed.color.multiply(new THREE.Color(0.3, 0.3, 0.31))
   const barrel = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xb4b7bb), roughness: 0.28, metalness: 0.92 }))
@@ -171,11 +168,11 @@ export function kit(): Kit {
   lamp.clearcoatRoughness = 0.22
   const seat = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x4c4a47), roughness: 0.78, metalness: 0, specularIntensity: 0.3 }))
   const dark = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x201f1e), roughness: 0.55, metalness: 0.2, specularIntensity: 0.5 }))
-  made = { brushed, deck, well, turned, chrome, collar, barrel, bed, cap, orange: m.orange, lamp, seat, dark }
+  made = { brushed, deck, well, turned, chrome, barrel, bed, cap, orange: m.orange, lamp, seat, dark }
   return made
 }
 
-export const CAP = { rise: config.scale.heights.keycap - config.scale.heights.keyboardDeck, skirt: 7.2, rim: 0.55, dish: 18, corner: 9, tile: 96, gap: 1.2, shoulder: 6.4, fall: 7, crest: 1.3 }
+export const CAP = { rise: config.scale.heights.keycap - config.scale.heights.keyboardDeck, skirt: 7.2, rim: 0.55, dish: 18, corner: 11, tile: 96, gap: 1.2, shoulder: 4.8, fall: 5.6, crest: 1.3 }
 
 // A keycap: a skirt that stands in its seat, straight walls, a flat sloped shoulder with a hard lower edge, a tight crest and a top that is all but flat.
 // z = 0 is the crest of the rim, at the top of the key shape. The dish lies below it, so a flat legend at that height is never under the plastic.
