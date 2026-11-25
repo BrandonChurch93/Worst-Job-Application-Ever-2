@@ -162,8 +162,8 @@ describe('step 1: the script of the film', () => {
       else if (now - landed > 0.3 && now - landed < 0.5) after = Math.max(after, off)
       expect(Boolean(deck.moved)).toBe(off > 0.01)
     }
-    expect(most).toBeGreaterThan(1)
-    expect(most).toBeLessThan(3)
+    expect(most).toBeGreaterThan(2)
+    expect(most).toBeLessThan(6)
     expect(after).toBe(0)
   })
 

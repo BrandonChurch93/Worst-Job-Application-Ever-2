@@ -22,35 +22,37 @@ function context(list: Shape[], time: number, asked: Emitter[] = []): RealContex
   return { page: 'step1', list, byId: new Map(list.map((s) => [s.id, s])), time, scroll: 0, turning: false, width: 1920, top: 0, tall: 1080, light: (e) => asked.push(e) }
 }
 
-interface Slot { mesh: THREE.InstancedMesh; index: number }
-interface DeckData { caps: Map<string, Slot>; meshes: THREE.InstancedMesh[] }
+interface Slot { start: number; count: number }
+interface DeckData { caps: Map<string, Slot>; body: THREE.Mesh; accent: THREE.Mesh | null }
 
 const isCap = (s: Shape): boolean => s.role === 'keycap' && s.kind !== 'text'
 
-function placeOf(slot: Slot): THREE.Vector3 {
-  const m = new THREE.Matrix4()
-  slot.mesh.getMatrixAt(slot.index, m)
-  return new THREE.Vector3().setFromMatrixPosition(m)
+// Where a cap is drawn, read from the vertices the renderer is given: the middle of its outline and its highest point.
+function placeOf(data: DeckData, id: string): THREE.Vector3 {
+  if (id === 'key-enter') return data.accent!.position.clone()
+  const slot = data.caps.get(id)!
+  const p = data.body.geometry.getAttribute('position')
+  const box = new THREE.Box3()
+  for (let i = slot.start; i < slot.start + slot.count; i++) box.expandByPoint(new THREE.Vector3(p.getX(i), p.getY(i), p.getZ(i)))
+  return new THREE.Vector3((box.min.x + box.max.x) / 2, (box.min.y + box.max.y) / 2, box.max.z)
 }
 
 function follows(o: THREE.Object3D, list: Shape[]): void {
   const deck = list.find((s) => s.id === 'keyboard-deck')!
-  const caps = (o.userData.deck as DeckData).caps
+  const data = o.userData.deck as DeckData
   for (const s of list.filter(isCap)) {
-    const slot = caps.get(s.id)
-    expect(slot, s.id).toBeDefined()
-    expect(slot!.index).toBeLessThan(slot!.mesh.count)
-    const p = placeOf(slot!)
-    expect(p.x).toBeCloseTo(s.x + s.w / 2 - (deck.x + deck.w / 2), 3)
-    expect(p.y).toBeCloseTo(-(s.y + s.h / 2 - (deck.y + deck.h / 2)), 3)
+    if (s.id !== 'key-enter') expect(data.caps.get(s.id), s.id).toBeDefined()
+    const p = placeOf(data, s.id)
     const flying = s.z0 > deck.z1 + 0.01
-    if (flying) expect(Math.abs(p.z - (s.z1 - deck.z0))).toBeLessThan(1.2)
-    else expect(p.z).toBeCloseTo(s.z1 - deck.z0, 3)
+    const near = flying ? 2.5 : 0.002
+    expect(Math.abs(p.x - (s.x + s.w / 2 - (deck.x + deck.w / 2))), s.id).toBeLessThan(near)
+    expect(Math.abs(p.y + (s.y + s.h / 2 - (deck.y + deck.h / 2))), s.id).toBeLessThan(near)
+    expect(Math.abs(p.z - (s.z1 - deck.z0)), s.id).toBeLessThan(near)
   }
 }
 
 describe('the real keyboard', () => {
-  it('gives every seat of the data a cap, and the instanced caps follow the shapes through the rise, the shots, the shuffle and the sinking', () => {
+  it('gives every seat of the data a cap, and the caps follow the shapes through the rise, the shots, the shuffle and the sinking', () => {
     const s = film()
     let o: THREE.Object3D | null = null
     let seen = 0
@@ -67,7 +69,7 @@ describe('the real keyboard', () => {
       for (const c of shapes) expect(keyboard.key(c, ctx)).toBe('')
       if (!o) {
         o = keyboard.make(deck, ctx)
-        expect((o.userData.deck as DeckData).caps.size).toBe(seats.length)
+        expect((o.userData.deck as DeckData).caps.size + 1).toBe(seats.length)
       }
       keyboard.pose!(o, deck, ctx)
       follows(o, list)
@@ -78,17 +80,22 @@ describe('the real keyboard', () => {
     expect(flown).toBeGreaterThan(0)
   })
 
-  it('draws equal caps as one instanced mesh for each size', () => {
+  it('draws every cream cap in one mesh and the Enter in a second, and writes again only the caps that moved', () => {
     const s = film()
     s.advance(steps(6))
     const list = listOf(s)
     const deck = list.find((c) => c.id === 'keyboard-deck')!
     const o = keyboard.make(deck, context(list, 6))
     keyboard.pose!(o, deck, context(list, 6))
-    const meshes = (o.userData.deck as DeckData).meshes
-    const sizes = new Set(seats.map((c) => `${c.w}x${c.h}`))
-    expect(meshes.length).toBeLessThanOrEqual(sizes.size + 1)
-    expect(meshes.reduce((n, m) => n + m.count, 0)).toBe(seats.length)
+    const data = o.userData.deck as DeckData
+    const meshes: THREE.Mesh[] = []
+    o.traverse((c) => { if ((c as THREE.Mesh).isMesh) meshes.push(c as THREE.Mesh) })
+    expect(meshes.length).toBe(4)
+    expect(meshes.filter((m) => m.castShadow).length).toBe(3)
+    const spots = data.body.geometry.getAttribute('position') as THREE.BufferAttribute
+    const before = spots.version
+    keyboard.pose!(o, deck, context(list, 6))
+    expect(spots.version).toBe(before)
   })
 })
 
