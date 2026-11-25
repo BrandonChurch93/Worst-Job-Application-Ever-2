@@ -16,6 +16,8 @@ const whole = makeBody !== null
 export const cursorReal = { body: whole, effects: makeEffects !== null, acting: whole && actingLook !== null, damage: whole && damageLook !== null, arms: whole && makeArms !== null }
 
 const half = config.table.ballPx / 2
+// A closed hand rides this far above where it holds, so that the fingers lie on what is held and not inside it.
+const HOLD = 7
 
 // One cursor made of its parts: the body, its effects and its arms, posed from what the cursor is doing.
 export class CursorView {
@@ -81,7 +83,7 @@ export class CursorView {
       this.body.root.localToWorld(this.body.anchor(s[0], s[1], from))
       this.root.worldToLocal(from)
       const h = hands[i]!
-      to.set(h.x - 960, 540 - h.y, h.z)
+      to.set(h.x - 960, 540 - h.y, h.z + HOLD * c.grip[i]!)
       to.lerpVectors(from, to, Math.min(1.12, grown))
       // Torn off: the shoulder end lets go and trails after the hand, which sinks with what it holds.
       if (c.shed > 0) {
