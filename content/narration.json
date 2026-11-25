@@ -1,144 +1,121 @@
 {
-  "about": "The narrator's lines. A nature documentary voice that watches the job applicant the way a wildlife film watches a small animal about to be eaten. The voice is the one saved in Brandon's ElevenLabs account under the name in audio.narratorVoice in config/showcase.json.",
-  "status": "DRAFT. Brandon hears every line on the sound board at the review stop and may rewrite any of them.",
+  "about": "The narrator's lines. A wildlife documentary voice that watches the job applicant the way a nature film watches a small animal having a very bad day. The voice is the one saved in Brandon's ElevenLabs account under the name in audio.narratorVoice in config/showcase.json.",
+  "status": "DRAFT 2, November 25. Brandon approved this voice from samples. He hears every line on the sound board at the review stop and may rewrite any of them. kit/addenda/001-sound-budget-and-narrator.md says what the Builder may change.",
   "direction": {
-    "inBrandonsWords": "National Geographic delivery: talking real slow, with a pause every few words. Kind of smug, matching the vibe of the application, even rude to the user. Narrating what the user is doing the whole time and poking fun at them.",
+    "inBrandonsWords": "Kind of Australian, National Geographic vibe: talking real slow, with a pause every few words. Somebody narrating what the user is doing in a condescending way, but funny, all of it. Never mean or rude just to be mean and rude. Look at the pitiful applicant as it tries to pay its bills, desperately. More than just wildlife.",
     "hisExample": "The lion (pause) walks to the den of his friend (pause) and then (pause) pounces on him.",
-    "notWanted": "A first test voice whispered and sounded sincere. He does not want that. Never warm, never kind, never whispering, never excited."
+    "theFiveThingsItDrawsOn": [
+      "The pitiful creature: the applicant as a species doing what its kind always does.",
+      "Money: rent, bills and loans are why it keeps going.",
+      "Company speak, quoted flat by someone who stopped believing it.",
+      "Made-up field facts, delivered as science.",
+      "The narrator's own opinion: he has watched a thousand of these and is a little bored."
+    ],
+    "whoTheJokeIsOn": "The job hunt and the company. The applicant is the one the audience feels for.",
+    "notWanted": "A first test voice whispered and sounded sincere. He does not want that. Never whispering, never excited, never cruel. Not constant: it speaks at chosen moments and leaves the rest to the picture and the sound."
   },
   "rules": [
     "The mark / is a pause. It is never spoken. Phase 0 finds what makes this voice pause and replaces the mark with it.",
     "Slow. A line is spoken at no more than audio.narratorMaxWordsPerSecond words a second, pauses included.",
-    "Smug and unimpressed. It looks down on the applicant. It is never on the applicant's side.",
+    "Condescending and dry, and always funny first. It pities the applicant. It never insults it for the sake of it.",
     "It says 'the applicant' and 'it'. Never 'you'. On the live site the applicant is the visitor, and the narrator talks about them as if they could not hear.",
     "It never laughs and never raises its voice.",
     "It never explains a joke the picture already tells.",
-    "Short. Room is left for the sound effects.",
+    "Not constant. Most beats have no line. Room is left for the sound effects.",
     "Every word is spoken exactly as written. No word is added.",
+    "Each film line has a 'live' entry: what the visitor does on the live site that plays the same line there, once.",
     "No em dashes."
   ],
   "pauseMark": "/",
   "film": {
     "marketing.stroll": [
-      { "at": 0, "text": "Behold. / The applicant." }
+      { "at": 0, "text": "Here we find / the applicant. / Rent is due.", "live": "the careers page first appears and the visitor moves the mouse" }
     ],
     "marketing.perks": [
-      { "at": 0.1, "text": "It sees unlimited PTO / and believes it. / The fine print / goes unread." }
+      { "at": 0.57, "text": "It spots unlimited PTO. / Poor thing / believes it.", "live": "the cursor first touches a perk card" }
     ],
     "marketing.ticker": [],
-    "marketing.apply": [
-      { "at": 0, "text": "And so / it applies." }
-    ],
+    "marketing.apply": [],
     "step1.keyboard": [],
     "step1.firstName": [
-      { "at": 0, "text": "Step one. / Its own name. / Under fire." },
-      { "at": 0.6, "text": "Shot. / On field one." }
+      { "at": 0, "text": "First name. / Under fire. / Standard onboarding.", "live": "the visitor clicks the First name field" },
+      { "at": 0.6, "text": "Hit. / It keeps typing. / It has bills.", "live": "the first bolt hits the cursor" }
     ],
-    "step1.lastName": [
-      { "at": 0, "text": "The keys moved. / It did not notice." }
-    ],
+    "step1.lastName": [],
     "step1.email": [
-      { "at": 0, "text": "A valid email. / Rejected. / As is tradition." }
+      { "at": 0, "text": "A valid email. / Rejected. / The system / is working as designed.", "live": "the first error slab lands" }
     ],
-    "step1.resume": [
-      { "at": 0, "text": "Ah. / The resume." }
-    ],
+    "step1.resume": [],
     "step1.tug": [
-      { "at": 0.05, "text": "It grows arms. / Desperate." },
-      { "at": 0.55, "text": "The shredder / always wins." }
+      { "at": 0.1, "text": "It fights for the resume. / Two pages. / One of them is true.", "live": "the cursor's arms come out" }
     ],
-    "step1.shredded": [
-      { "at": 0, "text": "Now type it again." }
-    ],
-    "step2.open": [
-      { "at": 0, "text": "Personal details. / Simple." }
-    ],
+    "step1.shredded": [],
+    "step2.open": [],
     "step2.dial": [
-      { "at": 0.05, "text": "A phone. / From before it was born." }
+      { "at": 0, "text": "A rotary phone. / The applicant / has never seen one.", "live": "the Contact number row opens" }
     ],
-    "step2.slot": [
-      { "at": 0, "text": "Its birthday / is now a gamble. / It loses." }
-    ],
+    "step2.slot": [],
     "step2.crank": [
-      { "at": 0, "text": "Volume. / All the way up. / It will regret that." }
+      { "at": 0, "text": "Volume. / All the way up. / It will regret that.", "live": "the Audio volume row opens" }
     ],
     "step2.continue": [],
     "pinball.seal": [
-      { "at": 0.05, "text": "The skills assessment." }
+      { "at": 0.05, "text": "The skills assessment. / No skills / will be assessed.", "live": "the ball closes round the cursor" }
     ],
-    "pinball.reveal": [
-      { "at": 0.1, "text": "A career. / In reverse." }
-    ],
+    "pinball.reveal": [],
     "pinball.launch": [
-      { "at": 0, "text": "Welcome to the grind." }
+      { "at": 0, "text": "A career. / In reverse.", "live": "the plunger fires" }
     ],
     "pinball.lobby": [
-      { "at": 0, "text": "Corporate headquarters. / So close." }
+      { "at": 0, "text": "Corporate headquarters. / So close.", "live": "the ball rolls onto the red carpet" }
     ],
     "pinball.coffee": [
-      { "at": 0, "text": "Coffee. / It solves nothing." }
+      { "at": 0, "text": "It runs on coffee / and fear.", "live": "the first bumper hit" }
     ],
     "pinball.replyAll": [
-      { "at": 0.05, "text": "Someone / hit reply all." },
-      { "at": 0.55, "text": "Everyone / is now involved." }
+      { "at": 0.1, "text": "Someone / hit reply all.", "live": "the inbox takes the ball" }
     ],
     "pinball.fired": [
-      { "at": 0, "text": "The firehouse. / It is fired." }
+      { "at": 0, "text": "Fired. / Before it was hired. / A new record.", "live": "the ball drops into the firehouse" }
     ],
-    "pinball.highway": [
-      { "at": 0, "text": "The commute. / Two hours. / Each way." }
-    ],
-    "pinball.save": [
-      { "at": 0, "text": "Saved. / Unpaid, of course." }
-    ],
+    "pinball.highway": [],
+    "pinball.save": [],
     "pinball.drain": [
-      { "at": 0, "text": "The unemployment office. / Where it belongs." }
+      { "at": 0, "text": "The unemployment office. / It knows the way.", "live": "the ball enters the drain" }
     ],
     "boss.verify": [
-      { "at": 0.05, "text": "A robot? / It says no. / It lies." }
+      { "at": 0, "text": "Not a robot, / it claims. / We will see.", "live": "the visitor ticks the checkbox" }
     ],
-    "boss.unfold": [
-      { "at": 0, "text": "The button / has had enough." }
-    ],
+    "boss.unfold": [],
     "boss.slabs": [
-      { "at": 0, "text": "It fights back / the only way it knows. / Clicking." }
+      { "at": 0, "text": "The submit button fights back. / Even it / does not want this job.", "live": "the boss fires its first slab" }
     ],
-    "boss.popups": [
-      { "at": 0, "text": "Pop-ups. / The coward's weapon." }
-    ],
+    "boss.popups": [],
     "boss.lastStand": [
-      { "at": 0, "text": "Session expired. / A classic." }
+      { "at": 0, "text": "Session expired. / A classic.", "live": "the boss's last phase starts" }
     ],
-    "boss.collapse": [
-      { "at": 0, "text": "It wins. / Barely." }
-    ],
-    "boss.press": [
-      { "at": 0.15, "text": "It may submit." }
-    ],
-    "decision.wait": [
-      { "at": 0, "text": "Now we wait." }
-    ],
+    "boss.collapse": [],
+    "boss.press": [],
+    "decision.wait": [],
     "decision.letter": [
-      { "at": 0.1, "text": "Or not. / Rejected. / Instantly." }
+      { "at": 0, "text": "Rejected. / In under a second.", "live": "the stamp lands" }
     ],
     "decision.metrics": [
-      { "at": 0, "text": "It accepts. / It always does." }
+      { "at": 0, "text": "It will apply again tomorrow. / They always do.", "live": "the metrics card appears" }
     ],
-    "decision.reset": [
-      { "at": 0, "text": "Look. / Still hiring." }
-    ]
+    "decision.reset": []
   },
   "liveOnly": {
     "about": "Lines the live site can add. They play when the named thing happens. One of the list is chosen in order, never at random. A live line never interrupts another line, and the gap between two lines is at least audio.liveNarratorMinGapSeconds.",
-    "idle": ["The applicant has stopped. / Thinking, / presumably.", "Take your time. / The position / is not real."],
-    "hit": ["Hit.", "Again.", "It does not learn.", "Still standing. / Technically."],
+    "idle": ["The applicant has frozen. / A common defence. / It does not work.", "Take your time. / The job is not real."],
+    "hit": ["Hit.", "Again.", "Still typing. / It has bills.", "Resilient. / Or desperate."],
     "slowTyping": ["One letter. / Well done."],
     "realKeyboard": ["A real keyboard. / How optimistic."],
-    "tugLost": ["It was never / going to win that."],
-    "pinball.flipper": ["It found the flippers. / They will not help."],
+    "tugLost": ["The shredder / always eats first."],
+    "pinball.flipper": ["It found the flippers. / Hope / is a powerful thing."],
     "boss.verify": ["It claims to be human. / Bold."],
     "boss.slow": ["The button is winning. / The button."],
-    "skip": ["It gives up. / Finally, / a real skill."],
+    "skip": ["It skips ahead. / Efficient. / Still unemployed."],
     "watchFilm": ["It would rather watch. / Understandable."]
   }
 }
