@@ -67,7 +67,7 @@ describe('damage', () => {
 
   it('nothing switches back: the hole closes, the char fades, the flat body refills', () => {
     const at = (kind: Damage, u: number) => look(restPose(0, 0, { damage: [kind], healing: u })).body
-    expect(at('burn', 0.3).holes[0].r).toBeGreaterThan(2)
+    expect(at('burn', 0.3).holes[0].r).toBeGreaterThan(1.3)
     expect(at('burn', 0.3).holes[0].glow).toBeLessThan(at('burn', 0.05).holes[0].glow)
     expect(at('burn', 0.8).holes[0].r).toBeLessThan(at('burn', 0.6).holes[0].r)
     expect(at('burn', 1).holes).toEqual([])

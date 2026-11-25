@@ -6,7 +6,7 @@ const smooth = (t: number): number => t * t * (3 - 2 * t)
 
 // The shares of a kind of damage's life at which each thing happens. A heal is always seen: nothing switches back.
 export const LIFE = {
-  burn: { punched: 0.04, cold: 0.42, flake: [0.44, 0.6], smokeEnd: 0.6, close: 0.64, radius: 2.15 },
+  burn: { punched: 0.04, cold: 0.42, flake: [0.44, 0.6], smokeEnd: 0.6, close: 0.64, radius: 1.4, clean: 2.15 },
   scorched: { fade: 0.4, smokeEnd: 0.75 },
   flattened: { pressed: 0.05, peel: 0.5, refill: 0.78, crackEnd: 0.95 },
   reassembled: { seam: 0.76 }
@@ -19,12 +19,13 @@ export function woundOf(w: Wound, look: Parameters<LookMaker>[1], pose: Paramete
   const u = w.at
   if (w.kind === 'burn') {
     const L = LIFE.burn
-    const r = L.radius * smooth(ramp(u, 0, L.punched)) * (1 - smooth(ramp(u, L.close, 1)))
-    // The char flakes off once the rim is cold: what is left is a clean punched hole, and that closes.
-    const hole = { x: w.x, y: w.y, r, glow: Math.pow(1 - ramp(u, 0, L.cold), 1.6), burnt: 1 - smooth(ramp(u, L.flake[0], L.flake[1])) }
+    // The char flakes off once the rim is cold: what is left is a wider clean punched hole, and that closes.
+    const burnt = 1 - smooth(ramp(u, L.flake[0], L.flake[1]))
+    const r = (L.clean + (L.radius - L.clean) * burnt) * smooth(ramp(u, 0, L.punched)) * (1 - smooth(ramp(u, L.close, 1)))
+    const hole = { x: w.x, y: w.y, r, glow: Math.pow(1 - ramp(u, 0, L.cold), 1.6), burnt }
     if (r > 0.03) b.holes.push(hole)
     const smoke = 1 - ramp(u, 0.08, L.smokeEnd)
-    if (smoke > 0) e.smoke.push({ x: w.x, y: w.y - L.radius * 0.6, amount: smoke })
+    if (smoke > 0) e.smoke.push({ x: w.x, y: w.y - L.radius * 0.9, amount: smoke })
   } else if (w.kind === 'scorched') {
     const L = LIFE.scorched
     b.char = Math.max(b.char, 1 - smooth(ramp(u, L.fade, 1)))
