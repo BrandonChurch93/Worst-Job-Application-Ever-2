@@ -1,4 +1,5 @@
 // npm run parts: fills the parts register from the flags the code carries. --check compares the register with the code and with what the page reports. --set NAME --state S changes a state.
+// --record NAME --files a,b,c records the files of a part that carries no flag, with their hash as they were when the part was a stand-in.
 import fs from 'node:fs'
 import path from 'node:path'
 import { spawnSync } from 'node:child_process'
@@ -6,6 +7,7 @@ import { parseAst } from 'vite'
 import { args, at, config, readJson, writeJson } from './lib/paths.mjs'
 import { clock, seconds, took } from './lib/film-encode.mjs'
 import { STATES, compare, filesOfParts, fill, hashOf, scan, setState, templateTest } from './lib/film-parts.mjs'
+import { ANCHORS, anchoredRecord, resolveCommit, showAt } from './lib/gate-checks.mjs'
 
 const a = args()
 const t0 = clock()
@@ -15,12 +17,37 @@ const stop = (line, code = 1) => {
   console.error(`parts: ${line}`)
   process.exit(code)
 }
-const file = at('parts', 'PARTS.json')
-if (!fs.existsSync(file)) stop('parts/PARTS.json does not exist, so there is no register to fill')
+const file = word(a.register) ? path.resolve(word(a.register)) : at('parts', 'PARTS.json')
+if (!fs.existsSync(file)) stop(`${path.relative(at(), file)} does not exist, so there is no register to fill`)
 const register = readJson(file)
 const git = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: at(), encoding: 'utf8' })
 const commit = git.status === 0 ? git.stdout.trim() : ''
 if (!commit) stop('git gives no commit for HEAD, so a state or a hash cannot be recorded')
+
+if (a.record !== undefined) {
+  const name = word(a.record)
+  const files = [...new Set(word(a.files).split(',').map((f) => f.trim().replace(/^\.\//, '')).filter(Boolean))].sort()
+  if (!name || !files.length) stop('give both --record NAME and --files a,b,c: the files that hold the part')
+  const part = register.parts.find((p) => p.name === name)
+  if (!part) stop(`the register holds no part called "${name}"`)
+  if (part.standInHash && !a.replace) stop(`${name} has a recorded hash already, of ${part.files.join(' ')}. Add --replace to record it again`)
+  const gone = files.filter((f) => !fs.existsSync(at(f)) || !fs.statSync(at(f)).isFile())
+  if (gone.length) stop(`not a file of this tree: ${gone.join(', ')}`)
+  const anchors = (word(a.at) ? word(a.at).split(',') : ANCHORS).map((c) => ({ asked: c, full: resolveCommit(at(), c) }))
+  const lost = anchors.filter((c) => !c.full)
+  if (lost.length) stop(`this clone does not hold the commit ${lost.map((c) => c.asked).join(', ')}, so no file can be read as it was then`)
+  const rec = anchoredRecord(files, anchors.map((c) => c.full), (c, f) => showAt(at(), c, f))
+  if (rec.absent.length) stop(`${rec.absent.join(', ')} ${rec.absent.length === 1 ? 'is' : 'are'} in none of the commits ${anchors.map((c) => c.asked).join(', ')}: a file that did not exist while the part was a stand-in cannot show that the part changed. Name the files that held the stand-in`)
+  part.files = rec.files
+  part.standInHash = rec.hash
+  part.hashAt = rec.hashAt
+  part.commit = commit
+  writeJson(file, register)
+  const today = hashOf(at(), rec.files)
+  for (const f of rec.files) say(`${f} as it was at ${rec.hashAt[f].slice(0, 7)}`)
+  say(`${name}: ${rec.files.length} file${rec.files.length === 1 ? '' : 's'} recorded with the hash ${rec.hash.slice(0, 12)}. The files today ${today === rec.hash ? 'are the same, so test 2 of G13 fails until one of them changes' : 'differ already'}. Wrote ${path.relative(at(), file)} in ${took(seconds(t0))}`)
+  process.exit(0)
+}
 
 if (a.set !== undefined || a.state !== undefined) {
   if (!word(a.set) || !word(a.state)) stop(`give both --set NAME and --state STATE. The states are ${STATES.join(', ')}`)
