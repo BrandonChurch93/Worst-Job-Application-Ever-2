@@ -412,6 +412,20 @@ function play(first: PlayMode): void {
     if (e.button === 2) mouse.pointer = { ...mouse.pointer, flipRight: false }
     else mouse.pointer = { ...mouse.pointer, down: false, flipLeft: false }
   })
+  let tabbed = false
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Tab') tabbed = true
+  }, true)
+  window.addEventListener('pointerdown', () => {
+    tabbed = false
+    canvas.dataset.ring = 'false'
+  }, true)
+  canvas.addEventListener('focus', () => {
+    canvas.dataset.ring = String(tabbed)
+  })
+  canvas.addEventListener('blur', () => {
+    canvas.dataset.ring = 'false'
+  })
   const onControl = (e: KeyboardEvent): boolean => {
     const t = e.target
     return t instanceof HTMLElement && t !== canvas && t !== document.body && t !== document.documentElement
