@@ -52,6 +52,7 @@ Times are seconds of the unit. Events are read from a run of the stage in film m
 22. The keyboard note sits 24 px under the form (was 14), clear of the contact shadow of the resume card and 28 px above the deck: asked by the type owner, seen in a draft still.
 23. Legends: a single letter, digit or sign is set at 26 px and a word (Tab, Shift, Enter) at 20 px, the sizes the type owner measured on the approved image (cap heights 19 and 15 px).
 24. After the loss the body is driven over the card (6 px above its face, 84 px up the page from the slot) for the 0.3 s before the shredder has it, so it is seen whole with its arms gone, not cut by the plate: seen by the cursor's actor. The knock at the loss stays `recoil`, which now turns the body as it is yanked.
+25. The tug camera at the key still (25.125 s) frames about 900 px of the page, so the cursor is 149 px tall in a 1920 frame (was 128). MEASURED with `npm run measure -- --unit step1 --only M3` at four widths of frame: 1054 px 1.3387 (the least of the two keys), 949 px 1.1363, 902 px 1.008, 852 px 0.8635, 600 px 0.6701 (red). 902 px is the closest with room to spare; the push to 600 px comes after the key still, by 26.35 s.
 
 ## Agreed with other owners
 

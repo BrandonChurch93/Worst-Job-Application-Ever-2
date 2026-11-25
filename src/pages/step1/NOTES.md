@@ -66,7 +66,7 @@ The logic, the script of the film and the numbers the makers of the real parts r
 
 - `fire.ts` gives `makeTurrets()` and `drawFire(out, { typed, pressed, turrets })`: the page with the keyboard up, First name holding `typed`, the keys named in `pressed` down, and the given turrets with their bolts and marks. Key names are those of `keyboard.json`.
 - The cursor grabs the paper by its top right corner, clear of the title.
-- The film camera eases from home to a wide frame of the card and the slot (1200 px wide) between 21.1 s and 22.1 s, pushes slowly in to 1000 px for 4.6 s, pushes to a 600 px frame on the slot and the hands between 25.2 s and 26.8 s (after the key still at 25.125), and eases home between 27.6 s and 28.9 s. All three frames are placed from `SLOT`. `tests/step1-script.test.ts` holds the cursor at least 70 px inside the frame for the whole tug.
+- The film camera eases from home to a wide frame of the card and the slot (1200 px wide) between 21.1 s and 22.1 s, pushes slowly in to 1000 px for 4.6 s, pushes to a 600 px frame on the slot and the hands between 24.35 s and 26.35 s (the key still at 25.125 is about 900 px wide, where the fine detail against the approved image, M3, measures 1.008; at 850 px it is 0.8635 and at 600 px 0.6701, under the least of 0.8), and eases home between 27.6 s and 28.9 s. All three frames are placed from `SLOT`. `tests/step1-script.test.ts` holds the cursor at least 70 px inside the frame for the whole tug.
 - The end (`END`, seconds after the cursor is whole): a double take at 0.06, a lean toward the message with `shocked` from 0.14, a wind-up and a stamp in `angry` at 0.62, then `exhausted` and a trudge of 0.8 s away from the card from 1.0.
 
 ## For the measures
