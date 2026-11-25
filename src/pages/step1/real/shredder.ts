@@ -409,13 +409,13 @@ function poseCassette(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
 
 const SEG = 26
 const MAX = 24
-const RIBBON = 3.6
+const RIBBON = 2.5
 
 interface Strips { geometry: THREE.BufferGeometry; was: string }
 
 const face = new Float32Array(SEG * 3)
 // What a strip keeps of a rule of the sheet: a tick paler than the rule, as the cut edge frays it.
-const RULE = INK.bar.clone().lerp(INK.paper, 0.35)
+const RULE = INK.bar.clone().lerp(INK.paper, 0.55)
 
 function makeStrips(): THREE.Group {
   const g = new THREE.BufferGeometry()
@@ -512,7 +512,7 @@ function poseStrips(o: THREE.Object3D, ctx: RealContext): void {
       const side = sway * Math.sin(Math.PI * (t * waves + phase))
       const mx = cx + ax * along + wx * side
       const my = cy + ay * along + wy * side
-      const mz = s.z0 - high * 0.92 * smooth(t * 1.25) + 0.4 + up + Math.abs(uz) * RIBBON * 0.5
+      const mz = s.z0 - high * 0.92 * smooth(t * 2.4) + 0.4 + n * 0.05 + up + Math.abs(uz) * RIBBON * 0.5
       o[0] = mx - ux * RIBBON * 0.5
       o[1] = my - uy * RIBBON * 0.5
       o[2] = mz - uz * RIBBON * 0.5

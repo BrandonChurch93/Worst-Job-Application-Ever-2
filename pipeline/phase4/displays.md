@@ -56,3 +56,29 @@ One display is 2 draw calls and 82 triangles. The four together are 328 of the 4
 - `tests/table-displays-pick.test.ts` holds what is shown when: hint first, newest running mode, score after the line, the round used while the page gives no time.
 - Looked at `last-save` and `youre-fired`: no tier display is in frame in either, as in the approved images.
 - Looked at a sheet of `pinball.coffee`: the name is held, then the line runs, on the round used while the page gives no time.
+
+## After merge 13 (main at 7d15ded and later)
+
+- The main display now sits in the frame's new seat (`POCKET` 472 by 116, `seatOf`): its pitch is 3.66 page pixels a dot against 2.4 on a tier. MEASURED by a review still of `table-wide` and a draft still of `lobby-doors`, where the main display is seen close with a line running.
+- The numerals of the score stand five dots apart, not two: the approved `table-wide` has its numerals set wide, and the score still ends four dots from the right edge.
+- The hint's mouse has a lit wheel between its two buttons, and each button fills evenly. Looked at once on `tier-street` by forcing it.
+- Looked at `rail-cam`: the office display is seen from the side with a line running; the mask, the beads and the liner part as they should.
+- In `table-wide` the three tier displays are behind the wall at the foot of each tier from that camera. The approved `table-wide` shows none either. Only the main display is seen there.
+
+## Measured at the end
+
+| What | Command | Number |
+| --- | --- | --- |
+| `displays` row, `table-wide` | `npm run build && npm run counts -- --key table-wide --live low` | 8 meshes, 8 colour, 0 shadow, 8 calls, 328 triangles (stand-in before: 3 meshes, 6 calls, 72) |
+| `displays` row, `tier-street` | same, `--key tier-street` | 4 meshes, 4 colour, 0 shadow, 4 calls, 164 triangles (before: 2, 4 calls, 48) |
+| `displays` row, `tier-office` | same, `--key tier-office` | 4, 4, 0, 4 calls, 164 (before: 3, 5 calls, 60) |
+| `displays` row, `tier-corporate` | same, `--key tier-corporate` | 4, 4, 0, 4 calls, 164 (before: 2, 3 calls, 36) |
+| one draft still | `npm run still -- --key tier-street --format hd --tier draft` | 29.347 s, 1083499 triangles, 535 calls in the whole frame (other parts grew on main) |
+| one review still | `npm run still -- --key table-wide --format hd --tier review` | 57.685 s, 61.7 s on the wall clock |
+| asset sets | the three folders under `table/displays` do not exist | 0 MB each |
+
+## The three things that still look least real
+
+1. From `table-wide` a dot of the main display is about one screen pixel, so the numerals read as smooth strokes. The shader fades to a soft picture of the grid there on purpose, since single dots at that size shimmer.
+2. The lamps in the pane of a tier display are soft round spots in a row. A real pane would show them with the shape of each lens.
+3. The numerals of the main display are the two-dot strokes of the tiers. The approved image has thinner strokes with rounder ends.
