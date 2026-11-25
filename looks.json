@@ -1,0 +1,35 @@
+{
+  "folder": "step1",
+  "pushed": "2026-11-25T09:19:32.177Z",
+  "commit": "e6875ea006c964c134ea7d8c02dd6bc3c05da335",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Step 1 at rest: resume card left, three fields right, Continue under the fields",
+      "time": "2026-11-25T09:19:30.433Z",
+      "by": "step1",
+      "from": "out/work/stills/step1-rest-preview-draft.png"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Key still step1-fire: keyboard up, two turrets firing bolts at the cursor while it types the first name",
+      "time": "2026-11-25T09:19:30.664Z",
+      "by": "step1",
+      "from": "out/work/stills/key-step1-fire-preview-draft.png"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Key still step1-tug: film camera pushed in, the cursor with arms pulling the resume out of the shredder slot",
+      "time": "2026-11-25T09:19:30.900Z",
+      "by": "step1",
+      "from": "out/work/stills/key-step1-tug-preview-draft.png"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Shredded at 0.35: the cursor has gone into the slot and the strips come out below",
+      "time": "2026-11-25T09:19:31.130Z",
+      "by": "step1",
+      "from": "out/work/stills/step1-step1_shredded-0p35-preview-draft.png"
+    }
+  ]
+}
