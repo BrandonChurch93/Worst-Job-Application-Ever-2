@@ -1,35 +1,35 @@
 {
   "folder": "tug",
-  "pushed": "2026-11-25T18:34:07.567Z",
-  "commit": "ccfb2eb46bdac4425cc0a92bb178a14cf35a3bc8",
+  "pushed": "2026-11-25T18:48:48.954Z",
+  "commit": "b8d3c434db4741a2888c582676e4a489539ee450",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "The tug key beside the approved image: the cursor leans to the right only, clear of the Browse files chip",
-      "time": "2026-11-25T18:34:05.761Z",
+      "caption": "The tug key beside the approved image at b8d3c43: smooth rubber arms, the bend at the mouth shaded deeper",
+      "time": "2026-11-25T18:48:47.228Z",
       "by": "tug",
-      "from": "out/work/report/tug3-compare.jpg"
+      "from": "out/work/report/tug4-compare.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "The key at review tier, three times its size: the arms as smooth rubber, the bend and the lines of the sheet",
-      "time": "2026-11-25T18:34:06.016Z",
+      "caption": "The key at review tier, three times its size, at b8d3c43",
+      "time": "2026-11-25T18:48:47.464Z",
       "by": "tug",
-      "from": "out/work/report/tug3-key-close.jpg"
+      "from": "out/work/report/tug4-key-close.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "The loss, 27.4 to 27.8 s: the cursor goes down the mouth, no part of it shows below the machine",
-      "time": "2026-11-25T18:34:06.247Z",
+      "caption": "The cut edge of the sheet at review tier, four times its size: before a dotted line, after a soft one",
+      "time": "2026-11-25T18:48:47.701Z",
       "by": "tug",
-      "from": "out/work/report/tug3-loss.jpg"
+      "from": "out/work/report/tug4-edge.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "The beat step1.tug, twelve frames at draft tier",
-      "time": "2026-11-25T18:34:06.472Z",
+      "caption": "The beat step1.tug at b8d3c43, twelve frames at draft tier",
+      "time": "2026-11-25T18:48:47.936Z",
       "by": "tug",
-      "from": "out/work/report/tug3-sheet.jpg"
+      "from": "out/work/report/tug4-sheet.jpg"
     }
   ]
 }
