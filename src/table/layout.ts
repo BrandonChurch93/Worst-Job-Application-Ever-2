@@ -197,7 +197,7 @@ for (let k = 0; k < 3; k++) {
   seg(k, 'coffee.roof', [COLS.right, 1.75], [14.3, 2.25], 'guide')
   model(k, 'cubicles', 'model-cubicles', [COLS.left, 2.25, 1.8, 2.15], 0.7, 'raised')
   dropBank(k, 'cubicles.drop', 5.05, 2.25, 4.4)
-  model(k, 'coffee', 'model-coffee', [14.3, 2.25, 2.45, 1.35], 1.6, 'metal', { sign: 'copy:step3.table.buildings.coffee' })
+  model(k, 'coffee', 'model-coffee-machine', [14.3, 2.25, 2.45, 1.35], 1.6, 'metal', { sign: 'copy:step3.table.buildings.coffee' })
   targets.push({ id: 'office.coffee.standup', tier: k, kind: 'standup', box: [14.1, TIER_Y[k]! + 2.7, 0.2, 0.8], n: [-1, 0], index: targets.length })
   model(k, 'inbox', 'model-inbox', [15.2, 3.6, 1.55, 1.2], 0.9, 'paper')
   bumpers.push({ id: 'office.bumper.1', tier: k, c: at(k, 8.5, 3.3), r: 0.75 }, { id: 'office.bumper.2', tier: k, c: at(k, 11.5, 3.3), r: 0.75 }, { id: 'office.bumper.3', tier: k, c: at(k, MID, 5.7), r: 0.75 })
@@ -224,7 +224,7 @@ for (let k = 0; k < 3; k++) {
   model(k, 'garage', 'model-garage', [GARAGE[0] - 1.1, GARAGE[1] - 1.1, 2.2, 2.2], 1.0, 'raised', { solid: false, round: true, base: 1.3 })
   holds.push({ id: 'street.firehouse', tier: k, kind: 'scoop', c: at(k, 5.05, 4.35), r: 0.5, releases: true })
   holds.push({ id: 'street.mom', tier: k, kind: 'hatch', c: at(k, 3.95, 9.3), r: 0.5, releases: true })
-  model(k, 'mom', 'model-mom', [4.8, 9.25, 1.0, 0.8], 0.8, 'raised', { solid: false, sign: 'copy:step3.table.buildings.outlane', signPx: 16 })
+  model(k, 'mom', 'model-moms', [4.8, 9.25, 1.0, 0.8], 0.8, 'raised', { solid: false, sign: 'copy:step3.table.buildings.outlane', signPx: 16 })
   for (let i = 0; i < 3; i++) {
     model(k, `house.left.${i + 1}`, 'model-houses', [5.0 + i * 0.75, 10.5, 0.5, 0.5], 0.5, 'raised', { solid: false })
     model(k, `house.right.${i + 1}`, 'model-houses', [13.6 + i * 0.58, 9.35, 0.45, 0.45], 0.5, 'raised', { solid: false })
