@@ -103,6 +103,9 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
   press(skip, () => api.skip())
 
   const surface = el('div', css.surface, root)
+  const offer = el('div', css.offer, surface)
+  offer.setAttribute('aria-hidden', 'true')
+  offer.append(icon('play'))
   const bar = el('div', css.bar, root)
   const play = el('button', css.icon, bar)
   play.type = 'button'
@@ -201,6 +204,7 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
   let heading = ''
   let step = -1
   let playing: boolean | null = null
+  let started: boolean | null = null
   let shownTime = ''
   let shownValue = -1
   const heard = new Set<string>()
@@ -250,6 +254,11 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
             wake()
           }
           const t = f.time()
+          const begun = now || t > 0
+          if (begun !== started) {
+            started = begun
+            root.dataset.started = String(begun)
+          }
           const label = `${clockText(t)} / ${clockText(f.seconds)}`
           if (label !== shownTime) {
             shownTime = label

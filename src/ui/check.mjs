@@ -167,6 +167,12 @@ const focus = (page) => page.evaluate(() => {
 {
   const page = await open('view=auto', { reducedMotion: 'reduce' })
   const mode = await page.evaluate(() => document.querySelector('[data-mode]').dataset.mode)
+  const shown = () => page.evaluate(() => getComputedStyle(document.querySelector('[class*="offer"]')).display)
+  const before = await shown()
+  await page.mouse.click(640, 360)
+  await page.waitForTimeout(300)
+  const l = await log(page)
+  check('the offer: a film that has not begun shows a large play sign, and a click on it plays', before === 'flex' && l.join() === 'play' && (await shown()) === 'none', `${before} ${l.join()}`)
   check('lessMotion() is true for a visitor who asks for less motion', mode === 'film', mode)
   await page.context().close()
   const phone = await open('view=auto', { hasTouch: true, isMobile: true, viewport: { width: 390, height: 780 } })

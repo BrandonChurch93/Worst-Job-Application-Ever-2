@@ -128,6 +128,31 @@
   pointer-events: none;
 }
 
+.offer {
+  display: none;
+}
+
+.root[data-mode='film'][data-started='false'] .offer {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: max(64px, calc(var(--u) * 132));
+  height: max(64px, calc(var(--u) * 132));
+  margin: calc(max(64px, calc(var(--u) * 132)) / -2) 0 0 calc(max(64px, calc(var(--u) * 132)) / -2);
+  border-radius: 50%;
+  background: rgba(30, 29, 27, 0.9);
+  color: var(--light);
+  cursor: pointer;
+}
+
+.offer svg {
+  width: 46%;
+  height: 46%;
+}
+
 .root[data-mode='film'] .bar {
   position: absolute;
   left: calc(var(--u) * 128);
