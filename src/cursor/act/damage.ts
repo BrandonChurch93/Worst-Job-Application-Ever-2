@@ -28,7 +28,7 @@ export function woundOf(w: Wound, look: Parameters<LookMaker>[1], pose: Paramete
     if (smoke > 0) e.smoke.push({ x: w.x, y: w.y - L.radius * 0.9, amount: smoke })
   } else if (w.kind === 'scorched') {
     const L = LIFE.scorched
-    // The tip is burnt black, not the head: the crust reaches under a third of the way down and draws back to the tip as it heals.
+    // The crust draws back to the tip as it heals.
     b.char = Math.max(b.char, L.reach * (1 - smooth(ramp(u, L.fade, 1))))
     const smoke = 1 - ramp(u, 0.05, L.smokeEnd)
     if (smoke > 0) e.smoke.push({ x: TIP.x, y: TIP.y, amount: smoke })

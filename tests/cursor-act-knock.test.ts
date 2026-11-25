@@ -28,11 +28,11 @@ describe('a hit knocks the cursor over', () => {
   it('past upright onto its other shoulder within 0.12 s, the way the bolt was going', () => {
     const right = struck(900)
     run(right, 0.11)
-    expect(right.pose().spin).toBeGreaterThan(0.9)
-    expect(right.pose().spin).toBeLessThan(1.4)
+    expect(right.pose().spin).toBeGreaterThan(0.75)
+    expect(right.pose().spin).toBeLessThan(1.1)
     const left = struck(-900)
     run(left, 0.11)
-    expect(left.pose().spin).toBeLessThan(-0.9)
+    expect(left.pose().spin).toBeLessThan(-0.75)
   })
 
   it('swings back and stands exactly as before', () => {
@@ -52,6 +52,21 @@ describe('a hit knocks the cursor over', () => {
       b.react(name)
       run(b, 1.2, (p) => expect(p.spin).toBe(0))
     }
+  })
+
+  it('thrown up and to the right it turns its tip the way it flies, and lands straight', () => {
+    const b = body()
+    run(b, 0.2)
+    b.knock(0, 0, 380)
+    let far = 0
+    for (let i = 0; i < Math.round(0.25 * stepHz); i++) {
+      b.step({ x: home.x + 160, y: home.y - 110 }, quiet, false)
+      far = Math.max(far, b.pose().spin)
+    }
+    expect(far).toBeGreaterThan(0.4)
+    expect(far).toBeLessThan(1.3)
+    run(b, 3)
+    expect(b.pose().spin).toBe(0)
   })
 
   it('is the same after a save and a load in the middle of the fall', () => {

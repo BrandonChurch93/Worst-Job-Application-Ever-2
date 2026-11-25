@@ -65,7 +65,7 @@ class Limb {
     this.cuff.position.set(0, 0.3, 0)
     this.hand.add(this.palm, this.cuff)
     const lay: [number, number, number, number, number, boolean][] = [
-      [-2.9, 7.3, 0.26, 0.06, 1, false], [0, 8.1, 0, 0, 1.12, false], [2.9, 7.3, -0.26, -0.06, 1, false], [3.6, 3.2, -1.15, -0.45, 0.86, true]
+      [-2.5, 7.4, 0.11, 0.04, 1, false], [0, 8.1, 0, 0, 1.12, false], [2.5, 7.4, -0.11, -0.04, 1, false], [3.6, 3.4, -0.95, -0.45, 0.86, true]
     ]
     for (const [x, y, open, shut, long, thumb] of lay) {
       const base = new THREE.Object3D()
@@ -146,8 +146,8 @@ class Limb {
     for (const f of this.fingers) {
       const splay = f.open + (f.shut - f.open) * grip
       f.base.position.set(f.x, f.y, f.thumb ? -0.4 * grip : 0)
-      f.base.rotation.set(f.thumb ? -0.9 * grip : -0.95 * grip - 0.08, f.thumb ? -0.5 * grip * this.side : 0, splay)
-      f.tip.rotation.x = f.thumb ? -0.9 * grip - 0.1 : -1.1 * grip - 0.12
+      f.base.rotation.set(f.thumb ? -0.9 * grip : -0.95 * grip - 0.14, f.thumb ? -0.5 * grip * this.side : 0, splay)
+      f.tip.rotation.x = f.thumb ? -0.9 * grip - 0.1 : -1.1 * grip - 0.22
     }
     this.hand.updateMatrixWorld(true)
     d3.palms.setMatrixAt(this.slot, this.palm.matrixWorld)
