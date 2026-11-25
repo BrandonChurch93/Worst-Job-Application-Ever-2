@@ -10,9 +10,9 @@ const C = {
   base: hex(0x232325),
   black: hex(0x1d1d1f),
   bronze: hex(0x56473b),
-  steel: hex(0x7d848b),
-  steelLight: hex(0x959ba1),
-  chrome: hex(0xb4b8bc),
+  steel: hex(0x717a85),
+  steelLight: hex(0x8a939d),
+  chrome: hex(0x98a2ad),
   slot: hex(0x121214),
   paper: hex(0xece8dd),
   sleeve: hex(0x8a6a4a),
@@ -94,8 +94,7 @@ function sticks(k: Kit, r: Random, x: number, y: number, z: number, n: number, c
 function group(k: Kit, x: number, side: number): void {
   const y = -45
   k.box(x, -41, 100, 36, 16, 12, C.black, SURF.plastic, 1.2)
-  k.cyl(x, y, 88, 12.5, 12, C.chrome, SURF.chrome, 18, 1)
-  k.cyl(x, y, 80, 11, 8, C.steel, SURF.brushed, 18, 0.8)
+  k.lathe(x, y, 79, [[0, 0], [9.4, 0], [10.6, 1.2], [10.6, 7], [12.6, 8], [12.6, 11.4], [13.6, 12], [13.6, 14.4], [12.4, 15], [12.4, 21], [0, 21]], [C.steel, C.steel, C.steel, C.steel, C.chrome, C.chrome, C.black, C.black, C.chrome, C.chrome], [SURF.brushed, SURF.brushed, SURF.brushed, SURF.brushed, SURF.chrome, SURF.chrome, SURF.rubber, SURF.rubber, SURF.chrome, SURF.chrome], 20)
   for (const s of [-1, 1]) k.tube([[x + s * 2, y, 80], [x + s * 4.2, y - 1, 76], [x + s * 4.2, y - 1, 72]], 1.5, C.chrome, SURF.chrome, 6)
   k.tube([[x, y - 9, 84], [x + side * 9, y - 13.5, 84], [x + side * 15, y - 16, 83]], 3, C.black, SURF.plastic, 8)
   k.tube([[x, y - 2, 84], [x, y - 9, 84]], 2.2, C.chrome, SURF.chrome, 8)
@@ -180,6 +179,20 @@ export function buildCoffee(z: Zone, ctx: RealContext): THREE.Object3D {
 
   group(k, -36, -1)
   group(k, 36, 1)
+  k.at(0, HEAD.lip - 0.4, 117, 0, Math.PI / 2)
+  k.lathe(0, 0, 0, [[11, 0], [11, 2.2], [9.6, 3], [9.2, 1.6], [0, 1.6]], [C.chrome, C.chrome, C.chrome, C.face], [SURF.chrome, SURF.chrome, SURF.chrome, SURF.satin], 20)
+  for (let i = 0; i < 9; i++) {
+    const a2 = Math.PI * (1.25 - (i / 8) * 1.5)
+    k.box(Math.cos(a2) * 7.4, Math.sin(a2) * 7.4, 1.6, i % 4 === 0 ? 2.6 : 1.6, 0.7, 0.25, i > 6 ? C.max : C.slot, SURF.plastic, 0, a2)
+  }
+  k.box(2.2, 2.6, 1.7, 8.4, 0.9, 0.4, C.max, SURF.plastic, 0, 0.87)
+  k.cyl(0, 0, 1.6, 1.5, 1, C.black, SURF.plastic, 8, 0.3)
+  k.back()
+  for (const gx of [-36, 36]) {
+    k.at(gx, HEAD.lip - 0.4, 124, 0, Math.PI / 2)
+    k.lathe(0, 0, 0, [[4.4, 0], [4.4, 1], [3.4, 2.2], [0, 2.2]], [C.chrome, C.chrome, C.chrome], SURF.chrome, 12)
+    k.back()
+  }
   k.tube([[HEAD.x - 5, HEAD.lip + 4, HEAD.low], [HEAD.x - 4, HEAD.lip - 8, 92], [HEAD.x - 3, -50, 58], [HEAD.x - 3, -52, 44]], 1.9, C.chrome, SURF.chrome, 7)
   k.tube([[HEAD.x - 3.6, -46, 72], [HEAD.x - 3.2, -49.5, 62]], 3, C.black, SURF.rubber, 7)
 

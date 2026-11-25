@@ -18,7 +18,7 @@ const C = {
   kick: hex(0x55585c),
   wood: hex(0xdcc096),
   woodEdge: hex(0xa5855c),
-  steel: hex(0x8f9499),
+  steel: hex(0x7c8590),
   grey: hex(0x8b8f93),
   dark: hex(0x2b2c30),
   screen: hex(0x0c0f14),
@@ -312,11 +312,11 @@ function small(k: Kit, f: Kit, c: Kit, z: Zone, r: Random): void {
     const [x, y] = at('plant')
     k.lathe(x, y, 0, [[9.5, 0], [10.2, 1.2], [13.6, 20], [14.6, 20.6], [14.6, 23.4], [12.6, 23.4], [12.2, 20.6], [0, 20.6]], [C.pot, C.pot, C.pot, shade(C.pot, 1.06), shade(C.pot, 0.9), shade(C.pot, 0.7), C.soil], [SURF.gloss, SURF.gloss, SURF.gloss, SURF.gloss, SURF.gloss, SURF.matte, SURF.matte], 18)
     k.lathe(x, y, 0, [[16, 0], [16.6, 1.6], [12, 2.2]], [shade(C.pot, 0.9), shade(C.pot, 0.96)], SURF.gloss, 18)
-    const n = 11
+    const n = 19
     for (let i = 0; i < n; i++) {
-      const a = i * 2.39996 + r.range(-0.25, 0.25)
-      const lift = 0.3 + (i / n) * 0.95
-      leaf(f, x, y, 21, a, r.range(24, 33) * (1.12 - lift * 0.42), r.range(15, 20) * (1.05 - lift * 0.3), lift, mix(C.leaf, C.dust, r.range(0.2, 0.55)))
+      const a = i * 2.39996 + r.range(-0.3, 0.3)
+      const lift = 0.22 + (i / n) * 1.1
+      leaf(f, x, y, 21, a, r.range(22, 36) * (1.12 - lift * 0.42), r.range(9, 13) * (1.05 - lift * 0.3), lift, shade(mix(C.leaf, C.dust, r.range(0.15, 0.6)), r.range(0.72, 1.08)))
     }
     f.cyl(x, y, 20.6, 1.6, 9, shade(C.leaf, 0.7), SURF.matte, 6, 0.3)
   }
@@ -367,13 +367,13 @@ function crumple(k: Kit, r: Random, x: number, y: number, z: number, s: number):
 
 function leaf(k: Kit, x: number, y: number, z: number, a: number, len: number, wid: number, lift: number, col: RGB): void {
   k.at(x, y, z, a)
-  const rows = 6
+  const rows = 8
   const pts: { p: V3; l: V3; r: V3; n: V3 }[] = []
   for (let i = 0; i <= rows; i++) {
     const t = i / rows
     const out = 2 + len * t * Math.cos(lift * (1 - t * 0.9))
     const up = len * (Math.sin(lift) * t - 0.55 * t * t * t) * 1.1
-    const w = wid * Math.sin(Math.PI * Math.pow(t, 0.7)) * 0.5 + 0.3
+    const w = wid * Math.pow(Math.sin(Math.PI * Math.pow(t, 0.62)), 0.8) * 0.5 + 0.2
     const slope = Math.atan2(len * (Math.sin(lift) - 1.65 * t * t) * 1.1, len * Math.cos(lift * (1 - t * 0.9)))
     const n: V3 = [-Math.sin(slope), 0, Math.cos(slope)]
     pts.push({ p: [out, 0, up], l: [out, w, up + w * 0.28], r: [out, -w, up + w * 0.28], n })
@@ -386,7 +386,7 @@ function leaf(k: Kit, x: number, y: number, z: number, a: number, len: number, w
       const s = side === 'l' ? 1 : -1
       const na: V3 = [A.n[0], -s * 0.28, A.n[2]]
       const nb: V3 = [B.n[0], -s * 0.28, B.n[2]]
-      k.quad(A.p, B.p, B[side], A[side], na, nb, nb, na, c0, SURF.matte)
+      k.quad(A.p, B.p, B[side], A[side], na, nb, nb, na, c0, SURF.satin)
       const ua: V3 = [-na[0], -na[1], -na[2]]
       const ub: V3 = [-nb[0], -nb[1], -nb[2]]
       k.quad(A.p, B.p, B[side], A[side], ua, ub, ub, ua, shade(c0, 0.6), SURF.matte)
