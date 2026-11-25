@@ -73,6 +73,7 @@ Phase 2, engine and blockout. Everything here is a stand-in shape with working l
 - The site sets a camera's near plane at 1500 px in front of its target, so a fixed pose keeps its target within 1500 px of the nearest thing it must show. `table-wide` lost the Street tier until its target was moved toward the eye.
 - The wells are deep (the Street floor is 288 px down), so a low camera cannot see the flippers. `table-save` is steep for that reason.
 
+- `table-lobby` looks down from the south-east at about 38 degrees, far enough back to hold the top of the HQ box. The approved image is a low close view of the doors. In the blockout a low view shows a blank wall, because the sign is type on the top of the box. To be refitted low when the model has a sign on its front.
 - `table-save` shows the whole Street tier from above the apron, so the flippers, the inserts and the drain are in one picture.
 - Film order: follow, `table-wide` at 4.2 s, follow at 8.2, `tier-3` at 11.2, `table-lobby` at 13.0, follow at 14.3, `table-replyall` at 20.6, follow at 22.6, `table-fired` at 27.2, follow at 28.8, `rail` at 31.0, follow at 33.0, `table-save` at 34.3, follow at 36.6.
 - While the ball is at the plunger or low on the feed rail the follow camera scrolls 2.4 balls further down, so the knob is in the frame.
