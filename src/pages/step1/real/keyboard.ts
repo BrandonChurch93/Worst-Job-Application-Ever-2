@@ -20,6 +20,15 @@ const capShape = (w: number, h: number): THREE.BufferGeometry => {
   return g
 }
 
+const CORE = 0.6
+let core: THREE.BufferGeometry | null = null
+const coreShape = (w: number, h: number): THREE.BufferGeometry => {
+  if (core) return core
+  core = capGeometry(w - CORE * 2, h - CORE * 2)
+  core.translate(0, 0, -CORE)
+  return core
+}
+
 const isCap = (s: Shape): boolean => s.role === 'keycap' && s.kind !== 'text'
 const isEnter = (s: Shape): boolean => s.id === 'key-enter'
 
@@ -108,9 +117,9 @@ function makeDeck(s: Shape, ctx: RealContext): THREE.Object3D {
   const bed = new THREE.Mesh(g.seat, k.bed)
   plate.add(new THREE.Mesh(g.metal, k.deck), bed)
   root.add(plate)
-  const cream = ctx.list.filter((c) => isCap(c) && !isEnter(c))
-  const enter = ctx.list.find((c) => isCap(c) && isEnter(c))
-  const total = cream.reduce((n, c) => n + capShape(c.w, c.h).getAttribute('position').count, 0)
+  const cream = ctx.list.filter(isCap)
+  const enter = cream.find(isEnter)
+  const total = cream.reduce((n, c) => n + (isEnter(c) ? coreShape(c.w, c.h) : capShape(c.w, c.h)).getAttribute('position').count, 0)
   const position = new Float32Array(total * 3)
   const normal = new Float32Array(total * 3)
   const uv = new Float32Array(total * 2)
@@ -118,7 +127,7 @@ function makeDeck(s: Shape, ctx: RealContext): THREE.Object3D {
   const caps = new Map<string, CapSlot>()
   let start = 0
   for (const c of cream) {
-    const shape = capShape(c.w, c.h)
+    const shape = isEnter(c) ? coreShape(c.w, c.h) : capShape(c.w, c.h)
     const from = shape.getAttribute('position').array as Float32Array
     const facing = shape.getAttribute('normal').array as Float32Array
     const count = from.length / 3
@@ -148,12 +157,13 @@ function makeDeck(s: Shape, ctx: RealContext): THREE.Object3D {
   }
   lit(root)
   bed.castShadow = false
+  if (accent) accent.castShadow = false
   const data: DeckData = { plate, caps, body, accent, owned: [g.metal, g.seat, all] }
   root.userData.deck = data
   return root
 }
 
-// Every cream cap is one stretch of one mesh. A cap that moved since the last frame has its stretch written again, the others are left.
+// Every cap is one stretch of one mesh. The Enter is the shared orange over a core in that mesh, and the core casts its shadow. A cap that moved since the last frame has its stretch written again, the others are left.
 function poseDeck(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const data = o.userData.deck as DeckData
   data.plate.position.z = s.z1 - s.z0
@@ -236,7 +246,7 @@ function makeLoneCap(s: Shape): THREE.Object3D {
   return root
 }
 
-// The deck, its seats and every cap on it are one object. The cream caps are one mesh of one draw, the orange Enter a second.
+// The deck, its bed and every cap on it are one object: the caps are one mesh of one draw, the orange Enter a second that casts no shadow of its own.
 export const keyboard: PartMaker = {
   key(s, ctx) {
     if (s.kind === 'text' || s.kind === 'well') return null

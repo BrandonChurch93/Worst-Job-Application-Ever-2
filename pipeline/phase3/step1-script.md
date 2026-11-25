@@ -49,6 +49,7 @@ Times are seconds of the unit. Events are read from a run of the stage in film m
 19. The end: whole at 30.18, a double take, it leans toward the message and freezes (shocked) for 0.4 s, stamps once in anger at 30.8, sags at 31.18 and starts its trudge toward the form as the page turns at 31.5.
 20. The slabs have weight: the keys under a slab go down their full travel and stay down, the slab sinks with them and does not bounce, the deck shakes 4.5 px in its plane for 0.25 s and the caps within 460 px hop up to 15 px, the nearest first.
 21. The form empties for a cause on the page: the focus ring lights on Email, its caret runs back along the line and takes the address a character at a time, then Last name, then First name, 0.28 s each, while the cursor lies in strips. No letter is a shape of its own, so the letters do not drop: that would need the type owner.
+22. The keyboard note sits 24 px under the form (was 14), clear of the contact shadow of the resume card and 28 px above the deck: asked by the type owner, seen in a draft still.
 
 ## Agreed with other owners
 

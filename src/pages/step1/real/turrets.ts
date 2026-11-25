@@ -240,21 +240,18 @@ function poseTurret(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   })
 }
 
-interface HatchData { doors: [THREE.Mesh, THREE.Mesh] }
+interface HatchData { doors: THREE.InstancedMesh }
 
 function makeHatch(): THREE.Object3D {
   const k = kit()
   const g = geometries()
   const root = new THREE.Group()
   root.add(new THREE.Mesh(g.bezel, k.turned), new THREE.Mesh(g.socket, k.seat))
-  const a = new THREE.Mesh(g.door, k.deck)
-  const b = new THREE.Mesh(g.door, k.deck)
-  b.rotation.z = Math.PI
-  a.position.z = -TURRET_LOOK.doorDrop
-  b.position.z = -TURRET_LOOK.doorDrop
-  root.add(a, b)
+  const doors = new THREE.InstancedMesh(g.door, k.deck, 2)
+  doors.frustumCulled = false
+  root.add(doors)
   lit(root, false, true)
-  const data: HatchData = { doors: [a, b] }
+  const data: HatchData = { doors }
   root.userData.hatch = data
   return root
 }
@@ -265,11 +262,12 @@ function poseHatch(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const turret = ctx.byId.get(`turret-${side}`)
   const open = turret?.v ? smooth(turret.v[6] ?? 1) : turret ? 1 : 0
   const slide = open * (TURRET_LOOK.door + 3)
-  d.doors[0].position.y = slide
-  d.doors[1].position.y = -slide
+  d.doors.setMatrixAt(0, m4.compose(v3.set(0, slide, -TURRET_LOOK.doorDrop), q4.identity(), w3.set(1, 1, 1)))
+  d.doors.setMatrixAt(1, m4.compose(v3.set(0, -slide, -TURRET_LOOK.doorDrop), q4.setFromEuler(e3.set(0, 0, Math.PI)), w3.set(1, 1, 1)))
+  d.doors.instanceMatrix.needsUpdate = true
 }
 
-interface BoltData { head: THREE.Mesh; tail: THREE.Mesh; core: THREE.Mesh }
+interface BoltData { head: THREE.Mesh; tails: THREE.InstancedMesh }
 
 function makeBolt(): THREE.Object3D {
   const f = fx()
@@ -278,14 +276,10 @@ function makeBolt(): THREE.Object3D {
   const head = overlay(new THREE.Mesh(f.head, f.headMaterial), 6)
   head.scale.set(9, 3.8, 3.8)
   head.position.set(len / 2 - 11, 0, 8)
-  const tail = overlay(new THREE.Mesh(f.tail, f.tailMaterial), 4)
-  tail.scale.set(112, 3.8, 3.8)
-  tail.position.set(len / 2 - 12, 0, 8)
-  const core = overlay(new THREE.Mesh(f.tail, f.tailMaterial), 5)
-  core.scale.set(48, 2.2, 2.2)
-  core.position.set(len / 2 - 12, 0, 8)
-  root.add(tail, core, head)
-  const data: BoltData = { head, tail, core }
+  const tails = overlay(new THREE.InstancedMesh(f.tail, f.tailMaterial, 2), 4) as THREE.InstancedMesh
+  tails.frustumCulled = false
+  root.add(tails, head)
+  const data: BoltData = { head, tails }
   root.userData.bolt = data
   return root
 }
@@ -294,8 +288,10 @@ function poseBolt(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const d = o.userData.bolt as BoltData
   const born = s.v ? Math.min(1, Math.max(0, s.v[1] ?? 1)) : 1
   const flick = 0.92 + 0.08 * Math.sin(ctx.time * 140 + (hashName(s.id) & 255))
-  d.tail.scale.set(30 + 82 * born, 3.8 * flick, 3.8 * flick)
-  d.core.scale.set(14 + 34 * born, 2.2, 2.2)
+  v3.set(TURRET.bolt / 2 - 12, 0, 8)
+  d.tails.setMatrixAt(0, m4.compose(v3, q4.identity(), w3.set(30 + 82 * born, 3.8 * flick, 3.8 * flick)))
+  d.tails.setMatrixAt(1, m4.compose(v3, q4, w3.set(14 + 34 * born, 2.2, 2.2)))
+  d.tails.instanceMatrix.needsUpdate = true
   const a = s.rot ?? 0
   const half = TURRET.bolt / 2 - 9
   ctx.light({ x: s.x + s.w / 2 + Math.cos(a) * half, y: s.y + s.h / 2 + Math.sin(a) * half, z: s.z0 + 8, colour: EMIT.bolt.colour, power: EMIT.bolt.power * flick, reach: EMIT.bolt.reach, shadow: true })
@@ -316,7 +312,7 @@ interface ScorchData {
   sparkMaterial: THREE.MeshBasicMaterial
 }
 
-const SCORCH = { size: 62, smoke: 4, smokeSeconds: 1.5, shoulder: 4.5, core: 14, sparks: 9, sparkSeconds: 0.55, fall: 900, ember: 0.35, snap: 36 }
+const SCORCH = { size: 62, smoke: 2, smokeSeconds: 1.5, shoulder: 4.5, core: 14, sparks: 9, sparkSeconds: 0.55, fall: 900, ember: 0.35, snap: 36 }
 
 function makeScorch(s: Shape): THREE.Object3D {
   const f = fx()
@@ -424,7 +420,7 @@ function poseScorch(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   if (d.sparks.visible) d.sparks.instanceMatrix.needsUpdate = true
   d.material.color.setRGB(1 + 6 * ember, 1 + 6 * ember, 1 + ember)
   d.smoke.forEach((puff, i) => {
-    const u = age / SCORCH.smokeSeconds - i * 0.12
+    const u = age / SCORCH.smokeSeconds - i * 0.22
     puff.visible = u > 0 && u < 1 && left * TURRET.scorchSeconds > TURRET.scorchFade
     if (!puff.visible) return
     const sway = Math.sin(u * 5 + i * 1.9 + d.seed) * 7 * u
@@ -432,7 +428,7 @@ function poseScorch(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
     puff.position.set(d.at[0] + sway - 10 * u, d.at[1] + 46 * u, 4 + 70 * u)
     puff.scale.set(size, size * 1.25, 1)
     puff.rotation.z = hash01(i, d.seed, 21) * 6.28 + u
-    d.smokeMaterials[i]!.opacity = 0.3 * smooth(u / 0.15) * (1 - u) ** 1.5
+    d.smokeMaterials[i]!.opacity = 0.36 * smooth(u / 0.15) * (1 - u) ** 1.5
   })
 }
 

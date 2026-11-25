@@ -240,7 +240,7 @@ const lin = (c: THREE.Color): Rgb => [c.r, c.g, c.b]
 const hex = (h: number): Rgb => lin(new THREE.Color().setHex(h, THREE.SRGBColorSpace))
 
 const INK = 0x302e2b
-const INK_WARM = 0x3f352a
+const INK_WARM = 0x52473c
 const INK_SOFT = 0x67625c
 const SOFT_FONT = 'inter-400'
 const INK_LIGHT = 0xfdf3e6
@@ -353,7 +353,7 @@ function kit(name: string): Kit {
     m.onBeforeCompile = (shader, renderer) => {
       lit.call(m, shader, renderer)
       shader.vertexShader = shader.vertexShader
-        .replace('#include <common>', '#include <common>\nattribute vec2 wjaRing;')
+        .replace('#include <common>', '#include <common>\nattribute vec3 wjaRing;')
         .replace('#include <begin_vertex>', `#include <begin_vertex>\n${NEAR_GLSL}`)
     }
     m.customProgramCacheKey = () => 'wja-studio-type'
@@ -388,41 +388,205 @@ const NEAR_GLSL = `
 float wjaDepth = - ( modelViewMatrix * vec4( position, 1.0 ) ).z;
 float wjaPixel = projectionMatrix[ 3 ][ 3 ] == 1.0 ? 2.0 / ( projectionMatrix[ 1 ][ 1 ] * 1080.0 ) : wjaDepth * 2.0 / ( projectionMatrix[ 1 ][ 1 ] * 1080.0 );
 float wjaUnit = clamp( wjaPixel / length( modelMatrix[ 0 ].xyz ), 0.0, 1.0 );
-transformed.xy -= wjaRing * ( 1.0 - wjaUnit );
+transformed -= wjaRing * ( 1.0 - wjaUnit );
 `
 
 const q = (v: number): number => Math.round(v * 4) / 4
 
-interface Held { said: string; style: string; over: boolean }
+const HOVER = 0.05
+const UNSEEN = 31
 
-function geometryOf(s: Shape, said: string, style: Style): THREE.BufferGeometry {
+function dataOf(s: Shape, said: string, style: Style): RunData {
   const t = s.type!
   const b = block(t.font, said, t.px, t.wrap, t.lead)
   const align = t.align ?? 'left'
   const x = align === 'centre' ? 0 : align === 'right' ? s.w / 2 : -s.w / 2
   const data = setRun({ font: t.font, px: t.px, lines: b.lines, align, x, y: s.h / 2 - b.cap, lead: b.lead, style })
-  const geometry = new THREE.BufferGeometry()
-  geometry.setAttribute('position', new THREE.BufferAttribute(data.position, 3))
-  geometry.setAttribute('normal', new THREE.BufferAttribute(data.normal, 3))
   const tint = data.colour
   for (let i = 0; i < tint.length; i += 4) {
     tint[i] = tint[i]! / style.fill[0]
     tint[i + 1] = tint[i + 1]! / style.fill[1]
     tint[i + 2] = tint[i + 2]! / style.fill[2]
   }
-  geometry.setAttribute('color', new THREE.BufferAttribute(tint, 4))
-  geometry.setAttribute('wjaRing', new THREE.BufferAttribute(data.ring, 2))
-  const uv = new Float32Array((data.position.length / 3) * 2)
-  for (let i = 0, j = 0; i < data.position.length; i += 3, j += 2) {
-    uv[j] = data.position[i]!
-    uv[j + 1] = data.position[i + 1]!
+  return data
+}
+
+// A run that is drawn alone: type under or on glass, which has to keep its own place in the order of drawing.
+function geometryOf(data: RunData): THREE.BufferGeometry {
+  const n = data.position.length / 3
+  const ring = new Float32Array(n * 3)
+  const uv = new Float32Array(n * 2)
+  for (let i = 0; i < n; i++) {
+    ring[i * 3] = data.ring[i * 2]!
+    ring[i * 3 + 1] = data.ring[i * 2 + 1]!
+    uv[i * 2] = data.position[i * 3]!
+    uv[i * 2 + 1] = data.position[i * 3 + 1]!
   }
+  const geometry = new THREE.BufferGeometry()
+  geometry.setAttribute('position', new THREE.BufferAttribute(data.position, 3))
+  geometry.setAttribute('normal', new THREE.BufferAttribute(data.normal, 3))
+  geometry.setAttribute('color', new THREE.BufferAttribute(data.colour, 4))
+  geometry.setAttribute('wjaRing', new THREE.BufferAttribute(ring, 3))
   geometry.setAttribute('uv', new THREE.BufferAttribute(uv, 2))
   geometry.setIndex(new THREE.BufferAttribute(data.index, 1))
   return geometry
 }
 
-const HOVER = 0.05
+const boxOf = (data: RunData): THREE.BufferGeometry => new THREE.BufferGeometry().setAttribute('position', new THREE.BufferAttribute(data.position, 3))
+
+interface Member { hold: THREE.Object3D; proxy: THREE.Mesh; data: RunData; version: number; first: number; at: THREE.Vector3; turn: THREE.Quaternion; sheet: Sheet | null }
+
+const ONE = new THREE.Vector3(1, 1, 1)
+const placing = new THREE.Matrix4()
+
+// All the runs of one page that share a setting, as one mesh and one draw call. It lies in the page's own space beside the runs.
+// Each run keeps an empty holder that the view places, shows and hides; the sheet reads those holders just before it is drawn and sets itself again only where a run came, went, moved or changed its words.
+export class Sheet extends THREE.Mesh<THREE.BufferGeometry, THREE.MeshPhysicalMaterial> {
+  members: Member[] = []
+  private set: Member[] = []
+  private versions: number[] = []
+
+  constructor(material: THREE.MeshPhysicalMaterial) {
+    super(new THREE.BufferGeometry(), material)
+    this.frustumCulled = false
+    this.receiveShadow = true
+    this.castShadow = false
+    this.visible = false
+    this.userData.part = 'type'
+    this.userData.type = material.name
+  }
+
+  override updateMatrixWorld(force?: boolean): void {
+    this.sync()
+    super.updateMatrixWorld(force)
+  }
+
+  sync(): void {
+    const live: Member[] = []
+    let changed = false
+    let order = 0
+    for (const m of this.members) {
+      if (!m.hold.visible) continue
+      const i = live.length
+      if (this.set[i] !== m || this.versions[i] !== m.version) changed = true
+      live.push(m)
+      if (m.proxy.renderOrder > order) order = m.proxy.renderOrder
+    }
+    if (live.length !== this.set.length) changed = true
+    this.visible = live.length > 0
+    this.renderOrder = order
+    if (changed) {
+      this.build(live)
+      return
+    }
+    let moved = false
+    for (const m of live) {
+      if (m.at.equals(m.hold.position) && m.turn.equals(m.hold.quaternion)) continue
+      this.bake(m)
+      moved = true
+    }
+    if (!moved) return
+    for (const name of ['position', 'normal', 'wjaRing', 'uv']) this.geometry.getAttribute(name).needsUpdate = true
+  }
+
+  private build(live: Member[]): void {
+    let vertices = 0
+    let indices = 0
+    for (const m of live) {
+      vertices += m.data.position.length / 3
+      indices += m.data.index.length
+    }
+    this.geometry.dispose()
+    const geometry = new THREE.BufferGeometry()
+    const colour = new Float32Array(vertices * 4)
+    const index = new Uint32Array(indices)
+    geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(vertices * 3), 3))
+    geometry.setAttribute('normal', new THREE.BufferAttribute(new Float32Array(vertices * 3), 3))
+    geometry.setAttribute('wjaRing', new THREE.BufferAttribute(new Float32Array(vertices * 3), 3))
+    geometry.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(vertices * 2), 2))
+    geometry.setAttribute('color', new THREE.BufferAttribute(colour, 4))
+    geometry.setIndex(new THREE.BufferAttribute(index, 1))
+    this.geometry = geometry
+    let v = 0
+    let k = 0
+    for (const m of live) {
+      m.first = v
+      colour.set(m.data.colour, v * 4)
+      const from = m.data.index
+      for (let i = 0; i < from.length; i++) index[k++] = from[i]! + v
+      this.bake(m)
+      v += m.data.position.length / 3
+    }
+    this.set = live
+    this.versions = live.map((m) => m.version)
+  }
+
+  private bake(m: Member): void {
+    const e = placing.compose(m.hold.position, m.hold.quaternion, ONE).elements
+    const position = this.geometry.getAttribute('position').array as Float32Array
+    const normal = this.geometry.getAttribute('normal').array as Float32Array
+    const ring = this.geometry.getAttribute('wjaRing').array as Float32Array
+    const uv = this.geometry.getAttribute('uv').array as Float32Array
+    const P = m.data.position
+    const N = m.data.normal
+    const R = m.data.ring
+    const n = P.length / 3
+    for (let i = 0; i < n; i++) {
+      const o = (m.first + i) * 3
+      const x = P[i * 3]!
+      const y = P[i * 3 + 1]!
+      const z = P[i * 3 + 2]! + HOVER
+      const px = e[0]! * x + e[4]! * y + e[8]! * z + e[12]!
+      const py = e[1]! * x + e[5]! * y + e[9]! * z + e[13]!
+      position[o] = px
+      position[o + 1] = py
+      position[o + 2] = e[2]! * x + e[6]! * y + e[10]! * z + e[14]!
+      const nx = N[i * 3]!
+      const ny = N[i * 3 + 1]!
+      const nz = N[i * 3 + 2]!
+      normal[o] = e[0]! * nx + e[4]! * ny + e[8]! * nz
+      normal[o + 1] = e[1]! * nx + e[5]! * ny + e[9]! * nz
+      normal[o + 2] = e[2]! * nx + e[6]! * ny + e[10]! * nz
+      const rx = R[i * 2]!
+      const ry = R[i * 2 + 1]!
+      ring[o] = e[0]! * rx + e[4]! * ry
+      ring[o + 1] = e[1]! * rx + e[5]! * ry
+      ring[o + 2] = e[2]! * rx + e[6]! * ry
+      uv[(m.first + i) * 2] = px
+      uv[(m.first + i) * 2 + 1] = py
+    }
+    m.at.copy(m.hold.position)
+    m.turn.copy(m.hold.quaternion)
+  }
+}
+
+const sheets = new WeakMap<THREE.Object3D, Map<string, Sheet>>()
+
+function join(m: Member, style: string, page: THREE.Object3D): void {
+  let of = sheets.get(page)
+  if (!of) sheets.set(page, (of = new Map()))
+  let sheet = of.get(style)
+  if (!sheet) of.set(style, (sheet = new Sheet(kit(style).opaque)))
+  if (sheet.parent !== page) page.add(sheet)
+  sheet.members.push(m)
+  m.sheet = sheet
+}
+
+function leave(m: Member, style: string): void {
+  const sheet = m.sheet
+  if (!sheet) return
+  m.sheet = null
+  sheet.members.splice(sheet.members.indexOf(m), 1)
+  if (sheet.members.length > 0) return
+  const page = sheet.parent
+  if (page) {
+    sheets.get(page)?.delete(style)
+    page.remove(sheet)
+  }
+  sheet.geometry.dispose()
+}
+
+interface Held { said: string; style: string; member: Member | null }
 
 export const type: PartMaker = {
   key(s, ctx) {
@@ -435,27 +599,54 @@ export const type: PartMaker = {
   make(s, ctx) {
     const ground = groundOf(s, ctx)
     const name = styleName(ground, s.tone, s.type!.font)
-    const style = styles()[name]!
     const said = words(s.words!, s.text)
-    const over = ground === 'glass'
-    const mesh = new THREE.Mesh(geometryOf(s, said, style), over ? kit(name).over : kit(name).opaque)
-    mesh.position.z = HOVER
-    mesh.receiveShadow = true
-    mesh.castShadow = false
-    const held: Held = { said, style: name, over }
-    mesh.userData.held = held
-    return mesh
+    const data = dataOf(s, said, styles()[name]!)
+    if (ground === 'glass') {
+      const mesh = new THREE.Mesh(geometryOf(data), kit(name).over)
+      mesh.position.z = HOVER
+      mesh.receiveShadow = true
+      mesh.castShadow = false
+      const held: Held = { said, style: name, member: null }
+      mesh.userData.held = held
+      return mesh
+    }
+    const hold = new THREE.Group()
+    const proxy = new THREE.Mesh(boxOf(data), kit(name).opaque)
+    proxy.position.z = HOVER
+    proxy.layers.set(UNSEEN)
+    proxy.castShadow = false
+    hold.add(proxy)
+    const member: Member = { hold, proxy, data, version: 0, first: 0, at: new THREE.Vector3(), turn: new THREE.Quaternion(), sheet: null }
+    const held: Held = { said, style: name, member }
+    hold.userData.held = held
+    return hold
   },
   pose(o, s) {
-    const mesh = o as THREE.Mesh
-    const held = mesh.userData.held as Held
+    const held = o.userData.held as Held
+    const m = held.member
+    if (m && !m.sheet && o.parent) join(m, held.style, o.parent)
     const said = words(s.words!, s.text)
     if (said === held.said) return
-    mesh.geometry.dispose()
-    mesh.geometry = geometryOf(s, said, styles()[held.style]!)
     held.said = said
+    const data = dataOf(s, said, styles()[held.style]!)
+    if (m) {
+      m.proxy.geometry.dispose()
+      m.proxy.geometry = boxOf(data)
+      m.data = data
+      m.version++
+      return
+    }
+    const mesh = o as THREE.Mesh
+    mesh.geometry.dispose()
+    mesh.geometry = geometryOf(data)
   },
   drop(o) {
-    ;(o as THREE.Mesh).geometry.dispose()
+    const held = o.userData.held as Held
+    if (!held.member) {
+      ;(o as THREE.Mesh).geometry.dispose()
+      return
+    }
+    leave(held.member, held.style)
+    held.member.proxy.geometry.dispose()
   }
 }
