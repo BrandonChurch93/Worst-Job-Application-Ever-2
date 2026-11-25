@@ -1,35 +1,35 @@
 {
   "folder": "ui",
-  "pushed": "2026-11-25T09:51:40.207Z",
-  "commit": "28806ac38609d6a1c906d0ed27edd98adfd56ad4",
+  "pushed": "2026-11-25T09:57:27.228Z",
+  "commit": "68549d03f4db74fa496890bfc11d0a8e59644694",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "The wired site in film mode: the bar now covers the whole ticker (y 978 to 1046) while it shows",
-      "time": "2026-11-25T09:43:50.157Z",
+      "caption": "Still still-screen-live-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T09:57:08.161Z",
+      "by": "ui",
+      "from": "out/work/stills/still-screen-live-hd-draft.png"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "The judged still screen-live from the still tool: sound and the film link in the empty strip above the title, on the column's left edge",
+      "time": "2026-11-25T09:57:25.743Z",
+      "by": "ui",
+      "from": "out/work/stills/still-screen-live-preview-draft.png"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "The wired site in film mode, paused: the bar is opaque now and covers the whole ticker",
+      "time": "2026-11-25T09:57:25.968Z",
       "by": "ui",
       "from": "out/work/stills/site-film-1200.png"
     },
     {
-      "file": "look-2.jpg",
-      "caption": "The wired site with reduced motion and no mode (with the NEEDS commit): the film waits at 0 with the play sign",
-      "time": "2026-11-25T09:43:50.385Z",
-      "by": "ui",
-      "from": "out/work/stills/site-less-motion-1200.png"
-    },
-    {
-      "file": "look-3.jpg",
-      "caption": "The measuring page after a full run in the headless browser (software graphics, so the numbers are low)",
-      "time": "2026-11-25T09:43:50.609Z",
-      "by": "ui",
-      "from": "out/work/stills/site-probe-1200.png"
-    },
-    {
       "file": "look-4.jpg",
-      "caption": "The wired site, careers page scrolled by a wheel turned over the row: the row takes its pale capsule while content passes under it",
-      "time": "2026-11-25T09:51:39.198Z",
+      "caption": "The judged still screen-touch from the still tool: the touch message",
+      "time": "2026-11-25T09:57:26.196Z",
       "by": "ui",
-      "from": "out/work/stills/site-scrolled-1200.png"
+      "from": "out/work/stills/still-screen-touch-preview-draft.png"
     }
   ]
 }
