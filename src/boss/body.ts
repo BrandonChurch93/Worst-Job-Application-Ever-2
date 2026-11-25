@@ -187,16 +187,63 @@ export function drawRig(out: DrawList, rig: Rig, id = 'boss', pressed = 0): void
   }
 }
 
+const HOLE = { lip: -5, floor: -150, inset: 6, strip: 3 }
+const CRACKS: { at: [number, number]; a: number; run: [number, number][]; fork?: [number, number, number] }[] = [
+  { at: [-146, -15], a: 3.52, run: [[22, 0], [17, 0.5], [12, -0.75]], fork: [0, -0.8, 13] },
+  { at: [-131, 34], a: 2.3, run: [[13, 0], [9, 0.55]] },
+  { at: [-64, -41], a: -1.85, run: [[18, 0], [24, 0.42], [13, -0.6]], fork: [1, -0.9, 15] },
+  { at: [22, -41], a: -1.4, run: [[11, 0], [7, -0.5]] },
+  { at: [118, -40], a: -0.86, run: [[20, 0], [15, -0.45], [19, 0.6]], fork: [1, 0.85, 11] },
+  { at: [147, 12], a: 0.3, run: [[14, 0], [10, 0.6]] },
+  { at: [70, 41], a: 1.2, run: [[16, 0], [21, -0.5], [9, 0.7]] },
+  { at: [-36, 41], a: 1.78, run: [[10, 0], [6, 0.6]] }
+]
+
+function hole(out: DrawList, id: string, cx: number, cy: number, w: number, h: number, z: number, tone: Tone): void {
+  const r = h / 2
+  const half = w / 2 - r
+  const well = (n: string, x: number, y: number, ww: number, hh: number): void => {
+    out.push({ id: `${id}-${n}`, part: 'boss-transform', kind: 'well', x, y, w: ww, h: hh, z0: z, z1: 0, tone })
+  }
+  well('mid', cx - half, cy - r, half * 2, h)
+  let k = 0
+  for (let d = 0; d < r - 0.01; d += HOLE.strip) {
+    const d1 = Math.min(r, d + HOLE.strip)
+    const reach = Math.sqrt(Math.max(0, r * r - ((d + d1) / 2) ** 2))
+    well(`w${k}`, cx - half - d1, cy - reach, d1 - d, reach * 2)
+    well(`e${k}`, cx + half + d, cy - reach, d1 - d, reach * 2)
+    k++
+  }
+}
+
 export function drawSocket(out: DrawList, x: number, y: number, cracked: number, id = 'socket'): void {
   const gap = 5
-  out.push({ id, part: 'shell', kind: 'capsule', x: x - CAP_W / 2 - gap, y: y - CAP_H / 2 - gap, w: CAP_W + gap * 2, h: CAP_H + gap * 2, z0: heights.buttonSocket, z1: 0, tone: 'dark', pocket: true })
-  if (cracked <= 0) return
-  const rays: [number, number, number][] = [[-170, -30, 2.6], [-178, 22, 3.5], [-96, -58, 4.2], [-40, -62, 4.9], [52, -64, 4.5], [128, -52, 5.4], [176, -8, 6.1], [170, 34, 0.5], [84, 60, 1.2], [-20, 62, 1.7], [-110, 56, 2.2]]
-  rays.forEach(([ox, oy, a], i) => {
-    const len = (34 + ((i * 37) % 30)) * Math.min(1, cracked)
-    const cx = x + ox + Math.cos(a) * len * 0.5
-    const cy = y + oy + Math.sin(a) * len * 0.5
-    out.push({ id: `${id}-crack-${i}`, part: 'boss-transform', kind: 'box', x: cx - len / 2, y: cy - 1.5, w: len, h: 3, z0: 0, z1: 0.5, tone: 'dark', rot: a })
+  const w = CAP_W + gap * 2
+  const h = CAP_H + gap * 2
+  if (cracked <= 0) {
+    out.push({ id, part: 'shell', kind: 'capsule', x: x - w / 2, y: y - h / 2, w, h, z0: heights.buttonSocket, z1: 0, tone: 'dark', pocket: true })
+    return
+  }
+  hole(out, `${id}-lip`, x, y, w, h, HOLE.lip, 'pocket')
+  hole(out, `${id}-wall`, x, y, w - HOLE.inset * 2, h - HOLE.inset * 2, HOLE.lip - 1, 'ink')
+  hole(out, `${id}-pit`, x, y, w - HOLE.inset * 2 - 3, h - HOLE.inset * 2 - 3, HOLE.floor, 'ink')
+  const grow = Math.min(1, cracked)
+  CRACKS.forEach((c, i) => {
+    let px = x + c.at[0]
+    let py = y + c.at[1]
+    let a = c.a
+    const piece = (n: string, fx: number, fy: number, dir: number, len: number, thick: number): void => {
+      if (len < 1) return
+      out.push({ id: `${id}-crack-${i}-${n}`, part: 'boss-transform', kind: 'box', x: fx + Math.cos(dir) * len * 0.5 - len / 2, y: fy + Math.sin(dir) * len * 0.5 - thick / 2, w: len, h: thick, z0: 0, z1: 0.4, tone: 'dark', rot: dir })
+    }
+    c.run.forEach(([len, turn], j) => {
+      a += turn
+      const l = len * grow
+      piece(`${j}`, px, py, a, l + 1, j === 0 ? 2.4 : 1.6)
+      px += Math.cos(a) * l
+      py += Math.sin(a) * l
+      if (c.fork && c.fork[0] === j) piece('fork', px, py, a + c.fork[1], c.fork[2] * grow, 1.4)
+    })
   })
 }
 

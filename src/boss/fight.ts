@@ -45,7 +45,7 @@ export interface Fight {
 }
 
 const START = [HEALTH, THRESHOLD[0], THRESHOLD[1] + EXPIRED_GAIN] as const
-const POPUP_ORDER = [2, 1, 0] as const
+const POPUP_ORDER = [1, 2, 0] as const
 const SLAB_HALF = 56
 
 export const cursorCentre = (c: { x: number; y: number }): { x: number; y: number } => ({ x: c.x + 18, y: c.y + 32 })
@@ -189,7 +189,9 @@ function slabs(f: Fight, io: StepIo, arena: Arena): void {
     }
   } else if (!quiet(f)) {
     f.nextSlab -= dt
-    const one = f.phase === 0 || (f.slabs.length === 0 && !f.popups.some((p) => p.t < POPUP.read))
+    const armed = f.phase !== 1 || f.popupCount >= POPUP_ORDER.length || f.phaseClock >= POPUP.armed
+    const read = f.phase === 1 ? POPUP.aim : POPUP.read
+    const one = f.phase === 0 || (armed && f.slabs.length === 0 && !f.popups.some((p) => p.t < read))
     if (f.nextSlab <= 0 && one) {
       f.windup = 0
       f.aim = { x: c.x, y: c.y }
@@ -199,7 +201,7 @@ function slabs(f: Fight, io: StepIo, arena: Arena): void {
   for (const s of f.slabs) {
     s.t += dt
     if (s.state === 0) {
-      const go = Math.min(s.left, SLAB.speed * dt)
+      const go = Math.min(s.left, SLAB.speed[f.phase]! * dt)
       s.x += s.dx * go
       s.y += s.dy * go
       s.left -= go
@@ -252,9 +254,15 @@ function popups(f: Fight, io: StepIo, arena: Arena): boolean {
       const slot = free.includes(want) ? want : free[0]!
       const box = arena.popups[slot]!.box
       f.popups.push({ slot, hp: POPUP.hp, t: 0, closing: -1 })
+      for (const s of f.slabs) {
+        if (s.state === 1) {
+          s.state = 2
+          s.t = 0
+        }
+      }
       f.popupCount++
       io.emit('popup', box.x + box.w / 2, box.y + box.h / 2, false)
-      f.popupDue = f.phase === 1 ? POPUP.every : POPUP.again
+      f.popupDue = f.phase === 1 ? POPUP.gaps[Math.min(f.popupCount, POPUP.gaps.length) - 1]! : POPUP.again
     } else f.popupDue = 0.2
   }
   return used
@@ -339,9 +347,15 @@ export function stepFight(f: Fight, io: StepIo, arena: Arena): void {
     } else {
       f.phase = (f.phase + 1) as 1 | 2
       f.phaseClock = 0
-      f.popupDue = POPUP.first
-      f.nextSlab = f.phase === 2 ? 0.5 : Math.max(f.nextSlab, 0.9)
+      f.popupDue = f.phase === 2 ? POPUP.late : POPUP.first
+      f.nextSlab = f.phase === 2 ? SLAB.late : Math.max(f.nextSlab, 0.9)
       f.windup = -1
+      for (const s of f.slabs) {
+        if (s.state === 1) {
+          s.state = 2
+          s.t = 0
+        }
+      }
     }
   }
 }
