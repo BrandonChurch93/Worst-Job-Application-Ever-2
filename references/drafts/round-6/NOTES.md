@@ -511,3 +511,102 @@ LETTERING: the only words in the image are "The Worst Job Application Ever" in t
 NOT IN THE IMAGE: no people, no hands; no second cursor anywhere outside the ball; no pinball playfield, no flippers, no bumpers, no lamps, because the machine is hidden under the cover panels; no form fields, no sliders, no Submit button; no browser window, no address bar, no device, no desk; no fog, no blur.
 ```
 
+### G8 · The rail cam
+
+- File: `references/drafts/round-6/G8-rail-cam.png`
+- Model: `seedream_5`
+- Takes made: 3 of 3 allowed. Kept: take 3.
+- How it was made: Take 3 as generated, with one retouch after generation. The roof of the bank, out of focus at the left, came out with a texture like a printed page: ruled lines, no letters. That roof alone (a patch about 390 by 180 px on the 1920 px frame) was smoothed and given grain again, so it is a plain roof. Nothing else in the file was changed. The retouch was not counted as a take. One judge saw take 3 before the retouch and a second judge saw the retouched file; both answers are below.
+- Reference images passed in, in order: `references/drafts/round-6/G5-tier-street.png` (the kept take of G5, the tier the shot is in, passed first); `references/drafts/round-6/G7-clear-ball.png` (the kept G7, passed second); No layout guide was passed: `references/guides/round-6/` has none for this view.
+
+Takes:
+
+- Take 1. Misses: the camera looks along the ramp more than down at it; the ramp curves away to the left; two wires each side with hoops between, not two rails; the firehouse carries a sign of unreadable pseudo-lettering. Judge: "closest to a frame from a top-budget film or commercial", then named things that could not work. Failed.
+- Take 2 (prompt changed: the ramp as exactly two rails and nothing else; no sign plates, the roofs bare). No lettering. Misses: the camera still looks ahead more than down, with the far wall of the table in frame; the ball sits in the middle of the frame, not the lower middle; the ramp curves left and has cross rungs like a ladder. Judge: "A frame from a top-budget film", then named things. Failed.
+- Take 3 (prompt changed: the camera pointing about sixty degrees down, so that the board fills the background; the ball's centre one third of the way up the frame; straight parallel rails, no rungs). The camera, the ball's place and size, the bank and the firehouse are as briefed. Judge, before the retouch: "a frame from a top-budget film (or a high-end commercial)", then named eight things. Judge, after the retouch: "amateur generated art, graded to look like a film frame. Runner-up: top-budget film frame. Roughly 60/35", then named eight things. Failed. Kept as the best of three: the only take that looks down through the top of the ball with the ball large in the lower middle.
+
+The judge's answer on the kept take:
+
+> Verdict on picture-0831.png (viewed at full size plus zoomed crops).
+>
+> Q1. Which is it most likely to be?
+> Best guess: amateur generated art, graded to look like a film frame. Runner-up: top-budget film frame. Roughly 60/35.
+> - At a glance it reads as a film or high-end commercial macro shot: shallow depth of field, warm bokeh against a teal playfield, fine grain, glossy reflections, a believable miniature-set feel.
+> - It is not a pinball video game screenshot: no HUD, score or flippers, and the lens blur and grain are photographic rather than real-time.
+> - It is not stock (a mouse-cursor arrow sealed in a glass ball is a bespoke concept) and not a textbook picture (nothing is labelled or legible).
+> - What pulls it away from "film frame" on a closer look is that the geometry does not hold up, which a built or properly modelled set would get right. The specifics are under Q2, plus a bank roof that sags into a butterfly shape behind the pediment and insert lights whose symbols are smeared.
+>
+> Q2. Could a ball really travel every lane and ramp you can see?
+> No. Things that could not work:
+> - The ball is not rolling on the ramp. It sits in a metal ring on top of a single centre rod, like a globe on a stem. The rod carries on down to the bottom of the frame.
+> - The ball is exactly as wide as the gap between the side rails. It has no clearance to roll between them and nothing but the centre rod to sit on, so it would jam or tip off.
+> - The rail count changes along the ramp. There are two or three rods per side near the camera, merging into one per side further up. A real wire ramp keeps a constant set of rails.
+> - The far end of the ramp is plugged by a glowing gold blob sitting in the track, with no visible entry or exit. The near end runs out of frame with no landing.
+> - The ball itself looks like a hollow two-layer shell with a seam and a flat cursor plaque inside. That would wobble rather than roll true. It is also glass rather than steel.
+> - The "lanes" on the playfield are only painted street lines and flush lights. There are no physical lane guides, walls, flippers or bumpers in view, so there is nothing to steer a ball.
+> - The white bank's column gaps are much narrower than the ball, so it could not enter. The red fire station's doorway is the only plausible ball hole, and it has a glowing lump sitting in it.
+> - The side rails at the left and right edges dissolve into blur and lights without forming a continuous track.
+>
+> What is plausible: the under-slung U hoops on the centre ramp are spaced and oriented like a real wire ramp, and a ball could roll freely over the open flat playfield.
+>
+> The earlier judge, on take 3 before the roof retouch:
+>
+> picture-0803.png: I opened it and inspected it at full size plus zoomed crops.
+>
+> WHAT IT SHOWS: a macro, shallow-focus view down a chrome wire ramp above a dark blue pinball playfield. A clear glass ball with a white mouse-cursor arrow inside sits on the ramp in sharp focus. Blurred behind it are a columned bank/courthouse model (left), a red brick firehouse with a red beacon (right), round amber insert lights, and light-studded rails along both edges.
+>
+> Q1 - MOST LIKELY CATEGORY: a frame from a top-budget film (or a high-end commercial).
+> - Why film: optical-looking shallow depth of field with soft round bokeh, fine grain, teal/amber grade, believable chrome reflections and glass refraction, physical-miniature feel to the buildings.
+> - Not a pinball video game screenshot: no score, HUD, display or UI, and game cameras do not render this kind of macro lens blur.
+> - Not stock: too specific and odd a concept (cursor inside a glass ball), lit and graded like a narrative shot.
+> - Not a textbook picture: no labels, nothing explanatory, most of the frame is out of focus.
+> - Not amateur generated art in finish. Caveat: close inspection shows some synthetic-looking details (stray seam arcs inside the ball, random scratch-like line art on the playfield, a bank roof textured like printed paper, uneven firehouse windows), so generated origin is possible, but the craft level reads as film, not amateur.
+>
+> Q2 - COULD A BALL TRAVEL EVERY LANE AND RAMP VISIBLE: No. Only the short visible stretch of the wire ramp looks rideable, and even that is doubtful. Things that could not work:
+> 1. Ball fit: the ball is as wide as the full gap between the side rails and fills the U-hoop exactly, so there is zero clearance. It would bind at every hoop rather than roll. It looks parked in the nearest hoop like a display cradle.
+> 2. Ball material: it is clear glass/acrylic, not steel. It would chip or shatter in play and would not respond to magnets or magnetic sensors. The arrow sits perfectly upright, which a rolling ball would not hold.
+> 3. Ramp has no visible entry, exit or support posts. It runs dead straight down the centre of the table and appears to float. A blurred gold object sits between the rails at the top of frame and may block the path (too blurred to be sure).
+> 4. The "lanes" on the playfield are only painted street lines. There are no guides, posts, walls or rollover gates, so nothing would channel a ball along them.
+> 5. Bank: the gaps between its columns are narrower than a ball, and it sits on a raised plinth. A ball could not enter.
+> 6. Firehouse: its doorway is filled by a glowing globe/bulb and it also sits on a plinth. A ball could not enter.
+> 7. Edge rails left and right: blurred metal rails with lamps along them. They do not resolve into a clear channel, and the lamps appear to sit in the path.
+> 8. No flippers, shooter lane, bumpers, targets or drain are visible, so there is no way to confirm a ball could reach or leave any of these features.
+
+Judge result: FAILED both questions on the file as kept (STATED by the judge). The judge who saw it before the retouch gave a film frame as its first answer and named eight things. Kept at the limit of three takes.
+
+What the kept take misses (MEASURED on the file unless marked):
+
+- Neither judge read it as a screenshot from a pinball video game. Both gave the same reasons: no score or display in frame, no flippers, and a lens blur and grain that read as film (STATED).
+- The ramp is not two rails. Each side has two chrome wires close together, four in all near the camera, with U-shaped hoops slung under them, and a thin rod runs along the centre line under the ball to the bottom edge of the frame. The second judge reads the ball as sitting in a ring on that rod "like a globe on a stem" (STATED), and the number of wires each side drops from two to one farther up the ramp (STATED; I see the same).
+- The ball is as wide as the gap between the side wires, with no clearance (STATED by both judges; I see the same).
+- The ramp shows no way on and no way off. It runs out of the bottom edge and, at the top of the frame, into a blurred gold lamp on the centre line.
+- The top edge of the frame shows a little of the far end of the table, blurred lamps and rails, although the prompt asked for the board alone as background.
+- Firehouse: its door holds a glowing lamp, so a ball could not enter there (STATED by both judges). Bank: the gaps between its columns are narrower than the ball (STATED).
+- Bank roof: it sags in a shallow V behind the pediment (STATED by the second judge; I see the same). Its surface is the retouch described above.
+- Inside the ball there are faint arcs besides the one seam (STATED by the first judge).
+- The pictures on the round inserts are out of focus and cannot be made out (STATED as "smeared" by the second judge).
+- Frame. The ceramic border is not in the picture. A blurred length of aluminum rail shows at the top left and top right.
+- Words (MEASURED at full size): none. No letters or numbers found.
+
+Full prompt of the kept take:
+
+```text
+A frame from a finished commercial 3D pinball video game with photoreal graphics, in its ride-along ball camera. It looks exactly like a macro photograph taken inside a real, physical pinball machine. 16:9.
+
+REFERENCE IMAGE 1 is the street tier of this pinball table seen from straight above. This shot is taken inside that same tier, so its parts are the same parts: the same dark teal and navy printed streets under a glossy clear coat, the same red brick firehouse with the red flasher dome on its roof, the same bank with stone columns, the same chrome wire ramp crossing over the road. REFERENCE IMAGE 2 shows the ball of this game three times: a clear acrylic ball with a white arrow cursor sealed inside it. Use it for how the ball and the cursor look. This image has exactly one ball.
+
+THE SHOT: the camera rides directly above the ball as it rolls along the highway overpass, the chrome wire ramp, high above the board. The camera points steeply down, about sixty degrees below level, and a little ahead. Because it looks down, there is no horizon and no far wall anywhere in the frame: the whole background, from the bottom edge to the top edge, is the board seen from above, far below. We see the roofs of the buildings from above, not their fronts. The side rails of the table are not in the frame.
+
+THE BALL: in the lower middle of the frame: its centre is half way across the frame and one third of the way up from the bottom edge. It is large: about one quarter of the frame's width across. A sphere of thick, perfectly clear acrylic with a fine seam round its middle. We look down through the top of it at the cursor inside: a solid white enamel arrow with a black edge, about three quarters as long as the ball is wide, a loose solid object tumbling a beat behind the roll, tipped at an angle, clear of the wall. It is plain to see and sharp. Small crisp highlights from the lamps on the acrylic. The acrylic bends the rails under it a little and never hides the cursor. The cursor is only an arrow: no face, no eyes, no limbs.
+
+THE RAMP: one wire ramp made of exactly two rails and nothing else. The two rails are polished chrome steel rods, each about as thick as a pencil beside a ball the size of a golf ball, side by side at the same height, two thirds of a ball apart. The ball rides in the trough between them and rests on both: the left rail passes under the left third of the ball and the right rail under its right third, and each rail can be seen through the clear acrylic. The two rails come up from the bottom edge of the frame, one each side of the centre, pass under the ball, and run away up the frame ahead of it to the top edge in one straight line, parallel all the way, drawing closer together only with distance. They never split, never cross, never branch and never end: measured in balls, the space between them is the same at the top of the frame as it is under the ball. Count the rails: two. In any slice across the ramp there are two round steel rods and nothing else: no third rail, no fourth rail, no guide rail above them, no handrail, no side wire, no rod down the centre, no second ramp and no loop of wire anywhere in the image. There are no rungs: nothing crosses between the two rails at rail height. Every four ball-lengths one small U-shaped chrome wire bracket hangs under the two rails, dipping a whole ball's depth below them, well clear of the ball, and from the bottom of that U one thin steel post drops straight down to the board far below. Mirror reflections of amber, red and blue lamps slide along the rails.
+
+FAR BELOW, out of focus: the street tier seen from high above, filling the whole frame behind the ball and the rails: the dark teal and navy printed road with its dashed white centre line, kerbs and crossings under glossy clear coat, running up the frame under the ramp; soft discs of amber light from street lamps and lit round inserts; to the left of the rails, the bank seen from above: its pale stone roof, the tops of its columns and warm light spilling from its front onto the board; to the right of the rails, the red brick firehouse seen from above: its flat grey roof with the red flasher dome glowing in the middle of it and red light spilling round it. All of this is soft: a film camera's shallow focus. The ball and the rails near it are razor sharp. Everything below is a smooth blur of shapes and lights, still easy to recognise.
+
+LIGHT: warm dusk. Amber from windows and street lamps, a red glow at the firehouse, a little blue far off to one side. Deep, rich contrast, glossy reflections. The air is clean: the softness is focus only.
+
+LETTERING: no words, letters or numbers anywhere in the image, and nothing that looks like blurred writing. In this shot the buildings carry no sign plates at all: the roof of the firehouse is bare except for its red dome, and the roof of the bank is bare.
+
+NOT IN THE IMAGE: no people, no hands, no faces; no cabinet, no legs, no room, no floor, no sheet of glass; no fog, no smoke, no haze, no lens flare; no second ball; not a cartoon, not an illustration, not a toy train set.
+```
+
