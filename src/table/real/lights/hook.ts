@@ -44,6 +44,7 @@ const body = /* glsl */ `
 	}
 	wjlCut = max( wjlCut, 0.0 );
 	float wjlUp = max( wjlP.z, 0.0 );
+	float wjlWall = 1.0 - smoothstep( 0.3, 0.9, wjlN.z );
 	float wjlShine = 1.0 - smoothstep( 0.9, 0.995, wjlN.z ) * ( 1.0 - smoothstep( 4.0, 16.0, wjlUp ) );
 	IncidentLight wjlLight;
 	wjlLight.visible = true;
@@ -65,6 +66,7 @@ const body = /* glsl */ `
 		if ( at.w > 1.5 ) {
 			from = vec3( wjlP.xy + wjlToward * at.z * wjlRun, at.z );
 			amount *= wjlCut;
+			amount = mix( amount, amount / ( 1.0 + 1.2 * amount ), wjlWall );
 		}
 		vec3 low = from - vec3( wjlP.xy, 0.0 );
 		vec3 to = from - wjlP;
