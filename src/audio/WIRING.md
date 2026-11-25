@@ -24,5 +24,5 @@ The rules it keeps:
 2. `unlock()` is called from the first click. Before it the engine makes nothing, fetches nothing and plays nothing.
 3. Every event of `stage.events` is passed on once, in order, with its `name`, `x`, `y` and `hitsCursor`.
 4. `beat(id, mode)` is called when a beat starts. The engine places the beat's lines itself.
-5. The control is hidden when `available()` is false. `setMuted`, `muted`, `setVolume` and `volume` serve the control.
+5. The control is hidden when `available()` is false. With an index that lists nothing it is false from the start, so the control never shows and then goes. `setMuted`, `muted`, `setVolume` and `volume` serve the control.
 6. `stop()` when the page is left or the film is reset.

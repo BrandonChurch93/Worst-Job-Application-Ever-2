@@ -28,6 +28,8 @@ npm run sound -- --cue step --keep --take 2 --listener answers.json --prompt "..
 npm run sound -- --pack                         build public/audio
 npm run sound -- --sheet                        draw the kept sounds on one picture
 npm run sound -- --check                        the sound checks, written to out/work/sound-checks.json
+npm run sound -- --browser                      the engine in a real browser, before and after a click
+npm run mix -- --picture                        the mix drawn on one picture
 npm run sound -- --fixtures                     stand-in sounds made with ffmpeg, in a scratch root
 npm run mix                                     audio/mix/review.wav
 npm run mix -- --final                          audio/final/film-b.wav
@@ -37,14 +39,14 @@ npm run mix -- --final                          audio/final/film-b.wav
 
 ## State
 
-No sound is kept. `public/audio/index.json` lists nothing, the engine reports `available() === false` after `unlock()`, and `npm run mix` writes a silent file of the film's exact length. The day takes exist, the commands above file them, keep them, pack them and mix them with no code change. That path has been run end to end on fixtures.
+No sound is kept. `public/audio/index.json` lists nothing, the engine reports `available() === false`, and `npm run mix` writes a silent file of the film's exact length. The day takes exist, the commands above file them, keep them, pack them and mix them with no code change. That path has been run end to end on fixtures.
 
 `src/main.ts` does not load the engine yet. The wiring it needs is in `src/audio/WIRING.md`.
 
 ## Decisions
 
-1. `available()` is true before `unlock()`, because nothing is known to have failed, and false once loading has found nothing to play. `onChange(listener)` tells the interface when that changes, so it can hide the control. `state()` gives `locked`, `loading`, `ready` or `silent`.
-2. With `public/audio/index.json` itself deleted the browser writes its own line about the missing file to the console. The engine logs nothing and throws nothing. The repository always ships the index, so check A11 holds as long as the index stays.
+1. The index of the sound files, `public/audio/index.json`, is a text file and is part of the build: the engine imports it. So the engine knows from the start whether there is any sound. With an index that lists nothing `available()` is false from the first moment, `state()` is `silent`, and `unlock()` makes nothing and asks for nothing. With an index that lists sounds `available()` is true until loading has found nothing to play. `onChange(listener)` tells the interface when that changes. `makeSound({ base, index })` takes another index, which the tests and the browser check use.
+2. With the sound files deleted and the index still naming them, the engine asks for the packed file, does not find it, stops there, turns silent and throws nothing. The browser itself writes one line about the file it did not find: no code can stop that line. `npm run sound -- --pack` writes the index and the files together, so the two only part when a file is deleted by hand.
 3. The same cue twice within 12 ms sounds once. A page may emit both `bolt-hit` and `bolt-hit-cursor` for one contact. In the mix the rule is the same frame.
 4. The room tone is not lowered under a line. The effects are, by `audio.duckDb`, over 0.08 s down and 0.3 s up.
 5. The narrator. A line never interrupts another. The gap `audio.liveNarratorMinGapSeconds` binds a live line on both sides. Lines of a beat keep `audio.lineGapSeconds` between them. A line of a beat may start up to 1.5 s late, a live line up to 0.4 s late: later than that it is dropped, never queued. A new beat gives up the lines of the beat before that have not started. The place in a list of live lines moves on only when a line is spoken.
@@ -56,7 +58,7 @@ No sound is kept. `public/audio/index.json` lists nothing, the engine reports `a
 11. A loop stops at its stop event, at `page-turn`, or after 30 s. Hold music is cut dead, with no fade, after `audio.holdMusicSeconds` or at its stop event.
 12. Variants are cut from one take where the level falls 30 dB under the take's peak for 60 ms. `--hits 1,3,4` picks which hits become the variants, `--slots 2` keeps one hit as one named variant.
 13. `npm run mix` reads `cut/CUTLIST.json` when it holds `events` with a `name` and a `frame`, `seconds` or `step` each, and optionally `lines` with `beat`, `index` and `frame` or `start`. Anything else, and it says so and reads the stage.
-14. The sound checks that need the site in a browser (A1, A2, A11, half of A3 and A4) say "not yet" until `src/main.ts` loads the engine. What the engine does before the unlock and with no sound files is held by `tests/audio-engine.test.ts` on a stand-in for the browser's audio graph.
+14. `npm run sound -- --check` opens a browser. It builds the engine onto a page of its own in `out/work/audio/harness/` and measures what it makes and asks for before and after a click, with the sound files of the root, with an index that lists nothing, and with the files removed. Once `src/main.ts` loads the engine it also opens the built site in live mode and measures the same there. Until then A1, A4 and A11 say "not yet" and give the engine's numbers. `npm run sound -- --browser` runs the browser part alone, and with fixtures (`--root out/work/audio/fixture-run`) it also listens: the level of the room tone, of an effect, of a line, and of the output when muted.
 15. The prompt line of the kit ends every effect prompt the tool records. For hold music the words about music are left out.
 
 ## Where the brief and the kit differ

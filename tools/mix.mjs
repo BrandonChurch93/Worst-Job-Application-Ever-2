@@ -6,7 +6,7 @@ import { spawnSync } from 'node:child_process'
 import { pathToFileURL } from 'node:url'
 import { args, at, config, readJson, writeJson } from './lib/paths.mjs'
 import { logic } from './lib/logic.mjs'
-import { keptRecords, keptSounds, listenerFindings, modulesFrom, places, readLedger, sha, target } from './sound.mjs'
+import { engineInBrowser, keptRecords, keptSounds, listenerFindings, modulesFrom, places, readLedger, sha, siteInBrowser, target } from './sound.mjs'
 
 const rel = (p) => path.relative(at(), p)
 const narration = () => readJson(at('content', 'narration.json'))
@@ -63,6 +63,60 @@ export async function makeMix(P, c, M, out, name) {
   return record
 }
 
+// The mix as a picture: its level over the film, the cues by class, the narrator's lines, and where the effects are held down.
+export async function picture(c, M, wav, out) {
+  const sharp = (await import('sharp')).default
+  const r = readJson(wav.replace(/\.wav$/, '.json'))
+  const mono = M.dsp.toMono(M.dsp.decodeWav(fs.readFileSync(wav)))
+  const W = 1800
+  const pad = 16
+  const left = 120
+  const w = W - left - pad
+  const rows = ['hit', 'mechanism', 'tick', 'music']
+  const names = { hit: 'hits and slams', mechanism: 'mechanisms', tick: 'steps and ticks', music: 'hold music' }
+  const colour = { hit: '#e07a5f', mechanism: '#8fb6d9', tick: '#9fc490', music: '#c9a0dc' }
+  const top = 86
+  const waveH = 150
+  const rowH = 34
+  const H = top + waveH + 30 + rows.length * rowH + 60 + pad
+  const x = (seconds) => left + (seconds / r.seconds) * w
+  const esc = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+  const text = (tx, ty, t, size = 12, fill = '#e9e6df', anchor = 'start') => `<text x="${tx}" y="${ty}" font-family="sans-serif" font-size="${size}" fill="${fill}" text-anchor="${anchor}">${esc(t)}</text>`
+  let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}"><rect width="100%" height="100%" fill="#1d1e22"/>`
+  svg += text(pad, 28, r.silent ? `The mix of the film: ${r.seconds} s of silence, because no sound is kept` : `The mix of the film: ${r.seconds} s, ${r.cuesLaid} cues and ${r.linesLaid} lines from ${r.source}, ${r.lufs} LUFS, true peak ${r.truePeakDb} dB`, 18)
+  svg += text(pad, 50, `sha256 ${r.sha256.slice(0, 16)}. Wanted: ${r.targetLufs} LUFS within one unit, peaks at or under ${r.ceilingDb} dB, effects ${r.duckDb} dB lower under a line`, 12, '#9fa3ab')
+  let at = 0
+  for (const u of c.film.units) {
+    svg += `<line x1="${x(at).toFixed(1)}" y1="${top - 22}" x2="${x(at).toFixed(1)}" y2="${H - pad}" stroke="#3a3d44" stroke-width="1"/>` + text(x(at) + 4, top - 10, u.id, 12, '#9fa3ab')
+    at += u.seconds
+  }
+  const mid = top + waveH / 2
+  svg += `<rect x="${left}" y="${top}" width="${w}" height="${waveH}" fill="#26282d"/>` + text(pad, mid + 4, 'level', 12, '#9fa3ab')
+  let d = ''
+  for (let i = 0; i < w; i++) {
+    const from = Math.floor((i / w) * mono.length)
+    const p = M.dsp.peak(mono, from, Math.max(from + 1, Math.floor(((i + 1) / w) * mono.length)))
+    if (p > 0) d += `M${left + i} ${(mid - p * (waveH / 2)).toFixed(1)}V${(mid + p * (waveH / 2)).toFixed(1)}`
+  }
+  if (d) svg += `<path d="${d}" stroke="#d8d4cb" stroke-width="1" fill="none"/>`
+  const ceiling = M.levels.db(r.ceilingDb) * (waveH / 2)
+  svg += `<line x1="${left}" y1="${(mid - ceiling).toFixed(1)}" x2="${left + w}" y2="${(mid - ceiling).toFixed(1)}" stroke="#e07a5f" stroke-width="1" stroke-dasharray="4 4"/>`
+  let y = top + waveH + 30
+  for (const cls of rows) {
+    svg += text(pad, y + rowH / 2 + 4, names[cls], 12, '#9fa3ab') + `<rect x="${left}" y="${y + 3}" width="${w}" height="${rowH - 6}" fill="#26282d"/>`
+    for (const p of r.placed.filter((q) => q.kind === 'cue' && M.cues.cueClass[q.cue] === cls)) svg += `<rect x="${x(p.sample / r.sampleRate).toFixed(1)}" y="${y + 6}" width="${Math.max(1.5, (p.seconds / r.seconds) * w).toFixed(1)}" height="${rowH - 12}" fill="${colour[cls]}" fill-opacity="0.8"/>`
+    y += rowH
+  }
+  svg += text(pad, y + 22, 'the narrator', 12, '#9fa3ab') + `<rect x="${left}" y="${y + 3}" width="${w}" height="34" fill="#26282d"/>`
+  for (const p of r.placed.filter((q) => q.kind === 'line')) svg += `<rect x="${x(p.sample / r.sampleRate).toFixed(1)}" y="${y + 6}" width="${Math.max(1.5, (p.seconds / r.seconds) * w).toFixed(1)}" height="28" fill="#e9a15b"/>`
+  if (!r.placed.length) svg += text(left + 8, y + 24, `nothing is laid: ${r.missingCues.length} cues and ${r.missingLines.length} lines have no kept sound`, 12, '#9fa3ab')
+  for (let t = 0; t <= r.seconds; t += 10) svg += text(x(t), H - pad - 2, `${t} s`, 11, '#9fa3ab', 'middle')
+  svg += '</svg>'
+  fs.mkdirSync(path.dirname(out), { recursive: true })
+  await sharp(Buffer.from(svg)).png().toFile(out)
+  return out
+}
+
 const lastLine = (r, out) => r.silent
   ? `mix: SILENT. No sound is kept, so ${rel(out)} is ${r.seconds.toFixed(3)} s of silence, ${r.samples} samples at ${r.sampleRate} Hz, the film's exact length. sha256 ${r.sha256.slice(0, 16)}`
   : `mix: ${rel(out)}, ${r.seconds.toFixed(3)} s, ${r.cuesLaid} cues and ${r.linesLaid} lines laid from ${r.source}, ${r.lufs} LUFS, true peak ${r.truePeakDb} dB, ${r.missingCues.length} cues and ${r.missingLines.length} lines with no kept sound. sha256 ${r.sha256.slice(0, 16)}`
@@ -87,8 +141,17 @@ export async function soundChecks(a, P, c, M) {
   const wired = has(at('src', 'main.ts'), /import\(['"]\.\/audio(\/index)?['"]\)/)
   const notWired = 'src/main.ts does not load the sound engine yet, so the site has no sound to test in a browser'
 
-  add('A1', 'not yet', wired ? 'the browser test of the first click is not run by this command yet' : notWired, { byCode: 'src/audio/index.ts makes no audio context, no audio element and no request before unlock(): tests/audio-engine.test.ts holds it to that' })
-  add('A2', 'not yet', wired ? 'the sound control is the interface\'s part: its test is not run by this command yet' : notWired)
+  const engine = await engineInBrowser(P, c)
+  const live = wired && !P.scratch ? await siteInBrowser() : null
+  const siteNote = P.scratch ? 'The site is not measured on a scratch root' : !wired ? notWired : live && !live.built ? 'The site is not built. Run npm run build' : ''
+  const early = engine.runs.filter((r) => r.before.contexts > 0 || r.before.plays > 0 || r.soundRequestsBefore > 0)
+  const engineFact = `on a page of its own in a browser the engine made ${engine.runs.reduce((n, r) => n + r.before.contexts, 0)} audio contexts and asked for ${engine.runs.reduce((n, r) => n + r.soundRequestsBefore, 0)} sound files before the first click, over ${engine.runs.length} visits, with events, a beat and a trigger sent to it first`
+  if (early.length) add('A1', 'fail', `the engine starts before the first click: ${engineFact}`, { engine: engine.runs.map((r) => ({ name: r.name, before: r.before })) })
+  else if (live && live.built) {
+    const ok = live.before.contexts === 0 && live.before.plays === 0
+    add('A1', ok ? 'pass' : 'fail', `the live site, 4 s after it opens and before any click: ${live.before.contexts} audio contexts, ${live.before.plays} sounds played. Also ${engineFact}${engine.lists ? '' : '. No sound is kept, so nothing would play after the click either'}`, { site: live.before })
+  } else add('A1', 'not yet', `${siteNote}. Held so far: ${engineFact}`, { engine: engine.runs.map((r) => ({ name: r.name, before: r.before })) })
+  add('A2', 'not yet', wired ? 'the sound control is the interface\'s part: its test by pointer and by keyboard is not run by this command' : notWired)
 
   const importers = []
   const walk = (dir) => {
@@ -112,7 +175,9 @@ export async function soundChecks(a, P, c, M) {
   const mb = soundBytes / 1048576
   if (!pubFiles.some((x) => x.f === 'index.json')) add('A4', 'not yet', `${rel(P.pub)} has no index. Run npm run sound -- --pack`)
   else if (mb > c.audio.appMaxMb) add('A4', 'fail', `the site's sound files are ${mb.toFixed(2)} MB together and audio.appMaxMb is ${c.audio.appMaxMb}`, { megabytes: Number(mb.toFixed(3)) })
-  else add('A4', soundBytes > 0 && wired ? 'pass' : 'not yet', soundBytes === 0 ? `no sound is kept, so the site ships an index that lists nothing: 0 MB of ${c.audio.appMaxMb} MB` : `${mb.toFixed(2)} MB of ${c.audio.appMaxMb} MB. The engine fetches nothing before unlock(), which the first click calls${wired ? '' : `. ${notWired}`}`, { megabytes: Number(mb.toFixed(3)) })
+  else if (live && live.built && live.before.soundRequests > 0) add('A4', 'fail', `the live site asked for ${live.before.soundRequests} sound files before the first click`, { megabytes: Number(mb.toFixed(3)) })
+  else if (live && live.built) add('A4', 'pass', `${mb.toFixed(2)} MB of ${c.audio.appMaxMb} MB${soundBytes === 0 ? ', because no sound is kept' : ''}. The live site asked for 0 sound files in its first 4 s, before any click`, { megabytes: Number(mb.toFixed(3)) })
+  else add('A4', 'not yet', `${mb.toFixed(2)} MB of ${c.audio.appMaxMb} MB${soundBytes === 0 ? ', because no sound is kept' : ''}. ${siteNote}. Held so far: ${engineFact}`, { megabytes: Number(mb.toFixed(3)) })
 
   if (!records.length) add('A5', 'not yet', 'no sound is kept')
   else {
@@ -165,7 +230,6 @@ export async function soundChecks(a, P, c, M) {
     add('A8', over.length ? 'fail' : 'pass', over.length ? over.join('; ') : `${ledger.takes.length} takes over ${keys.length} sounds, none over its limit`, { takes: ledger.takes.length })
   }
 
-  const cuesFile = at('cut', 'CUES.md')
   const mixRecord = path.join(P.mix, 'review.json')
   if (!fs.existsSync(mixRecord)) add('A9', 'not yet', 'no mix has been made, and cut/CUES.md is written by npm run cut')
   else {
@@ -199,7 +263,7 @@ export async function soundChecks(a, P, c, M) {
       if (next && start + l.seconds + c.audio.lineGapSeconds > next.sample / r.sampleRate + 1e-6) lineProblems.push(`${l.id} ends ${(next.sample / r.sampleRate - start - l.seconds).toFixed(2)} s before ${next.id}`)
     })
     const laid = r.cuesLaid + r.linesLaid
-    const where = fs.existsSync(cuesFile) ? 'cut/CUES.md is there but is the cut\'s to check: this is checked on the mix\'s own record' : 'cut/CUES.md is not written yet: this is checked on the mix\'s own record'
+    const where = plan.source === 'cut/CUTLIST.json' ? 'Checked against the frames of cut/CUTLIST.json, the list cut/CUES.md is written from' : 'cut/CUES.md is not written yet: checked against the events of the stage'
     if (late.length || lineProblems.length) add('A9', 'fail', `${[...late.slice(0, 5).map((x) => `no cue within ${c.audio.contactSyncFrames} frame of ${x}`), ...lineProblems.slice(0, 5)].join('; ')}. ${where}`, { lateEvents: late.length, lineProblems: lineProblems.length })
     else add('A9', laid ? 'pass' : 'not yet', laid ? `${r.cuesLaid} cues start on the frame of their event and ${r.linesLaid} of ${timed.length} lines start inside their beat and end ${c.audio.lineGapSeconds} s before the next. ${where}` : `no sound is kept, so the mix lays nothing. ${where}`)
   }
@@ -218,7 +282,23 @@ export async function soundChecks(a, P, c, M) {
     add('A10', bad.length ? 'fail' : 'pass', bad.length ? `${bad.length} problems over ${lineRecords.length} kept lines: ${bad.slice(0, 5).join('; ')}${bad.length > 5 ? '; and more' : ''}` : `all ${lineRecords.length} kept lines were written down by the listener word for word`)
   }
 
-  add('A11', 'not yet', wired ? 'the browser test with the sound files removed is not run by this command yet' : notWired, { byCode: 'with no index, or an index that lists nothing, the engine turns silent, available() is false and nothing is thrown or logged: tests/audio-engine.test.ts holds it to that' })
+  const none = engine.runs.find((r) => r.name === 'with an index that lists nothing')
+  const gone = engine.runs.find((r) => r.name.startsWith('with the sound files removed'))
+  const silentRun = (r) => r.after.state === 'silent' && r.after.available === false && r.errors.length === 0
+  const engineSilent = `on a page of its own the engine, with an index that lists nothing, is ${none.after.state}, available() ${none.after.available}, ${none.after.contexts} audio contexts, ${none.soundRequests} requests, ${none.errors.length} errors, ${none.console.length} console lines${gone ? `; with the files removed and the index still naming them it is ${gone.after.state}, available() ${gone.after.available}, ${gone.errors.length} errors, and the browser itself writes ${gone.console.length} line about the file it did not find` : ''}`
+  if (!silentRun(none) || none.console.length || (gone && !silentRun(gone))) add('A11', 'fail', engineSilent, { engine: engine.runs })
+  else if (live && live.built) {
+    let bare = live
+    if (engine.lists) {
+      const copy = at('out', 'work', 'audio', 'dist-silent')
+      fs.rmSync(copy, { recursive: true, force: true })
+      fs.cpSync(at('dist'), copy, { recursive: true })
+      fs.rmSync(path.join(copy, 'audio'), { recursive: true, force: true })
+      bare = await siteInBrowser(copy)
+    }
+    const ok = !bare.after.failShown && bare.after.control === 0 && bare.errors.length === 0 && (engine.lists || bare.console.length === 0)
+    add('A11', ok ? 'pass' : 'fail', `the live site ${engine.lists ? 'with its sound files removed' : 'as built, which has no sound files'}, after a click: sound control shown ${bare.after.control} times, ${bare.errors.length} errors, ${bare.console.length} console lines, failure box ${bare.after.failShown ? 'shown' : 'hidden'}. Also ${engineSilent}`, { site: bare })
+  } else add('A11', 'not yet', `${siteNote}. Held so far: ${engineSilent}`, { engine: engine.runs.map((r) => ({ name: r.name, after: r.after, errors: r.errors, console: r.console })) })
 
   const out = P.scratch ? path.join(path.dirname(P.audio), 'sound-checks.json') : at('out', 'work', 'sound-checks.json')
   writeJson(out, { about: 'The sound checks A1 to A11 of kit/07-QUALITY-BAR.md. None can fail a gate: a failing one is an open item.', root: P.scratch ? rel(P.audio) : 'audio', checks })
@@ -235,7 +315,12 @@ async function main() {
   const { load, close } = await logic()
   try {
     const M = await modulesFrom(load)
-    if (a.final) {
+    if (a.picture) {
+      const wav = path.join(P.mix, 'review.wav')
+      if (!fs.existsSync(wav)) throw new Error('no mix to draw. Run npm run mix first')
+      const out = a.out && a.out !== true ? path.resolve(a.out) : at('out', 'work', 'audio', P.scratch ? 'mix-fixtures.png' : 'mix.png')
+      console.log(`mix: drawn on ${rel(await picture(c, M, wav, out))}`)
+    } else if (a.final) {
       const out = a.out && a.out !== true ? path.resolve(a.out) : path.join(P.final, 'film-b.wav')
       const r = await makeMix(P, c, M, out, 'film-b')
       console.log('mix: film A is film B behind the prompt opening. Its opening has no events yet, so only film B is mixed')
