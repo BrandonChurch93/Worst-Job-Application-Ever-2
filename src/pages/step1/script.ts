@@ -21,20 +21,23 @@ export const HOOD = { y: SLOT.cy + 44, z: 8 }
 export const PILE = { x: SLOT.cx - 20, y: SLOT.cy + 118 }
 export const SHRED = { in: 0.3, gone: 0.34, strips: 0.12, pile: 0.78, pileSeconds: 1.0, empty: 1.3, emptySeconds: 0.5, zip: 1.78, zipSeconds: 1.0, end: 2.8 }
 
-// The film's first name: every time is a second of the unit. The turrets are up at 3.02 and fire at 3.62, 4.07, 4.52, 4.97, 5.42, 5.87, and so on. The shot of 5.42 lands beside the cursor; the shot of 5.87 was aimed while it stood still and hits it.
+// The film's first name: every time is a second of the unit. The turrets are up at 3.02 and fire at 3.62, 4.07, 4.52, 4.97, 5.42, 5.87, and so on.
+// The shot of 5.42 is aimed while the cursor stands proud and hits it at 5.89, so 6.0, the frame of the approved image, has the burn, the recoil and the next bolt in the air.
+// It scrambles clear from 6.02, and the shot of 5.87 lands where it stood.
 export const FIRST = {
   tap: 1.5,
-  keys: [[2.18, 2.56], [2.64, 2.97], [3.06, 3.25], [3.7, 4.05], [4.42, 4.55]] as [number, number][],
-  notice: 3.34, dodge: 3.7, duck: 4.08, cocky: [4.6, 4.8] as [number, number], proud: 4.9,
-  stand: { x: 1080, y: 838 }, thrown: { x: 196, y: -84 }, shock: [6.23, 7.0] as [number, number],
-  after: [[7.0, 7.2], [7.28, 7.6], [7.7, 7.9], [8.02, 8.34], [8.46, 8.66], [8.76, 8.96]] as [number, number][],
-  enter: [9.16, 9.38] as [number, number]
+  keys: [[2.18, 2.56], [2.64, 2.97], [3.06, 3.25], [3.7, 4.05], [4.28, 4.4]] as [number, number][],
+  notice: 3.34, dodge: 3.7, duck: 4.08, cocky: [4.44, 4.64] as [number, number], proud: 4.74,
+  stand: { x: 972, y: 826 }, thrown: { x: 196, y: -84 }, shock: [6.02, 6.7] as [number, number],
+  after: [[6.7, 6.92], [7.0, 7.32], [7.42, 7.62], [7.72, 8.0], [8.1, 8.3], [8.38, 8.56]] as [number, number][],
+  enter: [8.68, 8.9] as [number, number]
 }
 export const LAST = { at: [10.3, 10.95, 11.55, 12.1, 12.62, 13.12, 13.62, 14.12], hunts: 3, enter: [14.34, 14.6] as [number, number] }
-export const MAIL = { first: 15.22, run: 15.6, every: 0.092, enter: 17.52 }
+export const MAIL = { first: 15.16, run: 15.5, every: 0.092, enter: 17.42 }
 export const DIVES = [{ x: 1088, y: 816 }, { x: 744, y: 944 }, { x: 940, y: 668 }]
 export const DIVE = { see: 0.05, start: 0.22, seconds: 0.16 }
-export const RESUME = { walk: [20.5, 20.92] as [number, number], grab: 21.06, hoist: [21.12, 21.2] as [number, number], carry: [21.24, 21.74] as [number, number], drop: 21.82 }
+export const TRUDGE = { x: 150, y: -110, seconds: 1.0 }
+export const RESUME = { look: 19.9, walk: [20.3, 20.72] as [number, number], grab: 20.92, hoist: [20.98, 21.06] as [number, number], carry: [21.1, 21.54] as [number, number], drop: 21.62 }
 
 const TUG_CURVE: [number, number, number, number][] = [
   [0, 0.05, 0.3, 14], [0.34, 0.22, 0.08, 8], [0.91, 0.16, -0.5, 44], [1.25, 0.36, -0.12, 10], [1.88, 0.3, 0.55, 46], [2.21, 0.5, 0.18, 10],
@@ -136,7 +139,7 @@ export function makePlan(seed: number, first: string, last: string, email: strin
   leap(FIRST.cocky[0], FIRST.cocky[1], FIRST.stand.x, FIRST.stand.y, { arc: 40 })
   cue(FIRST.proud, { act: 'proud' })
   cue(FIRST.proud + 0.06, { react: 'dustOff' })
-  to(FIRST.shock[0], FIRST.shock[0] + 0.14, FIRST.stand.x + FIRST.thrown.x, FIRST.stand.y + FIRST.thrown.y, { ease: 'snap' })
+  to(FIRST.shock[0], FIRST.shock[0] + 0.16, FIRST.stand.x + FIRST.thrown.x, FIRST.stand.y + FIRST.thrown.y, { arc: 20, ease: 'out' })
   cue(FIRST.shock[1] - 0.08, { react: 'flinch' })
   for (let i = before - 1; i < keys.length; i++) {
     const n = i - (before - 1)
@@ -206,7 +209,7 @@ export function makePlan(seed: number, first: string, last: string, email: strin
 
   // step1.resume: it watches the keyboard go, fetches its paper and carries it over
   const grab = { x: PAPER_REST.x + PAPER.w - 62, y: PAPER_REST.y + 24 }
-  cue(20.08, { react: 'dustOff' })
+  cue(RESUME.look, { react: 'dustOff' })
   to(RESUME.walk[0], RESUME.walk[1], grab.x, grab.y, { arc: -34 })
   cue(RESUME.grab - 0.06, { react: 'anticipate' })
   clicks.push([RESUME.grab, RESUME.drop])
@@ -222,10 +225,11 @@ export function makePlan(seed: number, first: string, last: string, email: strin
   }
 
   // step1.shredded: where it comes back together, and a tired drag toward the form it has to fill in again
+  const whole = lost + TIMES.lost + SHRED.end
   to(lost + 0.1, lost + 0.2, PILE.x, PILE.y, { ease: 'out' })
-  cue(lost + TIMES.lost + SHRED.end + 0.1, { react: 'doubleTake' })
-  cue(lost + TIMES.lost + SHRED.end + 0.6, { act: 'exhausted' })
-  to(lost + TIMES.lost + SHRED.end + 0.7, 31.9, PILE.x + 64, PILE.y - 10)
+  cue(whole + 0.06, { react: 'doubleTake' })
+  cue(whole + 0.4, { act: 'exhausted' })
+  to(whole + 0.4, whole + 0.4 + TRUDGE.seconds, PILE.x + TRUDGE.x, PILE.y + TRUDGE.y, { arc: -10 })
   cues.sort((p, q) => p.at - q.at)
   return { moves, clicks, cues, drop: RESUME.drop, bite, lost }
 }
@@ -258,9 +262,9 @@ export function pointerAt(plan: Plan, time: number): Pointer {
   return { x: s.x0 + (s.x1 - s.x0) * u + s.side * bulge, y: s.y0 + (s.y1 - s.y0) * u - s.arc * bulge, down }
 }
 
-const TUG_WIDE = { x: 66, y: 172, w: 1120, h: 630 }
-const TUG_CLOSE = { x: 186, y: 372, w: 880, h: 495 }
-export const CAMERA = { in: [21.3, 22.3] as [number, number], push: 4.6, out: [28.0, 29.2] as [number, number] }
+const TUG_WIDE = { x: 26, y: 150, w: 1200, h: 675 }
+const TUG_CLOSE = { x: 126, y: 356, w: 1000, h: 562.5 }
+export const CAMERA = { in: [21.1, 22.1] as [number, number], push: 4.6, out: [27.6, 28.9] as [number, number] }
 
 export function filmCamera(time: number): CameraPose {
   const home = homePose(0)

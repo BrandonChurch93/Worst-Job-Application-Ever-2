@@ -34,7 +34,7 @@ function acting(): CursorPose[] {
     restPose(at(1), y - 20, { acting: 'shocked', squash: 1.36, lean: -0.08, z: hover + 6, reaction: 'doubleTake', reactionAt: 0.7 }),
     restPose(at(2), y, { acting: 'angry', squash: 1.03, lean: 0.08 }),
     restPose(at(3), y, { acting: 'scared', squash: 0.9, lean: -0.16, bend: -0.2 }),
-    restPose(at(4), y, { acting: 'exhausted', squash: 0.78, lean: 0.14, bend: 0.45 }),
+    restPose(at(4), y, { acting: 'exhausted', squash: 0.8, lean: 0.1, bend: 0.15 }),
     restPose(at(5), y, { acting: 'plain', damage: ['burn'], healing: 0.2, wounds: [{ kind: 'burn', at: 0.2, x: STRIKE.x, y: STRIKE.y }] })
   ]
 }
