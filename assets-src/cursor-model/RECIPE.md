@@ -7,7 +7,7 @@ Made by: `detailData(size, seed)` and `detailTexture()` in `src/cursor/model/tex
 From: `config/showcase.json` (`seed`); no input picture
 Prompt or command: `detailTexture()` on first use; the bytes alone: `detailData(512, config.seed)`. The test `the cursor detail texture` in `tests/cursor-model.test.ts` checks that the same seed gives the same bytes
 Takes: 1 made, 1 kept
-Why this one: one 512 by 512 picture carries all the body and the effects need, so a cursor costs one texture: red is how far a point lies from the nearest crack of a tiling web of plates (the crazing of a flattened body), green and blue are two tiling fields of soft cloud (the grain of stone, the ragged front of char and heat, the breaking up of steam, smoke and dust), alpha is one number for each plate (which way it tips)
+Why this one: one 512 by 512 picture carries all the body and the effects need, so a cursor costs one texture: green and blue are two tiling fields of soft cloud (the grain of stone, the ragged front of char and heat, the blisters of a crust, the breaking up of steam, smoke and dust). Red (how far a point lies from the nearest crack of a tiling web of plates) and alpha (one number for each plate) are still made but no longer read: the cracks of a flattened body are worked out in the shader, since the texture's cracks broke into dashes at page size
 Date: 2026-11-25
 
 Size: 512 by 512 pixels, four channels of 8 bits, 1.00 MB, 1.33 MB with its smaller copies. It tiles in both directions. It is shared by every cursor on the page.
