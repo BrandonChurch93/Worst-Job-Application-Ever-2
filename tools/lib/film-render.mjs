@@ -21,10 +21,10 @@ export const sources = {
   },
   opening: {
     units: () => [],
-    draw: (page, i) => page.evaluate(async (n) => {
+    draw: (page, i, tier) => page.evaluate(async ([n, t]) => {
       window.showcase.setDiagnostic('beauty')
-      await window.showcase.renderOpeningFrame(n)
-    }, i)
+      await window.showcase.renderOpeningFrame(n, t)
+    }, [i, tier])
   },
   loop: {
     units: (cfg) => cfg.film.units.map((u) => u.id),

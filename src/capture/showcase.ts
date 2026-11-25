@@ -25,8 +25,8 @@ export interface Showcase {
   film(): { frameCount: number; units: { id: string; first: number; last: number }[]; beats: { id: string; first: number; last: number }[]; lines: { beat: string; first: number; last: number }[] }
   filmState(frameIndex: number): { unit: string; beat: string; camera: number[]; cursor: CursorState; events: { name: string; x: number; y: number; hitsCursor: boolean }[]; standIns: string[] }
   renderFilmFrame(frameIndex: number, tier: string): Promise<void>
-  opening(): { frameCount: number }
-  renderOpeningFrame(frameIndex: number): Promise<void>
+  opening(): { frameCount: number; seconds: number; marks: { typing: number; level: number; build: number } }
+  renderOpeningFrame(frameIndex: number, tier?: string): Promise<void>
   loop(): { frameCount: number; scene: string }
   loopState(frameIndex: number): { cursorBox: number[]; threatBox: number[] }
   renderLoopFrame(frameIndex: number, tier: string): Promise<void>
@@ -115,11 +115,12 @@ export function makeShowcase(app: App, ready: Promise<void>): Showcase {
       await app.renderFilmFrame(frameIndex, tier)
     },
     opening() {
-      return { frameCount: app.opening().frameCount }
+      const piece = app.opening()
+      return { frameCount: piece.frameCount, seconds: piece.seconds, marks: { ...piece.marks } }
     },
-    async renderOpeningFrame(frameIndex) {
+    async renderOpeningFrame(frameIndex, tier) {
       await ready
-      await app.renderPiece(app.opening(), frameIndex, app.tier, frameIndex + 1)
+      await app.renderPiece(app.opening(), frameIndex, tier ?? app.tier, frameIndex + 1)
     },
     loop() {
       const piece = app.loop()

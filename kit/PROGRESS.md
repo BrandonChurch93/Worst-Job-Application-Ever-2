@@ -266,7 +266,7 @@ Kept by `npm run judged -- --write`. Check G6 compares its ids with the computed
 | `site:boss` | `site` | step 4 at rest, drawn through the live site's own path at the high level, from home, in hd |  |
 | `site:decision` | `site` | step 5 at rest, drawn through the live site's own path at the high level, from home, in hd |  |
 
-47 frames of the films and the loop. The frame numbers are those of the build of 2026-11-25T09:38:42Z. A judged frame is found again by its id when it is rendered, so a beat's frame follows its event.
+47 frames of the films and the loop. The frame numbers are those of the build of 2026-11-25T09:47:56Z. A judged frame is found again by its id when it is rendered, so a beat's frame follows its event.
 
 | Id | Unit | What | Frame |
 | --- | --- | --- | --- |
@@ -310,9 +310,9 @@ Kept by `npm run judged -- --write`. Check G6 compares its ids with the computed
 | `film:decision.metrics` | `film` | film B, the beat decision.metrics: the frame of its event, button-press | 9018 |
 | `film:decision.reset` | `film` | film B, the beat decision.reset: the frame of its event, page-turn | 9045 |
 | `film:last` | `film` | film B, the last frame | 9179 |
-| `opening:typing` | `film` | the opening of film A, a frame in the middle of the typing |  |
-| `opening:level` | `film` | the opening of film A, a frame with the reasoning level control open |  |
-| `opening:build` | `film` | the opening of film A, a frame in the middle of the build screen |  |
+| `opening:typing` | `film` | the opening of film A, a frame in the middle of the typing | 148 |
+| `opening:level` | `film` | the opening of film A, a frame with the reasoning level control open | 317 |
+| `opening:build` | `film` | the opening of film A, a frame in the middle of the build screen | 530 |
 | `loop:first` | `film` | the card loop, frame 0 | 0 |
 | `loop:quarter` | `film` | the card loop, the frame quarter of the way through | 120 |
 | `loop:half` | `film` | the card loop, the frame half of the way through | 240 |

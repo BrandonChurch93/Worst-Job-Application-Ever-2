@@ -519,12 +519,13 @@ function play(first: PlayMode): void {
 }
 
 // A still of the site with its controls over it, or of the message a touch screen gets, for the judged list.
-function overlays(): (spec: StillSpec) => void {
+function overlays(): (spec: StillSpec | null) => void {
   let mounted: { destroy(): void } | null = null
   return (spec) => {
     mounted?.destroy()
     mounted = null
     canvas.hidden = false
+    if (!spec) return
     if (spec.touchOnly) {
       canvas.hidden = true
       mounted = mountTouchMessage(host)
@@ -559,11 +560,18 @@ function overlays(): (spec: StillSpec) => void {
 const ready = start()
 const showcase = makeShowcase(app, ready)
 if (mode === 'capture') {
+  canvas.removeAttribute('tabindex')
   const overlay = overlays()
-  const render = showcase.renderStill
-  showcase.renderStill = async (spec) => {
-    await render(spec)
-    overlay(spec)
+  const draws = showcase as unknown as Record<string, (...args: unknown[]) => Promise<unknown>>
+  for (const name of Object.keys(draws)) {
+    if (!name.startsWith('render')) continue
+    const render = draws[name]!
+    draws[name] = async (...args) => {
+      overlay(null)
+      const result = await render(...args)
+      if (name === 'renderStill') overlay(args[0] as StillSpec)
+      return result
+    }
   }
 }
 window.showcase = showcase
