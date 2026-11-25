@@ -112,7 +112,7 @@ const Y2 = TIER_Y[2]!
 const NAMED: Record<string, CameraPose> = {
   'tier-3': tierPose(0), 'tier-2': tierPose(1), 'tier-1': streetPose(),
   'table-wide': look('table-wide', [MID, APRON_Y + 15.5, 15.5], [MID, APRON_Y - 10.6, -1.2]),
-  'table-lobby': look('table-lobby', [MID + 3.6, Y0 + 8.9, 1.3], [MID + 0.1, Y0 + 4.5, 0.45]),
+  'table-lobby': look('table-lobby', [MID + 3.6, Y0 + 8.9, 1.3], [MID + 0.1, Y0 + 4.5, 0.6]),
   'table-replyall': look('table-replyall', [MID + 2, Y1 + 15.5, 14], [MID + 1.2, Y1 + 5.4, -2]),
   'table-fired': look('table-fired', [8.2, Y2 + 8.0, 0.8], [4.8, Y2 + 3.5, -2.2]),
   'table-save': look('table-save', [MID, Y2 + 13.8, 6.9], [MID, Y2 + 7.7, -3])
