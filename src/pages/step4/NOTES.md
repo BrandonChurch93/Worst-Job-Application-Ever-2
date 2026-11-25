@@ -18,7 +18,7 @@ Unit `boss`, page `step4`. Logic in `src/pages/step4/`, the boss in `src/boss/`,
 | Gag | Starts | Ends by itself |
 | --- | --- | --- |
 | `boss.verify` | page start | the box ticks itself after `live.skipLinkAfterSeconds` |
-| `boss.unfold` | 1.6 s after the tick in the film, 2.8 s in the live site | 3.6 s, authored |
+| `boss.unfold` | 1.6 s after the tick in the film. In the live site when the pointer comes to Submit, 2.2 s after the tick at the earliest, and by itself 7 s after the tick (2.2 s if the box ticked itself) | 3.6 s, authored |
 | `boss.slabs` | the boss is whole | health 75, or 12 s |
 | `boss.popups` | health 75 | health 40, or 14.5 s |
 | `boss.lastStand` | health 40 | health 0, or 13.5 s |
@@ -27,6 +27,7 @@ Unit `boss`, page `step4`. Logic in `src/pages/step4/`, the boss in `src/boss/`,
 
 - The fight is a state machine in `src/boss/fight.ts`. It has no drawing code and no library. The longest fight is 12 + 14.5 + 13.5 = 40 s, inside `live.boss.maxSeconds`.
 - The boss tires: each phase has a health ceiling that falls to the phase's end in its last seconds. A visitor who does nothing still sees every phase.
+- The boss also has a health floor that falls through each phase in 4, 4 and 3 s, so the fastest clicker still sees each phase for that long. The film never touches it.
 - One click is one dart. A dart leaves the cursor's tip and flies at the boss, so a click anywhere counts. This keeps the fight fair for a wrong pointer and keeps the pointer free at all times: the page never takes control.
 - A slab aims at where the cursor was when the cannon wound up (0.45 s before it fires), flies flat and upright with a small tilt so its words stay readable, as in the approved picture, and stops. A hit scorches the cursor, knocks it back and is followed by a dust off. The scorch is the cursor body's own and heals by itself. After a hit the cursor is safe for 1.2 s.
 - A pop-up blocks darts. Three darts break it. A click on one of its buttons closes it at once (event `popup-close`, silent) and fires no dart.

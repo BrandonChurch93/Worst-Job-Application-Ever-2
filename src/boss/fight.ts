@@ -1,6 +1,6 @@
 import type { StepIo } from '../stage/types'
 import { CANNON_OFF, FOOT_OFF, smooth } from './body'
-import { ARENA, BODY, CAPS, DART, EXPIRED_GAIN, HEALTH, HIT, HOME, POPUP, RAMP, SLAB, SLOW_SECONDS, THRESHOLD } from './plan'
+import { ARENA, BODY, CAPS, FLOOR, DART, EXPIRED_GAIN, HEALTH, HIT, HOME, POPUP, RAMP, SLAB, SLOW_SECONDS, THRESHOLD } from './plan'
 
 export interface SlabSize { w: number; h: number }
 export interface Rect { x: number; y: number; w: number; h: number }
@@ -66,6 +66,12 @@ export const ceiling = (phase: number, phaseClock: number): number => {
   const ramp = RAMP[phase]!
   if (phaseClock <= cap - ramp) return from
   return Math.max(to, from - ((from - to) * (phaseClock - (cap - ramp))) / ramp)
+}
+
+const floor = (f: Fight): number => {
+  const from = START[f.phase]!
+  const clock = f.phase === 2 ? f.expired - 0.8 : f.phaseClock
+  return from - ((from - THRESHOLD[f.phase]!) * Math.max(0, clock)) / FLOOR[f.phase]!
 }
 
 const inside = (r: Rect, x: number, y: number, grow = 0): boolean => x >= r.x - grow && x <= r.x + r.w + grow && y >= r.y - grow && y <= r.y + r.h + grow
@@ -263,7 +269,7 @@ function darts(f: Fight, io: StepIo, arena: Arena, used: boolean): void {
     const ey = (d.y - f.y) / BODY.ry
     if (ex * ex + ey * ey <= 1) {
       const open = !(f.phase === 2 && f.expired < 0.8)
-      if (open) f.health = Math.max(THRESHOLD[f.phase]!, f.health - DART.damage)
+      if (open) f.health = Math.max(THRESHOLD[f.phase]!, Math.min(f.health, floor(f)), f.health - DART.damage)
       f.flash = 0.12
       spark(f, d.x, d.y)
       io.emit('dart-hit', d.x, d.y, false)
