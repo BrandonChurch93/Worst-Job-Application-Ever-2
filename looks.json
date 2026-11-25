@@ -1,0 +1,35 @@
+{
+  "folder": "pinball",
+  "pushed": "2026-11-25T09:12:00.899Z",
+  "commit": "d472bed69be9424151bf990767d702707fc52f55",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Still still-step3-result-preview-draft: draft tier, preview, view beauty",
+      "time": "2026-11-25T09:11:35.833Z",
+      "by": "pinball",
+      "from": "out/work/stills/still-step3-result-preview-draft.png"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Step 3 at rest: heading, subline, paragraph and the loader port, blockout",
+      "time": "2026-11-25T09:11:59.362Z",
+      "by": "pinball",
+      "from": "out/work/stills/pinball-rest-preview-draft.png"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Key tier-corporate, camera tier-3, 12.0 s: the corporate tier as stand-ins (render from before the line spacing fix)",
+      "time": "2026-11-25T09:11:59.594Z",
+      "by": "pinball",
+      "from": "out/work/stills/key-tier-corporate-preview-draft.png"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Step 3 result: outlet port, result card and Continue, blockout",
+      "time": "2026-11-25T09:11:59.840Z",
+      "by": "pinball",
+      "from": "out/work/stills/still-step3-result-preview-draft.png"
+    }
+  ]
+}
