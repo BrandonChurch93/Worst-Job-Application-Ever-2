@@ -3,7 +3,7 @@ import { along, arc, arrow, beside, chevron, dirDeg, dist, dot, el, f, footprint
 
 export const PAL = {
   corporate: { base: '#081229', base2: '#0f2147', key: '#c9a551', fine: '#a78a45', pale: '#ecd797', under: '#070f27', dark: '#040a1a', lane: '#102249', accent: '#27468a', soft: '#1b3466' },
-  office: { base: '#587566', base2: '#4c6859', key: '#ddd4b2', fine: '#c3ba92', pale: '#ece5cb', under: '#3d5346', dark: '#22332a', lane: '#cdc5a6', accent: '#8aa594', soft: '#6b8a79' },
+  office: { base: '#647b73', base2: '#3b5452', key: '#c9b684', fine: '#a99a6e', pale: '#e2d6b0', under: '#33494a', dark: '#1c2c2c', lane: '#cdc5a6', accent: '#7d968f', soft: '#69817a' },
   street: { base: '#11243b', base2: '#0c1b2f', key: '#dde4e1', fine: '#86a9b0', pale: '#f0f1e9', under: '#0a1627', dark: '#050c17', lane: '#1d4250', accent: '#d8b53b', soft: '#234a5c' }
 }
 
@@ -362,45 +362,57 @@ export function office(D, seed) {
   const pal = PAL.office
   const defs = []
   const C = D.COLS
-  const tile = 1.5
-  const x0 = C.left
   const y0 = 0.3
   const tiles = []
   const walk = []
   const seams = []
-  const cols = Math.round((C.right - C.left) / tile)
-  const rows = Math.ceil((D.H - y0) / tile)
-  const midCol = Math.round((D.MID - tile / 2 - x0) / tile)
-  const crossRow = 2
-  // Carpet tiles laid a quarter turn apart, each with its own pile direction, and a pale walkway down the middle and across.
-  defs.push(el('pattern', { id: 'pile-a', width: 0.16, height: 0.16, patternUnits: 'userSpaceOnUse' }, rect(0, 0, 0.16, 0.08, { fill: '#000', opacity: 0.16 }) + rect(0, 0.105, 0.16, 0.012, { fill: '#fff', opacity: 0.1 })))
-  defs.push(el('pattern', { id: 'pile-b', width: 0.16, height: 0.16, patternUnits: 'userSpaceOnUse' }, rect(0, 0, 0.08, 0.16, { fill: '#000', opacity: 0.16 }) + rect(0.105, 0, 0.012, 0.16, { fill: '#fff', opacity: 0.1 })))
-  defs.push(el('pattern', { id: 'pile-w', width: 0.16, height: 0.16, patternUnits: 'userSpaceOnUse' }, rect(0, 0, 0.16, 0.08, { fill: '#6a6348', opacity: 0.2 }) + rect(0, 0.105, 0.16, 0.012, { fill: '#fff', opacity: 0.2 })))
-  defs.push(el('pattern', { id: 'pile-x', width: 0.16, height: 0.16, patternUnits: 'userSpaceOnUse' }, rect(0, 0, 0.08, 0.16, { fill: '#6a6348', opacity: 0.2 }) + rect(0.105, 0, 0.012, 0.16, { fill: '#fff', opacity: 0.2 })))
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      const x = x0 + c * tile
-      const y = y0 + r * tile
-      const pale = c === midCol || (r === crossRow && c >= 1 && c <= cols - 2)
+  const half = 0.85
+  const low = D.bumpers.reduce((m, q) => (q.c[1] > m.c[1] ? q : m), D.bumpers[0])
+  const band = [low.c[1] - 0.8, low.c[1] + 0.9]
+  const tile = (C.right - D.MID - half) / 2
+  const cream = '#cfc8b1'
+  const cream2 = '#c6bfa8'
+  const tan = '#8f8662'
+  // Broad carpet tiles in two greens, chequered, and a pale walkway down the middle and across under the cups.
+  const us = [D.MID - half - 2 * tile, D.MID - half - tile, D.MID + half, D.MID + half + tile]
+  const vs = []
+  for (let v = band[0] - tile; v > y0 - tile; v -= tile) vs.unshift(v)
+  for (let v = band[1]; v < D.H; v += tile) vs.push(v)
+  vs.forEach((v, r) => {
+    us.forEach((u, c) => {
       const odd = (r + c) % 2 === 1
-      if (pale) {
-        walk.push(rect(x, y, tile, tile, { fill: odd ? '#d3cbad' : '#c9c1a2' }), rect(x, y, tile, tile, { fill: `url(#pile-${odd ? 'w' : 'x'})` }))
-      } else {
-        tiles.push(rect(x, y, tile, tile, { fill: odd ? pal.base : pal.base2 }), rect(x, y, tile, tile, { fill: `url(#pile-${odd ? 'a' : 'b'})` }))
-        tiles.push(rect(x + 0.2, y + 0.2, tile - 0.4, tile - 0.4, stroke(odd ? pal.base2 : pal.soft, 0.03, { opacity: 0.8 })), rect(x + 0.27, y + 0.27, tile - 0.54, tile - 0.54, stroke(pal.accent, 0.008, { opacity: 0.6 })))
-        tiles.push(star([x + tile / 2, y + tile / 2], 0.05, 0.16, 4, odd ? pal.base2 : pal.soft, { opacity: 0.9 }), ring([x + tile / 2, y + tile / 2], 0.24, pal.accent, 0.008, { opacity: 0.6 }))
-      }
-      seams.push(rect(x, y, tile, tile, stroke(pal.dark, 0.016, { opacity: 0.55 })))
+      tiles.push(rect(u, v, tile, tile, { fill: odd ? pal.base : pal.base2 }))
+      seams.push(rect(u, v, tile, tile, stroke(pal.dark, 0.014, { opacity: 0.5 })))
+    })
+  })
+  walk.push(rect(D.MID - half, y0, 2 * half, D.H - y0, { fill: cream }), rect(C.left, band[0], C.right - C.left, band[1] - band[0], { fill: cream }))
+  const onWalk = (q) => Math.abs(q[0] - D.MID) < half || (q[1] > band[0] && q[1] < band[1])
+  const pileRand = rng(seed + 77)
+  const pile = [pal.soft, pal.accent, pal.under, pal.dark].map((col) => ({ col, d: '', w: 0.018, o: 0.6 }))
+  const speck = ['#a39b7f', '#e3ddc8', '#857d63'].map((col, i) => ({ col, d: '', w: [0.04, 0.05, 0.03][i], o: 0.75 }))
+  for (let i = 0; i < 5200; i++) {
+    const q = [C.left + pileRand() * (C.right - C.left), y0 + pileRand() * (D.H - y0)]
+    const a = pileRand() * 180
+    const k = Math.floor(pileRand() * 4)
+    if (onWalk(q)) speck[k % 3].d += `M${f(q[0])} ${f(q[1])}h0.002`
+    else {
+      const [p0, p1] = [polar(q, 0.05, a), polar(q, 0.05, a + 180)]
+      pile[k].d += `M${f(p0[0])} ${f(p0[1])}L${f(p1[0])} ${f(p1[1])}`
     }
   }
+  for (const q of pile) tiles.push(path(q.d, stroke(q.col, q.w, { opacity: q.o, 'stroke-linecap': 'round' })))
+  for (const q of speck) walk.push(path(q.d, stroke(q.col, q.w, { opacity: q.o, 'stroke-linecap': 'round' })))
   // The edge of the walkway, and its arrows down to the flippers.
-  const wx = x0 + midCol * tile
-  const wy = y0 + crossRow * tile
   const edge = []
-  for (const u of [wx, wx + tile]) edge.push(line([u + (u === wx ? 0.09 : -0.09), y0], [u + (u === wx ? 0.09 : -0.09), D.H], '#8f8a6c', 0.02), line([u + (u === wx ? 0.15 : -0.15), y0], [u + (u === wx ? 0.15 : -0.15), D.H], '#a59f80', 0.008))
-  for (const v of [wy, wy + tile]) edge.push(line([x0 + tile, v + (v === wy ? 0.09 : -0.09)], [x0 + (cols - 1) * tile, v + (v === wy ? 0.09 : -0.09)], '#8f8a6c', 0.02))
-  for (const v of [0.75, 2.2, 2.75, 7.0]) edge.push(chevron([D.MID, v - 0.12], 90, 0.4, '#8f8a6c', 0.05), chevron([D.MID, v + 0.14], 90, 0.32, '#a59f80', 0.022))
-  for (const s of [-1, 1]) for (const d of [2.2, 3.1, 4.0]) edge.push(chevron([D.MID + s * d, wy + tile / 2], s === 1 ? 0 : 180, 0.36, '#8f8a6c', 0.045), chevron([D.MID + s * (d + 0.26), wy + tile / 2], s === 1 ? 0 : 180, 0.28, '#a59f80', 0.02))
+  for (const s of [-1, 1]) {
+    const u = D.MID + s * (half - 0.09)
+    edge.push(line([u, y0], [u, band[0] + 0.09], tan, 0.016, { opacity: 0.8 }), line([u, band[1] - 0.09], [u, D.H], tan, 0.016, { opacity: 0.8 }))
+    edge.push(line([D.MID + s * (half - 0.09), band[0] + 0.09], [s === 1 ? C.right : C.left, band[0] + 0.09], tan, 0.016, { opacity: 0.8 }), line([D.MID + s * (half - 0.09), band[1] - 0.09], [s === 1 ? C.right : C.left, band[1] - 0.09], tan, 0.016, { opacity: 0.8 }))
+    edge.push(line([D.MID + s * half, y0], [D.MID + s * half, band[0]], pal.dark, 0.012, { opacity: 0.45 }), line([D.MID + s * half, band[1]], [D.MID + s * half, D.H], pal.dark, 0.012, { opacity: 0.45 }))
+  }
+  for (const v of band) edge.push(line([C.left, v], [D.MID - half, v], pal.dark, 0.012, { opacity: 0.45 }), line([D.MID + half, v], [C.right, v], pal.dark, 0.012, { opacity: 0.45 }))
+  for (const v of [0.75, 2.2, 7.6]) edge.push(chevron([D.MID, v], 90, 0.36, tan, 0.03, { opacity: 0.8 }))
+  for (const s of [-1, 1]) for (const d of [2.6, 4.4]) edge.push(chevron([D.MID + s * d, (band[0] + band[1]) / 2], s === 1 ? 0 : 180, 0.32, tan, 0.028, { opacity: 0.8 }))
 
   // What lies about, printed: paper clips, loose sheets, rubber bands and sticky tabs, each with the shadow it would throw.
   const rand = rng(seed)
@@ -432,7 +444,7 @@ export function office(D, seed) {
   }
   const turn = (p, deg, inner) => g({ transform: `translate(${f(p[0])} ${f(p[1])}) rotate(${f(deg)})` }, inner)
   const sheetCols = ['#e9e4d2', '#e3e0d0', '#ece8da', '#dfe2d6']
-  for (let i = 0; i < 12; i++) {
+  for (let i = 0; i < 6; i++) {
     const p = place(0.42)
     if (!p) continue
     const w = 0.5 + rand() * 0.14
@@ -443,13 +455,13 @@ export function office(D, seed) {
     scatter.push(turn(p, rand() * 360, [shape(pts.map((q) => [q[0] + 0.035, q[1] + 0.045]), pal.dark, { opacity: 0.32 }), shape(pts, col), shape(pts, 'none', stroke('#b9b39a', 0.008)), shape([[w / 2 - fold, -h / 2], [w / 2 - fold, -h / 2 + fold], [w / 2, -h / 2 + fold]], '#cfc9b4'), rect(-w / 2 + 0.07, -h / 2 + 0.09, w * 0.5, 0.012, { fill: '#c9c4ae' }), rect(-w / 2 + 0.07, -h / 2 + 0.15, w - 0.2, 0.006, { fill: '#d3ceb9' }), rect(-w / 2 + 0.07, -h / 2 + 0.2, w - 0.2, 0.006, { fill: '#d3ceb9' }), rect(-w / 2 + 0.07, -h / 2 + 0.25, w - 0.3, 0.006, { fill: '#d3ceb9' })]))
   }
   const tabCols = ['#e5d36a', '#e7c0a8', '#b9d7c0']
-  for (let i = 0; i < 9; i++) {
+  for (let i = 0; i < 4; i++) {
     const p = place(0.16)
     if (!p) continue
     scatter.push(turn(p, rand() * 360, [rect(-0.1, -0.09, 0.24, 0.24, { fill: pal.dark, opacity: 0.3 }), rect(-0.12, -0.12, 0.24, 0.24, { fill: tabCols[i % 3] }), rect(-0.12, -0.12, 0.24, 0.05, { fill: '#000', opacity: 0.07 })]))
   }
   const clip = (s) => `M${-0.19 * s} ${-0.05 * s} L${0.14 * s} ${-0.05 * s} A${0.05 * s} ${0.05 * s} 0 0 1 ${0.14 * s} ${0.05 * s} L${-0.16 * s} ${0.05 * s} A${0.075 * s} ${0.075 * s} 0 0 1 ${-0.16 * s} ${-0.1 * s} L${0.17 * s} ${-0.1 * s} A${0.1 * s} ${0.1 * s} 0 0 1 ${0.17 * s} ${0.1 * s} L${-0.08 * s} ${0.1 * s}`
-  for (let i = 0; i < 26; i++) {
+  for (let i = 0; i < 11; i++) {
     const p = place(0.24)
     if (!p) continue
     const s = 0.9 + rand() * 0.35
@@ -457,7 +469,7 @@ export function office(D, seed) {
     scatter.push(turn(p, rand() * 360, [g({ transform: 'translate(0.02 0.03)' }, [path(d, stroke(pal.dark, 0.03, { opacity: 0.35 }))]), path(d, stroke(i % 5 === 0 ? '#b88d57' : '#aeb5b3', 0.026)), path(d, stroke('#eef0ec', 0.008, { opacity: 0.85 }))]))
   }
   const bandCols = ['#b9895a', '#a9584a', '#c8a56a', '#6f89a8']
-  for (let i = 0; i < 12; i++) {
+  for (let i = 0; i < 7; i++) {
     const p = place(0.3)
     if (!p) continue
     const rx = 0.17 + rand() * 0.1
@@ -466,7 +478,7 @@ export function office(D, seed) {
     const d = `M${-rx} 0 C${-rx} ${-ry * 1.3} ${rx * k} ${-ry * 1.5} ${rx} ${-ry * 0.2} C${rx * 1.25} ${ry} ${rx * 0.1} ${ry * 1.4} ${-rx * 0.5} ${ry * 0.9} C${-rx * 0.9} ${ry * 0.6} ${-rx} ${ry * 0.3} ${-rx} 0 Z`
     scatter.push(turn(p, rand() * 360, [g({ transform: 'translate(0.02 0.03)' }, [path(d, stroke(pal.dark, 0.034, { opacity: 0.32 }))]), path(d, stroke(bandCols[i % 4], 0.03)), path(d, stroke('#fff', 0.007, { opacity: 0.35 }))]))
   }
-  for (let i = 0; i < 40; i++) {
+  for (let i = 0; i < 12; i++) {
     const p = place(0.06)
     if (!p) continue
     scatter.push(dot([p[0] + 0.012, p[1] + 0.016], 0.03, pal.dark, { opacity: 0.3 }), dot(p, 0.03, i % 3 ? '#e9e4d2' : '#c9ced0'), dot([p[0] - 0.008, p[1] - 0.008], 0.01, '#fff', { opacity: 0.6 }))
@@ -523,7 +535,7 @@ export function street(D, seed) {
   }
   for (const [c, deg] of [[[D.MID - 0.2, 3.3], 90], [[D.MID + 0.2, 6.05], -90], [[7.9, cm + 0.17], 180], [[12.1, cm - 0.17], 0]]) roads.push(arrow(c, deg, 0.26, paint, { opacity: 0.9 }), line(polar(c, 0.05, deg + 180), polar(c, 0.3, deg + 180), paint, 0.03, { 'stroke-linecap': 'butt', opacity: 0.9 }))
 
-  // City blocks between the roads: the street map, plot by plot, some with a lit lot.
+  // Paving between the roads, slab by slab, faint under the asphalt's own grain.
   const rand = rng(seed)
   const plots = []
   const pw = 0.62
@@ -598,7 +610,7 @@ export function street(D, seed) {
   }
   const clipId = 'field-street'
   defs.push(el('clipPath', { id: clipId }, rect(C.left, 0.3, C.right - C.left, D.H - 0.3, { fill: '#000' })))
-  return { pal, defs, ground: [g({ mask: 'url(#keep-street)' }, plots)], top: [lanes, g({ 'clip-path': `url(#${clipId})` }, [roads, lots, holes]), local, answers, insertsPrint(D, pal)] }
+  return { pal, defs, ground: [g({ mask: 'url(#keep-street)', opacity: 0.5 }, plots)], top: [lanes, g({ 'clip-path': `url(#${clipId})` }, [roads, lots, holes]), local, answers, insertsPrint(D, pal)] }
 }
 
 // The guide: the tier from straight above with every lane, wall, post, footprint, insert and flipper as plain lines.

@@ -33,9 +33,9 @@ A fact below is MEASURED (the command and the number are given), STATED (read so
 
 | Setting | Value | Why |
 | --- | --- | --- |
-| `key.direction` | -0.65, 0.6, 0.45 | Shadows fall down and to the right and reach twice the height of the part; the soft far end fades, so what is seen is about one and a half times. At the first value (0.69 up) a 6 px pocket and a low button had almost no shadow. |
-| `key.radius` | 0.13 rad | Half the angle of the light's area. The far end of a 40 px part's shadow is about 20 px soft, the contact is sharp. At 0.2 the shadow of a part 5 px tall was all soft edge and no dark middle. |
-| `key.intensity` | 4.55 | With the fill, puts the ceramic of the surface owner (`0xecebe6`) where the approved page look has it. See the table of measurements. |
+| `key.direction` | -0.65, 0.6, 0.36 | Shadows fall down and to the right and reach two and a half times the height of the part. MEASURED on the page look at review, along the shadow of the second progress button: approved has a dark core of 12 px and a soft end of 18 px for a button 36 px in radius; the build had 8 and 5 at 0.45 up and has 11 and 10 at 0.36. At the first value (0.69 up) a 6 px pocket and a low button had almost no shadow. Lower than this and the grain of the ceramic gets louder than the approved one (standard deviation of a bare patch: approved 5.2, build 6.3). |
+| `key.radius` | 0.15 rad | Half the angle of the light's area. With the lower key the soft end of a shadow is about as long as its dark middle, as in the approved buttons. At 0.2 the shadow of a part 5 px tall was all soft edge and no dark middle. |
+| `key.intensity` | 5.47 | With the fill, puts the ceramic of the surface owner (`0xecebe6`) where the approved page look has it. See the table of measurements. |
 | `key.colour` | 1, 0.975, 0.945 | The approved ceramic is 6 warmer in red than in blue at the upper left; at 0.92 blue it was 10. |
 | `key.at` | -1200, 1000, 3750 px from the middle of the view | Fitted to the five patches of the approved page look by least squares (`out/work/light/fit.mjs`, not in the repository). |
 | `key.shadowMapPx` | 4096 | One texel is 0.45 px of the page at `hd` (see "Shadow texel"). |
@@ -71,6 +71,17 @@ A fact below is MEASURED (the command and the number are given), STATED (read so
 ## Units for whoever sends a light
 
 `ctx.light({ x, y, z, colour, power, reach, shadow })`. Agreed with the keyboard owner: power 1 means a white matte surface 100 px away, facing the light, sends back about `colour` in linear light. The light is zero at `reach`. Up to 6 are true lights in a frame and 2 of those throw shadows (the strongest that ask for one); more are joined, never dropped. A thing that should glow needs an emissive colour above 1.3 in linear light after exposure; anything that only reflects cannot glow.
+
+One call sets what is drawn: `rig.setLevel(level)`, with `'high'`, `'medium'`, `'low'` or `null`. `null` is a computed picture with everything on (`look.key.shadowMapPx`, `look.dome.shadowMapPx`, 6 lamps, 2 with shadows). A level takes `live.quality.<level>.shadowMapPx` for the key and half of it for the fill. `setQuality(keyPx, domePx)` still works and does the same from two sizes. The depth offsets of a shadow map grow with its texel, so a coarse map has no speckle and the page is as bright at low as at high.
+
+MEASURED, `npm run still -- --key step1-fire --format hd --live <level> --force` with `rig.setLevel(spec.live ?? null)` put in the still path for the measurement only:
+
+| level | draws | draw calls | triangles | limit | ceramic upper left, sRGB luminance |
+|---|---|---|---|---|---|
+| high | key and fill shadows, 6 lamps, 2 lamp shadows | 482 | 748260 | 600 | 229.5 |
+| medium | key and fill shadows, 4 lamps, 1 lamp shadow | 356 | 510996 | 450 | 229.4 |
+| low | the key's shadow pass alone, 2 lamps | 196 | 223622 | 300 | 229.4 |
+| null (draft) | everything | 482 | 748260 | | |
 
 The live site: `live.quality` high gets 6 lamps and 2 with shadows and the fill's shadows; medium gets 4 lamps and 1 with shadows; low gets 2 lamps, none with shadows, and no fill shadows (its shadow map would be 512 px). `rig.level` scales the key and the fill together and nothing else: the emitters keep their strength, so on the dimmed pinball page the table's lamps carry the picture.
 
@@ -161,6 +172,12 @@ Live frame time: UNKNOWN on the merged page. `npm run budget` was last run on th
 - A material's own `envMapIntensity` is honoured (asked for by the type owner).
 - Lit surfaces are capped under the glow's threshold.
 - The fill has the same strength on a flat page at every tier, so tiers differ in noise and softness only.
+
+- Solid things are drawn in a fixed order (group, render order, material, id) and not by distance. Cause, MEASURED with `npm run determinism`: 99 pixels of still-step1 differed after a step 1 film frame. The ground's flat mesh swaps in a larger buffer when a film frame carves more openings, its bounding sphere is worked out once from whatever the buffer held, three sorts solid things by the depth of that sphere, so the flat page and the pocket collars (same ceramic, one plane, meeting at edges 2 to 4 px outside each pocket) were drawn in the other order and the other mesh won the seam pixels. After the fix: `npm run determinism -- --format preview`, pass, 12 pictures identical. The cost is that nearer solids are not drawn first, so hidden pixels are shaded more often; draft time of step1-fire at hd stayed 11.2 s.
+- The levels of the live site are one call, `setLevel`, and low keeps the key's real shadow pass and drops every other, since the key's shadow is what makes the page read as lit from the upper left.
+
+- The studio picture has a floor: the lit page, dim and warm (`studio.floor`), below the horizon. A face above the page that looks down at it keeps that reflection even where the key does not reach it (`studio.floorKept`), so the lower right rim of a turned button stays silver; a wall below the page (a pocket) does not, so its upper left wall stays dark. Asked for by the maker of the surfaces.
+- The uneven bright edge on the upper and left walls of the keyboard's caps is light that comes through the gaps between the caps of the row above. MEASURED: the same shape with the slope following of the shadow lookup switched off, so it is not a fault of the filter.
 
 ## What is not done
 

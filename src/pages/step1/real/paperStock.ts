@@ -6,7 +6,7 @@ import { creaseExact } from './paperSolve'
 
 const srgb = (hex: number) => new THREE.Color().setHex(hex, THREE.SRGBColorSpace)
 
-export const STOCK = { seed: config.seed + 1907, fibrePx: 512, creaseW: 512, creaseH: 704, fibreTile: 150 }
+export const STOCK = { seed: config.seed + 1907, fibrePx: 512, creaseW: 512, creaseH: 704, fibreTile: 108 }
 
 // Paper fibre: short pale and dark strands laid every way over a faint cloud, as a colour picture that tiles.
 export function fibreMap(size: number, seed: number): THREE.DataTexture {

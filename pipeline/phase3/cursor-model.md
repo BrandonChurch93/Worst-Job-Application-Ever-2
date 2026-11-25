@@ -12,28 +12,33 @@ Parts `cursor-body` and `cursor-effects`. Branch `agent/cursor-model`. Owner of 
 
 ## How it is built
 
-- `shape.ts`: the outline with rounded corners as rings of 122 points, the band's section, the enamel's shoulder and dome, an own Delaunay net for the face. One closed solid: 2060 points, 4116 triangles.
-- `deform.ts`: every bend of the body, on the processor, in this order: gulp, puff, flat, melt, stretch, bend, peel, tremble. Normals are worked out again after it.
-- `material.ts`: one material for enamel and edge (a number on each point says which), built on the shared `studio()` rule and the shared colours of `materials().enamel` and `.edge`. The shader holds crazing, seams, pale stone, char, heat, melt, and up to 4 holes.
-- `strips.ts`: the solid clipped into strips across the tail's axis, with black cut faces.
+- `shape.ts`: the outline with rounded corners as rings of 122 points, the band's section, the enamel's shoulder and dome, an own Delaunay net for the face with a point every 0.28 unit. One closed solid: 2428 points, 4852 triangles (MEASURED by counting `solid()` in a test). The band is 0.5 unit wide, the groove 0.08 deep, the shoulder 0.6 wide.
+- `deform.ts`: every bend of the body, on the processor, in this order: gulp, puff, flat, melt, stretch, bend, peel, tremble. Normals are worked out again after it: the band's from its triangles, the enamel's from the dome itself (`domeAt`, pushed through the same bending), so a reflection never shows a triangle. Melt keeps the arrow: it blunts the three points (`POINTS`, a pull of 0.115 toward each), draws the wings in by a fifth and lets them droop, curls the tail to the right and ends it in a round lobe, and adds a slow fold of 0.3 unit with a fine ripple of 0.05.
+- `material.ts`: one material for enamel and edge (a number on each point says which), built on the shared `studio()` rule and the shared colours of `materials().enamel` and `.edge`. The shader holds cracks, seams, pale stone, char, heat, melt, and up to 4 holes. Each point carries `aInk` (0 enamel, 1 band, 2 bare cut face) and `aInset` (how far in from the outline). Cracks of a flattened body are a pattern of cells worked out in the shader (`wjaCells`), not read from the texture: the texture's cracks broke into dashes at page size. `uBurnt` says for each hole whether it is a burn or a clean punch, `uShape` how flat the body is. A flat body keeps only a thin dark edge. When the body is drawn small the dark edge keeps about 3.5 px of width (`fwidth` of the inset), so it reads on the page as it does on the approved page.
+- `strips.ts`: the solid clipped into strips across the tail's axis, with cut faces of bare cream clay (`aInk` 2): only the old outside edge is dark. In strips the dark edge is thin (`uShape.y` 1, ink cut between inset 0.24 and 0.34), so a pile reads as pale sticks with a dark rim and not as nine outlines.
 - `body.ts`: the model. `apply` does nothing when the look is the one it has.
-- `effects.ts`: two instanced meshes. Sweat is flattened half balls of water. Steam, smoke and dust are soft balls with a lit round form, eaten into by cloud from the detail texture. No flat cards.
+- `effects.ts`: two instanced meshes. Sweat is flattened half balls of water, at most 24. Steam (54 balls in 3 strands), smoke (26 balls for each of 4 burns, 2 strands) and dust (22) are soft balls with a lit round form, eaten into by cloud from the detail texture, laid along thin braided lines. No flat cards.
 - `texture.ts`: the one texture. See `assets-src/cursor-model/RECIPE.md`.
 
 ## Decisions
 
 1. One material for enamel and edge, with a number on each point for which it is. Two materials would be two draw calls for each cursor and a seam in the highlight.
-2. The body is deformed on the processor and its normals worked out again, 4116 triangles for each cursor, only when the look changes. The shader stays the shared one and the shadow is right for free.
-3. Holes are cut in the shader, by throwing away the points inside, with a charred wall mesh inside each one. The shadow material throws away the same points, so light falls through a hole onto the page. At most 4 holes at once.
+2. The body is deformed on the processor and its normals worked out again, 4852 triangles for each cursor, only when the look changes. The shader stays the shared one and the shadow is right for free.
+3. Holes are cut in the shader, by throwing away the points inside, with a wall mesh inside each one. A burn is a crater: its mouth is the hole's radius, its floor 0.24 of it, the wall charred with embers on one side. A clean punch (`burnt` 0) has straight walls of bare clay and a chipped rim. The shadow material throws away the same points, so light falls through a hole onto the page. At most 4 holes at once.
 4. Strips are cut parallel to the tail, `STRIP_AXIS`, not along the page's y: cut along y, a strip through the notch would be two pieces.
 5. One 512 px detail texture for the body and the effects.
 6. `anchor` gives the point at half the body's thickness, so an arm leaves the side of the body and not its top or the page.
 7. `emit` gives lights in the root's own space. The view turns them to the page.
 8. The body is 2.3 outline units thick (8.5 px, 12% of its height). The rounded corners cost 0.3 units of height: the body is 18.7 units from tip to tail's end where the outline is 19.
-9. Steam, smoke and dust are balls and not cards: each has a round lit form, lies over what is under it without cutting into it, and holds up when the camera tilts.
+9. Steam, smoke and dust are balls and not cards: each has a round lit form, lies over what is under it without cutting into it, and holds up when the camera tilts. Dust is wide, flat and pale (alpha 0.46 at most), so the balls run together into one low cloud.
 10. Sweat adds its highlight in full and darkens what is under it by its own alpha (custom blending: one, one minus source alpha), so a bead has a bright glint and a thin dark edge without a render of what is behind it.
 11. Heat stays under the tone curve's knee. Brighter than that, the curve washes red to salmon. The deep red of the approved image is a dark saturated red, so the tip gives off less than the orange behind it.
 12. Effects that are not asked for are not drawn: both meshes are hidden at rest.
+13. The lights of `emit` are small: a lamp of power 1 lights a pale surface 100 px away in full, so a hot tip gives 0.06 times heat and a glowing hole 0.02 times glow squared. More than that paints an orange disc on the page.
+14. The band is 0.5 unit as on the approved sheets, and widens in the shader to about 3.5 px when the body is small, as on the approved page. Both approved pictures cannot be met by one width.
+15. Agreed with the owner of `src/cursor/act/`: the actor sends 9 strip poses, heat and steam from 0 to 1, a melt of 1 with stretch 0.8 and bend 0.15, and one hole for each burn (radius 1.4 for the laser, `burnt` 1; a clean punch has `burnt` 0). What each of these looks like is the model's. Contract commits e0e04c0 (`seam`, `crack`, `peel`, `gulp`) and 4e6815a (`Hole.burnt`) only add.
+
+16. The face net keeps a point only where it is 0.45 unit inside the shoulder. MEASURED: at 0.3 the closed solid test fails (slivers at the shoulder), from 0.42 to 0.5 it passes.
 
 ## One more kind of damage: the model's side
 
@@ -49,8 +54,8 @@ Parts `cursor-body` and `cursor-effects`. Branch `agent/cursor-model`. Owner of 
 
 ## The sweep
 
-`node pipeline/phase3/cursor-model-sweep.mjs --set rest|body|surface|damage|effects|fix [--samples 8] [--cols n] [--pitch px] [--time s] [--tag name]` draws every number of `BodyLook` and `EffectsLook` at 0, 0.5 and 1 and mixed, on the site's own renderer, light and ground, outside the site. Pictures land in `out/work/cursor-model/`.
+`node pipeline/phase3/cursor-model-sweep.mjs --set rest|body|surface|damage|effects|fix|acting|harm [--samples 8] [--cols n] [--pitch px] [--time s] [--tag name]` draws every number of `BodyLook` and `EffectsLook` at 0, 0.5 and 1 and mixed, on the site's own renderer, light and ground, outside the site. Pictures land in `out/work/cursor-model/`.
 
 ## Light: proposal
 
-`BodyModel.emit(out)` is in the contract. The body adds one emitter for a hot tip (orange red, power 0.9 times heat, reach 14 to 30 units) and one for each hole that still glows (orange, power 0.7 times glow squared, reach 6 to 17 units), in the root's own space. The view calls it after `body.apply`, turns each by the body's turn, moves it to the page (page x = world x + 960, page y = 540 - world y) and passes it to `ctx.light`. The call in `src/cursor/view.ts` belongs to the owner of that file.
+`BodyModel.emit(out)` is in the contract. The body adds one emitter for a hot tip (orange red, power 0.06 times heat, reach 10 to 18 units) and one for each hole that still glows (orange, power 0.02 times glow squared, reach 5 units and 3 for each unit of radius), in the root's own space. The view calls it after `body.apply`, turns each by the body's turn, moves it to the page (page x = world x + 960, page y = 540 - world y) and passes it to `ctx.light`. The call in `src/cursor/view.ts` belongs to the owner of that file.
