@@ -51,11 +51,12 @@ export function drawWeapons(out: DrawList, f: Fight, plan: WeaponPlan): void {
   }
   if (bannerUp(f)) {
     const k = Math.min(prog(f.expired, 0, 0.16), 1 - prog(f.expired, 1.3, 1.5))
-    const w = plan.banner.w * k
-    const h = plan.banner.h * k
-    const y = Math.max(ARENA.y0 + 6 + plan.banner.h / 2, f.y - 208 - plan.banner.h / 2)
-    out.push({ id: 'banner-up', part, kind: 'box', x: f.x - w / 2, y: y - h / 2, w, h, z0: 108, z1: 108 + heights.slab, tone: 'danger', r: 10 * k })
-    if (k >= 0.98) out.push(label('banner-up-words', part, plan.banner.key, f.x, y, plan.bannerType, 108 + heights.slab, 'inkLight'))
+    const w = plan.banner.w
+    const h = plan.banner.h
+    const y = Math.max(ARENA.y0 + 6 + h / 2, f.y - 208 - h / 2) + (1 - k) * 22
+    const z1 = 108 + Math.max(0.4, heights.slab * k)
+    out.push({ id: 'banner-up', part, kind: 'box', x: f.x - w / 2, y: y - h / 2, w, h, z0: 108, z1, tone: 'danger', r: 10 })
+    out.push(label('banner-up-words', part, plan.banner.key, f.x, y, plan.bannerType, z1, 'inkLight'))
   }
   for (const d of f.darts) {
     const rot = Math.atan2(d.dy, d.dx)

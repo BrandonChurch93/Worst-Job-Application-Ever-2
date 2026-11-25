@@ -226,3 +226,12 @@ export function webSize(width, height, webWidth) {
   const w = Math.min(width, webWidth) - (Math.min(width, webWidth) % 2)
   return { width: w, height: Math.round((w * height) / width / 2) * 2 }
 }
+
+// The pictures round a loop's seam, in the order they play: the last three, then the first three.
+export function seamFrames(frames) {
+  const n = Math.min(3, Math.floor(frames / 2))
+  const out = []
+  for (let k = n; k >= 1; k--) out.push(frames - k)
+  for (let k = 0; k < n; k++) out.push(k)
+  return out
+}

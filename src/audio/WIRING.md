@@ -25,4 +25,5 @@ The rules it keeps:
 3. Every event of `stage.events` is passed on once, in order, with its `name`, `x`, `y` and `hitsCursor`.
 4. `beat(id, mode)` is called when a beat starts. The engine places the beat's lines itself.
 5. The control is hidden when `available()` is false. With an index that lists nothing it is false from the start, so the control never shows and then goes. `setMuted`, `muted`, `setVolume` and `volume` serve the control.
-6. `stop()` when the page is left or the film is reset.
+6. `stop()` when the film is paused, sought, ended or left, and when the step or the mode is changed. After it the engine is fully silent.
+7. `start()` when play runs again: in the film's `play()`, after a seek while the film plays, after a change of step, and after a change of mode unless the film starts paused. It brings the room tone back at once. A site that starts in film mode and paused calls `stop()` once right after `makeSound`. `src/audio/NEEDS.patch` holds these calls for `src/main.ts`.

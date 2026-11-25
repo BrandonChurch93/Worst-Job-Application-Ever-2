@@ -65,10 +65,14 @@ export const eventCues: Record<string, string> = {
   'hold-music': 'hold-music',
   'letter-drop': 'letter-drop',
   'stamp': 'stamp',
+  'share': 'button-press',
   'ui-tick': 'ui-tick',
   'key-tap': 'key-tap',
   'ui-send': 'ui-send'
 }
+
+// Events that are left without a sound on purpose.
+export const silentEvents: string[] = ['popup-close']
 
 // An event that ends a sound that would otherwise run on. A page turn ends every running loop but the room tone.
 export const stopEvents: Record<string, string[]> = {
