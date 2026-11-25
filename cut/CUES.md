@@ -9,7 +9,7 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | Beat | Start s | First frame | Last frame | Event | Event s | Event frame | Inside |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `marketing.stroll` | 0.000 | 0 | 119 | `step` | 1.000 | 60 | yes |
-| `marketing.perks` | 2.000 | 120 | 479 | `card-flip` | 2.308 | 138 | yes |
+| `marketing.perks` | 2.000 | 120 | 479 | `card-flip` | 2.104 | 126 | yes |
 | `marketing.ticker` | 8.000 | 480 | 659 | none |  |  |  |
 | `marketing.apply` | 11.000 | 660 | 839 | `page-turn` | 13.500 | 810 | yes |
 | `step1.keyboard` | 14.000 | 840 | 959 | `keyboard-rise` | 15.083 | 905 | yes |
@@ -20,26 +20,26 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | `step1.tug` | 36.000 | 2160 | 2579 | `arms-out` | 36.254 | 2175 | yes |
 | `step1.shredded` | 43.000 | 2580 | 2759 | `strips-zip` | 44.362 | 2661 | yes |
 | `step2.open` | 46.000 | 2760 | 2879 | none |  |  |  |
-| `step2.dial` | 48.000 | 2880 | 3239 | `dial-fling` | 52.163 | 3129 | yes |
+| `step2.dial` | 48.000 | 2880 | 3239 | `dial-fling` | 51.575 | 3094 | yes |
 | `step2.slot` | 54.000 | 3240 | 3599 | `coins` | 57.521 | 3451 | yes |
-| `step2.crank` | 60.000 | 3600 | 3959 | `flatten` | 62.763 | 3765 | yes |
+| `step2.crank` | 60.000 | 3600 | 3959 | `flatten` | 62.796 | 3767 | yes |
 | `step2.continue` | 66.000 | 3960 | 4019 | `button-press` | 66.300 | 3978 | yes |
-| `pinball.seal` | 67.000 | 4020 | 4259 | `ball-seal` | 68.600 | 4116 | yes |
-| `pinball.reveal` | 71.000 | 4260 | 4499 | `power-on` | 72.600 | 4356 | yes |
-| `pinball.launch` | 75.000 | 4500 | 4679 | `plunger` | 76.200 | 4572 | yes |
-| `pinball.lobby` | 78.000 | 4680 | 4919 | `doors-slam` | 79.600 | 4776 | yes |
-| `pinball.coffee` | 82.000 | 4920 | 5159 | `bumper` | 83.600 | 5016 | yes |
-| `pinball.replyAll` | 86.000 | 5160 | 5579 | `ball-drop` | 88.800 | 5328 | yes |
-| `pinball.fired` | 93.000 | 5580 | 5789 | `scoop-kick` | 94.400 | 5664 | yes |
-| `pinball.highway` | 96.500 | 5790 | 6059 | `ramp-roll` | 98.300 | 5898 | yes |
-| `pinball.save` | 101.000 | 6060 | 6239 | `flipper-save` | 102.200 | 6132 | yes |
-| `pinball.drain` | 104.000 | 6240 | 6539 | `drain` | 106.000 | 6360 | yes |
+| `pinball.seal` | 67.000 | 4020 | 4259 | `ball-seal` | 69.300 | 4158 | yes |
+| `pinball.reveal` | 71.000 | 4260 | 4499 | `power-on` | 72.196 | 4331 | yes |
+| `pinball.launch` | 75.000 | 4500 | 4679 | `plunger` | 76.400 | 4584 | yes |
+| `pinball.lobby` | 78.000 | 4680 | 4919 | `doors-slam` | 80.308 | 4818 | yes |
+| `pinball.coffee` | 82.000 | 4920 | 5159 | `bumper` | 82.871 | 4972 | yes |
+| `pinball.replyAll` | 86.000 | 5160 | 5579 | `ball-drop` | 87.000 | 5220 | yes |
+| `pinball.fired` | 93.000 | 5580 | 5789 | `scoop-kick` | 95.508 | 5730 | yes |
+| `pinball.highway` | 96.500 | 5790 | 6059 | `ramp-roll` | 97.996 | 5879 | yes |
+| `pinball.save` | 101.000 | 6060 | 6239 | `flipper-save` | 102.121 | 6127 | yes |
+| `pinball.drain` | 104.000 | 6240 | 6539 | `drain` | 105.517 | 6331 | yes |
 | `boss.verify` | 109.000 | 6540 | 6839 | `checkbox` | 112.800 | 6768 | yes |
 | `boss.unfold` | 114.000 | 6840 | 7079 | `unfold` | 115.708 | 6942 | yes |
 | `boss.slabs` | 118.000 | 7080 | 7499 | `slab-fire` | 118.862 | 7131 | yes |
-| `boss.popups` | 125.000 | 7500 | 7859 | `popup` | 125.204 | 7512 | yes |
+| `boss.popups` | 125.000 | 7500 | 7859 | `popup` | 125.192 | 7511 | yes |
 | `boss.lastStand` | 131.000 | 7860 | 8159 | `session-expired` | 131.071 | 7864 | yes |
-| `boss.collapse` | 136.000 | 8160 | 8279 | `power-down` | 136.229 | 8173 | yes |
+| `boss.collapse` | 136.000 | 8160 | 8279 | `power-down` | 136.100 | 8166 | yes |
 | `boss.press` | 138.000 | 8280 | 8459 | `button-press` | 139.500 | 8370 | yes |
 | `decision.wait` | 141.000 | 8460 | 8579 | `hold-music` | 141.400 | 8484 | yes |
 | `decision.letter` | 143.000 | 8580 | 8819 | `stamp` | 145.300 | 8718 | yes |
@@ -48,33 +48,35 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 
 ## Events with a cue
 
-639 of the film's 639 events have a cue in the table of events to cues. A cue starts on the frame of its event.
+679 of the film's 679 events have a cue in the table of events to cues. A cue starts on the frame of its event.
 
 | Time s | Frame | Beat | Event | Cue | Hits the cursor |
 | --- | --- | --- | --- | --- | --- |
 | 1.000 | 60 | `marketing.stroll` | `step` | `step` | no |
 | 1.358 | 81 | `marketing.stroll` | `step` | `step` | no |
-| 2.308 | 138 | `marketing.perks` | `card-flip` | `card-flip` | no |
-| 2.446 | 146 | `marketing.perks` | `step` | `step` | no |
+| 2.104 | 126 | `marketing.perks` | `card-flip` | `card-flip` | no |
+| 2.233 | 134 | `marketing.perks` | `step` | `step` | no |
+| 2.454 | 147 | `marketing.perks` | `step` | `step` | no |
+| 4.037 | 242 | `marketing.perks` | `card-flip` | `card-flip` | no |
 | 4.046 | 242 | `marketing.perks` | `step` | `step` | no |
-| 4.063 | 243 | `marketing.perks` | `card-flip` | `card-flip` | no |
 | 4.158 | 249 | `marketing.perks` | `step` | `step` | no |
 | 4.267 | 256 | `marketing.perks` | `step` | `step` | no |
 | 4.388 | 263 | `marketing.perks` | `step` | `step` | no |
+| 5.737 | 344 | `marketing.perks` | `card-flip` | `card-flip` | no |
 | 5.746 | 344 | `marketing.perks` | `step` | `step` | no |
-| 5.763 | 345 | `marketing.perks` | `card-flip` | `card-flip` | no |
 | 5.858 | 351 | `marketing.perks` | `step` | `step` | no |
 | 5.967 | 358 | `marketing.perks` | `step` | `step` | no |
 | 6.088 | 365 | `marketing.perks` | `step` | `step` | no |
-| 7.721 | 463 | `marketing.perks` | `step` | `step` | no |
-| 8.533 | 512 | `marketing.ticker` | `step` | `step` | no |
+| 7.704 | 462 | `marketing.perks` | `step` | `step` | no |
+| 8.358 | 501 | `marketing.ticker` | `step` | `step` | no |
+| 8.537 | 512 | `marketing.ticker` | `step` | `step` | no |
+| 8.754 | 525 | `marketing.ticker` | `step` | `step` | no |
 | 9.896 | 593 | `marketing.ticker` | `step` | `step` | no |
 | 10.050 | 603 | `marketing.ticker` | `step` | `step` | no |
 | 10.192 | 611 | `marketing.ticker` | `step` | `step` | no |
 | 10.333 | 620 | `marketing.ticker` | `step` | `step` | no |
 | 10.504 | 630 | `marketing.ticker` | `step` | `step` | no |
-| 12.058 | 723 | `marketing.apply` | `step` | `step` | no |
-| 13.058 | 783 | `marketing.apply` | `button-press` | `button-press` | no |
+| 12.971 | 778 | `marketing.apply` | `button-press` | `button-press` | no |
 | 13.500 | 810 | `marketing.apply` | `page-turn` | `page-turn` | no |
 | 14.550 | 873 | `step1.keyboard` | `step` | `step` | no |
 | 14.592 | 875 | `step1.keyboard` | `step` | `step` | no |
@@ -405,23 +407,17 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | 46.579 | 2794 | `step2.open` | `step` | `step` | no |
 | 46.608 | 2796 | `step2.open` | `step` | `step` | no |
 | 46.654 | 2799 | `step2.open` | `step` | `step` | no |
-| 48.054 | 2883 | `step2.dial` | `step` | `step` | no |
-| 48.300 | 2898 | `step2.dial` | `row-open` | `row-open` | no |
-| 48.846 | 2930 | `step2.dial` | `step` | `step` | no |
-| 48.942 | 2936 | `step2.dial` | `step` | `step` | no |
-| 49.042 | 2942 | `step2.dial` | `step` | `step` | no |
-| 49.250 | 2955 | `step2.dial` | `dial-wind` | `dial-wind` | no |
-| 49.525 | 2971 | `step2.dial` | `step` | `step` | no |
-| 49.700 | 2982 | `step2.dial` | `dial-return` | `dial-return` | no |
-| 50.029 | 3001 | `step2.dial` | `step` | `step` | no |
-| 50.100 | 3006 | `step2.dial` | `dial-wind` | `dial-wind` | no |
-| 50.375 | 3022 | `step2.dial` | `step` | `step` | no |
-| 50.550 | 3033 | `step2.dial` | `dial-return` | `dial-return` | no |
-| 50.879 | 3052 | `step2.dial` | `step` | `step` | no |
-| 50.950 | 3057 | `step2.dial` | `dial-wind` | `dial-wind` | no |
-| 51.225 | 3073 | `step2.dial` | `step` | `step` | no |
-| 51.400 | 3084 | `step2.dial` | `dial-return` | `dial-return` | no |
-| 52.163 | 3129 | `step2.dial` | `dial-fling` | `dial-return` | yes |
+| 47.746 | 2864 | `step2.open` | `step` | `step` | no |
+| 47.883 | 2873 | `step2.open` | `row-open` | `row-open` | no |
+| 48.192 | 2891 | `step2.dial` | `step` | `step` | no |
+| 48.271 | 2896 | `step2.dial` | `step` | `step` | no |
+| 48.333 | 2900 | `step2.dial` | `dial-wind` | `dial-wind` | no |
+| 48.642 | 2918 | `step2.dial` | `dial-return` | `dial-return` | no |
+| 48.992 | 2939 | `step2.dial` | `dial-wind` | `dial-wind` | no |
+| 49.100 | 2946 | `step2.dial` | `dial-return` | `dial-return` | no |
+| 50.250 | 3015 | `step2.dial` | `dial-wind` | `dial-wind` | no |
+| 50.813 | 3048 | `step2.dial` | `dial-return` | `dial-return` | no |
+| 51.575 | 3094 | `step2.dial` | `dial-fling` | `dial-return` | yes |
 | 53.712 | 3222 | `step2.dial` | `step` | `step` | no |
 | 53.754 | 3225 | `step2.dial` | `step` | `step` | no |
 | 53.783 | 3227 | `step2.dial` | `step` | `step` | no |
@@ -445,7 +441,6 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | 54.875 | 3292 | `step2.slot` | `step` | `step` | no |
 | 55.367 | 3322 | `step2.slot` | `lever-pull` | `lever-pull` | no |
 | 55.367 | 3322 | `step2.slot` | `reels-spin` | `reels-spin` | no |
-| 55.396 | 3323 | `step2.slot` | `step` | `step` | no |
 | 57.521 | 3451 | `step2.slot` | `coins` | `coins` | yes |
 | 57.775 | 3466 | `step2.slot` | `step` | `step` | no |
 | 57.846 | 3470 | `step2.slot` | `step` | `step` | no |
@@ -457,55 +452,96 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | 58.392 | 3503 | `step2.slot` | `step` | `step` | no |
 | 58.454 | 3507 | `step2.slot` | `step` | `step` | no |
 | 58.529 | 3511 | `step2.slot` | `step` | `step` | no |
-| 59.633 | 3578 | `step2.slot` | `step` | `step` | no |
-| 59.692 | 3581 | `step2.slot` | `step` | `step` | no |
-| 59.742 | 3584 | `step2.slot` | `step` | `step` | no |
-| 59.792 | 3587 | `step2.slot` | `step` | `step` | no |
-| 59.837 | 3590 | `step2.slot` | `step` | `step` | no |
-| 59.892 | 3593 | `step2.slot` | `step` | `step` | no |
-| 59.950 | 3597 | `step2.slot` | `step` | `step` | no |
-| 60.083 | 3605 | `step2.crank` | `row-open` | `row-open` | no |
-| 60.438 | 3626 | `step2.crank` | `step` | `step` | no |
-| 60.508 | 3630 | `step2.crank` | `step` | `step` | no |
-| 60.583 | 3635 | `step2.crank` | `step` | `step` | no |
-| 60.883 | 3653 | `step2.crank` | `step` | `step` | no |
-| 60.958 | 3657 | `step2.crank` | `step` | `step` | no |
-| 61.033 | 3662 | `step2.crank` | `step` | `step` | no |
-| 61.108 | 3666 | `step2.crank` | `step` | `step` | no |
-| 61.158 | 3669 | `step2.crank` | `crank-turn` | `crank-turn` | no |
-| 61.188 | 3671 | `step2.crank` | `step` | `step` | no |
-| 61.267 | 3676 | `step2.crank` | `step` | `step` | no |
-| 61.346 | 3680 | `step2.crank` | `step` | `step` | no |
-| 61.429 | 3685 | `step2.crank` | `step` | `step` | no |
-| 61.517 | 3691 | `step2.crank` | `step` | `step` | no |
-| 61.604 | 3696 | `step2.crank` | `step` | `step` | no |
-| 61.650 | 3699 | `step2.crank` | `crank-turn` | `crank-turn` | no |
-| 61.700 | 3702 | `step2.crank` | `step` | `step` | no |
-| 61.796 | 3707 | `step2.crank` | `step` | `step` | no |
-| 61.900 | 3714 | `step2.crank` | `step` | `step` | no |
-| 62.013 | 3720 | `step2.crank` | `step` | `step` | no |
-| 62.129 | 3727 | `step2.crank` | `step` | `step` | no |
-| 62.258 | 3735 | `step2.crank` | `step` | `step` | no |
-| 62.321 | 3739 | `step2.crank` | `crank-turn` | `crank-turn` | no |
-| 62.321 | 3739 | `step2.crank` | `crank-runaway` | `crank-runaway` | no |
-| 62.433 | 3746 | `step2.crank` | `step` | `step` | no |
-| 62.763 | 3765 | `step2.crank` | `flatten` | `flatten` | yes |
-| 65.763 | 3945 | `step2.crank` | `peel-up` | `peel-up` | yes |
+| 59.617 | 3577 | `step2.slot` | `step` | `step` | no |
+| 59.671 | 3580 | `step2.slot` | `step` | `step` | no |
+| 59.712 | 3582 | `step2.slot` | `step` | `step` | no |
+| 59.754 | 3585 | `step2.slot` | `step` | `step` | no |
+| 59.796 | 3587 | `step2.slot` | `step` | `step` | no |
+| 59.842 | 3590 | `step2.slot` | `step` | `step` | no |
+| 59.896 | 3593 | `step2.slot` | `step` | `step` | no |
+| 60.000 | 3600 | `step2.crank` | `row-open` | `row-open` | no |
+| 60.275 | 3616 | `step2.crank` | `step` | `step` | no |
+| 60.333 | 3620 | `step2.crank` | `step` | `step` | no |
+| 60.396 | 3623 | `step2.crank` | `step` | `step` | no |
+| 60.654 | 3639 | `step2.crank` | `crank-turn` | `crank-turn` | no |
+| 60.892 | 3653 | `step2.crank` | `crank-turn` | `crank-turn` | no |
+| 61.171 | 3670 | `step2.crank` | `crank-turn` | `crank-turn` | no |
+| 61.171 | 3670 | `step2.crank` | `crank-runaway` | `crank-runaway` | no |
+| 61.383 | 3683 | `step2.crank` | `step` | `step` | no |
+| 61.425 | 3685 | `step2.crank` | `step` | `step` | no |
+| 61.458 | 3687 | `step2.crank` | `step` | `step` | no |
+| 61.487 | 3689 | `step2.crank` | `step` | `step` | no |
+| 61.525 | 3691 | `step2.crank` | `step` | `step` | no |
+| 61.592 | 3695 | `step2.crank` | `step` | `step` | no |
+| 62.471 | 3748 | `step2.crank` | `step` | `step` | no |
+| 62.517 | 3751 | `step2.crank` | `step` | `step` | no |
+| 62.558 | 3753 | `step2.crank` | `step` | `step` | no |
+| 62.600 | 3756 | `step2.crank` | `step` | `step` | no |
+| 62.667 | 3760 | `step2.crank` | `step` | `step` | no |
+| 62.796 | 3767 | `step2.crank` | `flatten` | `flatten` | yes |
+| 65.796 | 3947 | `step2.crank` | `peel-up` | `peel-up` | yes |
 | 66.300 | 3978 | `step2.continue` | `button-press` | `button-press` | no |
 | 66.500 | 3990 | `step2.continue` | `page-turn` | `page-turn` | no |
-| 67.546 | 4052 | `pinball.seal` | `step` | `step` | no |
-| 67.579 | 4054 | `pinball.seal` | `step` | `step` | no |
-| 67.638 | 4058 | `pinball.seal` | `step` | `step` | no |
-| 68.600 | 4116 | `pinball.seal` | `ball-seal` | `ball-seal` | no |
-| 72.600 | 4356 | `pinball.reveal` | `power-on` | `power-on` | no |
-| 76.200 | 4572 | `pinball.launch` | `plunger` | `plunger` | no |
-| 79.600 | 4776 | `pinball.lobby` | `doors-slam` | `doors-slam` | no |
-| 83.600 | 5016 | `pinball.coffee` | `bumper` | `bumper` | no |
-| 88.800 | 5328 | `pinball.replyAll` | `ball-drop` | `ball-drop` | no |
-| 94.400 | 5664 | `pinball.fired` | `scoop-kick` | `scoop-kick` | no |
-| 98.300 | 5898 | `pinball.highway` | `ramp-roll` | `ramp-roll` | no |
-| 102.200 | 6132 | `pinball.save` | `flipper-save` | `flipper` | no |
-| 106.000 | 6360 | `pinball.drain` | `drain` | `drain` | no |
+| 67.979 | 4078 | `pinball.seal` | `step` | `step` | no |
+| 68.121 | 4087 | `pinball.seal` | `step` | `step` | no |
+| 68.250 | 4095 | `pinball.seal` | `step` | `step` | no |
+| 68.371 | 4102 | `pinball.seal` | `step` | `step` | no |
+| 69.300 | 4158 | `pinball.seal` | `ball-seal` | `ball-seal` | yes |
+| 70.296 | 4217 | `pinball.seal` | `tube-run` | `tube-run` | no |
+| 70.996 | 4259 | `pinball.seal` | `lights-down` | `lights-down` | no |
+| 72.196 | 4331 | `pinball.reveal` | `power-on` | `power-on` | no |
+| 76.400 | 4584 | `pinball.launch` | `plunger` | `plunger` | no |
+| 78.842 | 4730 | `pinball.lobby` | `flipper` | `flipper` | no |
+| 80.250 | 4815 | `pinball.lobby` | `spinner` | `spinner` | no |
+| 80.308 | 4818 | `pinball.lobby` | `doors-slam` | `doors-slam` | yes |
+| 81.746 | 4904 | `pinball.lobby` | `flipper` | `flipper` | no |
+| 82.275 | 4936 | `pinball.coffee` | `tier-fall` | `tier-fall` | no |
+| 82.871 | 4972 | `pinball.coffee` | `bumper` | `bumper` | yes |
+| 82.912 | 4974 | `pinball.coffee` | `bumper` | `bumper` | yes |
+| 83.158 | 4989 | `pinball.coffee` | `sling` | `sling` | no |
+| 84.146 | 5048 | `pinball.coffee` | `flasher` | `flasher` | no |
+| 84.313 | 5058 | `pinball.coffee` | `bumper` | `bumper` | yes |
+| 84.442 | 5066 | `pinball.coffee` | `flipper` | `flipper` | no |
+| 84.525 | 5071 | `pinball.coffee` | `bumper` | `bumper` | yes |
+| 84.625 | 5077 | `pinball.coffee` | `flipper` | `flipper` | no |
+| 84.696 | 5081 | `pinball.coffee` | `bumper` | `bumper` | yes |
+| 85.146 | 5108 | `pinball.coffee` | `flipper` | `flipper` | no |
+| 85.304 | 5118 | `pinball.coffee` | `bumper` | `bumper` | yes |
+| 85.329 | 5119 | `pinball.coffee` | `bumper` | `bumper` | yes |
+| 87.000 | 5220 | `pinball.replyAll` | `ball-drop` | `ball-drop` | no |
+| 87.350 | 5241 | `pinball.replyAll` | `ball-drop` | `ball-drop` | no |
+| 87.388 | 5243 | `pinball.replyAll` | `flasher` | `flasher` | no |
+| 87.508 | 5250 | `pinball.replyAll` | `flasher` | `flasher` | no |
+| 87.683 | 5261 | `pinball.replyAll` | `flasher` | `flasher` | no |
+| 87.700 | 5262 | `pinball.replyAll` | `ball-drop` | `ball-drop` | no |
+| 88.896 | 5333 | `pinball.replyAll` | `flasher` | `flasher` | yes |
+| 88.992 | 5339 | `pinball.replyAll` | `sling` | `sling` | no |
+| 89.504 | 5370 | `pinball.replyAll` | `flasher` | `flasher` | yes |
+| 89.754 | 5385 | `pinball.replyAll` | `flasher` | `flasher` | yes |
+| 89.821 | 5389 | `pinball.replyAll` | `flipper` | `flipper` | no |
+| 89.908 | 5394 | `pinball.replyAll` | `flasher` | `flasher` | yes |
+| 90.004 | 5400 | `pinball.replyAll` | `flipper` | `flipper` | no |
+| 90.162 | 5409 | `pinball.replyAll` | `flasher` | `flasher` | yes |
+| 90.371 | 5422 | `pinball.replyAll` | `sling` | `sling` | no |
+| 90.942 | 5456 | `pinball.replyAll` | `sling` | `sling` | no |
+| 91.313 | 5478 | `pinball.replyAll` | `flipper` | `flipper` | no |
+| 91.383 | 5483 | `pinball.replyAll` | `flasher` | `flasher` | yes |
+| 92.208 | 5532 | `pinball.replyAll` | `tier-fall` | `tier-fall` | no |
+| 92.867 | 5572 | `pinball.replyAll` | `sling` | `sling` | no |
+| 93.287 | 5597 | `pinball.fired` | `sling` | `sling` | no |
+| 93.529 | 5611 | `pinball.fired` | `sling` | `sling` | no |
+| 95.508 | 5730 | `pinball.fired` | `scoop-kick` | `scoop-kick` | yes |
+| 96.750 | 5805 | `pinball.highway` | `flasher` | `flasher` | no |
+| 97.996 | 5879 | `pinball.highway` | `ramp-roll` | `ramp-roll` | no |
+| 99.717 | 5983 | `pinball.highway` | `spiral` | `spiral` | no |
+| 102.121 | 6127 | `pinball.save` | `flipper` | `flipper` | no |
+| 102.121 | 6127 | `pinball.save` | `flipper-save` | `flipper` | no |
+| 103.013 | 6180 | `pinball.save` | `flasher` | `flasher` | no |
+| 104.487 | 6269 | `pinball.drain` | `flipper` | `flipper` | no |
+| 105.517 | 6331 | `pinball.drain` | `drain` | `drain` | no |
+| 106.704 | 6402 | `pinball.drain` | `ball-open` | `ball-open` | yes |
+| 106.704 | 6402 | `pinball.drain` | `flatten` | `flatten` | yes |
+| 107.208 | 6432 | `pinball.drain` | `peel-up` | `peel-up` | yes |
 | 108.000 | 6480 | `pinball.drain` | `button-press` | `button-press` | no |
 | 108.500 | 6510 | `pinball.drain` | `page-turn` | `page-turn` | no |
 | 109.950 | 6597 | `boss.verify` | `step` | `step` | no |
@@ -519,53 +555,59 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | 112.683 | 6761 | `boss.verify` | `step` | `step` | no |
 | 112.800 | 6768 | `boss.verify` | `checkbox` | `checkbox` | no |
 | 112.800 | 6768 | `boss.verify` | `step` | `step` | no |
-| 113.525 | 6811 | `boss.verify` | `step` | `step` | no |
-| 114.692 | 6881 | `boss.unfold` | `step` | `step` | no |
-| 114.817 | 6889 | `boss.unfold` | `step` | `step` | no |
+| 113.313 | 6798 | `boss.verify` | `step` | `step` | no |
+| 113.417 | 6805 | `boss.verify` | `step` | `step` | no |
+| 113.529 | 6811 | `boss.verify` | `step` | `step` | no |
+| 114.621 | 6877 | `boss.unfold` | `step` | `step` | no |
+| 114.758 | 6885 | `boss.unfold` | `step` | `step` | no |
+| 114.912 | 6894 | `boss.unfold` | `step` | `step` | no |
 | 115.108 | 6906 | `boss.unfold` | `button-crack` | `button-crack` | no |
+| 115.346 | 6920 | `boss.unfold` | `step` | `step` | no |
+| 115.450 | 6927 | `boss.unfold` | `step` | `step` | no |
 | 115.708 | 6942 | `boss.unfold` | `unfold` | `unfold` | no |
+| 116.171 | 6970 | `boss.unfold` | `step` | `step` | no |
 | 118.862 | 7131 | `boss.slabs` | `slab-fire` | `slab-fire` | no |
 | 118.900 | 7134 | `boss.slabs` | `dart-fire` | `dart-fire` | no |
-| 119.321 | 7159 | `boss.slabs` | `dart-hit` | `dart-hit` | no |
+| 119.342 | 7160 | `boss.slabs` | `dart-hit` | `dart-hit` | no |
 | 119.600 | 7176 | `boss.slabs` | `dart-fire` | `dart-fire` | no |
 | 119.654 | 7179 | `boss.slabs` | `step` | `step` | no |
-| 120.025 | 7201 | `boss.slabs` | `dart-hit` | `dart-hit` | no |
-| 120.283 | 7217 | `boss.slabs` | `slab-drop` | `slab-drop` | no |
+| 120.042 | 7202 | `boss.slabs` | `dart-hit` | `dart-hit` | no |
 | 120.300 | 7218 | `boss.slabs` | `dart-fire` | `dart-fire` | no |
+| 120.329 | 7219 | `boss.slabs` | `slab-drop` | `slab-drop` | no |
 | 120.421 | 7225 | `boss.slabs` | `slab-fire` | `slab-fire` | no |
-| 120.733 | 7244 | `boss.slabs` | `dart-hit` | `dart-hit` | no |
+| 120.737 | 7244 | `boss.slabs` | `dart-hit` | `dart-hit` | no |
 | 121.000 | 7260 | `boss.slabs` | `dart-fire` | `dart-fire` | no |
 | 121.179 | 7270 | `boss.slabs` | `step` | `step` | no |
-| 121.425 | 7285 | `boss.slabs` | `dart-hit` | `dart-hit` | no |
+| 121.433 | 7286 | `boss.slabs` | `dart-hit` | `dart-hit` | no |
 | 121.700 | 7302 | `boss.slabs` | `dart-fire` | `dart-fire` | no |
-| 121.862 | 7311 | `boss.slabs` | `slab-drop` | `slab-drop` | no |
+| 121.854 | 7311 | `boss.slabs` | `slab-drop` | `slab-drop` | no |
 | 121.979 | 7318 | `boss.slabs` | `slab-fire` | `slab-fire` | no |
-| 122.117 | 7327 | `boss.slabs` | `dart-hit` | `dart-hit` | no |
+| 122.138 | 7328 | `boss.slabs` | `dart-hit` | `dart-hit` | no |
 | 122.400 | 7344 | `boss.slabs` | `dart-fire` | `dart-fire` | no |
-| 122.817 | 7369 | `boss.slabs` | `dart-hit` | `dart-hit` | no |
-| 123.058 | 7383 | `boss.slabs` | `slab-drop` | `slab-drop` | yes |
+| 122.825 | 7369 | `boss.slabs` | `dart-hit` | `dart-hit` | no |
 | 123.100 | 7386 | `boss.slabs` | `dart-fire` | `dart-fire` | no |
-| 123.521 | 7411 | `boss.slabs` | `dart-hit` | `dart-hit` | no |
+| 123.133 | 7388 | `boss.slabs` | `slab-drop` | `slab-drop` | yes |
+| 123.513 | 7410 | `boss.slabs` | `dart-hit` | `dart-hit` | no |
 | 123.537 | 7412 | `boss.slabs` | `slab-fire` | `slab-fire` | no |
 | 123.800 | 7428 | `boss.slabs` | `dart-fire` | `dart-fire` | no |
-| 124.213 | 7452 | `boss.slabs` | `dart-hit` | `dart-hit` | no |
+| 124.200 | 7452 | `boss.slabs` | `dart-hit` | `dart-hit` | no |
 | 124.217 | 7453 | `boss.slabs` | `step` | `step` | no |
 | 124.500 | 7470 | `boss.slabs` | `dart-fire` | `dart-fire` | no |
+| 124.892 | 7493 | `boss.slabs` | `dart-hit` | `dart-hit` | no |
 | 124.896 | 7493 | `boss.slabs` | `slab-drop` | `slab-drop` | no |
-| 124.904 | 7494 | `boss.slabs` | `dart-hit` | `dart-hit` | no |
 | 125.096 | 7505 | `boss.popups` | `slab-fire` | `slab-fire` | no |
-| 125.204 | 7512 | `boss.popups` | `popup` | `popup` | no |
+| 125.192 | 7511 | `boss.popups` | `popup` | `popup` | no |
 | 125.396 | 7523 | `boss.popups` | `step` | `step` | no |
 | 125.675 | 7540 | `boss.popups` | `step` | `step` | no |
+| 125.896 | 7553 | `boss.popups` | `popup` | `popup` | no |
 | 125.900 | 7554 | `boss.popups` | `dart-fire` | `dart-fire` | no |
-| 125.908 | 7554 | `boss.popups` | `popup` | `popup` | no |
 | 126.183 | 7571 | `boss.popups` | `dart-fire` | `dart-fire` | no |
 | 126.321 | 7579 | `boss.popups` | `dart-hit` | `dart-hit` | no |
 | 126.463 | 7587 | `boss.popups` | `dart-fire` | `dart-fire` | no |
-| 126.500 | 7590 | `boss.popups` | `slab-drop` | `slab-drop` | no |
+| 126.492 | 7589 | `boss.popups` | `slab-drop` | `slab-drop` | no |
+| 126.600 | 7596 | `boss.popups` | `popup` | `popup` | no |
 | 126.600 | 7596 | `boss.popups` | `dart-hit` | `dart-hit` | no |
-| 126.612 | 7596 | `boss.popups` | `popup` | `popup` | no |
-| 126.733 | 7604 | `boss.popups` | `dart-hit` | `dart-hit` | no |
+| 126.721 | 7603 | `boss.popups` | `dart-hit` | `dart-hit` | no |
 | 126.742 | 7604 | `boss.popups` | `dart-fire` | `dart-fire` | no |
 | 126.892 | 7613 | `boss.popups` | `dart-hit` | `dart-hit` | no |
 | 127.021 | 7621 | `boss.popups` | `dart-fire` | `dart-fire` | no |
@@ -603,65 +645,63 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | 130.771 | 7846 | `boss.popups` | `dart-hit` | `dart-hit` | no |
 | 131.071 | 7864 | `boss.lastStand` | `session-expired` | `popup` | no |
 | 131.208 | 7872 | `boss.lastStand` | `slab-drop` | `slab-drop` | no |
-| 132.150 | 7929 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
-| 132.254 | 7935 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
-| 132.350 | 7941 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
-| 132.454 | 7947 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
-| 132.550 | 7953 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
-| 132.662 | 7959 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
-| 132.750 | 7965 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
+| 132.000 | 7920 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
+| 132.096 | 7925 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
+| 132.200 | 7932 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
+| 132.296 | 7937 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
+| 132.400 | 7944 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
+| 132.496 | 7949 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
+| 132.600 | 7956 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
+| 132.708 | 7962 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
+| 132.800 | 7968 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
 | 132.871 | 7972 | `boss.lastStand` | `popup` | `popup` | no |
-| 132.883 | 7973 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
-| 132.950 | 7977 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
-| 133.104 | 7986 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
-| 133.150 | 7989 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
+| 132.929 | 7975 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
+| 133.000 | 7980 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
+| 133.146 | 7988 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
+| 133.200 | 7992 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
 | 133.200 | 7992 | `boss.lastStand` | `step` | `step` | no |
 | 133.308 | 7998 | `boss.lastStand` | `step` | `step` | no |
-| 133.325 | 7999 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
-| 133.350 | 8001 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
-| 133.400 | 8004 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
+| 133.363 | 8001 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
+| 133.400 | 8004 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
+| 133.458 | 8007 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
 | 133.458 | 8007 | `boss.lastStand` | `step` | `step` | no |
 | 133.529 | 8011 | `boss.lastStand` | `slab-fire` | `slab-fire` | no |
-| 133.550 | 8013 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
-| 133.604 | 8016 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
-| 133.750 | 8025 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
-| 133.804 | 8028 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
-| 133.950 | 8037 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
-| 134.000 | 8040 | `boss.lastStand` | `slab-drop` | `slab-drop` | no |
-| 134.146 | 8048 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
-| 134.150 | 8049 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
-| 134.333 | 8060 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
-| 134.350 | 8061 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
+| 133.600 | 8016 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
+| 133.658 | 8019 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
+| 133.800 | 8028 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
+| 133.863 | 8031 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
+| 133.946 | 8036 | `boss.lastStand` | `slab-drop` | `slab-drop` | no |
+| 134.000 | 8040 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
+| 134.192 | 8051 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
+| 134.200 | 8052 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
+| 134.387 | 8063 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
+| 134.400 | 8064 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
 | 134.475 | 8068 | `boss.lastStand` | `popup` | `popup` | no |
-| 134.525 | 8071 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
-| 134.550 | 8073 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
-| 134.608 | 8076 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
+| 134.579 | 8074 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
+| 134.600 | 8076 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
 | 134.617 | 8077 | `boss.lastStand` | `step` | `step` | no |
+| 134.662 | 8079 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
 | 134.692 | 8081 | `boss.lastStand` | `step` | `step` | no |
-| 134.750 | 8085 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
 | 134.779 | 8086 | `boss.lastStand` | `step` | `step` | no |
+| 134.800 | 8088 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
 | 134.838 | 8090 | `boss.lastStand` | `slab-fire` | `slab-fire` | no |
-| 134.854 | 8091 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
-| 134.950 | 8097 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
-| 135.033 | 8102 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
-| 135.150 | 8109 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
-| 135.221 | 8113 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
-| 135.350 | 8121 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
-| 135.412 | 8124 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
-| 135.463 | 8127 | `boss.lastStand` | `slab-drop` | `slab-drop` | no |
-| 135.550 | 8133 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
-| 135.600 | 8136 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
-| 135.750 | 8145 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
-| 135.792 | 8147 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
+| 134.904 | 8094 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
+| 135.000 | 8100 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
+| 135.092 | 8105 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
+| 135.200 | 8112 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
+| 135.287 | 8117 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
+| 135.400 | 8124 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
+| 135.479 | 8128 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
+| 135.496 | 8129 | `boss.lastStand` | `slab-drop` | `slab-drop` | no |
+| 135.600 | 8136 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
+| 135.675 | 8140 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
+| 135.800 | 8148 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
+| 135.871 | 8152 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
 | 135.933 | 8156 | `boss.lastStand` | `step` | `step` | no |
-| 135.950 | 8157 | `boss.lastStand` | `dart-fire` | `dart-fire` | no |
-| 135.996 | 8159 | `boss.lastStand` | `dart-hit` | `dart-hit` | no |
+| 136.000 | 8160 | `boss.collapse` | `dart-fire` | `dart-fire` | no |
 | 136.012 | 8160 | `boss.collapse` | `step` | `step` | no |
-| 136.117 | 8167 | `boss.collapse` | `step` | `step` | no |
-| 136.146 | 8168 | `boss.collapse` | `slab-fire` | `slab-fire` | no |
-| 136.150 | 8169 | `boss.collapse` | `dart-fire` | `dart-fire` | no |
-| 136.229 | 8173 | `boss.collapse` | `dart-hit` | `dart-hit` | no |
-| 136.229 | 8173 | `boss.collapse` | `power-down` | `power-down` | no |
+| 136.100 | 8166 | `boss.collapse` | `dart-hit` | `dart-hit` | no |
+| 136.100 | 8166 | `boss.collapse` | `power-down` | `power-down` | no |
 | 139.500 | 8370 | `boss.press` | `button-press` | `button-press` | no |
 | 140.500 | 8430 | `boss.press` | `page-turn` | `page-turn` | no |
 | 141.400 | 8484 | `decision.wait` | `hold-music` | `hold-music` | no |

@@ -19,6 +19,7 @@ const BODY = { x: 14, y: 26 }
 const STRIPS = 9
 const LIE = heights.card + 9
 const IDLE_SHUFFLE = 5
+const HOUSING = 44
 
 type Phase = 'rest' | 'keyboard' | 'firstName' | 'lastName' | 'email' | 'slabs' | 'resume' | 'tug' | 'shredded' | 'received'
 const GAG: Record<Phase, string> = {
@@ -490,6 +491,7 @@ export function makePage(): PageLogic {
       s.cy = io.cursor.y
       if (s.skipped && !s.cleaned) {
         s.cleaned = true
+        if (s.slot > 0) io.emit('shredder-stop', SLOT.cx, SLOT.cy, false)
         io.cursor.setArms(false)
         io.cursor.setOnPage(true)
         io.cursor.release()
@@ -600,10 +602,8 @@ export function makePage(): PageLogic {
         const w = SLOT.w * smooth(s.slot)
         out.push({ id: 'shredder-slot', part: 'shredder', kind: 'well', x: SLOT.cx - w / 2, y: SLOT.cy - SLOT.h / 2, w, h: SLOT.h, z0: -44, z1: 0, tone: 'dark' })
         const spin = s.phase === 'tug' || s.phase === 'shredded' ? Math.sin(s.time * 40) * 1.5 : 0
-        for (const side of [0, 1]) {
-          const y = SLOT.cy + (side === 0 ? -SLOT.h / 2 - 12 : SLOT.h / 2 + 2)
-          out.push({ id: `shredder-jaw-${side}`, part: 'shredder', kind: 'capsule', x: SLOT.cx - w / 2 - 8 + spin, y, w: w + 16, h: 10, z0: 0, z1: 7, tone: 'metal', mechanism: true })
-        }
+        out.push({ id: 'shredder-jaw-0', part: 'shredder', kind: 'capsule', x: SLOT.cx - w / 2 - 8 + spin, y: SLOT.cy - SLOT.h / 2 - 12, w: w + 16, h: 10, z0: 0, z1: 7, tone: 'metal', mechanism: true })
+        out.push({ id: 'shredder-jaw-1', part: 'shredder', kind: 'box', x: SLOT.cx - w / 2 - 14 - spin, y: SLOT.cy, w: w + 28, h: HOUSING, z0: 0, z1: LIE + heights.paper + 3, r: 8, tone: 'metal', mechanism: true })
       }
       if (s.phase === 'tug' || s.phase === 'shredded') tugPaper(out)
       strips(out)

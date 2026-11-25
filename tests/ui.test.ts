@@ -228,10 +228,11 @@ describe('the names of the controls that show no word', () => {
 
 describe('what the device says about itself', () => {
   it('calls a device touch-only by its pointers and its hover, never by its size', () => {
-    expect(isTouchOnly({ anyHover: false, anyFine: false })).toBe(true)
-    expect(isTouchOnly({ anyHover: true, anyFine: true })).toBe(false)
-    expect(isTouchOnly({ anyHover: false, anyFine: true })).toBe(false)
-    expect(isTouchOnly({ anyHover: true, anyFine: false })).toBe(false)
+    expect(isTouchOnly({ anyHover: false, anyFine: false, touch: true })).toBe(true)
+    expect(isTouchOnly({ anyHover: false, anyFine: false, touch: false })).toBe(false)
+    expect(isTouchOnly({ anyHover: true, anyFine: true, touch: true })).toBe(false)
+    expect(isTouchOnly({ anyHover: false, anyFine: true, touch: true })).toBe(false)
+    expect(isTouchOnly({ anyHover: true, anyFine: false, touch: true })).toBe(false)
   })
 
   it('writes the time of the film as minutes and seconds', () => {

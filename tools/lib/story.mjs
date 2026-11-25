@@ -85,8 +85,9 @@ export async function wordsCheck(s) {
   }
   const live = new stage.Stage({ mode: 'live', flow: stage.liveFlow(), pages, driver: new BotDriver('keen', c.seed), seed: c.seed })
   const limit = Math.round(c.live.botMaxSeconds * c.sim.stepHz)
+  const perFrame = Math.round(c.sim.stepHz / c.film.fps)
   while (!live.finished && live.step < limit) {
-    live.advance(24)
+    live.advance(perFrame)
     const f = live.frameAt(live.time)
     for (const shape of f.list) note(f.page, shape)
   }
@@ -161,7 +162,7 @@ export async function wordsCheck(s) {
   }
   return {
     pass: detail.length === 0,
-    note: `the words: ${runs} runs of type on the six pages at rest and ${listed} entries of the type registers compared with the keys they name, character for character; every key a layout names looked for at rest, in ${Math.ceil(film.frameCount / 6)} film frames and in the keen bot's visit${live.finished ? '' : ' (which did not finish)'}${waited ? `, and for what was still missing on a page alone with a visitor who does nothing, for up to ${Math.round(waited)} s` : ''}${looked ? `, and for ${looked} runs with a pointer that scrolls to the run and rests on it` : ''}`,
+    note: `the words: ${runs} runs of type on the six pages at rest and ${listed} entries of the type registers compared with the keys they name, character for character; every key a layout names looked for at rest, in ${Math.ceil(film.frameCount / 6)} film frames and in the keen bot's visit read ${c.film.fps} times a second${live.finished ? '' : ' (which did not finish)'}${waited ? `, and for what was still missing on a page alone with a visitor who does nothing, for up to ${Math.round(waited)} s` : ''}${looked ? `, and for ${looked} runs with a pointer that scrolls to the run and rests on it` : ''}`,
     detail: few(detail, 30)
   }
 }

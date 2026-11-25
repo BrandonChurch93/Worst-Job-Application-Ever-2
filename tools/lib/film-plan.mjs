@@ -103,6 +103,7 @@ export const pieceName = (unit, first, last, format, tier, diag) => `${unit}-${p
 export const chunkName = (unit, format, tier, diag) => `${unit}-${tail(format, tier, diag)}`
 export const filmName = (which, format, tier, diag, range) => `film-${which}-${tail(format, tier, diag)}${range ? `-${pad(range.first)}-${pad(range.last)}` : ''}`
 export const seqName = (frame, format, tier, diag) => `frame-${pad(frame)}-${tail(format, tier, diag)}`
+export const seqRunName = (first, last, format, tier, diag) => `seq-${pad(first)}-${pad(last)}-${tail(format, tier, diag)}`
 export const loopPieceName = (first, last, format, tier) => `loop-${pad(first)}-${pad(last)}-${tail(format, tier)}`
 
 // Reads the range out of a piece's file name. Null for a name that is not a piece of this unit, format and tier.
@@ -209,4 +210,19 @@ export function sheetsOf(list, perSheet) {
   const out = []
   for (let i = 0; i < list.length; i += perSheet) out.push(list.slice(i, i + perSheet))
   return out
+}
+
+// The card loop: its frames are indexed at film.fps and rendered at deliver.cardLoop.fps.
+export function loopPlan(cfg) {
+  const card = cfg.deliver.cardLoop
+  const step = cfg.film.fps / card.fps
+  if (!Number.isInteger(step)) throw new Error(`film.fps ${cfg.film.fps} is not a whole multiple of deliver.cardLoop.fps ${card.fps}`)
+  const frameCount = Math.round(card.seconds * cfg.film.fps)
+  return { frameCount, step, frames: frameCount / step, rate: card.fps }
+}
+
+// The size of a copy scaled to a width, with an even height.
+export function webSize(width, height, webWidth) {
+  const w = Math.min(width, webWidth) - (Math.min(width, webWidth) % 2)
+  return { width: w, height: Math.round((w * height) / width / 2) * 2 }
 }
