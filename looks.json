@@ -1,0 +1,35 @@
+{
+  "folder": "audio",
+  "pushed": "2026-11-25T09:15:11.080Z",
+  "commit": "d521d4fec76af41d19fc787db45880f538251f95",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Still marketing-rest-preview-draft: draft tier, preview, view beauty",
+      "time": "2026-11-25T09:15:02.650Z",
+      "by": "audio",
+      "from": "out/work/stills/marketing-rest-preview-draft.png"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Sound: the waveform sheet of npm run sound --sheet, drawn from 144 stand-in sounds made with ffmpeg (not takes, not committed), after the one chain. Blue are effects, orange are the narrator's lines",
+      "time": "2026-11-25T09:15:09.532Z",
+      "by": "audio",
+      "from": "out/work/audio/sheet-fixtures.png"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Sound: npm run mix on the stand-in sounds, read from cut/CUTLIST.json: 333 cues and 37 lines on the film's 153 s, -14 LUFS, true peak under -1 dB, the same bytes twice",
+      "time": "2026-11-25T09:15:09.767Z",
+      "by": "audio",
+      "from": "out/work/audio/mix-fixtures.png"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Sound: npm run mix today, with no kept sound: 153 s of silence at the film's exact length",
+      "time": "2026-11-25T09:15:09.994Z",
+      "by": "audio",
+      "from": "out/work/audio/mix.png"
+    }
+  ]
+}
