@@ -248,6 +248,70 @@ describe('step 4, the boss', () => {
     expect(presses).toBeGreaterThan(0)
   })
 
+  it('leaves a hole where the button was: below the page, darker than any button, with thin uneven cracks', () => {
+    const stage = film()
+    stage.seek(12)
+    const list: Parameters<typeof stage.page.draw>[0] = []
+    stage.page.draw(list)
+    const open = list.filter((s) => s.id.startsWith('socket-open'))
+    const wells = open.filter((s) => s.kind === 'well')
+    expect(wells.length).toBeGreaterThan(0)
+    expect(open.filter((s) => s.kind !== 'well' && !s.id.includes('-crack-'))).toEqual([])
+    expect(list.some((s) => s.id === 'submit' || s.id === 'submit-cap')).toBe(false)
+    for (const w of wells) expect(w.z0).toBeLessThan(0)
+    const pit = wells.filter((s) => s.id.includes('-pit-'))
+    expect(pit.length).toBeGreaterThan(0)
+    for (const w of pit) {
+      expect(w.tone).toBe('ink')
+      expect(w.z0).toBeLessThan(config.scale.heights.buttonSocket * 4)
+    }
+    const cracks = open.filter((s) => s.id.includes('-crack-'))
+    expect(cracks.length).toBeGreaterThan(8)
+    for (const c of cracks) {
+      expect(c.h).toBeLessThan(3)
+      expect(c.w).toBeLessThan(30)
+      expect(c.z1).toBeLessThan(1)
+    }
+    const first = cracks.filter((s) => s.id.endsWith('-0')).map((s) => Math.round(s.w))
+    expect(new Set(first).size).toBeGreaterThan(4)
+  })
+
+  it('escalates in the film: one shield alone, then faster ones, the hit, the banner alone, and a fall that speeds up', () => {
+    const stage = film()
+    stage.advance(Math.round(28 * stepHz))
+    const at = (name: string): number[] => stage.events.filter((e) => e.name === name).map((e) => e.step / stepHz)
+    const ups = at('popup')
+    const fires = at('slab-fire')
+    const expired = at('session-expired')[0]!
+    const down = at('power-down')[0]!
+    expect(ups.length).toBe(3)
+    expect(ups[1]! - ups[0]!).toBeGreaterThanOrEqual(1.7)
+    expect(ups[2]! - ups[1]!).toBeLessThan(ups[1]! - ups[0]! - 0.5)
+    expect(fires.filter((t) => t > ups[0]! - 1 && t < ups[2]!)).toEqual([])
+    const late = fires.filter((t) => t > ups[2]!)
+    expect(late.length).toBe(1)
+    const hits = stage.events.filter((e) => e.hitsCursor && e.step / stepHz > ups[2]!).map((e) => e.step / stepHz)
+    expect(hits.length).toBe(1)
+    expect(hits[0]!).toBeLessThan(expired - 1.5)
+    expect(fires.filter((t) => t > expired)).toEqual([])
+    expect(ups.filter((t) => t > expired)).toEqual([])
+    const struck = at('dart-hit').filter((t) => t > expired)
+    expect(struck.length).toBeGreaterThanOrEqual(17)
+    expect(struck[0]!).toBeGreaterThan(expired + 1.5)
+    const third = (down - struck[0]!) / 3
+    const count = (k: number): number => struck.filter((t) => t >= struck[0]! + k * third && t < struck[0]! + (k + 1) * third).length
+    expect(count(1)).toBeGreaterThan(count(0))
+    expect(count(2)).toBeGreaterThan(count(1))
+    const quiet = film()
+    quiet.seek(expired + 1.6)
+    const page = quiet.page.save() as { fight: { popups: unknown[]; slabs: unknown[] } }
+    for (let t = expired + 1.6; t < down - 0.05; t += 0.1) {
+      quiet.seek(t)
+      const f = (quiet.page.save() as typeof page).fight
+      expect(f.popups.length + f.slabs.length, `bare page at ${t.toFixed(1)}`).toBe(0)
+    }
+  })
+
   it('draws the four stages of the boss on its sheet', () => {
     const page = makePage()
     const sheet = page.sheet!('boss-stages')

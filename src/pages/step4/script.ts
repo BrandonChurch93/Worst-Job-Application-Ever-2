@@ -15,7 +15,7 @@ export function makeScript(L: Step4Layout): FilmScript {
     [1.5, cb.cx + 330, cb.cy + 26], [2.3, cb.cx + 70, cb.cy + 26], [2.7, cb.cx + 26, cb.cy + 14], [3.05, cb.cx + 96, cb.cy + 56], [3.45, cb.cx + 96, cb.cy + 56], [3.75, cb.cx, cb.cy + 2], [3.92, cb.cx, cb.cy + 2],
     [4.4, cb.cx + 430, cb.cy + 44], [5.3, cb.cx + 430, cb.cy + 44], [6.0, 820, 890], [6.12, 824, 894], [6.5, 600, 800], [7.4, 450, 830], [9.0, 430, 840],
     [9.45, 430, 880], [10.3, 430, 880], [10.75, 420, 700], [11.85, 420, 700], [12.3, 450, 900], [14.9, 450, 900], [15.3, 400, 720], [17.35, 400, 720],
-    [17.8, 520, 900], [24, 520, 900], [26.6, 1330, 880], [27.1, 1330, 880],
+    [17.8, 520, 900], [23.95, 520, 900], [25.4, 960, 770], [26.6, 1300, 800], [27.1, 1330, 880],
     [27.4, 1380, 934], [28.1, 1380, 934], [28.9, FALLEN.x - 215, FALLEN.y + 62], [29.5, FALLEN.x - 215, FALLEN.y + 62], [30.25, FALLEN.x - 122, FALLEN.y - 28], [32, FALLEN.x - 122, FALLEN.y - 28]
   ]
   const clicks: number[] = [tickAt]
@@ -27,12 +27,12 @@ export function makeScript(L: Step4Layout): FilmScript {
   clicks.push(18.0, 18.16, 18.32, 18.6, 18.8)
   clicks.push(19.05, 19.3, 19.52, 19.72, 19.9, 20.07)
   clicks.push(21.1, 21.3, 21.48)
-  let at = 24
-  let gap = 0.365
+  let at = 23.99
+  let gap = 0.42
   for (let i = 0; i < 17; i++) {
     clicks.push(Number(at.toFixed(3)))
-    at += gap
-    gap *= 0.9
+    at += Math.max(0.095, gap)
+    gap *= 0.87
   }
   clicks.push(30.5)
   const pointer = (time: number): Pointer => {
