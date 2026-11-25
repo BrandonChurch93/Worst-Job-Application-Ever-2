@@ -88,3 +88,13 @@ Read by me on the draft sheets of the head, at the sheet's size (the arrow about
 - `step1.email`, the script's word: nervous, then scared. A stranger says: "it types fast and hits the red key, red plates drop and it lies flat and scuttles out from under them." Scared reads from the flat, small body and the three different places (frames 8 to 11). Nervous, the 0.45 s after Enter, lies between two frames of the sheet and is not seen on it.
 - `step1.shredded`, the script's word: exhausted. A stranger says: "a heap of strips lies under the slot, it pulls itself back into an arrow, sags, and drags off." The sag reads on frames 10 and 11 as a short, slumped arrow; at home size it is a few pixels, so it is the weakest of the five reads.
 
+### The knocked body clear of the flash
+
+MEASURED on `npm run sheet -- --motion hit --tier review` before this change: the frame of 5.90 s had the arrow inside the flash on its way back to the key (the spring brought it back 60 px in 0.13 s, at 600 px/s through the flash). Now the body stands where the blow put it for 0.07 s (`HIT.hold`), a key to the side, squashed and bent with its outline whole, and comes back in 0.1 s (`HIT.back`, eased at both ends): 5.82 to 5.88 s clear of the flash, back on the key at 5.98 s, at 6.0 s speed 21 px/s, spin 0.05, lean 0.38. The knock also sets the side the body falls to from the blow itself. The events of the film are the same list as on `main` (diff empty), the key frame's test holds, and `tests/cursor-act-knock.test.ts` holds as it stood after the first push. New test: `tests/acting3-holds.test.ts` (the rear, the hit's squash and held recoil with at most two changes of turn, nervous on Enter, a cower under each slab in a different place, the sag's numbers).
+
+### Not done, and why
+
+- A slump after the form's "Reluctantly": the message comes at about 19.85 s and my seconds end at 19.9 s. The seconds after are the paper fixer's.
+- Confident in the first second: the stage holds the cursor in the air until 1.0 s (the Builder's ruling at 22:03Z: it stays).
+- The pile, the stand and the zip larger in the frame: the camera is home from 28.96 s (declined by the paper fixer, upheld by the Builder).
+
