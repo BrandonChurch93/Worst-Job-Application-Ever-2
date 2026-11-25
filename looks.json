@@ -1,35 +1,35 @@
 {
   "folder": "frame",
-  "pushed": "2026-11-25T16:55:57.170Z",
-  "commit": "4d06f1749cdb004f3c752849ae26a6809318087b",
+  "pushed": "2026-11-25T17:09:35.888Z",
+  "commit": "f8613b799fb2893f1892ff4eaa3810e122513cd7",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-tier-street-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-25T16:53:09.269Z",
+      "caption": "Key rail-cam: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-25T17:08:40.150Z",
       "by": "frame",
-      "from": "out/work/stills/key-tier-street-hd-draft.png"
+      "from": "out/work/compare/compare-rail-cam.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Key table-wide: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-25T16:55:44.449Z",
+      "caption": "Key tier-office: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-25T17:09:12.835Z",
       "by": "frame",
-      "from": "out/work/compare/compare-table-wide.jpg"
+      "from": "out/work/compare/compare-tier-office.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Frame 5, the loader port: approved image on the left, this build on the right. The ball lies in the cup and the tube leaves through a slot in a darker ring",
-      "time": "2026-11-25T16:55:55.498Z",
+      "caption": "Frame 6, tier-office beside the approved image: brushed side rails with a joint and screws, stepped cross rail at the top, laminate strip on the lane walls",
+      "time": "2026-11-25T17:09:34.473Z",
       "by": "frame",
-      "from": "out/work/compare/frame-port.jpg"
+      "from": "out/work/compare/compare-tier-office.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Frame 5, table-wide beside the approved image: stepped cross rails between the tiers, clear feed tube with clamps, enamel drain plate",
-      "time": "2026-11-25T16:55:55.756Z",
+      "caption": "Frame 6, rail-cam beside the approved image: the lane wall with its dark groove and steel strike strip, the corner fillet",
+      "time": "2026-11-25T17:09:34.714Z",
       "by": "frame",
-      "from": "out/work/compare/compare-table-wide.jpg"
+      "from": "out/work/compare/compare-rail-cam.jpg"
     }
   ]
 }
