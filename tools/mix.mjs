@@ -23,10 +23,11 @@ export async function filmPlan(c, M) {
     const frameOf = (e) => (Number.isFinite(e.frame) ? e.frame : Number.isFinite(e.seconds) ? Math.floor(e.seconds * fps + 1e-6) : Number.isFinite(e.time) ? Math.floor(e.time * fps + 1e-6) : Number.isFinite(e.step) ? Math.floor((e.step * fps) / c.sim.stepHz) : NaN)
     const list = Array.isArray(cut.events) ? cut.events.map((e) => ({ name: e.name, frame: frameOf(e), x: Number.isFinite(e.x) ? e.x : 960 })) : []
     if (list.length && list.every((e) => typeof e.name === 'string' && Number.isFinite(e.frame))) {
-      if (Array.isArray(cut.lines) && cut.lines.every((l) => typeof l.beat === 'string' && Number.isFinite(frameOf({ ...l, seconds: l.seconds ?? l.start })))) {
-        lines = cut.lines.map((l) => ({ id: M.cues.filmLineId(l.beat, l.index ?? 0), beat: l.beat, index: l.index ?? 0, frame: frameOf({ ...l, seconds: l.seconds ?? l.start }) }))
+      const lineFrame = (l) => (Number.isFinite(l.first) ? l.first : frameOf({ frame: l.frame, seconds: l.startSeconds ?? l.start }))
+      if (Array.isArray(cut.lines) && cut.lines.every((l) => typeof l.beat === 'string' && Number.isFinite(lineFrame(l)))) {
+        lines = cut.lines.map((l) => ({ id: typeof l.id === 'string' ? l.id : M.cues.filmLineId(l.beat, l.index ?? 0), beat: l.beat, index: l.index ?? 0, frame: lineFrame(l) }))
       }
-      const total = Number.isFinite(cut.seconds) ? cut.seconds : Number.isFinite(cut.frames) ? cut.frames / fps : seconds
+      const total = Number.isFinite(cut.frameCount) ? cut.frameCount / fps : Number.isFinite(cut.seconds) ? cut.seconds : seconds
       return { source: 'cut/CUTLIST.json', fps, seconds: total, events: list, lines }
     }
     console.log('mix: cut/CUTLIST.json is there but holds no list of events by name and frame, so the events are read from the stage')

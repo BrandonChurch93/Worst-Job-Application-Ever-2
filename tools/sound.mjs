@@ -271,7 +271,7 @@ export async function keepTake(a, P, c, M, quiet = false) {
     writeJson(path.join(P.kept, `${m.id}.json`), {
       id: m.id, kind: t.kind, cue: t.kind === 'cue' ? t.id : null, variant: t.variants > 1 ? m.variant + 1 : null, class: t.cls, loop: t.loop,
       beat: t.beat ?? null, liveKey: t.liveKey ?? null, index: t.kind === 'line' ? t.index : null,
-      words: t.kind === 'line' ? t.text : null, prompt: take.prompt ?? null, settings: take.settings ?? null, askedSeconds: take.askedSeconds, cost: take.cost,
+      words: t.kind === 'line' ? t.text : null, text: t.kind === 'line' ? t.text : null, prompt: take.prompt ?? null, settings: take.settings ?? null, askedSeconds: take.askedSeconds, cost: take.cost,
       take: { number: take.take, round: take.round, file: take.file, sha256: take.sha256, filed: take.filed, measured: take.measured, line: take.line ?? null },
       chain: m.record, measured: M.dsp.measure(m.sound), listener: take.listener ?? null, why, forced, problems, fixture: Boolean(a.fixture),
       file: `${m.id}.wav`, seconds: Number((m.sound.channels[0].length / sr).toFixed(4)), sha256: sha(bytes)
