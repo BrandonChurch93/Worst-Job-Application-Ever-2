@@ -1,0 +1,35 @@
+{
+  "folder": "art",
+  "pushed": "2026-11-25T14:46:13.527Z",
+  "commit": "ba711dca3ef96cf1612637fde9f3780e59e849c3",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Tier art first complete version: approved keys (left) beside draft stills (right), all three floors in the machine, everything else still stand-ins",
+      "time": "2026-11-25T14:46:11.816Z",
+      "by": "art",
+      "from": "out/work/look-compare.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "The three printed floors as flat art, straight from the maker: drawn layer on the layout over painted marble, carpet and asphalt",
+      "time": "2026-11-25T14:46:12.046Z",
+      "by": "art",
+      "from": "out/work/look-art.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Corporate insert windows, one lit and two unlit. Looked at with the windows raised above the lights' stand-in discs, which cover them in the pushed build",
+      "time": "2026-11-25T14:46:12.268Z",
+      "by": "art",
+      "from": "out/work/look-windows.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Coverage view of the corporate floor: the mask made by rule from the drawn design",
+      "time": "2026-11-25T14:46:12.503Z",
+      "by": "art",
+      "from": "out/work/look-coverage.jpg"
+    }
+  ]
+}
