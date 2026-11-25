@@ -130,6 +130,8 @@ Owner: `/root/keys_fixer`, branch `agent/keys`. It answers the round 3 issues R4
 10. Bolts are thin streaks (the Builder's point 4). Head 13 by 3.6 px (was 22 by 5.4) at glow 10, 6.5, 3 (was 16, 10, 4.5); orange tail 2.6 px thick and up to 168 px long (was 6 px and 112); the white-hot core 1.5 px thick (was 3). The light a bolt throws on the caps is unchanged.
 11. The field's rim: `/root/surface_fixer` applied `0.8 + 1.6 v` and a core lift of `1 + 0.7 v` in `controls.ts` on `agent/glass` (04debbf). STATED by them; I look at it on a motion sheet once it is on main.
 
+12. In a swap one cap flies over and the other under: the cap that moves to a later seat flies at 1.25 of its height and the other at 0.75 (`FLIGHT.over`, `FLIGHT.under`), so two caps that cross are never at one height. Of two caps that overlap only the lower one loses its legend for those frames; before, both could, and blank caps flew. MEASURED by a review still of `step1.lastName` at 0.094 before (4 blank caps in the air) and a draft still after (none).
+
 ### Not reached
 
 - The landing frame of a slab falls between two sheet samples; what shows it afterwards is the pressed keys under the slab only.
@@ -148,4 +150,4 @@ Owner: `/root/keys_fixer`, branch `agent/keys`. It answers the round 3 issues R4
 
 ### Tuning looks
 
-Of 40 each in the fix round: keyboard 15, turrets 3, slabs 2.
+Of 40 each in the fix round: keyboard 17, turrets 3, slabs 2.

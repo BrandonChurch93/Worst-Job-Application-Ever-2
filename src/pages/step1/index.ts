@@ -44,7 +44,7 @@ const TAP = { seconds: 0.16, hold: 0.03, depth: 0.55 }
 const STRIKE = { seconds: 0.5, id: 90000, z: 96 }
 const THUD = { seconds: 0.26, hold: 0.07, shake: 0.4 }
 const PULSE = { hold: 0.05, fade: 0.3 }
-const FLIGHT = { ripple: 0.09, jitter: 0.025, seconds: 0.165, crouch: 0.035, low: 24, high: 64, perPx: 0.1, seat: 0.09, jolt: 2.6, rattle: 1.6, clear: 5 }
+const FLIGHT = { over: 1.25, under: 0.75, ripple: 0.09, jitter: 0.025, seconds: 0.165, crouch: 0.035, low: 24, high: 64, perPx: 0.1, seat: 0.09, jolt: 2.6, rattle: 1.6, clear: 5 }
 const LEGEND_CLEAR = 0
 
 type Phase = 'rest' | 'keyboard' | 'firstName' | 'lastName' | 'email' | 'slabs' | 'resume' | 'tug' | 'shredded' | 'received'
@@ -195,7 +195,7 @@ export function makePage(): PageLogic {
     const from = seats[s.from[key]!]!
     const to = seats[s.places[key]!]!
     const far = Math.hypot(to.cx - from.cx, to.cy - from.cy)
-    const high = Math.min(FLIGHT.high, FLIGHT.low + far * FLIGHT.perPx)
+    const high = Math.min(FLIGHT.high, FLIGHT.low + far * FLIGHT.perPx) * (s.places[key]! > s.from[key]! ? FLIGHT.over : FLIGHT.under)
     const crouch = t < start ? clamp((t - (start - FLIGHT.crouch)) / FLIGHT.crouch, 0, 1) : 0
     return { u: a + 0.12 * Math.sin(2 * Math.PI * a), air: Math.sin(Math.PI * a) ** 0.75, bow: Math.sin(Math.PI * a), high, crouch, seat: spring(t - start - FLIGHT.seconds, 0.012, FLIGHT.seat), t: t - start }
   }
@@ -837,7 +837,7 @@ export function makePage(): PageLogic {
             const word = over[`key-${seat.name}-legend`]
             if (!word) return
             const box = boxOf(layout, `key-${seat.name}-legend`)
-            const covered = spots.some((p, other) => other !== key && (p.air || mine.air) && p.top > mine.top - 8 && p.x + 3 < word.x! + box.w && p.x + p.w - 3 > word.x! && p.y + 3 < word.y! + box.h && p.y + p.h - 3 > word.y!)
+            const covered = spots.some((p, other) => other !== key && (p.air || mine.air) && (p.top > mine.top + 0.01 || (p.top > mine.top - 0.01 && other > key)) && p.x + 3 < word.x! + box.w && p.x + p.w - 3 > word.x! && p.y + 3 < word.y! + box.h && p.y + p.h - 3 > word.y!)
             if (covered) over[`key-${seat.name}-legend`] = null
           })
         }
