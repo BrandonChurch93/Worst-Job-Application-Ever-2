@@ -289,7 +289,7 @@ function stretched<T extends THREE.MeshPhysicalMaterial>(material: T): T {
   })
 }
 
-const SLAB = { bend: 14, through: 0.06, cloud: 0.004, frost: 0.034, hair: 0.007, glint: 0.2, tooth: 0.235, sheen: 0.045, wash: 0.05, shoulder: 0.5, far: 0.16, farSide: 0.14, farLow: 0.1, farLowEnd: 0.05, spill: 0.16, spillLow: 0.05, bevelEnd: 14.9, flat: 0.24, bandSide: 0.78, bandSideLow: 0.66, bandTopNear: 0.94, bandTop: 0.78, dipTop: 0.12, dipTopFar: 0.12, dipSide: 0.22, dipSideLow: 0.07, rim: 1.2, rimFar: 0.4, level: 0.99, pool: 0.13, poolRise: 0.18, dash: 0.42, dashInset: 26, dashDepth: 9, dashPitch: 30, dashWide: 1.0 }
+const SLAB = { bend: 14, through: 0.06, cloud: 0.004, frost: 0.034, hair: 0.007, glint: 0.2, tooth: 0.235, sand: 1.5, sheen: 0.045, wash: 0.05, shoulder: 0.5, far: 0.16, farSide: 0.14, farLow: 0.1, farLowEnd: 0.05, spill: 0.16, spillLow: 0.05, bevelEnd: 14.9, flat: 0.24, bandSide: 0.78, bandSideLow: 0.66, bandTopNear: 0.94, bandTop: 0.78, dipTop: 0.12, dipTopFar: 0.12, dipSide: 0.22, dipSideLow: 0.07, rim: 1.2, rimFar: 0.4, level: 0.99, pool: 0.13, poolRise: 0.18, dash: 0.42, dashInset: 26, dashDepth: 9, dashPitch: 30, dashWide: 1.0 }
 
 // A slab of frosted glass seen from above. Its geometry carries where each point lies on the card (`slab`: x, y, half width, half height,
 // and `slabEdge`: the corner's radius and whether a panel is sunk in the face), and the face is worked out from that for every pixel:
@@ -353,7 +353,13 @@ function slabbed<T extends THREE.MeshPhysicalMaterial>(material: T, grain: THREE
 		vec4 under = texture2D( wjaSlabGrain, ( wjaAt.xy - wjaFace.xy * ${n(SLAB.bend)} ) * ( 2.0 / 1024.0 ), 0.5 );
 		vec2 uvT = mat2( 0.4540, 0.8910, - 0.8910, 0.4540 ) * ( wjaAt.xy - wjaFace.xy * ${n(SLAB.bend)} ) * ( 4.0 / 1024.0 ) + vec2( 0.173, 0.591 );
 		vec2 tooth = mat2( 0.4540, - 0.8910, 0.8910, 0.4540 ) * ( texture2D( wjaSlabGrain, uvT ).xy - texture2D( wjaSlabGrain, uvT, 2.0 ).xy );
-		m *= 1.0 + ${n(SLAB.through)} * ( 0.6 + 0.3 * near + 0.5 * thin ) * dot( under.xy * 2.0 - 1.0, vec2( ${kx}, ${ky} ) ) + ${n(SLAB.tooth)} * ( 0.3 + 0.7 * near ) * 2.0 * dot( tooth, vec2( ${kx}, ${ky} ) );
+		m *= 1.0 + ${n(SLAB.through)} * ( 0.6 + 0.3 * near + 0.5 * thin ) * dot( under.xy * 2.0 - 1.0, vec2( ${kx}, ${ky} ) ) + ${n(SLAB.tooth)} * ( 0.3 + 0.35 * near ) * 2.0 * dot( tooth, vec2( ${kx}, ${ky} ) );
+		vec2 uvS = mat2( - 0.3090, 0.9511, - 0.9511, - 0.3090 ) * wjaAt.xy * ( 12.0 / 1024.0 ) + vec2( 0.731, 0.297 );
+		vec2 uvR = mat2( 0.9659, 0.2588, - 0.2588, 0.9659 ) * wjaAt.xy * ( 7.0 / 1024.0 ) + vec2( 0.419, 0.857 );
+		float sand = texture2D( wjaSlabGrain, uvS ).a - texture2D( wjaSlabGrain, uvS, 2.0 ).a + 0.7 * ( texture2D( wjaSlabGrain, uvR ).a - texture2D( wjaSlabGrain, uvR, 2.0 ).a );
+		vec2 uvO = mat2( 0.4540, 0.8910, - 0.8910, 0.4540 ) * wjaAt.xy * ( 3.0 / 1024.0 ) + vec2( 0.173, 0.591 );
+		sand += 1.6 * ( 1.0 - near ) * ( texture2D( wjaSlabGrain, uvO ).a - texture2D( wjaSlabGrain, uvO, 2.0 ).a );
+		m *= 1.0 + ${n(SLAB.sand)} * ( 0.35 + 0.65 * near ) * sand;
 		vec3 wjaEye = normalize( cameraPosition - wjaAt );
 		vec2 dp = sp - wjaEye.xy * ( ${n(SLAB.dashDepth)} / ( 1.5 * max( wjaEye.z, 0.2 ) ) );
 		float dr = max( 12.0, sr - 6.0 );
