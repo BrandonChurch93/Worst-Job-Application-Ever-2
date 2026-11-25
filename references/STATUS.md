@@ -74,15 +74,22 @@ Read this before generating or building anything. Each of these was tried.
 
 | Round | Folder | Images | Becomes |
 | --- | --- | --- | --- |
-| 6, the pinball machine | `references/drafts/round-6/` | G1 the master view from above. G2 player's eye. G3 the backbox. G4 to G8 close shots inside the machine | Keys `table-top`, `table-player`, `table-backbox`, `table-hq`, `table-firehouse`, `table-coffee`, `table-flippers`, `table-highway` |
+| 6, the pinball machine | `references/drafts/round-6/` | Eleven images, G1 to G11. The brief is `references/BRIEF-round-6.md`. The layout guides are in `references/guides/round-6/` | The `table-` keys, and a sheet for the clear ball |
+
+What changed on November 24, from Brandon, and is in the brief but not yet in the kit:
+
+- The cursor is sealed inside a clear ball, and that ball is the pinball. This replaces the earlier ruling in the table above that it stays a bare arrow: inside a clear ball it can still be seen and can still act.
+- The machine is big and is built into a tall Step 3 page. There is no cabinet on legs. The cursor is taken in at a loader port on the first screen.
+- The camera pulls back to show the whole machine, pushes in on the part where the ball is, follows it, and rides above it on the wire ramp.
 
 After Brandon approves round 6:
 
 1. This file is updated.
-2. The eight images are copied to `references/approved/` and the eight `table-` keys in the config lose their `pending` mark and get their settled lines.
-3. `references/approved/contact-sheet.jpg` and `references/approved/MANIFEST.sha256` are made.
-4. `references.pendingRounds` in the config is emptied.
-5. The kit is audited and the kickoff prompt is handed over.
+2. `kit/01-FILM.md`, `kit/02-SUBJECT.md`, `kit/03-METHOD.md` and the config are brought into line with the three changes above.
+3. The approved images are copied to `references/approved/`, and the `table-` keys in the config are set to match them, lose their `pending` mark and get their settled lines.
+4. `references/approved/contact-sheet.jpg` and `references/approved/MANIFEST.sha256` are made.
+5. `references.pendingRounds` in the config is emptied.
+6. The kit is audited once more and the kickoff prompt is handed over.
 
 ## Not pictures, but still to approve
 
