@@ -1,35 +1,35 @@
 {
   "folder": "step1",
-  "pushed": "2026-11-25T09:19:32.177Z",
-  "commit": "e6875ea006c964c134ea7d8c02dd6bc3c05da335",
+  "pushed": "2026-11-25T09:27:00.755Z",
+  "commit": "97eae317592fcd0e7ee934ade89cb00e8675b30e",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Step 1 at rest: resume card left, three fields right, Continue under the fields",
-      "time": "2026-11-25T09:19:30.433Z",
-      "by": "step1",
-      "from": "out/work/stills/step1-rest-preview-draft.png"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "Key still step1-fire: keyboard up, two turrets firing bolts at the cursor while it types the first name",
-      "time": "2026-11-25T09:19:30.664Z",
-      "by": "step1",
-      "from": "out/work/stills/key-step1-fire-preview-draft.png"
-    },
-    {
-      "file": "look-3.jpg",
-      "caption": "Key still step1-tug: film camera pushed in, the cursor with arms pulling the resume out of the shredder slot",
-      "time": "2026-11-25T09:19:30.900Z",
+      "caption": "Still key-step1-tug-preview-draft: draft tier, preview, view beauty",
+      "time": "2026-11-25T09:26:25.004Z",
       "by": "step1",
       "from": "out/work/stills/key-step1-tug-preview-draft.png"
     },
     {
-      "file": "look-4.jpg",
-      "caption": "Shredded at 0.35: the cursor has gone into the slot and the strips come out below",
-      "time": "2026-11-25T09:19:31.130Z",
+      "file": "look-2.jpg",
+      "caption": "Key still step1-tug, new frame: whole resume card, the cursor with arms, the paper going into the shredder housing",
+      "time": "2026-11-25T09:26:59.424Z",
       "by": "step1",
-      "from": "out/work/stills/step1-step1_shredded-0p35-preview-draft.png"
+      "from": "out/work/stills/key-step1-tug-preview-draft.png"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Last name at 0.2: the letter keys in mid air on their way to new seats",
+      "time": "2026-11-25T09:26:59.654Z",
+      "by": "step1",
+      "from": "out/work/stills/step1-step1_lastName-0p2-preview-draft.png"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Email at 0.66: an Invalid email slab has come down where the cursor was",
+      "time": "2026-11-25T09:26:59.882Z",
+      "by": "step1",
+      "from": "out/work/stills/tl-08.png"
     }
   ]
 }
