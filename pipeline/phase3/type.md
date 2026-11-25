@@ -35,6 +35,7 @@ Branch `agent/type`. Looks branch `agent/type-looks`. Part made real: `type`.
 - Ink is sRGB 36 39 42 (`0x24272a`) with `specularIntensity` 0.15 and roughness 0.62; on keycaps a warmer 63 53 42 (`0x3f352a`). MEASURED with ink at `0x28292b` on `--sheet page-look --tier review --format hd`: the mean of the darkest 3% of the title's box was 42 43 43 against 37 39 41 in `page-look.png`, so the ink went a step darker and cooler. Never pure black.
 - The ink of sunk print carries the ceramic's own grain picture as its normal map at 0.16 (uv = page pixels, the same as the slab), so the grain shows faintly through the print as in the approved crops. No texture of my own.
 - The floor of cut type is matte and not metal: a metal floor mirrored the studio and the numeral came and went with the turned finish under it.
+- The material's own colour is the ink and the vertex colours are counted from it, one material for each setting in the table. Reason, MEASURED: `typeContrasts` in `src/capture/showcase.ts` reads `material.color` of the mesh that carries a run. With white materials and the ink in the vertices `npm run measure -- --unit step1` gave M4 FAIL, least contrast 1.19, as soon as the real ceramic was under the type. Now M4 passes, least 4.64 (white on the orange and on the smoked capsule; the white went to `0xfdf3e6` for it).
 - A shoulder is set in page pixels. When a camera comes nearer than the home view the vertex shader draws each shoulder in by as much as it is nearer (attribute `wjaRing`), so an edge never grows past its width at 1920. Further away it is left alone.
 - A text shape with `turnX` (the marquee, a plate on a building) needs nothing of its own: the view turns the object about the shape's centre and the run stands 0.05 off its board.
 - `material.envMapIntensity` does nothing in three 0.187 when the reflection comes from `scene.environment` (`node_modules/three/src/renderers/WebGLRenderer.js` near line 2749). MEASURED: black ink rendered 70 at 0.3 and at 0.08, and 28 with `specularIntensity` 0.2. I use `specularIntensity`. Told the Builder, surface_mason, light_keeper and keyboard_smith.
@@ -82,6 +83,7 @@ Branch `agent/type`. Looks branch `agent/type-looks`. Part made real: `type`.
 | 25 | `npm run still -- --sheet page-look --tier review --format hd --force` | numeral floor 47, metal 84 to 100 in the dark sectors |
 | 26 | `npm run compare -- --key step1-fire --tier review --format hd` | ink `0x24272a`, grain 0.16, lighter white print, warmer legends |
 
+| 27 | `npm run still -- --key step1-fire --tier review --format hd --force` | after the ink moved into the material's colour: the picture is the same |
 Checks that are not tuning looks: `--key tier-corporate` and `--key table-wide` at draft (the signs of the table, flat and standing, are all set by this maker), `--id rest-step1 --diag type`, one draft still in each of the seven beats of step 1, one of each of `--page marketing`, `step2`, `boss`, `decision`.
 
 ## What I learned
@@ -96,7 +98,7 @@ Checks that are not tuning looks: `--key tier-corporate` and `--key table-wide` 
 - `npm run still -- --key step1-fire --format uhd --tier review --force`: 19.6 s, same triangles and draw calls.
 - `npm run still -- --id rest-step1 --diag type`: 2.4 s, 47,401 triangles, 137 draw calls, every run inside its box.
 - Textures of the part: none, 0 MB.
-- `npm run measure -- --unit step1`: M4 pass, 103 runs, smallest 18 px, least contrast 5.22. `npm run gate -- --phase 3 --only G11`: pass.
+- `npm run measure -- --unit step1` on main 77d4dc7 with this branch: M4 pass, 103 runs, smallest 18 px, least contrast 4.64. M2 and M3 are red there and are not type: M2 counts pixels of a `map`, which type has none of; M3 is the fine detail of the whole key. `npm run gate -- --phase 3 --only G11`: pass.
 - Shimmer: the regions of the title, the subline, the Resume label and the helper line differ by 0 between `--at 0.3` and `--at 0.6` of `step1.firstName` at hd draft.
 
 ## Seen and not mine
