@@ -20,35 +20,34 @@ const FLY = { z0: 14, z1: 14 + heights.slab }
 export function drawWeapons(out: DrawList, f: Fight, plan: WeaponPlan): void {
   for (const p of f.popups) {
     const made = plan.popups[p.slot]!
-    const k = p.closing >= 0 ? 1 - prog(p.closing, 0, POPUP.close) : 0.55 + 0.45 * prog(p.t, 0, 0.14)
+    const up = p.closing >= 0 ? 1 - prog(p.closing, 0, POPUP.close) : prog(p.t, 0, 0.14)
+    const top = heights.card * up
     const b = made.box
-    const w = b.w * k
-    const h = b.h * k
     const dim = p.hp < POPUP.hp ? (POPUP.hp - p.hp) * 0.012 : 0
-    out.push({ id: `popup-up-${p.slot}`, part, kind: 'box', x: b.cx - w / 2, y: b.cy - h / 2, w, h, z0: 0, z1: heights.card, tone: 'glass', r: 18 * k, rot: dim * (p.slot === 1 ? -1 : 1) })
-    if (k < 0.98) continue
+    out.push({ id: `popup-up-${p.slot}`, part, kind: 'box', x: b.x, y: b.y, w: b.w, h: b.h, z0: 0, z1: Math.max(0.4, top), tone: 'glass', r: 18, rot: dim * (p.slot === 1 ? -1 : 1) })
     const t = made.titleAt
-    out.push({ id: `popup-up-${p.slot}-title`, part, kind: 'text', x: t.x, y: t.y, w: t.w, h: t.cap, z0: heights.card, z1: heights.card, tone: 'ink', words: made.title, type: plan.titleType })
+    out.push({ id: `popup-up-${p.slot}-title`, part, kind: 'text', x: t.x, y: t.y, w: t.w, h: t.cap, z0: top, z1: top, tone: 'ink', words: made.title, type: plan.titleType })
     made.buttons.forEach((btn, j) => {
-      const z1 = heights.card + heights.button
-      out.push({ id: `popup-up-${p.slot}-button-${j}`, part, kind: 'capsule', x: btn.box.x, y: btn.box.y, w: btn.box.w, h: btn.box.h, z0: heights.card, z1, tone: btn.main ? 'accent' : 'metal' })
-      out.push(label(`popup-up-${p.slot}-button-${j}-word`, part, btn.key, btn.box.cx, btn.box.cy, TYPE.button, z1, btn.main ? 'inkLight' : 'ink'))
+      const z1 = top + heights.button * up
+      out.push({ id: `popup-up-${p.slot}-button-${j}`, part, kind: 'capsule', x: btn.box.x, y: btn.box.y, w: btn.box.w, h: btn.box.h, z0: top, z1: Math.max(top + 0.4, z1), tone: btn.main ? 'accent' : 'metal' })
+      out.push(label(`popup-up-${p.slot}-button-${j}-word`, part, btn.key, btn.box.cx, btn.box.cy, TYPE.button, Math.max(top + 0.4, z1), btn.main ? 'inkLight' : 'ink'))
     })
     for (let i = p.hp; i < POPUP.hp; i++) {
       const n = POPUP.hp - 1 - i
-      out.push({ id: `popup-up-${p.slot}-chip-${n}`, part, kind: 'disc', x: b.x + 30 + n * 46, y: b.y + b.h - 58 + (n % 2) * 10, w: 20, h: 20, z0: heights.card, z1: heights.card + 0.6, tone: 'dark' })
+      out.push({ id: `popup-up-${p.slot}-chip-${n}`, part, kind: 'disc', x: b.x + 30 + n * 46, y: b.y + b.h - 58 + (n % 2) * 10, w: 20, h: 20, z0: top, z1: top + 0.6, tone: 'dark' })
     }
   }
   for (const s of f.slabs) {
     const made = plan.slabs[s.m]!
-    const k = s.state === 2 ? 1 - prog(s.t, 0, SLAB.out) : s.state === 0 ? prog(s.t, 0, 0.1) : 1
+    const k = s.state === 0 ? prog(s.t, 0, 0.1) : 1
     if (k <= 0.02) continue
     const w = made.w * k
     const h = made.h * k
     const drop = s.state === 0 ? 0 : 1 - prog(s.t, 0, 0.12)
     const z0 = s.state === 0 ? FLY.z0 : FLY.z0 * drop
-    out.push({ id: `fired-${s.m}`, part, kind: 'box', x: s.x - w / 2, y: s.y - h / 2, w, h, z0, z1: z0 + heights.slab, tone: 'danger', r: 8 * k, rot: s.rot })
-    if (k >= 0.98) out.push(label(`fired-${s.m}-words`, part, made.key, s.x, s.y, plan.slabType, z0 + heights.slab, 'inkLight', s.rot))
+    const thick = s.state === 2 ? Math.max(0.4, heights.slab * (1 - prog(s.t, 0, SLAB.out))) : heights.slab
+    out.push({ id: `fired-${s.m}`, part, kind: 'box', x: s.x - w / 2, y: s.y - h / 2, w, h, z0, z1: z0 + thick, tone: 'danger', r: 8 * k, rot: s.rot })
+    if (k >= 0.98) out.push(label(`fired-${s.m}-words`, part, made.key, s.x, s.y, plan.slabType, z0 + thick, 'inkLight', s.rot))
   }
   if (bannerUp(f)) {
     const k = Math.min(prog(f.expired, 0, 0.16), 1 - prog(f.expired, 1.3, 1.5))
