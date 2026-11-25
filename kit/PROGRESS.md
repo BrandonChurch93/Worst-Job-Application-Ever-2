@@ -321,7 +321,26 @@ Kept by `npm run judged -- --write`. Check G6 compares its ids with the computed
 
 Written in Phase 3: what was learned from study in ten lines, every locked setting, each technique that worked and each that did not, and the six recipes.
 
-none
+### Study
+
+Done 2026-11-25T13:30Z, step 1 of Phase 3. The approved images of `step1` (`step1-fire`, `step1-tug`, `page-look`, `cursor-acting`, `cursor-damage`, `cursor-arms`) were looked at crop by crop at full size before the briefs were written, and what was seen is in each brief. Eight photographs were then studied, 8 of `assets.maxStudySources` 12; four are left for the pinball table. They are in `references/cache/phase3/` and are not committed. Sources: Wikimedia Commons files `Bisque Firing or Biscuit Firing.jpg` (CC0), `Frosted glass surface.jpg`, `Brushed Aluminium.jpg`, `Large Format Printing of Black Numbers on a Brushed Aluminum Sheet.jpg`, `Arcade button chording effects controller.jpg`, `Two-shot injection molded keycaps.jpg`, `AppleDesign Keyboard top.jpg`, and the Pexels photograph 6944705, a white matte bowl on a white surface. The first showed a kiln and taught nothing about the surface. Nothing from any of them is in a frame.
+
+What was learned, in ten lines:
+
+1. Matte ceramic has no bright spot at all. Under a low soft light the bowl's tone turns slowly across its form, and the only bright thing is its rim, a lighter line about a millimetre wide where the surface turns toward the light. So the page gets its shape from slow falloff and from thin light lines on its lips, never from a highlight.
+2. Its shadows are warm grey, darkest in a narrow line at the contact and soft a few millimetres out. No shadow in the photograph is black or blue. The approved page says the same: pockets dark on the upper left wall, bright on the lower right, about 14 px of corner radius.
+3. The grain of a matte glaze shows only where light rakes it and in the brightest part. In the approved images it is an eggshell speckle of 2 to 4 px at 1080p. It is height and roughness, not paint, and it must not crawl from frame to frame.
+4. Frosting on glass is a pebble far finer than one pixel at our scale. At page distance it is a satin sheen with a wide soft highlight and no grain to see. What touches the glass is sharp, what lies deeper under it is soft. The approved fields add a thin aluminum rim and a grey-green body.
+5. Brushed aluminum is dark where it mirrors nothing bright: blue-grey, not light grey. Its highlight is one broad band that runs across the brushing, the fine lines show inside that band and vanish outside it, a few stray scratches cross the grain, and its edge is a crisp chamfer.
+6. Ink on brushed metal is matte, even and sharp-edged, and the metal's highlight passes behind it without lifting it. So type is its own matte layer on every material and never takes a reflection.
+7. Glossy moulded plastic shows two things on each dome: one small sharp highlight and a wider, dimmer picture of the light. The highlight has the light's colour, and the body colour lives in the mid tones. A dark ring marks where a button meets its bezel, and the moulded radius carries a thin bright line. The approved orange button is this with a soft box of light along its upper edge.
+8. A keycap is matte, slightly dished on top, with sides that slope about ten degrees and are darker than the top, an edge radius of about a millimetre, and a legend that lies flush. The approved caps are warm cream with centred charcoal legends and one orange Enter.
+9. A keyboard seen from above reads through its gaps: they are the darkest tone in the picture, each cap throws a short shadow into the gap on the side away from the light, the tops are the lightest tone and nearly even, and side walls show only toward the edges of the frame. The deck is a little different in tone from the caps. In the build the deck stands above the page, as Brandon settled.
+10. One low soft key from the upper left, as in the approved page: every part throws a clear soft shadow down and to the right, deeper near things that stand high, and the frame is a little brighter at the upper left than at the lower right. Bands and window shapes of light, which one approved sheet shows, are not the target.
+
+### Locked settings, techniques and recipes
+
+Written at step 9 of the phase, from the final build.
 
 ## Sound
 
@@ -334,7 +353,15 @@ The pause mark and the voice settings in use. For every line and every cue: take
 
 The physics library and its test between VMs. The count of standing parts and the bare share each time they are measured. Every search for a take: how long it ran, what it found, when each beat's event fell. Which beats, if any, fell back.
 
-none
+### Study of real machines
+
+Done 2026-11-25T13:34Z, before any part of the machine is built, as `kit/03-METHOD.md` section 10 asks. The screenshots of shipped pinball video games were studied in reference round 6: `references/drafts/round-6/NOTES.md` under "Study" lists them and the five things taken (fullness, the tier framed round its flippers, one centerpiece per tier, a table lit by its own lamps, a ball found at a glance). Four photographs of real machines were studied now, the last 4 of `assets.maxStudySources` 12. They are in `references/cache/table/` and are not committed. Sources, all Wikimedia Commons: `Pinball Wire Ramp - Demolition Man.JPG`, `New pop bumbers and standup target (3726098619).jpg`, `Pinball machine Lower Playfield.jpg`, `Detail of new parts installed in the bottom part of the playfield (4539318190).jpg`. Only how parts are built and fixed down was taken. No layout, artwork, character or name.
+
+1. A wire ramp is a track of polished steel wires, two under the ball and two beside it, tied by hoops welded round them every few ball widths. It stands on brackets and ends in an open end or a wire cage where the ball drops. The steel is thin and bright and carries the colours of the lamps near it as glints along its length.
+2. A pop bumper is layered: a base plate on the floor, a white body, a metal ring that hangs lower on two rods, and a wide cap that overhangs the body. A bank of drop targets is a row of flat plates standing in one slot with a hair's gap between them and a post at each end.
+3. Everything is fixed down and shows how. A post is turned with a waist for its rubber ring and has a screw head on top. A slingshot is a rubber ring stretched round three posts under a printed plate held by screws with washers. A lane guide is a strip raised on two posts. Screw heads are everywhere, and they are what makes a floor read as built.
+4. A flipper is a moulded bat with a rubber band round its edge and a round boss at its pivot, standing a little off the floor on its shaft. An insert is a coloured clear window flush with the floor with a dark line round it, brightest in the middle when lit.
+5. A display sits behind smoked glass in a dark bezel. It glows through the glass, and its glow lies on the glass and on the parts beside it. No part of the floor is bare: where nothing stands there is printed art.
 
 ## Card
 
@@ -408,6 +435,8 @@ One line each: the date, the decision, the reason, and the config key if one was
 - 2026-11-25T13:26Z · Phase 3: `page-turn` stays the Builder's part. It lives in `src/stage/` and `src/shell/view.ts`, which are frozen for the agents: the turn with mass, the knock, the shiver and the cursor's jump. The slab's edge and back come from the surface's owner through the ground maker.
 - 2026-11-25T13:26Z · Phase 3, found while writing the seam and given to the gate agent: `tools/gate.mjs` has no G13, G15 or G16; `info().textureMb` answers the constant 0; five parts of the register (`materials`, `light-engine`, `page-turn`, `cursor-effects`, `acting-step1`) have no recorded files and no stand-in hash, so G13's second test cannot be made for them. The gate agent writes the three checks, the texture measure, and a way to record the files of those five parts against the stand-in commit d0f83c8.
 - 2026-11-25T13:26Z · Phase 3: `studio()` and the light law moved from `src/shell/materials.ts` to `src/post/studio.ts`, and `materials()` became one shared set seeded by `config.seed`, so that the light has one owner (`light_keeper`) and the materials another (`surface_mason`). The picture does not change. Type contrast and `App.groundOf` still read the blockout `TONES` of `src/shell/view.ts`: they move to the real materials at integration.
+- 2026-11-25T13:45Z · Phase 3, the table seam: the table has hundreds of shapes, so its parts are built whole, zone by zone, on a new kind of shape, `anchor`, that the view never draws (`whole.<part>.<zone>`, seven zones down the page of step 3). An anchor nobody answers keeps its part on the list of stand-ins. What moves carries its state in `v`. `src/table/real/zone.ts` puts a place of the layout into a zone's frame, `src/table/real/light.ts` is the one door every table material passes through so that the light groups of `table-lights` reach every surface, and a printed floor says which of its pixels are printed with a mask the `coverage` view and M8 read. `src/stage/CONTRACT.md` has the law under "Making the table real". `src/table/layout.ts`, `draw.ts` and `physics.ts` stay with the Builder until Phase 4's physics agent starts: a table agent sends a change to a collider as a patch.
+- 2026-11-25T13:45Z · Phase 3, the table team is ten agents, one folder each under `src/table/real/`: `art` (`tier-art`), `models/corporate`, `models/office`, `models/street` (the models of one tier each), `hardware` (`table-hardware`, `lift`), `play` (`flippers`, `bumpers`, `targets`, `ramps`), `frame` (`table-frame`, `marquee`, `loader`), `lights` (`table-lights`), `ball` (`clear-ball`), `displays` (`displays`). Build agents take at most 10 slots (`sandbox.maxAgents` 16 less `sandbox.criticSlots` 6) and nine are on step 1, so the table agents start one by one as slots come free: the floors first, then the models of Tier 3. Step 1 keeps its slots until its first round has started.
 
 ## Notes from Brandon
 
@@ -472,6 +501,7 @@ How much of each limit in the table of `kit/07-QUALITY-BAR.md` has been used.
 | Searches for the pinball take | 4, the fourth logged as over the count at 10:00Z | 3 (`quality.takeSearchMaxRuns`) |
 | Replacements of an agent that ran past its limit | 0 | one per job |
 | Attempts to fix one machine check | 2 (M9 after the height reading, the progress rail) | 5 per round (`quality.gateFixMaxAttempts`) |
+| 12, at 13:34Z: the eight photographs of the look lock study and four photographs of real pinball machines | 12 (`assets.maxStudySources`): all used, none left |
 
 ## Review items not done
 
