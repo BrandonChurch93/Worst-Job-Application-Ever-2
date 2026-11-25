@@ -20,6 +20,10 @@ export function studioEnvironment(renderer: THREE.WebGLRenderer): THREE.Texture 
   back.position.set(0, 0, 30)
   back.lookAt(0, 0, 0)
   scene.add(back)
+  // The page itself, lit, as a face turned away from the light sees it.
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(400, 400), new THREE.MeshBasicMaterial({ color: new THREE.Color(...look.studio.floor), side: THREE.DoubleSide }))
+  floor.position.set(0, 0, -3)
+  scene.add(floor)
   const pmrem = new THREE.PMREMGenerator(renderer)
   const target = pmrem.fromScene(scene, 0.03, 0.1, 200)
   pmrem.dispose()
@@ -27,6 +31,7 @@ export function studioEnvironment(renderer: THREE.WebGLRenderer): THREE.Texture 
   box.geometry.dispose()
   glowBox.geometry.dispose()
   back.geometry.dispose()
+  floor.geometry.dispose()
   return target.texture
 }
 
@@ -41,7 +46,7 @@ export const lightLaw = {
   // Where the key stands, in world units, and the square of its distance to the middle of the view.
   keyAt: { value: new THREE.Vector4(0, 0, 1, 1) },
   // The studio's reflection is dimmer where the key or the fill is in shadow: a pocket's wall hides the soft light too.
-  shade: { value: new THREE.Vector2(look.studio.shadeKey, look.studio.shadeFill) }
+  shade: { value: new THREE.Vector3(look.studio.shadeKey, look.studio.shadeFill, look.studio.floorKept) }
 }
 
 const fail = () => new Error('The light code of this three.js release is not the one this build was written for')
@@ -179,7 +184,10 @@ function patchedMaps(): string {
   if (!chunk.includes(mirror) || !chunk.includes(coat)) throw fail()
   return chunk
     .replace(line, 'iblIrradiance += wjaEnvDiffuse * wjaOpen * getIBLIrradiance( geometryNormal );')
-    .replace(mirror, 'radiance += iblRadiance * wjaOpen;')
+    .replace(
+      mirror,
+      'float wjaFloor = smoothstep( 0.05, -0.35, ( wjaViewInverse * vec4( reflect( - geometryViewDir, geometryNormal ), 0.0 ) ).z ) * smoothstep( 0.5, 3.0, ( wjaViewInverse * vec4( - vViewPosition, 1.0 ) ).z );\n\tradiance += iblRadiance * mix( wjaOpen, 1.0, wjaFloor * wjaShade.z );'
+    )
     .replace(coat, 'clearcoatRadiance += wjaOpen * getIBLRadiance( geometryViewDir, geometryClearcoatNormal, material.clearcoatRoughness );')
 }
 
@@ -212,7 +220,7 @@ export function studio<T extends THREE.MeshStandardMaterial>(material: T): T {
     shader.uniforms.wjaShade = lightLaw.shade
     shader.uniforms.wjaEnvOwn = { get value() { return material.envMapIntensity } } as THREE.IUniform
     shader.fragmentShader =
-      'uniform float wjaEnvDiffuse;\nuniform float wjaKeySpecular;\nuniform mat4 wjaViewInverse;\nuniform vec4 wjaKeyAt;\nuniform float wjaEnvOwn;\nuniform vec2 wjaCap;\nuniform vec2 wjaShade;\n' +
+      'uniform float wjaEnvDiffuse;\nuniform float wjaKeySpecular;\nuniform mat4 wjaViewInverse;\nuniform vec4 wjaKeyAt;\nuniform float wjaEnvOwn;\nuniform vec2 wjaCap;\nuniform vec3 wjaShade;\n' +
       shader.fragmentShader.replace('#include <opaque_fragment>', capped + '#include <opaque_fragment>').replace('#include <lights_fragment_begin>', patchedBegin()).replace('#include <lights_fragment_maps>', patchedMaps()).replace('#include <envmap_physical_pars_fragment>', patchedEnv())
   }
   material.customProgramCacheKey = () => 'wja-studio'

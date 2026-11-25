@@ -24,9 +24,37 @@ const ICONS = {
   clipboard: (s, w, fl) => `<rect x="184" y="162" width="144" height="200" rx="14" ${s(w)}/><rect x="220" y="140" width="72" height="42" rx="9" ${fl}/><polyline points="216,270 246,302 302,232" ${s(w * 1.3)}/>`,
   pizza: (s, w, fl) => `<path d="M256 374 L168 196 Q256 150 344 196 Z" ${s(w)}/><path d="M184 230 Q256 194 328 230" ${s(w * 0.6)}/><circle cx="234" cy="264" r="15" ${fl}/><circle cx="282" cy="254" r="14" ${fl}/><circle cx="257" cy="314" r="13" ${fl}/>`,
   envelope: (s, w) => `<rect x="170" y="228" width="172" height="118" rx="9" ${s(w)}/><polyline points="172,234 256,298 340,234" ${s(w)}/><path d="M248 206 Q236 168 198 174" ${s(w * 0.8)}/><polyline points="214,158 196,174 216,188" ${s(w * 0.8)}/><path d="M264 206 Q276 168 314 174" ${s(w * 0.8)}/><polyline points="298,158 316,174 296,188" ${s(w * 0.8)}/>`,
-  knot: (s, w, fl, t) => {
-    const d = 'M146 318 C212 318 254 286 264 242 C276 190 234 158 210 190 C186 224 236 266 288 264 C324 262 346 240 368 204'
-    return `<path d="${d}" ${s(w * 2.1)}/><path d="${d}" ${t(w * 0.5)}/>`
+  knot: (s, w, fl, t, gap) => {
+    const at = (q) => [256 + 46 * (Math.sin(q) + 2 * Math.sin(2 * q)), 250 - 46 * (Math.cos(q) - 2 * Math.cos(2 * q))]
+    const from = 0.42
+    const to = Math.PI * 2 - 0.42
+    const n = 480
+    const pts = []
+    for (let i = 0; i <= n; i++) pts.push(at(from + ((to - from) * i) / n))
+    const seg = (i0, i1) => 'M' + pts.slice(Math.max(0, i0), Math.min(n, i1) + 1).map((q) => `${q[0].toFixed(1)} ${q[1].toFixed(1)}`).join(' L')
+    const hits = []
+    for (let i = 0; i < n; i++) {
+      for (let j = i + 12; j < n; j++) {
+        const [a, b, c, d] = [pts[i], pts[i + 1], pts[j], pts[j + 1]]
+        const den = (b[0] - a[0]) * (d[1] - c[1]) - (b[1] - a[1]) * (d[0] - c[0])
+        if (Math.abs(den) < 1e-9) continue
+        const u = ((c[0] - a[0]) * (d[1] - c[1]) - (c[1] - a[1]) * (d[0] - c[0])) / den
+        const v = ((c[0] - a[0]) * (b[1] - a[1]) - (c[1] - a[1]) * (b[0] - a[0])) / den
+        if (u >= 0 && u < 1 && v >= 0 && v < 1) hits.push(i, j)
+      }
+    }
+    hits.sort((x, y) => x - y)
+    const tail = (q, far) => {
+      const d = [q[0] - far[0], q[1] - far[1]]
+      const l = Math.hypot(d[0], d[1])
+      return `M${q[0].toFixed(1)} ${q[1].toFixed(1)} L${(q[0] + (d[0] / l) * 78).toFixed(1)} ${(q[1] + (d[1] / l) * 78).toFixed(1)}`
+    }
+    let out = `<path d="${tail(pts[0], pts[6])}" ${s(w * 1.5)}/><path d="${tail(pts[n], pts[n - 6])}" ${s(w * 1.5)}/><path d="${seg(0, n)}" ${s(w * 1.5)}/>`
+    hits.forEach((i, k) => {
+      if (k % 2) return
+      out += `<path d="${seg(i - 20, i + 20)}" ${gap(w * 2.7)}/><path d="${seg(i - 26, i + 26)}" ${s(w * 1.5)}/>`
+    })
+    return out
   },
   ladder: (s, w) => `<line x1="212" y1="146" x2="212" y2="366" ${s(w * 1.2)}/><line x1="300" y1="146" x2="300" y2="366" ${s(w * 1.2)}/>${[180, 224, 268, 312, 356].map((y) => `<line x1="212" y1="${y - 12}" x2="300" y2="${y - 12}" ${s(w)}/>`).join('')}`,
   clock: (s, w, fl) => {
@@ -37,7 +65,8 @@ const ICONS = {
     }
     return `<circle cx="256" cy="256" r="106" ${s(w)}/>${ticks}<line x1="256" y1="256" x2="256" y2="190" ${s(w)}/><line x1="256" y1="256" x2="302" y2="282" ${s(w)}/><circle cx="256" cy="256" r="10" ${fl}/>`
   },
-  hats: (s, w) => `<ellipse cx="256" cy="354" rx="94" ry="18" ${s(w)}/><path d="M204 350 L211 302 Q256 288 301 302 L308 350" ${s(w)}/><ellipse cx="256" cy="298" rx="76" ry="15" ${s(w)}/><path d="M214 294 L220 252 Q256 240 292 252 L298 294" ${s(w)}/><ellipse cx="256" cy="248" rx="60" ry="12" ${s(w)}/><path d="M224 245 L229 206 Q256 194 283 206 L288 245" ${s(w)}/>`
+  hats: (s, w, fl, t, gap) =>
+    `<g transform="translate(0 -14)"><ellipse cx="256" cy="356" rx="102" ry="17" ${s(w)}/><path d="M198 352 L210 304 Q232 318 256 304 Q280 318 302 304 L314 352" ${s(w)}/><ellipse cx="256" cy="300" rx="80" ry="13" ${gap(w * 2.2)}/><ellipse cx="256" cy="300" rx="80" ry="13" ${s(w)}/><path d="M210 297 A46 46 0 0 1 302 297" ${s(w)}/><ellipse cx="256" cy="250" rx="60" ry="10" ${gap(w * 2.2)}/><ellipse cx="256" cy="250" rx="60" ry="10" ${s(w)}/><path d="M228 247 L226 172 L286 172 L284 247" ${s(w)}/><line x1="228" y1="228" x2="284" y2="228" ${s(w * 0.6)}/></g>`
 }
 
 const pen = (col, opacity = 1) => (w) => `fill="none" stroke="${col}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" opacity="${opacity}"`
@@ -49,15 +78,19 @@ function cell(look, kind, i) {
   let rings = ''
   if (kind === 'relief') {
     for (let r = 20; r < 250; r += 10) rings += `<circle cx="256" cy="256" r="${r}" fill="none" stroke="#fff" stroke-width="3.2" opacity="0.2"/>`
-    return `<rect width="512" height="512" fill="#000"/><circle cx="256" cy="256" r="250" fill="#262626"/>${rings}${draw(pen('#ffffff'), 22, 'fill="#fff"', pen('#555', 1))}`
+    return `<rect width="512" height="512" fill="#000"/><circle cx="256" cy="256" r="250" fill="#262626"/>${rings}<circle cx="256" cy="256" r="244" fill="none" stroke="#ffffff" stroke-width="9" opacity="0.8"/>${draw(pen('#ffffff'), 22, 'fill="#fff"', pen('#555555', 1), pen('#262626'))}`
   }
-  for (let r = 20; r < 262; r += 10) rings += `<circle cx="256" cy="256" r="${r}" fill="none" stroke="${kind === 'glow' ? '#fff' : mix(c, '#ffffff', 0.3)}" stroke-width="2" opacity="${kind === 'glow' ? 0.1 : 0.14}"/>`
+  for (let r = 20; r < 240; r += 10) rings += `<circle cx="256" cy="256" r="${r}" fill="none" stroke="${kind === 'glow' ? '#ffffff' : mix(c, '#ffffff', 0.3)}" stroke-width="2" opacity="${kind === 'glow' ? 0.1 : 0.14}"/>`
   if (kind === 'lens') {
-    const ink = mix(c, '#ffffff', 0.35)
-    return `<radialGradient id="l${i}" cx="256" cy="256" r="262" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${mix(c, '#06080c', 0.62)}"/><stop offset="0.75" stop-color="${mix(c, '#06080c', 0.74)}"/><stop offset="1" stop-color="${dark}"/></radialGradient><rect width="512" height="512" fill="url(#l${i})"/>${rings}${draw(pen(ink, 0.6), 17, `fill="${ink}" opacity="0.6"`, pen(dark, 0.7))}`
+    const ink = mix(c, '#06080c', 0.82)
+    const mid = mix(c, '#06080c', 0.42)
+    const rim = `<circle cx="256" cy="256" r="246" fill="none" stroke="${mix(c, '#ffffff', 0.45)}" stroke-width="7" opacity="0.55"/><circle cx="256" cy="256" r="236" fill="none" stroke="${dark}" stroke-width="3" opacity="0.5"/>`
+    return `<radialGradient id="l${i}" cx="256" cy="256" r="262" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${mix(c, '#06080c', 0.36)}"/><stop offset="0.7" stop-color="${mix(c, '#06080c', 0.5)}"/><stop offset="1" stop-color="${mix(c, '#06080c', 0.7)}"/></radialGradient><rect width="512" height="512" fill="url(#l${i})"/>${rings}${rim}${draw(pen(ink, 0.85), 15, `fill="${ink}" opacity="0.85"`, pen(mid, 0.9), pen(mid))}`
   }
-  const ink = mix(c, '#0a0c10', 0.9)
-  return `<radialGradient id="g${i}" cx="256" cy="256" r="262" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${mix(c, '#ffffff', 0.78)}"/><stop offset="0.38" stop-color="${mix(c, '#ffffff', 0.42)}"/><stop offset="0.72" stop-color="${c}"/><stop offset="1" stop-color="${mix(c, '#06080c', 0.5)}"/></radialGradient><rect width="512" height="512" fill="url(#g${i})"/>${rings}${draw(pen(ink, 0.94), 17, `fill="${ink}" opacity="0.94"`, pen(mix(c, '#ffffff', 0.3), 0.9))}`
+  const ink = mix(c, '#0a0c10', 0.78)
+  const lit = mix(c, '#ffffff', 0.5)
+  const rim = `<circle cx="256" cy="256" r="240" fill="none" stroke="${mix(c, '#06080c', 0.5)}" stroke-width="3" opacity="0.45"/>`
+  return `<radialGradient id="g${i}" cx="256" cy="256" r="262" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${mix(c, '#ffffff', 0.78)}"/><stop offset="0.38" stop-color="${mix(c, '#ffffff', 0.42)}"/><stop offset="0.72" stop-color="${c}"/><stop offset="1" stop-color="${mix(c, '#06080c', 0.62)}"/></radialGradient><rect width="512" height="512" fill="url(#g${i})"/>${rings}${rim}${draw(pen(ink, 0.94), 14, `fill="${ink}" opacity="0.94"`, pen(lit, 0.9), pen(lit))}`
 }
 
 export async function insertAtlases(inserts, dir, size) {
