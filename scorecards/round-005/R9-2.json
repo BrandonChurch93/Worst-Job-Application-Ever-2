@@ -1,0 +1,143 @@
+{
+ "critic": "R9",
+ "score": 4,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "B: one sheet across each acting state",
+ "reads": [
+  {
+   "file": "set-B-01.png",
+   "read": "calm, a bit wary; it drops onto a form and glides from the Email field up to First name, which then lights up. It is about to start filling in the form"
+  },
+  {
+   "file": "set-B-02.png",
+   "read": "shocked and in pain; a bullet comes across the keyboard, hits it with a flash and leaves a hole. It reels and spins, then flees toward F as more shots come in"
+  },
+  {
+   "file": "set-B-03.png",
+   "read": "panicked, dodging; it is still under fire, gets hit or scorched into a ragged crumpled shape, recovers, then darts across the keys to L near Enter"
+  },
+  {
+   "file": "set-B-04.png",
+   "read": "tired, grudging relief; the email is 'accepted. Reluctantly.' It pokes the field, flies off the keyboard to an empty page, finds a Resume and pulls it close, almost hugging it"
+  },
+  {
+   "file": "set-B-05.png",
+   "read": "desperate and protective; it grows arms and hands to hold its Resume as a shredder pulls the paper down. It strains and rocks in a tug-of-war"
+  },
+  {
+   "file": "set-B-06.png",
+   "read": "losing, then grief; the resume is eaten bit by bit, the arms go limp and vanish, and it sags, tilts and droops over the shreds, defeated"
+  },
+  {
+   "file": "set-B-07.png",
+   "read": "broken; it comes back as blurred strips, falls into the shred pile, half reforms, then ends as a crumpled limp blob under the empty shredder"
+  }
+ ],
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-B-05.png",
+   "where": "the arrow's sides, all 12 frames",
+   "what": "it grows two black rubber-hose arms that end in small black mitten hands, which grip the Resume. Gloved hands and limbs are forbidden",
+   "fix": "cut the arms and hands. Make the arrow itself hold on: pin the paper with its tip, or bend its body or tail over the page and pull back, stretching as the shredder tugs"
+  },
+  {
+   "severity": "severe",
+   "file": "set-B-06.png",
+   "where": "frames 1-5, the arms holding the paper",
+   "what": "the same black arms and mitten hands; in frame 5 they dangle alone under a flattened arrow, so they are clearly limbs",
+   "fix": "remove them, and play the losing grip and the let-go through the arrow's own bend, sag and tilt"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01.png",
+   "where": "frames 2-11, the move from Email to First name",
+   "what": "it glides along like a pointer: the same rigid pose, no anticipation, no lean and no stretch over the move, and no squash when it arrives at First name",
+   "fix": "crouch it (squash) before it moves, lean and stretch it along the path, and overshoot and settle with a small squash on the field"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02.png",
+   "where": "frame 2, the impact",
+   "what": "there is no wind-up and no squash on the hit. The flash hides the arrow, and the tumble frames after it are thin, rotated, broken-up shapes that do not read as a silhouette",
+   "fix": "show one clean frame of the arrow squashed or bent away from the bullet, then hold a clear shocked recoil pose for 2-3 frames before the spin"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03.png",
+   "where": "frames 5-7 and 9-10",
+   "what": "the arrow turns into a torn, ragged sprite and doubled ghost images; it is unclear whether it is hurt, smeared or a different object",
+   "fix": "keep one clear damaged silhouette (arrow plus holes or a dent), use a smear only for 1 frame on fast moves, and hold the hurt pose before the dash"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-04.png",
+   "where": "frames 4-5, and 7-12",
+   "what": "it jumps from the keyboard to an empty page with no transition, and its 'reluctant' feeling is not acted; then it slides toward the Resume in one rigid pose and its grow in frame 12 is only a scale-up",
+   "fix": "add a slump or sigh beat after 'Reluctantly', an anticipation before it leaves, and lean or tilt it toward the Resume to show it wants it"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-07.png",
+   "where": "frames 1-2, and 9-12",
+   "what": "the streaked, blurred strips do not read as the arrow, and the last pose is a melted blob that has lost the arrow shape, so the character is unclear at the end",
+   "fix": "keep the strips arrow-coloured with one arrowhead visible, and end on a bent, crumpled but still clearly arrow-shaped silhouette, held for 4+ frames"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-06.png",
+   "where": "frames 7-9",
+   "what": "the droop and turn away is good, but its sag is only a rotation with no squash; grief reads a little weak",
+   "fix": "add a slight vertical squash and a lower position to the sad hold"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01.png",
+   "where": "the whole sheet",
+   "what": "did not read: confident reads as calm and a bit wary.",
+   "fix": "The upright stand, the slight bounce and the strut of Confident, held.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03.png",
+   "where": "the whole sheet",
+   "what": "did not read: nervous reads as panicked and dodging.",
+   "fix": "The beads of sweat, the small tremble and the gulp of Nervous held on a still arrow before it moves.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-04.png",
+   "where": "the whole sheet",
+   "what": "did not read: proud reads as tired, grudging relief.",
+   "fix": "The puff up and the dusting of Proud, held with the paper.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-05.png",
+   "where": "the whole sheet",
+   "what": "did not read: angry reads as desperate and protective.",
+   "fix": "The red tip and the vented steam of Angry plain at the size of the sheet, with the pull acted as temper.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-06.png",
+   "where": "the whole sheet",
+   "what": "did not read: scared reads as losing, then grief.",
+   "fix": "The pale, stony arrow leaning back of Scared held before the loss.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-07.png",
+   "where": "the whole sheet",
+   "what": "did not read: exhausted reads as broken. The sag and the drag are not in the read, and the last pose reads as a blob that has lost the arrow.",
+   "fix": "The sag and the soft edges of Exhausted on a shape that stays an arrow, the drag and the slump against something held.",
+   "by": "builder"
+  }
+ ]
+}
