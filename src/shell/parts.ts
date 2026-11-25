@@ -46,7 +46,7 @@ export function header(current: number): LayoutNode[] {
     const kind = i === current ? 'progressButtonCurrent' : 'progressButton'
     const cap = block(TYPE.numeral.font, words(`data:numerals.${i}`), TYPE.numeral.px).cap
     const label = text(`progress-${i}-numeral`, `data:numerals.${i}`, { ...TYPE.numeral, align: 'centre' }, c.x, c.y - cap / 2, { part: 'type', on: heights[kind], tone: i === current ? 'inkLight' : 'ink' })
-    buttons.push(node(`progress-${i}`, kind, [c.x - d / 2, c.y - d / 2, d, d], { part: 'shell', shape: 'disc', floor: heights.progressRail, children: [label] }))
+    buttons.push(node(`progress-${i}`, kind, [c.x - d / 2, c.y - d / 2, d, d], { part: 'shell', shape: 'disc', floor: heights.progressRail, over: true, children: [label] }))
   }
   rail.children = buttons
   const rule = node('header-rule', 'rule', [LEFT, HEADER.ruleY, RIGHT - LEFT, 2], { part: 'shell' })
