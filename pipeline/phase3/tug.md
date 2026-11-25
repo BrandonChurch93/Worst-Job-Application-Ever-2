@@ -29,6 +29,15 @@ Agent `tug_fixer`, branch `agent/tug`. Started 16:42 UTC.
 14. `step1.resume`: the proud puff and the dust-off play beside the place of the sheet while it slides in (20.4 to 20.96 s), the lift follows at 21.06 s. Held 0.56 s: the sheet is at rest only from 20.86 s and the drop at 21.62 s does not move.
 15. In the tug the acting is `angry` until 0.62 of the sheet is gone (it was 0.45), so the key picture at 25.125 s and the peaks before it are angry: red tip and steam come from the acting of that state.
 
+16. Builder's ruling, 17:35Z, supersedes 7 and the last paragraph of "M3 and the camera": the key picture is taken in the close view. `TUG_FRAMES = { wide: 972, key: 620, close: 520 }`; the move in runs from 23.1 to 24.4 s (2.37 s into the beat), 620 px is held through 25.125 s, then a creep to 520 px by 27.0 s. The wide frame keeps its top at page y 250 (the Builder's word: not 196).
+17. The frame's top in the close view goes from page y 450 to 508, not 498: at 498 the prompt of the drop zone was cut through its middle. It then drops 18 px between 27.1 and 27.8 s so the pile is clear of the bottom edge.
+18. The key pose is a peak of the lean: `TUG_CURVE` has a point at 2.95 s and one at 3.2 s (lean 0.42 and 0.44, strain 25 and 26 px).
+19. "The loser stays in the picture": the cursor is never let go to leave the frame. It loses at 27.09 s, the arms are torn off, and it is drawn tip first into the intake in view (`stepShredded` drives it from 70 px above the slot down into it while `s.shred < SHRED.gone`). `SHRED.gone` 0.46, `pile` 0.64, `pileSeconds` 1.14, so about 0.3 s pass with neither the cursor nor its pile on screen. The brief's "holds on intake and outlet while sheet and cursor go through and strips drop" is kept.
+20. Strips, supersedes 5: 2.5 px wide in lanes 3.2 px apart (they were 3.6 px in the same lanes, so three touched and fought in depth and read as one grey slat). Each is 0.8 to 1.2 of 42 px long, up to 0.1 radians askew, 0.05 px above its neighbour, flat on the page from 0.4 of its length. The strip's stock has an emissive share of 0.14 for the light paper lets through: without it a strip in the hood's shadow was darker than the page beside it.
+21. The bend at the mouth is drawn twice: in the shape (`KNEE`, 16 units of the drawn sheet, about 4.7 px) and as shade in the sheet's vertex colours (`MOUTH`). The shape alone does not show from straight above on a stock this matte.
+22. Not done: the thick turned corner of the approved image. The dog ear of the solver is at the left top corner, under the left hand; a larger ear, or one at the right, comes up through the mitt that holds that corner.
+23. M3 at the key is red at draft since 16 (0.68, least 0.8), reported to the Builder as red; not worked on, by the Builder's word.
+
 ## M3 and the camera
 
 MEASURED with `npm run still -- --key step1-tug --format hd --tier draft` and the measure's own `highFrequencyEnergy` against `references/approved/step1-tug.png`, at the key instant 25.125 s, sheet and slot at the new scale:
