@@ -67,3 +67,24 @@ After the merge of the real models (main 9c7a181), draft, grade bend, from the s
 `counts` rows: `table-wide --live low`: clear-ball real, 2 meshes, 2 colour, 0 shadow, 2 calls, 18872 triangles. `tier-office --live low`: 3 meshes, 3 colour, 0 shadow, 3 calls, 18874 triangles. `tier-office --live high`: 3 calls, 18874 triangles.
 
 Asset sets: none. `public/assets/table/ball/` and `assets-full/table/ball/` do not exist; the part is code alone, 0 MB in both sets.
+
+## Last round, 17:50 to 18:15 UTC (ended early by the Builder)
+
+Decisions:
+- The picture bent through the wall is now traced: the ray leaves the ball, meets the nearest four models of the tier as boxes (from `table.models`, each drawn in 0.45 ball from its box because the real models stand back from their boxes), then the sky, then the floor. A box hit gives a wall with bars, rows and a dark foot, lit by `washAt` in `lamps.ts` (the zone's lamps and fill at that place). Wall colours are my reading of the other owners' models: `WALLS` in `index.ts`, by part first (`model-hq` brass), then by layout tone.
+- The lit insert in the bent picture has a hot middle, ribs, eighteen facets and a dark bezel; the wall gathers the insert's colour on the side nearest the insert.
+- The shadow is longer (key slant 1.8, lamp slant up to 2.4) and darker (key up to 0.72), its star has two more rays. On and beside the carpet the decal lies 5.6 px above the floor so that it also darkens the brass rods of the door floor (they reach 5.2 px); elsewhere it stays at 3.4 px.
+- Looks: 52 before this round, then 16 granted and 3 more; used 18 of 19 (a: 7, b: 11). Total 70.
+
+Seen after the last change of each thing (MEASURED means the still was rendered and looked at in a crop):
+- band in low views: `shot:pinball.lobby@0.35@table-lobby` (h3, h4, h5), `key:lobby-doors` (h7). Carpet red at the top of the ball, brass below.
+- band over the lit insert: `sheet:clear-ball` (h6), once. Not one colour any more: pale at the far side, strong blue toward the insert.
+- shadow in a low view: the same shot (h5). Carpet 166,60,60 lit and 57,23,26 in the shade (pixel values from h4).
+- grade true and the open halves on the sheet (t4, o4), loader-page, rail-cam, reply-all, youre-fired, last-save (h2): seen before the insert and shadow changes of 18:05 to 18:10, not after.
+
+Open for the next owner:
+1. In `key:lobby-doors` the ball stands 2 px in front of the hq box. The band there is a clear grey and blue rim with little of the room in it, because every bent ray meets the wall at once. A wall picture with more in it (the real door: brass posts, pale panes, the lit strip above) would have to come from the hq model's owner, as colours or as a small texture.
+2. The low-view shadow is a broad dark area in front of the ball with a soft bluish spot, not yet the long narrow shape with a sharp warm star of the approved lobby image. The numbers are in `decalFragment` (`glsl.ts`) and the last lines of `pose` (`index.ts`). The spot takes the colour of the tier's soft light, which is bluish in Corporate.
+3. On the loader page the ball is faint: a thin ring and the seam. There is no floor picture there (`uArtOn` 0), so the band has only the dark surround to show.
+4. The sheet has no light, so the sheet balls throw no shadow; the Builder owns sheet balls with a name that gets true light.
+5. Grade true and the open halves were not looked at after 18:05.

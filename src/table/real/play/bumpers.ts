@@ -10,12 +10,13 @@ import { drop, matsOf, part } from './mats'
 const PLATE = look(0xdde0e3, 0.2, 0.78, 0)
 const PRINT = look(0x20262a, 0.55, 0, 0.4)
 const PRINT_PALE = look(0xd9d4c4, 0.55, 0, 0.4)
-const SKIRT = look(0xbdbab2, 0.42, 0, 0.5)
+const SKIRT = look(0x2c2d30, 0.46, 0, 0.5)
 const PAPER = look(0xe6dfd0, 0.86, 0, 0)
 const KRAFT = look(0x7c4727, 0.82, 0, 0)
 const KRAFT_DARK = look(0x5e351d, 0.85, 0, 0)
-const LID = look(0xe4e1da, 0.34, 0, 0.6)
+const LID = look(0xf3f0e9, 0.58, 0, 0)
 const LID_DARK = look(0x2a2826, 0.7, 0, 0)
+const SIP = look(0x5a3a26, 0.6, 0, 0.3)
 const CHROME = look(0xf4f6f8, 0.18, 0.32, 1)
 const SCREW = look(0xd2d5d8, 0.26, 0.76, 0)
 
@@ -85,7 +86,7 @@ const lidProfile = (): V2[] => {
   const d = CUP.deck
   const r = CUP.lidR
   const z = CUP.lidZ
-  return [[r - 3, z - 1], [r - 0.8, z - 0.4], [r, z + 1.4], [r, z + 4.6], [r - 1, z + 6], [r - 3, z + 6.6], [r - 8, z + 6.8], [r - 9.4, z + 8], [r - 11, t - 2], [r - 12.2, t - 0.4], [r - 14, t], [r - 19, t], [r - 20.6, t - 0.6], [r - 21.4, t - 2.2], [r - 22.6, d + 1.2], [r - 24, d], [40, d], [39.2, d + 0.9], [37.4, d + 0.9], [36.6, d], [0, d]]
+  return [[r - 3, z - 1], [r - 0.8, z - 0.4], [r, z + 1.4], [r, z + 4.6], [r - 1, z + 6], [r - 3, z + 6.6], [r - 5.4, z + 6.8], [r - 6.4, z + 8], [r - 7.2, t - 3.2], [r - 8.2, t - 1.2], [r - 10, t - 0.2], [r - 12, t], [r - 18.5, t], [r - 20.4, t - 0.5], [r - 21.4, t - 2], [r - 22.6, d + 1.2], [r - 24, d], [40, d], [39.2, d + 0.9], [37.4, d + 0.9], [36.6, d], [0, d]]
 }
 
 function lidGeometry(): THREE.BufferGeometry {
@@ -96,26 +97,28 @@ function lidGeometry(): THREE.BufferGeometry {
   const hole: V2[] = []
   for (let i = 0; i < 16; i++) {
     const a = (i / 16) * Math.PI * 2
-    hole.push([5.2 * Math.cos(a), 2.3 * Math.sin(a)])
+    hole.push([6.2 * Math.cos(a), 2.9 * Math.sin(a)])
   }
-  b.add(prism(hole, t - 0.4, t + 0.25, 0), LID_DARK, mat({ x: CUP.lidR - 16.5, rz: Math.PI / 2 }).premultiply(mat({ rz: -2.2 })))
+  b.add(prism(hole, t - 0.4, t + 0.25, 0), SIP, mat({ x: CUP.lidR - 15.2, rz: Math.PI / 2 }).premultiply(mat({ rz: -2.2 })))
   b.add(lathe([[1.3, d + 0.05], [1.3, d + 0.3], [0, d + 0.3]], 8), LID_DARK, mat({ x: 22 }).premultiply(mat({ rz: 0.9 })))
   b.add(ball(2.2, 8, 5), LID, mat({ x: 46, z: d - 0.6, s: [1, 1, 0.5] }).premultiply(mat({ rz: 0.9 })))
   return b.done()
 }
 
+const WELL: [number, number, number] = [1, 0.8, 0.52]
+
 // The lamp in the cup, as it shows: through the lid, brightest in the middle, and in the gap under the lid.
 function glowGeometry(): THREE.BufferGeometry {
   const p: number[] = []
   const c: number[] = []
-  const n = 48
+  const n = 64
   const lid = lidProfile().map((q) => [q[0] + 0.5, q[1] + 0.6] as V2)
   const deckR = CUP.lidR - 24
   const shine = (r: number, z: number): number => {
     if (z < CUP.lidZ + 5.4) return 0.2
     if (z < CUP.lidZ + 8) return 0.32
-    if (r > deckR + 0.6) return z > CUP.top ? 0.5 : 0.27
-    return 0.4 + 0.6 * Math.pow(Math.max(0, 1 - r / deckR), 1.1)
+    if (r > deckR + 0.6) return z > CUP.top ? 0.24 : 0.3
+    return 0.5 + 0.7 * Math.pow(Math.max(0, 1 - r / deckR), 1.1)
   }
   const band = (r0: number, z0: number, v0: number, r1: number, z1: number, v1: number, tint: [number, number, number] = [1, 1, 1]): void => {
     for (let i = 0; i < n; i++) {
@@ -133,9 +136,9 @@ function glowGeometry(): THREE.BufferGeometry {
       for (let j = 0; j < 4; j++) {
         const r0 = a[0] * (1 - j / 4)
         const r1 = a[0] * (1 - (j + 1) / 4)
-        band(r0, a[1], shine(r0, a[1]), r1, b[1], shine(r1, b[1]))
+        band(r0, a[1], shine(r0, a[1]), r1, b[1], shine(r1, b[1]), WELL)
       }
-    } else band(a[0], a[1], shine(a[0], a[1]), b[0], b[1], shine(b[0], b[1]))
+    } else band(a[0], a[1], shine(a[0], a[1]), b[0], b[1], shine(b[0], b[1]), b[0] < deckR + 0.6 ? WELL : [1, 1, 1])
   }
   band(wallR(CUP.sleeve1) + 1, CUP.sleeve1 + 0.6, 0.55, wallR(CUP.lidZ) + 4, CUP.lidZ - 1, 1, [1, 0.74, 0.4])
   band(wallR(CUP.sleeve0) + 3.2, CUP.sleeve0, 0.02, wallR(CUP.sleeve1) + 3.2, CUP.sleeve1, 0.3, [1, 0.42, 0.14])
@@ -157,7 +160,7 @@ export const ringDown = (t: number): number => (t < 0.03 ? t / 0.03 : 1 - ease(0
 export const lidJump = (t: number): number => (t > 0.7 ? 0 : 4.5 * Math.exp(-7 * t) * Math.abs(Math.sin((Math.PI * t) / 0.14)))
 
 export const bumpers = whole('bumpers', {
-  version: 'play-bumpers-12',
+  version: 'play-bumpers-16',
   build(z) {
     const g = new THREE.Group()
     g.name = `play.bumpers.${z.id}`
@@ -193,6 +196,7 @@ export const bumpers = whole('bumpers', {
       const glow = new THREE.Mesh(glowShape, mat)
       glow.name = `play.bumpers.lamp.${b.id}`
       glow.position.set(at[i]![0], at[i]![1], 0)
+      glow.rotation.z = SEAMS[i % SEAMS.length]! + 2.4
       glow.userData.lightGroup = groups.find((x) => x.name === `bumper.${i + 1}`)?.id ?? `${z.id}.bumper.${i + 1}`
       glow.renderOrder = 2
       glow.userData.order = 2
