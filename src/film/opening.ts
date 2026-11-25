@@ -77,7 +77,7 @@ export function promptLayout(): LayoutNode {
     part: PART, shape: 'capsule', tone: 'metal', height: CONTROL_Z, floor: PANEL_Z,
     children: [
       node('level-unset', 'bar', [textX + 44, rowY + PILL.h / 2 - 7, PILL.w - 88, 14], { part: PART, shape: 'capsule', tone: 'pocket', height: CONTROL_Z + 2, floor: CONTROL_Z, states: ['unset'] }),
-      levelWord('level-word', textX + PILL.w / 2, rowY + PILL.h / 2, CONTROL_Z, 'inkLight', ['set'])
+      levelWord('level-word', textX + PILL.w / 2, rowY + PILL.h / 2, CONTROL_Z, 'ink', ['set'])
     ]
   })
   const menuY = rowY + PILL.h + 12
