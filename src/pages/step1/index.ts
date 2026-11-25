@@ -20,6 +20,7 @@ const STRIPS = 9
 const LIE = heights.card + 9
 const IDLE_SHUFFLE = 5
 const HOUSING = 44
+const SHRED = { zip: 1.1, reset: 1.5, end: 1.6 }
 
 type Phase = 'rest' | 'keyboard' | 'firstName' | 'lastName' | 'email' | 'slabs' | 'resume' | 'tug' | 'shredded' | 'received'
 const GAG: Record<Phase, string> = {
@@ -371,20 +372,20 @@ export function makePage(): PageLogic {
     s.tug.amount = Math.min(1, s.tug.amount + io.dt / 0.25)
     if (crossed(0.2)) io.cursor.drive(SLOT.cx - BODY.x, SLOT.cy - 30, -60)
     if (crossed(0.4)) io.cursor.setOnPage(false)
-    if (crossed(1.5)) {
+    if (crossed(SHRED.zip)) {
       io.cursor.place(PILE.x, PILE.y)
       io.cursor.setOnPage(true)
       io.cursor.hurt('shredded', 0.45)
       io.emit('strips-zip', PILE.x + BODY.x, PILE.y + BODY.y, false)
     }
-    if (crossed(1.9)) {
+    if (crossed(SHRED.reset)) {
       io.cursor.hurt('reassembled', 0.6)
       s.received = true
       s.accepted = false
       s.values = { firstName: '', lastName: '', email: '' }
       act(io, 'exhausted')
     }
-    if (crossed(2.0)) {
+    if (crossed(SHRED.end)) {
       io.cursor.release()
       enter('received')
     }
@@ -418,8 +419,8 @@ export function makePage(): PageLogic {
     if (s.phase !== 'shredded' && s.phase !== 'received') return
     if (gone >= 1) return
     for (let i = 0; i < STRIPS; i++) {
-      const start = 0.45 + i * 0.07
-      const u = clamp((t - start) / 0.4, 0, 1)
+      const start = 0.3 + i * 0.045
+      const u = clamp((t - start) / 0.35, 0, 1)
       if (u <= 0 && s.phase === 'shredded') continue
       const v = s.phase === 'received' ? 1 : u
       const ink = i % 3 === 1
@@ -429,7 +430,7 @@ export function makePage(): PageLogic {
       const y = lerp(SLOT.cy, ty, v)
       const z = Math.sin(Math.PI * v) * 70
       const len = (ink ? 64 : 84) * (1 - gone)
-      const zipped = ink && t >= 1.5
+      const zipped = ink && t >= SHRED.zip
       if (zipped) continue
       out.push({ id: `strip-${i}`, part: 'shredder', kind: 'box', x: x - 5, y: y - len / 2, w: 10, h: len, z0: z + 0.4 + i * 0.12, z1: z + 1.4 + i * 0.12, rot: (hash01(i, 7, s.seed) - 0.5) * 1.1 * v, tone: ink ? 'dark' : 'paper' })
     }

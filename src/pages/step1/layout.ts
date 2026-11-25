@@ -52,13 +52,13 @@ export function buildLayout(): LayoutNode {
     part: 'shell', shape: 'capsule', height: heights.card + 8, floor: heights.card, tone: 'metal', states: ['prompt'],
     children: [text('resume-browse-label', 'copy:step1.resume.browse', { ...TYPE.helper, align: 'centre' }, cx, browseY + (browseH - cap(TYPE.helper.font, TYPE.helper.px)) / 2, { part: 'type', on: heights.card + 8 })]
   })
-  const received = block(TYPE.body.font, words('copy:step1.resume.received'), TYPE.body.px, ZONE.w - 160)
+  const received = block(TYPE.hero.font, words('copy:step1.resume.received'), TYPE.hero.px, ZONE.w - 120)
   const zone = node('resume-zone', 'card', [ZONE.x, ZONE.y, ZONE.w, ZONE.h], {
     part: 'shell', r: 20,
     children: [
       text('resume-prompt', 'copy:step1.resume.prompt', { ...TYPE.body, align: 'centre' }, cx, promptY, { part: 'type', on: heights.card, states: ['prompt'] }),
       browse,
-      text('resume-received', 'copy:step1.resume.received', { ...TYPE.body, align: 'centre', wrap: ZONE.w - 160 }, cx, ZONE.y + (ZONE.h - received.height) / 2, { part: 'type', on: heights.card, states: ['received'] })
+      text('resume-received', 'copy:step1.resume.received', { ...TYPE.hero, align: 'centre', wrap: ZONE.w - 120 }, cx, ZONE.y + (ZONE.h - received.height) / 2, { part: 'type', on: heights.card, states: ['received'] })
     ]
   })
   const fields = column('fields', FIELD_X, HEADER.contentY, FIELD_GAP, FIELDS.map((name) => (x: number, y: number) => field(name, x, y, COL_W, `copy:step1.fields.${name}.label`, { value: `runtime:step1.${name}` })))

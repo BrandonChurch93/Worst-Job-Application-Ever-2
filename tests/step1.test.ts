@@ -399,6 +399,30 @@ describe('the scene of the card loop', () => {
   })
 })
 
+describe('the hold after the shredder', () => {
+  it('lands the reset at least 2 s before the page turns, seen front-on from home all the while', () => {
+    const a = film()
+    const page = makePage()
+    const home = page.camera('film', 0)!
+    let reset = -1
+    let turn = -1
+    for (let i = 0; i < at(32) && turn < 0; i++) {
+      a.advance(1)
+      const now = (i + 1) / stepHz
+      const st = a.page.save() as { received: boolean; values: Record<string, string> }
+      if (reset < 0 && st.received) {
+        reset = now
+        expect(Object.values(st.values).join('')).toBe('')
+        expect(a.page.states!()).toContain('received')
+      }
+      if (reset >= 0) expect(page.camera('film', now)!.eye).toEqual(home.eye)
+      if (a.events.some((e) => e.name === 'page-turn')) turn = now
+    }
+    expect(reset).toBeGreaterThan(28.25)
+    expect(turn - reset).toBeGreaterThanOrEqual(2)
+  })
+})
+
 describe('what the measures read', () => {
   it('marks a part as moved only while a gag has taken it from its place in the layout tree', () => {
     const a = film()

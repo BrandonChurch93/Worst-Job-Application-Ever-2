@@ -10,13 +10,13 @@ import { HEADER } from '../../shell/parts'
 const FIELD_Y = HEADER.contentY
 
 export const START = { x: 1180, y: 800 }
-export const TIMES = { riseSeconds: 0.8, sinkSeconds: 0.6, turretDelay: 0.3, shuffleSeconds: 0.32, pressWait: 0.16, slabFirst: 0.4, slabEvery: 0.55, slabFall: 0.22, slabLie: 0.2, slabLift: 0.13, paperSlide: 0.5, bite: 0.4, tugFilm: 6.6 }
+export const TIMES = { riseSeconds: 0.8, sinkSeconds: 0.6, turretDelay: 0.3, shuffleSeconds: 0.32, pressWait: 0.16, slabFirst: 0.4, slabEvery: 0.55, slabFall: 0.22, slabLie: 0.2, slabLift: 0.13, paperSlide: 0.5, bite: 0.4, tugFilm: 5.2 }
 export const TUG = { stiff: 2600, damp: 36, strainPx: 50, grip: { x: 18, y: 78 }, reach: 320 }
 export const SPOT = { x: -12, y: -14 }
 export const BITE = { x: SLOT.cx - PAPER.w / 2, y: SLOT.cy - PAPER.h + 8 }
 export const PILE = { x: SLOT.cx - 20, y: SLOT.cy + 64 }
 
-const TUG_CURVE: [number, number][] = [[0, 0.06], [0.9, 0.2], [1.6, 0.13], [2.6, 0.33], [3.2, 0.26], [4.2, 0.48], [4.7, 0.42], [5.6, 0.68], [5.9, 0.66], [6.6, 0.93]]
+const TUG_CURVE: [number, number][] = [[0, 0.06], [0.7, 0.2], [1.25, 0.13], [2.05, 0.33], [2.5, 0.26], [3.3, 0.48], [3.7, 0.42], [4.4, 0.68], [4.65, 0.66], [5.2, 0.93]]
 
 export function tugCurve(t: number): number {
   if (t <= 0) return TUG_CURVE[0]![1]
@@ -166,6 +166,6 @@ const TUG_FRAME = { x: 90, y: 300, w: 880, h: 495 }
 export function filmCamera(time: number): CameraPose {
   const home = homePose(0)
   const close = frame(TUG_FRAME)
-  const u = smooth((time - 21.6) / 1.0) * (1 - smooth((time - 29.2) / 0.9))
+  const u = smooth((time - 21.6) / 1.0) * (1 - smooth((time - 27.9) / 0.8))
   return u <= 0 ? home : mixPose(home, close, u)
 }
