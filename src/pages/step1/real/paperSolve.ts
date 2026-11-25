@@ -142,8 +142,8 @@ export function solveSheet(q: SheetIn, into?: Sheet): Sheet {
   const W = q.w
   const L = q.l
   const bite = smooth(q.bite)
-  const abuse = clamp(0.06 + 0.1 * bite + 1.2 * q.amount * bite, 0, 1)
-  const g0 = 0.35 + 3.0 * abuse
+  const abuse = clamp(0.05 + bite * (0.4 + 0.9 * q.amount + 0.25 * q.pull), 0, 1)
+  const g0 = 0.5 + 9 * abuse
   out.abuse = abuse
 
   const cos = Math.cos(q.rot)

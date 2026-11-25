@@ -11,7 +11,7 @@ import { CASSETTE, crest, openOf, riseOf } from './shredderShape'
 
 const TITLE_KEY = 'copy:step1.resume.paperTitle'
 const THICK = 0.9
-const BAR = { inset: 24, tall: 5, pad: 1.5, cells: 44 }
+const BAR = { inset: 24, tall: 3.2, pad: 2.4, cells: 44 }
 const WRAP_LEN = 1.12 * (CASSETTE.roller.r + 0.7)
 
 const clamp = (v: number, lo: number, hi: number): number => Math.min(hi, Math.max(lo, v))
@@ -253,12 +253,14 @@ function shape(rig: Rig, q: SheetIn): void {
   lay(rig.title, rig.titleMarks, sheet, THICK + 0.22)
   lay(rig.bars, rig.barMarks, sheet, THICK + 0.22)
   const mat = stock(PAPER.w, PAPER.h)
-  mat.sheet.normalScale.setScalar(0.1 + 0.5 * sheet.abuse)
+  mat.sheet.normalScale.setScalar(0.08 + 0.55 * sheet.abuse)
 }
 
-const ownTitle = (ctx: RealContext): boolean => {
+// The sheet prints its own title. While the page still hands the title to the type maker, that one shows on the flat sheet
+// and this one only once the sheet is bitten and stands clear of it.
+const ownTitle = (ctx: RealContext, bitten: boolean): boolean => {
   const t = ctx.byId.get('resume-paper-title')
-  return !t || t.part === 'paper'
+  return !t || t.part === 'paper' || bitten
 }
 
 export const paper: PartMaker = {
@@ -297,8 +299,9 @@ export const paper: PartMaker = {
     const rig = o.userData.rig as Rig
     o.position.set(0, 0, 0)
     o.rotation.set(0, 0, 0)
-    shape(rig, sheetIn(s, ctx))
-    rig.titleMesh.visible = ownTitle(ctx)
+    const q = sheetIn(s, ctx)
+    shape(rig, q)
+    rig.titleMesh.visible = ownTitle(ctx, q.bite > 0.5)
   },
   drop(o) {
     const rig = o.userData.rig as Rig
