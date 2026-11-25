@@ -13,7 +13,7 @@ export type { StillSpec, CursorState }
 
 export interface Showcase {
   ready: Promise<void>
-  info(): { fps: number; format: string; tier: string; assets: string; engineHash: string; pageHashes: Record<string, string>; standIns: { name: string; unit: string }[]; modules: { film: string[]; live: string[] }; counts: Record<string, { triangles: number; drawCalls: number; standingParts?: number }>; textureMb: Record<string, number>; versions: Record<string, string> }
+  info(): { fps: number; format: string; tier: string; assets: string; engineHash: string; pageHashes: Record<string, string>; standIns: { name: string; unit: string }[]; modules: Record<string, string[]>; counts: Record<string, { triangles: number; drawCalls: number; standingParts?: number }>; textureMb: Record<string, number>; versions: Record<string, string> }
   setFormat(id: string): Promise<void>
   setAssets(id: string): Promise<void>
   setDiagnostic(view: string): void
@@ -37,9 +37,6 @@ const ratio = (a: number, b: number): number => (Math.max(a, b) + 0.05) / (Math.
 export function makeShowcase(app: App, ready: Promise<void>): Showcase {
   const fps = config.film.fps
   const frameOf = (seconds: number) => Math.round(seconds * fps)
-  const notYet = (what: string): never => {
-    throw new Error(`${what} is not built yet`)
-  }
 
   return {
     ready,
@@ -50,7 +47,7 @@ export function makeShowcase(app: App, ready: Promise<void>): Showcase {
         counts[unit] = app.countsOf(unit)
         textureMb[unit] = 0
       }
-      return { fps, format: app.format.id, tier: app.tier, assets: app.assets, engineHash: build.engineHash, pageHashes: build.pageHashes, standIns: app.standIns(), modules: { film: [], live: [] }, counts, textureMb, versions: { ...build.versions, target: app.engine.kind } }
+      return { fps, format: app.format.id, tier: app.tier, assets: app.assets, engineHash: build.engineHash, pageHashes: build.pageHashes, standIns: app.standIns(), modules: build.modules, counts, textureMb, versions: { ...build.versions, target: app.engine.kind } }
     },
     async setFormat(id) {
       await ready
@@ -118,19 +115,25 @@ export function makeShowcase(app: App, ready: Promise<void>): Showcase {
       await app.renderFilmFrame(frameIndex, tier)
     },
     opening() {
-      return notYet('The opening of film A')
+      return { frameCount: app.opening().frameCount }
     },
-    async renderOpeningFrame() {
-      return notYet('The opening of film A')
+    async renderOpeningFrame(frameIndex) {
+      await ready
+      await app.renderPiece(app.opening(), frameIndex, app.tier, frameIndex + 1)
     },
     loop() {
-      return notYet('The card loop')
+      const piece = app.loop()
+      return { frameCount: piece.frameCount, scene: piece.scene }
     },
-    loopState() {
-      return notYet('The card loop')
+    loopState(frameIndex) {
+      const s = app.loop().state(frameIndex)
+      return { cursorBox: [s.cursor.x, s.cursor.y, s.cursor.w, s.cursor.h], threatBox: [s.threat.x, s.threat.y, s.threat.w, s.threat.h] }
     },
-    async renderLoopFrame() {
-      return notYet('The card loop')
+    async renderLoopFrame(frameIndex, tier) {
+      await ready
+      const piece = app.loop()
+      const n = piece.frameCount
+      await app.renderPiece(piece, frameIndex, tier, (((frameIndex % n) + n) % n) + 1)
     }
   }
 }
