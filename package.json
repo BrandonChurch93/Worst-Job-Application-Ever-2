@@ -40,7 +40,9 @@
     "sound": "node tools/sound.mjs",
     "mix": "node tools/mix.mjs",
     "render:local": "node tools/render-local.mjs",
-    "parts": "node tools/parts.mjs"
+    "parts": "node tools/parts.mjs",
+    "looks:push": "node tools/looks-push.mjs",
+    "looks:fetch": "node tools/looks-fetch.mjs"
   },
   "dependencies": {
     "@dimforge/rapier2d-deterministic-compat": "0.21.0",
