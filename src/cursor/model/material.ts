@@ -127,14 +127,14 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
     texture2D( uDetail, q / 1.9 + vec2( e, 0.0 ) ).g - texture2D( uDetail, q / 1.9 - vec2( e, 0.0 ) ).g,
     texture2D( uDetail, q / 1.9 + vec2( 0.0, e ) ).g - texture2D( uDetail, q / 1.9 - vec2( 0.0, e ) ).g );
   float bare = step( 1.5, vInk );
-  float reach = clamp( 2.8 * fwidth( vInset ), 0.545, 0.82 );
+  float reach = clamp( 3.4 * fwidth( vInset ), 0.545, 0.92 );
   float ink = max( smoothstep( 0.3, 0.7, vInk ), 1.0 - smoothstep( reach - 0.03, reach + 0.03, vInset ) ) * ( 1.0 - bare ) * ( 1.0 - smoothstep( 0.0, 0.55, melt ) );
   float face = 1.0 - ink;
   vec3 col = mix( enamel, edge * 0.62, ink );
   wjaRough = mix( 0.3, 0.46, ink );
   wjaCoatRough = mix( 0.09, 0.26, ink );
-  wjaCoat = mix( 1.0, 0.55, ink );
-  wjaSpec = mix( 1.0, 0.4, ink );
+  wjaCoat = mix( 1.0, 0.32, ink );
+  wjaSpec = mix( 1.0, 0.3, ink );
 
   // A cut face: bare fired clay, with the dark of the edge band only at its foot.
   if ( bare > 0.5 ) {
@@ -157,7 +157,12 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
     float near = 1.0 - smoothstep( 0.0, 0.05, cell.x );
     wjaCoatTilt += crack * vec2( cos( plate ), sin( plate ) ) * 0.016;
     wjaTilt += wjaCoatTilt;
-    col *= 1.0 - crack * ( 0.3 * line + 0.05 * near );
+    vec2 across = vec2( dFdx( cell.x ), -dFdy( cell.x ) );
+    vec2 toGap = -across / max( length( across ), 1e-6 );
+    float lip = ( 1.0 - smoothstep( thin, thin + 0.014, cell.x ) ) * ( 1.0 - line );
+    wjaTilt += crack * lip * toGap * 0.6;
+    col = mix( col, vec3( 0.80, 0.75, 0.65 ), crack * lip * 0.22 * smoothstep( 0.0, 0.8, dot( toGap, vec2( 0.6, 0.8 ) ) ) );
+    col *= 1.0 - crack * ( 0.42 * line + 0.05 * near );
     wjaCoat *= 1.0 - 0.8 * crack * line;
   }
 
@@ -227,9 +232,9 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
     vec2 d = q - hole.xy;
     float r = hole.z * wjaRag( d, burnt );
     float from = length( d ) / r + ( mid.g - 0.5 ) * 0.16 + ( fine.b - 0.5 ) * 0.14;
-    float soot = ( 1.0 - smoothstep( 1.18, 1.95, from ) ) * burnt;
-    float crust = ( 1.0 - smoothstep( 1.1, 1.3, from ) ) * burnt;
-    col = mix( col, col * vec3( 0.3, 0.215, 0.14 ), soot * soot * 0.95 );
+    float soot = ( 1.0 - smoothstep( 1.12, 2.5, from ) ) * burnt;
+    float crust = ( 1.0 - smoothstep( 1.12, 1.4, from + ( wide.b - 0.5 ) * 0.25 ) ) * burnt;
+    col = mix( col, col * vec3( 0.34, 0.235, 0.15 ), soot * soot * 0.9 );
     col = mix( col, vec3( 0.014, 0.012, 0.010 ) + 0.03 * fine.g * mid.b, crust );
     float chipAt = length( d ) / r + ( wide.g - 0.5 ) * 0.1 + ( mid.b - 0.5 ) * 0.12;
     float chip = ( 1.0 - smoothstep( 1.13, 1.17, chipAt ) ) * ( 1.0 - burnt );
