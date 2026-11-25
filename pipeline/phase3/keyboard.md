@@ -171,3 +171,33 @@ Owner: `/root/keys_fixer`, branch `agent/keys`. It answers the round 3 issues R4
 ### Tuning looks
 
 Of 40 each in the fix round: keyboard 27, turrets 20, slabs 5.
+
+## Fix round 3: the look
+
+Owner: `/root/keys_look_fixer`, branch `agent/keys-look`, 2026-11-25 from 21:22Z. Files: `real/keyboard.ts`, `real/keyboard-kit.ts`, `real/turrets.ts`, `real/turret-fx.ts`. Nothing outside them was changed. How anything moves, the layout, the type and the light are not touched.
+
+### What round 5 found and what was done
+
+1. The deck (R1-1 issue 2, severe). MEASURED on `references/approved/step1-fire.png` with a script that reads the mean of 12 px squares: the approved steel beside the keys runs from 135 to 202 (lower left 202, 201, 199; upper middle 162, 161, 161; under the well's wall it falls to 45 to 66, which is the shadow of the well the build does not have), the gaps between its caps 64 to 139, the page 221, 216, 210. The build on main: deck 98 to 107, page 229, 225, 217. Now the deck's face is 165 to 188 with highlights to 207, and the rim 207 with a line at 249.
+   - The face (`kit().well`) is no longer the shared aluminium darkened to 0.37. It is a satin steel of its own: colour `0xdfe0e1`, metalness 0.35, roughness 0.44, the same brushed normal picture, anisotropy 0.55. A full metal seen from straight above mirrors the dim room over the page and can only be dark, so part of the light is given back diffusely, as a satin finish does.
+   - Long soft highlights: the face carries a tone at every point, `sheen(u, v)` in `keyboard-kit.ts`: soft upright bands across the brushing, a little lighter toward the upper left. It is not a picture. Tried first as a colour picture of 512 by 256 px laid once over the deck: MEASURED `npm run measure -- --unit step1` M2 red, 0.9591 of the textured pixels under one texel a pixel, since a picture laid once over 1560 px is soft by M2's rule. So the flat face is split until no edge is longer than 40 px (`refine`, `DECK_LOOK.cell`) and the tone is written at its points; the fine streaks along the brushing are the brushed normal picture's, as before. M2 is green at 0.0148.
+   - The rim (`kit().deck`, `0xe6e7e8`, metalness 0.5, roughness 0.3): the edge is a quarter round of 8 px (`DECK_LOOK.roll`, was a chamfer of 3.4 px), then a flat land of 4.5 px, then a groove 2 px wide and 1 px deep that parts the rim from the face. The roll takes a bright line on the top and left edges and falls to shade on the right and bottom. The corner radius is 8 px (was 5).
+   - The bed between the caps is 0.3 of the shared aluminium (was 0.36) and the shade patches are as before: the dark is in the gaps and nowhere else.
+2. The struck key keeps its legend (R1-1 issue 4). The glow of a strike was a 150 px star picture drawn additively over the cap, and a lamp of power 0.8 over 170 px. Now: a soft round halo of 46 px (`SCORCH.hotSize`, a new 64 px picture `haloPicture`) at the point of impact, half as bright, dead in 0.4 s; the lamp 0.28 over 64 px. A small scorch stays behind for the 1.5 s the strike shape lives: the strike shape now lays the scorch picture at 0.72 of its size on the cap under the hit, kept clear of the legend by `layScorch` as every mark is, and fades it over its last 0.4 s. The sparks of a hit last 0.24 s (was 0.55) and are 6 (was 9), so none is left in the key still at 6.0 s. NOTE: in the key still the arrow itself stands on the middle of H. The legend is drawn (the page hides a legend only under a flying cap, `index.ts` line 849) and is behind the arrow's body; where the arrow stands is not mine.
+3. The turrets (R1-1 issue 6). The head is a polished dome (`kit().chrome`, `0xd4d6d9`, metalness 0.9, roughness 0.24, no brushing; an ellipse 40 px wide and 27 px high on a short straight body, made by `smoothTurn` so the highlight is one unbroken spot). The barrel is 134 px from the axis (was 116), tapers from 12.8 px to 9 px of radius and ends in a collar of 11.2 px, in polished steel (`0xb4b7bb`, was 0.2 of the aluminium). The muzzle collar is its own small mesh that glows orange (`GLOW.tip`): 0.3 of its heat at rest, rising with the charge, full for a moment after a shot, with a 30 px halo and a small lamp. The barrel's lift is 0.1.
+   - The bolt is thinner and shorter: head 8 by 2.4 px, tail 2 px thick and at most 76 px long, core 1.1 px. Its lamp is 0.16 over 64 px (was 0.3 over 110), so it no longer paints a whole cap orange.
+   - The bolt is lobbed: it is drawn up to 18 px (`TURRET_LOOK.lob`) to the picture's upper side of its line and half of that higher, by `sqrt(sin(pi u))` of its flight `u` (the shape's `v[0]`), so it leaves the muzzle and lands on its mark exactly and rides above the line of the legends between. The flight, the times and the hit are the motion owner's and are unchanged: this is where the streak is drawn only. At 6.0 s the left bolt is above the Caps Lock legend and the legend reads whole.
+4. The marks on the keys (R1-1 issue 5, the keys' half). `scorchPicture` is drawn again at the same 256 px: a ragged pit of black char, a sooty crust, a soft brown singe that fades outward, a few flecks of soot, the faintest lit far wall. No raised cream rim and no bronze ring. A fresh mark was multiplied by 7 in red and green while its ember lived, which made the ring glow; it is now 1.9 and 1.25, with a 30 px halo that dies in a third of a second. The mark is 46 px (was 52).
+5. The caps (R1-1 issue 7). Colour `0xeee7db` (was `0xf0e6d3`): MEASURED cap top 230, 222, 210 against the approved 215 to 225, 207 to 216, 195 to 203 (red over blue 1.095, approved 1.10, main 1.15). The shoulder is no longer a quarter round of 8 px: a hard lower edge, a flat slope 5.1 px wide, a crest of 1.3 px radius and a top that is flat but for a dish of 0.55 px (was 0.9). The slope takes a tight bright line on the top and left and a cool grey shade on the right and bottom.
+
+### Decisions
+
+1. The deck's face is not a full metal (metalness 0.35). See 1 above.
+2. The collar that rises with the turret has its own darker brushed material (`kit().collar`), so the dome stands against a darker ring.
+3. The lob of a bolt is drawn, not flown: see 3 above.
+4. The strike shape leaves a mark for its own 1.5 s (`SCORCH.strikeSeconds`, the same number `tests/keys-strike.test.ts` holds for the page).
+
+### Textures
+
+- New: `haloPicture` 64 by 64 px, RGBA 8 bit, 0.016 MB, 0.02 MB with mipmaps.
+- Redrawn at the same size: `scorchPicture` 256 px, 0.33 MB with mipmaps.

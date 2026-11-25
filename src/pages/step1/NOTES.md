@@ -141,3 +141,13 @@ This replaces every size and camera number of the tug given above.
 - The sheet at the mouth (`KNEE` in `paperSolve.ts`, `MOUTH` in `paper.ts`): the fed sheet stands up out of the cutters in a bend, tallest a quarter of the way to the hands, and is shaded where the hood keeps the sky off it: 0.3 at the mouth falling off in 4 px, and 0.24 below the line of the bend 15 px up. The cut edge takes 0.8 of the sheet's shade, so a line thinner than a pixel does not sparkle. The crease picture is shown at 0.07 to 0.29 (`normalScale`), the grid's normals are drawn 0.3 toward their mean (`level`).
 - The arms (`src/cursor/act/arms.ts`): a tube 5.3 px thick, at most 46 px long (`ARM.rest`); nearer than that it bends at an elbow, each to its own side (`ARM.elbow` 2.2: a conic, not an even bow), and it is straight when the strain is full. No cuff. An open hand that hangs lets its fingers fall (`droop`); an open hand that pushes bends back at the wrist (`wrist`). An arm whose hand is on the far side of the body goes under the body and comes out at the far edge, so no arm lies over the white face.
 - The body in the tug (`ARM` in `body.ts`): strain grows from 34 px between shoulder line and hands over 13 px; it leans 0.85 of the angle to the hands, stretches by 0.2 of the strain and squashes when the strain is let go (`snap`).
+
+## Round 5, the paper's part (these lines stand over older ones above where they differ)
+
+- The sheet comes to rest at 640, 678 (`PAPER_REST`), inside the tug frame. The camera moves in between 20.3 and 21.1 s and out between 28.3 and 29.1 s; the frame is 620 px wide, its top 205 px over the slot.
+- `RESUME`: leaves at 19.9, walks 20.04 to 20.42, taps at 20.5, crouches at 20.78, grips the middle of the sheet's right edge at 20.96, heaves 20.99 to 21.07, dips 9 px to 21.14, holds the sheet up (`raise` 34, `high` 16) until 21.36, carries it to 21.54, lets go at 21.62.
+- `TEMPER`: stamps at 22.24 and 24.12, a wind-up before each haul (22.3, 23.0, 23.76, 24.56), scared from 25.3, turned back at 25.62 and 26.06. In the film the page sets no state from the amount and does not flinch at a strain.
+- The loss is at 26.54 (`TIMES.tugFilm` 4.52). In the film the body stays lost for 0.84 s (`TIMES.lostFilm`), live for 0.3 s. `SHRED` starts at 27.38 as before.
+- The held sheet is folded by `fold` in `real/paper.ts` (`FOLD`); the thumb dents follow the arms' thumbs. Title ink 0x606166, bars 0xa3a4a8.
+- The machine has a plate at each end of the opening (`EAR`), shown only once the panels part. A strip's free end rolls up (`TIP`).
+

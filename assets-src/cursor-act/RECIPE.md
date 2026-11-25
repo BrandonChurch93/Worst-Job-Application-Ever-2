@@ -13,9 +13,9 @@ Date: 2026-11-25
 ## The arms and hands (geometry only, no picture)
 Made by: `makeArms()` in `src/cursor/act/arms.ts`
 From: no input file. `ARM` and `HAND` at the top of that file hold every size, all as shares of `cursor.heightPxAt1080`
-Prompt or command: none. Both arms are one tube mesh of 22 by 10 segments each, redrawn each frame from shoulder to hand; the palms, the cuff rings and the finger joints are three instanced meshes. Four draws for the pair. An arm is 7 percent of the body's height thick and widens to the wrist
+Prompt or command: none. Both arms are one tube mesh of 34 by 12 segments each, redrawn each frame from shoulder to hand; the palms and the finger joints are two instanced meshes. Three draws for the pair. An arm is 10 percent of the body's height thick at the shoulder and 7 percent at the wrist, with a rolled cuff of four rings there; a hand is about a quarter of the body's height long. To see it: `npm run compare -- --sheet cursor-arms --tier draft --format hd`
 Takes: about 27 looks of the 40 allowed
-Why this one: thin matte arms with a ring at the wrist and a hand of three fingers and a thumb, as in `references/approved/cursor-arms.png`
+Why this one: matte rubber arms that taper to a cuff and a hand of three fingers and a thumb with a round palm, as in `references/approved/cursor-arms.png`; round 5 read the thinner even tube as a wire and the smaller hand as prongs. See `pipeline/phase3/arms.md`
 Date: 2026-11-25
 
 ## Acting and damage (numbers only, no picture)

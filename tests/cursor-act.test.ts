@@ -227,7 +227,7 @@ describe('arms', () => {
         expect(stage.pageTime).toBeLessThan(tug.to)
       } else expect(c.hands).toBeNull()
     }
-    expect(inside / stepHz).toBeGreaterThan(5)
+    expect(inside / stepHz).toBeGreaterThan(4.4)
     expect(sprout).toBeGreaterThan(1.02)
     expect(strain).toBeGreaterThan(0.3)
     expect(stage.cursor.damaged).toBe(false)
