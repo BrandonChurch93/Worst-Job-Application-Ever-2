@@ -110,7 +110,7 @@ const NAMED: Record<string, CameraPose> = {
   'table-lobby': look('table-lobby', [MID + 3.6, Y0 + 7.9, 1.5], [MID - 0.5, Y0 + 4.6, -0.2]),
   'table-replyall': look('table-replyall', [MID + 2, Y1 + 15.5, 14], [MID + 1.2, Y1 + 5.4, -2]),
   'table-fired': look('table-fired', [8.2, Y2 + 8.0, 0.8], [4.8, Y2 + 3.5, -2.2]),
-  'table-save': look('table-save', [MID + 0.2, Y2 + 13.5, 9], [MID, Y2 + 8.4, -3])
+  'table-save': look('table-save', [MID, Y2 + 14.0, 10.5], [MID, Y2 + 6.8, -3])
 }
 const FILM: [number, string][] = [
   [0, 'follow'], [5.0, 'table-wide'], [9.5, 'follow'], [11.2, 'tier-3'], [13.0, 'table-lobby'], [14.3, 'follow'], [20.6, 'table-replyall'], [22.6, 'follow'], [27.2, 'table-fired'], [28.8, 'follow'],
@@ -361,7 +361,7 @@ export function makePage(): PageLogic {
         for (const e of events) emitTable(io, e)
         s.score = mc.score
         const b = ball()
-        io.cursor.place(px(b.x), px(b.y), px(b.z))
+        io.cursor.place(px(b.x), px(b.y), px(b.z) + BALL / 2)
         if (b.mode === 'hold' && b.hold === 'outlet') {
           s.opened += dt
           if (s.opened >= 0.2) {
@@ -494,7 +494,7 @@ export function makePage(): PageLogic {
           { x: MID + 1.3, y: Y1 + 5.95, lift: 0, pose: { acting: 'shocked', damage: ['flattened'] } }
         ]
         spots.forEach((p, i) => list.push({ id: `sheet-ball-${i + 1}`, part: 'clear-ball', kind: 'ball', x: px(p.x - 0.5), y: px(p.y - 0.5), w: BALL, h: BALL, z0: f + px(p.lift), z1: f + px(p.lift) + BALL, tone: 'glass' }))
-        return { list, cursors: spots.map((p) => restPose(px(p.x), px(p.y), { z: f + px(p.lift), inBall: true, taken: true, ...p.pose })), view: frame({ x: px(6.6), y: px(Y1 + 4.7), w: px(6.4), h: px(5.2) }, 1, f, fov('sheet')) }
+        return { list, cursors: spots.map((p) => restPose(px(p.x), px(p.y), { z: f + px(p.lift) + BALL / 2, inBall: true, taken: true, ...p.pose })), view: frame({ x: px(6.6), y: px(Y1 + 4.7), w: px(6.4), h: px(5.2) }, 1, f, fov('sheet')) }
       }
       if (id !== 'table-map') return null
       const mc = machine()
