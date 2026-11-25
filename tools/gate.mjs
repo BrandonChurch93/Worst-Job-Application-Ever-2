@@ -5,19 +5,24 @@ import fs from 'node:fs'
 import path from 'node:path'
 import sharp from 'sharp'
 import { args, at, config, readJson, writeJson } from './lib/paths.mjs'
-import { formatOf, openSession, renderJob, still } from './lib/capture.mjs'
+import { ensureBuild, formatOf, openSession, renderJob, still } from './lib/capture.mjs'
 import { buildInfo } from './lib/hashes.mjs'
 import { difference, psnrText, rawOf } from './lib/image.mjs'
 import { machine } from './lib/browser.mjs'
 import { state } from './lib/state.mjs'
 import { storyCheck, wordsCheck } from './lib/story.mjs'
 import { cutListExists, judgedFilm, judgedPages, listedIds, readCutList } from './lib/judged.mjs'
+import { ANCHORS, coveredUnits, filmMoments, flaggedPixels, hashFacts, hosting, memoryAndCounts, resolveCommit, showAt, standInTests, unitStates, unknownUnits } from './lib/gate-checks.mjs'
+import { launch } from './lib/browser.mjs'
+import { serve } from './lib/serve.mjs'
 
 const a = args()
 const c = config()
 const phase = Number(a.phase ?? 0)
 const only = a.only ? String(a.only).toUpperCase().split(',') : null
-const from = { G1: 0, G2: 0, G3: 0, G4: 0, G5: 2, G6: 2, G7: 2, G8: 0, G9: 0, G10: 0, G11: 2, G12: 2, G14: 2, G17: 2, G18: 2 }
+const named = a.unit && a.unit !== true ? String(a.unit).split(',').map((u) => u.trim()).filter(Boolean) : []
+const pageUnits = c.film.units.map((u) => u.id)
+const from = { G1: 0, G2: 0, G3: 0, G4: 0, G5: 2, G6: 2, G7: 2, G8: 0, G9: 0, G10: 0, G11: 2, G12: 2, G13: 3, G14: 2, G15: 3, G16: 5, G17: 2, G18: 2 }
 const onlyAt = { D1: [1], D2: [2, 6], D3: [2, 6] }
 const results = []
 const sha = (file) => crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')
@@ -345,6 +350,211 @@ const checks = {
     } finally {
       await s.close()
     }
+  },
+
+  async G13() {
+    const units = [...pageUnits, 'site', 'film']
+    const lost = unknownUnits(named, units)
+    if (lost.length) return { pass: false, note: `no unit called ${lost.join(', ')}. The units are ${units.join(', ')}`, detail: [] }
+    const register = readJson(at('parts', 'PARTS.json'))
+    const covered = coveredUnits({ states: unitStates(fs.readFileSync(at('kit', 'PROGRESS.md'), 'utf8')), named, phase, units })
+    if (!covered.length) return { pass: true, note: 'stand-ins: no unit is marked finished in kit/PROGRESS.md and none was named with --unit, so the check covers no part', detail: [] }
+    const parts = register.parts.filter((p) => covered.some((u) => u.unit === p.unit))
+    const anchors = ANCHORS.map((x) => resolveCommit(at(), x)).filter(Boolean)
+    const read = (f) => (fs.existsSync(at(f)) && fs.statSync(at(f)).isFile() ? fs.readFileSync(at(f)) : null)
+    const shown = new Map()
+    const show = (commit, f) => {
+      const k = `${commit}:${f}`
+      if (!shown.has(k)) shown.set(k, showAt(at(), commit, f))
+      return shown.get(k)
+    }
+    const facts = Object.fromEntries(parts.map((p) => [p.name, { ...hashFacts(p, read, show, anchors), pixels: [], reported: false }]))
+    const judged = judgedPages(c).filter((j) => !j.id.startsWith('site:') && covered.some((u) => u.unit === j.unit))
+    ensureBuild()
+    const node = await state()
+    let colours
+    let background
+    try {
+      const views = await node.load('/src/diagnostics/views.ts')
+      colours = Object.fromEntries(register.parts.map((p) => [p.name, views.standInColour(p.name)]))
+      background = (await node.load('/src/post/look.ts')).look?.background ?? [0, 0, 0]
+    } finally {
+      await node.close()
+    }
+    const grounds = [[0.02, 0.02, 0.02], [...background].slice(0, 3), [0, 0, 0]]
+    const session = await openSession({ format: 'hd' })
+    let pictures = 0
+    let filmPictures = 0
+    let moments = []
+    let framesRead = 0
+    let unread = 0
+    const levels = Object.keys(c.live.quality)
+    try {
+      const pages = covered.map((u) => u.unit).filter((u) => pageUnits.includes(u))
+      const step = Math.max(1, Math.round(c.film.fps / c.film.previewFps))
+      const told = await session.page.evaluate(
+        ([list, every]) => {
+          const film = window.showcase.film()
+          const out = {}
+          let read = 0
+          for (const u of film.units) {
+            if (!list.includes(u.id)) continue
+            for (let f = u.first; f <= u.last; f += every) {
+              const st = window.showcase.filmState(f)
+              read++
+              for (const n of st.standIns) {
+                const o = (out[n] ??= { count: 0, first: f, beats: [] })
+                o.count++
+                if (!o.beats.includes(st.beat)) o.beats.push(st.beat)
+              }
+            }
+          }
+          return { out, read, units: film.units.filter((u) => list.includes(u.id)).map((u) => ({ id: u.id, first: u.first, last: u.last })) }
+        },
+        [pages, step]
+      )
+      framesRead = told.read
+      for (const p of parts) if (told.out[p.name]) facts[p.name].frames = { ...told.out[p.name], of: told.read }
+      for (const j of judged) {
+        const [kind, id] = j.id.split(':')
+        const got = await still(session, { [kind === 'key' ? 'key' : kind === 'sheet' ? 'sheet' : 'id']: id, tier: 'draft', live: levels[0], diag: 'standins' }, { dir: 'gate', force: true })
+        const raw = await rawOf(got.file)
+        const { counts, other } = flaggedPixels(raw.data, raw.width, raw.height, raw.channels, colours, grounds)
+        pictures++
+        unread += other
+        for (const p of parts) if (counts[p.name]) facts[p.name].pixels.push({ still: j.id, pixels: counts[p.name] })
+      }
+      moments = filmMoments(told.units, c.film.beats, c.film.fps, parts.map((p) => facts[p.name].frames?.first).filter((f) => f !== undefined))
+      for (const m of moments) {
+        const got = await still(session, { page: m.unit, beat: m.beat, at: m.at, camera: 'film', tier: 'draft', live: levels[0], diag: 'standins', out: `film-${m.frame}` }, { dir: 'gate', force: true })
+        const raw = await rawOf(got.file)
+        const { counts, other } = flaggedPixels(raw.data, raw.width, raw.height, raw.channels, colours, grounds)
+        filmPictures++
+        unread += other
+        for (const p of parts) if (counts[p.name]) facts[p.name].pixels.push({ still: `film frame ${m.frame} (${m.beat})`, pixels: counts[p.name] })
+      }
+      if (covered.some((u) => u.unit === 'film')) {
+        const o = await session.page.evaluate(() => window.showcase.opening().frameCount)
+        for (const job of [{ kind: 'opening', frame: 0 }, { kind: 'opening', frame: o - 1 }, { kind: 'loop', frame: 0 }]) {
+          const png = await renderJob(session, { ...job, tier: 'draft', diag: 'standins' })
+          const { data, info } = await sharp(png).removeAlpha().raw().toBuffer({ resolveWithObject: true })
+          const { counts, other } = flaggedPixels(data, info.width, info.height, info.channels, colours, grounds, { tolerance: 6 })
+          pictures++
+          unread += other
+          for (const p of parts) if (counts[p.name]) facts[p.name].pixels.push({ still: `${job.kind} frame ${job.frame}`, pixels: counts[p.name] })
+        }
+      }
+      const after = await session.page.evaluate(() => {
+        window.showcase.setDiagnostic('beauty')
+        return window.showcase.info().standIns.map((x) => x.name)
+      })
+      for (const p of parts) if (after.includes(p.name)) facts[p.name].reported = true
+    } finally {
+      await session.close()
+    }
+    const detail = []
+    const rows = []
+    for (const p of parts) {
+      const why = standInTests(p, facts[p.name])
+      rows.push({ name: p.name, unit: p.unit, state: p.state, files: p.files, why })
+      for (const w of why) detail.push(`${p.name} (${p.unit}): ${w}`)
+    }
+    const red = rows.filter((r) => r.why.length)
+    writeJson(at('out', 'work', 'gate', 'G13.json'), { covered, anchors, framesRead, pictures: judged.map((j) => j.id), filmPictures: moments.map((m) => m.frame), unreadPixels: unread, parts: rows })
+    return { pass: red.length === 0, note: `stand-ins: ${parts.length} parts of ${covered.map((u) => `${u.unit} (${u.why})`).join(', ')}; ${red.length ? `${red.length} still a stand-in: ${red.map((r) => r.name).join(', ')}` : 'none is a stand-in by the three tests'}; read ${framesRead} film frames at ${c.film.previewFps} a second and ${pictures + filmPictures} pictures of the standins view at one sample a pixel (${pictures} keys, sheets and judged stills, ${filmPictures} moments of the film, one a second, through the film's camera)${unread ? `, in which ${unread} pixels are no flag colour and no ground` : ''}`, detail }
+  },
+
+  async G15() {
+    const lost = unknownUnits(named, pageUnits)
+    if (lost.length) return { pass: false, note: `no page called ${lost.join(', ')}. The pages are ${pageUnits.join(', ')}`, detail: [] }
+    const units = named.length ? named : pageUnits
+    const levels = Object.keys(c.live.quality)
+    const specs = (unit) => [{ id: 'rest', spec: { page: unit, camera: 'home', tier: 'draft' } }, ...c.keys.filter((k) => k.unit === unit).map((k) => ({ id: `key ${k.id}`, spec: { page: k.unit, beat: k.beat, at: k.at, camera: k.camera, tier: 'draft' } }))]
+    const pages = units.map((page) => ({ page, textureMb: {}, textures: {}, counts: {} }))
+    let pictures = 0
+    const sets = Object.keys(c.assetSets)
+    const formatOfSet = (set) => (set === 'full' ? c.formats.master.id : c.formats.hd.id)
+    for (const set of sets) {
+      const session = await openSession({ format: formatOfSet(set), assets: set })
+      try {
+        for (const p of pages) {
+          for (const level of set === sets[0] ? levels : levels.slice(0, 1)) {
+            for (const s of specs(p.page)) {
+              const got = await session.page.evaluate(async (spec) => {
+                window.showcase.setDiagnostic('beauty')
+                await window.showcase.renderStill(spec)
+                const i = window.showcase.info()
+                return { counts: i.counts[spec.page], mb: i.textureMb[spec.page], textures: i.textures?.[spec.page] ?? null }
+              }, set === 'full' && s.id === 'rest' ? s.spec : { ...s.spec, live: level })
+              pictures++
+              const n = (p.counts[level] ??= { triangles: 0, drawCalls: 0, at: s.id, callsAt: s.id })
+              if (got.counts.triangles > n.triangles) Object.assign(n, { triangles: got.counts.triangles, at: s.id })
+              if (got.counts.drawCalls > n.drawCalls) Object.assign(n, { drawCalls: got.counts.drawCalls, callsAt: s.id })
+              if (p.textureMb[set] === undefined || got.mb > p.textureMb[set]) {
+                p.textureMb[set] = got.mb
+                p.textures[set] = { ...got.textures, at: s.id, format: session.format.id }
+              }
+            }
+          }
+        }
+      } finally {
+        await session.close()
+      }
+    }
+    const v = memoryAndCounts(pages, { assetSets: c.assetSets, perf: c.perf, levels })
+    writeJson(at('out', 'work', 'gate', 'G15.json'), { formats: Object.fromEntries(sets.map((x) => [x, formatOfSet(x)])), levels, pages, most: v.most })
+    const most = (set) => pages.reduce((m, p) => ((p.textureMb[set] ?? 0) > (m?.textureMb[set] ?? -1) ? p : m), null)
+    const memory = sets.map((set) => {
+      const p = most(set)
+      const t = p?.textures[set]
+      return `${set} at ${formatOfSet(set)}: ${(p?.textureMb[set] ?? 0).toFixed(1)} of ${c.assetSets[set].maxTextureMb} MB on ${p?.page}${t ? ` (${t.counted} of the ${t.held} textures the renderer holds were read, ${t.assetMb} MB of pictures and ${t.targetMb} MB of targets${t.unseenMb > 0 ? `, and ${t.unseenMb} MB for the ${t.held - t.counted} the walk does not reach, the renderer's own target for materials that let light through, taken at the size of the picture` : ''})` : ''}`
+    })
+    const counts = levels.map((l) => `${l} ${Math.max(0, ...pages.map((p) => p.counts[l]?.triangles ?? 0))} of ${c.perf.maxTriangles[l]} triangles and ${Math.max(0, ...pages.map((p) => p.counts[l]?.drawCalls ?? 0))} of ${c.perf.maxDrawCalls[l]} draw calls`)
+    const alike = levels.length > 1 && pages.every((p) => levels.every((l) => p.counts[l]?.triangles === p.counts[levels[0]]?.triangles && p.counts[l]?.drawCalls === p.counts[levels[0]]?.drawCalls))
+    return { pass: v.pass, note: `memory and counts: ${pages.length} page${pages.length === 1 ? '' : 's'} (${units.join(', ')}), ${pictures} pictures drawn through the live path${sets.includes('full') ? `, and the picture at rest of the set full through the film's path, so its targets are held` : ''}; the most textures, ${memory.join('; ')}; the most counts, ${counts.join('; ')}${alike ? '; every level draws the same counts, so the levels are not built yet' : ''}`, detail: v.detail }
+  },
+
+  async G16() {
+    const r = run('node', ['tools/hostcheck.mjs', '--keep'])
+    const file = at('out', 'work', 'hostcheck.json')
+    const report = fs.existsSync(file) ? readJson(file) : null
+    const head = run('git', ['rev-parse', 'HEAD']).stdout.trim()
+    const clean = at('out', 'work', 'hostcheck', 'clean')
+    const dist = path.join(clean, 'dist')
+    let live = { ready: false, why: 'the clean copy holds no built site' }
+    if (fs.existsSync(path.join(dist, 'index.html'))) {
+      const server = await serve(dist)
+      try {
+        const { browser } = await launch()
+        const page = await (await browser.newContext({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 1 })).newPage()
+        const problems = []
+        page.on('pageerror', (e) => problems.push(String(e && e.message ? e.message : e)))
+        await page.goto(`${server.url}/?mode=live&clock=steps`)
+        live = await page.evaluate(async () => {
+          if (!window.showcase) return { ready: false, why: 'the page has no window.showcase' }
+          try {
+            await window.showcase.ready
+          } catch (e) {
+            return { ready: false, why: String(e && e.message ? e.message : e) }
+          }
+          for (let i = 0; i < 200 && !window.liveRun; i++) await new Promise((done) => setTimeout(done, 50))
+          if (!window.liveRun) return { ready: false, why: 'live mode did not start its run' }
+          const s = window.liveRun.advance(1)
+          return { ready: true, page: s.page, time: s.time }
+        })
+        live.problems = problems
+        await browser.close()
+      } catch (e) {
+        live = { ready: false, why: e.message.split('\n')[0] }
+      } finally {
+        await server.close()
+      }
+    }
+    fs.rmSync(clean, { recursive: true, force: true })
+    const v = hosting(report, { head, careers: pageUnits[0], live })
+    const rows = report?.verdict?.rows ?? []
+    if (!v.pass && r.status !== 0 && !rows.length) v.detail.push(...tail(r.stdout + r.stderr, 4))
+    return { pass: v.pass, note: `hosting: ${rows.length ? rows.map((x) => `${x.name.replace('host.', '')} ${x.got === null ? 'not measured' : x.got} of ${x.limit} ${x.unit}`).join(', ') : '`npm run hostcheck` gave no verdict'}; ${live.ready ? `the clean build opens ${live.page} in live mode` : 'the clean build did not open in live mode'}`, detail: v.detail }
   },
 
   async G14() {

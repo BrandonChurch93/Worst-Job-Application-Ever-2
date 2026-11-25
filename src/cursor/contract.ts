@@ -1,5 +1,6 @@
 import type * as THREE from 'three'
 import { config } from '../config'
+import type { Emitter } from '../real/types'
 import type { CursorPose } from './body'
 
 // The arrow's outline in its own units: the tip, the hot spot, is the first point. x runs right, y runs down the page.
@@ -10,9 +11,14 @@ export const UNIT = config.cursor.heightPxAt1080 / OUTLINE_BOX.h
 // Where an arm leaves the body, in outline units: left, right.
 export const SHOULDERS: [[number, number], [number, number]] = [[-0.2, 10.5], [8.6, 10.5]]
 
+// The direction the strips are cut along, in outline units: from the tip down the tail.
+export const STRIP_AXIS: [number, number] = [0.409, 0.912]
+
 // A burn hole, in outline units. glow runs from 1, just burnt, to 0, cold.
 export interface Hole { x: number; y: number; r: number; glow: number }
 // Where one strip of a shredded body lies: page pixels away from its place in the whole body, and its turns in radians.
+// x runs right and y runs up the page, in the body root's own space, and z is off the page. rot turns the strip about z round its own centre. tilt rolls it about its own long axis.
+// The cuts run parallel to the tail, STRIP_AXIS, so that every strip is one piece. Strip 0 is the leftmost. All zeros is the cut body standing whole.
 export interface StripPose { x: number; y: number; z: number; rot: number; tilt: number }
 
 // Everything the body can be asked to look like. Each number is 0 at rest unless it says otherwise.
@@ -38,6 +44,15 @@ export interface BodyLook {
   holes: Hole[]
   // Null for a body in one piece. Otherwise the body is cut along its length into this many strips.
   strips: StripPose[] | null
+  // Faint hairline seams on a whole body where the strips were cut: the reassembled body as it fades. With strips null it is drawn for seamCount strips.
+  seam: number
+  seamCount: number
+  // The web of fine cracks in the enamel, apart from flat, so the cracks can fade while the body refills.
+  crack: number
+  // A flat body lifting off the page from its tail corner.
+  peel: number
+  // A bulge that travels from tip to tail: how far along it is, 0 to 1, or -1 for none.
+  gulp: number
   time: number
 }
 
@@ -64,7 +79,7 @@ export interface ArmsLook {
 export interface CursorLook { body: BodyLook; effects: EffectsLook; arms: ArmsLook }
 
 export const restLook = (time = 0): CursorLook => ({
-  body: { stretch: 1, bend: 0, puff: 0, tremble: 0, pale: 0, heat: 0, melt: 0, flat: 0, char: 0, holes: [], strips: null, time },
+  body: { stretch: 1, bend: 0, puff: 0, tremble: 0, pale: 0, heat: 0, melt: 0, flat: 0, char: 0, holes: [], strips: null, seam: 0, seamCount: 9, crack: 0, peel: 0, gulp: -1, time },
   effects: { sweat: 0, steam: 0, smoke: [], dust: -1, time },
   arms: { grip: [1, 1], strain: 0, time }
 })
@@ -75,6 +90,8 @@ export interface BodyModel {
   apply(look: BodyLook): void
   // Where a point of the outline is on the body as it is drawn now, in the root's own space.
   anchor(x: number, y: number, out: THREE.Vector3): THREE.Vector3
+  // The light the body gives off as it was last applied: the hot tip, a glowing rim. It adds its emitters to out, in the root's own space and in page pixels. The view turns them into the page's space and passes each to ctx.light.
+  emit?(out: Emitter[]): void
   dispose(): void
 }
 
