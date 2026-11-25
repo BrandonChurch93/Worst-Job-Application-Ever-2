@@ -228,3 +228,104 @@ NOT IN THE IMAGE: no people, no hands, no faces; no cabinet, no legs, no room, n
 SCALE, with the ball as the unit: the frame is twenty balls wide and eleven tall. A flipper is three balls long. Every lane, the ramp and the lift tube are one and a half balls wide, so the ball fits in each of them with room to spare. The tower's footprint is four balls wide.
 ```
 
+### G4 · Tier 2, The Office
+
+- File: `references/drafts/round-6/G4-tier-office.png`
+- Model: `seedream_5`
+- Takes made: 4 of 4 allowed. Kept: take 4.
+- Reference images passed in, in order: `references/guides/round-6/guide-tier-office.png` (the unlabeled guide); `references/drafts/round-6/G7-clear-ball.png` (the kept G7); `references/drafts/round-6/G3-tier-corporate.png` (the kept G3).
+
+Takes:
+
+- Take 1. Follows the guide. Counts right except the staplers: three bumpers with coffee lid caps, one coffee machine with `Coffee`, six cubicles, five drop targets, one inbox with a scoop, three inserts. Misses: the slingshots are red triangular plastics with a wire, not clearly staplers; launch lane arrows point up at the top and down at the bottom; the ball sits just below the lowest bumper; the lift tube ends in an elbow at the bottom left. Judge: "Most likely generated art", then named eight things. Failed.
+- Take 2 (made at the same time; same prompt plus a paragraph naming the routes). Misses: flat disc caps on the bumpers, not coffee lids; an orbit lane along the top and an orange elbow at the top left that the guide does not have; cubicles of odd shapes. Judge: "amateur generated art (an AI-generated image)", then named twelve things. Failed.
+- Take 3 (prompt rewritten for every fault the two judges named: straight lift tube, launch lane walled off with every arrow up, no lane along the top, bumpers a ball and a half apart, desk staplers, blank printed notes, inlanes that meet the flipper). Misses: seen at an angle with dark margins left and right, so the tier does not fill the frame; nine cubicles, not six; the slingshots are red triangles, not staplers. Judge: "amateur generated art (AI-generated)", then named ten things. Failed.
+- Take 4 (made at the same time as take 3; the take 3 prompt plus the routes paragraph). Seen from straight above, tier fills the frame, all counts right, `Coffee` spelled right, no other writing. Judge: "generated art, of the five options", with "promotional art for a commercial pinball video game" as its second choice, then named nine things. Failed. Kept as the best of four: it is the only take with all counts right, real staplers and the overhead view.
+
+The judge's answer on the kept take:
+
+> Answer for picture-0404.png (I viewed it at full size plus zoomed crops of every lane, tube and corner).
+>
+> WHAT IT IS: an office-themed pinball playfield seen from above: six miniature cubicles top left, three coffee-cup pop bumpers, a "Coffee" machine top right, an inbox tray of envelopes with a hole in its front, red staplers as slingshots, orange flippers, three lit inserts (pizza, envelope, knot), a clear tube down the left side, a chrome arrowed lane down the right side and across the top, and a glass ball with a mouse cursor inside.
+>
+> Q1. MOST LIKELY CATEGORY: generated art, of the five options. It is not a real commercial pinball game screenshot, film frame, stock photo or textbook picture.
+> - Against a game screenshot: no score, HUD or display, and the layout is not functionally consistent (see Q2). A shipped pinball game has to simulate the ball, so its lanes must connect.
+> - Against a film frame or textbook: nothing explains or stages anything; it is a single decorative top-down still.
+> - For generated art: convincing at a glance, but mechanisms dissolve under zoom (lanes with capped ends, arrows that contradict each other, a smudged unreadable tag bottom right, vague playfield decals).
+> - Caveat on "amateur": the finish is well above amateur. Lighting, materials, theme and the lower third are polished enough that at a glance it passes for promotional art for a commercial pinball video game. That is my second-choice reading.
+>
+> Q2. COULD A BALL TRAVEL EVERY LANE AND RAMP? No. The lower third would work; most of the upper lanes and tubes would not.
+>
+> Things that could not work:
+> - Left clear tube: narrower than the ball (ball is about 80 px across, tube about 55-60 px). Its bottom end is a closed chrome cap with a stub going into the dark apron, so there is no exit onto the playfield.
+> - Right chrome lane: its upper three arrows point up and its lower two point down, so it has no single direction. The track is narrower than the ball, continuous rails wall it off from the playfield with no opening, and two flat tabs block its bottom end.
+> - Top lanes: the left one has arrows pointing right, the right one points left, and both end in riveted end plates either side of the centre. The U-shaped chrome pocket between them is closed at its lower end, so a ball arriving there has no way out.
+> - No plunger or shooter lane is visible, so there is no evident way for a ball to enter play at all.
+> - Column of five white targets: the upper two or three sit almost touching the left coffee-cup bumper, a gap far smaller than the ball, so they cannot be hit.
+> - Three coffee-cup bumpers: packed so tightly the ball cannot pass between them; it can only strike the outside of the cluster.
+> - Cubicles and coffee machine: sealed scenery with no entrances. That is fine as decoration, but they are not shots.
+> - Orange part clipped to the tube (left, mid-height): looks like a diverter or gate but connects to nothing.
+> - Minor: the tube lies over the left outlane, and the ball is glass rather than steel (fine for a video game, not a real machine).
+>
+> Things that would work: the two flippers and the centre drain gap (about 1.5 ball widths), the stapler slingshots, the inlane/outlane wire guides with their lights, the three round inserts, and the hole in the front of the inbox tray, which is wide enough to act as a scoop.
+
+Judge result: FAILED both questions (STATED by the judge). Kept at the limit of four takes.
+
+What the kept take misses (MEASURED on the file unless marked):
+
+- The judge did not pass it: it called it generated art and named nine things that could not work.
+- Launch lane arrows (MEASURED). Five arrow inserts: the top three point up, the bottom two point down. The prompt asked for every one to point up.
+- Lift tube. It has a clear elbow at the top left that turns into a clear rail along the top edge, and at the bottom it ends in a chrome collar and stub in the bottom left corner. The prompt asked for a dead straight tube leaving the frame at both ends. It is narrower than the ball (STATED by the judge: tube about 55 to 60 px against a ball of about 80 px on its view).
+- Top edge. A chrome strip with small arrow lamps runs along the top on both sides of the chute and reads as a lane with closed ends. This tier has no lane along the top in the guide.
+- Lift door. The orange part at mid-left is a clip on the tube with a wire, not clearly a door that opens onto the tier.
+- Bumpers. The three coffee cups stand closer together than one ball, so a ball cannot pass between them. The brief puts the ball among the three; here it touches the lowest one from below.
+- Drop targets. The top two or three of the five stand close to the left bumper, nearer than one ball.
+- Ball size (MEASURED). About 109 px across on the 1920 px frame, so the tier is about 18 balls wide, not 20. A bumper cap is about 2.1 balls across (brief: 2.5). A flipper is about 2.8 balls long (brief: 3).
+- A small blank paper tag on a loop of string lies on the dark panel in the bottom right corner. It is not a pinball part and nothing in the brief asks for it.
+- No plunger in frame (the plunger is in tier 1; the launch lane runs off the bottom of this frame as the guide shows).
+- Ceramic border. Not in frame. The edge of the picture is the aluminum rail, as in the guide for the tier views.
+- Words (MEASURED at full size): `Coffee`, spelled right. No other letters or numbers found. The envelopes, the printed notes and the coffee lids are blank.
+
+Full prompt of the kept take:
+
+```text
+A screenshot from a finished commercial 3D pinball video game with photoreal graphics: one full screen of play, looking straight down at one tier of a pinball table. It looks exactly like a photograph of a real, physical pinball playfield taken from directly overhead with a long lens. 16:9. The tier fills the whole frame from its left edge to its right edge. Dense, designed, polished and readable: every part of the board is busy, nothing is bare, and every lane is clear to see.
+
+REFERENCE IMAGE 1 is a LAYOUT GUIDE made of flat coloured blocks. Follow it exactly for where each thing is and how big it is. Do not copy its flat colours or its flat look: every block stands for a real, solid, photographed pinball part, described below. REFERENCE IMAGE 2 shows the ball of this game, three times: a clear acrylic ball with a white arrow cursor sealed inside it. Use it only for how the ball looks. This image has exactly one ball. REFERENCE IMAGE 3 is the tier above this one on the same machine, already finished. Match its brushed aluminum side rails, its clear lift tube on the left, its launch lane on the right, its orange flippers, its lane guides and lamps, the size of its parts and of its ball, its overhead camera and its photographic finish. Do not copy its navy marble, its tower or its other parts: this tier is a different place.
+
+THE PLACE: an open-plan office, built as a pinball playfield. The board is flat: grey-green carpet tiles with beige laminate walkways, printed as artwork under a thick glossy clear coat that shows sharp reflections of every lamp and part. Its light is flat fluorescent: cool, even, a little green-white. Accent colours: sticky-note yellow, stapler red, coffee brown. Everything that stands on the board is real pinball hardware or a small moulded playfield sculpture fixed among the hardware.
+
+THE FRAME, as in the guide and in reference image 3. Far left edge: a brushed aluminum side rail. Just inside it, the lift: a clear acrylic tube with aluminum collars, one and a half balls wide, running dead straight up the full height of the frame: it enters at the bottom edge and leaves at the top edge, with no bend, no elbow and no cap, because it carries on to the tiers above and below. Left edge, at mid height, just below the cubicles, where the lift opens onto this tier: one small glossy orange lift door, a hinged flap in the right side of the tube, standing open onto the board. The tube touches nothing else. Far right: the launch lane, a straight open channel running the full height of the frame beside the right aluminum rail, shut off from this tier by one continuous low steel wall: the launched ball only passes through here on its way up to the top tier. It is one and a half balls wide, plainly wider than the ball. It enters at the bottom edge of the frame and leaves at the top edge, dead straight. Its floor is clear and empty, with a row of small identical arrow inserts set flush in the floor, every single one pointing up toward the top of the frame. Top centre: the chute from the tier above, a steel-edged opening two balls wide through which the ball drops in, straight down onto the bumpers. The rest of the top edge is a plain low steel wall with a row of small white lamps. There is no lane along the top of this tier.
+
+UPPER PART, placed exactly as in the guide:
+- Top centre, the centerpiece and the biggest things in the image: exactly three large pop bumpers in a triangle, two side by side above and one below between them, with gaps one and a half balls wide between them so the ball can pass. Each has a white skirt at its base, a chrome ring, and a cap that is a white plastic takeaway coffee cup lid with a raised rim and a small sip hole, sitting on a coffee-brown body. Each cap is two and a half balls across. A warm lamp is lit inside each bumper.
+- Right of the bumpers, at the top: one office coffee machine, a moulded brown and steel machine seen from above, with small lit buttons that carry no words and a paper cup under its spout. Flat on its top lies a sign with one word: "Coffee".
+- Upper left: the cubicle farm, exactly six cubicles in two rows of three. Each has low beige fabric walls, a desk, one dark switched-off monitor and an empty chair. Nobody is there.
+- Along the right side of the cubicle farm: a straight column of exactly five white drop targets, facing the bumpers.
+- Right: the inbox, one large beige office mail tray piled with blank white envelopes, seen from above. At its lower left front corner: the scoop, a dark steel-edged hole in the board, big enough to swallow a ball.
+
+LOWER PART, the same on every tier of this machine, placed exactly as in the guide:
+- A pair of glossy orange flippers at the bottom centre, each three balls long, on steel shafts, each with a black rubber band round it. Their pivots are wide apart and their tips point down toward the centre, with a gap one and a half balls wide between the tips.
+- Below the gap: the chute, a steel-edged opening in the board through which a missed ball falls to the tier below.
+- A slingshot above and outside each flipper. Each slingshot is a giant glossy red office stapler seen from above, the classic desk stapler: a long red top arm with a rounded nose, hinged at its back end over a flat steel base. It lies along the slingshot's long inner edge, with the rubber band and its three posts beside it and a lamp under it. Exactly two red staplers, one each side, mirror images of each other.
+- Outside each slingshot: an inlane and an outlane, each one and a half balls wide, divided by one chrome wire lane guide. The inlane runs between the slingshot and the guide, and its lower end turns in to meet the pivot end of the flipper, so the flipper is the continuation of the inlane and a ball that rolls down it rolls onto the top of the flipper. No rail or guide runs under a flipper. The outlane runs outside the guide and leads down past the flipper. Two lit amber lamps set flush in the floor on each side. No bolt or post stands in the mouth of a lane.
+- Above the flippers, in an arc: exactly three large round lit inserts set flat and flush in the board, level with its surface. Each shows one simple picture and no words. Left: a slice of pizza. Middle: an envelope with two curved arrows. Right: a knot of rope. They glow yellow, green and blue.
+- Everywhere between these: printed artwork of carpet tiles, floor-plan lines, cable runs, paper clips, coffee rings and plain blank sticky notes with nothing on them; rows of small identical lit arrow and circle inserts along the lanes; steel posts with rubber rings; small lamps. None of the artwork looks like letters, numbers or writing. Nothing stands in a lane.
+
+THE BALL: exactly one ball, the clear acrylic ball of reference image 2, one twentieth of the frame's width across, much smaller than a bumper cap. It is in the gap in the middle of the three bumpers, touching the skirt of the lower bumper, plain to see between the three caps. We look down through the top of the clear ball at the solid white arrow cursor with its black edge lying inside it; the arrow is three quarters of the ball's width and is plain to see. A crisp highlight on the ball and a soft shadow under it.
+
+FINISH: the level of the best modern 3D pinball simulations on sale today. Rich contrast, glowing lamps, deep sharp reflections in the clear coat, crisp moulded plastics with printed art, chrome wire, brass, real screws, posts and rubber rings.
+
+LIGHT: every lamp is on. General lighting round the edges of the tier, a lamp under every insert, a lamp in each bumper, small lit buttons on the coffee machine. Light from each insert spills onto the post beside it. Flat, even, fluorescent overall.
+
+CAMERA: directly overhead, long lens, so things that stand up lean only a very little outward toward the edges of the frame and show a sliver of their sides. Deep focus: every part of the image is sharp from edge to edge, with no soft or blurred area anywhere.
+
+LETTERING: the only word anywhere in the image is "Coffee" on the coffee machine, spelled exactly like that. There are no other letters or numbers anywhere: no score, no display, no labels, no captions, no brand, no logo. The monitors are dark and blank, the envelopes and sticky notes are blank. Inserts and plastics carry only pictures, arrows, circles, stars and stripes.
+
+NOT IN THE IMAGE: no people, no hands, no faces; no cabinet, no legs, no room, no floor, no sheet of glass over the playfield; no fog, smoke, haze, lens flare or blur; not pixel art, not a flat illustration, not a cartoon, not a diorama, not a doll's house.
+
+SCALE, with the ball as the unit: the frame is twenty balls wide and eleven tall. A flipper is three balls long. A bumper cap is two and a half balls across. Every lane, every ramp and the lift tube are one and a half balls wide, so the ball fits in each of them with room to spare.
+
+ROUTES, all clear to see: the ball drops in at the top centre straight onto the three bumpers. An open lane one and a half balls wide runs down each side of the bumper group to the flippers. From the left flipper an open shot runs up to the scoop at the inbox; from the right flipper an open shot runs up to the row of drop targets beside the cubicles and to the lift door on the left. The cubicles, the coffee machine and the inbox stand outside the lanes, against the walls, and block nothing.
+```
+
