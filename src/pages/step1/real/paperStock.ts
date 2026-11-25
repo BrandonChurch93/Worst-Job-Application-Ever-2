@@ -120,7 +120,7 @@ export function stock(sheetW: number, sheetL: number): Stock {
   const fibre = fibreMap(STOCK.fibrePx, STOCK.seed)
   fibre.repeat.set(sheetW / STOCK.fibreTile, sheetL / STOCK.fibreTile)
   const crease = creaseMap(STOCK.creaseW, STOCK.creaseH, STOCK.seed, sheetW, sheetL, 5)
-  const base = { color: srgb(0xf3f3f1), roughness: 0.9, metalness: 0, specularIntensity: 0.35, side: THREE.DoubleSide }
+  const base = { color: srgb(0xf1f2f5), roughness: 0.9, metalness: 0, specularIntensity: 0.35, side: THREE.DoubleSide }
   const sheet = studio(new THREE.MeshPhysicalMaterial({ ...base, map: fibre, normalMap: crease, normalScale: new THREE.Vector2(0.2, 0.2) }))
   const strip = studio(new THREE.MeshPhysicalMaterial({ ...base, vertexColors: true }))
   const print = studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0.78, metalness: 0, specularIntensity: 0.3, vertexColors: true, side: THREE.DoubleSide }))
@@ -132,4 +132,4 @@ export function stock(sheetW: number, sheetL: number): Stock {
   return made
 }
 
-export const INK = { title: srgb(0x2b2a28), bar: srgb(0x9a9893), paper: srgb(0xf3f3f1) }
+export const INK = { title: srgb(0x2b2a28), bar: srgb(0x8d8d90), paper: srgb(0xf1f2f5) }

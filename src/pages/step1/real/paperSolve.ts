@@ -44,7 +44,7 @@ export interface Sheet {
   out: number
 }
 
-export const GRID = { nx: 35, ny: 51 }
+export const GRID = { nx: 49, ny: 67 }
 export const MARGIN = 16
 const WRAP = 1.12
 const KW = 72
@@ -72,24 +72,41 @@ const raw = (folds: Fold[], u: number, v: number): number => {
     if (t >= 1) continue
     const along = Math.abs(rx * c.dx + ry * c.dy)
     const end = 1 - smooth((along - c.len * 0.5) / (c.len * 0.5))
-    z += c.amp * (1 - t) * (1 - t * 0.35) * end
+    z += c.amp * (1 - t) * (1 - t) * end
   }
   return z
 }
 
-// The creases a sheet takes when it is grabbed and hauled: straight folds with a sharp ridge and soft flanks,
-// most of them through the two grips. In material coordinates, 0 to 1 both ways, range -1 to 1.
+// The creases a sheet takes when it is grabbed and hauled: straight folds with a sharp ridge and soft flanks.
+// Two in five run from a grip down the sheet, the rest are the short weak folds of crushing. Range -1 to 1.
 function field(seed: number): Field {
   const hit = fields.get(seed)
   if (hit) return hit
   const folds: Fold[] = []
-  for (let i = 0; i < 22; i++) {
+  for (let i = 0; i < 34; i++) {
     const h = (k: number): number => hash01(i, k, seed + 4409)
-    const through = i % 3
-    const px = through === 0 ? 0.27 + h(1) * 0.1 : through === 1 ? 0.63 + h(1) * 0.1 : h(1)
-    const py = through === 2 ? 0.25 + h(2) * 0.75 : 0.02 + h(2) * 0.2
-    const a = through === 2 ? h(3) * Math.PI : Math.PI * (0.18 + h(3) * 0.64)
-    folds.push({ px, py, dx: Math.cos(a), dy: Math.sin(a), half: 0.06 + h(4) * 0.16, amp: (h(5) < 0.5 ? -1 : 1) * (0.45 + h(6) * 0.55), len: 0.35 + h(7) * 0.9 })
+    const kind = i % 5
+    const long = kind < 2
+    const px = kind === 0 ? 0.25 + h(1) * 0.12 : kind === 1 ? 0.63 + h(1) * 0.12 : h(1)
+    const py = long ? 0.02 + h(2) * 0.16 : 0.12 + h(2) * 0.85
+    const a = long ? Math.PI * (0.2 + h(3) * 0.6) : h(3) * Math.PI
+    folds.push({
+      px, py, dx: Math.cos(a), dy: Math.sin(a),
+      half: long ? 0.12 + h(4) * 0.2 : 0.08 + h(4) * 0.14,
+      amp: (h(5) < 0.5 ? -1 : 1) * (long ? 0.5 + h(6) * 0.5 : 0.22 + h(6) * 0.3),
+      len: long ? 0.5 + h(7) * 0.9 : 0.16 + h(7) * 0.34
+    })
+  }
+  for (let i = 0; i < 8; i++) {
+    const h = (k: number): number => hash01(i, k, seed + 5521)
+    const left = i < 4
+    const a = Math.PI * (0.14 + ((i % 4) + h(1) * 0.7) * 0.2)
+    folds.push({
+      px: (left ? 0.24 : 0.76) + (h(5) - 0.5) * 0.05, py: 0.07 + h(6) * 0.04, dx: Math.cos(a), dy: Math.sin(a),
+      half: 0.045 + h(2) * 0.035,
+      amp: (i % 2 === 0 ? 1 : -1) * (0.2 + h(3) * 0.22),
+      len: 0.34 + h(4) * 0.3
+    })
   }
   const table = new Float32Array(KW * KH)
   let lo = Infinity
@@ -142,8 +159,8 @@ export function solveSheet(q: SheetIn, into?: Sheet): Sheet {
   const W = q.w
   const L = q.l
   const bite = smooth(q.bite)
-  const abuse = clamp(0.05 + bite * (0.4 + 0.9 * q.amount + 0.25 * q.pull), 0, 1)
-  const g0 = 0.5 + 9 * abuse
+  const abuse = clamp(0.05 + bite * (0.3 + 0.5 * q.amount + 0.2 * q.pull) + (1 - bite) * 0.5 * q.pull * smooth(q.hands), 0, 1)
+  const g0 = 0.5 + 5 * abuse
   out.abuse = abuse
 
   const cos = Math.cos(q.rot)
@@ -286,7 +303,7 @@ export function solveSheet(q: SheetIn, into?: Sheet): Sheet {
         const t = Math.min(1, s / F)
         const env = Math.sin(Math.PI * Math.pow(t, 0.8))
         const start = smooth(s / 16)
-        zc[k] = g0 * creaseAt(K, a / W, (bCrest - s) / L) * start
+        zc[k] = g0 * creaseAt(K, a / W, (bCrest - s) / L) * start * (1 - 0.7 * hands * (1 - smooth(Math.abs(F - s) / 22)))
         zk[k] = (curl + wr) * Math.pow(Math.max(0, env), 0.7) + (k > NS ? 0.012 * (s - F) * (s - F) : 0)
       }
       const run = (hh: number, gs: number): number => {
@@ -305,7 +322,7 @@ export function solveSheet(q: SheetIn, into?: Sheet): Sheet {
       const want = Math.min(c, F)
       const slack = Math.max(0, F - want)
       let got = run(0, 1)
-      const allowed = slack / F + 0.01
+      const allowed = slack / F + 0.03
       const short = 1 - got / F
       if (short > allowed) {
         scale = Math.sqrt(allowed / short)
@@ -378,14 +395,54 @@ export function solveSheet(q: SheetIn, into?: Sheet): Sheet {
       out.pos[o + 2] = z
     }
   }
-  hold(out, da, db)
+  hold(out, da, db, 6)
   normals(out)
+  const turned = Math.max(bite, q.pull * smooth(q.hands))
+  if (turned > 0.02) {
+    ear(out, W, L, turned * (0.55 + 0.45 * abuse))
+    hold(out, da, db, 3)
+    normals(out)
+  }
   return out
+}
+
+const EAR = { a: 34, b: 27, turn: 2.72 }
+const earAt = new Float32Array(3)
+
+// The dog ear: the corner by the left grip turned over along a straight fold, without stretching.
+function ear(s: Sheet, W: number, L: number, k: number): void {
+  const { nx, ny, pos } = s
+  const da = W / (nx - 1)
+  const db = L / (ny - 1)
+  const ia = 1 / EAR.a
+  const ib = 1 / EAR.b
+  const n = Math.hypot(ia, ib)
+  const theta = EAR.turn * smooth(k)
+  const co = Math.cos(theta)
+  const si = Math.sin(theta)
+  const done: number[] = []
+  for (let j = 0; j * db < EAR.b; j++) {
+    for (let i = 0; i * da < EAR.a; i++) {
+      const a = i * da
+      const b = j * db
+      const far = (1 - a * ia - b * ib) / n
+      if (far <= 0) continue
+      const step = (far - far * co) / n
+      sheetAt(s, (a + step * ia) / W, (b + step * ib) / L, far * si + 0.25, earAt, 0)
+      done.push((j * nx + i) * 3, earAt[0]!, earAt[1]!, earAt[2]!)
+    }
+  }
+  for (let m = 0; m < done.length; m += 4) {
+    const o = done[m]!
+    pos[o] = done[m + 1]!
+    pos[o + 1] = done[m + 2]!
+    pos[o + 2] = done[m + 3]!
+  }
 }
 
 // Paper does not stretch: where the shape asks an edge of the grid to be longer than the paper is, the sheet draws in instead.
 // Across, from the middle out; along, from the cutters up. This is what takes the outline off the rectangle.
-function hold(s: Sheet, da: number, db: number): void {
+function hold(s: Sheet, da: number, db: number, passes: number): void {
   const { nx, ny, pos } = s
   const mid = (nx - 1) >> 1
   const pullTo = (from: number, to: number, max: number): void => {
@@ -399,7 +456,7 @@ function hold(s: Sheet, da: number, db: number): void {
     pos[to + 1] = pos[from + 1]! + y * k
     pos[to + 2] = pos[from + 2]! + z * k
   }
-  for (let pass = 0; pass < 3; pass++) {
+  for (let pass = 0; pass < passes; pass++) {
     for (let j = 0; j < ny; j++) {
       for (let i = mid; i + 1 < nx; i++) pullTo((j * nx + i) * 3, (j * nx + i + 1) * 3, da * 1.004)
       for (let i = mid; i > 0; i--) pullTo((j * nx + i) * 3, (j * nx + i - 1) * 3, da * 1.004)

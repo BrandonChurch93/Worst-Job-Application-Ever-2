@@ -1,8 +1,8 @@
 # Status pictures
 
-Time: 2026-11-25T14:10Z. Phase 3, status 25.
+Time: 2026-11-25T14:32Z. Phase 3, status 26.
 
-1. `01-compare-step1-fire-first-merge.jpg`: Keyboard under fire: your approved picture on the left, the first merge of the real parts on the right. Flat light, flat deck, no long shadows yet.
-2. `02-compare-step1-tug-first-merge.jpg`: The tug of war: approved on the left, the first merge on the right, from the film's camera. The sheet knots at the slot and the arms are thin lines; both are being reworked.
-3. `03-cursor-acting-under-approved.jpg`: The cursor's acting states: your approved sheet above, the build's cursor below, in its owner's own test light.
-4. `04-compare-page-look-first-merge.jpg`: The page at rest with crops at full size: approved on the left, the build on the right. Fields, progress buttons and the cursor still lack depth and shadow.
+1. `01-compare-step1-fire-second-merge.jpg`: Keyboard under fire: your approved picture on the left, the merged build on the right, at the 20 degree lens. The page light now falls off like yours; the bolts and sparks of the judged moment are not there yet.
+2. `02-bolt-and-its-light.jpg`: A bolt at full size, from the light owner's test: a travelling streak with a bright head that warms the caps beside it, and the scorch marks earlier bolts left.
+3. `03-compare-step1-tug-second-merge.jpg`: The tug of war: approved on the left, the merged build on the right, from the film's camera. The sheet now hangs from the cursor's hands with a soft shadow; the arms are still too thin.
+4. `04-compare-page-look-second-merge.jpg`: The page at rest with crops at full size: approved on the left, the build on the right. Brushed metal, ceramic grain and falloff are close; pockets, long shadows and the cursor's shadow are not.
