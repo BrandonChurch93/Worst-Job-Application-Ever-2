@@ -1,35 +1,35 @@
 {
   "folder": "lights",
-  "pushed": "2026-11-25T15:38:14.896Z",
-  "commit": "a8522260f30d766eecbd0d801d866d77c7776bcc",
+  "pushed": "2026-11-25T16:07:26.067Z",
+  "commit": "5c0c7528f9805c86cb00c4c8e19f09ce43fac90c",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Tier corporate: approved left, this build right. Floor lit only by the lamps: cold white arrow windows, gold lane and sling lamps, globes, insert light on the plates. Models are still stand-ins.",
-      "time": "2026-11-25T15:38:12.975Z",
+      "caption": "Key tier-corporate: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-25T16:07:24.109Z",
       "by": "lights",
       "from": "out/work/compare/compare-tier-corporate.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Tier street: approved left, this build right. Dusk general light, sodium lane lamps, the red beacon at full as a true light.",
-      "time": "2026-11-25T15:38:13.224Z",
-      "by": "lights",
-      "from": "out/work/compare/compare-tier-street.jpg"
-    },
-    {
-      "file": "look-3.jpg",
-      "caption": "Tier office: approved left, this build right. Fluorescent general light, warm lane and sling lamps, bumper lamps.",
-      "time": "2026-11-25T15:38:13.469Z",
+      "caption": "Office beside the approved image: a pool of light at each rail lamp, no smudge between lamps",
+      "time": "2026-11-25T16:07:24.377Z",
       "by": "lights",
       "from": "out/work/compare/compare-tier-office.jpg"
     },
     {
-      "file": "look-4.jpg",
-      "caption": "Proof: tier corporate with every group, then lit by each of its ten groups alone (general, lanes, three inserts, two globes, windows, display, flash).",
-      "time": "2026-11-25T15:38:13.697Z",
+      "file": "look-3.jpg",
+      "caption": "Corporate beside the approved image: lamps light the floor in pools, globes light the doors",
+      "time": "2026-11-25T16:07:24.631Z",
       "by": "lights",
-      "from": "out/work/lights/sheet-corporate.jpg"
+      "from": "out/work/compare/compare-tier-corporate.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Office proof sheet: all groups, then each group alone",
+      "time": "2026-11-25T16:07:24.873Z",
+      "by": "lights",
+      "from": "out/work/lights/sheet-office.jpg"
     }
   ]
 }
