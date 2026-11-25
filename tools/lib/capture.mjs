@@ -79,6 +79,13 @@ export async function readCanvas(page) {
   return Buffer.from(b64, 'base64')
 }
 
+// The page as the browser shows it, for a still with the site's controls over the picture or with the touch message.
+export async function readPage(session) {
+  const f = session.format
+  await session.page.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))))
+  return session.page.screenshot({ type: 'png', clip: { x: 0, y: 0, width: Math.min(f.width, 1920), height: Math.min(f.height, 1080) } })
+}
+
 // What state an output was made from. An output is reused only when this matches.
 export function recordFor(session, { units, tier, diagnostic, what }) {
   const info = buildInfo(at())
@@ -159,7 +166,7 @@ export async function still(session, a, { force = false, dir = 'stills' } = {}) 
     [spec, diagnostic]
   )
   const seconds = Number(process.hrtime.bigint() - t0) / 1e9
-  const png = await readCanvas(session.page)
+  const png = spec.interface || spec.touchOnly ? await readPage(session) : await readCanvas(session.page)
   fs.mkdirSync(path.dirname(file), { recursive: true })
   fs.writeFileSync(file, png)
   const info = await session.page.evaluate(() => window.showcase.info())
@@ -173,6 +180,8 @@ export async function renderJob(session, job) {
   await session.page.evaluate(async (j) => {
     window.showcase.setDiagnostic(j.diag || 'beauty')
     if (j.kind === 'film') await window.showcase.renderFilmFrame(j.frame, j.tier)
+    else if (j.kind === 'opening') await window.showcase.renderOpeningFrame(j.frame)
+    else if (j.kind === 'loop') await window.showcase.renderLoopFrame(j.frame, j.tier)
     else await window.showcase.renderStill(j.spec)
   }, job)
   return readCanvas(session.page)

@@ -54,8 +54,8 @@ function waitPanel(): LayoutNode {
   const on = heights.card
   const titleY = TOP + pad
   const labelY = titleY + cap(T.waitTitle) + 48
-  const counterY = labelY + cap(TYPE.label) + 20
-  const counterH = 220
+  const counterY = labelY + cap(TYPE.value) + 22
+  const counterH = 212
   const bodyY = counterY + counterH + 40
   const valueY = counterY + (counterH - cap(T.waitValue)) / 2
   const value = words(KEYS.waitValue)
@@ -70,9 +70,9 @@ function waitPanel(): LayoutNode {
     part: 'wait', r: 24, states: ['wait'],
     children: [
       text('wait-title', 'copy:transitions.step5', T.waitTitle, x, titleY, { part: 'type', on }),
-      text('wait-label', 'copy:step5.wait.label', TYPE.label, x, labelY, { part: 'type', on }),
+      text('wait-label', 'copy:step5.wait.label', TYPE.value, x, labelY, { part: 'type', on }),
       counter,
-      text('wait-body', 'copy:step5.wait.body', TYPE.body, x, bodyY, { part: 'type', on })
+      text('wait-body', 'copy:step5.wait.body', TYPE.subline, x, bodyY, { part: 'type', on })
     ]
   })
 }
@@ -126,25 +126,25 @@ export const spotOf = (): { x: number; y: number } => {
 }
 
 function metrics(): LayoutNode {
-  const pad = 44
+  const pad = 48
   const x = RIGHT_X + pad
   const on = heights.card
   const gap = 24
   const tileW = (COLUMN - pad * 2 - gap * 2) / 3
   const titleY = TOP + pad
-  const tilesY = titleY + cap(T.panelTitle) + 32
-  const inner = 22
+  const tilesY = titleY + cap(T.panelTitle) + 40
+  const inner = 26
   const labelY = tilesY + inner
-  const valueY = labelY + cap(TYPE.helper) + 22
+  const valueY = labelY + cap(TYPE.label) + 22
   const tileH = Math.round(valueY + cap(T.readout) + inner + 2 - tilesY)
-  const applicantY = tilesY + tileH + 30
-  const height = Math.round(applicantY + cap(TYPE.body) + pad - TOP)
+  const applicantY = tilesY + tileH + 36
+  const height = CONTENT_H - GUTTER - markOf().blockH
   const tile = (i: number, id: string, label: string, values: LayoutNode[]): LayoutNode => {
     const tx = x + i * (tileW + gap)
     for (const v of values) v.box[0] = tx + inner
     return node(`metrics-${id}`, 'readout', [tx, tilesY, tileW, tileH], {
       part: 'metrics', height: READOUT_TOP, floor: on, tone: 'light', r: 14,
-      children: [text(`metrics-${id}-label`, label, TYPE.helper, tx + inner, labelY, { part: 'type', on: READOUT_TOP }), ...values]
+      children: [text(`metrics-${id}-label`, label, TYPE.label, tx + inner, labelY, { part: 'type', on: READOUT_TOP }), ...values]
     })
   }
   const run = (id: string, key: string, states?: string[]): LayoutNode =>
@@ -187,7 +187,7 @@ function stampAtRest(): LayoutNode {
 
 function controls(): LayoutNode[] {
   const w = buttonWidth('copy:step5.accept', true)
-  const y = BOTTOM + 44
+  const y = BOTTOM + GUTTER
   const accept = button('accept', CENTRE - w / 2, y, w, 'copy:step5.accept', { hero: true, part: 'shell', states: SHOWN })
   const linkY = y + sizes.heroButton + 34
   const link = text('share-link', 'copy:step5.share', T.link, CENTRE, linkY, { part: 'type' })

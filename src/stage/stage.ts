@@ -353,12 +353,19 @@ export class MouseDriver implements Driver {
   readonly name = 'mouse' as const
   pointer: Pointer = { x: 960, y: 540, down: false }
   private once: Partial<Pointer> = {}
+  private keys: string[] = []
+  // What happened between two steps. Keys wait in line, one a step, so two keys pressed within one drawn frame both arrive.
   pulse(p: Partial<Pointer>): void {
-    Object.assign(this.once, p)
+    const { key, wheel, ...rest } = p
+    if (key !== undefined) this.keys.push(key)
+    if (wheel !== undefined) this.once.wheel = (this.once.wheel ?? 0) + wheel
+    Object.assign(this.once, rest)
   }
   input(): Pointer {
     const out = { ...this.pointer, ...this.once }
     this.once = {}
+    const key = this.keys.shift()
+    if (key !== undefined) out.key = key
     return out
   }
 }
