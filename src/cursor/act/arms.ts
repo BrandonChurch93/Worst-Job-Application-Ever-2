@@ -8,7 +8,7 @@ import type { ArmsLook, ArmsModel } from '../contract'
 // A hose is `rest` long and never shorter. A hand nearer than that leaves the rest as slack: the hose leaves the body outward (`out`), bows round in one loop and comes to the hand along the line of its reach (`into`). A hand further away stretches it: it is still `taut` longer than the straight line, so it keeps a curve, and it thins by `thin` at full strain and by the root of its stretch. `most` is the longest a short reach may be for its length, so a hand that is still growing out does not throw a loop. An open hand that pushes bends back at the wrist by `wrist`; an open hand that hangs lets its fingers fall by `droop`.
 const H = config.cursor.heightPxAt1080
 export const ARM = { radius: H * 0.04, rest: 50, taut: 1.12, most: 2.1, out: 0.16, into: 0.3, ease: 0.45, thin: 0.12, along: 34, round: 12, grainPx: 64, wrist: 1, droop: 0.6, low: 0.15, rise: 0.55 }
-const HAND = { palm: [4.6, 4.7, 2.7], palmY: 4.8, finger: 1.5, joint: 3.1, joints: 8 }
+const HAND = { palm: [4.1, 3.7, 1.9], palmY: 3.6, finger: 1.15, joint: 3.2, joints: 8, curl: 0.5, knuckle: 0.65 }
 
 export interface Arms extends ArmsModel {
   // How far the arms have grown, 0 to 1 and a little over: the hands swell with it.
@@ -28,14 +28,11 @@ function parts() {
   const rubber = studio(
     new THREE.MeshPhysicalMaterial({
       color: new THREE.Color().setHex(0x1b1b1c, THREE.SRGBColorSpace),
-      roughness: 0.6,
+      roughness: 0.78,
       metalness: 0,
-      sheen: 0.25,
-      sheenRoughness: 0.5,
-      sheenColor: new THREE.Color().setHex(0x8a8680, THREE.SRGBColorSpace),
       normalMap: grain,
       normalScale: new THREE.Vector2(0.07, 0.07),
-      specularIntensity: 0.5
+      specularIntensity: 0.3
     })
   )
   const palm = new THREE.SphereGeometry(1, 20, 14).scale(HAND.palm[0]!, HAND.palm[1]!, HAND.palm[2]!)
@@ -67,7 +64,7 @@ class Limb {
     this.palm.position.set(0, HAND.palmY, 0)
     this.hand.add(this.palm)
     const lay: [number, number, number, number, number, boolean][] = [
-      [-2.5, 7.4, 0.11, 0.04, 1, false], [0, 8.1, 0, 0, 1.12, false], [2.5, 7.4, -0.11, -0.04, 1, false], [3.6, 3.4, -0.95, -0.45, 0.86, true]
+      [-3, 6.2, 0.2, 0.14, 1, false], [0, 6.9, 0, 0, 1.1, false], [3, 6.2, -0.2, -0.14, 1, false], [3.7, 2.6, -1, -0.6, 0.8, true]
     ]
     for (const [x, y, open, shut, long, thumb] of lay) {
       const base = new THREE.Object3D()
@@ -204,8 +201,8 @@ class Limb {
     for (const f of this.fingers) {
       const splay = f.open + (f.shut - f.open) * grip
       f.base.position.set(f.x, f.y, f.thumb ? -0.4 * grip : 0)
-      f.base.rotation.set(f.thumb ? -0.9 * grip : -0.95 * grip - 0.14, f.thumb ? -0.5 * grip * this.side : 0, splay)
-      f.tip.rotation.x = f.thumb ? -0.9 * grip - 0.1 : -1.1 * grip - 0.22
+      f.base.rotation.set(f.thumb ? -0.9 * grip : -HAND.curl * grip - 0.14, f.thumb ? -0.5 * grip * this.side : 0, splay)
+      f.tip.rotation.x = f.thumb ? -0.9 * grip - 0.1 : -HAND.knuckle * grip - 0.22
     }
     this.hand.updateMatrixWorld(true)
     d3.palms.setMatrixAt(this.slot, this.palm.matrixWorld)
@@ -217,8 +214,8 @@ class Limb {
 }
 
 const HAND_SCALE = 1.05
-// A clenched fist bulges: without this a closed hand is half the size of an open one and is lost on the sheet it holds.
-const FIST = 0.4
+// A closed hand is a touch larger than an open one, so it is not lost on the sheet it holds.
+const FIST = 0.08
 
 interface Draw { position: THREE.BufferAttribute; normal: THREE.BufferAttribute; palms: THREE.InstancedMesh; joints: THREE.InstancedMesh }
 

@@ -285,7 +285,9 @@ function screws(at: [number, number][], z: number): { heads: THREE.BufferGeometr
 }
 
 const PANEL = { thick: 1.5, lift: 0.3, clear: 0.7, bevel: 0.3 }
-const SEAT = 0.5
+const SEAT = 1
+// What throws the machine's shadow: a block inside the walls this high over the page, so the shadow stays close round the foot.
+const CAST = 13
 
 interface Cassette {
   lift: THREE.Group
@@ -326,7 +328,8 @@ function makeCassette(): THREE.Group {
     block(-inner, inner, C.deep - C.wall, C.deep, -C.sink, C.top - 6.5, 0.5),
     block(-inner, inner, -C.deep, -C.deep + C.wall, -C.sink, C.chute.z - 0.6, 0.5)
   ], true)
-  add(lift, body, brushed())
+  add(lift, body, brushed(), false)
+  add(lift, strip(block(-C.half + 1, C.half - 1, -C.deep + 1, C.deep - 1, -C.sink, (CAST - RAISE) / K, 0.01)), shade())
   const hard = screws(
     [
       [-C.half + C.cheek / 2, C.deep - 5.2],
@@ -352,7 +355,7 @@ function makeCassette(): THREE.Group {
   const b = new THREE.Mesh(roller, cutterSteel())
   b.rotation.z = Math.PI
   for (const r of [a, b]) {
-    r.castShadow = true
+    r.castShadow = false
     r.receiveShadow = true
   }
   north.add(a)
@@ -362,11 +365,11 @@ function makeCassette(): THREE.Group {
   const chute = new THREE.Group()
   chute.position.set(0, -C.deep, C.chute.z)
   lift.add(chute)
-  add(chute, sheetMetal(-inner + 0.6, inner - 0.6, arcRun(HOOD.cy, HOOD.cz, HOOD.r, HOOD.from, HOOD.to, 0), C.chute.thick), brushed())
+  add(chute, sheetMetal(-inner + 0.6, inner - 0.6, arcRun(HOOD.cy, HOOD.cz, HOOD.r, HOOD.from, HOOD.to, 0), C.chute.thick), brushed(), false)
   const slide = new THREE.Group()
   slide.position.set(0, HOOD.cy, HOOD.cz)
   chute.add(slide)
-  const reach = add(slide, sheetMetal(-inner + 4, inner - 4, arcRun(0, 0, HOOD.r - C.chute.thick - 0.35, HOOD.to - HOOD.more - 0.08, HOOD.to + 0.02, 1.25), C.chute.thick), brushed())
+  const reach = add(slide, sheetMetal(-inner + 4, inner - 4, arcRun(0, 0, HOOD.r - C.chute.thick - 0.35, HOOD.to - HOOD.more - 0.08, HOOD.to + 0.02, 1.25), C.chute.thick), brushed(), false)
 
   // The two panels that close the slot. They are the page's own ceramic, so shut they are two tiles with a seam.
   // Open, they have come up out of the slot and lie on the page either side of it, their thickness showing.

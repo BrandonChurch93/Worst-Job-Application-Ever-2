@@ -211,37 +211,39 @@ describe('step 1: the script of the film', () => {
     }
   })
 
-  it('holds the tug frame left of the field column on the intake and the outlet, is close by 2.4 s into the tug, 560 to 680 px of page at the key picture, and about 556 px after it', () => {
+  it('moves straight in to one frame 590 px of page wide left of the field column, stands dead still there from before the first bite to the pile, and moves straight out', () => {
     const page = film().page
+    const widthAt = (cam: NonNullable<ReturnType<typeof page.camera>>): number => (1920 * 200) / (projectPage(cam, SLOT.cx + 100, SLOT.cy, 0).x - projectPage(cam, SLOT.cx - 100, SLOT.cy, 0).x)
+    const still = page.camera('film', CAMERA.key)!
+    const home = page.camera('film', 0)!
+    const share = home.eye[2] / (home.eye[2] - still.eye[2])
+    const fixed = { x: 960 + home.eye[0] + (still.eye[0] - home.eye[0]) * share, y: 540 - home.eye[1] - (still.eye[1] - home.eye[1]) * share }
+    const held = projectPage(still, fixed.x, fixed.y, 0)
     let gutter = Infinity
-    let widest = 0
-    let closest = Infinity
-    for (let now = CAMERA.in[1]; now <= CAMERA.out[0]; now += 0.05) {
+    for (let now = CAMERA.in[0]; now <= CAMERA.out[1]; now += 0.05) {
       const cam = page.camera('film', now)!
-      const wide = (1920 * 200) / (projectPage(cam, SLOT.cx + 100, SLOT.cy, 0).x - projectPage(cam, SLOT.cx - 100, SLOT.cy, 0).x)
-      if (now >= CAMERA.creep[1]) {
-        widest = Math.max(widest, wide)
-        closest = Math.min(closest, wide)
-      } else expect(wide, now.toFixed(2)).toBeLessThan(980)
-      if (now >= CAMERA.closer[1] && now <= CAMERA.key) {
-        expect(wide, now.toFixed(2)).toBeGreaterThan(560)
-        expect(wide, now.toFixed(2)).toBeLessThan(680)
-      }
+      expect(cam.target[0], now.toFixed(2)).toBeCloseTo(cam.eye[0], 6)
+      expect(cam.target[1], now.toFixed(2)).toBeCloseTo(cam.eye[1], 6)
+      const on = projectPage(cam, fixed.x, fixed.y, 0)
+      expect(Math.hypot(on.x - held.x, on.y - held.y), now.toFixed(2)).toBeLessThan(0.01)
+      if (now < CAMERA.in[1] || now > CAMERA.out[0]) continue
+      expect(cam.eye, now.toFixed(2)).toEqual(still.eye)
       for (const y of [ZONE.y, ZONE.y + ZONE.h, SLOT.cy]) {
         gutter = Math.min(gutter, projectPage(cam, FIELD_X - 16, y, 0).x - 1920)
         expect(projectPage(cam, FIELD_X - 16, y, 0).x, now.toFixed(2)).toBeGreaterThan(1920 - 0.01)
         expect(projectPage(cam, FIELD_X - 6, y, config.scale.heights.card).x, now.toFixed(2)).toBeGreaterThan(1920)
       }
       for (const q of [{ x: SLOT.cx - SLOT.w / 2, y: SLOT.cy - SLOT.h / 2 }, { x: SLOT.cx + SLOT.w / 2, y: SLOT.cy + 30 }]) {
-        const on = projectPage(cam, q.x, q.y, 0)
-        expect(Math.min(on.x, 1920 - on.x, on.y, 1080 - on.y), now.toFixed(2)).toBeGreaterThan(100)
+        const at = projectPage(cam, q.x, q.y, 0)
+        expect(Math.min(at.x, 1920 - at.x, at.y, 1080 - at.y), now.toFixed(2)).toBeGreaterThan(100)
       }
     }
-    expect(CAMERA.closer[1]).toBeLessThanOrEqual(22.03 + 2.4)
-    expect(widest).toBeLessThan(570)
-    expect(closest).toBeGreaterThan(540)
-    expect((config.cursor.heightPxAt1080 * 1920) / widest / 1080).toBeGreaterThan(0.22)
-    console.log(`tug frame: ${closest.toFixed(0)} to ${widest.toFixed(0)} px of page wide once it has closed, the line before the field column ${gutter.toFixed(0)} px outside the right edge`)
+    const wide = widthAt(still)
+    expect(CAMERA.in[1]).toBeLessThan(22.03)
+    expect(wide).toBeGreaterThan(560)
+    expect(wide).toBeLessThan(680)
+    expect((config.cursor.heightPxAt1080 * 1920) / wide / 1080).toBeGreaterThan(0.2)
+    console.log(`tug frame: ${wide.toFixed(0)} px of page wide, the point that keeps its place ${fixed.x.toFixed(0)}, ${fixed.y.toFixed(0)}, the line before the field column ${gutter.toFixed(0)} px outside the right edge`)
   })
 
   it('draws the upload glyph above the prompt of the drop zone until the resume is received', () => {

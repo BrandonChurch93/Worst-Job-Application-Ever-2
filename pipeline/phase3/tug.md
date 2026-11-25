@@ -63,3 +63,37 @@ MEASURED with `npm run still -- --key step1-tug --format hd --tier draft` and th
 Tile by tile at 462 px: the bare page measures 0.2 to 0.3 of the approved image's mean, the glass of the drop zone 0.0 to 0.1, the tiles with the cursor, the sheet and the shredder 1.4 to 5.9. The page surface holds M3 down: at 462 px about 85% of the frame is bare page. The approved image earns its number from the type of the whole form.
 
 So the key picture is taken at 972 px wide with its top at page y 250 (ratio 1.03), and the camera pushes on to 462 px from 25.15 to 26.15 s, holds on the intake and the outlet while the sheet and the cursor go through and the pile lands (28.19 s), drifts down 60 px to keep the pile in, and pulls out from 28.3 to 29.1 s. One move each way, eased.
+
+## Round 4 and 5, 25 November, branch agent/tug2
+
+Decisions, numbered on from 32.
+
+33. The arms are hoses on one cubic curve (`ARM` in `src/cursor/act/arms.ts`): 5.6 px thick at rest, 50 px long at rest and never shorter, so a near hand leaves slack. The slack is one loop that bows away from the other arm (`Arms.axis`, set in `view.ts` from the two roots) with a bias up; its height is found by bisection so the arc keeps the hose's length. Under load the hose is straighter and thinner (`thin` 0.12, and the 0.3 power of rest over length), and still curved at the key.
+34. The slot stands at the drop zone's lower rim at its right end (`SLOT.cx` at 0.84 of the zone's width, `SLOT.cy` 9 px under the form's lower edge; it was at 0.62 and 30 px under). The sheet lies over the drop zone and goes in at the rim. Answers R8-1 issue 3 and R3-1 issue 6, and keeps the Browse files chip clear.
+35. The leans of `TUG_CURVE` are mirrored: the cursor stands up and to the left of the slot, over the sheet, tip up and left. Supersedes 25.
+36. The body lies in line with the pull and leans further back with strain (`ARM.lean` 0.35, `ARM.back` 0.45 in `body.ts`; the sign of the old rule was the other way, so the body leaned into the slot).
+37. `TUG.reach` rest 43, least 37, most 52.
+38. `TUG.least` 21 (was 10): no hand is nearer than 21 px to the slot, so no hand is on the machine while the sheet is held.
+39. The camera, by the Builder's note 1 of round 4: one straight move in between 20.9 and 21.95 s, one frame, one straight move out between 28.3 and 29.1 s (`TUG_FRAME`, `CAMERA`, `glide`). The eye goes down one line with one quintic ease on all three coordinates and looks straight down all the way; the point of the page at 520, 703 keeps its place on the screen (a test holds it within 0.01 px). The frame is 620 px of page wide, its top at page y 476, its right edge at 972: it holds the prompt whole (9 px inside the left edge), the chip, the rim, the slot, the machine, the whole cursor at its highest (tip at y 505 at 22.9 s, 90 px of screen inside the frame) and where the pile lands (y 727). 590 px with its top at 514 cut the tip at 22.85 s; a frame closer than 617 px with its top over 490 cuts the prompt's first letters. Supersedes the frames of the ruling of 17:35Z.
+40. The sheet takes one soft slanted bend in tone between the hands and the mouth (`BEND` in `paper.ts`) and a deeper shade where it goes in (`MOUTH` 0.36, bent 0.3); the crease picture shows at 0.09 to 0.39.
+41. The hands (R9-1 issue 1, R9-2 issues 1 and 2): no sheen, roughness 0.78, a flatter and smaller palm (8.2 by 7.4 px, it was 9.2 by 9.4), three fingers 2.3 px thick set 3 px apart with a splay that stays when shut, a shorter curl (`HAND.curl` 0.5, `knuckle` 0.65) so the fingers lie over the sheet's edge and are seen one by one, and a fist that swells 0.08 and not 0.4. About 14 px long, a fifth of the body. Arms removed: declined by the Builder.
+42. The bite comes first (R9-1 issue 9, R9-2 issue 12): the sheet settles on the mouth in the first half of the 0.4 s of the feed, 9 px short, holds, and is jerked down those 9 px in the last 0.11 s (`BITE.jerk`, `settle`, `snap`), so the tug starts with 0.125 of the sheet gone (first row of `TUG_CURVE`, it was 0.05). The cursor has let go at 21.62 and steps up over the sheet's top before the bite (one move of the pointer, 21.65 to 21.97 s), so the arms come out at 22.03 from over the sheet and reach down to it.
+43. The machine's shadow (R1-1 issue 2, R3-1 issue 10): the housing, the rollers and the hood no longer cast; a dark block inside the walls, 13 px high, casts in their place (`CAST` in `shredder.ts`), so the shadow stays close round the foot. The dark of the opening round the unit is 1 px wider than the slot (`SEAT`). The stage light is not touched. The strips still cast their own thin shadows.
+44. The sheet's creases (R1-1 issue 8, R3-1 on the sheet): four broad creases fixed to the stock (`CREASES` in `paper.ts`), each a line with a darker facet on one side and a lighter one on the other and a shallow valley along it, laid in the vertex colours like the bend, 0.09 to 0.16 of tone, shown while the hands hold the sheet. Seen at review tier at the key beside the frame before: the first strengths (0.04 to 0.075) did not show on a stock this bright.
+
+## Numbers of 25 November (MEASURED)
+
+- `npm run still -- --key step1-tug --format hd --tier draft`: 10.0 to 10.6 s, 676,981 triangles, 310 draw calls.
+- `npm run still -- --key step1-tug --format hd --tier review`: 20.5 to 22.0 s.
+- `npm run sheet -- --beat step1.tug --tier draft`: 27 to 29 s for 12 frames.
+- `npm run measure -- --unit step1 --tier review` on 158dd3d: 8 green, M3 0.9758, 2 min 13 s.
+- The key alone at review with the measure's `highFrequencyEnergy`: 1.02 at 590 px with the top at 514, 0.96 at 620 px with the top at 476.
+- No new texture: the arms keep the 64 px rubber grain (0.02 MB), the sheet's bend and creases and the machine's caster are geometry and vertex colour.
+
+## Still weak
+
+- The sheet's outline is straight: no buckled silhouette, no uneven edge, no thick turned corner in the tug (the dog ear shows only before the bite).
+- The strips are flat ribbons of one tone; no curl or twist.
+- At the key the left arm goes under the body for a third of its length, and the lower third of the still frame is bare page.
+- Between 27.1 and 27.4 s the arms hang with the hands just over the rim above the machine while they spring back.
+- (Decision 45.) `TUG.least` 28, supersedes 38: at 26.4 s with 21 the lower hand of the tilted pair lay at the machine's north edge. The last haul leans 0.15 and not 0.51 (`TUG_CURVE` row 4.6), so the cursor still moves more than 5 px in every second with the longer least hold.
