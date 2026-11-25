@@ -510,7 +510,7 @@ const checks = {
     const memory = sets.map((set) => {
       const p = most(set)
       const t = p?.textures[set]
-      return `${set} at ${formatOfSet(set)}: ${(p?.textureMb[set] ?? 0).toFixed(1)} of ${c.assetSets[set].maxTextureMb} MB on ${p?.page}${t ? ` (${t.counted} of the ${t.held} textures the renderer holds were read, ${t.assetMb} MB of pictures and ${t.targetMb} MB of targets${t.unseenMb > 0 ? `, and ${t.unseenMb} MB for the ${t.held - t.counted} the walk does not reach, the renderer's own target for materials that let light through, taken at the size of the picture` : ''})` : ''}`
+      return `${set} at ${formatOfSet(set)}: ${(p?.textureMb[set] ?? 0).toFixed(1)} of ${c.assetSets[set].maxTextureMb} MB on ${p?.page}${t ? ` (${t.counted} of the ${t.held} textures the renderer holds were read, ${t.assetMb} MB of pictures and ${t.targetMb} MB of targets${t.unseenMb > 0 ? `, and ${t.unseenMb} MB for the ${t.held - t.counted} the walk does not reach, each taken at the size of the picture with a whole chain` : ''})` : ''}`
     })
     const counts = levels.map((l) => `${l} ${Math.max(0, ...pages.map((p) => p.counts[l]?.triangles ?? 0))} of ${c.perf.maxTriangles[l]} triangles and ${Math.max(0, ...pages.map((p) => p.counts[l]?.drawCalls ?? 0))} of ${c.perf.maxDrawCalls[l]} draw calls`)
     const alike = levels.length > 1 && pages.every((p) => levels.every((l) => p.counts[l]?.triangles === p.counts[levels[0]]?.triangles && p.counts[l]?.drawCalls === p.counts[levels[0]]?.drawCalls))
