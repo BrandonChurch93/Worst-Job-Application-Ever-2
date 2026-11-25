@@ -1,0 +1,141 @@
+{
+  "stamp": {
+    "role": "R9",
+    "round": 4,
+    "unit": "step1",
+    "commit": "5e2a59d65930fd53ec2ae38ea73194262cb64c82",
+    "tier": "review",
+    "engineHash": "3ab3910b14381c9f",
+    "sharedHash": "908575b66747a0ac",
+    "pageHashes": {
+      "step1": "e74e75a4961be3ea",
+      "step2": "55cb277c9b082808",
+      "marketing": "c46c984d2df73782",
+      "pinball": "fd303e8468a6b766",
+      "boss": "f7b68d3ef704e243",
+      "decision": "08e4b1401a38f867"
+    }
+  },
+  "format": "png",
+  "longEdgeMostPx": 1400,
+  "filesMostPerCritic": 10,
+  "sets": [
+    {
+      "set": "A",
+      "critic": "R9-1",
+      "files": [
+        {
+          "name": "set-A-01.png",
+          "width": 1399,
+          "height": 1060,
+          "bytes": 1536322,
+          "sha256": "05abccfcb4fc3f881c9d0d25bc5c6cbb9922a17cee3d761290194c7f43cd739d"
+        },
+        {
+          "name": "set-A-02.png",
+          "width": 1399,
+          "height": 1060,
+          "bytes": 1791015,
+          "sha256": "c3c2fcd541792018da858dd6efad27db1c99b1cb515dc02cd8bfdc8a59b800ef"
+        },
+        {
+          "name": "set-A-03.png",
+          "width": 1399,
+          "height": 1060,
+          "bytes": 1782915,
+          "sha256": "a558896244f60e26f0f2aa0c34d400226ee34875f0c668832b09c10626b13cb9"
+        },
+        {
+          "name": "set-A-04.png",
+          "width": 1399,
+          "height": 1060,
+          "bytes": 1787523,
+          "sha256": "7d261e80006dbbf9e29d7ee4f8f33d2dbbb6e080d333ad7e2ac9f6f400e39dab"
+        },
+        {
+          "name": "set-A-05.png",
+          "width": 1399,
+          "height": 1060,
+          "bytes": 1601260,
+          "sha256": "bec94206bef3081a106423ed67b0041effb1a27de6f5084bc7273ea225582b59"
+        },
+        {
+          "name": "set-A-06.png",
+          "width": 1399,
+          "height": 1060,
+          "bytes": 1736644,
+          "sha256": "0c3256b4762c9c764ecbbe2bbdf13d9c610b8a23c94c2db4754145297fcd424f"
+        },
+        {
+          "name": "set-A-07.png",
+          "width": 1399,
+          "height": 1060,
+          "bytes": 1547819,
+          "sha256": "e0dd16e03b32387d14e0381411429590113e4e5b702359252373867af9132b20"
+        }
+      ]
+    },
+    {
+      "set": "B",
+      "critic": "R9-2",
+      "files": [
+        {
+          "name": "set-B-01.png",
+          "width": 1399,
+          "height": 1304,
+          "bytes": 2136372,
+          "sha256": "b5cf185c93b85ce871b606118fb55f090563b1ae5ee1441695dc8d89586585aa"
+        },
+        {
+          "name": "set-B-02.png",
+          "width": 1399,
+          "height": 1304,
+          "bytes": 2138784,
+          "sha256": "2b6c60a49b6e238b837a791edb2cd87acec440d930709ce3afefe995ddb6db9f"
+        },
+        {
+          "name": "set-B-03.png",
+          "width": 1399,
+          "height": 1304,
+          "bytes": 2336265,
+          "sha256": "2c15d83a30d58e3a06644ad7b678deb9f5fc103318c8b393a41ac3b755bc6faf"
+        },
+        {
+          "name": "set-B-04.png",
+          "width": 1399,
+          "height": 1304,
+          "bytes": 2256560,
+          "sha256": "44e0976e2ba15ebaaa6f0eb1409315eeff8ca19a193c799b891c9465ec7e282f"
+        },
+        {
+          "name": "set-B-05.png",
+          "width": 1399,
+          "height": 1304,
+          "bytes": 2096770,
+          "sha256": "bbd21a4bf611d064c5e49aa1a02a0acaea71d19d3ee69a18d98e4d73a85d02b5"
+        },
+        {
+          "name": "set-B-06.png",
+          "width": 1399,
+          "height": 1304,
+          "bytes": 2104166,
+          "sha256": "1a33e985e9229bb04ee87349fde8e2b519e36c3176eaeaeb07058016236518c3"
+        },
+        {
+          "name": "set-B-07.png",
+          "width": 1399,
+          "height": 1304,
+          "bytes": 2331771,
+          "sha256": "95a898b2409c1a57bcd26acdb4af68d4afd7e89ee110e8509a5dc26f788338dd"
+        },
+        {
+          "name": "set-B-08.png",
+          "width": 1399,
+          "height": 1304,
+          "bytes": 1957354,
+          "sha256": "d63b500f9c2c3316ed7f7c40f285e0cd183eccbc171885920265331392219162"
+        }
+      ]
+    }
+  ]
+}

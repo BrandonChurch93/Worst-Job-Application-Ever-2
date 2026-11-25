@@ -93,6 +93,10 @@ export class CursorView {
     }
     this.arms.grown = c.shed > 0 ? Math.pow(1 - c.shed, 1.5) : grown
     this.arms.over = c.z + 2 * (Math.max(this.from[0]!.z, this.from[1]!.z) - c.z)
+    const ax = this.from[1]!.x - this.from[0]!.x
+    const ay = this.from[1]!.y - this.from[0]!.y
+    const al = Math.hypot(ax, ay) || 1
+    this.arms.axis = [ax / al, ay / al]
     this.arms.apply(this.from, this.to, look.arms)
   }
 

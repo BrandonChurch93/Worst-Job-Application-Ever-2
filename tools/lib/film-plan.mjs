@@ -159,13 +159,13 @@ export function spread(first, last, count, step = 1) {
   return [...new Set(out)]
 }
 
-// `count` frames in a row round one frame, kept inside a range.
-export function around(frame, count, step, first, last) {
+// `count` frames in a row round one frame, kept inside a range. One part in `part` of them comes before it.
+export function around(frame, count, step, first, last, part = 3) {
   const range = clip(first, last, step)
   const centre = Math.round(frame / step) * step
   const n = (range.last - range.first) / step + 1
   const size = Math.min(count, n)
-  const before = Math.floor((size - 1) / 3)
+  const before = Math.floor((size - 1) / part)
   let start = centre - before * step
   start = Math.max(range.first, Math.min(start, range.last - (size - 1) * step))
   return Array.from({ length: size }, (_, i) => start + i * step)

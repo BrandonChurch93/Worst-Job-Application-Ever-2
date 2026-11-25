@@ -20,7 +20,10 @@ const BAR = { inset: PAPER.inset, tall: 1.1, pad: (PAPER.bar - 1.1) / 2, cells: 
 const BETWEEN = { tall: 1.1, wide: [0.94, 0.78, 1, 0.34, 0.88, 0.97, 0.6] }
 // The hood and the cutters keep the sky off the sheet where it goes in, and the sheet bends over to go down:
 // a deep shade at the mouth, and below the line of the bend the sheet is turned from the light.
-const MOUTH = { in: 0.5, near: 0.3, nearPx: 4, bent: 0.24, fold: 15, soft: 7, slant: 0.12, lit: 0.03, edge: 0.8 }
+const MOUTH = { in: 0.5, near: 0.36, nearPx: 4, bent: 0.3, fold: 15, soft: 7, slant: 0.12, lit: 0.03, edge: 0.8 }
+// The held sheet hangs in one soft S between the hands and the mouth: it sags under the hands and comes up again before the bend.
+// From straight above a matte stock shows that only as tone, so it is laid in the sheet's colours: a broad soft valley across the sheet, on a slant, and the light the far flank of it takes.
+const BEND = { at: 0.56, wide: 0.19, deep: 0.13, lit: 0.035, crown: 0.86, crownWide: 0.1, slant: 0.22, grip: 0.055 }
 const WRAP_LEN = 1.12 * (UNIT.r + 0.7 * SIZE)
 
 const clamp = (v: number, lo: number, hi: number): number => Math.min(hi, Math.max(lo, v))
@@ -299,12 +302,19 @@ function shape(rig: Rig, q: SheetIn): void {
   const bite = clamp(q.bite, 0, 1)
   const mouth = 540 - q.cy
   const across = q.cx - 960
+  const uvs = rig.body.getAttribute('uv').array as Float32Array
+  const top = MARGIN / (DRAWN * (PAPER.h / PAPER.w))
+  const foot = Math.max(top + 0.05, sheet.out - WRAP_LEN / PAPER.h)
+  const hung = bite * smooth(q.hands) * smooth((foot - top) / 0.3)
   for (let v = 0; v < c.length; v += 3) {
     const d = p[v + 1]! - mouth
     const fold = d - (p[v]! - across) * MOUTH.slant
     const below = 1 - smooth((fold - MOUTH.fold) / MOUTH.soft)
     const crown = Math.exp(-Math.pow((fold - MOUTH.fold - MOUTH.soft) / MOUTH.soft, 2))
-    const shade = 1 - bite * (d < 0 ? MOUTH.in : MOUTH.near * Math.exp(-d / MOUTH.nearPx) + MOUTH.bent * below - MOUTH.lit * crown)
+    const k = (v / 3) * 2
+    const t = (uvs[k + 1]! - top) / (foot - top) + (uvs[k]! - 0.5) * BEND.slant
+    const sag = BEND.deep * Math.exp(-Math.pow((t - BEND.at) / BEND.wide, 2)) - BEND.lit * Math.exp(-Math.pow((t - BEND.crown) / BEND.crownWide, 2)) + BEND.grip * Math.exp(-Math.pow(Math.max(0, t) / 0.12, 2))
+    const shade = 1 - bite * (d < 0 ? MOUTH.in : MOUTH.near * Math.exp(-d / MOUTH.nearPx) + MOUTH.bent * below - MOUTH.lit * crown) - hung * sag
     c[v] = c[v + 1] = c[v + 2] = v < n * 6 ? shade : shade * MOUTH.edge
   }
   col.needsUpdate = true
@@ -314,7 +324,7 @@ function shape(rig: Rig, q: SheetIn): void {
   lay(rig.title, rig.titleMarks, sheet, THICK + 0.12)
   lay(rig.bars, rig.barMarks, sheet, THICK + 0.12)
   const mat = stock(PAPER.w, PAPER.h)
-  mat.sheet.normalScale.setScalar(0.07 + 0.22 * sheet.abuse)
+  mat.sheet.normalScale.setScalar(0.09 + 0.3 * sheet.abuse)
 }
 
 // The sheet prints its own title. While the page still hands the title to the type maker, that one shows on the flat sheet

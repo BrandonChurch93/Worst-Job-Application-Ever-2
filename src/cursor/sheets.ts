@@ -62,7 +62,7 @@ function acting(): CursorPose[] {
   const y = SHEET.y
   return [
     restPose(at(0), y, { acting: 'nervous', squash: 0.95, lean: 0.08 }),
-    restPose(at(1), y - 20, { acting: 'shocked', squash: 1.36, lean: 0.08, z: hover + 6, reaction: 'doubleTake', reactionAt: 0.7 }),
+    restPose(at(1), y - 20, { acting: 'shocked', squash: 1.14, lean: 0.08, z: hover + 6, reaction: 'doubleTake', reactionAt: 0.7 }),
     restPose(at(2), y, { acting: 'angry', squash: 1.03, lean: 0.1 }),
     restPose(at(3), y, { acting: 'scared', squash: 0.9, lean: 0.06, bend: -0.1 }),
     restPose(at(4), y, { acting: 'exhausted', squash: 0.8, lean: 0.1, bend: 0.15 }),

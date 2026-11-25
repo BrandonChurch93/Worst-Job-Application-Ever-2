@@ -1,0 +1,113 @@
+{
+ "critic": "R9",
+ "score": 4,
+ "pass": false,
+ "model": "kimi_k3",
+ "set": "A: one sheet across each beat",
+ "reads": [
+  {
+   "file": "set-A-01.png",
+   "read": "calm and unsuspecting; the form has just unfolded in front of it and it is about to start filling in its name"
+  },
+  {
+   "file": "set-A-02.png",
+   "read": "patient and diligent; it is typing its first name one letter at a time on an on-screen keyboard that has just appeared"
+  },
+  {
+   "file": "set-A-03.png",
+   "read": "confused but pushing on; the keyboard has just scrambled and scattered its keys while it tries to type its last name"
+  },
+  {
+   "file": "set-A-04.png",
+   "read": "frustrated; it keeps typing its email address and the form keeps slapping red 'Invalid email' labels back at it"
+  },
+  {
+   "file": "set-A-05.png",
+   "read": "hopeful and determined; it has picked up its resume and is carrying it toward the drop zone to finish the step"
+  },
+  {
+   "file": "set-A-06.png",
+   "read": "straining, then destroyed; it feeds its resume into a shredder below the drop zone and disappears with it"
+  },
+  {
+   "file": "set-A-07.png",
+   "read": "defeated and betrayed; the form says the resume was received, wipes every field, demands everything be re-entered manually, and it slinks away as the form folds back into the dark"
+  }
+ ],
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-A-06.png",
+   "where": "the arrow, in nearly every frame of the sheet",
+   "what": "it has thin black stick arms ending in round gloved hands holding the resume over the shredder; the character must never have arms or gloved hands",
+   "fix": "remove the arms and hand blobs entirely; let the arrow grip the resume with its own tip or carry it pinned beneath its body"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "rows 3 and 4, as the red 'Invalid email' labels appear",
+   "what": "the arrow does not react at all; it just keeps sliding between keys like a system pointer while the form repeatedly rejects it",
+   "fix": "add a sharp flinch or recoil held for two or three frames on the first rejection, then a slump before it resumes typing"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "row 2, when the keyboard keys scatter and rearrange",
+   "what": "the keyboard explodes into loose keys around it and the arrow does not startle, hesitate, or look; it just keeps pecking keys",
+   "fix": "add a startled jump-back held for a few frames, then a cautious return to the keyboard before typing resumes"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "rows 2 and 3, after the wiped form and 're-enter all information manually' message",
+   "what": "the gut-punch of the unit gets almost no reaction; the arrow just slides away small, so the defeat never lands",
+   "fix": "hold a visible slump or droop for several frames, let it sag before it moves, then have it creep off slowly"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "throughout the sheet, and also set-A-01 and set-A-05",
+   "what": "no wind-up before it clicks, no squash when it lands on a key, no stretch on fast moves; it reads as a recording of a real cursor, not a performed character",
+   "fix": "add a small anticipation dip before each click, a squash on key landings, and stretch on the longer moves between fields"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-06.png",
+   "where": "last row, after the shredder eats the resume",
+   "what": "the arrow vanishes into the shredder with the resume and is simply back in set-A-07, so the gag ambiguously reads as the character being destroyed",
+   "fix": "add a frame of the arrow leaping clear or being spat out so the resume is shredded but the character plainly survives"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "the whole sheet",
+   "what": "did not read: the turrets, the bolts, the dodges and the hit with its burn hole are not in the read. The beat reads as patient typing.",
+   "fix": "The turrets and their bolts large and bright enough to see in a small frame, each dodge a leap with a held pose, and the hit one held beat of shock with the hole and the smoke.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "the whole sheet",
+   "what": "did not read: the slabs read as labels the form slaps back, and the dives clear of them are not in the read. The beat reads as frustrated typing.",
+   "fix": "Each slab falls as a heavy block with its shadow growing under it, the arrow dives clear at the last moment and holds a cower after each.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-06.png",
+   "where": "the whole sheet",
+   "what": "did not read: the tug of war is not in the read. It reads as the arrow feeding its resume into the shredder, and the arms read as stick arms with round gloved hands.",
+   "fix": "The shredder bites first and draws the sheet in before the arms come out; then the body leans away from the slot with its heel dug in and the sheet taut between the hands and the slot.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "the whole sheet",
+   "what": "did not read: the pile of strips that stands up and zips itself back into the arrow is not in the read. It reads as the arrow slinking away.",
+   "fix": "The pile, the stand and the zip larger in the frame and each held, the mended arrow out of line for a moment and then true.",
+   "by": "builder"
+  }
+ ]
+}

@@ -1,0 +1,117 @@
+{
+  "id": "dial-fling",
+  "kind": "cue",
+  "cue": "dial-fling",
+  "variant": null,
+  "class": "hit",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A telephone dial hitting its stop hard",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A rotary telephone dial hitting its metal stop hard at the end of its run back, one sharp metal knock with a short spring rattle after it, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.8,
+    "loop": false,
+    "influence": null,
+    "call": 164
+  },
+  "askedSeconds": 0.8,
+  "cost": "9",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "8a0d677c79ff223349be3810b13c5c1ca2bd7762ccf07915e7ffea86f96efad1",
+    "filed": "2026-11-25T19:24:31.752Z",
+    "measured": {
+      "seconds": 0.8,
+      "start": 0,
+      "end": 0.634,
+      "peakDb": -8.94,
+      "rmsDb": -37.06,
+      "lufs": -30.27,
+      "truePeakDb": -8.76,
+      "low": 0.155,
+      "mid": 0.465,
+      "high": 0.379,
+      "tailDb": -57.21,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0.004,
+          "end": 0.134,
+          "peakDb": -8.94
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0.033,
+    "trimEnd": 0.634,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -5,
+    "gainDb": 3.66,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.601,
+    "start": 0,
+    "end": 0.17,
+    "peakDb": -5,
+    "rmsDb": -28.2,
+    "lufs": -29.89,
+    "truePeakDb": -5,
+    "low": 0.085,
+    "mid": 0.504,
+    "high": 0.411,
+    "tailDb": -56.38,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.098,
+        "peakDb": -5
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 2 asks, 2 whole, 0 void",
+    "asks": 2,
+    "whole": 2,
+    "heard": "A rotary telephone dial spins back to its resting position and strikes the finger stop with a sharp click. / A rotary telephone dial spinning back and hitting its finger stop.",
+    "madeOf": "Plastic and metal / Plastic and metal",
+    "events": "1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 2 no",
+    "word": false,
+    "wordVotes": "0 yes, 2 no",
+    "music": false,
+    "musicVotes": "0 yes, 2 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 0 no",
+    "basis": [
+      "The mechanical whirring and final, abrupt clack are characteristic of a spring-loaded rotary phone dial returning to its start position.",
+      "The recording features the mechanical whirring of a rotary dial returning to its resting position followed by a sharp click as it hits the stop."
+    ],
+    "heardRaisedByDb": 5.94
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "dial-fling.wav",
+  "seconds": 0.601,
+  "sha256": "62b766f77f4d8ec12257366c0ce4664a9385f6dd32457953d3154b4bebb89b68"
+}
