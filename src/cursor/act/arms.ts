@@ -39,7 +39,7 @@ function parts() {
       roughness: 0.56,
       metalness: 0,
       normalMap: grain,
-      normalScale: new THREE.Vector2(0.04, 0.04),
+      normalScale: new THREE.Vector2(0.07, 0.07),
       specularIntensity: 0.85
     })
   )
