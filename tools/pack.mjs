@@ -24,8 +24,11 @@ const role = a.role && a.role !== true ? String(a.role) : Object.keys(roles).fin
 if (!role || !roles[role]) stop(`no pack is defined for the unit "${unit}" yet. Give --role, one of ${Object.keys(roles).join(', ')}`)
 if (a.phase !== undefined && roles[role].phase && Number(a.phase) !== roles[role].phase) stop(`the role ${role} belongs to phase ${roles[role].phase}`)
 
-const dir = at('out', 'work', 'packs', roundName(round), role)
-const keyFile = at('out', 'work', 'keys', `${roundName(round)}-${role}.json`)
+const slice = a.slice && a.slice !== true ? String(a.slice).split('/').map(Number) : null
+if (slice && !(slice.length === 2 && Number.isInteger(slice[0]) && Number.isInteger(slice[1]) && slice[1] > 0 && slice[0] >= 0 && slice[0] < slice[1])) stop('give --slice I/N with I from 0 to N less 1: one machine of N draws every Nth file of the pack, to fill the cache of this commit')
+const sliceName = slice ? `${role}-slice-${slice[0]}-of-${slice[1]}` : role
+const dir = at('out', 'work', 'packs', roundName(round), sliceName)
+const keyFile = at('out', 'work', 'keys', `${roundName(round)}-${sliceName}.json`)
 const cards = at('scorecards', roundName(round))
 
 if (a['release-key']) {
@@ -46,6 +49,11 @@ const tier = a.tier && a.tier !== true ? String(a.tier) : 'draft'
 const cache = dirty ? null : at('out', 'work', 'packs', 'cache', commit.slice(0, 12), tier)
 const facts = roles[role].facts ? await (await import('./lib/pack-look.mjs')).lookFacts(cfg, unit, cache) : null
 const plan = packPlan(cfg, { role, round, unit, facts })
+if (slice) {
+  let n = 0
+  for (const s of plan.sets) s.files = s.files.filter(() => n++ % slice[1] === slice[0])
+  plan.sets = plan.sets.filter((s) => s.files.length)
+}
 for (const s of plan.sets) for (const f of s.files) if (!neutral(f.name) || BANNED.test(f.heading)) stop(`"${f.name}", "${f.heading}" is not a neutral name`)
 
 const info = buildInfo(at())

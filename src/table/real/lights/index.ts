@@ -87,15 +87,18 @@ function pose(o: THREE.Object3D, z: Zone, ctx: RealContext): void {
     }
     const level = L.groups[i]! * (1 - share[i]!)
     u.wjlCol.value[i]!.set(g.colour[0] * level, g.colour[1] * level, g.colour[2] * level)
-    u.wjlAt.value[i]!.set(g.at[0], g.at[1], g.mode === 0 ? (g.name === 'flash' ? 0 : FIELD_HEIGHT) : g.at[2], g.mode)
+    u.wjlAt.value[i]!.set(g.at[0], g.at[1], g.mode === 0 ? FIELD_HEIGHT : g.at[2], g.name === 'flash' ? 3 : g.mode)
   }
   const fill = FILL[z.id]!
   const soft = 0.05 * L.general + 0.05 * L.flash
   u.wjlFill.value.set(fill[0] * soft, fill[1] * soft, fill[2] * soft)
   u.wjlEnv.value = soloed() !== null ? 0.5 : L.general * (1 + 0.5 * L.flash) + 0.2 * L.website
   if (!b) return
-  const alone = soloed()
-  if (b.lens) b.lens.emissiveIntensity = alone !== null ? (alone === `${z.id}.general` || alone === `${z.id}.lanes` ? 1 : 0) : Math.min(1.4, L.general * (1 + 0.4 * L.flash))
+  if (b.lens) {
+    const lift = 1 + 0.4 * L.flash
+    const lane = L.byName.lanes ?? L.byName.windows ?? 0
+    b.lens.set(Math.min(1.4, (L.byName.general ?? 0) * lift), Math.min(1.4, lane * lift))
+  }
   if (b.cores) {
     b.coreGroups.forEach((id, i) => {
       const g = groups.find((x) => x.id === id)

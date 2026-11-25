@@ -147,8 +147,27 @@ function patchFalloff(): void {
   THREE.ShaderChunk.lights_pars_begin = chunk.replace(line, `float distanceFalloff = 1.0 / ( pow( lightDistance, decayExponent ) + ${(EMITTER_BODY_PX * EMITTER_BODY_PX).toFixed(1)} ); // WJA_BODY`)
 }
 
+function patchHeights(): void {
+  const knee = look.shadowHeights.knee.toFixed(2)
+  const keep = look.shadowHeights.keep.toFixed(4)
+  const low = (v: string) => `${v}.z = min( ${v}.z, ${knee} ) + max( ${v}.z - ${knee}, 0.0 ) * ${keep};`
+  const depth = THREE.ShaderLib.depth.vertexShader
+  if (depth.includes('WJA_LOW')) return
+  const project = '#include <project_vertex>'
+  if (!depth.includes(project)) throw fail()
+  THREE.ShaderLib.depth.vertexShader = depth.replace(
+    project,
+    `// WJA_LOW\n\tvec4 mvPosition = vec4( transformed, 1.0 );\n\t#ifdef USE_BATCHING\n\tmvPosition = batchingMatrix * mvPosition;\n\t#endif\n\t#ifdef USE_INSTANCING\n\tmvPosition = instanceMatrix * mvPosition;\n\t#endif\n\tmvPosition = modelMatrix * mvPosition;\n\t${low('mvPosition')}\n\tmvPosition = viewMatrix * mvPosition;\n\tgl_Position = projectionMatrix * mvPosition;`
+  )
+  const chunk = THREE.ShaderChunk.shadowmap_vertex
+  const coord = 'vDirectionalShadowCoord[ i ] = directionalShadowMatrix[ i ] * shadowWorldPosition;'
+  if (!chunk.includes(coord)) throw fail()
+  THREE.ShaderChunk.shadowmap_vertex = chunk.replace(coord, `${low('shadowWorldPosition')}\n\t\t\t${coord}`)
+}
+
 patchShadows()
 patchFalloff()
+patchHeights()
 
 const dirStart = '#if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )'
 function patchedBegin(): string {

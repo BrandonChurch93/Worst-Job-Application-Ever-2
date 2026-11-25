@@ -36,7 +36,7 @@ export interface Group {
 export const LIT = ['marquee', 'corporate', 'office', 'street']
 export const CHANNELS = 10
 // How high a lamp of the general lighting is taken to stand over its lens, and how wide its body is, in pixels.
-export const LAMP = { z: 26, body: 20, reach: 3.4 * BALL, power: 0.34, wideZ: 150, wideReach: 9 * BALL, widePower: 0.3 }
+export const LAMP = { z: 44, body: 20, reach: 3.4 * BALL, power: 0.34, wideZ: 150, wideReach: 9 * BALL, widePower: 0.3 }
 
 const linear = (c: { r: number; g: number; b: number }): RGB => [c.r, c.g, c.b]
 const centre = (m: Model): [number, number] => [m.box[0] + m.box[2] / 2, m.box[1] + m.box[3] / 2]
@@ -73,8 +73,8 @@ function build(z: Zone): Group[] {
   const both = (list: typeof lamps): Source[] => [...list.map((l) => lampAt(l, false)), ...list.map((l) => lampAt(l, true))]
   const inserts = table.inserts.filter((n) => n.tier === k)
   // Under each sling plastic stands a lamp that lights the floor round it and the flipper before it.
-  const slings: Source[] = table.slings.filter((s) => s.tier === k).map((s) => at((s.a[0] + s.b[0] + s.c[0]) / 3, (s.a[1] + s.b[1] + s.c[1]) / 3, 22, 0.75, 2.7, `sling.${s.id}`))
-  const insert = (n: Insert, i: number): void => add(`insert.${i + 1}`, 1, linear(insertColour(n)), [at(n.c[0], n.c[1], 18, 1.3, 3.6)], true)
+  const slings: Source[] = table.slings.filter((s) => s.tier === k).map((s) => at((s.a[0] + s.b[0] + s.c[0]) / 3, (s.a[1] + s.b[1] + s.c[1]) / 3, 30, 0.6, 2.7, `sling.${s.id}`))
+  const insert = (n: Insert, i: number): void => add(`insert.${i + 1}`, 1, linear(insertColour(n)), [at(n.c[0], n.c[1], 40, 1.0, 3.6)], true)
   const d = table.displays[k]!
   const display = (): void => add('display', 0, C.DISPLAY_AMBER, [0.2, 0.5, 0.8].map((f) => at(d.box[0] + d.box[2] * f, d.box[1] + d.box[3] * 0.4, 40, 0.5, 3.6)))
   if (z.id === 'corporate') {
@@ -93,7 +93,7 @@ function build(z: Zone): Group[] {
     display()
     add('flash', 0, C.CORPORATE_FLASH, [])
   } else if (z.id === 'office') {
-    add('general', 2, C.OFFICE_FLUORESCENT, both(rail))
+    add('general', 2, C.OFFICE_FLUORESCENT, both(rail).map((s) => ({ ...s, power: s.power * 0.8 })))
     inserts.forEach(insert)
     table.bumpers.filter((b) => b.tier === k).forEach((b, i) => add(`bumper.${i + 1}`, 1, C.OFFICE_BUMPER, [at(b.c[0], b.c[1], 58, 1.1, 4.2, `bumper.${b.id}`)], true))
     const coffee = model('office.coffee')

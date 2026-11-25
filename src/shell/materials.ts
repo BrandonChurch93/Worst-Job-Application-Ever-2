@@ -46,9 +46,14 @@ function unit(h: Float32Array): Float32Array {
 }
 
 const PIT_FROM = 0.7
+const PIT_DEPTH = 1
 const TOOTH = 0.07
 const GRAIN_PER_PIXEL = 2
 const FROST = 0.022
+const CLOSE_FALL = 2.8
+const CLOSE_FLOOR = 0.03
+const CLOSE_TOOTH = 0.9
+const CLOSE_EASE = 0.6
 
 // The eggshell grain as heights, one number a texel, with a mean of nought and a spread of one. The size is a power of two and the picture tiles.
 export function grainHeights(size: number, seed: number): Float32Array {
@@ -70,7 +75,7 @@ export function grainHeights(size: number, seed: number): Float32Array {
     // Pits read as eggshell: only the low places of the fine grain are kept as pits, the rest is nearly flat.
     // The tooth is finer than a page pixel: it shows only when the camera comes close or the picture is larger.
     const f = fine[i]!
-    h[i] = -1.6 * Math.max(0, -f - PIT_FROM) + 0.22 * f + 0.34 * coarse[i]! + TOOTH * tooth[i]!
+    h[i] = -PIT_DEPTH * Math.max(0, -f - PIT_FROM) + 0.22 * f + 0.34 * coarse[i]! + TOOTH * tooth[i]!
   }
   return unit(h)
 }
@@ -193,18 +198,30 @@ function also<T extends THREE.Material>(material: T, name: string, patch: (shade
 }
 
 const grainGlsl = `
+#ifndef USE_TRANSMISSION
+uniform mat4 projectionMatrix;
+#endif
 float wjaGrainHeight = 0.0;
 vec3 wjaGrain( vec2 uv ) {
+	float close = projectionMatrix[ 1 ][ 1 ] * 540.0 / ( isOrthographic ? 1.0 : max( vViewPosition.z, 1.0 ) );
+	float relief = clamp( pow( max( close, 1.0 ), -CLOSE_FALL ), CLOSE_FLOOR, 1.0 );
 	vec4 a = texture2D( normalMap, uv );
 	vec2 uvB = mat2( 0.7986, 0.6018, -0.6018, 0.7986 ) * uv * 1.1180 + vec2( 0.371, 0.113 );
 	vec4 b = texture2D( normalMap, uvB );
 	vec2 tilt = mat2( 0.7986, -0.6018, 0.6018, 0.7986 ) * ( b.xy * 2.0 - 1.0 );
-	wjaGrainHeight = a.a + b.a - 1.0;
-	return normalize( vec3( a.xy * 2.0 - 1.0 + 0.5 * tilt, a.z * 2.0 - 1.0 ) );
+	float nearer = log2( max( close, 1.0 ) );
+	vec2 uvD = mat2( 0.4540, 0.8910, -0.8910, 0.4540 ) * uv * 2.0 + vec2( 0.173, 0.591 );
+	vec2 once = a.xy - texture2D( normalMap, uv, 2.0 ).xy;
+	vec2 twice = mat2( 0.4540, -0.8910, 0.8910, 0.4540 ) * ( texture2D( normalMap, uvD ).xy - texture2D( normalMap, uvD, 2.0 ).xy );
+	vec2 fine = 2.0 * clamp( nearer / 0.8, 0.0, 1.0 ) * mix( 1.0, CLOSE_EASE, clamp( ( nearer - 0.9 ) / 0.7, 0.0, 1.0 ) ) * mix( once, twice, clamp( nearer - 1.0, 0.0, 1.0 ) );
+	wjaGrainHeight = relief * ( a.a + b.a - 1.0 );
+	return normalize( vec3( relief * ( a.xy * 2.0 - 1.0 + 0.5 * tilt ) + CLOSE_TOOTH * fine, a.z * 2.0 - 1.0 ) );
 }
-`
+`.replace(/CLOSE_FALL/g, CLOSE_FALL.toFixed(3)).replace(/CLOSE_FLOOR/g, CLOSE_FLOOR.toFixed(3)).replace(/CLOSE_TOOTH/g, CLOSE_TOOTH.toFixed(3)).replace(/CLOSE_EASE/g, CLOSE_EASE.toFixed(3))
 
 // Two layers of one grain picture, the second turned and larger, so no repeat shows across a page. The height also moves the roughness.
+// The relief falls as the camera comes nearer than the page's own size. What takes its place is only the finest part of the same picture
+// (the picture less its own blurred copy), so close up the face keeps a tooth a pixel or two wide and no bump throws a shade of its own.
 function grained<T extends THREE.MeshStandardMaterial>(material: T, rough: number): T {
   return also(material, `grain-${rough}`, (shader) => {
     const sample = 'texture2D( normalMap, vNormalMapUv ).xyz * 2.0 - 1.0'
@@ -250,6 +267,7 @@ export interface Materials {
   glass: THREE.MeshPhysicalMaterial
   glassThick: THREE.MeshPhysicalMaterial
   glassSunk: THREE.MeshPhysicalMaterial
+  glassCard: THREE.MeshPhysicalMaterial
   aluminium: THREE.MeshPhysicalMaterial
   aluminiumTurned: THREE.MeshPhysicalMaterial
   aluminiumEdge: THREE.MeshPhysicalMaterial
@@ -281,11 +299,12 @@ export function makeMaterials(seed: number): Materials {
   brushed.repeat.set(1 / 720, 1 / 420)
   const turned = turnedMaps(256, seed, 2.2)
   const physical = (o: THREE.MeshPhysicalMaterialParameters) => studio(new THREE.MeshPhysicalMaterial(o))
-  const ceramic = grained(physical({ color: srgb(0xecebe6), roughness: 0.74, metalness: 0, normalMap: grain, normalScale: new THREE.Vector2(0.085, 0.085), specularIntensity: 0.6 }), 0.5)
+  const ceramic = grained(physical({ color: srgb(0xecebe6), roughness: 0.74, metalness: 0, normalMap: grain, normalScale: new THREE.Vector2(0.075, 0.075), specularIntensity: 0.6 }), 0.5)
   const pocket = grained(physical({ color: srgb(0xdcdfdc), roughness: 0.8, metalness: 0, normalMap: grain, normalScale: new THREE.Vector2(0.08, 0.08), specularIntensity: 0.4 }), 0.3)
   const glass = physical({ color: srgb(0xbdc5c2), roughness: 0.44, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8, ...frosted })
   const glassSunk = physical({ color: srgb(0xbdc5c2), roughness: 0.44, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8, vertexColors: true, ...frosted })
-  const glassThick = physical({ color: srgb(0x9aa3a4), roughness: 0.48, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8, ...frosted })
+  const glassCard = physical({ color: srgb(0xbdc5c2), roughness: 0.4, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8, vertexColors: true, normalMap: grain, normalScale: new THREE.Vector2(0.03, 0.03) })
+  const glassThick = physical({ color: srgb(0xa8b0af), roughness: 0.48, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.34, specularIntensity: 0.8, ...frosted })
   const aluminium = physical({
     color: srgb(0xb9bdc1), roughness: 0.3, metalness: 1, normalMap: brushed, normalScale: new THREE.Vector2(0.22, 0.22), anisotropy: 0.72, anisotropyRotation: Math.PI / 2
   })
@@ -293,7 +312,7 @@ export function makeMaterials(seed: number): Materials {
     color: srgb(0x8e9399), roughness: 0.2, metalness: 1, normalMap: turned.normal, normalScale: new THREE.Vector2(0.06, 0.06), anisotropy: 0.85, anisotropyMap: turned.direction
   }))
   const aluminiumEdge = physical({ color: srgb(0xc6cacd), roughness: 0.38, metalness: 0.62 })
-  const aluminiumSatin = physical({ color: srgb(0x9ca0a5), roughness: 0.5, metalness: 0.4 })
+  const aluminiumSatin = physical({ color: srgb(0xb4b8bc), roughness: 0.45, metalness: 0.5 })
   const orange = physical({ color: srgb(0xc24400), roughness: 0.5, metalness: 0, clearcoat: 0.3, clearcoatRoughness: 0.09, specularIntensity: 0.8, specularColor: srgb(0xff9a52) })
   const gap = physical({ color: srgb(0x23211f), roughness: 0.85, metalness: 0, specularIntensity: 0.3 })
   const ink = physical({ color: srgb(0x2a2927), roughness: 0.48, metalness: 0, specularIntensity: 0.2 })
@@ -312,7 +331,7 @@ export function makeMaterials(seed: number): Materials {
     m.polygonOffsetUnits = -2
   }
   return {
-    ceramic, pocket, glass, glassThick, glassSunk, aluminium, aluminiumTurned, aluminiumEdge, aluminiumSatin, orange, gap, ink, inkOnOrange, enamel, edge, smoked, paper, red, keycap, steel, rubber,
+    ceramic, pocket, glass, glassThick, glassSunk, glassCard, aluminium, aluminiumTurned, aluminiumEdge, aluminiumSatin, orange, gap, ink, inkOnOrange, enamel, edge, smoked, paper, red, keycap, steel, rubber,
     textures: [grain, brushed, turned.normal, turned.direction]
   }
 }
