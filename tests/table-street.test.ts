@@ -17,12 +17,13 @@ describe('the models of the street', () => {
     for (const id of ['model-firehouse', 'model-police', 'model-bank', 'model-garage', 'model-houses', 'model-moms', 'model-road-signs']) expect(parts[id], id).toBeTruthy()
   })
 
-  it('holds the firehouse door half raised at rest, shut on a held ball and up as the ball is fired out', () => {
-    expect(doorOf([0, 9, 9]).raise).toBeCloseTo(0.5)
-    expect(doorOf([1, 1, 9]).raise).toBeLessThan(0.01)
+  it('hangs the firehouse door low at rest, runs it up on a held ball and keeps it up as the ball is fired out', () => {
+    expect(doorOf([0, 9, 9]).raise).toBeCloseTo(0.35)
+    expect(doorOf([1, 1, 9]).raise).toBeGreaterThan(0.9)
+    expect(doorOf([1, 0.25, 9]).shake).toBeGreaterThan(0.1)
     expect(doorOf([0, 9, 0.2]).raise).toBeGreaterThan(0.9)
     expect(doorOf([0, 9, 0.2]).shake).toBeGreaterThan(0.1)
-    expect(doorOf([0, 9, 3]).raise).toBeCloseTo(0.5)
+    expect(doorOf([0, 9, 3]).raise).toBeCloseTo(0.35)
     expect(doorOf([0, 9, 3]).shake).toBe(0)
   })
 

@@ -14,7 +14,7 @@ import { HATCH, moms, type Moms } from './moms'
 import { police } from './police'
 import { roadSign, streetThings } from './things'
 
-const VERSION = 'street-models-11'
+const VERSION = 'street-models-13'
 
 // Everything the seven parts are built from in one zone, made once and shared: each part keeps the meshes that are its own.
 interface Street {
@@ -69,24 +69,23 @@ const ease = (t: number): number => {
   return u * u * (3 - 2 * u)
 }
 
-// How far the firehouse door is raised, 0 shut to 1 fully up, and how hard its frame shakes.
+// How far the firehouse door is raised, 0 shut to 1 fully up, and how hard its frame shakes. It hangs low at rest, runs up as a ball is caught, stays up while the ball is held and fired out, then comes down again.
 export function doorOf(v: number[]): { raise: number; shake: number } {
   const held = (v[0] ?? 0) > 0.5
   const sinceIn = v[1] ?? 9
   const sinceOut = v[2] ?? 9
-  const rest = 0.5
+  const rest = 0.35
+  const up = 0.95
   if (held) {
     const t = sinceIn
-    if (t < 0.14) return { raise: rest * (1 - ease(t / 0.14)), shake: 0 }
-    const u = t - 0.14
-    return { raise: 0.05 * Math.exp(-u * 16) * Math.abs(Math.sin(u * 38)), shake: Math.exp(-u * 14) * 0.5 }
+    if (t < 0.18) return { raise: rest + (up - rest) * ease(t / 0.18), shake: 0 }
+    const u = t - 0.18
+    return { raise: up - 0.035 * Math.exp(-u * 12) * Math.abs(Math.sin(u * 34)), shake: Math.exp(-u * 14) * 0.5 }
   }
   if (sinceOut >= 8.9) return { raise: rest, shake: 0 }
   const t = sinceOut
-  const shake = Math.exp(-t * 7)
-  if (t < 0.09) return { raise: 0.97 * ease(t / 0.09), shake }
-  if (t < 1.4) return { raise: 0.97 - 0.035 * Math.exp(-(t - 0.09) * 9) * Math.abs(Math.sin((t - 0.09) * 30)), shake }
-  return { raise: 0.97 + (rest - 0.97) * ease((t - 1.4) / 1.2), shake: 0 }
+  if (t < 1.4) return { raise: up, shake: Math.exp(-t * 7) }
+  return { raise: up + (rest - up) * ease((t - 1.4) / 1.2), shake: 0 }
 }
 
 // How far the cellar doors stand open, 0 shut to 1, and how bright the cellar is.
@@ -148,7 +147,7 @@ const fire = whole('model-firehouse', {
     const frame = k.frame as THREE.Mesh
     frame.position.set(Math.sin(ctx.time * 71) * 0.9 * d.shake, 0, Math.abs(Math.sin(ctx.time * 53)) * 1.1 * d.shake)
     const red = levels(ctx, z).byName.red ?? 0
-    ;(k.lens as THREE.MeshPhysicalMaterial).emissiveIntensity = 0.1 + 0.5 * red
+    ;(k.lens as THREE.MeshPhysicalMaterial).emissiveIntensity = 0.18 + 0.6 * red
     ;(k.glow as THREE.MeshStandardMaterial).emissiveIntensity = 0.3 + 3 * red
     ;(k.turn as THREE.Mesh).rotation.z = red > 0.6 ? ctx.time * 8.5 : 0.6
   }
@@ -175,7 +174,7 @@ const cops = whole('model-police', {
     const k = kept.get(o)
     if (!k) return
     const blue = levels(ctx, z).byName.blue ?? 0
-    ;(k.lens as THREE.MeshPhysicalMaterial).emissiveIntensity = 0.1 + 0.5 * blue
+    ;(k.lens as THREE.MeshPhysicalMaterial).emissiveIntensity = 0.18 + 0.6 * blue
     ;(k.glow as THREE.MeshStandardMaterial).emissiveIntensity = 0.3 + 3 * blue
     ;(k.turn as THREE.Mesh).rotation.z = blue > 0.6 ? -ctx.time * 8.5 : 2.2
   }
