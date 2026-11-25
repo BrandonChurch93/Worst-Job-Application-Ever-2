@@ -1,35 +1,35 @@
 {
   "folder": "keys",
-  "pushed": "2026-11-25T20:08:53.902Z",
-  "commit": "07f29fb44cebd001fd48780992512c9bdf546861",
+  "pushed": "2026-11-25T20:26:09.232Z",
+  "commit": "f1e84a6541efac3a9839ad832f0650d3cd4ce018",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Round 5, the fire key beside the approved image: charred holes with rims, the hot key and the marks grouped round the cursor on J, darker turret and deck",
-      "time": "2026-11-25T20:08:52.059Z",
+      "caption": "Still key-step1-fire-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T20:18:22.908Z",
       "by": "keys",
-      "from": "out/work/looks/files/20261125200852-r5-compare.jpg"
+      "from": "out/work/stills/key-step1-fire-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Round 5, close: approved cursor and hole on the left, the build at 6.0 s on the right, hot key, sparks, wisp and holes round the cursor",
-      "time": "2026-11-25T20:08:52.313Z",
+      "caption": "Still key-step1-fire-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T20:19:24.161Z",
       "by": "keys",
-      "from": "out/work/looks/files/20261125200852-r5-cluster.jpg"
+      "from": "out/work/stills/key-step1-fire-hd-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Round 5: the approved holes above, the build's bullet holes on R, U and J below, and the hot key after a hit",
-      "time": "2026-11-25T20:08:52.594Z",
+      "caption": "Still key-step1-fire-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-25T20:25:54.879Z",
       "by": "keys",
-      "from": "out/work/looks/files/20261125200852-r5-holes.jpg"
+      "from": "out/work/stills/key-step1-fire-hd-draft.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Round 5: larger brighter bolts, and a slab one frame before it lands and one frame after with the caps under it down",
-      "time": "2026-11-25T20:08:52.825Z",
+      "caption": "Fire key after round 5: approved above, build below; dark well in a light rim, bolts as thin streaks",
+      "time": "2026-11-25T20:26:07.931Z",
       "by": "keys",
-      "from": "out/work/looks/files/20261125200852-r5-b.jpg"
+      "from": "out/work/looks/files/20261125202607-r5-tray.jpg"
     }
   ]
 }
