@@ -420,6 +420,11 @@ Each with the critic, the round, the issue in the critic's words, and the approv
 - Round 1 (blockout), reviewer-03, pinball camera 7: "the framing gives almost the entire Office tier equal weight". Declined: approved `reply-all.png` shows the tier so, and kit/01 says this camera is "fitted to its key".
 - Round 1 (blockout), reviewer-03, pinball cameras 3 and 4 (tiers 3 and 2): "the center drain and the bottom boundary are clipped". Declined for tiers 3 and 2: approved `tier-corporate.png` and `tier-office.png` end just under the flippers. Taken for tier 1, which approved `tier-street.png` shows with its apron edge.
 - Round 1 (blockout), reviewer-01, set A: "this set has no sheets for the film's beats". Not an issue of the build: the sheets were in sets B and C, as the pack is split.
+- Round 2 (blockout), reviewer-01, step 3 at rest: "The at-rest page gives no visible cue for how to start the assessment. The only shapes that might signal it are disconnected from the copy, and the lower shape runs off the viewport without a clear indication that the crop is intentional." Declined: approved `loader-page.png` shows the page so, with the heading and its lines at the left, the loader port at the right edge and its tube running off the first screen. It repeats the line settled in round 1.
+- Round 2 (blockout), reviewer-01, step 4 at rest: "The verification card sits in the upper-left column while Submit floats at the bottom center across a large blank gap." Declined: it repeats the line settled in round 1; approved `boss-fight.png` and `boss-down.png` show Submit's socket at bottom centre.
+- Round 2 (blockout), reviewer-01, step 2 at rest: "The labels and hints hug the left page margin while the controls begin across a wide blank gap." Declined: approved `step2-rest.png` shows the three labels with their lines at the left margin and the three controls at the right edge of the content.
+- Round 2 (blockout), reviewer-03, step 1 at rest, minor: "all the content sits in the top half and the lower 45% of the page is empty, so the layout looks top-heavy". Declined: approved `step1-fire.png` shows the form in the upper half and the keyboard standing in the lower half.
+- Round 2 (blockout), reviewer-02, the pinball launch, one half of the issue: "The cursor silhouette covers the ball in both close-ups" with the fix "Keep the ball clear of the cursor once it moves". Declined in that half: the cursor rides through the machine sealed in a clear ball, a stated choice, as approved `clear-ball.png` and `rail-cam.png` show it. The other half, the framing of the lane, was taken.
 
 ## Open items
 
@@ -440,7 +445,7 @@ How much of each limit in the table of `kit/07-QUALITY-BAR.md` has been used.
 
 | What | Used | Limit |
 | --- | --- | --- |
-| Blockout rounds in Phase 2 | 1 | 2 (`quality.blockoutMaxRounds`) |
+| Blockout rounds in Phase 2 | 2 | 2 (`quality.blockoutMaxRounds`): the limit is reached, R4 blockout closed at it at 11:48Z |
 | Searches for the pinball take | 4, the fourth logged as over the count at 10:00Z | 3 (`quality.takeSearchMaxRuns`) |
 | Replacements of an agent that ran past its limit | 0 | one per job |
 | Attempts to fix one machine check | 2 (M9 after the height reading, the progress rail) | 5 per round (`quality.gateFixMaxAttempts`) |
