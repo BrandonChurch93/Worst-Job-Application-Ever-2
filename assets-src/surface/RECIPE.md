@@ -16,10 +16,18 @@ MEASURED: `npx vitest run tests/surface.test.ts` (the test "holds four pictures 
 
 ## grain (1024 by 1024, RGBA, 4.00 MB)
 Made by: `grainHeights(size, seed)` and `grainNormalMap(size, seed, strength)` in `src/shell/materials.ts`.
-From: the seed, through `Random(seed, 'grain')` of `src/core/random.ts`. One number a texel, blurred with a blur that wraps, so the picture tiles. Two bands are kept, each the difference of two blurs so no slow lumps are left: 0.4 less 0.9 texels (the speckle) and 1.2 less 3 texels (the soft swell). Only the low places of the speckle, below 0.7 of its spread, are kept at full depth as pits; the rest of it is laid in at a fifth. That is what reads as eggshell and not as sand or leather.
-Prompt or command: `makeMaterials(config.seed)`; in the shader the picture is read twice, the second time turned 37 degrees and 1.118 times finer, so no repeat shows across a page. One texel is one page pixel.
-Takes: 290 ms on this machine (MEASURED, one run under vitest, 4 cores at 2.9 GHz).
-Why this one: the approved image has a speckle of 2 to 4 pixels with no direction and no bright spot: small separate pits on a nearly flat face. Slopes alone looked painted on, so the height in alpha also moves the roughness: pits are a little more matt. MEASURED on a clean patch at review tier, spread of the grey after taking off a 6 pixel blur: approved 6.4, this build 5.8.
+From: the seed, through `Random(seed, 'grain')` of `src/core/random.ts`. One number a texel, blurred with a blur that wraps, so the picture tiles. Three bands are kept, each the difference of two blurs so no slow lumps are left: 0.8 less 1.8 texels (the speckle), 2.4 less 6 texels (the soft swell) and 0.4 less 0.9 texels (the tooth, laid in at `TOOTH` 0.07). Only the low places of the speckle, below 0.7 of its spread (`PIT_FROM`), are kept at full depth as pits; the rest of it is laid in at a fifth. That is what reads as eggshell and not as sand or leather.
+Prompt or command: `makeMaterials(config.seed)`; in the shader the picture is read twice, the second time turned 37 degrees and 1.118 times finer, so no repeat shows across a page. Two texels are one page pixel (`GRAIN_PER_PIXEL` 2), so a repeat is 512 page pixels and the picture is never drawn larger than it is, also in the 3840 wide master.
+Takes: 290 ms on this machine (MEASURED once under vitest with two bands, 4 cores at 2.9 GHz; with the third band UNKNOWN, not measured again).
+Why this one: the approved image has a speckle of 2 to 4 pixels with no direction and no bright spot: small separate pits on a nearly flat face. Slopes alone looked painted on, so the height in alpha also moves the roughness: pits are a little more matt. At one texel a page pixel the grain was soft in the master and in every close view; at two the same picture stays sharp, and the tooth band is what a close view lands on. MEASURED on a clean patch at review tier with one texel a pixel, spread of the grey after taking off a 6 pixel blur: approved 6.4, that build 5.8.
+Date: 2026-11-25
+
+## frost (the grain picture again, no memory of its own)
+Made by: `grain.clone()` in `makeMaterials`, `src/shell/materials.ts`. It shares the grain's picture on the card, so it adds nothing to the megabytes.
+From: the grain picture above.
+Prompt or command: laid at 5 repeats in 1024 page pixels with a strength of `FROST` 0.022 on `glass`, `glassThick` and `glassSunk`.
+Takes: nothing to make.
+Why this one: glass with no slopes at all read as plastic sheet at full size. At this strength no grain can be picked out, the sheen only loses its last hard edge. The first try, coarser and stronger, read as orange peel.
 Date: 2026-11-25
 
 ## brushed (512 by 512, RGBA, 1.00 MB)
