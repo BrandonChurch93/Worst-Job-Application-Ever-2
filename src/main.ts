@@ -63,6 +63,7 @@ async function start(): Promise<void> {
     format: params.get('format') ?? 'hd',
     assets: params.get('assets') ?? (capture ? 'full' : 'web'),
     capture,
+    stepped: params.get('clock') === 'steps' || mode === 'probe',
     forceKind: (params.get('target') as TargetKind | null) ?? undefined
   })
   if (params.get('diag')) app.setDiagnostic(params.get('diag')!)
@@ -486,6 +487,7 @@ function play(first: PlayMode): void {
     app.put(p.frame, p.size, p.pose)
     app.setCamera(p.pose)
     app.engine.frame(app.shot(), rest[still]!, still === 0, frame, app.diagnostic)
+    if (now !== 'live' || base > 0 || stage.page.id !== liveFlow()[0]!.page) app.loadLater()
   }
 
   if (stepped) {
