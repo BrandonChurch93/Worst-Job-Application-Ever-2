@@ -306,6 +306,40 @@ describe('the careers page', () => {
     expect(JSON.stringify(drawn(b))).toBe(JSON.stringify(drawn(a)))
   })
 
+  it('scrolls to a section when a link of the top bar is pressed', () => {
+    const { layout, sections, height } = careersLayout()
+    const box = (id: string): number[] => {
+      let found: number[] = []
+      const walk = (n: { id: string; box: number[]; children?: unknown[] }): void => {
+        if (n.id === id) found = n.box
+        for (const c of (n.children ?? []) as { id: string; box: number[] }[]) walk(c)
+      }
+      walk(layout)
+      return found
+    }
+    const wanted = [sections.final!, sections.awards!, sections.perks!]
+    wanted.forEach((top, i) => {
+      const b = box(`nav-link-${i}`)
+      const at = { x: b[0]! + b[2]! / 2, y: b[1]! + b[3]! / 2 }
+      let pressed = false
+      const s = live({
+        name: 'bot',
+        input(v: DriverView): Pointer {
+          if (v.time < 0.5 || pressed) return { x: at.x, y: Math.max(10, at.y - v.scroll), down: false }
+          pressed = true
+          return { x: at.x, y: at.y, down: true }
+        }
+      })
+      s.advance(seconds(3))
+      const scroll = s.page.scroll()
+      expect(scroll, `link ${i}`).toBeGreaterThan(0)
+      expect(scroll, `link ${i}`).toBeLessThanOrEqual(height - 1080)
+      expect(top - scroll, `link ${i}`).toBeGreaterThan(0)
+      expect(top - scroll, `link ${i}`).toBeLessThan(200)
+      expect(s.page.done()).toBe(false)
+    })
+  })
+
   it('keeps the tape inside its window: a run that crosses an edge keeps its box centre in the well, so the page hides the rest', () => {
     const s = film()
     let crossing = 0

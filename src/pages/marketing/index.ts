@@ -27,6 +27,7 @@ const SINK = 0.09
 const HOLD = 0.3
 const JUMP_HEIGHT = 96
 const AUTO_GAP = 0.5
+const LINK_LEAD = 96
 const BUTTONS = ['nav-cta', 'hero-cta', 'final-cta'] as const
 const HERO = 1
 
@@ -62,7 +63,7 @@ const smooth = (u: number): number => {
 const mod = (a: number, n: number): number => ((a % n) + n) % n
 
 export function makePage(): PageLogic {
-  const { layout, height } = careersLayout()
+  const { layout, height, sections } = careersLayout()
   const beats = config.film.beats.filter((b) => b.unit === 'marketing')
   const gags: GagInfo[] = beats.map((b) => ({ id: b.id, event: b.event ?? null }))
   const [strollBeat, perksBeat, tickerBeat, applyBeat] = ['marketing.stroll', 'marketing.perks', 'marketing.ticker', 'marketing.apply'].map((id) => beat(id)) as [ReturnType<typeof beat>, ReturnType<typeof beat>, ReturnType<typeof beat>, ReturnType<typeof beat>]
@@ -105,6 +106,11 @@ export function makePage(): PageLogic {
   const afterLength = afterCount * (afterW + TICKER.gap)
   const tapeY = boxOf(layout, 'ticker-0').y
   const tapeH = boxOf(layout, 'ticker-0').h
+
+  const links = (['final', 'awards', 'perks'] as const).map((name, i) => {
+    const b = boxOf(layout, `nav-link-${i}`)
+    return { box: { ...b, x: b.x - 12, y: b.y - 16, w: b.w + 24, h: b.h + 32 }, to: Math.min(maxScroll, Math.max(0, sections[name]! - LINK_LEAD)) }
+  })
 
   const hero = caps[HERO]!
   const start = { x: 64, y: 596 }
@@ -319,6 +325,7 @@ export function makePage(): PageLogic {
       if (s.mode === 'live') {
         if (io.pointer.scroll !== undefined) s.scrollTo = Math.min(maxScroll, Math.max(0, io.pointer.scroll))
         if (io.pointer.wheel) s.scrollTo = Math.min(maxScroll, Math.max(0, s.scrollTo + io.pointer.wheel))
+        if (io.pressed) for (const link of links) if (inside(link.box, io.pointer)) s.scrollTo = link.to
         const gap = s.scrollTo - s.scroll
         s.scroll = Math.abs(gap) < 0.05 ? s.scrollTo : s.scroll + gap * Math.min(1, dt * 16)
       }
