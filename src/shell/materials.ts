@@ -1,7 +1,6 @@
 import * as THREE from 'three'
 import { config } from '../config'
 import { hash01 } from '../core/random'
-import { config } from '../config'
 import { studio } from '../post/studio'
 
 const srgb = (hex: number) => new THREE.Color().setHex(hex, THREE.SRGBColorSpace)
@@ -115,14 +114,6 @@ export function makeMaterials(seed: number): Materials {
     m.polygonOffsetUnits = -2
   }
   return { ceramic, pocket, glass, aluminium, orange, gap, ink, inkOnOrange, enamel, edge, smoked, paper, red, keycap, steel, rubber, textures: [grain] }
-}
-
-let set: Materials | null = null
-
-// The one shared set. Every part of the site takes its materials from here.
-export function materials(): Materials {
-  set ??= makeMaterials(config.seed)
-  return set
 }
 
 let made: Materials | null = null
