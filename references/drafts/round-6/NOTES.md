@@ -769,3 +769,82 @@ LETTERING: the only word in the image is "Coffee", once, on the small plate on t
 NOT IN THE IMAGE: no people, no hands, no faces, nobody in the cubicles; no cabinet, no legs, no room, no floor, no sheet of glass over the playfield; no fog, no smoke, no haze, no lens flare; no second clear ball and no more than three steel balls; no paper tag, card or label lying on the board; not a cartoon, not an illustration, not a diorama.
 ```
 
+### G11 · You're Fired
+
+- File: `references/drafts/round-6/G11-youre-fired.png`
+- Model: `seedream_5`
+- Takes made: 3 of 3 allowed. Kept: take 2.
+- Reference images passed in, in order: `references/drafts/round-6/G5-tier-street.png` (the kept take of G5, the tier the shot is in, passed first); `references/drafts/round-6/G7-clear-ball.png` (the kept G7, passed second); No layout guide was passed: `references/guides/round-6/` has none for this view.
+
+Takes:
+
+- Take 1. Misses: the camera is high, looking down on the roof, not low; the red light stays on the roof; a steel post stands in front of the building, two patches of raised relief lie on the board at the right, and an orange part hangs over the roof. `You're Fired` spelled right. Judge: "the closest of the five is a frame from a top-budget film", then named things. Failed.
+- Take 2 (prompt changed: the lens two balls' height above the board looking almost level at the front wall; the building standing straight on the flat board; the ball half way into the hole; the red light named surface by surface; nothing else on the board or the roof). Closer and lower, the ball half sunk in the scoop, red on the scoop and the roof. Judge: "Most likely: a frame from a top-budget film", then named six things. Failed. Kept as the best of three.
+- Take 3 (prompt changed: the door opening two balls wide and one and a half high, the scoop as wide as the door with a chute inside, two crisp arrow inserts on the door's centre line, more red). The camera came out higher, the door half lowered, and a steel ramp inside the door ends at nothing. Judge: "Most likely a frame from a top-budget film", then named things. Failed.
+
+The judge's answer on the kept take:
+
+> Answer for picture-1102.png (viewed at full size plus zoomed crops).
+>
+> What the image shows: a macro, shallow-depth-of-field shot of a miniature red-brick two-storey building on a dark glossy pinball playfield. It has a glowing red beacon on the roof, a cream and gold sign reading "You're Fired", warm lit windows, and a garage-style arch at the front leading into a sunken, metal-rimmed pit. A clear glass ball with a white mouse-cursor arrow inside sits in that pit. Blurred metal rails run along the left. 1920x1080, no HUD, score or interface.
+>
+> 1) Which is it most likely to be
+> - Most likely: a frame from a top-budget film (or equivalent high-end CG/miniature production). Reasons: cinematic macro framing, very shallow focus, film-style grading, physically consistent lighting (red beacon spill and window glow reflected correctly in the playfield), clean legible sign text, convincing miniature-scale textures.
+> - Not a commercial pinball game screenshot: no score, HUD or table-wide view, and games do not render with this lens blur and close crop during play.
+> - Not a textbook picture (nothing explanatory or labelled) and unlikely stock (too specific and odd a concept).
+> - Runner-up: polished generated art. Small tells point that way: inconsistent window designs, a stray dark slit between two upper windows on the right wall, an indistinct blob at the building's left corner, and mushy arrow shapes on the two lit inserts. But the overall finish is well above "amateur".
+>
+> 2) Could a ball really travel every lane and ramp visible
+> There are no ramps in frame and essentially one ball path: the scoop under the garage arch. Partly plausible, but these would not work or cannot be confirmed:
+> - The ball itself: clear glass with a cursor embedded. A real pinball is solid steel; glass would be too light, would chip or shatter, would not respond to magnets, and the embedded shape would unbalance it.
+> - The scoop: the pit is a wide rectangle that extends out past the building's left wall, with a raised metal rim on the near side. A slow ball rolling in from the front would hit that lip, and the pit is much wider than the ball, so it would not be captured in a repeatable position.
+> - No exit: the interior is just black. No kicker, eject hole or subway is visible, so the ball would sit there unless something hidden returns it.
+> - Arch clearance: the ball looks roughly as tall as the arch opening. It appears to fit only because it has dropped into the pit; it could not roll through at playfield level.
+> - Lit arrow inserts: the two sit off to the front-left of the pit and do not clearly point into the opening.
+> - Left side: there seems to be a channel between two metal rails, but it is out of focus, both ends are out of frame, and the blob at the building corner sits about where its mouth would be. It cannot be confirmed as a working lane.
+>
+> Short version: looks like a high-budget film frame, not a game screenshot. The only real ball path is the garage scoop, and the glass ball, the oversized rimmed pit and the lack of any visible exit are the things that would not work on a real table.
+
+Judge result: FAILED. First answer: "a frame from a top-budget film", not a game screenshot (STATED). Under the narrow reading of the question's first option that is not the first answer; under the wide reading (game screenshot or film frame as one option) it is. See the choices at the end. Second answer: six things named, which fails under either reading. Kept at the limit of three takes.
+
+What the kept take misses (MEASURED on the file unless marked):
+
+- The judge did not read it as a game screenshot: no score or display, no view of the table, and a close crop with lens blur (STATED).
+- Camera height. The top of the roof can be seen, so the lens is above the roof line: lower than take 1, not as low as the brief asks.
+- Red light. It falls on the roof, the rim of the scoop, the inside of the door and the board in front as a reflection. The brick front is lit mostly by its own amber windows, and the ball is hardly red at all. The brief asks for red over everything near the dome.
+- Scoop. The pit is a wide rectangle, wider than the door, and runs out past the building's left wall; its near side has a steel rim that reads as raised (STATED by the judge; I see the same). No kicker or way out can be seen inside it (STATED).
+- The ball is about as tall as the door opening, so it could not roll in at board level (STATED; the opening is partly hidden by the ball).
+- Two lit inserts sit at the front left of the scoop, not on the door's centre line, and their arrows are soft shapes that do not clearly point at the door.
+- Small flaws on the building (STATED by the judge; I see the first two): windows of differing patterns, a dark slit between two upper windows on the right wall, a small shapeless lump at the building's left corner.
+- At the left, out of focus, two aluminum rails with a channel between them whose ends are out of frame.
+- Frame. A blurred length of aluminum rail at the upper left. The ceramic border is not in the picture.
+- Words (MEASURED at full size): `You're Fired`, spelled right, on a cream plate with a brass edge at the front of the roof. No other letters or numbers found.
+
+Full prompt of the kept take:
+
+```text
+A frame from a finished commercial 3D pinball video game with photoreal graphics, in its low close-up replay camera. It looks exactly like a close photograph taken inside a real, physical pinball machine. 16:9.
+
+REFERENCE IMAGE 1 is the street tier of this pinball table seen from straight above. This shot is taken inside that same tier, low down, at its upper left, so its parts are the same parts: the same red brick firehouse with grey stone trim, lit amber windows and a flat grey roof, the same red flasher dome on that roof, the same wide garage door opening at its front, the same dark steel-edged scoop hole in the board at the door, the same dark teal and navy printed street under a glossy clear coat. REFERENCE IMAGE 2 shows the ball of this game three times: a clear acrylic ball with a white arrow cursor sealed inside it. Use it for how the ball and the cursor look. This image has exactly one ball.
+
+THE SHOT: low and tight on the firehouse. The camera is very low: its lens is only two balls' height above the playfield, in front of the firehouse and a little to its right, looking almost level at its front wall. We see the front wall nearly square-on and only a thin sliver of the top of the roof. The firehouse fills most of the frame, from its dome at the top to the board in front of its door at the bottom.
+
+THE FIREHOUSE: a small moulded playfield sculpture of a two-storey red brick firehouse with grey stone trim and rows of small windows lit amber. Its wide garage door is rolled up and stands fully open. The firehouse stands directly on the flat board: there is no slab, no step and no kerb under it. Directly in front of the open door, cut into the flat board: the scoop, a dark hole in the playfield one and a half balls wide and two balls deep, edged with a thin polished steel lip that lies flush with the board, its far side running in under the open door. The board runs flat and level right up to the lip, so a rolling ball meets nothing before it drops in.
+
+THE BALL: the clear acrylic ball is dropping into the scoop. It is in the middle of the lower half of the frame, about one seventh of the frame's width across. It is half way in: the lower half of the ball is already below the level of the board, down inside the dark hole, hidden behind the near lip of the hole, and only the upper half of the ball still shows above the board, like a setting sun. The whole cursor is in that upper half, in plain view. Inside it the cursor, a solid white enamel arrow with a black edge, three quarters as long as the ball is wide, is tumbling as the ball falls, tipped over, clear of the wall. The arrow is plain to see through the clear acrylic. The acrylic is lit red on the side toward the dome, with crisp highlights. The cursor is only an arrow: no face, no eyes, no limbs.
+
+THE DOME: on the roof, one red flasher dome, a ribbed red lens on a chrome base, lit at full flash. It is the brightest thing in the frame. It throws strong red light over everything near it: the roof, the back of the sign, the whole brick front, the board in front of the door, the steel lip of the scoop and the ball are all washed with red, and its red reflection lies sharp in the glossy clear coat. The red light is the main light in the picture.
+
+THE SIGN: along the front edge of the roof, standing up and facing the camera, one wide cream sign plate with a thin gold border and large dark serif letters: "You're Fired".
+
+AROUND IT: the flat, glossy board printed with dark teal and navy street artwork, perfectly smooth under its clear coat, and two small lit arrow inserts set flush in the board in front of the scoop, both pointing at the scoop. Nothing else stands on the board near the door: no post, no street lamp, no plaque, no manhole cover, no raised relief of any kind. Nothing is on the roof but the dome and the sign. Beyond the firehouse, soft in the distance, a little of the tier: the brushed aluminum side rail at the left.
+
+LIGHT: dusk. Strong red from the dome, warm amber from the windows, deep navy shadows. Rich contrast and glossy reflections. The air is clean.
+
+FOCUS: the firehouse front, the sign, the scoop and the ball are sharp.
+
+LETTERING: the only words in the image are "You're Fired", once, on the sign plate, spelled exactly like that: Y-o-u-apostrophe-r-e, then F-i-r-e-d. No other letters or numbers anywhere.
+
+NOT IN THE IMAGE: no people, no hands, no faces, no firefighters, no fire engine with a driver; no flames, no fire; no orange part, no wire and no ramp on or above the roof; no cabinet, no legs, no room, no floor, no sheet of glass over the playfield; no fog, no smoke, no haze, no lens flare; no second ball; not a cartoon, not an illustration, not a diorama.
+```
+
