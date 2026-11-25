@@ -35,7 +35,7 @@ const DART = { fall: 9000 }
 // A rear gets to its place fast, so the lean is held there.
 const REAR = { settle: 0.36 }
 // The frame of a hit: the body is short and bent away from the blow at once, with no spring to build it, and stands a body's width along the blow, clear of the flash.
-const HIT = { squash: 0.58, bend: 0.5, shove: 60, lift: 0.7 }
+const HIT = { squash: 0.58, bend: 0.5, shove: 60, lift: 0.7, hold: 0.07, back: 0.1 }
 const SPRING = { squash: { k: 620, c: 26 }, lean: { k: 330, c: 17 }, bend: { k: 260, c: 13 }, sprout: { k: 2400, c: 58 } }
 // A hit knocks the body over, past upright onto its other shoulder, and it swings back: the knocked cursor of the approved fire image.
 const TUMBLE = { far: 0.6, share: 0.08, out: { k: 900, c: 60 }, back: { k: 900, c: 58 } }
@@ -151,13 +151,14 @@ interface State {
   takenFor: number
   drive: { x: number; y: number; z: number } | null
   handback: number
+  shove: { x: number; y: number; t: number } | null
   from: { x: number; y: number }
 }
 
 const fresh = (x: number, y: number): State => ({
   x, y, z: hover, vx: 0, vy: 0, vz: 0, squash: 1, squashV: 0, lean: 0, spin: 0, stride: 0, fast: 0, acting: 'plain', reaction: null, reactionLeft: 0,
   damage: [], windowLeft: 0, leanV: 0, spinV: 0, bend: 0, bendV: 0, foot: 1, drag: 0, ticks: 0, dir: 1, feel: freshFeel(), gulp: -1,
-  strips: null, seed: config.seed, shreds: 0, sprout: 0, sproutV: 0, strain: 0, grip: 0, shed: 0, shedHands: null, arms: false, hands: null, onPage: true, inBall: false, air: null, ground: 0, aloft: false, taken: null, takenFor: 0, drive: null, handback: 1, from: { x, y }
+  strips: null, seed: config.seed, shreds: 0, sprout: 0, sproutV: 0, strain: 0, grip: 0, shed: 0, shedHands: null, arms: false, hands: null, onPage: true, inBall: false, air: null, ground: 0, aloft: false, taken: null, takenFor: 0, drive: null, handback: 1, shove: null, from: { x, y }
 })
 
 export class CursorBody {
@@ -266,6 +267,10 @@ export class CursorBody {
       if (s.taken === null && !s.air && !s.inBall) {
         s.x += (vx / d) * HIT.shove
         s.y += (vy / d) * HIT.shove
+        s.vx -= vx
+        s.vy -= vy
+        s.shove = { x: s.x, y: s.y, t: 0 }
+        s.dir = vx < -40 ? -1 : vx > 40 ? 1 : s.dir
       }
     }
   }
@@ -372,12 +377,22 @@ export class CursorBody {
       ty = s.from.y + (target.y - s.from.y) * u
     }
     const before = Math.hypot(s.vx, s.vy)
-    s.vx += (gait.stiff * (tx - s.x) - gait.damp * s.vx) * dt
-    s.vy += (gait.stiff * (ty - s.y) - gait.damp * s.vy) * dt
-    const speed = Math.hypot(s.vx, s.vy)
-    if (speed > gait.top) {
-      s.vx *= gait.top / speed
-      s.vy *= gait.top / speed
+    if (s.shove && !s.air && s.taken === null && !s.inBall) {
+      s.shove.t += dt
+      const u = Math.min(1, Math.max(0, (s.shove.t - HIT.hold) / HIT.back))
+      const k = u * u * (3 - 2 * u)
+      s.vx = (s.shove.x + (tx - s.shove.x) * k - s.x) / dt
+      s.vy = (s.shove.y + (ty - s.shove.y) * k - s.y) / dt
+      if (u >= 1) s.shove = null
+    } else {
+      s.shove = null
+      s.vx += (gait.stiff * (tx - s.x) - gait.damp * s.vx) * dt
+      s.vy += (gait.stiff * (ty - s.y) - gait.damp * s.vy) * dt
+      const speed = Math.hypot(s.vx, s.vy)
+      if (speed > gait.top) {
+        s.vx *= gait.top / speed
+        s.vy *= gait.top / speed
+      }
     }
     s.x += s.vx * dt
     s.y += s.vy * dt
@@ -557,7 +572,7 @@ const CUTS: { x: number; y: number; half: number }[] = (() => {
 })()
 
 // Where a strip comes to lie: the pile is the arrow fanned open, every strip swung about its top end, slid along itself and pushed apart from its neighbours, each on its own layer.
-const FAN = { away: [34, -58], pinch: [14, -10], pull: 0.18, from: -0.38, to: 0.42, wobble: 0.12, stagger: 16, across: 2.1 }
+const FAN = { away: [34, -58], pinch: [14, -10], pull: 0.18, from: -0.38, to: 0.42, wobble: 0.12, stagger: 6, across: 0.9 }
 
 function lie(i: number, seed: number): Strip {
   const h = (k: number) => hash01(i, k + 40, seed)
