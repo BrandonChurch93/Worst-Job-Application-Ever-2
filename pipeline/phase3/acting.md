@@ -98,3 +98,11 @@ MEASURED on `npm run sheet -- --motion hit --tier review` before this change: th
 - Confident in the first second: the stage holds the cursor in the air until 1.0 s (the Builder's ruling at 22:03Z: it stays).
 - The pile, the stand and the zip larger in the frame: the camera is home from 28.96 s (declined by the paper fixer, upheld by the Builder).
 
+### The pile's fan
+
+Agreed with the cursor form fixer at 22:12Z: its loose strip is now the piece of the arrow it was cut from, so the fan pushes the strips less far apart (`FAN.across` 2.1 to 0.9, `FAN.stagger` 16 to 6, `tilt` stays 0). Looked at on a trial merge of its b429fd6 with this branch (stills of `step1.shredded` at 29.15 s, old fan above new): the pile reads as one arrowhead cut into strips.
+
+### Measures of the last push
+
+MEASURED on the merge with `main` db41bef, `npm run measure -- --unit step1 --tier review`: 8 green, 0 red. M2 0.0069 (most 0.02), M3 0.8224 (least 0.8, the same as `main`), M4 14 px and 4.76, M7 0 misses of 3, M9 1.87 px. `npm run still -- --key step1-fire --format hd`: draft 12.3 s, review 24.7 s, 470467 triangles and 282 draw calls, the same counts as `main`. No texture added.
+
