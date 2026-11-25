@@ -286,6 +286,9 @@ function screws(at: [number, number][], z: number): { heads: THREE.BufferGeometr
 
 const PANEL = { thick: 1.5, lift: 0.3, clear: 0.7, bevel: 0.3 }
 const SEAT = 1
+const FOOT = 0.4
+// The frame the machine is fastened in: a plate at each end of the opening, let into the page flush with it, a hair of seam round it and two screws through it. The panels run between the two.
+const EAR = { wide: 6.6, north: SLOT.h / 2 + 3.4, south: SLOT.h + PANEL.clear + 0.6, thick: 0.36, seam: 0.32, k: 0.42 }
 // What throws the machine's shadow: a block inside the walls this high over the page, so the shadow stays close round the foot.
 const CAST = 13
 
@@ -298,6 +301,7 @@ interface Cassette {
   panelN: THREE.Mesh
   panelS: THREE.Mesh
   seat: THREE.Mesh
+  ears: THREE.Group[]
   geometries: THREE.BufferGeometry[]
 }
 
@@ -376,14 +380,34 @@ function makeCassette(): THREE.Group {
   const panel = (y0: number, y1: number): THREE.Mesh => {
     const tile = add(root, block(-SLOT.w / 2, SLOT.w / 2, y0, y1, -0.2 - PANEL.thick, -0.2, PANEL.bevel), m.ceramic, true)
     // The dark line a tile lying on the page has round its foot.
-    add(tile, strip(block(-SLOT.w / 2 - SEAT, SLOT.w / 2 + SEAT, y0 - SEAT, y1 + SEAT, -0.2 - PANEL.thick - 0.1, -0.2 - PANEL.thick + 0.15, 0.01)), shade(), false)
+    add(tile, strip(block(-SLOT.w / 2 - FOOT, SLOT.w / 2 + FOOT, y0 - FOOT, y1 + FOOT, -0.2 - PANEL.thick - 0.1, -0.2 - PANEL.thick + 0.15, 0.01)), shade(), false)
     return tile
   }
   const panelN = panel(0, SLOT.h / 2)
   const panelS = panel(-SLOT.h / 2, 0)
   // The cutout the cassette stands in: the dark of the opening round it, a hair wider than the slot.
   const seat = add(root, strip(block(-SLOT.w / 2 - SEAT, SLOT.w / 2 + SEAT, -SLOT.h / 2 - SEAT, SLOT.h / 2 + SEAT, -0.4, 0.07, 0.01)), shade(), false)
-  const rig: Cassette = { lift, north, south, chute, reach, panelN, panelS, seat, geometries }
+  const ear = (side: number): THREE.Group => {
+    const g = new THREE.Group()
+    g.position.set(side * (SLOT.w / 2 + SEAT), 0, 0)
+    const plate = new THREE.Group()
+    plate.scale.setScalar(EAR.k)
+    g.add(plate)
+    const w = EAR.wide / EAR.k
+    const x0 = side > 0 ? 0 : -w
+    const y0 = -EAR.south / EAR.k
+    const y1 = EAR.north / EAR.k
+    const top = EAR.thick / EAR.k
+    const seam = EAR.seam / EAR.k
+    add(plate, merge([block(x0, x0 + w, y0, y1, 0.1, top, 0.5)], true), brushed(), false)
+    const hard = screws([[x0 + w / 2, y0 + 7], [x0 + w / 2, y1 - 7]], top)
+    add(plate, hard.heads, steel(), false)
+    add(plate, merge([hard.sockets, strip(block(x0 - seam, x0 + w + seam, y0 - seam, y1 + seam, 0.04, 0.16, 0.01))]), shade(), false)
+    root.add(g)
+    return g
+  }
+  const ears = [ear(-1), ear(1)]
+  const rig: Cassette = { lift, north, south, chute, reach, panelN, panelS, seat, ears, geometries }
   root.userData.rig = rig
   return root
 }
@@ -398,6 +422,10 @@ function poseCassette(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   rig.lift.position.z = RAISE - TRAVEL * (1 - rise)
   rig.lift.visible = p > 0.5
   rig.seat.visible = rig.lift.visible
+  for (const e of rig.ears) {
+    e.visible = p > 0.02
+    e.scale.x = Math.max(0.001, smooth(p / 0.4))
+  }
   const turn = s.v && s.v.length > 1 ? s.v[1]! : ctx.time * 9
   rig.north.rotation.x = turn
   rig.south.rotation.x = -turn
@@ -410,7 +438,12 @@ function poseCassette(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   rig.panelS.position.set(0, -slide, up)
 }
 
-const SEG = 26
+const SEG = 36
+// The free end of a strip rolls up off the page, each by its own amount, from its own place along the strip.
+const TIP = { least: 1.3, more: 2.6, from: 0.4, vary: 0.22, full: 16 }
+const tipAlong = new Float32Array(SEG + 1)
+const tipUp = new Float32Array(SEG + 1)
+const tipTurn = new Float32Array(SEG + 1)
 const MAX = 24
 const RIBBON = 2.5
 
@@ -491,7 +524,7 @@ function poseStrips(o: THREE.Object3D, ctx: RealContext): void {
     const cx = s.x + s.w / 2
     const cy = s.y + s.h / 2
     const curl = (0.016 + 0.034 * hash01(n, 1, seed)) * (hash01(n, 2, seed) < 0.25 ? -0.5 : 1)
-    const twist = (hash01(n, 3, seed) - 0.5) * 0.9
+    const twist = (hash01(n, 3, seed) - 0.5) * 2.6
     const off = hash01(n, 4, seed) * 8
     const sway = len * (0.01 + 0.025 * hash01(n, 5, seed))
     const waves = 0.5 + 0.7 * hash01(n, 6, seed)
@@ -499,12 +532,30 @@ function poseStrips(o: THREE.Object3D, ctx: RealContext): void {
     const sag = curl < 0 ? (1 - Math.cos(curl * len * 0.5)) / -curl : 0
     // A strip leaves the hood at the hood's height and its free end comes to rest on the page, so its shadow meets it there.
     const high = Math.max(0, s.z0 - 1.2)
+    const turn = (TIP.least + TIP.more * hash01(n, 8, seed)) * Math.min(1, len / TIP.full)
+    const from = TIP.from + TIP.vary * hash01(n, 9, seed)
+    const ds = len / SEG
+    let da = 0
+    let du = 0
+    for (let i = 0; i <= SEG; i++) {
+      const f = Math.max(0, (i / SEG - from) / (1 - from))
+      tipTurn[i] = turn * f * f
+      if (i > 0) {
+        const base = curl * ((i - 0.5) / SEG - 0.5) * len
+        const mid = base + (tipTurn[i]! + tipTurn[i - 1]!) / 2
+        da += (Math.cos(mid) - Math.cos(base)) * ds
+        du += (Math.sin(mid) - Math.sin(base)) * ds
+      }
+      tipAlong[i] = da
+      tipUp[i] = du
+    }
     const ring = (t: number, o: number[]): void => {
       const d = (t - 0.5) * len
-      const along = Math.sin(curl * d) / curl
-      const up = (1 - Math.cos(curl * d)) / curl + sag
-      const ta = Math.cos(curl * d)
-      const tu = Math.sin(curl * d)
+      const at = Math.min(SEG, Math.max(0, Math.round(t * SEG)))
+      const along = Math.sin(curl * d) / curl + tipAlong[at]!
+      const up = (1 - Math.cos(curl * d)) / curl + sag + tipUp[at]!
+      const ta = Math.cos(curl * d + tipTurn[at]!)
+      const tu = Math.sin(curl * d + tipTurn[at]!)
       const roll = twist * (t - 0.5)
       const cr = Math.cos(roll)
       const sr = Math.sin(roll)
