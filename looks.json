@@ -1,0 +1,35 @@
+{
+  "folder": "type",
+  "pushed": "2026-11-25T13:58:30.359Z",
+  "commit": "b56122a56c168acc92173f0f98ddc29133db84ff",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Type beside the approved step1-fire, five crops: title, numerals, field value, legends, white on dark (build at uhd review)",
+      "time": "2026-11-25T13:58:28.565Z",
+      "by": "type",
+      "from": "out/work/study/look-type-crops.png"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "page-look beside the approved sheet, review tier, real type on stand-in surfaces",
+      "time": "2026-11-25T13:58:28.789Z",
+      "by": "type",
+      "from": "out/work/study/look-compare-page-look.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "step1-fire beside the approved image, review tier",
+      "time": "2026-11-25T13:58:29.008Z",
+      "by": "type",
+      "from": "out/work/study/look-compare-fire.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "rest-step1, diag type: every run inside its box, black on white",
+      "time": "2026-11-25T13:58:29.234Z",
+      "by": "type",
+      "from": "out/work/study/look-diag-type.png"
+    }
+  ]
+}
