@@ -25,22 +25,21 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 33, 2026-11-25T17:09Z, Phase 3.
+Status 34, 2026-11-25T17:28Z, Phase 3.
 
-1. `out/stills/status/01-page-surface-before-and-now.jpg`: The page's surface at its real size: your approved images, the build before, the build now. Top row from the home camera, bottom row in the tug's close frame. Review tier.
-2. `out/stills/status/02-office-tier-models.jpg`: The office tier from the Reply All camera, from the office modeller's report (draft tier): cubicles, coffee machine, inbox and staplers are real. The grey cups and balls are parts that were still stand-ins on its branch.
-3. `out/stills/status/03-corporate-tier-models.jpg`: The corporate tier from straight above, from the corporate modeller's report (review tier): headquarters, revolving door, beach case, boardroom, ladder, notes and wedges.
-4. `out/stills/status/04-street-tier-beside-approved.jpg`: The street tier: your approved image on the left, the street modeller's draft on the right. The build's camera looks straight down, yours is tilted. That camera is mine to rule.
+1. `out/stills/status/01-street-tier-new-spiral.jpg`: The street tier from straight above with the new layout, draft tier. Right: the spiral's three turns now stand 1.3 balls apart, so the top turn is nearer the camera and looks larger. The thin column inside is the old garage core, due to be rebuilt as the frame outside the trough.
+2. `out/stills/status/02-rail-cam-new-highway.jpg`: The rail camera riding the highway, draft tier: the ball on the wire track above the police station, the spiral's turns ahead.
+3. `out/stills/status/03-drop-zone-glass-approved-over-build.jpg`: The drop zone's glass at the same scale: your approved fire image above, the build below (review tier). The build's glass is the next thing I change.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 3, tick 72 at 2026-11-25T17:09:45Z, allowance: build
-time used in this phase: 4.28 h of its box of 8.00 h
-time used under the allowance in force: 11.62 h of 36.00 h allowed
-time used: 11.62 of 36.00 hours before the review
+clock: phase 3, tick 73 at 2026-11-25T17:28:21Z, allowance: build
+time used in this phase: 4.59 h of its box of 8.00 h
+time used under the allowance in force: 11.93 h of 36.00 h allowed
+time used: 11.93 of 36.00 hours before the review
 extra rounds: yes
 half point: reached
 box end: not reached
@@ -470,6 +469,7 @@ One line each: the date, the decision, the reason, and the config key if one was
 - 17:27Z. The garage spiral and the highway are laid out again in `src/table/layout.ts`. MEASURED faults, reported by the owners of the ramps and of the street models: the spiral dropped 0.5 ball a turn, under `table.minClearanceBalls`; its ring crossed the front of the police station by 0.44 balls and reached past the right wall; its last points turned the ball back on itself. Now: 3 turns round a path 0.75 balls in radius, each turn 1.3 balls under the one above (1.25 clear over the ball's path and the floor of the trough), entered and left at the leftmost point so the ball never turns back, the lowest turn 1.3 balls above the floor so that a ball on the floor passes under it, the open end over the right inlane. The top of the spiral is 5.4 balls above the street floor, 2.4 above the surface of the page (the HQ stands 3 above it). The garage model becomes the round frame outside the trough, as `kit/02-SUBJECT.md` says. The highway climbs to 5.7 balls and ends over the spiral's entry. Considered and not taken: a spiral standing on the floor (it closes the right inlane and the right outlane to a ball on the floor), fewer turns (`table.spiralTurns` is the kit's number), a spiral that widens instead of stacking (9 balls across). MEASURED after the change: 126 table tests and the 10 pinball tests pass, the build is clean, the bots report all clear. The owners of `model-garage` and of the ramps rebuild to it before their limit.
 - 17:27Z. The launch rail and the two lift rails stay as they are: they climb evenly from one tier's floor to the next, which is what a launched ball and a tube do. The floor of the launch lane and the beds of the lift tubes follow the rails instead of stepping. Sent to the owner of the frame.
 - 17:27Z. The owner of the ball spent its 40 tuning looks and stopped tuning by eye, as its brief says. Granted: 12 more looks for the two faults it named in `lobby-doors` (the wall band reads as a flat blue hoop, the shadow lies under the carpet) and nothing else.
+- 17:34Z, the launch lane and the lift tubes, changed from the 17:27Z decision. At 17:27Z I ruled that the launch and lift rails stay as drawn (one straight climb from tier line to tier line, a ball above the floor at its top) and that the frame follows them. The frame maker then measured what following them costs: the tier floor in both lanes is the art plate at tier floor height, the lift tubes are level at tier floor height and the lane lamps sit on the tier floor, so a floor under the old rail means cutting the art plate, sinking a bed under each lift and leaving the lamps a ball under the ball. Decided instead: the rails change in `src/table/layout.ts`. The launch lane is level at the floor of the tier it passes and climbs to the next tier by a ramp 1.5 balls long that ends on the tier line; the launched ball leaves the top of the ramp in a hop 0.3 balls high and 2 balls long (a 34 degree ramp at 30 balls a second gives 0.38 by 2.3 by the arithmetic of a thrown ball, so the hop is what a ball would do). Each lift tube stays level in its tier, as the hardware is built, and rises one tier within 0.4 balls of the tier line, inside the cross rail. `LANE_RAMP` in the layout carries the numbers. The ramp clears the lane lamps at 2 balls into each tier. Not taken: cutting the art plate under the lanes; tilting the lift tubes; lamps on posts. Measured after: tsc clean, 136 table and pinball tests pass, the build builds, the bots are all clear.
 
 ## Notes from Brandon
 

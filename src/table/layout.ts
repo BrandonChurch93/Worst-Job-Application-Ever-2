@@ -241,13 +241,19 @@ export const OUTLET = { x: 293 / BALL, y: LAST_Y + 420 / BALL, ring: 330 / BALL,
 export const PLUNGER: V = [COLS.launch, TIER_Y[2]! + 10.5]
 
 const zf = (k: number): number => floorZ(k)
+export const LANE_RAMP = { run: 1.5, hop: [[0.5, 0.22], [1, 0.3], [1.5, 0.22], [2, 0]] as V[], lift: 0.4 }
+const climb = (u: number, k: number): P3[] => {
+  const y = TIER_Y[k]!
+  return [[u, y + LANE_RAMP.run, zf(k)], [u, y, zf(k - 1)], ...LANE_RAMP.hop.map((h) => [u, y - h[0], zf(k - 1) + h[1]] as P3)]
+}
+const rise = (u: number, k: number): P3[] => [[u, TIER_Y[k]! + LANE_RAMP.lift, zf(k)], [u, TIER_Y[k]! - LANE_RAMP.lift, zf(k - 1)]]
 rails.push({
   id: 'feed', from: 'loader', to: 'plunger', speed: 9.4, out: [0, 0],
   points: [[PORT.x, PORT.y, -0.4], [PORT.x, PORT.y + 2.2, 0], [PORT.x, MARQUEE_Y - 0.6, 0], [COLS.feed, MARQUEE_Y + 1.4, 0], [COLS.feed, TIER_Y[2]! + 10.2, 0], [COLS.feed, TIER_Y[2]! + 10.9, -1.5], [18.5, TIER_Y[2]! + 11.1, zf(2)], [PLUNGER[0], PLUNGER[1], zf(2)]]
 })
 rails.push({
   id: 'launch', from: 'plunger', to: 'corporate.top.lane', speed: 30, out: [0, 5],
-  points: [[PLUNGER[0], PLUNGER[1], zf(2)], [COLS.launch, TIER_Y[2]!, zf(2)], [COLS.launch, TIER_Y[1]!, zf(1)], [COLS.launch, TIER_Y[0]! + 1.9, zf(0)], [17.3, TIER_Y[0]! + 1.3, zf(0)], [16.4, TIER_Y[0]! + 1.05, zf(0)], [7.0, TIER_Y[0]! + 1.05, zf(0)], [5.8, TIER_Y[0]! + 1.3, zf(0)], [5.3, TIER_Y[0]! + 1.9, zf(0)], [5.3, TIER_Y[0]! + 2.7, zf(0)]]
+  points: [[PLUNGER[0], PLUNGER[1], zf(2)], ...climb(COLS.launch, 2), ...climb(COLS.launch, 1), [COLS.launch, TIER_Y[0]! + 1.9, zf(0)], [17.3, TIER_Y[0]! + 1.3, zf(0)], [16.4, TIER_Y[0]! + 1.05, zf(0)], [7.0, TIER_Y[0]! + 1.05, zf(0)], [5.8, TIER_Y[0]! + 1.3, zf(0)], [5.3, TIER_Y[0]! + 1.9, zf(0)], [5.3, TIER_Y[0]! + 2.7, zf(0)]]
 })
 for (let k = 0; k < 3; k++) {
   const name = TIERS[k]!
@@ -262,8 +268,8 @@ rails.push({
   id: 'drain', from: 'street.exit', to: 'outlet', speed: 7.5, out: [0, 0],
   points: [[MID, TIER_Y[2]! + 11.05, zf(2)], [MID, APRON_Y + 1.2, zf(2)], [MID, LAST_Y + 0.9, -1.2], [OUTLET.x, LAST_Y + 1.6, -0.6], [OUTLET.x, OUTLET.y, -0.4]]
 })
-rails.push({ id: 'lift.street', from: 'street.lift.door', to: 'office.elbow', speed: 14, out: [7, 0], points: [[3.3, TIER_Y[2]! + 1.05, zf(2)], [COLS.lift, TIER_Y[2]! + 1.05, zf(2)], [COLS.lift, TIER_Y[1]! + 1.05, zf(1)], [3.9, TIER_Y[1]! + 1.05, zf(1)]] })
-rails.push({ id: 'lift.office', from: 'office.lift.door', to: 'corporate.elbow', speed: 14, out: [7, 0], points: [[3.3, TIER_Y[1]! + 5.2, zf(1)], [COLS.lift, TIER_Y[1]! + 5.2, zf(1)], [COLS.lift, TIER_Y[0]! + 1.05, zf(0)], [3.9, TIER_Y[0]! + 1.05, zf(0)]] })
+rails.push({ id: 'lift.street', from: 'street.lift.door', to: 'office.elbow', speed: 14, out: [7, 0], points: [[3.3, TIER_Y[2]! + 1.05, zf(2)], [COLS.lift, TIER_Y[2]! + 1.05, zf(2)], ...rise(COLS.lift, 2), [COLS.lift, TIER_Y[1]! + 1.05, zf(1)], [3.9, TIER_Y[1]! + 1.05, zf(1)]] })
+rails.push({ id: 'lift.office', from: 'office.lift.door', to: 'corporate.elbow', speed: 14, out: [7, 0], points: [[3.3, TIER_Y[1]! + 5.2, zf(1)], [COLS.lift, TIER_Y[1]! + 5.2, zf(1)], ...rise(COLS.lift, 1), [COLS.lift, TIER_Y[0]! + 1.05, zf(0)], [3.9, TIER_Y[0]! + 1.05, zf(0)]] })
 holds.push({ id: 'loader', tier: -1, kind: 'port', c: [PORT.x, PORT.y], r: PORT.cup / 2, releases: true })
 holds.push({ id: 'plunger', tier: 2, kind: 'plunger', c: PLUNGER, r: 0.6, releases: true })
 holds.push({ id: 'outlet', tier: 3, kind: 'port', c: [OUTLET.x, OUTLET.y], r: OUTLET.cup / 2, releases: true })
@@ -279,6 +285,7 @@ export const table: Table = {
     'The garage spiral turns table.spiralTurns times round a path 0.75 balls in radius, each turn 1.3 balls under the one above. Its top is 5.4 balls above the street floor and its open end 1.3 balls above the right inlane, where the ball drops off. The round frame of the garage stands outside the trough, 1.525 balls from its centre, clear of the police station and of the right wall.',
     'The highway climbs from its flap on the street floor to 5.7 balls, turns down the page and ends over the top of the spiral.',
     'Gravity along the floor is 29.4 balls a second squared: a rolling 27 mm ball on a slope of table.slopeDeg.',
+    'The launch lane and the lift tubes lie at the floor height of the tier they pass. The launch lane climbs to the next tier by a ramp 1.5 balls long that ends on the tier line, and the launched ball leaves its top in a hop 0.3 balls high and 2 balls long. Each lift tube rises one tier inside the cross rail, within 0.4 balls of the tier line.',
     'The apron is 2 balls deep. The loader port and the outlet port are 330 px rings with a 220 px cup.'
   ]
 }
