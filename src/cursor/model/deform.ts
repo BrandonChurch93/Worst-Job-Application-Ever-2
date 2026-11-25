@@ -12,7 +12,7 @@ const BEND_TURN = 0.85
 const ROUND_WIDE = 1.15
 const ROUND_TOP = 2.12
 const PEEL_RADIUS = 9
-const POINTS: [number, number][] = [[0, 0], [0, 16.2], [11.8, 11.6]]
+const POINTS: [number, number, number, number][] = [[0, 0, 0.115, 3.2], [0, 16.2, 0.17, 4.5], [11.8, 11.6, 0.21, 5]]
 const PEEL_TURN = 1.0
 
 // Turns a point of the body at rest, in outline units, into where it is now, in page pixels in the body's own space.
@@ -108,9 +108,9 @@ export class Deform {
       for (const c of POINTS) {
         const cx = x0 - c[0]
         const cy = y0 - c[1]
-        blunt += Math.exp(-(cx * cx + cy * cy) / 3.2)
+        blunt += c[2] * Math.exp(-(cx * cx + cy * cy) / c[3])
       }
-      const grow = (1 + m * 0.07 * wob * (1 - tail)) * (1 - m * 0.115 * Math.min(1, blunt))
+      const grow = (1 + m * 0.07 * wob * (1 - tail)) * (1 - m * Math.min(0.24, blunt))
       x = CENTRE[0] + dx * grow * (1 - 0.2 * m * wing)
       y = CENTRE[1] + dy * grow + m * 0.16 * wing * Math.abs(dx)
       y += m * (0.7 * low + 2.4 * tail + 0.3 * Math.sin(x0 * 0.85 + 1.4) * (1 - tail))
@@ -125,7 +125,7 @@ export class Deform {
       const fold = Math.sin(x0 * 0.55 + y0 * 0.38 + 0.5) * Math.sin(y0 * 0.31 - x0 * 0.2 + 1.2)
       z *= 1 - 0.1 * m - 0.3 * m * tail
       const ripple = Math.sin(x0 * 1.7 + y0 * 1.15 + 0.4) * Math.sin(y0 * 1.45 - x0 * 0.8 + 2.1)
-      z += m * up * (0.46 * fold + 0.07 * ripple) * (1 - Math.exp(-inset / 0.9)) * (1 - 0.5 * tail)
+      z += m * up * (0.46 * fold + 0.02 * ripple) * (1 - Math.exp(-inset / 0.9)) * (1 - 0.5 * tail)
     }
     x *= this.wide
     y *= this.stretch
