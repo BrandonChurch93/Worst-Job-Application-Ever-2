@@ -246,6 +246,10 @@ export class App {
     return { unit: last.id, time: last.seconds }
   }
 
+  useCheckpoint(unit: string, saved: unknown): void {
+    this.film(unit).restore(saved)
+  }
+
   filmFrame(unit: string, time: number): { frame: Frame; pose: CameraPose; page: PageLogic } {
     const stage = this.film(unit)
     const frame = stage.frameAt(time)
