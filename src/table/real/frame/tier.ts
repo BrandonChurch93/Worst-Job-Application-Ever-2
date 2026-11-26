@@ -7,8 +7,8 @@ import { TUBE } from './loader'
 import { Screws, TONE, aluOf, mesh, paintOf, screwOf, steelOf } from './mats'
 
 // What the walls of a tier are made to, in page pixels.
-const WALL = { height: 60, seg: 56, chamfer: 2.5, strip: [30, 54] as V2, stripOut: 0.9 }
-const RAIL = { reveal: 30, revealWide: 4.5, revealDeep: 2, chamfer: 3, channel: 17, channelDepth: 3, ledge: 18, ledgeDrop: 7, gap: 1.2, joint: 1.4, screwStep: 1.5, cradle: 62.5, tubeUp: 48 }
+const WALL = { height: 60, seg: 56, chamfer: 4.5, strip: [30, 54] as V2, stripOut: 0.9 }
+const RAIL = { reveal: 30, revealWide: 4.5, revealDeep: 2, chamfer: 3, channel: 17, channelDepth: 3, ledge: 15, land: 44, step: 5, lip: 3, slope: 0.84, bank: 11, cuts: 10, tilt: [20, 58] as V2, gap: 1.2, joint: 1.4, screwStep: 1.5, cradle: 62.5, tubeUp: 48 }
 const CROSS = { lower: 0.3, upper: 0.12, throat: 0.75, mouth: 1.2, tunnel: 122 }
 const STEP = { back: 11, rise: 3, groove: 64, grooveWide: 4.5, grooveDeep: 2 }
 const LANE = { strip: 0.24, stripWide: 3.2, clear: 0.6, lip: 9, lipTall: 1.6, line: 1.6, house: 0.8, elbowClear: 0.14, flange: 10 }
@@ -58,21 +58,47 @@ export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
     const y = H - RAIL.reveal
     return H > RAIL.reveal + 30 ? [[x, y], [x + into * RAIL.revealDeep, y - 1.2], [x + into * RAIL.revealDeep, y - RAIL.revealWide + 1.2], [x, y - RAIL.revealWide]] : []
   }
+  // The left rail: a narrow bright land at the page's edge, then a polished face that falls toward the lane and shows the lamps, then a low ledge at the lane.
   const land0 = xb + c
-  const land1 = xa - RAIL.ledge
+  const land1 = xb + RAIL.land
+  const foot = xa - RAIL.ledge
+  // The face is a low round, not a flat: each lamp shows in it as a point.
+  const round: V2[] = []
+  {
+    const n = RAIL.cuts
+    const tilt = (i: number): number => ((RAIL.tilt[0] + ((RAIL.tilt[1] - RAIL.tilt[0]) * (i + 0.5)) / n) * Math.PI) / 180
+    let run = 0
+    for (let i = 0; i < n; i++) run += Math.cos(tilt(i))
+    const l = (foot - land1 - RAIL.lip) / run
+    let x = land1 + RAIL.lip
+    let h = H - RAIL.step
+    round.push([x, h])
+    for (let i = 0; i < n; i++) {
+      x += l * Math.cos(tilt(i))
+      h -= l * Math.sin(tilt(i))
+      round.push([x, h])
+    }
+  }
+  const zl = round[round.length - 1]![1]
   const mid = (land0 + land1) / 2
-  const left: V2[] = [[xb, 0], [xb, H - c], [land0, H], [mid - RAIL.channel - 3, H], [mid - RAIL.channel, H - RAIL.channelDepth], [mid + RAIL.channel, H - RAIL.channelDepth], [mid + RAIL.channel + 3, H], [land1, H], [land1, H - RAIL.ledgeDrop], [xa - c, H - RAIL.ledgeDrop], [xa, H - RAIL.ledgeDrop - c], ...reveal(xa, -1), [xa, 0]]
-  for (const [y0, y1] of lengths(0, TH, 5.6)) A.prism(left, [0, y0], [0, y1], grooved(left, [xa - RAIL.revealDeep], TONE.alu, TONE.gap))
-  P.box(xb, xa, Y(5.6) - RAIL.joint / 2, Y(5.6) + RAIL.joint / 2, 0, H - 4, TONE.gap, { along: [0, 1, 0] })
-  for (let v = RAIL.screwStep / 2; v < TH; v += RAIL.screwStep) screws.add(mid, Y(v), H - RAIL.channelDepth, 1, turnOf(mid, v))
-  for (let v = RAIL.screwStep; v < TH; v += RAIL.screwStep * 2) screws.add((land1 + xa) / 2, Y(v), H - RAIL.ledgeDrop, 0.8, turnOf(xa, v))
+  const left: V2[] = [[xb, 0], [xb, H - c], [land0, H], [land1 - c, H], [land1, H - c], [land1, H - RAIL.step], ...round, [xa - c, zl], [xa, zl - c], ...reveal(xa, -1), [xa, 0]]
+  for (const [y0, y1] of lengths(0, TH, 5.6)) {
+    A.prism(left, [0, y0], [0, y1], grooved(left, [xa - RAIL.revealDeep], TONE.alu, TONE.gap))
+    for (let i = 1; i < round.length; i++) {
+      const p = round[i - 1]!
+      const q = round[i]!
+      S.face([[p[0], y0, p[1] + 0.3], [q[0], y0, q[1] + 0.3], [q[0], y1, q[1] + 0.3], [p[0], y1, p[1] + 0.3]], [p[1] - q[1], 0, q[0] - p[0]], [0, 1, 0], [1, 1, 1])
+    }
+  }
+  for (let v = RAIL.screwStep / 2; v < TH; v += RAIL.screwStep) screws.add(mid, Y(v), H, 0.9, turnOf(mid, v))
+  for (let v = RAIL.screwStep; v < TH; v += RAIL.screwStep * 2) screws.add((foot + xa) / 2, Y(v), zl, 0.7, turnOf(xa, v))
 
   // The right rail is a cradle: the feed tube lies in a round bed along its top.
   const feed = railOf('feed').points
   const dive = k === 2 ? feed[4]![1] - TIER_Y[k]! - 0.6 : TH
   const half = Math.sqrt(RAIL.cradle * RAIL.cradle - RAIL.tubeUp * RAIL.tubeUp)
   const t0 = Math.asin(half / RAIL.cradle)
-  const right: V2[] = [[xc, 0], ...reveal(xc, 1).reverse(), [xc, H - c], [xc + c, H], [xf - half, H]]
+  const right: V2[] = [[xc, 0], ...reveal(xc, 1).reverse(), [xc, H - RAIL.bank * RAIL.slope], [xc + RAIL.bank, H], [xf - half, H]]
   for (let i = 1; i < 12; i++) {
     const t = -t0 + (2 * t0 * i) / 12
     right.push([xf + RAIL.cradle * Math.sin(t), H + RAIL.tubeUp - RAIL.cradle * Math.cos(t)])
