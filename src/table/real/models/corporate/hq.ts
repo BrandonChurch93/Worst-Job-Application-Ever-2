@@ -138,10 +138,24 @@ function leaf(): Geo {
   const st = 6
   const kick = 24
   fin(g, FINISH.brushed, () => {
-    g.box(0, st, -t, t, z0, H, TONE.brass, { bottom: true, bevel: 0.6 })
-    g.box(W - st, W, -t, t, z0, H, TONE.brass, { bottom: true, bevel: 0.6 })
-    g.box(st, W - st, -t, t, H - 7, H, TONE.brass, { bottom: true })
-    g.box(st, W - st, -t, t, z0, kick, TONE.brassDark, { bottom: true })
+    const deep = shade(TONE.brass, 0.58)
+    g.box(0, st, -t, t, z0, H, deep, { bottom: true, bevel: 0.6 })
+    g.box(W - st, W, -t, t, z0, H, deep, { bottom: true, bevel: 0.6 })
+    g.box(st, W - st, -t, t, H - 7, H, deep, { bottom: true })
+    g.box(st, W - st, -t, t, z0, kick, shade(TONE.brassDark, 0.6), { bottom: true })
+    // The worn edges of each stile and rail, where the brass is bright.
+    for (const s of [-1, 1]) {
+      const y = s * (t + 0.06)
+      const line = (x0: number, x1: number, a: number, b: number, k: number): void => { g.face(s > 0 ? [[x1, y, a], [x0, y, a], [x0, y, b], [x1, y, b]] : [[x0, y, a], [x1, y, a], [x1, y, b], [x0, y, b]], [0, s, 0], [0, 0, 1], shade(TONE.gold, k)) }
+      line(0.7, 1.5, z0 + 1, H - 1, 1.7)
+      line(st - 1.3, st - 0.6, kick, H - 7, 1.25)
+      line(W - st + 0.6, W - st + 1.3, kick, H - 7, 1.25)
+      line(W - 1.5, W - 0.7, z0 + 1, H - 1, 1.7)
+      line(st, W - st, H - 7.6, H - 6.9, 1.25)
+      line(st, W - st, kick - 0.7, kick, 1.5)
+      line(2.4, 3.6, z0 + 1, H - 1, 0.5)
+      line(W - 3.6, W - 2.4, z0 + 1, H - 1, 0.5)
+    }
   }, 0)
   fin(g, FINISH.polished, () => {
     for (const s of [-1, 1]) {
@@ -243,21 +257,23 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
     for (const s of [-1, 1]) for (const u of [0.74, 0.97]) screw(S, s * out * u, face + 0.2, (pz0 + lip + pz1) / 2, 1.8, STEEL, [0, -1, 0])
 
     // The brass portal round the doorway, in two steps, its head up to the band and its threshold.
-    fin(S, FINISH.polished, () => {
+    fin(S, FINISH.brushed, () => {
       for (const s of [-1, 1]) {
         const a = s > 0 ? dw : -dw - 11
-        S.box(a, a + 11, F - 6, F + 6, 0, pz0, PORTAL, { bevel: 1.2 })
+        S.box(a, a + 11, F - 6, F + 6, 0, pz0, shade(PORTAL, 0.5), { bevel: 1.2 })
         const c = s > 0 ? dw + 11 : -dw - 17
-        S.box(c, c + 6, F - 3, F + 6, 0, pz0, shade(PORTAL, 0.8), { bevel: 0.8 })
+        S.box(c, c + 6, F - 3, F + 6, 0, pz0, shade(PORTAL, 0.32), { bevel: 0.8 })
       }
-      S.box(-dw, dw, F - 6, F + 6, dh - 4.6, pz0, PORTAL, { bottom: true })
+      S.box(-dw, dw, F - 6, F + 6, dh - 4.6, pz0, shade(PORTAL, 0.5), { bottom: true })
+      S.box(-dw, dw, F + 6, F + 6.1, dh - 4.6, dh - 3.8, shade(TONE.gold, 1.5))
+      S.box(-dw, dw, F + 6, F + 6.1, pz0 - 1.6, pz0 - 0.8, shade(TONE.gold, 1.1))
       // What polished brass mirrors: upright streaks of the room, no two of one tone.
       const gleam = new Random(SEED, 'corporate.hq.brass')
       for (const s of [-1, 1]) {
         const a = s > 0 ? dw : -dw - 11
         for (let x = a + 1.2; x < a + 9.4;) {
           const w = gleam.range(0.5, 2.2)
-          S.face([[x, F + 6.12, 2.4], [Math.min(a + 9.8, x + w), F + 6.12, 2.4], [Math.min(a + 9.8, x + w), F + 6.12, pz0 - 0.5], [x, F + 6.12, pz0 - 0.5]], [0, 1, 0], [0, 0, 1], shade(PORTAL, gleam.next() < 0.3 ? gleam.range(1.5, 2.3) : gleam.range(0.35, 0.9)))
+          S.face([[x, F + 6.12, 2.4], [Math.min(a + 9.8, x + w), F + 6.12, 2.4], [Math.min(a + 9.8, x + w), F + 6.12, pz0 - 0.5], [x, F + 6.12, pz0 - 0.5]], [0, 1, 0], [0, 0, 1], shade(PORTAL, gleam.next() < 0.2 ? gleam.range(1.6, 2.8) : gleam.range(0.2, 0.6)))
           x += w + gleam.range(0, 1.4)
         }
       }
@@ -267,19 +283,21 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
 
     // The hall: a pale stone floor with a dark border and a brass round under the open middle, a runner in from the doors, columns, a desk and three lifts in the back wall.
     fin(G, FINISH.stone, () => {
-      flat(G, room, 6.2, 1, warm(0.3))
+      flat(G, room, 6.2, 1, warm(0.15))
       level(G, inset(room, 7), inset(room, 9.5), 6.3, 1, warm(0.16))
       G.lathe([[30, 0], [30, 0.3], [0, 0.3]], mid[0], mid[1], 28, (k) => (k === 0 ? warm(0.2) : warm(0.62)), 6.2)
       G.lathe([[23, 0], [23, 0.2], [0, 0.2]], mid[0], mid[1], 28, [COOL[0] * 0.5, COOL[1] * 0.36, COOL[2] * 0.16], 6.5)
       G.lathe([[17, 0], [17, 0.2], [0, 0.2]], mid[0], mid[1], 28, warm(0.7), 6.7)
-      G.face([[room.x0, room.y1, 6], [room.x1, room.y1, 6], [room.x1, room.y1, pz0], [room.x0, room.y1, pz0]], [0, -1, 0], [1, 0, 0], warm(0.24))
+      // The back wall: dim at the floor, lit under the ceiling.
+      const rise = [6, 6 + (pz0 - 6) * 0.45, 6 + (pz0 - 6) * 0.8, pz0]
+      ;[0.05, 0.1, 0.19].forEach((k, i) => G.face([[room.x0, room.y1, rise[i]!], [room.x1, room.y1, rise[i]!], [room.x1, room.y1, rise[i + 1]!], [room.x0, room.y1, rise[i + 1]!]], [0, -1, 0], [1, 0, 0], warm(k)))
       for (const s of [-1, 0, 1]) {
         const x = s * 46
         G.face([[x - 15, room.y1 - 0.4, 6], [x + 15, room.y1 - 0.4, 6], [x + 15, room.y1 - 0.4, 104], [x - 15, room.y1 - 0.4, 104]], [0, -1, 0], [1, 0, 0], [0.26, 0.19, 0.09])
         G.face([[x - 0.6, room.y1 - 0.8, 6], [x + 0.6, room.y1 - 0.8, 6], [x + 0.6, room.y1 - 0.8, 104], [x - 0.6, room.y1 - 0.8, 104]], [0, -1, 0], [1, 0, 0], [0.03, 0.03, 0.03])
         G.face([[x - 6, room.y1 - 0.8, 109], [x + 6, room.y1 - 0.8, 109], [x + 6, room.y1 - 0.8, 114], [x - 6, room.y1 - 0.8, 114]], [0, -1, 0], [1, 0, 0], lamp(1.3))
       }
-      for (const sx of [-1, 1]) for (const y of [room.y0 + 34, room.y1 - 40]) G.box(sx * 112 - 6, sx * 112 + 6, y - 6, y + 6, 6, pz0, warm(0.2))
+      for (const sx of [-1, 1]) for (const y of [room.y0 + 34, room.y1 - 40]) G.box(sx * 112 - 6, sx * 112 + 6, y - 6, y + 6, 6, pz0, warm(0.1))
     }, 1)
     fin(G, FINISH.cloth, () => flat(G, { x0: -dw + 14, x1: dw - 14, y0: F + 6, y1: mid[1] - 30 }, 6.5, 1, [0.36, 0.03, 0.05]), 1)
     fin(G, FINISH.gloss, () => {
