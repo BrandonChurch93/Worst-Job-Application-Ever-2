@@ -1,8 +1,8 @@
 // The colours of the light in the machine, linear RGB. A lens and the light it throws read the same constant.
 export type RGB = [number, number, number]
 
-// Tier 3, Corporate: cold white and gold.
-export const CORPORATE_COLD_WHITE: RGB = [0.88, 0.93, 1.0]
+// Tier 3, Corporate: white and gold. The lamps are the warm white of the approved image, the cold is in the fill and the flash.
+export const CORPORATE_WHITE: RGB = [1.0, 0.94, 0.84]
 export const CORPORATE_GOLD: RGB = [1.0, 0.62, 0.24]
 export const CORPORATE_GLOBE: RGB = [1.0, 0.93, 0.82]
 export const CORPORATE_WINDOW: RGB = [1.0, 0.83, 0.6]
@@ -35,8 +35,11 @@ export const FILL: Record<string, RGB> = {
 }
 
 // How bright a lens is when its lamp is on, in linear light: the middle is above the threshold of the lens glow, the rim below.
-export const LENS = { on: 5.0, window: 3.2, rim: 0.5, off: 0.0 }
+export const LENS = { on: 5.0, window: 4.2, rim: 0.5, off: 0.0 }
 // The lamp in a bumper stands at this share of the general lighting and flashes to full on a hit.
 export const BUMPER = { rest: 0.5, seconds: 0.25 }
+
+// What a flash of a whole tier does to the picture. The page can raise the flash five times in one second while steel balls are in play (measured in `tests/table-lights-strobe.test.ts`), so a flash is kept shallow: the lamps flare and the pools round them brighten, and the floor between them changes by less than a tenth of the brightest white over most of any part of the picture.
+export const FLASH = { flat: 0.05, lamps: 0.3, fill: 0.01, room: 0.15, lens: 0.4 }
 
 export const scale = (c: RGB, k: number): RGB => [c[0] * k, c[1] * k, c[2] * k]

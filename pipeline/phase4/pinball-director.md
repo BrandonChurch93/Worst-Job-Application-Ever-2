@@ -38,6 +38,12 @@ Parts `table-layout`, `table-physics`, `director`, `acting-pinball`. Branch `age
 - `tools/take.mjs`: a run earns 150 for each of three keys where the ball stands where the approved picture has it (`tier-office`, `reply-all`, `tier-street`), and the check prints how many. The score still puts the ten beats first.
 - `tools/take.mjs`: the replay now stops on the exact step of the key `last-save`; before, it looked only every quarter second and never saw 35.59 s.
 
+- The revolving door (the Builder's ruling at 01:57 UTC). The post left the ball's line: `corporate.revolving` post (10, 6.0) to (9.2, 6.1), on the carpet's left border. The ball now stands beside it at (10.25, 7.0) (`stand` of the hold, new), in front of the right wing, and the wing bats it up the carpet. The ruling asked 2.5 to 3 balls below the doors hold; the post is 1.08 below it and 0.8 left of the ball's line. Why not lower: the raised left flipper's tip reaches (9.01, 7.79), and the door's floor ring (0.73 ball) would lie over the left insert (8.3, 7.1) from v 6.2 down. At the doors hold (10, 5.02) the ball's centre is 1.35 balls from the post and the wings reach 0.69, so no wing covers the ball from the front. The carpet is 2.6 balls long (was 2.2) so the ball stands on it.
+- The door bats at 13.1 s (was 13.2): the ball has 0.9 ball further to roll, and the doors slam at 13.30 s as before, half a second before the key `lobby-doors`.
+- A well over the apron zone (`tier.apron`, the table_framer's ask): the page's slab opened only over the three tiers and hid the apron, which lies at the street floor's height since 7125cd0.
+- The firehouse (the Builder's ruling at 02:15 UTC): the ball rests in the garage doorway. Hold `street.firehouse` centre (5.05, 4.35) to (5.05, 3.9), 0.1 ball in front of the front wall's plane (v 3.8); the ball rests on the street floor, its centre half a ball above it (no sink). The ball is still taken at the old place in front of the door (`mouth` of the hold, new, (5.05, 4.35)) and rolls in over 0.28 s. The building's solid has a bay for it (`bay` of the model, new): u 4.4 to 5.7, 0.55 ball deep, an opening 1.3 balls wide (`street.firehouse.door`). The bank's drop targets end at u 4.45, so the bay cannot go further left. The kick is (10.5, 9) (was (8.5, -2.5)): out of the door, off the post at the slingshot's top and across the tier to the right slingshot.
+- The corporate modes are lit at 10.9, 12.1 and 13.3 s (were 11, 13.3, 14.2), so each name is on the displays for at least a second before the cut at 14.3 s; the third is lit as the doors slam.
+
 ## Take searches
 
 Kept take before: 4 of 4. Bought since, three for each change:
@@ -45,7 +51,10 @@ Kept take before: 4 of 4. Bought since, three for each change:
 - physics (bat shape, kicks, shots): searches 8, 9, 10.
 - physics and layout (thrown arcs, launch exit): searches 11, 12, 13.
 - physics and director (the inbox kick, the order of the pour): search 14.
-- layout (the bumper cluster): searches 17, 18, 19 bought; searches 15 and 16 used. Three left (17 to 19).
+- layout (the bumper cluster): searches 17, 18, 19 bought; searches 15 and 16 used.
+- layout (the revolving door's post): searches 20, 21, 22 bought; search 17 used. search 17 used.
+- nothing new: search 18 from 14.9 s on for the ball's place at `tier-office`; nothing better, the kept take stays.
+- layout and physics (the firehouse bay): searches 23, 24, 25 bought; search 19 used (from 25.5 s on; nothing better, the kept take stays and still holds). 19 used of 25 allowed.
 
 MEASURED, `npm run take -- --check` after search 16 (kept run 3): 10 of 10 events inside their beats, 7 flips, 1 tow (was 3; the one left is the highway flap at 30.8 s), 6 bumper hits in Coffee, the save a flip, the ball on a flipper at `last-save`, the ball where the approved picture has it at 2 of 3 other keys (`reply-all`, `tier-street`; not `tier-office`), and no hit within 0.15 s of a cut of the film. Search 15 had 3 of 3 keys but a slingshot hit 0.05 s before the stager's cut at 36.6 s, which `tests/pinball-stage.test.ts` forbids, so a run now loses 400 for each hit beside a cut and search 16 replaced it.
 
@@ -62,5 +71,10 @@ Between searches I follow one ball with a fixed player that presses when the hin
 | inlane floor | (4.65, 8.0) to (6.5, 8.62) | (4.65, 8.05) to (6.45, 8.5) |
 | shoulder edge start | (6.5, 9.1) | (6.45, 9.45) |
 | bumpers 1, 2, 3 | (8.5, 3.3) (11.5, 3.3) (10, 5.7) | (8.9, 3.2) (11.1, 3.2) (10, 5.1) |
+| revolving door post | (10, 6.0) | (9.2, 6.1) |
+| ball at the revolving door | (10, 6.0) | (10.25, 7.0) |
+| carpet length | 2.2 | 2.6 |
+| firehouse hold centre | (5.05, 4.35) | (5.05, 3.9), ball taken at (5.05, 4.35) |
+| firehouse solid | box u 3.25 to 5.75, v 2.3 to 3.8 | the same with a bay u 4.4 to 5.7, v 3.25 to 3.8 |
 | apron zone floor | z 0 (page level) | floorZ(2), the street floor |
 | feed tube bend | MARQUEE_Y - 0.6 to + 1.4 | MARQUEE_Y + 0.15 to + 2.15 |

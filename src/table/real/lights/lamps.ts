@@ -9,8 +9,9 @@ import { LENS, type RGB } from './colours'
 import { groupsOf } from './groups'
 
 // The lamps as things: the lenses of the general lighting in their sockets, the globes, and the bezels of the inserts. No plate lies under an insert: the kit puts no word there.
-const SIZE = { dome: 13, domeHigh: 6, ring: 20, screw: 3.1, window: [38, 25] as [number, number], globe: 21, core: 19 }
+const SIZE = { dome: 13, domeHigh: 6, ring: 20, screw: 3.1, rail: 12.5, railHigh: 6.4, cup: 19.5, globe: 21, core: 19 }
 const STEEL: RGB = [0.74, 0.76, 0.79]
+const CHROME: RGB = [0.9, 0.91, 0.93]
 const BRASS: RGB = [0.83, 0.6, 0.27]
 const SOCKET: RGB = [0.035, 0.035, 0.04]
 
@@ -89,25 +90,23 @@ function socket(metal: RGB): THREE.BufferGeometry[] {
   const plate = paint(tablet(stadiumLoop(24, 8), stadiumLoop(24, 7.6), 0.3, 1.8, 0.4), () => k(metal, 0.82))
   return [ring, plate]
 }
-// A lens let into a lane, with the arrow of the way the ball travels raised on it.
+// A lamp let into a lane: a round domed lens in a chrome cup, with the arrow of the way the ball travels raised dark on it.
 function arrowLens(colour: RGB): THREE.BufferGeometry[] {
-  const [w, h] = SIZE.window
-  const lens = paint(tablet(roundedLoop(w - 4, h - 4, 3.5), roundedLoop(w - 5.2, h - 5.2, 2.9), 0.7, 2.7, 0.6), (x, y) => {
-    const q = Math.min(1, (x * x) / ((w * w) / 4) + (y * y) / ((h * h) / 4))
-    return k(colour, 0.5 + (LENS.window - 0.5) * Math.pow(1 - q, 1.4))
+  const r = (SIZE.rail * SIZE.rail + SIZE.railHigh * SIZE.railHigh) / (2 * SIZE.railHigh)
+  const top = 2.2 + SIZE.railHigh
+  const g = new THREE.SphereGeometry(r, 18, 4, 0, Math.PI * 2, 0, Math.asin(SIZE.rail / r)).rotateX(Math.PI / 2).translate(0, 0, top - r)
+  const lens = paint(g, (x, y) => {
+    const q = Math.min(1, (x * x + y * y) / (SIZE.rail * SIZE.rail))
+    return k(colour, LENS.rim + (LENS.window - LENS.rim) * Math.pow(1 - q, 1.3))
   }, 0)
-  const a: Loop = [[11, 0], [1.5, 7], [1.5, 2.8], [-9.5, 2.8], [-9.5, -2.8], [1.5, -2.8], [1.5, -7]]
-  const head: Loop = [[11, 0], [1.5, 7], [1.5, -7]]
-  const tail: Loop = [[1.5, 2.8], [-9.5, 2.8], [-9.5, -2.8], [1.5, -2.8]]
-  const arrow = paint(new Solid().cap(head, 3.4).cap(tail, 3.4).band(a, 2.7, a, 3.4).done(), () => k(colour, 0.1), 0)
+  const a: Loop = [[8, 0], [1, 5.4], [1, 2.1], [-7, 2.1], [-7, -2.1], [1, -2.1], [1, -5.4]]
+  const head: Loop = [[8, 0], [1, 5.4], [1, -5.4]]
+  const tail: Loop = [[1, 2.1], [-7, 2.1], [-7, -2.1], [1, -2.1]]
+  const arrow = paint(new Solid().cap(head, top + 0.2).cap(tail, top + 0.2).band(a, top - 3.2, a, top + 0.2).done(), () => k(colour, 0.06), 0)
   return [lens, arrow]
 }
-function arrowBezel(metal: RGB): THREE.BufferGeometry[] {
-  const [w, h] = SIZE.window
-  const outer = roundedLoop(w, h, 5.5)
-  const top = roundedLoop(w - 1, h - 1, 5)
-  const inner = roundedLoop(w - 4, h - 4, 3.5)
-  return [paint(new Solid().band(top, 3.2, inner, 3.2).band(outer, 2.7, top, 3.2).band(outer, 0.3, outer, 2.7).band(inner, 3.2, inner, 0.6).done(), () => metal)]
+function arrowBezel(): THREE.BufferGeometry[] {
+  return [paint(lathe([[SIZE.cup, 0.3], [SIZE.cup, 5.4], [SIZE.cup - 1.3, 6.6], [SIZE.rail + 3.4, 6.6], [SIZE.rail + 0.5, 2.2]], 22), () => CHROME)]
 }
 function globeStem(metal: RGB): THREE.BufferGeometry {
   return paint(lathe([[15, 0.3], [15, 2.2], [13.6, 3.2], [9, 3.4], [9, 6.2], [5.2, 7.4], [4.6, 24], [6.4, 26], [10.5, 29], [12.5, 33], [11, 33.4], [0, 33.4]], 18), () => metal)
@@ -157,7 +156,7 @@ export function buildLamps(z: Zone, ctx: RealContext): Lamps {
     if (l.arrow) {
       const turn = Math.atan2(-l.arrow[1], l.arrow[0])
       for (const g of arrowLens(colourOf('general'))) lenses.push(put(g, p[0], p[1], 0, turn))
-      for (const g of arrowBezel(metal)) metals.push(put(g, p[0], p[1], 0, turn))
+      for (const g of arrowBezel()) metals.push(put(g, p[0], p[1], 0))
     } else {
       lenses.push(put(dome(colourOf(groups.some((g) => g.name === 'lanes') ? 'lanes' : 'windows')), p[0], p[1], 0))
       for (const g of socket(metal)) metals.push(put(g, p[0], p[1], 0))

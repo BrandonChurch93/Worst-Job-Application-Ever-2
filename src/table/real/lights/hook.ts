@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import type { Zone } from '../zone'
 import { BALL, COLS, W } from '../../layout'
+import { FLASH } from './colours'
 import { CHANNELS, LAMP, LIT } from './groups'
 import { BODY, CORE } from './pictures'
 import { zoneLight, type ZoneLight } from './state'
@@ -25,6 +26,9 @@ const EDGE = (COLS.launchB - W / 2) * BALL
 
 // A lacquered floor is never a clean mirror: the fine scratches of play spread each lamp near it into a soft pool in the lamp's own colour, whatever the colour of the print under the lacquer.
 const HAZE = 0.065
+
+// Lacquer seen along the floor sends back more of the light on it than lacquer seen from above: the sheen of a waxed floor from across the room. Nothing is added straight down.
+const SHEEN = { coat: 0.08, pools: 1.0 }
 
 // Metal leaf laid in a floor is not a mirror: it is beaten thin over the grain of the print and throws a lamp's light back in every direction, in its own colour.
 const LEAF = 0.6
@@ -107,13 +111,13 @@ const body = /* glsl */ `
 		if ( c.r + c.g + c.b <= 0.0 ) continue;
 		vec4 at = wjlAt[ i ];
 		if ( at.w > 2.5 ) {
-			wjlField += c * ( 0.34 + 0.5 * min( 1.6, wjlPhi[ 0 ] ) ) * wjlInside * wjlClear * ( 0.58 + 0.42 * wjlN.z );
+			wjlField += c * ( ${FLASH.flat.toFixed(3)} + ${FLASH.lamps.toFixed(3)} * min( 1.6, wjlPhi[ 0 ] ) ) * wjlInside * wjlClear * ( 0.58 + 0.42 * wjlN.z );
 			continue;
 		}
 		float amount = wjlPhi[ i ] * wjlInside * wjlClear;
 		if ( at.w < 0.5 ) {
 			wjlField += c * amount * ( 0.34 + 0.66 * max( wjlN.z, 0.0 ) ) / ( 1.0 + wjlUp * wjlUp * at.z );
-			wjlHaze += c * amount * smoothstep( 0.5, 2.4, amount );
+			wjlHaze += c * amount * smoothstep( 0.8, 2.6, amount );
 			continue;
 		}
 		vec3 from = at.xyz;
@@ -121,7 +125,7 @@ const body = /* glsl */ `
 			from = vec3( wjlP.xy + wjlToward * at.z * wjlRun, at.z + wjlUp * wjlTop );
 			amount *= wjlCut / ( 1.0 + wjlTop * wjlUp * wjlUp * ${(1 / (170 * 170)).toExponential(4)} );
 			amount = mix( amount, 0.6 * amount / ( 1.0 + 1.5 * amount ), max( wjlWall, smoothstep( 40.0, 100.0, wjlUp ) ) );
-			wjlHaze += c * amount * smoothstep( 0.5, 2.4, amount );
+			wjlHaze += c * amount * smoothstep( 0.8, 2.6, amount );
 		}
 		vec3 low = vec3( from.xy - wjlP.xy, at.z );
 		vec3 to = from - wjlP;
@@ -143,7 +147,8 @@ const body = /* glsl */ `
 	wjlField += wjlFill * ( 0.5 + 0.5 * wjlN.z ) * ( 1.0 + 1.6 * wjlTop * smoothstep( 20.0, 130.0, wjlUp ) ) * wjlPit;
 	reflectedLight.directDiffuse += wjlField * material.diffuseColor;
 	#ifdef USE_CLEARCOAT
-	clearcoatSpecularDirect += wjlHaze * ${HAZE.toFixed(3)} * ( 1.0 - wjlShine ) / ( 1.0 + 0.25 * ( wjlHaze.r + wjlHaze.g + wjlHaze.b ) );
+	clearcoatSpecularDirect += wjlHaze * ${HAZE.toFixed(3)} * ( 1.0 + ${SHEEN.pools.toFixed(2)} * wjlFace * wjlFace ) * ( 1.0 - wjlShine ) / ( 1.0 + 0.25 * ( wjlHaze.r + wjlHaze.g + wjlHaze.b ) );
+	clearcoatSpecularDirect += wjlField * ${SHEEN.coat.toFixed(3)} * wjlFlat * wjlFace * wjlFace;
 	clearcoatSpecularDirect += wjlSeen * ${GLINT.level.toFixed(2)} * wjlMirror * wjlClear;
 	#endif
 	#ifdef STANDARD

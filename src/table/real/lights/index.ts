@@ -3,7 +3,7 @@ import type { PartMaker, RealContext } from '../../../real/types'
 import { zoneAt } from '../../draw'
 import { BALL } from '../../layout'
 import { whole, type Zone } from '../zone'
-import { FILL } from './colours'
+import { FILL, FLASH } from './colours'
 import { groupsOf, LIT, type Group } from './groups'
 import { buildLamps, type Lamps } from './lamps'
 import { levels, solo, soloed } from './levels'
@@ -90,12 +90,12 @@ function pose(o: THREE.Object3D, z: Zone, ctx: RealContext): void {
     u.wjlAt.value[i]!.set(g.at[0], g.at[1], g.mode === 0 ? FIELD_HEIGHT : g.at[2], g.name === 'flash' ? 3 : g.mode)
   }
   const fill = FILL[z.id]!
-  const soft = 0.028 * L.general + 0.05 * L.flash
+  const soft = 0.028 * L.general + FLASH.fill * L.flash
   u.wjlFill.value.set(fill[0] * soft, fill[1] * soft, fill[2] * soft)
-  u.wjlEnv.value = soloed() !== null ? 0.5 : L.general * (1 + 0.5 * L.flash) + 0.2 * L.website
+  u.wjlEnv.value = soloed() !== null ? 0.5 : L.general * (1 + FLASH.room * L.flash) + 0.2 * L.website
   if (!b) return
   if (b.lens) {
-    const lift = 1 + 0.4 * L.flash
+    const lift = 1 + FLASH.lens * L.flash
     const lane = L.byName.lanes ?? L.byName.windows ?? 0
     b.lens.set(Math.min(1.4, (L.byName.general ?? 0) * lift), Math.min(1.4, lane * lift))
   }
