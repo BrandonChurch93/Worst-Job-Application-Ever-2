@@ -1,35 +1,35 @@
 {
   "folder": "pinball-director",
-  "pushed": "2026-11-26T02:11:35.806Z",
-  "commit": "3edf15f95fc10a63afef2938bb29321572fc6e32",
+  "pushed": "2026-11-26T02:54:48.481Z",
+  "commit": "5588cb75bad865c0dcd76e82a55ab311b6daf79c",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key tier-office: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-26T02:11:15.182Z",
-      "by": "pinball-director",
-      "from": "out/work/compare/compare-tier-office.jpg"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "lobby-doors beside the approved image: the revolving door's post on the carpet's left border, the ball clear of it at the doors (draft, the camera not yet refitted)",
-      "time": "2026-11-26T02:11:34.216Z",
+      "caption": "lobby-doors beside the approved image, draft: the ball below the doors with the cursor's face turned to the lens, the revolving door at the carpet's left border",
+      "time": "2026-11-26T02:54:46.705Z",
       "by": "pinball-director",
       "from": "out/work/report/compare-lobby-doors.jpg"
     },
     {
-      "file": "look-3.jpg",
-      "caption": "tier-corporate beside the approved image: the ball stands on the carpet beside the door's post at 12.0 s (draft)",
-      "time": "2026-11-26T02:11:34.454Z",
+      "file": "look-2.jpg",
+      "caption": "tier-office beside the approved image, draft: the ball at the key, 1.5 from its approved place below the bumpers",
+      "time": "2026-11-26T02:54:46.945Z",
       "by": "pinball-director",
-      "from": "out/work/report/compare-tier-corporate.jpg"
+      "from": "out/work/report/compare-tier-office.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "rail-cam beside the approved image, draft: the ball on the highway wire; the cursor in it reads dark and is not upright to this camera",
+      "time": "2026-11-26T02:54:47.176Z",
+      "by": "pinball-director",
+      "from": "out/work/report/compare-rail-cam.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "table-wide beside the approved image: the apron now lies open at the street floor's height (draft)",
-      "time": "2026-11-26T02:11:34.689Z",
+      "caption": "last-save beside the approved image, draft: the ball on the right flipper at the save",
+      "time": "2026-11-26T02:54:47.404Z",
       "by": "pinball-director",
-      "from": "out/work/report/compare-table-wide.jpg"
+      "from": "out/work/report/compare-last-save.jpg"
     }
   ]
 }
