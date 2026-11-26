@@ -1,0 +1,1251 @@
+{
+  "role": "R3",
+  "round": 12,
+  "unit": "pinball",
+  "commit": "7e7ddb051845adaccd63e6d8b10f11fa163f3c13",
+  "tier": "final",
+  "engineHash": "4a32522105f508db",
+  "sharedHash": "0cdfd2c004bce5cf",
+  "pageHashes": {
+    "step1": "554fd748a7d0bf1f",
+    "step2": "0679d16320166a1e",
+    "marketing": "f5cc2fcd805829ae",
+    "pinball": "fb4bd6d441f28f93",
+    "boss": "8d76a0fff103c15a",
+    "decision": "740d3c0f81bae216"
+  },
+  "browser": "147.0.7727.15",
+  "files": {
+    "set-A-01.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "judged",
+      "heading": "Picture 1 of 14. The page at one moment",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.seal",
+        "at": 0.7,
+        "camera": "home",
+        "tier": "final"
+      },
+      "from": {
+        "key": "loader-page"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-02.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "judged",
+      "heading": "Picture 2 of 14. Part of the page at one moment, seen close",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.reveal",
+        "at": 1,
+        "camera": "table-wide",
+        "tier": "final"
+      },
+      "from": {
+        "key": "table-wide"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-03.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "judged",
+      "heading": "Picture 3 of 14. Part of the page at one moment, seen close",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.lobby",
+        "at": 0.25,
+        "camera": "tier-3",
+        "tier": "final"
+      },
+      "from": {
+        "key": "tier-corporate"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-04.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "judged",
+      "heading": "Picture 4 of 14. Part of the page at one moment, seen close",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.lobby",
+        "at": 0.7,
+        "camera": "table-lobby",
+        "tier": "final"
+      },
+      "from": {
+        "key": "lobby-doors"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-05.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "judged",
+      "heading": "Picture 5 of 14. Part of the page at one moment, seen close",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.coffee",
+        "at": 0.6,
+        "camera": "tier-2",
+        "tier": "final"
+      },
+      "from": {
+        "key": "tier-office"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-06.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "judged",
+      "heading": "Picture 6 of 14. Part of the page at one moment, seen close",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.replyAll",
+        "at": 0.3,
+        "camera": "table-replyall",
+        "tier": "final"
+      },
+      "from": {
+        "key": "reply-all"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-07.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "judged",
+      "heading": "Picture 7 of 14. Part of the page at one moment, seen close",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.fired",
+        "at": 0.15,
+        "camera": "tier-1",
+        "tier": "final"
+      },
+      "from": {
+        "key": "tier-street"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-08.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "judged",
+      "heading": "Picture 8 of 14. Part of the page at one moment, seen close",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.fired",
+        "at": 0.5,
+        "camera": "table-fired",
+        "tier": "final"
+      },
+      "from": {
+        "key": "youre-fired"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-09.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "judged",
+      "heading": "Picture 9 of 14. Part of the page at one moment, seen close",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.highway",
+        "at": 0.556,
+        "camera": "rail",
+        "tier": "final"
+      },
+      "from": {
+        "key": "rail-cam"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-10.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "judged",
+      "heading": "Picture 10 of 14. Part of the page at one moment, seen close",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.save",
+        "at": 0.53,
+        "camera": "table-save",
+        "tier": "final"
+      },
+      "from": {
+        "key": "last-save"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-B-01.png": {
+      "set": "B",
+      "critic": "R3-2",
+      "kind": "judged",
+      "heading": "Picture 11 of 14. A sheet of parts: the clear ball with the cursor in it: at rest on a flipper and sweating, in flight, and pressed flat on a bumper hit",
+      "still": {
+        "page": "pinball",
+        "camera": "sheet",
+        "tier": "final",
+        "sheet": "clear-ball"
+      },
+      "from": {
+        "sheet": "clear-ball"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-B-02.png": {
+      "set": "B",
+      "critic": "R3-2",
+      "kind": "judged",
+      "heading": "Picture 12 of 14. A sheet of parts: the whole machine from straight above: where every part of every tier is",
+      "still": {
+        "page": "pinball",
+        "camera": "table-map",
+        "tier": "final",
+        "sheet": "table-map"
+      },
+      "from": {
+        "sheet": "table-map"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.6942
+    },
+    "set-B-03.png": {
+      "set": "B",
+      "critic": "R3-2",
+      "kind": "judged",
+      "heading": "Picture 13 of 14. The page at rest",
+      "still": {
+        "page": "pinball",
+        "camera": "home",
+        "tier": "final"
+      },
+      "from": {
+        "id": "rest-step3"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-B-04.png": {
+      "set": "B",
+      "critic": "R3-2",
+      "kind": "judged",
+      "heading": "Picture 14 of 14. The page at rest, scrolled",
+      "still": {
+        "page": "pinball",
+        "camera": "home",
+        "tier": "final",
+        "beat": "pinball.drain",
+        "at": 1,
+        "scroll": 1
+      },
+      "from": {
+        "id": "step3-result"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-B-05.png": {
+      "set": "B",
+      "critic": "R3-2",
+      "kind": "surface-crops",
+      "heading": "Surfaces and objects at their real size, cut from a picture of this set: the page at rest",
+      "still": {
+        "page": "pinball",
+        "camera": "home",
+        "tier": "final"
+      },
+      "from": {
+        "id": "rest-step3"
+      },
+      "crops": [
+        {
+          "part": "progressButton",
+          "window": [
+            1009,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "type",
+          "window": [
+            104,
+            178,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            971,
+            625,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "header",
+          "window": [
+            103,
+            0,
+            461,
+            340
+          ]
+        }
+      ],
+      "format": "hd",
+      "tier": "final"
+    },
+    "set-B-06.png": {
+      "set": "B",
+      "critic": "R3-2",
+      "kind": "surface-crops",
+      "heading": "Surfaces and objects at their real size, cut from a picture of this set: the page at rest, scrolled",
+      "still": {
+        "page": "pinball",
+        "camera": "home",
+        "tier": "final",
+        "beat": "pinball.drain",
+        "at": 1,
+        "scroll": 1
+      },
+      "from": {
+        "id": "step3-result"
+      },
+      "crops": [
+        {
+          "part": "card.glass",
+          "window": [
+            1459,
+            321,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "button",
+          "window": [
+            430,
+            389,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "type",
+          "window": [
+            583,
+            239,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            451,
+            424,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "card.contact",
+          "window": [
+            328,
+            321,
+            461,
+            340
+          ]
+        }
+      ],
+      "format": "hd",
+      "tier": "final"
+    },
+    "set-C-01.png": {
+      "set": "C",
+      "critic": "R3-3",
+      "kind": "surface-crops",
+      "heading": "Surfaces and objects at their real size, cut from a picture of this set: the page at one moment",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.seal",
+        "at": 0.7,
+        "camera": "home",
+        "tier": "final"
+      },
+      "from": {
+        "key": "loader-page"
+      },
+      "crops": [
+        {
+          "part": "shape:loader.ring",
+          "window": [
+            1402,
+            350,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:rail.feed.2",
+          "window": [
+            1397,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "progressButtonCurrent",
+          "window": [
+            1182,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "header",
+          "window": [
+            197,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            1398,
+            350,
+            461,
+            340
+          ]
+        }
+      ],
+      "format": "hd",
+      "tier": "final"
+    },
+    "set-C-02.png": {
+      "set": "C",
+      "critic": "R3-3",
+      "kind": "surface-crops",
+      "heading": "Surfaces and objects at their real size, cut from a picture of this set: part of the page at one moment, seen close",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.reveal",
+        "at": 1,
+        "camera": "table-wide",
+        "tier": "final"
+      },
+      "from": {
+        "key": "table-wide"
+      },
+      "crops": [
+        {
+          "part": "shape:marquee.back",
+          "window": [
+            730,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.corporate.hq",
+          "window": [
+            730,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:bumper.office.bumper.3",
+          "window": [
+            730,
+            232,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.street.firehouse",
+          "window": [
+            382,
+            375,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.street.garage",
+          "window": [
+            1105,
+            283,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:flipper.street.flipper.left",
+          "window": [
+            552,
+            666,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "apronCard",
+          "window": [
+            366,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            1459,
+            450,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:plunger.knob",
+          "window": [
+            1413,
+            740,
+            461,
+            340
+          ]
+        }
+      ],
+      "format": "hd",
+      "tier": "final"
+    },
+    "set-C-03.png": {
+      "set": "C",
+      "critic": "R3-3",
+      "kind": "surface-crops",
+      "heading": "Surfaces and objects at their real size, cut from a picture of this set: part of the page at one moment, seen close",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.lobby",
+        "at": 0.25,
+        "camera": "tier-3",
+        "tier": "final"
+      },
+      "from": {
+        "key": "tier-corporate"
+      },
+      "crops": [
+        {
+          "part": "shape:model.corporate.hq",
+          "window": [
+            730,
+            120,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.corporate.beach",
+          "window": [
+            1279,
+            152,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.corporate.boardroom",
+          "window": [
+            122,
+            155,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:hold.corporate.revolving",
+          "window": [
+            651,
+            417,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "part:model-ladder",
+          "window": [
+            1174,
+            351,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:flipper.corporate.flipper.left",
+          "window": [
+            512,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:sling.corporate.sling.left.1+sling.corporate.sling.left.2+sling.corporate.sling.left.3",
+          "window": [
+            396,
+            482,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:insert.corporate.insert.1",
+          "window": [
+            566,
+            512,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:lift.elbow.corporate",
+          "window": [
+            0,
+            0,
+            461,
+            340
+          ]
+        }
+      ],
+      "format": "hd",
+      "tier": "final"
+    },
+    "set-C-04.png": {
+      "set": "C",
+      "critic": "R3-3",
+      "kind": "surface-crops",
+      "heading": "Surfaces and objects at their real size, cut from a picture of this set: part of the page at one moment, seen close",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.lobby",
+        "at": 0.7,
+        "camera": "table-lobby",
+        "tier": "final"
+      },
+      "from": {
+        "key": "lobby-doors"
+      },
+      "crops": [
+        {
+          "part": "shape:hq.plate",
+          "window": [
+            885,
+            181,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:hq.doorway",
+          "window": [
+            876,
+            324,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            852,
+            570,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:hold.corporate.revolving.post",
+          "window": [
+            589,
+            496,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:post.corporate.globe.right",
+          "window": [
+            1144,
+            527,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.corporate.hq",
+          "window": [
+            921,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:flat.corporate.carpet",
+          "window": [
+            778,
+            740,
+            461,
+            340
+          ]
+        }
+      ],
+      "format": "hd",
+      "tier": "final"
+    },
+    "set-C-05.png": {
+      "set": "C",
+      "critic": "R3-3",
+      "kind": "surface-crops",
+      "heading": "Surfaces and objects at their real size, cut from a picture of this set: part of the page at one moment, seen close",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.coffee",
+        "at": 0.6,
+        "camera": "tier-2",
+        "tier": "final"
+      },
+      "from": {
+        "key": "tier-office"
+      },
+      "crops": [
+        {
+          "part": "shape:model.office.cubicles",
+          "window": [
+            195,
+            130,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:bumper.office.bumper.3",
+          "window": [
+            730,
+            318,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.office.coffee",
+          "window": [
+            1288,
+            97,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.office.inbox",
+          "window": [
+            1325,
+            241,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:sling.office.sling.left.1+sling.office.sling.left.2+sling.office.sling.left.3",
+          "window": [
+            396,
+            482,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:flipper.office.flipper.left",
+          "window": [
+            512,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            674,
+            561,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:insert.office.insert.1",
+          "window": [
+            566,
+            512,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:lift.elbow.office",
+          "window": [
+            0,
+            0,
+            461,
+            340
+          ]
+        }
+      ],
+      "format": "hd",
+      "tier": "final"
+    },
+    "set-C-06.png": {
+      "set": "C",
+      "critic": "R3-3",
+      "kind": "surface-crops",
+      "heading": "Surfaces and objects at their real size, cut from a picture of this set: part of the page at one moment, seen close",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.replyAll",
+        "at": 0.3,
+        "camera": "table-replyall",
+        "tier": "final"
+      },
+      "from": {
+        "key": "reply-all"
+      },
+      "crops": [
+        {
+          "part": "shape:ball.steel.2",
+          "window": [
+            1024,
+            156,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            785,
+            374,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.office.inbox",
+          "window": [
+            1452,
+            66,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:bumper.office.bumper.3",
+          "window": [
+            730,
+            164,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.office.cubicles",
+          "window": [
+            105,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.office.coffee",
+          "window": [
+            1384,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:sling.office.sling.left.1+sling.office.sling.left.2+sling.office.sling.left.3",
+          "window": [
+            304,
+            359,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:flipper.office.flipper.left",
+          "window": [
+            419,
+            681,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:lift.elbow.office",
+          "window": [
+            0,
+            0,
+            461,
+            340
+          ]
+        }
+      ],
+      "format": "hd",
+      "tier": "final"
+    },
+    "set-C-07.png": {
+      "set": "C",
+      "critic": "R3-3",
+      "kind": "surface-crops",
+      "heading": "Surfaces and objects at their real size, cut from a picture of this set: part of the page at one moment, seen close",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.fired",
+        "at": 0.15,
+        "camera": "tier-1",
+        "tier": "final"
+      },
+      "from": {
+        "key": "tier-street"
+      },
+      "crops": [
+        {
+          "part": "shape:model.street.firehouse",
+          "window": [
+            195,
+            27,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.street.police",
+          "window": [
+            1264,
+            27,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.street.garage",
+          "window": [
+            1275,
+            252,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.street.bank",
+          "window": [
+            137,
+            159,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            516,
+            141,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.street.mom",
+          "window": [
+            289,
+            658,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:sling.street.sling.left.1+sling.street.sling.left.2+sling.street.sling.left.3",
+          "window": [
+            412,
+            389,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:flipper.street.flipper.left",
+          "window": [
+            523,
+            644,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:rail.highway.a.4",
+          "window": [
+            868,
+            101,
+            461,
+            340
+          ]
+        }
+      ],
+      "format": "hd",
+      "tier": "final"
+    },
+    "set-C-08.png": {
+      "set": "C",
+      "critic": "R3-3",
+      "kind": "surface-crops",
+      "heading": "Surfaces and objects at their real size, cut from a picture of this set: part of the page at one moment, seen close",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.fired",
+        "at": 0.5,
+        "camera": "table-fired",
+        "tier": "final"
+      },
+      "from": {
+        "key": "youre-fired"
+      },
+      "crops": [
+        {
+          "part": "shape:model.street.firehouse",
+          "window": [
+            983,
+            54,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            814,
+            640,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:seg.street.firehouse.roof",
+          "window": [
+            1161,
+            430,
+            461,
+            340
+          ]
+        }
+      ],
+      "format": "hd",
+      "tier": "final"
+    },
+    "set-C-09.png": {
+      "set": "C",
+      "critic": "R3-3",
+      "kind": "surface-crops",
+      "heading": "Surfaces and objects at their real size, cut from a picture of this set: part of the page at one moment, seen close",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.highway",
+        "at": 0.556,
+        "camera": "rail",
+        "tier": "final"
+      },
+      "from": {
+        "key": "rail-cam"
+      },
+      "crops": [
+        {
+          "part": "cursor",
+          "window": [
+            723,
+            577,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.street.bank",
+          "window": [
+            1459,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.street.firehouse",
+          "window": [
+            827,
+            740,
+            461,
+            340
+          ]
+        }
+      ],
+      "format": "hd",
+      "tier": "final"
+    },
+    "set-C-10.png": {
+      "set": "C",
+      "critic": "R3-3",
+      "kind": "surface-crops",
+      "heading": "Surfaces and objects at their real size, cut from a picture of this set: part of the page at one moment, seen close",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.save",
+        "at": 0.53,
+        "camera": "table-save",
+        "tier": "final"
+      },
+      "from": {
+        "key": "last-save"
+      },
+      "crops": [
+        {
+          "part": "cursor",
+          "window": [
+            924,
+            426,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:flipper.street.flipper.left",
+          "window": [
+            442,
+            472,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:sling.street.sling.left.1+sling.street.sling.left.2+sling.street.sling.left.3",
+          "window": [
+            373,
+            321,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "apronCard",
+          "window": [
+            76,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.street.mom",
+          "window": [
+            112,
+            444,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.street.firehouse",
+          "window": [
+            226,
+            55,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:rail.drain.1",
+          "window": [
+            738,
+            702,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "apronSlab",
+          "window": [
+            57,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:insert.street.insert.1",
+          "window": [
+            544,
+            376,
+            461,
+            340
+          ]
+        }
+      ],
+      "format": "hd",
+      "tier": "final"
+    }
+  }
+}
