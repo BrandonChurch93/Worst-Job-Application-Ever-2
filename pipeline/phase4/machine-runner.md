@@ -64,6 +64,9 @@ Branch `agent/machine-runner`, from `origin/main` 997de9fb. Looks branch `agent/
 - 09:18 UTC, `near-nest` tried closer (eye 10.5 and 12 balls up in place of 15, measured by projection only, no render): the ball is 12 to 13.7 of 100 across in place of 9.6, but the bumper hit at 18.91 s and the inbox's take at 19.02 s sit at 6 to 10 of 100 from the top edge, the ball cut by the frame, because the camera trails the ball by 0.25 s. Put back: a cut never hides a hit. The camera stays at 15.
 - 09:16 UTC, R9-1 issue 7 (the arrow in the reveal beat) is not done. The ball reaches the plunger at 8.3 s, 0.3 s after the beat ends, and the key `table-wide` sits at the beat's last frame, so a landing inside the beat needs the event `at-plunger` moved about 1 s and the key's camera changed: both are the Builder's.
 - 09:16 UTC, one run of the whole checks on the merge of main 5429fcf2 timed out in `tests/pinball.test.ts` (continues exactly after load(save()), 20.8 s against 20 s) while four stills were rendering beside it. Run again with nothing beside it before the push.
+- 09:22 UTC, R9-2 issue 1 (the white smear after the bumper hit at film frame 5010): three draft film stills at 16.525, 16.56 and 16.61 s, 1.5, 3.4 and 6.2 film frames after the contact of 16.51 s, show one squashed pose held through all three, the arrow whole inside the glass against the wall away from the bumper. Under the straight-down tier camera it is turned about a third away from the lens there, so it reads grey and short, not white and long.
+- 09:26 UTC, an earlier cut to `ride` for the ball's way down the feed tube was looked at by numbers only and left: the tube runs at the page's height (z 0) down x 19.15 until 8.0 s and only then dives to the plunger lane at z -3, so the plunger's camera does not see it come; a camera for the tube would be a new fitted camera with no time left to judge it at review.
+- 09:30 UTC, the two close cameras judged once at review: `near-nest` at 17.37 s (78.9 s, 562080 triangles, 382 draw calls) the arrow whole in the glass under the bumper, the ball about a tenth of the frame's width; `near-spent` at 35.1 s (60.4 s, 408314, 333) the drooped arrow fills the ball over the right flipper. Counts at the key reply-all, draft, hd: `npm run counts -- --key reply-all --format hd --tier draft` 176 draw calls and 495367 triangles in one drawing of the scene (assets web); `node out/work/mr/tex.mjs --key reply-all --tier draft` 730.5 MB of textures on pinball in the asset set full (338.0 assets, 329.2 render targets, 63.3 not seen; 60 of 63 counted).
 
 ## Moves of things a model stands on
 
@@ -74,13 +77,13 @@ Branch `agent/machine-runner`, from `origin/main` 997de9fb. Looks branch `agent/
 
 | Part | Looks | What |
 | --- | --- | --- |
-| table-cameras | 37 | 6 baseline compares, 1 tier view by mistake, 5 rail stills looking back, 2 youre-fired compares, 1 last-save compare, 1 rail compare looking ahead, 1 rail still at 32.0 s, 1 rail compare at the new key, 3 `review` stills (rail-cam, youre-fired, last-save), 1 youre-fired compare, 3 last-save compares, near-nest at 17.35 s, near-spent at 36.85 and 35.1 s, doors-swing at 13.23 s, last-save again, lobby-doors compare at 12.4 degrees down, 1 lobby-doors at review after the eye went up (146.7 s), 1 lobby-doors at draft with the fitting view, 3 film stills with the true states (near-nest 17.48 s, ride 8.6 s, near-spent 35.1 s) |
+| table-cameras | 39 | 6 baseline compares, 1 tier view by mistake, 5 rail stills looking back, 2 youre-fired compares, 1 last-save compare, 1 rail compare looking ahead, 1 rail still at 32.0 s, 1 rail compare at the new key, 3 `review` stills (rail-cam, youre-fired, last-save), 1 youre-fired compare, 3 last-save compares, near-nest at 17.35 s, near-spent at 36.85 and 35.1 s, doors-swing at 13.23 s, last-save again, lobby-doors compare at 12.4 degrees down, 1 lobby-doors at review after the eye went up (146.7 s), 1 lobby-doors at draft with the fitting view, 3 film stills with the true states (near-nest 17.48 s, ride 8.6 s, near-spent 35.1 s), near-nest at 17.37 s and near-spent at 35.1 s at review |
 | clear-ball sheet | 2 | three panels, first draft; third ball at `cup.r + 0.5` |
 | page | 2 | loader-caught at 2.76 s, result at 41.5 s |
 | table-layout | 0 | |
 | table-physics | 0 | |
 | director | 7 | ride-brace at 9.2 s, wayin at 4.4 and 5.4 s, the calmer way in at 4.4, 4.7, 5.0 and 5.3 s |
-| acting-pinball | 2 | near-nest struck pose at 17.37 s, alarm in the inbox at 20.5 s |
+| acting-pinball | 5 | near-nest struck pose at 17.37 s, alarm in the inbox at 20.5 s, the bumper hit of 16.51 s at 16.525, 16.56 and 16.61 s |
 | keys after merge 30, asked by the Builder, not tuning | 5 | table-wide, reply-all, youre-fired, rail-cam, last-save at draft |
 
 ## Take searches
