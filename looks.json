@@ -1,35 +1,35 @@
 {
   "folder": "step2-finish",
-  "pushed": "2026-11-26T12:25:41.782Z",
-  "commit": "958fa7dad0ec2d39039e47040841cc97018943b8",
+  "pushed": "2026-11-26T12:29:35.036Z",
+  "commit": "acd1ded1a024e7bc788f216fccf2021ef3add638",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-step2-crank-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T12:22:10.790Z",
+      "caption": "Step 2 crank key, approved left, the build right at the draft tier: the well's shade under the upper wall reaches further and the floor is warmer",
+      "time": "2026-11-26T12:25:40.232Z",
       "by": "step2-finish",
-      "from": "out/work/stills/key-step2-crank-hd-draft.png"
+      "from": "out/work/looks/files/20261126122540-r3-well2.jpg"
     },
     {
       "file": "look-2.jpg",
       "caption": "Still key-step2-crank-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T12:22:35.504Z",
+      "time": "2026-11-26T12:26:15.106Z",
       "by": "step2-finish",
       "from": "out/work/stills/key-step2-crank-hd-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Still key-step2-dial-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T12:22:49.817Z",
+      "caption": "Still key-step2-crank-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T12:27:17.041Z",
       "by": "step2-finish",
-      "from": "out/work/stills/key-step2-dial-hd-draft.png"
+      "from": "out/work/stills/key-step2-crank-hd-review.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Step 2 crank key, approved left, the build right at the draft tier: the well's shade under the upper wall reaches further and the floor is warmer",
-      "time": "2026-11-26T12:25:40.232Z",
+      "caption": "Step 2 crank key, approved left, the build right at the review tier: the well with its long shade under the upper wall, the lenses with a light edge",
+      "time": "2026-11-26T12:29:33.864Z",
       "by": "step2-finish",
-      "from": "out/work/looks/files/20261126122540-r3-well2.jpg"
+      "from": "out/work/looks/files/20261126122933-end-crank.jpg"
     }
   ]
 }
