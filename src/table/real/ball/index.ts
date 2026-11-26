@@ -27,7 +27,7 @@ const INSET = 0.45
 const DOOR = { part: 'model-hq', x: 10.0, y: TIER_Y[0]! + 4.5, leaf: 'hq.door.left', swing: 0.35 }
 const WALLS: Record<string, number[]> = { 'model-hq': [0.74, 0.5, 0.2], glass: [0.5, 0.52, 0.54], danger: [0.5, 0.17, 0.12], paper: [0.7, 0.68, 0.62], light: [0.7, 0.68, 0.6], raised: [0.42, 0.42, 0.44], metal: [0.5, 0.5, 0.52] }
 // How the ball gives where it strikes: the most it is squashed, the squash of a full hit, how near a thing must be to press it, the seconds in which the squash of a hit dies, and the squash for each radius it stands inside a thing.
-export const PRESS = { most: 0.3, hit: 0.3, near: 0.35, dies: 0.05, stand: 3 }
+export const PRESS = { most: 0.4, hit: 0.4, near: 0.35, dies: 0.05, stand: 3 }
 // How the shell opens, as shares of the way open: the halves have swung apart by `swung`, they sink from `sinks` on, by `deep` radii, and they are gone from sight between `fades` and 1.
 export const PARTING = { swung: 0.8, sinks: 0.55, deep: 1.9, fades: 0.8 }
 const INSIDE = { key: 2.6, fill: 0.5, lamps: 0.12, face: 1.0, least: 0.5, most: 0.6 }
