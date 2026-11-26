@@ -1,5 +1,4 @@
-import { hasFont } from '../shell/metrics'
-import { loadFont } from '../shell/type'
+import { hasFont, loadFont } from '../shell/metrics'
 import css from './glyphs.module.css'
 import { outline, spaceOf } from './outline'
 

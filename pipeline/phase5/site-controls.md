@@ -73,3 +73,27 @@ Parts: `pointer`, `finish-logic`, `interface`. Branch `agent/site-controls`. Eve
 - f. Browser back and forward in the middle of each page: the same for the stage, with the mouse out through the top edge. STATED: `popstate` in `src/main.ts` only switches film and live. Not yet driven in a real browser.
 - g. A real keyboard through step 1 for 60 s: one `real-keyboard` event, the keyboard rises, no key of the page is pressed, nothing is taken, the skip link is offered and works. 30 s of typing and then the mouse on the page's keys: finishes.
 - No hole found: no patch for a page.
+
+## Findings of the Builder, 16:51 UTC
+
+1. Flipper chord. Already held by decision 5. Added the case as the Builder wrote it (left down, right down, left up, right up, and the mirror) to `tests/site-pointer-listeners.test.ts`, 19 tests. In a browser, with two real mouse buttons on the stepped site (`node src/ui/hands.mjs chord`): five pictures, none, left, both, right, none, the bats stand as held in each.
+2. A press with the arrow still on its way. Decision 2. In the browser (`node src/ui/hands.mjs press`): mouse on Apply, arrow 1036 px away, press: the page stays. The same press with the arrow arrived: step 1.
+3. The row over the header. At 1920 by 1080 the row is y 14 to 46 and the header starts below 56. On a small picture the row keeps its least size (14 px type) and overlapped the header. Decision 9.
+
+## Decisions, continued
+
+9. The row on a small picture (`fit()` in `src/ui/interface.ts`). Where the row no longer ends above the 56 unit strip, it stands above the picture if the window has room there (`data-row="above"`, pale ink on the dark band), else it stays and gets the pale capsule (`data-row="over"`). MEASURED `node src/ui/hands.mjs row`: strip at 1920 by 1080, above at 520 by 900, over at 700 by 380, and a real click on the film link opens the film at all three.
+10. The live region (`src/ui/said.ts`). Every message of a step is written once, in the order it came on the page, as the text of the copy. One message has the region to itself for `SAY` (0.6 s and 0.03 s a letter, at most 3 s) before the next is written, so a display that changes fast does not flood a voice. What still waits when the step ends is written together at once, so nothing is lost. `messagesOf()` (what a message is) moved from `main.ts` into the same file, unchanged in what it picks. MEASURED `npx vitest run tests/site-controls-said.test.ts`, 8 tests: keen and clumsy 68 messages in 57 writes, skipper 38 in 31, the latest write 8.7 s (skipper 10.5 s) after its message came.
+11. The sound controls look for the sound every 250 ms by themselves (`SOUND_LOOK_MS`), so they appear and change without a drawn frame (finding of /root/site_sound).
+12. A link answers Space as well as Enter (`press()` in `src/ui/interface.ts`): a link takes Enter by itself, Space was not heard.
+13. The touch page loads nothing of the site. `src/ui/boot.ts` is the first module: a touch-only device that asks for the live site gets `src/ui/message.ts` (the message and its type), every other visitor gets `src/main.ts`, each by `import()`. Until the site's module has run, `window.showcase.ready` waits for it, so a tool that asks for it right after the page loads still gets the site. Needs two changes outside my files, in `pipeline/phase5/site-controls-NEEDS.patch`: `index.html` loads `/src/ui/boot.ts`, and `loadFont` moves from `src/shell/type.ts` (which pulls in the drawing library) to `src/shell/metrics.ts` (which does not), `type.ts` still exports it.
+14. Ruled by the Builder at 17:16Z: on step 3, while the table is played with the flippers, a mouse button pressed in the dark band beside the picture moves its flipper and is never a press. A press on a control stays the control's own. On every other page a press in the band is nothing. `src/ui/pointer.ts` keeps the band's buttons apart from the picture's (`beside`), three tests in `tests/site-pointer-listeners.test.ts`.
+15. Browser runs on the wired site are slow on a machine without a graphics card: MEASURED with `out/work/dbg.mjs` at 1920 by 1080, level high, 18 drawn frames in 72 s. The wired site moves the stage at most 0.1 s per drawn frame (`src/main.ts`, not mine), so the 20 s before the skip link take 200 frames. The run for the skip link (`node src/ui/hands.mjs skip`) therefore keeps the window at 1920 by 1080 CSS px and sets the device pixel ratio to 0.5 and the level to low. The layout, the mouse and the click are the same.
+16. Open, for Brandon: a visitor who never presses Apply on the careers page stays there (ruled by the Builder at 17:16Z: no change).
+
+## Names typed in code, for Brandon (interface g)
+
+These are names for a screen reader and labels of the probe. They are in code, not in `content/copy.json`. They stay until Brandon moves or changes them.
+
+- `src/ui/names.ts`: sound "Sound", play "Play", position "Position in the film", back "Back to the application".
+- `src/probe/labels.ts`: title "Probe", running "Measuring", median "median fps", slowest "slowest 1% fps", frames "frames", card "Graphics card", screen "Screen", window "Window", browser "Browser", pick "The site would pick", unknown "not reported", failed "did not run", copy "Copy", copied "Copied", again "Run again".

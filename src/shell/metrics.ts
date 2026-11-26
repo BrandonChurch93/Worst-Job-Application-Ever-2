@@ -29,6 +29,14 @@ export function registerFont(name: string, data: BakedFont): void {
 
 export const hasFont = (name: string): boolean => fonts.has(name)
 
+export async function loadFont(name: string): Promise<BakedFont> {
+  const res = await fetch(`./fonts/${name}.json`)
+  if (!res.ok) throw new Error(`The font file "${name}.json" did not load`)
+  const data = (await res.json()) as BakedFont
+  registerFont(name, data)
+  return data
+}
+
 export function font(name: string): BakedFont {
   const f = fonts.get(name)
   if (!f) throw new Error(`The font "${name}" is not loaded`)

@@ -9,6 +9,12 @@ export function touchOnly(): boolean {
   return isTouchOnly({ anyHover: matchMedia('(any-hover: hover)').matches, anyFine: matchMedia('(any-pointer: fine)').matches, touch })
 }
 
+// True where the visitor gets the message for a touch-only device in place of the site: the live site is asked for, no bot plays it, and the device is touch-only.
+export function messageOnly(search: string, touch: boolean): boolean {
+  const asked = new URLSearchParams(search)
+  return touch && (asked.get('mode') ?? 'live') === 'live' && !asked.get('bot')
+}
+
 export function lessMotion(): boolean {
   return typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches
 }

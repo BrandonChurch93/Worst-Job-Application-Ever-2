@@ -754,273 +754,273 @@
       "file": "line.boss.lastStand.0.mp3",
       "seconds": 3.512,
       "mime": "audio/mpeg",
-      "bytes": 28416,
-      "sha256": "c8abff6e9be6fa78fcab7cea233474ad985f2cae0c6790faf50304b86b8dea14"
+      "bytes": 56832,
+      "sha256": "16b66196f8ada4adef059b16a4375e0029584509d9fd64510ea743a8854267c2"
     },
     {
       "id": "line.boss.slabs.0",
       "file": "line.boss.slabs.0.mp3",
       "seconds": 8.038,
       "mime": "audio/mpeg",
-      "bytes": 64512,
-      "sha256": "199b702c9d85b0a84bbc3ee03752aff461d1f0a3d0c1764c1162d387526454b2"
+      "bytes": 129024,
+      "sha256": "e9e81c4f3a5a5857626c6ed503ed97b4988d3ed970333635522788daaaf636c6"
     },
     {
       "id": "line.boss.verify.0",
       "file": "line.boss.verify.0.mp3",
       "seconds": 5.22,
       "mime": "audio/mpeg",
-      "bytes": 42048,
-      "sha256": "abf6e46c24f1b1a44c1f158538df87b34b7539322e7cb42c8c273e347df84254"
+      "bytes": 84096,
+      "sha256": "2281a70fb991f112ed8673098c9bffba232b4578dee317364db15df28ed9f217"
     },
     {
       "id": "line.decision.letter.0",
       "file": "line.decision.letter.0.mp3",
       "seconds": 3.474,
       "mime": "audio/mpeg",
-      "bytes": 28032,
-      "sha256": "86246fb165893e1a4d1249223edb0df15d5d0d67cf6ce89f07e4d253d15ff25b"
+      "bytes": 56064,
+      "sha256": "d6a6085cfbf26edaecfb4075df29920d4cd1b5922b5cc568b7e2feedcd3bbde7"
     },
     {
       "id": "line.decision.metrics.0",
       "file": "line.decision.metrics.0.mp3",
       "seconds": 5.736,
       "mime": "audio/mpeg",
-      "bytes": 46080,
-      "sha256": "1677b09b6f68b9237148d635b8fb97e74d2a723bb40a95dcd14cec9f269a045f"
+      "bytes": 92160,
+      "sha256": "2360378d40917c6b1a393f3beb9e949e4afd93b2ecf98f6e90053136f492708e"
     },
     {
       "id": "line.live.boss.slow.0",
       "file": "line.live.boss.slow.0.mp3",
       "seconds": 4.192,
       "mime": "audio/mpeg",
-      "bytes": 33792,
-      "sha256": "4d1ea4ac3664b242628f457c97c445c5d65a2f0f1b6d4a6dba81e6933e60226f"
+      "bytes": 67584,
+      "sha256": "02037173a65de2ebba35077277aebf99249d6c9bf7a6c54782b394503b2e3017"
     },
     {
       "id": "line.live.boss.verify.0",
       "file": "line.live.boss.verify.0.mp3",
       "seconds": 4.072,
       "mime": "audio/mpeg",
-      "bytes": 32832,
-      "sha256": "c93535f7a246893df0886bd31dbf24f73c69e3aabd7a383a3c467aee3dcfb6cd"
+      "bytes": 65664,
+      "sha256": "43e1bd93fba5a7b84c1308c775914251c7fd509d6e86ad8baaa4948291f9d354"
     },
     {
       "id": "line.live.hit.0",
       "file": "line.live.hit.0.mp3",
       "seconds": 0.578,
       "mime": "audio/mpeg",
-      "bytes": 4992,
-      "sha256": "b53de0d3c95dc3ea2d14b41888288c1c43bbb4db90157a176cc6f273dd168c54"
+      "bytes": 9984,
+      "sha256": "c7f9c5eb59f00dc9ed4d5be0d2ac7f1f016c71a2904daf4936db7c1c42e5f829"
     },
     {
       "id": "line.live.hit.1",
       "file": "line.live.hit.1.mp3",
       "seconds": 0.72,
       "mime": "audio/mpeg",
-      "bytes": 5952,
-      "sha256": "529979cf768b92a717cb5e6a03a9cc29fd13ebde418fe183dd57805f3dde9afb"
+      "bytes": 11904,
+      "sha256": "f4d6a902ff690c5d2d2b633d11c8dc43cb622d30bb6f3a5cc032d56d88ba5df1"
     },
     {
       "id": "line.live.hit.2",
       "file": "line.live.hit.2.mp3",
       "seconds": 3.48,
       "mime": "audio/mpeg",
-      "bytes": 28032,
-      "sha256": "50489b635209eaf8b6ba4638fa27807892cf15a2b1e5b9400d9800834fd541f5"
+      "bytes": 56064,
+      "sha256": "55b222650416e362389fdfc53e7bf8c98085bdaa06120716318106caef5bd374"
     },
     {
       "id": "line.live.hit.3",
       "file": "line.live.hit.3.mp3",
       "seconds": 3.166,
       "mime": "audio/mpeg",
-      "bytes": 25536,
-      "sha256": "af28d8370f72b877447b71f08ece1905c353b08def267dcf0e38ebd938731183"
+      "bytes": 51072,
+      "sha256": "a5be8a20b23f26f9d8c4e6713346fa2a393d5c03dbd44c5916b2d64933370821"
     },
     {
       "id": "line.live.idle.0",
       "file": "line.live.idle.0.mp3",
       "seconds": 8.014,
       "mime": "audio/mpeg",
-      "bytes": 64320,
-      "sha256": "66fcd665cd3f5723827796f3109d7eb50eefb231becd1af012eeb4fce00fc691"
+      "bytes": 128640,
+      "sha256": "091c85236d139d5ba992cd83af110cf84621bd032d9cf7c87ed6e7919b431ff9"
     },
     {
       "id": "line.live.idle.1",
       "file": "line.live.idle.1.mp3",
       "seconds": 5.162,
       "mime": "audio/mpeg",
-      "bytes": 41664,
-      "sha256": "52bd8296261605c0ad9c3ecbd55d781a7f8054a6598cc2584695fdc292071857"
+      "bytes": 83328,
+      "sha256": "62daa9dd792a7e274b8f73806ced40abbd370b16a7574ec00c9a480e0a697bee"
     },
     {
       "id": "line.live.pinball.flipper.0",
       "file": "line.live.pinball.flipper.0.mp3",
       "seconds": 6.186,
       "mime": "audio/mpeg",
-      "bytes": 49728,
-      "sha256": "20817f62501c277eeedd758a3d385a8eb0cbc164432ddc01b0f3f87c3f684ffb"
+      "bytes": 99456,
+      "sha256": "3717192a45088a3f00c6e1ed92c0150b41f09256dcb579f66e7b62ec52a56090"
     },
     {
       "id": "line.live.realKeyboard.0",
       "file": "line.live.realKeyboard.0.mp3",
       "seconds": 3.632,
       "mime": "audio/mpeg",
-      "bytes": 29376,
-      "sha256": "9f5efbca2792140c3c855403e02e950048e8d408407aa5fa5a28193b5b93f68e"
+      "bytes": 58752,
+      "sha256": "7d68ebe8b6f874d5caebdacf006f9cfda234b7e4a3671800c92a1cce7fa6e9e0"
     },
     {
       "id": "line.live.skip.0",
       "file": "line.live.skip.0.mp3",
       "seconds": 5.644,
       "mime": "audio/mpeg",
-      "bytes": 45504,
-      "sha256": "53c77516e92cb060ef4ea40456ea9dfdf892389746fcea38d211edebababf0b2"
+      "bytes": 91008,
+      "sha256": "8ff58e6dd59261728d3e7ea66caea71602792ee45efb7f367c6893234fbc144f"
     },
     {
       "id": "line.live.slowTyping.0",
       "file": "line.live.slowTyping.0.mp3",
       "seconds": 2.766,
       "mime": "audio/mpeg",
-      "bytes": 22464,
-      "sha256": "f75e613617eb2f6ddec0d480a14dccbf37d1649672584c85ee8d66681a2d195a"
+      "bytes": 44928,
+      "sha256": "0140aa2a75cf25fb51c5ded57e2bf9d98fa62f64c7b617126e9b1a9377b6893b"
     },
     {
       "id": "line.live.tugLost.0",
       "file": "line.live.tugLost.0.mp3",
       "seconds": 4.018,
       "mime": "audio/mpeg",
-      "bytes": 32448,
-      "sha256": "6d304089ab969b032e83fcd4ef68972f63a62dc5dd0b145610ebd2ec2b6c8fed"
+      "bytes": 64896,
+      "sha256": "2d2d58470a366bab0a9601b0870dfd1a24739f4b4da987db3a5efa108833d838"
     },
     {
       "id": "line.live.watchFilm.0",
       "file": "line.live.watchFilm.0.mp3",
       "seconds": 4.016,
       "mime": "audio/mpeg",
-      "bytes": 32448,
-      "sha256": "3e36009901f2a9c16f5ec729dfc783cea4d155c25cbcf76edd500f2f4beedf20"
+      "bytes": 64896,
+      "sha256": "0d6f02f49cc0268181369d64824c25c6332f6c843ff2e38ed0ce434b4caa2e02"
     },
     {
       "id": "line.marketing.perks.0",
       "file": "line.marketing.perks.0.mp3",
       "seconds": 6.728,
       "mime": "audio/mpeg",
-      "bytes": 54144,
-      "sha256": "64a72e154da33ceda9565d931bedf014728f0525417097ce14e3276556012b33"
+      "bytes": 108288,
+      "sha256": "2e80d4b557b8e147f04b31ddc8fcd92ef1ac93de8c86f83b08781ec01aff9dd4"
     },
     {
       "id": "line.marketing.stroll.0",
       "file": "line.marketing.stroll.0.mp3",
       "seconds": 5.122,
       "mime": "audio/mpeg",
-      "bytes": 41280,
-      "sha256": "388f5b46a909231fc347864840712dddbd23c560e4251b092ef33395ecacdb23"
+      "bytes": 82560,
+      "sha256": "1ee9b0f87a463152f98030c3b1d4eb09e9c5de735e9b2933e0a8d7cbb0b70100"
     },
     {
       "id": "line.pinball.coffee.0",
       "file": "line.pinball.coffee.0.mp3",
       "seconds": 3.936,
       "mime": "audio/mpeg",
-      "bytes": 31680,
-      "sha256": "05ca7f2a2a367482a105eae173d7e11be280067c89e55c86d49016b8e7d4e432"
+      "bytes": 63360,
+      "sha256": "8ca257363536e7e0bcf21a27bd12e4f0b2e85cab1caa779d379136e9e6101c36"
     },
     {
       "id": "line.pinball.drain.0",
       "file": "line.pinball.drain.0.mp3",
       "seconds": 4.558,
       "mime": "audio/mpeg",
-      "bytes": 36672,
-      "sha256": "3964a0d9f4c788936e1bc71c15c177fc92f348a672100e0f593ae501ef02f377"
+      "bytes": 73344,
+      "sha256": "cb406d7b8eae8328cb0b8efbbefe371ba31dfc1ec3fca13d7f24b10e406875ac"
     },
     {
       "id": "line.pinball.fired.0",
       "file": "line.pinball.fired.0.mp3",
       "seconds": 5.54,
       "mime": "audio/mpeg",
-      "bytes": 44544,
-      "sha256": "c1ce10ecf677214592057c9045ab642550ca167090186a5fe81d328b385348d1"
+      "bytes": 89088,
+      "sha256": "c40f84224dc05f9cc2bfcb40c2bb38fab27e1fcb6fb309b14e706ffcfe2f26fb"
     },
     {
       "id": "line.pinball.launch.0",
       "file": "line.pinball.launch.0.mp3",
       "seconds": 3.092,
       "mime": "audio/mpeg",
-      "bytes": 24960,
-      "sha256": "3937b1ab5638e1b185f034513f2a032b09696ffb5f64cb66530b256d9058f094"
+      "bytes": 49920,
+      "sha256": "89d0922af2f344609072d5d334f6e957453bc73cc8eb3107b878b680f603493e"
     },
     {
       "id": "line.pinball.lobby.0",
       "file": "line.pinball.lobby.0.mp3",
       "seconds": 3.672,
       "mime": "audio/mpeg",
-      "bytes": 29568,
-      "sha256": "16632b47c3eca56a5da3120f58f5e5d9a358383a3b147bbf720b767ef066f5ce"
+      "bytes": 59136,
+      "sha256": "9ec5823a643e56b1b406c6d04b5fb0afac22737e6293940f98e90ff80db1285f"
     },
     {
       "id": "line.pinball.replyAll.0",
       "file": "line.pinball.replyAll.0.mp3",
       "seconds": 2.962,
       "mime": "audio/mpeg",
-      "bytes": 24000,
-      "sha256": "0edf9e3a3994bb480d9f5686c833c6fb5877dc16c0b17d1beec0de100ff3b948"
+      "bytes": 48000,
+      "sha256": "db6d263d69dc260291e5c8c56c49479ada7a628be1e708e0f72819abf9722091"
     },
     {
       "id": "line.pinball.seal.0",
       "file": "line.pinball.seal.0.mp3",
       "seconds": 6.696,
       "mime": "audio/mpeg",
-      "bytes": 53760,
-      "sha256": "786f50728d707f36afedda714120fe5b7c68db2dd27125edd6c10b7978fbd7a1"
+      "bytes": 107520,
+      "sha256": "639d6b6d9300c7525ce4eb21b00583f1e08567f94b55b4b5d0a109d6cb28cd24"
     },
     {
       "id": "line.step1.email.0",
       "file": "line.step1.email.0.mp3",
       "seconds": 7.472,
       "mime": "audio/mpeg",
-      "bytes": 60096,
-      "sha256": "76be262eac9728249a4df1c688065e4a31572ce60fc85f3030ee83185e108267"
+      "bytes": 120192,
+      "sha256": "aa72df9858ace73c7800f1f335af3a51de8b0a21bf311d0acea400a9cf5fbea9"
     },
     {
       "id": "line.step1.firstName.0",
       "file": "line.step1.firstName.0.mp3",
       "seconds": 5.344,
       "mime": "audio/mpeg",
-      "bytes": 43008,
-      "sha256": "9e0026f4b8f00883a0ba9b580d0154fbd3f63bbfd34801e97ca4932e84f47edc"
+      "bytes": 86016,
+      "sha256": "c7ca67d787ffc3cf57981aa971c553202db9ea4fd8aed0b6553c6d29f5ed39b6"
     },
     {
       "id": "line.step1.firstName.1",
       "file": "line.step1.firstName.1.mp3",
       "seconds": 5.184,
       "mime": "audio/mpeg",
-      "bytes": 41664,
-      "sha256": "efdccdfa88b82a49bf6eebaa7a55ce1ea184ca4e112af867219831e9cbe2dc67"
+      "bytes": 83328,
+      "sha256": "3b3ffe2300a98cf1a25f444a9ac3eb172578603dd466f5729f24e3609208780d"
     },
     {
       "id": "line.step1.tug.0",
       "file": "line.step1.tug.0.mp3",
       "seconds": 7.816,
       "mime": "audio/mpeg",
-      "bytes": 62784,
-      "sha256": "801936fe0dd5c869ecd2d1795cd0b8c171731c9c3841cb5ddfdf0acaea4bbbcc"
+      "bytes": 125568,
+      "sha256": "16714d2b6e765c906669167357c0de3882d8a0f1ca6f03258c1acc8218058b95"
     },
     {
       "id": "line.step2.crank.0",
       "file": "line.step2.crank.0.mp3",
       "seconds": 6.454,
       "mime": "audio/mpeg",
-      "bytes": 51840,
-      "sha256": "13667ed1f4daa516ff679d9a5ad33f369bb1b51ab460a16350c0df9f2242e9e4"
+      "bytes": 103680,
+      "sha256": "a268a41ed41300d2bb1abbcb328c2cb27dd87ebf4d5235f9c2f335cd9089439e"
     },
     {
       "id": "line.step2.dial.0",
       "file": "line.step2.dial.0.mp3",
       "seconds": 5.864,
       "mime": "audio/mpeg",
-      "bytes": 47232,
-      "sha256": "00f6f933dd2c3367965adfe085e5dd6711b0f5233ff1b5a4a59f4f531be720cb"
+      "bytes": 94464,
+      "sha256": "5754e4fdc5d990143207b06f14fd09808470a30bc01cff7b94485bc90e9f91bd"
     }
   ],
-  "totalBytes": 5682044
+  "totalBytes": 6987452
 }
