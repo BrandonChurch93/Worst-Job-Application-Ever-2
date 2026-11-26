@@ -102,6 +102,9 @@ Draw calls of my folders: 99 before, 99 after. Triangles of my folders: 183228 b
 28. Steel balls, second step (mail of 12:05Z): paler overhead, a larger window, larger lamps, the floor's colour strong in the lower half and a dark band at the horizon.
 29. Loader cup (mail of 12:08Z): done in decision 20 before the mail, near black dish under a bright lip; seen in my still of `loader-page` at 11:43 UTC.
 
+30. Steel balls, third step: stripes overhead tried and taken back (read as drawn); the room overhead is a soft pale glow round the window, the floor in the lower half fades to dark under the ball.
+31. Rail cap (the Builder's mail of 12:16Z: walls keep their height, the rail on top wider and bright). The bright brushed land now takes the upper half of the round face that falls to the lane on the left (`CAP.cuts` of `RAIL.cuts`) and the bank and the shoulders of the cradle on the right; its tone is a neutral bright steel (0xeceae3) and not cream; two fine dark grooves run along each land as an extrusion's die leaves them. The walls under it stay navy.
+
 ## Measurements
 
 - MEASURED before: `npm test` 1461 of 1461, `npm run build` built, `npm run bots` all clear, 10:03 to 10:06 UTC.
@@ -116,3 +119,4 @@ Draw calls of my folders: 99 before, 99 after. Triangles of my folders: 183228 b
 - MEASURED 10:57 UTC: one review still of `step3-result` 56.4 s.
 - MEASURED 11:59 UTC: M3 at draft red on 2 of 10 keys: `rail-cam` 0.40 and `lobby-doors` 0.796 (least 0.8); `youre-fired` and `tier-corporate` pass now. `rail-cam` fell from 0.51 at 11:11 UTC; cause UNKNOWN (my wire sheen or the shared look of merge 34).
 - MEASURED 12:09 UTC: mean of `table-wide` draft 1.002 of the approved, with the title's band gone and the front lands at 0.95; the lands went to 0.4 after that still.
+- MEASURED 12:21 UTC with the wider bright cap (tone 1.9): mean of `table-wide` draft 1.004 of the approved; riser street to office 39.3 against floor 43.1; riser office to corporate 28.0 against floor 79.8; left wall 22.8. The box of the right wall (1560,560,1640,700) reads 59.4 because the cap's shoulder now lies in it, the wall under it is unchanged.
