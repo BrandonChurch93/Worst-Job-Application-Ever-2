@@ -5,7 +5,7 @@ import { CursorView, cursorUnmade } from '../cursor/view'
 import { real } from '../real'
 import type { Emitter, PartMaker, RealContext } from '../real/types'
 import type { Frame } from '../stage/stage'
-import { rattleAt, SHIVER, shiverAt, shiverBase, shiverDelay, TURN } from '../stage/turn'
+import { JOLT, joltAt, rattleAt, SHIVER, shiverAt, shiverBase, shiverDelay, TURN } from '../stage/turn'
 import type { Shape, Tone } from '../stage/types'
 
 export const TONES: Record<Tone, number> = {
@@ -170,6 +170,8 @@ export class PageView {
     // The slab lies still in the scene and whoever draws it turns the camera, the light and the studio about its axis:
     // every surface works out its grain, its heights and its shadows from where it lies, and those hold for a page that lies flat.
     this.scene.userData.turn = { angle: f.turn, y: -f.scroll }
+    const jolt = joltAt(this.settle)
+    this.scene.userData.jolt = jolt > 0 ? { push: JOLT.push * jolt, rise: JOLT.rise * jolt } : null
     if (turning) this.stand.matrix.makeRotationX(-f.turn).setPosition(0, -f.scroll * (1 - Math.cos(f.turn)), -f.scroll * Math.sin(f.turn))
     else this.stand.matrix.identity()
     this.stand.matrixWorldNeedsUpdate = true

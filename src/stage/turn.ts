@@ -2,16 +2,18 @@ const QUARTER = Math.PI / 2
 const DEG = Math.PI / 180
 
 // `land` is the share of the speed of the hand over that the slab still has when it meets its seat: it falls into the seat, it does not coast into it.
+// `held` is how long the slab lies pressed flat in the seat before it springs back, as a share of the arriving half of the turn: two frames of the film, so a picture taken every other frame holds the slab flat once.
 // `knocks` are how far the slab springs back off the seat, and for how long, as shares of the arriving half of the turn.
 export const TURN = {
   windUp: 0.12,
   lean: 1.6 * DEG,
   power: 2.2,
   seat: 0.6,
-  land: 0.8,
+  land: 1.2,
+  held: 2 / 30,
   knocks: [
-    { size: 6 * DEG, lasts: 0.22 },
-    { size: 1.8 * DEG, lasts: 0.12 }
+    { size: 8 * DEG, lasts: 4 / 30 },
+    { size: 2 * DEG, lasts: 3 / 30 }
   ]
 } as const
 
@@ -42,7 +44,8 @@ export function arriveTurn(u: number): number {
     const bend = 6 * (enter - 1) - 3 * drop
     return -QUARTER * (1 - enter * w + bend * (w * w / 2 - (w * w * w) / 3) + (drop * w * w) / 2)
   }
-  let from = TURN.seat
+  if (t < TURN.seat + TURN.held) return 0
+  let from = TURN.seat + TURN.held
   for (const k of TURN.knocks) {
     if (t < from + k.lasts) {
       const s = (t - from) / k.lasts
@@ -57,7 +60,8 @@ export function seatedAt(): number {
   return TURN.seat
 }
 
-export const SHIVER = { hop: 9, slide: 3, beat: 0.085, fade: 0.09, beats: 4, loose: 0.5, spread: 0.1 } as const
+// The hop of what stands loose on the page, from the step of the seat: `hop` and `slide` in page units, bounces of `beat` seconds, each under a fifth of the one before, and the foot of the page `spread` seconds after its head. The third is too small to see: what can be seen is over when the last knock is.
+export const SHIVER = { hop: 26, slide: 8, beat: 1 / 15, fade: 0.04, beats: 3, loose: 0.5, spread: 1 / 60 } as const
 
 const shiverLasts = SHIVER.beat * SHIVER.beats
 
@@ -68,6 +72,11 @@ const swing = (seconds: number): number => (seconds > 0 && seconds < shiverLasts
 export const shiverAt = (seconds: number): number => SHIVER.hop * Math.abs(swing(seconds))
 
 export const rattleAt = (seconds: number): number => SHIVER.slide * swing(seconds)
+
+// The jolt of the view on the step of the seat: the camera is knocked `push` of its distance toward the slab and `rise` page units down, so the picture swells from its lower edge, and it is back in `lasts` seconds without going past where it stood.
+export const JOLT = { push: 0.01, rise: 4.9, lasts: 5 / 60 } as const
+
+export const joltAt = (seconds: number): number => (seconds >= 0 && seconds < JOLT.lasts ? (1 - seconds / JOLT.lasts) ** 2 : 0)
 
 export const shiverDelay = (down: number): number => SHIVER.spread * Math.min(1, Math.max(0, down))
 
