@@ -71,4 +71,23 @@ Every hold is a pointer that does not move, so the gag ends by itself in live mo
 
 - The share line is not copied to the clipboard by this page.
 
-- After the hit the cursor is carried under the stamp and dropped to its right (`STUCK` in `script.ts`); the page holds it until the stamp is down (`AT.lower[1]`).
+- After the hit the cursor is carried under the stamp and dropped to its right (`STUCK` in `script.ts`); the page holds it until it has landed (`AT.fling[1]`).
+
+## After round 8 (the fix round)
+
+What is above is as it was built; where this section differs, this section holds. The reasons are in `pipeline/phase4/decision-fix.md`.
+
+- Places. The two columns are 560 tall (button's middle at y 952, link's at 1036). The wait panel has its own top (`WAIT`, 52 px lower). The sheet lies square (`SHEET_ROT = 0`). The mark lies in the sheet's lower right corner (`MARK_AT`), the stamp rests under the middle of the glass (`REST_AT`), the letter's print is inset by `LETTER_PAD`. The underline of the link is the shape `share-rule`, role `underline`, part `metrics`: flat printed ink.
+- The path of the film cursor starts at the hand-off place (960, 540), as `start` says, stays there to 0.52 s and backs off the counter to `waitSpotOf()` by 0.86 s.
+- Times of the stamp (`timeline.ts`, whole frames of 30 a second, seconds of the unit): in 4.57 to 4.87, hang to 5.30, fall to 5.43, contact 5.433, rebound in the next frame, held to 5.70, lifted straight up to 5.97, carried to 6.40, laid down by 6.63. The stamp is posed from `since()`, the seconds since the letter's beat began, so it goes on after that beat ends at 6.0.
+- The cursor is struck with its tip under the block's lower edge (`SPOT`), its stem outside. It rides with the block (`STUCK`). Over its place the block shakes once (`AT.shake`), the flat cursor is thrown clear, the block is set down, and the cursor comes down swaying with a soft shade of its own on the page (`fallShade`), skids and lies flat right of the block from 7.07, where it is hurt again for `STUCK.heal` seconds so that the key at 7.2 holds it flat.
+- The numbers in `v` of `stamp-block` and `stamp-grip`: v[4] is how large the block is drawn (1 at rest, more the higher it is, a little less in the frame of contact), v[5] its height over the page. The sheet `letter` has v[0], how far its three far corners are kicked up (0 to 1), for two frames after the hit.
+- The acting. `PACE` is gone. `ARRIVE`, `HOPE`, `GIVE` and `CUES` in `script.ts`; the states are set by the page in both modes.
+
+| Beat | Word | What the cursor does |
+| --- | --- | --- |
+| The wait, 0 to 2 s | nervous | set down on the counter, backs off it to the bare glass by 0.86 s and holds its place to 2.0 s: beads, tremble, gulp |
+| The letter falls, 2 to 3.5 s | shocked | flinches as the counter spins (2.03), stands tall as the sheet falls (2.45), jumps as it lands (2.8), then holds a tilt toward it (3.06 to 3.5) |
+| The letter read, 3.5 to 4.9 s | proud | puffs up and holds (3.5 to 3.94), dusts itself off (3.94), struts to the sheet's corner (4.44 to 4.8) |
+| The stamp, 4.9 to 5.43 s | scared | the shadow is on it at 4.93: rears, then small, pale and laid back, held to the hit |
+| The peel and the button, 7.07 to 10 s | exhausted | lies flat 0.4 s, peels itself up with nothing else moving, looks at the button (7.88), drags itself there (8.29 to 8.9), holds 0.3 s, then one strike (`stamp` reaction at 9.2, press at 9.3) |
