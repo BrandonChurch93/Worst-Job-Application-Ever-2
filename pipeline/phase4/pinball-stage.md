@@ -21,6 +21,13 @@ Agent `pinball_stager`, branch `agent/pinball-stage`. Times UTC.
 - 00:55 Insert labels dropped. Kit `02-SUBJECT.md`: an insert carries a picture and no words, and the displays show that mode's `insert` and then its `display` line. So `insert-label.<id>` and `insert-plate.<id>` are gone from the page (the owner of the lights asked for the same), and each tier display shows the mode's `insert` name for 0.6 s (`NAME`), then its `display` line. Text `display.<tier>.<mode>.insert`, state `name<mode>`, switched in `draw`.
 - The three tier cameras stay the `home` camera moved down the page. Not fitted.
 
+- 01:10 The displays' own part already holds the insert's name and then runs the line, read from the `display.<tier>.<mode>` text alone. So that text stays on for the whole mode and now carries `v[0]`, the seconds since the mode was lit, which that part reads as its clock. `NAME` is 1.5 s, the displays' hold.
+- 01:05 Film: a close view is entered by a cut. With the 0.6 s blend the camera was half way into `table-lobby` at `doors-slam`. Reply-all's close view moved from 20.6 to 19.5 s: it sat 0.1 s before the third `ball-drop`.
+- 01:05 Shake reads `machine().last` and `steps`: no clock, no random, the same on every run. None in live mode.
+- 01:20 `clear-ball`: one low view (home's 20 degree lens from 7.9 balls, to keep the three balls one size), flipper in front of the first ball, the lowest office bumper behind the third. Places computed from the layout.
+- 01:20 `table-map`: the page's width fills the frame, tiers and apron, no marquee, displays on the score. The approved map is the three tier images joined inside a frame.
+- 01:35 With the engine's lens on: `table-save` 20 to 9, `rail` 16 to 7, `ride` 10 to 7 (the Builder's look at the first stills). `rail` is now steep (59 degrees down) so no wall crosses the top of the frame. `table-fired` moved in to 5.2 balls.
+
 ## Needs sent
 
 - `pipeline/phase4/pinball-stage-NEEDS.patch`: `cameras.table-wide.fovDeg` 35 to 43, `cameras.table-lobby.fovDeg` 35 to 56, `cameras.table-save.fovDeg` 62 to 40. Sent 00:55.
