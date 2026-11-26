@@ -74,8 +74,10 @@ The times in the table from 05:01 on are read back from the pushes (05:20, 05:28
 | --- | --- | --- | --- |
 | 05:46 | loader-page | loader: ring's gradient | 1 |
 | 05:48 to 05:53 | youre-fired 2, reply-all 1, tier-office 1 | table-frame: walls | 4 |
+| 05:53 to 05:55 | table-wide, tier-street, last-save | marquee, table-frame, ramps | 3 |
+| 06:00 to 06:06 | table-wide 3 | marquee: the title | 3 |
 
-Total in round 11: 5 (loader 1, table-frame 4).
+Total in round 11 at 06:06 UTC: 11 (loader 1, table-frame 5, marquee 4, ramps 1).
 
 ## Decisions
 
@@ -100,6 +102,8 @@ Total in round 11: 5 (loader 1, table-frame 4).
 - The loader's bowl is turned whole and the tube's mouth stands out of its wall; only the ring is slotted. The slot's bed inside the bowl read as a dark box whatever its tone. The ring's face is a mid grey of its own (`FACE`, `EDGE`), darker than the collars. The ring's top is shaded round its turn (`Geo.tint`): dark toward the top of the page, light toward its lower right, as approved (54 at the top, 113 left, 171 lower right there).
 - The sunk panels of the side rails' south ends are near black (`SLOPE`): from the player's end they read as two grey planks. MEASURED in `table-wide` draft: (34,33,31).
 - Seen, not mine, told to their owners: the floor inside the lower shoulders is black in `tier-office` and `tier-street` (lamp_keeper); `rail-cam` near wire inside the lens's blur (table_runner, who lowered the camera and closed the lens). The marquee's title draws heavy and black across the whole picture in `table-wide` (table_runner, 05:25).
+- The marquee's title (06:05 UTC, 73124fdf). `frame/title.ts`: my marquee maker answers `key` for the one shape `marquee-title` and makes it from the type's own `dataOf` and `geometryOf` (words through `words()` from copy.json; font, size and place are the shape's, set by table_runner), on one material through `lit(studio(m), zone('marquee'))` whose emissive follows the `panel` level in `pose`. It is not drawn twice: `realKey` in `src/shell/view.ts` asks the part's maker first and the shell's type only when that says null. The tone: lamp_keeper and table_runner both said approved has a pale word, and /root asked for letters that glow. MEASURED on approved `table-wide`: the letters are dark warm print, (91,56,39) on a sky of (194,153,120). So the title is dark warm print that lets a little of the panel's light through. MEASURED on the draft at 06:06 UTC: letters (76,48,35) on sky (224,131,67); before it was near black. Counts in `table-wide` the same: scene 201, marquee 4 / 2168 (the run is counted in the row of the type).
+- The side rails' near ends stand tall in `table-wide` because the street floor is 288 below the page: that height is the layout's and stays.
 
 ## MEASURED times (04:07 to 04:34 UTC, this VM)
 
@@ -121,4 +125,4 @@ Total in round 11: 5 (loader 1, table-frame 4).
 
 ## Needs outside my folder
 
-- `pipeline/phase4/frame-keeper-NEEDS.patch` (05:55 UTC): `export` on `dataOf` and `geometryOf` in `src/shell/real/type.ts`. The marquee's title (`marquee-title`, part `marquee`) is set by the shell's type on a material that never passes `lit()`, so it is near black in the marquee zone where approved has pale letters. With the two exports my marquee maker can answer for that one run (the contract's line on `text` shapes) with the type's own letters from `content/copy.json` on a material of mine that glows with the `panel` group as the picture does. Not built: the patch is not in, and nothing of it is tested.
+- `pipeline/phase4/frame-keeper-NEEDS.patch` (05:55 UTC): `export` on `dataOf` and `geometryOf` in `src/shell/real/type.ts`. The marquee's title (`marquee-title`, part `marquee`) is set by the shell's type on a material that never passes `lit()`, so it is near black in the marquee zone (I wrote here that approved has pale letters: that was said to me and was wrong, see the decision on the title). With the two exports my marquee maker can answer for that one run (the contract's line on `text` shapes) with the type's own letters from `content/copy.json` on a material of mine that glows with the `panel` group as the picture does. The patch went into main at daf0748f (05:58 UTC) and the title is built on it (73124fdf, 06:05 UTC).
