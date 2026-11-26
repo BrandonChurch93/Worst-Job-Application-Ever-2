@@ -1,35 +1,35 @@
 {
   "folder": "table-frame",
-  "pushed": "2026-11-26T02:42:31.232Z",
-  "commit": "95511d0e78ec94a577ae5b4e6d478bbfa27b3ff2",
+  "pushed": "2026-11-26T03:23:15.729Z",
+  "commit": "4881cbf7dbe544246a19057ebd4891712acf8587",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-tier-street-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T02:40:04.436Z",
+      "caption": "Still key-tier-street-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T03:23:07.633Z",
       "by": "table-frame",
-      "from": "out/work/stills/key-tier-street-hd-draft.png"
+      "from": "out/work/stills/key-tier-street-hd-review.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "table-wide at 95511d0: near rail cut to the slabs' height, side rails sloped down to it, Street flippers show; machine orange 0xc48004",
-      "time": "2026-11-26T02:42:29.684Z",
+      "caption": "table-wide at 4881cbf beside approved (left): near rail at the slabs' height, side rails' south ends as a slim rail with a sunk dark panel, slimmer tubes",
+      "time": "2026-11-26T03:23:14.142Z",
       "by": "table-frame",
-      "from": "out/work/looks/files/20261126024229-b32-table-wide.jpg"
+      "from": "out/work/looks/files/20261126032314-rep-cmp-table-wide.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "tier-street at 95511d0: sill at the apron's height, amber bats, apron plates and plaque",
-      "time": "2026-11-26T02:42:29.929Z",
+      "caption": "rail-cam at 4881cbf beside approved (left): the ramp wire as polished steel, no longer a dark cable",
+      "time": "2026-11-26T03:23:14.371Z",
       "by": "table-frame",
-      "from": "out/work/looks/files/20261126024229-b32-tier-street.jpg"
+      "from": "out/work/looks/files/20261126032314-rep-cmp-rail-cam.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Street bats: approved above, 95511d0 below",
-      "time": "2026-11-26T02:42:30.159Z",
+      "caption": "tier-street at 4881cbf: the machine's orange on the bats, the sill at the apron, ramp wires bright from above",
+      "time": "2026-11-26T03:23:14.614Z",
       "by": "table-frame",
-      "from": "out/work/looks/files/20261126024230-cmp-bats.jpg"
+      "from": "out/work/looks/files/20261126032314-rep-tier-street.jpg"
     }
   ]
 }
