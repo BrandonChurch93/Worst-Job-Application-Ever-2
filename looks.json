@@ -1,35 +1,35 @@
 {
   "folder": "table-light",
-  "pushed": "2026-11-26T01:46:36.497Z",
-  "commit": "6561f5dff656356ca89ebac2cd197cc64216ab73",
+  "pushed": "2026-11-26T02:01:25.870Z",
+  "commit": "ba70c5c98b4d3f58954f16b5811f1e3c529ca5f4",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "table-wide, approved left, build right: lamps mirrored in the lacquer, windows glowing at rest, the room near black",
-      "time": "2026-11-26T01:46:34.814Z",
+      "caption": "Contact sheet, the beat pinball.coffee: 12 frames from 1:22.00 to 1:25.97, draft tier, preview",
+      "time": "2026-11-26T01:49:21.796Z",
       "by": "table-light",
-      "from": "out/work/lights/send/v1-table-wide.jpg"
+      "from": "out/work/sheets/sheet-beat-pinball_coffee-preview-draft.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "tier-corporate, approved left, build right: lamps mirrored in the lacquer, windows glowing at rest, the room near black",
-      "time": "2026-11-26T01:46:35.047Z",
+      "caption": "tier-corporate at ba70c5c beside approved (left): round lamps in chrome cups, warm white, deeper lacquer",
+      "time": "2026-11-26T02:01:23.361Z",
       "by": "table-light",
-      "from": "out/work/lights/send/v1-tier-corporate.jpg"
+      "from": "out/work/lights/n18-tier-corporate-pair.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "last-save, approved left, build right: lamps mirrored in the lacquer, windows glowing at rest, the room near black",
-      "time": "2026-11-26T01:46:35.277Z",
+      "caption": "tier-street at ba70c5c beside approved (left): round rail lamps, sodium pools",
+      "time": "2026-11-26T02:01:23.605Z",
       "by": "table-light",
-      "from": "out/work/lights/send/v1-last-save.jpg"
+      "from": "out/work/lights/n18-tier-street-pair.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "tier-street, approved left, build right: lamps mirrored in the lacquer, windows glowing at rest, the room near black",
-      "time": "2026-11-26T01:46:35.509Z",
+      "caption": "rail-cam at ba70c5c beside approved (left)",
+      "time": "2026-11-26T02:01:23.856Z",
       "by": "table-light",
-      "from": "out/work/lights/send/v1-tier-street.jpg"
+      "from": "out/work/lights/n18-rail-cam-pair.jpg"
     }
   ]
 }
