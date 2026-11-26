@@ -23,7 +23,7 @@ const beatAt = (id: string): { from: number; to: number } => beats.find((b) => b
 const px = (v: number): number => v * BALL
 
 export const T = {
-  arrive: 0.8, seal: 2.4, tube: 3.3, lightsDown: 4.0, powerOn: 5.2, atPlunger: 8.3, plunger: 9.4, onTable: 10.85, doorKick: 13.2, doorOpen: 14.1, lobbyEnd: 14.9, below: 15.9, inboxOn: 17.9, inboxBy: 19.1,
+  arrive: 0.8, seal: 2.4, tube: 3.3, lightsDown: 4.0, powerOn: 5.2, atPlunger: 8.3, plunger: 9.4, onTable: 10.85, doorKick: 13.2, doorOpen: 14.1, lobbyEnd: 14.9, inboxOn: 17.9, inboxBy: 19.1,
   drops: [20.78, 20.88, 20.98], eject: 20.72, officeOpen: 24.6, officeBy: 25.2, firedBy: 27.2, scoopKick: 28.5, flapOn: 29.6, flapBy: 30.8, highwayEnd: 32.7, spiralEnd: 34.6, save: 35.6, streetOpen: 36.9, streetBy: 37.9,
   press: seconds - TURN_HALF - 0.5
 }
@@ -130,8 +130,8 @@ const WAKE = 0.35
 const DUSK = config.table.pageDuskLevel
 const ASLEEP = 0.25
 const LOW = 2.4
-const PULL = { door: 12, scoop: 30, near: 2.2, gate: 40, nest: 20, cup: 3 }
-const NEST = { v: 4.3, out: [1.7, 5.2], pour: [-10.6, 2.4, 0.3] }
+const PULL = { door: 12, scoop: 30, near: 2.2, gate: 40 }
+const NEST = { sling: [3.3, 6.5], under: [0.5, 0.9], pour: [-10.6, 1.0, 0.3] }
 const SHOT = { door: 13, scoop: 21, nest: 17, save: 19, lob: 9, lean: 0.3, jets: 0.5, wide: 2.5, low: 7.5, early: 0.3, back: 1 }
 const ACT = { bumper: 0.5, kick: 0.7, doors: 0.45, shock: 0.45, realise: 0.45, slow: 7, lead: 0.3 }
 
@@ -464,11 +464,9 @@ export function makePage(): PageLogic {
         else if (t >= T.officeOpen) mc.magnet = [MID, Y1 + 11.2, PULL.gate]
         mc.aim = [MID, Y1 + MOUTH.v, SHOT.lean]
       } else {
-        mc.shot = [MID, Y1 + 5.7, SHOT.nest]
-        if (t < T.below) {
-          mc.aim = [MID, Y1 + NEST.v, SHOT.jets]
-          mc.magnet = [MID, Y1 + NEST.v, PULL.nest, PULL.cup]
-        } else mc.aim = [MID + NEST.out[0], Y1 + NEST.out[1], SHOT.lean]
+        const low = table.bumpers.filter((m) => m.tier === 1)[2]!.c
+        mc.shot = [low[0], low[1], SHOT.nest]
+        mc.aim = b.vy < 0 ? [b.x < MID ? MID - NEST.sling[0]! : MID + NEST.sling[0]!, Y1 + NEST.sling[1]!, SHOT.lean] : [b.x < MID ? low[0] - NEST.under[0]! : low[0] + NEST.under[0]!, low[1] + NEST.under[1]!, SHOT.lean]
       }
     }
     if (b.mode === 'hold' && b.hold === 'office.inbox') b.wait = t >= T.eject ? 0 : 1e9

@@ -25,8 +25,8 @@ const keyTime = keyBeat.from + key.at * (keyBeat.to - keyBeat.from)
 const r4 = (n) => Number(n.toFixed(4))
 // Where the approved key pictures show the ball: tier, place in balls from the tier's top left, and how near counts.
 const PLACES = [
-  { key: 'tier-office', tier: 1, at: [10.3, 6.9], within: 1.7 },
-  { key: 'reply-all', tier: 1, at: [10.5, 7.0], within: 1.7 },
+  { key: 'tier-office', tier: 1, at: [10.3, 6.3], within: 1.7 },
+  { key: 'reply-all', tier: 1, at: [10.5, 6.7], within: 1.7 },
   { key: 'tier-street', tier: 2, at: [6.2, 4.2], within: 2 }
 ].map((p) => {
   const k = c.keys.find((x) => x.id === p.key)
@@ -39,7 +39,8 @@ const { load, close } = await logic()
 const { Stage, ScriptDriver, filmFlow, filmOptions } = await load('/src/stage/stage.ts')
 const { pages } = await load('/src/pages/index.ts')
 const { stream } = await load('/src/core/random.ts')
-const { TIER_Y, FLIP, MID } = await load('/src/table/layout.ts')
+const { TIER_Y, FLIP, MID, BALL } = await load('/src/table/layout.ts')
+const HITS = ['plunger', 'doors-slam', 'bumper', 'sling', 'scoop-kick', 'flipper-save', 'drain']
 
 function caught(b) {
   if (!b || b.mode !== 'plane') return false
@@ -85,15 +86,22 @@ function play(driver) {
   let tows = 0
   let atKey = false
   const placed = []
+  const cuts = []
+  let eye = null
+  let n = 0
   while (!stage.finished && stage.time < unitSeconds + 1) {
-    if (stage.page.id === 'step3') tows = stage.page.save().s.tows
-    let go = hz / 4
+    if (stage.page.id === 'step3' && n % 15 === 0) tows = stage.page.save().s.tows
+    n++
+    let go = 4
     for (const t of stops) {
       const n = Math.round((t - stage.time) * hz)
       if (n > 0 && n < go) go = n
     }
     stage.advance(go)
     if (stage.page.id !== 'step3') continue
+    const pose = stage.page.camera('film', stage.time)
+    if (pose && eye && Math.hypot(pose.eye[0] - eye[0], pose.eye[1] - eye[1], pose.eye[2] - eye[2]) > 2 * BALL) cuts.push(stage.time)
+    eye = pose ? pose.eye : eye
     if (Math.abs(stage.time - keyTime) < 0.5 / hz) atKey = caught(stage.page.save().m.balls[0])
     for (const p of PLACES) {
       if (Math.abs(stage.time - p.time) >= 0.5 / hz) continue
@@ -113,8 +121,10 @@ function play(driver) {
   out.bumpers = stage.events.filter((e) => e.name === 'bumper').length
   const save = stage.events.find((e) => e.name === 'flipper-save')
   out.flipSave = !!save && stage.events.some((e) => e.name === 'flipper' && e.step === save.step)
+  out.beside = 0
+  for (const e of stage.events) if (HITS.includes(e.name)) for (const t of cuts) if (Math.abs(t - e.step / hz) < 0.16) out.beside++
   out.reached = beats.every((b) => stage.gagsReached.includes(b.id))
-  out.score = out.inside * 1000 + (out.reached ? 500 : 0) + (out.flipSave ? 40 : 0) + (out.atKey ? 300 : 0) + Math.min(out.bumpers, 8) * 4 + out.placed.length * 150 - out.tows * 15
+  out.score = out.inside * 1000 + (out.reached ? 500 : 0) + (out.flipSave ? 40 : 0) + (out.atKey ? 300 : 0) + Math.min(out.bumpers, 8) * 4 + out.placed.length * 150 - out.tows * 15 - out.beside * 400
   return out
 }
 
@@ -127,6 +137,7 @@ function check() {
   }
   const ok = r.inside === r.wanted && r.reached
   console.log(`the director brought the ball in ${r.tows} times; bumper hits in the coffee beat ${r.bumpers}; the save was ${r.flipSave ? 'a flip' : 'the gate'}; at the key last-save (${keyTime} s) the ball is ${r.atKey ? 'on a flipper' : 'not on a flipper'}; where the approved pictures have it at ${r.placed.length} of ${PLACES.length} other keys${r.placed.length ? ` (${r.placed.join(', ')})` : ''}`)
+  console.log(`hits within 0.15 s of a cut of the film: ${r.beside}`)
   console.log(ok ? `take: every one of the ${r.wanted} beat events fell inside its beat` : `take: ${r.wanted - r.inside} of ${r.wanted} beat events fell outside their beats`)
   writeJson(checkFile, { made: new Date().toISOString(), searches: kept.searches, flips: kept.flips.length, toleranceSeconds: tolerance, beats: r.beats, tows: r.tows, bumpers: r.bumpers, flipSave: r.flipSave, ballOnFlipperAtLastSave: r.atKey, ballPlacedAtKeys: r.placed, everyGagReached: r.reached, score: r.score, ok })
   return ok

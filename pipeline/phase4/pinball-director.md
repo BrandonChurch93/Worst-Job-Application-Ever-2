@@ -30,8 +30,9 @@ Parts `table-layout`, `table-physics`, `director`, `acting-pinball`. Branch `age
 - Director times moved: `inboxOn` 18.3 to 17.9, `streetOpen` 37.3 to 36.9, the door tow from 0.6 s to 0.3 s before the kick; new `save` 35.6 (the hint asks for no flip before it in the Save beat, so the key `last-save` at 35.59 s shows the ball on the bat).
 - Events: `carpet-roll` once when the ball first rolls on the carpet, `inbox-take` and `firehouse-take` when the ball enters each scoop.
 - Acting: one state per situation, set once a step (`mood`), so no state fights another. Hits press the cursor flat for 0.5 s (bumper), 0.7 s (kick, save) or 0.45 s (the doors). The cursor leans where the ball goes (`knock` by 0.3 of the ball's speed).
-- Coffee: until 15.9 s each bumper throws the ball back into the middle of the three (a pull of 20 within 3 balls keeps it there), so it rattles, is thrown over the top and falls in again. After 15.9 s the bumpers throw it out to the right, where it is batted between bumper 3 and the right slingshot until the inbox takes it. STATED: at the key `tier-office` (17.4 s) the ball is at about (13.1, 5.3), right of bumper 3; the approved picture has it under bumper 3 at about (10.3, 6.9).
-- Reply All: the clear ball leaves the inbox first (20.72 s, kick (-10.8, 2.6), was 21.4 s and (-7, 3)) and the three steel balls pour out after it at 20.78, 20.88 and 20.98 s on nearly the same arc (were 20.0, 20.35, 20.7, before the clear ball, which then ran into them). At the key `reply-all` (21.1 s) the clear ball is under bumper 3 with the steel balls in a line behind it, as approved.
+- Bumpers: the three stand in a tight cluster as approved, lids almost touching: (8.5, 3.3), (11.5, 3.3), (10, 5.7) to (8.9, 3.2), (11.1, 3.2), (10, 5.1). The radius of the collider stays 0.75. No ball passes between them now, so the three openings `bumpers.1.2`, `bumpers.1.3`, `bumpers.2.3` are gone. STATED: the approved lid is about 1.2 balls in radius, the built one 0.95 (`CUP.lidR` 76 px, the frame maker's).
+- Coffee: the chute drops the ball on the top of the cluster, which throws it at the cubicles; it runs down the left side to a bat. Every flip is sent at bumper 3 from below. Bumper 3 throws the ball at the slingshot of its side and the slingshot throws it back under bumper 3, so it is batted about under the cluster, where the approved picture has it. From 17.9 s every throw goes to the inbox.
+- Reply All: the clear ball leaves the inbox first (20.72 s, kick (-10.8, 1.2), was 21.4 s and (-7, 3)) and the three steel balls pour out after it at 20.78, 20.88 and 20.98 s on nearly the same arc (were 20.0, 20.35, 20.7, before the clear ball, which then ran into them). At the key `reply-all` (21.1 s) the clear ball is under bumper 3 with the steel balls in a line behind it, as approved.
 - The doors press lasts 0.45 s (was 1.6): at the key `lobby-doors` (13.8 s) a cursor pressed flat was seen edge on from the low camera and read as a line.
 - `tools/take.mjs`: a run earns 150 for each of three keys where the ball stands where the approved picture has it (`tier-office`, `reply-all`, `tier-street`), and the check prints how many. The score still puts the ten beats first.
 - `tools/take.mjs`: the replay now stops on the exact step of the key `last-save`; before, it looked only every quarter second and never saw 35.59 s.
@@ -42,9 +43,12 @@ Kept take before: 4 of 4. Bought since, three for each change:
 - layout (flippers, slingshots, lanes, mouth): searches 5, 6, 7.
 - physics (bat shape, kicks, shots): searches 8, 9, 10.
 - physics and layout (thrown arcs, launch exit): searches 11, 12, 13.
-- physics and director (the inbox kick, the coffee nest, the order of the pour): search 14. Two left (15, 16).
+- physics and director (the inbox kick, the order of the pour): search 14.
+- layout (the bumper cluster): searches 17, 18, 19 bought; searches 15 and 16 used. Three left (17 to 19).
 
-MEASURED, `npm run take -- --check` after search 14 (kept run 2): 10 of 10 events inside their beats, 8 flips, 1 tow (was 3; the one left is the highway flap at 30.8 s), 14 bumper hits in Coffee, the save a flip, the ball on a flipper at `last-save`, and the ball where the approved picture has it at 2 of 3 other keys (`reply-all`, `tier-street`; not `tier-office`).
+MEASURED, `npm run take -- --check` after search 16 (kept run 3): 10 of 10 events inside their beats, 7 flips, 1 tow (was 3; the one left is the highway flap at 30.8 s), 6 bumper hits in Coffee, the save a flip, the ball on a flipper at `last-save`, the ball where the approved picture has it at 2 of 3 other keys (`reply-all`, `tier-street`; not `tier-office`), and no hit within 0.15 s of a cut of the film. Search 15 had 3 of 3 keys but a slingshot hit 0.05 s before the stager's cut at 36.6 s, which `tests/pinball-stage.test.ts` forbids, so a run now loses 400 for each hit beside a cut and search 16 replaced it.
+
+Between searches I follow one ball with a fixed player that presses when the hint asks (`out/work/trace2.mjs`, not kept). It writes no take and is not a search.
 
 ## Old and new numbers for things a model stands on
 
@@ -56,4 +60,5 @@ MEASURED, `npm run take -- --check` after search 14 (kept run 2): 10 of 10 event
 | inserts | (8.35, 6.2) (10, 7.35) (11.65, 6.2) r 0.55 | (8.3, 7.1) (10, 8.0) (11.7, 7.1) r 0.62 |
 | inlane floor | (4.65, 8.0) to (6.5, 8.62) | (4.65, 8.05) to (6.45, 8.5) |
 | shoulder edge start | (6.5, 9.1) | (6.45, 9.45) |
+| bumpers 1, 2, 3 | (8.5, 3.3) (11.5, 3.3) (10, 5.7) | (8.9, 3.2) (11.1, 3.2) (10, 5.1) |
 | feed tube bend | MARQUEE_Y - 0.6 to + 1.4 | MARQUEE_Y + 0.15 to + 2.15 |
