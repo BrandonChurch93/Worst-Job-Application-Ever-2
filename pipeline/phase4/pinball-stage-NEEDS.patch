@@ -1,26 +1,44 @@
 diff --git a/config/showcase.json b/config/showcase.json
-index 191e739..7d994f4 100644
+index 77524f0..c9a805d 100644
 --- a/config/showcase.json
 +++ b/config/showcase.json
 @@ -158,7 +158,7 @@
        "note": "the page, straight on, filling the frame; moved once at the look lock from 12 to 20, the wide end of its limits, to bring the lean of standing parts toward the approved keyboard picture"
      },
      "sheet": { "fovDeg": 12, "note": "straight on and close, for the cursor and boss sheets" },
--    "table-wide": { "fovDeg": 35, "note": "the whole machine from the player's end, fitted to its approved image" },
-+    "table-wide": { "fovDeg": 43, "note": "the whole machine from the player's end, fitted to its approved image" },
+-    "table-wide": { "fovDeg": 43, "note": "the whole machine from the player's end, fitted to its approved image" },
++    "table-wide": { "fovDeg": 35, "note": "the whole machine from the player's end, fitted to its approved image" },
      "table-map": { "fovDeg": 12, "note": "the whole machine from straight above, rendered 1080 wide by 1920 tall" },
      "tier-3": {
        "like": "home",
-@@ -173,10 +173,10 @@
-       "note": "the home camera moved down the page to the street tier: cameras.home.fovDeg, a little lower and a little further than home's distance from that tier's floor, so the apron edge and the Unemployment Office plate are in the frame as approved tier-street.png has them"
-     },
-     "rail": { "fovDeg": 40, "note": "riding above the ball on a wire ramp, looking down and a little ahead, fitted to its approved image" },
--    "table-lobby": { "fovDeg": 35, "note": "fitted to its approved image" },
-+    "table-lobby": { "fovDeg": 56, "note": "fitted to its approved image" },
-     "table-replyall": { "fovDeg": 30, "note": "fitted to its approved image" },
-     "table-fired": { "fovDeg": 35, "note": "fitted to its approved image" },
--    "table-save": { "fovDeg": 62, "note": "fitted to its approved image" }
-+    "table-save": { "fovDeg": 40, "note": "fitted to its approved image" }
-   },
-   "layout": { "tolerancePx": 2, "minTextPx": 14, "minTextContrast": 4.5 },
-   "sim": { "stepHz": 240, "checkpointSeconds": 1 },
+diff --git a/pipeline/phase4/pinball-stage-NEEDS.patch b/pipeline/phase4/pinball-stage-NEEDS.patch
+index c4fc5bd..e69de29 100644
+--- a/pipeline/phase4/pinball-stage-NEEDS.patch
++++ b/pipeline/phase4/pinball-stage-NEEDS.patch
+@@ -1,26 +0,0 @@
+-diff --git a/config/showcase.json b/config/showcase.json
+-index 191e739..7d994f4 100644
+---- a/config/showcase.json
+-+++ b/config/showcase.json
+-@@ -158,7 +158,7 @@
+-       "note": "the page, straight on, filling the frame; moved once at the look lock from 12 to 20, the wide end of its limits, to bring the lean of standing parts toward the approved keyboard picture"
+-     },
+-     "sheet": { "fovDeg": 12, "note": "straight on and close, for the cursor and boss sheets" },
+--    "table-wide": { "fovDeg": 35, "note": "the whole machine from the player's end, fitted to its approved image" },
+-+    "table-wide": { "fovDeg": 43, "note": "the whole machine from the player's end, fitted to its approved image" },
+-     "table-map": { "fovDeg": 12, "note": "the whole machine from straight above, rendered 1080 wide by 1920 tall" },
+-     "tier-3": {
+-       "like": "home",
+-@@ -173,10 +173,10 @@
+-       "note": "the home camera moved down the page to the street tier: cameras.home.fovDeg, a little lower and a little further than home's distance from that tier's floor, so the apron edge and the Unemployment Office plate are in the frame as approved tier-street.png has them"
+-     },
+-     "rail": { "fovDeg": 40, "note": "riding above the ball on a wire ramp, looking down and a little ahead, fitted to its approved image" },
+--    "table-lobby": { "fovDeg": 35, "note": "fitted to its approved image" },
+-+    "table-lobby": { "fovDeg": 56, "note": "fitted to its approved image" },
+-     "table-replyall": { "fovDeg": 30, "note": "fitted to its approved image" },
+-     "table-fired": { "fovDeg": 35, "note": "fitted to its approved image" },
+--    "table-save": { "fovDeg": 62, "note": "fitted to its approved image" }
+-+    "table-save": { "fovDeg": 40, "note": "fitted to its approved image" }
+-   },
+-   "layout": { "tolerancePx": 2, "minTextPx": 14, "minTextContrast": 4.5 },
+-   "sim": { "stepHz": 240, "checkpointSeconds": 1 },
