@@ -61,7 +61,7 @@ export const roomOf = (z: Zone): Zone | undefined => (LIT.includes(z.id) ? z : z
 export const aluOf = (z: Zone, name = 'alu'): THREE.MeshPhysicalMaterial => {
   const src = materials().aluminium
   const on = roomOf(z) !== undefined
-  const m = steel(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: on ? 0.27 : 0.4, metalness: on ? 1 : 0.4, normalMap: src.normalMap ? fine(src.normalMap) : null, normalScale: new THREE.Vector2(on ? 0.24 : 0.15, on ? 0.24 : 0.15), anisotropy: 0.72, anisotropyRotation: Math.PI / 2 })), z, { ceiling: 1, panel: 1.3, wide: 0.3, horizon: 1.3, direct: 0.3, under: 0.5, wall: 0.12 }, roomOf(z))
+  const m = steel(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: on ? 0.27 : 0.4, metalness: on ? 1 : 0.4, normalMap: src.normalMap ? fine(src.normalMap) : null, normalScale: new THREE.Vector2(on ? 0.24 : 0.15, on ? 0.24 : 0.15), anisotropy: 0.72, anisotropyRotation: Math.PI / 2 })), z, { ceiling: 1, panel: 1.3, wide: 0.3, horizon: 1.3, direct: 0.3, under: 0.5, wall: 0.06 }, roomOf(z))
   if (!on) {
     const room = m.onBeforeCompile
     const key = m.customProgramCacheKey
@@ -104,7 +104,7 @@ export const steelOf = (z: Zone): THREE.MeshPhysicalMaterial => {
   return own(lit(steel(studio(new THREE.MeshPhysicalMaterial({ color: 0xe2e5e8, roughness: on ? 0.1 : 0.2, metalness: on ? 1 : 0.55 })), z, { panel: 0.22, horizon: 1.5, lamps: 1.4 }, roomOf(z)), z), `frame.steel.${z.id}`)
 }
 
-export const screwOf = (z: Zone): THREE.MeshPhysicalMaterial => own(lit(steel(studio(new THREE.MeshPhysicalMaterial({ color: 0xc4c8cc, roughness: 0.2, metalness: 1, vertexColors: true })), z, { panel: 0.6, horizon: 1.4 }, roomOf(z)), z), `frame.screw.${z.id}`)
+export const screwOf = (z: Zone): THREE.MeshPhysicalMaterial => own(lit(steel(studio(new THREE.MeshPhysicalMaterial({ color: 0xc4c8cc, roughness: 0.2, metalness: 1, vertexColors: true })), z, { ceiling: 0.7, panel: 1, wide: 0.3, horizon: 1.4 }, roomOf(z)), z), `frame.screw.${z.id}`)
 
 // Clear plastic with no light passed through it: thin where it is seen straight on, bright where it turns away and wherever a lamp shines in it, with the dark line a clear wall shows just inside its edge.
 export const clearOf = (z: Zone, name = 'clear', base = 0.06): THREE.MeshPhysicalMaterial => {
