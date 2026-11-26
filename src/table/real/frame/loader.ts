@@ -11,7 +11,7 @@ const RING = { height: 26, lip: 6, floor: 2.4, slot: 2, mouth: 6, dish: 34, cuts
 // The shadow the tube lays on the page, toward the lower right.
 const SHADE = { dx: 56, dy: -38, wide: 1, dark: 0.64, up: 0.5, ease: 40, touch: 0.92, soft: 0.3, cast: 60 }
 // Where the shadow of the tube lies beside it, in tube radii from its middle line toward the lower right, and how dark it is there: a tight dark line where the tube meets the page, then a soft fall.
-const CAST: [number, number][] = [[0.8, 0], [0.97, 1], [1.15, 0.86], [1.6, 0.6], [2.2, 0.28], [3, 0]]
+const CAST: [number, number][] = [[0.8, 0], [0.97, 1], [1.2, 0.9], [1.8, 0.62], [2.8, 0.3], [4, 0]]
 // The rim of light in the port: how dim and how bright it breathes, and how many seconds one breath takes.
 const GLOW = { low: 0.25, high: 0.95, seconds: 4.6 }
 // The port's answer when the arrow is taken or the ball comes home: the ring is struck down for two frames, which from above is seen as the ring drawn in, and springs back, and the rim of light flashes and dies.
@@ -26,13 +26,13 @@ export const dipOf = (t: number): number => {
 // How bright the flash of the rim stands, 1 to 0.
 export const flashOf = (t: number): number => (t < 0 || t >= ANSWER.over ? 0 : Math.exp(-t / ANSWER.fade) * (1 - t / ANSWER.over))
 interface Ring { x: number; y: number; at: number; runs: { mesh: THREE.Mesh; from: number; rest: Float32Array }[] }
-const CUP: [number, number, number] = [0.03, 0.032, 0.036]
+const CUP: [number, number, number] = [0.006, 0.0065, 0.0075]
 // The colour a vertex of the rim of light carries: the tube's material knows it by its blue.
 const RIM: [number, number, number] = [1, 1, 0]
 // The light falls off down the wall of the bowl in three steps: a glow under the lip, not a drawn line.
 const RIM_FALL = [0.62, 0.34, 0.14]
-const FACE = hex(0x6f7377)
-const EDGE = hex(0x6a6e72)
+const FACE = hex(0x44474b)
+const EDGE = hex(0x414448)
 const SOCKET = hex(0x3a3c40)
 const LIP = hex(0xc9cdd1)
 
@@ -239,7 +239,7 @@ function port(A: Geo, G: Geo | null, z: Zone, c: { x: number; y: number; ring: n
   A.lathe([[r - RING.dish, RING.floor], [r - RING.dish - 16, RING.floor - 0.5], [BALL * 0.5, RING.floor - 1.2], [0, RING.floor - 1.6]], p[0], p[1], 120, CUP)
   // The bowl is dark and deep: the wall under the lip toward the lamp is in the lip's shadow, and the one place that shows the lamp is low on the wall and the floor toward the lower right.
   const low = (x: number, y: number): number => Math.pow(0.5 + 0.5 * Math.cos(Math.atan2(y - p[1], x - p[0]) + 0.82), 7)
-  A.tint(dark, (x, y, zz) => 1.5 + 1.3 * (1 - side(x, y)) + 7 * low(x, y) * Math.max(0, 1 - Math.abs(Math.hypot(x - p[0], y - p[1]) - (r - RING.dish * 0.75)) / 34) * (zz < h * 0.6 ? 1 : 0.3))
+  A.tint(dark, (x, y, zz) => 0.55 + 0.75 * (1 - side(x, y)) + 5 * low(x, y) * Math.max(0, 1 - Math.abs(Math.hypot(x - p[0], y - p[1]) - (r - RING.dish * 0.75)) / 34) * (zz < h * 0.6 ? 1 : 0.3))
 }
 
 export function loader(z: Zone, _ctx: RealContext): THREE.Object3D {
@@ -285,7 +285,7 @@ export function loader(z: Zone, _ctx: RealContext): THREE.Object3D {
     for (let s = Math.ceil((from + 30) / near) * near - from; s < length - 20; s += near) {
       const f = frameAt(path, s)
       if (f && Math.abs(s - seat) > 60) {
-        first ? collar(A, f, 13, TUBE.outer + 6) : collar(A, f)
+        first ? collar(A, f, 18, TUBE.outer + 6) : collar(A, f)
         if (z.tier < 0 && f.at.z < BALL * 0.75) shadows.push({ f, long: first ? 13 : TUBE.ferrule, out: first ? TUBE.outer + 6 : TUBE.ferruleOut })
       }
     }

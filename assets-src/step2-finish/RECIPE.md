@@ -40,3 +40,29 @@ Date: 2026-11-26
 - Made by: `payout()` in `src/pages/step2/real/slot.ts`, in code, from the numbers `SLOT_LOOK.pay`. A rounded bar of the cabinet's frame steel through `studio()`, a dark bed of the window's mouth material, one contact line of the shared gap material.
 - Texture: none of its own. 0 px, 0 MB.
 
+## The seat of a meter lens, the crank's cast shade, the bed of the payout tray (geometry and materials in memory, no file)
+Made by: `segment()` and `castDisc()` in `src/pages/step2/real/crank.ts`; `payout()` in `src/pages/step2/real/slot.ts`
+From: `CRANK_LOOK.seat`, `CRANK_LOOK.cast`, `SLOT_LOOK.pay`
+Prompt or command: `npm run compare -- --key step2-crank --tier draft --format hd`, `npm run compare -- --sheet machines`
+Takes: 4 draft stills of the crank key for the seat's line (the shared gap, then the part's own grey `0x6f7877`), 2 for the cast shade, 2 of the sheet for the bed
+Why this one: the lens sits below a narrow lip and its foot line is soft, the plate's shade falls down and to the right as the key's light asks, the bed is mid grey steel and not a black hole
+Texture: none new. The lit lens's picture was repainted at the same size, 64 by 256 px, 0.06 MB (0.08 MB with its mips); the unlit lens's picture is 128 by 512 px, 0.25 MB (0.33 MB with its mips)
+Date: 2026-11-26
+
+## The floor of a tray (vertex colour, no texture, no file)
+Made by: `trayFloor()` in `src/pages/step2/real/rows.ts`
+From: `TRAY.floor` in `src/pages/step2/layout.ts`
+Prompt or command: `npm run still -- --key step2-crank --format hd --tier draft`, `npm run still -- --key step2-dial --format hd --tier draft`
+Takes: 3 draft stills of the crank key (soak 0.42 over 30 px was too dark all over; soak 0.44 over 13 px kept), 1 of the dial key
+Why this one: a shade under the upper and left wall and a lighter far side, as the approved well has
+Texture: none. 0 px, 0 MB
+Date: 2026-11-26
+
+## The unlit lens's edge (a picture and a material, no file)
+Made by: `own()` in `src/pages/step2/real/crank.ts`: the picture `off` drawn by `picture()` and the material `wall` passed through `studio()`
+From: `CRANK_LOOK` there: in the picture the dark line inside the rim is 0.12 and the rim's own darkening 0.02; the wall and the seat have the tone 0.86 of the pale glass and give off 0.5 of the tone 0xe9eeec; the foot line is 0xa2aaa8
+Prompt or command: `npm run still -- --key step2-crank --format hd --tier draft`, the same at `--tier review`
+Takes: 4 draft stills and 1 review still of the crank key (one with the wall painted green to find what the dark outline was)
+Why this one: approved's unlit lenses are clear blocks with a light edge all round, not a dark outline
+Texture: `off`, 128 by 512 px, 0.25 MB (0.33 MB with its smaller copies), as before
+Date: 2026-11-26

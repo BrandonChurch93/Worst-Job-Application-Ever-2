@@ -263,7 +263,7 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
     col = mix( col, ember * 0.12, body );
     float vein = smoothstep( 0.685, 0.735, fine.b * 0.8 + mid.g * 0.4 ) * smoothstep( 0.15, 0.4, h ) * ( 1.0 - smoothstep( 0.8, 1.0, h ) );
     wjaGlow += ember * body * ( 0.95 + 0.3 * mid.g );
-    wjaGlow += vec3( 1.5, 0.95, 0.3 ) * vein * face * 1.5;
+    wjaGlow += vec3( 1.5, 0.95, 0.3 ) * vein * face * 0.1;
     wjaGlow += ember * h * ink * 0.1;
     wjaCoat *= 1.0 - 0.88 * body;
     wjaSpec *= 1.0 - 0.8 * body;

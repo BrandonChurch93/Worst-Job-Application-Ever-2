@@ -58,17 +58,17 @@ Counted from the first still, by part. A still that shows several parts counts o
 
 | part | looks |
 | --- | --- |
-| tower, band, carpet (hq) | 3 |
+| tower, band, carpet (hq) | 12 |
 | notes | 3 |
-| boardroom | 3 |
+| boardroom | 5 |
 | beach | 2 |
-| wedges | 2 |
+| wedges | 9 |
 | coffee machine | 2 |
-| letter tray | 2 |
-| staplers | 1 |
+| letter tray | 3 |
+| staplers | 4 |
 | cubicles and loose paper | 1 |
 
-The stills behind the counts: 11:21 `tier-corporate` and `lobby-doors`; 11:24 the same two; 11:27 and 11:29 `tier-office`; 11:30 `lobby-doors` and `tier-corporate` on the tree with merge 33 in it.
+The stills behind the counts. First pass: 11:21 `tier-corporate` and `lobby-doors`; 11:24 the same two; 11:27 and 11:29 `tier-office`; 11:30 `lobby-doors` and `tier-corporate` on the tree with merge 33 in it. Second pass: 11:36 `tier-office` (staplers); 11:40 `lobby-doors` and `tier-corporate` (tower); 11:42 `tier-corporate` (wedges, carpet) and `tier-office` (staplers); 11:44 `tier-corporate` (roof, wedges) and `lobby-doors` (tower); 11:46, 11:48 and 11:49 `tier-corporate` (wedges); 11:47 `lobby-doors` (band); 11:53 `tier-corporate` at `final` (all of the tier, counted for the tower and the wedges); 11:56 `tier-corporate` (boardroom, wedges); 11:59 `tier-corporate` and `lobby-doors` (roof, hall); 12:01 `tier-corporate` (boardroom, roof); 12:02 `tier-office` (tray, staplers); 12:03 `lobby-doors` (hall); 12:04 `tier-office` (staplers) and `lobby-doors` (hall).
 
 ## What was done, in the order of the brief
 
@@ -93,3 +93,77 @@ The stills behind the counts: 11:21 `tier-corporate` and `lobby-doors`; 11:24 th
 - The warm lip under the staplers is in the tier's one glowing mesh, which the cubicles hold.
 - The black ring beside the tray is the hold of the layout and the frame's ejector: not mine, left alone.
 - `tests/table-corporate.test.ts`: the triangle limits of the tier went up with the new parts, and the test of the tower's box leaves out the glowing mesh, which now also holds the boardroom's pools and the loose note.
+
+## After the first pass (MEASURED 11:34 to 11:37 UTC, on the tree with merge 33 in it, commit 522854d5)
+
+- `npm test`: 116 files, 1466 of 1466 tests. `npm run build`: built. `npm run bots`: all clear, keen reached every one of the 37 gags on every seed.
+- `npm run counts -- --key table-wide --live low`, my rows (calls, triangles), before and after:
+
+| part | calls before | calls after | triangles before | triangles after |
+| --- | --- | --- | --- | --- |
+| model-hq | 5 | 5 | 12154 | 35246 |
+| model-beach | 4 | 4 | 9859 | 9859 |
+| model-boardroom | 4 | 4 | 8220 | 9252 |
+| model-revolving-door | 3 | 3 | 4008 | 4008 |
+| model-ladder | 2 | 2 | 9888 | 9888 |
+| model-wedges | 2 | 2 | 4844 | 4844 |
+| model-notes | 1 | 1 | 924 | 924 |
+| model-staplers | 6 | 6 | 7356 | 7708 |
+| model-inbox | 5 | 5 | 4364 | 4041 |
+| model-cubicles | 3 | 3 | 12355 | 12284 |
+| model-coffee-machine | 2 | 2 | 6628 | 7392 |
+
+Corporate: 21 calls (21 before), 74021 triangles (49897). Office: 16 calls (16), 31425 triangles (30703). Together 37 calls and 105446 triangles against 37 and 110600. Whole frame at the lowest level: 199 calls against 300.
+- No asset file in either folder: 0 MB in `assets-src`, `public/assets` and `assets-full` for `table/corporate` and `table/office`.
+- Band, on the `draft` still of `lobby-doors` after the merge: letters 0.0201, plate 0.6070, ratio 9.37.
+- Fine detail by the formula of M3 (`node out/work/tmp/m3.mjs <still> <approved>`, which calls `highFrequencyEnergy` of `tools/lib/measure-core.mjs`) on my `draft` stills: `tier-corporate` 0.785, `lobby-doors` 0.811, `tier-office` 1.012. The judged number is taken at the `final` tier, which I did not render.
+- The revolving door after merge 33: its post and foot stand wholly on the carpet in `tier-corporate` and `lobby-doors`; the carpet's width was not changed.
+
+A fault of mine: the merge commit 7452e955 (of `origin/main` at 11:36 UTC, records only) went out with git's own message and without the trailer. It is pushed and I do not rewrite history; every merge after it carries the trailer.
+
+## Second pass (11:40 to 12:10 UTC)
+
+What the Builder sent at 11:40, 11:57 and 11:58 came first, in the Builder's order.
+
+1. Roof of the tower (Builder, a). The deck is now small pavers of brushed steel, three to a bay, with dark joints. In the middle of it lies the glass roof of an atrium in a steel curb: through it the lit galleries of the floors, the darker well and a lit patch at its foot, under a grid of dark glazing bars with small lamps along both sides. A second row of lit roof lights stands behind the plant. All of the light is in the tower's one glowing mesh.
+2. Wedges (Builder, b). The stone went from near white to a grey white (`MARBLE` 0.82, 0.98, 1.5 to 0.14, 0.165, 0.245, since the lamp under the lip and the tier's light lift it a long way), its finish from polished stone to satin so that it does not mirror the lamps as a white field, and the veins are darker, more of them and of three weights: six main veins with branches, three broad faint clouds and sixteen hairlines.
+3. The doorway (Builder). The hall behind the doors is lit: its floor at twice the level it had and its back wall from 0.2 at the floor to 0.62 under the ceiling, so that the panes of the doors show a warm lit room. The two slanting streaks on each door leaf are narrower and fainter.
+4. Boardroom (Builder, c). The wood is darker and the pools under the lamps smaller and less bright, so that the top reads as wood. At each place lies what a meeting leaves: a sheet or two, a dark pad and a brass pen, none square to the edge.
+5. Letter tray (Builder, b of 11:58). Seventeen envelopes in the two heaps that hop (thirteen before), turned every way and not only by quarter turns, and the heap stands three px higher in the tray so that it comes over the rim.
+6. Tower glass and core walls. The five painted streaks on the front glass are gone. The core walls are dimmer (0.016 at the floor to 0.12 under the ceiling, from 0.03 to 0.2), more bays have a dark timber panel with a lit strip over it, and dark cross walls run out from the core to the desks at about every second bay, so that each floor reads as rooms with depth.
+7. Band. The plate is a mid brushed steel grey (`PLATE` 0.56, 0.585, 0.63, from 0.78, 0.8, 0.84) as the Builder allowed. MEASURED on the `draft` still of `lobby-doors`, 11:48 and again 12:03: letters 0.0135, plate 0.4480, ratio 7.84.
+8. Carpet. The tones of the tufts differ more (0.7 to 1.3 of the red, from 0.84 to 1.16) and the tufts are a little larger (`PILE.step` 4.3 from 3.4), which gave back the triangles the roof and the rooms took.
+9. Staplers. The body is fuller at the hinge and tapers to the nose, with a rounder shoulder and a smaller highlight. The foot is a chrome edge under a darker brushed plate. A red plate was tried at 12:02 and thrown out: it read as a red triangle, not as a stapler on a foot.
+
+Decisions of the second pass:
+
+- The Builder ruled at 11:40 that the plate stays pale with dark flat letters and that the change to raised letters on blue steel is not begun. It is a difference from the approved image, listed by the Builder.
+- The cups of the Office are bumpers and belong to `src/table/real/play/bumpers.ts`: not mine, by the Builder's word at 11:59.
+- The roof shows an atrium roof although the floors under it have core walls: from above the eye wants light in the middle of the largest plain area of the key, and a real tower may have both.
+
+Fine detail by the formula of M3:
+
+| still | tier | ratio |
+| --- | --- | --- |
+| `tier-corporate` before the second pass | draft | 0.785 |
+| `tier-corporate` at 11:53 (commit 0edbdd10) | final | 0.554 |
+| `tier-corporate` at 12:01 | draft | 0.868 |
+| `lobby-doors` at 12:03 | draft | 0.824 |
+| `tier-office` at 12:02 | draft | 1.080 |
+
+The `final` tier softens the picture: the same tree gave 0.822 at `draft` and 0.554 at `final`. By area (`node out/work/tmp/region.mjs <still> <approved>`), the roof, the wedges and the carpet were each under the approved image's fine detail at `final`, and so were the frame, the top and the bottom of the picture, which are not my parts.
+
+After the second pass (MEASURED 12:05 to 12:08 UTC on the tree with merge 34 in it): `npm test` 117 files, 1472 of 1472; `npm run build` built; `npm run bots` all clear, keen reached every one of the 37 gags on every seed. `npm run counts -- --key table-wide --live low`, my rows (calls, triangles): hq 5, 33162; beach 4, 9859; boardroom 4, 9252; revolving door 3, 4008; ladder 2, 9888; wedges 2, 5900; notes 1, 924; staplers 6, 8120; inbox 5, 4272; cubicles 3, 12284; coffee machine 2, 7392. Corporate 21 calls and 72993 triangles, Office 16 calls and 32068 triangles, together 37 calls and 105061 triangles against 37 and 110600. Whole frame at the lowest level: 198 calls against 300.
+
+## Third pass (12:10 to 12:20 UTC)
+
+- Wedges against the approved crop: the stone a step paler again (`MARBLE` 0.2, 0.235, 0.35), the veins thin, crisp and dark with more branches and more wander, the soft halo round each vein cut to one narrow band.
+- Carpet: tufts a little smaller (`PILE.step` 3.8), each leaning more its own way (0.13) and each a hair lighter or darker than its neighbours (0.1). A grain of 0.2 was tried at 12:14 and thrown out: close to the doors it read as a board of squares.
+- Atrium roof: wider (168 px), fourteen bays of glazing bars by four, fifteen lamps along each gallery.
+- Staplers: the base under the arm is red enamel, a little wider than the arm, as the approved image has it; the hinge cheeks stay dark.
+- Looks: 12:13 `tier-corporate` (wedges, carpet, roof) and `lobby-doors` (carpet); 12:15 `tier-office` (staplers); 12:16 `tier-corporate` (wedges, carpet); 12:17 `lobby-doors` (carpet). Counts by part now: hq 16, wedges 11, staplers 5; the others as in the table above. One more `final` still of `tier-corporate` at 12:09 (hq, wedges: counted in these).
+- MEASURED 12:17 to 12:20 UTC: `npm test` 117 files, 1472 of 1472; build built; bots all clear. Counts: hq 35418, wedges 6192, the other rows as after the second pass; Corporate 21 calls and 75541 triangles, Office 16 and 32068, together 37 and 107609 against 37 and 110600; frame 198 of 300.
+- MEASURED fine detail by M3's formula: `tier-corporate` 0.876 at `draft` (12:16); 0.581 at `final` on 65ca2758 (12:12, 191.8 s). `lobby-doors` 0.824 at `draft`, band ratio 7.84.
+- What `final` takes away, from a `draft` and a `final` still of nearly the same tree (`node out/work/tmp/bands.mjs`): strong edges lose 44 percent of their energy, weak edges and texture 5 percent; pixels beside something bright lose 48 percent, beside mid tones 25 percent, in the dark 11 percent. By area the loss is even. So it is the hard edges of lit and bright things that the `final` tier softens. Told to the Builder at 12:15.
+- By area at `final` on 65ca2758 (`node out/work/tmp/region.mjs`), build against approved: roof 0.00148 against 0.00155, wedges 0.00101 against 0.00159, carpet 0.00028 against 0.00089, beach 0.00071 against 0.00083; outside my folders, frame left 0.00110 against 0.00223, frame right 0.00105 against 0.00335, top strip 0.00059 against 0.00188, bottom 0.00254 against 0.00435.
+

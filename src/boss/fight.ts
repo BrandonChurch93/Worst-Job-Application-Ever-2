@@ -9,7 +9,7 @@ export interface Arena { slabs: SlabSize[]; popups: { box: Rect; buttons: Rect[]
 export interface Slab { m: number; x: number; y: number; dx: number; dy: number; rot: number; left: number; state: 0 | 1 | 2; t: number; push?: number; skid?: number; air?: number; rim?: boolean; ox?: number; oy?: number; ex?: number; ey?: number; far?: number; out?: number }
 export interface Popup { slot: number; hp: number; t: number; closing: number; off: number; vel: number; dx: number; dy: number; shot: boolean }
 export interface Dart { n: number; x: number; y: number; dx: number; dy: number; t: number; p: number }
-export interface Flash { n: number; x: number; y: number; rot: number; t: number }
+export interface Flash { n: number; x: number; y: number; rot: number; t: number; r?: number }
 export interface Spark { n: number; x: number; y: number; t: number; z?: number }
 export interface Foot { x: number; y: number; fx: number; fy: number; tx: number; ty: number; t: number }
 
@@ -61,6 +61,7 @@ const LEAVE = { back: 0.3, pull: 9, power: 2.6, past: 30, tall: 44, machine: 230
 const PAGE = { w: 1920, h: 1080 } as const
 export const SPARK_SECONDS = 0.3
 export const FLASH_SECONDS = 0.16
+const TIP_FLASH = { n: 5000, ahead: 14, r: 26 }
 
 export const cursorCentre = (c: { x: number; y: number }): { x: number; y: number } => ({ x: c.x + 18, y: c.y + 32 })
 
@@ -420,6 +421,7 @@ function darts(f: Fight, io: StepIo, arena: Arena, used: boolean): void {
       d.y = tip.y
       d.dx = dx / len
       d.dy = dy / len
+      f.flashes.push({ n: TIP_FLASH.n + d.n, x: d.x + d.dx * TIP_FLASH.ahead, y: d.y + d.dy * TIP_FLASH.ahead, rot: Math.atan2(d.dy, d.dx), t: 0, r: TIP_FLASH.r })
       io.emit('dart-fire', d.x, d.y, false)
     }
     d.x += d.dx * DART.speed * dt

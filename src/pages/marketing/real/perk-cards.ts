@@ -35,7 +35,7 @@ export function cardGlass(): THREE.MeshPhysicalMaterial {
   return glassMade
 }
 
-export const GLASS = { colour: 0xc4cecb, shade: 0.62, exit: 0.72, glint: 0.36, wash: 0.13, warm: 0.07, lean: 0.03, caster: 6.4, least: 0.4, most: 4.4, through: 0.8, grain: 0.024, mostSide: 0.7, fade: [3, 13] as [number, number], bend: 7 }
+export const GLASS = { colour: 0xc4cecb, shade: 0.62, exit: 0.72, glint: 0.36, wash: 0.13, warm: 0.07, lean: 0.03, caster: 6.4, least: 0.4, most: 4.4, through: 0.8, grain: 0.024, mostSide: 0.7, fade: [3, 13] as [number, number], bend: 7, topShort: 0.3, wall: 2.4, wallUp: 0.85 }
 
 const keyFlat = Math.hypot(look.key.direction[0], look.key.direction[1]) || 1
 const KX = look.key.direction[0] / keyFlat
@@ -52,6 +52,8 @@ export const groundEdge = (s: Shape): number => SLAB.frame + SLAB.round + bevelO
 // a thin dark line, a paler line where the bevel meets the face, and a soft shade that is longer the more the edge faces the light.
 // The far side: the light leaves there, so the face brightens toward the edge, dips, and ends in a white rim.
 const NEAR: [number, number][] = [[0, -0.9], [0.9, -0.9], [1.7, 0.8], [3.6, 1], [5.4, 0.92], [6.8, 0.74], [8.4, 0.9], [10, 0.96], [12.3, 0.94]]
+// The edge that lies across the light's way, the top one, read off the approved card too: its dark line is thinner, a pale line follows it, and its shade is lighter and shorter.
+const NEAR_TOP: [number, number][] = [[0, -0.6], [0.9, -0.6], [1.7, 0.9], [3.6, 1.02], [5.2, 1.2], [6.6, 0.72], [8.2, 0.3], [10, 0.62], [11.9, 0.74], [12.3, 0.74]]
 const FAR: [number, number][] = [[0, 1.2], [1.2, 1.15], [2.2, 0.8], [3.2, 0.45], [4.5, 0.18], [6, 0.26], [8, 0.38], [10, 0.38], [12, 0.34], [14, 0.27], [16, 0.19], [18, 0.14], [20, 0.09], [24, 0.04], [28, 0]]
 
 const along = (table: [number, number][], d: number): number => {
@@ -65,12 +67,13 @@ const along = (table: [number, number][], d: number): number => {
 }
 
 // What the glass's own colour is multiplied by at `d` px in from the outline, where the outline faces the light by `side` (1 toward it, -1 away).
-export function edgeLight(d: number, facing: number, reach = 1): number {
+export function edgeLight(d: number, facing: number, reach = 1, top = 0): number {
   const G = GLASS
   const side = Math.max(-G.mostSide, Math.min(G.mostSide, facing)) / G.mostSide
   if (side >= 0) {
-    const end = 12.3 + (G.fade[0] + G.fade[1] * side) * reach
-    const shade = d <= 12.3 ? along(NEAR, d) : 0.94 * (1 - smooth((d - 12.3) / (end - 12.3)))
+    const end = 12.3 + (G.fade[0] + G.fade[1] * side) * reach * (1 - G.topShort * top)
+    const last = 0.94 + (0.74 - 0.94) * top
+    const shade = d <= 12.3 ? along(NEAR, d) * (1 - top) + along(NEAR_TOP, d) * top : last * (1 - smooth((d - 12.3) / (end - 12.3)))
     return shade < 0 ? 1 - side * shade * G.glint : 1 - side * G.shade * shade
   }
   return 1 - side * G.exit * along(FAR, d)
@@ -146,8 +149,8 @@ function face(s: Shape, half: number, flip: number, open: boolean): THREE.Buffer
       const ox = outline.nx[i]!
       const oy = outline.ny[i]!
       const side = ox * KX + flip * oy * KY
-      const v = r === 0 && side > 0 ? 0.9 : edgeLight(dd, side, reach)
-      const out = (up / l) * ring.lean
+      const v = r === 0 && side > 0 ? 0.9 : edgeLight(dd, side, reach, oy * oy) * (r < 2 && side < 0 ? 1 + (G.wall - 1) * Math.min(1, -side / G.mostSide) : 1)
+      const out = (up / l) * (r < 2 && side < 0 ? ring.lean * (1 - G.wallUp * Math.min(1, -side / G.mostSide)) : ring.lean)
       const rise = Math.sqrt(Math.max(0, 1 - out * out))
       const x = Math.max(-(wide - ring.d), Math.min(wide - ring.d, outline.x[i]! - ring.d * ox))
       const y = Math.max(-(tall - ring.d), Math.min(tall - ring.d, outline.y[i]! - ring.d * oy))
@@ -238,7 +241,7 @@ const spillMaterial = (): THREE.MeshPhysicalMaterial =>
     normalMap: materials().ceramic.normalMap, normalScale: new THREE.Vector2(0.04, 0.04), polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -2
   })))
 
-export const SPILL = { tint: [1, 0.9, 0.7] as [number, number, number], rings: [[-2, 0], [0, 0.15], [2, 0.14], [4, 0.2], [6, 0.33], [8, 0.45], [10, 0.5], [14, 0.4], [20, 0.15], [28, 0]] as [number, number][], turn: 1.6 }
+export const SPILL = { tint: [1, 0.9, 0.7] as [number, number, number], rings: [[-2, 0.3], [0, 0.26], [2, 0.2], [4, 0.17], [6, 0.22], [8, 0.3], [10, 0.32], [14, 0.24], [20, 0.1], [28, 0]] as [number, number][], turn: 1.6 }
 
 // The ring of spilled light round a slab's far edges, lying on the page.
 export function spillGeometry(s: Shape): THREE.BufferGeometry {
@@ -286,7 +289,7 @@ export function even(turn: number): number {
 function glassSlab(s: Shape, thick: number): THREE.Object3D {
   const root = new THREE.Group()
   const own = studio(new THREE.MeshPhysicalMaterial(glassOptions()))
-  const glass = mesh(shared(`perkSlab:${dims(s)}:${q(thick)}`, () => slabGeometry(s, thick)), own, false)
+  const glass = mesh(shared(`perkSlab:${dims(s)}:${q(thick)}:${fallKey(s)}`, () => darker(slabGeometry(s, thick), s)), own, false)
   glass.name = 'glass'
   root.add(glass)
   const print = mesh(shared(`perkPrint:${dims(s)}`, () => sweep(outlineOf(s, SLAB.frame + 0.6, 8), profile([[0, -0.3, true], [0, 0.3, true]]))), cardGlass(), true, false)
@@ -362,13 +365,34 @@ export function troughGeometry(s: Shape): THREE.BufferGeometry {
   return g
 }
 
-export const slabKey = (s: Shape): string => `restSlab:${dims(s)}:${q(s.z1 - s.z0)}`
+// Glass further from the lamp, toward the page's right, is darker, by the approved image: its colour falls by `per` for each page pixel, which the
+// light already on it turns into about 1.5, 5 and 7.5 hundredths at the three cards of a row.
+export const FALL = { at: 1.02, per: 0.000115 }
+export const fallAt = (x: number): number => FALL.at - FALL.per * x
+export const fallOf = (s: Shape): number => fallAt(s.x + s.w / 2)
+const fallKey = (s: Shape): string => fallOf(s).toFixed(3)
+
+export function darker(g: THREE.BufferGeometry, s: Shape): THREE.BufferGeometry {
+  const p = g.getAttribute('position')
+  const had = g.getAttribute('color')
+  const size = had?.itemSize ?? 3
+  const col = new Float32Array(p.count * size).fill(1)
+  if (had) col.set(had.array as Float32Array)
+  for (let i = 0; i < p.count; i++) {
+    const by = fallAt(s.x + s.w / 2 + p.getX(i))
+    for (let k = 0; k < 3; k++) col[i * size + k]! *= by
+  }
+  g.setAttribute('color', new THREE.BufferAttribute(col, size))
+  return g
+}
+
+export const slabKey = (s: Shape): string => `restSlab:${dims(s)}:${q(s.z1 - s.z0)}:${fallKey(s)}`
 
 // A card at rest on the page: the same slab, lying with its under side on the surface. Glass lets most of the light through, so the shadow on the
 // page is thrown by the printed foot of the slab alone, which lies inside the glass and is never seen.
 export function restingSlab(s: Shape): THREE.Object3D {
   const thick = s.z1 - s.z0
-  const glass = mesh(shared(`perkSlab:${dims(s)}:${q(thick)}`, () => slabGeometry(s, thick)), cardGlass(), false)
+  const glass = mesh(shared(`perkSlab:${dims(s)}:${q(thick)}:${fallKey(s)}`, () => darker(slabGeometry(s, thick), s)), cardGlass(), false)
   glass.name = 'glass'
   glass.position.z = thick / 2
   const root = new THREE.Group()
@@ -385,7 +409,7 @@ export function restingSlab(s: Shape): THREE.Object3D {
 export const perkCards: PartMaker | null = {
   key(s) {
     if (s.kind === 'text' || s.kind === 'well') return null
-    if (s.id.endsWith('-slab')) return `perkSlab:${dims(s)}:${q(s.v?.[0] ?? 12)}`
+    if (s.id.endsWith('-slab')) return `perkSlab:${dims(s)}:${q(s.v?.[0] ?? 12)}:${fallKey(s)}`
     if (s.role === 'cardRule') return `perkRule:${q(s.w)}x${q(s.h)}`
     if (s.role === 'card') return slabKey(s)
     return null
