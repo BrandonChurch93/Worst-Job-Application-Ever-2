@@ -1,35 +1,35 @@
 {
   "folder": "lamp-finish",
-  "pushed": "2026-11-26T10:40:32.353Z",
-  "commit": "814d6b5134cb71ef1c07d7b8b7f66bf038ced351",
+  "pushed": "2026-11-26T11:11:12.007Z",
+  "commit": "69385167753f2df72f6e39cd5644ba51b14233e9",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "tier-office: approved left, build right. Short soft shadows, pale lit inserts, fine grain, no fan of guide lines",
-      "time": "2026-11-26T10:40:30.680Z",
+      "caption": "Still key-tier-corporate-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T10:54:47.452Z",
       "by": "lamp-finish",
-      "from": "out/work/lights/r1-office.jpg"
+      "from": "out/work/stills/key-tier-corporate-hd-review.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "tier-corporate: approved left, build right. All three inserts lit, hot warm middles under the slings, dark between the lamps",
-      "time": "2026-11-26T10:40:30.907Z",
+      "caption": "Still key-tier-corporate-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T11:00:47.653Z",
       "by": "lamp-finish",
-      "from": "out/work/lights/r1-corporate.jpg"
+      "from": "out/work/stills/key-tier-corporate-hd-review.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "tier-street: approved left, build right. No long highway shadow, pale inserts with dark line art",
-      "time": "2026-11-26T10:40:31.147Z",
+      "caption": "tier-corporate, approved left, build right at draft: stone laid in slabs with flecks, veins and wear; inserts pale in the middle, deep at the rim",
+      "time": "2026-11-26T11:11:10.301Z",
       "by": "lamp-finish",
-      "from": "out/work/lights/r1-street.jpg"
+      "from": "out/work/lights/r2-tier-corporate.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "reply-all: main before (left), agent/lamp-finish 814d6b51 (right)",
-      "time": "2026-11-26T10:40:31.372Z",
+      "caption": "reply-all, approved left, build right at draft: lit windows brightest in the middle with a dark seat, short soft shadows",
+      "time": "2026-11-26T11:11:10.539Z",
       "by": "lamp-finish",
-      "from": "out/work/lights/r1-replyall-before-after.jpg"
+      "from": "out/work/lights/r2-reply-all.jpg"
     }
   ]
 }
