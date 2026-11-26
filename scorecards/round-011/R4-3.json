@@ -1,0 +1,37 @@
+{
+ "critic": "R4",
+ "score": 7,
+ "pass": false,
+ "model": "gpt_6_2_sol",
+ "set": "C: consecutive frames at hits 1 to 10 of the page's 22",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-C-01.png",
+   "where": "center of the metal socket, 1:09.27 - 1:09.33",
+   "what": "The bare arrow becomes a full-size glass ball in one frame and the socket does not visibly answer. The hold makes the new state legible, but the change reads as a swap rather than a capture with weight.",
+   "fix": "Show the arrow seat against the socket, give the rim a brief mechanical response on contact, and let the shell close around the arrow before the hold."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-02.png",
+   "where": "Corporate HQ doors and red runner, 1:20.23 - 1:20.50",
+   "what": "The ball recedes and settles in front of the changing door panels, but the overlap and camera movement leave no clear contact frame or reaction. It is hard to tell whether the ball hit a door, triggered it, or simply stopped outside.",
+   "fix": "Keep the door jamb and carpet steady through the beat. Make either the contact and paired reaction or the ball crossing a visibly triggered threshold unambiguous, then hold the result."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-06.png",
+   "where": "bottom of the native-size hit crop, 1:24.53 - 1:24.63; also set-C-05.png and set-C-07.png",
+   "what": "The ball comes up from below the crop and only the ends of the flippers are visible. The bumper flash reads, but the frames do not establish which flipper sent the ball back up or show the save itself.",
+   "fix": "Reframe the save around the pivot, blade and ball, with enough lead-in to show the ball descending, a shared contact frame at the blade, and enough follow-through to see the rebound and blade return."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-10.png",
+   "where": "the round Coffee recess, 1:26.03 - 1:26.23",
+   "what": "The ball slows and slides into alignment over the mouth without a clear drop or rim response. The arrow begins projecting beyond the shell while the sphere still reads as suspended above the opening, making the capture unclear.",
+   "fix": "Carry the incoming velocity into the lip, then show a decisive seat or drop using rim occlusion and a tightening contact shadow. Release the arrow only after the ball has visibly seated."
+  }
+ ]
+}
