@@ -1,35 +1,35 @@
 {
   "folder": "ball-finish",
-  "pushed": "2026-11-26T10:58:28.162Z",
-  "commit": "5f156c38fc4c5fc4f63a3e520b689ce1a7885b7f",
+  "pushed": "2026-11-26T11:12:20.460Z",
+  "commit": "4236d0b77c9fdf3bab724c372c431d3416537f21",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "film frames 5011 to 5016 across the bumper hit of 5010 (round 12 R4-3 issue 5): a whole round sphere on every frame",
-      "time": "2026-11-26T10:41:16.915Z",
-      "by": "ball-finish",
-      "from": "out/work/looks/ball-hit.jpg"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "displays: last-save approved and build, and the display of tier-corporate: a whole word on each, never a lone letter or a cut word",
-      "time": "2026-11-26T10:41:17.144Z",
-      "by": "ball-finish",
-      "from": "out/work/looks/displays.jpg"
-    },
-    {
-      "file": "look-3.jpg",
-      "caption": "Still key-tier-office-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-26T10:44:36.376Z",
-      "by": "ball-finish",
-      "from": "out/work/stills/key-tier-office-hd-review.png"
-    },
-    {
-      "file": "look-4.jpg",
       "caption": "Build above, approved below: the sheet ball, last-save and lobby-doors after the rim and window pass",
       "time": "2026-11-26T10:58:26.990Z",
       "by": "ball-finish",
       "from": "out/work/looks/ball-rim.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Still key-tier-corporate-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T11:03:55.447Z",
+      "by": "ball-finish",
+      "from": "out/work/stills/key-tier-corporate-hd-draft.png"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Build above, approved below: two sheet balls and lobby-doors, the wall with soft arcs and no tint",
+      "time": "2026-11-26T11:12:18.621Z",
+      "by": "ball-finish",
+      "from": "out/work/looks/ball-arcs.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "tier-corporate display: a long word stands whole, twice as tall, behind smoked glass",
+      "time": "2026-11-26T11:12:18.868Z",
+      "by": "ball-finish",
+      "from": "out/work/looks/display-tall.jpg"
     }
   ]
 }
