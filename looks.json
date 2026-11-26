@@ -1,0 +1,35 @@
+{
+  "folder": "pinball-stage",
+  "pushed": "2026-11-26T01:01:30.473Z",
+  "commit": "67839de1ea49f6ec32e1e24023943fe214408dd7",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Key table-wide: approved on the left, agent/pinball-stage f989e5a on the right, draft tier, camera fitted (pass 2)",
+      "time": "2026-11-26T01:01:28.670Z",
+      "by": "pinball-stage",
+      "from": "out/work/compare/compare-table-wide.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Key lobby-doors: approved on the left, agent/pinball-stage f989e5a on the right, draft tier, camera fitted (pass 2)",
+      "time": "2026-11-26T01:01:28.896Z",
+      "by": "pinball-stage",
+      "from": "out/work/compare/compare-lobby-doors.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Key reply-all: approved on the left, agent/pinball-stage f989e5a on the right, draft tier, camera fitted (pass 2)",
+      "time": "2026-11-26T01:01:29.140Z",
+      "by": "pinball-stage",
+      "from": "out/work/compare/compare-reply-all.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Key last-save: approved on the left, agent/pinball-stage f989e5a on the right, draft tier, camera fitted (pass 2)",
+      "time": "2026-11-26T01:01:29.372Z",
+      "by": "pinball-stage",
+      "from": "out/work/compare/compare-last-save.jpg"
+    }
+  ]
+}
