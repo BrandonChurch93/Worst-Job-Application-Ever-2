@@ -1,0 +1,74 @@
+right bat of the office tier: pivot x 13.469999999999999 v 8.95, 3 balls long, rest 25 deg, up -25 deg, stroke 0.07 s = 16.8 steps; 240 steps a second; the slope's pull 29.4 balls/s2; raised tip centre x 10.99 v 7.79
+a step here is one step of the physics (1/240 s); a visitor's step in the pack tool is 4 of them (1/60 s)
+
+== a: the bat pressed as the ball rolls to 1.8 balls along it, and held up
+a real ball: takes the speed of the bat under it (the bat turns 50 deg in 0.07 s: 22 balls/s at 1.8 balls from the pivot) and a little more from the rubber, and leaves up the table
+  rolling down the bat at rest: steps 0 to 117, speed 0.12 to 4.51 balls/s, 9.00 balls/s2 along the bat
+  the stroke: steps 118 to 134 in touch (17 steps, 0.071 s),  1.87 to  3.17 balls along the bat; speed 4.51 before, 29.76 after, leaving toward 91 deg
+  touch 2: steps 160 to 163 in touch (4 steps, 0.017 s),  1.97 to  2.10 balls along the bat; speed 20.59 before, 11.66 after, leaving toward 121 deg
+  touch 3: steps 229 to 232 in touch (4 steps, 0.017 s),  2.02 to  2.12 balls along the bat; speed 14.39 before, 8.94 after, leaving toward 128 deg
+  clear of the bat for 250 steps: in 247 of them the speed down the slope grows by 0.1225 to 0.1225 balls/s (the slope's pull is 0.1225 a step) and the sideways speed does not change; in 3 the ball meets something else of the table (bumper)
+  deepest the ball's edge is inside the bat's line: 0.049 balls; highest v 6.01; fastest 30.00 balls/s; ends at step 399, x  8.30 v  8.68
+
+== b: the same press, let go after 6 visitor steps (24 steps)
+a real ball: the same strike as (a): the stroke is over in 17 steps, so letting go at 24 changes only what the ball meets when it comes back
+  rolling down the bat at rest: steps 0 to 117, speed 0.12 to 4.51 balls/s, 9.00 balls/s2 along the bat
+  the stroke: steps 118 to 134 in touch (17 steps, 0.071 s),  1.87 to  3.17 balls along the bat; speed 4.51 before, 29.76 after, leaving toward 91 deg
+  touch 2: steps 186 to 187 in touch (2 steps, 0.008 s),  2.80 to  2.88 balls along the bat; speed 23.20 before, 20.10 after, leaving toward -164 deg
+  touch 3: steps 361 to 364 in touch (4 steps, 0.017 s),  1.93 to  1.99 balls along the bat; speed 9.21 before, 5.28 after, leaving toward 174 deg
+  clear of the bat for 253 steps: in 250 of them the speed down the slope grows by 0.1225 to 0.1225 balls/s (the slope's pull is 0.1225 a step) and the sideways speed does not change; in 3 the ball meets something else of the table (bumper)
+  deepest the ball's edge is inside the bat's line: 0.032 balls; highest v 6.04; fastest 30.00 balls/s; ends at step 399, x  10.55 v  9.26
+
+== b2: the same press, let go after 6 physics steps
+a real ball: a short tap: the bat rises a third of its stroke and falls back, the ball is thrown as hard as the bat moved while it pushed
+  rolling down the bat at rest: steps 0 to 117, speed 0.12 to 4.51 balls/s, 9.00 balls/s2 along the bat
+  the stroke: steps 118 to 124 in touch (7 steps, 0.029 s),  1.87 to  2.22 balls along the bat; speed 4.51 before, 27.08 after, leaving toward 119 deg
+  touch 2: steps 190 to 191 in touch (2 steps, 0.008 s),  3.43 to  3.47 balls along the bat; speed 17.79 before, 9.54 after, leaving toward -128 deg
+  clear of the bat for 68 steps: in 66 of them the speed down the slope grows by 0.1225 to 0.1225 balls/s (the slope's pull is 0.1225 a step) and the sideways speed does not change; in 2 the ball meets something else of the table (bumper)
+  deepest the ball's edge is inside the bat's line: 0.019 balls; highest v 6.31; fastest 27.30 balls/s; ends at step 197, x  10.06 v  10.34
+
+== c: the bat held up, the ball let fall from 0.7 balls above the raised tip, -0.35 balls to the gap side of the tip centre
+a real ball: a low bounce off the rubber (a third to a half of its speed back, along the line from the tip to the ball), then it rolls off the round tip into the gap or down the raised flank to the pivot
+  touch 1: steps 55 to 60 in touch (6 steps, 0.025 s),  3.34 to  3.41 balls along the bat; speed 6.74 before, 2.91 after, leaving toward 174 deg
+  clear of the bat for 239 steps: in 238 of them the speed down the slope grows by 0.1225 to 0.1225 balls/s (the slope's pull is 0.1225 a step) and the sideways speed does not change; in 1 the ball meets something else of the table (a wall, a post or a guide)
+  deepest the ball's edge is inside the bat's line: 0.000 balls; highest v 6.33; fastest 12.04 balls/s; ends at step 248, x  10.70 v  10.32
+
+== c: the bat held up, the ball let fall from 0.7 balls above the raised tip, -0.15 balls to the gap side of the tip centre
+a real ball: a low bounce off the rubber (a third to a half of its speed back, along the line from the tip to the ball), then it rolls off the round tip into the gap or down the raised flank to the pivot
+  touch 1: steps 53 to 56 in touch (4 steps, 0.017 s),  3.19 to  3.22 balls along the bat; speed 6.49 before, 2.14 after, leaving toward 128 deg
+  touch 2: steps 95 to 136 in touch (42 steps, 0.175 s),  3.37 to  3.51 balls along the bat; speed 3.15 before, 5.90 after, leaving toward -112 deg
+  clear of the bat for 155 steps: in 154 of them the speed down the slope grows by 0.1225 to 0.1225 balls/s (the slope's pull is 0.1225 a step) and the sideways speed does not change; in 1 the ball meets something else of the table (a wall, a post or a guide)
+  deepest the ball's edge is inside the bat's line: 0.006 balls; highest v 6.33; fastest 12.51 balls/s; ends at step 216, x  10.28 v  10.35
+
+== c: the bat held up, the ball let fall from 0.7 balls above the raised tip, 0 balls right over the tip centre
+a real ball: a low bounce off the rubber (a third to a half of its speed back, along the line from the tip to the ball), then it rolls off the round tip into the gap or down the raised flank to the pivot
+  touch 1: steps 52 to 59 in touch (8 steps, 0.033 s),  3.06 to  3.09 balls along the bat; speed 6.37 before, 1.41 after, leaving toward 90 deg
+  touch 2: steps 91 to 299 in touch (209 steps, 0.871 s),  3.06 to  3.06 balls along the bat; speed 2.26 before, 0.00 after, leaving toward 95 deg
+  clear of the bat for 73 steps: in 73 of them the speed down the slope grows by 0.1225 to 0.1225 balls/s (the slope's pull is 0.1225 a step) and the sideways speed does not change; in 0 the ball meets something else of the table
+  deepest the ball's edge is inside the bat's line: 0.000 balls; highest v 6.33; fastest 6.37 balls/s; ends at step 299, x  10.99 v  7.03
+
+== c: the bat held up, the ball let fall from 0.7 balls above the raised tip, 0.15 balls to the pivot side of the tip centre
+a real ball: a low bounce off the rubber (a third to a half of its speed back, along the line from the tip to the ball), then it rolls off the round tip into the gap or down the raised flank to the pivot
+  touch 1: steps 53 to 56 in touch (4 steps, 0.017 s),  2.91 to  2.91 balls along the bat; speed 6.49 before, 2.14 after, leaving toward 52 deg
+  touch 2: steps 94 to 299 in touch (206 steps, 0.858 s),  2.68 to  1.96 balls along the bat; speed 3.04 before, 0.00 after, leaving toward 85 deg
+  clear of the bat for 78 steps: in 78 of them the speed down the slope grows by 0.1225 to 0.1225 balls/s (the slope's pull is 0.1225 a step) and the sideways speed does not change; in 0 the ball meets something else of the table
+  deepest the ball's edge is inside the bat's line: 0.006 balls; highest v 6.33; fastest 6.49 balls/s; ends at step 299, x  12.03 v  7.40
+
+== c: the bat held up, the ball let fall from 0.7 balls above the raised tip, 0.35 balls to the pivot side of the tip centre
+a real ball: a low bounce off the rubber (a third to a half of its speed back, along the line from the tip to the ball), then it rolls off the round tip into the gap or down the raised flank to the pivot
+  touch 1: steps 55 to 58 in touch (4 steps, 0.017 s),  2.70 to  2.68 balls along the bat; speed 6.74 before, 2.95 after, leaving toward 18 deg
+  touch 2: steps 95 to 299 in touch (205 steps, 0.854 s),  2.20 to  1.96 balls along the bat; speed 4.41 before, 0.00 after, leaving toward 85 deg
+  clear of the bat for 82 steps: in 82 of them the speed down the slope grows by 0.1225 to 0.1225 balls/s (the slope's pull is 0.1225 a step) and the sideways speed does not change; in 0 the ball meets something else of the table
+  deepest the ball's edge is inside the bat's line: 0.000 balls; highest v 6.33; fastest 6.74 balls/s; ends at step 299, x  12.03 v  7.40
+
+== c2: the bat held up, the ball set down at rest on the raised tip, 0.1 balls to the gap side
+a real ball: rolls round the tip and falls into the gap, gaining speed all the way
+  touch 1: steps 0 to 141 in touch (142 steps, 0.592 s),  3.15 to  3.52 balls along the bat; speed 0.12 before, 5.23 after, leaving toward -116 deg
+  clear of the bat for 81 steps: in 80 of them the speed down the slope grows by 0.1225 to 0.1225 balls/s (the slope's pull is 0.1225 a step) and the sideways speed does not change; in 1 the ball meets something else of the table (a wall, a post or a guide)
+  deepest the ball's edge is inside the bat's line: 0.000 balls; highest v 7.03; fastest 12.38 balls/s; ends at step 228, x  10.30 v  10.33
+
+== d: the bat at rest, the ball let go 0.7 balls along it
+a real ball: rolls down the bat gaining speed (a rolling ball on a 25 deg bat gains 8.3 balls/s2, a sliding one up to 12.4) and drops off the tip into the gap
+  touch 1: steps 0 to 166 in touch (167 steps, 0.696 s),  0.70 to  2.92 balls along the bat; speed 0.12 before, 6.53 after, leaving toward -151 deg
+  clear of the bat for 35 steps: in 34 of them the speed down the slope grows by 0.1225 to 0.1225 balls/s (the slope's pull is 0.1225 a step) and the sideways speed does not change; in 1 the ball meets something else of the table (a wall, a post or a guide)
+  deepest the ball's edge is inside the bat's line: 0.000 balls; highest v 8.46; fastest 8.83 balls/s; ends at step 205, x  9.84 v  10.34
