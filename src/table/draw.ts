@@ -45,7 +45,7 @@ export const ZONES: { id: string; y: number; h: number; z: number }[] = [
   { id: 'first', y: 0, h: SCREEN, z: 0 },
   { id: 'marquee', y: MARQUEE_Y, h: MARQUEE_H, z: 0 },
   ...TIERS.map((id, k) => ({ id: id as string, y: TIER_Y[k]!, h: TH, z: floorZ(k) })),
-  { id: 'apron', y: APRON_Y, h: APRON_H, z: 0 },
+  { id: 'apron', y: APRON_Y, h: APRON_H, z: floorZ(TIERS.length - 1) },
   { id: 'last', y: LAST_Y, h: SCREEN, z: 0 }
 ]
 export const zoneAt = (y: number): string => (ZONES.find((z) => y < px(z.y + z.h)) ?? ZONES[ZONES.length - 1]!).id
@@ -150,7 +150,7 @@ export function fixedShapes(): Shape[] {
   out.push(box('lift.door.street', 'lift', [COLS.left - 0.2, TIER_Y[2]! + 1.7, 0.2, 0.3], px(floorZ(2)), px(floorZ(2)) + 70, 'accent'))
   out.push(disc('lift.elbow.corporate', 'lift', [COLS.lift, TIER_Y[0]! + 1.05], 0.7, px(floorZ(0)), px(floorZ(0)) + 100, 'accent'))
   out.push(disc('lift.elbow.office', 'lift', [COLS.lift, TIER_Y[1]! + 1.05], 0.7, px(floorZ(1)), px(floorZ(1)) + 100, 'accent'))
-  out.push(box('drain.plate', 'table-frame', [8.8, APRON_Y + 0.25, 2.4, 0.5], 0, 6, 'dark'))
+  out.push(box('drain.plate', 'table-frame', [8.8, APRON_Y + 0.25, 2.4, 0.5], px(floorZ(2)), px(floorZ(2)) + 6, 'dark'))
   out.push(disc('flap.highway', 'ramps', [6.9, TIER_Y[2]! + 4.9], 0.3, px(floorZ(2)), px(floorZ(2)) + 5, 'metal'))
   const hf = px(floorZ(0))
   out.push(box('hq.doorway', 'model-hq', [DOORS.x, TIER_Y[0]! + DOORS.y, DOORS.w, 0.04], hf, hf + px(DOORS.h), 'dark'))
@@ -226,7 +226,7 @@ export function movingShapes(m: Machine, lit: boolean[], hide: boolean, glow: (b
     out.push({ ...box(`target.${t.id}`, t.id.startsWith('corporate.note') ? 'model-notes' : 'targets', t.box, z, z + (up ? 44 : 3), t.kind === 'spinner' ? 'metal' : 'paper'), v: [up ? 1 : 0, m.since(t.id)] })
   }
   out.push({ ...box('plunger.rod', 'table-hardware', [PLUNGER[0] - 0.08, PLUNGER[1] + 0.55 + pull * 0.45, 0.16, 1.2 + pull * 0.25], px(floorZ(2)) + 30, px(floorZ(2)) + 46, 'metal'), v: [pull] })
-  out.push({ ...disc('plunger.knob', 'table-hardware', [PLUNGER[0], APRON_Y + 0.75 + pull * 0.7], 0.32, 0, 60, 'accent'), v: [pull] })
+  out.push({ ...disc('plunger.knob', 'table-hardware', [PLUNGER[0], APRON_Y + 0.75 + pull * 0.7], 0.32, px(floorZ(2)) + 8, px(floorZ(2)) + 68, 'accent'), v: [pull] })
   for (const l of table.lamps) {
     const f = px(floorZ(l.tier))
     const on = level[l.tier]! > 0.5

@@ -31,6 +31,7 @@ Parts `table-layout`, `table-physics`, `director`, `acting-pinball`. Branch `age
 - Events: `carpet-roll` once when the ball first rolls on the carpet, `inbox-take` and `firehouse-take` when the ball enters each scoop.
 - Acting: one state per situation, set once a step (`mood`), so no state fights another. Hits press the cursor flat for 0.5 s (bumper), 0.7 s (kick, save) or 0.45 s (the doors). The cursor leans where the ball goes (`knock` by 0.3 of the ball's speed).
 - Bumpers: the three stand in a tight cluster as approved, lids almost touching: (8.5, 3.3), (11.5, 3.3), (10, 5.7) to (8.9, 3.2), (11.1, 3.2), (10, 5.1). The radius of the collider stays 0.75. No ball passes between them now, so the three openings `bumpers.1.2`, `bumpers.1.3`, `bumpers.2.3` are gone. STATED: the approved lid is about 1.2 balls in radius, the built one 0.95 (`CUP.lidR` 76 px, the frame maker's).
+- Apron (the Builder's ruling, 01:41Z, from table_framer's measurement): the zone `apron` of `ZONES` in `src/table/draw.ts` lies at the street floor's height, `floorZ(2)`, not at page level, so the anchors of the frame and the hardware there stand 3 balls lower. The drain plate and the plunger knob of the plain draw list went down with it. The ball's paths do not read the zone: paths, M10 and the take are unchanged.
 - Coffee: the chute drops the ball on the top of the cluster, which throws it at the cubicles; it runs down the left side to a bat. Every flip is sent at bumper 3 from below. Bumper 3 throws the ball at the slingshot of its side and the slingshot throws it back under bumper 3, so it is batted about under the cluster, where the approved picture has it. From 17.9 s every throw goes to the inbox.
 - Reply All: the clear ball leaves the inbox first (20.72 s, kick (-10.8, 1.2), was 21.4 s and (-7, 3)) and the three steel balls pour out after it at 20.78, 20.88 and 20.98 s on nearly the same arc (were 20.0, 20.35, 20.7, before the clear ball, which then ran into them). At the key `reply-all` (21.1 s) the clear ball is under bumper 3 with the steel balls in a line behind it, as approved.
 - The doors press lasts 0.45 s (was 1.6): at the key `lobby-doors` (13.8 s) a cursor pressed flat was seen edge on from the low camera and read as a line.
@@ -61,4 +62,5 @@ Between searches I follow one ball with a fixed player that presses when the hin
 | inlane floor | (4.65, 8.0) to (6.5, 8.62) | (4.65, 8.05) to (6.45, 8.5) |
 | shoulder edge start | (6.5, 9.1) | (6.45, 9.45) |
 | bumpers 1, 2, 3 | (8.5, 3.3) (11.5, 3.3) (10, 5.7) | (8.9, 3.2) (11.1, 3.2) (10, 5.1) |
+| apron zone floor | z 0 (page level) | floorZ(2), the street floor |
 | feed tube bend | MARQUEE_Y - 0.6 to + 1.4 | MARQUEE_Y + 0.15 to + 2.15 |
