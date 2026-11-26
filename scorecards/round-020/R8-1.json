@@ -1,0 +1,44 @@
+{
+ "critic": "R8",
+ "score": 7,
+ "pass": true,
+ "model": "kimi_k3",
+ "set": "A: the site as web pages: the six pages at rest, the application with its controls on, the message page for touch devices, and the controls at their real size",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "the three dropdown controls on Step 2 (Contact number, Date of birth, Audio volume)",
+   "what": "each renders as a plain empty bar with only a chevron; there is no selected value or placeholder text, so at delivery size they read as blank, possibly broken inputs rather than controls a visitor could use",
+   "fix": "give every dropdown a visible placeholder or currently selected value, e.g. 'Select...', so its state is legible before interaction"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "the lower two-thirds of Steps 3, 4 and 5 (also set-A-05.png and set-A-02.png)",
+   "what": "content is parked in the top band and the rest of the page is bare background; at rest each step looks half-finished rather than deliberately sparse, with the mechanism on Step 3 hanging into a large void",
+   "fix": "either vertically centre the main content of each step or bring the useful content up (grow the panel/control cluster) so each page balances within the viewport"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01.png",
+   "where": "the three perk cards (Unlimited PTO, Competitive Salary, Flexible Hours)",
+   "what": "text sits at the top with an empty bottom half and a divider rule under the description that separates nothing; the cards look like placeholders awaiting content",
+   "fix": "reduce card height to hug the content or distribute heading, body and rule through the card so the empty area at the bottom disappears"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-02.png",
+   "where": "the arrow cursor sitting mid-page (also present in set-A-01, set-A-04 and set-A-05, each at a different position)",
+   "what": "a baked-in cursor floats over otherwise clean stills; on a page at rest it reads as capture noise, not part of the site",
+   "fix": "capture or compose the at-rest stills without the cursor, or place it consistently on the primary action if it is meant to show intent"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-04.png",
+   "where": "bottom end of the tube mechanism, lower right",
+   "what": "the tube descending from the funnel dish fades out mid-page with no socket, cut line or floor contact, so the mechanism reads as clipped artwork rather than something bolted to the page",
+   "fix": "end the tube in a collar or socket element, or fade it out with a clear shadow so it reads as receding rather than truncated"
+  }
+ ]
+}
