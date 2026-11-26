@@ -6,7 +6,8 @@ import { look } from '../../../post/look'
 import { materials } from '../../../shell/materials'
 import { arc, circle, merge, profile, roundedRect, sweep, type ProfilePoint, type Ring } from '../../../shell/solids'
 import { DIAL, DIAL_BODY, dialPlate, HUB_ORANGE_LIFT } from '../layout'
-import { contact } from './slot-kit'
+import { studio } from '../../../post/studio'
+import { contact, outline, srgb } from './slot-kit'
 
 const B = DIAL_BODY
 const H = B.tall
@@ -148,26 +149,21 @@ export function hubGeometry(): THREE.BufferGeometry {
   const points: ProfilePoint[] = [[0, H - B.hubSeatDeep, true], [0, H + foot - 0.8], [0.8, H + foot], [step, H + foot + 0.3]]
   for (let i = 1; i <= n; i++) {
     const a = (i / n) * (Math.PI / 2)
-    points.push([Math.min(r - 0.01, step + (r - step) * (1 - Math.pow(Math.cos(a), 0.9))), H + foot + 0.3 + (dome - 0.3) * Math.pow(Math.sin(a), 0.8)])
+    points.push([Math.min(r - 0.01, step + (r - step) * (1 - Math.pow(Math.cos(a), B.hubCrown))), H + foot + 0.3 + (dome - 0.3) * Math.pow(Math.sin(a), B.hubShoulder)])
   }
   return sweep(circle(r, 72), profile(points))
 }
 
 // The floor of the seat the hub stands in: a dark ring a little under the wheel's face.
 // The boss in the middle of the wheel, a step proud of the turned face and of the same metal, and the fine seam round it.
-export function innerGeometry(): { disc: THREE.BufferGeometry; seam: THREE.BufferGeometry } {
+export function innerGeometry(): { disc: THREE.BufferGeometry; seam: THREE.BufferGeometry; ring: THREE.BufferGeometry } {
   const r = B.inner
-  const disc = sweep(circle(r, 96), profile([[0, H - 0.2, true], [0, H + B.innerTall - 0.6, true], [0.7, H + B.innerTall, true]]))
-  const p = disc.getAttribute('position')
-  const uv = new Float32Array(p.count * 2)
-  for (let i = 0; i < p.count; i++) {
-    uv[i * 2] = p.getX(i) / B.turned + 0.5
-    uv[i * 2 + 1] = p.getY(i) / B.turned + 0.5
-  }
-  disc.setAttribute('uv', new THREE.BufferAttribute(uv, 2))
-  disc.setAttribute('color', new THREE.BufferAttribute(new Float32Array(p.count * 3).fill(1), 3))
+  const disc = sweep(circle(r - B.innerRing + 0.3, 96), profile([[0, H - 0.2, true], [0, H + B.innerTall - 0.2, true], [0.4, H + B.innerTall, true]]))
+  const w = B.innerRing
+  const t = B.innerRingTall
+  const ring = sweep(circle(r, 96), profile([[0, H - 0.2, true], [0, H + t - 0.5, true], [0.5, H + t, true], [w - 0.5, H + t, true], [w, H + t - 0.5, true], [w, H + B.innerTall - 0.1, true]]), false)
   const seam = sweep(circle(r + B.innerSeam, 96), [flat(0, H + 0.06), flat(B.innerSeam + 0.6, H + 0.06)], false)
-  return { disc, seam }
+  return { disc, seam, ring }
 }
 
 export function hubRingGeometry(): THREE.BufferGeometry {
@@ -206,18 +202,35 @@ export function glintGeometry(): THREE.BufferGeometry {
   return g
 }
 
-// The finger stop: a bar that stands on the bezel's edge and reaches in over the wheel.
+// The finger stop: a flat wedge that stands on the bezel's edge and reaches in over the wheel, broad at the bezel and narrow at its tip.
+export function wedge(long: number, wide: number, tip: number, n = 12): ReturnType<typeof roundedRect> {
+  const r0 = tip / 2
+  const r1 = wide / 2
+  const x0 = -long / 2 + r0
+  const x1 = long / 2 - r1
+  const lean = Math.asin((r1 - r0) / (x1 - x0))
+  const pts: [number, number, number, number][] = []
+  for (let i = 0; i <= n; i++) {
+    const a = -Math.PI / 2 - lean + ((Math.PI + 2 * lean) * i) / n
+    pts.push([x1 + r1 * Math.cos(a), r1 * Math.sin(a), Math.cos(a), Math.sin(a)])
+  }
+  for (let i = 0; i <= n; i++) {
+    const a = Math.PI / 2 + lean + ((Math.PI - 2 * lean) * i) / n
+    pts.push([x0 + r0 * Math.cos(a), r0 * Math.sin(a), Math.cos(a), Math.sin(a)])
+  }
+  return outline(pts)
+}
+
 export function stopGeometry(): THREE.BufferGeometry {
   const long = B.stopOut - B.stopIn
   const mid = (B.stopOut + B.stopIn) / 2
   const z0 = H + B.stopClear
   const z1 = z0 + B.stopTall
-  const round = 2.2
-  const bar = sweep(roundedRect(long, B.stopWide, B.stopWide / 2, 10), profile([[0.6, z0, true], [0, z0 + 0.6], [0, z1 - round], ...arc(0, z1 - round, round, round, 6).slice(1), [B.stopWide / 2 - 0.4, z1 + 0.25]]))
+  const bar = sweep(wedge(long, B.stopWide, B.stopTip), profile([[0.5, z0, true], [0, z0 + 0.5, true], [0, z1 - 0.9, true], [0.9, z1, true], [B.stopTip / 2 - 0.4, z1 + 0.12]]))
   bar.translate(mid, 0, 0)
   const footLong = B.stopOut - (DIAL.r - B.bezel + 1.5)
-  const foot = sweep(roundedRect(footLong, B.stopWide - 1.6, (B.stopWide - 1.6) / 2, 10), profile([[0, H - B.stopFoot, true], [0, z0 + 0.4, true]]), false)
-  foot.translate(B.stopOut - footLong / 2 - 0.8, 0, 0)
+  const foot = sweep(roundedRect(footLong, B.stopWide - 3, (B.stopWide - 3) / 2, 10), profile([[0, H - B.stopFoot, true], [0, z0 + 0.4, true]]), false)
+  foot.translate(B.stopOut - footLong / 2 - 1.5, 0, 0)
   const g = merge([bar, foot])
   g.rotateZ(-DIAL.stop)
   return g
@@ -275,6 +288,7 @@ let hubMaterial: THREE.MeshPhysicalMaterial | null = null
 let housingMaterial: THREE.MeshPhysicalMaterial | null = null
 let stopMaterial: THREE.MeshPhysicalMaterial | null = null
 let seatMaterial: THREE.MeshPhysicalMaterial | null = null
+let innerMaterial: THREE.MeshPhysicalMaterial | null = null
 let glintMaterial: THREE.MeshBasicMaterial | null = null
 
 // The housing and its base ring are the shared steel, a shade darker: the approved housing is a dark turned ring round a pale wheel.
@@ -355,14 +369,14 @@ function lacquered(shared: THREE.MeshPhysicalMaterial): THREE.MeshPhysicalMateri
   return m
 }
 
-interface Kit { inner: THREE.BufferGeometry; seam: THREE.BufferGeometry; foot: THREE.BufferGeometry; seat: THREE.BufferGeometry; gap: THREE.BufferGeometry; groove: THREE.BufferGeometry; housing: THREE.BufferGeometry; plate: THREE.BufferGeometry; face: THREE.BufferGeometry; edges: THREE.BufferGeometry; holes: THREE.BufferGeometry; glint: THREE.BufferGeometry; hub: THREE.BufferGeometry; hubRing: THREE.BufferGeometry; stop: THREE.BufferGeometry; shade: THREE.BufferGeometry; cast: THREE.BufferGeometry }
+interface Kit { inner: THREE.BufferGeometry; innerRing: THREE.BufferGeometry; seam: THREE.BufferGeometry; foot: THREE.BufferGeometry; seat: THREE.BufferGeometry; gap: THREE.BufferGeometry; groove: THREE.BufferGeometry; housing: THREE.BufferGeometry; plate: THREE.BufferGeometry; face: THREE.BufferGeometry; edges: THREE.BufferGeometry; holes: THREE.BufferGeometry; glint: THREE.BufferGeometry; hub: THREE.BufferGeometry; hubRing: THREE.BufferGeometry; stop: THREE.BufferGeometry; shade: THREE.BufferGeometry; cast: THREE.BufferGeometry }
 let kit: Kit | null = null
 
 function geometries(): Kit {
   if (!kit) {
     const seat = seatGeometry()
     const inner = innerGeometry()
-    kit = { inner: inner.disc, seam: inner.seam, foot: contact(circle(DIAL.r + B.seat + B.footLine, 120), B.footLine + 0.8), seat: seat.collar, gap: seat.gap, groove: grooveGeometry(), housing: housingGeometry(), plate: plateGeometry(), face: faceGeometry(), edges: edgesGeometry(), holes: holesGeometry(), glint: glintGeometry(), hub: hubGeometry(), hubRing: hubRingGeometry(), stop: stopGeometry(), shade: holeShadeGeometry(), cast: castGeometry() }
+    kit = { inner: inner.disc, innerRing: inner.ring, seam: inner.seam, foot: contact(circle(DIAL.r + B.seat + B.footLine, 120), B.footLine + 0.8), seat: seat.collar, gap: seat.gap, groove: grooveGeometry(), housing: housingGeometry(), plate: plateGeometry(), face: faceGeometry(), edges: edgesGeometry(), holes: holesGeometry(), glint: glintGeometry(), hub: hubGeometry(), hubRing: hubRingGeometry(), stop: stopGeometry(), shade: holeShadeGeometry(), cast: castGeometry() }
   }
   return kit
 }
@@ -374,7 +388,7 @@ function mesh(geometry: THREE.BufferGeometry, material: THREE.Material, cast = t
   return m
 }
 
-interface Kept { body: THREE.Group; wheel: THREE.Group; face: THREE.Mesh; shades: THREE.InstancedMesh; hub: THREE.Mesh; stop: THREE.Mesh; plate: THREE.Mesh; cast: THREE.Mesh; seat: THREE.Mesh; glint: THREE.Mesh }
+interface Kept { ring: THREE.Mesh; body: THREE.Group; wheel: THREE.Group; face: THREE.Mesh; shades: THREE.InstancedMesh; hub: THREE.Mesh; stop: THREE.Mesh; plate: THREE.Mesh; cast: THREE.Mesh; seat: THREE.Mesh; glint: THREE.Mesh }
 const place = new THREE.Matrix4()
 
 const plainDial: PartMaker = {
@@ -414,7 +428,10 @@ const plainDial: PartMaker = {
     wheel.add(face)
     wheel.add(mesh(g.edges, housingMaterial))
     wheel.add(mesh(g.holes, m.aluminiumSatin))
-    wheel.add(mesh(g.inner, faceMaterial, false))
+    innerMaterial ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(B.innerTone), roughness: B.innerRough, metalness: 0, clearcoat: 0.2, clearcoatRoughness: 0.5, specularIntensity: 0.4, name: 'dial-inner' }))
+    wheel.add(mesh(g.inner, innerMaterial, false))
+    const ring = mesh(g.innerRing, m.aluminiumSatin)
+    wheel.add(ring)
     const hubRing = mesh(g.hubRing, m.gap, false)
     hubRing.position.z = B.innerTall + B.hubSeatDeep - 0.1
     wheel.add(hubRing)
@@ -440,7 +457,7 @@ const plainDial: PartMaker = {
     cast.receiveShadow = false
     cast.position.z = B.castOver
     root.add(cast)
-    root.userData.dial = { body, wheel, face, shades, hub, stop, plate, cast, seat, glint } satisfies Kept
+    root.userData.dial = { ring, body, wheel, face, shades, hub, stop, plate, cast, seat, glint } satisfies Kept
     return root
   },
   pose(o: THREE.Object3D, s: Shape, _ctx: RealContext): void {
@@ -455,6 +472,7 @@ const plainDial: PartMaker = {
     kept.hub.scale.z = swell
     kept.hub.position.z = H * (1 - swell)
     kept.stop.position.z = -(B.stopClear + B.stopTall + 0.5) * low
+    kept.ring.position.z = -B.innerRingTall * low
     kept.seat.scale.z = Math.max(0.1, 1 - low)
     kept.glint.visible = low < 0.5
     kept.glint.position.z = H * (1 - swell) + (H + B.glintUp) * swell

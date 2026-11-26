@@ -52,10 +52,10 @@ export const HUB_ORANGE_LIFT = 1.6
 
 export const DIAL_BODY = {
   tall: TOP + 2 - TRAY_Z, rest: 1.6, plateLeast: 0.4, below: 2, plate: 6.6, bezel: 5.5, bezelDrop: 0.8, bezelChamfer: 2, bezelSlope: 0.9, wheel: 92.9, thick: 5.2, chamfer: 1, holeRim: 0.8, holeChamfer: 2.6,
-  hub: 30, hubTall: 17, hubFlat: 0.02, hubCoat: 0.05, hubRough: 0.3, hubIor: 1.5, hubEnv: 0.5, hubFoot: 3, hubStep: 3.2, hubSeat: 3, hubSeatDeep: 1.8, turned: 256, cut: 0.012, faceRough: 0.17, faceStretch: 1, faceLight: 1.45,
-  housingDark: 1, housingRough: 0.36, seat: 10, seatDark: 1, seatGap: 1.2, seatTall: 10, seatSlope: 1, stopIn: 71, stopOut: 111, stopWide: 15, stopClear: 2.4, stopTall: 3.6, stopFoot: 12, stopDark: 0.45,
-  inner: 45, innerTall: 0.35, innerSeam: 0.5, footLine: 1.5,
-  grooveOver: 0.15, grooveUnder: 3, fanAxis: 0.2, fanLow: 0.78, fanGain: 0.5, fanSharp: 1.6,
+  hub: 30, hubTall: 14, hubFlat: 0.02, hubCoat: 0.22, hubRough: 0.42, hubIor: 1.5, hubEnv: 0.4, hubFoot: 3.4, hubStep: 3.2, hubShoulder: 0.5, hubCrown: 0.55, hubSeat: 3, hubSeatDeep: 1.8, turned: 256, cut: 0.012, faceRough: 0.27, faceStretch: 1, faceLight: 1.5,
+  housingDark: 1.18, housingRough: 0.46, seat: 10, seatDark: 0.92, seatGap: 0.6, seatTall: 10, seatSlope: 1, stopIn: 69, stopOut: 112, stopWide: 19, stopTip: 7, stopClear: 2.4, stopTall: 3, stopFoot: 12, stopDark: 0.62,
+  inner: 49, innerTall: 0.35, innerSeam: 0.5, innerRing: 2.4, innerRingTall: 1.1, innerTone: 0xdcdad3, innerRough: 0.55, footLine: 0.7,
+  grooveOver: 0.15, grooveUnder: 4.2, fanAxis: 0.2, fanLow: 0.78, fanGain: 0.5, fanSharp: 1.6,
   glint: 0.5, glintLong: 13, glintWide: 10, glintOut: 9, glintUp: 17.3,
   shade: 0.6, shadeReach: 0.78, cast: 0.72, castIn: 8, castOut: 36, castAway: 34, castOver: 0.2
 }
@@ -101,7 +101,9 @@ export function sheetScale(id: string): number {
 
 export const ROW_TITLE = { font: 'inter-600', px: 26 }
 export const ROW_HELPER = { font: 'inter-400', px: 20 }
-export const REEL_TYPE = { font: 'inter-600', px: 34, align: 'centre' as const }
+export const REEL_TYPE = { font: 'inter-600', px: 48, align: 'centre' as const }
+export const YEAR_TYPE = { font: 'inter-600', px: 34, align: 'centre' as const }
+export const reelType = (r: number): typeof REEL_TYPE => (r === 2 ? YEAR_TYPE : REEL_TYPE)
 export const DIAL_TYPE = { font: 'inter-600', px: 22, align: 'centre' as const }
 
 export const reelId = (r: number, legend: string): string => `reel-${r}-${legend}`
@@ -114,7 +116,7 @@ function rowNodes(i: number, low: boolean): LayoutNode[] {
   const when = (cond: string): string[] => (i === 0 ? [`${name}-${cond}`] : [`${name}-${low ? 'low' : 'up'}-${cond}`])
   const capY = y + (FH - block(TYPE.value.font, 'X', TYPE.value.px).cap) / 2
   const value = (suffix: string, key: string, cond: string): LayoutNode =>
-    text(`${id}-${suffix}`, key, { ...TYPE.value, wrap: FW - 116 }, FX + PAD, capY, { part: 'type', on: VALUE_Z, states: when(cond) })
+    text(`${id}-${suffix}`, key, { ...TYPE.value, wrap: FW - 116, ...(cond === 'done' ? { ink: 'soft' } : {}) }, FX + PAD, capY, { part: 'type', on: VALUE_Z, states: when(cond) })
   const values: LayoutNode[] = []
   if (name === 'phone') values.push(value('typed', 'runtime:step2.phone', 'typing'), value('value', 'copy:step2.rows.phone.gaveUp', 'done'))
   if (name === 'birth') values.push(value('value', 'copy:step2.rows.birth.recorded', 'done'))
@@ -145,10 +147,11 @@ function dialNodes(): LayoutNode[] {
 function slotNodes(): LayoutNode[] {
   const s = SLOT
   const reels: LayoutNode[] = []
-  const cap = block(REEL_TYPE.font, '0', REEL_TYPE.px).cap
   for (let r = 0; r < 3; r++) {
+    const type = reelType(r)
+    const cap = block(type.font, '0', type.px).cap
     const marks = s.strips[r]!.map((legend) =>
-      text(reelId(r, legend), `data:step2.${s.names[r]}.${legend}`, REEL_TYPE, s.reelX(r) + s.reelW / 2, s.reelY + (s.reelH - cap) / 2, { part: 'type', on: TOP + 14, states: [reelId(r, legend)] }))
+      text(reelId(r, legend), `data:step2.${s.names[r]}.${legend}`, type, s.reelX(r) + s.reelW / 2, s.reelY + (s.reelH - cap) / 2, { part: 'slot', on: TOP + 14, states: [reelId(r, legend)] }))
     reels.push(node(`slot-reel-${r}`, 'slotReel', [s.reelX(r), s.reelY, s.reelW, s.reelH], { part: 'slot', height: TOP + 14, floor: TOP + 10, tone: 'paper', r: 6, children: marks }))
   }
   const window = node('slot-window', 'slotWindow', [s.x + 10, s.y + 14, s.w - 20, s.h - 28], { part: 'slot', height: TOP + 10, floor: TOP + 8, tone: 'dark', r: 8, children: reels })

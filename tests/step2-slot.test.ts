@@ -176,20 +176,26 @@ describe('the slot machine', () => {
     expect(coinPose(1, 2, 12, 0.4, 0.5, 3, m).elements).toEqual(a)
   })
 
-  it('hangs the lever from its bracket when it is pulled, and keeps the rod round', () => {
+  it('swings the lever on its socket when it is pulled, and keeps the rod round', () => {
     const { ctx } = context([])
     const rest = shapes('', 0).find((s) => s.id === 'slot-arm')!
     const pulled = shapes('', 1).find((s) => s.id === 'slot-arm')!
+    const V = SLOT_LOOK.lever
+    const climb = V.head - V.foot
     const o = slot!.make(rest, ctx)
     slot!.pose!(o, rest, ctx)
     const rod = meshes(o)[0]!
+    const swing = rod.parent!
     expect(rod.scale.x).toBe(1)
     expect(rod.scale.z).toBe(1)
-    expect(rod.scale.y).toBeGreaterThan(rest.h)
-    expect(rod.parent!.rotation.z).toBe(0)
+    expect(rod.scale.y + V.bend).toBeCloseTo(Math.hypot(rest.h, climb), 6)
+    expect(swing.rotation.z).toBe(0)
+    expect(swing.rotation.x).toBeCloseTo(Math.atan2(climb, rest.h), 6)
+    expect(swing.position.y).toBeCloseTo(-rest.h / 2, 6)
     slot!.pose!(o, pulled, ctx)
-    expect(rod.scale.y).toBeGreaterThan(pulled.h)
-    expect(rod.parent!.rotation.z).toBeCloseTo(Math.PI, 6)
+    expect(rod.scale.y + V.bend).toBeCloseTo(Math.hypot(pulled.h, climb), 6)
+    expect(swing.rotation.x).toBeCloseTo(Math.atan2(climb, -pulled.h), 6)
+    expect(swing.position.y).toBeCloseTo(pulled.h / 2, 6)
     expect(pulled.y).toBe(pivot)
     expect(rest.y + rest.h).toBe(pivot)
   })

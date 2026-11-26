@@ -210,7 +210,7 @@ describe('step 2, the film', () => {
     }
     t.seek(15.2)
     for (const id of ['crank-arm', 'crank-grip']) expect(part(id).moved, id).toBe(true)
-    t.seek(9.1)
+    t.seek(8.9)
     expect(part('slot-knob').moved).toBeUndefined()
     t.seek(9.35)
     expect(part('slot-knob').moved).toBe(true)
