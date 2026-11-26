@@ -1,35 +1,35 @@
 {
   "folder": "frame-keeper",
-  "pushed": "2026-11-26T06:06:31.107Z",
-  "commit": "73124fdfe84a9bcf2c9bdb542db72db73975ef2b",
+  "pushed": "2026-11-26T06:18:08.336Z",
+  "commit": "3254134b425452bbbd8ad70aaed1cdfb6944d34d",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-table-wide-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T06:02:08.940Z",
+      "caption": "Still key-table-wide-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T06:16:09.263Z",
       "by": "frame-keeper",
-      "from": "out/work/stills/key-table-wide-hd-draft.png"
+      "from": "out/work/stills/key-table-wide-hd-review.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Still key-table-wide-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T06:06:14.398Z",
+      "caption": "Still key-last-save-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T06:16:54.652Z",
       "by": "frame-keeper",
-      "from": "out/work/stills/key-table-wide-hd-draft.png"
+      "from": "out/work/stills/key-last-save-hd-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Marquee title, approved above, draft below at 73124fdf: the type's run on the marquee's own print material, dark warm letters (76,48,35) against approved (91,56,39); it was near black",
-      "time": "2026-11-26T06:06:29.657Z",
+      "caption": "Still key-tier-street-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T06:17:32.466Z",
       "by": "frame-keeper",
-      "from": "out/work/looks/files/20261126060629-cmp-title-0607.png"
+      "from": "out/work/stills/key-tier-street-hd-draft.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "table-wide, approved above, draft below at 73124fdf",
-      "time": "2026-11-26T06:06:29.891Z",
+      "caption": "table-wide at the review tier, approved above, ours below at b225b629",
+      "time": "2026-11-26T06:18:06.988Z",
       "by": "frame-keeper",
-      "from": "out/work/looks/files/20261126060629-cmp-table-wide-0607.png"
+      "from": "out/work/looks/files/20261126061806-cmp-table-wide-review-0617.png"
     }
   ]
 }
