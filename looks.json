@@ -1,35 +1,35 @@
 {
   "folder": "boss-fight",
-  "pushed": "2026-11-26T02:45:28.714Z",
-  "commit": "93e9298752f4d6f21f8b7367400078596824ccec",
+  "pushed": "2026-11-26T03:09:19.433Z",
+  "commit": "ca8dfcc410077a339a164701bc5730301b4f2538",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still boss-boss_slabs-0p3935-film-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T02:43:23.200Z",
+      "caption": "Key boss-fight at 12.5 s, review tier: approved above, build below (three slabs in the air)",
+      "time": "2026-11-26T03:09:17.628Z",
       "by": "boss-fight",
-      "from": "out/work/stills/boss-boss_slabs-0p3935-film-hd-draft.png"
+      "from": "out/work/looks/files/20261126030917-cmp-boss-fight.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "The stage sheet boss-stages, approved above and the build below: four stages whole, none touching",
-      "time": "2026-11-26T02:45:27.213Z",
+      "caption": "Key boss-down at 29.0 s, review tier: approved above, build below",
+      "time": "2026-11-26T03:09:17.873Z",
       "by": "boss-fight",
-      "from": "out/work/looks/files/20261126024527-cmp-stages.jpg"
+      "from": "out/work/looks/files/20261126030917-cmp-boss-down.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "A firing frame (11.76 s, draft): the flash and the slab at the mouth of barrel 2, twice its size",
-      "time": "2026-11-26T02:45:27.457Z",
+      "caption": "Stage sheet boss-stages after the last body merge: approved above, build below",
+      "time": "2026-11-26T03:09:18.103Z",
       "by": "boss-fight",
-      "from": "out/work/looks/files/20261126024527-flash.jpg"
+      "from": "out/work/looks/files/20261126030918-cmp-stages.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "The key boss-fight at 02:30 UTC, approved above and the build below",
-      "time": "2026-11-26T02:45:27.681Z",
+      "caption": "Key boss-fight with the cursor turned to the boss (the NEEDS patch applied, draft tier): approved above, build below",
+      "time": "2026-11-26T03:09:18.326Z",
       "by": "boss-fight",
-      "from": "out/work/looks/files/20261126024527-cmp-boss-fight.jpg"
+      "from": "out/work/looks/files/20261126030918-cmp-aim.jpg"
     }
   ]
 }
