@@ -1,35 +1,35 @@
 {
   "folder": "look-finish",
-  "pushed": "2026-11-26T11:31:08.703Z",
-  "commit": "e613986e94a4866c2bd931cee10499484f02cb75",
+  "pushed": "2026-11-26T11:41:36.172Z",
+  "commit": "bbb5d8bcc73f09385ec50083aecf8ac1cab691f8",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-decision-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T11:26:38.297Z",
+      "caption": "Still key-step2-rest-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T11:40:44.659Z",
       "by": "look-finish",
-      "from": "out/work/stills/key-decision-hd-draft.png"
+      "from": "out/work/stills/key-step2-rest-hd-review.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "A: waiting Continue on step2-rest at review: approved, before, after",
-      "time": "2026-11-26T11:31:06.951Z",
+      "caption": "Still key-decision-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T11:41:09.989Z",
       "by": "look-finish",
-      "from": "out/work/look-finish/a/A-step2-rest-continue.jpg"
+      "from": "out/work/stills/key-decision-hd-review.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "A: waiting Continue on step2-dial at review: approved, before, after",
-      "time": "2026-11-26T11:31:07.228Z",
+      "caption": "B: bare paper on step2-rest, decision, boss-fight, marketing-top at review: approved, before, after",
+      "time": "2026-11-26T11:41:34.778Z",
       "by": "look-finish",
-      "from": "out/work/look-finish/a/A-step2-dial-continue.jpg"
+      "from": "out/work/look-finish/b/B-paper-four.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "A: boss-fight, marketing-top, decision in draft after A: nothing else moved",
-      "time": "2026-11-26T11:31:07.504Z",
+      "caption": "B: paper by the seal on marketing-top at review: approved, before, after",
+      "time": "2026-11-26T11:41:35.011Z",
       "by": "look-finish",
-      "from": "out/work/look-finish/a/drafts.jpg"
+      "from": "out/work/look-finish/b/B-marketing-top-paper-seal.jpg"
     }
   ]
 }
