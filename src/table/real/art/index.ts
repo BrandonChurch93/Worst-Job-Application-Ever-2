@@ -141,5 +141,5 @@ function drop(o: THREE.Object3D): void {
 }
 
 export const parts: Record<string, PartMaker | null> = {
-  'tier-art': whole('tier-art', { version: 'art-15', ready: () => pictures.every((p) => p.ready()), build, pose, drop })
+  'tier-art': whole('tier-art', { version: 'art-19', ready: () => pictures.every((p) => p.ready()), build, pose, drop })
 }

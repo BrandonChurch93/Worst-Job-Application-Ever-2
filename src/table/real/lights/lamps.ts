@@ -16,7 +16,7 @@ const BRASS: RGB = [0.83, 0.6, 0.27]
 const SOCKET: RGB = [0.035, 0.035, 0.04]
 const SEAT: RGB = [0.78, 0.64, 0.42]
 const DARK: RGB = [0.1, 0.1, 0.11]
-const WARM: RGB = [1.0, 0.82, 0.58]
+const WARM: RGB = [1.0, 0.78, 0.5]
 
 const paint = (g: THREE.BufferGeometry, colour: (x: number, y: number, z: number) => RGB, lane = -1): THREE.BufferGeometry => {
   const flat = g.index ? g.toNonIndexed() : g
