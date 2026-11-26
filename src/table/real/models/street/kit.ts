@@ -255,7 +255,7 @@ export function beaconLens(): THREE.BufferGeometry {
     const a = (i / 22) * (Math.PI / 2)
     dome.push([25 * Math.pow(Math.cos(a), 0.62), 9 + 26 * Math.sin(a)])
   }
-  g.lathe(dome, 0, 0, 160, c, { base: 8, wave: [32, 0.045], soft: true })
+  g.lathe(dome, 0, 0, 160, c, { base: 8, wave: [32, 0.026], lean: 2.8, soft: true })
   return g.done()
 }
 

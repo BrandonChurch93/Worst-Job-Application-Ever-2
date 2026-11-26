@@ -111,7 +111,7 @@ export class Geo {
   }
 
   // A turned thing: (radius, height) pairs from the bottom up, spun round a centre. Smooth round the axis, crisp along the outline. `wave` flutes it: [count, depth].
-  lathe(outline: V2[], cx: number, cy: number, segs: number, col: RGB | ((step: number) => RGB), o: { base?: number; arc?: V2; kind?: number; wave?: V2; soft?: boolean } = {}): this {
+  lathe(outline: V2[], cx: number, cy: number, segs: number, col: RGB | ((step: number) => RGB), o: { base?: number; arc?: V2; kind?: number; wave?: V2; soft?: boolean; lean?: number } = {}): this {
     const base = o.base ?? 0
     const arc = o.arc ?? [0, Math.PI * 2]
     const kind = o.kind ?? 0
@@ -147,7 +147,7 @@ export class Geo {
         const corner = (r: number, z: number, a: number, n: V2): [V3, V3] => {
           const c = Math.cos(a)
           const s = Math.sin(a)
-          const lean = wave ? wave[1] * wave[0] * 0.5 * Math.sin(a * wave[0]) : 0
+          const lean = wave ? wave[1] * wave[0] * 0.5 * Math.sin(a * wave[0]) * (o.lean ?? 1) : 0
           return [[cx + rad(r, a) * c, cy + rad(r, a) * s, base + z], unit([n[0] * c - lean * s * n[0], n[0] * s + lean * c * n[0], n[1]])]
         }
         const rm = Math.max(1, (p[0] + q[0]) / 2)

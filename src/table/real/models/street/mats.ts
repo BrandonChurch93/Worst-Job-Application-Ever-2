@@ -193,11 +193,11 @@ export function lensOf(z: Zone, name: string, colour: [number, number, number]):
   )
   m.userData.lit = true
   // The dome gathers its lamp: bright where the eye looks straight through it at the bulb, deep in colour toward its rim.
-  over(m, 'wja-studio-street-lens-5', (shader) => {
+  over(m, 'wja-studio-street-lens-8', (shader) => {
     shader.vertexShader = 'varying vec3 vWsCore;\nvarying float vWsRad;\n' + shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n\tvWsCore = ( modelViewMatrix * vec4( 0.0, 0.0, 21.0, 1.0 ) ).xyz;\n\tvWsRad = length( ( modelViewMatrix * vec4( 25.0, 0.0, 0.0, 0.0 ) ).xyz );')
     shader.fragmentShader = 'varying vec3 vWsCore;\nvarying float vWsRad;\n' + shader.fragmentShader.replace(
       '#include <emissivemap_fragment>',
-      '#include <emissivemap_fragment>\n\t{\n\t\tfloat wsF = clamp( dot( normalize( vNormal ), normalize( vViewPosition ) ), 0.0, 1.0 );\n\t\tfloat wsL = max( totalEmissiveRadiance.r, max( totalEmissiveRadiance.g, totalEmissiveRadiance.b ) );\n\t\tvec3 wsHue = totalEmissiveRadiance / max( wsL, 0.0001 );\n\t\tfloat wsOff = length( cross( normalize( vViewPosition ), vWsCore ) ) / vWsRad;\n\t\tfloat wsHot = exp( - wsOff * wsOff * 9.0 );\n\t\tfloat wsHalo = exp( - wsOff * wsOff * 2.2 );\n\t\ttotalEmissiveRadiance = totalEmissiveRadiance * ( 0.07 + 0.3 * pow( wsF, 1.5 ) + 0.5 * wsHalo * ( 0.55 + 0.45 * wsF ) ) + mix( wsHue, vec3( 1.0, 0.8, 0.56 ), 0.7 ) * wsL * 2.6 * wsHot * ( 0.6 + 0.4 * wsF );\n\t}'
+      '#include <emissivemap_fragment>\n\t{\n\t\tfloat wsF = clamp( dot( normalize( vNormal ), normalize( vViewPosition ) ), 0.0, 1.0 );\n\t\tfloat wsL = max( totalEmissiveRadiance.r, max( totalEmissiveRadiance.g, totalEmissiveRadiance.b ) );\n\t\tvec3 wsHue = totalEmissiveRadiance / max( wsL, 0.0001 );\n\t\tfloat wsOff = length( cross( normalize( vViewPosition ), vWsCore ) ) / vWsRad;\n\t\tfloat wsHot = exp( - wsOff * wsOff * 9.0 );\n\t\tfloat wsHalo = exp( - wsOff * wsOff * 2.2 );\n\t\ttotalEmissiveRadiance = totalEmissiveRadiance * ( 0.24 + 0.5 * pow( wsF, 2.4 ) + 0.4 * wsHalo * ( 0.4 + 0.6 * pow( wsF, 2.0 ) ) ) + mix( wsHue, vec3( 1.0, 0.8, 0.56 ), 0.7 ) * wsL * 2.6 * wsHot * ( 0.6 + 0.4 * wsF );\n\t}'
     )
   })
   return named(lit(m, z), `street.lens.${name}.${z.id}`)

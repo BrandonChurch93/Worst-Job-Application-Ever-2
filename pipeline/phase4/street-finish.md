@@ -34,15 +34,22 @@ Seen on my own `youre-fired` and `tier-street` drafts at 11:15 UTC.
 
 | Part | Looks |
 | --- | --- |
-| model-firehouse (`youre-fired`) | 2 |
-| shared tier (`tier-street`) | 3 |
+| model-firehouse (`youre-fired`) | 6 |
+| shared tier (`tier-street`), counted against model-garage | 6 |
 
 ## Decisions
 
 - Sign boards: one maker, `board()` in `kit.ts`, for all four models. Cream enamel `0xefe8d6` as a paint kind of its own (`KIND.enamel`): flat, near matte, no clear coat, with a small light of its own in the paint shader (0.2 of its colour) so the plate does not fall to khaki in the dim of the tier. The material itself has no emissive colour, so the zone hook lights it and M4 reads its cream. Gilt bezel 1.25 px wide in the metal bucket. The board is placed, sized and turned by the sign shape of the layout, so it stands where the letters are.
 - Beacon: the turning reflector is gone. A dome of 160 segments with 32 soft ribs and smooth normals along its outline, a small bulb inside it, and the hot core is drawn in the lens shader from the distance of the eye's ray to the bulb, so it stays a small core through the ribs. The firehouse bulb is merged into the red bay lamp mesh, which frees one draw call for the clear decks of the garage. Neither beacon turns now.
-- Garage: the concrete ring beams are clear moulded decks on steel hoops, the posts are grey gloss steel outside the ring, the rim is post grey. The ring keeps its radii (inner face 9.1 px inside `SPIRAL.frame`) and the opening where the tube and the wire receiver cross, as agreed with frame_finisher.
+- Garage: the concrete ring beams are clear moulded decks on steel hoops, the posts are grey gloss steel outside the ring, the rim is post grey. The ring keeps its radii (inner face 9.1 px inside `SPIRAL.frame`) and the opening where the tube and the wire receiver cross, as agreed with frame_finisher. Toward the police station (58 degrees to each side of the line between the two centres) nothing of the garage stands higher than that station's roof plus 0.3 balls, so the station's front and its sign are clear of my ring from straight above. What still lies over them in `tier-street` is the clear trough and the wires of the frame owner.
 - Roof lights: taken out. One plain hatch with a felt lid on each roof.
 - Houses: all six roofs are gabled and dull red, each with one lit roof window on a slope, to be seen from straight above. Each row stands on a brushed steel plate screwed to the floor. Hedges, bush and grass are gone.
 - Bank: a steel plate under its base.
 - Brick: more spread from brick to brick, a few pale bricks, deeper and darker mortar, soot and bloom.
+
+## After the first pass, MEASURED at 11:39 UTC on the merge of origin/main 37c2e908
+
+- `npm test`: 116 files, 1466 of 1466. `npm run build`: exit 0. `npm run bots`: all clear.
+- `npm run build && npm run counts -- --key table-wide --live low`, my rows (draw calls, triangles): model-firehouse 5, 47536; model-road-signs 4, 3076; model-moms 3, 2982; model-garage 2, 10672; model-police 2, 8640; model-bank 1, 10340; model-houses 0, 0. Folder: 17 draw calls (17 before), 83246 triangles (71368 before, 11878 more of the 30000 allowed).
+- Sign contrast on my own still, `python3 signlum.py out/work/stills/key-youre-fired-hd-draft.png 1030 188 1140 235` (a crop inside the firehouse board round the word; Otsu split, edge pixels dropped; relative luminance from sRGB): letters 0.0342, board 0.5269, ratio (board + 0.05) / (letters + 0.05) = 6.85.
+- `npm run still -- --key youre-fired --format hd --tier draft`: 38.7 s. No asset file: 0 MB in `public/assets/table/street/`, `assets-full/table/street/`, `assets-src/table/street/`.
