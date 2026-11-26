@@ -134,6 +134,9 @@ export interface RunSpec {
 export interface RunData { position: Float32Array; normal: Float32Array; colour: Float32Array; ring: Float32Array; index: Uint32Array; triangles: number }
 
 const LIFT = 0.03
+// The page's title and a step's heading are drawn this much heavier all round, in px, from this size up.
+export const DISPLAY_FROM = 40
+export const DISPLAY_GAIN = 0.16
 
 // One run of type as plain numbers: first the shoulders of every glyph, then every fill, so that ink always lies over a neighbour's shoulder.
 export function setRun(spec: RunSpec): RunData {
@@ -141,7 +144,8 @@ export function setRun(spec: RunSpec): RunData {
   const scale = spec.px / f.unitsPerEm
   const segments = segmentsFor(spec.px)
   const st = spec.style
-  const rings = st.rings
+  const more = st.setting === 'sunk' && spec.px >= DISPLAY_FROM && spec.font.startsWith('inter') ? DISPLAY_GAIN : 0
+  const rings = more > 0 ? [{ d: more, a: 1, c: st.rings[0]!.c }, ...st.rings.map((r) => ({ ...r, d: r.d + more }))] : st.rings
   const bands = rings.length
   const placed: { g: Glyph; x: number; y: number }[] = []
   let vertices = 0
