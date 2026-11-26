@@ -5,7 +5,7 @@ import { words } from '../../shell/words'
 import { homePose } from '../../stage/camera'
 import type { CameraPose, DrawList, GagInfo, Hint, Mode, PageContext, PageLogic, Pointer, Shape, StepIo } from '../../stage/types'
 import { KEYS, makeLayout, MARK_ROT, markOf, SHEET_ROT, STAMP, placesOf, spotOf, turned } from './layout'
-import { CUES, HIT, LIE, pointerAt, type Marks } from './script'
+import { CUES, HIT, LIE, pointerAt, STUCK, type Marks } from './script'
 import { AT } from './timeline'
 
 type Phase = 'wait' | 'letter' | 'metrics' | 'reset'
@@ -78,7 +78,8 @@ export function makePage(): PageLogic {
   const mark = markOf()
   const spot = spotOf()
   const start = { x: places.accept.cx, y: places.accept.cy + 14 }
-  const marks: Marks = { start, spot, press: { x: places.accept.x + places.accept.w - 42, y: places.accept.cy - 8 } }
+  const drop = { x: places.rest.cx + markOf().blockW / 2 + STUCK.right, y: places.rest.cy + STUCK.down }
+  const marks: Marks = { start, spot, drop, press: { x: places.accept.x + places.accept.w - 42, y: places.accept.cy - 8 } }
   const nodes = { wait: find(layout, 'wait-panel'), letter: find(layout, 'letter'), metrics: find(layout, 'metrics'), stamp: find(layout, 'stamp'), accept: find(layout, 'accept'), cap: find(layout, 'accept-cap') }
   const average = secondsOf(words(KEYS.averageValue))
   const target = secondsOf(words(KEYS.targetValue))
@@ -320,10 +321,18 @@ export function makePage(): PageLogic {
           }
         }
         if (s.held && s.stamped) {
-          if (p >= AT.lift[1]) {
+          const pose = stampPose()
+          if (p >= AT.lower[1] || !pose) {
             s.held = false
+            cursor.place(drop.x, drop.y, 0)
             cursor.release()
-          } else cursor.place(s.tx, s.ty, heights.paper)
+          } else if (p < AT.lift[0]) cursor.place(s.tx, s.ty, heights.paper)
+          else {
+            const u = smooth(span(p, AT.lower))
+            const x = pose.cx + s.tx - mark.cx
+            const y = pose.cy + s.ty - mark.cy
+            cursor.place(x + (drop.x - x) * u, y + (drop.y - y) * u, pose.z + STUCK.toss * 4 * u * (1 - u))
+          }
         }
         if (p >= AT.letterSeconds) {
           s.phase = 'metrics'

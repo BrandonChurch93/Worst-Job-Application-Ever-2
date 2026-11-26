@@ -193,7 +193,7 @@ describe('step 5, the film', () => {
     expect(s.cursor.y).toBeLessThan(cap.y + cap.h)
   })
 
-  it('lets the film cursor walk to the letter by itself, and holds it only while the stamp is over it', () => {
+  it('lets the film cursor walk to the letter by itself, and holds it only while the stamp is over it or carries it', () => {
     const s = film()
     let first = -1
     let last = -1
@@ -205,7 +205,7 @@ describe('step 5, the film', () => {
       }
     }
     expect(first / hz).toBeGreaterThanOrEqual(3.9)
-    expect(last / hz).toBeLessThanOrEqual(5.12)
+    expect(last / hz).toBeLessThanOrEqual(5.87)
     expect((last - first) / hz).toBeLessThan(config.live.controlTakenMaxSeconds)
   })
 
