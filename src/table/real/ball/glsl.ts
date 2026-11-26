@@ -382,7 +382,12 @@ void paint() {
 	dim = max( dim, ( 1.0 - smoothstep( 0.0, 0.013, abs( rho - 0.927 ) ) ) * pow( 0.5 + 0.5 * sin( th * 3.0 + 1.0 ), 2.0 ) );
 	float rings = smoothstep( 0.3, 0.7, 0.5 + 0.5 * sin( rho * 150.0 + 1.6 * sin( th * 2.0 + 1.0 ) + 0.8 * sin( th * 5.0 ) ) );
 	float inRim = band * ( 1.0 - smoothstep( 0.955, 0.975, rho ) );
-	col *= mix( 1.0, mix( 0.45, 1.5, rings ), inRim );
+	col *= mix( 1.0, mix( 0.35, 1.7, rings ), inRim );
+	float inner = smoothstep( 0.64, 0.8, rho ) * ( 1.0 - band );
+	float wave = rho * 64.0 + 2.2 * sin( th * 2.0 + 0.4 ) + sin( th * 3.0 + 2.0 );
+	float turn = 0.3 + 0.7 * ( 0.5 + 0.5 * sin( th * 2.0 + 2.0 ) );
+	col += inner * turn * pow( 0.5 + 0.5 * sin( wave ), 5.0 ) * ( max( soft * 0.16, vec3( 0.024, 0.026, 0.03 ) ) + min( uFloor, vec3( 0.8 ) ) * 0.03 + gather * 0.3 );
+	alpha = max( alpha, inner * ( 1.3 - turn ) * 0.3 * pow( 0.5 - 0.5 * sin( wave ), 4.0 ) );
 	col *= 1.0 - 0.6 * dim;
 	alpha = max( alpha, 0.55 * dim );
 	col += bright * ( max( soft * 0.5, vec3( 0.05, 0.054, 0.062 ) ) + min( uFloor, vec3( 0.8 ) ) * 0.04 + gather * 0.4 );
