@@ -1,0 +1,35 @@
+{
+  "folder": "boss-closer",
+  "pushed": "2026-11-26T07:14:37.398Z",
+  "commit": "9a03082071033764b1134af4775cc07c23699bd2",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Sheet boss-stages: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-26T07:11:35.934Z",
+      "by": "boss-closer",
+      "from": "out/work/compare/compare-boss-stages.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Sheet boss-stages: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-26T07:12:08.751Z",
+      "by": "boss-closer",
+      "from": "out/work/compare/compare-boss-stages.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "boss-fight at draft, approved left, build right: glass card and shield with a polished rim, arrow turned along the shot, no fine print under the card",
+      "time": "2026-11-26T07:14:36.198Z",
+      "by": "boss-closer",
+      "from": "out/work/compare/compare-boss-fight.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "sheet boss-stages at draft, approved left, build right: the Unfolding state is a compact plate with short legs folding out",
+      "time": "2026-11-26T07:14:36.423Z",
+      "by": "boss-closer",
+      "from": "out/work/compare/compare-boss-stages.jpg"
+    }
+  ]
+}
