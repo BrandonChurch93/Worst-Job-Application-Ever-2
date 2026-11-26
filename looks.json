@@ -1,35 +1,35 @@
 {
   "folder": "step2-fix",
-  "pushed": "2026-11-26T07:23:58.024Z",
-  "commit": "9fe8b7fb9280570282e429680a700ca48e50cd29",
+  "pushed": "2026-11-26T07:37:46.055Z",
+  "commit": "b9027488ef33964bf384f4d445f1a97d563710fc",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Sheet machines: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-26T07:23:40.330Z",
+      "caption": "Still step2-step2_slot-0p83333-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T07:35:27.915Z",
       "by": "step2-fix",
-      "from": "out/work/compare/compare-machines.jpg"
+      "from": "out/work/stills/step2-step2_slot-0p83333-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Sheet machines, approved left, the build right: header, heading and three labelled columns",
-      "time": "2026-11-26T07:23:56.493Z",
+      "caption": "Still step2-step2_slot-0p90333-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T07:35:40.885Z",
       "by": "step2-fix",
-      "from": "out/work/compare/compare-machines.jpg"
+      "from": "out/work/stills/step2-step2_slot-0p90333-hd-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Key step2-crank, approved above, the build below: the percent in the field, the arrow on the grip",
-      "time": "2026-11-26T07:23:56.721Z",
+      "caption": "Slot beat at 12.05, 12.2, 12.35, 12.6, 13.0, 13.42 s: coins spat at the arrow, falling, lying on the ledge of the tray, swept in as it shuts",
+      "time": "2026-11-26T07:37:44.591Z",
       "by": "step2-fix",
-      "from": "out/work/ap/cmp-crank.png"
+      "from": "out/work/ap/slot-coins.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Key step2-dial, approved above, the build below: pale inner disc, dark stop, arrow nearer the cap",
-      "time": "2026-11-26T07:23:56.953Z",
+      "caption": "Slot beat at 9.12, 9.42, 9.55, 10.25 s: the knob rises, is pulled to its stop, springs back, the reels stop one after another (before the coins were finished)",
+      "time": "2026-11-26T07:37:44.823Z",
       "by": "step2-fix",
-      "from": "out/work/ap/cmp-dial.png"
+      "from": "out/work/ap/slot-strip.png"
     }
   ]
 }
