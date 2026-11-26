@@ -351,7 +351,7 @@ void paint() {
 	through( vP, - V, C, from, dir );
 	vec4 seen = floorAt( from, dir );
 	float known = mix( 0.5, 1.0, seen.a );
-	vec3 pic = mix( vec3( dot( seen.rgb, vec3( 0.2126, 0.7152, 0.0722 ) ) ), seen.rgb, 0.6 );
+	vec3 pic = mix( vec3( dot( seen.rgb, vec3( 0.2126, 0.7152, 0.0722 ) ) ) * vec3( 1.06, 1.0, 0.92 ), seen.rgb, 0.4 );
 	float deep = smoothstep( RIN, 0.985, rho );
 	float alpha = mix( mix( 0.72, 0.9, deep ) * known, 0.34, uTrue ) * mix( 0.7, 1.0, uArtOn ) * uBend * band;
 	vec3 col = ( pic * mix( 1.1, 0.4, deep ) + lampsIn( dir, from, 0.7 ) * 0.4 + gather * 0.9 + uHaze ) * alpha;
@@ -383,14 +383,14 @@ void paint() {
 	float rings = smoothstep( 0.3, 0.7, 0.5 + 0.5 * sin( rho * 150.0 + 1.6 * sin( th * 2.0 + 1.0 ) + 0.8 * sin( th * 5.0 ) ) );
 	float inRim = band * ( 1.0 - smoothstep( 0.955, 0.975, rho ) );
 	col *= mix( 1.0, mix( 0.35, 1.7, rings ), inRim );
-	float inner = smoothstep( 0.64, 0.8, rho ) * ( 1.0 - band );
+	float inner = smoothstep( 0.6, 0.76, rho ) * ( 1.0 - band );
 	float wave = rho * 64.0 + 2.2 * sin( th * 2.0 + 0.4 ) + sin( th * 3.0 + 2.0 );
 	float turn = 0.3 + 0.7 * ( 0.5 + 0.5 * sin( th * 2.0 + 2.0 ) );
-	col += inner * turn * pow( 0.5 + 0.5 * sin( wave ), 5.0 ) * ( max( soft * 0.16, vec3( 0.024, 0.026, 0.03 ) ) + min( uFloor, vec3( 0.8 ) ) * 0.03 + gather * 0.3 );
-	alpha = max( alpha, inner * ( 1.3 - turn ) * 0.3 * pow( 0.5 - 0.5 * sin( wave ), 4.0 ) );
+	col += inner * turn * pow( 0.5 + 0.5 * sin( wave ), 5.0 ) * ( max( soft * 0.26, vec3( 0.042, 0.04, 0.037 ) ) + min( uFloor, vec3( 0.8 ) ) * 0.04 + gather * 0.4 );
+	alpha = max( alpha, inner * ( 1.3 - turn ) * 0.45 * pow( 0.5 - 0.5 * sin( wave ), 4.0 ) );
 	col *= 1.0 - 0.6 * dim;
 	alpha = max( alpha, 0.55 * dim );
-	col += bright * ( max( soft * 0.5, vec3( 0.05, 0.054, 0.062 ) ) + min( uFloor, vec3( 0.8 ) ) * 0.04 + gather * 0.4 );
+	col += bright * ( max( soft * 0.6, vec3( 0.064, 0.062, 0.058 ) ) + min( uFloor, vec3( 0.8 ) ) * 0.04 + gather * 0.4 );
 	float thick = smoothstep( 0.8, 0.87, rho ) * ( 1.0 - smoothstep( 0.97, 0.996, rho ) );
 	col += ( lampsIn( reflect( - V, normalize( N - Np * 0.7 ) ), vP, 0.5 ) + lampsIn( reflect( - V, normalize( N + Np * 0.9 ) ), vP, 0.45 ) ) * 0.4 * thick;
 	float edge = smoothstep( 0.97, 0.996, rho );
