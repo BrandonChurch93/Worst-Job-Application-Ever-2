@@ -46,3 +46,12 @@ Nothing here is a picture. No file is downloaded, none is generated and none is 
 - Why this one: the approved hub is a polished knob with one clear point of light on the side of the key; the shared orange gave the dome a dull even face.
 - Date: 2026-11-26
 
+## Dial's shade on the floor
+
+- Made by: `castGeometry()` in `src/pages/step2/real/dial.ts`
+- From: nothing. Numbers of `DIAL_BODY` in `src/pages/step2/layout.ts`: `cast` 0.62, `castIn` 8, `castOut` 44, `castAway` 22, `castOver` 0.2. A disc of vertex colour multiplied over the floor, moved away from the key's direction by the dial's rise.
+- Prompt or command: none.
+- Takes: three. No texture: 0 px, 0 MB.
+- Why this one: the approved dial stands in a deep soft shadow on the tray's floor; the sunk glass's fill light left the lamp's shadow too faint to read.
+- Date: 2026-11-26
+

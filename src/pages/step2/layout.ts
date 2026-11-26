@@ -49,7 +49,7 @@ export const DIAL = {
 export const DIAL_BODY = {
   tall: TOP + 2 - TRAY_Z, rest: 1.6, plateLeast: 0.4, below: 2, plate: 6.2, bezel: 9, bezelDrop: 2, wheel: 89.2, thick: 4.8, chamfer: 1, holeRim: 0.4, holeChamfer: 2,
   hub: 30, hubTall: 17, hubFlat: 0.02, hubCoat: 0.03, hubRough: 0.1, hubIor: 1.9, turned: 256, cut: 0.012, faceRough: 0.2, faceStretch: 1, faceLight: 1.5, seat: 5, seatGap: 1.8, stopIn: 71, stopOut: 109, stopWide: 12, stopClear: 3, stopTall: 8, stopFoot: 12,
-  shade: 0.46, shadeReach: 0.78
+  shade: 0.46, shadeReach: 0.78, cast: 0.62, castIn: 8, castOut: 44, castAway: 22, castOver: 0.2
 }
 
 // How far the top of the dial's wheel stands above the tray's floor when the machine has risen by `lift` (0 to 1). Before it rises it lies in the tray's floor, its wheel under the floor of a field, its hub and its stop drawn down into it.
