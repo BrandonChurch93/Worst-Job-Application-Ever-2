@@ -10,7 +10,8 @@ Every number below is MEASURED with the command beside it, STATED by the code or
 | `softShadows: accumulated at rest` | `src/core/levelPlan.ts`, `Engine.frame` | a page at rest gathers 64 frames, the light moved over its area as in a computed picture |
 | `softShadows: filtered` | the same | the light never moves: one sample with the filtered lookup; a page at rest gathers 8 frames in which only the taps of the filter turn, then the picture is kept and nothing is drawn |
 | `softShadows: baked` | the same and `src/core/levelShadows.ts` | as `filtered`, and the shadows of what stands still are drawn once into the key's map and kept; only what moves is drawn into the map of each frame |
-| `glass` | `src/core/levelPlan.ts` | see "Glass" |
+| `glass: refracting` | `src/core/levelPlan.ts`, `src/core/levelGlass.ts`, `App.setLevel` | the ball bends a picture of the floor inside its shell, as before |
+| `glass: frosted, no refraction` | the same | the ball does not bend: its pale shell, its bright rim and its reflections stay, and what lies under it shows straight through, dimmed by the shell. See "Glass" |
 | `particleFraction` | `src/core/levelSmall.ts`, `App.put` | the share of the small things of each emitter that is drawn |
 
 ## Decisions
@@ -24,6 +25,9 @@ Every number below is MEASURED with the command beside it, STATED by the code or
 7. The film bar: `fitPicture` in `src/core/levelFit.ts` takes `FILM_BAR_PX` (56, the height `.fitted` of `src/ui/interface.module.css` uses) off the window's height while the mode is film. `sizer()` takes the mode as an argument; its call in `play()` passes it.
 8. `startLevel` and `levelIsFixed` of `src/main.ts` call `src/core/levelStart.ts`, so they have tests.
 9. Small things: an emitter says what it is on its own object, `userData.small`. That mark lies in files that are not mine: `pipeline/phase5/site-levels-NEEDS.patch`.
+10. `accumulated at rest`, the jump. Each gathered frame takes one direction of the dome at one over its height, so the mean of the first few frames is far from where it ends: MEASURED before the change, careers page paused in film mode, 1920x1080 window, mean of the picture of 255: frame 1 189.11, frame 2 200.39, frame 8 191.42, frame 10 187.77, frame 64 187.47. `src/core/levelRest.ts` keeps the one-sample picture and shows `mix(one-sample, mean, (n - 1) / 63)` while frame n of 64 is gathered. Frame 64 is the mean alone, as before.
+11. Glass. No live frame at any level draws a transmission pass; the perk cards and the boss's card are drawn the same at every level. The one thing that refracts is the ball, in its own shader, and it already listens on the window for `wjb-ball` and takes `bend` from it. `App.setLevel` says `bend: false` through that door at a level whose word is `frosted, no refraction` and `bend: true` otherwise and for every computed picture. So no frozen file is changed. The risk: that door was made for proof sheets; if its owner removes it, low bends again and `tests/site-levels-rest.test.ts` does not see it. It saves no measurable time: the shader still runs.
+12. Motion blur of small fast things. Read in the code and seen in the sheet: a bolt and a dart each carry their own tail in a live frame. The slot's coins had nothing: `src/core/levelStreak.ts` draws each coin longer along the way it went since the frame before, by the film's own shutter (`film.shutterDegrees` / 360 of the travel), at most `STREAK.most` (3) lengths. The coins are found as `root.userData.coins`, the name `src/pages/step2/real/slot.ts` gives them. The ball of the machine is NOT stretched: it is drawn by a shader that knows it as a sphere, with the hero inside; a stretched ball would bend the hero. That is open.
 
 ## Measured so far
 
@@ -39,7 +43,7 @@ Machine: this VM, software GL, 4 cores. Times of frames here say nothing about a
 | draws into the shadow map in one frame, careers page, level low | `scripts/live-probe.mjs` | MEASURED 3 draws and 8290 triangles kept, 22 draws and 60018 triangles whole; all draws of the frame 84 before, 65 after |
 | step 1, keen bot, 160 frames, level low | the same | MEASURED 8 bakes, 148 kept frames, 12 whole frames |
 
-## G15: the counts of a live frame at each level (first table, before any lowering)
+## G15: the counts of a live frame at each level (first table, from my own probe)
 
 `info().counts` after `renderStill` with `live: <level>`, hd, assets full. Limits of `perf`: triangles 3000000, 1500000, 700000; draw calls 600, 450, 300.
 
@@ -50,9 +54,8 @@ Machine: this VM, software GL, 4 cores. Times of frames here say nothing about a
 | boss-fight | 618218 / 455 | 469526 / 383 | 250608 / 241 |
 | boss-down | 620840 / 394 | 456110 / 322 | 223076 / 181 |
 | decision | 539181 / 285 | 385689 / 201 | 191059 / 92 |
-| step2-crank | 888565 / **814** | 604601 / **512** | 293243 / 172 |
 
-MEASURED over the limit: step2-crank, draw calls, at high (814 of 600) and medium (512 of 450). Every other key and every page at rest is inside. Not lowered yet.
+CORRECTION (17:25Z): my first table held a row "step2-crank 888565 / 814, 604601 / 512" and I reported it as over the limit. That row was wrong: it came from my own probe, not from the gate. The gate itself, `npm run gate -- --phase 5 --only G15 --unit step2`: MEASURED pass, high 418067 triangles / 238 draw calls, medium 354645 / 238, low 293243 / 172. The five rows above come from the same probe of mine (`scripts/calls-probe.mjs`, not in the repo) and were not checked against the gate; the whole gate is the measure, see "G15, the whole gate" below.
 
 ## The change outside my files (NEEDS, accepted by the Builder at 16:48Z)
 
@@ -80,3 +83,62 @@ MEASURED 17:05Z to 17:08Z on the tree of 57b89e8f. "After" is the tree with the 
 Three frames of the film itself, `npm run determinism -- --only film-step1,film-step2,film-boss` (frames 2472, 3831, 8172, hd, draft), before against after with `cmp`: MEASURED byte equal, sha256 6f5c751349f5f719, 6584713698f310ae, c026e4c22efc216e. The film is computed with no level, and at `high` the share is 1 as well, so no count changes there (the three frames above are the measured part; "every count at high in a live frame" is STATED by the code, not counted).
 
 After the marks: `npm test` exit 0, `npm run determinism` pass 12 pictures, `npm run bots` all clear, `npx tsc --noEmit -p .` exit 0 (MEASURED 16:58Z to 17:04Z).
+
+## The page at rest at `high` (rule 2a)
+
+`RM=1 node scripts/rest-probe.mjs` of this agent (not in the repo): the careers page, paused in film mode through reduced motion, the mean of the canvas of 255 read after each frame.
+
+| | frame 1 | frame 2 | frame 8 | frame 64 | largest step between two frames |
+|---|---|---|---|---|---|
+| before `levelRest`, high, window 1920x1080 | 189.11 | 200.39 | 191.42 | 187.47 | 11.28 (frame 1 to 2) |
+| after `levelRest`, high, window 960x540 | 189.51 | 189.71 | not noted | 187.87 | 0.78 (frame 18) |
+| medium, window 1920x1080 | 189.02 | 189.26 | 189.42 | 8 frames only | 0.24 |
+| low, window 1920x1080 | 189.36 | 189.59 | 189.73 | 8 frames only | 0.23 |
+
+MEASURED: the jump of 11 of 255 at the second frame is gone. NOT the same window size before and after: the after run was made at 960x540 to save time, so the two rows of high are not a strict pair. What remains, MEASURED: the gathered picture is about 1.6 of 255 darker than the one-sample picture, so when the page moves again the picture steps back by that much in one frame. Not removed. After the last gathered frame nothing is drawn, at every level.
+
+## Glass (rule 2b)
+
+MEASURED by reading the code and by counts: no live frame draws a transmission pass at any level; the perk cards, the fields and the boss's card are one material at every level. The ball is the only thing that bends. Pictures of the ball at low with the bend on and off (`scripts/glass-probe.mjs`, keys `rail-cam` and `last-save`), looked at: with the bend off the ball keeps its pale shell, its bright rim and its reflections, and the floor under it shows straight. It did not read as a grey slab in those two pictures. The cards at low against high and medium: the native crops of the proof sheets, looked at; I saw no difference in the glass of the cards between the levels, which is what the code says.
+
+## Motion blur of small fast things (rule 3)
+
+Two sheets of twelve live frames each, level high, stepped clock: `scripts/streak-sheet.mjs` (not in the repo), step 1 under fire and the slot's coins. Looked at.
+
+- Step 1 under fire: bolts are in the frames, small and dark, each with its own short tail. The tail is the page's own, not mine.
+- The slot's coins: coins are in the air in the frames. I could NOT see in the native crops that a coin is longer along its way than a coin at rest: the coins tumble and overlap, and I made no pair with the stretch off. So "the coins are stretched in a live frame" is STATED by the code and by `tests/site-levels-streak.test.ts` (the matrix of an instance is stretched along its travel), and UNKNOWN in the picture.
+- The ball: not stretched (decision 12). The dart: carries its own tail, not looked at in a picture by me.
+
+## Smallest type at `low` (rule 4, the part that was measured)
+
+Native crops, 1920x1080 window, pixel ratio 1, of the smallest line of type of each page, at each level. The number is (background + 0.05) / (ink + 0.05) in relative luminance, the background as the 60th percentile and the ink as the 1st percentile of the crop. It is a measure of the darkest ink against the paper, not of how sharp a stroke is.
+
+| page | line | high | medium | low |
+|---|---|---|---|---|
+| careers | "Est. time: 5 minutes ..." | 15.42 | 15.23 | 14.54 |
+| step 1 | "Minimum 3 characters required" | 10.55 | 10.55 | 10.55 |
+| step 2 | "Also collected automatically ..." | 14.62 | 14.62 | 14.66 |
+| step 3 | "Toxicity Tolerance Assessment" and the lines under it | 16.87 | 16.87 | 16.87 |
+| step 4 | "This verification process ..." | 12.14 | 12.05 | 12.14 |
+| step 5 | "Your application is very important ..." | 11.39 | 11.39 | 11.47 |
+
+The headless browser of this VM has a device pixel ratio of 1, so the cap of the pixel ratio (2, 1.5, 1) changed nothing in these pictures: the three levels were all drawn at ratio 1. What the cap does on a screen of ratio 2 or 3 is UNKNOWN here.
+
+Seen in the crops and not repaired: at low the edge of the shadow under a card (step 4 and step 5) is ragged, a pattern of small teeth, where high and medium are smooth.
+
+NOT DONE of rule 4: the 188 invalid pixels of the still `youre-fired` with 4x multisampling. I did not find the material and clamped nothing. `LIVE_MULTISAMPLES = 4` in `src/app.ts` is used by live frames only.
+
+## The 8 bit path (rule 8)
+
+`scripts/bits-probe.mjs` (not in the repo): one session with `EXT_color_buffer_float` hidden (target `half`), one with `EXT_color_buffer_float` and `EXT_color_buffer_half_float` hidden (target `byte`, read from `info().versions.target`), stills of the careers page, step 1 and the table's page (step 3) at rest, hd, tier draft, and the same three with `live: low`. `tests/site-levels-bits.test.ts` holds that a machine with both hidden gets `byte`.
+
+| picture | mean of the half float picture | mean of the 8 bit picture | mean difference of 255 | pixels off by more than 8 |
+|---|---|---|---|---|
+| careers | 191.54 | 120.47 | 71.07 | 99.9 % |
+| step 1 | 201.61 | 131.01 | 70.60 | 100 % |
+| table | 204.52 | 140.09 | 64.42 | 100 % |
+| careers, low | 189.17 | 116.45 | 72.71 | 99.9 % |
+| step 1, low | 199.35 | 126.93 | 72.42 | 100 % |
+| table, low | 201.92 | 135.37 | 66.56 | 100 % |
+
+MEASURED: the 8 bit path does not give the same picture. It is far darker, every metal is black (the medal, the steps of the progress bar, the cabinet's ring) and the orange is a deep red. The browser's log of the 8 bit session: "Framebuffer is incomplete: Attachment is not renderable" and "glGenerateMipmap: Texture format does not support mipmap generation". Read in the code: `src/post/studio.ts` builds the studio's surround with three's `PMREMGenerator`, which draws into half float targets (`node_modules/three/src/extras/PMREMGenerator.js`, line 477); with both extensions hidden that target cannot be drawn into, so the surround is black. That this is the whole cause is my reading, not measured: `src/post/post.ts` also makes a half float target. Both files are not mine. NOT REPAIRED. The pair is in the looks folder.
