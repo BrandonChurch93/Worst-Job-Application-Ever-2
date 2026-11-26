@@ -40,8 +40,8 @@ Phase 2, engine and blockout. Everything here is a stand-in shape with working l
 
 ## The arrow in the ball
 
-- The arrow is loose in the glass and never leaves it. `director-arrow.ts` (`berth`) finds the posed outline's enclosing circle from the cursor's own shape tables and the page places the cursor so that circle is centred in the ball. `GLASS.wall` is 40 px, the limit agreed with the ball's owner; the bore is 42 px.
-- The stretched states are not used in the glass: `SHORT` plays `shocked` as `scared`, `confident` and `proud` as `plain`, `angry` as `nervous`. A 70 px arrow at stretch 1.2 is 87 px corner to corner, more than the bore. The reactions in the glass are `recoil`, `cower` and `flinch`.
+- The arrow is loose in the glass and never leaves it. The page seals it centred (`io.cursor.seal(true, true)`) and places it on the ball's middle; the view measures the body as it is drawn, sets its middle there and holds it inside the bore. `director-arrow.ts` (`berth`) gives only how far back toward the wall behind it the body may sit. The bore is 42 px.
+- The acting states play as themselves in the glass. The view holds a pose that is wider than its room for that frame alone; over the take only the doors' `flattened` is held (0.903). The reactions in the glass are `recoil`, `cower` and `flinch`.
 - On a hit (`FACE`) the arrow is thrown flat against the inside wall on the far side from the hit, holds there for 0.45 of 0.5 s and comes off as the ball rolls on. Rolling, it tumbles a beat behind (`lag`).
 - `flattened` is raised in the machine by the HQ doors alone, and by the outlet once the ball has opened. No other hit damages the arrow.
 - At a close key the arrow lies as approved (`ROLL.tip`, the tip's angle on the screen): up right in `rail` and `table-lobby`, up left in `table-fired`.

@@ -27,7 +27,7 @@ const tilt = (v: number[], n: number[]): number[] => {
 }
 
 // Where the body has to be put for its outline, as it is posed now, to lie round the middle of the ball, and how deep toward the wall behind it it may go before a corner meets the glass.
-export function berth(c: CursorPose, lean: number, spin: number, squash: number, face: number[] | null, deep: number, time: number, seen = false): Berth {
+export function berth(c: CursorPose, lean: number, spin: number, squash: number, face: number[] | null, deep: number, time: number): Berth {
   const look = restLook(time)
   look.body.stretch = squash
   actingLook?.(c, look)
@@ -82,7 +82,6 @@ export function berth(c: CursorPose, lean: number, spin: number, squash: number,
   const at = face ? [ox * c0 - oy * s0, ox * s0 + oy * c0, 0] : [ox, oy, 0]
   const n = face ?? [0, 0, 1]
   const back = behind + (lo + hi) / 2
-  // A seen cursor is centred by its own view from the outline as it is drawn (`src/cursor/view.ts`), so the page adds nothing in the plane.
-  const off = seen ? [0, 0, 0] : tilt([at[0]! + mx, at[1]! + my, 0], n)
+  const off = tilt([at[0]! + mx, at[1]! + my, 0], n)
   return { x: -off[0]!, y: -off[1]!, z: -off[2]! - 1, back, reach: Math.hypot(reach, behind + half) }
 }
