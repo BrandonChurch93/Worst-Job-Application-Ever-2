@@ -17,13 +17,14 @@ export const WEAPON_GLOW = {
   trail: [1.7, 1.45, 1.1] as [number, number, number],
   streak: [0.55, 0.47, 0.36] as [number, number, number],
   halo: [0.34, 0.24, 0.13] as [number, number, number],
+  spill: [0.3, 0.2, 0.09] as [number, number, number],
   spark: [6, 5.2, 4] as [number, number, number],
   fleck: [5, 3.9, 2.4] as [number, number, number],
   muzzle: [9, 2.6, 0.7] as [number, number, number]
 }
 
 export const WEAPON_EMIT = {
-  dart: { colour: [1, 0.8, 0.52] as [number, number, number], power: 0.26, reach: 40 },
+  dart: { colour: [1, 0.8, 0.52] as [number, number, number], power: 0.06, reach: 40 },
   spark: { colour: [1, 0.8, 0.52] as [number, number, number], power: 0.5, reach: 150 },
   muzzle: { colour: [1, 0.36, 0.12] as [number, number, number], power: 0.6, reach: 170 }
 }
@@ -36,6 +37,7 @@ interface Kit {
   trailMaterial: THREE.MeshBasicMaterial
   streakMaterial: THREE.MeshBasicMaterial
   haloMaterial: THREE.MeshBasicMaterial
+  spillMaterial: THREE.MeshBasicMaterial
   sparkMaterial: THREE.MeshBasicMaterial
   fleckMaterial: THREE.MeshBasicMaterial
   muzzleMaterial: THREE.MeshBasicMaterial
@@ -81,6 +83,7 @@ function kit(): Kit {
     trailMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...WEAPON_GLOW.trail), vertexColors: true, ...add }),
     streakMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...WEAPON_GLOW.streak), vertexColors: true, ...add }),
     haloMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...WEAPON_GLOW.halo), map: f.halo, ...add }),
+    spillMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...WEAPON_GLOW.spill), map: f.halo, ...add }),
     sparkMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...WEAPON_GLOW.spark), map: f.star, ...add }),
     fleckMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...WEAPON_GLOW.fleck), vertexColors: true, side: THREE.DoubleSide, ...add }),
     muzzleMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...WEAPON_GLOW.muzzle), map: f.star, ...add }),
@@ -105,6 +108,10 @@ function makeDart(): THREE.Object3D {
   halo.scale.set(52, 36, 1)
   halo.position.set(-10, 0, 1)
   halo.name = 'halo'
+  // The dart's light on the paper under it: it lies on the page, not on the dart.
+  const spill = overlay(new THREE.Mesh(f.quad, k.spillMaterial), 0)
+  spill.name = 'spill'
+  spill.scale.set(78, 78, 1)
   const streak = overlay(new THREE.Mesh(f.tail, k.streakMaterial), 2)
   streak.name = 'streak'
   streak.position.set(-12, 0, 2)
@@ -116,7 +123,7 @@ function makeDart(): THREE.Object3D {
   const body = plain(new THREE.Mesh(k.dart, k.dartMaterial))
   body.position.z = 1
   body.castShadow = true
-  root.add(halo, streak, trail, rim, body)
+  root.add(spill, halo, streak, trail, rim, body)
   return root
 }
 
@@ -221,6 +228,7 @@ export const bossWeapons: PartMaker | null = {
         const streak = o.getObjectByName('streak')!
         streak.scale.set(Math.max(1, 520 * born), 0.9, 0.9)
         o.getObjectByName('halo')!.scale.set(52 * flick, 36 * flick, 1)
+        o.getObjectByName('spill')!.position.set(-4, 0, 0.7 - s.z0)
         ctx.light({ x: cx, y: cy, z: s.z1 + 4, ...WEAPON_EMIT.dart })
         break
       }

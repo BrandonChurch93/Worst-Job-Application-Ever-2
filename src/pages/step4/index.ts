@@ -36,10 +36,12 @@ interface State {
 
 const heights = config.scale.heights
 const REALLY = [0.7, 1.5] as const
+const REALLY_TAKE = 0.04
+const HORROR = { rear: UNFOLD.open + 0.04, cower: UNFOLD.cannons[0] + 0.2, scared: 2.3 } as const
 const SEAT = 0.2
 const LIFT = 7
-const FILL_GAP = 3.4
-const FILL_TOP = 2.2
+const FILL_GAP = 5
+const FILL_TOP = 1.6
 const easeOut = (t: number): number => 1 - (1 - t) * (1 - t) * (1 - t)
 const easeIn = (t: number): number => t * t
 const PHASE_GAG = ['boss.slabs', 'boss.popups', 'boss.lastStand'] as const
@@ -156,7 +158,9 @@ export function makePage(): PageLogic {
           const at = bossPlaceAt(s.t)
           io.emit('unfold', at.x, at.y, false)
         }
-        if (s.t >= 2.3 && s.t < UNFOLD.end) io.cursor.act('scared')
+        if (s.t >= HORROR.rear && s.t - dt < HORROR.rear) io.cursor.react('rear')
+        if (s.t >= HORROR.cower && s.t - dt < HORROR.cower) io.cursor.react('cower')
+        if (s.t >= HORROR.scared && s.t < UNFOLD.end) io.cursor.act('scared')
         if (s.t >= UNFOLD.end) {
           s.fight = newFight(HOME.x, HOME.y)
           s.stage = 'fight'
@@ -173,10 +177,11 @@ export function makePage(): PageLogic {
         }
         if (f.phase === 2 && f.expired >= 0) {
           const was = f.expired - io.dt
+          if (f.expired >= REALLY_TAKE && was < REALLY_TAKE) io.cursor.react('doubleTake')
           if (f.expired >= REALLY[0] && was < REALLY[0]) io.cursor.act('exhausted')
           if (f.expired >= REALLY[1] && was < REALLY[1]) {
             io.cursor.act('angry')
-            io.cursor.react('anticipate')
+            io.cursor.react('fume')
           }
         }
         if (f.over) toCollapse(io, rigNow()!)

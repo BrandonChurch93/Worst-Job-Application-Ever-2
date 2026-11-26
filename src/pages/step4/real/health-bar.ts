@@ -7,7 +7,7 @@ import type { Shape } from '../../../stage/types'
 
 const q = (v: number): number => Math.round(v * 4) / 4
 
-export const HEALTH = { proud: 0.9, rim: 2.6, under: 1.5, crown: 0.7, shoulder: 3.2 }
+export const HEALTH = { proud: 0.9, rim: 2.6, under: 1.5, crown: 0.5, shoulder: 2.6 }
 
 let floorMaterial: THREE.MeshPhysicalMaterial | null = null
 
@@ -34,8 +34,8 @@ function track(s: Shape): THREE.Object3D {
   const top = surface + HEALTH.proud
   const rim = HEALTH.rim
   const points: ProfilePoint[] = [
-    [0.2, -HEALTH.under, true], [0.2, surface - 0.3, true], [-0.9, surface + 0.1, true], [-0.9, top - 0.5],
-    ...arc(-0.9, top - 0.5, 0.6, 0.5, 4).slice(1), [0.5, top],
+    [0.2, -HEALTH.under, true], [0.2, surface - 0.3, true], [-1.6, surface + 0.05, true], [-1.6, top - 0.6],
+    ...arc(-1.6, top - 0.6, 0.9, 0.6, 5).slice(1), [0.5, top],
     ...[1, 2, 3, 4, 5, 6].map((i): ProfilePoint => {
       const a = (i / 6) * (Math.PI / 2)
       return [0.5 + (rim - 0.9) * Math.sin(a), top - 1.2 * (1 - Math.cos(a))]
