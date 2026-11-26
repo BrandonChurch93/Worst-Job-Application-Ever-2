@@ -25,8 +25,9 @@ const TRAY = { wall: 14, round: 16, lip: 4.5, bed: 0.6 }
 const CHUTE = { deep: 40, wide: 88, drop: 8, tall: 84, bar: 6, proud: 2.4, side: 8 }
 const LIFT = { mould: 0.42, paper: 0.52 }
 // The shade one envelope lays on what is under it: how far it reaches, and its colour.
-const SHADE = { x: 2.2, y: 3, col: [0.42, 0.39, 0.35] as RGB }
-const HOP = { a: 15, b: 22, lag: 0.07, out: 0.6 }
+const SHADE = { x: 2.2, y: 3, col: [0.5, 0.47, 0.42] as RGB, lift: 0.22 }
+// The hop of the two heaps: how high, how much later the upper one goes, how much lower the hop on the way out is, and how far they swell and turn so that the hop is seen from straight above as well.
+const HOP = { a: 15, b: 22, lag: 0.07, out: 0.6, swell: 0.16, turn: 0.34, slide: 5 }
 
 export function boxOf(z: Zone, id: string): { x: number; y: number; w: number; d: number; h: number } {
   const m = table.models.find((q) => q.id === id)
@@ -90,7 +91,7 @@ function heap(k: Kit, r: Random, count: number, hx: number, hy: number, z0: numb
     const sx = Math.cos(rot) * SHADE.x + Math.sin(rot) * SHADE.y
     const sy = -Math.sin(rot) * SHADE.x + Math.cos(rot) * SHADE.y
     const lift = k.lift
-    k.lift = 0
+    k.lift = SHADE.lift
     k.flat([[sx - w / 2, sy - d / 2, -0.7], [sx + w / 2, sy - d / 2, -0.7], [sx + w / 2, sy + d / 2, -0.7], [sx - w / 2, sy + d / 2, -0.7]], [0, 0, 1], SHADE.col, SURF.matte)
     k.lift = lift
     k.back()
@@ -176,7 +177,7 @@ function chute(k: Kit, p: Plan): void {
   if (p.side > 0) k.back()
 }
 
-interface Built { a: THREE.Object3D; b: THREE.Object3D; z: number }
+interface Built { a: THREE.Object3D; b: THREE.Object3D; x: number; z: number }
 const built = new WeakMap<THREE.Object3D, Built>()
 
 export function inboxScrews(z: Zone): [number, number, number][] {
@@ -221,7 +222,7 @@ export function buildInbox(z: Zone): THREE.Object3D {
     root.add(mesh)
     groups.push(mesh)
   }
-  built.set(root, { a: groups[0]!, b: groups[1]!, z: top })
+  built.set(root, { a: groups[0]!, b: groups[1]!, x: p.x + p.trayX, z: top })
   return root
 }
 
@@ -256,6 +257,10 @@ export function poseInbox(o: THREE.Object3D, _z: Zone, ctx: RealContext): void {
   const c = hopAt(sinceIn - HOP.lag) + HOP.out * hopAt(sinceOut - HOP.lag)
   b.a.position.z = b.z + HOP.a * a + 0.9 * shake * Math.abs(wob)
   b.b.position.z = b.z + HOP.b * c + 1.6 * shake * Math.abs(Math.sin(ctx.time * 73 + 0.4))
-  b.a.rotation.set(0.05 * a, -0.04 * a, 0.06 * a + 0.01 * shake * wob)
-  b.b.rotation.set(-0.07 * c, 0.05 * c, -0.1 * c - 0.014 * shake * wob)
+  b.a.rotation.set(0.05 * a, -0.04 * a, HOP.turn * 0.6 * a + 0.01 * shake * wob)
+  b.b.rotation.set(-0.07 * c, 0.05 * c, -HOP.turn * c - 0.014 * shake * wob)
+  b.a.scale.setScalar(1 + HOP.swell * 0.7 * a)
+  b.b.scale.setScalar(1 + HOP.swell * c)
+  b.a.position.x = b.x - HOP.slide * 0.6 * a
+  b.b.position.x = b.x + HOP.slide * c
 }
