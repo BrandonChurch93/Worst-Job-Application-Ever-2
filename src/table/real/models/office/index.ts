@@ -7,7 +7,7 @@ import { buildInbox, poseInbox } from './inbox'
 import { FILL, matsOf } from './kit'
 import { buildStaplers, poseStaplers } from './staplers'
 
-const VERSION = 'office-3'
+const VERSION = 'office-7'
 
 export const parts: Record<string, PartMaker | null> = {
   'model-coffee-machine': whole('model-coffee-machine', {

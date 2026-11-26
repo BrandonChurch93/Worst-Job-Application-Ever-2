@@ -44,15 +44,15 @@ One draft still of a key counts once for each of my parts judged in it.
 
 | part | looks |
 | --- | --- |
-| table-frame | 13 |
-| marquee | 3 |
-| loader | 4 |
-| table-hardware | 6 |
+| table-frame | 26 |
+| marquee | 7 |
+| loader | 9 |
+| table-hardware | 14 |
 | lift | 0 |
-| flippers | 3 |
-| bumpers | 3 |
-| targets | 0 |
-| ramps | 3 |
+| flippers | 5 |
+| bumpers | 7 |
+| targets | 2 |
+| ramps | 12 |
 
 ## Counts (`npm run counts -- --key table-wide --live low`)
 
@@ -62,6 +62,7 @@ Each cell is draw calls / triangles.
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | before, cfd83123 | 201 | 21 / 31056 | 16 / 11980 | 15 / 23180 | 12 / 27120 | 10 / 15974 | 8 / 41304 | 8 / 10166 | 5 / 20920 | 4 / 1528 |
 | first pass, 10:51 UTC | 201 | 21 / 31484 | 16 / 11936 | 15 / 23180 | 12 / 29808 | 10 / 22214 | 8 / 49488 | 8 / 10166 | 5 / 19144 | 4 / 1688 |
+| second pass, 11:54 UTC, f8ebae70 | 198 (rows 203) | 21 / 31868 | 16 / 11936 | 15 / 23180 | 12 / 29808 | 10 / 22214 | 8 / 49488 | 8 / 10166 | 5 / 23624 | 4 / 1688 |
 
 Draw calls of my folders: 99 before, 99 after. Triangles of my folders: 183228 before, 199108 after, 15880 more against the 30000 allowed.
 
@@ -86,6 +87,24 @@ Draw calls of my folders: 99 before, 99 after. Triangles of my folders: 183228 b
 16. Title plate: dusk plum (0x2b2236) in a thin dark frame instead of near black in a bright frame.
 17. Street drop targets: navy enamel with a brass edge (see issue 16).
 
+18. Tier joints (`table-map` R3-2 issue 7): the chute between tiers is a transfer channel now: a dark pressed floor, two polished runners the ball rides on, dark side walls under a chrome top edge (`hardware/tier.ts` `chute`).
+19. Wire track: the chrome is helped by a tone that turns with the wire's face (`SHEEN` in `play/ramps.ts`, through a new optional argument of `Bag.add` in `play/g.ts`): a bright line along the top, darker sides, a little light from below. Tried at 0.3 to 1.8 (read as a white wire with a black outline, taken back) and kept at 0.6 to 1.4.
+20. Loader ring tones taken down toward the approved image: face 0x44474b, bowl near black (`CUP`), bright lip kept. The first collar under the ring is 18 px long.
+21. Marquee title, M4: MEASURED 11:33 UTC by `stillState` of `table-wide` at draft: "THE DAILY GRIND" contrast 27.1 against what lies under it (was 1.68; least 4.5).
+22. Agreed with other owners: told the street finisher where the receiver stands (end of rail `highway`, (14.45, 42.75) balls, radius 58.15 px, up to 110 px over the track line), no answer yet. Told the lamp finisher the mean of `table-wide` and the riser measures, no change asked.
+
+23. Cup lids: the lid is matte now (roughness 0.46, a thin coat) and whiter, the lamp shows through it more evenly; the steel ring under the lid is a thin wire (4.8 px, was 7 px) as in the approved image.
+24. Steel balls: the room they show is darker overhead with one long cool strip and a brighter window, and the floor in their lower half is stronger, so that they read as mirrors and not as dark glass.
+
+25. Marquee title, M4 (red at 1.68 on merge 34, the Builder's mail of 11:57Z). Cause, MEASURED: the title shape exists only in the state `on`; a marquee built first on the loader's page had no title to place a plate under, and `whole` does not build it again, so every still read after `loader-page` had the cream letters on the lit picture (ink 1.82 on ground 1.06). Decision: no plate and no band. The letters are dark print (0x17131c, not self-lit) on the lit dusk sky, as the approved image has them. MEASURED 12:01 UTC, `npm run -s measure -- --unit pinball --only M4 --tier draft`: pass, 257 runs in 11 stills, least contrast 4.62 (least 4.5).
+26. Front corners: the lands that come down from the side rails to the apron were cream enamel and the brightest large things in `table-wide`. They are dark brushed metal now (`SLOPE` in `frame/apron.ts`).
+27. Cup lids, second step (the Builder's mail of 11:59Z): white plastic by material and form only. The steps of the moulding are a shade darker than what faces up (`FORM`), the lamp's light through the lid is cooled to a white (`WELL`, `RIM`). No light added, the lamp's level is the lamp finisher's.
+28. Steel balls, second step (mail of 12:05Z): paler overhead, a larger window, larger lamps, the floor's colour strong in the lower half and a dark band at the horizon.
+29. Loader cup (mail of 12:08Z): done in decision 20 before the mail, near black dish under a bright lip; seen in my still of `loader-page` at 11:43 UTC.
+
+30. Steel balls, third step: stripes overhead tried and taken back (read as drawn); the room overhead is a soft pale glow round the window, the floor in the lower half fades to dark under the ball.
+31. Rail cap (the Builder's mail of 12:16Z: walls keep their height, the rail on top wider and bright). The bright brushed land now takes the upper half of the round face that falls to the lane on the left (`CAP.cuts` of `RAIL.cuts`) and the bank and the shoulders of the cradle on the right; its tone is a neutral bright steel (0xeceae3) and not cream; two fine dark grooves run along each land as an extrusion's die leaves them. The walls under it stay navy.
+
 ## Measurements
 
 - MEASURED before: `npm test` 1461 of 1461, `npm run build` built, `npm run bots` all clear, 10:03 to 10:06 UTC.
@@ -93,3 +112,11 @@ Draw calls of my folders: 99 before, 99 after. Triangles of my folders: 183228 b
 - MEASURED: one draft still of `step3-result` 19.9 s (`npm run still -- --id step3-result --format hd --tier draft`).
 - MEASURED 10:49 UTC: mean of `table-wide` draft against the approved image 0.952 (approved 58.5, 55.8, 51.5; build 55.6, 52.8, 49.5; PIL `ImageStat.Stat(image).mean`, sum of the three channels).
 - MEASURED 10:48 UTC, before the last two tone edits: `npm test` 1464 of 1464 in 116 files, `npm run build` built, `npm run bots` all clear.
+- MEASURED 11:25 UTC: mean of `table-wide` draft 0.995 of the approved with cream wedges and polished navy walls; 1.019 at 11:36 UTC after merge 33 (same command as above).
+- MEASURED 11:25 UTC in `table-wide` draft (PIL mean of a box, luma): riser street to office 38.6 against street floor 41.0 to 63.9; riser office to corporate 27.5 against office floor 66.2; left wall 30.7, right wall 44.0. No riser or wall is over 1.2 times the floor beside it.
+- MEASURED 11:11 UTC: M3 at draft red on 3 of 10 keys: `rail-cam` 0.51, `youre-fired` 0.71, `tier-corporate` 0.78 (least 0.8).
+- MEASURED 11:31 UTC, before the title plate was read by the measure: M4 at draft red on "You're Fired" 1.3 and "Corporate HQ" 4.25 (the models' signs) and on the title 1.68; the title reads 27.1 since.
+- MEASURED 10:57 UTC: one review still of `step3-result` 56.4 s.
+- MEASURED 11:59 UTC: M3 at draft red on 2 of 10 keys: `rail-cam` 0.40 and `lobby-doors` 0.796 (least 0.8); `youre-fired` and `tier-corporate` pass now. `rail-cam` fell from 0.51 at 11:11 UTC; cause UNKNOWN (my wire sheen or the shared look of merge 34).
+- MEASURED 12:09 UTC: mean of `table-wide` draft 1.002 of the approved, with the title's band gone and the front lands at 0.95; the lands went to 0.4 after that still.
+- MEASURED 12:21 UTC with the wider bright cap (tone 1.9): mean of `table-wide` draft 1.004 of the approved; riser street to office 39.3 against floor 43.1; riser office to corporate 28.0 against floor 79.8; left wall 22.8. The box of the right wall (1560,560,1640,700) reads 59.4 because the cap's shoulder now lies in it, the wall under it is unchanged.

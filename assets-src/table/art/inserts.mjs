@@ -73,15 +73,18 @@ const ICONS = {
 const pen = (col, opacity = 1) => (w) => `fill="none" stroke="${col}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" opacity="${opacity}"`
 
 // The glass of a window fills its hole: a frosted lens flush with the floor, with one fine dark line where it meets its metal seat.
-const WELL = { glass: 0.97 }
+const WELL = { glass: 0.89 }
+const SEAT = `<linearGradient id="seat" x1="60" y1="40" x2="452" y2="472" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#a88a55"/><stop offset="0.22" stop-color="#d8c08a"/><stop offset="0.45" stop-color="#8a6e40"/><stop offset="0.7" stop-color="#5e4a2a"/><stop offset="0.86" stop-color="#9c8050"/><stop offset="1" stop-color="#6a5430"/></linearGradient>`
 
 function cell(look, kind, i) {
   const inner = glass(look, kind, i)
   const set = `<clipPath id="w${kind}${i}"><circle cx="256" cy="256" r="250"/></clipPath><g transform="translate(256 256) scale(${WELL.glass}) translate(-256 -256)"><g clip-path="url(#w${kind}${i})">${inner}</g></g>`
   const edge = 250 * WELL.glass
-  if (kind === 'relief') return `<rect width="512" height="512" fill="#000"/><circle cx="256" cy="256" r="250" fill="#101010"/>${set}`
-  if (kind === 'glow') return `<rect width="512" height="512" fill="#020203"/>${set}<circle cx="256" cy="256" r="${edge}" fill="none" stroke="#020203" stroke-width="4" opacity="0.5"/>`
-  return `<rect width="512" height="512" fill="#07080a"/>${set}<circle cx="256" cy="256" r="${edge}" fill="none" stroke="#040507" stroke-width="4" opacity="0.7"/>`
+  const mid = (250 + edge) / 2
+  const wide = 250 - edge
+  if (kind === 'relief') return `<rect width="512" height="512" fill="#000"/><circle cx="256" cy="256" r="250" fill="#101010"/>${set}<circle cx="256" cy="256" r="${mid}" fill="none" stroke="#b0b0b0" stroke-width="${wide * 0.7}"/><circle cx="256" cy="256" r="${edge}" fill="none" stroke="#000" stroke-width="5"/>`
+  if (kind === 'glow') return `<rect width="512" height="512" fill="#020203"/>${set}<circle cx="256" cy="256" r="${mid}" fill="none" stroke="#020203" stroke-width="${wide + 6}"/>`
+  return `${SEAT}<rect width="512" height="512" fill="#07080a"/>${set}<circle cx="256" cy="256" r="${mid}" fill="none" stroke="url(#seat)" stroke-width="${wide}"/><circle cx="256" cy="256" r="${mid + wide * 0.18}" fill="none" stroke="#f0dfb0" stroke-width="2.5" opacity="0.5"/><circle cx="256" cy="256" r="${edge + 1}" fill="none" stroke="#040507" stroke-width="7" opacity="0.85"/><circle cx="256" cy="256" r="249" fill="none" stroke="#040507" stroke-width="3" opacity="0.7"/>`
 }
 
 // The lens is pale enamel-white plastic that takes its colour toward the rim, with one moulded ring near the edge and the picture in a fine dark line. Lit, most of its face is near white and the colour stands in the outer third.

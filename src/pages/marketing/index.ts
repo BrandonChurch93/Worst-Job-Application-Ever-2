@@ -127,6 +127,7 @@ export function makePage(): PageLogic {
     start,
     corner: { x: 66, y: 902 },
     cards: [0, 1, 2].map((i) => ({ x: cards[i]!.x + cards[i]!.w - 118, y: cards[i]!.y + cards[i]!.h + 4 })),
+    round: { x: cards[2]!.x + cards[2]!.w + 50, y: cards[2]!.y - 44 },
     lane: { x: cards[2]!.x - 18, y: cards[2]!.y - 44 },
     medal: { x: boxOf(layout, 'award-0').x - 96, y: boxOf(layout, 'award-0').cy + 56 },
     stand: { x: hero.x + hero.w + 92, y: hero.cy - 2 },
