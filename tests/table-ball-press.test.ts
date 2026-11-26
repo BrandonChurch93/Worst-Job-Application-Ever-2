@@ -28,19 +28,15 @@ describe('the clear ball pressed where it strikes', () => {
     expect(p.x).toBeCloseTo(1, 5)
     expect(p.y).toBeCloseTo(0, 5)
     const [dx, dy] = from(0.45)
-    expect(pressAt(dx, dy, R, floor, ctxOf([bumper()])).amount).toBeCloseTo(PRESS.most, 5)
+    expect(pressAt(dx, dy, R, floor, ctxOf([bumper()])).amount).toBeCloseTo(PRESS.stood, 5)
     const [ex, ey] = from(0.1)
-    expect(pressAt(ex, ey, R, floor, ctxOf([bumper()])).amount).toBe(PRESS.most)
+    expect(pressAt(ex, ey, R, floor, ctxOf([bumper()])).amount).toBe(PRESS.stood)
   })
 
-  test('a strike presses it for a moment and lets go', () => {
+  test('a bumper that has just fired does not press it by itself: the page tells of the hit', () => {
     const [x, y] = from(0.55)
-    const at = (since: number): number => pressAt(x, y, R, floor, ctxOf([bumper(since)])).amount
-    expect(at(0)).toBeCloseTo(PRESS.hit, 5)
-    expect(at(0.04)).toBeLessThan(at(0))
-    expect(at(0.04)).toBeGreaterThan(at(0.1))
-    expect(at(0.1)).toBeGreaterThan(0)
-    expect(at(1)).toBe(0)
+    expect(pressAt(x, y, R, floor, ctxOf([bumper(0)])).amount).toBe(0)
+    expect(pressAt(x, y, R, floor, ctxOf([bumper(0.04)])).amount).toBe(0)
   })
 
   test('a bumper on another floor does not press it', () => {
@@ -50,7 +46,7 @@ describe('the clear ball pressed where it strikes', () => {
 
   test('a steel ball it stands in presses it away from that ball', () => {
     const p = pressAt(500, 500, R, floor, ctxOf([steel(500, 500 + 0.9 * B)]))
-    expect(p.amount).toBe(PRESS.most)
+    expect(p.amount).toBe(PRESS.stood)
     expect(p.x).toBeCloseTo(0, 5)
     expect(p.y).toBeCloseTo(1, 5)
     expect(pressAt(500, 500, R, floor, ctxOf([steel(500, 500 + 1.2 * B)])).amount).toBe(0)
