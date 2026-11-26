@@ -211,7 +211,9 @@ export class Geo {
       const b = path[Math.min(path.length - 1, i + 1)]!
       const t = unit(sub(b, a))
       const ref: V3 = Math.abs(t[2]) > 0.92 ? [1, 0, 0] : [0, 0, 1]
-      const s = unit(cross(t, ref))
+      const prev = frames[i - 1]?.s
+      const kept: V3 | null = prev ? sub(prev, [t[0] * dot(prev, t), t[1] * dot(prev, t), t[2] * dot(prev, t)]) : null
+      const s = unit(kept && Math.hypot(...kept) > 0.2 ? kept : cross(t, ref))
       const u = unit(cross(s, t))
       frames.push({ o: path[i]!, s, u })
       if (i > 0) run += Math.hypot(...sub(path[i]!, path[i - 1]!))
