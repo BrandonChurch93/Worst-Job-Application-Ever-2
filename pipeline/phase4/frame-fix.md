@@ -36,17 +36,17 @@ Not mine, left: R1-1 issue 2 (light), 6, 7, 18 (models), 9 (crop), R3-1 issue 5 
 
 ## Looks, by part, from the first still
 
-Counted at 08:52 UTC. One still that shows several parts is counted on the part it was rendered for. The limit is 40 a part.
+Counted at 09:33 UTC. One still that shows several parts is counted on the part it was rendered for. The limit is 40 a part.
 
 | part | looks | what |
 | --- | --- | --- |
-| table-frame | 12 | 2 baseline compares, 8 table-wide stills (rail ends, risers, marquee, title), 2 last-save stills for the shoulder blades |
+| table-frame | 28 | 2 baseline compares, 8 table-wide stills (rail ends, risers, marquee, title), 2 last-save stills for the shoulder blades, 9 table-wide stills for the dark risers, 7 stills of tier-corporate, tier-office, tier-street and reply-all for the five means |
 | marquee | 0 | seen in the table-wide stills, counted there |
 | table-hardware | 4 | table-wide stills for the spring, the tier block, the pocket and the lane guides |
 | lift | 0 | seen in the table-wide stills, counted there |
-| loader | 23 | 1 baseline compare, 17 loader-page draft stills, 1 review still, 4 page stills of the port's answer at 0.57 to 0.63 of pinball.seal |
+| loader | 28 | 1 baseline compare, 17 loader-page draft stills, 1 review still, 4 page stills of the port's answer at 0.57 to 0.63 of pinball.seal, 5 loader-page stills for the soft rim and the collars |
 | flippers | 8 | last-save stills, tier-office (2) and tier-corporate after the wire change |
-| bumpers | 2 | table-wide crops |
+| bumpers | 4 | table-wide crops, 2 tier-office stills for the lids |
 | targets | 0 | |
 | ramps | 12 | 1 baseline compare, 10 rail-cam stills for the wires, 1 table-wide |
 
@@ -76,6 +76,13 @@ Counted at 08:52 UTC. One still that shows several parts is counted on the part 
 21. The shoulder guides beside the bats are thin steel blades (4.8 px, were 11.5) on slim posts: a real machine's lane guide is a strip on edge, and the thick bars read as square section.
 22. The wire gate across each tier's exit stays: it is the page's `gate.<tier>` and it moves. R1-5 issue 18 names it; whether it should show in last-save is `/root/machine_runner`'s camera and `/root`'s call.
 23. The lift's elbows and the plunger's knob stay `MACHINE_ORANGE`; they read dull amber under the tier's light. Left for the same reason as 20.
+
+24. Ruling 09:06Z, risers. The vertical faces between floors are a dark anodised tone (`RISER` 0.2, 0.208, 0.22 and the ledge 0.15, 0.155, 0.165 in `frame/tier.ts`); the two strike strips on the cross rail's face are gone, since they were the bright band; the thin top edges of the rails stay bright aluminium. `table.tierStepBalls` and `table.topFloorDepthBalls` stay 1.
+25. The frame's aluminium gives back less of the room: `under` 0.9 (was 1.8), `wall` 0.35 (was 0.8), `ceiling` 0.7 (was 1), `panel` 0.95 (was 1.3) in `frame/mats.ts`. This is my metal, not a lamp: no value of `light.ts` or of the lamps' folder is touched.
+26. Bumper lids (ruling 09:06Z): the lid is a lathe with a rolled rim, a groove and a raised deck, and the glow falls with the form (rim 0.6, groove 0.2 to 0.26, deck 0.54 to 0.84), so the lid reads from straight above without a lamp change.
+27. The port's hard white line (ruling 08:58Z) is now three falling steps of light (0.62, 0.34, 0.14) set 0.6 px inside the well's lip; the collars on the tube are shaded round by height.
+28. The wire gate stays as ruled; its wire was not thinned in this round: UNKNOWN whether a thinner one reads better.
+29. The outlet's answer in zone `last` was built and tested but never rendered in a page still: UNKNOWN how it looks.
 
 ## Measured
 
@@ -125,3 +132,19 @@ All at 1e39deca unless said. Commands as written.
 - The port's answer live: four page stills at 0.57, 0.6, 0.61, 0.63 of pinball.seal. At 0.6 the rim carries a halo and the ring is drawn in; at 0.61 it is back.
 - Counts at f4fc2f8d, 08:43 to 08:45 UTC, same command. table-wide scene 201; loader 10 calls 15686 triangles; ramps 5 calls 20920; all other rows as in the table above. tier-corporate 110. tier-office 126. tier-street 108. loader-page 63, loader 3 calls 7070. last-save 189: its camera now shows the whole lower machine, so it is not the 122 of the baseline; each of my parts there has as many calls as in table-wide or fewer (hardware 20, frame 16, targets 15, flippers 12, loader 9, bumpers 8, lift 8, ramps 5, marquee 3).
 - Triangles of my folders in table-wide at f4fc2f8d: 181060, so 10310 fewer than the 191370 of the baseline.
+
+### After ab79cbfd, at the last commit of this round
+
+- `npm test` (09:29 to 09:31 UTC): 115 files, 1461 of 1461 passed. `npm run build`: built. `npm run bots`: "bots: all clear".
+- The five means by the lamps' tool, `cp out/work/stills/key-<key>-hd-draft.png out/work/lights/fg-<key>.png; node assets-src/table/lights/means2.mjs fg table-wide,tier-corporate,tier-office,tier-street,reply-all` (09:29 UTC): table-wide 0.99, tier-corporate 1.05, tier-office 1.04, tier-street 1.06, reply-all 1.00. Before the riser change table-wide was 1.15 by the same tool.
+- Riser against floor in the table-wide draft still, grey means of boxes (`python3 /tmp/meas.py`, boxes x0 y0 x1 y1 in the 1920 wide still): riser between street and office (712, 550, 927, 585) 49.1; street floor (1020, 672, 1115, 752) 42.4, so 1.16 by my box and 0.85 against the lamps' floor figure of 58. Riser between office and corporate (672, 325, 927, 365) 34.9; office floor (806, 403, 860, 430) 64.4, so 0.54. Left side wall's inner face 76.6. Near wedges 120.4 and 119.5.
+- Draft stills: table-wide 46.4 s, tier-corporate 44.8 s, tier-office 43.0 s, tier-street 38.7 s, reply-all 41.4 s.
+- Counts, `npm run build && npm run counts -- --key <key> --live low` (09:32 to 09:34 UTC). table-wide scene 201: table-hardware 21 calls 31056 triangles, table-frame 16 and 11980, targets 15 and 23180, flippers 12 and 27120, loader 10 and 15974, bumpers 8 and 41304, lift 8 and 10166, ramps 5 and 20920, marquee 4 and 1528. Every part has the calls it had at 997de9fb. Triangles of my folders in table-wide: 183228, so 8142 fewer than the baseline's 191370.
+- tier-corporate 110, tier-office 126, tier-street 108, last-save 189: no part of mine has more calls than at f4fc2f8d. loader-page scene 65 (was 63): the loader's row is 3 calls as before, 7358 triangles; the two new calls are in rows that are not mine.
+- Asset sets, `du -sb`: `public/assets/table/frame` 65310 bytes (0.062 MB), `assets-full/table/frame` 142746 bytes (0.136 MB). No set for hardware or play.
+
+## The three least real things left, for the successor
+
+1. The cabinet reads as a deep pit: tall side walls and the two near wedges stand high over the street floor (keys `table-wide`, `last-save`). The steps are the layout's; within my files the next move is the wedges' and side walls' tone and a lower inner lip.
+2. The orange parts (bats, lift elbows and doors, plunger knob) read dull amber, not approved's bright moulded orange (keys `tier-corporate`, `tier-office`, `tier-street`, `table-wide`). `MACHINE_ORANGE` is fixed; the next move is the gloss and the rim light of `ORANGE_LOW` and of the lift's elbow material.
+3. The ramp's wires and trestles are still busier and greyer than approved's four clean chrome wires, and the spiral reads as a drum (keys `rail-cam`, `tier-street`, `table-wide`). After that: the bumper lids' deck is still flat next to approved's cups (`tier-office`) and the port's ring is flatter than approved's polished ring (`loader-page`).
