@@ -9,7 +9,7 @@ import { contact, dims, disc, flange, leaf, leaned, mesh, pressed, q, scattered,
 import { BRUSHED, brushedPicture } from './medal-picture'
 import { engraved, restingSlab, slabKey } from './perk-cards'
 
-export const MEDAL_LOOK = { lobes: 30, deep: 9, toward: 2.4, side: 0.5, wall: 3.4, wallSide: 0.8, under: [[-2.5, 0.9], [0, 0.9], [1.5, 0.78], [4, 0.5], [8, 0.24], [13, 0.07], [18, 0]] as [number, number][], underTurn: 1.5, band: 141, ring: 138, face: 130.5, wreath: 119, leaves: 12, leaf: [27, 11.5, 2.6] as const, sheen: 0.62, axis: 2.55, rim: 1.02, lean: 0.6, cap: 0.26, capFrom: 0.6, narrow: 3.2, bow: [2.9, 0.5] as [number, number], lip: [2.6, 1.5] as [number, number], ridge: 1.7, groove: 0.5, pressed: [0.8, 0.42, 1.25] as [number, number, number] }
+export const MEDAL_LOOK = { lobes: 30, deep: 9, toward: 2.4, side: 0.5, wall: 3.4, wallSide: 0.8, under: [[-2.5, 0.94], [0, 0.94], [1.5, 0.86], [4, 0.6], [8, 0.3], [13, 0.09], [18, 0]] as [number, number][], underTurn: 1.5, band: 141, ring: 138, face: 130.5, wreath: 119, leaves: 12, leaf: [27, 11.5, 2.6] as const, sheen: 0.62, axis: 2.55, rim: 1.02, lean: 0.6, cap: 0.26, capFrom: 0.6, narrow: 3.2, bow: [2.9, 0.5] as [number, number], lip: [2.6, 2.3] as [number, number], ridge: 1.7, groove: 0.5, pressed: [0.9, 0.32, 1.35] as [number, number, number] }
 
 
 let faceMade: THREE.MeshPhysicalMaterial | null = null

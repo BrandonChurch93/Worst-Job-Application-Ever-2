@@ -241,7 +241,7 @@ const spillMaterial = (): THREE.MeshPhysicalMaterial =>
     normalMap: materials().ceramic.normalMap, normalScale: new THREE.Vector2(0.04, 0.04), polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -2
   })))
 
-export const SPILL = { tint: [1, 0.9, 0.7] as [number, number, number], rings: [[-2, 0.4], [0, 0.4], [2, 0.3], [4, 0.28], [6, 0.32], [8, 0.36], [10, 0.34], [14, 0.24], [20, 0.1], [28, 0]] as [number, number][], turn: 1.6 }
+export const SPILL = { tint: [1, 0.9, 0.7] as [number, number, number], rings: [[-2, 0.3], [0, 0.26], [2, 0.2], [4, 0.17], [6, 0.22], [8, 0.3], [10, 0.32], [14, 0.24], [20, 0.1], [28, 0]] as [number, number][], turn: 1.6 }
 
 // The ring of spilled light round a slab's far edges, lying on the page.
 export function spillGeometry(s: Shape): THREE.BufferGeometry {
