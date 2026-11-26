@@ -10,7 +10,7 @@ export const TUBE = { outer: 53, wall: 3.6, sides: 24, opacity: 0.05, collar: 22
 const RING = { height: 26, lip: 6, floor: 2.4, slot: 2, mouth: 6, dish: 34, cuts: 7 }
 const BED = { height: 6, land: 5 }
 const CUP: [number, number, number] = [0.02, 0.021, 0.024]
-const BAND = { face: hex(0x565a5f), groove: hex(0x3c3f43) }
+const BAND = hex(0x3c3f43)
 
 // The middle line of the tube on the page, in page pixels, its corners rounded.
 function line(): V3[] {
@@ -160,7 +160,7 @@ function port(A: Geo, screws: Screws, z: Zone, c: { x: number; y: number; ring: 
     bowl.push([r + RING.lip - (RING.lip + RING.dish) * (1 - Math.cos(t)), h - 3 - (h - 3 - RING.floor) * Math.sin(t)])
   }
   const outline: V2[] = [[R, 0], [R, h - 5], [R - 5, h], [R - 22, h], [R - 24, h - 2.2], [R - 34, h - 2.2], [R - 36, h], [r + RING.lip + 4, h], [r + RING.lip, h - 3], ...bowl]
-  const tone = (i: number): [number, number, number] => (i >= 8 ? CUP : i === 4 ? BAND.groove : i === 1 || i === 7 ? TONE.aluDeep : BAND.face)
+  const tone = (i: number): [number, number, number] => (i >= 8 ? CUP : i === 4 ? BAND : i === 1 || i === 7 ? TONE.aluDeep : TONE.aluDark)
   if (toward === null) A.lathe(outline, p[0], p[1], 72, tone)
   else {
     // The tube leaves through a slot cut in the ring, and lies there on a dark bed.

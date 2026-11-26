@@ -113,7 +113,7 @@ export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
     right.push([xf + RAIL.cradle * Math.sin(t), H + RAIL.tubeUp - RAIL.cradle * Math.cos(t)])
   }
   right.push([xf + half, H], [xe - c, H], [xe, H - c], [xe, 0])
-  for (const [y0, y1] of lengths(0, dive, 5.6)) A.prism(right, [0, y0], [0, y1], landed(right, grooved(right, [xc + RAIL.revealDeep], METAL, TONE.gap), Math.max(RAIL.bank * RAIL.slope, RAIL.cradle - RAIL.tubeUp)))
+  for (const [y0, y1] of lengths(0, dive, 5.6)) A.prism(right, [0, y0], [0, y1], landed(right, grooved(right, [xc + RAIL.revealDeep], METAL, TONE.gap), RAIL.bank * RAIL.slope))
   P.box(xc, xe, Y(5.6) - RAIL.joint / 2, Y(5.6) + RAIL.joint / 2, 0, H - 4, TONE.gap, { along: [0, 1, 0] })
   for (let v = RAIL.screwStep / 2; v < dive - 0.2; v += RAIL.screwStep) {
     screws.add((xc + c + xf - half) / 2, Y(v), H, 0.9, turnOf(xc, v))
