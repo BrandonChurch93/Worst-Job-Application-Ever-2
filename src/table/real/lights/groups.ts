@@ -189,7 +189,7 @@ export const HIGHS = 9
 export const HIGH_BODY = 60
 // The beacon's lamp over its roof, in pixels and balls: low and near, so its colour lies on the roof and not on the street.
 // The lamp under a sling stands toward its foot edge, low, so its pool lies on the floor before the sling and on the flipper.
-const SLING = { foot: 0.85, z: 16, power: 4, reach: 1.5 }
+const SLING = { foot: 0.85, z: 16, power: 3.6, reach: 0.95 }
 const BEACON = { z: 14, reach: 0.85, power: 0.7 }
 const NOTES = { out: 0.75, z: 70, reach: 2, power: 0.2 }
 

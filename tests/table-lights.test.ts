@@ -8,7 +8,7 @@ import { zone, zones } from '../src/table/real/zone'
 import { CHANNELS, LIT } from '../src/table/real/lights/groups'
 import { hook } from '../src/table/real/lights/hook'
 import { groupsOf, levels, parts, solo } from '../src/table/real/lights/index'
-import { INSERT_REST } from '../src/table/real/lights/levels'
+import { ANSWER, INSERT_LIT, INSERT_REST } from '../src/table/real/lights/levels'
 import { fall, LEAN, picturesOf, TEXEL } from '../src/table/real/lights/pictures'
 import { BUMPER } from '../src/table/real/lights/colours'
 import { buildLamps } from '../src/table/real/lights/lamps'
@@ -59,7 +59,7 @@ describe('the levels of a zone', () => {
     expect(L.byName.general).toBe(0.8)
     expect(L.byName.red).toBe(1)
     expect(L.byName.blue).toBe(0)
-    expect(L.byName['insert.2']).toBe(1)
+    expect(L.byName['insert.2']).toBe(INSERT_LIT)
     expect(L.byName['insert.1']).toBeCloseTo(INSERT_REST * 0.8, 6)
     expect(L.groups.length).toBe(groupsOf(z).length)
   })
@@ -68,7 +68,7 @@ describe('the levels of a zone', () => {
     expect(L.general).toBe(0)
     expect(Math.max(...L.groups)).toBe(0)
   })
-  it('raise a bumper lamp when it is struck and let it fall back in a quarter of a second', () => {
+  it('raise a bumper lamp when it is struck and let it fall back in under half a second', () => {
     const o = zone('office')
     const b = table.bumpers.filter((x) => x.tier === o.tier)[0]!
     const at = (since: number): number => levels(context([shape('whole.table-lights.office', [1, 0.18, 0, 0, 0]), shape(`bumper.${b.id}`, [since])]), o).byName['bumper.1']!
@@ -76,6 +76,25 @@ describe('the levels of a zone', () => {
     expect(at(BUMPER.seconds)).toBeCloseTo(BUMPER.rest, 6)
     expect(at(5)).toBeCloseTo(BUMPER.rest, 6)
     expect(at(0.1)).toBeGreaterThan(at(0.2))
+  })
+  it('raise a window in the floor as a ball rolls onto it, full when the ball is over its middle', () => {
+    const n = insert
+    const R = n.r * 96
+    const ball = (dx: number): ReturnType<typeof shape> => ({ ...shape('ball.clear', []), x: n.c[0] * 96 + dx - 48, y: n.c[1] * 96 - 48, w: 96, h: 96, z0: 0, z1: 96 })
+    const win = { ...shape(`insert.${n.id}`, [0]), x: n.c[0] * 96 - R, y: n.c[1] * 96 - R, w: 2 * R, h: 2 * R, z0: 0, z1: 3 }
+    const at = (dx: number): number => levels(context([shape('whole.table-lights.street', [1, 0.18, 0, 0, 0]), win, ball(dx)]), z).byName['insert.2']!
+    expect(at(600)).toBeCloseTo(INSERT_REST, 6)
+    expect(at(R + 48)).toBeGreaterThan(INSERT_REST)
+    expect(at(R)).toBeGreaterThan(at(R + 48))
+    expect(at(0)).toBe(1)
+  })
+  it('hold the red of the firehouse below full with a ball in the bay and throw it full on the frame of the catch and of the kick', () => {
+    const red = (v: number[]): number => levels(context([shape('whole.table-lights.street', [1, 0.18, 0, 1, 0]), shape('model.street.firehouse', v)]), z).byName.red!
+    expect(red([1, 0, 9])).toBe(1)
+    expect(red([1, 2, 9])).toBeCloseTo(ANSWER.heldRed, 6)
+    expect(red([0, 3, 0])).toBe(1)
+    expect(red([0, 3, 0.4])).toBeLessThan(1)
+    expect(red([0, 3, 0.4])).toBeGreaterThan(0.35)
   })
   it('show one group alone when asked', () => {
     solo('street.red')

@@ -19,6 +19,7 @@ const BOX = { rim: 30, proud: 16, deep: 46, inner: POCKET.bar, innerProud: POCKE
 const STRIP = { slot: 4.5, pitch: 11, slotPad: 7 }
 const BEAM = { thick: 16, first: 12, pitch: 400, wide: 3, deep: 1.2 }
 const GLOW = { rest: 0.05, lit: 1.0 }
+export const PLATE = { proud: 2.4, pad: 22, most: 0.6, bar: 3, floor: 0.3 }
 // Where the foot of the face lies on the page while the board is not stood up: `boardAt` in `draw.ts` turns the board about it.
 const flatFoot = (MARQUEE_Y + MARQUEE_H - 0.25) * BALL
 const sky = ask('table/frame/marquee-skyline.webp', { colour: true })
@@ -134,8 +135,39 @@ export function marquee(z: Zone, ctx: RealContext): THREE.Object3D {
     P.box(x - 26, x + 26, h2 * 0.2 - 16, h2 * 0.2 - 9, -BOX.deep - 0.6, -BOX.deep + 0.5, TONE.vent, { bottom: true })
   }
   P.move(dark, toBoard)
+  // The title stands on a calm dark plate of its own, let into the picture in a thin bright frame, so the words are read against one dark tone and not against the sky.
+  const name = ctx.byId.get('marquee-title')
+  let hole: [number, number, number, number] | null = null
+  if (name) {
+    const c = localOf(z, name)
+    const q = new THREE.Vector3(c[0], c[1], c[2]).applyMatrix4(fromBoard)
+    const cy = name.turnX ? q.y : -h2 + flatFoot - (name.y + name.h / 2)
+    const hw = Math.min(name.w / 2 + PLATE.pad, w * PLATE.most)
+    const y0 = Math.max(p0 + step + 3, cy - name.h / 2 - PLATE.pad * 0.4)
+    const y1 = Math.min(h2 - step - 3, cy + name.h / 2 + PLATE.pad * 0.4)
+    hole = [q.x - hw, q.x + hw, y0, y1]
+    const plate = P.vertices
+    P.box(q.x - hw, q.x + hw, y0, y1, 0.05, PLATE.floor, TONE.pocket)
+    P.move(plate, toBoard)
+    const frame = A.vertices
+    const b = PLATE.bar
+    for (const [x0, x1, ya, yb, along] of [[q.x - hw - b, q.x + hw + b, y1, y1 + b, [1, 0, 0]], [q.x - hw - b, q.x + hw + b, y0 - b, y0, [1, 0, 0]], [q.x - hw - b, q.x - hw, y0, y1, [0, 1, 0]], [q.x + hw, q.x + hw + b, y0, y1, [0, 1, 0]]] as [number, number, number, number, [number, number, number]][]) A.box(x0, x1, ya, yb, 0.3, PLATE.proud, TONE.aluBright, { bevel: 0.8, along })
+    A.move(frame, toBoard)
+  }
   const face = F.vertices
-  F.face([[-w + step, p0 + step, 0.4], [w - step, p0 + step, 0.4], [w - step, h2 - step, 0.4], [-w + step, h2 - step, 0.4]], [0, 0, 1], [1, 0, 0], [1, 1, 1])
+  const pane = (x0: number, x1: number, y0: number, y1: number): void => {
+    if (x1 - x0 > 0.01 && y1 - y0 > 0.01) F.face([[x0, y0, 0.4], [x1, y0, 0.4], [x1, y1, 0.4], [x0, y1, 0.4]], [0, 0, 1], [1, 0, 0], [1, 1, 1])
+  }
+  const fx0 = -w + step
+  const fx1 = w - step
+  const fy0 = p0 + step
+  const fy1 = h2 - step
+  if (hole) {
+    pane(fx0, hole[0], fy0, fy1)
+    pane(hole[1], fx1, fy0, fy1)
+    pane(hole[0], hole[1], fy0, hole[2])
+    pane(hole[0], hole[1], hole[3], fy1)
+  } else pane(fx0, fx1, fy0, fy1)
   F.map(face, (x, y) => [(x + w) / (2 * w), (y + h2) / h])
   F.move(face, toBoard)
   const out = new THREE.Vector3(0, -BOARD.sin, BOARD.cos)
