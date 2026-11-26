@@ -1,0 +1,151 @@
+{
+ "critic": "R9",
+ "score": 5,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "A: one sheet across each of the four beats of the careers page and three close sheets of the arrow acting",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-A-02.png",
+   "where": "the arrow across all 12 frames, moving card to card",
+   "what": "the cards turn over to show their grim fine print and the arrow does nothing about it: no flinch, no recoil, no hold. It slides along like an ordinary pointer, so the beat's emotion is carried only by the text",
+   "fix": "after each reveal add a 3–4 frame reaction (recoil back and up with a stretch, then a squash settle) and hold the reacting pose for at least 6 frames before it moves on"
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-04.png",
+   "where": "last three frames, the page tipping over and falling into darkness",
+   "what": "the world collapses under the arrow and it stays upright with no change of pose. There is no shock, no clutch and no fall. It looks pasted on top of the page",
+   "fix": "give it an anticipation squash as the page starts to tilt, then a strong stretch or tumble as it falls with the page, held long enough to read"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "the arrow in every frame, upper left moving down to the first card",
+   "what": "at this framing the arrow is roughly 15 px tall and keeps one rigid pose, so it has no readable silhouette or attitude. It reads as a cursor, not a character",
+   "fix": "push in or scale the character up for acting beats, and give it a lean or tilt that carries an attitude (sneaking, wary) as it travels"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "frames 7–10, the click on Apply for a Job",
+   "what": "the click has no visible wind-up (a pull back or rise) and no squash on contact at this size, so the big decision lands flat",
+   "fix": "add a clear pull-up and stretch before the press, a strong squash on contact, and a held beat afterwards"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "frames 6–12, the move from the card to the badge and back to Apply",
+   "what": "the tilt toward the badge is the only acting, and it is too small and too brief to read. The rest of the travel is a constant-speed glide with no stretch",
+   "fix": "stop at the badge with a held look (lean in, then recoil), and stretch along the path on the fast return move"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-06.png",
+   "where": "frames 4–12, the dust puffs around the arrow on the card",
+   "what": "the puffs carry the action, but the arrow itself barely deforms. It stays stiff and upright, so it is unclear whether it is struggling, shaking off or celebrating",
+   "fix": "add visible squash and stretch cycles (wriggle, strain) in sync with the puffs, and finish on a distinct exhausted or relieved pose"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "frames 4–12, the slumped lean beside the card corner",
+   "what": "the slump is a good read, but it varies only slightly frame to frame, so the shift from tense to deflated happens with no clear key pose or hold",
+   "fix": "add a clear down-squash key at the moment of deflation and hold it for 6 or more frames"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-07.png",
+   "where": "frames 7–12, the backward-tilted glide",
+   "what": "the arrow looks the same as in sheets 5–6 (same chrome bevel), but the backward tilt is held rigidly through the whole move with no follow-through when it stops",
+   "fix": "add overshoot and settle at the end of the glide"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "the whole sheet",
+   "what": "did not read: confident reads as calm, idle and a little cautious, and the stroll reads as a drift in from the edge.",
+   "fix": "The upright stand, the slight bounce and the strut of Confident on the way in, at a size the sheet can show.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "the whole sheet",
+   "what": "did not read: the double take at Unlimited PTO is not in the read: the arrow reads as showing no reaction to any card. The visits and the fine print are read, and so is unbothered.",
+   "fix": "One held double take at that card, a stretch tall and a snap back, then the stroll goes on as before.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "the whole sheet",
+   "what": "did not read: the ticker and the arrow that does not look down at it are not in the read. The beat reads as idle, then wary or curious, with a drift to the badge and back.",
+   "fix": "The ticker plain in the sheet, and the arrow held upright and turned away from it while it runs, so that not looking is a pose.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "the whole sheet",
+   "what": "did not read: the bound reads as a creep and the arrow as hesitant, then resigned; the jump on the button reads as a click, and the page turning over reads as the page tipping and falling away.",
+   "fix": "The bound with a stretch, a wind-up held above the button, the jump and the landing with a squash, and the turn read as a turn.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "the whole sheet",
+   "what": "did not read: shocked reads as tense, then discouraged or tired. The stretch is seen; the snap back reads as a slump into a lean.",
+   "fix": "The double take of Shocked: the stretch tall, then a snap back to upright, held, with no lean after it.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-06.png",
+   "where": "the whole sheet",
+   "what": "did not read: proud reads as straining or struggling to get free. The dust is seen; the puff up is not.",
+   "fix": "The puff up of Proud held first on an arrow that stands clear of the card, and then the dusting as a show.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "the whole sheet",
+   "what": "did not read: confident reads as uneasy and dragged away, with the tilt held backward through the move.",
+   "fix": "The upright stand, the slight bounce and the strut of Confident, leaning into the move and not away from it.",
+   "by": "builder"
+  }
+ ],
+ "reads": [
+  {
+   "file": "set-A-01.png",
+   "read": "calm, idle, maybe a little cautious; it drifts in from the left edge and wanders down toward the first card, and nothing has happened to it yet"
+  },
+  {
+   "file": "set-A-02.png",
+   "read": "neutral, going through the motions; it hovers each card in turn and the cards reveal grim fine print, and it shows no visible reaction to any of them"
+  },
+  {
+   "file": "set-A-03.png",
+   "read": "idle, then wary or curious; it pauses on the last card, drifts up toward the 'Excellence in Synergy' badge, then tilts and slides back toward the Apply button"
+  },
+  {
+   "file": "set-A-04.png",
+   "read": "hesitant, then resigned or determined; it creeps toward Apply for a Job, clicks it, and then the whole page tips over and falls away under it"
+  },
+  {
+   "file": "set-A-05.png",
+   "read": "tense and stretched tall, poking at the corner of a card, then it tips, slumps sideways and settles into a deflated lean; looks discouraged or tired"
+  },
+  {
+   "file": "set-A-06.png",
+   "read": "straining or struggling; it sinks into the card corner, then pops upright with puffs of dust around it, as if shaking itself off or fighting to get free, and then stands still and stiff"
+  },
+  {
+   "file": "set-A-07.png",
+   "read": "uneasy, pulled away; the card slides away under it, it rises past the badge, then tips back and glides off toward the Apply button as if dragged or reluctantly drifting"
+  }
+ ]
+}
