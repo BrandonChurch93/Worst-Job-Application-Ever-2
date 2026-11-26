@@ -1,35 +1,35 @@
 {
   "folder": "step2-keeper",
-  "pushed": "2026-11-26T05:43:04.579Z",
-  "commit": "9ad77d9899a9ef4cf01e010d8ecb6b07428cf57e",
+  "pushed": "2026-11-26T06:13:48.764Z",
+  "commit": "321401976e510dee5719513a1e4e9cb1c5f68448",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Slot on the sheet machines: approved on the left, this build on the right, after the rounded window, wider drums with a bright plateau and the thicker payline",
-      "time": "2026-11-26T05:43:02.737Z",
+      "caption": "Three frames of the cranking, 14.36 s, 14.51 s, 14.66 s: the cursor leans and stretches with the crank it turns",
+      "time": "2026-11-26T06:13:46.872Z",
       "by": "step2-keeper",
-      "from": "out/work/looks/files/20261126054302-slot-compare.jpg"
+      "from": "out/work/looks/files/20261126061346-crank-swing.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Beat step2.slot at 0.6, review: the slot machine in its tray with the coins",
-      "time": "2026-11-26T05:43:02.966Z",
+      "caption": "Crank key, the meter: approved on the left, this build on the right, with the warm pool the lit segments throw on the tray",
+      "time": "2026-11-26T06:13:47.100Z",
       "by": "step2-keeper",
-      "from": "out/work/looks/files/20261126054302-slot-beat.jpg"
+      "from": "out/work/looks/files/20261126061347-meter-spill.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "The cursor 0.04 s after it grips the dial's hole and the crank's grip: the hand now closes over 0.09 s and is no longer set there in one step",
-      "time": "2026-11-26T05:43:03.208Z",
+      "caption": "The chevron of Contact number turning with its tray, 1.93 s and 1.97 s",
+      "time": "2026-11-26T06:13:47.398Z",
       "by": "step2-keeper",
-      "from": "out/work/looks/files/20261126054303-reach.png"
+      "from": "out/work/looks/files/20261126061347-chevron-turn.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Three frames of the cursor climbing onto the slot's knob, 8.84 s, 8.95 s, 9.2 s",
-      "time": "2026-11-26T05:43:03.439Z",
+      "caption": "Key step2-crank beside the approved image, review, at the pushed head",
+      "time": "2026-11-26T06:13:47.719Z",
       "by": "step2-keeper",
-      "from": "out/work/looks/files/20261126054303-climb.png"
+      "from": "out/work/compare/compare-step2-crank.jpg"
     }
   ]
 }
