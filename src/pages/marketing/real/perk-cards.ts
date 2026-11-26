@@ -83,7 +83,8 @@ const smooth = (t: number): number => {
 
 // One face of the slab, from the middle of its wall to the middle of its face. `d` is how far in from the edge a ring lies, `z` its height.
 // A ring further in than the corner's radius keeps its corners square, so no ring ever folds over itself.
-// The picture coordinates of the ground edge are pushed outward, so what shows through the edge is bent as a rounded edge of glass bends it.
+// The picture coordinates of the ground edge are pushed outward, so what shows through the edge is bent as a rounded edge of glass bends it,
+// and further outward down the wall by its depth, so the picture lies down the wall as closely as on the face.
 function face(s: Shape, half: number, flip: number, open: boolean): THREE.BufferGeometry {
   const bevel = bevelOf(s)
   const foot = half - SLAB.rise
@@ -151,7 +152,8 @@ function face(s: Shape, half: number, flip: number, open: boolean): THREE.Buffer
       const x = Math.max(-(wide - ring.d), Math.min(wide - ring.d, outline.x[i]! - ring.d * ox))
       const y = Math.max(-(tall - ring.d), Math.min(tall - ring.d, outline.y[i]! - ring.d * oy))
       const warm = side < 0 && dd < 3 ? -side * G.warm * (1 - dd / 3) : 0
-      put(x, y, ring.z, ox * out, oy * out, rise, v, warm, x + ox * bend, y + oy * bend)
+      const down = bend + Math.max(0, foot - ring.z)
+      put(x, y, ring.z, ox * out, oy * out, rise, v, warm, x + ox * down, y + oy * down)
     }
   })
   for (let r = 0; r < rings.length - 1; r++) {

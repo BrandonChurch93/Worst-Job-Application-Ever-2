@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import { config } from '../../../config'
 import { Random } from '../../../core/random'
 
-export const PICTURE = { size: 512, level: 0.93, cloud: 0.012, blotch: 0.008, grain: 0.011 }
+export const PICTURE = { size: 1024, lay: 2.4, level: 0.93, cloud: 0.012, blotch: 0.008, grain: 0.011 }
 
 function blurWrap(src: Float32Array, size: number, sigma: number): Float32Array {
   const reach = Math.max(1, Math.ceil(sigma * 3))
@@ -65,18 +65,18 @@ function read(h: Float32Array, size: number, u: number, v: number): number {
 }
 
 // What shows through a slab of frosted glass, as what its colour is multiplied by: the soft clouds of the frosting, the blotches of the
-// page's light under it, and the page's grain, blurred by the depth of the glass. One texel is one page pixel and the picture tiles.
+// page's light under it, and the page's grain, blurred by the depth of the glass. `lay` texels lie on one page pixel and the picture tiles.
 export function glassHeights(seed: number): Float32Array {
   const rnd = new Random(seed, 'glass-picture')
   const P = PICTURE
   const cloud = band(rnd, 32, 1.1, 3.2)
   const blotch = band(rnd, 128, 1.6, 4.5)
-  const grain = band(rnd, P.size, 0.9, 2.2)
+  const grain = band(rnd, 512, 1.1, 2.6)
   const out = new Float32Array(P.size * P.size)
   for (let y = 0; y < P.size; y++) for (let x = 0; x < P.size; x++) {
     const u = (x + 0.5) / P.size
     const v = (y + 0.5) / P.size
-    out[y * P.size + x] = P.level + P.cloud * read(cloud, 32, u, v) + P.blotch * read(blotch, 128, u, v) + P.grain * grain[y * P.size + x]!
+    out[y * P.size + x] = P.level + P.cloud * read(cloud, 32, u, v) + P.blotch * read(blotch, 128, u, v) + P.grain * read(grain, 512, u, v)
   }
   return out
 }
@@ -100,7 +100,7 @@ export function glassPicture(): THREE.DataTexture {
   tex.generateMipmaps = true
   tex.anisotropy = 4
   tex.colorSpace = THREE.NoColorSpace
-  tex.repeat.set(1 / P.size, 1 / P.size)
+  tex.repeat.set(P.lay / P.size, P.lay / P.size)
   tex.needsUpdate = true
   made = tex
   return tex
