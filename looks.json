@@ -1,35 +1,35 @@
 {
   "folder": "boss-fight",
-  "pushed": "2026-11-26T01:54:28.808Z",
-  "commit": "46ac15d63866b372f8842db86c0652cd4eeb53be",
+  "pushed": "2026-11-26T02:20:04.073Z",
+  "commit": "72ce75ed233015044446036966c9fea7c29550e6",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still boss-boss_press-0p53-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T01:52:22.885Z",
+      "caption": "Key boss-down: approved on the left, this build on the right, review tier",
+      "time": "2026-11-26T02:19:47.342Z",
       "by": "boss-fight",
-      "from": "out/work/stills/boss-boss_press-0p53-hd-draft.png"
+      "from": "out/work/compare/compare-boss-down.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Key boss-down: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-26T01:54:27.116Z",
+      "caption": "boss-fight at review beside the approved image (above): deeper red slabs flying above the darts, flat health fill, thin checkbox frame, the new shared orange",
+      "time": "2026-11-26T02:20:02.345Z",
       "by": "boss-fight",
-      "from": "out/work/compare/compare-boss-down.jpg"
+      "from": "out/work/looks/files/20261126022002-cmp-boss-fight.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "boss.press in six frames around the cursor: stands whole at the key, sags, drags itself on, presses the fallen button",
-      "time": "2026-11-26T01:54:27.381Z",
+      "caption": "boss-down at review beside the approved image (above): the cursor whole at 29.0 s, the bar empty",
+      "time": "2026-11-26T02:20:02.594Z",
       "by": "boss-fight",
-      "from": "out/work/looks/files/20261126015427-press-acting.jpg"
+      "from": "out/work/looks/files/20261126022002-cmp-boss-down.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "The key boss-down: approved left, build right. The cursor is whole with its black edge, lower left of the fallen button",
-      "time": "2026-11-26T01:54:27.612Z",
+      "caption": "the beat boss.popups: each pop-up as wide as its title, the lower two clear of the shield's glass",
+      "time": "2026-11-26T02:20:02.818Z",
       "by": "boss-fight",
-      "from": "out/work/compare/compare-boss-down.jpg"
+      "from": "out/work/sheets/sheet-beat-boss_popups-preview-draft.jpg"
     }
   ]
 }
