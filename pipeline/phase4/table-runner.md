@@ -39,9 +39,11 @@ Tuning looks of this round (40 per part): counted below as they are spent. Take 
 | `SPIRAL_TOP` | 5.4 | 4.1 | street_modeller, lamp_keeper |
 | Garage height (base 1.3 unchanged) | 4.3 | 3.0 | street_modeller, lamp_keeper |
 | Highway end height (`HIGHWAY_TOP`, every point scaled by 4.4 / 5.7) | 5.7 | 4.4 | street_modeller, lamp_keeper, frame_keeper reads it from the rail |
-| Cubicles box | [3.25, 2.25, 1.8, 2.15] h 0.7 | [3.25, 2.25, 3.2, 1.85] h 0.7 | office_modeller, lamp_keeper |
-| `cubicles.drop` bank | u 5.05, v 2.25 to 4.4 | u 6.45, v 2.25 to 4.1 | office_modeller |
-| `cubicles.roof` guide | (3.25, 1.75) to (5.25, 2.25) | (3.25, 1.45) to (6.65, 2.25) | office_modeller |
+| Cubicles box | [3.25, 2.25, 1.8, 2.15] h 0.7 | [3.25, 2.25, 3.2, 1.85] at 04:08, then [3.25, 2.25, 2.6, 1.85] h 0.7 at 04:25 | office_modeller, lamp_keeper |
+| `cubicles.drop` bank | u 5.05, v 2.25 to 4.4 | u 6.45 at 04:08, then u 5.85, v 2.25 to 4.1 | office_modeller |
+| `cubicles.roof` guide | (3.25, 1.75) to (5.25, 2.25) | (3.25, 1.45) to (6.65, 2.25), then to (6.05, 2.25) | office_modeller |
+| `drain-label` seat | 7 px | 6.3 px (frame_keeper's number) | frame_keeper |
+| `apron-card-words` seat | slab + 2 | slab + 1.3 (frame_keeper's number) | frame_keeper |
 | Inbox box | [15.2, 3.6, 1.55, 1.2] h 0.9 | [15.2, 3.6, 1.55, 1.45] h 1.15 | office_modeller, lamp_keeper |
 | Boardroom box | [3.25, 2.5, 1.2, 1.9] h 0.9 | unchanged (launch lane lets the ball out at u 5.3 and needs u 4.8 to 5.8) | corporate_modeller, /root |
 
@@ -57,3 +59,39 @@ Tuning looks of this round (40 per part): counted below as they are spent. Take 
 
 - Take searches: 21 of 28 (25 and three bought by the layout change). Search 21 ran from 29 s (`--allow 28 --from 29`) and kept run 2.
 - Tuning looks: one draft compare per key and sheet at the start (12), counted as one per part in the table below as they are added to.
+
+## Second push (04:37 UTC, 32ba1b7c)
+
+### The take
+
+- The cubicles at 3.2 balls wide held the Coffee rally in the top left corner: MEASURED at the `tier-office` key (17.4 s) the ball sat on the cubicle roof. The box is 2.6 wide now and the bank stands at u 5.85.
+- Searches 22 and 23 ran from 15 s (`npm run take -- --allow 28 --from 15 --runs 40`); 23 kept run 27. Searches used: 23 of 28.
+- The score of a run in `tools/take.mjs` now pays 300 for a save by a flip, 40 for each Coffee bumper hit up to 8 and takes 60 for each time the director brings the ball in (was 40, 4 and 15), so a search prefers play to tows.
+- MEASURED `npm run take -- --check`: 10 of 10 events inside their beats; the director brought the ball in 3 times (the inbox 19.1 s, the Office gate 25.2 s, the firehouse 27.2 s); 4 bumper hits in the Coffee beat; the save a flip; the ball on a flipper at `last-save`; 3 of 3 other keys placed; 0 hits within 0.15 s of a cut; ramp-roll 30.27 s by a flip.
+- MEASURED in the whole `npm test` (`tests/table-lights-strobe.test.ts`): Coffee 5 flashes in 4 s, most in one second 2, shortest gap 0.392 s; Reply All 8 in 7 s, most in one second 3, gap 0.400 s.
+- `T`: scoopKick 29.0, flapOn 29.4, flapBy 31.2, highwayEnd 33.0 (was 32.7), spiralEnd 34.45 (was 34.6).
+
+### The cameras (old to new, page balls; fov and key times unchanged, no NEEDS patch)
+
+| Camera | Old eye, target | New eye, target |
+| --- | --- | --- |
+| `table-wide` | as the first owner left it (machine 76% of the frame width) | eye (MID, APRON_Y + 16, 13.3), target (MID, Y2 + 7.25, 3.9) |
+| `table-lobby` | ball 1.6 times approved, centred | eye (MID + 0.35, Y0 + 9, -0.5), target (MID - 0.55, Y0 + 5.02, 0.35) |
+| `table-replyall` | cups 0.75 of approved | eye (MID, Y1 + 15.34, 12), target (MID, Y1 + 6.6, -2) |
+| `table-fired` | house 50% of the width | eye (7.25, Y2 + 7.45, 0.95), target (4.6, Y2 + 3.5, -2) |
+| `table-save` | 32 degrees down, ball 110 px | eye (MID, Y2 + 16.7, 4.8), target (MID + 0.15, Y2 + 10.71, -0.5) |
+| `rail` | on the bend, beside the ball | 3 balls ahead of the ball along the rail's plan, 2.3 over the higher of the ball and the rail under the eye, target 0.7 over the ball; `LENS.rail` 6 to 9 |
+
+- The three tier cameras are the `home` camera: not fitted.
+- The cursor faces the lens in every low camera (`FACE.over` 0.94, `low` 0.82, `turn` 0.9, were 0.766, 0.574, 0.75) and lies flat only under the tier cameras.
+
+### The displays (ball_keeper's list)
+
+- `display.<tier>.score` and `marquee-score` carry `v = [seconds since the score last changed (at most 9), the score before the change]`.
+- `display.<tier>.<mode>` carries `v[0]`, seconds since the mode was lit.
+- `display.hint` (part `displays`, `v[0]` seconds shown) is drawn only in live play, on the sealed table, in the first 8 s after the ball is on the table and only until the visitor has flipped once. DECISION: the film never shows it.
+
+### Counts
+
+- Take searches: 23 of 28.
+- Tuning looks, `table-cameras`: 12 first compares, 10 draft stills (rail-cam 4, last-save 2, youre-fired 2, table-wide 1, lobby-doors 1, reply-all 1; one more of each is the review still): 22 of 40. `table-layout` 0, `table-physics` 0, `director` 0, `acting-pinball` 0 beyond those.
