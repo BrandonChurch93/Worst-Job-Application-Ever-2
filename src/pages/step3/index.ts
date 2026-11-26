@@ -90,10 +90,10 @@ function buildLayout(): LayoutNode {
 
 interface State {
   mode: 'live' | 'film'; time: number; t: number; phase: 'wait' | 'pull' | 'sealed' | 'open' | 'result'; pull: number; said: string[]; drops: number; tows: number
-  scroll: number; floor: number; opened: number; result: number; pressed: boolean; hold: number; took: number; home: number; done: boolean; skipped: boolean; saved: boolean; score: number; shut: boolean; dim: number; struck: number; face: number[]; hit: number[]; was: number[]; scoreAt: number; scoreWas: number; flipped: boolean
+  scroll: number; floor: number; opened: number; result: number; pressed: boolean; hold: number; took: number; home: number; pan: number[]; arc: number; blow: number[]; done: boolean; skipped: boolean; saved: boolean; score: number; shut: boolean; dim: number; struck: number; face: number[]; hit: number[]; was: number[]; scoreAt: number; scoreWas: number; flipped: boolean
 }
 
-const fresh = (): State => ({ mode: 'live', time: 0, t: 0, phase: 'wait', pull: 0, said: [], drops: 0, tows: 0, scroll: 0, floor: 0, opened: 0, result: 0, pressed: false, hold: 0, took: -1, home: -1, done: false, skipped: false, saved: false, score: 0, shut: false, dim: 0, struck: -9, face: [0, 0, 1, 0], hit: [0, 0], was: [0, 0, 1, 0], scoreAt: -9, scoreWas: 0, flipped: false })
+const fresh = (): State => ({ mode: 'live', time: 0, t: 0, phase: 'wait', pull: 0, said: [], drops: 0, tows: 0, scroll: 0, floor: 0, opened: 0, result: 0, pressed: false, hold: 0, took: -1, home: -1, pan: [0, 0, 0, 1], arc: -9, blow: [0, 0, -9], done: false, skipped: false, saved: false, score: 0, shut: false, dim: 0, struck: -9, face: [0, 0, 1, 0], hit: [0, 0], was: [0, 0, 1, 0], scoreAt: -9, scoreWas: 0, flipped: false })
 
 const flips = (take as unknown as { flips: [string, number, number][] }).flips
 const held = (side: string, time: number): boolean => flips.some((f) => f[0] === side && time >= f[1] && time < f[2])
@@ -120,11 +120,11 @@ const NAMED: Record<string, CameraPose> = {
   'table-save': { ...look('table-save', [MID - 0.15, Y2 + 19.5, 3.5], [MID, Y2 + 8.5, -2.2]), omit: LAST_OUT }
 }
 const FILM: [number, string, number][] = [
-  [0, 'follow', 0], [4.2, 'table-wide', 0], [8.5, 'ride', 0], [10.25, 'tier-3', 0.6], [13.0, 'table-lobby', 0], [14.3, 'follow', 0], [19.5, 'table-replyall', 0], [22.2, 'follow', 0], [27.2, 'table-fired', 0], [29.3, 'follow', 0],
-  [31.15, 'rail', 0], [32.3, 'follow', 0.6], [34.3, 'table-save', 0], [36.6, 'follow', 0]
+  [0, 'follow', 0], [4.2, 'table-wide', 0], [8.5, 'ride', 0], [10.25, 'tier-3', 0.6], [13.0, 'table-lobby', 0], [14.3, 'follow', 0], [17.0, 'near-nest', 0], [20.95, 'table-replyall', 0], [22.2, 'follow', 0], [26.9, 'table-fired', 0], [29.3, 'follow', 0],
+  [31.15, 'rail', 0], [32.3, 'follow', 0.6], [34.3, 'table-save', 0], [34.8, 'near-spent', 0], [35.45, 'table-save', 0], [36.6, 'follow', 0]
 ]
-const LENS: Record<string, number> = { 'table-wide': 5, 'table-lobby': 7, 'table-replyall': 12, 'table-fired': 10, 'table-save': 12, rail: 10, ride: 7 }
-const HARD: Record<string, number> = { bumper: 1, sling: 0.7, 'doors-slam': 1.3, 'scoop-kick': 0.8, plunger: 1, 'ball-hit': 0.6, 'drop-target': 0.5, 'mom-save': 1, 'ball-save': 0.8 }
+const LENS: Record<string, number> = { 'table-wide': 5, 'table-lobby': 7, 'table-replyall': 12, 'table-fired': 10, 'table-save': 12, rail: 10, ride: 7, 'near-nest': 14, 'near-spent': 14 }
+const HARD: Record<string, number> = { bumper: 1, sling: 0.7, 'doors-slam': 0.5, 'scoop-kick': 0.8, plunger: 1, 'ball-hit': 0.6, 'drop-target': 0.5, 'mom-save': 1, 'ball-save': 0.8 }
 const SHAKE = { size: 0.006, decay: 0.09, hz: 23, most: 1.5, last: 0.5 }
 const SOFT = 0.4
 const NAME = 1
@@ -138,13 +138,15 @@ const LOW = 2.4
 const PULL = { door: 12, scoop: 30, near: 2.2, gate: 40, key: 14 }
 const NEST = { sling: [3.3, 6.5], under: [0.5, 0.9], pour: [-10.6, 1.0, 0.3], key: [0.3, 1.2], wait: [0.45, 0.05] }
 const ROLL: { rest: number; tip: Record<string, number> } = { rest: 1.992, tip: { rail: 0.77, 'table-lobby': 0.77, 'table-fired': 2.13 } }
-const BACK = { behind: 2.8, up: 3.6, aim: 2.4, lift: -0.8 }
+const BACK = { behind: 2.8, up: 3.6, aim: 2.4, lift: -0.8, lag: 0.4, lead: 1.93, start: 0.9 }
+const NEAR: Record<string, { off: [number, number, number]; mid: [number, number]; keep: number }> = { 'near-nest': { off: [0, 6, 15], mid: [11.3, Y1 + 6.9], keep: 0.6 }, 'near-spent': { off: [0, 3.4, 8.6], mid: [0, 0], keep: 1 } }
+const PAN = { lag: 0.25, in: 0.68, slow: 0.5 }
 const RIDE = { crest: 2.2, foot: 8.5, tip: 2 }
 const SHOT = { door: 13, scoop: 21, ramp: 21, nest: 17, save: 19, lob: 9, lean: 0.3, jets: 0.5, wide: 2.5, low: 7.5, early: 0.3, back: 1 }
 const FACE = { over: 0.94, low: 0.82, turn: 0.9, back: 5, press: 20, hit: 0.5, hold: 0.45, lag: 0.1, snap: 0.02, step: 0.03, wall: 0.6, lens: 0.8 }
 const SHORT: Record<Acting, Acting> = { plain: 'plain', confident: 'plain', nervous: 'nervous', shocked: 'scared', angry: 'nervous', scared: 'scared', proud: 'plain', exhausted: 'exhausted' }
-const SHELL = { shut: 0.27, open: 0.2 }
-const ACT = { doors: 0.45, shock: 0.45, realise: 0.45, slow: 7, lead: 0.1, tall: 1.01, ease: 0.06 }
+const SHELL = { shut: 0.27, open: 0.2, soft: 3.6, full: 14.6 }
+const ACT = { wake: 0.3, doors: 0.45, shock: 0.45, realise: 0.45, slow: 7, lead: 0.1, tall: 1.01, ease: 0.06 }
 
 export function makePage(): PageLogic {
   const layout = buildLayout()
@@ -278,14 +280,23 @@ export function makePage(): PageLogic {
     const b = ball()
     if (b.mode !== 'rail' || b.rail !== 'highway') return railPose()
     const r = railOf(b.rail)
-    const c = soft(r, b.s)
-    const e = soft(r, Math.max(0, b.s - BACK.behind))
-    const a = soft(r, Math.min(railLength(r), b.s + BACK.aim))
+    const g = s.arc < -8 ? b.s : s.arc + BACK.lead
+    const c = soft(r, g)
+    const e = soft(r, Math.max(0, g - BACK.behind))
+    const a = soft(r, Math.min(railLength(r), g + BACK.aim))
     const d = Math.hypot(a.x - e.x, a.y - e.y) || 1
     const along = [(a.x - e.x) / d, (a.y - e.y) / d]
     return { eye: toWorld(px(c.x - along[0]! * BACK.behind), px(c.y - along[1]! * BACK.behind), px(c.z + BACK.up)), target: toWorld(px(c.x + along[0]! * BACK.aim), px(c.y + along[1]! * BACK.aim), px(c.z + BACK.lift)), up: [0, 0, 1], fov: fov('rail') }
   }
   const follow = (): CameraPose => homePose(s.scroll, s.floor)
+  const nearPose = (name: string): CameraPose => {
+    const n = NEAR[name]!
+    const keep = n.keep + ((1 - n.keep) * (1 - s.pan[3]!)) / (1 - PAN.in)
+    const x = n.mid[0] + (s.pan[0]! - n.mid[0]) * keep
+    const y = n.mid[1] + (s.pan[1]! - n.mid[1]) * keep
+    const z = s.pan[2]! + 0.5
+    return look(name, [x + n.off[0] * s.pan[3]!, y + n.off[1] * s.pan[3]!, z + n.off[2] * s.pan[3]!], [x, y, z])
+  }
   const lens = (name: string, p: CameraPose | null): CameraPose | null => {
     const open = LENS[name]
     if (!p || open === undefined) return p
@@ -294,7 +305,7 @@ export function makePage(): PageLogic {
     const f = basis(p).forward
     return { ...p, focus: Math.max(BALL, (on[0] - p.eye[0]) * f[0] + (on[1] - p.eye[1]) * f[1] + (on[2] - p.eye[2]) * f[2]), aperture: open }
   }
-  const named = (name: string): CameraPose | null => lens(name, name === 'follow' ? follow() : name === 'rail' ? backPose() : name === 'ride' ? ridePose() : NAMED[name] ?? null)
+  const named = (name: string): CameraPose | null => lens(name, name === 'follow' ? follow() : name === 'rail' ? backPose() : name === 'ride' ? ridePose() : name in NEAR ? nearPose(name) : NAMED[name] ?? null)
 
   const shot = (time: number): string => {
     let i = 0
@@ -425,6 +436,7 @@ export function makePage(): PageLogic {
     if (b.mode === 'tow') return b.then.startsWith('gate:') ? 'exhausted' : 'scared'
     if (t - s.struck < ACT.shock) return 'shocked'
     if (s.saved && b.tier === 2) return 'exhausted'
+    if (b.tier === 2 && !s.saved && t >= T.spiralEnd && t < T.save - ACT.wake) return 'exhausted'
     const w = mc.wants(0.2, -60)
     if ((w[0] || w[1]) && Math.hypot(b.vx, b.vy) < ACT.slow) return 'nervous'
     if (b.tier === 0) return s.shut ? 'scared' : 'confident'
@@ -622,7 +634,14 @@ export function makePage(): PageLogic {
       } else s.t += dt
       if (s.phase === 'sealed') {
         direct(io)
+        const before = ball()
+        const was = before.mode === 'plane' ? [before.vx, before.vy] : null
         const events = mc.step(io.pointer.flipLeft === true, io.pointer.flipRight === true)
+        const after = ball()
+        if (was && after.mode === 'plane') {
+          const push = Math.hypot(was[0]! - after.vx, was[1]! - after.vy)
+          if (push > SHELL.soft) s.blow = [Math.min(1, (push - SHELL.soft) / (SHELL.full - SHELL.soft)), Math.atan2(was[1]! - after.vy, was[0]! - after.vx), s.t]
+        }
         for (const e of events) emitTable(io, e)
         if (mc.score !== s.score) {
           s.scoreWas = s.score
@@ -631,6 +650,9 @@ export function makePage(): PageLogic {
         s.score = mc.score
         if (io.pointer.flipLeft === true || io.pointer.flipRight === true) s.flipped = true
         const b = ball()
+        const ease = b.mode === 'none' ? 0 : s.t < T.onTable ? 1 : Math.min(1, dt / PAN.lag)
+        s.pan = [s.pan[0]! + (b.x - s.pan[0]!) * ease, s.pan[1]! + (b.y - s.pan[1]!) * ease, s.pan[2]! + (b.z - s.pan[2]!) * ease, s.pan[3]! + ((b.mode === 'hold' ? PAN.in : 1) - s.pan[3]!) * Math.min(1, dt / PAN.slow)]
+        s.arc = b.mode === 'rail' && b.rail === 'highway' ? (s.arc < -8 ? b.s - BACK.start : s.arc + (b.s - s.arc) * Math.min(1, dt / BACK.lag)) : -9
         face(io)
         const lead = ACT.lead * Math.max(0, Math.min(1, (ACT.tall - io.cursor.pose().squash) / ACT.ease))
         if (b.mode !== 'hold') io.cursor.knock(px(b.vx) * lead, px(b.vy) * lead)
@@ -706,7 +728,7 @@ export function makePage(): PageLogic {
       const ago = (at: number): number => (at < 0 ? 9 : Math.min(9, s.t - at))
       const rings: Record<string, number> = { 'loader.ring': ago(s.took), 'outlet.ring': ago(s.home) }
       for (const shape of fixedShapes()) out.push(shape.id in rings ? { ...shape, v: [rings[shape.id]!] } : shape)
-      const shell = s.phase === 'sealed' && s.home >= 0 ? [Math.max(0, 1 - s.opened / SHELL.open), 9, 0] : [Math.min(1, ago(s.took) / SHELL.shut), Math.max(0, ago(s.took) - SHELL.shut), 0]
+      const shell = s.phase === 'sealed' && s.home >= 0 ? [Math.max(0, 1 - s.opened / SHELL.open), 9, 0, 0, 0, 9] : [Math.min(1, ago(s.took) / SHELL.shut), Math.max(0, ago(s.took) - SHELL.shut), 0, s.blow[0]!, s.blow[1]!, Math.min(9, s.t - s.blow[2]!)]
       for (const shape of movingShapes(mc, lit(), false, general(), drawn(), s.shut, website())) out.push(shape.id === 'ball.clear' ? { ...shape, v: shell } : shape)
       out.push(hqPlate)
     },

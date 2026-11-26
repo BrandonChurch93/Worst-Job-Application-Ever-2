@@ -173,6 +173,7 @@ const MOVER = /^(bumper\.[a-z]+\.bumper\.\d+|sling\..+|hold\.corporate\.revolvin
 const HELD: Record<string, string> = { 'model.street.firehouse': 'street.firehouse', 'model.office.inbox': 'office.inbox', 'model.street.mom': 'street.mom', 'hold.corporate.revolving': 'corporate.revolving' }
 let movers: Shape[] = []
 const FLASH = 0.25
+const SWING = { leaf: 0.09, seconds: 0.15, wait: 1 }
 const BEACON = { idle: 0.35, seconds: 1.5 }
 const STROBE_HZ = 2.5
 
@@ -211,9 +212,11 @@ export function movingShapes(m: Machine, lit: boolean[], hide: boolean, glow: (b
   const hf = px(floorZ(0))
   const leaf = (DOORS.w - DOORS.seam) / 2
   const dy = TIER_Y[0]! + DOORS.y + 0.04
+  const near = m.since('spinner:corporate.revolving')
+  const swing = !shut && m.on['corporate.doors'] === true && near < SWING.wait
   for (const side of [0, 1]) {
     const b = shut ? [DOORS.x + side * (leaf + DOORS.seam), dy, leaf, 0.05] : [DOORS.x + side * (DOORS.w - 0.05), dy, 0.05, leaf]
-    out.push({ ...box(`hq.door.${side === 0 ? 'left' : 'right'}`, 'model-hq', b, hf, hf + px(DOORS.h - 0.05), 'light'), v: [shut ? 1 : 0, m.since('doors-slam:corporate.hq'), m.since('doors-open:corporate.doors')] })
+    out.push({ ...box(`hq.door.${side === 0 ? 'left' : 'right'}`, 'model-hq', b, hf, hf + px(DOORS.h - 0.05), 'light'), v: [shut || swing ? 1 : 0, shut ? Math.min(9, SWING.leaf + m.since('doors-slam:corporate.hq')) : swing ? SWING.leaf * Math.min(1, near / SWING.seconds) : 9, m.since('doors-open:corporate.doors')] })
   }
   for (const f of table.flippers) {
     const z = px(floorZ(f.tier))
