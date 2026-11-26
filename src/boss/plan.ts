@@ -28,3 +28,6 @@ export const SLAB = { speed: [880, 1150, 1150] as const, windup: 0.45, rest: 1.5
 export const POPUP = { hp: 12, first: 0.3, gaps: [1.8, 1, 1] as const, again: 1.6, late: 2, close: 0.25, read: 1, aim: 0.3, armed: 6 }
 export const HIT = { safe: 1.2, knock: 820 }
 export const BODY = { rx: 196, ry: 118 }
+
+// The glass shield stands on the cursor's side of the body: a dart that comes from the left stops on it.
+export const SHIELD = { x: -288, half: 118, z: 72 }

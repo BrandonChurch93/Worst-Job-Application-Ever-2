@@ -1,6 +1,6 @@
 import type { StepIo } from '../stage/types'
 import { CANNON_OFF, FOOT_OFF, smooth } from './body'
-import { ARENA, BODY, CAPS, FLOOR, DART, EXPIRED_GAIN, HEALTH, HIT, HOME, LAST_CLEAR, POPUP, RAMP, SLAB, SLOW_SECONDS, THRESHOLD } from './plan'
+import { ARENA, BODY, CAPS, FLOOR, DART, EXPIRED_GAIN, HEALTH, HIT, HOME, LAST_CLEAR, POPUP, RAMP, SHIELD, SLAB, SLOW_SECONDS, THRESHOLD } from './plan'
 
 export interface SlabSize { w: number; h: number }
 export interface Rect { x: number; y: number; w: number; h: number }
@@ -10,7 +10,7 @@ export interface Slab { m: number; x: number; y: number; dx: number; dy: number;
 export interface Popup { slot: number; hp: number; t: number; closing: number }
 export interface Dart { n: number; x: number; y: number; dx: number; dy: number; t: number; p: number }
 export interface Flash { n: number; x: number; y: number; rot: number; t: number }
-export interface Spark { n: number; x: number; y: number; t: number }
+export interface Spark { n: number; x: number; y: number; t: number; z?: number }
 export interface Foot { x: number; y: number; fx: number; fy: number; tx: number; ty: number; t: number }
 
 export interface Fight {
@@ -146,8 +146,8 @@ function walk(f: Fight, dt: number): void {
   })
 }
 
-function spark(f: Fight, x: number, y: number): void {
-  f.sparks.push({ n: f.sparkCount++, x, y, t: 0 })
+function spark(f: Fight, x: number, y: number, z = 0): void {
+  f.sparks.push({ n: f.sparkCount++, x, y, t: 0, z })
 }
 
 function fire(f: Fight, io: StepIo, arena: Arena): void {
@@ -307,13 +307,22 @@ function darts(f: Fight, io: StepIo, arena: Arena, used: boolean): void {
       io.emit('dart-hit', d.x, d.y, false)
       continue
     }
+    const plate = f.x + SHIELD.x
+    const before = d.x - d.dx * DART.speed * dt
+    const cross = d.dx > 0 && before < plate && d.x >= plate
+    const py = cross ? d.y - d.dy * (d.x - plate) / d.dx : 0
+    const glass = cross && Math.abs(py - f.y) < SHIELD.half
     const ex = (d.x - f.x) / BODY.rx
     const ey = (d.y - f.y) / BODY.ry
-    if (ex * ex + ey * ey <= 1) {
+    if (glass || ex * ex + ey * ey <= 1) {
+      if (glass) {
+        d.x = plate
+        d.y = py
+      }
       const open = !(f.phase === 2 && f.expired < 0.8)
       if (open && d.p === f.phase) f.health = Math.max(THRESHOLD[f.phase]!, Math.min(f.health, floor(f)), f.health - DART.damage)
       f.flash = 0.12
-      spark(f, d.x, d.y)
+      spark(f, d.x, d.y, glass ? SHIELD.z : 0)
       io.emit('dart-hit', d.x, d.y, false)
       continue
     }

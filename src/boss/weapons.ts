@@ -17,7 +17,7 @@ export interface WeaponPlan { slabs: SlabPlan[]; popups: PopupPlan[]; banner: Ba
 
 const FLY = { z0: 14, z1: 14 + heights.slab }
 export const DART_LONG = 34
-export const DART_Z = 20
+export const DART_Z = 30
 export const SPARK_Z = 30
 export const MUZZLE_Z = 46
 export const BANNER_Z = 64
@@ -71,7 +71,8 @@ export function drawWeapons(out: DrawList, f: Fight, plan: WeaponPlan): void {
     out.push({ id: `dart-${d.n}`, part, kind: 'capsule', x: d.x - DART_LONG / 2, y: d.y - 6, w: DART_LONG, h: 12, z0: DART_Z, z1: DART_Z + 4, tone: 'light', rot: Math.atan2(d.dy, d.dx), v: [Math.min(1, d.t / 0.08)] })
   }
   for (const s of f.sparks) {
-    out.push({ id: `spark-${s.n}`, part, kind: 'disc', x: s.x - 40, y: s.y - 40, w: 80, h: 80, z0: SPARK_Z, z1: SPARK_Z + 4, tone: 'light', v: [s.t / SPARK_SECONDS, s.n] })
+    const z = Math.max(SPARK_Z, s.z ?? 0)
+    out.push({ id: `spark-${s.n}`, part, kind: 'disc', x: s.x - 40, y: s.y - 40, w: 80, h: 80, z0: z, z1: z + 4, tone: 'light', v: [s.t / SPARK_SECONDS, s.n] })
   }
 }
 
