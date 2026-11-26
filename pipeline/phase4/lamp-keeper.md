@@ -100,6 +100,9 @@ Round 11 (opened 05:42 UTC, 40 a part, 80), the same one list:
 | 05:59 | q7 | 1 | `tier-corporate` as it was, for the notes' paper |
 | 06:01 | q8 | 1 | low lamp before the notes at 0.12, paper divided by 2.45 |
 | 06:03 | q9 | 2 | the lamp at 0.2, and `youre-fired` |
+| 06:07 | q10 | 2 | the pushed state without the patch, and `lobby-doors` |
+| 06:09 | q11 | 2 | less of the room in the insert glass: no change seen, not kept |
+| 06:11 | q12 | 2 | a paler glow in the inserts: the moulded pictures fade, not kept |
 
 ## Diagnosis (04:00 to 04:25 UTC, 26 stills with a local switch on each term, counted in the list of looks)
 
@@ -240,4 +243,8 @@ What moved: Office print 1.7 to 1.35, Office rail lamps 0.8 to 0.6 with the wide
 Counts at ac3f758e (live low, MEASURED 05:56 UTC, `npm run build && npm run counts -- --key <k> --live low`): the same as at c475041e in every row of mine (table-lights 8, 8, 0, 8, 22662 on `table-wide`; 6, 6, 0, 6, 16204; 6, 6, 0, 6, 20166; 4, 4, 0, 4, 12916 on the tiers; tier-art 6, 6, 0, 6, 3534; 3, 3, 0, 3, 1180; 3, 3, 0, 3, 1180; 2, 2, 0, 2, 1178). Assets after the insert atlases were baked again: `public/assets/table/art` 8288329 bytes (7.90 MB of 9), `assets-full/table/art` 26326693 bytes, largest file 8543144 bytes.
 
 Point (e), `table-wide` at review (05:57 UTC, 70.5 s, 936517 triangles, 580 draw calls, invalid values 0), looked at under approved: whole frame (52, 49, 44) against (59, 56, 52), 0.87. The pit holds beside approved; what differs most is outside my part (the open cabinet end and the black side walls, the marquee's dark title).
+
+The pushed state without the patch (q10, 06:07 UTC, MEASURED): the sheets come out at (170, 153, 87), linear (0.427, 0.335, 0.099), 2.5 times what they were. The Builder applied the patch in merge 26 with d1af448c, so that state is on no main. `lobby-doors` whole frame 0.92 of approved.
+
+Two trials not kept (06:09 to 06:12 UTC). In `lobby-doors` the blue insert in the foreground is a large pale blur: less of the room in its glass (`WINDOW.room` 2.4 to 1.3) changed nothing to the eye, so the blur is its own glow out of focus. A paler glow (more white in the middle stops) made the red nearer the approved pink in `last-save` but the ladder and the hats faded into it; the pictures count for more. Both back as they were, files as committed.
 
