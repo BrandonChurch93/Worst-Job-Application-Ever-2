@@ -3,6 +3,7 @@ import { lightLaw } from '../../../post/studio'
 import type { Zone } from '../zone'
 import { DEEP } from './colours'
 import { CHANNELS, HIGHS, SPILLS } from './groups'
+import { BALLS, BATS, shadeOf } from './key'
 import { picturesOf } from './pictures'
 
 // What every material of one zone reads for a frame. The part's `pose` writes it; nothing is rebuilt when a level moves.
@@ -19,7 +20,7 @@ export interface ZoneLight {
     wjlFull: { value: THREE.Vector3[] }
     wjlSpill: { value: THREE.Vector4[] }
     wjlSpillCol: { value: THREE.Vector3[] }
-    wjlSpillComb: { value: THREE.Vector2[] }
+    wjlSpillComb: { value: THREE.Vector3[] }
     wjlHigh: { value: THREE.Vector4[] }
     wjlHighCol: { value: THREE.Vector3[] }
     wjlAt: { value: THREE.Vector4[] }
@@ -27,6 +28,11 @@ export interface ZoneLight {
     wjlHole: { value: THREE.Vector4[] }
     wjlEnv: { value: number }
     wjlDeep: { value: THREE.Vector2 }
+    wjlKey: { value: THREE.Texture }
+    wjlKeyDir: { value: THREE.Vector3 }
+    wjlKeyCol: { value: THREE.Vector3 }
+    wjlBall: { value: THREE.Vector4[] }
+    wjlBat: { value: THREE.Vector4[] }
   }
 }
 
@@ -57,14 +63,19 @@ export function zoneLight(z: Zone): ZoneLight {
       wjlFull: { value: full },
       wjlSpill: { value: Array.from({ length: SPILLS }, () => new THREE.Vector4()) },
       wjlSpillCol: { value: Array.from({ length: SPILLS }, () => new THREE.Vector3()) },
-      wjlSpillComb: { value: Array.from({ length: SPILLS }, () => new THREE.Vector2()) },
+      wjlSpillComb: { value: Array.from({ length: SPILLS }, () => new THREE.Vector3()) },
       wjlHigh: { value: Array.from({ length: HIGHS }, () => new THREE.Vector4()) },
       wjlHighCol: { value: Array.from({ length: HIGHS }, () => new THREE.Vector3()) },
       wjlAt: { value: at },
       wjlFill: { value: new THREE.Vector3() },
       wjlHole: { value: [new THREE.Vector4(0, 0, 1, 0), new THREE.Vector4(0, 0, 1, 0)] },
       wjlEnv: { value: 0 },
-      wjlDeep: { value: new THREE.Vector2(...(DEEP[z.id] ?? [1, 1])) }
+      wjlDeep: { value: new THREE.Vector2(...(DEEP[z.id] ?? [1, 1])) },
+      wjlKey: { value: shadeOf(z).texture },
+      wjlKeyDir: { value: new THREE.Vector3(0, 0, 1) },
+      wjlKeyCol: { value: new THREE.Vector3() },
+      wjlBall: { value: Array.from({ length: BALLS }, () => new THREE.Vector4()) },
+      wjlBat: { value: Array.from({ length: BATS }, () => new THREE.Vector4()) }
     }
   }
   made.set(z.id, s)

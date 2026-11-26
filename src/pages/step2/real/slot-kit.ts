@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { hash01 } from '../../../core/random'
-import type { Outline } from '../../../shell/solids'
+import { sweep, type Outline } from '../../../shell/solids'
 import type { Shape } from '../../../stage/types'
 
 export type LathePoint = [number, number, boolean?]
@@ -139,6 +139,11 @@ export function outline(points: [number, number, number, number][]): Outline {
 }
 
 // A machine comes up out of its tray: the page sends the part's height, the part is built at its full height.
+// The dark line where a thing meets what it stands on: a flat band just outside its foot.
+export function contact(foot: Outline, wide: number, z = 0.07): THREE.BufferGeometry {
+  return sweep(foot, [{ inset: 0, z, out: 0, up: 1 }, { inset: wide, z, out: 0, up: 1 }], false)
+}
+
 export function rise(o: THREE.Object3D, s: Shape, full: number): number {
   const up = clamp01((s.z1 - s.z0) / full)
   o.scale.z = Math.max(0.001, up)

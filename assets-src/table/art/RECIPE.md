@@ -8,9 +8,9 @@ Every picture here is made by one command: `node assets-src/table/art/make.mjs` 
 - From: the layout (walls, lanes, posts, bumpers, slings, flippers, targets, models, displays, lamps, inserts, rails, holds, flats), the seed, and nothing from `content/copy.json`: no card is printed under a window and no word is printed anywhere
 - Prompt or command: `node assets-src/table/art/make.mjs --only art`
 - Takes: about 35 s for the web set and 150 s for the full set (MEASURED on the build machine)
-- Why this one: a drawn floor is exactly on the layout, so every line answers a part that stands there. Corporate is a faint sunburst of gold hairlines from the doors of the tower on midnight blue marble; Office is broad chequered carpet tile in two dark grey-greens with one pale grey walkway cross and a few loose things; Street is an avenue on the layout's road with a cross street, two car parks in thin lines and faint paving. No floor has a row of arrows or chevrons, or rays round a lamp: the approved floors have none, and at night a quiet print lets the lamps be the brightest things
+- Why this one: a drawn floor is exactly on the layout, so every line answers a part that stands there. Corporate is a faint sunburst of gold hairlines from the doors of the tower on midnight blue marble; Office is broad chequered tile in two muted slate-teal tones with a fine speckle, one pale grey walkway cross, a few fine scratches of play and a few clips; Street is an avenue on the layout's road with a cross street in broad painted lines and broad plain kerb bands, two car parks in a few faint lines, paving as faint broad slabs with no outline, and the fine pale scratches of play in the lacquer (`wear()` in `tiers.mjs`). No lamp and no window has a printed surround: the print runs up to its metal seat No floor has a row of arrows or chevrons, or rays round a lamp: the approved floors have none, and at night a quiet print lets the lamps be the brightest things
 - Size: web 4096 by 2304, full 8192 by 4608
-- Date: 2026-11-25
+- Date: 2026-11-26 (Office and Street floors redrawn, printed surrounds of lamps and windows taken out)
 
 ## corporate-mask.png, office-mask.png, street-mask.png (data, the coverage mask)
 
@@ -38,9 +38,9 @@ Every picture here is made by one command: `node assets-src/table/art/make.mjs` 
 - From: `config.table.inserts`, in its order: cell `index % 3` across, `floor(index / 3)` down. The picture of a cell is chosen by the insert's `picture`
 - Prompt or command: `node assets-src/table/art/make.mjs --only inserts`
 - Takes: about 1 s
-- Why this one: the lens is the window unlit, dark in its own colour; the glow is what it emits when lit, brightest in the middle with the moulded picture dark against it; the relief is the picture and the rings of the lens as heights, for the bump of the surface. The glass is 0.82 of the window's width (`WELL` in `inserts.mjs`): round it a dark well and a thin metal trim, so a lit window is a small deep light and not a plate
+- Why this one: the lens is the window unlit, dark in its own colour; the glow is what it emits when lit, brightest in the middle with the moulded picture dark against it; the relief is the picture alone as a low height, for the bump of the surface. The lens is frosted, with no moulded rings and the picture in a fine line. The glass is 0.97 of the window's width (`WELL` in `inserts.mjs`), with one fine dark line where it meets its metal seat, so a window is one lens flush with the floor and not a dial
 - Size: web 1152 square, full 2304 square
-- Date: 2026-11-25
+- Date: 2026-11-26
 
 ## guide/corporate.png, guide/office.png, guide/street.png (not shipped)
 
