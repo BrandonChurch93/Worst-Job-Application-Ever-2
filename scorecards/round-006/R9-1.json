@@ -39,14 +39,14 @@
    "severity": "major",
    "file": "set-A-02.png, set-A-03.png, set-A-04.png",
    "where": "the long typing passages on the on-screen keyboard",
-   "what": "the arrow simply slides from key to key like a plain pointer; there is no wind-up before a tap, no reaction when keys pop out, and no flinch or recoil when the red 'Invalid email' stickers hit — the feeling is carried by the keyboard graphics, not by the character",
+   "what": "the arrow simply slides from key to key like a plain pointer; there is no wind-up before a tap, no reaction when keys pop out, and no flinch or recoil when the red 'Invalid email' stickers hit - the feeling is carried by the keyboard graphics, not by the character",
    "fix": "give the arrow a small anticipatory dip before each tap, a stretchy hop when crossing between rows, a startled shake-off when keys pop out, and a clear recoil-and-drooping hold when the error stickers appear"
   },
   {
    "severity": "major",
    "file": "set-A-06.png",
    "where": "the cord-tangle frames, especially frames 9-11 (bottom row, first two panels)",
-   "what": "the black looping cord wraps over the arrow's silhouette and muddies the pose, and in the late frames the arrow shrinks to a few pixels in the corner, nearly invisible against the drop zone — the struggle cannot be read at a glance",
+   "what": "the black looping cord wraps over the arrow's silhouette and muddies the pose, and in the late frames the arrow shrinks to a few pixels in the corner, nearly invisible against the drop zone - the struggle cannot be read at a glance",
    "fix": "render the arrow on top of the cord with a clean rim, keep it at a readable size through the whole struggle, and give it distinct writhing poses rather than letting it fade out"
   },
   {

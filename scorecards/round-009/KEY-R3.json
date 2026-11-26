@@ -1,0 +1,451 @@
+{
+  "role": "R3",
+  "round": 9,
+  "unit": "step2",
+  "commit": "020efac56c74aeabb31d88259061fcd868bf4d16",
+  "tier": "final",
+  "engineHash": "a904e95f64b6d933",
+  "sharedHash": "c59d02ddbce49e21",
+  "pageHashes": {
+    "step1": "3792c5cee2f83f56",
+    "step2": "08714a8278e3a199",
+    "marketing": "9965eb282805c02f",
+    "pinball": "86fccdaacf4f1870",
+    "boss": "e22b67bd80711f07",
+    "decision": "0baf0cef7ca90495"
+  },
+  "browser": "147.0.7727.15",
+  "files": {
+    "set-A-01.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "judged",
+      "heading": "Picture 1 of 5. The page at one moment",
+      "still": {
+        "page": "step2",
+        "beat": "step2.open",
+        "at": 0.5,
+        "camera": "home",
+        "tier": "final"
+      },
+      "from": {
+        "key": "step2-rest"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-02.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "judged",
+      "heading": "Picture 2 of 5. The page at one moment",
+      "still": {
+        "page": "step2",
+        "beat": "step2.dial",
+        "at": 0.2,
+        "camera": "home",
+        "tier": "final"
+      },
+      "from": {
+        "key": "step2-dial"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-03.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "judged",
+      "heading": "Picture 3 of 5. The page at one moment",
+      "still": {
+        "page": "step2",
+        "beat": "step2.crank",
+        "at": 0.2,
+        "camera": "home",
+        "tier": "final"
+      },
+      "from": {
+        "key": "step2-crank"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-04.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "judged",
+      "heading": "Picture 4 of 5. A sheet of parts: the dial, the slot machine and the crank",
+      "still": {
+        "page": "step2",
+        "camera": "sheet",
+        "tier": "final",
+        "sheet": "machines"
+      },
+      "from": {
+        "sheet": "machines"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-05.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "judged",
+      "heading": "Picture 5 of 5. The page at rest",
+      "still": {
+        "page": "step2",
+        "camera": "home",
+        "tier": "final"
+      },
+      "from": {
+        "id": "rest-step2"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-06.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "surface-crops",
+      "heading": "Surfaces and objects at their real size, cut from a picture of this set: the page at one moment",
+      "still": {
+        "page": "step2",
+        "beat": "step2.open",
+        "at": 0.5,
+        "camera": "home",
+        "tier": "final"
+      },
+      "from": {
+        "key": "step2-rest"
+      },
+      "crops": [
+        {
+          "part": "cursor",
+          "window": [
+            1374,
+            258,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "field.start",
+          "window": [
+            969,
+            162,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "progressButton",
+          "window": [
+            923,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "button",
+          "window": [
+            1459,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "header",
+          "window": [
+            197,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "surface",
+          "window": [
+            1339,
+            53,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "type",
+          "window": [
+            94,
+            179,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "field",
+          "window": [
+            976,
+            162,
+            461,
+            340
+          ]
+        }
+      ],
+      "format": "hd",
+      "tier": "final"
+    },
+    "set-A-07.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "surface-crops",
+      "heading": "Surfaces and objects at their real size, cut from a picture of this set: the page at one moment",
+      "still": {
+        "page": "step2",
+        "beat": "step2.dial",
+        "at": 0.2,
+        "camera": "home",
+        "tier": "final"
+      },
+      "from": {
+        "key": "step2-dial"
+      },
+      "crops": [
+        {
+          "part": "dialWheel",
+          "window": [
+            932,
+            331,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "machineTray",
+          "window": [
+            1164,
+            331,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            1011,
+            399,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "field.start",
+          "window": [
+            969,
+            162,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "progressButton",
+          "window": [
+            923,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "button",
+          "window": [
+            1459,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "field",
+          "window": [
+            976,
+            162,
+            461,
+            340
+          ]
+        }
+      ],
+      "format": "hd",
+      "tier": "final"
+    },
+    "set-A-08.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "surface-crops",
+      "heading": "Surfaces and objects at their real size, cut from a picture of this set: the page at one moment",
+      "still": {
+        "page": "step2",
+        "beat": "step2.crank",
+        "at": 0.2,
+        "camera": "home",
+        "tier": "final"
+      },
+      "from": {
+        "key": "step2-crank"
+      },
+      "crops": [
+        {
+          "part": "crankBase",
+          "window": [
+            867,
+            652,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "crankGrip",
+          "window": [
+            960,
+            619,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "meterSegment",
+          "window": [
+            1110,
+            652,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            957,
+            620,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "progressButton",
+          "window": [
+            923,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "button",
+          "window": [
+            1459,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "field",
+          "window": [
+            976,
+            162,
+            461,
+            340
+          ]
+        }
+      ],
+      "format": "hd",
+      "tier": "final"
+    },
+    "set-A-09.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "surface-crops",
+      "heading": "Surfaces and objects at their real size, cut from a picture of this set: the page at rest",
+      "still": {
+        "page": "step2",
+        "camera": "home",
+        "tier": "final"
+      },
+      "from": {
+        "id": "rest-step2"
+      },
+      "crops": [
+        {
+          "part": "surface",
+          "window": [
+            1339,
+            53,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "progressButton",
+          "window": [
+            923,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "button",
+          "window": [
+            1459,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "type",
+          "window": [
+            94,
+            179,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            1351,
+            305,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "field",
+          "window": [
+            976,
+            162,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "header",
+          "window": [
+            103,
+            0,
+            461,
+            340
+          ]
+        }
+      ],
+      "format": "hd",
+      "tier": "final"
+    }
+  }
+}

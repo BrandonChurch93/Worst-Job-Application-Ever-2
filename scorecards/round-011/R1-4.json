@@ -1,0 +1,163 @@
+{
+ "critic": "R1",
+ "score": 4,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "D: tier 1 from above and You're Fired beside the approved images, whole and in crops",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-D-01-b.png",
+   "where": "the framing of the whole table",
+   "what": "The build is almost an overhead plan. The target has a forward oblique view with visible building fronts, a taper to the side rails and much more of the machinery's depth. On the build the outer aluminum and black channels take over the sides, and the front apron reads as a broad separate strip.",
+   "fix": "Bring the camera toward the front and down from overhead, then reframe on the playfield so its side channels are subordinate and the front apron is just the foreground edge. Keep the configured dimensions."
+  },
+  {
+   "severity": "severe",
+   "file": "set-D-01-b.png",
+   "where": "the blue playfield and its lighting",
+   "what": "The build reads as dark technical artwork with fine parking grids, outlined plots and repeating soft pools. The target reads as a deep glossy petrol-blue playfield with broad painted roads, distressed markings, fine irregular wear and crisp warm reflections across the surface.",
+   "fix": "Subdue the schematic linework, bring forward the broad teal road markings and worn lacquer, and tune reflection sharpness and light falloff so the windows, lamps and hardware leave distinct warm highlights on the blue surface."
+  },
+  {
+   "severity": "severe",
+   "file": "set-D-03-b.png",
+   "where": "the composition around the firehouse",
+   "what": "The build looks down from higher up and centers the action amid the bank, a foreground rail and a busy upper edge. The target is a lower, tighter portrait of the firehouse on the right, with a clear view of its masonry front and side, and mostly open blue playfield and a soft rail at left.",
+   "fix": "Lower and re-aim the close camera to favor the firehouse front, move the firehouse toward the right of the frame, and crop or defocus the neighboring hardware so it does not compete. Preserve the take's ball position."
+  },
+  {
+   "severity": "severe",
+   "file": "set-D-02-b.png",
+   "where": "garage, upper right panel",
+   "what": "The spiral reads as a pale circular disk with a dark radial-spoked center and a bright opaque perimeter. The target reads as a visibly open stack of dark parking decks carried on upright metal ribs, topped by a transparent curling chute that catches thin highlights.",
+   "fix": "Expose the stacked openings and uprights through camera and material changes, deepen the gaps, and give the top chute polished transparent walls and a clear center. Keep the required turn clearance and rail drop."
+  },
+  {
+   "severity": "major",
+   "file": "set-D-02-b.png",
+   "where": "firehouse and police station, top row",
+   "what": "The flat gray and rust roof planes, skylight-like rectangles and nearly flush red and blue light disks dominate; the target shows distinct red brick and blue siding fronts, recessed warm windows, a small police entry pediment, and glossy domed lights on shiny collars.",
+   "fix": "Show the front elevations, differentiate the finishes and entry details, and give the two colored covers concentrated internal highlights and polished metal seating instead of a flat luminous disk from this view."
+  },
+  {
+   "severity": "major",
+   "file": "set-D-02-b.png",
+   "where": "bank, second row left",
+   "what": "It reads as a plain warm-gray roof plate tucked beside the firehouse opening. The target shows a separate miniature stone portico with visible fluted columns, steps, a warmly lit recessed doorway and a row of inset rectangular lamps alongside.",
+   "fix": "Separate the building silhouettes in the view and make the column relief, stone edges, recessed warm entrance and individual lamp faces readable."
+  },
+  {
+   "severity": "major",
+   "file": "set-D-02-b.png",
+   "where": "small house and neighboring house rows",
+   "what": "Mostly flat roofs, very bright diagram outlines and a dark squared flap dominate, whereas the target has little pitched-roof houses with cream and muted red walls, glowing windows and doors, and a deep oblique opening with a polished rounded rim.",
+   "fix": "Expose the gables, façades, lit openings and steps, tone down the footprint outlines, and give the cutout a glinting rounded metal edge and dark interior."
+  },
+  {
+   "severity": "major",
+   "file": "set-D-01-b.png",
+   "where": "left lift tube and its lower end",
+   "what": "The visible tube reads as dark straight bands with faint edges and an abrupt ring, instead of clear polished glass with bright warm streaks, reflective couplings and a visibly rounded lower sweep.",
+   "fix": "Give the tube clearer transmission and curved specular reflections, add crisper metal-collar highlights, and make the elbow silhouette legible while keeping the mandated openings."
+  },
+  {
+   "severity": "major",
+   "file": "set-D-01-b.png",
+   "where": "perimeter lanes and their lamps",
+   "what": "The capsules float in circular cyan halos on open flat lanes; the target has warm, wide rectangular inserts seated into rounded dark metal, with reflections running along the lane rather than a ring around each lamp.",
+   "fix": "Restore the frosted rectangular insert faces, darker sockets and reflective continuous lane trim without changing the lamps' required directions."
+  },
+  {
+   "severity": "major",
+   "file": "set-D-01-b.png",
+   "where": "lower field around the flippers, slingshots and inserts",
+   "what": "The slingshots and inserts are grouped noticeably farther up the picture, while long metal bars and an exposed apron organize the bottom. The target pools the controls closer to the front edge with smaller local brackets and a more continuous open patch of board between the road and the controls.",
+   "fix": "Use the oblique framing and the surrounding guide and trim layout to recover the target's visual grouping, revealing the shorter local bracket forms without rescaling the parts."
+  },
+  {
+   "severity": "major",
+   "file": "set-D-02-b.png",
+   "where": "slingshot and its bracket, bottom left panel",
+   "what": "The insert is comparatively graded and glossy across the graphic itself, with almost continuous chevrons, dark round footprints and a shallow gray frame. The target has a cleaner yellow face with separated dark chevrons, distinct bolt heads and a substantial polished steel shoe catching warm light beneath.",
+   "fix": "Separate the chevrons, make the yellow face read as printed material, and restore the visible fasteners, layered chrome lip and concentrated warm highlights on the base."
+  },
+  {
+   "severity": "major",
+   "file": "set-D-02-b.png",
+   "where": "flipper, bottom center panel",
+   "what": "The paddle reads as a darker orange flat strip with linear grain and two dull gray screw circles. The target is smooth saturated molded orange with a bright top edge, contrasting orange and dark rubber side layers and a polished pivot cap.",
+   "fix": "Smooth the orange top, highlight the chamfer, make the rubber sandwich readable at the edge, and use bright metallic response on the main pivot."
+  },
+  {
+   "severity": "major",
+   "file": "set-D-01-b.png",
+   "where": "three round inserts in the lower field",
+   "what": "Heavy concentric black surrounds and broad even gradients make the centers look like recessed instrument dials. The target has thinner warm metal seats and bright translucent lamp lenses with finer warm line art and a tighter specular edge.",
+   "fix": "Reduce the black ring contrast, use a narrow polished metal bezel and frosted lit lens, and refine the line weight of the icons while keeping the approved designs."
+  },
+  {
+   "severity": "major",
+   "file": "set-D-02-b.png",
+   "where": "raised road, bottom right panel",
+   "what": "The four-wire track is allowed, but its wires, joints and feet read as broad gray tubing, with little warm metallic sparkle or reflection beneath compared with the target.",
+   "fix": "Keep the track, hoops and end mechanisms intact, and give the wires and feet a crisper polished-metal response, smaller bright contact highlights and a readable reflection on the lacquer."
+  },
+  {
+   "severity": "major",
+   "file": "set-D-02-b.png",
+   "where": "arrow, middle panel",
+   "what": "Through the sphere's large broad highlights the cursor reads like a faceted white graphic, with background and rail lines competing through it. The target shows a coherent glossy solid arrow with a clear charcoal edge inside a clearer bead of glass.",
+   "fix": "Keep the sizes and position from the build, but smooth the arrow edge and shading, emphasize its dark sidewall, and tune glass transmission and highlight placement for a clean silhouette."
+  },
+  {
+   "severity": "major",
+   "file": "set-D-04-b.png",
+   "where": "arrow, center panel",
+   "what": "The arrow points almost straight up and is pale and washed with translucent bands; its blunt near-symmetrical shoulders and weak dark side miss the target's diagonally leaning asymmetrical solid pointer. The shell has an obvious dark seam and a broad pink rim rather than the target's clear body with distinct red and warm-white specular flecks.",
+   "fix": "Match the cursor silhouette, bevel, charcoal thickness and oblique attitude while retaining its configured size. Remove the obvious seam, clear the glass center, and localize the red and warm-white reflections."
+  },
+  {
+   "severity": "major",
+   "file": "set-D-03-b.png",
+   "where": "firehouse threshold and foreground surface",
+   "what": "A circular faceted dark socket with a wide pale rim and a red gridded apron changes the threshold into an instrument well. The target has an integrated rectangular black recess with rounded corners, a narrow chrome lip, frosted apron inserts and a much clearer red reflection beside it.",
+   "fix": "Bring the visible mouth, lip and apron materials back toward the rectangular recessed threshold and local glossy red spill, without moving the ball from its prescribed position."
+  },
+  {
+   "severity": "major",
+   "file": "set-D-04-b.png",
+   "where": "roof and beacon, left panel",
+   "what": "The beacon is a tall uniformly striped glowing dome on a matte, stepped gray pedestal. The target has clear deep-red ribbed plastic around a localized hot core, sharper white glints and a reflective rounded silver collar. The surrounding roof and blocks also look smoother and more uniform than the grainy target roof.",
+   "fix": "Localize the lamp core, tune the red cover to a glossy translucent finish, smooth and polish the collar, and add irregular roughness to the roof and fittings."
+  },
+  {
+   "severity": "major",
+   "file": "set-D-04-b.png",
+   "where": "wall and windows, right panel",
+   "what": "Brick courses are uniform and shallow, the corner stones are clean chunky blocks, and the panes resemble flat amber grids. The target has varied raised bricks, visibly recessed dark mortar, worn stone sills and jambs, and recessed textured glass that glows unevenly from within.",
+   "fix": "Break up brick color and relief, deepen joints and window reveals, give stones fine rounded wear, and add textured glass with warmer graduated interior light and natural spill."
+  },
+  {
+   "severity": "major",
+   "file": "set-D-02-b.png",
+   "where": "cream plaques on buildings and the small house",
+   "what": "The typography is heavy black sans serif and gives the plaques a dense digital look. The target lettering is finer and warmer with visible serifs, a more restrained scale and more cream margin. The panels themselves lose the fine grain and aged metal edge.",
+   "fix": "Keep the approved copy and sign placement, but use the lighter target serif treatment with warmer ink, less visual crowding and a subtly worn cream face and brass edge."
+  },
+  {
+   "severity": "major",
+   "file": "set-D-04-b.png",
+   "where": "firehouse plaque, left panel",
+   "what": "The plaque has large dark near-black sans serif lettering on a smooth flat face instead of the target's finer brown serif letters on warm stippled stock with a narrow polished frame.",
+   "fix": "Preserve the copy and required tilt, use the target's serif weight and brown-black color, and recover the tactile face and fine brass highlight."
+  },
+  {
+   "severity": "major",
+   "file": "set-D-01-b.png",
+   "where": "front apron, center sign and lower right plunger",
+   "what": "The apron reads as fresh molded off-white with sharp pale panel outlines, its center plaque uses heavy dark sans serif, and the knob and exposed hardware are dull. The target uses slightly aged cream, a warmer serif plaque and glossy amber plastic against gleaming metal.",
+   "fix": "Add a little surface patina, reduce the hard panel highlights, bring the center plaque to the thinner warm serif style, and polish the exposed steel and amber knob without changing the specified rod or knob placement."
+  }
+ ]
+}

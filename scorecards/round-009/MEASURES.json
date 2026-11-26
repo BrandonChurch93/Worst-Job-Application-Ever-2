@@ -1,0 +1,183 @@
+{
+  "unit": "step2",
+  "tier": "final",
+  "judgedTier": "final",
+  "format": "hd",
+  "engineHash": "a904e95f64b6d933",
+  "sharedHash": "c59d02ddbce49e21",
+  "pageHashes": {
+    "step2": "08714a8278e3a199"
+  },
+  "only": null,
+  "stills": [
+    "key:step2-rest",
+    "key:step2-dial",
+    "key:step2-crank",
+    "still:rest-step2",
+    "sheet:machines"
+  ],
+  "exit": 2,
+  "green": [
+    "M1",
+    "M2",
+    "M4",
+    "M5",
+    "M6",
+    "M7",
+    "M9"
+  ],
+  "red": [
+    "M3"
+  ],
+  "notYet": [],
+  "measures": [
+    {
+      "id": "M1",
+      "status": "pass",
+      "summary": "5 stills: 0 invalid values; 0 bare of 23984 edge pixels in 4 stills from home; the cursor outside the frame in 0",
+      "numbers": {
+        "stills": 5,
+        "invalidValues": 0,
+        "edgePixels": 23984,
+        "bareEdgePixels": 0,
+        "stillsFromHome": 4,
+        "cursorOutside": 0
+      },
+      "failing": []
+    },
+    {
+      "id": "M2",
+      "status": "pass",
+      "summary": "5 stills, 54073 textured pixels: the largest soft share 0.0006, the most allowed 0.02",
+      "numbers": {
+        "stills": 5,
+        "texturedPixels": 54073,
+        "worstSoftShare": 0.0006,
+        "limit": 0.02
+      },
+      "failing": []
+    },
+    {
+      "id": "M3",
+      "status": "fail",
+      "summary": "3 keys: the least ratio of fine detail to the approved image 0.7791, the least allowed 0.8",
+      "numbers": {
+        "keys": 3,
+        "leastRatio": 0.7791,
+        "limit": 0.8
+      },
+      "failing": [
+        {
+          "still": "key:step2-rest",
+          "what": "fine detail against the approved image at the same size",
+          "value": 0.7791,
+          "limit": 0.8,
+          "energy": [
+            0.0106,
+            0.0136
+          ]
+        },
+        {
+          "still": "key:step2-dial",
+          "what": "fine detail against the approved image at the same size",
+          "value": 0.7979,
+          "limit": 0.8,
+          "energy": [
+            0.012,
+            0.015
+          ]
+        },
+        {
+          "still": "key:step2-crank",
+          "what": "fine detail against the approved image at the same size",
+          "value": 0.7938,
+          "limit": 0.8,
+          "energy": [
+            0.0119,
+            0.0151
+          ]
+        }
+      ]
+    },
+    {
+      "id": "M4",
+      "status": "pass",
+      "summary": "79 runs of type in 4 stills: the smallest 20 px (least 14), the least contrast 4.63 (least 4.5)",
+      "numbers": {
+        "stills": 4,
+        "runs": 79,
+        "leastPx": 20,
+        "leastContrast": 4.63,
+        "minTextPx": 14,
+        "minTextContrast": 4.5
+      },
+      "failing": []
+    },
+    {
+      "id": "M5",
+      "status": "pass",
+      "summary": "64 parts in 4 stills: the furthest 0 px from the layout tree, the most allowed 2; 2 left out as moved by a gag",
+      "numbers": {
+        "stills": 4,
+        "parts": 64,
+        "worstPx": 0,
+        "limit": 2,
+        "leftOutAsMoved": [
+          {
+            "still": "key:step2-crank",
+            "part": "crank-arm"
+          },
+          {
+            "still": "key:step2-crank",
+            "part": "crank-grip"
+          }
+        ]
+      },
+      "failing": []
+    },
+    {
+      "id": "M6",
+      "status": "pass",
+      "summary": "4 stills from home with the cursor at rest and 0 from a tier camera: the furthest 0 px from its size, the most allowed 6",
+      "numbers": {
+        "fromHome": 4,
+        "fromTierCamera": 0,
+        "worstPx": 0,
+        "heightPx": 70,
+        "ballPx": 96,
+        "cursorInBallPx": 70.08,
+        "tolerancePx": 6
+      },
+      "failing": []
+    },
+    {
+      "id": "M7",
+      "status": "pass",
+      "summary": "1260 frames read, 3 events strike the cursor: 0 further from it than its own height in the picture, 0 with no change of damage or acting and no reaction starting on that frame or the next",
+      "numbers": {
+        "frames": 1260,
+        "hits": 3,
+        "tooFar": 0,
+        "noChange": 0,
+        "worstOverPx": 0,
+        "beats": 5,
+        "firstFrame": 2760,
+        "lastFrame": 4019
+      },
+      "failing": []
+    },
+    {
+      "id": "M9",
+      "status": "pass",
+      "summary": "55 of 66 parts checked in 4 stills from home: the furthest 0 px from its size or height, the most allowed 2",
+      "numbers": {
+        "stills": 4,
+        "parts": 66,
+        "checked": 55,
+        "worstPx": 0,
+        "tolerancePx": 2
+      },
+      "failing": []
+    }
+  ]
+}

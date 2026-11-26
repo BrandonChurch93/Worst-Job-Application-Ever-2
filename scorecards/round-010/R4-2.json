@@ -16,7 +16,7 @@
    "severity": "major",
    "file": "set-B-03.png",
    "where": "the cracked slot, 'Session expired' slab seating",
-   "what": "cracks and debris are fully formed in the first frame and identical in every frame; on the frame the slab seats into the slot nothing reacts — no dust, no crack growth, no shake of slab or slot — so the hit has no force and the page never answers",
+   "what": "cracks and debris are fully formed in the first frame and identical in every frame; on the frame the slab seats into the slot nothing reacts - no dust, no crack growth, no shake of slab or slot - so the hit has no force and the page never answers",
    "fix": "have cracks and debris appear or grow on the contact frame, kick a few debris pieces, and give the slab and slot a one-to-two frame squash/settle on impact"
   },
   {
@@ -31,13 +31,13 @@
    "file": "set-B-07.png",
    "where": "the 'Invalid input' slab, frames 2:04.77 to 2:04.80",
    "what": "the label vanishes in a single frame and the slab then flashes to a smaller blurred bar with no easing, reading as a pop or glitch rather than a deliberate exit at playback speed",
-   "fix": "spend three to five frames on the exit — let the text lift or fade as the slab sinks, with an ease and a short hold so the viewer can see what happened"
+   "fix": "spend three to five frames on the exit - let the text lift or fade as the slab sinks, with an ease and a short hold so the viewer can see what happened"
   },
   {
    "severity": "minor",
    "file": "set-B-01.png",
    "where": "the 'Field cannot be blank' slab, also repeated in set-B-02, set-B-04 and set-B-06",
-   "what": "the slab slides in and stops dead in open page with no wind-up and no answer from the page on landing, and the hold after it stops is only about 0.2s — easing is good and weight is decent, but the landing has no consequence and the beat feels clipped",
+   "what": "the slab slides in and stops dead in open page with no wind-up and no answer from the page on landing, and the hold after it stops is only about 0.2s - easing is good and weight is decent, but the landing has no consequence and the beat feels clipped",
    "fix": "add a short anticipation or a slightly faster approach, a one-frame page answer at landing (deeper shadow snap or faint flex), and extend the hold to roughly half a second"
   }
  ]

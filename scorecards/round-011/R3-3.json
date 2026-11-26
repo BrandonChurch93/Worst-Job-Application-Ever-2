@@ -1,0 +1,86 @@
+{
+ "critic": "R3",
+ "score": 6,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "C: surface and detail, native-size crops of the ten keys",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-C-05.png",
+   "where": "the clear ball over the green envelope insert, lower left of the right half",
+   "what": "the arrow is bigger than the ball and its head and tail stick out through the glass at the upper right, so the ball reads as a bubble with an arrow passing through it rather than a solid arrow sealed inside a clear ball",
+   "fix": "scale the arrow down so it sits fully inside the sphere with clear glass all round it, and check every frame for intersections"
+  },
+  {
+   "severity": "major",
+   "file": "set-C-04.png",
+   "where": "the tower crop, top edge and windows",
+   "what": "the tower texture is low resolution and soft at native size; the lit windows are flat yellow rectangles with no frames or depth, and the roof edge is smeared, so it reads as an under-sampled stand-in",
+   "fix": "re-texture the tower at higher resolution, give the windows frames, recesses and glass with a light behind them, and add a crisp parapet edge"
+  },
+  {
+   "severity": "major",
+   "file": "set-C-10.png",
+   "where": "the small houses and the slab at the foot, middle and bottom rows",
+   "what": "the tiny gabled houses with little figures on a green lawn read as model-railway scenery, and the slab at the foot is a flat, even grey with nothing on it, which looks like an empty render surface",
+   "fix": "tie the houses into the playfield with inserts, lane guides and lamps so they read as machine toys, drop the railway figures, and give the slab apron print, wear, screws and a gloss falloff"
+  },
+  {
+   "severity": "major",
+   "file": "set-C-03.png",
+   "where": "the slingshots, top left and middle left",
+   "what": "the slingshots are bare marbled plastic triangles with no rubber ring around the posts and no kicker hardware; the cracks on the plastic look like drawn lines",
+   "fix": "wrap each slingshot in a black rubber ring over its posts, add the kicker blade and its gap, and give any cracks real depth and edge highlights"
+  },
+  {
+   "severity": "major",
+   "file": "set-C-06.png",
+   "where": "the slingshot, bottom left",
+   "what": "the red slingshot has no rubber around its posts, so it looks like a red stapler shape set on the floor and not a slingshot",
+   "fix": "add the rubber ring and the switch and kicker detail, with a contact shadow where the plastic meets the posts"
+  },
+  {
+   "severity": "major",
+   "file": "set-C-07.png",
+   "where": "the arrow crop, the grey box at the end of the wire ramp",
+   "what": "the bucket at the ramp end is a plain untextured grey box with no fixings, and there is a stray soft glare spot on the floor below the ball",
+   "fix": "model the ramp end as a themed metal scoop with brackets and screws, and remove or justify the glare spot"
+  },
+  {
+   "severity": "major",
+   "file": "set-C-08.png",
+   "where": "the arrow, middle crop",
+   "what": "the arrow inside the pink ball is milky and semi-transparent with reflections running across it, so it does not read as a solid white arrow; its edges are soft",
+   "fix": "make the arrow opaque with a crisp bevel and specular edge, and keep the reflections on the outer glass only"
+  },
+  {
+   "severity": "major",
+   "file": "set-C-01.png",
+   "where": "the ring, the arrow inside the small ball at its centre",
+   "what": "at native size the arrow is a crumpled, irregular white shape and not a clean arrow; the tube where it meets the ring has no collar or join",
+   "fix": "render the arrow cleanly with a readable outline and thickness, and add a metal collar where the tube enters the ring"
+  },
+  {
+   "severity": "minor",
+   "file": "set-C-02.png",
+   "where": "the bumpers",
+   "what": "the bumpers read as cups of coffee in saucers more than bumpers; there are no visible skirts or rings",
+   "fix": "add the bumper skirt, ring and cap so they read as bumpers that are themed as cups"
+  },
+  {
+   "severity": "minor",
+   "file": "set-C-10.png",
+   "where": "the card at the foot",
+   "what": "the card text is slightly soft from depth of field at native size",
+   "fix": "keep the card inside the focal plane or sharpen the focus"
+  },
+  {
+   "severity": "minor",
+   "file": "set-C-09.png",
+   "where": "the crop labelled the firehouse",
+   "what": "it shows an out-of-focus flipper, not the firehouse, so the firehouse is not shown; the same thing happens in set-C-02 (the sign and the tower crops are the same) and set-C-07 (the firehouse and the bank are the same)",
+   "fix": "recut the crops so each label shows its own object, in focus"
+  }
+ ]
+}

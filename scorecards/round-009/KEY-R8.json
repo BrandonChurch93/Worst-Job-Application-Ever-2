@@ -1,0 +1,166 @@
+{
+  "role": "R8",
+  "round": 9,
+  "unit": "step2",
+  "commit": "020efac56c74aeabb31d88259061fcd868bf4d16",
+  "tier": "final",
+  "engineHash": "a904e95f64b6d933",
+  "sharedHash": "c59d02ddbce49e21",
+  "pageHashes": {
+    "step1": "3792c5cee2f83f56",
+    "step2": "08714a8278e3a199",
+    "marketing": "9965eb282805c02f",
+    "pinball": "86fccdaacf4f1870",
+    "boss": "e22b67bd80711f07",
+    "decision": "0baf0cef7ca90495"
+  },
+  "browser": "147.0.7727.15",
+  "files": {
+    "set-A-01.png": {
+      "set": "A",
+      "critic": "R8-1",
+      "kind": "judged",
+      "heading": "The page at rest",
+      "still": {
+        "page": "step2",
+        "camera": "home",
+        "tier": "final"
+      },
+      "from": {
+        "id": "rest-step2"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-02.png": {
+      "set": "A",
+      "critic": "R8-1",
+      "kind": "judged",
+      "heading": "The page at one moment, 1 of 3",
+      "still": {
+        "page": "step2",
+        "beat": "step2.open",
+        "at": 0.5,
+        "camera": "home",
+        "tier": "final"
+      },
+      "from": {
+        "key": "step2-rest"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-03.png": {
+      "set": "A",
+      "critic": "R8-1",
+      "kind": "judged",
+      "heading": "The page at one moment, 2 of 3",
+      "still": {
+        "page": "step2",
+        "beat": "step2.dial",
+        "at": 0.2,
+        "camera": "home",
+        "tier": "final"
+      },
+      "from": {
+        "key": "step2-dial"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-04.png": {
+      "set": "A",
+      "critic": "R8-1",
+      "kind": "judged",
+      "heading": "The page at one moment, 3 of 3",
+      "still": {
+        "page": "step2",
+        "beat": "step2.crank",
+        "at": 0.2,
+        "camera": "home",
+        "tier": "final"
+      },
+      "from": {
+        "key": "step2-crank"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-05.png": {
+      "set": "A",
+      "critic": "R8-1",
+      "kind": "text-crops",
+      "heading": "Text and controls of the page at rest, at their real size",
+      "still": {
+        "page": "step2",
+        "camera": "home",
+        "tier": "final"
+      },
+      "from": {
+        "id": "rest-step2"
+      },
+      "crops": [
+        {
+          "part": "header",
+          "window": [
+            79,
+            0,
+            696,
+            270
+          ]
+        },
+        {
+          "part": "progress",
+          "window": [
+            1004,
+            0,
+            696,
+            270
+          ]
+        },
+        {
+          "part": "type",
+          "window": [
+            0,
+            214,
+            696,
+            270
+          ]
+        },
+        {
+          "part": "field.whole",
+          "window": [
+            976,
+            197,
+            696,
+            270
+          ]
+        },
+        {
+          "part": "button",
+          "window": [
+            1224,
+            810,
+            696,
+            270
+          ]
+        },
+        {
+          "part": "data:numerals.2",
+          "window": [
+            892,
+            0,
+            696,
+            270
+          ]
+        }
+      ],
+      "format": "hd",
+      "tier": "final"
+    }
+  }
+}

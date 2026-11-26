@@ -1,0 +1,37 @@
+{
+ "critic": "R3",
+ "score": 7,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "B: surface and detail, the clear ball sheet, the table map, the page at rest and its result, with crops",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-B-06.png",
+   "where": "upper-left glass crop, lower-right corner of the assessment panel",
+   "what": "The bevel is visible, but the face reads as an opaque grey plaque. The paper grain does not visibly carry through beneath it, and there is no refracted detail at the edge.",
+   "fix": "Put the grain and lettering on a backing plane beneath a transmissive slab, then let the bevel subtly shift the grain and catch a grazing reflection."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-04.png",
+   "where": "upper left, clear tube crossing the circular rim",
+   "what": "The tube appears laid over the rim in projection rather than seated in it. The rim bands continue through the overlap unchanged, and the tube's end collar has no visible mating seat.",
+   "fix": "Give the tube a keyed opening or receiver, interrupt the rim where the parts meet, and show the overlap with contact occlusion and refraction through the tube wall."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01.png",
+   "where": "upper right, clear ball in front of the bumper",
+   "what": "The stated bumper-hit ball is still almost circular, with no flat contact patch against the bumper. It reads as another ball suspended in front of the hardware.",
+   "fix": "Place the ball against the striking face, flatten its envelope at that contact, and compress the reflected highlight there while keeping the arrow visibly solid."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-05.png",
+   "where": "upper-left crop, orange step 3 cap",
+   "what": "The cap has a modeled bevel, but the rail simply vanishes behind it and the dark outer edge reads as part of the cap, not as a separate socket. It looks stuck onto the rail.",
+   "fix": "Seat the cap in a fixed collar with a narrow annular gap and a tight contact shadow, and show the rail joining the collar behind it."
+  }
+ ]
+}

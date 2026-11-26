@@ -1,0 +1,38 @@
+{
+ "critic": "R4",
+ "score": 7,
+ "pass": false,
+ "model": "gpt_6_2_sol",
+ "set": "A: motion, the boss's beats and hits in sheets of consecutive frames",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "the privacy and session pop-ups, 2:06.10–2:08.27",
+   "what": "The incoming shots leave sparks and dark marks, but the cards stay rigid and then are gone. The sheet doesn't make it clear whether the shots knock the cards away or the interface simply replaces them.",
+   "fix": "Give each card a short kick or hinge recoil on the first hit, then hold its damaged state briefly before clearing it. Show that first contact in consecutive frames."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "the damaged Submit button, 2:19.33–2:20.70",
+   "what": "The pointer sits against Submit for about a second, then pulls away as the slab starts turning. There is no readable downstroke or release to tie the click to the turn.",
+   "fix": "Seat the cap visibly into its mount on contact, spring it partway back on release, and start the slab turn on that release."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-09.png",
+   "where": "the numbered discs and horizontal rule at native size, 2:21.20–2:21.37",
+   "what": "The digit strokes and fine rings break into doubled or jagged contours on approach, and the horizontal rule alternates between a crisp line and a soft double edge as the slab seats.",
+   "fix": "Filter the fine rings and rule through the moving shot and use consistent directional motion blur on approach. Keep the numeral faces and rule stable once the slab seats."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-06.png",
+   "where": "the separated metal arm, housing plates and green shield, 2:16.90–2:17.60",
+   "what": "The initial burst is fast, but the final spread reads as pieces sliding into a layout. The heavier parts do not have a distinct first contact and stop before the lighter pieces finish moving.",
+   "fix": "Stagger the landings by mass. Drive the heavier plates into the page with tight contact shadows and an abrupt stop, then let the smaller arms bounce or skid briefly before settling."
+  }
+ ],
+ "note": "The first critic asked for this set (GLM, asked 05:44Z) had not answered at its limit of 45 minutes, 06:29Z, and was stopped. It was replaced once, as AGENTS.md says: this is the answer of the replacement (GPT, asked 06:29Z, answered 06:32Z) to the same brief and the same nine files."
+}
