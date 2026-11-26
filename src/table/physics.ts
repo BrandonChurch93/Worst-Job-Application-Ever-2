@@ -29,6 +29,7 @@ const LIFT_SHUT = 0.4
 const FOREVER = 1e9
 const BAT = { bounce: 0.3, grip: 0.4 }
 const KICK = { bumper: 18, sling: 12, face: 0.3 }
+export const EJECT = { firehouse: [1.4, 4] as V }
 const PULSE = { gap: Math.round(0.34 / DT), swell: Math.round(0.4 / DT), rest: Math.round(0.5 / DT), lead: Math.round(0.12 / DT) }
 const FLASHERS = new Set([...table.bumpers, ...table.slings, ...table.targets].map((x) => x.id))
 const SETTLE = { seconds: 0.28, land: 0.45, sink: 0, hop: 0.07 }
@@ -393,7 +394,7 @@ export class Machine {
       this.toPlane(i, b.x, b.y, -10.8, 1.2)
       this.say('eject', i, id)
     } else if (id === 'street.firehouse') {
-      this.toPlane(i, b.x, b.y, 10.5, 9)
+      this.toPlane(i, b.x, b.y, EJECT.firehouse[0], EJECT.firehouse[1])
       this.say('scoop-kick', i, id)
     } else if (id === 'street.mom') {
       this.toPlane(i, b.x, b.y, 0, -22)

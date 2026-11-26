@@ -363,10 +363,10 @@ const TEXTS = [
   ['progress', 'the progress bar', true],
   ['heading', 'the heading and the line under it', true],
   ['type', 'the smallest text', true],
-  ['chip', 'the drop zone'],
+  ['chip', 'the button on the glass'],
   ['field.whole', 'a field with its label and helper', true],
   ['button', 'the button'],
-  ['card.corner', 'a corner of the drop zone']
+  ['card.corner', 'a corner of the glass card']
 ]
 
 // Draws the pictures of a look pack into `built`, with what the key file says of each in `about`.

@@ -18,12 +18,14 @@ uniform vec3 wjlCol[ ${CHANNELS} ];
 uniform vec3 wjlFull[ ${CHANNELS} ];
 uniform vec4 wjlSpill[ ${SPILLS} ];
 uniform vec3 wjlSpillCol[ ${SPILLS} ];
+uniform vec2 wjlSpillComb[ ${SPILLS} ];
 uniform vec4 wjlHigh[ ${HIGHS} ];
 uniform vec3 wjlHighCol[ ${HIGHS} ];
 uniform vec4 wjlAt[ ${CHANNELS} ];
 uniform vec3 wjlFill;
 uniform vec4 wjlHole[ 2 ];
 uniform float wjlEnv;
+uniform vec2 wjlDeep;
 `
 
 // The deck of the frame outside a tier's pit stands at the page's surface, over every lamp of the tier: no lamp reaches its top.
@@ -39,7 +41,10 @@ const SHEEN = { coat: 0.03, pools: 0.0 }
 const LEAF = 1.1
 
 // Lacquer is not a flat mirror: the orange peel of the coat draws each lamp out into a streak that runs toward the eye, longer the lower the eye. A lamp is looked for at several heights along the turned line of sight, a different set for each pixel.
-const STREAK = { taps: 6, near: 0.5, far: 2.6, level: 2.6, long: 3.5 }
+const STREAK = { taps: 6, head: 0.45, at: 0.3, near: 0.42, far: 2.8, level: 2.6, long: 3.5 }
+
+// Print under lacquer is dark where no lamp stands near: the coat sends most of a far lamp's light away from the eye, and only in the pool round a lamp does the print show in full.
+const DEEP = { from: 0.12, to: 1.3 }
 
 // How much of a lamp wet lacquer shows from straight above. Dry lacquer shows 0.04; the approved floors are wetter than that.
 const WET = 0.1
@@ -88,6 +93,7 @@ const body = /* glsl */ `
 	wjlInside *= wjlPit;
 	float wjlShine = 1.0 - smoothstep( 0.9, 0.995, wjlN.z ) * ( 1.0 - smoothstep( 4.0, 16.0, wjlUp ) );
 	IncidentLight wjlLight;
+	vec3 wjlDiff0 = reflectedLight.directDiffuse;
 	wjlLight.visible = true;
 	vec3 wjlField = vec3( 0.0 );
 	vec3 wjlHaze = vec3( 0.0 );
@@ -101,9 +107,9 @@ const body = /* glsl */ `
 	if ( wjlMirror > 0.0 ) {
 		float wjlGrain = fract( 52.9829189 * fract( dot( gl_FragCoord.xy, vec2( 0.06711056, 0.00583715 ) ) ) );
 		for ( int t = 0; t < ${STREAK.taps}; t ++ ) {
-			float wjlStep = ( float( t ) + wjlGrain ) / ${STREAK.taps.toFixed(1)};
-			float wjlHigh = ${STREAK.near.toFixed(2)} * pow( ${(STREAK.far / STREAK.near).toFixed(3)}, wjlStep );
-			float wjlPart = ${(STREAK.level / STREAK.taps).toFixed(4)} * ( 1.0 - 0.7 * abs( 2.0 * wjlStep - 1.0 ) );
+			float wjlStep = t == 0 ? 0.0 : ( float( t - 1 ) + wjlGrain ) / ${(STREAK.taps - 1).toFixed(1)};
+			float wjlHigh = t == 0 ? ${STREAK.at.toFixed(2)} : ${STREAK.near.toFixed(2)} * pow( ${(STREAK.far / STREAK.near).toFixed(3)}, wjlStep );
+			float wjlPart = t == 0 ? ${(STREAK.level * STREAK.head).toFixed(4)} : ${((STREAK.level * (1 - STREAK.head) * 2) / (STREAK.taps - 1)).toFixed(4)} * ( 1.0 - wjlStep ) * ( 1.0 - wjlStep ) * 1.5;
 			vec2 wjlOver = ( wjlP.xy + wjlRay.xy / wjlRay.z * ${LAMP.z.toFixed(1)} * wjlHigh ) / wjlSize + 0.5;
 			float wjlIn = step( abs( wjlOver.x - 0.5 ), 0.5 ) * step( abs( wjlOver.y - 0.5 ), 0.5 ) * wjlPart;
 			vec4 wjlRa = texture2D( wjlA, wjlOver );
@@ -138,7 +144,9 @@ const body = /* glsl */ `
 			float wjlFar = dot( d, wjlEye );
 			float wjlOut = dot( d, vec2( - wjlEye.y, wjlEye.x ) );
 			float wjlLong = sp.w * ( 0.5 + wjlLow );
-			wjlSpilt += wjlSpillCol[ k ] * exp( - wjlOut * wjlOut / ( sp.z * sp.z ) ) * smoothstep( - 0.4 * sp.z, 0.1 * sp.z, wjlFar ) * ( 1.0 - smoothstep( 0.2 * wjlLong, wjlLong, wjlFar ) ) * ( 0.35 + 0.65 * wjlFace ) * wjlFlat;
+			vec2 cb = wjlSpillComb[ k ];
+			float wjlBars = cb.x > 0.0 ? pow( 0.5 + 0.5 * cos( 6.2831853 * ( wjlOut / cb.x + cb.y ) ), 3.0 ) : 1.0;
+			wjlSpilt += wjlSpillCol[ k ] * wjlBars * exp( - pow( wjlOut * wjlOut / ( sp.z * sp.z ), 2.0 ) ) * smoothstep( 0.0, 0.06 * sp.w, wjlFar ) * pow( 1.0 - smoothstep( 0.0, wjlLong, wjlFar ), 1.6 ) * ( 0.35 + 0.65 * wjlFace ) * wjlFlat;
 		}
 	}
 	for ( int i = 0; i < ${CHANNELS}; i ++ ) {
@@ -191,6 +199,10 @@ const body = /* glsl */ `
 	}
 	wjlField += wjlFill * ( 0.5 + 0.5 * wjlN.z ) * ( 1.0 + 1.6 * wjlTop * smoothstep( 20.0, 130.0, wjlUp ) ) * wjlPit;
 	reflectedLight.directDiffuse += wjlField * material.diffuseColor;
+	vec3 wjlOwn = reflectedLight.directDiffuse - wjlDiff0;
+	float wjlGot = dot( wjlOwn, vec3( 0.2126, 0.7152, 0.0722 ) ) / max( dot( material.diffuseColor, vec3( 0.2126, 0.7152, 0.0722 ) ), 0.02 );
+	float wjlKept = min( 1.0, mix( wjlDeep.x, wjlDeep.y, wjlFace ) );
+	reflectedLight.directDiffuse = wjlDiff0 + wjlOwn * mix( 1.0, wjlKept + ( 1.0 - wjlKept ) * smoothstep( ${DEEP.from.toFixed(2)}, ${DEEP.to.toFixed(2)}, wjlGot ), wjlFlat );
 	#ifdef USE_CLEARCOAT
 	clearcoatSpecularDirect += wjlHaze * ${HAZE.toFixed(3)} * ( 1.0 + ${SHEEN.pools.toFixed(2)} * wjlFace * wjlFace ) * ( 1.0 - wjlShine ) / ( 1.0 + 0.25 * ( wjlHaze.r + wjlHaze.g + wjlHaze.b ) );
 	clearcoatSpecularDirect += wjlField * ${SHEEN.coat.toFixed(3)} * wjlFlat * wjlFace * wjlFace;
