@@ -79,6 +79,8 @@ export const LIVE = {
   loopFadeSeconds: 0.03,
   toneFadeInSeconds: 0.4,
   volumeRampSeconds: 0.03,
+  // One fixed gain after everything, in dB down, so the sum of a line and the effects stays at or under audio.truePeakDb. npm run sound -- --levels measures it.
+  headroomDb: 2.5,
   // The engine keeps this many entries of its log of the narrator's lines, the newest.
   logMax: 600,
   // The sounds of film A's opening are known before they are due, so each is set on the sound clock this long ahead of the picture.

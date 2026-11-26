@@ -65,9 +65,12 @@ type ContextMaker = new () => AudioContext
 function graphBackend(Maker: ContextMaker): Backend {
   const ctx = new Maker()
   const out = ctx.createGain()
-  out.connect(ctx.destination)
   const buses: Record<Bus, GainNode> = { fx: ctx.createGain(), voice: ctx.createGain(), tone: ctx.createGain() }
   for (const b of Object.values(buses)) b.connect(out)
+  const head = ctx.createGain()
+  head.gain.value = db(-LIVE.headroomDb)
+  out.connect(head)
+  head.connect(ctx.destination)
   const buffers = new Map<string, AudioBuffer>()
   const voices = new Set<Voice>()
   let held = false

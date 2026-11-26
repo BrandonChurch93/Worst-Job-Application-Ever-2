@@ -12,6 +12,8 @@ Part `sound-engine`. Branch `agent/site-sound`. A fact here is MEASURED (the com
 6. The idle rule moved from `src/main.ts` into the engine: `quiet(seconds)`. `main.ts` passes the seconds since the last movement or click, the engine holds `live.idleSeconds`. This is what lets a test prove the rule at the engine's level.
 7. The volume is 1 on a page that sets none. Before this `main.ts` kept the last volume when a page had no `volume()`; step 2 always ends at 1, so nothing heard changes, but the rule is now in one place.
 8. The margin of the levels is `audio.duckDb` (8 dB): section 12 says "Effects duck under a line" and names no other number. The voice is called clear when its loudness is at least 8 dB over the ducked bed.
+10. One fixed headroom after everything, `LIVE.headroomDb` 2.5 dB in `src/audio/levels.ts`, by the Builder's ruling of 17:00Z: no compressor and no limiter. It is the smallest half dB that holds the live output at or under `audio.truePeakDb` (-1 dB) in every render of `npm run sound -- --levels`. The plain audio elements of the fallback have no sum of their own to hold, so the headroom is in the sound graph only.
+11. The 30 s after which a loop that nothing stops ends by itself is `LIVE.loopMaxSeconds` in `src/audio/levels.ts`. It is the sound part's own number, there since the engine was first built (main at aafc241c), not the config's.
 9. Idle after a hidden tab is left as it was: the seconds since the last movement run on while the tab is hidden, and the engine holds its sound graph meanwhile, so the line is said when the visitor is back.
 
 ## The six events (point 2)
@@ -51,6 +53,30 @@ What the two visits show, MEASURED, seed 20261124:
 - skipper: finished in 117.43 s, 5 skips. Heard: `marketing.stroll`, three idle lines, one skip line, `pinball.seal`, `decision.letter`, `decision.metrics`. Each line of the film started on the page of its own gag after its own event; the skip line was dropped 4 times of 5.
 - Why so few: two lines must be `audio.liveNarratorMinGapSeconds` (6 s) apart and a line of the film may wait 10 s for its turn (`LIVE.waitSeconds`), a hit 0.4 s. With lines of 3 to 8 s the narrator can say one line in about 11 s. Both numbers are the config's and the levels', not changed here.
 
+### The lines only the live site has, over the four bots
+
+`npm run sound -- --visit all`, MEASURED, seed 20261124: keen 124.05 s, clumsy 148.7 s, random 112.38 s with 4 skips, skipper 117.43 s with 5 skips. Lines of the film heard: keen 11, clumsy 12, random 6, skipper 4.
+
+| line | asked for | heard | by |
+| --- | --- | --- | --- |
+| `live.idle` | 5 | 3 | skipper 3 |
+| `live.skip` | 9 | 5 | random 4, skipper 1 |
+| `live.tugLost` | 2 | 1 | clumsy 1 |
+| `live.hit` | 84 | 0 | |
+| `live.pinball.flipper` | 3 | 0 | |
+| `live.boss.verify` | 3 | 0 | |
+| `live.slowTyping` | 1 | 0 | |
+| `live.realKeyboard` | 0 | 0 | no bot presses a real key |
+| `live.boss.slow` | 0 | 0 | no bot's fight reaches `live.bossSlowSeconds` with the boss above half |
+| `live.watchFilm` | 0 | 0 | no bot picks the film |
+
+Every drop has the same reason in the log: the line could not start within its wait, because another line was being spoken or had ended less than `audio.liveNarratorMinGapSeconds` before.
+
+- `live.boss.verify` cannot be heard on a first pass through step 4 under any numbers: its trigger, `checkbox`, is also the trigger of the film's line `boss.verify.0`, which is asked first at the same instant. Whenever the narrator is free the film's line takes the place, and when it is not, both are dropped. It can be heard only on a second pass in the same load, when the film's line is spent.
+- `live.hit` may wait 0.4 s. It needs a hit at a moment when no line is spoken, none is booked and the last ended over 6 s ago. On step 1 and step 4, where the hits are, the lines of the film with their gaps fill nearly the whole page: 0 of 84 in four visits. It can happen, and a bot never got it.
+- `live.pinball.flipper` hangs on the first flipper press, which comes right after the plunger, where `pinball.launch.0` is spoken: it needs a visitor who waits about 5 s after the launch before the first press. `live.slowTyping` needs the same kind of gap on step 1.
+- `live.realKeyboard`, `live.boss.slow` and `live.watchFilm` are set off by nothing a bot does. That they are spoken when their trigger comes and the narrator is free is MEASURED at the engine's level (`tests/audio-rules.test.ts`, "speaks a line only the live site has when its trigger happens"); how often a real visitor hears them is UNKNOWN.
+
 ## The loops (point 4)
 
 `npm run sound -- --loops`, MEASURED on the files of `public/audio/`:
@@ -72,6 +98,44 @@ Each seam is smaller than the largest step the loop takes inside itself. The hol
 
 The duck goes down over 0.08 s before a line and comes back over 0.3 s after it (`DUCK` in `src/audio/levels.ts`).
 
+## The levels (point 4)
+
+`npm run sound -- --levels`, MEASURED in Chromium 159.0.8154.6. The keen bot's visit (827 events, 124.05 s, seed 20261124) is sent event by event, at its own times, to the site's own engine on an offline sound graph of the browser, with the voice, the bed (effects after the duck, and the room tone) and the output on tracks of their own. Loudness is the project's own measure (`loudness` of `src/audio/dsp.ts`), over the span of the line. Voice and bed are read before the master gain, so the crank and the headroom do not move the margin.
+
+The line of each moment is set off by its own trigger, at the occurrence where the bed under it is loudest, in a render of its own. The slot machine has no line: there the line of `step2.dial` is placed on the event `coins` by the tool.
+
+| moment | line, trigger, time in the visit | voice LUFS | bed LUFS | margin dB | bed with no line LUFS | margin at the bed's loudest 0.4 s dB |
+| --- | --- | --- | --- | --- | --- | --- |
+| step 1 under fire | `step1.email.0`, `slab-drop`, 18.23 s, loudest of 3 | -14.95 | -30.03 | 15.08 | -22.06 | 11.76 |
+| step 1, the tug at the shredder | `step1.tug.0`, `arms-out`, 20.23 s | -14.55 | -29.40 | 14.85 | -21.52 | 12.86 |
+| the slot machine paying out | `step2.dial.0`, placed on `coins`, 41.07 s | -15.11 | -32.44 | 17.33 | -24.65 | 10.84 |
+| the bumpers | `pinball.coffee.0`, `bumper`, 63.42 s, loudest of 5 | -15.00 | -29.62 | 14.62 | -22.21 | 7.98 |
+| the boss's hit | `boss.slabs.0`, `slab-fire`, 95.58 s, loudest of 5 | -14.77 | -29.62 | 14.85 | -21.85 | 8.84 |
+
+Wanted: 8 dB (`audio.duckDb`). Every margin over the line holds, by 6.6 dB or more. Against the loudest 0.4 s of the bed the bumpers are at 7.98 dB, 0.02 dB under 8: that is the voice's loudness over its whole line against one moment of the bed, a harder reading than section 12 gives. The page's busiest 3 s lie under the line in four of the five rows; on step 1 they are at 27.6 s, under the tug line and not under the email line, which is why the tug has a row.
+
+The visit as it is heard (every event live, the narrator saying what its rules let through), the 11 lines heard: margins 14.12 dB (`pinball.launch.0`) to 25.83 dB (`pinball.coffee.0`); against the bed's loudest 0.4 s the smallest is 7.86 dB (`decision.letter.0`, the stamp). All eleven are in `out/work/audio/levels.json`.
+
+### The peak, and the headroom
+
+FINDING, MEASURED before the headroom: the live output went over full scale when a line was spoken: true peak up to +1.05 dB (the bumpers), +0.92 dB in the keen visit as heard, +0.66 dB in the skipper's. With no line: -2.39 dB (keen) and -2.92 dB (skipper).
+
+The cause is the packed line file, not a gain and not two voices:
+
+- No gain over 1 is on a line: the source gain is 1, the voice bus is 1, and the narrator never books two lines over each other (test "never lets a line interrupt another").
+- The chain sets a line to -18 LUFS and holds no peak for the voice. For 9 kept lines that gain put peaks over full scale: the records beside the kept sounds say peak +4.11 dB (`line.step2.crank.0`), +3.76 (`line.pinball.replyAll.0`), +3.72 (`line.marketing.stroll.0`), +2.31 (`line.pinball.fired.0`), +1.73 (`line.live.slowTyping.0`), +1.59 (`line.live.hit.2`), +0.71 (`line.live.realKeyboard.0`), +0.52 (`line.step1.email.0`), +0.09 (`line.pinball.launch.0`). STATED from `audio/kept/*.json`.
+- The 24 bit WAV cannot hold that: MEASURED with ffmpeg, the kept WAV of those lines has its largest sample at exactly 0 dB, with 1 to 100 samples at full scale, the longest run 17 samples (0.35 ms, `line.step2.crank.0`).
+- The packed MP3 holds more: MEASURED with ffmpeg's decoder, largest sample +3.80 dB in `line.pinball.fired.0.mp3` and +3.95 dB in `line.pinball.replyAll.0.mp3`; 22 of the 34 packed lines read over 0 dB true peak that way.
+- In Chromium the decoded line has its largest sample at exactly 0 dB and a true peak up to +0.84 dB (MEASURED in the render, voice track alone): its decoder stops at full scale. What Firefox and Safari do with those files is UNKNOWN.
+
+So the sound that is wrong is the level of 9 kept lines, clipped for under half a millisecond each, and it is in the film mix as well, which reads the same kept files. To mend it the lines would be kept again with a peak held in the chain, from their takes, which is not this job and needs the takes; no line was made or kept again here.
+
+The headroom: `LIVE.headroomDb` 2.5 dB, one gain between the master and the output. MEASURED after it, the true peak of the output in each of the nine renders: keen with no line -4.89 dB; step 1 under fire -2.13; the tug -1.99; the slot -3.21; the bumpers -1.45; the boss's hit -2.32; keen as heard -1.58; skipper with no line -5.42; skipper as heard -1.84. The bound is `audio.truePeakDb`, -1 dB: held, the largest is -1.45 dB. The margins of the table are the same to the hundredth before and after, and so is each page against the others: it is one gain after everything.
+
+What it cost: the keen visit as heard is -19.65 LUFS at the output (it was -17.15), with no line -26.62 (was -24.12); the skipper's as heard -18.83 (was -16.33).
+
+The check for step 3's sound checks is the last line of `npm run sound -- --levels`: "levels: peak pass" or "levels: peak FAIL", with the largest true peak and the render it is in. The command ends with exit code 1 when the peak is over the bound or a margin is under `audio.duckDb`. The bound is proven for these nine renders only: a line that no bot hears at a loud moment is not in them.
+
 ## The crank (point 5)
 
 `src/pages/step2/index.ts` line 857: the page's volume is `max(0.1, level)` from the moment the Audio volume row opens until that row is done, and 1 otherwise; `level` is a tenth for each whole turn.
@@ -87,5 +151,6 @@ A2. MEASURED on a quiet VM of 4 cores, `npm run sound -- --browser --site`: the 
 ## What is not done, and what is not known
 
 - A6 and A9 wait for the mix; A10 is left as ruled.
+- The 9 kept lines with clipped peaks are not kept again.
 - `cut/CUTLIST.json` on main is older than the stage: 689 events against the 977 `npm run cut` gives now.
 - What a phone does with the sound is UNKNOWN: everything here is measured in Chromium on a desk.
