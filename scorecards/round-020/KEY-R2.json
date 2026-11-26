@@ -1,0 +1,362 @@
+{
+  "role": "R2",
+  "round": 20,
+  "unit": "site",
+  "commit": "e17eb5f8ab00c46bdba990cfea96369ba4812e2a",
+  "tier": "live-high",
+  "engineHash": "084c6e798d8e8fe9",
+  "sharedHash": "1146313901f29ceb",
+  "pageHashes": {
+    "step1": "ca5a06f4d54b4206",
+    "step2": "1ba00f8ab331f145",
+    "marketing": "3645cc7fb7a95417",
+    "pinball": "1df2191eb5031070",
+    "boss": "ed18eab775dec297",
+    "decision": "7268eb60f24ef748"
+  },
+  "browser": "159.0.8154.6",
+  "files": {
+    "set-A-01.png": {
+      "set": "A",
+      "critic": "R2-1",
+      "kind": "site-jury",
+      "heading": "",
+      "judged": "site:marketing",
+      "still": {
+        "page": "marketing",
+        "camera": "home",
+        "tier": "draft",
+        "live": "high"
+      },
+      "format": "hd",
+      "level": "high",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-02.png": {
+      "set": "A",
+      "critic": "R2-1",
+      "kind": "site-jury",
+      "heading": "",
+      "judged": "site:step1",
+      "still": {
+        "page": "step1",
+        "camera": "home",
+        "tier": "draft",
+        "live": "high"
+      },
+      "format": "hd",
+      "level": "high",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-03.png": {
+      "set": "A",
+      "critic": "R2-1",
+      "kind": "site-jury",
+      "heading": "",
+      "judged": "site:step2",
+      "still": {
+        "page": "step2",
+        "camera": "home",
+        "tier": "draft",
+        "live": "high"
+      },
+      "format": "hd",
+      "level": "high",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-04.png": {
+      "set": "A",
+      "critic": "R2-1",
+      "kind": "site-jury",
+      "heading": "",
+      "judged": "site:pinball",
+      "still": {
+        "page": "pinball",
+        "camera": "home",
+        "tier": "draft",
+        "live": "high"
+      },
+      "format": "hd",
+      "level": "high",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-05.png": {
+      "set": "A",
+      "critic": "R2-1",
+      "kind": "site-jury",
+      "heading": "",
+      "judged": "site:boss",
+      "still": {
+        "page": "boss",
+        "camera": "home",
+        "tier": "draft",
+        "live": "high"
+      },
+      "format": "hd",
+      "level": "high",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-06.png": {
+      "set": "A",
+      "critic": "R2-1",
+      "kind": "site-jury",
+      "heading": "",
+      "judged": "site:decision",
+      "still": {
+        "page": "decision",
+        "camera": "home",
+        "tier": "draft",
+        "live": "high"
+      },
+      "format": "hd",
+      "level": "high",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-B-01.png": {
+      "set": "B",
+      "critic": "R2-2",
+      "kind": "site-jury",
+      "heading": "",
+      "control": "marketing-top",
+      "image": "references/approved/marketing-top.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-B-02.png": {
+      "set": "B",
+      "critic": "R2-2",
+      "kind": "site-jury",
+      "heading": "",
+      "control": "step1-fire",
+      "image": "references/approved/step1-fire.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-B-03.png": {
+      "set": "B",
+      "critic": "R2-2",
+      "kind": "site-jury",
+      "heading": "",
+      "control": "step1-tug",
+      "image": "references/approved/step1-tug.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-B-04.png": {
+      "set": "B",
+      "critic": "R2-2",
+      "kind": "site-jury",
+      "heading": "",
+      "control": "step2-rest",
+      "image": "references/approved/step2-rest.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-B-05.png": {
+      "set": "B",
+      "critic": "R2-2",
+      "kind": "site-jury",
+      "heading": "",
+      "control": "step2-dial",
+      "image": "references/approved/step2-dial.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-B-06.png": {
+      "set": "B",
+      "critic": "R2-2",
+      "kind": "site-jury",
+      "heading": "",
+      "control": "step2-crank",
+      "image": "references/approved/step2-crank.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-B-07.png": {
+      "set": "B",
+      "critic": "R2-2",
+      "kind": "site-jury",
+      "heading": "",
+      "control": "loader-page",
+      "image": "references/approved/loader-page.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-B-08.png": {
+      "set": "B",
+      "critic": "R2-2",
+      "kind": "site-jury",
+      "heading": "",
+      "control": "table-wide",
+      "image": "references/approved/table-wide.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-B-09.png": {
+      "set": "B",
+      "critic": "R2-2",
+      "kind": "site-jury",
+      "heading": "",
+      "control": "tier-corporate",
+      "image": "references/approved/tier-corporate.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-B-10.png": {
+      "set": "B",
+      "critic": "R2-2",
+      "kind": "site-jury",
+      "heading": "",
+      "control": "lobby-doors",
+      "image": "references/approved/lobby-doors.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-C-01.png": {
+      "set": "C",
+      "critic": "R2-3",
+      "kind": "site-jury",
+      "heading": "",
+      "control": "tier-office",
+      "image": "references/approved/tier-office.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-C-02.png": {
+      "set": "C",
+      "critic": "R2-3",
+      "kind": "site-jury",
+      "heading": "",
+      "control": "reply-all",
+      "image": "references/approved/reply-all.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-C-03.png": {
+      "set": "C",
+      "critic": "R2-3",
+      "kind": "site-jury",
+      "heading": "",
+      "control": "tier-street",
+      "image": "references/approved/tier-street.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-C-04.png": {
+      "set": "C",
+      "critic": "R2-3",
+      "kind": "site-jury",
+      "heading": "",
+      "control": "youre-fired",
+      "image": "references/approved/youre-fired.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-C-05.png": {
+      "set": "C",
+      "critic": "R2-3",
+      "kind": "site-jury",
+      "heading": "",
+      "control": "rail-cam",
+      "image": "references/approved/rail-cam.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-C-06.png": {
+      "set": "C",
+      "critic": "R2-3",
+      "kind": "site-jury",
+      "heading": "",
+      "control": "last-save",
+      "image": "references/approved/last-save.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-C-07.png": {
+      "set": "C",
+      "critic": "R2-3",
+      "kind": "site-jury",
+      "heading": "",
+      "control": "boss-fight",
+      "image": "references/approved/boss-fight.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-C-08.png": {
+      "set": "C",
+      "critic": "R2-3",
+      "kind": "site-jury",
+      "heading": "",
+      "control": "boss-down",
+      "image": "references/approved/boss-down.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-C-09.png": {
+      "set": "C",
+      "critic": "R2-3",
+      "kind": "site-jury",
+      "heading": "",
+      "control": "decision",
+      "image": "references/approved/decision.png",
+      "size": [
+        1400,
+        788
+      ]
+    }
+  }
+}
