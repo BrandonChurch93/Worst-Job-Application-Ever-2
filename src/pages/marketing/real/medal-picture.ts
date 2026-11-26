@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import { config } from '../../../config'
 import { Random } from '../../../core/random'
 
-export const BRUSHED = { size: 512, level: 0.84, ring: 1, rings: 0.05, arcs: 2600, arc: 0.3, long: [0.05, 0.3] as [number, number], fine: 0.03 }
+export const BRUSHED = { size: 512, level: 0.84, ring: 1, rings: 0.13, arcs: 2600, arc: 0.22, long: [0.05, 0.3] as [number, number], fine: 0.05 }
 
 // A disc of metal brushed on a wheel, as what its colour is multiplied by: rings a hair wide, each of its own brightness,
 // and short bright and dark arcs laid over them, the single strokes of the brush that are seen one by one.
@@ -21,7 +21,7 @@ export function brushedHeights(seed: number): Float32Array {
     out[y * n + x] = B.level + B.rings * 2 * (ring[i]! * (1 - f) + ring[i + 1]! * f) + B.fine * 2 * (rnd.next() - 0.5)
   }
   for (let k = 0; k < B.arcs; k++) {
-    const r = Math.sqrt(rnd.next()) * half * 1.02
+    const r = Math.sqrt(rnd.next()) * half * 0.62
     const from = rnd.next() * Math.PI * 2
     const long = B.long[0] + (B.long[1] - B.long[0]) * rnd.next() ** 2
     const strength = B.arc * (rnd.next() < 0.5 ? -1 : 1) * (0.4 + 0.6 * rnd.next())
@@ -42,7 +42,8 @@ export function brushedHeights(seed: number): Float32Array {
 
 let made: THREE.DataTexture | null = null
 
-export function brushedPicture(): THREE.DataTexture {
+// `across` is the width of the disc the picture lies on, in page pixels: one texel is one page pixel, from the disc's middle.
+export function brushedPicture(across: number): THREE.DataTexture {
   if (made) return made
   const B = BRUSHED
   const h = brushedHeights(config.seed)
@@ -59,6 +60,8 @@ export function brushedPicture(): THREE.DataTexture {
   tex.generateMipmaps = true
   tex.anisotropy = 4
   tex.colorSpace = THREE.NoColorSpace
+  tex.repeat.set(across / B.size, across / B.size)
+  tex.offset.set((1 - across / B.size) / 2, (1 - across / B.size) / 2)
   tex.needsUpdate = true
   made = tex
   return tex

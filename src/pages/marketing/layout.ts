@@ -38,7 +38,7 @@ export const T = {
   quote: { font: 'inter-400', px: 20, lead: 30 },
   role: { font: 'inter-600', px: 20 },
   answer: { font: 'inter-400', px: 20, lead: 30 },
-  tape: { font: 'inter-400', px: 20 }
+  tape: { font: 'inter-500', px: 20 }
 } satisfies Record<string, TypeSpec>
 
 const cap = (t: TypeSpec): number => block(t.font, 'X', t.px).cap

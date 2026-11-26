@@ -57,3 +57,10 @@ Looks spent on `ticker`: 4 of 40.
 
 - The well under a turning card read near black. The slab now brings its own bed: `troughGeometry()` in `real/perk-cards.ts`, a round trough of the page's ceramic as deep as half the card, with its light laid in as vertex colour (darker under the lip toward the light, never under 0.46 of the page) and normals straight up. It stays in the mouth of the well as the seal does.
 
+## Point 4, M3, and M4 (04:46 to 05:00 UTC)
+
+- MEASURED 04:48 UTC, `npm run measure -- --unit marketing --only M3,M4 --tier review`: M3 0.6891 (was 0.6323), still red against 0.8. M4 was red in that run, 4.0 against 4.5 on four runs on the medals: the brushed picture's dark strokes lay under the words. It went to origin in commit 2f7e3c7e for about 12 minutes. Fixed: the picture lies one texel to one page pixel (`brushedPicture(across)`), its arcs are weaker (0.22), and the face is 0x919395 (was 0x8a8d8f). MEASURED after, `npm run measure -- --unit marketing --only M4`: pass, least contrast 4.61.
+- Where M3's gap lies, by blocks of 120 px (my own count with the measure's formula, mean square Laplacian of luminance, whole key 2645 against 1828 in units of 1e6): the medal about 405 against 190, the ticker's row 265 against 178, the lines of type of the hero and the top bar (shared type, not mine) about 700 against 520, the page's border columns (shared grain) 60 against 18. The face's brushing alone is worth about 36 of the 290 that are missing; the rest of the medal's gap is the edges of its words, leaves, grooves and teeth, which approved draws dark and crisp.
+- The tape's type is the medium weight (`T.tape` inter-500, was 400): approved's words on the strip are darker than a regular 20 px gives here (darkest 3 percent of the row 31 of 255 against 59).
+- The glass picture's clouds are weaker (0.012, was 0.02): on the wide comparison table at `marketing-proof` they read as stains.
+

@@ -6,10 +6,13 @@ import { controls } from '../../../shell/real/controls'
 import { arc, circle, outlineOf, profile, sweep, type ProfilePoint } from '../../../shell/solids'
 import type { Shape } from '../../../stage/types'
 import { contact, dims, flange, leaf, leaned, mesh, q, scattered, shared, sheen, srgb } from './careers-solids'
+import { MEDAL } from '../layout'
 import { BRUSHED, brushedPicture } from './medal-picture'
 import { engraved, restingSlab, slabKey } from './perk-cards'
 
 export const MEDAL_LOOK = { lobes: 30, deep: 9, toward: 2.4, side: 0.3, wall: 3.4, wallSide: 0.8, under: [[-2.5, 0.9], [0, 0.9], [1.5, 0.78], [4, 0.5], [8, 0.24], [13, 0.07], [18, 0]] as [number, number][], underTurn: 1.5, band: 141, ring: 138, face: 127, wreath: 119, leaves: 12, leaf: [27, 11.5, 2.6] as const, sheen: 0.58, axis: 2.2, rim: 0.94, lean: 0.14 }
+
+const MEDAL_FACE = (MEDAL_LOOK.face * 2 * MEDAL) / 324
 
 let faceMade: THREE.MeshPhysicalMaterial | null = null
 
@@ -17,7 +20,7 @@ let faceMade: THREE.MeshPhysicalMaterial | null = null
 function medalFace(): THREE.MeshPhysicalMaterial {
   if (!faceMade) {
     const turned = materials().aluminiumTurned
-    faceMade = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x8a8d8f).multiplyScalar(1 / BRUSHED.level), map: brushedPicture(), roughness: 0.5, metalness: 0.88, vertexColors: true, normalMap: turned.normalMap, normalScale: new THREE.Vector2(0.06, 0.06), anisotropy: 0.45, anisotropyMap: turned.anisotropyMap }))
+    faceMade = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x919395).multiplyScalar(1 / BRUSHED.level), map: brushedPicture(MEDAL_FACE), roughness: 0.5, metalness: 0.88, vertexColors: true, normalMap: turned.normalMap, normalScale: new THREE.Vector2(0.06, 0.06), anisotropy: 0.45, anisotropyMap: turned.anisotropyMap }))
   }
   return faceMade
 }
