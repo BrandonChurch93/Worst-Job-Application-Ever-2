@@ -7,8 +7,9 @@ import { Geo, type RGB, type V2, type V3 } from './geo'
 import { FINISH, TONE, drop as free, fin, matsOf, mesh, mix, screw } from './mats'
 
 const SEED = 20261125
-const MARBLE: RGB = [0.68, 0.86, 1.4]
-const VEIN: RGB = [0.06, 0.09, 0.17]
+const MARBLE: RGB = [0.82, 0.98, 1.5]
+const VEIN: RGB = [0.3, 0.38, 0.6]
+const RIM = { tone: [1, 0.7, 0.36] as RGB, glow: 1.1, low: 2.2 }
 export const WEDGE = { under: 46, thick: 7, out: 6, bevel: 1.5 }
 
 const inside = (p: V2, t: V2[]): boolean => {
@@ -24,6 +25,35 @@ const inside = (p: V2, t: V2[]): boolean => {
   return true
 }
 
+const plan = (z: Zone, s: (typeof table.slings)[number]): V2[] => {
+  const t: V2[] = [s.a, s.b, s.c].map((p) => {
+    const l = localBalls(z, p[0], p[1])
+    return [l[0], l[1]] as V2
+  })
+  const area = (t[1]![0] - t[0]![0]) * (t[2]![1] - t[0]![1]) - (t[1]![1] - t[0]![1]) * (t[2]![0] - t[0]![0])
+  return area < 0 ? [t[0]!, t[2]!, t[1]!] : t
+}
+
+// A warm line of light under the lip of each slab, where the lamp below it shows.
+export function wedgeRims(G: Geo, z: Zone): void {
+  for (const s of table.slings.filter((x) => x.tier === z.tier)) {
+    const t = plan(z, s)
+    fin(G, FINISH.stone, () => {
+      for (let i = 0; i < 3; i++) {
+        const a = t[i]!
+        const b = t[(i + 1) % 3]!
+        const len = Math.hypot(b[0] - a[0], b[1] - a[1])
+        const d: V2 = [(b[0] - a[0]) / len, (b[1] - a[1]) / len]
+        const n: V2 = [d[1], -d[0]]
+        const out = WEDGE.out + 0.2
+        const p: V2 = [a[0] + n[0] * out, a[1] + n[1] * out]
+        const q: V2 = [b[0] + n[0] * out, b[1] + n[1] * out]
+        G.face([[p[0] + n[0] * RIM.low, p[1] + n[1] * RIM.low, WEDGE.under], [q[0] + n[0] * RIM.low, q[1] + n[1] * RIM.low, WEDGE.under], [q[0], q[1], WEDGE.under + 2.6], [p[0], p[1], WEDGE.under + 2.6]], [n[0] * 0.6, n[1] * 0.6, 0.8], [d[0], d[1], 0], RIM.tone)
+      }
+    }, RIM.glow)
+  }
+}
+
 export function buildWedges(z: Zone, _ctx: RealContext): THREE.Object3D {
   const mats = matsOf(z)
   const o = new THREE.Group()
@@ -31,12 +61,7 @@ export function buildWedges(z: Zone, _ctx: RealContext): THREE.Object3D {
   const top = WEDGE.under + WEDGE.thick
   for (const s of table.slings.filter((x) => x.tier === z.tier)) {
     const rnd = new Random(SEED, `marble.${s.id}`)
-    let t: V2[] = [s.a, s.b, s.c].map((p) => {
-      const l = localBalls(z, p[0], p[1])
-      return [l[0], l[1]] as V2
-    })
-    const area = (t[1]![0] - t[0]![0]) * (t[2]![1] - t[0]![1]) - (t[1]![1] - t[0]![1]) * (t[2]![0] - t[0]![0])
-    if (area < 0) t = [t[0]!, t[2]!, t[1]!]
+    const t = plan(z, s)
     const loop: V2[] = []
     for (let i = 0; i < 3; i++) {
       const p = t[i]!
@@ -88,7 +113,7 @@ export function buildWedges(z: Zone, _ctx: RealContext): THREE.Object3D {
       for (let k = 0; k < 4; k++) {
         const side = -60 + k * 40 + rnd.range(-12, 12)
         const start: V2 = [cx - Math.cos(grain) * 90 - Math.sin(grain) * side, cy - Math.sin(grain) * 90 + Math.cos(grain) * side]
-        vein(start, grain + rnd.range(-0.25, 0.25), 190, rnd.range(0.9, 1.9), rnd.range(0.7, 1), 0)
+        vein(start, grain + rnd.range(-0.25, 0.25), 190, rnd.range(0.7, 1.5), rnd.range(0.5, 0.85), 0)
       }
       for (let k = 0; k < 5; k++) {
         const side = rnd.range(-60, 60)

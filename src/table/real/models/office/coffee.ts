@@ -7,13 +7,13 @@ import { boxOf } from './inbox'
 import { hex, Kit, matsOf, meshOf, rrect, shade, SURF, type RGB, type Surf, type V2, type V3 } from './kit'
 
 const C = {
-  base: hex(0x4a3324),
+  base: hex(0x2a1c13),
   black: hex(0x242325),
-  bronze: hex(0x74503a),
-  bronzeDark: hex(0x553a2a),
+  bronze: hex(0x4b3122),
+  bronzeDark: hex(0x2f1f15),
   steel: hex(0x9aa1a9),
   steelLight: hex(0xc3c9cf),
-  top: hex(0xa3a9af),
+  top: hex(0x5a3c29),
   chrome: hex(0xccd3da),
   slot: hex(0x121214),
   paper: hex(0xf2efe6),
@@ -27,14 +27,15 @@ const C = {
   water: [0.42, 0.66, 0.84] as RGB,
   mark: hex(0xe6e3da),
   max: hex(0xb3202a),
-  face: hex(0xf1ede2),
+  face: hex(0xd8ccb0),
   lamps: [[0.2, 1, 0.34], [1, 0.78, 0.2], [1, 0.16, 0.12]] as RGB[],
-  display: [1, 0.86, 0.62] as RGB
+  display: [1, 0.86, 0.62] as RGB,
+  cups: [hex(0x2f5d50), hex(0x7a2a2e), hex(0x2c4266)]
 }
 
 const BRONZE: Surf = [0.3, 0.25, 0.9]
 const PLATE: Surf = [0.4, 0.55, 0.2]
-const LIFT = { body: 0.28, plate: 0.4, sign: 0.7, paper: 0.6 }
+const LIFT = { body: 0.24, plate: 0.26, sign: 0.42, paper: 0.55 }
 const HEAD = { x: 77, back: 62, deck: -10, lip: -34, low: 100, slope: 138, top: 154 }
 const SLOPE = Math.atan2(HEAD.top - HEAD.slope, HEAD.deck - HEAD.lip)
 
@@ -68,7 +69,9 @@ function prism(k: Kit, x0: number, x1: number, pts: V2[], cols: RGB[], surfs: Su
 
 function paperCup(k: Kit, x: number, y: number, z: number, full: boolean): void {
   const p = C.paper
-  k.lathe(x, y, z, [[6.4, 0], [7.3, 6], [8.3, 15], [8.9, 20], [9.6, 20.5], [9.6, 21.3], [8.5, 21.3], [8, full ? 18 : 2], [0, full ? 18 : 2]], [p, C.sleeve, p, p, p, p, shade(p, 0.9), full ? C.coffee : shade(p, 0.8)], [SURF.paper, SURF.paper, SURF.paper, SURF.paper, SURF.paper, SURF.paper, SURF.paper, full ? SURF.gloss : SURF.paper], 14)
+  k.lathe(x, y, z, [[5.6, 0], [6.2, 1], [8.6, 8], [9.3, 16], [9.6, 17], [9.2, 17.4], [8.4, 16.6], [7.6, full ? 14 : 2], [0, full ? 14 : 2]], [p, p, p, p, p, shade(p, 0.9), shade(p, 0.9), full ? C.coffee : shade(p, 0.8)], SURF.gloss, 14)
+  k.lathe(x, y, z - 1.5, [[12.5, 0], [13.2, 0.9], [9, 1.5], [0, 1.5]], [p, p, shade(p, 0.92)], SURF.gloss, 16)
+  k.tube([[x + 8.6, y - 1, z + 13.5], [x + 13.4, y - 3, z + 13], [x + 14.2, y - 3.6, z + 8.4], [x + 8.2, y - 1, z + 5.4]], 1.25, p, SURF.gloss, 6)
 }
 
 function cupStack(k: Kit, x: number, y: number, z: number, n: number): void {
@@ -144,9 +147,15 @@ function draw(z: Zone, ctx: RealContext): { k: Kit; g: Kit; c: Kit } {
     for (let i = 0; i < 6; i++) k.box(s * 77.6, 12 + i * 7, 60, 0.5, 3.4, 26, C.slot, SURF.matte, 0)
     k.fine = false
   }
-  k.box(0, -5.6, 30, 130, 1.2, 62, C.steel, PLATE, 0.4)
+  k.box(0, -5.6, 30, 130, 1.2, 62, shade(C.steel, 0.32), PLATE, 0.4)
+  // The service bay: two cheeks that lean in, a valance under the head and a lit groove behind each group.
+  for (const s of [-1, 1]) {
+    k.box(s * 70, -18, 14, 9, 26, 86, C.bronze, BRONZE, 3, s * 0.22)
+    k.box(s * 36, -6.6, 34, 30, 0.8, 50, shade(C.steel, 0.5), PLATE, 0.3)
+  }
+  k.box(0, -20, 92, 132, 26, 8, C.bronzeDark, BRONZE, 2.4)
 
-  prism(k, -HEAD.x, HEAD.x, [[HEAD.back, HEAD.low], [HEAD.back, HEAD.top], [HEAD.deck, HEAD.top], [HEAD.lip, HEAD.slope], [HEAD.lip, HEAD.low]], [C.bronze, C.bronze, C.bronze, C.steelLight, C.bronze], [BRONZE, BRONZE, BRONZE, PLATE, BRONZE], C.bronze, BRONZE)
+  prism(k, -HEAD.x, HEAD.x, [[HEAD.back, HEAD.low], [HEAD.back, HEAD.top], [HEAD.deck, HEAD.top], [HEAD.lip, HEAD.slope], [HEAD.lip, HEAD.low]], [C.bronze, C.bronze, C.bronze, C.bronzeDark, C.bronze], [BRONZE, BRONZE, BRONZE, BRONZE, BRONZE], C.bronze, BRONZE)
   k.flat([[-HEAD.x, HEAD.lip, HEAD.low], [HEAD.x, HEAD.lip, HEAD.low], [HEAD.x, -4, HEAD.low], [-HEAD.x, -4, HEAD.low]], [0, 0, -1], C.black, SURF.plastic)
   k.tube([[-HEAD.x, HEAD.deck, HEAD.top], [HEAD.x, HEAD.deck, HEAD.top]], 1, C.chrome, SURF.chrome, 5)
   k.tube([[-HEAD.x, HEAD.lip, HEAD.slope], [HEAD.x, HEAD.lip, HEAD.slope]], 1, C.chrome, SURF.chrome, 5)
@@ -162,8 +171,9 @@ function draw(z: Zone, ctx: RealContext): { k: Kit; g: Kit; c: Kit } {
   for (const [px, py] of [[-58, 8], [0, 3], [58, 8], [-58, 46], [0, 51], [58, 46]] as V2[]) k.cyl(px, py, HEAD.top + 1.2, 1.3, 6.8, C.chrome, SURF.chrome, 6, 0.2)
   for (let i = 0; i < 5; i++) k.box(40, 8 + i * 4.6, HEAD.top + 1.4, 34, 1.6, 0.3, C.slot, SURF.matte, 0)
   k.lift = LIFT.paper
-  for (const [cx, cy] of [[-50, 46], [-30, 47], [-10, 45.5], [10, 47], [-40, 31], [-20, 31.5]] as V2[]) {
-    k.lathe(cx, cy, HEAD.top + 1.4, [[8.2, 0], [8.4, 0.8], [7.2, 3], [6, 9.4], [5, 10], [0, 10]], [C.paper, C.paper, shade(C.paper, 0.97), C.paper, shade(C.paper, 0.93)], SURF.gloss, 16)
+  for (const [cx, cy, tone] of [[-50, 46, 0], [-31, 47, 1], [-41, 30, 2]] as V3[]) {
+    const cup = C.cups[tone]!
+    k.lathe(cx, cy, HEAD.top + 1.4, [[6.6, 0], [6.8, 0.8], [5.8, 3], [4.8, 8.4], [4, 9], [0, 9]], [cup, cup, shade(cup, 0.94), cup, shade(cup, 0.8)], SURF.gloss, 14)
   }
   k.lift = LIFT.body
 
@@ -174,7 +184,7 @@ function draw(z: Zone, ctx: RealContext): { k: Kit; g: Kit; c: Kit } {
   k.at(0, sy, sz, 0, SLOPE)
   g.at(0, sy, sz, 0, SLOPE)
   for (const [px, pw, lamps, lit] of [[-46, 44, 3, true], [2, 30, 2, false], [47, 36, 3, false]] as [number, number, number, boolean][]) {
-    k.box(px, 0, 0, pw, 17, 1, C.steel, PLATE, 0.5)
+    k.box(px, 0, 0, pw, 17, 1, shade(C.steel, 0.42), PLATE, 0.5)
     k.box(px, 0, 1, pw - 3, 14, 0.3, C.black, SURF.plastic, 0)
     for (let i = 0; i < lamps; i++) {
       const lx = px - pw / 2 + 7 + i * 7
@@ -212,8 +222,8 @@ function draw(z: Zone, ctx: RealContext): { k: Kit; g: Kit; c: Kit } {
   k.lift = LIFT.paper
   k.box(0, -33, 13.6, 140, 47, 0.5, C.slot, SURF.matte, 0)
   k.fine = true
-  for (let i = 0; i < 23; i++) k.box(-66 + i * 6, -33, 13.8, 2.6, 47, 1.5, C.steelLight, SURF.steel, 0.4)
-  for (const y of [-56.5, -9.5]) k.box(0, y, 13.8, 140, 2, 1.7, C.steelLight, SURF.steel, 0.4)
+  for (let i = 0; i < 23; i++) k.box(-66 + i * 6, -33, 13.8, 2.6, 47, 1.5, shade(C.steel, 0.5), SURF.steel, 0.4)
+  for (const y of [-56.5, -9.5]) k.box(0, y, 13.8, 140, 2, 1.7, shade(C.steel, 0.6), SURF.steel, 0.4)
   k.fine = false
   paperCup(k, -36, -45, 15.3, true)
   paperCup(k, 36, -45, 15.3, false)
@@ -256,10 +266,10 @@ function draw(z: Zone, ctx: RealContext): { k: Kit; g: Kit; c: Kit } {
     const sy2 = s.y - b.y
     const cos = Math.cos(s.turn)
     const sin = Math.sin(s.turn)
-    const W = s.w + 22
-    const H = s.h + 12
+    const W = s.w + 12
+    const H = s.h + 7
     k.at(sx, sy2, s.z, 0, s.turn)
-    k.box(0, 0, -4.4, W, H, 3.2, C.chrome, SURF.brushed, 1, 0, true)
+    k.box(0, 0, -4.4, W, H, 3.2, shade(C.steel, 0.5), SURF.brushed, 1, 0, true)
     k.lift = LIFT.sign
     k.box(0, 0, -1.4, W - 3, H - 3, 0.7, C.face, SURF.satin, 0.3)
     k.lift = LIFT.body

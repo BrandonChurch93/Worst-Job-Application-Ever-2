@@ -5,8 +5,9 @@ import { localBalls, type Zone } from '../../zone'
 import { hex, Kit, matsOf, meshOf, mix, shade, SURF, type RGB, type Surf, type V2, type V3 } from './kit'
 
 const C = {
-  red: hex(0x8e161c),
-  plate: hex(0x701419),
+  red: hex(0xa8151b),
+  plate: hex(0xb7bec7),
+  under: [1, 0.6, 0.26] as RGB,
   steel: hex(0x9aa1aa),
   chrome: hex(0xc9d0d8),
   rubber: hex(0x222223),
@@ -65,12 +66,13 @@ function plateOutline(f: Frame): V2[] {
 
 const taper = (f: Frame, x: number): number => 21 - (5.5 * Math.max(0, Math.min(f.length, x))) / f.length
 const LIFT = 0.08
+const UNDER = { out: 2.4, drop: 2 }
 // The enamel of the arm is smoother than the plate's, so the lamps draw a narrow highlight on its crown.
 const ARM: Surf = [0.17, 0, 1]
 // Across the stapler, in px beyond its taper: the top arm, the steel base that shows on both sides of it, and the shade the two lay on the plate.
 const SIDE = { arm: -1, steel: 1.8, shade: 4.8 }
 // The long highlight of the enamel, baked along the two shoulders of the arm: how much of it each ring of the section takes.
-const SHEEN = [0, 0, 0, 0.08, 0.75, 0.25, 0.04, 0, 0]
+const SHEEN = [0, 0, 0, 0.04, 0.34, 0.12, 0.02, 0, 0]
 
 function body(k: Kit, f: Frame): void {
   const L = f.length
@@ -87,16 +89,17 @@ function body(k: Kit, f: Frame): void {
     }
     return out
   }
-  k.poly(strip(2, L + 1, SIDE.shade), 0.05, 0.3, shade(C.plate, 0.5), SURF.enamel, 0)
+  k.poly(strip(2, L + 1, SIDE.shade), 0.05, 0.3, shade(C.plate, 0.34), SURF.brushed, 0)
   k.poly(strip(3, L - 3, SIDE.steel - 1), 0, 1.6, C.rubber, SURF.rubber, 0.3)
-  k.poly(strip(0, L, SIDE.steel), 1.4, 3.2, shade(C.steel, 0.72), SURF.brushed, 1.2)
-  k.poly(strip(18, L - 30, -5), 4.4, 0.7, shade(C.steel, 0.8), SURF.brushed, 0.4)
+  k.poly(strip(0, L, SIDE.steel), 1.4, 3.2, C.dark, SURF.brushed, 1.2)
+  k.poly(strip(4, L - 4, SIDE.steel - 2.6), 4.4, 0.5, C.chrome, SURF.chrome, 0.3)
+  k.poly(strip(18, L - 30, -5), 4.9, 0.7, shade(C.dark, 0.8), SURF.brushed, 0.4)
   k.box(L - 15, 0, 4.4, 20, 20, 1.1, C.chrome, SURF.chrome, 0.4)
   for (const y of [-3.2, 3.2]) k.box(L - 14, y, 5.5, 9, 2.4, 0.25, C.dark, SURF.steel, 0)
   k.cyl(L - 24.5, 0, 5.5, 1.6, 0.6, shade(C.chrome, 0.8), SURF.steel, 8, 0.3)
   for (const s of [-1, 1]) {
     const y = s * (taper(f, PIN.x) + SIDE.arm + 0.6)
-    k.poly([[0.5, y - 1.1], [19, y - 1.1], [19, y + 1.1], [0.5, y + 1.1]], 3.6, 12.6, C.steel, SURF.brushed, 0.7)
+    k.poly([[0.5, y - 1.1], [19, y - 1.1], [19, y + 1.1], [0.5, y + 1.1]], 3.6, 12.6, C.dark, SURF.brushed, 0.7)
     k.at(PIN.x, y + s * 1.1, PIN.z, 0, s * -Math.PI * 0.5)
     k.cyl(0, 0, 0, 3.4, 1.6, C.chrome, SURF.chrome, 12, 0.7)
     k.back()
@@ -146,7 +149,7 @@ function arm(k: Kit, f: Frame): void {
     const low = step < 2 ? 0.72 : 1
     return mix(shade(C.red, low), C.sheen, Math.min(0.85, sheen))
   }
-  k.loft(xs.map(([x, g]) => section(x, g, 1, 1, 5 * g)), tint, ARM)
+  k.loft(xs.map(([x, g]) => section(x, g, 1.04, 0.66, 4 * g)), tint, ARM)
   k.box(L - 9, 0, -6.2, 5, 13, 2.4, C.chrome, SURF.chrome, 0.3)
   for (const s of [-1, 1]) {
     const seam: V3[] = []
@@ -176,14 +179,35 @@ function bases(z: Zone): Kit {
   for (const g of slingsOf(z)) {
     const f = frameOf(z, g)
     const outline = plateOutline(f)
-    k.poly(outline, PLATE.z, PLATE.thick, C.plate, SURF.enamel, 2.2, shade(C.plate, 1.08))
-    k.tube(outline.map((q) => [q[0], q[1], PLATE.z + PLATE.thick - 0.2] as V3), 1.25, shade(C.plate, 1.2), SURF.enamel, 5, true)
+    k.poly(outline, PLATE.z, PLATE.thick, shade(C.plate, 0.8), SURF.brushed, 2.2, C.plate)
+    k.tube(outline.map((q) => [q[0], q[1], PLATE.z + PLATE.thick - 0.2] as V3), 1.25, C.chrome, SURF.chrome, 5, true)
     for (const q of [f.a, f.b, f.c]) k.cyl(q[0], q[1], PLATE.z + PLATE.thick, 5.8, 0.8, C.chrome, SURF.steel, 16, 0.3)
     k.at(f.s[0], f.s[1], PLATE.z + PLATE.thick, f.turn)
     body(k, f)
     k.back()
   }
   return k
+}
+
+// The warm light under the foot of each stapler: a lit lip all round its lower edge.
+export function staplerLit(z: Zone): Kit {
+  const g = new Kit()
+  for (const sl of slingsOf(z)) {
+    const f = frameOf(z, sl)
+    const o = plateOutline(f)
+    const cx = (f.a[0] + f.b[0] + f.c[0]) / 3
+    const cy = (f.a[1] + f.b[1] + f.c[1]) / 3
+    const out = (q: V2): V3 => {
+      const l = Math.hypot(q[0] - cx, q[1] - cy) || 1
+      return [q[0] + ((q[0] - cx) / l) * UNDER.out, q[1] + ((q[1] - cy) / l) * UNDER.out, PLATE.z - UNDER.drop]
+    }
+    for (let i = 0; i < o.length; i++) {
+      const a = o[i]!
+      const b = o[(i + 1) % o.length]!
+      g.flat([out(a), out(b), [b[0], b[1], PLATE.z + 0.6], [a[0], a[1], PLATE.z + 0.6]], [0, 0, 1], C.under, SURF.gloss)
+    }
+  }
+  return g
 }
 
 // The small trim of the staplers, for the one mesh of fine things of the tier.
