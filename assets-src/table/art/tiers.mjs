@@ -284,6 +284,22 @@ export function corporate(D) {
     const n = [12, 24][i]
     for (let j = 0; j < n; j++) filler.push(line(polar(door, r0, (360 * (j + i * 0.5)) / n), polar(door, r1, (360 * (j + i * 0.5)) / n), pal.fine, 0.011))
   }
+  // The lobby is laid in slabs: a dark joint with a pale arris beside it, square to the tower, and the scratches of play in the polish.
+  const slab = 1.62
+  for (let u = D.MID - slab / 2; u > D.COLS.left; u -= slab) filler.push(line([u, 0.3], [u, D.H], pal.dark, 0.02, { opacity: 0.9 }), line([u + 0.022, 0.3], [u + 0.022, D.H], pal.pale, 0.006, { opacity: 0.5 }))
+  for (let u = D.MID + slab / 2; u < D.COLS.right; u += slab) filler.push(line([u, 0.3], [u, D.H], pal.dark, 0.02, { opacity: 0.9 }), line([u + 0.022, 0.3], [u + 0.022, D.H], pal.pale, 0.006, { opacity: 0.5 }))
+  for (let v = door[1] + slab / 2; v < D.H; v += slab) filler.push(line([D.COLS.left, v], [D.COLS.right, v], pal.dark, 0.02, { opacity: 0.9 }), line([D.COLS.left, v + 0.022], [D.COLS.right, v + 0.022], pal.pale, 0.006, { opacity: 0.5 }))
+  for (let v = door[1] - slab / 2; v > 0.3; v -= slab) filler.push(line([D.COLS.left, v], [D.COLS.right, v], pal.dark, 0.02, { opacity: 0.9 }), line([D.COLS.left, v + 0.022], [D.COLS.right, v + 0.022], pal.pale, 0.006, { opacity: 0.5 }))
+  // The stone itself: the flecks of a dark polished granite, each smaller than a screw head.
+  const fleckRand = rng(57)
+  const fleck = [pal.accent, pal.soft, pal.pale, pal.dark, pal.fine].map((col, i) => ({ col, d: '', w: [0.013, 0.017, 0.008, 0.015, 0.009][i], o: [0.7, 0.6, 0.6, 0.7, 0.5][i] }))
+  for (let i = 0; i < 60000; i++) {
+    const q = [D.COLS.left + fleckRand() * (D.COLS.right - D.COLS.left), 0.3 + fleckRand() * (D.H - 0.3)]
+    const k = [0, 0, 0, 1, 1, 1, 2, 3, 3, 4][Math.floor(fleckRand() * 10)]
+    fleck[k].d += `M${f(q[0])} ${f(q[1])}h0.002`
+  }
+  const stone = fleck.map((q) => path(q.d, stroke(q.col, q.w, { opacity: q.o, 'stroke-linecap': 'round' })))
+  stone.push(veins(D, 83, pal.pale, 90))
   const keep = keepOut(D)
   defs.push(el('mask', { id: 'keep-corporate', maskUnits: 'userSpaceOnUse', x: 0, y: 0, width: D.W, height: D.H }, rect(D.COLS.left, 0.3, D.COLS.right - D.COLS.left, D.H - 0.3, { fill: '#fff' }) + keep.join('')))
 
@@ -322,7 +338,7 @@ export function corporate(D) {
   const { lanes, answers } = common(D, pal)
   const prints = insertsPrint(D, pal)
   lineWeight(1)
-  return { pal, defs, ground: [], top: [lanes, g({ mask: 'url(#keep-corporate)', opacity: 0.36 }, filler), local, answers, prints] }
+  return { pal, defs, ground: [], top: [lanes, g({ mask: 'url(#keep-corporate)' }, stone), g({ mask: 'url(#keep-corporate)', opacity: 0.72 }, [filler, wear(D, 31, pal.pale, 170)]), local, answers, prints] }
 }
 
 export function office(D, seed) {
@@ -451,6 +467,26 @@ export function office(D, seed) {
   const clipId = 'field-office'
   defs.push(el('clipPath', { id: clipId }, rect(C.left, 0.3, C.right - C.left, D.H - 0.3, { fill: '#000' })))
   return { pal, defs, ground: [g({ 'clip-path': `url(#${clipId})` }, [tiles, walk])], top: [g({ 'clip-path': `url(#${clipId})` }, [seams, edge, wear(D, seed + 9, '#c2ccc6', 70)]), lanes, scatter, answers, insertsPrint(D, pal)] }
+}
+
+// The veins of the stone: thin pale threads that wander and fork, as a dark marble has them.
+function veins(D, seed, col, count) {
+  const rand = rng(seed)
+  const out = []
+  const C = D.COLS
+  for (let i = 0; i < count; i++) {
+    let q = [C.left + rand() * (C.right - C.left), 0.3 + rand() * (D.H - 0.3)]
+    let a = rand() * 360
+    let d = `M${f(q[0])} ${f(q[1])}`
+    const steps = 6 + Math.floor(rand() * 14)
+    for (let j = 0; j < steps; j++) {
+      a += (rand() - 0.5) * 70
+      q = polar(q, 0.08 + rand() * 0.2, a)
+      d += `L${f(q[0])} ${f(q[1])}`
+    }
+    out.push(path(d, stroke(col, 0.004 + rand() * 0.006, { opacity: f(0.18 + rand() * 0.32), 'stroke-linejoin': 'round', 'stroke-linecap': 'round' })))
+  }
+  return out
 }
 
 // The wear of play in the lacquer: fine pale scratches, each a short arc of a wide circle, thickest where the ball runs most between the slings and the flippers.

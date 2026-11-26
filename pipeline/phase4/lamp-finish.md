@@ -57,6 +57,12 @@ Counted from the first still, by part. Limit 40 a part in this round.
 | 10:32 | both | 3 | a6: reply-all, lobby-doors (lights), tier-corporate (art) | 19, 11 |
 | 10:39 | both | 4 | a7, lamps answer the ball: tier-office (art), lobby-doors, last-save, table-wide (lights) | 22, 12 |
 | 10:42 | art | 1 | review still of tier-office for the time of one review still (87.3 s) | 22, 13 |
+| 10:46 | both | 2 | a8, Corporate laid in slabs with wear, sling pools smaller: tier-corporate (art), lobby-doors (lights) | 23, 14 |
+| 10:49 | both | 2 | a9: tier-corporate (art, the full set was not remade, so the same picture as a8), table-wide (lights) | 24, 15 |
+| 10:53 | art | 1 | a10, flecks in the Corporate stone: tier-corporate | 24, 16 |
+| 10:54 | art | 1 | rv1, review still of tier-corporate for M3's own number | 24, 17 |
+| 11:00 | art | 1 | rv2, review still of tier-corporate with stronger flecks, veins, the sunburst at 0.72 | 24, 18 |
+| 11:09 | art | 2 | a11, flecks one step back, inserts deeper at the rim: tier-corporate, reply-all | 24, 20 |
 
 ## Decisions
 
@@ -78,3 +84,9 @@ Counted from the first still, by part. Limit 40 a part in this round.
   - the red of the firehouse holds 0.6 with the ball in the bay, is full on the frame of the catch (0.3 s) and of the kick (falls to idle over 1.2 s); its pool before the bay and its image in the lacquer follow the same level;
   - the scoop of the letter tray flashes the Office (0.8 of a flash, 0.25 s) on the frame it takes the ball and the frame it kicks it.
   `/root/machine_finisher` confirmed the numbers in the draw list (10:41): nothing needed from it.
+- 10:46 Corporate print: slabs with a dark joint and pale arris, the scratches of play, base 1.18 times brighter. Sling pools smaller and lower (`SLING` power 3.6, reach 0.95).
+- 10:50 FOUND: `look.mjs` and `npm run still` read the full asset set, so a floor remade with `--set web` alone shows nothing. Both sets are remade each time (web 26 s, full 190 s for Corporate).
+- 10:55 M3, MEASURED with the measure's own sum (`node assets-src/table/lights/sharp.mjs <name>`, the mean square Laplacian of the still over the approved image's at the same size) on review stills of `tier-corporate` (`npm run still -- --key tier-corporate --format hd --tier review`): 0.512 before the flecks, 0.539 with strong flecks, veins and the sunburst at 0.72. The draft stills read higher (0.70 to 0.71) because they are not smoothed, so the draft number is no guide to the review one. By blocks of 240 by 180 px (`node assets-src/table/lights/grid.mjs <name> <key>`): the open floor holds 11 to 19 against the approved 35 to 74, and tripling the print's marks moved a block by 2 to 3. The approved floor is smooth marble: its fine detail is in the hardware on it (posts, screws, wire guides, lamp rings with hard small highlights), in the frame and at the head wall.
+- 11:02 DECISION: the Corporate stone keeps flecks at a level that reads as granite (pale 0.6, gold 0.5, 60000 marks), not the stronger set of rv2, which read as glitter under the slings. M3 on the tier keys cannot be passed from the print alone without a floor that no longer looks like the approved one. I do not raise it further.
+- 11:00 Inserts: lens and glow fall to the deep colour at 0.74 of the radius and darker to the seat, so a lit window is plainly brightest in the middle (point 4).
+
