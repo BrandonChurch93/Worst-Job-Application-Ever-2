@@ -58,7 +58,7 @@ One word for each beat, all in `script.ts` as `PACE`, `HOPE`, `GIVE` and `CUES`,
 
 | Beat | Word | What the cursor does |
 | --- | --- | --- |
-| The wait, 0 to 2 s | worried | stands under the panel to 0.9 s, crouches (`anticipate`), tiptoes 110 px right, flinches at the count (1.24 s), tiptoes back 44 px past where it stood, and stands, `nervous` |
+| The wait, 0 to 2 s | worried | stands under the panel to 0.9 s, crouches (`anticipate`), tiptoes 170 px right, flinches at the count (1.24 s), tiptoes back 70 px past where it stood, and stands, `nervous` |
 | The letter falls, 2 to 4.3 s | hope | stands still while the sheet falls, hops when it lands (`jump`, `proud`), struts to the foot of the sheet (2.9 to 3.5 s), looks up at 3.62 s (`doubleTake`) and freezes |
 | The stamp, 4.3 s | frozen | no move from 3.5 s to the hit, then flat |
 | The peel and the button, 6 to 10 s | beaten | peels itself up, looks at the one button (7.82 s), drags itself there in 0.65 s, stands 0.4 s, and presses once with no flourish, `exhausted` |

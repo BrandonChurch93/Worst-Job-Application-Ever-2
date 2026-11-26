@@ -90,9 +90,9 @@ export function stock(): Stock {
     for (let x = 0; x < size; x++) {
       const i = (y * size + x) * 4
       const v = Math.min(0.992, Math.max(0.84, 0.974 + h[y * size + x]! * 0.06))
-      tint[i] = Math.round(v * 255)
-      tint[i + 1] = Math.round(Math.min(1, v * 0.998) * 255)
-      tint[i + 2] = Math.round(Math.min(1, v * 0.992) * 255)
+      tint[i] = Math.round(v * 0.99 * 255)
+      tint[i + 1] = Math.round(Math.min(1, v * 0.996) * 255)
+      tint[i + 2] = Math.round(Math.min(1, v * 1.004) * 255)
       tint[i + 3] = 255
       const dx = (at(x + 1, y) - at(x - 1, y)) * 0.9
       const dy = (at(x, y + 1) - at(x, y - 1)) * 0.9

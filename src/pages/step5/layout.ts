@@ -172,7 +172,7 @@ function metrics(): LayoutNode {
 function stampAtRest(): LayoutNode {
   const m = markOf()
   const BLOCK = { w: m.blockW, h: m.blockH }
-  const x = RIGHT_X
+  const x = RIGHT_X + Math.round((COLUMN - BLOCK.w) * 0.62)
   const y = BOTTOM - BLOCK.h
   const gripW = Math.round(BLOCK.w * 0.5)
   const gripH = Math.round(BLOCK.h * 0.6)
