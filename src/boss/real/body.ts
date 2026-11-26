@@ -129,6 +129,13 @@ export const CROWN = { wing: 0.0011, side: 0.0019 }
 export const EDGE = { bevel: 2.4, out: 3, step: 3.4 }
 
 // A cast plate is never dead flat: its top swells by a hair, so the room's light fades across it. Only the normals lean, the top stays level.
+function grained(g: THREE.BufferGeometry): THREE.BufferGeometry {
+  const p = g.getAttribute('position')
+  const uv = g.getAttribute('uv')
+  for (let i = 0; i < p.count; i++) uv.setXY(i, p.getX(i) + p.getZ(i), p.getY(i) + p.getZ(i))
+  return g
+}
+
 function crown(g: THREE.BufferGeometry, lean: number): THREE.BufferGeometry {
   const p = g.getAttribute('position')
   const n = g.getAttribute('normal')
@@ -155,9 +162,9 @@ function wingParts(flip: boolean, half: -1 | 0 | 1): THREE.Group {
   const mine = (x: number): boolean => half === 0 || x < 0 === half < 0
   const [ox, oy] = half === 0 ? [0, 0] : HALF_AT[half < 0 ? 0 : 1]!
   const put = (geometry: THREE.BufferGeometry): THREE.BufferGeometry => geometry.translate(-ox, -oy, 0)
-  g.add(mesh(geo(`wing:${name}`, () => put(crown(cutPlate(shape(wingOutline()), FRAME.tall, EDGE.bevel, 0, 2), CROWN.wing))), k.plate))
+  g.add(mesh(geo(`wing:${name}`, () => put(crown(grained(cutPlate(shape(wingOutline()), FRAME.tall, EDGE.bevel, 0, 2)), CROWN.wing))), k.plate))
   g.add(mesh(geo(`wingSide:${name}`, () => put(cutPlate(shape(wingOutline()), FRAME.tall - EDGE.step, 1, EDGE.out, 1))), k.plateSide))
-  g.add(mesh(geo(`wingBed:${name}`, () => put(cutPlate(shape(bedOutline()), 9, 0.5))), half === 0 ? k.pocket : k.plate, false))
+  g.add(mesh(geo(`wingBed:${name}`, () => put(grained(cutPlate(shape(bedOutline()), 9, 0.5)))), half === 0 ? k.pocket : k.plate, false))
   g.add(mesh(geo(`wingBright:${name}`, () => put(joined([
     ...(half === 0 ? [cutPlate(shape(lipOutline()), 3, 1.1).translate(0, 0, FRAME.tall - 0.4)] : []),
     ...WING_SCREWS.filter(([x]) => mine(x)).map(([x, y], i) => moved(screw(3.8, 1.5, i + (flip ? 9 : 0) + (half > 0 ? 3 : 0)), x, y, FRAME.tall)),
@@ -177,7 +184,7 @@ function wing(flip: boolean): THREE.Group {
   const halves = [wingParts(flip, -1), wingParts(flip, 1)]
   turned.add(whole, ...halves)
   g.add(turned)
-  const tab = (): THREE.Mesh => mesh(geo(`tail:${flip}`, () => cutPlate([[0, 0.3], [28, 0.3], [28, 20], [0, 34]], 5, 1.1).translate(0, 0, 0.5)), k.plate, false)
+  const tab = (): THREE.Mesh => mesh(geo(`tail:${flip}`, () => grained(cutPlate([[0, 0.3], [28, 0.3], [28, 20], [0, 34]], 5, 1.1)).translate(0, 0, 0.5)), k.plate, false)
   const tail = tab()
   if (flip) tail.scale.y = -1
   const gone = tab()
@@ -253,7 +260,7 @@ function side(i: number): THREE.Object3D {
   const hh = SIDE.h / 2
   const turnZ = i === 0 ? 0 : Math.PI
   const outline: [number, number][] = [[-hw, -hh], [hw, -hh], [hw, -hh + 16], [hw - SIDE.lean, hh], [-hw + SIDE.lean, hh], [-hw, -hh + 16]]
-  root.add(mesh(geo(`side:${i}`, () => crown(cutPlate(outline, SIDE.tall, EDGE.bevel, 0, 2).rotateZ(turnZ), CROWN.side)), k.plate))
+  root.add(mesh(geo(`side:${i}`, () => crown(grained(cutPlate(outline, SIDE.tall, EDGE.bevel, 0, 2).rotateZ(turnZ)), CROWN.side)), k.plate))
   root.add(mesh(geo(`sideSide:${i}`, () => cutPlate(outline, SIDE.tall - EDGE.step, 1, EDGE.out, 1).rotateZ(turnZ)), k.plateSide))
   root.add(mesh(geo(`sideParts:${i}`, () => joined([
     ...[[-98, -36], [98, -36], [-70, 38], [70, 38]].map(([x, y], n) => moved(screw(3.6, 1.4, 20 + n + i * 5), x!, y! * sign, SIDE.tall))
