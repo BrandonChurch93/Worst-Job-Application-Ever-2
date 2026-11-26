@@ -84,12 +84,34 @@ marketing-top was red before and is further under after this item alone; the dar
 
 Looks used on B: light-engine 0, shell 3 (review stills of step2-rest at three settings; the other keys were rendered once each for the pictures).
 
+## The ink (the Builder's item, taken between B and C at 11:34 UTC; it is also the helper text of G)
+
+Asked by `careers_finisher` and ordered by the Builder: the type's ink is lighter than the approved images, and M3 on marketing-top is red.
+
+MEASURED first (`node out/work/look-finish/dark3.cjs <png> x y w h`: the mean of the darkest 3 percent of a row of type, on review stills):
+
+| Row | Approved | Build before | Build after |
+| --- | --- | --- | --- |
+| step2-rest title | 29,30,29 | 47,45,42 | 36,35,33 |
+| step2-rest field label | 28,25,20 | 48,46,43 | 37,36,34 |
+| step2-rest subline | 45,42,36 | 93,87,81 | 59,54,49 |
+| step2-rest helper | 54,50,44 | 94,89,82 | 60,55,50 |
+| decision title | 33,33,33 | 47,45,42 | 36,35,33 |
+| marketing-top headline | 31,30,27 | 47,45,42 | 36,35,33 |
+| marketing-top nav links | 79,75,69 | 104,99,93 | 74,70,64 |
+
+Built, four numbers in `src/shell/real/type.ts`: `INK` 0x302e2b to 0x201f1d, `INK_SOFT` 0x67625c to 0x3e3933, `INK_ON_GLASS` 0x262827 to 0x1b1d1c, `INK_SOFT_ON_GLASS` 0x484b49 to 0x383b39. No surface is pure black. The ink on metal, on keycaps, on the frosted cap and the light ink are as they were. The soft ink stays a little lighter than the approved sublines so that the two voices of the page stay two.
+
+M3 after B and the ink together (`node out/work/look-finish/hfe.mjs`): marketing-top 0.8309 (0.7854 at the start, 0.7346 after B alone), decision 0.9172, step2-rest 1.0879. M4: a darker ink on a pale ground only raises the contrast; the full measures are run again before the last push.
+
+Looks used: type 1 (three keys at review, one setting).
+
 ## Looks counted (tuning looks; baseline and three-panel pictures not counted)
 
 | Part | Used | Of |
 | --- | --- | --- |
 | shell | 8 | 40 |
-| type | 0 | 40 |
+| type | 1 | 40 |
 | light-engine | 0 | 40 |
 | cursor-body | 0 | 40 |
 

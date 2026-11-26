@@ -244,16 +244,16 @@ export function setRun(spec: RunSpec): RunData {
 const lin = (c: THREE.Color): Rgb => [c.r, c.g, c.b]
 const hex = (h: number): Rgb => lin(new THREE.Color().setHex(h, THREE.SRGBColorSpace))
 
-const INK = 0x302e2b
+const INK = 0x201f1d
 const INK_WARM = 0x52473c
-const INK_SOFT = 0x67625c
+const INK_SOFT = 0x3e3933
 const SOFT_FONT = 'inter-400'
 const INK_LIGHT = 0xfdfdfd
 const LIP = 0xf2efe8
 const INK_ON_METAL = 0x17181a
 const LIP_ON_METAL = 0xc6cace
-const INK_ON_GLASS = 0x262827
-const INK_SOFT_ON_GLASS = 0x484b49
+const INK_ON_GLASS = 0x1b1d1c
+const INK_SOFT_ON_GLASS = 0x383b39
 const INK_ON_FROST = 0x505352
 const LIP_ON_FROST = 0xdde1e1
 
