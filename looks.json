@@ -1,35 +1,35 @@
 {
   "folder": "machine-finish",
-  "pushed": "2026-11-26T12:07:14.741Z",
-  "commit": "6902685fb6be3d714cee4f7047850759a0da13a2",
+  "pushed": "2026-11-26T12:13:16.367Z",
+  "commit": "7d159780de34a5ed040c8cf8ff50942a70124ac5",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Contact sheet, the beat pinball.launch: 12 frames from 1:15.00 to 1:17.97, draft tier, preview",
-      "time": "2026-11-26T11:59:57.354Z",
+      "caption": "Key lobby-doors: approved on the left, this build on the right, draft tier, with crops of shape:hq.plate, shape:hq.doorway, cursor, shape:hold.corporate.revolving.post, shape:post.corporate.globe.right, shape:model.corporate.hq, shape:flat.corporate.carpet",
+      "time": "2026-11-26T12:08:02.686Z",
       "by": "machine-finish",
-      "from": "out/work/sheets/sheet-beat-pinball_launch-preview-draft.jpg"
+      "from": "out/work/compare/compare-lobby-doors.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Contact sheet, the beat pinball.launch: 12 frames from 1:15.00 to 1:17.97, draft tier, preview",
-      "time": "2026-11-26T12:02:22.151Z",
+      "caption": "Key rail-cam: approved on the left, this build on the right, draft tier, with crops of cursor, shape:model.street.bank, shape:model.street.firehouse",
+      "time": "2026-11-26T12:08:51.474Z",
       "by": "machine-finish",
-      "from": "out/work/sheets/sheet-beat-pinball_launch-preview-draft.jpg"
+      "from": "out/work/compare/compare-rail-cam.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Contact sheet, the beat pinball.launch: 12 frames from 1:15.00 to 1:17.97, draft tier, preview",
-      "time": "2026-11-26T12:04:14.333Z",
+      "caption": "Key rail-cam: approved on the left, this build on the right, draft tier, with crops of cursor, shape:model.street.bank, shape:model.street.firehouse",
+      "time": "2026-11-26T12:10:36.414Z",
       "by": "machine-finish",
-      "from": "out/work/sheets/sheet-beat-pinball_launch-preview-draft.jpg"
+      "from": "out/work/compare/compare-rail-cam.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "the launch beat: at the plunger the arrow turns away from the lane and trembles, then braces before the launch",
-      "time": "2026-11-26T12:07:13.450Z",
+      "caption": "rail-cam beside the approved image: the ball whole and in the middle again at the key after the new take",
+      "time": "2026-11-26T12:13:15.224Z",
       "by": "machine-finish",
-      "from": "out/work/sheets/sheet-beat-pinball_launch-preview-draft.jpg"
+      "from": "out/work/mf/q7-rail-cam.jpg"
     }
   ]
 }
