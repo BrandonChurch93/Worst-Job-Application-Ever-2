@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import type { RealContext } from '../../../../real/types'
 import { studio } from '../../../../post/studio'
 import type { Shape } from '../../../../stage/types'
+import { steel } from '../../frame/steel'
 import { lit } from '../../light'
 import { colours, groupsOf, levels } from '../../lights'
 import { localOf, type Zone } from '../../zone'
@@ -76,17 +77,19 @@ export interface Mats {
   solid: THREE.MeshPhysicalMaterial
   glow: THREE.MeshPhysicalMaterial
   clear: THREE.MeshPhysicalMaterial
+  pane: THREE.MeshPhysicalMaterial
   group: string | null
 }
 
 const GLOW = { windows: 1.15 }
+const PANE = { edge: 0.45, body: 0.32 }
 const made = new Map<string, Mats>()
 
 // The three materials of the tier's models, made once for a zone and shared by all seven.
 export function matsOf(z: Zone): Mats {
   const have = made.get(z.id)
   if (have) return have
-  const solid = lit(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 1, metalness: 1, roughnessMap: finishes(), metalnessMap: finishes() })), z)
+  const solid = lit(steel(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 1, metalness: 1, roughnessMap: finishes(), metalnessMap: finishes() })), z), z)
   solid.name = `corporate.solid.${z.id}`
   // What gives light: its own colour, vertex by vertex, is the light it gives, at the level of its light group.
   const glow = studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 1, metalness: 1, roughnessMap: finishes(), metalnessMap: finishes(), emissive: new THREE.Color(...colours.CORPORATE_WINDOW), emissiveIntensity: 0 }))
@@ -113,8 +116,22 @@ export function matsOf(z: Zone): Mats {
   clear.customProgramCacheKey = () => `${key2.call(clear)}|corporate-clear`
   lit(clear, z)
   clear.name = `corporate.clear.${z.id}`
+  // Glass with a tint of its own, vertex by vertex, and as dense as the second coordinate says.
+  const pane = studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 1, metalness: 1, roughnessMap: finishes(), metalnessMap: finishes(), transparent: true, opacity: 0.4, depthWrite: false, specularIntensity: 1, clearcoat: 1, clearcoatRoughness: 0.03, side: THREE.DoubleSide, forceSinglePass: true }))
+  const room3 = pane.onBeforeCompile
+  pane.onBeforeCompile = (shader, renderer) => {
+    room3.call(pane, shader, renderer)
+    shader.fragmentShader = shader.fragmentShader.replace(
+      '#include <tonemapping_fragment>',
+      'float wjcEdge = pow( 1.0 - abs( dot( normalize( vViewPosition ), normalize( normal ) ) ), 3.0 );\n#ifdef USE_COLOR\n\tgl_FragColor.rgb += vColor.rgb * PANE_BODY;\n#endif\ngl_FragColor.a = clamp( vRoughnessMapUv.y + wjcEdge * PANE_EDGE + dot( outgoingLight, vec3( 0.3333 ) ) * 0.35, 0.0, 1.0 );\n#include <tonemapping_fragment>'
+    ).replace('PANE_EDGE', PANE.edge.toFixed(2)).replace('PANE_BODY', PANE.body.toFixed(2))
+  }
+  const key3 = pane.customProgramCacheKey
+  pane.customProgramCacheKey = () => `${key3.call(pane)}|corporate-pane2`
+  lit(pane, z)
+  pane.name = `corporate.pane.${z.id}`
   const group = groupsOf(z).find((g) => g.name === 'windows')
-  const out: Mats = { solid, glow, clear, group: group ? group.id : null }
+  const out: Mats = { solid, glow, clear, pane, group: group ? group.id : null }
   made.set(z.id, out)
   return out
 }
