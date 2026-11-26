@@ -51,3 +51,8 @@ One word for each beat, and the poses that carry it. Times are seconds of the un
 - Nothing is cued in the half second before a key picture: 1.0 s (the cursor stands still from 0 to 1.06), 3.2 s (nothing between 1.96 and 3.3), 15.2 s (the shock of the runaway moved from 15.17 to 15.22, the old recoil at 15.20 is gone).
 - No event of the page moved. MEASURED by listing the film's events before and after: row-open 1.88, 8.20, 14.00; dial-fling 5.58; lever-pull 9.37; coins 11.96; crank-runaway 15.17; flatten 16.80; peel-up 19.80; button-press 20.30. Only footsteps moved.
 - At key `step2-rest` the cursor now stands at (1575, 395), between the first and second rows, where the approved image has it (it stood at (1590, 425), half on the second field).
+
+## Main's red test at 02:09 UTC
+
+- After the merge of `origin/main` at 8d230d7, `tests/glass3.test.ts` fails: "orange: expected 4.570085953127007 to be greater than or equal to 4.6". MEASURED on a clean checkout of `origin/main` 8d230d7 with `npx vitest run tests/glass3.test.ts`: the same failure, so it is main's own (the shared orange and the light type changed there). It is not a file of this part. The commit before the merge, ab2fe46, was green (92 files, 1329 tests). Pushed with the merge and reported to the Builder at once.
+
