@@ -139,14 +139,24 @@ const made = new Map<string, Group[]>()
 // A lit opening at the foot of a model, and what it throws on the wet floor before it: where it stands, half its width and its height in pixels, its colour, and the group whose level it follows.
 export interface Spill { x: number; y: number; half: number; high: number; colour: RGB; follows: string; power: number }
 
+export const SPILLS = 4
+
 export function spillsOf(z: Zone): Spill[] {
-  if (z.id !== 'corporate' && z.id !== 'street') return []
-  const m = model(z.id === 'street' ? 'street.firehouse' : 'corporate.hq')
-  const u = z.id === 'street' ? centre(m)[0] + 0.55 : centre(m)[0]
-  const p = localBalls(z, u, m.box[1] + m.box[3] + 0.05)
-  return z.id === 'street'
-    ? [{ x: p[0], y: p[1], half: 0.5 * BALL, high: 0.6 * BALL, colour: C.STREET_RED, follows: 'red', power: 1 }]
-    : [{ x: p[0], y: p[1], half: 0.75 * BALL, high: 1.0 * BALL, colour: C.CORPORATE_WINDOW, follows: 'windows', power: 0.6 }]
+  const front = (id: string, off: number, half: number, high: number, colour: RGB, follows: string, power: number): Spill => {
+    const m = model(id)
+    const p = localBalls(z, centre(m)[0] + off, m.box[1] + m.box[3] + 0.05)
+    return { x: p[0], y: p[1], half: half * BALL, high: high * BALL, colour, follows, power }
+  }
+  if (z.id === 'street') {
+    return [
+      front('street.firehouse', 0.55, 0.5, 0.6, C.STREET_RED, 'red', 1),
+      front('street.firehouse', -0.6, 0.55, 0.9, C.STREET_WINDOW, 'windows', 0.4),
+      front('street.police', 0, 0.9, 0.9, C.STREET_WINDOW, 'windows', 0.4),
+      front('street.bank', 0, 0.6, 0.8, C.STREET_WINDOW, 'windows', 0.35)
+    ]
+  }
+  if (z.id === 'corporate') return [front('corporate.hq', 0, 0.75, 1.0, C.CORPORATE_WINDOW, 'windows', 0.6)]
+  return []
 }
 
 export function groupsOf(z: Zone | string): Group[] {

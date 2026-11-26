@@ -65,6 +65,8 @@ Branch `agent/table-light`, made from `origin/phase4-base` (f634ffb). Folders `s
   - Spills (`spillsOf` in `groups.ts`, `SPILL` in the hook): a lit opening at the foot of a model throws its colour on the lacquer before it, a pool from above and a streak toward a low eye. Two today: the firehouse bay (red, follows the red beacon) and the doors of HQ (warm, follows the windows). They stand where the layout puts the model's front; the owners of the models can ask for more.
   - Corporate's fine gold lines are drawn 1.55 times as heavy (`lineWeight` in `lib.mjs`), and the leaf answers a lamp at 1.1 (was 0.6).
   - The Street print is bluer (`base` `#0b2238`, `base2` `#133a55`), baked again.
+- Draw calls (the Builder's mail of 02:29 UTC): the screw heads of the lamp sockets are in the one drawing of the sockets, so every tier's lamps are one draw call fewer in the close keys.
+- Spills are four a zone (`SPILLS`): on the Street the firehouse bay in red, and the lit fronts of the firehouse, the police station and the bank in warm white; on Corporate the doors of HQ.
 
 ## Measured after (at the first full version)
 

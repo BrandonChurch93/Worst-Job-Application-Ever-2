@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import type { Zone } from '../zone'
 import { BALL, COLS, W } from '../../layout'
 import { FLASH } from './colours'
-import { CHANNELS, LAMP, LIT } from './groups'
+import { CHANNELS, LAMP, LIT, SPILLS } from './groups'
 import { BODY, CORE } from './pictures'
 import { zoneLight, type ZoneLight } from './state'
 import { surroundOf } from './surround'
@@ -16,8 +16,8 @@ uniform vec3 wjlFrame;
 uniform vec2 wjlSize;
 uniform vec3 wjlCol[ ${CHANNELS} ];
 uniform vec3 wjlFull[ ${CHANNELS} ];
-uniform vec4 wjlSpill[ 2 ];
-uniform vec3 wjlSpillCol[ 2 ];
+uniform vec4 wjlSpill[ ${SPILLS} ];
+uniform vec3 wjlSpillCol[ ${SPILLS} ];
 uniform vec4 wjlAt[ ${CHANNELS} ];
 uniform vec3 wjlFill;
 uniform vec4 wjlHole[ 2 ];
@@ -129,7 +129,7 @@ const body = /* glsl */ `
 		}
 		vec2 wjlEye = wjlBack.xy / max( length( wjlBack.xy ), 0.001 );
 		float wjlLow = length( wjlBack.xy ) / max( wjlBack.z, 0.2 );
-		for ( int k = 0; k < 2; k ++ ) {
+		for ( int k = 0; k < ${SPILLS}; k ++ ) {
 			vec4 sp = wjlSpill[ k ];
 			if ( sp.z <= 0.0 ) continue;
 			vec2 d = wjlP.xy - sp.xy;

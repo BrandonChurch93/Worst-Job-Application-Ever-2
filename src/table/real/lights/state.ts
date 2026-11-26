@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { lightLaw } from '../../../post/studio'
 import type { Zone } from '../zone'
-import { CHANNELS } from './groups'
+import { CHANNELS, SPILLS } from './groups'
 import { picturesOf } from './pictures'
 
 // What every material of one zone reads for a frame. The part's `pose` writes it; nothing is rebuilt when a level moves.
@@ -50,8 +50,8 @@ export function zoneLight(z: Zone): ZoneLight {
       wjlSize: { value: new THREE.Vector2(1920, z.height) },
       wjlCol: { value: col },
       wjlFull: { value: full },
-      wjlSpill: { value: [new THREE.Vector4(), new THREE.Vector4()] },
-      wjlSpillCol: { value: [new THREE.Vector3(), new THREE.Vector3()] },
+      wjlSpill: { value: Array.from({ length: SPILLS }, () => new THREE.Vector4()) },
+      wjlSpillCol: { value: Array.from({ length: SPILLS }, () => new THREE.Vector3()) },
       wjlAt: { value: at },
       wjlFill: { value: new THREE.Vector3() },
       wjlHole: { value: [new THREE.Vector4(0, 0, 1, 0), new THREE.Vector4(0, 0, 1, 0)] },
