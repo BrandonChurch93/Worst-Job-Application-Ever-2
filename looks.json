@@ -1,35 +1,35 @@
 {
   "folder": "step2-keeper",
-  "pushed": "2026-11-26T05:07:18.096Z",
-  "commit": "720b26e8ebc36a0ae132a8c44a79df2c34ad3401",
+  "pushed": "2026-11-26T05:15:49.698Z",
+  "commit": "cfede3951318f3429f42c96f219ef1523d58ffc6",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still step2-step2_slot-0p6-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T05:05:14.300Z",
+      "caption": "Still step2-step2_slot-0p15-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T05:10:37.441Z",
       "by": "step2-keeper",
-      "from": "out/work/stills/step2-step2_slot-0p6-hd-draft.png"
+      "from": "out/work/stills/step2-step2_slot-0p15-hd-review.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Still step2-step2_slot-0p75-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T05:05:27.501Z",
+      "caption": "Still step2-step2_slot-0p15-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T05:11:45.233Z",
       "by": "step2-keeper",
-      "from": "out/work/stills/step2-step2_slot-0p75-hd-draft.png"
+      "from": "out/work/stills/step2-step2_slot-0p15-hd-review.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "The slot's beat in six draft frames, 9.3 s to 12.5 s: lever under and over its bracket, reels, result line, coins",
-      "time": "2026-11-26T05:07:16.697Z",
+      "caption": "Still sheet-machines-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T05:12:25.578Z",
       "by": "step2-keeper",
-      "from": "out/work/looks/files/20261126050716-slot-beat.jpg"
+      "from": "out/work/stills/sheet-machines-hd-review.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Dial at twice its size: approved left, build right; housing darker, dark groove",
-      "time": "2026-11-26T05:07:16.931Z",
+      "caption": "Slot on the machines sheet at cfede395: approved left, build right; frame lighter, finer grain, gradient toward the key",
+      "time": "2026-11-26T05:15:48.326Z",
       "by": "step2-keeper",
-      "from": "out/work/looks/files/20261126050716-dial-zoom.png"
+      "from": "out/work/looks/files/20261126051548-slot-compare.jpg"
     }
   ]
 }
