@@ -157,5 +157,18 @@ Tuning looks of this round (40 per part): counted below as they are spent. Take 
 | `apron-card` box | [1128, ay + 56, 440, 80] under `apron-right` | [352, ay + 56, 440, 80] under `apron-left` | frame_keeper, 06:21 UTC |
 | `apron-card-words` x | 1348 | 572 | frame_keeper, 06:21 UTC |
 
-- Round 11 looks at the end: `table-cameras` 13 of 40 plus the review stills of the end report, `director` 2 of 40, `acting-pinball` 1 of 40, `table-layout` 0, `table-physics` 0. Take searches 25 of 31.
+- Round 11 looks at the end: `table-cameras` 15 of 40 (13 drafts and compares, and one review still each of `rail-cam`, 74 s, and `lobby-doors`, 75 s, for the end report), `director` 2 of 40, `acting-pinball` 1 of 40, `table-layout` 0, `table-physics` 0. Take searches 25 of 31.
 - Round 11 judges 8fdbc4b7 (my 63fde4c7): the rail camera of that commit is the one BEHIND the ball. The rail camera looking back, the lobby eye, the roll set at the cut and the card on the left slab are judged in round 12.
+- Pushed bdaef0af at 06:22 UTC. MEASURED before its last merge of main (no code file in that merge): type check clean; `npm test` 102 files, 1390 of 1390; build, bots, take check (10 of 10, 0 times brought in, 0 hits within 0.15 s of a cut) and paths all clear.
+
+## For the next owner: what round 11's looks showed and what is open, by key
+
+- `table-wide`: the title sits in the sky at 60% of the board's width but draws dark (the word stands on a board lit from behind; frame_keeper's board). The machine's inner walls at the near end are dark where approved has bright metal. The apron card is on the left slab.
+- `lobby-doors`: eye 1.8 balls over the floor. Open: the tower is half as wide against the ball as approved's, so the dark over the table and the marquee show left and right of it.
+- `tier-corporate`, `tier-office`, `tier-street`: not looked at in round 11 (the `home` camera moved down the page, not fitted).
+- `reply-all`: not looked at in round 11.
+- `youre-fired`: one try from lower and more from the front lost the beacon behind the roof's sign; thrown away. Open: approved sees the door from the front left, where the bank stands in this layout.
+- `rail-cam`: the camera looks back from ahead of the ball; the cursor's roll is set at the cut by `aim` (two NEEDS lines in `src/cursor/body.ts`, one in `src/cursor/view.ts`). Open: the wire nearest the eye is two thick blurred bars at the foot of the picture; the bank stands beside the firehouse and not at the far left; the tier's dark back wall is the top tenth of the picture.
+- `last-save`: not looked at in round 11; the apron card has left its right corner.
+- Sheet `clear-ball`: the first ball hangs over the bat's far edge where approved has it lying on the bat.
+- The film: the Coffee rally is five bat to bumper pings in a row (17.2 to 18.92 s) and reads like a paddle rally; a search costs one of the 6 left (25 of 31). The launch ride's right third is a grey streaked wall.
