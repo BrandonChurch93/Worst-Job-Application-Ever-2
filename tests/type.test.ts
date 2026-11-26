@@ -117,6 +117,8 @@ describe('type: the setting of a run', () => {
     expect(styleName('page', 'ink', 'inter-400')).toBe('page:soft')
     expect(styleName('page', 'ink', 'inter-500')).toBe('page:ink')
     expect(styleName('glass', 'ink', 'inter-400')).toBe('glass:ink')
+    expect(styleName('glass', 'ink', 'inter-400', 'soft')).toBe('glass:soft')
+    expect(styleName('page', 'ink', 'inter-500', 'soft')).toBe('page:ink')
     expect(styles()['page:soft']).toBeDefined()
     for (const g of ['page', 'cap', 'glass', 'paper', 'metal', 'smoked', 'gloss'] as const) {
       expect(styles()[styleName(g, 'ink')]).toBeDefined()

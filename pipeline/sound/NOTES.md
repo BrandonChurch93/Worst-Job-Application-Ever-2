@@ -4,14 +4,34 @@ Kept by the sound agent on the branch `agent/sound`. A fact here is MEASURED (th
 
 The second half of this file, from "Every take" on, is written by `node tools/lib/sound-notes.mjs`. It holds every take with its call, its cost, its break N, its numbers, the listener's answers, whether it is kept, and every effect's prompt beside its takes.
 
-## Where things stand (20:10Z, 25 November 2026)
+## Where things stand (21:02Z, 25 November 2026)
 
 - MEASURED, `npm run credits`: 2677 of 10000 credits in 178 calls. All 178 calls answered 200. The limit of this stretch is 8000; extras are closed at eleven.
 - MEASURED, `npm run sound`: 139 of 139 sounds kept (73 cues with their variants, the 20 lines of the film, the 14 lines only the live site has). 167 takes filed.
 - MEASURED, `npm run sound -- --pack`: 102 short sounds in one file, 3 loops, 34 narrator lines, 5.42 MB of 14 MB. `--pack-check`: pass, 38 files.
 - MEASURED, `npx vitest run tests/audio tests/credits.test.ts`: 170 passed. `npx tsc --noEmit -p .`: clean.
 - Of the 139 kept, 57 are kept by force, each with its reason in `audio/kept/<id>.json` (`why`, `problems`). 29 of the 34 lines are forced, nearly all because the listener gave fewer than two whole answers on tone.
-- MEASURED, `npm run sound -- --check` at 20:00Z to 20:03Z: 7 pass (A1, A2, A3, A4, A7, A8, A11), 2 fail (A5, A10), 2 not yet (A6, A9: there is no mix). The two failures are under "The checks at 20:03Z".
+- MEASURED, `npm run sound -- --check` at 20:55Z to 20:58Z, on a machine the Builder had freed: 8 pass (A1, A2, A3, A4, A5, A7, A8, A11), 1 fail (A10, on `line.live.tugLost.0`, as ruled), 2 not yet (A6, A9: there is no mix, and the Builder holds `npm run mix` until the cut list stops changing). The runs before it are under "The checks after merge 20" and "The checks at 20:03Z".
+- The branch is pushed again from my shell since 20:46Z (it failed from about 20:15Z to 20:34Z for want of a credential; the Builder pushed 88b8041 itself).
+
+## The checks after merge 20 (20:34Z to 20:50Z)
+
+- A5 passes: "all 139 kept sounds have their take, their prompt or words, their measurements, the listener's answers and a row". The Builder copied the rows into `ASSETS.md` in 11a1cd6.
+- A10 fails on one line: "1 problems over 34 kept lines: line.live.tugLost.0: the listener wrote "", which is not the line". Ruled by the Builder at 20:15Z: it stays failing, it is not waived. `line.live.idle.0` is no longer listed.
+- A2 fails, and it passed at 20:03Z: "sound is kept and the live site shows no sound control after the first click". MEASURED over four runs of the check. 20:03Z: pass. 20:37Z: fail, 3.5 s after the click. 20:41Z: the run stopped with no A lines, because the click on the film's Play button timed out at 30 s ("waiting for element to be visible, enabled and stable"); that block only runs when the sound control was shown, so in that run it was shown. 20:45Z: fail after waiting 20 s, with 1 audio context, 0 sound controls, 38 sound files asked for, 0 errors and 0 console lines (`out/work/audio/site.json`).
+- MEASURED, `uptime`: load average 5.87 at 20:42Z and 5.22 at 20:45Z on 2 cores. MEASURED, `git diff 88b8041 11a1cd6 --stat`: merge 20 changed no file in `src/ui`, `src/audio` or `src/main.ts`.
+- The cause of A2 is UNKNOWN. STATED from the code: the control shows while the engine's `available()` is true, which is every state but "silent", and the engine goes silent when loading ends with nothing decoded. It comes and goes between runs on the same code, so the busy machine is suspected and not shown.
+- Changed in the check for this: it waits up to 20 s for the control (it was a fixed 3.5 s); a failure in the "also measured" film block is written as `filmError` and no longer stops the A lines; the failing A2 line now gives the state of the audio context, how many files were decoded and refused, how many sounds started, how many frames the page drew and whether a sound button is in the page and hidden. Not run with a browser since that last change.
+- MEASURED after these changes: `npx tsc --noEmit -p .` clean, `npx vitest run tests/audio tests/credits.test.ts` 170 passed.
+- "0 sounds played" in the check's A1 line counts media elements, which the engine does not use; it says nothing about the engine's own sounds.
+
+## The run on a quiet machine (20:55Z to 20:58Z)
+
+- MEASURED, `uptime`: load average 0.25 at the start and 2.61 at the end (the check itself). 8 pass, 1 fail, 2 not yet.
+- A2 passes: "the control is named "Sound", is reached with 4 presses of Tab, and changes its state and its picture at a pointer click, at Enter and at Space: as found: pressed true, level heard 0.6005; pointer click: pressed false, level heard 0; Enter key: pressed true, level heard 0.0162; Space key: pressed false, level heard 0".
+- MEASURED in that run (`out/work/audio/site.json`): the control showed 7 s after the click, not within the 3.5 s the check used to wait. By then the audio context was running, 139 of 139 sounds were decoded and 0 refused, 3 sounds had started, 38 files had been asked for, 0 errors, 0 console lines. The page had drawn 4 frames since it opened, 2 of them before the click.
+- So the two failures of A2 (20:37Z and 20:45Z) fell on runs with a load average over 5 (5.87 at 20:42Z, 5.22 at 20:45Z), and the run that passes fell on a quiet machine. STATED from the code: the control is shown by the page's frame loop (`update()` in `src/ui/interface.ts`), so it appears at the first frame drawn after the engine exists. The check's browser draws the live site at well under one frame a second, and slower still under load, which is why the control came late or, in 20 s, not at all. This is the check's browser and the machine, not a fault found in the sound code or the control. Whether a frame every few seconds in that browser matters elsewhere is the Builder's to judge.
+- Also measured, not checks. The film on the site: sound runs while playing, stops when paused, holds while the page is hidden and comes back, 0 errors. A seek 2.9 s into `step1.firstName` books `line.step1.firstName.1` 2.86 s ahead. Film A: 51 sounds heard against 78 laid, but the film had reached 4.5 s of its 11.933 s opening when the check stopped waiting, so the two numbers still do not cover the same span.
 
 ## The checks at 20:03Z
 
@@ -22,6 +42,8 @@ The second half of this file, from "Every take" on, is written by `node tools/li
 - Also measured by the check, not a check: film A on the site played 47 sounds where the mix lays 78 in the opening. The film had only reached 2.7 s of its 11.933 s opening when the check stopped waiting (20 s of wall time, with the machine busy), so the two numbers do not cover the same span and say nothing yet.
 
 ## The hit on the arrow after it moved (step 1)
+
+After merge 20 (11a1cd6) the hit is at 5.813 s of step 1 (STATED by the Builder). MEASURED from `cut/CUTLIST.json` on 11a1cd6: `bolt-hit-cursor` and `sizzle` at 19.8083 s of the film (frame 1188, 5.808 s of step 1), `keyboard-rise` at 15.5 s. `line.step1.firstName.0` runs 16.000 to 21.344 s, so the hit falls 3.808 s into it, inside its second pause, 0.114 s before "Standard onboarding" begins. `line.step1.firstName.1` starts at 21.76 s, 1.952 s after the hit, and keeps its time (ruled at 20:15Z: no shorter take of line 0). The bolt-hit and the 1.2 s sizzle start while line 0 runs, so the mix plays them lowered under it. The mix reads its events from the cut list (689 events, 9180 frames, 60 fps) and needs no change. What follows was measured at the time of merge 19.
 
 The Builder moved the hit from 7.138 s to 5.746 s of step 1 in merge 19. MEASURED at 19:59Z by running the stage in film mode in Node (`tools/lib/logic.mjs`, no browser): `keyboard-rise` at 15.500 s of the film, `bolt-hit-cursor` and `sizzle` at 19.742 s (5.742 s of step 1).
 

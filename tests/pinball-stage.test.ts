@@ -100,20 +100,27 @@ describe('the words of the inserts', () => {
     expect(list.filter((x) => x.id.startsWith('insert-label.') || x.id.startsWith('insert-plate.'))).toEqual([])
   })
 
-  it('shows a mode by its name first and its line after, on the display of its tier', () => {
+  it('gives the display of a tier the line of a mode with its time, and the name of its insert while that is held', () => {
     const names = new Set<string>()
-    const lines = new Set<string>()
-    for (const r of taken.rows) {
-      const name = r.shown.filter((id) => id.endsWith('.insert'))
-      const line = r.shown.filter((id) => /\.\d+$/.test(id))
-      for (const id of name) {
-        names.add(id)
-        expect(lines.has(id.slice(0, -7)), id).toBe(false)
-        expect(line.includes(id.slice(0, -7)), id).toBe(false)
+    const s = film()
+    let before: Record<string, number> = {}
+    while (!s.finished && s.time < 39) {
+      s.advance(4)
+      const list: Shape[] = []
+      s.page.draw(list)
+      const now: Record<string, number> = {}
+      for (const x of list) if (x.kind === 'text' && /^display\.[a-z]+\.\d+$/.test(x.id)) now[x.id] = x.v![0]!
+      for (const id in now) {
+        expect(now[id]).toBeGreaterThanOrEqual(0)
+        if (before[id] !== undefined) expect(now[id]!).toBeGreaterThan(before[id]!)
       }
-      for (const id of line) lines.add(id)
+      for (const x of list) {
+        if (x.kind !== 'text' || !x.id.endsWith('.insert')) continue
+        names.add(x.id)
+        expect(now[x.id.slice(0, -7)], x.id).toBeLessThan(1.5)
+      }
+      before = now
     }
     expect(names.size).toBeGreaterThanOrEqual(6)
-    for (const id of names) expect(lines.has(id.slice(0, -7)), id).toBe(true)
   })
 })
