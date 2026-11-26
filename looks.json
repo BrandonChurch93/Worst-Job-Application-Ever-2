@@ -1,35 +1,35 @@
 {
   "folder": "step2-fix",
-  "pushed": "2026-11-26T09:28:16.902Z",
-  "commit": "176473c8c75c8333fb5c3279174a586654e7694d",
+  "pushed": "2026-11-26T09:39:28.919Z",
+  "commit": "44e2e5e71182c925947a0bd2bbf3e68da1e11398",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Dial key, approved above and build 176473c8 below: one steel face to the cap, wider wheel, thin bezel, tip on the cap's shoulder",
-      "time": "2026-11-26T09:28:14.734Z",
+      "caption": "Still key-step2-dial-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T09:36:52.579Z",
       "by": "step2-fix",
-      "from": "out/work/looks/files/20261126092814-cmp-dial-8.png"
+      "from": "out/work/stills/key-step2-dial-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Crank key, approved above and build 176473c8 below: thin tray rim, longer lighter arm, larger grip, tip on the grip",
-      "time": "2026-11-26T09:28:14.979Z",
+      "caption": "Dial key, approved above and build 44e2e5e7 below: one steel face to the cap, wider wheel, thin bezel, glossier cap, mid grey stop",
+      "time": "2026-11-26T09:39:26.979Z",
       "by": "step2-fix",
-      "from": "out/work/looks/files/20261126092814-cmp-crank-8.png"
+      "from": "out/work/looks/files/20261126093926-cmp-dial-9.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Rest key, approved left and build 176473c8 right, on the shared look",
-      "time": "2026-11-26T09:28:15.239Z",
+      "caption": "Crank key, approved above and build 44e2e5e7 below: longer lighter arm, larger grip with the tip on it, lenses with a rim line, light kept under the lit ones",
+      "time": "2026-11-26T09:39:27.205Z",
       "by": "step2-fix",
-      "from": "out/work/looks/files/20261126092815-cmp-rest-8.png"
+      "from": "out/work/looks/files/20261126093927-cmp-crank-9.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Machines sheet, approved above and build below: the dial's middle follows the key (steel), not the sheet (cream)",
-      "time": "2026-11-26T09:28:15.481Z",
+      "caption": "Machines sheet, approved above and build below (before the lamp was weakened): the dial's middle follows the key, the slot's lever is still a short straight rod",
+      "time": "2026-11-26T09:39:27.482Z",
       "by": "step2-fix",
-      "from": "out/work/looks/files/20261126092815-cmp-machines-4.png"
+      "from": "out/work/looks/files/20261126093927-cmp-machines-5.png"
     }
   ]
 }
