@@ -1,0 +1,150 @@
+{
+  "unit": "marketing",
+  "tier": "final",
+  "judgedTier": "final",
+  "format": "hd",
+  "engineHash": "cc2bd747b83999a7",
+  "sharedHash": "83acc506710c2995",
+  "pageHashes": {
+    "marketing": "8f627e70205cb5b3"
+  },
+  "only": null,
+  "stills": [
+    "key:marketing-top",
+    "still:rest-marketing",
+    "still:marketing-perks",
+    "still:marketing-proof",
+    "still:marketing-foot"
+  ],
+  "exit": 2,
+  "green": [
+    "M1",
+    "M4",
+    "M5",
+    "M6",
+    "M7",
+    "M9"
+  ],
+  "red": [
+    "M3"
+  ],
+  "notYet": [
+    "M2"
+  ],
+  "measures": [
+    {
+      "id": "M1",
+      "status": "pass",
+      "summary": "5 stills: 0 invalid values; 0 bare of 29980 edge pixels in 5 stills from home; the cursor outside the frame in 0",
+      "numbers": {
+        "stills": 5,
+        "invalidValues": 0,
+        "edgePixels": 29980,
+        "bareEdgePixels": 0,
+        "stillsFromHome": 5,
+        "cursorOutside": 0
+      },
+      "failing": []
+    },
+    {
+      "id": "M2",
+      "status": "notyet",
+      "summary": "no textured pixel in any of the 5 stills: nothing in this unit carries a texture yet",
+      "numbers": {
+        "stills": 5,
+        "texturedPixels": 0
+      },
+      "failing": []
+    },
+    {
+      "id": "M3",
+      "status": "fail",
+      "summary": "1 keys: the least ratio of fine detail to the approved image 0.6323, the least allowed 0.8",
+      "numbers": {
+        "keys": 1,
+        "leastRatio": 0.6323,
+        "limit": 0.8
+      },
+      "failing": [
+        {
+          "still": "key:marketing-top",
+          "what": "fine detail against the approved image at the same size",
+          "value": 0.6323,
+          "limit": 0.8,
+          "energy": [
+            0.0124,
+            0.0197
+          ]
+        }
+      ]
+    },
+    {
+      "id": "M4",
+      "status": "pass",
+      "summary": "759 runs of type in 5 stills: the smallest 18 px (least 14), the least contrast 4.63 (least 4.5)",
+      "numbers": {
+        "stills": 5,
+        "runs": 759,
+        "leastPx": 18,
+        "leastContrast": 4.63,
+        "minTextPx": 14,
+        "minTextContrast": 4.5
+      },
+      "failing": []
+    },
+    {
+      "id": "M5",
+      "status": "pass",
+      "summary": "353 parts in 5 stills: the furthest 0 px from the layout tree, the most allowed 2; 0 left out as moved by a gag",
+      "numbers": {
+        "stills": 5,
+        "parts": 353,
+        "worstPx": 0,
+        "limit": 2,
+        "leftOutAsMoved": []
+      },
+      "failing": []
+    },
+    {
+      "id": "M6",
+      "status": "pass",
+      "summary": "5 stills from home with the cursor at rest and 0 from a tier camera: the furthest 0 px from its size, the most allowed 6",
+      "numbers": {
+        "fromHome": 5,
+        "fromTierCamera": 0,
+        "worstPx": 0,
+        "heightPx": 70,
+        "ballPx": 96,
+        "cursorInBallPx": 70.08,
+        "tolerancePx": 6
+      },
+      "failing": []
+    },
+    {
+      "id": "M7",
+      "status": "pass",
+      "summary": "840 frames read: no event strikes the cursor in them",
+      "numbers": {
+        "frames": 840,
+        "hits": 0,
+        "beats": 4,
+        "firstFrame": 0,
+        "lastFrame": 839
+      },
+      "failing": []
+    },
+    {
+      "id": "M9",
+      "status": "pass",
+      "summary": "185 of 353 parts checked in 5 stills from home: the furthest 0 px from its size or height, the most allowed 2",
+      "numbers": {
+        "stills": 5,
+        "parts": 353,
+        "checked": 185,
+        "worstPx": 0,
+        "tolerancePx": 2
+      },
+      "failing": []
+    }
+  ]
+}
