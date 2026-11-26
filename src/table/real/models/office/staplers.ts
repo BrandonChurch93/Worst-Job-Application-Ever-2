@@ -5,8 +5,8 @@ import { localBalls, type Zone } from '../../zone'
 import { hex, Kit, matsOf, meshOf, mix, shade, SURF, type RGB, type V2, type V3 } from './kit'
 
 const C = {
-  red: hex(0xa01e24),
-  plate: hex(0x7f191f),
+  red: hex(0x8e161c),
+  plate: hex(0x701419),
   steel: hex(0x9aa1aa),
   chrome: hex(0xc9d0d8),
   rubber: hex(0x222223),
