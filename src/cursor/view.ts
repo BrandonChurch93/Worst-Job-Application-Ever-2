@@ -53,6 +53,7 @@ export class CursorView {
     look.body.stretch = c.squash
     actingLook?.(c, look)
     damageLook?.(c, look)
+    look.body.sealed = c.inBall ? 1 : 0
     look.arms.grip = [c.grip[0], c.grip[1]]
     look.arms.strain = c.strain
     const turn = -c.lean - c.spin
