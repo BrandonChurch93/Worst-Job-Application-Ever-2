@@ -5,9 +5,9 @@ import { materials } from '../../../shell/materials'
 import { controls } from '../../../shell/real/controls'
 import { arc, outlineOf, profile, sweep, type ProfilePoint } from '../../../shell/solids'
 import type { Shape } from '../../../stage/types'
-import { cardGlass, GLASS, SLAB, slabGeometry } from '../../marketing/real/perk-cards'
-import { bossKit } from '../../../boss/real/body-kit'
+import { cardGlass, GLASS, SLAB } from '../../marketing/real/perk-cards'
 import { walled } from '../../../boss/real/body'
+import { glassKit, paneGeometry, rimGeometry, CARD_PANE, RIM } from '../../../boss/real/glass'
 
 const heights = config.scale.heights
 const q = (v: number): number => Math.round(v * 4) / 4
@@ -28,9 +28,13 @@ function mesh(g: THREE.BufferGeometry, m: THREE.Material, cast = true): THREE.Me
 function card(s: Shape): THREE.Object3D {
   const thick = s.z1 - s.z0
   const root = new THREE.Group()
-  const glass = mesh(walled(slabGeometry(s, thick)), bossKit().paleGlass, false)
+  const glass = mesh(walled(paneGeometry(s, thick, CARD_PANE)), glassKit().card, false)
   glass.position.z = thick / 2
   glass.userData.own = true
+  const rim = mesh(rimGeometry(s, thick, RIM.card, CARD_PANE.inset - RIM.card / 2), glassKit().rim, false)
+  rim.position.z = thick / 2
+  rim.userData.own = true
+  root.add(rim)
   const foot = mesh(sweep(outlineOf(s, SLAB.frame + 0.6, 8), profile([[0, 0, true], [0, Math.min(GLASS.caster, thick * 0.4), true]])), cardGlass())
   foot.userData.own = true
   root.add(glass, foot)

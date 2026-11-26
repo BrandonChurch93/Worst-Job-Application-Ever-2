@@ -26,22 +26,34 @@ export const BANNER_Z = 64
 export function drawWeapons(out: DrawList, f: Fight, plan: WeaponPlan): void {
   for (const p of f.popups) {
     const made = plan.popups[p.slot]!
-    const up = p.closing >= 0 ? 1 - prog(p.closing, 0, POPUP.close) : prog(p.t, 0, 0.14)
+    const up = p.closing >= 0 ? 1 - prog(p.closing, POPUP.hold, POPUP.hold + POPUP.close) : prog(p.t, 0, 0.14)
     const top = heights.card * up
     const b = made.box
-    const lost = Math.floor(((POPUP.hp - p.hp) * 3) / POPUP.hp)
-    const dim = lost * 0.012
+    const lost = p.shot ? 3 : Math.floor(((POPUP.hp - p.hp) * 3) / POPUP.hp)
+    const side = p.slot === 1 ? -1 : 1
+    const turn = (lost * 0.012 + p.off * 0.0034) * side
+    const ox = p.dx * p.off
+    const oy = p.dy * p.off
+    const cos = Math.cos(turn)
+    const sin = Math.sin(turn)
+    const put = (x: number, y: number, w: number, h: number): { x: number; y: number } => {
+      const rx = x + w / 2 - b.cx
+      const ry = y + h / 2 - b.cy
+      return { x: b.cx + rx * cos - ry * sin + ox - w / 2, y: b.cy + rx * sin + ry * cos + oy - h / 2 }
+    }
     const struck = p.closing >= 0 ? p.closing : 9
-    out.push({ id: `popup-up-${p.slot}`, part, kind: 'box', x: b.x, y: b.y, w: b.w, h: b.h, z0: 0, z1: Math.max(0.4, top), tone: 'glass', r: 18, rot: dim * (p.slot === 1 ? -1 : 1), role: 'card', v: [up, lost, struck] })
+    out.push({ id: `popup-up-${p.slot}`, part, kind: 'box', x: b.x + ox, y: b.y + oy, w: b.w, h: b.h, z0: 0, z1: Math.max(0.4, top), tone: 'glass', r: 18, rot: turn, role: 'card', v: [up, lost, struck] })
     const t = made.titleAt
-    out.push({ id: `popup-up-${p.slot}-title`, part, kind: 'text', x: t.x, y: t.y, w: t.w, h: t.cap, z0: top, z1: top, tone: 'ink', words: made.title, type: plan.titleType })
+    out.push({ id: `popup-up-${p.slot}-title`, part, kind: 'text', ...put(t.x, t.y, t.w, t.cap), w: t.w, h: t.cap, z0: top, z1: top, tone: 'ink', words: made.title, type: plan.titleType, rot: turn })
     made.buttons.forEach((btn, j) => {
       const z1 = top + heights.button * up
-      out.push({ id: `popup-up-${p.slot}-button-${j}`, part, kind: 'capsule', x: btn.box.x, y: btn.box.y, w: btn.box.w, h: btn.box.h, z0: top, z1: Math.max(top + 0.4, z1), tone: btn.main ? 'accent' : 'metal', role: 'button', v: [up] })
-      out.push(label(`popup-up-${p.slot}-button-${j}-word`, part, btn.key, btn.box.cx, btn.box.cy, TYPE.button, Math.max(top + 0.4, z1), btn.main ? 'inkLight' : 'ink'))
+      const at = put(btn.box.x, btn.box.y, btn.box.w, btn.box.h)
+      out.push({ id: `popup-up-${p.slot}-button-${j}`, part, kind: 'capsule', x: at.x, y: at.y, w: btn.box.w, h: btn.box.h, z0: top, z1: Math.max(top + 0.4, z1), tone: btn.main ? 'accent' : 'metal', role: 'button', rot: turn, v: [up] })
+      out.push(label(`popup-up-${p.slot}-button-${j}-word`, part, btn.key, at.x + btn.box.w / 2, at.y + btn.box.h / 2, TYPE.button, Math.max(top + 0.4, z1), btn.main ? 'inkLight' : 'ink', turn))
     })
     for (let n = 0; n < lost; n++) {
-      out.push({ id: `popup-up-${p.slot}-chip-${n}`, part, kind: 'disc', x: b.x + 22 + n * 52, y: b.y + b.h - 66 + (n % 2) * 12, w: 40, h: 40, z0: top, z1: top + 0.6, tone: 'dark', v: [n + p.slot * 3] })
+      const at = put(b.x + 22 + n * 52, b.y + b.h - 66 + (n % 2) * 12, 40, 40)
+      out.push({ id: `popup-up-${p.slot}-chip-${n}`, part, kind: 'disc', x: at.x, y: at.y, w: 40, h: 40, z0: top, z1: top + 0.6, tone: 'dark', v: [n + p.slot * 3] })
     }
   }
   for (const s of f.slabs) {
@@ -49,7 +61,7 @@ export function drawWeapons(out: DrawList, f: Fight, plan: WeaponPlan): void {
     const k = s.state === 0 ? Math.min(1, (2 * SLAB.speed[f.phase]! * s.t) / made.w) : 1
     if (k <= 0.02) continue
     const drop = s.state === 0 ? 0 : 1 - prog(s.t, 0, 0.12)
-    const sink = s.state === 2 ? prog(s.t, 0, SLAB.out) : 0
+    const sink = s.state === 2 ? smooth(prog(s.t, 0, SLAB.out)) : 0
     const from = MUZZLE.z - heights.slab / 2
     const up = prog(s.t, 0, FLY.rise)
     const high = s.state !== 0 ? 0 : s.t < FLY.rise ? from + (FLY.over - from) * (1 - (1 - up) ** 2) - FLY.z0 : (FLY.over - FLY.z0) * (1 - smooth(prog(s.t, FLY.rise, FLY.fall)))
@@ -57,8 +69,8 @@ export function drawWeapons(out: DrawList, f: Fight, plan: WeaponPlan): void {
     const landed = s.state === 0 ? 9 : s.state === 1 ? s.t : s.t + 9
     const sx = s.x
     const sy = s.y
-    out.push({ id: `fired-${s.m}`, part, kind: 'box', x: sx - made.w / 2, y: sy - made.h / 2, w: made.w, h: made.h, z0, z1: z0 + heights.slab, tone: 'danger', r: 8, rot: s.rot, role: 'slab', v: [k, landed, s.state === 0 ? s.t : 9] })
-    if (k >= 0.98 && sink < 0.5) out.push(label(`fired-${s.m}-words`, part, made.key, sx, sy, plan.slabType, z0 + heights.slab + (s.state === 1 && s.t < 0.6 ? 1.2 : 0), 'inkLight', s.rot))
+    out.push({ id: `fired-${s.m}`, part, kind: 'box', x: sx - made.w / 2, y: sy - made.h / 2, w: made.w, h: made.h, z0, z1: z0 + heights.slab, tone: 'danger', r: 8, rot: s.rot, role: 'slab', v: [k, landed, s.state === 0 ? s.t : 9, s.push === undefined ? 0 : 1] })
+    if (k >= 0.98 && sink < 0.82) out.push(label(`fired-${s.m}-words`, part, made.key, sx, sy, plan.slabType, Math.max(0.3, z0 + heights.slab) + (s.state === 1 && s.t < 0.6 ? 1.2 : 0), 'inkLight', s.rot))
   }
   if (bannerUp(f)) {
     const k = Math.min(prog(f.expired, 0, 0.16), 1 - prog(f.expired, 1.3, 1.5))

@@ -12,9 +12,11 @@ import { groupsOf } from './groups'
 const SIZE = { dome: 13, domeHigh: 6, ring: 20, screw: 3.1, globe: 21, core: 19 }
 const STEEL: RGB = [0.74, 0.76, 0.79]
 const SCREW: RGB = [0.7, 0.71, 0.73]
-const CHROME: RGB = [0.9, 0.91, 0.93]
 const BRASS: RGB = [0.83, 0.6, 0.27]
 const SOCKET: RGB = [0.035, 0.035, 0.04]
+const SEAT: RGB = [0.78, 0.64, 0.42]
+const DARK: RGB = [0.1, 0.1, 0.11]
+const WARM: RGB = [1.0, 0.82, 0.58]
 
 const paint = (g: THREE.BufferGeometry, colour: (x: number, y: number, z: number) => RGB, lane = -1): THREE.BufferGeometry => {
   const flat = g.index ? g.toNonIndexed() : g
@@ -76,14 +78,6 @@ class Solid {
 const tablet = (outer: Loop, top: Loop, z0: number, z1: number, bevel: number): THREE.BufferGeometry => new Solid().cap(top, z1).band(outer, z1 - bevel, top, z1).band(outer, z0, outer, z1 - bevel).done()
 
 const k = (c: RGB, v: number): RGB => [c[0] * v, c[1] * v, c[2] * v]
-// A lens is deeper in colour than the light it lets through.
-const TINT: Record<string, number> = { corporate: 3.4, office: 1.5, street: 2.2 }
-const tint = (c: RGB, zone: string): RGB => {
-  const top = Math.max(c[0], c[1], c[2])
-  const p = TINT[zone] ?? 1
-  return [top * Math.pow(c[0] / top, p), top * Math.pow(c[1] / top, p), top * Math.pow(c[2] / top, p)]
-}
-
 // A domed lens: brightest in the middle, where its lamp stands under it.
 function dome(colour: RGB): THREE.BufferGeometry {
   const r = (SIZE.dome * SIZE.dome + SIZE.domeHigh * SIZE.domeHigh) / (2 * SIZE.domeHigh)
@@ -120,11 +114,11 @@ function arrowBezel(w: number, h: number): THREE.BufferGeometry[] {
   const land = roundedLoop(w + 6.4, h + 6.4, h * 0.32 + 3.2)
   const lip = roundedLoop(w + 1.6, h + 1.6, h * 0.32 + 0.8)
   const inner = roundedLoop(w, h, h * 0.32)
-  return [paint(new Solid().band(outer, 0.3, outer, 3.4).band(outer, 3.4, land, 4.4).band(land, 4.4, lip, 4.4).band(lip, 4.4, inner, 2.1).done(), () => CHROME)]
+  return [paint(new Solid().band(outer, 0.3, outer, 3.4).band(outer, 3.4, land, 4.4).band(land, 4.4, lip, 4.4).band(lip, 4.4, inner, 2.1).done(), () => DARK)]
 }
 // The lamps of a tier are not one fitting bought by the box: the row over the top lane is the smallest, the launch lane's the largest, and each stands a little above or below its row's level.
 export function railLamp(id: string, index: number): { w: number; h: number; level: number } {
-  const place = id.includes('.top.') ? { w: 21, h: 11.5, level: 0.8 } : id.includes('.launch.') ? { w: 29, h: 15.5, level: 1 } : { w: 25, h: 13.5, level: 0.9 }
+  const place = id.includes('.top.') ? { w: 24, h: 13, level: 0.8 } : id.includes('.launch.') ? { w: 32, h: 18, level: 1 } : { w: 28, h: 16, level: 0.9 }
   return { ...place, level: place.level * (0.88 + 0.12 * ((index * 5) % 3) * 0.5) }
 }
 function globeStem(metal: RGB): THREE.BufferGeometry {
@@ -176,7 +170,7 @@ export function buildLamps(z: Zone, ctx: RealContext): Lamps {
     if (l.arrow) {
       const turn = Math.atan2(-l.arrow[1], l.arrow[0])
       const size = railLamp(l.id, rails++)
-      for (const g of arrowLens(tint(colourOf('general'), z.id), size.w, size.h, size.level)) lenses.push(put(g, p[0], p[1], 0, turn))
+      for (const g of arrowLens(WARM, size.w, size.h, size.level)) lenses.push(put(g, p[0], p[1], 0, turn))
       for (const g of arrowBezel(size.w, size.h)) metals.push(put(g, p[0], p[1], 0, turn))
     } else {
       lenses.push(put(dome(colourOf(groups.some((g) => g.name === 'lanes') ? 'lanes' : 'windows')), p[0], p[1], 0))
@@ -188,7 +182,7 @@ export function buildLamps(z: Zone, ctx: RealContext): Lamps {
     if (n.tier !== z.tier) continue
     const p = localBalls(z, n.c[0], n.c[1])
     const r = n.r * BALL
-    metals.push(put(paint(lathe([[r + 5.4, 0.4], [r + 5.4, 1.2], [r + 4.2, 2.1], [r + 1.6, 2.1], [r + 0.6, 1.5]], 48), () => metal), p[0], p[1], 0))
+    metals.push(put(paint(lathe([[r + 6.2, 0.3], [r + 6.2, 0.9], [r + 5.4, 1.4], [r + 1.2, 1.4], [r + 0.2, 0.7]], 48), () => SEAT), p[0], p[1], 0))
   }
   const globes = table.posts.filter((q) => q.tier === z.tier && q.lamp)
   for (const q of globes) {
