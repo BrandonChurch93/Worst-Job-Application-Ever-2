@@ -62,8 +62,8 @@ function waitPanel(): LayoutNode {
   const counter = node('wait-counter', 'counter', [x, counterY, RIGHT - LEFT - pad * 2, counterH], {
     part: 'wait', height: COUNTER_TOP, floor: on, tone: 'dark', r: 18,
     children: [
-      text('wait-value', KEYS.waitValue, T.waitValue, CENTRE, valueY, { part: 'type', on: COUNTER_TOP, tone: 'inkLight', states: ['waiting'] }),
-      text('wait-count', KEYS.waitCount, T.waitValue, CENTRE, valueY, { part: 'type', on: COUNTER_TOP, tone: 'inkLight', states: ['spinning'], runtime: value })
+      text('wait-value', KEYS.waitValue, T.waitValue, CENTRE, valueY, { part: 'wait', on: COUNTER_TOP, tone: 'inkLight', states: ['waiting'] }),
+      text('wait-count', KEYS.waitCount, T.waitValue, CENTRE, valueY, { part: 'wait', on: COUNTER_TOP, tone: 'inkLight', states: ['spinning'], runtime: value })
     ]
   })
   return node('wait-panel', 'card', [LEFT, TOP, RIGHT - LEFT, CONTENT_H], {
