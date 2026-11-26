@@ -142,3 +142,13 @@ MEASURED:
 | soft texels after the fix | `npm run still -- --sheet boss-stages --format hd --tier review --diag texels`, own count | 4 soft of 91790 textured pixels |
 | melt at the key | trace of `stage.cursor.pose().feel` | 0.411 before, 0.198 after |
 | gate 11:54 | `npm test`, `npm run build`, `npm run bots` | 117 files, 1472 of 1472; build ok; bots all clear |
+
+## 12:00 to 12:30
+
+Looks, by part: acting-boss 20 + 11 (dodge-a, tip-a, dodge-b, shake-a, shake-b, hit-b, pop-b, bar-b, take-a, take-b, take-c, hit-c, turn-a: 13, so 33 of 40); boss-body 21 + 1 (key `boss-fight` at review); health-bar 5 + 1 (barflash-a).
+
+- A hit sets `shocked`, not `exhausted` (Builder agreed, 12:20): the melted arrow could not be read through the shake. `exhausted` is the sag at `boss-down` only.
+- The dust off comes 0.3 s after a hit in every phase (`DUST_AFTER` in `src/boss/fight.ts`); the page's own second dust off in the pop-up phase is gone (`SHAKE` is now only how long the page waits before the arrow is calm again, 1.2 s).
+- The double take (`LOOKS` in `src/pages/step4/index.ts`): the page aims the arrow at the bar from 0.56 to 0.9 s after the banner, at the boss to 1.12 s, at the bar again to 1.64 s with `doubleTake` at 1.02 s (its tall stretch falls in the second look), then the snap back with `angry` and `fume`. The arrow stands at (900,350), clear of the card (`BAR` in `script.ts`).
+- The press: at 29.88 s in my file (`PRESS`, `sunk`), the arrow stays on the button until 31.5 s. From 31.5 s the arrow leaves the button to the left and up (frames 8433 to 8454): that is the stage's turn, not this page.
+- M2 by the full measure at 12:00: 0.0027 against 0.02, 8 green.
