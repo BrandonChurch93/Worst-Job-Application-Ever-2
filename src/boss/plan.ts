@@ -33,4 +33,4 @@ export const HIT = { safe: 1.2, knock: 820 }
 export const BODY = { rx: 196, ry: 118 }
 
 // The glass shield stands on the cursor's side of the body: a dart that comes from the left stops on it.
-export const SHIELD = { x: -288, half: 118, z: 60 }
+export const SHIELD = { x: -288, half: 108, z: 92 }

@@ -242,6 +242,17 @@ export class Geo {
   }
 
   // Everything added since `from` is moved by the matrix.
+  // Shades the colour of every vertex from `from` on by its place: a turned face that is lighter on one side.
+  tint(from: number, by: (x: number, y: number, z: number) => number): this {
+    for (let i = from; i < this.vertices; i++) {
+      const k = by(this.p[i * 3]!, this.p[i * 3 + 1]!, this.p[i * 3 + 2]!)
+      this.c[i * 3] = this.c[i * 3]! * k
+      this.c[i * 3 + 1] = this.c[i * 3 + 1]! * k
+      this.c[i * 3 + 2] = this.c[i * 3 + 2]! * k
+    }
+    return this
+  }
+
   move(from: number, m: THREE.Matrix4): this {
     const v = new THREE.Vector3()
     const nm = new THREE.Matrix3().getNormalMatrix(m)
