@@ -69,7 +69,7 @@ describe('the parts of step 2 as their keeper left them', () => {
     crank!.pose!(o, s, ctx)
     const meshes: THREE.Mesh[] = []
     o.traverse((c) => { if ((c as THREE.Mesh).isMesh) meshes.push(c as THREE.Mesh) })
-    expect(meshes.length).toBe(2)
+    expect(meshes.length).toBe(4)
     const maps = meshes.map((m) => (m.material as THREE.MeshPhysicalMaterial).map)
     expect(maps.filter((m) => m !== null).length).toBe(1)
     const top = meshes.find((m) => (m.material as THREE.MeshPhysicalMaterial).map)!

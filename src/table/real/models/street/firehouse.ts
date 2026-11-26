@@ -3,7 +3,7 @@ import type { RealContext } from '../../../../real/types'
 import { BALL } from '../../../layout'
 import { localBalls, type Zone } from '../../zone'
 import { Geo, type Buckets, type RGB, type V3 } from './geo'
-import { KIND, TONE, band, beaconBase, board, framed, mix, parapet, reveal, rgb, roofDeck, roofLight, shade, site, wallFace, windowAt, type Hole, type Site, type WindowLook } from './kit'
+import { KIND, TONE, band, beaconBase, beaconBulb, board, framed, mix, parapet, reveal, rgb, roofDeck, roofHatch, shade, site, wallFace, windowAt, type Hole, type Site, type WindowLook } from './kit'
 
 export type Side = 'front' | 'right' | 'back' | 'left'
 
@@ -233,10 +233,10 @@ export function firehouse(b: Buckets, z: Zone, ctx: RealContext): Firehouse {
   }
   for (const [sx, sy] of [[x0 + 9, yf + 9], [x1 - 9, yf + 9], [x1 - 9, yb - 9]] as const) b.screws.push([sx, sy, deck, 1.6])
 
-  roofLight(b, x0 + 36, x0 + 80, yf + 34, yf + 60, deck, TONE.stoneDark)
-  roofLight(b, x1 - 80, x1 - 36, yf + 34, yf + 60, deck, TONE.stoneDark)
+  roofHatch(b, x0 + 44, x0 + 72, yf + 36, yf + 58, deck, TONE.stoneDark)
   const beacon: V3 = [S.cx, S.yb - S.d * 0.3, deck]
   beaconBase(b, beacon[0], beacon[1], deck)
+  beaconBulb(bay, beacon)
   board(b, z, ctx, 'street.firehouse', deck)
 
   // The door: two white panels with a rubber seal at the foot. Only its foot shows, in the head of the mouth.
