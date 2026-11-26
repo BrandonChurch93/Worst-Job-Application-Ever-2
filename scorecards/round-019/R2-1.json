@@ -1,0 +1,226 @@
+{
+ "critic": "R2",
+ "pass": true,
+ "jurors": 5,
+ "judged": [
+  {
+   "file": "set-A-01.png",
+   "what": {
+    "still": {
+     "page": "decision",
+     "beat": "decision.metrics",
+     "at": 0.3,
+     "camera": "home",
+     "tier": "final"
+    }
+   },
+   "votes": [
+    {
+     "juror": "r19_juror_01",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 88,
+     "why": "the image is composed like a web/app interface, with step navigation, metrics cards, a CTA button, and a cursor rather than a photographic or cinematic scene.",
+     "at": "13:11Z"
+    },
+    {
+     "juror": "r19_juror_02",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 98,
+     "why": "the interactive web-game results UI, especially the numbered stepper and 'Accept Rejection' button.",
+     "at": "13:12Z"
+    },
+    {
+     "juror": "r19_juror_03",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 85,
+     "why": "It's a screenshot of a web-app interface (step tracker, buttons, cursor, 'Share Your Achievement' link), with a 3D stamp and skeuomorphic UI elements. That makes it a picture from a browser or low-budget app, not a photo, a film frame or a stock render.",
+     "at": "13:12Z"
+    },
+    {
+     "juror": "r19_juror_04",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 98,
+     "why": "the game-like results screen with an 'Accept Rejection' button.",
+     "at": "13:13Z"
+    },
+    {
+     "juror": "r19_juror_05",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 94,
+     "why": "the image is clearly an app-like interactive UI, with step navigation, performance metrics, buttons, and a cursor rather than a photographic or cinematic scene.",
+     "at": "13:13Z"
+    }
+   ],
+   "letters": "d d d d d"
+  },
+  {
+   "file": "set-A-02.png",
+   "what": {
+    "still": {
+     "page": "decision",
+     "camera": "home",
+     "tier": "final"
+    }
+   },
+   "votes": [
+    {
+     "juror": "r19_juror_06",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 97,
+     "why": "The perfectly front-facing, numbered application progress bar makes it read as a stylized webpage interface.",
+     "at": "13:14Z"
+    },
+    {
+     "juror": "r19_juror_07",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 75,
+     "why": "it's a flat web-app UI screen (crisp UI text, step indicator, 'Worst Job Application Ever' joke page) with skeuomorphic rendered effects layered on top. That reads as a web page or low-budget app, not a photo, film frame or stock product render. The materials (metal buttons, LED dot-matrix glow, frosted glass) are fairly polished, which is why my confidence isn't higher. If you count it as a stylized ordinary render, (c) is the alternative.",
+     "at": "13:14Z"
+    },
+    {
+     "juror": "r19_juror_08",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 93,
+     "why": "The numbered progress indicator and processing panel read as a stylized interactive web interface rather than a freestanding rendered object.",
+     "at": "13:15Z"
+    },
+    {
+     "juror": "r19_juror_09",
+     "model": "kimi_k3",
+     "answer": "c",
+     "confidence": 72,
+     "why": "the flat, highly designed UI-like composition with clean synthetic lighting and text layout makes it look like an ordinary graphic 3D render rather than a real photograph, cinematic frame, or rough app screenshot.",
+     "at": "13:26Z"
+    },
+    {
+     "juror": "r19_juror_10",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 90,
+     "why": "The numbered progress indicator and prominent status panel read as an interactive web-app interface, not a photographed object or cinematic frame.",
+     "at": "13:26Z"
+    }
+   ],
+   "letters": "d d d c d"
+  }
+ ],
+ "controls": [
+  {
+   "file": "set-A-03.png",
+   "what": {
+    "control": "decision",
+    "image": "references/approved/decision.png"
+   },
+   "votes": [
+    {
+     "juror": "r8_juror_11",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 50,
+     "why": "it's a UI screen for a joke web game or app (\"The Worst Job Application Ever\", step tracker, \"Accept Rejection\" button, cursor). The photoreal paper and stamp textures look like generated or skeuomorphic app art, not a real photo or a film or cinematic frame.",
+     "at": "05:03Z"
+    },
+    {
+     "juror": "r8_juror_12",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "c",
+     "confidence": 83,
+     "why": "The interface is staged as a polished 3D mockup, most clearly in the physical cursor casting a shadow onto the textured paper.",
+     "at": "05:03Z"
+    },
+    {
+     "juror": "r8_juror_13",
+     "model": "kimi_k3",
+     "answer": "c",
+     "confidence": 65,
+     "why": "The deciding factor was the impeccably smooth skeuomorphic materials (clay-like stamp, flawless plastic button, paper with uniform fiber texture) under soft, idealized studio lighting: the signature of a professional 3D illustration or stock-style render rather than a real photograph. It avoided (b) because the composition is a flat, static UI mockup with no cinematic framing or motion storytelling, and the overly clean perfection pushed it away from an ordinary real photo (a).",
+     "at": "05:03Z"
+    },
+    {
+     "juror": "r8_juror_14",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 86,
+     "why": "The strongest cue is that the whole image is an interactive results screen, with a 3D-styled \"Accept Rejection\" button and cursor.",
+     "at": "05:03Z"
+    },
+    {
+     "juror": "r8_juror_15",
+     "model": "claude_opus_5_5",
+     "answer": "c",
+     "confidence": 55,
+     "why": "It looks like a tactile, skeuomorphic UI mockup with clean studio lighting and photoreal materials (paper texture, glass panel, rubber stamp). That reads as a polished ordinary render or stock-style image, not film-grade cinematic work or a real photo. It's probably AI-generated. The web-app/game UI theme points toward (d), but the rendering quality is too high for a low-budget app.",
+     "at": "05:04Z"
+    }
+   ],
+   "letters": "d c c d c",
+   "reusedFrom": "scorecards/round-008/R2-1.json",
+   "askedAgainNotCounted": {
+    "votes": [
+     {
+      "juror": "r19_juror_11",
+      "model": "claude_opus_5_5",
+      "answer": "c",
+      "confidence": 45,
+      "why": "it's a web-app UI ('Accept Rejection' button, step tracker, metrics panel) turned into tidy, evenly lit physical objects with soft studio shadows. That looks more like a staged, stock-style render than a real photo or a cinematic frame. The paper grain and the stamp look quite real, though, so (a) is the next most likely answer.",
+      "at": "13:27Z"
+     },
+     {
+      "juror": "r19_juror_12",
+      "model": "pplx_computer_glm_5_3_1009",
+      "answer": "d",
+      "confidence": 91,
+      "why": "The prominent 'Accept Rejection' button and five-step progress tracker make it read as an interactive web-game/app results screen, not a standalone object render or cinematic.",
+      "at": "13:28Z"
+     },
+     {
+      "juror": "r19_juror_13",
+      "model": "kimi_k3",
+      "answer": "c",
+      "confidence": 70,
+      "why": "it's a static, studio-lit 3D mockup of a fictional UI (joke job-application 'Step 5: Decision' screen) with realistic materials - paper texture, soft shadows, glossy plastic stamp, glass metrics panel - i.e., a polished concept/stock-style render rather than a real photo, a film/game cinematic, or an actual low-budget app screenshot (the image quality is too high and there's no real screen/pixel structure, but the flat single-view composition is far below cinematic standards).",
+      "at": "13:29Z"
+     },
+     {
+      "juror": "r19_juror_14",
+      "model": "gpt_6_2_sol",
+      "answer": "c",
+      "confidence": 83,
+      "why": "The strongest cue is the perfectly aligned interface rendered as tactile 3D objects, especially the glass panel and buttons casting shadows on paper, like a static design mockup rather than a photographed scene or live game frame.",
+      "at": "13:30Z"
+     },
+     {
+      "juror": "r19_juror_15",
+      "model": "claude_opus_5_5",
+      "answer": "d",
+      "confidence": 55,
+      "why": "The biggest factor was the content: it's a joke web-app interface ('The Worst Job Application Ever', with a step progress bar, an 'Accept Rejection' button and a cursor). That reads as a screen from a low-budget web app. The skeuomorphic textures, like the paper, the stamp and the frosted acrylic panel, are fairly photoreal and probably AI-generated, so (c) is the main alternative.",
+      "at": "13:30Z"
+     }
+    ],
+    "letters": "c d c c d"
+   }
+  }
+ ],
+ "judgedShare": {
+  "votes": 10,
+  "aOrB": 0,
+  "share": 0.0
+ },
+ "controlShare": {
+  "votes": 5,
+  "aOrB": 0,
+  "share": 0.0
+ },
+ "rule": "R2 passes when the judged share is no lower than the control share minus quality.jury.maxShareGap (0.2)",
+ "note": "It passes by the rule: 0 of 10 on the judged pictures against 0 of 5 on the control, and the judged share is no lower than the control share less 0.2. The control's votes are those of round 8 (kit/07: a control's votes are collected once and reused in later rounds). By the Builder's mistake the juror list of this round also held the control picture, and five fresh jurors answered on it (c d c c d); those five answers are kept on this card under askedAgainNotCounted and are not counted; counted, they would give 0 of 5 as well. One juror (number 9, Kimi) gave no answer in 10 minutes, was interrupted and replaced once by a fresh juror of the same model; the replacement's answer is the one recorded.",
+ "replaced": 1
+}
