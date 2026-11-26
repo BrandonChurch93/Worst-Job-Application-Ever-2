@@ -59,6 +59,17 @@
   background-color: rgba(30, 29, 27, 0.94);
 }
 
+.root[data-mode='live'][data-row='above'] .live {
+  --quiet: rgba(241, 238, 231, 0.86);
+  --ink: #fbf8f2;
+  --accent: #f08a4b;
+  top: auto;
+  bottom: calc(100% + 3px);
+  transform: none;
+  background-color: rgba(30, 29, 27, 0);
+  box-shadow: none;
+}
+
 .icon,
 .link {
   appearance: none;

@@ -1,6 +1,7 @@
 import { config } from '../config'
 import { quality as qualityOf } from '../core/quality'
 import type { InterfaceApi, Mounted } from './api'
+import { wallSeconds } from './clock'
 import { clockText } from './device'
 import { draw } from './glyphs'
 import { icon, setIcon } from './icons'
@@ -8,12 +9,19 @@ import css from './interface.module.css'
 import { mountMenu } from './menu'
 import { names } from './names'
 import { makeQualityPicker, type QualityPicker } from './picker'
+import { makeSaid } from './said'
 import { word } from './words'
 
 const PAGE_W = 1920
 const TYPE = 'inter-500'
 const HIDE_AFTER_MS = 2600
 const SEEK_KEY_SECONDS = 5
+// The height of the empty strip at the top of every page, in page units: the row of live controls has to end above it.
+const STRIP = 56
+// The room in px the row needs above the picture to stand there.
+const ROW_ROOM = 6
+// How often the sound controls look for the sound by themselves, so they come and change without waiting for a drawn frame.
+const SOUND_LOOK_MS = 250
 
 function el<K extends keyof HTMLElementTagNameMap>(tag: K, cls: string | undefined, parent?: HTMLElement): HTMLElementTagNameMap[K] {
   const e = document.createElement(tag)
@@ -86,13 +94,22 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
     root.style.width = `${r.width}px`
     root.style.height = `${r.height}px`
     root.style.setProperty('--u', `${r.width / PAGE_W}px`)
+    fit(r)
+  }
+  const live = el('div', css.live, root)
+  // On a small picture the row keeps its least size and no longer fits the strip. It then stands above the picture where the window has room there, and on a capsule over the page where it has none.
+  const fit = (r: { top: number; width: number }) => {
+    root.dataset.row = 'strip'
+    const h = live.offsetHeight
+    if (!h) return
+    if (live.offsetTop + h / 2 <= (STRIP * r.width) / PAGE_W) return
+    root.dataset.row = r.top >= h + ROW_ROOM ? 'above' : 'over'
   }
   place()
   listen('resize', place)
   const watch = typeof ResizeObserver === 'function' ? new ResizeObserver(place) : null
   watch?.observe(api.canvas)
 
-  const live = el('div', css.live, root)
   const liveSound = soundButton(api, live)
   const film = el('a', css.link, live)
   film.href = '?mode=film'
@@ -161,6 +178,11 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
   root.addEventListener('pointermove', wake)
   bar.addEventListener('focusin', wake)
 
+  const look = window.setInterval(() => {
+    liveSound.update()
+    barSound.update()
+  }, SOUND_LOOK_MS)
+
   const said = el('div', css.said, root)
   said.setAttribute('role', 'status')
   said.setAttribute('aria-live', 'polite')
@@ -211,12 +233,11 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
   let skipDue: boolean | null = null
   let backing = ''
   let heading = ''
-  let step = -1
   let playing: boolean | null = null
   let started: boolean | null = null
   let shownTime = ''
   let shownValue = -1
-  const heard = new Set<string>()
+  const line = makeSaid()
   // Called at the press as well as once a frame, so the control answers a press before the next frame is drawn.
   function showPlaying(now: boolean): void {
     if (now === playing) return
@@ -246,7 +267,8 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
       }
       if (m === 'live') {
         liveSound.update()
-        const under = api.backing ? api.backing() : 'page'
+        const below = api.backing ? api.backing() : 'page'
+        const under = below === 'page' && root.dataset.row === 'over' ? 'light' : below
         if (under !== backing) {
           backing = under
           root.dataset.backing = under
@@ -289,25 +311,17 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
           }
         }
       }
-      const s = api.step()
-      if (s !== step) {
-        step = s
-        heard.clear()
-        saidMessage.textContent = ''
-      }
       const h = api.heading()
       if (h !== heading) {
         heading = h
         saidHeading.textContent = h
       }
-      for (const message of api.messages()) {
-        if (heard.has(message)) continue
-        heard.add(message)
-        saidMessage.textContent = message
-      }
+      const words = line.frame(api.step(), api.messages(), wallSeconds())
+      if (words !== null) saidMessage.textContent = words
     },
     destroy() {
       window.clearTimeout(timer)
+      window.clearInterval(look)
       watch?.disconnect()
       api.canvas.classList.remove(css.fitted!)
       for (const fn of off) fn()

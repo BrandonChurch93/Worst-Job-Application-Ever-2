@@ -11,7 +11,7 @@ import { words } from './shell/words'
 import { BotDriver, type BotName } from './stage/bots'
 import { liveFlow, liveView, MouseDriver, Stage, type Frame } from './stage/stage'
 import type { CameraPose, Driver, Hint } from './stage/types'
-import { lessMotion, makeQualityPicker, mountInterface, mountProbe, mountTouchMessage, ready as controlsReady, touchOnly, type InterfaceApi, type Mounted, type ProbeRunner } from './ui/api'
+import { lessMotion, makeQualityPicker, messagesOf, mountInterface, mountProbe, mountTouchMessage, ready as controlsReady, touchOnly, type InterfaceApi, type Mounted, type ProbeRunner } from './ui/api'
 import { wallSeconds } from './ui/clock'
 import { listenToVisitor } from './ui/pointer'
 
@@ -379,16 +379,7 @@ function play(first: PlayMode): void {
       before = ''
     },
     heading: () => headings[stepNow()]!,
-    messages() {
-      const out: string[] = []
-      if (!shown || now !== 'live') return out
-      for (const s of shown.list) {
-        if (s.kind !== 'text' || !s.words || !s.words.startsWith('copy:') || atRest.has(s.words)) continue
-        const text = words(s.words, s.text)
-        if (text && !out.includes(text)) out.push(text)
-      }
-      return out
-    },
+    messages: () => (shown && now === 'live' ? messagesOf(shown.list, atRest, words) : []),
     skipOffered: () => now === 'live' && stage.skipOffered,
     skip: () => mouse.pulse({ skip: true }),
     watchFilm() {

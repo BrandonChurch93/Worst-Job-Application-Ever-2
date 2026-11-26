@@ -153,6 +153,26 @@ describe('site pointer listeners: nothing sticks', () => {
     expect(p.visitor.held()).toEqual(none)
   })
 
+  it('both buttons as a browser sends them: left down, right down, left up, right up, with both flippers up in the middle and both down at the end', () => {
+    const p = page()
+    fire(p.canvas, 'pointerdown', { button: 0, buttons: 1 })
+    fire(p.canvas, 'pointermove', { button: 2, buttons: 3 })
+    expect(shown(p)).toEqual({ down: true, flipLeft: true, flipRight: true })
+    fire(p.canvas, 'pointermove', { button: 0, buttons: 2 })
+    expect(shown(p)).toEqual({ down: false, flipLeft: false, flipRight: true })
+    fire(p.canvas, 'pointerup', { button: 2, buttons: 0 })
+    expect(shown(p)).toEqual(nothing)
+    expect(p.visitor.held()).toEqual(none)
+    fire(p.canvas, 'pointerdown', { button: 2, buttons: 2 })
+    fire(p.canvas, 'pointermove', { button: 0, buttons: 3 })
+    expect(shown(p)).toEqual({ down: true, flipLeft: true, flipRight: true })
+    fire(p.canvas, 'pointermove', { button: 2, buttons: 1 })
+    expect(shown(p)).toEqual({ down: true, flipLeft: true, flipRight: false })
+    fire(p.canvas, 'pointerup', { button: 0, buttons: 0 })
+    expect(shown(p)).toEqual(nothing)
+    expect(p.visitor.held()).toEqual(none)
+  })
+
   it('the right button never presses, and the middle, back and forward buttons do nothing at all', () => {
     const p = page()
     fire(p.canvas, 'pointerdown', { button: 2, buttons: 2 })
