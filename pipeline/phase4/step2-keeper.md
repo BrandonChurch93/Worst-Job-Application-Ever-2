@@ -30,16 +30,18 @@ Branch `agent/step2-keeper`. Parts: `rows`, `dial`, `slot`, `crank`, `acting-ste
 16. The crank's arm stays 96 px. The approved arm is longer in proportion (about 2.5 base radii against 1.9), but a longer arm would carry the grip over the prompt's line and the tray's upper wall on its turn.
 17. The dial's groove: the pale numeral plate showed as a bright line between the wheel and the bezel. A dark ring now lies in that groove on the plate (`grooveGeometry`, the shared gap material), and the wheel's rim is in the housing's darker steel, not the shared chrome. The approved dial holds a dark gap there.
 18. The crank's beat looked at in seven frames (15.26 s to 19.1 s): the crank throws the cursor, it comes back angry with steam, the meter fills, the result line stands in the field, the tray shuts over the sunk crank, Continue turns orange. From 16.95 s the cursor is `exhausted`, which the cursor draws as a pale crumpled body; that look is the cursor's own.
+19. The dial's housing is darker and less polished (`housingDark` 0.72, `housingRough` 0.36): its upper left rim read white where the approved bezel is mid grey.
+20. The slot's beat looked at in six frames (9.3 s to 12.5 s): the knob is pulled under the bracket and springs back over it, the reels spin and settle on 07, 23, 1991, the result line stands in the field, the coins leave the mouth and the cursor flees them.
 
 ## Looks counted (at most 40 a part)
 
 | Part | Looks |
 | --- | --- |
-| `dial` | 13 |
+| `dial` | 15 |
 | `rows` | 4 |
 | `crank` | 8 |
 | `slot` | 9 |
-| `acting-step2` | 22 |
+| `acting-step2` | 28 |
 
 The stills that `npm run measure` renders by itself are not counted.
 
