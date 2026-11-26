@@ -36,9 +36,9 @@ export const FILL: Record<string, RGB> = {
 
 // How much of a far lamp's light the print of a floor gives back, seen from straight above and seen along the floor. The night tiers are dark lacquer between their pools; the Office is a lit room.
 export const DEEP: Record<string, [number, number]> = {
-  corporate: [0.8, 0.2],
+  corporate: [1, 0.2],
   office: [1, 0.7],
-  street: [0.75, 0.2]
+  street: [1, 0.2]
 }
 
 // How bright a lens is when its lamp is on, in linear light: the middle is above the threshold of the lens glow, the rim below.

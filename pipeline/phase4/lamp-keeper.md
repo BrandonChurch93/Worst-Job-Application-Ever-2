@@ -69,7 +69,48 @@ Tuning looks, 40 a part a critic round. The ten stills of point 1 are measuremen
 
 | Round | table-lights | tier-art |
 | --- | --- | --- |
-| 1 (to 04:30 UTC) | 20 (r1 3, r2 8, r3 5, r4 4) | 0 of its own: the same 20 stills show the floors and the inserts |
+| 1 (to 04:50 UTC) | 29 (r1 3, r2 8, r3 5, r4 4, r5 6, r6 2, r7 1) | 0 of its own: the same stills show the floors and the inserts |
+
+## The frame owner's two facts (04:36 UTC), MEASURED on `tier-corporate` draft
+
+16 px squares on the left bat at a quarter, a half and 0.85 of its length, and on the lift's elbow (x 215 y 95):
+
+| | Pivot | Middle | Tip | Elbow |
+| --- | --- | --- | --- | --- |
+| Before (r4) | (222, 141, 54) | (227, 144, 52) | (129, 87, 49) | (76, 55, 34) |
+| After (r7) | (147, 98, 53) | (184, 118, 51) | (168, 108, 50) | (121, 83, 41) |
+| Approved, by the frame owner | (187, 102, 27) | | (194, 107, 30) | (161, 79, 27) |
+
+The bat lamp stood 16 px over the bat near its pivot; it now stands 150 px over the floor above the bat's middle (power 2.1, reach 3.6 balls). One lamp was added at the head of the lift column of Corporate and the Office (power 1.6 after r7, not rendered again yet).
+
+## Counts after the changes (04:40 UTC, commit c475041e, live low)
+
+Command: `npm run build && npm run counts -- --key <key> --live low`. MEASURED (meshes, colour, shadow, calls, triangles):
+
+| Key | table-lights before | table-lights now | tier-art before and now |
+| --- | --- | --- | --- |
+| table-wide | 8, 8, 0, 8, 25350 | 8, 8, 0, 8, 22662 | 6, 6, 0, 6, 3534 |
+| tier-corporate | 6, 6, 0, 6, 17996 | 6, 6, 0, 6, 16204 | 3, 3, 0, 3, 1180 |
+| tier-office | 6, 6, 0, 6, 22854 | 6, 6, 0, 6, 20166 | 3, 3, 0, 3, 1180 |
+| tier-street | 4, 4, 0, 4, 14708 | 4, 4, 0, 4, 12916 | 2, 2, 0, 2, 1178 |
+
+Draw calls the same, triangles fewer (the rail lamps are flat windows now, not domes in cups). Whole frame of `table-wide`: 192 calls of 300.
+
+Assets, `du -sb`: `public/assets/table/art` 8279678 bytes (7.90 MB of 9), `assets-full/table/art` 26280293 bytes, largest file 8543144. The lights have no asset folder.
+
+One still of `youre-fired`, hd, `--force`: draft 39.2 s (43 s with start), review 80.4 s (83 s).
+
+## Point 7: the savings, MEASURED, no patch recommended
+
+`npm run counts -- --key table-wide --live low`: the shadow pass of the key light is 51 of the 192 calls.
+
+- The shell's ground: 5 meshes, 7 colour calls, 6 shadow calls, 1930 triangles, the same in all four keys. Trial, not kept: `flat.castShadow = false` in `src/shell/real/ground.ts` takes 3 of the 6 (192 to 189 calls). Two draft stills before and after (the same code twice gives 0 pixels of difference): `youre-fired` 159 pixels differ, largest step 1; `table-wide` 18987 pixels differ, 764 by more than 4, largest step 23, all inside the machine (x 481 to 1531, y 323 to 1015). So the ground's shadow is seen in the wide view and 3 calls do not pay for it.
+- `table-hardware`: 7 shadow calls in `table-wide` (14 meshes, 21 calls), 6 in `tier-corporate`, 7 in `tier-office`, 7 in `tier-street`. Not tried: the folder has an owner.
+- The far plane of `src/core/renderer.ts` line 227 is set on my point lamps only. With `TRUE.shadows` 0 no lamp of mine casts (`shadow.autoUpdate` false), so no shadow pass reads that far plane and changing it saves no call. STATED from the code; the shadow column of my rows is 0 in every key (MEASURED).
+
+## Point 8: the garage lamps
+
+Computed from the garage model, by the street owner's rule. MEASURED in a throwaway test on main's layout (h 4.3): x 637 and 362 px, z 515.6 and 289.9, the old typed 16.63, 13.77, 516 and 290. With the runner's two turn spiral (h 3.0) the row heights follow and the lower left fitting is left out (six lamps).
 
 ## Decisions
 
@@ -110,4 +151,5 @@ The rest of the whole frame is the frame's pale outer rails, not mine.
 - I did not lower `wjlEnv`: the frame reads it and its owner asked me to leave it.
 - The hidden lamps are not fittings: they have no lens and spend none of `ctx.light`. They exist because the approved Office and the boardroom are lit from above with no visible source.
 - No floor was rebaked: the lift of the Office print is a material colour, 197 s saved a round.
+- The boardroom lamp stays at power 0.7. The Corporate owner MEASURED the walnut right under it and the paper a sixth brighter; twice the lamp would overlight the walnut it has just set. The paper keeps a colour over 1 on its side.
 

@@ -3,7 +3,7 @@ import type { RealContext } from '../../../real/types'
 import { BALL, OUTLET, PORT, railOf } from '../../layout'
 import { local, localBalls, type Zone } from '../zone'
 import { Geo, type V2, type V3 } from './geo'
-import { Screws, TONE, aluOf, clearOf, hex, mesh, screwOf } from './mats'
+import { Screws, TONE, aluOf, clearOf, hex, mesh, screwOf, shade } from './mats'
 
 // The one clear tube of the machine. The feed tube is built to it here; the drain tube and the lift tube are to be built to the same.
 export const TUBE = { outer: 53, wall: 3.6, sides: 24, opacity: 0.05, collar: 22, collarOut: 58.5, ferrule: 9, ferruleOut: 56, collarStep: 5.1 * BALL, clampStep: 5.1 * BALL, clampWide: 5, strap: 2, bend: 1.1 * BALL }
@@ -167,7 +167,9 @@ function port(A: Geo, screws: Screws, z: Zone, c: { x: number; y: number; ring: 
     const half = TUBE.outer + RING.slot
     A.slotted(outline, p[0], p[1], 72, tone, toward, half)
     const from = A.vertices
-    A.box(Math.sqrt(Math.max(0, (r - RING.dish) * (r - RING.dish) - half * half)) - 2, Math.sqrt(R * R - half * half), -half, half, 0, RING.floor, CUP)
+    const wall = Math.sqrt(Math.max(0, (r + RING.lip) * (r + RING.lip) - half * half))
+    A.box(Math.sqrt(Math.max(0, (r - RING.dish) * (r - RING.dish) - half * half)) - 2, wall, -half, half, 0, RING.floor, shade(CUP, 1.4))
+    A.box(wall, Math.sqrt(R * R - half * half), -half, half, 0, RING.floor, TONE.aluDeep)
     A.move(from, new THREE.Matrix4().makeTranslation(p[0], p[1], 0).multiply(new THREE.Matrix4().makeRotationZ(toward)))
   }
   A.lathe([[r - RING.dish, RING.floor], [BALL * 0.62, RING.floor - 0.6], [BALL * 0.5, RING.floor - 1.6], [0, RING.floor - 1.8]], p[0], p[1], 48, (i) => (i === 0 ? CUP : [0.006, 0.006, 0.008]))

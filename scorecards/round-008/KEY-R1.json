@@ -1,0 +1,254 @@
+{
+  "role": "R1",
+  "round": 8,
+  "unit": "decision",
+  "commit": "c24bc6a8b83236db00c3a59f9cbfbaea556d118c",
+  "tier": "final",
+  "engineHash": "e3b74d5a5dd3bbac",
+  "sharedHash": "c59d02ddbce49e21",
+  "pageHashes": {
+    "step1": "3792c5cee2f83f56",
+    "step2": "ee9a922a9749af32",
+    "marketing": "3d87c3f59b6bae9e",
+    "pinball": "97579c111c3f4fe8",
+    "boss": "c105557871f60ee1",
+    "decision": "0baf0cef7ca90495"
+  },
+  "browser": "147.0.7727.15",
+  "files": {
+    "set-A-01-a.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "decision"
+      },
+      "side": "a",
+      "image": "references/approved/decision.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-01-b.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "decision"
+      },
+      "side": "b",
+      "still": {
+        "page": "decision",
+        "beat": "decision.metrics",
+        "at": 0.3,
+        "camera": "home",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-02-a.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "decision"
+      },
+      "side": "a",
+      "crops": [
+        {
+          "part": "paper",
+          "window": [
+            302,
+            416,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:letter-mark-top+letter-mark-bottom+letter-mark-left+letter-mark-right",
+          "window": [
+            461,
+            575,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "stampBlock",
+          "window": [
+            974,
+            591,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "readout",
+          "window": [
+            926,
+            297,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "card.glass",
+          "window": [
+            1459,
+            456,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "heroButton",
+          "window": [
+            734,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            1262,
+            602,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "progressButtonCurrent",
+          "window": [
+            1459,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "header",
+          "window": [
+            194,
+            0,
+            461,
+            340
+          ]
+        }
+      ],
+      "image": "references/approved/decision.png"
+    },
+    "set-A-02-b.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "decision"
+      },
+      "side": "b",
+      "crops": [
+        {
+          "part": "paper",
+          "window": [
+            301,
+            390,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:letter-mark-top+letter-mark-bottom+letter-mark-left+letter-mark-right",
+          "window": [
+            490,
+            472,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "stampBlock",
+          "window": [
+            1224,
+            596,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "readout",
+          "window": [
+            913,
+            286,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "card.glass",
+          "window": [
+            1459,
+            443,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "heroButton",
+          "window": [
+            730,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            1459,
+            709,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "progressButtonCurrent",
+          "window": [
+            1459,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "header",
+          "window": [
+            197,
+            0,
+            461,
+            340
+          ]
+        }
+      ],
+      "still": {
+        "page": "decision",
+        "beat": "decision.metrics",
+        "at": 0.3,
+        "camera": "home",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final"
+    }
+  }
+}

@@ -249,7 +249,7 @@ export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
         const len = Math.hypot(yb - ya, db - da)
         const up: [number, number, number] = [0, (yb - ya) / len, (db - da) / len]
         const n: [number, number, number] = [0, -up[2], up[1]]
-        A.face([[x0, ya, da], [x1, ya, da], [x1, yb, db], [x0, yb, db]], n, up, TONE.aluDeep)
+        A.face([[x0, ya, da], [x1, ya, da], [x1, yb, db], [x0, yb, db]], n, up, METAL)
         A.face([[x0, ya, 0], [x0, ya, da], [x0, yb, db], [x0, yb, 0]], [-1, 0, 0], [0, 1, 0], TONE.aluDark)
         A.face([[x1, ya, 0], [x1, ya, da], [x1, yb, db], [x1, yb, 0]], [1, 0, 0], [0, 1, 0], TONE.aluDark)
         for (const side of [-1, 1]) {

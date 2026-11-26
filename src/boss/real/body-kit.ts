@@ -127,13 +127,13 @@ export function bossKit(): BossKit {
     bore: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x121212), roughness: 0.8, metalness: 0.2, specularIntensity: 0.3 })),
     bed: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x1f2022), roughness: 0.62, metalness: 0.55, specularIntensity: 0.5 })),
     pin: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xc9ccd0), roughness: 0.2, metalness: 1 })),
-    glass: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x93b0a1), roughness: 0.3, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.12, specularIntensity: 0.9, transparent: true, opacity: 0.6, depthWrite: false })),
-    glassEdge: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xeef5f0), roughness: 0.22, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.08, specularIntensity: 1, transparent: true, opacity: 0.9, depthWrite: false })),
-    glassDeep: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x5d7f6e), roughness: 0.6, metalness: 0, specularIntensity: 0.2, transparent: true, opacity: 0.5, depthWrite: false })),
-    glassCrack: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xf4f8f5), roughness: 0.3, metalness: 0, specularIntensity: 0.8, transparent: true, opacity: 0.85, depthWrite: false })),
-    plate: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xb2b6ba), roughness: 0.42, metalness: 1 })),
-    pocket: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x7d8084), roughness: 0.5, metalness: 0.9 })),
-    link: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xc3c7ca), roughness: 0.3, metalness: 0.85 })),
+    glass: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x86a39b), roughness: 0.18, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.08, specularIntensity: 1, transparent: true, opacity: 0.44, depthWrite: false })),
+    glassEdge: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xe6f0ec), roughness: 0.16, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.06, specularIntensity: 1, transparent: true, opacity: 0.5, depthWrite: false })),
+    glassDeep: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x55766c), roughness: 0.6, metalness: 0, specularIntensity: 0.2, transparent: true, opacity: 0.38, depthWrite: false })),
+    glassCrack: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xf4f8f5), roughness: 0.3, metalness: 0, specularIntensity: 0.8, transparent: true, opacity: 0.8, depthWrite: false })),
+    plate: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x6f7378), roughness: 0.38, metalness: 1 })),
+    pocket: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x63666a), roughness: 0.5, metalness: 0.9 })),
+    link: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xc2c6c9), roughness: 0.45, metalness: 0.5 })),
     crack: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x3a1608), roughness: 0.85, metalness: 0, specularIntensity: 0.15, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 }))
   }
   return made

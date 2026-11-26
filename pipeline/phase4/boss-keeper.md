@@ -22,18 +22,20 @@ Counted by part, 40 each for this round. A look is one still rendered and looked
 
 | Part | Looks |
 | --- | --- |
-| boss-body | 9 |
-| boss-transform | 5 |
-| boss-weapons | 8 |
+| boss-body | 21 |
+| boss-transform | 7 |
+| boss-weapons | 11 |
 | health-bar | 1 |
-| acting-boss | 2 |
+| acting-boss | 3 |
 | verify-card | 0 |
 
 ## Measures
 
 MEASURED at 04:19 UTC, `npm run measure -- --unit boss --tier review`, 1 m 28.6 s, record `out/work/measures/boss.json`: M1 pass, M2 FAIL (0.761 of 42754 textured pixels under 1 texel per pixel, limit 0.02, key `boss-fight`), M3 pass 0.8574 against 0.8, M4 pass (smallest type 18 px, contrast 4.63), M5, M6, M7, M9 pass. 7 green, 1 red.
 
-M2: the texels view counts only meshes whose material holds a colour `map`. The soft pixels were the halo of each spark and muzzle and the pool under each dart, which stretched step 1's 64 px halo picture over up to 230 px. They are now fans of rings with the light in the corners of their faces (`glow()` in `boss-weapons.ts`), so no picture is stretched. MEASURED after the change, `npm run still -- --key boss-fight --format hd --tier draft --diag texels`: the only textured pixels left are the stars of the darts and the muzzle, all at full density. The measure is to be run again.
+M2: the texels view counts only meshes whose material holds a colour `map`. The soft pixels were the halo of each spark and muzzle and the pool under each dart, which stretched step 1's 64 px halo picture over up to 230 px. They are now fans of rings with the light in the corners of their faces (`glow()` in `boss-weapons.ts`), so no picture is stretched. MEASURED after the change, `npm run still -- --key boss-fight --format hd --tier draft --diag texels`: the only textured pixels left are the stars of the darts and the muzzle, all at full density. 
+
+MEASURED at 04:40 UTC after the change, same command, 1 m 30.9 s: M1 pass; M2 pass 0.0088 against 0.02 (24976 textured pixels in 4 stills); M3 pass 0.8779 against 0.8; M4 pass (18 px, 4.63); M5, M6, M7, M9 pass. 8 green, 0 red.
 
 ## Decisions
 
@@ -48,3 +50,10 @@ M2: the texels view counts only meshes whose material holds a colour `map`. The 
 9. `content/copy.json` holds no key for the four stage words of the sheet (Resting, Breaking loose, Unfolding, Boss): none added, told to the Builder.
 10. The merge commit 3f01ed8f was pushed without the trailer, by my mistake. History is not rewritten; every later merge carries it.
 11. The halo and pool of the weapons are geometry with vertex colours, not a stretched picture (see Measures).
+12. The smoke ring of the muzzle was wound the wrong way round and so was never drawn: found by forcing it opaque in a still. It is dark smoke (0.2 grey), since a mid grey does not read on the page.
+13. The hull came out too pale at 0xb2b6ba beside the approved image: it is now 0x6f7378, roughness 0.38, still without brushing. The pockets are 0x63666a.
+14. The glass block is clearer (opacity 0.44 over a floor of 0.38), its bright edge is a thin half clear band and it holds four cracks, not six.
+15. The collar of the pit is a satin grey of its own (0x9a9c9c, roughness 0.6) and the wall under it is lighter and rougher, so the wall reads as broken stone and only the floor is near black.
+16. The cursor is scorched twice by the script: at the power-down and again when the hot cap lands (1.2 s into the collapse, for 2.4 s), so the scorch is fresh at the key `boss-down` and gone before the unit ends, as `tests/boss.test.ts` asks.
+17. The sheet shows no captions: ruled by the Builder at 04:44 UTC, the words of the approved sheet are the picture's own and no key is added.
+18. The lower pair of legs read near black: the faces of their links lean about 30 degrees away from the key light, because a leg comes down 107 px from the hip to the foot. Each foot now carries a stem 52 px tall with the ball on its top (`ANKLE` in `src/boss/real/body.ts`), so a leg leans about half as much. The stem shrinks to nothing as the boss folds or falls flat. The links are a less mirror like metal (metalness 0.5, roughness 0.45).
