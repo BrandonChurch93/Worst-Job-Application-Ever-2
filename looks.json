@@ -1,35 +1,35 @@
 {
   "folder": "corporate-models",
-  "pushed": "2026-11-26T04:04:18.290Z",
-  "commit": "79ee8100930e2fae7c04ed922c80877deb584cf9",
+  "pushed": "2026-11-26T05:05:47.323Z",
+  "commit": "3753270aefbd22d71b45555e3957644097ad08dc",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key tier-corporate: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-26T04:04:04.671Z",
+      "caption": "Corporate tier from above beside the approved image, review still at 05:00 UTC",
+      "time": "2026-11-26T05:05:45.516Z",
       "by": "corporate-models",
-      "from": "out/work/compare/compare-tier-corporate.jpg"
+      "from": "out/work/looks/files/20261126050545-final-compare-tier-corporate.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Corporate at 79ee8100 beside the approved image: ladder with stringers, boardroom stops short of the notes",
-      "time": "2026-11-26T04:04:16.716Z",
+      "caption": "The lobby doors beside the approved image, review still at 05:03 UTC",
+      "time": "2026-11-26T05:05:45.748Z",
       "by": "corporate-models",
-      "from": "out/work/looks/files/20261126040416-tier-compare-0404.jpg"
+      "from": "out/work/looks/files/20261126050545-final-compare-lobby-doors.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "The ladder at 79ee8100, native size: two flat stringers outside the wires, rungs bent in a U",
-      "time": "2026-11-26T04:04:16.948Z",
+      "caption": "Boardroom and the three notes under the new lamp, native size crop twice enlarged",
+      "time": "2026-11-26T05:05:45.987Z",
       "by": "corporate-models",
-      "from": "out/work/looks/files/20261126040416-ladder-0404.jpg"
+      "from": "out/work/looks/files/20261126050545-final-boardroom-notes.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Boardroom and notes at 79ee8100, three times native: the table and chairs follow the layout box, paler notes",
-      "time": "2026-11-26T04:04:17.201Z",
+      "caption": "The whole table, review still at 05:01 UTC",
+      "time": "2026-11-26T05:05:46.217Z",
       "by": "corporate-models",
-      "from": "out/work/looks/files/20261126040417-board-0404.jpg"
+      "from": "out/work/looks/files/20261126050546-final-table-wide.jpg"
     }
   ]
 }
