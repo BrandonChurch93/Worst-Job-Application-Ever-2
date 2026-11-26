@@ -1,35 +1,35 @@
 {
   "folder": "look-finish",
-  "pushed": "2026-11-26T11:45:15.414Z",
-  "commit": "ca07412d8f439a4356e67913b525df400e549a8f",
+  "pushed": "2026-11-26T11:53:55.711Z",
+  "commit": "979389dd049d0fb248c20e7072116065b0a0ac25",
   "looks": [
     {
       "file": "look-1.jpg",
       "caption": "Still key-decision-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-26T11:41:09.989Z",
+      "time": "2026-11-26T11:50:06.990Z",
       "by": "look-finish",
       "from": "out/work/stills/key-decision-hd-review.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "B: bare paper on step2-rest, decision, boss-fight, marketing-top at review: approved, before, after",
-      "time": "2026-11-26T11:41:34.778Z",
+      "caption": "Still key-marketing-top-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T11:51:03.214Z",
       "by": "look-finish",
-      "from": "out/work/look-finish/b/B-paper-four.jpg"
+      "from": "out/work/stills/key-marketing-top-hd-review.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "B: paper by the seal on marketing-top at review: approved, before, after",
-      "time": "2026-11-26T11:41:35.011Z",
+      "caption": "C: field glass on step2-rest (left end, right end), step2-dial, and the boss card (not shared glass, unchanged) at review: approved, before, after",
+      "time": "2026-11-26T11:53:54.238Z",
       "by": "look-finish",
-      "from": "out/work/look-finish/b/B-marketing-top-paper-seal.jpg"
+      "from": "out/work/look-finish/c/C-all.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Ink: type on marketing-top (headline, nav, card), step2-rest and decision at review: approved, before, after",
-      "time": "2026-11-26T11:45:14.155Z",
+      "caption": "Quiet ink: marketing-top hero subline and the row under the button: approved, after the ink pass, now",
+      "time": "2026-11-26T11:53:54.479Z",
       "by": "look-finish",
-      "from": "out/work/look-finish/ink/I-type-three.jpg"
+      "from": "out/work/look-finish/c/Q-marketing-rows.jpg"
     }
   ]
 }
