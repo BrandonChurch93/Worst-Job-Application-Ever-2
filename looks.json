@@ -1,35 +1,35 @@
 {
   "folder": "step2-keeper",
-  "pushed": "2026-11-26T04:58:04.501Z",
-  "commit": "8d77cb7de1230c4dfe3d0713486e215bf57cd682",
+  "pushed": "2026-11-26T05:02:41.823Z",
+  "commit": "721d7b043303c97d756b9358a4b6c7287fef28e2",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still step2-step2_crank-0p85-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T04:53:20.859Z",
+      "caption": "Still key-step2-crank-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T04:59:28.522Z",
       "by": "step2-keeper",
-      "from": "out/work/stills/step2-step2_crank-0p85-hd-draft.png"
+      "from": "out/work/stills/key-step2-crank-hd-review.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Still key-step2-dial-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-26T04:55:34.331Z",
+      "caption": "Still key-step2-crank-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T05:00:10.013Z",
       "by": "step2-keeper",
-      "from": "out/work/stills/key-step2-dial-hd-review.png"
+      "from": "out/work/stills/key-step2-crank-hd-review.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Still key-step2-dial-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-26T04:56:14.315Z",
+      "caption": "Still key-step2-crank-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T05:00:48.486Z",
       "by": "step2-keeper",
-      "from": "out/work/stills/key-step2-dial-hd-review.png"
+      "from": "out/work/stills/key-step2-crank-hd-review.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Dial close at 8d77cb7d: approved left, build right; dark groove round the wheel",
-      "time": "2026-11-26T04:58:02.961Z",
+      "caption": "Lit meter segments: approved left, build right; softer peach core",
+      "time": "2026-11-26T05:02:40.635Z",
       "by": "step2-keeper",
-      "from": "out/work/looks/files/20261126045802-dz.png"
+      "from": "out/work/looks/files/20261126050240-lit.png"
     }
   ]
 }
