@@ -1,35 +1,35 @@
 {
   "folder": "office-models",
-  "pushed": "2026-11-26T04:37:32.505Z",
-  "commit": "2c69a107c12b10d59a8beffce241bca020fe5866",
+  "pushed": "2026-11-26T04:51:56.413Z",
+  "commit": "ce8fa1978a320e17c8c9bac75dfe939327250ecf",
   "looks": [
     {
       "file": "look-1.jpg",
       "caption": "Still key-reply-all-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T04:33:12.649Z",
+      "time": "2026-11-26T04:47:36.182Z",
       "by": "office-models",
       "from": "out/work/stills/key-reply-all-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
       "caption": "Still key-tier-office-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T04:33:54.293Z",
+      "time": "2026-11-26T04:48:18.753Z",
       "by": "office-models",
       "from": "out/work/stills/key-tier-office-hd-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Left stapler at 751fd9cb: approved image, then the build in reply-all and from straight above, deeper red and a sharper highlight",
-      "time": "2026-11-26T04:37:30.900Z",
+      "caption": "Inbox and coffee machine in the runner's new box and under the lamp keeper's lamp: tier-office left, reply-all right, the lift down to 0.45",
+      "time": "2026-11-26T04:51:54.991Z",
       "by": "office-models",
-      "from": "out/work/looks/files/20261126043730-stap-approved-now-2.jpg"
+      "from": "out/work/looks/files/20261126045154-right-new-boxes.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "reply-all at the review tier, the Office models at ef524227",
-      "time": "2026-11-26T04:37:31.146Z",
+      "caption": "Cubicle farm three across and two deep in the runner's new box: tier-office left, reply-all right",
+      "time": "2026-11-26T04:51:55.223Z",
       "by": "office-models",
-      "from": "out/work/looks/files/20261126043731-reply-all-review.jpg"
+      "from": "out/work/looks/files/20261126045155-cub-new-box.jpg"
     }
   ]
 }
