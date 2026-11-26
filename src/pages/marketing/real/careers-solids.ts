@@ -49,21 +49,30 @@ export function polar(radius: (a: number) => number, count: number): Outline {
 // The rim of a medal: round lobes with a sharp valley between them.
 export const scalloped = (r: number, lobes: number, deep: number, per = 14): Outline => polar((a) => r - deep + deep * Math.pow(Math.abs(Math.sin((a * lobes) / 2)), 0.8), lobes * per)
 
-// One pressed leaf, lying along x from its stem at 0 to its tip, raised from z = 0 with a rib along its middle.
+// One pressed leaf, lying along x from its stem at 0 to its tip, raised from z = 0 with a rib along its middle. Round it lies a skirt, the groove
+// the die pressed round it. Its uv are not a place in a picture: u is 1 on the skirt and 0 on the leaf, v is 1 on the rib.
+export const LEAF = { skirt: 1.22, along: 18, across: 12 }
+
 export function leaf(long: number, wide: number, high: number): THREE.BufferGeometry {
-  const nu = 18
-  const nv = 8
+  const nu = LEAF.along
+  const nv = LEAF.across
   const pos: number[] = []
+  const uv: number[] = []
   const idx: number[] = []
   for (let i = 0; i <= nu; i++) {
     const u = i / nu
     const half = (wide / 2) * Math.pow(Math.sin(Math.PI * Math.pow(u, 0.82)), 0.75)
     const body = Math.pow(Math.sin(Math.PI * u), 0.4)
+    const end = i === 0 || i === nu
     for (let j = 0; j <= nv; j++) {
-      const v = (j / nv) * 2 - 1
-      const dome = Math.pow(Math.max(0, 1 - v * v), 0.6)
+      const outer = j === 0 || j === nv
+      const v = outer ? Math.sign(j - nv / 2) * LEAF.skirt : ((j - 1) / (nv - 2)) * 2 - 1
+      const inside = Math.min(1, Math.abs(v))
+      const dome = Math.pow(Math.max(0, 1 - inside * inside), 0.6)
       const rib = 0.34 * Math.exp(-(v * v) / 0.012)
-      pos.push((u - 0.5) * long, v * half, high * body * dome * (1 - rib))
+      const reach = outer ? half + 1.5 : half
+      pos.push((u - 0.5) * long + (end ? (i === 0 ? -1.5 : 1.5) : 0), Math.sign(v) * inside * reach, high * body * dome * (1 - rib))
+      uv.push(outer || end || Math.abs(v) > 0.999 ? 1 : 0, Math.abs(v) < 0.01 ? 1 : 0)
     }
   }
   for (let i = 0; i < nu; i++) {
@@ -75,11 +84,28 @@ export function leaf(long: number, wide: number, high: number): THREE.BufferGeom
   }
   const g = new THREE.BufferGeometry()
   g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
-  g.setAttribute('uv', new THREE.Float32BufferAttribute(pos.filter((_, i) => i % 3 !== 2), 2))
+  g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2))
   g.setIndex(idx)
   g.computeVertexNormals()
   const n = g.getAttribute('normal')
   for (let i = 0; i < n.count; i++) if (Math.hypot(n.getX(i), n.getY(i), n.getZ(i)) < 0.5) n.setXYZ(i, 0, 0, 1)
+  return g
+}
+
+// The light of a pressed wreath, laid into it: the groove round each leaf dark, the half of each leaf that is turned to `toward` bright
+// and the other half dull, by `amount`, and the rib a little brighter than both.
+export function pressed(g: THREE.BufferGeometry, toward: number, amount: number, groove: number, rib: number): THREE.BufferGeometry {
+  const n = g.getAttribute('normal')
+  const uv = g.getAttribute('uv')
+  const col = new Float32Array(n.count * 3)
+  const tx = Math.cos(toward)
+  const ty = Math.sin(toward)
+  for (let i = 0; i < n.count; i++) {
+    const lit = n.getX(i) * tx + n.getY(i) * ty
+    const v = uv.getX(i) > 0.5 ? groove : Math.max(0.2, 1 + amount * lit) * (uv.getY(i) > 0.5 ? rib : 1)
+    col.set([v, v, v], i * 3)
+  }
+  g.setAttribute('color', new THREE.BufferAttribute(col, 3))
   return g
 }
 
@@ -135,7 +161,8 @@ export function flange(r: number, lobes: number, deep: number, inner: number, ri
 // A solid of turned metal lit from one side: brighter round the part of it that lies toward `toward`, duller round the far part.
 // Its picture lies across `across` px once, from the middle. Below the height `wall[0]` it is a wall, and leans by `wall[1]`.
 // `bow` is the turned top's own sheen: two bright sectors along the angle `bow[0]`, two dull ones across it, by `bow[1]`.
-export function leaned(g: THREE.BufferGeometry, toward: number, amount: number, across: number, wall: [number, number] = [-1, 0], bow: [number, number] = [0, 0]): THREE.BufferGeometry {
+// `tone` is what a height of the solid is multiplied by besides: a polished lip, a dark groove.
+export function leaned(g: THREE.BufferGeometry, toward: number, amount: number, across: number, wall: [number, number] = [-1, 0], bow: [number, number] = [0, 0], tone: (z: number, facing: number) => number = () => 1): THREE.BufferGeometry {
   const p = g.getAttribute('position')
   const col = new Float32Array(p.count * 3)
   const uv = new Float32Array(p.count * 2)
@@ -144,7 +171,7 @@ export function leaned(g: THREE.BufferGeometry, toward: number, amount: number, 
     const y = p.getY(i)
     const a = Math.atan2(y, x)
     const top = p.getZ(i) >= wall[0]
-    const v = Math.max(0.05, 1 + (top ? amount : wall[1]) * Math.cos(a - toward) + (top ? bow[1] * Math.cos(2 * (a - bow[0])) : 0))
+    const v = Math.max(0.05, 1 + (top ? amount : wall[1]) * Math.cos(a - toward) + (top ? bow[1] * Math.cos(2 * (a - bow[0])) : 0)) * tone(p.getZ(i), Math.cos(a - toward))
     col.set([v, v, v], i * 3)
     uv.set([x / across + 0.5, y / across + 0.5], i * 2)
   }
