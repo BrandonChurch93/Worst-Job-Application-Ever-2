@@ -41,6 +41,21 @@ export function moms(b: Buckets, z: Zone, ctx: RealContext): Moms {
   const side: Hole[] = [{ x: (yb - yf) / 2 - 5, z: 9, w: 10, h: 13 }]
   house(b, x0, x1, yf, yb, base, top, { wall, kind: KIND.board, roof, ridge: 'x', door: rgb(0x3b5a4a), trim, eave: 36, chimney: 1, glow: [1.7, 1.4, 1.1, 1.5] }, { door, windows: wins, side, depth: 2.6 })
 
+  // Two lit roof windows on the back slope, the one the tier's camera sees past the board: each a pale frame with the light of the attic in it.
+  {
+    const ze = base + 36
+    const my = (yf + yb) / 2
+    const ye = yb + 2.4
+    const l = Math.hypot(ye - my, top - ze)
+    const nrm: V3 = [0, (top - ze) / l, (ye - my) / l]
+    const on = (x: number, t: number, up: number): V3 => [x, ye + (my - ye) * t + nrm[1] * up, ze + (top - ze) * t + nrm[2] * up]
+    for (const cx of [x0 + W * 0.2, x0 + W * 0.47]) {
+      g.face([on(cx + 5.4, 0.26, 0.4), on(cx - 5.4, 0.26, 0.4), on(cx - 5.4, 0.74, 0.4), on(cx + 5.4, 0.74, 0.4)], trim, 0, nrm)
+      b.glow.face([on(cx + 4.2, 0.31, 0.75), on(cx - 4.2, 0.31, 0.75), on(cx - 4.2, 0.69, 0.75), on(cx + 4.2, 0.69, 0.75)], cx < x0 + W * 0.3 ? [2.1, 1.6, 0.95] : [1.2, 0.95, 0.6], 0, nrm)
+      g.box(cx - 0.45, cx + 0.45, ye + (my - ye) * 0.5 - 0.3, ye + (my - ye) * 0.5 + 0.3, ze + (top - ze) * 0.5 + 0.2, ze + (top - ze) * 0.5 + 1.4, trim)
+    }
+  }
+
   // A window in the gable at each end, under the ridge.
   for (const sx of [-1, 1]) {
     const x = sx < 0 ? x0 - 0.3 : x1 + 0.3
