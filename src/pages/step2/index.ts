@@ -472,7 +472,7 @@ export function makePage(): PageLogic {
       const ky = knobY(s.slot.p)
       if (x >= SLOT.x && x <= SLOT.x + SLOT.w && y >= SLOT.y && y <= SLOT.y + SLOT.h) put(TOP + 20)
       if (x >= SLOT.x + 10 && x <= SLOT.x + SLOT.w - 10 && y >= SLOT.y + 14 && y <= SLOT.y + SLOT.h - 14) put(TOP + 14)
-      if (Math.abs(x - SLOT.leverX) <= 6 && y >= ky && y <= SLOT.knobY + SLOT.pull + 34) put(TOP + 12)
+      if (Math.abs(x - SLOT.leverX) <= 6 && y >= Math.min(ky, SLOT.pivotY) && y <= Math.max(ky, SLOT.pivotY)) put(TOP + 12)
       if (Math.hypot(x - SLOT.leverX, y - ky) <= SLOT.knob / 2) put(TOP + 40)
     } else {
       const c = s.crank
@@ -705,9 +705,9 @@ export function makePage(): PageLogic {
       out.push({ id: `${tag}dial-stop`, part: 'dial', kind: 'capsule', x: sx - 20 + dx, y: sy - 5 + dy, w: 40, h: 10, z0: z(TOP + 2), z1: z(TOP + 12), tone: 'dark', rot: DIAL.stop, mechanism: true })
     } else if (i === 1) {
       const ky = knobY(m.slot.p)
-      const pivot = SLOT.knobY + SLOT.pull + 34
+      const pivot = SLOT.pivotY
       out.push({ id: `${tag}slot-mount`, part: 'slot', kind: 'box', x: SLOT.x + SLOT.w - 2 + dx, y: pivot - 10 + dy, w: 50, h: 20, z0: z(0), z1: z(TOP), tone: 'metal', r: 4 })
-      out.push({ id: `${tag}slot-arm`, part: 'slot', kind: 'capsule', x: SLOT.leverX - 6 + dx, y: ky + dy, w: 12, h: pivot - ky, z0: z(TOP), z1: z(TOP + 12), tone: 'raised', mechanism: true })
+      out.push({ id: `${tag}slot-arm`, part: 'slot', kind: 'capsule', x: SLOT.leverX - 6 + dx, y: Math.min(ky, pivot) + dy, w: 12, h: Math.max(1, Math.abs(pivot - ky)), z0: z(TOP), z1: z(TOP + 12), tone: 'raised', v: [ky <= pivot ? 1 : -1], mechanism: true })
       for (let r = 0; r < 3; r++) {
         const strip = SLOT.strips[r]!
         const pos = reelPos(m.slot, r)

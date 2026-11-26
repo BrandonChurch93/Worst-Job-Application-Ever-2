@@ -34,7 +34,7 @@ const T = {
 // Each idea of the acting has its own times: the wind-up, the move, the pose and how long it is held.
 // It looks easy: it stands between the rows, strolls to the first field and taps it as if it owned the page.
 // The page arrives with the cursor in the air at the hand-off place and sets it down there at 0.5 s. The pointer waits under it and then walks to where it stands at rest, so the cursor does not dash across the page after a pointer that stood somewhere else.
-const ARRIVE = { look: 0.56, there: 0.96 }
+const ARRIVE = { look: 0.52, there: 0.8 }
 const EASY = { stroll: 1.06, there: 1.62, tap: T.phone - 0.14 }
 // A row opens under it. The first time it only starts, the second time it rears, the third time it has lost its temper and stamps the field open.
 const DREAD = { phone: { start: T.phone + 0.08, go: T.phone + 0.27 }, birth: { rear: T.birth + 0.08, go: T.birth + 0.5 } }
