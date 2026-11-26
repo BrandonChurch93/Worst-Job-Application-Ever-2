@@ -1,0 +1,108 @@
+{
+  "role": "R2",
+  "round": 10,
+  "unit": "boss",
+  "commit": "020efac56c74aeabb31d88259061fcd868bf4d16",
+  "tier": "final",
+  "engineHash": "a904e95f64b6d933",
+  "sharedHash": "c59d02ddbce49e21",
+  "pageHashes": {
+    "step1": "3792c5cee2f83f56",
+    "step2": "08714a8278e3a199",
+    "marketing": "9965eb282805c02f",
+    "pinball": "86fccdaacf4f1870",
+    "boss": "e22b67bd80711f07",
+    "decision": "0baf0cef7ca90495"
+  },
+  "browser": "147.0.7727.15",
+  "files": {
+    "set-A-01.png": {
+      "set": "A",
+      "critic": "R2-1",
+      "kind": "jury",
+      "heading": "",
+      "judged": {
+        "key": "boss-fight"
+      },
+      "still": {
+        "page": "boss",
+        "beat": "boss.slabs",
+        "at": 0.5,
+        "camera": "home",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-02.png": {
+      "set": "A",
+      "critic": "R2-1",
+      "kind": "jury",
+      "heading": "",
+      "judged": {
+        "key": "boss-down"
+      },
+      "still": {
+        "page": "boss",
+        "beat": "boss.collapse",
+        "at": 1,
+        "camera": "home",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-03.png": {
+      "set": "A",
+      "critic": "R2-1",
+      "kind": "jury",
+      "heading": "",
+      "judged": {
+        "id": "rest-step4"
+      },
+      "still": {
+        "page": "boss",
+        "camera": "home",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-04.png": {
+      "set": "A",
+      "critic": "R2-1",
+      "kind": "jury",
+      "heading": "",
+      "control": "boss-fight",
+      "image": "references/approved/boss-fight.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-05.png": {
+      "set": "A",
+      "critic": "R2-1",
+      "kind": "jury",
+      "heading": "",
+      "control": "boss-down",
+      "image": "references/approved/boss-down.png",
+      "size": [
+        1400,
+        788
+      ]
+    }
+  }
+}
