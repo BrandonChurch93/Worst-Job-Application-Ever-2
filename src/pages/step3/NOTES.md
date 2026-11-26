@@ -86,16 +86,16 @@ Lengths in balls, page coordinates, z up from the page surface. `look(name, eye,
 | 0 | follow | the seal and the tube, the view goes down the page with the ball |
 | 4.2 | `table-wide` | lights down at 4.0, power on at 5.2: the wake is seen whole |
 | 8.5 | `ride` | the ball is on the plunger from 8.3, launched at 9.4 |
-| 11.0 | `tier-3` | the ball comes onto the Corporate tier |
+| 10.6 | `tier-3` | the ball is in the top arc of the launch lane; the move (0.6 s) is over before the first `sling` (11.25) |
 | 13.0 | `table-lobby` | 0.3 s before `doors-slam` (13.31) |
 | 14.3 | follow | the doors have opened (14.1), the flippers are needed |
-| 19.5 | `table-replyall` | the ball is in the inbox, before the first `ball-drop` (20.0) |
+| 19.5 | `table-replyall` | the ball is in the inbox (`inbox-take` 19.0), before the first `ball-drop` (20.8) |
 | 22.2 | follow | the multiball is in play |
 | 27.2 | `table-fired` | the ball is in the firehouse, the `scoop-kick` is at 28.5 |
 | 28.8 | follow | after the kick |
-| 31.0 | `rail` | the ball is on the highway ramp |
-| 32.2 | follow | before the spiral |
-| 34.3 | `table-save` | the ball comes down to the flippers, `flipper-save` at 35.5 |
+| 31.15 | `rail` | the ball is on the highway wire from `ramp-roll` (31.05); a cut before it would jump when the ball takes the wire |
+| 32.3 | follow | a move of 0.6 s up to the home view, over before the spiral (32.7) |
+| 34.3 | `table-save` | the ball comes down to the flippers, `flipper-save` at 35.6 |
 | 36.6 | follow | the drain and the way out |
 
 - Live mode: the view is `follow`, the tier camera of the tier the ball is on, travelling in `live.pinball.tierTravelSeconds`. No close view in live mode yet.

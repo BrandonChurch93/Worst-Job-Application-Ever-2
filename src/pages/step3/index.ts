@@ -116,8 +116,8 @@ const NAMED: Record<string, CameraPose> = {
   'table-save': look('table-save', [MID, Y2 + 13.4, 6.05], [MID, Y2 + 8.6, -2.26])
 }
 const FILM: [number, string, number][] = [
-  [0, 'follow', 0], [4.2, 'table-wide', 0], [8.5, 'ride', 0], [11.0, 'tier-3', 0.6], [13.0, 'table-lobby', 0], [14.3, 'follow', 0], [19.5, 'table-replyall', 0], [22.2, 'follow', 0], [27.2, 'table-fired', 0], [28.8, 'follow', 0],
-  [31.0, 'rail', 0], [32.2, 'follow', 0.6], [34.3, 'table-save', 0], [36.6, 'follow', 0]
+  [0, 'follow', 0], [4.2, 'table-wide', 0], [8.5, 'ride', 0], [10.6, 'tier-3', 0.6], [13.0, 'table-lobby', 0], [14.3, 'follow', 0], [19.5, 'table-replyall', 0], [22.2, 'follow', 0], [27.2, 'table-fired', 0], [28.8, 'follow', 0],
+  [31.15, 'rail', 0], [32.3, 'follow', 0.6], [34.3, 'table-save', 0], [36.6, 'follow', 0]
 ]
 const LENS: Record<string, number> = { 'table-wide': 8, 'table-lobby': 7, 'table-replyall': 12, 'table-fired': 10, 'table-save': 9, rail: 7, ride: 7 }
 const HARD: Record<string, number> = { bumper: 1, sling: 0.7, 'doors-slam': 1.3, 'scoop-kick': 0.8, plunger: 1, 'ball-hit': 0.6, 'drop-target': 0.5, 'mom-save': 1, 'ball-save': 0.8 }
