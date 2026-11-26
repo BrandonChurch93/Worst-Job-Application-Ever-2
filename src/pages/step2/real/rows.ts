@@ -21,6 +21,7 @@ export function trayJoint(s: Shape): THREE.BufferGeometry {
 }
 
 const BEAD = Math.PI / 3
+const COVE = 7
 
 // How far under the liner's top its rolled rim lies, a given way in from the joint.
 const beadDrop = (inset: number): number => {
@@ -33,7 +34,7 @@ const beadDrop = (inset: number): number => {
 const wallAt = (inset: number, top: number, foot: number): number => {
   const from = TRAY.joint + TRAY.rim
   const z = top - beadDrop(TRAY.rim)
-  return z * (1 - Math.min(1, Math.max(0, (inset - from) / (foot - from))))
+  return z * Math.pow(1 - Math.min(1, Math.max(0, (inset - from) / (foot - from))), TRAY.cove)
 }
 
 // The rim: rolled, a hair under the page, polished, so it holds a line of the light all the way round.
@@ -54,7 +55,13 @@ export function trayLiner(s: Shape): THREE.BufferGeometry {
   const top = surface - TRAY.sink
   const from = TRAY.joint + TRAY.rim
   const foot = trayFoot(surface)
-  return sweep(outlineOf(s, 0, 12), profile([[from, wallAt(from, top, foot), true], [foot, 0, true], [foot, -0.4, true]]), false)
+  const points: ProfilePoint[] = [[from, wallAt(from, top, foot), true]]
+  for (let i = 1; i < COVE; i++) {
+    const inset = from + ((foot - from) * i) / COVE
+    points.push([inset, wallAt(inset, top, foot)])
+  }
+  points.push([foot, 0], [foot + 0.6, -0.4, true])
+  return sweep(outlineOf(s, 0, 12), profile(points), false)
 }
 
 // The wall on the light's side sees neither the key nor much of the room: its shade is painted over the liner, strongest where the wall faces away from the key.
@@ -70,10 +77,13 @@ export function trayWallShade(s: Shape): THREE.BufferGeometry {
     [j + TRAY.rim * 0.25, top - beadDrop(TRAY.rim * 0.25) + over, 0, 0],
     [j + TRAY.rim * 0.6, top - beadDrop(TRAY.rim * 0.6) + over, TRAY.rimShade, TRAY.rimShade],
     [from, wallAt(from, top, foot) + over, TRAY.rimShade, TRAY.rimShade],
-    [from + 1.2, wallAt(from + 1.2, top, foot) + over, TRAY.wallShade, TRAY.wallShadeTop],
-    [foot - 1.4, wallAt(foot - 1.4, top, foot) + over, TRAY.wallFoot, TRAY.wallFootTop],
-    [foot, over, TRAY.wallFoot, TRAY.wallFootTop]
+    [from + 0.6, wallAt(from + 0.6, top, foot) + over, TRAY.wallShade, TRAY.wallShadeTop]
   ]
+  for (let i = 1; i <= COVE; i++) {
+    const u = i / COVE
+    const inset = from + (foot - from) * u
+    steps.push([inset, wallAt(inset, top, foot) + over, TRAY.wallShade + (TRAY.wallFoot - TRAY.wallShade) * u, TRAY.wallShadeTop + (TRAY.wallFootTop - TRAY.wallShadeTop) * u])
+  }
   const g = sweep(outline, steps.map(([inset, z]) => ({ inset, z, out: 0, up: 1 })), false)
   const [lx, ly] = look.key.direction
   const l = Math.hypot(lx, ly) || 1

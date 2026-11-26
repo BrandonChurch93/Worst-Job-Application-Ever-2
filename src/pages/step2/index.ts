@@ -577,7 +577,7 @@ export function makePage(): PageLogic {
     if (ready && s.open === 0 && s.dial.phase === 'drag') at = { ...holePlace(s.dial.k, s.dial.a), z: TOP + 3 }
     if (ready && s.open === 1 && s.slot.grab) at = { x: SLOT.leverX, y: knobY(s.slot.p), z: TOP + 40 }
     if (ready && s.open === 2 && (s.crank.grab || (s.crank.phase === 'runaway' && s.crank.t < WIND.long))) {
-      const shown = s.crank.b + s.crank.o
+      const shown = s.crank.b
       const hold = gripPlace(shown, CRANK.arm + CRANK.hold)
       at = { x: hold.x - Math.sin(shown) * CRANK.holdAside, y: hold.y + Math.cos(shown) * CRANK.holdAside, z: TOP + 30 }
     }
