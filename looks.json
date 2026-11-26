@@ -1,35 +1,35 @@
 {
   "folder": "step2-keeper",
-  "pushed": "2026-11-26T04:45:01.212Z",
-  "commit": "14bb13ec86b0e3da7b7e1c51bf3d79860b05e6fc",
+  "pushed": "2026-11-26T04:51:49.857Z",
+  "commit": "0e6071a24a5853655ef7584cee9ad7c9621a6cf4",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still sheet-machines-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-26T04:40:59.538Z",
-      "by": "step2-keeper",
-      "from": "out/work/stills/sheet-machines-hd-review.png"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "Still step2-step2_slot-0p15-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-26T04:41:45.837Z",
-      "by": "step2-keeper",
-      "from": "out/work/stills/step2-step2_slot-0p15-hd-review.png"
-    },
-    {
-      "file": "look-3.jpg",
       "caption": "Slot on the machines sheet at 14bb13ec: approved left, build right; frame thicker and stepped, calmer bevel",
       "time": "2026-11-26T04:44:59.843Z",
       "by": "step2-keeper",
       "from": "out/work/looks/files/20261126044459-slot-compare.jpg"
     },
     {
-      "file": "look-4.jpg",
+      "file": "look-2.jpg",
       "caption": "Dial key close at 14bb13ec: approved left, build right; softer cast shade, darker housing",
       "time": "2026-11-26T04:45:00.078Z",
       "by": "step2-keeper",
       "from": "out/work/looks/files/20261126044500-dial-close.png"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Still key-step2-crank-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T04:46:23.273Z",
+      "by": "step2-keeper",
+      "from": "out/work/stills/key-step2-crank-hd-review.png"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Unlit meter segments at 0e6071a2: approved left, build right; clearer glass, rounded rectangles",
+      "time": "2026-11-26T04:51:48.739Z",
+      "by": "step2-keeper",
+      "from": "out/work/looks/files/20261126045148-pills.png"
     }
   ]
 }
