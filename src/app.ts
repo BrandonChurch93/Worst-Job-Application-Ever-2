@@ -22,7 +22,9 @@ import { layoutProblems } from './shell/layout'
 import { FONTS } from './shell/metrics'
 import { loadFont } from './shell/type'
 import type { QualityId } from './core/quality'
+import { setGlass } from './core/levelGlass'
 import { SmallThings } from './core/levelSmall'
+import { isCoins, Streaks } from './core/levelStreak'
 import { homePose, project, toWorld } from './stage/camera'
 import { panelPlan, type PanelPlan } from './stage/panels'
 import { filmFlow, filmOptions, liveFlow, ScriptDriver, Stage, StillDriver, TURN_HALF, type Frame } from './stage/stage'
@@ -61,6 +63,7 @@ export class App {
   private level: QualityId | null = null
   private hidFine = false
   private small = new SmallThings()
+  private streaks = new Streaks()
   readonly view = new PageView()
   readonly rig = new LightRig()
   readonly camera = new THREE.PerspectiveCamera()
@@ -254,6 +257,8 @@ export class App {
   put(frame: Frame, page: { width: number; height: number }, pose: CameraPose, size?: { width: number; height: number }): void {
     this.view.apply(frame, size ?? { width: page.width, height: page.height })
     this.fine()
+    if (this.engine.levelPlan) this.streaks.apply(this.view.scene, config.film.shutterDegrees / 360, isCoins)
+    else this.streaks.release()
     this.small.apply(this.view.scene, this.engine.levelPlan?.particles ?? 1, config.seed)
     this.shown = { frame, page: 'layout' in page ? (page as PageLogic) : null, pose }
     const cy = pose.target[1]
@@ -271,6 +276,7 @@ export class App {
     this.level = level
     this.rig.setLevel(level)
     this.engine.setLevel(level)
+    setGlass(this.engine.levelPlan?.glass ?? null)
   }
 
   private fine(): void {
