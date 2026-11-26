@@ -1,35 +1,35 @@
 {
   "folder": "table-frame",
-  "pushed": "2026-11-26T02:22:26.428Z",
-  "commit": "39fddc2bf7ff0e4eda57a80c49927146f7bbc61b",
+  "pushed": "2026-11-26T02:42:31.232Z",
+  "commit": "95511d0e78ec94a577ae5b4e6d478bbfa27b3ff2",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-table-wide-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T02:19:38.034Z",
+      "caption": "Still key-tier-street-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T02:40:04.436Z",
       "by": "table-frame",
-      "from": "out/work/stills/key-table-wide-hd-draft.png"
+      "from": "out/work/stills/key-tier-street-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Still key-tier-office-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T02:20:18.275Z",
+      "caption": "table-wide at 95511d0: near rail cut to the slabs' height, side rails sloped down to it, Street flippers show; machine orange 0xc48004",
+      "time": "2026-11-26T02:42:29.684Z",
       "by": "table-frame",
-      "from": "out/work/stills/key-tier-office-hd-draft.png"
+      "from": "out/work/looks/files/20261126024229-b32-table-wide.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "table-wide at 39fddc2 with the apron well applied locally: wide pale land on the left rail, lighter inner walls",
-      "time": "2026-11-26T02:22:24.981Z",
+      "caption": "tier-street at 95511d0: sill at the apron's height, amber bats, apron plates and plaque",
+      "time": "2026-11-26T02:42:29.929Z",
       "by": "table-frame",
-      "from": "out/work/looks/files/20261126022224-b27-table-wide.jpg"
+      "from": "out/work/looks/files/20261126024229-b32-tier-street.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "tier-office crop, approved left, 39fddc2 right: bats with the shared orange 0xc74c00 read red under the tier lamps",
-      "time": "2026-11-26T02:22:25.211Z",
+      "caption": "Street bats: approved above, 95511d0 below",
+      "time": "2026-11-26T02:42:30.159Z",
       "by": "table-frame",
-      "from": "out/work/looks/files/20261126022225-crop-office-cmp.jpg"
+      "from": "out/work/looks/files/20261126024230-cmp-bats.jpg"
     }
   ]
 }
