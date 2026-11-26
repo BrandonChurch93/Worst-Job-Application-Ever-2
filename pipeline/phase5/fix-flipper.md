@@ -72,3 +72,25 @@ Two things in the sequence are not contact physics, and neither sits in the line
 2. The bumper's set throw of 18 balls/s, leaned toward the director's `aim`, back at the raised bat 10 steps later (`aimed()` and `kick()` of `src/table/physics.ts`, the `aim` set by `direct()`).
 
 Strike, bumper and tip contact all fall inside 38 steps (0.16 s, 10 pictures). The film's take plays the same director and the same machine, so a change to either would move the film's take; the machine cannot tell a visitor's press from the film's without a flag set from `src/pages/step3/index.ts`, which is not a file of this piece. No mend in this pass.
+
+## Case (b) in the live site (MEASURED)
+
+`node pipeline/phase5/fix-flipper-live.mjs --phase 0 --hold 6` (Node) and `node pipeline/phase5/fix-flipper-sheet.mjs --name case-b --frames 24 --lead 3 --hold 6` (the browser; the page's place of the ball equals the Node place in all 23 pictures the Node rows cover, the drawn bat is within 0.8 deg):
+
+- The stroke, the strike (29.76 to 18.80 at step 4201) and the bumper's throw (18.00 at step 4211) are the same as with the key held.
+- The key is let go at step 4209; the bat is back at rest at step 4225, before the ball comes down.
+- Step 4247: the ball lands on the flank of the bat at rest: in (5.84, 21.31) 22.10 balls/s, out (-10.93, -3.36) 11.44 balls/s, 17 deg above level to the left. Spin rim speed -14.54 before, -8.26 after.
+- After that: sideways -10.93 every step, down the slope +0.1225 every step.
+
+Sheets: `node pipeline/phase5/fix-flipper-compose.mjs --name case-b --cx 1070 --cy 780 --w 290 --h 440 --cols 4 --rows 2 --out b` (three sheets of 8, real size) and `--name critic --cx 1025 --cy 678 --w 290 --h 356 --cols 4 --rows 3 --from 7 --to 18 --out held` (the held press, pictures 7 to 18).
+
+## What goes to Brandon in plain words
+
+The ball off the flipper is the machine's own physics and the picture shows the machine's own step. What reads as a sideways peel is this: the flipper sends the ball at a bumper that sits a ball and a half above its tip, the bumper throws it straight back within a twentieth of a second, and the ball skids off the flipper at a shallow angle with the spin the stroke gave it. To change that, the shot the director asks for (or where that bumper throws the ball) would have to change, and the film's take plays the same shot, so the film's take would move with it.
+
+## Checks before the first push (MEASURED)
+
+- `npm test`: 140 files, 1764 tests passed.
+- `npm run bots`: "bots: all clear".
+- `npm run still -- --key <step1-fire|table-wide|boss-fight> --format hd --tier draft --force`, then `cmp` against the three made on `origin/main` before any work: byte equal, all three.
+- `npm run determinism` and `npx tsc --noEmit -p .`: see the report.
