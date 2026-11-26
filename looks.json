@@ -1,35 +1,35 @@
 {
   "folder": "frame-finish",
-  "pushed": "2026-11-26T12:12:10.877Z",
-  "commit": "fe8cea32a644ccd87648c34410b3ce814cc2ac97",
+  "pushed": "2026-11-26T12:22:27.151Z",
+  "commit": "3286ac8116cc634e74802d7162fc28533d4fbc5f",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "table-wide, marquee: approved left, build right (dark title on the dusk sky, no band; M4 green at 4.62)",
-      "time": "2026-11-26T12:12:09.121Z",
+      "caption": "Key tier-office: approved on the left, this build on the right, draft tier, with crops of shape:model.office.cubicles, shape:bumper.office.bumper.3, shape:model.office.coffee, shape:model.office.inbox, shape:sling.office.sling.left.1+sling.office.sling.left.2+sling.office.sling.left.3, shape:flipper.office.flipper.left, cursor, shape:insert.office.insert.1, shape:lift.elbow.office",
+      "time": "2026-11-26T12:19:05.574Z",
       "by": "frame-finish",
-      "from": "out/work/frame-finish/fourth-title.jpg"
+      "from": "out/work/compare/compare-tier-office.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "reply-all, cups and steel balls: approved left, build right (white moulded lids, mirror balls)",
-      "time": "2026-11-26T12:12:09.346Z",
+      "caption": "Key table-wide: approved on the left, this build on the right, draft tier, with crops of shape:marquee.back, shape:model.corporate.hq, shape:bumper.office.bumper.3, shape:model.street.firehouse, shape:model.street.garage, shape:flipper.street.flipper.left, apronCard, cursor, shape:plunger.knob",
+      "time": "2026-11-26T12:21:04.666Z",
       "by": "frame-finish",
-      "from": "out/work/frame-finish/fourth-lids-balls.jpg"
+      "from": "out/work/compare/compare-table-wide.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "loader-page, cup and tube: approved left, build right (near black dish, bright lip, flange collar)",
-      "time": "2026-11-26T12:12:09.582Z",
+      "caption": "table-wide: approved left, build right (wider bright brushed cap on the rails, walls navy, mean 1.004 of approved)",
+      "time": "2026-11-26T12:22:25.777Z",
       "by": "frame-finish",
-      "from": "out/work/frame-finish/fourth-loader.jpg"
+      "from": "out/work/frame-finish/fifth-table-wide.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "table-wide: approved left, build right (dark front lands, navy walls, mean 0.976 of approved)",
-      "time": "2026-11-26T12:12:09.819Z",
+      "caption": "tier-office: approved left, build right (bright cap at both sides; drawn at tone 2.1, pushed at 1.9)",
+      "time": "2026-11-26T12:22:26.016Z",
       "by": "frame-finish",
-      "from": "out/work/frame-finish/fourth-table-wide.jpg"
+      "from": "out/work/frame-finish/fifth-tier-office.jpg"
     }
   ]
 }
