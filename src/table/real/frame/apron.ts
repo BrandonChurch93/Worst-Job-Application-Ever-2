@@ -5,13 +5,12 @@ import { local, localBalls, localOf, shapesIn, type Zone } from '../zone'
 import { Geo, roundedLoop, type V2 } from './geo'
 import { Screws, TONE, aluOf, clearOf, mesh, paintOf, screwOf, shade } from './mats'
 
-const SLAB = { height: 16, bevel: 3.2, corner: 10, inlay: 9, line: 1.5, grain: 0.03 }
+const SLAB = { height: 16, bevel: 6.5, corner: 18, cuts: 4, grain: 0.02 }
 // The frame round the apron: the two rails run on from the street tier and a slim rail closes them in front. `low` is how high they stand where the apron lies at the page's own height.
 export const EDGE = { gap: 1.6, near: 44, low: 7, chamfer: 3, deck: 3, slot: [86, 40] as V2, bezel: 7, skin: 1.2, skirt: 1, panel: 10 }
 const WALL: [number, number, number] = [0.2, 0.208, 0.22]
-// The sunk panel of each side rail's south end, seen end on from the player's end: a quiet dark face.
-const SLOPE: [number, number, number] = [0.06, 0.063, 0.068]
 const CARD = { cover: 12, thick: 2.6, lift: 1.4 }
+const THROAT = { long: 150, deep: 80, cheek: 12 }
 
 export function apron(z: Zone, ctx: RealContext): THREE.Object3D {
   const C = new Geo()
@@ -56,21 +55,18 @@ export function apron(z: Zone, ctx: RealContext): THREE.Object3D {
   const wedge = (g: Geo, x0: number, x1: number, d: number, top: [number, number, number] | null, at0: [number, number, number] | null, at1: [number, number, number] | null): void => {
     const a = Hn - d
     const b = H - d
-    if (top) g.face([[x0, y0, a], [x1, y0, a], [x1, yT, b], [x0, yT, b]], up, run, top)
+    if (top) g.face([[x0, y0, a], [x1, y0, a], [x1, yT, b], [x0, yT, b]], up, [1, 0, 0], top)
     if (at0) g.face([[x0, y0, 0], [x0, y0, a], [x0, yT, b], [x0, yT, 0]], [-1, 0, 0], [0, 1, 0], at0)
     if (at1) g.face([[x1, y0, 0], [x1, y0, a], [x1, yT, b], [x1, yT, 0]], [1, 0, 0], [0, 1, 0], at1)
   }
-  // Each side rail comes down as a slim rail at the machine's edge, one with the near rail, and a dark sunk panel inside it.
+  // Each side rail comes down to the near rail as one land of brushed aluminium, from the page's edge to the lane.
   const side = (x0: number, x1: number, inner: 0 | 1): void => {
     if (sunk) {
-      const d = EDGE.panel
-      const xs = inner === 1 ? X(0) + EDGE.near : X(20) - EDGE.near
-      const [r0, r1, p0, p1] = inner === 1 ? [x0, xs, xs, x1] : [xs, x1, x0, xs]
-      wedge(A, r0, r1, 0, TONE.aluBright, null, null)
-      wedge(A, p0, p1, d, SLOPE, inner === 0 ? WALL : null, inner === 1 ? WALL : null)
-      A.face([[xs, y0, Hn - d], [xs, y0, Hn], [xs, yT, H], [xs, yT, H - d]], [inner === 1 ? 1 : -1, 0, 0], run, WALL)
-      A.face([[p0, yT, H - d], [p1, yT, H - d], [p1, yT, H], [p0, yT, H]], [0, -1, 0], [1, 0, 0], WALL)
-      for (const t of [0.3, 0.8]) screws.add((r0 + r1) / 2, y0 + (yT - y0) * t, heightAt(y0 + (yT - y0) * t), 0.7, x0 + t, new THREE.Vector3(...up))
+      const [a, b] = inner === 1 ? [X(0), x1] : [x0, X(20)]
+      wedge(A, a, b, 0, TONE.aluBright, inner === 0 ? TONE.alu : TONE.aluDark, inner === 1 ? TONE.alu : TONE.aluDark)
+      A.face([[a, yT, 0], [b, yT, 0], [b, yT, H], [a, yT, H]], [0, 1, 0], [1, 0, 0], TONE.aluDark)
+      const xm = inner === 1 ? a + EDGE.near / 2 : b - EDGE.near / 2
+      for (const t of [0.3, 0.8]) screws.add(xm, y0 + (yT - y0) * t, heightAt(y0 + (yT - y0) * t), 0.7, x0 + t, new THREE.Vector3(...up))
       return
     }
     const o: V2[] = [[x0, 0], [x0, H - c], [x0 + c, H], [x1 - c, H], [x1, H - c], [x1, 0]]
@@ -78,13 +74,9 @@ export function apron(z: Zone, ctx: RealContext): THREE.Object3D {
     for (const t of [0.3, 0.8]) screws.add((x0 + x1) / 2, y0 + (yT - y0) * t, H, 0.9, x0 + t)
   }
   if (sunk) {
-    // Outside the rails the machine's edge comes down with them. The outside of the near end is one face of aluminium.
-    const skin = yB + EDGE.skin
-    for (const [x0, x1, out] of [[X(0), xb - EDGE.gap, 0], [xe + EDGE.gap, X(20), 1]] as [number, number, 0 | 1][]) {
-      wedge(A, x0, x1, 0, TONE.aluBright, out === 0 ? TONE.alu : null, out === 1 ? TONE.alu : null)
-      C.box(x0, x1, skin, y0, 0, Hn, TONE.ceramic, { along: [0, 1, 0] })
-    }
-    A.box(X(0), X(20), yB, skin, -EDGE.skirt * BALL, Hn, TONE.alu, { along: [1, 0, 0], top: TONE.aluBright })
+    // The outside of the near end is one face of aluminium.
+    A.box(X(0), X(20), yB, yB + EDGE.skin, -EDGE.skirt * BALL, Hn, TONE.alu, { along: [1, 0, 0], top: TONE.aluBright })
+    for (const [x0, x1] of [[X(0), xb], [xe, X(20)]] as [number, number][]) A.box(x0, x1, yB + EDGE.skin, y0, 0, Hn, TONE.alu, { along: [0, 1, 0], top: TONE.aluBright })
   }
   side(xb, xa, 1)
   side(xc, xe, 0)
@@ -92,15 +84,38 @@ export function apron(z: Zone, ctx: RealContext): THREE.Object3D {
   const near: V2[] = [[0, 0], [0, Hn - c], [c, Hn], [y0 - front - c, Hn], [y0 - front, Hn - c], [y0 - front, 0]]
   A.prism(near, [xe, front], [xb, front], tone(near, Hn))
   for (let i = 0; i < 9; i++) screws.add(xb + 60 + ((xe - xb - 120) * i) / 8, yB + EDGE.near / 2, Hn, 0.9, i * 1.7)
-  // The cast plate the two fields lie on, from rail to rail.
-  C.box(xa, xc, yB + EDGE.near, yT, 0, EDGE.deck, shade(TONE.ceramic, 0.82), { bevel: 0.8 })
+  let throat: [number, number, number, number] | null = null
   for (const id of ['apron-left', 'apron-right']) {
     const s = boxOf(id)
     if (!s) continue
     // The slab the card lies on, whichever of the two it is, ends at the card's underside.
     const under = !!card && (card.x0 + card.x1) / 2 > s.x0 && (card.x0 + card.x1) / 2 < s.x1
     const top = under ? card.z0 : Math.max(SLAB.height, s.z1)
-    C.slab(roundedLoop(s.x0, s.x1, s.y0, s.y1, SLAB.corner, 5), 0, top, TONE.ceramic, { bevel: SLAB.bevel })
+    // The slab's edge is turned over in a soft round, not cut to a line.
+    const r = SLAB.bevel
+    const ring = (d: number): V2[] => roundedLoop(s.x0 + d, s.x1 - d, s.y0 + d, s.y1 - d, SLAB.corner - d, 5)
+    const at = (i: number): [number, number] => [r * (1 - Math.cos((i / SLAB.cuts) * (Math.PI / 2))), top - r + r * Math.sin((i / SLAB.cuts) * (Math.PI / 2))]
+    const foot = ring(0)
+    for (let j = 0; j < foot.length; j++) {
+      const p = foot[j]!
+      const q = foot[(j + 1) % foot.length]!
+      C.face([[p[0], p[1], 0], [q[0], q[1], 0], [q[0], q[1], top - r], [p[0], p[1], top - r]], [q[1] - p[1], p[0] - q[0], 0], [q[0] - p[0], q[1] - p[1], 0], TONE.ceramic)
+    }
+    for (let i = 0; i < SLAB.cuts; i++) {
+      const [d0, z0] = at(i)
+      const [d1, z1] = at(i + 1)
+      const lo = ring(d0)
+      const hi = ring(d1)
+      const a = ((i + 0.5) / SLAB.cuts) * (Math.PI / 2)
+      for (let j = 0; j < lo.length; j++) {
+        const k = (j + 1) % lo.length
+        const p = lo[j]!
+        const q = lo[k]!
+        const l = Math.hypot(q[0] - p[0], q[1] - p[1]) || 1
+        C.face([[p[0], p[1], z0], [q[0], q[1], z0], [hi[k]![0], hi[k]![1], z1], [hi[j]![0], hi[j]![1], z1]], [((q[1] - p[1]) / l) * Math.cos(a), ((p[0] - q[0]) / l) * Math.cos(a), Math.sin(a)], [q[0] - p[0], q[1] - p[1], 0], TONE.ceramic)
+      }
+    }
+    C.slab(ring(r), top - 0.01, top, TONE.ceramic, { sides: false })
     C.map(0, (x, y) => [x + 960, z.top + z.height / 2 - y])
     P.slab(roundedLoop(s.x0 - 1.4, s.x1 + 1.4, s.y0 - 1.4, s.y1 + 1.4, SLAB.corner + 1.4, 5), 0, 0.5, TONE.gap, { sides: false })
   }
@@ -124,22 +139,37 @@ export function apron(z: Zone, ctx: RealContext): THREE.Object3D {
     const t = plate.z1 - plate.z0
     A.slab(roundedLoop(p[0] - w - 3, p[0] + w + 3, p[1] - h - 3, p[1] + h + 3, 7, 4), 0, t - 1.2, TONE.brass, { bevel: 1 })
     P.slab(roundedLoop(p[0] - w, p[0] + w, p[1] - h, p[1] + h, 5, 4), 0, t, TONE.paper, { bevel: 1.2 })
-    // The drain's mouth under the plate is a square slot in a bezel of aluminium, as wide as the two grey blocks that carry the plate stand apart: the screws of the blocks and of the bezel share their columns.
+    // The drain's mouth under the plate is a deep throat: two sloped cheeks of aluminium run down into the dark, from the plate to the near rail.
     const b = EDGE.bezel
     const sw = Math.max(EDGE.slot[0] / 2, w - 13 - b / 2)
-    const sh = EDGE.slot[1] / 2
+    const top = 6
+    const ya = p[1] - h - 4
+    const yb = Math.max(yB + EDGE.near + 3, ya - THROAT.long)
+    const deep = -THROAT.deep
+    const xi = sw - THROAT.cheek
+    throat = [p[0] - sw - b, p[0] + sw + b, yb, ya]
     for (const side of [-1, 1]) {
-      const bx = p[0] + side * (sw + b / 2)
-      A.box(bx - 13, bx + 13, p[1] - h - 30, p[1] - h - 3, 0, t - 1.6, TONE.aluDark, { bevel: 1.4, along: [0, 1, 0] })
-      screws.add(bx, p[1] - h - 16, t - 1.6, 0.8, side * 0.9)
+      const x0 = p[0] + side * (sw + b)
+      const x1 = p[0] + side * sw
+      const x2 = p[0] + side * xi
+      A.box(Math.min(x0, x1), Math.max(x0, x1), yb, ya, 0, top, TONE.alu, { bevel: 1.2, along: [0, 1, 0], top: TONE.aluBright })
+      A.face([[x1, yb, top - 1], [x1, ya, top - 1], [x2, ya, deep], [x2, yb, deep]], [-side * (top - 1 - deep), 0, THROAT.cheek], [0, 1, 0], TONE.alu)
+      for (const t of [0.14, 0.86]) screws.add((x0 + x1) / 2, yb + (ya - yb) * t, top, 0.6, side + t * 3)
     }
-    const cy = p[1] - h - 34 - sh
-    A.box(p[0] - sw - b, p[0] + sw + b, cy + sh, cy + sh + b, 0, 5, TONE.alu, { bevel: 1.2, along: [1, 0, 0] })
-    A.box(p[0] - sw - b, p[0] + sw + b, cy - sh - b, cy - sh, 0, 5, TONE.alu, { bevel: 1.2, along: [1, 0, 0] })
-    A.box(p[0] - sw - b, p[0] - sw, cy - sh, cy + sh, 0, 5, TONE.alu, { bevel: 1.2, along: [0, 1, 0] })
-    A.box(p[0] + sw, p[0] + sw + b, cy - sh, cy + sh, 0, 5, TONE.alu, { bevel: 1.2, along: [0, 1, 0] })
-    P.box(p[0] - sw, p[0] + sw, cy - sh, cy + sh, 0, EDGE.deck + 0.4, TONE.pocket)
-    for (const sx of [-1, 1]) for (const sy of [-1, 1]) screws.add(p[0] + sx * (sw + b / 2), cy + sy * (sh + b / 2), 5, 0.5, sx + sy * 2)
+    P.face([[p[0] - xi, yb, deep], [p[0] + xi, yb, deep], [p[0] + xi, ya, deep], [p[0] - xi, ya, deep]], [0, 0, 1], [1, 0, 0], TONE.pocket)
+    P.face([[p[0] - sw, ya, deep], [p[0] + sw, ya, deep], [p[0] + sw, ya, top - 1], [p[0] - sw, ya, top - 1]], [0, -1, 0], [1, 0, 0], TONE.pocket)
+    P.face([[p[0] - sw, yb, deep], [p[0] + sw, yb, deep], [p[0] + sw, yb, top - 1], [p[0] - sw, yb, top - 1]], [0, 1, 0], [1, 0, 0], TONE.pocket)
+  }
+  // The cast plate the two fields lie on, from rail to rail, open where the drain's throat goes down through it.
+  {
+    const tone = shade(TONE.ceramic, 0.82)
+    const y0d = yB + EDGE.near
+    if (throat) {
+      C.box(xa, throat[0], y0d, yT, 0, EDGE.deck, tone, { bevel: 0.8 })
+      C.box(throat[1], xc, y0d, yT, 0, EDGE.deck, tone, { bevel: 0.8 })
+      C.box(throat[0], throat[1], throat[3], yT, 0, EDGE.deck, tone, { bevel: 0.8 })
+      if (throat[2] - y0d > 0.5) C.box(throat[0], throat[1], y0d, throat[2], 0, EDGE.deck, tone, { bevel: 0.8 })
+    } else C.box(xa, xc, y0d, yT, 0, EDGE.deck, tone, { bevel: 0.8 })
   }
   if (C.vertices > 0) {
     const plates = mesh(C, paintOf(z, 'slab', SLAB.grain), `table-frame.ceramic.${z.id}`, { cast: z.floor >= 0 })

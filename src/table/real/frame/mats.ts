@@ -61,7 +61,7 @@ export const roomOf = (z: Zone): Zone | undefined => (LIT.includes(z.id) ? z : z
 export const aluOf = (z: Zone, name = 'alu'): THREE.MeshPhysicalMaterial => {
   const src = materials().aluminium
   const on = roomOf(z) !== undefined
-  const m = steel(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: on ? 0.27 : 0.4, metalness: on ? 1 : 0.4, normalMap: src.normalMap ? fine(src.normalMap) : null, normalScale: new THREE.Vector2(on ? 0.24 : 0.15, on ? 0.24 : 0.15), anisotropy: 0.72, anisotropyRotation: Math.PI / 2 })), z, { ceiling: 1, panel: 1.3, wide: 0.3, horizon: 1.3, direct: 0.3, under: 0.5, wall: 0.06 }, roomOf(z))
+  const m = steel(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: on ? 0.27 : 0.4, metalness: on ? 1 : 0.4, normalMap: src.normalMap ? fine(src.normalMap) : null, normalScale: new THREE.Vector2(on ? 0.11 : 0.15, on ? 0.11 : 0.15), anisotropy: 0.72, anisotropyRotation: Math.PI / 2 })), z, { ceiling: 1, panel: 1.3, wide: 0.3, horizon: 1.3, direct: 0.3, under: 1.8, wall: 0.8 }, roomOf(z))
   if (!on) {
     const room = m.onBeforeCompile
     const key = m.customProgramCacheKey
@@ -84,19 +84,52 @@ export const liftOf = (z: Zone): { value: number } => {
 const LIFT = { keeps: 0.92, least: 0.03 }
 export const liftFor = (website: number): number => (website + LIFT.keeps * (1 - website)) / Math.max(website, LIFT.least)
 
+const CLOUD = /* glsl */ `
+float wjfHash( vec2 p ) { return fract( sin( dot( p, vec2( 127.1, 311.7 ) ) ) * 43758.5453 ); }
+float wjfCloud( vec2 p ) {
+	vec2 i = floor( p );
+	vec2 f = fract( p );
+	f = f * f * ( 3.0 - 2.0 * f );
+	return mix( mix( wjfHash( i ), wjfHash( i + vec2( 1.0, 0.0 ) ), f.x ), mix( wjfHash( i + vec2( 0.0, 1.0 ) ), wjfHash( i + vec2( 1.0, 1.0 ) ), f.x ), f.y );
+}
+`
+
 export const paintOf = (z: Zone, name = 'paint', grain = 0.035): THREE.MeshPhysicalMaterial => {
   const src = materials().ceramic
   const m = studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.66, metalness: 0, normalMap: src.normalMap, normalScale: new THREE.Vector2(grain, grain), specularIntensity: 0.55 }))
   if (!LIT.includes(z.id)) {
     const room = m.onBeforeCompile
+    // A cast slab is not one even colour: it is clouded, a little warmer here and greyer there, and worn paler along its edges.
+    const cloud = name === 'slab'
     m.onBeforeCompile = (shader, renderer) => {
       room.call(m, shader, renderer)
       shader.uniforms.wjfLift = liftOf(z)
       shader.fragmentShader = 'uniform float wjfLift;\n' + shader.fragmentShader.replace('#include <aomap_fragment>', 'reflectedLight.directDiffuse *= wjfLift;\nreflectedLight.indirectDiffuse *= wjfLift;\n#include <aomap_fragment>')
+      if (cloud) {
+        shader.vertexShader = 'varying vec3 wjfAt;\n' + shader.vertexShader.replace('#include <project_vertex>', 'wjfAt = transformed;\n#include <project_vertex>')
+        shader.fragmentShader = 'varying vec3 wjfAt;\n' + CLOUD + shader.fragmentShader.replace('#include <color_fragment>', '#include <color_fragment>\nfloat wjfC = wjfCloud( wjfAt.xy * 0.011 ) * 0.6 + wjfCloud( wjfAt.xy * 0.037 + 7.3 ) * 0.28 + wjfCloud( wjfAt.xy * 0.13 + 2.1 ) * 0.12;\ndiffuseColor.rgb *= mix( vec3( 0.86, 0.855, 0.84 ), vec3( 1.0, 0.985, 0.95 ), smoothstep( 0.25, 0.75, wjfC ) );')
+      }
     }
-    m.customProgramCacheKey = () => 'wja-studio-frame-paint-lift'
+    m.customProgramCacheKey = () => (cloud ? 'wja-studio-frame-paint-lift-cloud' : 'wja-studio-frame-paint-lift')
   }
   return own(lit(m, z), `frame.${name}.${z.id}`)
+}
+
+// The bowl of the loader's port: plain dark satin, and a rim of light under the ring's lip that breathes. A vertex whose red is over one is the rim's.
+export const BREATH = { value: 0.6 }
+export const bowlOf = (z: Zone): THREE.MeshPhysicalMaterial => {
+  const m = studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.62, metalness: 0, specularIntensity: 0.25 }))
+  const room = m.onBeforeCompile
+  m.onBeforeCompile = (shader, renderer) => {
+    room.call(m, shader, renderer)
+    shader.uniforms.wjfBreath = BREATH
+    shader.fragmentShader = 'uniform float wjfBreath;\n' + shader.fragmentShader
+      .replace('#include <color_fragment>', '#include <color_fragment>\nfloat wjfRim = step( 1.5, vColor.r );\ndiffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.5, 0.48, 0.44 ), wjfRim );')
+      .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\ntotalEmissiveRadiance += vec3( 1.0, 0.9, 0.74 ) * wjfBreath * wjfRim;')
+  }
+  m.customProgramCacheKey = () => 'wja-studio-frame-bowl'
+  m.userData.lit = true
+  return own(lit(m, z), `frame.bowl.${z.id}`)
 }
 
 export const steelOf = (z: Zone): THREE.MeshPhysicalMaterial => {
@@ -108,7 +141,7 @@ export const screwOf = (z: Zone): THREE.MeshPhysicalMaterial => own(lit(steel(st
 
 // Clear plastic with no light passed through it: thin where it is seen straight on, bright where it turns away and wherever a lamp shines in it, with the dark line a clear wall shows just inside its edge.
 export const clearOf = (z: Zone, name = 'clear', base = 0.06): THREE.MeshPhysicalMaterial => {
-  const m = studio(new THREE.MeshPhysicalMaterial({ color: 0x8a9296, roughness: 0.06, metalness: 0, transparent: true, opacity: base, depthWrite: false, specularIntensity: 1, clearcoat: 1, clearcoatRoughness: 0.04 }))
+  const m = studio(new THREE.MeshPhysicalMaterial({ color: 0x8a9296, vertexColors: name === 'tube', roughness: 0.06, metalness: 0, transparent: true, opacity: base, depthWrite: false, specularIntensity: 1, clearcoat: 1, clearcoatRoughness: 0.04 }))
   // Under the lamps a clear tube shows them as long thin lines down its wall.
   const line = name === 'tube' && roomOf(z) !== undefined
   const room = m.onBeforeCompile
@@ -116,10 +149,10 @@ export const clearOf = (z: Zone, name = 'clear', base = 0.06): THREE.MeshPhysica
     room.call(m, shader, renderer)
     shader.fragmentShader = shader.fragmentShader.replace(
       '#include <tonemapping_fragment>',
-      'float wjfTurn = 1.0 - abs( dot( normalize( vViewPosition ), normalize( normal ) ) );\nfloat wjfEdge = pow( wjfTurn, 1.6 );\nfloat wjfDark = smoothstep( 0.6, 0.78, wjfTurn ) * ( 1.0 - smoothstep( 0.86, 0.96, wjfTurn ) );\ngl_FragColor.rgb *= 1.0 - 0.72 * wjfDark;\n' + (line ? 'vec3 wjfR = normalize( ( wjaViewInverse * vec4( reflect( - normalize( vViewPosition ), normalize( normal ) ), 0.0 ) ).xyz );\nfloat wjfLine = gl_FrontFacing ? exp( - ( wjfR.z - 0.84 ) * ( wjfR.z - 0.84 ) / 0.0009 ) * ( 0.2 + 0.8 * smoothstep( -0.25, 0.3, wjfR.x + 0.6 * wjfR.y ) ) : 0.0;\ngl_FragColor.rgb += vec3( 0.8, 0.86, 0.88 ) * wjfLine * 0.9;\n' : 'float wjfLine = 0.0;\n') + 'gl_FragColor.a = clamp( diffuseColor.a + wjfEdge * 0.62 + wjfDark * 0.22 + wjfLine * 0.4 + dot( outgoingLight, vec3( 0.3333 ) ) * 0.45, 0.0, 1.0 );\n#include <tonemapping_fragment>'
+      'float wjfTurn = 1.0 - abs( dot( normalize( vViewPosition ), normalize( normal ) ) );\nfloat wjfEdge = pow( wjfTurn, 1.6 );\nfloat wjfDark = smoothstep( 0.6, 0.78, wjfTurn ) * ( 1.0 - smoothstep( 0.86, 0.96, wjfTurn ) );\ngl_FragColor.rgb *= 1.0 - 0.72 * wjfDark;\n' + (line ? 'vec3 wjfR = normalize( ( wjaViewInverse * vec4( reflect( - normalize( vViewPosition ), normalize( normal ) ), 0.0 ) ).xyz );\nfloat wjfLine = gl_FrontFacing ? exp( - ( wjfR.z - 0.84 ) * ( wjfR.z - 0.84 ) / 0.0009 ) * ( 0.2 + 0.8 * smoothstep( -0.25, 0.3, wjfR.x + 0.6 * wjfR.y ) ) : 0.0;\ngl_FragColor.rgb += vec3( 0.8, 0.86, 0.88 ) * wjfLine * 0.9;\n' : 'float wjfLine = 0.0;\n') + 'gl_FragColor.a = clamp( diffuseColor.a + wjfEdge * 0.62 + wjfDark * 0.22 + wjfLine * 0.4 + dot( outgoingLight, vec3( 0.3333 ) ) * 0.45, 0.0, 1.0 );\n' + (name === 'tube' ? '#ifdef USE_COLOR\nif ( vColor.r < 0.5 ) gl_FragColor = vec4( 0.07, 0.062, 0.055, vColor.g );\n#endif\n' : '') + '#include <tonemapping_fragment>'
     )
   }
-  m.customProgramCacheKey = () => (line ? 'wja-studio-frame-clear-line-3' : 'wja-studio-frame-clear')
+  m.customProgramCacheKey = () => (line ? 'wja-studio-frame-clear-line-4' : name === 'tube' ? 'wja-studio-frame-clear-tube' : 'wja-studio-frame-clear')
   return own(lit(m, z), `frame.${name}.${z.id}`)
 }
 

@@ -15,18 +15,19 @@ export const hex = (h: number): RGB => {
 export const shade = (c: RGB, k: number): RGB => [c[0] * k, c[1] * k, c[2] * k]
 
 // The finishes of the hardware. One material carries them all: a vertex picks its finish through its texture coordinate.
-export const FIN = { steel: 0, alu: 1, brass: 2, rubber: 3, gloss: 4, dark: 5, zinc: 6, satin: 7, chrome: 8 }
+export const FIN = { steel: 0, alu: 1, brass: 2, rubber: 3, gloss: 4, dark: 5, zinc: 6, satin: 7, chrome: 8, spring: 9 }
 // Clear coat, roughness, metalness of each finish.
 const FINISH: [number, number, number][] = [
   [0, 0.09, 1],
   [0, 0.3, 1],
   [0, 0.2, 1],
-  [0, 0.9, 0],
-  [1, 0.34, 0],
+  [0, 0.68, 0],
+  [1, 0.22, 0],
   [0, 0.5, 0.6],
   [0, 0.3, 1],
   [0, 0.5, 0],
-  [0, 0.035, 1]
+  [0, 0.035, 1],
+  [0, 0.26, 0.35]
 ]
 
 export const TONE = {
@@ -36,9 +37,9 @@ export const TONE = {
   aluDark: hex(0x9da2a8),
   brass: hex(0xd0a858),
   brassDark: hex(0x9a7636),
-  rubber: hex(0xdcd8cc),
-  rubberLine: hex(0xeeeae0),
-  rubberWorn: hex(0xbdb8aa),
+  rubber: hex(0x1c1c1e),
+  rubberLine: hex(0x38383b),
+  rubberWorn: hex(0x2a2a2c),
   rubberBlack: hex(0x222223),
   orange: hex(MACHINE_ORANGE),
   knob: hex(MACHINE_ORANGE),
@@ -128,7 +129,7 @@ export const metalOf = (z: Zone): THREE.MeshPhysicalMaterial => {
     }
   }
   m.customProgramCacheKey = () => `wja-studio-hardware-metal-${from === z ? 'lit' : from ? 'foot' : 'page'}`
-  m = lit(steel(m, z, { ceiling: 0.035, panel: 0.34, wide: 0.12, horizon: 1.25, sky: 0.6, paint: 0.4 }, from), z)
+  m = lit(steel(m, z, { ceiling: 0.3, panel: 0.5, wide: 0.12, horizon: 1.25, sky: 0.8, paint: 0.4 }, from), z)
   m.name = `hardware.${z.id}`
   made.set(z.id, m)
   return m
