@@ -15,7 +15,7 @@ export const SLOT_LOOK = {
   drum: { r: 62, crest: 50, w: 88, lip: 2.2, flat: 0.4, fall: 3.6 },
   line: { z: 53.1, r: 0.6, pin: 1.9, glow: 0.06 },
   sheen: { top: 0.1, streak: 0.045, order: 800001 },
-  lever: { rod: 4.6, pivotX: 11, pivotZ: 28, barrel: 9, barrelW: 19, collar: 4, foot: -2, head: 22 },
+  lever: { rod: 4.6, pivotX: 11, pivotZ: 28, barrel: 9, barrelW: 19, collar: 4, foot: -2, head: 22, ferrule: 7, ferruleAt: 27 },
   coin: { r: 13, t: 4, teeth: 64, most: 16, flight: 14, tilt: 1.05 },
   mouthFloor: 8.5,
   glassOrder: 800000
@@ -89,7 +89,7 @@ function own(): Own {
   const glass = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x10161b), roughness: 0.05, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.03, specularIntensity: 1, envMapIntensity: 1.5, transparent: true, opacity: 0.12, depthWrite: false }))
   const well = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x1d1c1b), roughness: 0.8, metalness: 0, specularIntensity: 0.3 }))
   const gold = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xecc163), roughness: 0.36, metalness: 1, envMapIntensity: 1.5, normalMap: face, normalScale: new THREE.Vector2(1, 1) }))
-  const rod = studio(new THREE.MeshPhysicalMaterial({ color: m.chrome.color, roughness: 0.2, metalness: 1 }))
+  const rod = studio(new THREE.MeshPhysicalMaterial({ color: m.chrome.color, roughness: 0.14, metalness: 1 }))
   const frame = studio(m.aluminium.clone())
   frame.color = srgb(0x6a6e72)
   frame.roughness = 0.5
@@ -273,8 +273,16 @@ function arm(): THREE.Group {
     return out
   })
   const rod = mesh(g, own().rod)
-  root.add(rod)
+  const f = shared('ferrule', () => {
+    const r = L.lever.rod
+    const out = lathe([[r + 0.3, 0, true], [r + 1.9, 0.9, true], [r + 1.9, L.lever.ferrule - 0.9, true], [r + 0.3, L.lever.ferrule, true]], 28)
+    out.rotateX(-Math.PI / 2)
+    return out
+  })
+  const ferrule = mesh(f, materials().chrome)
+  root.add(rod, ferrule)
   root.userData.rod = rod
+  root.userData.ferrule = ferrule
   return root
 }
 
@@ -432,6 +440,11 @@ export const slot: PartMaker | null = {
     const climb = L.lever.head - L.lever.foot
     rod.position.set(0, -run / 2, L.lever.foot)
     rod.rotation.x = Math.atan2(climb, run)
-    rod.scale.y = Math.hypot(run, climb)
+    const long = Math.hypot(run, climb)
+    rod.scale.y = long
+    const ferrule = o.userData.ferrule as THREE.Mesh
+    const back = Math.min(L.lever.ferruleAt, long - L.lever.ferrule)
+    ferrule.rotation.x = rod.rotation.x
+    ferrule.position.set(0, run / 2 - (run / long) * back, L.lever.head - (climb / long) * back)
   }
 }

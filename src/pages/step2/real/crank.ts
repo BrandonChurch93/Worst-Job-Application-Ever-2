@@ -11,7 +11,7 @@ export const CRANK_LOOK = {
   full: { base: 26, hub: 22, arm: 10, grip: 24, meter: 20 }, pill: 6.5, pillRound: 2.4,
   plate: 8, rim: 3.6, screwAt: 38, screw: 4.8, washer: 25.5, neck: 20, eye: 3.4, bar: 0.8, end: 0.5, fillet: 9, cap: 16.5,
   grip: { cap: 0.95, round: 2.5, square: 3.2, taper: 0.9, seamAt: 9, seam: 0.07, collar: 0.05 },
-  tie: { low: 1.05, gain: 1.15, second: 0.22, sharp: 4, axis: 2.5, capAxis: 2.2 },
+  tie: { low: 0.82, gain: 1.7, second: 0.3, sharp: 3, axis: 2.5, capAxis: 2.2 },
   lamp: { colour: [1, 0.46, 0.12] as [number, number, number], power: 0.16, reach: 170, lift: 14, most: 4 }
 }
 const L = CRANK_LOOK
@@ -170,7 +170,7 @@ function armOutline(len: number, wide: number): ReturnType<typeof outline> {
 
 function arm(s: Shape): THREE.Group {
   const H = L.full.arm
-  const g = shared(`arm:${s.w}:${s.h}`, () => sweep(armOutline(s.w, s.h), profile([[0.7, 0, true], [0, 0.7], [0, H - 2.4], ...arc(0, H - 2.4, 2.4, 2.4, 6)])))
+  const g = shared(`arm:${s.w}:${s.h}`, () => sweep(armOutline(s.w, s.h), profile([[0.7, 0, true], [0, 0.7], [0, H - 3.1], [0.35, H - 2.4], [2.4, H - 0.35], [3.1, H]])))
   const root = new THREE.Group()
   root.add(mesh(g, own().bar))
   return root
