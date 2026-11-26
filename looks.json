@@ -1,35 +1,35 @@
 {
   "folder": "machine-runner",
-  "pushed": "2026-11-26T08:57:14.980Z",
-  "commit": "df109cb5cedf8ecb857cbacc98852e36a53cbac7",
+  "pushed": "2026-11-26T09:19:27.501Z",
+  "commit": "9a71dee0ea4deeffc65cd2b80a03bfd1f4375870",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Sheet clear-ball: approved above, the build below as three panels (draft): on the Street flipper with sweat, in flight, pressed at the Office cup",
-      "time": "2026-11-26T08:57:11.184Z",
+      "caption": "Key lobby-doors: approved on the left, this build on the right, draft tier, with crops of shape:hq.plate, shape:hq.doorway, cursor, shape:hold.corporate.revolving.post, shape:post.corporate.globe.right, shape:model.corporate.hq, shape:flat.corporate.carpet",
+      "time": "2026-11-26T09:17:01.789Z",
       "by": "machine-runner",
-      "from": "out/work/mr/look-clear-ball.jpg"
+      "from": "out/work/compare/compare-lobby-doors.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "20.5 s, draft: the close camera has pushed in on the ball held in the inbox, the arrow alarmed and held before the copies pour",
-      "time": "2026-11-26T08:57:11.681Z",
+      "caption": "lobby-doors, approved left, the build right at draft: the camera 12.4 degrees down, the arrow fitted by the view",
+      "time": "2026-11-26T09:19:25.840Z",
       "by": "machine-runner",
-      "from": "out/work/mr/a.jpg"
+      "from": "out/work/mr/look-lobby.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "17.35 s before (left) and 17.37 s after the acting on hits (right), draft: the arrow is struck across the hit axis and pressed short after the bumper",
-      "time": "2026-11-26T08:57:12.242Z",
+      "caption": "the way in at 4.4, 4.7, 5.0 and 5.3 s: the tiers wake while the website's light goes down, darkest 0.58 of settled",
+      "time": "2026-11-26T09:19:26.079Z",
       "by": "machine-runner",
-      "from": "out/work/mr/look-nest.jpg"
+      "from": "out/work/mr/wayin.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "2.76 s, draft: the arrow caught in the loader's shell, flinch held as the shell closes",
-      "time": "2026-11-26T08:57:12.660Z",
+      "caption": "after merge 30 and the fitting view: youre-fired, rail-cam, last-save, table-wide at draft, true acting states in the glass",
+      "time": "2026-11-26T09:19:26.315Z",
       "by": "machine-runner",
-      "from": "out/work/mr/l.jpg"
+      "from": "out/work/mr/look-keys.jpg"
     }
   ]
 }
