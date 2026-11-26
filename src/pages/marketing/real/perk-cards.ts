@@ -34,7 +34,7 @@ export function cardGlass(): THREE.MeshPhysicalMaterial {
   return glassMade
 }
 
-export const GLASS = { colour: 0xcbd5d2, shade: 0.9, band: 1.2, exit: 1.26, rim: 1.55, glint: 0.7, line: 1.08, wash: 0.07, warm: 0.07, lean: 0.03, caster: 2.2, least: 0.4, most: 2, through: 0.8 }
+export const GLASS = { colour: 0xc4cecb, shade: 0.27, after: 0.6, exit: 1.4, rim: 1.8, glint: 0.25, line: 0.9, wash: 0.13, warm: 0.07, lean: 0.03, caster: 4.2, least: 0.4, most: 2, through: 0.8 }
 
 const keyFlat = Math.hypot(look.key.direction[0], look.key.direction[1]) || 1
 const KX = look.key.direction[0] / keyFlat
@@ -58,16 +58,17 @@ function face(s: Shape, half: number, flip: number, open: boolean): THREE.Buffer
     { d: 0, z: 0, lit: G.glint, away: 0.9, lean: 1 },
     { d: 0, z: foot - SLAB.round, lit: G.glint, away: 1, lean: 1 },
     { d: 0.5, z: foot - 0.5, lit: G.glint, away: G.rim, lean: 0.5, warm: 1 },
-    { d: SLAB.round, z: foot, lit: G.glint + 0.04, away: G.rim, lean: G.lean * 2, warm: 1 },
-    { d: SLAB.round + 1.4, z: foot + SLAB.rise * 0.2, lit: G.glint + 0.1, away: G.exit, lean: G.lean, warm: 0.5 },
-    { d: SLAB.round + bevel * 0.42, z: foot + SLAB.rise * 0.62, lit: G.band, away: G.exit - 0.03, lean: G.lean },
-    { d: SLAB.round + bevel - 1.6, z: foot + SLAB.rise * 0.97, lit: G.band - 0.02, away: G.exit - 0.08, lean: G.lean },
-    { d: SLAB.round + bevel - 0.4, z: half, lit: G.shade, away: G.line, lean: 0.05 },
-    { d: SLAB.round + bevel + 1, z: half, lit: G.shade, away: G.line - 0.02, lean: 0 },
-    { d: SLAB.round + bevel + SLAB.flat, z: half, lit: G.shade + 0.03, away: G.line - 0.03, lean: 0 }
+    { d: SLAB.round, z: foot, lit: G.shade, away: G.rim, lean: G.lean * 2, warm: 1 },
+    { d: SLAB.round + 1.4, z: foot + SLAB.rise * 0.2, lit: G.shade, away: G.exit, lean: G.lean, warm: 0.5 },
+    { d: SLAB.round + bevel * 0.42, z: foot + SLAB.rise * 0.62, lit: G.shade - 0.02, away: G.exit - 0.04, lean: G.lean },
+    { d: SLAB.round + bevel - 1.6, z: foot + SLAB.rise * 0.97, lit: G.shade + 0.02, away: G.exit - 0.02, lean: G.lean },
+    { d: SLAB.round + bevel - 0.4, z: half, lit: G.line, away: G.exit, lean: 0.05 },
+    { d: SLAB.round + bevel + 1, z: half, lit: G.line, away: G.exit, lean: 0 },
+    { d: SLAB.round + bevel + SLAB.flat, z: half, lit: open ? 0.9 : G.after, away: open ? 1.04 : G.exit - 0.02, lean: 0 }
   ]
+  if (!open) rings.push({ d: SLAB.round + bevel + SLAB.flat + bevel * 0.6, z: half, lit: (1 + G.after) / 2 + 0.05, away: (1 + G.exit) / 2 - 0.03, lean: 0 }, { d: SLAB.round + bevel + SLAB.flat + bevel * 1.4, z: half, lit: 1, away: 1, lean: 0 })
   const lowest = Math.min(s.w, s.h) / 2
-  if (!open) for (const f of [0.3, 0.65]) rings.push({ d: SLAB.round + bevel + SLAB.flat + f * (lowest - SLAB.round - bevel - 3), z: half, lit: 1, away: 1, lean: 0 })
+  if (!open) for (const f of [0.3, 0.65]) rings.push({ d: SLAB.round + bevel * 2.4 + SLAB.flat + f * (lowest - SLAB.round - bevel * 2.4 - SLAB.flat - 1), z: half, lit: 1, away: 1, lean: 0 })
   const outline = outlineOf(s, SLAB.frame, 14)
   const n = outline.count
   const pos: number[] = []

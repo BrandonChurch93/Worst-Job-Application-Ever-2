@@ -262,9 +262,9 @@ export function makePage(): PageLogic {
   }
 
   function ticker(out: DrawList): void {
-    const left = TICKER.x + TICKER.edge
-    const right = TICKER.x + TICKER.w - TICKER.edge
-    out.push({ id: 'ticker-tape', part: 'ticker', kind: 'box', x: left, y: TICKER.y + TICKER.edge, w: right - left, h: TICKER.h - TICKER.edge * 2, z0: TICKER.floor, z1: TICKER.tape, tone: 'paper' })
+    const left = TICKER.x + TICKER.clip
+    const right = TICKER.x + TICKER.w - TICKER.clip
+    out.push({ id: 'ticker-tape', part: 'ticker', kind: 'box', x: TICKER.x + TICKER.edge, y: TICKER.y + TICKER.edge, w: TICKER.w - TICKER.edge * 2, h: TICKER.h - TICKER.edge * 2, z0: TICKER.floor, z1: TICKER.tape, tone: 'paper' })
     out.push({ id: 'ticker-glass', part: 'ticker', kind: 'box', x: TICKER.x, y: TICKER.y, w: TICKER.w, h: TICKER.h, r: TICKER.r, z0: 0, z1: TICKER.thick, tone: 'glass', mechanism: true })
     const items = rejected() ? afterItems : tapeItems
     const length = rejected() ? afterLength : tapeLength

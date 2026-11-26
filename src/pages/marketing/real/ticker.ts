@@ -6,7 +6,7 @@ import type { Shape } from '../../../stage/types'
 import { dims, mesh, q, shared, srgb } from './careers-solids'
 import { cardGlass, GLASS, glassOptions, groundEdge, SLAB, slabGeometry } from './perk-cards'
 
-export const TICKER_LOOK = { clear: 0.1, wedge: 4.4, caster: 2.2, dot: 0x3c4043 }
+export const TICKER_LOOK = { clear: 0.1, wedge: 4.4, caster: 2.6, dot: 0x3c4043 }
 
 let tapeMade: THREE.MeshPhysicalMaterial | null = null
 let paneMade: THREE.MeshPhysicalMaterial | null = null
