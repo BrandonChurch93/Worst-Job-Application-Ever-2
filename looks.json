@@ -1,0 +1,35 @@
+{
+  "folder": "frame-keeper",
+  "pushed": "2026-11-26T04:41:18.509Z",
+  "commit": "b9ab1cba01ed428eedbcdb9f35df18f11adb8df0",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "youre-fired, approved left, draft right at e41b0768: the tall brushed wall behind the firehouse went from (96,81,77) to (52,42,41), approved (29,34,38)",
+      "time": "2026-11-26T04:41:16.827Z",
+      "by": "frame-keeper",
+      "from": "out/work/looks/files/20261126044116-cmp-youre-fired.png"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "loader-page crop, approved left, draft right at e41b0768: bowl near black and deep, ring toned down; the tube's bed still reads as a dark box across the ring",
+      "time": "2026-11-26T04:41:17.048Z",
+      "by": "frame-keeper",
+      "from": "out/work/looks/files/20261126044117-cmp-loader-page.png"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "last-save, approved left, draft right at 33f80334: bats without the eye, shoulders low, drain slot on the screw grid; the camera is higher than approved's",
+      "time": "2026-11-26T04:41:17.266Z",
+      "by": "frame-keeper",
+      "from": "out/work/looks/files/20261126044117-cmp-last-save.png"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "table-wide, approved left, draft right at e41b0768: side walls dark, marquee foot dark; machine proportions are the layout's",
+      "time": "2026-11-26T04:41:17.488Z",
+      "by": "frame-keeper",
+      "from": "out/work/looks/files/20261126044117-cmp-table-wide.png"
+    }
+  ]
+}
