@@ -110,3 +110,35 @@ Decisions:
 - `SAG_AT` 1.66 to 1.57: the boss dies 0.08 s later now (27.32 s), the sag stays at 28.89 s.
 - The boss hides header stations 1 and 2 (`over`) once the cannons unfold: the discs are the cannons' then.
 - Sent to look_finisher (11:12): the arrow's contour beside "Invalid input" (R9-2 issue 4), R9-1 issue 6, and the glass of the card (R1-1 issues 10 and 15). No answer yet, nothing agreed.
+
+## After the first pass (11:34 to 12:00)
+
+Looks since the first pass, by part: acting-boss about 20 in all (sheets of unfold, verify, popups, last stand, press); boss-body 18 + 3 (two texel stills, one key `boss-down`); boss-transform 16; boss-weapons 5; verify-card 2; health-bar 5.
+
+The eight added acting issues:
+
+| issue | what was changed | state |
+| --- | --- | --- |
+| R9-1 7 dodge, own fire | a pale flash at the tip for every dart (`TIP_FLASH` in `src/boss/fight.ts`), a nub at the fill's end on every landing (`STRUCK_GLOW`) | sheets looked at; tip flash and bar flash not looked at close |
+| R9-1 8 dialogs as cover | the arrow stands below the first dialog and its shots stop on it (`BLOCKED`), goes round the second (`ROUND`), is hit once (`STRUCK`) and holds a shake for 0.9 s (`SHAKE`, `dustOff`) | sheet `pop-a` looked at; the shake's read not judged close |
+| R9-1 9 bar fills back | the arrow goes under the bar (`BAR`) and holds there from 22.86 to 24.15 s while it fills | sheet looked at |
+| R9-2 9 scared | thrown back, runs behind the left edge of the card (`COVER`), cowers still; pale, stiff and the lean are the body's | sheet `unfold-b` looked at |
+| R9-2 10 confidence | `jump` at 9.25 s then `rear` before the first slab; darts flash at the tip | sheet looked at |
+| R9-2 11 anger | `fume` on the later dialogs and after "really", no knock; the red tip from inside is the body's | sheet looked at |
+| R9-2 12 double take | `startle` and shocked as the banner lands, `doubleTake` at the bar's jump, held under the bar | sheet looked at |
+| R9-2 13 proud | `act('proud')` with `dustOff`, pointer held on the button to the turn | sheet `press-c` looked at |
+
+Decisions:
+
+- M2 on the sheet `boss-stages`: the bevel facets of the plates carried the brushing stretched; `grained()` in `src/boss/real/body.ts` lays it at full density on the four plate geometries.
+- `boss-down`, the arrow (Builder, 11:53): the scrap was the kit's `exhausted` melt, 0.41 at the key, where the body's ink outline has faded to 0.16. `SAG_AT` 1.57 to 1.7: the sag now begins at 28.93 s, so at the key the arrow is slumped and leaning with its outline (melt 0.20, ink about 0.7). Size untouched. The melt runs on after the key; the body and its material are look_finisher's.
+- The press stays at 29.88 s.
+
+MEASURED:
+
+| what | command | number |
+| --- | --- | --- |
+| M2 before the fix, 11:47 | `npm run measure -- --unit boss --tier review` | M2 red 0.0254 against 0.02 on `sheet:boss-stages`, 7 green 1 red |
+| soft texels after the fix | `npm run still -- --sheet boss-stages --format hd --tier review --diag texels`, own count | 4 soft of 91790 textured pixels |
+| melt at the key | trace of `stage.cursor.pose().feel` | 0.411 before, 0.198 after |
+| gate 11:54 | `npm test`, `npm run build`, `npm run bots` | 117 files, 1472 of 1472; build ok; bots all clear |
