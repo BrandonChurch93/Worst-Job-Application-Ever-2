@@ -32,7 +32,7 @@ Unit `decision`, page `step5`. Files: `layout.ts` (the page and its places), `ti
 
 ## Seen, not mine to change
 
-- A stand-in shape that floats above the page (the stamp block in the air, the letter while it drops) casts a hollow shadow in the blockout view: an outline, with light inside it. A shape that rests on the page is right. The cause is not known. This page only gives the shape its place and its height. The stamp flies at 200 to 220 and is carried at 120, under the 320 the lamps cover.
+- A stand-in shape that floats above the page (the stamp block in the air, the letter while it drops) casts a hollow shadow in the blockout view: an outline, with light inside it. A shape that rests on the page is right. The cause is not known. This page only gives the shape its place and its height. The foot of the stamp flies at 120 to 140, rises to 170 in the wind up before the hit, and is carried at 120. Its top stands 164 px over its foot, so for the 0.24 s of the wind up the top of the grip is at up to 334, which is 14 px over the 320 the lamps cover; no fault was seen in the frames of the hit.
 
 ## The real parts (Phase 4)
 
