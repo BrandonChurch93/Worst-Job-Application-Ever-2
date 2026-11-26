@@ -21,11 +21,11 @@ export const ROW_Y = HEADER.contentY
 export const PITCH = 144
 export const TRAY_GAP = 12
 export const TRAY_H = 250
-export const TRAY_R = 14
+export const TRAY_R = 18
 // A tray's liner, in page pixels, and the shade its wall lays on its floor.
-export const TRAY = { sink: 0.5, joint: 0.3, jointDeep: 0.7, rim: 8, lean: 1.3, wallShade: 0.55, wallLit: 1, soakOver: 0.5,
+export const TRAY = { sink: 0.5, joint: 0.3, jointDeep: 0.7, rim: 6.5, lean: 1.25, rimShade: 0.8, wallShade: 0.5, wallShadeTop: 0.22, wallFoot: 0.36, wallFootTop: 0.05, cool: 0.12, soakOver: 0.5,
   floor: { soak: 0.3, hold: 0.2, reach: 20, bounce: 0.12, bounceReach: 9, base: 1, side: 0.8 },
-  soak: { soak: 0.88, hold: 1, reach: 10, bounce: 0.16, bounceReach: 12, base: 0.76, side: 0.8 } }
+  soak: { soak: 0.88, hold: 1, reach: 10, bounce: 0.16, bounceReach: 12, base: 0.76, side: 0.8, cool: 0.14 } }
 export const SHIFT = TRAY_H + TRAY_GAP
 export const TRAY_Z = heights.machineTray
 export const TOP = heights.machineMinTop
@@ -47,9 +47,11 @@ export const DIAL = {
 
 // The dial's body, in page pixels: how tall it stands on the tray's floor, how much of it shows before it has risen, and its turned steps.
 export const DIAL_BODY = {
-  tall: TOP + 2 - TRAY_Z, rest: 1.6, plateLeast: 0.4, below: 2, plate: 6.2, bezel: 9, bezelDrop: 2, wheel: 89.2, thick: 4.8, chamfer: 1, holeRim: 0.4, holeChamfer: 2,
-  hub: 30, hubTall: 17, hubFlat: 0.02, hubCoat: 0.03, hubRough: 0.1, hubIor: 1.9, turned: 256, cut: 0.012, faceRough: 0.2, faceStretch: 1, faceLight: 1.5, seat: 5, seatGap: 1.8, stopIn: 71, stopOut: 109, stopWide: 12, stopClear: 3, stopTall: 8, stopFoot: 12,
-  shade: 0.46, shadeReach: 0.78, cast: 0.78, castIn: 8, castOut: 40, castAway: 26, castOver: 0.2
+  tall: TOP + 2 - TRAY_Z, rest: 1.6, plateLeast: 0.4, below: 2, plate: 6.6, bezel: 10, bezelDrop: 0.8, bezelChamfer: 2, bezelSlope: 0.9, wheel: 88.4, thick: 5.2, chamfer: 1, holeRim: 0.8, holeChamfer: 2.6,
+  hub: 30, hubTall: 17, hubFlat: 0.02, hubCoat: 0.14, hubRough: 0.4, hubIor: 1.5, hubEnv: 0.3, hubLift: 1.6, hubFoot: 3, hubStep: 3.2, hubSeat: 3, hubSeatDeep: 1.8, turned: 256, cut: 0.012, faceRough: 0.17, faceStretch: 1, faceLight: 1.45,
+  housingDark: 0.86, housingRough: 0.22, seat: 9, seatGap: 1.8, seatTall: 10, seatSlope: 1, stopIn: 71, stopOut: 109, stopWide: 12, stopClear: 3, stopTall: 8, stopFoot: 12,
+  glint: 0.5, glintLong: 13, glintWide: 10, glintOut: 9, glintUp: 17.3,
+  shade: 0.6, shadeReach: 0.78, cast: 0.78, castIn: 8, castOut: 40, castAway: 26, castOver: 0.2
 }
 
 // How far the top of the dial's wheel stands above the tray's floor when the machine has risen by `lift` (0 to 1). Before it rises it lies in the tray's floor, its wheel under the floor of a field, its hub and its stop drawn down into it.
@@ -64,7 +66,7 @@ export const SLOT = {
   reelW: 92, reelH: 106, reelGap: 12,
   reelX: (r: number): number => sx + 18 + r * (92 + 12),
   reelY: sy + PAD + 22,
-  leverX: sx + 336 + 34, knobY: sy + PAD + 30, pull: 96, knob: 44,
+  leverX: sx + 336 + 34, knobY: sy + PAD + 30, pull: 96, knob: 44, pivotY: sy + PAD + 58,
   payX: sx + 60, payY: sy + PAD + 150 + 8, payW: 216, payH: 22,
   strips: [Object.keys(legends.months).sort(), Object.keys(legends.days).sort(), Object.keys(legends.years).sort()] as string[][],
   names: ['months', 'days', 'years'] as const,

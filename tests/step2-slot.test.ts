@@ -9,7 +9,7 @@ import type { Shape } from '../src/stage/types'
 
 const shape = (id: string, kind: Shape['kind'], x: number, y: number, w: number, h: number, z0: number, z1: number, tone: Shape['tone'], over: Partial<Shape> = {}): Shape => ({ id, part: 'slot', kind, x, y, w, h, z0, z1, tone, ...over })
 
-const pivot = SLOT.knobY + SLOT.pull + 34
+const pivot = SLOT.pivotY
 
 const shapes = (tag = '', p = 0): Shape[] => [
   shape(`${tag}slot-cabinet`, 'box', SLOT.x, SLOT.y, SLOT.w, SLOT.h, TRAY_Z, TOP + 8, 'metal', { r: 12 }),
@@ -18,7 +18,7 @@ const shapes = (tag = '', p = 0): Shape[] => [
   shape(`${tag}slot-knob`, 'disc', SLOT.leverX - 22, SLOT.knobY + SLOT.pull * p - 22, 44, 44, TOP + 12, TOP + 40, 'accent'),
   shape(`${tag}slot-payout`, 'box', SLOT.payX, SLOT.payY, SLOT.payW, SLOT.payH, TRAY_Z, 6, 'dark', { r: 6 }),
   shape(`${tag}slot-mount`, 'box', SLOT.x + SLOT.w - 2, pivot - 10, 50, 20, 0, TOP, 'metal', { r: 4 }),
-  shape(`${tag}slot-arm`, 'capsule', SLOT.leverX - 6, SLOT.knobY + SLOT.pull * p, 12, pivot - (SLOT.knobY + SLOT.pull * p), TOP, TOP + 12, 'raised')
+  shape(`${tag}slot-arm`, 'capsule', SLOT.leverX - 6, Math.min(SLOT.knobY + SLOT.pull * p, pivot), 12, Math.max(1, Math.abs(pivot - (SLOT.knobY + SLOT.pull * p))), TOP, TOP + 12, 'raised', { v: [SLOT.knobY + SLOT.pull * p <= pivot ? 1 : -1] })
 ]
 
 const coins = (tag: string, n: number): Shape[] => Array.from({ length: n }, (_, k) => shape(`${tag}coin-${k}`, 'disc', 1100 + k * 30, 700 + k * 7, 26, 26, k * 9, k * 9 + 4, 'light', { rot: k * 0.8 }))
@@ -176,19 +176,22 @@ describe('the slot machine', () => {
     expect(coinPose(1, 2, 12, 0.4, 0.5, 3, m).elements).toEqual(a)
   })
 
-  it('shortens the lever as the knob comes down, and keeps the rod round', () => {
+  it('hangs the lever from its bracket when it is pulled, and keeps the rod round', () => {
     const { ctx } = context([])
     const rest = shapes('', 0).find((s) => s.id === 'slot-arm')!
     const pulled = shapes('', 1).find((s) => s.id === 'slot-arm')!
     const o = slot!.make(rest, ctx)
     slot!.pose!(o, rest, ctx)
     const rod = meshes(o)[0]!
-    const long = rod.scale.y
     expect(rod.scale.x).toBe(1)
     expect(rod.scale.z).toBe(1)
+    expect(rod.scale.y).toBeGreaterThan(rest.h)
+    expect(rod.parent!.rotation.z).toBe(0)
     slot!.pose!(o, pulled, ctx)
-    expect(rod.scale.y).toBeLessThan(long)
     expect(rod.scale.y).toBeGreaterThan(pulled.h)
+    expect(rod.parent!.rotation.z).toBeCloseTo(Math.PI, 6)
+    expect(pulled.y).toBe(pivot)
+    expect(rest.y + rest.h).toBe(pivot)
   })
 
   it('hides the machine while it is down in its tray', () => {

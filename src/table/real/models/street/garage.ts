@@ -77,7 +77,7 @@ export function garage(b: Buckets, z: Zone): void {
   const base = S.base
   const top = S.base + S.h
   const pitch = SPIRAL.pitch * BALL
-  const con = rgb(0xc6c9c9)
+  const con = rgb(0x9aa5b0)
   const pts = tube(z)
   const N = 96
   const step = (Math.PI * 2) / N
@@ -127,8 +127,8 @@ export function garage(b: Buckets, z: Zone): void {
       done += n
     }
   })
-  const cols = 12
-  const half = 8
+  const cols = 8
+  const half = 7
   const rib = 3
   const fin = 2
   const piece = 6
@@ -214,7 +214,7 @@ export function garage(b: Buckets, z: Zone): void {
     const m = [g.mark(), b.metal.mark(), b.glow.mark()]
     b.metal.rod([Ro, 0, l.z + 12], [l.r - 3, 0, l.z + 3], 1.1, 8, TONE.steel)
     b.metal.box(Ro - 0.4, Ro + 1.6, -4, 4, l.z + 7, l.z + 16, TONE.steel, { under: true })
-    g.box(l.r - 9, l.r + 7, -6, 6, l.z + 1.2, l.z + 5, TONE.iron, { bevel: 1.2, kind: KIND.gloss, under: true })
+    g.box(l.r - 8, l.r + 6, -5, 5, l.z + 1.2, l.z + 4.6, shade(con, 0.72), { bevel: 1.2, kind: KIND.gloss, under: true })
     b.glow.box(l.r - 7.5, l.r + 5.5, -4.6, 4.6, l.z, l.z + 1.2, [1.9, 1.7, 1.3], { under: true, skip: 't' })
     g.place(m[0]!, cx, cy, 0, a)
     b.metal.place(m[1]!, cx, cy, 0, a)

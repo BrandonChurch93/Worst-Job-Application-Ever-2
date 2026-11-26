@@ -249,53 +249,69 @@
     {
       "name": "rows",
       "unit": "step2",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/pages/step2/index.ts",
-        "src/pages/step2/layout.ts"
+        "src/pages/step2/real/rows.ts"
       ],
-      "standInHash": "9353d3d9b8eeaad461a88c690cffde88320ab2b2b531344d747ba9406a4ba4a5",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "9f0123d9d18ad540595851e1320aaeff6261a8fd569efee9879426d8fcf8a448",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/pages/step2/real/rows.ts": "absent"
+      }
     },
     {
       "name": "dial",
       "unit": "step2",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/pages/step2/index.ts",
-        "src/pages/step2/layout.ts"
+        "src/pages/step2/real/dial.ts"
       ],
-      "standInHash": "9353d3d9b8eeaad461a88c690cffde88320ab2b2b531344d747ba9406a4ba4a5",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "c0e8b2ac13048fc7991f6d476a8e2a6d9891561ec7a5b2bc34cce80ac6cb3e1e",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/pages/step2/real/dial.ts": "absent"
+      }
     },
     {
       "name": "slot",
       "unit": "step2",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/pages/step2/index.ts",
-        "src/pages/step2/layout.ts"
+        "src/pages/step2/real/slot-kit.ts",
+        "src/pages/step2/real/slot.ts"
       ],
-      "standInHash": "9353d3d9b8eeaad461a88c690cffde88320ab2b2b531344d747ba9406a4ba4a5",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "68f33e9f450180531b123ae471d3442357c31c0635f3dc9c38da77261bd2ac9e",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/pages/step2/real/slot-kit.ts": "absent",
+        "src/pages/step2/real/slot.ts": "absent"
+      }
     },
     {
       "name": "crank",
       "unit": "step2",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/pages/step2/layout.ts"
+        "src/pages/step2/real/crank.ts"
       ],
-      "standInHash": "d2f8780fa85b28bb2fe711d9e8e51403b8e77d80b18f15eec7346b6bd608b656",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "7d31da98187a3e763b728a8ac82a4e77bd2920f33f14badb5dee98cceb6c2cb4",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/pages/step2/real/crank.ts": "absent"
+      }
     },
     {
       "name": "acting-step2",
       "unit": "step2",
-      "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "state": "finished",
+      "files": [
+        "src/pages/step2/script.ts"
+      ],
+      "standInHash": "e7dcc1600512280d5e785977c980997260a64f213b18ababf5f8af7daa76049f",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/pages/step2/script.ts": "729ee568a01a9cf67a8e72e9d6b9d0484d32519f"
+      }
     },
     {
       "name": "careers-page",
@@ -371,455 +387,683 @@
     {
       "name": "table-layout",
       "unit": "pinball",
-      "state": "stand-in",
-      "files": [
-        "src/table/draw.ts"
-      ],
-      "standInHash": "189bc8169cf1e24f75f934b560359bdd0beb8e30870ccd229943d1ef1ef72aea",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
-    },
-    {
-      "name": "table-frame",
-      "unit": "pinball",
-      "state": "stand-in",
-      "files": [
-        "src/pages/step3/index.ts",
-        "src/table/draw.ts"
-      ],
-      "standInHash": "dcd2e7969e23cb52bfb9a5576b91dfa2f65c8cedb556466229fe18e4edbe0dbd",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
-    },
-    {
-      "name": "marquee",
-      "unit": "pinball",
-      "state": "stand-in",
-      "files": [
-        "src/pages/step3/index.ts",
-        "src/table/draw.ts"
-      ],
-      "standInHash": "dcd2e7969e23cb52bfb9a5576b91dfa2f65c8cedb556466229fe18e4edbe0dbd",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
-    },
-    {
-      "name": "loader",
-      "unit": "pinball",
-      "state": "stand-in",
-      "files": [
-        "src/pages/step3/index.ts",
-        "src/table/draw.ts"
-      ],
-      "standInHash": "dcd2e7969e23cb52bfb9a5576b91dfa2f65c8cedb556466229fe18e4edbe0dbd",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
-    },
-    {
-      "name": "tier-art",
-      "unit": "pinball",
-      "state": "stand-in",
-      "files": [
-        "src/table/layout.ts"
-      ],
-      "standInHash": "03348f4abe0e085234d0072835d8a86f6bc80910f5854cc155415713b5c75e50",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
-    },
-    {
-      "name": "table-hardware",
-      "unit": "pinball",
-      "state": "stand-in",
-      "files": [
-        "src/table/draw.ts"
-      ],
-      "standInHash": "189bc8169cf1e24f75f934b560359bdd0beb8e30870ccd229943d1ef1ef72aea",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
-    },
-    {
-      "name": "flippers",
-      "unit": "pinball",
-      "state": "stand-in",
-      "files": [
-        "src/table/draw.ts"
-      ],
-      "standInHash": "189bc8169cf1e24f75f934b560359bdd0beb8e30870ccd229943d1ef1ef72aea",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
-    },
-    {
-      "name": "bumpers",
-      "unit": "pinball",
-      "state": "stand-in",
-      "files": [
-        "src/table/draw.ts"
-      ],
-      "standInHash": "189bc8169cf1e24f75f934b560359bdd0beb8e30870ccd229943d1ef1ef72aea",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
-    },
-    {
-      "name": "targets",
-      "unit": "pinball",
-      "state": "stand-in",
-      "files": [
-        "src/table/draw.ts"
-      ],
-      "standInHash": "189bc8169cf1e24f75f934b560359bdd0beb8e30870ccd229943d1ef1ef72aea",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
-    },
-    {
-      "name": "ramps",
-      "unit": "pinball",
-      "state": "stand-in",
-      "files": [
-        "src/table/draw.ts"
-      ],
-      "standInHash": "189bc8169cf1e24f75f934b560359bdd0beb8e30870ccd229943d1ef1ef72aea",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
-    },
-    {
-      "name": "lift",
-      "unit": "pinball",
-      "state": "stand-in",
-      "files": [
-        "src/table/draw.ts"
-      ],
-      "standInHash": "189bc8169cf1e24f75f934b560359bdd0beb8e30870ccd229943d1ef1ef72aea",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
-    },
-    {
-      "name": "displays",
-      "unit": "pinball",
-      "state": "stand-in",
-      "files": [
-        "src/pages/step3/index.ts",
-        "src/table/draw.ts"
-      ],
-      "standInHash": "dcd2e7969e23cb52bfb9a5576b91dfa2f65c8cedb556466229fe18e4edbe0dbd",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
-    },
-    {
-      "name": "clear-ball",
-      "unit": "pinball",
-      "state": "stand-in",
-      "files": [
-        "src/pages/step3/index.ts",
-        "src/table/draw.ts"
-      ],
-      "standInHash": "dcd2e7969e23cb52bfb9a5576b91dfa2f65c8cedb556466229fe18e4edbe0dbd",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
-    },
-    {
-      "name": "table-lights",
-      "unit": "pinball",
-      "state": "stand-in",
-      "files": [
-        "src/pages/step3/index.ts",
-        "src/table/draw.ts"
-      ],
-      "standInHash": "dcd2e7969e23cb52bfb9a5576b91dfa2f65c8cedb556466229fe18e4edbe0dbd",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
-    },
-    {
-      "name": "table-physics",
-      "unit": "pinball",
-      "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
-    },
-    {
-      "name": "director",
-      "unit": "pinball",
-      "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
-    },
-    {
-      "name": "table-cameras",
-      "unit": "pinball",
-      "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
-    },
-    {
-      "name": "model-hq",
-      "unit": "pinball",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
         "src/table/draw.ts",
         "src/table/layout.ts"
       ],
-      "standInHash": "f7d094becd9eb088aeeecf332df03fb891f61a04090db6dad46dd41a2071e9f7",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "59c3f2e65cd49c491a0d204e0dadf552bdda728f8749b49aaba2614b8421c7c9",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/table/draw.ts": "729ee568a01a9cf67a8e72e9d6b9d0484d32519f",
+        "src/table/layout.ts": "729ee568a01a9cf67a8e72e9d6b9d0484d32519f"
+      }
+    },
+    {
+      "name": "table-frame",
+      "unit": "pinball",
+      "state": "finished",
+      "files": [
+        "src/table/real/frame/apron.ts",
+        "src/table/real/frame/geo.ts",
+        "src/table/real/frame/index.ts",
+        "src/table/real/frame/mats.ts",
+        "src/table/real/frame/skyline.ts",
+        "src/table/real/frame/steel.ts",
+        "src/table/real/frame/tier.ts"
+      ],
+      "standInHash": "2a8a53b9834ca9af4acaaf9936f1094ffea3b07155938ad8e1b1a8eea1191084",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/table/real/frame/apron.ts": "absent",
+        "src/table/real/frame/geo.ts": "absent",
+        "src/table/real/frame/index.ts": "absent",
+        "src/table/real/frame/mats.ts": "absent",
+        "src/table/real/frame/skyline.ts": "absent",
+        "src/table/real/frame/steel.ts": "absent",
+        "src/table/real/frame/tier.ts": "absent"
+      }
+    },
+    {
+      "name": "marquee",
+      "unit": "pinball",
+      "state": "finished",
+      "files": [
+        "src/table/real/frame/marquee.ts"
+      ],
+      "standInHash": "bfeb00b5cc9155ae84a5305f0ba6ecd1a8c6d10e27ee8b1db63fe0df15e524ee",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/table/real/frame/marquee.ts": "absent"
+      }
+    },
+    {
+      "name": "loader",
+      "unit": "pinball",
+      "state": "finished",
+      "files": [
+        "src/table/real/frame/loader.ts"
+      ],
+      "standInHash": "a54aebe61ca1c231b72cc746431d99083d11af58c5ca3a5ba7ca198f45c88dd6",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/table/real/frame/loader.ts": "absent"
+      }
+    },
+    {
+      "name": "tier-art",
+      "unit": "pinball",
+      "state": "finished",
+      "files": [
+        "src/table/real/art/floor.ts",
+        "src/table/real/art/index.ts",
+        "src/table/real/art/inserts.ts",
+        "src/table/real/art/windows.ts"
+      ],
+      "standInHash": "daffcaf1df0d279492ae40d349222af9dd72b724f9680f3a4f5c5377e5059831",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/table/real/art/floor.ts": "absent",
+        "src/table/real/art/index.ts": "absent",
+        "src/table/real/art/inserts.ts": "absent",
+        "src/table/real/art/windows.ts": "absent"
+      }
+    },
+    {
+      "name": "table-hardware",
+      "unit": "pinball",
+      "state": "finished",
+      "files": [
+        "src/table/real/hardware/apron.ts",
+        "src/table/real/hardware/geo.ts",
+        "src/table/real/hardware/index.ts",
+        "src/table/real/hardware/kit.ts",
+        "src/table/real/hardware/mats.ts",
+        "src/table/real/hardware/tier.ts"
+      ],
+      "standInHash": "c9296ce54e4179fd90a22bd07d45f37f3dfbab77608ea8b0f98a091f46ae2af9",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/table/real/hardware/apron.ts": "absent",
+        "src/table/real/hardware/geo.ts": "absent",
+        "src/table/real/hardware/index.ts": "absent",
+        "src/table/real/hardware/kit.ts": "absent",
+        "src/table/real/hardware/mats.ts": "absent",
+        "src/table/real/hardware/tier.ts": "absent"
+      }
+    },
+    {
+      "name": "flippers",
+      "unit": "pinball",
+      "state": "finished",
+      "files": [
+        "src/table/real/play/flippers.ts"
+      ],
+      "standInHash": "7146301d488aca3fe7d49a947ac9d7dced21a4d1b66f02d7bfaa4f838ead365b",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/table/real/play/flippers.ts": "absent"
+      }
+    },
+    {
+      "name": "bumpers",
+      "unit": "pinball",
+      "state": "finished",
+      "files": [
+        "src/table/real/play/bumpers.ts"
+      ],
+      "standInHash": "aad713a1dfb89dd393e757ff01f3924d9d945fe646ad86e9012d51a535b5dbcc",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/table/real/play/bumpers.ts": "absent"
+      }
+    },
+    {
+      "name": "targets",
+      "unit": "pinball",
+      "state": "finished",
+      "files": [
+        "src/table/real/play/targets.ts"
+      ],
+      "standInHash": "32874bc35ab15c28eeb9c982556d7be7f1fbbc6fddc58f65d9418995aa5bfa07",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/table/real/play/targets.ts": "absent"
+      }
+    },
+    {
+      "name": "ramps",
+      "unit": "pinball",
+      "state": "finished",
+      "files": [
+        "src/table/real/play/ramps.ts"
+      ],
+      "standInHash": "5bdb744ea0e6c73f76d4efd1ae04032701aad8fc18d34c3a3b39ef6b2a98a660",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/table/real/play/ramps.ts": "absent"
+      }
+    },
+    {
+      "name": "lift",
+      "unit": "pinball",
+      "state": "finished",
+      "files": [
+        "src/table/real/hardware/lift.ts"
+      ],
+      "standInHash": "4e6e83aba20a4d46a6b4e0c1498e9a3d3506af3fda8af28093c241680f1026c5",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/table/real/hardware/lift.ts": "absent"
+      }
+    },
+    {
+      "name": "displays",
+      "unit": "pinball",
+      "state": "finished",
+      "files": [
+        "src/table/real/displays/font.ts",
+        "src/table/real/displays/index.ts",
+        "src/table/real/displays/pick.ts",
+        "src/table/real/displays/screen.ts"
+      ],
+      "standInHash": "b13c4e10cdb241b5cf578c4e460394b005e3612ab3a8ab7fbcbb3826f5df32a3",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/table/real/displays/font.ts": "absent",
+        "src/table/real/displays/index.ts": "absent",
+        "src/table/real/displays/pick.ts": "absent",
+        "src/table/real/displays/screen.ts": "absent"
+      }
+    },
+    {
+      "name": "clear-ball",
+      "unit": "pinball",
+      "state": "finished",
+      "files": [
+        "src/table/real/ball/glsl.ts",
+        "src/table/real/ball/index.ts",
+        "src/table/real/ball/lamps.ts"
+      ],
+      "standInHash": "cc83120488df62b8c002e1ed9b7d705e8727055bc762f9af1d4518017fefe1a9",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/table/real/ball/glsl.ts": "absent",
+        "src/table/real/ball/index.ts": "absent",
+        "src/table/real/ball/lamps.ts": "absent"
+      }
+    },
+    {
+      "name": "table-lights",
+      "unit": "pinball",
+      "state": "finished",
+      "files": [
+        "src/table/real/lights/colours.ts",
+        "src/table/real/lights/groups.ts",
+        "src/table/real/lights/hook.ts",
+        "src/table/real/lights/index.ts",
+        "src/table/real/lights/lamps.ts",
+        "src/table/real/lights/levels.ts",
+        "src/table/real/lights/pictures.ts",
+        "src/table/real/lights/state.ts",
+        "src/table/real/lights/surround.ts"
+      ],
+      "standInHash": "060c635b42348c7230694086586cdd4f28eca0cc2f1db5d5b9db7257c0e11a35",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/table/real/lights/colours.ts": "absent",
+        "src/table/real/lights/groups.ts": "absent",
+        "src/table/real/lights/hook.ts": "absent",
+        "src/table/real/lights/index.ts": "absent",
+        "src/table/real/lights/lamps.ts": "absent",
+        "src/table/real/lights/levels.ts": "absent",
+        "src/table/real/lights/pictures.ts": "absent",
+        "src/table/real/lights/state.ts": "absent",
+        "src/table/real/lights/surround.ts": "absent"
+      }
+    },
+    {
+      "name": "table-physics",
+      "unit": "pinball",
+      "state": "finished",
+      "files": [
+        "src/table/physics.ts"
+      ],
+      "standInHash": "4f073389c12f9902c8cf12f54e918756d638e7e41e847cc73866b361d057a503",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/table/physics.ts": "729ee568a01a9cf67a8e72e9d6b9d0484d32519f"
+      }
+    },
+    {
+      "name": "director",
+      "unit": "pinball",
+      "state": "finished",
+      "files": [
+        "cut/TABLE-TAKE.json",
+        "src/pages/step3/index.ts"
+      ],
+      "standInHash": "7d2dabb7c05ce67d92f0fccee79dfd75b53ab7b889833ab17e5c6a63b1c5c1a9",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "cut/TABLE-TAKE.json": "729ee568a01a9cf67a8e72e9d6b9d0484d32519f",
+        "src/pages/step3/index.ts": "729ee568a01a9cf67a8e72e9d6b9d0484d32519f"
+      }
+    },
+    {
+      "name": "table-cameras",
+      "unit": "pinball",
+      "state": "finished",
+      "files": [
+        "src/pages/step3/index.ts",
+        "tests/pinball-stage-out.test.ts",
+        "tests/pinball-stage.test.ts"
+      ],
+      "standInHash": "b73227777a2342dee8534a289b5222b8161c5b371519a248346a0ef8fa1fd1d5",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/pages/step3/index.ts": "729ee568a01a9cf67a8e72e9d6b9d0484d32519f",
+        "tests/pinball-stage-out.test.ts": "absent",
+        "tests/pinball-stage.test.ts": "absent"
+      }
+    },
+    {
+      "name": "model-hq",
+      "unit": "pinball",
+      "state": "finished",
+      "files": [
+        "src/table/real/models/corporate/hq.ts"
+      ],
+      "standInHash": "0daac2ff08eaac86ac03a70429d1f4a9498b1cdfabc894383369f515f58788bf",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/table/real/models/corporate/hq.ts": "absent"
+      }
     },
     {
       "name": "model-revolving-door",
       "unit": "pinball",
-      "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "state": "finished",
+      "files": [
+        "src/table/real/models/corporate/revolving.ts"
+      ],
+      "standInHash": "03668ad7ce2b5926ae6ff5ec48ada79d44322b189fbfc2a8fe6e6156a83a09d6",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/table/real/models/corporate/revolving.ts": "absent"
+      }
     },
     {
       "name": "model-beach",
       "unit": "pinball",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/table/layout.ts"
+        "src/table/real/models/corporate/beach.ts"
       ],
-      "standInHash": "03348f4abe0e085234d0072835d8a86f6bc80910f5854cc155415713b5c75e50",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "c1b6c031de7c208353d1f1b73774318c6b291dcaa0a0f9beba65106694db5458",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/table/real/models/corporate/beach.ts": "absent"
+      }
     },
     {
       "name": "model-boardroom",
       "unit": "pinball",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/table/layout.ts"
+        "src/table/real/models/corporate/boardroom.ts"
       ],
-      "standInHash": "03348f4abe0e085234d0072835d8a86f6bc80910f5854cc155415713b5c75e50",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "50f2248ed88121afc1cdbcef5221f1e92d839a6ce7dcd930bd4f3fcffdd037f8",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/table/real/models/corporate/boardroom.ts": "absent"
+      }
     },
     {
       "name": "model-ladder",
       "unit": "pinball",
-      "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "state": "finished",
+      "files": [
+        "src/table/real/models/corporate/ladder.ts"
+      ],
+      "standInHash": "3a49f8bdb38c8f4e74aa6421b30e97ca5dcf9b8c7f4a66820f244b2af51ebde5",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/table/real/models/corporate/ladder.ts": "absent"
+      }
     },
     {
       "name": "model-notes",
       "unit": "pinball",
-      "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "state": "finished",
+      "files": [
+        "src/table/real/models/corporate/notes.ts"
+      ],
+      "standInHash": "91fdf096cfdce90de2dd5ca7830b292a8a567a2d9605ce2c6f04dbccf501442d",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/table/real/models/corporate/notes.ts": "absent"
+      }
     },
     {
       "name": "model-coffee-machine",
       "unit": "pinball",
-      "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "state": "finished",
+      "files": [
+        "src/table/real/models/office/coffee.ts"
+      ],
+      "standInHash": "931c7c1ed5d406829b37b39770b9a44c7668bf4295c6c537d8d9c7b9a93075ad",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/table/real/models/office/coffee.ts": "absent"
+      }
     },
     {
       "name": "model-cubicles",
       "unit": "pinball",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/table/layout.ts"
+        "src/table/real/models/office/cubicles.ts"
       ],
-      "standInHash": "03348f4abe0e085234d0072835d8a86f6bc80910f5854cc155415713b5c75e50",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "a85b06804388eba326933298e23aac4963f66a05e74f0bbf927617e73f766617",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/table/real/models/office/cubicles.ts": "absent"
+      }
     },
     {
       "name": "model-inbox",
       "unit": "pinball",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/table/layout.ts"
+        "src/table/real/models/office/inbox.ts"
       ],
-      "standInHash": "03348f4abe0e085234d0072835d8a86f6bc80910f5854cc155415713b5c75e50",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "fd50ab52327c178db4771e7ff4118cd7389d44283cdfd5bf419a471febd394a9",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/table/real/models/office/inbox.ts": "absent"
+      }
     },
     {
       "name": "model-staplers",
       "unit": "pinball",
-      "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "state": "finished",
+      "files": [
+        "src/table/real/models/office/staplers.ts"
+      ],
+      "standInHash": "b760da32238759d70cab2946432f55bc405f039c9f09cedf37e9e012c8bf503f",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/table/real/models/office/staplers.ts": "absent"
+      }
     },
     {
       "name": "model-firehouse",
       "unit": "pinball",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/table/layout.ts"
+        "src/table/real/models/street/firehouse.ts"
       ],
-      "standInHash": "03348f4abe0e085234d0072835d8a86f6bc80910f5854cc155415713b5c75e50",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "319d5b9ac3186bf2770588006132cab6878f2fdc7a009fe0f06d79452038b678",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/table/real/models/street/firehouse.ts": "absent"
+      }
     },
     {
       "name": "model-police",
       "unit": "pinball",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/table/layout.ts"
+        "src/table/real/models/street/police.ts"
       ],
-      "standInHash": "03348f4abe0e085234d0072835d8a86f6bc80910f5854cc155415713b5c75e50",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "8feccf0d66e1d3a7a93279eaba21223f0c6ee4f7665cd0f55651ee0cebbee95c",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/table/real/models/street/police.ts": "absent"
+      }
     },
     {
       "name": "model-bank",
       "unit": "pinball",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/table/layout.ts"
+        "src/table/real/models/street/bank.ts"
       ],
-      "standInHash": "03348f4abe0e085234d0072835d8a86f6bc80910f5854cc155415713b5c75e50",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "97a6ae51403d8e038ffa9cc78090e59fa15f9168dfffd84656f5ce88abebed92",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/table/real/models/street/bank.ts": "absent"
+      }
     },
     {
       "name": "model-garage",
       "unit": "pinball",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/table/layout.ts"
+        "src/table/real/models/street/garage.ts"
       ],
-      "standInHash": "03348f4abe0e085234d0072835d8a86f6bc80910f5854cc155415713b5c75e50",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "010d70fa213e685e700907b642e780ed8cfd245a41383f6b5a7552f398f66ba1",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/table/real/models/street/garage.ts": "absent"
+      }
     },
     {
       "name": "model-houses",
       "unit": "pinball",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/table/layout.ts"
+        "src/table/real/models/street/houses.ts"
       ],
-      "standInHash": "03348f4abe0e085234d0072835d8a86f6bc80910f5854cc155415713b5c75e50",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "35a542a20061de28508f8ce3b7d73ee24aaf940f0f8cd6dad71b34b2295c2f52",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/table/real/models/street/houses.ts": "absent"
+      }
     },
     {
       "name": "model-moms",
       "unit": "pinball",
-      "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "state": "finished",
+      "files": [
+        "src/table/real/models/street/moms.ts"
+      ],
+      "standInHash": "db2db467e187efc4ea5ecb21e2273a24f067e34ff6c362d0f1e08a56855f9003",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/table/real/models/street/moms.ts": "absent"
+      }
     },
     {
       "name": "model-wedges",
       "unit": "pinball",
-      "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "state": "finished",
+      "files": [
+        "src/table/real/models/corporate/wedges.ts"
+      ],
+      "standInHash": "ae7391bead709f3888e4adece2f12c966c8d2723a41b249478fa027d6ec7bd29",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/table/real/models/corporate/wedges.ts": "absent"
+      }
     },
     {
       "name": "model-road-signs",
       "unit": "pinball",
-      "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "state": "finished",
+      "files": [
+        "src/table/real/models/street/things.ts"
+      ],
+      "standInHash": "7d40396291d64e3b84442db2821e4dd75f295972b51790bda2c78d49847757d4",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/table/real/models/street/things.ts": "absent"
+      }
     },
     {
       "name": "acting-pinball",
       "unit": "pinball",
-      "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "state": "finished",
+      "files": [
+        "src/pages/step3/index.ts"
+      ],
+      "standInHash": "b4366548b982c76959d4d578e91feb8d41c935de36206d5dd116a2fe4957270c",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/pages/step3/index.ts": "729ee568a01a9cf67a8e72e9d6b9d0484d32519f"
+      }
     },
     {
       "name": "verify-card",
       "unit": "boss",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/pages/step4/index.ts",
-        "src/pages/step4/layout.ts"
+        "src/pages/step4/real/verify-card.ts"
       ],
-      "standInHash": "87c67d03fdf25513a6443ff2483194e836fc07454a14c3d1f3e68ea015553613",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "89e9c93f7bb7d86c668613f9748c14d52f748e7c7ee74b36a1222e5f7b751b69",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/pages/step4/real/verify-card.ts": "absent"
+      }
     },
     {
       "name": "boss-body",
       "unit": "boss",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/boss/body.ts"
+        "src/boss/real/body-kit.ts",
+        "src/boss/real/body.ts"
       ],
-      "standInHash": "a7123900b584f7c1922bb964604d0f494caa9cf2da307f1595c57ec2abd0ec95",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "467c3451043905dd75885d92cac3df59efb150bf657905d45c84af1e46029367",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/boss/real/body-kit.ts": "absent",
+        "src/boss/real/body.ts": "absent"
+      }
     },
     {
       "name": "boss-transform",
       "unit": "boss",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/boss/body.ts"
+        "src/boss/real/transform.ts"
       ],
-      "standInHash": "a7123900b584f7c1922bb964604d0f494caa9cf2da307f1595c57ec2abd0ec95",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "a73e60b6aa4480927191475b3fef98950ecaa66dd6925cb495545e9bad3000f1",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/boss/real/transform.ts": "absent"
+      }
     },
     {
       "name": "boss-weapons",
       "unit": "boss",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/boss/weapons.ts",
-        "src/pages/step4/layout.ts"
+        "src/pages/step4/real/boss-weapons.ts"
       ],
-      "standInHash": "896763622c1d31886786891376f082facd5ac7151123f409004df3a5b9f5162f",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "f49c05867707b6c41a1a6b9966f71048da8338a074f9d04a46d7db4d27408dee",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/pages/step4/real/boss-weapons.ts": "absent"
+      }
     },
     {
       "name": "health-bar",
       "unit": "boss",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/pages/step4/index.ts",
-        "src/pages/step4/layout.ts"
+        "src/pages/step4/real/health-bar.ts"
       ],
-      "standInHash": "87c67d03fdf25513a6443ff2483194e836fc07454a14c3d1f3e68ea015553613",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "460e202475f21fc1d063aa45ded1f982c3190a57f60062ed661b2597d8ebf33f",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/pages/step4/real/health-bar.ts": "absent"
+      }
     },
     {
       "name": "acting-boss",
       "unit": "boss",
-      "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "state": "finished",
+      "files": [
+        "src/pages/step4/script.ts"
+      ],
+      "standInHash": "915041c958370fdbf3c41344b24b20322bb81059351726cae90b16201955ce1a",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/pages/step4/script.ts": "729ee568a01a9cf67a8e72e9d6b9d0484d32519f"
+      }
     },
     {
       "name": "wait",
       "unit": "decision",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/pages/step5/layout.ts"
+        "src/pages/step5/real/wait.ts",
+        "src/pages/step5/real/waitMatrix.ts"
       ],
-      "standInHash": "0389294ef1f5ea7b052cca2eb407eb3ec280e875f0775d81395ece891429af36",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "a99e76802ae46a6d45da24970007c1ac641f3e03a81c802b902ee9703bbb85b2",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/pages/step5/real/wait.ts": "absent",
+        "src/pages/step5/real/waitMatrix.ts": "absent"
+      }
     },
     {
       "name": "letter",
       "unit": "decision",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/pages/step5/layout.ts"
+        "src/pages/step5/real/letter.ts",
+        "src/pages/step5/real/letterStock.ts"
       ],
-      "standInHash": "0389294ef1f5ea7b052cca2eb407eb3ec280e875f0775d81395ece891429af36",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "8fb9979e7c831ec3ae933e713801abfbb136dda4ab49560fef9b8683524fa620",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/pages/step5/real/letter.ts": "absent",
+        "src/pages/step5/real/letterStock.ts": "absent"
+      }
     },
     {
       "name": "stamp",
       "unit": "decision",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/pages/step5/index.ts",
-        "src/pages/step5/layout.ts"
+        "src/pages/step5/real/stamp.ts",
+        "src/pages/step5/real/stampInk.ts"
       ],
-      "standInHash": "276500dde2e1b170f4c7832beafa7e0742081ce9a96e1d53e8843520f2b925e8",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "4de409ef5e4afdfa20e354896eb587ff4152de898cc268255c94aea382c864e5",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/pages/step5/real/stamp.ts": "absent",
+        "src/pages/step5/real/stampInk.ts": "absent"
+      }
     },
     {
       "name": "metrics",
       "unit": "decision",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/pages/step5/layout.ts"
+        "src/pages/step5/real/metrics.ts"
       ],
-      "standInHash": "0389294ef1f5ea7b052cca2eb407eb3ec280e875f0775d81395ece891429af36",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "16080b972038edee7f97528c8434692715aeb53630af95ef5650082878379060",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/pages/step5/real/metrics.ts": "absent"
+      }
     },
     {
       "name": "acting-decision",
       "unit": "decision",
-      "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "state": "finished",
+      "files": [
+        "src/pages/step5/script.ts"
+      ],
+      "standInHash": "09011147d6f6311fd83bbc2178071d6c28a107861fa9898a7c6b41f1c7cdcfe0",
+      "commit": "1c0d40c1b4d240370bd3d2846f0540f51cab83b2",
+      "hashAt": {
+        "src/pages/step5/script.ts": "729ee568a01a9cf67a8e72e9d6b9d0484d32519f"
+      }
     },
     {
       "name": "interface",

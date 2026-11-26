@@ -2,16 +2,17 @@ import * as THREE from 'three'
 import type { RealContext } from '../../../../real/types'
 import { table, type Sling } from '../../../layout'
 import { localBalls, type Zone } from '../../zone'
-import { hex, Kit, matsOf, meshOf, shade, SURF, type V2, type V3 } from './kit'
+import { hex, Kit, matsOf, meshOf, mix, shade, SURF, type RGB, type V2, type V3 } from './kit'
 
 const C = {
-  red: hex(0x54151c),
-  plate: hex(0x4a1218),
-  steel: hex(0x6c7480),
-  chrome: hex(0x8a94a0),
+  red: hex(0xab2228),
+  plate: hex(0x7f191f),
+  steel: hex(0x9aa1aa),
+  chrome: hex(0xc9d0d8),
   rubber: hex(0x222223),
-  staple: hex(0x8f98a3),
-  dark: hex(0x2c2d30)
+  staple: hex(0xb4bcc6),
+  dark: hex(0x2c2d30),
+  sheen: [1, 0.8, 0.76] as RGB
 }
 
 // The shoulders of the sling posts, from the owner of the hardware: 46 px over the floor, and the plate keeps within the post triangle plus 6 px so the rubber band shows under it.
@@ -62,7 +63,10 @@ function plateOutline(f: Frame): V2[] {
   return out
 }
 
-const taper = (f: Frame, x: number): number => 18 - (5 * Math.max(0, Math.min(f.length, x))) / f.length
+const taper = (f: Frame, x: number): number => 21 - (5.5 * Math.max(0, Math.min(f.length, x))) / f.length
+const LIFT = 0.13
+// The long highlight of the enamel, baked along the two shoulders of the arm: how much of it each ring of the section takes.
+const SHEEN = [0, 0, 0, 0.12, 0.62, 0.3, 0.06, 0, 0]
 
 function body(k: Kit, f: Frame): void {
   const L = f.length
@@ -119,17 +123,25 @@ function body(k: Kit, f: Frame): void {
 function arm(k: Kit, f: Frame): void {
   const L = f.length - PIN.x - 1
   const section = (x: number, grow: number, wide: number, tall: number, skirt: number): V3[] => {
-    const w = (taper(f, x + PIN.x) + 1.2) * wide * (0.6 + 0.4 * grow)
-    const h = 1 + (15.5 - (3.5 * Math.max(0, x)) / L) * tall * (0.45 + 0.55 * grow)
-    const s = h * 0.46
-    const t = w * 0.6
-    const half: V2[] = [[w, -skirt], [w, s - 1], [w - 0.7, s], [t + 0.9, h - 0.6], [t, h]]
+    const w = (taper(f, x + PIN.x) + 2.2) * wide * (0.6 + 0.4 * grow)
+    const h = 1 + (21 - (5 * Math.max(0, x)) / L) * tall * (0.45 + 0.55 * grow)
+    const half: V2[] = [[w - 0.8, -skirt], [w, -skirt + 1], [w, h * 0.5], [w * 0.975, h * 0.7], [w * 0.91, h * 0.86], [w * 0.8, h * 0.95], [w * 0.62, h], [w * 0.36, h * 1.035], [w * 0.12, h * 1.05]]
     const out: V3[] = half.map((q) => [x, -q[0], q[1]] as V3)
     for (let i = half.length - 1; i >= 0; i--) out.push([x, half[i]![0], half[i]![1]])
     return out
   }
   const xs: [number, number][] = [[-11, 0.4], [-10.2, 0.7], [-8, 0.93], [-4, 1], [L * 0.2, 1], [L * 0.45, 1], [L * 0.7, 1], [L - 14, 1], [L - 13.2, 0.985], [L - 4, 0.8], [L + 0.4, 0.62], [L + 1.6, 0.4]]
-  k.loft(xs.map(([x, g]) => section(x, g, 1, 1, 5 * g)), C.red, SURF.enamel)
+  const last = xs.length - 1
+  const tint = (row: number, i: number): RGB => {
+    const side = i < 9 ? 0 : 1
+    const step = side ? 17 - i : i
+    const ends = Math.min(1, row / 2) * Math.min(1, (last - row) / 1.5)
+    const nose = row >= last - 2 && row < last ? 0.5 : 0
+    const sheen = (SHEEN[step] ?? 0) * (side ? 1 : 0.45) * ends + nose * (SHEEN[step] ? 0.6 : 0.25)
+    const low = step < 2 ? 0.72 : 1
+    return mix(shade(C.red, low), C.sheen, Math.min(0.85, sheen))
+  }
+  k.loft(xs.map(([x, g]) => section(x, g, 1, 1, 5 * g)), tint, SURF.enamel)
   k.box(L - 9, 0, -6.2, 5, 13, 2.4, C.chrome, SURF.chrome, 0.3)
   for (const s of [-1, 1]) {
     const seam: V3[] = []
@@ -155,6 +167,7 @@ export function staplerScrews(z: Zone): [number, number, number][] {
 
 function bases(z: Zone): Kit {
   const k = new Kit()
+  k.lift = LIFT
   for (const g of slingsOf(z)) {
     const f = frameOf(z, g)
     const outline = plateOutline(f)
@@ -180,6 +193,7 @@ export function buildStaplers(z: Zone): THREE.Object3D {
   for (const g of slingsOf(z)) {
     const f = frameOf(z, g)
     const a = new Kit()
+    a.lift = LIFT
     arm(a, f)
     const mesh = meshOf(a.done(), mats.solid, `office.stapler.arm.${g.side}`, { cast: true })
     mesh.rotation.order = 'ZYX'

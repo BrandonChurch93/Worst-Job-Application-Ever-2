@@ -25,7 +25,7 @@ const px = (v: number): number => v * BALL
 
 export const T = {
   arrive: 0.8, seal: 2.4, tube: 3.3, lightsDown: 4.0, powerOn: 5.2, atPlunger: 8.3, plunger: 9.4, onTable: 10.85, doorKick: 13.1, doorOpen: 14.1, lobbyEnd: 14.9, officeKey: 17.4, inboxOn: 17.9, inboxBy: 19.1,
-  drops: [20.78, 20.88, 20.98], eject: 20.72, officeOpen: 24.6, officeBy: 25.2, firedBy: 27.2, scoopKick: 28.5, flapOn: 29.6, flapBy: 30.8, highwayEnd: 32.7, spiralEnd: 34.6, save: 35.6, streetOpen: 36.9, streetBy: 37.9,
+  drops: [20.78, 20.88, 20.98], eject: 20.72, officeOpen: 24.6, officeBy: 25.2, firedBy: 27.2, scoopKick: 29.0, flapOn: 29.4, flapBy: 31.2, highwayEnd: 32.7, spiralEnd: 34.6, save: 35.6, streetOpen: 36.9, streetBy: 37.9,
   press: seconds - TURN_HALF - 0.5
 }
 const MODES: { at: number; tier: number; mode: number }[] = [
@@ -119,7 +119,7 @@ const NAMED: Record<string, CameraPose> = {
   'table-save': { ...look('table-save', [MID, Y2 + 17.42, 3.33], [MID, Y2 + 10.64, -0.91]), omit: LAST_OUT }
 }
 const FILM: [number, string, number][] = [
-  [0, 'follow', 0], [4.2, 'table-wide', 0], [8.5, 'ride', 0], [10.25, 'tier-3', 0.6], [13.0, 'table-lobby', 0], [14.3, 'follow', 0], [19.5, 'table-replyall', 0], [22.2, 'follow', 0], [27.2, 'table-fired', 0], [28.8, 'follow', 0],
+  [0, 'follow', 0], [4.2, 'table-wide', 0], [8.5, 'ride', 0], [10.25, 'tier-3', 0.6], [13.0, 'table-lobby', 0], [14.3, 'follow', 0], [19.5, 'table-replyall', 0], [22.2, 'follow', 0], [27.2, 'table-fired', 0], [29.3, 'follow', 0],
   [31.15, 'rail', 0], [32.3, 'follow', 0.6], [34.3, 'table-save', 0], [36.6, 'follow', 0]
 ]
 const LENS: Record<string, number> = { 'table-wide': 5, 'table-lobby': 7, 'table-replyall': 12, 'table-fired': 10, 'table-save': 12, rail: 6, ride: 7 }
@@ -133,9 +133,10 @@ const WAKE = 0.35
 const DUSK = config.table.pageDuskLevel
 const ASLEEP = 0.25
 const LOW = 2.4
-const PULL = { door: 12, scoop: 30, near: 2.2, gate: 40, key: 30 }
-const NEST = { sling: [3.3, 6.5], under: [0.5, 0.9], pour: [-10.6, 1.0, 0.3], key: [0.3, 1.2], wait: [0.3, 0.1] }
-const SHOT = { door: 13, scoop: 21, nest: 17, save: 19, lob: 9, lean: 0.3, jets: 0.5, wide: 2.5, low: 7.5, early: 0.3, back: 1 }
+const PULL = { door: 12, scoop: 30, near: 2.2, gate: 40, key: 14 }
+const NEST = { sling: [3.3, 6.5], under: [0.5, 0.9], pour: [-10.6, 1.0, 0.3], key: [0.3, 1.2], wait: [0.45, 0.05] }
+const RIDE = { crest: 2.2, foot: 8.5, tip: 2 }
+const SHOT = { door: 13, scoop: 21, ramp: 21, nest: 17, save: 19, lob: 9, lean: 0.3, jets: 0.5, wide: 2.5, low: 7.5, early: 0.3, back: 1 }
 const FACE = { over: 0.766, low: 0.574, turn: 0.75, back: 13, press: 20, hit: 0.3, lag: 0.1, wall: 0.8, lens: 0.6 }
 const ACT = { bumper: 0.5, kick: 0.7, doors: 0.45, shock: 0.45, realise: 0.45, slow: 7, lead: 0.3 }
 
@@ -504,12 +505,12 @@ export function makePage(): PageLogic {
         const c = holdOf('street.firehouse').mouth!
         if (t >= T.firedBy) towTo('street.firehouse')
         else shoot(c[0], c[1], SHOT.scoop, PULL.scoop)
-      } else if (t >= T.flapOn - SHOT.early && t < T.highwayEnd) {
+      } else if (t < T.highwayEnd) {
         const p = railOf('highway').points[0]!
-        if (t >= T.flapBy || (t >= T.flapOn && Math.hypot(b.x - p[0], b.y - p[1]) < 0.7)) {
-          if (t >= T.flapBy) s.tows++
+        if (t >= T.flapBy) {
+          s.tows++
           mc.tow(0, p[0], p[1], 16, 'rail:highway')
-        } else shoot(p[0], p[1], SHOT.scoop, PULL.scoop)
+        } else mc.shot = [p[0], p[1], SHOT.ramp]
       } else if (t >= T.spiralEnd && t < T.streetOpen - SHOT.back) mc.shot = [MID + 1.2, Y2 + 2.2, SHOT.save]
       else {
         if (t >= T.streetBy) towGate(2)
@@ -520,9 +521,9 @@ export function makePage(): PageLogic {
     if (b.mode === 'hold' && b.hold === 'street.firehouse') {
       b.wait = t >= T.scoopKick ? Math.min(b.wait, 0.01) : 1e9
     }
-    on['street.flap'] = false
-    if (b.mode === 'rail' && b.rail === 'highway') b.speed = Math.max(3, Math.min(14, (railLength(railOf('highway')) - b.s) / Math.max(0.05, T.highwayEnd - t)))
-    if (b.mode === 'rail' && b.rail === 'spiral') b.speed = Math.max(8, Math.min(30, (railLength(railOf('spiral')) - b.s) / Math.max(0.05, T.spiralEnd - t)))
+    on['street.flap'] = t >= T.flapOn && t < T.highwayEnd
+    if (b.mode === 'rail' && b.rail === 'highway') b.speed = Math.max(RIDE.crest, Math.min(16, (2 * (railLength(railOf('highway')) - b.s)) / Math.max(0.05, T.highwayEnd - t) - RIDE.crest))
+    if (b.mode === 'rail' && b.rail === 'spiral') b.speed = Math.max(RIDE.crest, Math.min(30, (2 * (railLength(railOf('spiral')) - b.s)) / Math.max(0.05, T.spiralEnd - t) - RIDE.foot))
     if (b.mode === 'rail' && b.rail === 'drain') b.speed = s.skipped ? 40 : 13
     io.cursor.act(mood())
   }
@@ -691,7 +692,7 @@ export function makePage(): PageLogic {
       if (s.phase === 'sealed') {
         const b = ball()
         const held = gagAt(s.t) === 'pinball.save' && !s.saved && s.t < T.save
-        const want = machine().shot && b.mode === 'plane' && !machine().gate[b.tier] && !held ? machine().wants() : [false, false]
+        const want = machine().shot && b.mode === 'plane' && !machine().gate[b.tier] && !held ? machine().wants(s.t >= T.scoopKick && s.t < T.highwayEnd ? RIDE.tip : 1.2) : [false, false]
         return { x: px(MID), y: px(TIER_Y[b.mode === 'none' ? 2 : Math.min(2, b.tier)]! + 10), down: false, flipLeft: want[0], flipRight: want[1] }
       }
       return { x: go.cx, y: go.cy, down: s.phase === 'result' && Math.floor(s.time * 4) % 2 === 0 }

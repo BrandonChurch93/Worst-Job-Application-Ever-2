@@ -53,6 +53,21 @@ export const rrect = (w: number, d: number, r: number, n = 3): V2[] => {
   return out
 }
 
+// A rounded rectangle with the outward direction at each point.
+export const rounded = (w: number, d: number, r: number, n = 4): { points: V2[]; out: V2[] } => {
+  const points: V2[] = []
+  const out: V2[] = []
+  const hw = w / 2
+  const hd = d / 2
+  const corners: [number, number, number][] = [[hw - r, hd - r, 0], [-hw + r, hd - r, 1], [-hw + r, -hd + r, 2], [hw - r, -hd + r, 3]]
+  for (const [cx, cy, q] of corners) for (let i = 0; i <= n; i++) {
+    const a = (q + i / n) * Math.PI * 0.5
+    points.push([cx + Math.cos(a) * r, cy + Math.sin(a) * r])
+    out.push([Math.cos(a), Math.sin(a)])
+  }
+  return { points, out }
+}
+
 // Triangles with a place, a normal, a colour and a surface, gathered into one geometry for one draw.
 export class Kit {
   private p: number[] = []
@@ -60,6 +75,8 @@ export class Kit {
   private c: number[] = []
   private s: number[] = []
   private small: number[][] = [[], [], [], []]
+  // How much of the tier's own soft light what follows gives back, on top of the lamps: paper and pale moulding take more of it than dark things.
+  lift = 0.16
   // What follows is small trim: it is kept apart, for the one mesh of fine things of the tier.
   fine = false
   private m = new THREE.Matrix4()
@@ -110,7 +127,15 @@ export class Kit {
     }
     nn.push(this.v.x, this.v.y, this.v.z)
     c.push(col[0], col[1], col[2])
-    ss.push(surf[0], surf[1], surf[2])
+    ss.push(surf[0], surf[1], surf[2], this.lift)
+  }
+  // Takes all the triangles of another kit in among its own.
+  take(from: Kit): this {
+    for (const x of from.p) this.p.push(x)
+    for (const x of from.n) this.n.push(x)
+    for (const x of from.c) this.c.push(x)
+    for (const x of from.s) this.s.push(x)
+    return this
   }
   // Takes the small trim of another kit in among its own triangles.
   takeFine(from: Kit): this {
@@ -122,16 +147,16 @@ export class Kit {
     return this
   }
 
-  tri(a: V3, b: V3, c: V3, na: V3, nb: V3, nc: V3, col: RGB, surf: Surf): this {
+  tri(a: V3, b: V3, c: V3, na: V3, nb: V3, nc: V3, col: RGB, surf: Surf, colB: RGB = col, colC: RGB = col): this {
     const f = cross(sub(b, a), sub(c, a))
     const flip = (dot(f, [na[0] + nb[0] + nc[0], na[1] + nb[1] + nc[1], na[2] + nb[2] + nc[2]]) < 0) !== this.flip
     this.vert(a, na, col, surf)
     if (flip) {
-      this.vert(c, nc, col, surf)
-      this.vert(b, nb, col, surf)
+      this.vert(c, nc, colC, surf)
+      this.vert(b, nb, colB, surf)
     } else {
-      this.vert(b, nb, col, surf)
-      this.vert(c, nc, col, surf)
+      this.vert(b, nb, colB, surf)
+      this.vert(c, nc, colC, surf)
     }
     return this
   }
@@ -277,6 +302,44 @@ export class Kit {
     return this
   }
 
+  // A wall of one section carried round a closed outline: the section is (inset, height) from the foot up the outside, over the top and down the inside.
+  ring(points: V2[], out: V2[], profile: V2[], col: RGB | RGB[], surf: Surf | Surf[], smooth = true): this {
+    const N = points.length
+    const ns: V2[] = []
+    for (let j = 0; j < profile.length - 1; j++) {
+      const di = profile[j + 1]![0] - profile[j]![0]
+      const dz = profile[j + 1]![1] - profile[j]![1]
+      const l = Math.hypot(di, dz) || 1
+      ns.push([dz / l, di / l])
+    }
+    const nAt = (seg: number, end: number): V2 => {
+      if (!smooth) return ns[seg]!
+      const j = seg + end
+      const a = ns[Math.max(0, j - 1)]!
+      const b = ns[Math.min(ns.length - 1, j)]!
+      const l = Math.hypot(a[0] + b[0], a[1] + b[1]) || 1
+      return [(a[0] + b[0]) / l, (a[1] + b[1]) / l]
+    }
+    for (let j = 0; j < profile.length - 1; j++) {
+      const [i0, z0] = profile[j]!
+      const [i1, z1] = profile[j + 1]!
+      const n0 = nAt(j, 0)
+      const n1 = nAt(j, 1)
+      const cc = Array.isArray(col[0]) ? (col as RGB[])[j]! : (col as RGB)
+      const ss = Array.isArray(surf[0]) ? (surf as Surf[])[j]! : (surf as Surf)
+      for (let i = 0; i < N; i++) {
+        const k = (i + 1) % N
+        const p = points[i]!
+        const q = points[k]!
+        const a = out[i]!
+        const b = out[k]!
+        this.quad([p[0] - a[0] * i0, p[1] - a[1] * i0, z0], [q[0] - b[0] * i0, q[1] - b[1] * i0, z0], [q[0] - b[0] * i1, q[1] - b[1] * i1, z1], [p[0] - a[0] * i1, p[1] - a[1] * i1, z1],
+          [a[0] * n0[0], a[1] * n0[0], n0[1]], [b[0] * n0[0], b[1] * n0[0], n0[1]], [b[0] * n1[0], b[1] * n1[0], n1[1]], [a[0] * n1[0], a[1] * n1[0], n1[1]], cc, ss)
+      }
+    }
+    return this
+  }
+
   // A round wire along a path.
   tube(points: V3[], r: number, col: RGB, surf: Surf, radial = 5, closed = false, ref: V3 = [0, 0, 1]): this {
     const N = points.length
@@ -310,7 +373,7 @@ export class Kit {
   }
 
   // A skin over sections that each hold the same count of points, with smooth normals.
-  loft(sections: V3[][], col: RGB, surf: Surf, caps = true): this {
+  loft(sections: V3[][], col: RGB | ((row: number, k: number) => RGB), surf: Surf, caps = true): this {
     const rows = sections.length
     const cols = sections[0]!.length
     const pos: number[] = []
@@ -339,13 +402,19 @@ export class Kit {
     for (let i = 0; i < rows * cols; i++) sign += dot(sub(P(i), mid), [nor.getX(i), nor.getY(i), nor.getZ(i)])
     const sg = sign < 0 ? -1 : 1
     const Nn = (i: number): V3 => [nor.getX(i) * sg, nor.getY(i) * sg, nor.getZ(i) * sg]
-    for (let i = 0; i < idx.length; i += 3) this.tri(P(idx[i]!), P(idx[i + 1]!), P(idx[i + 2]!), Nn(idx[i]!), Nn(idx[i + 1]!), Nn(idx[i + 2]!), col, surf)
+    const flatCol = typeof col === 'function' ? col(0, 0) : col
+    const tint = typeof col === 'function' ? col : null
+    for (let i = 0; i < idx.length; i += 3) {
+      const [a, b, c] = [idx[i]!, idx[i + 1]!, idx[i + 2]!]
+      const at = (v: number): RGB => (tint ? tint(Math.floor(v / cols), v % cols) : flatCol)
+      this.tri(P(a), P(b), P(c), Nn(a), Nn(b), Nn(c), at(a), surf, at(b), at(c))
+    }
     if (caps) {
       for (const r of [0, rows - 1]) {
         const s = sections[r]!
         const other = sections[r === 0 ? 1 : rows - 2]!
         const n = unit(sub(s[0]!, other[0]!))
-        this.flat(s, n, col, surf)
+        this.flat(s, n, tint ? tint(r, 0) : flatCol, surf)
       }
     }
     g.dispose()
@@ -357,7 +426,7 @@ export class Kit {
     g.setAttribute('position', new THREE.Float32BufferAttribute(this.p, 3))
     g.setAttribute('normal', new THREE.Float32BufferAttribute(this.n, 3))
     g.setAttribute('color', new THREE.Float32BufferAttribute(this.c, 3))
-    g.setAttribute('aSurf', new THREE.Float32BufferAttribute(this.s, 3))
+    g.setAttribute('aSurf', new THREE.Float32BufferAttribute(this.s, 4))
     g.computeBoundingSphere()
     g.computeBoundingBox()
     return g
@@ -369,6 +438,7 @@ export interface Mats {
   clear: THREE.MeshPhysicalMaterial
   glow: THREE.MeshPhysicalMaterial
   level: { value: number }
+  fill: { value: number }
 }
 
 // The grain of a surface, from where it is on its own object: fibres on what is soft, streaks along what is brushed, smudges on what shines. It fades out where a pixel is wider than the grain, so nothing shimmers from far off.
@@ -405,21 +475,24 @@ const made = new Map<string, Mats>()
 export function matsOf(z: Zone): Mats {
   const have = made.get(z.id)
   if (have) return have
+  const fill = { value: 0 }
   const solid = new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 1, metalness: 1, clearcoat: 1, clearcoatRoughness: 0.08, specularIntensity: 0.9 })
   solid.name = `office.solid.${z.id}`
   lit(studio(solid), z)
   const inner = solid.onBeforeCompile
   solid.onBeforeCompile = function (shader, renderer) {
     inner.call(solid, shader, renderer)
-    shader.vertexShader = ('attribute vec3 aSurf;\nvarying vec3 vSurf;\nvarying vec3 vObj;\n' + shader.vertexShader).replace('#include <begin_vertex>', '#include <begin_vertex>\n\tvSurf = aSurf;\n\tvObj = position;')
-    shader.fragmentShader = ('varying vec3 vSurf;\nvarying vec3 vObj;\n' + GRAIN + shader.fragmentShader)
+    shader.uniforms.wjoFill = fill
+    shader.vertexShader = ('attribute vec4 aSurf;\nvarying vec3 vSurf;\nvarying vec3 vObj;\nvarying float vLift;\n' + shader.vertexShader).replace('#include <begin_vertex>', '#include <begin_vertex>\n\tvSurf = aSurf.xyz;\n\tvObj = position;\n\tvLift = aSurf.w * ( 1.0 - aSurf.y ) * ( 0.3 + 0.7 * max( 0.0, normalize( mat3( modelMatrix ) * normal ).z ) );')
+    shader.fragmentShader = ('uniform float wjoFill;\nvarying vec3 vSurf;\nvarying vec3 vObj;\nvarying float vLift;\n' + GRAIN + shader.fragmentShader)
       .replace('#include <color_fragment>', '#include <color_fragment>\n' + GRAIN_COLOUR)
       .replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\n\troughnessFactor = clamp( vSurf.x + wjoSmudge * 0.16 * ( 1.0 - wjoSoft ) + vSurf.y * wjoStreak * 0.2, 0.04, 1.0 );')
+      .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\n\ttotalEmissiveRadiance += diffuseColor.rgb * vLift * wjoFill;')
       .replace('#include <metalnessmap_fragment>', '#include <metalnessmap_fragment>\n\tmetalnessFactor = clamp( vSurf.y, 0.0, 1.0 );')
       .replace('#include <lights_physical_fragment>', '#include <lights_physical_fragment>\n\t#ifdef USE_CLEARCOAT\n\tmaterial.clearcoat = clamp( vSurf.z, 0.0, 1.0 );\n\t#endif')
   }
   const key = solid.customProgramCacheKey
-  solid.customProgramCacheKey = () => `${key.call(solid)}|office-surf-2`
+  solid.customProgramCacheKey = () => `${key.call(solid)}|office-surf-3`
 
   const clear = new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.05, metalness: 0, transparent: true, opacity: 0.34, depthWrite: false, clearcoat: 1, clearcoatRoughness: 0.04, specularIntensity: 1, side: THREE.DoubleSide })
   clear.name = `office.clear.${z.id}`
@@ -442,7 +515,7 @@ export function matsOf(z: Zone): Mats {
   const glowKey = glow.customProgramCacheKey
   glow.customProgramCacheKey = () => `${glowKey.call(glow)}|office-glow`
 
-  const out = { solid, clear, glow, level }
+  const out = { solid, clear, glow, level, fill }
   made.set(z.id, out)
   return out
 }

@@ -60,6 +60,8 @@ varying vec3 vAxisY;
 varying vec3 vAxisZ;
 varying float vKind;
 varying vec2 vUv;
+varying vec3 vView;
+varying vec3 vMid;
 void main() {
 	vec3 p = position;
 	vec3 n = normal;
@@ -81,6 +83,8 @@ void main() {
 	vAxisZ = normalize( m * vec3( 0.0, 0.0, 1.0 ) );
 	vKind = aKind;
 	vUv = uv;
+	vView = ( viewMatrix * wp ).xyz;
+	vMid = ( viewMatrix * modelMatrix * vec4( 0.0, 0.0, 0.0, 1.0 ) ).xyz;
 	gl_Position = projectionMatrix * viewMatrix * wp;
 	if ( aKind > 0.5 && aKind < 1.5 && uOpen < 0.002 ) gl_Position = vec4( 2.0, 2.0, 2.0, 1.0 );
 }
@@ -94,6 +98,8 @@ uniform vec4 uFlat;
 uniform vec4 uBoxAt[ BOXES ];
 uniform vec4 uBoxCol[ BOXES ];
 uniform vec3 uFlatCol;
+uniform vec4 uDoor;
+uniform vec3 uDoorLit;
 uniform float uDrop;
 uniform float uTrue;
 uniform float uPlugTurn;
@@ -177,6 +183,20 @@ vec4 floorAt( vec3 from, vec3 dir ) {
 		float foot = smoothstep( 0.0, uR * 0.5, p.z - uDrop );
 		float side = face > 1.5 ? 1.1 : ( face < 0.5 ? 0.78 : 1.0 ) * mix( 0.34, 1.0, bars * rows ) * mix( 0.5, 1.12, up ) * mix( 0.45, 1.0, foot );
 		float seenWall = 1.0 - smoothstep( uR * 12.0, uR * 24.0, best );
+		if ( uDoor.z > 0.5 && face > 0.5 && face < 1.5 && abs( p.y - uDoor.y ) < uR * 1.4 ) {
+			float dx = abs( p.x - uDoor.x );
+			float hz = p.z - uDrop;
+			vec3 c = mix( vec3( 0.107, 0.117, 0.125 ), vec3( 0.065, 0.120, 0.125 ), smoothstep( 0.08, 0.12, abs( fract( p.x / 62.0 ) - 0.5 ) ) ) * uDoorLit;
+			if ( hz > 153.6 ) c = vec3( 0.202, 0.205, 0.209 ) * uDoorLit * ( hz < 206.4 ? 1.0 : 0.7 );
+			else if ( dx < 108.2 ) c = vec3( 0.250, 0.120, 0.018 ) * uDoorLit;
+			if ( dx < 91.2 && hz < 144.0 ) {
+				vec3 room = mix( vec3( 0.216, 0.178, 0.114 ), vec3( 0.445, 0.356, 0.205 ), smoothstep( 78.0, 104.0, hz ) );
+				room = mix( room, vec3( 0.871, 0.831, 0.745 ), smoothstep( 104.0, 110.0, hz ) * step( abs( fract( dx / 26.0 ) - 0.5 ), 0.28 ) * step( abs( fract( hz / 12.0 ) - 0.5 ), 0.3 ) );
+				float brass = max( step( hz, 24.0 ), max( step( 137.0, hz ), max( step( dx, 3.0 ), step( 85.2, dx ) ) ) );
+				c = mix( room * 1.25, ( hz < 24.0 ? vec3( 0.347, 0.168, 0.024 ) : vec3( 0.381, 0.181, 0.026 ) ) * uDoorLit, brass );
+			}
+			return vec4( mix( surround( dir ), c, seenWall ), seenWall );
+		}
 		return vec4( mix( surround( dir ), wall * side, seenWall ), seenWall );
 	}
 	if ( d.z > - 0.04 ) return vec4( surround( dir ) + softbox( dir, 0.1 ) * 0.6, 0.0 );
@@ -236,19 +256,29 @@ void main() {
 		gather += uLampLit[ i ] * uLampCol[ i ].w * 0.6 * smoothstep( uR * 0.2, uR * 0.8, length( to ) ) * pow( max( dot( normalize( to + vec3( 1e-4 ) ), Np ), 0.0 ), 2.0 );
 	}
 
+	gather /= max( 1.0, dot( gather, vec3( 0.2126, 0.7152, 0.0722 ) ) / 0.6 );
+	vec3 soft = uSoft / max( 1.0, dot( uSoft, vec3( 0.2126, 0.7152, 0.0722 ) ) / 0.35 );
 	float band = smoothstep( RIN - 0.012, RIN + 0.012, rho );
-	float lens = smoothstep( 0.36, RIN, rho );
-	float aIn = mix( 0.05, 0.62 * known, lens * lens );
-	float alpha = mix( mix( aIn, 0.93 * known, band ), mix( 0.03, 0.34, band ), uTrue ) * mix( 0.7, 1.0, uArtOn );
-	vec3 col = ( bent * mix( 1.0, 1.25, band ) + ( gather * 0.3 + uHaze + uSoft * 0.06 ) * band ) * alpha;
+	float lens = smoothstep( 0.68, RIN, rho );
+	float aIn = mix( 0.04, 0.62 * known, lens * lens );
+	float alpha = mix( mix( aIn, 0.95 * known, band ), mix( 0.03, 0.34, band ), uTrue ) * mix( 0.7, 1.0, uArtOn );
+	vec3 col = ( bent * mix( 1.15, 1.9, band ) + ( gather * 0.5 + uHaze + soft * 0.1 ) * band ) * alpha;
+
+	vec3 away = normalize( vec3( - uSoftDir.xy, 0.0 ) + vec3( 1e-4 ) );
+	float far = pow( max( dot( Np, away ), 0.0 ), 2.0 );
+	float pool = smoothstep( 0.6, 0.84, rho ) * ( 1.0 - band );
+	col += ( soft * 0.34 * far + gather * 0.4 ) * pool;
+	col += ( soft * 0.022 + min( uFloor, vec3( 0.6 ) ) * 0.008 ) * ( 0.4 + 0.6 * rho );
+	alpha = clamp( alpha + 0.1 * pool * far, 0.0, 1.0 );
 
 	vec3 Ni = normalize( N + 0.1 * Np );
 	vec3 Ri = reflect( - V, Ni );
-	vec3 refl = softbox( R, 0.03 ) * SOFT * ( 0.1 + 0.5 * pow( 1.0 - ndv, 2.0 ) );
-	refl += softbox( Ri, 0.16 ) * SOFT * 0.04;
+	vec3 refl = softbox( R, 0.03 ) * SOFT * ( 0.34 + 0.9 * pow( 1.0 - ndv, 2.0 ) );
+	refl += softbox( Ri, 0.16 ) * SOFT * 0.1;
 	refl += floorAt( vP, R ).rgb * F * 0.9;
-	refl += lampsIn( R, vP, 1.0 ) * ( 0.07 + 0.9 * F );
-	refl += lampsIn( Ri, vP, 0.7 ) * 0.035;
+	refl += lampsIn( R, vP, 1.0 ) * ( 0.12 + 0.9 * F );
+	refl += lampsIn( Ri, vP, 0.7 ) * 0.06;
+	refl += lampsIn( T2, Pout, 0.8 ) * 0.1 * lens;
 	col += refl;
 	alpha = clamp( alpha + F * 0.6, 0.0, 1.0 );
 
@@ -256,12 +286,13 @@ void main() {
 	col *= 1.0 - 0.4 * ring;
 	alpha = max( alpha, 0.5 * ring );
 	float lip = 1.0 - smoothstep( 0.0, 0.022, abs( rho - RIN - 0.032 ) );
-	col += lip * ( softbox( reflect( - V, normalize( N - 0.6 * Np ) ), 0.25 ) * SOFT * 0.05 + gather * 0.3 );
+	col += lip * ( softbox( reflect( - V, normalize( N - 0.6 * Np ) ), 0.25 ) * SOFT * 0.12 + gather * 0.5 + uFloor * 0.05 );
 
-	col *= 1.0 - 0.22 * smoothstep( 0.9, 0.96, rho );
-	float edge = smoothstep( 0.958, 0.993, rho );
-	col = mix( col, col * 0.22, edge * 0.85 );
-	alpha = mix( alpha, 0.97, edge * 0.8 );
+	float brim = smoothstep( 0.9, 0.955, rho ) * ( 1.0 - smoothstep( 0.965, 0.985, rho ) );
+	col += brim * ( min( uFloor, vec3( 0.8 ) ) * 0.1 + soft * 0.25 * ( 0.4 + 0.6 * max( dot( Np, normalize( vec3( uSoftDir.xy, 0.0 ) ) ), 0.0 ) ) + gather * 0.4 );
+	float edge = smoothstep( 0.972, 0.996, rho );
+	col = mix( col, col * 0.12, edge * 0.9 );
+	alpha = mix( alpha, 0.97, edge * 0.9 );
 
 	float glint;
 	float line = seamLine( glint );
@@ -278,9 +309,13 @@ void main() {
 export const backFragment = /* glsl */ `
 ${head}
 ${shared}
+uniform mat4 projectionMatrix;
+varying vec3 vView;
+varying vec3 vMid;
 void main() {
 	vec3 V = normalize( uEye - vP );
 	vec3 N = normalize( vN );
+	gl_FragDepth = gl_FragCoord.z;
 	if ( vKind > 1.5 ) {
 		gl_FragColor = vec4( seat( - N, V, 0.35 ), 1.0 );
 		return;
@@ -301,6 +336,11 @@ void main() {
 	col += glint * 0.3 * ( softbox( reflect( - V, normalize( - N + vAxisY * 0.5 * sign( vO.y ) ) ), 0.15 ) * SOFT * 0.12 + uHaze * 2.0 + uFloor * 0.03 );
 	col *= 1.0 - 0.5 * line;
 	alpha = max( alpha, 0.4 * line );
+	if ( uOpen < 0.002 && uTrue < 0.5 ) {
+		vec3 along = normalize( vView );
+		vec4 mid = projectionMatrix * vec4( along * dot( vMid, along ), 1.0 );
+		gl_FragDepth = mid.z / mid.w * 0.5 + 0.5;
+	}
 	gl_FragColor = vec4( col, alpha );
 }
 `
@@ -319,7 +359,13 @@ void main() {
 	vec4 wp = modelMatrix * vec4( at, 1.0 );
 	vP = ( uToPage * wp ).xyz;
 	vN = normalize( m * normal );
-	gl_Position = projectionMatrix * viewMatrix * wp;
+	vec4 seen = viewMatrix * wp;
+	gl_Position = projectionMatrix * seen;
+	float near = ( viewMatrix * modelMatrix * vec4( 0.0, 0.0, 0.0, 1.0 ) ).z + 0.3 * length( modelMatrix[ 0 ].xyz );
+	if ( seen.z < near ) {
+		vec4 q = projectionMatrix * vec4( seen.xy, near, 1.0 );
+		gl_Position.z = q.z / q.w * gl_Position.w;
+	}
 }
 `
 
@@ -370,20 +416,20 @@ void main() {
 		float along = dot( q, d ) / ( uR * 0.95 * sqrt( 1.0 + k * k ) );
 		float across = dot( q, side ) / ( uR * 0.82 );
 		float e = along * along + across * across;
-		keep *= 1.0 - uShade[ i ].w * ( 1.0 - smoothstep( 0.2, 1.0, e ) ) * ( 1.0 - 0.4 * smoothstep( - 0.6, 1.0, along ) );
-		vec2 s = vXY - d * ( uR * ( 0.35 + 0.4 * k ) + uLift * k );
+		keep *= 1.0 - uShade[ i ].w * ( 1.0 - smoothstep( 0.42, 1.0, e ) ) * ( 1.0 - 0.3 * smoothstep( - 0.2, 1.0, along ) );
+		vec2 s = vXY - d * ( uR * ( 0.5 + 0.62 * k ) + uLift * k );
 		float sa = dot( s, d ) / uR;
 		float sc = dot( s, side ) / uR;
-		float core = 1.1 * exp( - ( sa * sa / 0.02 + sc * sc / 0.008 ) ) + 0.12 * exp( - ( sa * sa / 0.2 + sc * sc / 0.06 ) );
-		float ray = 0.26 * exp( - ( sa * sa / 0.4 + sc * sc / 0.003 ) ) + 0.17 * exp( - ( sa * sa / 0.004 + sc * sc / 0.12 ) );
+		float core = 1.5 * exp( - ( sa * sa / 0.014 + sc * sc / 0.006 ) ) + 0.05 * exp( - ( sa * sa / 0.08 + sc * sc / 0.03 ) );
+		float ray = 0.16 * exp( - ( sa * sa / 0.14 + sc * sc / 0.0016 ) ) + 0.1 * exp( - ( sa * sa / 0.002 + sc * sc / 0.05 ) );
 		float da = ( sa + sc ) * 0.7071;
 		float db = ( sa - sc ) * 0.7071;
-		ray += 0.1 * ( exp( - ( da * da / 0.1 + db * db / 0.003 ) ) + exp( - ( db * db / 0.1 + da * da / 0.003 ) ) );
+		ray += 0.05 * ( exp( - ( da * da / 0.05 + db * db / 0.002 ) ) + exp( - ( db * db / 0.05 + da * da / 0.002 ) ) );
 		float ring = ( length( s ) / uR - 0.36 ) / 0.06;
-		float arc = 0.3 * exp( - ring * ring ) * pow( max( dot( normalize( s + vec2( 1e-4 ) ), d ), 0.0 ), 3.0 );
+		float arc = 0.16 * exp( - ring * ring ) * pow( max( dot( normalize( s + vec2( 1e-4 ) ), d ), 0.0 ), 3.0 );
 		c += uSpot[ i ] * ( core + ray + arc );
 	}
-	keep *= 1.0 - 0.6 * uNear * exp( - dot( vXY, vXY ) / ( uR * uR * 0.2 ) );
+	keep *= 1.0 - 0.8 * uNear * exp( - dot( vXY, vXY ) / ( uR * uR * 0.24 ) );
 	float fade = 1.0 - smoothstep( 0.8, 1.0, length( vXY ) / ( uR * 5.2 ) );
 	gl_FragColor = vec4( c * fade, ( 1.0 - keep ) * fade );
 }

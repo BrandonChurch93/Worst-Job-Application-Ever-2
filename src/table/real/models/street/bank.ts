@@ -2,12 +2,12 @@ import type { RealContext } from '../../../../real/types'
 import type { Zone } from '../../zone'
 import type { Buckets } from './geo'
 import { walls } from './firehouse'
-import { KIND, TONE, band, board, mix, parapet, shade, site, wallFace, windowAt, type Hole } from './kit'
+import { KIND, TONE, band, board, parapet, rgb, roofDeck, shade, site, wallFace, windowAt, type Hole } from './kit'
 
 export function bank(b: Buckets, z: Zone, ctx: RealContext): void {
   const S = site(z, 'street.bank')
   const g = b.paint
-  const stone = mix(TONE.stonePale, TONE.lime, 0.3)
+  const stone = rgb(0xc3c6c6)
   const top = S.h
   const steps = 3
   const tread = 3.6
@@ -33,7 +33,7 @@ export function bank(b: Buckets, z: Zone, ctx: RealContext): void {
   walls(b, x0, x1, yf, yb, podium, (side, width) => {
     const tall: Hole[] = [{ x: 7, z: 6, w: 11, h: doorH - 6 }, { x: width - 18, z: 6, w: 11, h: doorH - 6 }]
     const holes: Hole[] = side === 'front' ? [doors, ...tall] : side === 'right' ? [{ x: 10, z: 12, w: 11, h: 40 }, { x: width / 2 - 5.5, z: 12, w: 11, h: 40 }, { x: width - 21, z: 12, w: 11, h: 40 }] : []
-    wallFace(g, 0, width, 0, entab - podium, holes, stone, KIND.block)
+    wallFace(g, 0, width, 0, entab - podium, holes, side === 'front' ? shade(stone, 0.8) : stone, KIND.block)
     if (side === 'right') {
       for (const h of holes) windowAt(b, h, { frame: TONE.bronze, wall: stone, sill: TONE.stone, bars: [1, 4], glow: 1, warm: 0.2, depth: 3 })
       for (const px of [3, width / 2 - 14, width / 2 + 10, width - 7]) g.box(px, px + 4, -1.4, 0, 0, entab - podium, shade(stone, 1.04), { skip: 'b' })
@@ -53,7 +53,7 @@ export function bank(b: Buckets, z: Zone, ctx: RealContext): void {
       for (let k = 0; k < 3; k++) b.metal.box(p + 1.6, q - 1.6, d - 2, d - 1.4, 2.5 + k * 12, 12 + k * 12, shade(TONE.bronze, 1.25), { skip: 'b', bevel: 0.4 })
     }
     for (const hx of [mid - 1.9, mid + 0.9]) b.metal.box(hx, hx + 1, d - 3.2, d - 2, 15, 24, TONE.brass, { under: true })
-    b.glow.face([[a, d - 0.4, doorH - 7], [c, d - 0.4, doorH - 7], [c, d - 0.4, doorH], [a, d - 0.4, doorH]], [1, 0.9, 0.7], 0, [0, -1, 0])
+    b.glow.face([[a, d - 0.4, doorH - 7], [c, d - 0.4, doorH - 7], [c, d - 0.4, doorH], [a, d - 0.4, doorH]], [0.7, 0.48, 0.2], 0, [0, -1, 0])
     b.metal.box(a, c, d - 1.2, d, doorH - 8, doorH - 7, TONE.bronze, { skip: 'b', under: true })
     band(g, a - 3, c + 3, doorH, doorH + 3.5, 1.4, shade(stone, 1.05))
     const nx = c + 7
@@ -72,7 +72,7 @@ export function bank(b: Buckets, z: Zone, ctx: RealContext): void {
     const cy = pf + 9
     g.box(cx - 8.4, cx + 8.4, cy - 8.4, cy + 8.4, podium, podium + 2.2, stone, { bevel: 0.6 })
     g.lathe([[8, 0], [8, 1.5], [7.1, 2.1], [7.6, 2.9], [6.8, 3.6]], cx, cy, 24, stone, { base: podium + 2.2 })
-    g.lathe([[6.6, 0], [6.5, (entab - podium - 11.8) * 0.4], [5.7, entab - podium - 11.8]], cx, cy, 48, stone, { base: podium + 5.8, wave: [16, 0.1] })
+    g.lathe([[6.6, 0], [6.5, (entab - podium - 11.8) * 0.4], [5.7, entab - podium - 11.8]], cx, cy, 48, stone, { base: podium + 5.8, wave: [16, 0.17] })
     g.lathe([[5.8, 0], [6.2, 0.8], [5.9, 1.4], [7.6, 3.2], [7.6, 4]], cx, cy, 24, stone, { base: entab - 6.6 })
     g.box(cx - 8.3, cx + 8.3, cy - 8.3, cy + 8.3, entab - 2.8, entab, stone, { under: true, bevel: 0.4 })
   }
@@ -91,8 +91,8 @@ export function bank(b: Buckets, z: Zone, ctx: RealContext): void {
   // The attic over the cornice and a flat roof inside its parapet.
   const deck = top - 8
   g.box(ex0 + 1, ex1 - 1, ey0 + 1, ey1 - 1, roofFoot, top - 3, stone, { kind: KIND.block, skip: 't' })
-  g.quad([ex0 + 7, ey0 + 7, deck], [ex1 - 7, ey0 + 7, deck], [ex1 - 7, ey1 - 7, deck], [ex0 + 7, ey1 - 7, deck], TONE.roof, KIND.tar)
-  parapet(g, ex0 + 1, ex1 - 1, ey0 + 1, ey1 - 1, deck, top, 7, stone, shade(stone, 1.08), KIND.stucco)
+  roofDeck(g, ex0 + 7, ex1 - 7, ey0 + 7, ey1 - 7, deck)
+  parapet(g, ex0 + 1, ex1 - 1, ey0 + 1, ey1 - 1, deck, top, 7, stone, shade(stone, 1.12), KIND.stucco)
   g.box(ex1 - 30, ex1 - 16, ey1 - 26, ey1 - 14, deck, deck + 4.5, TONE.stoneDark, { bevel: 0.8 })
   b.metal.lathe([[2.6, 0], [2.6, 6], [4, 7.2], [4, 8.4], [0, 9.6]], ex0 + 20, ey1 - 20, 12, TONE.alu, { base: deck })
   board(b, z, ctx, 'street.bank', deck)

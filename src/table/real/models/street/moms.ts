@@ -39,7 +39,7 @@ export function moms(b: Buckets, z: Zone, ctx: RealContext): Moms {
   const door: Hole = { x: W / 2 - 5.5, z: 0, w: 11, h: 22 }
   const wins: Hole[] = [{ x: 8, z: 8, w: 13, h: 15 }, { x: W - 21, z: 8, w: 13, h: 15 }]
   const side: Hole[] = [{ x: (yb - yf) / 2 - 5, z: 9, w: 10, h: 13 }]
-  house(b, x0, x1, yf, yb, base, top, { wall, kind: KIND.board, roof, ridge: 'x', door: rgb(0x3b5a4a), trim, eave: 36, chimney: 1, glow: [1, 0.85, 0.6, 0.9] }, { door, windows: wins, side, depth: 2.6 })
+  house(b, x0, x1, yf, yb, base, top, { wall, kind: KIND.board, roof, ridge: 'x', door: rgb(0x3b5a4a), trim, eave: 36, chimney: 1, glow: [1.7, 1.4, 1.1, 1.5] }, { door, windows: wins, side, depth: 2.6 })
 
   // A window in the gable at each end, under the ridge.
   for (const sx of [-1, 1]) {

@@ -33,7 +33,19 @@ const cloud = (x: number, y: number, cell: number, seed: number): number => {
 }
 
 const mix = (a: number, b: number, t: number): number => a + (b - a) * t
-const BURNS: [number, number, number][] = [[-76, 12, 8], [78, -14, 6], [64, 20, 4]]
+const CHAR: [number, number, number][] = [[-CAP_W / 2 + 26, 2, 34], [-CAP_W / 2 + 52, -12, 15], [CAP_W / 2 - 24, -2, 31], [CAP_W / 2 - 50, 14, 16], [CAP_W / 2 - 62, -6, 7]]
+const SPLITS: [number, number, number, number][] = [[-96, -6, -74, -17], [-74, -17, -62, -15], [-92, 9, -76, 20], [84, 10, 66, 22], [66, 22, 58, 19], [88, -12, 72, -22]]
+
+const toSplit = (px: number, py: number): number => {
+  let best = 99
+  for (const [x0, y0, x1, y1] of SPLITS) {
+    const dx = x1 - x0
+    const dy = y1 - y0
+    const t = clamp(((px - x0) * dx + (py - y0) * dy) / (dx * dx + dy * dy))
+    best = Math.min(best, Math.hypot(px - x0 - dx * t, py - y0 - dy * t) - 1.5 * (1 - t))
+  }
+  return best
+}
 
 export function sootPixels(w = SOOT_W, h = SOOT_H): Uint8Array {
   const data = new Uint8Array(w * h * 4)
@@ -42,28 +54,29 @@ export function sootPixels(w = SOOT_W, h = SOOT_H): Uint8Array {
     for (let x = 0; x < w; x++) {
       const px = ((x + 0.5) / w - 0.5) * CAP_W
       const py = ((y + 0.5) / h - 0.5) * CAP_H
-      const big = cloud(x, y, 22 * k, 5)
-      const mid = cloud(x, y, 8 * k, 7)
-      const fine = cloud(x, y, 2.5 * k, 11)
-      const edge = (px > 0 ? 88 : 78) + (big - 0.5) * 44 + (mid - 0.5) * 16 + 6 * Math.sin(py * 0.2 + (px > 0 ? 1.1 : 2.6))
-      let d = smooth((Math.abs(px) - edge) / 18)
-      const reach = smooth((Math.abs(px) - edge + 26) / 26)
-      d = Math.max(d, reach * smooth((fine * 0.6 + mid * 0.4 - 0.55) / 0.06))
-      let ash = smooth(1 - Math.abs(Math.abs(px) - edge + 4) / 9) * smooth((fine - 0.5) / 0.2)
-      for (const [hx, hy, hr] of BURNS) {
-        const far = Math.hypot(px - hx, py - hy) + (mid - 0.5) * 7
-        d = Math.max(d, 1 - smooth((far - hr * 0.7) / (hr * 0.5)))
-        ash = Math.max(ash, smooth(1 - Math.abs(far - hr * 1.15) / 3.5) * smooth((fine - 0.35) / 0.3))
-      }
+      const big = cloud(x, y, 20 * k, 5)
+      const mid = cloud(x, y, 7 * k, 7)
+      const fine = cloud(x, y, 2.2 * k, 11)
+      let near = 99
+      for (const [cx, cy, r] of CHAR) near = Math.min(near, Math.hypot(px - cx, (py - cy) * 1.15) - r)
+      const lip = near + (big - 0.5) * 20 + (mid - 0.5) * 12
+      let d = 1 - smooth((lip + 1.5) / 3)
+      const flake = smooth((fine * 0.55 + mid * 0.45 - 0.56) / 0.04) * (1 - smooth((lip - 2) / 16))
+      d = Math.max(d, flake)
+      d = Math.max(d, 1 - smooth(toSplit(px, py) / 1.1))
+      const halo = (1 - smooth(lip / 15)) * 0.34
+      const inside = smooth(-lip / 8)
+      const plate = cloud(x, y, 4.5 * k, 17)
+      const seam = 1 - smooth(Math.abs(plate - 0.5) / 0.035)
+      const ash = clamp(inside * smooth((mid * 0.6 + fine * 0.4 - 0.63) / 0.07) * 0.6 + smooth(1 - Math.abs(lip + 2.5) / 2.5) * smooth((fine - 0.5) / 0.2) * 0.7)
+      const bare = inside * seam * smooth((big - 0.5) / 0.2) * 0.45
       const i = (y * w + x) * 4
-      const tone = 7 + Math.round(10 * (1 - clamp(d)) + 7 * fine)
-      const grey = 96 + Math.round(60 * fine)
-      const k2 = clamp(ash) * 0.85
-      data[i] = Math.round(mix(tone + 5, grey, k2))
-      data[i + 1] = Math.round(mix(tone + 2, grey - 2, k2))
-      data[i + 2] = Math.round(mix(tone, grey - 6, k2))
-      const alpha = Math.max(clamp(d) * 0.98, k2 * 0.8)
-      data[i + 3] = Math.round(255 * alpha)
+      const tone = 9 + Math.round(9 * fine)
+      const grey = 74 + Math.round(70 * fine)
+      data[i] = Math.round(mix(tone + 4, grey, ash))
+      data[i + 1] = Math.round(mix(tone + 2, grey - 2, ash))
+      data[i + 2] = Math.round(mix(tone, grey - 5, ash))
+      data[i + 3] = Math.round(255 * Math.max(clamp(d) * 0.985 * (1 - bare), halo))
     }
   }
   return data
@@ -130,11 +143,11 @@ const chipStuff = (): THREE.MeshPhysicalMaterial => {
 
 let crackMaterial: THREE.MeshPhysicalMaterial | null = null
 const crackStuff = (): THREE.MeshPhysicalMaterial => {
-  crackMaterial ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0x2b2622, THREE.SRGBColorSpace), roughness: 0.9, metalness: 0, specularIntensity: 0.1, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 }))
+  crackMaterial ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0x3b2a20, THREE.SRGBColorSpace), roughness: 0.9, metalness: 0, specularIntensity: 0.1, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 }))
   return crackMaterial
 }
 
-const CHIPS = 14
+const CHIPS = 18
 
 export function crackGeometry(): THREE.BufferGeometry {
   const runs = crackRuns().map((r, i) => ({ ...r, i })).sort((a, b) => a.at - b.at)
@@ -148,13 +161,13 @@ export function crackGeometry(): THREE.BufferGeometry {
     const parts = Math.max(2, Math.round(len / 5))
     let px = r.x0
     let py = r.y0
-    let pw = r.wide * (1 - r.at * 0.5)
+    let pw = r.wide * 1.7 * (1 - r.at * 0.5)
     for (let k = 1; k <= parts; k++) {
       const t = k / parts
       const j = k === parts ? 0 : (hash01(r.i, k, 31) - 0.5) * 2.4
       const qx = r.x0 + dx * t + nx * j
       const qy = r.y0 + dy * t + ny * j
-      const qw = Math.max(0.35, r.wide * (1 - (r.at + (1 - r.at) * t * 0.5) * 0.7) * (0.7 + 0.6 * hash01(r.i, k, 37)))
+      const qw = Math.max(0.45, r.wide * 1.7 * (1 - (r.at + (1 - r.at) * t * 0.5) * 0.82) * (0.7 + 0.6 * hash01(r.i, k, 37)))
       const ax = px - nx * pw * 0.5
       const ay = py - ny * pw * 0.5
       const bx = px + nx * pw * 0.5
@@ -190,17 +203,33 @@ function chipPlaces(): Chip[] {
     const s = Math.sin(a)
     const ex = c * (half + r)
     const ey = s * r
-    const far = 6 + hash01(i, 3, 43) ** 2 * 44
-    out.push({ fx: ex * 0.96, fy: ey * 0.9, tx: ex + c * far, ty: ey + s * far * 0.9, size: 1.6 + hash01(i, 4, 47) * 3.4, turn: hash01(i, 5, 53) * 6.283, tip: (hash01(i, 6, 59) - 0.5) * 0.9 })
+    const far = 10 + hash01(i, 3, 43) ** 1.5 * 78
+    out.push({ fx: ex * 0.96, fy: ey * 0.9, tx: ex + c * far, ty: ey + s * far * 0.9, size: 2.6 + hash01(i, 4, 47) * 4.6, turn: hash01(i, 5, 53) * 6.283, tip: (hash01(i, 6, 59) - 0.5) * 0.9 })
   }
   return out
 }
 
+let wallMaterial: THREE.MeshPhysicalMaterial | null = null
+let floorMaterial: THREE.MeshPhysicalMaterial | null = null
+const pitStuff = (): { wall: THREE.MeshPhysicalMaterial; floor: THREE.MeshPhysicalMaterial } => {
+  const grain = materials().ceramic.normalMap
+  wallMaterial ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0x3f3c39, THREE.SRGBColorSpace), roughness: 0.96, metalness: 0, specularIntensity: 0.2, normalMap: grain, normalScale: new THREE.Vector2(0.7, 0.7) }))
+  floorMaterial ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0x0d0c0c, THREE.SRGBColorSpace), roughness: 0.95, metalness: 0, specularIntensity: 0.1 }))
+  return { wall: wallMaterial, floor: floorMaterial }
+}
+
+export const PIT = { collar: 12, wallTo: 27, deep: -58 }
+
 function rim(): THREE.Object3D {
   const m = materials()
   const root = new THREE.Group()
-  const ring = sweep(roundedRect(HOLE_W, HOLE_H, HOLE_H / 2, 20), profile([[0.25, -4.9, true], [0.25, -1.7], [0.9, -1.0], [4.4, -1.0], [6.4, -2.6], [6.6, -6.4, true]]), false)
+  const line = roundedRect(HOLE_W, HOLE_H, HOLE_H / 2, 22)
+  const ring = sweep(line, profile([[0.25, -4.9, true], [0.25, -1.6], [1.4, -0.9], [9.6, -1.5], [10.8, -2.6], [PIT.collar, -9.5, true]]), false)
   root.add(mesh(ring, m.aluminiumEdge, false, true))
+  const pit = pitStuff()
+  const wall = sweep(line, profile([[PIT.collar - 0.4, -9.5, true], [PIT.collar + 2.5, -13], [PIT.collar + 8, -34], [PIT.wallTo, PIT.deep, true]]), false)
+  root.add(mesh(wall, pit.wall, false, true))
+  root.add(mesh(sweep(roundedRect(HOLE_W - PIT.wallTo * 2 + 2, HOLE_H - PIT.wallTo * 2 + 2, HOLE_H / 2 - PIT.wallTo + 1, 14), [{ inset: 0, z: PIT.deep, out: 0, up: 1 }], true), pit.floor, false, true))
   const cracks = mesh(crackGeometry(), crackStuff(), false, false)
   cracks.position.z = 0.12
   root.add(cracks)
@@ -253,8 +282,8 @@ const WISP_ACROSS = [0, 0.75, 1, 0.75, 0]
 let wispMaterial: THREE.MeshBasicMaterial | null = null
 
 export function wispPoint(u: number, t: number, w: number): [number, number, number, number] {
-  const sway = Math.sin(u * 5.6 + w * 2.3 - t * 1.1) * 22 * u + Math.sin(u * 12 + w - t * 1.9) * 6 * u
-  return [sway + u * 30, Math.pow(u, 1.4) * 190, u * 110, 5 + 30 * Math.pow(u, 0.8)]
+  const sway = Math.sin(u * 5.6 + w * 2.3 - t * 1.1) * 24 * u + Math.sin(u * 13 + w - t * 1.9) * 11 * u * u
+  return [sway + u * 30, Math.pow(u, 1.4) * 190, u * 110, 7 + 36 * Math.pow(u, 0.8)]
 }
 
 function smoke(): THREE.Object3D {
@@ -262,7 +291,7 @@ function smoke(): THREE.Object3D {
     puffMade = texture(puffPixels(), PUFF_PX, PUFF_PX, false)
     puffMade.wrapT = THREE.RepeatWrapping
   }
-  wispMaterial ??= new THREE.MeshBasicMaterial({ color: new THREE.Color(0.1, 0.1, 0.105), alphaMap: puffMade, vertexColors: true, transparent: true, depthWrite: false, toneMapped: false, side: THREE.DoubleSide })
+  wispMaterial ??= new THREE.MeshBasicMaterial({ color: new THREE.Color(0.2, 0.2, 0.205), alphaMap: puffMade, vertexColors: true, transparent: true, depthWrite: false, toneMapped: false, side: THREE.DoubleSide })
   const across = WISP_ACROSS.length
   const count = (WISP_N + 1) * across
   const g = new THREE.BufferGeometry()
@@ -272,7 +301,7 @@ function smoke(): THREE.Object3D {
   const index: number[] = []
   for (let i = 0; i <= WISP_N; i++) {
     const u = i / WISP_N
-    const along = smooth((u - 0.03) / 0.3) * Math.pow(1 - u, 0.9)
+    const along = smooth((u - 0.02) / 0.16) * Math.pow(1 - u, 0.55)
     for (let j = 0; j < across; j++) {
       const n = (i * across + j) * 4
       colour[n] = 1

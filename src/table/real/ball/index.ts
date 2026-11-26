@@ -6,7 +6,7 @@ import type { PartMaker, RealContext } from '../../../real/types'
 import type { Shape } from '../../../stage/types'
 import { ask } from '../assets'
 import { zoneAt } from '../../draw'
-import { table } from '../../layout'
+import { table, TIER_Y } from '../../layout'
 import { lit } from '../light'
 import { zone } from '../zone'
 import { backFragment, decalFragment, decalVertex, dropFragment, dropVertex, frontFragment, shellVertex } from './glsl'
@@ -24,8 +24,9 @@ const KEY_AWAY = new THREE.Vector2(0.52, -0.5).normalize()
 const TIERS = ['corporate', 'office', 'street']
 const FLATS: Record<string, number> = { 'corporate.carpet': 0xa3161c }
 const INSET = 0.45
+const DOOR = { part: 'model-hq', x: 10.0, y: TIER_Y[0]! + 4.5 }
 const WALLS: Record<string, number[]> = { 'model-hq': [0.74, 0.5, 0.2], glass: [0.5, 0.52, 0.54], danger: [0.5, 0.17, 0.12], paper: [0.7, 0.68, 0.62], light: [0.7, 0.68, 0.6], raised: [0.42, 0.42, 0.44], metal: [0.5, 0.5, 0.52] }
-const INSIDE = { key: 2.6, fill: 0.5, lamps: 0.12, face: 1.0 }
+const INSIDE = { key: 2.6, fill: 0.5, lamps: 0.12, face: 1.0, least: 0.5, most: 0.6 }
 const floors = TIERS.map((id) => ask(`table/art/${id}.webp`, { colour: true }))
 
 // What the page tells the maker about the ball, on the shape's `v`: the share it is closed, the seconds since it closed, how much it sweats.
@@ -184,6 +185,8 @@ const lightUniforms = (): Record<string, THREE.IUniform> => ({
   uBoxAt: { value: Array.from({ length: BOXES }, () => new THREE.Vector4(0, 0, 0, 0)) },
   uBoxCol: { value: Array.from({ length: BOXES }, () => new THREE.Vector4(0, 0, 0, 0)) },
   uFlatCol: { value: new THREE.Color(0, 0, 0) },
+  uDoor: { value: new THREE.Vector4(0, 0, 0, 0) },
+  uDoorLit: { value: new THREE.Vector3(1, 1, 1) },
   uDrop: { value: 0 },
   uTrue: { value: 0 },
   uPlugTurn: { value: 0 },
@@ -245,6 +248,7 @@ function build(s: Shape): THREE.Group {
 
   const back = new THREE.Mesh(k.shell, mat(backFragment, shellVertex, THREE.BackSide))
   back.name = 'ball.back'
+  ;(back.material as THREE.ShaderMaterial).depthWrite = true
   const front = new THREE.Mesh(k.shell, mat(frontFragment, shellVertex, THREE.FrontSide))
   front.name = 'ball.front'
   const sweat = new THREE.InstancedMesh(k.drop.clone(), mat(dropFragment, dropVertex, THREE.DoubleSide), DROPS)
@@ -340,6 +344,7 @@ function pose(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const B = config.table.ballPx
   const boxAt = u.uBoxAt!.value as THREE.Vector4[]
   const boxCol = u.uBoxCol!.value as THREE.Vector4[]
+  const door = (u.uDoor!.value as THREE.Vector4).set(0, 0, 0, 0)
   const seen: { far: number; mx: number; my: number; hw: number; hh: number; tall: number; tone: string; part: string }[] = []
   for (const m of table.models) {
     if (m.tier !== L.zone.tier) continue
@@ -365,13 +370,22 @@ function pose(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
     const top = Math.max(1, wash[0], wash[1], wash[2])
     boxAt[i]!.set(b.mx, b.my, b.hw - Math.min(INSET * B, b.hw * 0.5), b.hh - Math.min(INSET * B, b.hh * 0.5))
     boxCol[i]!.set((tone[0]! * wash[0]) / top, (tone[1]! * wash[1]) / top, (tone[2]! * wash[2]) / top, b.tall)
+    if (b.part === DOOR.part) {
+      door.set(DOOR.x * B - cx, cy - DOOR.y * B, 1, 0)
+      ;(u.uDoorLit!.value as THREE.Vector3).set(wash[0] / top, wash[1] / top, wash[2] / top)
+    }
   }
   const within = 1 - Math.min(1, L.website)
   const fillOf = L.soft.map((v) => Math.max(0, v - 0.55 * L.website)) as RGB
   const near: RGB = [0, 0, 0]
   for (const l of L.lamps) if (!l.window) for (let c = 0; c < 3; c++) near[c]! += l.colour[c]! * Math.min(1.5, l.amount) * INSIDE.lamps
-  sealed.light.value.set((fillOf[0] * 1.5 + near[0]) * INSIDE.key * within, (fillOf[1] * 1.5 + near[1]) * INSIDE.key * within, (fillOf[2] * 1.5 + near[2]) * INSIDE.key * within)
-  sealed.fill.value.set((fillOf[0] * 1.5 + near[0]) * INSIDE.fill * within, (fillOf[1] * 1.5 + near[1]) * INSIDE.fill * within, (fillOf[2] * 1.5 + near[2]) * INSIDE.fill * within)
+  const inside = fillOf.map((v, c) => v * 1.5 + near[c]!) as RGB
+  const level = 0.2126 * inside[0] + 0.7152 * inside[1] + 0.0722 * inside[2]
+  const lack = Math.max(0, INSIDE.least - level)
+  for (let c = 0; c < 3; c++) inside[c]! += lack
+  const most = within * Math.min(1, INSIDE.most / Math.max(1e-4, level + lack))
+  sealed.light.value.set(inside[0] * INSIDE.key * most, inside[1] * INSIDE.key * most, inside[2] * INSIDE.key * most)
+  sealed.fill.value.set(inside[0] * INSIDE.fill * most, inside[1] * INSIDE.fill * most, inside[2] * INSIDE.fill * most)
   sealed.from.value.set(SOFT_DIR.x, SOFT_DIR.y, SOFT_DIR.z, INSIDE.face)
   u.uDrop!.value = L.drop
   u.uTrue!.value = debug.grade === 'true' ? 1 : 0
@@ -390,9 +404,10 @@ function pose(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const lum = (c: number[]): number => 0.25 * c[0]! + 0.6 * c[1]! + 0.15 * c[2]!
   const high = 1 / (1 + lift / (r * 2.5))
   const dim = 1 - 0.7 * open
-  const key = Math.min(1, lum(L.soft) * 2.2)
-  shade[0]!.set(KEY_AWAY.x, KEY_AWAY.y, 1.8, Math.min(0.72, 0.4 + 0.5 * key) * Math.min(1, key * 8) * high)
-  spot[0]!.set(L.soft[0] * 0.8 * high * dim, L.soft[1] * 0.8 * high * dim, L.soft[2] * 0.8 * high * dim)
+  const key = Math.min(1, Math.max(lum(L.soft) * 2.2, lum(L.floor) * 0.7))
+  shade[0]!.set(KEY_AWAY.x, KEY_AWAY.y, 1.15, Math.min(0.86, 0.56 + 0.5 * key) * Math.min(1, key * 8) * high)
+  const gathered = L.soft.map((v, c) => Math.max(v, L.floor[c]! * 0.3))
+  spot[0]!.set(gathered[0]! * 1.5 * high * dim, gathered[1]! * 1.3 * high * dim, gathered[2]! * 1.05 * high * dim)
   const low = L.lamps.filter((l) => !l.window && l.z - L.drop > 16 && l.amount > 0.03 && Math.hypot(l.x, l.y) > r * 0.8)
   for (let i = 1; i < 3; i++) {
     const l = low[i - 1]

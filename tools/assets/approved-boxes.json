@@ -1,5 +1,5 @@
 {
-  "about": "Where each part lies in an approved image, as fractions of its width and height: left, top, width, height. Read off the image by eye. A name is a kind of the layout tree or one of the names tools/lib/pack-look.mjs knows how to find in a still. npm run compare and the R1 pack cut their matching crops from these.",
+  "about": "Where each part lies in an approved image, as fractions of its width and height: left, top, width, height. Read off the image by eye. A name is a kind of the layout tree, one of the names tools/lib/pack-look.mjs knows how to find in a still, `shape:ID` for one shape of the frame's draw list, `shape:ID+ID` for several taken together (window.showcase.stillState gives them as `shapes`), or `part:NAME` for all the shapes of a part of the register that the still shows. npm run compare and the R1 pack cut their matching crops from these. A name the still of the build does not show is left out of both.",
   "page-look": {
     "button": [
       0.37,
@@ -261,6 +261,1100 @@
         0.11
       ],
       "label": "the title and the rule"
+    }
+  },
+  "step2-rest": {
+    "cursor": {
+      "box": [
+        0.805,
+        0.375,
+        0.045,
+        0.085
+      ],
+      "label": "the arrow"
+    },
+    "field.start": {
+      "box": [
+        0.515,
+        0.27,
+        0.2,
+        0.1
+      ],
+      "label": "a field"
+    },
+    "progressButton": {
+      "box": [
+        0.53,
+        0.025,
+        0.16,
+        0.125
+      ],
+      "label": "a round button of the progress row"
+    },
+    "button": {
+      "box": [
+        0.815,
+        0.895,
+        0.12,
+        0.075
+      ],
+      "label": "the button"
+    },
+    "header": {
+      "box": [
+        0.065,
+        0.06,
+        0.37,
+        0.12
+      ],
+      "label": "the header"
+    },
+    "surface": {
+      "box": [
+        0.72,
+        0.17,
+        0.12,
+        0.08
+      ],
+      "label": "the bare surface"
+    },
+    "type": {
+      "box": [
+        0.065,
+        0.335,
+        0.21,
+        0.04
+      ],
+      "label": "the smallest type"
+    }
+  },
+  "step2-dial": {
+    "dialWheel": {
+      "box": [
+        0.545,
+        0.365,
+        0.125,
+        0.21
+      ],
+      "label": "the dial"
+    },
+    "machineTray": {
+      "box": [
+        0.515,
+        0.35,
+        0.42,
+        0.25
+      ],
+      "label": "the tray the machine sits in"
+    },
+    "cursor": {
+      "box": [
+        0.605,
+        0.485,
+        0.04,
+        0.075
+      ],
+      "label": "the arrow"
+    },
+    "field.start": {
+      "box": [
+        0.515,
+        0.275,
+        0.2,
+        0.1
+      ],
+      "label": "a field"
+    },
+    "progressButton": {
+      "box": [
+        0.53,
+        0.025,
+        0.16,
+        0.125
+      ],
+      "label": "a round button of the progress row"
+    },
+    "button": {
+      "box": [
+        0.815,
+        0.885,
+        0.12,
+        0.075
+      ],
+      "label": "the button"
+    }
+  },
+  "step2-crank": {
+    "crankBase": {
+      "box": [
+        0.54,
+        0.75,
+        0.065,
+        0.11
+      ],
+      "label": "the base of the crank"
+    },
+    "crankGrip": {
+      "box": [
+        0.62,
+        0.74,
+        0.05,
+        0.06
+      ],
+      "label": "the grip of the crank"
+    },
+    "meterSegment": {
+      "box": [
+        0.69,
+        0.745,
+        0.02,
+        0.105
+      ],
+      "label": "a segment of the meter"
+    },
+    "cursor": {
+      "box": [
+        0.64,
+        0.775,
+        0.035,
+        0.07
+      ],
+      "label": "the arrow"
+    },
+    "progressButton": {
+      "box": [
+        0.53,
+        0.025,
+        0.16,
+        0.125
+      ],
+      "label": "a round button of the progress row"
+    },
+    "button": {
+      "box": [
+        0.815,
+        0.895,
+        0.12,
+        0.075
+      ],
+      "label": "the button"
+    }
+  },
+  "boss-fight": {
+    "shape:boss-plate": {
+      "box": [
+        0.72,
+        0.42,
+        0.17,
+        0.18
+      ],
+      "label": "the front plate of the machine"
+    },
+    "shape:boss-cannon-0": {
+      "box": [
+        0.78,
+        0.33,
+        0.07,
+        0.09
+      ],
+      "label": "a cannon"
+    },
+    "shape:boss-shield": {
+      "box": [
+        0.655,
+        0.39,
+        0.055,
+        0.25
+      ],
+      "label": "the shield"
+    },
+    "shape:fired-0": {
+      "box": [
+        0.515,
+        0.375,
+        0.125,
+        0.085
+      ],
+      "label": "a shot in flight"
+    },
+    "cursor": {
+      "box": [
+        0.16,
+        0.76,
+        0.065,
+        0.11
+      ],
+      "label": "the arrow"
+    },
+    "shape:rim-socket-open": {
+      "box": [
+        0.415,
+        0.83,
+        0.17,
+        0.1
+      ],
+      "label": "the open socket in the rim"
+    },
+    "checkbox": {
+      "box": [
+        0.088,
+        0.435,
+        0.03,
+        0.045
+      ],
+      "label": "the checkbox"
+    },
+    "shape:health-track": {
+      "box": [
+        0.14,
+        0.235,
+        0.79,
+        0.035
+      ],
+      "label": "the long bar"
+    },
+    "progressButton": {
+      "box": [
+        0.71,
+        0.05,
+        0.15,
+        0.125
+      ],
+      "label": "a round button of the progress row"
+    }
+  },
+  "boss-down": {
+    "shape:boss-cap": {
+      "box": [
+        0.625,
+        0.53,
+        0.15,
+        0.15
+      ],
+      "label": "the cap"
+    },
+    "cursor": {
+      "box": [
+        0.6,
+        0.64,
+        0.09,
+        0.2
+      ],
+      "label": "the arrow"
+    },
+    "shape:boss-plate": {
+      "box": [
+        0.615,
+        0.385,
+        0.11,
+        0.1
+      ],
+      "label": "the front plate of the machine"
+    },
+    "shape:boss-cannon-0": {
+      "box": [
+        0.745,
+        0.355,
+        0.075,
+        0.09
+      ],
+      "label": "a cannon"
+    },
+    "shape:boss-shield": {
+      "box": [
+        0.71,
+        0.89,
+        0.135,
+        0.09
+      ],
+      "label": "the shield"
+    },
+    "shape:boss-side-0": {
+      "box": [
+        0.265,
+        0.71,
+        0.085,
+        0.11
+      ],
+      "label": "a side piece"
+    },
+    "shape:rim-socket-open": {
+      "box": [
+        0.415,
+        0.86,
+        0.165,
+        0.1
+      ],
+      "label": "the open socket in the rim"
+    },
+    "shape:health-track": {
+      "box": [
+        0.14,
+        0.235,
+        0.79,
+        0.035
+      ],
+      "label": "the long bar"
+    },
+    "checkbox": {
+      "box": [
+        0.088,
+        0.435,
+        0.03,
+        0.045
+      ],
+      "label": "the checkbox"
+    }
+  },
+  "decision": {
+    "paper": {
+      "box": [
+        0.075,
+        0.28,
+        0.405,
+        0.525
+      ],
+      "label": "the letter"
+    },
+    "shape:letter-mark-top+letter-mark-bottom+letter-mark-left+letter-mark-right": {
+      "box": [
+        0.26,
+        0.61,
+        0.2,
+        0.16
+      ],
+      "label": "the stamped mark"
+    },
+    "stampBlock": {
+      "box": [
+        0.55,
+        0.615,
+        0.155,
+        0.18
+      ],
+      "label": "the stamp"
+    },
+    "readout": {
+      "box": [
+        0.54,
+        0.365,
+        0.125,
+        0.135
+      ],
+      "label": "a readout"
+    },
+    "card.glass": {
+      "box": [
+        0.89,
+        0.53,
+        0.1,
+        0.1
+      ],
+      "label": "the glass card"
+    },
+    "heroButton": {
+      "box": [
+        0.375,
+        0.83,
+        0.255,
+        0.095
+      ],
+      "label": "the large button"
+    },
+    "cursor": {
+      "box": [
+        0.75,
+        0.665,
+        0.055,
+        0.1
+      ],
+      "label": "the arrow"
+    },
+    "progressButtonCurrent": {
+      "box": [
+        0.885,
+        0.06,
+        0.06,
+        0.1
+      ],
+      "label": "the current button of the progress row"
+    },
+    "header": {
+      "box": [
+        0.066,
+        0.04,
+        0.31,
+        0.11
+      ],
+      "label": "the header"
+    }
+  },
+  "loader-page": {
+    "shape:loader.ring": {
+      "box": [
+        0.78,
+        0.29,
+        0.195,
+        0.34
+      ],
+      "label": "the ring"
+    },
+    "shape:rail.feed.2": {
+      "box": [
+        0.85,
+        0.7,
+        0.06,
+        0.3
+      ],
+      "label": "the rail"
+    },
+    "progressButtonCurrent": {
+      "box": [
+        0.775,
+        0.05,
+        0.05,
+        0.075
+      ],
+      "label": "the current button of the progress row"
+    },
+    "header": {
+      "box": [
+        0.03,
+        0.03,
+        0.31,
+        0.11
+      ],
+      "label": "the header"
+    }
+  },
+  "table-wide": {
+    "shape:marquee.back": {
+      "box": [
+        0.345,
+        0.035,
+        0.305,
+        0.185
+      ],
+      "label": "the sign at the head"
+    },
+    "shape:model.corporate.hq": {
+      "box": [
+        0.43,
+        0.2,
+        0.13,
+        0.14
+      ],
+      "label": "the tower"
+    },
+    "shape:bumper.office.bumper.3": {
+      "box": [
+        0.44,
+        0.345,
+        0.1,
+        0.1
+      ],
+      "label": "a bumper"
+    },
+    "shape:model.street.firehouse": {
+      "box": [
+        0.27,
+        0.5,
+        0.1,
+        0.14
+      ],
+      "label": "the firehouse"
+    },
+    "shape:model.street.garage": {
+      "box": [
+        0.63,
+        0.58,
+        0.1,
+        0.14
+      ],
+      "label": "the garage"
+    },
+    "shape:flipper.street.flipper.left": {
+      "box": [
+        0.35,
+        0.81,
+        0.1,
+        0.09
+      ],
+      "label": "a flipper"
+    },
+    "apronCard": {
+      "box": [
+        0.42,
+        0.86,
+        0.15,
+        0.07
+      ],
+      "label": "the card at the foot"
+    },
+    "cursor": {
+      "box": [
+        0.8,
+        0.76,
+        0.07,
+        0.1
+      ],
+      "label": "the arrow"
+    },
+    "shape:plunger.knob": {
+      "box": [
+        0.86,
+        0.87,
+        0.07,
+        0.1
+      ],
+      "label": "the plunger"
+    }
+  },
+  "tier-corporate": {
+    "shape:model.corporate.hq": {
+      "box": [
+        0.39,
+        0.02,
+        0.22,
+        0.41
+      ],
+      "label": "the tower"
+    },
+    "shape:model.corporate.beach": {
+      "box": [
+        0.74,
+        0.11,
+        0.16,
+        0.24
+      ],
+      "label": "the beach"
+    },
+    "shape:model.corporate.boardroom": {
+      "box": [
+        0.11,
+        0.2,
+        0.22,
+        0.14
+      ],
+      "label": "the long table"
+    },
+    "shape:hold.corporate.revolving": {
+      "box": [
+        0.45,
+        0.45,
+        0.1,
+        0.17
+      ],
+      "label": "the revolving door"
+    },
+    "part:model-ladder": {
+      "box": [
+        0.66,
+        0.37,
+        0.19,
+        0.26
+      ],
+      "label": "the ladder"
+    },
+    "shape:flipper.corporate.flipper.left": {
+      "box": [
+        0.305,
+        0.78,
+        0.16,
+        0.2
+      ],
+      "label": "a flipper"
+    },
+    "shape:sling.corporate.sling.left.1+sling.corporate.sling.left.2+sling.corporate.sling.left.3": {
+      "box": [
+        0.215,
+        0.56,
+        0.09,
+        0.26
+      ],
+      "label": "a slingshot"
+    },
+    "shape:insert.corporate.insert.1": {
+      "box": [
+        0.335,
+        0.61,
+        0.07,
+        0.12
+      ],
+      "label": "a lamp in the floor"
+    },
+    "shape:lift.elbow.corporate": {
+      "box": [
+        0.07,
+        0.02,
+        0.1,
+        0.14
+      ],
+      "label": "the bend of the tube"
+    }
+  },
+  "lobby-doors": {
+    "shape:hq.plate": {
+      "box": [
+        0.38,
+        0.21,
+        0.32,
+        0.14
+      ],
+      "label": "the name plate"
+    },
+    "shape:hq.doorway": {
+      "box": [
+        0.45,
+        0.36,
+        0.15,
+        0.17
+      ],
+      "label": "the doorway"
+    },
+    "cursor": {
+      "box": [
+        0.51,
+        0.575,
+        0.1,
+        0.17
+      ],
+      "label": "the arrow"
+    },
+    "shape:hold.corporate.revolving.post": {
+      "box": [
+        0.23,
+        0.33,
+        0.1,
+        0.12
+      ],
+      "label": "the post of the revolving door"
+    },
+    "shape:post.corporate.globe.right": {
+      "box": [
+        0.715,
+        0.545,
+        0.09,
+        0.16
+      ],
+      "label": "a globe lamp"
+    },
+    "shape:model.corporate.hq": {
+      "box": [
+        0.3,
+        0.0,
+        0.5,
+        0.2
+      ],
+      "label": "the tower"
+    },
+    "shape:flat.corporate.carpet": {
+      "box": [
+        0.4,
+        0.78,
+        0.36,
+        0.2
+      ],
+      "label": "the carpet"
+    }
+  },
+  "tier-office": {
+    "shape:model.office.cubicles": {
+      "box": [
+        0.125,
+        0.13,
+        0.215,
+        0.3
+      ],
+      "label": "the cubicles"
+    },
+    "shape:bumper.office.bumper.3": {
+      "box": [
+        0.43,
+        0.29,
+        0.14,
+        0.24
+      ],
+      "label": "a bumper"
+    },
+    "shape:model.office.coffee": {
+      "box": [
+        0.635,
+        0.06,
+        0.13,
+        0.2
+      ],
+      "label": "the coffee machine"
+    },
+    "shape:model.office.inbox": {
+      "box": [
+        0.72,
+        0.31,
+        0.17,
+        0.21
+      ],
+      "label": "the tray of letters"
+    },
+    "shape:sling.office.sling.left.1+sling.office.sling.left.2+sling.office.sling.left.3": {
+      "box": [
+        0.215,
+        0.57,
+        0.095,
+        0.24
+      ],
+      "label": "a slingshot"
+    },
+    "shape:flipper.office.flipper.left": {
+      "box": [
+        0.305,
+        0.79,
+        0.155,
+        0.18
+      ],
+      "label": "a flipper"
+    },
+    "cursor": {
+      "box": [
+        0.49,
+        0.52,
+        0.06,
+        0.1
+      ],
+      "label": "the arrow"
+    },
+    "shape:insert.office.insert.1": {
+      "box": [
+        0.34,
+        0.63,
+        0.07,
+        0.1
+      ],
+      "label": "a lamp in the floor"
+    },
+    "shape:lift.elbow.office": {
+      "box": [
+        0.1,
+        0.03,
+        0.1,
+        0.13
+      ],
+      "label": "the bend of the tube"
+    }
+  },
+  "reply-all": {
+    "shape:ball.steel.2": {
+      "box": [
+        0.605,
+        0.44,
+        0.06,
+        0.09
+      ],
+      "label": "a steel ball"
+    },
+    "cursor": {
+      "box": [
+        0.49,
+        0.5,
+        0.06,
+        0.1
+      ],
+      "label": "the arrow"
+    },
+    "shape:model.office.inbox": {
+      "box": [
+        0.66,
+        0.27,
+        0.19,
+        0.23
+      ],
+      "label": "the tray of letters"
+    },
+    "shape:bumper.office.bumper.3": {
+      "box": [
+        0.43,
+        0.25,
+        0.14,
+        0.25
+      ],
+      "label": "a bumper"
+    },
+    "shape:model.office.cubicles": {
+      "box": [
+        0.17,
+        0.14,
+        0.17,
+        0.29
+      ],
+      "label": "the cubicles"
+    },
+    "shape:model.office.coffee": {
+      "box": [
+        0.635,
+        0.04,
+        0.125,
+        0.21
+      ],
+      "label": "the coffee machine"
+    },
+    "shape:sling.office.sling.left.1+sling.office.sling.left.2+sling.office.sling.left.3": {
+      "box": [
+        0.215,
+        0.55,
+        0.09,
+        0.25
+      ],
+      "label": "a slingshot"
+    },
+    "shape:flipper.office.flipper.left": {
+      "box": [
+        0.305,
+        0.76,
+        0.155,
+        0.21
+      ],
+      "label": "a flipper"
+    },
+    "shape:lift.elbow.office": {
+      "box": [
+        0.14,
+        0.01,
+        0.1,
+        0.12
+      ],
+      "label": "the bend of the tube"
+    }
+  },
+  "tier-street": {
+    "shape:model.street.firehouse": {
+      "box": [
+        0.12,
+        0.08,
+        0.16,
+        0.28
+      ],
+      "label": "the firehouse"
+    },
+    "shape:model.street.police": {
+      "box": [
+        0.71,
+        0.08,
+        0.165,
+        0.24
+      ],
+      "label": "the police station"
+    },
+    "shape:model.street.garage": {
+      "box": [
+        0.73,
+        0.31,
+        0.17,
+        0.26
+      ],
+      "label": "the garage"
+    },
+    "shape:model.street.bank": {
+      "box": [
+        0.105,
+        0.4,
+        0.135,
+        0.2
+      ],
+      "label": "the bank"
+    },
+    "cursor": {
+      "box": [
+        0.275,
+        0.26,
+        0.055,
+        0.09
+      ],
+      "label": "the arrow"
+    },
+    "shape:model.street.mom": {
+      "box": [
+        0.1,
+        0.82,
+        0.07,
+        0.14
+      ],
+      "label": "the small house"
+    },
+    "shape:sling.street.sling.left.1+sling.street.sling.left.2+sling.street.sling.left.3": {
+      "box": [
+        0.235,
+        0.6,
+        0.075,
+        0.21
+      ],
+      "label": "a slingshot"
+    },
+    "shape:flipper.street.flipper.left": {
+      "box": [
+        0.31,
+        0.8,
+        0.15,
+        0.16
+      ],
+      "label": "a flipper"
+    },
+    "shape:rail.highway.a.4": {
+      "box": [
+        0.42,
+        0.24,
+        0.16,
+        0.1
+      ],
+      "label": "the raised road"
+    }
+  },
+  "youre-fired": {
+    "shape:model.street.firehouse": {
+      "box": [
+        0.29,
+        0.1,
+        0.66,
+        0.24
+      ],
+      "label": "the roof and its sign"
+    },
+    "cursor": {
+      "box": [
+        0.38,
+        0.65,
+        0.15,
+        0.25
+      ],
+      "label": "the arrow"
+    },
+    "shape:seg.street.firehouse.roof": {
+      "box": [
+        0.55,
+        0.38,
+        0.2,
+        0.24
+      ],
+      "label": "the wall and its windows"
+    }
+  },
+  "rail-cam": {
+    "cursor": {
+      "box": [
+        0.405,
+        0.49,
+        0.195,
+        0.37
+      ],
+      "label": "the arrow"
+    },
+    "shape:rail.highway.b.1": {
+      "box": [
+        0.42,
+        0.05,
+        0.16,
+        0.3
+      ],
+      "label": "the rails ahead"
+    },
+    "shape:model.street.bank": {
+      "box": [
+        0.14,
+        0.2,
+        0.18,
+        0.36
+      ],
+      "label": "the bank"
+    },
+    "shape:model.street.firehouse": {
+      "box": [
+        0.66,
+        0.12,
+        0.22,
+        0.4
+      ],
+      "label": "the firehouse"
+    }
+  },
+  "last-save": {
+    "cursor": {
+      "box": [
+        0.53,
+        0.49,
+        0.095,
+        0.17
+      ],
+      "label": "the arrow"
+    },
+    "shape:flipper.street.flipper.left": {
+      "box": [
+        0.275,
+        0.58,
+        0.18,
+        0.18
+      ],
+      "label": "a flipper"
+    },
+    "shape:sling.street.sling.left.1+sling.street.sling.left.2+sling.street.sling.left.3": {
+      "box": [
+        0.2,
+        0.41,
+        0.08,
+        0.18
+      ],
+      "label": "a slingshot"
+    },
+    "apronCard": {
+      "box": [
+        0.39,
+        0.785,
+        0.22,
+        0.065
+      ],
+      "label": "the card at the foot"
+    },
+    "shape:model.street.mom": {
+      "box": [
+        0.0,
+        0.58,
+        0.1,
+        0.17
+      ],
+      "label": "the small house"
+    },
+    "shape:model.street.firehouse": {
+      "box": [
+        0.19,
+        0.03,
+        0.15,
+        0.2
+      ],
+      "label": "the firehouse"
+    },
+    "shape:rail.drain.1": {
+      "box": [
+        0.41,
+        0.86,
+        0.17,
+        0.14
+      ],
+      "label": "the drain"
+    },
+    "apronSlab": {
+      "box": [
+        0.0,
+        0.84,
+        0.24,
+        0.16
+      ],
+      "label": "the slab at the foot"
+    },
+    "shape:insert.street.insert.1": {
+      "box": [
+        0.335,
+        0.455,
+        0.07,
+        0.1
+      ],
+      "label": "a lamp in the floor"
     }
   }
 }
