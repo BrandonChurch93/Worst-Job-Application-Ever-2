@@ -16,9 +16,9 @@ Patches, the same in each picture: the face of the current progress cap (a box o
 
 | Patch | Approved | Build before (review) | Build after (review) |
 | --- | --- | --- | --- |
-| `step2-rest`, progress cap | (200, 89, 27) | (163, 64, 14) | AFTER_CAP |
-| `marketing-top`, hero button | (204, 92, 34) | (168, 72, 30) | AFTER_HERO |
-| `boss-fight`, progress cap | (183, 77, 23) | BEFORE_BOSS | AFTER_BOSS |
+| `step2-rest`, progress cap | (200, 89, 27) | (163, 64, 14) | (197, 89, 32) |
+| `marketing-top`, hero button | (204, 92, 34) | (168, 72, 30) | (207, 99, 48) |
+| `boss-fight`, progress cap | (183, 77, 23) | (165, 65, 13) | (193, 87, 30) |
 | `page-look`, progress cap | (193, 80, 32) | none | none |
 | `step1-fire`, progress cap | (191, 83, 33) | none | none |
 | `decision`, progress cap | (171, 61, 15) | none | none |
@@ -30,7 +30,15 @@ What was found:
 - Built: the same luminance with the approved hue, 0xbe5418 (contrast with `inkOnOrange` 4.61, MEASURED by the same sum as the test), and the pigment gives back 1.7 times the lamps' diffuse light (`ORANGE_LIFT`, in the shader, the wrapper `lifted`). `specularIntensity` 0.3, `clearcoatRoughness` 0.1, `envMapIntensity` 0.5, `roughness` 0.55.
 - DECISION, said plainly: M4 and the test read the colour of the material, not the lit face. With the lift the drawn face is lighter than the colour M4 reads, as on the approved images. The contrast of the drawn pixels is in the table of measures below. The approved pictures themselves stand near 3.6 on the same sum. If the Builder wants the drawn contrast at 4.5, `ORANGE_LIFT` goes back toward 1.15 and the face toward (165, 75, 28).
 - The cap: a foot ring 6 px wide with a rounded rim, a wall that leans in 1.6 px, an edge that rolls over 4.6 px and a face crowned by 0.4 px (it was 1.3 px with a shoulder 13 px wide, which spread the studio's light over the whole face as a pale blotch).
-- The hub of step 2's dial clones this material and multiplies its colour by `HUB_ORANGE_LIFT` 1.6 on top: it is now lifted twice. Its colour with the constant at 1 is in the report.
+- The hub of step 2's dial clones this material and multiplies its colour by `HUB_ORANGE_LIFT` 1.6 on top: it is now lifted twice. MEASURED on `step2-dial` at review, the median of a box of 30 by 30 px at the hub's middle: approved (199, 81, 13); before, old orange with the constant at 1.6, (207, 84, 30); this branch with the constant at 1.6, (241, 117, 55), too light; this branch with the constant at 1 (set by hand for one still, not committed), (206, 98, 51). The constant goes to 1 when this branch is merged. The hub is then as light as approved and a little less deep in colour (its dome takes more of the studio's reflection than a flat face).
+- The white ink on a lit colour (`gloss:light` on anything but the smoked grey) gives back 1.22 times the lamps' light (`LIGHT_INK_LIFT` in `type.ts`, in the colours of the run's vertices, the material's own colour is unchanged). Drawn contrast, white ink against the face it lies on, MEASURED with `node out/work/shared-look/drawn.cjs <png> x0 y0 x1 y1` (the median of the orange pixels against the 90th centile of the near-white ones):
+
+| Patch | Approved | Before | After A | After A with the ink lifted |
+| --- | --- | --- | --- | --- |
+| `step2-rest`, numeral on the cap | 3.94 | 5.16 | 3.29 | 3.77 |
+| `marketing-top`, words on the hero button | 3.49 | 4.59 | 2.98 | 3.28 |
+
+- The waiting Continue: 0x5b6168 to 0x6e7379 (contrast with its words 4.71). DECISION: the approved pale silver pill with paler words cannot be reached while M4 holds 4.5 between a button and its words; the pill is as light as the measure lets it be with white words, and its words are not lifted, so they stay quieter than the words on the orange.
 
 The waiting Continue button (`materials().waiting`): 0x5b6168 to 0x6e7379, the lightest grey that keeps 4.6 with `inkOnOrange` (4.71). DECISION: the approved pill (about 0x9a9d9e with paler words) is not reachable while M4 holds 4.5 for its words; the face went as light as the measure allows and the words stay the light ink. Not lifted: lifting it would take the drawn contrast of its words under 4.5.
 
@@ -68,8 +76,8 @@ Tests that held a number of the old header: none. MEASURED: `npx vitest run` wit
 
 | Part | Used | Of |
 | --- | --- | --- |
-| shell | LOOKS_SHELL | 40 |
-| type | 0 | 40 |
+| shell | 16 | 40 |
+| type | 2 | 40 |
 | light-engine | 0 | 40 |
 | cursor-body | 0 | 40 |
 
@@ -84,6 +92,16 @@ BEFORE at review (`npm run -s measure -- --unit <unit> --tier review`, on a18933
 | step2 | pass | 0.004 | 0.8177 | 4.63 | 0 px | 0 px | pass | 0 px |
 | boss | pass | 0.0028 | 0.9429 | 4.63 | 0 px | 0 px | pass | 0 px |
 | decision | pass | 0.0932 FAIL | 0.7566 FAIL | 4.63 | 0 px | 0 px | pass | 0 px |
-| pinball | BEFORE_PINBALL |
+| pinball | not finished at 07:12 UTC; started 06:42:54, stopped while each of my renders ran; far over 15 minutes |
 
-AFTER_MEASURES
+AFTER the first pass (A and B, on 3bb161c1, files in `out/work/shared-look/after1m/`):
+
+| Unit | M1 | M2 soft share | M3 least ratio | M4 least contrast | M5 | M6 | M7 | M9 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| marketing | pass | 0.0001 | 0.684 FAIL | 4.61 | 0 px | 0 px | pass | 0 px |
+| step1 | pass | 0.0132 | 0.9559 | 4.62 | 0 px | 0 px | pass | 0 px |
+| step2 | pass | 0.004 | 0.8174 | 4.62 | 0 px | 0 px | pass | 0 px |
+| boss | pass | 0.003 | 0.9433 | 4.62 | 0 px | 0 px | pass | 0 px |
+| decision | pass | 0.0932 FAIL | 0.7527 FAIL | 4.62 | 0 px | 0 px | pass | 0 px |
+
+No measure that was green is red. No number moved by a tenth of its limit: M4's least contrast 4.63 to 4.62 (the orange's own colour, 4.627 to 4.61), M3 by 0.006 at most. The three that fail failed before by the same amounts: marketing M3 and decision M2 and M3 are items G and the decision page's own.

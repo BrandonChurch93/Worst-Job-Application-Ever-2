@@ -596,7 +596,19 @@ function leave(m: Member): void {
   sheet.geometry.dispose()
 }
 
-interface Held { said: string; style: string; member: Member | null }
+interface Held { said: string; style: string; lit: boolean; member: Member | null }
+
+// White paint on a lit colour gives back more of the lamps' light than its colour says, as the orange under it does. On the smoked grey it stays quiet.
+export const LIGHT_INK_LIFT = 1.22
+function lifted(data: RunData): RunData {
+  const tint = data.colour
+  for (let i = 0; i < tint.length; i += 4) {
+    tint[i] = tint[i]! * LIGHT_INK_LIFT
+    tint[i + 1] = tint[i + 1]! * LIGHT_INK_LIFT
+    tint[i + 2] = tint[i + 2]! * LIGHT_INK_LIFT
+  }
+  return data
+}
 
 export const type: PartMaker = {
   key(s, ctx) {
@@ -610,14 +622,15 @@ export const type: PartMaker = {
     const ground = groundOf(s, ctx)
     const name = styleName(ground, s.tone, s.type!.font, s.type!.ink)
     const said = words(s.words!, s.text)
-    const data = dataOf(s, said, styles()[name]!)
+    const lit = name === 'gloss:light' && ground !== 'smoked'
+    const data = lit ? lifted(dataOf(s, said, styles()[name]!)) : dataOf(s, said, styles()[name]!)
     const over = ground === 'glass'
     if (over || s.words!.startsWith('runtime:')) {
       const mesh = new THREE.Mesh(geometryOf(data), over ? kit(name).over : kit(name).opaque)
       mesh.position.z = HOVER
       mesh.receiveShadow = true
       mesh.castShadow = false
-      const held: Held = { said, style: name, member: null }
+      const held: Held = { said, style: name, lit, member: null }
       mesh.userData.held = held
       return mesh
     }
@@ -628,7 +641,7 @@ export const type: PartMaker = {
     proxy.castShadow = false
     hold.add(proxy)
     const member: Member = { hold, proxy, data, first: 0, at: new THREE.Vector3(), turn: new THREE.Quaternion(), sheet: null }
-    const held: Held = { said, style: name, member }
+    const held: Held = { said, style: name, lit, member }
     hold.userData.held = held
     return hold
   },
@@ -644,7 +657,8 @@ export const type: PartMaker = {
     held.said = said
     const mesh = o as THREE.Mesh
     mesh.geometry.dispose()
-    mesh.geometry = geometryOf(dataOf(s, said, styles()[held.style]!))
+    const data = dataOf(s, said, styles()[held.style]!)
+    mesh.geometry = geometryOf(held.lit ? lifted(data) : data)
   },
   drop(o) {
     const held = o.userData.held as Held
