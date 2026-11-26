@@ -71,3 +71,16 @@ What the sheets show, looked at one by one:
 - The sheet of the hit is made of that bolt (`hitTaken`), or of the first bolt when none struck that far.
 - The run's file says which: `stood.at` (the key and its place), `stood.hit` (`step`, `nth` bolt, its place, `fromMuzzle` px, `least` px, `far`), and `stood.capReached` is true when the cap ran out with no far hit. The pack's log says the same in one line.
 - `BLOCK` holds the numbers of the key block that the kit does not set (top of the deck, width of an end, barrel). `tests/fix-packs.test.ts` holds them against `src/pages/step1/keyboard.ts` and `turrets.ts`, so a change of the page breaks the test and not the sheet.
+
+## The other packs and the checks
+
+- R5, MEASURED with `npm run -s pack -- --phase 5 --round 21 --unit site --role R5` at commit 7a0ae9b7 (the walk before the place of the stand-still was set): exit 0, 9 files, 15.2 MB, 488 s.
+- R8 and the second pack of R4 are built at the commit that holds the place of the stand-still, after this note was pushed. Their numbers are in the last report to the Builder and are not in this file unless a line below says so.
+- MEASURED at the commit that holds the place of the stand-still: `npx vitest run --maxWorkers=2` 141 files, 1785 tests passed (1764 before this work, 21 new in `tests/fix-packs.test.ts`); `npx tsc --noEmit -p .` clean; `npm run -s bots` "bots: all clear"; the stills `step1-fire`, `table-wide` and `boss-fight` (hd, draft) byte equal by `cmp` to the ones made on origin/main dc83c2d0.
+- The first two pushes of this branch (00f2ae4f, 7a0ae9b7) went out without the three stills and `npm run determinism`. Both were run before the third push.
+
+## Open
+
+- The shiver after the seat of the page turn is inside the run by its steps and was not seen by eye at the size of a whole-page tile.
+- The end of the arrow's ease after the give-back is after the one sheet that moment keeps.
+- The leaving half of the page turn is not in the motion pack.
