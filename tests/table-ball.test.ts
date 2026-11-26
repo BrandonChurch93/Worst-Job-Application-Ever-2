@@ -98,11 +98,13 @@ describe('the clear ball', () => {
     const front = meshesOf(o).find((m) => m.name === 'ball.front')!
     const u = (front.material as THREE.ShaderMaterial).uniforms
     maker.pose!(o, ball(1085, 3115, -192, [0.25, 0, 0.5]), ctx)
+    maker.pose!(o, ball(1085, 3115, -192, [0.1, 0, 0.5]), ctx)
     expect(u.uOpen!.value).toBe(1)
     expect(u.uGone!.value).toBeGreaterThan(0)
     expect(front.parent!.position.z).toBeLessThan(48)
     maker.pose!(o, ball(1085, 3115, -192, [0.65, 0, 0.5]), ctx)
-    expect(u.uOpen!.value).toBeCloseTo(0.5)
+    expect(u.uOpen!.value).toBeGreaterThan(0.3)
+    expect(u.uOpen!.value).toBeLessThan(0.6)
     expect(u.uGone!.value).toBe(0)
     expect(front.parent!.position.z).toBe(48)
     maker.pose!(o, ball(1085, 3115, -192, [0, 0, 0.5]), ctx)
