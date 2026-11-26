@@ -1,35 +1,35 @@
 {
   "folder": "step2-slot",
-  "pushed": "2026-11-26T01:59:14.746Z",
-  "commit": "7a0a4e60ea772633ada96735d4bd9ec17a12a129",
+  "pushed": "2026-11-26T02:14:32.714Z",
+  "commit": "346f64e87d964103e84682d30d3ca35d9e5f642e",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-step2-crank-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T01:55:58.816Z",
-      "by": "step2-slot",
-      "from": "out/work/stills/key-step2-crank-hd-draft.png"
-    },
-    {
-      "file": "look-2.jpg",
       "caption": "Still step2-step2_slot-0p8-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-26T01:56:41.841Z",
+      "time": "2026-11-26T02:13:49.684Z",
       "by": "step2-slot",
       "from": "out/work/stills/step2-step2_slot-0p8-hd-review.png"
     },
     {
-      "file": "look-3.jpg",
-      "caption": "Crank key, draft tier, 7a0a4e6: approved above, build below. Grip cross section rounder so its top carries a wider sheen",
-      "time": "2026-11-26T01:59:13.310Z",
+      "file": "look-2.jpg",
+      "caption": "Crank key, review tier, 346f64e: approved above, build below. Grip 52 px high, crank 18 px further in, unlit segments grey green glass",
+      "time": "2026-11-26T02:14:31.041Z",
       "by": "step2-slot",
-      "from": "out/work/looks/files/20261126015913-crank-0200.jpg"
+      "from": "out/work/looks/files/20261126021431-crank-0215.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Sheet machines, review tier, 346f64e: approved above, build below. Unlit segments have a body of their own on the white page",
+      "time": "2026-11-26T02:14:31.272Z",
+      "by": "step2-slot",
+      "from": "out/work/looks/files/20261126021431-machines-0215.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Slot beat at 0.8, review tier, 7a0a4e6: cabinet frame more polished with stronger brushing",
-      "time": "2026-11-26T01:59:13.536Z",
+      "caption": "Slot beat at 0.8, review tier, 346f64e: drums fall to dark at top and bottom, near black gaps, satin gold coins",
+      "time": "2026-11-26T02:14:31.503Z",
       "by": "step2-slot",
-      "from": "out/work/looks/files/20261126015913-slot-0200.jpg"
+      "from": "out/work/looks/files/20261126021431-slot-0215.jpg"
     }
   ]
 }
