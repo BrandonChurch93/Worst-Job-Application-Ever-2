@@ -121,7 +121,7 @@ function firstScreen(): LayoutNode[] {
   const headline = { ...T.display, wrap: 1040 }
   out.push(text('hero-headline', 'copy:marketing.hero.headline', headline, LEFT, headY, type))
   const sublineY = headY + tall(headline, 'copy:marketing.hero.headline', headline.wrap) + 36
-  out.push(text('hero-subline', 'copy:marketing.hero.subline', { ...TYPE.subline, ink: 'soft' }, LEFT, sublineY, type))
+  out.push(text('hero-subline', 'copy:marketing.hero.subline', TYPE.subline, LEFT, sublineY, type))
   const buttonY = 424
   out.push(button('hero-cta', LEFT, buttonY, HERO_W, 'copy:marketing.hero.cta', { hero: true, part: 'apply-button' }))
   out.push(text('hero-under', 'copy:marketing.hero.underCta', { ...TYPE.helper, ink: 'soft' }, LEFT, buttonY + sizes.heroButton + 28, type))
