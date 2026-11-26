@@ -1,35 +1,35 @@
 {
   "folder": "street-models",
-  "pushed": "2026-11-26T03:31:14.811Z",
-  "commit": "e3f5c715695f1088f1cf5861d30ac5bea289092b",
+  "pushed": "2026-11-26T03:56:09.421Z",
+  "commit": "ac06044d9b7eaad584845ae39d1f8cb7f1718a6c",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "youre-fired beside approved at e3f5c71: paler stone, amber windows, the bay a dull red at rest",
-      "time": "2026-11-26T03:31:13.025Z",
-      "by": "street-models",
-      "from": "out/work/compare/compare-youre-fired.jpg"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "tier-street beside approved at e3f5c71",
-      "time": "2026-11-26T03:31:13.267Z",
-      "by": "street-models",
-      "from": "out/work/compare/compare-tier-street.jpg"
-    },
-    {
-      "file": "look-3.jpg",
-      "caption": "last-save beside approved at e3f5c71: the garage wall is still unlit on main",
-      "time": "2026-11-26T03:31:13.498Z",
+      "caption": "Key last-save: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-26T03:55:59.499Z",
       "by": "street-models",
       "from": "out/work/compare/compare-last-save.jpg"
     },
     {
-      "file": "look-4.jpg",
-      "caption": "last-save in a trial merge with agent/table-light 23d0031 (not kept): the garage with the lighter's seven lamps",
-      "time": "2026-11-26T03:31:13.732Z",
+      "file": "look-2.jpg",
+      "caption": "youre-fired beside approved at ac06044: the stager's lens takes the whole house, felt roof, deeper lens",
+      "time": "2026-11-26T03:56:07.716Z",
       "by": "street-models",
-      "from": "out/work/looks/files/20261126033113-last-save-with-the-lighters-garage-lamps.jpg"
+      "from": "out/work/compare/compare-youre-fired.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "tier-street beside approved at ac06044: felt roofs with pale caps, the garage under its seven lamps",
+      "time": "2026-11-26T03:56:07.940Z",
+      "by": "street-models",
+      "from": "out/work/compare/compare-tier-street.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "last-save beside approved at ac06044: the garage lit, on main",
+      "time": "2026-11-26T03:56:08.168Z",
+      "by": "street-models",
+      "from": "out/work/compare/compare-last-save.jpg"
     }
   ]
 }
