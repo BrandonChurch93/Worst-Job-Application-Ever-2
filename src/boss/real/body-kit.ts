@@ -160,7 +160,7 @@ export interface BossKit {
 
 let made: BossKit | null = null
 
-export const PLATE_TONE = { live: srgb(0x7b7f85), dead: srgb(0x6c7076) }
+export const PLATE_TONE = { live: srgb(0x6b6f75), dead: srgb(0x5d6166) }
 export const FLANGE_TONE = { live: srgb(0x35373a), dead: srgb(0x74777b), rough: [0.55, 0.44] }
 
 export function bossKit(): BossKit {
