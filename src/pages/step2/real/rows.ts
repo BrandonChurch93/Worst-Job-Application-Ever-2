@@ -65,19 +65,27 @@ export function trayWallShade(s: Shape): THREE.BufferGeometry {
   const from = TRAY.joint + TRAY.rim
   const foot = trayFoot(surface)
   const over = 0.06
-  const steps: [number, number, number][] = [
-    [from - 0.7, top - beadDrop(TRAY.rim - 0.7) + over, 0], [from, wallAt(from, top, foot) + over, 0.6], [from + 1.2, wallAt(from + 1.2, top, foot) + over, 1], [foot, over, 1]
+  const j = TRAY.joint
+  const steps: [number, number, number, number][] = [
+    [j + TRAY.rim * 0.25, top - beadDrop(TRAY.rim * 0.25) + over, 0, 0],
+    [j + TRAY.rim * 0.6, top - beadDrop(TRAY.rim * 0.6) + over, TRAY.rimShade, TRAY.rimShade],
+    [from, wallAt(from, top, foot) + over, TRAY.rimShade, TRAY.rimShade],
+    [from + 1.2, wallAt(from + 1.2, top, foot) + over, TRAY.wallShade, TRAY.wallShadeTop],
+    [foot - 1.4, wallAt(foot - 1.4, top, foot) + over, TRAY.wallFoot, TRAY.wallFootTop],
+    [foot, over, TRAY.wallFoot, TRAY.wallFootTop]
   ]
   const g = sweep(outline, steps.map(([inset, z]) => ({ inset, z, out: 0, up: 1 })), false)
   const [lx, ly] = look.key.direction
   const l = Math.hypot(lx, ly) || 1
   const n = outline.count
   const colour = new Float32Array(steps.length * n * 3)
-  steps.forEach(([, , share], k) => {
+  steps.forEach(([, , side, upper], k) => {
     for (let i = 0; i < n; i++) {
       const toward = Math.max(0, (outline.nx[i]! * lx + outline.ny[i]! * ly) / l)
-      const v = (1 - (1 - TRAY.wallLit) * share) * (1 - TRAY.wallShade * share * Math.pow(toward, 0.6))
-      colour.set([v, v, v], (k * n + i) * 3)
+      const up = outline.ny[i]! * outline.ny[i]!
+      const dark = (side + (upper - side) * up) * Math.pow(toward, 0.6)
+      const v = 1 - dark
+      colour.set([v * (1 - TRAY.cool * dark), v, v * (1 - TRAY.cool * 0.3 * dark)], (k * n + i) * 3)
     }
   })
   g.setAttribute('color', new THREE.BufferAttribute(colour, 3))
@@ -104,7 +112,7 @@ const RINGS = [0, 1.5, 3, 5, 7.5, 10.5, 14, 18, 23, 29, 36, 45, 56, 70]
 
 // The floor: frosted glass lying in the shade of the wall on the light's side. The shade is laid into the face as vertex colour, from the key's
 // direction and the tray's depth, the way a field's is, but deeper and longer: a tray is the deepest opening of the page.
-export function trayFloor(s: Shape, paint: { soak: number; hold: number; reach: number; bounce: number; bounceReach: number; base: number; side?: number } = TRAY.floor): THREE.BufferGeometry {
+export function trayFloor(s: Shape, paint: { soak: number; hold: number; reach: number; bounce: number; bounceReach: number; base: number; side?: number; cool?: number } = TRAY.floor): THREE.BufferGeometry {
   const depth = -s.z0
   const inset = trayFoot(depth) - 0.5
   const w = Math.max(1, s.w - inset * 2)
@@ -146,8 +154,9 @@ export function trayFloor(s: Shape, paint: { soak: number; hold: number; reach: 
   const idx: number[] = []
   const put = (x: number, y: number): void => {
     const v = shade(x, y)
+    const dark = Math.max(0, 1 - v) * (paint.cool ?? 0)
     pos.push(x, y, 0)
-    col.push(v, v, v)
+    col.push(v * (1 - dark), v, v * (1 - dark * 0.3))
   }
   for (const ring of rings) for (const [x, y] of ring) put(x, y)
   put(0, 0)
