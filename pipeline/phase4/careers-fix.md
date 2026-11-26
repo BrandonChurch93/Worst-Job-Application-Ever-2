@@ -64,3 +64,17 @@ Looks spent on `ticker`: 4 of 40.
 - The tape's type is the medium weight (`T.tape` inter-500, was 400): approved's words on the strip are darker than a regular 20 px gives here (darkest 3 percent of the row 31 of 255 against 59).
 - The glass picture's clouds are weaker (0.012, was 0.02): on the wide comparison table at `marketing-proof` they read as stains.
 
+## R4 and R9 of round 7: the arrow's acting (05:03 UTC on)
+
+/root's order A to F. All of it is in `script.ts` (path and cues) and four places of `index.ts`. The film timing is written out in `src/pages/marketing/NOTES.md`.
+
+- A, the arrow answers each card. Decision: it no longer walks on the cards. It stands on the page under a card and pokes the bottom edge with its tip, so its outline is against the page all through. The page calls `startle` (a hop back and a stretch) on the step a card starts to turn, in the film and for a visitor alike. The double take stays on the first card only, with a second step back and 0.8 s of `shocked`.
+- B, the press. One bound from the stand to a perch at the button's corner, a wind-up there (crouch held 0.2 s, then a rise), a leap 110 px high, `stamp` on landing, cap down 0.3 s, back up over 0.18 s to a fifth of its travel, a stand of about 0.5 s, then the turn. For a visitor `done` comes 0.7 s after the press (was 0.3), so the cap is seen to come back before the page goes.
+- C, the turn. Mine are only the cues: a crouch from 13.3, a stretch as it is lifted, `shocked` and `startle` from 13.66.
+- D, the walk. Moves are at one speed with a plant before and after and 16 px of overshoot. The states' own leans are the cursor's and locked: at speed the lean follows the way it goes (the body adds velocity / 2600), which is why the long walk left is now fast.
+- E, the ticker beat. A stand of 1.08 s, `proud`, right above the running strip. The dusting off is removed.
+- F, holds. Every state is held 0.3 s or more, the stands at the cards 0.36 s or more.
+- Declined, as /root wrote: no change of the arrow's size, no camera.
+- Film events moved: `card-flip` 498, 1180, 1684 (were 505, 1034, 1522), `button-press` 3007 (was 3065). The test that pins them is mine and is rewritten.
+- Looks, part `acting-marketing`: 3 so far (perks sheet before, perks sheet after, apply sheet after).
+

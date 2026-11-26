@@ -22,18 +22,23 @@ const tapeSpeed = 120
 const DOT_GROWS = 24
 const REJECTED_SETTLE = 1.7
 export const TRAVEL = heights.button - 4
-const WIND = 0.45
-const BACK = 44
-const JUMP = 0.46
+const WIND = 0.36
+const BACK = 56
+const JUMP = 0.42
+const STAMP = 0.14
 const SINK = 0.09
-const HOLD = 0.3
-const JUMP_HEIGHT = 96
+const DOWN = 0.3
+const RISE = 0.18
+const UP = 0.2
+const HOLD = 0.7
+const JUMP_HEIGHT = 110
+const TAKE_NEAR = 150
 const AUTO_GAP = 0.5
 const LINK_LEAD = 96
 const BUTTONS = ['nav-cta', 'hero-cta', 'final-cta'] as const
 const HERO = 1
 
-interface Apply { button: number; t: number; fx: number; fy: number; jx: number; jy: number; jumped: boolean; pressed: boolean; held: number }
+interface Apply { button: number; t: number; fx: number; fy: number; jx: number; jy: number; jumped: boolean; stamped: boolean; pressed: boolean; held: number }
 
 interface State {
   mode: 'live' | 'film'
@@ -58,6 +63,7 @@ interface State {
 interface Box { x: number; y: number; w: number; h: number; cx: number; cy: number }
 
 const inside = (b: Box, p: { x: number; y: number }): boolean => p.x >= b.x && p.x <= b.x + b.w && p.y >= b.y && p.y <= b.y + b.h
+const near = (b: Box, p: { x: number; y: number }, by: number): boolean => p.x >= b.x - by && p.x <= b.x + b.w + by && p.y >= b.y - by && p.y <= b.y + b.h + by
 const smooth = (u: number): number => {
   const v = Math.min(1, Math.max(0, u))
   return v * v * (3 - 2 * v)
@@ -117,11 +123,12 @@ export function makePage(): PageLogic {
   const start = { x: 64, y: 596 }
   const marks: Marks = {
     start,
-    lane: { x: 430, y: 598 },
-    cards: [0, 1, 2].map((i) => ({ x: cards[i]!.x + cards[i]!.w - 72, y: cards[i]!.y + 178 })),
-    off: { x: cards[2]!.x + cards[2]!.w - 60, y: cards[2]!.y - 44 },
+    corner: { x: 66, y: 902 },
+    cards: [0, 1, 2].map((i) => ({ x: cards[i]!.x + cards[i]!.w - 118, y: cards[i]!.y + cards[i]!.h + 4 })),
+    lane: { x: cards[2]!.x - 18, y: cards[2]!.y - 44 },
     medal: { x: boxOf(layout, 'award-0').x - 96, y: boxOf(layout, 'award-0').cy + 56 },
     stand: { x: hero.x + hero.w + 92, y: hero.cy - 2 },
+    perch: { x: hero.x + hero.w + 26, y: hero.y - 18 },
     press: { x: hero.x + hero.w * 0.76, y: hero.cy - 4 }
   }
 
@@ -157,7 +164,7 @@ export function makePage(): PageLogic {
 
   function startApply(button: number, io: StepIo): void {
     if (s.apply || s.done) return
-    s.apply = { button, t: 0, fx: io.cursor.x, fy: io.cursor.y, jx: io.cursor.x, jy: io.cursor.y, jumped: false, pressed: false, held: 0 }
+    s.apply = { button, t: 0, fx: io.cursor.x, fy: io.cursor.y, jx: io.cursor.x, jy: io.cursor.y, jumped: false, stamped: false, pressed: false, held: 0 }
     io.cursor.take('apply')
     io.cursor.react('anticipate')
   }
@@ -191,6 +198,10 @@ export function makePage(): PageLogic {
         io.cursor.react('jump')
       }
       const u = (a.t - WIND) / JUMP
+      if (!a.stamped && a.t >= WIND + JUMP - STAMP) {
+        a.stamped = true
+        io.cursor.react('stamp')
+      }
       const from = hover + surface(a.jx, a.jy)
       const z = from + (capTop(i) + 1 - from) * u + 4 * JUMP_HEIGHT * u * (1 - u)
       io.cursor.place(a.jx + (to.x - a.jx) * smooth(u), a.jy + (to.y - a.jy) * smooth(u), z)
@@ -201,7 +212,7 @@ export function makePage(): PageLogic {
       io.emit('button-press', caps[i]!.cx, caps[i]!.cy, false)
     }
     a.held += dt
-    s.sink[i] = Math.min(1, a.held / SINK)
+    s.sink[i] = a.held < DOWN ? Math.min(1, a.held / SINK) : 1 - (1 - UP) * smooth((a.held - DOWN) / RISE)
     io.cursor.place(to.x, to.y, capTop(i) + 1)
     if (rejected()) {
       if (a.held >= HOLD + 0.2) {
@@ -369,11 +380,14 @@ export function makePage(): PageLogic {
       const walking = !io.cursor.inAir && !io.cursor.taken
       for (let i = 0; i < perkCount; i++) {
         const p = s.flip[i]!
-        if (p === 0 && walking && inside(cards[i]!, tip)) openCard(i, io)
+        if (p === 0 && walking && inside(cards[i]!, tip)) {
+          openCard(i, io)
+          io.cursor.react('startle')
+        }
         if (p > 0 && p < 1) {
           const next = Math.min(1, p + dt / FLIP_SECONDS)
           s.flip[i] = next
-          if (i === 0 && !s.took && p < 0.8 && next >= 0.8 && walking && inside(cards[0]!, tip)) {
+          if (i === 0 && !s.took && p < 0.8 && next >= 0.8 && walking && near(cards[0]!, tip, TAKE_NEAR)) {
             s.took = true
             s.shock = SHOCK
             io.cursor.react('doubleTake')
