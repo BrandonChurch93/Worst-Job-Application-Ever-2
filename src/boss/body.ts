@@ -14,13 +14,14 @@ export const FOOT_OFF: [number, number][] = [[-250, -205], [250, -205], [-250, 2
 export const HIP_OFF: [number, number][] = [[-168, -50], [168, -50], [-168, 50], [168, 50]]
 export const CANNON_OFF: [number, number][] = [[-10, -116], [-10, 116]]
 const SHIELD_OFF: [number, number] = [-252, 0]
-const SIDE_OFF: [number, number][] = [[0, -112], [0, 112]]
+export const SIDE_OFF: [number, number][] = [[0, -112], [0, 112]]
 export const CANNON_FROM = [1, 2] as const
 export const BODY_Z = { side: 86, sideTop: 96, frame: 96, cap: 106, shield: 8, capTall: heights.button - heights.buttonSocket, hip: 118, cannonTall: 13, housing: 20 }
-export const LEG = { link: 108, wide: 28, foot: 46, knee: 42 }
+export const LEG = { link: 108, wide: 36, foot: 58, knee: 52 }
 export const FRAME = { w: 372, h: 136, cut: 26, bedW: 300, bedH: 84, tall: 16 }
 export const SIDE = { w: 224, h: 100, lean: 36, tall: 12 }
 export const SHIELD = { w: 108, h: 236, tall: 12 }
+export const SHADE = { w: 560, h: 500, off: 46, soft: 74 }
 
 export interface Spot { x: number; y: number; rot: number; k: number; z: number; flat?: number; turn?: number; recoil?: number }
 export interface Leg { hx: number; hy: number; fx: number; fy: number; k: number; z: number; flat?: number }
@@ -183,6 +184,8 @@ export function drawRig(out: DrawList, rig: Rig, id = 'boss', pressed = 0): void
     const p = rig.plate
     const flat = p.flat ?? 0
     const z0 = mix(BODY_Z.frame, 0, flat) + p.z
+    const lit = p.k * (1 - flat)
+    if (lit > 0.01) out.push({ id: `${id}-shade`, part: body, kind: 'box', role: 'bossShade', x: p.x + SHADE.off - SHADE.w / 2, y: p.y + SHADE.off - SHADE.h / 2, w: SHADE.w, h: SHADE.h, z0: 1, z1: 1.3, tone: 'dark', rot: p.rot, v: [lit] })
     out.push({ id: `${id}-plate`, part: body, kind: 'box', role: 'bossFrame', x: p.x - FRAME.w / 2, y: p.y - FRAME.h / 2, w: FRAME.w, h: FRAME.h, z0, z1: z0 + FRAME.tall, tone: 'metal', rot: p.rot, r: 22, v: [p.k, flat, rig.split ?? 0] })
   }
   if (rig.shield.k > 0.01) {
@@ -211,7 +214,7 @@ export function drawRig(out: DrawList, rig: Rig, id = 'boss', pressed = 0): void
     word.turnX = tilt
   }
   out.push(top, word)
-  if (rig.hurt > 0.01) {
+  if (rig.hurt > 0.8) {
     const soot: Shape = { id: `${id}-scorch`, part: 'boss-transform', kind: 'capsule', role: 'bossScorch', x: cap.x - CAP_W / 2, y: cap.y - CAP_H / 2, w: CAP_W, h: CAP_H, z0, z1: z1 + 0.3, tone: 'dark', rot: cap.rot, v: [Math.min(1, rig.hurt), tilt] }
     if (tilt > 0.001) soot.turnX = tilt
     out.push(soot)

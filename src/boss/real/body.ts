@@ -5,7 +5,7 @@ import { materials } from '../../shell/materials'
 import { controls } from '../../shell/real/controls'
 import { roundedRect, sweep, plateProfile } from '../../shell/solids'
 import { config } from '../../config'
-import { BODY_Z, FRAME, LEG, SHIELD, SIDE, CAP_W, CAP_H } from '../body'
+import { BODY_Z, FRAME, LEG, SHADE, SHIELD, SIDE, SIDE_OFF, CAP_W, CAP_H } from '../body'
 import { bossKit, cutPlate, joined, lathe, lying, mesh, moved, screw } from './body-kit'
 
 const heights = config.scale.heights
@@ -424,6 +424,35 @@ function cap(s: Shape, ctx: RealContext): THREE.Object3D {
   return root
 }
 
+const SHADE_N = 28
+
+// The dark under the body: how far a point of the page is inside the body's outline seen from above, 0 to 1.
+export function shadeAt(px: number, py: number): number {
+  const box = (x: number, y: number, hw: number, hh: number): number => {
+    const dx = Math.abs(x) - hw
+    const dy = Math.abs(y) - hh
+    return Math.hypot(Math.max(dx, 0), Math.max(dy, 0)) + Math.min(Math.max(dx, dy), 0)
+  }
+  const d = Math.min(box(px, py, FRAME.w / 2, FRAME.h / 2), box(px, py, SIDE.w / 2 - 14, SIDE_OFF[1]![1] + SIDE.h / 2))
+  return 1 - smooth((d + 24) / SHADE.soft)
+}
+
+let shadeMaterial: THREE.MeshBasicMaterial | null = null
+
+function shade(): THREE.Object3D {
+  shadeMaterial ??= new THREE.MeshBasicMaterial({ color: new THREE.Color(0.02, 0.019, 0.018), vertexColors: true, transparent: true, depthWrite: false, toneMapped: false })
+  const o = new THREE.Group()
+  o.add(mesh(geo('shade', () => {
+    const g = new THREE.PlaneGeometry(SHADE.w, SHADE.h, SHADE_N, SHADE_N)
+    const p = g.getAttribute('position')
+    const colour = new Float32Array(p.count * 4)
+    for (let i = 0; i < p.count; i++) colour.set([1, 1, 1, shadeAt(p.getX(i), p.getY(i))], i * 4)
+    g.setAttribute('color', new THREE.BufferAttribute(colour, 4))
+    return g
+  }), shadeMaterial, false, false))
+  return o
+}
+
 export const bossBody: PartMaker = {
   key(s: Shape): string | null {
     if (s.kind === 'text') return null
@@ -434,6 +463,7 @@ export const bossBody: PartMaker = {
       case 'bossShield': return 'shield'
       case 'bossCannon': return 'cannon'
       case 'bossCap': return 'cap'
+      case 'bossShade': return 'shade'
       default: return null
     }
   },
@@ -444,6 +474,7 @@ export const bossBody: PartMaker = {
       case 'bossFrame': return frame()
       case 'bossShield': return shield()
       case 'bossCannon': return cannon(s, ctx)
+      case 'bossShade': return shade()
       default: return cap(s, ctx)
     }
   },
@@ -453,13 +484,14 @@ export const bossBody: PartMaker = {
       case 'bossFrame': poseFrame(o, s); break
       case 'bossShield': poseShield(o, s); break
       case 'bossCannon': poseCannon(o, s); break
+      case 'bossShade': if (shadeMaterial) shadeMaterial.opacity = 0.46 * clamp(s.v?.[0] ?? 0); break
       case 'bossCap': {
         const t = s.v?.[2] ?? 0
         o.position.y += BODY_Z.capTall * Math.sin(t)
         o.position.z += BODY_Z.capTall * (1 - Math.cos(t))
         const cracks = o.userData.cracks as THREE.Mesh
         const all = cracks.geometry.getAttribute('position').count / 6
-        const n = Math.floor(all * prog(s.v?.[0] ?? 0, 0.5, 1))
+        const n = Math.floor(all * prog(s.v?.[0] ?? 0, 0.8, 1))
         cracks.visible = n > 0
         cracks.geometry.setDrawRange(0, n * 6)
         break

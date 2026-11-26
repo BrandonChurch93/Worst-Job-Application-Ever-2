@@ -33,7 +33,7 @@ const cloud = (x: number, y: number, cell: number, seed: number): number => {
 }
 
 const mix = (a: number, b: number, t: number): number => a + (b - a) * t
-const BURNS: [number, number, number][] = [[-58, 12, 9], [44, -16, 7], [66, 18, 5], [-24, -20, 4]]
+const BURNS: [number, number, number][] = [[-76, 12, 8], [78, -14, 6], [64, 20, 4]]
 
 export function sootPixels(w = SOOT_W, h = SOOT_H): Uint8Array {
   const data = new Uint8Array(w * h * 4)
@@ -47,8 +47,8 @@ export function sootPixels(w = SOOT_W, h = SOOT_H): Uint8Array {
       const fine = cloud(x, y, 2.5 * k, 11)
       const edge = (px > 0 ? 88 : 78) + (big - 0.5) * 44 + (mid - 0.5) * 16 + 6 * Math.sin(py * 0.2 + (px > 0 ? 1.1 : 2.6))
       let d = smooth((Math.abs(px) - edge) / 18)
-      const reach = smooth((Math.abs(px) - edge + 40) / 40)
-      d = Math.max(d, reach * smooth((fine * 0.6 + mid * 0.4 - 0.52) / 0.12) * 0.8)
+      const reach = smooth((Math.abs(px) - edge + 26) / 26)
+      d = Math.max(d, reach * smooth((fine * 0.6 + mid * 0.4 - 0.55) / 0.06))
       let ash = smooth(1 - Math.abs(Math.abs(px) - edge + 4) / 9) * smooth((fine - 0.5) / 0.2)
       for (const [hx, hy, hr] of BURNS) {
         const far = Math.hypot(px - hx, py - hy) + (mid - 0.5) * 7
@@ -88,7 +88,7 @@ export function puffPixels(size = PUFF_PX): Uint8Array {
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
       const i = (y * size + x) * 4
-      const v = 20 + Math.round(220 * clamp(0.5 + 0.5 * wrap(x, y, 32, 23) + 0.3 * (wrap(x, y, 8, 29) - 0.5)))
+      const v = 95 + Math.round(160 * clamp(0.5 + 0.5 * wrap(x, y, 32, 23) + 0.3 * (wrap(x, y, 8, 29) - 0.5)))
       data[i] = v
       data[i + 1] = v
       data[i + 2] = v
@@ -253,8 +253,8 @@ const WISP_ACROSS = [0, 0.75, 1, 0.75, 0]
 let wispMaterial: THREE.MeshBasicMaterial | null = null
 
 export function wispPoint(u: number, t: number, w: number): [number, number, number, number] {
-  const sway = Math.sin(u * 5.1 + w * 2.3 - t * 1.1) * 18 * u + Math.sin(u * 11 + w - t * 1.9) * 4 * u
-  return [sway + u * 30, Math.pow(u, 1.4) * 190, u * 110, 5 + 62 * Math.pow(u, 0.75)]
+  const sway = Math.sin(u * 5.6 + w * 2.3 - t * 1.1) * 22 * u + Math.sin(u * 12 + w - t * 1.9) * 6 * u
+  return [sway + u * 30, Math.pow(u, 1.4) * 190, u * 110, 5 + 30 * Math.pow(u, 0.8)]
 }
 
 function smoke(): THREE.Object3D {
@@ -262,7 +262,7 @@ function smoke(): THREE.Object3D {
     puffMade = texture(puffPixels(), PUFF_PX, PUFF_PX, false)
     puffMade.wrapT = THREE.RepeatWrapping
   }
-  wispMaterial ??= new THREE.MeshBasicMaterial({ color: new THREE.Color(0.13, 0.13, 0.135), alphaMap: puffMade, vertexColors: true, transparent: true, depthWrite: false, toneMapped: false, side: THREE.DoubleSide })
+  wispMaterial ??= new THREE.MeshBasicMaterial({ color: new THREE.Color(0.1, 0.1, 0.105), alphaMap: puffMade, vertexColors: true, transparent: true, depthWrite: false, toneMapped: false, side: THREE.DoubleSide })
   const across = WISP_ACROSS.length
   const count = (WISP_N + 1) * across
   const g = new THREE.BufferGeometry()
@@ -339,7 +339,7 @@ export const bossTransform: PartMaker = {
       const t = s.v?.[1] ?? 0
       o.position.y += BODY_Z.capTall * Math.sin(t)
       o.position.z += BODY_Z.capTall * (1 - Math.cos(t))
-      soot().opacity = clamp(s.v?.[0] ?? 1)
+      soot().opacity = smooth(((s.v?.[0] ?? 1) - 0.8) / 0.2)
     } else if (s.role === 'bossSmoke') poseSmoke(o, s)
   },
   drop(o: THREE.Object3D): void {
