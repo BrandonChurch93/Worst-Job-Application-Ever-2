@@ -101,6 +101,9 @@ export function garage(b: Buckets, z: Zone): void {
 
   // The ring beams: a deck edge under each turn of the spiral, a slimmer rail beam half way to the next, and a deeper one at the rim. Each is left out where the tube crosses it.
   const levels: [number, number][] = []
+  // The deck under the rim is left open on the side away from the police station, where it would stand before that station's sign as the player sees the table.
+  let open = -1
+  const away = (a: number): boolean => Math.abs(Math.atan2(Math.sin(a - toward - Math.PI + 0.2), Math.cos(a - toward - Math.PI + 0.2))) < 0.95
   const slim: boolean[] = []
   const cap = 4
   for (let zz = base; zz + pitch < top - 1; zz += pitch) {
@@ -109,11 +112,12 @@ export function garage(b: Buckets, z: Zone): void {
     if (zz + pitch * 0.5 + 0.34 * BALL < top - 0.42 * BALL - 4) {
       levels.push([zz + pitch * 0.5, zz + pitch * 0.5 + 0.34 * BALL])
       slim.push(false)
+      if (zz + pitch * 1.5 >= top - 1) open = levels.length - 1
     }
   }
   levels.push([top - 0.42 * BALL, top - cap])
   slim.push(false)
-  const has: boolean[][] = levels.map(([z0, z1]) => Array.from({ length: N }, (_, i) => free((i + 0.5) * step, z0, z1, step / 2)))
+  const has: boolean[][] = levels.map(([z0, z1], li) => Array.from({ length: N }, (_, i) => !(li === open && away((i + 0.5) * step)) && free((i + 0.5) * step, z0, z1, step / 2)))
 
   // The lengths of beam that are left, and the pieces of pier that are left: eight piers round the ring, each cut where the tube passes.
   type Run = { li: number; i: number; n: number; whole: boolean; held: boolean }
