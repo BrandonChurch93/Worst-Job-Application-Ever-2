@@ -87,6 +87,7 @@ Round 2 of the critics began at 08:15 UTC, so the count begins again here.
 | 08:21 | lights | 4 | w3, the night floors keep more of their print along the floor: rail-cam, youre-fired, last-save, lobby-doors | 4, 6 |
 | 08:25 | lights | 4 | r1, head lamps weaker on what stands over them: youre-fired, tier-street, tier-corporate, table-wide | 8, 6 |
 | 08:27 | lights | 3 | r2, the same from 60 px up, beacon light nearer its beacon: youre-fired, tier-street, tier-office | 11, 6 |
+| 08:34 | art | 3 | u1, the dark print under posts and bumpers small: tier-office, tier-corporate, tier-street | 11, 9 |
 
 ## Decisions
 
@@ -115,6 +116,7 @@ Round 2 of the critics began at 08:15 UTC, so the count begins again here.
 23. `youre-fired` is over its approved mean by more than a tenth and was so on main (1.16). The picture is mostly the firehouse and the pale bank beside it, whose roofs and right walls face the head lamps. Left as it is in this pass; a lower head lamp for what stands high would darken every roof of the tier.
 24. The head lamps hang under the cross rail, one ball over the floor, so they cannot light what faces up above them: a top over 60 px takes less of them, a quarter from 100 px up (`SHADOW.roof`). The roofs keep the tier's soft light, the hidden lamps over the low models and the beacons. MEASURED (`means2.mjs r2`): tier-office 0.99, tier-street 1.02, youre-fired 1.21, and r1 tier-corporate 1.03, table-wide 0.88.
 25. A window at rest glows at 0.5: at 0.3 the white and amber windows of the Street read grey in `tier-street`.
+26. The dark print under a post or a bumper is only a soft contact mark now (a post's radius plus 0.06 of a ball, a bumper's plus 0.12, at 0.7, without a ring): on the Office the old discs read as black saucers under the cups from straight above. MEASURED after it (`means2.mjs u1`): tier-corporate 1.01, tier-office 1.00, tier-street 1.02.
 
 ## Needs
 
