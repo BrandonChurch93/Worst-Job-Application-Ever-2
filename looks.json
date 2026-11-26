@@ -1,0 +1,35 @@
+{
+  "folder": "table-frame",
+  "pushed": "2026-11-26T01:03:55.936Z",
+  "commit": "ff18594ab7559c3f1acaa95911ee143c99db3dc5",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Street tier beside its approved image after the first push: full-metal steel with lamp points on the rails, thick bats with a dark rubber band, the apron lifted pale",
+      "time": "2026-11-26T01:03:54.055Z",
+      "by": "table-frame",
+      "from": "out/work/compare/compare-tier-street.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Corporate tier beside its approved image after the first push: rails mirror a dark room, bats are thick, wires and guides are full metal",
+      "time": "2026-11-26T01:03:54.279Z",
+      "by": "table-frame",
+      "from": "out/work/compare/compare-tier-corporate.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Office tier beside its approved image after the first push",
+      "time": "2026-11-26T01:03:54.508Z",
+      "by": "table-frame",
+      "from": "out/work/compare/compare-tier-office.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "The whole machine beside its approved image after the first push: the outer rails still read too dark and the marquee too small",
+      "time": "2026-11-26T01:03:54.742Z",
+      "by": "table-frame",
+      "from": "out/work/compare/compare-table-wide.jpg"
+    }
+  ]
+}
