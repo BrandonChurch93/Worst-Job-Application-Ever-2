@@ -62,7 +62,7 @@ minutes since the last status: 0
 
 | Unit | State | Rounds run | Last scores | Commit | What ended its loop |
 | --- | --- | --- | --- | --- | --- |
-| `step1` | not started | 0 | | | |
+| `step1` | finished | 4 (rounds 3 to 6 of the build; round 6 is the best judged round) | R1 5 and 5, R2 7, R3 7, R4 7, R8 7, R9 6 and 5 (round 6, on bd38dd5; 4 severe, 53 major, 15 minor open) | 05c5eb3 (code of 41faebf: round 6 plus the fixes of merge 22, not judged by a critic) | the clock: `extra rounds: no` at 18.00 h, after four of the five rounds of `quality.lookLockMaxRounds`; the pass bar did not hold |
 | `pinball` | not started | 0 | | | |
 | `boss` | not started | 0 | | | |
 | `step2` | not started | 0 | | | |
