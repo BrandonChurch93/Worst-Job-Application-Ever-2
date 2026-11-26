@@ -56,7 +56,7 @@ const fine = (src: THREE.Texture): THREE.Texture => {
 export const aluOf = (z: Zone, name = 'alu'): THREE.MeshPhysicalMaterial => {
   const src = materials().aluminium
   const on = LIT.includes(z.id)
-  return own(lit(steel(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: on ? 0.27 : 0.4, metalness: on ? 1 : 0.4, normalMap: src.normalMap ? fine(src.normalMap) : null, normalScale: new THREE.Vector2(on ? 0.24 : 0.15, on ? 0.24 : 0.15), anisotropy: 0.72, anisotropyRotation: Math.PI / 2 })), z, { ceiling: 0.05, panel: 0.42, wide: 0.16, horizon: 1.3 }), z), `frame.${name}.${z.id}`)
+  return own(lit(steel(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: on ? 0.27 : 0.4, metalness: on ? 1 : 0.4, normalMap: src.normalMap ? fine(src.normalMap) : null, normalScale: new THREE.Vector2(on ? 0.24 : 0.15, on ? 0.24 : 0.15), anisotropy: 0.72, anisotropyRotation: Math.PI / 2 })), z, { ceiling: 0.9, panel: 0.4, wide: 0.4, horizon: 1.3, direct: 0.5 }), z), `frame.${name}.${z.id}`)
 }
 
 // A zone the lamps do not reach keeps its pale parts pale when the website's light goes down: its paint is lifted by the share of that light that is off.
@@ -86,7 +86,7 @@ export const paintOf = (z: Zone, name = 'paint', grain = 0.035): THREE.MeshPhysi
 
 export const steelOf = (z: Zone): THREE.MeshPhysicalMaterial => {
   const on = LIT.includes(z.id)
-  return own(lit(steel(studio(new THREE.MeshPhysicalMaterial({ color: 0xe2e5e8, roughness: on ? 0.1 : 0.2, metalness: on ? 1 : 0.55 })), z, { panel: 0.5, horizon: 1.5 }), z), `frame.steel.${z.id}`)
+  return own(lit(steel(studio(new THREE.MeshPhysicalMaterial({ color: 0xe2e5e8, roughness: on ? 0.1 : 0.2, metalness: on ? 1 : 0.55 })), z, { panel: 0.22, horizon: 1.5, lamps: 1.4 }), z), `frame.steel.${z.id}`)
 }
 
 export const screwOf = (z: Zone): THREE.MeshPhysicalMaterial => own(lit(steel(studio(new THREE.MeshPhysicalMaterial({ color: 0xc4c8cc, roughness: 0.2, metalness: 1, vertexColors: true })), z, { panel: 0.6, horizon: 1.4 }), z), `frame.screw.${z.id}`)

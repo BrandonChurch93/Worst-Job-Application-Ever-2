@@ -41,7 +41,7 @@ vec3 wjsRoom( vec3 R, float rough ) {
 	float az = atan( R.y, R.x );
 	vec2 c = R.xy - vec2( -0.1, 0.07 );
 	float panel = exp( - dot( c, c ) / ( wjsPanel.z + soft * soft ) );
-	float up = smoothstep( 0.5, 0.86, R.z );
+	float up = smoothstep( 0.5 - soft * 1.8, 0.86 - soft * 0.6, R.z );
 	vec3 col = vec3( 0.016, 0.017, 0.02 ) + up * ( wjsPanel.x + wjsPanel.y * panel ) * vec3( 1.0, 0.985, 0.96 );
 	float wide = 0.06 + soft;
 	float band = exp( - ( R.z - 0.66 ) * ( R.z - 0.66 ) / ( wide * wide ) );
@@ -102,6 +102,6 @@ export function steel<T extends THREE.MeshPhysicalMaterial>(m: T, z: Zone, o: St
     shader.vertexShader = 'varying vec3 wjsAt;\n' + shader.vertexShader.replace('#include <project_vertex>', 'wjsAt = transformed;\n#include <project_vertex>')
     shader.fragmentShader = PARS + shader.fragmentShader.replace(AT, BODY + AT)
   }
-  m.customProgramCacheKey = () => `${key.call(m)}|wjs5`
+  m.customProgramCacheKey = () => `${key.call(m)}|wjs6`
   return m
 }

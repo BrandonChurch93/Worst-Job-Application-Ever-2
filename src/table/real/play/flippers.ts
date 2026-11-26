@@ -6,9 +6,9 @@ import { Bag, DEG, lathe, look, mat, prism, type V2 } from './g'
 import { drop, matsOf, part } from './mats'
 
 // The orange of the approved bats: the site's accent, as the lamps of a tier show it on a moulded top.
-export const ORANGE = look(0xf0842c, 0.46, 0, 0.4)
-const ORANGE_TOP = look(0xf48e36, 0.44, 0, 0.4)
-const ORANGE_LOW = look(0xb84a06, 0.4, 0, 0.6)
+export const ORANGE = look(0xff9838, 0.5, 0, 0.3)
+const ORANGE_TOP = look(0xffa040, 0.48, 0, 0.3)
+const ORANGE_LOW = look(0xd86a14, 0.45, 0, 0.4)
 const RUBBER = look(0x161617, 0.86, 0, 0)
 const RUBBER_LINE = look(0x2c2c2e, 0.7, 0, 0)
 const NYLON = look(0xe4e0d6, 0.5, 0, 0.2)

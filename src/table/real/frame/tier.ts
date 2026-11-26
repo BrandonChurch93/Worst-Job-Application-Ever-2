@@ -8,6 +8,7 @@ import { Screws, TONE, aluOf, mesh, paintOf, screwOf, steelOf } from './mats'
 
 // What the walls of a tier are made to, in page pixels.
 const WALL = { height: 60, seg: 56, chamfer: 4.5, strip: [30, 54] as V2, stripOut: 0.9 }
+const METAL: [number, number, number] = [0.15, 0.156, 0.165]
 const RAIL = { reveal: 30, revealWide: 4.5, revealDeep: 2, chamfer: 3, channel: 17, channelDepth: 3, ledge: 15, land: 44, step: 5, lip: 3, slope: 0.84, bank: 11, cuts: 10, tilt: [20, 58] as V2, gap: 1.2, joint: 1.4, screwStep: 1.5, cradle: 62.5, tubeUp: 48 }
 const CROSS = { lower: 0.3, upper: 0.12, throat: 0.75, mouth: 1.2, tunnel: 122 }
 const STEP = { back: 11, rise: 3, groove: 64, grooveWide: 4.5, grooveDeep: 2 }
@@ -81,9 +82,14 @@ export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
   }
   const zl = round[round.length - 1]![1]
   const mid = (land0 + land1) / 2
+  const landed = (outline: V2[], rest: (edge: number) => [number, number, number]) => (edge: number): [number, number, number] => {
+    const p = outline[edge]!
+    const q = outline[(edge + 1) % outline.length]!
+    return p[1] >= H - c - 0.01 && q[1] >= H - c - 0.01 ? TONE.aluBright : rest(edge)
+  }
   const left: V2[] = [[xb, 0], [xb, H - c], [land0, H], [land1 - c, H], [land1, H - c], [land1, H - RAIL.step], ...round, [xa - c, zl], [xa, zl - c], ...reveal(xa, -1), [xa, 0]]
   for (const [y0, y1] of lengths(0, TH, 5.6)) {
-    A.prism(left, [0, y0], [0, y1], grooved(left, [xa - RAIL.revealDeep], TONE.alu, TONE.gap))
+    A.prism(left, [0, y0], [0, y1], landed(left, grooved(left, [xa - RAIL.revealDeep], METAL, TONE.gap)))
     for (let i = 1; i < round.length; i++) {
       const p = round[i - 1]!
       const q = round[i]!
@@ -104,7 +110,7 @@ export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
     right.push([xf + RAIL.cradle * Math.sin(t), H + RAIL.tubeUp - RAIL.cradle * Math.cos(t)])
   }
   right.push([xf + half, H], [xe - c, H], [xe, H - c], [xe, 0])
-  for (const [y0, y1] of lengths(0, dive, 5.6)) A.prism(right, [0, y0], [0, y1], grooved(right, [xc + RAIL.revealDeep], TONE.alu, TONE.gap))
+  for (const [y0, y1] of lengths(0, dive, 5.6)) A.prism(right, [0, y0], [0, y1], landed(right, grooved(right, [xc + RAIL.revealDeep], METAL, TONE.gap)))
   P.box(xc, xe, Y(5.6) - RAIL.joint / 2, Y(5.6) + RAIL.joint / 2, 0, H - 4, TONE.gap, { along: [0, 1, 0] })
   for (let v = RAIL.screwStep / 2; v < dive - 0.2; v += RAIL.screwStep) {
     screws.add((xc + c + xf - half) / 2, Y(v), H, 0.9, turnOf(xc, v))
@@ -112,7 +118,7 @@ export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
   }
   if (dive < TH) {
     // Where the tube dives to the plunger the rail is a shell: an outer wall and a dark pocket.
-    A.prism([[xe - 20, 0], [xe - 20, H - c], [xe - 20 + c, H], [xe - c, H], [xe, H - c], [xe, 0]], [0, yB], [0, Y(dive)], TONE.alu)
+    A.prism([[xe - 20, 0], [xe - 20, H - c], [xe - 20 + c, H], [xe - c, H], [xe, H - c], [xe, 0]], [0, yB], [0, Y(dive)], METAL)
     P.box(xc, xe - 20, yB, Y(dive), 0, 1.2, TONE.pocket)
   }
 
@@ -120,7 +126,7 @@ export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
   const wall = (x0: number, x1: number, v0: number, v1: number, face: 1 | -1): void => {
     if (v1 - v0 < 0.08) return
     const w = WALL.chamfer
-    A.prism([[x0, 0], [x0, WALL.height - w], [x0 + w, WALL.height], [x1 - w, WALL.height], [x1, WALL.height - w], [x1, 0]], [0, Y(v1)], [0, Y(v0)], TONE.alu)
+    A.prism([[x0, 0], [x0, WALL.height - w], [x0 + w, WALL.height], [x1 - w, WALL.height], [x1, WALL.height - w], [x1, 0]], [0, Y(v1)], [0, Y(v0)], METAL)
     const xs = face > 0 ? x1 : x0
     S.box(Math.min(xs, xs + face * WALL.stripOut), Math.max(xs, xs + face * WALL.stripOut), Y(v1) + 3, Y(v0) - 3, WALL.strip[0], WALL.strip[1], [1, 1, 1], { along: [0, 1, 0] })
     const xm = (x0 + x1) / 2
@@ -172,7 +178,7 @@ export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
   const top = CROSS.lower * BALL
   if (k === 0) {
     const head: V2[] = [[0, 0], [0, H], [top - c, H], [top, H - c], ...reveal(top, -1), [top, 0]]
-    A.prism(head, [xa, yT], [xc, yT], grooved(head, [top - RAIL.revealDeep], TONE.alu, TONE.gap), [false, false])
+    A.prism(head, [xa, yT], [xc, yT], grooved(head, [top - RAIL.revealDeep], METAL, TONE.gap), [false, false])
     A.box(xL + 8, xR - 8, yT - top / 2 - 1.2, yT - top / 2 + 1.2, H - 0.4, H + 0.35, TONE.brass)
     for (let u = COLS.left + 0.75; u < COLS.right; u += RAIL.screwStep) screws.add(X(u), yT - 7, H, 0.8, turnOf(u, 1))
     // The throat: the launch lane turns into the top lane round a corner block cut to the ball's way.
@@ -183,7 +189,7 @@ export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
       const t = (i / 16) * (Math.PI / 2)
       loop.push(at(cu + 2 * Math.cos(t), cv - 2 * Math.sin(t)))
     }
-    A.slab(loop, 0, H, TONE.alu, { bevel: c })
+    A.slab(loop, 0, H, METAL, { bevel: c })
     for (let i = 1; i < 16; i++) {
       const t0s = ((i - 0.5) / 16) * (Math.PI / 2)
       const t1s = ((i + 0.5) / 16) * (Math.PI / 2)
@@ -201,7 +207,7 @@ export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
     const g = STEP.groove
     const in0 = top - STEP.back
     const cross: V2[] = [[0, 0], [0, h - c], [c, h], [in0 - c, h], [in0, h - c], [in0, BALL + STEP.rise], [top - STEP.rise, BALL + STEP.rise], [top, BALL], [top, g + STEP.grooveWide], [top - STEP.grooveDeep, g + STEP.grooveWide - 1.2], [top - STEP.grooveDeep, g + 1.2], [top, g], [top, 0]]
-    const tone = (edge: number): [number, number, number] => (edge === 9 ? TONE.gap : edge === 4 || edge >= 7 ? TONE.aluDark : TONE.alu)
+    const tone = (edge: number): [number, number, number] => (edge === 9 ? TONE.gap : edge === 4 || edge >= 7 ? TONE.aluDark : METAL)
     A.prism(cross, [xL, yT], [X(MID - CROSS.throat), yT], tone)
     A.prism(cross, [X(MID + CROSS.throat), yT], [xR, yT], tone)
     A.box(xl, xL, yT - 4, yT, 0, BALL, TONE.aluDark)
@@ -211,7 +217,7 @@ export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
       const elbow = table.openings.find((o) => o.tier === k && o.id.endsWith('.elbow'))
       const deep = elbow ? Math.min(LANE.house, Math.min(elbow.a[1], elbow.b[1]) - TIER_Y[k]! - LANE.elbowClear) : Math.max(LANE.house, LANE_RAMP.lift * 2)
       const yf = Y(deep)
-      A.box(xa, xl, yf, yT, 0, h, TONE.alu, { bevel: c, along: [1, 0, 0] })
+      A.box(xa, xl, yf, yT, 0, h, METAL, { bevel: c, along: [1, 0, 0] })
       P.box(xa, xl, yf - LANE.line, yf, 0, 0.9, TONE.gap)
       if (!elbow) {
         const o = TUBE.outer
@@ -265,20 +271,20 @@ export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
       const t = (i / 8) * (Math.PI / 2)
       fillet.push(at(COLS.right - r + r * Math.cos(t), CROSS.lower + r - r * Math.sin(t)))
     }
-    A.slab(fillet, 0, WALL.height, TONE.alu, { bevel: WALL.chamfer })
+    A.slab(fillet, 0, WALL.height, METAL, { bevel: WALL.chamfer })
   }
 
   // The foot of the tier.
   const low = CROSS.upper * BALL
   if (k < 2) {
     const bar: V2[] = [[0, 0], [0, WALL.seg - c], [c, WALL.seg], [low, WALL.seg], [low, 0]]
-    A.prism(bar, [xL, yB + low], [X(MID - CROSS.mouth), yB + low], TONE.alu)
-    A.prism(bar, [X(MID + CROSS.mouth), yB + low], [xR, yB + low], TONE.alu)
+    A.prism(bar, [xL, yB + low], [X(MID - CROSS.mouth), yB + low], METAL)
+    A.prism(bar, [X(MID + CROSS.mouth), yB + low], [xR, yB + low], METAL)
   } else {
     const bar: V2[] = [[0, 0], [0, H - c], [c, H], [low, H], [low, 0]]
-    A.prism(bar, [xa, yB + low], [X(MID - CROSS.mouth), yB + low], TONE.alu)
-    A.prism(bar, [X(MID + CROSS.mouth), yB + low], [xc, yB + low], TONE.alu)
-    A.box(X(MID - CROSS.mouth), X(MID + CROSS.mouth), yB, yB + low, CROSS.tunnel, H, TONE.alu, { bottom: true })
+    A.prism(bar, [xa, yB + low], [X(MID - CROSS.mouth), yB + low], METAL)
+    A.prism(bar, [X(MID + CROSS.mouth), yB + low], [xc, yB + low], METAL)
+    A.box(X(MID - CROSS.mouth), X(MID + CROSS.mouth), yB, yB + low, CROSS.tunnel, H, METAL, { bottom: true })
     P.box(X(MID - CROSS.mouth), X(MID + CROSS.mouth), yB, yB + 1.5, 0, CROSS.tunnel, TONE.pocket)
     S.box(xL + 6, X(MID - CROSS.mouth) - 6, yB + low, yB + low + WALL.stripOut, WALL.strip[0], WALL.strip[1], [1, 1, 1])
     S.box(X(MID + CROSS.mouth) + 6, xR - 6, yB + low, yB + low + WALL.stripOut, WALL.strip[0], WALL.strip[1], [1, 1, 1])
@@ -292,7 +298,7 @@ export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
     const b = at(s.b[0], s.b[1] - TIER_Y[k]!)
     const w = 5.76
     const w2 = WALL.chamfer
-    A.prism([[-w, 0], [-w, WALL.seg - w2], [-w + w2, WALL.seg], [w - w2, WALL.seg], [w, WALL.seg - w2], [w, 0]], a, b, TONE.alu, [false, false])
+    A.prism([[-w, 0], [-w, WALL.seg - w2], [-w + w2, WALL.seg], [w - w2, WALL.seg], [w, WALL.seg - w2], [w, 0]], a, b, METAL, [false, false])
     if (k === 0 && s.id.includes('shoulder.edge')) {
       const d = Math.hypot(b[0] - a[0], b[1] - a[1])
       const from = A.vertices
@@ -303,7 +309,7 @@ export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
     if (b[1] > yB + 2) posts.set(`${b[0].toFixed(1)},${b[1].toFixed(1)}`, b)
   }
   for (const p of posts.values()) {
-    A.lathe([[7.4, 0], [7.4, WALL.seg], [6.2, WALL.seg + 2.2], [2.6, WALL.seg + 2.2]], p[0], p[1], 14, TONE.alu)
+    A.lathe([[7.4, 0], [7.4, WALL.seg], [6.2, WALL.seg + 2.2], [2.6, WALL.seg + 2.2]], p[0], p[1], 14, METAL)
     screws.add(p[0], p[1], WALL.seg + 2.2, 0.58, turnOf(p[0], p[1]))
   }
 
