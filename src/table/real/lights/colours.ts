@@ -25,7 +25,7 @@ export const STREET_FLASH: RGB = [1.0, 0.93, 0.84]
 // The head lamps of each tier: the one warm light from one side.
 export const CORPORATE_KEY: RGB = [1.0, 0.88, 0.7]
 export const OFFICE_KEY: RGB = [1.0, 0.93, 0.82]
-export const STREET_KEY: RGB = [1.0, 0.86, 0.68]
+export const STREET_KEY: RGB = [1.0, 0.9, 0.76]
 
 // The four dot displays, and the marquee's panel at dusk.
 export const DISPLAY_AMBER: RGB = [1.0, 0.5, 0.08]
@@ -47,9 +47,9 @@ export const POOL: Record<string, number> = { marquee: 1, corporate: 0.55, offic
 
 // How much of a far lamp's light the print of a floor gives back, seen from straight above and seen along the floor. The night tiers are dark lacquer between their pools; the Office is a lit room.
 export const DEEP: Record<string, [number, number]> = {
-  corporate: [1, 0.2],
+  corporate: [1, 0.35],
   office: [1, 0.7],
-  street: [1, 0.2]
+  street: [1, 0.5]
 }
 
 // How bright a lens is when its lamp is on, in linear light: the middle is above the threshold of the lens glow, the rim below.

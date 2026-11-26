@@ -78,6 +78,14 @@ Counted from the first still, by part. Limit 40 a part in this round.
 | 08:01 | both | 3 | m3, riser light and mirror down a step: youre-fired (art), table-wide (lights); one review still of reply-all for its time (lights) | 37, 20 |
 | 08:10 | both | 3 | s1, head lamps lower so shadows run longer, Corporate floor thinned: tier-corporate (art), reply-all, tier-street (lights) | 39, 21 |
 
+Round 2 of the critics began at 08:15 UTC, so the count begins again here.
+
+| Time UTC | Part | Stills | What | Running: lights, art |
+| --- | --- | --- | --- | --- |
+| 08:16 | art | 4 | w1, worn patches in the lacquer: youre-fired, rail-cam, lobby-doors, last-save | 0, 4 |
+| 08:17 | art | 2 | w2, the patches stronger: youre-fired, rail-cam | 0, 6 |
+| 08:21 | lights | 4 | w3, the night floors keep more of their print along the floor: rail-cam, youre-fired, last-save, lobby-doors | 4, 6 |
+
 ## Decisions
 
 1. Point 2, the side light. Each tier has one bar of warm spots hidden under the cross rail at its head, right of the middle, aimed down the tier: `src/table/real/lights/key.ts`. It is a lamp of the machine: it follows the tier's general lighting and has its own solo name `<zone>.key`. It costs no light of `ctx.light` and no shadow map (`TRUE.shadows` stays 0): the shadows of everything that stands are worked out once per tier from the layout as a height map swept away from the lamps, three times for a soft edge that widens with distance; the balls and the flippers move, so their shadows are worked out in the shader from their places each frame.
@@ -100,6 +108,9 @@ Counted from the first still, by part. Limit 40 a part in this round.
 18. Corporate floor (R1-2 issue 5): the sunburst went from six double rings with up to 96 rays a band to three single rings with 12 and 24 hairlines, so the marble is the floor and the gold is a few lines on it. The fans beside the carpet stay: the approved floor has them.
 19. The head lamps stand lower (the height part of their direction 0.5 to 0.38, Office 0.52 to 0.42) and are stronger by the same share, so a shadow runs about 2.6 times the height of what throws it instead of 1.75. MEASURED after it (`means2.mjs s1`): tier-corporate 1.04 with 26% dark, reply-all 0.99 with 8% dark, tier-street 1.03 with 17% dark.
 20. A lit window glows at 0.85 instead of 1.05, so its colour stays deep round a bright middle.
+21. The lacquer has broad soft patches where it is duller (`WORN` in `make.mjs`, in the coat map of each tier), and where it is duller it gives back a soft sheen of the light that falls there and veils the mirrored lamps and fronts by half (`SHEEN.worn`, `SHEEN.veil` in `hook.ts`). Seen at `rail-cam` and `youre-fired`: the patches are there and faint.
+22. The night floors keep more of their print seen along the floor (`DEEP` Corporate 0.2 to 0.35, Street 0.2 to 0.5), so the Street stays blue with its road lines from the low cameras instead of going grey; the Street's head lamps are a little less orange for the same reason. MEASURED (`means2.mjs w3`): rail-cam 0.97, last-save 0.93, lobby-doors 0.92, youre-fired 1.23.
+23. `youre-fired` is over its approved mean by more than a tenth and was so on main (1.16). The picture is mostly the firehouse and the pale bank beside it, whose roofs and right walls face the head lamps. Left as it is in this pass; a lower head lamp for what stands high would darken every roof of the tier.
 
 ## Needs
 

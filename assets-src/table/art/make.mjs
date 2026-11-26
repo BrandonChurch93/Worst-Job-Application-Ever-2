@@ -180,6 +180,9 @@ async function mask(artPng, file) {
 }
 
 // The clear coat's roughness in green (as three.js reads it): smooth everywhere, a little duller along the lines the ball runs most, where it has worn the lacquer. Blue is how much of a place is metal leaf: the gold of the corporate floor, nothing on the others.
+// How much duller the lacquer is in the broad patches where years of play have taken its polish, by tier, in steps of 255.
+const WORN = [26, 40, 46]
+
 async function coat(L, k, file, w, gilded) {
   const D = tierOf(L, k)
   const h = Math.round((w * 9) / 16)
@@ -209,7 +212,9 @@ async function coat(L, k, file, w, gilded) {
     const y = (i / w) | 0
     const scuff = hash2(x >> 1, y >> 1, SEED + 77 + k)
     const fine = trail[i] / 255
-    const g = lo + fine * (34 + scuff * 26) + (hash2(x >> 3, y >> 3, SEED + 91) - 0.5) * 5
+    const wide = fbm((x / w) * 18, (y / w) * 18, SEED + 300 + k, 3)
+    const worn = smooth(Math.max(0, Math.min(1, (wide - 0.44) / 0.22)))
+    const g = lo + fine * (34 + scuff * 26) + worn * WORN[k] + (hash2(x >> 3, y >> 3, SEED + 91) - 0.5) * 5
     out[i * 3] = 128
     out[i * 3 + 1] = Math.max(4, Math.min(250, Math.round(g)))
     out[i * 3 + 2] = gold ? Math.round(Math.max(0, Math.min(1, (gold[i * 3] - gold[i * 3 + 2] - FOIL.from) / FOIL.over)) * 250) : 0
