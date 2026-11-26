@@ -1,0 +1,66 @@
+{
+  "what": {
+    "sheet": {
+      "kind": "beat",
+      "id": "step1.tug",
+      "frames": [
+        2160,
+        2194,
+        2228,
+        2262,
+        2296,
+        2330,
+        2364,
+        2398,
+        2432,
+        2466,
+        2500,
+        2534
+      ]
+    }
+  },
+  "engineHash": "f53260b07e37d041",
+  "sharedHash": "dd95c22f49f6a5b3",
+  "pageHashes": {
+    "step1": "263044f80dcca6af"
+  },
+  "format": "preview",
+  "tier": "review",
+  "assets": "full",
+  "diagnostic": "beauty",
+  "browser": "147.0.7727.15",
+  "machine": {
+    "host": "space-sandbox",
+    "cores": 2,
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.90GHz",
+    "memoryMb": 7958,
+    "platform": "linux 6.1.155",
+    "node": "v20.20.2"
+  },
+  "width": 1399,
+  "height": 1192,
+  "columns": 3,
+  "rows": 4,
+  "tile": [
+    461,
+    259
+  ],
+  "pictures": [
+    "0:36.00  step1.tug  frame 2160",
+    "0:36.57  step1.tug  frame 2194",
+    "0:37.13  step1.tug  frame 2228",
+    "0:37.70  step1.tug  frame 2262",
+    "0:38.27  step1.tug  frame 2296",
+    "0:38.83  step1.tug  frame 2330",
+    "0:39.40  step1.tug  frame 2364",
+    "0:39.97  step1.tug  frame 2398",
+    "0:40.53  step1.tug  frame 2432",
+    "0:41.10  step1.tug  frame 2466",
+    "0:41.67  step1.tug  frame 2500",
+    "0:42.23  step1.tug  frame 2534"
+  ],
+  "standIns": [],
+  "problems": [],
+  "sha256": "794ba47c6a337ab06ef60622c33bb7ccf26ff0f2abe08f81a6fdea2ff8831aac",
+  "keptFrom": "out/work/sheets/sheet-beat-step1_tug-preview-review.jpg"
+}
