@@ -1,0 +1,52 @@
+{
+ "critic": "R4",
+ "score": 4,
+ "pass": false,
+ "model": "kimi_k3",
+ "set": "A: one sheet across each of the four beats of the Decision page, two sheets of consecutive frames at a hit, and the turn with its seating",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-A-02.png + set-A-05.png + set-A-06.png",
+   "where": "the REJECTED stamp hit, 2:23.4-2:26.6",
+   "what": "the stamp never visibly strikes. It pops into frame already touching the card between beat frames (present at 2:23.73, absent at 2:23.37), and neither consecutive hit sheet catches it: set-A-05 (2:23.63-2:24.00, 'hit 1 of 2') shows only card text drifting with no stamp in any of the 12 frames - the crop misses the stamp entirely; set-A-06 (2:25.13-2:25.50, 'hit 2 of 2') shows the stamp already resting with a faint rock, well after landing. The biggest weight event of the page has no contact frame, no wind-up and no impact - it reads as an object being moved by hand, exactly what the brief says a loose thing in the scene must not look like.",
+   "fix": "show the stamp falling in over 3-4 frames with squash on the card at contact; recrop the consecutive hit sheets so the actual strike is inside them - roughly 2:23.4-2:23.8 around the stamp position, not the text corner and not a second later."
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-02.png",
+   "where": "the REJECTED imprint appearing, 2:26.23-2:26.60",
+   "what": "the ink mark desyncs from the stamp: the stamp lands at ~2:23.7 and sits for over two seconds while the card stays blank, then 'RE' pops in at 2:26.23 and the full REJECTED is on the card at 2:26.60 as the stamp slides sideways off the card instead of lifting. Ink transfer detaches from contact by seconds, and the sideways slide-off kills the stamping action.",
+   "fix": "reveal the imprint at the moment of impact (or expose it as the stamp lifts straight up within a few frames of contact); keep the stamp on the card until the mark exists, then lift it vertically."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "the card under the stamp on every contact frame",
+   "what": "the page never answers the hit: the card stays perfectly flat and static under the stamp at 2:23.73-2:25.90, no flex, no depression, no shadow tightening at the contact patch; the stamp even appears to hover with a soft gap shadow rather than press into the paper (visible in set-A-06). A heavy rubber stamp should compress the card face and its shadow should close at contact.",
+   "fix": "add a small card deflection and a tightening contact shadow on the impact frames, with a one-frame rebound, so the paper reacts."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-08.png",
+   "where": "the turned slab seating, sheet states 2:31.55, frames 2:31.47-2:31.83",
+   "what": "the new page has no visible seat: in set-A-07 it goes from edge-on motion blur at 2:31.17 to fully flat and still at 2:31.30, and the consecutive seat sheet shows only the slow camera zoom with zero settle response across the claimed seat frame - no compression, no ring-down, no content jolt. The landing is weightless rather than a slab landing and stopping dead, and the stated seat time does not match anything happening in the sheet.",
+   "fix": "hold a frame or two at the slam angle before flat, add a single low-amplitude settle (paper ripple or content micro-shift) on the seat frame, and cut the consecutive sheet so the actual seat frame is inside it."
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-05.png",
+   "where": "the 'hit 1 of 2' sheet, all 12 frames",
+   "what": "clarity fails on this sheet: 12 consecutive frames of drifting card text with the camera slowly moving and no event visible - without the sheet title you cannot tell anything happened, let alone what.",
+   "fix": "re-aim and re-time this sheet at the stamp so the incoming object and the contact are on the captured frames."
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01.png",
+   "where": "2:21.00, first frame of the page-open sheet",
+   "what": "the first frame is an edge-on side view of the slab that reads as a sliver against black - as the opening frame of the page's first beat it is ambiguous whether the page is arriving, leaving or broken; it resolves by 2:21.17 but the beat opens unclear.",
+   "fix": "start the beat sheet at 2:21.17 or a frame or two later once the tilted page is legible, or include one frame before 2:21.00 showing the turn clearly in progress."
+  }
+ ],
+ "notes": "Weight, hold and stability are otherwise good: the page turn has a clear tilt-back wind-up (A-07, 2:31.03) and a long hold after landing; the camera on the pages moves straight in and out only; fine detail (seal teeth, small text, progress pills) is stable across A-08 with no flicker or shimmer; the cursor walks and the button hover read clearly; the metrics count-up at 2:27.4-2:28.1 settles cleanly. Disallowed motion wasn't the problem - the missing contact coverage and the imprint desync are what keep this from shipping."
+}
