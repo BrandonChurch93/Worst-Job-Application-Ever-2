@@ -1,35 +1,35 @@
 {
   "folder": "street-finish",
-  "pushed": "2026-11-26T11:40:41.528Z",
-  "commit": "0d1e5dfcd6506c49e97f43ede649786fa15ce046",
+  "pushed": "2026-11-26T11:52:09.521Z",
+  "commit": "fb31d445e7bbfbe3ea0b751113fb8b832dc3665d",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "youre-fired, approved left, this build right: cream enamel board in a gilt bezel, ribbed red dome with a hot core on a chrome ring, plain roof hatch, uneven brick",
-      "time": "2026-11-26T11:40:39.571Z",
+      "caption": "youre-fired after merge 34, approved left, this build right: deeper parapet with a dark inner face, beacon on a kerb with a banded chrome ring, windows behind their bars, bank pediment",
+      "time": "2026-11-26T11:52:07.726Z",
       "by": "street-finish",
-      "from": "out/work/street-finish/compare-youre-fired.jpg"
+      "from": "out/work/street-finish/compare-youre-fired-2.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "tier-street, approved left, this build right: boards under every sign, red gabled houses with a lit roof window on steel plates, garage ring in post grey",
-      "time": "2026-11-26T11:40:39.798Z",
+      "caption": "tier-street after merge 34, approved left, this build right: worked roofs, the police board under the moved two line sign",
+      "time": "2026-11-26T11:52:07.953Z",
       "by": "street-finish",
-      "from": "out/work/street-finish/compare-tier-street.jpg"
+      "from": "out/work/street-finish/compare-tier-street-2.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "tier-street crop at twice size: the police front and its board clear of the garage ring, which is kept low toward the station; the clear trough in front is the frame's",
-      "time": "2026-11-26T11:40:40.019Z",
+      "caption": "tier-street crop: both roofs from straight above with felt laps, patches, stains, cap joints, drains, pipes and hatches",
+      "time": "2026-11-26T11:52:08.177Z",
       "by": "street-finish",
-      "from": "out/work/street-finish/tier-street-police-garage.jpg"
+      "from": "out/work/street-finish/tier-street-roofs-2.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "tier-street crop: the two rows of houses from straight above, red gabled roofs, one lit roof window each, brushed steel mounting plates",
-      "time": "2026-11-26T11:40:40.250Z",
+      "caption": "youre-fired crop at native size: board, beacon, kerb and parapet",
+      "time": "2026-11-26T11:52:08.417Z",
       "by": "street-finish",
-      "from": "out/work/street-finish/tier-street-houses.jpg"
+      "from": "out/work/street-finish/youre-fired-roof-2.jpg"
     }
   ]
 }
