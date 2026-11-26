@@ -49,3 +49,5 @@ Read from `references/approved/step2-crank.png` and `machines.png` at full size,
 33. The lever has a chrome ferrule 7 px long where the rod enters the knob; it rides the rod, 27 px back from its end, in every pose. The rod is more polished (roughness 0.14).
 34. The coins are a satin gold and not a polished one (0xd4a543, roughness 0.6, reflection 1.1, relief twice as strong). A polished coin that faced the key light reached the studio's cap over its whole face and showed as a blank yellow disc.
 
+35. The grip's cross section is rounder (superellipse power 2.5, was 3.2), so a wider band of its top faces the key light and carries the soft sheen of the approved grip. The orange stays the shared one. Asked of the dial maker at 01:58 UTC: `CRANK.gripH` 40 to 52, because the approved grip measures about 88 by 54 px at this scale.
+36. The cabinet's frame is a little more polished (roughness 0.42, was 0.5) and its brushing twice as strong (0.15), so the band reads as brushed metal at the key's distance and not as grey paint.

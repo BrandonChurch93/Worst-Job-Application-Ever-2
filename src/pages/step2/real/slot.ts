@@ -92,12 +92,12 @@ function own(): Own {
   const rod = studio(new THREE.MeshPhysicalMaterial({ color: m.chrome.color, roughness: 0.14, metalness: 1 }))
   const frame = studio(m.aluminium.clone())
   frame.color = srgb(0x6a6e72)
-  frame.roughness = 0.5
+  frame.roughness = 0.42
   const brushing = m.aluminium.normalMap!.clone()
   brushing.repeat.set(1 / 300, 1 / 150)
   brushing.needsUpdate = true
   frame.normalMap = brushing
-  frame.normalScale = new THREE.Vector2(0.07, 0.07)
+  frame.normalScale = new THREE.Vector2(0.15, 0.15)
   const mouth = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x0e0e0d), roughness: 0.9, metalness: 0, specularIntensity: 0.2 }))
   const sheen = new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })
   const line = studio(m.orange.clone())
