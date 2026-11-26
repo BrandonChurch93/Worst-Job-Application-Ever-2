@@ -10,7 +10,7 @@ const FPS = config.film.fps
 
 export const PACE = {
   // A mode: the insert's name is held, then the line runs from right to left at an even pace, then the score is back.
-  hold: 1.5,
+  hold: 1.0,
   dotsPerSecond: 2 * FPS,
   // A numeral that changes rolls up into place in this time: two frames of the film.
   roll: 2 / FPS,
