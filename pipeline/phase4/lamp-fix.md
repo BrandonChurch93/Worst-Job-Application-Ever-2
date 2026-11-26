@@ -85,6 +85,8 @@ Round 2 of the critics began at 08:15 UTC, so the count begins again here.
 | 08:16 | art | 4 | w1, worn patches in the lacquer: youre-fired, rail-cam, lobby-doors, last-save | 0, 4 |
 | 08:17 | art | 2 | w2, the patches stronger: youre-fired, rail-cam | 0, 6 |
 | 08:21 | lights | 4 | w3, the night floors keep more of their print along the floor: rail-cam, youre-fired, last-save, lobby-doors | 4, 6 |
+| 08:25 | lights | 4 | r1, head lamps weaker on what stands over them: youre-fired, tier-street, tier-corporate, table-wide | 8, 6 |
+| 08:27 | lights | 3 | r2, the same from 60 px up, beacon light nearer its beacon: youre-fired, tier-street, tier-office | 11, 6 |
 
 ## Decisions
 
@@ -111,6 +113,8 @@ Round 2 of the critics began at 08:15 UTC, so the count begins again here.
 21. The lacquer has broad soft patches where it is duller (`WORN` in `make.mjs`, in the coat map of each tier), and where it is duller it gives back a soft sheen of the light that falls there and veils the mirrored lamps and fronts by half (`SHEEN.worn`, `SHEEN.veil` in `hook.ts`). Seen at `rail-cam` and `youre-fired`: the patches are there and faint.
 22. The night floors keep more of their print seen along the floor (`DEEP` Corporate 0.2 to 0.35, Street 0.2 to 0.5), so the Street stays blue with its road lines from the low cameras instead of going grey; the Street's head lamps are a little less orange for the same reason. MEASURED (`means2.mjs w3`): rail-cam 0.97, last-save 0.93, lobby-doors 0.92, youre-fired 1.23.
 23. `youre-fired` is over its approved mean by more than a tenth and was so on main (1.16). The picture is mostly the firehouse and the pale bank beside it, whose roofs and right walls face the head lamps. Left as it is in this pass; a lower head lamp for what stands high would darken every roof of the tier.
+24. The head lamps hang under the cross rail, one ball over the floor, so they cannot light what faces up above them: a top over 60 px takes less of them, a quarter from 100 px up (`SHADOW.roof`). The roofs keep the tier's soft light, the hidden lamps over the low models and the beacons. MEASURED (`means2.mjs r2`): tier-office 0.99, tier-street 1.02, youre-fired 1.21, and r1 tier-corporate 1.03, table-wide 0.88.
+25. A window at rest glows at 0.5: at 0.3 the white and amber windows of the Street read grey in `tier-street`.
 
 ## Needs
 
