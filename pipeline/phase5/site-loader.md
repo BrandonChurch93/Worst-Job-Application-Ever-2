@@ -41,7 +41,7 @@ Branch `agent/site-loader`. A fact is MEASURED (the command and the number), STA
 
 - The code of the six pages is still in the first script (1.85 MB stored after the physics library left it). MEASURED with a vite build in memory: the six pages are 1.66 MB of it with the table's own code, 0.63 MB without. Splitting it by page means dynamic imports in `src/pages/index.ts` and in everything that reads `pages` at start (`App.check`, the films). The Builder ruled at 17:59Z not to start it unless the physics split was on main by 18:45Z with a full gate's time left.
 - What a page's makers put on the card besides fetched pictures (geometry, drawn textures) is released by the makers' own `drop`. I do not change them.
-- Warm-up of the next page's own objects (programs, geometry) before the turn. MEASURED in software: the longest frame of step 3 is 4.5 s against a median of 0.5 s (8.5 s on main, where the pictures were put on the card in the same frames). It is the first drawing of the table's objects, not a file.
+- Warm-up of the next page's own objects (programs, geometry) before the turn (order (d)): not built, an open item with the numbers of "The frame a page arrives in" below. No cheap step is known to me: the objects of the next page do not exist before the stage enters it, so a warm-up needs that page's draw list ahead of the turn (a second stage of the page), its makers called ahead in `src/shell/view.ts`, and programs compiled for the engine's own targets in `src/core/renderer.ts`, which is not mine.
 - One upload on a real graphics card: UNKNOWN. This VM has none.
 
 ## What loads now (points 3 and 4), measured on 3c28d6f6
@@ -60,4 +60,16 @@ Branch `agent/site-loader`. A fact is MEASURED (the command and the number), STA
 - The hold into step 3 on that line, read from the sheet (looked at): step 2 is answered in the shot at 424 s, still on show at 454 s with the tip tapping, step 3 is on show at 461.7 s. That is between 38 and 46 s of this VM's wall time at a median frame of 667 ms, which is the 4 s of `live.loadWaitSeconds` and the turn: 10 of 13 pictures were on the card, so it was the pictures' wait, at its limit. The library was in long before, so its own hold measured 0 s here. Before the split the same turn came with 11 of 13 on the card: the pictures now start after the library, about 56 s of wall time later on this line.
 - MEASURED in node (`tests/site-loading.test.ts`): code that arrives 12 s after step 2 is done holds the turn 12 s, the tip taps every 0.6 s, 20 taps, then the page turns.
 - Frames on that run, low level, 640 by 360, software renderer, median and longest: careers page 1017 and 3117 ms, step 1 667 and 2033 ms, step 2 667 and 2500 ms, step 3 483 and 4383 ms.
+- MEASURED `node pipeline/phase5/site-loader-measure.mjs --mbit 0 --bot none --quality low --view 640x360 --every 10 --seconds 45 --name careers-idle`: in the 43.7 s after the first picture the careers page fetches 0 files. So the library is not fetched while the careers page is on show.
+
+## The frame a page arrives in (order (d), the Builder's 18:32Z), measured
+
+All on this VM's software renderer, canvas 640 by 360. The tool now tells the frame that ended when the status line first named the page (the frame that drew it first), the longest of the three after it, and the median of the page's later frames.
+
+- Level high, the turn from step 2 into step 3, `--mbit 0 --bot skipper --quality high --view 640x360 --every 10 --seconds 540 --from 2 --until step3 --after 10 --name turn-high-step3`: step 3 arrived in a frame of 3500 ms; frames of 3283, 3316 and 4883 ms follow at 3, 8 and 13 s of wall time after it; the median of step 3's other frames there is 717 ms, of step 2's 917 ms. The worst is 6.8 times the median and it is not the first frame. STATED from `src/shell/view.ts`: while a page turns only the shapes in the window are made, the rest when the turn is over, and a part that first shows later is made then.
+- Level high, a start on step 2 (the same run): first frame 3017 ms, the longest of the next three 2733 ms, median 917 ms.
+- Level high, a start on step 3, `--from 3 --until step4 --after 10 --seconds 400 --name turn-high-step4`: first frame 7700 ms, the next 6783 ms, median of 207 frames 2050 ms with the table in play, longest 8200 ms. The run did not reach step 4 in 400 s.
+- Level low, a start on the careers page (`careers-idle`): first frame 3550 ms, the next 2983 ms, median 983 ms.
+- Level low, a whole visit on the slow line (`split-skipper-1.5`), median and longest of each page: careers page 1017 and 3117 ms, step 1 667 and 2033 ms, step 2 667 and 2500 ms, step 3 483 and 4383 ms.
+- Not measured: the turns into step 1 and step 2 at the level high, step 4 and step 5 at any level, and anything on a real graphics card.
 
