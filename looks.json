@@ -1,35 +1,35 @@
 {
   "folder": "step2-dial",
-  "pushed": "2026-11-26T02:26:31.204Z",
-  "commit": "53f819731c2e6795d056f635498af2ecbd13125e",
+  "pushed": "2026-11-26T02:41:00.596Z",
+  "commit": "d7f7fd43dfacbf30ec07a174740cb950c64223bb",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "53f8197 key step2-dial beside approved (review): tray 250 px tall, floor shade, lacquered hub, dial's shade on the floor",
-      "time": "2026-11-26T02:26:29.484Z",
+      "caption": "Key step2-dial, review tier at d7f7fd4: approved left, build right. Tray wall now matt grey, rim 8 px",
+      "time": "2026-11-26T02:40:58.834Z",
       "by": "step2-dial",
-      "from": "out/work/looks/files/20261126022629-compare-step2-dial.jpg"
+      "from": "out/work/looks/files/20261126024058-compare-dial.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "53f8197 dial tray close, approved above, build below (review)",
-      "time": "2026-11-26T02:26:29.714Z",
+      "caption": "Dial tray close: approved above, build below, draft tier",
+      "time": "2026-11-26T02:40:59.064Z",
       "by": "step2-dial",
-      "from": "out/work/looks/files/20261126022629-dial-tray-close.jpg"
+      "from": "out/work/looks/files/20261126024059-dial-tray.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "53f8197 key step2-crank beside approved (review): grip 52 px, crank and prompt in from the wall",
-      "time": "2026-11-26T02:26:29.954Z",
+      "caption": "Tray corners at 3x: approved left, build right. Lower right wall no longer a dark band, joint thinner",
+      "time": "2026-11-26T02:40:59.293Z",
       "by": "step2-dial",
-      "from": "out/work/looks/files/20261126022629-compare-step2-crank.jpg"
+      "from": "out/work/looks/files/20261126024059-tray-corners.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "53f8197 slot tray at 11.3 s (draft): cabinet 12 px in from the wall, centred in the taller tray",
-      "time": "2026-11-26T02:26:30.180Z",
+      "caption": "Key step2-rest: approved above, build below. Row titles bold, note beside Continue in row helper size",
+      "time": "2026-11-26T02:40:59.525Z",
       "by": "step2-dial",
-      "from": "out/work/looks/files/20261126022630-slot-tray.jpg"
+      "from": "out/work/looks/files/20261126024059-rest.jpg"
     }
   ]
 }
