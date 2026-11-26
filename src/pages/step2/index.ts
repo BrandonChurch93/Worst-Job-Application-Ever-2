@@ -808,7 +808,7 @@ export function makePage(): PageLogic {
       machine(extra, i, demo, 1, dx, dy, 'sheet-')
       for (const shape of extra) list.push(shape)
       const label = find(layout, `${ROWS[i]}-label`)
-      list.push({ id: `sheet-${label.id}`, part: 'type', kind: 'text', x: labelX[i]!, y: 316, w: label.box[2]!, h: label.box[3]!, z0: 0, z1: 0, tone: 'ink', words: label.copy!, type: label.type! })
+      list.push({ id: `sheet-${label.id}`, part: 'type', kind: 'text', x: labelX[i]!, y: 316, w: label.box[2]!, h: label.box[3]!, z0: 0, z1: 0, tone: 'ink', words: label.copy!, type: TYPE.label })
     }
     return { list, cursors: [restPose(400, 640)], view: frame({ x: 100, y: 120, w: 1240, h: 697 }, 1) }
   }
