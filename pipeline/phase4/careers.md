@@ -98,3 +98,4 @@ Known and open, lower screens.
 - The redaction bars on the testimonial badges are matt black tape, flat. The comparison table is one wide even slab.
 
 Looks. STATED, not counted exactly: well over the 40 a part is allowed, about 80 stills and 11 sheets over the cards, the strip, the medal and the acting together.
+- 03:06 UTC. The redaction bars are tape with a faint sheen (colour 0x1c1d1f, roughness 0.7, a thin clear coat). MEASURED on the draft still at scroll 0.44, the first bar of the three cards of the top row: 58, 54, 44 of 255, where every bar was the same flat near black. Not on the first screen.
