@@ -1,35 +1,35 @@
 {
   "folder": "look-finish",
-  "pushed": "2026-11-26T12:09:13.203Z",
-  "commit": "17d70424953c5b4cb7e1658d61acfa8be1533ab3",
+  "pushed": "2026-11-26T12:33:02.134Z",
+  "commit": "0fd52cb7e9027136041304c11cb392e46dcd0abd",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-step2-rest-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-26T12:08:47.247Z",
+      "caption": "Still key-tier-corporate-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T12:21:32.334Z",
       "by": "look-finish",
-      "from": "out/work/stills/key-step2-rest-hd-review.png"
+      "from": "out/work/stills/key-tier-corporate-hd-review.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "D: the flattened arrow, approved, before, after: Continue at 0.6 and the sheet cursor-damage, review",
-      "time": "2026-11-26T12:09:11.478Z",
+      "caption": "SHARP: the sharpening of the finished picture, before and after at native size: type of step2-rest, lamps and type of tier-corporate, review",
+      "time": "2026-11-26T12:32:59.478Z",
       "by": "look-finish",
-      "from": "out/work/look-finish/d2/D-all.jpg"
+      "from": "out/work/look-finish/s1/S-all.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "D: the angry arrow without flecks, approved, before, after, draft",
-      "time": "2026-11-26T12:09:11.715Z",
+      "caption": "SHARP: before and after at four times: a lamp and the sign of tier-corporate, type of step2-rest",
+      "time": "2026-11-26T12:32:59.728Z",
       "by": "look-finish",
-      "from": "out/work/look-finish/d2/D-angry.jpg"
+      "from": "out/work/look-finish/s1/S-zoom.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "D: the exhausted arrow keeps a dark contour, approved, before, after: Continue at 0.2 at review and the sheet cursor-acting at draft",
-      "time": "2026-11-26T12:09:11.992Z",
+      "caption": "G: the focus ring, approved, before, after: step2-crank and step2-dial, review",
+      "time": "2026-11-26T12:32:59.979Z",
       "by": "look-finish",
-      "from": "out/work/look-finish/d3/D-exhausted.jpg"
+      "from": "out/work/look-finish/g2/G-all.jpg"
     }
   ]
 }
