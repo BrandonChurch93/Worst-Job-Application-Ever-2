@@ -3,7 +3,7 @@ import { APRON_Y, BALL, PLUNGER, railOf } from '../../layout'
 import { localBalls, type Zone } from '../zone'
 import { Geo, type V2, type V3 } from './geo'
 import { TUBE, clamp, coil, collar, frameAt, lengthOf, rounded, shells } from './kit'
-import { FIN, Screws, TONE, shade } from './mats'
+import { FIN, Screws, TONE, hex, shade } from './mats'
 
 export const PLUNGE = { travel: 0.7 * BALL, knob: 0.32 * BALL, high: 30, housing: 0.92 * BALL, spring: 0.98 * BALL, shut: 0.29 * BALL, ring: 8, fade: 2, wave: 1.5, tip: 0.45 * BALL }
 
@@ -17,7 +17,10 @@ export function plunger(z: Zone): Geo {
   const yh = localBalls(z, PLUNGER[0], APRON_Y)[1]
   const turn = (at: number): THREE.Matrix4 => new THREE.Matrix4().makeRotationX(-Math.PI / 2).setPosition(x, at, zc)
 
-  G.f(FIN.zinc).box(x - 30, x + 30, yh - 40, yh - 2, 0.4, 4, TONE.zinc, { bevel: 1 })
+  G.f(FIN.zinc).box(x - 30, x + 30, yh - 40, yh - 2, 0.4, 4, shade(TONE.zinc, 0.5), { bevel: 1 })
+  // The dark channel the rod and its spring run in, with a low lip either side.
+  G.f(FIN.dark).box(x - 19, x + 19, yk - PLUNGE.knob * 0.6, yh - 40, 0.3, 1.2, TONE.slot)
+  for (const sx of [-1, 1]) G.f(FIN.zinc).box(x + sx * 21.5 - 2.5, x + sx * 21.5 + 2.5, yk - PLUNGE.knob * 0.6, yh - 40, 0.3, 3.2, shade(TONE.zinc, 0.38), { bevel: 0.9, top: shade(TONE.zinc, 0.7) })
   G.f(FIN.spring).box(x - 16, x + 16, yh - 11, yh - 2, 4, zc, TONE.alu)
   let from = G.vertices
   G.lathe([[7, 24], [16, 24], [17.5, 25.5], [17.5, 30], [16, 31.5], [13, 31.5], [13, 38], [11.5, 39.5], [7, 39.5]], 0, 0, 20, (i) => (i === 4 ? TONE.aluDark : TONE.alu))
@@ -62,7 +65,8 @@ export function plunger(z: Zone): Geo {
   return G
 }
 
-export const PORT = { square: 0.3, clear: 20, step: 4, gap: 3, land: 20, far: 46, thick: 2.4, cuts: 10 }
+export const PORT = { square: 0.3, clear: 20, step: 4, gap: 3, land: 20, far: 46, thick: 5.2, cuts: 10, lip: 6, proud: 3.4 }
+const PORT_SHADE: [number, number, [number, number, number]][] = [[9, -7, hex(0xb9b4aa)], [5.5, -4.2, hex(0x8d8880)], [2.4, -1.8, hex(0x57534e)]]
 
 export interface Drain { G: Geo; C: Geo; S: Screws }
 
@@ -113,7 +117,16 @@ export function drain(z: Zone): Drain {
     const tx = Math.cos(way)
     const ty = Math.sin(way)
     const corner = (along: number, side: number): V2 => [g.at.x + tx * along - ty * side * wide, g.at.y + ty * along + tx * side * wide]
-    G.f(FIN.zinc).slab([corner(a - b - PORT.land, 1), corner(PORT.far, 1), corner(PORT.far, -1), corner(a - b - PORT.land, -1)], 0.2, PORT.thick, shade(TONE.zinc, 0.5), { bevel: 0.8 })
+    const plate: V2[] = [corner(a - b - PORT.land, 1), corner(PORT.far, 1), corner(PORT.far, -1), corner(a - b - PORT.land, -1)]
+    // The plate's own tight shadow on the page, toward the lower right: three flat steps, darkest where the plate touches.
+    PORT_SHADE.forEach(([dx, dy, tone], i) => G.f(FIN.dark).slab(plate.map((q) => [q[0] + dx, q[1] + dy] as V2), 0.05 + i * 0.04, 0.09 + i * 0.04, tone, { sides: false }))
+    G.f(FIN.zinc).slab(plate, 0.2, PORT.thick, shade(TONE.zinc, 0.2), { bevel: 1.8, top: shade(TONE.zinc, 0.17) })
+    // A raised lip round the slot, open where the tube runs out: the fitting the tube is seated in.
+    const inner = (TUBE.outer + PORT.gap + 1) / wide
+    const outer = (TUBE.outer + PORT.gap + 1 + PORT.lip) / wide
+    const back = a - b - PORT.lip - 1
+    for (const side of [-1, 1]) G.f(FIN.zinc).slab([corner(back, side * inner), corner(PORT.gap + 4, side * inner), corner(PORT.gap + 4, side * outer), corner(back, side * outer)], PORT.thick - 0.2, PORT.thick + PORT.proud, shade(TONE.zinc, 0.16), { bevel: 1.3, top: shade(TONE.zinc, 0.3) })
+    G.f(FIN.zinc).slab([corner(back, outer), corner(back + PORT.lip, outer), corner(back + PORT.lip, -outer), corner(back, -outer)], PORT.thick - 0.2, PORT.thick + PORT.proud, shade(TONE.zinc, 0.16), { bevel: 1.3, top: shade(TONE.zinc, 0.3) })
     const up: V2[] = []
     const down: V2[] = []
     for (let i = 0; i <= PORT.cuts; i++) {

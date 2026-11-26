@@ -7,10 +7,10 @@ import { PLUNGE, drain, plunger } from './apron'
 import { Geo } from './geo'
 import { TUBE } from './kit'
 import { LIFT, lift } from './lift'
-import { FIN, TONE, drop, mesh, metalOf, tubeOf as clearTube } from './mats'
-import { GATE, SLING, tier } from './tier'
+import { FIN, TONE, ballOf, drop, mesh, metalOf, tubeOf as clearTube } from './mats'
+import { GATE, SLING, kickOf, tier } from './tier'
 
-export const VERSION = 'hardware-20'
+export const VERSION = 'hardware-24'
 const STEEL_BALLS = 8
 const TURN = 0.34
 // The lift's rings stand upright and are seen on their flat faces from the player's end, so they keep more of their tone.
@@ -33,6 +33,7 @@ function buildHardware(z: Zone): THREE.Object3D {
     if (t.F.vertices > 0) o.add(mesh(t.F.turn(TURN, SOFT), m, 'hardware.fine', { fine: true }))
     const band = mesh(t.B, m, 'hardware.bands')
     band.userData.slings = t.slings
+    band.userData.kicks = t.kicks
     band.receiveShadow = false
     o.add(band)
     const gate = mesh(t.gate.mesh, m, 'hardware.gate')
@@ -46,7 +47,7 @@ function buildHardware(z: Zone): THREE.Object3D {
       o.add(tip)
     }
     const ball = new Geo().f(FIN.chrome).ball(0, 0, 0, BALL / 2, 48, TONE.chrome)
-    const balls = new THREE.InstancedMesh(ball.done(), m, STEEL_BALLS)
+    const balls = new THREE.InstancedMesh(ball.done(), ballOf(z), STEEL_BALLS)
     balls.name = 'hardware.balls'
     balls.castShadow = true
     balls.receiveShadow = true
@@ -78,6 +79,11 @@ function poseHardware(o: THREE.Object3D, z: Zone, ctx: RealContext): void {
       for (let i = 0; i < ids.length; i++) {
         const t = since(ctx, `sling.${ids[i]}.3`)
         band.morphTargetInfluences[i] = t > 0.4 ? 0 : Math.exp(-SLING.decay * t) * Math.cos((2 * Math.PI * t) / SLING.period)
+      }
+      const kicks = band.userData.kicks as string[]
+      for (let i = 0; i < kicks.length; i++) {
+        const v = ctx.byId.get(kicks[i]!)?.v
+        band.morphTargetInfluences[ids.length + i] = kickOf(v?.[1] ?? 9, v?.[2] ?? 9)
       }
     }
     const gate = part(o, 'hardware.gate')

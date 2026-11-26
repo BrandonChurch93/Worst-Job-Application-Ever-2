@@ -3,6 +3,7 @@ import { hash01 } from '../../../core/random'
 import { studio } from '../../../post/studio'
 import { lit } from '../light'
 import { LIT } from '../lights/groups'
+import { zoneLight } from '../lights/state'
 import type { Zone } from '../zone'
 import { MACHINE_ORANGE, liftOf, roomOf } from '../frame/mats'
 import { steel } from '../frame/steel'
@@ -106,6 +107,7 @@ const MIRROR = /* glsl */ `
 `
 
 // The floor of each zone as polished metal sees it.
+const BALL_FLOOR: Record<string, [number, number, number]> = { corporate: [0.16, 0.24, 0.5], office: [0.3, 0.5, 0.42], street: [0.14, 0.3, 0.4] }
 const FLOOR: Record<string, [number, number, number]> = { corporate: [0.5, 0.58, 0.82], office: [0.62, 0.8, 0.72], street: [0.5, 0.76, 0.8] }
 
 const made = new Map<string, THREE.MeshPhysicalMaterial>()
@@ -134,6 +136,70 @@ export const metalOf = (z: Zone): THREE.MeshPhysicalMaterial => {
   made.set(z.id, m)
   return m
 }
+
+// A steel ball is a dark mirror: nearly all of it is the dark room over the table, the lamps are a few small points that stand at their own places over the tier, so that each ball shows them where it lies, and its lower half is the floor it rolls on.
+const BALL_ROOM = /* glsl */ `
+uniform float hbLevel;
+uniform vec3 hbLamp;
+uniform vec3 hbFloor;
+varying vec3 hbAt;
+vec3 hbRoom( vec3 R, vec3 P ) {
+	float az = atan( R.y, R.x );
+	float ph = P.x * 0.013 + P.y * 0.017;
+	vec3 col = vec3( 0.022, 0.024, 0.03 ) + vec3( 0.075, 0.072, 0.068 ) * smoothstep( 0.2, 1.0, R.z );
+	vec2 c = R.xy - vec2( -0.24, 0.3 ) + P.xy * 0.0005;
+	float box = ( 1.0 - smoothstep( 0.17, 0.23, abs( c.x * 0.8 + c.y * 0.6 ) ) ) * ( 1.0 - smoothstep( 0.08, 0.12, abs( c.y * 0.8 - c.x * 0.6 ) ) );
+	col += vec3( 1.0, 0.97, 0.92 ) * 1.5 * box * step( 0.0, R.z );
+	vec2 c2 = R.xy - vec2( 0.36, -0.14 ) + P.yx * 0.0004;
+	col += vec3( 1.0, 0.94, 0.84 ) * 0.8 * exp( - dot( c2, c2 ) / 0.0026 ) * step( 0.0, R.z );
+	for ( int i = 0; i < 5; i ++ ) {
+		float f = float( i );
+		vec3 L = vec3( sin( f * 2.4 + 0.7 ) * 620.0, cos( f * 1.7 + 0.2 ) * 430.0, 330.0 + 60.0 * sin( f * 3.1 ) );
+		vec3 d = normalize( L - P );
+		col += mix( hbLamp, vec3( 1.0 ), 0.3 ) * 7.0 * smoothstep( 0.9982, 0.9994, dot( R, d ) );
+	}
+	float high = 0.1 + 0.3 * ( 0.5 + 0.5 * sin( az * 2.0 + ph ) ) * ( 0.5 + 0.5 * sin( az * 5.0 + ph * 1.7 + 0.4 ) );
+	float stand = smoothstep( high, high - 0.035, R.z );
+	vec3 thing = mix( vec3( 0.05, 0.04, 0.032 ), mix( hbLamp, vec3( 1.0 ), 0.2 ) * 0.5, pow( 0.5 + 0.5 * sin( az * 3.0 + ph * 2.3 + 1.3 ), 3.0 ) * smoothstep( 0.0, 0.12, R.z ) );
+	col = mix( col, thing, stand );
+	vec3 low = hbFloor * ( 0.035 + 0.2 * smoothstep( -0.9, -0.05, R.z ) );
+	low += hbLamp * 0.5 * pow( 0.5 + 0.5 * cos( az - ph * 0.5 - 0.9 ), 14.0 ) * exp( - ( R.z + 0.3 ) * ( R.z + 0.3 ) / 0.03 );
+	low += vec3( 0.25, 0.5, 1.0 ) * 0.5 * pow( 0.5 + 0.5 * cos( az + ph * 0.4 + 2.2 ), 26.0 ) * exp( - ( R.z + 0.45 ) * ( R.z + 0.45 ) / 0.015 );
+	low *= 0.1 + 0.9 * smoothstep( -0.995, -0.82, R.z );
+	return mix( col, low, smoothstep( 0.012, -0.02, R.z ) );
+}
+`
+const BALL_BODY = /* glsl */ `
+{
+	vec3 hbR = normalize( ( wjaViewInverse * vec4( reflect( - geometryViewDir, geometryNormal ), 0.0 ) ).xyz );
+	float hbRim = pow( 1.0 - clamp( dot( geometryViewDir, geometryNormal ), 0.0, 1.0 ), 4.0 );
+	reflectedLight.indirectSpecular = material.specularColorBlended * hbRoom( hbR, hbAt ) * ( 1.0 + 0.3 * hbRim ) * hbLevel;
+	reflectedLight.directSpecular *= 0.5;
+}
+`
+const balls = new Map<string, THREE.MeshPhysicalMaterial>()
+export const ballOf = (z: Zone): THREE.MeshPhysicalMaterial => {
+  if (roomOf(z) !== z) return metalOf(z)
+  let m = balls.get(z.id)
+  if (m) return m
+  m = studio(new THREE.MeshPhysicalMaterial({ color: 0xb9bfc6, roughness: 0.045, metalness: 1 }))
+  const room = m.onBeforeCompile
+  const made0 = m
+  m.onBeforeCompile = (shader, renderer) => {
+    room.call(made0, shader, renderer)
+    shader.uniforms.hbLevel = zoneLight(z).uniforms.wjlEnv
+    shader.uniforms.hbLamp = { value: new THREE.Vector3(...(LAMP[z.id] ?? [1, 0.86, 0.62])) }
+    shader.uniforms.hbFloor = { value: new THREE.Vector3(...(BALL_FLOOR[z.id] ?? [0.3, 0.4, 0.4])) }
+    shader.vertexShader = 'varying vec3 hbAt;\n' + shader.vertexShader.replace('#include <project_vertex>', '#ifdef USE_INSTANCING\nhbAt = instanceMatrix[ 3 ].xyz;\n#else\nhbAt = vec3( 0.0 );\n#endif\n#include <project_vertex>')
+    shader.fragmentShader = BALL_ROOM + shader.fragmentShader.replace('#include <aomap_fragment>', BALL_BODY + '#include <aomap_fragment>')
+  }
+  m.customProgramCacheKey = () => 'wja-studio-hardware-ball-1'
+  m = lit(m, z)
+  m.name = `hardware.ball.${z.id}`
+  balls.set(z.id, m)
+  return m
+}
+const LAMP: Record<string, [number, number, number]> = { corporate: [1.0, 0.86, 0.62], office: [1.0, 0.9, 0.72], street: [1.0, 0.8, 0.56] }
 
 // The window of the room on clear acrylic: on a tube it is drawn out into one long bright line down the wall that faces it.
 const STREAK = /* glsl */ `

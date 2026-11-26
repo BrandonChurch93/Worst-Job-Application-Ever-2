@@ -5,17 +5,17 @@ import { localBalls, whole, type Zone } from '../zone'
 import { Bag, ball, box, DEG, lathe, look, mat, prism, rod, sweep, wire, type V2, type V3 } from './g'
 import { drop, matsOf, part } from './mats'
 
-const WIRE = look(0xf6f8fa, 0.05, 1, 0)
-const PLATE = look(0xdde0e3, 0.16, 1, 0)
+const WIRE = look(0x7d838a, 0.06, 1, 0)
+const PLATE = look(0x8d9299, 0.14, 1, 0)
 const SPRING = look(0xbfc4c9, 0.24, 1, 0)
 const WORN = look(0xf0f2f3, 0.1, 1, 0)
 const SCREW = look(0xd2d5d8, 0.26, 1, 0)
 const SCREW_SLOT = look(0x242526, 0.7, 1, 0)
-const BEAD = look(0xe6e9ec, 0.12, 1, 0)
+const BEAD = look(0x9aa0a6, 0.1, 1, 0)
 const CLEAR = look(0x8fa4ad, 0.05, 0, 1)
 const CLEAR_EDGE = look(0xd4e3ea, 0.04, 0, 1)
 
-export const TRACK = { wire: 3.1, under: 36, underUp: 11.7, side: 58.15, sideUp: 40, hoop: 2.7, hoopR: 59.8, centre: 48, every: 192, bead: 5 }
+export const TRACK = { wire: 4.3, under: 36, underUp: 10.06, side: 58.15, sideUp: 40, hoop: 3.7, hoopR: 60.4, centre: 48, every: 288, bead: 6, stop: 50 }
 // The clear width of the trough is the width of the layout's opening for the spiral's turn.
 const turnOf = table.openings.find((o) => o.id === 'street.spiral.turn')!
 export const CLEARANCE = Math.hypot(turnOf.b[0] - turnOf.a[0], turnOf.b[1] - turnOf.a[1]) * BALL
@@ -84,7 +84,7 @@ function trestle(b: Bag, fine: Bag, f: Frame, turn: number): void {
   const tops = [-1, 1].map((side) => put(f, side * TRACK.under, TRACK.underUp - TRACK.wire * 0.6))
   const tall = Math.min(tops[0]![2], tops[1]![2])
   const spread = Math.min(20, tall * 0.1)
-  const r = tall > 240 ? 3.6 : tall > 96 ? 3.2 : TRACK.wire + 0.3
+  const r = tall > 240 ? 4.8 : tall > 96 ? 4.5 : TRACK.wire + 0.3
   const feet = tops.map((p, i) => [p[0] + f.side[0] * (i * 2 - 1) * spread, p[1] + f.side[1] * (i * 2 - 1) * spread, 2.4] as V3)
   const at = (i: number, h: number): V3 => {
     const k = (h - feet[i]![2]) / (tops[i]![2] - feet[i]![2])
@@ -96,16 +96,11 @@ function trestle(b: Bag, fine: Bag, f: Frame, turn: number): void {
     b.add(lathe([[r + 2.6, 2.4], [r + 2.6, 7], [r + 1, 9], [r, 9.6]], 10), PLATE, mat({ x: feet[i]![0], y: feet[i]![1] }))
     fine.add(ball(TRACK.bead + 0.6, 8, 6), BEAD, mat({ x: tops[i]![0], y: tops[i]![1], z: tops[i]![2] + 0.6, s: [1.25, 1.25, 0.8] }))
   }
-  for (let h = tall - 64; h > 44; h -= BALL) {
+  for (let h = tall - 64; h > 44; h -= 2 * BALL) {
     const p = at(0, h)
     const q = at(1, h)
-    b.add(rod(p, q, 2.3, 6), WIRE)
+    b.add(rod(p, q, 3.1, 6), WIRE)
     for (const e of [p, q]) fine.add(ball(TRACK.bead - 0.2, 8, 6), BEAD, mat({ x: e[0], y: e[1], z: e[2] }))
-  }
-  if (tall > 240) {
-    const h0 = 44 + ((tall - 64 - 44) % BALL)
-    b.add(rod(at(0, 14), at(1, h0), 2, 6), WIRE)
-    b.add(rod(at(1, 14), at(0, h0), 2, 6), WIRE)
   }
 }
 
@@ -116,15 +111,42 @@ function highway(z: Zone, b: Bag, fine: Bag): Frame[] {
   const line = (across: number, up: number, from = 0): V3[] => frames.filter((f) => f.s >= from).map((f) => put(f, across, up))
   const e = frames[frames.length - 1]!
   for (const side of [-1, 1]) {
-    b.add(wire(line(side * TRACK.under, TRACK.underUp), TRACK.wire, 8, 1), WIRE)
+    b.add(wire(line(side * TRACK.under, TRACK.underUp).slice(0, -Math.round(TRACK.stop / 16)), TRACK.wire, 8, 1), WIRE)
     b.add(wire(line(side * TRACK.side, TRACK.sideUp, 40), TRACK.wire, 8, 1), WIRE)
     const a = frames.find((f) => f.s >= 40)!
     b.add(wire([put(a, side * TRACK.side, TRACK.sideUp), put(a, side * (TRACK.side + 3), TRACK.sideUp - 6, -14), put(a, side * (TRACK.side + 10), TRACK.sideUp - 18, -26)], TRACK.wire, 8, 4), WIRE)
-    for (const [across, up] of [[TRACK.under, TRACK.underUp], [TRACK.side, TRACK.sideUp]] as const) {
-      const p = put(e, side * across, up)
-      b.add(ball(TRACK.wire, 8, 6), WIRE, mat({ x: p[0], y: p[1], z: p[2] }))
-    }
+    const stop = frames[frames.length - 1 - Math.round(TRACK.stop / 16)]!
+    const p = put(stop, side * TRACK.under, TRACK.underUp)
+    b.add(ball(TRACK.wire + 1.2, 8, 6), BEAD, mat({ x: p[0], y: p[1], z: p[2] }))
   }
+  // The receiver: the floor wires stop short of the end, the side wires close round it in a loop, and a cage of uprights and a heavier lower loop stand round the hole the ball drops through into the trough.
+  const loop = (r: number, up: number, from: number, to: number): V3[] => {
+    const pts: V3[] = []
+    for (let i = 0; i <= 12; i++) {
+      const a = from + ((to - from) * i) / 12
+      pts.push(put(e, -Math.cos(a) * r, up, Math.sin(a) * r))
+    }
+    return pts
+  }
+  b.add(wire(loop(TRACK.side, TRACK.sideUp, 0, Math.PI), TRACK.wire, 8, 2), WIRE)
+  b.add(wire(loop(TRACK.side, 4, -0.5, Math.PI + 0.5), TRACK.wire + 1.6, 8, 2), WIRE)
+  for (const a of [-0.5, Math.PI + 0.5]) {
+    const p = put(e, -Math.cos(a) * TRACK.side, 4, Math.sin(a) * TRACK.side)
+    b.add(ball(TRACK.wire + 2.6, 8, 6), BEAD, mat({ x: p[0], y: p[1], z: p[2] }))
+  }
+  for (let i = 0; i <= 4; i++) {
+    const a = (Math.PI * i) / 4
+    const top = put(e, -Math.cos(a) * TRACK.side, TRACK.sideUp, Math.sin(a) * TRACK.side)
+    const foot = put(e, -Math.cos(a) * TRACK.side, 4, Math.sin(a) * TRACK.side)
+    b.add(rod(foot, top, TRACK.wire - 0.6, 6), WIRE)
+    fine.add(ball(TRACK.bead - 0.6, 8, 6), BEAD, mat({ x: top[0], y: top[1], z: top[2] }))
+  }
+  const crown: V3[] = []
+  for (let i = 0; i <= 8; i++) {
+    const a = Math.PI / 2 + (Math.PI * i) / 16
+    crown.push(put(e, 0, TRACK.sideUp + Math.sin(a) * (TRACK.centre * 2 - TRACK.sideUp + 14), TRACK.side * Math.cos(a) * -1))
+  }
+  b.add(wire(crown, TRACK.wire - 0.4, 8, 2), WIRE)
   const total = e.s
   const count = Math.floor((total - 90) / TRACK.every)
   const first = 70 + (total - 90 - count * TRACK.every) / 2
@@ -232,7 +254,7 @@ interface Built { flap: THREE.Mesh | null; down: number }
 export const flapLift = (open: number): number => (1 - Math.max(0, Math.min(1, open))) * FLAP.lift
 
 export const ramps = whole('ramps', {
-  version: 'play-ramps-31',
+  version: 'play-ramps-32',
   build(z) {
     const g = new THREE.Group()
     g.name = `play.ramps.${z.id}`
