@@ -125,7 +125,7 @@ const RINGS = [0, 1.5, 3, 5, 7.5, 10.5, 14, 18, 23, 29, 36, 45, 56, 70]
 
 // The floor: frosted glass lying in the shade of the wall on the light's side. The shade is laid into the face as vertex colour, from the key's
 // direction and the tray's depth, the way a field's is, but deeper and longer: a tray is the deepest opening of the page.
-export function trayFloor(s: Shape, paint: { soak: number; hold: number; reach: number; bounce: number; bounceReach: number; base: number; side?: number; cool?: number } = TRAY.floor): THREE.BufferGeometry {
+export function trayFloor(s: Shape, paint: { soak: number; hold: number; reach: number; bounce: number; bounceReach: number; base: number; side?: number; cool?: number; far?: number; farReach?: number; warm?: number } = TRAY.floor): THREE.BufferGeometry {
   const depth = -s.z0
   const inset = trayFoot(depth) - 0.5
   const w = Math.max(1, s.w - inset * 2)
@@ -160,8 +160,10 @@ export function trayFloor(s: Shape, paint: { soak: number; hold: number; reach: 
   const side = paint.side ?? 0
   const under = (x: number, y: number): number =>
     side > 0 ? Math.min(reach(x, y, 1), (w / 2 - x * Math.sign(dx)) / side, (h / 2 - y * Math.sign(dy)) / side) : reach(x, y, 1)
-  const shade = (x: number, y: number): number =>
-    paint.base * (1 - paint.soak * Math.exp(-Math.max(0, under(x, y) * slope - depth * paint.hold) / paint.reach)) + paint.bounce * Math.exp(-(reach(x, y, -1) * slope) / paint.bounceReach)
+  const shade = (x: number, y: number): number => {
+    const d = Math.max(0, under(x, y) * slope - depth * paint.hold)
+    return paint.base * (1 - paint.soak * Math.exp(-d / paint.reach) - (paint.far ?? 0) * Math.exp(-d / (paint.farReach ?? 1))) + paint.bounce * Math.exp(-(reach(x, y, -1) * slope) / paint.bounceReach)
+  }
   const pos: number[] = []
   const col: number[] = []
   const idx: number[] = []
@@ -169,7 +171,7 @@ export function trayFloor(s: Shape, paint: { soak: number; hold: number; reach: 
     const v = shade(x, y)
     const dark = Math.max(0, 1 - v) * (paint.cool ?? 0)
     pos.push(x, y, 0)
-    col.push(v * (1 - dark), v, v * (1 - dark * 0.3))
+    col.push(v * (1 - dark), v, v * (1 - dark * 0.3) * (1 - (paint.warm ?? 0)))
   }
   for (const ring of rings) for (const [x, y] of ring) put(x, y)
   put(0, 0)

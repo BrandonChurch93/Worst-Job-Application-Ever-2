@@ -41,13 +41,13 @@ Closed since the judged commit, seen in the pictures:
 ## Looks, counted by part
 
 
-One look is one draft still, comparison or sheet. Counted to 12:20 UTC. The limit is 40 for each part.
+One look is one draft still, comparison or sheet. Counted to 12:41 UTC. The limit is 40 for each part.
 
 - rows: 1 (`compare --key step2-rest`). The tray's floor was judged in the crank's and the dial's stills and is counted there.
-- dial: 8 (`compare --key step2-dial` and draft stills of the key, the sheet `machines` for the stop and the middle).
-- slot: 10 (the sheet `machines`, `still --page step2 --beat step2.slot` at 0.35 and 0.62).
-- crank: 20 (`compare --key step2-crank` and draft stills of the key).
-- acting: 23 (sheets of film frames, whole or cut round the arrow: the lever, the open, the dial, the landing, the blow, Continue, the coins, the recovery, the snag of the dial, the warned arrow, the whip in the frames the beat sheet takes, the throw off the crank, the double take, the strut, the crank beat and the Continue beat in whole frames, the angry run, the refill before and after its move).
+- dial: 9 (`compare --key step2-dial` and draft stills of the key, the sheet `machines` for the stop and the middle).
+- slot: 11 (the sheet `machines`, `still --page step2 --beat step2.slot` at 0.35 and 0.62).
+- crank: 26 (`compare --key step2-crank` and draft stills of the key).
+- acting: 25 (sheets of film frames, whole or cut round the arrow: the lever, the open, the dial, the landing, the blow, Continue, the coins, the recovery, the snag of the dial, the warned arrow, the whip in the frames the beat sheet takes, the throw off the crank, the double take, the strut, the crank beat and the Continue beat in whole frames, the angry run, the refill before and after its move).
 
 ## Decisions
 
@@ -82,3 +82,16 @@ One look is one draft still, comparison or sheet. Counted to 12:20 UTC. The limi
 29. R9-2 issue 8. The arrow turns its tip to the crank's hub when it goes back in at 16.32 s. The heat of `angry` is the cursor's: I asked for heat 0.6 and the Builder refused it with a picture, because approved's glow covers the same half of the head; the yellow flecks are the shared look's item now. No patch is on this branch.
 30. The well of a tray, the Builder's look at merge 34: the floor's shade under the upper and left wall is deeper and shorter (soak 0.44 over 13 px, was 0.25 over 22 px), the floor is a little darker (1.13, was 1.16) and the far side is lighter (0.13 over 12 px). All three trays share it.
 31. The unlit lens of the meter had a dark outline where approved's is clear glass with a light edge. MEASURED in a draft still with the wall painted green: the outline is the lens's upright wall and seat, which the studio's light from above leaves at about a quarter of their tone. The wall and seat now give off a little of their own pale tone (`edgeLight` 0.5), standing for the light a clear block carries to its edges; their tone is lighter (`rimTone` 0.86, was 0.68), the dark line inside the rim of the picture is fainter (0.12, was 0.3) and the foot line is a lighter grey. The lit lens keeps its picture and its orange wall.
+32. The well again, measured this time. MEASURED down one column of the crank key (approved and the build at the review tier, green channel, 10 to 90 px under the upper wall): approved 81, 105, 130, 146, 154, 156, 160, 165, 163; the build before 101, 126, 144, 156, 165, 170, 175, 177, 179; the build after 86, 112, 128, 143, 153, 160, 166, 169, 172 at the draft tier. The floor's shade has a second, long part (`far` 0.4 over 120, base 1.28; 0.32 over 110 was tried first and gave 91, 117, 133, 148, 157, 164, 170, 173, 176), the floor is a little warmer (blue down 3.5 percent) and the lower lip's light reaches twice as far (0.16 over 24). Approved's is still a little deeper from 60 px on (156 to 163 against 160 to 172). The build's column after is 30 px to the right of the one before, clear of the last lens. All three trays share it; seen on the dial key too.
+
+## End of the round (12:35 UTC)
+
+The three things least real in step 2, as I see them in my own stills and film frames:
+
+1. The well of a tray is still shallower than approved's at the dial: approved's dial well is dark to half its height, the build's shade is the crank's, lighter. The rim of a tray is one bright line and a grey one where approved's is a thick clear lip with a bright lower edge.
+2. The shade under the crank's arm and grip, and under the slot's lever, is fainter and cooler than approved's long warm shade to the lower right.
+3. On the way to Continue the arrow is a pale lump for three seconds (the exhausted body over the flat one); at the size the film is judged in, the peel and the refill are small changes of a small shape. The body is the cursor's; the timing is mine and is as slow as the kit's beat lets it be.
+
+Not done: R1-1 issue 11 and R1-2 issue 9 (decision 24); the dial's repeated rim rings at the draft tier; a held pose of the whip longer than the 1.36 s it has.
+
+Tried last and not kept (12:41 UTC): the plate's shade on the floor at `cast.dark` 0.66 and 0.78 with a warm tint. Two draft stills showed almost no change beside approved's deep warm shade, so the part of the shade that is seen is not where I thought; the file is as it was pushed.
