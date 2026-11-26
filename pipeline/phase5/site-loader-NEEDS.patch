@@ -37,22 +37,20 @@ index e87ed065..9e0cf598 100644
      return this.world.getRigidBody(this.ballHandles[i]!)
    }
  
-diff --git a/src/main.ts b/src/main.ts
-index 0b56bd76..27faac6a 100644
 --- a/src/main.ts
 +++ b/src/main.ts
-@@ -364,7 +364,9 @@ function play(first: PlayMode): void {
+@@ -363,7 +363,9 @@
      canvas,
      step: stepNow,
      setStep(step) {
 -      base = Math.min(5, Math.max(0, Math.round(step)))
 +      const to = Math.min(5, Math.max(0, Math.round(step)))
-+      if (!app.code(liveFlow()[to]!.page)) return
++      if (!app.code(liveFlow()[to]!.page, () => api.setStep(to))) return
 +      base = to
        stage = makeStage()
        sound?.stop()
        if (flowing()) sound?.start()
-@@ -446,6 +448,11 @@ function play(first: PlayMode): void {
+@@ -445,6 +447,11 @@
      last = t
      frameSeconds = Math.min(0.5, dt)
      const run = Math.min(0.1, dt)
