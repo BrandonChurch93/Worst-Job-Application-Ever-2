@@ -182,9 +182,14 @@ export function firehouse(b: Buckets, z: Zone, ctx: RealContext): Firehouse {
       const z0 = (zc * k) / steps
       const z1 = (zc * (k + 1)) / steps
       const lv = 0.0012 + 0.04 * Math.pow((k + 0.5) / steps, 3.2)
-      bay.quad([a, d0, z0], [a, d1, z0], [a, d1, z1], [a, d0, z1], red(lv))
-      bay.quad([c, d1, z0], [c, d0, z0], [c, d0, z1], [c, d1, z1], red(lv))
-      bay.quad([a, d1, z0], [c, d1, z0], [c, d1, z1], [a, d1, z1], red(lv * 0.3))
+      for (let j = 0; j < 4; j++) {
+        const e0 = d0 + ((d1 - d0) * j) / 4
+        const e1 = d0 + ((d1 - d0) * (j + 1)) / 4
+        const fall = lv * (1 - 0.24 * j)
+        bay.quad([a, e0, z0], [a, e1, z0], [a, e1, z1], [a, e0, z1], red(fall))
+        bay.quad([c, e1, z0], [c, e0, z0], [c, e0, z1], [c, e1, z1], red(fall))
+      }
+      bay.quad([a, d1, z0], [c, d1, z0], [c, d1, z1], [a, d1, z1], red(lv * 0.22))
     }
     bay.quad([a, d1, zc], [c, d1, zc], [c, d0 + 4, zc], [a, d0 + 4, zc], red(0.02))
     // Racks on the back wall, dark against it.
