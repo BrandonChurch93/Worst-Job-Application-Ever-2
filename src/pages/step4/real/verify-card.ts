@@ -1,5 +1,7 @@
 import * as THREE from 'three'
 import { config } from '../../../config'
+import { hash01 } from '../../../core/random'
+import { studio } from '../../../post/studio'
 import type { PartMaker, RealContext } from '../../../real/types'
 import { materials } from '../../../shell/materials'
 import { controls } from '../../../shell/real/controls'
@@ -14,6 +16,64 @@ const q = (v: number): number => Math.round(v * 4) / 4
 
 export const VERIFY = { step: 4, bezel: 1.8, bezelHigh: 2, capHigh: 4.8, capLow: 1.9, stroke: 4.8, ink: 0.7, dip: 1.6 }
 export const TICK: [number, number][] = [[10.5, 23], [18.5, 31], [33.5, 13.5]]
+
+export const FROST = { step: 8, coarse: 84, fine: 31, pale: 0.07, shade: 0.06, edge: 30, inset: 14, dark: [0.42, 0.5, 0.48] as const }
+
+let frostMade: THREE.MeshStandardMaterial | null = null
+
+const cloud = (x: number, y: number, cell: number, seed: number): number => {
+  const gx = Math.floor(x / cell)
+  const gy = Math.floor(y / cell)
+  const fx = x / cell - gx
+  const fy = y / cell - gy
+  const sx = fx * fx * (3 - 2 * fx)
+  const sy = fy * fy * (3 - 2 * fy)
+  const a = hash01(gx, gy, seed)
+  const b = hash01(gx + 1, gy, seed)
+  const c = hash01(gx, gy + 1, seed)
+  const d = hash01(gx + 1, gy + 1, seed)
+  return a + (b - a) * sx + (c + (d - c) * sx - a - (b - a) * sx) * sy
+}
+
+export function frostGeometry(w: number, h: number): THREE.BufferGeometry {
+  const seed = config.seed + 211
+  const iw = w - FROST.inset * 2
+  const ih = h - FROST.inset * 2
+  const nx = Math.max(2, Math.round(iw / FROST.step))
+  const ny = Math.max(2, Math.round(ih / FROST.step))
+  const pos: number[] = []
+  const col: number[] = []
+  const idx: number[] = []
+  for (let j = 0; j <= ny; j++) {
+    for (let i = 0; i <= nx; i++) {
+      const x = (i / nx) * iw
+      const y = (j / ny) * ih
+      const n = (cloud(x, y, FROST.coarse, seed) * 2 + cloud(x, y, FROST.fine, seed + 1)) / 3 - 0.5
+      const rim = Math.min(1, Math.min(x, y, iw - x, ih - y) / FROST.edge)
+      const k = Math.min(1, Math.abs(n) * 4) * rim * rim * (3 - 2 * rim)
+      pos.push(x - iw / 2, ih / 2 - y, 0)
+      if (n >= 0) col.push(1, 1, 1, k * FROST.pale)
+      else col.push(FROST.dark[0], FROST.dark[1], FROST.dark[2], k * FROST.shade)
+    }
+  }
+  for (let j = 0; j < ny; j++) {
+    for (let i = 0; i < nx; i++) {
+      const a = j * (nx + 1) + i
+      idx.push(a, a + nx + 1, a + 1, a + 1, a + nx + 1, a + nx + 2)
+    }
+  }
+  const g = new THREE.BufferGeometry()
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
+  g.setAttribute('color', new THREE.Float32BufferAttribute(col, 4))
+  g.setIndex(idx)
+  g.computeVertexNormals()
+  return g
+}
+
+function frostStuff(): THREE.MeshStandardMaterial {
+  frostMade ??= studio(new THREE.MeshStandardMaterial({ color: new THREE.Color(1, 1, 1), roughness: 0.9, metalness: 0, vertexColors: true, transparent: true, depthWrite: false }))
+  return frostMade
+}
 
 const stepped = (h: number): number => Math.ceil(h / VERIFY.step) * VERIFY.step
 
@@ -38,6 +98,11 @@ function card(s: Shape): THREE.Object3D {
   const foot = mesh(sweep(outlineOf(s, SLAB.frame + 0.6, 8), profile([[0, 0, true], [0, Math.min(GLASS.caster, thick * 0.4), true]])), cardGlass())
   foot.userData.own = true
   root.add(glass, foot)
+  const frost = mesh(frostGeometry(s.w, s.h), frostStuff(), false)
+  frost.receiveShadow = false
+  frost.position.z = thick + 0.04
+  frost.userData.own = true
+  root.add(frost)
   return root
 }
 
