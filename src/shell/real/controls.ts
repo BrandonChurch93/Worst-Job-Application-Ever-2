@@ -156,7 +156,12 @@ function field(s: Shape): THREE.Object3D {
   return root
 }
 
-const CROWN_RAIL = 1.2
+const CROWN_RAIL = 0.1
+const RAIL_BEVEL = 1.3
+const RAIL_RISE = 0.8
+const COLLAR = 2.2
+const CLEARANCE = 1.3
+const COLLAR_PROUD = 0.6
 const CROWN_BUTTON = 0.4
 const FOOT_RING = 6
 const FOOT_RISE = 0.34
@@ -164,10 +169,31 @@ const FOOT_ROUND = 2.4
 const WALL_LEAN = 1.6
 const EDGE = 4.6
 const FLANGE = 4.4
+const BEAD = 1.5
+const CONE = 1.3
+const GROOVE = 1.5
 
-function rail(s: Shape): THREE.Object3D {
+const currentOf = (ctx: RealContext): Shape | null => ctx.list.find((o) => o.role === 'progressButtonCurrent') ?? null
+
+// The rail, and round the current step's cap a thin collar that stays where it is: the cap stands in it with a dark clearance between.
+function rail(s: Shape, ctx: RealContext): THREE.Object3D {
   const under = pocketCut(s).under
-  return mesh(shared(`rail:${dims(s)}`, () => sweep(outlineOf(s, 0.15, 16), profile([[0, -under, true], [0, -0.2, true], ...[0.8, 0.6, 0.4, 0.2, 0.05].map((t): ProfilePoint => [(s.h / 2) * (1 - t), -0.2 + CROWN_RAIL * (1 - t * t)])]))), materials().railSatin, false)
+  const top = -0.2 + RAIL_RISE
+  const m = materials()
+  const bar = mesh(shared(`rail:${dims(s)}`, () => sweep(outlineOf(s, 0.15, 16), profile([[0, -under, true], [0, -0.2, true], [RAIL_BEVEL, top, true], [s.h / 2, top + CROWN_RAIL]]))), m.railFlat, false)
+  const cur = currentOf(ctx)
+  if (!cur) return bar
+  const root = new THREE.Group()
+  root.add(bar)
+  const r = cur.w / 2 + CLEARANCE + COLLAR
+  const lip = top + COLLAR_PROUD
+  const ring = mesh(shared(`collar:${q(cur.w)}`, () => sweep(circle(r, 72), profile([[0, -0.2, true], [0, lip - 0.4], ...arc(0, lip - 0.4, 0.4, 0.4, 3).slice(1), [COLLAR, lip, true], [COLLAR + 0.1, top, true]]), false)), m.capRim, false)
+  const dark = mesh(shared(`collarGap:${q(cur.w)}`, () => sweep(circle(r - COLLAR + 0.2, 72), [{ inset: 0, z: top + 0.08, out: 0, up: 1 }])), m.gap, false)
+  for (const o of [ring, dark]) {
+    o.position.set(cur.x + cur.w / 2 - (s.x + s.w / 2), s.y + s.h / 2 - (cur.y + cur.h / 2), 0)
+    root.add(o)
+  }
+  return root
 }
 
 const BEZEL = 3.4
@@ -319,9 +345,13 @@ function progressButton(s: Shape, current: boolean): THREE.Object3D {
     return mesh(shared(`progress:${dims(s)}:1`, () => sweep(circle(d / 2, 72), profile(points))), m.orange)
   }
   const root = new THREE.Group()
-  const flange: ProfilePoint[] = [[0, foot - 0.5, true], [0, foot + up * 0.34, true], [0.5, foot + up * 0.4, true], [FLANGE, foot + up * 0.8, true], [FLANGE + 0.7, foot + up * 0.8, true], [FLANGE + 0.9, foot + up * 0.6, true], [FLANGE + 1.9, foot + up * 0.6, true], [FLANGE + 2.1, h - 0.4, true], [FLANGE + 2.5, h, true]]
-  root.add(mesh(shared(`progressFlange:${dims(s)}`, () => sweep(circle(d / 2, 72), profile(flange), false)), m.aluminiumEdge))
-  root.add(mesh(shared(`progressFace:${dims(s)}`, () => discUv(sweep(circle(d / 2 - FLANGE - 2.5, 72), [{ inset: 0, z: h, out: 0, up: 1 }]), d - (FLANGE + 2.5) * 2)), m.aluminiumTurned))
+  const top = foot + up * 0.86
+  const flange: ProfilePoint[] = [
+    [0, foot - 0.5, true], [0, top - CONE - BEAD], ...arc(0, top - CONE - BEAD, BEAD, BEAD, 5).slice(1), [FLANGE, top, true],
+    [FLANGE + 1, top - GROOVE, true], [FLANGE + 2.2, h - 0.2, true], [FLANGE + 2.5, h, true]
+  ]
+  root.add(mesh(shared(`progressFlange:${dims(s)}`, () => sweep(circle(d / 2, 72), profile(flange), false)), m.capRim))
+  root.add(mesh(shared(`progressFace:${dims(s)}`, () => discUv(sweep(circle(d / 2 - FLANGE - 2.5, 72), [{ inset: 0, z: h, out: 0, up: 1 }]), d - (FLANGE + 2.5) * 2)), m.capFace))
   return root
 }
 
@@ -420,7 +450,10 @@ export const controls: PartMaker = {
       return f ? `focus:${dims(f)}` : `plate:${dims(s)}:${s.tone}`
     }
     if (s.id === 'field-caret') return `caret:${dims(s)}`
-    return `${s.role ?? 'plate'}:${dims(s)}:${s.tone}:${s.pocket ? 1 : 0}:${s.id.endsWith('-zone') ? 1 : 0}`
+    const base = `${s.role ?? 'plate'}:${dims(s)}:${s.tone}:${s.pocket ? 1 : 0}:${s.id.endsWith('-zone') ? 1 : 0}`
+    if (s.role !== 'progressRail') return base
+    const cur = currentOf(ctx)
+    return cur ? `${base}:${q(cur.x - s.x)}:${q(cur.y - s.y)}:${q(cur.w)}` : base
   },
   make(s: Shape, ctx: RealContext): THREE.Object3D {
     if (s.id === 'field-focus') {
@@ -430,7 +463,7 @@ export const controls: PartMaker = {
     if (s.id === 'field-caret') return mesh(shared(`caret:${dims(s)}`, () => new THREE.BoxGeometry(s.w, s.h, 0.3).translate(0, 0, 0.15)), materials().ink, false)
     switch (s.role) {
       case 'rule': return rule(s)
-      case 'progressRail': return s.pocket ? rail(s) : plate(s)
+      case 'progressRail': return s.pocket ? rail(s, ctx) : plate(s)
       case 'progressButton': return progressButton(s, false)
       case 'progressButtonCurrent': return progressButton(s, true)
       case 'field': return s.pocket ? field(s) : plate(s)

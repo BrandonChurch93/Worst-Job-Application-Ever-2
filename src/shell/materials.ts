@@ -157,7 +157,7 @@ export function brushedHeights(size: number, seed: number): Float32Array {
   return unit(soft)
 }
 
-// Circular brushing for a turned face, laid once across the disc: rings of fine lines round the centre.
+// Circular brushing for a turned face, laid once across the disc: rings of fine lines round the centre, each band of them worn deeper on one side than the other and a little off centre, as a lathe leaves them.
 function turnedMaps(size: number, seed: number, strength: number): { normal: THREE.DataTexture; direction: THREE.DataTexture } {
   const rnd = new Random(seed, 'turned')
   const rings = new Float32Array(size)
@@ -169,6 +169,13 @@ function turnedMaps(size: number, seed: number, strength: number): { normal: THR
     const f = r - k
     return smooth[k]! + (smooth[k + 1]! - smooth[k]!) * f
   }
+  const BAND = 7
+  const bands = Array.from({ length: Math.ceil(size / BAND) + 2 }, () => ({ turns: 1 + rnd.int(4), at: rnd.next() * Math.PI * 2, drift: (rnd.next() - 0.5) * 2.4 }))
+  const worn = (r: number, a: number): number => {
+    const b = bands[Math.floor(r / BAND)]!
+    return 0.3 + 0.7 * (0.5 + 0.5 * Math.sin(a * b.turns + b.at))
+  }
+  const off = (r: number, a: number): number => bands[Math.floor(r / BAND)]!.drift * Math.sin(a + bands[Math.floor(r / BAND)]!.at)
   const normal = new Uint8Array(size * size * 4)
   const direction = new Uint8Array(size * size * 4)
   const c = (size - 1) / 2
@@ -179,7 +186,9 @@ function turnedMaps(size: number, seed: number, strength: number): { normal: THR
       const r = Math.hypot(dx, dy)
       const ux = r > 0.5 ? dx / r : 1
       const uy = r > 0.5 ? dy / r : 0
-      const slope = (ring(r + 1) - ring(Math.max(0, r - 1))) * strength * Math.min(1, r / 6)
+      const a = Math.atan2(dy, dx)
+      const rr = Math.max(0, r + off(r, a))
+      const slope = (ring(rr + 1) - ring(Math.max(0, rr - 1))) * strength * Math.min(1, r / 6) * worn(r, a)
       const l = Math.sqrt(slope * slope + 1)
       const i = (y * size + x) * 4
       normal[i] = Math.round(((-slope * ux) / l) * 127.5 + 127.5)
@@ -269,7 +278,7 @@ vec3 wjaStretched( const in vec3 viewDir, const in vec3 normal, const in float r
 	for ( int i = -4; i <= 4; i ++ ) {
 		float t = float( i ) / 4.0;
 		float w = exp( -2.0 * t * t );
-		sum += w * getIBLRadiance( viewDir, normalize( normal + along * ( t * anisotropy * 0.26 ) ), roughness );
+		sum += w * getIBLRadiance( viewDir, normalize( normal + along * ( t * anisotropy * WJA_REACH ) ), roughness );
 		total += w;
 	}
 	return sum / total;
@@ -279,12 +288,12 @@ vec3 wjaStretched( const in vec3 viewDir, const in vec3 normal, const in float r
 
 // A brushed face mirrors the room stretched across its brushing. The stock code only bends the mirror when the face is seen from the side,
 // so a turned face seen from above showed no fan of light. This reads the room along the stretch instead.
-function stretched<T extends THREE.MeshPhysicalMaterial>(material: T): T {
-  return also(material, 'stretched', (shader) => {
+function stretched<T extends THREE.MeshPhysicalMaterial>(material: T, reach = 0.26): T {
+  return also(material, `stretched-${reach}`, (shader) => {
     const call = 'getIBLAnisotropyRadiance( geometryViewDir, geometryNormal, material.roughness, material.anisotropyB, material.anisotropy )'
     if (!shader.fragmentShader.includes(call) || !shader.fragmentShader.includes('void main() {')) throw new Error('The light code of this three.js release is not the one this build was written for')
     shader.fragmentShader = shader.fragmentShader
-      .replace('void main() {', `${stretchGlsl}\nvoid main() {`)
+      .replace('void main() {', `${stretchGlsl.replace('WJA_REACH', reach.toFixed(3))}\nvoid main() {`)
       .replace(call, 'wjaStretched( geometryViewDir, geometryNormal, material.roughness, material.anisotropyT, material.anisotropy )')
   })
 }
@@ -437,6 +446,9 @@ export interface Materials {
   orange: THREE.MeshPhysicalMaterial
   chrome: THREE.MeshPhysicalMaterial
   railSatin: THREE.MeshPhysicalMaterial
+  railFlat: THREE.MeshPhysicalMaterial
+  capFace: THREE.MeshPhysicalMaterial
+  capRim: THREE.MeshPhysicalMaterial
   gap: THREE.MeshPhysicalMaterial
   ink: THREE.MeshPhysicalMaterial
   inkOnOrange: THREE.MeshPhysicalMaterial
@@ -478,6 +490,11 @@ export function makeMaterials(seed: number): Materials {
     color: srgb(0x92969b), roughness: 0.25, metalness: 1, normalMap: turned.normal, normalScale: new THREE.Vector2(0.06, 0.06), anisotropy: 0.85, anisotropyMap: turned.direction
   }))
   const aluminiumEdge = physical({ color: srgb(0xd0d4d7), roughness: 0.34, metalness: 0.8 })
+  const capFace = stretched(physical({
+    color: srgb(0x7c8085), roughness: 0.2, metalness: 1, normalMap: turned.normal, normalScale: new THREE.Vector2(0.1, 0.1), anisotropy: 0.9, anisotropyMap: turned.direction
+  }), 0.42)
+  const capRim = physical({ color: srgb(0xc2c6ca), roughness: 0.3, metalness: 1 })
+  const railFlat = physical({ color: srgb(0x7b8085), roughness: 0.5, metalness: 0.55, normalMap: brushed, normalScale: new THREE.Vector2(0.12, 0.12), anisotropy: 0.5, anisotropyRotation: Math.PI / 2 })
   const cardSeal = physical({ color: srgb(0xa2a4a3), roughness: 0.7, metalness: 0 })
   const aluminiumSatin = physical({ color: srgb(0xb7bbbe), roughness: 0.3, metalness: 0.8 })
   const orange = lifted(physical({ color: srgb(0xbe5418), roughness: 0.55, metalness: 0, clearcoat: 0.85, clearcoatRoughness: 0.1, specularIntensity: 0.3, specularColor: srgb(0xff9a52), envMapIntensity: 0.5 }), ORANGE_LIFT)
@@ -502,7 +519,7 @@ export function makeMaterials(seed: number): Materials {
     m.polygonOffsetUnits = -2
   }
   return {
-    ceramic, pocket, glass, glassThick, glassSunk, glassCard, aluminium, aluminiumTurned, aluminiumEdge, aluminiumSatin, cardSeal, orange, chrome, railSatin, gap, ink, inkOnOrange, enamel, edge, smoked, chip, waiting, paper, red, keycap, steel, rubber,
+    ceramic, pocket, glass, glassThick, glassSunk, glassCard, aluminium, aluminiumTurned, aluminiumEdge, aluminiumSatin, cardSeal, orange, chrome, railSatin, railFlat, capFace, capRim, gap, ink, inkOnOrange, enamel, edge, smoked, chip, waiting, paper, red, keycap, steel, rubber,
     textures: [grain, brushed, turned.normal, turned.direction]
   }
 }

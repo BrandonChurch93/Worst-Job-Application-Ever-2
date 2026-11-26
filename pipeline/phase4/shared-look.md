@@ -72,11 +72,24 @@ For the owners, not changed by me:
 
 Tests that held a number of the old header: none. MEASURED: `npx vitest run` with only `HEADER` changed, 1387 of 1387 passed, no test file touched.
 
+## Item C: the progress rail and its buttons
+
+MEASURED on three approved pages (`step2-rest`, `step1-fire`, `decision`), a column 13 px wide across the rail between two caps, the mean grey of each row: a dark line (47 to 94), one lit row (127 to 136), a flat interior of 100 to 121 on all three, a dark line (48 to 85), then the page's lit lip (224 to 232). The build before: an interior of 147 to 184 that rises to the middle, a round pipe.
+
+Built:
+
+- The rail is a flat strip with a bevel 1.3 px wide at each edge (`RAIL_BEVEL`, `RAIL_RISE` 0.8, `CROWN_RAIL` 1.2 to 0.1) of a darker satin, `railFlat` 0x7b8085. `railSatin` is left as it was for step 4's health bar, which clones it.
+- The steel caps: the rim is a rolled edge and a cone that faces outward (`BEAD` 1.5, `CONE` 1.3), so the side toward the studio's lamp is light and the side away from it is grey, of `capRim` 0xc2c6ca, roughness 0.3; a V groove; the face of `capFace` 0x7c8085, roughness 0.2, with the fan of light reaching further across the brushing (`stretched(..., 0.42)`; the other turned faces keep 0.26). `aluminiumEdge` and `aluminiumTurned` are left as they were for the dial, the crank and the boss.
+- The turned rings (`turnedMaps`, the one texture all turned faces share, 256 by 256 px twice, 0.5 MB, size unchanged): each band of 7 texels is worn deeper on one side than the other and sits a little off centre. No texture added.
+- Numerals on metal (`metal:ink` in `type.ts`) are stamped: a wall that leans into the face with a light lip (lean 0 to 0.55, a second ring of 0xc6cace).
+- The collar: a thin ring of `capRim` round the current cap, 2.2 px wide with 1.3 px of dark clearance, made by the rail and keyed by where the current cap stands. It lies at the rail's height, so it shows where it crosses the rail and is under the page elsewhere: the rail's outline in the layout does not grow. DECISION: the approved pictures show no collar; it is built as the order of work words it, set into the rail.
+- Declined as told: no new state for finished steps.
+
 ## Looks counted (tuning looks; baseline and three-panel pictures not counted)
 
 | Part | Used | Of |
 | --- | --- | --- |
-| shell | 16 | 40 |
+| shell | 25 | 40 |
 | type | 2 | 40 |
 | light-engine | 0 | 40 |
 | cursor-body | 0 | 40 |
