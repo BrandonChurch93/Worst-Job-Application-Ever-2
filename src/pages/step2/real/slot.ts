@@ -12,9 +12,9 @@ import { clamp01, fuse, lathe, loft, mesh, moved, noise, normalsFrom, rise, smoo
 
 export const SLOT_LOOK = {
   page: { cabinet: 46, knob: 28, payout: 14, mount: 30, arm: 12 },
-  top: 58, corner: 12, roundOver: 3, band: 12.4, step: 0.9, ledge: 2.4, chamfer: 4.6, chamferDrop: 3.6, gasket: 2.6, glass: 54.2, floor: 18,
-  drum: { r: 62, crest: 50, w: 88, lip: 2.2, flat: 0.4, fall: 4.4 },
-  line: { z: 53.1, r: 0.6, pin: 1.9, glow: 0.06 },
+  top: 58, corner: 16, window: 13, roundOver: 3, band: 12.4, step: 0.9, ledge: 2.4, chamfer: 4.6, chamferDrop: 3.6, gasket: 2.6, glass: 54.2, floor: 18,
+  drum: { r: 62, crest: 50, w: 97, lip: 2.2, flat: 0.4, dark: 0.62, full: 0.88 },
+  line: { z: 53.3, r: 0.85, pin: 1.9, glow: 0.1 },
   sheen: { top: 0.06, streak: 0.034, order: 800001 },
   lever: { rod: 5.6, pivotX: 11, pivotZ: 28, barrel: 9, barrelW: 19, collar: 4, foot: -2, head: 22, ferrule: 7, ferruleAt: 27 },
   coin: { r: 13, t: 4, teeth: 64, most: 16, flight: 14, tilt: 1.05 },
@@ -117,7 +117,7 @@ function own(): Own {
   return made
 }
 
-const ring = (w: number, h: number, r: number, inset: number, z: number, out: number, up: number): LoftRing => ({ o: roundedRect(w - inset * 2, h - inset * 2, Math.max(0.8, r - inset), 10), z, out, up })
+const ring = (w: number, h: number, r: number, inset: number, z: number, out: number, up: number): LoftRing => ({ o: roundedRect(w - inset * 2, h - inset * 2, Math.max(0.8, inset >= L.band ? L.window - (inset - L.band) : r - inset), 10), z, out, up })
 
 // The frame's upward faces are painted a little lighter toward the key and darker away from it, more from top to bottom than across: a satin band this narrow shows the room as one slow gradient.
 export function fanned(g: THREE.BufferGeometry, reach: number): THREE.BufferGeometry {
@@ -188,7 +188,7 @@ function cabinet(): THREE.Group {
     const n = all.getAttribute('normal')
     const colour = new Float32Array(n.count * 3)
     for (let i = 0; i < n.count; i++) {
-      const k = 0.05 + 0.95 * Math.pow(clamp01(n.getZ(i)), d.fall)
+      const k = 0.04 + 0.96 * smooth((n.getZ(i) - d.dark) / (d.full - d.dark))
       colour[i * 3] = k
       colour[i * 3 + 1] = k
       colour[i * 3 + 2] = k
