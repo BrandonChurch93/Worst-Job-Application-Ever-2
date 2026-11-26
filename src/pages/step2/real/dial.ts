@@ -365,6 +365,7 @@ function lacquered(shared: THREE.MeshPhysicalMaterial): THREE.MeshPhysicalMateri
   m.specularColor.setScalar(1)
   m.envMapIntensity = B.hubEnv
   m.color.multiplyScalar(HUB_ORANGE_LIFT)
+  m.normalScale = m.normalScale.clone().multiplyScalar(B.hubGrain)
   m.name = 'dial-hub'
   return m
 }
