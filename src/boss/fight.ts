@@ -112,7 +112,7 @@ function wander(f: Fight): { x: number; y: number; speed: number } {
   if (f.phase === 0) return { x: HOME.x - 50 + 60 * Math.sin(f.clock * 0.6), y: HOME.y - 10 + 80 * Math.sin(f.clock * 0.5 + 2.9), speed: 130 }
   if (f.phase === 1) return { x: HOME.x, y: HOME.y, speed: 170 }
   if (f.expired < 1.5) return { x: HOME.x, y: HOME.y + 24, speed: 170 }
-  return { x: HOME.x + 10 + 40 * Math.sin(f.clock * 0.9), y: HOME.y + 10 + 100 * Math.sin(f.clock * 0.75), speed: 210 }
+  return { x: HOME.x - 60 + 30 * Math.sin(f.clock * 0.9), y: HOME.y + 10 + 100 * Math.sin(f.clock * 0.75), speed: 210 }
 }
 
 function walk(f: Fight, dt: number): void {

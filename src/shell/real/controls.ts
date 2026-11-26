@@ -211,6 +211,39 @@ function socket(s: Shape): THREE.Object3D {
   return root
 }
 
+export const WAITING_TOP = 2.4
+const WAITING_EDGE = 2.2
+const WAITING_CROWN = 0.3
+const LIP_WIDE = 3.5
+const LIP_DEEP = 2.7
+
+export const isWaiting = (s: Shape | undefined): boolean => !!s && s.role === 'button' && s.tone === 'metal' && s.part === 'shell'
+
+// The socket of a button that waits: no bezel stands proud. The page rolls over into the socket as a wide soft lip, lit on the side that faces the key and dark on the other, down to a narrow dark gap round the cap.
+function waitingSocket(s: Shape): THREE.Object3D {
+  const m = materials()
+  const root = new THREE.Group()
+  const surface = -s.z0
+  const points: ProfilePoint[] = [[-0.6, surface - 0.4, true], [-0.6, surface, true]]
+  for (let i = 1; i <= 8; i++) {
+    const t = i / 8
+    points.push([-0.6 + (LIP_WIDE + 0.6) * t, surface - LIP_DEEP * (1 - Math.cos((t * Math.PI) / 2)) ** 0.8])
+  }
+  points.push([LIP_WIDE, 0.2, true], [LIP_WIDE, -0.4, true])
+  const lip = mesh(shared(`waitingLip:${dims(s)}`, () => sweep(outlineOf(s, 0, 16), profile(points), false)), m.socketLip, false)
+  root.add(lip)
+  root.add(mesh(shared(`waitingFloor:${dims(s)}`, () => sweep(outlineOf(s, LIP_WIDE - 0.3, 16), [{ inset: 0, z: 0.05, out: 0, up: 1 }])), m.cardSeal, false))
+  return root
+}
+
+// The cap of a button that waits: frosted, its top a little under the page, a small soft edge, no gloss.
+function waitingCap(s: Shape): THREE.Object3D {
+  const half = Math.min(s.w, s.h) / 2
+  const top = WAITING_TOP - WAITING_CROWN
+  const points: ProfilePoint[] = [[0, 0, true], [0, top - WAITING_EDGE * 0.8], ...arc(0, top - WAITING_EDGE * 0.8, WAITING_EDGE, WAITING_EDGE * 0.8, 8).slice(1), ...[0.75, 0.5, 0.25, 0.05].map((t): ProfilePoint => [half - (half - WAITING_EDGE) * t, top + WAITING_CROWN * (1 - t * t)])]
+  return mesh(shared(`waitingCap:${dims(s)}`, () => sweep(outlineOf(s, 0, 18), profile(points))), materials().frosted, false)
+}
+
 const BUTTON_SHOULDER = 8
 const BUTTON_CROWN = 0.9
 const CHIP_SHADE = 9
@@ -285,6 +318,7 @@ function chipPocket(s: Shape): THREE.Mesh {
 
 function capsule(s: Shape, round: number): THREE.Object3D {
   const h = s.z1 - s.z0
+  if (isWaiting(s)) return waitingCap(s)
   if (s.role !== 'chip') {
     // A button is moulded plastic: a straight wall, a wide soft shoulder and a top that is crowned by a hair, so the studio's light lies along its upper edge.
     const half = Math.min(s.w, s.h) / 2
@@ -450,7 +484,8 @@ export const controls: PartMaker = {
       return f ? `focus:${dims(f)}` : `plate:${dims(s)}:${s.tone}`
     }
     if (s.id === 'field-caret') return `caret:${dims(s)}`
-    const base = `${s.role ?? 'plate'}:${dims(s)}:${s.tone}:${s.pocket ? 1 : 0}:${s.id.endsWith('-zone') ? 1 : 0}`
+    const waits = s.role === 'buttonSocket' ? isWaiting(ctx.byId.get(`${s.id}-cap`)) : isWaiting(s)
+    const base = `${s.role ?? 'plate'}:${dims(s)}:${s.tone}:${s.pocket ? 1 : 0}:${s.id.endsWith('-zone') ? 1 : 0}${waits ? ':waits' : ''}`
     if (s.role !== 'progressRail') return base
     const cur = currentOf(ctx)
     return cur ? `${base}:${q(cur.x - s.x)}:${q(cur.y - s.y)}:${q(cur.w)}` : base
@@ -467,7 +502,7 @@ export const controls: PartMaker = {
       case 'progressButton': return progressButton(s, false)
       case 'progressButtonCurrent': return progressButton(s, true)
       case 'field': return s.pocket ? field(s) : plate(s)
-      case 'buttonSocket': return s.pocket ? socket(s) : plate(s)
+      case 'buttonSocket': return !s.pocket ? plate(s) : isWaiting(ctx.byId.get(`${s.id}-cap`)) ? waitingSocket(s) : socket(s)
       case 'button': case 'heroButton': return capsule(s, 6.5)
       case 'chip': return capsule(s, 3.5)
       case 'card': return card(s)
