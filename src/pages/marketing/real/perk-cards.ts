@@ -35,7 +35,7 @@ export function cardGlass(): THREE.MeshPhysicalMaterial {
   return glassMade
 }
 
-export const GLASS = { colour: 0xc4cecb, shade: 0.62, exit: 0.72, glint: 0.36, wash: 0.13, warm: 0.07, lean: 0.03, caster: 6.4, least: 0.4, most: 4.4, through: 0.8, grain: 0.024, mostSide: 0.7, fade: [3, 13] as [number, number], bend: 7, topShort: 0.3, wall: 2.4, wallUp: 0.85 }
+export const GLASS = { colour: 0xc4cecb, shade: 0.62, exit: 0.72, glint: 0.36, wash: 0.13, warm: 0.07, lean: 0.03, caster: 6.4, least: 0.4, most: 4.4, through: 0.8, grain: 0.024, mostSide: 0.7, fade: [3, 13] as [number, number], bend: 7, topShort: 0.3, wall: 2.4, wallUp: 0.85, spark: 0.5, sparkAt: [8.6, 3.8, 0.8] as [number, number, number] }
 
 const keyFlat = Math.hypot(look.key.direction[0], look.key.direction[1]) || 1
 const KX = look.key.direction[0] / keyFlat
@@ -51,10 +51,11 @@ export const groundEdge = (s: Shape): number => SLAB.frame + SLAB.round + bevelO
 // The side toward the light: a bright hairline on the rounded top of the wall, then the edge's own shade on the page under the slab, seen through the glass:
 // a thin dark line, a paler line where the bevel meets the face, and a soft shade that is longer the more the edge faces the light.
 // The far side: the light leaves there, so the face brightens toward the edge, dips, and ends in a white rim.
+// In the corner that is turned full away from the light the two edges throw their light to one place: a short bright bow a little way in.
 const NEAR: [number, number][] = [[0, -0.9], [0.9, -0.9], [1.7, 0.8], [3.6, 1], [5.4, 0.92], [6.8, 0.74], [8.4, 0.9], [10, 0.96], [12.3, 0.94]]
 // The edge that lies across the light's way, the top one, read off the approved card too: its dark line is thinner, a pale line follows it, and its shade is lighter and shorter.
 const NEAR_TOP: [number, number][] = [[0, -0.6], [0.9, -0.6], [1.7, 0.9], [3.6, 1.02], [5.2, 1.2], [6.6, 0.72], [8.2, 0.3], [10, 0.62], [11.9, 0.74], [12.3, 0.74]]
-const FAR: [number, number][] = [[0, 1.2], [1.2, 1.15], [2.2, 0.8], [3.2, 0.45], [4.5, 0.18], [6, 0.26], [8, 0.38], [10, 0.38], [12, 0.34], [14, 0.27], [16, 0.19], [18, 0.14], [20, 0.09], [24, 0.04], [28, 0]]
+const FAR: [number, number][] = [[0, 1.2], [1.8, 1.2], [2.8, 0.85], [3.6, 0.45], [4.5, 0.18], [6, 0.26], [8, 0.38], [10, 0.38], [12, 0.34], [14, 0.27], [16, 0.19], [18, 0.14], [20, 0.09], [24, 0.04], [28, 0]]
 
 const along = (table: [number, number][], d: number): number => {
   if (d <= table[0]![0]) return table[0]![1]
@@ -149,7 +150,9 @@ function face(s: Shape, half: number, flip: number, open: boolean): THREE.Buffer
       const ox = outline.nx[i]!
       const oy = outline.ny[i]!
       const side = ox * KX + flip * oy * KY
-      const v = r === 0 && side > 0 ? 0.9 : edgeLight(dd, side, reach, oy * oy) * (r < 2 && side < 0 ? 1 + (G.wall - 1) * Math.min(1, -side / G.mostSide) : 1)
+      const turned = Math.max(0, (-side - G.sparkAt[2]) / (1 - G.sparkAt[2]))
+      const spark = 1 + G.spark * turned * turned * Math.max(0, 1 - ((dd - G.sparkAt[0]) / G.sparkAt[1]) ** 2)
+      const v = r === 0 && side > 0 ? 0.9 : edgeLight(dd, side, reach, oy * oy) * spark * (r < 2 && side < 0 ? 1 + (G.wall - 1) * Math.min(1, -side / G.mostSide) : 1)
       const out = (up / l) * (r < 2 && side < 0 ? ring.lean * (1 - G.wallUp * Math.min(1, -side / G.mostSide)) : ring.lean)
       const rise = Math.sqrt(Math.max(0, 1 - out * out))
       const x = Math.max(-(wide - ring.d), Math.min(wide - ring.d, outline.x[i]! - ring.d * ox))
