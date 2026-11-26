@@ -1,35 +1,35 @@
 {
   "folder": "decision-fix",
-  "pushed": "2026-11-26T06:27:18.258Z",
-  "commit": "e3a35125bdb79cfe91e37611fe4a01277d29fe5d",
+  "pushed": "2026-11-26T07:21:37.718Z",
+  "commit": "db83a77cc6f335220db98861671039b04f3031c5",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Step 5 key beside the approved image: mark low right in the sheet, stamp and flat cursor right of it, panel and letter tops on one line",
-      "time": "2026-11-26T06:27:16.381Z",
+      "caption": "Step 5 key beside the approved image at db83a77c: the mark as wide as approved's, dense ink, the block narrower and at approved's place, the flat cursor right of it",
+      "time": "2026-11-26T07:21:35.648Z",
       "by": "decision-fix",
       "from": "out/work/compare/compare-decision.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "The stamp's hit, 12 frames: large and high, the fall, contact with the page jump and lifted corners, one rebound frame, the hold",
-      "time": "2026-11-26T06:27:16.613Z",
+      "caption": "The release, 6.37 to 7.03 s: the block shakes, the flat arrow is thrown clear, the block is set down, the arrow comes down swaying with its shade closing on it",
+      "time": "2026-11-26T07:21:35.874Z",
+      "by": "decision-fix",
+      "from": "out/work/release.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "The hit, 12 frames: the fall, one contact frame, three frames of rebound with the letter's corners lifted, the settle",
+      "time": "2026-11-26T07:21:36.120Z",
       "by": "decision-fix",
       "from": "out/work/sheets/sheet-motion-stamp_decision-preview-draft.jpg"
     },
     {
-      "file": "look-3.jpg",
-      "caption": "The lift toward the eye: the wet word uncovered, the arrow carried on the block's corner and set down right of it",
-      "time": "2026-11-26T06:27:16.846Z",
-      "by": "decision-fix",
-      "from": "out/work/fling-lift.jpg"
-    },
-    {
       "file": "look-4.jpg",
-      "caption": "Step 5 at rest: the wait panel, lower and taller, the counter's glare softened",
-      "time": "2026-11-26T06:27:17.110Z",
+      "caption": "For the needs line: the flat cursor in the approved image (left) and in this build (right) at the same scale",
+      "time": "2026-11-26T07:21:36.359Z",
       "by": "decision-fix",
-      "from": "out/work/stills/still-rest-step5-hd-draft.png"
+      "from": "out/work/flat-cursor-crops.jpg"
     }
   ]
 }
