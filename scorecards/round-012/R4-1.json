@@ -1,0 +1,72 @@
+{
+ "critic": "R4",
+ "score": 6,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "A: motion, one sheet of frames spread across each of the page's ten beats",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "upper playfield of the lower level, top-left region, 1:22.37 to 1:23.80",
+   "what": "the clear ball takes about 1.4 s to wander from the top centre to the left of the bumpers. Across five frames it moves a short, even distance, with no acceleration down the slope and no clear bounce off anything. It reads as being moved by hand, not as steel loose on an incline",
+   "fix": "let gravity act: the ball should speed up downhill on every frame and only slow or turn at a contact. Cut the time spent in this region to about 0.5 s, or give it a visible bumper or wall hit that explains why it changes direction"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "spinner and gold post, centre of the upper level, 1:19.07 to 1:19.80",
+   "what": "the ball sits almost exactly in place beside the post for about 0.7 s, mid-table and on a slope. It looks parked or hovering, not trapped",
+   "fix": "either show a real capture (a scoop, a magnet with a glow, or the post caging it) or keep it rolling. A ball on an open slope should never hold still"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "whole-machine wide shot, 1:12.07 to 1:14.97",
+   "what": "close to 3 s of nearly identical frames. The camera, the lamps and the machine barely change, and no ball or action shows. The arrival lands, but the hold after it is far longer than needed to see what happened and reads as frozen",
+   "fix": "trim the static hold to about 1 to 1.5 s, or fill it with visible life: lamp chases, the plunger winding up, the ball rolling into the shooter lane"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-06.png",
+   "where": "multiball, 1:27.90 to 1:31.07",
+   "what": "three balls come out of the coffee-cup kicker and are on the table at 1:28.53 to 1:29.17. By the wide shot at 1:29.80 only one ball is visible, and there is no drain, lock or exit to explain where the others went. Without a caption you cannot tell what happened",
+   "fix": "show the extra balls draining, locking or leaving, or keep them visible through the wide shot until they are accounted for"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-09.png",
+   "where": "the whole sheet, 1:41.00 to 1:43.97",
+   "what": "the camera changes between top-down, low perspective and tight close-up about every 0.3 to 0.5 s (1:41.27 top, 1:41.53 perspective, 1:41.80 close, 1:42.63 perspective, 1:43.70 top). The ball's path cannot be followed between the views, and the flipper hit in the close-ups loses its link to the table",
+   "fix": "use fewer views and hold each one longer (at least about 1 s), easing between them, so a single hit and its result play out in one framing"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "dive into the machine, 1:15.27 and 1:16.63 to 1:17.43",
+   "what": "at 1:15.27 the camera passes through, or right against, a cabinet wall, so the frame is a flat grey slab. At 1:17.43 the frame is rolled and heavily blurred. The move reads as a whip, not a weighted, eased camera, and it is hard to tell where you are",
+   "fix": "route the camera around the cabinet geometry, cap the roll, and ease the speed down before the top-down settle at 1:17.70 so the move has mass"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-10.png",
+   "where": "the new page after the machine, 1:45.37 to 1:45.80",
+   "what": "the page arrives dark and then changes to light by a brightness fade. That is a soft, weightless change, not a slab settling, and no landing or stop is visible",
+   "fix": "land the page as a slab that stops dead, with a small settle, and bring the light up as a lamp switching on (fast, with a slight overshoot), not a linear fade"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01.png",
+   "where": "end of the page beat, 1:10.60 to 1:10.97",
+   "what": "the camera tilts or pans down along the tube toward the machine. On the pages the camera should only move straight in and out",
+   "fix": "make it a straight pull-out, or a cut or page-turn into the machine, rather than a vertical pan on the page"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-10.png",
+   "where": "the Continue press, 1:48.07 to 1:48.50",
+   "what": "at this frame spacing the orange button shows no visible travel or spring-back, and the page turn at 1:48.97 is too dark and blurred to judge whether the slab has mass",
+   "fix": "give the key a clear depress (2 to 3 px with the shadow shrinking) and a spring-back, then a short wind-up before the slab turn"
+  }
+ ]
+}

@@ -20,7 +20,7 @@
      "model": "kimi_k3",
      "answer": "d",
      "confidence": 80,
-     "why": "The image is a step-by-step wizard UI screen (\"The Worst Job Application Ever — Step 3\") with instructional copy, numbered progress buttons, and a skeuomorphic 3D gauge, which reads as an interactive web 3D demo or app screen rather than a photograph, cinematic frame, or standalone stock render.",
+     "why": "The image is a step-by-step wizard UI screen (\"The Worst Job Application Ever - Step 3\") with instructional copy, numbered progress buttons, and a skeuomorphic 3D gauge, which reads as an interactive web 3D demo or app screen rather than a photograph, cinematic frame, or standalone stock render.",
      "at": "09:39Z"
     },
     {
@@ -36,7 +36,7 @@
      "model": "claude_opus_5_5",
      "answer": "d",
      "confidence": 85,
-     "why": "It's clearly a web app UI (HTML text overlays, step-progress buttons, flat paper texture background) with simple, somewhat stylized 3D/skeuomorphic elements — typical of a web 3D demo rather than a photo, film frame, or stock render.",
+     "why": "It's clearly a web app UI (HTML text overlays, step-progress buttons, flat paper texture background) with simple, somewhat stylized 3D/skeuomorphic elements - typical of a web 3D demo rather than a photo, film frame, or stock render.",
      "at": "09:39Z"
     },
     {
@@ -52,7 +52,7 @@
      "model": "kimi_k3",
      "answer": "d",
      "confidence": 70,
-     "why": "Most influential factor: it's clearly an app UI screen (\"The Worst Job Application Ever — Step 3\") with flat web typography and layout, where the joystick and progress buttons are stylized skeuomorphic 3D UI widgets rather than scene-scale cinematic renders — characteristic of a web 3D demo / app rather than a film frame, stock product render, or photograph.",
+     "why": "Most influential factor: it's clearly an app UI screen (\"The Worst Job Application Ever - Step 3\") with flat web typography and layout, where the joystick and progress buttons are stylized skeuomorphic 3D UI widgets rather than scene-scale cinematic renders - characteristic of a web 3D demo / app rather than a film frame, stock product render, or photograph.",
      "at": "09:40Z"
     }
    ],
@@ -146,7 +146,7 @@
      "model": "kimi_k3",
      "answer": "c",
      "confidence": 75,
-     "why": "The one thing that most influenced my answer: the perfectly uniform CGI lighting and clean, simplified geometry/textures (flat marble decals, identical glowing inserts, stylized icon graphics like the magnifying glass and checklist) — it reads as a polished but ordinary 3D product/concept render of a themed pinball table (\"Corporate HQ\", \"Retirement\"), not the gritty detail of a real photographed playfield nor the atmospheric complexity of an AAA cinematic.",
+     "why": "The one thing that most influenced my answer: the perfectly uniform CGI lighting and clean, simplified geometry/textures (flat marble decals, identical glowing inserts, stylized icon graphics like the magnifying glass and checklist) - it reads as a polished but ordinary 3D product/concept render of a themed pinball table (\"Corporate HQ\", \"Retirement\"), not the gritty detail of a real photographed playfield nor the atmospheric complexity of an AAA cinematic.",
      "at": "09:41Z"
     },
     {
@@ -193,7 +193,7 @@
      "model": "kimi_k3",
      "answer": "d",
      "confidence": 75,
-     "why": "Most influential factor: the 2D mouse-cursor sprite floating inside a glass bubble in front of the building — a telltale interactive UI element typical of a WebGL/web 3D demo or low-budget app, which a big-budget film/game cinematic would never composite into a shot. Supporting cues: generic \"Corporate HQ\" signage text, board-game-like floor, and competent but assets-store-level rendering quality.",
+     "why": "Most influential factor: the 2D mouse-cursor sprite floating inside a glass bubble in front of the building - a telltale interactive UI element typical of a WebGL/web 3D demo or low-budget app, which a big-budget film/game cinematic would never composite into a shot. Supporting cues: generic \"Corporate HQ\" signage text, board-game-like floor, and competent but assets-store-level rendering quality.",
      "at": "09:41Z"
     },
     {

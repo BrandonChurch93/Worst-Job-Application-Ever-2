@@ -1,0 +1,128 @@
+{
+ "critic": "R1",
+ "score": 5,
+ "pass": false,
+ "model": "gpt_6_2_sol",
+ "set": "A: the keys `boss-fight` and `boss-down` and the sheet `boss-stages`, whole and in native crops, each beside the approved image",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-A-01-b.png",
+   "where": "right-side boss, also visible in the first three crops of set-A-02-b.png",
+   "what": "The pale multi-hinged legs, broad bright screw trim, uniform dark plates and ladder-like shield mounts give the boss a noticeably different silhouette and surface character. The reference has straighter dark steel arms, an angular solid face frame, heavier polished cannon barrels and a compact side mount.",
+   "fix": "Keep the configured part sizes, but straighten and darken the arms, simplify the visible hinge and shield attachments, rework the angular outer face frame and give the cannon barrels darker bores and more substantial steel collars."
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-01-b.png",
+   "where": "red error tiles across the middle of the page",
+   "what": "The central red tile drops left into the projectile lane and the lowest tile nearly sits on the open socket. The tiles no longer form the staggered group rising toward the boss; the middle tile also tilts the opposite way.",
+   "fix": "Move the middle tile up and right and the bottom tile right and up, and tilt the middle tile to rise to the right. Leave a clear margin around the socket."
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-01-b.png",
+   "where": "paper and cast shadows, especially under the boss and cursor",
+   "what": "The page is cooler and more evenly gray, with more uniform stipple. The boss, raised tiles, progress marker and arrow cast much shorter, weaker shadows, losing the strong upper-left illumination and dark lower-right weight.",
+   "fix": "Warm the paper slightly, replace the uniform stipple with subtler fibrous grain, and extend and deepen the lower-right cast shadows while keeping tight contact shadows and soft outer edges. Do not introduce a window-light band."
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-03-b.png",
+   "where": "paper and cast shadows beneath the scattered machine parts and scorched cap",
+   "what": "The debris and hot orange cap sit in weak gray shadows. The target has hard contact, pronounced soft-ended lower-right shadows and stronger warm highlights, making the pieces look much heavier.",
+   "fix": "Use a more directional upper-left key, darker contact and longer lower-right shadows with falloff. Warm the paper slightly without introducing a light band."
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-01-b.png",
+   "where": "top step rail",
+   "what": "The first two stations are bare, leaving a long empty stretch where the reference has a continuous row of five visible discs.",
+   "fix": "Restore the two left station faces, using residual or matching steel discs if the cannon elements must still be shown in their deployed positions."
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-03-b.png",
+   "where": "top step rail",
+   "what": "Only the last three stations are visible, while the reference retains all five throughout the wreckage state.",
+   "fix": "Restore the two left station faces without removing the detached cannon props from the wreckage."
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-05-b.png",
+   "where": "four-state sheet layout and captions",
+   "what": "All four states sit lower than in the reference, the first three sit noticeably farther left, and the reference's small centered dark captions are entirely absent.",
+   "fix": "Raise the row, center the four state groups at their reference stations, and add back the small regular-weight charcoal caption treatment beneath each state using approved copy."
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-05-b.png",
+   "where": "unfolding and boss states",
+   "what": "The unfolding arms flare as shallow sideways zigzags rather than corner-folded legs. In the boss state they splay less diagonally, and the pale rails, rectangular shoulder geometry, ladder shield mount and prominent screws create a different read from the dark metal reference.",
+   "fix": "In unfolding, fold the corner joints upward and downward along the target diagonals. In boss, carry those diagonals through to dark steel limbs, shape the angular face and side projection, and compact the glass attachment; retain the settled cannon numerals."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "shield and shot crops",
+   "what": "The shield is flat, mint-gray and bottom-lit by the impact, with thin internal straight lines. The target shield looks like translucent tinted glass with a curved bevel and milky reflections, taking the impact on its outward side near mid-height.",
+   "fix": "Use a softer green-gray glass transmission, curved edge refraction and brighter curved rim glints, then put the dart and flash on the outward face near mid-height and re-aim the trail to it."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "boss, shot, verification and bar crops",
+   "what": "The orange cap and red tiles have comparatively flat faces, weak edge highlights and heavier-looking labels. The long fill begins too far left and ends early; the gray channel and checkbox card look hard, less rounded and less layered than the target.",
+   "fix": "Restore richer lacquer highlights, dark socket lips and more dimensional sidewalls, then match the label weight and placement. Indent the bar past its label and carry the orange endpoint right. Give the track and glass card stronger rounded bevel reflections and make the checkbox's inset edge read more clearly."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "arrow and open socket crops",
+   "what": "The arrow's white face is comparatively plain and its cast shadow is compact; the socket looks clean and machined, with a smooth uniform rim and less chipped paper than the target.",
+   "fix": "At the settled arrow size, add a stronger slanted face reflection and dark beveled edge, and lengthen its shadow. Weather the socket's inner lip, vary its edge sheen and bring chipped paper fragments into the adjacent cracks."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04-b.png",
+   "where": "front plate, cannon, shield and side-piece wreckage crops",
+   "what": "The debris looks like clean spare panels and bright linked fittings. In the target, the plates have visibly fractured edges and thicker darker side faces, the legs have duller metallic pins, and the shield is a softly rounded glossy slab with deeper, more refractive breaks.",
+   "fix": "Preserve the configured piece sizes but roughen and chip the exposed plate edges, reduce the bright decorative screw contrast, darken and brush the fittings, and round and deepen the fractured glass bevel with internal reflection at each crack."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04-b.png",
+   "where": "scorched cap and exhausted arrow crops",
+   "what": "The cap's very flat dark patches and pale, smooth smoke read independently of the plastic; the arrow face and edge look unscathed compared with the target's marked lacquer and chipped black outline.",
+   "fix": "Keep the agreed dent and sag. Add blistered orange lacquer, raised soot edges, hot rim glints and more meandering smoke, and add light scattered marks and chips to the arrow without changing its configured size or pose."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03-b.png",
+   "where": "arrow and wreckage placements around the socket",
+   "what": "The arrow is farther left of the orange cap rather than below its left end. The lower left arm sits too far down and the lower left panel sits closer to the socket, weakening the target's spread of debris.",
+   "fix": "Move the sagging arrow to sit under the cap's left end and rebalance the two lower-left pieces toward the target's wider diagonal scatter, leaving clear space around the socket."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04-b.png",
+   "where": "socket, empty progress bar and verification card crops",
+   "what": "The socket rim and the long trough are more uniformly smooth and flat, and the trough starts too far left. The verification frame has a sharper thin ridge rather than the target's thick translucent bevel.",
+   "fix": "Deepen and weather the socket lip, set the long trough farther right and add its rounded dark inset and metallic reflection, and soften the glass bevel with a thicker-looking layered rim and clearer contact shadow."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "resting and breaking-loose states",
+   "what": "The resting cap has a much flatter silhouette and softer rim definition. In breaking loose, the clean lifted cap is less glossy, the gap reads as a neat dark stripe rather than a deep opening, and the cracks are thinner and more evenly dispersed. The lettering reads small and compact across all four buttons.",
+   "fix": "Give the resting state a more distinct nested socket and rolled bright bevel. In breaking loose, build up the bright upper-left cap reflection, deepen the shadowed opening and add irregular paper chips close to the rim. Increase the label's apparent size and match its weight across all four states."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "paper and shadows across all four states",
+   "what": "The sheet is cooler, flatter and more evenly stippled, with notably shorter and softer gray cast shadows, especially around the boss and lifted button.",
+   "fix": "Warm and soften the grain and build progressively longer lower-right shadows from resting through boss, with darker contact and brighter upper-left material glints."
+  }
+ ]
+}
