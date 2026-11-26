@@ -144,7 +144,6 @@ const PAN = { lag: 0.25, in: 0.68, slow: 0.5 }
 const RIDE = { crest: 2.2, foot: 8.5, tip: 2 }
 const SHOT = { door: 13, scoop: 21, ramp: 21, nest: 17, save: 19, lob: 9, lean: 0.3, jets: 0.5, wide: 2.5, low: 7.5, early: 0.3, back: 1 }
 const FACE = { over: 0.94, low: 0.82, turn: 0.9, back: 5, press: 20, hit: 0.5, hold: 0.45, lag: 0.1, snap: 0.02, step: 0.03, wall: 0.6, lens: 0.8 }
-const SHORT: Record<Acting, Acting> = { plain: 'plain', confident: 'plain', nervous: 'nervous', shocked: 'scared', angry: 'nervous', scared: 'scared', proud: 'plain', exhausted: 'exhausted' }
 const SHEET = { along: 0.9, gap: 0.5, press: 0.6, side: 2.6, fly: [0.4, 7.4, 0.6], from: [0.18, 0.76, 0.624], far: 10.2, open: 15 }
 const LEAVE = { seconds: 0.55, in: 1.7, firm: 0.25, back: 5, settle: 0.12, up: 0.3 }
 const LOADER = { land: [0.66, 0.1], away: [-0.5, 0.84, 0.32], go: [1.25, 0.2], short: 0.72, by: 1.8, low: 16, shut: [-0.6, 0.78], alarm: [0.55, 0.45, 0.8] }
@@ -559,7 +558,7 @@ export function makePage(): PageLogic {
     if (b.mode === 'rail' && b.rail === 'highway') b.speed = Math.max(RIDE.crest, Math.min(16, (2 * (railLength(railOf('highway')) - b.s)) / Math.max(0.05, T.highwayEnd - t) - RIDE.crest))
     if (b.mode === 'rail' && b.rail === 'spiral') b.speed = Math.max(RIDE.crest, Math.min(30, (2 * (railLength(railOf('spiral')) - b.s)) / Math.max(0.05, T.spiralEnd - t) - RIDE.foot))
     if (b.mode === 'rail' && b.rail === 'drain') b.speed = s.skipped ? 40 : 13
-    io.cursor.act(SHORT[mood()])
+    io.cursor.act(mood())
     const snap = (squash: number, seconds: number, turn = 0): void => {
       const p = io.cursor.pose()
       if (turn !== 0) {
@@ -639,9 +638,9 @@ export function makePage(): PageLogic {
     const len = Math.hypot(s.face[0]!, s.face[1]!, s.face[2]!) || 1
     const n = [s.face[0]! / len, s.face[1]! / len, s.face[2]! / len]
     s.was = [pose.lean, pose.spin, pose.squash, 1, held ? 1 : 0]
-    const at = berth(pose, pose.lean, pose.spin, pose.squash, n, s.face[3]!, s.time, true)
+    const at = berth(pose, pose.lean, pose.spin, pose.squash, n, s.face[3]!, s.time)
     io.cursor.turn({ x: n[0]!, y: n[1]!, z: n[2]!, back: at.back })
-    io.cursor.place(px(b.x) + at.x, px(b.y) - at.y, px(b.z) + at.z)
+    io.cursor.place(px(b.x), px(b.y), px(b.z) - 1)
   }
 
   const logic: PageLogic = {
