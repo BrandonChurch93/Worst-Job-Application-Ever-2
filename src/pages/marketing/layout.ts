@@ -137,7 +137,7 @@ function tickerNode(): LayoutNode {
   const at = { part: 'type', on: TICKER.tape }
   const items = m.ticker.map((_, i) => text(`ticker-${i}`, `copy:marketing.ticker.${i}`, T.tape, TICKER.x + TICKER.pad, y, { ...at, states: [tapeStates(i)] }))
   items.push(text('ticker-after', 'copy:marketing.tickerAfterRejection', T.tape, TICKER.x + TICKER.pad, y, { ...at, states: ['tape-after'] }))
-  return node('ticker-window', 'tickerWindow', [TICKER.x, TICKER.y, TICKER.w, TICKER.h], { part: 'ticker', shape: 'none', children: items })
+  return node('ticker-window', 'tickerWindow', [TICKER.x, TICKER.y, TICKER.w, TICKER.h], { part: 'ticker', shape: 'capsule', height: TICKER.floor, tone: 'pocket', children: items })
 }
 
 function perks(y: number): Section {
