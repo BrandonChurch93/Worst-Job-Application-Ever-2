@@ -1,0 +1,39 @@
+{
+  "what": {
+    "still": {
+      "page": "step1",
+      "beat": "step1.tug",
+      "at": 0.5,
+      "camera": "film",
+      "tier": "final"
+    }
+  },
+  "engineHash": "f53260b07e37d041",
+  "sharedHash": "dd95c22f49f6a5b3",
+  "pageHashes": {
+    "step1": "263044f80dcca6af"
+  },
+  "format": "hd",
+  "tier": "final",
+  "assets": "full",
+  "diagnostic": "beauty",
+  "browser": "147.0.7727.15",
+  "machine": {
+    "host": "space-sandbox",
+    "cores": 2,
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.90GHz",
+    "memoryMb": 7958,
+    "platform": "linux 6.1.155",
+    "node": "v20.20.2"
+  },
+  "seconds": 119.27,
+  "invalidValues": 0,
+  "standIns": [],
+  "counts": {
+    "triangles": 666485,
+    "drawCalls": 300
+  },
+  "problems": [],
+  "sha256": "23425b95618915a62966235327369249742551bfff82943b2d21e3e67809c8ba",
+  "keptFrom": "out/work/stills/key-step1-tug-hd-final.png"
+}
