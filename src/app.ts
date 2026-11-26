@@ -43,6 +43,7 @@ export class App {
   assets: AssetSet = 'web'
   diagnostic = 'beauty'
   private shown: { frame: Frame; page: PageLogic | null; pose: CameraPose } | null = null
+  private lens = { focus: 0, aperture: 0 }
   private marks: ViewEvent[] = []
   private level: QualityId | null = null
   private hidFine = false
@@ -208,6 +209,8 @@ export class App {
     c.aspect = width / height
     c.near = Math.max(4, d - 1500)
     c.far = d + 3000
+    this.lens.focus = pose.focus ?? d
+    this.lens.aperture = pose.aperture ?? 0
     c.position.set(...pose.eye)
     c.up.set(...(pose.up ?? [0, 1, 0]))
     c.lookAt(...pose.target)
@@ -254,7 +257,7 @@ export class App {
   }
 
   shot(pose?: (shutter: number) => void): Shot {
-    return { scene: this.view.scene, camera: this.camera, rig: this.rig, pose }
+    return { scene: this.view.scene, camera: this.camera, rig: this.rig, pose, lens: this.level === 'low' ? null : this.lens }
   }
 
   private note(unit: string): void {

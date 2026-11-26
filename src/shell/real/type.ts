@@ -439,15 +439,16 @@ interface Member { hold: THREE.Object3D; proxy: THREE.Mesh; data: RunData; first
 const ONE = new THREE.Vector3(1, 1, 1)
 const placing = new THREE.Matrix4()
 
-// All the runs of one page that share a setting, as one mesh and one draw call. It lies in the page's own space beside the runs.
+// The runs of one band of a page that share a setting, as one mesh and one draw call. It lies in the page's own space beside the runs.
+// A band is one picture's height of the page, so a camera that sees one screen draws the type of that screen and not of the whole page.
 // Each run keeps an empty holder that the view places, shows and hides; the sheet reads those holders just before it is drawn and sets itself again only when a run came or went, and where a run moved.
 export class Sheet extends THREE.Mesh<THREE.BufferGeometry, THREE.MeshPhysicalMaterial> {
   members: Member[] = []
   private set: Member[] = []
 
-  constructor(material: THREE.MeshPhysicalMaterial) {
+  constructor(material: THREE.MeshPhysicalMaterial, readonly key: string) {
     super(new THREE.BufferGeometry(), material)
-    this.frustumCulled = false
+    this.frustumCulled = true
     this.receiveShadow = true
     this.castShadow = false
     this.visible = false
@@ -485,6 +486,7 @@ export class Sheet extends THREE.Mesh<THREE.BufferGeometry, THREE.MeshPhysicalMa
     }
     if (!moved) return
     for (const name of ['position', 'normal', 'wjaRing', 'uv']) this.geometry.getAttribute(name).needsUpdate = true
+    this.geometry.boundingSphere = null
   }
 
   private build(live: Member[]): void {
@@ -515,6 +517,7 @@ export class Sheet extends THREE.Mesh<THREE.BufferGeometry, THREE.MeshPhysicalMa
       this.bake(m)
       v += m.data.position.length / 3
     }
+    this.geometry.boundingSphere = null
     this.set = live
   }
 
@@ -559,17 +562,22 @@ export class Sheet extends THREE.Mesh<THREE.BufferGeometry, THREE.MeshPhysicalMa
 
 const sheets = new WeakMap<THREE.Object3D, Map<string, Sheet>>()
 
+// The page's top edge stands at BAND_TOP and a band is BAND tall, in page pixels.
+const BAND_TOP = 540
+const BAND = 1080
+
 function join(m: Member, style: string, page: THREE.Object3D): void {
   let of = sheets.get(page)
   if (!of) sheets.set(page, (of = new Map()))
-  let sheet = of.get(style)
-  if (!sheet) of.set(style, (sheet = new Sheet(kit(style).opaque)))
+  const key = `${style}|${Math.floor((BAND_TOP - m.hold.position.y) / BAND)}`
+  let sheet = of.get(key)
+  if (!sheet) of.set(key, (sheet = new Sheet(kit(style).opaque, key)))
   if (sheet.parent !== page) page.add(sheet)
   sheet.members.push(m)
   m.sheet = sheet
 }
 
-function leave(m: Member, style: string): void {
+function leave(m: Member): void {
   const sheet = m.sheet
   if (!sheet) return
   m.sheet = null
@@ -577,7 +585,7 @@ function leave(m: Member, style: string): void {
   if (sheet.members.length > 0) return
   const page = sheet.parent
   if (page) {
-    sheets.get(page)?.delete(style)
+    sheets.get(page)?.delete(sheet.key)
     page.remove(sheet)
   }
   sheet.geometry.dispose()
@@ -639,7 +647,7 @@ export const type: PartMaker = {
       ;(o as THREE.Mesh).geometry.dispose()
       return
     }
-    leave(held.member, held.style)
+    leave(held.member)
     held.member.proxy.geometry.dispose()
   }
 }
