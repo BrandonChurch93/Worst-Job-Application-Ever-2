@@ -1,66 +1,62 @@
 import * as THREE from 'three'
 import { studio } from '../../../post/studio'
 import type { PartMaker } from '../../../real/types'
-import { materials } from '../../../shell/materials'
-import { arc, outlineOf, profile, sweep, type ProfilePoint } from '../../../shell/solids'
+import { outlineOf, profile, sweep } from '../../../shell/solids'
 import type { Shape } from '../../../stage/types'
 import { dims, mesh, q, shared, srgb } from './careers-solids'
+import { cardGlass, GLASS, glassOptions, groundEdge, SLAB, slabGeometry } from './perk-cards'
 
-export const TICKER_LOOK = { bezel: 3.2, proud: 0.9, glass: 1.6, pane: 0.9, glow: 0.3 }
+export const TICKER_LOOK = { clear: 0.1, wedge: 4.4, caster: 2.6, dot: 0x3c4043 }
 
 let tapeMade: THREE.MeshPhysicalMaterial | null = null
 let paneMade: THREE.MeshPhysicalMaterial | null = null
 let dotMade: THREE.MeshPhysicalMaterial | null = null
-let wallMade: THREE.MeshPhysicalMaterial | null = null
 
-// The tape is thin paper with a lamp behind it: it gives off a little warm light of its own, evenly along its length, as a light box does.
-const tape = (): THREE.MeshPhysicalMaterial =>
-  (tapeMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xefe9dc), roughness: 0.88, metalness: 0, specularIntensity: 0.2, emissive: srgb(0xf2e2c4), emissiveIntensity: TICKER_LOOK.glow })))
+// The tape runs in a shallow channel under the strip. It is the same frosted stuff as the strip, so the two read as one slab with the words inside it.
+const tape = (): THREE.MeshPhysicalMaterial => (tapeMade ??= studio(new THREE.MeshPhysicalMaterial({ ...glassOptions(), vertexColors: false, clearcoat: 0, roughness: 0.6 })))
 
-// The pane over the window: clear glass, seen only by what it reflects and by a faint green in its body.
+// The polished top of the strip over the channel: clear, seen by what it reflects and by a little of the glass's own colour.
 const pane = (): THREE.MeshPhysicalMaterial =>
-  (paneMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xc9d6d2), roughness: 0.12, metalness: 0, transparent: true, opacity: 0.16, clearcoat: 1, clearcoatRoughness: 0.08, specularIntensity: 1, depthWrite: false })))
+  (paneMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(GLASS.colour), roughness: 0.3, metalness: 0, transparent: true, opacity: TICKER_LOOK.clear, clearcoat: 0.6, clearcoatRoughness: 0.22, specularIntensity: 0.6, depthWrite: false })))
 
-const dot = (): THREE.MeshPhysicalMaterial => (dotMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xb8470a), roughness: 0.6, metalness: 0 })))
-const wall = (): THREE.MeshPhysicalMaterial => (wallMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x3a3b3c), roughness: 0.6, metalness: 0.4 })))
+const dot = (): THREE.MeshPhysicalMaterial => (dotMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(TICKER_LOOK.dot), roughness: 0.7, metalness: 0 })))
 
-// The window: a polished bezel at the mouth of the cut, a dark sleeve down to the tape, and a pane of glass let into the bezel.
-function window(s: Shape): THREE.Object3D {
-  const m = materials()
-  const L = TICKER_LOOK
+// The strip: the cards' slab lying on the page, its ground edge all round, hollow over the channel the tape runs in.
+// Its shadow on the page is thrown by a wedge under the ground edge, which is lower than the light all the way in, so none falls on the tape.
+function strip(s: Shape): THREE.Object3D {
+  const thick = s.z1 - s.z0
   const root = new THREE.Group()
-  const depth = -s.z0
-  const top = depth + L.proud
-  const lip: ProfilePoint[] = [[-1.4, depth - 0.3, true], [-1.4, depth + 0.1], ...arc(-1.4, depth + 0.1, 1.3, L.proud - 0.1, 5).slice(1), [L.bezel - 1.2, top], [L.bezel - 0.3, top - 0.6], [L.bezel, top - 1.6, true]]
-  root.add(mesh(shared(`tickerBezel:${dims(s)}:${q(depth)}`, () => sweep(outlineOf(s, 0, 20), profile(lip), false)), m.chrome))
-  const sleeve: ProfilePoint[] = [[L.bezel, top - 1.6, true], [L.bezel + 0.4, 0.2, true], [L.bezel + 1.6, 0.2, true]]
-  const liner = mesh(shared(`tickerSleeve:${dims(s)}:${q(depth)}`, () => sweep(outlineOf(s, 0, 20), profile(sleeve), false)), wall(), false)
-  root.add(liner)
-  const glassTop = depth - 0.2
-  const sheet: ProfilePoint[] = [[L.bezel - 0.1, glassTop - L.glass, true], [L.bezel - 0.1, glassTop - 0.5], ...arc(L.bezel - 0.1, glassTop - 0.5, 0.6, 0.5, 3).slice(1)]
-  const glass = mesh(shared(`tickerPane:${dims(s)}:${q(depth)}`, () => sweep(outlineOf(s, 0, 20), profile(sheet))), pane(), false, false)
-  glass.userData.order = true
-  glass.renderOrder = 880000
-  root.add(glass)
+  const rim = mesh(shared(`tickerRim:${dims(s)}:${q(thick)}`, () => slabGeometry(s, thick, true)), cardGlass(), false)
+  rim.position.z = thick / 2
+  root.add(rim)
+  const inset = groundEdge(s) - 0.4
+  const top = mesh(shared(`tickerPane:${dims(s)}:${q(thick)}`, () => sweep(outlineOf(s, inset, 10), [{ inset: 0, z: thick, out: 0, up: 1 }])), pane(), false, false)
+  top.userData.order = true
+  top.renderOrder = 880000
+  root.add(top)
+  const foot = mesh(shared(`tickerFoot:${dims(s)}`, () => sweep(outlineOf(s, SLAB.frame + 0.6, 8), profile([[0, 0, true], [0, TICKER_LOOK.caster, true], [TICKER_LOOK.wedge, 0.2, true]]), false)), cardGlass(), true, false)
+  foot.name = 'foot'
+  root.add(foot)
   return root
 }
 
-function strip(s: Shape): THREE.Object3D {
+function band(s: Shape): THREE.Object3D {
   const h = Math.max(0.2, s.z1 - s.z0)
-  return mesh(shared(`tickerTape:${dims(s)}`, () => sweep(outlineOf({ kind: 'capsule', w: s.w, h: s.h + 8 }, 4, 20), [{ inset: 0, z: h, out: 0, up: 1 }])), tape(), false, true)
+  return mesh(shared(`tickerTape:${dims(s)}`, () => sweep(outlineOf({ kind: 'box', w: s.w + 6, h: s.h + 6 }, 0, 4), [{ inset: 0, z: h, out: 0, up: 1 }])), tape(), false, true)
 }
 
 export const ticker: PartMaker | null = {
   key(s) {
     if (s.kind === 'text' || s.kind === 'well') return null
-    if (s.role === 'tickerWindow') return `tickerWindow:${dims(s)}:${q(s.z0)}`
+    if (s.role === 'tickerWindow') return ''
+    if (s.id === 'ticker-glass') return `tickerGlass:${dims(s)}:${q(s.z1 - s.z0)}`
     if (s.id === 'ticker-tape') return `tickerTape:${dims(s)}`
     if (s.kind === 'disc') return `tickerDot:${q(s.w)}`
     return null
   },
   make(s) {
-    if (s.role === 'tickerWindow') return window(s)
-    if (s.id === 'ticker-tape') return strip(s)
-    return mesh(shared(`tickerDot:${q(s.w)}`, () => new THREE.CircleGeometry(s.w / 2 - 1, 24).translate(0, 0, 0.08)), dot(), false)
+    if (s.id === 'ticker-glass') return strip(s)
+    if (s.id === 'ticker-tape') return band(s)
+    return mesh(shared(`tickerDot:${q(s.w)}`, () => new THREE.CircleGeometry(s.w / 2, 16).translate(0, 0, 0.08)), dot(), false)
   }
 }
