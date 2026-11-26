@@ -1,0 +1,35 @@
+{
+  "folder": "lamp-keeper",
+  "pushed": "2026-11-26T04:34:25.659Z",
+  "commit": "98ed6d077cd76bb27e188ebfee423cdf3c5deb6f",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "youre-fired, approved left, build right at 98ed6d07 draft: the red wash on the floor is gone, the floor is dark lacquer with lamp tails; the pale wall behind is the frame's",
+      "time": "2026-11-26T04:34:23.848Z",
+      "by": "lamp-keeper",
+      "from": "out/work/lights/send/youre-fired-pair.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "tier-corporate, approved left, build right, draft: rail lamps are small lit windows, lane domes keep warm pools, floor deep navy",
+      "time": "2026-11-26T04:34:24.079Z",
+      "by": "lamp-keeper",
+      "from": "out/work/lights/send/tier-corporate-pair.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "reply-all, approved left, build right, draft: the Office as a lit room, hidden lamps over cubicles and inbox, floor still darker green than approved",
+      "time": "2026-11-26T04:34:24.326Z",
+      "by": "lamp-keeper",
+      "from": "out/work/lights/send/reply-all-pair.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "rail-cam, approved left, build right, draft: deep floor with mirrored lamp tails; the red insert is still the largest bright thing",
+      "time": "2026-11-26T04:34:24.551Z",
+      "by": "lamp-keeper",
+      "from": "out/work/lights/send/rail-cam-pair.jpg"
+    }
+  ]
+}
