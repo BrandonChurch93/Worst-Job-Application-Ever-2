@@ -61,10 +61,25 @@ Not this part's:
 7. The first digit is wound in 0.24 s (was 0.3 s) and the second begins at 2.87 s (was 2.95 s), so the arrow has left the stop before the key at 3.2 s. The cursor's own follow is slow after a release; the tip is still 23 px from the shoulder at the key.
 8. The tilt of the arrow at rest is the cursor's own body in `src/cursor/`. Not this part's.
 
+## After the first pass (from 07:50 UTC)
+
+- The tray: the wall is a cove (`TRAY.cove` 2.4, seven steps), smooth into the floor, its shade laid along the same curve; the rim is 6 px and the wall leans 1.9.
+- The crank's wind-up: the film held the arrow at the wound-back angle while the arm was drawn somewhere else, so at 15.26 s the arrow stood above the hub with the grip far from it. The hold now uses the angle the arm is drawn at.
+- The coins: when the row shuts they lay over the shutting tray and one over the third field (seen at 13.4 and 13.5 s). They now lie where they fell and the shutting tray covers them one by one; none is drawn past the tray's edge.
+- The reels: 94 px wide with a 3.4 px lip and a shade that starts nearer the crest, so each reads as a roller with a dark gap beside it.
+- The dial: the housing is lighter (0.86 of the shared steel, was 0.72) and the three dark lines thinner (seat gap 1.2, foot line 1.5, inner seam 1.3).
+- The sheet: the crank stands at 0.9 rad, as approved.
+- The peel up and the refill: the flat arrow drags itself to a place 190 px left of the button by 19.4 s, stands still there through the peel (19.8 s) and the refill, and steps to the button from 20.04 s. Looked at with the place 96 px left of the button, where the arrow stood on the button's edge; moved to 190 px and NOT looked at after the move (the acting looks of this round are used up).
+
+Decisions after the first pass:
+
+9. The coins do not ride the tray's lower wall as it shuts (decision 4 said they did): that carried them over the next field.
+10. The tip at the dial key stays about 35 px right and 30 px below the centre of the cap. The cursor's own follow keeps it at the stop for 0.2 s after the pointer leaves; beginning the second digit earlier than 2.87 s breaks the dial (tried 2.80 s: the second digit is not taken). Not solved.
+
 ## Looks, counted by part
 
-- rows: 3 (the rest key three times).
-- dial: 4 (the dial key four times).
-- crank: 4 (the crank key four times).
-- slot: 33 (the sheet four times; 8 stills at a wrong time that showed nothing; 21 stills of the lever, the reels and the coins).
-- acting: 12 (one strip of twelve stills of the slot beat).
+- rows: 5 (the rest key three times; the dial and crank keys once each for the cove).
+- dial: 6 (the dial key six times).
+- crank: 9 (the crank key six times; three stills of the wind-up).
+- slot: 39 (the sheet six times; 8 stills at a wrong time that showed nothing; 22 stills of the lever, the reels and the coins; three stills of the tray shutting over the coins).
+- acting: 40 (12 of the slot beat, 4 at a wrong time, 7 of the dial beat, 4 of the open beat, 8 of the crank beat, 5 of the peel). None left this round.

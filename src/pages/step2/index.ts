@@ -285,7 +285,7 @@ export function makePage(): PageLogic {
     const right = FX + FW - COIN.wall - COIN.r
     const roof = trayY(1) + COIN.wall + COIN.r
     const lid = trayY(1) + COIN.r + 2
-    const ledge = Math.max(lid, trayY(1) + TRAY_H * clamp(s.spring[1]!, 0, 1) - COIN.wall - COIN.r)
+    const ledge = trayY(1) + TRAY_H - COIN.wall - COIN.r
     const floor = TRAY_Z + COIN.clear
     sl.cool = Math.max(0, sl.cool - dt)
     for (const coin of sl.coins) {
@@ -808,7 +808,8 @@ export function makePage(): PageLogic {
           out.push({ id: `${tag}${reelId(r, legend)}`, part: 'type', kind: 'text', x: SLOT.reelX(r) + dx, y: b.y + off + dy, w: SLOT.reelW, h: b.h, z0: z(TOP + 14), z1: z(TOP + 14), tone: 'ink', words: `data:step2.${SLOT.names[r]}.${legend}`, type: { font: 'inter-600', px: 34, align: 'centre' } })
         }
       }
-      for (const coin of m.slot.coins) out.push({ id: `${tag}coin-${coin.n}`, part: 'slot', kind: 'disc', x: coin.x - COIN.r + dx, y: coin.y - COIN.r + dy, w: COIN.r * 2, h: COIN.r * 2, z0: coin.z, z1: coin.z + 4, tone: 'light', rot: coin.rot })
+      const shut = trayY(1) + TRAY_H * clamp(s.spring[1]!, 0, 1) - COIN.r - COIN.wall / 2
+      for (const coin of m.slot.coins) if (tag !== '' || coin.y <= shut) out.push({ id: `${tag}coin-${coin.n}`, part: 'slot', kind: 'disc', x: coin.x - COIN.r + dx, y: coin.y - COIN.r + dy, w: COIN.r * 2, h: COIN.r * 2, z0: coin.z, z1: coin.z + 4, tone: 'light', rot: coin.rot })
     }
   }
 

@@ -14,7 +14,7 @@ import { clamp01, contact, fuse, lathe, loft, mesh, moved, noise, normalsFrom, r
 export const SLOT_LOOK = {
   page: { cabinet: 46, knob: 28, payout: 14, mount: 30, arm: 12 },
   top: 58, corner: 16, window: 13, roundOver: 3, band: 12.4, step: 0.9, ledge: 2.4, chamfer: 4.6, chamferDrop: 3.6, gasket: 2.6, glass: 54.2, floor: 18,
-  drum: { r: 62, crest: 50, w: 97, lip: 2.2, flat: 0.4, dark: 0.62, full: 0.88 },
+  drum: { r: 62, crest: 50, w: 94, lip: 3.4, flat: 0.4, dark: 0.56, full: 0.96 },
   line: { z: 53.3, r: 0.85, pin: 1.9, glow: 0.1 },
   sheen: { top: 0.06, streak: 0.034, order: 800001 },
   lever: { rod: 5.6, pivotX: 11, pivotZ: 28, barrel: 9, barrelW: 19, collar: 4, foot: -2, head: 22, ferrule: 7, ferruleAt: 27 },

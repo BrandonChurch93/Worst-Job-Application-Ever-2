@@ -35,6 +35,7 @@ const TURNS = 3.03
 const away: P = { x: CRANK.hx + 636, y: CRANK.hy - 6 }
 const caught: P = { x: CRANK.hx + 37, y: CRANK.hy - 100 }
 export const BUTTON: P = { x: 1688, y: 1004 }
+const beside: P = { x: BUTTON.x - 190, y: BUTTON.y - 30 }
 
 const T = {
   phone: 1.88, zero: 2.33, one: 2.87, third: 4.25,
@@ -56,6 +57,8 @@ const PULL = { there: 8.98, back: 9.03, up: 9.11, rise: 12 }
 const STRUCK = { tight: T.lever + 0.9, near: 11.9, duck: 12.0, flee: 12.38 }
 const TEMPER = { safe: 12.7, dust: 12.76, fume: 13.3, red: 13.5, march: 13.52, there: 13.86, stamp: T.volume - 0.1, go: T.volume + 0.22, spent: T.volume + 0.16 }
 // The crank throws it clear. It cowers where it lands, and then goes back in to stop it.
+// Flat, it drags itself to the button and stops short of it. There it peels up and fills out, standing still, and only then steps on to press.
+const RISE = { there: 19.4, go: 20.04 }
 const THROWN = { see: T.runaway + 0.05, cower: T.runaway + 0.43, back: T.lean - 0.08 }
 const idle: P = { x: 1575, y: 374 }
 const refuge: P = { x: 800, y: 700 }
@@ -108,8 +111,9 @@ const path: Seg[] = [
   line(T.runaway + 0.36, T.lean, away, away),
   line(T.lean, T.lean + 0.3, away, caught),
   line(T.lean + 0.3, 17.7, caught, caught),
-  line(17.7, 19.9, caught, { x: BUTTON.x - 40, y: BUTTON.y - 4 }),
-  line(19.9, 20.24, { x: BUTTON.x - 40, y: BUTTON.y - 4 }, BUTTON),
+  line(17.7, RISE.there, caught, beside),
+  line(RISE.there, RISE.go, beside, beside),
+  line(RISE.go, 20.24, beside, BUTTON),
   line(20.24, 21, BUTTON, BUTTON)
 ]
 
