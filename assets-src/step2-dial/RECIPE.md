@@ -37,3 +37,12 @@ Nothing here is a picture. No file is downloaded, none is generated and none is 
 - Takes: eight. No texture: 0 px, 0 MB. The floor's shade under the wall on the light's side is vertex colour, worked out from the key's direction and the tray's depth: once in the glass itself (`TRAY.floor`) and once as a copy of the floor multiplied over it and over the words on it (`TRAY.soak`), tuned against the column x 1500 of the approved `step2-dial`.
 - Why this one: the approved tray has a thin aluminium lip, bright along the lower right and dark along the upper left inside wall, and a floor that is darker in a band under the upper and left walls.
 - Date: 2026-11-26
+## Hub lacquer
+
+- Made by: `lacquered()` in `src/pages/step2/real/dial.ts`
+- From: the shared orange of `materials()`, copied with its shader rules. Numbers of `DIAL_BODY` in `src/pages/step2/layout.ts`: clearcoat 1, `hubCoat` 0.03, `hubRough` 0.1, `hubIor` 1.9. The colour is the shared one.
+- Prompt or command: none.
+- Takes: three. No texture: 0 px, 0 MB.
+- Why this one: the approved hub is a polished knob with one clear point of light on the side of the key; the shared orange gave the dome a dull even face.
+- Date: 2026-11-26
+

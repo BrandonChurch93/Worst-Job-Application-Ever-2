@@ -1,7 +1,9 @@
 import * as THREE from 'three'
 import { config } from '../../../config'
 import { hash01 } from '../../../core/random'
+import { studio } from '../../../post/studio'
 import type { PartMaker, RealContext } from '../../../real/types'
+import { grainNormalMap } from '../../../shell/materials'
 import { controls } from '../../../shell/real/controls'
 import type { Shape } from '../../../stage/types'
 import { makeSlab } from '../../step1/real/slabs'
@@ -23,6 +25,31 @@ export const WEAPON_GLOW = {
   spark: [6, 5.2, 4] as [number, number, number],
   fleck: [5, 3.9, 2.4] as [number, number, number],
   muzzle: [9, 2.6, 0.7] as [number, number, number]
+}
+
+export const LACQUER = { colour: 0x9a0808, rough: 0.5, spec: 0.4, coat: 0.07, env: 0.4 }
+
+let lacquerMade: THREE.MeshPhysicalMaterial | null = null
+
+function lacquer(): THREE.MeshPhysicalMaterial {
+  if (!lacquerMade) {
+    const grain = grainNormalMap(256, config.seed + 71, 1.6)
+    grain.repeat.set(1 / 90, 1 / 90)
+    lacquerMade = studio(
+      new THREE.MeshPhysicalMaterial({
+        color: new THREE.Color().setHex(LACQUER.colour, THREE.SRGBColorSpace),
+        roughness: LACQUER.rough,
+        metalness: 0,
+        specularIntensity: LACQUER.spec,
+        clearcoat: 1,
+        clearcoatRoughness: LACQUER.coat,
+        clearcoatNormalMap: grain,
+        clearcoatNormalScale: new THREE.Vector2(0.035, 0.035),
+        envMapIntensity: LACQUER.env
+      })
+    )
+  }
+  return lacquerMade
 }
 
 export const WEAPON_EMIT = {
@@ -309,6 +336,7 @@ export const bossWeapons: PartMaker | null = {
       case 'scorch': return makeScorch(s)
       case 'slab': {
         const slab = makeSlab(s.w, s.h, s.r ?? 8, heights.slab)
+        ;(slab.children[0] as THREE.Mesh).material = lacquer()
         slab.children[1]!.castShadow = false
         return slab
       }

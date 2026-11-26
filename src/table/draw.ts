@@ -78,6 +78,7 @@ function anchors(shapes: Shape[]): Shape[] {
 export function fixedShapes(): Shape[] {
   if (fixed) return fixed
   const out: Shape[] = []
+  out.push({ id: 'tier.apron', part: 'table-layout', kind: 'well', x: 0, y: px(APRON_Y), w: 1920, h: px(APRON_H), z0: px(floorZ(2)), z1: 0, tone: FLOOR[2]! })
   for (let k = 0; k < 3; k++) {
     const f = px(floorZ(k))
     const y = TIER_Y[k]!

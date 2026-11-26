@@ -18,6 +18,14 @@ No file is stored for the careers page. Every solid is built in code when the pa
 - Why this one: one solid for the resting and the turning card, with a real under side, and no texture
 - Date: 2026-11-26
 
+## ticker frost (geometry, built at run time)
+- Made by: `frosted(w, h, solid, ramp)` in `src/pages/marketing/real/ticker.ts`
+- From: numbers only (`TICKER` in `layout.ts`, `TICKER_LOOK`)
+- Prompt or command: two strips of quads over the ends of the tape, alpha by vertex: 1 over the solid part, then 8 steps down to 0 by a smooth curve
+- Takes: under 1 ms, once per strip size
+- Why this one: a run fades into the glass at the strip's ends and is never cut; no texture is needed
+- Date: 2026-11-26
+
 ## materials (no file)
 - Made by: `cardGlass()` in `real/perk-cards.ts`, `medalFace()`, `medalMetal()`, the print and tape materials in `real/careers-page.ts`, the tape and the clear top of the strip in `real/ticker.ts`
 - From: numbers only; `medalFace()` reads the shared turned aluminium's normal and anisotropy pictures of `materials()`
