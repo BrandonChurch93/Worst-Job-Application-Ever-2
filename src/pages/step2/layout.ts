@@ -23,7 +23,7 @@ export const TRAY_GAP = 12
 export const TRAY_H = 232
 export const TRAY_R = 14
 // A tray's liner, in page pixels, and the shade its wall lays on its floor.
-export const TRAY = { sink: 0.5, joint: 0.9, jointDeep: 1.1, rim: 5.6, lean: 1.3, wallShade: 0.8, soakOver: 0.5,
+export const TRAY = { sink: 0.5, joint: 0.9, jointDeep: 1.1, rim: 5.6, lean: 1.3, wallShade: 0.8, wallLit: 0.62, soakOver: 0.5,
   floor: { soak: 0.3, hold: 0.2, reach: 20, bounce: 0.12, bounceReach: 9, base: 1 },
   soak: { soak: 0.8, hold: 0.4, reach: 7, bounce: 0.16, bounceReach: 12, base: 0.76 } }
 export const SHIFT = TRAY_H + TRAY_GAP
@@ -48,7 +48,7 @@ export const DIAL = {
 // The dial's body, in page pixels: how tall it stands on the tray's floor, how much of it shows before it has risen, and its turned steps.
 export const DIAL_BODY = {
   tall: TOP + 2 - TRAY_Z, rest: 1.6, plateLeast: 0.4, below: 2, plate: 6.2, bezel: 9, bezelDrop: 2, wheel: 89.2, thick: 4.8, chamfer: 1, holeRim: 0.4, holeChamfer: 2,
-  hub: 30, hubTall: 14, seat: 5, seatGap: 1.8, stopIn: 71, stopOut: 109, stopWide: 12, stopClear: 3, stopTall: 8, stopFoot: 12,
+  hub: 30, hubTall: 17, turned: 256, cut: 0.012, faceRough: 0.2, faceStretch: 1, faceLight: 1.5, seat: 5, seatGap: 1.8, stopIn: 71, stopOut: 109, stopWide: 12, stopClear: 3, stopTall: 8, stopFoot: 12,
   shade: 0.46, shadeReach: 0.78
 }
 

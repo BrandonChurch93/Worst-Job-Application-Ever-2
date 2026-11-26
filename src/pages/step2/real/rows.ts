@@ -4,7 +4,7 @@ import type { Shape } from '../../../stage/types'
 import { look } from '../../../post/look'
 import { materials } from '../../../shell/materials'
 import { controls } from '../../../shell/real/controls'
-import { arc, outlineOf, profile, roundedRect, sweep, type ProfilePoint } from '../../../shell/solids'
+import { outlineOf, profile, roundedRect, sweep, type ProfilePoint } from '../../../shell/solids'
 import { TRAY, TRAY_H } from '../layout'
 
 const q = (v: number): number => Math.round(v * 4) / 4
@@ -20,18 +20,41 @@ export function trayJoint(s: Shape): THREE.BufferGeometry {
   return sweep(outlineOf(s, 0, 12), [{ inset: -0.4, z, out: 0, up: 1 }, { inset: TRAY.joint + 0.3, z, out: 0, up: 1 }], false)
 }
 
-// The liner: a flat rim a hair under the page, rolled over into a wall that leans in down to the floor.
+const BEAD = Math.PI / 3
+
+// How far under the liner's top its rolled rim lies, a given way in from the joint.
+const beadDrop = (inset: number): number => {
+  const half = TRAY.rim / 2
+  const radius = half / Math.sin(BEAD)
+  const off = Math.min(half, Math.abs(inset - half))
+  return radius - Math.sqrt(radius * radius - off * off)
+}
+
+const wallAt = (inset: number, top: number, foot: number): number => {
+  const from = TRAY.joint + TRAY.rim
+  const z = top - beadDrop(TRAY.rim)
+  return z * (1 - Math.min(1, Math.max(0, (inset - from) / (foot - from))))
+}
+
+// The rim: rolled, a hair under the page, polished, so it holds a line of the light all the way round.
+export function trayRim(s: Shape): THREE.BufferGeometry {
+  const top = -s.z0 - TRAY.sink
+  const j = TRAY.joint
+  const points: ProfilePoint[] = [[j, top - TRAY.jointDeep - 0.3, true]]
+  for (let i = 0; i <= 10; i++) {
+    const inset = (TRAY.rim * i) / 10
+    points.push([j + inset, top - beadDrop(inset)])
+  }
+  return sweep(outlineOf(s, 0, 12), profile(points), false)
+}
+
+// The wall: satin, leaning in from under the rim down to the floor.
 export function trayLiner(s: Shape): THREE.BufferGeometry {
   const surface = -s.z0
   const top = surface - TRAY.sink
-  const j = TRAY.joint
+  const from = TRAY.joint + TRAY.rim
   const foot = trayFoot(surface)
-  const points: ProfilePoint[] = [
-    [j, top - TRAY.jointDeep - 0.3, true], [j, top - 0.5], ...arc(j, top - 0.5, 0.5, 0.5, 3).slice(1), [j + TRAY.rim - 1.6, top],
-    ...[1, 2, 3, 4, 5].map((i): ProfilePoint => [j + TRAY.rim - 1.6 + 1.6 * Math.sin((i / 5) * (Math.PI / 2)), top - 1.2 * (1 - Math.cos((i / 5) * (Math.PI / 2)))]),
-    [foot, 0, true], [foot, -0.4, true]
-  ]
-  return sweep(outlineOf(s, 0, 12), profile(points), false)
+  return sweep(outlineOf(s, 0, 12), profile([[from, wallAt(from, top, foot), true], [foot, 0, true], [foot, -0.4, true]]), false)
 }
 
 // The wall on the light's side sees neither the key nor much of the room: its shade is painted over the liner, strongest where the wall faces away from the key.
@@ -41,7 +64,10 @@ export function trayWallShade(s: Shape): THREE.BufferGeometry {
   const outline = outlineOf(s, 0, 12)
   const from = TRAY.joint + TRAY.rim
   const foot = trayFoot(surface)
-  const steps: [number, number, number][] = [[from - 0.9, top + 0.05, 0], [from + 0.2, top - 0.9, 0.6], [from + 1.4, top - 1.6, 1], [foot, 0.06, 1]]
+  const over = 0.06
+  const steps: [number, number, number][] = [
+    [from - 0.7, top - beadDrop(TRAY.rim - 0.7) + over, 0], [from, wallAt(from, top, foot) + over, 0.6], [from + 1.2, wallAt(from + 1.2, top, foot) + over, 1], [foot, over, 1]
+  ]
   const g = sweep(outline, steps.map(([inset, z]) => ({ inset, z, out: 0, up: 1 })), false)
   const [lx, ly] = look.key.direction
   const l = Math.hypot(lx, ly) || 1
@@ -50,7 +76,7 @@ export function trayWallShade(s: Shape): THREE.BufferGeometry {
   steps.forEach(([, , share], k) => {
     for (let i = 0; i < n; i++) {
       const toward = Math.max(0, (outline.nx[i]! * lx + outline.ny[i]! * ly) / l)
-      const v = 1 - TRAY.wallShade * share * Math.pow(toward, 0.6)
+      const v = (1 - (1 - TRAY.wallLit) * share) * (1 - TRAY.wallShade * share * Math.pow(toward, 0.6))
       colour.set([v, v, v], (k * n + i) * 3)
     }
   })
@@ -139,11 +165,11 @@ export function trayFloor(s: Shape, paint: { soak: number; hold: number; reach: 
   return g
 }
 
-interface TrayKit { joint: THREE.BufferGeometry; liner: THREE.BufferGeometry; floor: THREE.BufferGeometry; shade: THREE.BufferGeometry; soak: THREE.BufferGeometry }
+interface TrayKit { joint: THREE.BufferGeometry; rim: THREE.BufferGeometry; liner: THREE.BufferGeometry; floor: THREE.BufferGeometry; shade: THREE.BufferGeometry; soak: THREE.BufferGeometry }
 let open: { key: string; kit: TrayKit } | null = null
 
 const trayKey = (s: Shape): string => `tray:${q(s.w)}x${q(s.h)}:${q(s.r ?? 0)}:${q(s.z0)}`
-const makeKit = (s: Shape): TrayKit => ({ joint: trayJoint(s), liner: trayLiner(s), floor: trayFloor(s), shade: trayWallShade(s), soak: trayFloor(s, TRAY.soak) })
+const makeKit = (s: Shape): TrayKit => ({ joint: trayJoint(s), rim: trayRim(s), liner: trayLiner(s), floor: trayFloor(s), shade: trayWallShade(s), soak: trayFloor(s, TRAY.soak) })
 
 // Every tray of the page has the same plan when it is open, so the open tray's solids are built once and kept. A tray on its way open is built for its height and dropped after.
 function tray(s: Shape): THREE.Object3D {
@@ -164,6 +190,7 @@ function tray(s: Shape): THREE.Object3D {
     return mesh
   }
   add(kit.joint, m.gap, false, true)
+  add(kit.rim, m.chrome, true, true)
   add(kit.liner, m.aluminiumSatin, true, true)
   add(kit.floor, m.glassSunk, false, true)
   shadeMaterial ??= new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, blending: THREE.CustomBlending, blendSrc: THREE.DstColorFactor, blendDst: THREE.ZeroFactor, depthWrite: false, toneMapped: false, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -2 })

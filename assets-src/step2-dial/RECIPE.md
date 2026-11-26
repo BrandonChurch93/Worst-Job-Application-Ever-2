@@ -20,10 +20,19 @@ Nothing here is a picture. No file is downloaded, none is generated and none is 
 - Why this one: a wall 5 px tall is under what the shadow map resolves, and in the approved image the upper left third of each hole lies in a soft brown grey shade.
 - Date: 2026-11-26
 
+## Wheel face
+
+- Made by: `turnedFine()` in `src/pages/step2/real/dial.ts`
+- From: the shared turned aluminium of `materials()`, copied with its shader rules (the studio's and the stretch of the room along the cut), so it stands under the same light as everything else. Changed numbers, all in `DIAL_BODY`: the cut's depth `cut` 0.012 (shared: 0.06), roughness `faceRough` 0.2, stretch `faceStretch` 1, colour times `faceLight` 1.5. The turned pictures are laid one texel to a page pixel (`turned` 256).
+- Prompt or command: none.
+- Takes: four. No new texture: 0 px, 0 MB (it reads the shared turned pictures).
+- Why this one: at 178 px across, the shared cut read as a few hard rings; the approved face is light brushed metal with soft fans of light and no ring to count.
+- Date: 2026-11-26
+
 ## Tray
 
 - Made by: `trayJoint()`, `trayLiner()`, `trayFloor()` and `trayWallShade()` in `src/pages/step2/real/rows.ts`
-- From: nothing. Numbers of `TRAY` and `TRAY_R` in `src/pages/step2/layout.ts`: a dark joint 0.9 px wide where the page parts, an aluminium rim 5.6 px wide, a wall that leans in by 1.3 px for each pixel of depth, a glass floor 8 px under the page.
+- From: nothing. Numbers of `TRAY` and `TRAY_R` in `src/pages/step2/layout.ts`: a dark joint 0.9 px wide where the page parts, a rolled rim 5.6 px wide in the shared chrome (`trayRim()`), holding a line of light all round, a satin wall, a wall that leans in by 1.3 px for each pixel of depth, a glass floor 8 px under the page.
 - Prompt or command: none. The open tray's solids are built once and kept; a tray on its way open is built for its height and dropped after.
 - Takes: eight. No texture: 0 px, 0 MB. The floor's shade under the wall on the light's side is vertex colour, worked out from the key's direction and the tray's depth: once in the glass itself (`TRAY.floor`) and once as a copy of the floor multiplied over it and over the words on it (`TRAY.soak`), tuned against the column x 1500 of the approved `step2-dial`.
 - Why this one: the approved tray has a thin aluminium lip, bright along the lower right and dark along the upper left inside wall, and a floor that is darker in a band under the upper and left walls.
