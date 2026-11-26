@@ -37,8 +37,10 @@ describe('the page of a touch-only device, built from the materials of the site'
     expect(first).toContain('classList.add(css.device!)')
     const sizes = [...sheet.matchAll(/font-size: clamp\((\d+)px/g)].map((m) => Number(m[1]))
     expect(sizes.length).toBe(4)
+    const fixed = [...sheet.matchAll(/font-size: (\d+)px;/g)].map((m) => Number(m[1]))
+    expect(Math.min(...fixed)).toBeGreaterThanOrEqual(16)
     expect(Math.min(...sizes)).toBeGreaterThanOrEqual(16)
-    expect(sheet.match(/font-size:/g)?.length).toBe(sizes.length)
+    expect(sheet.match(/font-size:/g)?.length).toBe(sizes.length + fixed.length)
   })
   it('writes no word of its own: what it shows comes from the copy by its key', () => {
     expect([...code.matchAll(/word\('(\w+)'\)/g)].map((m) => m[1])).toEqual(['title', 'touchTitle', 'touchBody', 'touchLink'])

@@ -7,10 +7,10 @@
   --accent: #c4460f;
   /* The margin left and right of the content column: 128 page pixels, never under 24 px. */
   --side: max(24px, calc(var(--u) * 128));
-  /* The corner of the glass card: 22 page pixels, never under 14 px. */
-  --corner: max(14px, calc(var(--u) * 22));
+  /* The corner of the glass card: 28 page pixels as the perk cards of the careers page, never under 16 px. */
+  --corner: max(16px, calc(var(--u) * 28));
   /* The eggshell of the ceramic: one tile of 240 px, lit from the upper left, drawn by a filter and fetched from nowhere. */
-  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g' x='-8' y='-8' width='256' height='256' filterUnits='userSpaceOnUse' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.15' numOctaves='2' seed='11'/%3E%3CfeDiffuseLighting surfaceScale='0.95' diffuseConstant='1' lighting-color='%23f6f3ef'%3E%3CfeDistantLight azimuth='225' elevation='75'/%3E%3C/feDiffuseLighting%3E%3C/filter%3E%3Crect x='-8' y='-8' width='256' height='256' filter='url(%23g)'/%3E%3C/svg%3E");
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g' x='-8' y='-8' width='256' height='256' filterUnits='userSpaceOnUse' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.15' numOctaves='2' seed='11'/%3E%3CfeDiffuseLighting surfaceScale='0.75' diffuseConstant='1' lighting-color='%23f6f3ef' result='l'%3E%3CfeDistantLight azimuth='225' elevation='75'/%3E%3C/feDiffuseLighting%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.7' numOctaves='1' seed='5'/%3E%3CfeColorMatrix values='0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0 0 0 0 1'/%3E%3CfeComposite operator='arithmetic' in2='l' k1='0' k2='0.2' k3='1' k4='-0.1'/%3E%3C/filter%3E%3Crect x='-8' y='-8' width='256' height='256' filter='url(%23g)'/%3E%3C/svg%3E");
   /* The tile is drawn 240 pixels of the screen wide at every pixel ratio, so the grain stays as fine as the screen. */
   --tile: 240px;
   position: fixed;
@@ -71,12 +71,11 @@
   height: max(4px, calc(var(--u) * 6));
   margin-top: max(18px, calc(var(--u) * 55));
   border-radius: 999px;
-  background:
-    linear-gradient(to right, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 22%, rgba(0, 0, 0, 0.05) 48%, rgba(255, 255, 255, 0.12) 71%, rgba(0, 0, 0, 0.1)),
-    linear-gradient(to bottom, #e3e4e5 0%, #cfd1d2 20%, #a9aaac 42%, #d1d3d4 62%, #a6a7a8 82%, #3a3b3b 100%);
+  /* The bands of a turned rod, in hard steps so they stay crisp at every size: a shaded upper line, the lit body, a dark lower edge. */
+  background: linear-gradient(to bottom, #c4c1bc 0 10%, #dddedf 10% 36%, #cccecf 36% 50%, #aeafb1 50% 60%, #d0d2d3 60% 74%, #a9aaab 74% 84%, #2f3030 84% 100%);
   box-shadow:
-    0 max(1px, calc(var(--u) * 2)) max(1px, calc(var(--u) * 2)) rgba(70, 62, 48, 0.5),
-    max(1px, calc(var(--u) * 2)) max(3px, calc(var(--u) * 5)) max(4px, calc(var(--u) * 7)) rgba(70, 62, 48, 0.2);
+    0 max(1px, calc(var(--u) * 1)) 0 rgba(70, 62, 48, 0.4),
+    max(1px, calc(var(--u) * 1)) max(2px, calc(var(--u) * 2.5)) max(1.5px, calc(var(--u) * 2)) rgba(70, 62, 48, 0.2);
 }
 
 .card {
@@ -107,8 +106,8 @@
   /* The inner line of the bevel, where the thick edge of the glass ends. */
   content: '';
   position: absolute;
-  inset: max(6px, calc(var(--u) * 10));
-  border-radius: calc(var(--corner) - max(6px, calc(var(--u) * 10)));
+  inset: max(7px, calc(var(--u) * 12));
+  border-radius: calc(var(--corner) - max(7px, calc(var(--u) * 12)));
   box-shadow:
     max(-1px, calc(var(--u) * -1.5)) max(-1px, calc(var(--u) * -1.5)) 0 0 rgba(236, 244, 238, 0.5),
     max(1px, calc(var(--u) * 1.5)) max(1px, calc(var(--u) * 1.5)) 0 0 rgba(236, 244, 238, 0.28);
@@ -146,7 +145,7 @@
   /* The ring round the pill: a dark gap and a ring of aluminium, 9 page pixels together and never under 5 px. */
   --ring: max(5px, calc(var(--u) * 9));
   margin: calc(max(30px, calc(var(--u) * 46)) + var(--ring)) var(--ring) var(--ring);
-  padding: max(15px, calc(var(--u) * 24)) max(30px, calc(var(--u) * 52));
+  padding: max(15px, calc(var(--u) * 29)) max(30px, calc(var(--u) * 56));
   border-radius: 999px;
   background-color: var(--accent);
   /* Deep glossy orange: the light only at the upper edge, so the words keep their contrast. */
@@ -162,8 +161,8 @@
     max(3px, calc(var(--u) * 5)) max(5px, calc(var(--u) * 9)) max(5px, calc(var(--u) * 8)) calc(var(--ring) * 0.6) rgba(70, 62, 48, 0.5),
     max(8px, calc(var(--u) * 14)) max(12px, calc(var(--u) * 22)) max(18px, calc(var(--u) * 30)) calc(var(--ring) * 0.5) rgba(70, 62, 48, 0.24);
   color: #fbf8f2;
-  /* The words of the pill: 30 page pixels, never under 18 px. */
-  font-size: clamp(18px, 4.7vw, max(22px, calc(var(--u) * 30)));
+  /* The words of the pill: 32 page pixels as the Apply button of the careers page, never under 18 px. */
+  font-size: clamp(18px, 4.7vw, max(22px, calc(var(--u) * 32)));
   line-height: 1.2;
   font-weight: 600;
   text-decoration: none;
@@ -184,5 +183,38 @@
 @media (min-resolution: 2.5dppx) {
   .page {
     --tile: 80px;
+  }
+}
+
+/* A phone on its side: the page is drawn tighter so that all of it, the pill too, stands on one screen 390 px high. */
+@media (max-height: 440px) and (orientation: landscape) {
+  .page {
+    padding-top: 20px;
+    padding-bottom: 22px;
+  }
+
+  .site {
+    font-size: 26px;
+  }
+
+  .rule {
+    margin-top: 14px;
+  }
+
+  .card {
+    margin-top: 22px;
+    padding-top: 20px;
+    padding-bottom: 22px;
+  }
+
+  .title {
+    margin-bottom: 8px;
+    font-size: 38px;
+  }
+
+  .link {
+    margin-top: calc(18px + var(--ring));
+    padding-top: 12px;
+    padding-bottom: 12px;
   }
 }
