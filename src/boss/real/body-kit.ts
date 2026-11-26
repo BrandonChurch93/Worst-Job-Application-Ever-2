@@ -2,6 +2,8 @@ import * as THREE from 'three'
 import { materials } from '../../shell/materials'
 import { studio } from '../../post/studio'
 import { hash01 } from '../../core/random'
+import { glassOptions } from '../../pages/marketing/real/perk-cards'
+import { glassPicture, PICTURE } from '../../pages/marketing/real/glass-picture'
 
 const srgb = (hex: number) => new THREE.Color().setHex(hex, THREE.SRGBColorSpace)
 
@@ -55,9 +57,9 @@ export function lathe(points: [number, number][], segments = 48): THREE.BufferGe
 }
 
 // A flat plate cut from a closed line of points (counter clockwise seen from above), with a chamfer round its upper edge.
-export function cutPlate(points: [number, number][], tall: number, bevel: number): THREE.BufferGeometry {
+export function cutPlate(points: [number, number][], tall: number, bevel: number, out = 0, facets = 3): THREE.BufferGeometry {
   const shape = new THREE.Shape(points.map(([x, y]) => new THREE.Vector2(x, y)))
-  const g = new THREE.ExtrudeGeometry(shape, { depth: Math.max(0.1, tall - 2 * bevel), bevelEnabled: true, bevelThickness: bevel, bevelSize: bevel, bevelOffset: -bevel, bevelSegments: 3, steps: 1, curveSegments: 1 })
+  const g = new THREE.ExtrudeGeometry(shape, { depth: Math.max(0.1, tall - 2 * bevel), bevelEnabled: true, bevelThickness: bevel, bevelSize: bevel, bevelOffset: out - bevel, bevelSegments: facets, steps: 1, curveSegments: 1 })
   g.translate(0, 0, 0)
   const p = g.getAttribute('position')
   let low = Infinity
@@ -104,6 +106,58 @@ export function lying(points: [number, number][], segments = 32): THREE.BufferGe
   return lathe(points, segments).rotateY(-Math.PI / 2)
 }
 
+export const SHIELD_GLASS = { colour: 0x808c89, through: 0.86, perPx: 2.4 }
+
+// The careers page's picture of the page under glass, laid finer: the block is seen closer than a card.
+function blockPicture(): THREE.Texture {
+  const t = glassPicture().clone()
+  t.repeat.set(SHIELD_GLASS.perPx / PICTURE.size, SHIELD_GLASS.perPx / PICTURE.size)
+  t.needsUpdate = true
+  return t
+}
+
+export const BRUSH = { w: 512, h: 128, perPx: 2.4, deep: 0.3, cells: 8 }
+
+// Fine straight brushing along x, as a grey that the plate's colour is multiplied by: every row its own tone, drifting slowly along its length, and a few sharper scratches.
+export function brushPixels(seed = 5): Uint8Array {
+  const { w, h, deep, cells } = BRUSH
+  const out = new Uint8Array(w * h * 4)
+  const smooth = (t: number): number => t * t * (3 - 2 * t)
+  for (let y = 0; y < h; y++) {
+    const row = 0.25 * hash01(y, 1, seed) + 0.35 * hash01(y >> 1, 2, seed) + 0.4 * hash01(y >> 2, 3, seed)
+    const scratch = hash01(y, 4, seed) > 0.93 ? 0.5 : 0
+    for (let x = 0; x < w; x++) {
+      const at = (x / w) * cells
+      const c = Math.floor(at)
+      const drift = hash01(y * 31 + (c % cells), 5, seed) + (hash01(y * 31 + ((c + 1) % cells), 5, seed) - hash01(y * 31 + (c % cells), 5, seed)) * smooth(at - c)
+      const dark = Math.min(1, 0.5 * row + 0.5 * drift + scratch * drift)
+      const g = Math.round(255 * (1 - deep * dark))
+      const i = (y * w + x) * 4
+      out[i] = g
+      out[i + 1] = g
+      out[i + 2] = g
+      out[i + 3] = 255
+    }
+  }
+  return out
+}
+
+let brush: THREE.DataTexture | null = null
+
+function brushing(): THREE.DataTexture {
+  if (brush) return brush
+  brush = new THREE.DataTexture(brushPixels(), BRUSH.w, BRUSH.h, THREE.RGBAFormat)
+  brush.wrapS = THREE.RepeatWrapping
+  brush.wrapT = THREE.RepeatWrapping
+  brush.repeat.set(BRUSH.perPx / BRUSH.w, BRUSH.perPx / BRUSH.h)
+  brush.magFilter = THREE.LinearFilter
+  brush.minFilter = THREE.LinearMipmapLinearFilter
+  brush.generateMipmaps = true
+  brush.anisotropy = 4
+  brush.needsUpdate = true
+  return brush
+}
+
 export interface BossKit {
   housing: THREE.MeshPhysicalMaterial
   bore: THREE.MeshPhysicalMaterial
@@ -111,10 +165,9 @@ export interface BossKit {
   pin: THREE.MeshPhysicalMaterial
   crack: THREE.MeshPhysicalMaterial
   glass: THREE.MeshPhysicalMaterial
-  glassEdge: THREE.MeshPhysicalMaterial
-  glassDeep: THREE.MeshPhysicalMaterial
   glassCrack: THREE.MeshPhysicalMaterial
   plate: THREE.MeshPhysicalMaterial
+  plateSide: THREE.MeshPhysicalMaterial
   pocket: THREE.MeshPhysicalMaterial
   link: THREE.MeshPhysicalMaterial
 }
@@ -127,13 +180,12 @@ export function bossKit(): BossKit {
     bore: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x121212), roughness: 0.8, metalness: 0.2, specularIntensity: 0.3 })),
     bed: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x1f2022), roughness: 0.62, metalness: 0.55, specularIntensity: 0.5 })),
     pin: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xc9ccd0), roughness: 0.2, metalness: 1 })),
-    glass: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x86a39b), roughness: 0.18, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.08, specularIntensity: 1, transparent: true, opacity: 0.44, depthWrite: false })),
-    glassEdge: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xe6f0ec), roughness: 0.16, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.06, specularIntensity: 1, transparent: true, opacity: 0.5, depthWrite: false })),
-    glassDeep: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x55766c), roughness: 0.6, metalness: 0, specularIntensity: 0.2, transparent: true, opacity: 0.38, depthWrite: false })),
+    glass: studio(new THREE.MeshPhysicalMaterial({ ...glassOptions(), map: blockPicture(), color: srgb(SHIELD_GLASS.colour).multiplyScalar(1 / PICTURE.level), roughness: 0.2, clearcoat: 1, clearcoatRoughness: 0.1, transparent: true, opacity: SHIELD_GLASS.through })),
     glassCrack: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xf4f8f5), roughness: 0.3, metalness: 0, specularIntensity: 0.8, transparent: true, opacity: 0.8, depthWrite: false })),
-    plate: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x6f7378), roughness: 0.38, metalness: 1 })),
+    plate: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x7c8085), roughness: 0.34, metalness: 1, map: brushing(), anisotropy: 0.55, anisotropyRotation: Math.PI / 2 })),
+    plateSide: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x35373a), roughness: 0.55, metalness: 0.9 })),
     pocket: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x63666a), roughness: 0.5, metalness: 0.9 })),
-    link: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xc2c6c9), roughness: 0.45, metalness: 0.5 })),
+    link: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xb2b6ba), roughness: 0.45, metalness: 0.5 })),
     crack: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x3a1608), roughness: 0.85, metalness: 0, specularIntensity: 0.15, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 }))
   }
   return made

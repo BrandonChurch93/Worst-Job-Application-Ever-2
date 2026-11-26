@@ -189,7 +189,11 @@ vec4 floorAt( vec3 from, vec3 dir ) {
 			float hz = p.z - uDrop;
 			vec3 c = mix( vec3( 0.107, 0.117, 0.125 ), vec3( 0.065, 0.120, 0.125 ), smoothstep( 0.08, 0.12, abs( fract( p.x / 62.0 ) - 0.5 ) ) ) * uDoorLit;
 			if ( hz > 153.6 ) c = vec3( 0.202, 0.205, 0.209 ) * uDoorLit * ( hz < 206.4 ? 1.0 : 0.7 );
-			else if ( dx < 108.2 ) c = ( sx > 0.0 ? vec3( 0.188, 0.098, 0.019 ) : vec3( 0.220, 0.153, 0.070 ) ) * uDoorLit;
+			else if ( hz > 144.0 && dx < 108.2 ) c = vec3( 0.254, 0.144, 0.025 ) * mix( 0.16, 0.8, ( hz - 144.0 ) / 9.6 ) * uDoorLit;
+			else if ( dx < 108.2 ) {
+				float hj = hz / 144.0;
+				c = ( sx > 0.0 ? vec3( 0.188, 0.098, 0.019 ) : vec3( 0.220, 0.153, 0.070 ) ) * uDoorLit * ( hj < 0.58 ? mix( 0.3, 1.5, smoothstep( 0.0, 0.58, hj ) ) : mix( 1.5, 0.35, smoothstep( 0.58, 1.0, hj ) ) );
+			}
 			if ( dx < 91.2 && hz < 144.0 ) {
 				vec3 room = vec3( 0.108, 0.089, 0.057 ) * ( hz < 35.0 ? 0.6 : ( hz < 70.0 ? 1.0 : 1.5 ) );
 				room = mix( room, vec3( 0.356, 0.285, 0.164 ), smoothstep( 90.0, 104.0, hz ) );
@@ -199,7 +203,7 @@ vec4 floorAt( vec3 from, vec3 dir ) {
 				if ( dx > open ) {
 					float l = ( dx - open ) / max( uDoor.w, 0.05 );
 					float q = fract( ( l + hz * 0.55 ) / 91.2 );
-					c += vec3( 0.07, 0.07, 0.065 ) * uDoorLit * ( 0.6 - 0.6 * smoothstep( 0.0, 0.03, abs( q - 0.3 ) ) + 0.4 - 0.4 * smoothstep( 0.0, 0.015, abs( q - 0.42 ) ) );
+					c += vec3( 0.03, 0.036, 0.037 ) * uDoorLit * ( 0.6 - 0.6 * smoothstep( 0.0, 0.03, abs( q - 0.3 ) ) + 0.4 - 0.4 * smoothstep( 0.0, 0.015, abs( q - 0.42 ) ) );
 					if ( l < 3.0 || l > 85.2 ) c = vec3( 0.503, 0.262, 0.058 ) * uDoorLit;
 					if ( hz >= 137.0 ) c = vec3( 0.296, 0.144, 0.022 ) * uDoorLit;
 					if ( hz < 24.0 ) c = vec3( 0.252, 0.122, 0.019 ) * uDoorLit;
