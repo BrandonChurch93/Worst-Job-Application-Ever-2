@@ -412,13 +412,16 @@ export function pack(P, c, M, quiet = false) {
   const records = keptRecords(P).filter((r) => fs.existsSync(path.join(P.kept, r.file)))
   const index = { version: 1, sampleRate: c.audio.sampleRate, pack: null, sfx: [], loops: [], lines: [], totalBytes: 0 }
   const chunks = []
+  const linePeaks = []
   let offset = 0
   for (const r of records) {
     const wav = path.join(P.kept, r.file)
     if (r.kind !== 'cue') {
-      const bytes = encode(wav, ['-ac', '1', '-c:a', 'libmp3lame', '-b:a', '64k', '-id3v2_version', '0', '-f', 'mp3'])
+      const bytes = encode(wav, ['-ac', '1', '-c:a', 'libmp3lame', '-b:a', `${M.levels.PACK.lineKbps}k`, '-id3v2_version', '0', '-f', 'mp3'])
       const file = `${r.id}.mp3`
       fs.writeFileSync(path.join(P.pub, file), bytes)
+      const decoded = decodeFile(path.join(P.pub, file), c.audio.sampleRate)
+      linePeaks.push({ id: r.id, db: M.levels.toDb(M.dsp.peak(decoded.channels[0])) })
       index.lines.push({ id: r.id, file, seconds: r.seconds, mime: 'audio/mpeg', bytes: bytes.length, sha256: sha(bytes) })
     } else if (r.loop) {
       const bytes = encode(wav, ['-c:a', 'flac', '-sample_fmt', 's16', '-compression_level', '8', '-f', 'flac'])
@@ -444,6 +447,10 @@ export function pack(P, c, M, quiet = false) {
   if (!quiet) {
     console.log(`packed: ${index.sfx.length} short sounds in one file, ${index.loops.length} loops, ${index.lines.length} narrator lines, ${mb.toFixed(2)} MB of ${c.audio.appMaxMb} MB, in ${rel(P.pub)}`)
     if (!records.length) console.log('pack: no sound is kept, so the index lists nothing and the site runs silent')
+    const over = linePeaks.filter((l) => l.db > 0).sort((x, y) => y.db - x.db)
+    const top = linePeaks.slice().sort((x, y) => y.db - x.db)[0]
+    if (top) console.log(`pack: the narrator lines at ${M.levels.PACK.lineKbps} kbit decode with their largest sample at ${top.db.toFixed(2)} dB (${top.id})`)
+    if (over.length) console.log(`pack: OVER FULL SCALE. ${over.length} packed lines decode over 0 dB, which a browser's decoder cuts flat: ${over.map((l) => `${l.id} ${l.db.toFixed(2)} dB`).join(', ')}`)
     if (mb > c.audio.appMaxMb) console.log(`pack: OVER THE LIMIT. The site's sound files are ${mb.toFixed(2)} MB and audio.appMaxMb is ${c.audio.appMaxMb}`)
   }
   return index

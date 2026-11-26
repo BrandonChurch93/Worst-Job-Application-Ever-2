@@ -162,6 +162,25 @@ Test: `tests/audio-peaks.test.ts`, 7 tests, with a made take (two tones with a 3
 
 After the Builder has kept and packed them again: `npm run sound -- --levels` on the new pack, and `LIVE.headroomDb` is set to the smallest half dB that holds the bound.
 
+### The packed line, and why 64 kbit was wrong (17:50Z to 17:55Z)
+
+FINDING of the Builder, MEASURED again here: the packed MP3 of a line peaks far over its kept WAV. With ffmpeg's decoder, true peak (`loudnorm` input_tp) and largest sample (`astats`), mono `libmp3lame` as the pack makes it:
+
+| Line | Kept WAV | 64 kbit | 96 kbit | 128 kbit | 160 kbit |
+| --- | --- | --- | --- | --- | --- |
+| `line.live.pinball.flipper.0` (the kept WAV itself) | -1.48 | +1.52 | -0.29 | -1.84 | -1.99 |
+| `line.pinball.fired.0` (a stand-in: the old kept WAV limited here) | -1.04 | +2.49 | +0.20 | -1.01 | -0.98 |
+| `line.pinball.replyAll.0` (a stand-in, the same way) | -1.13 | +2.54 | -0.56 | -1.20 | -1.36 |
+| `line.marketing.perks.0` (a stand-in, the same way) | -1.03 | +1.63 | -0.50 | -1.52 | -1.45 |
+
+True peak in dB. The files: 64 kbit 49920, 44544, 24000, 54144 bytes; 128 kbit twice that. In the Builder's pack of 17:49Z, MEASURED here: `flipper.0` +1.52 dB, `fired.0` +3.42, `replyAll.0` +0.54.
+
+Why it matters more than the number at the output: Chromium's decoder stops at full scale. MEASURED in `npm run sound -- --levels` on that pack (logs/levels5.log), the voice track alone: 7 of the 11 lines the keen visit hears have their largest sample at exactly 0 dB (`step1.firstName.0`, `step1.email.0`, `pinball.launch.0`, `pinball.coffee.0`, `pinball.fired.0`, `boss.verify.0`, `boss.slabs.0`). So the line that the chain now keeps whole is cut flat again, by the browser, because of the MP3. No gain after the engine mends that.
+
+So `PACK.lineKbps` in `src/audio/levels.ts` is 128: the overshoot goes from about +3 dB to within 0.4 dB of the kept sound, and a line limited at -1 dB stays under full scale after the decoder. The cost: the 34 lines are 1305408 bytes at 64 kbit over 162.07 s, so about 2.61 MB at 128, and the pack goes from 5.42 MB to about 6.66 MB of `audio.appMaxMb` 14. `--pack` now prints the largest decoded sample of the packed lines and names every line that decodes over 0 dB.
+
+On that 64 kbit pack `--levels` FAILS its peak line: +0.07 dB at the output in the keen visit as heard, at `line.boss.verify.0` (voice alone +0.62 dB, cut at full scale, over the bed's loudest moment), with the headroom at 2.5 dB. The keen visit is also not the one of 17:10Z: after merge 38 it has 839 events over 125.62 s and 14 lines booked (it was 124.05 s and 11).
+
 ## The crank (point 5)
 
 `src/pages/step2/index.ts` line 857: the page's volume is `max(0.1, level)` from the moment the Audio volume row opens until that row is done, and 1 otherwise; `level` is a tenth for each whole turn.
