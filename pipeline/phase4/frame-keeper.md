@@ -77,8 +77,11 @@ The times in the table from 05:01 on are read back from the pushes (05:20, 05:28
 | 05:53 to 05:55 | table-wide, tier-street, last-save | marquee, table-frame, ramps | 3 |
 | 06:00 to 06:06 | table-wide 3 | marquee: the title | 3 |
 | 06:08 | tier-corporate | lift: the tube's bands | 1 |
+| 06:15 to 06:17 | table-wide (review), last-save, tier-street | all parts, after the title and the bands | 3 |
+| 06:19 | tier-corporate | lift: bands in aluminium, not kept | 1 |
+| 06:20 | table-wide | table-frame: the apron card on the left slab | 1 |
 
-Total in round 11 at 06:12 UTC: 12 (loader 1, table-frame 5, marquee 4, ramps 1, lift 1).
+Total in round 11 at 06:24 UTC: 17 (loader 1, table-frame 7, marquee 5, ramps 2, lift 2). Nothing pushed after 06:13 UTC is judged in round 11 (/root, 06:14 UTC); these stills are counted here all the same.
 
 ## Decisions
 
@@ -105,6 +108,8 @@ Total in round 11 at 06:12 UTC: 12 (loader 1, table-frame 5, marquee 4, ramps 1,
 - Seen, not mine, told to their owners: the floor inside the lower shoulders is black in `tier-office` and `tier-street` (lamp_keeper); `rail-cam` near wire inside the lens's blur (table_runner, who lowered the camera and closed the lens). The marquee's title draws heavy and black across the whole picture in `table-wide` (table_runner, 05:25).
 - The marquee's title (06:05 UTC, 73124fdf). `frame/title.ts`: my marquee maker answers `key` for the one shape `marquee-title` and makes it from the type's own `dataOf` and `geometryOf` (words through `words()` from copy.json; font, size and place are the shape's, set by table_runner), on one material through `lit(studio(m), zone('marquee'))` whose emissive follows the `panel` level in `pose`. It is not drawn twice: `realKey` in `src/shell/view.ts` asks the part's maker first and the shell's type only when that says null. The tone: lamp_keeper and table_runner both said approved has a pale word, and /root asked for letters that glow. MEASURED on approved `table-wide`: the letters are dark warm print, (91,56,39) on a sky of (194,153,120). So the title is dark warm print that lets a little of the panel's light through. MEASURED on the draft at 06:06 UTC: letters (76,48,35) on sky (224,131,67); before it was near black. Counts in `table-wide` the same: scene 201, marquee 4 / 2168 (the run is counted in the row of the type).
 - The clear tube's chrome bands (06:12 UTC, 46f2e454): 20 px long and 1.6 proud of the old ring, with a groove round the middle (`BAND` in `hardware/kit.ts`); the loader's own ring keeps `TUBE.ferrule`. Approved has bands near a third of the tube's width; these are a fifth, so the straps between them still fit. Looked at in `tier-corporate` beside approved: they read as bands, darker than approved's.
+- The bands in brushed aluminium in place of chrome: tried at 06:19 UTC, looked the same dark from above in `tier-corporate`, taken out again (the tree stays as checked).
+- The apron's card (06:22 UTC, d97c5e43, by /root's ruling of 06:20 UTC that the card belongs on the left slab, kit/02-SUBJECT.md line 371): `apron.ts` no longer names a side. The slab whose span holds the card's middle ends at the card's underside, so the line is right before and after table_runner's move of the node and the two changes need not land in the same minute. Looked at once in `table-wide` draft with table_runner's two lines put in locally and taken out again: the card lies on the left slab under its cover, a tone darker than it was on the right. The whole checks were run with the card on the right only.
 - The side rails' near ends stand tall in `table-wide` because the street floor is 288 below the page: that height is the layout's and stays.
 
 ## MEASURED times (04:07 to 04:34 UTC, this VM)
@@ -120,10 +125,6 @@ Total in round 11 at 06:12 UTC: 12 (loader 1, table-frame 5, marquee 4, ramps 1,
 3. The bats and the lift's elbow: flat orange without the gloss streak approved has, and the elbow darker than approved. The light on them is lamp_keeper's; not measured again since 04:34 UTC.
 
 Also open: the loader's ring is paler than approved and has no brushed sheen; the marquee's title is Inter where approved has a wide tracked light face (the font and place are table_runner's shape); the near highway wire is a little pale at draft.
-
-| 06:15 to 06:17 | table-wide (review), last-save, tier-street | all parts, after the title and the bands | 3 |
-
-Total in round 11 at 06:18 UTC: 15 (loader 1, table-frame 6, marquee 5, ramps 2, lift 1).
 
 ## Draw calls, MEASURED about 05:30 UTC at f66fec4d (`npm run build && npm run counts -- --key <key> --live low`)
 
