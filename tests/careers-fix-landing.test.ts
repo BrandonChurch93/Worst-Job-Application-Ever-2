@@ -44,7 +44,6 @@ describe('the landing back on the careers page', () => {
   })
 
   it('holds three poses long enough to be read: flat on landing, stood again, leant at the button', () => {
-    console.log('flat', flat, 'stood', stood, 'leant', leant, 'ends', poses[poses.length - 1]!.t)
     expect(flat[1] - flat[0]).toBeGreaterThan(0.3)
     expect(stood[1] - stood[0]).toBeGreaterThan(0.3)
     expect(leant[1] - leant[0]).toBeGreaterThan(0.3)
