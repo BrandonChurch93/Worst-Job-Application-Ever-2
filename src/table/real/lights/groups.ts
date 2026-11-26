@@ -182,7 +182,7 @@ export interface High { x: number; y: number; z: number; reach: number; colour: 
 export const HIGHS = 9
 export const HIGH_BODY = 60
 // The beacon's lamp over its roof, in pixels and balls: low and near, so its colour lies on the roof and not on the street.
-const BEACON = { z: 20, reach: 1.5, power: 0.8 }
+const BEACON = { z: 14, reach: 0.85, power: 0.7 }
 const NOTES = { out: 0.75, z: 70, reach: 2, power: 0.2 }
 
 export function highOf(z: Zone): High[] {

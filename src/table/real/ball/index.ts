@@ -9,7 +9,7 @@ import { zoneAt } from '../../draw'
 import { table, TIER_Y } from '../../layout'
 import { lit } from '../light'
 import { zone } from '../zone'
-import { backFragment, decalFragment, decalVertex, dropFragment, dropVertex, frontFragment, shellVertex } from './glsl'
+import { backFragment, decalFragment, decalVertex, dropFragment, dropVertex, frontFragment, shellVertex, SQUASH } from './glsl'
 import { BOXES, LAMPS, lightAt, washAt, type Light, type RGB } from './lamps'
 
 export const PART = 'clear-ball'
@@ -368,6 +368,9 @@ function pose(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const pressed = debug.press ? { x: debug.press[0] ?? 1, y: debug.press[1] ?? 0, amount: debug.press[2] ?? 0 } : hit.amount > stood.amount ? hit : stood
   const gone = smooth((open - PARTING.fades) / (1 - PARTING.fades))
   own.roll.position.z = r - smooth((open - PARTING.sinks) / (1 - PARTING.sinks)) * PARTING.deep * r
+  const lean = open > 0 || debug.press || pressed !== hit ? 0 : (1 - (1 - SQUASH.cut * hit.amount) * (1 - SQUASH.thin * hit.amount)) * r
+  own.roll.position.x = hit.x * lean
+  own.roll.position.y = -hit.y * lean
   toward.set(pressed.x, -pressed.y, 0).applyQuaternion(unroll.copy(own.roll.quaternion).invert())
   ;(u.uPress!.value as THREE.Vector4).set(toward.x, toward.y, toward.z, open > 0 ? 0 : pressed.amount)
 

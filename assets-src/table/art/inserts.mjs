@@ -98,7 +98,7 @@ function glass(look, kind, i) {
   }
   const ink = mix(c, '#0a0c10', 0.78)
   const lit = mix(c, '#ffffff', 0.5)
-  return `<radialGradient id="g${i}" cx="256" cy="256" r="262" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${mix(c, '#ffffff', 0.8)}"/><stop offset="0.18" stop-color="${mix(c, '#ffffff', 0.45)}"/><stop offset="0.4" stop-color="${mix(c, '#06080c', 0.1)}"/><stop offset="0.7" stop-color="${mix(c, '#06080c', 0.5)}"/><stop offset="1" stop-color="${mix(c, '#06080c', 0.8)}"/></radialGradient><rect width="512" height="512" fill="url(#g${i})"/>${draw(pen(ink, 0.94), 9, `fill="${ink}" opacity="0.94"`, pen(lit, 0.9), pen(lit))}`
+  return `<radialGradient id="g${i}" cx="256" cy="256" r="262" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${mix(c, '#ffffff', 0.8)}"/><stop offset="0.14" stop-color="${mix(c, '#ffffff', 0.45)}"/><stop offset="0.34" stop-color="${mix(c, '#06080c', 0.2)}"/><stop offset="0.62" stop-color="${mix(c, '#06080c', 0.62)}"/><stop offset="1" stop-color="${mix(c, '#06080c', 0.88)}"/></radialGradient><rect width="512" height="512" fill="url(#g${i})"/>${draw(pen(ink, 0.94), 9, `fill="${ink}" opacity="0.94"`, pen(lit, 0.9), pen(lit))}`
 }
 
 export async function insertAtlases(inserts, dir, size) {

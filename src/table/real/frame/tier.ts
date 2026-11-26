@@ -8,7 +8,7 @@ import { TUBE } from './loader'
 import { Screws, TONE, aluOf, mesh, paintOf, screwOf, steelOf } from './mats'
 
 // What the walls of a tier are made to, in page pixels.
-const WALL = { height: 60, seg: 34, rim: 30, chamfer: 4.5, strip: [30, 54] as V2, stripOut: 0.9 }
+const WALL = { height: 60, seg: 34, rim: 30, blade: 2.4, post: 5.4, chamfer: 4.5, strip: [30, 54] as V2, stripOut: 0.9 }
 const METAL: [number, number, number] = [0.52, 0.53, 0.55]
 const RAIL = { reveal: 30, revealWide: 4.5, revealDeep: 2, chamfer: 3, channel: 17, channelDepth: 3, ledge: 15, land: 84, step: 5, lip: 3, slope: 0.84, bank: 11, cuts: 10, tilt: [20, 58] as V2, gap: 1.2, joint: 1.4, screwStep: 1.5, cradle: 62.5, tubeUp: 48 }
 const exitOf = table.openings.find((o) => o.id.endsWith('.exit'))!
@@ -311,20 +311,20 @@ export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
     if (s.tier !== k || !/\.(shoulder\.step|shoulder\.edge|mouth\.side|outlane\.side)\./.test(s.id)) continue
     const a = at(s.a[0], s.a[1] - TIER_Y[k]!)
     const b = at(s.b[0], s.b[1] - TIER_Y[k]!)
-    const w = 5.76
-    const w2 = WALL.chamfer
+    const w = WALL.blade
+    const w2 = 1
     A.prism([[-w, 0], [-w, WALL.rim - w2], [-w + w2, WALL.rim], [w - w2, WALL.rim], [w, WALL.rim - w2], [w, 0]], a, b, METAL, [false, false])
     if (k === 0 && s.id.includes('shoulder.edge')) {
       const d = Math.hypot(b[0] - a[0], b[1] - a[1])
       const from = A.vertices
-      A.box(8, d - 8, -1.2, 1.2, WALL.rim - 0.4, WALL.rim + 0.35, TONE.brass)
+      A.box(8, d - 8, -0.9, 0.9, WALL.rim - 0.4, WALL.rim + 0.35, TONE.brass)
       A.move(from, new THREE.Matrix4().makeTranslation(a[0], a[1], 0).multiply(new THREE.Matrix4().makeRotationZ(Math.atan2(b[1] - a[1], b[0] - a[0]))))
     }
     posts.set(`${a[0].toFixed(1)},${a[1].toFixed(1)}`, a)
     if (b[1] > yB + 2) posts.set(`${b[0].toFixed(1)},${b[1].toFixed(1)}`, b)
   }
   for (const p of posts.values()) {
-    A.lathe([[7.4, 0], [7.4, WALL.rim], [6.2, WALL.rim + 2.2], [2.6, WALL.rim + 2.2]], p[0], p[1], 14, METAL)
+    A.lathe([[WALL.post, 0], [WALL.post, WALL.rim], [WALL.post - 1.2, WALL.rim + 2.2], [2.6, WALL.rim + 2.2]], p[0], p[1], 14, METAL)
     screws.add(p[0], p[1], WALL.rim + 2.2, 0.58, turnOf(p[0], p[1]))
   }
 
