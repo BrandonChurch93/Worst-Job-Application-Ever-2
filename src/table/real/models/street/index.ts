@@ -8,13 +8,13 @@ import { firehouse, type Firehouse } from './firehouse'
 import { garage } from './garage'
 import { Geo, buckets, type Buckets, type V3 } from './geo'
 import { houses } from './houses'
-import { beaconLens, beaconReflector } from './kit'
-import { glowOf, lensOf, metalOf, paintOf } from './mats'
+import { beaconBulb, beaconLens } from './kit'
+import { glowOf, lensOf, metalOf, paintOf, plasticOf } from './mats'
 import { HATCH, moms, type Moms } from './moms'
 import { police } from './police'
 import { roadSign, streetThings } from './things'
 
-const VERSION = 'street-models-49'
+const VERSION = 'street-models-50'
 
 // Everything the seven parts are built from in one zone, made once and shared: each part keeps the meshes that are its own.
 interface Street {
@@ -139,13 +139,10 @@ const fire = whole('model-firehouse', {
     const dome = mesh(beaconLens(), lens, `street.firehouse.beacon.${z.id}`, { receive: false })
     dome.position.set(s.fire.beacon[0], s.fire.beacon[1], s.fire.beacon[2])
     dome.userData.lightGroup = group(z, 'red')
-    const turn = mesh(beaconReflector(), glow, `street.firehouse.reflector.${z.id}`, { receive: false })
-    turn.position.copy(dome.position)
-    turn.userData.lightGroup = group(z, 'red')
     const bay = mesh(s.fire.bay.done(), glow, `street.firehouse.bay.${z.id}`, { receive: false })
     bay.userData.lightGroup = group(z, 'red')
-    o.add(bay, turn, dome)
-    kept.set(o, { door, lens, glow, turn, x0: s.fire.doorAt[0], z0: s.fire.doorAt[2], travel: s.fire.travel })
+    o.add(bay, dome)
+    kept.set(o, { door, lens, glow, x0: s.fire.doorAt[0], z0: s.fire.doorAt[2], travel: s.fire.travel })
     return o
   },
   pose(o, z, ctx) {
@@ -156,9 +153,8 @@ const fire = whole('model-firehouse', {
     door.position.z = (k.z0 as number) + d.raise * (k.travel as number) + Math.abs(Math.sin(ctx.time * 53)) * 0.8 * d.shake
     door.position.x = (k.x0 as number) + Math.sin(ctx.time * 71) * 0.7 * d.shake
     const red = levels(ctx, z).byName.red ?? 0
-    ;(k.lens as THREE.MeshPhysicalMaterial).emissiveIntensity = 0.35 + 1.5 * red
+    ;(k.lens as THREE.MeshPhysicalMaterial).emissiveIntensity = 0.3 + 1.0 * red
     ;(k.glow as THREE.MeshStandardMaterial).emissiveIntensity = 1.5 + 1.8 * red
-    ;(k.turn as THREE.Mesh).rotation.z = red > 0.6 ? ctx.time * 8.5 : 0.6
   }
 })
 
@@ -173,20 +169,18 @@ const cops = whole('model-police', {
     const dome = mesh(beaconLens(), lens, `street.police.beacon.${z.id}`, { receive: false })
     dome.position.set(s.police.beacon[0], s.police.beacon[1], s.police.beacon[2])
     dome.userData.lightGroup = group(z, 'blue')
-    const turn = mesh(beaconReflector(), glow, `street.police.reflector.${z.id}`, { receive: false })
-    turn.position.copy(dome.position)
-    turn.userData.lightGroup = group(z, 'blue')
-    o.add(turn, dome)
-    kept.set(o, { lens, glow, turn })
+    const bulb = mesh(beaconBulb(new Geo(), s.police.beacon).done(), glow, `street.police.bulb.${z.id}`, { receive: false })
+    bulb.userData.lightGroup = group(z, 'blue')
+    o.add(bulb, dome)
+    kept.set(o, { lens, glow })
     return o
   },
   pose(o, z, ctx) {
     const k = kept.get(o)
     if (!k) return
     const blue = levels(ctx, z).byName.blue ?? 0
-    ;(k.lens as THREE.MeshPhysicalMaterial).emissiveIntensity = 0.35 + 1.5 * blue
+    ;(k.lens as THREE.MeshPhysicalMaterial).emissiveIntensity = 0.3 + 1.0 * blue
     ;(k.glow as THREE.MeshStandardMaterial).emissiveIntensity = 0.3 + 3 * blue
-    ;(k.turn as THREE.Mesh).rotation.z = blue > 0.6 ? -ctx.time * 8.5 : 2.2
   }
 })
 
@@ -210,7 +204,9 @@ const park = whole('model-garage', {
     const glow = glowOf(z, 'windows', colours.STREET_WINDOW)
     const lit = mesh(s.b.glow.done(), glow, `street.models.glow.${z.id}`, { receive: false })
     lit.userData.lightGroup = group(z, 'windows')
-    o.add(lit)
+    const decks = mesh(s.b.glass.done(), plasticOf(z), `street.garage.decks.${z.id}`, { receive: false })
+    decks.renderOrder = 2
+    o.add(lit, decks)
     kept.set(o, { glow })
     return o
   },

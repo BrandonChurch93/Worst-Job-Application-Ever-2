@@ -51,6 +51,7 @@ vec2 wsCells( vec2 uv, vec2 size, float shift, float joint ) {
 }
 // The surface a face is moulded with: xyz the tone its paint is multiplied by, w its height for the relief. wsGloss is taken off the roughness.
 float wsGloss = 0.0;
+float wsSelf = 0.0;
 float wsCoat = 1.0;
 vec4 wsOver = vec4( 0.0 );
 vec4 wsSurface( vec3 face ) {
@@ -61,17 +62,22 @@ vec4 wsSurface( vec3 face ) {
 	vec3 tone = vec3( 1.0 );
 	float h = 0.0;
 	if ( kind == 1.0 || kind == 10.0 ) {
-		vec2 c = wsCells( uv, kind == 1.0 ? vec2( 10.0, 4.2 ) : vec2( 6.0, 2.5 ), 0.5, kind == 1.0 ? 0.8 : 0.5 );
+		vec2 c = wsCells( uv, kind == 1.0 ? vec2( 10.0, 4.2 ) : vec2( 6.0, 2.5 ), 0.5, kind == 1.0 ? 1.05 : 0.5 );
 		float burnt = step( 0.86, wsHash( vec2( c.y * 53.0, 11.0 ) ) );
 		if ( kind == 1.0 ) {
 			float lip = smoothstep( 0.52, 0.86, wsIn.y ) * ( 1.0 - c.x ) * wsFade;
 			float foot = smoothstep( 0.42, 0.1, wsIn.y ) * wsFade;
-			tone = vec3( 0.74 + 0.44 * c.y ) * vec3( 1.0, 0.9 + 0.16 * wsHash( vec2( c.y * 91.0, 3.0 ) ), 0.88 ) * ( 1.0 - 0.45 * burnt ) * ( 0.88 + 0.22 * grain ) * ( 1.0 + 0.38 * lip - 0.22 * foot );
-			wsOver = vec4( vec3( 0.05, 0.036, 0.03 ) * ( 0.7 + 0.6 * grain ), c.x * 0.86 );
+			float soot = wsNoise( uv * 0.045 + 11.3 );
+			float bloom = smoothstep( 0.62, 0.9, wsNoise( uv * 0.07 + 5.1 ) ) * wsFade;
+			float chip = smoothstep( 0.55, 0.9, wsNoise( uv * 1.7 ) ) * wsFade;
+			float pale = step( 0.9, wsHash( vec2( c.y * 17.0, 29.0 ) ) );
+			tone = vec3( 0.58 + 0.72 * c.y ) * vec3( 1.0, 0.82 + 0.3 * wsHash( vec2( c.y * 91.0, 3.0 ) ), 0.8 + 0.2 * wsHash( vec2( c.y * 37.0, 5.0 ) ) ) * ( 1.0 - 0.5 * burnt ) * ( 1.0 + 0.5 * pale ) * ( 0.8 + 0.34 * grain ) * ( 1.0 + 0.42 * lip - 0.3 * foot ) * ( 0.66 + 0.6 * soot ) * ( 1.0 - 0.3 * chip );
+			tone = mix( tone, vec3( 1.5, 1.5, 1.6 ) * ( 0.6 + 0.5 * grain ), 0.3 * bloom );
+			wsOver = vec4( vec3( 0.06, 0.05, 0.045 ) * ( 0.5 + 1.1 * grain ), c.x * 0.92 );
 		} else {
 			tone = vec3( 0.9 + 0.18 * c.y ) * ( 1.0 - 0.3 * c.x ) * ( 0.92 + 0.14 * grain );
 		}
-		h = ( 1.0 - c.x ) * 0.55 + grain * 0.3;
+		h = ( 1.0 - c.x ) * ( kind == 1.0 ? 1.1 : 0.55 ) + grain * 0.3 + ( kind == 1.0 ? wsNoise( uv * 1.7 ) * 0.35 : 0.0 );
 	} else if ( kind == 2.0 ) {
 		vec2 c = wsCells( uv, vec2( 22.0, 9.6 ), 0.5, 1.3 );
 		tone = vec3( 0.84 + 0.22 * c.y + 0.1 * grain ) * ( 1.0 - 0.2 * c.x );
@@ -110,8 +116,18 @@ vec4 wsSurface( vec3 face ) {
 		float speck = wsNoise( uv * 1.1 );
 		tone = vec3( 0.86 + 0.12 * speck * speck ) * ( 0.74 + 0.4 * wsNoise( uv * 0.06 ) ) * ( 0.9 + 0.2 * wsNoise( uv * 0.4 ) );
 		h = speck * 0.1;
+	} else if ( kind == 11.0 ) {
+		tone = vec3( 1.0 );
+		wsGloss = -0.34;
+		wsCoat = 0.0;
+		wsSelf = 0.2;
 	} else {
 		tone = vec3( 0.95 + 0.08 * grain );
+	}
+	if ( kind == 2.0 || kind == 3.0 || kind == 6.0 || kind == 9.0 ) {
+		float grit = wsNoise( uv * 2.9 + 1.7 );
+		tone *= 0.9 + 0.2 * grit;
+		h += grit * 0.12;
 	}
 	if ( kind == 1.0 || kind == 2.0 || kind == 3.0 || kind == 4.0 || kind == 6.0 || kind == 9.0 ) wsCoat = 0.12;
 	if ( kind == 1.0 || kind == 2.0 || kind == 3.0 || kind == 5.0 || kind == 6.0 || kind == 10.0 ) {
@@ -128,13 +144,14 @@ vec4 wsSurface( vec3 face ) {
 // The moulded and painted plastic of the models: one material for the zone, a colour for each vertex and a kind of surface for each face.
 export function paintOf(z: Zone): THREE.MeshPhysicalMaterial {
   const m = studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.6, metalness: 0, specularIntensity: 0.5, clearcoat: 0.22, clearcoatRoughness: 0.38 }))
-  over(m, 'wja-studio-street-paint-16', (shader) => {
+  over(m, 'wja-studio-street-paint-18', (shader) => {
     shader.vertexShader = 'attribute vec3 face;\nvarying vec3 vWsFace;\n' + shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n\tvWsFace = face;')
     shader.fragmentShader =
       'varying vec3 vWsFace;\n' +
       shader.fragmentShader
         .replace('void main() {', surface + '\nvoid main() {\n\tvec4 wsS = wsSurface( vWsFace );')
         .replace('#include <color_fragment>', '#include <color_fragment>\n\tdiffuseColor.rgb = mix( diffuseColor.rgb * wsS.xyz, wsOver.rgb, wsOver.a );')
+        .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\n\ttotalEmissiveRadiance += diffuseColor.rgb * wsSelf;')
         .replace('#include <lights_physical_fragment>', '#include <lights_physical_fragment>\n\t#ifdef USE_CLEARCOAT\n\tmaterial.clearcoat *= wsCoat;\n\t#endif')
         .replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\n\troughnessFactor = clamp( roughnessFactor - wsGloss, 0.05, 1.0 );')
         .replace(
@@ -162,29 +179,38 @@ export function glowOf(z: Zone, name: string, colour: [number, number, number]):
 export function lensOf(z: Zone, name: string, colour: [number, number, number]): THREE.MeshPhysicalMaterial {
   const m = studio(
     new THREE.MeshPhysicalMaterial({
-      color: new THREE.Color(colour[0] * 0.42 + 0.01, colour[1] * 0.14 + 0.004, colour[2] * 0.42 + 0.01),
+      color: new THREE.Color(colour[0] * 0.3 + 0.006, colour[1] * 0.1 + 0.003, colour[2] * 0.3 + 0.006),
       roughness: 0.16,
       metalness: 0,
       transparent: true,
-      opacity: 0.93,
-      specularIntensity: 0.45,
-      clearcoat: 0.45,
-      clearcoatRoughness: 0.12,
+      opacity: 0.95,
+      specularIntensity: 0.6,
+      clearcoat: 0.7,
+      clearcoatRoughness: 0.08,
       emissive: new THREE.Color(colour[0], colour[1], colour[2]),
       emissiveIntensity: 1
     })
   )
   m.userData.lit = true
   // The dome gathers its lamp: bright where the eye looks straight through it at the bulb, deep in colour toward its rim.
-  over(m, 'wja-studio-street-lens-3', (shader) => {
-    shader.fragmentShader = shader.fragmentShader.replace(
+  over(m, 'wja-studio-street-lens-5', (shader) => {
+    shader.vertexShader = 'varying vec3 vWsCore;\nvarying float vWsRad;\n' + shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n\tvWsCore = ( modelViewMatrix * vec4( 0.0, 0.0, 21.0, 1.0 ) ).xyz;\n\tvWsRad = length( ( modelViewMatrix * vec4( 25.0, 0.0, 0.0, 0.0 ) ).xyz );')
+    shader.fragmentShader = 'varying vec3 vWsCore;\nvarying float vWsRad;\n' + shader.fragmentShader.replace(
       '#include <emissivemap_fragment>',
-      '#include <emissivemap_fragment>\n\t{\n\t\tfloat wsF = clamp( dot( normalize( vNormal ), normalize( vViewPosition ) ), 0.0, 1.0 );\n\t\tfloat wsL = max( totalEmissiveRadiance.r, max( totalEmissiveRadiance.g, totalEmissiveRadiance.b ) );\n\t\ttotalEmissiveRadiance = totalEmissiveRadiance * ( 0.1 + 1.9 * pow( wsF, 2.6 ) ) + vec3( 0.34 ) * wsL * pow( wsF, 10.0 );\n\t}'
+      '#include <emissivemap_fragment>\n\t{\n\t\tfloat wsF = clamp( dot( normalize( vNormal ), normalize( vViewPosition ) ), 0.0, 1.0 );\n\t\tfloat wsL = max( totalEmissiveRadiance.r, max( totalEmissiveRadiance.g, totalEmissiveRadiance.b ) );\n\t\tvec3 wsHue = totalEmissiveRadiance / max( wsL, 0.0001 );\n\t\tfloat wsOff = length( cross( normalize( vViewPosition ), vWsCore ) ) / vWsRad;\n\t\tfloat wsHot = exp( - wsOff * wsOff * 9.0 );\n\t\tfloat wsHalo = exp( - wsOff * wsOff * 2.2 );\n\t\ttotalEmissiveRadiance = totalEmissiveRadiance * ( 0.07 + 0.3 * pow( wsF, 1.5 ) + 0.5 * wsHalo * ( 0.55 + 0.45 * wsF ) ) + mix( wsHue, vec3( 1.0, 0.8, 0.56 ), 0.7 ) * wsL * 2.6 * wsHot * ( 0.6 + 0.4 * wsF );\n\t}'
     )
   })
   return named(lit(m, z), `street.lens.${name}.${z.id}`)
 }
 
-// Clear plastic: panes and the panel of the shelter.
-export const glassOf = (z: Zone): THREE.MeshPhysicalMaterial =>
-  named(lit(studio(new THREE.MeshPhysicalMaterial({ color: 0xcfdde2, roughness: 0.06, metalness: 0, transparent: true, opacity: 0.2, depthWrite: false, clearcoat: 1, clearcoatRoughness: 0.04, specularIntensity: 1 })), z), `street.glass.${z.id}`)
+// Clear plastic, moulded thick: the decks of the garage. Thin where it is seen straight through, bright where it turns away from the eye and wherever a lamp lies on it, with the dark line a clear wall shows just inside its edge.
+export function plasticOf(z: Zone): THREE.MeshPhysicalMaterial {
+  const m = studio(new THREE.MeshPhysicalMaterial({ color: 0x9aa7ad, vertexColors: true, roughness: 0.07, metalness: 0, transparent: true, opacity: 0.2, depthWrite: false, clearcoat: 1, clearcoatRoughness: 0.05, specularIntensity: 1 }))
+  over(m, 'wja-studio-street-plastic-1', (shader) => {
+    shader.fragmentShader = shader.fragmentShader.replace(
+      '#include <tonemapping_fragment>',
+      'float wsTurn = 1.0 - abs( dot( normalize( vViewPosition ), normalize( normal ) ) );\nfloat wsEdge = pow( wsTurn, 1.7 );\nfloat wsDark = smoothstep( 0.6, 0.78, wsTurn ) * ( 1.0 - smoothstep( 0.86, 0.96, wsTurn ) );\ngl_FragColor.rgb *= 1.0 - 0.6 * wsDark;\ngl_FragColor.a = clamp( diffuseColor.a * vColor.r + wsEdge * 0.5 + wsDark * 0.2 + dot( outgoingLight, vec3( 0.3333 ) ) * 0.5, 0.0, 1.0 );\n#include <tonemapping_fragment>'
+    )
+  })
+  return named(lit(m, z), `street.plastic.${z.id}`)
+}

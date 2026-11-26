@@ -20,7 +20,7 @@ const unit = (a: V3): V3 => {
 }
 
 // The kinds of surface the paint material knows: the third number of the `face` attribute.
-export const KIND = { plain: 0, brick: 1, block: 2, concrete: 3, shingle: 4, board: 5, stucco: 6, gloss: 7, sheeting: 8, tar: 9, painted: 10 }
+export const KIND = { plain: 0, brick: 1, block: 2, concrete: 3, shingle: 4, board: 5, stucco: 6, gloss: 7, sheeting: 8, tar: 9, painted: 10, enamel: 11 }
 
 // Triangles with a place, a normal, a colour and a `face` attribute: two coordinates in page pixels along the face and the kind of surface.
 export class Geo {
@@ -111,12 +111,26 @@ export class Geo {
   }
 
   // A turned thing: (radius, height) pairs from the bottom up, spun round a centre. Smooth round the axis, crisp along the outline. `wave` flutes it: [count, depth].
-  lathe(outline: V2[], cx: number, cy: number, segs: number, col: RGB | ((step: number) => RGB), o: { base?: number; arc?: V2; kind?: number; wave?: V2 } = {}): this {
+  lathe(outline: V2[], cx: number, cy: number, segs: number, col: RGB | ((step: number) => RGB), o: { base?: number; arc?: V2; kind?: number; wave?: V2; soft?: boolean } = {}): this {
     const base = o.base ?? 0
     const arc = o.arc ?? [0, Math.PI * 2]
     const kind = o.kind ?? 0
     const wave = o.wave
     const rad = (r: number, a: number): number => (wave ? r * (1 - wave[1] * (0.5 + 0.5 * Math.cos(a * wave[0]))) : r)
+    const flat: V2[] = []
+    for (let k = 0; k < outline.length - 1; k++) {
+      const dr = outline[k + 1]![0] - outline[k]![0]
+      const dz = outline[k + 1]![1] - outline[k]![1]
+      const l = Math.hypot(dr, dz) || 1
+      flat.push([dz / l, -dr / l])
+    }
+    // With `soft` the outline is smooth too: each point takes the mean of the two lengths that meet in it.
+    const at = (k: number): V2 => {
+      const a = flat[Math.max(0, k - 1)]!
+      const c = flat[Math.min(flat.length - 1, k)]!
+      const l = Math.hypot(a[0] + c[0], a[1] + c[1]) || 1
+      return [(a[0] + c[0]) / l, (a[1] + c[1]) / l]
+    }
     for (let k = 0; k < outline.length - 1; k++) {
       const p = outline[k]!
       const q = outline[k + 1]!
@@ -124,20 +138,20 @@ export class Geo {
       const dz = q[1] - p[1]
       const l = Math.hypot(dr, dz)
       if (l < 1e-6) continue
-      const nr = dz / l
-      const nz = -dr / l
+      const np = o.soft ? at(k) : flat[k]!
+      const nq = o.soft ? at(k + 1) : flat[k]!
       const colour = typeof col === 'function' ? col(k) : col
       for (let i = 0; i < segs; i++) {
         const a0 = arc[0] + ((arc[1] - arc[0]) * i) / segs
         const a1 = arc[0] + ((arc[1] - arc[0]) * (i + 1)) / segs
-        const corner = (r: number, z: number, a: number): [V3, V3] => {
+        const corner = (r: number, z: number, a: number, n: V2): [V3, V3] => {
           const c = Math.cos(a)
           const s = Math.sin(a)
           const lean = wave ? wave[1] * wave[0] * 0.5 * Math.sin(a * wave[0]) : 0
-          return [[cx + rad(r, a) * c, cy + rad(r, a) * s, base + z], unit([nr * c - lean * s * nr, nr * s + lean * c * nr, nz])]
+          return [[cx + rad(r, a) * c, cy + rad(r, a) * s, base + z], unit([n[0] * c - lean * s * n[0], n[0] * s + lean * c * n[0], n[1]])]
         }
         const rm = Math.max(1, (p[0] + q[0]) / 2)
-        this.smooth([corner(p[0], p[1], a0), corner(p[0], p[1], a1), corner(q[0], q[1], a1), corner(q[0], q[1], a0)], colour, kind, [[a0 * rm, p[1]], [a1 * rm, p[1]], [a1 * rm, q[1]], [a0 * rm, q[1]], [a0 * rm, p[1]], [a1 * rm, q[1]]].filter((_, j) => j < 4) as V2[])
+        this.smooth([corner(p[0], p[1], a0, np), corner(p[0], p[1], a1, np), corner(q[0], q[1], a1, nq), corner(q[0], q[1], a0, nq)], colour, kind, [[a0 * rm, p[1]], [a1 * rm, p[1]], [a1 * rm, q[1]], [a0 * rm, q[1]], [a0 * rm, p[1]], [a1 * rm, q[1]]].filter((_, j) => j < 4) as V2[])
       }
     }
     return this
