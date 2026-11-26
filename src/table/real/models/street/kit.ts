@@ -212,6 +212,37 @@ export function roofDeck(g: Geo, x0: number, x1: number, y0: number, y1: number,
 }
 
 // A beacon: a chromed base on a roof, in the metal bucket. Its lens and its reflector are meshes of their own.
+// A roof light: a kerb, a lit pane seen from above and its glazing bars.
+export function roofLight(b: Buckets, x0: number, x1: number, y0: number, y1: number, deck: number, kerb: RGB, lum = 1): void {
+  const top = deck + 4.5
+  b.paint.box(x0, x1, y0, y1, deck, top, kerb, { bevel: 0.6 })
+  const ax = x0 + 2.2
+  const bx = x1 - 2.2
+  const ay = y0 + 2.2
+  const by = y1 - 2.2
+  const lo: RGB = [lum * 0.3, lum * 0.19, lum * 0.08]
+  const core: RGB = [lum * 1.15, lum * 0.9, lum * 0.5]
+  const nx = 8
+  const ny = 6
+  for (let i = 0; i < nx; i++) {
+    for (let j = 0; j < ny; j++) {
+      const r = Math.hypot(((i + 0.5) / nx - 0.5) * 1.5, ((j + 0.5) / ny - 0.5) * 1.5)
+      const c = mix(lo, core, Math.exp(-r * r * 6))
+      const u0 = ax + ((bx - ax) * i) / nx
+      const u1 = ax + ((bx - ax) * (i + 1)) / nx
+      const v0 = ay + ((by - ay) * j) / ny
+      const v1 = ay + ((by - ay) * (j + 1)) / ny
+      b.glow.face([[u0, v0, top + 0.1], [u1, v0, top + 0.1], [u1, v1, top + 0.1], [u0, v1, top + 0.1]], c, 0, [0, 0, 1])
+    }
+  }
+  const n = Math.max(2, Math.round((bx - ax) / 9))
+  for (let k = 0; k <= n; k++) {
+    const x = ax + ((bx - ax) * k) / n
+    b.metal.box(x - 0.45, x + 0.45, ay - 0.6, by + 0.6, top + 0.1, top + 1, TONE.iron)
+  }
+  for (const y of [ay, (ay + by) / 2, by]) b.metal.box(ax - 0.6, bx + 0.6, y - 0.45, y + 0.45, top + 0.1, top + 1, TONE.iron)
+}
+
 export function beaconBase(b: Buckets, x: number, y: number, z: number): void {
   b.metal.lathe([[0, 0], [31, 0], [31, 2.5], [28.6, 4.8], [28.6, 7.4], [26.4, 8.6], [0, 8.6]], x, y, 36, TONE.chrome, { base: z })
   b.metal.lathe([[2.2, 8], [2.2, 14], [0, 14]], x, y, 10, TONE.steel, { base: z })
