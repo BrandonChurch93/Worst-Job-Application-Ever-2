@@ -94,9 +94,9 @@ MEASURED, by stepping the page of the film frame by frame and asking `pick` (a t
 - The sweep runs on the score only. In the film it can be seen from 9.0 s to 10.9 s; a tier display is in frame for the last quarter second of that.
 - No line is seen to its end in the film. A line needs 5.7 to 7.8 s (name 1.5 s, then 120 dots a second). The modes are lit at 10.9, 12.1, 13.3, 15, 19, 23, 26, 29.5 and 34 s, so the first two show their names only, the third 0.2 s of its line, the next five 3 to 4.5 s of 6.4 to 7.8, and the last one (lit at 34 s, done at 41.35 s) is cut by the result card: the table is out of frame at 39.5 s.
 
-## Round 11 (from 05:42 UTC): looks ball 9 of 40, displays 0 of 40
+## Round 11 (from 05:42 UTC): looks ball 10 of 40, displays 0 of 40
 
-Looks of the ball: `lobby-doors`, `tier-office`, the sheet `clear-ball` (05:43 UTC, on 328c961f), `lobby-doors` once more with the shadow's plane tinted to see where it lies (05:51 UTC, the tint is not in the code), `lobby-doors` with the two shells tinted (05:56 UTC), `lobby-doors` and `tier-office` after decision 22 (05:58 UTC), the sheet and `tier-corporate` (06:00 UTC).
+Looks of the ball: `lobby-doors`, `tier-office`, the sheet `clear-ball` (05:43 UTC, on 328c961f), `lobby-doors` once more with the shadow's plane tinted to see where it lies (05:51 UTC, the tint is not in the code), `lobby-doors` with the two shells tinted (05:56 UTC), `lobby-doors` and `tier-office` after decision 22 (05:58 UTC), the sheet and `tier-corporate` (06:00 UTC), `tier-office` with the shadow's plane tinted (06:04 UTC).
 
 Seen:
 
@@ -111,3 +111,7 @@ Found, `lobby-doors`:
 - The cream haze inside the ball was the back shell's picture of the lamps. Seen at 05:56 UTC in one look with the front shell tinted green and the back shell tinted magenta (the tints are not in the code): the whole inside was magenta. A lamp nearer than 214 units is drawn as a wider spot (up to 0.15 times 1.4), and each wide spot kept the brightness of a small one, so the two globe lamps by the doors washed the inside. Decision 22.
 
 Not looked at in round 11: `tier-street`, `youre-fired`, `rail-cam` under the table runner's new `rail` camera, the true grade, the open halves. The door colours of decisions 14 and 20 were in the `lobby-doors` look: the doorway, the brass jambs and two lamp marks show in the ball, washed by the haze at 05:43 UTC. After decision 22 the real doors show through the middle of the ball; the bent doors are only in the outer third, a pale band in that look, so the door colours of decisions 14 and 20 are still not judged.
+
+Found, `tier-office` (06:04 UTC, the shadow's plane tinted): the plane covers the floor and the rims of the inserts but not the lit middle of an insert, which is a low dome over it (`src/table/real/art/windows.ts`, the lamp keeper's). In this key the ball lies at the edge of the green insert and its shadow falls on that lit middle, so no shadow shows; on the sheet the right ball's shadow falls on the floor and shows. Not changed: a plane lifted over the dome would float over the floor beside it. For a successor: draw the shadow a second time on the dome's own height where an insert is under it, or ask the lamp keeper to darken the insert's window from the ball's place.
+
+At the limit, 06:20 UTC 2026-11-26. Gates MEASURED on 53df38a3 (main daf0748f merged) at 06:03 UTC: `npm test` 101 files, 1380 of 1380; `npm run build` built; `npm run bots` all clear; `npm run paths` all clear. `npm run take -- --check` at 05:49 UTC on 107f3e1a: all 10 beat events inside their beats. Counts MEASURED at 05:55 UTC (`npm run counts -- --key <tier key> --live low`), the same in the three tier keys and the same as before my work: `clear-ball` 3 calls, 18874 triangles; `displays` 4 calls, 164 triangles.
