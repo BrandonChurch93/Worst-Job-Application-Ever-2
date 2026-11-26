@@ -2,7 +2,7 @@ import { config } from '../../config'
 import { copy, type LayoutNode } from '../../copy'
 import { column, group, node, row, text, type Item } from '../../shell/layout'
 import { block } from '../../shell/metrics'
-import { button, buttonWidth, field, HEADER, LEFT, page, RIGHT, TYPE } from '../../shell/parts'
+import { button, buttonWidth, field, LEFT, page, RIGHT, TYPE } from '../../shell/parts'
 import { words } from '../../shell/words'
 import type { TypeSpec } from '../../stage/types'
 
@@ -26,6 +26,7 @@ export const FIRST_CARDS = 3
 const SECTION = 170
 const HEAD_TO_CONTENT = 140
 const FOOT = 128
+const NAV = { y: 76, ruleY: 148 }
 
 export const T = {
   display: { font: 'inter-display-600', px: 68, lead: 84 },
@@ -105,17 +106,17 @@ function medallion(i: number, cx: number, y: number, under = 28): LayoutNode[] {
 
 function firstScreen(): LayoutNode[] {
   const out: LayoutNode[] = []
-  out.push(text('nav-brand', 'copy:marketing.nav.brand', TYPE.title, LEFT, HEADER.progressY - cap(TYPE.title) / 2, { part: 'shell' }))
+  out.push(text('nav-brand', 'copy:marketing.nav.brand', TYPE.title, LEFT, NAV.y - cap(TYPE.title) / 2, { part: 'shell' }))
   const ctaW = buttonWidth('copy:marketing.nav.cta')
   const ctaX = RIGHT - ctaW
-  out.push(button('nav-cta', ctaX, HEADER.progressY - sizes.button / 2, ctaW, 'copy:marketing.nav.cta', { part: 'apply-button' }))
+  out.push(button('nav-cta', ctaX, NAV.y - sizes.button / 2, ctaW, 'copy:marketing.nav.cta', { part: 'apply-button' }))
   let right = ctaX - 56
   for (let i = m.nav.links.length - 1; i >= 0; i--) {
     const key = `copy:marketing.nav.links.${i}`
-    out.push(text(`nav-link-${i}`, key, { ...TYPE.label, align: 'right' }, right, HEADER.progressY - cap(TYPE.label) / 2, type))
+    out.push(text(`nav-link-${i}`, key, { ...TYPE.label, align: 'right' }, right, NAV.y - cap(TYPE.label) / 2, type))
     right -= wide(TYPE.label, key) + 48
   }
-  out.push(node('header-rule', 'rule', [LEFT, HEADER.ruleY - 2, WIDTH, 6], { part: 'shell' }))
+  out.push(node('header-rule', 'rule', [LEFT, NAV.ruleY - 2, WIDTH, 6], { part: 'shell' }))
   const headY = 200
   const headline = { ...T.display, wrap: 1040 }
   out.push(text('hero-headline', 'copy:marketing.hero.headline', headline, LEFT, headY, type))
