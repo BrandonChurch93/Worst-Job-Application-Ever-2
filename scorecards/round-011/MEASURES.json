@@ -1,0 +1,446 @@
+{
+  "unit": "pinball",
+  "tier": "final",
+  "judgedTier": "final",
+  "format": "hd",
+  "engineHash": "08923a79a1f8309e",
+  "sharedHash": "2912b618e02bbcd1",
+  "pageHashes": {
+    "pinball": "bd1f629657030de6"
+  },
+  "only": null,
+  "stills": [
+    "key:loader-page",
+    "key:table-wide",
+    "key:tier-corporate",
+    "key:lobby-doors",
+    "key:tier-office",
+    "key:reply-all",
+    "key:tier-street",
+    "key:youre-fired",
+    "key:rail-cam",
+    "key:last-save",
+    "still:rest-step3",
+    "still:step3-result",
+    "sheet:clear-ball",
+    "sheet:table-map"
+  ],
+  "exit": 2,
+  "green": [
+    "M1",
+    "M2",
+    "M5",
+    "M6",
+    "M7",
+    "M8",
+    "M9",
+    "M10"
+  ],
+  "red": [
+    "M3",
+    "M4"
+  ],
+  "notYet": [],
+  "measures": [
+    {
+      "id": "M1",
+      "status": "pass",
+      "summary": "14 stills: 0 invalid values; 0 bare of 17988 edge pixels in 3 stills from home; the cursor outside the frame in 0",
+      "numbers": {
+        "stills": 14,
+        "invalidValues": 0,
+        "edgePixels": 17988,
+        "bareEdgePixels": 0,
+        "stillsFromHome": 3,
+        "cursorOutside": 0
+      },
+      "failing": []
+    },
+    {
+      "id": "M2",
+      "status": "pass",
+      "summary": "14 stills, 5683324 textured pixels: the largest soft share 0.003, the most allowed 0.02",
+      "numbers": {
+        "stills": 14,
+        "texturedPixels": 5683324,
+        "worstSoftShare": 0.003,
+        "limit": 0.02
+      },
+      "failing": []
+    },
+    {
+      "id": "M3",
+      "status": "fail",
+      "summary": "10 keys: the least ratio of fine detail to the approved image 0.3539, the least allowed 0.8",
+      "numbers": {
+        "keys": 10,
+        "leastRatio": 0.3539,
+        "limit": 0.8
+      },
+      "failing": [
+        {
+          "still": "key:tier-corporate",
+          "what": "fine detail against the approved image at the same size",
+          "value": 0.5562,
+          "limit": 0.8,
+          "energy": [
+            0.0118,
+            0.0213
+          ]
+        },
+        {
+          "still": "key:lobby-doors",
+          "what": "fine detail against the approved image at the same size",
+          "value": 0.3539,
+          "limit": 0.8,
+          "energy": [
+            0.002,
+            0.0056
+          ]
+        },
+        {
+          "still": "key:tier-street",
+          "what": "fine detail against the approved image at the same size",
+          "value": 0.7041,
+          "limit": 0.8,
+          "energy": [
+            0.0124,
+            0.0177
+          ]
+        },
+        {
+          "still": "key:youre-fired",
+          "what": "fine detail against the approved image at the same size",
+          "value": 0.5284,
+          "limit": 0.8,
+          "energy": [
+            0.0025,
+            0.0048
+          ]
+        },
+        {
+          "still": "key:rail-cam",
+          "what": "fine detail against the approved image at the same size",
+          "value": 0.5122,
+          "limit": 0.8,
+          "energy": [
+            0.0018,
+            0.0034
+          ]
+        }
+      ]
+    },
+    {
+      "id": "M4",
+      "status": "fail",
+      "summary": "256 runs of type in 11 stills: the smallest 16 px (least 14), the least contrast 1.3 (least 4.5)",
+      "numbers": {
+        "stills": 11,
+        "runs": 256,
+        "leastPx": 16,
+        "leastContrast": 1.3,
+        "minTextPx": 14,
+        "minTextContrast": 4.5
+      },
+      "failing": [
+        {
+          "still": "key:loader-page",
+          "run": "copy:step3.table.buildings.firehouse",
+          "text": "You're Fired",
+          "what": "contrast against what lies under it",
+          "value": 1.3,
+          "limit": 4.5
+        },
+        {
+          "still": "key:loader-page",
+          "run": "copy:step3.table.buildings.hq",
+          "text": "Corporate HQ",
+          "what": "contrast against what lies under it",
+          "value": 4.25,
+          "limit": 4.5
+        },
+        {
+          "still": "key:table-wide",
+          "run": "copy:step3.table.buildings.firehouse",
+          "text": "You're Fired",
+          "what": "contrast against what lies under it",
+          "value": 1.3,
+          "limit": 4.5
+        },
+        {
+          "still": "key:table-wide",
+          "run": "copy:step3.table.buildings.hq",
+          "text": "Corporate HQ",
+          "what": "contrast against what lies under it",
+          "value": 4.25,
+          "limit": 4.5
+        },
+        {
+          "still": "key:tier-corporate",
+          "run": "copy:step3.table.buildings.firehouse",
+          "text": "You're Fired",
+          "what": "contrast against what lies under it",
+          "value": 1.3,
+          "limit": 4.5
+        },
+        {
+          "still": "key:tier-corporate",
+          "run": "copy:step3.table.buildings.hq",
+          "text": "Corporate HQ",
+          "what": "contrast against what lies under it",
+          "value": 4.25,
+          "limit": 4.5
+        },
+        {
+          "still": "key:lobby-doors",
+          "run": "copy:step3.table.buildings.firehouse",
+          "text": "You're Fired",
+          "what": "contrast against what lies under it",
+          "value": 1.3,
+          "limit": 4.5
+        },
+        {
+          "still": "key:lobby-doors",
+          "run": "copy:step3.table.buildings.hq",
+          "text": "Corporate HQ",
+          "what": "contrast against what lies under it",
+          "value": 4.25,
+          "limit": 4.5
+        },
+        {
+          "still": "key:tier-office",
+          "run": "copy:step3.table.buildings.firehouse",
+          "text": "You're Fired",
+          "what": "contrast against what lies under it",
+          "value": 1.3,
+          "limit": 4.5
+        },
+        {
+          "still": "key:tier-office",
+          "run": "copy:step3.table.buildings.hq",
+          "text": "Corporate HQ",
+          "what": "contrast against what lies under it",
+          "value": 4.25,
+          "limit": 4.5
+        },
+        {
+          "still": "key:reply-all",
+          "run": "copy:step3.table.buildings.firehouse",
+          "text": "You're Fired",
+          "what": "contrast against what lies under it",
+          "value": 1.3,
+          "limit": 4.5
+        },
+        {
+          "still": "key:reply-all",
+          "run": "copy:step3.table.buildings.hq",
+          "text": "Corporate HQ",
+          "what": "contrast against what lies under it",
+          "value": 4.25,
+          "limit": 4.5
+        },
+        {
+          "still": "key:tier-street",
+          "run": "copy:step3.table.buildings.firehouse",
+          "text": "You're Fired",
+          "what": "contrast against what lies under it",
+          "value": 1.3,
+          "limit": 4.5
+        },
+        {
+          "still": "key:tier-street",
+          "run": "copy:step3.table.buildings.hq",
+          "text": "Corporate HQ",
+          "what": "contrast against what lies under it",
+          "value": 4.25,
+          "limit": 4.5
+        },
+        {
+          "still": "key:youre-fired",
+          "run": "copy:step3.table.buildings.firehouse",
+          "text": "You're Fired",
+          "what": "contrast against what lies under it",
+          "value": 1.3,
+          "limit": 4.5
+        },
+        {
+          "still": "key:youre-fired",
+          "run": "copy:step3.table.buildings.hq",
+          "text": "Corporate HQ",
+          "what": "contrast against what lies under it",
+          "value": 4.25,
+          "limit": 4.5
+        },
+        {
+          "still": "key:rail-cam",
+          "run": "copy:step3.table.buildings.firehouse",
+          "text": "You're Fired",
+          "what": "contrast against what lies under it",
+          "value": 1.3,
+          "limit": 4.5
+        },
+        {
+          "still": "key:rail-cam",
+          "run": "copy:step3.table.buildings.hq",
+          "text": "Corporate HQ",
+          "what": "contrast against what lies under it",
+          "value": 4.25,
+          "limit": 4.5
+        },
+        {
+          "still": "key:last-save",
+          "run": "copy:step3.table.buildings.firehouse",
+          "text": "You're Fired",
+          "what": "contrast against what lies under it",
+          "value": 1.3,
+          "limit": 4.5
+        },
+        {
+          "still": "key:last-save",
+          "run": "copy:step3.table.buildings.hq",
+          "text": "Corporate HQ",
+          "what": "contrast against what lies under it",
+          "value": 4.25,
+          "limit": 4.5
+        },
+        {
+          "still": "still:rest-step3",
+          "run": "copy:step3.table.buildings.firehouse",
+          "text": "You're Fired",
+          "what": "contrast against what lies under it",
+          "value": 1.3,
+          "limit": 4.5
+        },
+        {
+          "still": "still:rest-step3",
+          "run": "copy:step3.table.buildings.hq",
+          "text": "Corporate HQ",
+          "what": "contrast against what lies under it",
+          "value": 4.25,
+          "limit": 4.5
+        }
+      ]
+    },
+    {
+      "id": "M5",
+      "status": "pass",
+      "summary": "110 parts in 11 stills: the furthest 0 px from the layout tree, the most allowed 2; 0 left out as moved by a gag",
+      "numbers": {
+        "stills": 11,
+        "parts": 110,
+        "worstPx": 0,
+        "limit": 2,
+        "leftOutAsMoved": []
+      },
+      "failing": []
+    },
+    {
+      "id": "M6",
+      "status": "pass",
+      "summary": "2 stills from home with the cursor at rest and 3 from a tier camera: the furthest 3.41 px from its size, the most allowed 6",
+      "numbers": {
+        "fromHome": 2,
+        "fromTierCamera": 3,
+        "worstPx": 3.41,
+        "heightPx": 70,
+        "ballPx": 96,
+        "cursorInBallPx": 70.08,
+        "tolerancePx": 6
+      },
+      "failing": []
+    },
+    {
+      "id": "M7",
+      "status": "pass",
+      "summary": "2520 frames read, 22 events strike the cursor: 0 further from it than its own height in the picture, 0 with no change of damage or acting and no reaction starting on that frame or the next",
+      "numbers": {
+        "frames": 2520,
+        "hits": 22,
+        "tooFar": 0,
+        "noChange": 0,
+        "worstOverPx": 0,
+        "beats": 10,
+        "firstFrame": 4020,
+        "lastFrame": 6539
+      },
+      "failing": []
+    },
+    {
+      "id": "M8",
+      "status": "pass",
+      "summary": "corporate 27 parts, 0.0152 bare; office 26 parts, 0.0075 bare; street 31 parts, 0.0087 bare (at least 24 parts, at most 0.08 bare)",
+      "numbers": {
+        "tiers": {
+          "corporate": {
+            "standingParts": 27,
+            "bareShare": 0.0152,
+            "floorPixels": 2040041,
+            "floorPixelsInSight": 500987,
+            "barePixels": 30994,
+            "radiusPx": 39.01
+          },
+          "office": {
+            "standingParts": 26,
+            "bareShare": 0.0075,
+            "floorPixels": 2000492,
+            "floorPixelsInSight": 595718,
+            "barePixels": 14975,
+            "radiusPx": 39.01
+          },
+          "street": {
+            "standingParts": 31,
+            "bareShare": 0.0087,
+            "floorPixels": 2027617,
+            "floorPixelsInSight": 425838,
+            "barePixels": 17615,
+            "radiusPx": 37.13
+          }
+        },
+        "minStandingParts": 24,
+        "maxBareFraction": 0.08
+      },
+      "failing": []
+    },
+    {
+      "id": "M9",
+      "status": "pass",
+      "summary": "14 of 20 parts checked in 2 stills from home: the furthest 0 px from its size or height, the most allowed 2",
+      "numbers": {
+        "stills": 2,
+        "parts": 20,
+        "checked": 14,
+        "worstPx": 0,
+        "tolerancePx": 2
+      },
+      "failing": []
+    },
+    {
+      "id": "M10",
+      "status": "pass",
+      "summary": "63 openings, the narrowest 1.25 balls (least 1.25); 16 rails; 17 holds; the lift has 2 doors and 2 elbows; display characters 15.24 px in the tier stills (least 14); npm run paths ended with code 0: paths: all clear",
+      "numbers": {
+        "openings": 63,
+        "narrowestBalls": 1.25,
+        "minClearanceBalls": 1.25,
+        "rails": 16,
+        "holds": 17,
+        "liftDoors": 2,
+        "liftElbows": 2,
+        "sealed": [
+          "corporate.beach"
+        ],
+        "leastDisplayCharPx": 15.24,
+        "paths": {
+          "status": 0,
+          "last": "paths: all clear"
+        },
+        "displayScale": {
+          "corporate": 1,
+          "office": 1,
+          "street": 0.9523809523809522
+        }
+      },
+      "failing": []
+    }
+  ]
+}

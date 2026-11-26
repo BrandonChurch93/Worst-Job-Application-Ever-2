@@ -8,12 +8,12 @@ import { drawLayout, type DrawOptions } from '../../shell/layout'
 import { SCREEN_H } from '../../shell/parts'
 import type { DrawList, GagInfo, Hint, Mode, PageContext, PageLogic, Pointer, Shape, SheetFrame, StepIo } from '../../stage/types'
 import { makeLayout } from './layout'
-import { makeScript } from './script'
+import { makeScript, STAND } from './script'
 import { TICK_Z } from './real/verify-card'
 
 const CAP_LANDS = 1.2
 const CAP_CLEARS = 0.6
-const SAG_AFTER = 1.45
+const SAG_AFTER = 0.15
 type StageName = 'verify' | 'unfold' | 'fight' | 'collapse' | 'press'
 
 interface State {
@@ -157,7 +157,7 @@ export function makePage(): PageLogic {
             s.selfTick = self
             io.emit('checkbox', L.checkbox.cx, L.checkbox.cy, false)
             io.cursor.act(self ? 'plain' : 'proud')
-          } else io.cursor.act(Math.hypot(io.pointer.x - L.checkbox.cx, io.pointer.y - L.checkbox.cy) < 150 ? 'nervous' : 'plain')
+          } else io.cursor.act(Math.hypot(io.pointer.x - L.checkbox.cx, io.pointer.y - L.checkbox.cy) < STAND.near ? 'nervous' : 'plain')
         } else {
           s.ticked += dt
           if (!s.selfTick && s.ticked >= PRIDE && s.ticked - dt < PRIDE) io.cursor.act('confident')
@@ -246,7 +246,6 @@ export function makePage(): PageLogic {
         }
         if (f.over) toCollapse(io, rigNow()!)
       } else if (s.stage === 'collapse') {
-        if (s.t >= SAG_AFTER && s.t - dt < SAG_AFTER) io.cursor.act('exhausted')
         if (s.t >= COLLAPSE_SECONDS) {
           s.stage = 'press'
           s.t = 0
@@ -254,9 +253,10 @@ export function makePage(): PageLogic {
             io.cursor.heal()
             io.cursor.hurt('scorched')
           }
-          io.cursor.act('exhausted')
+          io.cursor.act('plain')
         }
       } else if (s.stage === 'press') {
+        if (s.t >= SAG_AFTER && s.t - dt < SAG_AFTER && s.pressed < 0) io.cursor.act('exhausted')
         if (s.pressed < 0) {
           const target = s.inSocket ? L.cap : fallenBox
           const self = s.t >= GAG_MAX || (s.skipping && s.t >= 0.5)

@@ -201,11 +201,10 @@ export function common(D, pal) {
   for (const p of D.posts) {
     if (p.c[1] < 0.3) continue
     const big = !!p.lamp
-    answers.push(dot(p.c, p.r + (big ? 0.3 : 0.2), pal.under))
-    answers.push(ring(p.c, p.r + (big ? 0.3 : 0.2), pal.fine, 0.01))
+    answers.push(dot(p.c, p.r + (big ? 0.1 : 0.06), pal.under, { opacity: 0.7 }))
   }
   for (const b of D.bumpers) {
-    answers.push(dot(b.c, b.r + 0.46, pal.under, { opacity: 0.85 }), ring(b.c, b.r + 0.2, pal.key, 0.02), ring(b.c, b.r + 0.46, pal.fine, 0.01))
+    answers.push(dot(b.c, b.r + 0.12, pal.under, { opacity: 0.7 }))
   }
   for (const m of D.models) {
     if (m.round) {
