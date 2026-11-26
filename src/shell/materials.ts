@@ -457,6 +457,8 @@ export interface Materials {
   smoked: THREE.MeshPhysicalMaterial
   chip: THREE.MeshPhysicalMaterial
   waiting: THREE.MeshPhysicalMaterial
+  frosted: THREE.MeshPhysicalMaterial
+  socketLip: THREE.MeshPhysicalMaterial
   paper: THREE.MeshPhysicalMaterial
   red: THREE.MeshPhysicalMaterial
   keycap: THREE.MeshPhysicalMaterial
@@ -508,6 +510,8 @@ export function makeMaterials(seed: number): Materials {
   const smoked = physical({ color: srgb(0x676d75), roughness: 0.55, metalness: 0, clearcoat: 0.5, clearcoatRoughness: 0.32, specularIntensity: 0.7 })
   const chip = physical({ color: srgb(0x666c74), roughness: 0.56, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.3, specularIntensity: 0.6, vertexColors: true })
   const waiting = physical({ color: srgb(0x6e7379), roughness: 0.5, metalness: 0, clearcoat: 0.85, clearcoatRoughness: 0.1, specularIntensity: 0.8, specularColor: srgb(0xc9d6e2), sheen: 0.5, sheenRoughness: 0.4, sheenColor: srgb(0x8f9aa6) })
+  const frostedCap = physical({ color: srgb(0xc2cacd), roughness: 0.66, metalness: 0, clearcoat: 0.3, clearcoatRoughness: 0.55, specularIntensity: 0.5, ...frosted })
+  const socketLip = physical({ color: srgb(0xf2f1ee), roughness: 0.74, metalness: 0, specularIntensity: 0.6 })
   const paper = physical({ color: srgb(0xf3efe6), roughness: 0.9, metalness: 0, specularIntensity: 0.25, side: THREE.DoubleSide })
   const red = physical({ color: srgb(0xc22a1e), roughness: 0.42, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.1 })
   const keycap = physical({ color: srgb(0xece4d4), roughness: 0.52, metalness: 0, clearcoat: 0.25, clearcoatRoughness: 0.4 })
@@ -519,7 +523,7 @@ export function makeMaterials(seed: number): Materials {
     m.polygonOffsetUnits = -2
   }
   return {
-    ceramic, pocket, glass, glassThick, glassSunk, glassCard, aluminium, aluminiumTurned, aluminiumEdge, aluminiumSatin, cardSeal, orange, chrome, railSatin, railFlat, capFace, capRim, gap, ink, inkOnOrange, enamel, edge, smoked, chip, waiting, paper, red, keycap, steel, rubber,
+    ceramic, pocket, glass, glassThick, glassSunk, glassCard, aluminium, aluminiumTurned, aluminiumEdge, aluminiumSatin, cardSeal, orange, chrome, railSatin, railFlat, capFace, capRim, gap, ink, inkOnOrange, enamel, edge, smoked, chip, waiting, frosted: frostedCap, socketLip, paper, red, keycap, steel, rubber,
     textures: [grain, brushed, turned.normal, turned.direction]
   }
 }

@@ -43,13 +43,13 @@ export const FILL: Record<string, RGB> = {
 export const SOFT: Record<string, number> = { marquee: 0.028, corporate: 0.02, office: 0.012, street: 0.016 }
 
 // How much of each lamp's pool reaches a tier beside the head lamps: the pools are accents, the head lamps shape the tier.
-export const POOL: Record<string, number> = { marquee: 1, corporate: 0.95, office: 0.6, street: 0.85 }
+export const POOL: Record<string, number> = { marquee: 1, corporate: 0.95, office: 0.8, street: 0.98 }
 
 // How much of a far lamp's light the print of a floor gives back, seen from straight above and seen along the floor. The night tiers are dark lacquer between their pools; the Office is a lit room.
 export const DEEP: Record<string, [number, number]> = {
   corporate: [0.65, 0.45],
-  office: [0.82, 0.7],
-  street: [0.75, 0.5]
+  office: [0.7, 0.56],
+  street: [0.66, 0.46]
 }
 
 // How bright a lens is when its lamp is on, in linear light: the middle is above the threshold of the lens glow, the rim below.

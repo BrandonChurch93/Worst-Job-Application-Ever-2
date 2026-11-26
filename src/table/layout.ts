@@ -40,7 +40,7 @@ export const INSERTS = { spots: [[8.3, 7.1], [MID, 8.0], [11.7, 7.1]] as V[], r:
 
 export interface Seg { id: string; tier: number; a: V; b: V; kind: 'wall' | 'guide' | 'rubber' }
 export interface Post { id: string; tier: number; c: V; r: number; lamp?: boolean }
-export interface Model { id: string; tier: number; part: string; box: [number, number, number, number]; h: number; tone: string; solid: boolean; standing: boolean; round?: boolean; base?: number; sign?: string; signPx?: number; bay?: [number, number, number] }
+export interface Model { id: string; tier: number; part: string; box: [number, number, number, number]; h: number; tone: string; solid: boolean; standing: boolean; round?: boolean; base?: number; sign?: string; signPx?: number; signAt?: [number, number]; bay?: [number, number, number] }
 export interface Bumper { id: string; tier: number; c: V; r: number }
 export interface Sling { id: string; tier: number; side: 'left' | 'right'; a: V; b: V; c: V }
 export interface Target { id: string; tier: number; kind: 'drop' | 'standup' | 'spinner'; box: [number, number, number, number]; n: V; index: number }
@@ -234,7 +234,7 @@ for (let k = 0; k < 3; k++) {
   model(k, 'firehouse', 'model-firehouse', [COLS.left, 2.3, 2.5, 1.5], 2.0, 'danger', { sign: 'copy:step3.table.buildings.firehouse', bay: [4.4, 5.7, 0.55] })
   model(k, 'bank', 'model-bank', [COLS.left, 3.8, 1.0, 1.1], 1.2, 'raised', { sign: 'copy:step3.table.buildings.bank', signPx: 16 })
   dropBank(k, 'bank.drop', 4.25, 3.8, 4.9)
-  model(k, 'police', 'model-police', [14.25, 2.3, 2.5, 1.5], 2.0, 'glass', { sign: 'copy:step3.table.buildings.police' })
+  model(k, 'police', 'model-police', [14.25, 2.3, 2.5, 1.5], 2.0, 'glass', { sign: 'copy:step3.table.buildings.police', signAt: [1.8, 1.4] })
   targets.push({ id: 'street.spinner', tier: k, kind: 'spinner', box: [13.2, TIER_Y[k]! + 2.95, 0.9, 0.1], n: [0, 1], index: targets.length })
   model(k, 'garage', 'model-garage', [GARAGE[0] - SPIRAL.frame, GARAGE[1] - SPIRAL.frame, 2 * SPIRAL.frame, 2 * SPIRAL.frame], SPIRAL_TOP + 0.2 - SPIRAL.under, 'raised', { solid: false, round: true, base: SPIRAL.under })
   holds.push({ id: 'street.firehouse', tier: k, kind: 'scoop', c: at(k, 5.05, 3.9), r: 0.5, releases: true, mouth: at(k, 5.05, 4.35) })
