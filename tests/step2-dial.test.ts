@@ -163,6 +163,23 @@ describe('the dial on the page', () => {
     expect(seen).toBeGreaterThan(0)
   })
 
+  it('lacquers the hub and cuts the face finer under the shared studio rules, never with a material of another law', () => {
+    const list = listAt(3.2)
+    const wheel = list.find((s) => s.id === 'dial-wheel')!
+    const o = dial.make(wheel, context(list, 3.2))
+    const found = new Map<string, THREE.MeshPhysicalMaterial>()
+    o.traverse((c) => {
+      const m = (c as THREE.Mesh).material as THREE.MeshPhysicalMaterial | undefined
+      if (m && (m.name === 'dial-hub' || m.name === 'dial-face')) found.set(m.name, m)
+    })
+    expect([...found.keys()].sort()).toEqual(['dial-face', 'dial-hub'])
+    for (const m of found.values()) expect(m.customProgramCacheKey().startsWith('wja-studio'), m.name).toBe(true)
+    const hub = found.get('dial-hub')!
+    expect(hub.clearcoatRoughness).toBe(DIAL_BODY.hubCoat)
+    expect(hub.roughness).toBe(DIAL_BODY.hubRough)
+    expect(hub.ior).toBe(DIAL_BODY.hubIor)
+  })
+
   it('shows its numerals as words of the legends, never as shapes of its own', () => {
     const list = listAt(3.2)
     const numerals = list.filter((s) => s.id.startsWith('dial-numeral-'))

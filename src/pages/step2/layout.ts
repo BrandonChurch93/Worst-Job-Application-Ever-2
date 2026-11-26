@@ -48,7 +48,7 @@ export const DIAL = {
 // The dial's body, in page pixels: how tall it stands on the tray's floor, how much of it shows before it has risen, and its turned steps.
 export const DIAL_BODY = {
   tall: TOP + 2 - TRAY_Z, rest: 1.6, plateLeast: 0.4, below: 2, plate: 6.2, bezel: 9, bezelDrop: 2, wheel: 89.2, thick: 4.8, chamfer: 1, holeRim: 0.4, holeChamfer: 2,
-  hub: 30, hubTall: 17, hubFlat: 0.02, turned: 256, cut: 0.012, faceRough: 0.2, faceStretch: 1, faceLight: 1.5, seat: 5, seatGap: 1.8, stopIn: 71, stopOut: 109, stopWide: 12, stopClear: 3, stopTall: 8, stopFoot: 12,
+  hub: 30, hubTall: 17, hubFlat: 0.02, hubCoat: 0.03, hubRough: 0.1, hubIor: 1.9, turned: 256, cut: 0.012, faceRough: 0.2, faceStretch: 1, faceLight: 1.5, seat: 5, seatGap: 1.8, stopIn: 71, stopOut: 109, stopWide: 12, stopClear: 3, stopTall: 8, stopFoot: 12,
   shade: 0.46, shadeReach: 0.78
 }
 
