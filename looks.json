@@ -1,35 +1,35 @@
 {
   "folder": "step2-finish",
-  "pushed": "2026-11-26T11:57:07.154Z",
-  "commit": "e92835cf4b03a9be08ba0b6b0328f717f7f31598",
+  "pushed": "2026-11-26T12:05:39.443Z",
+  "commit": "bf56ef7b1031bc89fb5bd4b7dc89956fd78d1279",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-step2-dial-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T11:28:32.269Z",
+      "caption": "Still key-step2-crank-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T11:59:47.381Z",
       "by": "step2-finish",
-      "from": "out/work/stills/key-step2-dial-hd-draft.png"
+      "from": "out/work/stills/key-step2-crank-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
       "caption": "Still key-step2-dial-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T11:29:20.516Z",
+      "time": "2026-11-26T12:00:11.177Z",
       "by": "step2-finish",
       "from": "out/work/stills/key-step2-dial-hd-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Step 2 film, whole frames as the acting critic gets them, 4.17 to 6.87 s: the arrow carried round the dial at three places, thrown left, skidding on its side, then up",
-      "time": "2026-11-26T11:57:05.656Z",
+      "caption": "Step 2 film, cut round the arrow at the far end of the meter, 15.65 to 16.24 s: landed on its side, a look at the crank, away, a second look, the stretch tall, the snap back",
+      "time": "2026-11-26T12:05:37.603Z",
       "by": "step2-finish",
-      "from": "out/work/looks/files/20261126115705-r3-dial-whip.jpg"
+      "from": "out/work/looks/files/20261126120537-r3-double-take.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Step 2 film, the crank tray 15.25 to 16.5 s: the crank throws the arrow off, it lands at the far end of the meter and does its double take while the handle runs alone",
-      "time": "2026-11-26T11:57:05.885Z",
+      "caption": "Step 2 crank key, approved left, the build right at the draft tier: the well's floor now has a shade under its upper and left wall",
+      "time": "2026-11-26T12:05:37.842Z",
       "by": "step2-finish",
-      "from": "out/work/looks/files/20261126115705-r3-crank-throw.jpg"
+      "from": "out/work/looks/files/20261126120537-r3-well.jpg"
     }
   ]
 }
