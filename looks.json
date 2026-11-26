@@ -1,35 +1,35 @@
 {
   "folder": "look-finish",
-  "pushed": "2026-11-26T12:33:02.134Z",
-  "commit": "0fd52cb7e9027136041304c11cb392e46dcd0abd",
+  "pushed": "2026-11-26T12:47:12.357Z",
+  "commit": "162e30a24c52c1d70600dee4a083db2bd2a19c84",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-tier-corporate-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-26T12:21:32.334Z",
+      "caption": "Still key-step2-rest-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T12:35:17.282Z",
       "by": "look-finish",
-      "from": "out/work/stills/key-tier-corporate-hd-review.png"
+      "from": "out/work/stills/key-step2-rest-hd-review.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "SHARP: the sharpening of the finished picture, before and after at native size: type of step2-rest, lamps and type of tier-corporate, review",
-      "time": "2026-11-26T12:32:59.478Z",
+      "caption": "Still key-youre-fired-hd-final: final tier, hd, view beauty",
+      "time": "2026-11-26T12:39:22.219Z",
       "by": "look-finish",
-      "from": "out/work/look-finish/s1/S-all.jpg"
+      "from": "out/work/stills/key-youre-fired-hd-final.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "SHARP: before and after at four times: a lamp and the sign of tier-corporate, type of step2-rest",
-      "time": "2026-11-26T12:32:59.728Z",
+      "caption": "Still key-tier-corporate-hd-final: final tier, hd, view beauty",
+      "time": "2026-11-26T12:42:36.262Z",
       "by": "look-finish",
-      "from": "out/work/look-finish/s1/S-zoom.jpg"
+      "from": "out/work/stills/key-tier-corporate-hd-final.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "G: the focus ring, approved, before, after: step2-crank and step2-dial, review",
-      "time": "2026-11-26T12:32:59.979Z",
+      "caption": "END: tier-corporate and youre-fired at final with the sharpening, beside approved, native size",
+      "time": "2026-11-26T12:47:11.024Z",
       "by": "look-finish",
-      "from": "out/work/look-finish/g2/G-all.jpg"
+      "from": "out/work/look-finish/end/END-final-vs-approved.jpg"
     }
   ]
 }
