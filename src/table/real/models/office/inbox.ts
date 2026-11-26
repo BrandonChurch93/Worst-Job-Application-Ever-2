@@ -7,9 +7,9 @@ import { localBalls, type Zone } from '../../zone'
 import { hex, Kit, matsOf, meshOf, mix, rounded, shade, smooth, SURF, type RGB, type Surf, type V3 } from './kit'
 
 const C = {
-  cream: hex(0xd6cdb4),
-  creamIn: hex(0xc1b89e),
-  creamLow: hex(0xaa9f85),
+  cream: hex(0xc4b08c),
+  creamIn: hex(0xa8946f),
+  creamLow: hex(0x8c7a5c),
   white: hex(0xf5f3ec),
   shadeWhite: hex(0xe2dfd6),
   steel: hex(0xb4bac1),
@@ -20,14 +20,14 @@ const C = {
 
 const MOULD: Surf = [0.56, 0, 0.12]
 // The tray: how thick its wall is, how round its corners and its lip, and where the bed of the heap lies as a share of its height.
-const TRAY = { wall: 14, round: 16, lip: 4.5, bed: 0.6, foot: 0.2, step: 1.8 }
+const TRAY = { wall: 14, round: 4, lip: 2.2, bed: 0.6, foot: 0.2, step: 1.8 }
 // The card holder on the front wall: its width, its height and how high it sits as a share of the tray's height.
 const CARD = { w: 46, h: 22, z: 0.44 }
 // The chute on the side of the hold: how far it stands out, how wide its mouth is, and its steel frame.
 const CHUTE = { deep: 40, wide: 88, drop: 8, tall: 84, bar: 6, proud: 2.4, side: 8 }
 const LIFT = { mould: 0.36, paper: 0.52 }
 // The shade one envelope lays on what is under it: how far it reaches, and its colour.
-const SHADE = { x: 2.2, y: 3, col: [0.5, 0.47, 0.42] as RGB, lift: 0.22 }
+const SHADE = { x: 3, y: 4, col: [0.3, 0.27, 0.23] as RGB, lift: 0.16 }
 // The layer that fills the tray to its walls under the two heaps that hop: how many envelopes, how far beyond the heaps they spread, how light they are.
 const FILL_LAYER = { count: 13, out: 3, dim: 0.92 }
 // The hop of the two heaps: how high, how much later the upper one goes, how much lower the hop on the way out is, and how far they swell and turn so that the hop is seen from straight above as well.
@@ -89,7 +89,7 @@ function heap(k: Kit, r: Random, count: number, hx: number, hy: number, z0: numb
     const col = shade(mix(C.white, C.shadeWhite, r.next()), dim * (0.9 + 0.1 * (i / Math.max(1, count - 1))))
     const a = (i / count) * Math.PI * 2 + r.range(-0.5, 0.5)
     const out = Math.sqrt(r.range(0.05, 1))
-    const rot = r.range(0, Math.PI * 2)
+    const rot = r.pick([0, Math.PI, Math.PI / 2]) + r.range(-0.3, 0.3)
     k.at(Math.cos(a) * out * hx, Math.sin(a) * out * hy, z0 + ((z1 - z0) * i) / Math.max(1, count - 1), rot, r.range(-wild, wild), r.range(-wild, wild))
     envelope(k, w, d, col, r, r.next() < 0.82)
     const sx = Math.cos(rot) * SHADE.x + Math.sin(rot) * SHADE.y
@@ -163,10 +163,9 @@ function chute(k: Kit, p: Plan): void {
   face([0, v1], [len, y1])
   face([s1, v0], [len, v1])
   const bar = CHUTE.bar
-  k.box(s1 / 2 + bar / 4, v0 - bar / 2 + 1, 0, s1 + bar / 2, bar, CHUTE.proud, C.steel, SURF.brushed, 1)
-  k.box(s1 / 2 + bar / 4, v1 + bar / 2 - 1, 0, s1 + bar / 2, bar, CHUTE.proud, C.steel, SURF.brushed, 1)
-  k.box(s1 + bar / 2 - 1, (v0 + v1) / 2, 0, bar, v1 - v0 + bar * 2 - 2, CHUTE.proud, C.steel, SURF.brushed, 1)
-  for (const v of [v0 - bar / 2 + 1, v1 + bar / 2 - 1]) for (const s of [s1 * 0.12, s1 + bar / 2 - 1]) k.cyl(s, v, CHUTE.proud, 1.5, 0.7, shade(C.steel, 0.7), SURF.steel, 8, 0.3)
+  k.box(s1 / 2 + bar / 4, v0 - bar / 2 + 1, 0, s1 + bar / 2, bar, CHUTE.proud, C.cream, MOULD, 0.6)
+  k.box(s1 / 2 + bar / 4, v1 + bar / 2 - 1, 0, s1 + bar / 2, bar, CHUTE.proud, C.cream, MOULD, 0.6)
+  k.box(s1 + bar / 2 - 1, (v0 + v1) / 2, 0, bar, v1 - v0 + bar * 2 - 2, CHUTE.proud, C.cream, MOULD, 0.6)
   k.back()
   const at = (s: number): [number, number] => [xf + (D * s) / len, (Hc * s) / len]
   const [xa, za] = at(s0)

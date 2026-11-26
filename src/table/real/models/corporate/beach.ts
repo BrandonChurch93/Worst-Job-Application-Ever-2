@@ -10,6 +10,7 @@ const SEED = 20261125
 const SAND = hex(0xf0dcae)
 const GLASS: RGB = [0.3, 0.42, 0.42]
 const EDGE: RGB = [2.3, 2.6, 2.6]
+const STRIPE: { pale: RGB; blue: RGB } = { pale: [0.93, 0.9, 0.82], blue: [0.1, 0.3, 0.62] }
 export const CASE = { base: 7, wall: 5, lid: 5, sun: 0.17, sky: 0.5, lamp: 0.9 }
 
 const both = (g: Geo, pts: V3[], n: V3, along: V3, col: RGB, under: RGB = shade(col, 0.72)): void => {
@@ -36,7 +37,7 @@ export function buildBeach(z: Zone, ctx: RealContext): THREE.Object3D {
   const iw = hw - CASE.wall - 1.5
   const id = hd - CASE.wall - 1.5
   const lid0 = H - CASE.lid
-  const shore = id * 0.3
+  const shore = id * 0.16
   const ground = (x: number, y: number): number => {
     const dune = 5.5 * Math.exp(-((x + iw * 0.55) ** 2 + (y + id * 0.1) ** 2) / 2600) + 3 * Math.exp(-((x - iw * 0.5) ** 2 + (y + id * 0.5) ** 2) / 1800)
     const ripple = 0.6 * Math.sin(y * 0.46 + Math.sin(x * 0.05) * 2.2) + 0.25 * Math.sin(x * 0.13 + y * 0.21)
@@ -136,7 +137,7 @@ export function buildBeach(z: Zone, ctx: RealContext): THREE.Object3D {
       for (let i = 0; i < cols; i++) {
         const x0 = -iw + (iw * 2 * i) / cols
         const x1 = -iw + (iw * 2 * (i + 1)) / cols
-        const bands: [number, RGB][] = [[1, shade(TONE.seaDeep, 0.8)], [0.78, TONE.seaDeep], [0.56, TONE.sea], [0.36, hex(0x4fbfd0)], [0.2, hex(0x76d6d6)], [0.08, hex(0xa9e6dc)], [0, hex(0xcff2e6)]]
+        const bands: [number, RGB][] = [[1, hex(0x1b9fc4)], [0.78, hex(0x22b4d0)], [0.56, hex(0x34c8d8)], [0.36, hex(0x58d8dc)], [0.2, hex(0x86e6de)], [0.08, hex(0xb4f0e2)], [0, hex(0xd6f6ea)]]
         for (let k = 0; k < bands.length - 1; k++) {
           const y = (x: number, u: number): number => edge(x) + (id - edge(x)) * u
           const u0 = bands[k]![0]
@@ -210,7 +211,7 @@ export function buildBeach(z: Zone, ctx: RealContext): THREE.Object3D {
         const rib = (u: number): V3 => [head[0] + dx * len * u, head[1] + dy * len * u, head[2] + 3 + len * (rise * u - (0.55 + rise) * u * u)]
         const path: V3[] = []
         for (let k = 0; k <= steps; k += 2) path.push(rib(k / steps))
-        G.pipe(path, 0.6, 3, hex(0x8a9a3e))
+        G.pipe(path, 0.75, 3, upper ? hex(0xb4c45a) : hex(0x6f7f30))
         const wide = (k: number): number => (k === 0 ? 0.6 : (upper ? 4.6 : 6) * Math.pow(Math.sin(Math.PI * Math.min(1, (k / steps) * 0.86 + 0.1)), 0.7) * (k % 2 ? 1 : 0.78))
         for (const s of [-1, 1]) {
           const edge = (k: number): V3 => {
@@ -220,7 +221,7 @@ export function buildBeach(z: Zone, ctx: RealContext): THREE.Object3D {
           }
           for (let k = 0; k < steps; k++) {
             const u = (k + 0.5) / steps
-            const col = shade(mix(mix(TONE.palmDark, TONE.palm, tone), hex(0x9fbf4a), (upper ? 0.3 : 0.08) + 0.25 * u), (k % 2 ? 1.08 : 0.84) * (s > 0 ? 1 : 0.9))
+            const col = shade(mix(mix(TONE.palmDark, TONE.palm, tone), hex(0x9fbf4a), (upper ? 0.3 : 0.08) + 0.25 * u), (k % 2 ? 1.08 : 0.84) * (s > 0 ? 1 : 0.86) * (upper ? 1.22 : 0.74 + 0.3 * u))
             const p0 = rib(k / steps)
             const p1 = rib((k + 1) / steps)
             both(G, [p0, p1, edge(k + 1), edge(k)], [dy * s * 0.45, -dx * s * 0.45, 1], [dx, dy, 0], col, shade(col, 0.55))
@@ -250,7 +251,7 @@ export function buildBeach(z: Zone, ctx: RealContext): THREE.Object3D {
           for (let s = 0; s < stripes; s++) {
             const y0 = -w + 1 + ((w * 2 - 2) * s) / stripes
             const y1 = -w + 1 + ((w * 2 - 2) * (s + 1)) / stripes
-            both(G, [[p[0], y0, p[2]], [q[0], y0, q[2]], [q[0], y1, q[2]], [p[0], y1, p[2]]], [-(q[2] - p[2]), 0, q[0] - p[0]], [1, 0, 0], shade(wood, (k % 2 ? 1.12 : 0.96) * (s % 2 ? 1 : 0.94)))
+            both(G, [[p[0], y0, p[2]], [q[0], y0, q[2]], [q[0], y1, q[2]], [p[0], y1, p[2]]], [-(q[2] - p[2]), 0, q[0] - p[0]], [1, 0, 0], shade(s % 2 ? STRIPE.pale : STRIPE.blue, k % 2 ? 1.06 : 0.94))
           }
         }
       }, CASE.sun)
