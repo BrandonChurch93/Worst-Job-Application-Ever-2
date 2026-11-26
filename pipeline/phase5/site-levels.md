@@ -59,3 +59,24 @@ MEASURED over the limit: step2-crank, draw calls, at high (814 of 600) and mediu
 Eight lines in seven files, each `userData.small = ...` on the object that draws small things:
 `src/pages/step1/real/turrets.ts` (two), `src/pages/step2/real/slot.ts`, `src/cursor/model/effects.ts`, `src/table/real/ball/index.ts`, `src/boss/real/transform.ts`, `src/pages/step4/real/boss-weapons.ts`, `src/pages/step5/real/stamp.ts`.
 The mark is read by `src/core/levelSmall.ts` alone. A computed picture has no level (`engine.levelPlan` is null), the share is 1, and `SmallThings.apply` returns at its first line when the share is 1 and was 1 (STATED, the code).
+
+### Proof that the eight marks change no computed picture (the Builder's conditions 2, 3, 5)
+
+MEASURED 17:05Z to 17:08Z on the tree of 57b89e8f. "After" is the tree with the marks, "before" is the same tree with `git apply -R pipeline/phase5/site-levels-NEEDS.patch`, built again. Each picture hd, tier draft, compared with `cmp`; the number is the first 16 digits of its sha256, the same on both sides.
+
+| touched part | frame | sha256 | what the eye finds in it |
+|---|---|---|---|
+| turrets, sparks (step 1 under fire) | key `step1-fire` | c7252177462bc248 | also byte equal to the reference made at a5724fb9, before any of this work |
+| slot, coins | `--page step2 --beat step2.slot --at 0.5` | d2137c422f33054a | reels read 07 23 1991, no coin yet |
+| slot, coins | `--page step2 --beat step2.slot --at 0.7` | e57ee73c455f8f57 | coins beside the lever |
+| cursor, drops and puffs | key `step1-tug` | 8ebebb76da62cb75 | the tug of war over the shredder; whether a drop or a puff is in this frame is UNKNOWN |
+| table, sweat | key `last-save` | bf9d1e70496a6df8 | the ball above the flippers; whether sweat is in this frame is UNKNOWN |
+| table | key `table-wide` | 6503c2dd8a1a58a2 | also byte equal to the reference of a5724fb9 |
+| boss transform, chips | `--page boss --beat boss.unfold --at 0.6` | 54831ceae01a5037 | the button out of the cracked page; whether a chip is in the air is UNKNOWN |
+| boss fight, flecks | `--page boss --beat boss.slabs --at 0.3` | 38b5008fdce7b107 | a stream of sparks toward the cursor |
+| boss fight | key `boss-fight` | 39c4973f36bf54b7 | also byte equal to the reference of a5724fb9 |
+| stamp, dust | `--page decision --beat decision.letter --at 0.55` | f06b5e1386005f1b | the letter lies, the stamp has not come down yet: no dust in this frame |
+
+Three frames of the film itself, `npm run determinism -- --only film-step1,film-step2,film-boss` (frames 2472, 3831, 8172, hd, draft), before against after with `cmp`: MEASURED byte equal, sha256 6f5c751349f5f719, 6584713698f310ae, c026e4c22efc216e. The film is computed with no level, and at `high` the share is 1 as well, so no count changes there (the three frames above are the measured part; "every count at high in a live frame" is STATED by the code, not counted).
+
+After the marks: `npm test` exit 0, `npm run determinism` pass 12 pictures, `npm run bots` all clear, `npx tsc --noEmit -p .` exit 0 (MEASURED 16:58Z to 17:04Z).
