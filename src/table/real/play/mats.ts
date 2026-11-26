@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { studio } from '../../../post/studio'
 import { lit } from '../light'
+import { steel } from '../frame/steel'
 import type { Zone } from '../zone'
 
 export interface Mats {
@@ -23,11 +24,10 @@ function solidOf(z: Zone): THREE.MeshPhysicalMaterial {
         .replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\nroughnessFactor = vWjpFinish.x;')
         .replace('#include <metalnessmap_fragment>', '#include <metalnessmap_fragment>\nmetalnessFactor = vWjpFinish.y;')
         .replace('#include <lights_physical_fragment>', '#include <lights_physical_fragment>\n#ifdef USE_CLEARCOAT\nmaterial.clearcoat = vWjpFinish.z;\n#endif')
-        .replace('radiance += iblRadiance * mix(', 'radiance += ( 1.0 + vWjpFinish.y * 3.0 ) * iblRadiance * mix(')
   }
-  m.customProgramCacheKey = () => 'wja-studio-play-solid-2'
+  m.customProgramCacheKey = () => 'wja-studio-play-solid-3'
   m.name = `play.solid.${z.id}`
-  return lit(m, z)
+  return lit(steel(m, z, { ceiling: 0.035, panel: 0.34, wide: 0.12, horizon: 1.25 }), z)
 }
 
 // Clear plastic with no light passed through it: thin where it is seen straight on, bright where it turns away and at every edge.

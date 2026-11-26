@@ -5,17 +5,24 @@ import { localBalls, whole, type Zone } from '../zone'
 import { Bag, DEG, lathe, look, mat, prism, type V2 } from './g'
 import { drop, matsOf, part } from './mats'
 
-// The site's own orange, as the accent button wears it.
-export const ORANGE = look(0xc24400, 0.3, 0, 1)
-const ORANGE_SOFT = look(0xb84000, 0.42, 0, 0.6)
-const RUBBER = look(0x1d1d1f, 0.9, 0, 0)
-const RUBBER_LINE = look(0x29292b, 0.8, 0, 0)
+// The orange of the approved bats: the site's accent, as the lamps of a tier show it on a moulded top.
+export const ORANGE = look(0xff9838, 0.5, 0, 0.3)
+const ORANGE_TOP = look(0xffa040, 0.48, 0, 0.3)
+const ORANGE_LOW = look(0xd86a14, 0.45, 0, 0.4)
+const RUBBER = look(0x161617, 0.86, 0, 0)
+const RUBBER_LINE = look(0x2c2c2e, 0.7, 0, 0)
 const NYLON = look(0xe4e0d6, 0.5, 0, 0.2)
-const CHROME = look(0xe6e9ec, 0.12, 0.8, 0)
+const CHROME = look(0xe6e9ec, 0.1, 1, 0)
 const SOCKET = look(0x2a2b2d, 0.6, 1, 0)
-const SHAFT = look(0xc9cdd1, 0.3, 0.78, 0)
+const SHAFT = look(0xc9cdd1, 0.25, 1, 0)
 
-const BAT = { pivot: 22.5, tip: 15.5, floor: 7.5, top: 40, band: 1.3 }
+// The bat stands on its shaft: a low orange foot, the rubber round its waist, and the moulded top above it.
+const BAT = { floor: 9, waist: 20, band: 15, top: 56, lip: 5.2, crown: 5 }
+const F = FLIP as { length: number; radius: number; tip?: number }
+// The rubber's outer line is the line the ball meets: a round at the pivot, a round at the tip, the two flanks between.
+// Until the layout carries the tip's round, the bat takes the size the director gave for it.
+const SIZE = F.tip === undefined ? { radius: 0.4, tip: 0.26 } : { radius: F.radius, tip: F.tip }
+export const BAT_LINE = { pivot: SIZE.radius * BALL, tip: SIZE.tip * BALL, reach: (F.length - SIZE.tip) * BALL }
 
 // The outline of a bat that lies along x from its pivot: two rounds and the two lines that touch both.
 export function batOutline(ra: number, rb: number, len: number, steps = 12): V2[] {
@@ -39,20 +46,24 @@ let shared: THREE.BufferGeometry | null = null
 
 export function batGeometry(): THREE.BufferGeometry {
   if (shared) return shared
-  const len = FLIP.length * BALL
+  const { pivot: ra, tip: rb, reach: len } = BAT_LINE
+  const line = (inset: number, steps = 10): V2[] => batOutline(ra - inset, rb - inset, len, steps)
   const b = new Bag()
-  b.add(lathe([[12.5, 0], [12.5, 1.2], [10, 2.4], [10, BAT.floor + 1]], 20), NYLON)
-  b.add(lathe([[5, BAT.floor - 0.5], [5, BAT.floor + 2]], 12), SHAFT)
-  b.add(prism(batOutline(BAT.pivot - BAT.band, BAT.tip - BAT.band, len), BAT.floor, BAT.top, 4.2, 4), ORANGE)
-  b.add(prism(batOutline(BAT.pivot, BAT.tip, len), 14.5, 25.5, 1.5, 2), RUBBER)
-  b.add(prism(batOutline(BAT.pivot + 0.4, BAT.tip + 0.4, len, 10), 19.6, 20.4, 0), RUBBER_LINE)
-  const rib: V2[] = [[52, -3.4], [len - 44, -2.4], [len - 38, 0], [len - 44, 2.4], [52, 3.4], [46, 0]]
-  b.add(prism(rib, BAT.top - 0.4, BAT.top + 0.6, 0.5, 2), ORANGE)
-  b.add(lathe([[15.5, BAT.top - 0.5], [15.5, BAT.top + 2.2], [14.2, BAT.top + 3.4], [9, BAT.top + 3.4]], 28), ORANGE)
-  b.add(lathe([[9.4, BAT.top + 3], [9.4, BAT.top + 3.9], [8.6, BAT.top + 4.5], [0, BAT.top + 4.5]], 20), SHAFT)
-  b.add(lathe([[7.2, BAT.top + 4.4], [7.2, BAT.top + 5.6], [6.4, BAT.top + 7], [4.6, BAT.top + 7.8], [3.6, BAT.top + 7.8]], 20), CHROME)
-  b.add(lathe([[3.6, BAT.top + 7.8], [3.4, BAT.top + 5.4], [0, BAT.top + 5.4]], 6, 80), SOCKET)
-  b.add(lathe([[3.4, BAT.top - 0.2], [3.4, BAT.top + 1.3], [2.6, BAT.top + 2], [0, BAT.top + 2]], 12), CHROME, mat({ x: len - 3 }))
+  const hub = Math.min(13, ra * 0.5)
+  b.add(lathe([[hub + 3, 0], [hub + 3, 1.4], [hub, 2.8], [hub, BAT.floor + 1]], 20), NYLON)
+  b.add(lathe([[hub * 0.45, 0.5], [hub * 0.45, BAT.floor + 2]], 12), SHAFT)
+  b.add(lathe([[4.2, 0], [4.2, BAT.floor + 1]], 10), NYLON, mat({ x: len }))
+  b.add(prism(line(BAT.lip + 1.2), BAT.floor, BAT.waist + 1, 2.2, 3), ORANGE_LOW)
+  b.add(prism(line(0), BAT.waist, BAT.waist + BAT.band, 2.4, 3), RUBBER)
+  b.add(prism(batOutline(ra + 0.35, rb + 0.35, len, 12), BAT.waist + BAT.band / 2 - 0.5, BAT.waist + BAT.band / 2 + 0.5, 0), RUBBER_LINE)
+  b.add(prism(line(BAT.lip), BAT.waist + BAT.band - 1, BAT.top, BAT.crown, 4), ORANGE)
+  b.add(prism(line(BAT.lip + BAT.crown + 2.4), BAT.top - 0.6, BAT.top + 1.1, 0.9, 2), ORANGE_TOP)
+  const boss = Math.max(7, ra * 0.26)
+  b.add(lathe([[boss + 2.2, BAT.top + 0.6], [boss + 2.2, BAT.top + 1.6], [boss + 1, BAT.top + 2.6], [boss - 0.4, BAT.top + 2.6]], 24), ORANGE_TOP)
+  b.add(lathe([[boss, BAT.top + 2.2], [boss, BAT.top + 3.4], [boss - 1.2, BAT.top + 4.6], [boss * 0.45, BAT.top + 5.2], [boss * 0.4, BAT.top + 5.2]], 24), CHROME)
+  b.add(lathe([[boss * 0.4, BAT.top + 5.2], [boss * 0.36, BAT.top + 3.2], [0, BAT.top + 3.2]], 6, 80), SOCKET)
+  const stud = Math.max(4.2, rb * 0.24)
+  b.add(lathe([[stud + 1.4, BAT.top + 0.6], [stud + 1.4, BAT.top + 1.5], [stud, BAT.top + 2.3], [stud * 0.5, BAT.top + 3.1], [0, BAT.top + 3.2]], 16), CHROME, mat({ x: len }))
   shared = b.done()
   shared.userData.shared = true
   return shared
@@ -61,7 +72,7 @@ export function batGeometry(): THREE.BufferGeometry {
 const flippersOf = (z: Zone) => table.flippers.filter((f) => f.tier === z.tier)
 
 export const flippers = whole('flippers', {
-  version: 'play-flippers-6',
+  version: 'play-flippers-7',
   build(z) {
     const g = new THREE.Group()
     g.name = `play.flippers.${z.id}`
