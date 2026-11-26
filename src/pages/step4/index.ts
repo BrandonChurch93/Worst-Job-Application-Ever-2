@@ -3,7 +3,7 @@ import { collapseRig, drawRig, drawSmoke, drawSocket, fightRig, restRig, unfoldR
 import { clearSpot, newFight, SPARK_SECONDS, stepFight, threat, type Arena, type Fight } from '../../boss/fight'
 import { ARENA, COLLAPSE_SECONDS, DOUBT_SECONDS, FALLEN, GAG_MAX, HOME, SOCKET, UNFOLD, WAKE_AFTER_TICK } from '../../boss/plan'
 import { drawWeapons } from '../../boss/weapons'
-import { homePose } from '../../stage/camera'
+import { frame } from '../../stage/camera'
 import { drawLayout, type DrawOptions } from '../../shell/layout'
 import { SCREEN_H } from '../../shell/parts'
 import type { DrawList, GagInfo, Hint, Mode, PageContext, PageLogic, Pointer, Shape, SheetFrame, StepIo } from '../../stage/types'
@@ -45,6 +45,7 @@ const FILL_TOP = 3.4
 // The body takes a sixth argument for the shield's flash and the cap's soot once the modeller's body is in; until then it is ignored.
 const easeOut = (t: number): number => 1 - (1 - t) * (1 - t) * (1 - t)
 const easeIn = (t: number): number => t * t
+const STAGES = { w: 2240, h: 1260, y: 630, x: [235, 667, 1216, 1863] } as const
 const PHASE_GAG = ['boss.slabs', 'boss.popups', 'boss.lastStand'] as const
 const SPOTS: [number, number][] = [[560, 800], [430, 640], [330, 900], [760, 900], [1150, 940], [1420, 950], [1690, 960]]
 
@@ -334,24 +335,25 @@ export function makePage(): PageLogic {
     sheet(id: string): SheetFrame | null {
       if (id !== 'boss-stages') return null
       const list: DrawList = []
-      const y = 520
-      drawSocket(list, 250, y, 0, 'stage-0-socket')
-      drawRig(list, restRig(250, y), 'stage-0')
-      drawSocket(list, 650, y + 14, 1, 'stage-1-socket')
-      const loose = restRig(650, y)
+      const [x0, x1, x2, x3] = STAGES.x
+      const y = STAGES.y
+      drawSocket(list, x0, y, 0, 'stage-0-socket')
+      drawRig(list, restRig(x0, y), 'stage-0')
+      drawSocket(list, x1, y + 14, 1, 'stage-1-socket')
+      const loose = restRig(x1, y)
       loose.cap.lift = 0.5
       loose.cap.rot = -0.11
       loose.cap.x += 14
       loose.cap.y -= 12
       drawRig(list, loose, 'stage-1')
-      drawSocket(list, 1090, y + 8, 1, 'stage-2-socket')
-      const half = fightRig(1090, y, null)
+      drawSocket(list, x2, y + 8, 1, 'stage-2-socket')
+      const half = fightRig(x2, y, null)
       for (const l of half.legs) l.k = 0.5
       for (const c of half.cannons) c.k = 0
       half.shield.k = 0
       drawRig(list, half, 'stage-2')
-      drawRig(list, fightRig(1610, y, null), 'stage-3')
-      return { list, cursors: [], view: homePose(0) }
+      drawRig(list, fightRig(x3, y, null), 'stage-3')
+      return { list, cursors: [], view: frame({ x: 0, y: 0, w: STAGES.w, h: STAGES.h }), width: STAGES.w, height: STAGES.h }
     }
   }
   return page

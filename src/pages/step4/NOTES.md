@@ -78,7 +78,7 @@ The numbers in `v`:
 
 | Shape | `v` |
 | --- | --- |
-| `fired-N` | 0: scale while it leaves the mouth (0 to 1 in 0.1 s); it leaves at the mouth's height and comes down to its flying height in 0.26 s. 1: seconds since it landed (9 in flight). 2: seconds in flight (9 once landed) |
+| `fired-N` | 0: scale while it leaves the mouth (twice the way it has gone over its length, so its tail stays at the mouth until it is whole); it leaves at the mouth's height, clears the shield and comes down to its flying height by 0.5 s. 1: seconds since it landed (9 in flight). 2: seconds in flight (9 once landed) |
 | `banner-up` | 0: scale, 1: seconds since `session-expired` |
 | `popup-up-N` | 0: how far it is up (0 to 1), 1: clicks it has taken, 2: seconds since it began to sink (9 before) |
 | `popup-up-N-button-J` | 0: how far it is up |

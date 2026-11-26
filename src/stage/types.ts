@@ -87,6 +87,8 @@ export interface CameraPose {
   fov: number
   focus?: number
   aperture?: number
+  // A well this camera sees in place of a box of the page: the shapes that lie wholly inside the box are left out of its frame.
+  omit?: Shape
 }
 
 export interface Applicant { firstName: string; lastName: string; email: string }

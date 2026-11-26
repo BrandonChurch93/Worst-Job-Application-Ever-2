@@ -24,9 +24,9 @@ const PLATE = { w: 1920, h: 1080, z: 0.5 }
 // The ink has no shine of its own: its face meets the lacquer, not the air, so only the coat and the leaf reflect.
 // What the print lies under: a hard clear coat, a little rougher where the coat map says the ball has run, with the orange peel of a sprayed lacquer. Where the coat map says leaf, the print is metal.
 const COAT = [
-  { roughness: 0.4, leaf: true, coat: 1, peel: 0.045, specular: 0, room: 2.6 },
-  { roughness: 0.95, leaf: false, coat: 1, peel: 0.05, specular: 0, room: 1.6 },
-  { roughness: 0.92, leaf: false, coat: 1, peel: 0.05, specular: 0, room: 2.2 }
+  { roughness: 0.4, leaf: true, coat: 1, peel: 0.045, specular: 0, room: 0.3 },
+  { roughness: 0.95, leaf: false, coat: 1, peel: 0.05, specular: 0, room: 0.3 },
+  { roughness: 0.92, leaf: false, coat: 1, peel: 0.05, specular: 0, room: 0.3 }
 ]
 const WINDOW = { lift: 0.35, bump: 2.2, segments: 56, inset: 0.975, room: 2.4, dome: 4.5 }
 
@@ -140,5 +140,5 @@ function drop(o: THREE.Object3D): void {
 }
 
 export const parts: Record<string, PartMaker | null> = {
-  'tier-art': whole('tier-art', { version: 'art-10', ready: () => pictures.every((p) => p.ready()), build, pose, drop })
+  'tier-art': whole('tier-art', { version: 'art-12', ready: () => pictures.every((p) => p.ready()), build, pose, drop })
 }
