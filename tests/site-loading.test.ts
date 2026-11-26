@@ -91,6 +91,22 @@ describe('what is loaded when', () => {
     expect(fake.fetched.length).toBe(inWeb.length)
   })
 
+  it('puts no picture on the card while a page is turning, and goes on when the turn is over', async () => {
+    stageLoading(card, () => 0)
+    showPage(flow, 'step1', 'web', true)
+    await play(12)
+    expect(loadState().pages.step3!.loaded).toBeGreaterThan(0)
+    expect(fake.uploads).toEqual([])
+    expect(pageReady('step3')).toBe(false)
+    showPage(flow, 'step1', 'web', false)
+    await play(inWeb.length * 3 + 4)
+    expect(loadState().pages.step3).toMatchObject({ onCard: inWeb.length, ready: true })
+    const at = fake.uploads.length
+    showPage(flow, 'step1', 'web', true)
+    await play(4)
+    expect(fake.uploads.length).toBe(at)
+  })
+
   it('fetches nothing on the careers page, the table from step 1 on, and lets it go after step 3', async () => {
     stageLoading(card, () => 0)
     showPage(flow, 'marketing', 'web')
