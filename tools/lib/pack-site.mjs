@@ -24,6 +24,15 @@ export const RUN = { format: 'preview', assets: 'web', query: `&clock=steps&qual
 // at a hand's speed, presses when it is there, types, scrolls when the place is off the screen and plays the flippers with the Shift keys.
 // It takes hits: the first time a page tells it to step aside it does not. It stands where it is, hands off, for `standSteps`, and obeys from then on.
 export const VISITOR = { hz: 60, speed: 1500, reactSteps: 11, typeEvery: 8, wheelEvery: 10, wheel: 120, jitter: 6, near: 22, top: 90, bottom: 990, edge: 10, seed: 12345, start: [960, 540], standSteps: 120, mostSeconds: 400 }
+// Where the turrets fire: from the gag `from` of the page `page` until the gag `until`, the visitor stands still, hands off, until the site tells of one hit named `hit` there. `mostSteps` ends the wait if no bolt ever lands.
+export const STANDS = { page: 'step1', from: 'step1.firstName', until: 'step1.lastName', hit: 'bolt-hit-cursor', mostSteps: 900 }
+// Given back: the arrow lay dead for at least `still` steps, and now moves again.
+export const BACK = { still: 30, dead: 0.2, moves: 0.5 }
+// The gag at which a page takes the arrow from the visitor, as `told().gags` names it: the tug of war of step 1.
+export const TAKES = 'step1.tug'
+// The stroke after the arrow is given back: once the page has taken the arrow, the arrow has lain dead for BACK.still steps and the place the page
+// wants the pointer jumps by `least` px or more, the visitor was waiting for it and goes there `reactSteps` late, not VISITOR.reactSteps. Once a visit.
+export const STROKE = { least: 200, reactSteps: 2 }
 
 // The visitor's mind: from what the site tells at a step to the events of that step. No clock and no chance but its own seeded numbers.
 export function makeVisitor(k, o = VISITOR) {
@@ -39,6 +48,11 @@ export function makeVisitor(k, o = VISITOR) {
   let lastKey = -999
   let lastWheel = -999
   let stand = -1
+  let waited = 0
+  let hero = null
+  let dead = 0
+  let aimed = null
+  let stroked = false
   const release = (acts) => {
     if (held.down) acts.push({ up: 'left' })
     if (held.left) acts.push({ keyUp: 'ShiftLeft' })
@@ -48,6 +62,7 @@ export function makeVisitor(k, o = VISITOR) {
   return {
     pointer: () => ({ x: pos.x / k, y: pos.y / k }),
     held: () => ({ ...held }),
+    waited: () => waited,
     end() {
       const acts = []
       release(acts)
@@ -62,10 +77,27 @@ export function makeVisitor(k, o = VISITOR) {
         target = { x: aim.x + rand() * o.jitter, y: aim.y - t.scroll + rand() * o.jitter, down: h.down === true, key: h.key, left: h.flipLeft === true, right: h.flipRight === true, hx: h.x, hy: h.y - t.scroll }
       }
       if (h && h.dodge && stand < 0) stand = o.standSteps
-      if (stand > 0) {
+      const gags = t.gags || []
+      const fired = t.page === STANDS.page && gags.includes(STANDS.from) && !gags.includes(STANDS.until) && !t.turning
+      const struck = (t.hits || []).some((x) => x.name === STANDS.hit && x.page === STANDS.page)
+      const waits = fired && !struck && waited < STANDS.mostSteps
+      if (waits) waited += 1
+      if (t.hero) {
+        dead = hero && Math.hypot(t.hero.x - hero.x, t.hero.y - hero.y) <= BACK.dead ? dead + 1 : 0
+        hero = { x: t.hero.x, y: t.hero.y }
+      }
+      if (waits) {
+        if (stand > 0) stand -= 1
+        queue.push({ stand: true })
+      } else if (stand > 0) {
         stand -= 1
         queue.push({ stand: true })
       } else queue.push(target)
+      if (target && aimed && !stroked && !waits && gags.includes(TAKES) && dead >= BACK.still && Math.hypot(h.x - aimed.x, h.y - aimed.y) >= STROKE.least) {
+        for (let j = STROKE.reactSteps; j < queue.length; j++) queue[j] = target
+        stroked = true
+      }
+      aimed = h && !t.turning ? { x: h.x, y: h.y } : aimed
       const seen = queue.length > o.reactSteps ? queue.shift() : null
       if (seen && seen.stand) {
         if (held.down) acts.push({ up: 'left' })
@@ -179,7 +211,9 @@ export async function walk(cfg, log = () => {}) {
       if (i % 1200 === 1199) log(`the visitor is at ${t.time.toFixed(0)} s, on ${t.page}`)
     }
     const finished = t.finished
-    return { format: f.id, level: LEVEL, assets: RUN.assets, visitor: VISITOR, finished, steps: rows.length, gags, hits, acts, rows, browser: session.version, problems: [...new Set(session.problems)].slice(0, 12) }
+    const bolts = hits.filter((h) => h.name === STANDS.hit && h.page === STANDS.page).length
+    const stood = { steps: v.waited(), mostSteps: STANDS.mostSteps, boltHits: bolts, capReached: v.waited() >= STANDS.mostSteps && bolts === 0 }
+    return { format: f.id, level: LEVEL, assets: RUN.assets, visitor: VISITOR, finished, steps: rows.length, seconds: Math.round((rows.length / VISITOR.hz) * 100) / 100, stood, gags, hits, acts, rows, browser: session.version, problems: [...new Set(session.problems)].slice(0, 12) }
   } finally {
     await session.close()
   }
@@ -190,12 +224,15 @@ const runFile = (cache) => path.join(cache, 'site-run.json')
 // The run of this commit: read from the cache, or walked once and kept there.
 export async function siteFacts(cfg, cache = null, log = () => {}) {
   const file = cache ? runFile(cache) : null
-  if (file && fs.existsSync(file)) return momentsOf(cfg, readJson(file))
-  const run = await walk(cfg, log)
-  if (file) {
-    fs.mkdirSync(cache, { recursive: true })
-    fs.writeFileSync(file, JSON.stringify(run) + '\n')
+  let run = file && fs.existsSync(file) ? readJson(file) : null
+  if (!run) {
+    run = await walk(cfg, log)
+    if (file) {
+      fs.mkdirSync(cache, { recursive: true })
+      fs.writeFileSync(file, JSON.stringify(run) + '\n')
+    }
   }
+  if (run.stood) log(run.stood.capReached ? `the visitor stood still on ${STANDS.page} for ${run.stood.steps} steps, the most it waits, and no bolt hit the arrow: the sheet of the hit shows another blow` : `the visitor stood still on ${STANDS.page} for ${run.stood.steps} steps and was hit by ${run.stood.boltHits} bolt${run.stood.boltHits === 1 ? '' : 's'} there`)
   return momentsOf(cfg, run)
 }
 
@@ -273,13 +310,20 @@ export function aroundStep(at, count, every, first, last, part = 2) {
 
 // The hits on the arrow that the site tells of by name, the one to show first.
 const HITS = ['bolt-hit-cursor', 'tug-lost']
-// Given back: the arrow lay dead for at least this many steps, and now moves again.
-const BACK = { still: 30, dead: 0.2, moves: 0.5 }
-// The gag at which a page takes the arrow from the visitor, as `told().gags` names it: the tug of war of step 1.
-const TAKES = 'step1.tug'
 // A walk: the arrow moves at least this far in a step, and the stretch is at least this long.
 const WALK = { least: 6, steps: 24 }
-const TURN = { before: 6, after: 6 }
+// A page turn's sheets end this many steps after the turning ends: the knock of the seat is inside the turning, the shiver of the page after it lasts this long.
+const TURN = { after: 16 }
+// A moment's run starts this many pictures before the moment itself.
+const LEAD = 3
+// Out of the port: the ball's middle is this far, in px of the page, from where the arrow was sealed, and the run holds this many steps more.
+const PORT = { clear: 150, tail: 6, most: 600 }
+// The flipper meets the ball: within `within` steps of a press of a flipper the arrow's speed changes by `kick` px of the page a step or more, the ball then `lifts` px a step or more up the table.
+const MEETS = { within: 24, kick: 4, lifts: 3 }
+// Round a run's path in a close sheet: this much of the picture stays clear on every side of the arrow's places, in px of the picture.
+const ROOM = 56
+// When the limit of files cuts a run of two sheets to one, the second sheets go in this order, the least worth first.
+const WORTH = ['given-back', 'flip', 'flippers', 'turn']
 // Pictures of a moment are this many steps apart: 30 a second, as a page's sheets of consecutive frames are.
 const EVERY = 2
 
@@ -351,6 +395,16 @@ export function momentsOf(cfg, run) {
     }
   }
 
+  // The release itself: the visitor strokes STROKE.reactSteps after the page lets go, so the page let go that long before the pointer's first long move.
+  let released = back
+  if (back !== null) {
+    const long = (VISITOR.speed / VISITOR.hz) * 0.6
+    for (let i = Math.max(taken + 1, back - VISITOR.reactSteps); i <= back; i++) if (pointerMoved(i) >= long && pointerMoved(i - 1) < long) {
+      released = Math.min(back, i - STROKE.reactSteps)
+      break
+    }
+  }
+
   // Step 3: the visitor gets the flippers at the step the site says control is the flippers' (`told().control`), and uses them at the first press of one after that.
   const s3 = of('pinball')
   let flippers = null
@@ -359,7 +413,49 @@ export function momentsOf(cfg, run) {
     for (let i = s3.first; i <= s3.last && flippers === null; i++) if (rows[i][COL.control]) flippers = i
     for (let i = (flippers ?? s3.last) + 1; i <= s3.last && flip === null; i++) if ((rows[i][COL.left] && !rows[i - 1][COL.left]) || (rows[i][COL.right] && !rows[i - 1][COL.right])) flip = i
   }
-  return { ...run, pages, turns, moments: { walk, hit, struck: struck ? struck.name : null, taken, back, flippers, flip, turn: turns[0] || null } }
+  // The ball has left the port: the arrow, sealed in it, is PORT.clear from where it was sealed.
+  let left = null
+  let leaves = null
+  if (flippers !== null) {
+    const far = (i) => Math.hypot(rows[i][COL.heroX] - rows[flippers][COL.heroX], rows[i][COL.heroY] - rows[flippers][COL.heroY])
+    for (let i = flippers + 1; i <= Math.min(s3.last, flippers + PORT.most) && left === null; i++) if (far(i) >= PORT.clear) left = i
+    // It leaves at the first step of the unbroken move that takes it there.
+    if (left !== null) {
+      leaves = left
+      while (leaves - 1 > flippers && moved(leaves - 1) >= BACK.moves) leaves -= 1
+    }
+  }
+  // The flipper meets the ball: the first press of a flipper after which the ball is struck up the table, and the step of the blow.
+  const speed = (i) => [rows[i][COL.heroX] - rows[i - 1][COL.heroX], rows[i][COL.heroY] - rows[i - 1][COL.heroY]]
+  let blow = null
+  if (s3 && flip !== null) {
+    for (let p = flip; p <= s3.last && blow === null; p++) {
+      if (!((rows[p][COL.left] && !rows[p - 1][COL.left]) || (rows[p][COL.right] && !rows[p - 1][COL.right]))) continue
+      for (let i = Math.max(p, s3.first + 2); i <= Math.min(s3.last, p + MEETS.within) && blow === null; i++) {
+        const now = speed(i)
+        const was = speed(i - 1)
+        if (Math.hypot(now[0] - was[0], now[1] - was[1]) >= MEETS.kick && now[1] <= -MEETS.lifts) blow = i
+      }
+    }
+  }
+  return { ...run, pages, turns, moments: { walk, hit, struck: struck ? struck.name : null, taken, back, released, flippers, leaves, left, flip, met: blow, turn: turns[0] || null } }
+}
+
+// The window of a close sheet: one fixed window for the whole run, set on the arrow's places over it. It is the tile itself, uncut and unscaled,
+// while the arrow's way fits in it with ROOM round it, and a wider one in the tile's proportions, shown smaller, when it does not.
+export function runWindow(cfg, run, steps) {
+  const edge = cfg.critics.maxImageLongEdgePx
+  const rf = cfg.formats[run.format || RUN.format]
+  const k = rf.width / cfg.formats.hd.width
+  const tileW = Math.floor((edge - GAP * 2) / 3)
+  const tileH = hitTileHeight(edge, Math.min(steps.length, cfg.critics.contactSheetFrames))
+  const xs = steps.map((i) => run.rows[i][COL.heroX] * k)
+  const ys = steps.map((i) => (run.rows[i][COL.heroY] - run.rows[i][COL.scroll]) * k)
+  const box = [Math.min(...xs), Math.min(...ys), Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys)]
+  const zoom = Math.min(Math.max(1, (box[2] + ROOM * 2) / tileW, (box[3] + ROOM * 2) / tileH), rf.width / tileW, rf.height / tileH)
+  const w = Math.round(tileW * zoom)
+  const h = Math.round(tileH * zoom)
+  return { window: windowRound(box, w, h, rf.width, rf.height), tileW, tileH, shown: Math.round((tileW / w) * 100) }
 }
 
 const unitsOf = (cfg) => cfg.film.units.map((u) => u.id)
@@ -418,39 +514,64 @@ function wholeGroups(cfg, unit, facts) {
   ]
 }
 
-// R4: the sheets kit/07 names for `site`, each found in the visitor's run.
+// R4: the sheets kit/07 names for `site`, each found in the visitor's run. A moment is one run of consecutive pictures on one sheet, or on two in a row.
 function motionGroups(cfg, unit, facts) {
   const run = needRun(facts, 'R4')
   const count = cfg.critics.contactSheetFrames
+  const most = cfg.critics.maxFilesPerMessage
   const m = run.moments
   const last = run.rows.length - 1
-  const items = []
-  // Whole pictures, one after the other, from a step on: as many sheets as it takes to reach `to`.
-  const whole = (from, to, words, what) => {
-    const sheets = Math.max(1, Math.ceil((to - from + 1) / (count * EVERY)))
-    for (let j = 0; j < sheets; j++) {
-      const steps = Array.from({ length: count }, (_, i) => from + (j * count + i) * EVERY).filter((i) => i >= 0 && i <= last)
-      if (!steps.length) continue
-      const part = sheets > 1 ? `, sheet ${j + 1} of ${sheets}` : ''
-      items.push({ kind: 'site-run-sheet', moment: what, page: run.rows[steps[0]][COL.page], steps, heading: `Consecutive frames ${words}${part}: ${span(steps)}` })
+  const runs = []
+  // `sheets` sheets of pictures one after the other from the step `from`. `keep` says which sheet stays when the limit takes the other.
+  const add = (what, kind, words, from, sheets, at = null, keep = 'first') => {
+    const start = Math.max(0, Math.min(from, last - (count * sheets - 1) * EVERY))
+    const steps = Array.from({ length: count * sheets }, (_, i) => start + i * EVERY).filter((i) => i >= 0 && i <= last)
+    if (steps.length) runs.push({ what, kind, words, steps, at, keep })
+  }
+  if (m.walk) add('walk', 'site-run-sheet', "as a visitor's pointer walks the arrow across the page", m.walk.first + Math.max(0, Math.floor((m.walk.last - m.walk.first + 1 - count * EVERY) / 2)), 1)
+  if (m.turn) add('turn', 'site-run-sheet', 'of a page turn, from the page on its edge to the page seated and still', m.turn.last + TURN.after - (count * 2 - 1) * EVERY, 2, null, 'last')
+  const lead = LEAD * EVERY
+  if (m.hit !== null && m.hit !== undefined) add('hit', 'site-hit-sheet', 'at a hit on the arrow', m.hit - lead, 1, m.hit)
+  if (m.taken !== null && m.taken !== undefined) add('taken', 'site-hit-sheet', 'as the page takes the arrow from the visitor', m.taken - lead, 1, m.taken)
+  if (m.back !== null && m.back !== undefined) add('given-back', 'site-hit-sheet', 'as the page gives the arrow back to the visitor and the visitor moves it away', (m.released ?? m.back) - lead, 1, m.released ?? m.back)
+  if (m.flippers !== null && m.flippers !== undefined) {
+    // One run from the seal until the ball is out of the port, where two sheets hold it. Where the ball lies longer in the port than that,
+    // the moment is two runs of one sheet each: the seal, and the ball leaving the port.
+    const out = m.left === null || m.left === undefined ? null : m.left + PORT.tail
+    const from = m.flippers - lead
+    if (out === null || out - from <= (count * 2 - 1) * EVERY) add('flippers', 'site-hit-sheet', 'as the arrow goes into the ball, the ball leaves the port and the visitor gets the flippers', from, 2, m.flippers)
+    else {
+      add('flippers', 'site-hit-sheet', 'as the arrow goes into the ball and the visitor gets the flippers', from, 1, m.flippers)
+      add('flippers', 'site-hit-sheet', 'as the ball, with the arrow sealed in it, leaves the port', Math.max(m.leaves - lead, out - (count - 1) * EVERY), 1, m.leaves, 'second')
     }
   }
-  // The part of the picture round the arrow at its real size, round one step.
-  const close = (at, words, what, part = 2) => {
-    if (at === null || at === undefined) return
-    const steps = aroundStep(at, count, EVERY, 0, last, part)
-    items.push({ kind: 'site-hit-sheet', moment: what, at, page: run.rows[at][COL.page], steps, heading: `Consecutive frames ${words}, the part of the picture round the arrow at its real size: ${span(steps)}` })
+  const struck = m.met ?? m.flip
+  if (struck !== null && struck !== undefined) add('flip', 'site-hit-sheet', "as the visitor's flipper meets the ball and the ball goes off it", struck - lead, 2, struck)
+  // The limit of files: every moment keeps a sheet, and the second sheets go, the least worth first.
+  const files = () => runs.reduce((n, r) => n + Math.ceil(r.steps.length / count), 0)
+  for (const what of WORTH) {
+    const r = runs.find((x) => x.what === what && x.steps.length > count)
+    const second = runs.findIndex((x) => x.what === what && x.keep === 'second')
+    if (files() <= most) break
+    if (r) r.steps = r.keep === 'last' ? r.steps.slice(-count) : r.steps.slice(0, count)
+    else if (second >= 0) runs.splice(second, 1)
   }
-  if (m.walk) {
-    const from = m.walk.first + Math.max(0, Math.floor((m.walk.last - m.walk.first + 1 - count * EVERY) / 2))
-    whole(from, from, "as a visitor's pointer walks the arrow across the page", 'walk')
+  const items = []
+  for (const r of runs) {
+    const sheets = Math.ceil(r.steps.length / count)
+    const first = runs.find((x) => x.what === r.what)
+    // The second run of a moment: how long after the first run's last picture its first picture is.
+    const apart = first !== r ? Math.round(((r.steps[0] - first.steps[first.steps.length - 1]) / VISITOR.hz) * 100) / 100 : null
+    const win = r.kind === 'site-hit-sheet' ? runWindow(cfg, run, r.steps) : null
+    const size = !win ? '' : win.shown === 100 ? ', the part of the picture round the arrow at its real size' : `, the part of the picture round the arrow's way at ${win.shown}% of its size`
+    for (let j = 0; j < sheets; j++) {
+      const steps = r.steps.slice(j * count, (j + 1) * count)
+      const part = sheets > 1 ? `, sheet ${j + 1} of ${sheets} of one run, frames ${j * count + 1} to ${j * count + steps.length} of ${r.steps.length}` : ''
+      const item = { kind: r.kind, moment: r.what, page: run.rows[steps[0]][COL.page], steps, run: r.steps, part: sheets > 1 ? [j + 1, sheets] : null, apart, heading: `Consecutive frames ${r.words}${size}${part}: ${span(steps)}` }
+      if (r.at !== null && steps.includes(r.at)) item.at = r.at
+      items.push(item)
+    }
   }
-  if (m.turn) whole(m.turn.first - TURN.before, m.turn.last + TURN.after, 'of a page turn', 'turn')
-  close(m.hit, 'at a hit on the arrow', 'hit')
-  close(m.taken, 'as the page takes the arrow from the visitor', 'taken')
-  close(m.back, 'as the page gives the arrow back to the visitor', 'given-back')
-  close(m.flippers, 'as the arrow goes into the ball and the visitor gets the flippers', 'flippers')
-  close(m.flip, "as the visitor's flipper is used on the ball", 'flip', 3)
   items.sort((x, y) => x.steps[0] - y.steps[0])
   return [{ id: 'moments', items }]
 }
@@ -615,18 +736,19 @@ export async function buildSite({ cfg, session, files, built, about, log, cache,
   for (const f of sheets.filter((x) => x.kind === 'site-run-sheet')) {
     const tiles = f.steps.map((i) => ({ png: frames.get(i), label: timeOf(i) }))
     built.set(f.name, await grid(tiles, f.heading, { edge, columns, tileW, tileH: Math.round((tileW * rf.height) / rf.width) }))
-    about.set(f.name, { moment: f.moment || null, page: f.page, steps: f.steps, sha256: f.steps.map((i) => shaOf(frames.get(i))), format: rf.id, level: LEVEL, visitor: VISITOR })
+    about.set(f.name, { moment: f.moment || null, page: f.page, steps: f.steps, run: f.run || f.steps, sha256: f.steps.map((i) => shaOf(frames.get(i))), format: rf.id, level: LEVEL, visitor: VISITOR })
     log(`${f.name}: ${f.moment ? `the moment ${f.moment}` : `the visit on ${f.page}`}`)
   }
   // A moment is a small thing in a whole picture: its sheet is the part of the picture round the arrow, uncut and unscaled, in one fixed window.
   for (const f of sheets.filter((x) => x.kind === 'site-hit-sheet')) {
-    const tileH = hitTileHeight(edge, f.steps.length)
-    const row = run.rows[f.at]
-    const win = windowRound([row[COL.heroX] * k - 1, (row[COL.heroY] - row[COL.scroll]) * k - 1, 2, 2], tileW, tileH, rf.width, rf.height)
+    const { window: win, tileH, shown } = runWindow(cfg, run, f.run || f.steps)
     const tiles = []
-    for (const i of f.steps) tiles.push({ png: await cut(frames.get(i), win), label: timeOf(i) })
+    for (const i of f.steps) {
+      const part = await cut(frames.get(i), win)
+      tiles.push({ png: shown === 100 ? part : await sharp(part).resize(tileW, tileH, { fit: 'fill' }).png().toBuffer(), label: timeOf(i) })
+    }
     built.set(f.name, await grid(tiles, f.heading, { edge, columns, tileW, tileH, exact: true }))
-    about.set(f.name, { moment: f.moment, page: f.page, at: f.at, steps: f.steps, window: win, sha256: f.steps.map((i) => shaOf(frames.get(i))), format: rf.id, level: LEVEL, visitor: VISITOR })
-    log(`${f.name}: the moment ${f.moment} at step ${f.at}`)
+    about.set(f.name, { moment: f.moment, page: f.page, at: f.at ?? null, steps: f.steps, run: f.run || f.steps, window: win, shownPercent: shown, sha256: f.steps.map((i) => shaOf(frames.get(i))), format: rf.id, level: LEVEL, visitor: VISITOR })
+    log(`${f.name}: the moment ${f.moment}${f.at !== undefined ? ` at step ${f.at}` : ''}`)
   }
 }
