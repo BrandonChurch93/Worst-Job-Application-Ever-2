@@ -1,0 +1,35 @@
+{
+  "folder": "step2-dial",
+  "pushed": "2026-11-26T00:48:56.618Z",
+  "commit": "c221123210d29db6ffb57ca3e9dd431604a01a79",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Still key-step2-dial-hd-draft-standins: draft tier, hd, view standins",
+      "time": "2026-11-26T00:48:12.959Z",
+      "by": "step2-dial",
+      "from": "out/work/stills/key-step2-dial-hd-draft-standins.png"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Key step2-dial: approved on the left, this build on the right, review tier",
+      "time": "2026-11-26T00:48:44.905Z",
+      "by": "step2-dial",
+      "from": "out/work/compare/compare-step2-dial.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "step2-dial key: approved image above, the build at review tier below. Dial, tray and fields are real, no stand-ins left on this key",
+      "time": "2026-11-26T00:48:55.232Z",
+      "by": "step2-dial",
+      "from": "out/work/looks/files/20261126004855-cmp-dial.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "step2-dial whole frame beside its approved image (review tier)",
+      "time": "2026-11-26T00:48:55.491Z",
+      "by": "step2-dial",
+      "from": "out/work/compare/compare-step2-dial.jpg"
+    }
+  ]
+}
