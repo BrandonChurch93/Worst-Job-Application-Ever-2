@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { look } from '../../../post/look'
 import { studio } from '../../../post/studio'
 import type { PartMaker, RealContext } from '../../../real/types'
 import { materials } from '../../../shell/materials'
@@ -9,14 +10,15 @@ import { CRANK, ROWS } from '../layout'
 import { clamp01, contact, fuse, lathe, mesh, moved, outline, picture, rise, round, smooth, srgb } from './slot-kit'
 
 export const CRANK_LOOK = {
-  full: { base: 26, hub: 22, arm: 10, grip: 24, meter: 20 }, pill: 8, pillRound: 5, pillCorner: 12, clear: { core: 0.2, low: 0.6, gain: 0.3 }, footLine: 0.8, wallRings: 3, picture: [128, 512] as [number, number], rimTone: 0.4,
-  plate: 8, rim: 3.6, screwAt: 38, screw: 4.8, washer: 25.5, neck: 20, eye: 3.4, bar: 0.68, end: 0.44, fillet: 9, cap: 16.5,
+  full: { base: 26, hub: 22, arm: 10, grip: 24, meter: 20 }, pill: 8, pillRound: 5, pillCorner: 12, clear: { core: 0.2, low: 0.6, gain: 0.3 }, footLine: 0.8, wallRings: 3, seat: { out: 1.5, up: 0.8, top: 0.9, line: 0.3, foot: 0.45 }, glow: { core: [0.6, 0.66] as [number, number], wide: 5, power: 0.94 }, picture: [128, 512] as [number, number], rimTone: 0.56,
+  plate: 8, rim: 3.6, screwAt: 38, screw: 5.6, face: { tone: 0.8, cut: 0.05, rough: 0.34 }, cast: { dark: 0.5, in: 10, out: 34, away: 24, over: 0.2 }, washer: 25.5, neck: 20, eye: 3.4, bar: 0.68, end: 0.44, fillet: 9, cap: 16.5,
   grip: { cap: 0.95, round: 2.5, square: 2.5, taper: 0.9, seamAt: 9, seam: 0.07, collar: 0.05 },
   tie: { low: 0.82, gain: 1.7, second: 0.3, sharp: 3, axis: 2.5, capAxis: 2.2 },
-  lamp: { colour: [1, 0.42, 0.1] as [number, number, number], power: 0.4, reach: 58, lift: 12, most: 4 }
+  lamp: { colour: [1, 0.42, 0.1] as [number, number, number], power: 0.8, reach: 66, lift: 9, most: 4 }
 }
 const L = CRANK_LOOK
 
+let shade: THREE.MeshBasicMaterial | null = null
 let made: { glass: THREE.MeshPhysicalMaterial; wall: THREE.MeshPhysicalMaterial; lit: THREE.MeshPhysicalMaterial; washer: THREE.MeshPhysicalMaterial; bar: THREE.MeshPhysicalMaterial; turned: THREE.MeshPhysicalMaterial; textures: THREE.Texture[] } | null = null
 const cache = new Map<string, THREE.BufferGeometry>()
 const shared = (key: string, build: () => THREE.BufferGeometry): THREE.BufferGeometry => {
@@ -59,26 +61,27 @@ function own(): NonNullable<typeof made> {
   // The lit segment: a pale orange core, a deeper orange ring, and a bright line at the rim.
   const glow = picture(64, 256, true, (u, v) => {
     const p = inPill(u, v)
-    const t = smooth((p.depth - 2.6) / 7.5) * (1 - 0.2 * smooth((Math.abs(p.y) - 36) / 18))
+    const t = smooth((p.depth - 2.6) / L.glow.wide) * (1 - 0.2 * smooth((Math.abs(p.y) - 36) / 18))
     const rim = smooth((p.depth - 0.5) / 0.8) * (1 - smooth((p.depth - 2) / 1.2))
     const wall = 1 - 0.45 * (1 - smooth(p.depth / 1.2))
-    return [wall, wall * (0.27 + 0.66 * t + 0.16 * rim), wall * (0.03 + 0.74 * Math.pow(t, 1.5) + 0.05 * rim), 1]
+    return [wall, wall * (0.27 + L.glow.core[0] * t + 0.16 * rim), wall * (0.03 + L.glow.core[1] * Math.pow(t, 1.5) + 0.05 * rim), 1]
   })
   const glass = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xf4f7f7), map: off, roughness: 0.06, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.03, specularIntensity: 1, envMapIntensity: 1.6, transparent: true }))
   const wall = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xf4f7f7).multiply(new THREE.Color().setRGB(L.rimTone * 0.955, L.rimTone * 0.995, L.rimTone * 0.975, THREE.SRGBColorSpace)), roughness: 0.06, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.03, specularIntensity: 1, envMapIntensity: 1.6 }))
-  const lit = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xd9772c), emissive: new THREE.Color(1, 1, 1), emissiveMap: glow, emissiveIntensity: 1.0, roughness: 0.4, metalness: 0, clearcoat: 0.35, clearcoatRoughness: 0.3, specularIntensity: 0.5 }))
+  const lit = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xd9772c), emissive: new THREE.Color(1, 1, 1), emissiveMap: glow, emissiveIntensity: L.glow.power, roughness: 0.3, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.08, specularIntensity: 0.8 }))
   const washer = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x2a2826), roughness: 0.6, metalness: 0.4 }))
   const bar = studio(materials().aluminium.clone())
   bar.color = srgb(0x767a80)
-  bar.roughness = 0.4
-  bar.normalScale = new THREE.Vector2(0.09, 0.09)
+  bar.roughness = 0.34
+  bar.normalScale = new THREE.Vector2(0.16, 0.16)
   bar.anisotropyRotation = 0
   const shared = materials().aluminiumTurned
   const turned = shared.clone()
   turned.onBeforeCompile = shared.onBeforeCompile
   turned.customProgramCacheKey = shared.customProgramCacheKey
-  turned.normalScale = new THREE.Vector2(0.022, 0.022)
-  turned.roughness = 0.3
+  turned.normalScale = new THREE.Vector2(L.face.cut, L.face.cut)
+  turned.roughness = L.face.rough
+  turned.color = turned.color.clone().multiplyScalar(L.face.tone)
   turned.vertexColors = true
   made = { glass, wall, lit, washer, bar, turned, textures: [off, glow] }
   return made
@@ -89,19 +92,53 @@ function screw(turn: number): { head: THREE.BufferGeometry; floor: THREE.BufferG
   const r = L.screw
   const face = new THREE.Shape()
   face.absarc(0, 0, r - 0.9, 0, Math.PI * 2, false)
-  const a = 3.1
-  const b = 0.62
+  const a = r - 1.7
+  const b = 0.7
   const cross = new THREE.Path()
   const pts: [number, number][] = [[b, b], [a, b], [a, -b], [b, -b], [b, -a], [-b, -a], [-b, -b], [-a, -b], [-a, b], [-b, b], [-b, a], [b, a]]
   pts.forEach(([x, y], i) => (i === 0 ? cross.moveTo(x, y) : cross.lineTo(x, y)))
   cross.closePath()
   face.holes.push(cross)
-  const top = new THREE.ExtrudeGeometry(face, { depth: 0.9, bevelEnabled: false, curveSegments: 20 })
-  const ring = lathe([[r, 0], [r, 0.25, true], [r - 0.9, 0.9, true]], 28)
+  const top = new THREE.ExtrudeGeometry(face, { depth: 1.2, bevelEnabled: false, curveSegments: 20 })
+  const ring = lathe([[r, 0], [r, 0.4, true], [r - 0.9, 1.2, true]], 28)
   const head = fuse([top, ring])
   head.rotateZ(turn)
-  const floor = lathe([[a + 0.3, 0.18], [0, 0.18]], 12)
+  const floor = lathe([[a + 0.3, 0.12], [0, 0.12]], 12)
   return { head, floor }
+}
+
+// The soft shade the plate lays on the tray's floor, away from the key light: dark at the plate's foot, gone at its far edge.
+function castDisc(from: number, to: number, dark: number): THREE.BufferGeometry {
+  const rings = 10
+  const n = 48
+  const pos: number[] = [0, 0, 0]
+  const col: number[] = [1 - dark, 1 - dark, 1 - dark]
+  const idx: number[] = []
+  for (let k = 0; k <= rings; k++) {
+    const t = k / rings
+    const r = from + (to - from) * t
+    const v = 1 - dark * (1 - smooth(t))
+    for (let i = 0; i < n; i++) {
+      const a = (i / n) * Math.PI * 2
+      pos.push(r * Math.cos(a), r * Math.sin(a), 0)
+      col.push(v, v, v)
+    }
+  }
+  for (let i = 0; i < n; i++) idx.push(0, 1 + i, 1 + ((i + 1) % n))
+  for (let k = 0; k < rings; k++) {
+    for (let i = 0; i < n; i++) {
+      const j = (i + 1) % n
+      const a = 1 + k * n
+      const b = a + n
+      idx.push(a + i, b + i, a + j, a + j, b + i, b + j)
+    }
+  }
+  const g = new THREE.BufferGeometry()
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
+  g.setAttribute('normal', new THREE.Float32BufferAttribute(pos.map((_, i) => (i % 3 === 2 ? 1 : 0)), 3))
+  g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3))
+  g.setIndex(idx)
+  return g
 }
 
 function base(): THREE.Group {
@@ -125,6 +162,12 @@ function base(): THREE.Group {
     mesh(shared('heads', () => fuse(heads)), m.steel),
     mesh(shared('floors', () => fuse(floors)), o.washer, false, true)
   )
+  shade ??= new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, blending: THREE.CustomBlending, blendSrc: THREE.DstColorFactor, blendDst: THREE.ZeroFactor, depthWrite: false, toneMapped: false })
+  const cast = mesh(shared('cast', () => castDisc(R - L.cast.in, R + L.cast.out, L.cast.dark)), shade, false, true)
+  const [lx, ly] = look.key.direction
+  const l = Math.hypot(lx, ly) || 1
+  cast.position.set((-lx / l) * L.cast.away, (-ly / l) * L.cast.away, L.cast.over)
+  root.add(cast)
   return root
 }
 
@@ -271,12 +314,18 @@ function segment(): THREE.Group {
     return out
   })
   const side = shared('segment-wall', () => sweep(plan(), rings().slice(0, L.wallRings), false))
+  const q = L.seat
+  const lip = shared('segment-seat', () => sweep(roundedRect(CRANK.segW + q.out * 2, CRANK.segH + q.out * 2, L.pillCorner + q.out, 14), profile([[0, 0, true], [0, q.up - 0.5], [0.5, q.up], [q.top, q.up], [q.out - 0.2, q.up * 0.35]]), false))
+  const foot = shared('segment-foot', () => contact(roundedRect(CRANK.segW + (q.out + q.line) * 2, CRANK.segH + (q.out + q.line) * 2, L.pillCorner + q.out + q.line, 14), q.line + q.foot))
   const root = new THREE.Group()
   const body = mesh(top, own().glass)
   const wall = mesh(side, own().wall)
-  root.add(body, wall)
+  const seat = new THREE.Group()
+  seat.add(mesh(lip, own().wall), mesh(foot, materials().gap, false))
+  root.add(body, wall, seat)
   root.userData.body = body
   root.userData.wall = wall
+  root.userData.seat = seat
   return root
 }
 
@@ -344,6 +393,9 @@ const plainCrank: PartMaker = {
     const wall = o.userData.wall as THREE.Mesh
     wall.material = on ? m.lit : m.wall
     wall.position.z = body.position.z
+    const seat = o.userData.seat as THREE.Group
+    seat.position.z = body.position.z
+    seat.scale.z = 1 / o.scale.z
     if (on && up > 0.5) lamp(s, ctx)
   }
 }

@@ -3,11 +3,12 @@ import { studio } from '../../post/studio'
 import type { PartMaker, RealContext } from '../../real/types'
 import type { Shape } from '../../stage/types'
 import { materials } from '../materials'
+import { isWaiting, WAITING_TOP } from './controls'
 import { block, font, measure } from '../metrics'
 import { words } from '../words'
 
 // What the type lies on decides how it is set: sunk print, flat print or raised print.
-export type Ground = 'page' | 'cap' | 'glass' | 'paper' | 'metal' | 'smoked' | 'gloss'
+export type Ground = 'page' | 'cap' | 'glass' | 'paper' | 'metal' | 'smoked' | 'gloss' | 'frost'
 export type Setting = 'sunk' | 'flat' | 'raised'
 
 type Rgb = [number, number, number]
@@ -253,6 +254,8 @@ const INK_ON_METAL = 0x17181a
 const LIP_ON_METAL = 0xc6cace
 const INK_ON_GLASS = 0x262827
 const INK_SOFT_ON_GLASS = 0x484b49
+const INK_ON_FROST = 0x505352
+const LIP_ON_FROST = 0xdde1e1
 
 let styleSet: Record<string, Style> | null = null
 
@@ -268,6 +271,8 @@ export function styles(): Record<string, Style> {
   const metalLip = hex(LIP_ON_METAL)
   const onGlass = hex(INK_ON_GLASS)
   const softOnGlass = hex(INK_SOFT_ON_GLASS)
+  const onFrost = hex(INK_ON_FROST)
+  const frostLip = hex(LIP_ON_FROST)
   styleSet = {
     'page:ink': { setting: 'sunk', fill: ink, lean: 0.5, rings: [{ d: 0.3, a: 0.8, c: ink }, { d: 0.9, a: 0.5, c: lip }] },
     'page:soft': { setting: 'sunk', fill: soft, lean: 0.5, rings: [{ d: 0.3, a: 0.8, c: soft }, { d: 0.9, a: 0.5, c: lip }] },
@@ -276,6 +281,7 @@ export function styles(): Record<string, Style> {
     'glass:soft': { setting: 'flat', fill: softOnGlass, lean: 0, rings: [{ d: 0.45, a: 0.85, c: softOnGlass }] },
     'paper:ink': { setting: 'flat', fill: ink, lean: 0, rings: [{ d: 0.5, a: 0.8, c: ink }] },
     'metal:ink': { setting: 'flat', fill: onMetal, lean: 0.55, rings: [{ d: 0.35, a: 0.9, c: onMetal }, { d: 1, a: 0.5, c: metalLip }] },
+    'frost:ink': { setting: 'flat', fill: onFrost, lean: 0.4, rings: [{ d: 0.3, a: 0.8, c: onFrost }, { d: 0.8, a: 0.35, c: frostLip }] },
     'gloss:ink': { setting: 'flat', fill: ink, lean: 0, rings: [{ d: 0.45, a: 0.85, c: ink }] },
     'page:light': { setting: 'raised', fill: light, lean: -0.5, rings: [{ d: 0.4, a: 0.85, c: light }] },
     'gloss:light': { setting: 'raised', fill: light, lean: -0.55, rings: [{ d: 0.4, a: 0.85, c: light }] }
@@ -287,6 +293,7 @@ export function styles(): Record<string, Style> {
 // On glass a run takes the softer ink only when it asks for it.
 export function styleName(ground: Ground, tone: string, font = '', ink = ''): string {
   if (ground === 'smoked') return 'gloss:light'
+  if (ground === 'frost') return 'frost:ink'
   const inkName = tone === 'inkLight' || tone === 'light' ? 'light' : 'ink'
   if (inkName === 'light') return ground === 'gloss' || ground === 'metal' ? 'gloss:light' : 'page:light'
   if (ground === 'glass' && ink === 'soft') return 'glass:soft'
@@ -298,7 +305,7 @@ const GROUND_OF_TONE: Record<string, Ground> = { metal: 'metal', accent: 'gloss'
 const SMOKED_ROLES = new Set(['chip', 'button', 'heroButton'])
 
 // A chip or a button of tone metal is the smoked grey capsule of the surface, dark enough that only light type reads on it.
-const groundOfShape = (u: Shape): Ground => (u.role === 'field' ? 'glass' : u.tone === 'metal' && SMOKED_ROLES.has(u.role ?? '') ? 'smoked' : (GROUND_OF_TONE[u.tone] ?? 'page'))
+const groundOfShape = (u: Shape): Ground => (u.role === 'field' ? 'glass' : isWaiting(u) ? 'frost' : u.tone === 'metal' && SMOKED_ROLES.has(u.role ?? '') ? 'smoked' : (GROUND_OF_TONE[u.tone] ?? 'page'))
 
 let seenList: Shape[] | null = null
 const seenGround = new Map<string, Ground>()
@@ -616,6 +623,19 @@ function lifted(data: RunData): RunData {
   return data
 }
 
+// The label of a button that waits lies on its cap, which stands under the height the layout gives the label.
+function capDrop(s: Shape, ctx: RealContext): number {
+  const cut = s.id.lastIndexOf('-')
+  const cap = cut > 0 ? ctx.byId.get(`${s.id.slice(0, cut)}-cap`) : undefined
+  return cap ? Math.max(0, s.z1 - (cap.z0 + WAITING_TOP)) : 0
+}
+
+function lowered(data: RunData, by: number): RunData {
+  const p = data.position
+  for (let i = 2; i < p.length; i += 3) p[i] = p[i]! - by
+  return data
+}
+
 export const type: PartMaker = {
   key(s, ctx) {
     if (s.kind !== 'text' || !s.type || !s.words) return null
@@ -629,7 +649,7 @@ export const type: PartMaker = {
     const name = styleName(ground, s.tone, s.type!.font, s.type!.ink)
     const said = words(s.words!, s.text)
     const lit = name === 'gloss:light' && ground !== 'smoked'
-    const data = lit ? lifted(dataOf(s, said, styles()[name]!)) : dataOf(s, said, styles()[name]!)
+    const data = lit ? lifted(dataOf(s, said, styles()[name]!)) : ground === 'frost' ? lowered(dataOf(s, said, styles()[name]!), capDrop(s, ctx)) : dataOf(s, said, styles()[name]!)
     const over = ground === 'glass'
     if (over || s.words!.startsWith('runtime:')) {
       const mesh = new THREE.Mesh(geometryOf(data), over ? kit(name).over : kit(name).opaque)

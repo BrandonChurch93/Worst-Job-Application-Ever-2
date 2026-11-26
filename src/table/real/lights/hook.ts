@@ -41,7 +41,7 @@ const EDGE = (COLS.launchB - W / 2) * BALL
 const HAZE = 0.014
 
 // Lacquer seen along the floor sends back more of the light on it than lacquer seen from above: the sheen of a waxed floor from across the room. Nothing is added straight down.
-const SHEEN = { coat: 0.03, pools: 0.0, worn: 0.2, from: 0.07, to: 0.24, veil: 0.4 }
+const SHEEN = { coat: 0.1, pools: 0.8, worn: 0.2, from: 0.07, to: 0.24, veil: 0.4 }
 
 // Metal leaf laid in a floor is not a mirror: it is beaten thin over the grain of the print and throws a lamp's light back in every direction, in its own colour.
 const LEAF = 1.1
@@ -56,7 +56,7 @@ const DEEP = { from: 0.12, to: 1.3 }
 const WET = 0.16
 
 // How bright the floor before a lit opening is with what the opening throws on it.
-const SPILL = 1.5
+const SPILL = 2.2
 
 // The image of a lit front in the lacquer: how sharp its edge is at the foot of the wall in pixels, how fast it blurs with the height it mirrors, and where the sill of the lowest windows stands as a share of the front's height.
 const MIRROR = { sharp: 3, blur: 0.2, sill: 0.14 }

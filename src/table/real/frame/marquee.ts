@@ -9,7 +9,7 @@ import { groupsOf, levels } from '../lights'
 import type { Shape } from '../../../stage/types'
 import { localOf, shapesIn, type Zone } from '../zone'
 import { Geo, grooved, type V2 } from './geo'
-import { Screws, TONE, aluOf, mesh, paintOf, screwOf } from './mats'
+import { Screws, TONE, aluOf, hex, mesh, paintOf, screwOf } from './mats'
 import { skyline } from './skyline'
 
 // The seat of the main display: a dark floor `w` by `h` in the middle of the strip, `floor` out of the face, inside a bezel `bar` wide and `proud` high. `seatOf` says where its middle is.
@@ -19,7 +19,7 @@ const BOX = { rim: 30, proud: 16, deep: 46, inner: POCKET.bar, innerProud: POCKE
 const STRIP = { slot: 4.5, pitch: 11, slotPad: 7 }
 const BEAM = { thick: 16, first: 12, pitch: 400, wide: 3, deep: 1.2 }
 const GLOW = { rest: 0.05, lit: 1.0 }
-export const PLATE = { proud: 2.4, pad: 22, most: 0.6, bar: 3, floor: 0.3 }
+export const PLATE = { proud: 2.4, pad: 22, most: 0.6, bar: 2.2, floor: 0.3, dusk: hex(0x2b2236) }
 // Where the foot of the face lies on the page while the board is not stood up: `boardAt` in `draw.ts` turns the board about it.
 const flatFoot = (MARQUEE_Y + MARQUEE_H - 0.25) * BALL
 const sky = ask('table/frame/marquee-skyline.webp', { colour: true })
@@ -147,11 +147,11 @@ export function marquee(z: Zone, ctx: RealContext): THREE.Object3D {
     const y1 = Math.min(h2 - step - 3, cy + name.h / 2 + PLATE.pad * 0.4)
     hole = [q.x - hw, q.x + hw, y0, y1]
     const plate = P.vertices
-    P.box(q.x - hw, q.x + hw, y0, y1, 0.05, PLATE.floor, TONE.pocket)
+    P.box(q.x - hw, q.x + hw, y0, y1, 0.05, PLATE.floor, PLATE.dusk)
     P.move(plate, toBoard)
     const frame = A.vertices
     const b = PLATE.bar
-    for (const [x0, x1, ya, yb, along] of [[q.x - hw - b, q.x + hw + b, y1, y1 + b, [1, 0, 0]], [q.x - hw - b, q.x + hw + b, y0 - b, y0, [1, 0, 0]], [q.x - hw - b, q.x - hw, y0, y1, [0, 1, 0]], [q.x + hw, q.x + hw + b, y0, y1, [0, 1, 0]]] as [number, number, number, number, [number, number, number]][]) A.box(x0, x1, ya, yb, 0.3, PLATE.proud, TONE.aluBright, { bevel: 0.8, along })
+    for (const [x0, x1, ya, yb, along] of [[q.x - hw - b, q.x + hw + b, y1, y1 + b, [1, 0, 0]], [q.x - hw - b, q.x + hw + b, y0 - b, y0, [1, 0, 0]], [q.x - hw - b, q.x - hw, y0, y1, [0, 1, 0]], [q.x + hw, q.x + hw + b, y0, y1, [0, 1, 0]]] as [number, number, number, number, [number, number, number]][]) A.box(x0, x1, ya, yb, 0.3, PLATE.proud, TONE.aluDeep, { bevel: 0.8, along, top: TONE.aluDark })
     A.move(frame, toBoard)
   }
   const face = F.vertices
