@@ -288,6 +288,9 @@ export interface Shot {
   rig: LightRig
   // Puts everything that moves at this share of the shutter. Absent for a picture that holds still.
   pose?: (shutter: number) => void
+  // The lens of the camera, read after `pose`: the distance that is sharp and the width of the opening, in page pixels.
+  // Absent, or with no opening, everything is sharp.
+  lens?: { focus: number; aperture: number } | null
 }
 
 export interface PictureOptions {
@@ -305,6 +308,7 @@ export class Engine {
   width: number
   height: number
   lastCounts = { triangles: 0, drawCalls: 0 }
+  private lens: { near: number; far: number; focus: number; reach: number } | null = null
   beforeSample: ((shot: Shot, view: string) => (() => void) | void) | null = null
 
   constructor(canvas: HTMLCanvasElement, width: number, height: number, opts: { preserve: boolean; forceKind?: TargetKind; multisamples?: number }) {
@@ -342,6 +346,10 @@ export class Engine {
     lightLaw.viewInverse.value.copy(shot.camera.matrixWorld)
     shot.rig.place(s, shot.camera, alone)
     shot.camera.setViewOffset(this.width, this.height, s.pixel[0], s.pixel[1], this.width, this.height)
+    const l = view === 'beauty' && this.kind !== 'byte' && shot.lens && shot.lens.aperture > 0 && shot.lens.focus > 0 ? shot.lens : null
+    this.acc.keepDepth(l !== null)
+    // `reach` is the radius in pixels of the blur circle of a thing endlessly far away.
+    this.lens = l ? { near: shot.camera.near, far: shot.camera.far, focus: l.focus, reach: (l.aperture * this.height) / (4 * l.focus * Math.tan((shot.camera.fov * Math.PI) / 360)) } : null
     const restore = this.beforeSample?.(shot, view)
     r.setRenderTarget(this.acc.sample)
     r.clear(true, true, false)
@@ -360,7 +368,7 @@ export class Engine {
       if (i === 0) this.lastCounts = { triangles: this.renderer.info.render.triangles, drawCalls: this.renderer.info.render.calls }
       if (i % 2 === 1) await new Promise<void>((done) => setTimeout(done, 0))
     }
-    this.present(o.frame, o.diagnostic)
+    this.present(o.frame, o.diagnostic, false)
     this.settle()
   }
 
@@ -368,11 +376,12 @@ export class Engine {
   frame(shot: Shot, s: Sample, restart: boolean, frame: number, view: string): void {
     if (restart) this.acc.begin()
     this.sample(shot, s, view, restart)
-    this.present(frame, view)
+    this.present(frame, view, true)
   }
 
-  private present(frame: number, view: string): void {
-    this.post.draw(this.renderer, this.acc.texture, frame, view !== 'beauty', this.kind === 'byte')
+  private present(frame: number, view: string, quick: boolean): void {
+    const depth = this.acc.depth
+    this.post.draw(this.renderer, this.acc.texture, frame, view !== 'beauty', this.kind === 'byte', this.lens && depth ? { ...this.lens, depth, quick } : null)
   }
 
   // WebGL calls return before the picture is done. Reading a pixel back waits for it.
