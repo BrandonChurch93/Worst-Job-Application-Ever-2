@@ -2,10 +2,10 @@ import * as THREE from 'three'
 import type { RealContext } from '../../../../real/types'
 import { table } from '../../../layout'
 import { localBalls, type Zone } from '../../zone'
-import { Geo, type V3 } from './geo'
+import { Geo, type RGB, type V3 } from './geo'
 import { FINISH, TONE, drop as free, fin, hex, matsOf, mesh, moved, place, screw, shade } from './mats'
 
-export const NOTE = { leaf: 44, wide: 30, paper: 32, hinge: 4, lean: 0.3, rest: 0.62 }
+export const NOTE = { leaf: 42, wide: 26, paper: 34, hinge: 4, lean: 0.3, rest: 1.05 }
 
 interface Built { leaves: THREE.InstancedMesh; tick: THREE.Mesh; at: { id: string; p: V3; turn: number }[] }
 const built = new WeakMap<THREE.Object3D, Built>()
@@ -17,9 +17,12 @@ const UP = new THREE.Vector3(0, 0, 1)
 const ONE = new THREE.Vector3(1, 1, 1)
 const P = new THREE.Vector3()
 
-const paperAt = (u: number): [number, number] => {
-  const curl = Math.max(0, u - 0.45) / 0.55
-  return [-0.62 - curl * curl * 6.5, NOTE.leaf - 1.5 - u * NOTE.paper + curl * curl * 2.2]
+const PAPER: RGB = [0.8, 0.6, 0.1]
+// The sheet: stuck along its top edge, hanging a hair off the steel, and one lower corner curled up off it.
+const paperAt = (u: number, v: number): V3 => {
+  const hang = Math.max(0, v - 0.3) / 0.7
+  const corner = Math.max(0, u + v - 1.25) / 0.75
+  return [(u - 0.5) * NOTE.paper - corner * corner * 2.5, -0.62 - hang * hang * 1.6 - corner * corner * 11, NOTE.leaf - 1.5 - v * NOTE.paper + corner * corner * 5]
 }
 
 // One leaf of spring steel with its note, its hinge on the x axis, its face to -y.
@@ -35,16 +38,19 @@ function leaf(): Geo {
     g.pipe([[-w - 2, 0, 0], [w + 2, 0, 0]], 2.4, 8, TONE.steel)
     for (const x of [-w + 4.5, w - 4.5]) moved(g, place(x, -0.5, 4.5, 0, Math.PI / 2), () => g.lathe([[2, 0], [1.7, 0.7], [0, 0.9]], 0, 0, 8, TONE.steelDark))
   })
-  const p = NOTE.paper / 2
-  const rows = 9
+  const n = 7
   fin(g, FINISH.cloth, () => {
-    for (let k = 0; k < rows; k++) {
-      const a = paperAt(k / rows)
-      const b = paperAt((k + 1) / rows)
-      const n: V3 = [0, -(a[1] - b[1]), -(a[0] - b[0])]
-      const col = shade(TONE.paper, 1 - 0.1 * (k / rows) - (k < 2 ? 0.07 : 0))
-      g.face([[-p, a[0], a[1]], [p, a[0], a[1]], [p, b[0], b[1]], [-p, b[0], b[1]]], n, [1, 0, 0], col)
-      g.face([[-p, a[0] + 0.12, a[1]], [p, a[0] + 0.12, a[1]], [p, b[0] + 0.12, b[1]], [-p, b[0] + 0.12, b[1]]], [-n[0], -n[1], -n[2]], [1, 0, 0], TONE.paperShade)
+    for (let a = 0; a < n; a++) {
+      for (let b = 0; b < n; b++) {
+        const q: [V3, V3, V3, V3] = [paperAt(a / n, b / n), paperAt((a + 1) / n, b / n), paperAt((a + 1) / n, (b + 1) / n), paperAt(a / n, (b + 1) / n)]
+        const e1: V3 = [q[1][0] - q[0][0], q[1][1] - q[0][1], q[1][2] - q[0][2]]
+        const e2: V3 = [q[3][0] - q[0][0], q[3][1] - q[0][1], q[3][2] - q[0][2]]
+        const nn: V3 = [e2[1] * e1[2] - e2[2] * e1[1], e2[2] * e1[0] - e2[0] * e1[2], e2[0] * e1[1] - e2[1] * e1[0]]
+        const lift = Math.max(0, (a + b + 1) / n - 1.25)
+        const col = shade(PAPER, (b === 0 ? 0.9 : 1) * (1 + lift * 0.35))
+        g.face(q, nn, [1, 0, 0], col)
+        g.face(q.map((v): V3 => [v[0], v[1] + 0.12, v[2]]), [-nn[0], -nn[1], -nn[2]], [1, 0, 0], shade(PAPER, 0.62))
+      }
     }
   })
   return g

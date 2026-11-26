@@ -88,7 +88,7 @@ describe('the models of the street', () => {
     const m = moms(b, z, ctx)
     streetThings(b, z)
     const signs = table.slings.filter((s) => s.tier === 2).reduce((n, s) => n + roadSign(z, s).geo.triangles, 0)
-    const total = b.paint.triangles + b.metal.triangles + b.glow.triangles + f.door.triangles + f.frame.triangles + m.door.triangles * 2 + m.light.triangles + signs + b.screws.length * 42
+    const total = b.paint.triangles + b.metal.triangles + b.glow.triangles + f.door.triangles + f.bay.triangles + m.door.triangles * 2 + m.light.triangles + signs + b.screws.length * 42
     expect(total).toBeLessThan(60000)
   })
 })

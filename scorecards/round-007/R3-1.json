@@ -1,0 +1,37 @@
+{
+ "critic": "R3",
+ "score": 7,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "A: the five judged stills of the careers page and five grids of native-size crops of their surfaces",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "upper-left crop, glass card faces and the lower ticker slab",
+   "what": "The rims have thickness, but the centers are nearly uniform gray-green. The page detail stops at the rims without a visible transmitted or refracted continuation, so the faces read as matte inserts rather than glass over the page.",
+   "fix": "Let the substrate show through the centers and visibly shift through the bevels; keep the tint and frost but add a faint grazing reflection that does not mask the transmission."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-06.png",
+   "where": "left crop, arrow edge and shadow beside the orange button",
+   "what": "The shiny heel suggests thickness, but most of the long diagonal reads as a dark outline, and the shadow starts against that outline rather than opening a visible gap where the arrow rises.",
+   "fix": "Show a distinct beveled sidewall catching light along the diagonal and separate the cast shadow from the lifted tip, keeping the darkest shadow only near the closest edge."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-10.png",
+   "where": "left crop, lower rim of the orange Apply for a Job button",
+   "what": "The cap is rounded, but the silver rim and broad drop shadow carry nearly all of the depth. The outside of the rim reads as a bright outline sitting on the page, not as the edge of a recessed socket.",
+   "fix": "Recess the ring into the substrate and show a fine dark clearance between cap and socket, with a tight contact line at the page and a separate softer cast shadow."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-08.png",
+   "where": "left crop, lower-right scallops of the Top Employer medal",
+   "what": "The brushed face and rim are convincing, but the scallops throw a broad, softened duplicate of their silhouette without a distinct contact line under the nearest teeth. The badge appears to float above its mount.",
+   "fix": "Show the rim's sidewall where it meets the page and add tight contact shadows at the closest scallops before letting the longer cast shadow soften."
+  }
+ ]
+}

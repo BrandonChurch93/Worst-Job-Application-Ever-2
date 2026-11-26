@@ -5,7 +5,7 @@ import { localBalls, localOf, type Zone } from '../../zone'
 import { Geo, KIND, mix, rgb, shade, type Buckets, type RGB, type V3 } from './geo'
 
 export const TONE = {
-  brick: rgb(0x7d3329),
+  brick: rgb(0x66281f),
   brickDark: rgb(0x6f261f),
   stone: rgb(0x878a8c),
   stoneDark: rgb(0x696b6d),
@@ -13,12 +13,14 @@ export const TONE = {
   concrete: rgb(0x868c92),
   concreteDark: rgb(0x696d70),
   roof: rgb(0x66696b),
+  deck: rgb(0x8b9095),
+  deckDark: rgb(0x6a6e72),
   lime: rgb(0xd2cbb8),
   blue: rgb(0x3b5b90),
   blueDark: rgb(0x2c4775),
   blueTrim: rgb(0x9db0cf),
   cream: rgb(0xefe8d6),
-  board: rgb(0xcdc6b4),
+  board: rgb(0xdfe0dc),
   door: rgb(0xe4dfd2),
   dark: rgb(0x191718),
   inside: rgb(0x231a18),
@@ -116,7 +118,7 @@ export function windowAt(b: Buckets, h: Hole, o: WindowLook): void {
   reveal(g, h, d, shade(o.wall, 0.62))
   const lum = o.glow ?? 1
   const warm = o.warm ?? 0.5
-  const pane: RGB = o.dark ? [0.02, 0.025, 0.03] : [lum, lum * (0.84 + 0.16 * warm), lum * (0.62 + 0.3 * warm)]
+  const pane: RGB = o.dark ? [0.02, 0.025, 0.03] : [lum * 0.8, lum * (0.62 + 0.12 * warm), lum * (0.36 + 0.24 * warm)]
   const lo: RGB = o.dark ? pane : shade(pane, 0.55)
   const { x, z, w } = h
   const t = z + h.h
@@ -186,11 +188,11 @@ export function parapet(g: Geo, x0: number, x1: number, y0: number, y1: number, 
 
 // A beacon: a chromed base on a roof, in the metal bucket. Its lens and its reflector are meshes of their own.
 export function beaconBase(b: Buckets, x: number, y: number, z: number): void {
-  b.metal.lathe([[0, 0], [24.5, 0], [24.5, 2.5], [22.2, 4.5], [22.2, 7], [20.2, 8], [0, 8]], x, y, 28, TONE.chrome, { base: z })
+  b.metal.lathe([[0, 0], [31, 0], [31, 2.5], [28.6, 4.8], [28.6, 7.4], [26.4, 8.6], [0, 8.6]], x, y, 36, TONE.chrome, { base: z })
   b.metal.lathe([[2.2, 8], [2.2, 14], [0, 14]], x, y, 10, TONE.steel, { base: z })
   for (let i = 0; i < 4; i++) {
     const a = Math.PI / 4 + (i * Math.PI) / 2
-    b.screws.push([x + Math.cos(a) * 23.3, y + Math.sin(a) * 23.3, z + 2.5, 1.2])
+    b.screws.push([x + Math.cos(a) * 29.8, y + Math.sin(a) * 29.8, z + 2.5, 1.3])
   }
 }
 
@@ -198,8 +200,8 @@ export function beaconBase(b: Buckets, x: number, y: number, z: number): void {
 export function beaconLens(): THREE.BufferGeometry {
   const g = new Geo()
   const c: RGB = [1, 1, 1]
-  g.lathe([[19.2, 0], [19.2, 18], [18.4, 25], [15.8, 31], [11.2, 35.4], [5.2, 37.4], [0, 37.8]], 0, 0, 72, c, { base: 7, wave: [28, 0.06] })
-  g.lathe([[20, 0], [20, 1.8], [19.2, 1.8]], 0, 0, 36, c, { base: 7 })
+  g.lathe([[25, 0], [25, 20], [23.6, 29], [19.8, 36.6], [13.6, 42], [6, 44.6], [0, 45]], 0, 0, 72, c, { base: 8, wave: [24, 0.07] })
+  g.lathe([[26, 0], [26, 2], [25, 2]], 0, 0, 36, c, { base: 8 })
   return g.done()
 }
 
@@ -211,10 +213,10 @@ export function beaconReflector(): THREE.BufferGeometry {
   for (let i = 0; i < segs; i++) {
     const a0 = -1.05 + (2.1 * i) / segs
     const a1 = -1.05 + (2.1 * (i + 1)) / segs
-    const at = (a: number, zz: number): [V3, V3] => [[-11.5 * Math.cos(a) + 3.5, 11.5 * Math.sin(a), zz], [Math.cos(a), -Math.sin(a), 0]]
-    g.smooth([at(a0, 9), at(a1, 9), at(a1, 30), at(a0, 30)], c)
+    const at = (a: number, zz: number): [V3, V3] => [[-15 * Math.cos(a) + 4.5, 15 * Math.sin(a), zz], [Math.cos(a), -Math.sin(a), 0]]
+    g.smooth([at(a0, 10), at(a1, 10), at(a1, 38), at(a0, 38)], c)
   }
-  g.lathe([[0, 12], [2.6, 13], [3.4, 16], [2.6, 19], [0, 20]], 0, 0, 10, [2.4, 2.4, 2.4])
+  g.lathe([[0, 15], [3.6, 16.5], [4.8, 21], [3.6, 25.5], [0, 27]], 0, 0, 12, [2.4, 2.4, 2.4])
   return g.done()
 }
 

@@ -11,6 +11,7 @@ import { groupsOf } from './groups'
 // The lamps as things: the lenses of the general lighting in their sockets, the globes, and the bezels of the inserts. No plate lies under an insert: the kit puts no word there.
 const SIZE = { dome: 13, domeHigh: 6, ring: 20, screw: 3.1, rail: 12.5, railHigh: 6.4, cup: 19.5, globe: 21, core: 19 }
 const STEEL: RGB = [0.74, 0.76, 0.79]
+const SCREW: RGB = [0.7, 0.71, 0.73]
 const CHROME: RGB = [0.9, 0.91, 0.93]
 const BRASS: RGB = [0.83, 0.6, 0.27]
 const SOCKET: RGB = [0.035, 0.035, 0.04]
@@ -174,6 +175,11 @@ export function buildLamps(z: Zone, ctx: RealContext): Lamps {
     const p = localBalls(z, q.c[0], q.c[1])
     metals.push(put(globeStem(metal), p[0], p[1], 0))
   }
+  // The screw heads are in the one drawing of the sockets: a drawing of their own cost every tier a draw call.
+  for (const at of screws) {
+    const head = new THREE.SphereGeometry(SIZE.screw * 1.25, 8, 3, 0, Math.PI * 2, 0, Math.PI * 0.3).rotateX(Math.PI / 2).translate(0, 0, -SIZE.screw * 1.25 * Math.cos(Math.PI * 0.3))
+    metals.push(put(paint(head, () => SCREW), at[0], at[1], at[2]))
+  }
   if (lenses.length > 0) {
     out.lens = new THREE.Vector2(0, 0)
     const mesh = new THREE.Mesh(mergeGeometries(lenses), lensMaterial(z, out.lens))
@@ -187,17 +193,6 @@ export function buildLamps(z: Zone, ctx: RealContext): Lamps {
     const mesh = new THREE.Mesh(mergeGeometries(metals), m)
     mesh.name = 'sockets'
     mesh.receiveShadow = true
-    group.add(mesh)
-  }
-  if (screws.length > 0) {
-    const head = new THREE.SphereGeometry(SIZE.screw * 1.25, 8, 3, 0, Math.PI * 2, 0, Math.PI * 0.3).rotateX(Math.PI / 2).translate(0, 0, -SIZE.screw * 1.25 * Math.cos(Math.PI * 0.3))
-    const m = lit(studio(new THREE.MeshStandardMaterial({ color: new THREE.Color(0.7, 0.71, 0.73), metalness: 1, roughness: 0.24 })), z)
-    const mesh = new THREE.InstancedMesh(head, m, screws.length)
-    const at = new THREE.Matrix4()
-    screws.forEach((s, i) => mesh.setMatrixAt(i, at.makeTranslation(s[0], s[1], s[2])))
-    mesh.instanceMatrix.needsUpdate = true
-    mesh.name = 'screws'
-    mesh.userData.fine = true
     group.add(mesh)
   }
   if (globes.length > 0) {

@@ -32,7 +32,7 @@ Nothing here is a picture. No file is downloaded, none is generated and none is 
 ## Tray
 
 - Made by: `trayJoint()`, `trayLiner()`, `trayFloor()` and `trayWallShade()` in `src/pages/step2/real/rows.ts`
-- From: nothing. Numbers of `TRAY` and `TRAY_R` in `src/pages/step2/layout.ts`: a dark joint 0.6 px wide where the page parts, a rolled rim 8 px wide in the shared satin aluminium (`trayRim()`; chrome gave a hard line between two black edges), holding a line of light all round, a matt grey wall in the shared `cardSeal` (the satin metal burnt white on the right wall and went dark on the lower one), a wall that leans in by 1.3 px for each pixel of depth, a glass floor 8 px under the page.
+- From: nothing. Numbers of `TRAY` and `TRAY_R` in `src/pages/step2/layout.ts`: a dark joint 0.3 px wide where the page parts, a rolled rim 8 px wide in the shared satin aluminium (`trayRim()`; chrome gave a hard line between two black edges), holding a line of light all round, a matt grey wall in the shared `cardSeal` (the satin metal burnt white on the right wall and went dark on the lower one), a wall that leans in by 1.3 px for each pixel of depth, a glass floor 8 px under the page.
 - Prompt or command: none. The open tray's solids are built once and kept; a tray on its way open is built for its height and dropped after.
 - Takes: twelve. No texture: 0 px, 0 MB. The floor's shade under the wall on the light's side is vertex colour, worked out from the key's direction and the tray's depth: once in the glass itself (`TRAY.floor`) and once as a copy of the floor multiplied over it and over the words on it (`TRAY.soak`), tuned against the column x 1500 of the approved `step2-dial`.
 - Why this one: the approved tray has a thin aluminium lip, bright along the lower right and dark along the upper left inside wall, and a floor that is darker in a band under the upper and left walls.
@@ -49,7 +49,7 @@ Nothing here is a picture. No file is downloaded, none is generated and none is 
 ## Dial's shade on the floor
 
 - Made by: `castGeometry()` in `src/pages/step2/real/dial.ts`
-- From: nothing. Numbers of `DIAL_BODY` in `src/pages/step2/layout.ts`: `cast` 0.62, `castIn` 8, `castOut` 44, `castAway` 22, `castOver` 0.2. A disc of vertex colour multiplied over the floor, moved away from the key's direction by the dial's rise.
+- From: nothing. Numbers of `DIAL_BODY` in `src/pages/step2/layout.ts`: `cast` 0.78, `castIn` 8, `castOut` 40, `castAway` 26, `castOver` 0.2. A disc of vertex colour multiplied over the floor, moved away from the key's direction by the dial's rise.
 - Prompt or command: none.
 - Takes: three. No texture: 0 px, 0 MB.
 - Why this one: the approved dial stands in a deep soft shadow on the tray's floor; the sunk glass's fill light left the lamp's shadow too faint to read.

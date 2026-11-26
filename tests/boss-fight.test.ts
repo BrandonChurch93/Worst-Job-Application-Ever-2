@@ -187,4 +187,37 @@ describe('the boss fight, made real', () => {
     expect(Math.abs(dipAt(0.49))).toBeLessThan(0.01)
     expect(dipAt(0.6)).toBe(0)
   })
+
+  it('shows the four stages of the sheet whole, with air between them and to the edges', () => {
+    const sheet = pages.step4!().sheet!('boss-stages')!
+    const centre = [0, 1, 2, 3].map((n) => {
+      const cap = sheet.list.find((s) => s.id === `stage-${n}-cap`)!
+      return cap.x + cap.w / 2
+    })
+    const reach = [[150, 150], [200, 160], [310, 310], [310, 310]] as const
+    expect(centre[0]! - reach[0]![0]).toBeGreaterThan(60)
+    for (let n = 0; n < 3; n++) expect(centre[n + 1]! - reach[n + 1]![0] - (centre[n]! + reach[n]![1])).toBeGreaterThan(20)
+    expect(sheet.width! - (centre[3]! + reach[3]![1])).toBeGreaterThan(60)
+    const cap = sheet.list.find((s) => s.id === 'stage-3-cap')!
+    expect(cap.y + cap.h / 2 - 240).toBeGreaterThan(60)
+    expect(sheet.height! - (cap.y + cap.h / 2 + 240)).toBeGreaterThan(60)
+  })
+
+  it('keeps the tail of a fired slab at the mouth until the whole block is out', () => {
+    const all = frames()
+    const first = all.findIndex((f) => f.list.some((s) => /^fired-\d+$/.test(s.id) && (s.v?.[2] ?? 9) < 9))
+    const id = all[first]!.list.find((s) => /^fired-\d+$/.test(s.id))!.id
+    const seen: { x: number; y: number; half: number }[] = []
+    for (let n = first; n < first + 30; n++) {
+      const slab = all[n]!.list.find((s) => s.id === id)
+      if (!slab || (slab.v?.[0] ?? 1) >= 1) break
+      seen.push({ x: slab.x + slab.w / 2, y: slab.y + slab.h / 2, half: (slab.w / 2) * slab.v![0]! })
+    }
+    expect(seen.length).toBeGreaterThan(2)
+    const a = seen[0]!
+    const b = seen[seen.length - 1]!
+    const l = Math.hypot(b.x - a.x, b.y - a.y)
+    const tails = seen.map((p) => ((p.x - a.x) * (b.x - a.x) + (p.y - a.y) * (b.y - a.y)) / l - p.half)
+    expect(Math.max(...tails) - Math.min(...tails)).toBeLessThan(2)
+  })
 })

@@ -1,0 +1,30 @@
+{
+ "critic": "R8",
+ "score": 8,
+ "pass": false,
+ "model": "kimi_k3",
+ "set": "A: the page at rest in four screens, its key, and native crops of its text and controls",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "bottom ticker strip, right end",
+   "what": "in the resting state the line is sliced mid-word at the container edge (\"Company Retreat: One S...\"), so if nothing moves it reads as text overflow rather than a marquee",
+   "fix": "pad the loop and add left/right fade masks or ellipses, or choose a rest frame that ends on a complete item"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-06.png",
+   "where": "nav links and small helper/fine-print text in the native-size crops",
+   "what": "the warm-grey secondary text is readable but sits close to the contrast floor for small text on the paper background",
+   "fix": "darken secondary text one step while keeping primary headings and CTA unchanged"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01.png",
+   "where": "three benefit cards in the rest state",
+   "what": "the cards are large and mostly empty until the later moment fills the lower area, so a purely static reading feels slightly underfilled",
+   "fix": "either keep the title/body position stable and let the card grow for the reveal, or shorten the resting card height"
+  }
+ ]
+}

@@ -158,12 +158,13 @@ interface State {
   handback: number
   shove: { x: number; y: number; t: number } | null
   from: { x: number; y: number }
+  aimed: number | null
 }
 
 const fresh = (x: number, y: number): State => ({
   x, y, z: hover, vx: 0, vy: 0, vz: 0, squash: 1, squashV: 0, lean: 0, spin: 0, stride: 0, fast: 0, acting: 'plain', reaction: null, reactionLeft: 0,
   damage: [], windowLeft: 0, leanV: 0, spinV: 0, bend: 0, bendV: 0, foot: 1, drag: 0, ticks: 0, dir: 1, feel: freshFeel(), gulp: -1,
-  strips: null, seed: config.seed, shreds: 0, sprout: 0, sproutV: 0, strain: 0, grip: 0, shed: 0, shedHands: null, arms: false, hands: null, onPage: true, inBall: false, face: null, air: null, ground: 0, aloft: false, taken: null, takenFor: 0, drive: null, handback: 1, shove: null, from: { x, y }
+  strips: null, seed: config.seed, shreds: 0, sprout: 0, sproutV: 0, strain: 0, grip: 0, shed: 0, shedHands: null, arms: false, hands: null, onPage: true, inBall: false, face: null, air: null, ground: 0, aloft: false, taken: null, takenFor: 0, drive: null, handback: 1, shove: null, from: { x, y }, aimed: null
 })
 
 export class CursorBody {
@@ -328,6 +329,10 @@ export class CursorBody {
     if (!inBall) this.s.face = null
   }
 
+  aim(turn: number | null): void {
+    this.s.aimed = turn
+  }
+
   turn(face: Face | null): void {
     this.s.face = face ? { ...face } : null
   }
@@ -475,8 +480,9 @@ export class CursorBody {
     s.squash = Math.min(1.6, Math.max(0.35, s.squash + s.squashV * dt))
     const free = !s.air && s.taken === null && !s.inBall
     const flying = free && s.reaction !== 'rear' && s.reaction !== 'dart' && s.reaction !== 'fume' ? smooth01((s.z - floor - DIVE.high[0]) / (DIVE.high[1] - DIVE.high[0])) * smooth01((now - DIVE.fast[0]) / (DIVE.fast[1] - DIVE.fast[0])) : 0
+    const aimed = free ? s.aimed : null
     const knocked = s.reaction === 'recoil' && pose && 1 - s.reactionLeft / REACTION_SECONDS.recoil < TUMBLE.share
-    const over = (knocked ? TUMBLE.far * s.dir : flying > 0 ? DIVE.far * Math.sin(DIVE.tip - Math.atan2(-s.vy, s.vx)) * flying : 0) + (pose ? pose.turn : 0)
+    const over = (knocked ? TUMBLE.far * s.dir : flying > 0 ? DIVE.far * Math.sin(DIVE.tip - Math.atan2(-s.vy, s.vx)) * flying : 0) + (pose ? pose.turn * (aimed !== null ? 0.3 : 1) : 0) + (aimed !== null ? aimed - s.feel.lean : 0)
     const swing = over !== 0 ? TUMBLE.out : TUMBLE.back
     s.spinV += (swing.k * (over - s.spin) - swing.c * s.spinV) * dt
     s.spin += s.spinV * dt

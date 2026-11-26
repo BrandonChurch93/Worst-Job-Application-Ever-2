@@ -22,7 +22,7 @@ export const READOUT_TOP = heights.card + 4
 export const STAMP = { blockTop: heights.machineMinTop + 58, gripTop: heights.machineMinTop + 134, high: 120 }
 const SHOWN = ['decided', 'link', 'shared']
 // The stamp at rest lies a little under the line the columns end on, so the panel above it keeps its room.
-export const REST_LOW = 24
+export const REST_LOW = 34
 export const MARK_ROT = -0.27
 // The sheet does not lie square on the page: it is turned a little, clockwise as seen, about its middle.
 export const SHEET_ROT = 0.012
@@ -135,13 +135,13 @@ function metrics(): LayoutNode {
   const on = heights.card
   const gap = 24
   const tileW = (COLUMN - pad * 2 - gap * 2) / 3
-  const titleY = TOP + pad
-  const tilesY = titleY + cap(T.panelTitle) + 40
+  const titleY = TOP + pad - 6
+  const tilesY = titleY + cap(T.panelTitle) + 32
   const inner = 26
   const labelY = tilesY + inner
   const valueY = labelY + cap(TYPE.label) + 22
   const tileH = Math.round(valueY + cap(T.readout) + inner + 2 - tilesY)
-  const applicantY = tilesY + tileH + 36
+  const applicantY = tilesY + tileH + 30
   const height = CONTENT_H - GUTTER - markOf().blockH + REST_LOW
   const tile = (i: number, id: string, label: string, values: LayoutNode[]): LayoutNode => {
     const tx = x + i * (tileW + gap)
