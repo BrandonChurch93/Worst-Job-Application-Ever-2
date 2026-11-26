@@ -262,18 +262,33 @@ export function makePage(): PageLogic {
     })
   }
 
+  const leadOf = (items: { at: number; w: number }[]): number => {
+    const window = TICKER.w - TICKER.clip * 2
+    const room = window - (TICKER.solid + TICKER.ramp) * 2
+    let end = 0
+    for (const item of items) {
+      if (item.at + item.w > room) break
+      end = item.at + item.w
+    }
+    return end > 0 ? (window - end) / 2 : TICKER.pad
+  }
+  const tapeLead = leadOf(tapeItems)
+  const afterLead = leadOf(afterItems)
+
   function ticker(out: DrawList): void {
     const left = TICKER.x + TICKER.clip
     const right = TICKER.x + TICKER.w - TICKER.clip
     out.push({ id: 'ticker-tape', part: 'ticker', kind: 'box', x: TICKER.x + TICKER.edge, y: TICKER.y + TICKER.edge, w: TICKER.w - TICKER.edge * 2, h: TICKER.h - TICKER.edge * 2, z0: TICKER.floor, z1: TICKER.tape, tone: 'paper' })
-    out.push({ id: 'ticker-glass', part: 'ticker', kind: 'box', x: TICKER.x, y: TICKER.y, w: TICKER.w, h: TICKER.h, r: TICKER.r, z0: 0, z1: TICKER.thick, tone: 'glass', mechanism: true })
     const items = rejected() ? afterItems : tapeItems
     const length = rejected() ? afterLength : tapeLength
     const tape = (rejected() ? s.time - REJECTED_SETTLE : s.time - applyBeat.from) * tapeSpeed
+    const lead = rejected() ? afterLead : tapeLead
+    const frostTo = Math.max(TICKER.solid, lead - TICKER.gap)
+    out.push({ id: 'ticker-glass', part: 'ticker', kind: 'box', x: TICKER.x, y: TICKER.y, w: TICKER.w, h: TICKER.h, r: TICKER.r, z0: 0, z1: TICKER.thick, tone: 'glass', mechanism: true, v: [TICKER.clip + frostTo, TICKER.gap - 6] })
     for (const item of items) {
       let rel = mod(item.at - tape, length)
       if (rel + item.w + TICKER.gap > length) rel -= length
-      const x = left + TICKER.pad + rel
+      const x = left + lead + rel
       if (x + item.w > left + 2 && x < right - 2) {
         const run = { id: `${item.id}-run`, part: 'type', kind: 'text', y: tapeY, h: tapeH, z0: TICKER.tape, z1: TICKER.tape, tone: 'ink', words: item.key } as const
         if (x >= left && x + item.w <= right) out.push({ ...run, x, w: item.w, type: T.tape })
@@ -281,7 +296,7 @@ export function makePage(): PageLogic {
         else out.push({ ...run, x: x + item.w - 2, w: 2, type: { ...T.tape, align: 'right' } })
       }
       const dot = x + item.w + TICKER.gap / 2
-      if (dot - 3 > left && dot + 3 < right) out.push({ id: `${item.id}-dot`, part: 'ticker', kind: 'disc', x: dot - 2.5, y: TICKER.y + TICKER.h / 2 - 2.5, w: 5, h: 5, z0: TICKER.tape, z1: TICKER.tape + 0.6, tone: 'dark' })
+      if (dot - 3 > left && dot + 3 < right) out.push({ id: `${item.id}-dot`, part: 'ticker', kind: 'disc', x: dot - 2, y: TICKER.y + TICKER.h / 2 - 2, w: 4, h: 4, z0: TICKER.tape, z1: TICKER.tape + 0.6, tone: 'dark' })
     }
   }
 
