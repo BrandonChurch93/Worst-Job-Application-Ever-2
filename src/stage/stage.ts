@@ -2,7 +2,7 @@ import { beat, config, stepHz } from '../config'
 import { blendPose, CursorBody, HANDOFF, type CursorPose } from '../cursor/body'
 import { BotDriver, type BotName, type BotRun } from './bots'
 import { homePose, smooth } from './camera'
-import { arriveTurn, leaveTurn, shiverSeconds, TURN } from './turn'
+import { arriveTurn, holdsTurn, leaveTurn, shiverSeconds, TURN } from './turn'
 import type { CameraPose, Driver, DrawList, FlowEntry, Mode, PageLogic, PageMaker, Pointer, Shape, StageEvent } from './types'
 
 export * from './types'
@@ -211,6 +211,7 @@ export class Stage {
       const forced = closes !== undefined && (!last || film?.leave === true) && this.unitStep >= Math.round((closes - TURN_HALF) * stepHz)
       const free = closes === undefined && !last && this.page.done()
       if (forced || free) {
+        if (!forced && holdsTurn(this, this.o.flow[this.index + 1]?.page, () => this.cursor.react('tap'))) return
         this.phase = 'leave'
         this.phaseStep = 0
         const y = this.page.scroll() + HANDOFF.y

@@ -66,7 +66,7 @@ Decisions taken without asking, in the order they were met.
 - A meter segment is two meshes: the top carries the picture, the upright wall is plain glass. The picture is `CRANK_LOOK.picture` px. Its solid is a rounded rectangle (`pillCorner`), and `inPill()` measures depth in that same shape.
 - The slot's frame is a flat band, a step, a shelf and a slope to the gasket (`SLOT_LOOK.band`, `step`, `ledge`, `chamfer`); the step and slope are `bevel`, a plain copy of the shared aluminium.
 - The dial's face is repainted in `pose()` for the wheel's angle (`fanFace`): its bright fans belong to the light, not to the wheel.
-- `HUB_ORANGE_LIFT` in `layout.ts` is a stand-in and goes when the shared orange is right.
+- `HUB_ORANGE_LIFT` is gone since Phase 5 (2026-11-26): the shared orange is lifted in `src/shell/materials.ts`, so the hub was lifted twice. The hub is still paler than the approved one: an open item in `kit/PROGRESS.md`.
 - The dial: the housing is a sloped bezel on a stepped base ring in a darker copy of the shared steel; each hole has a countersink (`holesGeometry`); the hub stands on a foot and carries one painted sheen toward the key (`glintGeometry`).
 - The tray's wall shade (`trayWallShade`) also runs over the rim on the light's side, and tints the shade a little cool (`TRAY.cool`).
 - The temper of the cursor ends after the stamp (`TEMPER.spent`): it is `plain` at the crank until the crank throws it.

@@ -102,8 +102,8 @@ export function allCues<T extends { id: string; seconds: number }>(sfx: T[]): (T
   return [...sfx, ...extraCues.filter((x) => !sfx.some((s) => s.id === x.id)).map((x) => ({ id: x.id, seconds: x.seconds }))]
 }
 
-// Events that are left without a sound on purpose.
-export const silentEvents: string[] = []
+// Events that are left without a sound on purpose. count-run has no cue made yet: it carries a line of the narrator.
+export const silentEvents: string[] = ['count-run']
 
 // An event that ends a sound that would otherwise run on. A page turn ends every running loop but the room tone.
 export const stopEvents: Record<string, string[]> = {
@@ -113,6 +113,12 @@ export const stopEvents: Record<string, string[]> = {
   'power-down': ['boss-loop'],
   'hold-music-stop': ['hold-music'],
   'letter-drop': ['hold-music']
+}
+
+// An event that starts a second sound beside its own. Addendum 001: the fight music runs under the boss battle from boss.unfold to boss.collapse.
+// The boss starts to unfold on the event unfold; power-down, the start of the collapse, stops the loop.
+export const alsoStarts: Record<string, string[]> = {
+  'unfold': ['boss-loop']
 }
 
 // Cues that repeat until they are stopped.
@@ -142,10 +148,9 @@ export const unitPage: Record<string, string> = { 'marketing': 'marketing', 'ste
 
 // What sets each line of the film off on the live site, by beat and by the line's place in the beat.
 // event: the first event of that name on the line's page. gag: the stage reporting that the line's own beat is reached.
-// standIn names the event that is wanted and does not exist yet: pipeline/sound/NEEDS.md lists each one.
 export type FilmLive =
   | { on: 'event'; event: string }
-  | { on: 'gag'; standIn?: string }
+  | { on: 'gag' }
 
 export const filmLive: Record<string, FilmLive> = {
   'marketing.stroll.0': { on: 'event', event: 'step' },
@@ -158,16 +163,16 @@ export const filmLive: Record<string, FilmLive> = {
   'step2.crank.0': { on: 'gag' },
   'pinball.seal.0': { on: 'event', event: 'ball-seal' },
   'pinball.launch.0': { on: 'event', event: 'plunger' },
-  'pinball.lobby.0': { on: 'gag', standIn: 'carpet-roll' },
+  'pinball.lobby.0': { on: 'event', event: 'carpet-roll' },
   'pinball.coffee.0': { on: 'event', event: 'bumper' },
-  'pinball.replyAll.0': { on: 'gag', standIn: 'inbox-take' },
-  'pinball.fired.0': { on: 'gag', standIn: 'firehouse-take' },
+  'pinball.replyAll.0': { on: 'event', event: 'inbox-take' },
+  'pinball.fired.0': { on: 'event', event: 'firehouse-take' },
   'pinball.drain.0': { on: 'event', event: 'drain' },
   'boss.verify.0': { on: 'event', event: 'checkbox' },
   'boss.slabs.0': { on: 'event', event: 'slab-fire' },
   'boss.lastStand.0': { on: 'event', event: 'session-expired' },
   'decision.letter.0': { on: 'event', event: 'stamp' },
-  'decision.metrics.0': { on: 'gag', standIn: 'metrics-card' }
+  'decision.metrics.0': { on: 'event', event: 'count-run' }
 }
 
 export const filmLiveKey = (beat: string, index: number): string => `${beat}.${index}`

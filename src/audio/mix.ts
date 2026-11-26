@@ -1,5 +1,5 @@
 // The film's sound, laid out from the events of the film. Pure arithmetic: the same inputs give the same samples.
-import { allCues, cueOfEvent, loopCues, pickVariant, stopEvents } from './cues'
+import { allCues, alsoStarts, cueOfEvent, loopCues, pickVariant, stopEvents } from './cues'
 
 export { openingEvents, type OpeningPlan } from './cues'
 import { master, repitch, type Mastered, type Sound } from './dsp'
@@ -79,8 +79,7 @@ export function mixFilm(o: MixInput): MixResult {
     return end
   }
 
-  for (const e of events) {
-    const cue = cueOfEvent(e.name)
+  for (const e of events) for (const cue of [cueOfEvent(e.name), ...(alsoStarts[e.name] ?? [])]) {
     if (!cue || cue === 'room-tone') continue
     if (lastFrame.get(cue) === e.frame) continue
     lastFrame.set(cue, e.frame)
@@ -114,6 +113,7 @@ export function mixFilm(o: MixInput): MixResult {
       const k = loop ? (i - start) % n : i - start
       let g = 1
       if ((loop || cutShort) && !dead && until - i <= fadeLen) g = (until - i) / fadeLen
+      if (loop && i - start < fadeLen) g *= (i - start) / fadeLen
       if (mono) {
         const v = src[0]![k]! * g
         fx[0]![i]! += v * gains.left

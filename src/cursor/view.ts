@@ -13,10 +13,13 @@ import { makeBody } from './model/body'
 import { drawnStretch } from './model/deform'
 import { makeEffects } from './model/effects'
 
-// Which of the cursor's five parts are made. The rest are drawn as stand-ins by the page's view.
-// Acting, damage and arms are drawn on the body, so none of them is real before the body is.
-const whole = makeBody !== null
-export const cursorReal = { body: whole, effects: makeEffects !== null, acting: whole && actingLook !== null, damage: whole && damageLook !== null, arms: whole && makeArms !== null }
+// The cursor's five parts, each with the maker its file exports. All five are made: a part without one stops the build of the cursor.
+const makers = { 'cursor-body': makeBody, 'cursor-effects': makeEffects, 'cursor-acting': actingLook, 'cursor-damage': damageLook, 'cursor-arms': makeArms }
+export const cursorUnmade = (): string[] => Object.entries(makers).filter(([, make]) => make === null).map(([part]) => part)
+const made = <T>(part: keyof typeof makers, make: (() => T) | null): T => {
+  if (!make) throw new Error(`The cursor's part "${part}" has no maker`)
+  return make()
+}
 
 const half = config.table.ballPx / 2
 const UP = new THREE.Vector3(0, 0, 1)
@@ -33,10 +36,10 @@ const EDGE = { out: 6.5, down: [4, 0], reach: 10, tilt: 2, least: 12 }
 export class CursorView {
   readonly root = new THREE.Group()
   private at = new THREE.Group()
-  private body: BodyModel | null = makeBody ? makeBody() : null
-  private effects: EffectsModel | null = makeEffects ? makeEffects() : null
-  private arms: Arms | null = makeArms ? makeArms() : null
-  private tape: Tape | null = makeBody ? makeTape() : null
+  private body: BodyModel = made('cursor-body', makeBody)
+  private effects: EffectsModel = made('cursor-effects', makeEffects)
+  private arms: Arms = made('cursor-arms', makeArms)
+  private tape: Tape = makeTape()
   private from: [THREE.Vector3, THREE.Vector3] = [new THREE.Vector3(), new THREE.Vector3()]
   private to: [THREE.Vector3, THREE.Vector3] = [new THREE.Vector3(), new THREE.Vector3()]
   private lit: Emitter[] = []
@@ -45,10 +48,10 @@ export class CursorView {
 
   constructor() {
     this.root.add(this.at)
-    if (this.body) this.at.add(this.body.root)
-    if (this.effects) this.at.add(this.effects.root)
-    if (this.tape) this.at.add(this.tape.root)
-    if (this.arms) this.root.add(this.arms.root)
+    this.at.add(this.body.root)
+    this.at.add(this.effects.root)
+    this.at.add(this.tape.root)
+    this.root.add(this.arms.root)
   }
 
   apply(c: CursorPose, ctx: RealContext): void {
@@ -56,13 +59,11 @@ export class CursorView {
     const turn = -c.lean - c.spin
     this.at.quaternion.identity()
     // The body is shaped first: where a sealed body stands comes from its outline as it is drawn.
-    if (this.body) {
-      this.body.root.rotation.set(0, 0, turn)
-      this.body.apply(look.body)
-    }
+    this.body.root.rotation.set(0, 0, turn)
+    this.body.apply(look.body)
     if (c.inBall && c.centred) {
       // The middle of the body as it is drawn stands on the ball's middle, whatever its lean, its turn, its length and its acting.
-      const drawn = this.body?.middle?.()
+      const drawn = this.body.middle?.()
       if (drawn) this.at.position.set(-drawn.x, -drawn.y, 0)
       else {
         const m = middleOf(drawnStretch(look.body.stretch, look.body.melt))
@@ -87,13 +88,11 @@ export class CursorView {
     } else if (c.inBall) this.at.position.set(c.x - 960 - 4.2 * UNIT, 540 - c.y + 9.5 * UNIT, c.z + half + 1)
     else this.at.position.set(c.x - 960, 540 - c.y, c.z)
     this.at.scale.setScalar(c.scale)
-    if (this.effects && this.body) this.effects.apply(look.effects, this.body, turn)
-    if (this.tape && this.body) {
-      const back = c.wounds.find((w) => w.kind === 'reassembled')
-      this.tape.root.rotation.set(0, 0, turn)
-      this.tape.apply(back ? back.at : 0, this.body, c.strips ? Math.max(0, ...c.strips.map((p) => p.z)) : 0)
-    }
-    if (this.body?.emit) {
+    this.effects.apply(look.effects, this.body, turn)
+    const mended = c.wounds.find((w) => w.kind === 'reassembled')
+    this.tape.root.rotation.set(0, 0, turn)
+    this.tape.apply(mended ? mended.at : 0, this.body, c.strips ? Math.max(0, ...c.strips.map((p) => p.z)) : 0)
+    if (this.body.emit) {
       this.root.updateMatrixWorld(true)
       this.lit.length = 0
       this.body.emit(this.lit)
@@ -102,10 +101,9 @@ export class CursorView {
         ctx.light({ ...e, x: this.spot.x + 960, y: 540 - this.spot.y, z: this.spot.z })
       }
     }
-    if (!this.arms) return
     const hands = c.arms ? c.hands : null
     this.arms.root.visible = hands !== null
-    if (!hands || !this.body) return
+    if (!hands) return
     this.root.updateMatrixWorld(true)
     const grown = Math.max(0, c.sprout)
     const gone = Math.min(1, Math.max(0, (c.shed - SHED.hold) / (1 - SHED.hold)))
@@ -158,9 +156,9 @@ export class CursorView {
   }
 
   dispose(): void {
-    this.body?.dispose()
-    this.effects?.dispose()
-    this.arms?.dispose()
-    this.tape?.dispose()
+    this.body.dispose()
+    this.effects.dispose()
+    this.arms.dispose()
+    this.tape.dispose()
   }
 }

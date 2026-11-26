@@ -196,6 +196,7 @@ class Effects implements EffectsModel {
     this.puffs = new THREE.InstancedMesh(ball, cloud, PUFFS)
     this.puffs.instanceMatrix.setUsage(THREE.DynamicDrawUsage)
     for (const mesh of [this.drops, this.puffs]) {
+      mesh.userData.small = 'count'
       mesh.frustumCulled = false
       mesh.castShadow = mesh === this.drops
       mesh.receiveShadow = false
