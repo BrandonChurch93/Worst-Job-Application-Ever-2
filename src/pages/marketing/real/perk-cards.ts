@@ -365,13 +365,30 @@ export function troughGeometry(s: Shape): THREE.BufferGeometry {
   return g
 }
 
-export const slabKey = (s: Shape): string => `restSlab:${dims(s)}:${q(s.z1 - s.z0)}`
+// Glass further from the lamp, toward the page's right, is darker, by the approved image: its colour falls by `per` for each page pixel, which the
+// light already on it turns into about 1.5, 5 and 7.5 hundredths at the three cards of a row.
+export const FALL = { at: 1.02, per: 0.000115 }
+export const fallAt = (x: number): number => FALL.at - FALL.per * x
+export const fallOf = (s: Shape): number => fallAt(s.x + s.w / 2)
+const fallKey = (s: Shape): string => fallOf(s).toFixed(3)
+
+function darker(g: THREE.BufferGeometry, s: Shape): THREE.BufferGeometry {
+  const c = g.getAttribute('color')
+  const p = g.getAttribute('position')
+  for (let i = 0; i < c.count; i++) {
+    const by = fallAt(s.x + s.w / 2 + p.getX(i))
+    c.setXYZ(i, c.getX(i) * by, c.getY(i) * by, c.getZ(i) * by)
+  }
+  return g
+}
+
+export const slabKey = (s: Shape): string => `restSlab:${dims(s)}:${q(s.z1 - s.z0)}:${fallKey(s)}`
 
 // A card at rest on the page: the same slab, lying with its under side on the surface. Glass lets most of the light through, so the shadow on the
 // page is thrown by the printed foot of the slab alone, which lies inside the glass and is never seen.
 export function restingSlab(s: Shape): THREE.Object3D {
   const thick = s.z1 - s.z0
-  const glass = mesh(shared(`perkSlab:${dims(s)}:${q(thick)}`, () => slabGeometry(s, thick)), cardGlass(), false)
+  const glass = mesh(shared(`perkSlab:${dims(s)}:${q(thick)}:${fallKey(s)}`, () => darker(slabGeometry(s, thick), s)), cardGlass(), false)
   glass.name = 'glass'
   glass.position.z = thick / 2
   const root = new THREE.Group()
@@ -406,7 +423,7 @@ export const perkCards: PartMaker | null = {
     const print = o.getObjectByName('foot')
     if (print) print.position.z = -(thickOf(s) / 2 - GLASS.caster) * Math.cos(turn)
     const own = o.userData.glass as THREE.MeshPhysicalMaterial
-    own.color.copy(srgb(GLASS.colour)).multiplyScalar(even(turn))
+    own.color.copy(srgb(GLASS.colour)).multiplyScalar(even(turn) * fallOf(s))
     seal.rotation.x = -turn
     seal.position.set(0, 0, -s.z0).applyAxisAngle(AXIS, -turn)
     const trough = o.getObjectByName('trough')
