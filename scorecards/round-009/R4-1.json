@@ -1,0 +1,72 @@
+{
+ "critic": "R4",
+ "score": 6,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "A: one sheet across each of the five beats, three sheets of consecutive frames at the hits on the arrow, the page turn and its seat",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-09.png",
+   "where": "frame 1:07.03, the middle of the page turn",
+   "what": "the turn's midpoint frame breaks up into horizontal streaks with an orange, skyline-like smear and a black band, so it reads as a video glitch rather than a slab edge passing the lens. At normal speed it shows as a one-frame flash",
+   "fix": "render the slab edge-on with real geometry (the edge, the bevel and the underside in shadow) and use directional motion blur along the rotation, not a smeared texture. Keep the orange light off the slab edge unless something in the scene casts it"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-09.png",
+   "where": "1:06.53 to 1:06.97, the outgoing slab",
+   "what": "the slab tips back and is gone in about 0.3 s and comes in again in about 0.3 s, with no wind-up before the tip and no hold on the far side. The turn reads as quick and light, not as a heavy block being heaved over",
+   "fix": "add a short anticipation (2 to 3 frames where the slab dips or lifts slightly before it goes), ease into the rotation so it gathers speed like a heavy door, and add 3 to 4 frames of travel at the top"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "the coins below the slot, 0:57.97 to 0:58.17",
+   "what": "the coins spill out and then hang and pile up in mid-air over the vertical face of the panel, above the rail, with nothing under them. They drift and stack as if weightless instead of falling under gravity. In set-A-03 at 0:59.97 they then disappear without leaving",
+   "fix": "have the coins fall with gravity, speeding up, onto a real ledge or into a tray (or off the bottom of the frame), bounce once or twice with a quick stop, and then either stay or be cleared on screen"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "the whole sheet, the slot-machine hit",
+   "what": "the lever is never seen going down or springing back. The hit is only coins appearing, so the sheet does not show what caused the payout, and the reels show no wind-up or stop",
+   "fix": "show the lever pulled down with weight, the reels spinning and stopping one at a time with a small jolt, then the payout. The lever should spring back with a slight overshoot"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "0:46.53 to 0:47.97, beat 1",
+   "what": "for 1.5 s the arrow just wanders over the empty fields and nothing happens. The beat has no action and no clear intent, so you cannot tell what this beat is for without a caption",
+   "fix": "cut the idle wandering short, or have the arrow travel with purpose to the first field and press it, so the beat ends on an action"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-06.png",
+   "where": "the dial, 0:51.47 to 0:51.57",
+   "what": "the finger holes and numerals ghost into several copies as the dial returns. This is acceptable motion blur, but the return looks the same speed all the way round and does not slow against the finger stop. The stop at 0:51.67 is dead but has no tiny knock, and only the field text answers the hit, not the page",
+   "fix": "ease the dial's return so it slows into the stop, add a 1-frame recoil at the finger stop, and give the panel or field a small answering move on the frame the number registers"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-05.png",
+   "where": "the arrow after the Continue click, 1:06.53 to 1:06.70",
+   "what": "after the click the arrow and its shadow streak away as a long soft smear, while the slab starts to tip under it. The arrow does not visibly press the button, and the button does not go down and spring back",
+   "fix": "show the Continue key go down on the press and spring back before the slab moves, and keep the arrow still for the press"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-10.png",
+   "where": "1:07.20 to 1:07.33, the steppers 3, 4 and 5 and the lower rule",
+   "what": "the brushed concentric rings on the 4 and 5 buttons show moiré while the slab moves, and the lower rule is still soft at 1:07.33 after the slab has seated. Otherwise the landing is dead and the page stays still from 1:07.37",
+   "fix": "pre-filter the brushed texture or use mipmaps so it does not alias in motion, and make sure the motion blur ends on the seating frame"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-08.png",
+   "where": "the crank handle, 1:02.70 to 1:02.97",
+   "what": "the crank spins fast and evenly and stops without ringing down, and the handle swings out past the panel bezel over the paper. The burning arrow gag reads well",
+   "fix": "wind the crank up from slow to fast, then let it coast and slow to a stop with a slight settle. Keep the handle's sweep inside the socket or give it a shadow on the paper where it crosses"
+  }
+ ]
+}

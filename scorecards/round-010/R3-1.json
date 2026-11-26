@@ -1,0 +1,51 @@
+{
+ "critic": "R3",
+ "score": 7,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "A: the two keys, the sheet `boss-stages` and the page at rest, whole, and native crops of each",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "Human Verification slab, upper-left glass-edge crop",
+   "what": "The broad face reads as an opaque blue-grey panel. The bevel has a highlight, but there is no discernible page grain or separate layer seen through the slab, even near the edge.",
+   "fix": "Make the slab transmit the underlying page texture and printed layer, with a slight refractive shift at the bevel and a separate grazing reflection on the front face."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "the arrow in flight, center crop of the middle row",
+   "what": "The white face and continuous black perimeter dominate; only a thin sliver of sidewall is visible. The cast shadow still starts against the underside, so the moving arrow reads as a beveled cursor graphic rather than a solid part lifting off the page.",
+   "fix": "Expose a distinct glossy sidewall and narrow bevel highlight, and give the airborne arrow a small visible gap from its cast shadow that increases as it rises."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-06.png",
+   "where": "the damaged green shield, center crop of the middle row",
+   "what": "The pale fracture lines have nearly uniform width and brightness, with no visible depth, offsets, or light catching the broken edges. They read as lines laid over a flat green insert.",
+   "fix": "Fracture the pane into actual adjoining surfaces with irregular hairline branches, small gaps or offsets near the impact, and specular flashes on the exposed edges."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-06.png",
+   "where": "the damaged Submit cap and its two ends, upper-left crop",
+   "what": "The black damage looks printed on the cap: the two scorch patches reach the ends while leaving the outer profile and molded edge almost perfectly intact.",
+   "fix": "Interrupt the rim with uneven chips and shallow pits, reveal a different material beneath the burnt surface, and vary the depth and roughness across the two ends."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-06.png",
+   "where": "the exposed front-plate fragment, upper-right crop",
+   "what": "The broad grey area below the curved trim ends in a planar silhouette; the broken sides do not reveal a wall or underside, so the fragment reads as a flat shape under a bevel.",
+   "fix": "Show a material cross-section and underside flange at the separated edges, with a narrow edge highlight and occlusion where the trim overlaps the plate."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-06.png",
+   "where": "the cracks around the open socket, lower-left crop",
+   "what": "The socket itself has depth, but the surrounding fractures taper like dark ink strokes. There are no opposing broken edges or exposed cross-sections where the widest cracks meet the rim.",
+   "fix": "Cut the widest fractures into the surface, exposing thin broken lips, a little inner wall and tight occlusion where they meet the socket."
+  }
+ ]
+}

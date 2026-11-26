@@ -1,0 +1,23 @@
+{
+ "critic": "R8",
+ "score": 7,
+ "pass": false,
+ "model": "kimi_k3",
+ "set": "A: the page at rest and the two keys, whole, and the smallest type at native size",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "verification card to centered Submit button",
+   "what": "The usable content ends at the helper line, then roughly 220px of empty space isolates the centered Submit button. At rest the page looks unfinished and the button has no spatial relationship to the checkbox it depends on.",
+   "fix": "Move Submit into the section flow, about 24-32px below the helper text and aligned with or centered on the verification card; keep the mechanism's open stage separate."
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01.png",
+   "where": "header step indicator, steps 1-3",
+   "what": "Completed steps 1-3 use the same grey styling as future step 5, so only the body heading resolves the step state.",
+   "fix": "Give steps 1-3 check marks or a filled completed state, and keep step 5 as the dim future state."
+  }
+ ]
+}
