@@ -1,35 +1,35 @@
 {
   "folder": "careers-fix",
-  "pushed": "2026-11-26T04:59:51.655Z",
-  "commit": "51908a6598eb54b1ddf5118783c03dbc86434cb7",
+  "pushed": "2026-11-26T05:17:09.522Z",
+  "commit": "fb7a65a950c496bd8fd021e570b25882811c9662",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "marketing-top at review, commit 51908a65: approved left, built right",
-      "time": "2026-11-26T04:59:49.988Z",
+      "caption": "perks beat at fb7a65a9: the arrow pokes each card from the page under it, hops back, double take at the first",
+      "time": "2026-11-26T05:17:07.803Z",
       "by": "careers-fix",
-      "from": "out/work/looks/files/20261126045949-r-top-compare.jpg"
+      "from": "out/work/looks/files/20261126051707-sheet-perks.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "hero medal at 3x: approved left, built right (brushed face, leaned rim, contact ring)",
-      "time": "2026-11-26T04:59:50.214Z",
+      "caption": "apply beat at fb7a65a9: bound to the perch, wind-up, leap, on the cap, the turn",
+      "time": "2026-11-26T05:17:08.043Z",
       "by": "careers-fix",
-      "from": "out/work/looks/files/20261126045950-r-medal.jpg"
+      "from": "out/work/looks/files/20261126051708-sheet-apply.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "ticker: approved, built at the key (11 s), built at rest (0 s); no cut word in either",
-      "time": "2026-11-26T04:59:50.438Z",
+      "caption": "the 12 frames round the first card-flip: poke, the card starts, the hop back",
+      "time": "2026-11-26T05:17:08.264Z",
       "by": "careers-fix",
-      "from": "out/work/looks/files/20261126045950-r-tick2.jpg"
+      "from": "out/work/looks/files/20261126051708-sheet-hit.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "card 0 at 3x: approved left, built right",
-      "time": "2026-11-26T04:59:50.663Z",
+      "caption": "ticker beat at fb7a65a9: stands proud over the running strip, then struts to the stand",
+      "time": "2026-11-26T05:17:08.491Z",
       "by": "careers-fix",
-      "from": "out/work/looks/files/20261126045950-r-cards.jpg"
+      "from": "out/work/looks/files/20261126051708-sheet-ticker.jpg"
     }
   ]
 }
