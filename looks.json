@@ -1,35 +1,35 @@
 {
   "folder": "boss-fight",
-  "pushed": "2026-11-26T02:20:04.073Z",
-  "commit": "72ce75ed233015044446036966c9fea7c29550e6",
+  "pushed": "2026-11-26T02:45:28.714Z",
+  "commit": "93e9298752f4d6f21f8b7367400078596824ccec",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key boss-down: approved on the left, this build on the right, review tier",
-      "time": "2026-11-26T02:19:47.342Z",
+      "caption": "Still boss-boss_slabs-0p3935-film-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T02:43:23.200Z",
       "by": "boss-fight",
-      "from": "out/work/compare/compare-boss-down.jpg"
+      "from": "out/work/stills/boss-boss_slabs-0p3935-film-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "boss-fight at review beside the approved image (above): deeper red slabs flying above the darts, flat health fill, thin checkbox frame, the new shared orange",
-      "time": "2026-11-26T02:20:02.345Z",
+      "caption": "The stage sheet boss-stages, approved above and the build below: four stages whole, none touching",
+      "time": "2026-11-26T02:45:27.213Z",
       "by": "boss-fight",
-      "from": "out/work/looks/files/20261126022002-cmp-boss-fight.jpg"
+      "from": "out/work/looks/files/20261126024527-cmp-stages.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "boss-down at review beside the approved image (above): the cursor whole at 29.0 s, the bar empty",
-      "time": "2026-11-26T02:20:02.594Z",
+      "caption": "A firing frame (11.76 s, draft): the flash and the slab at the mouth of barrel 2, twice its size",
+      "time": "2026-11-26T02:45:27.457Z",
       "by": "boss-fight",
-      "from": "out/work/looks/files/20261126022002-cmp-boss-down.jpg"
+      "from": "out/work/looks/files/20261126024527-flash.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "the beat boss.popups: each pop-up as wide as its title, the lower two clear of the shield's glass",
-      "time": "2026-11-26T02:20:02.818Z",
+      "caption": "The key boss-fight at 02:30 UTC, approved above and the build below",
+      "time": "2026-11-26T02:45:27.681Z",
       "by": "boss-fight",
-      "from": "out/work/sheets/sheet-beat-boss_popups-preview-draft.jpg"
+      "from": "out/work/looks/files/20261126024527-cmp-boss-fight.jpg"
     }
   ]
 }
