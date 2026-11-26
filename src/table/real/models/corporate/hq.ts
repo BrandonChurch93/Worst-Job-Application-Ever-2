@@ -19,7 +19,7 @@ const PORTAL = hex(0x8a6a2c)
 const ROOF = hex(0x6a707a)
 const BRIGHT = hex(0xbac4d4)
 const GLASS: RGB = [0.016, 0.085, 0.1]
-const CARPET: RGB = [0.07, 0.15, 0.19]
+const CARPET: RGB = [0.028, 0.05, 0.075]
 const PILE = { step: 3, lean: 0.56 }
 const DESK: RGB = [0.5, 0.38, 0.24]
 const GLASS_PALE: RGB = [0.02, 0.085, 0.1]
@@ -180,7 +180,7 @@ function leafGlass(): Geo {
   fin(g, FINISH.stone, () => {
     for (const [at, w] of [[0.1, 0.2], [0.4, 0.05]] as V2[]) {
       const x = 6 + gw * at
-      g.face([[x, -0.08, 24], [x + gw * w, -0.08, 24], [x + gw * (w + 0.34), -0.08, H - 7], [x + gw * 0.34, -0.08, H - 7]], [0, -1, 0], [1, 0, 0], [1.5, 1.75, 1.8])
+      g.face([[x, -0.08, 24], [x + gw * w, -0.08, 24], [x + gw * (w + 0.34), -0.08, H - 7], [x + gw * 0.34, -0.08, H - 7]], [0, -1, 0], [1, 0, 0], [0.5, 0.6, 0.62])
     }
   }, 2 * 0.028)
   return g
@@ -333,7 +333,7 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
       }
       if (i < FLOORS) {
         fin(G, FINISH.satin, () => {
-          const deep = 0.5 + (0.5 * i) / (FLOORS - 1)
+          const deep = 0.3 + (0.7 * i) / (FLOORS - 1)
           level(G, shaft, h, zz + 0.5, 1, shade(CARPET, deep))
           level(G, inset(h, -1.6), h, zz + 0.6, 1, warm(0.5 * deep))
           // The desks of the floor, in a row round the open middle, each under its own lamp.
@@ -355,7 +355,7 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
       }
       if (i > 0) {
         fin(G, FINISH.matte, () => {
-          level(G, shaft, h, zz - ROOM.slab, -1, warm(0.065))
+          level(G, shaft, h, zz - ROOM.slab, -1, warm(0.022))
           panels(G, shaft, h, zz - ROOM.slab - 0.5, (x, y) => 0.95 * zone(x, y))
         }, 1)
       }
