@@ -1,35 +1,35 @@
 {
   "folder": "pinball-stage",
-  "pushed": "2026-11-26T02:20:01.129Z",
-  "commit": "9be7574e5e5a9901b56e3c5b1c773deb448b883a",
+  "pushed": "2026-11-26T02:25:03.934Z",
+  "commit": "2db32cb57b8463108383ff0de80411cb9103ca1c",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key last-save: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-26T02:16:59.170Z",
+      "caption": "Key rail-cam: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-26T02:21:21.654Z",
       "by": "pinball-stage",
-      "from": "out/work/compare/compare-last-save.jpg"
+      "from": "out/work/compare/compare-rail-cam.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "lobby-doors beside approved, on the director's 3edf15f: head on from the carpet, the door's post at the left, the ball clear of the wings",
-      "time": "2026-11-26T02:19:59.656Z",
+      "caption": "Still pinball-pinball_highway-0p4-rail-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T02:23:03.504Z",
       "by": "pinball-stage",
-      "from": "out/work/c-lobby2.jpg"
+      "from": "out/work/stills/pinball-pinball_highway-0p4-rail-hd-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "last-save beside approved, apron in its well: 72 degrees down, both flippers whole over the Street tier's near rail, the drain plate at the bottom centre",
-      "time": "2026-11-26T02:19:59.880Z",
+      "caption": "rail-cam beside approved, looking back from ahead of the ball on the wire at the key (31.75 s): bank left, firehouse right behind the ball",
+      "time": "2026-11-26T02:25:02.633Z",
       "by": "pinball-stage",
-      "from": "out/work/c-save2.jpg"
+      "from": "out/work/c-rail-back.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "table-wide beside approved with the apron in its well: the frame's marks hold, the apron and the Street's flippers lie under the near rail's line of sight",
-      "time": "2026-11-26T02:20:00.113Z",
+      "caption": "the same rail camera early in the ride (31.3 s, at 0.4 of the beat): the firehouse and the bank close behind the ball, the track in the foreground",
+      "time": "2026-11-26T02:25:02.862Z",
       "by": "pinball-stage",
-      "from": "out/work/c-wide3.jpg"
+      "from": "out/work/rep-rail-back-early.jpg"
     }
   ]
 }
