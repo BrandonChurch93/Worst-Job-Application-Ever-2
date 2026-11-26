@@ -95,3 +95,32 @@ The ball off the flipper is the machine's own physics and the picture shows the 
 - `npm run still -- --key <step1-fire|table-wide|boss-fight> --format hd --tier draft --force`, then `cmp` against the three made on `origin/main` before any work: byte equal, all three.
 - `npm run determinism`: "determinism: pass, 12 pictures at hd, tier draft, identical across two fresh loads and two orders".
 - `npx tsc --noEmit -p .`: exit 0, no output.
+
+## For Brandon, in plain words: the director's set shot
+
+1. On the live site a visitor's stroke does not send the ball where the bat alone would. When a bat starts its stroke under the ball, the machine ends that stroke by sending the ball to the place the director has named for that moment (`strike()` of `src/table/physics.ts`, the place set by `direct()` of `src/pages/step3/index.ts`). In the measured stroke (MEASURED, `node pipeline/phase5/fix-flipper-live.mjs --phase 0`): the bat alone had the ball at 29.76 balls/s nearly straight up the table, and the set shot made it 18.80 balls/s toward the low bumper 1.4 balls above the bat's tip, which threw it back onto the raised tip 22 steps of the physics (0.09 s) later.
+2. The director's set shots of the visit, in the order of the page's clock (STATED, read from `direct()`; either bat sends them, whichever began its stroke under the ball):
+
+| when (page seconds) | tier | aimed at | speed, balls/s |
+|---|---|---|---|
+| until 12.6 (then towed) | lobby | the stand of the revolving door (`corporate.revolving`), with a pull of 12 within 2.2 balls | 13 |
+| until 17.9, and again 20.72 to 23.3 | office | the low bumper (`office.bumper.3`) | 17 |
+| 17.9 to 19.1 (then the ball is towed there until 20.72) | office | the inbox scoop (`office.inbox`), with a pull of 30 within 2.2 balls | 21 |
+| from 23.3 | office | none: the bumpers and slings lean the ball to the gate's mouth, and from 24.3 a pull of 40 draws it to the gate | none |
+| until 27.2 (then towed) | street | the mouth of the firehouse (`street.firehouse`), with a pull of 30 within 2.2 balls | 21 |
+| 29.35 to 31.2 (then towed) | street | the start of the highway ramp | 21 |
+| 34.45 to 35.9 | street | a spot 1.2 balls right of the middle, 2.2 balls down the street tier (the save) | 19 |
+
+A shot to a far place on the ball's own side from low on the tier is lobbed at 9 balls/s instead.
+
+## The ball over the left lamp window after the stroke (the Builder's question of 21:18)
+
+MEASURED, `node pipeline/phase5/fix-flipper-live.mjs --phase 3 --after 170 --json /tmp/live3long.json`, then `node pipeline/phase5/fix-flipper-insert.mjs /tmp/live3long.json` (the same for phase 0), and `node pipeline/phase5/fix-flipper-near.mjs` for what stands nearest:
+
+- The yellow disc is not a bumper. It is the lamp window `office.insert.1` (a slice of pizza, radius 0.62, at 8.3, 7.1 of the office tier). The machine has no body there: `src/table/physics.ts` does not read `table.inserts`. The three bumpers of the office tier are at (8.9, 3.2), (11.1, 3.2) and (10, 5.1); the ball's centre is 3.7 to 4.9 balls from the left one's centre in these steps (the two radii are 0.5 and 0.75).
+- The ball rolls over the window from the right (phase 3: 9.8 to 10.9 balls/s, visitor steps +20 to +26 after the key), meets the corner post of the left slingshot (`office.sling.post.left.c`, radius 0.12, at 7.35, 7.45) once, at step 4292 (phase 3) or 4297 (phase 0): 10.86 to 6.54 balls/s (phase 3), 10.18 to 5.67 (phase 0), about half the speed back along the line of contact, spin -14.73 to -10.93. Then it rolls back over the lower side of the window at 6.5 to 9.7 balls/s (phase 3, until visitor step +34) or 5.7 to 7.8 (phase 0, past visitor step +36).
+- Nothing kicks because nothing there kicks: a window has no body, and the slingshot kicks only when the ball is within 0.56 balls of its face (the line between its end posts); at the corner post the ball's centre is 0.62 from that line's end, held off by the post itself. No rest time and no sensor is in play. No event is told because the machine tells none for a post.
+- The director does not steer the ball there: in every step between visitor steps +18 and +40 but the one at the post, the ball's velocity changes by the slope's pull alone (0.1225 down the slope, 0 sideways). From 17.9 s the director's pull toward the inbox is set (30, reach 2.2 balls), and the ball is 6.9 to 7.3 balls from it.
+- The window is lit for two reasons, both in the drawing and neither a touch: its mode is on since 15 s of the page (`MODES`, mode 0), and a window answers the ball's nearness (`near()` in `src/table/real/lights/levels.ts`, line 94: the level rises as the ball's edge comes within 0.55 balls of the window and is full with the ball deep over it).
+
+Reading: honest physics. What may read as a ball stuck to a bumper is a ball rolling over a flat lit window after a slow bounce off a slingshot post.
