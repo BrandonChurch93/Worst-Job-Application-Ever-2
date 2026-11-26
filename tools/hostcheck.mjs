@@ -4,7 +4,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { spawnSync } from 'node:child_process'
-import { args, at, config, writeJson } from './lib/paths.mjs'
+import { args, at, config, readJson, writeJson } from './lib/paths.mjs'
 import { launch, machine } from './lib/browser.mjs'
 import { serve } from './lib/serve.mjs'
 import { clock, seconds, took } from './lib/film-encode.mjs'
@@ -122,6 +122,16 @@ const soundFiles = files.filter((f) => f.file.startsWith('audio/') && !f.file.en
 const soundBytes = soundFiles.reduce((n, f) => n + f.bytes, 0)
 const soundFirst = load.files.filter((f) => f.file.startsWith('audio/') && !f.file.endsWith('.json'))
 result.sound = { files: soundFiles.length, mb: megabytes(soundBytes), distWithoutMb: megabytes(shipped - soundBytes), inFirstLoad: soundFirst.map((f) => f.file) }
+const soundIndex = path.join(dist, 'audio', 'index.json')
+if (fs.existsSync(soundIndex)) {
+  const index = readJson(soundIndex)
+  const named = [index.pack, ...(index.loops ?? []), ...(index.lines ?? [])].filter((f) => f && f.file)
+  const namedBytes = named.reduce((n, f) => n + f.bytes, 0)
+  const here = new Set(soundFiles.map((f) => f.file))
+  const absent = named.filter((f) => !here.has(`audio/${f.file}`))
+  const absentBytes = absent.reduce((n, f) => n + f.bytes, 0)
+  result.sound.index = { files: named.length, mb: megabytes(namedBytes), largestMb: megabytes(Math.max(0, ...named.map((f) => f.bytes))), absent: absent.length, distWithMb: megabytes(shipped + absentBytes) }
+}
 
 // The sub path: the same build under a folder two levels down, opened in live mode and played by a bot until step 1 is on show.
 let sub = null
@@ -183,6 +193,7 @@ if (load.elsewhere.length) say(`asked from another address than the site's own: 
 if (load.problems.length) say(`errors on the page: ${load.problems.join(' | ')}`)
 say(`the built site ${result.opensCareersLive ? 'opens the careers page in live mode' : 'does not open the careers page in live mode cleanly'}${load.state.ready ? ` (flags reported: ${load.state.standIns.join(', ') || 'none'})` : ''}`)
 say(soundFiles.length ? `sound: ${soundFiles.length} sound files in dist/audio/, ${result.sound.mb} MB: dist/ is ${result.sound.distWithoutMb} MB without them. In the first load: ${soundFirst.length ? soundFirst.map((f) => f.file).join(', ') : 'none'}` : `sound: dist/audio/ holds no sound file${files.some((f) => f.file === 'audio/index.json') ? ', only its index' : ''}, so every number here is without the sound`)
+if (result.sound.index) say(`sound: the index names ${result.sound.index.files} sound files, ${result.sound.index.mb} MB, the largest ${result.sound.index.largestMb} MB; ${result.sound.index.absent} of them are not in dist/. With all of them dist/ is ${result.sound.index.distWithMb} MB against ${cfg.host.maxShippedMb} MB`)
 if (sub) say(`served from ${sub.prefix} the built site ${sub.ok ? `opened in live mode and a bot played it to step 1 in ${took(sub.seconds)}` : `did not play to step 1 cleanly: reached "${sub.reached || 'the careers page'}" in ${took(sub.seconds)}${sub.problems.length ? `; errors: ${sub.problems.join(' | ')}` : ''}${sub.failed.length ? `; failed: ${sub.failed.join(', ')}` : ''}${sub.outside.length ? `; asked outside the sub path: ${sub.outside.join(', ')}` : ''}${sub.flags.length ? `; flags: ${sub.flags.join(', ')}` : ''}`}`)
 for (const r of v.rows) say(`${r.name}: ${r.got === null ? 'not measured' : `${r.got} ${r.unit}`} against ${r.limit} ${r.unit}: ${r.inside ? 'inside' : 'OUTSIDE'}`)
 if (!a.keep) fs.rmSync(copy, { recursive: true, force: true })
