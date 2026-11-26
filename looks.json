@@ -1,35 +1,35 @@
 {
   "folder": "office-models",
-  "pushed": "2026-11-26T04:14:59.916Z",
-  "commit": "ab1234b5355a09a413179fa38832ab745621b4fa",
+  "pushed": "2026-11-26T04:25:47.645Z",
+  "commit": "ef524227e2d652742395520befabdf93076c511b",
   "looks": [
     {
       "file": "look-1.jpg",
       "caption": "Still key-reply-all-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T04:09:22.424Z",
+      "time": "2026-11-26T04:21:46.538Z",
       "by": "office-models",
       "from": "out/work/stills/key-reply-all-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
       "caption": "Still key-tier-office-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T04:10:04.148Z",
+      "time": "2026-11-26T04:22:28.672Z",
       "by": "office-models",
       "from": "out/work/stills/key-tier-office-hd-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Left stapler in reply-all at ab1234b5: approved image on the left, the build on the right, with the long highlight baked on the arm",
-      "time": "2026-11-26T04:14:58.579Z",
+      "caption": "Cubicle farm in reply-all: approved image on the left, the build on the right, grey beige partitions under pale caps, shade at their feet",
+      "time": "2026-11-26T04:25:46.137Z",
       "by": "office-models",
-      "from": "out/work/looks/files/20261126041458-stap-approved-now.jpg"
+      "from": "out/work/looks/files/20261126042546-cub-approved-now.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Inbox in reply-all at ab1234b5: approved image on the left, the build on the right, thicker tray walls and shade between the envelopes",
-      "time": "2026-11-26T04:14:58.818Z",
+      "caption": "tier-office, draft, after the third push: staplers with their highlight, brushed top on the coffee machine, shade in the inbox",
+      "time": "2026-11-26T04:25:46.367Z",
       "by": "office-models",
-      "from": "out/work/looks/files/20261126041458-inbox-approved-now.jpg"
+      "from": "out/work/looks/files/20261126042546-tier.jpg"
     }
   ]
 }
