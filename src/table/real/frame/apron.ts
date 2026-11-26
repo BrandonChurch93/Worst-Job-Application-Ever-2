@@ -97,7 +97,9 @@ export function apron(z: Zone, ctx: RealContext): THREE.Object3D {
   for (const id of ['apron-left', 'apron-right']) {
     const s = boxOf(id)
     if (!s) continue
-    const top = id === 'apron-right' && card ? card.z0 : Math.max(SLAB.height, s.z1)
+    // The slab the card lies on, whichever of the two it is, ends at the card's underside.
+    const under = !!card && (card.x0 + card.x1) / 2 > s.x0 && (card.x0 + card.x1) / 2 < s.x1
+    const top = under ? card.z0 : Math.max(SLAB.height, s.z1)
     C.slab(roundedLoop(s.x0, s.x1, s.y0, s.y1, SLAB.corner, 5), 0, top, TONE.ceramic, { bevel: SLAB.bevel })
     C.map(0, (x, y) => [x + 960, z.top + z.height / 2 - y])
     P.slab(roundedLoop(s.x0 - 1.4, s.x1 + 1.4, s.y0 - 1.4, s.y1 + 1.4, SLAB.corner + 1.4, 5), 0, 0.5, TONE.gap, { sides: false })
