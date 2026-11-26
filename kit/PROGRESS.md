@@ -25,21 +25,21 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 62, 2026-11-26T03:56Z, Phase 4.
+Status 63, 2026-11-26T04:25Z, Phase 4.
 
-1. `out/stills/status/01-round-7-the-page-turn-as-the-motion-critic-gets-.jpg`: Twelve frames of the film from 0:13.40 to 0:14.80, commit be1d145, drawn by the pack tool at 03:50Z (stills of this pack at the final tier, film frames at the review tier). The careers page tips away, the slab shows its dark edge at 0:14.03, and step 1 seats. Still wrong, to my eye before the critic answers: the arrow drifts off the button while the page turns; the page's edge at 0:14.03 is pure white with no thickness shading; the careers cards and ticker are the grey-green slabs the match critic marked down.
-2. `out/stills/status/02-tier-3-corporate-first-complete-version-of-its-m.jpg`: Left the approved image `tier-corporate`, right the build at the draft tier on the Corporate model owner's branch, rendered by that owner at 03:46Z; the commit after it (92524864) goes on main with merge 21. Better: the tower has lit floors and a sign, the beach is a glass box with a palm, the carpet and the door are there. Still wrong: straight down where approved leans back; the frame's rails are near white where approved is dark brushed metal; the ladder is a white wire cage where approved is a steel staircase; the boardroom at the upper left is a small dark slab where approved is a long table with chairs; no desk row and no notes show; the bats are paler with a white pivot.
-3. `out/stills/status/03-lobby-doors-first-complete-version.jpg`: Left the approved image `lobby-doors`, right the build at the draft tier, same branch and time. Better: the revolving door is glass on a brass post, the tower stands behind with its sign, the globes glow, the carpet is red. Still wrong: the hall behind the doors is evenly cream where approved is warm and deep; the brass is flat ochre with no bright line; the glass leaves have thick pale edges; the ground is not the wet dark floor with reflections; the ball is larger and its arrow is flat grey; the background is plain black with the marquee showing at the right, where approved falls into soft dark blue.
+1. `out/stills/status/01-tier-2-office-first-complete-version-of-its-mode.jpg`: Left the approved image `tier-office`, right the build at the draft tier on the Office model owner's branch, rendered by that owner at about 04:00Z; that version is on main with merge 21. Better than the stand-ins: a coffee machine with its sign, cubicles with desks, a tray of letters, lidded cups on the three bumpers, red staplers at the slings. Still wrong: the camera looks straight down where approved looks along the field; the cubicles and the tray are a fraction of their approved size; the field is dark with spot lamps where approved is a pale printed field; the bumpers read as flat discs; the outer lane on the right is a blank white panel.
+2. `out/stills/status/02-reply-all-first-complete-version.jpg`: Left the approved image `reply-all`, right the build at the draft tier, same branch and time. Better: the camera's angle is near the approved one, the tube runs down the left side, the three inserts are lit in their colours. Still wrong: the extra balls are clear glass and small where approved has three mirror chrome balls in a row; the cubicles are small and pale; the walls of the cabinet are near white; the tray of letters sits in the corner at a third of its size.
+3. `out/stills/status/03-the-ball-at-the-lobby-doors-the-lamp-inside.jpg`: Sent by the ball's owner at 04:04Z, draft tier. Left the build with the lamp as first patched: the arrow is one flat white. Middle the build with the lamp topping the arrow up to its own level: the face shades from light to grey. Right a detail of the approved image `lobby-doors`. Still wrong in the build: the ball fills far more of the frame than approved, the glass has no bubbles or bright caustic on the carpet, and the arrow is larger and whiter than the approved grey one.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 4, tick 133 at 2026-11-26T03:56:36Z, allowance: build
-time used in this phase: 2.86 h of its box of 14.00 h
-time used under the allowance in force: 22.40 h of 36.00 h allowed
-time used: 22.40 of 36.00 hours before the review
+clock: phase 4, tick 135 at 2026-11-26T04:25:17Z, allowance: build
+time used in this phase: 3.34 h of its box of 14.00 h
+time used under the allowance in force: 22.88 h of 36.00 h allowed
+time used: 22.88 of 36.00 hours before the review
 extra rounds: yes
 half point: not reached
 box end: not reached
