@@ -27,7 +27,7 @@ const INSET = 0.45
 const DOOR = { part: 'model-hq', x: 10.0, y: TIER_Y[0]! + 4.5, leaf: 'hq.door.left', swing: 0.35 }
 const WALLS: Record<string, number[]> = { 'model-hq': [0.74, 0.5, 0.2], glass: [0.5, 0.52, 0.54], danger: [0.5, 0.17, 0.12], paper: [0.7, 0.68, 0.62], light: [0.7, 0.68, 0.6], raised: [0.42, 0.42, 0.44], metal: [0.5, 0.5, 0.52] }
 // How the ball gives where it strikes: the most it is squashed, the squash of a full hit, how near a thing must be to press it, the seconds in which the squash of a hit dies, and the squash for each radius it stands inside a thing.
-export const PRESS = { most: 0.3, hit: 0.3, near: 0.35, dies: 0.05, stand: 3 }
+export const PRESS = { most: 0.4, hit: 0.4, stood: 0.3, dies: 0.05, stand: 3 }
 // How the shell opens, as shares of the way open: the halves have swung apart by `swung`, they sink from `sinks` on, by `deep` radii, and they are gone from sight between `fades` and 1.
 export const PARTING = { swung: 0.8, sinks: 0.55, deep: 1.9, fades: 0.8 }
 const INSIDE = { key: 2.6, fill: 0.5, lamps: 0.12, face: 1.0, least: 0.5, most: 0.6 }
@@ -221,7 +221,7 @@ export function rollAt(x: number, y: number, r: number, into = new THREE.Quatern
   return into.copy(qy).multiply(qx).multiply(BASE)
 }
 
-// Where the ball is pressed flat, and how far: against a bumper it stands in or has just struck, and against a steel ball it stands in. The way is on the page, x right and y down.
+// Where the ball is pressed flat, and how far: against a bumper or a steel ball it stands in. The way is on the page, x right and y down.
 export function pressAt(cx: number, cy: number, r: number, z0: number, ctx: RealContext): { x: number; y: number; amount: number } {
   const B = config.table.ballPx
   const out = { x: 1, y: 0, amount: 0 }
@@ -238,9 +238,7 @@ export function pressAt(cx: number, cy: number, r: number, z0: number, ctx: Real
     const dx = b.c[0] * B - cx
     const dy = b.c[1] * B - cy
     const gap = (Math.hypot(dx, dy) - b.r * B - r) / r
-    if (gap > PRESS.near) continue
-    const since = shape.v?.[0] ?? 9
-    take(dx, dy, Math.min(PRESS.most, Math.max(PRESS.stand * clamp01(-gap), PRESS.hit * Math.exp(-since / PRESS.dies))))
+    take(dx, dy, Math.min(PRESS.stood, PRESS.stand * clamp01(-gap)))
   }
   for (let i = 1; i < 8; i++) {
     const shape = ctx.byId.get(`ball.steel.${i}`)
@@ -248,7 +246,7 @@ export function pressAt(cx: number, cy: number, r: number, z0: number, ctx: Real
     if (Math.abs(shape.z0 - z0) > r) continue
     const dx = shape.x + shape.w / 2 - cx
     const dy = shape.y + shape.h / 2 - cy
-    take(dx, dy, Math.min(PRESS.most, PRESS.stand * clamp01((2 * r - Math.hypot(dx, dy)) / r)))
+    take(dx, dy, Math.min(PRESS.stood, PRESS.stand * clamp01((2 * r - Math.hypot(dx, dy)) / r)))
   }
   if (out.amount < 0.004) out.amount = 0
   return out
