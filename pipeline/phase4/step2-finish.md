@@ -41,13 +41,13 @@ Closed since the judged commit, seen in the pictures:
 ## Looks, counted by part
 
 
-One look is one draft still, comparison or sheet. Counted to 12:28 UTC. The limit is 40 for each part.
+One look is one draft still, comparison or sheet. Counted to 12:41 UTC. The limit is 40 for each part.
 
 - rows: 1 (`compare --key step2-rest`). The tray's floor was judged in the crank's and the dial's stills and is counted there.
 - dial: 9 (`compare --key step2-dial` and draft stills of the key, the sheet `machines` for the stop and the middle).
 - slot: 11 (the sheet `machines`, `still --page step2 --beat step2.slot` at 0.35 and 0.62).
-- crank: 24 (`compare --key step2-crank` and draft stills of the key).
-- acting: 23 (sheets of film frames, whole or cut round the arrow: the lever, the open, the dial, the landing, the blow, Continue, the coins, the recovery, the snag of the dial, the warned arrow, the whip in the frames the beat sheet takes, the throw off the crank, the double take, the strut, the crank beat and the Continue beat in whole frames, the angry run, the refill before and after its move).
+- crank: 26 (`compare --key step2-crank` and draft stills of the key).
+- acting: 25 (sheets of film frames, whole or cut round the arrow: the lever, the open, the dial, the landing, the blow, Continue, the coins, the recovery, the snag of the dial, the warned arrow, the whip in the frames the beat sheet takes, the throw off the crank, the double take, the strut, the crank beat and the Continue beat in whole frames, the angry run, the refill before and after its move).
 
 ## Decisions
 
@@ -94,3 +94,4 @@ The three things least real in step 2, as I see them in my own stills and film f
 
 Not done: R1-1 issue 11 and R1-2 issue 9 (decision 24); the dial's repeated rim rings at the draft tier; a held pose of the whip longer than the 1.36 s it has.
 
+Tried last and not kept (12:41 UTC): the plate's shade on the floor at `cast.dark` 0.66 and 0.78 with a warm tint. Two draft stills showed almost no change beside approved's deep warm shade, so the part of the shade that is seen is not where I thought; the file is as it was pushed.
