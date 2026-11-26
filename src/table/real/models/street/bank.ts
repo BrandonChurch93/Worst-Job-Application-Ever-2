@@ -2,7 +2,7 @@ import type { RealContext } from '../../../../real/types'
 import type { Zone } from '../../zone'
 import type { Buckets } from './geo'
 import { walls } from './firehouse'
-import { KIND, TONE, band, board, mix, parapet, shade, site, wallFace, windowAt, type Hole } from './kit'
+import { KIND, TONE, band, board, mix, parapet, roofDeck, shade, site, wallFace, windowAt, type Hole } from './kit'
 
 export function bank(b: Buckets, z: Zone, ctx: RealContext): void {
   const S = site(z, 'street.bank')
@@ -91,8 +91,8 @@ export function bank(b: Buckets, z: Zone, ctx: RealContext): void {
   // The attic over the cornice and a flat roof inside its parapet.
   const deck = top - 8
   g.box(ex0 + 1, ex1 - 1, ey0 + 1, ey1 - 1, roofFoot, top - 3, stone, { kind: KIND.block, skip: 't' })
-  g.quad([ex0 + 7, ey0 + 7, deck], [ex1 - 7, ey0 + 7, deck], [ex1 - 7, ey1 - 7, deck], [ex0 + 7, ey1 - 7, deck], TONE.roof, KIND.tar)
-  parapet(g, ex0 + 1, ex1 - 1, ey0 + 1, ey1 - 1, deck, top, 7, stone, shade(stone, 1.08), KIND.stucco)
+  roofDeck(g, ex0 + 7, ex1 - 7, ey0 + 7, ey1 - 7, deck)
+  parapet(g, ex0 + 1, ex1 - 1, ey0 + 1, ey1 - 1, deck, top, 7, stone, shade(stone, 1.12), KIND.stucco)
   g.box(ex1 - 30, ex1 - 16, ey1 - 26, ey1 - 14, deck, deck + 4.5, TONE.stoneDark, { bevel: 0.8 })
   b.metal.lathe([[2.6, 0], [2.6, 6], [4, 7.2], [4, 8.4], [0, 9.6]], ex0 + 20, ey1 - 20, 12, TONE.alu, { base: deck })
   board(b, z, ctx, 'street.bank', deck)

@@ -2,7 +2,7 @@ import type { RealContext } from '../../../../real/types'
 import type { Zone } from '../../zone'
 import type { Buckets, V3 } from './geo'
 import { quoins, walls } from './firehouse'
-import { KIND, TONE, band, beaconBase, board, parapet, reveal, shade, site, wallFace, windowAt, type Hole, type WindowLook } from './kit'
+import { KIND, TONE, band, beaconBase, board, parapet, reveal, roofDeck, shade, site, wallFace, windowAt, type Hole, type WindowLook } from './kit'
 
 export function police(b: Buckets, z: Zone, ctx: RealContext): { beacon: V3 } {
   const S = site(z, 'street.police')
@@ -83,9 +83,8 @@ export function police(b: Buckets, z: Zone, ctx: RealContext): { beacon: V3 } {
     b.glow.lathe([[0, -9.6], [2.6, -8.8], [4.3, -6.6], [4.8, -4.2], [4.2, -2], [2.4, -0.4], [0, 0]], mid, -6.5, 16, [0.75, 1.05, 1.9], { base: zt - 4.2 })
   })
 
-  g.quad([x0 + 5, yf + 5, deck], [x1 - 5, yf + 5, deck], [x1 - 5, yb - 5, deck], [x0 + 5, yb - 5, deck], TONE.deck, KIND.concrete)
-  for (const [ax, bx, ay, by] of [[x0 + 6, x1 - 6, yf + 6, yf + 8.5], [x0 + 6, x1 - 6, yb - 8.5, yb - 6], [x0 + 6, x0 + 8.5, yf + 8.5, yb - 8.5], [x1 - 8.5, x1 - 6, yf + 8.5, yb - 8.5]] as const) g.quad([ax, ay, deck + 0.08], [bx, ay, deck + 0.08], [bx, by, deck + 0.08], [ax, by, deck + 0.08], TONE.deckDark)
-  parapet(g, x0, x1, yf, yb, deck, top, 6, TONE.blue, TONE.stonePale, KIND.brick)
+  roofDeck(g, x0 + 5, x1 - 5, yf + 5, yb - 5, deck)
+  parapet(g, x0, x1, yf, yb, deck, top, 6, TONE.blue, TONE.cap, KIND.brick)
 
   // On the roof: a stair house with a door, a radio mast, a cooling unit and two vents.
   const sx0 = x0 + 12

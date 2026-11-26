@@ -3,7 +3,7 @@ import type { RealContext } from '../../../../real/types'
 import { BALL } from '../../../layout'
 import { localBalls, type Zone } from '../../zone'
 import { Geo, type Buckets, type RGB, type V3 } from './geo'
-import { KIND, TONE, band, beaconBase, board, framed, mix, parapet, reveal, rgb, shade, site, wallFace, windowAt, type Hole, type Site, type WindowLook } from './kit'
+import { KIND, TONE, band, beaconBase, board, framed, mix, parapet, reveal, rgb, roofDeck, shade, site, wallFace, windowAt, type Hole, type Site, type WindowLook } from './kit'
 
 export type Side = 'front' | 'right' | 'back' | 'left'
 
@@ -45,7 +45,6 @@ export const DOOR = { h: 24, depth: 8.5, travel: 114 }
 // The floor of the engine bay: a deep oxide red.
 const BAY: RGB = [0.085, 0.017, 0.015]
 const STONE = rgb(0x959da5)
-const DECK = TONE.deck
 
 export function firehouse(b: Buckets, z: Zone, ctx: RealContext): Firehouse {
   const S: Site = site(z, 'street.firehouse')
@@ -198,10 +197,8 @@ export function firehouse(b: Buckets, z: Zone, ctx: RealContext): Firehouse {
     bay.place(0, x0, yf, 0, 0)
   }
 
-  g.quad([x0 + 7, yf + 7, deck], [x1 - 7, yf + 7, deck], [x1 - 7, yb - 7, deck], [x0 + 7, yb - 7, deck], DECK, KIND.concrete)
-  // A gutter round the deck, a shade darker, and two drains.
-  for (const [ax, bx, ay, by] of [[x0 + 8, x1 - 8, yf + 8, yf + 10.5], [x0 + 8, x1 - 8, yb - 10.5, yb - 8], [x0 + 8, x0 + 10.5, yf + 10.5, yb - 10.5], [x1 - 10.5, x1 - 8, yf + 10.5, yb - 10.5]] as const) g.quad([ax, ay, deck + 0.08], [bx, ay, deck + 0.08], [bx, by, deck + 0.08], [ax, by, deck + 0.08], TONE.deckDark)
-  parapet(g, x0, x1, yf, yb, deck, top, 8, STONE, mix(TONE.stonePale, TONE.white, 0.3), KIND.stucco)
+  roofDeck(g, x0 + 7, x1 - 7, yf + 7, yb - 7, deck)
+  parapet(g, x0, x1, yf, yb, deck, top, 8, STONE, TONE.cap, KIND.stucco)
 
   // The stair head at the back left corner: a low rendered box with a louvre and a capped flat roof, as the small units on the approved roof are.
   const tx0 = x0 + 10

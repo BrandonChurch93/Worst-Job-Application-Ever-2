@@ -13,8 +13,9 @@ export const TONE = {
   concrete: rgb(0x868c92),
   concreteDark: rgb(0x696d70),
   roof: rgb(0x66696b),
-  deck: rgb(0x8b9095),
-  deckDark: rgb(0x6a6e72),
+  deck: rgb(0x77828d),
+  deckDark: rgb(0x59626b),
+  cap: rgb(0xc3c9cf),
   lime: rgb(0xd2cbb8),
   blue: rgb(0x3b5b90),
   blueDark: rgb(0x2c4775),
@@ -186,6 +187,18 @@ export function parapet(g: Geo, x0: number, x1: number, y0: number, y1: number, 
   g.box(x1 - t + over * 0.4, p, y0 + thick + over * 0.6, y1 - thick - over * 0.6, top - capH, top, cap, { bevel: 0.9, under: true, skip: 'fb' })
 }
 
+// The deck of a flat roof inside its parapet: felt laid in strips with a dark lap between them, and a gutter round it.
+export function roofDeck(g: Geo, x0: number, x1: number, y0: number, y1: number, deck: number): void {
+  g.quad([x0, y0, deck], [x1, y0, deck], [x1, y1, deck], [x0, y1, deck], TONE.deck, KIND.tar)
+  const lap = 27
+  const n = Math.max(1, Math.round((x1 - x0) / lap))
+  for (let k = 1; k < n; k++) {
+    const x = x0 + ((x1 - x0) * k) / n
+    g.quad([x - 0.45, y0 + 3.5, deck + 0.06], [x + 0.45, y0 + 3.5, deck + 0.06], [x + 0.45, y1 - 3.5, deck + 0.06], [x - 0.45, y1 - 3.5, deck + 0.06], shade(TONE.deckDark, 0.8))
+  }
+  for (const [ax, bx, ay, by] of [[x0 + 1, x1 - 1, y0 + 1, y0 + 3.5], [x0 + 1, x1 - 1, y1 - 3.5, y1 - 1], [x0 + 1, x0 + 3.5, y0 + 3.5, y1 - 3.5], [x1 - 3.5, x1 - 1, y0 + 3.5, y1 - 3.5]] as const) g.quad([ax, ay, deck + 0.08], [bx, ay, deck + 0.08], [bx, by, deck + 0.08], [ax, by, deck + 0.08], TONE.deckDark)
+}
+
 // A beacon: a chromed base on a roof, in the metal bucket. Its lens and its reflector are meshes of their own.
 export function beaconBase(b: Buckets, x: number, y: number, z: number): void {
   b.metal.lathe([[0, 0], [31, 0], [31, 2.5], [28.6, 4.8], [28.6, 7.4], [26.4, 8.6], [0, 8.6]], x, y, 36, TONE.chrome, { base: z })
@@ -200,7 +213,7 @@ export function beaconBase(b: Buckets, x: number, y: number, z: number): void {
 export function beaconLens(): THREE.BufferGeometry {
   const g = new Geo()
   const c: RGB = [1, 1, 1]
-  g.lathe([[25, 0], [25, 20], [23.6, 29], [19.8, 36.6], [13.6, 42], [6, 44.6], [0, 45]], 0, 0, 72, c, { base: 8, wave: [24, 0.07] })
+  g.lathe([[25, 0], [25, 12], [23.6, 20], [19.8, 27], [13.6, 32], [6, 34.6], [0, 35]], 0, 0, 72, c, { base: 8, wave: [24, 0.07] })
   g.lathe([[26, 0], [26, 2], [25, 2]], 0, 0, 36, c, { base: 8 })
   return g.done()
 }
@@ -214,9 +227,9 @@ export function beaconReflector(): THREE.BufferGeometry {
     const a0 = -1.05 + (2.1 * i) / segs
     const a1 = -1.05 + (2.1 * (i + 1)) / segs
     const at = (a: number, zz: number): [V3, V3] => [[-15 * Math.cos(a) + 4.5, 15 * Math.sin(a), zz], [Math.cos(a), -Math.sin(a), 0]]
-    g.smooth([at(a0, 10), at(a1, 10), at(a1, 38), at(a0, 38)], c)
+    g.smooth([at(a0, 10), at(a1, 10), at(a1, 31), at(a0, 31)], c)
   }
-  g.lathe([[0, 15], [3.6, 16.5], [4.8, 21], [3.6, 25.5], [0, 27]], 0, 0, 12, [2.4, 2.4, 2.4])
+  g.lathe([[0, 13], [3.6, 14.5], [4.8, 19], [3.6, 23.5], [0, 25]], 0, 0, 12, [2.4, 2.4, 2.4])
   return g.done()
 }
 
