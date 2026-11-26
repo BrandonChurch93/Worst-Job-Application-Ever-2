@@ -289,7 +289,7 @@ export function even(turn: number): number {
 function glassSlab(s: Shape, thick: number): THREE.Object3D {
   const root = new THREE.Group()
   const own = studio(new THREE.MeshPhysicalMaterial(glassOptions()))
-  const glass = mesh(shared(`perkSlab:${dims(s)}:${q(thick)}`, () => slabGeometry(s, thick)), own, false)
+  const glass = mesh(shared(`perkSlab:${dims(s)}:${q(thick)}:${fallKey(s)}`, () => darker(slabGeometry(s, thick), s)), own, false)
   glass.name = 'glass'
   root.add(glass)
   const print = mesh(shared(`perkPrint:${dims(s)}`, () => sweep(outlineOf(s, SLAB.frame + 0.6, 8), profile([[0, -0.3, true], [0, 0.3, true]]))), cardGlass(), true, false)
@@ -372,13 +372,17 @@ export const fallAt = (x: number): number => FALL.at - FALL.per * x
 export const fallOf = (s: Shape): number => fallAt(s.x + s.w / 2)
 const fallKey = (s: Shape): string => fallOf(s).toFixed(3)
 
-function darker(g: THREE.BufferGeometry, s: Shape): THREE.BufferGeometry {
-  const c = g.getAttribute('color')
+export function darker(g: THREE.BufferGeometry, s: Shape): THREE.BufferGeometry {
   const p = g.getAttribute('position')
-  for (let i = 0; i < c.count; i++) {
+  const had = g.getAttribute('color')
+  const size = had?.itemSize ?? 3
+  const col = new Float32Array(p.count * size).fill(1)
+  if (had) col.set(had.array as Float32Array)
+  for (let i = 0; i < p.count; i++) {
     const by = fallAt(s.x + s.w / 2 + p.getX(i))
-    c.setXYZ(i, c.getX(i) * by, c.getY(i) * by, c.getZ(i) * by)
+    for (let k = 0; k < 3; k++) col[i * size + k]! *= by
   }
+  g.setAttribute('color', new THREE.BufferAttribute(col, size))
   return g
 }
 
@@ -405,7 +409,7 @@ export function restingSlab(s: Shape): THREE.Object3D {
 export const perkCards: PartMaker | null = {
   key(s) {
     if (s.kind === 'text' || s.kind === 'well') return null
-    if (s.id.endsWith('-slab')) return `perkSlab:${dims(s)}:${q(s.v?.[0] ?? 12)}`
+    if (s.id.endsWith('-slab')) return `perkSlab:${dims(s)}:${q(s.v?.[0] ?? 12)}:${fallKey(s)}`
     if (s.role === 'cardRule') return `perkRule:${q(s.w)}x${q(s.h)}`
     if (s.role === 'card') return slabKey(s)
     return null
@@ -423,7 +427,7 @@ export const perkCards: PartMaker | null = {
     const print = o.getObjectByName('foot')
     if (print) print.position.z = -(thickOf(s) / 2 - GLASS.caster) * Math.cos(turn)
     const own = o.userData.glass as THREE.MeshPhysicalMaterial
-    own.color.copy(srgb(GLASS.colour)).multiplyScalar(even(turn) * fallOf(s))
+    own.color.copy(srgb(GLASS.colour)).multiplyScalar(even(turn))
     seal.rotation.x = -turn
     seal.position.set(0, 0, -s.z0).applyAxisAngle(AXIS, -turn)
     const trough = o.getObjectByName('trough')

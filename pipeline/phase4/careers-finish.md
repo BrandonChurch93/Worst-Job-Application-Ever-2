@@ -44,7 +44,10 @@ Not done to raise the number: nothing was added that the approved image does not
 
 - R1-1 issues 4 and 14 (medal): leaves flat, scallops without a lip, dull sectors too bright: worked, crops `pair-medal.jpg` (approved, before, after) in the looks branch. Still true after: the bow's two edges are harder than the approved image's; my leaves are a little larger and darker in outline than the approved ones; the shadow's length is the kit's and stays.
 - R1-1 issues 2 and 12 (glass): heavy top bevel, hard dark line under the far edges: worked, crop `pair-glass.jpg`. Edge profiles of the first card against the approved image (luminance, 1 px steps, outward): top edge mine 236,182,151,144,136,139,162,177,184,174,166 against 226,170,151,150,135,149,182,183,175,171,166. Still true after: the approved image has a brighter thin rim along the left edge than mine.
-- Cards 1 and 2 a little bright against the approved: not worked.
+- The bow of light on the medal ended on two hard edges (about 1 and 7 o'clock): the dull side of `sheen()` now starts from the bow with no step (`c * (2 + c)`). MEASURED after: M3 0.8014, M4 4.61.
+- Cards 1 and 2 a little bright against the approved: worked (`FALL`, `fallAt`, `darker` of `perk-cards.ts`). The glass's colour falls evenly with the page's x, in the resting slab and in the turning one alike, so a card does not change as it starts to turn (looked at on the sheet of `marketing.perks`). Face colours, approved against mine, lower part of each card: 179.5,184.9,180.5 against 180.3,186.3,181.3; 165.6,172.4,167.6 against 167.7,173.7,168.9; 147.5,155.5,150.6 against 148.7,154.1,149.8 (before: 182,188,183; 174,181,176; 160,165,161).
+  What it costs: the type on darker glass has less contrast, and M3 is mostly type. MEASURED on this branch alone: M3 0.7857 (red), M4 4.61. MEASURED on a trial merge of `origin/agent/look-finish` at 979389dd (the darker ink), not committed: M3 0.8177, M4 4.62, M2 0.0001. So this commit needs the shared ink to be on main with it.
+- Tried and withdrawn: the same fall on the ticker's tape, frost and rim. The right end of the strip came to 136,140,136 against approved 132,137,131 (146,150,146 without), but M4 fell to 3.92 on `copy:marketing.ticker.4`, a run under the frost at the right end. The ticker is as it was.
 
 ## Point 4: the acting, read from the four sheets as a stranger would (draft tier, 11:30 UTC)
 
@@ -69,8 +72,8 @@ Not reproduced. MEASURED on this branch at 11:36 and 11:45 UTC: `npm run sheet -
 
 ## Looks, counted by part
 
-- `careers-page` (medal): 3 draft stills, 5 review stills.
-- `perk-cards` (glass): 4 review stills.
+- `careers-page` (medal): 3 draft stills, 6 review stills.
+- `perk-cards` (glass): 7 review stills, 1 sheet of `marketing.perks` for the turning card.
+- `ticker`: 1 review still (the fall, withdrawn).
 - `acting-marketing`: 5 sheets (the four beats, and the ticker again after the fix).
-- `ticker`: 0.
 - Not of a part: 1 compare before, 1 compare after, 1 sheet of `decision.reset`, 1 run of 33 film frames for point 5.
