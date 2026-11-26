@@ -1,35 +1,35 @@
 {
   "folder": "frame-keeper",
-  "pushed": "2026-11-26T05:52:42.864Z",
-  "commit": "58332ac3b5aaa35016374ba1fbfdb6cf9cf17580",
+  "pushed": "2026-11-26T06:06:31.107Z",
+  "commit": "73124fdfe84a9bcf2c9bdb542db72db73975ef2b",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-reply-all-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T05:48:38.346Z",
+      "caption": "Still key-table-wide-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T06:02:08.940Z",
       "by": "frame-keeper",
-      "from": "out/work/stills/key-reply-all-hd-draft.png"
+      "from": "out/work/stills/key-table-wide-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Still key-youre-fired-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T05:49:55.132Z",
+      "caption": "Still key-table-wide-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T06:06:14.398Z",
       "by": "frame-keeper",
-      "from": "out/work/stills/key-youre-fired-hd-draft.png"
+      "from": "out/work/stills/key-table-wide-hd-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Still key-tier-office-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T05:50:37.032Z",
+      "caption": "Marquee title, approved above, draft below at 73124fdf: the type's run on the marquee's own print material, dark warm letters (76,48,35) against approved (91,56,39); it was near black",
+      "time": "2026-11-26T06:06:29.657Z",
       "by": "frame-keeper",
-      "from": "out/work/stills/key-tier-office-hd-draft.png"
+      "from": "out/work/looks/files/20261126060629-cmp-title-0607.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "youre-fired, approved beside draft: the tall wall behind the firehouse is dark and even, where the brushed grain drew static across it",
-      "time": "2026-11-26T05:52:41.550Z",
+      "caption": "table-wide, approved above, draft below at 73124fdf",
+      "time": "2026-11-26T06:06:29.891Z",
       "by": "frame-keeper",
-      "from": "out/work/looks/files/20261126055241-cmp-youre-fired-0552.png"
+      "from": "out/work/looks/files/20261126060629-cmp-table-wide-0607.png"
     }
   ]
 }
