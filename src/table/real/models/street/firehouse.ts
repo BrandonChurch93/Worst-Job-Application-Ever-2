@@ -99,9 +99,9 @@ export function firehouse(b: Buckets, z: Zone, ctx: RealContext): Firehouse {
     band(g, -1.6, W + 1.6, deck - 4, top - 3, 1.6, STONE, KIND.stucco)
     quoins(b, W, course + 0.5, cornice - 3, STONE, side === 'front' ? head + 2 : course)
     upper.forEach((h, k) => {
-      windowAt(b, h, { ...up, glow: lum(), blind: [0.3, 0, 0.45, 0.2, 0.55][(n + k) % 5]! })
+      windowAt(b, h, { ...up, depth: side === 'front' ? 3.5 : 2.1, glow: lum(), blind: [0.3, 0, 0.45, 0.2, 0.55][(n + k) % 5]! })
     })
-    lower.forEach((h) => windowAt(b, h, { ...down, glow: lum() }))
+    lower.forEach((h) => windowAt(b, h, { ...down, depth: side === 'front' ? 3.5 : 2.1, glow: lum() }))
     if (side !== 'front') return
 
     // The stone frame of the mouth: two jambs and a head with round inner corners, proud of the brick and as deep as the wall. Its right jamb is the corner of the building.
