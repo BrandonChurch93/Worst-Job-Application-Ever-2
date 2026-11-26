@@ -9,24 +9,36 @@ const ease = (u: number): number => u * u * (3 - 2 * u)
 const line = (from: number, to: number, a: P, b: P): Seg => ({ from, to, at: (u) => ({ x: a.x + (b.x - a.x) * ease(u), y: a.y + (b.y - a.y) * ease(u) }) })
 const arc = (from: number, to: number, c: P, r: number, a0: number, a1: number, shape: (u: number) => number = ease): Seg => ({ from, to, at: (u) => ({ x: c.x + r * Math.cos(a0 + (a1 - a0) * shape(u)), y: c.y + r * Math.sin(a0 + (a1 - a0) * shape(u)) }) })
 
+const strides = (from: number, to: number, a: P, b: P, n: number, rest: number): Seg[] =>
+  Array.from({ length: n }, (_, i) => {
+    const at = (k: number): P => ({ x: a.x + ((b.x - a.x) * k) / n, y: a.y + ((b.y - a.y) * k) / n })
+    const t0 = from + ((to - from) * i) / n
+    const t1 = from + ((to - from) * (i + 1)) / n
+    return [line(t0, t1 - rest, at(i), at(i + 1)), line(t1 - rest, t1, at(i + 1), at(i + 1))]
+  }).flat()
+
 const field = (i: number): P => ({ x: FX + FW * 0.5, y: rowY(i) + FH / 2 })
 const dialC: P = { x: DIAL.cx, y: DIAL.cy }
 export const FILM_DIGITS = [10, 1, 5]
 const holeAt = (k: number, a = 0): P => ({ x: DIAL.cx + DIAL.ring * Math.cos(DIAL.holeAngle(k) + a), y: DIAL.cy + DIAL.ring * Math.sin(DIAL.holeAngle(k) + a) })
 const woundAt = (k: number): P => holeAt(k, DIAL.travel(k))
+// Between two numbers it rests its tip on the lower right shoulder of the cap.
+const shoulder: P = { x: DIAL.cx + 5, y: DIAL.cy + 16 }
 export const LANDING: P = { x: DIAL.cx - 600, y: DIAL.cy + 30 }
 const knob: P = { x: SLOT.leverX, y: SLOT.knobY }
 const pulled: P = { x: SLOT.leverX, y: SLOT.knobY + SLOT.pull + 6 }
-const watch: P = { x: SLOT.leverX + 6, y: SLOT.y + SLOT.h + 6 }
+const watch: P = { x: SLOT.leverX + 44, y: SLOT.y + 64 }
+const peer: P = { x: watch.x - 14, y: watch.y + 4 }
 const hub: P = { x: CRANK.hx, y: CRANK.hy }
 const grip: P = { x: CRANK.hx + CRANK.arm * Math.cos(CRANK.rest), y: CRANK.hy + CRANK.arm * Math.sin(CRANK.rest) }
 const TURNS = 3.03
 const away: P = { x: CRANK.hx + 636, y: CRANK.hy - 6 }
 const caught: P = { x: CRANK.hx + 37, y: CRANK.hy - 100 }
 export const BUTTON: P = { x: 1688, y: 1004 }
+const beside: P = { x: BUTTON.x - 190, y: BUTTON.y - 30 }
 
 const T = {
-  phone: 1.88, zero: 2.33, one: 2.99, third: 4.25,
+  phone: 1.88, zero: 2.31, one: 2.83, third: 4.25,
   birth: 8.2, lever: 9.15,
   volume: 14.0, crank: 14.45, runaway: 15.17, lean: 16.32, press: 20.3
 }
@@ -41,10 +53,14 @@ const DREAD = { phone: { start: T.phone + 0.08, go: T.phone + 0.27 }, birth: { r
 // The lever: it has learnt to be careful, so it draws the knob up a little before it pulls.
 const PULL = { there: 8.98, back: 9.03, up: 9.11, rise: 12 }
 // The coins: it hides, shakes them off where it is safe, and comes back angry. The temper is spent on the stamp: it takes the crank with a cool head.
-const TEMPER = { safe: 12.7, dust: 12.76, red: 13.36, march: 13.52, there: 13.86, stamp: T.volume - 0.1, go: T.volume + 0.22, spent: T.volume + 0.16 }
+// The reels: it leans in to watch them, small and tight. The coins: it goes flat under them where it stands, held, and then darts for cover.
+const STRUCK = { tight: T.lever + 0.9, near: 11.9, duck: 12.0, flee: 12.38 }
+const TEMPER = { safe: 12.7, dust: 12.76, fume: 13.3, red: 13.5, march: 13.52, there: 13.86, stamp: T.volume - 0.1, go: T.volume + 0.22, spent: T.volume + 0.16 }
 // The crank throws it clear. It cowers where it lands, and then goes back in to stop it.
+// Flat, it drags itself to the button and stops short of it. There it peels up and fills out, standing still, and only then steps on to press.
+const RISE = { there: 19.4, go: 20.04 }
 const THROWN = { see: T.runaway + 0.05, cower: T.runaway + 0.43, back: T.lean - 0.08 }
-const idle: P = { x: 1575, y: 395 }
+const idle: P = { x: 1575, y: 374 }
 const refuge: P = { x: 800, y: 700 }
 const hand: P = { x: HANDOFF.x, y: HANDOFF.y }
 
@@ -57,16 +73,17 @@ const path: Seg[] = [
   line(0, ARRIVE.look, hand, hand),
   line(ARRIVE.look, ARRIVE.there, hand, idle),
   line(ARRIVE.there, EASY.stroll, idle, idle),
-  line(EASY.stroll, EASY.there, idle, field(0)),
+  ...strides(EASY.stroll, EASY.there, idle, field(0), 3, 0.05),
   line(EASY.there, DREAD.phone.go, field(0), field(0)),
   line(DREAD.phone.go, T.zero - 0.04, field(0), holeAt(10)),
   line(T.zero - 0.04, T.zero, holeAt(10), holeAt(10)),
-  ...wind(T.zero, 10, 0.3),
-  line(T.zero + 0.32, T.one - 0.06, woundAt(10), holeAt(1)),
+  ...wind(T.zero, 10, 0.24),
+  line(T.zero + 0.26, T.one - 0.06, woundAt(10), holeAt(1)),
   line(T.one - 0.06, T.one, holeAt(1), holeAt(1)),
   ...wind(T.one, 1, 0.1),
-  line(T.one + 0.12, 3.5, woundAt(1), woundAt(1)),
-  line(3.5, T.third - 0.2, woundAt(1), holeAt(5)),
+  line(T.one + 0.12, T.one + 0.19, woundAt(1), shoulder),
+  line(T.one + 0.19, 3.5, shoulder, shoulder),
+  line(3.5, T.third - 0.2, shoulder, holeAt(5)),
   line(T.third - 0.2, T.third, holeAt(5), holeAt(5)),
   ...wind(T.third, 5, 0.55),
   line(T.third + 0.57, T.third + 0.9, woundAt(5), woundAt(5)),
@@ -81,9 +98,9 @@ const path: Seg[] = [
   line(T.lever, T.lever + 0.3, knob, pulled),
   line(T.lever + 0.3, T.lever + 0.45, pulled, pulled),
   line(T.lever + 0.45, T.lever + 0.9, pulled, watch),
-  line(T.lever + 0.9, 11.98, watch, { x: watch.x + 10, y: watch.y + 4 }),
-  line(11.98, 12.25, { x: watch.x + 10, y: watch.y + 4 }, { x: 1180, y: 850 }),
-  line(12.25, TEMPER.safe, { x: 1180, y: 850 }, refuge),
+  line(T.lever + 0.9, STRUCK.near, watch, peer),
+  line(STRUCK.near, STRUCK.flee, peer, peer),
+  line(STRUCK.flee, TEMPER.safe, peer, refuge),
   line(TEMPER.safe, TEMPER.march, refuge, refuge),
   line(TEMPER.march, TEMPER.there, refuge, field(2)),
   line(TEMPER.there, TEMPER.go, field(2), field(2)),
@@ -94,14 +111,15 @@ const path: Seg[] = [
   line(T.runaway + 0.36, T.lean, away, away),
   line(T.lean, T.lean + 0.3, away, caught),
   line(T.lean + 0.3, 17.7, caught, caught),
-  line(17.7, 19.9, caught, { x: BUTTON.x - 40, y: BUTTON.y - 4 }),
-  line(19.9, 20.24, { x: BUTTON.x - 40, y: BUTTON.y - 4 }, BUTTON),
+  line(17.7, RISE.there, caught, beside),
+  line(RISE.there, RISE.go, beside, beside),
+  line(RISE.go, 20.24, beside, BUTTON),
   line(20.24, 21, BUTTON, BUTTON)
 ]
 
 const presses: [number, number][] = [
   [T.phone, T.phone + 0.1],
-  [T.zero, T.zero + 0.31], [T.one, T.one + 0.11], [T.third, T.third + 0.56],
+  [T.zero, T.zero + 0.25], [T.one, T.one + 0.11], [T.third, T.third + 0.56],
   [T.birth, T.birth + 0.12],
   [T.lever, T.lever + 0.36],
   [T.volume, T.volume + 0.1],
@@ -127,7 +145,7 @@ export type Mark = 'fling' | 'strike'
 export type Marks = Partial<Record<Mark, number>>
 
 const acts: [number | Mark, Acting][] = [
-  [0, 'confident'], [T.third + 0.56, 'scared'], ['fling', 'shocked'], [6.5, 'nervous'], [9.5, 'plain'], [11.0, 'shocked'], ['strike', 'scared'], [TEMPER.red, 'angry'], [TEMPER.spent, 'plain'],
+  [0, 'plain'], [EASY.stroll, 'confident'], [T.third + 0.56, 'scared'], ['fling', 'shocked'], [6.5, 'nervous'], [9.5, 'plain'], [STRUCK.tight, 'nervous'], [11.0, 'shocked'], ['strike', 'scared'], [TEMPER.red, 'angry'], [TEMPER.spent, 'plain'],
   [THROWN.see, 'shocked'], [THROWN.back, 'angry'], [16.95, 'exhausted'], [20.28, 'plain']
 ]
 
@@ -142,6 +160,6 @@ export function actingAt(time: number, marks: Marks = {}): Acting {
 
 // One reaction for one cause, and no reaction twice: the page itself adds a recoil where the dial throws it down and a flinch under the coins.
 export const reactions: [number, Reaction][] = [
-  [EASY.tap, 'tap'], [DREAD.phone.start, 'startle'], [3.3, 'jump'], [T.third - 0.12, 'anticipate'], [6.6, 'doubleTake'], [DREAD.birth.rear, 'rear'], [TEMPER.dust, 'dustOff'],
+  [EASY.tap, 'tap'], [DREAD.phone.start, 'startle'], [3.3, 'jump'], [T.third - 0.12, 'anticipate'], [6.6, 'doubleTake'], [DREAD.birth.rear, 'rear'], [STRUCK.duck, 'duck'], [STRUCK.flee, 'dart'], [TEMPER.dust, 'dustOff'], [TEMPER.fume, 'fume'],
   [TEMPER.stamp, 'stamp'], [THROWN.cower, 'cower']
 ]

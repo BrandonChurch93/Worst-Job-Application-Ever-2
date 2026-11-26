@@ -4,19 +4,18 @@ import { BALL, table } from '../../layout'
 import { colours, groupsOf, levels } from '../lights'
 import { lit } from '../light'
 import { localBalls, whole, type Zone } from '../zone'
-import { Bag, ball, box, ease, lathe, look, mat, prism, rod, type V2 } from './g'
+import { Bag, box, ease, lathe, look, mat, rod, type V2 } from './g'
 import { drop, matsOf, part } from './mats'
 
 const PLATE = look(0xdde0e3, 0.2, 1, 0)
 const PRINT = look(0x20262a, 0.55, 0, 0.4)
 const PRINT_PALE = look(0xd9d4c4, 0.55, 0, 0.4)
-const SKIRT = look(0x2c2d30, 0.46, 0, 0.5)
-const PAPER = look(0xe6dfd0, 0.86, 0, 0)
-const KRAFT = look(0x7c4727, 0.82, 0, 0)
-const KRAFT_DARK = look(0x5e351d, 0.85, 0, 0)
-const LID = look(0xf3f0e9, 0.58, 0, 0)
+const SKIRT = look(0xd4d7da, 0.16, 1, 0)
+const PAPER = look(0xb0906e, 0.3, 1, 0)
+const KRAFT = look(0xc2a480, 0.26, 1, 0)
+const KRAFT_DARK = look(0xe2e4e6, 0.14, 1, 0)
+const LID = look(0xf4f2ec, 0.26, 0, 0.8)
 const LID_DARK = look(0x2a2826, 0.7, 0, 0)
-const SIP = look(0x5a3a26, 0.6, 0, 0.3)
 const CHROME = look(0xf4f6f8, 0.18, 1, 0)
 const SCREW = look(0xd2d5d8, 0.26, 1, 0)
 
@@ -46,9 +45,8 @@ function sleeve(): THREE.BufferGeometry {
   return g
 }
 
-function cup(b: Bag, x: number, y: number, seam: number): void {
+function cup(b: Bag, x: number, y: number): void {
   const m = mat({ x, y })
-  const turn = mat({ x, y, rz: seam })
   b.add(lathe([[97, 0.15], [97, 0.5], [91, 0.5]], 48), PRINT, m)
   b.add(lathe([[90.6, 0.15], [90.6, 0.6], [89.4, 0.6]], 48), PRINT_PALE, m)
   b.add(lathe([[89, 0], [89, 1.6], [87.6, 2.7], [78.4, 2.7], [77.6, 2.1], [76.4, 2.1], [75.6, 2.7], [70, 2.7]], 48), PLATE, m)
@@ -57,10 +55,6 @@ function cup(b: Bag, x: number, y: number, seam: number): void {
   b.add(lathe([[CUP.rimR, CUP.rimZ - 2], [CUP.rimR + 2.6, CUP.rimZ - 1.2], [CUP.rimR + 3.4, CUP.rimZ + 0.8], [CUP.rimR + 2.4, CUP.rimZ + 2.6], [CUP.rimR - 1, CUP.rimZ + 3]], 48, 80), PAPER, m)
   b.add(sleeve(), KRAFT, m)
   for (const z of [CUP.sleeve0, CUP.sleeve1]) b.add(lathe([[wallR(z) + 0.2, z - 0.3], [wallR(z) + 2.7, z - 0.3], [wallR(z) + 2.7, z + 0.3], [wallR(z) + 0.2, z + 0.3]], 48), KRAFT_DARK, m)
-  const tilt = Math.atan2(CUP.rimR - CUP.footR, CUP.rimZ - CUP.foot)
-  const mid = (CUP.sleeve0 + CUP.sleeve1) / 2
-  b.add(box(1.2, 11, CUP.sleeve1 - CUP.sleeve0 + 0.8), KRAFT_DARK, turn.clone().multiply(mat({ x: wallR(mid) + 2.5, z: mid, ry: tilt })))
-  b.add(rod([wallR(CUP.foot) + 0.3, 2.2, CUP.foot], [wallR(CUP.rimZ) + 0.3, 2.2, CUP.rimZ - 2], 0.8, 5), PAPER, turn)
   for (const side of [-1, 1]) {
     const s = mat({ x: x + side * 60.5, y: y + side * 60.5 })
     b.add(lathe([[4.6, 2.6], [4.6, 3.6], [3.6, 4.4], [1.6, 4.4]], 10), SCREW, s)
@@ -81,31 +75,25 @@ function ringGeometry(): THREE.BufferGeometry {
   return b.done()
 }
 
+// The cap: a white dome with a rolled rim.
 const lidProfile = (): V2[] => {
-  const t = CUP.top
-  const d = CUP.deck
   const r = CUP.lidR
   const z = CUP.lidZ
-  return [[r - 3, z - 1], [r - 0.8, z - 0.4], [r, z + 1.4], [r, z + 4.6], [r - 1, z + 6], [r - 3, z + 6.6], [r - 5.4, z + 6.8], [r - 6.4, z + 8], [r - 7.2, t - 3.2], [r - 8.2, t - 1.2], [r - 10, t - 0.2], [r - 12, t], [r - 18.5, t], [r - 20.4, t - 0.5], [r - 21.4, t - 2], [r - 22.6, d + 1.2], [r - 24, d], [40, d], [39.2, d + 0.9], [37.4, d + 0.9], [36.6, d], [0, d]]
+  const out: V2[] = [[r - 3, z - 1], [r - 0.8, z - 0.4], [r, z + 1.4], [r, z + 4.6], [r - 1.2, z + 6.4], [r - 4, z + 8.2]]
+  for (let i = 1; i <= 9; i++) {
+    const a = (i / 9) * (Math.PI / 2)
+    out.push([(r - 4) * Math.cos(a), z + 8.2 + (CUP.top + 5 - z - 8.2) * Math.sin(a)])
+  }
+  return out
 }
 
 function lidGeometry(): THREE.BufferGeometry {
   const b = new Bag()
-  const t = CUP.top
-  const d = CUP.deck
   b.add(lathe(lidProfile(), 64, 28), LID)
-  const hole: V2[] = []
-  for (let i = 0; i < 16; i++) {
-    const a = (i / 16) * Math.PI * 2
-    hole.push([6.2 * Math.cos(a), 2.9 * Math.sin(a)])
-  }
-  b.add(prism(hole, t - 0.4, t + 0.25, 0), SIP, mat({ x: CUP.lidR - 15.2, rz: Math.PI / 2 }).premultiply(mat({ rz: -2.2 })))
-  b.add(lathe([[1.3, d + 0.05], [1.3, d + 0.3], [0, d + 0.3]], 8), LID_DARK, mat({ x: 22 }).premultiply(mat({ rz: 0.9 })))
-  b.add(ball(2.2, 8, 5), LID, mat({ x: 46, z: d - 0.6, s: [1, 1, 0.5] }).premultiply(mat({ rz: 0.9 })))
   return b.done()
 }
 
-const WELL: [number, number, number] = [1, 0.8, 0.52]
+const WELL: [number, number, number] = [1, 0.95, 0.84]
 
 // The lamp in the cup, as it shows: through the lid, brightest in the middle, and in the gap under the lid.
 function glowGeometry(): THREE.BufferGeometry {
@@ -115,10 +103,10 @@ function glowGeometry(): THREE.BufferGeometry {
   const lid = lidProfile().map((q) => [q[0] + 0.5, q[1] + 0.6] as V2)
   const deckR = CUP.lidR - 24
   const shine = (r: number, z: number): number => {
-    if (z < CUP.lidZ + 5.4) return 0.2
-    if (z < CUP.lidZ + 8) return 0.32
-    if (r > deckR + 0.6) return z > CUP.top ? 0.24 : 0.3
-    return 0.5 + 0.7 * Math.pow(Math.max(0, 1 - r / deckR), 1.1)
+    if (z < CUP.lidZ + 5.4) return 0.4
+    if (z < CUP.lidZ + 8) return 0.5
+    if (r > deckR + 0.6) return z > CUP.top ? 0.56 : 0.52
+    return 0.56 + 0.3 * Math.pow(Math.max(0, 1 - r / deckR), 1.3)
   }
   const band = (r0: number, z0: number, v0: number, r1: number, z1: number, v1: number, tint: [number, number, number] = [1, 1, 1]): void => {
     for (let i = 0; i < n; i++) {
@@ -132,16 +120,10 @@ function glowGeometry(): THREE.BufferGeometry {
   for (let k = 1; k < lid.length; k++) {
     const a = lid[k - 1]!
     const b = lid[k]!
-    if (b[0] < 30 && a[0] > 30) {
-      for (let j = 0; j < 4; j++) {
-        const r0 = a[0] * (1 - j / 4)
-        const r1 = a[0] * (1 - (j + 1) / 4)
-        band(r0, a[1], shine(r0, a[1]), r1, b[1], shine(r1, b[1]), WELL)
-      }
-    } else band(a[0], a[1], shine(a[0], a[1]), b[0], b[1], shine(b[0], b[1]), b[0] < deckR + 0.6 ? WELL : [1, 1, 1])
+    band(a[0], a[1], shine(a[0], a[1]), b[0], b[1], shine(b[0], b[1]), b[0] < deckR + 0.6 ? WELL : [1, 1, 1])
   }
-  band(wallR(CUP.sleeve1) + 1, CUP.sleeve1 + 0.6, 0.55, wallR(CUP.lidZ) + 4, CUP.lidZ - 1, 1, [1, 0.74, 0.4])
-  band(wallR(CUP.sleeve0) + 3.2, CUP.sleeve0, 0.02, wallR(CUP.sleeve1) + 3.2, CUP.sleeve1, 0.3, [1, 0.42, 0.14])
+  band(wallR(CUP.sleeve1) + 1, CUP.sleeve1 + 0.6, 0.55, wallR(CUP.lidZ) + 4, CUP.lidZ - 1, 1, [1, 0.86, 0.62])
+  band(wallR(CUP.sleeve0) + 3.2, CUP.sleeve0, 0.02, wallR(CUP.sleeve1) + 3.2, CUP.sleeve1, 0.3, [1, 0.74, 0.46])
   const g = new THREE.BufferGeometry()
   g.setAttribute('position', new THREE.Float32BufferAttribute(p, 3))
   g.setAttribute('color', new THREE.Float32BufferAttribute(c, 3))
@@ -160,7 +142,7 @@ export const ringDown = (t: number): number => (t < 0.03 ? t / 0.03 : 1 - ease(0
 export const lidJump = (t: number): number => (t > 0.7 ? 0 : 4.5 * Math.exp(-7 * t) * Math.abs(Math.sin((Math.PI * t) / 0.14)))
 
 export const bumpers = whole('bumpers', {
-  version: 'play-bumpers-18',
+  version: 'play-bumpers-20',
   build(z) {
     const g = new THREE.Group()
     g.name = `play.bumpers.${z.id}`
@@ -171,7 +153,7 @@ export const bumpers = whole('bumpers', {
       return [p[0], p[1]] as [number, number]
     })
     const bag = new Bag()
-    at.forEach((p, i) => cup(bag, p[0], p[1], SEAMS[i % SEAMS.length]!))
+    at.forEach((p) => cup(bag, p[0], p[1]))
     g.add(part(bag.done(), m.solid, `play.bumpers.cups.${z.id}`, { cast: true }))
     const rings = new THREE.InstancedMesh(ringGeometry(), m.solid, list.length)
     rings.name = `play.bumpers.rings.${z.id}`
