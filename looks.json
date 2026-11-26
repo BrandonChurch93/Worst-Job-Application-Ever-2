@@ -1,35 +1,35 @@
 {
   "folder": "frame-fix",
-  "pushed": "2026-11-26T07:52:24.373Z",
-  "commit": "1e39deca77df6717e82dfc11a2c93b4072b7aeea",
+  "pushed": "2026-11-26T08:31:35.022Z",
+  "commit": "63f2135ac6fa3ba16fd599630ef506fff5b732f5",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key loader-page: approved on the left, this build on the right, draft tier, with crops of shape:loader.ring, shape:rail.feed.2, progressButtonCurrent, header",
-      "time": "2026-11-26T07:52:07.847Z",
+      "caption": "Still key-table-wide-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T08:28:38.914Z",
       "by": "frame-fix",
-      "from": "out/work/compare/compare-loader-page.jpg"
+      "from": "out/work/stills/key-table-wide-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "table-wide beside approved after the first pass: aluminium risers and rail ends, open shooter lane with spring, cream title, white bumper caps",
-      "time": "2026-11-26T07:52:22.810Z",
+      "caption": "Key table-wide: approved on the left, this build on the right, draft tier, with crops of shape:marquee.back, shape:model.corporate.hq, shape:bumper.office.bumper.3, shape:model.street.firehouse, shape:model.street.garage, shape:flipper.street.flipper.left, apronCard, cursor, shape:plunger.knob",
+      "time": "2026-11-26T08:31:33.059Z",
       "by": "frame-fix",
       "from": "out/work/compare/compare-table-wide.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "loader-page beside approved: plain satin ring, deep dark bowl with breathing rim, tube seated in a collar, drawn soft shadows",
-      "time": "2026-11-26T07:52:23.068Z",
+      "caption": "rail-cam beside approved after the ramp wires were made chrome: one long white line on each thin wire, hoops smooth",
+      "time": "2026-11-26T08:31:33.387Z",
       "by": "frame-fix",
-      "from": "out/work/compare/compare-loader-page.jpg"
+      "from": "out/work/compare/compare-rail-cam.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "last-save beside approved: glossy orange bats with black rubber and chrome screws, mottled rounded apron slabs",
-      "time": "2026-11-26T07:52:23.302Z",
+      "caption": "table-wide beside approved at 63f2135a: bright ramp wires, white bumper caps, cream title, collars and thin lane guides",
+      "time": "2026-11-26T08:31:33.644Z",
       "by": "frame-fix",
-      "from": "out/work/compare/compare-last-save.jpg"
+      "from": "out/work/compare/compare-table-wide.jpg"
     }
   ]
 }
