@@ -1,35 +1,35 @@
 {
   "folder": "ball-displays",
-  "pushed": "2026-11-26T05:15:35.132Z",
-  "commit": "ba5336407047588463e0b03fb1bc7c374e42497d",
+  "pushed": "2026-11-26T06:02:15.638Z",
+  "commit": "53df38a3c39f5c87ac37afeb027c0640645b55e2",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Displays: the last line enters at 35.7 s (left, 1.6 times) and runs at 38 s (right, 2.7 times), with the lamps as points in the pane",
-      "time": "2026-11-26T05:09:38.413Z",
+      "caption": "lobby-doors, the ball at draft beside the approved image, after the near lamps stopped washing its inside (53df38a3)",
+      "time": "2026-11-26T06:02:13.324Z",
       "by": "ball-displays",
-      "from": "out/work/looks/files/20261126050938-r2-scroll.jpg"
+      "from": "out/work/looks/files/20261126060213-rep-lobby.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Still key-table-wide-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T05:11:16.745Z",
+      "caption": "lobby-doors, the same crop before (328c961f): a cream haze inside the ball",
+      "time": "2026-11-26T06:02:13.585Z",
       "by": "ball-displays",
-      "from": "out/work/stills/key-table-wide-hd-draft.png"
+      "from": "out/work/looks/files/20261126060213-look-lobby-before.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Displays: the main display of table-wide with orange dots and pale cores (top) beside the approved one (middle), three times real size; bottom the Street display of the try before",
-      "time": "2026-11-26T05:15:33.807Z",
+      "caption": "sheet clear-ball at draft in the table runner's new view (53df38a3)",
+      "time": "2026-11-26T06:02:13.859Z",
       "by": "ball-displays",
-      "from": "out/work/looks/files/20261126051533-r3-main.jpg"
+      "from": "out/work/looks/files/20261126060213-r11d-sheet.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Displays: the Street display in the film at 38 s, three tones of the dots: the lamps' amber (top), a try (middle), as pushed (bottom), 2.5 times real size",
-      "time": "2026-11-26T05:15:34.032Z",
+      "caption": "tier-office at draft beside the approved image (53df38a3)",
+      "time": "2026-11-26T06:02:14.190Z",
       "by": "ball-displays",
-      "from": "out/work/looks/files/20261126051534-r3-tier.jpg"
+      "from": "out/work/looks/files/20261126060214-rep-office.jpg"
     }
   ]
 }
