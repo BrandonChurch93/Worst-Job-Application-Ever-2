@@ -24,3 +24,19 @@
 
 - `RISER` in `loader.ts`: the cap's sizes in px.
 - `CARD_R`, `RISE`, `RISER_S` in `src/pages/step3/index.ts`.
+
+## Measured (26 Nov, hd, draft)
+
+- `npm run still -- --key <k> --format hd --tier draft --force` for `step1-fire`, `table-wide`, `boss-fight`, `loader-page`, then `cmp` against the ones made from dc83c2d0: all four byte equal, on the last code.
+- Film frame `npm run still -- --page pinball --beat pinball.drain --at 0.22 --format hd --tier draft --force`, before (a worktree of origin/main) against after: 61101 pixels differ, all in rows 951 to 1079 and x 264 to 1138 (the page under the apron). Rows 0 to 950, the apron and its drain slot, differ in 0 pixels.
+- `npm run determinism`: pass, 12 pictures identical across two fresh loads and two orders. `npm run bots`: all clear, 37 of 37 gags on every seed.
+- `npm test` on the merged tree c8f40b78: 141 files, 1768 tests passed (dc83c2d0: 140 and 1764). `npx tsc --noEmit -p .` clean.
+- The ride in the film, frames 6306 to 6331 looked at in crops at real size: the ball with the arrow in its middle rides inside the glass from the cap through the bend into the port, and the shells part in the port by frame 6340. In the film the camera comes down to the cap when the ball is already leaving it, so the moment the ball comes out of the cap is not in the film's picture.
+
+## Not done, for the next pass
+
+- The rise of the card is in the code (height 3 to 12 px over 0.4 s) but six film frames in a row (6390 to 6404) show the card standing whole in the first frame it is seen: a growth of 9 px in height is not read as a rise from above. It needs a rise that is seen (a short travel or a start under the page), and frames to prove it.
+- The ride on the live site's path was not pictured. The page draws the ball by the same code in both modes; no picture of the live site was made.
+- The first screen's shadow wedge at the lower edge (decision 8).
+- The latch beat of the half shells (the Builder's second item of 20:24Z) did not fit before the limit: not started.
+- G15 was not run by me; the tube brings no texture and no render target.
