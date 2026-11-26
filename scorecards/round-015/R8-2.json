@@ -1,0 +1,23 @@
+{
+ "critic": "R8",
+ "score": 8,
+ "pass": false,
+ "model": "gpt_6_2_sol",
+ "set": "B: the last two keys and the native-size crops of the page's text and controls",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-B-01.png",
+   "where": "the silver numbered discs in the progress rail",
+   "what": "The strong bevels and shadows make the inactive markers look like enabled push buttons, even though the crop gives no cue about whether steps can be revisited.",
+   "fix": "Keep the mechanical rail, but make unavailable markers flatter and distinguish completed steps from future ones. Reserve the raised button treatment for markers the user can actually press."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03.png",
+   "where": "the Background Check sign behind the upper-right spiral",
+   "what": "The spiral and its upright supports cover most of the second line, so the label is harder to read than the other named stations in the same view.",
+   "fix": "Mount the sign on the front of the assembly or lift it above the rails so both lines are readable from this camera angle."
+  }
+ ]
+}

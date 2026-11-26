@@ -1,0 +1,114 @@
+{
+ "critic": "R1",
+ "score": 3,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "C: tier 2 from above and Reply All beside the approved images, whole and in crops",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-C-01-b.png",
+   "where": "whole frame, camera",
+   "what": "-a is a low oblique three-quarter view looking up the table, with parts standing up off the page and receding in perspective. -b is a flat top-down orthographic plan, so every part reads as a footprint with no height and the page division (cross of pale stripes, lane on the right) reads as a diagram",
+   "fix": "tilt the camera down to the -a oblique angle, about 35-45 degrees from the page, with perspective foreshortening toward the top so the bumpers, machine, tray and slingshots show their sides"
+  },
+  {
+   "severity": "severe",
+   "file": "set-C-01-b.png",
+   "where": "whole frame, light and mood",
+   "what": "-a is warm, low-key and moody: amber practical glows, deep falloff into dark corners, a dark surround. -b is evenly lit, cool and bright everywhere, like a clean CG render, with no falloff and no warm cast",
+   "fix": "drop the overall exposure, warm the key light, let the edges and top of the frame fall off into shadow, and let the lamp inserts and bumper bases carry the warm glow"
+  },
+  {
+   "severity": "severe",
+   "file": "set-C-01-b.png",
+   "where": "frame around the playfield",
+   "what": "-a frames the page with wide brushed-steel rails and a chrome lane curving down the right side. -b uses navy-blue painted walls, a separate dark side panel and a white light strip, so the cabinet material and colour are wrong",
+   "fix": "replace the navy walls with wide brushed-steel side rails and a curved chrome right-hand lane that carries the arrow lamps, as in -a"
+  },
+  {
+   "severity": "severe",
+   "file": "set-C-01-b.png / set-C-03-b.png",
+   "where": "the three bumpers",
+   "what": "-a bumpers are glossy warm-white takeaway-cup lids on copper cup bodies that glow from a lit gap, sitting in steel rings. -b lids are flat grey-white discs (01) or grey translucent lids on dull brown bodies (03) with big chrome skirts and no warm glow",
+   "fix": "make the lids warm white, opaque plastic with a raised rim and a sip slot, put them on burnished copper bodies with a warm lit gap under the lid, and reduce the chrome base to a thin steel ring with a black rubber band"
+  },
+  {
+   "severity": "major",
+   "file": "set-C-01-b.png / set-C-03-b.png",
+   "where": "the slingshots",
+   "what": "in -a each slingshot is a red desk stapler on a chrome frame, rising off the page with a white-lit base. In -b it is a flat red bar inside a steel triangle",
+   "fix": "build the slingshot as a glossy red stapler body with a chrome hinge and visible rivets, angled up off the page on a chrome frame with a lit base"
+  },
+  {
+   "severity": "major",
+   "file": "set-C-01-b.png / set-C-03-b.png",
+   "where": "the coffee machine, upper right",
+   "what": "-a has a bronze and brushed-metal espresso machine with small lit displays, two spouts and cups under them. -b has a brown box with dials and a grille, and a black cup-hole socket beside it",
+   "fix": "replace it with a metallic bronze/steel espresso machine, a front panel of small green/red displays, a cup under each spout, and the cream 'Coffee' plate on top"
+  },
+  {
+   "severity": "major",
+   "file": "set-C-01-b.png / set-C-03-b.png",
+   "where": "the tray of letters",
+   "what": "-a is a pale concrete-like tray holding flat, neatly fanned white envelopes, with a dark slot at its front. -b is a small tan box of crumpled paper",
+   "fix": "use a matte pale-grey tray filled with flat overlapping envelopes, with a dark rectangular opening in its front face, at the -a scale relative to the machine"
+  },
+  {
+   "severity": "major",
+   "file": "set-C-01-b.png / set-C-03-b.png",
+   "where": "the cubicles, upper left",
+   "what": "-a shows six open cubicles with low pale walls standing straight on the page, plus a column of five lit white blocks to the right. -b puts the cubicles inside a dark wooden crate frame with a rail over it and leaves out the lit blocks",
+   "fix": "remove the crate, let the six cubicles stand open on the page with pale grey-beige partition walls, and add the vertical row of five glowing white blocks beside them"
+  },
+  {
+   "severity": "major",
+   "file": "set-C-01-b.png / set-C-03-b.png",
+   "where": "the lift tube on the left",
+   "what": "in -a the tube is clear glass with steel collars and a clear/steel elbow at the top, and the orange part is a small plastic flap on its side. In -b the elbow is solid orange plastic, the tube is very wide with many ring bands, and a large orange box stands beside it",
+   "fix": "make the elbow clear glass with a steel collar, slim the tube to the -a proportion with a few steel collars, and keep orange to the small door flap"
+  },
+  {
+   "severity": "major",
+   "file": "set-C-03-b.png",
+   "where": "the three steel balls",
+   "what": "in -a they are bright polished chrome mirrors that reflect the warm room. In -b they are dark gunmetal spheres with a blue rim tint, reading as black glass",
+   "fix": "raise their reflectance and brightness to mirror chrome, show the warm surroundings in them, and remove the blue tint"
+  },
+  {
+   "severity": "major",
+   "file": "set-C-03-b.png",
+   "where": "whole frame, camera and light",
+   "what": "the -b angle is steeper and higher than -a, so the table looks shallower and the parts lose height. The light is cooler and flatter with blue walls, and -a's warm amber key and dark vignette are missing",
+   "fix": "lower the camera to the -a oblique angle, warm and darken the light, and add falloff at the frame edges"
+  },
+  {
+   "severity": "major",
+   "file": "set-C-01-b.png / set-C-03-b.png",
+   "where": "the flippers",
+   "what": "-a flippers are flat matte-orange bars with a black rubber band round the edge, two steel pivot pins and a short post under them. -b flippers are glossy, rounded orange capsules with one pin",
+   "fix": "flatten the profile, take the finish to satin orange, add the black band round the edge and a second steel pin"
+  },
+  {
+   "severity": "major",
+   "file": "set-C-01-b.png / set-C-03-b.png",
+   "where": "the page surface",
+   "what": "-a page is worn, mottled teal felt or linoleum with soft grain, pale beige crossing stripes and thin brass inlay lines. -b is a cleaner, more uniform teal carpet with a fine even speckle, more saturated, and the page reads flatter",
+   "fix": "add low-frequency mottling and wear, desaturate the teal slightly toward grey-green, and give the beige stripes a pale stone texture"
+  },
+  {
+   "severity": "minor",
+   "file": "set-C-01-b.png / set-C-03-b.png",
+   "where": "the arrow ball",
+   "what": "in -a the ball is clear glass with a soft warm caustic and a crisp white arrow with a dark edge. In -b the glass is greyer and darker, and in 01-b the arrow is hard to read",
+   "fix": "clear up the glass, add a warm caustic on the page under it, and keep the arrow white with a clean dark outline"
+  },
+  {
+   "severity": "minor",
+   "file": "set-C-01-b.png / set-C-03-b.png",
+   "where": "floor lamp inserts",
+   "what": "-a inserts sit flush in brass rings, with a soft warm glow and a fine icon. -b inserts are larger and more saturated, and glow more like screens than lit plastic",
+   "fix": "lower their saturation and emission, add a thin brass bezel, and let the glow spill softly onto the page"
+  }
+ ]
+}

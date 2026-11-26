@@ -1,0 +1,30 @@
+{
+ "critic": "R4",
+ "score": 7,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "A: motion, one sheet of frames spread across each of the page's ten beats",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-06.png",
+   "where": "2:26.40–2:26.63, under the red stamp’s lower-right edge",
+   "what": "The stamp comes down fast and the paper edge nudges, but the arrow mostly disappears behind the stamp and then reappears. The crop ends while the stamp still covers the impact point; the rejection mark is only readable on the wider beat sheet. Without the caption, this reads more readily as the stamp covering the arrow than striking the paper.",
+   "fix": "Show the whole contact area and keep the consecutive frames running through lift-off. Make the paper edge and arrow react on the same frame as the strike, then hold the exposed ink mark long enough to read it."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "2:23.77–2:23.93, the ‘Position Filled’ notice and the page below its lower-right corner",
+   "what": "The note’s shadow tightens, but the note continues sliding and straightening after its edge appears to meet the page. The crop shows no clear response from the surface beneath it, so the hit reads as a floating card easing into place.",
+   "fix": "Let one corner touch first, make the remaining edge slap flat in the next frame or two, and show a small response in the receiving page before holding the note still."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-08.png",
+   "where": "2:31.47–2:31.57, ‘Perks &amp; Benefits’ and the orange button rim as the slab seats",
+   "what": "The moving label and button lettering break into jagged, doubled edges before becoming sharp at the stop. The new page holds cleanly afterward, but the fine detail is unstable during the landing.",
+   "fix": "Improve temporal antialiasing and texture filtering through the foreshortened frames; check the label and button rim at delivery size during the turn."
+  }
+ ]
+}

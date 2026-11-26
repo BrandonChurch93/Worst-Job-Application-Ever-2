@@ -1,0 +1,191 @@
+{
+ "critic": "R1",
+ "score": 4,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "B: tier 3 from above, the lobby doors and the table map beside the approved images, whole and in crops",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-B-01-b.png",
+   "where": "the corporate playfield framing, especially the tower and surrounding props",
+   "what": "The near-vertical view turns the HQ into a roof plan and the scene into a flat diagram. The target sees the illuminated front and side glazing, the front of the beach case, and the raised routes in a shallow oblique view.",
+   "fix": "Bring the tier camera down to the target's centered oblique view, with the HQ facade visible above the carpet and enough angle to show the depth of the other parts without changing configured part sizes."
+  },
+  {
+   "severity": "severe",
+   "file": "set-B-03-b.png",
+   "where": "the lobby close-up, whole frame",
+   "what": "The camera looks down into a small central facade surrounded by exposed cabinet, ramp, table and slingshot. The target is an upward-looking carpet-level view in which the tower and its entrance dominate, with a slight diagonal perspective and dark peripheral background.",
+   "fix": "Lower and bring the close-up camera in, look up toward the doorway, and turn it slightly off-axis so the facade fills the backdrop; leave the revolving door on the carpet."
+  },
+  {
+   "severity": "severe",
+   "file": "set-B-01-b.png",
+   "where": "the navy playfield and overall lighting",
+   "what": "Flat blue-black speckle, conspicuous extra gold grids and fan lines, and isolated white glows replace the deep glossy blue surface, restrained thin gold inlay, and connected warm reflections of the target. Hardware reads as outlined components rather than pieces grounded by contact shadows.",
+   "fix": "Use a deeper, smoother satin-polished blue with sparse fine scratches, simplify gold linework to the target's borders and fans, and give lamps and hardware warmer local reflection pools, varied highlight falloff and tighter contact shadows."
+  },
+  {
+   "severity": "severe",
+   "file": "set-B-01-b.png",
+   "where": "boardroom upper left and curved ladder upper right",
+   "what": "The boardroom is turned ninety degrees into a vertical strip against the lift, and the ladder runs almost horizontally in front of the beach case and over the right slingshot. The target has a transverse boardroom with a row beneath it and a clear diagonal ladder approach that curves down the right side with neither object obscured.",
+   "fix": "Turn the boardroom across the upper-left bay and put the ladder entry on an inward diagonal, sweeping the return to the right edge while keeping the beach case and slingshot clear."
+  },
+  {
+   "severity": "severe",
+   "file": "set-B-03-b.png",
+   "where": "the central HQ nameplate and illuminated lobby frontage",
+   "what": "A pale silver plaque with printed black sans-serif lettering and a plain gold portal look like signage on a render; the target has restrained raised serif lettering in dark warm metal on blue brushed steel and a layered, warmly glowing entrance inside the glazing.",
+   "fix": "Give the plaque a blue-gray brushed face and dimensional warm-gray serif letters, then restore layered brass trim, brighter warm backlighting and the reflected lobby glow without changing the door state."
+  },
+  {
+   "severity": "severe",
+   "file": "set-B-03-b.png",
+   "where": "the cursor marble over the carpet",
+   "what": "The cursor points up-right and has a hard white, sharply beveled face and very heavy black flank. Smooth concentric highlight bands on the clear sphere and the weak projected shadow make it look suspended, unlike the rounded silver-gray arrow facing up-left and the irregular, lit glass of the target.",
+   "fix": "Match the visible arrow angle, round the corners and bevel, thin and soften the dark edge, and replace the uniform rings with irregular glass highlights and refraction, a grounded shadow and a small bright caustic."
+  },
+  {
+   "severity": "severe",
+   "file": "set-B-05-b.png",
+   "where": "upper third, corporate-tier boardroom and ladder",
+   "what": "The boardroom runs along the left wall rather than across the bay, and the ladder lies across the retirement case and slingshot instead of leading diagonally up to a curve down the right side. The top tier loses the target's clear left-center-right divisions.",
+   "fix": "Restore the transverse boardroom and separate the right-hand ladder from the beach case and slingshot with the diagonal inward entry and right-edge return."
+  },
+  {
+   "severity": "severe",
+   "file": "set-B-05-b.png",
+   "where": "lower third, building cluster and ramp on both shoulders",
+   "what": "The Student Loans facade is tucked beneath the left edge of the firing building rather than standing separately below it, and the spiral reads from overhead as a wheel intruding over the right slingshot. The transverse crossover has lost the target's defined approach between the two building clusters.",
+   "fix": "Separate the left buildings vertically so each frontage and entry reads, run the crossover toward the outside-right spiral, and adjust the view/route so the spiral is clear of the slingshot and its stacked turns are visible."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02-b.png",
+   "where": "the tower crop",
+   "what": "The roof grid, fan housings and uniform rows of emissive squares mostly replace the target's chamfered dark steel crown and dense cool glass facade with varied warm room lights. The visible sign is black block lettering on pale stock rather than warm serif lettering on dark metal.",
+   "fix": "Keep the intended standing plaque but give it the darker metal and warm serif treatment; show the chamfered crown edge and glass frontage, with slim metal mullions and irregular lit interiors."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02-b.png",
+   "where": "the beach crop",
+   "what": "The scene looks like flat bands of sand and turquoise with a top-view leafy shape and striped rectangle. The target sees a beach horizon, upright palm and chair in perspective through a substantial beveled glass box with warmer metal corners.",
+   "fix": "Aim the view into the case, stage a slanted palm trunk, chair and softly graduated distant water and sky, and add beveled clear faces, warm metal seams and subtle glass reflection. Use light serif lettering on the brass sign instead of bold black sans serif."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02-b.png",
+   "where": "the long-table crop",
+   "what": "The table reads as an amber tray of round marks with mostly wireframe seats and edge-on rectangles; the dark walnut boardroom, padded leather chairs, row of five evenly spaced pale inset tiles and separated loose notes no longer read.",
+   "fix": "Use a continuous dark wood-grain top and solid padded dark seats along both long edges. Reinstate the pale inset row across the front and distribute the notes separately along the near side."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02-b.png",
+   "where": "the revolving-door crop",
+   "what": "From this view the door comes across as a gold disc with white radial bars, losing the clear broad glass leaves and stepped, shaded brass hub. The red runner also glows evenly rather than picking up directional doorstep light.",
+   "fix": "Show the broad clear faces with fine glass edges, give the brass hub layered reflective turns and contact shadow, and bring the warm spill out from the threshold onto a darker, fine-fiber runner."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02-b.png",
+   "where": "the ladder crop",
+   "what": "The ladder is a broad-looking hairpin of pale planar rails, with bars that converge awkwardly near the turn and little sense of raised depth. The target reads as parallel polished round rails, regular visible rungs, an elevated return and a short brushed lead-in plate.",
+   "fix": "Use round metallic sections with bright/dark reflection pairs, show the underside and supports with contact shadows, space the crossbars through the curve, and finish the lead-in in brushed metal."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02-b.png",
+   "where": "the flipper crop",
+   "what": "The orange is more ochre and reflective only in a small highlight; the dark continuous rubber layer with thin orange lower return and clearly dished metal pivot are hard to see.",
+   "fix": "Move the top toward richer orange lacquer, put a long soft highlight on its bevel, expose/shade the dark rubber side and lower orange layer, and make the pivot read as a bright recessed screw."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02-b.png",
+   "where": "the slingshot crop and nearby stand-up post",
+   "what": "The pale top is made of dark branching cracks, with a luminous gold edge and little visible chrome sidewall; the target has soft marble veins, clean screw seats and a substantial rounded mirrored underside. The neighboring post also lacks its ivory collar and metallic definition.",
+   "fix": "Soften the veins into the pale stone, recover the rounded chrome side and restrained warm bounce below it, refine the seats and screw heads, and give the post distinct ivory and polished metal layers."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02-b.png",
+   "where": "the inset lamp crop and adjacent round lamps",
+   "what": "The blue face has a broad uniform electric-blue fill and faint icon strokes, while the nearby white hourglass is washed out. The target reads as a slightly recessed lens with deeper outlines, crisp dark icon work and a tight reflected light edge.",
+   "fix": "Darken and define the sockets and rim rings, use a pale-center lens with controlled edge glow, and increase icon contrast so the magnifier, hourglass and clipboard remain readable without changing their settled designs."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02-b.png",
+   "where": "the lift elbow crop and surrounding lanes",
+   "what": "The open elbow is dull tan and the tube reads as dark empty space with straight gray lines and clear bands. Nearby route lamps often read as white dashes with no legible arrow, unlike the target's glossy warm orange housing, contrasted glass and metal collars, and molded lit inserts.",
+   "fix": "Keep the elbow open, but use glossy rich orange enamel, cylindrical light streaks and polished or brushed collars with contact edges. Make the direction glyphs legible within warm inset lenses while retaining the assigned direction."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-04-b.png",
+   "where": "doorway crop and surrounding glazing",
+   "what": "The portal has broad, featureless gold faces and flat tan glazing, with uniform diagonal reflection strips. The target's warm local illumination shows a real threshold, stepped inner jambs and thin glass reflections.",
+   "fix": "Build up the warmer interior light, sharpen the dark seams between successive brass sections, and replace the large flat strips with reflected and refracted light tied to the framing. Preserve the chosen door positions."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-04-b.png",
+   "where": "revolving-door post and leaves",
+   "what": "The shaft has a machined bright-yellow cap with protruding square lugs, while the leaves have thick cyan borders. The target shows dark burnished brass with rounded collars and thin glass leaves whose edges pick up the warm doorway.",
+   "fix": "Keep the revolving door on the runner, but round and darken the brass fittings, model slender metal supports and give the glass finer clear bevels with tighter warm reflections."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-04-b.png",
+   "where": "globe lamp crop and reflected floor",
+   "what": "The lamp has a visible tall gold stem and plate with a large hard white streak beneath. The target globe sits low in a layered reflective cup and gives a more diffuse amber-white reflection into the glossy blue floor.",
+   "fix": "Reproduce the cup and its stepped reflective mount within the configured envelope, tame the hard white streak, and concentrate the warm spill and contact shadow at the base."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-04-b.png",
+   "where": "tower facade crop above the entrance",
+   "what": "The glazing is flat teal with dense regular ceiling-light strips and repetitive office boxes. The target has dark, deeper layered window bays, slimmer reflective metal mullions, irregular points of light and soft blue reflected flare.",
+   "fix": "Use more varied interior lighting and depth, cooler dark glass with localized warm reflections, metallic mullion glints, and less uniformly crisp distant detail."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-04-b.png",
+   "where": "carpet crop",
+   "what": "The runner is a saturated mottled red with relatively little visible pile and weak local shadow. The target has fine red-brown fiber grain, a narrow woven gold edge, and warm doorway light interrupted by a long soft cast shadow and a small hot spot.",
+   "fix": "Use fine directional pile and understated woven gold trim, warm the near-door section and deepen the foreground, and shape the local shadow and caustic from the marble at its actual take position."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-05-b.png",
+   "where": "middle third, office and coffee corner",
+   "what": "The cubicle grid loses the front-facing desk rows and the bordering row of pale inserts. The envelope bin is pulled tight against the coffee machine, mostly behind its dark cup, rather than reading as its own station lower in the right bay.",
+   "fix": "Give the cubicle aisles visible frontage and line the inside edge with the pale inserts. Disentangle the bin and machine and place the bin as the separate lower-right station."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-05-b.png",
+   "where": "middle third, aisles and scattered paper",
+   "what": "A prominent wall-to-wall cross-aisle splits the middle tier and loose paper clusters at the lower flipper pockets; the target puts the strongest pale lane on the central stem and most of the loose objects nearer the cubicles and coffee stations.",
+   "fix": "Subdue the full-width horizontal stripe outside the coffee-cup cluster, keep the center stem clear, and move the scattered paper and desk items into the upper side bays."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-05-b.png",
+   "where": "lower third, props and drains beneath the crossover",
+   "what": "Both groups of tiny houses sit below the flippers instead of flanking the shoulder-level approach, and the basement opening sits above-left of its sign instead of beside the basement at the bottom. The road also loses the paired lateral approaches that subdivide the field.",
+   "fix": "Place the house clusters on the left and right shoulders above the slingshots, move the basement opening next to the facade at the lower left, and restore discreet lateral road approaches meeting the center lane."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-05-b.png",
+   "where": "tier seams and continuous lift/return paths",
+   "what": "Broad straight dividers, repeated horizontal fields of lamps and breaks in the side paths make three separate tables. The reference keeps a joined machine through a concentrated central chute at each seam and continuous lift and return lanes at the edges.",
+   "fix": "Retain the side lanes through both tiers and keep the horizontal framing subordinate to the central drop mouths; make the side-mounted transitions read as one continuous route without closing the settled open sections."
+  }
+ ]
+}

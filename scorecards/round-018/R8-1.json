@@ -1,0 +1,30 @@
+{
+ "critic": "R8",
+ "score": 8,
+ "pass": true,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "A: the page at rest, its result, and eight of the keys, as a web page",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "the three perk cards, below their divider lines; same treatment in set-A-02.png",
+   "what": "At rest the visible rules carve out a large blank zone, so otherwise finished cards look like they are still waiting for content. The punchlines in set-A-05.png explain the space, but nothing in the resting layout does.",
+   "fix": "Make the reserved area look deliberately closed with a small labeled disclosure, or show the punchlines by default when motion is unavailable."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "the avatar and name area at the top of each testimonial card",
+   "what": "The identical gray square and two bars read as a loading skeleton before they read as intentional anonymity, weakening the illusion of a finished website.",
+   "fix": "Use an intentional redaction treatment such as a stamped NAME WITHHELD and a distinct anonymous avatar while preserving the card grid."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "the rightmost column next to Remote Friendly and Amazing Culture",
+   "what": "The vertically centered Still interested? paragraph sits without a heading or action in what otherwise reads as the slot for a third card.",
+   "fix": "Either treat the paragraph as the section's conclusion below the grid, or align it to the cards and give it a useful next action."
+  }
+ ]
+}

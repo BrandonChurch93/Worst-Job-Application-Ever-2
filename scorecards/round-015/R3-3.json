@@ -1,0 +1,72 @@
+{
+ "critic": "R3",
+ "score": 7,
+ "pass": false,
+ "model": "kimi_k3",
+ "set": "C: surface and detail, native-size crops of the ten keys",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-C-09.png",
+   "where": "the arrow crop, whole left panel",
+   "what": "the arrow is a flat white shape with a black outline, no thickness, no bevel and no gloss; even inside a well-rendered clear ball it reads as a 2D paper insert, not a solid arrow",
+   "fix": "give the arrow real depth: extrude the shape, bevel the edges, add a glossy clear coat and a side wall visible at this angle so it reads as a solid object inside the ball"
+  },
+  {
+   "severity": "major",
+   "file": "set-C-04.png",
+   "where": "the arrow crop, upper right",
+   "what": "same flat arrow: it fills the bubble as a single flat white plane with a printed outline, no thickness catching the light",
+   "fix": "model the arrow as a solid with edge highlights and a small shadow inside the ball that separates from it as it lifts"
+  },
+  {
+   "severity": "major",
+   "file": "set-C-01.png",
+   "where": "the arrow crop, bottom middle, and the ring crop",
+   "what": "the arrow lies on the panel like a sticker, flat white with an outline, and in the ring crop it is visibly warped where it crosses the glass ridge, with no thickness and almost no shadow",
+   "fix": "raise the arrow into a 3D piece with a bevel and a contact shadow; let refraction, not a bent decal, explain any distortion under glass"
+  },
+  {
+   "severity": "minor",
+   "file": "set-C-03.png",
+   "where": "the long table crop, lower right of the tabletop",
+   "what": "a yellow checkered cloth piece floats in mid-air below the table edge with no attachment, and the cups and small rings on the tabletop sit at slightly odd scale",
+   "fix": "remove the floating scrap or hang it over the edge with contact; scale the tableware to match real tableware"
+  },
+  {
+   "severity": "minor",
+   "file": "set-C-06.png",
+   "where": "a steel ball crop, upper left",
+   "what": "the balls read as dark smoky marbles with a painted highlight, not chrome steel; there is almost no environment in their reflection",
+   "fix": "mirror the surroundings in the ball surface so it reads as polished steel"
+  },
+  {
+   "severity": "minor",
+   "file": "set-C-02.png",
+   "where": "the plunger crop, right panel",
+   "what": "the whole crop is a blur of streaks; the plunger and its gold knob have no readable edge at native size",
+   "fix": "reduce the depth of field at this distance so the plunger rod, spring and knob keep a readable edge"
+  },
+  {
+   "severity": "minor",
+   "file": "set-C-09.png",
+   "where": "the bank crop, middle panel",
+   "what": "the panel is one heavy motion blur with no sharp element, which reads as a smear rather than a surface at native size",
+   "fix": "keep at least the lamppost or lamp housing sharp so the blur reads as deliberate depth of field"
+  },
+  {
+   "severity": "minor",
+   "file": "set-C-05.png",
+   "where": "a flipper crop, right of the orange flipper",
+   "what": "small white crumbs and a hanging paper scrap float beside the flipper with no support, reading as stray debris on the render, not as themed parts",
+   "fix": "remove the debris or seat the scraps on the floor with contact shadows"
+  },
+  {
+   "severity": "minor",
+   "file": "set-C-02.png",
+   "where": "the tower crop, small sign on the building",
+   "what": "the apartment nameplate print is a soft grey smudge; it fails the smallest-text test at native size",
+   "fix": "sharpen the plate letterforms or drop the micro print for a plain plate"
+  }
+ ]
+}

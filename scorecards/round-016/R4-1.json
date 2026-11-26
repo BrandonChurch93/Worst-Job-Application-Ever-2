@@ -1,0 +1,65 @@
+{
+ "critic": "R4",
+ "score": 5,
+ "pass": false,
+ "model": "kimi_k3",
+ "set": "A: motion, one sheet of frames spread across each of the page's ten beats",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-A-09.png",
+   "where": "frame 1:07.03, middle of the page turn",
+   "what": "as the page flips, it reveals a glowing orange and purple audio-waveform landscape instead of the edge or back of the slab; at normal speed this flashes as an unrelated scene cut inside a physical turn, and you cannot tell what you are looking at without knowing it is meant to be a page",
+   "fix": "render the flip's interstitial as the physical slab (its thin edge and mottled back, dim and matte); if a reveal of the next page's glow is wanted, keep it framed by the slab's underside and edge so it reads as the back of the page, not a cut to another scene"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "frame 0:46.00, first frame of beat 1",
+   "what": "the page is seen steeply foreshortened from an oblique angle, then snaps to a dead-flat view within 0.17s; the camera is at an angle over the page (against the straight-in, straight-out rule) and the snap has no ease or weight",
+   "fix": "start the beat flat, or open on a slow, eased dolly that settles to the flat view over at least half a second"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "the slot lever, all twelve frames (0:57.80 to 0:58.17)",
+   "what": "contact is one-sided: the cursor reaches the orange lever knob and coins pour out, but the lever never rotates down or springs back in any frame; a hit that makes the machine pay without the lever moving reads as broken",
+   "fix": "rotate the lever smoothly down through the pull across a few consecutive frames, hold the digits flipping while it is down, then let it spring back and settle"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-08.png",
+   "where": "the cursor, most frames (notably 1:02.63 to 1:02.90)",
+   "what": "the cursor smears into a feathered double-image with a red-orange trailing fringe while cranking; at native size the pointer is visibly unstable and chromatically ghosted",
+   "fix": "keep the cursor a solid white arrow at all times; if motion blur is wanted, use a mild single-image blur with no color fringe and no duplicated shape"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "crank and VU panel, 1:03.27 to 1:03.80",
+   "what": "the whole crank and VU assembly pops away within two frames of the 100% pay-off rather than retreating mechanically; a built machine vanishes like a UI layer, killing its mass at the exact moment the viewer is watching it",
+   "fix": "slide or fold the assembly back into the page over at least a third of a second with a slight overshoot, so it leaves the way a heavy part would"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-09.png",
+   "where": "frame 1:06.67, just under the Volume row",
+   "what": "a grey brush-stroke smear appears across the dropdown for one frame and is gone again; a flicker artifact at native size",
+   "fix": "regenerate or patch that frame so the row matches its neighbors"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-06.png",
+   "where": "dial and cursor, 0:51.40 through 0:51.77",
+   "what": "the dial's spin is soft and drifty (continuous feathered blur with no ratchet click or spring-back cadence a rotary dial has), and the cursor inflates into an oversized feathered paper-plane arrow that dwarfs it elsewhere on the page",
+   "fix": "give the dial a stepped, click-driven spin that snaps back under the finger, and keep the drag cursor the same size and hardness as elsewhere"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-02.png",
+   "where": "Audio volume field, frames 0:53.43 and 0:53.97",
+   "what": "small duplicated checkmark-like cursor ghosts linger over the field in two frames; they read as leftover render ghosts",
+   "fix": "remove the ghost glyphs so only one clean cursor exists per frame"
+  }
+ ]
+}

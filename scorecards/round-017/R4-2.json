@@ -1,0 +1,51 @@
+{
+ "critic": "R4",
+ "score": 6,
+ "pass": false,
+ "model": "gpt_6_2_sol",
+ "set": "B: the way in, the way out, the last two hits, the flipper save, the rail ride and the page turn that ends the page",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-B-02.png",
+   "where": "the spark on the green plate at right, 2:01.40–2:01.77",
+   "what": "The flare is already live in the first frame and stays on the same point throughout. The plate and its linkage do not visibly react as the light reaches them, so this reads as a running discharge rather than a distinct hit.",
+   "fix": "Include the frame before contact, peak the flare on contact, and give the plate and linkage a short kick and damped return."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03.png",
+   "where": "the final light pulse and the green plate, 2:01.80–2:01.97",
+   "what": "The bright pulse disappears into the sustained flare, which then fades; there is no clear change in the plate or nearby page to identify the hit frame.",
+   "fix": "Make the last arrival legible with a compact contact flash and a small mechanical response before the light tails off."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01.png",
+   "where": "the lower red Field cannot be blank plaque, 2:00.13–2:00.37",
+   "what": "The plaque slides diagonally at a nearly even rate and comes to rest on an unmarked patch. A faint puff follows, but nothing visibly takes the load, so the stop reads like the end of an animation rather than a landing.",
+   "fix": "Give the plaque a short acceleration into a visible stop or seating point, then kick dust or a tight shadow change from that point on the exact arrest frame."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-07.png",
+   "where": "the lower Invalid input plaque, 2:04.50–2:04.73",
+   "what": "The plaque stops in open space while the light trail runs elsewhere. The arrow barely moves and there is no visible counterpart at the stopping point, so the hit cannot be identified without the caption.",
+   "fix": "Keep the actual contact pair in frame and show the plaque's stop and the receiving surface's reaction together."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-06.png",
+   "where": "Required field beside the green form panel, around 2:04.10",
+   "what": "The plaque stops just beside the panel's lower corner, but the panel stays rigid and the small haze does not identify the point of contact. It is unclear whether the plaque hit the panel or simply stopped next to it.",
+   "fix": "Show the plaque close the gap and make the panel tick in response, or show the page taking the impact if the intended contact is with the page."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-05.png",
+   "where": "Session expired over the black slot, 2:03.87–2:04.07",
+   "what": "The plaque stops and dust appears, but it hangs partly across the opening without visibly catching the rim or seating. The frames do not make it clear whether it lodged, landed short, or was meant to drop through.",
+   "fix": "Show the relevant edge catch or drop against the slot's near lip and originate the dust at that edge on the contact frame."
+  }
+ ]
+}

@@ -1,0 +1,79 @@
+{
+ "critic": "R3",
+ "score": 6,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "A: surface and detail, the ten keys whole",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "the broken side pieces: centre left (around 640,440 to 790,500), top centre (870,320 to 1020,390), right edge (1240,390 and 1255,660)",
+   "what": "each piece has a flat brushed-grey strip sticking out of its torn end. The strip has no thickness, no edge bevel and no shadow of its own, so it looks like a decal or a strip of tape and not torn metal. A loose grey dot also floats off the left end of the centre-left piece",
+   "fix": "give the torn ends real sheet thickness: a lit top edge, a dark side face, jagged bent edges and a tight contact shadow. Remove the stray dot"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png, set-A-02.png, set-A-03.png (stage 2), set-A-05.png and set-A-06.png ('the open socket in the rim')",
+   "where": "the open socket, bottom centre",
+   "what": "the inside of the hole is a soft black blob. There are no inner walls, no floor and no lip lit from the key light, so it reads as a dark spot and not a hole",
+   "fix": "model the hole's inner wall: lit on the far side, falling into shadow on the near side, with a visible floor or cavity and a crisp edge where the rim meets the opening"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png, set-A-02.png, set-A-03.png, set-A-05.png, set-A-06.png",
+   "where": "the cracks around the socket, and in front of the stage-2 cap on the parts sheet",
+   "what": "the cracks are dark-brown lines of the same width that branch like drawn twigs. They have no depth, no lifted edge and no light-side highlight, and the page surface does not break along them. The chips beside them are grey dots of almost the same size",
+   "fix": "make the cracks splits in the surface: a dark gap with a lit edge on one side, thick at the socket and thinning out, some lifted flakes of the page, and chips of varied size that cast tight shadows"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png, set-A-06.png ('the cap', 'the front plate')",
+   "where": "the smoke above the burnt Submit cap and the front plate",
+   "what": "the smoke is two or three grey squiggles of even width and even opacity. They look like drawn ribbons and not smoke",
+   "fix": "use soft volumetric wisps that widen, thin out and break up as they rise, are lit on one side and are translucent over the page"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png, set-A-06.png",
+   "where": "the cracked shield slab, lower right",
+   "what": "the cracks in the glass are thin white drawn lines with no refraction, no offset across the break and no chipped edge. The slab is a flat tinted green with nothing showing through",
+   "fix": "render the fractures as breaks: displaced refraction of the page behind, bright glints along the edges and a chip at the rim. Show the page texture through the slab, slightly distorted"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png, set-A-04.png, set-A-07.png ('glass at its edge')",
+   "where": "the Human Verification glass panel",
+   "what": "the glass reads as a flat, mottled grey-green panel. The page texture does not show through, the edge does not refract and the face has no reflection gradient. Only the rim is convincing",
+   "fix": "let the page grain show through with slight offset and blur, add a soft specular sweep across the face and a refracted, brighter band just inside the bevelled edge"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png, set-A-05.png ('a shot in flight', 'the arrow')",
+   "where": "the shots along the line from the arrow to the shield",
+   "what": "each shot is a small flat white arrowhead with a beige glow under it. They have no thickness, gloss or motion blur, so they look like stamped icons and not projectiles",
+   "fix": "make each shot a small glossy solid with a highlight and a shaded side, add a short motion streak, and make the glow light the page beneath it"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-02.png, set-A-06.png ('the cap')",
+   "where": "the burnt Submit cap",
+   "what": "the scorch marks look like black paint splats with orange rims laid over the cap, not charred plastic. A thin straight seam line runs the length of the cap through the scorch",
+   "fix": "blister and darken the plastic into the burnt areas, add bubbling and soot fall-off, and remove or justify the seam"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01.png, set-A-02.png, set-A-04.png",
+   "where": "the arrow",
+   "what": "the arrow changes material between stills: dark chrome in 01, ivory plastic in 02, and a white fill with a black outline in 04. In 04 it reads closest to a flat cursor with an outline, with only a thin bevel",
+   "fix": "pick one material and use it in every still, with a visible side wall and a specular highlight"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01.png, set-A-05.png",
+   "where": "the 'Required field' tag, near the lower right of the text",
+   "what": "a small stray white tick mark sits on the red face of the tag",
+   "fix": "remove it, or make it clearly a spark from the impact"
+  }
+ ]
+}

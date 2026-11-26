@@ -1,0 +1,66 @@
+{
+ "critic": "R9",
+ "score": 6,
+ "pass": false,
+ "model": "gpt_6_2_sol",
+ "set": "A: one sheet across each of the ten beats, with no time and no word on it",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "crank and meter, first two rows",
+   "what": "The arrow disappears against the moving handle, then appears across the meter while the crank spins on the other side. The number climbs but the character's effort and responsibility for turning the crank aren't consistently visible.",
+   "fix": "Keep the tip visibly anchored to the knob through at least one full turn, and pose a lean against the load before the release. Hold a distinct compressed recoil at 100% before the unsteady exit."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "rotary dial, first two rows and start of third",
+   "what": "The small white arrow overlaps highlights and white dial holes, obscuring its silhouette and making the effort look like ordinary pointing. Its later recoil is much clearer than the work that triggers it.",
+   "fix": "Stage the cursor body outside the rim with just its tip on a hole. Show a braced pull pose, stretch on release, and hold the recoil in the clear space beside the dial."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "approach to the Contact number field, rows two through four",
+   "what": "The dart has a readable stretch, but afterward the arrow settles into nearly stock cursor poses. The form opening supplies the payoff without a separate held arrow reaction.",
+   "fix": "Show a short lean away from the field before committing the tip, then a visible squash or recoil and a curious held tilt when the dial rises."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "right of the lever and above the coins, rows two and three",
+   "what": "The lever pull is legible, but the arrow returns to a generic pose. Two nearly identical upright poses by the result hold position rather than an emotion, and the coin burst pushes it straight into departure without much readable response.",
+   "fix": "Pose the arrow in a clear anticipatory lean while the reels stop, then compress it on the coin burst and hold a tilted, withdrawn silhouette before it leaves."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "left edge of Continue through the retreat, rows one through three",
+   "what": "The contact pose is held, but the tip and shadow merge into the edge of the button, and several repeats read as hover rather than hesitation. The blurred departure is clearer than the decision or the exit reaction.",
+   "fix": "Keep a sliver of separation on a pulled-back wind-up, then give the button press its own compact, identifiable arrow silhouette before stretching away and counter-tilting against the departing form."
+  }
+ ],
+ "reads": [
+  {
+   "file": "set-A-01.png",
+   "read": "Tentatively curious; the form swings into view, and the arrow darts across the recessed fields, hesitates, then opens Contact number to reveal a rotary dial."
+  },
+  {
+   "file": "set-A-02.png",
+   "read": "Concentrating on dialing, then startled; the arrow works around the rotary dial until the field accepts the partial number, then springs back, steadies itself and moves toward Date of birth."
+  },
+  {
+   "file": "set-A-03.png",
+   "read": "Intent on getting a date, then briefly startled by the payoff; the arrow pulls the slot-machine lever, pauses beside the recorded date, jumps away as coins spill out, then approaches Audio volume."
+  },
+  {
+   "file": "set-A-04.png",
+   "read": "Trying hard, then rattled or worn out; the arrow tackles a volume crank, the meter fills to 100%, and it wobbles away toward the now-lit Continue button."
+  },
+  {
+   "file": "set-A-05.png",
+   "read": "Hesitant, then committed; the arrow lingers at Continue, nudges it and shoots back toward the middle as the form tilts away beneath it."
+  }
+ ]
+}

@@ -1,0 +1,58 @@
+{
+ "critic": "R4",
+ "score": 6,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "A: motion, one sheet of frames spread across each of the page's ten beats",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-01.png to set-A-06.png",
+   "where": "the pack as a whole",
+   "what": "No sheet shows consecutive frames at any hit. The card flips at about 0:02.53, 0:05.27 and 0:07.43 and the Apply press at about 0:12.6 to 0:13.5 only show up in spread-out beat sheets, one frame per hit, so I can't judge contact, wind-up or rebound. The only consecutive sheet is set-A-06, the slab seating",
+   "fix": "add one sheet of consecutive frames (about 30 fps) at each card flip and at the Apply button press, starting 3 or 4 frames before contact and running 6 or more frames after"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "the Apply for a Job button, 0:12.63 to 0:13.43",
+   "what": "the arrow rests on the button for about 0.8 s and the button doesn't visibly go down or spring back. The press only reads at 0:13.53 in set-A-05, as a ring and shadow change. It feels like a hover, not a key with travel",
+   "fix": "have the button go down 2 to 3 px in 1 or 2 frames when clicked, with its shadow tightening, hold it down for about 4 frames, then let it spring back with a small overshoot before the slab starts to turn"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png and set-A-03.png",
+   "where": "the whole of beat 1 (0:00.00 to 0:01.97) and beat 3 from 0:08.00 to 0:10.97",
+   "what": "the arrow drifts slowly around empty space and nothing reacts. Beat 1 has no event at all, and in beat 3 the cards and seal stay still. Without a caption you can't tell what these beats are for, and the motion is even and floaty, not purposeful",
+   "fix": "make the arrow move with intent, fast with an ease-out into a target and then a short settle, and give each beat one readable event (the seal reacting to a hover, a card answering). Or cut these beats down"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "the page turn, 0:13.77 to 0:14.17",
+   "what": "the turn is very short, about 0.4 s from tilt to landing, with only one frame (0:14.03) showing the new slab edge-on and overexposed to near white. The old slab drops to dark grey at 0:13.90. The flip reads as a flash, not a heavy slab rotating",
+   "fix": "stretch the rotation to about 0.6 to 0.8 s with a slow start and a heavier end. Keep the exposure even through the turn, and let the slab's lit face and dark side show over several frames"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-05.png",
+   "where": "the resume upload panel at 0:14.17",
+   "what": "mid-landing, the upload panel is rendered near-black on its left half while the rest of the slab is lit, then it snaps to light grey at 0:14.30. It reads as a lighting pop",
+   "fix": "keep the shading on the panel consistent with the slab's lighting as it rotates, so it brightens steadily over the last frames"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-06.png",
+   "where": "the thin horizontal rule under the step rail, 0:14.33 to 0:14.47",
+   "what": "after the slab has seated, the rule changes in thickness and sharpness from frame to frame: soft and doubled at 0:14.33 and 0:14.43, crisp at 0:14.37. That is shimmer in fine detail",
+   "fix": "snap the rule to whole pixels once the slab is seated, or soften its sampling so it keeps the same weight from frame to frame"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-06.png",
+   "where": "the top edge of the frame, 0:14.20 to 0:14.27",
+   "what": "the slab lands and stops dead at 0:14.30, which is good, but it gives no answering settle: there's no shadow pulse and the rail buttons don't jolt. The landing has mass but no contact response",
+   "fix": "on the landing frame, add a 1 or 2 frame shadow tighten and a tiny jolt in the rail buttons, then hold still"
+  }
+ ]
+}

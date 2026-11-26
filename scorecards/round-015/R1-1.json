@@ -1,0 +1,100 @@
+{
+ "critic": "R1",
+ "score": 4,
+ "pass": false,
+ "model": "kimi_k3",
+ "set": "A: the page with the loader, the whole machine and the clear ball sheet beside the approved images, whole and in crops",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-A-03-b.png",
+   "where": "the whole frame",
+   "what": "the camera has pulled up and back: -a holds the table head-on, low and tight so it fills the frame, while -b shows the whole cabinet small against black with both side walls, the plinth and deep black surround visible",
+   "fix": "lower the camera to -a's height, move in, and crop so the table fills the frame with almost no black"
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-03-b.png",
+   "where": "the whole playfield",
+   "what": "the light is cool and dim with most lamps out, and a hard red pool from the roof beacon washes the left lane, the bank building and the left flipper area; -a is warm throughout, amber lamps glowing all over, the beacon kept to a tight local halo",
+   "fix": "warm the key light, switch the amber lamps on as in -a, and shrink the red spill to a small glow around the beacon"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "the ring device, upper right",
+   "what": "a diagonal glass-pane edge cuts across the whole ring and the cursor's dome, and the cursor is drawn as bevelled grey metal instead of -a's flat bright-white arrow with a crisp dark edge under a glossy dome",
+   "fix": "remove the diagonal seam from the glass, and render the cursor white with a dark outline on its glossy dome as in -a"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "the bottom of the glass tube, lower right",
+   "what": "the tube dies mid-frame into stray slanted glass planes and a diagonal shard; -a's tube runs straight and clean off the bottom edge",
+   "fix": "extend the tube straight off the bottom of the frame and delete the diagonal glass shards"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "\"the ring\" and \"the rail\" crops",
+   "what": "same two faults at native size: a diagonal glass seam crosses the ring and cursor, the cursor reads as metal not white, and the rail crop carries a loose diagonal glass shard at its lower right; the rim is also a lighter satin grey than -a's dark brushed steel",
+   "fix": "white glossy cursor with dark edge, no seam, no shard, darker brushed rim with -a's bright stepped inner lip"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03-b.png",
+   "where": "the backbox marquee",
+   "what": "the skyline panel is dark and barely backlit so the title reads dim, and the band below it is a big grey slab; -a's marquee glows warm like a sunset lightbox with the title bright",
+   "fix": "relight the marquee to -a's warm backlit level and slim the band beneath it"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03-b.png",
+   "where": "the spiral ramp on the right and the bumpers at the top",
+   "what": "the spiral ramp is frosted white and heavy where -a's is clear glass, and the bumpers are grey metal caps on tan bodies where -a has glossy white porcelain domes",
+   "fix": "make the spiral clear and the bumper caps white and glossy as in -a"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "all three states, the ball and cursor",
+   "what": "the ball's glass is duller and the cursor is flat light-grey, the middle state especially dark; -a has a sparkling wet-gloss bubble with a bright white arrow and crisp dark edge",
+   "fix": "raise the ball's speculars and highlights, give the cursor its white face and dark outline, and lift the middle state's exposure"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "the right-hand state, the bumper beside the ball",
+   "what": "the bumper is a grey metal cap on a tan body; -a's is a big glossy white porcelain dome that catches the warm light",
+   "fix": "recolour the bumper to -a's white gloss and warm its highlights"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04-b.png",
+   "where": "\"the arrow\" and \"the plunger\" crops",
+   "what": "the scene is cool and dark where -a is warm amber: the plunger knob is a dull olive-brown ball on a shadowed grey spring (in -a bright orange on a glowing spring), and the cursor in the ball is flat grey instead of white",
+   "fix": "warm the lane's light, restore the knob's saturated orange gloss, and give the cursor its white face with dark edge"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-04-b.png",
+   "where": "\"the sign at the head\" and \"the tower\" crops",
+   "what": "the marquee and tower read grey and dim with dark windows; -a's tower base glows with lit amber windows under a bright marquee",
+   "fix": "warm the tower's window light and lift the marquee to -a's glow"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-02-b.png",
+   "where": "\"the current button of the progress row\" crop",
+   "what": "the digits on the idle buttons 2 and 4 are dark where -a's are light, and the lit 3 button's warm halo is weaker",
+   "fix": "lighten the idle digits and strengthen the orange halo round the lit button"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01-b.png",
+   "where": "the ring's metal",
+   "what": "the rim is a light satin grey; -a is darker brushed steel with a bright polished lip on the inner step",
+   "fix": "darken the rim steel and add the bright inner lip"
+  }
+ ]
+}

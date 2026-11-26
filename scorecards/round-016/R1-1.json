@@ -1,0 +1,86 @@
+{
+ "critic": "R1",
+ "score": 6,
+ "pass": false,
+ "model": "kimi_k3",
+ "set": "A: the page with the loader, the whole machine and the clear ball sheet beside the approved images, whole and in crops",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "progress row, top right",
+   "what": "the build's row shows five dials starting with a steel \"1\" left of the orange 2; the approved row begins at the orange 2 with bare wall to its left, so -b's row runs one dial longer and further left",
+   "fix": "drop the leading steel dial and start the row at the orange 2, keeping the right end where it is"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "the button crop (also set-A-01-b and set-A-03-b, lower right)",
+   "what": "the Continue button is a dull dark-grey pill with dark grey lettering; in the approved it is a light silvery pill with pale, near-white lettering and a brighter sheen",
+   "fix": "lighten the button face toward silver-grey and make its label light"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "the round-button and bare-surface crops (also the header row in every full view)",
+   "what": "the metal dials read as dull gunmetal with long, hard, dark shadows; the approved dials are bright polished chrome sitting in tight, short, soft shadows",
+   "fix": "brighten the steel, restore the strong specular small-side highlight upper-left, and shorten and soften the drop shadows"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "all type, headline to footnote (repeated in every pair)",
+   "what": "every line of type in -b renders near-black and a touch heavier; the approved type is a warm medium dark-grey",
+   "fix": "lighten all type toward the approved warm dark-grey and take a little weight off"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04-b.png",
+   "where": "the dial and the tray-the-machine-sits-in crops (also set-A-03-b)",
+   "what": "the open machine's tray interior is a darker grey-green with a heavy dark inner edge, and the rotary dial face is dull steel with a flat, dark orange centre; the approved tray is light silvery and the dial is polished steel with a glossy bright-orange centre button",
+   "fix": "lighten the tray interior toward silver, polish the dial face, and restore the centre button's gloss"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "dial centre knob, crank handle grip, lit volume bars (also the orange step-2 button in every pair)",
+   "what": "the orange parts are matte and darker, with no bright highlight and no warm glow on the surrounding surface; the approved knobs and grips are glossy with a crisp highlight and throw a soft orange reflection onto the page",
+   "fix": "restore the gloss highlight upper-left on every orange part and the soft orange spill under them"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01-b.png",
+   "where": "the whole page surface (all pairs)",
+   "what": "-b's page is cooler and dimmer, a grey-ivory; the approved page is a brighter warm cream, so the build's mood is colder",
+   "fix": "warm the page tone and lift overall brightness slightly"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-05-b.png",
+   "where": "under the date-of-birth drum",
+   "what": "the build shows a horizontal slot/handle bar beneath the drum that the approved machine does not have",
+   "fix": "remove the slot bar under the drum"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-05-b.png",
+   "where": "under \"Step 2: Personal Details\"",
+   "what": "the build shows a line of grey body text there; the approved view has no line at that place, leaving bare page between the step title and the machine labels",
+   "fix": "if the line stays (per copy), expect it; otherwise the layout gap reads differently from the approved"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-02-b.png",
+   "where": "the arrow crop (also set-A-01-b)",
+   "what": "the cursor carries a hard, dark offset shadow; the approved arrow has a soft, pale, close bloom of shade under it",
+   "fix": "soften and lighten the arrow's shadow, pull it in tight"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01-b.png",
+   "where": "the hairline rule under the title (all pairs)",
+   "what": "the rule under the header is darker and throws a visible shadow; the approved rule is a quiet light line",
+   "fix": "lighten the rule and take its shadow away"
+  }
+ ]
+}

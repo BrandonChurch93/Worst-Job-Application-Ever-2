@@ -1,0 +1,37 @@
+{
+ "critic": "R4",
+ "score": 7,
+ "pass": false,
+ "model": "kimi_k3",
+ "set": "A: motion, one sheet of frames spread across each of the page's ten beats",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "the spider machine, every frame 2:11.90 to 2:15.97 (also across set-A-04)",
+   "what": "it glides back and forth across the page at an even speed with its legs dangling and only a soft blob shadow; no foot ever visibly plants and the body never shifts weight, so the machine reads as a prop being slid by hand, not a thing with mass",
+   "fix": "give the walk discrete planted steps with a pause and body dip on each plant, tighten the contact shadow under the planted feet, and vary its speed so it starts and stops rather than drifting"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-02.png",
+   "where": "frames 1:55.07 and 1:55.43, the Submit button and the cursor",
+   "what": "the button cracks and tips while the cursor is a hand's width away to its left; in no shown frame does the cursor touch the button, so the hit reads as remote activation",
+   "fix": "show the frame where the cursor point meets the button face, with the button dipping under it in the same frame, before the cracks spread"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-05.png",
+   "where": "the spark exchange, 2:13.27 to 2:15.97",
+   "what": "without a caption it is unclear who is firing at whom: the glowing trail runs from near the cursor to the machine's face in some frames and blooms on the machine's mouth in others as if the machine itself is sparking; only the later explosion resolves it",
+   "fix": "anchor the beam's source to the cursor tip in every frame and keep the hit flash on the machine's hull, offset from its mouth"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01.png",
+   "where": "frame 1:54.73, mid-page left of the Submit button",
+   "what": "a small white fragmented shape floats mid-page with no readable identity; it does not connect to the cursor in the frames before or after, so it reads as a stray artifact",
+   "fix": "if it is the cursor mid-transition, hold one continuous silhouette through the morph; otherwise remove it"
+  }
+ ]
+}

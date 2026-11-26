@@ -1,0 +1,72 @@
+{
+ "critic": "R1",
+ "score": 7,
+ "pass": false,
+ "model": "gpt_6_2_sol",
+ "set": "B: tier 3 from above, the lobby doors and the table map beside the approved images, whole and in crops",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-B-01-b.png",
+   "where": "right column, collapsed contact and date fields",
+   "what": "Two prominent dark status lines fill what are visually quiet, empty glass wells in the target. This is separate from the settled percentage in the audio field.",
+   "fix": "Restore the quiet appearance of the two collapsed wells. If their status lines must remain visible, make them much less prominent."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02-b.png",
+   "where": "bottom right crop, Continue button",
+   "what": "The dark, relatively heavy label makes the control look enabled, and its light gray face, sharp outline and white lower-right line read like a flat UI button rather than subdued gray hardware.",
+   "fix": "Use a pale, lower-contrast label, darken the face, and soften the edge into a rounded warm metal bevel with a close contact shadow."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02-b.png",
+   "where": "upper left and upper middle crops, crank base, hub and lever",
+   "what": "The crank reads as smooth cool molded gray; the radial machining on the base and hub is weak, the fasteners look like gray dots rather than dark recessed screws, and the lever lacks the target's bright brushed face and pronounced dark underside. The lever also rises more steeply toward the grip.",
+   "fix": "Reinstate fine directional metal grain, recessed screw details, a bright upper-left glint and dark lower-right edge; ease the lever toward the target's shallower angle without changing its configured size."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02-b.png",
+   "where": "upper middle and lower left crops, orange crank grip and its shadow",
+   "what": "The grip has a soft matte highlight and a diffuse gray shadow. The target has a bright, sharply rounded lacquer highlight, dark red edge, and a much more concentrated warm shadow extending down-right.",
+   "fix": "Polish the grip with a thin bright upper-left highlight, a richer dark orange-red lower edge and colored, denser down-right shadow that softens outward."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02-b.png",
+   "where": "meter crops, the three lit segments and the unlit bank",
+   "what": "Lit capsules have flatter, nearly uniform yellow cores and sharp orange outlines with little warm light spilling onto the well. Unlit capsules look like thin white double outlines on a flat field, without the target's rounded smoky bodies, asymmetrical highlights and lower-right shadows.",
+   "fix": "Give lit capsules rounded bright cores with orange falloff and modest warm spill on the tray; give inactive capsules smoky volume, a softer directional rim and short down-right contact shadows."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02-b.png",
+   "where": "lower middle crop, progress rail and numbered buttons",
+   "what": "The active orange face looks dark and matte, with less of the target's orange lacquer sparkle and warm spill. The steel faces and rail have colder, more uniform edge lines, flatter digits, and shorter, softer shadows than the target, especially below-right of the active button.",
+   "fix": "Add stronger upper-left speculars and circular machining, more recessed-looking dark numerals on the steel faces, a restrained warm glint on the rail, and a longer, denser down-right active-button shadow."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01-b.png",
+   "where": "right column, the glass wells, selected audio rim and recessed tray",
+   "what": "The wells and tray look cooler and more uniformly gray-green, with hard fine rim stripes. The selected field remains gray in the middle and its orange looks like an outline; in the target it is warmer and paler with light washing through the bevel. The target tray has more varied reflected light and richer dark top and left walls.",
+   "fix": "Add a warm-white wash just inside the selected bevel and a softer local amber glow. Give the other cavities dark top-left depth, smoother inner gradation, brighter glass toward the bottom, and fewer separately visible edge lines."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02-b.png",
+   "where": "lower left crop, cursor on the grip",
+   "what": "The cursor silhouette has a broader triangular wing and blunter, more rounded tail, with a more uniform black rim. The target is narrower through the arrow head and tail and has a more directional ivory-to-gray face and crisp dark side edge.",
+   "fix": "Keep the settled cursor height; refine the narrower point and angular shaft, add the subtle graded face and make the lower-right edge read as a separate thin dark bevel."
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-01-b.png",
+   "where": "paper and left-column type",
+   "what": "The page is a little grayer and more uniformly fine-grained than the lighter, softly fibrous target; small body and footer text also reads a touch more compact and dark.",
+   "fix": "Lift the even paper base slightly and soften the grain into more natural variation, without adding a window band or border. Ease the small text contrast and tracking toward the target."
+  }
+ ]
+}

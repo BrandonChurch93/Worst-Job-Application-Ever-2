@@ -1,0 +1,58 @@
+{
+ "critic": "R1",
+ "score": 7,
+ "pass": false,
+ "model": "gpt_6_2_sol",
+ "set": "A: the page with the loader, the whole machine and the clear ball sheet beside the approved images, whole and in crops",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-A-01-b.png",
+   "where": "hero arrow, between the primary button and the medal",
+   "what": "The arrow reads almost upright and needle-like, with a very narrow head and a small straight tail. The target has a much broader diagonal head, a clearly stepped tail angled down to the right, and a distinct dark underside.",
+   "fix": "Keep the configured cursor height, but redraw the silhouette with the broader diagonal head and stepped tail. Use a flat ivory face, narrow bright chamfer and dark sidewall, and carry the cast shadow to the lower right."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "medal and header-button crops, medal face, leaf ring and rim",
+   "what": "The face has broad, high-contrast white and black reflective swaths and brighter, pillowy leaves. The target is a finer-grained, quieter satin steel with flatter leaf relief, more separation between its rim rings, and lettering that looks integrated into the metal rather than laid on in solid black.",
+   "fix": "Soften the broad reflections, restore a fine directional brushed grain and tighter leaf highlights, separate the concentric rim profiles, and add subtle relief to the lettering. Give the right-side cast shadow a more distinct core and a soft tail."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "primary and header orange button crops",
+   "what": "Both buttons have a duller orange center and a thin, nearly white outline against a dark shelf, where the target has a broader rounded metal collar, a concentrated top-left gleam and a warmer, more luminous orange face. The labels in the build are noticeably bolder.",
+   "fix": "Separate the dark seat from the rounded metallic collar and orange inner lip. Restore the focused upper-left specular arc and richer orange face, and reduce label weight toward the target."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "glass card corner, glass edge, and card typography crops",
+   "what": "The build reads as even gray-green, with a murky top-left bevel and broad, cloudy interior strips. The target has clearer pale glass, thinner edges, sharp highlights in the lower-right curves, and more localized shadows at the right edge. The explanatory text is too dark relative to the primary card text.",
+   "fix": "Lighten and soften the glass fill, narrow the inner bevel gradient, and sharpen the glints at the right and lower-right corners while keeping soft directional shadows outside. Lighten the explanatory lines and dividers so the dark primary text leads."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "bottom glass ticker",
+   "what": "The ticker looks almost printed onto the page because its side glints and lower-right cast shadow are so weak. The target reads as a raised, rounded piece of glass.",
+   "fix": "At the configured height, give its ends rounded refracted highlights and add a close contact shadow that extends and softens toward the lower right."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "header divider and header-to-hero transition",
+   "what": "The divider sits noticeably lower in the build, leaving too much room beneath the navigation and compressing the air above the hero title. Its cool double edge also reads less like the target's fine warm metallic rule.",
+   "fix": "Raise the divider relative to the hero and navigation, and use one fine warm-gray profile with a narrow top sheen and a tight lower edge."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "page surface and left hero typography",
+   "what": "The exposed paper is darker and grayer, with less visibly irregular fiber than the target even away from any lighting band. The subtitle and the note under the button look too dark against it, reducing the target's hierarchy.",
+   "fix": "Lift the uniform paper base toward a warm off-white and restore subtle, irregular tooth. Warm and lighten the supporting text without changing the approved copy or adding a window band."
+  }
+ ]
+}

@@ -1,0 +1,23 @@
+{
+ "critic": "R3",
+ "score": 8,
+ "pass": true,
+ "model": "kimi_k3",
+ "set": "A: surface and detail, the ten keys whole",
+ "issues": [
+  {
+   "severity": "minor",
+   "file": "set-A-07.png (seen in set-A-01, set-A-02, set-A-03 stills)",
+   "where": "the frosted glass cards, e.g. 'Unlimited PTO' and the three-column benefit cards",
+   "what": "the glass is an opaque frosted tile; nothing of the page grain or anything beneath it shows through, and the edges refract nothing, so it reads as solid plastic rather than glass",
+   "fix": "make the slabs genuinely translucent: let the paper grain and any element behind a card show dimly through, and refract the page at the bevelled edge"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01.png",
+   "where": "every surface: medal metal, chrome socket rims, orange button plastic, white cursor",
+   "what": "all surfaces are uniformly flawless and even everywhere, and the two medals' laurel leaves are identical stamps; nothing has a scratch, smudge or spot of wear to anchor it to reality",
+   "fix": "add trace wear: faint fingerprints or smudges on the chrome rings, a hairline scuff near a serrated medal edge, and vary the laurel leaves slightly from medal to medal"
+  }
+ ]
+}

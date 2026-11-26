@@ -1,0 +1,88 @@
+{
+ "critic": "R9",
+ "score": 4,
+ "pass": false,
+ "model": "kimi_k3",
+ "set": "A: one sheet across each of the ten beats, with no time and no word on it",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "frames 10-12, the Apply button and the glitch collapse",
+   "what": "the unit's climax has no wind-up and no reaction: the arrow reaches the button with the same glide as every other move (no anticipation pull-back, no squash on the press), and when the entire page crumples into a dark glitch strip the arrow just sits tiny at the frame edge with no recoil, flinch, or readable shock",
+   "fix": "give the press 2-3 anticipation frames (pull back and slightly compressed), a squashed contact frame on the button, then a clear startle pose after the glitch: lean back hard, stretched, held 2+ frames"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "frames 7-9, the Competitive Salary card",
+   "what": "the card visibly darkens under the arrow, an event, and the arrow does not react to it at all; it keeps sliding like a pointer, so a thing happened on screen and the character ignored it",
+   "fix": "add a flinch or double-take when the card darkens: a sharp stop, a lean back, then a cautious lean in to inspect the darkened card"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "all 12 frames, the left edge and baseline path",
+   "what": "the arrow just glides down the margin and along the bottom at a constant speed and identical pose; there is no readable intention, no hesitation or curiosity beats, so the opening sheet reads as a recording of a pointer, not a character arriving",
+   "fix": "break the glide into readable beats: enter fast with a stretch, skid to a stop with a squash at the headline, pause tilted at the seal (reading), then a slower wary move downward"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "all 12 frames, especially the final three",
+   "what": "this is the decided, rush-to-act state and the motion blur in the last frames sells speed, but the arrow silhouette never stretches with the fast move and never squashes when it rounds the turn off the seal; the acting reads as fast pointer movement, not a character throwing itself at a goal",
+   "fix": "stretch the arrow lengthwise along the motion vector in the blurred frames, squash it on the direction change at the seal, and give it a 1-2 frame coiled lean-back just before the dive"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "all 12 frames",
+   "what": "the whole sheet is one continuous drift with no pose change: across 12 frames the arrow points the same direction and moves the same way, so the 'still browsing, deciding' state has no held feeling and no build toward set-A-04's commitment",
+   "fix": "let the browsing slow: decelerate across the sheet, add a small double-take tilt at the Flexible Hours card, and end with a settled, squared-up pose aimed at the button so the next sheet's commitment lands"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-06.png",
+   "where": "all 12 frames",
+   "what": "the wary frozen-stare state is nearly a hold on a single pose; the unease never builds, and at playback speed the sheet will read as a static frame with a cursor pasted on it rather than a character holding its nerve",
+   "fix": "keep the freeze but add micro-acting: a slow tiny lean-in over frames 1-6, a suppressed shiver (1-2px alternate tilts) mid-sheet, and a slight back-off at the end"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-05.png",
+   "where": "all 12 frames",
+   "what": "the wobble tilts vary in size and direction with no pattern, so it reads as cursor jitter more than as a character trembling or glancing around nervously; the pose changes do not accumulate into a feeling",
+   "fix": "organize the wobble: 2-3 consistently larger lean cycles (tremble), interleave one clear look-left and look-right tilt as glances at the ticker, keep the rest near neutral"
+  }
+ ],
+ "reads": [
+  {
+   "file": "set-A-01.png",
+   "read": "curious and unhurried, drifting down the left edge and along the bottom of the page; nothing has happened yet, it is sizing the page up before doing anything"
+  },
+  {
+   "file": "set-A-02.png",
+   "read": "interested, browsing the perk cards along the bottom row; the Competitive Salary card darkens as if it poked it, but it shows no reaction and just keeps gliding"
+  },
+  {
+   "file": "set-A-03.png",
+   "read": "still browsing, drifting right, eyeing the Flexible Hours card and the Excellence in Synergy seal; nothing has landed emotionally yet"
+  },
+  {
+   "file": "set-A-04.png",
+   "read": "committed and deliberate, homing in on the orange Apply for a Job button and pressing it; then the whole page collapses into a dark glitch strip and it is about to be horrified"
+  },
+  {
+   "file": "set-A-05.png",
+   "read": "uneasy and fidgeting, wobbling and leaning while it hovers by the 0 Days Without an HR Incident ticker; something about that claim has rattled it"
+  },
+  {
+   "file": "set-A-06.png",
+   "read": "wary and frozen, holding stock-still in front of the Printer: Haunted (Confirmed) ticker; it has read something it does not like and is holding its nerve"
+  },
+  {
+   "file": "set-A-07.png",
+   "read": "determined and quick, darting up past the seal then diving down toward the orange button with motion blur; it has made up its mind and is rushing to act"
+  }
+ ]
+}

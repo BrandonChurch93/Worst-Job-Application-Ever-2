@@ -1,0 +1,114 @@
+{
+ "critic": "R1",
+ "score": 3,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "E: the rail camera and the last save beside the approved images, whole and in crops",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-E-01-b.png",
+   "where": "whole frame, framing and subject",
+   "what": "the target is a high, near top-down close view looking straight along a straight chrome lift rail with hoop braces, with the bank lower left and the red-beaconed firehouse upper right on either side of the rail. The build is a low oblique view of curving rails sweeping up into the tall spiral ramp tower, with no bank or firehouse in frame and a yellow hazard triangle and orange flipper part in the foreground instead",
+   "fix": "raise the camera to look down along the straight rail section with the hoop braces receding to the top centre, and frame the bank on the left and the firehouse on the right as the flanking objects"
+  },
+  {
+   "severity": "severe",
+   "file": "set-E-01-b.png",
+   "where": "whole frame, light and mood",
+   "what": "the target is dim, warm and photographic. Lamp bokeh blooms in the background, the depth of field is shallow, there is film grain, and the shadows are deep. The build is bright, even, cool CG light with crisp focus almost everywhere, no grain and shallow shadows",
+   "fix": "lower the overall exposure, warm the practical lamps, add strong defocus to everything off the ball plane with bloomed bokeh, deepen the shadows and add fine grain"
+  },
+  {
+   "severity": "severe",
+   "file": "set-E-02-b.png",
+   "where": "the bank and firehouse crops",
+   "what": "neither building is in the build's frame. The bank crop shows a blurred rail strip and the firehouse crop shows the hazard triangle and orange part. The warm-lit columned bank and the red brick firehouse with a glowing red beacon are missing",
+   "fix": "frame the shot so both buildings fall where the target has them, with warm interior glow and the red beacon spilling onto the roof"
+  },
+  {
+   "severity": "major",
+   "file": "set-E-01-b.png / set-E-02-b.png",
+   "where": "the ball",
+   "what": "the target ball is thick solid glass with heavy refraction, bright rim highlights and internal reflections of the rails. The build ball reads as a thin soap bubble: a faint rim, a few scratch lines, and almost no refraction or caustic weight",
+   "fix": "make the ball thick, clear glass with a strong refractive index, bright specular rims on the lit side and visible internal reflections and distortion of what sits behind it"
+  },
+  {
+   "severity": "major",
+   "file": "set-E-02-b.png / set-E-04-b.png",
+   "where": "the arrow inside the ball",
+   "what": "the target arrow is matte off-white, like soft plastic, with a narrow dark bevelled edge on its shadow side. The build arrow is glossy, with a thick uniform black outline all round in E-01/02, and reads grey-metallic and flat in E-03/04",
+   "fix": "use a matte warm-white material, replace the outline with a thin dark extruded edge visible mainly on the shadow side, and keep a soft highlight on the lit face"
+  },
+  {
+   "severity": "severe",
+   "file": "set-E-03-b.png",
+   "where": "whole frame, light and mood",
+   "what": "the target is a dim, warm, filmic shot with heavy background bokeh, deep falloff to dark at the edges and grain. The build is brightly and evenly lit, sharp into the upper tiers, cooler and more saturated, and has a CG look",
+   "fix": "drop the exposure and the fill, warm the key, blur the upper playfield and back tiers strongly, let the edges fall to dark and add grain"
+  },
+  {
+   "severity": "major",
+   "file": "set-E-03-b.png",
+   "where": "mid playfield, the ramp crossing",
+   "what": "in the target a low, flat chrome rail bridge crosses the playfield horizontally just above centre. In the build a tall arched ramp sweeps diagonally from the lower left to the upper right on tall posts, blocking the centre lane view",
+   "fix": "bring the crossing ramp down to a low, near-horizontal chrome rail spanning the mid playfield, as in the target"
+  },
+  {
+   "severity": "major",
+   "file": "set-E-03-b.png",
+   "where": "right side, the spiral ramp",
+   "what": "the target spiral is a compact, squat chrome-and-glass cage behind the right slingshot. The build's spiral is a tall, open tower climbing out of frame with wide grey decks",
+   "fix": "make the spiral a compact, short coil of chrome rails and glass, seated at playfield level"
+  },
+  {
+   "severity": "major",
+   "file": "set-E-03-b.png / set-E-04-b.png",
+   "where": "the slab at the foot and the card at the foot",
+   "what": "the target foot slabs are white marble-like stone with soft grain and worn edges, and the drain is clad in grey stone brick with a brass-framed card. The build's slabs are smooth grey painted panels with screws, the drain has no brick cladding, the card is a plain white plastic plate, and a chrome railing has been added above the drain",
+   "fix": "give the slabs a white stone material with visible grain and soft wear, clad the drain sides in grey brick with steel trim, frame the card in brass, and remove the rail above the drain"
+  },
+  {
+   "severity": "major",
+   "file": "set-E-03-b.png / set-E-04-b.png",
+   "where": "text look on the cards and signs",
+   "what": "the target sets 'Unemployment Office' and 'Mom's Basement' in a dark serif face on a cream card. The build uses a bold sans-serif in black on white or yellow",
+   "fix": "switch the card and sign type to a dark serif on a cream card, at the target's weight"
+  },
+  {
+   "severity": "major",
+   "file": "set-E-03-b.png / set-E-04-b.png",
+   "where": "the flippers",
+   "what": "the target flippers are slim and matte orange, with a black rubber band and a small silver pivot cap. The build flippers are fat, glossy pill shapes with a heavy plastic sheen that sit high on a dark base",
+   "fix": "slim the flipper profile, reduce the gloss to a satin plastic, keep a thin black rubber ring and a silver pivot screw"
+  },
+  {
+   "severity": "major",
+   "file": "set-E-03-b.png / set-E-04-b.png",
+   "where": "the slingshots",
+   "what": "the target shows the yellow chevron triangle held in a chrome wire cage on chrome posts, with warm lamps lit inside its base. The build shows a bare triangle sign on two black legs with no chrome cage and no lit base",
+   "fix": "wrap each triangle in a polished chrome wire frame on chrome posts and light its base from within with warm lamps"
+  },
+  {
+   "severity": "major",
+   "file": "set-E-03-b.png / set-E-04-b.png",
+   "where": "the page surface",
+   "what": "the target playfield is a deep navy-teal with a mottled, worn, grainy print surface and faint scratches. The build is a smoother, greener teal with clean CG grid lines and an even sheen",
+   "fix": "shift the surface towards deep navy-teal, add a mottled print grain, wear and fine scratches, and cut the uniform sheen"
+  },
+  {
+   "severity": "minor",
+   "file": "set-E-04-b.png",
+   "where": "the lamps in the floor",
+   "what": "the target inserts are domed lenses in thick brass rims with a soft inner glow. The build lamps are flat, over-saturated glowing discs with thin rims, and the clock lamp is a hot orange",
+   "fix": "give the inserts a domed lens and a thicker brass bezel, and lower the saturation and emission to a soft warm glow"
+  },
+  {
+   "severity": "minor",
+   "file": "set-E-04-b.png",
+   "where": "the small houses",
+   "what": "the target houses are muted cream with dull red roofs and a soft warm window glow. The build houses have bright, saturated red plastic roofs and a crisp toy look",
+   "fix": "desaturate the roof red, add a matte painted texture and soft weathering"
+  }
+ ]
+}

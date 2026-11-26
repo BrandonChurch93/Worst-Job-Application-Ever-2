@@ -1,0 +1,99 @@
+{
+ "critic": "R9",
+ "score": 5,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "B: one sheet of each acting state the page uses, plain, nervous, shocked, confident, scared and exhausted, with no time and no word on it",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-B-07.png",
+   "where": "the arrow, frames 3 to 12",
+   "what": "the wilted arrow's tail splits into two rounded prongs, so the shape reads at a glance as a white blob standing on two little legs or feet (like a tooth)",
+   "fix": "wilt it by bending and drooping the whole tail as one piece, or by sagging the head; never split the tail into two stubs"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-04.png",
+   "where": "the arrow at the moment the beam hits, frames 2 to 4",
+   "what": "no recoil and no squash on impact; the pose stays the same while it is burned, and it only drifts around, so the hit barely registers as acting",
+   "fix": "add a sharp squash and knock-back on the first hit frame, then a held flinch (tilted, tip pulled away) before it settles into the smoking stillness"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-05.png",
+   "where": "frames 3 to 12 compared with B-04 and B-06",
+   "what": "the burn on the tip is gone by frame 3 and the arrow is clean and sharp again, then it is singed again in B-06 and restored in B-08 frame 3 with no change shown; the damage comes and goes, so it does not read as the same character with the same injury",
+   "fix": "keep one damage track: carry the scorched tip through B-05 and B-06, and only clear it at a visible recovery beat (a shake-off or a stretch) before B-08's straighten-up"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01.png",
+   "where": "frames 4 to 12",
+   "what": "it holds one identical pose for six frames, then slides down and right with no wind-up and no change of shape, like a plain pointer",
+   "fix": "give the wait a small life (a lean or tilt toward the checkbox) and add a little crouch before the move and a settle after it"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02.png",
+   "where": "the landing by the checkbox, frames 4 to 6",
+   "what": "it arrives from the smear with no squash on landing; the relief is held but there is no impact to mark the arrival",
+   "fix": "squash it on the first frame by the checkbox, then overshoot and settle over two or three frames"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03.png",
+   "where": "whole sheet",
+   "what": "twelve frames of a slow turn and then standing still, with no anticipation before the turn and no settle; the feeling is neutral and is hard to name",
+   "fix": "add a small dip before it swings upright and a stretch as it rises, so the turn reads as resolve rather than a rotation"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-06.png",
+   "where": "frame 9, the glass panel crashing beside it",
+   "what": "it is hidden behind the falling glass and shows no flinch in frames 10 to 12; it simply stands where it was",
+   "fix": "add a one-frame flinch away from the crash and a short look back at it"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-08.png",
+   "where": "the press, frames 9 to 10",
+   "what": "the press is a motion blur with no squash on contact with the button",
+   "fix": "squash the arrow on the button for one frame before it springs back up"
+  }
+ ],
+ "reads": [
+  {
+   "file": "set-B-01.png",
+   "read": "cautious and curious; it sneaks in low along the divider under 'I am not a robot', settles over the verification text and waits, then edges down, as if about to be checked"
+  },
+  {
+   "file": "set-B-02.png",
+   "read": "startled by a hole blasted in the floor beside it, it darts away in a smear and lands by the ticked checkbox and 'Humanity Confirmed'; relieved, a little proud, settling"
+  },
+  {
+   "file": "set-B-03.png",
+   "read": "calm resolve; once confirmed it turns from pointing right to pointing straight up and stands tall, ready to set off"
+  },
+  {
+   "file": "set-B-04.png",
+   "read": "has just been told 'Invalid input', then a beam hits its tip and burns it; stunned and smoking, it takes the hit and holds still"
+  },
+  {
+   "file": "set-B-05.png",
+   "read": "singed and recovering, then hurries past a 'session will expire' warning, shoves at 'Stay', and glances about anxiously while a timer bar drains; nervous, impatient"
+  },
+  {
+   "file": "set-B-06.png",
+   "read": "zapped by a sparking robot arm, it recoils and cowers; the machine falls apart and a glass panel crashes beside it; it stands up shaken, facing a smoking Submit button"
+  },
+  {
+   "file": "set-B-07.png",
+   "read": "worn out and dejected; as it nears the burnt Submit button it wilts and its tail splits, it droops, then drags itself to the button"
+  },
+  {
+   "file": "set-B-08.png",
+   "read": "it pulls itself upright on the Submit button, determined, presses it in a blur, then stands on the wreckage, triumphant but tired, as the light dims"
+  }
+ ]
+}

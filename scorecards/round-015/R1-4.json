@@ -1,0 +1,142 @@
+{
+ "critic": "R1",
+ "score": 4,
+ "pass": false,
+ "model": "gpt_6_2_sol",
+ "set": "D: tier 1 from above and You're Fired beside the approved images, whole and in crops",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-D-01-b.png",
+   "where": "entire table, particularly the roofs and upper half",
+   "what": "the build reads as a near-orthographic plan; the target is a slightly raked photograph with converging side rails, visible building fronts, and upper and lower features layered in depth",
+   "fix": "rake the overview camera toward the upper tier and tune perspective and aim to recover the target's depth and facade visibility without changing configured part scales"
+  },
+  {
+   "severity": "severe",
+   "file": "set-D-01-b.png",
+   "where": "blue playfield, rails, and pools of light across the table",
+   "what": "the field is flat teal/navy with fine even speckle and clean linework; the target has deeper blue-black lacquer, uneven scuffs, warm light reflected on the field, and brighter elongated metallic glints",
+   "fix": "deepen the blue, break up the uniform grain, add subtle handling wear, and tune directional light and roughness so the warm lamps and rails reflect into the playfield"
+  },
+  {
+   "severity": "severe",
+   "file": "set-D-03-b.png",
+   "where": "close-up composition, left third and top background",
+   "what": "the student-loan building and its fence dominate the left foreground and partly block the firehouse; sharp tubing and track fill the upper background. The target isolates the firehouse against open dark blue with softer, receding rail detail",
+   "fix": "reframe from a slightly more frontal angle with the firehouse clear of the bank and use closer, selective focus to soften the background hardware"
+  },
+  {
+   "severity": "severe",
+   "file": "set-D-03-b.png",
+   "where": "firehouse opening, threshold, and foreground around the ball",
+   "what": "a bright round metal receiver with exposed rings dominates the threshold; the target has a near-black rectangular recess, a thin rounded metal lip, inset amber arrow lamps, and a conspicuous red reflection on the blue field",
+   "fix": "recess and darken the receiver inside a softly rounded rectangular threshold, recover the visible inset lighting and red floor bounce, and retain the take's ball position and any required tube opening"
+  },
+  {
+   "severity": "severe",
+   "file": "set-D-03-b.png",
+   "where": "field, firehouse facade, and left background lighting",
+   "what": "hard pale streaks from the neighboring structure and uniformly dim window panes make the scene look like a clean miniature render; the target has more focused highlights, dark soft background falloff, vivid warm windows, and richer red and amber spill",
+   "fix": "reduce the long pale reflected streaks, deepen background falloff, put more warm light behind the windows, and restore concentrated saturated red and amber reflections near the firehouse"
+  },
+  {
+   "severity": "major",
+   "file": "set-D-01-b.png",
+   "where": "three upper buildings and the lower-left house",
+   "what": "the fronts are mostly obscured and the signs read as stark black sans-serif on yellow cream; the target shows weathered dimensional facades and warmer, finer dark-brown serif lettering, with slender warm metal borders",
+   "fix": "recover readable facades from the camera angle, give masonry and trim material depth, and use finer serif lettering and aged ivory plaques while preserving canonical copy and specified roof placement"
+  },
+  {
+   "severity": "major",
+   "file": "set-D-02-b.png",
+   "where": "firehouse crop, upper left",
+   "what": "on the largely roof-only crop the red beacon looks like a luminous concentric disc, and the paneled roof reads flatter than the worn stone cap and glass beacon in the target; the warm windowed front and dark entry are not well represented",
+   "fix": "frame more of the front and entry, texture the roof coping, and give the beacon a visibly ribbed red glass dome, tight glints, and a silver bezel"
+  },
+  {
+   "severity": "major",
+   "file": "set-D-02-b.png",
+   "where": "police-station crop, upper middle",
+   "what": "the near-gray roof and orbital blue lamp dominate; the target shows cool blue masonry, stone surrounds, peaked entry trim, and a row of warm windows. The high-contrast two-line bold sign also has a different text silhouette",
+   "fix": "bring the blue facade and amber windows into the crop, make the lamp read as a glazed dome, and use a slimmer one-line serif treatment on a lightly weathered ivory plaque"
+  },
+  {
+   "severity": "major",
+   "file": "set-D-02-b.png",
+   "where": "garage crop, upper right",
+   "what": "the roof reads as a mostly opaque gray-green disc with a conspicuous radial fan pattern, rather than clear curved channel walls above stacked metal decks with dark, pillared gaps",
+   "fix": "remove the radial shading artifact, make the upper channel transmit and catch light like clear plastic, and give the spaced decks and ribs alternating dark gaps and worn metallic edges without reducing turn clearance"
+  },
+  {
+   "severity": "major",
+   "file": "set-D-02-b.png",
+   "where": "bank crop, middle left",
+   "what": "the overhead crop mostly shows adjacent hardware and the sign, losing the illuminated classical portico and column bases that define the target; the sign is blocky and stacked instead of fine and horizontal",
+   "fix": "frame for the recessed warm entry and stone columns, bring out their relief and pool of light, and treat the unchanged copy as a fine one-line serif plaque"
+  },
+  {
+   "severity": "major",
+   "file": "set-D-02-b.png",
+   "where": "arrow crop, middle center",
+   "what": "the sphere looks like a pale concentric lens with broad bands and the arrow's outline is partly lost behind the roof, rather than the target's crystal-like sphere with small reflected accents and a clearly separated dark-edged pointer",
+   "fix": "use a viewing angle that exposes the pointer at the take position and trade the uniform rings for smaller scene reflections, darker transparent center tones, and restrained edge glints"
+  },
+  {
+   "severity": "major",
+   "file": "set-D-02-b.png",
+   "where": "small-house crop, middle right",
+   "what": "the house and nearby miniatures read largely as planar roofs and bright printed bases; the target gives the house depth through visible walls, warm windows, and an adjacent angled dark opening with a bright rounded rim",
+   "fix": "show the fronts and add warm window depth, bring back a metallic lip around the dark opening, and give the miniatures subdued bases and contact shadows"
+  },
+  {
+   "severity": "major",
+   "file": "set-D-02-b.png",
+   "where": "slingshot crop, bottom left",
+   "what": "the black-and-yellow face has a flatter printed look and the lower trim forms a dim line; the target has an obvious layered metal socket, screw caps and a broader warm reflected glow under the edge",
+   "fix": "bring out the rounded polished edge, countersunk fasteners and visible undercut, and let warm light spill onto the playfield below it"
+  },
+  {
+   "severity": "major",
+   "file": "set-D-02-b.png",
+   "where": "flipper crop, bottom middle",
+   "what": "the paddle looks syrupy amber with a soft highlight and little separation from its mount; the target has a clearer orange solid-plastic top, a tight dark sidewall band, and a reflective metal pivot",
+   "fix": "shift the face toward solid warm orange, sharpen its bevel reflection, expose the dark band, and give the pivot a defined metallic glint and contact shadow"
+  },
+  {
+   "severity": "major",
+   "file": "set-D-02-b.png",
+   "where": "raised-road crop, bottom right",
+   "what": "the track wires and mounts lack the target metal's tight bright glints and warm reflected points on the blue road below; the road markings also read newer and flatter",
+   "fix": "retain the four-wire track, hoops and hardware but give the metal brighter specular edges, deeper contact shadows, and small warm reflections on a slightly worn road finish"
+  },
+  {
+   "severity": "major",
+   "file": "set-D-01-b.png",
+   "where": "left lift tube, side trim, and lower ivory apron",
+   "what": "the glass and metal read as machined repeating bands with sparse warm reflections, and the apron is clean and panelized; the target has more rounded glass curvature, strong liquid-like glints along the tube and polished trim, and gently stained off-white at the bottom",
+   "fix": "retain the specified openings and plunger configuration, improve glass refraction and bright edge highlights, add varied reflections in the side rails, and soften and subtly age the apron finish and office plaque"
+  },
+  {
+   "severity": "major",
+   "file": "set-D-04-b.png",
+   "where": "roof and sign crop, left",
+   "what": "the lamp is a smooth rounded dome with an opaque white blob and dark stepped base; the target has a more defined transparent ribbed lens, a crisp silver base, and sharp highlights. The sign is heavy slanted sans-serif on flat yellow-cream",
+   "fix": "use distinct refracting lens ribs, a gleaming silver collar and tighter glints; use dark-brown serif type and a fine worn brass edge on ivory while retaining the specified tilt"
+  },
+  {
+   "severity": "major",
+   "file": "set-D-04-b.png",
+   "where": "arrow crop, center",
+   "what": "the arrow face has conspicuous pits, a broad black border, and a blunt curved notch; the target has a smoother glossy face, a finer dark edge with red side reflection, and a tighter notch. Broad milky shell arcs replace the target's smaller mixed reflected highlights",
+   "fix": "remove the pits, refine the notch and bevel, narrow the black rim and let it pick up red edge light; reduce shell haze and add broken, sharply resolved environment glints without changing arrow or ball size"
+  },
+  {
+   "severity": "major",
+   "file": "set-D-04-b.png",
+   "where": "wall and windows crop, right",
+   "what": "the uniform red brick pattern, broad pale horizontal banding and contrasting corner blocks look schematic next to the target's darker irregular mortar and rounded masonry. The hard flat gold or dark panes lack the target's textured orange translucency and glow",
+   "fix": "deepen and vary mortar and brick relief, reduce the contrast of trim bands and corner blocks, soften stone edges, and make the warm panes textured and softly emissive"
+  }
+ ]
+}

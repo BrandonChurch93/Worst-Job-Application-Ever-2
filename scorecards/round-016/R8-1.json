@@ -1,0 +1,58 @@
+{
+ "critic": "R8",
+ "score": 7,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "A: the page at rest, its result, and eight of the keys, as a web page",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "Audio volume field, bottom right, above the Continue button",
+   "what": "when the dial panel opens it pushes the rows below down, and the Audio volume field ends up about 20px above the footer line and Continue. The bottom of the form looks squeezed and close to overlapping, which reads as a layout mistake rather than something happening to the page",
+   "fix": "reserve space below the last field, or open the panel as an overlay, so there is always at least a 48px gap between the last field and the footer"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "crank panel bottom edge vs the Continue button, lower right",
+   "what": "the open crank panel ends about 20px above Continue and nearly touches its top-left curve. Continue looks crowded by the panel",
+   "fix": "move the footer down or keep a fixed minimum gap. Better still, let the page grow and scroll so the footer is never jammed against an open panel"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "all three fields, right column",
+   "what": "every field is an empty box with only a chevron: no placeholder, no value, no hint. A phone number and a date of birth look like select menus, so at rest it is unclear what each one takes or that you can type in it",
+   "fix": "add muted placeholder text in each field (for example '(555) 000-0000', 'MM / DD / YYYY', '0%') so each one reads as a usable input before it is opened"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "the stepper, top right",
+   "what": "step 1 looks the same as the upcoming steps 3 to 5, so there is no 'done' state. The track between knobs gives no sense of progress",
+   "fix": "give completed steps a distinct state (a checkmark, or a filled section of track between 1 and 2) and keep upcoming steps neutral"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01.png",
+   "where": "vertical rhythm between the subtitle and the first field",
+   "what": "the subtitle sits about 44px above 'Contact number', but the gaps between rows are about 108px, and there is a large empty band of about 200px above the footer. Spacing feels uneven and the form floats high",
+   "fix": "increase the gap between the intro and the first row to about 1.5 times the row gap and tighten the row gaps a little, or centre the form block vertically"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-05.png",
+   "where": "Continue button, lower right of the button crop",
+   "what": "the bright white rim sits offset to the lower right of the pill and looks like a misregistered second outline rather than a highlight",
+   "fix": "make the highlight a thin, even inner bevel, or reduce its opacity so it doesn't read as a doubled edge"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01.png",
+   "where": "Continue button",
+   "what": "Continue is grey and low contrast with no disabled cue, so you can't tell whether it is the primary action or disabled. The orange accent is used for the stepper but not for the main action",
+   "fix": "give the primary button the orange accent, or a clearer disabled treatment with a reason shown"
+  }
+ ]
+}

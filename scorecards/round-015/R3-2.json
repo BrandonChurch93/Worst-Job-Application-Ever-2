@@ -1,0 +1,44 @@
+{
+ "critic": "R3",
+ "score": 7,
+ "pass": false,
+ "model": "gpt_6_2_sol",
+ "set": "B: surface and detail, the clear ball sheet, the table map, the page at rest and its result, with crops",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-B-06.png",
+   "where": "top-left and top-right crops, glass assessment panel and its lower bevel",
+   "what": "The panel reads as an opaque gray plaque. The page grain changes abruptly at the border and there is no recognizable view of the substrate through the face or distortion of it at the bevel.",
+   "fix": "Let the paper texture remain faintly visible through the glass, shift it optically at the bevel, and keep diffusion or a translucent backer only as strong as needed for text contrast."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01.png",
+   "where": "right panel, clear ball at the lower bumper",
+   "what": "The ball keeps essentially the same round outline as in flight, and its right edge disappears into the bumper hardware rather than forming a readable flattened contact patch.",
+   "fix": "Flatten the shell locally against the bumper rubber without overlap, bulge the free side slightly, and bend the reflected highlight around that contact patch."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01.png",
+   "where": "left panel, clear ball beside the orange flipper",
+   "what": "The most legible droplets read as beads on the white cursor inside the ball; the outer glass sphere does not convincingly look like it is sweating.",
+   "fix": "Place droplets on the outer curved shell, including along its silhouette, and let them refract and distort the cursor where they cross it."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02.png",
+   "where": "middle tier, pale cross-shaped lane around the three bumpers",
+   "what": "The broad surface reads as matte office carpet rather than sealed playfield artwork. The lamps have local halos, but the bumper rims and rail give little recognizable reflection in the lane.",
+   "fix": "Keep the carpet as a print layer under a clear coat, then add restrained grazing highlights and short, broken reflections from the closest bumper rims and lit hardware."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-06.png",
+   "where": "lower-left crop, damaged arrow at the Continue button",
+   "what": "The arrow reads as a crumpled piece of off-white material. Its bent sections lose the earlier cursor's dark edge and do not show distinct material cross-sections or separations at the breaks.",
+   "fix": "Carry the original hard edge onto the surviving perimeter and use separated fractured faces with a visible wall thickness where the tip and tail have bent or split."
+  }
+ ]
+}

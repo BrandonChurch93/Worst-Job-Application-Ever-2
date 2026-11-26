@@ -1,0 +1,103 @@
+{
+ "critic": "R9",
+ "score": 5,
+ "pass": false,
+ "model": "kimi_k3",
+ "set": "A: one sheet across each of the ten beats, with no time and no word on it",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "the whole sheet and everything after it",
+   "what": "the story regresses: this sheet ends with the arrow settled on a new job board after accepting rejection, yet set-A-05 to set-A-09 put it back on the old 'business months' waiting screen and show it being crushed by the same REJECTED stamp that already landed in set-A-03, then limping to an Accept Rejection button it already used; read left to right the causality is broken",
+   "fix": "order the sheets so the macro wait, the stamp slam and the crush happen before Position Filled / Accept Rejection, and the move to the new board comes last"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "the arrow in every frame",
+   "what": "the arrow glides from spot to spot in the same neutral pointer pose on every frame; nothing in silhouette sells boredom or resignation, it just slides like a cursor with no reaction to the 6-8 month news",
+   "fix": "let the tip sag, slow the drift into heavy trudges, add a small deflated squash on settles so the waiting has weight"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "the frames around the stamp landing",
+   "what": "no wind-up and no flinch: the red stamp simply appears already pressed onto the letter while the arrow sits passively nearby, and the arrow never reacts to the Position Filled reveal itself",
+   "fix": "cut a recoil/flinch on the reveal and 2-3 frames of bracing anticipation before the stamp hits, then a held reaction after impact"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "the Accept Rejection approach, lower frames",
+   "what": "accepting the rejection is plotted but not acted: the arrow moves to the button in a plain hover with no hesitation, no slump, no weight of defeat, and the same neutral pose carries through set-A-09's press",
+   "fix": "slow the approach, have it pull back once and return, then a slow heavy press with a downward squash on the button"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "the arrow over the LED text",
+   "what": "disbelief is implied only by context; in silhouette the arrow just points and slides across the letters with a perfectly steady pose, so shock and anxiety do not read at a glance",
+   "fix": "add a lean-back recoil when it reaches 'months' and a fine tremble in the point while it re-reads"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-08.png",
+   "where": "the arrow, top two rows especially",
+   "what": "the crushed form is held too long and too formless: through most of the sheet the arrow is an unrecognizable white wad with no point, so in silhouette it no longer reads as the character recovering",
+   "fix": "keep one kinked point or directional lean in the crumple so it stays readable, and let it pull itself back toward arrow shape progressively through the sheet"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-04.png",
+   "where": "the arrow on the new homepage frames",
+   "what": "the arrow is washed-out grey against the pale page in several frames, low contrast and hard to pick out at a glance",
+   "fix": "restore the full white fill and dark outline used elsewhere"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-06.png",
+   "where": "the bottom-row fast-move frames",
+   "what": "the streak frames turn the arrow into a flat side-on smear whose stretch does not track the travel arc, so the fast move reads as artefact rather than speed",
+   "fix": "stretch along the actual motion path while keeping the point readable"
+  }
+ ],
+ "reads": [
+  {
+   "file": "set-A-01.png",
+   "read": "resigned and bored; it has just been told the decision will take 6-8 business months and is drifting around the waiting screen killing time"
+  },
+  {
+   "file": "set-A-02.png",
+   "read": "shocked; it has just read that the position was filled by an AI trained by the CEO's nephew, and the rejection stamp is about to slam down"
+  },
+  {
+   "file": "set-A-03.png",
+   "read": "defeated; the letter has been stamped REJECTED, an Accept Rejection button has appeared, and it is about to give in and click it"
+  },
+  {
+   "file": "set-A-04.png",
+   "read": "numb and hopeless; pulling back from the rejection, it drifts onto a jaded new job board, about to start the whole thing over"
+  },
+  {
+   "file": "set-A-05.png",
+   "read": "incredulous and anxious; up close on the absurd '6-8 business months' wait, hovering over the words, still waiting"
+  },
+  {
+   "file": "set-A-06.png",
+   "read": "restless, then alarmed; idling on empty ground, then the huge red stamp enters and it darts as the stamp is about to come down on it"
+  },
+  {
+   "file": "set-A-07.png",
+   "read": "panicked, then crushed; the stamp slams down and it is flattened, dragged, and pinned under the REJECTED stamp"
+  },
+  {
+   "file": "set-A-08.png",
+   "read": "battered and dazed; the stamp has lifted and, still crumpled, it staggers toward the Accept Rejection button"
+  },
+  {
+   "file": "set-A-09.png",
+   "read": "exhausted and resigned; beaten flat, it crawls onto the Accept Rejection button and is about to press it"
+  }
+ ]
+}

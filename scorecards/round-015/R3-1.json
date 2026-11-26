@@ -1,0 +1,65 @@
+{
+ "critic": "R3",
+ "score": 8,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "A: surface and detail, the ten keys whole",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "the clear tube below the porthole, right side, at the two lower rings",
+   "what": "its shadow on the page breaks into detached dark diagonal wedges beside each ring, with no continuous contact shadow along the tube; it reads as a composited overlay, not a tube lying on or standing off the page",
+   "fix": "cast one continuous shadow for the tube, with a tight dark line where the rings come closest to the page and a softer falloff beyond, and no separate wedges"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "the backbox, 'THE DAILY GRIND' over the skyline",
+   "what": "the title is flat type sitting on a flat skyline picture, with no glass, no backlight and no bevel, so it looks like a pasted banner and not lit translite art",
+   "fix": "put the art behind a glass face with a reflection and an even backlight glow, and give the title a printed or embossed finish that belongs to the art"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "the wire ramp's entry plate, upper left of centre",
+   "what": "the entry plate is a plain grey box with no flap, no rivets or screws and no lip down to the floor; it is the one stock box on a detailed table",
+   "fix": "model a proper ramp entrance: a thin steel flap with a lip onto the playfield, screw heads, and a small contact shadow"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png / set-A-10.png",
+   "where": "the 'Background Check' sign inside the spiral tower",
+   "what": "the sign is cut through by the spiral ramp and its text is unreadable, so the sign and the ramp seem to share the same space",
+   "fix": "move the sign clear of the spiral or mount it above, so it sits in front with a gap"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-05.png",
+   "where": "the lower right display",
+   "what": "the scrolling text is caught mid-scroll as '(In Lieu of', clipped at the left; on a still this reads as cropped text",
+   "fix": "choose a frame where the message is whole, or let the text scroll in from a clean margin"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-03.png",
+   "where": "the spinner by the red carpet and the ball",
+   "what": "the spinner's arms run under the ball's edge with no shadow or gap where they cross, so the height order is unclear",
+   "fix": "cast the ball's shadow onto the spinner arm and keep a visible gap between them"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-04.png",
+   "where": "the Corporate HQ tower windows",
+   "what": "the office interiors repeat the same small white blocks floor after floor, which shows the tiling at a glance",
+   "fix": "vary the interiors from floor to floor (lights on or off, different desks, blinds)"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-10.png",
+   "where": "the apron at the bottom edge",
+   "what": "strong depth of field softens the apron's lower edge into smear, and the fine print there goes soft",
+   "fix": "ease the blur or move the focal plane down a little so the near apron stays crisp"
+  }
+ ]
+}

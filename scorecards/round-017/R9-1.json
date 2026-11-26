@@ -1,0 +1,74 @@
+{
+ "critic": "R9",
+ "score": 7,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "A: one sheet across each of the ten beats, with no time and no word on it",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "row 2 column 3 through row 4 column 2, recoil from Submit and machine assembly",
+   "what": "The retreat is legible, but once the arrow reaches the left edge of the verification card it looks like a parked pointer while the machine assembles. There is no distinct held alarm pose or second reaction to the unfolding limbs.",
+   "fix": "After the first snap back, compress the arrow into a low lean away from the machine, let its tip lift toward the limbs, and hold that silhouette before it leaves cover."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "rows 2 and 3, arrow between red warning tags and the shield",
+   "what": "Firing is clear from the light, but banking, aiming, and dodging use almost the same small diagonal arrow; passing red tags often get no distinct reaction. The effects are doing more of the acting than the cursor.",
+   "fix": "Add a brief aim wind-up, a sharp counter-tilt on the nearest warning pass, and a stretched escape pose before returning to the attack angle."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "row 1 column 2 through row 3 column 2, successive dialog arrivals",
+   "what": "Privacy, expiry, and leave prompts arrive during effectively the same firing pose. There is a quick sideways flinch later, but no readable hold or recovery to distinguish getting crowded from simply continuing to shoot.",
+   "fix": "Interrupt the repeated diagonal with a visible pullback for one close pop-up, hold the compressed silhouette, then stretch back into the firing stance."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-06.png",
+   "where": "rows 3 and 4, breakup and debris settle",
+   "what": "The machine reacts strongly but the arrow mostly clears the debris and settles into its standard pointer angle. Compared with the big reversal on screen, its own reaction is too neutral to distinguish triumph, relief, or wariness in the silhouette.",
+   "fix": "Give the breakup a clear backward snap and squash, then let the cursor hold a contrasting tall recovery pose before approaching the exposed button."
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-07.png",
+   "where": "row 2 columns 2 and 3, arrow at the left end of the orange button",
+   "what": "The cursor tip briefly merges with the button’s dark end, making the beginning of the press harder to separate from the debris.",
+   "fix": "Keep a sliver of light around the tip until the contact frame, then use a short tip-first compression for the click."
+  }
+ ],
+ "reads": [
+  {
+   "file": "set-A-01.png",
+   "read": "Wary and curious, it edges along the tiny print, checks ‘I am not a robot,’ then straightens under the confirmation as if relieved."
+  },
+  {
+   "file": "set-A-02.png",
+   "read": "Confident enough to go for Submit, then startled into retreat when the button tears out of the page and builds a machine around itself."
+  },
+  {
+   "file": "set-A-03.png",
+   "read": "Determined but on guard, it angles toward the Submit machine and fires while red error labels fly at it; the machine’s shield catches the shots."
+  },
+  {
+   "file": "set-A-04.png",
+   "read": "Pressed and frustrated, it keeps firing at the shield as privacy, expiry, and leave prompts crowd the lane; it jerks aside when a red warning gets close."
+  },
+  {
+   "file": "set-A-05.png",
+   "read": "Urgent and improvising, it darts high as the session expires, then dives and closes on the bottom edge of the shield, firing at close range."
+  },
+  {
+   "file": "set-A-06.png",
+   "read": "Dogged, then watchful as the attack pays off: the machine buckles and breaks apart, leaving the arrow hovering under the smoking Submit button."
+  },
+  {
+   "file": "set-A-07.png",
+   "read": "Wary but resolved, it hangs just below the ‘Click to submit’ prompt, noses up to press the battered button, then pulls away as the page tips into darkness."
+  }
+ ]
+}

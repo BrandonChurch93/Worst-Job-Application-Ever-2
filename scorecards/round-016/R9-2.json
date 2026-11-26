@@ -1,0 +1,88 @@
+{
+ "critic": "R9",
+ "score": 6,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "B: one sheet of each acting state the page uses, plain, nervous, shocked, confident, scared and exhausted, with no time and no word on it",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-B-04.png",
+   "where": "frames 5 to 11, the arrow on the crank handle",
+   "what": "the arrow is lost in heavy motion blur behind the handle; its silhouette does not read, and the cranking reads as the handle moving on its own rather than the arrow straining",
+   "fix": "keep the arrow's silhouette sharp on at least the key poses of each turn; show it leaning and stretching along the direction of pull, with a squash at each reversal"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01.png",
+   "where": "frames 1 to 7, the arrow between the dropdowns",
+   "what": "it mostly slides and gently rotates like a pointer; there is no clear wind-up before it moves in to the dial and no reaction when the fields open up and the dial appears",
+   "fix": "add a crouch or pull-back before it moves in, and a clear take (a stretch up, then a settle) when the phone dial is revealed"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-05.png",
+   "where": "frames 4 to 12, the arrow sliding along the meter to the Continue button",
+   "what": "pointer-like gliding and turning with no squash or stretch and no held pose; the tiredness or impatience is not held long enough to read",
+   "fix": "hold one clear slumped or tapping pose for several frames by the Continue button, and give the moves an ease with a small squash on each stop"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-06.png",
+   "where": "frames 2 to 6, the tip catching fire on the meter",
+   "what": "the reaction to being burned is weak; the arrow keeps the same pose and just gets a scorch mark, with no recoil, squash or flinch, then blurs away",
+   "fix": "add a sharp recoil with a stretch away from the meter, a squash on impact, and a held shocked pose before it is pulled back to the crank"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03.png",
+   "where": "frames 1 to 3, the lever pull",
+   "what": "there is no wind-up before the lever is pulled; the arrow is beside the lever, then coins are already out and it is lying sideways; the action itself is not seen",
+   "fix": "show the arrow reaching up, gripping, and pulling the lever down with a stretch, then the coins burst and it recoils"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-02.png",
+   "where": "frames 10 to 12, the arrow going blurred and doubled",
+   "what": "the blur and ghosting reads as a rendering artifact more than trembling; the feeling is unclear",
+   "fix": "replace the blur with a readable tremble, small sharp offset poses, or a clear squash before it moves on"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-07.png",
+   "where": "frames 3 to 12, the melted arrow",
+   "what": "strong and readable, but the melted lump changes shape a lot from frame to frame, so it reads as a different object in places",
+   "fix": "keep a consistent melted silhouette, the bent tip and droopy tail, and animate the limp through squash and stretch on that shape"
+  }
+ ],
+ "reads": [
+  {
+   "file": "set-B-01.png",
+   "read": "cautious and curious, it drifts down between two dropdown fields, tilts and peers about, then the fields open out and it is drawn in to dial a rotary phone, uneasy but going along"
+  },
+  {
+   "file": "set-B-02.png",
+   "read": "lost and hesitant, it turns about on a blank page, wobbles side to side unsure where to go, then goes blurry and trembles as new text and fields come in; it is about to be pulled into the next task"
+  },
+  {
+   "file": "set-B-03.png",
+   "read": "startled then wary, it has just pulled a slot machine lever and coins spill out; it recoils, hangs back and watches the coins warily, then moves on toward the next dropdown"
+  },
+  {
+   "file": "set-B-04.png",
+   "read": "already singed and smoking from the last task, it grits on and frantically spins a crank round and round, blurred with effort, while the meter slowly fills"
+  },
+  {
+   "file": "set-B-05.png",
+   "read": "tired and impatient, it lets go of the crank, slides down the meter and hovers by the Continue button, turning back and forth as if wondering if it is done yet"
+  },
+  {
+   "file": "set-B-06.png",
+   "read": "hurt and alarmed, its tip catches fire and smokes as it brushes the glowing meter, it is yanked back to crank again, and it keeps going while burning"
+  },
+  {
+   "file": "set-B-07.png",
+   "read": "burnt out and defeated, the burning tip melts it into a soft bent lump, then it limps and staggers across an empty page, crumpled but still trying to move"
+  }
+ ]
+}

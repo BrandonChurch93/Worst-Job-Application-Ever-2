@@ -1,0 +1,212 @@
+{
+ "critic": "R1",
+ "score": 5,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "A: the page with the loader, the whole machine and the clear ball sheet beside the approved images, whole and in crops",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-A-01-b.png",
+   "where": "page and cast shadows, especially below and right of the boss",
+   "what": "The build is a cooler, more uniform gray. The boss, active progress puck and cursor lose the target's strong upper-left illumination and deep, directional lower-right shadows; the scene reads like a flat render rather than lit objects on warm paper.",
+   "fix": "Warm the evenly lit paper slightly, soften the fine uniform noise into paper tooth, and give the upper-left key stronger highlights and deeper, longer lower-right cast shadows without introducing a light band."
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-03-b.png",
+   "where": "page and shadows under demolished parts",
+   "what": "The cooler, even page and pale compact shadows lose the target's warm tactile surface and heavy lower-right shadows, most obviously under the orange cap and round metal debris.",
+   "fix": "Use a warmer page with subtler, less uniform grain, and strengthen the directional key and down-right contact and cast shadows."
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-01-b.png",
+   "where": "top progress rail, left of the three remaining pucks",
+   "what": "The first two puck positions are bare, leaving a visibly long dead stretch where the target has five occupied positions.",
+   "fix": "Restore the visual presence of the first two rail positions in this still so the header reads as a complete five-position row."
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-03-b.png",
+   "where": "top progress rail, left of the three remaining pucks",
+   "what": "The target's first two puck positions are bare in the build, making the rail look abandoned across its left half.",
+   "fix": "Restore the visual presence of the first two rail positions in this still."
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-05-b.png",
+   "where": "under all four states",
+   "what": "The complete row of centered dark state captions is missing, leaving a visibly different sheet layout.",
+   "fix": "Add the four state captions from the approved copy, in dark regular type at a consistent baseline below their corresponding states."
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-05-b.png",
+   "where": "the full four-state row and paper",
+   "what": "The sheet is cool and flat next to the warm photographed paper. The hardware has gray, diffuse shading and narrow graphic borders instead of warm raking highlights and distinctly down-right shadows. The early states sit farther left relative to the target, while the boss is canted toward the right margin.",
+   "fix": "Match the warm paper and directional lighting, and rebalance the four state centers and outside margins, retaining configured part sizes."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "right-hand machine silhouette and placement",
+   "what": "The machine reads farther right; its arms mount nearly upright and kink through their joints where the reference forms four continuous diagonal spokes. Its central housing also reads as three separate flat tiers.",
+   "fix": "Recenter the assembly slightly left, bring the link and hinge alignment toward a splayed X, and tie the front and rear plates together with coherent depth and metal bevels."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "the red alert tiles between panel and machine",
+   "what": "They read relatively flat and near horizontal, with heavier lettering and gray shadow bars. The bottom tile is farther left and lower, crowding the socket, rather than completing the reference's tighter, more tilted stagger.",
+   "fix": "Shift the alert group left where it approaches the shield but bring the bottom tile up and toward the machine; increase the counterclockwise tilt, ease the label weight, and add glossy deep-red bevels and directional shadows."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "front-plate crop, housing and orange cap",
+   "what": "The plate has uniform cool horizontal striping, strong graphic seams and evenly stamped rivets instead of directional brushed sheen and contrasting machined edges. The orange cap looks flatter and more muted, with a restrained edge glint, and the white label is heavier and more undersized relative to the face.",
+   "fix": "Shape the plate with localized metallic edge catches and darker recesses; give the cap a rounded upper-left specular roll and dark lower seating rim, with a more open medium-weight label treatment."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "cannon crop and exposed hinges in the top row",
+   "what": "The barrel is styled as a repeated stepped spool and the disc as stacked rings, rather than a simple dark bore, tapered metal tube and radial brushed face. The hinge faces are mechanical ring badges rather than reflective capped bearings.",
+   "fix": "Simplify the barrel profile, show a clearly dark open bore, and model directional radial reflections on the disc and rounded hinge caps."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "shield and shot-in-flight crops",
+   "what": "The shield is a flat opaque olive-green shape with a sharp white outline, missing the reference glass's thick translucent depth and internal reflections. The hit is a large white-yellow bloom near the middle with a spray across the pane; the target has a small edge flash and thinner star rays. Away from impact the darts read as stronger warm triangular glows.",
+   "fix": "Give the glass a rounded polished side wall, muted transmission and internal reflection; bring the hit to the glass's left edge, reduce the bloom and make the fine rays more localized while keeping its dart; soften the in-flight glows."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "arrow crop and lower-left in set-A-01-b.png",
+   "what": "The pale face is more strongly cut by a dark bevel, with a sharp glint, and the arrow has a softer, lighter shadow than the target's broad light face, clean black perimeter and dense cast shadow. In the whole still it also sits farther right and lower.",
+   "fix": "Keep the configured cursor size, but move its anchor slightly up-left, open up the off-white enamel face inside the clean dark edge, and give it a darker directional shadow."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "open socket crop and lower center in set-A-01-b.png",
+   "what": "The rim looks like an even gray granular ring, and a smooth gray inner floor is plainly visible. The target has a thin shiny battered lip and more nearly black, textured depth. The surrounding fractures read as heavy regular spokes with loose crumbs rather than cuts meeting the broken lip.",
+   "fix": "Make the lip more reflective and irregular, darken and roughen the recess, and taper the cracks with a few small chips torn directly from their edges."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "checkbox crop and left card in set-A-01-b.png",
+   "what": "The card reads as a flat gray-green panel with a fine bright outline, tighter corners and little internal bloom. The target has a rounded glass-like roll, mottled cloudy color and deeper contact. The card copy sits too close to the left edge and the check is a flat orange tile compared with the recessed gloss of the target.",
+   "fix": "Soften and round the rim, add clouded interior variation and contact shading, increase the type inset, and give the check a sculpted orange cap with a dark seat and warm glint."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "long bar and round progress-button crops",
+   "what": "The progress fill terminates in a separate bright dot instead of a single rounded inset orange bar, and the channel and rail look horizontally striped. The active puck lacks the warm reflection onto the rail; the idle puck has a more graphic multi-ring rim and heavier numeral rather than the target's dark engraved appearance.",
+   "fix": "Integrate the orange terminus into one continuous rounded fill, simplify the striping into brushed metal and a shadowed recess, and match the pucks' engraved type, glossier faces and localized orange reflection."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "header and step typography",
+   "what": "The top title runs slightly farther right, and the small bar label is crowded toward the heading and reads heavier and less tracked than in the target.",
+   "fix": "Tighten the title width slightly and restore the lighter, more tracked bar-label treatment and vertical breathing room."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03-b.png",
+   "where": "debris field around the cap, left of the cap, and at far lower right",
+   "what": "The scattered silhouette changes: there is another long outlined fragment directly below the verification card and a large diagonal fragment at far lower right with no counterpart in the target's group. The remaining slabs and links sit in a different stagger and orientation around the cap and port.",
+   "fix": "Consolidate those outlying fragments with the intended wreckage; bring the side slabs and detached hinges into the reference's opposing stagger and use matching directions without rescaling the parts."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04-b.png",
+   "where": "cap and smoke crop",
+   "what": "The blackening is an opaque blotchy mask with little thermal transition; the orange between the ends is flatter and the two smoke trails are broad and similarly smooth. The target shows localized baked-in soot, bright surviving gloss, and wispy trails with different curl and density.",
+   "fix": "Keep the dents, but blend scorch into the plastic with singed edges and localized sheen, and vary smoke opacity, width and curvature as it rises."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04-b.png",
+   "where": "exhausted arrow crop and near cap in set-A-03-b.png",
+   "what": "The white arrow face looks almost clean. The target has small pits or blister-like marks, scuffs and chipped enamel toward the lower dark edge and stem.",
+   "fix": "Keep the configured size and exhausted sag; add a few naturally scaled flecks, small face blisters and edge chips to the ivory enamel and dark surround."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04-b.png",
+   "where": "front plate and side piece crops, including fragment above shield",
+   "what": "The wreckage reads as clean stamped panels with repeated fasteners, a curved cutout and smooth solid outlines. The target shows simpler broken slab faces, warmer exposed edges, scratches and a damaged corner on the plate above the glass.",
+   "fix": "Use irregular broken or stressed edges, directional brushed metal and small scratches; restore the slab-like silhouette and add the torn warm-metal catches rather than treating all fragments as intact panel graphics."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04-b.png",
+   "where": "detached cannon and links crop",
+   "what": "The barrel has a stepped spool profile; the disc and hinge faces have schematic concentric outlines, unlike the target's simpler bore, radial brushed disc and rounded polished link ends.",
+   "fix": "Give the barrel a simpler tapered cylinder and dark bore and the disc and link ends directional metal highlights and reflected edge light."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04-b.png",
+   "where": "broken shield crop and lower right in set-A-03-b.png",
+   "what": "The cracked shield reads as a flat green plate with white crack strokes and a sharp outline. The target glass has thicker rounded edges, hazy depth and fracture segments that shift in brightness and depth.",
+   "fix": "Carry transmission and colored thickness through a rounded rim; embed the branching fractures in the glass with dark-to-bright transitions and tiny reflected chips or highlights."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04-b.png",
+   "where": "open socket crop and lower center in set-A-03-b.png",
+   "what": "The pale grainy ring and exposed gray floor make the cavity look manufactured into concrete, and the cracks radiate more regularly. The reference has a dark layered cavity, mostly metallic lip and better-integrated chips.",
+   "fix": "Build a thinner battered reflective rim around a dark textured recess, and let irregular, tapered cracks and flakes break directly out of the rim."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04-b.png",
+   "where": "empty progress channel and divider crop",
+   "what": "The channel reads as smooth stacked gray bands with a strong pixel-straight bright lower edge, rather than a dark inset with a slim reflected lip. The divider similarly looks like a uniform hairline.",
+   "fix": "Shape the channel as a light-catching bevel above a darker brushed recess and give the divider subtle metal edge shading."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04-b.png",
+   "where": "checkbox crop and left card in set-A-03-b.png",
+   "what": "The uniform gray-green face, sharp white edging, tight copy inset and flat check lack the target's cloudy rounded panel, softer dark-to-light bevel and orange enamel depth.",
+   "fix": "Round and shade the rim, add subtle internal haze and a stronger contact line, breathe the copy inward, and make the check read as a small inset glossy cap."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "resting state, far left",
+   "what": "The orange face is flatter and duller, and the base is a single pale granular rim rather than a dark metallic layered socket. The small bold button label has less presence than the target's larger, more open lettering.",
+   "fix": "Add rounded orange gloss and a dark seated gap with layered reflective metal, and match the label's visual proportions and weight without changing the part scale."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "breaking-loose state, second from left",
+   "what": "The exposed recess has a broad pale rough ring and bright gray shelf below the cap. The longer regular fractures and hard scattered crumbs look less naturally torn than the target, and the cap lacks a strong edge shine.",
+   "fix": "Darken the shelf into an actual recess, use a thinner metallic lip and naturally branching cracks with attached edge chips, and restore the rounded orange highlight."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "unfolding state, third from left",
+   "what": "The links rise as upright hoops before turning inward, unlike the reference's diagonally emerging articulated legs. The front and rear plates are visually separated flat tiers; the normal and unfolded caps have nearly identical flat lighting rather than curved reflective faces.",
+   "fix": "Set the hinge angles for a diagonal unfolding silhouette, use warmer and more directional brushed highlights with genuine bevel depth, and relight the plastic as a curved cap."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "boss state, far right",
+   "what": "The plate stack and bolts feel schematic, the top and bottom limbs are near vertical at the joints, the barrels are stepped cylinders, and the shield is opaque with an outline rather than thick translucent glass. The label sits on a shallow-looking orange face.",
+   "fix": "Bring the limb angles toward a continuous X and unite the metal layers with warmer machined bevels; use simpler dark-bore barrels, glass thickness and internal reflections, and a stronger gloss roll across the orange face. Keep the numbered discs."
+  }
+ ]
+}

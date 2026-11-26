@@ -1,0 +1,44 @@
+{
+ "critic": "R3",
+ "score": 6,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "A: surface and detail, the ten keys whole",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-09.png",
+   "where": "the field crops, top left and middle right",
+   "what": "The field faces read as opaque gray gradient fills. The thin rim has a highlight, but there is no readable glass edge thickness, reflection on the face, or visible layer beneath it.",
+   "fix": "Model a thin beveled cover above the recessed well, with a glancing reflection along one end and the underlying backing and inner wall visible through the face."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-08.png",
+   "where": "the pointer at the orange crank grip, middle left",
+   "what": "The pointer reads as a flat white cursor with a heavy black outline. Its exposed lower edge has no distinct sidewall or specular highlight, and its shadow is not distinct from the crank's on the tray.",
+   "fix": "Give the pointer a shallow extrusion and a narrower bevel that catches the same key light as the metal. Cast an offset shadow separately onto the grip and tray."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-09.png",
+   "where": "the Continue button and its socket, top right",
+   "what": "The gray cap reads as one flat fill with a dark top-left stroke and a white bottom-right stroke; there is no distinct cap sidewall or continuous clearance seam separating it from the socket.",
+   "fix": "Give the cap a shallow crowned face and chamfer, then separate its edge from the recessed socket with a narrow dark clearance seam and tighter contact occlusion."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "the rotary dial and its mount inside the open contact-number tray, top left",
+   "what": "The dial has convincing metal and recessed numeral holes, but the entire assembly sits over the tray on a broad shadow without a visible mounting flange or cutout. The small stop looks stuck onto the rim rather than mechanically anchored.",
+   "fix": "Seat the dial into a visible collar with a narrow contact seam at the tray, and anchor the finger stop with a small bracket or fastener."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "the date-reel window in the center of the parts sheet",
+   "what": "The reels are readable, but the large front opening does not read as a covered glass window: no reflection crosses multiple reels and no edge reveals a separate pane inside the metal frame.",
+   "fix": "Set a lightly reflective pane into the inner frame and add a restrained off-axis reflection across the reels, keeping the numerals sharp beneath it."
+  }
+ ]
+}
