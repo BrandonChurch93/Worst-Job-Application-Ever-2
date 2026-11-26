@@ -247,7 +247,7 @@ export function makePage(): PageLogic {
     const a = turnOf(i)
     const sin = Math.sin(a)
     const cos = Math.cos(a)
-    out.push({ id: `${n.id}-pit`, part: 'perk-cards', kind: 'well', x: b.x, y: b.y, w: b.w, h: b.h, z0: -(b.h / 2 + PIT_CLEAR), z1: 0, tone: 'dark', mechanism: true })
+    out.push({ id: `${n.id}-pit`, part: 'perk-cards', kind: 'well', x: b.x, y: b.y, w: b.w, h: b.h, z0: -(b.h / 2 + PIT_CLEAR), z1: 0, tone: 'page', mechanism: true })
     out.push({ id: `${n.id}-slab`, part: 'perk-cards', kind: 'box', x: b.x, y: b.y, w: b.w, h: b.h, z0: half, z1: turningTop(i), tone: 'glass', r: CARD_R, turnX: -a, mechanism: true, v: [heights.card] })
     ;(n.children ?? []).forEach((c, k) => {
       const front = c.states?.includes(st.shut) === true

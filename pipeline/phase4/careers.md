@@ -50,3 +50,8 @@ None of my own so far. Every surface uses the shared pictures of `materials()`.
 - The nav button stays the shell's button, 72 high. I made it 58 high as approved has it, and M9 failed ("nav-cta-cap: its height on the page: [58] against 72 within 2"), so I took it back. A smaller nav button needs a size of its own in `config/` and in the measure, which are the Builder's.
 - The fine print on the cards asks for `ink: 'soft'`.
 - The ticker's runs are cut 18 px in from the strip's ends (`TICKER.clip`), inside the hollow, so the 2 px box of a run that crosses an end lies where the words are seen; M4 read 1.17 for a run whose box lay under the ground edge.
+
+## 02:05 UTC (Builder's clock)
+
+- The well under a turning card is now the page's own ceramic (`tone: 'page'`), not `dark`. MEASURED by eye on the sheet of `marketing.perks` (samples 2.53 s and 4.70 s) and on stills at 0.06 and 0.088 of the beat: the dark well read as a black hole under the card, the darkest thing on the page; in ceramic it reads as a tray routed into the page with the slab's shadow in it. This replaces the line "The well under a turning card is dark" above.
+- The words of a perk card sit lower, by the approved image: side margin 36, the open title 46 below the card's top, the promise 30 below the title. MEASURED beside approved (`references/approved/marketing-top.png`, crop 100 to 1300 by 600 to 1080): title, promise, rule and fine print now lie within about 4 px of the approved lines.

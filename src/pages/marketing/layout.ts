@@ -67,11 +67,11 @@ export const perkStates = (i: number): { shut: string; open: string } => ({ shut
 function perkCard(i: number, x: number, y: number): LayoutNode {
   const k = `copy:marketing.perks.items.${i}`
   const st = perkStates(i)
-  const pad = 32
+  const pad = 36
   const wrap = CARD_W - pad * 2
   const tCap = cap(T.cardTitle)
   const bCap = cap(TYPE.body)
-  const promiseY = y + 36 + tCap + 22
+  const promiseY = y + 46 + tCap + 30
   const ruleY = promiseY + bCap + 26
   const faceTop = y + (CARD_H - (tCap + 22 + bCap)) / 2
   return node(`perk-${i}`, 'card', [x, y, CARD_W, CARD_H], {
@@ -79,7 +79,7 @@ function perkCard(i: number, x: number, y: number): LayoutNode {
     children: [
       text(`perk-${i}-title`, `${k}.title`, T.cardTitle, x + pad, faceTop, { ...onCard, states: [st.shut] }),
       text(`perk-${i}-promise`, `${k}.promise`, { ...TYPE.body, wrap }, x + pad, faceTop + tCap + 22, { ...onCard, states: [st.shut] }),
-      text(`perk-${i}-title-open`, `${k}.title`, T.cardTitle, x + pad, y + 36, { ...onCard, states: [st.open] }),
+      text(`perk-${i}-title-open`, `${k}.title`, T.cardTitle, x + pad, y + 46, { ...onCard, states: [st.open] }),
       text(`perk-${i}-promise-open`, `${k}.promise`, { ...TYPE.body, wrap }, x + pad, promiseY, { ...onCard, states: [st.open] }),
       node(`perk-${i}-rule`, 'cardRule', [x + pad, ruleY, wrap, 2], { part: 'perk-cards', floor: heights.card, height: heights.card + 1, tone: 'metal', states: [st.open] }),
       text(`perk-${i}-fine`, `${k}.finePrint`, { ...TYPE.helper, wrap, lead: 26, ink: 'soft' }, x + pad, ruleY + 26, { ...onCard, states: [st.open] })
