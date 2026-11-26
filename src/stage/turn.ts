@@ -64,3 +64,19 @@ export const shiverAt = (seconds: number): number => SHIVER.hop * Math.abs(swing
 export const rattleAt = (seconds: number): number => SHIVER.slide * swing(seconds)
 
 export const shiverDelay = (down: number): number => SHIVER.spread * Math.min(1, Math.max(0, down))
+
+// What a thing shivers with: the lowest loose thing under its middle that it stands on, or else itself.
+// Type that is set on a card then hops with the card and never sinks into it, and a box on a card never leaves it.
+export function shiverBase<T extends { kind: string; x: number; y: number; w: number; h: number; z0: number; z1: number; pocket?: boolean }>(list: readonly T[], s: T): T {
+  const cx = s.x + s.w / 2
+  const cy = s.y + s.h / 2
+  const foot = s.kind === 'text' ? s.z1 : s.z0
+  let base = s
+  for (const u of list) {
+    if (u === s || u.kind === 'text' || u.kind === 'well' || u.kind === 'anchor' || u.pocket === true) continue
+    if (u.z1 <= SHIVER.loose || u.z1 > foot + 0.75) continue
+    if (cx < u.x || cx > u.x + u.w || cy < u.y || cy > u.y + u.h) continue
+    if (base === s || u.z0 < base.z0) base = u
+  }
+  return base
+}

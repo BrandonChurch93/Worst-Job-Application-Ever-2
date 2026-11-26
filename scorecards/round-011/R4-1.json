@@ -1,0 +1,37 @@
+{
+ "critic": "R4",
+ "score": 7,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "A: motion, one sheet of frames spread across each of the page's ten beats",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "Corporate HQ doorway, 1:20.17 to 1:21.97",
+   "what": "The clear ball comes up to the already-open doors and barely moves for several samples. The view then changes to the next playfield without showing the threshold crossing, so it reads as a posed insert rather than a ball going through a gate.",
+   "fix": "Keep the ball and the threshold in the same view through the crossing. Time the door swing and stop to the ball's approach, then let it roll visibly into the next playfield before changing views."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-09.png",
+   "where": "Below the Background Check spiral at the right flipper, 1:41.53 to 1:42.63",
+   "what": "The ball hangs near the same end of the right flipper across several samples while the flipper keeps the same angle, then slides toward center. The low view makes it look suspended rather than supported or struck.",
+   "fix": "Show the ball dropping onto the bed or the flipper, with a readable point of contact and a quick change in velocity if the flipper kicks it."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "You're Fired cup, 1:34.27 to 1:36.17",
+   "what": "The close-up shows the ball already at rest with the beacon already on. The dwell is long enough to read, but there is no visible catch or release cue, so it is unclear what the machine did to the ball.",
+   "fix": "Show the ball arriving and settling into the cup, trigger the beacon on contact, and give the release a visible mechanical action before cutting away."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-10.png",
+   "where": "Continue button and outgoing slab, 1:48.07 to 1:48.97",
+   "what": "The last sample shows the slab already edge-on. The button press and the start of the turn are missing from the sampled action, and the new page never lands within this sheet, so the turn's cause, weight and settle are unclear here.",
+   "fix": "Carry a consecutive-frame strip from the button's downstroke through the slab's start and hard stop, then hold on the newly seated page."
+  }
+ ]
+}

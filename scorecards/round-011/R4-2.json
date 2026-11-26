@@ -1,0 +1,72 @@
+{
+ "critic": "R4",
+ "score": 5,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "B: the way in, the way out, the last two hits, the flipper save, the rail ride and the page turn that ends the page",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-B-07.png",
+   "where": "new page after it seats, 1:49.30 to 1:49.80, the Human Verification box",
+   "what": "small text blinks on and off from frame to frame after the page has settled. 'I am not a robot' is missing at 1:49.43 and 1:49.53, the 'Human Verification' title is missing at 1:49.67, and both are back at 1:49.80. It does not read as a reveal. At normal speed it shows up as flicker on a page that has just come to rest",
+   "fix": "find what toggles the label layers after the turn (late font or texture load, z-fighting with the panel glass, or a reveal that restarts) and keep the labels drawn steadily from the first settled frame"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03.png",
+   "where": "the clear ball reaching the seal, 1:45.80 to 1:46.13",
+   "what": "the ball simply vanishes between 1:45.93 and 1:45.97, and the arrow sits outside it. The seal does not flinch, flash or ring, and the page shows no response. The page is also still drifting upward, so the hit lands on a moving target. Without a caption you cannot tell that this was a hit",
+   "fix": "let the page finish settling first. Then on the contact frame give the seal a short, hard reaction (a 1-2 frame dip and ring flash, or a small shake of the slab) and break the ball open visibly over 2-3 frames before the arrow is released"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-04.png",
+   "where": "the arrow cursor at real size, 1:46.17 to 1:46.53",
+   "what": "the arrow's outline changes from frame to frame into a lumpy, melted shape like a tooth or bone, with its tip and tail wobbling. The shape shimmers even though the cursor is barely moving. Nothing else in this sheet changes, so it is unclear what the 'hit' was",
+   "fix": "draw the cursor as one rigid shape with a fixed silhouette, and if this sheet is meant to show a hit, give that hit a visible contact"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-07.png",
+   "where": "the Continue click and the start of the turn, 1:48.40 to 1:48.67",
+   "what": "the Continue button does not go down or spring back before the slab starts to tip, so the click that triggers the turn gets no answer. Then the old slab tips away and the new one seats in about 0.6 s, with no wind-up and no hold, so the turn reads as hurried rather than heavy",
+   "fix": "press the button in for 2-3 frames and let it spring back, then hold for a beat. Give the slab a small wind-up (a slight lift or lean the wrong way) before it tips, and stretch the turn a little so its mass can be felt"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-06.png",
+   "where": "the rail ride, 1:38.17 to 1:38.50",
+   "what": "the camera is locked to the ball, so the ball stays dead centre in every frame while the rails and table slide past underneath. The ball seems to float between the rails rather than ride on them, and its speed cannot be read. It looks carried by hand, not loose on a rail",
+   "fix": "let the ball move through the frame, with the camera lagging and easing behind it, and seat it visibly on the rail wires (contact shadow, rails passing under it at the touch points)"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01.png",
+   "where": "the way in, 1:10.83 to 1:11.37",
+   "what": "the change from the page with the tube to the whole machine is a jump in scale and angle with no motion in between. The camera angle then changes again between 1:11.37 and 1:12.40, so the move in has no single eased path",
+   "fix": "run one continuous, eased camera move from the seal out to the whole machine, or make one clean, deliberate cut and then hold"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-05.png",
+   "where": "the flipper save, 1:42.73 to 1:42.90",
+   "what": "the flipper is fully up for only one frame before it drops back, and the ball is out of frame within two frames, so there is no hold to see where the save sent it. No lamp or bumper answers the strike. The ball's speed before the hit, and its direction change within a frame, are good",
+   "fix": "hold the flipper up for 3-4 frames and keep the ball in view a little longer, or flash a nearby lamp on the contact frame"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-02.png",
+   "where": "the page sliding up over the machine, 1:45.10 to 1:45.80",
+   "what": "the page comes in grey and brightens to cream while it is still moving, so its tone changes mid-move. It also eases to a stop softly instead of landing",
+   "fix": "keep the slab's tone constant through the move, and land it with a firm stop and a very small settle"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-08.png",
+   "where": "the new slab seating, 1:49.27 to 1:49.30",
+   "what": "the slab stops dead, which is correct for its weight, but nothing on the page answers the landing. The step buttons and their shadows do not react at all",
+   "fix": "add a 1-2 frame jolt to the buttons' shadows, or a tiny jiggle of the buttons, on the frame the slab seats"
+  }
+ ]
+}
