@@ -1,35 +1,35 @@
 {
   "folder": "table-light",
-  "pushed": "2026-11-26T01:15:04.399Z",
-  "commit": "79c96afa9b33ec1d1fe93e03cc3102dfe7b435ad",
+  "pushed": "2026-11-26T01:46:36.497Z",
+  "commit": "6561f5dff656356ca89ebac2cd197cc64216ab73",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "tier-corporate at 79c96af, approved left, build right: night floors, pools on the lacquer, paler lit windows",
-      "time": "2026-11-26T01:15:02.658Z",
+      "caption": "table-wide, approved left, build right: lamps mirrored in the lacquer, windows glowing at rest, the room near black",
+      "time": "2026-11-26T01:46:34.814Z",
       "by": "table-light",
-      "from": "out/work/lights/n8-tier-corporate-pair.jpg"
+      "from": "out/work/lights/send/v1-table-wide.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "tier-office at 79c96af, approved left, build right: night floors, pools on the lacquer, paler lit windows",
-      "time": "2026-11-26T01:15:02.885Z",
+      "caption": "tier-corporate, approved left, build right: lamps mirrored in the lacquer, windows glowing at rest, the room near black",
+      "time": "2026-11-26T01:46:35.047Z",
       "by": "table-light",
-      "from": "out/work/lights/n8-tier-office-pair.jpg"
+      "from": "out/work/lights/send/v1-tier-corporate.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "tier-street at 79c96af, approved left, build right: night floors, pools on the lacquer, paler lit windows",
-      "time": "2026-11-26T01:15:03.128Z",
+      "caption": "last-save, approved left, build right: lamps mirrored in the lacquer, windows glowing at rest, the room near black",
+      "time": "2026-11-26T01:46:35.277Z",
       "by": "table-light",
-      "from": "out/work/lights/n8-tier-street-pair.jpg"
+      "from": "out/work/lights/send/v1-last-save.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "table-wide at 79c96af, approved left, build right: night floors, pools on the lacquer, paler lit windows",
-      "time": "2026-11-26T01:15:03.356Z",
+      "caption": "tier-street, approved left, build right: lamps mirrored in the lacquer, windows glowing at rest, the room near black",
+      "time": "2026-11-26T01:46:35.509Z",
       "by": "table-light",
-      "from": "out/work/lights/n8-table-wide-pair.jpg"
+      "from": "out/work/lights/send/v1-tier-street.jpg"
     }
   ]
 }
