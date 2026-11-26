@@ -188,7 +188,7 @@ function shield(): THREE.Object3D {
     const ring = roundedRect(w, h, 15, 12)
     const t = SHIELD.tall
     return sweep(ring, [{ inset: 7, z: 0, out: 0, up: -1 }, { inset: 0.8, z: 0, out: 0, up: -1 }, { inset: 0, z: 0.8, out: 1, up: 0 }, { inset: 0, z: t - 3, out: 1, up: 0 }, { inset: 0.9, z: t - 1.2, out: 0.8, up: 0.6 }, { inset: 2.8, z: t, out: 0.3, up: 0.95 }, { inset: 4.4, z: t, out: -0.3, up: 0.95 }, { inset: 6.4, z: t - 1.2, out: -0.6, up: 0.8 }], false)
-  }), k.glassEdge))
+  }), m.aluminiumEdge))
   const cracks = mesh(geo('glassCracks', () => {
     const pos: number[] = []
     const line = (x0: number, y0: number, x1: number, y1: number, wide: number): void => {
@@ -354,7 +354,7 @@ function poseLeg(o: THREE.Object3D, s: Shape): void {
   N.set(-U.y, U.x, 0)
   if (N.lengthSq() < 1e-6) N.set(sx, 0, 0)
   N.normalize()
-  if (N.x * sx < 0) N.negate()
+  if (N.x < 0) N.negate()
   N.multiplyScalar(mix(-1, 1, open))
   N.z += 0.16 * open * (1 - flat)
   N.addScaledVector(U, -N.dot(U)).normalize()
