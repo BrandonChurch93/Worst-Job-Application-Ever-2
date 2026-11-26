@@ -178,7 +178,7 @@ export function highOf(z: Zone): High[] {
     return { x: p[0], y: p[1], z: (m.h + lift) * BALL, reach: reachBalls * BALL, colour, follows: 'general', power }
   }
   // A hidden lamp over each low model that stands far from every lamp of its tier, so its top is lit from above as the approved tiers have it.
-  if (z.id === 'office') return [over('office.inbox', C.OFFICE_BUMPER, 0.75, 2.6), over('office.cubicles', C.OFFICE_BUMPER, 0.75, 3.2, 1.6)]
+  if (z.id === 'office') return [over('office.inbox', C.OFFICE_BUMPER, 0.75, 2.6), over('office.cubicles', C.OFFICE_BUMPER, 0.9, 3.2, 1.6)]
   if (z.id === 'corporate') return [over('corporate.boardroom', C.CORPORATE_WHITE, 0.7, 2.6)]
   if (z.id !== 'street') return []
   // The fittings of the garage, by the rule of the owner of the street's models: arms half a ball outside its wall on the diagonals, three 22 px under the rim and the rest at four tenths of its height.
