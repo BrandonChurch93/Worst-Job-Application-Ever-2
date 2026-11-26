@@ -4,7 +4,7 @@ import type { Shape } from '../../../stage/types'
 import { look } from '../../../post/look'
 import { materials } from '../../../shell/materials'
 import { arc, circle, merge, profile, roundedRect, sweep, type ProfilePoint, type Ring } from '../../../shell/solids'
-import { DIAL, DIAL_BODY, dialPlate } from '../layout'
+import { DIAL, DIAL_BODY, dialPlate, HUB_ORANGE_LIFT } from '../layout'
 
 const B = DIAL_BODY
 const H = B.tall
@@ -47,6 +47,12 @@ export function housingGeometry(): THREE.BufferGeometry {
 
 export function plateGeometry(): THREE.BufferGeometry {
   return sweep(circle(DIAL.r - B.bezel + 0.2, 72), [flat(0, H - B.plate)])
+}
+
+// The groove between the wheel and the bezel: dark, so the pale plate does not show as a line round the wheel.
+export function grooveGeometry(): THREE.BufferGeometry {
+  const out = DIAL.r - B.bezel + 0.4
+  return sweep(circle(out, 144), [flat(0, H - B.plate + B.grooveOver), flat(out - (B.wheel - B.grooveUnder), H - B.plate + B.grooveOver)], false)
 }
 
 // The finger wheel's face, with its ten holes cut through.
@@ -307,18 +313,18 @@ function lacquered(shared: THREE.MeshPhysicalMaterial): THREE.MeshPhysicalMateri
   m.specularIntensity = 1
   m.specularColor.setScalar(1)
   m.envMapIntensity = B.hubEnv
-  m.color.multiplyScalar(B.hubLift)
+  m.color.multiplyScalar(HUB_ORANGE_LIFT)
   m.name = 'dial-hub'
   return m
 }
 
-interface Kit { seat: THREE.BufferGeometry; gap: THREE.BufferGeometry; housing: THREE.BufferGeometry; plate: THREE.BufferGeometry; face: THREE.BufferGeometry; edges: THREE.BufferGeometry; holes: THREE.BufferGeometry; glint: THREE.BufferGeometry; hub: THREE.BufferGeometry; hubRing: THREE.BufferGeometry; stop: THREE.BufferGeometry; shade: THREE.BufferGeometry; cast: THREE.BufferGeometry }
+interface Kit { seat: THREE.BufferGeometry; gap: THREE.BufferGeometry; groove: THREE.BufferGeometry; housing: THREE.BufferGeometry; plate: THREE.BufferGeometry; face: THREE.BufferGeometry; edges: THREE.BufferGeometry; holes: THREE.BufferGeometry; glint: THREE.BufferGeometry; hub: THREE.BufferGeometry; hubRing: THREE.BufferGeometry; stop: THREE.BufferGeometry; shade: THREE.BufferGeometry; cast: THREE.BufferGeometry }
 let kit: Kit | null = null
 
 function geometries(): Kit {
   if (!kit) {
     const seat = seatGeometry()
-    kit = { seat: seat.collar, gap: seat.gap, housing: housingGeometry(), plate: plateGeometry(), face: faceGeometry(), edges: edgesGeometry(), holes: holesGeometry(), glint: glintGeometry(), hub: hubGeometry(), hubRing: hubRingGeometry(), stop: stopGeometry(), shade: holeShadeGeometry(), cast: castGeometry() }
+    kit = { seat: seat.collar, gap: seat.gap, groove: grooveGeometry(), housing: housingGeometry(), plate: plateGeometry(), face: faceGeometry(), edges: edgesGeometry(), holes: holesGeometry(), glint: glintGeometry(), hub: hubGeometry(), hubRing: hubRingGeometry(), stop: stopGeometry(), shade: holeShadeGeometry(), cast: castGeometry() }
   }
   return kit
 }
@@ -350,12 +356,13 @@ export const dial: PartMaker = {
     body.add(mesh(g.housing, housingMaterial))
     const plate = mesh(g.plate, m.keycap, false)
     body.add(plate)
+    plate.add(mesh(g.groove, m.gap, false))
     const stop = mesh(g.stop, m.steel)
     body.add(stop)
     const wheel = new THREE.Group()
     faceMaterial ??= turnedFine(m.aluminiumTurned)
     wheel.add(mesh(g.face, faceMaterial))
-    wheel.add(mesh(g.edges, m.chrome))
+    wheel.add(mesh(g.edges, housingMaterial))
     wheel.add(mesh(g.holes, m.aluminiumSatin))
     wheel.add(mesh(g.hubRing, m.gap, false))
     hubMaterial ??= lacquered(m.orange)
