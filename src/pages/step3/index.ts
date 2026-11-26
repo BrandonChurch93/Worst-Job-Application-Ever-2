@@ -125,7 +125,7 @@ const FILM: [number, string, number][] = [
   [30.75, 'rail', 0], [32.3, 'follow', 0.6], [34.65, 'table-gap', 0], [35.35, 'table-save', 0], [37.2, 'follow', 0]
 ]
 const TUBE: { eye: [number, number, number]; at: [number, number, number]; wide: number } = { eye: [0.55, 2.7, 1.5], at: [-2.7, -1.2, 0.1], wide: 12 }
-const LENS: Record<string, number> = { tube: 9, 'table-wide': 5, 'table-lobby': 7, 'table-replyall': 12, 'table-nest': 12, 'table-fired': 10, 'table-save': 12, 'table-gap': 12, rail: 10, ride: 7, 'near-nest': 14, 'near-spent': 14 }
+const LENS: Record<string, number> = { tube: 9, 'table-wide': 5, 'table-lobby': 4, 'table-replyall': 12, 'table-nest': 12, 'table-fired': 3, 'table-save': 12, 'table-gap': 12, rail: 5, ride: 7, 'near-nest': 14, 'near-spent': 14 }
 const HARD: Record<string, number> = { bumper: 1, sling: 0.7, 'doors-slam': 0.5, 'scoop-kick': 0.8, plunger: 1, 'ball-hit': 0.6, 'drop-target': 0.5, 'mom-save': 1, 'ball-save': 0.8 }
 const SHAKE = { size: 0.006, decay: 0.09, hz: 23, most: 1.5, last: 0.5 }
 const SOFT = 0.4
