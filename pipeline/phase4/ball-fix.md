@@ -71,13 +71,15 @@ The zeros in `table-wide` are the moment, not a fault. STATED in `config/showcas
 - The contact dark is softer (key at most 0.78, the foot term 0.62) because through the ball on a lit insert it read as a black hole (`tier-office`).
 - `tier-office`: the shadow now shows on the lit insert dome in my draft still. Not asked of `/root/lamp_fixer` after all.
 
+- 07:49 UTC: the rim band darker at the edge (0.4), one thin bright arc at rho 0.925 on the side away from the soft light, the far wall carries the lamps as warm points (0.1 + 0.5 F). Looked at in `rail-cam`, `tier-street`, `youre-fired` at `draft`.
+
 After these changes, MEASURED 07:46 UTC with `npm run counts -- --key table-wide --live low` and `--key tier-office`: `clear-ball` 2 calls 18872 triangles and 3 calls 18874 triangles, `displays` 8 calls 328 triangles and 4 calls 164 triangles. The same as before, number for number.
 
 Asset sets: MEASURED with `ls public/assets/table`: `art`, `frame`. There is no set for the ball or for the displays, 0 MB each. `assets-src/table/ball` holds two scripts, 6078 bytes.
 
 ## Tuning looks, by part, critic round 1
 
-- `clear-ball`: 32 of 40. 10 `review` (6 diagnosis, 4 report), 19 `draft` key stills (2 of them for the probe), 3 `draft` sheets.
+- `clear-ball`: 35 of 40. 10 `review` (6 diagnosis, 4 report), 22 `draft` key stills (2 of them for the probe), 3 `draft` sheets.
 - `displays`: 0 of 40.
 
 Time of one still on this VM, MEASURED by `assets-src/table/ball/diag.mjs` (it prints the seconds of each render): `draft` 17.7 to 41.6 s, `review` 56.3 to 84.0 s.
