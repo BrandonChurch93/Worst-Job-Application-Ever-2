@@ -215,7 +215,7 @@ export function makePage(): PageLogic {
           s.busy = f.phase === 1 ? SHAKE.at + SHAKE.hold : BUCKLE
           s.shake = f.phase === 1 ? SHAKE.at : -1
           s.mad = -1
-          io.cursor.act('exhausted')
+          io.cursor.act('shocked')
         } else if (s.busy > 0 && s.busy - dt <= 0 && !(f.phase === 2 && f.expired < REALLY[1])) calm()
         if (s.shake > 0) {
           s.shake -= dt
