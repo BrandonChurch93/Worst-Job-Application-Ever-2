@@ -5,7 +5,7 @@ const chevron = () => ''
 const arrow = () => ''
 
 export const PAL = {
-  corporate: { base: '#081229', base2: '#0f2147', key: '#c9a551', fine: '#a78a45', pale: '#ecd797', under: '#070f27', dark: '#040a1a', lane: '#060e22', accent: '#27468a', soft: '#1b3466' },
+  corporate: { base: '#081229', base2: '#0f2147', key: '#e3bd62', fine: '#c4a252', pale: '#ecd797', under: '#070f27', dark: '#040a1a', lane: '#060e22', accent: '#27468a', soft: '#1b3466' },
   office: { base: '#4f625b', base2: '#41534d', key: '#8fa39a', fine: '#73887f', pale: '#b9c2b4', under: '#2c3f3f', dark: '#182626', lane: '#2c3f3f', accent: '#667f78', soft: '#566d66' },
   street: { base: '#0e2130', base2: '#17384a', key: '#c3ccc9', fine: '#5f858e', pale: '#dcdfd6', under: '#091824', dark: '#050e15', lane: '#0a1a26', accent: '#b89a38', soft: '#1d404e', fan: '#4f757d', fan2: '#33575f' }
 }
@@ -324,10 +324,10 @@ export function corporate(D) {
     const c = [D.MID + s * 2.45, 5.25]
     const a0 = s === -1 ? 200 : -20
     const a1 = s === -1 ? 290 : -110
-    local.push(rays(c, 0.25, 1.15, a0, a1, 13, pal.key, 0.014), arc(c, 1.15, Math.min(a0, a1), Math.max(a0, a1), pal.key, 0.022), arc(c, 1.22, Math.min(a0, a1), Math.max(a0, a1), pal.fine, 0.008), arc(c, 0.25, Math.min(a0, a1), Math.max(a0, a1), pal.fine, 0.012), dot(c, 0.05, pal.pale))
+    local.push(rays(c, 0.25, 1.15, a0, a1, 13, pal.key, 0.02), arc(c, 1.15, Math.min(a0, a1), Math.max(a0, a1), pal.key, 0.03), arc(c, 1.22, Math.min(a0, a1), Math.max(a0, a1), pal.fine, 0.008), arc(c, 0.25, Math.min(a0, a1), Math.max(a0, a1), pal.fine, 0.012), dot(c, 0.05, pal.pale))
   }
   const { lanes, answers } = common(D, pal)
-  return { pal, defs, ground: [], top: [lanes, g({ mask: 'url(#keep-corporate)', opacity: 0.22 }, filler), local, answers, insertsPrint(D, pal)] }
+  return { pal, defs, ground: [], top: [lanes, g({ mask: 'url(#keep-corporate)', opacity: 0.36 }, filler), local, answers, insertsPrint(D, pal)] }
 }
 
 export function office(D, seed) {

@@ -41,7 +41,7 @@ Makers in `real/`: `wait.ts`, `letter.ts` with `letterStock.ts`, `stamp.ts` with
 - `wait`: the panel is the shared glass card. The counter is a chrome bezel, a dark gap and smoked glass 1.6 px below the bezel's top. The digits (`wait-value`, `wait-count`, part `wait`) are lamps under the glass with a halo, and they light the panel through `ctx.light`.
 - `letter`: one sheet of 72 by 48 cells, flat under its print, lifted at its four corners (3.4 px at the lower right), with fibre in its colour and in its normals. A painted shade lies under it and fades as the sheet leaves the page. The sheet and all that is printed on it lie turned by `SHEET_ROT` (0.012 rad) about the sheet's middle; the mark's border and word turn with it. In the air the sheet is lifted by a little light of its own (`AIR` in `letter.ts`, by height only) so that it does not fall grey.
 - `stamp`: a lacquered block on a dark red rubber die with a waisted grip on a chrome band, block and grip both red. Upright while it works; set down, it is laid on its side with the grip away from the reader and a little off square (`LIE` in `script.ts`), so that the reader sees its side: grip, band, block, die. The mark is geometry in red ink: a double border drawn from `letter-mark-top`, and the word `letter-stamp` (part `stamp`), both under one picture of uneven ink cover.
-- `metrics`: the panel and the three readouts are the shared glass card.
+- `metrics`: the panel is the shared glass card with a line of light on its rim and a tinted shade under it. The three readouts are pillows of lighter glass with a broad round shoulder; the shoulder is toned by its normal against the key light (`refracted`), dark where it faces the lamp and bright on the far side, the way clear glass turns the light round.
 
 ### The numbers in `v`
 
@@ -58,7 +58,7 @@ One word for each beat, all in `script.ts` as `PACE`, `HOPE`, `GIVE` and `CUES`,
 
 | Beat | Word | What the cursor does |
 | --- | --- | --- |
-| The wait, 0 to 2 s | worried | stands under the panel to 0.9 s, crouches (`anticipate`), tiptoes 110 px right, flinches at the count (1.24 s), tiptoes back 44 px past where it stood, and stands, `nervous` |
+| The wait, 0 to 2 s | worried | stands under the panel to 0.9 s, crouches (`anticipate`), tiptoes 170 px right, flinches at the count (1.24 s), tiptoes back 70 px past where it stood, and stands, `nervous` |
 | The letter falls, 2 to 4.3 s | hope | stands still while the sheet falls, hops when it lands (`jump`, `proud`), struts to the foot of the sheet (2.9 to 3.5 s), looks up at 3.62 s (`doubleTake`) and freezes |
 | The stamp, 4.3 s | frozen | no move from 3.5 s to the hit, then flat |
 | The peel and the button, 6 to 10 s | beaten | peels itself up, looks at the one button (7.82 s), drags itself there in 0.65 s, stands 0.4 s, and presses once with no flourish, `exhausted` |

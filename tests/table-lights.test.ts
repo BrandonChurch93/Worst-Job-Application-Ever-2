@@ -8,6 +8,7 @@ import { zone, zones } from '../src/table/real/zone'
 import { CHANNELS, LIT } from '../src/table/real/lights/groups'
 import { hook } from '../src/table/real/lights/hook'
 import { groupsOf, levels, parts, solo } from '../src/table/real/lights/index'
+import { INSERT_REST } from '../src/table/real/lights/levels'
 import { fall, LEAN, picturesOf, TEXEL } from '../src/table/real/lights/pictures'
 import { BUMPER } from '../src/table/real/lights/colours'
 import { buildLamps } from '../src/table/real/lights/lamps'
@@ -59,7 +60,7 @@ describe('the levels of a zone', () => {
     expect(L.byName.red).toBe(1)
     expect(L.byName.blue).toBe(0)
     expect(L.byName['insert.2']).toBe(1)
-    expect(L.byName['insert.1']).toBe(0)
+    expect(L.byName['insert.1']).toBeCloseTo(INSERT_REST * 0.8, 6)
     expect(L.groups.length).toBe(groupsOf(z).length)
   })
   it('are nothing when the anchor is missing', () => {

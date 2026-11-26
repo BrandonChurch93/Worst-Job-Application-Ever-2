@@ -7,7 +7,7 @@ import type { Shape } from '../../../stage/types'
 
 const q = (v: number): number => Math.round(v * 4) / 4
 
-export const HEALTH = { proud: 0.9, rim: 2.6, under: 1.5, crown: 0.5, shoulder: 2.6 }
+export const HEALTH = { proud: 0.9, rim: 2.6, under: 1.5, wall: 0.8 }
 
 let floorMaterial: THREE.MeshPhysicalMaterial | null = null
 
@@ -15,7 +15,7 @@ let floorMaterial: THREE.MeshPhysicalMaterial | null = null
 function floor(): THREE.MeshPhysicalMaterial {
   if (!floorMaterial) {
     floorMaterial = studio(materials().railSatin.clone())
-    floorMaterial.color.setRGB(0.3, 0.315, 0.33)
+    floorMaterial.color.setRGB(0.21, 0.222, 0.238)
     floorMaterial.roughness = 0.42
   }
   return floorMaterial
@@ -52,10 +52,8 @@ function track(s: Shape): THREE.Object3D {
 function fill(s: Shape, full: number): THREE.Object3D {
   const h = s.z1 - s.z0
   const half = s.h / 2
-  const wide = Math.min(HEALTH.shoulder, half - 1)
-  const top = h - HEALTH.crown
-  const rise = Math.min(wide, top * 0.6)
-  const points: ProfilePoint[] = [[0, 0, true], [0, top - rise], ...arc(0, top - rise, wide, rise, 8).slice(1), ...[0.75, 0.5, 0.25, 0.05].map((t): ProfilePoint => [half - (half - wide) * t, top + HEALTH.crown * (1 - t * t)])]
+  // A rod of moulded plastic: a short wall, then one round back from edge to crest, so the light lies on it as a narrow band.
+  const points: ProfilePoint[] = [[0, 0, true], [0, HEALTH.wall], ...arc(0, HEALTH.wall, half * 0.97, h - HEALTH.wall, 14).slice(1)]
   const g = sweep(outlineOf({ kind: 'capsule', w: full, h: s.h }, 0, 18), profile(points))
   const at = g.getAttribute('position') as THREE.BufferAttribute
   const m = mesh(g, materials().orange, true)

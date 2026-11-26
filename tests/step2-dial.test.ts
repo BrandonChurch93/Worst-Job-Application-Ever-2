@@ -2,9 +2,9 @@ import { describe, expect, it } from 'vitest'
 import * as THREE from 'three'
 import { stepHz } from '../src/config'
 import { pages } from '../src/pages'
-import { DIAL, DIAL_BODY, dialPlate, dialTop, TOP, TRAY, TRAY_H, TRAY_Z, VALUE_Z } from '../src/pages/step2/layout'
+import { DIAL, DIAL_BODY, dialPlate, dialTop, ROW_HELPER, ROW_TITLE, TOP, TRAY, TRAY_H, TRAY_Z, VALUE_Z } from '../src/pages/step2/layout'
 import { dial, edgesGeometry, faceGeometry, holeShadeGeometry, housingGeometry, hubGeometry, plateGeometry, seatGeometry, stopGeometry } from '../src/pages/step2/real/dial'
-import { rows, trayFloor, trayFoot, trayJoint, trayLiner, trayWallShade } from '../src/pages/step2/real/rows'
+import { rows, trayFloor, trayFoot, trayJoint, trayLiner, trayRim, trayWallShade } from '../src/pages/step2/real/rows'
 import type { RealContext } from '../src/real/types'
 import type { Shape } from '../src/stage/types'
 import { filmFlow, filmOptions, ScriptDriver, Stage, type DrawList } from '../src/stage/stage'
@@ -152,6 +152,12 @@ describe('the dial on the page', () => {
       const kept = o.userData.dial as { body: THREE.Group }
       o.updateMatrixWorld(true)
       expect(new THREE.Box3().setFromObject(kept.body).max.z + wheel.z0, `at ${t}`).toBeLessThan(VALUE_Z)
+      if (wheel.z1 - wheel.z0 <= DIAL_BODY.rest) {
+        const hub = (o.userData.dial as { hub: THREE.Mesh }).hub
+        const box = new THREE.Box3().setFromObject(hub)
+        expect(box.max.z - new THREE.Box3().setFromObject(kept.body.children[0]!).max.z, `hub at ${t}`).toBeLessThan(3)
+        expect(hub.scale.z).toBeCloseTo(DIAL_BODY.hubFlat, 6)
+      }
       for (const n of list.filter((v) => v.id.startsWith('dial-numeral-'))) expect(n.z1, n.id).toBeGreaterThan(TRAY_Z)
     }
     expect(seen).toBeGreaterThan(0)
@@ -204,9 +210,9 @@ describe('the rows as they are built', () => {
     expect(listAt(1).filter((s) => s.id === 'field-focus').length).toBe(0)
   })
 
-  it('builds the tray as a joint, a liner, a floor and a shade, all finite, with unit normals, the same every time', () => {
+  it('builds the tray as a joint, a rim, a liner, a floor and a shade, all finite, with unit normals, the same every time', () => {
     const tray = listAt(3.2).find((n) => n.id === 'phone-tray')!
-    for (const [name, make] of Object.entries({ joint: trayJoint, liner: trayLiner, floor: trayFloor, shade: trayWallShade })) {
+    for (const [name, make] of Object.entries({ joint: trayJoint, rim: trayRim, liner: trayLiner, floor: trayFloor, shade: trayWallShade })) {
       const g = make(tray)
       const p = g.getAttribute('position')
       const n = g.getAttribute('normal')
@@ -241,6 +247,46 @@ describe('the rows as they are built', () => {
     expect(ns).toBeGreaterThan(4)
     expect(nl).toBeGreaterThan(4)
     expect(shaded / ns).toBeLessThan(lit / nl - 0.2)
+  })
+
+  it('rolls the rim under the page and lays the deep shade of the floor over the words on it, never over a thing standing on it', () => {
+    const list = listAt(3.2)
+    const tray = list.find((n) => n.id === 'phone-tray')!
+    const rim = trayRim(tray).getAttribute('position')
+    let top = -Infinity
+    for (let i = 0; i < rim.count; i++) top = Math.max(top, rim.getZ(i))
+    expect(top).toBeCloseTo(-TRAY_Z - TRAY.sink, 3)
+    const soak = trayFloor(tray, TRAY.soak).getAttribute('color')
+    let least = Infinity
+    let most = -Infinity
+    for (let i = 0; i < soak.count; i++) {
+      least = Math.min(least, soak.getX(i))
+      most = Math.max(most, soak.getX(i))
+    }
+    expect(least).toBeGreaterThan(0.05)
+    expect(least).toBeLessThan(0.3)
+    expect(most).toBeLessThanOrEqual(1)
+    expect(TRAY.soakOver).toBeGreaterThan(0)
+    expect(TRAY.soakOver).toBeLessThan(DIAL_BODY.rest)
+    const o = rows.make(tray, context(list, 3.2))
+    const multiplied = o.children.filter((c) => ((c as THREE.Mesh).material as THREE.Material).blending === THREE.CustomBlending)
+    expect(multiplied.length).toBe(2)
+    expect(multiplied.some((c) => c.position.z === TRAY.soakOver)).toBe(true)
+  })
+
+  it('sets the row titles semi-bold over a regular helper line, each a key of the copy', () => {
+    const list = listAt(1.0)
+    for (const name of ['phone', 'birth', 'volume']) {
+      const title = list.find((n) => n.id === `${name}-label`)!
+      const helper = list.find((n) => n.id === `${name}-helper`)!
+      expect(title.type?.font).toBe(ROW_TITLE.font)
+      expect(title.type?.px).toBe(ROW_TITLE.px)
+      expect(helper.type?.font).toBe(ROW_HELPER.font)
+      expect(ROW_TITLE.px).toBeGreaterThan(ROW_HELPER.px)
+      expect(title.words).toBe(`copy:step2.rows.${name}.label`)
+      expect(helper.words).toBe(`copy:step2.rows.${name}.helper`)
+      expect(title.x).toBe(helper.x)
+    }
   })
 
   it('builds a tray on its way open for the height it has', () => {
