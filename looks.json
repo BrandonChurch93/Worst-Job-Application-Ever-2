@@ -1,35 +1,35 @@
 {
   "folder": "street-finish",
-  "pushed": "2026-11-26T12:07:24.138Z",
-  "commit": "db70b5fbb44bfc9b76cb32f8b9b82017b99923aa",
+  "pushed": "2026-11-26T12:15:55.143Z",
+  "commit": "46030588f9993d30b4cdafc4c71577a46d3c764b",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-table-wide-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T12:02:48.358Z",
+      "caption": "Still key-tier-street-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T12:15:23.100Z",
       "by": "street-finish",
-      "from": "out/work/stills/key-table-wide-hd-draft.png"
+      "from": "out/work/stills/key-tier-street-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Still key-table-wide-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T12:03:52.083Z",
+      "caption": "Key tier-street: approved on the left, this build on the right, draft tier, with crops of shape:model.street.firehouse, shape:model.street.police, shape:model.street.garage, shape:model.street.bank, cursor, shape:model.street.mom, shape:sling.street.sling.left.1+sling.street.sling.left.2+sling.street.sling.left.3, shape:flipper.street.flipper.left, shape:rail.highway.a.4",
+      "time": "2026-11-26T12:15:32.870Z",
       "by": "street-finish",
-      "from": "out/work/stills/key-table-wide-hd-draft.png"
+      "from": "out/work/compare/compare-tier-street.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "youre-fired draft, crop: rooms lit unlike their neighbours, two dark, one with a blind",
-      "time": "2026-11-26T12:07:22.441Z",
+      "caption": "table-wide draft, garage: approved left, build right: grey concrete decks with kerbs round the clear spiral",
+      "time": "2026-11-26T12:15:53.785Z",
       "by": "street-finish",
-      "from": "out/work/street-finish/youre-fired-windows-3.jpg"
+      "from": "out/work/street-finish/garage-side-4.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "table-wide draft, crop enlarged: garage decks show as stacked clear bands at the sides, sign behind stays clear (ratio 6.11)",
-      "time": "2026-11-26T12:07:22.662Z",
+      "caption": "tier-street draft, crop: the garage from straight above, a concrete deck with marked bays round the spiral",
+      "time": "2026-11-26T12:15:54.006Z",
       "by": "street-finish",
-      "from": "out/work/street-finish/table-wide-garage-3.jpg"
+      "from": "out/work/street-finish/tier-street-garage-4.jpg"
     }
   ]
 }
