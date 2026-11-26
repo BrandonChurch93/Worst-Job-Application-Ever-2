@@ -3,7 +3,7 @@ import type { RealContext } from '../../../../real/types'
 import { BALL } from '../../../layout'
 import { localBalls, type Zone } from '../../zone'
 import { Geo, type Buckets, type RGB, type V3 } from './geo'
-import { KIND, TONE, band, beaconBase, board, framed, mix, parapet, reveal, rgb, roofDeck, shade, site, wallFace, windowAt, type Hole, type Site, type WindowLook } from './kit'
+import { KIND, TONE, band, beaconBase, board, framed, mix, parapet, reveal, rgb, roofDeck, roofLight, shade, site, wallFace, windowAt, type Hole, type Site, type WindowLook } from './kit'
 
 export type Side = 'front' | 'right' | 'back' | 'left'
 
@@ -99,9 +99,9 @@ export function firehouse(b: Buckets, z: Zone, ctx: RealContext): Firehouse {
     band(g, -1.6, W + 1.6, deck - 4, top - 3, 1.6, STONE, KIND.stucco)
     quoins(b, W, course + 0.5, cornice - 3, STONE, side === 'front' ? head + 2 : course)
     upper.forEach((h, k) => {
-      windowAt(b, h, { ...up, glow: lum(), blind: [0.3, 0, 0.45, 0.2, 0.55][(n + k) % 5]! })
+      windowAt(b, h, { ...up, depth: side === 'front' ? 3.5 : 2.1, glow: lum(), blind: [0.3, 0, 0.45, 0.2, 0.55][(n + k) % 5]! })
     })
-    lower.forEach((h) => windowAt(b, h, { ...down, glow: lum() }))
+    lower.forEach((h) => windowAt(b, h, { ...down, depth: side === 'front' ? 3.5 : 2.1, glow: lum() }))
     if (side !== 'front') return
 
     // The stone frame of the mouth: two jambs and a head with round inner corners, proud of the brick and as deep as the wall. Its right jamb is the corner of the building.
@@ -161,7 +161,7 @@ export function firehouse(b: Buckets, z: Zone, ctx: RealContext): Firehouse {
     const mid = (fl + fr) / 2
     for (const dx of [-44, -22, 22, 44]) g.quad([mid + dx - 0.45, -jz, ft + 2.6], [mid + dx + 0.45, -jz, ft + 2.6], [mid + dx + 0.45, -jz, head], [mid + dx - 0.45, -jz, head], shade(STONE, 0.42))
     g.box(mid - 7, mid + 7, -5.6, 0, ft - 1.5, head + 3.5, shade(STONE, 1.05), { skip: 'b', under: true, bevel: 1.2, kind: KIND.stucco })
-    for (const fx of [fl - MOUTH.jamb - 1, fr - 0.5]) g.box(fx, fx + 4.5, -7, -3.4, 0, 12, TONE.yellow, { skip: 'b', bevel: 0.9, kind: KIND.gloss })
+    for (const fx of [fl - MOUTH.jamb - 1, fr - 0.5]) g.box(fx, fx + 4.5, -7, -3.4, 0, 12, TONE.iron, { skip: 'b', bevel: 0.9, kind: KIND.gloss })
 
     // The bay behind the mouth: a dark floor let in level with the street, and the slot the door runs up in.
     g.quad([fl, -3.4, 0.22], [fr, -3.4, 0.22], [fr, deep, 0.22], [fl, deep, 0.22], shade(BAY, 0.5), KIND.gloss)
@@ -233,6 +233,8 @@ export function firehouse(b: Buckets, z: Zone, ctx: RealContext): Firehouse {
   }
   for (const [sx, sy] of [[x0 + 9, yf + 9], [x1 - 9, yf + 9], [x1 - 9, yb - 9]] as const) b.screws.push([sx, sy, deck, 1.6])
 
+  roofLight(b, x0 + 36, x0 + 80, yf + 34, yf + 60, deck, TONE.stoneDark)
+  roofLight(b, x1 - 80, x1 - 36, yf + 34, yf + 60, deck, TONE.stoneDark)
   const beacon: V3 = [S.cx, S.yb - S.d * 0.3, deck]
   beaconBase(b, beacon[0], beacon[1], deck)
   board(b, z, ctx, 'street.firehouse', deck)

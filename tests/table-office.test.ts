@@ -122,16 +122,26 @@ describe('the models of the office', () => {
     expect(heaps.length).toBe(2)
     poseInbox(built.inbox, z, ctxOf([{ id: 'model.office.inbox', v: [0, 9, 9] }]))
     const rest = heaps.map((m) => m.position.z)
+    const restX = heaps.map((m) => m.position.x)
     poseInbox(built.inbox, z, ctxOf([{ id: 'model.office.inbox', v: [1, 0.12, 9] }]))
     const up = heaps.map((m, i) => m.position.z - rest[i]!)
     for (const h of up) expect(h).toBeGreaterThan(2)
+    for (const m of heaps) {
+      expect(m.scale.x).toBeGreaterThan(1.02)
+      expect(Math.abs(m.rotation.z)).toBeGreaterThan(0.04)
+    }
     poseInbox(built.inbox, z, ctxOf([{ id: 'model.office.inbox', v: [0, 9, 0.12] }]))
     heaps.forEach((m, i) => {
       expect(m.position.z - rest[i]!).toBeGreaterThan(1)
       expect(m.position.z - rest[i]!).toBeLessThan(up[i]!)
     })
     poseInbox(built.inbox, z, ctxOf([{ id: 'model.office.inbox', v: [0, 9, 9] }]))
-    heaps.forEach((m, i) => expect(m.position.z).toBeCloseTo(rest[i]!, 6))
+    heaps.forEach((m, i) => {
+      expect(m.position.z).toBeCloseTo(rest[i]!, 6)
+      expect(m.position.x).toBeCloseTo(restX[i]!, 6)
+      expect(m.scale.x).toBeCloseTo(1, 6)
+      expect(m.rotation.z).toBeCloseTo(0, 6)
+    })
     expect(hopAt(9)).toBe(0)
     expect(hopAt(0)).toBe(0)
     for (let t = 0; t < 1.4; t += 0.01) expect(hopAt(t)).toBeLessThanOrEqual(1)

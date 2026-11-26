@@ -24,7 +24,7 @@ const KEY_AWAY = new THREE.Vector2(0.52, -0.5).normalize()
 const TIERS = ['corporate', 'office', 'street']
 const FLATS: Record<string, number> = { 'corporate.carpet': 0xa3161c }
 const INSET = 0.45
-const DOOR = { part: 'model-hq', x: 10.0, y: TIER_Y[0]! + 4.5 }
+const DOOR = { part: 'model-hq', x: 10.0, y: TIER_Y[0]! + 4.5, leaf: 'hq.door.left', swing: 0.35 }
 const WALLS: Record<string, number[]> = { 'model-hq': [0.74, 0.5, 0.2], glass: [0.5, 0.52, 0.54], danger: [0.5, 0.17, 0.12], paper: [0.7, 0.68, 0.62], light: [0.7, 0.68, 0.6], raised: [0.42, 0.42, 0.44], metal: [0.5, 0.5, 0.52] }
 const INSIDE = { key: 2.6, fill: 0.5, lamps: 0.12, face: 1.0, least: 0.5, most: 0.6 }
 const floors = TIERS.map((id) => ask(`table/art/${id}.webp`, { colour: true }))
@@ -371,7 +371,8 @@ function pose(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
     boxAt[i]!.set(b.mx, b.my, b.hw - Math.min(INSET * B, b.hw * 0.5), b.hh - Math.min(INSET * B, b.hh * 0.5))
     boxCol[i]!.set((tone[0]! * wash[0]) / top, (tone[1]! * wash[1]) / top, (tone[2]! * wash[2]) / top, b.tall)
     if (b.part === DOOR.part) {
-      door.set(DOOR.x * B - cx, cy - DOOR.y * B, 1, 0)
+      const leaf = ctx.byId.get(DOOR.leaf)
+      door.set(DOOR.x * B - cx, cy - DOOR.y * B, 1, !leaf || !leaf.v || (leaf.v[0] ?? 1) > 0.5 ? 1 : Math.max(0, 1 - (leaf.v[2] ?? 9) / DOOR.swing))
       ;(u.uDoorLit!.value as THREE.Vector3).set(wash[0] / top, wash[1] / top, wash[2] / top)
     }
   }

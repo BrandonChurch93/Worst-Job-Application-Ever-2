@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import { config } from '../../../config'
 import { Random } from '../../../core/random'
 
-export const PICTURE = { size: 512, level: 0.93, cloud: 0.02, blotch: 0.01, grain: 0.011 }
+export const PICTURE = { size: 512, level: 0.93, cloud: 0.012, blotch: 0.008, grain: 0.011 }
 
 function blurWrap(src: Float32Array, size: number, sigma: number): Float32Array {
   const reach = Math.max(1, Math.ceil(sigma * 3))
