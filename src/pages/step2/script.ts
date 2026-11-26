@@ -35,7 +35,7 @@ const T = {
 // It looks easy: it stands between the rows, strolls to the first field and taps it as if it owned the page.
 const EASY = { stroll: 1.06, there: 1.62, tap: T.phone - 0.14 }
 // A row opens under it. The first time it only starts, the second time it rears, the third time it has lost its temper and stamps the field open.
-const DREAD = { phone: { start: T.phone + 0.08, go: T.phone + 0.27 }, birth: { rear: T.birth + 0.08, go: T.birth + 0.44 } }
+const DREAD = { phone: { start: T.phone + 0.08, go: T.phone + 0.27 }, birth: { rear: T.birth + 0.08, go: T.birth + 0.5 } }
 // The lever: it has learnt to be careful, so it draws the knob up a little before it pulls.
 const PULL = { there: 8.98, back: 9.03, up: 9.11, rise: 12 }
 // The coins: it hides, shakes them off where it is safe, and comes back angry.
@@ -86,8 +86,8 @@ const path: Seg[] = [
   line(T.crank - 0.05, T.crank, grip, grip),
   arc(T.crank, T.runaway + 0.01, hub, CRANK.arm, CRANK.rest, CRANK.rest + TURNS * 2 * Math.PI, (u) => u * (1.25 - 0.25 * u)),
   line(T.runaway + 0.01, T.runaway + 0.36, grip, away),
-  line(T.runaway + 0.36, T.lean, away, { x: away.x + 14, y: away.y + 8 }),
-  line(T.lean, T.lean + 0.3, { x: away.x + 14, y: away.y + 8 }, caught),
+  line(T.runaway + 0.36, T.lean, away, away),
+  line(T.lean, T.lean + 0.3, away, caught),
   line(T.lean + 0.3, 17.7, caught, caught),
   line(17.7, 19.9, caught, { x: BUTTON.x - 40, y: BUTTON.y - 4 }),
   line(19.9, 20.24, { x: BUTTON.x - 40, y: BUTTON.y - 4 }, BUTTON),

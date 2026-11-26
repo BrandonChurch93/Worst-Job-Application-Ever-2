@@ -33,7 +33,7 @@ One word for each beat, and the poses that carry it. Times are seconds of the un
 | --- | --- | --- |
 | `step2.open` | cocky | stands between the rows till 1.06, strolls to the first field (there 1.62), a decided `tap` at 1.74 that lands on the click at 1.88 |
 | `step2.dial` | caught out | `startle` at 1.96 as the row opens under it; `jump` at 3.3 when the wheel snaps home; `anticipate` at 4.13 before the third digit; scared in the whip, shocked at the fling, the page's `recoil` where it lands; nervous and a `doubleTake` at 6.6, held to 7.55 |
-| `step2.slot` | wary | `rear` at 8.28 as the second row opens, held to 8.64; draws the knob up 12 px (9.03 to 9.11) before the pull; plain while the reels turn, shocked at 11.0 on the wrong date; the page's `flinch` under the coins, scared, runs to the left column |
+| `step2.slot` | wary | `rear` at 8.28 as the second row opens, held to 8.70; draws the knob up 12 px (9.03 to 9.11) before the pull; plain while the reels turn, shocked at 11.0 on the wrong date; the page's `flinch` under the coins, scared, runs to the left column |
 | `step2.crank` | temper | `dustOff` at 12.76 where it is safe, angry from 13.36, marches back, `stamp` at 13.9 that drives the third field open at 14.0; shocked at 15.22 when the crank runs away; `cower` at 15.60 where it lands, held to 16.22; angry again and back in at 16.32; flat at 16.80, exhausted |
 | `step2.continue` | spent | flat and dragging to the button, peels up at 19.80, plain at 20.28, presses at 20.30 |
 
