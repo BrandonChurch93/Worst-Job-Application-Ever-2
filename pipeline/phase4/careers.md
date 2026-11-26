@@ -32,3 +32,12 @@ Branch `agent/careers`, from `origin/phase4-base`, with `origin/main` merged in.
 ## Textures
 
 None of my own so far. Every surface uses the shared pictures of `materials()`.
+
+## 01:23 UTC, the Builder's answers, and what followed
+
+- STATED by `/root`: the ticker is the glass strip of the approved image ("When words and an approved image disagree, the image wins", `kit/04-LOOK.md` line 10). Built: the cards' slab lying on the page with a corner radius of 16, hollow over a channel 2.4 deep that the tape and its words run in; the page hides the words past the channel's ends, the ground edge of the strip hides the channel's walls. No bezel, no sleeve, no light from inside.
+- The strip's corner radius is 16 and not the cards' 28: the strip is 58 high, and with 28 it would be round ended, which the approved strip is not.
+- The cards' corner radius goes from 22 to 28, measured on the approved image (about 27 px).
+- The turning card has a material of its own, because the colour of the face that is up follows the turn (`even()` in `perk-cards.ts`): a frosted slab is lit through its body, so its face must not flare when it tilts toward the light. Its shadow is thrown by the print in its middle.
+- The ground edge is laid in as light and shade of the glass itself (vertex colour), and the faces of the bevel lean very little (0.03), because with the key 21 degrees above the page a lean of 0.12 changed the bevel's light by a sixth and undid the shade.
+- A slab's shadow on the page is thrown by a foot 2.2 high inside the glass: the approved cards throw a short soft shadow, and the whole slab (12 high) threw one 30 px long.

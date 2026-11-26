@@ -11,7 +11,7 @@ Phase 2 blockout. Stand-in shapes only. Every word is a key of `content/copy.jso
 
 ## Layout
 
-- First screen follows `references/approved/marketing-top.png`: top bar, hero with the big button, one medallion (award 0), perk cards 0 to 2, ticker strip at y 984 to 1040.
+- First screen follows `references/approved/marketing-top.png`: top bar, hero with the big button, one medallion (award 0), perk cards 0 to 2, ticker strip at y 990 to 1048.
 - Below: perks (cards 3 to 7 in a 3 by 2 grid, `perks.closing` in the sixth cell), awards 1 to 4, testimonials, comparison table, five-step process, questions, final call to action, footer.
 - Section gap 170, heading to content 140, foot margin 128. These three numbers are chosen so that the judged scroll stills (0.25, 0.5, 1 of the scroll range) start in a gap between rows, 25 to 29 px above a row, and not through a card.
 - `copy:marketing.hero.sublineLong` is the hero subline in long form. The approved first screen uses the short one, so the long one stands in the footer as the line about the company, under the brand.
@@ -45,6 +45,6 @@ Phase 2 blockout. Stand-in shapes only. Every word is a key of `content/copy.jso
 
 - The ticker is closed-form: its offset is a function of the page time, 36 px a second, set so that an item starts at the window's left pad at 11.0 s (the key) and, after the rejection, at 1.7 s.
 - The value of the wait field sits at the pocket floor as the shell's `field()` places it; the blockout view of main 8c84635 lifts type on a flat pocket by itself, so the page no longer lifts it.
-- The ticker's window is the pocket `ticker-window` (round ends, `TICKER.floor` deep) that the ground cuts; the rectangular well `ticker-well` is gone. The tape `ticker-tape` lies in it under a pane of glass and is lit by four small lamps inside the window (`TICKER_LOOK` in `real/ticker.ts`).
+- The ticker is a strip of the cards' glass lying on the page (`ticker-glass`, `TICKER.thick` high, corner radius `TICKER.r`), hollow over the shallow channel `ticker-window` (a pocket `TICKER.floor` deep, `TICKER.edge` in from the strip's outline) that the ground cuts. The tape `ticker-tape` and the words run in the channel: the page hides them past its ends, and the strip's ground edge hides the channel's walls from the camera. Nothing in it gives off light (`TICKER_LOOK` in `real/ticker.ts`).
 - The tape is clipped by the page: a run of the tape lies below the surface, so the part of it outside the window is under the slab. The blockout view of main 8c84635 lifts sunk type whose box centre is outside every well onto the page, which would spill a run that crosses the window's edge. A crossing run is therefore drawn with a 2 px box at its inner end (left aligned as it comes in, right aligned as it goes out), so its centre stays inside the well.
 - The three links of the top bar work in the live site, as on a real page: `Perks & Benefits` scrolls to the perks section, `Our Values` to the awards (the page has no section of that name; the awards and the testimonials are what it has to say about itself), `Open Positions` to the final call to action, whose body says there are none. A link only scrolls. It starts no gag and takes no control.

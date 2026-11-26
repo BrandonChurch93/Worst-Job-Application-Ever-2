@@ -16,11 +16,11 @@ export const CENTRE = (LEFT + RIGHT) / 2
 export const GAP = 40
 export const CARD_W = (WIDTH - GAP * 2) / 3
 export const CARD_H = 248
-export const CARD_R = 22
+export const CARD_R = 28
 export const MEDAL = 356
 export const MEDAL_H = 10
 export const HERO_W = 460
-export const TICKER = { x: LEFT, y: 984, w: WIDTH, h: 56, floor: -6, tape: -5, pad: 28, gap: 64 }
+export const TICKER = { x: LEFT, y: 990, w: WIDTH, h: 58, floor: -2.4, tape: -2, pad: 28, gap: 64, edge: 5, thick: 12, r: 16 }
 export const FIRST_CARDS = 3
 const SECTION = 170
 const HEAD_TO_CONTENT = 140
@@ -33,11 +33,11 @@ export const T = {
   cardTitle: { font: 'inter-600', px: 30 },
   strong: { font: 'inter-600', px: 22 },
   medalTitle: { font: 'inter-600', px: 31, lead: 38 },
-  medalFrom: { font: 'inter-400', px: 18, lead: 24 },
+  medalFrom: { font: 'inter-400', px: 17, lead: 23 },
   quote: { font: 'inter-400', px: 20, lead: 30 },
   role: { font: 'inter-600', px: 20 },
   answer: { font: 'inter-400', px: 20, lead: 30 },
-  tape: { font: 'inter-500', px: 22 }
+  tape: { font: 'inter-500', px: 20 }
 } satisfies Record<string, TypeSpec>
 
 const cap = (t: TypeSpec): number => block(t.font, 'X', t.px).cap
@@ -90,7 +90,7 @@ function perkCard(i: number, x: number, y: number): LayoutNode {
 function medallion(i: number, cx: number, y: number): LayoutNode[] {
   const k = `copy:marketing.awards.items.${i}`
   const title = { ...T.medalTitle, align: 'centre' as const, wrap: 190 }
-  const from = { ...T.medalFrom, align: 'centre' as const, wrap: 200 }
+  const from = { ...T.medalFrom, align: 'centre' as const, wrap: 214 }
   const th = tall(title, `${k}.title`, title.wrap)
   const fh = tall(from, `${k}.from`, from.wrap)
   const top = y + (MEDAL - (th + 22 + fh)) / 2
@@ -135,9 +135,9 @@ export const tapeStates = (i: number): string => `tape-${i}`
 function tickerNode(): LayoutNode {
   const y = TICKER.y + (TICKER.h - cap(T.tape)) / 2
   const at = { part: 'type', on: TICKER.tape }
-  const items = m.ticker.map((_, i) => text(`ticker-${i}`, `copy:marketing.ticker.${i}`, T.tape, TICKER.x + TICKER.pad, y, { ...at, states: [tapeStates(i)] }))
-  items.push(text('ticker-after', 'copy:marketing.tickerAfterRejection', T.tape, TICKER.x + TICKER.pad, y, { ...at, states: ['tape-after'] }))
-  return node('ticker-window', 'tickerWindow', [TICKER.x, TICKER.y, TICKER.w, TICKER.h], { part: 'ticker', shape: 'capsule', height: TICKER.floor, tone: 'pocket', children: items })
+  const items = m.ticker.map((_, i) => text(`ticker-${i}`, `copy:marketing.ticker.${i}`, T.tape, TICKER.x + TICKER.edge + TICKER.pad, y, { ...at, states: [tapeStates(i)] }))
+  items.push(text('ticker-after', 'copy:marketing.tickerAfterRejection', T.tape, TICKER.x + TICKER.edge + TICKER.pad, y, { ...at, states: ['tape-after'] }))
+  return node('ticker-window', 'tickerWindow', [TICKER.x + TICKER.edge, TICKER.y + TICKER.edge, TICKER.w - TICKER.edge * 2, TICKER.h - TICKER.edge * 2], { part: 'ticker', r: TICKER.r - TICKER.edge + 2, height: TICKER.floor, tone: 'pocket', children: items })
 }
 
 function perks(y: number): Section {
