@@ -4,7 +4,7 @@ import type { PartMaker, RealContext } from '../../../real/types'
 import { materials } from '../../../shell/materials'
 import { arc, profile, roundedRect, sweep } from '../../../shell/solids'
 import type { Shape } from '../../../stage/types'
-import { CRANK } from '../layout'
+import { CRANK, ROWS } from '../layout'
 import { clamp01, fuse, lathe, mesh, moved, outline, picture, rise, round, smooth, srgb } from './slot-kit'
 
 export const CRANK_LOOK = {
@@ -281,8 +281,14 @@ function lamp(s: Shape, ctx: RealContext): void {
     const bearer = Math.floor((from + to) / 2)
     if (bearer !== mine) continue
     const mid = (from + to) / 2 - mine
-    ctx.light({ x: s.x + s.w / 2 + mid * (CRANK.segW + CRANK.segGap), y: s.y + s.h / 2, z: s.z0 + L.pill * 1.3 + L.lamp.lift, colour: L.lamp.colour, power: L.lamp.power * (to - from + 1), reach: L.lamp.reach })
+    ctx.light({ x: s.x + s.w / 2 + mid * (CRANK.segW + CRANK.segGap), y: s.y + s.h / 2, z: standOf(s, ctx) + L.pill * 1.3 + L.lamp.lift, colour: L.lamp.colour, power: L.lamp.power * (to - from + 1), reach: L.lamp.reach })
   }
+}
+
+// Where a segment stands: on the floor of its tray, or on the page when the list has no tray for it (the sheet).
+function standOf(s: Shape, ctx: RealContext): number {
+  const tag = s.id.slice(0, s.id.lastIndexOf('meter-'))
+  return ctx.byId.has(`${tag}${ROWS[2]}-tray`) ? s.z0 : Math.max(s.z0, 0)
 }
 
 const kindOf = (s: Shape): 'base' | 'hub' | 'arm' | 'grip' | 'meter' | null => {
@@ -318,6 +324,7 @@ export const crank: PartMaker | null = {
     o.scale.z = Math.max(0.001, (s.z1 - s.z0) / L.full.meter)
     o.visible = up > 0.02
     const body = o.userData.body as THREE.Mesh
+    body.position.z = (standOf(s, ctx) - s.z0) / o.scale.z
     const m = own()
     body.material = on ? m.lit : m.glass
     if (on && up > 0.5) lamp(s, ctx)
