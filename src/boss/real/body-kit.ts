@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { materials } from '../../shell/materials'
 import { studio } from '../../post/studio'
 import { hash01 } from '../../core/random'
 
@@ -110,7 +111,6 @@ export interface BossKit {
   pin: THREE.MeshPhysicalMaterial
   crack: THREE.MeshPhysicalMaterial
   glass: THREE.MeshPhysicalMaterial
-  glassEdge: THREE.MeshPhysicalMaterial
   plate: THREE.MeshPhysicalMaterial
   pocket: THREE.MeshPhysicalMaterial
   link: THREE.MeshPhysicalMaterial
@@ -124,11 +124,10 @@ export function bossKit(): BossKit {
     bore: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x121212), roughness: 0.8, metalness: 0.2, specularIntensity: 0.3 })),
     bed: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x1f2022), roughness: 0.62, metalness: 0.55, specularIntensity: 0.5 })),
     pin: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xc9ccd0), roughness: 0.2, metalness: 1 })),
-    glass: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x9fb0a8), roughness: 0.3, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.1, specularIntensity: 0.9, transparent: true, opacity: 0.6 })),
-    glassEdge: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xd3ddd8), roughness: 0.22, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.08, specularIntensity: 1, transparent: true, opacity: 0.88 })),
-    plate: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x5b5e63), roughness: 0.4, metalness: 0.92 })),
+    glass: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xa3b1aa), roughness: 0.38, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.16, specularIntensity: 0.9, transparent: true, opacity: 0.7 })),
+    plate: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x585b60), roughness: 0.38, metalness: 1, normalMap: materials().aluminium.normalMap, normalScale: new THREE.Vector2(0.09, 0.09), anisotropy: 0.5, anisotropyRotation: Math.PI / 2 })),
     pocket: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x34363a), roughness: 0.55, metalness: 0.85 })),
-    link: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x8f9297), roughness: 0.36, metalness: 0.95 })),
+    link: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x868a8f), roughness: 0.52, metalness: 0.7 })),
     crack: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x3a1608), roughness: 0.85, metalness: 0, specularIntensity: 0.15, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 }))
   }
   return made
