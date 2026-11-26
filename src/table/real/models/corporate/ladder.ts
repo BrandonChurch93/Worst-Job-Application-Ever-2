@@ -9,6 +9,8 @@ import { FINISH, drop as free, fin, hex, matsOf, mesh, moved, place, screw, shad
 // The wire ramp, as agreed with the owner of the ramps: the rail's height is the underside of the ball.
 export const WIRE = { r: 2.6, under: 34.56, underUp: 11, side: 53.76, sideUp: 40, hoop: 55.4, hoopR: 2.2, centre: 48, rung: 24, hoops: 144, clear: 58, weld: 3.4, foot: 14 }
 const STEEL = hex(0xd0d4d8)
+// The stringers of the ladder: a flat strap of steel outside each under wire, clear of the ball on either way.
+const STRAP = { gap: 0.8, wide: 8.5, thick: 3, bevel: 1.1, clear: 33 }
 
 interface At { p: V3; t: V2; r: V2 }
 
@@ -111,9 +113,16 @@ export function buildLadder(z: Zone, _ctx: RealContext): THREE.Object3D {
   const bead = (q: V3, r = WIRE.weld): void => {
     F.lathe([[0, -r * 0.5], [r, -r * 0.25], [r, r * 0.25], [0, r * 0.5]], q[0], q[1], 7, shade(STEEL, 0.8), q[2])
   }
-  const wire = (lat: number, up: number, need: number): void => {
+  const straps: [V3, V3][][] = []
+  const wire = (lat: number, up: number, need: number, strap = false): void => {
     let line: V3[] = []
+    let band: [V3, V3][] = []
+    const cut = (): void => {
+      if (band.length > 1) straps.push(band)
+      band = []
+    }
     const end = (): void => {
+      cut()
       if (line.length > 2) {
         S.pipe(line, WIRE.r, 6, STEEL)
         for (const q of [line[0]!, line[line.length - 1]!]) S.lathe([[0, -WIRE.r], [WIRE.r, 0], [0, WIRE.r]], q[0], q[1], 5, STEEL, q[2])
@@ -130,6 +139,13 @@ export function buildLadder(z: Zone, _ctx: RealContext): THREE.Object3D {
       const last = line[line.length - 1]
       if (last && (q[0] - last[0]) * a.t[0] + (q[1] - last[1]) * a.t[1] < 1.5) continue
       line.push(q)
+      if (strap) {
+        const side = Math.sign(lat)
+        const far = off(a, lat + side * (STRAP.gap + STRAP.wide), up)
+        const zz = Math.max(q[2], far[2])
+        if (free(far, STRAP.clear)) band.push([[q[0] + a.r[0] * side * STRAP.gap, q[1] + a.r[1] * side * STRAP.gap, zz], [far[0], far[1], zz]])
+        else cut()
+      }
     }
     end()
   }
@@ -170,9 +186,9 @@ export function buildLadder(z: Zone, _ctx: RealContext): THREE.Object3D {
     bead(from, WIRE.weld + 0.6)
   }
   fin(S, FINISH.polished, () => {
-    wire(out * WIRE.under, WIRE.underUp, WIRE.under)
+    wire(out * WIRE.under, WIRE.underUp, WIRE.under, true)
     wire(out * WIRE.side, WIRE.sideUp, WIRE.side)
-    wire(-out * WIRE.under, WIRE.underUp, WIRE.under)
+    wire(-out * WIRE.under, WIRE.underUp, WIRE.under, true)
     // A rung every half ball: across one lane where the two stand apart, across both where they run as one.
     for (let s = WIRE.rung / 2; s < L; s += WIRE.rung) {
       const a = at(s)
@@ -182,7 +198,7 @@ export function buildLadder(z: Zone, _ctx: RealContext): THREE.Object3D {
         if (s > sApex - 30) continue
         r = off(mate(s), out * WIRE.under, WIRE.underUp - 1.4)
       }
-      S.pipe([l, r], 1.9, 5, shade(STEEL, 0.94))
+      S.pipe([l, r], 2.3, 5, shade(STEEL, 0.94))
       bead(l)
       bead(r)
     }
@@ -223,6 +239,28 @@ export function buildLadder(z: Zone, _ctx: RealContext): THREE.Object3D {
   S.tint(0, chrome)
   F.tint(0, chrome)
   F.map(0, () => [(FINISH.polished + 0.5) / 8, 0.5])
+  fin(S, FINISH.brushed, () => {
+    for (const band of straps) {
+      for (let i = 0; i < band.length - 1; i++) {
+        const [a, b] = band[i]!
+        const [c, e] = band[i + 1]!
+        const al: V3 = [c[0] - a[0], c[1] - a[1], c[2] - a[2]]
+        const l = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1
+        const n: V3 = [(b[0] - a[0]) / l, (b[1] - a[1]) / l, 0]
+        const pull = (p: V3, q: V3, back: number, down: number): V3 => {
+          const m = Math.hypot(p[0] - q[0], p[1] - q[1]) || 1
+          return [p[0] + ((q[0] - p[0]) / m) * back, p[1] + ((q[1] - p[1]) / m) * back, p[2] - down]
+        }
+        const b1 = pull(b, a, STRAP.bevel, 0)
+        const e1 = pull(e, c, STRAP.bevel, 0)
+        const b2 = pull(b, a, 0, STRAP.bevel)
+        const e2 = pull(e, c, 0, STRAP.bevel)
+        S.face([a, b1, e1, c], [0, 0, 1], al, shade(STEEL, 0.72))
+        S.face([b1, b2, e2, e1], [n[0] * 0.7, n[1] * 0.7, 0.7], al, shade(STEEL, 1.25))
+        S.face([b2, pull(b, a, 0, STRAP.thick), pull(e, c, 0, STRAP.thick), e2], n, al, shade(STEEL, 0.5))
+      }
+    }
+  })
   // The flap at the foot, where a ball leaves the floor for the wires.
   const a0 = raw[0]!
   const a1 = raw[raw.length - 1]!

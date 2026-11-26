@@ -18,11 +18,12 @@ const STEEL_DARK = hex(0x727d8f)
 const PORTAL = hex(0x8a6a2c)
 const ROOF = hex(0x6a707a)
 const BRIGHT = hex(0xbac4d4)
-const GLASS: RGB = [0.03, 0.13, 0.15]
+const GLASS: RGB = [0.016, 0.085, 0.1]
 const CARPET: RGB = [0.07, 0.15, 0.19]
 const PILE = { step: 3, lean: 0.56 }
 const DESK: RGB = [0.5, 0.38, 0.24]
-const GLASS_PALE: RGB = [0.03, 0.06, 0.06]
+const GLASS_PALE: RGB = [0.02, 0.085, 0.1]
+const LOBBY = { dense: 0.32, mirrored: 0.8 }
 const GLASS_ROOF: RGB = [0.02, 0.09, 0.1]
 const lamp = (k: number, blue = 1): RGB => [COOL[0] * k, COOL[1] * k, COOL[2] * k * blue]
 const warm = (k: number): RGB => [COOL[0] * k, COOL[1] * k * 0.84, COOL[2] * k * 0.56]
@@ -250,18 +251,28 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
         S.box(c, c + 6, F - 3, F + 6, 0, pz0, shade(PORTAL, 0.8), { bevel: 0.8 })
       }
       S.box(-dw, dw, F - 6, F + 6, dh - 4.6, pz0, PORTAL, { bottom: true })
+      // What polished brass mirrors: upright streaks of the room, no two of one tone.
+      const gleam = new Random(SEED, 'corporate.hq.brass')
+      for (const s of [-1, 1]) {
+        const a = s > 0 ? dw : -dw - 11
+        for (let x = a + 1.2; x < a + 9.4;) {
+          const w = gleam.range(0.5, 2.2)
+          S.face([[x, F + 6.12, 2.4], [Math.min(a + 9.8, x + w), F + 6.12, 2.4], [Math.min(a + 9.8, x + w), F + 6.12, pz0 - 0.5], [x, F + 6.12, pz0 - 0.5]], [0, 1, 0], [0, 0, 1], shade(PORTAL, gleam.next() < 0.3 ? gleam.range(1.5, 2.3) : gleam.range(0.35, 0.9)))
+          x += w + gleam.range(0, 1.4)
+        }
+      }
       S.box(-dw - 1, dw + 1, F - 14, F + 6, 0, 2, PORTAL, { bevel: 0.6 })
     })
     fin(S, FINISH.matte, () => S.box(-3, 3, F - 9, F - 5, 2, 5, TONE.rubber, { bevel: 1 }))
 
     // The hall: a pale stone floor with a dark border and a brass round under the open middle, a runner in from the doors, columns, a desk and three lifts in the back wall.
     fin(G, FINISH.stone, () => {
-      flat(G, room, 6.2, 1, warm(0.4))
+      flat(G, room, 6.2, 1, warm(0.3))
       level(G, inset(room, 7), inset(room, 9.5), 6.3, 1, warm(0.16))
       G.lathe([[30, 0], [30, 0.3], [0, 0.3]], mid[0], mid[1], 28, (k) => (k === 0 ? warm(0.2) : warm(0.62)), 6.2)
       G.lathe([[23, 0], [23, 0.2], [0, 0.2]], mid[0], mid[1], 28, [COOL[0] * 0.5, COOL[1] * 0.36, COOL[2] * 0.16], 6.5)
       G.lathe([[17, 0], [17, 0.2], [0, 0.2]], mid[0], mid[1], 28, warm(0.7), 6.7)
-      G.face([[room.x0, room.y1, 6], [room.x1, room.y1, 6], [room.x1, room.y1, pz0], [room.x0, room.y1, pz0]], [0, -1, 0], [1, 0, 0], warm(0.36))
+      G.face([[room.x0, room.y1, 6], [room.x1, room.y1, 6], [room.x1, room.y1, pz0], [room.x0, room.y1, pz0]], [0, -1, 0], [1, 0, 0], warm(0.24))
       for (const s of [-1, 0, 1]) {
         const x = s * 46
         G.face([[x - 15, room.y1 - 0.4, 6], [x + 15, room.y1 - 0.4, 6], [x + 15, room.y1 - 0.4, 104], [x - 15, room.y1 - 0.4, 104]], [0, -1, 0], [1, 0, 0], [0.26, 0.19, 0.09])
@@ -340,7 +351,7 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
   const sides: [V2, V2, number][] = [[[shaft.x0, shaft.y0], [shaft.x1, shaft.y0], cols], [[shaft.x1, shaft.y0], [shaft.x1, shaft.y1], rows], [[shaft.x1, shaft.y1], [shaft.x0, shaft.y1], cols], [[shaft.x0, shaft.y1], [shaft.x0, shaft.y0], rows]]
   here(() => {
     sides.forEach(([a, b, n], k) => {
-      glazing(C, a, b, pz1, roof, k === 2 ? 1 : n, k === 2 ? 1 : FLOORS * 2, rnd, GLASS, k === 2 ? 0.8 : 0.56)
+      glazing(C, a, b, pz1, roof, k === 2 ? 1 : n, k === 2 ? 1 : FLOORS * 2, rnd, GLASS, k === 2 ? 0.8 : 0.66)
       framing(S, W, a, b, pz1, roof, n, FLOORS, { transom: 0.5, fin: k === 0 ? 3.6 : 3 })
     })
     fin(S, FINISH.polished, () => {
@@ -349,10 +360,10 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
     const lobby: [V2, V2][] = [[[room.x0 + 5, room.y0], [-dw - 17, room.y0]], [[dw + 17, room.y0], [room.x1 - 5, room.y0]], [[room.x1, F + 12], [room.x1, room.y1]], [[room.x0, room.y1], [room.x0, F + 12]]]
     for (const [a, b] of lobby) {
       const n = Math.max(1, Math.round(Math.hypot(b[0] - a[0], b[1] - a[1]) / 23))
-      glazing(C, a, b, 6, pz0 - 20, n, 1, rnd, GLASS_PALE, 0.07)
+      glazing(C, a, b, 6, pz0 - 20, n, 1, rnd, GLASS_PALE, LOBBY.dense)
       const from = C.vertices
-      glazing(C, a, b, pz0 - 20, pz0, n, 1, rnd, shade(GLASS, 0.4), 0.07)
-      C.map(from, (_x, _y, zz) => [(FINISH.stone + 0.5) / 8, 0.07 + 0.55 * smooth(pz0 - 20, pz0 - 3, zz)])
+      glazing(C, a, b, pz0 - 20, pz0, n, 1, rnd, shade(GLASS, 0.4), LOBBY.dense)
+      C.map(from, (_x, _y, zz) => [(FINISH.stone + 0.5) / 8, LOBBY.dense + (0.62 - LOBBY.dense) * smooth(pz0 - 20, pz0 - 3, zz)])
       framing(S, W, a, b, 6, pz0, n, 1, { fin: 2.2, wide: 1.3 })
     }
     for (let i = 0; i < cols; i++) {
@@ -427,7 +438,7 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
     if (Math.abs(x) < dw + 20 || Math.abs(x) > room.x1 - 4) continue
     const y = 2 * room.y0 - p[1]
     const ball: V2[] = Array.from({ length: 9 }, (_, k) => [21 * Math.sin((k / 8) * Math.PI), 49 - 21 * Math.cos((k / 8) * Math.PI)] as V2)
-    fin(G, FINISH.matte, () => G.lathe(ball, p[0], y, 16, lamp(0.3)), 1)
+    fin(G, FINISH.matte, () => G.lathe(ball, p[0], y, 16, lamp(LOBBY.mirrored)), 1)
   }
 
   // The board the name stands on, at the front edge of the roof.
