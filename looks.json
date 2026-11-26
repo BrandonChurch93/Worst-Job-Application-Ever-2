@@ -1,35 +1,35 @@
 {
   "folder": "lamp-fix",
-  "pushed": "2026-11-26T08:37:11.667Z",
-  "commit": "1c0b34fa1cb00d6c4478a2392e5e688c5b16d6ca",
+  "pushed": "2026-11-26T09:03:43.115Z",
+  "commit": "0961d254a3ce05b3db593bd6fd9a6681436e2b27",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "table-wide, approved left, build right: riser faces between the tiers take light from the head lamps",
-      "time": "2026-11-26T08:06:47.602Z",
+      "caption": "tier-office, approved left, build right, on main 7f82c9cc: slate floor, small contact marks, head lamps from the upper right; frame and cup lids now pale",
+      "time": "2026-11-26T09:03:41.290Z",
       "by": "lamp-fix",
-      "from": "out/work/lights/look-m3-table-wide.jpg"
+      "from": "out/work/lights/look-z1-tier-office.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "tier-office, approved left, build right: small contact marks under cups and posts, darker slate, head lamps from the upper right",
-      "time": "2026-11-26T08:37:10.117Z",
+      "caption": "tier-street, approved left, build right, on main 7f82c9cc: navy lacquer with soft wear beside the ball's lines, warm lane lamps",
+      "time": "2026-11-26T09:03:41.554Z",
       "by": "lamp-fix",
-      "from": "out/work/lights/look-u1-tier-office.jpg"
+      "from": "out/work/lights/look-z1-tier-street.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "tier-street, approved left, build right: navy floor with roads forward, roofs out of the head lamps, beacon light on its roof",
-      "time": "2026-11-26T08:37:10.362Z",
+      "caption": "table-wide, approved left, build right: no grey clouds on the Street floor; riser faces pale with the frame's aluminium, my light on them down to 0.015",
+      "time": "2026-11-26T09:03:41.791Z",
       "by": "lamp-fix",
-      "from": "out/work/lights/look-u1-tier-street.jpg"
+      "from": "out/work/lights/look-y2-table-wide.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "rail-cam, approved left, build right: worn patches in the lacquer, the floor keeps its print along the floor",
-      "time": "2026-11-26T08:37:10.644Z",
+      "caption": "reply-all, approved left, build right, on main 7f82c9cc: windows brightest in the middle",
+      "time": "2026-11-26T09:03:42.031Z",
       "by": "lamp-fix",
-      "from": "out/work/lights/look-w3-rail-cam.jpg"
+      "from": "out/work/lights/look-z1-reply-all.jpg"
     }
   ]
 }
