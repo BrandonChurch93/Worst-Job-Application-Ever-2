@@ -13,7 +13,7 @@ This is how a page plugs into the one stage. Everything named here is plain Type
 
 `src/pages/<page>/index.ts` exports `makePage(): PageLogic`, as `src/stage/types.ts` types it. It is called after the fonts are loaded, so it may measure type. The six pages are in `src/pages/`: the stub page that showed the shape of one is gone, and `src/pages/marketing/index.ts` is the shortest whole page to read first.
 
-A page module may also export `prepare(): Promise<void>`. It is awaited once before any page is made, in the browser, in the tests and in the tools: the place to start a library that starts asynchronously, such as the physics.
+A page module may also export `prepare(): Promise<void>`: the place to start a library that starts asynchronously, such as the physics. In the tests, the tools, a film, a still and a stepped run it is awaited once before any page is made. The live site awaits only the first page's before its first picture, asks for the others when step 1 arrives, and neither steps nor draws a page before its own has ended: a turn into such a page is held, however long that takes. So `makePage`, `layout` and `reset` must not need what `prepare` starts; `step` and `draw` may.
 
 - `layout` is the tree of the page at rest and of every run of type it can ever show. Build it with `src/shell/layout.ts` and `src/shell/parts.ts`. `layoutProblems` must find nothing in it: nothing outside the page, nothing overlapping, the parts of a row or a column sharing an edge and standing at equal gaps.
 - `gags` lists the page's gags in order. A gag's `id` is the id of its beat in `film.beats`, and its `event` is that beat's event.

@@ -81,9 +81,10 @@ export function shiverBase<T extends { kind: string; x: number; y: number; w: nu
   return base
 }
 
-// The wait before a page turn of the live site: a turn that is free to start is held while the next page is not ready, for at most `steps` steps, and the cursor taps its tip every `every` steps. Nobody sets it for a film, a still, a stepped run or a bot in the harness, so nothing waits there.
+// The wait before a page turn of the live site: a turn that is free to start is held while the next page is not ready, for at most `steps` steps, and the cursor taps its tip every `every` steps. A page whose code has not arrived cannot be stepped at all, so `code` holds the turn for as long as it says false. Nobody sets the wait for a film, a still, a stepped run or a bot in the harness, so nothing waits there.
 export interface TurnWait {
   ready(page: string): boolean
+  code?(page: string): boolean
   steps: number
   every: number
 }
@@ -102,7 +103,8 @@ export function setTurnWait(w: TurnWait | null): void {
 export function holdsTurn(stage: object, next: string | undefined, tap: () => void): boolean {
   if (!wait || next === undefined) return false
   const n = waited.get(stage) ?? 0
-  if (n >= wait.steps || wait.ready(next)) {
+  const can = wait.code ? wait.code(next) : true
+  if (can && (n >= wait.steps || wait.ready(next))) {
     waited.delete(stage)
     return false
   }

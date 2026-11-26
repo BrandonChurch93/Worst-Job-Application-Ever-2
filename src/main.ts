@@ -65,6 +65,7 @@ async function start(): Promise<void> {
     assets: params.get('assets') ?? (capture ? 'full' : 'web'),
     capture,
     stepped: params.get('clock') === 'steps' || mode === 'probe',
+    whole: mode !== 'live' || params.has('step'),
     forceKind: (params.get('target') as TargetKind | null) ?? undefined
   })
   if (params.get('diag')) app.setDiagnostic(params.get('diag')!)

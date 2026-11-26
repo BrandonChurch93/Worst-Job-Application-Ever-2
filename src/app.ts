@@ -12,7 +12,7 @@ import { restPose, type CursorPose } from './cursor/body'
 import { cursorSheet } from './cursor/sheets'
 import { EVENT_TRAIL, applyView, isView, type ViewContext, type ViewEvent } from './diagnostics/views'
 import { makeLoop, makeOpening, type FilmPiece, type LoopPiece, type OpeningPiece } from './film'
-import { pages, preparePages, unitPages } from './pages'
+import { pagePrepared, pages, preparePages, unitPages } from './pages'
 import { websiteLevel } from './real'
 import { loadTable } from './table/real/assets'
 import { look } from './post/look'
@@ -89,22 +89,31 @@ export class App {
 
   // Called after every frame of the live site that is not the first page at rest: what the page on show and the pages after it are built from is fetched, and what a page left behind was built from is let go (`src/core/load.ts`).
   loadLater(): void {
-    if (this.staged && this.shown) showPage(liveFlow().map((e) => e.page), this.shown.frame.page, this.assets, this.shown.frame.turn !== 0)
+    if (this.staged && this.code(null) && this.shown) showPage(liveFlow().map((e) => e.page), this.shown.frame.page, this.assets, this.shown.frame.turn !== 0)
+  }
+
+  // Whether the code a page starts with has arrived (null asks for every page). It is asked for when it has not: the live site starts without the code of a later page.
+  code(page: string | null): boolean {
+    const ids = page === null ? Object.keys(pages) : [page]
+    if (ids.every(pagePrepared)) return true
+    preparePages(ids).catch(() => undefined)
+    return false
   }
 
   private staged = false
 
-  async start(canvas: HTMLCanvasElement, o: { format: string; assets: string; capture: boolean; stepped?: boolean; forceKind?: TargetKind }): Promise<void> {
+  async start(canvas: HTMLCanvasElement, o: { format: string; assets: string; capture: boolean; stepped?: boolean; whole?: boolean; forceKind?: TargetKind }): Promise<void> {
     this.format = formatById(o.format)
     this.assets = assetSet(o.assets)
-    await Promise.all([...FONTS.map((name) => loadFont(name)), preparePages(), o.capture || o.stepped ? loadTable(this.assets) : Promise.resolve()])
+    const whole = o.capture || o.stepped === true || o.whole === true
+    await Promise.all([...FONTS.map((name) => loadFont(name)), preparePages(whole ? undefined : [liveFlow()[0]!.page]), o.capture || o.stepped ? loadTable(this.assets) : Promise.resolve()])
     App.check()
     this.engine = new Engine(canvas, this.format.width, this.format.height, { preserve: o.capture, forceKind: o.forceKind, multisamples: o.capture ? 0 : LIVE_MULTISAMPLES })
     this.engine.beforeSample = (_shot, view) => (view === 'beauty' ? undefined : applyView(view, this.viewContext()))
     this.staged = !o.capture && !o.stepped
     if (this.staged) {
       stageLoading(this.engine.renderer, wallSeconds)
-      setTurnWait({ ready: pageReady, steps: Math.round(config.live.loadWaitSeconds * stepHz), every: Math.round(WAIT_TAP_SECONDS * stepHz) })
+      setTurnWait({ ready: pageReady, code: (page) => this.code(page), steps: Math.round(config.live.loadWaitSeconds * stepHz), every: Math.round(WAIT_TAP_SECONDS * stepHz) })
     }
     this.environment = studioEnvironment(this.engine.renderer)
     this.view.scene.environment = this.environment
