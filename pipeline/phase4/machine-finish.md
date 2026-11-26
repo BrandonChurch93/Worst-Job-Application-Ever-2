@@ -123,4 +123,38 @@ MEASURED from the event and track dump (`node out/work/mf/ev.mjs`): the clear ba
 | Thing | Old | New | Told the Builder |
 |---|---|---|---|
 | hold `corporate.revolving`, centre | (9.2, 6.1) balls on tier 3 | (9.5, 6.1) | 10:21 UTC |
+| letters of `sign.street.police` ('Background Check'), no model moved | centre x 15.5, wrap 2.5 balls | centre x 16.05, wrap 1.4 balls (`signAt: [1.8, 1.4]`) | 11:53 UTC; the street finisher 11:27 UTC |
 
+## Agreed with other owners
+
+- Street finisher: its ask of 11:17 UTC (model signs on cream enamel boards, so the firehouse sign in `ink`) done in 467828d3. It asked "only if cheap" for 'Background Check' clear of the spiral: done the same push; I had first answered that the letters would not move, then moved them and sent the correction with the numbers (11:27 UTC).
+- Frame finisher (its mail, read): scoops are pockets, the ejector slug reads `model.office.inbox` and `model.street.firehouse` v[1], v[2], bumper caps jump on `bumper.<id>` v[0] = 0. I changed none of those values' meaning.
+- Lamp finisher and frame finisher were sent the shapes of the contact times early in the round; nothing came back that asked a change of me.
+- Ball finisher: its two asks (above) are not done; I answered "no change on my side" at the time.
+
+## End state (12:20 UTC)
+
+MEASURED on 7d159780, this sandbox (4 cores), 12:16 to 12:18 UTC:
+
+| What | Command | Result |
+|---|---|---|
+| One `draft` still | `npm run still -- --key tier-office --format hd --tier draft` | 43.1 s in the renderer, 46 s by the clock; 712279 triangles, 441 draw calls |
+| One `review` still | `npm run still -- --key reply-all --format hd --tier review` | 85.7 s in the renderer, 89 s by the clock; 822687 triangles, 474 draw calls |
+| Counts at a key | `npm run counts -- --key reply-all --format hd --tier draft` | 582175 triangles, 197 draw calls |
+| Texture MB | | UNKNOWN: the still and counts tools print none; the gate measures it (`tools/gate.mjs`) and I did not run the gate. No file of mine holds a picture. |
+| `table-wide` brightness against approved | means of the two halves of `out/work/compare/compare-table-wide.jpg` (draft, my own measure with PIL, not the kit's) | 1.046 |
+
+Not done, of what was mine in round 12:
+
+- R4-1 issue 7 (the light on the way out as a lamp): decision 26, needs a ruling on the rule in `tests/pinball.test.ts`.
+- R4-1 issue 9 (the Continue key): the key goes down its 6 px at once and the page turns 0.25 s later with the key still down. Not changed: a travel and a spring back inside 0.25 s cannot be seen on a sheet, and a longer press moves the page turn.
+- R9-1 issue 10 and R9-2 issue 11 (the save and the worn out arrow at a size): decision 29.
+- R9-2 issue 9 (the double take): decision 33, the cursor's cap in the ball.
+- R4-3 issue 9 (the ball on the carpet at one even speed, posts that answer), R4-3 issue 10 (one frame slivers at 15.07 s, not looked for after the retiming), R4-4 issue 3.
+- The steel balls' ending as the kit has it (the inbox takes them back one by one): they leave by the chute, seen, and are taken off at the rail's end.
+
+Three least real things in my part:
+
+1. The save. The ball is about 40 px across in the one `table-save` view; the catch is seen, the arrow in the ball is not, and there is no slow motion.
+2. The Corporate lobby. The ball is brought to the doors by the director at an even speed and nothing on the carpet answers it; the flat arrow on the doors is 0.6 s in a view where the ball is about 80 px.
+3. The steel balls. They pour, strike and leave by the chute; which ball is the cursor's reads only by the arrow in it, and the kit's ending (the inbox taking them back) is not there.
