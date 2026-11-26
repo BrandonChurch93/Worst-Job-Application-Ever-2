@@ -4,8 +4,9 @@ import { drawLayout, find, shapeOf, walk } from '../../shell/layout'
 import { words } from '../../shell/words'
 import { homePose } from '../../stage/camera'
 import type { CameraPose, DrawList, GagInfo, Hint, Mode, PageContext, PageLogic, Pointer, Shape, StepIo } from '../../stage/types'
-import { KEYS, makeLayout, MARK_ROT, markOf, SHEET_ROT, STAMP, placesOf, spotOf, turned } from './layout'
-import { CUES, HIT, LIE, pointerAt, STUCK, type Marks } from './script'
+import { HANDOFF } from '../../cursor/body'
+import { COUNTER_TOP, KEYS, makeLayout, MARK_ROT, markOf, SHEET_ROT, STAMP, placesOf, spotOf, turned, waitSpotOf } from './layout'
+import { CUES, grown, HIT, hopAt, LIE, pointerAt, reboundAt, STUCK, type Marks } from './script'
 import { AT } from './timeline'
 
 type Phase = 'wait' | 'letter' | 'metrics' | 'reset'
@@ -14,6 +15,8 @@ interface State {
   n: number
   phase: Phase
   at: number
+  lt: number
+  acted: number
   mode: Mode
   music: boolean
   landed: boolean
@@ -25,6 +28,9 @@ interface State {
   fy: number
   tx: number
   ty: number
+  lx: number
+  ly: number
+  air: [number, number, number] | null
   flat: boolean
   peeled: boolean
   jolt: number
@@ -54,7 +60,7 @@ export const secondsOf = (value: string): number => {
 export const spun = (value: string, u: number): string => value.replace(/\d/g, (d) => String(Math.ceil(Number(d) * (1 - clamp(u)))))
 
 const fresh = (mode: Mode): State => ({
-  n: 0, phase: 'wait', at: 0, mode, music: false, landed: false, loomed: false, stamped: false, held: false, pull: -1, fx: 0, fy: 0, tx: 0, ty: 0, flat: false, peeled: false, jolt: -1, your: 0, self: -1, shared: false, done: false, cue: 0, skip: false
+  n: 0, phase: 'wait', at: 0, lt: -1, acted: 0, mode, music: false, landed: false, loomed: false, stamped: false, held: false, pull: -1, fx: 0, fy: 0, tx: 0, ty: 0, lx: 0, ly: 0, air: null, flat: false, peeled: false, jolt: -1, your: 0, self: -1, shared: false, done: false, cue: 0, skip: false
 })
 
 function carry(over: Over, root: LayoutNode, m: Move): void {
@@ -77,9 +83,10 @@ export function makePage(): PageLogic {
   const places = placesOf(layout)
   const mark = markOf()
   const spot = spotOf()
-  const start = { x: places.accept.cx, y: places.accept.cy + 14 }
+  const start = { x: HANDOFF.x, y: HANDOFF.y }
   const drop = { x: places.rest.cx + markOf().blockW / 2 + STUCK.right, y: places.rest.cy + STUCK.down }
-  const marks: Marks = { start, spot, drop, press: { x: places.accept.x + places.accept.w - 42, y: places.accept.cy - 8 } }
+  const marks: Marks = { hand: start, wait: waitSpotOf(), spot, drop, press: { x: places.accept.x + places.accept.w - 42, y: places.accept.cy - 8 } }
+  const counter = find(layout, 'wait-counter').box
   const nodes = { wait: find(layout, 'wait-panel'), letter: find(layout, 'letter'), metrics: find(layout, 'metrics'), stamp: find(layout, 'stamp'), accept: find(layout, 'accept'), cap: find(layout, 'accept-cap') }
   const average = secondsOf(words(KEYS.averageValue))
   const target = secondsOf(words(KEYS.targetValue))
@@ -88,17 +95,21 @@ export function makePage(): PageLogic {
   let s = fresh('live')
 
   const seconds = (): number => (s.n - s.at) / stepHz
+  const since = (): number => (s.phase === 'wait' ? -1 : s.lt < 0 ? 99 : (s.n - s.lt) / stepHz)
   const inRect = (p: { x: number; y: number }, b: { x: number; y: number; w: number; h: number }, grow = 0): boolean => p.x >= b.x - grow && p.x <= b.x + b.w + grow && p.y >= b.y - grow && p.y <= b.y + b.h + grow
   const underStamp = (p: { x: number; y: number }): boolean => {
-    const local = turned({ cx: 0, cy: 0 }, p.x + 20 - mark.cx, p.y + 34 - mark.cy, -MARK_ROT)
-    return Math.abs(local.x) <= mark.blockW / 2 + 16 && Math.abs(local.y) <= mark.blockH / 2 + 30
+    const local = turned({ cx: 0, cy: 0 }, p.x - mark.cx, p.y - mark.cy, -MARK_ROT)
+    return Math.abs(local.x + 10) <= mark.blockW / 2 + 12 && local.y >= -mark.blockH / 2 - 40 && local.y <= mark.blockH / 2 - 4
   }
   const buttonShown = (): boolean => s.phase === 'reset' || (s.phase === 'metrics' && seconds() >= AT.button[0])
   const armed = (): boolean => s.phase === 'metrics' && seconds() >= AT.armed
 
   const groundAt = (x: number, y: number): number => {
     const p = { x, y }
-    if (s.phase === 'wait') return inRect(p, { x: nodes.wait.box[0]!, y: nodes.wait.box[1]!, w: nodes.wait.box[2]!, h: nodes.wait.box[3]! }) ? heights.card : 0
+    if (s.phase === 'wait') {
+      if (inRect(p, { x: counter[0]!, y: counter[1]!, w: counter[2]!, h: counter[3]! })) return COUNTER_TOP
+      return inRect(p, { x: nodes.wait.box[0]!, y: nodes.wait.box[1]!, w: nodes.wait.box[2]!, h: nodes.wait.box[3]! }) ? heights.card : 0
+    }
     if (buttonShown() && inRect(p, places.accept)) return s.phase === 'reset' ? heights.button - heights.keyTravel : heights.button
     const m = nodes.metrics.box
     if ((s.phase !== 'letter' || seconds() >= AT.panel[1]) && inRect(p, { x: m[0]!, y: m[1]!, w: m[2]!, h: m[3]! })) return heights.card
@@ -136,37 +147,44 @@ export function makePage(): PageLogic {
     s.loomed = true
     s.stamped = true
     s.held = false
+    s.lt = -1
+    s.jolt = -1
   }
 
   const yourTime = (io: StepIo): number => (s.mode === 'film' ? filmSeconds() : (io.elapsed ?? io.time))
 
-  function stampPose(): { cx: number; cy: number; z: number; rot: number; tilt?: number; lay?: number } | null {
+  function stampPose(p: number = since()): { cx: number; cy: number; z: number; rot: number; tilt?: number; lay?: number } | null {
     if (s.phase === 'wait') return null
     const rest = { cx: places.rest.cx, cy: places.rest.cy, z: 0, rot: LIE.rot, lay: 1 }
-    if (s.phase !== 'letter') return rest
-    const p = seconds()
     const high = STAMP.high
-    const carryZ = 120
+    const carryZ = HIT.carry
     const on = heights.paper
     if (p < AT.swoop[0]) return null
-    if (p < AT.swoop[1]) {
+    const back = HIT.back
+    if (p < AT.hang[0]) {
       const u = out3(span(p, AT.swoop))
-      const wind = smooth(span(p, [AT.swoop[1] - HIT.windSeconds, AT.swoop[1]]))
-      return { cx: mark.cx + (1 - u) * 190, cy: mark.cy - (1 - u) * (mark.cy + 260), z: high + (1 - u) * 20 + HIT.windRise * wind, rot: MARK_ROT, tilt: HIT.windTilt * wind }
+      return { cx: mark.cx + back.x + (1 - u) * 230, cy: mark.cy + back.y - (1 - u) * (mark.cy + 420), z: high + (1 - u) * 16, rot: MARK_ROT + (1 - u) * 0.2 }
+    }
+    if (p < AT.hang[1]) {
+      const wind = smooth(span(p, [AT.hang[1] - HIT.windSeconds, AT.hang[1]]))
+      return { cx: mark.cx + back.x * (1 + 0.25 * wind), cy: mark.cy + back.y * (1 + 0.25 * wind), z: high + HIT.windRise * wind, rot: MARK_ROT, tilt: HIT.windTilt * wind }
     }
     if (p < AT.slam[1]) {
-      const u = span(p, AT.slam)
-      return { cx: mark.cx, cy: mark.cy, z: on + (high + HIT.windRise - on) * (1 - Math.pow(u, HIT.fallPower)), rot: MARK_ROT, tilt: HIT.windTilt * (1 - smooth(clamp(u / 0.7))) }
+      const u = Math.pow(span(p, AT.slam), HIT.fallPower)
+      return { cx: mark.cx + back.x * 1.25 * (1 - u), cy: mark.cy + back.y * 1.25 * (1 - u), z: on + (high + HIT.windRise - on) * (1 - u), rot: MARK_ROT, tilt: HIT.windTilt * (1 - u) }
     }
-    if (p < AT.lift[0]) return { cx: mark.cx, cy: mark.cy, z: on, rot: MARK_ROT }
-    if (p < AT.lift[1]) return { cx: mark.cx, cy: mark.cy, z: on + (carryZ - on) * smooth(span(p, AT.lift)), rot: MARK_ROT }
+    const age = s.jolt >= 0 ? (s.n - s.jolt) / stepHz : HIT.over
+    if (p < AT.lift[0]) return { cx: mark.cx, cy: mark.cy, z: on + HIT.rebound * reboundAt(age), rot: MARK_ROT }
+    if (p < AT.lift[1]) return { cx: mark.cx, cy: mark.cy, z: on + (carryZ - on) * out3(span(p, AT.lift)), rot: MARK_ROT }
     if (p < AT.carry[1]) {
       const u = smooth(span(p, AT.carry))
       return { cx: mark.cx + (rest.cx - mark.cx) * u, cy: mark.cy + (rest.cy - mark.cy) * u, z: carryZ, rot: MARK_ROT + (LIE.rot - MARK_ROT) * u, lay: 0.35 * u }
     }
     if (p < AT.lower[1]) {
       const u = span(p, AT.lower)
-      return { ...rest, z: carryZ * (1 - u * u), lay: 0.35 + 0.65 * smooth(u) }
+      const v = span(p, AT.shake)
+      const w = v < 1 ? Math.sin(3 * Math.PI * v) * (1 - v) : 0
+      return { ...rest, cx: rest.cx + STUCK.shakeX * w, rot: LIE.rot + STUCK.shakeRot * w, z: carryZ * (1 - u * u), lay: 0.35 + 0.65 * smooth(u) }
     }
     return rest
   }
@@ -202,21 +220,31 @@ export function makePage(): PageLogic {
       const k = 1 - out3(span(p, AT.slide))
       carry(over, nodes.letter, { dx: -56 * k, dy: 0, dz: 220 * (1 - fall * fall), rot: SHEET_ROT + 0.04 * k, px: mid.cx, py: mid.cy })
     } else carry(over, nodes.letter, { dx: 0, dy: 0, dz: 0, rot: SHEET_ROT, px: mid.cx, py: mid.cy })
+    const struck = s.jolt >= 0 ? (s.n - s.jolt) / stepHz : HIT.over
+    over[nodes.letter.id] = { ...(over[nodes.letter.id] ?? {}), v: [hopAt(struck), s.stamped ? Math.exp(-struck / 0.5) : 0] }
     if (lettering && p < AT.panel[0]) over[nodes.metrics.id] = null
     else if (lettering && p < AT.panel[1]) carry(over, nodes.metrics, { dx: 0, dy: 0, dz: -(heights.card + 4) * (1 - smooth(span(p, AT.panel))), rot: 0, px: 0, py: 0 })
     const pose = stampPose()
     if (!pose) over[nodes.stamp.id] = null
     else {
       carry(over, nodes.stamp, { dx: pose.cx - places.rest.cx, dy: pose.cy - places.rest.cy, dz: pose.z, rot: pose.rot, px: places.rest.cx, py: places.rest.cy })
-      const age = lettering && s.jolt >= 0 ? (s.n - s.jolt) / stepHz : HIT.over
-      const down = lettering && p >= AT.lower[1] ? p - AT.lower[1] : HIT.over
-      const v = [Math.min(HIT.over, age), Math.min(HIT.over, down), pose.tilt ?? 0, pose.lay ?? 0]
+      const age = struck
+      const lp = since()
+      const down = lp >= AT.lower[1] ? lp - AT.lower[1] : HIT.over
+      const v = [Math.min(HIT.over, age), Math.min(HIT.over, down), pose.tilt ?? 0, pose.lay ?? 0, grown(pose.z - heights.paper) - (age < 0.02 ? HIT.pinch : 0), pose.z]
       over['stamp-block'] = { ...(over['stamp-block'] ?? {}), v }
       over['stamp-grip'] = { ...(over['stamp-grip'] ?? {}), v }
       if (age < HIT.dustSeconds) {
         const reach = HIT.dustReach
         bars.push({ id: 'stamp-dust', part: 'stamp', kind: 'box', role: 'dust', x: mark.cx - mark.blockW / 2 - reach, y: mark.cy - mark.blockH / 2 - reach, w: mark.blockW + reach * 2, h: mark.blockH + reach * 2, z0: heights.paper, z1: heights.paper + 0.05, tone: 'paper', rot: MARK_ROT, v: [age] })
       }
+    }
+    if (s.air && s.air[2] > 1) {
+      const z = s.air[2]
+      const r = STUCK.shade + z * 0.16
+      const cx = s.air[0] + 20 + z * 0.44
+      const cy = s.air[1] + 34 + z * 0.4
+      bars.push({ id: 'cursor-fall-shade', part: 'stamp', kind: 'box', role: 'fallShade', x: cx - r, y: cy - r, w: r * 2, h: r * 2, z0: 1, z1: 1.05, tone: 'paper', rot: 0, v: [STUCK.shadeDark * Math.min(1, z / 14) * (1 - 0.45 * Math.min(1, z / 160))] })
     }
     if (s.stamped) {
       states.push('stamped')
@@ -262,6 +290,7 @@ export function makePage(): PageLogic {
           if (cursor.damaged) continue
           if (cue.act) cursor.act(cue.act)
           if (cue.react) cursor.react(cue.react)
+          if (cue.aim !== undefined) cursor.aim(cue.aim)
         }
       }
       if (s.phase === 'wait') {
@@ -273,24 +302,31 @@ export function makePage(): PageLogic {
         if (t >= AT.decide) {
           s.phase = 'letter'
           s.at = s.n
-          cursor.act('shocked')
-          cursor.react('doubleTake')
+          s.lt = s.n
         }
       } else if (s.phase === 'letter') {
         const p = seconds()
+        if (s.acted < 1 && p >= AT.drop[0]) {
+          s.acted = 1
+          cursor.act('shocked')
+        }
         if (!s.landed && p >= AT.drop[1]) {
           s.landed = true
           io.emit('letter-drop', places.letter.cx, places.letter.cy, false)
           io.emit('paper-slide', places.letter.cx, places.letter.cy, false)
-          cursor.act('proud')
           cursor.react('jump')
         }
-        if (!s.stamped && !s.held && p >= AT.swoop[0] && !underStamp(cursor)) hold(io, spot.x, spot.y)
+        if (s.acted < 2 && p >= AT.proud) {
+          s.acted = 2
+          cursor.act('proud')
+        }
+        if (!s.stamped && !s.held && p >= AT.pull && !underStamp(cursor)) hold(io, spot.x, spot.y)
         if (!s.loomed && p >= AT.loom) {
           s.loomed = true
           if (!s.held) hold(io, cursor.x, cursor.y)
+          cursor.aim(null)
           cursor.act('scared')
-          cursor.react('flinch')
+          cursor.react('rear')
         }
         if (s.held && !s.stamped) {
           const left = Math.max(0.05, Math.min(AT.pullSeconds, AT.slam[1] - 0.06 - (s.pull - s.at) / stepHz))
@@ -313,25 +349,14 @@ export function makePage(): PageLogic {
             s.peeled = false
             s.tx = cursor.x
             s.ty = cursor.y
+            const local = turned({ cx: 0, cy: 0 }, cursor.x - mark.cx, cursor.y - mark.cy, -MARK_ROT)
+            s.lx = local.x
+            s.ly = local.y
           } else {
             if (s.held) cursor.release()
             s.held = false
             cursor.act('shocked')
             cursor.react('jump')
-          }
-        }
-        if (s.held && s.stamped) {
-          const pose = stampPose()
-          if (p >= AT.lower[1] || !pose) {
-            s.held = false
-            cursor.place(drop.x, drop.y, 0)
-            cursor.release()
-          } else if (p < AT.lift[0]) cursor.place(s.tx, s.ty, heights.paper)
-          else {
-            const u = smooth(span(p, AT.lower))
-            const x = pose.cx + s.tx - mark.cx
-            const y = pose.cy + s.ty - mark.cy
-            cursor.place(x + (drop.x - x) * u, y + (drop.y - y) * u, pose.z + STUCK.toss * 4 * u * (1 - u))
           }
         }
         if (p >= AT.letterSeconds) {
@@ -363,6 +388,35 @@ export function makePage(): PageLogic {
           if (s.self >= 0) cursor.release()
         }
       }
+      if (s.held && s.stamped && s.phase !== 'reset') {
+        const p = since()
+        const pose = stampPose()
+        s.air = null
+        if (p >= AT.fling[1] || !pose) {
+          s.held = false
+          cursor.place(drop.x, drop.y, 0)
+          cursor.hurt('flattened', STUCK.heal)
+          cursor.release()
+        } else if (p < AT.lift[0]) cursor.place(s.tx, s.ty, heights.paper)
+        else {
+          const from = p < AT.fling[0] ? pose : (stampPose(AT.fling[0]) ?? pose)
+          const k = grown(from.z - heights.paper)
+          const at = turned({ cx: from.cx, cy: from.cy }, s.lx * k, s.ly * k + STUCK.hang * (from.lay ?? 0), from.rot)
+          const u = span(p, AT.fling)
+          const off = out3(Math.min(1, u / STUCK.off))
+          const fall = Math.min(1, Math.max(0, (u - STUCK.off) / (STUCK.fall - STUCK.off)))
+          const skid = smooth(Math.max(0, (u - STUCK.fall) / (1 - STUCK.fall)))
+          const swing = Math.sin(2 * Math.PI * STUCK.swings * fall) * (1 - 0.6 * fall)
+          const short = { x: drop.x - STUCK.skid, y: drop.y - STUCK.skid * 0.3 }
+          const to: [number, number, number] = [
+            at.x + (short.x - at.x) * off + STUCK.clear * off * (1 - fall) + STUCK.sway * swing + STUCK.skid * skid,
+            at.y + (short.y - at.y) * off - STUCK.sway * 0.3 * Math.abs(swing) + STUCK.skid * 0.3 * skid,
+            (from.z + STUCK.up * off) * (1 - fall) + STUCK.float * Math.abs(swing) * (1 - fall)
+          ]
+          cursor.place(to[0], to[1], to[2])
+          if (p >= AT.fling[0]) s.air = to
+        }
+      }
       if (s.flat) {
         if (!cursor.damaged) {
           s.flat = false
@@ -390,9 +444,9 @@ export function makePage(): PageLogic {
     view(): CameraPose | null {
       if (s.jolt < 0) return null
       const j = (s.n - s.jolt) / stepHz
-      if (j >= 0.32) return null
-      const fade = 1 - j / 0.32
-      return homePose(-9 * fade * fade * Math.cos(j * 46))
+      if (j >= 0.3) return null
+      const fade = 1 - j / 0.3
+      return homePose(-HIT.shake * fade * fade * Math.cos(j * 52))
     },
     camera: () => null,
     script: (time: number): Pointer => pointerAt(marks, time),
