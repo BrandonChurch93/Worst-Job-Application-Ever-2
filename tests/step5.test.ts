@@ -170,7 +170,7 @@ describe('step 5, the film', () => {
     const s = film()
     s.advance(12 * hz)
     const order = s.events.filter((e) => e.name !== 'step').map((e) => e.name)
-    expect(order).toEqual(['hold-music', 'letter-drop', 'paper-slide', 'stamp', 'flatten', 'peel-up', 'button-press', 'page-turn'])
+    expect(order).toEqual(['hold-music', 'letter-drop', 'paper-slide', 'metrics-card', 'stamp', 'flatten', 'count-run', 'peel-up', 'button-press', 'page-turn'])
     const stamp = s.events.find((e) => e.name === 'stamp')!
     expect(stamp.hitsCursor).toBe(true)
     expect(s.pagesVisited).toEqual(['step5', 'marketing'])
