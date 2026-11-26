@@ -74,8 +74,14 @@ The times in the table from 05:01 on are read back from the pushes (05:20, 05:28
 | --- | --- | --- | --- |
 | 05:46 | loader-page | loader: ring's gradient | 1 |
 | 05:48 to 05:53 | youre-fired 2, reply-all 1, tier-office 1 | table-frame: walls | 4 |
+| 05:53 to 05:55 | table-wide, tier-street, last-save | marquee, table-frame, ramps | 3 |
+| 06:00 to 06:06 | table-wide 3 | marquee: the title | 3 |
+| 06:08 | tier-corporate | lift: the tube's bands | 1 |
+| 06:15 to 06:17 | table-wide (review), last-save, tier-street | all parts, after the title and the bands | 3 |
+| 06:19 | tier-corporate | lift: bands in aluminium, not kept | 1 |
+| 06:20 | table-wide | table-frame: the apron card on the left slab | 1 |
 
-Total in round 11: 5 (loader 1, table-frame 4).
+Total in round 11 at 06:24 UTC: 17 (loader 1, table-frame 7, marquee 5, ramps 2, lift 2). Nothing pushed after 06:13 UTC is judged in round 11 (/root, 06:14 UTC); these stills are counted here all the same.
 
 ## Decisions
 
@@ -100,6 +106,11 @@ Total in round 11: 5 (loader 1, table-frame 4).
 - The loader's bowl is turned whole and the tube's mouth stands out of its wall; only the ring is slotted. The slot's bed inside the bowl read as a dark box whatever its tone. The ring's face is a mid grey of its own (`FACE`, `EDGE`), darker than the collars. The ring's top is shaded round its turn (`Geo.tint`): dark toward the top of the page, light toward its lower right, as approved (54 at the top, 113 left, 171 lower right there).
 - The sunk panels of the side rails' south ends are near black (`SLOPE`): from the player's end they read as two grey planks. MEASURED in `table-wide` draft: (34,33,31).
 - Seen, not mine, told to their owners: the floor inside the lower shoulders is black in `tier-office` and `tier-street` (lamp_keeper); `rail-cam` near wire inside the lens's blur (table_runner, who lowered the camera and closed the lens). The marquee's title draws heavy and black across the whole picture in `table-wide` (table_runner, 05:25).
+- The marquee's title (06:05 UTC, 73124fdf). `frame/title.ts`: my marquee maker answers `key` for the one shape `marquee-title` and makes it from the type's own `dataOf` and `geometryOf` (words through `words()` from copy.json; font, size and place are the shape's, set by table_runner), on one material through `lit(studio(m), zone('marquee'))` whose emissive follows the `panel` level in `pose`. It is not drawn twice: `realKey` in `src/shell/view.ts` asks the part's maker first and the shell's type only when that says null. The tone: lamp_keeper and table_runner both said approved has a pale word, and /root asked for letters that glow. MEASURED on approved `table-wide`: the letters are dark warm print, (91,56,39) on a sky of (194,153,120). So the title is dark warm print that lets a little of the panel's light through. MEASURED on the draft at 06:06 UTC: letters (76,48,35) on sky (224,131,67); before it was near black. Counts in `table-wide` the same: scene 201, marquee 4 / 2168 (the run is counted in the row of the type).
+- The clear tube's chrome bands (06:12 UTC, 46f2e454): 20 px long and 1.6 proud of the old ring, with a groove round the middle (`BAND` in `hardware/kit.ts`); the loader's own ring keeps `TUBE.ferrule`. Approved has bands near a third of the tube's width; these are a fifth, so the straps between them still fit. Looked at in `tier-corporate` beside approved: they read as bands, darker than approved's.
+- The bands in brushed aluminium in place of chrome: tried at 06:19 UTC, looked the same dark from above in `tier-corporate`, taken out again (the tree stays as checked).
+- The apron's card (06:22 UTC, d97c5e43, by /root's ruling of 06:20 UTC that the card belongs on the left slab, kit/02-SUBJECT.md line 371): `apron.ts` no longer names a side. The slab whose span holds the card's middle ends at the card's underside, so the line is right before and after table_runner's move of the node and the two changes need not land in the same minute. Looked at once in `table-wide` draft with table_runner's two lines put in locally and taken out again: the card lies on the left slab under its cover, a tone darker than it was on the right. The whole checks at d97c5e43 were run with the card on the right. With table_runner's branch (bdaef0af, its move at 35ca7f7d) merged in locally at 06:25 UTC, not pushed: 102 test files, 1390 of 1390, build, bots all clear, `table-wide` 201 draw calls with frame 16 / 11732 as before.
+- The side rails' near ends stand tall in `table-wide` because the street floor is 288 below the page: that height is the layout's and stays.
 
 ## MEASURED times (04:07 to 04:34 UTC, this VM)
 
@@ -107,11 +118,13 @@ Total in round 11: 5 (loader 1, table-frame 4).
 - One `review` still, hd: 84 s (`last-save`), same command with `--tier review`.
 - Asset sets: `public/assets/table/frame` 0.062 MB, `assets-full/table/frame` 0.136 MB, `assets-src/table/frame` 2.024 MB (`du -sb`); hardware and play have none.
 
-## Still least real at 04:40 UTC
+## Still least real at 06:18 UTC (looked at: `table-wide` review, `last-save`, `tier-street`, `tier-corporate` drafts beside approved)
 
-1. The light on the bats and on the lift's elbow: a bat's top falls from (238,150,36) at the pivot to (126,79,29) at the tip where approved is even, and the elbow is (73,53,34) against (161,79,27). The lamps are lamp_keeper's; told at 04:34.
-2. The highway's wire from a low eye (`last-save`): still a pale grey tube at draft size, where approved is a dark mirror with thin white lines. The hoops and trestles are right.
-3. The frame's lands from straight above: pale sheets with fine stripes and a row of dark screws, where approved is one slow gradient. The south ends of the side rails stand as tall brushed posts in `table-wide` (their height is the layout's).
+1. The frame from the player's end (`table-wide`): the side rails' near ends stand as two tall dark ribbed slabs where approved has one low bevelled steel rim, and the lands from straight above are one even pale grey (about (137,137,136) in `tier-corporate`) where approved runs from about (110,117,118) to a soft highlight near (207,207,205). The height is the layout's; the even tone is mine and open.
+2. The clear tubes from above (lift in `tier-corporate`): a pale blue haze over the floor with thin lamp lines, where approved is clear glass with bright rims and brighter chrome bands. The bands are wide now, still darker than approved.
+3. The bats and the lift's elbow: flat orange without the gloss streak approved has, and the elbow darker than approved. The light on them is lamp_keeper's; not measured again since 04:34 UTC.
+
+Also open: the loader's ring is paler than approved and has no brushed sheen; the marquee's title is Inter where approved has a wide tracked light face (the font and place are table_runner's shape); the near highway wire is a little pale at draft.
 
 ## Draw calls, MEASURED about 05:30 UTC at f66fec4d (`npm run build && npm run counts -- --key <key> --live low`)
 
@@ -121,4 +134,22 @@ Total in round 11: 5 (loader 1, table-frame 4).
 
 ## Needs outside my folder
 
-- `pipeline/phase4/frame-keeper-NEEDS.patch` (05:55 UTC): `export` on `dataOf` and `geometryOf` in `src/shell/real/type.ts`. The marquee's title (`marquee-title`, part `marquee`) is set by the shell's type on a material that never passes `lit()`, so it is near black in the marquee zone where approved has pale letters. With the two exports my marquee maker can answer for that one run (the contract's line on `text` shapes) with the type's own letters from `content/copy.json` on a material of mine that glows with the `panel` group as the picture does. Not built: the patch is not in, and nothing of it is tested.
+- `pipeline/phase4/frame-keeper-NEEDS.patch` (05:55 UTC): `export` on `dataOf` and `geometryOf` in `src/shell/real/type.ts`. The marquee's title (`marquee-title`, part `marquee`) is set by the shell's type on a material that never passes `lit()`, so it is near black in the marquee zone (I wrote here that approved has pale letters: that was said to me and was wrong, see the decision on the title). With the two exports my marquee maker can answer for that one run (the contract's line on `text` shapes) with the type's own letters from `content/copy.json` on a material of mine that glows with the `panel` group as the picture does. The patch went into main at daf0748f (05:58 UTC) and the title is built on it (73124fdf, 06:05 UTC).
+
+## Draw calls and triangles, MEASURED 06:12 UTC at 46f2e454 (`npm run build && npm run counts -- --key <key> --live low`)
+
+| key | hardware | frame | targets | flippers | bumpers | loader | lift | ramps | marquee | scene |
+|---|---|---|---|---|---|---|---|---|---|---|
+| table-wide | 21 / 30368 | 16 / 11732 | 15 / 23180 | 12 / 33216 | 8 / 48192 | 10 / 13966 | 8 / 9868 | 5 / 18680 | 4 / 2168 | 201 |
+| tier-corporate | 13 / 19488 | 9 / 8375 | 7 / 11420 | 5 / 13840 | 2 / 17556 | 4 / 3696 | 3 / 2896 | none | 4 / 2168 | 111 |
+| tier-office | 16 / 26252 | 12 / 10766 | 11 / 18208 | 7 / 19376 | 8 / 48192 | 3 / 4432 | 6 / 7172 | 3 / 15084 | 1 / 806 | 126 |
+| tier-street | 19 / 28432 | 13 / 9666 | 8 / 12060 | 6 / 16608 | 2 / 17556 | 2 / 4352 | 3 / 2822 | 5 / 18680 | none | 108 |
+| loader-page | 7 / 3510 | 5 / 4857 | none | none | none | 4 / 6798 | none | none | 4 / 2168 | 64 |
+| reply-all | 16 / 40076 | 12 / 10766 | 11 / 18208 | 7 / 19376 | 8 / 48192 | 3 / 4432 | 6 / 7238 | 3 / 15084 | 1 / 806 | 129 |
+
+Against the rows before any change: every row of mine in the three tier keys has the same draw calls. `table-wide` has the loader at 10 against 8, which comes with main's wide camera (the same 10 with the loader file of the push before the camera's change). The title's run is counted in the row of the type (10 calls in `table-wide`, scene 201 before and after it). Triangles of my rows in `table-wide`: 187052 before, 191370 now. `loader-page` and `reply-all` have no row from before: UNKNOWN whether they changed.
+
+## Messages to other owners since the first report
+
+- lamp_keeper: the floor inside the lower shoulders is black in `tier-office` and `tier-street` (about 04:58 UTC, no answer); the marquee's title gets no light (05:50 UTC; answered that it cannot reach it and the door is mine).
+- table_runner: the marquee's title heavy and black (05:25 UTC; it set `inter-400` 76 px); the apron card's move (06:22 and 06:23 UTC: my line is side-free and pushed).
