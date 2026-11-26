@@ -142,7 +142,9 @@ Not built, and why:
 - The exhausted arrow's contour (boss_finisher). MEASURED by looking at `references/approved/cursor-acting.png`: the approved Exhausted arrow is melted white with no black contour at all, and the build's follows it. The evidence does not hold, so nothing is changed.
 - The outline's shimmer while still (film frames 6370 to 6392). Not looked at: it wants film frames, not stills.
 
-Looks used on D: cursor-body 5 (Continue at review twice, the sheet `cursor-damage` at review, `step2-crank` at review, the sheet `cursor-acting` at draft).
+What was tried on the exhausted arrow and taken back (commit fa1ae36c, reverted by the Builder at merge 35, which also took back the words written here then): MEASURED by looking, the white lump on Continue is the exhausted body and not the flattened one (`--page step2 --beat step2.continue --at 0.2`: the change to `FLAT` moved 16 pixels of that still). In `material.ts` line 164 the melt fades the black of the edge out wholly by 0.55 and the exhausted state asks 0.6. Fading it by 0.12 at most gave the arrow a dark contour and a point on Continue, and a panel on the sheet that differed from approved's. Ruled for the sheet.
+
+Looks used on D: cursor-body 8 (Continue at 0.6 at review twice, Continue at 0.2 at review twice, the sheet `cursor-damage` at review, `step2-crank` at review, the sheet `cursor-acting` at draft twice).
 
 The Builder's ruling on D, 12:12Z: the flattened arrow and the angry arrow are accepted; the exhausted arrow's contour (fa1ae36c) is ruled for the sheet (`kit/02-SUBJECT.md` names the sheet `cursor-acting` as the reference for Exhausted) and the Builder takes that commit back alone at merge 35. I push no revert of my own.
 
@@ -205,5 +207,5 @@ The three things in my part that still look least real:
 | shell | 15 | 40 |
 | type | 2 | 40 |
 | light-engine | 2 | 40 |
-| cursor-body | 5 | 40 |
+| cursor-body | 8 | 40 |
 
