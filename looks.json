@@ -1,35 +1,35 @@
 {
   "folder": "step2-keeper",
-  "pushed": "2026-11-26T05:02:41.823Z",
-  "commit": "721d7b043303c97d756b9358a4b6c7287fef28e2",
+  "pushed": "2026-11-26T05:07:18.096Z",
+  "commit": "720b26e8ebc36a0ae132a8c44a79df2c34ad3401",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-step2-crank-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-26T04:59:28.522Z",
+      "caption": "Still step2-step2_slot-0p6-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T05:05:14.300Z",
       "by": "step2-keeper",
-      "from": "out/work/stills/key-step2-crank-hd-review.png"
+      "from": "out/work/stills/step2-step2_slot-0p6-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Still key-step2-crank-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-26T05:00:10.013Z",
+      "caption": "Still step2-step2_slot-0p75-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T05:05:27.501Z",
       "by": "step2-keeper",
-      "from": "out/work/stills/key-step2-crank-hd-review.png"
+      "from": "out/work/stills/step2-step2_slot-0p75-hd-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Still key-step2-crank-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-26T05:00:48.486Z",
+      "caption": "The slot's beat in six draft frames, 9.3 s to 12.5 s: lever under and over its bracket, reels, result line, coins",
+      "time": "2026-11-26T05:07:16.697Z",
       "by": "step2-keeper",
-      "from": "out/work/stills/key-step2-crank-hd-review.png"
+      "from": "out/work/looks/files/20261126050716-slot-beat.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Lit meter segments: approved left, build right; softer peach core",
-      "time": "2026-11-26T05:02:40.635Z",
+      "caption": "Dial at twice its size: approved left, build right; housing darker, dark groove",
+      "time": "2026-11-26T05:07:16.931Z",
       "by": "step2-keeper",
-      "from": "out/work/looks/files/20261126050240-lit.png"
+      "from": "out/work/looks/files/20261126050716-dial-zoom.png"
     }
   ]
 }
