@@ -40,3 +40,12 @@ Read from `references/approved/decision.png` at full size, crop by crop.
 - The lit digits of the wait are drawn before their halo, so the measure of type contrast reads the lamp and not the glow: M4 went from 1.83 to 4.74 against 4.5.
 - The tooth of the paper is stronger (normal scale 0.55, fibre tone 0.085) after the measure of fine detail found the sheet at a quarter of the approved image's.
 - The stamp after the first report: the wall of the block is bellied by 2.4 px so that the lamps leave a soft band on it and not an even red; the lacquer has a faint orange peel in its clear coat and the die a coarse grain, both from the tooth picture of the letter's stock (no new texture); a black foam line 3.4 px tall sits between block and die, and the die is 11 px tall and set in by 2.2 px, as in the approved image.
+
+## After the Builder's look at 02:15Z
+
+- Metrics glass: my own recipe (shared card, a bead, a painted shade, pillows) is gone. The panel, the wait panel and the readouts now use the careers page's slab, imported from `src/pages/marketing/real/perk-cards.ts` and not edited. The readout is the same slab at a smaller scale with a flat face added in this part.
+- Stamp: a short block again. The mark's type is 62 px, the mark is the word plus 48 by 52, the block is the mark plus 12 wide and plus 100 deep (about 1.7 times as wide as deep), and at rest it stands tipped back 0.34 rad and turned 0.17 rad. The lacquer takes 0.3 of the studio's reflection, as the shared orange does, so the top is not washed pale. Not as short as the approved image's block (about 290 px): the block has to cover the mark it prints.
+- Mark: turned 0.27 rad, outer line 10 px, inner line 3.4 px, deeper red 0xb81812, more cover.
+- Cursor: not moved to the right of the stamp. The brief settles that the cursor is flattened in the build, and a flat cursor lies where the block struck it, which is on the sheet at the mark. It now stands clear of the sheet's edge, under the lower right of the mark, and the block covers it whole.
+- Your Time: the film's own length (02:33), not a free constant. Left.
+- The stamp's rest lies 24 px under the columns' lower line (`REST_LOW`), so the deeper block does not squeeze the panel.
