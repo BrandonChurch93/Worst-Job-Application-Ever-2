@@ -12,7 +12,7 @@ export const CRANK_LOOK = {
   plate: 8, rim: 3.6, screwAt: 38, screw: 4.8, washer: 25.5, neck: 20, eye: 3.4, bar: 0.8, end: 0.5, fillet: 9, cap: 16.5,
   grip: { cap: 0.95, round: 2.5, square: 2.5, taper: 0.9, seamAt: 9, seam: 0.07, collar: 0.05 },
   tie: { low: 0.82, gain: 1.7, second: 0.3, sharp: 3, axis: 2.5, capAxis: 2.2 },
-  lamp: { colour: [1, 0.46, 0.12] as [number, number, number], power: 0.16, reach: 170, lift: 14, most: 4 }
+  lamp: { colour: [1, 0.46, 0.12] as [number, number, number], power: 0.24, reach: 170, lift: 14, most: 4 }
 }
 const L = CRANK_LOOK
 
@@ -59,7 +59,7 @@ function own(): NonNullable<typeof made> {
     const p = inPill(u, v)
     const t = Math.pow(smooth((p.depth - 2.5) / 8), 1.1) * (1 - 0.25 * smooth((Math.abs(p.y) - 26) / 18))
     const rim = smooth((p.depth - 0.4) / 0.8) * (1 - smooth((p.depth - 1.8) / 1.2))
-    return [1, 0.28 + 0.6 * t + 0.24 * rim, 0.02 + 0.72 * t * t + 0.08 * rim, 1]
+    return [1, 0.3 + 0.54 * t + 0.22 * rim, 0.03 + 0.63 * Math.pow(t, 1.6) + 0.08 * rim, 1]
   })
   const glass = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xf4f7f7), map: off, roughness: 0.06, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.03, specularIntensity: 1, envMapIntensity: 1.6, transparent: true }))
   const wall = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xf4f7f7).multiply(new THREE.Color().setRGB(L.rimTone * 0.955, L.rimTone * 0.995, L.rimTone * 0.975, THREE.SRGBColorSpace)), roughness: 0.06, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.03, specularIntensity: 1, envMapIntensity: 1.6 }))

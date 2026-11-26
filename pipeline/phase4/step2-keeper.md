@@ -37,7 +37,7 @@ Branch `agent/step2-keeper`. Parts: `rows`, `dial`, `slot`, `crank`, `acting-ste
 | --- | --- |
 | `dial` | 13 |
 | `rows` | 4 |
-| `crank` | 5 |
+| `crank` | 8 |
 | `slot` | 9 |
 | `acting-step2` | 22 |
 
