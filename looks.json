@@ -1,35 +1,35 @@
 {
   "folder": "boss-keeper",
-  "pushed": "2026-11-26T05:29:07.189Z",
-  "commit": "b696d05728cb5f80085fe10c8d63a1b55f4365f9",
+  "pushed": "2026-11-26T06:20:37.789Z",
+  "commit": "ec724222dcf7720badf520128755102d2893cecd",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still sheet-boss-stages-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T05:24:30.624Z",
+      "caption": "Key boss-fight: approved on the left, this build on the right, draft tier, with crops of shape:boss-plate, shape:boss-cannon-0, shape:boss-shield, shape:fired-0, cursor, shape:rim-socket-open, checkbox, shape:health-track, progressButton",
+      "time": "2026-11-26T06:20:19.616Z",
       "by": "boss-keeper",
-      "from": "out/work/stills/sheet-boss-stages-hd-draft.png"
+      "from": "out/work/compare/compare-boss-fight.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "boss-fight beside approved at b696d057: brushed dark plates with a bright top edge and a dark side, the careers slab as shield, the arrow along its shot",
-      "time": "2026-11-26T05:29:05.630Z",
+      "caption": "boss-fight at ec724222 beside approved: brushed darker hull, careers glass on the block and on the verification card, arrow aimed along its shot",
+      "time": "2026-11-26T06:20:36.167Z",
       "by": "boss-keeper",
-      "from": "out/work/k/send2/compare-boss-fight.jpg"
+      "from": "out/work/k/send3/compare-boss-fight.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "boss-down beside approved at b696d057: the wreck as four dark plate heaps close round the cap, the glass block lying flat",
-      "time": "2026-11-26T05:29:05.890Z",
+      "caption": "boss-down at ec724222 beside approved: plates darken as they fall, brighter collar round a darker pit, finer cracks in the glass",
+      "time": "2026-11-26T06:20:36.403Z",
       "by": "boss-keeper",
-      "from": "out/work/k/send2/compare-boss-down.jpg"
+      "from": "out/work/k/send3/compare-boss-down.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "sheet boss-stages under approved at b696d057, no captions by ruling",
-      "time": "2026-11-26T05:29:06.114Z",
+      "caption": "boss-stages at ec724222 under approved: the unfolding state compact with short bent legs",
+      "time": "2026-11-26T06:20:36.646Z",
       "by": "boss-keeper",
-      "from": "out/work/k/send2/sheet-boss-stages.jpg"
+      "from": "out/work/k/send3/sheet-over-approved.jpg"
     }
   ]
 }
