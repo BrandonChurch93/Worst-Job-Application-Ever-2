@@ -37,13 +37,14 @@ Branch `agent/step2-keeper`. Parts: `rows`, `dial`, `slot`, `crank`, `acting-ste
 23. The cursor no longer jumps to a grip or onto a machine in one step. `grip()` in `index.ts` closes the hand over `REACH` 0.09 s from where the body is, and `ground()` looks `CLIMB.ahead` 44 px toward the pointer and lets the ground rise at most `CLIMB.rise` 900 px a second. MEASURED with a scan of `Stage.advance(1)` over the film (240 steps a second): before, 66.7 px across in one step at 2.3375 s, 34.4 px at 14.4542 s, and up to 69.7 px in height at 8.9375 s; after, the largest step before the walk to Continue is 8.6 px across and 9.7 px in height. The cursor at the three keys is the same to two decimals (1.0 s 1582.84, 393.15, 4.00; 3.2 s 1217.16, 534.00, 37.00; 15.2 s 1162.23, 749.56, 62.83). A keeper test holds both limits.
 24. The slot's window has rounded corners (`SLOT_LOOK.window` 13, the rings inside the band shrink from it), the frame's own corner is 16, the drums are 97 px wide so the dark between them is a narrow gap as in the approved sheet, and a drum's tone holds a bright plateau and falls to dark only near the window's upper and lower edge (`drum.dark` 0.62, `drum.full` 0.88, in place of a power of the normal). The payline is 1.7 px thick (0.85 radius, the most the room between the legends and the glass allows). MEASURED down the middle drum of the sheet `machines`: approved 188 227 221 208 on the plateau; build before 166 203 214 200.
 25. The meter's segments have a corner of 12 on a width of 28 (the approved top is nearly a half circle), and a lit segment's core is less yellow. MEASURED across a lit segment of the crank key, the core: approved 255 214 150, build before 255 237 168, build now 255 218 137.
+26. A field's chevron turns with its tray (its tilt follows the tray's spring) and no longer flips in one frame. Found with a scan of every shape of the film at 60 frames a second for the largest change in one frame: the chevron's bars turned 1.4 rad in the frame at 1.90 s, 8.22 s and 14.02 s. The other large steps in that scan are meant: the crank's runaway (the grip moves 65.7 px a frame at 16.57 s), the dial's fling (a hole moves 32.7 px a frame at 5.5 s), the rows pushed down by the opening tray (32.9 px a frame at 1.95 s).
 
 ## Looks counted (at most 40 a part)
 
 | Part | Looks |
 | --- | --- |
 | `dial` | 21 |
-| `rows` | 5 |
+| `rows` | 7 |
 | `crank` | 12 |
 | `slot` | 19 |
 | `acting-step2` | 33 |

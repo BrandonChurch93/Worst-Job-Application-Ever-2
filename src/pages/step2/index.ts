@@ -708,8 +708,8 @@ export function makePage(): PageLogic {
     }
   }
 
-  function chevron(out: DrawList, id: string, x: number, y: number, flip: boolean): void {
-    const tilt = flip ? -0.7 : 0.7
+  function chevron(out: DrawList, id: string, x: number, y: number, turn: number): void {
+    const tilt = 0.7 * (1 - 2 * turn)
     for (const side of [-1, 1]) out.push({ id: `${id}-${side < 0 ? 'a' : 'b'}`, part: 'rows', kind: 'box', x: x + 14 + side * 5.2 - 8, y: y + 12.5, w: 16, h: 3, z0: VALUE_Z + 0.05, z1: VALUE_Z + 0.6, tone: 'ink', rot: -tilt * side, r: 1.5 })
   }
 
@@ -799,7 +799,7 @@ export function makePage(): PageLogic {
     for (let i = 0; i < 3; i++) {
       const y = rowY(i) + offsets[i]!
       const isOpen = s.open === i && s.phase !== 'closing'
-      chevron(out, `${ROWS[i]}-chevron`, FX + FW - 24 - 28, y + (FH - 28) / 2, isOpen)
+      chevron(out, `${ROWS[i]}-chevron`, FX + FW - 24 - 28, y + (FH - 28) / 2, clamp(s.spring[i]!, 0, 1))
       if (isOpen) {
         out.push({ id: 'field-focus', part: 'rows', kind: 'box', x: FX + 14, y: y + FH - 5, w: FW - 28, h: 3, z0: 0.1, z1: 0.5, tone: 'accent', v: [0.3] })
       }
