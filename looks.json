@@ -1,35 +1,35 @@
 {
   "folder": "table-light",
-  "pushed": "2026-11-26T02:50:58.377Z",
-  "commit": "6f65863cf2a0ee9124d3a0608eef0cdfd0d16d0e",
+  "pushed": "2026-11-26T03:16:20.162Z",
+  "commit": "ac5769a21a312307ee19482f803822115da52624",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "tier-corporate beside approved (left) at f843395: wet lacquer streaks, spill before the lit opening, bluer Street, heavier gold",
-      "time": "2026-11-26T02:45:01.725Z",
+      "caption": "table-wide beside the approved image at ac5769a: seven lamps on the garage's wall, no true shadows from the table's lamps",
+      "time": "2026-11-26T03:16:18.340Z",
       "by": "table-light",
-      "from": "out/work/lights/n27-tier-corporate-pair.jpg"
+      "from": "out/work/lights/n33-table-wide-pair.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "tier-street beside approved (left) at f843395: wet lacquer streaks, spill before the lit opening, bluer Street, heavier gold",
-      "time": "2026-11-26T02:45:01.974Z",
+      "caption": "reply-all near the ball: two true shadows from the lamps on the left, none on the right, 296 draw calls fewer at draft",
+      "time": "2026-11-26T03:16:18.571Z",
       "by": "table-light",
-      "from": "out/work/lights/n27-tier-street-pair.jpg"
+      "from": "out/work/lights/n32-shadows-2-0.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "table-wide beside approved (left) at 6f65863 on merge 15: box (500,250,1500,1000) build (75,72,66), approved (82,77,68)",
-      "time": "2026-11-26T02:50:57.114Z",
+      "caption": "youre-fired beside the approved image: the floor still reads matt and pale, the red a flat wash",
+      "time": "2026-11-26T03:16:18.801Z",
       "by": "table-light",
-      "from": "out/work/lights/n28-table-wide-pair.jpg"
+      "from": "out/work/lights/n33-youre-fired-pair.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "youre-fired beside approved (left) at 6f65863: the bay's red on the floor before it",
-      "time": "2026-11-26T02:50:57.337Z",
+      "caption": "tier-corporate beside the approved image at ac5769a",
+      "time": "2026-11-26T03:16:19.036Z",
       "by": "table-light",
-      "from": "out/work/lights/n28-youre-fired-pair.jpg"
+      "from": "out/work/lights/n33-tier-corporate-pair.jpg"
     }
   ]
 }
