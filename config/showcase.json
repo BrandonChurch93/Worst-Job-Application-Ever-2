@@ -40,7 +40,7 @@
     "maxBareFraction": 0.08,
     "bareDistanceFraction": 0.02,
     "slopeDeg": 6.5,
-    "pageDuskLevel": 0.18
+    "pageDuskLevel": 0.05
   },
   "applicant": { "filmFirstName": "Perplexity", "filmLastName": "Computer", "filmEmail": "applicant@example.com" },
   "film": {
