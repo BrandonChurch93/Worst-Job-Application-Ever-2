@@ -8,7 +8,7 @@ import { SCREEN_H, stepHead, TYPE } from '../../shell/parts'
 import { words } from '../../shell/words'
 import { frame } from '../../stage/camera'
 import type { DrawList, GagInfo, Hint, PageContext, PageLogic, Pointer, Shape, SheetFrame, StepIo, Tone } from '../../stage/types'
-import { buildLayout, COIN, CRANK, DIAL, dialPlate, dialTop, FH, FW, FX, PAD, reelId, ROWS, rowY, SHEET, SHIFT, SLOT, statesOf, TOP, TRAY_H, TRAY_R, TRAY_Z, trayY, VALUE_Z } from './layout'
+import { buildLayout, COIN, CRANK, DIAL, dialPlate, dialTop, FH, FW, FX, PAD, reelId, reelType, ROWS, rowY, SHEET, SHIFT, SLOT, statesOf, TOP, TRAY_H, TRAY_R, TRAY_Z, trayY, VALUE_Z } from './layout'
 import { actingAt, LANDING, pointerAt, reactions, type Mark, type Marks } from './script'
 
 const dt = 1 / stepHz
@@ -29,6 +29,7 @@ const STOPS = [0.8, 1.15, 1.5]
 const REEL = { gather: 0.3, jolt: 0.2, die: 13, ring: 24, read: 0.388 }
 const LEVER = { rise: 0.1, give: 0.045, drive: 5.5, hold: 0.1, spring: 230, damp: 12, over: 0.075 }
 const REEL_PITCH = 62
+const REEL_SEEN = 58
 const COINS = 14
 // The dial runs home: it gathers speed, runs, and slows into its stop.
 const RETURN = { most: 42, gather: 300, least: 4, slow: 30 }
@@ -814,9 +815,9 @@ export function makePage(): PageLogic {
         const b = legendBox[r]!
         for (const n of m.slot.phase === 'spin' ? [Math.floor(pos), Math.floor(pos) + 1] : []) {
           const off = (n - pos) * REEL_PITCH
-          if (Math.abs(off) > (SLOT.reelH - b.h) / 2 - 6) continue
+          if (Math.abs(off) > REEL_SEEN) continue
           const legend = strip[mod(n, strip.length)]!
-          out.push({ id: `${tag}${reelId(r, legend)}`, part: 'type', kind: 'text', x: SLOT.reelX(r) + dx, y: b.y + off + dy, w: SLOT.reelW, h: b.h, z0: z(TOP + 14), z1: z(TOP + 14), tone: 'ink', words: `data:step2.${SLOT.names[r]}.${legend}`, type: { font: 'inter-600', px: 34, align: 'centre' } })
+          out.push({ id: `${tag}${reelId(r, legend)}`, part: 'slot', kind: 'text', x: SLOT.reelX(r) + dx, y: b.y + off + dy, w: SLOT.reelW, h: b.h, z0: z(TOP + 14), z1: z(TOP + 14), tone: 'ink', words: `data:step2.${SLOT.names[r]}.${legend}`, type: reelType(r) })
         }
       }
       const shut = trayY(1) + TRAY_H * clamp(s.spring[1]!, 0, 1) - COIN.r - COIN.wall / 2
@@ -878,7 +879,7 @@ export function makePage(): PageLogic {
     for (let i = 0; i < 3; i++) {
       const y = rowY(i) + offsets[i]!
       const isOpen = s.open === i && s.phase !== 'closing'
-      if (!s.done[i] || s.open === i) chevron(out, `${ROWS[i]}-chevron`, FX + FW - 24 - 28, y + (FH - 28) / 2, clamp(s.spring[i]!, 0, 1))
+      chevron(out, `${ROWS[i]}-chevron`, FX + FW - 24 - 28, y + (FH - 28) / 2, clamp(s.spring[i]!, 0, 1))
       if (isOpen) {
         out.push({ id: 'field-focus', part: 'rows', kind: 'box', x: FX + 14, y: y + FH - 5, w: FW - 28, h: 3, z0: 0.1, z1: 0.5, tone: 'accent', v: [0.3] })
       }
