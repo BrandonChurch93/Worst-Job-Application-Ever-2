@@ -1,35 +1,35 @@
 {
   "folder": "table-light",
-  "pushed": "2026-11-26T02:22:24.872Z",
-  "commit": "e48460b817afa6bacf027a7c9bdde4832265d35d",
+  "pushed": "2026-11-26T02:45:03.061Z",
+  "commit": "f843395bae822edfc2d43eac3f0e00e24a69943a",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "table-wide after merge 14 beside approved (left): floors baked from the director's layout, round lamps, wider pools",
-      "time": "2026-11-26T02:22:23.096Z",
-      "by": "table-light",
-      "from": "out/work/lights/n23-table-wide-pair.jpg"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "tier-corporate after merge 14 beside approved (left): floors baked from the director's layout, round lamps, wider pools",
-      "time": "2026-11-26T02:22:23.335Z",
-      "by": "table-light",
-      "from": "out/work/lights/n23-tier-corporate-pair.jpg"
-    },
-    {
-      "file": "look-3.jpg",
-      "caption": "tier-street after merge 14 beside approved (left): floors baked from the director's layout, round lamps, wider pools",
-      "time": "2026-11-26T02:22:23.571Z",
-      "by": "table-light",
-      "from": "out/work/lights/n23-tier-street-pair.jpg"
-    },
-    {
-      "file": "look-4.jpg",
       "caption": "Office flash before the change: flash 1 (left) and flash 0 (right) of pinball.replyAll; 56 percent of the worst block changed, now 6.8",
       "time": "2026-11-26T02:22:23.820Z",
       "by": "table-light",
       "from": "out/work/lights/s1-pair.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "youre-fired beside approved (left) at f843395: wet lacquer streaks, spill before the lit opening, bluer Street, heavier gold",
+      "time": "2026-11-26T02:45:01.499Z",
+      "by": "table-light",
+      "from": "out/work/lights/n27-youre-fired-pair.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "tier-corporate beside approved (left) at f843395: wet lacquer streaks, spill before the lit opening, bluer Street, heavier gold",
+      "time": "2026-11-26T02:45:01.725Z",
+      "by": "table-light",
+      "from": "out/work/lights/n27-tier-corporate-pair.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "tier-street beside approved (left) at f843395: wet lacquer streaks, spill before the lit opening, bluer Street, heavier gold",
+      "time": "2026-11-26T02:45:01.974Z",
+      "by": "table-light",
+      "from": "out/work/lights/n27-tier-street-pair.jpg"
     }
   ]
 }
