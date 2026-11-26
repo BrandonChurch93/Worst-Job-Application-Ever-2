@@ -179,5 +179,88 @@
       ],
       "label": "progress buttons"
     }
+  },
+  "marketing-top": {
+    "cursor": {
+      "box": [
+        0.359,
+        0.435,
+        0.038,
+        0.081
+      ],
+      "label": "the arrow"
+    },
+    "medallion": {
+      "box": [
+        0.716,
+        0.155,
+        0.194,
+        0.346
+      ],
+      "label": "the medal"
+    },
+    "heroButton": {
+      "box": [
+        0.069,
+        0.393,
+        0.243,
+        0.097
+      ],
+      "label": "the large button"
+    },
+    "button": {
+      "box": [
+        0.819,
+        0.043,
+        0.114,
+        0.058
+      ],
+      "label": "the button in the header"
+    },
+    "card.corner": {
+      "box": [
+        0.019,
+        0.549,
+        0.1,
+        0.1
+      ],
+      "label": "a corner of a glass card"
+    },
+    "card.glass": {
+      "box": [
+        0.297,
+        0.781,
+        0.1,
+        0.1
+      ],
+      "label": "glass at its edge"
+    },
+    "cardRule": {
+      "box": [
+        0.087,
+        0.722,
+        0.24,
+        0.008
+      ],
+      "label": "the words on a card"
+    },
+    "tickerWindow": {
+      "box": [
+        0.069,
+        0.922,
+        0.864,
+        0.052
+      ],
+      "label": "the ticker"
+    },
+    "header": {
+      "box": [
+        0.069,
+        0.03,
+        0.43,
+        0.11
+      ],
+      "label": "the title and the rule"
+    }
   }
 }
