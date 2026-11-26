@@ -237,18 +237,26 @@ void main() {
 	}
 
 	float band = smoothstep( RIN - 0.012, RIN + 0.012, rho );
-	float lens = smoothstep( 0.36, RIN, rho );
-	float aIn = mix( 0.05, 0.62 * known, lens * lens );
-	float alpha = mix( mix( aIn, 0.93 * known, band ), mix( 0.03, 0.34, band ), uTrue ) * mix( 0.7, 1.0, uArtOn );
-	vec3 col = ( bent * mix( 1.0, 1.25, band ) + ( gather * 0.3 + uHaze + uSoft * 0.06 ) * band ) * alpha;
+	float lens = smoothstep( 0.55, RIN, rho );
+	float aIn = mix( 0.04, 0.62 * known, lens * lens );
+	float alpha = mix( mix( aIn, 0.95 * known, band ), mix( 0.03, 0.34, band ), uTrue ) * mix( 0.7, 1.0, uArtOn );
+	vec3 col = ( bent * mix( 1.15, 1.9, band ) + ( gather * 0.5 + uHaze + uSoft * 0.1 ) * band ) * alpha;
+
+	vec3 away = normalize( vec3( - uSoftDir.xy, 0.0 ) + vec3( 1e-4 ) );
+	float far = pow( max( dot( Np, away ), 0.0 ), 2.0 );
+	float pool = smoothstep( 0.42, 0.8, rho ) * ( 1.0 - band );
+	col += ( uSoft * 0.34 * far + gather * 0.4 ) * pool;
+	col += ( uSoft * 0.022 + uFloor * 0.008 ) * ( 0.4 + 0.6 * rho );
+	alpha = clamp( alpha + 0.1 * pool * far, 0.0, 1.0 );
 
 	vec3 Ni = normalize( N + 0.1 * Np );
 	vec3 Ri = reflect( - V, Ni );
-	vec3 refl = softbox( R, 0.03 ) * SOFT * ( 0.1 + 0.5 * pow( 1.0 - ndv, 2.0 ) );
-	refl += softbox( Ri, 0.16 ) * SOFT * 0.04;
+	vec3 refl = softbox( R, 0.03 ) * SOFT * ( 0.34 + 0.9 * pow( 1.0 - ndv, 2.0 ) );
+	refl += softbox( Ri, 0.16 ) * SOFT * 0.1;
 	refl += floorAt( vP, R ).rgb * F * 0.9;
-	refl += lampsIn( R, vP, 1.0 ) * ( 0.07 + 0.9 * F );
-	refl += lampsIn( Ri, vP, 0.7 ) * 0.035;
+	refl += lampsIn( R, vP, 1.0 ) * ( 0.12 + 0.9 * F );
+	refl += lampsIn( Ri, vP, 0.7 ) * 0.06;
+	refl += lampsIn( T2, Pout, 0.8 ) * 0.1 * lens;
 	col += refl;
 	alpha = clamp( alpha + F * 0.6, 0.0, 1.0 );
 
@@ -256,12 +264,13 @@ void main() {
 	col *= 1.0 - 0.4 * ring;
 	alpha = max( alpha, 0.5 * ring );
 	float lip = 1.0 - smoothstep( 0.0, 0.022, abs( rho - RIN - 0.032 ) );
-	col += lip * ( softbox( reflect( - V, normalize( N - 0.6 * Np ) ), 0.25 ) * SOFT * 0.05 + gather * 0.3 );
+	col += lip * ( softbox( reflect( - V, normalize( N - 0.6 * Np ) ), 0.25 ) * SOFT * 0.12 + gather * 0.5 + uFloor * 0.05 );
 
-	col *= 1.0 - 0.22 * smoothstep( 0.9, 0.96, rho );
-	float edge = smoothstep( 0.958, 0.993, rho );
-	col = mix( col, col * 0.22, edge * 0.85 );
-	alpha = mix( alpha, 0.97, edge * 0.8 );
+	float brim = smoothstep( 0.9, 0.955, rho ) * ( 1.0 - smoothstep( 0.965, 0.985, rho ) );
+	col += brim * ( uFloor * 0.1 + uSoft * 0.25 * ( 0.4 + 0.6 * max( dot( Np, normalize( vec3( uSoftDir.xy, 0.0 ) ) ), 0.0 ) ) + gather * 0.4 );
+	float edge = smoothstep( 0.972, 0.996, rho );
+	col = mix( col, col * 0.12, edge * 0.9 );
+	alpha = mix( alpha, 0.97, edge * 0.9 );
 
 	float glint;
 	float line = seamLine( glint );
@@ -370,20 +379,20 @@ void main() {
 		float along = dot( q, d ) / ( uR * 0.95 * sqrt( 1.0 + k * k ) );
 		float across = dot( q, side ) / ( uR * 0.82 );
 		float e = along * along + across * across;
-		keep *= 1.0 - uShade[ i ].w * ( 1.0 - smoothstep( 0.2, 1.0, e ) ) * ( 1.0 - 0.4 * smoothstep( - 0.6, 1.0, along ) );
-		vec2 s = vXY - d * ( uR * ( 0.35 + 0.4 * k ) + uLift * k );
+		keep *= 1.0 - uShade[ i ].w * ( 1.0 - smoothstep( 0.42, 1.0, e ) ) * ( 1.0 - 0.3 * smoothstep( - 0.2, 1.0, along ) );
+		vec2 s = vXY - d * ( uR * ( 0.5 + 0.62 * k ) + uLift * k );
 		float sa = dot( s, d ) / uR;
 		float sc = dot( s, side ) / uR;
-		float core = 1.1 * exp( - ( sa * sa / 0.02 + sc * sc / 0.008 ) ) + 0.12 * exp( - ( sa * sa / 0.2 + sc * sc / 0.06 ) );
-		float ray = 0.26 * exp( - ( sa * sa / 0.4 + sc * sc / 0.003 ) ) + 0.17 * exp( - ( sa * sa / 0.004 + sc * sc / 0.12 ) );
+		float core = 1.5 * exp( - ( sa * sa / 0.014 + sc * sc / 0.006 ) ) + 0.05 * exp( - ( sa * sa / 0.08 + sc * sc / 0.03 ) );
+		float ray = 0.16 * exp( - ( sa * sa / 0.14 + sc * sc / 0.0016 ) ) + 0.1 * exp( - ( sa * sa / 0.002 + sc * sc / 0.05 ) );
 		float da = ( sa + sc ) * 0.7071;
 		float db = ( sa - sc ) * 0.7071;
-		ray += 0.1 * ( exp( - ( da * da / 0.1 + db * db / 0.003 ) ) + exp( - ( db * db / 0.1 + da * da / 0.003 ) ) );
+		ray += 0.05 * ( exp( - ( da * da / 0.05 + db * db / 0.002 ) ) + exp( - ( db * db / 0.05 + da * da / 0.002 ) ) );
 		float ring = ( length( s ) / uR - 0.36 ) / 0.06;
-		float arc = 0.3 * exp( - ring * ring ) * pow( max( dot( normalize( s + vec2( 1e-4 ) ), d ), 0.0 ), 3.0 );
+		float arc = 0.16 * exp( - ring * ring ) * pow( max( dot( normalize( s + vec2( 1e-4 ) ), d ), 0.0 ), 3.0 );
 		c += uSpot[ i ] * ( core + ray + arc );
 	}
-	keep *= 1.0 - 0.6 * uNear * exp( - dot( vXY, vXY ) / ( uR * uR * 0.2 ) );
+	keep *= 1.0 - 0.8 * uNear * exp( - dot( vXY, vXY ) / ( uR * uR * 0.24 ) );
 	float fade = 1.0 - smoothstep( 0.8, 1.0, length( vXY ) / ( uR * 5.2 ) );
 	gl_FragColor = vec4( c * fade, ( 1.0 - keep ) * fade );
 }

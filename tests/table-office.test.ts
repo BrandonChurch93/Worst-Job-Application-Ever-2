@@ -6,8 +6,8 @@ import { groupsOf } from '../src/table/real/lights'
 import { localBalls, zone } from '../src/table/real/zone'
 import type { RealContext } from '../src/real/types'
 import { buildCoffee } from '../src/table/real/models/office/coffee'
-import { buildCubicles, things } from '../src/table/real/models/office/cubicles'
-import { boxOf, buildInbox, poseInbox } from '../src/table/real/models/office/inbox'
+import { buildCubicles, loose, things } from '../src/table/real/models/office/cubicles'
+import { boxOf, buildInbox, hopAt, poseInbox } from '../src/table/real/models/office/inbox'
 import { buildStaplers, openAt, PLATE, poseStaplers } from '../src/table/real/models/office/staplers'
 import { parts } from '../src/table/real/models/office'
 
@@ -44,9 +44,9 @@ describe('the models of the office', () => {
     for (const id of ['model-coffee-machine', 'model-cubicles', 'model-inbox', 'model-staplers']) expect(parts[id]).toBeTruthy()
   })
 
-  test('the tier is drawn in no more than fourteen draws, and its triangles are counted', () => {
+  test('the tier is drawn in no more than twelve draws, and its triangles are counted', () => {
     const all = Object.values(built).flatMap(meshes)
-    expect(all.length).toBeLessThanOrEqual(14)
+    expect(all.length).toBeLessThanOrEqual(12)
     const fine = all.filter((m) => m.userData.fine).reduce((n, m) => n + triangles(m), 0)
     const rest = all.filter((m) => !m.userData.fine).reduce((n, m) => n + triangles(m), 0)
     expect(fine).toBeGreaterThan(0)
@@ -59,7 +59,7 @@ describe('the models of the office', () => {
     expect(names.size).toBeLessThanOrEqual(3)
     const groups = new Set(groupsOf(z).map((g) => g.id))
     const glowing = all.filter((m) => (m.material as THREE.Material).name.startsWith('office.glow'))
-    expect(glowing.length).toBe(2)
+    expect(glowing.length).toBe(1)
     for (const m of glowing) expect(groups.has(m.userData.lightGroup)).toBe(true)
   })
 
@@ -82,7 +82,6 @@ describe('the models of the office', () => {
     for (const [id, o, over] of [['office.coffee', built.coffee, 0], ['office.inbox', built.inbox, 0]] as [string, THREE.Object3D, number][]) {
       const b = boxOf(z, id)
       for (const m of meshes(o)) {
-        if (m.name === 'office.inbox.tray' || m.name === 'office.inbox.loose') continue
         const box = boundsOf(m)
         expect(box.min.x).toBeGreaterThanOrEqual(b.x - b.w / 2 - 0.01)
         expect(box.max.x).toBeLessThanOrEqual(b.x + b.w / 2 + 0.01)
@@ -118,15 +117,24 @@ describe('the models of the office', () => {
     poseInbox(built.inbox, z, ctxOf([{ id: 'model.office.inbox', v: [0, 9, 9] }]))
   })
 
-  test('the inbox tips when it holds the ball and comes back level', () => {
-    const tray = meshes(built.inbox).find((m) => m.name === 'office.inbox.tray')!
-    poseInbox(built.inbox, z, ctxOf([{ id: 'model.office.inbox', v: [1, 2, 9] }]))
-    const held = Math.abs(tray.rotation.y)
-    expect(held).toBeGreaterThan(0.2)
-    poseInbox(built.inbox, z, ctxOf([{ id: 'model.office.inbox', v: [0, 9, 0.2] }]))
-    expect(Math.abs(tray.rotation.y)).toBeLessThan(held)
+  test('the envelopes jump when a ball goes in, lower when it is sent on, and lie still after', () => {
+    const heaps = meshes(built.inbox).filter((m) => m.name.startsWith('office.inbox.heap'))
+    expect(heaps.length).toBe(2)
     poseInbox(built.inbox, z, ctxOf([{ id: 'model.office.inbox', v: [0, 9, 9] }]))
-    expect(Math.abs(tray.rotation.y)).toBeLessThan(1e-6)
+    const rest = heaps.map((m) => m.position.z)
+    poseInbox(built.inbox, z, ctxOf([{ id: 'model.office.inbox', v: [1, 0.12, 9] }]))
+    const up = heaps.map((m, i) => m.position.z - rest[i]!)
+    for (const h of up) expect(h).toBeGreaterThan(2)
+    poseInbox(built.inbox, z, ctxOf([{ id: 'model.office.inbox', v: [0, 9, 0.12] }]))
+    heaps.forEach((m, i) => {
+      expect(m.position.z - rest[i]!).toBeGreaterThan(1)
+      expect(m.position.z - rest[i]!).toBeLessThan(up[i]!)
+    })
+    poseInbox(built.inbox, z, ctxOf([{ id: 'model.office.inbox', v: [0, 9, 9] }]))
+    heaps.forEach((m, i) => expect(m.position.z).toBeCloseTo(rest[i]!, 6))
+    expect(hopAt(9)).toBe(0)
+    expect(hopAt(0)).toBe(0)
+    for (let t = 0; t < 1.4; t += 0.01) expect(hopAt(t)).toBeLessThanOrEqual(1)
   })
 
   test('a stapler slams shut in three hundredths of a second and springs back in a quarter with one small overshoot', () => {
@@ -193,6 +201,18 @@ describe('the models of the office', () => {
       expect(side(t.at, 'office.inlane.floor.left')).toBeGreaterThan(0)
       expect(side(t.at, 'office.shoulder.edge.left')).toBeGreaterThan(0)
       expect(t.at[1] + t.r).toBeLessThan(seg('office.outlane.floor.left').a[1])
+    }
+    const lying = loose()
+    expect(lying.length).toBeGreaterThan(5)
+    const display = table.displays.find((d) => d.tier === 1)!
+    for (const t of lying) {
+      for (const q of table.segs) if (q.tier === 1) expect(far(t.at, q.a, q.b)).toBeGreaterThan(t.r + 0.08)
+      for (const q of table.posts) if (q.tier === 1) expect(Math.hypot(q.c[0] - t.at[0], q.c[1] - t.at[1])).toBeGreaterThan(q.r + t.r + 0.08)
+      for (const n of table.inserts) expect(Math.hypot(n.c[0] - t.at[0], n.c[1] - t.at[1])).toBeGreaterThan(n.r + t.r)
+      expect(t.at[0] + t.r).toBeLessThan(seg('office.outlane.side.right').a[0])
+      expect(t.at[0] - t.r).toBeGreaterThan(seg('office.shoulder.step.right').a[0])
+      expect(side(t.at, 'office.inlane.floor.right')).toBeLessThan(0)
+      expect(t.at[1] + t.r).toBeLessThan(display.box[1])
     }
   })
 })

@@ -31,14 +31,20 @@ export const sealed = {
 }
 
 const SEALED = /* glsl */ `
+vec3 wjaSealed = vec3( 0.0 );
 if ( uShape.y > 0.0 ) {
 	IncidentLight wjaLamp;
 	wjaLamp.visible = true;
 	wjaLamp.direction = normalize( normalize( cross( vAcross, - vDown ) ) * uSealedFrom.w + ( viewMatrix * vec4( uSealedFrom.xyz, 0.0 ) ).xyz );
 	wjaLamp.color = uSealedLight * uShape.y;
-	RE_Direct( wjaLamp, geometryPosition, geometryNormal, geometryViewDir, geometryClearcoatNormal, material, reflectedLight );
-	reflectedLight.directDiffuse += uSealedFill * uShape.y * material.diffuseColor;
+	ReflectedLight wjaIn = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );
+	RE_Direct( wjaLamp, geometryPosition, geometryNormal, geometryViewDir, geometryClearcoatNormal, material, wjaIn );
+	wjaSealed = wjaIn.directDiffuse + wjaIn.directSpecular + uSealedFill * uShape.y * material.diffuseColor;
 }
+`
+// The sealed lamp tops the body up to its own level: where the scene already lights the body as much, it adds nothing.
+const SEALED_TOP = /* glsl */ `
+outgoingLight += wjaSealed * clamp( 1.0 - dot( outgoingLight, vec3( 0.2126, 0.7152, 0.0722 ) ) / max( dot( wjaSealed, vec3( 0.2126, 0.7152, 0.0722 ) ), 1e-4 ), 0.0, 1.0 );
 `
 
 export function bodyUniforms(): BodyUniforms {
@@ -345,6 +351,7 @@ export function bodyMaterial(uniforms: BodyUniforms): THREE.MeshPhysicalMaterial
     )
     shader.fragmentShader = ('uniform vec3 uEnamel;\nuniform vec3 uEdge;\nuniform vec3 uSealedLight;\nuniform vec4 uSealedFrom;\nuniform vec3 uSealedFill;\n' + FRAGMENT_HEAD + shader.fragmentShader)
       .replace('#include <lights_fragment_end>', SEALED + '#include <lights_fragment_end>')
+      .replace('#include <opaque_fragment>', SEALED_TOP + '#include <opaque_fragment>')
       .replace('#include <color_fragment>', '#include <color_fragment>\nwjaHoles( vRest );\ndiffuseColor.rgb = wjaSurface( uEnamel, uEdge );')
       .replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\nroughnessFactor = wjaRough;')
       .replace('#include <normal_fragment_maps>', '#include <normal_fragment_maps>\nnormal = normalize( normal + vAcross * wjaTilt.x + vDown * wjaTilt.y );')
