@@ -1,0 +1,86 @@
+{
+ "critic": "R1",
+ "score": 6,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "B: the key `step2-crank`, whole and in native crops, each beside the approved image",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-B-01-b.png",
+   "where": "the Contact number and Date of birth controls in the right column",
+   "what": "The two quiet, empty dropdown faces have become prominent dark text rows, and both right-end down chevrons are gone. The thin gray wells also lack the target's darker recessed upper-left edge and reflective lower-right lip.",
+   "fix": "Restore the two closed dropdown faces and their right-aligned chevrons; recover the cool glass well, dark inner bevel and bright opposite rim. Leave the separate volume percentage as settled."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02-b.png",
+   "where": "meter segments, upper-right and lower-right crops",
+   "what": "The unlit segments look like flat gray outlines with almost no local shadows, and the lit ones read as fuzzy orange capsules rather than glossed amber glass. Both lose the directional reflections and surrounding light seen in the target.",
+   "fix": "Render curved glass faces with narrow off-center specular rims, darker cool sides and soft lower-right contact shadows. Retain the three lit segments, giving them defined cream-amber inner highlights and warm spill onto the tray."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02-b.png",
+   "where": "the crank mount and central hub, upper-left crop",
+   "what": "The plate and hub read as smooth pale gray disks with faint, nearly flat screw marks. The target has darker circular brushing, four defined fasteners, bright polished shoulders and a deeper soft shadow off the lower right.",
+   "fix": "Restore the circular brushed-steel finish, separated polished bevels, sharply modeled fasteners and localized lower-right occlusion without changing the configured part scale."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02-b.png",
+   "where": "the crank arm and orange grip, upper-middle and lower-left crops",
+   "what": "The arm rises more steeply and ends farther left. The arm face is uniformly gray and the orange grip loses the bright rounded upper shoulder, dark sidewall and longer warm shadow of the target.",
+   "fix": "Rotate the arm slightly clockwise to bring it closer to horizontal, moving the grip right and a little down relative to the hub. Add directional metal brushing, a focused upper-left gloss line, a deeper orange sidewall and a soft warm shadow toward the lower right."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02-b.png",
+   "where": "the crank tray rim and floor across the crank and meter crops",
+   "what": "The pocket reads cooler and flatter, with a thin gray-white outline, less warm reflection at the metal edges, and weaker local shadows behind the crank and meter.",
+   "fix": "Give the tray a deeper dark inner roll at the top and left, a narrow warm reflected edge, a brighter lower lip and more localized directional light across its floor. Keep the clean page lighting."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02-b.png",
+   "where": "the numbered progress buttons and connecting rail, lower-middle crop",
+   "what": "The orange active cap and the steel cap have flatter faces, more uniform rim lighting and shorter, lighter cast shadows. The orange cap is duller, and the rail and divider lack the target's warmer reflected highlights.",
+   "fix": "Use brighter upper-left curved highlights, more defined cap finish and darker lower-right falloff. Restore radial metal sheen on the inactive caps, warm gloss on the selected cap and a restrained warm glint on the rail and divider."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02-b.png",
+   "where": "the Continue button, lower-right crop",
+   "what": "The dark charcoal face, high-contrast bold label and strong external shadow make it look more active than the target's muted blue-gray, low-contrast button. Its black edge looks raised rather than nestled into the page.",
+   "fix": "Lighten and cool the face, reduce label weight and contrast, and trade the heavy external black shadow for a restrained socket shadow and softly reflective rim."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01-b.png",
+   "where": "paper surface across the page, especially the broad left column",
+   "what": "The paper reads darker, grayer and more uniformly coarse than the brighter, warmer off-white target. The flattened surrounding light weakens the sculpted look even away from the controls.",
+   "fix": "Lift the diffuse paper tone gently toward ivory, soften the uniform coarse grain, and preserve the directional upper-left light through local shadows rather than adding a window band or border slab."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01-b.png",
+   "where": "the active Audio volume header above the tray",
+   "what": "The active slot keeps a cool gray interior under a thin hot orange outline. The target reads warmer and milkier, with a brighter cream inner lip rather than the more uniform line.",
+   "fix": "Warm and soften the well, shape the amber outline around a cream-colored inner reflection, and carry a restrained warm spill into the adjoining tray rim. Keep the percentage."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02-b.png",
+   "where": "the crank cursor, lower-left crop",
+   "what": "The white pointer face is flatter and broader in contour, with a chunkier, rounder dark stroke. It loses the target arrow's crisp dark edge and subtle bright inset treatment.",
+   "fix": "Keep the configured cursor size, but refine the contour to the sharper arrowhead and slimmer stem, give the edge a tighter dark profile, and restore the subtle face highlight and bevel. Keep its tip anchored to the grip."
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-01-b.png",
+   "where": "the header, supporting text, tray instruction and lower-left footer",
+   "what": "The header and supporting lines look slightly more open in tracking; the tray instruction starts a little farther right and lower, while the footer sits slightly high.",
+   "fix": "Tighten the type metrics where needed, nudge the tray instruction toward its upper-left inset and lower the footer baseline slightly, without changing any copy."
+  }
+ ]
+}

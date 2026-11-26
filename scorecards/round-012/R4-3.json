@@ -1,0 +1,79 @@
+{
+ "critic": "R4",
+ "score": 4,
+ "pass": false,
+ "model": "kimi_k3",
+ "set": "C: consecutive frames at hits 1 to 10 of the page's 22",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-C-10.png",
+   "where": "frames 1:26.07 to 1:26.23, the black dome target left of the envelopes tray",
+   "what": "the ball arrives at speed, then parks and balances on the sloped edge of a raised dome for a quarter of a second; a steel ball would roll off or drop in, so it reads as placed by hand, not loose in a machine",
+   "fix": "let the ball roll off the dome within a frame or two of landing, or drop into the saucer; never let it rest on a slope"
+  },
+  {
+   "severity": "severe",
+   "file": "set-C-03.png",
+   "where": "1:21.93 to 1:22.07, right-hand round bumper on the felt lane",
+   "what": "the ball strikes the bumper and bounces, but the bumper does nothing at the contact frame: no flash, no pop, no movement inside the lamp; only one thing reacts to a hit that should move both, and the three frames after the ball leaves are dead stills",
+   "fix": "fire the bumper lamp and cap on the contact frame, let the flash decay over the following frames, and cut the three identical tail frames"
+  },
+  {
+   "severity": "severe",
+   "file": "set-C-10.png",
+   "where": "1:26.00 to 1:26.03, the dome target and the red flipper beside it",
+   "what": "the ball's fastest arrival in the set meets an inert target and a flipper that never fires; nothing answers the impact, so the climax of the sheet lands flat",
+   "fix": "flash the struck target at contact, and if the shot is meant to be a flipper save, fire the flipper with wind-up and recoil"
+  },
+  {
+   "severity": "major",
+   "file": "set-C-05.png",
+   "where": "whole sheet, continued in set-C-06, set-C-07 and set-C-08 (1:24.17 to 1:25.57)",
+   "what": "the ball glides at near-constant speed and wanders in loops around the same lit lamp for over a second: no acceleration on a slope, no speed change at contact, no deflection; it drifts like something being moved by hand rather than steel loose in a machine",
+   "fix": "give the ball slope-driven acceleration, a sharp direction change in a frame or two at any target, and a decisive exit instead of circling the same lamp"
+  },
+  {
+   "severity": "major",
+   "file": "set-C-04.png",
+   "where": "1:23.53 to 1:23.57, the ball near the big round bumper",
+   "what": "the ball loses its spherical form and becomes a pinched blob with a mouth-like dark opening for two frames, then snaps back to a clean sphere; also the bumper it brushes never reacts",
+   "fix": "keep the ball a rigid sphere through the contact frames, expressing speed by streaking it rather than deforming it, and flash the bumper it touches"
+  },
+  {
+   "severity": "major",
+   "file": "set-C-08.png",
+   "where": "1:25.40 to 1:25.47, the ball crossing the blue lamp",
+   "what": "the ball develops a dark Pac-Man-style opening where the cursor should be, then the cursor reappears; shape instability reads at delivery size",
+   "fix": "render the cursor held inside a stable glass shell on every frame; no openings or holes in the ball"
+  },
+  {
+   "severity": "major",
+   "file": "set-C-01.png",
+   "where": "1:09.43 to 1:09.50, the shockwave ripple on the black round button",
+   "what": "the ripple resolves into two arcs above the arrow and one below, reading as a smiley face rather than a shockwave; at 1:09.30 the arrow also crumples into an unrecognisable star, so the sheet's own hit moment is unclear without the caption",
+   "fix": "emit a single closed ring or concentric rings from the contact point, and keep the arrow intact through the hit, showing recoil by position rather than by deforming it"
+  },
+  {
+   "severity": "major",
+   "file": "set-C-05.png",
+   "where": "the pizza lamp, 1:24.17 onward",
+   "what": "the lamp is fully lit before the ball reaches it, so the flash is not caused by the hit; the brightest frame comes after the ball has left, putting the answer off the moment of contact",
+   "fix": "trigger the lamp-up on the frame the ball touches the lamp, with the peak following the contact"
+  },
+  {
+   "severity": "major",
+   "file": "set-C-02.png",
+   "where": "whole sheet, the bubble ball on the red carpet",
+   "what": "the ball rolls at one even speed while the arrow inside floats and re-orients independently of the rolling shell, so the contents read as overlaid rather than carried; nothing in the lobby responds as it passes the posts",
+   "fix": "lock the arrow's motion to the ball's roll, ease the ball in and out with weight, and have posts or the barrier react when it brushes them"
+  },
+  {
+   "severity": "minor",
+   "file": "set-C-03.png",
+   "where": "1:22.07 and 1:22.10, top-left and bottom-left frame edges",
+   "what": "single-frame slivers of the ball appear at the sheet edges on isolated frames, a flicker in an otherwise empty lane",
+   "fix": "track the ball cleanly on and off frame so no one-frame fragments remain"
+  }
+ ]
+}
