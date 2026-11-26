@@ -21,6 +21,7 @@ export const ROW_Y = HEADER.contentY
 export const PITCH = 144
 export const TRAY_GAP = 12
 export const TRAY_H = 232
+export const TRAY_R = 14
 export const SHIFT = TRAY_H + TRAY_GAP
 export const TRAY_Z = heights.machineTray
 export const TOP = heights.machineMinTop
@@ -39,6 +40,16 @@ export const DIAL = {
   travel: (k: number): number => 60 * DEG + 30 * DEG * (k - 1),
   digit: (k: number): string => String(k % 10)
 }
+
+// The dial's body, in page pixels: how tall it stands on the tray's floor, how much of it shows before it has risen, and its turned steps.
+export const DIAL_BODY = {
+  tall: TOP + 2 - TRAY_Z, rest: 7.4, below: 2, plate: 6.2, bezel: 9, bezelDrop: 2, wheel: 89.2, thick: 4.8, chamfer: 1, holeRim: 0.4, holeChamfer: 2,
+  hub: 30, hubTall: 14, seat: 5, seatGap: 1.8, stopIn: 71, stopOut: 109, stopWide: 12, stopClear: 3, stopTall: 8, stopFoot: 12,
+  shade: 0.46, shadeReach: 0.78
+}
+
+// How far the top of the dial's wheel stands above the tray's floor when the machine has risen by `lift` (0 to 1).
+export const dialTop = (lift: number): number => Math.max(DIAL_BODY.rest, DIAL_BODY.tall * lift)
 
 const sy = trayY(1)
 export const SLOT = {
@@ -92,7 +103,7 @@ function dialNodes(): LayoutNode[] {
   const numerals: LayoutNode[] = []
   for (let k = 1; k <= 10; k++) {
     const a = d.holeAngle(k)
-    numerals.push(text(`dial-numeral-${d.digit(k)}`, `data:step2.dial.${d.digit(k)}`, DIAL_TYPE, d.cx + d.ring * Math.cos(a), d.cy + d.ring * Math.sin(a) - cap / 2, { part: 'type', on: TOP + 3 }))
+    numerals.push(text(`dial-numeral-${d.digit(k)}`, `data:step2.dial.${d.digit(k)}`, DIAL_TYPE, d.cx + d.ring * Math.cos(a), d.cy + d.ring * Math.sin(a) - cap / 2, { part: 'type', on: TOP + 2 - DIAL_BODY.plate }))
   }
   const centre = node('dial-centre', 'dialCentre', [d.cx - 30, d.cy - 30, 60, 60], { part: 'dial', shape: 'disc', height: TOP + 16, floor: TOP + 2, tone: 'accent', mechanism: true })
   const wheel = node('dial-wheel', 'dialWheel', [d.cx - d.r, d.cy - d.r, d.r * 2, d.r * 2], { part: 'dial', shape: 'disc', height: TOP + 2, floor: TRAY_Z, tone: 'metal', mechanism: true, children: [...numerals, centre] })
@@ -139,7 +150,7 @@ function crankNodes(): LayoutNode[] {
 
 export function buildLayout(): LayoutNode {
   const machines = [dialNodes(), slotNodes(), crankNodes()]
-  const trays = ROWS.map((name, i) => node(`${name}-tray`, 'machineTray', [FX, trayY(i), FW, TRAY_H], { part: 'rows', r: 0, states: [`${name}-open`], children: machines[i]! }))
+  const trays = ROWS.map((name, i) => node(`${name}-tray`, 'machineTray', [FX, trayY(i), FW, TRAY_H], { part: 'rows', r: TRAY_R, states: [`${name}-open`], children: machines[i]! }))
   const rows: LayoutNode[] = []
   for (let i = 0; i < 3; i++) {
     rows.push(...rowNodes(i, false))

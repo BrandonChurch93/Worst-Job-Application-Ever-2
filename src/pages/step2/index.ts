@@ -8,7 +8,7 @@ import { SCREEN_H, TYPE } from '../../shell/parts'
 import { words } from '../../shell/words'
 import { frame } from '../../stage/camera'
 import type { DrawList, GagInfo, Hint, PageContext, PageLogic, Pointer, Shape, SheetFrame, StepIo, Tone } from '../../stage/types'
-import { buildLayout, CRANK, DIAL, FH, FW, FX, PAD, reelId, ROWS, rowY, SHIFT, SLOT, statesOf, TOP, TRAY_H, TRAY_Z, trayY } from './layout'
+import { buildLayout, CRANK, DIAL, DIAL_BODY, dialTop, FH, FW, FX, PAD, reelId, ROWS, rowY, SHIFT, SLOT, statesOf, TOP, TRAY_H, TRAY_R, TRAY_Z, trayY, VALUE_Z } from './layout'
 import { actingAt, LANDING, pointerAt, reactions, type Mark, type Marks } from './script'
 
 const dt = 1 / stepHz
@@ -683,16 +683,17 @@ export function makePage(): PageLogic {
 
   function chevron(out: DrawList, id: string, x: number, y: number, flip: boolean): void {
     const tilt = flip ? -0.7 : 0.7
-    for (const side of [-1, 1]) out.push({ id: `${id}-${side < 0 ? 'a' : 'b'}`, part: 'rows', kind: 'box', x: x + 14 + side * 5.2 - 8, y: y + 12.5, w: 16, h: 3, z0: 0.1, z1: 0.9, tone: 'ink', rot: -tilt * side, r: 1.5 })
+    for (const side of [-1, 1]) out.push({ id: `${id}-${side < 0 ? 'a' : 'b'}`, part: 'rows', kind: 'box', x: x + 14 + side * 5.2 - 8, y: y + 12.5, w: 16, h: 3, z0: VALUE_Z + 0.05, z1: VALUE_Z + 0.6, tone: 'ink', rot: -tilt * side, r: 1.5 })
   }
 
   function machine(out: DrawList, i: number, m: { dial: DialState; slot: SlotState; crank: CrankState }, lift: number, dx: number, dy: number, tag: string, fade = 1): void {
     const L = smooth(lift)
     const z = (v: number): number => mix(TRAY_Z, v, L)
     if (i === 0) {
+      const plate = TRAY_Z + dialTop(L) - DIAL_BODY.plate
       for (let k = 1; k <= 10; k++) {
         const h = holePlace(k, m.dial.a)
-        out.push({ id: `${tag}dial-hole-${k}`, part: 'dial', kind: 'disc', x: h.x - DIAL.hole + dx, y: h.y - DIAL.hole + dy, w: DIAL.hole * 2, h: DIAL.hole * 2, z0: z(TOP + 2), z1: z(TOP + 3), tone: 'light' })
+        out.push({ id: `${tag}dial-hole-${k}`, part: 'dial', kind: 'disc', x: h.x - DIAL.hole + dx, y: h.y - DIAL.hole + dy, w: DIAL.hole * 2, h: DIAL.hole * 2, z0: plate - 0.5, z1: plate, tone: 'light' })
       }
       const sx = DIAL.cx + (DIAL.ring + 20) * Math.cos(DIAL.stop)
       const sy = DIAL.cy + (DIAL.ring + 20) * Math.sin(DIAL.stop)
@@ -717,9 +718,14 @@ export function makePage(): PageLogic {
     }
   }
 
-  function overMachine(over: Record<string, Partial<Shape> | null>, i: number, m: { slot: SlotState; crank: CrankState }, lift: number): void {
+  function overMachine(over: Record<string, Partial<Shape> | null>, i: number, m: { dial: DialState; slot: SlotState; crank: CrankState }, lift: number): void {
     const L = smooth(lift)
     for (const part of parts[i]!) over[part.id] = part.text ? { z0: mix(TRAY_Z, part.top, L), z1: mix(TRAY_Z, part.top, L) } : { z0: mix(TRAY_Z, part.floor, L), z1: mix(TRAY_Z, part.top, L) }
+    if (i === 0) {
+      const top = TRAY_Z + dialTop(L)
+      Object.assign(over['dial-wheel']!, { z1: top, v: [m.dial.a] })
+      for (let k = 1; k <= 10; k++) over[`dial-numeral-${DIAL.digit(k)}`] = { z0: top - DIAL_BODY.plate, z1: top - DIAL_BODY.plate }
+    }
     if (i === 1) {
       const knob = boxOf(layout, 'slot-knob')
       const p = clamp(m.slot.p, 0, 1)
@@ -751,7 +757,8 @@ export function makePage(): PageLogic {
     }
     if (shown >= 0) {
       const name = ROWS[shown]!
-      over[`${name}-tray`] = { kind: 'well', pocket: false, h: Math.max(1, TRAY_H * clamp(s.spring[shown]!, 0, 1)), z0: TRAY_Z, z1: 0, tone: 'pocket' }
+      const tall = Math.max(4, Math.round(TRAY_H * clamp(s.spring[shown]!, 0, 1)))
+      over[`${name}-tray`] = { h: tall, r: Math.min(TRAY_R, tall / 2) }
       overMachine(over, shown, s, s.lift)
     }
     if (allDone()) {
@@ -764,15 +771,13 @@ export function makePage(): PageLogic {
       const isOpen = s.open === i && s.phase !== 'closing'
       chevron(out, `${ROWS[i]}-chevron`, FX + FW - 24 - 28, y + (FH - 28) / 2, isOpen)
       if (isOpen) {
-        const t = 3
-        const ring: [string, number, number, number, number][] = [['n', FX - t, y - t, FW + 2 * t, t], ['s', FX - t, y + FH, FW + 2 * t, t], ['w', FX - t, y, t, FH], ['e', FX + FW, y, t, FH]]
-        for (const [side, x, yy, w, h] of ring) out.push({ id: `focus-${side}`, part: 'rows', kind: 'box', x, y: yy, w, h, z0: 0, z1: 2, tone: 'accent' })
+        out.push({ id: 'field-focus', part: 'rows', kind: 'box', x: FX + 14, y: y + FH - 5, w: FW - 28, h: 3, z0: 0.1, z1: 0.5, tone: 'accent', v: [0] })
       }
     }
     const caret = s.open === 0 && !s.done[0] && s.phase !== 'closing' && Math.floor(s.time * 2) % 2 === 0
     if (caret) {
       const wide = measure(TYPE.value.font, phoneMask(s.dial.digits), TYPE.value.px).width + 4
-      out.push({ id: 'caret', part: 'rows', kind: 'box', x: FX + PAD + wide, y: rowY(s.open) + offsets[s.open]! + 17, w: 2, h: 30, z0: 0.1, z1: 0.6, tone: 'ink' })
+      out.push({ id: 'field-caret', part: 'rows', kind: 'box', x: FX + PAD + wide, y: rowY(s.open) + offsets[s.open]! + 16, w: 3, h: FH - 32, z0: 0.1, z1: 0.5, tone: 'ink' })
     }
     if (shown >= 0) machine(out, shown, s, s.lift, 0, 0, '', s.phase === 'closing' ? Math.max(0.02, smooth(s.lift)) : 1)
   }
