@@ -1,35 +1,35 @@
 {
   "folder": "decision",
-  "pushed": "2026-11-26T01:30:39.789Z",
-  "commit": "f512992b08e3a0f6ca76f56e14477acb79362f2b",
+  "pushed": "2026-11-26T02:07:49.401Z",
+  "commit": "d54bff9a28bb3fcd1afa0705fed63b9225815dea",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Decision key at review tier beside the approved image, 01:30 UTC: stamp laid on its side, sheet off square, panel with its line of light",
-      "time": "2026-11-26T01:30:38.077Z",
+      "caption": "Contact sheet, the beat decision.letter: 12 frames from 2:23.00 to 2:26.97, draft tier, preview",
+      "time": "2026-11-26T02:05:38.428Z",
       "by": "decision",
-      "from": "out/work/compare/compare-decision.jpg"
+      "from": "out/work/sheets/sheet-beat-decision_letter-preview-draft.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "The stamp at rest, laid on its side: grip, chrome band, lacquered block, dark red die",
-      "time": "2026-11-26T01:30:38.300Z",
+      "caption": "Still key-decision-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T02:07:47.450Z",
       "by": "decision",
-      "from": "out/work/look-stamp.jpg"
+      "from": "out/work/stills/key-decision-hd-review.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "The letter: fibre, lifted corner, shade all round, the mark printed twice and unevenly",
-      "time": "2026-11-26T01:30:38.523Z",
+      "caption": "Key picture at review, 02:08Z: approved on the left, build on the right. Shorter stamp, bolder mark, glass with light at its far edge",
+      "time": "2026-11-26T02:07:48.046Z",
       "by": "decision",
-      "from": "out/work/look-letter.jpg"
+      "from": "out/work/look-compare.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "The wait display: a grid of round lamps behind smoked glass",
-      "time": "2026-11-26T01:30:38.748Z",
+      "caption": "Metrics panel: approved on the left, build on the right. Readouts as pillows with a bright rim away from the lamp, a light band on the ground edge",
+      "time": "2026-11-26T02:07:48.263Z",
       "by": "decision",
-      "from": "out/work/r-wait.jpg"
+      "from": "out/work/look-panel.jpg"
     }
   ]
 }
