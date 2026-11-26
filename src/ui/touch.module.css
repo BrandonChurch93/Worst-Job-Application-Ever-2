@@ -1,50 +1,148 @@
 .page {
+  /* One page pixel: the window's width over the 1920 of the layout. */
+  --u: calc(100vw / 1920);
+  /* The ceramic where the key light meets it, the ink and the one accent, as src/ui/interface.module.css holds them. */
+  --ceramic: #ece9e4;
+  --ink: #262522;
+  --accent: #c4460f;
+  /* The margin left and right of the content column: 128 page pixels, never under 24 px. */
+  --side: max(24px, calc(var(--u) * 128));
+  /* The corner of the glass card: 28 page pixels as the perk cards of the careers page, never under 16 px. */
+  --corner: max(16px, calc(var(--u) * 28));
+  /* The eggshell of the ceramic: one tile of 240 px, lit from the upper left, drawn by a filter and fetched from nowhere. */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g' x='-8' y='-8' width='256' height='256' filterUnits='userSpaceOnUse' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.15' numOctaves='2' seed='11'/%3E%3CfeDiffuseLighting surfaceScale='0.75' diffuseConstant='1' lighting-color='%23f6f3ef' result='l'%3E%3CfeDistantLight azimuth='225' elevation='75'/%3E%3C/feDiffuseLighting%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.7' numOctaves='1' seed='5'/%3E%3CfeColorMatrix values='0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0 0 0 0 1'/%3E%3CfeComposite operator='arithmetic' in2='l' k1='0' k2='0.2' k3='1' k4='-0.1'/%3E%3C/filter%3E%3Crect x='-8' y='-8' width='256' height='256' filter='url(%23g)'/%3E%3C/svg%3E");
+  /* The tile is drawn 240 pixels of the screen wide at every pixel ratio, so the grain stays as fine as the screen. */
+  --tile: 240px;
   position: fixed;
   inset: 0;
   z-index: 40;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   box-sizing: border-box;
-  --u: calc(100vw / 1920);
-  padding: max(28px, calc(var(--u) * 58)) max(24px, calc(var(--u) * 128)) 40px;
-  background: #e7e4dd;
-  color: #262522;
+  padding: max(28px, calc(var(--u) * 40)) var(--side) max(40px, calc(var(--u) * 64));
+  color-scheme: light;
+  color-scheme: only light;
+  forced-color-adjust: none;
+  background-color: var(--ceramic);
+  /* The light falls off from the upper left toward the lower right, as on the pages of the site. */
+  background-image:
+    radial-gradient(ellipse 128% 170% at 2% 0%, rgba(52, 44, 34, 0) 0%, rgba(52, 44, 34, 0.035) 30%, rgba(52, 44, 34, 0.09) 58%, rgba(52, 44, 34, 0.17) 82%, rgba(52, 44, 34, 0.22) 100%),
+    var(--grain);
+  background-size: 100% 100%, var(--tile) var(--tile);
+  background-repeat: no-repeat, repeat;
+  background-attachment: local, local;
+  color: var(--ink);
   font-family: Inter, 'Helvetica Neue', Helvetica, Arial, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
   cursor: auto;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
+}
+
+/* --above and --below share the room under the rule round the card, 42 parts to 58, so the card stands at the optical middle; --gap is the least room between the rule and the card. */
+.page::before,
+.page::after {
+  --above: 42;
+  --below: 58;
+  --gap: max(30px, calc(var(--u) * 62));
+  content: '';
+  flex: var(--below) 0 0;
+  order: 3;
+}
+
+.page::before {
+  flex: var(--above) 0 var(--gap);
+  order: 1;
+}
+
+.device,
+.device body {
+  background: #ece9e4;
+  color-scheme: light;
+  color-scheme: only light;
 }
 
 .page:focus {
   outline: none;
 }
 
-.header,
-.body {
-  width: 100%;
-}
-
 .header {
-  padding-bottom: max(20px, calc(var(--u) * 52));
-  border-bottom: max(2px, calc(var(--u) * 3)) solid #b9b5ad;
+  flex: none;
+  width: 100%;
 }
 
 .site {
   margin: 0;
-  font-size: max(18px, calc(var(--u) * 28));
+  /* The title of the header: 47 page pixels as on the steps, one line on a phone 390 wide. */
+  font-size: clamp(22px, 5.6vw, max(34px, calc(var(--u) * 47)));
   line-height: 1.3;
   font-weight: 600;
   letter-spacing: -0.01em;
 }
 
-.body {
-  padding-top: max(40px, calc(var(--u) * 44));
+.rule {
+  /* The machined rule: 6 page pixels thick, never under 4 px. */
+  height: max(4px, calc(var(--u) * 6));
+  margin-top: max(18px, calc(var(--u) * 55));
+  border-radius: 999px;
+  /* The bands of a turned rod, in hard steps so they stay crisp at every size: a shaded upper line, the lit body, a dark lower edge. */
+  background: linear-gradient(to bottom, #c4c1bc 0 10%, #dddedf 10% 36%, #cccecf 36% 50%, #aeafb1 50% 60%, #d0d2d3 60% 74%, #a9aaab 74% 84%, #2f3030 84% 100%);
+  box-shadow:
+    0 max(1px, calc(var(--u) * 1)) 0 rgba(70, 62, 48, 0.4),
+    max(1px, calc(var(--u) * 1)) max(2px, calc(var(--u) * 2.5)) max(1.5px, calc(var(--u) * 2)) rgba(70, 62, 48, 0.2);
+}
+
+.card {
+  position: relative;
+  box-sizing: border-box;
+  flex: none;
+  order: 2;
+  align-self: center;
+  max-width: 100%;
+  padding: max(26px, calc(var(--u) * 60)) max(26px, calc(var(--u) * 68)) max(30px, calc(var(--u) * 66));
+  border-radius: var(--corner);
+  /* Frosted sage glass: shaded under its upper edge, clearer toward the lower one, with the grain of the page showing through. */
+  background-color: #ced7d2;
+  background-image:
+    linear-gradient(168deg, rgba(58, 64, 60, 0.07) 0%, rgba(58, 64, 60, 0.02) 36%, rgba(255, 255, 255, 0.07) 66%, rgba(255, 255, 255, 0.28) 100%),
+    linear-gradient(rgba(189, 196, 191, 0.55), rgba(189, 196, 191, 0.55)),
+    var(--grain);
+  background-size: 100% 100%, 100% 100%, var(--tile) var(--tile);
+  background-blend-mode: normal, normal, multiply;
+  box-shadow:
+    inset 0 0 0 max(1.5px, calc(var(--u) * 2)) rgba(240, 246, 241, 0.95),
+    inset max(3px, calc(var(--u) * 5)) max(3px, calc(var(--u) * 5)) max(3px, calc(var(--u) * 5)) calc(var(--u) * -1) rgba(62, 68, 64, 0.55),
+    inset min(-3px, calc(var(--u) * -6)) min(-3px, calc(var(--u) * -6)) max(4px, calc(var(--u) * 6)) min(-1px, calc(var(--u) * -2)) rgba(240, 248, 241, 0.9),
+    max(2px, calc(var(--u) * 3)) max(3px, calc(var(--u) * 6)) max(3px, calc(var(--u) * 4)) rgba(58, 50, 38, 0.7),
+    max(4px, calc(var(--u) * 6)) max(7px, calc(var(--u) * 11)) max(8px, calc(var(--u) * 10)) rgba(62, 54, 42, 0.4),
+    max(8px, calc(var(--u) * 12)) max(13px, calc(var(--u) * 20)) max(18px, calc(var(--u) * 28)) rgba(66, 58, 44, 0.2);
+}
+
+.card::before {
+  /* The inner line of the bevel, where the thick edge of the glass ends. */
+  content: '';
+  position: absolute;
+  inset: max(7px, calc(var(--u) * 12));
+  border-radius: calc(var(--corner) - max(7px, calc(var(--u) * 12)));
+  box-shadow:
+    min(-1px, calc(var(--u) * -1.5)) min(-1px, calc(var(--u) * -1.5)) 0 0 rgba(236, 244, 238, 0.5),
+    max(1px, calc(var(--u) * 1.5)) max(1px, calc(var(--u) * 1.5)) 0 0 rgba(236, 244, 238, 0.28);
+  pointer-events: none;
+}
+
+.title,
+.words,
+.link {
+  position: relative;
 }
 
 .title {
-  margin: 0 0 max(16px, calc(var(--u) * 20));
-  font-size: max(40px, calc(var(--u) * 60));
+  margin: 0 0 max(14px, calc(var(--u) * 22));
+  /* The apology's title: 68 page pixels, the display size of the careers page, 34 px on a phone upright. */
+  font-size: clamp(34px, 9vw, max(46px, calc(var(--u) * 68)));
   line-height: 1.1;
   font-weight: 600;
   letter-spacing: -0.02em;
@@ -52,26 +150,93 @@
 
 .words {
   margin: 0;
-  max-width: 34em;
-  font-size: max(18px, calc(var(--u) * 24));
+  max-width: 25em;
+  /* The apology's words: 28 page pixels, never under 18 px. */
+  font-size: clamp(18px, 4.7vw, max(22px, calc(var(--u) * 28)));
   line-height: 1.5;
-  color: #4a4843;
 }
 
 .link {
   display: inline-block;
-  margin-top: max(32px, calc(var(--u) * 48));
-  padding: max(16px, calc(var(--u) * 20)) max(28px, calc(var(--u) * 40));
+  box-sizing: border-box;
+  max-width: calc(100% - var(--ring) * 2);
+  text-align: center;
+  /* The ring round the pill: a dark gap and a ring of aluminium, 9 page pixels together and never under 5 px. */
+  --ring: max(5px, calc(var(--u) * 9));
+  margin: calc(max(30px, calc(var(--u) * 46)) + var(--ring)) var(--ring) var(--ring);
+  padding: max(15px, calc(var(--u) * 29)) max(30px, calc(var(--u) * 56));
   border-radius: 999px;
-  background: #c4460f;
+  background-color: var(--accent);
+  /* Deep glossy orange: the light only at the upper edge, so the words keep their contrast. */
+  background-image:
+    linear-gradient(to right, rgba(255, 150, 90, 0.2), rgba(255, 150, 90, 0) 9%, rgba(60, 16, 0, 0) 90%, rgba(60, 16, 0, 0.22)),
+    linear-gradient(to bottom, #e06a33 0%, #cb4d16 10%, #c4460f 24%, #be430e 60%, #b23d0c 84%, #8e2f07 100%);
+  box-shadow:
+    inset 0 max(1.5px, calc(var(--u) * 2.5)) max(1px, calc(var(--u) * 2)) rgba(255, 176, 128, 0.7),
+    inset 0 min(-3px, calc(var(--u) * -5)) max(3px, calc(var(--u) * 5)) rgba(66, 20, 2, 0.5),
+    0 0 0 calc(var(--ring) * 0.4) #121110,
+    0 0 0 calc(var(--ring) * 0.86) #f1f1ef,
+    0 0 0 var(--ring) rgba(128, 126, 121, 0.9),
+    max(3px, calc(var(--u) * 5)) max(5px, calc(var(--u) * 9)) max(5px, calc(var(--u) * 8)) calc(var(--ring) * 0.6) rgba(70, 62, 48, 0.5),
+    max(8px, calc(var(--u) * 14)) max(12px, calc(var(--u) * 22)) max(18px, calc(var(--u) * 30)) calc(var(--ring) * 0.5) rgba(70, 62, 48, 0.24);
   color: #fbf8f2;
-  font-size: max(18px, calc(var(--u) * 26));
+  /* The words of the pill: 32 page pixels as the Apply button of the careers page, never under 18 px. */
+  font-size: clamp(18px, 4.7vw, max(22px, calc(var(--u) * 32)));
   line-height: 1.2;
   font-weight: 600;
   text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .link:focus-visible {
-  outline: 3px solid #262522;
-  outline-offset: 3px;
+  outline: 3px solid var(--ink);
+  outline-offset: calc(var(--ring) + 3px);
+}
+
+@media (min-resolution: 1.5dppx) {
+  .page {
+    --tile: 120px;
+  }
+}
+
+@media (min-resolution: 2.5dppx) {
+  .page {
+    --tile: 80px;
+  }
+}
+
+/* A phone on its side: the page is drawn tighter so that all of it, the pill too, stands on one screen 390 px high. */
+@media (max-height: 440px) and (orientation: landscape) {
+  .page {
+    padding-top: 20px;
+    padding-bottom: 22px;
+  }
+
+  .site {
+    font-size: 26px;
+  }
+
+  .rule {
+    margin-top: 14px;
+  }
+
+  .page::before {
+    --gap: 22px;
+  }
+
+  .card {
+    padding-top: 20px;
+    padding-bottom: 22px;
+  }
+
+  .title {
+    margin-bottom: 8px;
+    font-size: 38px;
+  }
+
+  .link {
+    margin-top: calc(18px + var(--ring));
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
 }

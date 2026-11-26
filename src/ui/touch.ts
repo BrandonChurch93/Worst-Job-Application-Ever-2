@@ -14,9 +14,12 @@ export function mountTouchMessage(host: HTMLElement): { destroy(): void } {
   const site = document.createElement('p')
   site.className = css.site!
   draw(site, word('title'), 'inter-600', { wrap: true })
-  head.append(site)
+  const rule = document.createElement('div')
+  rule.className = css.rule!
+  rule.setAttribute('aria-hidden', 'true')
+  head.append(site, rule)
   const body = document.createElement('section')
-  body.className = css.body!
+  body.className = css.card!
   const title = document.createElement('h1')
   title.className = css.title!
   draw(title, word('touchTitle'), 'inter-display-600', { wrap: true })
