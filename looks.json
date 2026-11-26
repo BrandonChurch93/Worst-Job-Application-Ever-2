@@ -1,35 +1,35 @@
 {
   "folder": "careers",
-  "pushed": "2026-11-26T02:25:19.022Z",
-  "commit": "c03aa82411816d83d168780d85eab5533c3f8506",
+  "pushed": "2026-11-26T02:55:34.641Z",
+  "commit": "a79de6d274b3111a0444432278e6c822a3d38aa2",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "marketing-top: approved above, draft tier below, commit c03aa82",
-      "time": "2026-11-26T02:25:17.285Z",
+      "caption": "Still key-marketing-top-hd-final: final tier, hd, view beauty",
+      "time": "2026-11-26T02:55:25.019Z",
       "by": "careers",
-      "from": "out/work/looks/files/20261126022517-cmp-0235.jpg"
+      "from": "out/work/stills/key-marketing-top-hd-final.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "medal and ticker strip: approved left and upper, mine right and lower, commit c03aa82",
-      "time": "2026-11-26T02:25:17.521Z",
+      "caption": "marketing-top at the final tier on a79de6d2 (below) beside the approved image (above)",
+      "time": "2026-11-26T02:55:33.007Z",
       "by": "careers",
-      "from": "out/work/looks/files/20261126022517-medal-strip-0235.jpg"
+      "from": "out/work/looks/files/20261126025533-cmp-final-0255.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "scroll 0.25 and 0.5. Kit: 'Awards. Aluminum medallions, each with the award, who gave it, and the fine print.' 'Testimonials. No portraits. Each is an employee badge with the photo blacked out and the name redacted with bars, the role, the quote and the bracketed note.'",
-      "time": "2026-11-26T02:25:17.798Z",
+      "caption": "The medal at the final tier (right) beside approved (left): deeper dull sectors on the turned face",
+      "time": "2026-11-26T02:55:33.246Z",
       "by": "careers",
-      "from": "out/work/looks/files/20261126022517-sections-0.25.jpg"
+      "from": "out/work/looks/files/20261126025533-medal-final-0255.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "scroll 0.75 and 1: the five-step process, the questions, the final call to action, the footer. Kit: 'The big button. It has real travel.'",
-      "time": "2026-11-26T02:25:18.022Z",
+      "caption": "Testimonial badges at draft: the blacked out photograph as a glossy print that takes the light",
+      "time": "2026-11-26T02:55:33.510Z",
       "by": "careers",
-      "from": "out/work/looks/files/20261126022518-sections-0.75.jpg"
+      "from": "out/work/looks/files/20261126025533-badge.jpg"
     }
   ]
 }
