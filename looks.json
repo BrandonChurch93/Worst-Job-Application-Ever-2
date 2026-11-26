@@ -1,35 +1,35 @@
 {
   "folder": "table-frame",
-  "pushed": "2026-11-26T01:34:01.523Z",
-  "commit": "a842706b721d51f574179c2e663489901fa4fc5a",
+  "pushed": "2026-11-26T02:16:35.490Z",
+  "commit": "c65c00dd8f30868778fc00cf3fda51b7e2a30785",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "tier-street beside its approved image after the metal took its own colour: bright rail lands, dark walls, thick bats",
-      "time": "2026-11-26T01:33:59.296Z",
+      "caption": "Still key-tier-street-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T02:14:42.822Z",
       "by": "table-frame",
-      "from": "out/work/compare/compare-tier-street.jpg"
+      "from": "out/work/stills/key-tier-street-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "tier-corporate beside its approved image after the metal took its own colour: bright rail lands, dark walls, thick bats",
-      "time": "2026-11-26T01:33:59.529Z",
+      "caption": "table-wide beside approved, branch with the apron well open (director's 3edf15f, local test): pale rails, silver marquee foot, bats in view",
+      "time": "2026-11-26T02:16:33.946Z",
       "by": "table-frame",
-      "from": "out/work/compare/compare-tier-corporate.jpg"
+      "from": "out/work/looks/files/20261126021633-wide-well.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "tier-office beside its approved image after the metal took its own colour: bright rail lands, dark walls, thick bats",
-      "time": "2026-11-26T01:33:59.762Z",
+      "caption": "tier-street draft with the apron well open: pale plates, plaque, square drain slot, low end wall, orange knob on chrome spring",
+      "time": "2026-11-26T02:16:34.183Z",
       "by": "table-frame",
-      "from": "out/work/compare/compare-tier-office.jpg"
+      "from": "out/work/looks/files/20261126021634-street-well.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "table-wide beside its approved image after the metal took its own colour: bright rail lands, dark walls, thick bats",
-      "time": "2026-11-26T01:33:59.991Z",
+      "caption": "table-wide draft at 96a7b6c plus ramps: wire ramps thicker and bright chrome, slim ferrules on the tubes",
+      "time": "2026-11-26T02:16:34.413Z",
       "by": "table-frame",
-      "from": "out/work/compare/compare-table-wide.jpg"
+      "from": "out/work/looks/files/20261126021634-wide-ramps.jpg"
     }
   ]
 }
