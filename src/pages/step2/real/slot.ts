@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import { config } from '../../../config'
 import { studio } from '../../../post/studio'
 import type { PartMaker, RealContext } from '../../../real/types'
+import { look } from '../../../post/look'
 import { materials } from '../../../shell/materials'
 import { roundedRect } from '../../../shell/solids'
 import type { Shape } from '../../../stage/types'
@@ -17,6 +18,7 @@ export const SLOT_LOOK = {
   sheen: { top: 0.06, streak: 0.034, order: 800001 },
   lever: { rod: 5.6, pivotX: 11, pivotZ: 28, barrel: 9, barrelW: 19, collar: 4, foot: -2, head: 22, ferrule: 7, ferruleAt: 27 },
   coin: { r: 13, t: 4, teeth: 64, most: 16, flight: 14, tilt: 1.05 },
+  frame: { colour: 0x7e8286, rough: 0.37, grain: 0.08, grainLong: 1200, grainWide: 150, fan: 0.34, fanAcross: 0.6, fanUp: 2.2 },
   bevel: { colour: 0x7c8084, rough: 0.34 },
   glassEnv: 0.7,
   mouthFloor: 8.5,
@@ -94,17 +96,18 @@ function own(): Own {
   const gold = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xd4a543), roughness: 0.6, metalness: 1, envMapIntensity: 1.1, normalMap: face, normalScale: new THREE.Vector2(2, 2) }))
   const rod = studio(new THREE.MeshPhysicalMaterial({ color: m.chrome.color, roughness: 0.14, metalness: 1 }))
   const frame = studio(m.aluminium.clone())
-  frame.color = srgb(0x6a6e72)
-  frame.roughness = 0.42
+  frame.color = srgb(L.frame.colour)
+  frame.roughness = L.frame.rough
+  frame.vertexColors = true
   const brushing = m.aluminium.normalMap!.clone()
-  brushing.repeat.set(1 / 300, 1 / 150)
+  brushing.repeat.set(1 / L.frame.grainLong, 1 / L.frame.grainWide)
   brushing.needsUpdate = true
   frame.normalMap = brushing
   const bevel = studio(m.aluminium.clone())
   bevel.color = srgb(L.bevel.colour)
   bevel.roughness = L.bevel.rough
   bevel.normalMap = null
-  frame.normalScale = new THREE.Vector2(0.15, 0.15)
+  frame.normalScale = new THREE.Vector2(L.frame.grain, L.frame.grain)
   const mouth = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x0e0e0d), roughness: 0.9, metalness: 0, specularIntensity: 0.2 }))
   const sheen = new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })
   const line = studio(m.orange.clone())
@@ -115,6 +118,24 @@ function own(): Own {
 }
 
 const ring = (w: number, h: number, r: number, inset: number, z: number, out: number, up: number): LoftRing => ({ o: roundedRect(w - inset * 2, h - inset * 2, Math.max(0.8, r - inset), 10), z, out, up })
+
+// The frame's upward faces are painted a little lighter toward the key and darker away from it, more from top to bottom than across: a satin band this narrow shows the room as one slow gradient.
+export function fanned(g: THREE.BufferGeometry, reach: number): THREE.BufferGeometry {
+  const p = g.getAttribute('position')
+  const n = g.getAttribute('normal')
+  const [kx, ky] = look.key.direction
+  const kl = Math.hypot(kx, ky) || 1
+  const colour = new Float32Array(p.count * 3)
+  for (let i = 0; i < p.count; i++) {
+    const toward = (p.getX(i) * kx * L.frame.fanAcross + p.getY(i) * ky * L.frame.fanUp) / kl / reach
+    const k = 1 + L.frame.fan * toward * clamp01(n.getZ(i))
+    colour[i * 3] = k
+    colour[i * 3 + 1] = k
+    colour[i * 3 + 2] = k
+  }
+  g.setAttribute('color', new THREE.Float32BufferAttribute(colour, 3))
+  return g
+}
 
 function cabinet(): THREE.Group {
   const m = materials()
@@ -131,7 +152,7 @@ function cabinet(): THREE.Group {
       rings.push(ring(w, h, R, L.roundOver * (1 - Math.cos(a)), T - L.roundOver + L.roundOver * Math.sin(a), Math.cos(a), Math.sin(a)))
     }
     rings.push(ring(w, h, R, L.band, T, 0, 1))
-    return loft(rings)
+    return fanned(loft(rings), Math.hypot(w, h) / 2)
   })
   const lip = L.band + 0.6
   const shelf = lip + L.ledge
@@ -263,7 +284,7 @@ function mount(): THREE.Group {
       const a = (i / 5) * (Math.PI / 2)
       rings.push(ring(w, h, 4, 2 * (1 - Math.cos(a)), H - 2 + 2 * Math.sin(a), Math.cos(a), Math.sin(a)))
     }
-    return loft(rings, 1)
+    return fanned(loft(rings, 1), Math.hypot(SLOT.w, SLOT.h) / 2)
   })
   const barrel = shared('barrel', () => {
     const b = L.lever.barrel
