@@ -8,12 +8,24 @@ interface Key { t: number; x: number; y: number }
 
 export interface Cue { at: number; act?: Acting; react?: Reaction }
 
+// The hit of the stamp: it draws back and leans before it falls, the fall speeds up, the rubber gives, the block rocks and comes to rest, and paper dust leaves from under its edges.
+export const HIT = { windSeconds: 0.24, windRise: 30, windTilt: -0.13, fallPower: 2.6, over: 9, give: 1.5, giveSeconds: 0.06, rock: 0.03, rockSeconds: 0.11, rockRate: 50, landRock: 0.014, dustSeconds: 0.62, dustReach: 70 } as const
+
+// Set down, the stamp is laid on its side, grip away from the reader, a little off square: `turn` about its long axis, `rot` on the page.
+export const LIE = { turn: Math.PI / 2, rot: -0.1 } as const
+
+// The wait: the word is worried. It comes in with the page and stands, tiptoes right, reads the months and shrinks, tiptoes back further than it came, and stands again.
+export const PACE = { stand: 0.9, right: [0.9, 1.2], read: 1.24, left: [1.62, 1.92], far: 110, back: -44 } as const
+// The letter: the word is hope. It stays put while the sheet falls, hops when it lands, struts to it and reads, looks up at what comes, and freezes.
+export const HOPE = { walk: [2.9, 3.5], look: 3.62 } as const
+// The button: the word is beaten. Whole again it looks at the one button there is, drags itself there, stands for 0.4 s and presses with no flourish.
+export const GIVE = { look: 7.82, walk: [8.25, 8.9] } as const
+
 export const CUES: Cue[] = [
-  { at: 0.55, react: 'anticipate' },
-  { at: 1.3, react: 'flinch' },
-  { at: 3.72, react: 'doubleTake' },
-  { at: 7.92, react: 'doubleTake' },
-  { at: FILM.press - 0.12, react: 'anticipate' }
+  { at: PACE.right[0] - 0.06, react: 'anticipate' },
+  { at: PACE.read, react: 'flinch' },
+  { at: HOPE.look, react: 'doubleTake' },
+  { at: GIVE.look, react: 'doubleTake' }
 ]
 
 function keys(m: Marks): Key[] {
@@ -21,18 +33,16 @@ function keys(m: Marks): Key[] {
   const stamped = AT.decide + AT.slam[1]
   return [
     { t: 0, x: s.x, y: s.y },
-    { t: 0.85, x: s.x, y: s.y },
-    { t: 1.15, x: s.x + 74, y: s.y - 4 },
-    { t: 1.45, x: s.x + 74, y: s.y - 4 },
-    { t: 1.8, x: s.x - 8, y: s.y },
-    { t: 2.05, x: s.x - 8, y: s.y },
-    { t: 2.3, x: s.x + 96, y: s.y + 22 },
-    { t: 2.9, x: s.x + 96, y: s.y + 22 },
-    { t: 3.5, x: m.spot.x, y: m.spot.y },
+    { t: PACE.right[0], x: s.x, y: s.y },
+    { t: PACE.right[1], x: s.x + PACE.far, y: s.y - 4 },
+    { t: PACE.left[0], x: s.x + PACE.far, y: s.y - 4 },
+    { t: PACE.left[1], x: s.x + PACE.back, y: s.y + 2 },
+    { t: HOPE.walk[0], x: s.x + PACE.back, y: s.y + 2 },
+    { t: HOPE.walk[1], x: m.spot.x, y: m.spot.y },
     { t: stamped + 3.55, x: m.spot.x, y: m.spot.y },
     { t: stamped + 3.9, x: m.spot.x + 18, y: m.spot.y + 40 },
-    { t: 8.25, x: m.spot.x + 18, y: m.spot.y + 40 },
-    { t: 8.9, x: m.press.x, y: m.press.y },
+    { t: GIVE.walk[0], x: m.spot.x + 18, y: m.spot.y + 40 },
+    { t: GIVE.walk[1], x: m.press.x, y: m.press.y },
     { t: 12, x: m.press.x, y: m.press.y }
   ]
 }

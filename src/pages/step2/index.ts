@@ -8,7 +8,7 @@ import { SCREEN_H, TYPE } from '../../shell/parts'
 import { words } from '../../shell/words'
 import { frame } from '../../stage/camera'
 import type { DrawList, GagInfo, Hint, PageContext, PageLogic, Pointer, Shape, SheetFrame, StepIo, Tone } from '../../stage/types'
-import { buildLayout, CRANK, DIAL, FH, FW, FX, PAD, reelId, ROWS, rowY, SHIFT, SLOT, statesOf, TOP, TRAY_H, TRAY_Z, trayY } from './layout'
+import { buildLayout, CRANK, DIAL, dialPlate, dialTop, FH, FW, FX, PAD, reelId, ROWS, rowY, SHIFT, SLOT, statesOf, TOP, TRAY_H, TRAY_R, TRAY_Z, trayY, VALUE_Z } from './layout'
 import { actingAt, LANDING, pointerAt, reactions, type Mark, type Marks } from './script'
 
 const dt = 1 / stepHz
@@ -416,7 +416,7 @@ export function makePage(): PageLogic {
       }
       const cur = io.cursor
       if (!c.hit && c.t >= 0.2 && c.w > 6 && cur.z < 70 && !cur.taken) {
-        const tip = gripPlace(c.b, CRANK.arm + CRANK.gripW / 2)
+        const tip = gripPlace(c.b, CRANK.tip)
         const mx = cur.x + 10 - CRANK.hx
         const my = cur.y + 20 - CRANK.hy
         const ax = tip.x - CRANK.hx
@@ -454,7 +454,7 @@ export function makePage(): PageLogic {
 
   function topAt(x: number, y: number): number {
     const i = s.open
-    if (i < 0) return 0
+    if (i < 0) return overGo({ x, y }) ? heights.button - (s.pressed ? heights.keyTravel : 0) : 0
     let top = TRAY_Z
     const put = (v: number): void => {
       top = Math.max(top, v)
@@ -465,7 +465,7 @@ export function makePage(): PageLogic {
       if (far <= 30) put(TOP + 16)
     } else if (i === 1) {
       const ky = knobY(s.slot.p)
-      if (x >= SLOT.x && x <= SLOT.x + SLOT.w && y >= SLOT.y && y <= SLOT.y + SLOT.h) put(TOP + 8)
+      if (x >= SLOT.x && x <= SLOT.x + SLOT.w && y >= SLOT.y && y <= SLOT.y + SLOT.h) put(TOP + 20)
       if (x >= SLOT.x + 10 && x <= SLOT.x + SLOT.w - 10 && y >= SLOT.y + 14 && y <= SLOT.y + SLOT.h - 14) put(TOP + 14)
       if (Math.abs(x - SLOT.leverX) <= 6 && y >= ky && y <= SLOT.knobY + SLOT.pull + 34) put(TOP + 12)
       if (Math.hypot(x - SLOT.leverX, y - ky) <= SLOT.knob / 2) put(TOP + 40)
@@ -480,7 +480,7 @@ export function makePage(): PageLogic {
         const uy = Math.sin(c.b)
         const along = (x - CRANK.hx) * ux + (y - CRANK.hy) * uy
         const across = Math.abs(-(x - CRANK.hx) * uy + (y - CRANK.hy) * ux)
-        if (along >= 0 && along <= CRANK.arm && across <= 8) put(TOP + 6)
+        if (along >= 0 && along <= CRANK.arm && across <= CRANK.armW / 2) put(TOP + 6)
         if (Math.abs(along - CRANK.arm) <= CRANK.gripW / 2 && across <= CRANK.gripH / 2) put(TOP + 30)
       }
     }
@@ -683,16 +683,17 @@ export function makePage(): PageLogic {
 
   function chevron(out: DrawList, id: string, x: number, y: number, flip: boolean): void {
     const tilt = flip ? -0.7 : 0.7
-    for (const side of [-1, 1]) out.push({ id: `${id}-${side < 0 ? 'a' : 'b'}`, part: 'rows', kind: 'box', x: x + 14 + side * 5.2 - 8, y: y + 12.5, w: 16, h: 3, z0: 0.1, z1: 0.9, tone: 'ink', rot: -tilt * side, r: 1.5 })
+    for (const side of [-1, 1]) out.push({ id: `${id}-${side < 0 ? 'a' : 'b'}`, part: 'rows', kind: 'box', x: x + 14 + side * 5.2 - 8, y: y + 12.5, w: 16, h: 3, z0: VALUE_Z + 0.05, z1: VALUE_Z + 0.6, tone: 'ink', rot: -tilt * side, r: 1.5 })
   }
 
   function machine(out: DrawList, i: number, m: { dial: DialState; slot: SlotState; crank: CrankState }, lift: number, dx: number, dy: number, tag: string, fade = 1): void {
     const L = smooth(lift)
     const z = (v: number): number => mix(TRAY_Z, v, L)
     if (i === 0) {
+      const plate = TRAY_Z + dialPlate(dialTop(L))
       for (let k = 1; k <= 10; k++) {
         const h = holePlace(k, m.dial.a)
-        out.push({ id: `${tag}dial-hole-${k}`, part: 'dial', kind: 'disc', x: h.x - DIAL.hole + dx, y: h.y - DIAL.hole + dy, w: DIAL.hole * 2, h: DIAL.hole * 2, z0: z(TOP + 2), z1: z(TOP + 3), tone: 'light' })
+        out.push({ id: `${tag}dial-hole-${k}`, part: 'dial', kind: 'disc', x: h.x - DIAL.hole + dx, y: h.y - DIAL.hole + dy, w: DIAL.hole * 2, h: DIAL.hole * 2, z0: plate - 0.5, z1: plate, tone: 'light' })
       }
       const sx = DIAL.cx + (DIAL.ring + 20) * Math.cos(DIAL.stop)
       const sy = DIAL.cy + (DIAL.ring + 20) * Math.sin(DIAL.stop)
@@ -717,20 +718,27 @@ export function makePage(): PageLogic {
     }
   }
 
-  function overMachine(over: Record<string, Partial<Shape> | null>, i: number, m: { slot: SlotState; crank: CrankState }, lift: number): void {
+  function overMachine(over: Record<string, Partial<Shape> | null>, i: number, m: { dial: DialState; slot: SlotState; crank: CrankState }, lift: number): void {
     const L = smooth(lift)
     for (const part of parts[i]!) over[part.id] = part.text ? { z0: mix(TRAY_Z, part.top, L), z1: mix(TRAY_Z, part.top, L) } : { z0: mix(TRAY_Z, part.floor, L), z1: mix(TRAY_Z, part.top, L) }
+    if (i === 0) {
+      const top = dialTop(L)
+      const plate = TRAY_Z + dialPlate(top)
+      Object.assign(over['dial-wheel']!, { z1: TRAY_Z + top, v: [m.dial.a] })
+      for (let k = 1; k <= 10; k++) over[`dial-numeral-${DIAL.digit(k)}`] = { z0: plate, z1: plate }
+    }
     if (i === 1) {
       const knob = boxOf(layout, 'slot-knob')
       const p = clamp(m.slot.p, 0, 1)
       Object.assign(over['slot-knob']!, { y: knob.y + SLOT.pull * p, ...(p > 0.002 ? { moved: true } : {}) })
+      for (let r = 0; r < 3; r++) Object.assign(over[`slot-reel-${r}`]!, { v: [reelPos(m.slot, r)] })
     }
     if (i === 2) {
       const b = m.crank.b
       const arm = gripPlace(b, CRANK.arm / 2)
       const grip = gripPlace(b)
       const away = Math.abs(wrapPi(b - CRANK.rest)) > 0.002 ? { moved: true } : {}
-      Object.assign(over['crank-arm']!, { x: arm.x - (CRANK.arm + 16) / 2, y: arm.y - 8, rot: b, ...away })
+      Object.assign(over['crank-arm']!, { x: arm.x - (CRANK.arm + CRANK.armW) / 2, y: arm.y - CRANK.armW / 2, rot: b, ...away })
       Object.assign(over['crank-grip']!, { x: grip.x - CRANK.gripW / 2, y: grip.y - CRANK.gripH / 2, rot: b, ...away })
       const lit = Math.round(m.crank.level * 10)
       for (let k = 1; k <= 10; k++) Object.assign(over[`meter-${k}`]!, { tone: (k <= lit ? 'accent' : 'glass') as Tone, z1: mix(TRAY_Z, k <= lit ? 18 : 12, L) })
@@ -751,7 +759,8 @@ export function makePage(): PageLogic {
     }
     if (shown >= 0) {
       const name = ROWS[shown]!
-      over[`${name}-tray`] = { kind: 'well', pocket: false, h: Math.max(1, TRAY_H * clamp(s.spring[shown]!, 0, 1)), z0: TRAY_Z, z1: 0, tone: 'pocket' }
+      const tall = Math.max(4, Math.round(TRAY_H * clamp(s.spring[shown]!, 0, 1)))
+      over[`${name}-tray`] = { h: tall, r: Math.min(TRAY_R, tall / 2) }
       overMachine(over, shown, s, s.lift)
     }
     if (allDone()) {
@@ -764,15 +773,13 @@ export function makePage(): PageLogic {
       const isOpen = s.open === i && s.phase !== 'closing'
       chevron(out, `${ROWS[i]}-chevron`, FX + FW - 24 - 28, y + (FH - 28) / 2, isOpen)
       if (isOpen) {
-        const t = 3
-        const ring: [string, number, number, number, number][] = [['n', FX - t, y - t, FW + 2 * t, t], ['s', FX - t, y + FH, FW + 2 * t, t], ['w', FX - t, y, t, FH], ['e', FX + FW, y, t, FH]]
-        for (const [side, x, yy, w, h] of ring) out.push({ id: `focus-${side}`, part: 'rows', kind: 'box', x, y: yy, w, h, z0: 0, z1: 2, tone: 'accent' })
+        out.push({ id: 'field-focus', part: 'rows', kind: 'box', x: FX + 14, y: y + FH - 5, w: FW - 28, h: 3, z0: 0.1, z1: 0.5, tone: 'accent', v: [0.3] })
       }
     }
     const caret = s.open === 0 && !s.done[0] && s.phase !== 'closing' && Math.floor(s.time * 2) % 2 === 0
     if (caret) {
       const wide = measure(TYPE.value.font, phoneMask(s.dial.digits), TYPE.value.px).width + 4
-      out.push({ id: 'caret', part: 'rows', kind: 'box', x: FX + PAD + wide, y: rowY(s.open) + offsets[s.open]! + 17, w: 2, h: 30, z0: 0.1, z1: 0.6, tone: 'ink' })
+      out.push({ id: 'field-caret', part: 'rows', kind: 'box', x: FX + PAD + wide, y: rowY(s.open) + offsets[s.open]! + 16, w: 3, h: FH - 32, z0: 0.1, z1: 0.5, tone: 'ink' })
     }
     if (shown >= 0) machine(out, shown, s, s.lift, 0, 0, '', s.phase === 'closing' ? Math.max(0.02, smooth(s.lift)) : 1)
   }

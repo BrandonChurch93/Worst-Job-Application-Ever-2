@@ -5,7 +5,7 @@ import { boxOf, drawLayout, node, text } from '../../shell/layout'
 import { block } from '../../shell/metrics'
 import { button, buttonWidth, HEADER, LEFT, page, RIGHT, stepHead, TYPE } from '../../shell/parts'
 import { words } from '../../shell/words'
-import { frame, homePose, mixPose, smooth, toWorld } from '../../stage/camera'
+import { basis, frame, homePose, mixPose, smooth, toWorld } from '../../stage/camera'
 import { TURN_HALF } from '../../stage/stage'
 import type { CameraPose, Collider, DrawList, GagInfo, Hint, PageContext, PageLogic, Pointer, Shape, SheetFrame, StepIo, TableState } from '../../stage/types'
 import take from '../../../cut/TABLE-TAKE.json'
@@ -39,7 +39,7 @@ const centred = (id: string, key: string, type: { font: string; px: number; wrap
 
 function buildLayout(): LayoutNode {
   const kids: LayoutNode[] = [...stepHead(3)]
-  kids.push(text('intro', 'copy:transitions.step3', { ...TYPE.body, wrap: 760, lead: 34 }, LEFT, HEADER.contentY, { part: 'type' }))
+  kids.push(text('intro', 'copy:transitions.step3', { ...TYPE.body, wrap: 600, lead: 34 }, LEFT, HEADER.contentY, { part: 'type' }))
   kids.push(node('loader-port', 'port', [px(PORT.x - PORT.ring / 2), px(PORT.y - PORT.ring / 2), px(PORT.ring), px(PORT.ring)], { part: 'loader', shape: 'none' }))
   const my = px(MARQUEE_Y)
   kids.push(node('marquee', 'marquee', [312, my + 24, 1296, 336], {
@@ -57,14 +57,11 @@ function buildLayout(): LayoutNode {
       const dark = m.tone === 'danger'
       kids.push(centred(`sign.${m.id}`, m.sign, { font: 'inter-600', px: m.signPx ?? 22, wrap: px(m.box[2]) - 6 }, px(m.box[0] + m.box[2] / 2), px(m.box[1] + m.box[3] / 2), { part: m.part, on: f + px((m.base ?? 0) + m.h) + 1, tone: dark ? 'inkLight' : 'ink' }))
     }
-    for (const n of table.inserts) {
-      if (n.tier !== k) continue
-      kids.push(text(`insert-label.${n.id}`, `copy:step3.table.modes.${n.mode}.insert`, { font: 'inter-500', px: 18, align: 'centre', wrap: 160, lead: 22 }, px(n.c[0]), px(n.c[1] + n.r + 0.12), { part: 'table-lights', on: f + 4, tone: 'ink' }))
-    }
     const d = table.displays[k]!
     for (const n of table.inserts) {
       if (n.tier !== k) continue
       kids.push(text(`display.${name}.${n.mode}`, `copy:step3.table.modes.${n.mode}.display`, { font: 'inter-500', px: 16, wrap: px(d.box[2]) - 20, lead: 21 }, px(d.box[0]) + 10, px(d.box[1]) + 6, { part: 'displays', on: f + 31, tone: 'inkLight', states: [`mode${n.mode}`] }))
+      kids.push(centred(`display.${name}.${n.mode}.insert`, `copy:step3.table.modes.${n.mode}.insert`, { font: 'inter-600', px: 20, wrap: px(d.box[2]) - 20, lead: 24 }, px(d.box[0] + d.box[2] / 2), px(d.box[1] + d.box[3] / 2), { part: 'displays', on: f + 31, tone: 'inkLight', states: [`name${n.mode}`] }))
     }
     kids.push(text(`display.${name}.score`, 'runtime:score', { font: 'inter-600', px: 30, align: 'centre', wrap: px(d.box[2]) - 20 }, px(d.box[0] + d.box[2] / 2), px(d.box[1]) + 18, { part: 'displays', on: f + 31, tone: 'inkLight', states: [`score${k}`] }))
   }
@@ -112,17 +109,21 @@ const Y1 = TIER_Y[1]!
 const Y2 = TIER_Y[2]!
 const NAMED: Record<string, CameraPose> = {
   'tier-3': tierPose(0), 'tier-2': tierPose(1), 'tier-1': streetPose(),
-  'table-wide': look('table-wide', [MID, APRON_Y + 20, 17.5], [MID, APRON_Y - 6.43, 3.3]),
-  'table-lobby': look('table-lobby', [MID + 3.25, Y0 + 10.65, 0], [MID + 0.15, Y0 + 4.6, 0.5]),
-  'table-replyall': look('table-replyall', [MID + 2, Y1 + 15.5, 14], [MID + 1.2, Y1 + 5.4, -2]),
-  'table-fired': look('table-fired', [8.2, Y2 + 8.0, 0.8], [4.8, Y2 + 3.5, -2.2]),
-  'table-save': look('table-save', [MID, Y2 + 12.4, 3.1], [MID, Y2 + 7.9, -2.26])
+  'table-wide': look('table-wide', [MID + 0.35, APRON_Y + 12.4, 11.22], [MID + 0.35, APRON_Y - 9.24, 0.85]),
+  'table-lobby': look('table-lobby', [MID + 2.65, Y0 + 6.43, -0.35], [MID - 0.13, Y0 + 5.31, 0]),
+  'table-replyall': look('table-replyall', [MID, Y1 + 16.35, 15.4], [MID, Y1 + 6.3, -2]),
+  'table-fired': look('table-fired', [8.56, Y2 + 7.8, 1.1], [5.2, Y2 + 3.8, -2.3]),
+  'table-save': look('table-save', [MID, Y2 + 13.4, 6.05], [MID, Y2 + 8.6, -2.26])
 }
-const FILM: [number, string][] = [
-  [0, 'follow'], [4.2, 'table-wide'], [8.2, 'follow'], [8.5, 'ride'], [11.0, 'tier-3'], [13.0, 'table-lobby'], [14.3, 'follow'], [20.6, 'table-replyall'], [22.6, 'follow'], [27.2, 'table-fired'], [28.8, 'follow'],
-  [31.0, 'rail'], [32.2, 'follow'], [34.3, 'table-save'], [36.6, 'follow']
+const FILM: [number, string, number][] = [
+  [0, 'follow', 0], [4.2, 'table-wide', 0], [8.5, 'ride', 0], [11.0, 'tier-3', 0.6], [13.0, 'table-lobby', 0], [14.3, 'follow', 0], [19.5, 'table-replyall', 0], [22.2, 'follow', 0], [27.2, 'table-fired', 0], [28.8, 'follow', 0],
+  [31.0, 'rail', 0], [32.2, 'follow', 0.6], [34.3, 'table-save', 0], [36.6, 'follow', 0]
 ]
-const BLEND = 0.6
+const LENS: Record<string, number> = { 'table-wide': 8, 'table-lobby': 7, 'table-replyall': 12, 'table-fired': 10, 'table-save': 20, rail: 16, ride: 10 }
+const HARD: Record<string, number> = { bumper: 1, sling: 0.7, 'doors-slam': 1.3, 'scoop-kick': 0.8, plunger: 1, 'ball-hit': 0.6, 'drop-target': 0.5, 'mom-save': 1, 'ball-save': 0.8 }
+const SHAKE = { size: 0.006, decay: 0.09, hz: 23, most: 1.5, last: 0.5 }
+const SOFT = 0.4
+const NAME = 1.5
 const TURN = 1.5707963267948966
 const SIGN = { turn: 0.5235987755982988, cos: 0.8660254037844387, sin: 0.5, inset: 8, lift: 6, back: ['corporate.beach'] }
 const WAKE = 0.35
@@ -132,11 +133,6 @@ const LOW = 2.4
 
 export function makePage(): PageLogic {
   const layout = buildLayout()
-  const plates: Shape[] = table.inserts.map((n) => {
-    const b = boxOf(layout, `insert-label.${n.id}`)
-    const f = px(floorZ(n.tier))
-    return { id: `insert-plate.${n.id}`, part: 'table-lights', kind: 'box', x: b.x - 10, y: b.y - 6, w: b.w + 20, h: b.h + 12, z0: f, z1: f + 3, tone: 'paper' }
-  })
   const go = boxOf(layout, 'go-cap')
   const stood: Record<string, Partial<Shape>> = {}
   for (const id of ['marquee-title', 'marquee-score']) {
@@ -219,8 +215,21 @@ export function makePage(): PageLogic {
     const k = b.mode === 'rail' && b.rail.startsWith('chute.') ? TIERS.indexOf(b.rail.slice(6) as never) + 1 : b.mode === 'rail' && b.rail.startsWith('lift.') ? tierAt(railOf(b.rail).points[3]![1]) : tierAt(Math.max(Y0, Math.min(APRON_Y - 0.01, b.y)))
     return { scroll: px(TIER_Y[k]! + (k === 2 ? STREET : 0)), floor: px(floorZ(k)) }
   }
-  const railPose = (back = 2.4, up = 4.6, ahead = 1.0, lift = 0.5, wide = 0): CameraPose => {
+  const soft = (r: ReturnType<typeof railOf>, at: number): { x: number; y: number; z: number } => {
+    const end = railLength(r)
+    const out = { x: 0, y: 0, z: 0 }
+    for (let k = -3; k <= 3; k++) {
+      const p = railAt(r, Math.max(0, Math.min(end, at + k * SOFT)))
+      const w = (4 - Math.abs(k)) / 16
+      out.x += p.x * w
+      out.y += p.y * w
+      out.z += p.z * w
+    }
+    return out
+  }
+  const railPose = (back = 3.4, up = 2.85, ahead = 0.85, lift = 0, wide = 0): CameraPose => {
     const b = ball()
+    let c = { x: b.x, y: b.y, z: b.z }
     let vx = b.vx
     let vy = b.vy
     if (b.mode === 'rail') {
@@ -229,6 +238,7 @@ export function makePage(): PageLogic {
       const p1 = railAt(r, Math.min(railLength(r), b.s + 2.2))
       vx = p1.x - p0.x
       vy = p1.y - p0.y
+      c = soft(r, b.s)
     } else if (b.mode === 'hold' && b.hold === 'plunger') {
       vx = 0
       vy = -1
@@ -239,7 +249,7 @@ export function makePage(): PageLogic {
     const sp = Math.hypot(vx, vy) || 1
     const dx = vx / sp
     const dy = vy / sp
-    return { eye: toWorld(px(b.x - dx * back), px(b.y - dy * back), px(b.z + up)), target: toWorld(px(b.x + dx * ahead), px(b.y + dy * ahead), px(b.z + lift)), up: [0, 0, 1], fov: fov('rail') + wide }
+    return { eye: toWorld(px(c.x - dx * back), px(c.y - dy * back), px(c.z + up)), target: toWorld(px(c.x + dx * ahead), px(c.y + dy * ahead), px(c.z + lift)), up: [0, 0, 1], fov: fov('rail') + wide }
   }
   const ridePose = (): CameraPose => {
     const b = ball()
@@ -247,18 +257,53 @@ export function makePage(): PageLogic {
     return railPose(0.7 + 2.7 * u, 2.6 + 0.8 * u, 0.95 + 1.55 * u, 0.5, 36 * (1 - u))
   }
   const follow = (): CameraPose => homePose(s.scroll, s.floor)
-  const named = (name: string): CameraPose | null => (name === 'follow' ? follow() : name === 'rail' ? railPose() : name === 'ride' ? ridePose() : NAMED[name] ?? null)
+  const lens = (name: string, p: CameraPose | null): CameraPose | null => {
+    const open = LENS[name]
+    if (!p || open === undefined) return p
+    const b = ball()
+    const on = name === 'table-wide' || b.mode === 'none' ? p.target : toWorld(px(b.x), px(b.y), px(b.z) + BALL / 2)
+    const f = basis(p).forward
+    return { ...p, focus: Math.max(BALL, (on[0] - p.eye[0]) * f[0] + (on[1] - p.eye[1]) * f[1] + (on[2] - p.eye[2]) * f[2]), aperture: open }
+  }
+  const named = (name: string): CameraPose | null => lens(name, name === 'follow' ? follow() : name === 'rail' ? railPose() : name === 'ride' ? ridePose() : NAMED[name] ?? null)
 
-  const filmPose = (time: number): CameraPose => {
+  const cut = (time: number): CameraPose => {
     let i = 0
     while (i + 1 < FILM.length && time >= FILM[i + 1]![0]) i++
     const now = named(FILM[i]![1])!
-    const u = i > 0 ? (time - FILM[i]![0]) / BLEND : 1
+    const u = i > 0 && FILM[i]![2] > 0 ? (time - FILM[i]![0]) / FILM[i]![2] : 1
     if (u >= 1) return now
     return mixPose(named(FILM[i - 1]![1])!, now, smooth(Math.max(0, u)))
   }
+  const jolt = (): { x: number; y: number } => {
+    const mc = machine()
+    let x = 0
+    let y = 0
+    for (const key in mc.last) {
+      const i = key.indexOf(':')
+      const hard = i < 0 ? 0 : HARD[key.slice(0, i)] ?? 0
+      const age = (mc.steps - mc.last[key]!) / stepHz
+      if (hard === 0 || age > SHAKE.last) continue
+      const e = hard * Math.exp(-age / SHAKE.decay)
+      const turn = 6.283185307179586 * SHAKE.hz * age + key.length * 1.7
+      x += e * Math.sin(turn)
+      y += e * Math.cos(turn * 0.83)
+    }
+    const size = Math.hypot(x, y)
+    const k = size > SHAKE.most ? SHAKE.most / size : 1
+    return { x: x * k, y: y * k }
+  }
+  const filmPose = (time: number): CameraPose => {
+    const p = cut(time)
+    const j = jolt()
+    if (j.x === 0 && j.y === 0) return p
+    const b = basis(p)
+    const d = Math.hypot(p.target[0] - p.eye[0], p.target[1] - p.eye[1], p.target[2] - p.eye[2])
+    const reach = 2 * d * Math.tan((p.fov * Math.PI) / 360) * SHAKE.size
+    return { ...p, target: [p.target[0] + (b.right[0] * j.x + b.up[0] * j.y) * reach, p.target[1] + (b.right[1] * j.x + b.up[1] * j.y) * reach, p.target[2] + (b.right[2] * j.x + b.up[2] * j.y) * reach] }
+  }
   const seen = (x: number, y: number, z: number): { x: number; y: number } => {
-    const eye = (s.mode === 'film' ? filmPose(s.time) : follow()).eye
+    const eye = (s.mode === 'film' ? cut(s.time) : follow()).eye
     const w = toWorld(x, y, z)
     const k = eye[2] / Math.max(1, eye[2] - w[2])
     return { x: eye[0] + (w[0] - eye[0]) * k + 960, y: 540 - (eye[1] + (w[1] - eye[1]) * k) }
@@ -512,9 +557,15 @@ export function makePage(): PageLogic {
     },
     draw(out: DrawList) {
       const mc = machine()
-      drawLayout(out, layout, { states: activeStates(), runtime: { score: scoreText() }, over: s.pressed ? { ...stood, 'go-cap': { z1: config.scale.heights.button - config.scale.heights.keyTravel } } : stood })
+      const states = activeStates()
+      const over: Record<string, Partial<Shape>> = s.pressed ? { ...stood, 'go-cap': { z1: config.scale.heights.button - config.scale.heights.keyTravel } } : { ...stood }
+      for (const m of MODES) {
+        if (!states.includes(`mode${m.mode}`)) continue
+        over[`display.${TIERS[m.tier]!}.${m.mode}`] = { v: [s.t - m.at] }
+        if (s.t < m.at + NAME) states.push(`name${m.mode}`)
+      }
+      drawLayout(out, layout, { states, runtime: { score: scoreText() }, over })
       for (const shape of fixedShapes()) out.push(shape)
-      for (const shape of plates) out.push(shape)
       for (const shape of movingShapes(mc, lit(), false, general(), drawn(), s.shut, website())) out.push(shape)
       out.push(hqPlate)
     },
@@ -609,32 +660,36 @@ export function makePage(): PageLogic {
         const list: DrawList = []
         drawLayout(list, layout, { states: ['play', 'on', 'mode0', 'score0', 'score2'], runtime: { score: scoreText() }, over: stood })
         for (const shape of fixedShapes()) list.push(shape)
-        for (const shape of plates) list.push(shape)
         for (const shape of movingShapes(mc, table.inserts.map(() => true), true, [true, true, true], 0, false, DUSK)) list.push(shape)
         const f = px(floorZ(1))
+        const bat = table.flippers.find((x) => x.tier === 1 && x.side === 'left')!.pivot
+        const cup = table.bumpers.filter((x) => x.tier === 1).reduce((p, q) => (q.c[1] > p.c[1] ? q : p))
+        const lean = (FLIP.rest * Math.PI) / 180
+        const rest = { x: bat[0] + 0.9 * Math.cos(lean) + (0.6 + FLIP.radius) * Math.sin(lean), y: bat[1] + 0.9 * Math.sin(lean) - (0.6 + FLIP.radius) * Math.cos(lean) }
+        const hit = { x: cup.c[0] + (cup.r + 0.45) * 0.26, y: cup.c[1] + (cup.r + 0.45) * 0.966 }
+        const mid = { x: (rest.x + hit.x) / 2, y: (rest.y + hit.y) / 2 }
         const spots: { x: number; y: number; lift: number; pose: Partial<CursorPose> }[] = [
-          { x: 7.68, y: Y1 + 8.84, lift: 0, pose: { acting: 'nervous' } },
-          { x: 8.3, y: Y1 + 5.6, lift: 0.7, pose: { acting: 'scared', lean: 0.3 } },
-          { x: MID + 1.3, y: Y1 + 5.95, lift: 0, pose: { acting: 'shocked', damage: ['flattened'] } }
+          { x: rest.x, y: rest.y, lift: 0, pose: { acting: 'nervous' } },
+          { x: mid.x, y: mid.y, lift: 0.5, pose: { acting: 'scared', lean: 0.3 } },
+          { x: hit.x, y: hit.y, lift: 0, pose: { acting: 'shocked', damage: ['flattened'] } }
         ]
         spots.forEach((p, i) => list.push({ id: `sheet-ball-${i + 1}`, part: 'clear-ball', kind: 'ball', x: px(p.x - 0.5), y: px(p.y - 0.5), w: BALL, h: BALL, z0: f + px(p.lift), z1: f + px(p.lift) + BALL, tone: 'glass' }))
-        return { list, cursors: spots.map((p) => restPose(px(p.x), px(p.y), { z: f + px(p.lift), inBall: true, taken: true, ...p.pose })), view: frame({ x: px(6.6), y: px(Y1 + 4.7), w: px(6.4), h: px(5.2) }, 1, f, fov('sheet')) }
+        return { list, cursors: spots.map((p) => restPose(px(p.x), px(p.y), { z: f + px(p.lift), inBall: true, taken: true, ...p.pose })), view: { ...look('home', [mid.x + 1.92, mid.y + 6.1, 3.2], [mid.x, mid.y, -1.45]), focus: px(7.9), aperture: 15 } }
       }
       if (id !== 'table-map') return null
       const mc = machine()
       const list: DrawList = []
-      drawLayout(list, layout, { states: ['play', 'on', 'mode5', 'mode0', 'mode3'], runtime: { score: scoreText() }, over: stood })
+      drawLayout(list, layout, { states: ['play', 'on', 'score0', 'score1', 'score2'], runtime: { score: scoreText() }, over: stood })
       for (const shape of fixedShapes()) list.push(shape)
-      for (const shape of plates) list.push(shape)
-      const top = px(MARQUEE_Y - 0.3)
-      const tall = px(APRON_Y + 2.6 - MARQUEE_Y + 0.3)
+      const tall = (1920 * 1920) / 1080
+      const top = px(Y0 - 0.35)
       for (const shape of movingShapes(mc, table.inserts.map(() => true), true, [true, true, true], 0, false, DUSK)) list.push(shape)
       const inside = list.filter((x) => !x.id.startsWith('rail.') || (x.y >= top && x.y + x.h <= top + tall))
       list.length = 0
       for (const shape of inside) list.push(shape)
       const f = fov('table-map')
-      const c = toWorld(960, top + tall / 2, 0)
-      const need = Math.max(tall, (1920 * 1920) / 1080) / 0.96
+      const c = toWorld(px(MID), top + tall / 2, 0)
+      const need = tall
       return { list, cursors: [], view: { eye: [c[0], c[1], need / 2 / Math.tan((f * Math.PI) / 360)], target: c, fov: f }, width: 1080, height: 1920 }
     }
   }

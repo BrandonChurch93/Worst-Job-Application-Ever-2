@@ -1,10 +1,13 @@
 // The drawn layer of the three floors, exactly on the layout. Everything is read from src/table/layout.ts; nothing here types a place of a part in.
-import { along, arc, arrow, beside, chevron, dirDeg, dist, dot, el, f, footprint, g, lerp, line, path, polar, poly, rays, rect, ring, rng, shape, star, stroke } from './lib.mjs'
+import { along, arc, beside, dirDeg, dist, dot, el, f, footprint, g, lerp, line, path, polar, poly, rays, rect, ring, rng, shape, star, stroke } from './lib.mjs'
+
+const chevron = () => ''
+const arrow = () => ''
 
 export const PAL = {
   corporate: { base: '#081229', base2: '#0f2147', key: '#c9a551', fine: '#a78a45', pale: '#ecd797', under: '#070f27', dark: '#040a1a', lane: '#060e22', accent: '#27468a', soft: '#1b3466' },
-  office: { base: '#60736a', base2: '#4c6058', key: '#c9b684', fine: '#a99a6e', pale: '#e2d6b0', under: '#33494a', dark: '#1c2c2c', lane: '#33494a', accent: '#7d968f', soft: '#69817a' },
-  street: { base: '#0f2433', base2: '#234b57', key: '#dde4e1', fine: '#86a9b0', pale: '#f0f1e9', under: '#0a1a26', dark: '#050e15', lane: '#0b1c28', accent: '#d8b53b', soft: '#234a58', fan: '#6f959d', fan2: '#44707a' }
+  office: { base: '#4f625b', base2: '#41534d', key: '#8fa39a', fine: '#73887f', pale: '#b9c2b4', under: '#2c3f3f', dark: '#182626', lane: '#2c3f3f', accent: '#667f78', soft: '#566d66' },
+  street: { base: '#0e2130', base2: '#17384a', key: '#c3ccc9', fine: '#5f858e', pale: '#dcdfd6', under: '#091824', dark: '#050e15', lane: '#0a1a26', accent: '#b89a38', soft: '#1d404e', fan: '#4f757d', fan2: '#33575f' }
 }
 
 // One tier of the layout in its own frame: u across, v down from the top of the tier, in balls.
@@ -52,8 +55,8 @@ export const shoulder = (D, side) => {
   return [[o, 8.0], [6.5, 8.62], [6.5, 9.1], [8.8, 10.8], [8.8, D.H], [o, D.H]].map((q) => [side.m(q[0]), q[1]])
 }
 
-// The card under an insert, where the lights' part lays the plate with the mode's name: as tall as the plate's one or two lines, with a narrow margin.
-export const cardOf = (n) => [n.c[0] - 1.0, n.c[1] + n.r, 2.0, 0.24 + 0.23 * (n.lines ?? 1)]
+// The clear margin under an insert. No card is printed there.
+export const cardOf = (n) => [n.c[0] - 0.3, n.c[1] + n.r, 0.6, 0.2]
 
 function banks(D) {
   const by = new Map()
@@ -111,7 +114,7 @@ export function common(D, pal) {
   // The top lane: a band across the head of the tier, with arrows the way the ball travels.
   lanes.push(rect(field.x, 0.3, field.w, 1.5, { fill: pal.lane, opacity: 0.55 }))
   lanes.push(line([field.x + 0.12, 0.44], [C.right - 0.12, 0.44], pal.key, 0.02), line([field.x + 0.12, 0.5], [C.right - 0.12, 0.5], pal.fine, 0.008))
-  lanes.push(line([field.x + 0.12, 1.72], [C.right - 0.12, 1.72], pal.key, 0.018, { 'stroke-dasharray': '0.3 0.08' }), line([field.x + 0.12, 1.78], [C.right - 0.12, 1.78], pal.fine, 0.008))
+  lanes.push(line([field.x + 0.12, 1.72], [C.right - 0.12, 1.72], pal.key, 0.014), line([field.x + 0.12, 1.78], [C.right - 0.12, 1.78], pal.fine, 0.008))
   const top = D.lamps.filter((l) => l.id.includes('.top.lamp.')).sort((a, b) => a.c[0] - b.c[0])
   for (let i = 0; i < top.length; i++) {
     const l = top[i]
@@ -119,19 +122,13 @@ export function common(D, pal) {
     if (i > 0) {
       const mid = lerp(top[i - 1].c, l.c, 0.5)
       lanes.push(chevron([mid[0] + 0.14, mid[1]], deg, 0.34, pal.key, 0.05), chevron([mid[0] - 0.14, mid[1]], deg, 0.34, pal.pale, 0.03), chevron([mid[0] - 0.4, mid[1]], deg, 0.26, pal.fine, 0.02))
-      for (const t of [0.22, 0.78]) lanes.push(dot(lerp(top[i - 1].c, l.c, t), 0.022, pal.fine))
     }
   }
-  for (let u = field.x + 0.25; u < C.right - 0.2; u += 0.125) lanes.push(line([u, 0.56], [u, Math.round((u - field.x) * 8) % 4 === 2 ? 0.7 : 0.63], pal.fine, 0.008))
 
   // The launch lane and the lift lane: the same print, plainer, with the arrows up the page.
   for (const [a, b, mid, name] of [[C.launchA, C.launchB, C.launch, '.launch.lamp.'], [C.liftA, C.liftB, C.lift, '.lift.lamp.']]) {
     lanes.push(rect(a, 0, b - a, D.H, { fill: pal.lane, opacity: 0.5 }))
     for (const u of [a + 0.1, b - 0.1]) lanes.push(line([u, 0], [u, D.H], pal.key, 0.018), line([u + (u < mid ? 0.06 : -0.06), 0], [u + (u < mid ? 0.06 : -0.06), D.H], pal.fine, 0.008))
-    for (let v = 0.125; v < D.H; v += 0.125) {
-      const long = Math.round(v * 8) % 4 === 0
-      lanes.push(line([a + 0.2, v], [a + (long ? 0.34 : 0.27), v], pal.fine, 0.008), line([b - 0.2, v], [b - (long ? 0.34 : 0.27), v], pal.fine, 0.008))
-    }
     const ls = D.lamps.filter((l) => l.id.includes(name)).sort((p, q) => p.c[1] - q.c[1])
     const vs = ls.map((l) => l.c[1])
     const gaps = []
@@ -143,14 +140,12 @@ export function common(D, pal) {
     }
     for (const v of gaps) {
       lanes.push(chevron([mid, v - 0.16], -90, 0.4, pal.key, 0.055), chevron([mid, v + 0.12], -90, 0.4, pal.pale, 0.03), chevron([mid, v + 0.4], -90, 0.3, pal.fine, 0.02))
-      for (const d of [-0.62, 0.86]) lanes.push(dot([mid, v + d], 0.025, pal.fine))
     }
   }
 
   // Every lamp in the floor gets a printed surround.
   for (const l of D.lamps) {
-    answers.push(dot(l.c, 0.25, pal.under), ring(l.c, 0.22, pal.key, 0.022), ring(l.c, 0.29, pal.fine, 0.008))
-    for (let a = 0; a < 360; a += 30) answers.push(line(polar(l.c, 0.32, a + 15), polar(l.c, a % 90 === 0 ? 0.4 : 0.36, a + 15), pal.fine, 0.01))
+    answers.push(dot(l.c, 0.24, pal.under), ring(l.c, 0.24, pal.fine, 0.01))
   }
 
   // Inlanes, outlanes, slings and flippers, the same on both sides.
@@ -186,20 +181,17 @@ export function common(D, pal) {
     const fan = pal.fan ?? pal.key
     const fan2 = pal.fan2 ?? pal.fine
     answers.push(arc(fl.pivot, L + 0.1, a0, a1, fan, 0.022), arc(fl.pivot, L + 0.17, a0, a1, fan2, 0.008))
-    answers.push(rays(fl.pivot, L - 0.75, L + 0.1, a0, a1, 21, fan2, 0.01).filter((_, i) => i % 2 === 1), rays(fl.pivot, L - 1.25, L + 0.1, a0, a1, 11, fan, 0.016))
+    answers.push(rays(fl.pivot, L - 1.25, L + 0.1, a0, a1, 9, fan2, 0.01))
     answers.push(arc(fl.pivot, L - 1.25, a0, a1, fan2, 0.008), dot(fl.pivot, 0.4, pal.under), ring(fl.pivot, 0.36, pal.key, 0.025), ring(fl.pivot, 0.44, pal.fine, 0.008))
-    for (let a = 0; a < 360; a += 22.5) answers.push(line(polar(fl.pivot, 0.47, a), polar(fl.pivot, 0.53, a), pal.fine, 0.01))
 
     const sl = D.slings.find((x) => x.side === side.id)
     const tri = [sl.a, sl.b, sl.c]
     answers.push(shape(grow(tri, 0.24), pal.under, { opacity: 0.9 }), shape(grow(tri, 0.24), 'none', stroke(pal.key, 0.022)), shape(grow(tri, 0.33), 'none', stroke(pal.fine, 0.008)))
-    const inner = grow(tri, -0.2)
-    for (let t = 0.12; t < 1; t += 0.11) answers.push(line(lerp(inner[0], inner[1], t), lerp(inner[0], inner[2], t), pal.fine, 0.01))
 
     const sh = shoulder(D, side)
     const id = `sh-${D.id}-${side.id}`
     const stripes = []
-    for (const [d, w, col] of [[0.14, 0.03, pal.key], [0.22, 0.012, pal.fine], [0.28, 0.012, pal.fine], [0.36, 0.022, pal.key], [0.5, 0.008, pal.fine]]) {
+    for (const [d, w, col] of [[0.14, 0.022, pal.key], [0.24, 0.009, pal.fine], [0.5, 0.008, pal.fine]]) {
       const e = beside([[m(o - 0.5), 8.0 - 0.1676], [m(6.5), 8.62], [m(6.5), 9.1], [m(8.8), 10.8], [m(8.8), D.H + 0.5]], side.s === 1 ? d : -d)
       stripes.push(poly(e, col, w, { 'stroke-linejoin': 'miter', 'stroke-linecap': 'butt' }))
     }
@@ -208,24 +200,21 @@ export function common(D, pal) {
 
   // The centre: the way down between the flippers.
   for (const v of [9.25, 9.8, 10.35]) lanes.push(chevron([D.MID, v - 0.1], 90, 0.42, pal.key, 0.05), chevron([D.MID, v + 0.16], 90, 0.34, pal.fine, 0.022))
-  for (const u of [D.MID - 0.75, D.MID + 0.75]) lanes.push(line([u, 8.95], [u, 9.95], pal.fine, 0.01, { 'stroke-dasharray': '0.06 0.06' }))
 
   for (const p of D.posts) {
     if (p.c[1] < 0.3) continue
     const big = !!p.lamp
     answers.push(dot(p.c, p.r + (big ? 0.3 : 0.2), pal.under))
-    answers.push(star(p.c, p.r + (big ? 0.12 : 0.07), p.r + (big ? 0.34 : 0.2), big ? 16 : 8, pal.key, { opacity: 0.95 }), ring(p.c, p.r + (big ? 0.4 : 0.25), pal.fine, 0.009))
+    answers.push(ring(p.c, p.r + (big ? 0.3 : 0.2), pal.fine, 0.01))
   }
   for (const b of D.bumpers) {
-    answers.push(dot(b.c, b.r + 0.46, pal.under, { opacity: 0.85 }), ring(b.c, b.r + 0.2, pal.key, 0.035), ring(b.c, b.r + 0.28, pal.fine, 0.01), ring(b.c, b.r + 0.46, pal.key, 0.014))
-    for (let a = 0; a < 360; a += 10) answers.push(line(polar(b.c, b.r + 0.32, a), polar(b.c, b.r + (a % 30 === 0 ? 0.43 : 0.38), a), pal.fine, a % 30 === 0 ? 0.018 : 0.009))
+    answers.push(dot(b.c, b.r + 0.46, pal.under, { opacity: 0.85 }), ring(b.c, b.r + 0.2, pal.key, 0.02), ring(b.c, b.r + 0.46, pal.fine, 0.01))
   }
   for (const m of D.models) {
     if (m.round) {
       const c = [m.box[0] + m.box[2] / 2, m.box[1] + m.box[3] / 2]
       const r = m.box[2] / 2
       answers.push(dot(c, r + 0.12, pal.under, { opacity: 0.8 }), ring(c, r + 0.12, pal.key, 0.024), ring(c, r + 0.2, pal.fine, 0.008))
-      for (let a = 0; a < 360; a += 15) answers.push(line(polar(c, r + 0.24, a), polar(c, r + 0.31, a), pal.fine, 0.01))
     } else answers.push(footprint(m.box, pal, { off: m.box[2] < 0.6 ? 0.06 : 0.1 }))
   }
   for (const b of banks(D)) {
@@ -243,37 +232,25 @@ export function common(D, pal) {
       for (const sg of signs) {
         const c = [cx + along[0] + n[0] * reach * sg, cy + along[1] + n[1] * reach * sg]
         const deg = b.kind === 'spinner' ? 90 : dirDeg([0, 0], [-n[0], -n[1]])
-        answers.push(arrow(c, deg, 0.24, pal.key), line([c[0] + n[0] * 0.2 * sg, c[1] + n[1] * 0.2 * sg], [c[0] + n[0] * 0.42 * sg, c[1] + n[1] * 0.42 * sg], pal.fine, 0.012))
+        answers.push(arrow(c, deg, 0.24, pal.key))
       }
     }
   }
   for (const d of D.displays) {
     const b = d.box
     answers.push(rect(b[0] - 0.14, b[1] - 0.14, b[2] + 0.28, b[3] + 0.28, { fill: pal.dark, rx: 0.1, opacity: 0.85 }), rect(b[0] - 0.14, b[1] - 0.14, b[2] + 0.28, b[3] + 0.28, { ...stroke(pal.key, 0.024), rx: 0.1 }), rect(b[0] - 0.21, b[1] - 0.21, b[2] + 0.42, b[3] + 0.42, { ...stroke(pal.fine, 0.008), rx: 0.15 }))
-    for (let i = 0; i <= 16; i++) answers.push(dot([b[0] + (b[2] * i) / 16, b[1] - 0.3], i % 4 === 0 ? 0.022 : 0.012, pal.fine))
   }
   for (const h of D.holds) {
     if (h.kind !== 'scoop' && h.kind !== 'hatch') continue
-    answers.push(dot(h.c, h.r + 0.34, pal.under, { opacity: 0.85 }), ring(h.c, h.r + 0.17, pal.key, 0.03), ring(h.c, h.r + 0.26, pal.fine, 0.01, { 'stroke-dasharray': '0.09 0.05' }), ring(h.c, h.r + 0.34, pal.key, 0.012))
+    answers.push(dot(h.c, h.r + 0.34, pal.under, { opacity: 0.85 }), ring(h.c, h.r + 0.17, pal.key, 0.03), ring(h.c, h.r + 0.34, pal.fine, 0.01))
   }
   return { lanes, answers }
 }
 
-// The windows: a dark pit under each lens, the dark line round it, a keyline, ticks, and the card for the mode's name.
+// The windows: a dark pit under each lens, the dark line round it and one thin keyline. No card: the kit puts no word at an insert.
 export function insertsPrint(D, pal) {
   const out = []
-  for (const n of D.inserts) {
-    const c = cardOf(n)
-    out.push(rect(c[0], c[1], c[2], c[3], { fill: pal.under, rx: 0.08, opacity: 0.9 }), rect(c[0], c[1], c[2], c[3], { ...stroke(pal.key, 0.018), rx: 0.08 }), rect(c[0] + 0.06, c[1] + 0.06, c[2] - 0.12, c[3] - 0.12, { ...stroke(pal.fine, 0.008), rx: 0.05 }))
-    for (const u of [c[0] + 0.16, c[0] + c[2] - 0.16]) out.push(dot([u, c[1] + c[3] / 2], 0.022, pal.key))
-    out.push(dot(n.c, n.r + 0.34, pal.under, { opacity: 0.9 }))
-    out.push(dot(n.c, n.r + 0.05, pal.dark), ring(n.c, n.r + 0.1, pal.key, 0.04), ring(n.c, n.r + 0.16, pal.pale, 0.008), ring(n.c, n.r + 0.34, pal.key, 0.012))
-    for (let a = 0; a < 360; a += 7.5) {
-      if (a > 60 && a < 120) continue
-      const long = a % 30 === 0
-      out.push(line(polar(n.c, n.r + 0.2, a), polar(n.c, n.r + (long ? 0.31 : 0.26), a), long ? pal.key : pal.fine, long ? 0.018 : 0.009))
-    }
-  }
+  for (const n of D.inserts) out.push(dot(n.c, n.r + 0.2, pal.under, { opacity: 0.9 }), dot(n.c, n.r + 0.07, pal.dark), ring(n.c, n.r + 0.12, pal.key, 0.02), ring(n.c, n.r + 0.2, pal.fine, 0.008))
   return out
 }
 
@@ -284,12 +261,11 @@ function underRamp(D, pal, id, col) {
   const r = railOf(D, id)
   if (!r) return []
   const out = []
-  for (const off of [-0.36, 0.36]) out.push(poly(beside(r.pts, off), col ?? pal.fine, 0.014, { 'stroke-dasharray': '0.1 0.1', opacity: 0.8 }))
+  for (const off of [-0.36, 0.36]) out.push(poly(beside(r.pts, off), col ?? pal.fine, 0.01, { opacity: 0.5 }))
   const a = r.pts[0]
   const b = r.pts[1]
   const deg = dirDeg(a, b)
   for (const t of [-0.34, -0.08, 0.2]) out.push(chevron(lerp(a, b, t), deg, 0.34, pal.key, 0.045))
-  for (const q of r.pts.slice(1, -1)) out.push(rect(q[0] - 0.09, q[1] - 0.09, 0.18, 0.18, { fill: pal.under }), rect(q[0] - 0.09, q[1] - 0.09, 0.18, 0.18, stroke(pal.key, 0.014)))
   return out
 }
 
@@ -304,19 +280,15 @@ export function corporate(D) {
 
   // The sunburst of the lobby: arcs and rays from the doors of the tower, over the whole floor.
   const radii = [1.55, 2.5, 3.6, 4.9, 6.4, 8.1]
-  for (const r of radii) filler.push(ring(door, r, pal.key, 0.026), ring(door, r + 0.07, pal.fine, 0.009), ring(door, r - 0.05, pal.fine, 0.006))
+  for (const r of radii) filler.push(ring(door, r, pal.key, 0.02), ring(door, r + 0.07, pal.fine, 0.009))
   for (let i = 0; i < radii.length - 1; i++) {
     const r0 = radii[i] + 0.07
     const r1 = radii[i + 1] - 0.05
     const n = [24, 36, 48, 72, 96][i]
     for (let j = 0; j < n; j++) {
       const a = (360 * (j + (i % 2) * 0.5)) / n
-      if (i % 2 === 0) filler.push(line(polar(door, r0, a), polar(door, r1, a), j % 2 ? pal.fine : pal.key, j % 2 ? 0.009 : 0.016))
-      else {
-        const mid = (r0 + r1) / 2
-        const w = 180 / n
-        filler.push(poly([polar(door, r0, a - w), polar(door, mid, a), polar(door, r0, a + w)], pal.fine, 0.01), poly([polar(door, r1, a - w), polar(door, mid, a), polar(door, r1, a + w)], pal.key, 0.014), dot(polar(door, mid, a + w), 0.02, pal.pale))
-      }
+      if (i % 2 === 0 && j % 2 === 0) filler.push(line(polar(door, r0, a), polar(door, r1, a), pal.key, 0.014))
+      else if (j % 4 === 0) filler.push(line(polar(door, r0, a), polar(door, r1, a), pal.fine, 0.012))
     }
   }
   const keep = keepOut(D)
@@ -329,8 +301,6 @@ export function corporate(D) {
     const u = D.MID + s * (cb[2] / 2 + 0.08)
     const u2 = D.MID + s * (cb[2] / 2 + 0.15)
     local.push(line([u, cb[1] + cb[3] + 0.08], [u, 8.9], pal.key, 0.024), line([u2, cb[1] + cb[3] + 0.15], [u2, 8.9], pal.fine, 0.009))
-    for (let v = cb[1] + 0.2; v < cb[1] + cb[3]; v += 0.2) local.push(line([u + s * 0.1, v], [u + s * 0.2, v], pal.fine, 0.01))
-    local.push(star([D.MID + s * (cb[2] / 2 + 0.3), cb[1] + cb[3] + 0.3], 0.03, 0.1, 4, pal.key))
   }
   // Stepped deco shoulders either side of the tower.
   for (const s of [-1, 1]) {
@@ -357,7 +327,7 @@ export function corporate(D) {
     local.push(rays(c, 0.25, 1.15, a0, a1, 13, pal.key, 0.014), arc(c, 1.15, Math.min(a0, a1), Math.max(a0, a1), pal.key, 0.022), arc(c, 1.22, Math.min(a0, a1), Math.max(a0, a1), pal.fine, 0.008), arc(c, 0.25, Math.min(a0, a1), Math.max(a0, a1), pal.fine, 0.012), dot(c, 0.05, pal.pale))
   }
   const { lanes, answers } = common(D, pal)
-  return { pal, defs, ground: [], top: [lanes, g({ mask: 'url(#keep-corporate)', opacity: 0.3 }, filler), local, answers, insertsPrint(D, pal)] }
+  return { pal, defs, ground: [], top: [lanes, g({ mask: 'url(#keep-corporate)', opacity: 0.22 }, filler), local, answers, insertsPrint(D, pal)] }
 }
 
 export function office(D, seed) {
@@ -372,9 +342,9 @@ export function office(D, seed) {
   const low = D.bumpers.reduce((m, q) => (q.c[1] > m.c[1] ? q : m), D.bumpers[0])
   const band = [low.c[1] - 0.8, low.c[1] + 0.9]
   const tile = (C.right - D.MID - half) / 2
-  const cream = '#c4c0b0'
-  const cream2 = '#bbb7a7'
-  const tan = '#8f8662'
+  const cream = '#9c9c8c'
+  const cream2 = '#949484'
+  const tan = '#7d7a62'
   // Broad carpet tiles in two greens, chequered, and a pale walkway down the middle and across under the cups.
   const us = [D.MID - half - 2 * tile, D.MID - half - tile, D.MID + half, D.MID + half + tile]
   const vs = []
@@ -445,8 +415,8 @@ export function office(D, seed) {
     return null
   }
   const turn = (p, deg, inner) => g({ transform: `translate(${f(p[0])} ${f(p[1])}) rotate(${f(deg)})` }, inner)
-  const sheetCols = ['#e9e4d2', '#e3e0d0', '#ece8da', '#dfe2d6']
-  for (let i = 0; i < 6; i++) {
+  const sheetCols = ['#c9c5b6', '#c3c1b3', '#cbc8bc', '#c0c3b9']
+  for (let i = 0; i < 3; i++) {
     const p = place(0.42)
     if (!p) continue
     const w = 0.5 + rand() * 0.14
@@ -457,13 +427,13 @@ export function office(D, seed) {
     scatter.push(turn(p, rand() * 360, [shape(pts.map((q) => [q[0] + 0.035, q[1] + 0.045]), pal.dark, { opacity: 0.32 }), shape(pts, col), shape(pts, 'none', stroke('#b9b39a', 0.008)), shape([[w / 2 - fold, -h / 2], [w / 2 - fold, -h / 2 + fold], [w / 2, -h / 2 + fold]], '#cfc9b4'), rect(-w / 2 + 0.07, -h / 2 + 0.09, w * 0.5, 0.012, { fill: '#c9c4ae' }), rect(-w / 2 + 0.07, -h / 2 + 0.15, w - 0.2, 0.006, { fill: '#d3ceb9' }), rect(-w / 2 + 0.07, -h / 2 + 0.2, w - 0.2, 0.006, { fill: '#d3ceb9' }), rect(-w / 2 + 0.07, -h / 2 + 0.25, w - 0.3, 0.006, { fill: '#d3ceb9' })]))
   }
   const tabCols = ['#e5d36a', '#e7c0a8', '#b9d7c0']
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 2; i++) {
     const p = place(0.16)
     if (!p) continue
     scatter.push(turn(p, rand() * 360, [rect(-0.1, -0.09, 0.24, 0.24, { fill: pal.dark, opacity: 0.3 }), rect(-0.12, -0.12, 0.24, 0.24, { fill: tabCols[i % 3] }), rect(-0.12, -0.12, 0.24, 0.05, { fill: '#000', opacity: 0.07 })]))
   }
   const clip = (s) => `M${-0.19 * s} ${-0.05 * s} L${0.14 * s} ${-0.05 * s} A${0.05 * s} ${0.05 * s} 0 0 1 ${0.14 * s} ${0.05 * s} L${-0.16 * s} ${0.05 * s} A${0.075 * s} ${0.075 * s} 0 0 1 ${-0.16 * s} ${-0.1 * s} L${0.17 * s} ${-0.1 * s} A${0.1 * s} ${0.1 * s} 0 0 1 ${0.17 * s} ${0.1 * s} L${-0.08 * s} ${0.1 * s}`
-  for (let i = 0; i < 11; i++) {
+  for (let i = 0; i < 6; i++) {
     const p = place(0.24)
     if (!p) continue
     const s = 0.9 + rand() * 0.35
@@ -471,7 +441,7 @@ export function office(D, seed) {
     scatter.push(turn(p, rand() * 360, [g({ transform: 'translate(0.02 0.03)' }, [path(d, stroke(pal.dark, 0.03, { opacity: 0.35 }))]), path(d, stroke(i % 5 === 0 ? '#b88d57' : '#aeb5b3', 0.026)), path(d, stroke('#eef0ec', 0.008, { opacity: 0.85 }))]))
   }
   const bandCols = ['#b9895a', '#a9584a', '#c8a56a', '#6f89a8']
-  for (let i = 0; i < 7; i++) {
+  for (let i = 0; i < 3; i++) {
     const p = place(0.3)
     if (!p) continue
     const rx = 0.17 + rand() * 0.1
@@ -526,16 +496,6 @@ export function street(D, seed) {
   for (const v of [cross.v0 + 0.03, cross.v1 - 0.03]) roads.push(line([cross.uL, v], [rx0 - kw - 0.02, v], paint, 0.022, { 'stroke-linecap': 'butt' }), line([rx1 + kw + 0.02, v], [cross.uR, v], paint, 0.022, { 'stroke-linecap': 'butt' }))
   const cm = (cross.v0 + cross.v1) / 2
   for (let u = cross.uL + 0.2; u < cross.uR - 0.3; u += 0.5) if (u + 0.26 < rx0 - kw - 0.5 || u > rx1 + kw + 0.5) roads.push(rect(u, cm - 0.015, 0.26, 0.03, { fill: pal.accent, opacity: 0.9 }))
-  // The crossings on the four arms of the junction, with their stop lines.
-  for (const [v, s] of [[cross.v0 - xk - 0.36, -1], [cross.v1 + xk + 0.08, 1]]) {
-    for (let i = 0; i < 6; i++) roads.push(rect(rx0 + 0.07 + i * 0.117, v, 0.07, 0.28, { fill: paint }))
-    roads.push(rect(rx0 + 0.04, s === -1 ? v - 0.1 : v + 0.34, road[2] - 0.08, 0.04, { fill: paint }))
-  }
-  for (const [u, s] of [[rx0 - kw - 0.36, -1], [rx1 + kw + 0.08, 1]]) {
-    for (let i = 0; i < 5; i++) roads.push(rect(u, cross.v0 + 0.07 + i * 0.12, 0.28, 0.07, { fill: paint }))
-    roads.push(rect(s === -1 ? u - 0.1 : u + 0.34, cross.v0 + 0.04, 0.04, cross.v1 - cross.v0 - 0.08, { fill: paint }))
-  }
-  for (const [c, deg] of [[[D.MID - 0.2, 3.3], 90], [[D.MID + 0.2, 6.05], -90], [[7.9, cm + 0.17], 180], [[12.1, cm - 0.17], 0]]) roads.push(arrow(c, deg, 0.26, paint, { opacity: 0.9 }), line(polar(c, 0.05, deg + 180), polar(c, 0.3, deg + 180), paint, 0.03, { 'stroke-linecap': 'butt', opacity: 0.9 }))
 
   // Paving between the roads, slab by slab, faint under the asphalt's own grain.
   const rand = rng(seed)
@@ -559,17 +519,15 @@ export function street(D, seed) {
   // The car parks beside the avenue, bay by bay.
   const lots = []
   const lot = (x, y, w, h, flip) => {
-    lots.push(rect(x, y, w, h, { fill: pal.base2, rx: 0.14 }), rect(x, y, w, h, { ...stroke(paint, 0.02), rx: 0.14, opacity: 0.9 }))
+    lots.push(rect(x, y, w, h, { fill: pal.base2, rx: 0.14, opacity: 0.5 }), rect(x, y, w, h, { ...stroke(pal.fine, 0.014), rx: 0.14, opacity: 0.8 }))
     const bay = 0.3
     const n = Math.floor((w - 0.3) / bay)
     const x0 = x + (w - n * bay) / 2
     for (const [vy, dir] of [[y + 0.06, 1], [y + h - 0.06, -1]]) {
-      for (let i = 0; i <= n; i++) lots.push(line([x0 + i * bay, vy], [x0 + i * bay, vy + dir * 0.52], paint, 0.016, { 'stroke-linecap': 'butt', opacity: 0.85 }))
+      for (let i = 0; i <= n; i++) lots.push(line([x0 + i * bay, vy], [x0 + i * bay, vy + dir * 0.52], pal.fine, 0.012, { 'stroke-linecap': 'butt', opacity: 0.8 }))
       const hatch = Math.floor(rand() * n)
-      for (let j = 1; j < 5; j++) lots.push(line([x0 + hatch * bay + 0.03, vy + dir * j * 0.1], [x0 + (hatch + 1) * bay - 0.03, vy + dir * (j * 0.1 - 0.07)], pal.accent, 0.012, { opacity: 0.9 }))
     }
     const cy = y + h / 2
-    for (let u = x + 0.4; u < x + w - 0.3; u += 0.7) lots.push(arrow([u, cy], flip ? 180 : 0, 0.2, paint, { opacity: 0.75 }), line([u + (flip ? 0.05 : -0.05), cy], [u + (flip ? 0.3 : -0.3), cy], paint, 0.022, { 'stroke-linecap': 'butt', opacity: 0.75 }))
   }
   const fire = D.models.find((m) => m.part === 'model-firehouse').box
   const pol = D.models.find((m) => m.part === 'model-police').box
@@ -585,7 +543,7 @@ export function street(D, seed) {
     const id = 'keep-clear'
     const hat = []
     for (let d = -1.2; d < 1.8; d += 0.16) hat.push(line([b[0] + d, b[1]], [b[0] + d + b[3], b[1] + b[3]], pal.accent, 0.022), line([b[0] + d + b[3], b[1]], [b[0] + d, b[1] + b[3]], pal.accent, 0.022))
-    lots.push(el('clipPath', { id }, rect(b[0], b[1], b[2], b[3], { fill: '#000' })), rect(b[0], b[1], b[2], b[3], { fill: pal.base2 }), g({ 'clip-path': `url(#${id})`, opacity: 0.9 }, hat), rect(b[0], b[1], b[2], b[3], stroke(pal.accent, 0.03)))
+    lots.push(el('clipPath', { id }, rect(b[0], b[1], b[2], b[3], { fill: '#000' })), rect(b[0], b[1], b[2], b[3], { fill: pal.base2 }), g({ 'clip-path': `url(#${id})`, opacity: 0.45 }, hat), rect(b[0], b[1], b[2], b[3], stroke(pal.accent, 0.02, { opacity: 0.7 })))
   }
   // Bays in front of the police station.
   for (let i = 0; i <= 6; i++) lots.push(line([pol[0] + 0.25 + i * 0.33, pol[1] + pol[3] + 0.2], [pol[0] + 0.05 + i * 0.33, pol[1] + pol[3] + 0.62], paint, 0.016, { 'stroke-linecap': 'butt', opacity: 0.85 }))

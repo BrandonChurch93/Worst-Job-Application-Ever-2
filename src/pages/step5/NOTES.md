@@ -34,7 +34,37 @@ Unit `decision`, page `step5`. Files: `layout.ts` (the page and its places), `ti
 
 - A stand-in shape that floats above the page (the stamp block in the air, the letter while it drops) casts a hollow shadow in the blockout view: an outline, with light inside it. A shape that rests on the page is right. The cause is not known. This page only gives the shape its place and its height. The stamp flies at 200 to 220 and is carried at 120, under the 320 the lamps cover.
 
+## The real parts (Phase 4)
+
+Makers in `real/`: `wait.ts`, `letter.ts` with `letterStock.ts`, `stamp.ts` with `stampInk.ts`, `metrics.ts`. What each is made of and why is in `pipeline/phase4/decision.md`; the textures are in `assets-src/decision/RECIPE.md`.
+
+- `wait`: the panel is the shared glass card. The counter is a chrome bezel, a dark gap and smoked glass 1.6 px below the bezel's top. The digits (`wait-value`, `wait-count`, part `wait`) are lamps under the glass with a halo, and they light the panel through `ctx.light`.
+- `letter`: one sheet of 72 by 48 cells, flat under its print, lifted at its four corners (3.4 px at the lower right), with fibre in its colour and in its normals. A painted shade lies under it and fades as the sheet leaves the page. The sheet and all that is printed on it lie turned by `SHEET_ROT` (0.012 rad) about the sheet's middle; the mark's border and word turn with it. In the air the sheet is lifted by a little light of its own (`AIR` in `letter.ts`, by height only) so that it does not fall grey.
+- `stamp`: a lacquered block on a dark red rubber die with a waisted grip on a chrome band, block and grip both red. Upright while it works; set down, it is laid on its side with the grip away from the reader and a little off square (`LIE` in `script.ts`), so that the reader sees its side: grip, band, block, die. The mark is geometry in red ink: a double border drawn from `letter-mark-top`, and the word `letter-stamp` (part `stamp`), both under one picture of uneven ink cover.
+- `metrics`: the panel and the three readouts are the shared glass card.
+
+### The numbers in `v`
+
+| Shape | v[0] | v[1] | v[2] | v[3] |
+| --- | --- | --- | --- | --- |
+| `stamp-block`, `stamp-grip` | seconds since the hit, capped at 9 | seconds since the block came to rest at its place, capped at 9 | lean of the block before the fall, in radians | how far it is laid on its side, 0 upright to 1 lying |
+| `stamp-dust` | seconds since the hit | | | |
+
+`stamp-dust` is in the draw list only for `HIT.dustSeconds` (0.62 s) after the hit.
+
+### The acting (recipe 5)
+
+One word for each beat, all in `script.ts` as `PACE`, `HOPE`, `GIVE` and `CUES`, tested in `tests/decision-acting.test.ts`.
+
+| Beat | Word | What the cursor does |
+| --- | --- | --- |
+| The wait, 0 to 2 s | worried | stands under the panel to 0.9 s, crouches (`anticipate`), tiptoes 110 px right, flinches at the count (1.24 s), tiptoes back 44 px past where it stood, and stands, `nervous` |
+| The letter falls, 2 to 4.3 s | hope | stands still while the sheet falls, hops when it lands (`jump`, `proud`), struts to the foot of the sheet (2.9 to 3.5 s), looks up at 3.62 s (`doubleTake`) and freezes |
+| The stamp, 4.3 s | frozen | no move from 3.5 s to the hit, then flat |
+| The peel and the button, 6 to 10 s | beaten | peels itself up, looks at the one button (7.82 s), drags itself there in 0.65 s, stands 0.4 s, and presses once with no flourish, `exhausted` |
+
+Every hold is a pointer that does not move, so the gag ends by itself in live mode: the script only drives the film.
+
 ## Not done
 
-- No beauty: every part is a stand-in shape.
 - The share line is not copied to the clipboard by this page.
