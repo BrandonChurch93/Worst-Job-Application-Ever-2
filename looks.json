@@ -1,35 +1,35 @@
 {
   "folder": "step2-finish",
-  "pushed": "2026-11-26T12:29:35.036Z",
-  "commit": "acd1ded1a024e7bc788f216fccf2021ef3add638",
+  "pushed": "2026-11-26T12:38:06.321Z",
+  "commit": "1e60fac7a26b539e3e660d66abcae6fd1bf19126",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Step 2 crank key, approved left, the build right at the draft tier: the well's shade under the upper wall reaches further and the floor is warmer",
-      "time": "2026-11-26T12:25:40.232Z",
-      "by": "step2-finish",
-      "from": "out/work/looks/files/20261126122540-r3-well2.jpg"
-    },
-    {
-      "file": "look-2.jpg",
       "caption": "Still key-step2-crank-hd-draft: draft tier, hd, view beauty",
       "time": "2026-11-26T12:26:15.106Z",
       "by": "step2-finish",
       "from": "out/work/stills/key-step2-crank-hd-draft.png"
     },
     {
-      "file": "look-3.jpg",
+      "file": "look-2.jpg",
       "caption": "Still key-step2-crank-hd-review: review tier, hd, view beauty",
       "time": "2026-11-26T12:27:17.041Z",
       "by": "step2-finish",
       "from": "out/work/stills/key-step2-crank-hd-review.png"
     },
     {
-      "file": "look-4.jpg",
+      "file": "look-3.jpg",
       "caption": "Step 2 crank key, approved left, the build right at the review tier: the well with its long shade under the upper wall, the lenses with a light edge",
       "time": "2026-11-26T12:29:33.864Z",
       "by": "step2-finish",
       "from": "out/work/looks/files/20261126122933-end-crank.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Step 2 film, the dial beat in the twelve whole frames it is judged in (2.0 to 7.967 s): the arrow on the dial through the winds and the whip, thrown clear at 5.8, lying on the page, up again and on to the next field",
+      "time": "2026-11-26T12:38:04.610Z",
+      "by": "step2-finish",
+      "from": "out/work/looks/files/20261126123804-end-dial-beat.jpg"
     }
   ]
 }
