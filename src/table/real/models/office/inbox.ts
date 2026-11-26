@@ -28,6 +28,8 @@ const CHUTE = { deep: 40, wide: 88, drop: 8, tall: 84, bar: 6, proud: 2.4, side:
 const LIFT = { mould: 0.42, paper: 0.52 }
 // The shade one envelope lays on what is under it: how far it reaches, and its colour.
 const SHADE = { x: 2.2, y: 3, col: [0.5, 0.47, 0.42] as RGB, lift: 0.22 }
+// The layer that fills the tray to its walls under the two heaps that hop: how many envelopes, how far beyond the heaps they spread, how light they are.
+const FILL_LAYER = { count: 13, out: 3, dim: 0.92 }
 // The hop of the two heaps: how high, how much later the upper one goes, how much lower the hop on the way out is, and how far they swell and turn so that the hop is seen from straight above as well.
 const HOP = { a: 15, b: 22, lag: 0.07, out: 0.6, swell: 0.16, turn: 0.34, slide: 5 }
 
@@ -218,6 +220,7 @@ export function buildInbox(z: Zone): THREE.Object3D {
   k.lift = LIFT.paper
   k.at(p.trayX, 0, p.bed + 0.4)
   heap(k, r, 9, hx, hy, 0, p.h - p.bed - 12, 0.12, 0.8)
+  heap(k, r, FILL_LAYER.count, hx + FILL_LAYER.out, hy + FILL_LAYER.out, p.h - p.bed - 20, p.h - p.bed - 11, 0.1, FILL_LAYER.dim)
   k.back()
   k.back()
   root.add(meshOf(k.done(), mats.solid, 'office.inbox.tray', { cast: true }))
