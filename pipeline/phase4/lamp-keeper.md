@@ -106,7 +106,9 @@ Round 11 (opened 05:42 UTC, 40 a part, 80), the same one list:
 | 06:13 | q13 | 2 | merge 26 on main: the marquee's title in `table-wide`, the notes with the patch |
 | 06:16 | q14 | 2 | the insert dome under the ball's shadow plane |
 | 06:18 | q15 | 1 | `lobby-doors` with my true lights off, for the cursor in the ball |
-| | Sum of round 11 | 29 | of 80. Not in round 11's judged commit after d1af448c: the Builder's word of 06:14 UTC. |
+| 06:27 | q16 | 3 | the street's floor seen along it at 0.08 in place of 0.2 |
+| 06:29 | q17 | 2 | the same two keys as committed, to compare |
+| | Sum of round 11 | 34 | of 80. Not in round 11's judged commit after d1af448c: the Builder's word of 06:14 UTC. |
 
 ## Diagnosis (04:00 to 04:25 UTC, 26 stills with a local switch on each term, counted in the list of looks)
 
@@ -280,4 +282,6 @@ The three things that still look least real, in my part:
 1. The floor mirrors the lamps but not the fronts of the models. In `youre-fired` approved has a wet black floor with the firehouse in it; the build has a matte teal floor, and the whole frame is 1.28 of approved.
 2. The lit inserts are deep now but still read as buttons more than moulded glass: full colour inside two rings, the red deeper than the approved pink, and in `lobby-doors` the blue one is a large pale blur in the foreground.
 3. The Office floor is greener and flatter than approved's cream and teal, and its rail windows are small white rectangles in dark rings where approved has warm slots mirrored in the steel.
+
+Last trial, not kept (06:27 to 06:29 UTC, MEASURED at draft): the street's `DEEP` along the floor at 0.08 in place of 0.2. The floor right of the firehouse in `youre-fired` (x 1300, y 620, w 620, h 460) is (38, 47, 50) with it and (39, 48, 50) without: nothing to the eye. So that floor is not bright by my far lamps; what is left is the room in the coat and the print itself. On main after merge 26 `youre-fired` is 1.16 of approved as a whole (it was 1.28 before it, by changes that are not mine), and `rail-cam` is 0.86 from a camera that has moved since my last look.
 
