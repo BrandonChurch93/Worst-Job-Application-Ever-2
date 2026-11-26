@@ -1,0 +1,35 @@
+{
+  "folder": "careers-finish",
+  "pushed": "2026-11-26T11:42:29.112Z",
+  "commit": "767f46bb91539d30b7a71a43c3b613eddd44fec5",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Key marketing-top: approved on the left, this build on the right, review tier, with crops",
+      "time": "2026-11-26T11:42:27.243Z",
+      "by": "careers-finish",
+      "from": "out/work/compare/compare-marketing-top.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Medal: approved, before (9334a125), after: leaves pressed with a groove, a lip on the scallops, a brighter ring",
+      "time": "2026-11-26T11:42:27.502Z",
+      "by": "careers-finish",
+      "from": "out/work/h/pair-medal.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "First card's corner: approved, before, after: the top edge's thin dark line and pale line, softer gap under the near edge",
+      "time": "2026-11-26T11:42:27.726Z",
+      "by": "careers-finish",
+      "from": "out/work/h/pair-glass.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Beat marketing.ticker after: the walk from the third card goes round it by the right margin, never over it",
+      "time": "2026-11-26T11:42:27.962Z",
+      "by": "careers-finish",
+      "from": "out/work/h/sheet-ticker-round.jpg"
+    }
+  ]
+}
