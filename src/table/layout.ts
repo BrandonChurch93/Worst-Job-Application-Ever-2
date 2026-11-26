@@ -111,7 +111,7 @@ const dropBank = (k: number, id: string, u: number, v0: number, v1: number): voi
 
 const LADDER: P3[] = [[12.3, 5.6, 0], [13.5, 5.1, 0.6], [15.2, 4.75, 1.2], [16.1, 5.1, 1.4], [15.9, 5.7, 1.2], [14.6, 5.75, 0.7], [13.0, 5.9, 0.2], [12.3, 6.0, 0]]
 const GARAGE: V = [15.2, 5.45]
-const CUBICLES = { u: 6.45, deep: 1.85 }
+const CUBICLES = { u: 5.85, deep: 1.85 }
 const INBOX = { u: 15.2, deep: 1.45 }
 export const SPIRAL = { c: GARAGE, r: 0.75, pitch: t.minClearanceBalls + 0.05, under: t.minClearanceBalls + 0.05, tail: 0.2, perTurn: 24, frame: 1.525 }
 export const SPIRAL_TOP = SPIRAL.under + SPIRAL.tail + t.spiralTurns * SPIRAL.pitch
