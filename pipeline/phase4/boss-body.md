@@ -24,13 +24,13 @@ Owner: boss-body agent. Branch `agent/boss-body`. Parts: `boss-body`, `boss-tran
 - The glass of the shield is its own material (grey green, see-through at 0.86, clear coat), made in `src/boss/real/body-kit.ts` and passed through `studio()`. The arms show through it.
 - When the boss falls, the second half of the frame is thrown clear to the right so that nothing lies over the fallen cap; the lower side plate lands between the socket and the cap.
 
-- After the Builder's first look: the steel of frame, plates and legs is a dark gunmetal of my own (`plate`, `pocket`, `link` in `body-kit.ts`), bright work is kept for chamfers, screws, the lip round the cap, pins and the turned discs. The body stands higher (frame top at z 86, cap top at z 98). Legs are flat bars 28 px wide with turned knuckles 42 px wide at hip and knee and a foot 46 px wide. The frame halves carry their bed as a shallow pocket, so they land as solid plates.
+- After the Builder's first look: the steel of frame, plates and legs is a dark gunmetal of my own (`plate`, `pocket`, `link` in `body-kit.ts`), bright work is kept for chamfers, screws, the lip round the cap, pins and the turned discs. The body stands higher (frame top at z 112, cap top at z 124), and the shield stands on the page in front of it, not at the height of the frame. Legs are flat bars 28 px wide with turned knuckles 42 px wide at hip and knee and a foot 46 px wide. The frame halves carry their bed as a shallow pocket, so they land as solid plates.
 
 ## Agreed with the boss-fight agent
 
-- The mouth of each barrel is given by `muzzleAt(x, y, i, aim)` in `src/boss/body.ts`: 92 px from the centre of the cannon, at z 82.5, turned toward `aim` by at most 0.7 rad. They pass `aim` (the cursor centre eased over 0.25 s) in the sixth argument of `fightRig` and fire slabs and the flash `muzzle-N` from the same formula (their own copy until this is on main, then my export; the name must not change).
+- The mouth of each barrel is given by `muzzleAt(x, y, i, aim)` in `src/boss/body.ts`: 92 px from the centre of the cannon, at z 108.5 (`MUZZLE.z`; told to them twice as the body grew: 82.5, then 108.5), turned toward `aim` by at most 0.7 rad. They pass `aim` (the cursor centre eased over 0.25 s) in the sixth argument of `fightRig` and fire slabs and the flash `muzzle-N` from the same formula (their own copy until this is on main, then my export; the name must not change).
 - Feet moved to (236, 192) from the centre and the cannons to (-10, 116); they read `FOOT_OFF` and `CANNON_OFF`.
-- The shield stays centred at (x - 252, y). Darts from the left stop on the plane x - 288 while |dy| < 118 and fly at z 30 to 34; shield sparks sit at z 100.
+- The shield stays centred at (x - 252, y). Darts from the left stop on the plane x - 288 while |dy| < 118 and fly at z 30 to 34; shield sparks: I asked for z 60 now that the shield stands on the page (glass from z 10 to 80).
 - They call `fightRig` with a sixth argument `{ flash: f.flash / 0.12, hurt: 1 - shown / 100 }`.
 
 ## Known weak points

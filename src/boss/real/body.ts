@@ -220,13 +220,13 @@ function shield(): THREE.Object3D {
   const pin = mesh(geo('shieldPin', () => lying([[0, 0], [3.4, 0], [3.4, 170], [0, 170]], 20).rotateZ(Math.PI / 2).translate(0, 85, 0)), k.pin, false)
   const tubes = [-1, 1].map((sy) => {
     const g = new THREE.Group()
-    g.add(mesh(geo('armTube', () => lying([[0, 0], [5, 0], [5, 50], [3.2, 50]], 20).rotateZ(Math.PI)), m.aluminiumSatin))
+    g.add(mesh(geo('armTube', () => lying([[0, 0], [5, 0], [5, 82], [3.2, 82]], 20).rotateZ(Math.PI)), m.aluminiumSatin))
     g.userData.sy = sy
     return g
   })
   const rods = [-1, 1].map((sy) => {
     const g = new THREE.Group()
-    g.add(mesh(geo('armRod', () => joined([lying([[0, 0], [3.1, 0], [3.1, 52], [0, 52]], 16).rotateZ(Math.PI), lathe([[6.5, -3], [6.5, 3], [0, 3]], 24).rotateX(Math.PI / 2)])), k.pin, false))
+    g.add(mesh(geo('armRod', () => joined([lying([[0, 0], [3.1, 0], [3.1, 82], [0, 82]], 16).rotateZ(Math.PI), lathe([[6.5, -3], [6.5, 3], [0, 3]], 24).rotateX(Math.PI / 2)])), k.pin, false))
     g.userData.sy = sy
     return g
   })
@@ -262,7 +262,7 @@ function poseShield(o: THREE.Object3D, s: Shape): void {
   d.pin.position.set(px + 6 * stand, py, low - 1 + 2 * stand)
   const ax = mix(s.v?.[3] ?? 40, -half + 60, flat)
   const ay = -(s.v?.[4] ?? 0) * (1 - flat)
-  const az = mix(BODY_Z.frame + 5 - BODY_Z.side, 5, flat)
+  const az = mix(BODY_Z.frame + 5 - BODY_Z.shield, 5, flat)
   for (let i = 0; i < 2; i++) {
     const sy = i === 0 ? -1 : 1
     const off = sy * 34
@@ -275,6 +275,8 @@ function poseShield(o: THREE.Object3D, s: Shape): void {
     const tube = d.tubes[i]!
     rod.position.copy(va)
     rod.quaternion.setFromUnitVectors(X, vc)
+    rod.scale.x = mix(1, 0.5, flat)
+    tube.scale.x = mix(1, 0.3, flat)
     tube.position.copy(vb)
     tube.quaternion.setFromUnitVectors(X, vc.negate())
     tube.visible = len > 20
@@ -290,7 +292,7 @@ function leg(): THREE.Object3D {
   const link = (): THREE.Mesh => mesh(geo('link', () => {
     const body = sweep(roundedRect(L + W, W, W / 2, 10), plateProfile(8, 2.2, 0, 4)).translate(L / 2, 0, -4)
     const under = sweep(roundedRect(L + W, W, W / 2, 10), [{ inset: 0, z: 0, out: 0, up: 1 }]).rotateX(Math.PI).translate(L / 2, 0, -4)
-    const slot = sweep(roundedRect(L - 56, 9, 4.5, 6), [{ inset: 0, z: 4, out: 0, up: 1 }, { inset: 1.6, z: 2.4, out: -0.7, up: 0.7 }, { inset: 1.6, z: 2.4, out: 0, up: 1 }]).translate(L / 2, 0, 0.03)
+    const slot = sweep(roundedRect(L - 52, 10, 5, 6), [{ inset: 0, z: 3.9, out: 1, up: 0 }, { inset: 0, z: 4.7, out: 0.7, up: 0.7 }, { inset: 1.3, z: 5.5, out: 0, up: 1 }]).translate(L / 2, 0, 0)
     return joined([body, under, slot])
   }), k.link)
   const upper = link()
@@ -384,7 +386,9 @@ const CAP_CRACKS: [number, number][][] = [
   [[-112, -9], [-104, 6], [-110, 18]],
   [[144, 10], [128, 4], [116, 11], [100, 5], [92, 14], [78, 12]],
   [[116, 11], [112, -6], [120, -20]],
-  [[-40, 36], [-36, 22], [-46, 12], [-42, 2]]
+  [[-34, 36], [-30, 25], [-38, 17], [-33, 8], [-40, 0], [-36, -8]],
+  [[-38, 17], [-50, 14], [-56, 20]],
+  [[58, -36], [54, -26], [61, -18], [56, -10]]
 ]
 
 function capCracks(): THREE.BufferGeometry {

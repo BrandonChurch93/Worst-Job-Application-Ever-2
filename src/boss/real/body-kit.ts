@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { materials } from '../../shell/materials'
 import { studio } from '../../post/studio'
 import { hash01 } from '../../core/random'
 
@@ -126,7 +127,7 @@ export function bossKit(): BossKit {
     pin: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xc9ccd0), roughness: 0.2, metalness: 1 })),
     glass: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x9fb0a8), roughness: 0.3, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.1, specularIntensity: 0.9, transparent: true, opacity: 0.6 })),
     glassEdge: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xd3ddd8), roughness: 0.22, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.08, specularIntensity: 1, transparent: true, opacity: 0.88 })),
-    plate: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x5b5e63), roughness: 0.4, metalness: 0.92 })),
+    plate: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x585b60), roughness: 0.38, metalness: 1, normalMap: materials().aluminium.normalMap, normalScale: new THREE.Vector2(0.24, 0.24), anisotropy: 0.4, anisotropyRotation: Math.PI / 2 })),
     pocket: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x34363a), roughness: 0.55, metalness: 0.85 })),
     link: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x8f9297), roughness: 0.36, metalness: 0.95 })),
     crack: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x3a1608), roughness: 0.85, metalness: 0, specularIntensity: 0.15, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 }))

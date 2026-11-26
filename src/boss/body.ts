@@ -16,7 +16,7 @@ export const CANNON_OFF: [number, number][] = [[-10, -116], [-10, 116]]
 const SHIELD_OFF: [number, number] = [-252, 0]
 const SIDE_OFF: [number, number][] = [[0, -112], [0, 112]]
 export const CANNON_FROM = [1, 2] as const
-export const BODY_Z = { side: 60, sideTop: 70, frame: 70, cap: 80, capTall: heights.button - heights.buttonSocket, hip: 92, cannonTall: 13, housing: 20 }
+export const BODY_Z = { side: 86, sideTop: 96, frame: 96, cap: 106, shield: 8, capTall: heights.button - heights.buttonSocket, hip: 118, cannonTall: 13, housing: 20 }
 export const LEG = { link: 100, wide: 28, foot: 46, knee: 42 }
 export const FRAME = { w: 372, h: 136, cut: 26, bedW: 300, bedH: 84, tall: 16 }
 export const SIDE = { w: 224, h: 100, lean: 36, tall: 12 }
@@ -188,7 +188,7 @@ export function drawRig(out: DrawList, rig: Rig, id = 'boss', pressed = 0): void
   if (rig.shield.k > 0.01) {
     const s = rig.shield
     const flat = s.flat ?? 0
-    const z0 = mix(BODY_Z.side, 0, flat) + s.z
+    const z0 = mix(BODY_Z.shield, 0, flat) + s.z * s.k
     out.push({ id: `${id}-shield`, part: body, kind: 'box', role: 'bossShield', x: s.x - SHIELD.w / 2, y: s.y - SHIELD.h / 2, w: SHIELD.w, h: SHIELD.h, z0, z1: z0 + SHIELD.tall, tone: 'glass', rot: s.rot, r: 12, v: [s.k, flat, rig.flash ?? 0, rig.plate.x - FRAME.w / 2 + 12 - s.x, rig.plate.y - s.y, rig.hurt] })
   }
   rig.cannons.forEach((c, i) => {

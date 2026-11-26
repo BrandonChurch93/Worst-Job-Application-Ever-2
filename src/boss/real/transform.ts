@@ -33,7 +33,7 @@ const cloud = (x: number, y: number, cell: number, seed: number): number => {
 }
 
 const mix = (a: number, b: number, t: number): number => a + (b - a) * t
-const BURNS: [number, number, number][] = [[-58, 12, 9], [30, -14, 7], [64, 16, 5], [-20, -20, 4]]
+const BURNS: [number, number, number][] = [[-58, 12, 9], [44, -16, 7], [66, 18, 5], [-24, -20, 4]]
 
 export function sootPixels(w = SOOT_W, h = SOOT_H): Uint8Array {
   const data = new Uint8Array(w * h * 4)
@@ -62,7 +62,8 @@ export function sootPixels(w = SOOT_W, h = SOOT_H): Uint8Array {
       data[i] = Math.round(mix(tone + 5, grey, k2))
       data[i + 1] = Math.round(mix(tone + 2, grey - 2, k2))
       data[i + 2] = Math.round(mix(tone, grey - 6, k2))
-      data[i + 3] = Math.round(255 * Math.max(clamp(d) * 0.98, k2 * 0.8))
+      const alpha = Math.max(clamp(d) * 0.98, k2 * 0.8)
+      data[i + 3] = Math.round(255 * alpha)
     }
   }
   return data
@@ -248,12 +249,12 @@ function scorch(s: Shape, ctx: RealContext): THREE.Object3D {
 }
 
 const WISP_N = 30
-const WISP_ACROSS = [0, 0.55, 1, 0.55, 0]
+const WISP_ACROSS = [0, 0.75, 1, 0.75, 0]
 let wispMaterial: THREE.MeshBasicMaterial | null = null
 
 export function wispPoint(u: number, t: number, w: number): [number, number, number, number] {
   const sway = Math.sin(u * 5.1 + w * 2.3 - t * 1.1) * 18 * u + Math.sin(u * 11 + w - t * 1.9) * 4 * u
-  return [sway + u * 30, Math.pow(u, 1.4) * 190, u * 110, 13 + 44 * Math.pow(u, 0.8)]
+  return [sway + u * 30, Math.pow(u, 1.4) * 190, u * 110, 5 + 62 * Math.pow(u, 0.75)]
 }
 
 function smoke(): THREE.Object3D {
@@ -261,7 +262,7 @@ function smoke(): THREE.Object3D {
     puffMade = texture(puffPixels(), PUFF_PX, PUFF_PX, false)
     puffMade.wrapT = THREE.RepeatWrapping
   }
-  wispMaterial ??= new THREE.MeshBasicMaterial({ color: new THREE.Color(0.2, 0.2, 0.205), alphaMap: puffMade, vertexColors: true, transparent: true, depthWrite: false, toneMapped: false, side: THREE.DoubleSide })
+  wispMaterial ??= new THREE.MeshBasicMaterial({ color: new THREE.Color(0.13, 0.13, 0.135), alphaMap: puffMade, vertexColors: true, transparent: true, depthWrite: false, toneMapped: false, side: THREE.DoubleSide })
   const across = WISP_ACROSS.length
   const count = (WISP_N + 1) * across
   const g = new THREE.BufferGeometry()
@@ -271,7 +272,7 @@ function smoke(): THREE.Object3D {
   const index: number[] = []
   for (let i = 0; i <= WISP_N; i++) {
     const u = i / WISP_N
-    const along = smooth(u / 0.06) * Math.pow(1 - u, 0.9)
+    const along = smooth((u - 0.03) / 0.3) * Math.pow(1 - u, 0.9)
     for (let j = 0; j < across; j++) {
       const n = (i * across + j) * 4
       colour[n] = 1
