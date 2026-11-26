@@ -401,15 +401,15 @@ export const bossWeapons: PartMaker | null = {
         const star = o.getObjectByName('star')!
         const size = (70 + 150 * Math.sqrt(u)) * Math.pow(1 - u, 1.2)
         star.scale.set(size, size * 0.62, 1)
-        star.position.set(18 + 30 * u, 0, 2)
+        star.position.set(2 + 26 * u, 0, 2)
         star.rotation.z = (hash01(n, 5, seed) - 0.5) * 0.5
         star.visible = size > 1
         const halo = o.getObjectByName('halo')!
         halo.scale.set(230 * hot + 4, 170 * hot + 4, 1)
-        halo.position.set(10, 0, 1)
+        halo.position.set(0, 0, 1)
         const smoke = o.getObjectByName('smoke')!
         smoke.scale.set(40 + 70 * u, 40 + 70 * u, 1)
-        smoke.position.set(8 + 26 * u, 0, 1.5)
+        smoke.position.set(26 * u, 0, 1.5)
         smoke.rotation.z = hash01(n, 6, seed) * 6
         smoke.visible = u > 0.25
         ctx.light({ x: cx, y: cy, z: s.z1 + 6, colour: WEAPON_EMIT.muzzle.colour, power: WEAPON_EMIT.muzzle.power * hot, reach: WEAPON_EMIT.muzzle.reach })

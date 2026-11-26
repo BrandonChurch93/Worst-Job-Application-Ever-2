@@ -6,7 +6,7 @@ import { look } from '../../../post/look'
 import { cardGlass, GLASS, groundEdge, SLAB, slabGeometry } from '../../marketing/real/perk-cards'
 
 const q = (v: number): number => Math.round(v * 4) / 4
-const INSET = { thick: 12, face: 1.07, lit: 0.9, away: 1.04, small: 0.55 }
+const INSET = { thick: 12, face: 1.09, lit: 0.76, away: 1.1, band: 30, small: 0.55 }
 
 function solid(g: THREE.BufferGeometry, cast: boolean): THREE.Mesh {
   const mesh = new THREE.Mesh(g, cardGlass())
@@ -56,7 +56,7 @@ function faceOf(s: Shape, z: number): THREE.BufferGeometry {
   const col: number[] = []
   const idx: number[] = []
   const reach = Math.min(wide, tall) - d - 1
-  const rings: [number, number][] = [[0, 0], [Math.min(6, reach * 0.5), 1], [reach, 1]]
+  const rings: [number, number][] = [[0, 0], [Math.min(INSET.band, reach * 0.5), 1], [reach, 1]]
   for (const [more, t] of rings) {
     for (let i = 0; i < n; i++) {
       const side = (o.nx[i]! * kx + o.ny[i]! * ky) / flat

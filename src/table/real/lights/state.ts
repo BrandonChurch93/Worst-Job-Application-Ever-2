@@ -15,6 +15,9 @@ export interface ZoneLight {
     wjlFrame: { value: THREE.Vector3 }
     wjlSize: { value: THREE.Vector2 }
     wjlCol: { value: THREE.Vector3[] }
+    wjlFull: { value: THREE.Vector3[] }
+    wjlSpill: { value: THREE.Vector4[] }
+    wjlSpillCol: { value: THREE.Vector3[] }
     wjlAt: { value: THREE.Vector4[] }
     wjlFill: { value: THREE.Vector3 }
     wjlHole: { value: THREE.Vector4[] }
@@ -29,9 +32,11 @@ export function zoneLight(z: Zone): ZoneLight {
   if (s) return s
   const p = picturesOf(z)
   const col: THREE.Vector3[] = []
+  const full: THREE.Vector3[] = []
   const at: THREE.Vector4[] = []
   for (let i = 0; i < CHANNELS; i++) {
     col.push(new THREE.Vector3())
+    full.push(new THREE.Vector3())
     at.push(new THREE.Vector4())
   }
   s = {
@@ -44,6 +49,9 @@ export function zoneLight(z: Zone): ZoneLight {
       wjlFrame: { value: new THREE.Vector3(0, 540 - (z.top + z.height / 2), z.floor) },
       wjlSize: { value: new THREE.Vector2(1920, z.height) },
       wjlCol: { value: col },
+      wjlFull: { value: full },
+      wjlSpill: { value: [new THREE.Vector4(), new THREE.Vector4()] },
+      wjlSpillCol: { value: [new THREE.Vector3(), new THREE.Vector3()] },
       wjlAt: { value: at },
       wjlFill: { value: new THREE.Vector3() },
       wjlHole: { value: [new THREE.Vector4(0, 0, 1, 0), new THREE.Vector4(0, 0, 1, 0)] },
