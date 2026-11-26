@@ -1,7 +1,7 @@
 # Status pictures
 
-Time: 2026-11-26T19:54Z. Phase 5, status 113.
+Time: 2026-11-26T20:12Z. Phase 5, status 114.
 
-1. `01-the-six-pages-of-the-live-site-as-round-20-s-jur.jpg`: Drawn by the packs agent through the live site's own path at the high level on round 20's commit e17eb5f8, 1400 by 788 each; put together and looked at by the Builder. Each of the 30 jurors saw one picture alone, with no word about where it came from.
-2. `02-five-pages-at-rest-the-approved-image-left-the-l.jpg`: The right column is the jury's pictures of round 20. Rows 2 to 4 show what R8's two major points are about: step 2's empty menus and the bare lower page of steps 3 and 4 are in the approved images too. Step 4 and step 5 are shown at other beats than the approved images, as the captions say.
-3. `03-preview-03-the-first-piece-in-step-5-decision-tw.jpg`: Drawn by a render agent from round 20's commit at the draft tier, 960 by 540; frames taken by the Builder from the delivered file. The first frame is the page turning in edge on; the last is the careers page after the turn back.
+1. `01-the-page-turn-into-step-1-the-live-site-as-the-m.jpg`: Top: sheet 3 of 3 of the page turn in round 20's motion pack, twelve frames in a row of a visitor's run of the live site on e17eb5f8. Bottom: the first sixteen frames of step 1's piece of Preview 03 (the film path, draft tier, 960 by 540). The dark triangles lie across the resume tray in both; put together and looked at by the Builder.
+2. `02-the-lost-tug-of-war-the-live-site-in-twelve-fram.jpg`: Top: the sheet of round 20's motion pack round the loss, the part of the picture round the arrow at its real size, 0:33.13 to 0:33.50 of the visit. Bottom: the same beat in the film, from Preview 03's step 1 piece. The live site shows the loss in one frame; the film shows the arrow drawn to the slot.
+3. `03-two-screens-the-look-critic-marked-the-touch-pag.jpg`: Top: the page a touch-only device gets, from round 20's pack for the story and look critic. Bottom: the result screen of step 3 from Preview 03's film frames, enlarged from 960 by 540 (so its softness is the enlargement's).

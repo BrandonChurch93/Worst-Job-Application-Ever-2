@@ -1,0 +1,58 @@
+{
+ "critic": "R5",
+ "score": 7,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "A: the whole site: the six pages at rest on one sheet, the screens with the controls, and sheets across one visitor's visit through the live site",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-A-03.png",
+   "where": "the whole touch-device page",
+   "what": "it is flat CSS: no paper grain, no lit edge on the rule, no sage glass panel, no orange control, no shadows. It is the only page that does not look built from the same materials, so it reads as an unfinished placeholder next to the other six",
+   "fix": "build it from the same kit: put the grain and vignette on the ground, use the machined rule and the progress beads in their dead state, set the apology on a sage glass card with its contact shadow, and add one dimmed orange pill (for example 'Try on a desktop') so it matches the rest of the site"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "frame 2:07.98, the 'Assessment Complete' screen after the pinball",
+   "what": "the site header, the title and the five-bead progress bar are gone. The pipe has turned ghostly and see-through, and it bends into an odd grey plate with a bullet shape on it. The text card has hard flat edges, unlike the soft glass cards on every other page. This frame looks like debug output, not a page from the same site",
+   "fix": "bring back the header and progress bar with bead 3 lit. Draw the pipe in the same solid chrome as on page 4 at rest, and end it cleanly in the socket. Remove the bullet plate or make it a proper machined part. Show the result on the standard sage glass card with rounded, lit edges and a soft shadow"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "Page 4 of 6 at rest",
+   "what": "except for the pipe socket at the lower right, the page is empty. Three lines of small text sit in the top left over a wide blank field. At rest it looks less finished than the other five, even though it leads into the high point",
+   "fix": "add a clear sign of what is coming: a sage card or plaque in the empty middle (for example 'Toxicity Tolerance Assessment: insert yourself'), a faint glow or a ball waiting inside the socket, and maybe a short pulse on the cursor's path toward the pipe"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "Pages 2 and 3 at rest",
+   "what": "at rest these two look like the same scene: a title, rows of grey sage inset fields on the right and a grey Continue pill at the lower right. Only their interactions (keyboard, dial, crank) set them apart, and they are hidden at rest",
+   "fix": "give each a different still look: for example, show Page 3's three controls (dial, lever, crank) partly visible as hardware sitting in or below their rows, or lay Page 3 out as a vertical control panel instead of a form list"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "frames 1:32.55 to 1:36.08, the move from page into pinball",
+   "what": "the light changes from warm daylit paper to a dark navy cabinet. The pinball machine is clearly the high point and is the richest scene by far, but it shares none of the site's sage glass, warm paper or progress beads, so for a moment it feels like a separate product",
+   "fix": "carry a few of the site's materials into the cabinet: a warm paper or cream apron card with the site's typeface, sage glass on the score window, the orange pill colour on the flippers (already close), and the five-bead progress bar worked into the backglass. Keep the darkness, but add a warm key light that matches the page lighting"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-07.png",
+   "where": "pinball frames, 1:39.63 to 2:04.43",
+   "what": "the system arrow cursor stays drawn over the playfield. On a physical-looking machine it reads as a UI overlay",
+   "fix": "hide the cursor or swap it for a small plunger or hand cursor while the pinball is in play"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01.png",
+   "where": "Page 5 of 6 at rest",
+   "what": "the small checkbox card and lone Submit pill leave about two-thirds of the page empty. It is sparse at rest, though the run fills it later",
+   "fix": "move the card and button closer together, or let the cracked socket show faintly at rest"
+  }
+ ]
+}
