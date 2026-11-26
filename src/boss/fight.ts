@@ -6,7 +6,7 @@ export interface SlabSize { w: number; h: number }
 export interface Rect { x: number; y: number; w: number; h: number }
 export interface Arena { slabs: SlabSize[]; popups: { box: Rect; buttons: Rect[] }[]; keep?: Rect }
 
-export interface Slab { m: number; x: number; y: number; dx: number; dy: number; rot: number; left: number; state: 0 | 1 | 2; t: number; push?: number; skid?: number }
+export interface Slab { m: number; x: number; y: number; dx: number; dy: number; rot: number; left: number; state: 0 | 1 | 2; t: number; push?: number; skid?: number; air?: number; rim?: boolean; ox?: number; oy?: number; ex?: number; ey?: number; far?: number; out?: number }
 export interface Popup { slot: number; hp: number; t: number; closing: number; off: number; vel: number; dx: number; dy: number; shot: boolean }
 export interface Dart { n: number; x: number; y: number; dx: number; dy: number; t: number; p: number }
 export interface Flash { n: number; x: number; y: number; rot: number; t: number }
@@ -44,6 +44,7 @@ export interface Fight {
   slow: boolean
   safe: number
   dust: number
+  blow: { t: number; dx: number; dy: number } | null
   hits: number
   flash: number
   look: { x: number; y: number }
@@ -54,6 +55,10 @@ const START = [HEALTH, THRESHOLD[0], THRESHOLD[1] + EXPIRED_GAIN] as const
 const POPUP_ORDER = [1, 2, 0] as const
 const SLAB_HALF = 56
 const SOCKET_CLEAR = { x: 168, y: 78 }
+const RIM_GAP = 4
+const STRIKE = { x: 4, y: 12, hold: 0.05 } as const
+const LEAVE = { back: 0.3, pull: 9, power: 2.6, past: 30, tall: 44, machine: 230, least: 0.3, speed: 2400, most: 0.72 } as const
+const PAGE = { w: 1920, h: 1080 } as const
 export const SPARK_SECONDS = 0.3
 export const FLASH_SECONDS = 0.16
 
@@ -64,7 +69,7 @@ export function newFight(x: number = HOME.x, y: number = HOME.y): Fight {
     phase: 0, clock: 0, phaseClock: 0, health: HEALTH, shown: HEALTH, x, y,
     feet: FOOT_OFF.map(([ox, oy]) => ({ x: x + ox, y: y + oy, fx: 0, fy: 0, tx: 0, ty: 0, t: -1 })),
     slabs: [], popups: [], darts: [], sparks: [], flashes: [], nextSlab: SLAB.first, windup: -1, aim: { x: 0, y: 0 }, cannon: 0, attacks: 0, burst: 0, burstDue: 0, recoil: [0, 0], slabCount: 3, popupCount: 0, popupDue: POPUP.first,
-    dartCount: 0, sparkCount: 0, expired: -1, slow: false, safe: 0, dust: -1, hits: 0, flash: 0, look: { x: x - 600, y }, over: false
+    dartCount: 0, sparkCount: 0, expired: -1, slow: false, safe: 0, dust: -1, blow: null, hits: 0, flash: 0, look: { x: x - 600, y }, over: false
   }
 }
 
@@ -170,7 +175,7 @@ function fire(f: Fight, io: StepIo, arena: Arena, shot: { m: number; side: numbe
     }
   }
   if (m < 0) return
-  if (shot && shot.side !== 0) f.cannon = shot.side > 0 ? 1 : 0
+  if (shot) f.cannon = shot.side > 0 ? 1 : 0
   const from = muzzle(f, f.cannon)
   let dx = f.aim.x - from.x
   let dy = f.aim.y - from.y
@@ -193,13 +198,15 @@ function fire(f: Fight, io: StepIo, arena: Arena, shot: { m: number; side: numbe
   if (dy < 0) left = Math.min(left, (from.y - (ARENA.y0 + pad)) / -dy)
   if (dy > 0) left = Math.min(left, (ARENA.y1 - pad - from.y) / dy)
   const keep = arena.keep
+  let rim = false
   if (keep) {
     const tall = SLAB_HALF / 2 + 20
-    for (let go = 0; go <= left; go += 8) {
+    for (let go = 0; go <= left; go += 4) {
       const x = from.x + dx * go
       const y = from.y + dy * go
-      if (x > keep.x - half - 16 && x < keep.x + keep.w + half + 16 && y > keep.y - tall && y < keep.y + keep.h + tall) {
-        left = go - 8
+      if (x > keep.x - half - RIM_GAP && x < keep.x + keep.w + half + RIM_GAP && y > keep.y - tall && y < keep.y + keep.h + tall) {
+        left = go - 4
+        rim = true
         break
       }
     }
@@ -210,15 +217,49 @@ function fire(f: Fight, io: StepIo, arena: Arena, shot: { m: number; side: numbe
     while (short > 40 && over(short)) short -= 8
     let long = left
     while (long < left + 160 && over(long)) long += 8
-    left = short > 120 || over(long) ? short : long
+    const to = short > 120 || over(long) ? short : long
+    if (to !== left) rim = false
+    left = to
   }
-  const rot = (m % 2 === 0 ? -1 : 1) * (0.06 + 0.03 * (m % 3))
-  f.slabs.push({ m, x: from.x, y: from.y, dx, dy, rot, left: Math.max(40, left), state: 0, t: 0 })
+  const rot = -0.12 + 0.03 * (m % 3)
+  f.slabs.push({ m, x: from.x, y: from.y, dx, dy, rot, left: Math.max(40, left), state: 0, t: 0, rim })
   f.slabCount = m + 1
   f.recoil[f.cannon] = 26
   f.flashes.push({ n: f.slabCount + f.attacks * 3, x: from.x, y: from.y, rot: Math.atan2(dy, dx), t: 0 })
   io.emit('slab-fire', from.x, from.y, false)
   f.cannon = f.cannon === 0 ? 1 : 0
+}
+
+// A slab that has lain its time is swept off the page: down, or down and aside, or sideways, by the shortest way that crosses neither the card, the socket nor the machine.
+const WAYS: [number, number][] = [[0, 1], [-0.5, 0.866], [0.5, 0.866], [-0.8, 0.6], [0.8, 0.6], [-1, 0], [1, 0]]
+
+function leave(f: Fight, s: Slab, arena: Arena): void {
+  const size = arena.slabs[s.m]!
+  const half = size.w / 2
+  const keep = arena.keep
+  const ways = WAYS.map(([ex, ey]) => {
+    const down = ey > 0 ? (PAGE.h + size.h + half * Math.abs(ex) - s.y) / ey : Infinity
+    const side = ex < 0 ? (s.x + half + LEAVE.past) / -ex : ex > 0 ? (PAGE.w - s.x + half + LEAVE.past) / ex : Infinity
+    return { ex, ey, far: Math.min(down, side) }
+  })
+  const blocked = (w: { ex: number; ey: number; far: number }, machine = true): boolean => {
+    for (let go = 16; go <= w.far; go += 16) {
+      const x = s.x + w.ex * go
+      const y = s.y + w.ey * go
+      if (keep && x > keep.x - half + 4 && x < keep.x + keep.w + half - 4 && y > keep.y - LEAVE.tall && y < keep.y + keep.h + LEAVE.tall) return true
+      if (Math.abs(x - SOCKET.x) < half + SOCKET_CLEAR.x && Math.abs(y - SOCKET.y) < SOCKET_CLEAR.y + size.h / 2) return true
+      if (machine && Math.hypot(x - f.x, y - f.y) < LEAVE.machine + half * Math.abs(w.ex) * 0.4) return true
+    }
+    return false
+  }
+  const near = (a: { far: number }, b: { far: number }): number => a.far - b.far
+  const way = ways.filter((w) => !blocked(w)).sort(near)[0] ?? ways.filter((w) => !blocked(w, false)).sort(near)[0] ?? ways[0]!
+  s.ox = s.x
+  s.oy = s.y
+  s.ex = way.ex
+  s.ey = way.ey
+  s.far = way.far
+  s.out = Math.min(LEAVE.most, Math.max(SLAB.out, LEAVE.least + way.far / LEAVE.speed))
 }
 
 function slabs(f: Fight, io: StepIo, arena: Arena): void {
@@ -262,30 +303,32 @@ function slabs(f: Fight, io: StepIo, arena: Arena): void {
       s.y += s.dy * go
       s.left -= go
       const size = arena.slabs[s.m]!
-      const hit = f.safe <= 0 && s.t > 0.12 && Math.abs(c.x - s.x) < size.w / 2 + 14 && Math.abs(c.y - s.y) < size.h / 2 + 24
+      const hit = f.safe <= 0 && s.t > 0.12 && Math.abs(c.x - s.x) < size.w / 2 + STRIKE.x && Math.abs(c.y - s.y) < size.h / 2 + STRIKE.y
       if (hit) {
         f.safe = HIT.safe
         f.dust = 0.95
         f.hits++
         io.cursor.hurt('scorched')
-        io.cursor.knock(s.dx * HIT.knock, s.dy * HIT.knock, 260)
         io.cursor.react('recoil')
         io.emit('slab-drop', c.x, c.y, true)
+        f.blow = { t: STRIKE.hold, dx: s.dx, dy: s.dy }
+        s.air = s.t
         s.state = 1
         s.t = 0
         s.push = Math.min(SLAB.through, Math.max(0, s.left))
       } else if (s.left <= 0) {
         io.emit('slab-drop', s.x, s.y, false)
+        s.air = s.t
         s.state = 1
         s.t = 0
-        s.skid = SLAB.skid
+        s.skid = s.rim ? -SLAB.bounce : SLAB.skid
       }
     } else if (s.state === 1 && (s.push ?? 0) > 0) {
       const go = Math.min(s.push!, SLAB.drive * dt)
       s.x += s.dx * go
       s.y += s.dy * go
       s.push = s.push! - go
-    } else if (s.state === 1 && (s.skid ?? 0) > 0.2) {
+    } else if (s.state === 1 && Math.abs(s.skid ?? 0) > 0.2) {
       const go = s.skid! * Math.min(1, SLAB.grip * dt)
       s.x += s.dx * go
       s.y += s.dy * go
@@ -293,9 +336,23 @@ function slabs(f: Fight, io: StepIo, arena: Arena): void {
     } else if (s.state === 1 && s.t >= (f.phase === 0 ? SLAB.rest : SLAB.restLate)) {
       s.state = 2
       s.t = 0
+      leave(f, s, arena)
+    } else if (s.state === 2) {
+      const u = s.t / (s.out ?? SLAB.out)
+      const back = u < LEAVE.back ? -LEAVE.pull * Math.sin((Math.PI * u) / LEAVE.back) : 0
+      const go = back + (s.far ?? 0) * Math.pow(Math.min(1, Math.max(0, (u - LEAVE.back * 0.6) / (1 - LEAVE.back * 0.6))), LEAVE.power)
+      s.x = (s.ox ?? s.x) + (s.ex ?? 0) * go
+      s.y = (s.oy ?? s.y) + (s.ey ?? 1) * go
     }
   }
-  f.slabs = f.slabs.filter((s) => !(s.state === 2 && s.t >= SLAB.out))
+  if (f.blow) {
+    f.blow.t -= dt
+    if (f.blow.t <= 0) {
+      io.cursor.knock(f.blow.dx * HIT.knock, f.blow.dy * HIT.knock, 260)
+      f.blow = null
+    }
+  }
+  f.slabs = f.slabs.filter((s) => !(s.state === 2 && s.t >= (s.out ?? SLAB.out)))
 }
 
 function popups(f: Fight, io: StepIo, arena: Arena): boolean {
@@ -354,8 +411,10 @@ function darts(f: Fight, io: StepIo, arena: Arena, used: boolean): void {
     }
     if (was < 0 || (was === 0 && d.dx === 0 && d.dy === 0)) {
       const tip = { x: io.cursor.x, y: io.cursor.y }
-      const dx = f.x - tip.x
-      const dy = f.y - tip.y
+      const face = f.x + SHIELD.x
+      const lead = tip.x < face - SHIELD.clear
+      const dx = (lead ? face : f.x) - tip.x
+      const dy = f.y + (lead ? Math.max(-SHIELD.spread, Math.min(SHIELD.spread, (tip.y - f.y) * SHIELD.drift)) : 0) - tip.y
       const len = Math.hypot(dx, dy) || 1
       d.x = tip.x
       d.y = tip.y

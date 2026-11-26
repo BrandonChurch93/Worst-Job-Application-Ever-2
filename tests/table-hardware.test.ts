@@ -50,10 +50,10 @@ describe('the hardware of the table', () => {
     expect(meshesOf(of(hardware, 'apron').o).length + meshesOf(of(hardware, 'last').o).length).toBeLessThanOrEqual(4)
   })
 
-  test('a zone shares one material for all its metal, rubber and plastic, and one for its clear tube', () => {
+  test('a zone shares one material for all its metal, rubber and plastic, one for its clear tube and one for its steel balls', () => {
     for (const zone of ['corporate', 'office', 'street']) {
       const mats = new Set([...meshesOf(of(hardware, zone).o), ...meshesOf(of(lift, zone).o)].map((m) => (m.material as THREE.Material).uuid))
-      expect(mats.size, zone).toBe(2)
+      expect(mats.size, zone).toBe(3)
     }
   })
 
@@ -65,7 +65,7 @@ describe('the hardware of the table', () => {
         else if (m.name !== 'hardware.balls') coarse += trianglesOf(m)
       }
     }
-    expect(coarse).toBeLessThan(30000)
+    expect(coarse).toBeLessThan(31000)
   })
 
   test('nothing is pure black or pure white', () => {

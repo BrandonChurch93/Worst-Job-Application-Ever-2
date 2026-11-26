@@ -7,16 +7,16 @@ import { localBalls, whole, type Zone } from '../zone'
 import { Bag, box, ease, lathe, look, mat, rod, type V2 } from './g'
 import { drop, matsOf, part } from './mats'
 
-const PLATE = look(0xdde0e3, 0.2, 1, 0)
+const PLATE = look(0xe6e9ec, 0.11, 1, 0)
 const PRINT = look(0x20262a, 0.55, 0, 0.4)
 const PRINT_PALE = look(0xd9d4c4, 0.55, 0, 0.4)
-const SKIRT = look(0xd4d7da, 0.16, 1, 0)
-const PAPER = look(0xb0906e, 0.3, 1, 0)
-const KRAFT = look(0xc2a480, 0.26, 1, 0)
-const KRAFT_DARK = look(0xe2e4e6, 0.14, 1, 0)
+const SKIRT = look(0xe2e5e8, 0.1, 1, 0)
+const PAPER = look(0x8c4a25, 0.22, 1, 0)
+const KRAFT = look(0x9a562c, 0.26, 1, 0)
+const KRAFT_DARK = look(0xf0f2f4, 0.09, 1, 0)
 const LID = look(0xf4f2ec, 0.26, 0, 0.8)
 const LID_DARK = look(0x2a2826, 0.7, 0, 0)
-const CHROME = look(0xf4f6f8, 0.18, 1, 0)
+const CHROME = look(0xf4f6f8, 0.09, 1, 0)
 const SCREW = look(0xd2d5d8, 0.26, 1, 0)
 
 // The heights of a cup, in page pixels over the floor.
@@ -62,33 +62,37 @@ function cup(b: Bag, x: number, y: number): void {
   }
 }
 
-// The steel ring and its two rods, round the z axis with the ring's middle at z = 0.
+// The steel ring and its two rods, round the z axis with the ring's middle at z = 0. The ring is a round bar: it shows the lamps as lines that run right round it.
 function ringGeometry(): THREE.BufferGeometry {
   const b = new Bag()
-  const section: V2[] = [[CUP.ringIn, -2.4], [CUP.ringIn + 1.6, -3.6], [CUP.ringOut - 2, -3.6], [CUP.ringOut, -1.8], [CUP.ringOut, 1.8], [CUP.ringOut - 2, 3.6], [CUP.ringIn + 1.6, 3.6], [CUP.ringIn, 2.4], [CUP.ringIn, -2.4]]
+  const mid = (CUP.ringIn + CUP.ringOut) * 0.5
+  const half = (CUP.ringOut - CUP.ringIn) * 0.5
+  const section: V2[] = []
+  for (let i = 0; i <= 12; i++) section.push([mid - half * Math.cos((i / 12) * Math.PI * 2), -half * Math.sin((i / 12) * Math.PI * 2)])
   b.add(lathe(section, 56, 50), CHROME)
   for (const side of [-1, 1]) {
-    const x = side * (CUP.ringIn + CUP.ringOut) * 0.5
-    b.add(rod([x, 0, -CUP.ringRest - 4], [x, 0, 3.4], 1.9, 8), SCREW)
-    b.add(lathe([[4.2, 3.4], [4.2, 5.6], [3.2, 6.4], [0, 6.4]], 6, 30), SCREW, mat({ x }))
+    const x = side * mid
+    b.add(rod([x, 0, -CUP.ringRest - 4], [x, 0, 2.6], 1.9, 8), SCREW)
   }
   return b.done()
 }
 
-// The cap, read from straight above: a rolled rim, a groove inside it, and a raised deck that domes a little. Each point carries how much of the lamp shows through it there.
+// The cap is a takeaway lid, read from straight above: a rolled bead at the rim, a groove inside it, a step up to a raised ring, and a step down again to a deck that domes a little. Each point carries how much of the lamp shows through it there.
+const LID_DECK = 32
+const SIP = { at: 19.5, long: 8.2, wide: 4.3, turn: -0.37 }
 const lidPoints = (): [number, number, number][] => {
   const r = CUP.lidR
   const z = CUP.lidZ
   const out: [number, number, number][] = [
-    [r - 3, z - 1, 0.36], [r - 0.8, z - 0.4, 0.36], [r, z + 1.4, 0.38], [r, z + 4.6, 0.42], [r - 1.2, z + 6.4, 0.5],
-    [r - 4, z + 8.6, 0.6], [r - 8, z + 9.4, 0.62], [r - 11.5, z + 8.4, 0.5],
-    [r - 13.5, z + 5.2, 0.26], [r - 16, z + 4.4, 0.2], [r - 19, z + 5.2, 0.26],
-    [r - 22, z + 10, 0.44], [r - 25, z + 12.6, 0.54]
+    [r - 3.5, z - 1.5, 0.36], [r - 1, z - 1.2, 0.36], [r, z + 0.6, 0.38], [r, z + 2.6, 0.42], [r - 1.2, z + 4.2, 0.5],
+    [r - 3.4, z + 4.8, 0.55], [r - 5.4, z + 4, 0.48], [r - 6.6, z + 2.8, 0.26], [r - 8.6, z + 2.8, 0.26],
+    [r - 9.8, z + 5.4, 0.36], [r - 10.6, z + 10.4, 0.46], [r - 12.2, z + 12.6, 0.56], [r - 15, z + 13.5, 0.62],
+    [r - 24, z + 13.9, 0.62], [r - 26.6, z + 13.3, 0.56], [r - 28, z + 11.4, 0.4], [r - 29.4, z + 9.5, 0.3], [r - LID_DECK, z + 9.2, 0.5]
   ]
-  const deck = r - 25
+  const deck = r - LID_DECK
   for (let i = 1; i <= 5; i++) {
     const a = (i / 5) * (Math.PI / 2)
-    out.push([deck * Math.cos(a), z + 12.6 + 4.4 * Math.sin(a), 0.54 + 0.3 * Math.pow(1 - Math.cos(a), 1.3)])
+    out.push([deck * Math.cos(a), z + 9.2 + 2.4 * Math.sin(a), 0.5 + 0.36 * Math.pow(1 - Math.cos(a), 1.3)])
   }
   return out
 }
@@ -97,6 +101,13 @@ const lidProfile = (): V2[] => lidPoints().map((q) => [q[0], q[1]])
 function lidGeometry(): THREE.BufferGeometry {
   const b = new Bag()
   b.add(lathe(lidProfile(), 64, 28), LID)
+  // The drinking opening: a small oval let into the raised ring, dark inside a pressed lip. A pin hole for the air stands across the deck from it.
+  const r = CUP.lidR - SIP.at
+  const top = CUP.lidZ + 13.7
+  const oval = mat({ x: r * Math.cos(SIP.turn), y: r * Math.sin(SIP.turn), z: top, rz: SIP.turn + Math.PI / 2, s: [SIP.long / SIP.wide, 1, 1] })
+  b.add(lathe([[SIP.wide + 2.6, -0.3], [SIP.wide + 1.4, 2.2], [SIP.wide + 0.6, 2.7], [SIP.wide, 2.7], [SIP.wide - 0.5, 2.1]], 20, 60), LID, oval)
+  b.add(lathe([[SIP.wide - 0.5, 2.15], [0, 2.15]], 20), LID_DARK, oval)
+  b.add(lathe([[1.6, 0], [0, 0]], 8), LID_DARK, mat({ x: -(CUP.lidR - LID_DECK - 7) * Math.cos(SIP.turn), y: -(CUP.lidR - LID_DECK - 7) * Math.sin(SIP.turn), z: CUP.lidZ + 13.2 }))
   return b.done()
 }
 
@@ -108,7 +119,7 @@ function glowGeometry(): THREE.BufferGeometry {
   const c: number[] = []
   const n = 64
   const lid = lidPoints().map((q, i) => [q[0] + (i < 5 ? 0.5 : 0), q[1] + (i < 5 ? 0.6 : 0.9), q[2]] as [number, number, number])
-  const deckR = CUP.lidR - 25
+  const deckR = CUP.lidR - LID_DECK
   const band = (r0: number, z0: number, v0: number, r1: number, z1: number, v1: number, tint: [number, number, number] = [1, 1, 1]): void => {
     for (let i = 0; i < n; i++) {
       const a0 = (i / n) * Math.PI * 2
@@ -135,15 +146,18 @@ function glowGeometry(): THREE.BufferGeometry {
 const bumpersOf = (z: Zone) => table.bumpers.filter((b) => b.tier === z.tier)
 const SEAMS = [2.5, 3.6, 1.9]
 
-interface Built { rings: THREE.InstancedMesh; lids: THREE.InstancedMesh; glows: THREE.Mesh[]; at: [number, number][]; m: THREE.Matrix4 }
+interface Built { rings: THREE.InstancedMesh; lids: THREE.InstancedMesh; glows: THREE.Mesh[]; at: [number, number][]; m: THREE.Matrix4; r: THREE.Matrix4; s: THREE.Vector3 }
 
 // How far the ring is down, 0 to 1: down in three hundredths of a second, up again in a tenth.
 export const ringDown = (t: number): number => (t < 0.03 ? t / 0.03 : 1 - ease(0.03, 0.13, t))
 // How far the lid stands off its seat, in pixels.
-export const lidJump = (t: number): number => (t > 0.7 ? 0 : 4.5 * Math.exp(-7 * t) * Math.abs(Math.sin((Math.PI * t) / 0.14)))
+export const lidJump = (t: number): number => (t < 0 || t > 0.7 ? 0 : 9 * Math.exp(-9 * t) * Math.abs(Math.cos((Math.PI * t) / 0.13)))
+// The cap answers on the frame of the hit: it is thrown up toward the eye and rocks on its posts, and the ring under it is flung wide.
+export const lidPop = (t: number): number => (t < 0 || t > 0.7 ? 0 : Math.exp(-11 * t))
+export const lidRock = (t: number): number => (t < 0 || t > 0.7 ? 0 : 0.085 * Math.exp(-6 * t) * Math.cos((2 * Math.PI * t) / 0.1))
 
 export const bumpers = whole('bumpers', {
-  version: 'play-bumpers-22',
+  version: 'play-bumpers-24',
   build(z) {
     const g = new THREE.Group()
     g.name = `play.bumpers.${z.id}`
@@ -186,7 +200,7 @@ export const bumpers = whole('bumpers', {
       g.add(glow)
       return glow
     })
-    g.userData.built = { rings, lids, glows, at, m: mm } satisfies Built
+    g.userData.built = { rings, lids, glows, at, m: mm, r: new THREE.Matrix4(), s: new THREE.Vector3() } satisfies Built
     return g
   },
   pose(o, z, ctx: RealContext) {
@@ -196,13 +210,15 @@ export const bumpers = whole('bumpers', {
     bumpersOf(z).forEach((bumper, i) => {
       const t = ctx.byId.get(`bumper.${bumper.id}`)?.v?.[0] ?? 9
       const p = b.at[i]!
-      b.rings.setMatrixAt(i, b.m.makeRotationZ(0.5 + i * 0.4).setPosition(p[0], p[1], CUP.ringRest - (CUP.ringRest - CUP.ringDown) * ringDown(t)))
+      const pop = lidPop(t)
+      b.rings.setMatrixAt(i, b.m.makeRotationZ(0.5 + i * 0.4).scale(b.s.set(1 + 0.11 * pop, 1 + 0.11 * pop, 1)).setPosition(p[0], p[1], CUP.ringRest - (CUP.ringRest - CUP.ringDown) * ringDown(t)))
       const jump = lidJump(t)
-      b.lids.setMatrixAt(i, b.m.makeRotationZ(SEAMS[i % SEAMS.length]! + 2.4).setPosition(p[0], p[1], jump))
+      b.lids.setMatrixAt(i, b.m.makeRotationZ(SEAMS[i % SEAMS.length]! + 2.4).multiply(b.r.makeRotationX(lidRock(t))).scale(b.s.setScalar(1 + 0.06 * pop)).setPosition(p[0], p[1], jump))
       const level = (L.byName[`bumper.${i + 1}`] ?? 0) * 1.5
       const glow = b.glows[i]!
       ;(glow.material as THREE.MeshBasicMaterial).color.setRGB(col[0] * level, col[1] * level, col[2] * level)
       glow.position.z = jump
+      glow.scale.setScalar(1 + 0.06 * pop)
       glow.visible = level > 0.004
     })
     b.rings.instanceMatrix.needsUpdate = true

@@ -33,6 +33,7 @@ export interface Step4Layout {
 }
 
 const CONTENT_Y = 336
+const HEALTH_GAP = 58
 const SUBLINE_Y = 266
 
 export function makeLayout(): Step4Layout {
@@ -79,7 +80,7 @@ export function makeLayout(): Step4Layout {
     'health',
     LEFT,
     trackY,
-    24,
+    HEALTH_GAP,
     [
       (x, y) => text('health-label', 'copy:step4.bossHealthLabel', healthType, x, y + (trackH - labelBlock.cap) / 2, { part: 'type' }),
       (x, y) => node('health-track', 'progressRail', [x, y, RIGHT - x, trackH], { part: 'health-bar', shape: 'capsule', tone: 'pocket' })
