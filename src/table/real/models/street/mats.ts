@@ -159,23 +159,24 @@ export function glowOf(z: Zone, name: string, colour: [number, number, number]):
 export function lensOf(z: Zone, name: string, colour: [number, number, number]): THREE.MeshPhysicalMaterial {
   const m = studio(
     new THREE.MeshPhysicalMaterial({
-      color: new THREE.Color(colour[0] * 0.55 + 0.01, colour[1] * 0.3 + 0.005, colour[2] * 0.55 + 0.01),
-      roughness: 0.12,
+      color: new THREE.Color(colour[0] * 0.42 + 0.01, colour[1] * 0.14 + 0.004, colour[2] * 0.42 + 0.01),
+      roughness: 0.16,
       metalness: 0,
       transparent: true,
-      opacity: 0.9,
-      clearcoat: 1,
-      clearcoatRoughness: 0.05,
+      opacity: 0.93,
+      specularIntensity: 0.45,
+      clearcoat: 0.45,
+      clearcoatRoughness: 0.12,
       emissive: new THREE.Color(colour[0], colour[1], colour[2]),
       emissiveIntensity: 1
     })
   )
   m.userData.lit = true
   // The dome gathers its lamp: bright where the eye looks straight through it at the bulb, deep in colour toward its rim.
-  over(m, 'wja-studio-street-lens', (shader) => {
+  over(m, 'wja-studio-street-lens-2', (shader) => {
     shader.fragmentShader = shader.fragmentShader.replace(
       '#include <emissivemap_fragment>',
-      '#include <emissivemap_fragment>\n\t{\n\t\tfloat wsF = clamp( dot( normalize( vNormal ), normalize( vViewPosition ) ), 0.0, 1.0 );\n\t\tfloat wsL = max( totalEmissiveRadiance.r, max( totalEmissiveRadiance.g, totalEmissiveRadiance.b ) );\n\t\ttotalEmissiveRadiance = totalEmissiveRadiance * ( 0.16 + 2.6 * pow( wsF, 3.0 ) ) + vec3( 0.7 ) * wsL * pow( wsF, 9.0 );\n\t}'
+      '#include <emissivemap_fragment>\n\t{\n\t\tfloat wsF = clamp( dot( normalize( vNormal ), normalize( vViewPosition ) ), 0.0, 1.0 );\n\t\tfloat wsL = max( totalEmissiveRadiance.r, max( totalEmissiveRadiance.g, totalEmissiveRadiance.b ) );\n\t\ttotalEmissiveRadiance = totalEmissiveRadiance * ( 0.1 + 1.5 * pow( wsF, 3.0 ) ) + vec3( 0.3 ) * wsL * pow( wsF, 14.0 );\n\t}'
     )
   })
   return named(lit(m, z), `street.lens.${name}.${z.id}`)

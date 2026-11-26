@@ -77,7 +77,7 @@ export function garage(b: Buckets, z: Zone): void {
   const base = S.base
   const top = S.base + S.h
   const pitch = SPIRAL.pitch * BALL
-  const con = rgb(0xb7c2ce)
+  const con = rgb(0x9aa5b0)
   const pts = tube(z)
   const N = 96
   const step = (Math.PI * 2) / N
