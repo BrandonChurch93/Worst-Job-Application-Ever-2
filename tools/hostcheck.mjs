@@ -1,5 +1,6 @@
 // npm run hostcheck: builds the site from a clean copy and holds its size, its largest file, its first load and its build time against the limits in host.
 // The copy is what the host gets: the tracked files of HEAD without the folders of .vercelignore. --whole copies every tracked file. --keep leaves the copy.
+// It also opens the build from a sub path and lets a bot play it to step 1 (--no-subpath leaves that out), and says what the sound files of public/audio/ weigh in the numbers.
 import fs from 'node:fs'
 import path from 'node:path'
 import { spawnSync } from 'node:child_process'
@@ -114,7 +115,61 @@ try {
   await server.close()
 }
 result.firstLoad = load
-result.opensCareersLive = Boolean(load.state.ready && load.state.mode === null && load.state.standIns.includes('careers-page') && !load.problems.length && !load.failed.length && !load.missing.length)
+result.opensCareersLive = Boolean(load.state.ready && load.state.mode === null && load.state.canvas && load.state.standIns.length === 0 && !load.problems.length && !load.failed.length && !load.missing.length)
+
+// The sound: what of dist/ and of the first load is sound files, so the numbers can be read with and without them.
+const soundFiles = files.filter((f) => f.file.startsWith('audio/') && !f.file.endsWith('.json'))
+const soundBytes = soundFiles.reduce((n, f) => n + f.bytes, 0)
+const soundFirst = load.files.filter((f) => f.file.startsWith('audio/') && !f.file.endsWith('.json'))
+result.sound = { files: soundFiles.length, mb: megabytes(soundBytes), distWithoutMb: megabytes(shipped - soundBytes), inFirstLoad: soundFirst.map((f) => f.file) }
+
+// The sub path: the same build under a folder two levels down, opened in live mode and played by a bot until step 1 is on show.
+let sub = null
+if (!a['no-subpath']) {
+  const prefix = '/some/folder/'
+  const empty = path.join(work, 'empty')
+  fs.mkdirSync(empty, { recursive: true })
+  const under = await serve(empty, { mounts: { [prefix]: dist } })
+  try {
+    const { browser } = await launch()
+    const context = await browser.newContext({ viewport: { width: 640, height: 360 }, deviceScaleFactor: 1 })
+    const page = await context.newPage()
+    const problems = []
+    const failed = []
+    const outside = []
+    page.on('request', (r) => !new URL(r.url()).pathname.startsWith(prefix) && !r.url().startsWith('data:') && !r.url().startsWith('blob:') && outside.push(r.url()))
+    page.on('response', (r) => r.status() >= 400 && failed.push(`${r.status()} ${r.url()}`))
+    page.on('pageerror', (e) => problems.push(String(e && e.message ? e.message : e)))
+    const ts = clock()
+    await page.goto(`${under.url}${prefix}?bot=skipper&quality=low`, { timeout: 120000 })
+    const limit = Number(a['subpath-seconds'] ?? 300)
+    let show = ''
+    let flags = []
+    while (seconds(ts) < limit) {
+      const s = await page.evaluate(async () => {
+        if (!window.showcase) return null
+        await window.showcase.ready
+        const info = window.showcase.info()
+        return { show: info.loading ? info.loading.show : '', flags: info.standIns.map((x) => x.name) }
+      }).catch((e) => {
+        problems.push(String(e && e.message ? e.message : e).split('\n')[0])
+        return null
+      })
+      if (s) {
+        show = s.show
+        flags = s.flags
+      }
+      if (show === 'step1' || problems.length) break
+      await new Promise((r) => setTimeout(r, 2000))
+    }
+    fs.writeFileSync(path.join(work, 'sub-path.png'), await page.screenshot({ type: 'png' }))
+    await browser.close()
+    sub = { prefix, reached: show, seconds: seconds(ts), flags, problems, failed: [...new Set(failed)], outside: [...new Set(outside)], ok: show === 'step1' && !problems.length && !failed.length && !outside.length && !flags.length }
+  } finally {
+    await under.close()
+  }
+  result.subPath = sub
+}
 
 const v = verdict({ shippedMb: result.dist.mb, largestMb: megabytes(files[0].bytes), firstLoadMb: load.state.ready ? load.mb : null, buildMinutes }, cfg.host)
 result.verdict = v
@@ -127,8 +182,10 @@ if (load.missing.length) say(`asked for and not in dist/: ${load.missing.join(',
 if (load.elsewhere.length) say(`asked from another address than the site's own: ${load.elsewhere.join(', ')}`)
 if (load.problems.length) say(`errors on the page: ${load.problems.join(' | ')}`)
 say(`the built site ${result.opensCareersLive ? 'opens the careers page in live mode' : 'does not open the careers page in live mode cleanly'}${load.state.ready ? ` (flags reported: ${load.state.standIns.join(', ') || 'none'})` : ''}`)
+say(soundFiles.length ? `sound: ${soundFiles.length} sound files in dist/audio/, ${result.sound.mb} MB: dist/ is ${result.sound.distWithoutMb} MB without them. In the first load: ${soundFirst.length ? soundFirst.map((f) => f.file).join(', ') : 'none'}` : `sound: dist/audio/ holds no sound file${files.some((f) => f.file === 'audio/index.json') ? ', only its index' : ''}, so every number here is without the sound`)
+if (sub) say(`served from ${sub.prefix} the built site ${sub.ok ? `opened in live mode and a bot played it to step 1 in ${took(sub.seconds)}` : `did not play to step 1 cleanly: reached "${sub.reached || 'the careers page'}" in ${took(sub.seconds)}${sub.problems.length ? `; errors: ${sub.problems.join(' | ')}` : ''}${sub.failed.length ? `; failed: ${sub.failed.join(', ')}` : ''}${sub.outside.length ? `; asked outside the sub path: ${sub.outside.join(', ')}` : ''}${sub.flags.length ? `; flags: ${sub.flags.join(', ')}` : ''}`}`)
 for (const r of v.rows) say(`${r.name}: ${r.got === null ? 'not measured' : `${r.got} ${r.unit}`} against ${r.limit} ${r.unit}: ${r.inside ? 'inside' : 'OUTSIDE'}`)
 if (!a.keep) fs.rmSync(copy, { recursive: true, force: true })
 writeJson(out, result)
 say(`wrote ${rel(out)} and ${rel(path.join(work, 'first-picture.png'))} in ${took(seconds(t0))}${a.keep ? `; the copy is kept in ${rel(copy)}` : ''}`)
-process.exit(v.inside ? 0 : 2)
+process.exit(v.inside && result.opensCareersLive && (!sub || sub.ok) ? 0 : 2)
