@@ -1,0 +1,35 @@
+{
+  "folder": "site-levels",
+  "pushed": "2026-11-26T17:48:24.102Z",
+  "commit": "c4695813bed479d363c43f7b0a92d4ed50bc03b2",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Every page at rest at high, medium and low (left to right), live site, window 1920x1080, pixel ratio 1",
+      "time": "2026-11-26T17:48:22.458Z",
+      "by": "site-levels",
+      "from": "out/work/looks/files/20261126174822-levels-overview.png"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Native crops per level (high, medium, low): shadow edge, glass edge, smallest type, of careers, step 1, step 2",
+      "time": "2026-11-26T17:48:22.692Z",
+      "by": "site-levels",
+      "from": "out/work/looks/files/20261126174822-crops-a.png"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Native crops per level (high, medium, low): shadow edge, glass edge, smallest type, of step 3, step 4, step 5. At low the shadow edge under a card is ragged",
+      "time": "2026-11-26T17:48:22.943Z",
+      "by": "site-levels",
+      "from": "out/work/looks/files/20261126174822-crops-b.png"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Twelve live frames of step 1 under fire and of the slot's coins at high; below, careers on the half float path and on the 8 bit path (far darker, metals black, not repaired)",
+      "time": "2026-11-26T17:48:23.175Z",
+      "by": "site-levels",
+      "from": "out/work/looks/files/20261126174823-motion-bits.png"
+    }
+  ]
+}
