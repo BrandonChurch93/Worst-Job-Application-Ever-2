@@ -1,35 +1,35 @@
 {
   "folder": "step2-fix",
-  "pushed": "2026-11-26T08:54:55.130Z",
-  "commit": "1553b57fab018c023cdcd85880cef9a44a4272fa",
+  "pushed": "2026-11-26T09:28:16.902Z",
+  "commit": "176473c8c75c8333fb5c3279174a586654e7694d",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-step2-crank-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T08:51:52.018Z",
+      "caption": "Dial key, approved above and build 176473c8 below: one steel face to the cap, wider wheel, thin bezel, tip on the cap's shoulder",
+      "time": "2026-11-26T09:28:14.734Z",
       "by": "step2-fix",
-      "from": "out/work/stills/key-step2-crank-hd-draft.png"
+      "from": "out/work/looks/files/20261126092814-cmp-dial-8.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "step2-crank key at the same place in both, approved above, build below: rows 12 px lower and 149 px apart, segments 116 px tall, lit ones pale inside an orange rim, unlit ones clearer",
-      "time": "2026-11-26T08:54:53.641Z",
+      "caption": "Crank key, approved above and build 176473c8 below: thin tray rim, longer lighter arm, larger grip, tip on the grip",
+      "time": "2026-11-26T09:28:14.979Z",
       "by": "step2-fix",
-      "from": "out/work/looks/files/20261126085453-cmp-crank-6.png"
+      "from": "out/work/looks/files/20261126092814-cmp-crank-8.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "the dial's whip and fling, 4.86 to 5.95 s: the arrow held by its tip in the hole, tail thrown outward and drawn long, then flung end over end",
-      "time": "2026-11-26T08:54:53.883Z",
+      "caption": "Rest key, approved left and build 176473c8 right, on the shared look",
+      "time": "2026-11-26T09:28:15.239Z",
       "by": "step2-fix",
-      "from": "out/work/looks/files/20261126085453-dial-whip.png"
+      "from": "out/work/looks/files/20261126092815-cmp-rest-8.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "rest, dial and crank keys, approved left, build right, same crop in both: the rows and trays now stand where approved has them",
-      "time": "2026-11-26T08:54:54.123Z",
+      "caption": "Machines sheet, approved above and build below: the dial's middle follows the key (steel), not the sheet (cream)",
+      "time": "2026-11-26T09:28:15.481Z",
       "by": "step2-fix",
-      "from": "out/work/looks/files/20261126085454-cmp-rows.png"
+      "from": "out/work/looks/files/20261126092815-cmp-machines-4.png"
     }
   ]
 }
