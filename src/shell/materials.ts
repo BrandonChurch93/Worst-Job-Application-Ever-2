@@ -470,7 +470,7 @@ export function makeMaterials(seed: number): Materials {
   const aluminiumEdge = physical({ color: srgb(0xd0d4d7), roughness: 0.34, metalness: 0.8 })
   const cardSeal = physical({ color: srgb(0xa2a4a3), roughness: 0.7, metalness: 0 })
   const aluminiumSatin = physical({ color: srgb(0xb7bbbe), roughness: 0.3, metalness: 0.8 })
-  const orange = physical({ color: srgb(0xc84d00), roughness: 0.5, metalness: 0, clearcoat: 0.85, clearcoatRoughness: 0.17, specularIntensity: 0.8, specularColor: srgb(0xff9a52), envMapIntensity: 0.25 })
+  const orange = physical({ color: srgb(0xc74c00), roughness: 0.5, metalness: 0, clearcoat: 0.85, clearcoatRoughness: 0.17, specularIntensity: 0.8, specularColor: srgb(0xff9a52), envMapIntensity: 0.25 })
   const chrome = physical({ color: srgb(0xdfe1e3), roughness: 0.16, metalness: 1 })
   const railSatin = physical({ color: srgb(0xd2d6d9), roughness: 0.36, metalness: 0.85, normalMap: brushed, normalScale: new THREE.Vector2(0.2, 0.2), anisotropy: 0.6, anisotropyRotation: Math.PI / 2 })
   const gap = physical({ color: srgb(0x23211f), roughness: 0.85, metalness: 0, specularIntensity: 0.3 })
