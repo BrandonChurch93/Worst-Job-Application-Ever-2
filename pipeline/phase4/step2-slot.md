@@ -33,4 +33,7 @@ Read from `references/approved/step2-crank.png` and `machines.png` at full size,
 17. The bezel's and the hub's faces use a clone of the shared turned aluminium with weaker rings (normal scale 0.022) and the shared material's own shader hook. The arm has its own brushed bar material (clone of the shared aluminium, darker, brushing along the arm).
 18. The crank's arm and grip take their size from the shape (`w`, `h`) and from `CRANK` of the page, so they follow the dial maker's change (grip 84 by 40, arm 24 wide) with no edit here. The cabinet's full height is read from the page's own layout (`slot-cabinet` height minus floor) so the frame keeps its 58 px whether the page says 46 or 58.
 19. Lamp power 0.12 for each lit segment, reach 170 px, 14 px above the pill.
+20. The payout's mouth is 3 px deep (floor at 8.5 above the tray floor) and not 10. On the `machines` sheet the machine stands on the page with its floor 8 px under it, and a deeper mouth showed the page's ground through its floor.
+21. The frame is darker and less brushed than the shared aluminium (0x6a6e72, roughness 0.5, brushing 0.07) after the approved image's bead blasted frame. The drums fall to dark faster toward the top and the bottom (share of light = 0.05 + 0.95 cos^3.6).
+22. The lever's mount: a block in the frame's metal with two screw heads, and a chrome barrel with a collar at each end.
 

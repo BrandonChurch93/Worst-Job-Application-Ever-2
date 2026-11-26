@@ -53,7 +53,7 @@ function own(): NonNullable<typeof made> {
     const p = inPill(u, v)
     const t = Math.pow(smooth((p.depth - 2.5) / 8), 1.1) * (1 - 0.25 * smooth((Math.abs(p.y) - 26) / 18))
     const rim = smooth((p.depth - 0.4) / 0.8) * (1 - smooth((p.depth - 1.8) / 1.2))
-    return [1, 0.3 + 0.42 * t + 0.24 * rim, 0.02 + 0.3 * t * t + 0.08 * rim, 1]
+    return [1, 0.28 + 0.42 * t + 0.24 * rim, 0.02 + 0.42 * t * t + 0.08 * rim, 1]
   })
   const glass = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xf4f7f7), map: off, roughness: 0.06, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.03, specularIntensity: 1, envMapIntensity: 1.6, transparent: true }))
   const lit = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xd9772c), emissive: new THREE.Color(1, 1, 1), emissiveMap: glow, emissiveIntensity: 1.0, roughness: 0.4, metalness: 0, clearcoat: 0.35, clearcoatRoughness: 0.3, specularIntensity: 0.5 }))

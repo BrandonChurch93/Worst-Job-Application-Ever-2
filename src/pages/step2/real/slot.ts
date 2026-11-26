@@ -11,12 +11,13 @@ import { clamp01, fuse, lathe, loft, mesh, moved, noise, normalsFrom, rise, smoo
 
 export const SLOT_LOOK = {
   page: { cabinet: 46, knob: 28, payout: 14, mount: 30, arm: 12 },
-  top: 58, corner: 12, roundOver: 3, band: 11.2, chamfer: 4.2, chamferDrop: 3.4, gasket: 2.2, glass: 54.2, floor: 18,
-  drum: { r: 62, crest: 50, w: 88, lip: 2.2, flat: 0.4 },
+  top: 58, corner: 12, roundOver: 3, band: 10.4, chamfer: 5, chamferDrop: 4.2, gasket: 2.2, glass: 54.2, floor: 18,
+  drum: { r: 62, crest: 50, w: 88, lip: 2.2, flat: 0.4, fall: 3.6 },
   line: { z: 50.4, r: 0.8, pin: 1.9, glow: 0.06 },
   sheen: { top: 0.11, streak: 0.06, order: 800001 },
-  lever: { rod: 4.6, pivotX: 11, pivotZ: 28, barrel: 9, barrelW: 17, foot: -2, head: 22 },
+  lever: { rod: 4.6, pivotX: 11, pivotZ: 28, barrel: 9, barrelW: 19, collar: 4, foot: -2, head: 22 },
   coin: { r: 13, t: 4, teeth: 64, most: 16, flight: 14, tilt: 1.05 },
+  mouthFloor: 8.5,
   glassOrder: 800000
 }
 const L = SLOT_LOOK
@@ -87,16 +88,16 @@ function own(): Own {
   const drum = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xe9e6de), roughness: 0.46, metalness: 0, clearcoat: 0.35, clearcoatRoughness: 0.3, specularIntensity: 0.5, vertexColors: true }))
   const glass = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x10161b), roughness: 0.05, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.03, specularIntensity: 1, envMapIntensity: 2.2, transparent: true, opacity: 0.2, depthWrite: false }))
   const well = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x1d1c1b), roughness: 0.8, metalness: 0, specularIntensity: 0.3 }))
-  const gold = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xe6b955), roughness: 0.34, metalness: 1, normalMap: face, normalScale: new THREE.Vector2(1, 1) }))
+  const gold = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xecc163), roughness: 0.36, metalness: 1, envMapIntensity: 1.5, normalMap: face, normalScale: new THREE.Vector2(1, 1) }))
   const rod = studio(new THREE.MeshPhysicalMaterial({ color: m.chrome.color, roughness: 0.2, metalness: 1 }))
   const frame = studio(m.aluminium.clone())
-  frame.color = srgb(0x7f8387)
-  frame.roughness = 0.4
+  frame.color = srgb(0x6a6e72)
+  frame.roughness = 0.5
   const brushing = m.aluminium.normalMap!.clone()
   brushing.repeat.set(1 / 300, 1 / 150)
   brushing.needsUpdate = true
   frame.normalMap = brushing
-  frame.normalScale = new THREE.Vector2(0.13, 0.13)
+  frame.normalScale = new THREE.Vector2(0.07, 0.07)
   const mouth = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x0e0e0d), roughness: 0.9, metalness: 0, specularIntensity: 0.2 }))
   const sheen = new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })
   const line = studio(m.orange.clone())
@@ -153,7 +154,7 @@ function cabinet(): THREE.Group {
     const n = all.getAttribute('normal')
     const colour = new Float32Array(n.count * 3)
     for (let i = 0; i < n.count; i++) {
-      const k = 0.1 + 0.9 * Math.pow(clamp01(n.getZ(i)), 2.3)
+      const k = 0.05 + 0.95 * Math.pow(clamp01(n.getZ(i)), d.fall)
       colour[i * 3] = k
       colour[i * 3 + 1] = k
       colour[i * 3 + 2] = k
@@ -254,11 +255,13 @@ function mount(): THREE.Group {
   const barrel = shared('barrel', () => {
     const b = L.lever.barrel
     const half = L.lever.barrelW / 2
-    const g = lathe([[0, -half], [b - 1.2, -half, true], [b, -half + 1.2, true], [b, half - 1.2, true], [b - 1.2, half, true], [0, half]], 40)
+    const c = L.lever.collar
+    const g = lathe([[0, -half], [b + 0.2, -half, true], [b + 1.4, -half + 1.2, true], [b + 1.4, -half + c - 0.8, true], [b, -half + c, true], [b, half - c, true], [b + 1.4, half - c + 0.8, true], [b + 1.4, half - 1.2, true], [b + 0.2, half, true], [0, half]], 48)
     g.rotateY(Math.PI / 2)
     return moved(g, L.lever.pivotX, 0, L.lever.pivotZ)
   })
-  root.add(mesh(block, own().frame), mesh(barrel, m.steel))
+  const heads = shared('mountHeads', () => fuse([-19, -8].map((x) => moved(lathe([[2.7, 0], [2.7, 0.7, true], [1.9, 1.25, true], [1.15, 1.3], [1.15, 0.5, true], [0, 0.5]], 20), x, 0, H))))
+  root.add(mesh(block, own().frame), mesh(barrel, m.chrome), mesh(heads, m.steel))
   return root
 }
 
@@ -331,7 +334,7 @@ function payout(): THREE.Group {
     rings.push(ring(w, h, 6, 3.6, H, 0, 1), ring(w, h, 6, 3.6, H, -1, 0.35), ring(w, h, 6, 5, H - 2.6, -1, 0.35))
     return loft(rings)
   })
-  const mouth = shared('mouth', () => loft([ring(w, h, 6, 5, H - 2.6, -1, 0), ring(w, h, 6, 5, 4, -1, 0), ring(w, h, 6, 5, 4, 0, 1)], 1))
+  const mouth = shared('mouth', () => loft([ring(w, h, 6, 5, H - 2.6, -1, 0), ring(w, h, 6, 5, L.mouthFloor, -1, 0), ring(w, h, 6, 5, L.mouthFloor, 0, 1)], 1))
   body.add(mesh(bezel, m.aluminiumSatin), mesh(mouth, o.mouth, false, false))
   const coins = new THREE.InstancedMesh(shared('coin', coinGeometry), o.gold, L.coin.most)
   coins.castShadow = true
