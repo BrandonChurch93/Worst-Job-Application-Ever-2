@@ -10,7 +10,7 @@ import { LIFT, lift } from './lift'
 import { FIN, TONE, drop, mesh, metalOf, tubeOf as clearTube } from './mats'
 import { GATE, SLING, tier } from './tier'
 
-export const VERSION = 'hardware-5'
+export const VERSION = 'hardware-8'
 const STEEL_BALLS = 8
 const TURN = 0.34
 // The lift's rings stand upright and are seen on their flat faces from the player's end, so they keep more of their tone.
@@ -31,7 +31,7 @@ function buildHardware(z: Zone): THREE.Object3D {
     const all = t.S.mesh(m, 'hardware.screws')
     if (all) o.add(all)
     if (t.F.vertices > 0) o.add(mesh(t.F.turn(TURN, SOFT), m, 'hardware.fine', { fine: true }))
-    const band = mesh(t.B, m, 'hardware.bands', { cast: true })
+    const band = mesh(t.B, m, 'hardware.bands')
     band.userData.slings = t.slings
     o.add(band)
     const gate = mesh(t.gate.mesh, m, 'hardware.gate')
@@ -39,7 +39,7 @@ function buildHardware(z: Zone): THREE.Object3D {
     gate.rotation.x = GATE.shut
     o.add(gate)
     if (t.tip) {
-      const tip = mesh(t.tip, m, 'hardware.tip', { cast: true })
+      const tip = mesh(t.tip, m, 'hardware.tip')
       tip.position.set(...t.tipAt)
       tip.userData.home = t.tipAt[1]
       o.add(tip)
@@ -57,7 +57,7 @@ function buildHardware(z: Zone): THREE.Object3D {
     o.add(p)
   } else if (z.id === 'last') {
     const d = drain(z)
-    o.add(mesh(d.G.turn(TURN, SOFT), m, 'hardware.static', { cast: true }))
+    o.add(mesh(d.G.turn(TURN, SOFT), m, 'hardware.static'))
     const tube = mesh(d.C, tubeOf(z), 'hardware.tube')
     tube.renderOrder = 3
     o.add(tube)
@@ -122,14 +122,14 @@ function buildLift(z: Zone): THREE.Object3D {
   o.name = `lift.${z.id}`
   const m = metalOf(z)
   const l = lift(z)
-  o.add(mesh(l.G.turn(RING, SOFT), m, 'lift.static', { cast: true }))
+  o.add(mesh(l.G.turn(RING, SOFT), m, 'lift.static'))
   const tube = mesh(l.C, tubeOf(z), 'lift.tube')
   tube.renderOrder = 3
   o.add(tube)
   const sc = l.S.mesh(m, 'lift.screws')
   if (sc) o.add(sc)
   if (l.flap) {
-    const flap = mesh(l.flap, m, 'lift.flap', { cast: true })
+    const flap = mesh(l.flap, m, 'lift.flap')
     flap.position.set(...l.hinge)
     flap.rotation.y = LIFT.lean
     o.add(flap)

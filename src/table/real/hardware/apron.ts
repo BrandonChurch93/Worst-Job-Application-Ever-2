@@ -82,6 +82,9 @@ export function drain(z: Zone): Drain {
   }
   const f = frameAt(path, length - TUBE.collar / 2 - 0.5)
   if (f) collar(G, S, f)
+  // The end under the apron carries a slim ring.
+  const e = frameAt(path, TUBE.ferrule / 2 + 0.5)
+  if (e) collar(G, S, e, { screws: false })
 
   // Where the tube comes up through the page: a steel plate screwed to the page, a long dark slot in it that the tube rises out of.
   if (b > a && b < length) {

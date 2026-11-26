@@ -5,7 +5,7 @@ import { localBalls, whole, type Zone } from '../zone'
 import { Bag, ball, box, DEG, lathe, look, mat, prism, rod, sweep, wire, type V2, type V3 } from './g'
 import { drop, matsOf, part } from './mats'
 
-const WIRE = look(0xf4f6f8, 0.2, 1, 0)
+const WIRE = look(0xf4f6f8, 0.12, 1, 0)
 const PLATE = look(0xd3d6d9, 0.3, 1, 0)
 const SPRING = look(0xbfc4c9, 0.24, 1, 0)
 const WORN = look(0xf0f2f3, 0.1, 1, 0)
@@ -232,7 +232,7 @@ interface Built { flap: THREE.Mesh | null; down: number }
 export const flapLift = (open: number): number => (1 - Math.max(0, Math.min(1, open))) * FLAP.lift
 
 export const ramps = whole('ramps', {
-  version: 'play-ramps-17',
+  version: 'play-ramps-18',
   build(z) {
     const g = new THREE.Group()
     g.name = `play.ramps.${z.id}`

@@ -234,7 +234,7 @@ export function loader(z: Zone, _ctx: RealContext): THREE.Object3D {
       if (f) collar(A, screws, f)
     }
   }
-  if (A.vertices > 0) o.add(mesh(A, aluOf(z), `loader.metal.${z.id}`, { cast: true }))
+  if (A.vertices > 0) o.add(mesh(A, aluOf(z), `loader.metal.${z.id}`))
   if (G.vertices > 0) {
     const tube = mesh(G, clearOf(z, 'tube', TUBE.opacity), `loader.tube.${z.id}`)
     tube.renderOrder = 3
