@@ -86,7 +86,7 @@ const solidGap = (x, y, k) => {
   for (const f of table.flippers) {
     if (f.tier !== k) continue
     const dir = f.side === 'left' ? 1 : -1
-    d = Math.min(d, distSeg(x, y, f.pivot, [f.pivot[0] + dir * FLIP.length * L.COS25, f.pivot[1] + FLIP.length * L.SIN25]) - FLIP.radius)
+    d = Math.min(d, distSeg(x, y, f.pivot, [f.pivot[0] + dir * L.FLIP_REACH * L.COS25, f.pivot[1] + L.FLIP_REACH * L.SIN25]) - FLIP.radius)
   }
   return d
 }

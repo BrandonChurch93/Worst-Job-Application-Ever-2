@@ -1,8 +1,8 @@
 import * as THREE from 'three'
 import type { Zone } from '../zone'
 import { BALL, COLS, W } from '../../layout'
-import { CHANNELS, LIT } from './groups'
-import { BODY } from './pictures'
+import { CHANNELS, LAMP, LIT } from './groups'
+import { BODY, CORE } from './pictures'
 import { zoneLight, type ZoneLight } from './state'
 import { surroundOf } from './surround'
 
@@ -24,7 +24,13 @@ uniform float wjlEnv;
 const EDGE = (COLS.launchB - W / 2) * BALL
 
 // A lacquered floor is never a clean mirror: the fine scratches of play spread each lamp near it into a soft pool in the lamp's own colour, whatever the colour of the print under the lacquer.
-const HAZE = 0.05
+const HAZE = 0.065
+
+// Metal leaf laid in a floor is not a mirror: it is beaten thin over the grain of the print and throws a lamp's light back in every direction, in its own colour.
+const LEAF = 0.6
+
+// The lacquer is a dark mirror too: it shows each lamp over it as a small bright spot where the eye's line, turned by the floor, meets the lamp. From straight above the spot lies under its lamp, from a low eye it runs out toward the eye.
+const GLINT = { level: 5.0, body: 13, low: 30 }
 
 // For each group: its picture at the fragment's place, a term for the fragment's height and for the way its surface faces the lamps, the group's colour and level.
 const body = /* glsl */ `
@@ -39,6 +45,7 @@ const body = /* glsl */ `
 	wjlPhi[ 0 ] = wjlTa.r; wjlPhi[ 1 ] = wjlTa.g; wjlPhi[ 2 ] = wjlTa.b; wjlPhi[ 3 ] = wjlTa.a;
 	wjlPhi[ 4 ] = wjlTb.r; wjlPhi[ 5 ] = wjlTb.g; wjlPhi[ 6 ] = wjlTb.b; wjlPhi[ 7 ] = wjlTb.a;
 	wjlPhi[ 8 ] = wjlTc.r; wjlPhi[ 9 ] = wjlTc.g;
+	for ( int i = 0; i < ${CHANNELS - 1}; i ++ ) if ( wjlPhi[ i ] < 0.0 ) wjlPhi[ i ] = ${CORE.light.toFixed(1)};
 	float wjlInside = step( abs( wjlUv.x - 0.5 ), 0.5 ) * step( abs( wjlUv.y - 0.5 ), 0.5 );
 	float wjlSide = length( wjlTc.ba );
 	vec2 wjlToward = wjlSide > 0.0001 ? wjlTc.ba / wjlSide : vec2( 1.0, 0.0 );
@@ -66,6 +73,35 @@ const body = /* glsl */ `
 	wjlLight.visible = true;
 	vec3 wjlField = vec3( 0.0 );
 	vec3 wjlHaze = vec3( 0.0 );
+	vec3 wjlSeen = vec3( 0.0 );
+	float wjlFlat = 1.0 - wjlShine;
+	vec3 wjlBack = normalize( ( wjlViewInverse * vec4( geometryViewDir, 0.0 ) ).xyz );
+	vec3 wjlRay = vec3( - wjlBack.xy, max( wjlBack.z, 0.06 ) );
+	float wjlFace = 1.0 - clamp( wjlBack.z, 0.0, 1.0 );
+	float wjlMirror = wjlFlat * ( 0.04 + 0.96 * wjlFace * wjlFace * wjlFace * wjlFace * wjlFace ) * smoothstep( 0.02, 0.12, wjlBack.z );
+	if ( wjlMirror > 0.0 ) {
+		vec2 wjlOver = ( wjlP.xy + wjlRay.xy / wjlRay.z * ${LAMP.z.toFixed(1)} ) / wjlSize + 0.5;
+		float wjlIn = step( abs( wjlOver.x - 0.5 ), 0.5 ) * step( abs( wjlOver.y - 0.5 ), 0.5 );
+		vec4 wjlRa = texture2D( wjlA, wjlOver );
+		vec4 wjlRb = texture2D( wjlB, wjlOver );
+		vec4 wjlRc = texture2D( wjlC, wjlOver );
+		float wjlRho[ ${CHANNELS} ];
+		wjlRho[ 0 ] = wjlRa.r; wjlRho[ 1 ] = wjlRa.g; wjlRho[ 2 ] = wjlRa.b; wjlRho[ 3 ] = wjlRa.a;
+		wjlRho[ 4 ] = wjlRb.r; wjlRho[ 5 ] = wjlRb.g; wjlRho[ 6 ] = wjlRb.b; wjlRho[ 7 ] = wjlRb.a;
+		wjlRho[ 8 ] = wjlRc.r; wjlRho[ 9 ] = 0.0;
+		for ( int i = 0; i < ${CHANNELS}; i ++ ) {
+			vec4 at = wjlAt[ i ];
+			if ( at.w > 2.5 ) continue;
+			if ( at.w > 1.5 ) {
+				wjlSeen += wjlCol[ i ] * smoothstep( ${(CORE.level * 0.12).toFixed(1)}, ${(CORE.level * 0.5).toFixed(1)}, - wjlRho[ i ] ) * wjlIn;
+			} else if ( at.w > 0.5 && at.z > ${GLINT.low.toFixed(1)} ) {
+				vec3 wjlTo = at.xyz - wjlP;
+				float wjlAlong = dot( wjlTo, wjlRay / length( wjlRay ) );
+				float wjlOff2 = dot( wjlTo, wjlTo ) - wjlAlong * wjlAlong;
+				wjlSeen += wjlCol[ i ] * step( 0.0, wjlAlong ) * exp( - wjlOff2 / ${(GLINT.body * GLINT.body).toFixed(1)} ) * step( 0.0001, wjlPhi[ i ] + max( wjlRho[ i ], 0.0 ) );
+			}
+		}
+	}
 	for ( int i = 0; i < ${CHANNELS}; i ++ ) {
 		vec3 c = wjlCol[ i ];
 		if ( c.r + c.g + c.b <= 0.0 ) continue;
@@ -89,7 +125,7 @@ const body = /* glsl */ `
 		}
 		vec3 low = vec3( from.xy - wjlP.xy, at.z );
 		vec3 to = from - wjlP;
-		amount *= min( ( dot( low, low ) + ${(BODY * BODY).toFixed(1)} ) / ( dot( to, to ) + ${(BODY * BODY).toFixed(1)} ), at.w > 1.5 ? 1.4 : 8.0 );
+		amount *= min( ( dot( low, low ) + ${(BODY * BODY).toFixed(1)} ) / ( dot( to, to ) + ${(BODY * BODY).toFixed(1)} ), at.w > 1.5 ? 1.4 : 3.0 );
 		wjlLight.direction = normalize( ( viewMatrix * vec4( to, 0.0 ) ).xyz );
 		wjlLight.color = c * amount * PI;
 		vec3 wjlGloss = reflectedLight.directSpecular;
@@ -108,9 +144,10 @@ const body = /* glsl */ `
 	reflectedLight.directDiffuse += wjlField * material.diffuseColor;
 	#ifdef USE_CLEARCOAT
 	clearcoatSpecularDirect += wjlHaze * ${HAZE.toFixed(3)} * ( 1.0 - wjlShine ) / ( 1.0 + 0.25 * ( wjlHaze.r + wjlHaze.g + wjlHaze.b ) );
+	clearcoatSpecularDirect += wjlSeen * ${GLINT.level.toFixed(2)} * wjlMirror * wjlClear;
 	#endif
 	#ifdef STANDARD
-	reflectedLight.directSpecular += wjlField * material.specularColor * 0.12;
+	reflectedLight.directSpecular += wjlField * material.specularColor * ( 0.12 + ${LEAF.toFixed(2)} * wjlFlat );
 	#endif
 }
 `
