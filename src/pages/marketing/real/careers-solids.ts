@@ -252,7 +252,7 @@ export function sheen(g: THREE.BufferGeometry, axis: number, depth: number, rim 
     const turn = Math.atan2(y, x) - axis
     const out = Math.max(0, Math.min(1, (r - from) / (0.95 - from)))
     const c = Math.cos(2 * turn)
-    const lobe = c > 0 ? c ** narrow : -((-c) ** (1 / narrow))
+    const lobe = c > 0 ? c ** narrow : c * (2 + c)
     const v = Math.max(0.05, 1 + (rim - 1 + depth * lobe + lean * Math.cos(turn)) * r - cap * Math.max(0, -c) * out * out * (3 - 2 * out))
     col.set([v, v, v], i * 3)
   }
