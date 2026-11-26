@@ -1,35 +1,35 @@
 {
   "folder": "step2-keeper",
-  "pushed": "2026-11-26T04:05:08.638Z",
-  "commit": "ac331c2db3894d6ce14b6d9cdf76b8f18d98e50d",
+  "pushed": "2026-11-26T04:32:59.557Z",
+  "commit": "48bdb84593dbe018c642d994fa49ecd1fbc2248d",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-step2-dial-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-26T03:59:04.487Z",
+      "caption": "step2-dial at review beside the approved image: stepped housing, bright hub with a sheen, countersunk holes, tray walls in their own tone",
+      "time": "2026-11-26T04:32:57.619Z",
       "by": "step2-keeper",
-      "from": "out/work/stills/key-step2-dial-hd-review.png"
+      "from": "out/work/looks/files/20261126043257-compare-step2-dial.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Still key-step2-dial-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-26T04:00:24.476Z",
+      "caption": "step2-crank at review beside the approved image: the cursor is calm at the grip, the meter picture is sharp (M2 0.0041)",
+      "time": "2026-11-26T04:32:57.853Z",
       "by": "step2-keeper",
-      "from": "out/work/stills/key-step2-dial-hd-review.png"
+      "from": "out/work/looks/files/20261126043257-compare-step2-crank.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Still key-step2-dial-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-26T04:01:29.364Z",
+      "caption": "sheet machines at review, approved left, build right: the pulled lever hangs from a bracket at the cabinet side",
+      "time": "2026-11-26T04:32:58.080Z",
       "by": "step2-keeper",
-      "from": "out/work/stills/key-step2-dial-hd-review.png"
+      "from": "out/work/looks/files/20261126043258-compare-machines.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "step2-dial at review, approved left, build right: stepped housing, lifted hub with sheen, tray walls in their own tone",
-      "time": "2026-11-26T04:05:07.500Z",
+      "caption": "step2-rest at review beside the approved image: rows, helper lines, wells",
+      "time": "2026-11-26T04:32:58.308Z",
       "by": "step2-keeper",
-      "from": "out/work/looks/files/20261126040507-dial-full.png"
+      "from": "out/work/looks/files/20261126043258-compare-step2-rest.jpg"
     }
   ]
 }
