@@ -82,7 +82,7 @@ export interface Mats {
 }
 
 const GLOW = { windows: 1.15 }
-const PANE = { edge: 0.45, body: 0.32 }
+const PANE = { edge: 0.45, body: 0.26 }
 const made = new Map<string, Mats>()
 
 // The three materials of the tier's models, made once for a zone and shared by all seven.
@@ -127,7 +127,7 @@ export function matsOf(z: Zone): Mats {
     ).replace('PANE_EDGE', PANE.edge.toFixed(2)).replace('PANE_BODY', PANE.body.toFixed(2))
   }
   const key3 = pane.customProgramCacheKey
-  pane.customProgramCacheKey = () => `${key3.call(pane)}|corporate-pane2`
+  pane.customProgramCacheKey = () => `${key3.call(pane)}|corporate-pane4`
   lit(pane, z)
   pane.name = `corporate.pane.${z.id}`
   const group = groupsOf(z).find((g) => g.name === 'windows')

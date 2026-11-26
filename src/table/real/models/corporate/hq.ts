@@ -15,7 +15,7 @@ const WHITE: RGB = [1, 0.9, 0.72]
 const COOL: RGB = [WHITE[0] / colours.CORPORATE_WINDOW[0], WHITE[1] / colours.CORPORATE_WINDOW[1], WHITE[2] / colours.CORPORATE_WINDOW[2]]
 const STEEL = hex(0x9ca8bd)
 const STEEL_DARK = hex(0x727d8f)
-const PORTAL = hex(0x7a6238)
+const PORTAL = hex(0x8a6a2c)
 const ROOF = hex(0x6a707a)
 const BRIGHT = hex(0xbac4d4)
 const GLASS: RGB = [0.03, 0.13, 0.15]
@@ -317,8 +317,8 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
       }
       if (i > 0) {
         fin(G, FINISH.matte, () => {
-          level(G, shaft, h, zz - ROOM.slab, -1, [0.05, 0.055, 0.06])
-          panels(G, shaft, h, zz - ROOM.slab - 0.5, (x, y) => 0.6 * zone(x, y))
+          level(G, shaft, h, zz - ROOM.slab, -1, warm(0.04))
+          panels(G, shaft, h, zz - ROOM.slab - 0.5, (x, y) => 0.95 * zone(x, y))
         }, 1)
       }
     }
@@ -328,7 +328,7 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
   const sides: [V2, V2, number][] = [[[shaft.x0, shaft.y0], [shaft.x1, shaft.y0], cols], [[shaft.x1, shaft.y0], [shaft.x1, shaft.y1], rows], [[shaft.x1, shaft.y1], [shaft.x0, shaft.y1], cols], [[shaft.x0, shaft.y1], [shaft.x0, shaft.y0], rows]]
   here(() => {
     sides.forEach(([a, b, n], k) => {
-      glazing(C, a, b, pz1, roof, k === 2 ? 1 : n, k === 2 ? 1 : FLOORS * 2, rnd, GLASS, k === 2 ? 0.8 : 0.62)
+      glazing(C, a, b, pz1, roof, k === 2 ? 1 : n, k === 2 ? 1 : FLOORS * 2, rnd, GLASS, k === 2 ? 0.8 : 0.56)
       framing(S, W, a, b, pz1, roof, n, FLOORS, { transom: 0.5, fin: k === 0 ? 3.6 : 3 })
     })
     fin(S, FINISH.polished, () => {
