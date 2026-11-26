@@ -22,6 +22,19 @@ function floor(): THREE.MeshPhysicalMaterial {
   return floorMaterial
 }
 
+let rimMaterial: THREE.MeshPhysicalMaterial | null = null
+
+function rimStuff(): THREE.MeshPhysicalMaterial {
+  if (!rimMaterial) {
+    rimMaterial = studio(materials().aluminiumSatin.clone())
+    rimMaterial.metalness = 0.25
+    rimMaterial.roughness = 0.5
+    rimMaterial.envMapIntensity = 0.35
+    rimMaterial.color.setRGB(0.62, 0.64, 0.65)
+  }
+  return rimMaterial
+}
+
 function mesh(g: THREE.BufferGeometry, m: THREE.Material, cast: boolean): THREE.Mesh {
   const out = new THREE.Mesh(g, m)
   out.castShadow = cast
@@ -44,7 +57,7 @@ function track(s: Shape): THREE.Object3D {
     [rim - 0.2, 0.5], [rim - 0.2, -0.4, true]
   ]
   const root = new THREE.Group()
-  root.add(mesh(sweep(outlineOf(s, 0, 16), profile(points), false), materials().aluminiumSatin, true))
+  root.add(mesh(sweep(outlineOf(s, 0, 16), profile(points), false), rimStuff(), true))
   const reach = s.h / 2 - (rim - 0.5)
   const gutter: ProfilePoint[] = [0, 0.1, 0.2, 0.32, 0.46, 0.62, 0.8, 0.98].map((t, i): ProfilePoint => [reach * t, 0.05 + HEALTH.gutter * (1 - t) * (1 - t), i === 0])
   root.add(mesh(sweep(outlineOf(s, rim - 0.5, 16), profile(gutter)), floor(), false))
