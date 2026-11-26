@@ -90,7 +90,7 @@ function cell(look, kind, i) {
   const ink = mix(c, '#0a0c10', 0.78)
   const lit = mix(c, '#ffffff', 0.5)
   const rim = `<circle cx="256" cy="256" r="240" fill="none" stroke="${mix(c, '#06080c', 0.5)}" stroke-width="3" opacity="0.45"/>`
-  return `<radialGradient id="g${i}" cx="256" cy="256" r="262" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${mix(c, '#ffffff', 0.9)}"/><stop offset="0.4" stop-color="${mix(c, '#ffffff', 0.66)}"/><stop offset="0.74" stop-color="${mix(c, '#ffffff', 0.36)}"/><stop offset="0.93" stop-color="${mix(c, '#06080c', 0.3)}"/><stop offset="1" stop-color="${mix(c, '#06080c', 0.7)}"/></radialGradient><rect width="512" height="512" fill="url(#g${i})"/>${rings}${rim}${draw(pen(ink, 0.94), 14, `fill="${ink}" opacity="0.94"`, pen(lit, 0.9), pen(lit))}`
+  return `<radialGradient id="g${i}" cx="256" cy="256" r="262" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${mix(c, '#ffffff', 0.6)}"/><stop offset="0.4" stop-color="${mix(c, '#ffffff', 0.42)}"/><stop offset="0.74" stop-color="${mix(c, '#ffffff', 0.16)}"/><stop offset="0.93" stop-color="${mix(c, '#06080c', 0.3)}"/><stop offset="1" stop-color="${mix(c, '#06080c', 0.7)}"/></radialGradient><rect width="512" height="512" fill="url(#g${i})"/>${rings}${rim}${draw(pen(ink, 0.94), 14, `fill="${ink}" opacity="0.94"`, pen(lit, 0.9), pen(lit))}`
 }
 
 export async function insertAtlases(inserts, dir, size) {
