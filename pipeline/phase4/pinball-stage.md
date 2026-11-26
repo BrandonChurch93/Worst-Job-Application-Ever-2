@@ -18,7 +18,7 @@ Agent `pinball_stager`, branch `agent/pinball-stage`. Times UTC.
 - 00:50 `table-fired`: front right of the firehouse, 28 degrees up, 6.2 balls away, lens 35.
 - 00:50 `table-save`: 60 degrees down over the apron, lens 40 (was 62). It cannot go lower: the street floor is 3 balls under the apron edge, so a flatter camera loses the flipper tips behind that edge.
 - 00:55 `rail`: 3.4 back, 2.85 up, looking 0.85 ahead at ball height, lens 40: the ball at the centre low, the wire running up the middle.
-- 00:55 Insert labels dropped. Kit `02-SUBJECT.md`: an insert carries a picture and no words, and the displays show that mode's `insert` and then its `display` line. So `insert-label.<id>` and `insert-plate.<id>` are gone from the page (the owner of the lights asked for the same), and each tier display shows the mode's `insert` name for 1.2 s (`NAME`), then its `display` line. Text `display.<tier>.<mode>.insert`, state `name<mode>`, switched in `draw`.
+- 00:55 Insert labels dropped. Kit `02-SUBJECT.md`: an insert carries a picture and no words, and the displays show that mode's `insert` and then its `display` line. So `insert-label.<id>` and `insert-plate.<id>` are gone from the page (the owner of the lights asked for the same), and each tier display shows the mode's `insert` name for 0.6 s (`NAME`), then its `display` line. Text `display.<tier>.<mode>.insert`, state `name<mode>`, switched in `draw`.
 - The three tier cameras stay the `home` camera moved down the page. Not fitted.
 
 ## Needs sent
