@@ -1,35 +1,35 @@
 {
   "folder": "corporate-models",
-  "pushed": "2026-11-26T05:05:47.323Z",
-  "commit": "3753270aefbd22d71b45555e3957644097ad08dc",
+  "pushed": "2026-11-26T05:12:13.607Z",
+  "commit": "12e8db56cb88a517c8749a9f06f4b0148ad52d37",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Corporate tier from above beside the approved image, review still at 05:00 UTC",
-      "time": "2026-11-26T05:05:45.516Z",
-      "by": "corporate-models",
-      "from": "out/work/looks/files/20261126050545-final-compare-tier-corporate.jpg"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "The lobby doors beside the approved image, review still at 05:03 UTC",
-      "time": "2026-11-26T05:05:45.748Z",
-      "by": "corporate-models",
-      "from": "out/work/looks/files/20261126050545-final-compare-lobby-doors.jpg"
-    },
-    {
-      "file": "look-3.jpg",
-      "caption": "Boardroom and the three notes under the new lamp, native size crop twice enlarged",
-      "time": "2026-11-26T05:05:45.987Z",
-      "by": "corporate-models",
-      "from": "out/work/looks/files/20261126050545-final-boardroom-notes.jpg"
-    },
-    {
-      "file": "look-4.jpg",
       "caption": "The whole table, review still at 05:01 UTC",
       "time": "2026-11-26T05:05:46.217Z",
       "by": "corporate-models",
       "from": "out/work/looks/files/20261126050546-final-table-wide.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Still key-lobby-doors-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T05:07:08.613Z",
+      "by": "corporate-models",
+      "from": "out/work/stills/key-lobby-doors-hd-draft.png"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Key lobby-doors: approved on the left, this build on the right, review tier, with crops of shape:hq.plate, shape:hq.doorway, cursor, shape:hold.corporate.revolving.post, shape:post.corporate.globe.right, shape:model.corporate.hq, shape:flat.corporate.carpet",
+      "time": "2026-11-26T05:11:53.216Z",
+      "by": "corporate-models",
+      "from": "out/work/compare/compare-lobby-doors.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "The lobby doors beside the approved image after the portal brass change, review still at 05:11 UTC",
+      "time": "2026-11-26T05:12:12.489Z",
+      "by": "corporate-models",
+      "from": "out/work/looks/files/20261126051212-final-compare-lobby-doors-0512.jpg"
     }
   ]
 }
