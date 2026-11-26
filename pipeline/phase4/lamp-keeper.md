@@ -69,7 +69,45 @@ Tuning looks, 40 a part a critic round. The ten stills of point 1 are measuremen
 
 | Round | table-lights | tier-art |
 | --- | --- | --- |
-| 1 | 0 | 0 |
+| 1 (to 04:30 UTC) | 20 (r1 3, r2 8, r3 5, r4 4) | 0 of its own: the same 20 stills show the floors and the inserts |
 
 ## Decisions
+
+## Diagnosis (04:00 to 04:25 UTC, 26 stills with a local switch on each term, counted as measurement)
+
+One session, one key, each term of the light switched off in turn, region means read with `sharp`. The switch was a local patch and is not in the tree.
+
+- `youre-fired`, the pale matt floor and the flat red wash (point 4). MEASURED: region x 300 y 880 w 400 h 200 is (123, 111, 87) with the broad spill term and (77, 77, 64) without it, approved (29, 42, 49). Region x 700 y 950 w 500 h 130 goes 122 to 83. The wash was the spill of the firehouse door: one broad soft red sheet in the coat, long as the whole street. It was not the red true light (without that light the wash is redder) and not the model.
+- `youre-fired`, the bright wall behind: the frame's own room reflection, scaled by my `wjlEnv`. MEASURED wall (96, 81, 77); with `wjlEnv` at 0 (60, 29, 27). The frame's owner asked me to leave `wjlEnv` alone and is bringing the wall down in `steel()` on its side (MEASURED by it: (96, 81, 77) to (59, 49, 47)).
+- With every term of mine off the whole frame of `youre-fired` is (49, 42, 35): darker than approved, with the right mood. So the excess was all in what the lights add to flat floors and walls, not in the lamps.
+- `last-save`, the milky veil: mostly the surround reflected in the coat. Whole frame (102, 95, 84), without the room (89, 82, 69).
+- `lobby-doors`, the pale floor at left (x 0 y 820 w 700 h 260): (111, 105, 98), without the room (79, 78, 78), approved (48, 50, 48). The carpet (165, 145, 133) against approved (88, 36, 37) is the model's own colour under my lamps; without the mirrored lamp term it is (121, 101, 89).
+
+## What changed (commits 9933daba, 96b38e0f)
+
+- Floors (points 2, 3): the print of a flat floor gives back less of a far lamp's light (`DEEP` in `lights/colours.ts`, by tier: seen along the floor 0.2 on Corporate and the street, 0.7 in the Office), and all of it inside a pool. The mirrored lamp is one sharp image and a tail of five taps toward the eye (`STREAK`). The floor's share of the room went 0.3 to 0.16 (0.2 Office).
+- Point 4: the firehouse spill is a narrow red streak (half 0.42 ball, sharp start, falling tail); window spills are barred by the pitch of their windows (`pitch`, `phase`), so a row of windows mirrors as a row.
+- Point 5: rail lamps are small flat windows in rectangular frames, three sizes by place (top wall, launch lane, lift side), lens colour deepened by tier (`TINT`), `LENS.window` 4.2 to 1.3 so the colour survives the bloom. Lane domes keep their pools.
+- Point 6: hidden lamps over the dim models through `highOf` (Office inbox and cubicles, Corporate boardroom; they read the model boxes, so they follow the layout). Office wide lamps 2.4 times, Office print lifted 1.7 (`COAT.print`), so the Office is a lit room and the night tiers stay night.
+- Inserts: `INSERT_GLOW.on` 1.9 to 1.05, rest 0.6 to 0.42; the glow atlas has a less white middle (rebaked with `--only inserts`).
+- Point 8: garage lamps are computed from the garage model by the street owner's rule (upper `(base + h) * 96 - 22`, lower `(base + 0.4 h) * 96`, half a ball outside on the diagonals; with the two turn spiral the lower left one is left out).
+
+## Point 6: the tiers at their cameras (r4, r2 for the street), MEASURED
+
+`sharp` region means. The build's tier camera shows the frame's rails around the pit, approved fills the frame with the pit, so the pit of the build (x 250 y 40 w 1420 h 990) is set against the whole approved frame.
+
+| Key | Approved whole | Build pit | Ratio | Build whole |
+| --- | --- | --- | --- | --- |
+| tier-corporate | (61, 59, 57) | (66, 63, 59) | 1.06 | (78, 76, 73) |
+| tier-office | (87, 87, 77) | (89, 92, 75) | 1.02 | (92, 96, 84) |
+| tier-street | (65, 67, 64) | (70, 67, 60) | 1.01 | (82, 80, 75) |
+
+The rest of the whole frame is the frame's pale outer rails, not mine.
+
+## Decisions
+
+- The Office is treated as a lit room and the two others as night: one rule for all three made the Office floor near black.
+- I did not lower `wjlEnv`: the frame reads it and its owner asked me to leave it.
+- The hidden lamps are not fittings: they have no lens and spend none of `ctx.light`. They exist because the approved Office and the boardroom are lit from above with no visible source.
+- No floor was rebaked: the lift of the Office print is a material colour, 197 s saved a round.
 
