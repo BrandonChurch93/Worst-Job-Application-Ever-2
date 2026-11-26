@@ -45,6 +45,20 @@ vec3 pane( vec3 Np, float rho, vec3 V, float side, float at, float deep, float w
 	return uSoft * m * ( 0.8 + 0.2 * sin( along * 6.0 + rho * 11.0 ) );
 }
 
+vec3 plain( vec3 c ) {
+	return mix( vec3( dot( c, vec3( 0.2126, 0.7152, 0.0722 ) ) ) * vec3( 1.05, 1.0, 0.94 ), c, 0.25 );
+}
+
+// The one window of the room on the outer wall: a patch with a flat top and a short feather, bent with the wall on the side of the light.
+float window( vec3 Np, float rho, vec3 V, float at, float deep, float wide ) {
+	vec3 S = normalize( uSoftDir );
+	vec3 U = normalize( S - V * dot( S, V ) + vec3( 1e-4, 2e-4, 0.0 ) );
+	float along = atan( dot( cross( U, Np ), V ), dot( U, Np ) );
+	float a = abs( rho - at - 0.03 * along * along ) / deep;
+	float b = abs( along + 0.12 ) / wide;
+	return ( 1.0 - smoothstep( 0.2, 1.3, a ) ) * ( 1.0 - smoothstep( 0.45, 1.2, b ) ) * ( 0.6 + 0.4 * smoothstep( - 1.0, 1.0, ( rho - at ) / deep ) );
+}
+
 vec3 surround( vec3 d ) {
 	float haze = exp( - abs( d.z ) * 5.5 );
 	return uHaze * ( 0.3 + haze ) + uFloor * uGround * 0.5 * smoothstep( 0.05, - 0.7, d.z );
@@ -315,6 +329,24 @@ vec3 flecks( vec3 Np, vec3 C ) {
 	return g / max( 1.0, dot( g, vec3( 0.2126, 0.7152, 0.0722 ) ) / 0.7 );
 }
 
+// Each lamp of the tier as one soft blob in the glass, pressed against the rim on the lamp's side as the eye sees it and stretched along it.
+vec3 blobs( vec3 Np, float rho, vec3 V, vec3 C, float at, float deep, float wide ) {
+	vec3 g = vec3( 0.0 );
+	for ( int i = 0; i < LAMPS; i ++ ) {
+		vec3 to = uLampPos[ i ] - C;
+		vec3 across = to - V * dot( to, V );
+		float far = length( across );
+		vec3 lit = uLampLit[ i ] * ( 1.0 - uLampCol[ i ].w );
+		float level = dot( lit, vec3( 0.2126, 0.7152, 0.0722 ) );
+		if ( level < 0.02 || far < 1.0 ) continue;
+		float ang = acos( clamp( dot( Np, across / far ), - 1.0, 1.0 ) );
+		float a = ( rho - at ) / deep;
+		float b = ang / wide;
+		g += lit / max( level, 0.35 ) * smoothstep( 0.03, 0.3, level ) * exp( - a * a - b * b );
+	}
+	return g;
+}
+
 float seamLine( out float glint ) {
 	float d = abs( vO.y );
 	float w = fwidth( vO.y );
@@ -359,7 +391,7 @@ void paint() {
 	float lightward = dot( Np, normalize( S - V * dot( S, V ) + vec3( 1e-4, 2e-4, 0.0 ) ) );
 	float uneven = 0.55 + 0.3 * sin( th * 2.0 + 0.6 ) + 0.15 * sin( th * 3.0 - 1.1 );
 	vec3 sky = uSoft * 3.0 / max( 1.0, dot( uSoft, vec3( 0.2126, 0.7152, 0.0722 ) ) * 3.0 / 0.9 );
-	sky = max( sky, vec3( 0.05, 0.05, 0.052 ) );
+	sky = plain( max( sky, vec3( 0.05, 0.05, 0.052 ) ) );
 	vec3 pic = mix( vec3( dot( seen.rgb, vec3( 0.2126, 0.7152, 0.0722 ) ) ) * vec3( 1.06, 1.0, 0.92 ), seen.rgb, 0.85 );
 	float deep = smoothstep( RIN, 0.99, rho );
 	float streak = 0.45 + 0.9 * pow( 0.5 + 0.5 * sin( th * 3.0 + rho * 13.0 + 0.8 * sin( th * 2.0 ) ), 3.0 );
@@ -367,7 +399,7 @@ void paint() {
 	vec3 col = ( pic * mix( 0.95, 0.4, deep ) * mix( 0.7, 1.2, uneven ) * streak + lampsIn( dir, from, 0.9 ) * 0.25 + gather * 0.35 + uHaze ) * alpha;
 
 	float wall = band * ( 1.0 - smoothstep( 0.95, 0.995, rho ) );
-	col += wall * ( sky * uneven * ( 0.015 + 0.16 * pow( max( lightward, 0.0 ), 6.0 ) + 0.1 * pow( max( - lightward, 0.0 ), 8.0 ) ) + min( uFloor, vec3( 0.8 ) ) * 0.03 );
+	col += wall * ( sky * ( 0.045 + uneven * ( 0.03 + 0.16 * pow( max( lightward, 0.0 ), 6.0 ) ) + 0.1 * uneven * pow( max( - lightward, 0.0 ), 8.0 ) ) + min( plain( uFloor ), vec3( 0.8 ) ) * 0.03 );
 	float fine = ( 1.0 - smoothstep( 0.0, 0.012, abs( rho - RIN - 0.022 ) ) ) * pow( max( lightward, 0.0 ), 2.0 ) + 0.6 * ( 1.0 - smoothstep( 0.0, 0.009, abs( rho - 0.955 ) ) ) * pow( max( - lightward, 0.0 ), 3.0 );
 	col += fine * ( sky * 0.3 + gather * 0.4 );
 	float veil = smoothstep( 0.42, RIN, rho ) * ( 1.0 - band );
@@ -377,9 +409,11 @@ void paint() {
 	col *= 1.0 - 0.22 * ring;
 	alpha = max( alpha, 0.26 * ring );
 
-	vec3 refl = pane( Np, rho, V, 1.0, 0.74, 0.05, 0.26, 0.0 ) * SOFT * 0.015;
-	refl += pane( Np, rho, V, 1.0, 0.9, 0.022, 0.13, 0.0 ) * SOFT * 0.4;
-	refl += floorAt( vP, R ).rgb * F * 0.9;
+	vec3 refl = sky * window( Np, rho, V, 0.64, 0.07, 0.24 ) * 0.3;
+	refl += plain( pane( Np, rho, V, - 1.0, 0.78, 0.03, 0.3, 0.0 ) ) * SOFT * 0.04;
+	refl += blobs( Np, rho, V, C, 0.8, 0.05, 0.16 ) * 0.4;
+	vec3 under = floorAt( vP, R ).rgb;
+	refl += mix( plain( under ), under, 0.5 ) * F * 0.9;
 	refl += lampsIn( R, vP, 0.7 ) * ( 0.3 + 0.9 * F ) * rimward;
 	if ( uPress.w > 0.0 ) {
 		float struck = max( dot( normalize( vO ), uPress.xyz ), 0.0 );
@@ -388,11 +422,19 @@ void paint() {
 	col += refl;
 	alpha = clamp( alpha + 0.012 + F * 0.6, 0.0, 1.0 );
 
-	float edge = smoothstep( 0.895, 0.94, rho ) * ( 1.0 - smoothstep( 0.95, 0.972, rho ) );
-	col = mix( col, col * 0.3 + surround( R ) * 0.5, edge * 0.7 );
+	float lw = max( lightward, 0.0 );
+	float aw = max( - lightward, 0.0 );
+	float edge = smoothstep( 0.895, 0.94, rho ) * ( 1.0 - smoothstep( 0.95, 0.972, rho ) ) * ( 1.0 - 0.85 * smoothstep( 0.25, 0.75, lw ) );
+	col = mix( col, col * 0.3 + plain( surround( R ) ) * 0.5, edge * 0.7 );
 	alpha = mix( alpha, 0.75, edge * 0.7 );
+	float taper = smoothstep( 0.5, 0.97, lw );
+	float near = smoothstep( 0.8 + 0.1 * ( 1.0 - taper ), 0.86 + 0.07 * ( 1.0 - taper ), rho ) * ( 1.0 - smoothstep( 0.935, 0.965, rho ) ) * smoothstep( 0.4, 0.75, lw ) * ( 0.6 + 0.4 * streak / 1.35 );
+	float far = smoothstep( 0.875, 0.9, rho ) * ( 1.0 - smoothstep( 0.93, 0.955, rho ) ) * smoothstep( 0.55, 0.95, aw );
+	vec3 crescent = sky * near * 1.1 + ( sky * 0.35 + gather * 0.5 ) * far;
+	col += crescent;
+	alpha = max( alpha, min( 1.0, dot( crescent, vec3( 0.2126, 0.7152, 0.0722 ) ) * 1.5 ) );
 	float lip = smoothstep( 0.952, 0.974, rho ) * ( 1.0 - 0.5 * smoothstep( 0.985, 1.0, rho ) );
-	vec3 brim = sky * uneven * uneven * ( 0.1 + 0.9 * pow( max( lightward, 0.0 ), 2.0 ) + 0.45 * pow( max( - lightward, 0.0 ), 4.0 ) ) + gather * 1.0 + min( uFloor, vec3( 0.8 ) ) * 0.05;
+	vec3 brim = sky * ( 0.2 + 0.8 * uneven * uneven ) * ( 0.22 + 0.8 * pow( lw, 2.0 ) + 0.45 * pow( aw, 4.0 ) ) + gather * 1.0 + min( plain( uFloor ), vec3( 0.8 ) ) * 0.05;
 	col = mix( col, brim, lip * 0.85 );
 	alpha = mix( alpha, max( 0.5, min( 1.0, dot( brim, vec3( 0.2126, 0.7152, 0.0722 ) ) * 2.0 ) ), lip * 0.85 );
 
@@ -401,7 +443,8 @@ void paint() {
 	vec3 Nb = normalize( N + vAxisY * 0.5 * sign( vO.y ) );
 	vec3 Rb = reflect( - V, Nb );
 	col += glint * 0.35 * ( softbox( Rb, 0.15 ) * SOFT * 0.14 + lampsIn( Rb, vP, 2.4 ) * 0.08 + uHaze * 2.0 + uFloor * 0.03 );
-	alpha = max( alpha, 0.16 * line );
+	col += line * ( sky * 0.12 + uHaze );
+	alpha = max( alpha, 0.3 * line );
 
 	gl_FragColor = vec4( col, alpha );
 }
@@ -455,8 +498,8 @@ void paint() {
 	alpha = max( alpha, a );
 
 	vec3 away = normalize( vec3( - uSoftDir.xy, 0.0 ) + vec3( 1e-4 ) );
-	float pool = smoothstep( 0.5, 0.8, rho ) * ( 1.0 - smoothstep( RIN - 0.03, RIN + 0.03, rho ) ) * pow( max( dot( Np, away ), 0.0 ), 2.0 );
-	col += ( soft * 0.16 + flecks( Np, C ) * 0.25 ) * pool * shut;
+	float pool = smoothstep( 0.45, 0.78, rho ) * ( 1.0 - smoothstep( RIN - 0.03, RIN + 0.03, rho ) ) * pow( max( dot( Np, away ), 0.0 ), 3.0 );
+	col += ( plain( soft ) * vec3( 1.1, 0.88, 0.62 ) * 0.42 + flecks( Np, C ) * 0.25 ) * pool * shut;
 
 	float glint;
 	float line = seamLine( glint );
