@@ -1,35 +1,35 @@
 {
   "folder": "street-models",
-  "pushed": "2026-11-26T05:01:26.718Z",
-  "commit": "e3d98e973f577e2e6f033f057cd39ec9f629dee7",
+  "pushed": "2026-11-26T05:08:20.726Z",
+  "commit": "7a29a90e905a24d13dd5391dcbe3e56564e3ecfd",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "tier-street at 77779a6d beside approved: the garage at two turns, roof lights on the firehouse and the police station",
-      "time": "2026-11-26T05:01:24.959Z",
+      "caption": "Key youre-fired: approved on the left, this build on the right, draft tier, with crops of shape:model.street.firehouse, cursor, shape:seg.street.firehouse.roof",
+      "time": "2026-11-26T05:04:26.309Z",
       "by": "street-models",
-      "from": "out/work/looks/files/20261126050124-final-compare-tier-street.jpg"
+      "from": "out/work/compare/compare-youre-fired.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "youre-fired at 77779a6d beside approved: smooth hot cores in the panes, round beacon dome",
-      "time": "2026-11-26T05:01:25.190Z",
+      "caption": "Still key-youre-fired-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T05:05:57.493Z",
       "by": "street-models",
-      "from": "out/work/looks/files/20261126050125-final-compare-youre-fired.jpg"
+      "from": "out/work/stills/key-youre-fired-hd-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "last-save at 77779a6d beside approved",
-      "time": "2026-11-26T05:01:25.418Z",
+      "caption": "Key youre-fired: approved on the left, this build on the right, draft tier, with crops of shape:model.street.firehouse, cursor, shape:seg.street.firehouse.roof",
+      "time": "2026-11-26T05:07:45.330Z",
       "by": "street-models",
-      "from": "out/work/looks/files/20261126050125-final-compare-last-save.jpg"
+      "from": "out/work/compare/compare-youre-fired.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "last-save draft at 77779a6d, whole frame",
-      "time": "2026-11-26T05:01:25.650Z",
+      "caption": "youre-fired at 7a29a90e beside approved: iron wheel guards, side windows in shallower reveals",
+      "time": "2026-11-26T05:08:19.496Z",
       "by": "street-models",
-      "from": "out/work/looks/files/20261126050125-final-last-save.jpg"
+      "from": "out/work/looks/files/20261126050819-final-compare-youre-fired.jpg"
     }
   ]
 }
