@@ -1,35 +1,35 @@
 {
   "folder": "careers",
-  "pushed": "2026-11-26T01:20:47.530Z",
-  "commit": "4dbcf1448a0eb25b07c14354d21bb9135557bd9c",
+  "pushed": "2026-11-26T01:58:48.569Z",
+  "commit": "dddd82bb0db605a56ba77bab008c087ce25f1c64",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still marketing-rest-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T01:20:24.709Z",
+      "caption": "Still key-marketing-top-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T01:57:04.043Z",
       "by": "careers",
-      "from": "out/work/stills/marketing-rest-hd-draft.png"
+      "from": "out/work/stills/key-marketing-top-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Careers first screen beside the approved image, draft tier, commit 4dbcf14",
-      "time": "2026-11-26T01:20:46.006Z",
+      "caption": "marketing-top: approved above, draft tier below, commit dddd82b",
+      "time": "2026-11-26T01:58:47.067Z",
       "by": "careers",
-      "from": "out/work/looks/files/20261126012046-r1-compare.jpg"
+      "from": "out/work/looks/files/20261126015847-cmp-0205.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "The first perk card turning over in its well: one slab with a real under side, at 2.36 s and 2.53 s",
-      "time": "2026-11-26T01:20:46.241Z",
+      "caption": "perk cards and ticker strip: approved above, draft below, commit dddd82b",
+      "time": "2026-11-26T01:58:47.293Z",
       "by": "careers",
-      "from": "out/work/looks/files/20261126012046-r3-turn.jpg"
+      "from": "out/work/looks/files/20261126015847-cards-0205.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Careers page at scroll 0.25 and 0.5: medals, staff badges, the table, all real",
-      "time": "2026-11-26T01:20:46.469Z",
+      "caption": "card 0 mid turn at 0.06 and 0.088 of marketing.perks: the well in the page's ceramic",
+      "time": "2026-11-26T01:58:47.517Z",
       "by": "careers",
-      "from": "out/work/looks/files/20261126012046-r4-lower.jpg"
+      "from": "out/work/looks/files/20261126015847-turn-0205.jpg"
     }
   ]
 }
