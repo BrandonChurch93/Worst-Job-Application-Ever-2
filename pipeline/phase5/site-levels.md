@@ -124,9 +124,18 @@ Native crops, 1920x1080 window, pixel ratio 1, of the smallest line of type of e
 
 The headless browser of this VM has a device pixel ratio of 1, so the cap of the pixel ratio (2, 1.5, 1) changed nothing in these pictures: the three levels were all drawn at ratio 1. What the cap does on a screen of ratio 2 or 3 is UNKNOWN here.
 
-Seen in the crops and not repaired: at low the edge of the shadow under a card (step 4 and step 5) is ragged, a pattern of small teeth, where high and medium are smooth.
+### The ragged shadow edge at `low`
 
-NOT DONE of rule 4: the 188 invalid pixels of the still `youre-fired` with 4x multisampling. I did not find the material and clamped nothing. `LIVE_MULTISAMPLES = 4` in `src/app.ts` is used by live frames only.
+Seen in the crops: at low the edge of the shadow under a card (step 1, step 4, step 5) is ragged, a row of small teeth about 25 pixels apart; at medium the teeth are there too, fainter.
+
+Cause, MEASURED by a pair: the same edge of step 1 in a still at `live: low` (whole map, one sample, no kept shadows) shows the same teeth, so the kept map of `levelShadows.ts` is not the cause. The cause is the map itself: at 1024 px a texel of the map is about two pixels of the page, the depths are read without interpolation, and the map stood turned against the page (the light comes from the side and from above, and the map's upward axis was the world's), so the straight lower edge of a card crossed one row of texels every 25 pixels or so.
+
+### The invalid pixels of `youre-fired` under 4x multisampling
+
+`scripts/msaa-probe.mjs` and `scripts/msaa-where.mjs` (not in the repo): the still `youre-fired` drawn through `renderStill` with `live: <level>`, once in a live session (the engine has 4x multisampling there) and once in a capture session (no multisampling), hd.
+
+- MEASURED 17:50Z: live session 3 invalid pixels at high, at medium and at low; capture session 0. The 188 of the open item were not reproduced as a number; the kind of fault was.
+- Where, MEASURED by reading the 64x36 count picture the app itself reads: two blocks of 30x30 pixels, at x 1140 to 1170, y 240 to 270 and at x 900 to 930, y 150 to 180 of the 1920x1080 picture. Looked at in the capture picture: each block holds one screw head of the sign "You're Fired", a few pixels wide, of bright metal. So the material is the metal of the sign's screws. Which term of its shading goes wrong at a sample outside the triangle I did not find.
 
 ## The 8 bit path (rule 8)
 
@@ -142,3 +151,17 @@ NOT DONE of rule 4: the 188 invalid pixels of the still `youre-fired` with 4x mu
 | table, low | 201.92 | 135.37 | 66.56 | 100 % |
 
 MEASURED: the 8 bit path does not give the same picture. It is far darker, every metal is black (the medal, the steps of the progress bar, the cabinet's ring) and the orange is a deep red. The browser's log of the 8 bit session: "Framebuffer is incomplete: Attachment is not renderable" and "glGenerateMipmap: Texture format does not support mipmap generation". Read in the code: `src/post/studio.ts` builds the studio's surround with three's `PMREMGenerator`, which draws into half float targets (`node_modules/three/src/extras/PMREMGenerator.js`, line 477); with both extensions hidden that target cannot be drawn into, so the surround is black. That this is the whole cause is my reading, not measured: `src/post/post.ts` also makes a half float target. Both files are not mine. NOT REPAIRED. The pair is in the looks folder.
+
+## G15, the whole gate (rule 6)
+
+`npm run gate -- --phase 5 --only G15`, started 17:52Z on commit c4695813, 1000.7 s: MEASURED pass. 6 pages (marketing, step1, step2, pinball, boss, decision), 94 pictures drawn through the live path.
+
+| level | most triangles of any picture | limit | most draw calls | limit |
+|---|---|---|---|---|
+| high | 774135 | 3000000 | 492 | 600 |
+| medium | 774135 | 1500000 | 311 | 450 |
+| low | 555445 | 700000 | 241 | 300 |
+
+Memory, the gate's own words: web at hd 692.0 of 700 MB on pinball; full at uhd 2045.7 of 2400 MB on pinball. The gate prints the most of each level, not a row per page; no page is over a limit.
+
+What the gate does NOT see, STATED from the code: it draws through `Engine.picture`, so (1) the two targets of `levelRest.ts`, held at `high` only while a page at rest is gathered and freed when the last frame is in, each of the picture's size in half float (1920x1080x8 bytes, 16.6 MB at hd, 33.2 MB for both), and (2) the kept shadow map of `levelShadows.ts` at `low` (1024x1024 depth, about 4 MB). With 692.0 of 700 MB measured on pinball, the first of these would go over the limit on that page while it is held, if the gate counted it. Not measured in a live session. This is open.
