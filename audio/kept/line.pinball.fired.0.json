@@ -88,35 +88,48 @@
     "levelDb": -18,
     "gainDb": 4.95,
     "channels": 1,
-    "loop": null
+    "loop": null,
+    "peak": {
+      "by": "ffmpeg alimiter, no make-up gain, its own level control off",
+      "boundDb": -1,
+      "limitDb": -1.23,
+      "attackMs": 5,
+      "releaseMs": 50,
+      "rounds": 2,
+      "truePeakBeforeDb": 2.44,
+      "truePeakAfterDb": -1.02,
+      "reductionDb": 3.54,
+      "lufsBefore": -18,
+      "lufsAfter": -19.28
+    }
   },
   "measured": {
     "seconds": 5.54,
     "start": 0,
-    "end": 5.512,
-    "peakDb": 2.31,
-    "rmsDb": -21.34,
-    "lufs": -18,
-    "truePeakDb": 2.42,
-    "low": 0.499,
-    "mid": 0.226,
-    "high": 0.276,
-    "tailDb": -24.64,
+    "end": 5.52,
+    "peakDb": -1.23,
+    "rmsDb": -21.91,
+    "lufs": -19.28,
+    "truePeakDb": -1.07,
+    "low": 0.568,
+    "mid": 0.238,
+    "high": 0.194,
+    "tailDb": -21.2,
     "hits": 3,
     "hitsAt": [
       {
         "start": 0.004,
-        "end": 0.702,
+        "end": 0.712,
         "peakDb": -1.53
       },
       {
         "start": 1.966,
-        "end": 3.314,
-        "peakDb": 2.31
+        "end": 3.328,
+        "peakDb": -1.23
       },
       {
-        "start": 4.578,
-        "end": 5.492,
+        "start": 4.572,
+        "end": 5.494,
         "peakDb": -5.38
       }
     ]
@@ -163,5 +176,14 @@
   "fixture": false,
   "file": "line.pinball.fired.0.wav",
   "seconds": 5.54,
-  "sha256": "43fb2ef4186e2018cbb21fe18794a46b559087cee8015cd0de8cc557e61dc48e"
+  "sha256": "1303caed701cb9a75174659a615b1ff881af971a25a7cba806e4a2f30392ec36",
+  "rekept": {
+    "when": "2026-11-26T17:46:32Z",
+    "why": "its levelled true peak was 2.44 dB, over the bound of -1 dB: the same take went through the chain again with the peak held",
+    "was": {
+      "sha256": "43fb2ef4186e2018cbb21fe18794a46b559087cee8015cd0de8cc557e61dc48e",
+      "truePeakDb": 2.42,
+      "lufs": -18
+    }
+  }
 }
