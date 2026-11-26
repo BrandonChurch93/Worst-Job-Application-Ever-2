@@ -40,8 +40,8 @@ const REALLY_TAKE = 0.04
 const HORROR = { rear: UNFOLD.open + 0.04, cower: UNFOLD.cannons[0] + 0.2, scared: 2.3 } as const
 const SEAT = 0.2
 const LIFT = 7
-const FILL_GAP = 5
-const FILL_TOP = 1.6
+const FILL_GAP = 4
+const FILL_TOP = 3.4
 // The body takes a sixth argument for the shield's flash and the cap's soot once the modeller's body is in; until then it is ignored.
 const rigOf = fightRig as unknown as (x: number, y: number, feet: { x: number; y: number; z: number }[] | null, recoil?: number[], bob?: number, more?: { aim?: { x: number; y: number }; flash?: number; hurt?: number }) => Rig
 const easeOut = (t: number): number => 1 - (1 - t) * (1 - t) * (1 - t)
@@ -104,7 +104,7 @@ export function makePage(): PageLogic {
       s.fight.flashes = []
     }
     io.emit('power-down', from.cap.x, from.cap.y, false)
-    io.cursor.act('exhausted')
+    io.cursor.act('plain')
   }
 
   const page: PageLogic = {
@@ -191,6 +191,7 @@ export function makePage(): PageLogic {
         if (s.t >= COLLAPSE_SECONDS) {
           s.stage = 'press'
           s.t = 0
+          io.cursor.act('exhausted')
         }
       } else if (s.stage === 'press') {
         if (s.pressed < 0) {

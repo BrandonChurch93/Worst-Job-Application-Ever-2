@@ -29,9 +29,9 @@ Looked at `references/approved/boss-fight.png` at full size in crops (health bar
 
 ## Agreed with `boss_modeller`
 
-- The cannon mouth is 92 px from the cannon's centre along the barrel, z 82.5 (`MUZZLE` in `src/boss/plan.ts`; first 70 px and z 46, then 92 px and z 48.5, then the body grew taller). The muzzle flash is the shape `muzzle-N`, mine, and sits at that mouth.
+- The cannon mouth is 92 px from the cannon's centre along the barrel, z 108.5 (`MUZZLE` in `src/boss/plan.ts`; first 70 px and z 46, then 92 px and z 48.5, then z 82.5 and z 108.5 as the body grew taller). The muzzle flash is the shape `muzzle-N`, mine, and sits at that mouth.
 - The barrels aim. I keep a point in the fight (`look`: the cursor's centre eased over 0.25 s), pass it as `aim` in the sixth argument of `fightRig`, and fire slabs and flash from the same formula the body turns its barrels with: rot = atan2(cy - aim.y, cx - aim.x) held inside 0.7 rad either way, mouth = (cx - 92 cos rot, cy - 92 sin rot). My copy is `muzzle()` in `src/boss/fight.ts`; when the modeller's `muzzleAt` is on `main` it replaces my copy.
-- Darts from the left stop on the shield plane above; sparks on the glass at z 100 (was 72, the body is taller). The plate stays where the modeller put it.
+- Darts from the left stop on the shield plane above; sparks on the glass at z 60. The shield now stands on the page, its glass from z 10 to z 80 at that plane (it leaned before, and the sparks went from z 72 to 100 to 60 with it).
 - I pass `aim`, `flash` and `hurt`.
 - The wider stance (`FOOT_OFF`) and the cannons' places (`CANNON_OFF`, soon (-10, 110) either way) come from the modeller's export; the times of the unfold stay.
 - Draw calls: the Builder wants 520 or less at high at the key for the two of us together. Told the modeller my share and that both of us merge.
@@ -43,7 +43,7 @@ The approved picture has the health near 55 percent, three slabs in the air at t
 - Phases end at 51, 25 and 0 percent of the health (were 75, 40, 0): `THRESHOLD`. Each dart does 1.9, 0.56 and 0.53 in the three phases (`DART.damage`), so the clicks a phase takes stay about as they were. The health can fall no faster than `FLOOR` (3.9, 4, 3 s for a phase) and a still visitor is taken down over `CAPS` (12.5, 14.5, 13 s), so the narrator's `boss-slow` still fires for one who does nothing.
 - In the first phase the first attack is one slab ("Field cannot be blank"), every later attack is a salvo of three, 0.18 s apart: the middle one at the cursor, one fanned 0.3 rad above from cannon 0, one below from cannon 1 (`SLAB.salvo`, `salvoGap`, `fan`). The cursor has one lane to step out of, and the tests of fairness and the bots pass unchanged.
 - A slab stops before the verify card (`Arena.keep`), so the card's words are never covered.
-- A slab is lobbed: it leaves the mouth at the mouth's height, rises to z 128 in 0.12 s to clear the top of the leaning shield, and is down at its flying height (z 14) after 0.5 s. Before, it flew through the glass. Attacks of the first phase come every 1.4 s (was 1.49), so at the key the last slab of the salvo is clear of the shield.
+- A slab is lobbed: it leaves the mouth at the mouth's height, rises to z 112 in 0.12 s to clear the top of the shield (z 80), and is down at its flying height (z 14) after 0.5 s. Before, it flew through the glass. Attacks of the first phase come every 1.4 s (was 1.49), so at the key the last slab of the salvo is clear of the shield.
 - The film's clicks in `boss.slabs`: every 0.34 s from 9.82 to 12.3 s, then one at 15.27 s. The snap aside is at 11.78 s, two frames after the first slab of the salvo.
 - Events of the film, measured (`npx vitest run` on a scratch test that prints `stage.events`): `checkbox` 3.80, `button-crack` 6.11, `unfold` 6.71, `slab-fire` 9.86, 11.72, 11.90, 12.09, 14.25, 14.43, 14.61, 19.49, `slab-drop` 11.30, 12.73, 12.92, 13.13, 15.07, 15.18, 15.59, 20.24 (this one hits the cursor, the only hit of the film), `popup` 15.93, 17.73, 18.73, `session-expired` 22.30, `power-down` 27.23, `button-press` 30.50, `page-turn` 31.50. All inside their beats.
 - At the key (12.5 s): three slabs in flight, five darts on screen, sparks on the glass, the fill at 57.7 percent of its length. Tested in `tests/boss-fight.test.ts`.
@@ -60,3 +60,11 @@ MEASURED with `npm run build && npm run counts -- --key boss-fight --format hd -
 - A dart no longer casts a real shadow: its shadow is part of the pool's mesh. A dart is 4 meshes and 4 calls (was 5 meshes and 19 calls).
 - My share at the key at high: `boss-weapons` 47 calls, `verify-card` 15, `health-bar` 7. The body is 203.
 - A single still reports more (562 for the key at `draft`): after the shadow maps are sized, each lamp with a shadow draws its map once even when it is dark (`needsUpdate` in `src/core/renderer.ts`, `resize`). That is my reading of the code, not a measurement; `counts` draws the scene after it has settled.
+
+## The cursor at `boss-down` (round 2, the Builder's answer of 01:49Z)
+
+The approved key shows a whole arrow with its black edge, lower left of the fallen button. The shared state `exhausted` is the melted cream form with no edge (melt 0.6, right for that state by the approved sheet `cursor-acting`), so the key decides the moment: the page calls `act('plain')` at the power-down and `act('exhausted')` only when the wreck is still, 2 s later (29.23 s in the film, 0.23 s after the key). The film adds a `duck` at 27.31 s, two frames after the power goes. `boss.press` then reads: stands whole, sags, drags itself on, presses. `button-press` stays at 30.50 s. The same two calls play in the live site.
+
+## The health bar (round 2)
+
+Beside the approved picture the bar was thin and its fill a flat strip with a wide white band. The track is 30 px tall (was 26), the fill is 22 px (was 16) and is one round back from edge to crest, 6.4 px high, so the light lies on it as a narrow band and its lower side goes dark; the track's floor is a stop darker. The label is set in the 600 weight at 23 px, as the approved label is heavier than the page's field labels.

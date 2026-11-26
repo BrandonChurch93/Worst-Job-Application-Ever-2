@@ -307,7 +307,11 @@ export const bossWeapons: PartMaker | null = {
       case 'spark': return makeSpark()
       case 'muzzle': return makeMuzzle()
       case 'scorch': return makeScorch(s)
-      case 'slab': return makeSlab(s.w, s.h, s.r ?? 8, heights.slab)
+      case 'slab': {
+        const slab = makeSlab(s.w, s.h, s.r ?? 8, heights.slab)
+        slab.children[1]!.castShadow = false
+        return slab
+      }
       case 'button': return controls.make(full(s, heights.button, 'button'), ctx)
       default: return controls.make(full(s, heights.card, 'card'), ctx)
     }

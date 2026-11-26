@@ -101,9 +101,9 @@ The acting, beat by beat (the word a stranger should say, and what carries it):
 | `boss.slabs` | fight | `confident`; a `snap` aside at 11.78 s, two frames after the first slab of the salvo of three is fired; stands its ground and fires through the key |
 | `boss.popups` | anger | `angry` from the phase change; the one hit of the film at 20.24 s, knocked back, dust off |
 | `boss.lastStand` | really | double take two frames after the banner, sags (`exhausted`) from 0.7 s and holds 0.8 s, then `fume` and `angry` at 1.5 s, and the rush |
-| `boss.collapse` | spent | `exhausted`, drags itself to the button and stands 0.9 s |
-| `boss.press` | done | gathers itself 29.45 s, climbs on, drops its weight on the button (`stamp` at 30.42 s, flat at 30.5 s) |
+| `boss.collapse` | spent | `plain`, whole: ducks at 27.31 s, two frames after the power goes, walks to the fallen button and stands 0.9 s, whole with its black edge at the key (29.0 s) as in the approved `boss-down` |
+| `boss.press` | done | sags (`exhausted`) when the wreck is still, 2 s after `power-down` (29.23 s in the film), gathers itself 29.45 s, drags itself on, drops its weight on the button (`stamp` at 30.42 s, flat at 30.5 s) |
 
-The cues the page gives itself (`rear`, `cower`, the double take and the `fume` at the banner) play in the live site too. The others are the film's, in `ACT` of `script.ts`.
+The cues the page gives itself (`rear`, `cower`, the double take and the `fume` at the banner, `plain` at the power-down and `exhausted` 2 s after it) play in the live site too. The others are the film's, in `ACT` of `script.ts`.
 
 The fight after the key was fitted (numbers in `src/boss/plan.ts`): phases end at 51, 25 and 0 percent; a dart does 1.9, 0.56, 0.53 by phase; the first attack is one slab, later attacks of the first phase are salvos of three (0.18 s apart, fanned 0.3 rad); slabs stop before the verify card; the barrels aim at `fight.look`, the cursor's centre eased over 0.25 s, and slabs and flash leave from the mouth `muzzle()` gives. The film's events and the key are in `pipeline/phase4/boss-fight.md`.
