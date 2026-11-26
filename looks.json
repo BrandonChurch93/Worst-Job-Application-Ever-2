@@ -1,35 +1,35 @@
 {
   "folder": "street-models",
-  "pushed": "2026-11-26T03:14:32.274Z",
-  "commit": "dd3f1382856d73b10cd5a836ae74845da2fb52c7",
+  "pushed": "2026-11-26T03:31:14.811Z",
+  "commit": "e3f5c715695f1088f1cf5861d30ac5bea289092b",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key last-save: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-26T03:14:23.410Z",
-      "by": "street-models",
-      "from": "out/work/compare/compare-last-save.jpg"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "youre-fired beside approved at dd3f138: wide low mouth with the red bay, bigger bricks in relief, stone frame; the lens is still the old one and cuts the roof",
-      "time": "2026-11-26T03:14:30.810Z",
+      "caption": "youre-fired beside approved at e3f5c71: paler stone, amber windows, the bay a dull red at rest",
+      "time": "2026-11-26T03:31:13.025Z",
       "by": "street-models",
       "from": "out/work/compare/compare-youre-fired.jpg"
     },
     {
-      "file": "look-3.jpg",
-      "caption": "tier-street beside approved at dd3f138: pale roofs, beacons with a core, pale garage ring, muted houses",
-      "time": "2026-11-26T03:14:31.040Z",
+      "file": "look-2.jpg",
+      "caption": "tier-street beside approved at e3f5c71",
+      "time": "2026-11-26T03:31:13.267Z",
       "by": "street-models",
       "from": "out/work/compare/compare-tier-street.jpg"
     },
     {
-      "file": "look-4.jpg",
-      "caption": "last-save beside approved at dd3f138: the garage wall is solid but unlit (lamps asked of the lighter)",
-      "time": "2026-11-26T03:14:31.272Z",
+      "file": "look-3.jpg",
+      "caption": "last-save beside approved at e3f5c71: the garage wall is still unlit on main",
+      "time": "2026-11-26T03:31:13.498Z",
       "by": "street-models",
       "from": "out/work/compare/compare-last-save.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "last-save in a trial merge with agent/table-light 23d0031 (not kept): the garage with the lighter's seven lamps",
+      "time": "2026-11-26T03:31:13.732Z",
+      "by": "street-models",
+      "from": "out/work/looks/files/20261126033113-last-save-with-the-lighters-garage-lamps.jpg"
     }
   ]
 }
