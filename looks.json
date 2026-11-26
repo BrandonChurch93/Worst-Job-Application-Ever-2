@@ -1,35 +1,35 @@
 {
   "folder": "step2-slot",
-  "pushed": "2026-11-26T01:18:56.121Z",
-  "commit": "5802bee9802c01b470cb966be8ee25f6a4248c97",
+  "pushed": "2026-11-26T01:31:52.932Z",
+  "commit": "8df0e8bf9cf9012b04bdf0c00b72188474a00d35",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still sheet-machines-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-26T01:16:48.799Z",
-      "by": "step2-slot",
-      "from": "out/work/stills/sheet-machines-hd-review.png"
-    },
-    {
-      "file": "look-2.jpg",
       "caption": "Still step2-step2_slot-0p8-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-26T01:17:14.618Z",
+      "time": "2026-11-26T01:30:14.433Z",
       "by": "step2-slot",
       "from": "out/work/stills/step2-step2_slot-0p8-hd-review.png"
     },
     {
-      "file": "look-3.jpg",
-      "caption": "Crank key, review tier, with the dial maker's branch laid over (grip 84 by 40, arm 24): approved above, the build below. Bar grip with collar and seam, bow tie on the turned faces, clear glass segments",
-      "time": "2026-11-26T01:18:54.525Z",
+      "file": "look-2.jpg",
+      "caption": "Crank key at review tier, approved above, build below (dial maker's sizes laid over): unlit segments are tinted glass, lit core paler, pills lower",
+      "time": "2026-11-26T01:31:51.239Z",
       "by": "step2-slot",
-      "from": "out/work/looks/files/20261126011854-crank-with-dial-sizes.jpg"
+      "from": "out/work/looks/files/20261126013151-crank-0145.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Machines sheet at review tier, approved above, build below: pay line is a wire over the legends, window glass veils less",
+      "time": "2026-11-26T01:31:51.487Z",
+      "by": "step2-slot",
+      "from": "out/work/looks/files/20261126013151-machines-0145.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Machines sheet, review tier, with the dial maker's branch laid over: approved above, the build below. Darker frame, deeper drums, payout mouth, lever mount, thick arm and bar grip",
-      "time": "2026-11-26T01:18:54.783Z",
+      "caption": "Step 2 slot beat at 0.8, review tier: cabinet, drums, wire, lever, payout mouth, coins",
+      "time": "2026-11-26T01:31:51.745Z",
       "by": "step2-slot",
-      "from": "out/work/looks/files/20261126011854-machines-with-dial-sizes.jpg"
+      "from": "out/work/looks/files/20261126013151-slot-0145.jpg"
     }
   ]
 }
