@@ -1,35 +1,35 @@
 {
   "folder": "step2-fix",
-  "pushed": "2026-11-26T08:37:11.730Z",
-  "commit": "d7f4ad800d76d036c91163629d3ea72ee5413e7b",
+  "pushed": "2026-11-26T08:54:55.130Z",
+  "commit": "1553b57fab018c023cdcd85880cef9a44a4272fa",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still sheet-machines-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T08:34:52.412Z",
-      "by": "step2-fix",
-      "from": "out/work/stills/sheet-machines-hd-draft.png"
-    },
-    {
-      "file": "look-2.jpg",
       "caption": "Still key-step2-crank-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T08:35:05.540Z",
+      "time": "2026-11-26T08:51:52.018Z",
       "by": "step2-fix",
       "from": "out/work/stills/key-step2-crank-hd-draft.png"
     },
     {
-      "file": "look-3.jpg",
-      "caption": "step2-dial key, approved above, build below: the tip now settles on the lower right shoulder of the cap; base ring darker",
-      "time": "2026-11-26T08:37:10.194Z",
+      "file": "look-2.jpg",
+      "caption": "step2-crank key at the same place in both, approved above, build below: rows 12 px lower and 149 px apart, segments 116 px tall, lit ones pale inside an orange rim, unlit ones clearer",
+      "time": "2026-11-26T08:54:53.641Z",
       "by": "step2-fix",
-      "from": "out/work/looks/files/20261126083710-cmp-dial-5.png"
+      "from": "out/work/looks/files/20261126085453-cmp-crank-6.png"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "the dial's whip and fling, 4.86 to 5.95 s: the arrow held by its tip in the hole, tail thrown outward and drawn long, then flung end over end",
+      "time": "2026-11-26T08:54:53.883Z",
+      "by": "step2-fix",
+      "from": "out/work/looks/files/20261126085453-dial-whip.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "step2-crank key, approved above, build below: lit segments with a pale core and an orange rim, their light kept near them",
-      "time": "2026-11-26T08:37:10.423Z",
+      "caption": "rest, dial and crank keys, approved left, build right, same crop in both: the rows and trays now stand where approved has them",
+      "time": "2026-11-26T08:54:54.123Z",
       "by": "step2-fix",
-      "from": "out/work/looks/files/20261126083710-cmp-crank-5.png"
+      "from": "out/work/looks/files/20261126085454-cmp-rows.png"
     }
   ]
 }
