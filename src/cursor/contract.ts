@@ -95,6 +95,8 @@ export interface BodyModel {
   apply(look: BodyLook): void
   // Where a point of the outline is on the body as it is drawn now, in the root's own space.
   anchor(x: number, y: number, out: THREE.Vector3): THREE.Vector3
+  // For a body last applied sealed: the middle of the smallest circle round its outline as it is drawn, in the root's own space, and the circle's radius. The glass holds the body inside its wall, so the radius is never more than the ball's bore leaves.
+  middle?(): { x: number; y: number; r: number }
   // The light the body gives off as it was last applied: the hot tip, a glowing rim. It adds its emitters to out, in the root's own space and in page pixels. The view turns them into the page's space and passes each to ctx.light.
   emit?(out: Emitter[]): void
   dispose(): void
