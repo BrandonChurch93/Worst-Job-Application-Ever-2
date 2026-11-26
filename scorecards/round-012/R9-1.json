@@ -1,0 +1,86 @@
+{
+ "critic": "R9",
+ "score": 6,
+ "pass": false,
+ "model": "gpt_6_2_sol",
+ "set": "A: one sheet across each of the ten beats, with no time and no word on it",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "machine reveal, frames 2–12, right-hand return lane",
+   "what": "The glass ball can be tracked intermittently, but its internal arrow gets lost among the reflections and rings. The lane carries a pinball; there is no readable character pose for most of the sheet.",
+   "fix": "Keep the wide reveal, but cut in on the ball for a held bracing pose and put a dark surface behind the white arrow so it survives the glass reflections."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "flipper volley, frames 7–12",
+   "what": "The moving ball and flippers sell the hits, but the internal arrow mostly spins or blurs. There is no readable prepare, compress, and recover sequence on an individual hit.",
+   "fix": "Feature one hit: aim the tip away from the approaching flipper, squash the arrow across the impact axis, then stretch and briefly hold a clean recoil silhouette."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-06.png",
+   "where": "Coffee release and playfield cut, frames 4–6",
+   "what": "The extra round forms and glare make it hard to follow which ball contains the character precisely when it should react to the swarm.",
+   "fix": "Give the cursor a distinct recoil before the cut and keep a dark backing behind its white silhouette while the extra balls scatter."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "intake approach and capture, frames 2–8",
+   "what": "The bare arrow moves much like a normal pointer until it goes into the intake. The suction and capsule change are clear, but there is little readable anticipation or recoil as it loses control.",
+   "fix": "Hold a tilted-back hesitation outside the mouth, then pull the tip sharply toward the intake and let the arrow recoil against the glass once sealed."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-08.png",
+   "where": "entry into the spiral, frames 6–10",
+   "what": "The tight views have a legible arrow, but most of the change is rotation with the ball; the turn from directed travel to being pulled into the funnel has no distinct bracing pose.",
+   "fix": "At the rail lip, counter-lean the tip against the turn for a beat, then widen it on the first hard change of direction before releasing into the spiral."
+  }
+ ],
+ "reads": [
+  {
+   "file": "set-A-01.png",
+   "read": "Tentatively curious, then startled and trapped: the cursor approaches the round intake, is sealed in a clear ball and drops down the tube."
+  },
+  {
+   "file": "set-A-02.png",
+   "read": "Trapped and being carried along, with no further feeling I can distinguish: the ball goes from the intake tube into the machine’s right-hand lane."
+  },
+  {
+   "file": "set-A-03.png",
+   "read": "Nervously bracing: the ball pauses at the launcher, then shoots up the lane and into the playfield."
+  },
+  {
+   "file": "set-A-04.png",
+   "read": "Intent and perhaps hopeful: after rolling among the bumpers, the arrow pitches up toward the Corporate HQ doors, then is sent down to the next field."
+  },
+  {
+   "file": "set-A-05.png",
+   "read": "Buffeted and scrambling: the ball drops past the office bumpers and gets batted back and forth by the flippers; the individual reactions are hard to read."
+  },
+  {
+   "file": "set-A-06.png",
+   "read": "Caught off guard: the ball seats itself at the Coffee station, then springs away as several lookalike balls spill out and it drops to the next level."
+  },
+  {
+   "file": "set-A-07.png",
+   "read": "Stunned and bracing again: the ball lands at You’re Fired, the arrow pancakes and springs back upright, then gets thrown back into play."
+  },
+  {
+   "file": "set-A-08.png",
+   "read": "Determined at first, then out of control: the ball gets onto the raised wire track, the arrow flips at the far end, and the ball circles the funnel."
+  },
+  {
+   "file": "set-A-09.png",
+   "read": "Woozy and battered: the ball comes out of the funnel and the arrow crumples at the right flipper before getting knocked across the field again."
+  },
+  {
+   "file": "set-A-10.png",
+   "read": "Worn out, then ready to move on: the ball drains, the arrow comes out bare at Assessment Complete, and after a short pause it clicks Continue."
+  }
+ ]
+}

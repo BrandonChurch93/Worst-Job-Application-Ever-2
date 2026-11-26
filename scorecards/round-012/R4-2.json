@@ -1,0 +1,37 @@
+{
+ "critic": "R4",
+ "score": 7,
+ "pass": false,
+ "model": "gpt_6_2_sol",
+ "set": "B: the way in, the way out, the last two hits, the flipper save, the rail ride and the page turn that ends the page",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-B-06.png",
+   "where": "the clear ball on the wire rail, 1:38.83–1:39.20",
+   "what": "The rail crossbars slide past at nearly even intervals while the sphere stays centered and its arrow remains almost the same size and orientation. The sheet reads as the track scrolling behind a pinned ball, rather than a ball carrying speed and weight along the rail.",
+   "fix": "Let the camera lag the ball slightly, vary travel speed with the grade, and give the shell highlights a visible roll and a small lateral load into the bend."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03.png",
+   "where": "the return socket and tube lip, 1:45.77–1:45.97",
+   "what": "The clear shell becomes two fading arcs while the tube lip stays fixed, and the arrow drops into a larger pose several frames later. The ring dims, but the contact and release are not causally clear without the caption.",
+   "fix": "Show the shell meeting a visible stop, give the lip a short recoil on the same frame, and release the arrow in one continuous motion while the ring answers the hit."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-04.png",
+   "where": "the arrow under the tube, 1:46.33–1:46.50",
+   "what": "The arrow folds inward and returns while the tube and socket stay still. On this hit sheet it is unclear what is struck or what triggers the change; it reads as an isolated shape change rather than a mechanical action.",
+   "fix": "Show what actuates the arrow, move both parts on contact, then give the arrow a distinct spring-back and readable hold before it leaves."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01.png",
+   "where": "the seal-to-machine handoff, 1:10.83–1:11.37",
+   "what": "The approach shows the ball in the clear tube, then jumps in the sampled views to the full dark machine. The tube-to-playfield transfer is not readable from the sheet, so the reveal feels disconnected from what set it off.",
+   "fix": "Keep the ball or tube outlet identifiable through the pullback and include a view of the ball crossing into the machine before the light-up."
+  }
+ ]
+}
