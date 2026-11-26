@@ -1,35 +1,35 @@
 {
   "folder": "careers-finish",
-  "pushed": "2026-11-26T11:42:29.112Z",
-  "commit": "767f46bb91539d30b7a71a43c3b613eddd44fec5",
+  "pushed": "2026-11-26T12:12:23.718Z",
+  "commit": "e56b61fc290360f3ed391607c6464e0dd3af57f0",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key marketing-top: approved on the left, this build on the right, review tier, with crops",
-      "time": "2026-11-26T11:42:27.243Z",
+      "caption": "Key marketing-top: approved on the left, this build on the right, review tier, with crops of cursor, medallion, heroButton, button, card.corner, card.glass, cardRule, tickerWindow, header",
+      "time": "2026-11-26T12:12:20.629Z",
       "by": "careers-finish",
       "from": "out/work/compare/compare-marketing-top.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Medal: approved, before (9334a125), after: leaves pressed with a groove, a lip on the scallops, a brighter ring",
-      "time": "2026-11-26T11:42:27.502Z",
+      "caption": "Key marketing-top after the bow and the cards' fall: approved on the left, this build on the right, review tier",
+      "time": "2026-11-26T12:12:22.086Z",
       "by": "careers-finish",
-      "from": "out/work/h/pair-medal.jpg"
+      "from": "out/work/compare/compare-marketing-top.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "First card's corner: approved, before, after: the top edge's thin dark line and pale line, softer gap under the near edge",
-      "time": "2026-11-26T11:42:27.726Z",
+      "caption": "The row of cards and the ticker: approved above, this build below; the cards darken toward the right as approved",
+      "time": "2026-11-26T12:12:22.343Z",
       "by": "careers-finish",
-      "from": "out/work/h/pair-glass.jpg"
+      "from": "out/work/h/pair-row.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Beat marketing.ticker after: the walk from the third card goes round it by the right margin, never over it",
-      "time": "2026-11-26T11:42:27.962Z",
+      "caption": "Medal: approved, before (9334a125), after: the bow of light fades with no hard edge",
+      "time": "2026-11-26T12:12:22.578Z",
       "by": "careers-finish",
-      "from": "out/work/h/sheet-ticker-round.jpg"
+      "from": "out/work/h/pair-medal.jpg"
     }
   ]
 }
