@@ -364,7 +364,9 @@ function play(first: PlayMode): void {
     canvas,
     step: stepNow,
     setStep(step) {
-      base = Math.min(5, Math.max(0, Math.round(step)))
+      const to = Math.min(5, Math.max(0, Math.round(step)))
+      if (!app.code(liveFlow()[to]!.page)) return
+      base = to
       stage = makeStage()
       sound?.stop()
       if (flowing()) sound?.start()
@@ -446,6 +448,11 @@ function play(first: PlayMode): void {
     last = t
     frameSeconds = Math.min(0.5, dt)
     const run = Math.min(0.1, dt)
+    if (now === 'film' && !app.code(null)) {
+      controls.update()
+      requestAnimationFrame(tick)
+      return
+    }
     if (now === 'live') {
       owed += run
       const steps = Math.floor(owed * stepHz)
