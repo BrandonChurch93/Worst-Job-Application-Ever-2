@@ -158,7 +158,7 @@ function crankNodes(): LayoutNode[] {
 
 export function buildLayout(): LayoutNode {
   const machines = [dialNodes(), slotNodes(), crankNodes()]
-  const trays = ROWS.map((name, i) => node(`${name}-tray`, 'machineTray', [FX, trayY(i), FW, TRAY_H], { part: 'rows', r: TRAY_R, states: [`${name}-open`], children: machines[i]! }))
+  const trays = ROWS.map((name, i) => node(`${name}-tray`, 'machineTray', [FX, trayY(i), FW, TRAY_H], { part: 'rows', r: TRAY_R, tone: 'glass', states: [`${name}-open`], children: machines[i]! }))
   const rows: LayoutNode[] = []
   for (let i = 0; i < 3; i++) {
     rows.push(...rowNodes(i, false))
