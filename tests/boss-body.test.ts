@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import * as THREE from 'three'
 import { COLLAPSE_SECONDS, FALLEN, HOME, SOCKET, UNFOLD } from '../src/boss/plan'
-import { collapseRig, crackRuns, drawRig, drawSmoke, drawSocket, fightRig, restRig, unfoldRig, CANNON_OFF, HOLE_H, HOLE_W } from '../src/boss/body'
+import { collapseRig, crackRuns, drawRig, drawSmoke, drawSocket, fightRig, muzzleAt, restRig, unfoldRig, CANNON_OFF, HOLE_H, HOLE_W, MUZZLE } from '../src/boss/body'
 import { bossBody } from '../src/boss/real/body'
 import { bossTransform, crackGeometry, puffPixels, sootPixels, wispPoint, PUFF_PX, SOOT_H, SOOT_W } from '../src/boss/real/transform'
 import { cutPlate, lathe, screw } from '../src/boss/real/body-kit'
@@ -84,6 +84,18 @@ describe('the body of the boss', () => {
       expect(c.x).toBeCloseTo(HOME.x + CANNON_OFF[i]![0], 5)
       expect(c.y).toBeCloseTo(HOME.y + CANNON_OFF[i]![1], 5)
       expect(c.rot).toBe(0)
+      const level = muzzleAt(HOME.x, HOME.y, i)
+      expect(level.x).toBeCloseTo(c.x - MUZZLE.reach, 5)
+      expect(level.y).toBeCloseTo(c.y, 5)
+    })
+    const aim = { x: HOME.x - 400, y: HOME.y + 300 }
+    const turned = fightRig(HOME.x, HOME.y, null, [0, 0], 0, { aim })
+    turned.cannons.forEach((c, i) => {
+      const m = muzzleAt(HOME.x, HOME.y, i, aim)
+      expect(c.rot).toBe(m.rot)
+      expect(Math.abs(m.rot)).toBeLessThanOrEqual(MUZZLE.turn)
+      expect(Math.hypot(m.x - c.x, m.y - c.y)).toBeCloseTo(MUZZLE.reach, 5)
+      expect(m.y).toBeGreaterThan(c.y)
     })
   })
 

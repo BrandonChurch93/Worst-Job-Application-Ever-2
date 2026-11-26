@@ -12,14 +12,14 @@ export const CAP_W = 288
 export const CAP_H = sizes.button
 export const FOOT_OFF: [number, number][] = [[-236, -192], [236, -192], [-236, 192], [236, 192]]
 export const HIP_OFF: [number, number][] = [[-168, -50], [168, -50], [-168, 50], [168, 50]]
-export const CANNON_OFF: [number, number][] = [[-10, -94], [-10, 94]]
+export const CANNON_OFF: [number, number][] = [[-10, -116], [-10, 116]]
 const SHIELD_OFF: [number, number] = [-252, 0]
-const SIDE_OFF: [number, number][] = [[0, -100], [0, 100]]
+const SIDE_OFF: [number, number][] = [[0, -112], [0, 112]]
 export const CANNON_FROM = [1, 2] as const
-export const BODY_Z = { side: 28, sideTop: 36, frame: 36, cap: 52, capTall: heights.button - heights.buttonSocket, hip: 46, cannonTall: 13, housing: 20 }
-export const LEG = { link: 84, wide: 21, foot: 42, knee: 32 }
-export const FRAME = { w: 372, h: 136, cut: 26, bedW: 300, bedH: 84, tall: 10 }
-export const SIDE = { w: 224, h: 76, lean: 30, tall: 8 }
+export const BODY_Z = { side: 60, sideTop: 70, frame: 70, cap: 80, capTall: heights.button - heights.buttonSocket, hip: 92, cannonTall: 13, housing: 20 }
+export const LEG = { link: 100, wide: 28, foot: 46, knee: 42 }
+export const FRAME = { w: 372, h: 136, cut: 26, bedW: 300, bedH: 84, tall: 16 }
+export const SIDE = { w: 224, h: 100, lean: 36, tall: 12 }
 export const SHIELD = { w: 108, h: 236, tall: 12 }
 
 export interface Spot { x: number; y: number; rot: number; k: number; z: number; flat?: number; turn?: number; recoil?: number }
@@ -41,6 +41,15 @@ export function label(id: string, part: string, key: string, cx: number, cy: num
   return s
 }
 
+export const MUZZLE = { reach: 92, z: BODY_Z.sideTop + 12.5, turn: 0.7 }
+
+export function muzzleAt(x: number, y: number, i: number, aim?: { x: number; y: number }): { x: number; y: number; z: number; rot: number } {
+  const cx = x + CANNON_OFF[i]![0]
+  const cy = y + CANNON_OFF[i]![1]
+  const rot = aim ? Math.max(-MUZZLE.turn, Math.min(MUZZLE.turn, Math.atan2(cy - aim.y, cx - aim.x))) : 0
+  return { x: cx - MUZZLE.reach * Math.cos(rot), y: cy - MUZZLE.reach * Math.sin(rot), z: MUZZLE.z, rot }
+}
+
 export function fightRig(x: number, y: number, feet: { x: number; y: number; z: number }[] | null, recoil: [number, number] = [0, 0], bob = 0, more: More = {}): Rig {
   const flash = more.flash ?? 0
   return {
@@ -49,10 +58,8 @@ export function fightRig(x: number, y: number, feet: { x: number; y: number; z: 
     sides: SIDE_OFF.map(([ox, oy]) => ({ x: x + ox, y: y + oy, rot: 0, k: 1, z: bob })),
     legs: HIP_OFF.map(([hx, hy], i) => ({ hx: x + hx, hy: y + hy, fx: feet ? feet[i]!.x : x + FOOT_OFF[i]![0], fy: feet ? feet[i]!.y : y + FOOT_OFF[i]![1], k: 1, z: feet ? feet[i]!.z : 0 })),
     cannons: CANNON_OFF.map(([ox, oy], i) => {
-      const cx = x + ox
-      const cy = y + oy
-      const aim = more.aim ? Math.max(-0.5, Math.min(0.5, Math.atan2(cy - more.aim.y, cx - more.aim.x))) : 0
-      return { x: cx, y: cy, rot: aim, k: 1, z: bob, recoil: recoil[i]! }
+      const m = muzzleAt(x, y, i, more.aim)
+      return { x: x + ox, y: y + oy, rot: m.rot, k: 1, z: bob, recoil: recoil[i]! }
     }),
     shield: { x: x + SHIELD_OFF[0], y: y + SHIELD_OFF[1], rot: 0, k: 1, z: bob },
     hurt: more.hurt ?? 0,

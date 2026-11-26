@@ -157,11 +157,11 @@ export function marquee(z: Zone, ctx: RealContext): THREE.Object3D {
   const sw = stand.w / 2
   const sh = stand.h / 2
   const tall = stand.z1 - stand.z0
-  P.box(sp[0] - sw, sp[0] + sw, sp[1] - sh, sp[1] + sh, 0, 9, TONE.bezel, { bevel: 2.4 })
+  A.box(sp[0] - sw, sp[0] + sw, sp[1] - sh, sp[1] + sh, 0, 9, TONE.aluBright, { bevel: 2.4, along: [1, 0, 0] })
   const hinge = new THREE.Vector3(0, -h2 - r, -BOX.deep).applyMatrix4(toBoard)
   const lean = new THREE.Vector3(0, -h2 * 0.35, -BOX.deep).applyMatrix4(toBoard)
   const brace: V2[] = [[-(sp[1] - sh + 10), 9], [-(hinge.y - 2), Math.min(tall, hinge.z)], [-lean.y, lean.z], [-(sp[1] + sh - 16), 9]]
-  for (const bx of [-0.82, -0.28, 0.28, 0.82]) P.prism(brace, [sp[0] + bx * sw - 9, 0], [sp[0] + bx * sw + 9, 0], TONE.bezel)
+  for (const bx of [-0.82, -0.28, 0.28, 0.82]) A.prism(brace, [sp[0] + bx * sw - 9, 0], [sp[0] + bx * sw + 9, 0], TONE.alu)
   // The beam the housing is hinged on: one ribbed extrusion across the foot.
   const beamTall = Math.min(tall, hinge.z) - 11
   const ribs = (side: number, into: 1 | -1): V2[] => {
@@ -171,7 +171,7 @@ export function marquee(z: Zone, ctx: RealContext): THREE.Object3D {
   }
   const bw = BEAM.thick / 2
   const beam: V2[] = [[-bw, 0], ...ribs(-bw, 1), [-bw, beamTall - 2.5], [-bw + 2.5, beamTall], [bw - 2.5, beamTall], [bw, beamTall - 2.5], ...ribs(bw, -1).reverse(), [bw, 0]]
-  if (beamTall > 12) P.prism(beam, [sp[0] - sw + 12, hinge.y + 1], [sp[0] + sw - 12, hinge.y + 1], grooved(beam, [-bw + BEAM.deep, bw - BEAM.deep], TONE.bezel, TONE.pocket), [true, true], 9)
+  if (beamTall > 12) A.prism(beam, [sp[0] - sw + 12, hinge.y + 1], [sp[0] + sw - 12, hinge.y + 1], grooved(beam, [-bw + BEAM.deep, bw - BEAM.deep], TONE.alu, TONE.aluDark), [true, true], 9)
   for (let i = 0; i < 9; i++) for (const sy of [-sh + 9, sh - 9]) screws.add(sp[0] - sw + 18 + (i * (2 * sw - 36)) / 8, sp[1] + sy, 9, 1.25, i + sy)
 
   const drawn = sky.ready() ? null : skyline()

@@ -7,7 +7,7 @@ import { levels } from '../lights/levels'
 import { drop, liftFor, liftOf } from './mats'
 import { tier } from './tier'
 
-export const VERSION = 'frame-12'
+export const VERSION = 'frame-16'
 
 export const parts: Record<string, PartMaker | null> = {
   'table-frame': whole('table-frame', { version: VERSION, build: (z, ctx) => (z.tier >= 0 ? tier(z, ctx) : apron(z, ctx)), pose: (_o, z, ctx) => { if (z.tier < 0) liftOf(z).value = liftFor(levels(ctx, zone('street')).website) }, drop }),
