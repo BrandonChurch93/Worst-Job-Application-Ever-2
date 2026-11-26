@@ -2,7 +2,7 @@ import type { RealContext } from '../../../../real/types'
 import type { Zone } from '../../zone'
 import type { Buckets, V3 } from './geo'
 import { quoins, walls } from './firehouse'
-import { KIND, TONE, band, beaconBase, board, parapet, reveal, roofDeck, shade, site, wallFace, windowAt, type Hole, type WindowLook } from './kit'
+import { KIND, TONE, band, mix, beaconBase, board, parapet, reveal, roofDeck, shade, site, wallFace, windowAt, type Hole, type WindowLook } from './kit'
 
 export function police(b: Buckets, z: Zone, ctx: RealContext): { beacon: V3 } {
   const S = site(z, 'street.police')
@@ -83,8 +83,8 @@ export function police(b: Buckets, z: Zone, ctx: RealContext): { beacon: V3 } {
     b.glow.lathe([[0, -9.6], [2.6, -8.8], [4.3, -6.6], [4.8, -4.2], [4.2, -2], [2.4, -0.4], [0, 0]], mid, -6.5, 16, [0.75, 1.05, 1.9], { base: zt - 4.2 })
   })
 
-  roofDeck(g, x0 + 5, x1 - 5, yf + 5, yb - 5, deck)
-  parapet(g, x0, x1, yf, yb, deck, top, 6, TONE.blue, TONE.cap, KIND.brick)
+  roofDeck(g, x0 + 5, x1 - 5, yf + 5, yb - 5, deck, mix(TONE.deck, TONE.blue, 0.4))
+  parapet(g, x0, x1, yf, yb, deck, top, 6, TONE.blue, mix(TONE.cap, TONE.blueTrim, 0.5), KIND.brick)
 
   // On the roof: a stair house with a door, a radio mast, a cooling unit and two vents.
   const sx0 = x0 + 12

@@ -188,15 +188,15 @@ export function parapet(g: Geo, x0: number, x1: number, y0: number, y1: number, 
 }
 
 // The deck of a flat roof inside its parapet: felt laid in strips with a dark lap between them, and a gutter round it.
-export function roofDeck(g: Geo, x0: number, x1: number, y0: number, y1: number, deck: number): void {
-  g.quad([x0, y0, deck], [x1, y0, deck], [x1, y1, deck], [x0, y1, deck], TONE.deck, KIND.tar)
+export function roofDeck(g: Geo, x0: number, x1: number, y0: number, y1: number, deck: number, felt: RGB = TONE.deck): void {
+  g.quad([x0, y0, deck], [x1, y0, deck], [x1, y1, deck], [x0, y1, deck], felt, KIND.tar)
   const lap = 27
   const n = Math.max(1, Math.round((x1 - x0) / lap))
   for (let k = 1; k < n; k++) {
     const x = x0 + ((x1 - x0) * k) / n
-    g.quad([x - 0.45, y0 + 3.5, deck + 0.06], [x + 0.45, y0 + 3.5, deck + 0.06], [x + 0.45, y1 - 3.5, deck + 0.06], [x - 0.45, y1 - 3.5, deck + 0.06], shade(TONE.deckDark, 0.8))
+    g.quad([x - 0.45, y0 + 3.5, deck + 0.06], [x + 0.45, y0 + 3.5, deck + 0.06], [x + 0.45, y1 - 3.5, deck + 0.06], [x - 0.45, y1 - 3.5, deck + 0.06], shade(felt, 0.6))
   }
-  for (const [ax, bx, ay, by] of [[x0 + 1, x1 - 1, y0 + 1, y0 + 3.5], [x0 + 1, x1 - 1, y1 - 3.5, y1 - 1], [x0 + 1, x0 + 3.5, y0 + 3.5, y1 - 3.5], [x1 - 3.5, x1 - 1, y0 + 3.5, y1 - 3.5]] as const) g.quad([ax, ay, deck + 0.08], [bx, ay, deck + 0.08], [bx, by, deck + 0.08], [ax, by, deck + 0.08], TONE.deckDark)
+  for (const [ax, bx, ay, by] of [[x0 + 1, x1 - 1, y0 + 1, y0 + 3.5], [x0 + 1, x1 - 1, y1 - 3.5, y1 - 1], [x0 + 1, x0 + 3.5, y0 + 3.5, y1 - 3.5], [x1 - 3.5, x1 - 1, y0 + 3.5, y1 - 3.5]] as const) g.quad([ax, ay, deck + 0.08], [bx, ay, deck + 0.08], [bx, by, deck + 0.08], [ax, by, deck + 0.08], shade(felt, 0.74))
 }
 
 // A beacon: a chromed base on a roof, in the metal bucket. Its lens and its reflector are meshes of their own.
