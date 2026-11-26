@@ -89,3 +89,10 @@ Branch `agent/machine-runner`, from `origin/main` 997de9fb. Looks branch `agent/
 ## Take searches
 
 - 25 of 31 used when I began. None spent yet.
+
+## Where it stands at the end, 09:35 UTC
+
+- Green head: ff195187 (main 180755e9 merged). `npm test` 115 files, 1461 of 1461; build built; take check every one of the 10 beat events inside its beat, hits within 0.15 s of a cut 0; paths all clear; bots all clear; the events of the take the same as the baseline (`node out/work/mr/ev.mjs`).
+- Take searches spent by this agent: 0. Layout and physics untouched this round.
+- Not done: R9-1 issue 7 (the arrow in the reveal beat), the steel balls after the blast (R4-4 issues 1 and 3, physics, not started), stills points 5 (`table-wide`, rails low), 9 (the launch ride's wall) and 10 (`rest-step3`, the port reads as a control), a closer `near-nest`.
+- Least real, by where it is seen: the reveal beat, film frames 4260 to 4500, where the ball is a speck in the feed tube and the arrow does nothing a viewer can see; the bumper hits under the straight-down tier camera, film frames 4878 to 5040 (the hit at 5011), where the ball is 5.1 of 100 across and the pressed arrow reads grey and short; the key `lobby-doors` (film frame 4848), where the camera stands straight on and higher than approved's low three-quarter view and the headquarters reads as a small glass box behind the ball.
