@@ -293,7 +293,7 @@ function popups(f: Fight, io: StepIo, arena: Arena): boolean {
   if (f.phase === 0 || quiet(f)) return used
   f.popupDue -= dt
   if (f.popupDue <= 0) {
-    const free = POPUP_ORDER.filter((slot) => !f.popups.some((p) => p.slot === slot))
+    const free = POPUP_ORDER.filter((slot) => (f.phase !== 2 || slot !== 0) && !f.popups.some((p) => p.slot === slot))
     const first = f.phase === 1 && f.popupCount < POPUP_ORDER.length && f.health > THRESHOLD[1] + DART.damage[1] * DART.volley
     const one = f.windup < 0 && !f.slabs.some((s) => s.state === 0)
     if (free.length && one && (first || f.phase === 2)) {

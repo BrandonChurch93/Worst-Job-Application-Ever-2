@@ -16,7 +16,7 @@ export interface BannerPlan { key: string; w: number; h: number }
 export interface WeaponPlan { slabs: SlabPlan[]; popups: PopupPlan[]; banner: BannerPlan; slabType: TypeSpec; bannerType: TypeSpec; titleType: TypeSpec }
 
 // A slab is lobbed: it leaves the mouth, clears the top of the shield (z 80) and comes down to its flying height.
-const FLY = { z0: 14, z1: 14 + heights.slab, rise: 0.12, over: 112, fall: 0.5 }
+const FLY = { z0: 24, z1: 24 + heights.slab, rise: 0.12, over: 112, fall: 0.5 }
 export const DART_LONG = 26
 export const DART_Z = 17
 export const SPARK_Z = 30
