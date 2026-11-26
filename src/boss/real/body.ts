@@ -301,7 +301,7 @@ function crackLines(lines: [number, number][][], wide: number, z: number, dx = 0
 }
 
 // The block leans, so its wall is seen: the picture runs down the wall as well, not only across the faces.
-function walled(g: THREE.BufferGeometry): THREE.BufferGeometry {
+export function walled(g: THREE.BufferGeometry): THREE.BufferGeometry {
   const p = g.getAttribute('position')
   const uv = g.getAttribute('uv')
   for (let i = 0; i < p.count; i++) uv.setXY(i, uv.getX(i) + p.getZ(i), uv.getY(i) + p.getZ(i))

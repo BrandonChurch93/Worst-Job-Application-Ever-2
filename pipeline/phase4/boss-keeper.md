@@ -27,7 +27,7 @@ Counted by part, 40 each for this round. A look is one still rendered and looked
 | boss-weapons | 15 |
 | health-bar | 1 |
 | acting-boss | 5 |
-| verify-card | 0 |
+| verify-card | 1 |
 
 ## Measures
 
@@ -71,3 +71,4 @@ MEASURED at 05:22 UTC on the tree of the second pass (brushed plates, the career
 28. The plates' roughness is 0.4 (was 0.34): while the plates fly in `boss.unfold` the tighter highlight filled whole plates with near white (share of pixels at 250 or more on every channel 0.051 before, 0.005 after, one still of the unfold at 0.5). The hull in the two keys keeps its sheen.
 29. The pit: the collar is wider (`PIT.collar` 15, was 12) and lighter (0xb6b8b8), with a rolled lip, and the wall under it is darker (0x5a5550, was 0x7a746d) and steeper, so the hole reads as approved's bright ring round a black pit and not as a grey bowl. Judged from one crop beside approved's.
 30. The plates darken as the boss falls: the plate material's colour eases from 0x7c8085 to 0x4a4d51 with the hull's `flat` (`PLATE_TONE` in `src/boss/real/body-kit.ts`, set in `poseFrame`). Lying flat under the room's light the live steel read as large pale sheets, and approved's wreck is dark pieces. One material is shared by the hull, the wings and the two side plates, and they all fall together, so one colour serves. Judged at `--key boss-down` beside approved and at `boss.collapse` 0.45 for the change in flight.
+31. The verification card is the careers page's slab of pale glass (`slabGeometry`, `glassOptions`, `SLAB`, `GLASS`, `cardGlass` imported from `src/pages/marketing/real/perk-cards.ts`), not the shell's grey card: round 10's cards on main (R1-1 issue 1, R3-1 issue 0) call the card opaque grey plastic, and approved's is pale sea-green ground glass with a lit bevel. Its picture is the block's finer clone, so M2 holds: MEASURED `npm run measure -- --unit boss --tier review`: M2 0.0028 of 709585 textured px, M3 0.9424, 8 green. The key of the card is its own (`verify-card:w:h:r:thick`), the geometry is made per size and dropped with the part. The box, tick and rule are untouched.

@@ -99,3 +99,11 @@ Every texture and built asset of the boss that this owner changed or added. All 
 - Takes: 2
 - Why this one: a satin ring that does not mirror the room, over a wall that reads as broken stone. 0 MB.
 - Date: 2026-11-26
+
+## glass of the verification card (material and geometry, no new image)
+
+- Made by: `card()` in `src/pages/step4/real/verify-card.ts`; the material is `paleGlass` in `bossKit()` (`src/boss/real/body-kit.ts`)
+- From: the careers page's `slabGeometry`, `glassOptions`, `SLAB`, `GLASS` and `cardGlass` (for the hidden foot that throws the shadow), imported from `src/pages/marketing/real/perk-cards.ts`
+- Prompt or command: none. `walled(slabGeometry(card, thick))` with `glassOptions()` unchanged but for its picture, which is the block's clone of the careers picture at 2.4 texels per page px
+- Size: no texture of its own (the clone is the block's: 512 x 512 px, 1.33 MB with mips if it is uploaded apart from the careers one)
+- Why this one: the card was the shell's opaque grey card; approved's is pale sea-green ground glass with a lit bevel. At 1 texel per px the picture is soft at the review tier, so the finer clone is used.
