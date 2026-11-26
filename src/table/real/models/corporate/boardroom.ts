@@ -9,7 +9,7 @@ import { FINISH, TONE, drop as free, fin, hex, matsOf, mesh, moved, place, shade
 const SEED = 20261125
 const SCALE = new THREE.Vector3(0.9, 0.9, 0.93)
 const WALNUT: RGB = [0.5, 0.2, 0.07]
-const HIDE = hex(0x131110)
+const HIDE = hex(0x0d0c0b)
 const flatStreak = (g: Geo, x0: number, x1: number, y0: number, y1: number, zz: number, col: RGB): void => {
   g.face([[x0, y0, zz], [x1, y0, zz], [x1, y1, zz], [x0, y1, zz]], [0, 0, 1], [0, 1, 0], col)
 }
@@ -32,7 +32,7 @@ function chair(): Geo {
     })
   })
   fin(g, FINISH.matte, () => {
-    g.slab(roundedLoop(-10.5, 11, -10.5, 10.5, 3.2, 2), ROOM.seat - 5, ROOM.seat + 1, HIDE, { bevel: 1.8, bottom: true, top: shade(HIDE, 1.5) })
+    g.slab(roundedLoop(-10.5, 11, -10.5, 10.5, 3.2, 2), ROOM.seat - 5, ROOM.seat + 1, HIDE, { bevel: 1.8, bottom: true, top: shade(HIDE, 1.2) })
     for (const s of [-1, 1]) g.box(-4.5, 7.5, s * 11.2 - 1.9, s * 11.2 + 1.9, ROOM.seat + 14.5, ROOM.seat + 16.6, HIDE)
     // The back: a padded slab leaning away, in three stitched rolls.
     moved(g, place(-9.2, 0, ROOM.seat - 1, 0, 0, -0.16), () => {
