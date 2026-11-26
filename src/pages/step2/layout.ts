@@ -25,7 +25,7 @@ export const TRAY_R = 14
 // A tray's liner, in page pixels, and the shade its wall lays on its floor.
 export const TRAY = { sink: 0.5, joint: 0.6, jointDeep: 1.1, rim: 8, lean: 1.3, wallShade: 0.55, wallLit: 1, soakOver: 0.5,
   floor: { soak: 0.3, hold: 0.2, reach: 20, bounce: 0.12, bounceReach: 9, base: 1, side: 0.8 },
-  soak: { soak: 0.85, hold: 0.8, reach: 8, bounce: 0.16, bounceReach: 12, base: 0.76, side: 0.8 } }
+  soak: { soak: 0.88, hold: 1.1, reach: 11, bounce: 0.16, bounceReach: 12, base: 0.76, side: 0.8 } }
 export const SHIFT = TRAY_H + TRAY_GAP
 export const TRAY_Z = heights.machineTray
 export const TOP = heights.machineMinTop
