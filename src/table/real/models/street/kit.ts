@@ -188,15 +188,15 @@ export function parapet(g: Geo, x0: number, x1: number, y0: number, y1: number, 
 }
 
 // The deck of a flat roof inside its parapet: felt laid in strips with a dark lap between them, and a gutter round it.
-export function roofDeck(g: Geo, x0: number, x1: number, y0: number, y1: number, deck: number): void {
-  g.quad([x0, y0, deck], [x1, y0, deck], [x1, y1, deck], [x0, y1, deck], TONE.deck, KIND.tar)
+export function roofDeck(g: Geo, x0: number, x1: number, y0: number, y1: number, deck: number, felt: RGB = TONE.deck): void {
+  g.quad([x0, y0, deck], [x1, y0, deck], [x1, y1, deck], [x0, y1, deck], felt, KIND.tar)
   const lap = 27
   const n = Math.max(1, Math.round((x1 - x0) / lap))
   for (let k = 1; k < n; k++) {
     const x = x0 + ((x1 - x0) * k) / n
-    g.quad([x - 0.45, y0 + 3.5, deck + 0.06], [x + 0.45, y0 + 3.5, deck + 0.06], [x + 0.45, y1 - 3.5, deck + 0.06], [x - 0.45, y1 - 3.5, deck + 0.06], shade(TONE.deckDark, 0.8))
+    g.quad([x - 0.45, y0 + 3.5, deck + 0.06], [x + 0.45, y0 + 3.5, deck + 0.06], [x + 0.45, y1 - 3.5, deck + 0.06], [x - 0.45, y1 - 3.5, deck + 0.06], shade(felt, 0.6))
   }
-  for (const [ax, bx, ay, by] of [[x0 + 1, x1 - 1, y0 + 1, y0 + 3.5], [x0 + 1, x1 - 1, y1 - 3.5, y1 - 1], [x0 + 1, x0 + 3.5, y0 + 3.5, y1 - 3.5], [x1 - 3.5, x1 - 1, y0 + 3.5, y1 - 3.5]] as const) g.quad([ax, ay, deck + 0.08], [bx, ay, deck + 0.08], [bx, by, deck + 0.08], [ax, by, deck + 0.08], TONE.deckDark)
+  for (const [ax, bx, ay, by] of [[x0 + 1, x1 - 1, y0 + 1, y0 + 3.5], [x0 + 1, x1 - 1, y1 - 3.5, y1 - 1], [x0 + 1, x0 + 3.5, y0 + 3.5, y1 - 3.5], [x1 - 3.5, x1 - 1, y0 + 3.5, y1 - 3.5]] as const) g.quad([ax, ay, deck + 0.08], [bx, ay, deck + 0.08], [bx, by, deck + 0.08], [ax, by, deck + 0.08], shade(felt, 0.74))
 }
 
 // A beacon: a chromed base on a roof, in the metal bucket. Its lens and its reflector are meshes of their own.
@@ -213,7 +213,12 @@ export function beaconBase(b: Buckets, x: number, y: number, z: number): void {
 export function beaconLens(): THREE.BufferGeometry {
   const g = new Geo()
   const c: RGB = [1, 1, 1]
-  g.lathe([[25, 0], [25, 12], [23.6, 20], [19.8, 27], [13.6, 32], [6, 34.6], [0, 35]], 0, 0, 72, c, { base: 8, wave: [24, 0.07] })
+  const dome: [number, number][] = [[25, 0], [25, 6]]
+  for (let i = 0; i <= 10; i++) {
+    const a = (i / 10) * (Math.PI / 2)
+    dome.push([25 * Math.pow(Math.cos(a), 0.62), 12 + 23 * Math.sin(a)])
+  }
+  g.lathe(dome, 0, 0, 84, c, { base: 8, wave: [28, 0.035] })
   g.lathe([[26, 0], [26, 2], [25, 2]], 0, 0, 36, c, { base: 8 })
   return g.done()
 }
