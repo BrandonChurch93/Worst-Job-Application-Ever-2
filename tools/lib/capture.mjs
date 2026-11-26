@@ -3,10 +3,14 @@ import { execFileSync } from 'node:child_process'
 import crypto from 'node:crypto'
 import fs from 'node:fs'
 import path from 'node:path'
+import sharp from 'sharp'
 import { at, config, readJson, writeJson } from './paths.mjs'
 import { launch, machine } from './browser.mjs'
 import { serve } from './serve.mjs'
 import { buildInfo, buildIsCurrent, unitFolders } from './hashes.mjs'
+
+// The ground between the panels of a sheet, as the approved sheet `clear-ball` has it (MEASURED there: gutters 21 px wide, colour 2, 2, 2).
+const PANEL_GROUND = '#020202'
 
 export const formatOf = (id) => {
   const c = config()
@@ -149,6 +153,40 @@ export function stillFrom(a) {
   return { spec, name, unit, units: Object.keys(unitFolders).includes(unit) ? [unit] : Object.keys(unitFolders) }
 }
 
+// Draws one still in the page and gives back its picture as PNG bytes with the picture's stats. A sheet in panels is drawn panel by panel,
+// each as its own picture, and the panels are put side by side on a dark ground with their gutters.
+export async function drawStill(session, spec, diagnostic = 'beauty', { wholePage = false } = {}) {
+  const one = async (s) =>
+    session.page.evaluate(
+      async ([x, view]) => {
+        window.showcase.setDiagnostic(view)
+        await window.showcase.renderStill(x)
+        return window.showcase.pictureStats()
+      },
+      [s, diagnostic]
+    )
+  const plan = spec.sheet && spec.panel === undefined ? await session.page.evaluate((s) => window.showcase.sheetPanels(s), spec) : null
+  if (!plan || plan.count < 2) {
+    const stats = await one(spec)
+    return { png: wholePage || spec.interface || spec.touchOnly ? await readPage(session) : await readCanvas(session.page), stats, panels: null }
+  }
+  const parts = []
+  let invalidValues = 0
+  let height = 0
+  for (let i = 0; i < plan.count; i++) {
+    const stats = await one({ ...spec, panel: i })
+    invalidValues += stats.invalidValues
+    const png = await readCanvas(session.page)
+    const m = await sharp(png).metadata()
+    if (m.width !== plan.width) throw new Error(`Panel ${i + 1} of sheet "${spec.sheet}" came ${m.width} px wide where ${plan.width} was planned`)
+    height = Math.max(height, m.height)
+    parts.push({ input: png, left: plan.left[i], top: 0 })
+  }
+  const width = session.format?.width ?? plan.left[plan.count - 1] + plan.width + plan.left[0]
+  const png = await sharp({ create: { width, height, channels: 3, background: PANEL_GROUND } }).composite(parts).png().toBuffer()
+  return { png, stats: { invalidValues }, panels: plan }
+}
+
 // Renders one still and writes it with its record. Reuses a still whose record matches.
 export async function still(session, a, { force = false, dir = 'stills' } = {}) {
   const { spec, name, units } = stillFrom(a)
@@ -157,32 +195,25 @@ export async function still(session, a, { force = false, dir = 'stills' } = {}) 
   const record = recordFor(session, { units, tier: spec.live ? `live:${spec.live}` : spec.tier, diagnostic, what: { still: spec } })
   if (!force && fresh(file, record)) return { file, reused: true, record: readJson(file.replace(/\.png$/, '.json')) }
   const t0 = process.hrtime.bigint()
-  const stats = await session.page.evaluate(
-    async ([s, view]) => {
-      window.showcase.setDiagnostic(view)
-      await window.showcase.renderStill(s)
-      return window.showcase.pictureStats()
-    },
-    [spec, diagnostic]
-  )
+  const { png, stats, panels } = await drawStill(session, spec, diagnostic)
   const seconds = Number(process.hrtime.bigint() - t0) / 1e9
-  const png = spec.interface || spec.touchOnly ? await readPage(session) : await readCanvas(session.page)
   fs.mkdirSync(path.dirname(file), { recursive: true })
   fs.writeFileSync(file, png)
   const info = await session.page.evaluate(() => window.showcase.info())
   const extra = { seconds: Number(seconds.toFixed(3)), invalidValues: stats.invalidValues, standIns: info.standIns, counts: info.counts[spec.page], problems: [...session.problems] }
+  if (panels) extra.panels = { count: panels.count, gutter: panels.gutter, width: panels.width }
   writeRecord(file, record, extra)
   return { file, reused: false, record: { ...record, ...extra } }
 }
 
 // Renders one job, a still or a film frame, and gives back the canvas as PNG bytes.
 export async function renderJob(session, job) {
+  if (job.kind !== 'film' && job.kind !== 'opening' && job.kind !== 'loop') return (await drawStill(session, job.spec, job.diag || 'beauty')).png
   await session.page.evaluate(async (j) => {
     window.showcase.setDiagnostic(j.diag || 'beauty')
     if (j.kind === 'film') await window.showcase.renderFilmFrame(j.frame, j.tier)
     else if (j.kind === 'opening') await window.showcase.renderOpeningFrame(j.frame, j.tier)
-    else if (j.kind === 'loop') await window.showcase.renderLoopFrame(j.frame, j.tier)
-    else await window.showcase.renderStill(j.spec)
+    else await window.showcase.renderLoopFrame(j.frame, j.tier)
   }, job)
   return readCanvas(session.page)
 }
