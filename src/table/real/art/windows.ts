@@ -6,9 +6,42 @@ import { INSERT_GLOW, insertCell, insertsOf } from './inserts'
 export interface WindowShape {
   segments: number
   inset: number
+  dome?: number
 }
 
-// The discs of a tier's three windows in one geometry, each with its own cell of the atlases, and `wjaGlow` on every corner: how far that window is lit.
+const RINGS = [0.45, 0.72, 0.9, 1]
+
+// One window: a disc, or with `dome` a low cap of glass whose middle stands that many units over its rim. The first corner is the middle.
+function cap(r: number, segments: number, dome: number): { at: number[]; up: number[]; uv: number[]; index: number[] } {
+  const at = [0, 0, dome]
+  const up = [0, 0, 1]
+  const uv = [0.5, 0.5]
+  const index: number[] = []
+  const rings = dome > 0 ? RINGS : [1]
+  const round = dome > 0 ? (r * r + dome * dome) / (2 * dome) : 0
+  const row = segments + 1
+  rings.forEach((f, j) => {
+    const d = f * r
+    for (let i = 0; i <= segments; i++) {
+      const a = (i / segments) * Math.PI * 2
+      const x = Math.cos(a) * d
+      const y = Math.sin(a) * d
+      const h = dome > 0 ? Math.sqrt(round * round - d * d) - (round - dome) : 0
+      at.push(x, y, h)
+      if (dome > 0) up.push(x / round, y / round, (h + round - dome) / round)
+      else up.push(0, 0, 1)
+      uv.push(0.5 + (x / r) * 0.5, 0.5 + (y / r) * 0.5)
+    }
+    const here = 1 + j * row
+    for (let i = 0; i < segments; i++) {
+      if (j === 0) index.push(0, here + i, here + i + 1)
+      else index.push(here - row + i, here + i, here + i + 1, here - row + i, here + i + 1, here - row + i + 1)
+    }
+  })
+  return { at, up, uv, index }
+}
+
+// The glasses of a tier's three windows in one geometry, each with its own cell of the atlases, and `wjaGlow` on every corner: how far that window is lit.
 export function windowGeometry(z: Zone, w: WindowShape): { geometry: THREE.BufferGeometry; spans: [number, number][]; ids: string[] } {
   const list = insertsOf(z.tier)
   const at: number[] = []
@@ -18,24 +51,21 @@ export function windowGeometry(z: Zone, w: WindowShape): { geometry: THREE.Buffe
   const index: number[] = []
   const spans: [number, number][] = []
   for (const n of list) {
-    const g = new THREE.CircleGeometry(n.r * BALL, w.segments)
-    const p = g.getAttribute('position')
-    const t = g.getAttribute('uv')
+    const g = cap(n.r * BALL, w.segments, w.dome ?? 0)
     const [col, row] = insertCell(n)
     const [x, y] = localBalls(z, n.c[0], n.c[1])
     const first = at.length / 3
-    for (let i = 0; i < p.count; i++) {
-      at.push(p.getX(i) + x, p.getY(i) + y, 0)
-      up.push(0, 0, 1)
-      const u = 0.5 + (t.getX(i) - 0.5) * w.inset
-      const v = 0.5 + (t.getY(i) - 0.5) * w.inset
+    const count = g.at.length / 3
+    for (let i = 0; i < count; i++) {
+      at.push(g.at[i * 3]! + x, g.at[i * 3 + 1]! + y, g.at[i * 3 + 2]!)
+      up.push(g.up[i * 3]!, g.up[i * 3 + 1]!, g.up[i * 3 + 2]!)
+      const u = 0.5 + (g.uv[i * 2]! - 0.5) * w.inset
+      const v = 0.5 + (g.uv[i * 2 + 1]! - 0.5) * w.inset
       uv.push((col + u) / 3, 1 - (row + 1 - v) / 3)
       glow.push(INSERT_GLOW.off)
     }
-    const tri = g.getIndex()!
-    for (let i = 0; i < tri.count; i++) index.push(tri.getX(i) + first)
-    spans.push([first, p.count])
-    g.dispose()
+    for (const k of g.index) index.push(k + first)
+    spans.push([first, count])
   }
   const geometry = new THREE.BufferGeometry()
   geometry.setAttribute('position', new THREE.Float32BufferAttribute(at, 3))
