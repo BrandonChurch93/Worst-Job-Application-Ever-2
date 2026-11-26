@@ -1,35 +1,35 @@
 {
   "folder": "lamp-keeper",
-  "pushed": "2026-11-26T04:34:25.659Z",
-  "commit": "98ed6d077cd76bb27e188ebfee423cdf3c5deb6f",
+  "pushed": "2026-11-26T04:57:04.814Z",
+  "commit": "3303de6b6e5e5b3e09c165d777325d14dcae03f8",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "youre-fired, approved left, build right at 98ed6d07 draft: the red wash on the floor is gone, the floor is dark lacquer with lamp tails; the pale wall behind is the frame's",
-      "time": "2026-11-26T04:34:23.848Z",
+      "caption": "Still key-youre-fired-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T04:43:30.572Z",
       "by": "lamp-keeper",
-      "from": "out/work/lights/send/youre-fired-pair.jpg"
+      "from": "out/work/stills/key-youre-fired-hd-review.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "tier-corporate, approved left, build right, draft: rail lamps are small lit windows, lane domes keep warm pools, floor deep navy",
-      "time": "2026-11-26T04:34:24.079Z",
+      "caption": "tier-street, approved left, build right at 3303de6b draft: floor print read from above, small amber rail windows, lane pools; pit mean 1.10 of approved",
+      "time": "2026-11-26T04:57:03.346Z",
+      "by": "lamp-keeper",
+      "from": "out/work/lights/send/tier-street-pair.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "tier-corporate, approved left, build right at 3303de6b draft: navy floor with its gold lines, bats lit evenly, boardroom lit from a hidden lamp; pit mean 1.06 of approved",
+      "time": "2026-11-26T04:57:03.570Z",
       "by": "lamp-keeper",
       "from": "out/work/lights/send/tier-corporate-pair.jpg"
     },
     {
-      "file": "look-3.jpg",
-      "caption": "reply-all, approved left, build right, draft: the Office as a lit room, hidden lamps over cubicles and inbox, floor still darker green than approved",
-      "time": "2026-11-26T04:34:24.326Z",
-      "by": "lamp-keeper",
-      "from": "out/work/lights/send/reply-all-pair.jpg"
-    },
-    {
       "file": "look-4.jpg",
-      "caption": "rail-cam, approved left, build right, draft: deep floor with mirrored lamp tails; the red insert is still the largest bright thing",
-      "time": "2026-11-26T04:34:24.551Z",
+      "caption": "last-save, approved left, build right at 3303de6b draft: the milky veil is gone, lamps mirrored in the floor; inserts still larger and brighter than approved",
+      "time": "2026-11-26T04:57:03.801Z",
       "by": "lamp-keeper",
-      "from": "out/work/lights/send/rail-cam-pair.jpg"
+      "from": "out/work/lights/send/last-save-pair.jpg"
     }
   ]
 }
