@@ -24,7 +24,7 @@ export const TRAY_H = 250
 export const TRAY_R = 18
 // A tray's liner, in page pixels, and the shade its wall lays on its floor.
 export const TRAY = { sink: 0.5, joint: 0.3, jointDeep: 0.7, rim: 3.4, lean: 0.3, cove: 2, rimShade: 0.66, wallShade: 0.36, wallShadeTop: 0.2, wallFoot: 0.2, wallFootTop: 0.04, cool: 0.12, soakOver: 0.5,
-  floor: { soak: 0.44, hold: 0.2, reach: 13, bounce: 0.13, bounceReach: 12, base: 1.13, side: 0.8 },
+  floor: { soak: 0.4, hold: 0.2, reach: 13, bounce: 0.16, bounceReach: 24, base: 1.24, side: 0.8, far: 0.32, farReach: 110, warm: 0.035 },
   soak: { soak: 0.62, hold: 1, reach: 15, bounce: 0.05, bounceReach: 20, base: 0.94, side: 0.8, cool: 0.14 } }
 export const COIN = { r: 13, wall: 14, clear: 0.3, fall: 2600, spring: 0.38, least: 150, hops: 2, rows: 2, roll: 150, pitch: 23, stack: 1.4 }
 export const SHIFT = TRAY_H + TRAY_GAP

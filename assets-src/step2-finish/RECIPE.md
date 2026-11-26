@@ -53,7 +53,7 @@ Date: 2026-11-26
 Made by: `trayFloor()` in `src/pages/step2/real/rows.ts`
 From: `TRAY.floor` in `src/pages/step2/layout.ts`
 Prompt or command: `npm run still -- --key step2-crank --format hd --tier draft`, `npm run still -- --key step2-dial --format hd --tier draft`
-Takes: 3 draft stills of the crank key (soak 0.42 over 30 px was too dark all over; soak 0.44 over 13 px kept), 1 of the dial key
+Takes: 3 draft stills of the crank key (soak 0.42 over 30 px was too dark all over; soak 0.44 over 13 px kept), 1 of the dial key; then 3 more of the crank key and 1 of the dial key for the long part of the shade (`far` 0.16 over 52 did nothing, 0.24 over 110 was short of approved, 0.32 over 110 kept with soak 0.4, base 1.24, bounce 0.16 over 24, warm 0.035)
 Why this one: a shade under the upper and left wall and a lighter far side, as the approved well has
 Texture: none. 0 px, 0 MB
 Date: 2026-11-26
