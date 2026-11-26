@@ -81,9 +81,9 @@ describe.skipIf(spawnSync('ffmpeg', ['-version']).status !== 0)('the check that 
     const r = linesOverFullScale(dir, { lines: [line('line.a.0.mp3', 0.25), line('line.b.0.mp3', 0.5)] })
     expect(r.problems).toEqual([])
     expect(r.lines).toBe(2)
-    expect(r.largest.file).toBe('line.b.0.mp3')
-    expect(r.largest.db).toBeGreaterThan(-7)
-    expect(r.largest.db).toBeLessThan(-5)
+    expect(r.largest?.file).toBe('line.b.0.mp3')
+    expect(r.largest?.db ?? 0).toBeGreaterThan(-7)
+    expect(r.largest?.db ?? 0).toBeLessThan(-5)
   })
 
   it('names a line that decodes over full scale, and a file that is no sound', () => {
