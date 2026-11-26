@@ -112,3 +112,61 @@ Looks added since 07:40 UTC, by part (first-pass counts above):
 | boss-weapons | 7 | 9 | `boss-fight` compare 4, beat sheet popups 1, motion sheets `slab-drop` 1 and `hit` 1 |
 | health-bar | 2 | 3 | beat sheet lastStand 2 |
 | acting-boss | 9 | 24 | beat sheets popups 1, lastStand 2, collapse 3, unfold 1, press 1, motion sheet `hit` 1 |
+
+## Third pass (08:20 to 08:45 UTC)
+
+Decisions:
+
+- Shield (R1-1 issue 12 and the `boss-fight` crop): the pane has a ground edge 12 px wide (`RIM.shield`), steel grey while it stands (`CLEAR_GLASS.edge` `0x727d7a`, metalness 0.7) and a pale glass bead once it lies (`bead` `0xc9dad4`, metalness 0.05); the lying bead casts a shadow, which costs 2 draw calls in `boss-down` (379 to 381, still under the 388 I was given).
+- Resting bezel (R1-1 issue 14): drawn with `drawRim` alone. The whole socket under a seated cap cost 257100 triangles for nothing seen (sheet 883438 with it, 626718 with no socket, 638338 with the rim alone, MEASURED with `npm run compare -- --sheet boss-stages --tier draft --format hd`).
+- Sweat in `boss.verify` (smaller read of 07:12Z): the beads are drawn by the cursor, 2 to 3 px wide in a 1920 frame, and are not mine to make larger. The arrow now hangs back on bare paper under the fine print (`STAND` in `script.ts`, 104 right and 132 below the box) instead of on the words, and turns nervous within 190 px of the box (was 150), so the beads and the tremble have a plain ground.
+- Slab landings (R4-2 issues 2 and 5): a slab kicks up a low ring of paper dust for 0.5 s where it lands or hits (`LAND_DUST` in `src/pages/step4/real/boss-weapons.ts`): discs with a soft rim, vertex alpha, no texture, one draw call while it shows.
+- Char on the fallen cap (R1-1 issue 11): the pale ash specks in the soot are darker (`grey` 74 to 40), so the burns read as char and not as a speckled print.
+- Plates (R3-1 issue 5): the flange under each plate is dark on the live machine (`FLANGE_TONE.live` `0x35373a`) and lit steel in the wreck (`dead` `0x74777b`, roughness 0.44), so a fallen plate shows a wall with a bright edge. Lit steel on the live machine was tried and taken back: M3 fell to 0.798 against 0.8 (the dark gaps between the plates are part of the fine detail of `boss-fight`), with the dark flange it is 0.8063. The margin is thin.
+- Cursor in `boss-down`: said to look_fixer at 08:20 UTC that `exhausted` with `scorched` shows as a folded shape about 50 px tall with no dark outline.
+
+MEASURED at 08:40 UTC:
+
+| what | command | number |
+| --- | --- | --- |
+| measures | `npm run measure -- --unit boss --tier review` | 8 green, 0 red; M3 0.8063 (least 0.8) |
+| `boss-fight` draft | `npm run compare -- --key boss-fight --tier draft --format hd` | 11.618 s, 642536 triangles, 472 draw calls |
+| `boss-fight` review | `npm run still -- --key boss-fight --format hd --tier review --force` | 23.174 s, 642536 triangles, 472 draw calls |
+| `boss-down` draft | `npm run compare -- --key boss-down --tier draft --format hd` | 11.78 s, 533654 triangles, 381 draw calls |
+| sheet `boss-stages` draft | `npm run compare -- --sheet boss-stages --tier draft --format hd` | 9.543 s, 638338 triangles, 501 draw calls |
+
+Looks added since 08:20 UTC, by part:
+
+| part | added | total | what they were |
+| --- | --- | --- | --- |
+| verify-card | 0 | 8 | |
+| boss-body | 14 | 39 | `boss-fight` compare 6, `boss-fight` at review 3, `boss-down` compare 5 |
+| boss-transform | 8 | 35 | `boss-down` compare 5, sheet `boss-stages` 3 |
+| boss-weapons | 5 | 14 | `boss-fight` compare 1, motion sheet `slab-drop` 1, stills of a landing 2, sheet of the unit 1 |
+| health-bar | 0 | 3 | |
+| acting-boss | 5 | 29 | beat sheet verify 1, stills of the stand 3, sheet of the unit 1 |
+
+## Fourth pass (08:42 UTC on)
+
+Ruling of the Builder at 08:42 UTC (the arrow at `boss-down`): at the key the arrow stands, with hurt `scorched` on a standing act, and exhaustion comes after the key's moment with a seen change. The cursor model is not changed.
+
+- Built: the arrow walks to the fallen button (28.0 to 28.6 s), stands there in act `plain` and is scorched from 29.0 s, sags to `exhausted` 0.15 s after the key (`SAG_AFTER` in `src/pages/step4/index.ts`), drags itself over and presses at 29.88 s, then holds `proud`. The sag in the collapse is gone.
+- `tests/boss-closer-acting.test.ts`: the last test now holds the ruling (plain from 28.6 to 29.05 s, exhausted held 0.9 s or more between 29.05 and 30.4 s, proud 1.5 s or more after the press). It was changed because the ruling changes what it holds.
+- SEEN in `npm run compare -- --key boss-down --tier draft --format hd` at 08:44 UTC: the arrow stands upright with its dark outline beside the fallen button. Its scorch marks are too small to read at this size (the cursor's size and its marks are not mine).
+
+Looks: acting-boss 30 (one `boss-down` compare).
+
+- Slabs (the `fired-0` crop of `boss-fight`): the lacquer is a deeper red with a line of light on the upper bevel (`LACQUER` in `src/pages/step4/real/boss-weapons.ts`: colour `0xba0a0b`, coat roughness 0.15, room 0.7). Before, the room's reflection laid a pale haze on the face and the slab read rose and matte. The shape of the slab is step 1's (`makeSlab`), not mine; its side walls stay less shaded than approved. Looks: boss-weapons 18 (four `boss-fight` compares).
+- MEASURED 08:49 UTC, `npm run compare -- --key boss-fight --tier draft --format hd`: 11.718 s, 642536 triangles, 472 draw calls.
+- Cracks round the socket: drawn 2.5 times their plan width (was 1.7) and a little darker (`0x33231b`), in `src/boss/real/transform.ts`. SEEN at 08:55 UTC in a crop of the `boss-fight` draft beside approved: the roots are about as heavy as approved; the colour of that look was `0x2b1e17`, which read black, and the committed `0x33231b` was not looked at by itself. Looks: boss-transform 36, boss-weapons 19 (a crop of the dart line and the burst: close to approved, not changed), acting-boss 31 (sheet of the unit: at 2:18.23 the arrow stands by the fallen button; in the sag after it the melted shape is hard to see on the paper, which is the cursor's own drawing).
+
+On main with merge 30 (the shared look, 7f82c9cc), MEASURED 09:00 to 09:04 UTC:
+
+| what | command | number |
+| --- | --- | --- |
+| gate | `npm test`, `npm run build`, `npm run bots` | 112 files, 1442 of 1442; build ok; bots all clear |
+| measures | `npm run measure -- --unit boss --tier review` | 8 green, 0 red; M3 1.0339 (least 0.8; 0.8148 before the merge) |
+| `boss-fight` draft | `npm run compare -- --key boss-fight --tier draft --format hd` | 12.215 s, 645616 triangles, 474 draw calls |
+| `boss-down` draft | `npm run compare -- --key boss-down --tier draft --format hd` | 12.599 s, 536734 triangles, 383 draw calls |
+
+SEEN in both compares at 09:01 UTC: nothing of the boss reads worse on the shared look. The caps are glossier and a brighter orange (the seated cap now has the approved gloss), the health fill carries a line of light, the legs are brighter. Looks: boss-transform 38 (the two compares, also for the cracks at their committed colour).

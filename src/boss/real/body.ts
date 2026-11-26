@@ -6,7 +6,7 @@ import { controls } from '../../shell/real/controls'
 import { roundedRect, sweep, plateProfile } from '../../shell/solids'
 import { config } from '../../config'
 import { BODY_Z, FRAME, LEG, SHADE, SHIELD, SIDE, SIDE_OFF, CAP_W, CAP_H, WRECK } from '../body'
-import { bossKit, cutPlate, joined, lathe, lying, mesh, moved, screw, PLATE_TONE } from './body-kit'
+import { bossKit, cutPlate, joined, lathe, lying, mesh, moved, screw, FLANGE_TONE, PLATE_TONE } from './body-kit'
 import { pillGeometry, PILL } from './pill'
 import { clearTone, deepTone, fracture, glassKit, paneGeometry, rimGeometry, CLEAR_GLASS, RIM, SHIELD_PANE } from './glass'
 
@@ -186,6 +186,8 @@ function poseFrame(o: THREE.Object3D, s: Shape): void {
   const split = s.v?.[2] ?? 0
   const [a, b] = o.userData.wings as THREE.Group[]
   bossKit().plate.color.copy(PLATE_TONE.live).lerp(PLATE_TONE.dead, prog(s.v?.[1] ?? 0, 0.3, 1))
+  bossKit().plateSide.color.copy(FLANGE_TONE.live).lerp(FLANGE_TONE.dead, prog(s.v?.[1] ?? 0, 0.3, 1))
+  bossKit().plateSide.roughness = FLANGE_TONE.rough[0] + (FLANGE_TONE.rough[1] - FLANGE_TONE.rough[0]) * prog(s.v?.[1] ?? 0, 0.3, 1)
   const fold = (1 - k) * (Math.PI / 2)
   a!.rotation.set(-fold, 0, 0)
   b!.rotation.set(fold, 0, 0)
