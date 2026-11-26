@@ -71,7 +71,20 @@ const ICONS = {
 
 const pen = (col, opacity = 1) => (w) => `fill="none" stroke="${col}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" opacity="${opacity}"`
 
+// The glass of a window is smaller than its hole: it lies at the foot of a dark well, inside a thin metal trim, so a lit window is a small deep light and not a plate.
+const WELL = { glass: 0.82, trim: 240 }
+
 function cell(look, kind, i) {
+  const inner = glass(look, kind, i)
+  const set = `<clipPath id="w${kind}${i}"><circle cx="256" cy="256" r="250"/></clipPath><g transform="translate(256 256) scale(${WELL.glass}) translate(-256 -256)"><g clip-path="url(#w${kind}${i})">${inner}</g></g>`
+  const edge = 250 * WELL.glass
+  if (kind === 'relief') return `<rect width="512" height="512" fill="#000"/><circle cx="256" cy="256" r="250" fill="#101010"/>${set}<circle cx="256" cy="256" r="${WELL.trim}" fill="none" stroke="#ffffff" stroke-width="16" opacity="0.9"/>`
+  if (kind === 'glow') return `<rect width="512" height="512" fill="#020203"/>${set}<circle cx="256" cy="256" r="${edge}" fill="none" stroke="#020203" stroke-width="10" opacity="0.7"/>`
+  const wall = mix(look.colour, '#06080c', 0.93)
+  return `<radialGradient id="k${i}" cx="256" cy="256" r="250" gradientUnits="userSpaceOnUse"><stop offset="${WELL.glass}" stop-color="#050608"/><stop offset="0.9" stop-color="${wall}"/><stop offset="1" stop-color="#0a0b0e"/></radialGradient><rect width="512" height="512" fill="url(#k${i})"/>${set}<circle cx="256" cy="256" r="${WELL.trim}" fill="none" stroke="#8a8f96" stroke-width="12"/><circle cx="256" cy="256" r="${WELL.trim + 3}" fill="none" stroke="#d6dade" stroke-width="3" opacity="0.8"/><circle cx="256" cy="256" r="${edge}" fill="none" stroke="#040507" stroke-width="8" opacity="0.8"/>`
+}
+
+function glass(look, kind, i) {
   const c = look.colour
   const dark = mix(c, '#06080c', 0.86)
   const draw = ICONS[look.icon]
@@ -90,7 +103,7 @@ function cell(look, kind, i) {
   const ink = mix(c, '#0a0c10', 0.78)
   const lit = mix(c, '#ffffff', 0.5)
   const rim = `<circle cx="256" cy="256" r="240" fill="none" stroke="${mix(c, '#06080c', 0.5)}" stroke-width="3" opacity="0.45"/>`
-  return `<radialGradient id="g${i}" cx="256" cy="256" r="262" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${mix(c, '#ffffff', 0.6)}"/><stop offset="0.4" stop-color="${mix(c, '#ffffff', 0.42)}"/><stop offset="0.74" stop-color="${mix(c, '#ffffff', 0.16)}"/><stop offset="0.93" stop-color="${mix(c, '#06080c', 0.3)}"/><stop offset="1" stop-color="${mix(c, '#06080c', 0.7)}"/></radialGradient><rect width="512" height="512" fill="url(#g${i})"/>${rings}${rim}${draw(pen(ink, 0.94), 14, `fill="${ink}" opacity="0.94"`, pen(lit, 0.9), pen(lit))}`
+  return `<radialGradient id="g${i}" cx="256" cy="256" r="262" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${mix(c, '#ffffff', 0.7)}"/><stop offset="0.2" stop-color="${mix(c, '#ffffff', 0.34)}"/><stop offset="0.46" stop-color="${mix(c, '#06080c', 0.2)}"/><stop offset="0.7" stop-color="${mix(c, '#06080c', 0.55)}"/><stop offset="0.88" stop-color="${mix(c, '#06080c', 0.8)}"/><stop offset="0.96" stop-color="${mix(c, '#06080c', 0.92)}"/></radialGradient><rect width="512" height="512" fill="url(#g${i})"/>${rings}${rim}${draw(pen(ink, 0.94), 14, `fill="${ink}" opacity="0.94"`, pen(lit, 0.9), pen(lit))}`
 }
 
 export async function insertAtlases(inserts, dir, size) {
