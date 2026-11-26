@@ -1,35 +1,35 @@
 {
   "folder": "corporate-models",
-  "pushed": "2026-11-26T03:32:23.408Z",
-  "commit": "fa4f84bb059627e33d576b08f979d2d9ef2e725e",
+  "pushed": "2026-11-26T03:48:13.613Z",
+  "commit": "92524864c62bc0b7b4108d294202a4ba37a607aa",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "lobby-doors draft at fa4f84bb, approved on the left, this build on the right: glass slabs on a brass post, deeper brass, red carpet pile",
-      "time": "2026-11-26T03:32:21.639Z",
+      "caption": "lobby-doors draft at 92524864 beside the approved image: dark blue green glass, red carpet, deeper brass",
+      "time": "2026-11-26T03:48:11.797Z",
       "by": "corporate-models",
-      "from": "out/work/looks/files/20261126033221-lobby-compare-0331.jpg"
+      "from": "out/work/looks/files/20261126034811-lobby-compare-0346.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "tier-corporate draft at fa4f84bb beside the approved image",
-      "time": "2026-11-26T03:32:21.870Z",
+      "caption": "tier-corporate draft at 92524864 beside the approved image",
+      "time": "2026-11-26T03:48:12.023Z",
       "by": "corporate-models",
-      "from": "out/work/looks/files/20261126033221-tier-compare-0331.jpg"
+      "from": "out/work/looks/files/20261126034812-tier-compare-0346.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "the tower from straight above at fa4f84bb: glazed lantern over the lit hall, lit sills on the front strip, band, globes, carpet, wedges",
-      "time": "2026-11-26T03:32:22.100Z",
+      "caption": "tier-corporate draft at 92524864, this build alone: tower with glazed lantern, red carpet, glass revolving door, marble wedges, beach case, walnut boardroom",
+      "time": "2026-11-26T03:48:12.256Z",
       "by": "corporate-models",
-      "from": "out/work/looks/files/20261126033222-tower-above-0331.jpg"
+      "from": "out/work/looks/files/20261126034812-tier-0346.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "beach case and boardroom from the tier camera at fa4f84bb, enlarged: the boardroom is the weakest part",
-      "time": "2026-11-26T03:32:22.352Z",
+      "caption": "lobby-doors draft at 92524864, this build alone",
+      "time": "2026-11-26T03:48:12.481Z",
       "by": "corporate-models",
-      "from": "out/work/looks/files/20261126033222-beach-boardroom-0331.jpg"
+      "from": "out/work/looks/files/20261126034812-lobby-0346.jpg"
     }
   ]
 }
