@@ -150,9 +150,6 @@ float seamLine( out float glint ) {
 export const frontFragment = /* glsl */ `
 ${head}
 ${shared}
-uniform mat4 projectionMatrix;
-varying vec3 vView;
-varying vec3 vMid;
 
 vec4 floorAt( vec3 from, vec3 dir ) {
 	vec3 d = dir + step( abs( dir ), vec3( 1e-4 ) ) * 1e-4;
@@ -228,7 +225,6 @@ vec4 floorAt( vec3 from, vec3 dir ) {
 void main() {
 	vec3 V = normalize( uEye - vP );
 	vec3 N = normalize( vN );
-	gl_FragDepth = gl_FragCoord.z;
 	if ( vKind > 1.5 ) {
 		gl_FragColor = vec4( seat( N, V, 1.0 ), 1.0 );
 		return;
@@ -263,14 +259,14 @@ void main() {
 	gather /= max( 1.0, dot( gather, vec3( 0.2126, 0.7152, 0.0722 ) ) / 0.6 );
 	vec3 soft = uSoft / max( 1.0, dot( uSoft, vec3( 0.2126, 0.7152, 0.0722 ) ) / 0.35 );
 	float band = smoothstep( RIN - 0.012, RIN + 0.012, rho );
-	float lens = smoothstep( 0.55, RIN, rho );
+	float lens = smoothstep( 0.68, RIN, rho );
 	float aIn = mix( 0.04, 0.62 * known, lens * lens );
 	float alpha = mix( mix( aIn, 0.95 * known, band ), mix( 0.03, 0.34, band ), uTrue ) * mix( 0.7, 1.0, uArtOn );
 	vec3 col = ( bent * mix( 1.15, 1.9, band ) + ( gather * 0.5 + uHaze + soft * 0.1 ) * band ) * alpha;
 
 	vec3 away = normalize( vec3( - uSoftDir.xy, 0.0 ) + vec3( 1e-4 ) );
 	float far = pow( max( dot( Np, away ), 0.0 ), 2.0 );
-	float pool = smoothstep( 0.42, 0.8, rho ) * ( 1.0 - band );
+	float pool = smoothstep( 0.6, 0.84, rho ) * ( 1.0 - band );
 	col += ( soft * 0.34 * far + gather * 0.4 ) * pool;
 	col += ( soft * 0.022 + min( uFloor, vec3( 0.6 ) ) * 0.008 ) * ( 0.4 + 0.6 * rho );
 	alpha = clamp( alpha + 0.1 * pool * far, 0.0, 1.0 );
@@ -306,11 +302,6 @@ void main() {
 	col *= 1.0 - 0.6 * line;
 	alpha = max( alpha, 0.55 * line );
 
-	if ( uOpen < 0.002 && uTrue < 0.5 ) {
-		vec3 along = normalize( vView );
-		vec4 mid = projectionMatrix * vec4( along * dot( vMid, along ), 1.0 );
-		gl_FragDepth = mid.z / mid.w * 0.5 + 0.5;
-	}
 	gl_FragColor = vec4( col, alpha );
 }
 `
@@ -318,9 +309,13 @@ void main() {
 export const backFragment = /* glsl */ `
 ${head}
 ${shared}
+uniform mat4 projectionMatrix;
+varying vec3 vView;
+varying vec3 vMid;
 void main() {
 	vec3 V = normalize( uEye - vP );
 	vec3 N = normalize( vN );
+	gl_FragDepth = gl_FragCoord.z;
 	if ( vKind > 1.5 ) {
 		gl_FragColor = vec4( seat( - N, V, 0.35 ), 1.0 );
 		return;
@@ -341,6 +336,11 @@ void main() {
 	col += glint * 0.3 * ( softbox( reflect( - V, normalize( - N + vAxisY * 0.5 * sign( vO.y ) ) ), 0.15 ) * SOFT * 0.12 + uHaze * 2.0 + uFloor * 0.03 );
 	col *= 1.0 - 0.5 * line;
 	alpha = max( alpha, 0.4 * line );
+	if ( uOpen < 0.002 && uTrue < 0.5 ) {
+		vec3 along = normalize( vView );
+		vec4 mid = projectionMatrix * vec4( along * dot( vMid, along ), 1.0 );
+		gl_FragDepth = mid.z / mid.w * 0.5 + 0.5;
+	}
 	gl_FragColor = vec4( col, alpha );
 }
 `
@@ -359,7 +359,13 @@ void main() {
 	vec4 wp = modelMatrix * vec4( at, 1.0 );
 	vP = ( uToPage * wp ).xyz;
 	vN = normalize( m * normal );
-	gl_Position = projectionMatrix * viewMatrix * wp;
+	vec4 seen = viewMatrix * wp;
+	gl_Position = projectionMatrix * seen;
+	float near = ( viewMatrix * modelMatrix * vec4( 0.0, 0.0, 0.0, 1.0 ) ).z + 0.3 * length( modelMatrix[ 0 ].xyz );
+	if ( seen.z < near ) {
+		vec4 q = projectionMatrix * vec4( seen.xy, near, 1.0 );
+		gl_Position.z = q.z / q.w * gl_Position.w;
+	}
 }
 `
 

@@ -248,9 +248,9 @@ function build(s: Shape): THREE.Group {
 
   const back = new THREE.Mesh(k.shell, mat(backFragment, shellVertex, THREE.BackSide))
   back.name = 'ball.back'
+  ;(back.material as THREE.ShaderMaterial).depthWrite = true
   const front = new THREE.Mesh(k.shell, mat(frontFragment, shellVertex, THREE.FrontSide))
   front.name = 'ball.front'
-  ;(front.material as THREE.ShaderMaterial).depthWrite = true
   const sweat = new THREE.InstancedMesh(k.drop.clone(), mat(dropFragment, dropVertex, THREE.DoubleSide), DROPS)
   sweat.name = 'ball.sweat'
   sweat.userData.fine = true
@@ -404,9 +404,10 @@ function pose(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const lum = (c: number[]): number => 0.25 * c[0]! + 0.6 * c[1]! + 0.15 * c[2]!
   const high = 1 / (1 + lift / (r * 2.5))
   const dim = 1 - 0.7 * open
-  const key = Math.min(1, lum(L.soft) * 2.2)
+  const key = Math.min(1, Math.max(lum(L.soft) * 2.2, lum(L.floor) * 0.7))
   shade[0]!.set(KEY_AWAY.x, KEY_AWAY.y, 1.15, Math.min(0.86, 0.56 + 0.5 * key) * Math.min(1, key * 8) * high)
-  spot[0]!.set(L.soft[0] * 1.5 * high * dim, L.soft[1] * 1.3 * high * dim, L.soft[2] * 1.05 * high * dim)
+  const gathered = L.soft.map((v, c) => Math.max(v, L.floor[c]! * 0.3))
+  spot[0]!.set(gathered[0]! * 1.5 * high * dim, gathered[1]! * 1.3 * high * dim, gathered[2]! * 1.05 * high * dim)
   const low = L.lamps.filter((l) => !l.window && l.z - L.drop > 16 && l.amount > 0.03 && Math.hypot(l.x, l.y) > r * 0.8)
   for (let i = 1; i < 3; i++) {
     const l = low[i - 1]
