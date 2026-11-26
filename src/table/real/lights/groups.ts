@@ -74,14 +74,14 @@ function build(z: Zone): Group[] {
   const inserts = table.inserts.filter((n) => n.tier === k)
   // Under each sling plastic stands a lamp that lights the floor round it and the flipper before it.
   const slings: Source[] = table.slings.filter((s) => s.tier === k).map((s) => at((s.a[0] + s.b[0] + s.c[0]) / 3, (s.a[1] + s.b[1] + s.c[1]) / 3, 30, 0.95, 2.4, `sling.${s.id}`))
-  // A lamp over each bat, so the flippers are the brightest things at the foot of a tier.
-  const bats: Source[] = table.flippers.filter((f) => f.tier === k).map((f) => at(f.pivot[0] + (f.side === 'left' ? 0.85 : -0.85), f.pivot[1] + 0.25, 64, 0.5, 3))
+  // A lamp over each bat, in the warm white of the tier's windows, so the flippers are the brightest things at the foot of a tier and keep their own colour.
+  const bats: Source[] = table.flippers.filter((f) => f.tier === k).map((f) => at(f.pivot[0] + (f.side === 'left' ? 0.85 : -0.85), f.pivot[1] + 0.25, 64, 0.9, 3))
   const insert = (n: Insert, i: number): void => add(`insert.${i + 1}`, 1, linear(insertColour(n)), [at(n.c[0], n.c[1], 28, 0.8, 2.6)], true)
   const d = table.displays[k]!
   const display = (): void => add('display', 0, C.DISPLAY_AMBER, [0.2, 0.5, 0.8].map((f) => at(d.box[0] + d.box[2] * f, d.box[1] + d.box[3] * 0.4, 34, 0.22, 2.4)))
   if (z.id === 'corporate') {
     add('general', 2, C.CORPORATE_COLD_WHITE, both(rail, 1.3))
-    add('lanes', 2, C.CORPORATE_GOLD, [...both(lane), ...slings, ...bats])
+    add('lanes', 2, C.CORPORATE_GOLD, [...both(lane), ...slings])
     inserts.forEach(insert)
     for (const p of table.posts) if (p.tier === k && p.lamp) add(p.id.slice(p.id.indexOf('.') + 1), 1, C.CORPORATE_GLOBE, [at(p.c[0], p.c[1], 46, 1.5, 5.2, `post.${p.id}`)], true)
     const hq = model('corporate.hq')
@@ -90,7 +90,8 @@ function build(z: Zone): Group[] {
     add('windows', 0, C.CORPORATE_WINDOW, [
       at(hq.box[0] + 0.5, front, 150, 0.5, 5, hq.id), at(hq.box[0] + hq.box[2] - 0.5, front, 150, 0.5, 5, hq.id), at(centre(hq)[0], front + 0.1, 46, 0.85, 4.2, hq.id),
       at(hq.box[0] - 0.15, centre(hq)[1], 170, 0.4, 4.5, hq.id), at(hq.box[0] + hq.box[2] + 0.15, centre(hq)[1], 170, 0.4, 4.5, hq.id),
-      at(centre(beach)[0], centre(beach)[1], 150, 0.9, 4.4, beach.id), at(beach.box[0] - 0.1, centre(beach)[1], 60, 0.5, 3, beach.id), at(centre(beach)[0], beach.box[1] + beach.box[3] + 0.1, 60, 0.5, 3, beach.id)
+      at(centre(beach)[0], centre(beach)[1], 150, 0.9, 4.4, beach.id), at(beach.box[0] - 0.1, centre(beach)[1], 60, 0.5, 3, beach.id), at(centre(beach)[0], beach.box[1] + beach.box[3] + 0.1, 60, 0.5, 3, beach.id),
+      ...bats
     ])
     display()
     add('flash', 0, C.CORPORATE_FLASH, [])
@@ -104,11 +105,11 @@ function build(z: Zone): Group[] {
     add('flash', 0, C.OFFICE_FLASH, [])
   } else {
     add('general', 2, C.STREET_DUSK, both(rail, 1.35))
-    add('lanes', 2, C.STREET_SODIUM, [...both(lane), ...slings, ...bats])
+    add('lanes', 2, C.STREET_SODIUM, [...both(lane), ...slings])
     inserts.forEach(insert)
     const fire = model('street.firehouse')
     const police = model('street.police')
-    const beacon = (m: Model): Source => at(centre(m)[0], m.box[1] + m.box[3] * 0.3, m.h * BALL + 24, 1.1, 5.2, m.id)
+    const beacon = (m: Model): Source => at(centre(m)[0], m.box[1] + m.box[3] * 0.3, m.h * BALL + 24, 0.8, 5.2, m.id)
     add('red', 1, C.STREET_RED, [beacon(fire)], true)
     add('blue', 1, C.STREET_BLUE, [beacon(police)], true)
     const windows: Source[] = []
@@ -123,6 +124,7 @@ function build(z: Zone): Group[] {
     for (const [u, v] of [[5.86, 9.06], [7.31, 10.59], [13.77, 9.0], [15.18, 10.15]] as [number, number][]) windows.push(at(u, TIER_Y[k]! + v, 60, 0.5, 2.5))
     const garage = model('street.garage')
     windows.push(at(centre(garage)[0], centre(garage)[1], 110, 0.9, 3.2, garage.id))
+    windows.push(...bats)
     add('windows', 0, C.STREET_WINDOW, windows)
     display()
     add('flash', 0, C.STREET_FLASH, [])
