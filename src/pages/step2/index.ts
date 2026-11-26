@@ -9,7 +9,7 @@ import { words } from '../../shell/words'
 import { frame } from '../../stage/camera'
 import type { DrawList, GagInfo, Hint, PageContext, PageLogic, Pointer, Shape, SheetFrame, StepIo, Tone } from '../../stage/types'
 import { buildLayout, COIN, CRANK, DIAL, dialPlate, dialTop, FH, FW, FX, PAD, reelId, reelType, ROWS, rowY, SHEET, SHIFT, SLOT, statesOf, TOP, TRAY_H, TRAY_R, TRAY_Z, trayY, VALUE_Z } from './layout'
-import { actingAt, LANDING, pointerAt, reactions, type Mark, type Marks } from './script'
+import { actingAt, LANDING, PEEL_AT, pointerAt, poses, reactions, type Mark, type Marks } from './script'
 
 const dt = 1 / stepHz
 const LIMIT = config.live.skipLinkAfterSeconds
@@ -27,7 +27,7 @@ const G = 2400
 const TAU = Math.PI * 2
 const STOPS = [0.8, 1.15, 1.5]
 const REEL = { gather: 0.3, jolt: 0.2, die: 13, ring: 24, read: 0.388 }
-const LEVER = { rise: 0.1, give: 0.045, drive: 5.5, hold: 0.1, spring: 230, damp: 12, over: 0.075 }
+const LEVER = { rise: 0.1, give: 0.045, drive: 5.5, hold: 0.42, spring: 230, damp: 12, over: 0.075 }
 const REEL_PITCH = 62
 const REEL_SEEN = 58
 const COINS = 14
@@ -37,12 +37,13 @@ const RETURN = { most: 42, gather: 300, least: 4, slow: 30 }
 // The whip: the arrow hangs from the hole by its tip, its tail thrown outward and trailing the turn, drawn long by the speed. Flung, it goes end over end and lands the right way up.
 const WHIP = { tip: 1.965, follow: 30, long: 0.3, slow: 5, fast: 30, air: 0.72, tumble: 2 }
 const WIND = { long: 0.12, back: 1.6, out: 0.2 }
+const BLOW = { load: 0.45, kick: 990, out: 0.8, drag: 9 }
 
 type RowPhase = 'closed' | 'opening' | 'ready' | 'ending' | 'closing'
 interface Coin { n: number; x: number; y: number; z: number; vx: number; vy: number; vz: number; rot: number; hit: boolean; still: boolean; falls: boolean; row: number; hops: number }
 interface DialState { a: number; k: number; phase: 'rest' | 'drag' | 'return' | 'whip' | 'fly' | 'over'; digits: string; w: number; left: number; x: number; y: number; z: number; vx: number; vy: number; vz: number; t: number; r: number; turn: number; from: number; air: number }
 interface SlotState { p: number; pv: number; grab: boolean; phase: 'rest' | 'spin' | 'read' | 'pay' | 'over'; t: number; from: number[]; to: number[]; latch: number; coins: Coin[]; spawned: number; cool: number; rang: boolean }
-interface CrankState { b: number; set: boolean; grab: boolean; total: number; turns: number; phase: 'rest' | 'runaway' | 'full' | 'over'; w: number; level: number; hit: boolean; hitAt: number; peeled: boolean; t: number; stuck: number; sx: number; sy: number; o: number }
+interface CrankState { b: number; set: boolean; grab: boolean; total: number; turns: number; phase: 'rest' | 'runaway' | 'full' | 'over'; w: number; level: number; hit: boolean; hitAt: number; peeled: boolean; t: number; stuck: number; sx: number; sy: number; kx: number; ky: number; o: number }
 interface State {
   mode: 'live' | 'film'
   time: number
@@ -83,7 +84,7 @@ const mix = (a: number, b: number, t: number): number => a + (b - a) * t
 
 const freshDial = (): DialState => ({ a: 0, k: 0, phase: 'rest', digits: '', w: 0, left: 0, x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0, t: 0, r: 0, turn: 0, from: 0, air: 0 })
 const freshSlot = (): SlotState => ({ p: 0, pv: 0, grab: false, phase: 'rest', t: 0, from: [0, 0, 0], to: [0, 0, 0], latch: 0, coins: [], spawned: 0, cool: 0, rang: false })
-const freshCrank = (): CrankState => ({ b: CRANK.rest, set: false, grab: false, total: 0, turns: 0, phase: 'rest', w: 0, level: 0, hit: false, hitAt: -1, peeled: false, t: 0, stuck: 0, sx: 0, sy: 0, o: 0 })
+const freshCrank = (): CrankState => ({ b: CRANK.rest, set: false, grab: false, total: 0, turns: 0, phase: 'rest', w: 0, level: 0, hit: false, hitAt: -1, peeled: false, t: 0, stuck: 0, sx: 0, sy: 0, kx: 0, ky: 0, o: 0 })
 const fresh = (mode: 'live' | 'film'): State => ({
   mode, time: 0, open: -1, phase: 'closed', spring: [0, 0, 0], springV: [0, 0, 0], lift: 0, rowT: 0, endT: 0, idle: 0, done: [false, false, false], px: 0, py: 0,
   dial: freshDial(), slot: freshSlot(), crank: freshCrank(), pressed: false, hold: 0, finished: false, skipping: false, gripped: false, reach: { x: 0, y: 0, z: 0, t: 1 }, swing: null, climb: 0, marks: {}, rng: []
@@ -504,6 +505,12 @@ export function makePage(): PageLogic {
           c.stuck = 0.45
           c.sx = cur.x
           c.sy = cur.y
+          const far = Math.hypot(mx, my) || 1
+          const kx = -my / far + (BLOW.out * mx) / far
+          const ky = mx / far + (BLOW.out * my) / far
+          c.kx = (BLOW.kick * kx) / Math.hypot(kx, ky)
+          c.ky = (BLOW.kick * ky) / Math.hypot(kx, ky)
+          c.w *= BLOW.load
           cur.take('crank')
           cur.hurt('flattened')
           if (s.mode === 'live') cur.act('exhausted')
@@ -518,10 +525,14 @@ export function makePage(): PageLogic {
     const c = s.crank
     if (c.stuck > 0) {
       c.stuck -= dt
+      c.sx += c.kx * dt
+      c.sy += c.ky * dt
+      c.kx *= 1 - BLOW.drag * dt
+      c.ky *= 1 - BLOW.drag * dt
       io.cursor.place(c.sx, c.sy, hover)
       if (c.stuck <= 0) io.cursor.release()
     }
-    if (c.hit && !c.peeled && s.time >= c.hitAt + HEAL - 0.4) {
+    if (c.hit && !c.peeled && s.time >= (s.mode === 'film' ? PEEL_AT - dt / 2 : c.hitAt + HEAL - 0.4)) {
       c.peeled = true
       io.emit('peel-up', io.cursor.x, io.cursor.y, false)
       if (s.mode === 'live') io.cursor.act('plain')
@@ -644,6 +655,13 @@ export function makePage(): PageLogic {
       if (s.mode === 'film') {
         io.cursor.act(actingAt(io.time, s.marks))
         for (const [at, name] of reactions) if (io.step === Math.round(at * stepHz)) io.cursor.react(name)
+        for (const [at, kind, a, b] of poses) {
+          if (io.step !== Math.round(at * stepHz)) continue
+          if (kind === 'aim') io.cursor.aim(a)
+          else if (kind === 'press') io.cursor.press(a, b)
+          else if (kind === 'hold') io.cursor.hold(a)
+          else if (io.cursor.damaged) io.cursor.hurt('flattened', a)
+        }
       }
       if (s.skipping && !s.pressed) {
         for (let i = 0; i < 3; i++) s.done[i] = true
