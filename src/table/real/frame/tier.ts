@@ -8,7 +8,7 @@ import { Screws, TONE, aluOf, mesh, paintOf, screwOf, steelOf } from './mats'
 
 // What the walls of a tier are made to, in page pixels.
 const WALL = { height: 60, seg: 56, chamfer: 4.5, strip: [30, 54] as V2, stripOut: 0.9 }
-const METAL: [number, number, number] = [0.15, 0.156, 0.165]
+const METAL: [number, number, number] = [0.2, 0.208, 0.22]
 const RAIL = { reveal: 30, revealWide: 4.5, revealDeep: 2, chamfer: 3, channel: 17, channelDepth: 3, ledge: 15, land: 44, step: 5, lip: 3, slope: 0.84, bank: 11, cuts: 10, tilt: [20, 58] as V2, gap: 1.2, joint: 1.4, screwStep: 1.5, cradle: 62.5, tubeUp: 48 }
 const CROSS = { lower: 0.3, upper: 0.12, throat: 0.75, mouth: 1.2, tunnel: 122 }
 const STEP = { back: 11, rise: 3, groove: 64, grooveWide: 4.5, grooveDeep: 2 }

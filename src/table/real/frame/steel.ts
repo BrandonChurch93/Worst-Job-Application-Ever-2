@@ -4,7 +4,9 @@ import { zoneLight } from '../lights/state'
 import type { Zone } from '../zone'
 
 // The lamps of the lanes stand in rows along the table: this far apart, this far from the metal that mirrors them, this far above it.
-const ROW = { step: 72, away: 96, high: 45, strength: 5 }
+const ROW = { step: 72, away: 96, high: 45, strength: 8 }
+// The room is this bright beside the lamps of the table: its values below are shares of it.
+const SHOW = 0.14
 
 // What the metal of a zone mirrors once the website's light is down: a dark room with one soft panel overhead, a row of small lamps round the table, the lit edge of the table at the horizon and the tier's own floor below.
 // A flat top seen from above shows the dark ceiling and the panel's slow gradient, a chamfer shows the horizon as one hard bright line, a wire shows all of it across its width.
@@ -23,6 +25,7 @@ uniform vec4 wjsPanel;
 uniform vec4 wjsRow;
 uniform float wjsDirect;
 uniform float wjsKeep;
+uniform float wjsShow;
 varying vec3 wjsAt;
 float wjsGlint( float across, float along, float up, float at, float rough ) {
 	float a = abs( across );
@@ -61,7 +64,7 @@ const BODY = /* glsl */ `
 {
 	vec3 wjsR = normalize( ( wjaViewInverse * vec4( reflect( - geometryViewDir, geometryNormal ), 0.0 ) ).xyz );
 	reflectedLight.directSpecular *= wjsPanel.w > 0.0 ? wjsDirect : 1.0;
-	reflectedLight.indirectSpecular = reflectedLight.indirectSpecular * wjsKeep + material.specularColor * ( wjsRoom( wjsR, material.roughness ) + wjsLamps( wjsR, material.roughness ) ) * wjsLevel;
+	reflectedLight.indirectSpecular = reflectedLight.indirectSpecular * wjsKeep + mix( material.specularColor, material.specularColorBlended * wjsShow, metalnessFactor ) * ( wjsRoom( wjsR, material.roughness ) + wjsLamps( wjsR, material.roughness ) ) * wjsLevel;
 }
 `
 
@@ -99,9 +102,10 @@ export function steel<T extends THREE.MeshPhysicalMaterial>(m: T, z: Zone, o: St
     shader.uniforms.wjsRow = { value: row }
     shader.uniforms.wjsDirect = { value: o.direct ?? 0.35 }
     shader.uniforms.wjsKeep = { value: o.keep ?? 0 }
+    shader.uniforms.wjsShow = { value: SHOW }
     shader.vertexShader = 'varying vec3 wjsAt;\n' + shader.vertexShader.replace('#include <project_vertex>', 'wjsAt = transformed;\n#include <project_vertex>')
     shader.fragmentShader = PARS + shader.fragmentShader.replace(AT, BODY + AT)
   }
-  m.customProgramCacheKey = () => `${key.call(m)}|wjs6`
+  m.customProgramCacheKey = () => `${key.call(m)}|wjs7`
   return m
 }
