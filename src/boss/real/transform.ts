@@ -9,6 +9,7 @@ import { BODY_Z, CAP_H, CAP_W, HOLE_H, HOLE_W, crackRuns } from '../body'
 import { controls } from '../../shell/real/controls'
 import type { RealContext } from '../../real/types'
 import { mesh } from './body-kit'
+import { pillGeometry, PILL } from './pill'
 
 const clamp = (t: number): number => Math.min(1, Math.max(0, t))
 const smooth = (t: number): number => { const u = clamp(t); return u * u * (3 - 2 * u) }
@@ -136,6 +137,13 @@ const soot = (): THREE.MeshBasicMaterial => {
   return sootMaterial
 }
 
+let charMaterial: THREE.MeshPhysicalMaterial | null = null
+const charStuff = (): THREE.MeshPhysicalMaterial => {
+  soot()
+  charMaterial ??= studio(new THREE.MeshPhysicalMaterial({ map: sootMade, transparent: true, depthWrite: false, roughness: 0.86, metalness: 0, specularIntensity: 0.35, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 }))
+  return charMaterial
+}
+
 const chipStuff = (): THREE.MeshPhysicalMaterial => {
   chipMaterial ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0xe9e6e0, THREE.SRGBColorSpace), roughness: 0.62, metalness: 0, specularIntensity: 0.5 }))
   return chipMaterial
@@ -214,7 +222,7 @@ let floorMaterial: THREE.MeshPhysicalMaterial | null = null
 let collarMaterial: THREE.MeshPhysicalMaterial | null = null
 const pitStuff = (): { wall: THREE.MeshPhysicalMaterial; floor: THREE.MeshPhysicalMaterial; collar: THREE.MeshPhysicalMaterial } => {
   const grain = materials().ceramic.normalMap
-  wallMaterial ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0x5a5550, THREE.SRGBColorSpace), roughness: 0.96, metalness: 0, specularIntensity: 0.2, normalMap: grain, normalScale: new THREE.Vector2(0.9, 0.9) }))
+  wallMaterial ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0x34312e, THREE.SRGBColorSpace), roughness: 0.96, metalness: 0, specularIntensity: 0.2, normalMap: grain, normalScale: new THREE.Vector2(0.3, 0.3) }))
   floorMaterial ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0x0d0c0c, THREE.SRGBColorSpace), roughness: 0.95, metalness: 0, specularIntensity: 0.1 }))
   if (!collarMaterial) {
     collarMaterial = materials().aluminiumSatin.clone()
@@ -222,6 +230,8 @@ const pitStuff = (): { wall: THREE.MeshPhysicalMaterial; floor: THREE.MeshPhysic
     collarMaterial.roughness = 0.6
     collarMaterial.metalness = 0.55
     collarMaterial.envMapIntensity = 0.5
+    collarMaterial.normalMap = null
+    collarMaterial.roughnessMap = null
     studio(collarMaterial)
   }
   return { wall: wallMaterial, floor: floorMaterial, collar: collarMaterial }
@@ -233,7 +243,7 @@ function rim(): THREE.Object3D {
   const m = materials()
   const root = new THREE.Group()
   const line = roundedRect(HOLE_W, HOLE_H, HOLE_H / 2, 22)
-  const ring = sweep(line, profile([[0.25, -4.9, true], [0.25, -1.2], [1.2, -0.6], [3.6, -1], [12.6, -5.6], [14, -7.2], [PIT.collar, -12, true]]), false)
+  const ring = sweep(line, profile([[-2.4, 0, true], [-2.4, 0.35], [-1.7, 0.6], [3.4, 0.6], [4.4, 0.15], [7.2, -6.4], [8.6, -9.6], [PIT.collar, -12, true]]), false)
   const pit = pitStuff()
   root.add(mesh(ring, pit.collar, false, true))
   const wall = sweep(line, profile([[PIT.collar - 0.4, -12, true], [PIT.collar + 3, -17], [PIT.collar + 7, -36], [PIT.wallTo, PIT.deep, true]]), false)
@@ -283,6 +293,11 @@ function scorch(s: Shape, ctx: RealContext): THREE.Object3D {
   const m = mesh(skin ?? new THREE.PlaneGeometry(CAP_W, CAP_H), soot(), false, false)
   m.scale.set(1.002, 1.006, 1.012)
   o.add(m)
+  const pill = mesh(pillGeometry(), charStuff(), false, false)
+  pill.visible = false
+  o.add(pill)
+  o.userData.skin = m
+  o.userData.pill = pill
   return o
 }
 
@@ -378,6 +393,12 @@ export const bossTransform: PartMaker = {
       o.position.y += BODY_Z.capTall * Math.sin(t)
       o.position.z += BODY_Z.capTall * (1 - Math.cos(t))
       soot().opacity = smooth(((s.v?.[0] ?? 1) - 0.8) / 0.2)
+      charStuff().opacity = soot().opacity
+      const down = s.v?.[2] ?? 0
+      const pill = o.userData.pill as THREE.Mesh
+      pill.visible = down > 0
+      ;(o.userData.skin as THREE.Mesh).visible = down <= 0
+      pill.scale.set(1.002, 1.006, ((s.z1 - s.z0 - 0.3) / PILL.tall) * 1.012)
     } else if (s.role === 'bossSmoke') poseSmoke(o, s)
   },
   drop(o: THREE.Object3D): void {
