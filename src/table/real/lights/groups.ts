@@ -103,11 +103,11 @@ function build(z: Zone): Group[] {
     add('flash', 0, C.CORPORATE_FLASH, [])
   } else if (z.id === 'office') {
     // The Office is a lit room: its lamps throw wide, so the floor between them is never dark.
-    add('general', 2, C.OFFICE_FLUORESCENT, [...both(rail, 0.8).map((s) => (s.z > 100 ? { ...s, power: s.power * 1.9 } : s)), ...elbow])
+    add('general', 2, C.OFFICE_FLUORESCENT, [...both(rail, 0.6).map((s) => (s.z > 100 ? { ...s, power: s.power * 1.5 } : s)), ...elbow])
     inserts.forEach(insert)
     table.bumpers.filter((b) => b.tier === k).forEach((b, i) => add(`bumper.${i + 1}`, 1, C.OFFICE_BUMPER, [at(b.c[0], b.c[1], 58, 1.1, 4.2, `bumper.${b.id}`)], true))
     const coffee = model('office.coffee')
-    add('windows', 0, C.OFFICE_COFFEE, [...lane.map((l) => at(l.c[0], l.c[1], LAMP.z, LAMP.power * 0.8, LAMP.reach / BALL)), ...slings, ...bats, ...shoulders, at(centre(coffee)[0], coffee.box[1] + coffee.box[3] + 0.12, 90, 0.9, 3.6, coffee.id), at(coffee.box[0] - 0.12, centre(coffee)[1], 90, 0.7, 3.2, coffee.id)])
+    add('windows', 0, C.OFFICE_COFFEE, [...lane.map((l) => at(l.c[0], l.c[1], LAMP.z, LAMP.power * 0.8, LAMP.reach / BALL)), ...slings, ...bats, ...shoulders.map((s) => ({ ...s, power: s.power * 0.7 })), at(centre(coffee)[0], coffee.box[1] + coffee.box[3] + 0.12, 90, 0.9, 3.6, coffee.id), at(coffee.box[0] - 0.12, centre(coffee)[1], 90, 0.7, 3.2, coffee.id)])
     display()
     add('flash', 0, C.OFFICE_FLASH, [])
   } else {
@@ -172,6 +172,7 @@ export interface High { x: number; y: number; z: number; reach: number; colour: 
 
 export const HIGHS = 7
 export const HIGH_BODY = 60
+const NOTES = { out: 0.75, z: 70, reach: 2, power: 0.2 }
 
 export function highOf(z: Zone): High[] {
   const over = (id: string, colour: RGB, power: number, reachBalls: number, lift = 1.3): High => {
@@ -181,7 +182,18 @@ export function highOf(z: Zone): High[] {
   }
   // A hidden lamp over each low model that stands far from every lamp of its tier, so its top is lit from above as the approved tiers have it.
   if (z.id === 'office') return [over('office.inbox', C.OFFICE_BUMPER, 0.75, 2.6), over('office.cubicles', C.OFFICE_BUMPER, 0.9, 3.2, 1.6)]
-  if (z.id === 'corporate') return [over('corporate.boardroom', C.CORPORATE_WHITE, 0.7, 2.6)]
+  if (z.id === 'corporate') {
+    const out = [over('corporate.boardroom', C.CORPORATE_WHITE, 0.7, 2.6)]
+    // The notes at the foot of the boardroom face away from its lamp: one low lamp in front of them, so their paper is lit as paper and needs no colour over 1.
+    const notes = table.targets.filter((t) => t.tier === z.tier && t.id.startsWith('corporate.note'))
+    if (notes.length > 0) {
+      const mid = (i: 0 | 1): number => notes.reduce((a, t) => a + t.box[i] + t.box[i + 2]! / 2, 0) / notes.length
+      const n = notes[0]!.n
+      const p = localBalls(z, mid(0) + n[0] * NOTES.out, mid(1) + n[1] * NOTES.out)
+      out.push({ x: p[0], y: p[1], z: NOTES.z, reach: NOTES.reach * BALL, colour: C.CORPORATE_WHITE, follows: 'general', power: NOTES.power })
+    }
+    return out
+  }
   if (z.id !== 'street') return []
   // The fittings of the garage, by the rule of the owner of the street's models: arms half a ball outside its wall on the diagonals, three 22 px under the rim and the rest at four tenths of its height.
   const g = model('street.garage')

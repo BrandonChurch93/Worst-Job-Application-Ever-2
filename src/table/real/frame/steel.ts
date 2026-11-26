@@ -83,7 +83,7 @@ vec3 wjsPolish( vec3 R, float rough ) {
 const BODY = /* glsl */ `
 {
 	vec3 wjsR = normalize( ( wjaViewInverse * vec4( reflect( - geometryViewDir, geometryNormal ), 0.0 ) ).xyz );
-	vec3 wjsN = normalize( ( wjaViewInverse * vec4( geometryNormal, 0.0 ) ).xyz );
+	vec3 wjsN = normalize( ( wjaViewInverse * vec4( nonPerturbedNormal, 0.0 ) ).xyz );
 	float wjsStand = mix( wjsWall, 1.0, smoothstep( 0.12, 0.45, abs( wjsN.z ) ) );
 	reflectedLight.directSpecular *= ( wjsPanel.w > 0.0 ? wjsDirect : 1.0 ) * wjsStand;
 	reflectedLight.indirectSpecular = reflectedLight.indirectSpecular * wjsKeep + mix( material.specularColor * wjsPaint, material.specularColorBlended * wjsShow, metalnessFactor ) * ( wjsRoom( wjsR, material.roughness ) + wjsLamps( wjsR, material.roughness ) ) * wjsLevel * wjsStand + material.specularColorBlended * metalnessFactor * wjsPolish( wjsR, roughnessFactor ) * wjsLevel;
@@ -142,6 +142,6 @@ export function steel<T extends THREE.MeshPhysicalMaterial>(m: T, own: Zone, o: 
     shader.vertexShader = 'varying vec3 wjsAt;\n' + shader.vertexShader.replace('#include <project_vertex>', 'wjsAt = transformed;\n#include <project_vertex>')
     shader.fragmentShader = PARS + shader.fragmentShader.replace(AT, BODY + AT)
   }
-  m.customProgramCacheKey = () => `${key.call(m)}|wjs26`
+  m.customProgramCacheKey = () => `${key.call(m)}|wjs27`
   return m
 }

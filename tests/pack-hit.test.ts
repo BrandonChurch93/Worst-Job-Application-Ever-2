@@ -69,7 +69,7 @@ describe('the hit sheet of a look pack', () => {
   it('gives the machine its own sheets: the save and the rail in consecutive frames, the way in and the way out', () => {
     const first = 4020
     const facts = { unit: 'pinball', hits: [{ frame: first + 138, name: 'hit on the arrow' }], named: { 'ball-seal': first + 138, 'flipper-save': first + 2131, drain: first + 2253 }, turn: first + 2490, states: [] }
-    const plan = packPlan(cfg, { role: 'R4', round: 11, unit: 'pinball', facts })
+    const plan = packPlan(cfg, { role: 'R4', round: 11, unit: 'pinball', facts: facts as never })
     const files = plan.sets.flatMap((s: { files: { kind: string; hit?: string; way?: string; at?: number; frames: number[]; heading: string }[] }) => s.files)
     const moments = files.filter((f) => f.kind === 'hit-sheet' && f.hit === 'moment')
     expect(moments.length).toBe(2)
