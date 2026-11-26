@@ -5,7 +5,7 @@ import { OUTLINE, restLook, UNIT } from '../../cursor/contract'
 import { Deform } from '../../cursor/model/deform'
 import { CENTRE, TOP } from '../../cursor/model/shape'
 
-export const GLASS = { wall: 40, keep: 1.6 }
+export const GLASS = { wall: 40, keep: 2.4 }
 export interface Berth { x: number; y: number; z: number; back: number; reach: number }
 
 const deform = new Deform()

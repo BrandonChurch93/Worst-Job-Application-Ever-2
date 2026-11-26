@@ -116,8 +116,8 @@ const NAMED: Record<string, CameraPose> = {
   'table-wide': { ...look('table-wide', [MID, APRON_Y + 17.4, 8.4], [MID, Y2 + 0.45, -1.86]), omit: LAST_OUT },
   'table-lobby': look('table-lobby', [MID + 0.35, Y0 + 9.2, 0.8], [MID - 0.55, Y0 + 5.02, 0.36]),
   'table-replyall': look('table-replyall', [MID, Y1 + 15.34, 12], [MID, Y1 + 6.6, -2]),
-  'table-fired': look('table-fired', [8.73, Y2 + 6.89, -0.20], [4.15, Y2 + 3.55, -2.05]),
-  'table-save': { ...look('table-save', [MID, Y2 + 18, 5.2], [MID + 0.15, Y2 + 11.2, -0.5]), omit: LAST_OUT }
+  'table-fired': look('table-fired', [8.1, Y2 + 6.45, 0.25], [4.45, Y2 + 3.75, -1.95]),
+  'table-save': { ...look('table-save', [MID - 0.15, Y2 + 19.5, 3.5], [MID, Y2 + 8.5, -2.2]), omit: LAST_OUT }
 }
 const FILM: [number, string, number][] = [
   [0, 'follow', 0], [4.2, 'table-wide', 0], [8.5, 'ride', 0], [10.25, 'tier-3', 0.6], [13.0, 'table-lobby', 0], [14.3, 'follow', 0], [19.5, 'table-replyall', 0], [22.2, 'follow', 0], [27.2, 'table-fired', 0], [29.3, 'follow', 0],
@@ -571,7 +571,8 @@ export function makePage(): PageLogic {
     for (let i = 0; i < 4; i++) s.face[i] = s.face[i]! + (want[i]! - s.face[i]!) * rate
     const flat = Math.hypot(e[0]!, e[1]!)
     const tip = s.mode === 'film' ? ROLL.tip[shot(s.time)] : undefined
-    if (tip !== undefined && flat > 0.05 && (b.mode === 'rail' || shot(s.time) !== 'rail')) {
+    const held = tip !== undefined && flat > 0.05 && (b.mode === 'rail' || shot(s.time) !== 'rail')
+    if (held) {
       const turn = ROLL.rest - tip - Math.atan2(e[0]!, -e[1]!)
       io.cursor.aim(turn - Math.PI * 2 * Math.floor((turn + Math.PI / 2) / (Math.PI * 2)))
     } else io.cursor.aim(null)
@@ -579,8 +580,9 @@ export function makePage(): PageLogic {
     const len = Math.hypot(s.face[0]!, s.face[1]!, s.face[2]!) || 1
     const n = [s.face[0]! / len, s.face[1]! / len, s.face[2]! / len]
     const now = [pose.lean, pose.spin, pose.squash]
-    const next = now.map((v, i) => (s.was[3] === 1 && Math.abs(v - s.was[i]!) < FACE.step ? 2 * v - s.was[i]! : v))
-    s.was = [pose.lean, pose.spin, pose.squash, 1]
+    const same = s.was[3] === 1 && (s.was[4] === 1) === held
+    const next = now.map((v, i) => (same && (i < 2 || Math.abs(v - s.was[i]!) < FACE.step) ? 2 * v - s.was[i]! : v))
+    s.was = [pose.lean, pose.spin, pose.squash, 1, held ? 1 : 0]
     const at = berth(pose, next[0]!, next[1]!, next[2]!, n, s.face[3]!, s.time)
     io.cursor.turn({ x: n[0]!, y: n[1]!, z: n[2]!, back: at.back })
     io.cursor.place(px(b.x) + at.x, px(b.y) - at.y, px(b.z) + at.z)
