@@ -58,3 +58,38 @@ Counted from the first still, by part. A still that shows several parts counts o
 
 | part | looks |
 | --- | --- |
+| tower, band, carpet (hq) | 3 |
+| notes | 3 |
+| boardroom | 3 |
+| beach | 2 |
+| wedges | 2 |
+| coffee machine | 2 |
+| letter tray | 2 |
+| staplers | 1 |
+| cubicles and loose paper | 1 |
+
+The stills behind the counts: 11:21 `tier-corporate` and `lobby-doors`; 11:24 the same two; 11:27 and 11:29 `tier-office`; 11:30 `lobby-doors` and `tier-corporate` on the tree with merge 33 in it.
+
+## What was done, in the order of the brief
+
+1. Notes (R1-2 issue 4). Three leaves on the three targets of the layout and a fourth that has come off and lies on the floor past the row, all of one butter yellow, each with a curled corner and a short dark shade under it, no word on any. They are lit through the tier's glowing material so that they read yellow in the dim corner.
+2. Band (M4). A pale satin plate let into the band in a thin polished frame. MEASURED on my `draft` still of `lobby-doors` at 11:24, `node out/work/tmp/contrast.cjs out/work/stills/key-lobby-doors-hd-draft.png 860 375 500 75`: letters mean relative luminance 0.0200, plate beside them 0.5911, ratio 9.16 (was 4.25 by the Builder's measure).
+3. Tower. Each floor has a room's depth of carpet and desks behind the glass and then the lit wall of the core, dim at the floor and lit under the ceiling, with dark doors; nothing is seen through to the far side. The glass is denser and blue green, with five slanting streaks of the room's light on the front. The roof is closed: a steel coping, a deck of pavers, two air handlers with fans, the lift house, pipes, vents, a cable tray and a row of lit roof lights.
+4. Boardroom. A dark walnut table, three brass lamps on it with a warm pool under each, black chairs in two rows. No orange in it.
+5. Carpet. No ribs: a fine grid of tufts whose tones run into each other, each leaning a little its own way, in a deeper crimson.
+6. Beach and wedges. A lounger of blue and pale stripes on its legs, fronds in two layers with the upper ones lighter, the sea brighter and nearer. The wedges are whiter, the veins soft and grey, and a warm lit lip runs under each slab.
+7. Coffee machine. Darker bronze all over, a bronze top in place of the pale steel lid, three small coloured cups on it in place of six white ones, dark control plates with the small coloured lamps, a service bay with cheeks and a valance, a cup with a handle on a saucer in the bay, a smaller cream plate under the word.
+8. Letter tray. Squared corners, beige, the frame of the mouth moulded in the tray's own beige with no steel bars and no screws, envelopes laid square to each other with a darker shade under each.
+9. Staplers. A flatter, wider red paddle with a quiet highlight over dark hardware with a plated channel, on a foot of brushed steel with a chrome edge and a warm lit lip under it.
+10. Cubicles. Grey brown partitions ten px taller with darker caps, a deeper shade at their feet, nearly black screens, desks of several warm woods, dark chairs. Six loose things taken off the lower shoulders (nine and six before, six and three now) and the sheets that stay are greyer.
+
+## Decisions
+
+- The tower has core walls and no open hall: the approved image shows a lit wall a room's depth behind the glass.
+- The roof is a closed deck with the plant of a tower on it, not a glass lantern.
+- The layout has three note targets. The fourth note is a loose leaf on the floor, placed from the last target of the row, so nothing of the layout moves.
+- The notes, the pools under the boardroom lamps, the fourth note and the warm lips of the wedges are built into the one glowing mesh of the tower: no draw call more.
+- The band's plate is a satin face, not a mirror, so that its tone does not hang on what it reflects and the measure holds from every camera.
+- The warm lip under the staplers is in the tier's one glowing mesh, which the cubicles hold.
+- The black ring beside the tray is the hold of the layout and the frame's ejector: not mine, left alone.
+- `tests/table-corporate.test.ts`: the triangle limits of the tier went up with the new parts, and the test of the tower's box leaves out the glowing mesh, which now also holds the boardroom's pools and the loose note.

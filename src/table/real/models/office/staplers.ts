@@ -6,7 +6,7 @@ import { hex, Kit, matsOf, meshOf, mix, shade, SURF, type RGB, type Surf, type V
 
 const C = {
   red: hex(0xa8151b),
-  plate: hex(0xb7bec7),
+  plate: hex(0x7b828b),
   under: [1, 0.6, 0.26] as RGB,
   steel: hex(0x9aa1aa),
   chrome: hex(0xc9d0d8),
