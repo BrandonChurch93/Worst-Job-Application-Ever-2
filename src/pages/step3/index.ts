@@ -25,7 +25,7 @@ const px = (v: number): number => v * BALL
 
 export const T = {
   arrive: 0.8, seal: 2.4, tube: 3.3, lightsDown: 4.0, powerOn: 5.2, atPlunger: 8.3, plunger: 9.4, onTable: 10.85, doorKick: 13.1, doorOpen: 14.1, lobbyEnd: 14.9, officeKey: 17.4, inboxOn: 17.9, inboxBy: 19.1,
-  drops: [20.78, 20.88, 20.98], eject: 20.72, officeOpen: 24.6, officeBy: 25.2, firedBy: 27.2, scoopKick: 28.5, flapOn: 29.6, flapBy: 30.8, highwayEnd: 32.7, spiralEnd: 34.6, save: 35.6, streetOpen: 36.9, streetBy: 37.9,
+  drops: [20.78, 20.88, 20.98], eject: 20.72, officeOpen: 24.6, officeBy: 25.2, firedBy: 27.2, scoopKick: 29.0, flapOn: 29.4, flapBy: 31.2, highwayEnd: 33.0, spiralEnd: 34.45, save: 35.6, streetOpen: 36.9, streetBy: 37.9,
   press: seconds - TURN_HALF - 0.5
 }
 const MODES: { at: number; tier: number; mode: number }[] = [
@@ -89,10 +89,10 @@ function buildLayout(): LayoutNode {
 
 interface State {
   mode: 'live' | 'film'; time: number; t: number; phase: 'wait' | 'pull' | 'sealed' | 'open' | 'result'; pull: number; said: string[]; drops: number; tows: number
-  scroll: number; floor: number; opened: number; result: number; pressed: boolean; hold: number; done: boolean; skipped: boolean; saved: boolean; score: number; shut: boolean; dim: number; struck: number; face: number[]; hit: number[]
+  scroll: number; floor: number; opened: number; result: number; pressed: boolean; hold: number; done: boolean; skipped: boolean; saved: boolean; score: number; shut: boolean; dim: number; struck: number; face: number[]; hit: number[]; scoreAt: number; scoreWas: number; flipped: boolean
 }
 
-const fresh = (): State => ({ mode: 'live', time: 0, t: 0, phase: 'wait', pull: 0, said: [], drops: 0, tows: 0, scroll: 0, floor: 0, opened: 0, result: 0, pressed: false, hold: 0, done: false, skipped: false, saved: false, score: 0, shut: false, dim: 0, struck: -9, face: [0, 0, 1, 0], hit: [0, 0] })
+const fresh = (): State => ({ mode: 'live', time: 0, t: 0, phase: 'wait', pull: 0, said: [], drops: 0, tows: 0, scroll: 0, floor: 0, opened: 0, result: 0, pressed: false, hold: 0, done: false, skipped: false, saved: false, score: 0, shut: false, dim: 0, struck: -9, face: [0, 0, 1, 0], hit: [0, 0], scoreAt: -9, scoreWas: 0, flipped: false })
 
 const flips = (take as unknown as { flips: [string, number, number][] }).flips
 const held = (side: string, time: number): boolean => flips.some((f) => f[0] === side && time >= f[1] && time < f[2])
@@ -112,31 +112,34 @@ const Y2 = TIER_Y[2]!
 const LAST_OUT: Shape = { id: 'last.out', part: 'table-layout', kind: 'well', x: 0, y: px(LAST_Y), w: 1920, h: PAGE_H - px(LAST_Y), z0: -px(40), z1: 0, tone: 'dark' }
 const NAMED: Record<string, CameraPose> = {
   'tier-3': tierPose(0), 'tier-2': tierPose(1), 'tier-1': streetPose(),
-  'table-wide': { ...look('table-wide', [MID, APRON_Y + 20.07, 13.09], [MID, Y2 + 7.6, 2.44]), omit: LAST_OUT },
-  'table-lobby': look('table-lobby', [MID + 0.8, Y0 + 8.3, -0.45], [MID - 0.15, Y0 + 5.02, 0.19]),
-  'table-replyall': look('table-replyall', [MID, Y1 + 16.35, 15.4], [MID, Y1 + 6.3, -2]),
-  'table-fired': look('table-fired', [7.14, Y2 + 7.44, 0.27], [4.6, Y2 + 3.8, -1.8]),
-  'table-save': { ...look('table-save', [MID, Y2 + 17.42, 3.33], [MID, Y2 + 10.64, -0.91]), omit: LAST_OUT }
+  'table-wide': { ...look('table-wide', [MID, APRON_Y + 16, 13.3], [MID, Y2 + 7.25, 3.9]), omit: LAST_OUT },
+  'table-lobby': look('table-lobby', [MID + 0.35, Y0 + 9, -0.5], [MID - 0.55, Y0 + 5.02, 0.35]),
+  'table-replyall': look('table-replyall', [MID, Y1 + 15.34, 12], [MID, Y1 + 6.6, -2]),
+  'table-fired': look('table-fired', [7.25, Y2 + 7.45, 0.95], [4.6, Y2 + 3.5, -2]),
+  'table-save': { ...look('table-save', [MID, Y2 + 16.7, 4.8], [MID + 0.15, Y2 + 10.71, -0.5]), omit: LAST_OUT }
 }
 const FILM: [number, string, number][] = [
-  [0, 'follow', 0], [4.2, 'table-wide', 0], [8.5, 'ride', 0], [10.25, 'tier-3', 0.6], [13.0, 'table-lobby', 0], [14.3, 'follow', 0], [19.5, 'table-replyall', 0], [22.2, 'follow', 0], [27.2, 'table-fired', 0], [28.8, 'follow', 0],
+  [0, 'follow', 0], [4.2, 'table-wide', 0], [8.5, 'ride', 0], [10.25, 'tier-3', 0.6], [13.0, 'table-lobby', 0], [14.3, 'follow', 0], [19.5, 'table-replyall', 0], [22.2, 'follow', 0], [27.2, 'table-fired', 0], [29.3, 'follow', 0],
   [31.15, 'rail', 0], [32.3, 'follow', 0.6], [34.3, 'table-save', 0], [36.6, 'follow', 0]
 ]
-const LENS: Record<string, number> = { 'table-wide': 5, 'table-lobby': 7, 'table-replyall': 12, 'table-fired': 10, 'table-save': 12, rail: 6, ride: 7 }
+const LENS: Record<string, number> = { 'table-wide': 5, 'table-lobby': 7, 'table-replyall': 12, 'table-fired': 10, 'table-save': 12, rail: 9, ride: 7 }
 const HARD: Record<string, number> = { bumper: 1, sling: 0.7, 'doors-slam': 1.3, 'scoop-kick': 0.8, plunger: 1, 'ball-hit': 0.6, 'drop-target': 0.5, 'mom-save': 1, 'ball-save': 0.8 }
 const SHAKE = { size: 0.006, decay: 0.09, hz: 23, most: 1.5, last: 0.5 }
 const SOFT = 0.4
 const NAME = 1.5
+const HINT = 8
 const TURN = 1.5707963267948966
 const SIGN = { turn: 0.5235987755982988, cos: 0.8660254037844387, sin: 0.5, inset: 8, lift: 6, back: ['corporate.beach'] }
 const WAKE = 0.35
 const DUSK = config.table.pageDuskLevel
 const ASLEEP = 0.25
 const LOW = 2.4
-const PULL = { door: 12, scoop: 30, near: 2.2, gate: 40, key: 30 }
-const NEST = { sling: [3.3, 6.5], under: [0.5, 0.9], pour: [-10.6, 1.0, 0.3], key: [0.3, 1.2], wait: [0.3, 0.1] }
-const SHOT = { door: 13, scoop: 21, nest: 17, save: 19, lob: 9, lean: 0.3, jets: 0.5, wide: 2.5, low: 7.5, early: 0.3, back: 1 }
-const FACE = { over: 0.766, low: 0.574, turn: 0.75, back: 13, press: 20, hit: 0.3, lag: 0.1, wall: 0.8, lens: 0.6 }
+const PULL = { door: 12, scoop: 30, near: 2.2, gate: 40, key: 14 }
+const NEST = { sling: [3.3, 6.5], under: [0.5, 0.9], pour: [-10.6, 1.0, 0.3], key: [0.3, 1.2], wait: [0.45, 0.05] }
+const BACK = { ahead: 3, clear: 2.3, lift: 0.7, behind: 0.6, before: 2.2 }
+const RIDE = { crest: 2.2, foot: 8.5, tip: 2 }
+const SHOT = { door: 13, scoop: 21, ramp: 21, nest: 17, save: 19, lob: 9, lean: 0.3, jets: 0.5, wide: 2.5, low: 7.5, early: 0.3, back: 1 }
+const FACE = { over: 0.94, low: 0.82, turn: 0.9, back: 13, press: 20, hit: 0.3, lag: 0.1, wall: 0.8, lens: 0.6 }
 const ACT = { bumper: 0.5, kick: 0.7, doors: 0.45, shock: 0.45, realise: 0.45, slow: 7, lead: 0.3 }
 
 export function makePage(): PageLogic {
@@ -158,7 +161,7 @@ export function makePage(): PageLogic {
   }
   const af = px(ZONES.find((z) => z.id === 'apron')!.z)
   const slab = config.scale.heights.slab
-  for (const [id, z0, z1] of [['apron-left', 0, slab], ['apron-right', 0, slab], ['apron-card', slab, slab + 1], ['apron-card-words', slab + 2, slab + 2], ['drain-label', 7, 7]] as const) stood[id] = { z0: af + z0, z1: af + z1 }
+  for (const [id, z0, z1] of [['apron-left', 0, slab], ['apron-right', 0, slab], ['apron-card', slab, slab + 1], ['apron-card-words', slab + 1.3, slab + 1.3], ['drain-label', 6.3, 6.3]] as const) stood[id] = { z0: af + z0, z1: af + z1 }
   const hqType = { font: 'inter-600', px: 30, align: 'centre' as const }
   const hqBlock = block(hqType.font, words('copy:step3.table.buildings.hq', ''), hqType.px)
   const hqZ = px(floorZ(0) + DOORS.plate + DOORS.plateH / 2)
@@ -267,13 +270,15 @@ export function makePage(): PageLogic {
     const u = b.mode === 'rail' && b.rail === 'launch' ? smooth(Math.min(1, b.s / 7)) : b.mode === 'hold' ? 0 : 1
     return railPose(0.7 + 2.7 * u, 2.6 + 0.8 * u, 0.95 + 1.55 * u, 0.5, 36 * (1 - u))
   }
-  const backPose = (ahead = 3.2, clear = 1.7, lift = 1.05): CameraPose => {
+  const backPose = (): CameraPose => {
     const b = ball()
     if (b.mode !== 'rail' || b.rail !== 'highway') return railPose()
     const r = railOf(b.rail)
     const c = soft(r, b.s)
-    const e = soft(r, Math.min(railLength(r), b.s + ahead))
-    return { eye: toWorld(px(e.x), px(e.y), px(e.z + clear)), target: toWorld(px(c.x), px(c.y), px(c.z + lift)), up: [0, 0, 1], fov: fov('rail') }
+    const a = soft(r, Math.max(0, b.s - BACK.behind))
+    const f = soft(r, Math.min(railLength(r), b.s + BACK.before))
+    const d = Math.hypot(f.x - a.x, f.y - a.y) || 1
+    return { eye: toWorld(px(c.x + ((f.x - a.x) / d) * BACK.ahead), px(c.y + ((f.y - a.y) / d) * BACK.ahead), px(Math.max(c.z, soft(r, Math.min(railLength(r), b.s + BACK.ahead)).z) + BACK.clear)), target: toWorld(px(c.x), px(c.y), px(c.z + BACK.lift)), up: [0, 0, 1], fov: fov('rail') }
   }
   const follow = (): CameraPose => homePose(s.scroll, s.floor)
   const lens = (name: string, p: CameraPose | null): CameraPose | null => {
@@ -504,12 +509,12 @@ export function makePage(): PageLogic {
         const c = holdOf('street.firehouse').mouth!
         if (t >= T.firedBy) towTo('street.firehouse')
         else shoot(c[0], c[1], SHOT.scoop, PULL.scoop)
-      } else if (t >= T.flapOn - SHOT.early && t < T.highwayEnd) {
+      } else if (t < T.highwayEnd) {
         const p = railOf('highway').points[0]!
-        if (t >= T.flapBy || (t >= T.flapOn && Math.hypot(b.x - p[0], b.y - p[1]) < 0.7)) {
-          if (t >= T.flapBy) s.tows++
+        if (t >= T.flapBy) {
+          s.tows++
           mc.tow(0, p[0], p[1], 16, 'rail:highway')
-        } else shoot(p[0], p[1], SHOT.scoop, PULL.scoop)
+        } else mc.shot = [p[0], p[1], SHOT.ramp]
       } else if (t >= T.spiralEnd && t < T.streetOpen - SHOT.back) mc.shot = [MID + 1.2, Y2 + 2.2, SHOT.save]
       else {
         if (t >= T.streetBy) towGate(2)
@@ -520,9 +525,9 @@ export function makePage(): PageLogic {
     if (b.mode === 'hold' && b.hold === 'street.firehouse') {
       b.wait = t >= T.scoopKick ? Math.min(b.wait, 0.01) : 1e9
     }
-    on['street.flap'] = false
-    if (b.mode === 'rail' && b.rail === 'highway') b.speed = Math.max(3, Math.min(14, (railLength(railOf('highway')) - b.s) / Math.max(0.05, T.highwayEnd - t)))
-    if (b.mode === 'rail' && b.rail === 'spiral') b.speed = Math.max(8, Math.min(30, (railLength(railOf('spiral')) - b.s) / Math.max(0.05, T.spiralEnd - t)))
+    on['street.flap'] = t >= T.flapOn && t < T.highwayEnd
+    if (b.mode === 'rail' && b.rail === 'highway') b.speed = Math.max(RIDE.crest, Math.min(16, (2 * (railLength(railOf('highway')) - b.s)) / Math.max(0.05, T.highwayEnd - t) - RIDE.crest))
+    if (b.mode === 'rail' && b.rail === 'spiral') b.speed = Math.max(RIDE.crest, Math.min(30, (2 * (railLength(railOf('spiral')) - b.s)) / Math.max(0.05, T.spiralEnd - t) - RIDE.foot))
     if (b.mode === 'rail' && b.rail === 'drain') b.speed = s.skipped ? 40 : 13
     io.cursor.act(mood())
   }
@@ -596,7 +601,12 @@ export function makePage(): PageLogic {
         direct(io)
         const events = mc.step(io.pointer.flipLeft === true, io.pointer.flipRight === true)
         for (const e of events) emitTable(io, e)
+        if (mc.score !== s.score) {
+          s.scoreWas = s.score
+          s.scoreAt = s.t
+        }
         s.score = mc.score
+        if (io.pointer.flipLeft === true || io.pointer.flipRight === true) s.flipped = true
         const b = ball()
         io.cursor.place(px(b.x), px(b.y), px(b.z))
         if (b.mode !== 'hold') io.cursor.knock(px(b.vx) * ACT.lead, px(b.vy) * ACT.lead)
@@ -665,7 +675,10 @@ export function makePage(): PageLogic {
         over[`display.${TIERS[m.tier]!}.${m.mode}`] = { v: [s.t - m.at] }
         if (s.t < m.at + NAME) states.push(`name${m.mode}`)
       }
+      const changed = { v: [Math.min(9, s.t - s.scoreAt), s.scoreWas] }
+      for (const id of ['marquee-score', ...TIERS.map((z) => `display.${z}.score`)]) over[id] = { ...over[id], ...changed }
       drawLayout(out, layout, { states, runtime: { score: scoreText() }, over })
+      if (s.mode === 'live' && s.phase === 'sealed' && !s.flipped && s.t >= T.onTable && s.t < T.onTable + HINT) out.push({ id: 'display.hint', part: 'displays', kind: 'box', x: px(MID), y: px(MARQUEE_Y), w: 0, h: 0, z0: 0, z1: 0, tone: 'dark', v: [s.t - T.onTable] })
       for (const shape of fixedShapes()) out.push(shape)
       for (const shape of movingShapes(mc, lit(), false, general(), drawn(), s.shut, website())) out.push(shape)
       out.push(hqPlate)
@@ -691,7 +704,7 @@ export function makePage(): PageLogic {
       if (s.phase === 'sealed') {
         const b = ball()
         const held = gagAt(s.t) === 'pinball.save' && !s.saved && s.t < T.save
-        const want = machine().shot && b.mode === 'plane' && !machine().gate[b.tier] && !held ? machine().wants() : [false, false]
+        const want = machine().shot && b.mode === 'plane' && !machine().gate[b.tier] && !held ? machine().wants(s.t >= T.scoopKick && s.t < T.highwayEnd ? RIDE.tip : 1.2) : [false, false]
         return { x: px(MID), y: px(TIER_Y[b.mode === 'none' ? 2 : Math.min(2, b.tier)]! + 10), down: false, flipLeft: want[0], flipRight: want[1] }
       }
       return { x: go.cx, y: go.cy, down: s.phase === 'result' && Math.floor(s.time * 4) % 2 === 0 }

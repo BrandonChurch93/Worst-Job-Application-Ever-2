@@ -110,10 +110,13 @@ const dropBank = (k: number, id: string, u: number, v0: number, v1: number): voi
 }
 
 const LADDER: P3[] = [[12.3, 5.6, 0], [13.5, 5.1, 0.6], [15.2, 4.75, 1.2], [16.1, 5.1, 1.4], [15.9, 5.7, 1.2], [14.6, 5.75, 0.7], [13.0, 5.9, 0.2], [12.3, 6.0, 0]]
-const HIGHWAY: P3[] = [[6.9, 4.9, 0], [7.6, 4.2, 1.0], [9.0, 3.7, 2.2], [10.6, 3.5, 3.4], [12.2, 3.6, 4.5], [13.4, 3.95, 5.3], [14.1, 4.45, 5.65], [14.45, 5.0, 5.7]]
 const GARAGE: V = [15.2, 5.45]
+const CUBICLES = { u: 5.85, deep: 1.85 }
+const INBOX = { u: 15.2, deep: 1.45 }
 export const SPIRAL = { c: GARAGE, r: 0.75, pitch: t.minClearanceBalls + 0.05, under: t.minClearanceBalls + 0.05, tail: 0.2, perTurn: 24, frame: 1.525 }
 export const SPIRAL_TOP = SPIRAL.under + SPIRAL.tail + t.spiralTurns * SPIRAL.pitch
+export const HIGHWAY_TOP = SPIRAL_TOP + 0.3
+const HIGHWAY: P3[] = ([[6.9, 4.9, 0], [7.6, 4.2, 0.175], [9.0, 3.7, 0.386], [10.6, 3.5, 0.596], [12.2, 3.6, 0.789], [13.4, 3.95, 0.93], [14.1, 4.45, 0.991], [14.45, 5.0, 1]] as P3[]).map((p) => [p[0], p[1], p[2] * HIGHWAY_TOP])
 
 function spiral(): P3[] {
   const out: P3[] = [HIGHWAY[HIGHWAY.length - 1]!]
@@ -208,19 +211,19 @@ for (let k = 0; k < 3; k++) {
 
 {
   const k = 1
-  seg(k, 'cubicles.roof', [COLS.left, 1.75], [5.25, 2.25], 'guide')
+  seg(k, 'cubicles.roof', [COLS.left, 1.45], [CUBICLES.u + 0.2, 2.25], 'guide')
   seg(k, 'coffee.roof', [COLS.right, 1.75], [14.3, 2.25], 'guide')
-  model(k, 'cubicles', 'model-cubicles', [COLS.left, 2.25, 1.8, 2.15], 0.7, 'raised')
-  dropBank(k, 'cubicles.drop', 5.05, 2.25, 4.4)
+  model(k, 'cubicles', 'model-cubicles', [COLS.left, 2.25, CUBICLES.u - COLS.left, CUBICLES.deep], 0.7, 'raised')
+  dropBank(k, 'cubicles.drop', CUBICLES.u, 2.25, 2.25 + CUBICLES.deep)
   model(k, 'coffee', 'model-coffee-machine', [14.3, 2.25, 2.45, 1.35], 1.6, 'metal', { sign: 'copy:step3.table.buildings.coffee' })
   targets.push({ id: 'office.coffee.standup', tier: k, kind: 'standup', box: [14.1, TIER_Y[k]! + 2.7, 0.2, 0.8], n: [-1, 0], index: targets.length })
-  model(k, 'inbox', 'model-inbox', [15.2, 3.6, 1.55, 1.2], 0.9, 'paper')
+  model(k, 'inbox', 'model-inbox', [INBOX.u, 3.6, COLS.right - INBOX.u, INBOX.deep], 1.15, 'paper')
   bumpers.push({ id: 'office.bumper.1', tier: k, c: at(k, 8.9, 3.2), r: 0.75 }, { id: 'office.bumper.2', tier: k, c: at(k, 11.1, 3.2), r: 0.75 }, { id: 'office.bumper.3', tier: k, c: at(k, MID, 5.1), r: 0.75 })
   holds.push({ id: 'office.inbox', tier: k, kind: 'scoop', c: at(k, 14.6, 4.35), r: 0.5, releases: true })
-  open(k, 'cubicles.side', [5.25, 3.2], [8.15, 3.2])
+  open(k, 'cubicles.side', [CUBICLES.u + 0.2, 3.2], [8.15, 3.2])
   open(k, 'coffee.side', [11.85, 3.2], [14.1, 3.2])
-  open(k, 'cubicles.foot', [5.25, 4.4], [6.05, 5.4])
-  open(k, 'inbox.foot', [15.2, 4.8], [13.95, 5.4])
+  open(k, 'cubicles.foot', [CUBICLES.u + 0.2, 2.25 + CUBICLES.deep], [6.05, 5.4])
+  open(k, 'inbox.foot', [INBOX.u, 3.6 + INBOX.deep], [13.95, 5.4])
   open(k, 'chute.mouth', [MID - 0.75, 0.3], [MID + 0.75, 0.3])
 }
 
@@ -300,8 +303,8 @@ export const table: Table = {
     'Outlanes are 1.4 balls wide and end in a hole that leads through the cross rail into the tier exit. The lower corners are solid shoulders and carry the display, the houses and the card.',
     'Bumpers are 1.5 balls across, set 3.0 and 2.83 balls apart, so every gap between them clears 1.25 balls.',
     'The garage, the ladder and the highway stand above the floor on supports: a ball on the floor passes under them.',
-    'The garage spiral turns table.spiralTurns times round a path 0.75 balls in radius, each turn 1.3 balls under the one above. Its top is 5.4 balls above the street floor and its open end 1.3 balls above the right inlane, where the ball drops off. The round frame of the garage stands outside the trough, 1.525 balls from its centre, clear of the police station and of the right wall.',
-    'The highway climbs from its flap on the street floor to 5.7 balls, turns down the page and ends over the top of the spiral.',
+    'The garage spiral turns table.spiralTurns times round a path 0.75 balls in radius, each turn 1.3 balls under the one above. Its top is table.spiralTurns times 1.3 plus 1.5 balls above the street floor and its open end 1.3 balls above the right inlane, where the ball drops off. The round frame of the garage stands outside the trough, 1.525 balls from its centre, clear of the police station and of the right wall.',
+    'The highway climbs from its flap on the street floor to 0.3 balls over the top of the spiral, turns down the page and ends over the top of the spiral.',
     'Gravity along the floor is 29.4 balls a second squared: a rolling 27 mm ball on a slope of table.slopeDeg.',
     'The launch lane and the lift tubes lie at the floor height of the tier they pass. The launch lane climbs to the next tier by a ramp 1.5 balls long that ends on the tier line, and the launched ball leaves its top in a hop 0.3 balls high and 2 balls long. Each lift tube rises one tier inside the cross rail, within 0.4 balls of the tier line.',
     'The apron is 2 balls deep. The loader port and the outlet port are 330 px rings with a 220 px cup.'
