@@ -14,9 +14,29 @@ export const pages: Record<string, PageMaker> = Object.fromEntries(Object.entrie
 
 export const unitPages: Record<string, string[]> = { marketing: ['marketing'], step1: ['step1'], step2: ['step2'], pinball: ['step3'], boss: ['step4'], decision: ['step5'] }
 
-let prepared: Promise<void> | null = null
+const starting = new Map<string, Promise<void>>()
+const started = new Set<string>()
 
-export function preparePages(): Promise<void> {
-  if (!prepared) prepared = Promise.all(Object.values(modules).map((m) => m.prepare?.())).then(() => undefined)
-  return prepared
+export const pagePrepared = (id: string): boolean => !modules[id]?.prepare || started.has(id)
+
+export function preparePage(id: string): Promise<void> {
+  if (pagePrepared(id)) return Promise.resolve()
+  let p = starting.get(id)
+  if (!p) {
+    p = modules[id]!.prepare!().then(
+      () => {
+        started.add(id)
+      },
+      (e) => {
+        starting.delete(id)
+        throw e
+      }
+    )
+    starting.set(id, p)
+  }
+  return p
+}
+
+export function preparePages(only: readonly string[] = Object.keys(modules)): Promise<void> {
+  return Promise.all(only.map(preparePage)).then(() => undefined)
 }

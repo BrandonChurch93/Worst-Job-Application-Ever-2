@@ -44,6 +44,29 @@ export function comparePack(dir, index) {
   return { files: listed.length, problems }
 }
 
+// The narrator lines of the index, decoded: a line whose largest sample is over full scale is cut flat by a browser's decoder.
+export function linesOverFullScale(dir, index) {
+  const problems = []
+  let largest = null
+  for (const f of index.lines ?? []) {
+    const file = path.join(dir, f.file)
+    if (!fs.existsSync(file)) continue
+    const r = spawnSync('ffmpeg', ['-v', 'error', '-i', file, '-f', 'f32le', '-ac', '1', '-'], { maxBuffer: 1 << 28 })
+    if (r.error) return { lines: 0, largest: null, problems: ['the lines cannot be decoded here to measure their peaks: ffmpeg is missing'] }
+    if (r.status !== 0 || r.stdout.length < 4) {
+      problems.push(`cannot be decoded: ${f.file}`)
+      continue
+    }
+    const x = new Float32Array(r.stdout.buffer.slice(r.stdout.byteOffset, r.stdout.byteOffset + Math.floor(r.stdout.length / 4) * 4))
+    let top = 0
+    for (let i = 0; i < x.length; i++) if (Math.abs(x[i]) > top) top = Math.abs(x[i])
+    const db = top > 0 ? 20 * Math.log10(top) : -Infinity
+    if (!largest || db > largest.db) largest = { file: f.file, db }
+    if (db > 0) problems.push(`over full scale: ${f.file} decodes with its largest sample at +${db.toFixed(2)} dB, which a browser's decoder cuts flat`)
+  }
+  return { lines: (index.lines ?? []).length, largest, problems }
+}
+
 export function packCheck(root, dir) {
   const index = committedIndex(root)
   if (!index) {
@@ -52,11 +75,14 @@ export function packCheck(root, dir) {
     return false
   }
   const r = comparePack(dir, index)
-  if (!r.problems.length) {
-    console.log(`pack-check: pass. ${r.files} files of ${path.relative(root, dir)} are the ones the committed index lists, by size and sha256`)
+  const peaks = linesOverFullScale(dir, index)
+  if (!r.problems.length && !peaks.problems.length) {
+    console.log(`pack-check: pass. ${r.files} files of ${path.relative(root, dir)} are the ones the committed index lists, by size and sha256${peaks.largest ? `, and the ${peaks.lines} narrator lines decode under full scale, the largest sample at ${peaks.largest.db.toFixed(2)} dB (${peaks.largest.file})` : ''}`)
     return true
   }
-  console.log(`pack-check: FAIL. ${r.problems.length} of ${r.files + 1} differ from the committed index`)
+  if (r.problems.length) console.log(`pack-check: FAIL. ${r.problems.length} of ${r.files + 1} differ from the committed index`)
   for (const p of r.problems) console.log(`  ${p}`)
+  if (peaks.problems.length) console.log(`pack-check: FAIL. ${peaks.problems.length} of ${peaks.lines} narrator lines do not decode under full scale`)
+  for (const p of peaks.problems) console.log(`  ${p}`)
   return false
 }

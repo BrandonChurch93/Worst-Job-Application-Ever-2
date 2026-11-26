@@ -26,8 +26,9 @@ Every number below is MEASURED with the command beside it, STATED by the code or
 8. `startLevel` and `levelIsFixed` of `src/main.ts` call `src/core/levelStart.ts`, so they have tests.
 9. Small things: an emitter says what it is on its own object, `userData.small`. That mark lies in files that are not mine: `pipeline/phase5/site-levels-NEEDS.patch`.
 10. `accumulated at rest`, the jump. Each gathered frame takes one direction of the dome at one over its height, so the mean of the first few frames is far from where it ends: MEASURED before the change, careers page paused in film mode, 1920x1080 window, mean of the picture of 255: frame 1 189.11, frame 2 200.39, frame 8 191.42, frame 10 187.77, frame 64 187.47. `src/core/levelRest.ts` keeps the one-sample picture and shows `mix(one-sample, mean, (n - 1) / 63)` while frame n of 64 is gathered. Frame 64 is the mean alone, as before.
-11. Glass. No live frame at any level draws a transmission pass; the perk cards and the boss's card are drawn the same at every level. The one thing that refracts is the ball, in its own shader, and it already listens on the window for `wjb-ball` and takes `bend` from it. `App.setLevel` says `bend: false` through that door at a level whose word is `frosted, no refraction` and `bend: true` otherwise and for every computed picture. So no frozen file is changed. The risk: that door was made for proof sheets; if its owner removes it, low bends again and `tests/site-levels-rest.test.ts` does not see it. It saves no measurable time: the shader still runs.
+11. Glass. No live frame at any level draws a transmission pass; the perk cards and the boss's card are drawn the same at every level. The one thing that refracts is the ball, in its own shader, and it already listens on the window for `wjb-ball` and takes `bend` from it. `App.setLevel` says `bend: false` through that door at a level whose word is `frosted, no refraction` and `bend: true` otherwise and for every computed picture. So no frozen file is changed. The risk: that door was made for proof sheets; if its owner removes it, low bends again. `tests/site-levels-glass.test.ts` reads the ball's source and fails when the listener under that name, or the line that gives `bend` to the shader, is gone. It saves no measurable time: the shader still runs.
 12. Motion blur of small fast things. Read in the code and seen in the sheet: a bolt and a dart each carry their own tail in a live frame. The slot's coins had nothing: `src/core/levelStreak.ts` draws each coin longer along the way it went since the frame before, by the film's own shutter (`film.shutterDegrees` / 360 of the travel), at most `STREAK.most` (3) lengths. The coins are found as `root.userData.coins`, the name `src/pages/step2/real/slot.ts` gives them. The ball of the machine is NOT stretched: it is drawn by a shader that knows it as a sphere, with the hero inside; a stretched ball would bend the hero. That is open.
+13. The shadow map of a held light lies square on the page (see "The ragged shadow edge at `low`"). It holds for medium and low, in every live frame, moving or at rest, so the kept map of low and the frames around it use one and the same map.
 
 ## Measured so far
 
@@ -103,11 +104,26 @@ MEASURED by reading the code and by counts: no live frame draws a transmission p
 
 ## Motion blur of small fast things (rule 3)
 
-Two sheets of twelve live frames each, level high, stepped clock: `scripts/streak-sheet.mjs` (not in the repo), step 1 under fire and the slot's coins. Looked at.
+CORRECTION (18:25Z). The two sheets I called "twelve live frames" (`scripts/streak-sheet.mjs`, not in the repo) were NOT frames of the running loop. They were twelve stills drawn through `renderStill` with `live: 'high'` in a capture session, 1/60 s apart. The stretch works on the travel since the frame before, so it may not have been in them at all. What I wrote from them about the coins is withdrawn. The caption of the look `motion-bits.png` says "twelve live frames" and is wrong in the same way.
 
-- Step 1 under fire: bolts are in the frames, small and dark, each with its own short tail. The tail is the page's own, not mine.
-- The slot's coins: coins are in the air in the frames. I could NOT see in the native crops that a coin is longer along its way than a coin at rest: the coins tumble and overlap, and I made no pair with the stretch off. So "the coins are stretched in a live frame" is STATED by the code and by `tests/site-levels-streak.test.ts` (the matrix of an instance is stretched along its travel), and UNKNOWN in the picture.
+The pair that replaces them, MEASURED 18:27 to 18:29Z: the live site itself, `?mode=live&format=hd&assets=full&clock=steps&bot=keen&quality=high&step=2`, window 960 by 540, stepped 1/60 s at a time with `liveRun.advance` (`scripts/coin-live.mjs`, not in the repo), twelve frames in a row, 488 to 499, while the slot pays out. Once with `STREAK.most` set to 1 in a build that was never committed (stretch off), once with the file as it is in the repo (stretch on).
+
+- Frame 488, the first frame drawn after quiet steps: the two are equal, 0 pixels differ. Frames 489 to 499: 1024 to 1414 pixels differ by more than 8 of 255, all inside x 506 to 829, y 338 to 412, where the coins are.
+- Looked at, native pixels shown 3 times larger: with the stretch off the three coins in the air on the right are round; with it on they are ovals, longer along their way. The heap of coins at the left looks the same in both. So the stretch IS seen in a live frame, on coins that fly alone. I did not tune it.
+- Step 1's bolts: in the earlier stills each bolt had its own short tail, the page's own. Not looked at again in frames of the loop.
 - The ball: not stretched (decision 12). The dart: carries its own tail, not looked at in a picture by me.
+
+## A screen of pixel ratio 2
+
+MEASURED 18:22Z, `scripts/dpr-probe.mjs` (not in the repo), live site, window 960 by 540 CSS px, device scale factor 2, bot keen, 5 s.
+
+| level | canvas | what was seen in the screenshot (1920 by 1080) |
+|---|---|---|
+| high | not measured at this size: the page did not get ready in the tool's time on this machine (software GL). At 480 by 270 CSS px the canvas was 960 by 540, ratio 2 | no picture |
+| medium | 1440 by 810 (cap 1.5) | the smallest type slightly soft |
+| low | 960 by 540 (cap 1) | the smallest type ("Est. time: 5 minutes ...") visibly soft and speckled |
+
+Frame times on this machine, which has no graphics card and says nothing about a visitor's: medium 3565 ms of script per drawn frame (median, 2 frames in 5 s), low 3450 ms between drawn frames (3 frames), high at the small window 4333 ms between drawn frames. The caps are the kit's (`live.quality.*.pixelRatioCap`), so what low looks like on a ratio 2 screen is the kit's number at work, not mine to change.
 
 ## Smallest type at `low` (rule 4, the part that was measured)
 
@@ -124,9 +140,24 @@ Native crops, 1920x1080 window, pixel ratio 1, of the smallest line of type of e
 
 The headless browser of this VM has a device pixel ratio of 1, so the cap of the pixel ratio (2, 1.5, 1) changed nothing in these pictures: the three levels were all drawn at ratio 1. What the cap does on a screen of ratio 2 or 3 is UNKNOWN here.
 
-Seen in the crops and not repaired: at low the edge of the shadow under a card (step 4 and step 5) is ragged, a pattern of small teeth, where high and medium are smooth.
+### The ragged shadow edge at `low`
 
-NOT DONE of rule 4: the 188 invalid pixels of the still `youre-fired` with 4x multisampling. I did not find the material and clamped nothing. `LIVE_MULTISAMPLES = 4` in `src/app.ts` is used by live frames only.
+Seen in the crops: at low the edge of the shadow under a card (step 1, step 4, step 5) is ragged, a row of small teeth about 25 pixels apart; at medium the teeth are there too, fainter.
+
+Cause, MEASURED by a pair: the same edge of step 1 in a still at `live: low` (whole map, one sample, no kept shadows) shows the same teeth, so the kept map of `levelShadows.ts` is not the cause. The cause is the map itself: at 1024 px a texel of the map is about two pixels of the page, the depths are read without interpolation, and the map stood turned against the page (the light comes from the side and from above, and the map's upward axis was the world's), so the straight lower edge of a card crossed one row of texels every 25 pixels or so.
+
+Repair, in `LightRig.aim` of `src/core/renderer.ts` (decision 13): for a live frame of a level that holds its light still (medium and low), the map is turned (its upward axis is the page's upward axis seen from the light) and sheared (`squareLean`) so that both axes of the page run along the rows and the columns of the map. An edge that lies square on the page then falls into one row of texels along its whole length. A computed picture never takes this path: `tests/site-levels-square.test.ts` holds that its map stays upright and unsheared, and the three stills and `npm run determinism` are byte equal after it.
+
+MEASURED by looking at the same crops again (`scripts/proof-levels.mjs`, steps 1, 4, 5 at low and medium, 18:10Z): the teeth under the cards of step 1 and step 5 at low are gone; the edge is one straight line with fine grain. Step 4: the blobs of the old picture are gone; what stays under that card is an even grain, and the same grain is in the picture of `high` made before the change, so it is the one-sample filter of a frame that is not yet at rest, not the level. Edges that do not lie square on the page (round corners, the table's parts) still step at 1024 px: not looked at.
+
+### The invalid pixels of `youre-fired` under 4x multisampling
+
+`scripts/msaa-probe.mjs` and `scripts/msaa-where.mjs` (not in the repo): the still `youre-fired` drawn through `renderStill` with `live: <level>`, once in a live session (the engine has 4x multisampling there) and once in a capture session (no multisampling), hd.
+
+- MEASURED 17:50Z: live session 3 invalid pixels at high, at medium and at low; capture session 0. The 188 of the open item were not reproduced as a number; the kind of fault was.
+- Where, MEASURED by reading the 64x36 count picture the app itself reads: two blocks of 30x30 pixels, at x 1140 to 1170, y 240 to 270 and at x 900 to 930, y 150 to 180 of the 1920x1080 picture. Looked at in the capture picture: each block holds one screw head of the sign "You're Fired", a few pixels wide, of bright metal. So the material is the metal of the sign's screws. Which term of its shading goes wrong at a sample outside the triangle I did not find.
+- Clamp, where the samples are resolved: `src/core/levelClamp.ts` draws two squares over the multisampled target of a live frame before it is resolved, one that keeps the larger of each sample and 0, one that keeps the smaller of each sample and `SAMPLE_MOST` (60000), by the blend equations MAX and MIN. Only an engine with multisampling has it, so no computed picture passes through it.
+- MEASURED after, 18:12Z, the same probe: 0 invalid pixels at high and at low (medium not run again). Its cost, STATED: two draws of four triangles over the whole multisampled picture in every live frame; the time was not measured.
 
 ## The 8 bit path (rule 8)
 
@@ -142,3 +173,17 @@ NOT DONE of rule 4: the 188 invalid pixels of the still `youre-fired` with 4x mu
 | table, low | 201.92 | 135.37 | 66.56 | 100 % |
 
 MEASURED: the 8 bit path does not give the same picture. It is far darker, every metal is black (the medal, the steps of the progress bar, the cabinet's ring) and the orange is a deep red. The browser's log of the 8 bit session: "Framebuffer is incomplete: Attachment is not renderable" and "glGenerateMipmap: Texture format does not support mipmap generation". Read in the code: `src/post/studio.ts` builds the studio's surround with three's `PMREMGenerator`, which draws into half float targets (`node_modules/three/src/extras/PMREMGenerator.js`, line 477); with both extensions hidden that target cannot be drawn into, so the surround is black. That this is the whole cause is my reading, not measured: `src/post/post.ts` also makes a half float target. Both files are not mine. NOT REPAIRED. The pair is in the looks folder.
+
+## G15, the whole gate (rule 6)
+
+`npm run gate -- --phase 5 --only G15`, started 17:52Z on commit c4695813, 1000.7 s: MEASURED pass. 6 pages (marketing, step1, step2, pinball, boss, decision), 94 pictures drawn through the live path.
+
+| level | most triangles of any picture | limit | most draw calls | limit |
+|---|---|---|---|---|
+| high | 774135 | 3000000 | 492 | 600 |
+| medium | 774135 | 1500000 | 311 | 450 |
+| low | 555445 | 700000 | 241 | 300 |
+
+Memory, the gate's own words: web at hd 692.0 of 700 MB on pinball; full at uhd 2045.7 of 2400 MB on pinball. The gate prints the most of each level, not a row per page; no page is over a limit.
+
+What the gate does NOT see, STATED from the code: it draws through `Engine.picture`, so (1) the two targets of `levelRest.ts`, held at `high` only while a page at rest is gathered and freed when the last frame is in, each of the picture's size in half float (1920x1080x8 bytes, 16.6 MB at hd, 33.2 MB for both), and (2) the kept shadow map of `levelShadows.ts` at `low` (1024x1024 depth, about 4 MB). With 692.0 of 700 MB measured on pinball, the first of these would go over the limit on that page while it is held, if the gate counted it. Not measured in a live session. This is open.

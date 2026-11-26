@@ -1167,7 +1167,7 @@ async function main() {
       const { logic } = await import('./lib/logic.mjs')
       const site = await logic()
       try {
-        await levelsRun(site.load, c, P.pub)
+        await levelsRun(site.load, c, P.pub, Boolean(a.ear))
       } finally {
         await site.close()
       }
