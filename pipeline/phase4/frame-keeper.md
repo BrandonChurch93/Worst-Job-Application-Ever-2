@@ -113,11 +113,17 @@ Total in round 11 at 06:12 UTC: 12 (loader 1, table-frame 5, marquee 4, ramps 1,
 - One `review` still, hd: 84 s (`last-save`), same command with `--tier review`.
 - Asset sets: `public/assets/table/frame` 0.062 MB, `assets-full/table/frame` 0.136 MB, `assets-src/table/frame` 2.024 MB (`du -sb`); hardware and play have none.
 
-## Still least real at 04:40 UTC
+## Still least real at 06:18 UTC (looked at: `table-wide` review, `last-save`, `tier-street`, `tier-corporate` drafts beside approved)
 
-1. The light on the bats and on the lift's elbow: a bat's top falls from (238,150,36) at the pivot to (126,79,29) at the tip where approved is even, and the elbow is (73,53,34) against (161,79,27). The lamps are lamp_keeper's; told at 04:34.
-2. The highway's wire from a low eye (`last-save`): still a pale grey tube at draft size, where approved is a dark mirror with thin white lines. The hoops and trestles are right.
-3. The frame's lands from straight above: pale sheets with fine stripes and a row of dark screws, where approved is one slow gradient. The south ends of the side rails stand as tall brushed posts in `table-wide` (their height is the layout's).
+1. The frame from the player's end (`table-wide`): the side rails' near ends stand as two tall dark ribbed slabs where approved has one low bevelled steel rim, and the lands from straight above are one even pale grey (about (137,137,136) in `tier-corporate`) where approved runs from about (110,117,118) to a soft highlight near (207,207,205). The height is the layout's; the even tone is mine and open.
+2. The clear tubes from above (lift in `tier-corporate`): a pale blue haze over the floor with thin lamp lines, where approved is clear glass with bright rims and brighter chrome bands. The bands are wide now, still darker than approved.
+3. The bats and the lift's elbow: flat orange without the gloss streak approved has, and the elbow darker than approved. The light on them is lamp_keeper's; not measured again since 04:34 UTC.
+
+Also open: the loader's ring is paler than approved and has no brushed sheen; the marquee's title is Inter where approved has a wide tracked light face (the font and place are table_runner's shape); the near highway wire is a little pale at draft.
+
+| 06:15 to 06:17 | table-wide (review), last-save, tier-street | all parts, after the title and the bands | 3 |
+
+Total in round 11 at 06:18 UTC: 15 (loader 1, table-frame 6, marquee 5, ramps 2, lift 1).
 
 ## Draw calls, MEASURED about 05:30 UTC at f66fec4d (`npm run build && npm run counts -- --key <key> --live low`)
 
