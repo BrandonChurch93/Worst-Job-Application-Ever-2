@@ -106,7 +106,8 @@ export function lying(points: [number, number][], segments = 32): THREE.BufferGe
   return lathe(points, segments).rotateY(-Math.PI / 2)
 }
 
-export const SHIELD_GLASS = { colour: 0x8c9895, through: 0.82, perPx: 2.4 }
+export const SHIELD_GLASS = { colour: 0x8c9895, through: 0.82, perPx: 2.4, up: 0.8 }
+export const glassTone = (): THREE.Color => srgb(SHIELD_GLASS.colour).multiplyScalar(1 / PICTURE.level)
 
 // The careers page's picture of the page under glass, laid finer: the block is seen closer than a card.
 function blockPicture(): THREE.Texture {
@@ -183,7 +184,7 @@ export function bossKit(): BossKit {
     bore: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x121212), roughness: 0.8, metalness: 0.2, specularIntensity: 0.3 })),
     bed: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x1f2022), roughness: 0.62, metalness: 0.55, specularIntensity: 0.5 })),
     pin: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xc9ccd0), roughness: 0.2, metalness: 1 })),
-    glass: studio(new THREE.MeshPhysicalMaterial({ ...glassOptions(), map: blockPicture(), color: srgb(SHIELD_GLASS.colour).multiplyScalar(1 / PICTURE.level), roughness: 0.2, clearcoat: 1, clearcoatRoughness: 0.1, transparent: true, opacity: SHIELD_GLASS.through })),
+    glass: studio(new THREE.MeshPhysicalMaterial({ ...glassOptions(), map: blockPicture(), color: glassTone(), roughness: 0.2, clearcoat: 1, clearcoatRoughness: 0.1, transparent: true, opacity: SHIELD_GLASS.through })),
     glassCrack: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xf4f8f5), roughness: 0.3, metalness: 0, specularIntensity: 0.8, transparent: true, opacity: 0.8, depthWrite: false })),
     paleGlass: studio(new THREE.MeshPhysicalMaterial({ ...glassOptions(), map: blockPicture() })),
     plate: studio(new THREE.MeshPhysicalMaterial({ color: PLATE_TONE.live.clone(), roughness: 0.4, metalness: 1, map: brushing(), anisotropy: 0.55, anisotropyRotation: Math.PI / 2 })),

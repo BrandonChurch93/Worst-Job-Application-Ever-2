@@ -7,7 +7,7 @@ import { roundedRect, sweep, plateProfile } from '../../shell/solids'
 import { config } from '../../config'
 import { BODY_Z, FRAME, LEG, SHADE, SHIELD, SIDE, SIDE_OFF, CAP_W, CAP_H, WRECK } from '../body'
 import { SLAB, slabGeometry } from '../../pages/marketing/real/perk-cards'
-import { bossKit, cutPlate, joined, lathe, lying, mesh, moved, screw, PLATE_TONE } from './body-kit'
+import { bossKit, cutPlate, joined, lathe, lying, mesh, moved, screw, glassTone, PLATE_TONE, SHIELD_GLASS } from './body-kit'
 
 const heights = config.scale.heights
 const clamp = (t: number): number => Math.min(1, Math.max(0, t))
@@ -351,6 +351,7 @@ function poseShield(o: THREE.Object3D, s: Shape): void {
   const flat = s.v?.[1] ?? 0
   const hurt = s.v?.[5] ?? 0
   const stand = prog(k, 0.55, 1) * (1 - flat)
+  bossKit().glass.color.copy(glassTone()).multiplyScalar(1 - (1 - SHIELD_GLASS.up) * stand)
   const swing = (1 - prog(k, 0.1, 0.6)) * (Math.PI / 2)
   const lean = stand * (0.62 + 0.07 * clamp(s.v?.[2] ?? 0))
   const half = SHIELD.w / 2
