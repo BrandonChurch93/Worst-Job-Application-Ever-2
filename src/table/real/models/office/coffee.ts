@@ -283,17 +283,14 @@ function draw(z: Zone, ctx: RealContext): { k: Kit; g: Kit; c: Kit } {
 // The small trim of the coffee machine, for the one mesh of fine things of the tier.
 export const coffeeFine = (z: Zone, ctx: RealContext): Kit => draw(z, ctx).k
 
+// What glows and what is clear on the coffee machine, for the one glowing mesh and the one clear mesh of the tier.
+export const coffeeLit = (z: Zone, ctx: RealContext): { g: Kit; c: Kit } => draw(z, ctx)
+
 export function buildCoffee(z: Zone, ctx: RealContext): THREE.Object3D {
   const mats = matsOf(z)
   const root = new THREE.Group()
   root.name = 'office.coffee'
-  const { k, g, c } = draw(z, ctx)
+  const { k } = draw(z, ctx)
   root.add(meshOf(k.done(), mats.solid, 'office.coffee.body', { cast: true }))
-  const glow = meshOf(g.done(), mats.glow, 'office.coffee.buttons')
-  glow.userData.lightGroup = 'office.windows'
-  root.add(glow)
-  const clear = meshOf(c.done(), mats.clear, 'office.coffee.tank')
-  clear.renderOrder = 2
-  root.add(clear)
   return root
 }

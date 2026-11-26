@@ -33,8 +33,11 @@ Folder: 18 calls, 31208 triangles. Whole frame: 207 draw calls against a limit o
 - The monitors lean back and their screens glow a little (group `office.windows`), so each cubicle has one mark that reads from straight above.
 - The coffee machine keeps the form the first owner built. It is now bronze enamel with a bright top plate, white cups on the plate, and three small steel panels with small lamps in place of the four large rings.
 - The board under `sign.office.coffee` stays where the layout puts the words.
+- Loose paper. Three sheets, a folder, two envelopes, two paper clips and a rubber band lie in the right lower corner of the Office (behind `office.inlane.floor.right`, right of `office.shoulder.step.right`, above the display), the mirror of the corner where the cabinet, the bin and the plant stand. `loose()` in `cubicles.ts` gives their places from the lower post of the right stapler's plate, and the test holds each 0.08 balls clear of every segment and post of the tier and off the display. Nothing lies beside the inbox or the coffee machine yet: the hold and the foot opening are there, and the runner has not said where that floor is free.
+- One glowing mesh (`office.glow`) and one clear mesh (`office.clear`) for the whole tier, in the root of the cubicles: the screens with the lamps of the coffee machine, the bottles with its tank. Two draw calls fewer than before.
+- The sheets carry a few grey rules, not letters.
 
 ## Asked of others
 
-- `/root/table_runner` (not started when asked; sent through `/root`): a larger box for the inbox and the cubicles, and where the Office floor is free of ball paths for loose paper.
-- Lights owner: a hidden lamp or spill over the inbox (15.2 to 16.75, 3.6 to 4.8) and over the cubicles (3.25 to 5.05, 2.25 to 4.4). Glowing things of mine: the screens of the six monitors and the lamps and display of the coffee machine, both in group `office.windows`.
+- `/root/table_runner` (sent 03:50 UTC): inbox box [14.0, 3.6, 2.75, 1.5] h 1.15 with the hold in its front left corner, or at least h 1.15 and 0.3 deeper; cubicles box [3.25, 2.25, 3.2, 2.15] with `cubicles.drop` at about u 6.5; and where the Office floor is free of ball paths for loose paper. No answer yet.
+- `/root/lamp_keeper` (sent 03:50 UTC): a hidden lamp or spill over the inbox (15.2 to 16.75, 3.6 to 4.8) and over the cubicles (3.25 to 5.05, 2.25 to 4.4). Glowing things of mine: the screens of the six monitors and the lamps and display of the coffee machine, both in group `office.windows`.

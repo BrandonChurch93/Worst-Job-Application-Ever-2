@@ -4,7 +4,7 @@ import { Random } from '../../../../core/random'
 import type { RealContext } from '../../../../real/types'
 import { BALL, table } from '../../../layout'
 import { localBalls, type Zone } from '../../zone'
-import { coffeeFine, coffeeScrews } from './coffee'
+import { coffeeFine, coffeeLit, coffeeScrews } from './coffee'
 import { boxOf, envelope, inboxScrews } from './inbox'
 import { hex, Kit, matsOf, meshOf, mix, rrect, screwGeometry, shade, SURF, type RGB, type V2, type V3 } from './kit'
 import { staplerFine, staplerScrews } from './staplers'
@@ -552,10 +552,11 @@ export function buildCubicles(z: Zone, ctx: RealContext): THREE.Object3D {
   root.add(meshOf(k.done(), mats.solid, 'office.cubicles.body', { cast: false }))
   f.takeFine(k).takeFine(coffeeFine(z, ctx)).takeFine(staplerFine(z))
   root.add(meshOf(f.done(), mats.solid, 'office.cubicles.trim', { fine: true }))
-  const clear = meshOf(c.done(), mats.clear, 'office.cubicles.bottles')
+  const lit = coffeeLit(z, ctx)
+  const clear = meshOf(c.take(lit.c).done(), mats.clear, 'office.clear')
   clear.renderOrder = 2
   root.add(clear)
-  const glow = meshOf(g.done(), mats.glow, 'office.cubicles.screens')
+  const glow = meshOf(g.take(lit.g).done(), mats.glow, 'office.glow')
   glow.userData.lightGroup = 'office.windows'
   root.add(glow)
 

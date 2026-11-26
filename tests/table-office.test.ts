@@ -44,9 +44,9 @@ describe('the models of the office', () => {
     for (const id of ['model-coffee-machine', 'model-cubicles', 'model-inbox', 'model-staplers']) expect(parts[id]).toBeTruthy()
   })
 
-  test('the tier is drawn in no more than fourteen draws, and its triangles are counted', () => {
+  test('the tier is drawn in no more than twelve draws, and its triangles are counted', () => {
     const all = Object.values(built).flatMap(meshes)
-    expect(all.length).toBeLessThanOrEqual(14)
+    expect(all.length).toBeLessThanOrEqual(12)
     const fine = all.filter((m) => m.userData.fine).reduce((n, m) => n + triangles(m), 0)
     const rest = all.filter((m) => !m.userData.fine).reduce((n, m) => n + triangles(m), 0)
     expect(fine).toBeGreaterThan(0)
@@ -59,7 +59,7 @@ describe('the models of the office', () => {
     expect(names.size).toBeLessThanOrEqual(3)
     const groups = new Set(groupsOf(z).map((g) => g.id))
     const glowing = all.filter((m) => (m.material as THREE.Material).name.startsWith('office.glow'))
-    expect(glowing.length).toBe(2)
+    expect(glowing.length).toBe(1)
     for (const m of glowing) expect(groups.has(m.userData.lightGroup)).toBe(true)
   })
 

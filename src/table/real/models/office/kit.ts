@@ -129,6 +129,14 @@ export class Kit {
     c.push(col[0], col[1], col[2])
     ss.push(surf[0], surf[1], surf[2], this.lift)
   }
+  // Takes all the triangles of another kit in among its own.
+  take(from: Kit): this {
+    for (const x of from.p) this.p.push(x)
+    for (const x of from.n) this.n.push(x)
+    for (const x of from.c) this.c.push(x)
+    for (const x of from.s) this.s.push(x)
+    return this
+  }
   // Takes the small trim of another kit in among its own triangles.
   takeFine(from: Kit): this {
     const dst = [this.p, this.n, this.c, this.s]
