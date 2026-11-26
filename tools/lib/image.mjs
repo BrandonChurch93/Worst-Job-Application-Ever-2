@@ -84,9 +84,16 @@ export async function sheet(rows, file, { gap = 8, quality = 90, ground = '#1b1b
 // The middle of the arrow's body from its tip, in arrow lengths: the body lies below and to the right of the tip.
 export const ARROW_BODY = [0.3, 0.5]
 
-// The box round the cursor in page pixels, from what stillState reports of it: round the arrow's body, not round its tip.
+// The middle of the character in page pixels and its size, from what stillState reports of it: the arrow's body, not its tip, and the whole ball once the arrow is sealed in one.
+export function cursorMiddle(cursor) {
+  if (cursor.inBall && cursor.ballScreenPx > 0) return [cursor.ballX ?? cursor.x, cursor.ballY ?? cursor.y, cursor.ballScreenPx]
+  return [cursor.x + cursor.screenHeightPx * ARROW_BODY[0], cursor.y + cursor.screenHeightPx * ARROW_BODY[1], cursor.screenHeightPx]
+}
+
+// The box round the cursor in page pixels: round the arrow's body, or round the ball it is sealed in.
 export function cursorBox(cursor) {
   if (!cursor || !cursor.onPage) return null
-  const h = cursor.screenHeightPx * 1.5
-  return [cursor.x + cursor.screenHeightPx * ARROW_BODY[0] - h / 2, cursor.y + cursor.screenHeightPx * ARROW_BODY[1] - h / 2, h, h]
+  const [x, y, size] = cursorMiddle(cursor)
+  const h = size * 1.5
+  return [x - h / 2, y - h / 2, h, h]
 }

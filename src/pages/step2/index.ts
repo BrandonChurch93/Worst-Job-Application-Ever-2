@@ -20,6 +20,8 @@ const hover = config.scale.heights.cursorHover
 // How the cursor comes to a thing: how far ahead it sees it, how fast the ground it stands on may rise, and how long its hand takes to close on a grip.
 const CLIMB = { ahead: 44, looks: 4, rise: 900 }
 const REACH = 0.09
+// The cursor is swung by the crank it turns, and stands straight again over the last turns before the crank takes off.
+const SWING = { settle: 1.5 }
 const heights = config.scale.heights
 const G = 2400
 const TAU = Math.PI * 2
@@ -56,6 +58,7 @@ interface State {
   skipping: boolean
   gripped: boolean
   reach: { x: number; y: number; z: number; t: number }
+  swing: { x: number; y: number } | null
   climb: number
   marks: Marks
   rng: number[]
@@ -75,7 +78,7 @@ const freshSlot = (): SlotState => ({ p: 0, pv: 0, grab: false, phase: 'rest', t
 const freshCrank = (): CrankState => ({ b: CRANK.rest, set: false, grab: false, total: 0, turns: 0, phase: 'rest', w: 0, level: 0, hit: false, hitAt: -1, peeled: false, t: 0, stuck: 0, sx: 0, sy: 0 })
 const fresh = (mode: 'live' | 'film'): State => ({
   mode, time: 0, open: -1, phase: 'closed', spring: [0, 0, 0], springV: [0, 0, 0], lift: 0, rowT: 0, endT: 0, idle: 0, done: [false, false, false], px: 0, py: 0,
-  dial: freshDial(), slot: freshSlot(), crank: freshCrank(), pressed: false, hold: 0, finished: false, skipping: false, gripped: false, reach: { x: 0, y: 0, z: 0, t: 1 }, climb: 0, marks: {}, rng: []
+  dial: freshDial(), slot: freshSlot(), crank: freshCrank(), pressed: false, hold: 0, finished: false, skipping: false, gripped: false, reach: { x: 0, y: 0, z: 0, t: 1 }, swing: null, climb: 0, marks: {}, rng: []
 })
 
 export const phoneMask = (digits: string): string => words('data:step2.phone.prefix') + digits
@@ -528,10 +531,19 @@ export function makePage(): PageLogic {
       s.reach.t = Math.min(1, s.reach.t + dt / REACH)
       const left = (1 - s.reach.t) * (1 - s.reach.t)
       io.cursor.take('grip')
+      const swing = s.open === 2 && s.gripped && s.swing ? { x: (at.x - s.swing.x) / dt, y: (at.y - s.swing.y) / dt } : null
       io.cursor.place(at.x + s.reach.x * left, at.y + s.reach.y * left, at.z + hover + s.reach.z * left)
+      if (swing) {
+        const keep = clamp((TURNS * TAU - s.crank.total) / (SWING.settle * TAU), 0, 1)
+        const share = keep * keep * s.reach.t
+        io.cursor.knock(swing.x * share, swing.y * share)
+      }
+      s.swing = s.open === 2 ? { x: at.x, y: at.y } : null
       s.gripped = true
     } else if (s.gripped) {
       s.gripped = false
+      if (s.swing) io.cursor.place(io.cursor.x, io.cursor.y, io.cursor.z)
+      s.swing = null
       if (s.dial.phase !== 'whip' && s.dial.phase !== 'fly') io.cursor.release()
     }
   }
@@ -708,8 +720,8 @@ export function makePage(): PageLogic {
     }
   }
 
-  function chevron(out: DrawList, id: string, x: number, y: number, flip: boolean): void {
-    const tilt = flip ? -0.7 : 0.7
+  function chevron(out: DrawList, id: string, x: number, y: number, turn: number): void {
+    const tilt = 0.7 * (1 - 2 * turn)
     for (const side of [-1, 1]) out.push({ id: `${id}-${side < 0 ? 'a' : 'b'}`, part: 'rows', kind: 'box', x: x + 14 + side * 5.2 - 8, y: y + 12.5, w: 16, h: 3, z0: VALUE_Z + 0.05, z1: VALUE_Z + 0.6, tone: 'ink', rot: -tilt * side, r: 1.5 })
   }
 
@@ -799,7 +811,7 @@ export function makePage(): PageLogic {
     for (let i = 0; i < 3; i++) {
       const y = rowY(i) + offsets[i]!
       const isOpen = s.open === i && s.phase !== 'closing'
-      chevron(out, `${ROWS[i]}-chevron`, FX + FW - 24 - 28, y + (FH - 28) / 2, isOpen)
+      chevron(out, `${ROWS[i]}-chevron`, FX + FW - 24 - 28, y + (FH - 28) / 2, clamp(s.spring[i]!, 0, 1))
       if (isOpen) {
         out.push({ id: 'field-focus', part: 'rows', kind: 'box', x: FX + 14, y: y + FH - 5, w: FW - 28, h: 3, z0: 0.1, z1: 0.5, tone: 'accent', v: [0.3] })
       }

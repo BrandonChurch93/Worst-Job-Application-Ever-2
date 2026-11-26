@@ -1,13 +1,13 @@
 import { beat, config, stepHz } from '../../config'
 import { copy, type LayoutNode } from '../../copy'
-import type { Acting } from '../../cursor/body'
+import { HANDOFF, type Acting } from '../../cursor/body'
 import { boxOf, drawLayout, find } from '../../shell/layout'
 import { block } from '../../shell/metrics'
 import { SCREEN_H } from '../../shell/parts'
 import { words } from '../../shell/words'
 import type { DrawList, GagInfo, Hint, PageContext, PageLogic, Pointer, Shape, StepIo, Tone } from '../../stage/types'
 import { CARD_R, careersLayout, FIRST_CARDS, perkStates, T, TICKER } from './layout'
-import { CUES, pointerAt, REJECTED_CUES, type Marks } from './script'
+import { CUES, LANDING, pointerAt, REJECTED_CUES, type Marks } from './script'
 
 const dt = 1 / stepHz
 const heights = config.scale.heights
@@ -21,6 +21,8 @@ const TURN_SHARP = 5
 const tapeSpeed = 120
 const DOT_GROWS = 24
 const REJECTED_SETTLE = 1.7
+// What the stage's hold on an arrow in the air pulls it back up by in one step, as a share of how far under the hand-off it is.
+const HELD = 9 * dt
 export const TRAVEL = heights.button - 4
 const WIND = 0.36
 const BACK = 56
@@ -364,6 +366,11 @@ export function makePage(): PageLogic {
         s.scroll = Math.abs(gap) < 0.05 ? s.scrollTo : s.scroll + gap * Math.min(1, dt * 16)
       }
 
+      if (rejected() && io.cursor.inAir && io.time >= LANDING.from) {
+        const u = Math.min(1, (io.time - LANDING.from) / (LANDING.down - LANDING.from))
+        const z = hover + (HANDOFF.z - hover) * (1 - u * u)
+        io.cursor.place(HANDOFF.x, s.scroll + HANDOFF.y, (z - HANDOFF.z * HELD) / (1 - HELD))
+      } else if (rejected() && io.step === Math.round(LANDING.lands * stepHz)) io.cursor.place(HANDOFF.x, s.scroll + HANDOFF.y, hover)
       if (s.mode === 'film') {
         const cues = rejected() ? REJECTED_CUES : CUES
         while (s.cue < cues.length && cues[s.cue]!.at <= io.time + 1e-9) {

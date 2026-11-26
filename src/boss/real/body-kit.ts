@@ -166,6 +166,7 @@ export interface BossKit {
   crack: THREE.MeshPhysicalMaterial
   glass: THREE.MeshPhysicalMaterial
   glassCrack: THREE.MeshPhysicalMaterial
+  paleGlass: THREE.MeshPhysicalMaterial
   plate: THREE.MeshPhysicalMaterial
   plateSide: THREE.MeshPhysicalMaterial
   pocket: THREE.MeshPhysicalMaterial
@@ -173,6 +174,8 @@ export interface BossKit {
 }
 
 let made: BossKit | null = null
+
+export const PLATE_TONE = { live: srgb(0x7c8085), dead: srgb(0x4a4d51) }
 
 export function bossKit(): BossKit {
   made ??= {
@@ -182,7 +185,8 @@ export function bossKit(): BossKit {
     pin: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xc9ccd0), roughness: 0.2, metalness: 1 })),
     glass: studio(new THREE.MeshPhysicalMaterial({ ...glassOptions(), map: blockPicture(), color: srgb(SHIELD_GLASS.colour).multiplyScalar(1 / PICTURE.level), roughness: 0.2, clearcoat: 1, clearcoatRoughness: 0.1, transparent: true, opacity: SHIELD_GLASS.through })),
     glassCrack: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xf4f8f5), roughness: 0.3, metalness: 0, specularIntensity: 0.8, transparent: true, opacity: 0.8, depthWrite: false })),
-    plate: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x7c8085), roughness: 0.4, metalness: 1, map: brushing(), anisotropy: 0.55, anisotropyRotation: Math.PI / 2 })),
+    paleGlass: studio(new THREE.MeshPhysicalMaterial({ ...glassOptions(), map: blockPicture() })),
+    plate: studio(new THREE.MeshPhysicalMaterial({ color: PLATE_TONE.live.clone(), roughness: 0.4, metalness: 1, map: brushing(), anisotropy: 0.55, anisotropyRotation: Math.PI / 2 })),
     plateSide: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x35373a), roughness: 0.55, metalness: 0.9 })),
     pocket: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x63666a), roughness: 0.5, metalness: 0.9 })),
     link: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x9a9ea3), roughness: 0.45, metalness: 0.5 })),

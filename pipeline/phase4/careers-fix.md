@@ -76,5 +76,33 @@ Looks spent on `ticker`: 4 of 40.
 - F, holds. Every state is held 0.3 s or more, the stands at the cards 0.36 s or more.
 - Declined, as /root wrote: no change of the arrow's size, no camera.
 - Film events moved: `card-flip` 498, 1180, 1684 (were 505, 1034, 1522), `button-press` 3007 (was 3065). The test that pins them is mine and is rewritten.
-- Looks, part `acting-marketing`: 3 so far (perks sheet before, perks sheet after, apply sheet after).
+- Looks, part `acting-marketing`: 8 at 05:20 UTC (perks sheet before and after, apply, stroll, ticker, the card-flip motion sheet, two stills).
 
+
+## Second pass on the medal (05:20 to 05:33 UTC)
+
+- MEASURED on the draft key against the approved image, luminance at the 60th percentile in sectors of 15 degrees, ring 88 to 112 px from the medal's middle (script `out/work/h/medal-tmp.py`): the approved face has two bright lobes (182 at 30 degrees, 227 at 210) and two long dull sectors (84 to 99); mine before had the lobes (199, 206) but dull sectors of 121 to 136, so the bow-tie did not read.
+- Decision: the face is a disc laid in rings (`disc()` in `careers-solids.ts`), so the light can change along the radius, and `sheen()` puts all of the bow-tie at the rim and none in the middle, with `narrow` making the bright lobes narrower than the dull sectors and `cap` darkening only the outer part of the dull sectors, where no word lies. After: dull sectors 102 to 119, lobes 190 and 220.
+- Decision: the shared turned aluminium's bump at 0.02 on the face (was 0.06): at 0.06 it drew soft bands several pixels wide, which the approved face does not have. This cost M3 about 0.01 (0.6913 to 0.679), and I kept it: the bands were detail of the wrong kind.
+- Decision: the rim and the band carry the brushed picture too and their own bow (`leaned(..., bow)`), darker metal (0x8e8f8e).
+- Tried and taken back: vertex colour on the wreath's leaves for a dark pressed outline. The leaves went black (the merged wreath does not carry a colour of its own), and there was no time to carry it through. The leaves are a darker, rougher metal instead (0x7c7e80 at 0.52).
+- M4 during this pass: 4.44 with `rim` 0.94 and `cap` 0.32 (red), 3.66 with 9000 strokes (red), 4.61 with what is kept. None of the red states was committed.
+- Looks spent on `careers-page` (the medal) in this pass: 9, so 16 of 40.
+
+## M2, from /root's mail of 05:34 UTC
+
+- MEASURED before, `npm run -s measure -- --unit marketing --only M2 --tier review` at 7561a2eb: red, soft share 0.2578 on `marketing-top`, 0.2454 on `rest-marketing`, 0.418 on `marketing-perks`, 0.1363 on `marketing-proof` (worse than /root's numbers on main because the rim had just taken the picture at 0.78 texels to a pixel).
+- Cause: both of my pictures lay at one texel to a page pixel, which in the still is one texel to a screen pixel or a hair under it.
+- Decision: the glass picture is 1024 texels and lies at `PICTURE.lay` = 2.4 texels to a page pixel (repeat `lay / size`); `face()` of the slab pushes the uv outward down the wall by the wall's depth, so the picture lies down the wall too. The brushed picture is 1024 texels across the whole medal (2.7 to a page pixel). No export changed its name or shape; `PICTURE` has one more field.
+- MEASURED after, same command with M3 and M4, at c13da904: M2 pass, largest soft share 0.0001 (28 of 499764, 28 of 507895, 34 of 642606, 5 of 979531); M4 pass 4.61; M3 red 0.6781.
+- Cost: each picture is 4.0 MB (5.3 with its smaller copies) where it was 1.0 (1.4), by arithmetic.
+
+## The landing in `decision.reset` (round 8, R9 issue 3; 05:42 to 05:50 UTC)
+
+- MEASURED with the film of the decision unit in a test (`tests/careers-fix-landing.test.ts`): the page turn is at 9.754 s, my page is entered at 10.254 s, the stage lets the arrow go at 10.754 s, and before this change the arrow then fell for 0.45 s from the hand-off height and touched at 11.2 s, 0.8 s before the film ends. Three reads of 12 frames each need 1.2 s.
+- Decision: in the rejected variant the page lets the arrow down itself while the stage still holds it in the air (`io.cursor.place`, from `LANDING.from` to `LANDING.down` of the page's time), so it touches at 0.30 s, as the page comes flat, and not 0.45 s after it. The stage pulls an arrow in the air back up by `9 * dt` of its distance under the hand-off height each step, so the height given to `place` is corrected for that (`HELD`), and on the first step after the stage lets go the arrow is placed once more at rest: without that it left upward at 2394 px a second (seen in the test's print, z 1192).
+- The acting, in the page's time: 0.20 `stamp` (tall for the last of the fall, then driven flat as it touches), flat until 0.72; it gets up and stands, drooped, in place until 1.18; half a step of 46 px toward Apply for a Job and `recoil` in that direction at 1.24, which is a lean of 0.52 to 0.56 held to the end of the film at 1.746.
+- MEASURED by the test: flat (on the page, squash under 0.72) 0.367 to 0.725 s, 0.358 s, 10.7 frames at 30 a second; stood (no reaction, within 2 px) 0.729 to 1.183, 0.454 s, 13.6 frames; leant (lean past 0.45, moved more than 20 px) 1.329 to 1.746, 0.417 s, 12.5 frames. The flat read is 1.3 frames short of the 12 asked: its length is the `stamp` reaction's own (0.35 s of 0.5), which is the cursor's and locked.
+- Film only: a visitor who comes back rejected is let down the same way, but the cues (`stamp`, the half step, the lean) are the film's.
+- Seen and not mine to find in the time: in the sheet of `decision.reset` the frame at 2:31.70 shows the cards' glass without their type, and the frames 0.17 s before and after show it. MEASURED: the page's draw list holds the 20 texts of the cards at every step of that time and its states do not change, so it is not the page's logic. UNKNOWN whether the film has it or only a still that is rendered alone.
+- Looks, part `acting-marketing`: 14 of 40 (two sheets of `decision.reset`, three stills of it, one zoom).
