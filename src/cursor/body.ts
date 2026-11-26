@@ -1,7 +1,7 @@
 import { config, stepHz } from '../config'
 import { hash01 } from '../core/random'
 import type { Emit } from '../stage/types'
-import { arriveTurn, leaveTurn } from '../stage/turn'
+import { arriveTurn } from '../stage/turn'
 import { FEEL, FEEL_EASE, FEEL_KEYS, freshFeel, reactionPose, type Feel } from './act/feel'
 import { OUTLINE, STRIP_AXIS, UNIT } from './contract'
 
@@ -47,9 +47,9 @@ const DIVE = { tip: 2.09, far: 1.25, high: [5, 18] as [number, number], fast: [1
 const DRAG = { stride: 90, pulse: 0.2, lean: 0.34 }
 // Under a visitor's hand the arrow is not thrown by its own walk. `most` is how far the angle as drawn may stand off the standard angle, leaned into from `knee` on, and `rate` how fast it may change, in radians a second: 12 degrees in a frame of 60. A knock by the page lifts both for `thrown` seconds at least and until it is down again, `longest` at most.
 export const LED = { most: 0.61, knee: 0.42, rate: 12.5, thrown: 0.12, longest: 1.5 }
-// Over a turning page the visitor's arrow hangs only as high as the slab under it needs: `reach` is how far the body lies below its tip, `ahead` how many seconds of the turn it rises before the slab, `follow` how fast it goes to that height.
-// `fall` is how it comes down from more than `clear` above what it stands on when nothing threw it: walked off a raised thing, or let go by the page turn. `half` is the stage's half turn, in seconds.
-export const HOVER = { reach: 70, ahead: 0.05, follow: 30, clear: 20, fall: 14000, half: 0.5 }
+// Through a page turn the visitor's arrow lies on the leaving page and goes over with it. Over the arriving page it hangs only as high as the slab coming over needs: `reach` is how far the body lies below its tip, `follow` how fast it goes to that height.
+// `fall` is how it comes down from more than `clear` above what it stands on when nothing threw it: it walked off a raised thing. `half` is the stage's half turn, in seconds.
+export const HOVER = { reach: 70, follow: 30, clear: 20, fall: 14000, half: 0.5 }
 // The principles every move gets by itself: a pull back against the way it sets off, a stretch along the way while it travels, a squash where it stops.
 const MOVE = { off: 60, pull: 3, tip: 2.6, long: 0.3, per: 5200, land: 4.8 }
 const ARM = { rest: 40, strain: 13, shed: 0.3, snap: 0.035, lean: 0.35, back: 0.45 }
@@ -514,8 +514,7 @@ export class CursorBody {
     }
     const thrown = (s.thrown ?? 0) > 0
     if (this.hand && s.air) {
-      const u = ((s.hung ?? 0) + (s.arriving ? 0 : HOVER.ahead)) / HOVER.half
-      tz = Math.min(HANDOFF.z, hover + s.ground + HOVER.reach * Math.tan(Math.min(1.5, Math.abs(s.arriving ? arriveTurn(u) : leaveTurn(u)))))
+      tz = s.arriving ? Math.min(HANDOFF.z, hover + s.ground + HOVER.reach * Math.tan(Math.min(1.5, Math.abs(arriveTurn((s.hung ?? 0) / HOVER.half))))) : hover + s.ground
       s.hung = (s.hung ?? 0) + dt
     }
     const floor = tz + hop

@@ -77,7 +77,7 @@ describe('polish, the arrow under a visitor\'s pointer', () => {
     expect(live.seconds).toBeLessThanOrEqual(0.14)
   })
 
-  it('hangs over an arriving page only as high as the slab under it needs, and is down when the page is seated', () => {
+  it('lies on the leaving page, hangs over an arriving page only as high as the slab under it needs, and is down when the page is seated', () => {
     expect(HOVER.half).toBe(TURN_HALF)
     const live = new CursorBody()
     live.hand = true
@@ -93,6 +93,14 @@ describe('polish, the arrow under a visitor\'s pointer', () => {
       expect(film.z).toBeCloseTo(HANDOFF.z, 6)
     }
     expect(live.z).toBeLessThanOrEqual(hover + 6)
+    const left = new CursorBody()
+    left.hand = true
+    left.reset(400, 500)
+    left.lift()
+    for (let i = 0; i < n; i++) {
+      left.step({ x: 0, y: 0 }, () => undefined, false)
+      expect(Math.abs(left.z - hover)).toBeLessThanOrEqual(1)
+    }
     live.land()
     let most = 0
     for (let i = 0; i < stepHz / 2; i++) {
