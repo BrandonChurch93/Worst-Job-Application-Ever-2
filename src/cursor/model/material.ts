@@ -23,7 +23,7 @@ export interface BodyUniforms {
   uDetail: { value: THREE.Texture }
 }
 
-// The light on a body sealed in the clear ball. The website's own light leaves when the machine wakes and the lamps of a tier are not lights of the scene, so the owner of the ball writes here, for each frame, what the lamps round the ball give the body: `light` is the colour and level of one lamp, `from` the way to it in the world (x right, y up the page, z off it) with in `w` the share by which it follows the body's own face, `fill` the light from all sides. It counts on a body only while its look has `sealed`.
+// The light on a body sealed in the clear ball, written each frame by the ball's owner.
 export const sealed = {
   light: { value: new THREE.Vector3() },
   from: { value: new THREE.Vector4(0, 0, 1, 0) },

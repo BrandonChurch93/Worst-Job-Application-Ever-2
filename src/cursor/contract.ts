@@ -40,7 +40,7 @@ export interface BodyLook {
   melt: number
   // Pressed thin.
   flat: number
-  // 1 inside the clear ball, where the light the ball's owner gives (`sealed` of the body's material) stands in for the website's own. Left out: 0.
+  // 1 while sealed in the clear ball, else 0.
   sealed?: number
   // Blackened from the tip.
   char: number
