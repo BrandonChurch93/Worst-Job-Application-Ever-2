@@ -1,6 +1,7 @@
 import { config, stepHz } from '../../config'
 import type { LayoutNode } from '../../copy'
 import { HANDOFF, restPose, type Acting, type CursorPose } from '../../cursor/body'
+import { sealedFit } from '../../cursor/fit'
 import { boxOf, drawLayout, node, text } from '../../shell/layout'
 import { block } from '../../shell/metrics'
 import { button, buttonWidth, HEADER, LEFT, page, stepHead, TYPE } from '../../shell/parts'
@@ -90,10 +91,10 @@ function buildLayout(): LayoutNode {
 
 interface State {
   mode: 'live' | 'film'; time: number; t: number; phase: 'wait' | 'pull' | 'sealed' | 'open' | 'result'; pull: number; said: string[]; drops: number; tows: number
-  scroll: number; floor: number; opened: number; result: number; pressed: boolean; hold: number; took: number; home: number; pan: number[]; arc: number; blow: number[]; snap: number; sway: number; lay: number[]; seen: number; out: number[]; done: boolean; skipped: boolean; saved: boolean; score: number; shut: boolean; dim: number; struck: number; face: number[]; hit: number[]; was: number[]; scoreAt: number; scoreWas: number; flipped: boolean
+  scroll: number; floor: number; opened: number; result: number; pressed: boolean; hold: number; took: number; home: number; pan: number[]; arc: number; blow: number[]; snap: number; sway: number; lay: number[]; seen: number; out: number[]; done: boolean; skipped: boolean; saved: boolean; score: number; shut: boolean; dim: number; struck: number; face: number[]; hit: number[]; was: number[]; scoreAt: number; scoreWas: number; flipped: boolean; sink: number[]; latch: number; sv: number; roll: number[]
 }
 
-const fresh = (): State => ({ mode: 'live', time: 0, t: 0, phase: 'wait', pull: 0, said: [], drops: 0, tows: 0, scroll: 0, floor: 0, opened: 0, result: 0, pressed: false, hold: 0, took: -1, home: -1, pan: [0, 0, 0, 1], arc: -9, blow: [0, 0, -9], snap: -9, sway: -9, lay: [0, -9], seen: -9, out: [-9, 0, 0], done: false, skipped: false, saved: false, score: 0, shut: false, dim: 0, struck: -9, face: [0, 0, 1, 0], hit: [0, 0], was: [0, 0, 1, 0], scoreAt: -9, scoreWas: 0, flipped: false })
+const fresh = (): State => ({ mode: 'live', time: 0, t: 0, phase: 'wait', pull: 0, said: [], drops: 0, tows: 0, scroll: 0, floor: 0, opened: 0, result: 0, pressed: false, hold: 0, took: -1, home: -1, pan: [0, 0, 0, 1], arc: -9, blow: [0, 0, -9], snap: -9, sway: -9, lay: [0, -9], seen: -9, out: [-9, 0, 0], done: false, skipped: false, saved: false, score: 0, shut: false, dim: 0, struck: -9, face: [0, 0, 1, 0], hit: [0, 0], was: [0, 0, 1, 0], scoreAt: -9, scoreWas: 0, flipped: false, sink: [-1, 0, 0, 0, 0, 0], latch: -9, sv: 0, roll: [0, 0] })
 
 const flips = (take as unknown as { flips: [string, number, number][] }).flips
 const held = (side: string, time: number): boolean => flips.some((f) => f[0] === side && time >= f[1] && time < f[2])
@@ -101,8 +102,8 @@ const held = (side: string, time: number): boolean => flips.some((f) => f[0] ===
 const STREET = 0.95
 // The corner of the result card: the radius of the site's other result cards, step 5's two panels.
 const CARD_R = 24
-// The rise of the result card and its button out of the page: its seconds, and the height they start from.
-const RISE = { seconds: 0.4, low: 3 }
+// The rise of the result card and its button out of the page: its seconds, the height they start from, the share of the rise that is the settle at the top, and how far past their height they go before it, in px.
+const RISE = { seconds: 0.55, low: 0, settle: 0.3, over: 1.5 }
 // How far along the rail `drain` the riser of the last screen stands, in balls: from there to the outlet port the ball is drawn in the tube that lies on the page.
 const RISER_S = ((): number => {
   const p = railOf('drain').points
@@ -164,6 +165,21 @@ const HIT = { least: 0.3, hold: 0.2, short: 0.66, big: 0.9, sway: [0.3, 8, 0.4] 
 const LOAD = { reach: 0.8, gain: 1.6, most: 0.8, rock: [0.1, 1.3], hop: [0.385, 0.9, 0.05] }
 const BEATS = { dread: [0.86, -0.6], brace: [0.4, 0.68], catch: [0.12, 0.64], shiver: [0.35, 0.12, 11, 1.3], kick: [0.12, 0.7], alarm: [0.3, 0.36, 1, -0.5], lip: [0.35, 0.72, -0.6], dizzy: [[0, 0.25, 3, 0.5], [0.5, 0.5, 3, 0.5], [1, 0.8, 2.5, 1.3]] }
 const SHELL = { shut: 0.27, open: 0.2, soft: 3.6, full: 14.6 }
+// The way into the cup: the seconds in which the pull's aim runs from the arrow to the port, with growing speed from `lead` of its mean speed and the body stretched to `long` as it goes, and the seconds of the sink, in which the arrow goes down into the cup to `floor` px over the page, shortens and turns to the pose it is sealed in.
+const PLUNGE = { reach: 0.24, sink: 5 / 60, grow: 2, lead: 0.35, floor: 2, long: 1.3 }
+// The latch of the half shells: the share of the close that is the slow swing and how far shut it brings them, then the snap into the seam. On the latch the ball is squeezed across the seam by `squeeze` for at most `over` seconds, and the port's ring answers a second time.
+const LATCH = { swing: 0.7, to: 0.5, squeeze: 0.85, way: 1.5707963267948966, over: 0.5 }
+// The drop into the feed tube: the view follows the ball as a damped spring whose stiffness grows from `slow` to `firm` (1 / s) over `ramp` seconds after `hold`, so the ball runs down the screen and the view catches it up. After `over` seconds the page's plain rule follows again.
+const DROP = { slow: 4, firm: 13.8, hold: 0.15, ramp: 0.8, over: 1.3 }
+// The roll in a tube: the arrow turns by `gear` radians for each ball's width travelled, a whole number of turns over the tube, and the last `ease` of the way slows the turn to rest. In the film the roll down the feed tube is over after `film` balls, before the cut to the wide view of the table.
+const TUMBLE = { gear: 1, ease: 0.15, film: 10.5 }
+// How far shut the half shells are for the share of the close that has passed: a slow swing, then a snap into the seam with growing speed.
+const shutOf = (u: number): number => {
+  if (u >= 1) return 1
+  if (u <= LATCH.swing) return LATCH.to * Math.sin((Math.PI / 2) * Math.max(0, u / LATCH.swing))
+  const k = (u - LATCH.swing) / (1 - LATCH.swing)
+  return LATCH.to + (1 - LATCH.to) * k * k
+}
 const ACT = { wake: 0.3, doors: 0.6, shock: 0.45, realise: 0.45, slow: 7, lead: 0.1, tall: 1.01, ease: 0.06 }
 
 export function makePage(): PageLogic {
@@ -693,7 +709,21 @@ export function makePage(): PageLogic {
       const turn = ROLL.rest - (tip ?? 0) - Math.atan2(e[0]!, -e[1]!) + load
       const p = io.cursor.pose()
       io.cursor.aim(s.was[4] === 1 ? turn - Math.PI * 2 * Math.round((turn - p.lean - p.spin) / (Math.PI * 2)) : turn - Math.PI * 2 * Math.floor((turn + Math.PI / 2) / (Math.PI * 2)))
-    } else io.cursor.aim(null)
+    } else if (b.mode === 'rail' && (b.rail === 'feed' || b.rail === 'drain')) {
+      const whole = railLength(railOf(b.rail))
+      const far = b.rail === 'feed' && s.mode === 'film' ? Math.min(whole, TUMBLE.film) : whole
+      const p = io.cursor.pose()
+      const id = b.rail === 'feed' ? 1 : 2
+      if (s.roll[0] !== id) s.roll = [id, p.spin]
+      const f = Math.max(0, Math.min(1, b.s / far))
+      const u = (f - (1 - TUMBLE.ease)) / TUMBLE.ease
+      const g = u <= 0 ? f : 1 - TUMBLE.ease + TUMBLE.ease * (1.5 * u - 0.5 * u * u * u)
+      const turns = Math.max(1, Math.round((far * TUMBLE.gear) / 6.283185307179586))
+      io.cursor.aim(f >= 1 ? null : p.feel.lean + s.roll[1]! * (1 - g) + 6.283185307179586 * turns * g)
+    } else {
+      s.roll = [0, 0]
+      io.cursor.aim(null)
+    }
     if (s.t < s.lay[1]! && (s.was[4] === 1) !== held) {
       io.cursor.strike(s.lay[0]!, s.lay[1]! - s.t)
       s.snap = s.t
@@ -738,18 +768,49 @@ export function makePage(): PageLogic {
           } else if (io.time >= s.seen + LOADER.away[2]!) {
             s.phase = 'pull'
             s.pull = 0
+            s.sink = [-1, io.cursor.x, io.cursor.y, 0, 0, 0]
             io.cursor.take('ball')
             io.cursor.press(LOADER.go[0]!, LOADER.go[1]!)
           }
         }
         if (s.phase === 'pull') {
           s.pull += dt
-          io.cursor.drive(port.x, port.y, 30)
-          if ((d < 14 && s.pull > 0.3 && (s.mode === 'live' || io.time >= T.seal - 0.1)) || s.pull > 1.1) sealNow(io)
+          const due = s.mode === 'live' ? s.pull > 0.3 - PLUNGE.sink : io.time >= T.seal - 0.1 - PLUNGE.sink
+          if (s.sink[0]! < 0 && ((d < 14 && due) || s.pull > 1.1 - PLUNGE.sink)) {
+            const p = io.cursor.pose()
+            const turn = p.lean + p.spin
+            s.sink = [0, p.x, p.y, p.z, p.squash, turn]
+          }
+          if (s.sink[0]! < 0) {
+            const f = Math.min(1, s.pull / PLUNGE.reach)
+            const u = PLUNGE.lead * f + (1 - PLUNGE.lead) * Math.pow(f, PLUNGE.grow)
+            io.cursor.drive(s.sink[1]! + (port.x - s.sink[1]!) * u, s.sink[2]! + (port.y - s.sink[2]!) * u, 30)
+            io.cursor.press(LOADER.go[0]! + (PLUNGE.long - LOADER.go[0]!) * u, dt)
+          } else {
+            s.sink[0] = s.sink[0]! + dt
+            const film = s.mode === 'film' && s.pull <= 1.1 - PLUNGE.sink
+            const k = smooth(Math.max(0, Math.min(1, film ? 1 - (T.seal - 0.1 - io.time) / PLUNGE.sink : s.sink[0]! / PLUNGE.sink)))
+            const p = io.cursor.pose()
+            const to = LOADER.shut[0]! - 6.283185307179586 * Math.round((LOADER.shut[0]! - s.sink[5]!) / 6.283185307179586)
+            const turn = s.sink[5]! + (to - s.sink[5]!) * k
+            const squash = s.sink[4]! + (LOADER.shut[1]! - s.sink[4]!) * k
+            const mid = sealedFit({ ...p, spin: to - p.lean, squash: LOADER.shut[1]! }, s.time)
+            const cs = Math.cos(-to) * p.scale
+            const sn = Math.sin(-to) * p.scale
+            io.cursor.place(s.sink[1]! + (port.x - mid.x * cs + mid.y * sn - s.sink[1]!) * k, s.sink[2]! + (port.y + mid.x * sn + mid.y * cs - s.sink[2]!) * k, s.sink[3]! + (PLUNGE.floor - s.sink[3]!) * k * k)
+            io.cursor.strike(turn, dt)
+            io.cursor.press(squash, dt)
+            if (film ? io.time >= T.seal - 0.1 : s.sink[0]! >= PLUNGE.sink - dt / 2) sealNow(io)
+          }
         }
       } else s.t += dt
       if (s.phase === 'sealed') {
         direct(io)
+        if (s.latch < 0 && s.took >= 0 && s.t >= s.took + SHELL.shut) {
+          s.latch = s.t
+          if (s.t < T.tube) s.blow = [LATCH.squeeze, LATCH.way, s.t]
+        }
+        if (s.blow[2] === s.latch && s.t >= s.latch + LATCH.over) s.blow = [0, 0, -9]
         const before = ball()
         const was = before.mode === 'plane' ? [before.vx, before.vy] : null
         const events = mc.step(io.pointer.flipLeft === true, io.pointer.flipRight === true)
@@ -841,7 +902,15 @@ export function makePage(): PageLogic {
         s.scroll = s.out[1]! + (lastScroll - s.out[1]!) * p - (after > 0 && after < 1 ? LEAVE.back * Math.sin(Math.PI * after) : 0)
         s.floor = s.out[2]! * (1 - p)
       } else {
-        s.scroll += Math.max(-cap, Math.min(cap, (to.scroll - s.scroll) * rate))
+        const b = ball()
+        if (s.phase === 'sealed' && b.mode === 'rail' && b.rail === 'feed' && b.y <= Y2 + 2 && s.t < T.tube + DROP.over) {
+          const w = DROP.slow + (DROP.firm - DROP.slow) * smooth(Math.max(0, Math.min(1, (s.t - T.tube - DROP.hold) / DROP.ramp)))
+          s.sv += (w * w * (to.scroll - s.scroll) - 2 * w * s.sv) * dt
+          s.scroll += s.sv * dt
+        } else {
+          s.sv = 0
+          s.scroll += Math.max(-cap, Math.min(cap, (to.scroll - s.scroll) * rate))
+        }
         s.floor += (to.floor - s.floor) * rate
         if (Math.abs(to.scroll - s.scroll) < 0.01) s.scroll = to.scroll
       }
@@ -859,9 +928,13 @@ export function makePage(): PageLogic {
       const states = activeStates()
       const over: Record<string, Partial<Shape>> = s.pressed ? { ...stood, 'go-cap': { z1: config.scale.heights.button - config.scale.heights.keyTravel } } : { ...stood }
       if (s.phase === 'result' && s.result < RISE.seconds) {
-        const u = smooth(s.result / RISE.seconds)
-        const card = RISE.low + (config.scale.heights.card - RISE.low) * u
-        const cap = RISE.low + (config.scale.heights.button - RISE.low) * u
+        const t = s.result / RISE.seconds
+        const a = Math.min(1, t / (1 - RISE.settle))
+        const back = Math.max(0, (t - (1 - RISE.settle)) / RISE.settle)
+        const u = a * a * (3 - 2 * a)
+        const past = RISE.over * (t < 1 - RISE.settle ? u * u : (1 - back) * (1 - back) * Math.cos(Math.PI * back))
+        const card = RISE.low + (config.scale.heights.card - RISE.low) * u + past
+        const cap = RISE.low + (config.scale.heights.button - RISE.low) * u + past
         over.result = { z1: card }
         for (const id of ['result-title', 'result-body']) over[id] = { z0: card, z1: card }
         if (!s.pressed) {
@@ -879,9 +952,9 @@ export function makePage(): PageLogic {
       drawLayout(out, layout, { states, runtime: { score: scoreText() }, over })
       if (s.mode === 'live' && s.phase === 'sealed' && !s.flipped && s.t >= T.onTable && s.t < T.onTable + HINT) out.push({ id: 'display.hint', part: 'displays', kind: 'box', x: px(MID), y: px(MARQUEE_Y), w: 0, h: 0, z0: 0, z1: 0, tone: 'dark', v: [s.t - T.onTable] })
       const ago = (at: number): number => (at < 0 ? 9 : Math.min(9, s.t - at))
-      const rings: Record<string, number> = { 'loader.ring': ago(s.took), 'outlet.ring': ago(s.home) }
+      const rings: Record<string, number> = { 'loader.ring': Math.min(ago(s.took), ago(s.latch)), 'outlet.ring': ago(s.home) }
       for (const shape of fixedShapes()) out.push(shape.id in rings ? { ...shape, v: [rings[shape.id]!] } : shape)
-      const shell = s.phase === 'sealed' && s.home >= 0 ? [Math.max(0, 1 - s.opened / SHELL.open), 9, 0, 0, 0, 9] : [Math.min(1, ago(s.took) / SHELL.shut), Math.max(0, ago(s.took) - SHELL.shut), 0, s.blow[0]!, s.blow[1]!, Math.min(9, s.t - s.blow[2]!)]
+      const shell = s.phase === 'sealed' && s.home >= 0 ? [Math.max(0, 1 - s.opened / SHELL.open), 9, 0, 0, 0, 9] : [shutOf(ago(s.took) / SHELL.shut), Math.max(0, ago(s.took) - SHELL.shut), 0, s.blow[0]!, s.blow[1]!, Math.min(9, s.t - s.blow[2]!)]
       const lies = seen3()
       for (const shape of movingShapes(mc, lit(), false, general(), drawn(), s.shut, website())) out.push(shape.id === 'ball.clear' ? { ...shape, x: px(lies.x - 0.5), y: px(lies.y - 0.5), z0: px(lies.z), z1: px(lies.z) + BALL, v: shell } : shape)
       out.push(hqPlate)
