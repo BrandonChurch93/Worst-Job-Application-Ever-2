@@ -6,7 +6,7 @@ import { Geo, type V2, type V3 } from './geo'
 import { Screws, TONE, aluOf, clearOf, mesh, screwOf } from './mats'
 
 // The one clear tube of the machine. The feed tube is built to it here; the drain tube and the lift tube are to be built to the same.
-export const TUBE = { outer: 59.5, wall: 4.5, sides: 24, opacity: 0.05, collar: 22, collarOut: 66, collarStep: 3.4 * BALL, clampStep: 3.4 * BALL, clampWide: 9, strap: 2.4, bend: 1.1 * BALL }
+export const TUBE = { outer: 59.5, wall: 4.5, sides: 24, opacity: 0.05, collar: 22, collarOut: 66, ferrule: 9, ferruleOut: 63, collarStep: 5.1 * BALL, clampStep: 5.1 * BALL, clampWide: 5, strap: 2, bend: 1.1 * BALL }
 const RING = { height: 26, lip: 6, floor: 2.4, slot: 2, mouth: 6, dish: 34, cuts: 7 }
 const BED = { height: 6, land: 5 }
 const CUP: [number, number, number] = [0.045, 0.047, 0.052]
@@ -115,16 +115,16 @@ const frameAt = (path: V3[], s: number): { at: THREE.Vector3; m: THREE.Matrix4; 
 
 function collar(A: Geo, screws: Screws, f: { at: THREE.Vector3; m: THREE.Matrix4 }): void {
   const from = A.vertices
-  const c = TUBE.collar / 2
-  const o = TUBE.collarOut
-  const outline: V2[] = [[TUBE.outer + 0.2, -c], [o - 2, -c], [o, -c + 2], [o, -3.4], [o - 1.6, -2.4], [o - 1.6, 2.4], [o, 3.4], [o, c - 2], [o - 2, c], [TUBE.outer + 0.2, c]]
-  A.lathe(outline, 0, 0, 28, (i) => (i === 4 ? TONE.aluDark : TONE.alu))
+  const c = TUBE.ferrule / 2
+  const o = TUBE.ferruleOut
+  const outline: V2[] = [[TUBE.outer + 0.2, -c], [o - 1.2, -c], [o, -c + 1.2], [o, c - 1.2], [o - 1.2, c], [TUBE.outer + 0.2, c]]
+  A.lathe(outline, 0, 0, 28, TONE.aluBright)
   A.move(from, f.m)
   for (const side of [-1, 1]) {
     const a = Math.PI / 2 + side * 0.5
     const dir = new THREE.Vector3(Math.cos(a), Math.sin(a), 0)
-    const p = dir.clone().multiplyScalar(o).add(new THREE.Vector3(0, 0, side * 6.5)).applyMatrix4(f.m)
-    screws.add(p.x, p.y, p.z, 0.62, side, dir.transformDirection(f.m))
+    const p = dir.clone().multiplyScalar(o).add(new THREE.Vector3(0, 0, 0)).applyMatrix4(f.m)
+    screws.add(p.x, p.y, p.z, 0.45, side, dir.transformDirection(f.m))
   }
 }
 

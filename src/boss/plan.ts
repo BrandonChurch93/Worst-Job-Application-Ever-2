@@ -17,17 +17,20 @@ export const COLLAPSE_SECONDS = 2
 export const WAKE_AFTER_TICK = { film: 1.6, live: 7, near: 2.2 }
 export const DOUBT_SECONDS = 1.7
 
-export const THRESHOLD = [75, 40, 0] as const
-export const CAPS = [12, 14.5, 13.5] as const
+export const THRESHOLD = [51, 25, 0] as const
+export const CAPS = [12.5, 14.5, 13] as const
 export const RAMP = [3, 1.8, 6] as const
-export const FLOOR = [4, 4, 3] as const
+export const FLOOR = [3.9, 4, 3] as const
 export const EXPIRED_GAIN = 10
-export const LAST_CLEAR = 41
-export const DART = { speed: 2300, damage: 0.75, life: 1.4, volley: 4, gap: 0.085 }
-export const SLAB = { speed: [880, 1150, 1150] as const, windup: 0.45, rest: 1.5, restLate: 0.7, out: 0.22, overshoot: 170, every: [1.1, 2.8, 0.85] as const, first: 0.4, late: 2 }
+export const LAST_CLEAR = 28.75
+// A click is a volley. What a dart is worth changes with the phase, so each phase takes about as many clicks as it did when the phases ended at 75 and 40.
+export const DART = { speed: 2300, damage: [1.9, 0.75 * (26 / 35), 0.75 * 0.7] as const, life: 1.4, volley: 4, gap: 0.085 }
+// In the first phase the boss opens with one slab, then fires salvos of three: one at the cursor, one below it, one above it.
+export const SLAB = { speed: [880, 1150, 1150] as const, windup: 0.45, rest: 0.5, restLate: 0.7, out: 0.22, overshoot: 170, every: [1.4, 2.8, 0.85] as const, first: 0.4, late: 2, salvo: 3, salvoGap: 0.18, fan: 0.3, again: 1.7 }
+export const MUZZLE = { reach: 92, z: 108.5, turn: 0.7, ease: 0.25 }
 export const POPUP = { hp: 12, first: 0.3, gaps: [1.8, 1, 1] as const, again: 1.6, late: 2, close: 0.25, read: 1, aim: 0.3, armed: 6 }
 export const HIT = { safe: 1.2, knock: 820 }
 export const BODY = { rx: 196, ry: 118 }
 
 // The glass shield stands on the cursor's side of the body: a dart that comes from the left stops on it.
-export const SHIELD = { x: -288, half: 118, z: 72 }
+export const SHIELD = { x: -288, half: 118, z: 60 }

@@ -1,6 +1,6 @@
 import { config, stepHz } from '../../config'
 import type { LayoutNode } from '../../copy'
-import { HANDOFF, restPose, type CursorPose } from '../../cursor/body'
+import { HANDOFF, restPose, type Acting, type CursorPose } from '../../cursor/body'
 import { boxOf, drawLayout, node, text } from '../../shell/layout'
 import { block } from '../../shell/metrics'
 import { button, buttonWidth, HEADER, LEFT, page, RIGHT, stepHead, TYPE } from '../../shell/parts'
@@ -11,7 +11,7 @@ import { ZONES } from '../../table/draw'
 import type { CameraPose, Collider, DrawList, GagInfo, Hint, PageContext, PageLogic, Pointer, Shape, SheetFrame, StepIo, TableState } from '../../stage/types'
 import take from '../../../cut/TABLE-TAKE.json'
 import { BOARD, boardAt, DOORS, fixedShapes, movingShapes } from '../../table/draw'
-import { APRON_Y, BALL, FLIP, LAST_Y, MARQUEE_Y, MID, OUTLET, PAGE_H, PORT, TH, TIERS, TIER_Y, floorZ, holdOf, railAt, railLength, railOf, table, tierAt } from '../../table/layout'
+import { APRON_Y, BALL, FLIP, LAST_Y, MARQUEE_Y, MID, MOUTH, OUTLET, PAGE_H, PORT, TH, TIERS, TIER_Y, floorZ, holdOf, railAt, railLength, railOf, table, tierAt } from '../../table/layout'
 import { Machine, prepare as startPhysics, type MachineState, type TableEvent } from '../../table/physics'
 
 export const prepare = (): Promise<void> => startPhysics()
@@ -24,8 +24,8 @@ const beatAt = (id: string): { from: number; to: number } => beats.find((b) => b
 const px = (v: number): number => v * BALL
 
 export const T = {
-  arrive: 0.8, seal: 2.4, tube: 3.3, lightsDown: 4.0, powerOn: 5.2, atPlunger: 8.3, plunger: 9.4, onTable: 10.85, doorKick: 13.2, doorOpen: 14.1, lobbyEnd: 14.9, inboxOn: 18.3, inboxBy: 19.1,
-  drops: [20.0, 20.35, 20.7], eject: 21.4, officeOpen: 24.6, officeBy: 25.2, firedBy: 27.2, scoopKick: 28.5, flapOn: 29.6, flapBy: 30.8, highwayEnd: 32.7, spiralEnd: 34.6, streetOpen: 37.3, streetBy: 37.9,
+  arrive: 0.8, seal: 2.4, tube: 3.3, lightsDown: 4.0, powerOn: 5.2, atPlunger: 8.3, plunger: 9.4, onTable: 10.85, doorKick: 13.2, doorOpen: 14.1, lobbyEnd: 14.9, inboxOn: 17.9, inboxBy: 19.1,
+  drops: [20.78, 20.88, 20.98], eject: 20.72, officeOpen: 24.6, officeBy: 25.2, firedBy: 27.2, scoopKick: 28.5, flapOn: 29.6, flapBy: 30.8, highwayEnd: 32.7, spiralEnd: 34.6, save: 35.6, streetOpen: 36.9, streetBy: 37.9,
   press: seconds - TURN_HALF - 0.5
 }
 const MODES: { at: number; tier: number; mode: number }[] = [
@@ -88,10 +88,10 @@ function buildLayout(): LayoutNode {
 
 interface State {
   mode: 'live' | 'film'; time: number; t: number; phase: 'wait' | 'pull' | 'sealed' | 'open' | 'result'; pull: number; said: string[]; drops: number; tows: number
-  scroll: number; floor: number; opened: number; result: number; pressed: boolean; hold: number; done: boolean; skipped: boolean; saved: boolean; score: number; shut: boolean; dim: number
+  scroll: number; floor: number; opened: number; result: number; pressed: boolean; hold: number; done: boolean; skipped: boolean; saved: boolean; score: number; shut: boolean; dim: number; struck: number
 }
 
-const fresh = (): State => ({ mode: 'live', time: 0, t: 0, phase: 'wait', pull: 0, said: [], drops: 0, tows: 0, scroll: 0, floor: 0, opened: 0, result: 0, pressed: false, hold: 0, done: false, skipped: false, saved: false, score: 0, shut: false, dim: 0 })
+const fresh = (): State => ({ mode: 'live', time: 0, t: 0, phase: 'wait', pull: 0, said: [], drops: 0, tows: 0, scroll: 0, floor: 0, opened: 0, result: 0, pressed: false, hold: 0, done: false, skipped: false, saved: false, score: 0, shut: false, dim: 0, struck: -9 })
 
 const flips = (take as unknown as { flips: [string, number, number][] }).flips
 const held = (side: string, time: number): boolean => flips.some((f) => f[0] === side && time >= f[1] && time < f[2])
@@ -131,6 +131,10 @@ const WAKE = 0.35
 const DUSK = config.table.pageDuskLevel
 const ASLEEP = 0.25
 const LOW = 2.4
+const PULL = { door: 12, scoop: 30, near: 2.2, gate: 40 }
+const NEST = { sling: [3.3, 6.5], under: [0.5, 0.9], pour: [-10.6, 1.0, 0.3] }
+const SHOT = { door: 13, scoop: 21, nest: 17, save: 19, lob: 9, lean: 0.3, jets: 0.5, wide: 2.5, low: 7.5, early: 0.3, back: 1 }
+const ACT = { bumper: 0.5, kick: 0.7, doors: 0.45, shock: 0.45, realise: 0.45, slow: 7, lead: 0.3 }
 
 export function makePage(): PageLogic {
   const layout = buildLayout()
@@ -321,7 +325,7 @@ export function makePage(): PageLogic {
     const y = at.y
     const say = (name: string, hits = false) => io.emit(name, x, y, hits)
     if (e.name === 'flipper') {
-      io.emit('flipper', px(e.x), px(TIER_Y[ball().mode === 'none' ? 2 : ball().tier]! + 8.8), false)
+      io.emit('flipper', px(e.x), px(TIER_Y[ball().mode === 'none' ? 2 : ball().tier]! + FLIP.pivotV), false)
       const want = machine().wants(0.3, -60)
       if (gag === 'pinball.save' && !s.saved && (e.id === 'left' ? want[0] : want[1])) {
         s.saved = true
@@ -334,33 +338,71 @@ export function makePage(): PageLogic {
       if (e.name === 'bumper' || e.name === 'sling') say('flasher')
       return
     }
+    const flat = (seconds: number): void => {
+      s.struck = s.t
+      io.cursor.hurt('flattened', seconds)
+      io.cursor.react('recoil')
+    }
     if (e.name === 'bumper') {
       say(gag === 'pinball.coffee' ? 'bumper' : 'flasher', true)
-      io.cursor.react('flinch')
+      flat(ACT.bumper)
     } else if (e.name === 'scoop-kick') {
       say('scoop-kick', true)
-      io.cursor.react('recoil')
+      flat(ACT.kick)
     } else if (e.name === 'ball-hit') {
       say('flasher', true)
-      io.cursor.react('recoil')
+      flat(ACT.bumper)
     } else if (e.name === 'ball-save') {
       if (gag === 'pinball.save' && !s.saved) {
         s.saved = true
         say('flipper-save', true)
-        io.cursor.react('recoil')
+        flat(ACT.kick)
       } else say('flasher')
     } else if (e.name === 'doors-slam') {
       s.shut = true
       say('doors-slam', true)
-      io.cursor.hurt('flattened')
-      io.cursor.act('shocked')
-    } else if (e.name === 'tier-fall') {
-      say('tier-fall')
-      io.cursor.act('scared')
-    } else if (e.name === 'drain') {
-      say('drain')
-      io.cursor.act('exhausted')
-    } else if (e.name === 'ramp-roll' || e.name === 'spiral' || e.name === 'lift' || e.name === 'spinner' || e.name === 'drop-target' || e.name === 'sling' || e.name === 'tube-run' || e.name === 'plunger') say(e.name)
+      s.struck = s.t
+      io.cursor.hurt('flattened', ACT.doors)
+    } else if (e.name === 'scoop-in') {
+      if (e.id === 'office.inbox') say('inbox-take', true)
+      if (e.id === 'street.firehouse') say('firehouse-take', true)
+      io.cursor.react(e.id === 'street.firehouse' ? 'cower' : 'duck')
+    } else if (e.name === 'kicker-in') io.cursor.react('doubleTake')
+    else if (e.name === 'sling' || e.name === 'drop-target' || e.name === 'standup') {
+      if (e.name !== 'standup') say(e.name)
+      io.cursor.react('flinch')
+    } else if (e.name === 'at-plunger') io.cursor.react('doubleTake')
+    else if (e.name === 'mom-save') io.cursor.react('jump')
+    else if (e.name === 'carpet-roll') {
+      if (once('carpet-roll')) say('carpet-roll')
+    } else if (e.name === 'tier-fall' || e.name === 'drain' || e.name === 'ramp-roll' || e.name === 'spiral' || e.name === 'lift' || e.name === 'spinner' || e.name === 'tube-run' || e.name === 'plunger') say(e.name)
+  }
+
+  // The one word the cursor says with its whole body, from where the ball is and what last happened to it.
+  const mood = (): Acting => {
+    const mc = machine()
+    const b = ball()
+    const t = s.t
+    if (b.mode === 'hold') {
+      if (b.hold === 'plunger') return t >= T.atPlunger + ACT.realise ? 'scared' : 'nervous'
+      if (b.hold === 'corporate.doors') return 'shocked'
+      if (b.hold === 'office.inbox') return s.drops > 0 ? 'scared' : 'nervous'
+      if (b.hold === 'street.firehouse') return t >= T.scoopKick - 1.2 ? 'scared' : 'nervous'
+      return b.hold === 'outlet' ? 'exhausted' : 'nervous'
+    }
+    if (b.mode === 'rail') {
+      if (b.rail === 'feed') return 'nervous'
+      if (b.rail === 'highway' || b.rail.startsWith('lift.')) return 'confident'
+      return b.rail === 'drain' || b.rail.startsWith('outlane.') ? 'exhausted' : 'scared'
+    }
+    if (b.mode === 'tow') return b.then.startsWith('gate:') ? 'exhausted' : 'scared'
+    if (t - s.struck < ACT.shock) return 'shocked'
+    if (s.saved && b.tier === 2) return 'exhausted'
+    const w = mc.wants(0.2, -60)
+    if ((w[0] || w[1]) && Math.hypot(b.vx, b.vy) < ACT.slow) return 'nervous'
+    if (b.tier === 0) return s.shut ? 'scared' : 'confident'
+    if (b.tier === 1) return t >= T.eject && t < T.officeOpen ? 'angry' : 'scared'
+    return t < T.scoopKick ? 'nervous' : 'scared'
   }
 
   const direct = (io: StepIo): void => {
@@ -379,81 +421,95 @@ export function makePage(): PageLogic {
       s.tows++
       mc.tow(0, MID, TIER_Y[k]! + 11.0, 16, `gate:${k}`)
     }
+    const shoot = (x: number, y: number, speed: number, pull = 0): void => {
+      const far = (x - MID) * (b.x - MID) > 0 && Math.abs(x - MID) > SHOT.wide && b.y > TIER_Y[b.tier]! + SHOT.low
+      mc.shot = [x, y, far ? SHOT.lob : speed]
+      mc.aim = [x, y, SHOT.lean]
+      if (pull > 0) mc.magnet = [x, y, pull, PULL.near]
+    }
     on['plunger'] = false
+    on['lifts'] = false
     on['corporate.ladder'] = false
     on['street.mom'] = t > T.spiralEnd
     mc.gate = [t >= T.doorOpen, t >= T.officeOpen, t >= T.streetOpen]
     mc.magnet = null
+    mc.aim = null
+    mc.shot = null
     if (b.mode === 'hold' && b.hold === 'loader' && t >= T.tube) {
       mc.release(0)
-      io.cursor.act('nervous')
     }
     if (t >= T.lightsDown && once('lights-down')) io.emit('lights-down', px(MID), px(MARQUEE_Y + 2), false)
     if (t >= T.powerOn && once('power-on')) io.emit('power-on', px(MID), px(MARQUEE_Y + 2), false)
     if (b.mode === 'rail' && b.rail === 'feed') b.speed = Math.max(6, Math.min(40, (railLength(railOf('feed')) - b.s) / Math.max(0.05, T.atPlunger - t)))
     if (b.mode === 'hold' && b.hold === 'plunger' && t >= T.plunger) {
       mc.release(0)
-      io.cursor.act('scared')
     }
     if (b.mode === 'rail' && b.rail === 'launch') b.speed = Math.max(20, Math.min(60, (railLength(railOf('launch')) - b.s) / Math.max(0.05, T.onTable - t)))
     on['corporate.revolving'] = t < T.doorKick
-    on['corporate.doors'] = t < T.doorOpen
+    on['corporate.doors'] = t < T.doorOpen && mc.since('spinner:corporate.revolving') < 1
     if (b.mode === 'hold' && b.hold === 'corporate.revolving') {
       b.wait = t >= T.doorKick ? Math.min(b.wait, 0.05) : 1e9
     }
     if (b.mode === 'hold' && b.hold === 'corporate.doors') b.wait = t >= T.doorOpen ? Math.min(b.wait, 0.01) : 1e9
     if (b.tier === 0 && b.mode === 'plane') {
-      if (t >= T.doorKick - 0.6 && t < T.doorKick) towTo('corporate.revolving', 14)
+      if (t >= T.doorKick - 0.3 && t < T.doorKick) towTo('corporate.revolving', 18)
       else if (t >= T.lobbyEnd) towGate(0)
-      else if (t < T.doorKick) mc.magnet = [MID, Y0 + 6.0, b.y < Y0 + 8.4 ? 26 : 0]
+      else if (t < T.doorKick) shoot(MID, Y0 + 6.0, SHOT.door, PULL.door)
+      else if (t >= T.doorOpen) mc.magnet = [MID, Y0 + 11.2, PULL.gate]
     }
     on['office.inbox'] = t >= T.inboxOn && t < T.eject
     if (b.tier === 1 && b.mode === 'plane') {
       if (t >= T.inboxOn && t < T.eject) {
+        const c = holdOf('office.inbox').c
         if (t >= T.inboxBy) towTo('office.inbox')
-        else mc.magnet = [holdOf('office.inbox').c[0], holdOf('office.inbox').c[1], 50]
-      } else if (t < T.inboxOn) mc.magnet = [MID, Y1 + 4.3, b.y < Y1 + 7.5 ? 14 : 0]
-      else if (t >= T.officeBy) towGate(1)
-      else if (t >= T.officeOpen) mc.magnet = [MID, Y1 + 11, 30]
-    }
-    if (b.mode === 'hold' && b.hold === 'office.inbox') {
-      b.wait = 1e9
-      const h = holdOf('office.inbox')
-      while (s.drops < T.drops.length && t >= T.drops[s.drops]!) {
-        s.drops++
-        if (s.drops < mc.balls.length) {
-          mc.toPlane(s.drops, h.c[0], h.c[1], -7 - s.drops * 1.5, -5 + s.drops * 2.5)
-          io.emit('ball-drop', px(h.c[0]), px(h.c[1]), false)
-        }
+        else shoot(c[0], c[1], SHOT.scoop, PULL.scoop)
+      } else if (t >= T.officeOpen - SHOT.back) {
+        if (t >= T.officeBy) towGate(1)
+        else if (t >= T.officeOpen) mc.magnet = [MID, Y1 + 11.2, PULL.gate]
+        mc.aim = [MID, Y1 + MOUTH.v, SHOT.lean]
+      } else {
+        const low = table.bumpers.filter((m) => m.tier === 1)[2]!.c
+        mc.shot = [low[0], low[1], SHOT.nest]
+        mc.aim = b.vy < 0 ? [b.x < MID ? MID - NEST.sling[0]! : MID + NEST.sling[0]!, Y1 + NEST.sling[1]!, SHOT.lean] : [b.x < MID ? low[0] - NEST.under[0]! : low[0] + NEST.under[0]!, low[1] + NEST.under[1]!, SHOT.lean]
       }
-      if (t >= T.eject) {
-        b.wait = 0
-        io.cursor.act('angry')
+    }
+    if (b.mode === 'hold' && b.hold === 'office.inbox') b.wait = t >= T.eject ? 0 : 1e9
+    while (s.drops < T.drops.length && t >= T.drops[s.drops]! && b.tier === 1) {
+      const h = holdOf('office.inbox')
+      s.drops++
+      if (s.drops < mc.balls.length) {
+        mc.toPlane(s.drops, h.c[0], h.c[1], NEST.pour[0]! + s.drops * NEST.pour[2]!, NEST.pour[1]! - s.drops * NEST.pour[2]!)
+        io.emit('ball-drop', px(h.c[0]), px(h.c[1]), false)
       }
     }
     if (t >= T.officeBy + 2) for (let i = 1; i < mc.balls.length; i++) if (mc.balls[i]!.mode !== 'none') mc.remove(i)
     on['street.firehouse'] = t < T.scoopKick + 0.3
     if (b.tier === 2 && b.mode === 'plane') {
       if (t < T.scoopKick) {
+        const c = holdOf('street.firehouse').c
         if (t >= T.firedBy) towTo('street.firehouse')
-        else mc.magnet = [holdOf('street.firehouse').c[0], holdOf('street.firehouse').c[1], 50]
-      } else if (t >= T.flapOn && t < T.highwayEnd) {
+        else shoot(c[0], c[1], SHOT.scoop, PULL.scoop)
+      } else if (t >= T.flapOn - SHOT.early && t < T.highwayEnd) {
         const p = railOf('highway').points[0]!
-        if (t >= T.flapBy || Math.hypot(b.x - p[0], b.y - p[1]) < 0.7) {
+        if (t >= T.flapBy || (t >= T.flapOn && Math.hypot(b.x - p[0], b.y - p[1]) < 0.7)) {
           if (t >= T.flapBy) s.tows++
           mc.tow(0, p[0], p[1], 16, 'rail:highway')
-        } else mc.magnet = [p[0], p[1], 45]
-      } else if (t >= T.streetBy) towGate(2)
-      else if (t >= T.streetOpen) mc.magnet = [MID, Y2 + 11, 30]
+        } else shoot(p[0], p[1], SHOT.scoop, PULL.scoop)
+      } else if (t >= T.spiralEnd && t < T.streetOpen - SHOT.back) mc.shot = [MID + 1.2, Y2 + 2.2, SHOT.save]
+      else {
+        if (t >= T.streetBy) towGate(2)
+        else if (t >= T.streetOpen) mc.magnet = [MID, Y2 + 11.2, PULL.gate]
+        if (t >= T.streetOpen - SHOT.back) mc.aim = [MID, Y2 + MOUTH.v, SHOT.lean]
+      }
     }
     if (b.mode === 'hold' && b.hold === 'street.firehouse') {
       b.wait = t >= T.scoopKick ? Math.min(b.wait, 0.01) : 1e9
-      if (t >= T.scoopKick - 1.2) io.cursor.act('scared')
     }
     on['street.flap'] = false
     if (b.mode === 'rail' && b.rail === 'highway') b.speed = Math.max(3, Math.min(14, (railLength(railOf('highway')) - b.s) / Math.max(0.05, T.highwayEnd - t)))
     if (b.mode === 'rail' && b.rail === 'spiral') b.speed = Math.max(8, Math.min(30, (railLength(railOf('spiral')) - b.s) / Math.max(0.05, T.spiralEnd - t)))
     if (b.mode === 'rail' && b.rail === 'drain') b.speed = s.skipped ? 40 : 13
+    io.cursor.act(mood())
   }
 
   const sealNow = (io: StepIo): void => {
@@ -504,6 +560,7 @@ export function makePage(): PageLogic {
         s.score = mc.score
         const b = ball()
         io.cursor.place(px(b.x), px(b.y), px(b.z))
+        if (b.mode !== 'hold') io.cursor.knock(px(b.vx) * ACT.lead, px(b.vy) * ACT.lead)
         if (b.mode === 'hold' && b.hold === 'outlet') {
           s.opened += dt
           if (s.opened >= 0.2) {
@@ -592,8 +649,9 @@ export function makePage(): PageLogic {
     hint(): Hint | null {
       if (s.phase === 'wait' || s.phase === 'pull') return { x: port.x, y: port.y, down: false }
       if (s.phase === 'sealed') {
-        const want = machine().wants()
         const b = ball()
+        const held = gagAt(s.t) === 'pinball.save' && !s.saved && s.t < T.save
+        const want = machine().shot && b.mode === 'plane' && !machine().gate[b.tier] && !held ? machine().wants() : [false, false]
         return { x: px(MID), y: px(TIER_Y[b.mode === 'none' ? 2 : Math.min(2, b.tier)]! + 10), down: false, flipLeft: want[0], flipRight: want[1] }
       }
       return { x: go.cx, y: go.cy, down: s.phase === 'result' && Math.floor(s.time * 4) % 2 === 0 }

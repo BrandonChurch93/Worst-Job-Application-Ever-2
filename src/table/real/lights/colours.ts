@@ -2,7 +2,7 @@
 export type RGB = [number, number, number]
 
 // Tier 3, Corporate: cold white and gold.
-export const CORPORATE_COLD_WHITE: RGB = [0.78, 0.88, 1.0]
+export const CORPORATE_COLD_WHITE: RGB = [0.88, 0.93, 1.0]
 export const CORPORATE_GOLD: RGB = [1.0, 0.62, 0.24]
 export const CORPORATE_GLOBE: RGB = [1.0, 0.93, 0.82]
 export const CORPORATE_WINDOW: RGB = [1.0, 0.83, 0.6]
