@@ -10,15 +10,17 @@ import { pages } from './pages'
 import { words } from './shell/words'
 import { BotDriver, type BotName } from './stage/bots'
 import { liveFlow, liveView, MouseDriver, Stage, type Frame } from './stage/stage'
-import type { CameraPose, Driver } from './stage/types'
+import type { CameraPose, Driver, Hint } from './stage/types'
 import { lessMotion, makeQualityPicker, mountInterface, mountProbe, mountTouchMessage, ready as controlsReady, touchOnly, type InterfaceApi, type Mounted, type ProbeRunner } from './ui/api'
 import { wallSeconds } from './ui/clock'
 
 declare global {
-  interface Window { showcase: Showcase; liveRun?: { state(): LiveShot; advance(seconds: number): LiveShot } }
+  interface Window { showcase: Showcase; liveRun?: { state(): LiveShot; advance(seconds: number, quiet?: boolean): LiveShot; told(): LiveTold } }
 }
 
 interface LiveShot { time: number; page: string; gag: string | null; finished: boolean; png: string }
+// What a walk tool needs to act as a visitor would with real mouse and key events: where the page wants the pointer, and where the hero is.
+interface LiveTold { time: number; pageTime: number; page: string; gag: string | null; gags: string[]; finished: boolean; turning: boolean; skipOffered: boolean; scroll: number; hint: Hint | null; hero: { x: number; y: number } }
 interface Size { width: number; height: number }
 interface Picture { key: string; frame: Frame; size: Size; pose: CameraPose }
 type PlayMode = 'live' | 'film' | 'loop'
@@ -496,7 +498,12 @@ function play(first: PlayMode): void {
       draw()
       return { time: stage.time, page: stage.page.id, gag: stage.gagsReached.at(-1) ?? null, finished: stage.finished, png: canvas.toDataURL('image/png') }
     }
-    window.liveRun = { state: shot, advance: (seconds) => { stage.advance(Math.round(seconds * stepHz)); return shot() } }
+    const quietShot = (): LiveShot => ({ time: stage.time, page: stage.page.id, gag: stage.gagsReached.at(-1) ?? null, finished: stage.finished, png: '' })
+    const told = (): LiveTold => {
+      const pose = stage.cursor.pose()
+      return { time: stage.time, pageTime: stage.pageTime, page: stage.page.id, gag: stage.gagsReached.at(-1) ?? null, gags: stage.gagsReached, finished: stage.finished, turning: stage.turning, skipOffered: stage.skipOffered, scroll: stage.page.scroll(), hint: stage.page.hint(), hero: { x: pose.x, y: pose.y } }
+    }
+    window.liveRun = { state: shot, advance: (seconds, quiet) => { stage.advance(Math.round(seconds * stepHz)); return quiet ? quietShot() : shot() }, told }
     return
   }
 
