@@ -121,3 +121,7 @@ Not done in this part:
 - `src/cursor/body.ts`: one call, `aim(turn | null)`, a turn of the whole body round its tip, clockwise on the page, that the page holds. The body's `spin` goes to it on the spring it already has; the state's own lean is taken off so that the two together are the turn asked for, and a reaction's swing counts for 0.3 while the turn is held.
 - `src/pages/step4/index.ts`: in the fight stage the page asks for the turn from the tip's direction at rest (1.965 rad from the x axis) to the line from the cursor to the boss; at the power-down it gives the turn back.
 - MEASURED with the patch applied at 03:06 UTC: `npm test` all passed, `npm run build` ok, `npm run bots` "all clear"; the film's events are the same to the hundredth of a second; the key at `draft` shows the arrow lying along the line of darts with its tip to the shield, and so does `boss.popups` at 0.5.
+
+## Seen at the end, not mended
+
+- At four times its size the health track shows two hairlines on the paper: one along its upper edge past the left end, one along its lower edge past the right end, each about 30 px long. UNKNOWN cause; my reading is the edge of the pocket the ground cuts for the track (`tone: 'pocket'` in `src/pages/step4/layout.ts`, cut by the shared ground), since the lines follow the track's box and not its round ends.
