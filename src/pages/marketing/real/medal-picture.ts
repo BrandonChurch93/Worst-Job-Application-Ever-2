@@ -2,10 +2,10 @@ import * as THREE from 'three'
 import { config } from '../../../config'
 import { Random } from '../../../core/random'
 
-export const BRUSHED = { size: 512, level: 0.84, ring: 1, rings: 0.045, arcs: 1500, arc: 0.15, dark: 0.45, long: [14, 110] as [number, number], stray: 70, fine: 0.04 }
+export const BRUSHED = { size: 1024, level: 0.84, ring: 2.7, rings: 0.045, arcs: 900, arc: 0.15, dark: 0.45, wide: 2, long: [38, 300] as [number, number], stray: 190, fine: 0.05 }
 
 // A disc of metal brushed on a wheel, as what its colour is multiplied by: rings a hair wide, each of its own brightness,
-// and bright and dark strokes laid over them, each a texel wide and `long` texels long, round a middle that strays from the disc's
+// and bright and dark strokes laid over them, each `wide` texels wide and `long` texels long, round a middle that strays from the disc's
 // own by up to `stray` texels: the single strokes of the brush that are seen one by one, and that cross.
 export function brushedHeights(seed: number): Float32Array {
   const B = BRUSHED
@@ -37,10 +37,12 @@ export function brushedHeights(seed: number): Float32Array {
     for (let s = 0; s <= steps; s++) {
       const t = s / steps
       const a = from + (long * t) / r
-      const x = Math.floor(cx + Math.cos(a) * r)
-      const y = Math.floor(cy + Math.sin(a) * r)
-      if (x < 0 || y < 0 || x >= n || y >= n) continue
-      out[y * n + x] = out[y * n + x]! + strength * Math.sin(Math.PI * t)
+      for (let w = 0; w < B.wide; w++) {
+        const x = Math.floor(cx + Math.cos(a) * (r + w))
+        const y = Math.floor(cy + Math.sin(a) * (r + w))
+        if (x < 0 || y < 0 || x >= n || y >= n) continue
+        out[y * n + x] = out[y * n + x]! + strength * Math.sin(Math.PI * t)
+      }
     }
   }
   return out
@@ -48,8 +50,8 @@ export function brushedHeights(seed: number): Float32Array {
 
 let made: THREE.DataTexture | null = null
 
-// `across` is the width of the disc the picture lies on, in page pixels: one texel is one page pixel, from the disc's middle.
-export function brushedPicture(across: number): THREE.DataTexture {
+// The picture lies across the whole medal once, rim and all: on a medal 380 px wide that is 2.7 texels to a page pixel.
+export function brushedPicture(): THREE.DataTexture {
   if (made) return made
   const B = BRUSHED
   const h = brushedHeights(config.seed)
@@ -66,8 +68,6 @@ export function brushedPicture(across: number): THREE.DataTexture {
   tex.generateMipmaps = true
   tex.anisotropy = 4
   tex.colorSpace = THREE.NoColorSpace
-  tex.repeat.set(across / B.size, across / B.size)
-  tex.offset.set((1 - across / B.size) / 2, (1 - across / B.size) / 2)
   tex.needsUpdate = true
   made = tex
   return tex
