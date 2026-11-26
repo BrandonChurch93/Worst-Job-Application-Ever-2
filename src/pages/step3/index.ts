@@ -126,7 +126,7 @@ const LENS: Record<string, number> = { 'table-wide': 5, 'table-lobby': 7, 'table
 const HARD: Record<string, number> = { bumper: 1, sling: 0.7, 'doors-slam': 1.3, 'scoop-kick': 0.8, plunger: 1, 'ball-hit': 0.6, 'drop-target': 0.5, 'mom-save': 1, 'ball-save': 0.8 }
 const SHAKE = { size: 0.006, decay: 0.09, hz: 23, most: 1.5, last: 0.5 }
 const SOFT = 0.4
-const NAME = 1.5
+const NAME = 1
 const HINT = 8
 const TURN = 1.5707963267948966
 const SIGN = { turn: 0.5235987755982988, cos: 0.8660254037844387, sin: 0.5, inset: 8, lift: 6, back: ['corporate.beach'] }
@@ -567,7 +567,7 @@ export function makePage(): PageLogic {
       const n = [s.hit[0]! * FACE.wall + e[0]! * FACE.lens, s.hit[1]! * FACE.wall + e[1]! * FACE.lens, e[2]! * FACE.lens, FACE.press]
       for (let i = 0; i < 4; i++) want[i] = want[i]! * (1 - w) + n[i]! * w
     }
-    const rate = Math.min(1, dt / FACE.lag)
+    const rate = s.mode === 'film' && shot(s.time) !== shot(s.time - dt) ? 1 : Math.min(1, dt / FACE.lag)
     for (let i = 0; i < 4; i++) s.face[i] = s.face[i]! + (want[i]! - s.face[i]!) * rate
     const flatUp = low === 0 && s.face[3]! < 0.05
     if (flatUp) s.face = [0, 0, 1, 0]
