@@ -1,0 +1,35 @@
+{
+  "folder": "table-light",
+  "pushed": "2026-11-26T01:06:28.182Z",
+  "commit": "3f8e48c1f440aa6afd3b3e0fc036df528f632d2f",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "tier-corporate at 3f8e48c, approved left, build right, page dusk 0.18: floors without chevrons, tighter lamp pools, no plates at inserts",
+      "time": "2026-11-26T01:06:26.442Z",
+      "by": "table-light",
+      "from": "out/work/lights/n3-tier-corporate-pair.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "tier-office at 3f8e48c, approved left, build right, page dusk 0.18: floors without chevrons, tighter lamp pools, no plates at inserts",
+      "time": "2026-11-26T01:06:26.683Z",
+      "by": "table-light",
+      "from": "out/work/lights/n3-tier-office-pair.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "tier-street at 3f8e48c, approved left, build right, page dusk 0.18: floors without chevrons, tighter lamp pools, no plates at inserts",
+      "time": "2026-11-26T01:06:26.908Z",
+      "by": "table-light",
+      "from": "out/work/lights/n3-tier-street-pair.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "table-wide at 3f8e48c, approved left, build right, page dusk 0.18: floors without chevrons, tighter lamp pools, no plates at inserts",
+      "time": "2026-11-26T01:06:27.144Z",
+      "by": "table-light",
+      "from": "out/work/lights/n3-table-wide-pair.jpg"
+    }
+  ]
+}
