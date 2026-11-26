@@ -14,7 +14,7 @@ import { HATCH, moms, type Moms } from './moms'
 import { police } from './police'
 import { roadSign, streetThings } from './things'
 
-const VERSION = 'street-models-59'
+const VERSION = 'street-models-64'
 
 // Everything the seven parts are built from in one zone, made once and shared: each part keeps the meshes that are its own.
 interface Street {

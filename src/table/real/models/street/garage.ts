@@ -101,19 +101,23 @@ export function garage(b: Buckets, z: Zone): void {
 
   // The ring beams: a deck edge under each turn of the spiral, a slimmer rail beam half way to the next, and a deeper one at the rim. Each is left out where the tube crosses it.
   const levels: [number, number][] = []
+  // The deck under the rim is left open on the side away from the police station, where it would stand before that station's sign as the player sees the table.
+  let open = -1
+  const away = (a: number): boolean => Math.abs(Math.atan2(Math.sin(a - toward - Math.PI + 0.2), Math.cos(a - toward - Math.PI + 0.2))) < 0.95
   const slim: boolean[] = []
   const cap = 4
   for (let zz = base; zz + pitch < top - 1; zz += pitch) {
     levels.push([zz, zz + 0.34 * BALL])
     slim.push(false)
-    if (zz + pitch * 1.5 < top - 1) {
+    if (zz + pitch * 0.5 + 0.34 * BALL < top - 0.42 * BALL - 4) {
       levels.push([zz + pitch * 0.5, zz + pitch * 0.5 + 0.34 * BALL])
       slim.push(false)
+      if (zz + pitch * 1.5 >= top - 1) open = levels.length - 1
     }
   }
   levels.push([top - 0.42 * BALL, top - cap])
   slim.push(false)
-  const has: boolean[][] = levels.map(([z0, z1]) => Array.from({ length: N }, (_, i) => free((i + 0.5) * step, z0, z1, step / 2)))
+  const has: boolean[][] = levels.map(([z0, z1], li) => Array.from({ length: N }, (_, i) => !(li === open && away((i + 0.5) * step)) && free((i + 0.5) * step, z0, z1, step / 2)))
 
   // The lengths of beam that are left, and the pieces of pier that are left: eight piers round the ring, each cut where the tube passes.
   type Run = { li: number; i: number; n: number; whole: boolean; held: boolean }
@@ -237,6 +241,8 @@ export function garage(b: Buckets, z: Zone): void {
     const zt = lz1
     const zb = lz1 - 6
     const zk = Math.min(top - 0.4, lz1 + 3.6)
+    const zl = zt - 8
+    const zu = zt - 18
     const rin = Ro + 0.3
     const ok = Array.from({ length: N }, (_, i) => {
       if (!has[li]![i] || !runs.some((r) => r.held && r.li === li && ((i - r.i + N * 2) % N) < r.n)) return false
@@ -245,7 +251,7 @@ export function garage(b: Buckets, z: Zone): void {
         if (zk > P.h - 2 && faces(a)) return false
         const ro = outer(a, lz0)
         if (ro - Ro < 5) return false
-        for (const r of [ro, (ro + Ro) / 2]) if (inTube(pts, cx + Math.cos(a) * r, cy + Math.sin(a) * r, zb, zk, margin)) return false
+        for (const r of [ro, (ro + Ro) / 2]) if (inTube(pts, cx + Math.cos(a) * r, cy + Math.sin(a) * r, zu, zk, margin)) return false
       }
       return true
     })
@@ -259,16 +265,28 @@ export function garage(b: Buckets, z: Zone): void {
       const am = (a0 + a1) / 2
       const out: V3 = [Math.cos(am), Math.sin(am), 0]
       const inn: V3 = [-out[0], -out[1], 0]
+      // The edge of the slab is cast deep: a face with a moulded lip, a soffit under it and a haunch back to the thin of the slab.
+      const lip = 1.5
+      const sof = (r: number): number => Math.min(8, (r - rin) * 0.34)
+      const hau = (r: number): number => Math.min(15, (r - rin) * 0.62)
+      const band = (ra: number, za: number, rb: number, zb2: number, n: V3, col: [number, number, number]): void => put([at(a0, r0 - ra, za), at(a0, r0 - rb, zb2), at(a1, r1 - rb, zb2), at(a1, r1 - ra, za)], n, col)
       put([at(a0, rin, zt), at(a0, r0 - 2, zt), at(a1, r1 - 2, zt), at(a1, rin, zt)], [0, 0, 1], deckCol)
-      put([at(a0, r0 - 2, zk), at(a0, r0, zk), at(a1, r1, zk), at(a1, r1 - 2, zk)], [0, 0, 1], shade(deckCol, 1.14))
-      put([at(a0, r0 - 2, zt), at(a0, r0 - 2, zk), at(a1, r1 - 2, zk), at(a1, r1 - 2, zt)], inn, shade(deckCol, 0.78))
-      put([at(a0, r0, zb), at(a0, r0, zk), at(a1, r1, zk), at(a1, r1, zb)], out, shade(deckCol, 0.92))
-      put([at(a0, rin, zb), at(a0, r0, zb), at(a1, r1, zb), at(a1, rin, zb)], [0, 0, -1], shade(deckCol, 0.5))
+      band(2, zk, 0, zk, [0, 0, 1], shade(deckCol, 1.14))
+      band(2, zt, 2, zk, inn, shade(deckCol, 0.78))
+      band(0, zl, 0, zk, out, shade(deckCol, 0.96))
+      band(0, zl, lip, zl, [0, 0, -1], shade(deckCol, 0.45))
+      band(lip, zu, lip, zl, out, shade(deckCol, 0.8))
+      put([at(a0, r0 - sof(r0), zu), at(a0, r0 - lip, zu), at(a1, r1 - lip, zu), at(a1, r1 - sof(r1), zu)], [0, 0, -1], shade(deckCol, 0.5))
+      put([at(a0, r0 - hau(r0), zb), at(a0, r0 - sof(r0), zu), at(a1, r1 - sof(r1), zu), at(a1, r1 - hau(r1), zb)], [-out[0] * 0.8, -out[1] * 0.8, -0.6], shade(deckCol, 0.56))
+      put([at(a0, rin, zb), at(a0, r0 - hau(r0), zb), at(a1, r1 - hau(r1), zb), at(a1, rin, zb)], [0, 0, -1], shade(deckCol, 0.5))
       for (const [a, r, on, sg] of [[a0, r0, ok[(i + N - 1) % N], -1], [a1, r1, ok[(i + 1) % N], 1]] as const) {
         if (on) continue
         const n: V3 = [-Math.sin(a) * sg, Math.cos(a) * sg, 0]
-        put([at(a, rin, zb), at(a, r, zb), at(a, r, zt), at(a, rin, zt)], n, shade(deckCol, 0.85))
-        put([at(a, r - 2, zt), at(a, r, zt), at(a, r, zk), at(a, r - 2, zk)], n, shade(deckCol, 0.85))
+        const end = shade(deckCol, 0.85)
+        put([at(a, rin, zb), at(a, r - lip, zb), at(a, r - lip, zt), at(a, rin, zt)], n, end)
+        put([at(a, r - 2, zt), at(a, r, zt), at(a, r, zk), at(a, r - 2, zk)], n, end)
+        put([at(a, r - lip, zl), at(a, r, zl), at(a, r, zt), at(a, r - lip, zt)], n, end)
+        put([at(a, r - hau(r), zb), at(a, r - sof(r), zu), at(a, r - lip, zu), at(a, r - lip, zb)], n, end)
       }
       if (i % 2 === 0 && ok[(i + N - 1) % N] && r0 - Ro > 9) {
         const w = 0.6 / ((Ro + r0) / 2)
