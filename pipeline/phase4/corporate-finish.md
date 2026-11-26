@@ -176,3 +176,14 @@ After the second pass (MEASURED 12:05 to 12:08 UTC on the tree with merge 34 in 
 - MEASURED fine detail by M3's formula at `draft`: `lobby-doors` 0.869, `tier-corporate` 0.862; band ratio 7.84. At `final` on 491ee42b (12:24): `tier-corporate` 0.587.
 - The Builder's word at 12:25: the `final` number is not to be chased with stronger grain; a mild sharpening of the finished picture is with `look_finisher`.
 
+## Fifth pass (12:30 to 12:36 UTC)
+
+From the Builder's comparison at 12:30 of the `final` still of bf173faf.
+
+- Carpet: a darker woven border (the first and last two rows of tufts at 0.42 of the field) and a sheen that grows toward the doors (0.82 of the field at the far end, 1.57 at the doors).
+- Atrium: the galleries under the glass roof brighter (0.8), the well and its foot lit, the gallery lamps at 1 to 1.5, the roof lights a step up, so that lit floors read through the glass roof.
+- Boardroom: a lighter walnut (0.125, 0.056, 0.026) so that the long table reads as wood beside the dark room. The table is not longer: its place and size come from the layout.
+- Looks: 12:30 `tier-corporate` (carpet, atrium, boardroom), 12:31 `lobby-doors` (carpet). Counts by part now: hq 22, boardroom 6.
+- MEASURED 12:32 to 12:34 UTC on the tree with main merged in (e7e68fbe) and these changes: `npm test` 119 files, 1479 of 1479; build built; bots all clear, keen reached every one of the 37 gags on every seed. Counts: Corporate 21 calls and 75541 triangles, Office 16 and 32068, together 37 and 107609 against 37 and 110600; frame 198 of 300.
+- MEASURED fine detail by M3's formula at `draft`: `tier-corporate` 0.855, `lobby-doors` 0.867; band letters 0.0118 on a plate of 0.4480, ratio 8.05.
+

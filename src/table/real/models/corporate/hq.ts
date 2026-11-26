@@ -534,8 +534,8 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
       const on = slab.next() < 0.2 ? 0.1 : slab.range(0.55, 1)
       fin(S, FINISH.brushed, () => S.box(x - 10.5, x + 10.5, y - 7.5, y + 7.5, roof + 2, roof + 5.6, STEEL, { bevel: 1 }))
       fin(G, FINISH.gloss, () => {
-        flat(G, { x0: x - 8.6, x1: x - 0.5, y0: y - 5.6, y1: y + 5.6 }, roof + 5.7, 1, warm(0.5 * on))
-        flat(G, { x0: x + 0.5, x1: x + 8.6, y0: y - 5.6, y1: y + 5.6 }, roof + 5.7, 1, warm(0.42 * on))
+        flat(G, { x0: x - 8.6, x1: x - 0.5, y0: y - 5.6, y1: y + 5.6 }, roof + 5.7, 1, warm(0.8 * on))
+        flat(G, { x0: x + 0.5, x1: x + 8.6, y0: y - 5.6, y1: y + 5.6 }, roof + 5.7, 1, warm(0.66 * on))
       }, 1)
     }
     // The glass roof of the atrium: through it the lit galleries of the floors below and the hall at the foot of the well.
@@ -549,13 +549,13 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
     fin(G, FINISH.gloss, () => {
       const well = inset(sky, 9)
       const foot = inset(sky, 15)
-      level(G, sky, well, roof + 3, 1, warm(0.42))
-      level(G, well, foot, roof + 2.9, 1, warm(0.2))
-      flat(G, foot, roof + 2.8, 1, warm(0.07))
+      level(G, sky, well, roof + 3, 1, warm(0.8))
+      level(G, well, foot, roof + 2.9, 1, warm(0.4))
+      flat(G, foot, roof + 2.8, 1, warm(0.15))
       flat(G, { x0: -9, x1: 9, y0: (foot.y0 + foot.y1) / 2 - 4, y1: (foot.y0 + foot.y1) / 2 + 4 }, roof + 2.85, 1, warm(0.5))
       for (let k = 0; k < 15; k++) {
         const x = sky.x0 + 6 + (k * (sky.x1 - sky.x0 - 12)) / 14
-        for (const y of [sky.y0 + 4.5, sky.y1 - 4.5]) flat(G, { x0: x - 2.2, x1: x + 2.2, y0: y - 1.5, y1: y + 1.5 }, roof + 3.1, 1, lamp(slab.next() < 0.2 ? 0.2 : slab.range(0.6, 0.95)))
+        for (const y of [sky.y0 + 4.5, sky.y1 - 4.5]) flat(G, { x0: x - 2.2, x1: x + 2.2, y0: y - 1.5, y1: y + 1.5 }, roof + 3.1, 1, lamp(slab.next() < 0.2 ? 0.3 : slab.range(1, 1.5)))
       }
     }, 1)
     fin(S, FINISH.satin, () => {
@@ -574,7 +574,7 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
       const y = cy + dd * 0.35
       const on = slab.next() < 0.25 ? 0.12 : slab.range(0.55, 1)
       fin(S, FINISH.brushed, () => S.box(x - 8, x + 8, y - 5.5, y + 5.5, roof + 2, roof + 5, STEEL))
-      fin(G, FINISH.gloss, () => flat(G, { x0: x - 6.2, x1: x + 6.2, y0: y - 3.8, y1: y + 3.8 }, roof + 5.1, 1, warm(0.46 * on)), 1)
+      fin(G, FINISH.gloss, () => flat(G, { x0: x - 6.2, x1: x + 6.2, y0: y - 3.8, y1: y + 3.8 }, roof + 5.1, 1, warm(0.72 * on)), 1)
     }
     // Pipes, a row of vents and the cable tray that ties them.
     fin(S, FINISH.polished, () => {
@@ -625,7 +625,14 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
       const pile = new Random(SEED, 'corporate.hq.pile')
       const nx = Math.max(2, Math.round((c1[0] - c0[0] - 10) / PILE.step))
       const ny = Math.max(2, Math.round((c0[1] - c1[1] - 5) / PILE.step))
-      const tone: RGB[][] = Array.from({ length: nx + 1 }, () => Array.from({ length: ny + 1 }, () => shade(CRIMSON, pile.range(0.7, 1.3))))
+      // A darker woven border down each long side, and the light of the doors on the pile near them.
+      const far = Math.abs(c0[1] - F) > Math.abs(c1[1] - F) ? c0[1] : c1[1]
+      const lit = (i: number, j: number): number => {
+        const y = c1[1] + 5 + ((c0[1] - c1[1] - 5) * j) / ny
+        const near = 1 - Math.min(1, Math.abs(y - F) / Math.max(1, Math.abs(far - F)))
+        return (i < 2 || i > nx - 2 ? 0.42 : 1) * (0.82 + 0.75 * near * near)
+      }
+      const tone: RGB[][] = Array.from({ length: nx + 1 }, (_, i) => Array.from({ length: ny + 1 }, (_, j) => shade(CRIMSON, pile.range(0.7, 1.3) * lit(i, j))))
       for (let i = 0; i < nx; i++) {
         for (let j = 0; j < ny; j++) {
           const xa = c0[0] + 5 + ((c1[0] - c0[0] - 10) * i) / nx
