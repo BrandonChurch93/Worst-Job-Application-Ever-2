@@ -1,0 +1,30 @@
+{
+ "critic": "R4",
+ "score": 7,
+ "pass": false,
+ "model": "gpt_6_2_sol",
+ "set": "A: one sheet across each of the five beats, three sheets of consecutive frames at the hits on the arrow, the page turn and its seat",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "date-of-birth mechanism, 0:57.80–0:58.17; compare set-A-03.png at 0:57.27",
+   "what": "The consecutive hit sheet starts after the date is already accepted and the first coins are airborne. The lever and reel housing are stationary throughout the crop, so the viewer sees a spray but cannot see what struck or released it.",
+   "fix": "Recenter the consecutive sheet on the last reel stopping and the first coin leaving. Have the reel brake sharply, give the housing a brief kick, and send the first coin out of a visible mouth on that beat."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-08.png",
+   "where": "crank and smoking cursor, 1:02.63–1:03.00",
+   "what": "The sheet opens with the readout already at 100% and the cursor already smoking. When the crank handle sweeps through the cursor at 1:02.80–1:02.87, neither visibly changes course, so the apparent contact does not read as a hit.",
+   "fix": "Start the crop before the meter reaches full. If the handle is the cause, kick the cursor away and briefly load the crank at first touch, with the lamp response on that frame. If the heat comes from the meter instead, separate the arc of the handle from the cursor and show the meter trip before the smoke."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-06.png",
+   "where": "rotary dial and finger stop, 0:51.40–0:51.70",
+   "what": "The arrow smears around the dial and the confirmation text changes while it is still moving, but there is no clear frame where a turn reaches the finger stop and triggers the result. The ring settles, but the contact is hard to identify without the hit caption.",
+   "fix": "Show the arrow engaged in a hole for the last pull, arrest it and the dial at the finger stop for one sharp frame, then spring the dial back and update the readout on a distinct latch beat."
+  }
+ ]
+}
