@@ -25,6 +25,7 @@ import type { QualityId } from './core/quality'
 import { setGlass } from './core/levelGlass'
 import { SmallThings } from './core/levelSmall'
 import { isCoins, Streaks } from './core/levelStreak'
+import { restBlends } from './core/levelRest'
 import { homePose, project, toWorld } from './stage/camera'
 import { panelPlan, type PanelPlan } from './stage/panels'
 import { filmFlow, filmOptions, liveFlow, ScriptDriver, Stage, StillDriver, TURN_HALF, type Frame } from './stage/stage'
@@ -260,6 +261,7 @@ export class App {
     if (this.engine.levelPlan) this.streaks.apply(this.view.scene, config.film.shutterDegrees / 360, isCoins)
     else this.streaks.release()
     this.small.apply(this.view.scene, this.engine.levelPlan?.particles ?? 1, config.seed)
+    this.engine.blendsRest = restBlends(frame.page)
     this.shown = { frame, page: 'layout' in page ? (page as PageLogic) : null, pose }
     const cy = pose.target[1]
     this.view.focus = -cy
