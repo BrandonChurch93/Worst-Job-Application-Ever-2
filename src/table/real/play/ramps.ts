@@ -15,7 +15,7 @@ const BEAD = look(0x9aa0a6, 0.1, 1, 0)
 const CLEAR = look(0x8fa4ad, 0.05, 0, 1)
 const CLEAR_EDGE = look(0xd4e3ea, 0.04, 0, 1)
 
-export const TRACK = { wire: 4.3, under: 36, underUp: 10.06, side: 58.15, sideUp: 40, hoop: 3.7, hoopR: 60.4, centre: 48, every: 288, bead: 6, stop: 50 }
+export const TRACK = { wire: 4.3, under: 36, underUp: 10.06, side: 58.15, sideUp: 40, hoop: 3.7, hoopR: 60.4, centre: 48, every: 160, bead: 6, stop: 50 }
 // The clear width of the trough is the width of the layout's opening for the spiral's turn.
 const turnOf = table.openings.find((o) => o.id === 'street.spiral.turn')!
 export const CLEARANCE = Math.hypot(turnOf.b[0] - turnOf.a[0], turnOf.b[1] - turnOf.a[1]) * BALL
@@ -254,7 +254,7 @@ interface Built { flap: THREE.Mesh | null; down: number }
 export const flapLift = (open: number): number => (1 - Math.max(0, Math.min(1, open))) * FLAP.lift
 
 export const ramps = whole('ramps', {
-  version: 'play-ramps-34',
+  version: 'play-ramps-35',
   build(z) {
     const g = new THREE.Group()
     g.name = `play.ramps.${z.id}`
