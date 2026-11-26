@@ -12,17 +12,17 @@ import { staplerFine, staplerScrews } from './staplers'
 const C = {
   slab: hex(0xa59c86),
   carpet: hex(0x5d5a55),
-  fabric: [hex(0xcdbfa2), hex(0xc4b698), hex(0xd3c6ab)] as RGB[],
-  frame: hex(0xb3ab98),
-  cap: hex(0xece3cc),
+  fabric: [hex(0xa69b86), hex(0x9d927d), hex(0xada28d)] as RGB[],
+  frame: hex(0xa39b89),
+  cap: hex(0xe6decb),
   kick: hex(0x55585c),
   wood: hex(0xead7b2),
   woodEdge: hex(0xa5855c),
   steel: hex(0x7c8590),
   grey: hex(0x8b8f93),
   dark: hex(0x2b2c30),
-  screen: [0.14, 0.24, 0.42] as RGB,
-  pane: [0.56, 0.62, 0.66] as RGB,
+  screen: [0.07, 0.11, 0.19] as RGB,
+  pane: [0.3, 0.34, 0.38] as RGB,
   key: hex(0xd9d3c2),
   keyBed: hex(0xb9b3a2),
   base: hex(0x8d9298),
@@ -46,9 +46,11 @@ const C = {
   manila: hex(0xd3b073),
 }
 
-const WALL = { t: 6.4, h: 47, base: 10 }
+const WALL = { t: 6.4, h: 54, base: 10 }
 const SCREEN_LEAN = 0.5
-const LIFT = { wall: 0.5, inside: 0.6, paper: 0.75 }
+const LIFT = { wall: 0.24, cap: 0.5, inside: 0.5, paper: 0.7 }
+// The shade the partitions lay on the carpet at their feet: how far it reaches in, and how dark it is against the wall.
+const FOOT = { reach: 13, dark: 0.42 }
 
 function wall(k: Kit, a: V2, b: V2, r: Random): void {
   const len = Math.hypot(b[0] - a[0], b[1] - a[1])
@@ -68,7 +70,10 @@ function wall(k: Kit, a: V2, b: V2, r: Random): void {
     const ang = (i / 6) * Math.PI
     cap.push([0, Math.cos(ang) * (WALL.t / 2 + 1.1), WALL.h - 3.2 + Math.sin(ang) * 3.2])
   }
+  const lift = k.lift
+  k.lift = LIFT.cap
   k.loft([cap.map((q) => [-len / 2 - 1.3, q[1], q[2]] as V3), cap.map((q) => [len / 2 + 1.3, q[1], q[2]] as V3)], C.cap, SURF.satin, true)
+  k.lift = lift
   k.up = 0
   k.back()
 }
@@ -497,6 +502,22 @@ export function cubicleScrews(z: Zone): [number, number, number][] {
   for (const sy of [-1, 1]) out.push([b.x, b.y + sy * 60, WALL.base])
   return out
 }
+function foot(k: Kit, hw: number, hd: number): void {
+  const z = 0.3
+  const o: V3[] = [[-hw, -hd, z], [hw, -hd, z], [hw, hd, z], [-hw, hd, z]]
+  const q = FOOT.reach
+  const i: V3[] = [[-hw + q, -hd + q, z], [hw - q, -hd + q, z], [hw - q, hd - q, z], [-hw + q, hd - q, z]]
+  const up: V3 = [0, 0, 1]
+  const dark = shade(C.carpet, FOOT.dark)
+  for (let e = 0; e < 4; e++) {
+    const a = o[e]!
+    const b = o[(e + 1) % 4]!
+    const c = i[(e + 1) % 4]!
+    const d = i[e]!
+    k.tri(a, b, c, up, up, up, dark, SURF.fabric, dark, C.carpet)
+    k.tri(a, c, d, up, up, up, dark, SURF.fabric, C.carpet, C.carpet)
+  }
+}
 
 export function buildCubicles(z: Zone, ctx: RealContext): THREE.Object3D {
   const b = boxOf(z, 'office.cubicles')
@@ -533,6 +554,7 @@ export function buildCubicles(z: Zone, ctx: RealContext): THREE.Object3D {
       q.at(cx, cy, WALL.base)
       if (flip) q.mirror()
     }
+    foot(k, cw / 2 - WALL.t / 2, cd / 2 - WALL.t / 2)
     cubicle(k, f, g, r, n, cw, cd)
     for (const q of [k, f, g]) {
       if (flip) q.back()
