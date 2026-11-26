@@ -109,17 +109,20 @@ Lengths in balls, page coordinates, z up from the page surface. `look(name, eye,
 | --- | --- | --- |
 | 0 | follow | the seal and the tube, the view goes down the page with the ball |
 | 4.2 | `table-wide` | lights down at 4.0, power on at 5.2: the wake is seen whole |
-| 8.5 | `ride` | the ball is on the plunger from 8.3, launched at 9.4 |
+| 8.05 | `ride` | the ball comes to the plunger at 8.3, braces from 9.0, is launched at 9.4 |
 | 10.25 | `tier-3` | the ball is still on the launch wire; the move (0.6 s) ends as it leaves the wire (10.87) and well before the first `sling` (11.25). Started at 10.6 the ride camera lost its rail in the middle of the move and the picture jumped 0.4 balls |
 | 13.0 | `table-lobby` | 0.3 s before `doors-slam` (13.31) |
 | 14.3 | follow | the doors have opened (14.1), the flippers are needed |
-| 19.5 | `table-replyall` | the ball is in the inbox (`inbox-take` 19.0), before the first `ball-drop` (20.8) |
+| 17.0 | `near-nest` | close on the ball in the bumper nest, the camera pans after it 0.25 s late and pushes in while the inbox holds it |
+| 20.95 | `table-replyall` | the copies pour (`ball-drop` 20.78 to 20.98), the alarm of the arrow is in the close view before it |
 | 22.2 | follow | the multiball is in play |
-| 27.2 | `table-fired` | the ball is in the firehouse, the `scoop-kick` is at 28.5 |
-| 28.8 | follow | after the kick |
+| 26.9 | `table-fired` | the ball is seen coming into the cup (`firehouse-take` 27.07), the `scoop-kick` is at 29.01 |
+| 29.3 | follow | after the kick |
 | 31.15 | `rail` | the ball is on the highway wire from `ramp-roll` (31.05); a cut before it would jump when the ball takes the wire |
 | 32.3 | follow | a move of 0.6 s up to the home view, over before the spiral (32.7) |
-| 34.3 | `table-save` | the ball comes down to the flippers, `flipper-save` at 35.6 |
+| 34.3 | `table-save` | the ball comes down to the flippers |
+| 34.8 | `near-spent` | 0.65 s on the worn out arrow as it rolls down the inlane |
+| 35.45 | `table-save` | back before the `flipper-save` at 35.72, the blade held up 0.2 s |
 | 36.6 | follow | the drain and the way out |
 
 - Live mode: the view is `follow`, the tier camera of the tier the ball is on, travelling in `live.pinball.tierTravelSeconds`. No close view in live mode yet.
@@ -136,7 +139,7 @@ Lengths in balls, page coordinates, z up from the page surface. `look(name, eye,
 ## Sheets
 
 - `table-map`: straight above, 1080 x 1920, the page's full width across the frame (20 balls), from 0.35 balls above Tier 3 down into the apron. The marquee is not in it: the approved map is the three tiers and the apron inside the frame.
-- `clear-ball`: three balls on the Office tier in one close, low view with the lens of `table-fired`, left to right as the approved sheet has them: at rest on the left flipper (`nervous`, the sweat is the cursor's), in flight half a ball above the floor (`scared`), pressed on the lowest bumper (`shocked`, `flattened`). The places are computed from the flipper's pivot and the bumper's centre, so they follow the layout. The approved sheet is three separate pictures side by side; a sheet has one view, so this is one picture.
+- `clear-ball`: three panels (`panels`, gutter 21), each its own tall picture with its own camera 10.2 balls from its ball, 39 degrees down, lens of `home`. Left: at rest on the Street tier's left flipper, `nervous`, sweat 1 on the shell. Middle: in flight 0.6 balls over the Street floor, `scared`. Right: pressed on the Office tier's lowest white cup at `cup.r + 0.40`, `scared` with `recoil`, the shell told a hit of strength 1 toward the cup. The sheet's own `list`, `cursors` and `view` are the first panel's, as the one-picture fallback.
 
 ## Open
 
