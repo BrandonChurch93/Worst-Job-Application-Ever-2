@@ -47,6 +47,8 @@ Not done to raise the number: nothing was added that the approved image does not
 - The bow of light on the medal ended on two hard edges (about 1 and 7 o'clock): the dull side of `sheen()` now starts from the bow with no step (`c * (2 + c)`). MEASURED after: M3 0.8014, M4 4.61.
 - Cards 1 and 2 a little bright against the approved: worked (`FALL`, `fallAt`, `darker` of `perk-cards.ts`). The glass's colour falls evenly with the page's x, in the resting slab and in the turning one alike, so a card does not change as it starts to turn (looked at on the sheet of `marketing.perks`). Face colours, approved against mine, lower part of each card: 179.5,184.9,180.5 against 180.3,186.3,181.3; 165.6,172.4,167.6 against 167.7,173.7,168.9; 147.5,155.5,150.6 against 148.7,154.1,149.8 (before: 182,188,183; 174,181,176; 160,165,161).
   What it costs: the type on darker glass has less contrast, and M3 is mostly type. MEASURED on this branch alone: M3 0.7857 (red), M4 4.61. MEASURED on a trial merge of `origin/agent/look-finish` at 979389dd (the darker ink), not committed: M3 0.8177, M4 4.62, M2 0.0001. So this commit needs the shared ink to be on main with it.
+- The medal's flange (the flat band outside the body) was near white on the side away from the light; the approved band is mid grey there with one thin bright lip. Worked (`polished()`, `MEDAL_LOOK.flat`, `MEDAL_LOOK.ridge` as a pair, the lip's window narrowed, a second thin lip at the top of the rim). The band by twelve sectors of 30 degrees, luminance, approved against mine: 109 100 105 122 183 189 123 99 93 112 135 147 against 111 97 108 142 193 155 112 94 99 132 152 145 (before: 132 110 114 140 184 151 116 106 121 162 190 176). MEASURED after, `npm run -s measure -- --unit marketing --only M2,M3,M4 --tier review`, this branch alone: M3 0.7941, M4 4.61, M2 0.0001. Still true after: the approved flange is darker yet and has a warm edge; the sector at 150 degrees is 34 levels under.
+- The far edges of the cards (asked by /root at 12:16Z): the approved card has a short bright bow in the corner turned away from the light, and a far rim about 2 px wide; mine had a rim of 1 px and no bow. Worked (`GLASS.spark`, `GLASS.sparkAt`, the first rows of `FAR`). First try put the bow 14 px in, where the corner's rings have closed to a point, and it showed as a round spot; at 8.6 px in it is a bow as in the approved image. Bottom edge of card 0, outward, approved against mine at the rim: 206 217 219 165 against 200 214 227 195. Still true after: the approved wall beyond the rim is a warm band about 3 px wide, mine about 2 px and cooler. `slabGeometry` is shared with the Decision page: /root told.
 - Tried and withdrawn: the same fall on the ticker's tape, frost and rim. The right end of the strip came to 136,140,136 against approved 132,137,131 (146,150,146 without), but M4 fell to 3.92 on `copy:marketing.ticker.4`, a run under the frost at the right end. The ticker is as it was.
 
 ## Point 4: the acting, read from the four sheets as a stranger would (draft tier, 11:30 UTC)
@@ -72,8 +74,9 @@ Not reproduced. MEASURED on this branch at 11:36 and 11:45 UTC: `npm run sheet -
 
 ## Looks, counted by part
 
-- `careers-page` (medal): 3 draft stills, 6 review stills.
-- `perk-cards` (glass): 7 review stills, 1 sheet of `marketing.perks` for the turning card.
+- `careers-page` (medal): 3 draft stills, 11 review stills.
+- `perk-cards` (glass): 9 review stills, 1 sheet of `marketing.perks` for the turning card.
 - `ticker`: 1 review still (the fall, withdrawn).
 - `acting-marketing`: 5 sheets (the four beats, and the ticker again after the fix).
-- Not of a part: 1 compare before, 1 compare after, 1 sheet of `decision.reset`, 1 run of 33 film frames for point 5.
+- Judged stills looked at once each at draft, `marketing-perks` and `marketing-proof`: 2.
+- Not of a part: 1 compare before, 2 compares after, 1 sheet of `decision.reset`, 1 run of 33 film frames for point 5.

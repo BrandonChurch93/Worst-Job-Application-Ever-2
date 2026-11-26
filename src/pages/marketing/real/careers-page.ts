@@ -9,7 +9,7 @@ import { contact, dims, disc, flange, leaf, leaned, mesh, pressed, q, scattered,
 import { BRUSHED, brushedPicture } from './medal-picture'
 import { engraved, restingSlab, slabKey } from './perk-cards'
 
-export const MEDAL_LOOK = { lobes: 30, deep: 9, toward: 2.4, side: 0.5, wall: 3.4, wallSide: 0.8, under: [[-2.5, 0.94], [0, 0.94], [1.5, 0.86], [4, 0.6], [8, 0.3], [13, 0.09], [18, 0]] as [number, number][], underTurn: 1.5, band: 141, ring: 138, face: 130.5, wreath: 119, leaves: 12, leaf: [27, 11.5, 2.6] as const, sheen: 0.62, axis: 2.55, rim: 1.02, lean: 0.6, cap: 0.26, capFrom: 0.6, narrow: 3.2, bow: [2.9, 0.5] as [number, number], lip: [2.6, 2.3] as [number, number], ridge: 1.7, groove: 0.5, pressed: [0.9, 0.32, 1.35] as [number, number, number] }
+export const MEDAL_LOOK = { lobes: 30, deep: 9, toward: 2.4, side: 0.5, wall: 3.4, wallSide: 0.8, under: [[-2.5, 0.94], [0, 0.94], [1.5, 0.86], [4, 0.6], [8, 0.3], [13, 0.09], [18, 0]] as [number, number][], underTurn: 1.5, band: 141, ring: 138, face: 130.5, wreath: 119, leaves: 12, leaf: [27, 11.5, 2.6] as const, sheen: 0.62, axis: 2.55, rim: 1.02, lean: 0.6, cap: 0.26, capFrom: 0.6, narrow: 3.2, bow: [2.4, 0.5] as [number, number], lip: [2.6, 2.3] as [number, number], flat: [[-1, 0.93], [-0.67, 0.88], [-0.2, 1.07], [0.3, 0.85], [0.74, 0.75], [0.9, 1.2], [1, 1.7]] as [number, number][], ridge: [2.5, 2.1] as [number, number], groove: 0.5, pressed: [0.9, 0.32, 1.35] as [number, number, number] }
 
 
 let faceMade: THREE.MeshPhysicalMaterial | null = null
@@ -51,6 +51,20 @@ const leafMetal = (): THREE.MeshPhysicalMaterial => (leafMade ??= studio(new THR
 
 // A medal struck from aluminium: a scalloped rim, a band, a ring cut with two grooves, a turned face and a wreath pressed into it.
 // Its face lies at the shape's height, where the type is laid. The rim and the ring stand a little above it.
+
+// A polished edge is as bright all the way round: `look` is its brightness on the side toward the light and on the side away, whatever the lean of the solid it is on.
+// The flange's flat top by the approved image: brightest toward the light, a weaker second glow straight away from it, dull between. `rows` are the side it faces and what it is multiplied by.
+function table(rows: [number, number][], at: number): number {
+  for (let i = 1; i < rows.length; i++) {
+    const a = rows[i - 1]!
+    const b = rows[i]!
+    if (at <= b[0]) return a[1] + ((b[1] - a[1]) * Math.max(0, at - a[0])) / (b[0] - a[0])
+  }
+  return rows[rows.length - 1]![1]
+}
+
+const polished = (look: [number, number], facing: number): number => (look[1] + (look[0] - look[1]) * (0.5 + 0.5 * facing)) / Math.max(0.2, 1 + MEDAL_LOOK.side * facing)
+
 function medallion(s: Shape): THREE.Object3D {
   const m = materials()
   const root = new THREE.Group()
@@ -60,7 +74,7 @@ function medallion(s: Shape): THREE.Object3D {
   const r = s.w / 2
   const rimTop = h + 0.6
   const rim = [{ d: -L.wall, z: 0 }, { d: -L.wall + 0.5, z: 1 }, { d: -0.7, z: rimTop - 2.6 }, { d: 0, z: rimTop - 1.5 }, { d: 0.9, z: rimTop - 0.6 }, { d: 2.2, z: rimTop - 0.15 }, { d: 3.8, z: rimTop }, { t: 0.5, z: rimTop - 0.25 }, { t: 0.92, z: rimTop - 0.35 }, { t: 1, z: rimTop - 1.2 }, { t: 1.04, z: h - 2 }]
-  root.add(mesh(shared(`medalRim:${q(s.w)}:${q(h)}`, () => leaned(flange(r, L.lobes, L.deep * k, L.band * k, rim), L.toward, L.side, s.w, [rimTop - 1.2, L.wallSide], L.bow, (z, facing) => (z > rimTop - 1.6 && z < rimTop - 0.1 ? (L.lip[1] + (L.lip[0] - L.lip[1]) * (0.5 + 0.5 * facing)) / Math.max(0.2, 1 + L.side * facing) : 1))), medalMetal()))
+  root.add(mesh(shared(`medalRim:${q(s.w)}:${q(h)}`, () => leaned(flange(r, L.lobes, L.deep * k, L.band * k, rim), L.toward, L.side, s.w, [rimTop - 1.2, L.wallSide], L.bow, (z, facing) => ((z > rimTop - 1.6 && z < rimTop - 0.5) || Math.abs(z - rimTop + 0.15) < 0.03 ? polished(L.lip, facing) : z >= rimTop - 0.5 ? table(L.flat, facing) : 1))), medalMetal()))
   root.add(mesh(shared(`medalUnder:${q(s.w)}`, () => contact(r, L.lobes, L.deep * k, L.toward, L.under, L.underTurn)), underDark(), false, false))
   const band = L.band * k
   const ring = L.ring * k
@@ -71,7 +85,7 @@ function medallion(s: Shape): THREE.Object3D {
     [b(ring), h - 0.6], [b(ring - 0.8), h + 1.0], [b(ring - 2.0), h + 1.0], [b(ring - 2.5), h + 0.2], [b(ring - 2.9), h - 0.8, true],
     [b(ring - 3.6), h - 0.8, true], [b(ring - 4.0), h + 0.2], [b(ring - 4.4), h + 0.8], [b(ring - 5.4), h + 0.8], [b(ring - 5.9), h + 0.3], [b(face + 1.2), h - 0.6, true], [b(face + 0.5), h - 0.6, true], [b(face), h, true]
   ]
-  root.add(mesh(shared(`medalBody:${q(s.w)}:${q(h)}`, () => leaned(sweep(circle(band, 144), profile(body), false), L.toward, L.side, s.w, [-1, 0], L.bow, (z) => (z > h + 0.7 ? L.ridge : z < h - 0.7 ? L.groove : 1))), medalMetal()))
+  root.add(mesh(shared(`medalBody:${q(s.w)}:${q(h)}`, () => leaned(sweep(circle(band, 144), profile(body), false), L.toward, L.side, s.w, [-1, 0], L.bow, (z, facing) => (z > h + 0.7 ? polished(L.ridge, facing) : z < h - 0.7 ? L.groove : 1))), medalMetal()))
   root.add(mesh(shared(`medalFace:${q(s.w)}:${q(h)}`, () => sheen(discUv(disc(face + 0.2, h), s.w), L.axis, L.sheen, L.rim, L.lean, L.cap, L.capFrom, L.narrow)), medalFace(), false))
   const wreath = shared(`medalWreath:${q(s.w)}:${q(h)}`, () => {
     const one = leaf(L.leaf[0] * k, L.leaf[1] * k, L.leaf[2])
