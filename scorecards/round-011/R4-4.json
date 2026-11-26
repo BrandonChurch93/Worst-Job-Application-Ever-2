@@ -1,0 +1,37 @@
+{
+ "critic": "R4",
+ "score": 8,
+ "pass": false,
+ "model": "kimi_k3",
+ "set": "D: consecutive frames at hits 11 to 20 of the page's 22",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-D-02.png",
+   "where": "bottom edge of every frame in the sheet",
+   "what": "the sheet is 'consecutive frames at a hit' but the hit never appears in the region: two steel balls creep slowly down-left along the very bottom of frame, half cut off, for all twelve frames, with an even, soft drift that doesn't read as post-impact steel; you cannot tell what happened in this sheet without the caption",
+   "fix": "recrop or retime the sheet so the impact and the balls' fast post-hit travel are inside the region; if the slow roll-out is intentional, let the balls enter fast and visibly decelerate instead of gliding at one even pace"
+  },
+  {
+   "severity": "minor",
+   "file": "set-D-07.png",
+   "where": "all frames, trailing the clear ball",
+   "what": "the ball carries a white flame-and-spark comet plume the whole way across the table, which reads as a self-propelled rocket rather than a loose steel ball in a machine",
+   "fix": "drop the continuous exhaust plume; keep spark puffs only at the moment of contact, as in the launcher blast in set-D-01"
+  },
+  {
+   "severity": "minor",
+   "file": "set-D-01.png",
+   "where": "frames 1:27.80-1:27.97, ball pair crossing the scene",
+   "what": "after the blast ejection the clear ball and steel ball travel dead straight at a constant ~400px per frame with no visible deceleration or arc, exiting the right edge and re-entering from the left at the same speed; on stills it measures as a constant translate and sits on the wrong side of 'moved by hand' - the mass of the launch is paid off with a speed-up, not with weight",
+   "fix": "give the traverse slight deceleration and frame-consistent spin, and make the orbit lane/rail visible so the edge wrap reads as a guided path rather than a teleport"
+  },
+  {
+   "severity": "minor",
+   "file": "set-D-09.png",
+   "where": "last row, frames 1:34.20-1:34.27",
+   "what": "after nine clear frames of the ball caroming off the crane, the sheet jumps to a different, tighter framing with the ball no longer visible; the end of the hit and where the ball went are not shown",
+   "fix": "hold the same crop until the ball settles or exits, or end the sheet at the framing change"
+  }
+ ]
+}

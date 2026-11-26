@@ -6,7 +6,7 @@ import { CursorView, cursorReal } from '../cursor/view'
 import { real } from '../real'
 import type { Emitter, PartMaker, RealContext } from '../real/types'
 import type { Frame } from '../stage/stage'
-import { rattleAt, SHIVER, shiverAt, shiverDelay } from '../stage/turn'
+import { rattleAt, SHIVER, shiverAt, shiverBase, shiverDelay } from '../stage/turn'
 import type { Shape, Tone } from '../stage/types'
 import { studio } from '../post/studio'
 import { block } from './metrics'
@@ -112,6 +112,7 @@ export class PageView {
   private pageId = ''
   private lastScroll = 0
   private settle = -1
+  private list: readonly Shape[] = []
   private size = { width: 1920, height: 1080 }
   private cursors: CursorPose[] = []
   focus = 0
@@ -369,7 +370,8 @@ export class PageView {
 
   private shiver(o: THREE.Object3D, s: Shape): void {
     if (this.settle < 0 || s.z1 <= SHIVER.loose || s.pocket === true) return
-    const t = this.settle - shiverDelay((s.y + s.h / 2 - this.lastScroll) / 1080)
+    const b = shiverBase(this.list, s)
+    const t = this.settle - shiverDelay((b.y + b.h / 2 - this.lastScroll) / 1080)
     o.position.z += shiverAt(t)
     o.position.y += rattleAt(t)
   }
@@ -513,6 +515,7 @@ export class PageView {
     this.size = size
     this.lastScroll = f.scroll
     this.settle = f.settle ?? -1
+    this.list = f.list
     const turning = Math.abs(f.turn) > 1e-6
     const top = turning ? f.scroll : 0
     const tall = turning ? 1080 : size.height

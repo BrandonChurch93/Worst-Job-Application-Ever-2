@@ -1,0 +1,77 @@
+{
+ "critic": "R9",
+ "score": 5,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "B: one sheet of each acting state the page uses, plain, nervous, shocked, confident, scared and exhausted, with no time and no word on it",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-B-03.png",
+   "where": "the arrow at the green bumper and orange flipper contacts, especially rows 2 and 4",
+   "what": "The ball and flippers communicate the hits, but the arrow blurs into a white smear in the contact frames. I cannot pick out a squash, a recoil, or a clear recovery pose before the next hit.",
+   "fix": "Give one or two contacts a clean, broad squash followed by a sharply readable recoil and directional stretch. Keep the strong blur between those poses rather than across all of them."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02.png",
+   "where": "the instant of enclosure and the held pose before the ball drops",
+   "what": "The capture is clear, but the arrow switches directly into a nearly static diagonal. The hold registers as the machine pausing rather than the arrow reacting, and the fall largely carries the same pose along.",
+   "fix": "Pull the tip back as the shell closes, let the arrow unfold into a clearly held alarm pose aimed toward the tube, and stretch it along the drop before it settles."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-04.png",
+   "where": "the long upper-right diagonal pose on the wire rails and the entrance to the clear spiral",
+   "what": "The arrow is quite legible here, but repeats essentially the same silhouette through the approach. There is no clear wind-up or change of attitude when it reaches the spiral; the rails and camera do most of the acting.",
+   "fix": "Keep the readable forward lean, then briefly pull the tip back and hold it at the lip before pitching into the spiral. Make the change relative to the ball so it reads even as the camera moves."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-05.png",
+   "where": "the second circuit of the Background Check chamber and the bottom-row exit",
+   "what": "Most of both circuits use almost the same diagonal arrow pose, so the orbit sells the dizziness more than the character does. The exit shows little distinct release or lingering reaction.",
+   "fix": "Build the disorientation across circuits: start braced, let the tip overshoot farther on the next turn, then hold an off-balance silhouette through the exit before the arrow recovers."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-06.png",
+   "where": "the opening flipper launch, the skim past the chamber rim, and the last descent",
+   "what": "The launch and return path are readable, but the arrow goes edge-on or is obscured at several key moments. No clear held brace or recoil distinguishes the chamber skim from the rest of the ride.",
+   "fix": "Keep the broad face of the arrow readable at the skim, and give it a brief brace followed by a tip-and-tail recoil as it peels away. Hold the recoil just long enough to separate it from the next blur."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01.png",
+   "where": "the settle in row 3 and the intake approach in row 4",
+   "what": "The turn and closing shadow suggest a touchdown, but there is no distinct held squash or recovery. As the intake enters, the arrow is already upright and slides toward it with little visible hesitation or reaction.",
+   "fix": "Compress the arrow briefly against the surface, let it rebound and settle, then use a small lean away from the intake before it gets drawn in."
+  }
+ ],
+ "reads": [
+  {
+   "file": "set-B-01.png",
+   "read": "Tentatively curious: the arrow appears out of the dark, hovers, then tips upright and approaches a round intake."
+  },
+  {
+   "file": "set-B-02.png",
+   "read": "Stunned and frozen: the intake seals the arrow in a clear ball, holds it there, then drops it down the tube."
+  },
+  {
+   "file": "set-B-03.png",
+   "read": "Frantic and disoriented: the arrow is being pinballed between the lit bumpers and orange flippers, with no time to recover."
+  },
+  {
+   "file": "set-B-04.png",
+   "read": "Focused on what is ahead, but otherwise calm: the ball climbs the wire rails toward the clear spiral, and the arrow points into the ride."
+  },
+  {
+   "file": "set-B-05.png",
+   "read": "Dizzy: the ball circles the Background Check chamber repeatedly, then drops out underneath it."
+  },
+  {
+   "file": "set-B-06.png",
+   "read": "Rattled and still being carried by its momentum: the ball shoots off a flipper, skims the outside of the Background Check chamber, and caroms back down toward the flippers."
+  }
+ ]
+}
