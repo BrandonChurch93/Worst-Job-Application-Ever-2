@@ -1,0 +1,142 @@
+{
+ "critic": "R1",
+ "score": 3,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "A: the page with the loader, the whole machine and the clear ball sheet beside the approved images, whole and in crops",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-A-03-b.png",
+   "where": "the whole cabinet and camera",
+   "what": "-a is a low, near-frontal view of one gently sloping playfield inside a wide, continuous satin-aluminium rim with rounded front corners. -b looks down from higher up at a stack of steep tiers walled by tall black risers, and its front corners open onto dark wood-grain side panels with gaps, so it reads as a different machine",
+   "fix": "lower the camera and bring it forward to -a's angle, make the tier steps shallow and low so the field reads as one slope, and close the cabinet with -a's wide satin-aluminium rim with rounded corners. Remove the exposed wood side panels"
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-03-b.png",
+   "where": "the lower and middle playfield, light and colour",
+   "what": "-a's field is a glowing deep teal-navy enamel with dozens of hot warm lamps and pools of warm light. -b is darker, muddier and cooler, with far fewer lit inserts, and the strip of lamps along the inner right wall is missing",
+   "fix": "raise the warm general illumination and the brightness of the inserts, light the full lamp strip down the inside of the right wall, and bring the enamel back to a clean teal-navy with warm reflections"
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-03-b.png",
+   "where": "the wire ramp across the centre",
+   "what": "-a has one low chrome wire rail curving across the lower-middle field. -b has a tall, oversized wireform ramp that climbs from the left slingshot to the upper right and cuts across the bumpers and middle tier",
+   "fix": "replace it with -a's low, thin chrome rail at playfield height, following -a's arc above the lower inserts"
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-03-b.png",
+   "where": "the marquee at the head",
+   "what": "-a's backbox is a large satin-aluminium frame with the title in thin, widely spaced cream capitals over the skyline. -b's marquee is a smaller, thinner strip set higher above a dark louvred box, its title is set in heavy outlined yellow letters, and the Corporate HQ stack rises into it",
+   "fix": "enlarge the backbox to -a's proportions in its satin frame, set the title in light, widely spaced cream capitals, remove the louvred box and keep the tower clear below the score panel"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04-b.png",
+   "where": "the bumper crop (and the bumpers in set-A-03-b)",
+   "what": "-a's bumpers have glossy white domed caps over warm-lit brass bodies. -b's are open grey-rimmed cups with an orange-brown fill, like coffee cups",
+   "fix": "model a white domed cap over a brass skirt and a lit body, as in -a"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04-b.png",
+   "where": "the garage crop (and set-A-03-b, right of centre)",
+   "what": "-a's garage is a compact solid spiral of stacked satin-metal rings. -b's is a tall open lattice cage with thin uprights",
+   "fix": "build it as solid concentric ramp rings with no cage, at -a's low height"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04-b.png",
+   "where": "the tower crop and the sign-at-the-head crop",
+   "what": "the two crops are the same frame, so the tower has no crop of its own. The tower itself is a grey-framed stacked box with labels, not -a's glass cube with a single lit doorway",
+   "fix": "frame the tower crop on the tower, and make it a clear glass cube with a warm-lit door at its base"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04-b.png",
+   "where": "the arrow and plunger crops (and set-A-03-b, lower right)",
+   "what": "in -a the ball sits in an open shooter lane above a visible chrome spring and an orange plunger knob, inside the aluminium rim. In -b the ball floats in a black-walled glass tube high on the right wall, the spring is missing, and the plunger is a black rod with an orange knob jutting out beside a dark wood panel",
+   "fix": "show the shooter lane with a chrome coil spring and the orange knob at the foot inside the rim. Keep the settled feed tube, but end it at the plunger without walling in the lane"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04-b.png",
+   "where": "the card-at-the-foot crop",
+   "what": "-a's crop centres on the cream Unemployment Office card between the flippers. -b's crop shows the score display and the HR plate instead",
+   "fix": "frame the crop on the centre card at the foot"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "the whole sheet layout",
+   "what": "-a shows three tall panels side by side, split by black gutters, with one ball state in each. -b is a single unbroken frame holding three balls",
+   "fix": "split the sheet into three equal vertical panels with dark gutters, one state per panel, in -a's order"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "the arrow inside each ball",
+   "what": "-a's arrow is glossy white enamel with a thick, crisp black edge, and in the third state it is visibly melted and warped. -b's arrows are matte light grey with only a soft dark extrusion, and none of them is deformed",
+   "fix": "give the arrow a glossy white face and a bold black rim, and apply -a's melt and warp to the third state"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "the playfield surface and light",
+   "what": "-a's surface is dark navy enamel with teal swirls and gold pinstripes, warm low-key light and a shallow depth of field. -b's is a green speckled, terrazzo-like grain under flat, even light, with everything in focus",
+   "fix": "keep the insert layout but change the surface to glossy navy-teal enamel with gold lines, darken it, warm the light, and blur the background and foreground"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "the cursor ball and its bowl, right",
+   "what": "-a's ball is clear, thick glass with a crisp white arrow and a soft caustic on the floor of a satin bowl. In -b the arrow inside the ball is smeared and broken, and the ball reads as a grey ring in a bowl with dashed rings and screws",
+   "fix": "render the arrow sharp and whole behind clear glass with -a's refraction, and make the bowl one plain satin rim with a soft contact shadow"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "the glass tube, right",
+   "what": "-a's tube is thick clear glass with chrome collars, and it casts a soft shadow on the page. -b's tube is flat, with opaque vertical stripes inside it and almost no shadow",
+   "fix": "remove the inner stripes, add the thick-wall refraction and chrome collars, and cast a soft shadow to the lower right"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "the tube along the rail and its bend",
+   "what": "-a has evenly spaced chrome collars with tight shadows. -b has fewer collars, grey bars inside the tube and dark blocks at the bend, and its shadow on the page is weak",
+   "fix": "space the chrome collars evenly, clear the inside of the tube and add a soft shadow below and to the right"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03-b.png",
+   "where": "the left lock tube's front end",
+   "what": "-a's tube ends in a clear glass cup on a chrome foot. -b caps it with a heavy black disc",
+   "fix": "replace the cap with a clear glass end on a chrome base"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03-b.png",
+   "where": "the slingshots",
+   "what": "-a's yellow triangular chevron signs stand upright on chrome posts. -b's are black-and-yellow striped plates laid back over the slingshots",
+   "fix": "stand them up as yellow triangles with a dark chevron, on posts"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-03-b.png",
+   "where": "the red glass cylinder left of centre and the house cluster at Mom's Basement",
+   "what": "neither is in -a. -a has a single house at that spot and no red cylinder",
+   "fix": "remove the red cylinder and reduce the cluster to -a's single house"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01-b.png",
+   "where": "the orange button and the page grain",
+   "what": "the button is a darker red-orange with less gloss, and the page is slightly greyer with a coarser stucco grain than -a's smooth cream",
+   "fix": "lighten the button to -a's bright glossy orange, and warm and smooth the page grain"
+  }
+ ]
+}

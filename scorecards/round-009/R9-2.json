@@ -39,6 +39,30 @@
    "where": "After the top-row wilt, through the final drop",
    "what": "The wilt reads, but the crumpled shape loses much of the arrow's defining point and notch and then moves down almost unchanged. There is no distinct settling pose.",
    "fix": "Keep a bent but recognizable point and notch in the melted shape, and add a small buckle or squash at the end of the drop."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01.png",
+   "where": "the whole sheet",
+   "what": "did not read: confident reads as tentatively curious: a pause, a dart, a steadying. Upright with a slight bounce and a strut is not in the read.",
+   "fix": "The strut of Confident: upright, a bounce in each step, held over a walk long enough to be seen.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-05.png",
+   "where": "the whole sheet",
+   "what": "did not read: angry reads as alarmed and agitated: the glowing tip and the smoke are seen, and are taken for something happening to the arrow, not for its anger.",
+   "fix": "Anger as a pose before the heat: the arrow squared up to the thing it is angry at, held, and then the red tip and the steam.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-06.png",
+   "where": "the whole sheet",
+   "what": "did not read: shocked reads as intent, then watchful and impatient. The double take, the stretch tall and the snap back are not in the read.",
+   "fix": "The double take of Shocked: the stretch tall, then the snap back to upright, held.",
+   "by": "builder"
   }
  ],
  "reads": [

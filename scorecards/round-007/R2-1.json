@@ -14,7 +14,7 @@
      "model": "kimi_k3",
      "answer": "c",
      "confidence": 88,
-     "why": "the polished but generic skeuomorphic 3D website mockup styling—beveled buttons, medallion, and typography—looks like an ordinary render rather than a photograph, cinematic frame, or live web/app capture.",
+     "why": "the polished but generic skeuomorphic 3D website mockup styling - beveled buttons, medallion, and typography - looks like an ordinary render rather than a photograph, cinematic frame, or live web/app capture.",
      "at": "03:21Z"
     },
     {
@@ -87,7 +87,7 @@
      "model": "kimi_k3",
      "answer": "d",
      "confidence": 90,
-     "why": "it's a flat webpage layout (nav bar, headline, cursor arrow, ticker footer) whose widgets — chunky beveled buttons, metallic \"Excellence in Synergy\" seal, inset cards — are skeuomorphic 3D-styled UI elements, not a photographed object, cinematic frame, or standalone product render.",
+     "why": "it's a flat webpage layout (nav bar, headline, cursor arrow, ticker footer) whose widgets - chunky beveled buttons, metallic \"Excellence in Synergy\" seal, inset cards - are skeuomorphic 3D-styled UI elements, not a photographed object, cinematic frame, or standalone product render.",
      "at": "03:24Z"
     },
     {
@@ -144,7 +144,7 @@
      "model": "claude_opus_5_5",
      "answer": "d",
      "confidence": 85,
-     "why": "It's clearly a web page UI (cursor, HTML text layout, CSS/WebGL-style glass cards and metallic badges) — a web 3D/skeuomorphic demo, not a photo or film frame.",
+     "why": "It's clearly a web page UI (cursor, HTML text layout, CSS/WebGL-style glass cards and metallic badges) - a web 3D/skeuomorphic demo, not a photo or film frame.",
      "at": "03:24Z"
     }
    ],
@@ -213,7 +213,7 @@
      "model": "kimi_k3",
      "answer": "d",
      "confidence": 70,
-     "why": "the image is a rendered webpage layout (nav bar, hero text, chunky beveled orange buttons, glass-effect info cards, metal medal icon) — it reads as a stylized web/UI demo mockup, not a photograph, cinematic frame, or standalone product render. The skeuomorphic 3D buttons and glass cards look like a web 3D demo or app UI illustration, which is what pushed me to (d) over (c).",
+     "why": "the image is a rendered webpage layout (nav bar, hero text, chunky beveled orange buttons, glass-effect info cards, metal medal icon) - it reads as a stylized web/UI demo mockup, not a photograph, cinematic frame, or standalone product render. The skeuomorphic 3D buttons and glass cards look like a web 3D demo or app UI illustration, which is what pushed me to (d) over (c).",
      "at": "03:25Z"
     },
     {
@@ -245,7 +245,7 @@
      "model": "kimi_k3",
      "answer": "d",
      "confidence": 70,
-     "why": "The image is a satirical fake corporate landing page (\"Mandatory Optional Overtime\") laid out exactly like a website, complete with nav bar, hero text, CTA buttons, and a mouse cursor. The deciding factor was the flat webpage composition with a rendered cursor and faux-tactile skeuomorphic UI (glass buttons, paper texture, metal seal) — it reads as a styled web/app design mockup rather than a photo, cinematic, or standalone product render. While the individual textures (metallic seal, glossy button) are rendered decently, their simplistic, template-like quality and the joke-copy web layout place it closest to a web 3D demo or low-budget app piece.",
+     "why": "The image is a satirical fake corporate landing page (\"Mandatory Optional Overtime\") laid out exactly like a website, complete with nav bar, hero text, CTA buttons, and a mouse cursor. The deciding factor was the flat webpage composition with a rendered cursor and faux-tactile skeuomorphic UI (glass buttons, paper texture, metal seal) - it reads as a styled web/app design mockup rather than a photo, cinematic, or standalone product render. While the individual textures (metallic seal, glossy button) are rendered decently, their simplistic, template-like quality and the joke-copy web layout place it closest to a web 3D demo or low-budget app piece.",
      "at": "03:25Z"
     }
    ],
