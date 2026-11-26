@@ -19,7 +19,7 @@ export const CENTRE = (LEFT + RIGHT) / 2
 
 export const COUNTER_TOP = heights.card + 6
 export const READOUT_TOP = heights.card + 4
-export const STAMP = { blockTop: heights.machineMinTop + 22, gripTop: heights.machineMinTop + 74, high: 180 }
+export const STAMP = { blockTop: heights.machineMinTop + 36, gripTop: heights.machineMinTop + 100, high: 150 }
 const SHOWN = ['decided', 'link', 'shared']
 export const MARK_ROT = -0.14
 // The sheet does not lie square on the page: it is turned a little, clockwise as seen, about its middle.
@@ -109,7 +109,7 @@ export function markOf(): Mark {
   const said = block(T.mark.font, words('copy:step5.letter.stamp'), T.mark.px)
   const w = Math.round(said.width + 64)
   const h = Math.round(said.cap + 60)
-  const blockW = w + 176
+  const blockW = w + 124
   const blockH = h + 30
   const lift = Math.abs(Math.sin(MARK_ROT)) * (blockW / 2)
   made = { cx: LEFT + COLUMN - 28 - blockW / 2, cy: BOTTOM - 36 - blockH / 2 - lift, w, h, bar: 7, blockW, blockH }
@@ -174,7 +174,7 @@ function stampAtRest(): LayoutNode {
   const BLOCK = { w: m.blockW, h: m.blockH }
   const x = RIGHT_X
   const y = BOTTOM - BLOCK.h
-  const gripW = Math.round(BLOCK.w * 0.54)
+  const gripW = Math.round(BLOCK.w * 0.5)
   const gripH = Math.round(BLOCK.h * 0.6)
   return node('stamp', 'stamp', [x, y, BLOCK.w, BLOCK.h], {
     part: 'stamp', shape: 'none', states: SHOWN,

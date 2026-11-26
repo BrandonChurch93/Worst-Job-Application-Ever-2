@@ -16,7 +16,7 @@ const q = (v: number): number => Math.round(v * 4) / 4
 const WHITE: [number, number, number] = [1, 1, 1]
 const PRINT: Style = { setting: 'flat', fill: WHITE, lean: 0, rings: [{ d: 0.55, a: 0.7, c: WHITE }] }
 const FRAME = { r: 12, inner: 12, thin: 2.6, feather: 0.7 }
-const PAD = { out: 2.6, tall: 5, gap: 1.6 }
+const PAD = { out: 2.6, tall: 8, gap: 2 }
 
 let lacquerMade: THREE.MeshPhysicalMaterial | null = null
 function lacquer(): THREE.MeshPhysicalMaterial {
