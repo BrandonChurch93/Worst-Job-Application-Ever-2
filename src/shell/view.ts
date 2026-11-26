@@ -56,6 +56,7 @@ export class PageView {
   readonly scene = new THREE.Scene()
   private pivot = new THREE.Group()
   private sheet = new THREE.Group()
+  private stand = new THREE.Group()
   private reals = new Map<string, RealEntry>()
   private realGround: { object: THREE.Object3D; key: string } | null = null
   private models: CursorView[] = []
@@ -74,6 +75,8 @@ export class PageView {
   constructor() {
     this.scene.add(this.pivot)
     this.pivot.add(this.sheet)
+    this.stand.matrixAutoUpdate = false
+    this.scene.add(this.stand)
   }
 
   private tag(o: THREE.Object3D, part: string, order: number, extra: Record<string, unknown> = {}): void {
@@ -162,7 +165,12 @@ export class PageView {
     const tall = turning ? 1080 : size.height
     this.pivot.position.set(0, -f.scroll, 0)
     this.sheet.position.set(0, f.scroll, 0)
-    this.pivot.rotation.x = f.turn
+    // The slab lies still in the scene and whoever draws it turns the camera, the light and the studio about its axis:
+    // every surface works out its grain, its heights and its shadows from where it lies, and those hold for a page that lies flat.
+    this.scene.userData.turn = { angle: f.turn, y: -f.scroll }
+    if (turning) this.stand.matrix.makeRotationX(-f.turn).setPosition(0, -f.scroll * (1 - Math.cos(f.turn)), -f.scroll * Math.sin(f.turn))
+    else this.stand.matrix.identity()
+    this.stand.matrixWorldNeedsUpdate = true
     this.pivot.updateMatrixWorld(true)
     this.lit = []
     const ctx = contextOf(f, size.width, top, tall, (e) => {
@@ -197,7 +205,7 @@ export class PageView {
     while (this.models.length < cursors.length) {
       const model = new CursorView()
       this.tag(model.root, 'cursor-body', ORDER.cursor + 4096 + this.models.length * 64)
-      this.scene.add(model.root)
+      this.stand.add(model.root)
       this.models.push(model)
     }
     this.models.forEach((m, i) => {

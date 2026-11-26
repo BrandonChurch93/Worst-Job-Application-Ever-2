@@ -1,14 +1,17 @@
 const QUARTER = Math.PI / 2
 const DEG = Math.PI / 180
 
+// `land` is the share of the speed of the hand over that the slab still has when it meets its seat: it falls into the seat, it does not coast into it.
+// `knocks` are how far the slab springs back off the seat, and for how long, as shares of the arriving half of the turn.
 export const TURN = {
   windUp: 0.12,
   lean: 1.6 * DEG,
   power: 2.2,
   seat: 0.6,
+  land: 0.8,
   knocks: [
-    { size: 1.5 * DEG, lasts: 0.22 },
-    { size: 0.4 * DEG, lasts: 0.12 }
+    { size: 6 * DEG, lasts: 0.22 },
+    { size: 1.8 * DEG, lasts: 0.12 }
   ]
 } as const
 
@@ -32,9 +35,12 @@ export function leaveSpeed(): number {
 export function arriveTurn(u: number): number {
   const t = clamp01(u)
   if (t < TURN.seat) {
+    // The speed over the way in is `enter - bend * w * (1 - w) - drop * w` quarter turns: it eases as the slab comes over and picks up again as it falls into the seat.
     const w = t / TURN.seat
-    const a = 1 - (leaveSpeed() * TURN.seat) / QUARTER
-    return -QUARTER * (1 - w) * (1 + a * w)
+    const enter = (leaveSpeed() * TURN.seat) / QUARTER
+    const drop = enter * (1 - TURN.land)
+    const bend = 6 * (enter - 1) - 3 * drop
+    return -QUARTER * (1 - enter * w + bend * (w * w / 2 - (w * w * w) / 3) + (drop * w * w) / 2)
   }
   let from = TURN.seat
   for (const k of TURN.knocks) {
