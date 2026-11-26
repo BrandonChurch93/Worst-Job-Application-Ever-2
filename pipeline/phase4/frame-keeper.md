@@ -73,8 +73,9 @@ The times in the table from 05:01 on are read back from the pushes (05:20, 05:28
 | time UTC | key | for | count |
 | --- | --- | --- | --- |
 | 05:46 | loader-page | loader: ring's gradient | 1 |
+| 05:48 to 05:53 | youre-fired 2, reply-all 1, tier-office 1 | table-frame: walls | 4 |
 
-Total in round 11: 1 (loader 1).
+Total in round 11: 5 (loader 1, table-frame 4).
 
 ## Decisions
 
@@ -95,6 +96,7 @@ Total in round 11: 1 (loader 1).
 - The highway's wire stayed a pale tube at a low eye whatever the room did. MEASURED by turning terms off one at a time in `last-save`: not the lamps' direct shine, not the rows of lamps, not the floor field; it is `sky` (the polish rings) spread over a wire a few pixels wide. The rings now lose energy with the square of the thinning and play's steel runs `sky: 0.3`, `panel: 0.2`, `horizon: 0.4`.
 - The loader's tube lies in a bed that is the bowl's own tone inside the bowl and the ring's dark aluminium through the ring: it read as a dark box.
 - Frame aluminium's upright faces keep 0.06 of the room (`wall`), its screws mirror a ceiling near the lands' own, so a row of screws is not a row of black dots.
+- The `wall` term reads the face's own normal, not the brushed grain's: the grain tipped a wall's normal far enough to give streaks of the whole room, which read as static on the tall wall in `youre-fired`. MEASURED there, x 0..600, y 0..450: (44,42,41) streaked before, (24,23,24) even after, approved (29,34,38).
 - The loader's bowl is turned whole and the tube's mouth stands out of its wall; only the ring is slotted. The slot's bed inside the bowl read as a dark box whatever its tone. The ring's face is a mid grey of its own (`FACE`, `EDGE`), darker than the collars. The ring's top is shaded round its turn (`Geo.tint`): dark toward the top of the page, light toward its lower right, as approved (54 at the top, 113 left, 171 lower right there).
 - The sunk panels of the side rails' south ends are near black (`SLOPE`): from the player's end they read as two grey planks. MEASURED in `table-wide` draft: (34,33,31).
 - Seen, not mine, told to their owners: the floor inside the lower shoulders is black in `tier-office` and `tier-street` (lamp_keeper); `rail-cam` near wire inside the lens's blur (table_runner, who lowered the camera and closed the lens). The marquee's title draws heavy and black across the whole picture in `table-wide` (table_runner, 05:25).
@@ -116,3 +118,7 @@ Total in round 11: 1 (loader 1).
 - `tier-corporate`, `tier-office`, `tier-street`: every row of mine has the draw calls of the first measure (hardware 13/16/19, frame 9/12/13, targets 7/11/8, flippers 5/7/6, bumpers 2/8/2, loader 4/3/2, lift 3/6/3, ramps -/3/5, marquee 4/1/-).
 - `table-wide`: loader 10 calls and 13966 triangles, was 8 and 9408. The same 10 comes out with the loader file of the push before (14004 triangles), so it is not this round's loader: main's 2a5a2c59 moved the wide camera to show the machine to its near end, and two more loader meshes are in view. Every other row of mine equal: hardware 21, frame 16, targets 15, flippers 12, bumpers 8, lift 8, ramps 5, marquee 4. Scene 201.
 - Triangles of my rows in `table-wide`: 187052 before, 189610 now (ramps fell with main's layout, loader rose with the camera).
+
+## Needs outside my folder
+
+- `pipeline/phase4/frame-keeper-NEEDS.patch` (05:55 UTC): `export` on `dataOf` and `geometryOf` in `src/shell/real/type.ts`. The marquee's title (`marquee-title`, part `marquee`) is set by the shell's type on a material that never passes `lit()`, so it is near black in the marquee zone where approved has pale letters. With the two exports my marquee maker can answer for that one run (the contract's line on `text` shapes) with the type's own letters from `content/copy.json` on a material of mine that glows with the `panel` group as the picture does. Not built: the patch is not in, and nothing of it is tested.
