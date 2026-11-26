@@ -6,8 +6,8 @@ import { controls } from '../../shell/real/controls'
 import { roundedRect, sweep, plateProfile } from '../../shell/solids'
 import { config } from '../../config'
 import { BODY_Z, FRAME, LEG, SHADE, SHIELD, SIDE, SIDE_OFF, CAP_W, CAP_H, WRECK } from '../body'
-import { SLAB, slabGeometry } from '../../pages/marketing/real/perk-cards'
-import { bossKit, cutPlate, joined, lathe, lying, mesh, moved, screw, glassTone, PLATE_TONE, SHIELD_GLASS } from './body-kit'
+import { bossKit, cutPlate, joined, lathe, lying, mesh, moved, screw, PLATE_TONE } from './body-kit'
+import { clearTone, fracture, glassKit, paneGeometry, rimGeometry, CLEAR_GLASS, RIM, SHIELD_PANE } from './glass'
 
 const heights = config.scale.heights
 const clamp = (t: number): number => Math.min(1, Math.max(0, t))
@@ -272,32 +272,14 @@ const GLASS_CRACKS: [number, number][][] = [
   [[22, -29], [-6, -52], [-22, -83]]
 ]
 
-function crackLines(lines: [number, number][][], wide: number, z: number, dx = 0, dy = 0): THREE.BufferGeometry {
-  const pos: number[] = []
-  lines.forEach((line, n) => {
-    for (let i = 0; i < line.length - 1; i++) {
-      const [x0, y0] = line[i]!
-      const [x1, y1] = line[i + 1]!
-      const l = Math.hypot(x1 - x0, y1 - y0) || 1
-      const taper = (j: number): number => wide * (0.2 + 0.8 * Math.sin((Math.PI * (j + 0.5 * (n % 2))) / line.length))
-      const w0 = taper(i)
-      const w1 = taper(i + 1)
-      const nx = -(y1 - y0) / l
-      const ny = (x1 - x0) / l
-      const ax = x0 + dx
-      const ay = y0 + dy
-      const bx = x1 + dx
-      const by = y1 + dy
-      pos.push(ax - nx * w0, ay - ny * w0, z, bx - nx * w1, by - ny * w1, z, ax + nx * w0, ay + ny * w0, z, ax + nx * w0, ay + ny * w0, z, bx - nx * w1, by - ny * w1, z, bx + nx * w1, by + ny * w1, z)
-    }
-  })
-  const g = new THREE.BufferGeometry()
-  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
-  const nor = new Float32Array(pos.length)
-  for (let i = 2; i < nor.length; i += 3) nor[i] = 1
-  g.setAttribute('normal', new THREE.BufferAttribute(nor, 3))
-  g.setAttribute('uv', new THREE.BufferAttribute(new Float32Array((pos.length / 3) * 2), 2))
-  return g
+let brokenMade: ReturnType<typeof fracture> | null = null
+
+function brokenGlass(): ReturnType<typeof fracture> {
+  if (!brokenMade) {
+    brokenMade = fracture(GLASS_CRACKS, SHIELD.tall, 41)
+    for (const g of [brokenMade.light, brokenMade.dark, brokenMade.sheet]) g.translate(0, 0, SHIELD.tall / 2)
+  }
+  return brokenMade
 }
 
 // The block leans, so its wall is seen: the picture runs down the wall as well, not only across the faces.
@@ -316,11 +298,20 @@ function shield(): THREE.Object3D {
   const w = SHIELD.w
   const h = SHIELD.h
   const t = SHIELD.tall
-  const slab = { kind: 'box', w: w + 2 * SLAB.frame, h: h + 2 * SLAB.frame, r: 18 + SLAB.frame } as Shape
-  leaf.add(mesh(geo('glass', () => walled(slabGeometry(slab, t)).translate(0, 0, t / 2)), k.glass))
+  const slab = { kind: 'box', w, h, r: 18 } as Shape
+  const gk = glassKit()
+  const pane = mesh(geo('glass', () => walled(paneGeometry(slab, t, SHIELD_PANE)).translate(0, 0, t / 2)), gk.clear, false)
+  pane.renderOrder = 2
+  leaf.add(pane, mesh(geo('glassRim', () => rimGeometry(slab, t, RIM.shield, 0).translate(0, 0, t / 2)), gk.rim, false))
   const cracks = new THREE.Group()
-  cracks.add(mesh(geo('glassCracksDeep', () => crackLines(GLASS_CRACKS, 0.8, 1.6, 3.2, -2.6)), k.bed, false, false))
-  cracks.add(mesh(geo('glassCracks', () => crackLines(GLASS_CRACKS, 0.62, t + 0.12)), k.glassCrack, false, false))
+  const f = brokenGlass()
+  const sheet = mesh(f.sheet, gk.crackSheet, false, false)
+  const dark = mesh(f.dark, gk.crackDark, false, false)
+  const light = mesh(f.light, gk.crackLight, false, false)
+  sheet.renderOrder = 3
+  dark.renderOrder = 4
+  light.renderOrder = 5
+  cracks.add(sheet, dark, light)
   leaf.add(cracks)
   const pin = mesh(geo('shieldPin', () => joined([-1, 1].map((e) => new THREE.BoxGeometry(11, 18, 9).translate(0, e * 34, 2)))), m.aluminiumSatin, false)
   const tubes = [-1, 1].map((sy) => {
@@ -351,7 +342,7 @@ function poseShield(o: THREE.Object3D, s: Shape): void {
   const flat = s.v?.[1] ?? 0
   const hurt = s.v?.[5] ?? 0
   const stand = prog(k, 0.55, 1) * (1 - flat)
-  bossKit().glass.color.copy(glassTone()).multiplyScalar(1 - (1 - SHIELD_GLASS.up) * stand)
+  glassKit().clear.color.copy(clearTone()).multiplyScalar(1 - (1 - CLEAR_GLASS.up) * stand)
   const swing = (1 - prog(k, 0.1, 0.6)) * (Math.PI / 2)
   const lean = stand * (0.62 + 0.07 * clamp(s.v?.[2] ?? 0))
   const half = SHIELD.w / 2

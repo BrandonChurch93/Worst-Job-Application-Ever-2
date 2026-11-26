@@ -12,6 +12,7 @@ import { makeScript } from './script'
 import { TICK_Z } from './real/verify-card'
 
 const CAP_LANDS = 1.2
+const SAG_AFTER = 1.45
 type StageName = 'verify' | 'unfold' | 'fight' | 'collapse' | 'press'
 
 interface State {
@@ -46,7 +47,7 @@ const FILL_TOP = 3.4
 // The body takes a sixth argument for the shield's flash and the cap's soot once the modeller's body is in; until then it is ignored.
 const easeOut = (t: number): number => 1 - (1 - t) * (1 - t) * (1 - t)
 const easeIn = (t: number): number => t * t
-const STAGES = { w: 2240, h: 1260, y: 630, x: [235, 667, 1216, 1863] } as const
+const STAGES = { w: 2240, h: 1260, y: 630, x: [235, 667, 1216, 1863], fold: 0.78, out: 8, reach: 104 } as const
 const PHASE_GAG = ['boss.slabs', 'boss.popups', 'boss.lastStand'] as const
 const SPOTS: [number, number][] = [[560, 800], [430, 640], [330, 900], [760, 900], [1150, 940], [1420, 950], [1690, 960]]
 
@@ -112,7 +113,7 @@ export function makePage(): PageLogic {
   }
 
   const TIP_AT_REST = 1.965
-  const AIM_LIFT = 0.36
+  const AIM_LIFT = 0.72
 
   const page: PageLogic = {
     id: 'step4', unit: 'boss', width: 1920, height: SCREEN_H, layout: L.tree, gags, start: { x: 700, y: 820 }, control: 'pointer',
@@ -197,6 +198,7 @@ export function makePage(): PageLogic {
         }
         if (f.over) toCollapse(io, rigNow()!)
       } else if (s.stage === 'collapse') {
+        if (s.t >= SAG_AFTER && s.t - dt < SAG_AFTER) io.cursor.act('exhausted')
         if (s.t >= COLLAPSE_SECONDS) {
           s.stage = 'press'
           s.t = 0
@@ -250,6 +252,10 @@ export function makePage(): PageLogic {
       const options: DrawOptions = { states, over }
       const first = out.length
       drawLayout(out, L.tree, options)
+      if (states.includes('fight')) {
+        const fine = out.findIndex((shape, i) => i >= first && shape.id === 'verify-fine-open')
+        if (fine >= 0) out.splice(fine, 1)
+      }
       const open = L.fold - shut()
       for (let i = first; i < out.length; i++) if (out[i]!.id === 'verify-rule') out[i]!.v = [L.rule.w]
       if (open > 0 && states[0] === 'rest') {
@@ -361,11 +367,11 @@ export function makePage(): PageLogic {
       drawRig(list, loose, 'stage-1')
       drawSocket(list, x2, y + 8, 1, 'stage-2-socket')
       const half = fightRig(x2, y, null)
-      for (const l of half.legs) {
-        l.k = 0.7
-        l.fx = l.hx + (l.fx - l.hx) * 0.62
-        l.fy = l.hy + (l.fy - l.hy) * 0.62
-      }
+      half.legs.forEach((l, i) => {
+        l.k = STAGES.fold
+        l.fx = l.hx + (i % 2 === 0 ? -1 : 1) * STAGES.out
+        l.fy = l.hy + (i < 2 ? -1 : 1) * STAGES.reach
+      })
       half.sides.forEach((side, i) => { side.y = y + (i === 0 ? -1 : 1) * 64 })
       for (const c of half.cannons) c.k = 0
       half.shield.k = 0
