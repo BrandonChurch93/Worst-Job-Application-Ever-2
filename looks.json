@@ -1,35 +1,35 @@
 {
   "folder": "step2-finish",
-  "pushed": "2026-11-26T12:19:12.631Z",
-  "commit": "0c9321b84df6d7d82804fcc0a7c2206220325f11",
+  "pushed": "2026-11-26T12:25:41.782Z",
+  "commit": "958fa7dad0ec2d39039e47040841cc97018943b8",
   "looks": [
     {
       "file": "look-1.jpg",
       "caption": "Still key-step2-crank-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T12:14:47.806Z",
+      "time": "2026-11-26T12:22:10.790Z",
       "by": "step2-finish",
       "from": "out/work/stills/key-step2-crank-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
       "caption": "Still key-step2-crank-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T12:15:36.593Z",
+      "time": "2026-11-26T12:22:35.504Z",
       "by": "step2-finish",
       "from": "out/work/stills/key-step2-crank-hd-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Still key-step2-crank-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-26T12:16:14.462Z",
+      "caption": "Still key-step2-dial-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T12:22:49.817Z",
       "by": "step2-finish",
-      "from": "out/work/stills/key-step2-crank-hd-review.png"
+      "from": "out/work/stills/key-step2-dial-hd-draft.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Step 2 crank key, approved left, the build right at the review tier: the unlit lenses of the meter have a light edge and no dark outline",
-      "time": "2026-11-26T12:19:10.941Z",
+      "caption": "Step 2 crank key, approved left, the build right at the draft tier: the well's shade under the upper wall reaches further and the floor is warmer",
+      "time": "2026-11-26T12:25:40.232Z",
       "by": "step2-finish",
-      "from": "out/work/looks/files/20261126121910-r3-lenses.jpg"
+      "from": "out/work/looks/files/20261126122540-r3-well2.jpg"
     }
   ]
 }
