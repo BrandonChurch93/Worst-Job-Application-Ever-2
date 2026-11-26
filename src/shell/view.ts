@@ -5,7 +5,7 @@ import { CursorView, cursorUnmade } from '../cursor/view'
 import { real } from '../real'
 import type { Emitter, PartMaker, RealContext } from '../real/types'
 import type { Frame } from '../stage/stage'
-import { rattleAt, SHIVER, shiverAt, shiverBase, shiverDelay } from '../stage/turn'
+import { rattleAt, SHIVER, shiverAt, shiverBase, shiverDelay, TURN } from '../stage/turn'
 import type { Shape, Tone } from '../stage/types'
 
 export const TONES: Record<Tone, number> = {
@@ -161,6 +161,8 @@ export class PageView {
     this.settle = f.settle ?? -1
     this.list = f.list
     const turning = Math.abs(f.turn) > 1e-6
+    // Tilted further than the knock goes, the fold of the page can come into view: what starts on the fold is then left out as well.
+    const tilted = Math.abs(f.turn) > TURN.knocks[0].size + 1e-9
     const top = turning ? f.scroll : 0
     const tall = turning ? 1080 : size.height
     this.pivot.position.set(0, -f.scroll, 0)
@@ -185,7 +187,7 @@ export class PageView {
     for (const s of f.list) {
       order++
       if (s.kind === 'well') continue
-      if (turning && !s.fixed && (s.y + s.h < top || s.y > top + tall)) continue
+      if (turning && !s.fixed && (s.y + s.h < top || s.y > top + tall || (tilted && s.y >= top + tall))) continue
       const hit = realKey(s, ctx)
       if (hit) {
         if (hit.key !== '') this.made(s, hit, order, ctx)

@@ -26,6 +26,9 @@ const MIN_DOME_SHADOW_PX = 1024
 // A light that grazes the turning slab: how far its shadows' bias may grow, and the slope of the light, in map texels of depth, above which it grows.
 const GRAZE = { most: 8, from: 7 }
 const AXIS_X = new THREE.Vector3(1, 0, 0)
+// The most, in radians, that the lights go round a slab whose face is turning toward the key: past it the page would stand near white for the frames of its way in.
+const TOWARD = (8 * Math.PI) / 180
+const lightTurn = (angle: number): number => (angle < 0 ? -TOWARD * Math.tanh(-angle / TOWARD) : angle)
 
 // What a page that is turning over says to whoever draws it: the angle of the slab about its long axis and where that axis lies.
 export interface SlabTurn { angle: number; y: number }
@@ -145,7 +148,7 @@ export class LightRig {
     const t = this.turn
     if (!t) return v
     if (point) v.y -= t.y
-    v.applyAxisAngle(AXIS_X, -t.angle)
+    v.applyAxisAngle(AXIS_X, -lightTurn(t.angle))
     if (point) v.y += t.y
     return v
   }
