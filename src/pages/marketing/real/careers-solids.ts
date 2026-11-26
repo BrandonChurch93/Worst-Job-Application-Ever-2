@@ -240,7 +240,8 @@ export function disc(r: number, z: number, around = 144, rings = 20): THREE.Buff
 // The light a turned face gives back: two bright sectors along `axis` and two dull ones across it, laid into the disc as vertex colour,
 // none in the middle and all of it at the rim. `cap` is how much duller the dull sectors are in their outer part, from `from` of the
 // radius outward: the middle, where words lie, keeps its light.
-export function sheen(g: THREE.BufferGeometry, axis: number, depth: number, rim = 1, lean = 0, cap = 0, from = 0.5, narrow = 1): THREE.BufferGeometry {
+// `away` is the side that looks away from the light, how much duller its outer part is, how narrow that side is, and from what part of the radius.
+export function sheen(g: THREE.BufferGeometry, axis: number, depth: number, rim = 1, lean = 0, cap = 0, from = 0.5, narrow = 1, away: [number, number, number, number] = [0, 0, 1, 0.5]): THREE.BufferGeometry {
   const p = g.getAttribute('position')
   const col = new Float32Array(p.count * 3)
   let far = 1
@@ -253,7 +254,9 @@ export function sheen(g: THREE.BufferGeometry, axis: number, depth: number, rim 
     const out = Math.max(0, Math.min(1, (r - from) / (0.95 - from)))
     const c = Math.cos(2 * turn)
     const lobe = c > 0 ? c ** narrow : c * (2 + c)
-    const v = Math.max(0.05, 1 + (rim - 1 + depth * lobe + lean * Math.cos(turn)) * r - cap * Math.max(0, -c) * out * out * (3 - 2 * out))
+    const o = Math.max(0, Math.min(1, (r - away[3]) / (0.95 - away[3])))
+    const dim = away[1] * Math.max(0, Math.cos(Math.atan2(y, x) - away[0])) ** away[2] * o * o * (3 - 2 * o)
+    const v = Math.max(0.05, 1 + (rim - 1 + depth * lobe + lean * Math.cos(turn)) * r - cap * Math.max(0, -c) * out * out * (3 - 2 * out) - dim)
     col.set([v, v, v], i * 3)
   }
   g.setAttribute('color', new THREE.BufferAttribute(col, 3))
