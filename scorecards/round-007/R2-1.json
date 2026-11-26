@@ -1,0 +1,269 @@
+{
+ "critic": "R2",
+ "pass": true,
+ "jurors": 5,
+ "judged": [
+  {
+   "file": "set-A-01.png",
+   "what": {
+    "key": "marketing-top"
+   },
+   "votes": [
+    {
+     "juror": "r7_juror_01",
+     "model": "kimi_k3",
+     "answer": "c",
+     "confidence": 88,
+     "why": "the polished but generic skeuomorphic 3D website mockup styling—beveled buttons, medallion, and typography—looks like an ordinary render rather than a photograph, cinematic frame, or live web/app capture.",
+     "at": "03:21Z"
+    },
+    {
+     "juror": "r7_juror_02",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 89,
+     "why": "The strongest cue is the front-on website interface, with the 3D treatment applied as bevels and shadows to flat UI components.",
+     "at": "03:21Z"
+    },
+    {
+     "juror": "r7_juror_03",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 75,
+     "why": "It's a flat web page UI (nav bar, buttons, cards, satirical copy) with skeuomorphic 3D-style shading. That reads as a web 3D demo or low-budget app screenshot, not a photo, film frame, or product render.",
+     "at": "03:22Z"
+    },
+    {
+     "juror": "r7_juror_04",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 96,
+     "why": "The prominent beveled “Apply for a Job” button is unmistakably part of a skeuomorphic web interface.",
+     "at": "03:22Z"
+    },
+    {
+     "juror": "r7_juror_05",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 88,
+     "why": "the flat website layout with simple skeuomorphic 3D CSS effects.",
+     "at": "03:23Z"
+    }
+   ],
+   "letters": "c d d d d"
+  },
+  {
+   "file": "set-A-02.png",
+   "what": {
+    "id": "rest-marketing"
+   },
+   "votes": [
+    {
+     "juror": "r7_juror_06",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 97,
+     "why": "the beveled 3D elements are arranged as an unmistakable interactive webpage, complete with a visible cursor.",
+     "at": "03:23Z"
+    },
+    {
+     "juror": "r7_juror_07",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 85,
+     "why": "It's a skeuomorphic web page UI with a cursor, ticker, and nav bar. It looks like a browser-rendered 3D/CSS web demo, not a photo or a film frame.",
+     "at": "03:23Z"
+    },
+    {
+     "juror": "r7_juror_08",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 98,
+     "why": "The 3D effects are applied to an unmistakable web interface with navigation, clickable buttons, and cards.",
+     "at": "03:24Z"
+    },
+    {
+     "juror": "r7_juror_09",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 90,
+     "why": "it's a flat webpage layout (nav bar, headline, cursor arrow, ticker footer) whose widgets — chunky beveled buttons, metallic \"Excellence in Synergy\" seal, inset cards — are skeuomorphic 3D-styled UI elements, not a photographed object, cinematic frame, or standalone product render.",
+     "at": "03:24Z"
+    },
+    {
+     "juror": "r7_juror_10",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 99,
+     "why": "The strongest cue is the unmistakable interactive webpage layout, with a visible cursor beside beveled UI cards.",
+     "at": "03:24Z"
+    }
+   ],
+   "letters": "d d d d d"
+  },
+  {
+   "file": "set-A-03.png",
+   "what": {
+    "id": "marketing-perks"
+   },
+   "votes": [
+    {
+     "juror": "r7_juror_11",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 88,
+     "why": "It's a webpage screenshot (with a mouse cursor and web UI text) that shows skeuomorphic 3D-styled glass cards and metal award seals, so it reads as a web 3D/CSS demo.",
+     "at": "03:24Z"
+    },
+    {
+     "juror": "r7_juror_12",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 98,
+     "why": "The visible mouse-pointer arrow embedded in a flat, webpage-style awards layout was the strongest clue.",
+     "at": "03:24Z"
+    },
+    {
+     "juror": "r7_juror_13",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 88,
+     "why": "the webpage-like layout, cursor, and lightweight procedural-looking 3D elements strongly suggest a web 3D demo or low-budget app rather than a real photograph or cinematic asset.",
+     "at": "03:24Z"
+    },
+    {
+     "juror": "r7_juror_14",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 97,
+     "why": "The biggest clue is the rendered cursor sitting beside the awards in a recognizably webpage-style layout.",
+     "at": "03:24Z"
+    },
+    {
+     "juror": "r7_juror_15",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 85,
+     "why": "It's clearly a web page UI (cursor, HTML text layout, CSS/WebGL-style glass cards and metallic badges) — a web 3D/skeuomorphic demo, not a photo or film frame.",
+     "at": "03:24Z"
+    }
+   ],
+   "letters": "d d d d d"
+  },
+  {
+   "file": "set-A-04.png",
+   "what": {
+    "id": "marketing-proof"
+   },
+   "votes": [
+    {
+     "juror": "r7_juror_16",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 99,
+     "why": "The visible mouse cursor beside the heading is the strongest cue that this is a capture of a web interface.",
+     "at": "03:24Z"
+    },
+    {
+     "juror": "r7_juror_17",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 70,
+     "why": "most influenced by the visible cursor and polished-but-functional web UI layout, which make it look like a web 3D demo rather than a photograph or cinematic.",
+     "at": "03:25Z"
+    },
+    {
+     "juror": "r7_juror_18",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 95,
+     "why": "The oversized mouse cursor beside a webpage-style heading makes it read as a stylized web interface.",
+     "at": "03:25Z"
+    },
+    {
+     "juror": "r7_juror_19",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 80,
+     "why": "It's a web page with a skeuomorphic look: glassy cards on a paper-texture background and a 3D-styled cursor. It looks like a browser-based UI or web 3D demo, not a photo, film frame or stock product render.",
+     "at": "03:25Z"
+    },
+    {
+     "juror": "r7_juror_20",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 98,
+     "why": "The beveled testimonial cards, comparison table, and oversized cursor are arranged like a stylized website interface.",
+     "at": "03:25Z"
+    }
+   ],
+   "letters": "d d d d d"
+  }
+ ],
+ "controls": [
+  {
+   "file": "set-A-05.png",
+   "what": {
+    "control": "marketing-top",
+    "image": "references/approved/marketing-top.png"
+   },
+   "votes": [
+    {
+     "juror": "r7_juror_21",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 70,
+     "why": "the image is a rendered webpage layout (nav bar, hero text, chunky beveled orange buttons, glass-effect info cards, metal medal icon) — it reads as a stylized web/UI demo mockup, not a photograph, cinematic frame, or standalone product render. The skeuomorphic 3D buttons and glass cards look like a web 3D demo or app UI illustration, which is what pushed me to (d) over (c).",
+     "at": "03:25Z"
+    },
+    {
+     "juror": "r7_juror_22",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 88,
+     "why": "The raised 3D elements form a complete web interface, with navigation, clickable-looking buttons, and a sculpted mouse cursor.",
+     "at": "03:25Z"
+    },
+    {
+     "juror": "r7_juror_23",
+     "model": "claude_opus_5_5",
+     "answer": "c",
+     "confidence": 55,
+     "why": "The biggest factor was that this is a web page drawn as physical materials: paper-textured background, a brushed-metal seal, glass cards and glossy buttons. The lighting is clean and even, and the surfaces are too uniform for a photo of a real object. It looks staged like a stock render, without the cinematic lighting of a top-budget film frame. (It may actually be AI-generated, but of the four options it fits c best.)",
+     "at": "03:25Z"
+    },
+    {
+     "juror": "r7_juror_24",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 94,
+     "why": "the entire image is laid out as an interactive webpage, down to the cursor hovering beside a beveled call-to-action.",
+     "at": "03:25Z"
+    },
+    {
+     "juror": "r7_juror_25",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 70,
+     "why": "The image is a satirical fake corporate landing page (\"Mandatory Optional Overtime\") laid out exactly like a website, complete with nav bar, hero text, CTA buttons, and a mouse cursor. The deciding factor was the flat webpage composition with a rendered cursor and faux-tactile skeuomorphic UI (glass buttons, paper texture, metal seal) — it reads as a styled web/app design mockup rather than a photo, cinematic, or standalone product render. While the individual textures (metallic seal, glossy button) are rendered decently, their simplistic, template-like quality and the joke-copy web layout place it closest to a web 3D demo or low-budget app piece.",
+     "at": "03:25Z"
+    }
+   ],
+   "letters": "d d c d d",
+   "collected": "in round 7, for the first time: 5 fresh jurors who saw nothing else"
+  }
+ ],
+ "judgedShare": {
+  "votes": 20,
+  "aOrB": 0,
+  "share": 0.0
+ },
+ "controlShare": {
+  "votes": 5,
+  "aOrB": 0,
+  "share": 0.0
+ },
+ "rule": "R2 passes when the judged share is no lower than the control share minus quality.jury.maxShareGap (0.2)",
+ "note": "It passes by the rule: 0 of 20 on the judged pictures against 0 of 5 on the control, and the judged share is no lower than the control share less 0.2. What the rule does not see: no juror took any picture of the build for a photograph or a film frame, 19 of 20 chose (d) and one chose (c). The approved image drew the same letters, four (d) and one (c), and almost every juror of both gave the same reason: the picture is laid out as a web page with a pointer on it. So on this page the jury tells the build from the approved image by nothing. The fifth judged still of the unit, `marketing-foot`, is not in the jury: `quality.jury.stillsPerUnit` is 4, the key first and the rest in list order. All 25 jurors answered and none was replaced.",
+ "replaced": 0
+}

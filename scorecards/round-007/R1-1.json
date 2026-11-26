@@ -1,0 +1,121 @@
+{
+ "critic": "R1",
+ "score": 4,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "A: the key `marketing-top`, whole and in native crops, each beside the approved image",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-A-01-b.png",
+   "where": "both orange buttons (hero 'Apply for a Job' and header button)",
+   "what": "the plastic is a dark burnt red-brown with a glossy top-left gradient sheen; the target is a bright, saturated warm orange with a soft, near-matte satin finish and only a gentle top highlight",
+   "fix": "raise lightness and saturation toward a clean orange (about #E0662A), flatten the gradient to a soft satin sheen, and remove the strong specular streak at upper left"
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-01-b.png",
+   "where": "the three benefit cards and the ticker bar",
+   "what": "the glass reads as dark, opaque grey-green plastic slabs with heavy dark bevels and dark drop shadows; the target is pale, cool, frosted, translucent glass, much lighter than the page tone, with a thin bright edge highlight and a faint soft shadow",
+   "fix": "lighten the glass body substantially and cool it (pale blue-grey), add translucency, thin the bevel to a bright 1-2px edge rim, and soften and lighten the shadow under each slab"
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-01-b.png",
+   "where": "the arrow cursor, centre left",
+   "what": "the arrow is a grey-gradient chrome/pearl 3D object with a thin edge and a slimmer, narrower head; the target is a flat bright-white enamel arrow with a thick crisp black outline, a wider head, and a short, distinct shadow cast down-right",
+   "fix": "make the fill flat white with little gradient, thicken the black edge to a bold outline, widen the arrowhead to the target's proportions, and give it a tighter, darker contact shadow to the lower right"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "the silver medal, upper right",
+   "what": "the metal is darker mid-grey with concentric lathe-turned rings and high-contrast chrome rims, and the teeth are sharp triangles; the target is a brighter satin brushed steel with soft warm highlights, rounded scalloped teeth and a softer rim",
+   "fix": "brighten the steel, change the concentric turning to a fine directional brush, reduce rim contrast, round the teeth into scallops, and shorten and lighten the shadow to the right"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "headline, brand name, card titles",
+   "what": "type weight is semibold/medium; the target sets the headline, the wordmark and the card titles in a heavy bold with tight tracking and near-black colour",
+   "fix": "set those lines in bold/extra-bold, tighten letter-spacing slightly, and darken to near-black"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "button labels",
+   "what": "labels are a bold pinkish grey; the target uses an off-white regular-to-medium weight label",
+   "fix": "use a cream/off-white label colour at medium weight"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "page surface over the whole frame",
+   "what": "the page is greyer and dimmer with a mottled noise grain; the target is a brighter warm off-white with a fine paper-fibre grain",
+   "fix": "lift brightness and warm the page tone, and replace the mottled noise with a fine, low-contrast fibrous paper grain"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "all cast shadows (buttons, medal, cards, ticker)",
+   "what": "shadows are darker, longer and harder toward lower right than the target's soft, short, light shadows",
+   "fix": "reduce shadow opacity and offset, and increase blur so the parts sit close to the page"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01-b.png",
+   "where": "nav links in the header",
+   "what": "links are a lighter grey than the target's dark near-black",
+   "fix": "darken the nav text toward the body ink colour"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01-b.png",
+   "where": "header rule under the nav",
+   "what": "the rule is thicker and darker with a chrome highlight; the target is a thin, light grey metal line",
+   "fix": "thin the rule and lighten it to a soft grey with a faint highlight"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "crops 'the large button' and 'the button in the header'",
+   "what": "at native size the orange is dark brick red with a glossy gradient and a black-and-white chrome ring; the target shows bright satin orange inside a soft light-grey metal bezel",
+   "fix": "same as the full frame: brighten to clean orange, satin finish, and a softer grey bezel without the black inner line"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "crops 'a corner of a glass card', 'glass at its edge', 'the words on a card', 'the ticker'",
+   "what": "the glass is opaque mid grey-green with a dark rounded bevel and a dark lower shadow; the target's glass is pale, cool and translucent with a thin bright rim and a faint shadow",
+   "fix": "lighten and cool the glass, add translucency, and use a thin bright rim and a soft light shadow"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "crop 'the arrow'",
+   "what": "a glossy grey chrome arrow with a thin outline and slim head, against the target's flat white enamel arrow with a thick black outline",
+   "fix": "flat white fill, thick black outline, wider head, crisper short shadow down-right"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "crop 'the medal'",
+   "what": "darker, concentric-turned chrome with sharp teeth and a strong dark shadow, against the target's bright brushed satin steel with rounded scallops",
+   "fix": "brighten, brush the metal finish, round the teeth, soften the shadow"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "crop 'the title and the rule'",
+   "what": "headline and wordmark are lighter in weight, and the rule is heavier and darker than in the target",
+   "fix": "heavier bold type with tight tracking; a thin light-grey rule"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-02-b.png",
+   "where": "page grain in every crop",
+   "what": "the grain is a mottled grey noise, where the target has a fine warm paper fibre",
+   "fix": "use a fine fibrous warm paper texture at low contrast"
+  }
+ ]
+}
