@@ -192,3 +192,17 @@ On main with merge 31 (7e7ddb05), MEASURED 09:20 to 09:24 UTC:
 | `boss-down` draft | `npm run compare -- --key boss-down --tier draft --format hd` | 12.688 s, 542688 triangles, 384 draw calls |
 
 SEEN at 09:21 UTC in both compares and in a crop of the card beside approved (frost at its committed 0.07): the clouds in the face are soft and do not cover the words. Looks: verify-card 14.
+
+## End of the pass (09:27 UTC)
+
+MEASURED at 09:25 UTC: `npm run still -- --key boss-fight --format hd --tier review --force` 25.291 s, 651570 triangles, 475 draw calls. SEEN at 09:26 UTC, `npm run still -- --page boss --beat boss.press --at 0.2 --format hd --tier draft --force` (12.171 s): after the key the arrow is the folded white shape with a burnt tip and its smoke, left of the fallen button; it is seen on the paper.
+
+Looks of this round by part, at the end: verify-card 14, boss-body 40, boss-transform 40, boss-weapons 19, health-bar 4, acting-boss 32.
+
+What the two spent parts still need, with the numbers to try first (nothing of this was tried or looked at):
+
+- Shield's glass, standing (R1-1 issue 3, `boss-fight`): the approved pane is clear, see-through to the arm and the page, with a thin bright edge. The build's pane is pale and its ground edge is a grey band 12 px wide. Try first in `src/boss/real/glass.ts`: `RIM.shield` 12 to 6; `CLEAR_GLASS.edge` `0x727d7a` to `0xb9c6c2` with `metal` 0.7 to 0.2 (a bright thin line and no grey frame); `CLEAR_GLASS.through` 0.8 to 0.62 and `up` 0.8 to 0.65 (more of the arm and the page through it). Watch M3 of `npm run measure -- --unit boss --tier review` (1.0333 now).
+- Shield's glass, lying (`boss-down`): the approved shard is a long thick clear bar, about 3.4 wide to 1 tall; the build's is the whole pane, 216 by 108 (`SHIELD` in `src/boss/body.ts`), a pale tray. Try first: draw the fallen shield as the larger half of a pane broken across (a shape of about 216 by 64 with one broken end) and `CLEAR_GLASS.lying` 0.62 to 0.5.
+- Unfolding stage of the sheet (R1-1 issue 5, `boss-stages`): the approved plate hugs the button and the legs are short and bent close. The build draws the full plate (`FRAME.w` 372 against the cap's 288) with the legs folded to `STAGES.fold` 0.78 and reaching `STAGES.reach` 104. Try first in the sheet of `src/pages/step4/index.ts`: draw the stage from `unfoldRig` at a moment between `UNFOLD.plates[0]` 1.3 and `UNFOLD.legs[0]` 1.6 (about 1.7 s) in place of `fightRig` with folded legs, or set `half.plate.k` to about 0.82, `STAGES.reach` 104 to 62 and `STAGES.fold` 0.78 to 0.5.
+- Resting bezel (R1-1 issue 14): the approved is a bright polished ring about 10 px wide; the build's rim alone is thin and grey. Try first: the collar profile of `src/boss/real/transform.ts` drawn 1.6 times wider for `stage-0-socket` and in the shell's chrome.
+- Fallen cap (R3-1 issue 4): the burns still read partly as a print on the cap. Try first: cut the two chipped ends 3 to 4 px into the outline and raise the blisters from 0.6 to 1.4 px.
