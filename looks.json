@@ -1,35 +1,35 @@
 {
   "folder": "lamp-finish",
-  "pushed": "2026-11-26T11:58:13.033Z",
-  "commit": "79e350a8735a11d9ecc85557ad96daf02f3ad88a",
+  "pushed": "2026-11-26T12:08:14.261Z",
+  "commit": "14ec4cc14dbbc72f10a00f42f83918becb0a113c",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "tier-corporate, approved left, build right at draft: darker stone in slabs with veins and flecks, mean 1.02 of the approved",
-      "time": "2026-11-26T11:43:18.863Z",
-      "by": "lamp-finish",
-      "from": "out/work/lights/r3-tier-corporate.jpg"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "table-wide, approved left, build right at draft on main 37c2e908: mean 0.99 of the approved",
-      "time": "2026-11-26T11:43:19.091Z",
-      "by": "lamp-finish",
-      "from": "out/work/lights/r3-table-wide.jpg"
-    },
-    {
-      "file": "look-3.jpg",
       "caption": "tier-corporate at draft beside the approved image (left): flecks and veins of the print calmer, mean 1.01 of the approved",
       "time": "2026-11-26T11:58:11.673Z",
       "by": "lamp-finish",
       "from": "out/work/lights/c1-tier-corporate.jpg"
     },
     {
-      "file": "look-4.jpg",
+      "file": "look-2.jpg",
       "caption": "tier-office at draft beside the approved image (left): stipple at half strength, walkway paler, mean 1.03 of the approved",
       "time": "2026-11-26T11:58:11.905Z",
       "by": "lamp-finish",
       "from": "out/work/lights/c3-tier-office.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Street floor windows at draft, before (left) and after (right): the glass sits in a brass seat band with a dark groove",
+      "time": "2026-11-26T12:08:12.996Z",
+      "by": "lamp-finish",
+      "from": "out/work/lights/d1-windows.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "reply-all at draft beside the approved image (left): Office floor with lighter stipple, windows in their seat bands, mean 0.92 of the approved",
+      "time": "2026-11-26T12:08:13.225Z",
+      "by": "lamp-finish",
+      "from": "out/work/lights/d3-reply-all.jpg"
     }
   ]
 }
