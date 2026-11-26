@@ -53,6 +53,7 @@ Folder: 18 calls, 31208 triangles. Whole frame: 207 draw calls against a limit o
 - Loose paper lies 0.7 px over the floor at the least: at 0.2 px a tilted sheet cut into the floor at one corner.
 - After merge 23 the camera of `reply-all` stands closer and lower, and the models show their sides. Looked at beside the approved crops there: the reds of the staplers were lighter than approved (now 0x8e161c on the arm, 0x701419 on the plate); the caps and cloth of the cubicles were more cream than the approved warm grey (caps 0xd9d2c0, less lift, walls 7.6 px thick, screens a quarter dimmer); the tray was more yellow than the approved one (0xd6cdb4).
 - The farm in the runner's box of 2.6 by 1.85 balls (in `main` since merge 23) is three across and two deep with the furniture at its drawn size (`fit` 1.0 by the numbers of the box).
+- The arm of the stapler has a higher crown and a smoother enamel than the plate (`ARM`), so the lamps draw a narrower highlight on it. Looked at in a `draft` still: a small gain, kept.
 
 ## Counts after (MEASURED on d27f182b, with main at b62bc72b)
 
@@ -79,3 +80,8 @@ Folder: 16 calls (18 before), 29594 triangles (31208 before). Whole frame: `tabl
 
 - `/root/table_runner` (sent 03:50 UTC): inbox box [14.0, 3.6, 2.75, 1.5] h 1.15 with the hold in its front left corner, or at least h 1.15 and 0.3 deeper; cubicles box [3.25, 2.25, 3.2, 2.15] with `cubicles.drop` at about u 6.5; and where the Office floor is free of ball paths for loose paper. Answered, see above.
 - `/root/lamp_keeper` (sent 03:50 UTC): a hidden lamp or spill over the inbox (15.2 to 16.75, 3.6 to 4.8) and over the cubicles (3.25 to 5.05, 2.25 to 4.4). Glowing things of mine: the screens of the six monitors and the lamps and display of the coffee machine, both in group `office.windows`.
+
+## Looks
+
+- Before 05:42 UTC: about 37 render runs (stills, one sheet of the beat, three `review` stills), counted from my own log, not exact.
+- Since 05:42 UTC (round 11, 40 for the part): 1, the `draft` pair for the arm of the stapler.
