@@ -10,7 +10,7 @@ import { FIN, Screws, TONE, shade } from './mats'
 export const POST = { shoulder: 46, shoulderRadius: 7, band: 36, bandThick: 3.2, waist: 5.1, laneRing: 32 }
 export const SLING = { bow: 0.2 * BALL, decay: 38, period: 0.085 }
 export const GATE = { pin: 7, tall: 30, shut: -0.3, open: 1.45 }
-export const WIRE = { radius: 4.8, height: 34, roofRadius: 3.8, roofHeight: 30 }
+export const WIRE = { radius: 3.1, height: 34, roofRadius: 2.7, roofHeight: 30 }
 
 const mix = (a: RGB, b: RGB, t: number): RGB => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t]
 
@@ -296,7 +296,7 @@ export function tier(z: Zone): Tier {
     tip.f(FIN.steel).lathe([[9, 14], [9, 17], [5.5, 17], [5.5, 90]], 0, 0, 12, TONE.steel)
     tip.move(0, turn)
     const yb = spot(z, PLUNGER[0], TH)[1] + 9
-    G.f(FIN.alu).box(p[0] - 17, p[0] + 17, yb - 12, yb, BALL / 2 - 17, BALL / 2 + 17, TONE.alu, { bevel: 2 })
+    G.f(FIN.spring).box(p[0] - 17, p[0] + 17, yb - 12, yb, BALL / 2 - 17, BALL / 2 + 17, TONE.alu, { bevel: 2 })
     G.f(FIN.zinc).box(p[0] - 30, p[0] + 30, yb - 12, yb + 6, 0.4, 3, TONE.zinc)
     S.add(p[0] - 24, yb, 3, 0.75)
     S.add(p[0] + 24, yb, 3, 0.75)
