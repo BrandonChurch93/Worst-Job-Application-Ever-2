@@ -26,8 +26,6 @@ export interface VisitorHost {
   mouse: Hand
   // True while the live site plays: in the film nothing a visitor presses reaches the page.
   live(): boolean
-  // True while the page takes typed letters.
-  typing(): boolean
   // Called at every sign of life, for the idle line.
   touched(): void
   // True while the page is played with the flippers. Left out, it is true.
@@ -182,10 +180,6 @@ export function listenToVisitor(o: VisitorHost): Visitor {
       shiftRight = true
       show()
       if (!e.repeat) mouse.pulse({ flipRight: true })
-    } else if (e.key === 'Tab') {
-      if (e.shiftKey || !o.typing()) return
-      mouse.pulse({ key: 'Tab' })
-      e.preventDefault()
     } else if (e.key.length === 1 || e.key === 'Backspace' || e.key === 'Enter') {
       mouse.pulse({ key: e.key })
       if (e.key === ' ' || e.key === 'Backspace') e.preventDefault()
