@@ -85,7 +85,7 @@ Built:
 - The collar: a thin ring of `capRim` round the current cap, 2.2 px wide with 1.3 px of dark clearance, made by the rail and keyed by where the current cap stands. It lies at the rail's height, so it shows where it crosses the rail and is under the page elsewhere: the rail's outline in the layout does not grow. DECISION: the approved pictures show no collar; it is built as the order of work words it, set into the rail.
 - Declined as told: no new state for finished steps.
 
-A blocker found and mended. MEASURED at dd9082fa (`npm run -s measure -- --unit step2 --tier review`): M4 red, least contrast 3.9 against 4.5, the numerals on the steel caps; it was 4.62 before this item. The measure reads the materials' colours, and the darker face (0x7c8085) under the old ink (0x232427) gives 3.9. Mended: ink on metal 0x17181a, the cap's face 0x7f8388. The fault was mine: I pushed C on tests, build, bots and paths and did not wait for the measure.
+A blocker found and mended. MEASURED at dd9082fa (`npm run -s measure -- --unit step2 --tier review`): M4 red, least contrast 3.9 against 4.5, the numerals on the steel caps; it was 4.62 before this item. The measure reads the materials' colours, and the darker face (0x7c8085) under the old ink (0x232427) gives 3.9. Mended: ink on metal 0x17181a, the cap's face 0x7f8388. The fault was mine: I pushed C on tests, build, bots and paths and did not wait for the measure. MEASURED after the mend, with E and F in the tree (the same command, 105 s): M4 least contrast 4.62, pass; M2 0.004; M3 0.8175; all eight pass.
 
 ## Item D: the arrow's body
 
@@ -105,13 +105,54 @@ Not built:
 
 What still shows: a small grey dimple where the stem meets the wings at 6x.
 
+## Item E: where the shadows fall
+
+The control: a steel cap of the progress rail, the same part at the same place on every page. The measure (`out/work/shared-look/shadow3.cjs <png> <x> <y> <deg>`): the cap's radius across the light, then the page's linear luminance along a ray from the cap's middle toward where the shadow falls, as a share of the lit page; past the cap's far edge, where the shadow has lost 0.2, 0.5 and 0.8 of its depth. Offset is the half depth point, width is from 0.8 to 0.2 of the depth.
+
+MEASURED, ray 35 degrees below the horizontal (and 50 degrees in brackets), px past the cap's far edge:
+
+| Picture | Cap | Offset (half depth) | Width (0.8 to 0.2) | Darkest, share of the page |
+| --- | --- | --- | --- | --- |
+| approved step2-rest | 4 | 18 (12) | 18 (43) | 0.02 |
+| approved step2-rest | 3 | 18 (12) | 21 (19) | 0.02 |
+| approved step1-fire | 4 | 33 (28) | 33 (43) | 0.03 |
+| approved boss-down | 5 | 28 (26) | 29 (22) | 0.02 |
+| approved decision | 4 | 25 (21) | 28 (43) | 0.03 |
+| build, all four pages | 3, 4, 5 | 23 to 24 (23 to 24) | 13 to 16 (13 to 15) | 0.17 on a plateau 15 px long |
+| build with this item | 4 | 21 to 23 | 19 to 20 (37 to 39) | 0.12 |
+
+What the table says:
+
+- Offset: shorter than the build on one approved page, longer on three. No one direction, so `key.direction` and `shadowHeights` are NOT changed.
+- Width: wider than the build on all four approved pages. `key.radius` 0.23 to 0.34.
+- The core: the approved shadow is near black next to the cap (0.02 to 0.03 of the page) on all four; the build's is 0.17 of the page. `dome.intensity` 0.34 to 0.2. MEASURED on `step2-rest`, a 40 px square of open page at 900, 600, linear luminance: approved 0.703, build before 0.732, build after 0.695; the page comes nearer the approved level. The current cap's orange after: median (193, 87, 32), before (199, 90, 33).
+- NOT built: the orange current cap's shadow in the approved pictures is far longer than a steel cap's (still at 0.8 of its depth 42 to 56 px out; the build's is over at 34). `shadowHeights.keep` 0.2 is what holds it short, and it also holds the flying arrow's shadow close; raising it moves every tall thing's shadow on every page. Left for a ruling.
+- The condition, step 1's eight measures, MEASURED with E and F in the tree (`npm run -s measure -- --unit step1 --tier review`, 146 s): all eight pass; M2 0.0132 (before 0.0132), M3 0.9999 (before 0.957), M4 4.62, M5 0 px, M6 0 px, M9 0 px.
+
+## Item F: the type's weight
+
+The measure (`out/work/shared-look/stroke.cjs <png> x y w h`): one line of type; the ink's coverage summed along each row's short runs gives the stroke's width in px (the 0.3 quantile of the runs), and the first letter's summed height gives the letter's; the table is stroke over letter, so a different size of type does not count as weight.
+
+| Role | approved step2-rest | approved step1-fire | approved boss-down | build | build with this item |
+| --- | --- | --- | --- | --- | --- |
+| page title | 0.193 | 0.186 | 0.184 | 0.180 | 0.186 |
+| heading | 0.180 | 0.178 | 0.176 | 0.169 to 0.171 | 0.178 to 0.179 |
+| label ("Contact number", "First name", "SUBMIT") | 0.161 (build 0.178) | 0.127 (build 0.132) | 0.196 (build 0.182) | | not changed |
+| helper ("Don't call us") | 0.118 (build 0.134) | none on the page | none on the page | | not changed |
+| subline | 0.119 (build 0.133) | 0.127 (build 0.134) | none on the page | | not changed |
+
+- Title and heading: the approved type is heavier on all three pages. Built in `type.ts`: runs of Inter of 40 px and more that are sunk in the page (`DISPLAY_FROM` 40, `DISPLAY_GAIN` 0.16 px) get one more ring of solid ink round every outline. Only the page title (47 px) and the heading (40 px) are that large.
+- Label: two pages say lighter, one says heavier. Not changed.
+- Helper and subline: the build is heavier on every page that has one, but that is two pages, not three. Not changed. Said for the pages' owners: the quiet voice is drawn about a tenth heavier than approved, and on step 2 the approved helper's ink is darker than ours (linear luminance 0.03 against 0.10).
+- M4: no size changed.
+
 ## Looks counted (tuning looks; baseline and three-panel pictures not counted)
 
 | Part | Used | Of |
 | --- | --- | --- |
 | shell | 25 | 40 |
-| type | 2 | 40 |
-| light-engine | 0 | 40 |
+| type | 3 | 40 |
+| light-engine | 3 | 40 |
 | cursor-body | 8 | 40 |
 
 ## Measures, before and after
