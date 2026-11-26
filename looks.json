@@ -1,35 +1,35 @@
 {
   "folder": "office-models",
-  "pushed": "2026-11-26T04:02:58.072Z",
-  "commit": "f5de72528c254c4c4cde5ace9a8208082c96fb0b",
+  "pushed": "2026-11-26T04:14:59.916Z",
+  "commit": "ab1234b5355a09a413179fa38832ab745621b4fa",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "tier-office beside the approved image: cream inbox with its chute, cubicle grid, red staplers, bronze coffee machine, loose paper in the right corner",
-      "time": "2026-11-26T04:02:56.288Z",
+      "caption": "Still key-reply-all-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T04:09:22.424Z",
       "by": "office-models",
-      "from": "out/work/looks/files/20261126040256-compare-tier-office.jpg"
+      "from": "out/work/stills/key-reply-all-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "reply-all beside the approved image, draft",
-      "time": "2026-11-26T04:02:56.525Z",
+      "caption": "Still key-tier-office-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T04:10:04.148Z",
       "by": "office-models",
-      "from": "out/work/looks/files/20261126040256-compare-reply-all.jpg"
+      "from": "out/work/stills/key-tier-office-hd-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "reply-all before (1101091) and after the Office models",
-      "time": "2026-11-26T04:02:56.787Z",
+      "caption": "Left stapler in reply-all at ab1234b5: approved image on the left, the build on the right, with the long highlight baked on the arm",
+      "time": "2026-11-26T04:14:58.579Z",
       "by": "office-models",
-      "from": "out/work/looks/files/20261126040256-before-after-reply.jpg"
+      "from": "out/work/looks/files/20261126041458-stap-approved-now.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "table-wide, draft, the Office from the player's end",
-      "time": "2026-11-26T04:02:57.022Z",
+      "caption": "Inbox in reply-all at ab1234b5: approved image on the left, the build on the right, thicker tray walls and shade between the envelopes",
+      "time": "2026-11-26T04:14:58.818Z",
       "by": "office-models",
-      "from": "out/work/looks/files/20261126040257-table-wide.jpg"
+      "from": "out/work/looks/files/20261126041458-inbox-approved-now.jpg"
     }
   ]
 }
