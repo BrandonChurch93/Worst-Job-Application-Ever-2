@@ -42,6 +42,7 @@ Agent `pinball_stager`, branch `agent/pinball-stage`. Times UTC.
 - 03:00 Checked on the new take and the framer's near end, no change needed: `reply-all` at its key (21.1 s); the first frame of the lobby shot (13.05 s: the ball stands large and sharp in front, HQ soft behind it, then is batted to the doors); the last screen from `home` and the first screen beside `loader-page`; `table-map` (it ends 0.55 ball short of the apron's near edge: the whole machine with its near rail is 0.6% taller than the sheet at the page's full width, and a wider view would show the page's edge).
 - 03:05 `table-save` one step nearer and lower (eye 4.2 balls south of the apron): the near rail leaves the picture and the slot is cut by the bottom edge, as approved; the ball is an eighth larger.
 - 03:10 `table-fired` on the street modeller's 7980a1c and the director's firehouse of 2 balls: the view of 02:40 cut the beacon (it stood 235 px over the picture by projection), so the eye went up over the roof and back to 4.9 balls: roof, sign and beacon whole as approved, 50% of the width. The taller model costs 8 points of width against 02:40.
+- 03:15 `lobby-doors` seen on the corporate modeller's e4197ce (glass tower, lit hall, rods off the carpet): the fit of 02:30 holds, no change. All 65 looks are used.
 
 ## Needs sent
 
