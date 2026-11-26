@@ -8,6 +8,13 @@ export function restShare(done: number, of: number): number {
   return Math.min(1, Math.max(0, (done - 1) / (of - 1)))
 }
 
+// The pages that show a gathered rest without the blend. The table's page stands 8 MB under the web set's texture limit at hd, and the blend's two targets weigh 31.6 MB there.
+export const REST_UNBLENDED: readonly string[] = ['step3']
+
+export function restBlends(page: string): boolean {
+  return !REST_UNBLENDED.includes(page)
+}
+
 const TYPE: Record<TargetKind, THREE.TextureDataType> = { float: THREE.HalfFloatType, half: THREE.HalfFloatType, byte: THREE.UnsignedByteType }
 
 // Holds the picture a page showed as it came to rest and gives the picture to show while the mean is gathered.
@@ -32,7 +39,7 @@ export class RestBlend {
   }
 
   drop(): void {
-    this.holds = false
+    this.free()
   }
 
   hold(renderer: THREE.WebGLRenderer, picture: THREE.Texture, width: number, height: number, kind: TargetKind): void {

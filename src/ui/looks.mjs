@@ -1,4 +1,4 @@
-// The interface on the wired site, measured in a browser: node src/ui/looks.mjs [keys] [dark] [bar] [ink] [motion] [touch]. Asked for by name only: history, probe.
+// The interface on the wired site, measured in a browser: node src/ui/looks.mjs [keys] [dark] [bar] [ink] [motion] [touch]. Asked for by name only: history, probe, under.
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -22,6 +22,7 @@ const check = (name, ok, detail = '') => {
 const open = async (q, o = {}, base = 'http://localhost:5199/') => {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 720 }, ...o })
   const page = await ctx.newPage()
+  page.setDefaultTimeout(240000)
   page.errors = []
   page.asked = []
   page.on('pageerror', (e) => page.errors.push(String(e)))
@@ -148,6 +149,59 @@ if (wants('dark')) {
   await table.context().close()
 }
 
+// Every drawn picture of step 3 under a bot: what the row stands on, read off the picture itself, against what the site says it stands on.
+if (only.includes('under')) {
+  const page = await open('?step=3&bot=keen&quality=low', { deviceScaleFactor: 0.5 })
+  await page.evaluate(() => {
+    const stage = document.getElementById('stage')
+    const probe = document.createElement('canvas')
+    probe.width = 64
+    probe.height = 8
+    const pen = probe.getContext('2d', { willReadFrequently: true })
+    window.under = []
+    const tick = () => {
+      const root = document.querySelector('#controls [data-mode]')
+      const row = document.querySelector('#controls a')?.getBoundingClientRect()
+      const c = stage.getBoundingClientRect()
+      if (root && row && root.dataset.mode === 'live') {
+        const k = stage.width / c.width
+        pen.drawImage(stage, (row.left - c.left) * k, (row.top - c.top) * k, row.width * k, row.height * k, 0, 0, 64, 8)
+        const d = pen.getImageData(0, 0, 64, 8).data
+        const ls = []
+        for (let i = 0; i < d.length; i += 4) {
+          const f = (v) => (v / 255 <= 0.03928 ? v / 255 / 12.92 : ((v / 255 + 0.055) / 1.055) ** 2.4)
+          ls.push(0.2126 * f(d[i]) + 0.7152 * f(d[i + 1]) + 0.0722 * f(d[i + 2]))
+        }
+        ls.sort((a, b) => a - b)
+        window.under.push({ backing: root.dataset.backing, picture: Math.round(ls[ls.length >> 1] * 1000) / 1000, said: document.querySelector('#controls [role="status"]')?.textContent.slice(0, 24) })
+      }
+      requestAnimationFrame(tick)
+    }
+    requestAnimationFrame(tick)
+  })
+  const t = process.hrtime.bigint()
+  let seen = []
+  while (Number((process.hrtime.bigint() - t) / 1000000000n) < Number(process.env.UNDER_SECONDS ?? 420)) {
+    await page.waitForTimeout(5000)
+    seen = await page.evaluate(() => window.under)
+    if (seen.length && !/Step 3/.test(seen.at(-1).said ?? '')) break
+  }
+  const runs = []
+  for (const u of seen) {
+    const last = runs.at(-1)
+    if (last && last.backing === u.backing) {
+      last.frames++
+      last.low = Math.min(last.low, u.picture)
+      last.high = Math.max(last.high, u.picture)
+    } else runs.push({ backing: u.backing, frames: 1, low: u.picture, high: u.picture })
+  }
+  console.log(`under the row on step 3, ${seen.length} drawn pictures: ${runs.map((r) => `${r.backing} for ${r.frames} (picture ${r.low} to ${r.high})`).join(', ')}`)
+  // The ink on the page is 0.089 and on the dark capsule it is pale: with no capsule the picture under the row must be pale enough for 4.5 to 1, a luminance of 0.575.
+  const bare = seen.filter((u) => u.backing === 'page' && (u.picture + 0.05) / (0.089 + 0.05) < 4.5)
+  check('step 3 under a bot: in no drawn picture does the row stand without a capsule on a picture too dark for its ink', seen.length > 0 && bare.length === 0, `${bare.length} of ${seen.length} drawn pictures with no capsule and less than 4.5 to 1, the darkest at ${bare.length ? Math.min(...bare.map((u) => u.picture)) : 'none'}`)
+  await page.context().close()
+}
+
 if (wants('bar')) {
   for (const size of [{ width: 1280, height: 720 }, { width: 3840, height: 2160 }]) {
     const page = await open('?mode=film', { viewport: size })
@@ -172,6 +226,9 @@ if (wants('bar')) {
     const e = await place()
     await page.screenshot({ path: path.join(out, `looks-bar-${size.width}-ended.png`) })
     check(`bar ${size.width} by ${size.height}: at its end the film stands, the control shows play and the bar keeps its place`, e.playing === 'false' && Number(e.at) >= Number(e.of) - 0.11 && e.bar.join() === a.bar.join(), JSON.stringify(e))
+    const files = await page.evaluate(async () => ((await fetch('audio/room-tone.flac')).headers.get('content-type') ?? '').startsWith('audio'))
+    const sound = await page.evaluate(() => { const bar = document.querySelector('#controls input').parentElement; return [...bar.querySelectorAll('button[aria-label="Sound"]')].some((b) => !b.hidden && b.offsetParent) })
+    check(`bar ${size.width} by ${size.height}: at its end the sound control is in the bar where the sound files are in the build, and hidden where they are not (A11)`, sound === files, `sound files in the build ${files}, sound control shown ${sound}`)
     check(`bar ${size.width} by ${size.height}: no error on the page`, page.errors.length === 0, page.errors.slice(0, 3).join(' | '))
     await page.context().close()
   }

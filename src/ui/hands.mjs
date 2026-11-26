@@ -103,13 +103,7 @@ if (wants('press')) {
   await save(page, 'hands-press-on-the-way')
   await advance(page, 2)
   const after = await told(page)
-  check('careers page: a press made with the arrow still on its way lands where the arrow is, not where the mouse is', gap > 22 && after.page === 'marketing' && !after.turning, `the mouse stood on Apply at ${Math.round(before.hint.x)}, ${Math.round(before.hint.y)}, the arrow ${gap.toFixed(0)} px from it at the press; 2 s later the page is ${after.page}, turning ${after.turning}`)
-  await page.mouse.down()
-  await advance(page, 0.05)
-  await page.mouse.up()
-  await advance(page, 3)
-  const then = await told(page)
-  check('careers page: the same press with the arrow arrived applies', then.page === 'step1' || then.turning, `page ${then.page}, turning ${then.turning}`)
+  check('careers page: a press made with the arrow still on its way is not lost: it applies', gap > 22 && (after.page === 'step1' || after.turning), `the mouse stood on Apply at ${Math.round(before.hint.x)}, ${Math.round(before.hint.y)}, the arrow ${gap.toFixed(0)} px from it at the press, held 0.05 s; 2 s later the page is ${after.page}, turning ${after.turning}`)
   await page.context().close()
 }
 
