@@ -33,8 +33,11 @@ export function buildRevolving(z: Zone, _ctx: RealContext): THREE.Object3D {
   fin(S, FINISH.polished, () => {
     S.lathe([[R + 9.5, 3.6], [R + 9.5, 6.6], [R + 8.3, 7.8], [R + 3, 7.8], [R + 3, 9.4], [R + 1.8, 10.6]], 0, 0, 28, (k) => (k % 2 ? TONE.brass : TONE.gold))
     // The post, turned, with a collar low, a slim one at the middle and a collar high, and its cap.
+    const turned = S.vertices
     const collar = (at: number, half: number, out: number): V2[] => [[R, at - half - 1.4], [R + out, at - half], [R + out, at + half], [R, at + half + 1.4]]
     S.lathe([[R + 1.8, 10.6], [R + 1.8, 15], [R, 16.4], ...collar(DOOR.foot + 16, 3.2, 2.4), ...collar(mid, 1.1, 1.3), ...collar(top - 12, 3.2, 2.4), [R, top - 3], [R + 1.6, top - 1.8], [R + 1.6, top + 2.2], [R + 0.4, top + 3.4], [R - 3, top + 3.4], [R - 3.6, top + 4.8], [R - 6.5, top + 5.6], [0, top + 5.6]], 0, 0, 24, (k) => (k % 4 === 1 ? TONE.brass : TONE.gold))
+    // Turned brass shows the room in upright streaks: four round the post, so a quarter turn leaves them where they were.
+    S.tint(turned, (nx, ny, nz) => 1 + (1 - nz * nz) * (-0.5 + 0.95 * Math.pow(0.5 + 0.5 * Math.cos(4 * Math.atan2(ny, nx) + 0.9), 2.5)))
   })
   const t = DOOR.thick / 2
   const r0 = R + 4
