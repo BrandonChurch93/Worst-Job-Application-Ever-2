@@ -2,7 +2,7 @@ import { table } from '../../../layout'
 import type { Zone } from '../../zone'
 import type { Buckets, RGB, V3 } from './geo'
 import { walls } from './firehouse'
-import { KIND, TONE, rgb, shade, site, wallFace, windowAt, type Hole } from './kit'
+import { KIND, TONE, plate, rgb, shade, site, wallFace, windowAt, type Hole } from './kit'
 
 export interface HouseLook {
   wall: RGB
@@ -17,6 +17,8 @@ export interface HouseLook {
   chimney: -1 | 1
   doorAt?: number
   glow?: number[]
+  // A lit roof window on a slope, to be seen from straight above.
+  sky?: boolean
 }
 
 // A roof slope with its underside.
@@ -86,6 +88,34 @@ export function house(b: Buckets, x0: number, x1: number, yf: number, yb: number
     b.paint.face([e, a, r0], L.roof, kind)
     b.paint.face([c, d, r1], L.roof, kind)
   }
+  if (L.sky && L.ridge !== 'hip') {
+    const lit: RGB = [2.1, 1.6, 0.95]
+    const t0 = 0.3
+    const t1 = 0.74
+    const lift = (t: number): number => ze + (top - ze) * t
+    const off = -L.chimney * (L.ridge === 'x' ? W : D) * 0.16
+    for (const [e0, e1, hw] of [[-0.9, 0.9, 4.6], [0, 0, 3.6]] as const) {
+      const up = e0 === 0 ? 0.7 : 0.35
+      const u0 = t0 - e0 * -0.06
+      const u1 = t1 + e1 * 0.06
+      let q: V3[]
+      let nrm: V3
+      if (L.ridge === 'x') {
+        const yy = (t: number): number => yf - o + (my - (yf - o)) * t
+        const l = Math.hypot(my - (yf - o), top - ze)
+        nrm = [0, -(top - ze) / l, (my - (yf - o)) / l]
+        q = [[mx + off - hw, yy(u0), lift(u0)], [mx + off + hw, yy(u0), lift(u0)], [mx + off + hw, yy(u1), lift(u1)], [mx + off - hw, yy(u1), lift(u1)]]
+      } else {
+        const xx = (t: number): number => x0 - o + (mx - (x0 - o)) * t
+        const l = Math.hypot(mx - (x0 - o), top - ze)
+        nrm = [-(top - ze) / l, 0, (mx - (x0 - o)) / l]
+        q = [[xx(u0), my + off + hw, lift(u0)], [xx(u0), my + off - hw, lift(u0)], [xx(u1), my + off - hw, lift(u1)], [xx(u1), my + off + hw, lift(u1)]]
+      }
+      const pts = q.map((p): V3 => [p[0] + nrm[0] * up, p[1] + nrm[1] * up, p[2] + nrm[2] * up])
+      if (e0 === 0) b.glow.face(pts, lit, 0, nrm)
+      else g.face(pts, L.trim)
+    }
+  }
   // The chimney, of brick with a stone cap and a dark flue.
   const cx = mx + L.chimney * W * 0.27
   const cy = my + D * 0.16
@@ -102,17 +132,15 @@ export function mailbox(b: Buckets, x: number, y: number, z: number, col: RGB): 
 }
 
 const LOOKS: HouseLook[] = [
-  { wall: rgb(0xcbc2ac), kind: KIND.stucco, roof: rgb(0x4d3226), ridge: 'y', door: rgb(0x2c3f38), trim: rgb(0xd9d5c9), eave: 22, chimney: 1 },
-  { wall: rgb(0x6b3a2d), kind: KIND.brick, roof: rgb(0x363d46), ridge: 'y', door: rgb(0xc9c2b0), trim: TONE.stonePale, eave: 25, chimney: -1 },
-  { wall: rgb(0xb9ad8e), kind: KIND.stucco, roof: rgb(0x522b24), ridge: 'x', door: rgb(0x4a2a22), trim: rgb(0xd6d0c2), eave: 24, chimney: 1 },
-  { wall: rgb(0x8f9596), kind: KIND.stucco, roof: rgb(0x4a2c25), ridge: 'y', door: rgb(0xd6d0c2), trim: rgb(0xd9d5c9), eave: 24, chimney: 1 },
-  { wall: rgb(0xc9c3b6), kind: KIND.stucco, roof: rgb(0x34383e), ridge: 'x', door: rgb(0x2f3d52), trim: rgb(0x6c7479), eave: 22, chimney: -1 },
-  { wall: rgb(0xb5a88c), kind: KIND.stucco, roof: rgb(0x46392e), ridge: 'x', door: rgb(0x4d2c20), trim: rgb(0xd5cebd), eave: 25, chimney: -1 }
+  { wall: rgb(0xcbc2ac), kind: KIND.stucco, roof: rgb(0x9a3b2c), ridge: 'y', door: rgb(0x2c3f38), trim: rgb(0xd9d5c9), eave: 22, chimney: 1, sky: true },
+  { wall: rgb(0x6b3a2d), kind: KIND.brick, roof: rgb(0x8a3024), ridge: 'y', door: rgb(0xc9c2b0), trim: TONE.stonePale, eave: 25, chimney: -1, sky: true },
+  { wall: rgb(0xb9ad8e), kind: KIND.stucco, roof: rgb(0xa2452f), ridge: 'x', door: rgb(0x4a2a22), trim: rgb(0xd6d0c2), eave: 24, chimney: 1, sky: true },
+  { wall: rgb(0x8f9596), kind: KIND.stucco, roof: rgb(0x94392a), ridge: 'y', door: rgb(0xd6d0c2), trim: rgb(0xd9d5c9), eave: 24, chimney: 1, sky: true },
+  { wall: rgb(0xc9c3b6), kind: KIND.stucco, roof: rgb(0xa04330), ridge: 'x', door: rgb(0x2f3d52), trim: rgb(0xd5cebd), eave: 22, chimney: -1, sky: true },
+  { wall: rgb(0xb5a88c), kind: KIND.stucco, roof: rgb(0x883124), ridge: 'x', door: rgb(0x4d2c20), trim: rgb(0xd5cebd), eave: 25, chimney: -1, sky: true }
 ]
 
-const GRASS = rgb(0x2b3a27)
-
-// The six small houses, three in a row on each side, each row on a kerbed strip of its own.
+// The six small houses, three in a row on each side, each row on a steel mounting plate of its own, screwed to the floor.
 export function houses(b: Buckets, z: Zone): void {
   const g = b.paint
   for (const row of ['left', 'right']) {
@@ -123,9 +151,7 @@ export function houses(b: Buckets, z: Zone): void {
     const hi = Math.max(...sites.map((s) => s.x1))
     const yf = sites[0]!.yf
     const yb = sites[0]!.yb
-    g.box(lo - 3, hi + 3, yf - 3, yb + 3, 0, 2.2, TONE.stoneDark, { bevel: 0.8, top: TONE.concrete, topKind: KIND.stucco })
-    g.box(lo + 1, hi - 1, yf + 6, yb + 1.5, 2.2, 2.7, GRASS, { bevel: 0.3, kind: KIND.stucco })
-    b.screws.push([lo - 0.5, yf - 0.6, 2.2, 1], [hi + 0.5, yf - 0.6, 2.2, 1])
+    plate(b, lo - 5, hi + 5, yf - 5, yb + 5, 2.2)
     sites.forEach((S, i) => {
       const L = LOOKS[(row === 'left' ? 0 : 3) + (i % 3)]!
       const x0 = S.x0 + 3.5
@@ -142,11 +168,6 @@ export function houses(b: Buckets, z: Zone): void {
       g.box(x0 + dx - 5, x0 + dx + 5, y0 - 3, y0, 2.2, 3.8, TONE.stonePale, { skip: 'b', bevel: 0.4 })
       g.box(x0 + dx - 3, x0 + dx + 3, S.yf - 2.6, y0 - 3, 2.2, 2.6, TONE.stoneDark, { skip: 'b', kind: KIND.block })
       mailbox(b, x0 + dx + (i % 2 === 0 ? 9 : -9), S.yf + 0.5, 2.2, [TONE.iron, rgb(0x5a2a24), TONE.blueDark][i % 3]!)
-      // A hedge along one side.
-      const hx = i % 2 === 0 ? S.x0 + 0.4 : S.x1 - 2.6
-      g.box(hx, hx + 2.2, y0 + 2, y1 - 2, 2.2, 6.5, rgb(0x263a22), { bevel: 0.9, kind: KIND.stucco })
-      const bx = x0 + dx + (i % 2 === 0 ? -11 : 10)
-      g.lathe([[3.2, 0], [3.6, 2], [2.6, 4.4], [0, 5.2]], bx, y0 - 3.4, 9, rgb(0x2b4226), { base: 2.2, kind: KIND.stucco })
     })
   }
 }

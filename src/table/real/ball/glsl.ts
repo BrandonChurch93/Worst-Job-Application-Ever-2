@@ -351,7 +351,7 @@ vec3 blobs( vec3 Np, float rho, vec3 V, vec3 C, float at, float deep, float wide
 float arc( float la, float rho, float c, float w, float r, float t ) {
 	float d = abs( atan( sin( la - c ), cos( la - c ) ) ) / w;
 	float e = abs( rho - r ) / t;
-	return ( 1.0 - smoothstep( 0.45, 1.0, d ) ) * ( 1.0 - smoothstep( 0.3, 1.0, e ) );
+	return ( 1.0 - smoothstep( 0.7, 1.0, d ) ) * ( 1.0 - smoothstep( 0.55, 1.0, e ) );
 }
 
 float seamLine( out float glint ) {
@@ -409,7 +409,7 @@ void paint() {
 	vec3 col = ( pic * mix( 0.95, 0.4, deep ) * mix( 0.7, 1.2, uneven ) * streak + lampsIn( dir, from, 0.9 ) * 0.25 + gather * 0.35 + uHaze ) * alpha;
 
 	float wall = band * ( 1.0 - smoothstep( 0.95, 0.995, rho ) );
-	col += wall * ( sky * ( 0.02 + uneven * ( 0.03 + 0.16 * pow( max( lightward, 0.0 ), 6.0 ) ) + 0.1 * uneven * pow( max( - lightward, 0.0 ), 8.0 ) ) + min( plain( uFloor ), vec3( 0.8 ) ) * 0.03 );
+	col += wall * ( sky * ( 0.02 + uneven * ( 0.03 + 0.12 * pow( max( lightward, 0.0 ), 6.0 ) ) + 0.1 * uneven * pow( max( - lightward, 0.0 ), 8.0 ) ) + min( plain( uFloor ), vec3( 0.8 ) ) * 0.03 );
 	float fine = ( 1.0 - smoothstep( 0.0, 0.012, abs( rho - RIN - 0.022 ) ) ) * pow( max( lightward, 0.0 ), 2.0 ) + 0.6 * ( 1.0 - smoothstep( 0.0, 0.009, abs( rho - 0.955 ) ) ) * pow( max( - lightward, 0.0 ), 3.0 );
 	col += fine * ( sky * 0.3 + gather * 0.4 );
 	float veil = smoothstep( 0.42, RIN, rho ) * ( 1.0 - band );
@@ -422,8 +422,8 @@ void paint() {
 	vec3 refl = sky * window( Np, rho, V, 0.64, 0.07, 0.24 ) * 0.3;
 	refl += plain( pane( Np, rho, V, - 1.0, 0.78, 0.03, 0.3, 0.0 ) ) * SOFT * 0.04;
 	refl += blobs( Np, rho, V, C, 0.83, 0.035, 0.24 ) * 0.45;
-	refl += sky * ( 0.45 * arc( la, rho, 0.5 + 0.5 * sin( ph ), 0.8, 0.76, 0.05 ) + 0.5 * arc( la, rho, - 0.7 + 0.4 * sin( ph + 1.3 ), 0.5, 0.88, 0.04 ) + 0.4 * arc( la, rho, - 2.3 + 0.5 * sin( ph + 2.1 ), 0.45, 0.9, 0.035 ) );
-	refl += ( sky * 0.5 + gather ) * ( 0.3 * arc( la, rho, 2.6 + 0.4 * sin( ph + 0.7 ), 0.7, 0.74, 0.05 ) + 0.35 * arc( la, rho, 1.6 + 0.5 * sin( ph + 3.3 ), 0.35, 0.86, 0.045 ) );
+	refl += sky * ( 0.8 * arc( la, rho, 0.35 + 0.3 * sin( ph ), 0.42, 0.775, 0.04 ) + 0.5 * arc( la, rho, - 0.9 + 0.3 * sin( ph + 1.3 ), 0.26, 0.885, 0.03 ) );
+	refl += ( sky * 0.5 + gather ) * 0.4 * arc( la, rho, 2.7 + 0.4 * sin( ph + 0.7 ), 0.4, 0.75, 0.04 );
 	vec3 under = floorAt( vP, R ).rgb;
 	refl += mix( plain( under ), under, 0.5 ) * F * 0.9;
 	refl += lampsIn( R, vP, 0.7 ) * ( 0.3 + 0.9 * F ) * rimward;
@@ -437,16 +437,16 @@ void paint() {
 	float lw = max( lightward, 0.0 );
 	float aw = max( - lightward, 0.0 );
 	float edge = smoothstep( 0.895, 0.94, rho ) * ( 1.0 - smoothstep( 0.95, 0.972, rho ) ) * ( 1.0 - 0.85 * smoothstep( 0.25, 0.75, lw ) );
-	col = mix( col, col * 0.3 + plain( surround( R ) ) * 0.5, edge * 0.7 );
+	col = mix( col, col * 0.3 + plain( surround( R ) ) * 0.3, edge * 0.7 );
 	alpha = mix( alpha, 0.75, edge * 0.7 );
 	float taper = smoothstep( 0.5, 0.97, lw );
 	float near = smoothstep( 0.8 + 0.1 * ( 1.0 - taper ), 0.86 + 0.07 * ( 1.0 - taper ), rho ) * ( 1.0 - smoothstep( 0.935, 0.965, rho ) ) * smoothstep( 0.4, 0.75, lw ) * ( 0.2 + 0.8 * ( streak - 0.45 ) / 0.9 );
 	float far = smoothstep( 0.875, 0.9, rho ) * ( 1.0 - smoothstep( 0.93, 0.955, rho ) ) * smoothstep( 0.55, 0.95, aw );
-	vec3 crescent = sky * near * 0.7 + ( sky * 0.35 + gather * 0.5 ) * far;
+	vec3 crescent = sky * near * 0.5 + ( sky * 0.22 + gather * 0.5 ) * far;
 	col += crescent;
 	alpha = max( alpha, min( 1.0, dot( crescent, vec3( 0.2126, 0.7152, 0.0722 ) ) * 1.5 ) );
 	float lip = smoothstep( 0.952, 0.974, rho ) * ( 1.0 - 0.5 * smoothstep( 0.985, 1.0, rho ) );
-	vec3 brim = sky * ( 0.2 + 0.8 * uneven * uneven ) * ( 0.14 + 0.8 * pow( lw, 2.0 ) + 0.45 * pow( aw, 4.0 ) ) + gather * 1.0 + min( plain( uFloor ), vec3( 0.8 ) ) * 0.05;
+	vec3 brim = sky * ( 0.2 + 0.8 * uneven * uneven ) * ( 0.08 + 0.6 * pow( lw, 2.0 ) + 0.3 * pow( aw, 4.0 ) ) + gather * 1.0 + min( plain( uFloor ), vec3( 0.8 ) ) * 0.05;
 	col = mix( col, brim, lip * 0.85 );
 	alpha = mix( alpha, max( 0.5, min( 1.0, dot( brim, vec3( 0.2126, 0.7152, 0.0722 ) ) * 2.0 ) ), lip * 0.85 );
 
@@ -504,14 +504,15 @@ void paint() {
 	vec3 dir;
 	through( P1, - V, C, from, dir );
 	vec4 seen = floorAt( from, dir );
-	float lens = smoothstep( 0.66, 0.84, rho ) * ( 1.0 - smoothstep( RIN - 0.03, RIN + 0.03, rho ) );
-	float a = 0.4 * lens * mix( 0.5, 1.0, seen.a ) * mix( 0.7, 1.0, uArtOn ) * uBend * shut;
-	col += ( seen.rgb * 1.1 + lampsIn( dir, from, 0.8 ) * 0.2 ) * a;
+	float lens = smoothstep( 0.6, 0.8, rho ) * ( 1.0 - smoothstep( RIN - 0.03, RIN + 0.03, rho ) );
+	float a = 0.55 * lens * mix( 0.5, 1.0, seen.a ) * mix( 0.7, 1.0, uArtOn ) * uBend * shut;
+	col += ( seen.rgb * 1.35 + lampsIn( dir, from, 0.8 ) * 0.2 ) * a;
 	alpha = max( alpha, a );
 
-	vec3 away = normalize( vec3( - uSoftDir.xy, 0.0 ) + vec3( 1e-4 ) );
-	float pool = smoothstep( 0.45, 0.78, rho ) * ( 1.0 - smoothstep( RIN - 0.03, RIN + 0.03, rho ) ) * pow( max( dot( Np, away ), 0.0 ), 5.0 );
-	col += ( max( plain( soft ), vec3( 0.16 ) ) * vec3( 1.1, 0.88, 0.62 ) * 0.8 + flecks( Np, C ) * 0.25 ) * pool * shut;
+	vec3 down = - normalize( uSoftDir );
+	vec3 away = normalize( down - V * dot( down, V ) + vec3( 1e-4, 2e-4, 0.0 ) );
+	float pool = smoothstep( 0.56, 0.72, rho ) * ( 1.0 - smoothstep( 0.77, 0.85, rho ) ) * pow( max( dot( Np, away ), 0.0 ), 12.0 );
+	col += ( max( plain( soft ), vec3( 0.22 ) ) * vec3( 1.1, 0.88, 0.62 ) * 2.4 + flecks( Np, C ) * 0.25 ) * pool * shut;
 
 	float glint;
 	float line = seamLine( glint );
@@ -610,7 +611,7 @@ void main() {
 		float sc = dot( s, side ) / uR;
 		c += uSpot[ i ] * ( 0.9 * exp( - ( sa * sa / 0.016 + sc * sc / 0.007 ) ) + 0.06 * exp( - ( sa * sa / 0.12 + sc * sc / 0.05 ) ) );
 	}
-	keep *= 1.0 - 0.7 * uNear * exp( - dot( vXY, vXY ) / ( uR * uR * 0.4 ) );
+	keep *= 1.0 - 0.4 * uNear * exp( - dot( vXY, vXY ) / ( uR * uR * 0.3 ) );
 	float fade = 1.0 - smoothstep( 0.8, 1.0, length( vXY ) / ( uR * 5.2 ) );
 	gl_FragColor = vec4( c * fade, ( 1.0 - keep ) * fade );
 	if ( uLoud > 0.5 ) gl_FragColor = vec4( 1.0 - keep, 0.2, keep, 1.0 ) * 0.8;

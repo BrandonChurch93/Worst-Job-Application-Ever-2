@@ -9,7 +9,8 @@ import { FINISH, TONE, drop as free, fin, hex, matsOf, mesh, moved, place, shade
 
 const SEED = 20261125
 const SCALE = new THREE.Vector3(0.9, 0.9, 0.93)
-const WALNUT: RGB = [0.62, 0.2, 0.06]
+const WALNUT: RGB = [0.14, 0.055, 0.024]
+const LAMP = { r: 5.4, stem: 13, pool: 21, glow: 4 }
 const HIDE = hex(0x0d0c0b)
 const flatStreak = (g: Geo, x0: number, x1: number, y0: number, y1: number, zz: number, col: RGB): void => {
   g.face([[x0, y0, zz], [x1, y0, zz], [x1, y1, zz], [x0, y1, zz]], [0, 0, 1], [0, 1, 0], col)
@@ -44,6 +45,42 @@ function chair(): Geo {
     })
   })
   return g
+}
+
+const lampsAt = (tl: number): number[] => [-0.56, 0, 0.56].map((k) => k * tl + (k === 0 ? 17 : 0))
+
+// Where the room, its table and its lamps stand, read from the layout.
+function plan(z: Zone): { cx: number; cy: number; ty: number; rot: number; tl: number } | null {
+  const m = table.models.find((x) => x.id === 'corporate.boardroom')
+  if (!m) return null
+  const a = localBalls(z, m.box[0], m.box[1] + m.box[3])
+  const b = localBalls(z, m.box[0] + m.box[2], m.box[1])
+  const cx = (a[0] + b[0]) / 2
+  const cy = (a[1] + b[1]) / 2
+  const hw = (b[0] - a[0]) / 2
+  const hd = (b[1] - a[1]) / 2
+  const reach = NOTE.leaf * Math.sin(NOTE.rest + 0.1) + 4
+  const lean = table.targets.filter((t) => t.tier === z.tier && t.id.startsWith('corporate.note')).map((t) => localBalls(z, t.box[0] + t.box[2] / 2, t.box[1] + t.box[3] / 2)).filter((p) => p[0] > a[0] - 10 && p[0] < b[0] + 10 && p[1] < cy)
+  const south = Math.max(-hd + 7, ...lean.map((p) => p[1] - cy + reach))
+  const ey = (hd - south + 7) / 2
+  return { cx, cy, ty: (hd + south - 7) / 2, rot: hw > ey ? Math.PI / 2 : 0, tl: Math.max(hw, ey) - 7 }
+}
+
+// The light the three lamps lay on the table: warm pools that fade to the wood. They glow, so they are built into the tier's one glowing mesh.
+export function boardroomPools(G: Geo, z: Zone): void {
+  const q = plan(z)
+  if (!q) return
+  moved(G, place(q.cx, q.cy + q.ty, 0, q.rot), () => {
+    for (const y of lampsAt(q.tl)) {
+      const from = G.vertices
+      const rings: V2[] = [[LAMP.pool, 0], [LAMP.pool * 0.72, 0.02], [LAMP.pool * 0.45, 0.04], [LAMP.pool * 0.2, 0.06], [0, 0.07]]
+      G.lathe(rings, 0, y, 18, WALNUT, ROOM.top + 0.2)
+      G.map(from, (px, py) => {
+        const r = Math.hypot(px, py - y) / LAMP.pool
+        return [(FINISH.stone + 0.5) / 8, LAMP.glow * Math.max(0, 1 - r) ** 1.6]
+      })
+    }
+  })
 }
 
 export function buildBoardroom(z: Zone, _ctx: RealContext): THREE.Object3D {
@@ -111,7 +148,7 @@ export function buildBoardroom(z: Zone, _ctx: RealContext): THREE.Object3D {
         return out
       }
       S.slab(loop(0), ROOM.top - ROOM.slab, ROOM.top, WALNUT, { bevel: 1.3, bottom: true, along: [0, 1, 0] })
-      S.slab(loop(5), ROOM.top, ROOM.top + 0.05, TONE.woodLight, { sides: false, along: [0, 1, 0] })
+      S.slab(loop(5), ROOM.top, ROOM.top + 0.05, shade(TONE.woodLight, 0.5), { sides: false, along: [0, 1, 0] })
       S.slab(loop(6.2), ROOM.top, ROOM.top + 0.1, shade(WALNUT, 1.1), { sides: false, along: [0, 1, 0] })
       for (let k = 0; k < 34; k++) {
         const x = rnd.range(-tw + 9, tw - 9)
@@ -137,6 +174,15 @@ export function buildBoardroom(z: Zone, _ctx: RealContext): THREE.Object3D {
         for (let k = 0; k < 8; k++) D.lathe([[0.55, 0], [0, 0.02]], Math.cos((k / 8) * Math.PI * 2) * 3.1, Math.sin((k / 8) * Math.PI * 2) * 3.1, 5, TONE.rubber, 2.72)
       })
     })
+  })
+  // Three brass lamps down the middle of the table: a foot, a stem and a turned shade.
+  moved(S, place(cx, cy + ty, 0, rot), () => {
+    for (const y of lampsAt(tl)) {
+      fin(S, FINISH.polished, () => {
+        S.lathe([[4.2, 0], [4.2, 0.9], [1.1, 1.6], [1.1, LAMP.stem]], 0, y, 10, TONE.brass, ROOM.top + 0.1)
+        S.lathe([[LAMP.r + 2.4, 0], [LAMP.r + 2.4, 0.8], [LAMP.r, 3.4], [2.4, 6], [0, 6.6]], 0, y, 14, (k) => (k === 2 ? TONE.gold : TONE.brass), ROOM.top + LAMP.stem)
+      })
+    }
   })
   o.add(mesh(D, mats.solid, `boardroom.places.${z.id}`, { fine: true }))
   o.add(mesh(S, mats.solid, `boardroom.${z.id}`, { cast: true }))

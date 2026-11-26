@@ -378,6 +378,9 @@ function pose(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   ;(u.uSoft!.value as THREE.Vector3).fromArray(L.soft)
   ;(u.uHaze!.value as THREE.Vector3).fromArray(L.haze)
   ;(u.uFloor!.value as THREE.Vector3).fromArray(L.floor)
+  const head = keyOf(L.zone)
+  if (head) (u.uSoftDir!.value as THREE.Vector3).set(head.toward[0], head.toward[1], Math.max(head.toward[2], 0.5)).normalize()
+  else (u.uSoftDir!.value as THREE.Vector3).copy(SOFT_DIR)
   const pos = u.uLampPos!.value as THREE.Vector3[]
   const col = u.uLampCol!.value as THREE.Vector4[]
   const glow = u.uLampLit!.value as THREE.Vector3[]
@@ -474,7 +477,6 @@ function pose(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const high = (1 - gone) / (1 + lift / (r * 2.5))
   const dim = 1 - 0.7 * open
   const key = Math.min(1, Math.max(lum(L.soft) * 2.2, lum(L.floor) * 0.7))
-  const head = keyOf(L.zone)
   const flatKey = head ? Math.hypot(head.toward[0], head.toward[1]) : 1
   const kx = head && flatKey > 1e-4 ? -head.toward[0] / flatKey : KEY_AWAY.x
   const ky = head && flatKey > 1e-4 ? -head.toward[1] / flatKey : KEY_AWAY.y

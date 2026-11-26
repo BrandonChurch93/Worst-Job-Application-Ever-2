@@ -2,7 +2,7 @@ import type { RealContext } from '../../../../real/types'
 import type { Zone } from '../../zone'
 import type { Buckets } from './geo'
 import { walls } from './firehouse'
-import { KIND, TONE, band, board, parapet, rgb, roofDeck, shade, site, wallFace, windowAt, type Hole } from './kit'
+import { KIND, TONE, band, board, parapet, plate, rgb, roofDeck, shade, site, wallFace, windowAt, type Hole } from './kit'
 
 export function bank(b: Buckets, z: Zone, ctx: RealContext): void {
   const S = site(z, 'street.bank')
@@ -17,9 +17,9 @@ export function bank(b: Buckets, z: Zone, ctx: RealContext): void {
   const roofFoot = entab + 12
 
   // The stepped base: each step runs round the front and the side that faces the table.
-  g.box(S.x0, S.x1, S.yf, S.yb, 0, 3, TONE.stoneDark, { bevel: 0.8 })
+  plate(b, S.x0 - 3, S.x1 + 3, S.yf - 3, S.yb + 3, 1.6)
+  g.box(S.x0, S.x1, S.yf, S.yb, 1.6, 3, TONE.stoneDark, { bevel: 0.6, skip: 'u' })
   for (let k = 0; k < steps; k++) g.box(S.x0 + 2, S.x1 - 2 - k * tread, S.yf + 2 + k * tread, S.yb - 2, 3 + k * riser, 3 + (k + 1) * riser, stone, { bevel: 0.4, kind: KIND.block })
-  b.screws.push([S.x0 + 1.4, S.yf + 1.4, 3, 1], [S.x1 - 1.4, S.yf + 1.4, 3, 1])
 
   const x0 = S.x0 + 5
   const x1 = S.x1 - 2 - steps * tread - 1
