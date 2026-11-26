@@ -30,9 +30,9 @@ export const CARD_PANE: Pane = {
 
 // The shield: clear glass with a narrow ground edge that shows as one thin bright line all the way round.
 export const SHIELD_PANE: Pane = {
-  inset: 3, round: 1, bevel: 3, rise: 1.6, wash: 0.05,
-  near: [[0, 0.85], [3, 1.08], [5, 0.92], [9, 0.95], [15, 1]],
-  far: [[0, 1.15], [3, 1.08], [9, 1.03], [15, 1]]
+  inset: 2, round: 1, bevel: 10, rise: 3, wash: -0.34,
+  near: [[0, 1.1], [2, 0.62], [3.5, 1.2], [9, 1.12], [11.5, 0.8], [18, 1]],
+  far: [[0, 0.9], [2, 0.34], [10, 0.3], [12.5, 0.74], [20, 1]]
 }
 
 const keyFlat = Math.hypot(look.key.direction[0], look.key.direction[1]) || 1
@@ -144,7 +144,7 @@ export function paneGeometry(s: Shape, thick: number, P: Pane): THREE.BufferGeom
   return g
 }
 
-export const RIM = { card: 7.4, shield: 12 }
+export const RIM = { card: 7.4, shield: 4.4 }
 
 // The polished edge of a pane: a round bead of the same glass that runs all the way round, stands a little above the face and takes the room's light as one bright line.
 export function rimGeometry(s: Shape, thick: number, wide: number, inset: number): THREE.BufferGeometry {
@@ -160,8 +160,50 @@ export function rimGeometry(s: Shape, thick: number, wide: number, inset: number
   return sweep(outlineOf(s, inset, 14), profile(points), false)
 }
 
+// The depth of a thick pane seen through its ground edge: a dark green band inside the rim, deep where the light leaves the glass and faint where it enters.
+export const BAND = { rings: [3.6, 5, 7, 12.5, 16], near: [0, 0.62, 0.1, 0.06, 0], far: [0, 0.7, 0.78, 0.66, 0], tone: [0.1, 0.16, 0.13] as [number, number, number] }
+
+export function bandGeometry(s: Shape, z: number): THREE.BufferGeometry {
+  const outline = outlineOf(s, 0, 14)
+  const n = outline.count
+  let wide = 0
+  let tall = 0
+  for (let i = 0; i < n; i++) {
+    wide = Math.max(wide, outline.x[i]!)
+    tall = Math.max(tall, outline.y[i]!)
+  }
+  const pos: number[] = []
+  const col: number[] = []
+  const idx: number[] = []
+  BAND.rings.forEach((d, r) => {
+    for (let i = 0; i < n; i++) {
+      const ox = outline.nx[i]!
+      const oy = outline.ny[i]!
+      const side = Math.max(-1, Math.min(1, (ox * KX + oy * KY) / 0.6))
+      const t = (1 - side) / 2
+      pos.push(Math.max(-(wide - d), Math.min(wide - d, outline.x[i]! - d * ox)), Math.max(-(tall - d), Math.min(tall - d, outline.y[i]! - d * oy)), z)
+      col.push(BAND.tone[0], BAND.tone[1], BAND.tone[2], BAND.near[r]! + (BAND.far[r]! - BAND.near[r]!) * t)
+    }
+  })
+  for (let r = 0; r < BAND.rings.length - 1; r++) {
+    for (let i = 0; i < n; i++) {
+      const j = (i + 1) % n
+      idx.push(r * n + i, r * n + j, (r + 1) * n + i, r * n + j, (r + 1) * n + j, (r + 1) * n + i)
+    }
+  }
+  const g = new THREE.BufferGeometry()
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
+  g.setAttribute('color', new THREE.Float32BufferAttribute(col, 4))
+  const flat = new Float32Array(pos.length)
+  for (let i = 2; i < flat.length; i += 3) flat[i] = 1
+  g.setAttribute('normal', new THREE.BufferAttribute(flat, 3))
+  g.setAttribute('uv', new THREE.BufferAttribute(new Float32Array((pos.length / 3) * 2), 2))
+  g.setIndex(idx)
+  return g
+}
+
 export const CARD_GLASS = { colour: 0x9fb1ae, through: 0.86, perPx: 2.4 }
-export const CLEAR_GLASS = { colour: 0x93a099, through: 0.8, up: 0.8, lying: 0.62, deep: 0x5f8376, edge: 0x727d7a, bead: 0xc9dad4, metal: 0.7 }
+export const CLEAR_GLASS = { colour: 0x8ea096, through: 0.74, up: 0.74, lying: 0.5, deep: 0x5f8376, edge: 0xc2cdc9, bead: 0xc9dad4, metal: 0.3 }
 
 let picture: THREE.Texture | null = null
 
@@ -182,6 +224,7 @@ export interface GlassKit {
   crackLight: THREE.MeshPhysicalMaterial
   crackDark: THREE.MeshPhysicalMaterial
   crackSheet: THREE.MeshPhysicalMaterial
+  band: THREE.MeshPhysicalMaterial
 }
 
 let kit: GlassKit | null = null
@@ -200,13 +243,14 @@ export function glassKit(): GlassKit {
       specularIntensity: 0.6, vertexColors: true, shadowSide: THREE.BackSide, normalMap: grain, normalScale: new THREE.Vector2(0.02, 0.02), transparent: true, opacity: CARD_GLASS.through
     })),
     clear: studio(new THREE.MeshPhysicalMaterial({
-      color: clearTone(), map: under(), roughness: 0.16, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.08, specularIntensity: 0.9, vertexColors: true, shadowSide: THREE.BackSide,
+      color: clearTone(), map: under(), roughness: 0.34, metalness: 0, clearcoat: 0.45, clearcoatRoughness: 0.22, specularIntensity: 0.5, envMapIntensity: 0.3, vertexColors: true, shadowSide: THREE.BackSide,
       normalMap: grain, normalScale: new THREE.Vector2(0.012, 0.012), transparent: true, opacity: CLEAR_GLASS.through
     })),
     rim: studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0xb7c4c0, THREE.SRGBColorSpace), roughness: 0.22, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.05, specularIntensity: 1 })),
     edge: studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(CLEAR_GLASS.edge, THREE.SRGBColorSpace), roughness: 0.26, metalness: CLEAR_GLASS.metal, clearcoat: 1, clearcoatRoughness: 0.06, specularIntensity: 1 })),
     crackLight: studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.96, 0.99, 0.97), emissive: new THREE.Color(0.22, 0.23, 0.22), roughness: 0.25, metalness: 0, specularIntensity: 1, vertexColors: true, transparent: true, opacity: 0.92, depthWrite: false })),
     crackDark: studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.08, 0.1, 0.095), roughness: 0.6, metalness: 0, specularIntensity: 0.2, vertexColors: true, transparent: true, opacity: 0.5, depthWrite: false })),
+    band: studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(1, 1, 1), roughness: 0.5, metalness: 0, specularIntensity: 0.2, envMapIntensity: 0.2, vertexColors: true, transparent: true, depthWrite: false })),
     crackSheet: studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.9, 0.95, 0.93), roughness: 0.2, metalness: 0, specularIntensity: 1, vertexColors: true, transparent: true, opacity: 0.3, depthWrite: false, side: THREE.DoubleSide }))
   }
   return kit

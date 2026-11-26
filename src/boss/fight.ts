@@ -170,7 +170,7 @@ function fire(f: Fight, io: StepIo, arena: Arena, shot: { m: number; side: numbe
     }
   }
   if (m < 0) return
-  if (shot && shot.side !== 0) f.cannon = shot.side > 0 ? 1 : 0
+  if (shot) f.cannon = shot.side > 0 ? 1 : 0
   const from = muzzle(f, f.cannon)
   let dx = f.aim.x - from.x
   let dy = f.aim.y - from.y
@@ -212,7 +212,7 @@ function fire(f: Fight, io: StepIo, arena: Arena, shot: { m: number; side: numbe
     while (long < left + 160 && over(long)) long += 8
     left = short > 120 || over(long) ? short : long
   }
-  const rot = (m % 2 === 0 ? -1 : 1) * (0.06 + 0.03 * (m % 3))
+  const rot = -0.12 + 0.03 * (m % 3)
   f.slabs.push({ m, x: from.x, y: from.y, dx, dy, rot, left: Math.max(40, left), state: 0, t: 0 })
   f.slabCount = m + 1
   f.recoil[f.cannon] = 26

@@ -8,7 +8,7 @@ import { config } from '../../config'
 import { BODY_Z, FRAME, LEG, SHADE, SHIELD, SIDE, SIDE_OFF, CAP_W, CAP_H, WRECK } from '../body'
 import { bossKit, cutPlate, joined, lathe, lying, mesh, moved, screw, FLANGE_TONE, PLATE_TONE } from './body-kit'
 import { pillGeometry, PILL } from './pill'
-import { clearTone, deepTone, fracture, glassKit, paneGeometry, rimGeometry, CLEAR_GLASS, RIM, SHIELD_PANE } from './glass'
+import { bandGeometry, clearTone, deepTone, fracture, glassKit, paneGeometry, rimGeometry, CLEAR_GLASS, RIM, SHIELD_PANE } from './glass'
 
 const heights = config.scale.heights
 const clamp = (t: number): number => Math.min(1, Math.max(0, t))
@@ -306,7 +306,9 @@ function shield(): THREE.Object3D {
   const pane = mesh(geo('glass', () => walled(paneGeometry(slab, t, SHIELD_PANE)).translate(0, 0, t / 2)), gk.clear, false)
   pane.renderOrder = 2
   const bead = mesh(geo('glassRim', () => rimGeometry(slab, t, RIM.shield, 0).translate(0, 0, t / 2)), gk.edge, false)
-  leaf.add(pane, bead)
+  const band = mesh(geo('glassBand', () => bandGeometry(slab, t + 0.25)), gk.band, false, false)
+  band.renderOrder = 3
+  leaf.add(pane, bead, band)
   const cracks = new THREE.Group()
   const f = brokenGlass()
   const sheet = mesh(f.sheet, gk.crackSheet, false, false)
@@ -341,6 +343,7 @@ const vb = new THREE.Vector3()
 const vc = new THREE.Vector3()
 
 const TORN = 0.9
+const SHIELD_SET = { tilt: 0.1, lean: 0.62, grip: 12 }
 const beadTone = new THREE.Color().setHex(CLEAR_GLASS.bead, THREE.SRGBColorSpace)
 
 function poseShield(o: THREE.Object3D, s: Shape): void {
@@ -355,8 +358,8 @@ function poseShield(o: THREE.Object3D, s: Shape): void {
   glassKit().edge.color.setHex(CLEAR_GLASS.edge, THREE.SRGBColorSpace).lerp(beadTone, flat)
   glassKit().edge.metalness = mix(CLEAR_GLASS.metal, 0.05, flat)
   d.bead.castShadow = flat > TORN
-  const swing = (1 - prog(k, 0.1, 0.6)) * (Math.PI / 2)
-  const lean = stand * (0.62 + 0.07 * clamp(s.v?.[2] ?? 0))
+  const swing = (1 - prog(k, 0.1, 0.6)) * (Math.PI / 2) + SHIELD_SET.tilt * stand
+  const lean = stand * (SHIELD_SET.lean + 0.07 * clamp(s.v?.[2] ?? 0))
   const half = SHIELD.w / 2
   const low = 4 + stand * 6
   d.leaf.rotation.set(0, 0, 0)
@@ -365,10 +368,11 @@ function poseShield(o: THREE.Object3D, s: Shape): void {
   const cx = -half + half * Math.cos(lean) + 4 * stand
   d.leaf.position.set(cx * Math.cos(swing), cx * Math.sin(swing), low + half * Math.sin(lean))
   d.cracks.visible = hurt > 0.95 && flat > 0.6
-  const px = (-half + 6) * Math.cos(swing)
-  const py = (-half + 6) * Math.sin(swing)
-  d.pin.rotation.z = swing
-  d.pin.position.set(px + 6 * stand, py, low - 1 + 2 * stand)
+  const grip = mix(-half + 6, half - SHIELD_SET.grip, stand)
+  d.pin.rotation.set(0, 0, 0)
+  d.pin.rotateZ(swing)
+  d.pin.rotateY(-lean)
+  d.pin.position.set(d.leaf.position.x + grip * Math.cos(lean) * Math.cos(swing), d.leaf.position.y + grip * Math.cos(lean) * Math.sin(swing), d.leaf.position.z + grip * Math.sin(lean) - 3)
   const ax = mix(s.v?.[3] ?? 40, -half + 60, flat)
   const ay = -(s.v?.[4] ?? 0) * (1 - flat)
   const az = mix(BODY_Z.frame + 5 - BODY_Z.shield, 5, flat)
@@ -384,8 +388,9 @@ function poseShield(o: THREE.Object3D, s: Shape): void {
     const tube = d.tubes[i]!
     rod.position.copy(va)
     rod.quaternion.setFromUnitVectors(X, vc)
-    rod.scale.x = mix(1, 0.5, flat)
-    tube.scale.x = mix(1, 0.3, flat)
+    const fit = Math.min(1, (len * 0.62) / 82)
+    rod.scale.x = mix(fit, 0.5, flat)
+    tube.scale.x = mix(fit, 0.3, flat)
     tube.position.copy(vb)
     tube.quaternion.setFromUnitVectors(X, vc.negate())
     tube.visible = len > 20 && flat < TORN
