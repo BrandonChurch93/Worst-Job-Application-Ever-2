@@ -3,7 +3,7 @@ import type { LayoutNode } from '../../copy'
 import { HANDOFF, restPose, type Acting, type CursorPose } from '../../cursor/body'
 import { boxOf, drawLayout, node, text } from '../../shell/layout'
 import { block } from '../../shell/metrics'
-import { button, buttonWidth, HEADER, LEFT, page, RIGHT, stepHead, TYPE } from '../../shell/parts'
+import { button, buttonWidth, HEADER, LEFT, page, stepHead, TYPE } from '../../shell/parts'
 import { words } from '../../shell/words'
 import { basis, frame, homePose, mixPose, smooth, toWorld } from '../../stage/camera'
 import { TURN_HALF } from '../../stage/stage'
@@ -78,7 +78,7 @@ function buildLayout(): LayoutNode {
   kids.push(centred('drain-label', 'copy:step3.table.buildings.drain', { font: 'inter-600', px: 18 }, 960, ay + 48, { part: 'table-frame', on: 7, tone: 'ink' }))
   const ly = px(LAST_Y)
   kids.push(node('outlet-port', 'port', [px(OUTLET.x - OUTLET.ring / 2), px(OUTLET.y - OUTLET.ring / 2), px(OUTLET.ring), px(OUTLET.ring)], { part: 'loader', shape: 'none' }))
-  kids.push(node('result', 'card', [560, ly + 255, RIGHT - 560, 236], {
+  kids.push(node('result', 'card', [560, ly + 255, 816, 236], {
     part: 'shell', states: ['result'], children: [
       text('result-title', 'copy:step3.result.title', TYPE.heading, 608, ly + 295, { part: 'type', on: 12 }),
       text('result-body', 'copy:step3.result.body', { ...TYPE.body, wrap: 720, lead: 34 }, 608, ly + 385, { part: 'type', on: 12 })
@@ -115,15 +115,17 @@ const NAMED: Record<string, CameraPose> = {
   'tier-3': tierPose(0), 'tier-2': tierPose(1), 'tier-1': streetPose(),
   'table-wide': { ...look('table-wide', [MID, APRON_Y + 17.4, 8.4], [MID, Y2 + 0.45, -1.86]), omit: LAST_OUT },
   'table-lobby': look('table-lobby', [MID + 0.35, Y0 + 9.2, 1.3], [MID - 0.55, Y0 + 5.02, 0.36]),
-  'table-replyall': look('table-replyall', [MID, Y1 + 15.34, 12], [MID, Y1 + 6.6, -2]),
+  'table-replyall': look('table-replyall', [MID, Y1 + 18.3, 13.6], [MID, Y1 + 5.9, -2]),
+  'table-nest': { ...look('table-nest', [MID, Y1 + 12.4, 0.5], [MID, Y1 + 6.4, -1.4]), fov: fov('rail') },
   'table-fired': look('table-fired', [8.1, Y2 + 6.45, 0.25], [4.45, Y2 + 3.75, -1.95]),
   'table-save': { ...look('table-save', [MID - 0.15, Y2 + 19.5, 3.5], [MID, Y2 + 8.5, -2.2]), omit: LAST_OUT }
 }
 const FILM: [number, string, number][] = [
-  [0, 'follow', 0], [4.2, 'table-wide', 0], [8.05, 'ride', 0], [10.25, 'tier-3', 0.6], [13.0, 'table-lobby', 0], [14.3, 'follow', 0], [17.0, 'near-nest', 0], [20.95, 'table-replyall', 0], [22.2, 'follow', 0], [26.9, 'table-fired', 0], [29.3, 'follow', 0],
+  [0, 'follow', 0], [4.1, 'tube', 0.5], [6.2, 'table-wide', 0], [8.05, 'ride', 0], [10.25, 'tier-3', 0.6], [13.0, 'table-lobby', 0], [14.3, 'follow', 0], [16.0, 'table-nest', 0], [19.35, 'near-nest', 0], [20.95, 'table-replyall', 0], [22.2, 'follow', 0], [26.9, 'table-fired', 0], [29.3, 'follow', 0],
   [31.15, 'rail', 0], [32.3, 'follow', 0.6], [34.3, 'table-save', 0], [34.8, 'near-spent', 0], [35.45, 'table-save', 0], [36.6, 'follow', 0]
 ]
-const LENS: Record<string, number> = { 'table-wide': 5, 'table-lobby': 7, 'table-replyall': 12, 'table-fired': 10, 'table-save': 12, rail: 10, ride: 7, 'near-nest': 14, 'near-spent': 14 }
+const TUBE: { eye: [number, number, number]; at: [number, number, number]; wide: number } = { eye: [0.55, 2.7, 1.5], at: [-2.7, -1.2, 0.1], wide: 12 }
+const LENS: Record<string, number> = { tube: 9, 'table-wide': 5, 'table-lobby': 7, 'table-replyall': 12, 'table-nest': 12, 'table-fired': 10, 'table-save': 12, rail: 10, ride: 7, 'near-nest': 14, 'near-spent': 14 }
 const HARD: Record<string, number> = { bumper: 1, sling: 0.7, 'doors-slam': 0.5, 'scoop-kick': 0.8, plunger: 1, 'ball-hit': 0.6, 'drop-target': 0.5, 'mom-save': 1, 'ball-save': 0.8 }
 const SHAKE = { size: 0.006, decay: 0.09, hz: 23, most: 1.5, last: 0.5 }
 const SOFT = 0.4
@@ -293,6 +295,11 @@ export function makePage(): PageLogic {
     return { eye: toWorld(px(c.x - along[0]! * BACK.behind), px(c.y - along[1]! * BACK.behind), px(c.z + BACK.up)), target: toWorld(px(c.x + along[0]! * BACK.aim), px(c.y + along[1]! * BACK.aim), px(c.z + BACK.lift)), up: [0, 0, 1], fov: fov('rail') }
   }
   const follow = (): CameraPose => homePose(s.scroll, s.floor)
+  const tubePose = (): CameraPose => {
+    const b = ball()
+    const c = b.mode === 'rail' ? soft(railOf(b.rail), b.s) : { x: b.x, y: b.y, z: b.z }
+    return { eye: toWorld(px(c.x + TUBE.eye[0]), px(c.y + TUBE.eye[1]), px(c.z + TUBE.eye[2])), target: toWorld(px(c.x + TUBE.at[0]), px(c.y + TUBE.at[1]), px(c.z + TUBE.at[2])), up: [0, 0, 1], fov: fov('rail') + TUBE.wide }
+  }
   const nearPose = (name: string): CameraPose => {
     const n = NEAR[name]!
     const keep = n.keep + ((1 - n.keep) * (1 - s.pan[3]!)) / (1 - PAN.in)
@@ -309,7 +316,7 @@ export function makePage(): PageLogic {
     const f = basis(p).forward
     return { ...p, focus: Math.max(BALL, (on[0] - p.eye[0]) * f[0] + (on[1] - p.eye[1]) * f[1] + (on[2] - p.eye[2]) * f[2]), aperture: open }
   }
-  const named = (name: string): CameraPose | null => lens(name, name === 'follow' ? follow() : name === 'rail' ? backPose() : name === 'ride' ? ridePose() : name in NEAR ? nearPose(name) : NAMED[name] ?? null)
+  const named = (name: string): CameraPose | null => lens(name, name === 'follow' ? follow() : name === 'rail' ? backPose() : name === 'ride' ? ridePose() : name === 'tube' ? tubePose() : name in NEAR ? nearPose(name) : NAMED[name] ?? null)
 
   const shot = (time: number): string => {
     let i = 0
@@ -437,7 +444,7 @@ export function makePage(): PageLogic {
       return b.hold === 'outlet' ? 'exhausted' : 'nervous'
     }
     if (b.mode === 'rail') {
-      if (b.rail === 'feed') return 'nervous'
+      if (b.rail === 'feed') return t < T.wake ? 'nervous' : t < T.powerOn + ACT.shock ? 'shocked' : 'scared'
       if (b.rail === 'highway' || b.rail.startsWith('lift.')) return 'confident'
       return b.rail === 'drain' || b.rail.startsWith('outlane.') ? 'exhausted' : 'scared'
     }
@@ -761,8 +768,7 @@ export function makePage(): PageLogic {
       }
       const inside = s.phase === 'sealed' && s.t >= T.lightsDown && !(ball().mode === 'rail' && ball().rail === 'drain') && !(ball().mode === 'hold' && ball().hold === 'outlet')
       if (s.out[0]! < 0 && s.phase === 'sealed' && ball().mode === 'rail' && ball().rail === 'drain') s.out = [s.time, s.scroll, s.floor]
-      const landed = s.out[0]! < 0 || s.time >= s.out[0]! + LEAVE.seconds + LEAVE.settle
-      s.dim = Math.max(0, Math.min(1, s.dim + (inside ? dt / (T.powerOn - T.lightsDown) : landed ? -dt / (s.out[0]! < 0 ? T.powerOn - T.lightsDown : LEAVE.up) : 0)))
+      s.dim = Math.max(0, Math.min(1, s.dim + (inside ? dt / (T.powerOn - T.lightsDown) : -dt / (s.out[0]! < 0 ? T.powerOn - T.lightsDown : LEAVE.up))))
       if (s.phase !== 'sealed') {
         const on = [port, outlet].some((c) => Math.hypot(io.cursor.x + 8 - c.x, io.cursor.y + 14 - c.y) < px(OUTLET.ring) / 2 + 12)
         io.cursor.setGround(on ? PORT_TOP : 0)
@@ -771,7 +777,7 @@ export function makePage(): PageLogic {
       const rate = Math.min(1, dt / (live.tierTravelSeconds / 4))
       const cap = 4200 * dt
       if (s.out[0]! >= 0) {
-        const u = (s.time - s.out[0]!) / LEAVE.seconds
+        const u = (s.time - s.out[0]! - LEAVE.up) / LEAVE.seconds
         const w = Math.pow(Math.max(0, Math.min(1, u)), LEAVE.in)
         const p = (1 - LEAVE.firm) * w * (2 - w) + LEAVE.firm * w
         const after = (u - 1) * LEAVE.seconds / LEAVE.settle
