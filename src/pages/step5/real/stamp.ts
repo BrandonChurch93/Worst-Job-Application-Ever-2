@@ -16,11 +16,13 @@ import { INK, ink } from './stampInk'
 const q = (v: number): number => Math.round(v * 4) / 4
 const WHITE: [number, number, number] = [1, 1, 1]
 const PRINT: Style = { setting: 'flat', fill: WHITE, lean: 0, rings: [{ d: 1.7, a: 1, c: WHITE }, { d: 2.4, a: 0.5, c: WHITE }] }
-const FRAME = { r: 12, inner: 14, thin: 3.4, feather: 0.7 }
+const FRAME = { r: 12, inner: 12, thin: 2.6, feather: 0.5 }
 const PAD = { in: 2.2, foam: 1, tall: 16, gap: 5 }
 
 const GRAIN = { die: 22, coat: 46 }
 const BELLY = 2.4
+// Struck, the block is shorter and a little broader for a frame.
+const SQUASH = { z: 0.2, seconds: 0.028, spread: 0.1 }
 let roughMade: THREE.Texture | null = null
 
 // The tooth of the letter's stock, used again as the grain of the rubber and the faint orange peel of the lacquer.
@@ -31,14 +33,22 @@ function rough(): THREE.Texture {
 
 let lacquerMade: THREE.MeshPhysicalMaterial | null = null
 function lacquer(): THREE.MeshPhysicalMaterial {
-  lacquerMade ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0xb8120a, THREE.SRGBColorSpace), roughness: 0.46, metalness: 0, specularIntensity: 0.3, clearcoat: 1, clearcoatRoughness: 0.07, clearcoatNormalMap: rough(), clearcoatNormalScale: new THREE.Vector2(0.05, 0.05), envMapIntensity: 0.3 }))
+  lacquerMade ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0xb8120a, THREE.SRGBColorSpace), roughness: 0.46, metalness: 0, specularIntensity: 0.3, clearcoat: 1, clearcoatRoughness: 0.05, clearcoatNormalMap: rough(), clearcoatNormalScale: new THREE.Vector2(0.05, 0.05), envMapIntensity: 0.55 }))
   lacquerMade.name = 'stamp-lacquer'
   return lacquerMade
 }
 
+let wornMade: THREE.MeshPhysicalMaterial | null = null
+// The bottom edge of the red wall, where the lacquer is rubbed dull and dark with ink.
+function wornEdge(): THREE.MeshPhysicalMaterial {
+  wornMade ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0x6e1410, THREE.SRGBColorSpace), roughness: 0.78, metalness: 0, specularIntensity: 0.2, normalMap: rough(), normalScale: new THREE.Vector2(1.6, 1.6) }))
+  wornMade.name = 'stamp-worn'
+  return wornMade
+}
+
 let dieMade: THREE.MeshPhysicalMaterial | null = null
 function die(): THREE.MeshPhysicalMaterial {
-  dieMade ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0x4d0f0e, THREE.SRGBColorSpace), roughness: 0.92, metalness: 0, specularIntensity: 0.25, normalMap: rough(), normalScale: new THREE.Vector2(3.5, 3.5) }))
+  dieMade ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0x3a0c0c, THREE.SRGBColorSpace), roughness: 0.95, metalness: 0, specularIntensity: 0.25, normalMap: rough(), normalScale: new THREE.Vector2(3.5, 3.5) }))
   dieMade.name = 'stamp-die'
   return dieMade
 }
@@ -78,6 +88,8 @@ function blockOf(s: Shape): THREE.Object3D {
   const belly = [0, 0.14, 0.28, 0.42, 0.56, 0.7, 0.84, 1].map((u): ProfilePoint => [BELLY * (2 * u - 1) * (2 * u - 1), foot + 3 + wall * u])
   const body: ProfilePoint[] = [[BELLY + 1.6, foot - 0.4, true], [BELLY + 0.3, foot + 1.2], ...belly, ...arc(BELLY, top - round, round, round, 12).slice(1)]
   root.add(solid(grained(sweep(outlineOf(s, 0, 12), profile(body)), GRAIN.coat), lacquer()))
+  const worn: ProfilePoint[] = [[BELLY + 1.9, foot - 0.6, true], [BELLY + 2.1, foot + 0.6], [BELLY + 1.7, foot + 3.2], [BELLY + 0.9, foot + 5.4, true]]
+  root.add(solid(grained(sweep(outlineOf(s, -0.4, 12), profile(worn), false), GRAIN.die), wornEdge()))
   return root
 }
 
@@ -96,7 +108,7 @@ function gripOf(s: Shape): THREE.Object3D {
   ]
   const root = new THREE.Group()
   const outline = outlineOf({ ...s, kind: 'box', r }, 0, 20)
-  root.add(solid(sweep(outline, profile([[-3, 0, true], [-3, 3], [-2.2, 3.9], [1.2, 3.9, true]]), false), materials().chrome))
+  root.add(solid(grained(sweep(outline, profile([[-2.4, 0, true], [-2.4, 2.2], [-1.4, 3.4], [1.2, 3.6, true]]), false), GRAIN.coat), lacquer()))
   root.add(solid(grained(sweep(outline, profile(points)), GRAIN.coat), lacquer()))
   return root
 }
@@ -187,7 +199,7 @@ function wordOf(s: Shape): THREE.Object3D {
   return print(inked(pos, data.colour, data.index, m.w, m.h, 0, 0))
 }
 
-const DUST = { seed: INK.seed + 41, motes: 96, fan: 8, colour: 0xb3ab9e, slow: 0.17 }
+const DUST = { seed: INK.seed + 41, motes: 96, fan: 8, colour: 0x978d7b, slow: 0.17 }
 
 interface Mote { x: number; y: number; nx: number; ny: number; speed: number; r: number; grow: number; a: number }
 
@@ -208,7 +220,7 @@ function motes(): Mote[] {
     const by = onLong ? flip : spread
     const l = Math.hypot(bx, by)
     const speck = h(4) < 0.42
-    out.push({ x, y, nx: bx / l, ny: by / l, speed: speck ? 500 + h(5) * 800 : 220 + h(5) * 460, r: speck ? 0.8 + h(6) * 1.2 : 8 + h(6) * 14, grow: speck ? 0 : 90, a: speck ? 0.7 : 0.07 + h(7) * 0.09 })
+    out.push({ x, y, nx: bx / l, ny: by / l, speed: speck ? 500 + h(5) * 800 : 220 + h(5) * 460, r: speck ? 1.3 + h(6) * 1.7 : 8 + h(6) * 14, grow: speck ? 0 : 90, a: speck ? 0.8 : 0.15 + h(7) * 0.14 })
   }
   return out
 }
@@ -259,6 +271,31 @@ function blow(mesh: THREE.Mesh, age: number): void {
   ;(mesh.material as THREE.MeshBasicMaterial).opacity = left * left * Math.min(1, age / 0.02)
 }
 
+const FALL = { colour: 0x2e231a, fan: 28, core: 0.45 }
+
+function fallShadeOf(): THREE.Mesh {
+  const pos: number[] = [0, 0, 0]
+  const col: number[] = [1, 1, 1, 1]
+  const idx: number[] = []
+  for (let k = 0; k < FALL.fan; k++) {
+    const a = (k / FALL.fan) * Math.PI * 2
+    pos.push(Math.cos(a) * FALL.core, Math.sin(a) * FALL.core * 1.25, 0, Math.cos(a), Math.sin(a) * 1.25, 0)
+    col.push(1, 1, 1, 0.8, 1, 1, 1, 0)
+    const i = 1 + k * 2
+    const j = 1 + ((k + 1) % FALL.fan) * 2
+    idx.push(0, i, j, i, i + 1, j, j, i + 1, j + 1)
+  }
+  const g = new THREE.BufferGeometry()
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
+  g.setAttribute('color', new THREE.Float32BufferAttribute(col, 4))
+  g.setIndex(idx)
+  const mesh = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ color: new THREE.Color().setHex(FALL.colour, THREE.SRGBColorSpace), vertexColors: true, transparent: true, depthWrite: false, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -3 }))
+  mesh.castShadow = false
+  mesh.frustumCulled = false
+  mesh.userData.motes = []
+  return mesh
+}
+
 export const stamp: PartMaker | null = {
   key(s) {
     if (s.id === 'letter-stamp') return `word:${s.type!.font}:${s.type!.px}:${q(s.w)}:${q(s.h)}:${words(s.words!, s.text)}`
@@ -266,6 +303,7 @@ export const stamp: PartMaker | null = {
     if (s.id === 'letter-mark-top') return `frame:${q(s.w)}:${q(s.h)}`
     if (s.id.startsWith('letter-mark-')) return ''
     if (s.role === 'dust') return 'dust'
+    if (s.role === 'fallShade') return 'fallShade'
     if (s.role === 'stampBlock') return `block:${q(s.w)}:${q(s.h)}:${q(s.r ?? 0)}:${q(s.z1 - s.z0)}`
     if (s.role === 'stampGrip') return `grip:${q(s.w)}:${q(s.h)}:${q(s.z1 - s.z0)}`
     return null
@@ -274,12 +312,18 @@ export const stamp: PartMaker | null = {
     if (s.id === 'letter-stamp') return wordOf(s)
     if (s.id === 'letter-mark-top') return frameOf()
     if (s.role === 'dust') return dustOf()
+    if (s.role === 'fallShade') return fallShadeOf()
     if (s.role === 'stampGrip') return gripOf(s)
     return blockOf(s)
   },
   pose(o, s, ctx) {
     if (s.role === 'dust') {
       blow(o as THREE.Mesh, s.v?.[0] ?? 0)
+      return
+    }
+    if (s.role === 'fallShade') {
+      o.scale.set(s.w / 2, s.w / 2, 1)
+      ;((o as THREE.Mesh).material as THREE.MeshBasicMaterial).opacity = s.v?.[0] ?? 0
       return
     }
     if (s.role !== 'stampBlock' && s.role !== 'stampGrip') return
@@ -302,7 +346,10 @@ export const stamp: PartMaker | null = {
     o.rotation.x += a
     o.position.x -= along * Math.sin(turn)
     o.position.y += along * Math.cos(turn)
-    o.position.z += up * (Math.cos(a) - 1) - give + (Math.abs(Math.sin(rock)) + flat) * tall
+    const k = s.v?.[4] ?? 1
+    const press = SQUASH.z * Math.exp(-age / SQUASH.seconds)
+    o.position.z += up * (Math.cos(a) - 1) * k - give + (Math.abs(Math.sin(rock)) + flat) * tall - up * press
+    o.scale.set(k * (1 + press * SQUASH.spread), k * (1 + press * SQUASH.spread), 1 - press)
   },
   drop(o) {
     o.traverse((c) => {
