@@ -1,35 +1,35 @@
 {
   "folder": "step2-keeper",
-  "pushed": "2026-11-26T04:51:49.857Z",
-  "commit": "0e6071a24a5853655ef7584cee9ad7c9621a6cf4",
+  "pushed": "2026-11-26T04:58:04.501Z",
+  "commit": "8d77cb7de1230c4dfe3d0713486e215bf57cd682",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Slot on the machines sheet at 14bb13ec: approved left, build right; frame thicker and stepped, calmer bevel",
-      "time": "2026-11-26T04:44:59.843Z",
+      "caption": "Still step2-step2_crank-0p85-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T04:53:20.859Z",
       "by": "step2-keeper",
-      "from": "out/work/looks/files/20261126044459-slot-compare.jpg"
+      "from": "out/work/stills/step2-step2_crank-0p85-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Dial key close at 14bb13ec: approved left, build right; softer cast shade, darker housing",
-      "time": "2026-11-26T04:45:00.078Z",
+      "caption": "Still key-step2-dial-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T04:55:34.331Z",
       "by": "step2-keeper",
-      "from": "out/work/looks/files/20261126044500-dial-close.png"
+      "from": "out/work/stills/key-step2-dial-hd-review.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Still key-step2-crank-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-26T04:46:23.273Z",
+      "caption": "Still key-step2-dial-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T04:56:14.315Z",
       "by": "step2-keeper",
-      "from": "out/work/stills/key-step2-crank-hd-review.png"
+      "from": "out/work/stills/key-step2-dial-hd-review.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Unlit meter segments at 0e6071a2: approved left, build right; clearer glass, rounded rectangles",
-      "time": "2026-11-26T04:51:48.739Z",
+      "caption": "Dial close at 8d77cb7d: approved left, build right; dark groove round the wheel",
+      "time": "2026-11-26T04:58:02.961Z",
       "by": "step2-keeper",
-      "from": "out/work/looks/files/20261126045148-pills.png"
+      "from": "out/work/looks/files/20261126045802-dz.png"
     }
   ]
 }
