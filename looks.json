@@ -1,35 +1,35 @@
 {
   "folder": "frame-keeper",
-  "pushed": "2026-11-26T05:43:59.159Z",
-  "commit": "9590175fdc5787d27bc3d5de99c200c2adf933e3",
+  "pushed": "2026-11-26T05:52:42.864Z",
+  "commit": "58332ac3b5aaa35016374ba1fbfdb6cf9cf17580",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-tier-street-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T05:39:17.972Z",
+      "caption": "Still key-reply-all-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T05:48:38.346Z",
       "by": "frame-keeper",
-      "from": "out/work/stills/key-tier-street-hd-draft.png"
+      "from": "out/work/stills/key-reply-all-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
+      "caption": "Still key-youre-fired-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T05:49:55.132Z",
+      "by": "frame-keeper",
+      "from": "out/work/stills/key-youre-fired-hd-draft.png"
+    },
+    {
+      "file": "look-3.jpg",
       "caption": "Still key-tier-office-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T05:40:00.940Z",
+      "time": "2026-11-26T05:50:37.032Z",
       "by": "frame-keeper",
       "from": "out/work/stills/key-tier-office-hd-draft.png"
     },
     {
-      "file": "look-3.jpg",
-      "caption": "tier-corporate left side, approved beside draft: the lift's tube is clear with thin lamp lines, where it was a frosted sheet",
-      "time": "2026-11-26T05:43:57.713Z",
-      "by": "frame-keeper",
-      "from": "out/work/looks/files/20261126054357-cmp-corporate-lift-0541.png"
-    },
-    {
       "file": "look-4.jpg",
-      "caption": "loader-page ring, approved beside draft: the bowl is whole and the tube's mouth stands in its wall; the ring is still paler and flatter than approved",
-      "time": "2026-11-26T05:43:57.962Z",
+      "caption": "youre-fired, approved beside draft: the tall wall behind the firehouse is dark and even, where the brushed grain drew static across it",
+      "time": "2026-11-26T05:52:41.550Z",
       "by": "frame-keeper",
-      "from": "out/work/looks/files/20261126054357-cmp-loader-ring-0528.png"
+      "from": "out/work/looks/files/20261126055241-cmp-youre-fired-0552.png"
     }
   ]
 }
