@@ -9,7 +9,7 @@ import { FINISH, TONE, drop as free, fin, hex, matsOf, mesh, moved, place, shade
 
 const SEED = 20261125
 const SCALE = new THREE.Vector3(0.9, 0.9, 0.93)
-const WALNUT: RGB = [0.085, 0.036, 0.017]
+const WALNUT: RGB = [0.125, 0.056, 0.026]
 const POOL: RGB = [0.105, 0.06, 0.036]
 const LAMP = { r: 5.4, stem: 13, pool: 19, glow: 3 }
 const HIDE = hex(0x0d0c0b)

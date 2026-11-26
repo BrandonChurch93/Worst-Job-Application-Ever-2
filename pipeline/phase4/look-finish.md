@@ -142,14 +142,70 @@ Not built, and why:
 - The exhausted arrow's contour (boss_finisher). MEASURED by looking at `references/approved/cursor-acting.png`: the approved Exhausted arrow is melted white with no black contour at all, and the build's follows it. The evidence does not hold, so nothing is changed.
 - The outline's shimmer while still (film frames 6370 to 6392). Not looked at: it wants film frames, not stills.
 
-Looks used on D: cursor-body 5 (Continue at review twice, the sheet `cursor-damage` at review, `step2-crank` at review, the sheet `cursor-acting` at draft).
+What was tried on the exhausted arrow and taken back (commit fa1ae36c, reverted by the Builder at merge 35, which also took back the words written here then): MEASURED by looking, the white lump on Continue is the exhausted body and not the flattened one (`--page step2 --beat step2.continue --at 0.2`: the change to `FLAT` moved 16 pixels of that still). In `material.ts` line 164 the melt fades the black of the edge out wholly by 0.55 and the exhausted state asks 0.6. Fading it by 0.12 at most gave the arrow a dark contour and a point on Continue, and a panel on the sheet that differed from approved's. Ruled for the sheet.
+
+Looks used on D: cursor-body 8 (Continue at 0.6 at review twice, Continue at 0.2 at review twice, the sheet `cursor-damage` at review, `step2-crank` at review, the sheet `cursor-acting` at draft twice).
+
+The Builder's ruling on D, 12:12Z: the flattened arrow and the angry arrow are accepted; the exhausted arrow's contour (fa1ae36c) is ruled for the sheet (`kit/02-SUBJECT.md` names the sheet `cursor-acting` as the reference for Exhausted) and the Builder takes that commit back alone at merge 35. I push no revert of my own.
+
+## G. The focus ring
+
+MEASURED first, the column of pixels down through the top edge of the field in focus (`node out/work/look-finish/prof.cjs <png> 1200 596 300 30`, `step2-crank`, approved against the build; the ring's line is at row 612 to 615 in approved and 615 to 617 in the build):
+
+| Place | Approved | Build before | Build after |
+| --- | --- | --- | --- |
+| 6 px outside the line | 223,212,202 | 233,212,202 | 232,202,187 |
+| 3 px outside | 234,204,181 | 246,217,201 | 245,195,168 |
+| 1 px outside | 225,160,111 | 252,212,187 | 252,178,128 |
+| 2 px inside | 245,212,169 | 202,133,110 | 216,173,131 |
+| 6 px inside | 219,173,137 | 155,128,119 | 170,149,128 |
+
+So the halo was as wide as approved's already (about 13 px) but pale: light added to a pale page only makes it paler, never more orange. And inside the well the build was dark red where approved is warm and light.
+
+Built in `src/shell/real/controls.ts`, `focusRing`: a second surface under the glow that multiplies what lies behind it (`HALO_TINT`, 13 px out and 9 px in, strongest at the line), so the paper round the ring is stained orange and not bleached; and the glow that falls inside the well is now a warm cream (`HALO_WELL`) at 0.9, 0.45, 0.18 where it was the ring's own red at 0.5, 0.2, 0.07. The ring's line, its width and the caret are not touched. No texture.
+
+Still short of approved: the well 6 px inside is 170,149,128 against 219,173,137.
+
+Looks used on G: shell 3 (`step2-crank` at review twice, `step2-dial` at review).
+
+## The sharpening of the finished picture (the Builder's item, 12:15Z; `src/post/post.ts` lent for this alone)
+
+Built in `Post`, the pass that runs once after the samples are averaged. Where: after the lens, the glow, exposure, the tone curve and the grade, on the picture as shown (in display values), and before the grain and the dither, so the grain is not sharpened. How: each pixel moves away from the mean of itself and its eight neighbours (weights 4, 2, 1, a blur of about one pixel) by `SHARPEN` 0.4 of the difference, and is held within `SHARPEN_MOST` 0.03 (under 8 levels of 255) of the lightest and the darkest of those nine, so an edge is made steeper but cannot ring. One amount for every page and tier. The flat view is not sharpened. Cost: the tone curve is worked nine times a pixel in that one pass.
+
+MEASURED (`node out/work/look-finish/hfe.mjs <png>`, M3's own energy, review tier, the same commit with and without the change): step2-rest 14724.5 to 22440.8 (against approved 13600.3: ratio 1.083 to 1.650); tier-corporate 12042.2 to 17993.5 (against approved 21296.8: ratio 0.565 to 0.845).
+
+Seen at native size and at four times (`out/work/look-finish/s1/S-zoom.png`): no light or dark line round the type on the page, round the lamps of the corporate tier or round its sign. The paper's grain reads stronger on the page: with the sharpening step2-rest carries 1.65 times approved's fine detail.
+
+MEASURED with the sharpening (`npm run -s measure -- --unit <unit> --only M2,M3,M4 --tier review`): step2 M2 0, M3 1.6038, M4 4.62; marketing M2 0.0001, M3 1.2507, M4 4.62; decision M2 0, M3 1.3979, M4 4.62; boss M3 1.5085, M4 4.62 and M2 RED at 0.0254 against 0.02 on the sheet `boss-stages`. That red is not from the sharpening and not from this branch: the same command on origin/main at 32dd68f8 in a second worktree gives the same 0.0254 of the same 91790 pixels, and my whole measure of boss before the sharpening gave it too. At the start of my work (11:16Z) boss M2 was 0.0089.
+
+## E. The progress row: measured, not built
+
+MEASURED (`prof.cjs <png> 600 150 300 26` on step2-rest; the same on decision and marketing-top by rows darker than 200): the header rule is as thick in the build as in approved (step2-rest: 9 rows against 10; marketing-top: 6 against 5). Its body matches (162 to 173 against 151 to 169). What differs is the dark line along its lower edge: one hard row at 59 to 64 in the build, three soft rows at 86 to 122 in approved. One try: the rule in the satin rail metal (`railSatin`). The body went up to 204 to 211 and the top to 240, both away from approved, and the dark row stayed at 57, so it was taken back. The dark row is the shadow at the rule's foot, not its metal; changing it means changing the shadow of every page, which I did not do at this hour. The buttons, the numerals, the puck and the empty seat of the boss page were not looked at.
+
+Looks used on E: shell 1.
+
+## F. The shell that seals the arrow at the port
+
+Not started. UNKNOWN.
+
+## The end, 12:57Z
+
+The Builder's rulings: A, B, the ink with its quiet voice and the one-line NEEDS, C (fields), the flattened arrow, the angry arrow, G and the sharpening are accepted. The exhausted arrow's contour was ruled for the sheet and taken back by the Builder at merge 35. No new look item is opened after G: E and F go to the open items as written above. A second try at E was looked at and not kept (the rule with a chamfered shoulder: the dark row at its foot went from 51 to 80 against approved's 95 to 122, but its top row went from 192 to 240 against approved's 140 to 190).
+
+Boss M2 was red on main between merge 33 and 32dd68f8 (0.0254 against 0.02, the sheet `boss-stages`), from a change that was not mine; MEASURED on this branch's head 0fd52cb7 after merges 35 and 36: 0.0027, green.
+
+The three things in my part that still look least real:
+
+1. The cards' glass. The bevel is a hard grey band where approved's is a pale wide one, and the card reads as a flat plate with a line round it. Not touched in this pass.
+2. The arrow's black edge. It is two to three times as heavy as the approved sheets' thin contour, and at low cameras the black side shows as a slab. It is the body's height and the width of its edge band in `shape.ts`; not touched.
+3. The header rule and the progress row. The rule has one hard dark row at its foot where approved has a soft shadow of three rows, and the buttons are nearer mirror chrome than satin steel.
 
 ## Looks counted (tuning looks; baseline and three-panel pictures not counted)
 
 | Part | Used | Of |
 | --- | --- | --- |
-| shell | 10 | 40 |
+| shell | 15 | 40 |
 | type | 2 | 40 |
-| light-engine | 0 | 40 |
-| cursor-body | 5 | 40 |
+| light-engine | 2 | 40 |
+| cursor-body | 8 | 40 |
 

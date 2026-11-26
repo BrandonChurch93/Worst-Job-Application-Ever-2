@@ -29,7 +29,6 @@ interface State {
   from: Rig | null
   inSocket: boolean
   pressed: number
-  shake: number
   struck: number
   skipping: boolean
   damaged: boolean
@@ -48,8 +47,8 @@ const REALLY_TAKE = 0.04
 const HORROR = { thrown: UNFOLD.crack + 0.06, start: UNFOLD.open + 0.04, scared: UNFOLD.legs[0] } as const
 const PRIDE = 1.2
 const SQUARE_UP = 0.8
-const BUCKLE = 1.1
-const SHAKE = { at: 0.3, hold: 0.9 } as const
+const SHAKE = 1.2
+const LOOKS = { first: [0.56, 0.9], second: [1.12, 1.64], take: 1.02, at: [-10, -80] } as const
 const KICK = { shot: 150, popup: 200 } as const
 const RELIEF = { pose: 0.42, hold: 1.5 } as const
 const PRESS = { down: 0.03, deep: 12, hold: 0.06, back: 0.07, over: 0.4, ring: 0.5, stand: 16, shove: [7, -10], rock: -0.07 } as const
@@ -66,7 +65,7 @@ const STAGES = { w: 1920, h: 1080, y: 505, x: [232, 600, 1012, 1580], tuck: 30, 
 const PHASE_GAG = ['boss.slabs', 'boss.popups', 'boss.lastStand'] as const
 const SPOTS: [number, number][] = [[560, 800], [430, 640], [330, 900], [760, 900], [1150, 940], [1420, 950], [1690, 960]]
 
-const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, struck: -1, shake: -1, skipping: false, damaged: false, done: false, cue: 0, busy: 0, mad: -1, last: -9, cx: 700, cy: 820 })
+const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, struck: -1, skipping: false, damaged: false, done: false, cue: 0, busy: 0, mad: -1, last: -9, cx: 700, cy: 820 })
 
 export function makePage(): PageLogic {
   const L = makeLayout()
@@ -212,15 +211,10 @@ export function makePage(): PageLogic {
         s.busy = Math.max(0, s.busy - dt)
         const calm = (): void => { io.cursor.act(f.phase === 0 ? 'confident' : 'angry') }
         if (f.hits > hits) {
-          s.busy = f.phase === 1 ? SHAKE.at + SHAKE.hold : BUCKLE
-          s.shake = f.phase === 1 ? SHAKE.at : -1
+          s.busy = SHAKE
           s.mad = -1
           io.cursor.act('shocked')
         } else if (s.busy > 0 && s.busy - dt <= 0 && !(f.phase === 2 && f.expired < REALLY[1])) calm()
-        if (s.shake > 0) {
-          s.shake -= dt
-          if (s.shake <= 0) io.cursor.react('dustOff')
-        }
         if (f.popupCount > ups && s.busy <= 0) {
           io.cursor.react(f.popupCount === 1 ? 'flinch' : 'fume')
           s.busy = 0.7
@@ -232,7 +226,10 @@ export function makePage(): PageLogic {
           io.cursor.knock((-dx / d) * KICK.shot, (-dy / d) * KICK.shot)
           s.last = s.time
         }
-        const to = TIP_AT_REST - AIM_LIFT - Math.atan2(io.cursor.y - f.y, f.x - io.cursor.x)
+        const e = f.phase === 2 ? f.expired : -1
+        const atBar = (e >= LOOKS.first[0] && e < LOOKS.first[1]) || (e >= LOOKS.second[0] && e < LOOKS.second[1])
+        const eye = atBar ? { x: io.cursor.x + LOOKS.at[0], y: io.cursor.y + LOOKS.at[1] } : f
+        const to = TIP_AT_REST - AIM_LIFT - Math.atan2(io.cursor.y - eye.y, eye.x - io.cursor.x)
         io.cursor.aim(Math.atan2(Math.sin(to), Math.cos(to)))
         if (f.phase !== before) {
           s.t = 0
@@ -256,7 +253,7 @@ export function makePage(): PageLogic {
             io.cursor.react('startle')
             io.cursor.act('shocked')
           }
-          if (f.expired >= REALLY[0] && was < REALLY[0]) io.cursor.react('doubleTake')
+          if (f.expired >= LOOKS.take && was < LOOKS.take) io.cursor.react('doubleTake')
           if (f.expired >= REALLY[1] && was < REALLY[1]) {
             io.cursor.act('angry')
             io.cursor.react('fume')

@@ -44,15 +44,15 @@ One draft still of a key counts once for each of my parts judged in it.
 
 | part | looks |
 | --- | --- |
-| table-frame | 26 |
-| marquee | 7 |
-| loader | 9 |
-| table-hardware | 14 |
+| table-frame | 32 |
+| marquee | 9 |
+| loader | 13 |
+| table-hardware | 19 |
 | lift | 0 |
 | flippers | 5 |
-| bumpers | 7 |
+| bumpers | 13 |
 | targets | 2 |
-| ramps | 12 |
+| ramps | 14 |
 
 ## Counts (`npm run counts -- --key table-wide --live low`)
 
@@ -63,6 +63,11 @@ Each cell is draw calls / triangles.
 | before, cfd83123 | 201 | 21 / 31056 | 16 / 11980 | 15 / 23180 | 12 / 27120 | 10 / 15974 | 8 / 41304 | 8 / 10166 | 5 / 20920 | 4 / 1528 |
 | first pass, 10:51 UTC | 201 | 21 / 31484 | 16 / 11936 | 15 / 23180 | 12 / 29808 | 10 / 22214 | 8 / 49488 | 8 / 10166 | 5 / 19144 | 4 / 1688 |
 | second pass, 11:54 UTC, f8ebae70 | 198 (rows 203) | 21 / 31868 | 16 / 11936 | 15 / 23180 | 12 / 29808 | 10 / 22214 | 8 / 49488 | 8 / 10166 | 5 / 23624 | 4 / 1688 |
+| end, 12:24 UTC, 3286ac81 | 198 | 21 / 31868 | 16 / 12116 | 15 / 23180 | 12 / 29808 | 10 / 22214 | 8 / 49488 | 8 / 10166 | 5 / 23624 | 4 / 1528 |
+
+Sum of my rows at the end: 99 calls (99 before), 203992 triangles (183228 before, 20764 more of 30000 allowed).
+
+Tier keys at the end, 12:24 UTC (scene calls / triangles; before my work UNKNOWN, never measured): `tier-street` 107 / 298644, `tier-office` 128 / 351041, `tier-corporate` 110 / 270383.
 
 Draw calls of my folders: 99 before, 99 after. Triangles of my folders: 183228 before, 199108 after, 15880 more against the 30000 allowed.
 
@@ -105,6 +110,12 @@ Draw calls of my folders: 99 before, 99 after. Triangles of my folders: 183228 b
 30. Steel balls, third step: stripes overhead tried and taken back (read as drawn); the room overhead is a soft pale glow round the window, the floor in the lower half fades to dark under the ball.
 31. Rail cap (the Builder's mail of 12:16Z: walls keep their height, the rail on top wider and bright). The bright brushed land now takes the upper half of the round face that falls to the lane on the left (`CAP.cuts` of `RAIL.cuts`) and the bank and the shoulders of the cradle on the right; its tone is a neutral bright steel (0xeceae3) and not cream; two fine dark grooves run along each land as an extrusion's die leaves them. The walls under it stay navy.
 
+32. Front lands again (the Builder's mail of 12:25Z): the cap's steel tone at a lower level (0.8), so that the bright band runs round the near corners. MEASURED 12:28 UTC `table-wide` draft: mean 1.029 of approved (the Builder measured 0.994 at final where my draft read 1.004); land 78.7 against cap 143.6 and apron 148.1.
+33. Wire sheen and M3 on `rail-cam`: MEASURED 12:25 UTC, the same still with the sheen off reads 0.4046 against 0.4048 with it (mean square of the Laplacian over approved's, my own script, which gave the measure's 0.4048). The sheen is not the cause and stays. By thirds of the picture the two middle cells read 0.09 of approved: there the build is out of focus behind the ball, which is the camera's and the look's.
+34. Loader ring (the Builder's mail of 12:29Z): the ring's face from 0x44474b to 0x74777b, its edge to 0x66696d, the bowl's base three times lighter so that it shades from dark to mid grey. Seen in my own `loader-page` still at 12:31 UTC before it was kept.
+35. Struck cup at `tier-office` (the Builder's mail of 12:34Z). Cause: the lamp's glow shell stood straight while the lid rocked, so one side of the tilted lid came up through the shell and was drawn without it; the torn edge was the two surfaces crossing. The lid also rocked about a point on the floor, which threw it about 7 px out of its seat. Now the shell takes the lid's own tilt and place, and the lid rocks about its own seat. The glow on the lid was first cut from 1.4 to 0.45, which left the lids at rest grey (171), so it is now 1 and the lamp's level passes through `lidGlow` (2.25 l over 1 + 2.65 l), which holds the lid at rest near white and cannot pass 0.85 on a hit. MEASURED 12:43 UTC on the same box: struck deck 198 to 222, lid at rest 199. MEASURED 12:38 UTC on my `tier-office` draft still, box (850,380,1070,600), brightest channel: lid deck 192 to 220 with the middle brightest, the lid at rest beside it 171; whole picture 27285 pixels at 250 or more before and after, so the rest of them are the lamps' and the chrome's.
+36. Steel balls (the Builder's mail of 12:32Z): one step tried at 12:41 UTC, a lower half 1.9 times brighter and warmed by the lamp's colour, and a thin pale rim. Seen in my own `reply-all` still: the lower half stayed a flat grey green and the rim read as a plastic bead, no nearer to approved's chrome. Taken out again; open item.
+
 ## Measurements
 
 - MEASURED before: `npm test` 1461 of 1461, `npm run build` built, `npm run bots` all clear, 10:03 to 10:06 UTC.
@@ -120,3 +131,11 @@ Draw calls of my folders: 99 before, 99 after. Triangles of my folders: 183228 b
 - MEASURED 11:59 UTC: M3 at draft red on 2 of 10 keys: `rail-cam` 0.40 and `lobby-doors` 0.796 (least 0.8); `youre-fired` and `tier-corporate` pass now. `rail-cam` fell from 0.51 at 11:11 UTC; cause UNKNOWN (my wire sheen or the shared look of merge 34).
 - MEASURED 12:09 UTC: mean of `table-wide` draft 1.002 of the approved, with the title's band gone and the front lands at 0.95; the lands went to 0.4 after that still.
 - MEASURED 12:21 UTC with the wider bright cap (tone 1.9): mean of `table-wide` draft 1.004 of the approved; riser street to office 39.3 against floor 43.1; riser office to corporate 28.0 against floor 79.8; left wall 22.8. The box of the right wall (1560,560,1640,700) reads 59.4 because the cap's shoulder now lies in it, the wall under it is unchanged.
+
+### End of the round, 78a6e647
+
+- MEASURED 12:46 UTC, `npm run counts -- --key table-wide --live low`: scene 198 calls (201 before), 549309 triangles; my rows as in the row `end, 12:24 UTC` above, 99 calls (99 before) and 203992 triangles (183228 before, 20764 more of 30000 allowed).
+- MEASURED 12:47 UTC, `npm run compare -- --key table-wide --tier draft --format hd` and the mean of the three channels over approved's: 1.027. Boxes (L mean): riser street to office 39.3 against street floor 42.6; riser office to corporate 27.7 against office floor 80.6; left wall 22.8; right land 78.7; left cap 143.6.
+- MEASURED `du -sb public/assets/table/frame`: 65310 bytes; no hardware and no play asset set.
+- MEASURED on 78a6e647's source at 12:45 UTC: `npm test` 1479 of 1479 in 119 files, `npm run build` ok, `npm run bots` all clear.
+- Open at the end: steel balls short of approved's chrome; M3 red at draft on `rail-cam` (0.4048) and `lobby-doors` (0.7962), last measured 11:59 UTC; the struck lid at final tier is UNKNOWN to me (draft only); page grain through the loader tube; marquee frame plain; drop target relief.

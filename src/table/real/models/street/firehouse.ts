@@ -96,7 +96,7 @@ export function firehouse(b: Buckets, z: Zone, ctx: RealContext): Firehouse {
     if (cornice - string > 12) band(g, -1, W + 1, string, string + 3, 1.3, STONE, KIND.stucco)
     band(g, -3.6, W + 3.6, cornice, deck - 4, 3.6, STONE, KIND.stucco)
     band(g, -2.2, W + 2.2, cornice - 2.4, cornice, 2.2, shade(STONE, 0.86), KIND.stucco)
-    band(g, -1.6, W + 1.6, deck - 4, top - 3, 1.6, STONE, KIND.stucco)
+    band(g, -1.6, W + 1.6, deck - 4, top - 3, 1.6, TONE.brick, KIND.brick)
     quoins(b, W, course + 0.5, cornice - 3, STONE, side === 'front' ? head + 2 : course)
     upper.forEach((h, k) => {
       windowAt(b, h, { ...up, depth: side === 'front' ? 6 : 3.4, glow: lum(), blind: [0.3, 0, 0.45, 0.2, 0.55][(n + k) % 5]! })

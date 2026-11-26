@@ -34,8 +34,9 @@ Seen on my own `youre-fired` and `tier-street` drafts at 11:15 UTC.
 
 | Part | Looks |
 | --- | --- |
-| model-firehouse (`youre-fired`) | 8 |
-| shared tier (`tier-street`), counted against model-garage | 7 |
+| model-firehouse (`youre-fired`) | 11 |
+| model-garage (`tier-street` 11, `table-wide` 10, `last-save` 2, `rail-cam` 1) | 23 |
+| model-moms (`last-save` 1, `tier-street` 1) | 2 |
 
 ## Decisions
 
@@ -67,3 +68,24 @@ Decisions of the second pass:
 - Chrome ring: the bands a polished ring shows (dark under the bead, a dark line at the horizon, bright over it) are in its vertex colours, since the one metal material of the folder is too rough to mirror the room and a second material would cost a draw call.
 - Bank: a plain pediment on the cornice over the columns, three lamps in the porch ceiling, brighter tall windows.
 - The board's own light is 0.14 of its colour (0.2 in the first pass), since the police board read too white in `tier-street`.
+
+## Third pass, 11:55 to 12:35 UTC, in the Builder's order
+
+- Garage. The Builder's look at merge 34 from straight above: a ring of clear rails, not a garage. Decision: the clear rings stay where they are (the inside is the spiral's and the frame owner counts on my inner face), and a grey concrete parking deck stands outside each ring: 24 px out, 6 px thin at the ring and 18 px deep at its edge with a moulded lip, a kerb on top and the bays marked. A slab is cut where the tube of the ball passes (the test that no vertex is in the tube passes), stops short of the stanchions on the right wall, stops short of the police wall below that roof, and none stands in the sector that faces the police station above its roof.
+- One more ring and deck went in half a pitch under the rim, so five decks stack evenly. In `table-wide` that deck stood before the sign 'Background Check' (MEASURED on my still: the sign's crop went from 677 board pixels to 68). It is now left open on the side away from the police station, 0.95 rad to each side; the sign is back (ratio 6.13 on the crop 1306 530 1378 552).
+- The clear rings show at the sides of the cylinder: a pale sheen and more cover where the plastic turns away from the eye, none where it faces it, so a sign seen through the middle keeps its contrast.
+- Windows. Each room takes its level, its warmth and the place of its lamp from `hash01` of its place in the wall; about one in six is dark, about one in three has a blind part way down.
+- Mom's house: two lit roof windows on the back slope, the one the tier's camera sees past the board.
+- M4, MEASURED with `npm run measure -- --unit pinball --only M4 --tier draft` at 12:17 UTC: red, least contrast 1.68, every failing run is `copy:step3.table.title` (the marquee, not this folder). The measure took 15 s and does not see what stands before a sign, so the signs were also checked on my own stills.
+- M3: UNKNOWN from my side. One run was started and stopped, since it renders every still.
+
+- Firehouse parapet: in merge 36's final `youre-fired` the top quarter of the building was one pale stone band. The parapet's outer face is brick now, between a slim stone cornice and the stone coping, as approved's. Seen in my draft still at 12:42 UTC.
+- The pale round pad the ball rests on before the firehouse door is not drawn in this folder: `firehouse.ts` draws only the bay floor behind the mouth.
+- MEASURED at 12:43 UTC: `npm test` 119 files, 1479 of 1479; build exit 0; bots all clear; `npm run counts -- --key table-wide --live low` and the same at `--key tier-street`: 17 draw calls, 97824 triangles for this folder's parts (baseline 17, 71368; limit 17, 101368). One `review` still of `tier-street`: 73.9 s. One `draft` still: 36 to 52 s by key.
+
+## Left for the next owner
+
+- The garage's slabs are flat grey from the side; approved's read as moulded clear grey plastic with highlights.
+- The bank's roof and the row houses are small and plain from above.
+- The three tall bank windows look alike.
+
