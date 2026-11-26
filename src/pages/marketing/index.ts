@@ -18,6 +18,8 @@ export const FLIP_SECONDS = 0.63
 const PIT_CLEAR = 8
 const SHOCK = 0.8
 const TURN_SHARP = 5
+// Under a visitor a card comes over with weight: it is furthest past flat, by the share `past` of the half turn, at the share `over` of the flip, and settles back to flat from there.
+export const SETTLE = { past: 0.045, over: 0.7 }
 const tapeSpeed = 120
 const DOT_GROWS = 24
 const REJECTED_SETTLE = 1.7
@@ -251,7 +253,11 @@ export function makePage(): PageLogic {
     }
   }
 
-  const turnOf = (i: number): number => Math.PI * (0.5 + (0.5 * Math.tanh(TURN_SHARP * (s.flip[i]! - 0.5))) / Math.tanh(TURN_SHARP / 2))
+  const turnOf = (i: number): number => {
+    const u = s.flip[i]!
+    if (s.mode !== 'live') return Math.PI * (0.5 + (0.5 * Math.tanh(TURN_SHARP * (u - 0.5))) / Math.tanh(TURN_SHARP / 2))
+    return Math.PI * (u <= SETTLE.over ? (1 + SETTLE.past) * smooth(u / SETTLE.over) : 1 + (SETTLE.past * (1 + Math.cos((Math.PI * (u - SETTLE.over)) / (1 - SETTLE.over)))) / 2)
+  }
 
   const turningTop = (i: number): number => heights.card + (cards[i]!.h / 2) * Math.abs(Math.sin(turnOf(i)))
 
@@ -367,7 +373,7 @@ export function makePage(): PageLogic {
         s.scroll = Math.abs(gap) < 0.05 ? s.scrollTo : s.scroll + gap * Math.min(1, dt * 16)
       }
 
-      if (rejected() && io.cursor.inAir && io.time >= LANDING.from) {
+      if (rejected() && s.mode === 'film' && io.cursor.inAir && io.time >= LANDING.from) {
         const u = Math.min(1, (io.time - LANDING.from) / (LANDING.down - LANDING.from))
         const z = hover + (HANDOFF.z - hover) * (1 - u * u)
         io.cursor.place(HANDOFF.x, s.scroll + HANDOFF.y, (z - HANDOFF.z * HELD) / (1 - HELD))
