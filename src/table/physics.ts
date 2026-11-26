@@ -20,7 +20,7 @@ export interface BallState {
 export interface TableEvent { name: string; ball: number; id: string; x: number; y: number }
 export interface MachineState {
   snap: string; balls: BallState[]; flip: [number, number]; held: [boolean, boolean]; down: boolean[]; bank: number[]; cool: number[]; gate: boolean[]; on: Record<string, boolean>
-  mom: boolean; carpet?: boolean; saves: number; magnet: number[] | null; aim?: [number, number, number] | null; shot?: [number, number, number] | null; armed?: boolean[]; score: number; steps: number; last: Record<string, number>
+  mom: boolean; carpet?: boolean; live?: boolean; bounce?: [number, number]; saves: number; magnet: number[] | null; aim?: [number, number, number] | null; shot?: [number, number, number] | null; armed?: boolean[]; score: number; steps: number; last: Record<string, number>
 }
 
 const DEG = 0.017453292519943295
@@ -28,6 +28,8 @@ const BALLS = 1 + config.live.pinball.extraBallsInReplyAll
 const HZ = config.sim.stepHz
 const DT = 1 / HZ
 const MAX_SPEED = 30
+// Live play, set by the page each step and off in the film: the steps of a bat's stroke up and of its fall, the height and the steps of its bounce at rest, and the speed limit of a visitor's ball.
+const LIVE = { up: 8, down: 12, bounce: 0.1, back: 10, max: 36 }
 const LIFT_SHUT = 0.4
 const FOREVER = 1e9
 const BAT = { bounce: 0.3, grip: 0.4 }
@@ -78,6 +80,8 @@ export class Machine {
   on: Record<string, boolean> = {}
   mom = false
   carpet = false
+  live = false
+  bounce: [number, number] = [0, 0]
   saves = 0
   magnet: number[] | null = null
   aim: [number, number, number] | null = null
@@ -134,6 +138,8 @@ export class Machine {
     this.on = Object.fromEntries(table.holds.map((h) => [h.id, true]))
     this.mom = false
     this.carpet = false
+    this.live = false
+    this.bounce = [0, 0]
     this.saves = 0
     this.magnet = null
     this.aim = null
@@ -157,7 +163,7 @@ export class Machine {
   save(): MachineState {
     return {
       snap: toBase64(this.world.takeSnapshot()), balls: this.balls.map((b) => ({ ...b })), flip: [...this.flip], held: [...this.held], down: [...this.down], bank: [...this.bank], cool: [...this.cool], gate: [...this.gate],
-      on: { ...this.on }, mom: this.mom, carpet: this.carpet, saves: this.saves, magnet: this.magnet ? [...this.magnet] : null, aim: this.aim ? [...this.aim] : null, shot: this.shot ? [...this.shot] : null, armed: [...this.armed], score: this.score, steps: this.steps, last: { ...this.last }
+      on: { ...this.on }, mom: this.mom, carpet: this.carpet, ...(this.live ? { live: true, bounce: [...this.bounce] as [number, number] } : {}), saves: this.saves, magnet: this.magnet ? [...this.magnet] : null, aim: this.aim ? [...this.aim] : null, shot: this.shot ? [...this.shot] : null, armed: [...this.armed], score: this.score, steps: this.steps, last: { ...this.last }
     }
   }
 
@@ -175,6 +181,8 @@ export class Machine {
     this.on = { ...s.on }
     this.mom = s.mom
     this.carpet = s.carpet === true
+    this.live = s.live === true
+    this.bounce = s.bounce ? [...s.bounce] : [0, 0]
     this.saves = s.saves
     this.magnet = s.magnet ? [...s.magnet] : null
     this.aim = s.aim ? [...s.aim] : null
@@ -539,9 +547,10 @@ export class Machine {
       }
       this.held[s] = want[s]!
       const to = want[s] ? 1 : 0
-      const d = DT / FLIP.seconds
+      const d = this.live ? 1 / (want[s] ? LIVE.up : LIVE.down) : DT / FLIP.seconds
       const was = this.flip[s]!
       this.flip[s] = to > was ? Math.min(to, was + d) : Math.max(to, was - d)
+      if (this.live) this.rebound(s, want[s]!, was)
       if (!want[s]) this.armed[s] = false
       else if (this.armed[s] && was < 1 && this.flip[s] === 1) done = s
     }
@@ -574,11 +583,12 @@ export class Machine {
         const p = body.translation()
         const v = body.linvel()
         const sp = Math.hypot(v.x, v.y)
-        if (sp > MAX_SPEED) body.setLinvel({ x: (v.x / sp) * MAX_SPEED, y: (v.y / sp) * MAX_SPEED }, true)
+        const most = this.live ? LIVE.max : MAX_SPEED
+        if (sp > most) body.setLinvel({ x: (v.x / sp) * most, y: (v.y / sp) * most }, true)
         b.x = p.x
         b.y = p.y
-        b.vx = sp > MAX_SPEED ? (v.x / sp) * MAX_SPEED : v.x
-        b.vy = sp > MAX_SPEED ? (v.y / sp) * MAX_SPEED : v.y
+        b.vx = sp > most ? (v.x / sp) * most : v.x
+        b.vy = sp > most ? (v.y / sp) * most : v.y
         this.sense(i)
       } else if (b.mode === 'rail') {
         const r = railOf(b.rail)
@@ -644,6 +654,19 @@ export class Machine {
     return FLIP.rest + (FLIP.up - FLIP.rest) * pos
   }
 
+  // Live play: a bat that falls back to rest bounces once, low, before it lies still.
+  private rebound(s: number, want: boolean, was: number): void {
+    if (want) {
+      this.bounce[s] = 0
+      return
+    }
+    if (this.bounce[s]! > 0) {
+      this.bounce[s] = this.bounce[s]! - 1
+      const u = this.bounce[s]! / LIVE.back
+      this.flip[s] = LIVE.bounce * 4 * u * (1 - u)
+    } else if (was > 0 && this.flip[s] === 0) this.bounce[s] = LIVE.back
+  }
+
   // Where the clear ball is over a bat at rest: how far along it from the pivot and how far above its middle line.
   private over(s: number): { along: number; above: number } | null {
     const b = this.balls[0]!
@@ -667,6 +690,7 @@ export class Machine {
   // A bat that began its stroke under the ball ends it by sending the ball where the director asked, in the arc that gets it there.
   private strike(s: number): void {
     this.armed[s] = false
+    if (this.live) return
     const sh = this.shot
     const b = this.balls[0]!
     if (!sh || b.mode !== 'plane') return
