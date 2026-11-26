@@ -76,12 +76,12 @@ function build(z: Zone): Group[] {
   const slings: Source[] = table.slings.filter((s) => s.tier === k).map((s) => at((s.a[0] + s.b[0] + s.c[0]) / 3, (s.a[1] + s.b[1] + s.c[1]) / 3, 30, 0.95, 2.4, `sling.${s.id}`))
   // A lamp over each bat, in the warm white of the tier's windows, so the flippers are the brightest things at the foot of a tier and keep their own colour.
   const bats: Source[] = table.flippers.filter((f) => f.tier === k).map((f) => at(f.pivot[0] + (f.side === 'left' ? 0.85 : -0.85), f.pivot[1] + 0.25, 64, 0.9, 3))
-  const insert = (n: Insert, i: number): void => add(`insert.${i + 1}`, 1, linear(insertColour(n)), [at(n.c[0], n.c[1], 28, 0.8, 2.6)], true)
+  const insert = (n: Insert, i: number): void => add(`insert.${i + 1}`, 1, linear(insertColour(n)), [at(n.c[0], n.c[1], 28, 1.1, 3.0)], true)
   const d = table.displays[k]!
   const display = (): void => add('display', 0, C.DISPLAY_AMBER, [0.2, 0.5, 0.8].map((f) => at(d.box[0] + d.box[2] * f, d.box[1] + d.box[3] * 0.4, 34, 0.22, 2.4)))
   if (z.id === 'corporate') {
-    add('general', 2, C.CORPORATE_COLD_WHITE, both(rail, 1.3))
-    add('lanes', 2, C.CORPORATE_GOLD, [...both(lane), ...slings])
+    add('general', 2, C.CORPORATE_COLD_WHITE, both(rail, 1.45))
+    add('lanes', 2, C.CORPORATE_GOLD, [...both(lane, 1.4), ...slings])
     inserts.forEach(insert)
     for (const p of table.posts) if (p.tier === k && p.lamp) add(p.id.slice(p.id.indexOf('.') + 1), 1, C.CORPORATE_GLOBE, [at(p.c[0], p.c[1], 46, 1.5, 5.2, `post.${p.id}`)], true)
     const hq = model('corporate.hq')
@@ -104,8 +104,8 @@ function build(z: Zone): Group[] {
     display()
     add('flash', 0, C.OFFICE_FLASH, [])
   } else {
-    add('general', 2, C.STREET_DUSK, both(rail, 1.35))
-    add('lanes', 2, C.STREET_SODIUM, [...both(lane), ...slings])
+    add('general', 2, C.STREET_DUSK, both(rail, 1.45))
+    add('lanes', 2, C.STREET_SODIUM, [...both(lane, 1.4), ...slings])
     inserts.forEach(insert)
     const fire = model('street.firehouse')
     const police = model('street.police')

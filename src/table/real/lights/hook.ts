@@ -24,7 +24,7 @@ uniform float wjlEnv;
 const EDGE = (COLS.launchB - W / 2) * BALL
 
 // A lacquered floor is never a clean mirror: the fine scratches of play spread each lamp near it into a soft pool in the lamp's own colour, whatever the colour of the print under the lacquer.
-const HAZE = 0.05
+const HAZE = 0.065
 
 // The lacquer is a dark mirror too: it shows each lamp over it as a small bright spot where the eye's line, turned by the floor, meets the lamp. From straight above the spot lies under its lamp, from a low eye it runs out toward the eye.
 const GLINT = { level: 5.0, body: 13, low: 30 }

@@ -41,6 +41,10 @@ Branch `agent/table-light`, made from `origin/phase4-base` (f634ffb). Folders `s
 - `make.mjs` ends with `.linear(0.96, 6)`: nothing in a floor is pure black (one pixel of the office floor was, and the test of the art caught it).
 - `table.pageDuskLevel` is 0.05 on main since 6060c7a (the Builder's change, asked here).
 
+- After the Builder's look at 01:42 UTC (the whole machine dim in `table-wide`, the room round it grey): rail lamps gain 1.45 and lane lamps gain 1.4 in Corporate and the Street (the Office stays), fill down to `0.028 * general`, `HAZE` 0.065, the cold white of Corporate a little less blue (`[0.88, 0.93, 1.0]`).
+- A window of a waking tier is never dead: its lamp stands at `INSERT_REST` 0.3 of the general lighting and its glass at `INSERT_GLOW.rest` 0.6 until the score lights it (then 1 and 1.9). Insert lamp: power 1.1 over 3.0 balls (was 0.8 over 2.6).
+- The room round the machine is the renderer's clear colour (`look.background`, 29 of 255 in a still at any dusk). It is outside my folders: `pipeline/phase4/table-light-NEEDS.patch` makes it follow the website's light in `App.put` (`0.12 + 0.88 * website` of it), applied here as the commit `NEEDS: ...`. MEASURED in `table-wide`: the corner goes from (29, 29, 31) to (6, 6, 8); approved (4, 6, 8).
+
 ## Measured after (at the first full version)
 
 - `npm run build && npm run counts -- --key <key> --live low`, row `table-lights`, draw calls and triangles, before then after: tier-corporate 7 and 14902, then 6 and 14668; tier-office 7 and 18096, then 6 and 17862; tier-street 5 and 11614, then 4 and 11380; table-wide 11 and 21060, then 8 and 20358. Row `tier-art` is the same before and after: 3 and 172, 3 and 172, 2 and 170, 6 and 510. The "before" of the three tier keys was taken on a worktree of `origin/phase4-base`.
