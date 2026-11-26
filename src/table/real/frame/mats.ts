@@ -3,7 +3,7 @@ import { studio } from '../../../post/studio'
 import { materials } from '../../../shell/materials'
 import { lit } from '../light'
 import { LIT } from '../lights/groups'
-import type { Zone } from '../zone'
+import { zone, type Zone } from '../zone'
 import { Geo, type RGB } from './geo'
 import { steel } from './steel'
 
@@ -53,10 +53,13 @@ const fine = (src: THREE.Texture): THREE.Texture => {
   return t
 }
 
+// The lit zone whose room a zone's metal mirrors: its own, or the street's for the apron at the street's foot.
+export const roomOf = (z: Zone): Zone | undefined => (LIT.includes(z.id) ? z : z.id === 'apron' ? zone('street') : undefined)
+
 export const aluOf = (z: Zone, name = 'alu'): THREE.MeshPhysicalMaterial => {
   const src = materials().aluminium
-  const on = LIT.includes(z.id)
-  return own(lit(steel(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: on ? 0.27 : 0.4, metalness: on ? 1 : 0.4, normalMap: src.normalMap ? fine(src.normalMap) : null, normalScale: new THREE.Vector2(on ? 0.24 : 0.15, on ? 0.24 : 0.15), anisotropy: 0.72, anisotropyRotation: Math.PI / 2 })), z, { ceiling: 0.9, panel: 0.4, wide: 0.4, horizon: 1.3, direct: 0.5 }), z), `frame.${name}.${z.id}`)
+  const on = roomOf(z) !== undefined
+  return own(lit(steel(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: on ? 0.27 : 0.4, metalness: on ? 1 : 0.4, normalMap: src.normalMap ? fine(src.normalMap) : null, normalScale: new THREE.Vector2(on ? 0.24 : 0.15, on ? 0.24 : 0.15), anisotropy: 0.72, anisotropyRotation: Math.PI / 2 })), z, { ceiling: 3.6, panel: 1.2, wide: 0.4, horizon: 2, direct: 0.5 }, roomOf(z)), z), `frame.${name}.${z.id}`)
 }
 
 // A zone the lamps do not reach keeps its pale parts pale when the website's light goes down: its paint is lifted by the share of that light that is off.
@@ -66,7 +69,7 @@ export const liftOf = (z: Zone): { value: number } => {
   if (!u) lifts.set(z.id, (u = { value: 1 }))
   return u
 }
-const LIFT = { keeps: 0.7, least: 0.03 }
+const LIFT = { keeps: 0.92, least: 0.03 }
 export const liftFor = (website: number): number => (website + LIFT.keeps * (1 - website)) / Math.max(website, LIFT.least)
 
 export const paintOf = (z: Zone, name = 'paint', grain = 0.035): THREE.MeshPhysicalMaterial => {
@@ -85,11 +88,11 @@ export const paintOf = (z: Zone, name = 'paint', grain = 0.035): THREE.MeshPhysi
 }
 
 export const steelOf = (z: Zone): THREE.MeshPhysicalMaterial => {
-  const on = LIT.includes(z.id)
-  return own(lit(steel(studio(new THREE.MeshPhysicalMaterial({ color: 0xe2e5e8, roughness: on ? 0.1 : 0.2, metalness: on ? 1 : 0.55 })), z, { panel: 0.22, horizon: 1.5, lamps: 1.4 }), z), `frame.steel.${z.id}`)
+  const on = roomOf(z) !== undefined
+  return own(lit(steel(studio(new THREE.MeshPhysicalMaterial({ color: 0xe2e5e8, roughness: on ? 0.1 : 0.2, metalness: on ? 1 : 0.55 })), z, { panel: 0.22, horizon: 1.5, lamps: 1.4 }, roomOf(z)), z), `frame.steel.${z.id}`)
 }
 
-export const screwOf = (z: Zone): THREE.MeshPhysicalMaterial => own(lit(steel(studio(new THREE.MeshPhysicalMaterial({ color: 0xc4c8cc, roughness: 0.2, metalness: 1, vertexColors: true })), z, { panel: 0.6, horizon: 1.4 }), z), `frame.screw.${z.id}`)
+export const screwOf = (z: Zone): THREE.MeshPhysicalMaterial => own(lit(steel(studio(new THREE.MeshPhysicalMaterial({ color: 0xc4c8cc, roughness: 0.2, metalness: 1, vertexColors: true })), z, { panel: 0.6, horizon: 1.4 }, roomOf(z)), z), `frame.screw.${z.id}`)
 
 // Clear plastic with no light passed through it: thin where it is seen straight on, bright where it turns away and wherever a lamp shines in it, with the dark line a clear wall shows just inside its edge.
 export const clearOf = (z: Zone, name = 'clear', base = 0.06): THREE.MeshPhysicalMaterial => {

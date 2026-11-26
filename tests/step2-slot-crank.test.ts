@@ -113,4 +113,20 @@ describe('the crank', () => {
       for (const e of lights) expect(e.shadow).toBeUndefined()
     }
   })
+
+  it('stands a segment on the floor of its tray, and on the page when there is no tray', () => {
+    const seg = shapes(0)[4]!
+    const tray: Shape = { id: 'volume-tray', part: 'rows', kind: 'box', x: 0, y: 0, w: 900, h: 300, z0: TRAY_Z, z1: 0, tone: 'metal' }
+    for (const [list, low] of [[[seg, tray], TRAY_Z], [[{ ...seg, id: 'sheet-meter-5' }], 0]] as [Shape[], number][]) {
+      const { ctx } = context(list)
+      const s = list[0]!
+      const o = crank!.make(s, ctx)
+      crank!.pose!(o, s, ctx)
+      o.position.z = s.z0
+      o.updateMatrixWorld(true)
+      const box = new THREE.Box3().setFromObject(o)
+      expect(box.min.z).toBeCloseTo(low, 4)
+      expect(box.max.z).toBeCloseTo(low + CRANK_LOOK.pill, 4)
+    }
+  })
 })
