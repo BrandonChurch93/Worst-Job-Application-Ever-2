@@ -109,3 +109,12 @@ Same commands as section 2. The gap at the slab's free (upper) edge in px at 192
 - `npm test`: 148 files, 1819 tests passed (before: 147 files, 1812 tests; the new file is `tests/polish-turn.test.ts`, 7 tests).
 - `npx tsc --noEmit -p .`: clean, run last.
 - `tests/stage-turn.test.ts` (another owner's) was changed only where it holds numbers this work changed: the landing speed (0.7 to 0.9 of the hand over became 1.1 to 1.3), the start of the knocks (the seat plus `TURN.held`) and the first knock's depth (6 became 8 degrees).
+
+## 7. The critics' pack and the leave (MEASURED, pictures looked at)
+
+- `npm run -s pack -- --phase 5 --round 22 --unit site --role R4` on eba3a7d: exit 0, 10 files, 414 s. The two page turn sheets are `out/work/packs/round-022/R4/set-A-02.png` and `set-A-03.png` (frames 1 to 12 and 13 to 24 of 24, 0:10.43 to 0:11.20, every second frame of 60).
+- What the six tiles round the seat show at the sheet's size (a quarter of real size). 0:10.73: the slab tilted, the dark gap at its head and right edge. 0:10.77: flat, the page stands larger and higher (the jolt), the row and the tray with longer shadows (the hop). 0:10.80: flat. 0:10.83: the slab sprung back, the dark gap at its head again. 0:10.87: almost flat. 0:10.90 and after: still. In round 21's sheets the same six tiles cannot be told apart at that size.
+- In every tile of the two sheets in which the step row is seen, 0:10.47 to 0:11.20, balls 2 to 5 are steel.
+- The leave of a step page: film frames 2740 to 2792 (`npm run -s seq -- --first 2740 --last 2792 --tier draft --force`; the second page turn of the film is at frame 2730, step 1 to step 2). Balls 2 to 5 of step 1 are steel in every frame of the leaving half and balls 1, 3, 4, 5 of step 2 in every frame of the arriving half.
+- The live site's row before the seat, frames -17 to 0, at real size (`node /tmp/m/live.mjs high /tmp/after/live-early 18 0`): steel in every frame.
+- Decision to be weighed by the Builder: `TURN.held` is 2/30 of the arriving half, 1/30 s, two frames flat. One frame flat is `held: 1 / 30`; the tests of `tests/polish-turn.test.ts` that hold the two frames would change with it.
