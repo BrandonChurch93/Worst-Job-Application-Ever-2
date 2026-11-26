@@ -1,35 +1,35 @@
 {
   "folder": "boss-closer",
-  "pushed": "2026-11-26T08:07:44.626Z",
-  "commit": "2eab2f214e1957b315d9ad722650fd9fca3df8c9",
+  "pushed": "2026-11-26T08:21:05.494Z",
+  "commit": "9f7c3d932f9d489e08e388dfbeafd68be749d8c1",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Contact sheet, the beat boss.press: 12 frames from 2:18.00 to 2:20.97, draft tier, preview",
-      "time": "2026-11-26T08:07:24.731Z",
+      "caption": "Sheet boss-stages: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-26T08:19:05.578Z",
       "by": "boss-closer",
-      "from": "out/work/sheets/sheet-beat-boss_press-preview-draft.jpg"
+      "from": "out/work/compare/compare-boss-stages.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "boss-down beside the approved image, draft: wreck steel darker and brushed, torn shield without pins, smooth socket collar",
-      "time": "2026-11-26T08:07:43.077Z",
+      "caption": "boss-fight, approved left, build right: shield with a ground glass edge, darker brushed steel",
+      "time": "2026-11-26T08:21:03.833Z",
       "by": "boss-closer",
-      "from": "out/work/report/second-down.jpg"
+      "from": "out/work/report/third-fight.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "beat boss.collapse, draft: the machine draws in on itself before it falls apart; plates land first, arms and shield skid after",
-      "time": "2026-11-26T08:07:43.318Z",
+      "caption": "boss-down, approved left, build right: steel lip on the socket, lying shield as a glass bar",
+      "time": "2026-11-26T08:21:04.072Z",
       "by": "boss-closer",
-      "from": "out/work/report/second-collapse.jpg"
+      "from": "out/work/report/third-down.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "beat boss.popups, draft: dialogs stand between arrow and machine, are kicked by darts and hold their damage before clearing",
-      "time": "2026-11-26T08:07:43.549Z",
+      "caption": "boss-stages, approved left, build right: steel bezel at Resting, no seam on the lifted cap",
+      "time": "2026-11-26T08:21:04.309Z",
       "by": "boss-closer",
-      "from": "out/work/report/second-popups.jpg"
+      "from": "out/work/report/third-stages.jpg"
     }
   ]
 }
