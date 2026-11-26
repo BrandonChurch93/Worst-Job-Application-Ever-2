@@ -1,35 +1,35 @@
 {
   "folder": "pinball-stage",
-  "pushed": "2026-11-26T03:04:58.117Z",
-  "commit": "b6c6d66d9f4092f82c28ef43512a87a2d5b80bc5",
+  "pushed": "2026-11-26T03:07:44.352Z",
+  "commit": "0d3d0904c90031e73c3ab7775634c336fb449374",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "youre-fired beside approved on the doorway hold: firehouse 58% of the width",
-      "time": "2026-11-26T02:56:27.461Z",
-      "by": "pinball-stage",
-      "from": "out/work/c-fired3.jpg"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "Key youre-fired: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-26T03:02:00.930Z",
-      "by": "pinball-stage",
-      "from": "out/work/compare/compare-youre-fired.jpg"
-    },
-    {
-      "file": "look-3.jpg",
       "caption": "Key youre-fired: approved on the left, this build on the right, draft tier",
       "time": "2026-11-26T03:03:01.688Z",
       "by": "pinball-stage",
       "from": "out/work/compare/compare-youre-fired.jpg"
     },
     {
-      "file": "look-4.jpg",
+      "file": "look-2.jpg",
       "caption": "youre-fired beside approved on the new Street models: over the roof, beacon and sign whole, ball in the lit doorway, firehouse 50% of the width",
       "time": "2026-11-26T03:04:56.815Z",
       "by": "pinball-stage",
       "from": "out/work/c-fired5.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Key lobby-doors: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-26T03:05:48.773Z",
+      "by": "pinball-stage",
+      "from": "out/work/compare/compare-lobby-doors.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "lobby-doors beside approved on the new HQ: the fit holds, cursor faces the lens",
+      "time": "2026-11-26T03:07:43.340Z",
+      "by": "pinball-stage",
+      "from": "out/work/c-lobby3.jpg"
     }
   ]
 }
