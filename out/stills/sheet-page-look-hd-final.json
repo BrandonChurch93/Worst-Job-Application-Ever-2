@@ -1,0 +1,38 @@
+{
+  "what": {
+    "still": {
+      "page": "step1",
+      "camera": "sheet",
+      "tier": "final",
+      "sheet": "page-look"
+    }
+  },
+  "engineHash": "f53260b07e37d041",
+  "sharedHash": "dd95c22f49f6a5b3",
+  "pageHashes": {
+    "step1": "263044f80dcca6af"
+  },
+  "format": "hd",
+  "tier": "final",
+  "assets": "full",
+  "diagnostic": "beauty",
+  "browser": "147.0.7727.15",
+  "machine": {
+    "host": "space-sandbox",
+    "cores": 2,
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.90GHz",
+    "memoryMb": 7958,
+    "platform": "linux 6.1.155",
+    "node": "v20.20.2"
+  },
+  "seconds": 96.183,
+  "invalidValues": 0,
+  "standIns": [],
+  "counts": {
+    "triangles": 395415,
+    "drawCalls": 212
+  },
+  "problems": [],
+  "sha256": "dafbd57a3d26493015453af085c2d1fb3a9da3e6a8628aed72272bd78c7f1d27",
+  "keptFrom": "out/work/stills/sheet-page-look-hd-final.png"
+}
