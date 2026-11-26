@@ -64,6 +64,12 @@ function run(from: number, skipAt: (v: DriverView) => boolean, watch = false): {
 }
 
 const plain = run(0, () => false, true)
+// The same watch, started on the page itself as the runs below are: a bot that starts there is not at the same step as one that came from the careers page.
+const started = new Map<number, ReturnType<typeof run>>()
+const fromPage = (page: number): ReturnType<typeof run> => {
+  if (!started.has(page)) started.set(page, run(page, () => false, true))
+  return started.get(page)!
+}
 // The middle of a gag's own ending: the middle of the longest time it holds the cursor, or of its last third where it holds nothing.
 const middle = (s: Span): number => (s.takenTo > s.takenFrom ? (s.takenFrom + s.takenTo) / 2 : s.last - (s.last - s.first) / 6)
 
@@ -91,7 +97,8 @@ describe('site finish: d. the skip link', () => {
     // A gag that is over before the link is on the page cannot be left by it: there the press comes in the step the link appears.
     const title = middle(span) >= SKIP ? `pressed in the middle of the ending of ${span.gag}, ${middle(span).toFixed(1)} s into the page` : `${span.gag} is over ${middle(span).toFixed(1)} s into the page, before the link is there: pressed in the step it appears`
     it(title, () => {
-      const at = middle(span)
+      const own = fromPage(span.page).spans.find((x) => x.gag === span.gag && x.page === span.page)
+      const at = own ? middle(own) : middle(span)
       const page = liveFlow()[span.page]!.page
       const r = run(span.page, (v) => v.page.id === page && v.pageTime >= at && v.page.unit !== 'marketing')
       const who = `skip in ${span.gag}`

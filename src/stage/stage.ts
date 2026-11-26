@@ -15,6 +15,11 @@ const skipAfter = Math.round(config.live.skipLinkAfterSeconds * stepHz)
 const armsBeat = beat(config.cursor.armsOnlyInBeat)
 // A click lands where the hero is. The page is told the hero's place on the step of the press, and the place it is told then eases back to the mouse over this many seconds, so a drag that starts with the click has no jump in it.
 export const CLICK_EASE_SECONDS = 0.12
+// A press made with the hero farther than this from the mouse, in page units, waits for the hero. A press is always told to the page at the hero's place.
+export const CLICK_NEAR = 6
+// The longest a press waits for the hero, in seconds. Then the page is told it, and the release after it if the button is up by then.
+export const CLICK_WAIT_SECONDS = 0.25
+const waitSteps = Math.round(CLICK_WAIT_SECONDS * stepHz)
 
 export interface StageOptions {
   mode: Mode
@@ -39,6 +44,7 @@ interface Saved {
   run: number
   max: { pointer: number; flippers: number }
   lag: { x: number; y: number; left: number }
+  late?: { raw: boolean; wait: number }
   reached: string[]
   visited: string[]
   events: number
@@ -65,6 +71,7 @@ export class Stage {
   private run = 0
   private max = { pointer: 0, flippers: 0 }
   private lag = { x: 0, y: 0, left: 0 }
+  private late = { raw: false, wait: 0 }
   private reached = new Set<string>()
   private visited = new Set<string>()
   private made = new Map<string, PageLogic>()
@@ -97,6 +104,7 @@ export class Stage {
     this.pageStep = 0
     this.skipped = false
     this.lag = { x: 0, y: 0, left: 0 }
+    this.late = { raw: false, wait: 0 }
     if (entry.opens !== false) this.unitStep = 0
     this.phaseStep = 0
     this.phase = arrive ? 'arrive' : 'play'
@@ -112,6 +120,7 @@ export class Stage {
     this.run = 0
     this.max = { pointer: 0, flippers: 0 }
     this.lag = { x: 0, y: 0, left: 0 }
+    this.late = { raw: false, wait: 0 }
     this.reached = new Set()
     this.visited = new Set()
     this.checkpoints.clear()
@@ -168,14 +177,15 @@ export class Stage {
       page.skip()
     }
     if (this.phase !== 'end') {
-      const pressed = pointer.down && !this.down
-      page.step({ step: this.pageStep, time: this.pageTime, elapsed: this.time, dt, pointer: this.o.mode === 'live' ? this.landed(pointer, pressed) : pointer, pressed, released: !pointer.down && this.down, cursor: this.cursor, emit, mode: this.o.mode })
+      const down = this.o.mode === 'live' ? this.told(pointer) : pointer.down
+      const pressed = down && !this.down
+      page.step({ step: this.pageStep, time: this.pageTime, elapsed: this.time, dt, pointer: this.o.mode === 'live' ? this.landed({ ...pointer, down }, pressed) : pointer, pressed, released: !down && this.down, cursor: this.cursor, emit, mode: this.o.mode })
       const gag = page.gag()
       if (gag) this.reached.add(gag)
       const inBeat = this.o.mode === 'live' || (this.index === 0 && this.pageTime >= armsBeat.from && this.pageTime < armsBeat.to)
       this.cursor.step(pointer, emit, gag === config.cursor.armsOnlyInBeat && inBeat)
-    }
-    this.down = pointer.down
+      this.down = down
+    } else this.down = pointer.down
     const ignored = !playing || page.ignoring() || (page.control === 'pointer' && this.cursor.taken)
     if (ignored && this.phase !== 'end') {
       this.run++
@@ -187,6 +197,30 @@ export class Stage {
     this.phaseStep++
     this.step++
     this.advancePhase(emit)
+  }
+
+  private told(pointer: Pointer): boolean {
+    const c = this.cursor
+    const late = this.late
+    const fresh = pointer.down && !late.raw
+    late.raw = pointer.down
+    const free = this.page.control === 'pointer' && !c.taken && !c.inAir && c.onPage
+    const near = Math.hypot(c.x - pointer.x, c.y - pointer.y) <= CLICK_NEAR
+    if (late.wait > 0) {
+      if (!free) {
+        late.wait = 0
+        return pointer.down
+      }
+      late.wait--
+      if (!near && late.wait > 0) return false
+      late.wait = 0
+      return true
+    }
+    if (fresh && free && !near) {
+      late.wait = waitSteps
+      return false
+    }
+    return pointer.down
   }
 
   private landed(pointer: Pointer, pressed: boolean): Pointer {
@@ -230,7 +264,7 @@ export class Stage {
 
   private save(): Saved {
     return {
-      step: this.step, index: this.index, pageStep: this.pageStep, unitStep: this.unitStep, phase: this.phase, phaseStep: this.phaseStep, down: this.down, skipped: this.skipped, run: this.run, max: { ...this.max }, lag: { ...this.lag },
+      step: this.step, index: this.index, pageStep: this.pageStep, unitStep: this.unitStep, phase: this.phase, phaseStep: this.phaseStep, down: this.down, skipped: this.skipped, run: this.run, max: { ...this.max }, lag: { ...this.lag }, late: { ...this.late },
       reached: [...this.reached], visited: [...this.visited], events: this.events.length, page: JSON.parse(JSON.stringify(this.page.save() ?? null)), cursor: this.cursor.save()
     }
   }
@@ -252,6 +286,7 @@ export class Stage {
     this.run = s.run
     this.max = { ...s.max }
     this.lag = { ...(s.lag ?? { x: 0, y: 0, left: 0 }) }
+    this.late = { ...(s.late ?? { raw: s.down, wait: 0 }) }
     this.reached = new Set(s.reached)
     this.visited = new Set(s.visited)
     this.events.length = s.events

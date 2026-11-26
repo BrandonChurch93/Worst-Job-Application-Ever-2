@@ -5,7 +5,7 @@ import { pages } from '../src/pages'
 import { careersLayout } from '../src/pages/marketing/layout'
 import { boxOf } from '../src/shell/layout'
 import { BotDriver, type BotName } from '../src/stage/bots'
-import { CLICK_EASE_SECONDS, liveFlow, MouseDriver, Stage, type Driver, type DriverView, type Pointer } from '../src/stage/stage'
+import { CLICK_EASE_SECONDS, CLICK_NEAR, CLICK_WAIT_SECONDS, liveFlow, MouseDriver, Stage, type Driver, type DriverView, type Pointer } from '../src/stage/stage'
 
 const ACTING = ['plain', 'confident', 'nervous', 'shocked', 'angry', 'scared', 'proud', 'exhausted'] as const
 const FAR = 600
@@ -197,7 +197,7 @@ describe('site pointer: the hand back', () => {
   })
 })
 
-describe('site pointer: a click lands where the hero is', () => {
+describe('site pointer: a click lands where the mouse is, once the hero is there', () => {
   const settle = (stage: Stage, mouse: MouseDriver, x: number, y: number, seconds = 1): void => {
     mouse.pointer = { x, y: y - stage.page.scroll(), down: false }
     stage.advance(Math.round(seconds * stepHz))
@@ -209,24 +209,79 @@ describe('site pointer: a click lands where the hero is', () => {
     stage.advance(1)
   }
 
-  it('the Apply button of the careers page: pressed with the hero on it and the mouse 200 px away, not pressed the other way round', () => {
+  it('the Apply button of the careers page: a press goes to the mouse, with the hero on it at once and with the hero away once the hero has come', () => {
     const { layout } = careersLayout()
     const b = boxOf(layout, 'hero-cta-cap')
     const on = { x: b.x + b.w / 2, y: b.y + b.h / 2 }
+    const presses = (s: Stage): number => s.events.filter((e) => e.name === 'button-press').length
     const a = new MouseDriver()
     const there = new Stage({ mode: 'live', flow: liveFlow(), pages, driver: a })
     settle(there, a, on.x, on.y)
     expect(Math.hypot(there.cursor.x - on.x, there.cursor.y - on.y)).toBeLessThan(1)
-    click(there, a, on.x, on.y - 200)
+    a.pointer = { x: on.x, y: on.y - there.page.scroll(), down: true }
+    there.advance(1)
+    a.pointer = { ...a.pointer, down: false }
     there.advance(stepHz * 3)
-    expect(there.events.some((e) => e.name === 'button-press')).toBe(true)
+    expect(presses(there)).toBe(1)
 
     const m = new MouseDriver()
     const away = new Stage({ mode: 'live', flow: liveFlow(), pages, driver: m })
     settle(away, m, on.x, on.y - 200)
     click(away, m, on.x, on.y)
     away.advance(stepHz * 3)
-    expect(away.events.some((e) => e.name === 'button-press')).toBe(false)
+    expect(presses(away)).toBe(1)
+
+    const o = new MouseDriver()
+    const off = new Stage({ mode: 'live', flow: liveFlow(), pages, driver: o })
+    settle(off, o, on.x, on.y)
+    click(off, o, on.x, on.y - 200)
+    off.advance(stepHz * 3)
+    expect(presses(off)).toBe(0)
+  })
+
+  it('no press is lost: the mouse flicks to the Apply button in 0.2 s, presses as it arrives and lets go 0.08 s later', () => {
+    const { layout } = careersLayout()
+    const b = boxOf(layout, 'hero-cta-cap')
+    const on = { x: b.x + b.w / 2, y: b.y + b.h / 2 }
+    for (const [move, hold] of [[0.2, 0.08], [0.08, 1 / stepHz], [0.08, 0.05], [0.08, 0.4], [0.35, 0.08]] as const) {
+      const told: { x: number; y: number; pressed: boolean; after: number; hero: number }[] = []
+      let calls = 0
+      let stage: Stage | null = null
+      const probe = { ...pages }
+      const make = pages.marketing!
+      probe.marketing = () => {
+        const page = make()
+        const step = page.step.bind(page)
+        page.step = (io) => {
+          if (io.pressed || io.released) told.push({ x: io.pointer.x, y: io.pointer.y, pressed: io.pressed, after: calls, hero: stage ? Math.hypot(stage.cursor.x - io.pointer.x, stage.cursor.y - io.pointer.y) : NaN })
+          calls++
+          step(io)
+        }
+        return page
+      }
+      const m = new MouseDriver()
+      const s = new Stage({ mode: 'live', flow: liveFlow(), pages: probe, driver: m })
+      stage = s
+      settle(s, m, 1500, 800 + s.page.scroll())
+      const from = { x: 1500, y: 800 + s.page.scroll() }
+      const n = Math.max(1, Math.round(move * stepHz))
+      for (let i = 1; i <= n; i++) {
+        m.pointer = { x: from.x + (on.x - from.x) * i / n, y: from.y + (on.y - from.y) * i / n - s.page.scroll(), down: false }
+        s.advance(1)
+      }
+      calls = 0
+      m.pointer = { x: on.x, y: on.y - s.page.scroll(), down: true }
+      s.advance(Math.max(1, Math.round(hold * stepHz)))
+      m.pointer = { ...m.pointer, down: false }
+      s.advance(stepHz)
+      expect(s.events.some((e) => e.name === 'button-press'), `move ${move} s, held ${hold} s`).toBe(true)
+      expect(told.map((t) => (t.pressed ? 'press' : 'release'))).toEqual(['press', 'release'])
+      expect(told[0]!.after / stepHz).toBeLessThanOrEqual(CLICK_WAIT_SECONDS)
+      expect(told[1]!.after).toBeGreaterThan(told[0]!.after)
+      expect(told[0]!.hero).toBeLessThan(1e-6)
+      expect(Math.hypot(told[0]!.x - on.x, told[0]!.y - on.y)).toBeLessThanOrEqual(CLICK_NEAR)
+      expect(s.page.gag()).toBe('marketing.apply')
+    }
   })
 
   it('a perk card: it turns when the hero comes onto it, not when the mouse does', () => {
@@ -245,7 +300,7 @@ describe('site pointer: a click lands where the hero is', () => {
     expect(flips(s)).toBe(1)
   })
 
-  it('step 1: a field opens the keyboard and a key types, each with the hero on it and the mouse 200 px away', () => {
+  it('step 1: a field opens the keyboard and a key types when the mouse jumps onto it from 200 px away and presses at once', () => {
     const m = new MouseDriver()
     const s = new Stage({ mode: 'live', flow: liveFlow().slice(1), pages, driver: m })
     const bot = new BotDriver('keen', config.seed)
@@ -260,30 +315,30 @@ describe('site pointer: a click lands where the hero is', () => {
         s.advance(1)
         continue
       }
+      m.pointer = { x: p.x + 200, y: p.y, down: false }
+      s.advance(Math.round(0.4 * stepHz))
       const before = typed()
       const keys = s.events.filter((e) => e.name === 'key-press' || e.name === 'keyboard-rise').length
-      m.pointer = { x: p.x + 200, y: p.y, down: true }
+      m.pointer = { x: p.x, y: p.y, down: true }
       s.advance(1)
-      m.pointer = { x: p.x + 200, y: p.y, down: false }
-      s.advance(1)
-      if (s.events.filter((e) => e.name === 'key-press' || e.name === 'keyboard-rise').length > keys || typed() !== before) pressed++
-      else missed++
       m.pointer = { x: p.x, y: p.y, down: false }
       s.advance(Math.round(0.4 * stepHz))
+      if (s.events.filter((e) => e.name === 'key-press' || e.name === 'keyboard-rise').length > keys || typed() !== before) pressed++
+      else missed++
     }
     expect(pressed).toBe(6)
     expect(missed).toBeLessThanOrEqual(2)
   })
 
   it('a drag that starts with the click has no jump: the place the page is told eases from the hero to the mouse', () => {
-    const seen: { x: number; y: number }[] = []
+    const seen: { x: number; y: number; down: boolean }[] = []
     const probe = { ...pages }
     const make = pages.marketing!
     probe.marketing = () => {
       const page = make()
       const step = page.step.bind(page)
       page.step = (io) => {
-        seen.push({ x: io.pointer.x, y: io.pointer.y })
+        seen.push({ x: io.pointer.x, y: io.pointer.y, down: io.pointer.down })
         step(io)
       }
       return page
@@ -292,16 +347,28 @@ describe('site pointer: a click lands where the hero is', () => {
     const s = new Stage({ mode: 'live', flow: liveFlow(), pages: probe, driver: m })
     settle(s, m, 300, 900)
     seen.length = 0
-    m.pointer = { x: 500, y: 900 - s.page.scroll(), down: true }
+    m.pointer = { x: 300 + CLICK_NEAR - 1, y: 900 - s.page.scroll(), down: true }
     s.advance(Math.round(CLICK_EASE_SECONDS * stepHz) + 2)
+    expect(seen[0]!.down).toBe(true)
     expect(Math.abs(seen[0]!.x - 300)).toBeLessThan(1)
-    expect(seen.at(-1)!.x).toBeCloseTo(500, 6)
-    for (let i = 1; i < seen.length; i++) expect(Math.abs(seen[i]!.x - seen[i - 1]!.x)).toBeLessThanOrEqual(200 / (CLICK_EASE_SECONDS * stepHz) + 1e-6)
+    expect(seen.at(-1)!.x).toBeCloseTo(300 + CLICK_NEAR - 1, 6)
+    for (let i = 1; i < seen.length; i++) expect(Math.abs(seen[i]!.x - seen[i - 1]!.x)).toBeLessThanOrEqual(CLICK_NEAR / (CLICK_EASE_SECONDS * stepHz) + 1e-6)
+
+    settle(s, m, 300, 900)
+    seen.length = 0
+    m.pointer = { x: 500, y: 900 - s.page.scroll(), down: true }
+    s.advance(Math.round(CLICK_WAIT_SECONDS * stepHz) + 2)
+    const first = seen.findIndex((p) => p.down)
+    expect(first).toBeGreaterThan(0)
+    expect(first).toBeLessThanOrEqual(Math.round(CLICK_WAIT_SECONDS * stepHz))
+    expect(Math.abs(seen[first]!.x - 500)).toBeLessThanOrEqual(CLICK_NEAR)
+    expect(seen.slice(first).every((p) => p.down)).toBe(true)
   })
 
   it('the film is told the script\'s own pointer, untouched', () => {
     const film = new Stage({ mode: 'film', flow: liveFlow(), pages, driver: new MouseDriver() })
     film.advance(10)
     expect((film as unknown as { lag: { left: number } }).lag.left).toBe(0)
+    expect((film as unknown as { late: { wait: number } }).late.wait).toBe(0)
   })
 })
