@@ -38,7 +38,7 @@ function inPill(u: number, v: number): { depth: number; x: number; y: number } {
 
 function own(): NonNullable<typeof made> {
   if (made) return made
-  // The unlit segment: clear glass seen from above. Its alpha is how much of the tray is hidden: a bright line on the rim where the light comes from, a thin dark line inside it, a faintly tinted core.
+  // The unlit segment: tinted glass seen from above. Its alpha is how much of the ground is hidden: a bright line on the rim where the light comes from, a thin dark line inside it, a grey green core.
   const off = picture(64, 256, true, (u, v) => {
     const p = inPill(u, v)
     const side = (p.x / 14) * 0.6 - (p.y / 48) * 0.55
@@ -48,8 +48,8 @@ function own(): NonNullable<typeof made> {
     const gather = smooth(side) * smooth((p.depth - 3.2) / 1.5) * (1 - smooth((p.depth - 5.5) / 4))
     const hi = smooth((0.3 - side) / 0.9)
     const k = 0.7 + 0.3 * line * hi - 0.26 * dark * (1 - 0.6 * smooth(side + 0.4)) - 0.3 * edge + 0.22 * gather
-    const a = 0.3 + (0.2 + 0.6 * hi) * line + 0.5 * edge + 0.36 * dark + 0.3 * gather
-    return [k * 0.965, k * 0.995, k * 0.985, a]
+    const a = Math.min(1, 0.72 + (0.08 + 0.2 * hi) * line + 0.28 * edge + 0.2 * dark + 0.12 * gather)
+    return [k * 0.955, k * 0.995, k * 0.975, a]
   })
   // The lit segment: a pale orange core, a deeper orange ring, and a bright line at the rim.
   const glow = picture(64, 256, true, (u, v) => {
