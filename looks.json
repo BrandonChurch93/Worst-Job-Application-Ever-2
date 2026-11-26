@@ -1,35 +1,35 @@
 {
   "folder": "frame-keeper",
-  "pushed": "2026-11-26T05:20:47.472Z",
-  "commit": "9fb576fdbe1d2473f2863250ae3c16155b2c7681",
+  "pushed": "2026-11-26T05:43:59.159Z",
+  "commit": "9590175fdc5787d27bc3d5de99c200c2adf933e3",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-last-save-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T05:16:31.446Z",
+      "caption": "Still key-tier-street-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T05:39:17.972Z",
       "by": "frame-keeper",
-      "from": "out/work/stills/key-last-save-hd-draft.png"
+      "from": "out/work/stills/key-tier-street-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Still key-rail-cam-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T05:17:13.797Z",
+      "caption": "Still key-tier-office-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T05:40:00.940Z",
       "by": "frame-keeper",
-      "from": "out/work/stills/key-rail-cam-hd-draft.png"
+      "from": "out/work/stills/key-tier-office-hd-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "tier-street left side, approved beside draft: the lift's clear tube shows one soft lamp line, not eight hard ones",
-      "time": "2026-11-26T05:20:46.072Z",
+      "caption": "tier-corporate left side, approved beside draft: the lift's tube is clear with thin lamp lines, where it was a frosted sheet",
+      "time": "2026-11-26T05:43:57.713Z",
       "by": "frame-keeper",
-      "from": "out/work/looks/files/20261126052046-cmp-street-tube-0540.png"
+      "from": "out/work/looks/files/20261126054357-cmp-corporate-lift-0541.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "last-save upper half, approved beside draft: the highway's far wire is dark grey with a pale top line; near wire still pale",
-      "time": "2026-11-26T05:20:46.294Z",
+      "caption": "loader-page ring, approved beside draft: the bowl is whole and the tube's mouth stands in its wall; the ring is still paler and flatter than approved",
+      "time": "2026-11-26T05:43:57.962Z",
       "by": "frame-keeper",
-      "from": "out/work/looks/files/20261126052046-cmp-lastsave-wire-0540.png"
+      "from": "out/work/looks/files/20261126054357-cmp-loader-ring-0528.png"
     }
   ]
 }
