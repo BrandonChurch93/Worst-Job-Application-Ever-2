@@ -1,35 +1,35 @@
 {
   "folder": "table-light",
-  "pushed": "2026-11-26T02:45:03.061Z",
-  "commit": "f843395bae822edfc2d43eac3f0e00e24a69943a",
+  "pushed": "2026-11-26T02:50:58.377Z",
+  "commit": "6f65863cf2a0ee9124d3a0608eef0cdfd0d16d0e",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Office flash before the change: flash 1 (left) and flash 0 (right) of pinball.replyAll; 56 percent of the worst block changed, now 6.8",
-      "time": "2026-11-26T02:22:23.820Z",
-      "by": "table-light",
-      "from": "out/work/lights/s1-pair.jpg"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "youre-fired beside approved (left) at f843395: wet lacquer streaks, spill before the lit opening, bluer Street, heavier gold",
-      "time": "2026-11-26T02:45:01.499Z",
-      "by": "table-light",
-      "from": "out/work/lights/n27-youre-fired-pair.jpg"
-    },
-    {
-      "file": "look-3.jpg",
       "caption": "tier-corporate beside approved (left) at f843395: wet lacquer streaks, spill before the lit opening, bluer Street, heavier gold",
       "time": "2026-11-26T02:45:01.725Z",
       "by": "table-light",
       "from": "out/work/lights/n27-tier-corporate-pair.jpg"
     },
     {
-      "file": "look-4.jpg",
+      "file": "look-2.jpg",
       "caption": "tier-street beside approved (left) at f843395: wet lacquer streaks, spill before the lit opening, bluer Street, heavier gold",
       "time": "2026-11-26T02:45:01.974Z",
       "by": "table-light",
       "from": "out/work/lights/n27-tier-street-pair.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "table-wide beside approved (left) at 6f65863 on merge 15: box (500,250,1500,1000) build (75,72,66), approved (82,77,68)",
+      "time": "2026-11-26T02:50:57.114Z",
+      "by": "table-light",
+      "from": "out/work/lights/n28-table-wide-pair.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "youre-fired beside approved (left) at 6f65863: the bay's red on the floor before it",
+      "time": "2026-11-26T02:50:57.337Z",
+      "by": "table-light",
+      "from": "out/work/lights/n28-youre-fired-pair.jpg"
     }
   ]
 }
