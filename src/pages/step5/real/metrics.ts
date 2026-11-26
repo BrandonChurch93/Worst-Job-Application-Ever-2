@@ -9,12 +9,14 @@ import type { Shape } from '../../../stage/types'
 const q = (v: number): number => Math.round(v * 4) / 4
 const srgb = (hex: number) => new THREE.Color().setHex(hex, THREE.SRGBColorSpace)
 const RIM = { inset: 2.9, wide: 1.5, tall: 0.7 }
-const PILLOW = { shoulder: 8, turn: 1.25 }
+const PILLOW = { shoulder: 8, turn: 1.25, glint: 0.7 }
+const POLISH = { inset: 2.6, from: 1.8, wide: 10.5, tail: 9, near: 0.8, far: 0.42, lee: 0.42 }
 const SHADE = { rings: [[-8, 0.2], [0, 0.2], [2, 0.13], [5, 0.07], [10, 0.03], [17, 0]] as [number, number][], dx: 4, dy: -5, colour: 0x2c3a36, full: 8 }
 
 let lineMade: THREE.MeshPhysicalMaterial | null = null
 let pillowMade: THREE.MeshPhysicalMaterial | null = null
 let shadeMade: THREE.MeshBasicMaterial | null = null
+let sheenMade: THREE.MeshPhysicalMaterial | null = null
 
 // The polished edge of the glass: the line of light that runs all the way round a slab.
 function line(): THREE.MeshPhysicalMaterial {
@@ -27,6 +29,51 @@ function pillow(): THREE.MeshPhysicalMaterial {
   pillowMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xc3cdca), roughness: 0.3, metalness: 0, specularIntensity: 0.8, clearcoat: 0.8, clearcoatRoughness: 0.2, vertexColors: true }))
   pillowMade.name = 'metrics-pillow'
   return pillowMade
+}
+
+function sheen(): THREE.MeshPhysicalMaterial {
+  if (!sheenMade) {
+    sheenMade = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xeef3ee), emissive: srgb(0xe2eae4), emissiveIntensity: 0.5, roughness: 0.35, metalness: 0, vertexColors: true, transparent: true, depthWrite: false }))
+    sheenMade.name = 'metrics-sheen'
+    sheenMade.polygonOffset = true
+    sheenMade.polygonOffsetFactor = -1
+    sheenMade.polygonOffsetUnits = -2
+  }
+  return sheenMade
+}
+
+// Light that has gone through the glass comes out at the edge away from the lamp: a band painted on the ground edge, fullest on that side.
+function lightBand(s: Shape, inset: number, rings: [number, number, number][], lee: number): THREE.Mesh {
+  const o = outlineOf(s, inset, 14)
+  const n = o.count
+  const [lx, ly] = look.key.direction
+  const ll = Math.hypot(lx, ly) || 1
+  const pos: number[] = []
+  const nor: number[] = []
+  const col: number[] = []
+  const idx: number[] = []
+  for (const [d, z, a] of rings) {
+    for (let i = 0; i < n; i++) {
+      const away = Math.max(0, -(o.nx[i]! * lx + o.ny[i]! * ly) / ll)
+      pos.push(o.x[i]! - d * o.nx[i]!, o.y[i]! - d * o.ny[i]!, z)
+      nor.push(0, 0, 1)
+      col.push(1, 1, 1, a * (lee + (1 - lee) * away))
+    }
+  }
+  for (let k = 0; k < rings.length - 1; k++) {
+    for (let i = 0; i < n; i++) {
+      const j = (i + 1) % n
+      idx.push(k * n + i, k * n + j, (k + 1) * n + i, k * n + j, (k + 1) * n + j, (k + 1) * n + i)
+    }
+  }
+  const g = new THREE.BufferGeometry()
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
+  g.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3))
+  g.setAttribute('color', new THREE.Float32BufferAttribute(col, 4))
+  g.setIndex(idx)
+  const mesh = solid(g, sheen(), false)
+  mesh.receiveShadow = false
+  return mesh
 }
 
 function shade(): THREE.MeshBasicMaterial {
@@ -79,6 +126,16 @@ function panelOf(s: Shape, card: THREE.Object3D): THREE.Object3D {
   const root = new THREE.Group()
   const bead: ProfilePoint[] = [[RIM.inset, foot - 0.4, true], [RIM.inset + 0.15, foot + RIM.tall * 0.7], [RIM.inset + RIM.wide / 2, foot + RIM.tall], [RIM.inset + RIM.wide - 0.15, foot + RIM.tall * 0.7], [RIM.inset + RIM.wide, foot - 0.2, true]]
   root.add(shadeOf(s), card, solid(sweep(outlineOf(s, 0, 14), profile(bead), false), line(), false))
+  const k = Math.min(1, Math.min(s.w, s.h) / 90)
+  const rise = h - foot
+  const up = 0.08
+  const rings: [number, number, number][] = [[POLISH.from * 0.5, foot - 0.9 + up, 0]]
+  for (let i = 0; i <= 6; i++) {
+    const u = i / 6
+    rings.push([POLISH.from + POLISH.wide * k * u, foot + rise * Math.sin((u * Math.PI) / 2) + up, POLISH.near + (POLISH.far - POLISH.near) * u])
+  }
+  rings.push([POLISH.from + POLISH.wide * k + POLISH.tail, h + up, 0])
+  root.add(lightBand(s, POLISH.inset, rings, POLISH.lee))
   return root
 }
 
@@ -105,6 +162,10 @@ function readoutOf(s: Shape): THREE.Object3D {
   const top = h - 0.3
   const body: ProfilePoint[] = [[0, 0, true], [0, 0.5], ...arc(0, 0.5, wide, top - 0.5, 9).slice(1), [Math.min(half - 1, wide + 10), top]]
   root.add(solid(refracted(sweep(outlineOf(s, 0, 14), profile(body))), pillow(), false))
+  const shoulder = arc(0, 0.5, wide, top - 0.5, 6)
+  const glint: [number, number, number][] = shoulder.map(([d, z], i) => [d, z + 0.08, i === 0 ? 0 : PILLOW.glint * Math.sin((i / 6) * Math.PI) ** 0.6])
+  glint[glint.length - 1]![2] = 0
+  root.add(lightBand(s, 0, glint, 0))
   return root
 }
 
