@@ -23,10 +23,10 @@ Everything in this part is made in code when the page starts. No file is stored.
 ## Health bar
 
 - Made by: code, `src/pages/step4/real/health-bar.ts`.
-- From: numbers. Track: a swept rim (shared chrome) and a flat floor (the shared brushed rail metal, cloned, darker, through `studio()`). Fill: one swept capsule in the shared orange.
+- From: numbers. Track: a swept rim (shared satin aluminium) and a floor swept as a shallow gutter (the shared brushed rail metal, cloned, darker, finer brushing, through `studio()`). Fill: one swept capsule with a flat top in the shared orange.
 - Command: none.
-- Takes: first try, then tuned by eye.
-- Why this one: the approved image shows a polished rim, a dark brushed floor and a satin orange fill.
+- Takes: fourth (round back, then flat top; chrome rim, then satin; flat floor, then gutter).
+- Why this one: the approved image shows a thin rim, a dark brushed floor shaded from its upper wall and a satin orange fill with a flat top.
 - Date: 2026-11-26.
 
 ## Verify card
@@ -43,6 +43,6 @@ Everything in this part is made in code when the page starts. No file is stored.
 - Made by: code, `lacquer()` in `src/pages/step4/real/boss-weapons.ts`.
 - From: numbers (`LACQUER`), and the shell's grain normal map (256 px, seed 71 past the site's seed) on the clear coat, as step 1's red has it. No file.
 - Command: none.
-- Takes: third try of three (the second was a rougher base with full specular, dropped).
+- Takes: fifth (a rougher base with full specular was dropped; the last has no base specular and the coat at full reflection).
 - Why this one: its face is the nearest to the approved image's red, measured in the key's still.
 - Date: 2026-11-26.

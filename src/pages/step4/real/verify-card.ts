@@ -9,7 +9,7 @@ import type { Shape } from '../../../stage/types'
 const heights = config.scale.heights
 const q = (v: number): number => Math.round(v * 4) / 4
 
-export const VERIFY = { step: 4, bezel: 1.8, bezelHigh: 2, capHigh: 4, capLow: 1.9, stroke: 5.6, ink: 0.7, dip: 1.6 }
+export const VERIFY = { step: 4, bezel: 1.8, bezelHigh: 2, capHigh: 4.8, capLow: 1.9, stroke: 4.8, ink: 0.7, dip: 1.6 }
 export const TICK: [number, number][] = [[10.5, 23], [18.5, 31], [33.5, 13.5]]
 
 const stepped = (h: number): number => Math.ceil(h / VERIFY.step) * VERIFY.step
@@ -36,8 +36,8 @@ function box(s: Shape): THREE.Object3D {
   const ticked = s.tone === 'accent'
   const top = ticked ? VERIFY.capHigh : VERIFY.capLow
   const inner = { kind: 'box', w: s.w - (b + 0.7) * 2, h: s.h - (b + 0.7) * 2, r: Math.max(1, (s.r ?? 0) - b - 0.7) }
-  const round = ticked ? 2.2 : 1.1
-  const cap: ProfilePoint[] = [[0, 0.3, true], [0, top - round], ...arc(0, top - round, round, round, 7).slice(1)]
+  const round = ticked ? 3.6 : 1.1
+  const cap: ProfilePoint[] = [[0, 0.3, true], [0, top - round], ...arc(0, top - round, round, round, 9).slice(1)]
   const lid = mesh(sweep(outlineOf(inner, 0, 12), profile(cap)), ticked ? m.orange : m.enamel)
   lid.name = 'cap'
   root.add(lid)

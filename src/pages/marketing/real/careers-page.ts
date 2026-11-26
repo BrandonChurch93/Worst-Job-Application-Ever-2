@@ -89,7 +89,7 @@ let blackMade: THREE.MeshPhysicalMaterial | null = null
 let tapeMade: THREE.MeshPhysicalMaterial | null = null
 
 const print = (): THREE.MeshPhysicalMaterial => (printMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xe9e6df), roughness: 0.5, metalness: 0, clearcoat: 0.5, clearcoatRoughness: 0.2 })))
-const black = (): THREE.MeshPhysicalMaterial => (blackMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x202124), roughness: 0.78, metalness: 0, clearcoat: 0.12, clearcoatRoughness: 0.5, specularIntensity: 0.3 })))
+const black = (): THREE.MeshPhysicalMaterial => (blackMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x232527), roughness: 0.66, metalness: 0, clearcoat: 0.3, clearcoatRoughness: 0.34, specularIntensity: 0.4 })))
 const marker = (): THREE.MeshPhysicalMaterial => (tapeMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x1d1d1e), roughness: 0.82, metalness: 0, specularIntensity: 0.35 })))
 
 // A photograph for a staff badge: a print with a white border, its picture blacked out.

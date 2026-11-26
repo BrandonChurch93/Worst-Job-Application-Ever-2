@@ -88,10 +88,10 @@ function buildLayout(): LayoutNode {
 
 interface State {
   mode: 'live' | 'film'; time: number; t: number; phase: 'wait' | 'pull' | 'sealed' | 'open' | 'result'; pull: number; said: string[]; drops: number; tows: number
-  scroll: number; floor: number; opened: number; result: number; pressed: boolean; hold: number; done: boolean; skipped: boolean; saved: boolean; score: number; shut: boolean; dim: number; struck: number
+  scroll: number; floor: number; opened: number; result: number; pressed: boolean; hold: number; done: boolean; skipped: boolean; saved: boolean; score: number; shut: boolean; dim: number; struck: number; face: number[]; hit: number[]
 }
 
-const fresh = (): State => ({ mode: 'live', time: 0, t: 0, phase: 'wait', pull: 0, said: [], drops: 0, tows: 0, scroll: 0, floor: 0, opened: 0, result: 0, pressed: false, hold: 0, done: false, skipped: false, saved: false, score: 0, shut: false, dim: 0, struck: -9 })
+const fresh = (): State => ({ mode: 'live', time: 0, t: 0, phase: 'wait', pull: 0, said: [], drops: 0, tows: 0, scroll: 0, floor: 0, opened: 0, result: 0, pressed: false, hold: 0, done: false, skipped: false, saved: false, score: 0, shut: false, dim: 0, struck: -9, face: [0, 0, 1, 0], hit: [0, 0] })
 
 const flips = (take as unknown as { flips: [string, number, number][] }).flips
 const held = (side: string, time: number): boolean => flips.some((f) => f[0] === side && time >= f[1] && time < f[2])
@@ -113,7 +113,7 @@ const NAMED: Record<string, CameraPose> = {
   'table-wide': look('table-wide', [MID, APRON_Y + 16.41, 12.61], [MID, Y2 + 3.94, 1.96]),
   'table-lobby': look('table-lobby', [MID + 0.8, Y0 + 8.3, -0.45], [MID - 0.15, Y0 + 5.02, 0.19]),
   'table-replyall': look('table-replyall', [MID, Y1 + 16.35, 15.4], [MID, Y1 + 6.3, -2]),
-  'table-fired': look('table-fired', [7.6, Y2 + 7.14, -0.2], [4.8, Y2 + 3.8, -2.2]),
+  'table-fired': look('table-fired', [6.91, Y2 + 6.8, -0.67], [4.4, Y2 + 3.8, -2.27]),
   'table-save': look('table-save', [MID, Y2 + 12.45, 7.5], [MID, Y2 + 8.95, -3])
 }
 const FILM: [number, string, number][] = [
@@ -134,6 +134,7 @@ const LOW = 2.4
 const PULL = { door: 12, scoop: 30, near: 2.2, gate: 40 }
 const NEST = { sling: [3.3, 6.5], under: [0.5, 0.9], pour: [-10.6, 1.0, 0.3] }
 const SHOT = { door: 13, scoop: 21, nest: 17, save: 19, lob: 9, lean: 0.3, jets: 0.5, wide: 2.5, low: 7.5, early: 0.3, back: 1 }
+const FACE = { over: 0.766, low: 0.574, turn: 0.75, back: 13, press: 20, hit: 0.3, lag: 0.1, wall: 0.8, lens: 0.6 }
 const ACT = { bumper: 0.5, kick: 0.7, doors: 0.45, shock: 0.45, realise: 0.45, slow: 7, lead: 0.3 }
 
 export function makePage(): PageLogic {
@@ -264,6 +265,14 @@ export function makePage(): PageLogic {
     const u = b.mode === 'rail' && b.rail === 'launch' ? smooth(Math.min(1, b.s / 7)) : b.mode === 'hold' ? 0 : 1
     return railPose(0.7 + 2.7 * u, 2.6 + 0.8 * u, 0.95 + 1.55 * u, 0.5, 36 * (1 - u))
   }
+  const backPose = (ahead = 3.2, clear = 1.7, lift = 1.05): CameraPose => {
+    const b = ball()
+    if (b.mode !== 'rail' || b.rail !== 'highway') return railPose()
+    const r = railOf(b.rail)
+    const c = soft(r, b.s)
+    const e = soft(r, Math.min(railLength(r), b.s + ahead))
+    return { eye: toWorld(px(e.x), px(e.y), px(e.z + clear)), target: toWorld(px(c.x), px(c.y), px(c.z + lift)), up: [0, 0, 1], fov: fov('rail') }
+  }
   const follow = (): CameraPose => homePose(s.scroll, s.floor)
   const lens = (name: string, p: CameraPose | null): CameraPose | null => {
     const open = LENS[name]
@@ -273,7 +282,7 @@ export function makePage(): PageLogic {
     const f = basis(p).forward
     return { ...p, focus: Math.max(BALL, (on[0] - p.eye[0]) * f[0] + (on[1] - p.eye[1]) * f[1] + (on[2] - p.eye[2]) * f[2]), aperture: open }
   }
-  const named = (name: string): CameraPose | null => lens(name, name === 'follow' ? follow() : name === 'rail' ? railPose() : name === 'ride' ? ridePose() : NAMED[name] ?? null)
+  const named = (name: string): CameraPose | null => lens(name, name === 'follow' ? follow() : name === 'rail' ? backPose() : name === 'ride' ? ridePose() : NAMED[name] ?? null)
 
   const cut = (time: number): CameraPose => {
     let i = 0
@@ -523,6 +532,30 @@ export function makePage(): PageLogic {
     io.emit('ball-seal', port.x, port.y, true)
   }
 
+  const face = (io: StepIo): void => {
+    const b = ball()
+    const eye = (s.mode === 'film' ? cut(s.time) : follow()).eye
+    const c = toWorld(px(b.x), px(b.y), px(b.z) + BALL / 2)
+    const d = Math.hypot(eye[0] - c[0], eye[1] - c[1], eye[2] - c[2]) || 1
+    const e = [(eye[0] - c[0]) / d, (eye[1] - c[1]) / d, (eye[2] - c[2]) / d]
+    const low = smooth(Math.max(0, Math.min(1, (FACE.over - e[2]!) / (FACE.over - FACE.low))))
+    const k = FACE.turn * low
+    const want = [e[0]! * k, e[1]! * k, 1 - k + e[2]! * k, FACE.back * low]
+    const speed = Math.hypot(b.vx, b.vy)
+    if (s.struck === s.t) s.hit = speed > 0.01 ? [b.vx / speed, -b.vy / speed] : [0, 0]
+    const age = (s.t - s.struck) / FACE.hit
+    if (age >= 0 && age < 1 && low > 0) {
+      const w = (1 - age) * (1 - age) * low
+      const n = [s.hit[0]! * FACE.wall + e[0]! * FACE.lens, s.hit[1]! * FACE.wall + e[1]! * FACE.lens, e[2]! * FACE.lens, FACE.press]
+      for (let i = 0; i < 4; i++) want[i] = want[i]! * (1 - w) + n[i]! * w
+    }
+    const rate = Math.min(1, dt / FACE.lag)
+    for (let i = 0; i < 4; i++) s.face[i] = s.face[i]! + (want[i]! - s.face[i]!) * rate
+    const flatUp = low === 0 && s.face[3]! < 0.05
+    if (flatUp) s.face = [0, 0, 1, 0]
+    io.cursor.turn(flatUp ? null : { x: s.face[0]!, y: s.face[1]!, z: s.face[2]!, back: s.face[3]! })
+  }
+
   const logic: PageLogic = {
     id: 'step3', unit: 'pinball', width: 1920, height: PAGE_H, layout, gags, start,
     get control(): 'pointer' | 'flippers' { return s.phase === 'sealed' ? 'flippers' : 'pointer' },
@@ -561,6 +594,7 @@ export function makePage(): PageLogic {
         const b = ball()
         io.cursor.place(px(b.x), px(b.y), px(b.z))
         if (b.mode !== 'hold') io.cursor.knock(px(b.vx) * ACT.lead, px(b.vy) * ACT.lead)
+        face(io)
         if (b.mode === 'hold' && b.hold === 'outlet') {
           s.opened += dt
           if (s.opened >= 0.2) {

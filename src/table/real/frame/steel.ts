@@ -26,6 +26,7 @@ uniform vec4 wjsRow;
 uniform float wjsDirect;
 uniform float wjsKeep;
 uniform float wjsShow;
+uniform float wjsUnder;
 varying vec3 wjsAt;
 float wjsGlint( float across, float along, float up, float at, float rough ) {
 	float a = abs( across );
@@ -55,7 +56,7 @@ vec3 wjsRoom( vec3 R, float rough ) {
 	float sides = 0.6 + 0.4 * sin( az * 2.0 + 0.9 ) * sin( az * 3.0 - 0.4 );
 	col += mix( wjsLamp, vec3( 1.0 ), 0.45 ) * hor * sides * wjsPanel.w;
 	float low = smoothstep( -0.04, -0.34, R.z );
-	col = mix( col, wjsFloor * ( 0.16 + 0.3 * ( 0.5 + 0.5 * sin( az * 5.0 + 1.7 ) ) ), low );
+	col = mix( col, wjsFloor * ( 0.16 + 0.3 * ( 0.5 + 0.5 * sin( az * 5.0 + 1.7 ) ) ) + mix( wjsLamp, vec3( 1.0 ), 0.55 ) * wjsUnder * ( 0.8 + 0.2 * sin( az * 5.0 + 1.7 ) ), low );
 	return col;
 }
 `
@@ -82,6 +83,8 @@ export interface SteelLook {
   direct?: number
   // How much of the surround the lights give stays in it beside the room.
   keep?: number
+  // How much of the lit floor of its tier a satin wall gives back: a wall that stands beside the lamps is not a black mirror.
+  under?: number
 }
 
 // `from` is the lit zone whose room a zone outside the lamps mirrors: the apron stands in the street's room.
@@ -105,9 +108,10 @@ export function steel<T extends THREE.MeshPhysicalMaterial>(m: T, own: Zone, o: 
     shader.uniforms.wjsDirect = { value: o.direct ?? 0.35 }
     shader.uniforms.wjsKeep = { value: o.keep ?? 0 }
     shader.uniforms.wjsShow = { value: SHOW }
+    shader.uniforms.wjsUnder = { value: o.under ?? 0 }
     shader.vertexShader = 'varying vec3 wjsAt;\n' + shader.vertexShader.replace('#include <project_vertex>', 'wjsAt = transformed;\n#include <project_vertex>')
     shader.fragmentShader = PARS + shader.fragmentShader.replace(AT, BODY + AT)
   }
-  m.customProgramCacheKey = () => `${key.call(m)}|wjs8`
+  m.customProgramCacheKey = () => `${key.call(m)}|wjs10`
   return m
 }
