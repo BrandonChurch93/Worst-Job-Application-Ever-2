@@ -76,6 +76,7 @@ Counted from the first still, by part. Limit 40 a part in this round.
 | 07:55 | both | 4 | m1, light on the riser faces, walls that look across a tier mirrored: youre-fired, last-save (art), table-wide, lobby-doors (lights) | 34, 17 |
 | 07:58 | both | 3 | m2, a front's image in the lacquer worked out from the wall itself: youre-fired, lobby-doors (art), table-wide (lights) | 35, 19 |
 | 08:01 | both | 3 | m3, riser light and mirror down a step: youre-fired (art), table-wide (lights); one review still of reply-all for its time (lights) | 37, 20 |
+| 08:10 | both | 3 | s1, head lamps lower so shadows run longer, Corporate floor thinned: tier-corporate (art), reply-all, tier-street (lights) | 39, 21 |
 
 ## Decisions
 
@@ -96,6 +97,9 @@ Counted from the first still, by part. Limit 40 a part in this round.
 15. The Builder's riser check. MEASURED on the `table-wide` draft with a mean of luminance over a box of the still (Python, PIL; boxes 820,545 to 1200,585 and 820,330 to 1200,355; the Street's floor 900,620 to 1150,700): before, the riser faces stood at 31.0 and 32.5 of 255 and the Street's floor at 44.4, so the risers were the darkest large shapes. The head lamps point away from the rail they hang under, so nothing of them reached it. Now a wall that looks down the tier within 150 px of the tier's head takes a share of the head lamps' light (`SHADOW.riser` 0.06 in `hook.ts`): the risers stand at 54.9 and 61.8 and the floor at 44.7. This is on the faces as they are on main at 08:00 UTC; when `/root/frame_fixer`'s aluminium is merged the number has to be measured again and `SHADOW.riser` taken down if the faces come out pale.
 16. Point 7, the floor as a mirror. The image of a lit front in the lacquer is now worked out from the wall itself: for a place on the floor the ray to the eye is mirrored and followed to the wall's plane, and where it meets the wall between the sill and the top, in a window's column, the floor shows the window's colour (`MIRROR` in `hook.ts`). So the image stands under its wall from every camera, with the wall's own slant, and is gone from straight above, as a mirror's is. Walls that look across a tier have images too: the firehouse's right wall, the police station's left, the bank's right (`side` in `spillsOf`, 4 images to 7). The image is a row of lit columns, not the drawn windows: a true mirror would cost the tier a second drawing of its models.
 17. The lacquer mirrors more at middle angles (the square of the angle term instead of the cube), so a lamp and a front show in it from the film's cameras and not only from along the floor.
+18. Corporate floor (R1-2 issue 5): the sunburst went from six double rings with up to 96 rays a band to three single rings with 12 and 24 hairlines, so the marble is the floor and the gold is a few lines on it. The fans beside the carpet stay: the approved floor has them.
+19. The head lamps stand lower (the height part of their direction 0.5 to 0.38, Office 0.52 to 0.42) and are stronger by the same share, so a shadow runs about 2.6 times the height of what throws it instead of 1.75. MEASURED after it (`means2.mjs s1`): tier-corporate 1.04 with 26% dark, reply-all 0.99 with 8% dark, tier-street 1.03 with 17% dark.
+20. A lit window glows at 0.85 instead of 1.05, so its colour stays deep round a bright middle.
 
 ## Needs
 

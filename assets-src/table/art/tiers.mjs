@@ -277,17 +277,13 @@ export function corporate(D) {
   const door = [hq[0] + hq[2] / 2, hq[1] + hq[3]]
 
   // The sunburst of the lobby: arcs and rays from the doors of the tower, over the whole floor.
-  const radii = [1.55, 2.5, 3.6, 4.9, 6.4, 8.1]
-  for (const r of radii) filler.push(ring(door, r, pal.key, 0.02), ring(door, r + 0.07, pal.fine, 0.009))
+  const radii = [2.5, 4.9, 8.1]
+  for (const r of radii) filler.push(ring(door, r, pal.key, 0.016))
   for (let i = 0; i < radii.length - 1; i++) {
     const r0 = radii[i] + 0.07
     const r1 = radii[i + 1] - 0.05
-    const n = [24, 36, 48, 72, 96][i]
-    for (let j = 0; j < n; j++) {
-      const a = (360 * (j + (i % 2) * 0.5)) / n
-      if (i % 2 === 0 && j % 2 === 0) filler.push(line(polar(door, r0, a), polar(door, r1, a), pal.key, 0.014))
-      else if (j % 4 === 0) filler.push(line(polar(door, r0, a), polar(door, r1, a), pal.fine, 0.012))
-    }
+    const n = [12, 24][i]
+    for (let j = 0; j < n; j++) filler.push(line(polar(door, r0, (360 * (j + i * 0.5)) / n), polar(door, r1, (360 * (j + i * 0.5)) / n), pal.fine, 0.011))
   }
   const keep = keepOut(D)
   defs.push(el('mask', { id: 'keep-corporate', maskUnits: 'userSpaceOnUse', x: 0, y: 0, width: D.W, height: D.H }, rect(D.COLS.left, 0.3, D.COLS.right - D.COLS.left, D.H - 0.3, { fill: '#fff' }) + keep.join('')))
