@@ -6,7 +6,7 @@ import { fibreHeights } from './letterStock'
 
 const srgb = (hex: number) => new THREE.Color().setHex(hex, THREE.SRGBColorSpace)
 
-export const INK = { seed: config.seed + 5303, w: 1024, h: 256, colour: 0xc4211b, pad: 14 }
+export const INK = { seed: config.seed + 5303, w: 1024, h: 256, colour: 0xb81812, pad: 14 }
 
 // How much ink the rubber left at each place of the mark: less where the block rocked off the sheet, none in the paper's hollows.
 export function inkCover(w: number, h: number, seed: number): Float32Array {
@@ -32,7 +32,7 @@ export function inkCover(w: number, h: number, seed: number): Float32Array {
       const u = x / w
       const v = y / h
       const rock = 0.2 * ease(Math.min(1, Math.max(0, (0.34 - u) / 0.34))) * ease(Math.min(1, Math.max(0, (v - 0.2) / 0.8))) + 0.16 * ease(Math.min(1, Math.max(0, (u - 0.78) / 0.22))) * ease(Math.min(1, Math.max(0, (0.6 - v) / 0.6)))
-      const press = 1.14 - rock - 0.4 * Math.pow(cloud(x, y, 150, 11), 2) - 0.16 * cloud(x, y, 34, 13)
+      const press = 1.22 - rock - 0.4 * Math.pow(cloud(x, y, 150, 11), 2) - 0.16 * cloud(x, y, 34, 13)
       const t = tooth[(y % 512) * 512 + (x % 512)]!
       const hollow = Math.max(0, -t - 0.02 - 0.2 * (press - 0.6)) * 3.2
       const pin = hash01(x >> 1, y >> 1, seed + 17) < 0.03 + 0.26 * Math.max(0, 1 - press) ? 0.5 : 0
