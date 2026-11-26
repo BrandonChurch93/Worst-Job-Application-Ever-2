@@ -1,35 +1,35 @@
 {
   "folder": "table-runner",
-  "pushed": "2026-11-26T05:04:43.266Z",
-  "commit": "2a5a2c59dbead928fd036039e9b1fa40ce576820",
+  "pushed": "2026-11-26T05:47:51.760Z",
+  "commit": "38fbc638ee0a813cb5d2dda355cccbb25b47a1f5",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-tier-street-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T05:04:17.494Z",
+      "caption": "Still key-table-wide-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T05:27:10.140Z",
       "by": "table-runner",
-      "from": "out/work/stills/key-tier-street-hd-draft.png"
+      "from": "out/work/stills/key-table-wide-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "table-wide at draft, approved left, this build right: the whole machine to its near end, the near corners at the frame's corners",
-      "time": "2026-11-26T05:04:41.562Z",
+      "caption": "Key rail-cam: approved on the left, this build on the right, draft tier, with crops of cursor, shape:model.street.bank, shape:model.street.firehouse",
+      "time": "2026-11-26T05:43:47.122Z",
       "by": "table-runner",
-      "from": "out/work/report/table-runner-table-wide-2.jpg"
+      "from": "out/work/compare/compare-rail-cam.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "rail-cam at draft with the take of search 25, approved left, this build right: the rail runs from the ball down the centre toward the eye",
-      "time": "2026-11-26T05:04:41.826Z",
+      "caption": "Key rail-cam: approved on the left, this build on the right, draft tier, with crops of cursor, shape:rail.highway.b.1",
+      "time": "2026-11-26T05:45:20.724Z",
       "by": "table-runner",
-      "from": "out/work/report/table-runner-rail-cam-2.jpg"
+      "from": "out/work/compare/compare-rail-cam.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "tier-street at draft, approved left, this build right: the ball right of the firehouse door as approved; the camera is the home camera from above, not fitted",
-      "time": "2026-11-26T05:04:42.065Z",
+      "caption": "rail-cam draft beside approved, round 11 look 2: eye above and behind the ball, cursor rolled so the tip stands up right",
+      "time": "2026-11-26T05:47:50.651Z",
       "by": "table-runner",
-      "from": "out/work/report/table-runner-tier-street.jpg"
+      "from": "out/work/report/r11-rail-cam-look2.jpg"
     }
   ]
 }
