@@ -47,6 +47,8 @@ Folder: 18 calls, 31208 triangles. Whole frame: 207 draw calls against a limit o
 - The furniture of a cubicle is drawn for a cell of 82.2 by 66 px and grows or shrinks with the cell of the layout between 0.85 and 1.3 (`FIT`), so a wider or narrower farm stays full.
 - The screws of the farm sit on the caps, where the partitions cross the long walls, not on the slab.
 - The stapler from straight above. The arm, the base and the plate were three reds that ran together. The arm is now 2.8 px narrower on each side than the steel base, so a steel edge shows on both sides of it, and the base lays a dark band on the plate (`SIDE`).
+- The tray is full to its walls. Under the two heaps that hop lies a still layer of 13 envelopes just under the rim (`FILL_LAYER`), in the mesh of the tray, so no bed shows round the heaps from straight above. The test that holds the inbox inside its box caught the first version of it 1.6 px outside, and the spread was taken in.
+- The hop was looked at in two `draft` stills of the beat `pinball.replyAll`, at 0.082 (the ball at the hold, the heap at rest) and at 0.098 (the heap larger, turned and pushed aside). It reads from straight above.
 
 ## Counts after (MEASURED on d27f182b, with main at b62bc72b)
 
