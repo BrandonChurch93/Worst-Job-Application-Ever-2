@@ -1,0 +1,39 @@
+{
+  "what": {
+    "still": {
+      "page": "boss",
+      "beat": "boss.slabs",
+      "at": 0.5,
+      "camera": "home",
+      "tier": "final"
+    }
+  },
+  "engineHash": "37a0ae9550ae4e93",
+  "sharedHash": "b3f0d5b3590f8fda",
+  "pageHashes": {
+    "boss": "523f6a7695ccd263"
+  },
+  "format": "hd",
+  "tier": "final",
+  "assets": "full",
+  "diagnostic": "beauty",
+  "browser": "159.0.8154.6",
+  "machine": {
+    "host": "space-sandbox",
+    "cores": 4,
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.90GHz",
+    "memoryMb": 7957,
+    "platform": "linux 6.1.155",
+    "node": "v20.20.2"
+  },
+  "seconds": 60.422,
+  "invalidValues": 0,
+  "standIns": [],
+  "counts": {
+    "triangles": 663554,
+    "drawCalls": 501
+  },
+  "problems": [],
+  "sha256": "c6acb75006c6e7f20e89f3336641c0de319da413c19c8d00fd50921c22c05caa",
+  "keptFrom": "out/work/stills/key-boss-fight-hd-final.png"
+}

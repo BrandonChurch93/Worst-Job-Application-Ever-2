@@ -1,0 +1,39 @@
+{
+  "what": {
+    "still": {
+      "page": "pinball",
+      "beat": "pinball.lobby",
+      "at": 0.7,
+      "camera": "table-lobby",
+      "tier": "final"
+    }
+  },
+  "engineHash": "37a0ae9550ae4e93",
+  "sharedHash": "b3f0d5b3590f8fda",
+  "pageHashes": {
+    "pinball": "5a5c711506d19c82"
+  },
+  "format": "hd",
+  "tier": "final",
+  "assets": "full",
+  "diagnostic": "beauty",
+  "browser": "159.0.8154.6",
+  "machine": {
+    "host": "space-sandbox",
+    "cores": 4,
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.90GHz",
+    "memoryMb": 7957,
+    "platform": "linux 6.1.155",
+    "node": "v20.20.2"
+  },
+  "seconds": 198.63,
+  "invalidValues": 0,
+  "standIns": [],
+  "counts": {
+    "triangles": 714308,
+    "drawCalls": 490
+  },
+  "problems": [],
+  "sha256": "fcc8b5379388dbd79b81f2beca91d541a2268b85b62d986e483f3a7d807e6fa0",
+  "keptFrom": "out/work/stills/key-lobby-doors-hd-final.png"
+}

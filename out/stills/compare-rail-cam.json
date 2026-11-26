@@ -3,189 +3,48 @@
     "still": {
       "page": "pinball",
       "beat": "pinball.highway",
-      "at": 0.5,
+      "at": 0.556,
       "camera": "rail",
-      "tier": "draft"
+      "tier": "final"
     }
   },
-  "engineHash": "e6f9508050543b35",
-  "sharedHash": "a365b739db2b651c",
+  "engineHash": "37a0ae9550ae4e93",
+  "sharedHash": "b3f0d5b3590f8fda",
   "pageHashes": {
-    "pinball": "52eaa98774a574fc"
+    "pinball": "5a5c711506d19c82"
   },
   "format": "hd",
-  "tier": "draft",
+  "tier": "final",
   "assets": "full",
   "diagnostic": "beauty",
-  "browser": "147.0.7727.15",
+  "browser": "159.0.8154.6",
   "machine": {
     "host": "space-sandbox",
-    "cores": 2,
+    "cores": 4,
     "cpu": "Intel(R) Xeon(R) Processor @ 2.90GHz",
-    "memoryMb": 7958,
+    "memoryMb": 7957,
     "platform": "linux 6.1.155",
     "node": "v20.20.2"
   },
-  "seconds": 6.806,
+  "seconds": 246.316,
   "invalidValues": 0,
-  "standIns": [
-    {
-      "name": "bumpers",
-      "unit": "pinball"
-    },
-    {
-      "name": "clear-ball",
-      "unit": "pinball"
-    },
-    {
-      "name": "cursor-acting",
-      "unit": "step1"
-    },
-    {
-      "name": "cursor-body",
-      "unit": "step1"
-    },
-    {
-      "name": "displays",
-      "unit": "pinball"
-    },
-    {
-      "name": "flippers",
-      "unit": "pinball"
-    },
-    {
-      "name": "lift",
-      "unit": "pinball"
-    },
-    {
-      "name": "loader",
-      "unit": "pinball"
-    },
-    {
-      "name": "marquee",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-bank",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-beach",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-boardroom",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-coffee-machine",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-cubicles",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-firehouse",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-garage",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-houses",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-hq",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-inbox",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-ladder",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-moms",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-notes",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-police",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-revolving-door",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-road-signs",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-staplers",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-wedges",
-      "unit": "pinball"
-    },
-    {
-      "name": "ramps",
-      "unit": "pinball"
-    },
-    {
-      "name": "shell",
-      "unit": "step1"
-    },
-    {
-      "name": "table-frame",
-      "unit": "pinball"
-    },
-    {
-      "name": "table-hardware",
-      "unit": "pinball"
-    },
-    {
-      "name": "table-layout",
-      "unit": "pinball"
-    },
-    {
-      "name": "table-lights",
-      "unit": "pinball"
-    },
-    {
-      "name": "targets",
-      "unit": "pinball"
-    },
-    {
-      "name": "tier-art",
-      "unit": "pinball"
-    },
-    {
-      "name": "type",
-      "unit": "step1"
-    }
-  ],
+  "standIns": [],
   "counts": {
-    "triangles": 118534,
-    "drawCalls": 819
+    "triangles": 552855,
+    "drawCalls": 376
   },
   "problems": [],
   "compare": {
     "id": "rail-cam",
     "approved": "references/approved/rail-cam.png",
-    "still": "out/work/stills/key-rail-cam-hd-draft.png",
-    "crops": [],
+    "still": "out/work/stills/key-rail-cam-hd-final.png",
+    "crops": [
+      "cursor",
+      "shape:model.street.bank",
+      "shape:model.street.firehouse"
+    ],
     "width": 1400,
-    "height": 426
+    "height": 936
   },
   "keptFrom": "out/work/compare/compare-rail-cam.jpg"
 }

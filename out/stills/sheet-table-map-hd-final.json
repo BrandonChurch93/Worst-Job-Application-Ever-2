@@ -1,0 +1,38 @@
+{
+  "what": {
+    "still": {
+      "page": "pinball",
+      "camera": "table-map",
+      "tier": "final",
+      "sheet": "table-map"
+    }
+  },
+  "engineHash": "37a0ae9550ae4e93",
+  "sharedHash": "b3f0d5b3590f8fda",
+  "pageHashes": {
+    "pinball": "5a5c711506d19c82"
+  },
+  "format": "hd",
+  "tier": "final",
+  "assets": "full",
+  "diagnostic": "beauty",
+  "browser": "159.0.8154.6",
+  "machine": {
+    "host": "space-sandbox",
+    "cores": 4,
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.90GHz",
+    "memoryMb": 7957,
+    "platform": "linux 6.1.155",
+    "node": "v20.20.2"
+  },
+  "seconds": 173.59,
+  "invalidValues": 0,
+  "standIns": [],
+  "counts": {
+    "triangles": 590614,
+    "drawCalls": 463
+  },
+  "problems": [],
+  "sha256": "4be4cd0f491738cd76dae50108594045298433c94c3cb2bfeee9e1bf7e6a41b5",
+  "keptFrom": "out/work/stills/sheet-table-map-hd-final.png"
+}

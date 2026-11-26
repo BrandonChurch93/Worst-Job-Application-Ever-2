@@ -1,0 +1,39 @@
+{
+  "what": {
+    "still": {
+      "page": "pinball",
+      "beat": "pinball.reveal",
+      "at": 1,
+      "camera": "table-wide",
+      "tier": "final"
+    }
+  },
+  "engineHash": "37a0ae9550ae4e93",
+  "sharedHash": "b3f0d5b3590f8fda",
+  "pageHashes": {
+    "pinball": "5a5c711506d19c82"
+  },
+  "format": "hd",
+  "tier": "final",
+  "assets": "full",
+  "diagnostic": "beauty",
+  "browser": "159.0.8154.6",
+  "machine": {
+    "host": "space-sandbox",
+    "cores": 4,
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.90GHz",
+    "memoryMb": 7957,
+    "platform": "linux 6.1.155",
+    "node": "v20.20.2"
+  },
+  "seconds": 167.963,
+  "invalidValues": 0,
+  "standIns": [],
+  "counts": {
+    "triangles": 937199,
+    "drawCalls": 564
+  },
+  "problems": [],
+  "sha256": "3174f06a9fac83fddbe9fbd9ef4b4580ac64f2bb2180913441d0f74a44f50145",
+  "keptFrom": "out/work/stills/key-table-wide-hd-final.png"
+}

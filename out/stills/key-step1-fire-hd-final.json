@@ -8,32 +8,32 @@
       "tier": "final"
     }
   },
-  "engineHash": "f53260b07e37d041",
-  "sharedHash": "dd95c22f49f6a5b3",
+  "engineHash": "37a0ae9550ae4e93",
+  "sharedHash": "b3f0d5b3590f8fda",
   "pageHashes": {
-    "step1": "263044f80dcca6af"
+    "step1": "85340d921cd74c57"
   },
   "format": "hd",
   "tier": "final",
   "assets": "full",
   "diagnostic": "beauty",
-  "browser": "147.0.7727.15",
+  "browser": "159.0.8154.6",
   "machine": {
     "host": "space-sandbox",
-    "cores": 2,
+    "cores": 4,
     "cpu": "Intel(R) Xeon(R) Processor @ 2.90GHz",
-    "memoryMb": 7958,
+    "memoryMb": 7957,
     "platform": "linux 6.1.155",
     "node": "v20.20.2"
   },
-  "seconds": 115.608,
+  "seconds": 59.807,
   "invalidValues": 0,
   "standIns": [],
   "counts": {
-    "triangles": 470467,
-    "drawCalls": 282
+    "triangles": 475089,
+    "drawCalls": 285
   },
   "problems": [],
-  "sha256": "5e252c1790c8dadf6796ee134b0d0dc637b7742845e3c265be6a5be7e300fad9",
+  "sha256": "246024c8b4c12ed9a7b9d59f032af80f42aa175516bfec19f0719bf7db0a2496",
   "keptFrom": "out/work/stills/key-step1-fire-hd-final.png"
 }

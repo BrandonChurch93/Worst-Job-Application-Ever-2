@@ -7,29 +7,29 @@
       "sheet": "cursor-acting"
     }
   },
-  "engineHash": "f53260b07e37d041",
-  "sharedHash": "dd95c22f49f6a5b3",
+  "engineHash": "37a0ae9550ae4e93",
+  "sharedHash": "b3f0d5b3590f8fda",
   "pageHashes": {
-    "step1": "263044f80dcca6af"
+    "step1": "85340d921cd74c57"
   },
   "format": "hd",
   "tier": "final",
   "assets": "full",
   "diagnostic": "beauty",
-  "browser": "147.0.7727.15",
+  "browser": "159.0.8154.6",
   "machine": {
     "host": "space-sandbox",
-    "cores": 2,
+    "cores": 4,
     "cpu": "Intel(R) Xeon(R) Processor @ 2.90GHz",
-    "memoryMb": 7958,
+    "memoryMb": 7957,
     "platform": "linux 6.1.155",
     "node": "v20.20.2"
   },
-  "seconds": 87.139,
+  "seconds": 47.088,
   "invalidValues": 0,
   "standIns": [],
   "counts": {
-    "triangles": 832186,
+    "triangles": 837406,
     "drawCalls": 140
   },
   "problems": [],

@@ -1,0 +1,56 @@
+{
+  "what": {
+    "still": {
+      "page": "marketing",
+      "beat": "marketing.apply",
+      "at": 0,
+      "camera": "home",
+      "tier": "final"
+    }
+  },
+  "engineHash": "37a0ae9550ae4e93",
+  "sharedHash": "b3f0d5b3590f8fda",
+  "pageHashes": {
+    "marketing": "3645cc7fb7a95417"
+  },
+  "format": "hd",
+  "tier": "final",
+  "assets": "full",
+  "diagnostic": "beauty",
+  "browser": "159.0.8154.6",
+  "machine": {
+    "host": "space-sandbox",
+    "cores": 4,
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.90GHz",
+    "memoryMb": 7957,
+    "platform": "linux 6.1.155",
+    "node": "v20.20.2"
+  },
+  "seconds": 62.754,
+  "invalidValues": 0,
+  "standIns": [],
+  "counts": {
+    "triangles": 619589,
+    "drawCalls": 197
+  },
+  "problems": [],
+  "compare": {
+    "id": "marketing-top",
+    "approved": "references/approved/marketing-top.png",
+    "still": "out/work/stills/key-marketing-top-hd-final.png",
+    "crops": [
+      "cursor",
+      "medallion",
+      "heroButton",
+      "button",
+      "card.corner",
+      "card.glass",
+      "cardRule",
+      "tickerWindow",
+      "header"
+    ],
+    "width": 1400,
+    "height": 1391
+  },
+  "keptFrom": "out/work/compare/compare-marketing-top.jpg"
+}

@@ -1,0 +1,53 @@
+{
+  "what": {
+    "still": {
+      "page": "step2",
+      "beat": "step2.crank",
+      "at": 0.2,
+      "camera": "home",
+      "tier": "final"
+    }
+  },
+  "engineHash": "37a0ae9550ae4e93",
+  "sharedHash": "b3f0d5b3590f8fda",
+  "pageHashes": {
+    "step2": "63f851bcd2cd65cf"
+  },
+  "format": "hd",
+  "tier": "final",
+  "assets": "full",
+  "diagnostic": "beauty",
+  "browser": "159.0.8154.6",
+  "machine": {
+    "host": "space-sandbox",
+    "cores": 4,
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.90GHz",
+    "memoryMb": 7957,
+    "platform": "linux 6.1.155",
+    "node": "v20.20.2"
+  },
+  "seconds": 56.88,
+  "invalidValues": 0,
+  "standIns": [],
+  "counts": {
+    "triangles": 914669,
+    "drawCalls": 834
+  },
+  "problems": [],
+  "compare": {
+    "id": "step2-crank",
+    "approved": "references/approved/step2-crank.png",
+    "still": "out/work/stills/key-step2-crank-hd-final.png",
+    "crops": [
+      "crankBase",
+      "crankGrip",
+      "meterSegment",
+      "cursor",
+      "progressButton",
+      "button"
+    ],
+    "width": 1400,
+    "height": 1191
+  },
+  "keptFrom": "out/work/compare/compare-step2-crank.jpg"
+}

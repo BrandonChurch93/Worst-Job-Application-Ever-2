@@ -7,32 +7,32 @@
       "sheet": "cursor-arms"
     }
   },
-  "engineHash": "f53260b07e37d041",
-  "sharedHash": "dd95c22f49f6a5b3",
+  "engineHash": "37a0ae9550ae4e93",
+  "sharedHash": "b3f0d5b3590f8fda",
   "pageHashes": {
-    "step1": "263044f80dcca6af"
+    "step1": "85340d921cd74c57"
   },
   "format": "hd",
   "tier": "final",
   "assets": "full",
   "diagnostic": "beauty",
-  "browser": "147.0.7727.15",
+  "browser": "159.0.8154.6",
   "machine": {
     "host": "space-sandbox",
-    "cores": 2,
+    "cores": 4,
     "cpu": "Intel(R) Xeon(R) Processor @ 2.90GHz",
-    "memoryMb": 7958,
+    "memoryMb": 7957,
     "platform": "linux 6.1.155",
     "node": "v20.20.2"
   },
-  "seconds": 91.385,
+  "seconds": 48.088,
   "invalidValues": 0,
   "standIns": [],
   "counts": {
-    "triangles": 1427892,
+    "triangles": 1432242,
     "drawCalls": 416
   },
   "problems": [],
-  "sha256": "9a246b3b253fd7d2bb8725c6d284247b9f29cdf3801a7a4acde91942d0ccd2f6",
+  "sha256": "51117dbf7bb25c22ac07a453c4db7852482b8c7a27eb8f7c552ffbb3cf0b5e73",
   "keptFrom": "out/work/stills/sheet-cursor-arms-hd-final.png"
 }

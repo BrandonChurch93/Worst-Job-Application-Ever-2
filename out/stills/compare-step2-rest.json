@@ -1,0 +1,54 @@
+{
+  "what": {
+    "still": {
+      "page": "step2",
+      "beat": "step2.open",
+      "at": 0.5,
+      "camera": "home",
+      "tier": "final"
+    }
+  },
+  "engineHash": "37a0ae9550ae4e93",
+  "sharedHash": "b3f0d5b3590f8fda",
+  "pageHashes": {
+    "step2": "63f851bcd2cd65cf"
+  },
+  "format": "hd",
+  "tier": "final",
+  "assets": "full",
+  "diagnostic": "beauty",
+  "browser": "159.0.8154.6",
+  "machine": {
+    "host": "space-sandbox",
+    "cores": 4,
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.90GHz",
+    "memoryMb": 7957,
+    "platform": "linux 6.1.155",
+    "node": "v20.20.2"
+  },
+  "seconds": 51.507,
+  "invalidValues": 0,
+  "standIns": [],
+  "counts": {
+    "triangles": 418067,
+    "drawCalls": 188
+  },
+  "problems": [],
+  "compare": {
+    "id": "step2-rest",
+    "approved": "references/approved/step2-rest.png",
+    "still": "out/work/stills/key-step2-rest-hd-final.png",
+    "crops": [
+      "cursor",
+      "field.start",
+      "progressButton",
+      "button",
+      "header",
+      "surface",
+      "type"
+    ],
+    "width": 1400,
+    "height": 1390
+  },
+  "keptFrom": "out/work/compare/compare-step2-rest.jpg"
+}

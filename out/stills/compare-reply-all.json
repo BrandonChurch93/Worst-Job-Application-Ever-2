@@ -1,0 +1,56 @@
+{
+  "what": {
+    "still": {
+      "page": "pinball",
+      "beat": "pinball.replyAll",
+      "at": 0.3,
+      "camera": "table-replyall",
+      "tier": "final"
+    }
+  },
+  "engineHash": "37a0ae9550ae4e93",
+  "sharedHash": "b3f0d5b3590f8fda",
+  "pageHashes": {
+    "pinball": "5a5c711506d19c82"
+  },
+  "format": "hd",
+  "tier": "final",
+  "assets": "full",
+  "diagnostic": "beauty",
+  "browser": "159.0.8154.6",
+  "machine": {
+    "host": "space-sandbox",
+    "cores": 4,
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.90GHz",
+    "memoryMb": 7957,
+    "platform": "linux 6.1.155",
+    "node": "v20.20.2"
+  },
+  "seconds": 209.074,
+  "invalidValues": 0,
+  "standIns": [],
+  "counts": {
+    "triangles": 844642,
+    "drawCalls": 473
+  },
+  "problems": [],
+  "compare": {
+    "id": "reply-all",
+    "approved": "references/approved/reply-all.png",
+    "still": "out/work/stills/key-reply-all-hd-final.png",
+    "crops": [
+      "shape:ball.steel.2",
+      "cursor",
+      "shape:model.office.inbox",
+      "shape:bumper.office.bumper.3",
+      "shape:model.office.cubicles",
+      "shape:model.office.coffee",
+      "shape:sling.office.sling.left.1+sling.office.sling.left.2+sling.office.sling.left.3",
+      "shape:flipper.office.flipper.left",
+      "shape:lift.elbow.office"
+    ],
+    "width": 1400,
+    "height": 1391
+  },
+  "keptFrom": "out/work/compare/compare-reply-all.jpg"
+}

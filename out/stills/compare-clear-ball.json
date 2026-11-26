@@ -1,0 +1,50 @@
+{
+  "what": {
+    "still": {
+      "page": "pinball",
+      "camera": "sheet",
+      "tier": "final",
+      "sheet": "clear-ball"
+    }
+  },
+  "engineHash": "37a0ae9550ae4e93",
+  "sharedHash": "b3f0d5b3590f8fda",
+  "pageHashes": {
+    "pinball": "5a5c711506d19c82"
+  },
+  "format": "hd",
+  "tier": "final",
+  "assets": "full",
+  "diagnostic": "beauty",
+  "browser": "159.0.8154.6",
+  "machine": {
+    "host": "space-sandbox",
+    "cores": 4,
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.90GHz",
+    "memoryMb": 7957,
+    "platform": "linux 6.1.155",
+    "node": "v20.20.2"
+  },
+  "seconds": 184.239,
+  "invalidValues": 0,
+  "standIns": [],
+  "counts": {
+    "triangles": 445268,
+    "drawCalls": 124
+  },
+  "problems": [],
+  "panels": {
+    "count": 3,
+    "gutter": 21,
+    "width": 626
+  },
+  "compare": {
+    "id": "clear-ball",
+    "approved": "references/approved/clear-ball.png",
+    "still": "out/work/stills/sheet-clear-ball-hd-final.png",
+    "crops": [],
+    "width": 1400,
+    "height": 426
+  },
+  "keptFrom": "out/work/compare/compare-clear-ball.jpg"
+}
