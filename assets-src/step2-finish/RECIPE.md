@@ -58,3 +58,11 @@ Why this one: a shade under the upper and left wall and a lighter far side, as t
 Texture: none. 0 px, 0 MB
 Date: 2026-11-26
 
+## The unlit lens's edge (a picture and a material, no file)
+Made by: `own()` in `src/pages/step2/real/crank.ts`: the picture `off` drawn by `picture()` and the material `wall` passed through `studio()`
+From: `CRANK_LOOK` there: in the picture the dark line inside the rim is 0.12 and the rim's own darkening 0.02; the wall and the seat have the tone 0.86 of the pale glass and give off 0.5 of the tone 0xe9eeec; the foot line is 0xa2aaa8
+Prompt or command: `npm run still -- --key step2-crank --format hd --tier draft`, the same at `--tier review`
+Takes: 4 draft stills and 1 review still of the crank key (one with the wall painted green to find what the dark outline was)
+Why this one: approved's unlit lenses are clear blocks with a light edge all round, not a dark outline
+Texture: `off`, 128 by 512 px, 0.25 MB (0.33 MB with its smaller copies), as before
+Date: 2026-11-26

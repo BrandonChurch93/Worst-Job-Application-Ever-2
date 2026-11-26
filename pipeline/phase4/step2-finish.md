@@ -41,12 +41,12 @@ Closed since the judged commit, seen in the pictures:
 ## Looks, counted by part
 
 
-One look is one draft still, comparison or sheet. Counted to 12:12 UTC. The limit is 40 for each part.
+One look is one draft still, comparison or sheet. Counted to 12:20 UTC. The limit is 40 for each part.
 
 - rows: 1 (`compare --key step2-rest`). The tray's floor was judged in the crank's and the dial's stills and is counted there.
 - dial: 8 (`compare --key step2-dial` and draft stills of the key, the sheet `machines` for the stop and the middle).
 - slot: 10 (the sheet `machines`, `still --page step2 --beat step2.slot` at 0.35 and 0.62).
-- crank: 15 (`compare --key step2-crank` and draft stills of the key).
+- crank: 20 (`compare --key step2-crank` and draft stills of the key).
 - acting: 23 (sheets of film frames, whole or cut round the arrow: the lever, the open, the dial, the landing, the blow, Continue, the coins, the recovery, the snag of the dial, the warned arrow, the whip in the frames the beat sheet takes, the throw off the crank, the double take, the strut, the crank beat and the Continue beat in whole frames, the angry run, the refill before and after its move).
 
 ## Decisions
@@ -81,4 +81,4 @@ One look is one draft still, comparison or sheet. Counted to 12:12 UTC. The limi
 28. R9-2 issue 6. Before the first field the arrow stands on end (turned 0.14), stretched 1.26, and goes in three hops of 14 px with a squash of 0.9 on each landing, from 1.03 s to 1.66 s. The squash and lean back before the walk are gone: they read as doubt.
 29. R9-2 issue 8. The arrow turns its tip to the crank's hub when it goes back in at 16.32 s. The heat of `angry` is the cursor's: I asked for heat 0.6 and the Builder refused it with a picture, because approved's glow covers the same half of the head; the yellow flecks are the shared look's item now. No patch is on this branch.
 30. The well of a tray, the Builder's look at merge 34: the floor's shade under the upper and left wall is deeper and shorter (soak 0.44 over 13 px, was 0.25 over 22 px), the floor is a little darker (1.13, was 1.16) and the far side is lighter (0.13 over 12 px). All three trays share it.
-
+31. The unlit lens of the meter had a dark outline where approved's is clear glass with a light edge. MEASURED in a draft still with the wall painted green: the outline is the lens's upright wall and seat, which the studio's light from above leaves at about a quarter of their tone. The wall and seat now give off a little of their own pale tone (`edgeLight` 0.5), standing for the light a clear block carries to its edges; their tone is lighter (`rimTone` 0.86, was 0.68), the dark line inside the rim of the picture is fainter (0.12, was 0.3) and the foot line is a lighter grey. The lit lens keeps its picture and its orange wall.
