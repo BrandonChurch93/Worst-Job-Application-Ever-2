@@ -134,14 +134,17 @@ export function flange(r: number, lobes: number, deep: number, inner: number, ri
 
 // A solid of turned metal lit from one side: brighter round the part of it that lies toward `toward`, duller round the far part.
 // Its picture lies across `across` px once, from the middle. Below the height `wall[0]` it is a wall, and leans by `wall[1]`.
-export function leaned(g: THREE.BufferGeometry, toward: number, amount: number, across: number, wall: [number, number] = [-1, 0]): THREE.BufferGeometry {
+// `bow` is the turned top's own sheen: two bright sectors along the angle `bow[0]`, two dull ones across it, by `bow[1]`.
+export function leaned(g: THREE.BufferGeometry, toward: number, amount: number, across: number, wall: [number, number] = [-1, 0], bow: [number, number] = [0, 0]): THREE.BufferGeometry {
   const p = g.getAttribute('position')
   const col = new Float32Array(p.count * 3)
   const uv = new Float32Array(p.count * 2)
   for (let i = 0; i < p.count; i++) {
     const x = p.getX(i)
     const y = p.getY(i)
-    const v = 1 + (p.getZ(i) < wall[0] ? wall[1] : amount) * Math.cos(Math.atan2(y, x) - toward)
+    const a = Math.atan2(y, x)
+    const top = p.getZ(i) >= wall[0]
+    const v = Math.max(0.05, 1 + (top ? amount : wall[1]) * Math.cos(a - toward) + (top ? bow[1] * Math.cos(2 * (a - bow[0])) : 0))
     col.set([v, v, v], i * 3)
     uv.set([x / across + 0.5, y / across + 0.5], i * 2)
   }
@@ -180,15 +183,50 @@ export function contact(r: number, lobes: number, deep: number, toward: number, 
   return g
 }
 
-// The light a turned face gives back: two bright sectors along `axis` and two dull ones across it, laid into the disc as vertex colour.
-export function sheen(g: THREE.BufferGeometry, axis: number, depth: number, rim = 1, lean = 0): THREE.BufferGeometry {
+// A flat disc at the height `z`, in rings, so that a colour laid into it can change from the middle outward. Its uv are its x and y.
+export function disc(r: number, z: number, around = 144, rings = 20): THREE.BufferGeometry {
+  const pos: number[] = [0, 0, z]
+  const idx: number[] = []
+  for (let k = 1; k <= rings; k++) {
+    for (let i = 0; i < around; i++) {
+      const a = (i / around) * Math.PI * 2
+      pos.push((Math.cos(a) * r * k) / rings, (Math.sin(a) * r * k) / rings, z)
+    }
+  }
+  for (let i = 0; i < around; i++) idx.push(0, 1 + i, 1 + ((i + 1) % around))
+  for (let k = 1; k < rings; k++) {
+    for (let i = 0; i < around; i++) {
+      const j = (i + 1) % around
+      const a = 1 + (k - 1) * around
+      const b = 1 + k * around
+      idx.push(a + i, b + i, b + j, a + i, b + j, a + j)
+    }
+  }
+  const g = new THREE.BufferGeometry()
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
+  g.setAttribute('normal', new THREE.Float32BufferAttribute(pos.map((_, i) => (i % 3 === 2 ? 1 : 0)), 3))
+  g.setAttribute('uv', new THREE.Float32BufferAttribute(pos.filter((_, i) => i % 3 !== 2), 2))
+  g.setIndex(idx)
+  return g
+}
+
+// The light a turned face gives back: two bright sectors along `axis` and two dull ones across it, laid into the disc as vertex colour,
+// none in the middle and all of it at the rim. `cap` is how much duller the dull sectors are in their outer part, from `from` of the
+// radius outward: the middle, where words lie, keeps its light.
+export function sheen(g: THREE.BufferGeometry, axis: number, depth: number, rim = 1, lean = 0, cap = 0, from = 0.5, narrow = 1): THREE.BufferGeometry {
   const p = g.getAttribute('position')
   const col = new Float32Array(p.count * 3)
+  let far = 1
+  for (let i = 0; i < p.count; i++) far = Math.max(far, Math.hypot(p.getX(i), p.getY(i)))
   for (let i = 0; i < p.count; i++) {
     const x = p.getX(i)
     const y = p.getY(i)
+    const r = Math.hypot(x, y) / far
     const turn = Math.atan2(y, x) - axis
-    const v = Math.hypot(x, y) < 0.5 ? 1 : Math.max(0.05, rim + depth * Math.cos(2 * turn) + lean * Math.cos(turn))
+    const out = Math.max(0, Math.min(1, (r - from) / (0.95 - from)))
+    const c = Math.cos(2 * turn)
+    const lobe = c > 0 ? c ** narrow : -((-c) ** (1 / narrow))
+    const v = Math.max(0.05, 1 + (rim - 1 + depth * lobe + lean * Math.cos(turn)) * r - cap * Math.max(0, -c) * out * out * (3 - 2 * out))
     col.set([v, v, v], i * 3)
   }
   g.setAttribute('color', new THREE.BufferAttribute(col, 3))

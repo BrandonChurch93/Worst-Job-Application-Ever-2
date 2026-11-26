@@ -6,6 +6,7 @@ import { controls } from '../../shell/real/controls'
 import { roundedRect, sweep, plateProfile } from '../../shell/solids'
 import { config } from '../../config'
 import { BODY_Z, FRAME, LEG, SHADE, SHIELD, SIDE, SIDE_OFF, CAP_W, CAP_H, WRECK } from '../body'
+import { SLAB, slabGeometry } from '../../pages/marketing/real/perk-cards'
 import { bossKit, cutPlate, joined, lathe, lying, mesh, moved, screw } from './body-kit'
 
 const heights = config.scale.heights
@@ -100,8 +101,26 @@ function cut(points: [number, number][], keepLeft: boolean): [number, number][] 
   return out
 }
 
+export const CROWN = { wing: 0.0011, side: 0.0019 }
+export const EDGE = { bevel: 2.4, out: 3, step: 3.4 }
+
+// A cast plate is never dead flat: its top swells by a hair, so the room's light fades across it. Only the normals lean, the top stays level.
+function crown(g: THREE.BufferGeometry, lean: number): THREE.BufferGeometry {
+  const p = g.getAttribute('position')
+  const n = g.getAttribute('normal')
+  for (let i = 0; i < p.count; i++) {
+    if (n.getZ(i) < 0.99) continue
+    const x = p.getX(i) * lean
+    const y = p.getY(i) * lean
+    const l = Math.hypot(x, y, 1)
+    n.setXYZ(i, x / l, y / l, 1 / l)
+  }
+  n.needsUpdate = true
+  return g
+}
+
 const HALF_AT: [number, number][] = [[-96, 40], [96, 40]]
-const HALF_TO: [number, number, number][][] = [[[1290, 432, 0.16], [1236, 952, -0.3]], [[1752, 590, 1.42], [1768, 944, 0.5]]]
+const HALF_TO: [number, number, number, number][][] = [[[1290, 432, 0.16, 1], [1254, 462, -0.34, 0]], [[1752, 590, 1.42, 1], [1728, 632, 0.98, 0]]]
 
 function wingParts(flip: boolean, half: -1 | 0 | 1): THREE.Group {
   const m = materials()
@@ -112,10 +131,11 @@ function wingParts(flip: boolean, half: -1 | 0 | 1): THREE.Group {
   const mine = (x: number): boolean => half === 0 || x < 0 === half < 0
   const [ox, oy] = half === 0 ? [0, 0] : HALF_AT[half < 0 ? 0 : 1]!
   const put = (geometry: THREE.BufferGeometry): THREE.BufferGeometry => geometry.translate(-ox, -oy, 0)
-  g.add(mesh(geo(`wing:${name}`, () => put(cutPlate(shape(wingOutline()), FRAME.tall, half === 0 ? 5.5 : 4.2))), k.plate))
-  g.add(mesh(geo(`wingBed:${name}`, () => put(cutPlate(shape(bedOutline()), 9, 0.5))), k.pocket, false))
+  g.add(mesh(geo(`wing:${name}`, () => put(crown(cutPlate(shape(wingOutline()), FRAME.tall, EDGE.bevel, 0, 2), CROWN.wing))), k.plate))
+  g.add(mesh(geo(`wingSide:${name}`, () => put(cutPlate(shape(wingOutline()), FRAME.tall - EDGE.step, 1, EDGE.out, 1))), k.plateSide))
+  g.add(mesh(geo(`wingBed:${name}`, () => put(cutPlate(shape(bedOutline()), 9, 0.5))), half === 0 ? k.pocket : k.plateSide, false))
   g.add(mesh(geo(`wingBright:${name}`, () => put(joined([
-    cutPlate(shape(lipOutline()), 3, 1.1).translate(0, 0, FRAME.tall - 0.4),
+    ...(half === 0 ? [cutPlate(shape(lipOutline()), 3, 1.1).translate(0, 0, FRAME.tall - 0.4)] : []),
     ...WING_SCREWS.filter(([x]) => mine(x)).map(([x, y], i) => moved(screw(4.6, 1.8, i + (flip ? 9 : 0) + (half > 0 ? 3 : 0)), x, y, FRAME.tall)),
     ...(flip ? [] : [-1, 1].filter(mine).flatMap((e) => [0, 1, 2].map((i) => moved(lying([[0, 0], [4.6, 0], [4.6, 9], [0, 9]], 20), e * 168 + 15 - i * 10.5, 0, FRAME.tall - 0.5))))
   ]))), m.aluminiumEdge, false))
@@ -179,12 +199,12 @@ function poseFrame(o: THREE.Object3D, s: Shape): void {
     const sign = n === 1 ? -1 : 1
     ;(w.userData.halves as THREE.Group[]).forEach((h, i) => {
       h.visible = broken
-      const [tx, ty, turn] = HALF_TO[n]![i]!
+      const [tx, ty, turn, over] = HALF_TO[n]![i]!
       const dx = tx - WRECK.x
       const dy = ty - WRECK.y
       const lx = (dx * ca + dy * sa) * sign
       const ly = -(-dx * sa + dy * ca) * sign
-      h.position.set(mix(HALF_AT[i]![0], lx, split), mix(HALF_AT[i]![1], ly, split), 0)
+      h.position.set(mix(HALF_AT[i]![0], lx, split), mix(HALF_AT[i]![1], ly, split), over * FRAME.tall * split)
       h.rotation.z = -(turn - WRECK.rot) * split
     })
   })
@@ -198,7 +218,9 @@ function side(i: number): THREE.Object3D {
   const hw = SIDE.w / 2
   const hh = SIDE.h / 2
   const turnZ = i === 0 ? 0 : Math.PI
-  root.add(mesh(geo(`side:${i}`, () => cutPlate([[-hw, -hh], [hw, -hh], [hw, -hh + 16], [hw - SIDE.lean, hh], [-hw + SIDE.lean, hh], [-hw, -hh + 16]], SIDE.tall, 4.6).rotateZ(turnZ)), k.plate))
+  const outline: [number, number][] = [[-hw, -hh], [hw, -hh], [hw, -hh + 16], [hw - SIDE.lean, hh], [-hw + SIDE.lean, hh], [-hw, -hh + 16]]
+  root.add(mesh(geo(`side:${i}`, () => crown(cutPlate(outline, SIDE.tall, EDGE.bevel, 0, 2).rotateZ(turnZ), CROWN.side)), k.plate))
+  root.add(mesh(geo(`sideSide:${i}`, () => cutPlate(outline, SIDE.tall - EDGE.step, 1, EDGE.out, 1).rotateZ(turnZ)), k.plateSide))
   root.add(mesh(geo(`sideParts:${i}`, () => joined([
     ...[[-98, -36], [98, -36], [-70, 38], [70, 38]].map(([x, y], n) => moved(screw(4.2, 1.6, 20 + n + i * 5), x!, y! * sign, SIDE.tall))
   ])), m.aluminiumEdge, false))
@@ -243,10 +265,10 @@ function poseCannon(o: THREE.Object3D, s: Shape): void {
 }
 
 const GLASS_CRACKS: [number, number][][] = [
-  [[-47, 104], [-30, 70], [-12, 42], [4, 6], [22, -34], [36, -72], [47, -112]],
-  [[49, 74], [30, 48], [4, 6]],
-  [[-12, 42], [-4, 82], [10, 120]],
-  [[22, -34], [-6, -60], [-22, -96]]
+  [[-47, 90], [-30, 60], [-12, 36], [4, 5], [22, -29], [36, -62], [47, -97]],
+  [[49, 64], [30, 41], [4, 5]],
+  [[-12, 36], [-4, 71], [10, 103]],
+  [[22, -29], [-6, -52], [-22, -83]]
 ]
 
 function crackLines(lines: [number, number][][], wide: number, z: number, dx = 0, dy = 0): THREE.BufferGeometry {
@@ -277,6 +299,14 @@ function crackLines(lines: [number, number][][], wide: number, z: number, dx = 0
   return g
 }
 
+// The block leans, so its wall is seen: the picture runs down the wall as well, not only across the faces.
+function walled(g: THREE.BufferGeometry): THREE.BufferGeometry {
+  const p = g.getAttribute('position')
+  const uv = g.getAttribute('uv')
+  for (let i = 0; i < p.count; i++) uv.setXY(i, uv.getX(i) + p.getZ(i), uv.getY(i) + p.getZ(i))
+  return g
+}
+
 function shield(): THREE.Object3D {
   const m = materials()
   const k = bossKit()
@@ -285,11 +315,8 @@ function shield(): THREE.Object3D {
   const w = SHIELD.w
   const h = SHIELD.h
   const t = SHIELD.tall
-  const round = 8
-  const block = (): THREE.BufferGeometry => sweep(roundedRect(w, h, 18, 14), plateProfile(t, round, 0.4, 8), true)
-  leaf.add(mesh(geo('glassDeep', () => sweep(roundedRect(w - 12, h - 12, 13, 12), [{ inset: 0, z: 1.1, out: 0, up: 1 }], true)), k.glassDeep, false, false))
-  leaf.add(mesh(geo('glass', block), k.glass))
-  leaf.add(mesh(geo('glassEdge', () => sweep(roundedRect(w, h, 18, 14), [{ inset: 0, z: t - round - 5, out: 1, up: 0 }, ...plateProfile(t, round, 0.4, 8).slice(1), { inset: round + 0.6, z: t, out: 0, up: 1 }], false)), k.glassEdge, false, false))
+  const slab = { kind: 'box', w: w + 2 * SLAB.frame, h: h + 2 * SLAB.frame, r: 18 + SLAB.frame } as Shape
+  leaf.add(mesh(geo('glass', () => walled(slabGeometry(slab, t)).translate(0, 0, t / 2)), k.glass))
   const cracks = new THREE.Group()
   cracks.add(mesh(geo('glassCracksDeep', () => crackLines(GLASS_CRACKS, 1.1, 1.6, 3.2, -2.6)), k.bed, false, false))
   cracks.add(mesh(geo('glassCracks', () => crackLines(GLASS_CRACKS, 1.15, t + 0.12)), k.glassCrack, false, false))

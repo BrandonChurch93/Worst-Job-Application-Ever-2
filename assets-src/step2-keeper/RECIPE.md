@@ -46,6 +46,6 @@ Date: 2026-11-26
 Made by: `cabinet()` in `src/pages/step2/real/slot.ts`, with `loft()` of `src/pages/step2/real/slot-kit.ts`
 From: `SLOT_LOOK.band`, `step`, `ledge`, `chamfer`, `chamferDrop`, `gasket`, `bevel`, `glassEnv` in `src/pages/step2/real/slot.ts`
 Prompt or command: `npm run still -- --sheet machines --format hd --tier review`
-Takes: 3, the first owner's band of 10.4 px with one chrome slope; a band of 12.4 px with a step, a shelf and a slope in chrome; the same in a plain copy of the shared aluminium with the glass taking less of the room; the third was kept
+Takes: 4, the first owner's band of 10.4 px with one chrome slope; a band of 12.4 px with a step, a shelf and a slope in chrome; the same in a plain copy of the shared aluminium with the glass taking less of the room; the same with a lighter frame, a finer grain and a painted gradient toward the key (`SLOT_LOOK.frame`, `fanned()`); the fourth was kept
 Why this one: the approved sheet's frame is about 6 percent of the cabinet's width with a step toward the glass; chrome on the step read white where the approved step is mid grey
 Date: 2026-11-26

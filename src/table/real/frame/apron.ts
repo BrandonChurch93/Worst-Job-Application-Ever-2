@@ -10,7 +10,7 @@ const SLAB = { height: 16, bevel: 3.2, corner: 10, inlay: 9, line: 1.5, grain: 0
 export const EDGE = { gap: 1.6, near: 44, low: 7, chamfer: 3, deck: 3, slot: [86, 40] as V2, bezel: 7, skin: 1.2, skirt: 1, panel: 10 }
 const WALL: [number, number, number] = [0.2, 0.208, 0.22]
 // The sunk panel of each side rail's south end, seen end on from the player's end: a quiet dark face.
-const SLOPE: [number, number, number] = [0.16, 0.166, 0.176]
+const SLOPE: [number, number, number] = [0.06, 0.063, 0.068]
 const CARD = { cover: 12, thick: 2.6, lift: 1.4 }
 
 export function apron(z: Zone, ctx: RealContext): THREE.Object3D {
