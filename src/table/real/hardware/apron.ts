@@ -38,8 +38,15 @@ export function plunger(z: Zone): Geo {
   const moving = G.vertices
   const r = PLUNGE.knob
   from = G.vertices
-  G.f(FIN.gloss).lathe([[0, -r], [r * 0.34, -r * 0.94], [r * 0.64, -r * 0.77], [r * 0.87, -r * 0.5], [r * 0.98, -r * 0.2], [r, 0.08 * r], [r * 0.93, r * 0.36], [r * 0.74, r * 0.62], [r * 0.5, r * 0.8], [r * 0.5, r * 0.86], [r * 0.58, r * 0.9], [r * 0.58, r * 0.98], [5.5, r * 0.98]], 0, 0, 28, TONE.knob).round(from, 0, 0, 0, r, r * 0.045)
+  G.f(FIN.amber).lathe([[0, -r], [r * 0.34, -r * 0.94], [r * 0.64, -r * 0.77], [r * 0.87, -r * 0.5], [r * 0.98, -r * 0.2], [r, 0.08 * r], [r * 0.93, r * 0.36], [r * 0.74, r * 0.62], [r * 0.5, r * 0.8], [r * 0.5, r * 0.86], [r * 0.58, r * 0.9], [r * 0.58, r * 0.98], [5.5, r * 0.98]], 0, 0, 28, TONE.knob).round(from, 0, 0, 0, r, r * 0.045)
   G.move(from, turn(yk))
+  // The knob is a bead of amber glass: light goes into it, so its shaded side glows deeper and never goes to mud, and the side to the lamps is paler.
+  G.tint(from, (nx, ny, nz) => {
+    const up = Math.max(0, nz * 0.8 - nx * 0.3 + ny * 0.25)
+    const deep = Math.max(0, -nz * 0.7 - ny * 0.5)
+    const k = 1.7 + 1.1 * up * up + 1.1 * deep
+    return [k, k * (1 + 0.22 * up * up - 0.2 * deep), k]
+  })
   const clip = face + PLUNGE.spring
   from = G.vertices
   G.f(FIN.steel).lathe([[5.5, r * 0.98], [5.5, clip + 12 - yk], [4, clip + 14 - yk], [0, clip + 14 - yk]], 0, 0, 12, TONE.steel)

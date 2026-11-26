@@ -16,7 +16,7 @@ export const hex = (h: number): RGB => {
 export const shade = (c: RGB, k: number): RGB => [c[0] * k, c[1] * k, c[2] * k]
 
 // The finishes of the hardware. One material carries them all: a vertex picks its finish through its texture coordinate.
-export const FIN = { steel: 0, alu: 1, brass: 2, rubber: 3, gloss: 4, dark: 5, zinc: 6, satin: 7, chrome: 8, spring: 9 }
+export const FIN = { steel: 0, alu: 1, brass: 2, rubber: 3, gloss: 4, dark: 5, zinc: 6, satin: 7, chrome: 8, spring: 9, amber: 10 }
 // Clear coat, roughness, metalness of each finish.
 const FINISH: [number, number, number][] = [
   [0, 0.09, 1],
@@ -28,7 +28,8 @@ const FINISH: [number, number, number][] = [
   [0, 0.3, 1],
   [0, 0.5, 0],
   [0, 0.035, 1],
-  [0, 0.24, 1]
+  [0, 0.24, 1],
+  [0.3, 0.34, 0]
 ]
 
 export const TONE = {

@@ -13,7 +13,7 @@ const WALL = { height: 60, seg: 34, rim: 30, blade: 2.4, post: 5.4, chamfer: 4.5
 const METAL: [number, number, number] = [0.085, 0.125, 0.235]
 const POLISH: [number, number, number] = [0.1, 0.15, 0.28]
 // The face of a cross rail between two floors is anodised darker than the rails and carries no strike strip: no bright band stands between the floors.
-const RISER: [number, number, number] = [0.07, 0.102, 0.19]
+const RISER: [number, number, number] = [0.098, 0.143, 0.266]
 // Its ledge lies face up under the lamps, so it is darker still.
 const LEDGE: [number, number, number] = [0.05, 0.075, 0.14]
 // The land on top of a rail: the cabinet's cream enamel, bright against the navy under it.
