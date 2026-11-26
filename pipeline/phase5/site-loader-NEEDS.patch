@@ -1,100 +1,66 @@
-diff --git a/src/capture/showcase.ts b/src/capture/showcase.ts
-index baaadd3b..de3053ac 100644
---- a/src/capture/showcase.ts
-+++ b/src/capture/showcase.ts
-@@ -6,6 +6,7 @@ import { narration, timedLines } from '../copy'
- import { assetSet } from '../core/assets'
- import { pages } from '../pages'
- import { look } from '../post/look'
-+import { loadState, type LoadState } from '../core/load'
- import { standInsOf, TONES } from '../shell/view'
- import { plannedHeight, typeRegister, walk } from '../shell/layout'
- import { words } from '../shell/words'
-@@ -17,7 +18,7 @@ export type { StillSpec, CursorState }
+diff --git a/src/table/physics.ts b/src/table/physics.ts
+index e87ed065..9e0cf598 100644
+--- a/src/table/physics.ts
++++ b/src/table/physics.ts
+@@ -1,11 +1,14 @@
+-import RAPIER from '@dimforge/rapier2d-deterministic-compat'
++import type { RigidBody, World } from '@dimforge/rapier2d-deterministic-compat'
+ import { config } from '../config'
+ import { COLS, COS25, FLIP, FLIP_REACH, GRAVITY, MID, MOUTH, OUTLANE, R, SIN25, TH, TIERS, TIER_Y, floorZ, holdOf, railAt, railLength, railOf, solids, table, tierAt, type V } from './layout'
  
- export interface Showcase {
-   ready: Promise<void>
--  info(): { fps: number; format: string; tier: string; assets: string; engineHash: string; pageHashes: Record<string, string>; standIns: { name: string; unit: string }[]; modules: Record<string, string[]>; counts: Record<string, { triangles: number; drawCalls: number; standingParts?: number }>; textureMb: Record<string, number>; textures: Record<string, TextureCount>; versions: Record<string, string> }
-+  info(): { fps: number; format: string; tier: string; assets: string; engineHash: string; pageHashes: Record<string, string>; standIns: { name: string; unit: string }[]; modules: Record<string, string[]>; counts: Record<string, { triangles: number; drawCalls: number; standingParts?: number }>; textureMb: Record<string, number>; textures: Record<string, TextureCount>; versions: Record<string, string>; loading: LoadState }
-   setFormat(id: string): Promise<void>
-   setAssets(id: string): Promise<void>
-   setDiagnostic(view: string): void
-@@ -558,7 +559,7 @@ export function makeShowcase(app: App, ready: Promise<void>): Showcase {
-         textures[unit] = memory.get(unit) ?? { mb: 0, counted: 0, held: 0, assetMb: 0, targetMb: 0, unseenMb: 0 }
-         textureMb[unit] = textures[unit]!.mb
-       }
--      return { fps, format: app.format.id, tier: app.tier, assets: app.assets, engineHash: build.engineHash, pageHashes: build.pageHashes, standIns: app.standIns(), modules: build.modules, counts, textureMb, textures, versions: { ...build.versions, target: app.engine.kind } }
-+      return { fps, format: app.format.id, tier: app.tier, assets: app.assets, engineHash: build.engineHash, pageHashes: build.pageHashes, standIns: app.standIns(), modules: build.modules, counts, textureMb, textures, versions: { ...build.versions, target: app.engine.kind }, loading: loadState() }
-     },
-     async setFormat(id) {
-       await ready
-diff --git a/src/table/real/assets.ts b/src/table/real/assets.ts
-index 09bc13bd..b9be90eb 100644
---- a/src/table/real/assets.ts
-+++ b/src/table/real/assets.ts
-@@ -1,58 +1,16 @@
--import * as THREE from 'three'
--import { assetUrl, fetchBytes, filesOf, type AssetSet } from '../../core/assets'
-+import type { AssetSet } from '../../core/assets'
-+import { loadPage, picture, picturesOf, type Asked } from '../../core/load'
- 
- // A picture a part of the table is built from: a file of the asset sets, named from `table/` on, the same name in `public/assets/` and in `assets-full/`.
--export interface Asked {
--  file: string
--  // False while the file is not in the asset set in use, or not loaded yet. A maker answers null until its pictures are ready.
--  ready(): boolean
--  texture(): THREE.Texture
--}
--
--interface Entry { file: string; colour: boolean; repeat: boolean; texture: THREE.Texture | null }
--
--const asked = new Map<string, Entry>()
-+export type { Asked }
- 
- // Call it at the top of a file, never inside `make`. Colour pictures are read as sRGB, data pictures as they are.
- export function ask(file: string, o: { colour: boolean; repeat?: boolean }): Asked {
-   if (!file.startsWith('table/')) throw new Error(`A picture of the table is named from "table/" on: "${file}"`)
--  let e = asked.get(file)
--  if (!e) {
--    e = { file, colour: o.colour, repeat: o.repeat ?? false, texture: null }
--    asked.set(file, e)
--  } else if (e.colour !== o.colour || e.repeat !== (o.repeat ?? false)) throw new Error(`The picture "${file}" is asked for in two ways`)
--  const entry = e
--  return {
--    file,
--    ready: () => entry.texture !== null,
--    texture() {
--      if (!entry.texture) throw new Error(`The picture "${file}" is not loaded: answer null from key() while ready() is false`)
--      return entry.texture
--    }
--  }
-+  return picture('step3', 'table', file, o)
++let RAPIER!: typeof import('@dimforge/rapier2d-deterministic-compat').default
+ let ready = false
+ export async function prepare(): Promise<void> {
+   if (ready) return
+-  await RAPIER.init()
++  const library = (await import('@dimforge/rapier2d-deterministic-compat')).default
++  await library.init()
++  RAPIER = library
+   ready = true
  }
  
--export const askedFiles = (): string[] => [...asked.keys()].sort()
-+export const askedFiles = (): string[] => picturesOf('step3')
+@@ -62,7 +65,7 @@ const newBall = (steel: boolean): BallState => ({ mode: 'none', steel, x: 0, y:
+ const banks = [...new Set(table.targets.filter((t) => t.kind === 'drop').map((t) => t.id.slice(0, t.id.lastIndexOf('.'))))]
  
--// Loads every picture that was asked for and is in the asset set. A capture awaits it before its first frame; the live site calls it once the visitor has left the careers page.
--export async function loadTable(set: AssetSet): Promise<void> {
--  const have = new Set(filesOf('table', set).map((f) => f.file))
--  await Promise.all(
--    [...asked.values()]
--      .filter((e) => have.has(e.file) && !e.texture)
--      .map(async (e) => {
--        const bytes = await fetchBytes(assetUrl('table', e.file, set))
--        const bitmap = await createImageBitmap(new Blob([bytes]), { imageOrientation: 'flipY', premultiplyAlpha: 'none', colorSpaceConversion: 'none' })
--        const t = new THREE.Texture(bitmap)
--        t.colorSpace = e.colour ? THREE.SRGBColorSpace : THREE.NoColorSpace
--        t.wrapS = t.wrapT = e.repeat ? THREE.RepeatWrapping : THREE.ClampToEdgeWrapping
--        t.generateMipmaps = true
--        t.minFilter = THREE.LinearMipmapLinearFilter
--        t.magFilter = THREE.LinearFilter
--        t.anisotropy = 8
--        t.name = e.file
--        t.needsUpdate = true
--        e.texture = t
--      })
--  )
--}
-+// Loads every picture that was asked for and is in the asset set. A capture awaits it before its first frame; the live site starts it while the visitor is on step 1 (`src/core/load.ts`).
-+export const loadTable = (set: AssetSet): Promise<void> => loadPage('step3', set)
+ export class Machine {
+-  private world!: RAPIER.World
++  private world!: World
+   private ballHandles: number[] = []
+   private flipHandles: number[] = []
+   balls: BallState[] = []
+@@ -183,7 +186,7 @@ export class Machine {
+     this.events = []
+   }
+ 
+-  private body(i: number): RAPIER.RigidBody {
++  private body(i: number): RigidBody {
+     return this.world.getRigidBody(this.ballHandles[i]!)
+   }
+ 
+diff --git a/src/main.ts b/src/main.ts
+index 0b56bd76..27faac6a 100644
+--- a/src/main.ts
++++ b/src/main.ts
+@@ -364,7 +364,9 @@ function play(first: PlayMode): void {
+     canvas,
+     step: stepNow,
+     setStep(step) {
+-      base = Math.min(5, Math.max(0, Math.round(step)))
++      const to = Math.min(5, Math.max(0, Math.round(step)))
++      if (!app.code(liveFlow()[to]!.page)) return
++      base = to
+       stage = makeStage()
+       sound?.stop()
+       if (flowing()) sound?.start()
+@@ -446,6 +448,11 @@ function play(first: PlayMode): void {
+     last = t
+     frameSeconds = Math.min(0.5, dt)
+     const run = Math.min(0.1, dt)
++    if (now === 'film' && !app.code(null)) {
++      controls.update()
++      requestAnimationFrame(tick)
++      return
++    }
+     if (now === 'live') {
+       owed += run
+       const steps = Math.floor(owed * stepHz)
