@@ -9,11 +9,11 @@ import { CRANK, ROWS } from '../layout'
 import { clamp01, contact, fuse, lathe, mesh, moved, outline, picture, rise, round, smooth, srgb } from './slot-kit'
 
 export const CRANK_LOOK = {
-  full: { base: 26, hub: 22, arm: 10, grip: 24, meter: 20 }, pill: 3.4, pillRound: 2.4, pillCorner: 12, clear: { core: 0.42, low: 0.57, gain: 0.3 }, footLine: 1.5, wallRings: 3, picture: [128, 512] as [number, number], rimTone: 0.4,
-  plate: 8, rim: 3.6, screwAt: 38, screw: 4.8, washer: 25.5, neck: 20, eye: 3.4, bar: 0.8, end: 0.5, fillet: 9, cap: 16.5,
+  full: { base: 26, hub: 22, arm: 10, grip: 24, meter: 20 }, pill: 8, pillRound: 5, pillCorner: 12, clear: { core: 0.2, low: 0.6, gain: 0.3 }, footLine: 0.8, wallRings: 3, picture: [128, 512] as [number, number], rimTone: 0.4,
+  plate: 8, rim: 3.6, screwAt: 38, screw: 4.8, washer: 25.5, neck: 20, eye: 3.4, bar: 0.68, end: 0.44, fillet: 9, cap: 16.5,
   grip: { cap: 0.95, round: 2.5, square: 2.5, taper: 0.9, seamAt: 9, seam: 0.07, collar: 0.05 },
   tie: { low: 0.82, gain: 1.7, second: 0.3, sharp: 3, axis: 2.5, capAxis: 2.2 },
-  lamp: { colour: [1, 0.42, 0.1] as [number, number, number], power: 0.55, reach: 72, lift: 10, most: 4 }
+  lamp: { colour: [1, 0.42, 0.1] as [number, number, number], power: 0.4, reach: 58, lift: 12, most: 4 }
 }
 const L = CRANK_LOOK
 
@@ -45,29 +45,31 @@ function own(): NonNullable<typeof made> {
   const off = picture(L.picture[0], L.picture[1], true, (u, v) => {
     const p = inPill(u, v)
     const side = (p.x / 14) * 0.6 - (p.y / 48) * 0.55
-    const edge = 1 - smooth(p.depth / 0.9)
-    const line = smooth((p.depth - 0.5) / 0.8) * (1 - smooth((p.depth - 2.5) / 1.2))
-    const dark = smooth((p.depth - 2.9) / 0.8) * (1 - smooth((p.depth - 4.1) / 1.4))
-    const gather = smooth(side) * smooth((p.depth - 3.2) / 1.5) * (1 - smooth((p.depth - 5.5) / 4))
-    const hi = smooth((0.3 - side) / 0.9)
+    const edge = 1 - smooth(p.depth / 1.1)
+    const line = smooth((p.depth - 1.3) / 0.9) * (1 - smooth((p.depth - 3.4) / 1.5))
+    const dark = smooth((p.depth - 0.2) / 0.8) * (1 - smooth((p.depth - 1.5) / 0.9))
+    const gather = smooth(side) * smooth((p.depth - 3.4) / 1.5) * (1 - smooth((p.depth - 6.5) / 4))
+    const shade = smooth(-side) * smooth((p.depth - 4.2) / 1.2) * (1 - smooth((p.depth - 6.2) / 3.5))
+    const hi = smooth((0.25 - side) / 0.8)
     const across = smooth(0.5 + 0.5 * ((p.x / 14) * 0.85 - (p.y / 48) * 0.25))
-    const k = L.clear.low + L.clear.gain * across + 0.62 * line * (0.4 + 0.6 * hi) - 0.26 * dark * (1 - 0.6 * smooth(side + 0.4)) - 0.3 * edge + 0.12 * gather
-    const a = Math.min(1, L.clear.core + (0.3 + 0.4 * hi) * line + 0.44 * edge + 0.3 * dark + 0.1 * gather)
+    const k = L.clear.low + L.clear.gain * across + 0.9 * line * (0.15 + 0.85 * hi) - 0.3 * dark - 0.34 * edge + 0.2 * gather - 0.16 * shade
+    const a = Math.min(1, L.clear.core + (0.12 + 0.72 * hi) * line + 0.5 * edge + 0.42 * dark + 0.3 * gather + 0.22 * shade)
     return [k * 0.955, k * 0.995, k * 0.975, a]
   })
   // The lit segment: a pale orange core, a deeper orange ring, and a bright line at the rim.
   const glow = picture(64, 256, true, (u, v) => {
     const p = inPill(u, v)
-    const t = smooth((p.depth - 2.2) / 9) * (1 - 0.25 * smooth((Math.abs(p.y) - 34) / 20))
-    const rim = smooth((p.depth - 0.4) / 0.8) * (1 - smooth((p.depth - 1.8) / 1.2))
-    return [1, 0.3 + 0.44 * t + 0.14 * rim, 0.03 + 0.46 * Math.pow(t, 1.4) + 0.04 * rim, 1]
+    const t = smooth((p.depth - 2.6) / 7.5) * (1 - 0.2 * smooth((Math.abs(p.y) - 36) / 18))
+    const rim = smooth((p.depth - 0.5) / 0.8) * (1 - smooth((p.depth - 2) / 1.2))
+    const wall = 1 - 0.45 * (1 - smooth(p.depth / 1.2))
+    return [wall, wall * (0.27 + 0.66 * t + 0.16 * rim), wall * (0.03 + 0.74 * Math.pow(t, 1.5) + 0.05 * rim), 1]
   })
   const glass = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xf4f7f7), map: off, roughness: 0.06, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.03, specularIntensity: 1, envMapIntensity: 1.6, transparent: true }))
   const wall = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xf4f7f7).multiply(new THREE.Color().setRGB(L.rimTone * 0.955, L.rimTone * 0.995, L.rimTone * 0.975, THREE.SRGBColorSpace)), roughness: 0.06, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.03, specularIntensity: 1, envMapIntensity: 1.6 }))
   const lit = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xd9772c), emissive: new THREE.Color(1, 1, 1), emissiveMap: glow, emissiveIntensity: 1.0, roughness: 0.4, metalness: 0, clearcoat: 0.35, clearcoatRoughness: 0.3, specularIntensity: 0.5 }))
   const washer = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x2a2826), roughness: 0.6, metalness: 0.4 }))
   const bar = studio(materials().aluminium.clone())
-  bar.color = srgb(0x8e9398)
+  bar.color = srgb(0x767a80)
   bar.roughness = 0.4
   bar.normalScale = new THREE.Vector2(0.09, 0.09)
   bar.anisotropyRotation = 0

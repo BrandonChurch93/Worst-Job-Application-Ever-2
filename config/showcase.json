@@ -307,7 +307,7 @@
       "id": "tier-corporate",
       "unit": "pinball",
       "beat": "pinball.lobby",
-      "at": 0.25,
+      "at": 0.4,
       "camera": "tier-3",
       "image": "references/approved/tier-corporate.png",
       "settled": [
