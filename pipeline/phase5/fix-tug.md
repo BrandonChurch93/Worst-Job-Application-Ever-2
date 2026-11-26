@@ -52,3 +52,12 @@ Pictures (`node pipeline/phase5/fix-tug-steps.mjs walk after3`, the pack's own v
 - Step 2042: the panel is thrown about 9 px and its edge covers the upper part of the slot for that one picture; by 2044 it is 3 px.
 - The last pull back is 20 px of page (10 px at preview size) and small in the picture.
 - What the film shows at the moment of the give-back was not looked at: UNKNOWN.
+
+## Checks on the second pass (commit 4f68f93f, read 21:00 UTC)
+
+- MEASURED `npm run stills` at draft then `cmp`: `step1-fire`, `table-wide`, `boss-fight` byte equal to the ones made before.
+- MEASURED `npm run determinism`: pass, 12 pictures at hd, tier draft, identical across two fresh loads and two orders.
+- MEASURED `npm run gate -- --phase 5 --only G12`: pass, 9180 frames read, 37 beats, 35 of 35 events inside the beat, arms only in step1.tug.
+- MEASURED `npm run bots`: all clear.
+- MEASURED `npm test`: 141 files, 1767 tests passed.
+- MEASURED `npx tsc --noEmit -p .`: clean.
