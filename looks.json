@@ -1,35 +1,35 @@
 {
   "folder": "ball-fix",
-  "pushed": "2026-11-26T08:36:09.635Z",
-  "commit": "ac7a4f0b73fb8691929d91df22e42f01b600e102",
+  "pushed": "2026-11-26T08:55:18.154Z",
+  "commit": "c5f672d6e061df24f06546652966bd25594469b3",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Sheet clear-ball, draft tier: approved left, this build right. The panels and gutters are the page's",
-      "time": "2026-11-26T07:45:14.495Z",
-      "by": "ball-fix",
-      "from": "out/work/ball-looks/ball-sheet.jpg"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "Still key-table-wide-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T07:53:35.665Z",
-      "by": "ball-fix",
-      "from": "out/work/stills/key-table-wide-hd-draft.png"
-    },
-    {
-      "file": "look-3.jpg",
-      "caption": "Consecutive frames of the bumper hit: the event bumper at 1:23.50 in pinball.coffee, draft tier, preview",
-      "time": "2026-11-26T08:18:37.960Z",
-      "by": "ball-fix",
-      "from": "out/work/sheets/sheet-motion-bumper-preview-draft.jpg"
-    },
-    {
-      "file": "look-4.jpg",
       "caption": "The shell closing at the capture (top, film frames 4164 to 4176) and breaking open on the way out (bottom, 6346 to 6358), every second frame, ball at its real size, draft. Rendered on ball-fix ac7a4f0b merged with machine-runner c56cd02a in a scratch tree",
       "time": "2026-11-26T08:36:08.363Z",
       "by": "ball-fix",
       "from": "out/work/ball-looks/ball-capture-way-out.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Film frames 5009 to 5013 at the coffee bumper, ball at its real size (97 px), draft: the shell is pressed flat on the cap on the frame of the hit and comes back round over two frames",
+      "time": "2026-11-26T08:55:16.476Z",
+      "by": "ball-fix",
+      "from": "out/work/ball-looks/ball-hit-coffee-bumper.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "rail-cam, approved left, ours right, draft: the rim now carries bright and dark streaks and more lamp points",
+      "time": "2026-11-26T08:55:16.764Z",
+      "by": "ball-fix",
+      "from": "out/work/ball-looks/ball-rim-rail-cam.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "lobby-doors, approved left, ours right, draft: thicker rim, the shadow strip turned away from the doors",
+      "time": "2026-11-26T08:55:17.010Z",
+      "by": "ball-fix",
+      "from": "out/work/ball-looks/ball-rim-lobby-doors.jpg"
     }
   ]
 }
