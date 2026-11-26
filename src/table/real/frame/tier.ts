@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import type { RealContext } from '../../../real/types'
 import { BALL, COLS, LANE_RAMP, MID, TH, TIERS, TIER_Y, floorZ, railOf, table } from '../../layout'
-import { localBalls, type Zone } from '../zone'
+import { localBalls, zone, type Zone } from '../zone'
 import { Geo, grooved, type V2 } from './geo'
 import { TUBE } from './loader'
 import { Screws, TONE, aluOf, mesh, paintOf, screwOf, steelOf } from './mats'
@@ -284,11 +284,15 @@ export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
     A.prism(bar, [xL, yB + low], [X(MID - CROSS.mouth), yB + low], METAL)
     A.prism(bar, [X(MID + CROSS.mouth), yB + low], [xR, yB + low], METAL)
   } else {
-    const bar: V2[] = [[0, 0], [0, H - c], [c, H], [low, H], [low, 0]]
-    A.prism(bar, [xa, yB + low], [X(MID - CROSS.mouth), yB + low], METAL)
-    A.prism(bar, [X(MID + CROSS.mouth), yB + low], [xc, yB + low], METAL)
-    A.box(X(MID - CROSS.mouth), X(MID + CROSS.mouth), yB, yB + low, CROSS.tunnel, H, METAL, { bottom: true })
-    P.box(X(MID - CROSS.mouth), X(MID + CROSS.mouth), yB, yB + 1.5, 0, CROSS.tunnel, TONE.pocket)
+    // Where the apron lies at the street's own height the street ends on a low wall, open at the mouth. Where it stands at the page's height the wall is the well's end, with a tunnel for the mouth.
+    const open = zone('apron').floor <= z.floor + 0.01
+    const top = open ? WALL.seg : H
+    const bar: V2[] = [[0, 0], [0, top - c], [c, top], [low - c, top], [low, top - c], [low, 0]]
+    const tone = (edge: number): [number, number, number] => (open && edge >= 1 && edge <= 3 ? TONE.alu : METAL)
+    A.prism(bar, [xa, yB + low], [X(MID - CROSS.mouth), yB + low], tone)
+    A.prism(bar, [X(MID + CROSS.mouth), yB + low], [xc, yB + low], tone)
+    if (!open) A.box(X(MID - CROSS.mouth), X(MID + CROSS.mouth), yB, yB + low, CROSS.tunnel, H, METAL, { bottom: true })
+    P.box(X(MID - CROSS.mouth), X(MID + CROSS.mouth), yB, yB + (open ? low : 1.5), 0, open ? 0.9 : CROSS.tunnel, TONE.pocket)
     S.box(xL + 6, X(MID - CROSS.mouth) - 6, yB + low, yB + low + WALL.stripOut, WALL.strip[0], WALL.strip[1], [1, 1, 1])
     S.box(X(MID + CROSS.mouth) + 6, xR - 6, yB + low, yB + low + WALL.stripOut, WALL.strip[0], WALL.strip[1], [1, 1, 1])
   }
