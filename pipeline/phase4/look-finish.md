@@ -106,12 +106,34 @@ M3 after B and the ink together (`node out/work/look-finish/hfe.mjs`): marketing
 
 Looks used: type 1 (three keys at review, one setting).
 
+## The quiet ink (the Builder's finding of 11:46 UTC, ruled at 11:49 UTC)
+
+MEASURED with `dark3.cjs` on marketing-top: the row under the hero button reads 105,99,88 in approved, 94,88,82 before the ink and 60,55,49 after it; the hero subline 89,84,77, 92,87,81 and 59,54,48. On step 2 the approved soft rows are far darker (subline 45,42,36). One soft ink cannot fit both pages, so the page has a third voice: style `page:quiet`, 0x67625c (the soft ink of before), taken only by a run on the page in the regular weight that asks `ink: 'soft'` in its `TypeSpec`. `tests/shared-look-ink.test.ts` holds the three voices and their order. The two runs of the careers page ask for it in `src/pages/marketing/layout.ts` (not my file): `pipeline/phase4/look-finish-NEEDS.patch`, applied as the commit `NEEDS:` on the Builder's word.
+
+## C. The glass of the fields
+
+MEASURED first, the column of pixels down the middle of the first field of step2-rest (`node out/work/look-finish/prof.cjs <png> 1200 304 300 86`, mean colour of each row):
+
+| Place | Approved | Build before | Build after |
+| --- | --- | --- | --- |
+| under the top edge | 100,107,105 held for 10 px | 114,118,118 for 3 px | 105,111,107 to 130,134,132 over 8 px |
+| middle | 182,187,183 | 186,190,188 | 177,182,178 |
+| last 6 px above the lower lip | 195,199,194 rising to 208,213,209 | 200,205,203 flat | 195,201,197 rising to 206,211,208 |
+
+So the glass was nearly right in its middle and wrong at its two edges: no band of shade under the top wall and no light along the lower lip, which is why it read flat.
+
+Built: in `src/shell/real/controls.ts` `SOAK_HOLD` 2.5 to 5.5 and `SOAK_DEPTH` 0.32 to 0.4 (the top wall's shade is deeper and holds further in), `GLINT` 0.14 to 0.3 and its reach, now named `GLINT_REACH`, 1.6 to 7 (the lower lip is lit across about 6 px), `RIM` 2.2 to 3 (the satin frame is a third wider). In `src/shell/materials.ts` the sunk glass 0xd0d8d9 to 0xcdd6d5, a hair greener and less blue. A first try at 0xc9d6ce read olive and was thrown out.
+
+Not built: the cards (`glassCard`). Their bevel is drawn by the `slabbed` shader from some forty numbers set by the owner before me; the approved bevel is a paler, wider band, and moving it wants more looks than this pass had time for. The 'Human Verification' card of the boss page is not `glassCard`: it is built from `src/boss/real/glass`, not lent.
+
+Looks used on C: shell 2 (step2-rest at review, two settings).
+
 ## Looks counted (tuning looks; baseline and three-panel pictures not counted)
 
 | Part | Used | Of |
 | --- | --- | --- |
-| shell | 8 | 40 |
-| type | 1 | 40 |
+| shell | 10 | 40 |
+| type | 2 | 40 |
 | light-engine | 0 | 40 |
 | cursor-body | 0 | 40 |
 
