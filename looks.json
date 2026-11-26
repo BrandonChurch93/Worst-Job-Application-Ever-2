@@ -1,35 +1,35 @@
 {
   "folder": "ball-fix",
-  "pushed": "2026-11-26T09:38:57.218Z",
+  "pushed": "2026-11-26T09:39:16.798Z",
   "commit": "3bb54f4a21c9aa5e6f04378d0283643447370894",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-lobby-doors-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T09:27:11.122Z",
-      "by": "ball-fix",
-      "from": "out/work/stills/key-lobby-doors-hd-draft.png"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "Still key-lobby-doors-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T09:28:19.713Z",
-      "by": "ball-fix",
-      "from": "out/work/stills/key-lobby-doors-hd-draft.png"
-    },
-    {
-      "file": "look-3.jpg",
-      "caption": "Sheet clear-ball, approved above, ours below, draft: three panels with gutters, the third ball pressed toward the cup",
-      "time": "2026-11-26T09:38:55.271Z",
-      "by": "ball-fix",
-      "from": "out/work/ball-looks/ball-sheet-beside-approved.jpg"
-    },
-    {
-      "file": "look-4.jpg",
       "caption": "Film frames 5009 to 5013 at the coffee bumper on the last commit, ball at its real size (97 px), draft: pressed on the cap from the frame after contact",
       "time": "2026-11-26T09:38:55.502Z",
       "by": "ball-fix",
       "from": "out/work/ball-looks/ball-hit-coffee-bumper-2.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Sheet clear-ball, approved above, ours below, draft: three panels with gutters, the third ball pressed toward the cup",
+      "time": "2026-11-26T09:39:15.363Z",
+      "by": "ball-fix",
+      "from": "out/work/ball-looks/ball-sheet-beside-approved.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "rail-cam, approved left, ours right, draft, last commit: streaks of light and dark in the rim; still thinner than approved",
+      "time": "2026-11-26T09:39:15.594Z",
+      "by": "ball-fix",
+      "from": "out/work/ball-looks/ball-rim-rail-cam-2.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "lobby-doors, approved left, ours right, draft (a try since taken out): under the new camera the ball has no dark shadow on the carpet, cause not found",
+      "time": "2026-11-26T09:39:15.835Z",
+      "by": "ball-fix",
+      "from": "out/work/ball-looks/ball-lobby-doors-no-shadow.jpg"
     }
   ]
 }
