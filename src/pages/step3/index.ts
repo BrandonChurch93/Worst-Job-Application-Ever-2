@@ -57,14 +57,11 @@ function buildLayout(): LayoutNode {
       const dark = m.tone === 'danger'
       kids.push(centred(`sign.${m.id}`, m.sign, { font: 'inter-600', px: m.signPx ?? 22, wrap: px(m.box[2]) - 6 }, px(m.box[0] + m.box[2] / 2), px(m.box[1] + m.box[3] / 2), { part: m.part, on: f + px((m.base ?? 0) + m.h) + 1, tone: dark ? 'inkLight' : 'ink' }))
     }
-    for (const n of table.inserts) {
-      if (n.tier !== k) continue
-      kids.push(text(`insert-label.${n.id}`, `copy:step3.table.modes.${n.mode}.insert`, { font: 'inter-500', px: 18, align: 'centre', wrap: 160, lead: 22 }, px(n.c[0]), px(n.c[1] + n.r + 0.12), { part: 'table-lights', on: f + 4, tone: 'ink' }))
-    }
     const d = table.displays[k]!
     for (const n of table.inserts) {
       if (n.tier !== k) continue
       kids.push(text(`display.${name}.${n.mode}`, `copy:step3.table.modes.${n.mode}.display`, { font: 'inter-500', px: 16, wrap: px(d.box[2]) - 20, lead: 21 }, px(d.box[0]) + 10, px(d.box[1]) + 6, { part: 'displays', on: f + 31, tone: 'inkLight', states: [`mode${n.mode}`] }))
+      kids.push(centred(`display.${name}.${n.mode}.insert`, `copy:step3.table.modes.${n.mode}.insert`, { font: 'inter-600', px: 20, wrap: px(d.box[2]) - 20, lead: 24 }, px(d.box[0] + d.box[2] / 2), px(d.box[1] + d.box[3] / 2), { part: 'displays', on: f + 31, tone: 'inkLight', states: [`name${n.mode}`] }))
     }
     kids.push(text(`display.${name}.score`, 'runtime:score', { font: 'inter-600', px: 30, align: 'centre', wrap: px(d.box[2]) - 20 }, px(d.box[0] + d.box[2] / 2), px(d.box[1]) + 18, { part: 'displays', on: f + 31, tone: 'inkLight', states: [`score${k}`] }))
   }
@@ -112,17 +109,18 @@ const Y1 = TIER_Y[1]!
 const Y2 = TIER_Y[2]!
 const NAMED: Record<string, CameraPose> = {
   'tier-3': tierPose(0), 'tier-2': tierPose(1), 'tier-1': streetPose(),
-  'table-wide': look('table-wide', [MID, APRON_Y + 20, 17.5], [MID, APRON_Y - 6.43, 3.3]),
-  'table-lobby': look('table-lobby', [MID + 3.25, Y0 + 10.65, 0], [MID + 0.15, Y0 + 4.6, 0.5]),
-  'table-replyall': look('table-replyall', [MID + 2, Y1 + 15.5, 14], [MID + 1.2, Y1 + 5.4, -2]),
-  'table-fired': look('table-fired', [8.2, Y2 + 8.0, 0.8], [4.8, Y2 + 3.5, -2.2]),
-  'table-save': look('table-save', [MID, Y2 + 12.4, 3.1], [MID, Y2 + 7.9, -2.26])
+  'table-wide': look('table-wide', [MID, APRON_Y + 12.4, 11.22], [MID, APRON_Y - 9.24, 0.85]),
+  'table-lobby': look('table-lobby', [MID + 2.65, Y0 + 6.43, -0.35], [MID - 0.13, Y0 + 5.31, 0]),
+  'table-replyall': look('table-replyall', [MID, Y1 + 16.35, 15.4], [MID, Y1 + 6.3, -2]),
+  'table-fired': look('table-fired', [8.56, Y2 + 7.8, 1.1], [5.2, Y2 + 3.8, -2.3]),
+  'table-save': look('table-save', [MID, Y2 + 13.4, 6.05], [MID, Y2 + 8.6, -2.26])
 }
 const FILM: [number, string][] = [
   [0, 'follow'], [4.2, 'table-wide'], [8.2, 'follow'], [8.5, 'ride'], [11.0, 'tier-3'], [13.0, 'table-lobby'], [14.3, 'follow'], [20.6, 'table-replyall'], [22.6, 'follow'], [27.2, 'table-fired'], [28.8, 'follow'],
   [31.0, 'rail'], [32.2, 'follow'], [34.3, 'table-save'], [36.6, 'follow']
 ]
 const BLEND = 0.6
+const NAME = 1.2
 const TURN = 1.5707963267948966
 const SIGN = { turn: 0.5235987755982988, cos: 0.8660254037844387, sin: 0.5, inset: 8, lift: 6, back: ['corporate.beach'] }
 const WAKE = 0.35
@@ -132,11 +130,6 @@ const LOW = 2.4
 
 export function makePage(): PageLogic {
   const layout = buildLayout()
-  const plates: Shape[] = table.inserts.map((n) => {
-    const b = boxOf(layout, `insert-label.${n.id}`)
-    const f = px(floorZ(n.tier))
-    return { id: `insert-plate.${n.id}`, part: 'table-lights', kind: 'box', x: b.x - 10, y: b.y - 6, w: b.w + 20, h: b.h + 12, z0: f, z1: f + 3, tone: 'paper' }
-  })
   const go = boxOf(layout, 'go-cap')
   const stood: Record<string, Partial<Shape>> = {}
   for (const id of ['marquee-title', 'marquee-score']) {
@@ -219,7 +212,7 @@ export function makePage(): PageLogic {
     const k = b.mode === 'rail' && b.rail.startsWith('chute.') ? TIERS.indexOf(b.rail.slice(6) as never) + 1 : b.mode === 'rail' && b.rail.startsWith('lift.') ? tierAt(railOf(b.rail).points[3]![1]) : tierAt(Math.max(Y0, Math.min(APRON_Y - 0.01, b.y)))
     return { scroll: px(TIER_Y[k]! + (k === 2 ? STREET : 0)), floor: px(floorZ(k)) }
   }
-  const railPose = (back = 2.4, up = 4.6, ahead = 1.0, lift = 0.5, wide = 0): CameraPose => {
+  const railPose = (back = 3.4, up = 2.85, ahead = 0.85, lift = 0, wide = 0): CameraPose => {
     const b = ball()
     let vx = b.vx
     let vy = b.vy
@@ -512,9 +505,8 @@ export function makePage(): PageLogic {
     },
     draw(out: DrawList) {
       const mc = machine()
-      drawLayout(out, layout, { states: activeStates(), runtime: { score: scoreText() }, over: s.pressed ? { ...stood, 'go-cap': { z1: config.scale.heights.button - config.scale.heights.keyTravel } } : stood })
+      drawLayout(out, layout, { states: activeStates().map((x) => (MODES.some((m) => x === `mode${m.mode}` && s.t < m.at + NAME) ? `name${x.slice(4)}` : x)), runtime: { score: scoreText() }, over: s.pressed ? { ...stood, 'go-cap': { z1: config.scale.heights.button - config.scale.heights.keyTravel } } : stood })
       for (const shape of fixedShapes()) out.push(shape)
-      for (const shape of plates) out.push(shape)
       for (const shape of movingShapes(mc, lit(), false, general(), drawn(), s.shut, website())) out.push(shape)
       out.push(hqPlate)
     },
@@ -609,7 +601,6 @@ export function makePage(): PageLogic {
         const list: DrawList = []
         drawLayout(list, layout, { states: ['play', 'on', 'mode0', 'score0', 'score2'], runtime: { score: scoreText() }, over: stood })
         for (const shape of fixedShapes()) list.push(shape)
-        for (const shape of plates) list.push(shape)
         for (const shape of movingShapes(mc, table.inserts.map(() => true), true, [true, true, true], 0, false, DUSK)) list.push(shape)
         const f = px(floorZ(1))
         const spots: { x: number; y: number; lift: number; pose: Partial<CursorPose> }[] = [
@@ -625,7 +616,6 @@ export function makePage(): PageLogic {
       const list: DrawList = []
       drawLayout(list, layout, { states: ['play', 'on', 'mode5', 'mode0', 'mode3'], runtime: { score: scoreText() }, over: stood })
       for (const shape of fixedShapes()) list.push(shape)
-      for (const shape of plates) list.push(shape)
       const top = px(MARQUEE_Y - 0.3)
       const tall = px(APRON_Y + 2.6 - MARQUEE_Y + 0.3)
       for (const shape of movingShapes(mc, table.inserts.map(() => true), true, [true, true, true], 0, false, DUSK)) list.push(shape)
