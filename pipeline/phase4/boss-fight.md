@@ -29,8 +29,8 @@ Looked at `references/approved/boss-fight.png` at full size in crops (health bar
 
 ## Agreed with `boss_modeller`
 
-- The cannon mouth is 92 px from the cannon's centre along the barrel, z 108.5 (`MUZZLE` in `src/boss/plan.ts`; first 70 px and z 46, then 92 px and z 48.5, then z 82.5 and z 108.5 as the body grew taller). The muzzle flash is the shape `muzzle-N`, mine, and sits at that mouth.
-- The barrels aim. I keep a point in the fight (`look`: the cursor's centre eased over 0.25 s), pass it as `aim` in the sixth argument of `fightRig`, and fire slabs and flash from the same formula the body turns its barrels with: rot = atan2(cy - aim.y, cx - aim.x) held inside 0.7 rad either way, mouth = (cx - 92 cos rot, cy - 92 sin rot). My copy is `muzzle()` in `src/boss/fight.ts`; when the modeller's `muzzleAt` is on `main` it replaces my copy.
+- The cannon mouth is 92 px from the cannon's centre along the barrel, at the height the body gives (`MUZZLE` in `src/boss/body.ts`, the modeller's, read by my files since 02:12 UTC; first my own copy at 70 px and z 46, then 92 px and z 48.5, then z 82.5 and z 108.5 as the body grew taller). The muzzle flash is the shape `muzzle-N`, mine, and sits at that mouth.
+- The barrels aim. I keep a point in the fight (`look`: the cursor's centre eased over 0.25 s), pass it as `aim` in the sixth argument of `fightRig`, and fire slabs and flash from the same formula the body turns its barrels with: rot = atan2(cy - aim.y, cx - aim.x) held inside 0.7 rad either way, mouth = (cx - 92 cos rot, cy - 92 sin rot). Since 02:12 UTC `muzzle()` in `src/boss/fight.ts` is the modeller's `muzzleAt` with my `look`, so mouth and barrel cannot drift apart; the ease is `LOOK_EASE` in `src/boss/plan.ts`.
 - Darts from the left stop on the shield plane above; sparks on the glass at z 60. The shield now stands on the page, its glass from z 10 to z 80 at that plane (it leaned before, and the sparks went from z 72 to 100 to 60 with it).
 - I pass `aim`, `flash` and `hurt`.
 - The wider stance (`FOOT_OFF`) and the cannons' places (`CANNON_OFF`, soon (-10, 110) either way) come from the modeller's export; the times of the unfold stay.

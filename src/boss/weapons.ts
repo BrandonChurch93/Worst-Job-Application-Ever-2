@@ -1,9 +1,9 @@
 import { config } from '../config'
 import { TYPE } from '../shell/parts'
 import type { DrawList, TypeSpec } from '../stage/types'
-import { label, prog, smooth } from './body'
+import { label, MUZZLE, prog, smooth } from './body'
 import { bannerUp, FLASH_SECONDS, SPARK_SECONDS, type Fight } from './fight'
-import { ARENA, MUZZLE, POPUP, SLAB } from './plan'
+import { ARENA, POPUP, SLAB } from './plan'
 
 const heights = config.scale.heights
 const sizes = config.scale.sizes

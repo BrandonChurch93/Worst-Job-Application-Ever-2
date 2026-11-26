@@ -1,6 +1,6 @@
 import type { StepIo } from '../stage/types'
-import { CANNON_OFF, FOOT_OFF, smooth } from './body'
-import { ARENA, BODY, CAPS, FLOOR, DART, EXPIRED_GAIN, HEALTH, HIT, HOME, LAST_CLEAR, MUZZLE, POPUP, RAMP, SHIELD, SLAB, SLOW_SECONDS, THRESHOLD } from './plan'
+import { FOOT_OFF, muzzleAt, smooth } from './body'
+import { ARENA, BODY, CAPS, FLOOR, DART, EXPIRED_GAIN, HEALTH, HIT, HOME, LAST_CLEAR, LOOK_EASE, POPUP, RAMP, SHIELD, SLAB, SLOW_SECONDS, THRESHOLD } from './plan'
 
 export interface SlabSize { w: number; h: number }
 export interface Rect { x: number; y: number; w: number; h: number }
@@ -84,12 +84,7 @@ const floor = (f: Fight): number => {
 
 const inside = (r: Rect, x: number, y: number, grow = 0): boolean => x >= r.x - grow && x <= r.x + r.w + grow && y >= r.y - grow && y <= r.y + r.h + grow
 
-export const muzzle = (f: Fight, i: number): { x: number; y: number; rot: number } => {
-  const cx = f.x + CANNON_OFF[i]![0]
-  const cy = f.y + CANNON_OFF[i]![1]
-  const rot = Math.max(-MUZZLE.turn, Math.min(MUZZLE.turn, Math.atan2(cy - f.look.y, cx - f.look.x)))
-  return { x: cx - MUZZLE.reach * Math.cos(rot), y: cy - MUZZLE.reach * Math.sin(rot), rot }
-}
+export const muzzle = (f: Fight, i: number): { x: number; y: number; rot: number } => muzzleAt(f.x, f.y, i, f.look)
 
 export const bannerUp = (f: Fight): boolean => f.expired >= 0 && f.expired < 1.5
 export const spent = (f: Fight): boolean => f.phase === 2 && f.expired >= 1.5 && f.health <= LAST_CLEAR
@@ -390,7 +385,7 @@ export function stepFight(f: Fight, io: StepIo, arena: Arena): void {
   if (f.safe > 0) f.safe -= dt
   if (f.flash > 0) f.flash -= dt
   const at = cursorCentre(io.cursor)
-  const ease = 1 - Math.exp(-dt / MUZZLE.ease)
+  const ease = 1 - Math.exp(-dt / LOOK_EASE)
   f.look.x += (at.x - f.look.x) * ease
   f.look.y += (at.y - f.look.y) * ease
   if (f.dust >= 0) {
