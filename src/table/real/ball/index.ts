@@ -453,7 +453,14 @@ function pose(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const high = 1 / (1 + lift / (r * 2.5))
   const dim = 1 - 0.7 * open
   const key = Math.min(1, Math.max(lum(L.soft) * 2.2, lum(L.floor) * 0.7))
-  shade[0]!.set(KEY_AWAY.x, KEY_AWAY.y, 0.55, Math.min(0.86, 0.56 + 0.5 * key) * Math.min(1, key * 8) * high)
+  const reach = Math.hypot(door.x, door.y)
+  const lobby = door.z > 0 && reach > 1 ? smooth(1 - (reach - B * 1.5) / (B * 6)) : 0
+  let kx = KEY_AWAY.x * (1 - lobby) - (door.x / Math.max(1, reach)) * lobby
+  let ky = KEY_AWAY.y * (1 - lobby) - (door.y / Math.max(1, reach)) * lobby
+  const kl = Math.max(1e-4, Math.hypot(kx, ky))
+  kx /= kl
+  ky /= kl
+  shade[0]!.set(kx, ky, 0.55 + 1.85 * lobby, Math.min(0.78, 0.52 + 0.5 * key) * Math.min(1, key * 8) * high)
   const gathered = L.soft.map((v, c) => Math.max(v, L.floor[c]! * 0.3))
   spot[0]!.set(gathered[0]! * 1.5 * high * dim, gathered[1]! * 1.3 * high * dim, gathered[2]! * 1.05 * high * dim)
   const low = L.lamps.filter((l) => !l.window && l.z - L.drop > 16 && l.amount > 0.03 && Math.hypot(l.x, l.y) > r * 0.8)

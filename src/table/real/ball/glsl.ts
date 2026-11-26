@@ -348,8 +348,9 @@ void main() {
 	vec4 seen = floorAt( from, dir );
 	float known = mix( 0.5, 1.0, seen.a );
 	vec3 pic = mix( vec3( dot( seen.rgb, vec3( 0.2126, 0.7152, 0.0722 ) ) ), seen.rgb, 0.6 );
-	float alpha = mix( 0.72 * known, 0.34, uTrue ) * mix( 0.7, 1.0, uArtOn ) * uBend * band;
-	vec3 col = ( pic * 1.15 + lampsIn( dir, from, 0.7 ) * 0.35 + gather * 0.9 + uHaze ) * alpha;
+	float deep = smoothstep( RIN, 0.985, rho );
+	float alpha = mix( mix( 0.72, 0.9, deep ) * known, 0.34, uTrue ) * mix( 0.7, 1.0, uArtOn ) * uBend * band;
+	vec3 col = ( pic * mix( 1.1, 0.5, deep ) + lampsIn( dir, from, 0.7 ) * 0.4 + gather * 0.9 + uHaze ) * alpha;
 
 	vec3 refl = pane( Np, rho, V, 1.0, 0.8, 0.052, 0.34, 0.0 ) * SOFT * 0.45;
 	refl += floorAt( vP, R ).rgb * F * 0.9;
@@ -366,10 +367,10 @@ void main() {
 	float brim = smoothstep( 0.92, 0.96, rho ) * ( 1.0 - smoothstep( 0.968, 0.985, rho ) );
 	vec3 S = normalize( uSoftDir );
 	float lightward = dot( Np, normalize( S - V * dot( S, V ) + vec3( 1e-4, 2e-4, 0.0 ) ) );
-	col += brim * ( min( uFloor, vec3( 0.8 ) ) * 0.05 + uSoft * SOFT * ( 0.16 * pow( max( lightward, 0.0 ), 4.0 ) + 0.05 * pow( max( - lightward, 0.0 ), 6.0 ) ) + soft * 0.06 + gather * 0.6 );
-	float edge = smoothstep( 0.978, 0.998, rho );
-	col = mix( col, col * 0.2, edge * 0.85 );
-	alpha = mix( alpha, 0.9, edge * 0.85 );
+	col += brim * ( min( uFloor, vec3( 0.8 ) ) * 0.05 + uSoft * SOFT * ( 0.16 * pow( max( lightward, 0.0 ), 4.0 ) + 0.05 * pow( max( - lightward, 0.0 ), 6.0 ) ) + max( soft * 0.06, vec3( 0.022, 0.025, 0.03 ) ) * ( 1.0 + 2.0 * max( lightward, 0.0 ) ) + gather * 0.6 );
+	float edge = smoothstep( 0.97, 0.996, rho );
+	col = mix( col, col * 0.16, edge * 0.9 );
+	alpha = mix( alpha, 0.92, edge * 0.9 );
 
 	float glint;
 	float line = seamLine( glint );
@@ -411,7 +412,7 @@ void main() {
 	vec3 col = pane( Np, rho, V, - 1.0, 0.62, 0.045, 0.2, 0.03 ) * SOFT * 0.03;
 	col += lampsBack( R, vP ) * ( 0.03 + 0.4 * F );
 	col += surround( R ) * F * 0.5;
-	float alpha = F * 0.25;
+	float alpha = F * 0.25 + 0.1 * ( 1.0 - uTrue );
 
 	float shut = step( uOpen, 0.002 ) * ( 1.0 - uTrue );
 	vec3 oc = uEye - C;
@@ -517,7 +518,7 @@ void main() {
 		float across = dot( q, side ) / ( uR * 0.9 );
 		float e = along * along + across * across;
 		keep *= 1.0 - uShade[ i ].w * ( 1.0 - smoothstep( 0.42, 1.0, e ) ) * ( 1.0 - 0.55 * smoothstep( - 0.3, 1.0, along ) );
-		vec2 s = vXY - d * ( uR * ( 0.34 + 0.5 * k ) + uLift * k );
+		vec2 s = vXY - d * ( uR * ( 0.34 + 0.5 * min( k, 1.1 ) ) + uLift * k );
 		float sa = dot( s, d ) / uR;
 		float sc = dot( s, side ) / uR;
 		float core = 1.5 * exp( - ( sa * sa / 0.014 + sc * sc / 0.006 ) ) + 0.05 * exp( - ( sa * sa / 0.08 + sc * sc / 0.03 ) );
@@ -529,7 +530,7 @@ void main() {
 		float arc = 0.07 * exp( - ring * ring ) * pow( max( dot( normalize( s + vec2( 1e-4 ) ), d ), 0.0 ), 3.0 );
 		c += uSpot[ i ] * ( core + ray + arc );
 	}
-	keep *= 1.0 - 0.8 * uNear * exp( - dot( vXY, vXY ) / ( uR * uR * 0.24 ) );
+	keep *= 1.0 - 0.62 * uNear * exp( - dot( vXY, vXY ) / ( uR * uR * 0.24 ) );
 	float fade = 1.0 - smoothstep( 0.8, 1.0, length( vXY ) / ( uR * 5.2 ) );
 	gl_FragColor = vec4( c * fade, ( 1.0 - keep ) * fade );
 }
