@@ -26,6 +26,8 @@ const FLATS: Record<string, number> = { 'corporate.carpet': 0xa3161c }
 const INSET = 0.45
 const DOOR = { part: 'model-hq', x: 10.0, y: TIER_Y[0]! + 4.5, leaf: 'hq.door.left', swing: 0.35 }
 const WALLS: Record<string, number[]> = { 'model-hq': [0.74, 0.5, 0.2], glass: [0.5, 0.52, 0.54], danger: [0.5, 0.17, 0.12], paper: [0.7, 0.68, 0.62], light: [0.7, 0.68, 0.6], raised: [0.42, 0.42, 0.44], metal: [0.5, 0.5, 0.52] }
+// How the ball gives where it strikes: the most it is pressed flat, as a share of its radius, how near a thing must be to press it, and how fast the dent of a hit dies.
+export const PRESS = { most: 0.14, hit: 0.12, near: 0.35, dies: 0.04 }
 const INSIDE = { key: 2.6, fill: 0.5, lamps: 0.12, face: 1.0, least: 0.5, most: 0.6 }
 const floors = TIERS.map((id) => ask(`table/art/${id}.webp`, { colour: true }))
 
@@ -35,7 +37,7 @@ export const stateOf = (s: Shape): State => ({ closed: clamp01(s.v?.[0] ?? 1), s
 
 // The two grades of what is seen through the ball: 'bend' bends a picture of the floor in the shell's own drawing, 'true' adds one drawing that carries the scene behind it through the wall.
 export type Grade = 'bend' | 'true'
-const debug: { grade: Grade; sweat: number | null; open: number | null } = { grade: 'bend', sweat: null, open: null }
+const debug: { grade: Grade; sweat: number | null; open: number | null; shell: boolean; bend: boolean } = { grade: 'bend', sweat: null, open: null, shell: true, bend: true }
 export const setGrade = (g: Grade): void => {
   debug.grade = g
 }
@@ -47,6 +49,7 @@ export const hold = (what: 'sweat' | 'open', v: number | null): void => {
 if (typeof window !== 'undefined') {
   window.addEventListener('wjb-grade', (e) => setGrade((e as CustomEvent).detail === 'true' ? 'true' : 'bend'))
   window.addEventListener('wjb-sweat', (e) => hold('sweat', typeof (e as CustomEvent).detail === 'number' ? (e as CustomEvent).detail : null))
+  window.addEventListener('wjb-ball', (e) => Object.assign(debug, (e as CustomEvent).detail))
   window.addEventListener('wjb-open', (e) => hold('open', typeof (e as CustomEvent).detail === 'number' ? (e as CustomEvent).detail : null))
 }
 
@@ -191,6 +194,8 @@ const lightUniforms = (): Record<string, THREE.IUniform> => ({
   uTrue: { value: 0 },
   uPlugTurn: { value: 0 },
   uOpen: { value: 0 },
+  uBend: { value: 1 },
+  uPress: { value: new THREE.Vector4(1, 0, 0, 0) },
   uSweat: { value: 0 }
 })
 
@@ -200,6 +205,8 @@ const qx = new THREE.Quaternion()
 const qy = new THREE.Quaternion()
 const X = new THREE.Vector3(1, 0, 0)
 const Y = new THREE.Vector3(0, 1, 0)
+const unroll = new THREE.Quaternion()
+const toward = new THREE.Vector3()
 const inv = new THREE.Matrix4()
 const shift = new THREE.Matrix4()
 const eye = new THREE.Vector3()
@@ -209,6 +216,39 @@ export function rollAt(x: number, y: number, r: number, into = new THREE.Quatern
   qy.setFromAxisAngle(Y, x / r)
   qx.setFromAxisAngle(X, y / r)
   return into.copy(qy).multiply(qx).multiply(BASE)
+}
+
+// Where the ball is pressed flat, and how far: against a bumper it stands in or has just struck, and against a steel ball it stands in. The way is on the page, x right and y down.
+export function pressAt(cx: number, cy: number, r: number, z0: number, ctx: RealContext): { x: number; y: number; amount: number } {
+  const B = config.table.ballPx
+  const out = { x: 1, y: 0, amount: 0 }
+  const take = (dx: number, dy: number, amount: number): void => {
+    const d = Math.hypot(dx, dy)
+    if (amount <= out.amount || d < 1e-6) return
+    out.x = dx / d
+    out.y = dy / d
+    out.amount = amount
+  }
+  for (const b of table.bumpers) {
+    const shape = ctx.byId.get(`bumper.${b.id}`)
+    if (!shape || Math.abs(shape.z0 - z0) > r) continue
+    const dx = b.c[0] * B - cx
+    const dy = b.c[1] * B - cy
+    const gap = (Math.hypot(dx, dy) - b.r * B - r) / r
+    if (gap > PRESS.near) continue
+    const since = shape.v?.[0] ?? 9
+    take(dx, dy, Math.min(PRESS.most, Math.max(clamp01(-gap), PRESS.hit * Math.exp(-since / PRESS.dies))))
+  }
+  for (let i = 1; i < 8; i++) {
+    const shape = ctx.byId.get(`ball.steel.${i}`)
+    if (!shape) break
+    if (Math.abs(shape.z0 - z0) > r) continue
+    const dx = shape.x + shape.w / 2 - cx
+    const dy = shape.y + shape.h / 2 - cy
+    take(dx, dy, Math.min(PRESS.most, clamp01((2 * r - Math.hypot(dx, dy)) / r)))
+  }
+  if (out.amount < 0.004) out.amount = 0
+  return out
 }
 
 function build(s: Shape): THREE.Group {
@@ -311,6 +351,10 @@ function pose(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   rollAt(cx, -cy, r, own.roll.quaternion)
   if (open > 0) own.roll.quaternion.slerp(OPEN, smooth(open * 4))
 
+  const pressed = pressAt(cx, cy, r, s.z0, ctx)
+  toward.set(pressed.x, -pressed.y, 0).applyQuaternion(unroll.copy(own.roll.quaternion).invert())
+  ;(u.uPress!.value as THREE.Vector4).set(toward.x, toward.y, toward.z, open > 0 ? 0 : pressed.amount)
+
   ;(u.uSoft!.value as THREE.Vector3).fromArray(L.soft)
   ;(u.uHaze!.value as THREE.Vector3).fromArray(L.haze)
   ;(u.uFloor!.value as THREE.Vector3).fromArray(L.floor)
@@ -391,6 +435,9 @@ function pose(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   u.uDrop!.value = L.drop
   u.uTrue!.value = debug.grade === 'true' ? 1 : 0
   u.uOpen!.value = open
+  u.uBend!.value = debug.bend ? 1 : 0
+  own.back.visible = debug.shell
+  own.front.visible = debug.shell
   u.uPlugTurn!.value = (1 - smooth(st.since / 0.6)) * 2.4 + open * 1.2
   u.uSweat!.value = wet
   own.sweat.visible = wet > 0.01
@@ -406,7 +453,7 @@ function pose(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const high = 1 / (1 + lift / (r * 2.5))
   const dim = 1 - 0.7 * open
   const key = Math.min(1, Math.max(lum(L.soft) * 2.2, lum(L.floor) * 0.7))
-  shade[0]!.set(KEY_AWAY.x, KEY_AWAY.y, 1.15, Math.min(0.86, 0.56 + 0.5 * key) * Math.min(1, key * 8) * high)
+  shade[0]!.set(KEY_AWAY.x, KEY_AWAY.y, 0.55, Math.min(0.86, 0.56 + 0.5 * key) * Math.min(1, key * 8) * high)
   const gathered = L.soft.map((v, c) => Math.max(v, L.floor[c]! * 0.3))
   spot[0]!.set(gathered[0]! * 1.5 * high * dim, gathered[1]! * 1.3 * high * dim, gathered[2]! * 1.05 * high * dim)
   const low = L.lamps.filter((l) => !l.window && l.z - L.drop > 16 && l.amount > 0.03 && Math.hypot(l.x, l.y) > r * 0.8)
@@ -418,7 +465,7 @@ function pose(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
       continue
     }
     const flat = Math.hypot(l.x, l.y)
-    const slant = Math.min(2.4, flat / Math.max(20, l.z - L.drop))
+    const slant = Math.min(1.4, flat / Math.max(20, l.z - L.drop))
     shade[i]!.set(-l.x / flat, -l.y / flat, slant, Math.min(0.6, 0.55 * lum(l.colour) * l.amount) * high)
     const gain = 0.45 * Math.min(1.5, l.amount) * high * dim
     spot[i]!.set(l.colour[0] * gain, l.colour[1] * gain, l.colour[2] * gain)
