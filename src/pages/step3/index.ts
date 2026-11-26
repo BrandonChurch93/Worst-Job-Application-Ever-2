@@ -113,7 +113,7 @@ const NAMED: Record<string, CameraPose> = {
   'table-wide': look('table-wide', [MID, APRON_Y + 16.41, 12.61], [MID, Y2 + 3.94, 1.96]),
   'table-lobby': look('table-lobby', [MID + 0.8, Y0 + 8.3, -0.45], [MID - 0.15, Y0 + 5.02, 0.19]),
   'table-replyall': look('table-replyall', [MID, Y1 + 16.35, 15.4], [MID, Y1 + 6.3, -2]),
-  'table-fired': look('table-fired', [7.6, Y2 + 7.14, -0.2], [4.8, Y2 + 3.8, -2.2]),
+  'table-fired': look('table-fired', [6.91, Y2 + 6.8, -0.67], [4.4, Y2 + 3.8, -2.27]),
   'table-save': look('table-save', [MID, Y2 + 12.45, 7.5], [MID, Y2 + 8.95, -3])
 }
 const FILM: [number, string, number][] = [
@@ -265,6 +265,14 @@ export function makePage(): PageLogic {
     const u = b.mode === 'rail' && b.rail === 'launch' ? smooth(Math.min(1, b.s / 7)) : b.mode === 'hold' ? 0 : 1
     return railPose(0.7 + 2.7 * u, 2.6 + 0.8 * u, 0.95 + 1.55 * u, 0.5, 36 * (1 - u))
   }
+  const backPose = (ahead = 3.2, clear = 1.7, lift = 1.05): CameraPose => {
+    const b = ball()
+    if (b.mode !== 'rail' || b.rail !== 'highway') return railPose()
+    const r = railOf(b.rail)
+    const c = soft(r, b.s)
+    const e = soft(r, Math.min(railLength(r), b.s + ahead))
+    return { eye: toWorld(px(e.x), px(e.y), px(e.z + clear)), target: toWorld(px(c.x), px(c.y), px(c.z + lift)), up: [0, 0, 1], fov: fov('rail') }
+  }
   const follow = (): CameraPose => homePose(s.scroll, s.floor)
   const lens = (name: string, p: CameraPose | null): CameraPose | null => {
     const open = LENS[name]
@@ -274,7 +282,7 @@ export function makePage(): PageLogic {
     const f = basis(p).forward
     return { ...p, focus: Math.max(BALL, (on[0] - p.eye[0]) * f[0] + (on[1] - p.eye[1]) * f[1] + (on[2] - p.eye[2]) * f[2]), aperture: open }
   }
-  const named = (name: string): CameraPose | null => lens(name, name === 'follow' ? follow() : name === 'rail' ? railPose() : name === 'ride' ? ridePose() : NAMED[name] ?? null)
+  const named = (name: string): CameraPose | null => lens(name, name === 'follow' ? follow() : name === 'rail' ? backPose() : name === 'ride' ? ridePose() : NAMED[name] ?? null)
 
   const cut = (time: number): CameraPose => {
     let i = 0
