@@ -1,35 +1,35 @@
 {
   "folder": "step2-finish",
-  "pushed": "2026-11-26T11:16:57.811Z",
-  "commit": "94ad8a004fed4782b686ad42fd0a820f20dc5693",
+  "pushed": "2026-11-26T11:57:07.154Z",
+  "commit": "e92835cf4b03a9be08ba0b6b0328f717f7f31598",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Step 2 film 11.70 to 12.10 s: the last reel stops, the housing kicks, the first coin leaves the mouth, the coins reach the arrow",
-      "time": "2026-11-26T11:06:58.193Z",
+      "caption": "Still key-step2-dial-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T11:28:32.269Z",
       "by": "step2-finish",
-      "from": "out/work/looks/files/20261126110658-r1-hit-slot.jpg"
+      "from": "out/work/stills/key-step2-dial-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Step 2 film: top, the handle meets the arrow and kicks it away at 16.78 to 17.05 s; bottom, the arrow after the coins at 12.80 to 13.45 s",
-      "time": "2026-11-26T11:06:58.419Z",
+      "caption": "Still key-step2-dial-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T11:29:20.516Z",
       "by": "step2-finish",
-      "from": "out/work/looks/files/20261126110658-r1-hit-crank.jpg"
+      "from": "out/work/stills/key-step2-dial-hd-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Step 2 film 5.50 to 6.00 s: the dial whips the arrow round, arrests it sharp at 5.58 to 5.62 s, flings it and springs home",
-      "time": "2026-11-26T11:16:56.451Z",
+      "caption": "Step 2 film, whole frames as the acting critic gets them, 4.17 to 6.87 s: the arrow carried round the dial at three places, thrown left, skidding on its side, then up",
+      "time": "2026-11-26T11:57:05.656Z",
       "by": "step2-finish",
-      "from": "out/work/looks/files/20261126111656-r2-dial-fling.jpg"
+      "from": "out/work/looks/files/20261126115705-r3-dial-whip.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Step 2 film 16.80 to 19.60 s: the blow, the flat arrow turning and shrinking back at the warning, the approach to Continue in two parts",
-      "time": "2026-11-26T11:16:56.754Z",
+      "caption": "Step 2 film, the crank tray 15.25 to 16.5 s: the crank throws the arrow off, it lands at the far end of the meter and does its double take while the handle runs alone",
+      "time": "2026-11-26T11:57:05.885Z",
       "by": "step2-finish",
-      "from": "out/work/looks/files/20261126111656-r2-warned.jpg"
+      "from": "out/work/looks/files/20261126115705-r3-crank-throw.jpg"
     }
   ]
 }
