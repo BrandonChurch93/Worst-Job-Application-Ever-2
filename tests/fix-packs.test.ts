@@ -2,7 +2,9 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { briefFor, packPlan } from '../tools/lib/pack-plan.mjs'
-import { BACK, SITE, STANDS, STROKE, TAKES, VISITOR, makeVisitor, momentsOf, runWindow } from '../tools/lib/pack-site.mjs'
+import { BACK, BLOCK, SITE, STANDS, STROKE, TAKES, VISITOR, fromMuzzle, hitTaken, keyBlock, makeVisitor, momentsOf, runWindow } from '../tools/lib/pack-site.mjs'
+import { DECK, KEYS, hatchCentre, seats } from '../src/pages/step1/keyboard'
+import { TURRET } from '../src/pages/step1/turrets'
 
 const root = path.resolve(__dirname, '..')
 const cfg = JSON.parse(fs.readFileSync(path.join(root, 'config/showcase.json'), 'utf8'))
@@ -294,5 +296,76 @@ describe('the window of a close sheet', () => {
     expect(w.window[0] + w.window[2]).toBeLessThanOrEqual(preview.width)
     expect(w.window[1] + w.window[3]).toBeLessThanOrEqual(preview.height)
     expect(w.window[2] / w.window[3]).toBeCloseTo(w.tileW / w.tileH, 1)
+  })
+})
+
+describe('the place the visitor stands at while the turrets fire', () => {
+  const block = keyBlock(cfg)
+  const at = (x: number, y: number, step = 0) => ({ name: STANDS.hit, page: STANDS.page, step, x, y })
+
+  it('is the key nearest the middle of the key block, as the page lays its keys and turrets out', () => {
+    expect([block.x, block.y, block.w]).toEqual([KEYS.x, KEYS.y, KEYS.w])
+    expect(BLOCK.deckY).toBe(DECK.y)
+    expect(BLOCK.barrel).toBe(TURRET.barrel)
+    expect(block.turrets).toEqual([hatchCentre(0), hatchCentre(1)])
+    const last = seats[seats.length - 1]!
+    expect(block.y + block.h).toBeCloseTo(last.y + last.h, 6)
+    const mid = { x: KEYS.x + KEYS.w / 2, y: block.y + block.h / 2 }
+    const d = (s: { cx: number; cy: number }) => Math.hypot(s.cx - mid.x, s.cy - mid.y)
+    const nearest = seats.reduce((a, b) => (d(b) < d(a) ? b : a))
+    expect(block.place.key).toBe(nearest.name)
+    expect(block.place.x).toBeCloseTo(nearest.cx, 6)
+    expect(block.place.y).toBeCloseTo(nearest.cy, 6)
+    expect(fromMuzzle(block, block.place)).toBeGreaterThanOrEqual(block.least)
+    expect(block.least).toBeCloseTo(KEYS.w / 3, 6)
+  })
+
+  it('walks there at its own speed and then stands still, hands off', () => {
+    const v = makeVisitor(1, VISITOR, block)
+    for (let i = 0; i < 40; i++) v.act({ turning: false, scroll: 0, hint: { x: 1546, y: 829, down: false } })
+    let before = v.pointer()
+    let arrived = -1
+    for (let i = 0; i < 200; i++) {
+      v.act(firing())
+      const now = v.pointer()
+      expect(Math.hypot(now.x - before.x, now.y - before.y)).toBeLessThanOrEqual(VISITOR.speed / VISITOR.hz + 1e-6)
+      if (arrived < 0 && far(v, block.place) === 0) arrived = i
+      if (arrived >= 0) expect(far(v, block.place)).toBe(0)
+      before = now
+    }
+    expect(arrived).toBeGreaterThan(VISITOR.reactSteps)
+    expect(arrived).toBeLessThan(80)
+    expect(v.held().down).toBe(false)
+  })
+
+  it('goes on only after a bolt that struck the arrow far from both muzzles, not after one at a muzzle', () => {
+    const near = at(1560.6, 855.5)
+    const good = at(block.place.x, block.place.y)
+    expect(fromMuzzle(block, near)).toBeLessThan(block.least)
+    const v = makeVisitor(1, VISITOR, block)
+    for (let i = 0; i < 150; i++) v.act(firing([near]))
+    expect(far(v, block.place)).toBe(0)
+    for (let i = 0; i < 100; i++) v.act(firing([near, good]))
+    expect(far(v, block.place)).toBeGreaterThan(100)
+    expect(v.waited()).toBe(150)
+  })
+
+  it('takes for the sheet the first bolt far from both muzzles, the first bolt when none is, and says which and how far', () => {
+    const near = at(1560.6, 855.5, 800)
+    const good = at(block.place.x, block.place.y, 950)
+    const later = at(block.place.x, block.place.y, 1010)
+    expect(hitTaken(block, [near, good, later])).toEqual({ step: 950, nth: 2, x: good.x, y: good.y, fromMuzzle: Math.round(fromMuzzle(block, good)), least: Math.round(block.least), far: true })
+    expect(hitTaken(block, [near])).toMatchObject({ step: 800, nth: 1, far: false, fromMuzzle: Math.round(fromMuzzle(block, near)) })
+    expect(hitTaken(block, [{ name: 'tug-lost', page: STANDS.page, step: 5, x: 0, y: 0 }])).toBeNull()
+  })
+
+  it('makes the sheet of the hit from that bolt: the moment of the hit is its step, and the first bolt when none is far', () => {
+    const run = madeRun()
+    for (const h of run.hits) Object.assign(h, { x: 1560.6, y: 855.5 })
+    expect(momentsOf(cfg, run).moments.hit).toBe(520)
+    run.hits.push(at(block.place.x, block.place.y, 560), at(block.place.x, block.place.y, 580))
+    const m = momentsOf(cfg, run).moments
+    expect(m.hit).toBe(560)
+    expect(m.struck).toBe(STANDS.hit)
   })
 })

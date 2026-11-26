@@ -47,3 +47,27 @@ Branch `agent/fix-packs`, from `origin/main` at dc83c2d0. Files changed: `tools/
 - The give-back has one sheet. With the stroke 2 steps after the release, the arrow is seen lying, let go and easing away inside 12 pictures.
 - The turn's run starts where the old page stands on its edge. The first half of the turn (the old page swinging away) is no longer in the motion pack: two sheets hold 0.8 s and the limit leaves no third.
 - Not taken, as the brief says: a run of the steel balls.
+
+## The first round-21 pack of R4 (commit 00f2ae4f)
+
+MEASURED with `npm run -s pack -- --phase 5 --round 21 --unit site --role R4`: exit 0, 10 files (round 20 had 9), 23.1 MB, 496 s. Every sheet is 1399 px wide and 1210 to 1364 px high.
+
+MEASURED from `out/work/packs/cache/00f2ae4fc758/live-high/site-run.json`: finished true, 10290 steps, 171.5 s, 37 gags, the last `decision.reset` at step 10202; `stood` 141 steps of 900, 2 bolts on the arrow (steps 903 and 975, both at 1560.6, 855.5).
+
+What the sheets show, looked at one by one:
+
+- 01 walk, steps 52 to 74: the arrow crossing the perks cards.
+- 02 and 03 turn, steps 626 to 672, one run of 24: the page from its edge to seated. The difference between consecutive pictures of the page's top band is above nothing until step 668 and nothing at 670 and 672, so the run ends on a still page. The shiver itself was not seen by eye in tiles that show the whole page at about a quarter of its size.
+- 04 hit, steps 897 to 919, contact at 903 as picture 4: the spark, the arrow thrown and turned, smoke, the arrow coming back with a burn. The arrow stood about 52 px from the right muzzle, so the bolt that hit had no flight to see and the turret hid part of the knock-back. Mended below.
+- 05 taken, steps 1757 to 1779: three pictures of the paper going in, the bite as picture 4, the arrow pulled to the slot.
+- 06 given back, steps 2447 to 2469, release at 2453: the arrow lying, let go, easing right about 200 px by the last picture. The end of the ease is after the sheet.
+- 07 seal, steps 5674 to 5696, and 08 the ball leaving the port, steps 5768 to 5790: the shells closing round the arrow; the whole ball rolling into the tube, out of the ring by picture 9.
+- 09 and 10 flippers, steps 6616 to 6662, one run of 24, the blow at 6622 as picture 4: the ball off the flipper, up between the lamps, off one and back down.
+
+## The place of the stand-still (asked by the Builder at 20:34 UTC)
+
+- The visitor no longer stands where it happens to be. From `step1.firstName` it walks to the key nearest the middle of the key block (`keyBlock(cfg).place`, the key `g`, 623 px from the nearer muzzle) and stands there, hands off.
+- It goes on after the first bolt on the arrow that struck a third of the key block's width (421 px) or more from either muzzle. The cap of 900 steps stays.
+- The sheet of the hit is made of that bolt (`hitTaken`), or of the first bolt when none struck that far.
+- The run's file says which: `stood.at` (the key and its place), `stood.hit` (`step`, `nth` bolt, its place, `fromMuzzle` px, `least` px, `far`), and `stood.capReached` is true when the cap ran out with no far hit. The pack's log says the same in one line.
+- `BLOCK` holds the numbers of the key block that the kit does not set (top of the deck, width of an end, barrel). `tests/fix-packs.test.ts` holds them against `src/pages/step1/keyboard.ts` and `turrets.ts`, so a change of the page breaks the test and not the sheet.

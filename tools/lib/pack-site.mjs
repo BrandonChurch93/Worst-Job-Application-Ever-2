@@ -24,8 +24,47 @@ export const RUN = { format: 'preview', assets: 'web', query: `&clock=steps&qual
 // at a hand's speed, presses when it is there, types, scrolls when the place is off the screen and plays the flippers with the Shift keys.
 // It takes hits: the first time a page tells it to step aside it does not. It stands where it is, hands off, for `standSteps`, and obeys from then on.
 export const VISITOR = { hz: 60, speed: 1500, reactSteps: 11, typeEvery: 8, wheelEvery: 10, wheel: 120, jitter: 6, near: 22, top: 90, bottom: 990, edge: 10, seed: 12345, start: [960, 540], standSteps: 120, mostSeconds: 400 }
-// Where the turrets fire: from the gag `from` of the page `page` until the gag `until`, the visitor stands still, hands off, until the site tells of one hit named `hit` there. `mostSteps` ends the wait if no bolt ever lands.
+// Where the turrets fire: from the gag `from` of the page `page` until the gag `until`, the visitor walks to the key nearest the middle of the key block,
+// far from both turrets, and stands still there, hands off, until the site tells of one hit named `hit` far from both muzzles. `mostSteps` ends the wait if no such bolt ever lands.
+// With no key block given it stands where it is and any hit of that name ends the wait.
 export const STANDS = { page: 'step1', from: 'step1.firstName', until: 'step1.lastName', hit: 'bolt-hit-cursor', mostSteps: 900 }
+// The key block of step 1 and its two turrets, as the page's own files set them (src/pages/step1/keyboard.ts and turrets.ts): the top of the deck,
+// the width of each end where a turret stands, the gap above the keys, what the deck is taller than its keys by and the length of a barrel.
+// `share` is the part of the key block's width a hit must be from the nearer muzzle for its bolt to be seen in flight. A stepped test holds these against the page.
+export const BLOCK = { deckY: 728, end: 200, above: 8, deckMore: 16, barrel: 84, share: 1 / 3, data: 'src/pages/step1/keyboard.json' }
+export function keyBlock(cfg) {
+  const g = cfg.scale.grid
+  const key = cfg.scale.sizes.keycapMin
+  const data = readJson(at(BLOCK.data))
+  const x = g.contentLeft + BLOCK.end
+  const y = BLOCK.deckY + BLOCK.above
+  const w = g.contentRight - g.contentLeft - BLOCK.end * 2
+  const h = data.rows.length * key + (data.rows.length - 1) * g.keyGap
+  const pitch = (w + g.keyGap) / data.unitsWide
+  const seats = []
+  data.rows.forEach((row, r) => {
+    let n = 0
+    for (const c of row) {
+      seats.push({ key: c.name, x: x + n * pitch + (c.width * pitch - g.keyGap) / 2, y: y + r * (key + g.keyGap) + key / 2 })
+      n += c.width
+    }
+  })
+  const mid = { x: x + w / 2, y: y + h / 2 }
+  const far = (s) => Math.hypot(s.x - mid.x, s.y - mid.y)
+  const place = seats.reduce((a, b) => (far(b) < far(a) ? b : a))
+  const cy = BLOCK.deckY + (h + BLOCK.deckMore) / 2
+  return { x, y, w, h, place, least: w * BLOCK.share, turrets: [{ x: g.contentLeft + BLOCK.end / 2, y: cy }, { x: g.contentRight - BLOCK.end / 2, y: cy }] }
+}
+// How far a place is from the nearer muzzle: a barrel points at what it fires on.
+export const fromMuzzle = (block, p) => Math.min(...block.turrets.map((c) => Math.max(0, Math.hypot(p.x - c.x, p.y - c.y) - BLOCK.barrel)))
+const bolts = (hits) => hits.filter((h) => h.name === STANDS.hit && h.page === STANDS.page)
+// The hit a sheet is made of: the first bolt that struck the arrow `least` or more from either muzzle, or the first bolt if none did.
+export function hitTaken(block, hits) {
+  const all = bolts(hits)
+  const far = all.find((h) => fromMuzzle(block, h) >= block.least)
+  const h = far || all[0] || null
+  return h ? { step: h.step, nth: all.indexOf(h) + 1, x: h.x, y: h.y, fromMuzzle: Math.round(fromMuzzle(block, h)), least: Math.round(block.least), far: Boolean(far) } : null
+}
 // Given back: the arrow lay dead for at least `still` steps, and now moves again.
 export const BACK = { still: 30, dead: 0.2, moves: 0.5 }
 // The gag at which a page takes the arrow from the visitor, as `told().gags` names it: the tug of war of step 1.
@@ -35,7 +74,8 @@ export const TAKES = 'step1.tug'
 export const STROKE = { least: 200, reactSteps: 2 }
 
 // The visitor's mind: from what the site tells at a step to the events of that step. No clock and no chance but its own seeded numbers.
-export function makeVisitor(k, o = VISITOR) {
+/** @param {number} k @param {typeof VISITOR} [o] @param {ReturnType<typeof keyBlock> | null} [block] */
+export function makeVisitor(k, o = VISITOR, block = null) {
   let seed = o.seed
   const rand = () => {
     seed = (Math.imul(seed, 1103515245) + 12345) & 0x7fffffff
@@ -79,7 +119,7 @@ export function makeVisitor(k, o = VISITOR) {
       if (h && h.dodge && stand < 0) stand = o.standSteps
       const gags = t.gags || []
       const fired = t.page === STANDS.page && gags.includes(STANDS.from) && !gags.includes(STANDS.until) && !t.turning
-      const struck = (t.hits || []).some((x) => x.name === STANDS.hit && x.page === STANDS.page)
+      const struck = bolts(t.hits || []).some((x) => !block || fromMuzzle(block, x) >= block.least)
       const waits = fired && !struck && waited < STANDS.mostSteps
       if (waits) waited += 1
       if (t.hero) {
@@ -88,7 +128,9 @@ export function makeVisitor(k, o = VISITOR) {
       }
       if (waits) {
         if (stand > 0) stand -= 1
-        queue.push({ stand: true })
+        const to = block ? { x: block.place.x, y: block.place.y - t.scroll } : null
+        const there = !to || Math.hypot(to.x - pos.x / k, to.y - pos.y / k) < 0.5
+        queue.push(there ? { stand: true } : { x: to.x, y: to.y, down: false, left: false, right: false, hx: to.x, hy: to.y })
       } else if (stand > 0) {
         stand -= 1
         queue.push({ stand: true })
@@ -186,7 +228,8 @@ export async function walk(cfg, log = () => {}) {
   const gags = []
   const hits = []
   try {
-    const v = makeVisitor(k)
+    const block = keyBlock(cfg)
+    const v = makeVisitor(k, VISITOR, block)
     const most = VISITOR.mostSeconds * VISITOR.hz
     let t = await tell(session.page, 0)
     const known = new Set()
@@ -211,8 +254,8 @@ export async function walk(cfg, log = () => {}) {
       if (i % 1200 === 1199) log(`the visitor is at ${t.time.toFixed(0)} s, on ${t.page}`)
     }
     const finished = t.finished
-    const bolts = hits.filter((h) => h.name === STANDS.hit && h.page === STANDS.page).length
-    const stood = { steps: v.waited(), mostSteps: STANDS.mostSteps, boltHits: bolts, capReached: v.waited() >= STANDS.mostSteps && bolts === 0 }
+    const taken = hitTaken(block, hits)
+    const stood = { steps: v.waited(), mostSteps: STANDS.mostSteps, at: { key: block.place.key, x: r1(block.place.x), y: r1(block.place.y) }, boltHits: bolts(hits).length, hit: taken, capReached: v.waited() >= STANDS.mostSteps && !(taken && taken.far) }
     return { format: f.id, level: LEVEL, assets: RUN.assets, visitor: VISITOR, finished, steps: rows.length, seconds: Math.round((rows.length / VISITOR.hz) * 100) / 100, stood, gags, hits, acts, rows, browser: session.version, problems: [...new Set(session.problems)].slice(0, 12) }
   } finally {
     await session.close()
@@ -232,7 +275,12 @@ export async function siteFacts(cfg, cache = null, log = () => {}) {
       fs.writeFileSync(file, JSON.stringify(run) + '\n')
     }
   }
-  if (run.stood) log(run.stood.capReached ? `the visitor stood still on ${STANDS.page} for ${run.stood.steps} steps, the most it waits, and no bolt hit the arrow: the sheet of the hit shows another blow` : `the visitor stood still on ${STANDS.page} for ${run.stood.steps} steps and was hit by ${run.stood.boltHits} bolt${run.stood.boltHits === 1 ? '' : 's'} there`)
+  if (run.stood) {
+    const st = run.stood
+    const where = st.at ? ` at the key ${st.at.key}` : ''
+    const which = st.hit ? `the sheet of the hit is of bolt ${st.hit.nth} of ${st.boltHits}, at step ${st.hit.step}, ${st.hit.fromMuzzle} px from the nearer muzzle (${st.hit.least} px is wanted)` : 'no bolt hit the arrow: the sheet of the hit shows another blow'
+    log(`the visitor waited on ${STANDS.page}${where} for ${st.steps} steps${st.capReached ? ', the most it waits, with no hit far from both muzzles' : ''}; ${which}`)
+  }
   return momentsOf(cfg, run)
 }
 
@@ -375,9 +423,10 @@ export function momentsOf(cfg, run) {
   const tug = run.gags.find((g) => g.gag === TAKES)
   const taken = s1 && tug && tug.step >= s1.first && tug.step <= s1.last ? tug.step : null
 
-  // The hit: the first one the site tells of on step 1, a bolt before any other (`told().hits`, by name).
+  // The hit: a bolt before any other, and of the bolts the first far from both muzzles (`hitTaken`); with no bolt, the first hit the site tells of on step 1 (`told().hits`, by name).
   const on1 = s1 ? run.hits.filter((h) => h.step >= s1.first && h.step <= s1.last) : []
-  const struck = HITS.map((name) => on1.find((h) => h.name === name)).find(Boolean) || on1[0] || null
+  const bolt = hitTaken(keyBlock(cfg), on1)
+  const struck = (bolt && on1.find((h) => h.name === STANDS.hit && h.step === bolt.step)) || HITS.map((name) => on1.find((h) => h.name === name)).find(Boolean) || on1[0] || null
   const hit = struck ? struck.step : null
 
   // Control given back: step 1 has no word for it, so it is read from the arrow. After the page took it, the arrow lies dead
