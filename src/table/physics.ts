@@ -1,6 +1,6 @@
 import RAPIER from '@dimforge/rapier2d-deterministic-compat'
 import { config } from '../config'
-import { COLS, COS25, FLIP, FLIP_REACH, GRAVITY, MID, MOUTH, OUTLANE, R, SIN25, TH, TIERS, TIER_Y, floorZ, holdOf, railAt, railLength, railOf, table, tierAt, type V } from './layout'
+import { COLS, COS25, FLIP, FLIP_REACH, GRAVITY, MID, MOUTH, OUTLANE, R, SIN25, TH, TIERS, TIER_Y, floorZ, holdOf, railAt, railLength, railOf, solids, table, tierAt, type V } from './layout'
 
 let ready = false
 export async function prepare(): Promise<void> {
@@ -96,7 +96,7 @@ export class Machine {
     for (const b of table.bumpers) world.createCollider(RAPIER.ColliderDesc.ball(b.r).setTranslation(b.c[0], b.c[1]).setRestitution(0.7).setFriction(0.05), fixed)
     for (const m of table.models) {
       if (!m.solid) continue
-      world.createCollider(RAPIER.ColliderDesc.cuboid(m.box[2] / 2, m.box[3] / 2).setTranslation(m.box[0] + m.box[2] / 2, m.box[1] + m.box[3] / 2).setRestitution(0.3).setFriction(0.1), fixed)
+      for (const [x, y, w, h] of solids(m)) world.createCollider(RAPIER.ColliderDesc.cuboid(w / 2, h / 2).setTranslation(x + w / 2, y + h / 2).setRestitution(0.3).setFriction(0.1), fixed)
     }
     for (const s of table.slings) {
       for (const [a, b, r] of [[s.a, s.b, 0.3], [s.b, s.c, 0.3], [s.a, s.c, 0.65]] as [V, V, number][]) world.createCollider(RAPIER.ColliderDesc.segment({ x: a[0], y: a[1] }, { x: b[0], y: b[1] }).setRestitution(r).setFriction(0.1), fixed)
@@ -378,7 +378,7 @@ export class Machine {
       this.toPlane(i, b.x, b.y, -10.8, 1.2)
       this.say('eject', i, id)
     } else if (id === 'street.firehouse') {
-      this.toPlane(i, b.x, b.y, 8.5, -2.5)
+      this.toPlane(i, b.x, b.y, 10.5, 9)
       this.say('scoop-kick', i, id)
     } else if (id === 'street.mom') {
       this.toPlane(i, b.x, b.y, 0, -22)
@@ -482,7 +482,7 @@ export class Machine {
     if (b.cool > 0) return
     for (const h of table.holds) {
       if (h.tier !== k || !this.on[h.id] || h.id === 'corporate.doors' || (h.kind !== 'scoop' && h.kind !== 'kicker')) continue
-      const c = h.stand ?? h.c
+      const c = h.mouth ?? h.stand ?? h.c
       if (Math.hypot(b.x - c[0], b.y - c[1]) > (h.kind === 'kicker' ? 0.6 : 0.45)) continue
       this.hold(i, h.id, h.kind === 'kicker' ? 0.35 : 1)
       this.say(h.kind === 'kicker' ? 'kicker-in' : 'scoop-in', i, h.id)

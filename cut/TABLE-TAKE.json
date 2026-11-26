@@ -1,7 +1,7 @@
 {
   "about": "The kept run of the table: when each flipper is held, in seconds of the unit. Written by npm run take.",
-  "searches": 17,
-  "allowed": 22,
+  "searches": 19,
+  "allowed": 25,
   "kept": {
     "search": 17,
     "run": 22,

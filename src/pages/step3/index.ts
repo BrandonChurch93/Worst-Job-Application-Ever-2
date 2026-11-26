@@ -10,7 +10,7 @@ import { TURN_HALF } from '../../stage/stage'
 import type { CameraPose, Collider, DrawList, GagInfo, Hint, PageContext, PageLogic, Pointer, Shape, SheetFrame, StepIo, TableState } from '../../stage/types'
 import take from '../../../cut/TABLE-TAKE.json'
 import { BOARD, boardAt, DOORS, fixedShapes, movingShapes } from '../../table/draw'
-import { APRON_Y, BALL, FLIP, LAST_Y, MARQUEE_Y, MID, MOUTH, OUTLET, PAGE_H, PORT, TH, TIERS, TIER_Y, floorZ, holdOf, railAt, railLength, railOf, table, tierAt } from '../../table/layout'
+import { APRON_Y, BALL, FLIP, LAST_Y, MARQUEE_Y, MID, MOUTH, OUTLET, PAGE_H, PORT, TH, TIERS, TIER_Y, floorZ, holdOf, railAt, railLength, railOf, solids, table, tierAt } from '../../table/layout'
 import { Machine, prepare as startPhysics, type MachineState, type TableEvent } from '../../table/physics'
 
 export const prepare = (): Promise<void> => startPhysics()
@@ -28,7 +28,7 @@ export const T = {
   press: seconds - TURN_HALF - 0.5
 }
 const MODES: { at: number; tier: number; mode: number }[] = [
-  { at: 11, tier: 0, mode: 5 }, { at: 13.3, tier: 0, mode: 6 }, { at: 14.2, tier: 0, mode: 7 }, { at: 15, tier: 1, mode: 0 }, { at: 19, tier: 1, mode: 4 }, { at: 23, tier: 1, mode: 8 },
+  { at: 10.9, tier: 0, mode: 5 }, { at: 12.1, tier: 0, mode: 6 }, { at: 13.3, tier: 0, mode: 7 }, { at: 15, tier: 1, mode: 0 }, { at: 19, tier: 1, mode: 4 }, { at: 23, tier: 1, mode: 8 },
   { at: 26, tier: 2, mode: 3 }, { at: 29.5, tier: 2, mode: 1 }, { at: 34, tier: 2, mode: 2 }
 ]
 
@@ -482,7 +482,7 @@ export function makePage(): PageLogic {
     on['street.firehouse'] = t < T.scoopKick + 0.3
     if (b.tier === 2 && b.mode === 'plane') {
       if (t < T.scoopKick) {
-        const c = holdOf('street.firehouse').c
+        const c = holdOf('street.firehouse').mouth!
         if (t >= T.firedBy) towTo('street.firehouse')
         else shoot(c[0], c[1], SHOT.scoop, PULL.scoop)
       } else if (t >= T.flapOn - SHOT.early && t < T.highwayEnd) {
@@ -697,7 +697,7 @@ export function makePage(): PageLogic {
       for (const p of table.posts) add(p.id, 'post', p.tier, [...p.c], { r: p.r })
       for (const b of table.bumpers) add(b.id, 'bumper', b.tier, [...b.c], { r: b.r })
       for (const g of table.slings) add(g.id, 'sling', g.tier, [...g.a, ...g.b, ...g.c], { closed: true })
-      for (const m of table.models) if (m.solid) add(m.id, 'model', m.tier, m.round ? [m.box[0] + m.box[2] / 2, m.box[1] + m.box[3] / 2] : corners(m.box), m.round ? { r: m.box[2] / 2 } : { closed: true })
+      for (const m of table.models) if (m.solid) solids(m).forEach((q, n) => add(n ? `${m.id}.${n + 1}` : m.id, 'model', m.tier, m.round ? [m.box[0] + m.box[2] / 2, m.box[1] + m.box[3] / 2] : corners(q), m.round ? { r: m.box[2] / 2 } : { closed: true }))
       for (const t of table.targets) if (t.kind !== 'drop' || !mc.down[t.index]) add(t.id, 'target', t.tier, corners(t.box), { closed: true })
       for (const f of table.flippers) {
         const a = (mc.flipperAngle(f.side) * Math.PI) / 180
