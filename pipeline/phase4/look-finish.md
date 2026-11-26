@@ -186,12 +186,24 @@ Looks used on E: shell 1.
 
 Not started. UNKNOWN.
 
+## The end, 12:57Z
+
+The Builder's rulings: A, B, the ink with its quiet voice and the one-line NEEDS, C (fields), the flattened arrow, the angry arrow, G and the sharpening are accepted. The exhausted arrow's contour was ruled for the sheet and taken back by the Builder at merge 35. No new look item is opened after G: E and F go to the open items as written above. A second try at E was looked at and not kept (the rule with a chamfered shoulder: the dark row at its foot went from 51 to 80 against approved's 95 to 122, but its top row went from 192 to 240 against approved's 140 to 190).
+
+Boss M2 was red on main between merge 33 and 32dd68f8 (0.0254 against 0.02, the sheet `boss-stages`), from a change that was not mine; MEASURED on this branch's head 0fd52cb7 after merges 35 and 36: 0.0027, green.
+
+The three things in my part that still look least real:
+
+1. The cards' glass. The bevel is a hard grey band where approved's is a pale wide one, and the card reads as a flat plate with a line round it. Not touched in this pass.
+2. The arrow's black edge. It is two to three times as heavy as the approved sheets' thin contour, and at low cameras the black side shows as a slab. It is the body's height and the width of its edge band in `shape.ts`; not touched.
+3. The header rule and the progress row. The rule has one hard dark row at its foot where approved has a soft shadow of three rows, and the buttons are nearer mirror chrome than satin steel.
+
 ## Looks counted (tuning looks; baseline and three-panel pictures not counted)
 
 | Part | Used | Of |
 | --- | --- | --- |
-| shell | 14 | 40 |
+| shell | 15 | 40 |
 | type | 2 | 40 |
-| light-engine | 0 | 40 |
+| light-engine | 2 | 40 |
 | cursor-body | 5 | 40 |
 
