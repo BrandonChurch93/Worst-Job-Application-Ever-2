@@ -296,7 +296,7 @@ export function tier(z: Zone): Tier {
     tip.f(FIN.steel).lathe([[9, 14], [9, 17], [5.5, 17], [5.5, 90]], 0, 0, 12, TONE.steel)
     tip.move(0, turn)
     const yb = spot(z, PLUNGER[0], TH)[1] + 9
-    G.f(FIN.alu).box(p[0] - 17, p[0] + 17, yb - 12, yb, BALL / 2 - 17, BALL / 2 + 17, TONE.alu, { bevel: 2 })
+    G.f(FIN.spring).box(p[0] - 17, p[0] + 17, yb - 12, yb, BALL / 2 - 17, BALL / 2 + 17, TONE.alu, { bevel: 2 })
     G.f(FIN.zinc).box(p[0] - 30, p[0] + 30, yb - 12, yb + 6, 0.4, 3, TONE.zinc)
     S.add(p[0] - 24, yb, 3, 0.75)
     S.add(p[0] + 24, yb, 3, 0.75)

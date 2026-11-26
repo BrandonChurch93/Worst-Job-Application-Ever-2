@@ -125,7 +125,8 @@ export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
       const shell: V2[] = [[xe - 20, 0], [xe - 20, H - c], [xe - 20 + c, H], [xe - c, H], [xe, H - c], [xe, 0]]
       A.prism(shell, [0, yB], [0, Y(dive)], landed(shell, () => METAL))
     }
-    P.box(xc, xe - 20, yB, Y(dive), 0, 1.2, TONE.pocket)
+    A.box(xc, xe - 20, yB, Y(dive), 0, 1.2, TONE.aluDark)
+    A.box(xc, xe - 20, Y(dive) - 3, Y(dive), 1.2, H - c, METAL)
   }
 
   // The low walls between the lanes and the floor, in the lengths the layout gives, with a strip of bright steel where the ball strikes.

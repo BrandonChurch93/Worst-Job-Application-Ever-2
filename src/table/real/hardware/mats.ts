@@ -27,7 +27,7 @@ const FINISH: [number, number, number][] = [
   [0, 0.3, 1],
   [0, 0.5, 0],
   [0, 0.035, 1],
-  [0, 0.26, 0.35]
+  [0, 0.24, 1]
 ]
 
 export const TONE = {
@@ -129,7 +129,7 @@ export const metalOf = (z: Zone): THREE.MeshPhysicalMaterial => {
     }
   }
   m.customProgramCacheKey = () => `wja-studio-hardware-metal-${from === z ? 'lit' : from ? 'foot' : 'page'}`
-  m = lit(steel(m, z, { ceiling: 0.3, panel: 0.5, wide: 0.12, horizon: 1.25, sky: 0.8, paint: 0.4 }, from), z)
+  m = lit(steel(m, z, { ceiling: 0.3, panel: 0.5, wide: 0.12, horizon: 1.25, sky: 0.8, paint: 0.4, under: 1.7 }, from), z)
   m.name = `hardware.${z.id}`
   made.set(z.id, m)
   return m

@@ -48,7 +48,7 @@ const fine = (src: THREE.Texture): THREE.Texture => {
   let t = fineOf.get(src)
   if (!t) {
     t = src.clone()
-    t.repeat.set(src.repeat.x * 1.6, src.repeat.y * 3.2)
+    t.repeat.set(src.repeat.x * 2.4, src.repeat.y * 6.4)
     t.needsUpdate = true
     fineOf.set(src, t)
   }
@@ -61,7 +61,7 @@ export const roomOf = (z: Zone): Zone | undefined => (LIT.includes(z.id) ? z : z
 export const aluOf = (z: Zone, name = 'alu'): THREE.MeshPhysicalMaterial => {
   const src = materials().aluminium
   const on = roomOf(z) !== undefined
-  const m = steel(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: on ? 0.27 : 0.4, metalness: on ? 1 : 0.4, normalMap: src.normalMap ? fine(src.normalMap) : null, normalScale: new THREE.Vector2(on ? 0.11 : 0.15, on ? 0.11 : 0.15), anisotropy: 0.72, anisotropyRotation: Math.PI / 2 })), z, { ceiling: 1, panel: 1.3, wide: 0.3, horizon: 1.3, direct: 0.3, under: 1.8, wall: 0.8 }, roomOf(z))
+  const m = steel(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: on ? 0.27 : 0.4, metalness: on ? 1 : 0.4, normalMap: src.normalMap ? fine(src.normalMap) : null, normalScale: new THREE.Vector2(on ? 0.08 : 0.15, on ? 0.08 : 0.15), anisotropy: 0.72, anisotropyRotation: Math.PI / 2 })), z, { ceiling: 1, panel: 1.3, wide: 0.3, horizon: 1.3, direct: 0.3, under: 1.8, wall: 0.8 }, roomOf(z))
   if (!on) {
     const room = m.onBeforeCompile
     const key = m.customProgramCacheKey

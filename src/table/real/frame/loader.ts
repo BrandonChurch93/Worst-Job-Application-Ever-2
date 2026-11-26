@@ -3,7 +3,7 @@ import type { RealContext } from '../../../real/types'
 import { BALL, OUTLET, PORT, railOf } from '../../layout'
 import { local, localBalls, type Zone } from '../zone'
 import { Geo, type V2, type V3 } from './geo'
-import { BREATH, Screws, TONE, aluOf, bowlOf, clearOf, hex, mesh, screwOf } from './mats'
+import { BREATH, TONE, aluOf, bowlOf, clearOf, hex, mesh } from './mats'
 
 // The one clear tube of the machine. The feed tube is built to it here; the drain tube and the lift tube are to be built to the same.
 export const TUBE = { outer: 53, wall: 3.6, sides: 24, opacity: 0.05, collar: 22, collarOut: 58.5, ferrule: 9, ferruleOut: 56, collarStep: 5.1 * BALL, clampStep: 5.1 * BALL, clampWide: 5, strap: 2, bend: 1.1 * BALL }
@@ -16,6 +16,7 @@ const CUP: [number, number, number] = [0.03, 0.032, 0.036]
 const RIM: [number, number, number] = [2, 2, 2]
 const FACE = hex(0x8c9094)
 const EDGE = hex(0x6a6e72)
+const SOCKET = hex(0x3a3c40)
 
 // The middle line of the tube on the page, in page pixels, its corners rounded.
 function line(): V3[] {
@@ -127,8 +128,9 @@ function collar(A: Geo, f: { at: THREE.Vector3; m: THREE.Matrix4 }, long = TUBE.
   A.move(from, f.m)
 }
 
-function clamp(A: Geo, screws: Screws, f: { at: THREE.Vector3; m: THREE.Matrix4 }, ground: number): void {
+function clamp(A: Geo, f: { at: THREE.Vector3; m: THREE.Matrix4 }, ground: number): void {
   const from = A.vertices
+  const heads: THREE.Vector3[] = []
   const w = TUBE.clampWide / 2
   const r0 = TUBE.outer + 0.3
   const r1 = r0 + TUBE.strap
@@ -141,10 +143,14 @@ function clamp(A: Geo, screws: Screws, f: { at: THREE.Vector3; m: THREE.Matrix4 
     A.box(x0, x1, -w, w, -drop, 0, TONE.aluBright, { along: [0, 0, 1] })
     A.box(side > 0 ? r1 : -r1 - 11, side > 0 ? r1 + 11 : -r1, -w, w, -drop, -drop + TUBE.strap, TONE.aluBright)
     A.move(from2, new THREE.Matrix4().makeRotationX(-Math.PI / 2))
-    const p = new THREE.Vector3(side * (r1 + 5.5), -drop + TUBE.strap, 0).applyMatrix4(f.m)
-    screws.add(p.x, p.y, p.z, 0.6, side * 0.8)
+    heads.push(new THREE.Vector3(side * (r1 + 5.5), -drop + TUBE.strap, 0).applyMatrix4(f.m))
   }
   A.move(from, f.m)
+  // The screw of each foot is part of the same metal, so the tube costs no drawing for them.
+  for (const p of heads) {
+    A.lathe([[3, 0], [2.8, 0.55], [2.3, 0.8], [1.4, 0.8]], p.x, p.y, 10, TONE.aluBright, p.z)
+    A.lathe([[1.4, 0.8], [1.26, 0.06], [0, 0.06]], p.x, p.y, 6, SOCKET, p.z)
+  }
 }
 
 function port(A: Geo, P: Geo, z: Zone, c: { x: number; y: number; ring: number; cup: number }, toward: number | null = null): void {
@@ -178,7 +184,7 @@ function port(A: Geo, P: Geo, z: Zone, c: { x: number; y: number; ring: number; 
   P.lathe([[r + RING.lip, h - 3], bowl[0]!], p[0], p[1], 72, RIM)
   const dark = P.vertices
   P.lathe(bowl, p[0], p[1], 72, CUP)
-  P.lathe([[r - RING.dish, RING.floor], [BALL * 0.5, RING.floor - 1.2], [0, RING.floor - 1.6]], p[0], p[1], 48, CUP)
+  P.lathe([[r - RING.dish, RING.floor], [BALL * 0.5, RING.floor - 1.2], [0, RING.floor - 1.6]], p[0], p[1], 72, CUP)
   P.tint(dark, (x, y) => 0.4 + 2.4 * side(x, y) * side(x, y))
 }
 
@@ -188,7 +194,6 @@ export function loader(z: Zone, _ctx: RealContext): THREE.Object3D {
   const A = new Geo()
   const G = new Geo()
   const P = new Geo()
-  const screws = new Screws()
   const whole = inZone(z)
   const { first, last } = whole
   let { path, from } = whole
@@ -218,7 +223,7 @@ export function loader(z: Zone, _ctx: RealContext): THREE.Object3D {
     }
     for (let s = Math.ceil((from + 30 - step / 2) / step) * step + step / 2 - from; s < length - 20; s += TUBE.clampStep) {
       const f = frameAt(path, s)
-      if (f && f.flat && f.at.z - ground > 20 && f.at.z - ground < 90) clamp(A, screws, f, ground)
+      if (f && f.flat && f.at.z - ground > 20 && f.at.z - ground < 90) clamp(A, f, ground)
     }
     if (z.tier < 0) {
       // Over the page the tube lays a soft shadow toward the lower right.
@@ -264,8 +269,6 @@ export function loader(z: Zone, _ctx: RealContext): THREE.Object3D {
     tube.renderOrder = 3
     o.add(tube)
   }
-  const sc = screws.mesh(screwOf(z), `loader.screws.${z.id}`)
-  if (sc) o.add(sc)
   return o
 }
 
