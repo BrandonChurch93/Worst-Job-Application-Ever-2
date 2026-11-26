@@ -39,6 +39,7 @@ Agent `pinball_stager`, branch `agent/pinball-stage`. Times UTC.
 - 02:40 `table-fired` on the director's 9c03df9 (the ball in the doorway): 4.2 balls away, the firehouse 57% of the width. Two thirds is not to be had with the building whole: the limit is now the model's own shape (2.5 wide, 1.9 tall with the beacon), not the ball.
 - 02:50 The Builder's ruling on the near end: the apron's near rail is cut to the slabs (the framer), and for `table-wide` and `table-save` alone the last screen is out of view. Made as `omit` on the camera pose and `seenBy` in `src/app.ts` (`NEEDS:` commit, patch below). `table-wide` keeps the approved angle and stands back to put the apron's near edge on the bottom edge; `table-save` is low again, 32 degrees down. Aperture of `table-save` 9 to 12: the eye is twice as far.
 - 02:50 The apron slabs are kind `apronSlab` with their height and tone given, not `slab`: measure M9 asks every `slab` to stand 16 over the page, and these stand on the apron floor (the director's report).
+- 03:00 Checked on the new take and the framer's near end, no change needed: `reply-all` at its key (21.1 s); the first frame of the lobby shot (13.05 s: the ball stands large and sharp in front, HQ soft behind it, then is batted to the doors); the last screen from `home` and the first screen beside `loader-page`; `table-map` (it ends 0.55 ball short of the apron's near edge: the whole machine with its near rail is 0.6% taller than the sheet at the page's full width, and a wider view would show the page's edge).
 
 ## Needs sent
 
