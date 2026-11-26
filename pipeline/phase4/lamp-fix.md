@@ -95,6 +95,8 @@ Round 2 of the critics began at 08:15 UTC, so the count begins again here.
 | 08:46 | art | 2 | x4, the wear in the coat map soft and beside the ball's lines: table-wide, last-save | 18, 14 |
 | 08:49 | both | 6 | x5, all of it together: tier-street, tier-office, tier-corporate (art), reply-all, youre-fired, rail-cam (lights) | 21, 17 |
 | 08:51 | lights | 3 | x6, Street head lamps 1.55 to 1.38, beacon light tighter: youre-fired, tier-street, last-save | 24, 17 |
+| 08:55 | lights | 4 | y1, after merge 29 (the frame's aluminium): table-wide, tier-office, tier-corporate, tier-street | 28, 17 |
+| 08:58 | lights | 1 | y2, riser light 0.06 to 0.015: table-wide | 29, 17 |
 
 ## Decisions
 
@@ -129,6 +131,7 @@ Round 2 of the critics began at 08:15 UTC, so the count begins again here.
 29. The wear in the lacquer was a camouflage of hard-edged patches that showed from `table-wide` as grey clouds on the Street. MEASURED by looking: lowering `SHEEN.worn` and `SHEEN.veil` (x3) changed nothing, so the clouds were the coat map itself under the page's light. The coat map now has soft wear that is strongest beside the lines the ball runs most (`WORN` 22, 32, 36 and the `broad` trail in `make.mjs`), and the clouds are gone in x4.
 30. `table-wide` stands at 0.86 to 0.88 of its approved mean and no lamp of mine moves it (x1 to x4: 0.88, 0.88, 0.88, 0.86): in the build's framing the machine fills less of the picture and the room round it is black. Left: the camera is not mine, and a general fill is ruled out.
 31. Street head lamps 1.55 to 1.38 and the beacon's own lamp nearer and tighter (`BEACON` z 14, reach 0.85, power 0.7), for `youre-fired`. MEASURED (`means2.mjs x6`): tier-street 1.00, youre-fired 1.17 (was 1.19), last-save 0.90. The roof and the right wall in `youre-fired` hardly changed, so most of what lights them is not the head lamps; left there.
+32. After merge 29 the frame is pale aluminium and every key rose with it. MEASURED (`means2.mjs y1`): table-wide 1.15, tier-corporate 1.11, tier-office 1.10, tier-street 1.14, with my floors as they were (the Street's floor box in `table-wide` 57.1 before, 57.6 after). The riser faces went from 59.0 and 63.5 to 92.7 and 110.2 against a floor of 57.6, so they are now the palest large shapes. My light on them is down from 0.06 to 0.015 (`SHADOW.riser`): 78.7 and 96.5. The rest is the frame's metal under the page's light, which is not mine; I do not darken the floors to make up for it.
 
 ## Needs
 
