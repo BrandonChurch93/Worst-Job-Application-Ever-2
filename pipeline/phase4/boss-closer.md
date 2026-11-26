@@ -159,3 +159,14 @@ Looks: acting-boss 30 (one `boss-down` compare).
 - Slabs (the `fired-0` crop of `boss-fight`): the lacquer is a deeper red with a line of light on the upper bevel (`LACQUER` in `src/pages/step4/real/boss-weapons.ts`: colour `0xba0a0b`, coat roughness 0.15, room 0.7). Before, the room's reflection laid a pale haze on the face and the slab read rose and matte. The shape of the slab is step 1's (`makeSlab`), not mine; its side walls stay less shaded than approved. Looks: boss-weapons 18 (four `boss-fight` compares).
 - MEASURED 08:49 UTC, `npm run compare -- --key boss-fight --tier draft --format hd`: 11.718 s, 642536 triangles, 472 draw calls.
 - Cracks round the socket: drawn 2.5 times their plan width (was 1.7) and a little darker (`0x33231b`), in `src/boss/real/transform.ts`. SEEN at 08:55 UTC in a crop of the `boss-fight` draft beside approved: the roots are about as heavy as approved; the colour of that look was `0x2b1e17`, which read black, and the committed `0x33231b` was not looked at by itself. Looks: boss-transform 36, boss-weapons 19 (a crop of the dart line and the burst: close to approved, not changed), acting-boss 31 (sheet of the unit: at 2:18.23 the arrow stands by the fallen button; in the sag after it the melted shape is hard to see on the paper, which is the cursor's own drawing).
+
+On main with merge 30 (the shared look, 7f82c9cc), MEASURED 09:00 to 09:04 UTC:
+
+| what | command | number |
+| --- | --- | --- |
+| gate | `npm test`, `npm run build`, `npm run bots` | 112 files, 1442 of 1442; build ok; bots all clear |
+| measures | `npm run measure -- --unit boss --tier review` | 8 green, 0 red; M3 1.0339 (least 0.8; 0.8148 before the merge) |
+| `boss-fight` draft | `npm run compare -- --key boss-fight --tier draft --format hd` | 12.215 s, 645616 triangles, 474 draw calls |
+| `boss-down` draft | `npm run compare -- --key boss-down --tier draft --format hd` | 12.599 s, 536734 triangles, 383 draw calls |
+
+SEEN in both compares at 09:01 UTC: nothing of the boss reads worse on the shared look. The caps are glossier and a brighter orange (the seated cap now has the approved gloss), the health fill carries a line of light, the legs are brighter. Looks: boss-transform 38 (the two compares, also for the cracks at their committed colour).
