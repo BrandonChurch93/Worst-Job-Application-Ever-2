@@ -131,3 +131,11 @@ Draw calls of my folders: 99 before, 99 after. Triangles of my folders: 183228 b
 - MEASURED 11:59 UTC: M3 at draft red on 2 of 10 keys: `rail-cam` 0.40 and `lobby-doors` 0.796 (least 0.8); `youre-fired` and `tier-corporate` pass now. `rail-cam` fell from 0.51 at 11:11 UTC; cause UNKNOWN (my wire sheen or the shared look of merge 34).
 - MEASURED 12:09 UTC: mean of `table-wide` draft 1.002 of the approved, with the title's band gone and the front lands at 0.95; the lands went to 0.4 after that still.
 - MEASURED 12:21 UTC with the wider bright cap (tone 1.9): mean of `table-wide` draft 1.004 of the approved; riser street to office 39.3 against floor 43.1; riser office to corporate 28.0 against floor 79.8; left wall 22.8. The box of the right wall (1560,560,1640,700) reads 59.4 because the cap's shoulder now lies in it, the wall under it is unchanged.
+
+### End of the round, 78a6e647
+
+- MEASURED 12:46 UTC, `npm run counts -- --key table-wide --live low`: scene 198 calls (201 before), 549309 triangles; my rows as in the row `end, 12:24 UTC` above, 99 calls (99 before) and 203992 triangles (183228 before, 20764 more of 30000 allowed).
+- MEASURED 12:47 UTC, `npm run compare -- --key table-wide --tier draft --format hd` and the mean of the three channels over approved's: 1.027. Boxes (L mean): riser street to office 39.3 against street floor 42.6; riser office to corporate 27.7 against office floor 80.6; left wall 22.8; right land 78.7; left cap 143.6.
+- MEASURED `du -sb public/assets/table/frame`: 65310 bytes; no hardware and no play asset set.
+- MEASURED on 78a6e647's source at 12:45 UTC: `npm test` 1479 of 1479 in 119 files, `npm run build` ok, `npm run bots` all clear.
+- Open at the end: steel balls short of approved's chrome; M3 red at draft on `rail-cam` (0.4048) and `lobby-doors` (0.7962), last measured 11:59 UTC; the struck lid at final tier is UNKNOWN to me (draft only); page grain through the loader tube; marquee frame plain; drop target relief.
