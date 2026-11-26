@@ -22,7 +22,7 @@ export const hopAt = (age: number): number => (age <= 0 || age >= HIT.sheetSecon
 
 // Struck flat, the cursor sticks to the rubber with its tail out from under the block's edge, rises with the block and is carried off with it.
 // As the block slows to be set down the cursor comes off the rubber and flies on, and lands flat right of the block: `right` of the block's edge and `down` from its middle, with a `toss` on the way. `heal` is the seconds it then lies flat, peels and fills.
-export const STUCK = { right: 118, down: 44, toss: 64, heal: 1.27 } as const
+export const STUCK = { right: 118, down: 44, toss: 64, heal: 1.27, hang: 110 } as const
 
 // Set down, the stamp is laid on its side, grip away from the reader, a little off square: `turn` about its long axis, `rot` on the page.
 export const LIE = { turn: Math.PI / 2, rot: -0.17 } as const

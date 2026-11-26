@@ -390,7 +390,7 @@ export function makePage(): PageLogic {
         } else if (p < AT.lift[0]) cursor.place(s.tx, s.ty, heights.paper)
         else {
           const k = grown(pose.z - heights.paper)
-          const at = turned({ cx: pose.cx, cy: pose.cy }, s.lx * k, s.ly * k, pose.rot)
+          const at = turned({ cx: pose.cx, cy: pose.cy }, s.lx * k, s.ly * k + STUCK.hang * (pose.lay ?? 0), pose.rot)
           const u = span(p, AT.fling)
           const e = u * (2 - u)
           cursor.place(at.x + (drop.x - at.x) * e, at.y + (drop.y - at.y) * e, pose.z * (1 - u * u) + STUCK.toss * 4 * u * (1 - u))

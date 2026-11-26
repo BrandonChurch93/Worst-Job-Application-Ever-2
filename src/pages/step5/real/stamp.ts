@@ -33,14 +33,22 @@ function rough(): THREE.Texture {
 
 let lacquerMade: THREE.MeshPhysicalMaterial | null = null
 function lacquer(): THREE.MeshPhysicalMaterial {
-  lacquerMade ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0xb8120a, THREE.SRGBColorSpace), roughness: 0.46, metalness: 0, specularIntensity: 0.3, clearcoat: 1, clearcoatRoughness: 0.07, clearcoatNormalMap: rough(), clearcoatNormalScale: new THREE.Vector2(0.05, 0.05), envMapIntensity: 0.3 }))
+  lacquerMade ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0xb8120a, THREE.SRGBColorSpace), roughness: 0.46, metalness: 0, specularIntensity: 0.3, clearcoat: 1, clearcoatRoughness: 0.05, clearcoatNormalMap: rough(), clearcoatNormalScale: new THREE.Vector2(0.05, 0.05), envMapIntensity: 0.55 }))
   lacquerMade.name = 'stamp-lacquer'
   return lacquerMade
 }
 
+let wornMade: THREE.MeshPhysicalMaterial | null = null
+// The bottom edge of the red wall, where the lacquer is rubbed dull and dark with ink.
+function wornEdge(): THREE.MeshPhysicalMaterial {
+  wornMade ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0x6e1410, THREE.SRGBColorSpace), roughness: 0.78, metalness: 0, specularIntensity: 0.2, normalMap: rough(), normalScale: new THREE.Vector2(1.6, 1.6) }))
+  wornMade.name = 'stamp-worn'
+  return wornMade
+}
+
 let dieMade: THREE.MeshPhysicalMaterial | null = null
 function die(): THREE.MeshPhysicalMaterial {
-  dieMade ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0x4d0f0e, THREE.SRGBColorSpace), roughness: 0.92, metalness: 0, specularIntensity: 0.25, normalMap: rough(), normalScale: new THREE.Vector2(3.5, 3.5) }))
+  dieMade ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0x3a0c0c, THREE.SRGBColorSpace), roughness: 0.95, metalness: 0, specularIntensity: 0.25, normalMap: rough(), normalScale: new THREE.Vector2(3.5, 3.5) }))
   dieMade.name = 'stamp-die'
   return dieMade
 }
@@ -80,6 +88,8 @@ function blockOf(s: Shape): THREE.Object3D {
   const belly = [0, 0.14, 0.28, 0.42, 0.56, 0.7, 0.84, 1].map((u): ProfilePoint => [BELLY * (2 * u - 1) * (2 * u - 1), foot + 3 + wall * u])
   const body: ProfilePoint[] = [[BELLY + 1.6, foot - 0.4, true], [BELLY + 0.3, foot + 1.2], ...belly, ...arc(BELLY, top - round, round, round, 12).slice(1)]
   root.add(solid(grained(sweep(outlineOf(s, 0, 12), profile(body)), GRAIN.coat), lacquer()))
+  const worn: ProfilePoint[] = [[BELLY + 1.9, foot - 0.6, true], [BELLY + 2.1, foot + 0.6], [BELLY + 1.7, foot + 3.2], [BELLY + 0.9, foot + 5.4, true]]
+  root.add(solid(grained(sweep(outlineOf(s, -0.4, 12), profile(worn), false), GRAIN.die), wornEdge()))
   return root
 }
 
@@ -98,7 +108,7 @@ function gripOf(s: Shape): THREE.Object3D {
   ]
   const root = new THREE.Group()
   const outline = outlineOf({ ...s, kind: 'box', r }, 0, 20)
-  root.add(solid(sweep(outline, profile([[-3, 0, true], [-3, 3], [-2.2, 3.9], [1.2, 3.9, true]]), false), materials().chrome))
+  root.add(solid(grained(sweep(outline, profile([[-2.4, 0, true], [-2.4, 2.2], [-1.4, 3.4], [1.2, 3.6, true]]), false), GRAIN.coat), lacquer()))
   root.add(solid(grained(sweep(outline, profile(points)), GRAIN.coat), lacquer()))
   return root
 }

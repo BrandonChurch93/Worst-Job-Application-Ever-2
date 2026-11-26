@@ -23,7 +23,7 @@ export const AT = {
   carry: [f(119), f(132)],
   lower: [f(132), f(139)],
   // The flat cursor leaves the rubber as the block slows, and lands beside where the block is set down.
-  fling: [f(130), f(137)],
+  fling: [f(126), f(137)],
   // The cursor's pride in the letter: the seconds of the letter's phase at which it puffs up.
   proud: 1.5,
   letterSeconds: 4,
