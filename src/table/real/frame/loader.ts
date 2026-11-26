@@ -26,13 +26,13 @@ export const dipOf = (t: number): number => {
 // How bright the flash of the rim stands, 1 to 0.
 export const flashOf = (t: number): number => (t < 0 || t >= ANSWER.over ? 0 : Math.exp(-t / ANSWER.fade) * (1 - t / ANSWER.over))
 interface Ring { x: number; y: number; at: number; runs: { mesh: THREE.Mesh; from: number; rest: Float32Array }[] }
-const CUP: [number, number, number] = [0.006, 0.0065, 0.0075]
+const CUP: [number, number, number] = [0.013, 0.0145, 0.017]
 // The colour a vertex of the rim of light carries: the tube's material knows it by its blue.
 const RIM: [number, number, number] = [1, 1, 0]
 // The light falls off down the wall of the bowl in three steps: a glow under the lip, not a drawn line.
 const RIM_FALL = [0.62, 0.34, 0.14]
-const FACE = hex(0x44474b)
-const EDGE = hex(0x414448)
+const FACE = hex(0x74777b)
+const EDGE = hex(0x66696d)
 const SOCKET = hex(0x3a3c40)
 const LIP = hex(0xc9cdd1)
 

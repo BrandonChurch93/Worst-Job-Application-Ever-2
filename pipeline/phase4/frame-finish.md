@@ -65,7 +65,7 @@ Each cell is draw calls / triangles.
 | second pass, 11:54 UTC, f8ebae70 | 198 (rows 203) | 21 / 31868 | 16 / 11936 | 15 / 23180 | 12 / 29808 | 10 / 22214 | 8 / 49488 | 8 / 10166 | 5 / 23624 | 4 / 1688 |
 | end, 12:24 UTC, 3286ac81 | 198 | 21 / 31868 | 16 / 12116 | 15 / 23180 | 12 / 29808 | 10 / 22214 | 8 / 49488 | 8 / 10166 | 5 / 23624 | 4 / 1528 |
 
-Sum of my rows at the end: 99 calls (99 before), 204000 triangles (183228 before, 20772 more of 30000 allowed).
+Sum of my rows at the end: 99 calls (99 before), 203992 triangles (183228 before, 20764 more of 30000 allowed).
 
 Tier keys at the end, 12:24 UTC (scene calls / triangles; before my work UNKNOWN, never measured): `tier-street` 107 / 298644, `tier-office` 128 / 351041, `tier-corporate` 110 / 270383.
 
