@@ -78,5 +78,6 @@ Between searches I follow one ball with a fixed player that presses when the hin
 | carpet length | 2.2 | 2.6 |
 | firehouse hold centre | (5.05, 4.35) | (5.05, 3.9), ball taken at (5.05, 4.35) |
 | firehouse solid | box u 3.25 to 5.75, v 2.3 to 3.8 | the same with a bay u 4.4 to 5.7, v 3.25 to 3.8 |
+| firehouse and police height | 1.5 | 2.0 (the street_modeller's ask: an upper storey over the garage mouth) |
 | apron zone floor | z 0 (page level) | floorZ(2), the street floor |
 | feed tube bend | MARQUEE_Y - 0.6 to + 1.4 | MARQUEE_Y + 0.15 to + 2.15 |
