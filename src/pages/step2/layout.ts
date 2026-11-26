@@ -81,7 +81,7 @@ export const SLOT = {
 
 const cy = trayY(2)
 export const CRANK = {
-  hx: FX + PAD + 73, hy: cy + 174, rest: -0.75, arm: 118, armW: 18, gripW: 80, gripH: 44, tip: 126, hold: 34, holdAside: 8, base: 110, hub: 44,
+  hx: FX + PAD + 73, hy: cy + 174, rest: -0.75, arm: 128, armW: 23, gripW: 90, gripH: 52, tip: 136, hold: 8, holdAside: 6, base: 110, hub: 44,
   segW: 28, segH: 116, segGap: 13, segX: FX + PAD + 73 + 227, segY: cy + 107
 }
 
