@@ -1,35 +1,35 @@
 {
   "folder": "step2-dial",
-  "pushed": "2026-11-26T01:03:07.763Z",
-  "commit": "ae7468ec30672ccf0cb84574b5d43427cffca305",
+  "pushed": "2026-11-26T01:22:00.456Z",
+  "commit": "6dd53604a983b6cfcc01660c28a7f84aedbda93f",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key step2-dial: approved on the left, this build on the right, review tier",
-      "time": "2026-11-26T01:02:58.864Z",
+      "caption": "key step2-dial beside approved, review tier, commit 6dd5360",
+      "time": "2026-11-26T01:21:58.681Z",
       "by": "step2-dial",
-      "from": "out/work/compare/compare-step2-dial.jpg"
+      "from": "out/work/looks/files/20261126012158-1-compare-step2-dial.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Key step2-dial, review tier: approved image left, the build right (real dial, own tray)",
-      "time": "2026-11-26T01:03:06.222Z",
+      "caption": "dial and tray close, approved above, build below",
+      "time": "2026-11-26T01:21:58.957Z",
       "by": "step2-dial",
-      "from": "out/work/compare/compare-step2-dial.jpg"
+      "from": "out/work/looks/files/20261126012158-2-dial-close.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Dial and tray close up: approved above, the build below",
-      "time": "2026-11-26T01:03:06.448Z",
+      "caption": "tray opening and the dial rising, four frames",
+      "time": "2026-11-26T01:21:59.180Z",
       "by": "step2-dial",
-      "from": "out/work/looks/files/20261126010306-cmp-dial4.jpg"
+      "from": "out/work/looks/files/20261126012159-3-tray-opens-dial-rises.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "The tray opening and the dial rising out of its floor: open 0.97, dial 0.012, 0.03, 0.045 (draft tier)",
-      "time": "2026-11-26T01:03:06.692Z",
+      "caption": "nine acting poses of step 2",
+      "time": "2026-11-26T01:21:59.417Z",
       "by": "step2-dial",
-      "from": "out/work/looks/files/20261126010306-rise.jpg"
+      "from": "out/work/looks/files/20261126012159-4-acting-poses.jpg"
     }
   ]
 }
