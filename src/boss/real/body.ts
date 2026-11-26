@@ -244,11 +244,9 @@ function poseCannon(o: THREE.Object3D, s: Shape): void {
 
 const GLASS_CRACKS: [number, number][][] = [
   [[-47, 104], [-30, 70], [-12, 42], [4, 6], [22, -34], [36, -72], [47, -112]],
-  [[49, 74], [30, 48], [4, 6], [-20, -22], [-48, -52]],
-  [[4, 6], [26, 2], [50, 14]],
+  [[49, 74], [30, 48], [4, 6]],
   [[-12, 42], [-4, 82], [10, 120]],
-  [[22, -34], [-6, -60], [-22, -96], [-46, -118]],
-  [[-30, 70], [-49, 64]]
+  [[22, -34], [-6, -60], [-22, -96]]
 ]
 
 function crackLines(lines: [number, number][][], wide: number, z: number, dx = 0, dy = 0): THREE.BufferGeometry {
@@ -291,10 +289,10 @@ function shield(): THREE.Object3D {
   const block = (): THREE.BufferGeometry => sweep(roundedRect(w, h, 18, 14), plateProfile(t, round, 0.4, 8), true)
   leaf.add(mesh(geo('glassDeep', () => sweep(roundedRect(w - 12, h - 12, 13, 12), [{ inset: 0, z: 1.1, out: 0, up: 1 }], true)), k.glassDeep, false, false))
   leaf.add(mesh(geo('glass', block), k.glass))
-  leaf.add(mesh(geo('glassEdge', () => sweep(roundedRect(w, h, 18, 14), [{ inset: 0, z: t - round - 5, out: 1, up: 0 }, ...plateProfile(t, round, 0.4, 8).slice(1), { inset: round + 2.5, z: t, out: 0, up: 1 }], false)), k.glassEdge, false, false))
+  leaf.add(mesh(geo('glassEdge', () => sweep(roundedRect(w, h, 18, 14), [{ inset: 0, z: t - round - 5, out: 1, up: 0 }, ...plateProfile(t, round, 0.4, 8).slice(1), { inset: round + 0.6, z: t, out: 0, up: 1 }], false)), k.glassEdge, false, false))
   const cracks = new THREE.Group()
   cracks.add(mesh(geo('glassCracksDeep', () => crackLines(GLASS_CRACKS, 1.1, 1.6, 3.2, -2.6)), k.bed, false, false))
-  cracks.add(mesh(geo('glassCracks', () => crackLines(GLASS_CRACKS, 1.5, t + 0.12)), k.glassCrack, false, false))
+  cracks.add(mesh(geo('glassCracks', () => crackLines(GLASS_CRACKS, 1.15, t + 0.12)), k.glassCrack, false, false))
   leaf.add(cracks)
   const pin = mesh(geo('shieldPin', () => joined([-1, 1].map((e) => new THREE.BoxGeometry(11, 18, 9).translate(0, e * 34, 2)))), m.aluminiumSatin, false)
   const tubes = [-1, 1].map((sy) => {

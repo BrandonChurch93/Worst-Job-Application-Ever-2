@@ -11,6 +11,8 @@ import { makeLayout } from './layout'
 import { makeScript } from './script'
 import { TICK_Z } from './real/verify-card'
 
+const CAP_LANDS = 1.2
+const SCORCH_SECONDS = 2.4
 type StageName = 'verify' | 'unfold' | 'fight' | 'collapse' | 'press'
 
 interface State {
@@ -195,6 +197,10 @@ export function makePage(): PageLogic {
         }
         if (f.over) toCollapse(io, rigNow()!)
       } else if (s.stage === 'collapse') {
+        if (s.t >= CAP_LANDS && s.t - dt < CAP_LANDS) {
+          io.cursor.heal()
+          io.cursor.hurt('scorched', SCORCH_SECONDS)
+        }
         if (s.t >= COLLAPSE_SECONDS) {
           s.stage = 'press'
           s.t = 0
@@ -278,7 +284,7 @@ export function makePage(): PageLogic {
         const sparks = [0, 1, 2, 3, 4, 5].map((i) => ({ n: 900 + i, x: s.from!.cap.x + [-120, 90, -30, 150, -160, 40][i]!, y: s.from!.cap.y + [-40, 50, 70, -60, 30, -80][i]!, t: s.t - i * 0.1 })).filter((k) => k.t >= 0 && k.t < SPARK_SECONDS)
         if (sparks.length) drawWeapons(out, { ...newFight(), sparks }, L.weapons)
       }
-      if ((s.stage === 'collapse' && s.t > 1.2) || (s.stage === 'press' && !s.inSocket)) drawSmoke(out, FALLEN.x, FALLEN.y, s.time)
+      if ((s.stage === 'collapse' && s.t > CAP_LANDS) || (s.stage === 'press' && !s.inSocket)) drawSmoke(out, FALLEN.x, FALLEN.y, s.time)
     },
     scroll: () => 0,
     view: () => null,
