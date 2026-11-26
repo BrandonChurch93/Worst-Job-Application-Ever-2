@@ -8,7 +8,7 @@ import { CRANK, ROWS } from '../layout'
 import { clamp01, fuse, lathe, mesh, moved, outline, picture, rise, round, smooth, srgb } from './slot-kit'
 
 export const CRANK_LOOK = {
-  full: { base: 26, hub: 22, arm: 10, grip: 24, meter: 20 }, pill: 6.5, pillRound: 2.4, wallRings: 3, picture: [128, 512] as [number, number], rimTone: 0.4,
+  full: { base: 26, hub: 22, arm: 10, grip: 24, meter: 20 }, pill: 6.5, pillRound: 2.4, pillCorner: 10, clear: { core: 0.56, low: 0.5, gain: 0.48 }, wallRings: 3, picture: [128, 512] as [number, number], rimTone: 0.4,
   plate: 8, rim: 3.6, screwAt: 38, screw: 4.8, washer: 25.5, neck: 20, eye: 3.4, bar: 0.8, end: 0.5, fillet: 9, cap: 16.5,
   grip: { cap: 0.95, round: 2.5, square: 2.5, taper: 0.9, seamAt: 9, seam: 0.07, collar: 0.05 },
   tie: { low: 0.82, gain: 1.7, second: 0.3, sharp: 3, axis: 2.5, capAxis: 2.2 },
@@ -31,9 +31,11 @@ const shared = (key: string, build: () => THREE.BufferGeometry): THREE.BufferGeo
 function inPill(u: number, v: number): { depth: number; x: number; y: number } {
   const x = (u - 0.5) * CRANK.segW
   const y = (v - 0.5) * CRANK.segH
-  const r = CRANK.segW / 2
-  const ds = Math.hypot(x, Math.max(Math.abs(y) - (CRANK.segH / 2 - r), 0))
-  return { depth: r - ds, x, y }
+  const c = L.pillCorner
+  const qx = Math.abs(x) - (CRANK.segW / 2 - c)
+  const qy = Math.abs(y) - (CRANK.segH / 2 - c)
+  const ds = Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) + Math.min(Math.max(qx, qy), 0)
+  return { depth: c - ds, x, y }
 }
 
 function own(): NonNullable<typeof made> {
@@ -47,8 +49,9 @@ function own(): NonNullable<typeof made> {
     const dark = smooth((p.depth - 2.4) / 0.8) * (1 - smooth((p.depth - 3.6) / 1.4))
     const gather = smooth(side) * smooth((p.depth - 3.2) / 1.5) * (1 - smooth((p.depth - 5.5) / 4))
     const hi = smooth((0.3 - side) / 0.9)
-    const k = 0.7 + 0.3 * line * hi - 0.26 * dark * (1 - 0.6 * smooth(side + 0.4)) - 0.3 * edge + 0.22 * gather
-    const a = Math.min(1, 0.72 + (0.08 + 0.2 * hi) * line + 0.28 * edge + 0.2 * dark + 0.12 * gather)
+    const across = smooth(0.5 + 0.5 * ((p.x / 14) * 0.85 - (p.y / 48) * 0.25))
+    const k = L.clear.low + L.clear.gain * across + 0.4 * line * (0.35 + 0.65 * hi) - 0.26 * dark * (1 - 0.6 * smooth(side + 0.4)) - 0.3 * edge + 0.12 * gather
+    const a = Math.min(1, L.clear.core + (0.14 + 0.26 * hi) * line + 0.44 * edge + 0.3 * dark + 0.1 * gather)
     return [k * 0.955, k * 0.995, k * 0.975, a]
   })
   // The lit segment: a pale orange core, a deeper orange ring, and a bright line at the rim.
@@ -256,7 +259,7 @@ function segment(): THREE.Group {
   const H = L.pill
   const r = L.pillRound
   const rings = (): ReturnType<typeof profile> => profile([[0.4, 0, true], [0, 0.4], [0, H - r], ...arc(0, H - r, r, r - 0.25, 7), [7, H - 0.1], [13.5, H]])
-  const plan = (): ReturnType<typeof roundedRect> => roundedRect(CRANK.segW, CRANK.segH, CRANK.segW / 2, 14)
+  const plan = (): ReturnType<typeof roundedRect> => roundedRect(CRANK.segW, CRANK.segH, L.pillCorner, 14)
   const top = shared('segment', () => {
     const out = sweep(plan(), rings().slice(L.wallRings - 1))
     const uv = out.getAttribute('uv')
