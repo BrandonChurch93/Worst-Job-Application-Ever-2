@@ -13,13 +13,13 @@ No file is stored for the careers page. Every solid is built in code when the pa
 ## perk slab (geometry, built at run time)
 - Made by: `slabGeometry(s, thick)` in `src/pages/marketing/real/perk-cards.ts`
 - From: numbers only (`SLAB`, `GLASS`), the key light's direction from `src/post/look.ts`
-- Prompt or command: two faces of 12 rings each round the card's outline, the under one turned over; vertex colours carry the shade of the near bevel and the bright lines
+- Prompt or command: two faces of 12 rings each round the card's outline, the under one turned over; vertex colours carry the light and shade of the ground edge; `slabGeometry(s, thick, true)` leaves the middle of both faces out, for the ticker's strip
 - Takes: under 5 ms, once per card size
 - Why this one: one solid for the resting and the turning card, with a real under side, and no texture
 - Date: 2026-11-26
 
 ## materials (no file)
-- Made by: `cardGlass()` in `real/perk-cards.ts`, `medalFace()`, `medalMetal()`, the print and tape materials in `real/careers-page.ts`, the tape, pane and bezel in `real/ticker.ts`
+- Made by: `cardGlass()` in `real/perk-cards.ts`, `medalFace()`, `medalMetal()`, the print and tape materials in `real/careers-page.ts`, the tape and the clear top of the strip in `real/ticker.ts`
 - From: numbers only; `medalFace()` reads the shared turned aluminium's normal and anisotropy pictures of `materials()`
 - Prompt or command: each is a `MeshPhysicalMaterial` passed through `studio()` of `src/post/studio.ts`
 - Takes: nothing measurable

@@ -4,6 +4,7 @@ import { studio } from '../../../post/studio'
 import { lit } from '../light'
 import { LIT } from '../lights/groups'
 import type { Zone } from '../zone'
+import { liftOf, roomOf } from '../frame/mats'
 import { steel } from '../frame/steel'
 import { Geo, type RGB } from './geo'
 
@@ -39,9 +40,9 @@ export const TONE = {
   rubberLine: hex(0xeeeae0),
   rubberWorn: hex(0xbdb8aa),
   rubberBlack: hex(0x222223),
-  orange: hex(0xc24400),
-  knob: [3.0, 0.3, 0.012] as RGB,
-  orangeSeam: hex(0xa83a00),
+  orange: hex(0xf07a1c),
+  knob: hex(0xf07a1c),
+  orangeSeam: hex(0xc85e10),
   grey: hex(0x8e9398),
   greyDark: hex(0x5c6066),
   yellow: hex(0xd9b21c),
@@ -112,6 +113,7 @@ const made = new Map<string, THREE.MeshPhysicalMaterial>()
 export const metalOf = (z: Zone): THREE.MeshPhysicalMaterial => {
   let m = made.get(z.id)
   if (m) return m
+  const from = roomOf(z)
   const map = finishes()
   m = studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 1, metalness: 1, clearcoat: 1, clearcoatRoughness: 0.07, roughnessMap: map, metalnessMap: map, clearcoatMap: map }))
   const room = m.onBeforeCompile
@@ -119,10 +121,14 @@ export const metalOf = (z: Zone): THREE.MeshPhysicalMaterial => {
   m.onBeforeCompile = (shader, renderer) => {
     room.call(made0, shader, renderer)
     shader.uniforms.hwFloor = { value: new THREE.Vector3(...(FLOOR[z.id] ?? [0.72, 0.72, 0.72])) }
-    if (!LIT.includes(z.id)) shader.fragmentShader = 'uniform vec3 hwFloor;\n' + shader.fragmentShader.replace('#include <normal_fragment_maps>', '#include <normal_fragment_maps>\n' + MIRROR)
+    if (!from) shader.fragmentShader = 'uniform vec3 hwFloor;\n' + shader.fragmentShader.replace('#include <normal_fragment_maps>', '#include <normal_fragment_maps>\n' + MIRROR)
+    else if (from !== z) {
+      shader.uniforms.wjfLift = liftOf(z)
+      shader.fragmentShader = 'uniform float wjfLift;\n' + shader.fragmentShader.replace('#include <aomap_fragment>', 'reflectedLight.directDiffuse *= wjfLift;\nreflectedLight.indirectDiffuse *= wjfLift;\n#include <aomap_fragment>')
+    }
   }
-  m.customProgramCacheKey = () => `wja-studio-hardware-metal-${LIT.includes(z.id) ? 'lit' : 'page'}`
-  m = lit(steel(m, z, { ceiling: 0.035, panel: 0.34, wide: 0.12, horizon: 1.25 }), z)
+  m.customProgramCacheKey = () => `wja-studio-hardware-metal-${from === z ? 'lit' : from ? 'foot' : 'page'}`
+  m = lit(steel(m, z, { ceiling: 0.035, panel: 0.34, wide: 0.12, horizon: 1.25 }, from), z)
   m.name = `hardware.${z.id}`
   made.set(z.id, m)
   return m

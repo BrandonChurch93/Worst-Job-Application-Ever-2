@@ -29,9 +29,14 @@ export const GRAVITY = 29.4
 
 export const COLS = { border: 0.15, liftA: 1.55, liftB: 3.05, left: 3.25, right: 16.75, launchA: 16.95, launchB: 18.45, feed: 19.15, railB: 19.85, lift: 2.3, launch: 17.7 }
 export const MID = 10
-export const MOUTH = { half: 1.2, v: 10.95 }
+export const MOUTH = { half: 1.7, v: 10.35, hole: 11.05 }
 export const OUTLANE = { inner: 4.65, v: 10.3 }
-export const FLIP = { pivotU: 6.53, pivotV: 8.8, length: t.flipperBalls, radius: 0.2, rest: 25, up: -25, seconds: 0.07 }
+export const FLIP = { pivotU: 6.53, pivotV: 8.95, length: t.flipperBalls, radius: 0.4, tip: 0.26, rest: 25, up: -25, seconds: 0.07 }
+export const FLIP_REACH = FLIP.length - FLIP.tip
+export const FLIP_END_V = FLIP.pivotV + FLIP.length * SIN25
+export const INLANE = { a: [OUTLANE.inner, 8.05] as V, b: [6.45, 8.5] as V, shoulder: 9.45 }
+export const SLING = { a: [6.05, 5.55] as V, b: [6.05, 7.05] as V, c: [7.35, 7.45] as V }
+export const INSERTS = { spots: [[8.3, 7.1], [MID, 8.0], [11.7, 7.1]] as V[], r: 0.62 }
 
 export interface Seg { id: string; tier: number; a: V; b: V; kind: 'wall' | 'guide' | 'rubber' }
 export interface Post { id: string; tier: number; c: V; r: number; lamp?: boolean }
@@ -70,6 +75,20 @@ const lamps: Lamp[] = []
 const flats: Flat[] = []
 
 const at = (k: number, u: number, v: number): V => [u, TIER_Y[k]! + v]
+const nearest = (p: V, a: V, b: V): V => {
+  const dx = b[0] - a[0]
+  const dy = b[1] - a[1]
+  const u = Math.max(0, Math.min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / (dx * dx + dy * dy)))
+  return [a[0] + dx * u, a[1] + dy * u]
+}
+const INLANE_FOOT = nearest(SLING.b, INLANE.a, INLANE.b)
+const SLING_FOOT = ((): V => {
+  const q = nearest(SLING.c, [FLIP.pivotU, FLIP.pivotV], [FLIP.pivotU + FLIP_REACH * COS25, FLIP.pivotV + FLIP_REACH * SIN25])
+  const along = Math.hypot(q[0] - FLIP.pivotU, q[1] - FLIP.pivotV) / FLIP_REACH
+  const r = FLIP.radius + (FLIP.tip - FLIP.radius) * along
+  const d = Math.hypot(SLING.c[0] - q[0], SLING.c[1] - q[1])
+  return [q[0] + ((SLING.c[0] - q[0]) / d) * r, q[1] + ((SLING.c[1] - q[1]) / d) * r]
+})()
 const mir = (u: number): number => W - u
 const seg = (k: number, id: string, a: V, b: V, kind: Seg['kind'] = 'wall'): void => {
   segs.push({ id: `${TIERS[k]}.${id}`, tier: k, a: at(k, a[0], a[1]), b: at(k, b[0], b[1]), kind })
@@ -126,28 +145,28 @@ for (let k = 0; k < 3; k++) {
     open(k, 'lift.door', [L, 0.35], [L, 1.7])
   }
   both(k, 'outlane.floor', [L, TH], [OUTLANE.inner, TH])
-  both(k, 'lane.guide', [OUTLANE.inner, 6.3], [OUTLANE.inner, 8.0], 'guide')
-  both(k, 'inlane.floor', [OUTLANE.inner, 8.0], [6.5, 8.62], 'guide')
-  both(k, 'shoulder.step', [6.5, 8.62], [6.5, 9.1])
-  both(k, 'shoulder.edge', [6.5, 9.1], [8.8, 10.8])
+  both(k, 'lane.guide', [OUTLANE.inner, 6.3], INLANE.a, 'guide')
+  both(k, 'inlane.floor', INLANE.a, INLANE.b, 'guide')
+  both(k, 'shoulder.step', INLANE.b, [INLANE.b[0], INLANE.shoulder])
+  both(k, 'shoulder.edge', [INLANE.b[0], INLANE.shoulder], [8.8, 10.8])
   both(k, 'mouth.side', [8.8, 10.8], [8.8, TH])
-  both(k, 'outlane.side', [OUTLANE.inner, 8.0], [OUTLANE.inner, TH])
+  both(k, 'outlane.side', INLANE.a, [OUTLANE.inner, TH])
   for (const side of ['left', 'right'] as const) {
     const m = (u: number) => (side === 'left' ? u : mir(u))
     posts.push({ id: `${name}.lane.post.${side}`, tier: k, c: at(k, m(OUTLANE.inner), 6.3), r: 0.1 })
-    slings.push({ id: `${name}.sling.${side}`, tier: k, side, a: at(k, m(6.05), 5.4), b: at(k, m(6.05), 7.0), c: at(k, m(7.3), 7.35) })
+    slings.push({ id: `${name}.sling.${side}`, tier: k, side, a: at(k, m(SLING.a[0]), SLING.a[1]), b: at(k, m(SLING.b[0]), SLING.b[1]), c: at(k, m(SLING.c[0]), SLING.c[1]) })
     flippers.push({ id: `${name}.flipper.${side}`, tier: k, side, pivot: at(k, m(FLIP.pivotU), FLIP.pivotV), index: flippers.length })
     holds.push({ id: `${name}.outlane.${side}`, tier: k, kind: 'gate', c: at(k, m(3.95), 10.6), r: 0.55, releases: true })
     open(k, `outlane.${side}`, [m(L), 6.3], [m(OUTLANE.inner - 0.1), 6.3])
-    open(k, `inlane.${side}`, [m(OUTLANE.inner + 0.1), 6.3], [m(6.05), 6.3])
-    open(k, `inlane.foot.${side}`, [m(6.05), 7.0], [m(5.62), 8.33])
-    open(k, `sling.foot.${side}`, [m(7.3), 7.35], [m(7.9), 8.75])
+    open(k, `inlane.${side}`, [m(OUTLANE.inner + 0.1), 6.3], [m(SLING.a[0]), 6.3])
+    open(k, `inlane.foot.${side}`, [m(SLING.b[0]), SLING.b[1]], [m(INLANE_FOOT[0]), INLANE_FOOT[1]])
+    open(k, `sling.foot.${side}`, [m(SLING.c[0]), SLING.c[1]], [m(SLING_FOOT[0]), SLING_FOOT[1]])
     for (let i = 0; i < 2; i++) lamps.push({ id: `${name}.lane.lamp.${side}.${i + 1}`, tier: k, c: at(k, m(3.95 + i * 1.4), 7.4), group: `${name}.general` })
-    posts.push({ id: `${name}.sling.post.${side}.a`, tier: k, c: at(k, m(6.05), 5.4), r: 0.12 })
-    posts.push({ id: `${name}.sling.post.${side}.c`, tier: k, c: at(k, m(7.3), 7.35), r: 0.12 })
-    posts.push({ id: `${name}.sling.post.${side}.b`, tier: k, c: at(k, m(6.05), 7.0), r: 0.12 })
+    posts.push({ id: `${name}.sling.post.${side}.a`, tier: k, c: at(k, m(SLING.a[0]), SLING.a[1]), r: 0.12 })
+    posts.push({ id: `${name}.sling.post.${side}.c`, tier: k, c: at(k, m(SLING.c[0]), SLING.c[1]), r: 0.12 })
+    posts.push({ id: `${name}.sling.post.${side}.b`, tier: k, c: at(k, m(SLING.b[0]), SLING.b[1]), r: 0.12 })
   }
-  open(k, 'flipper.gap', [MID - t.flipperGapBalls / 2, 10.07], [MID + t.flipperGapBalls / 2, 10.07])
+  open(k, 'flipper.gap', [MID - t.flipperGapBalls / 2, FLIP_END_V], [MID + t.flipperGapBalls / 2, FLIP_END_V])
   open(k, 'exit', [8.8, 10.8], [11.2, 10.8])
   open(k, 'top.lane', [8, 0.3], [8, k === 0 ? 1.99 : 1.75])
   open(k, 'launch.lane', [COLS.launchA, 5], [COLS.launchB, 5])
@@ -155,8 +174,8 @@ for (let k = 0; k < 3; k++) {
   open(k, 'feed.tube', [COLS.feed - 0.625, 5], [COLS.feed + 0.625, 5])
   holds.push({ id: `${name}.gate`, tier: k, kind: 'gate', c: at(k, MID, 11.05), r: 1.2, releases: true })
   const picks = t.inserts.filter((n) => n.tier === name)
-  const spots: V[] = [[8.35, 6.2], [MID, 7.35], [11.65, 6.2]]
-  picks.forEach((n, i) => inserts.push({ id: `${name}.insert.${i + 1}`, tier: k, c: at(k, spots[i]![0], spots[i]![1]), r: 0.55, mode: n.mode, picture: n.picture, index: inserts.length }))
+  const spots = INSERTS.spots
+  picks.forEach((n, i) => inserts.push({ id: `${name}.insert.${i + 1}`, tier: k, c: at(k, spots[i]![0], spots[i]![1]), r: INSERTS.r, mode: n.mode, picture: n.picture, index: inserts.length }))
   displays.push({ id: `${name}.display`, tier: k, box: [12.0, TIER_Y[k]! + 10.35, t.displayWidthBalls, t.displayHeightBalls] })
   for (let i = 0; i < 7; i++) lamps.push({ id: `${name}.top.lamp.${i + 1}`, tier: k, c: at(k, 4.3 + i * 1.9, 1.05), group: `${name}.general`, arrow: [-1, 0] })
   for (let i = 0; i < 4; i++) lamps.push({ id: `${name}.launch.lamp.${i + 1}`, tier: k, c: at(k, COLS.launch, 2 + i * 2.4), group: `${name}.general`, arrow: [0, -1] })
@@ -196,13 +215,10 @@ for (let k = 0; k < 3; k++) {
   model(k, 'coffee', 'model-coffee-machine', [14.3, 2.25, 2.45, 1.35], 1.6, 'metal', { sign: 'copy:step3.table.buildings.coffee' })
   targets.push({ id: 'office.coffee.standup', tier: k, kind: 'standup', box: [14.1, TIER_Y[k]! + 2.7, 0.2, 0.8], n: [-1, 0], index: targets.length })
   model(k, 'inbox', 'model-inbox', [15.2, 3.6, 1.55, 1.2], 0.9, 'paper')
-  bumpers.push({ id: 'office.bumper.1', tier: k, c: at(k, 8.5, 3.3), r: 0.75 }, { id: 'office.bumper.2', tier: k, c: at(k, 11.5, 3.3), r: 0.75 }, { id: 'office.bumper.3', tier: k, c: at(k, MID, 5.7), r: 0.75 })
+  bumpers.push({ id: 'office.bumper.1', tier: k, c: at(k, 8.9, 3.2), r: 0.75 }, { id: 'office.bumper.2', tier: k, c: at(k, 11.1, 3.2), r: 0.75 }, { id: 'office.bumper.3', tier: k, c: at(k, MID, 5.1), r: 0.75 })
   holds.push({ id: 'office.inbox', tier: k, kind: 'scoop', c: at(k, 14.6, 4.35), r: 0.5, releases: true })
-  open(k, 'bumpers.1.2', [9.25, 3.3], [10.75, 3.3])
-  open(k, 'bumpers.1.3', [8.9, 3.94], [9.6, 5.06])
-  open(k, 'bumpers.2.3', [11.1, 3.94], [10.4, 5.06])
-  open(k, 'cubicles.side', [5.25, 3.3], [7.75, 3.3])
-  open(k, 'coffee.side', [12.25, 3.3], [14.1, 3.3])
+  open(k, 'cubicles.side', [5.25, 3.2], [8.15, 3.2])
+  open(k, 'coffee.side', [11.85, 3.2], [14.1, 3.2])
   open(k, 'cubicles.foot', [5.25, 4.4], [6.05, 5.4])
   open(k, 'inbox.foot', [15.2, 4.8], [13.95, 5.4])
   open(k, 'chute.mouth', [MID - 0.75, 0.3], [MID + 0.75, 0.3])
@@ -249,10 +265,10 @@ const climb = (u: number, k: number): P3[] => {
 const rise = (u: number, k: number): P3[] => [[u, TIER_Y[k]! + LANE_RAMP.lift, zf(k)], [u, TIER_Y[k]! - LANE_RAMP.lift, zf(k - 1)]]
 rails.push({
   id: 'feed', from: 'loader', to: 'plunger', speed: 9.4, out: [0, 0],
-  points: [[PORT.x, PORT.y, -0.4], [PORT.x, PORT.y + 2.2, 0], [PORT.x, MARQUEE_Y - 0.6, 0], [COLS.feed, MARQUEE_Y + 1.4, 0], [COLS.feed, TIER_Y[2]! + 10.2, 0], [COLS.feed, TIER_Y[2]! + 10.9, -1.5], [18.5, TIER_Y[2]! + 11.1, zf(2)], [PLUNGER[0], PLUNGER[1], zf(2)]]
+  points: [[PORT.x, PORT.y, -0.4], [PORT.x, PORT.y + 2.2, 0], [PORT.x, MARQUEE_Y + 0.15, 0], [COLS.feed, MARQUEE_Y + 2.15, 0], [COLS.feed, TIER_Y[2]! + 10.2, 0], [COLS.feed, TIER_Y[2]! + 10.9, -1.5], [18.5, TIER_Y[2]! + 11.1, zf(2)], [PLUNGER[0], PLUNGER[1], zf(2)]]
 })
 rails.push({
-  id: 'launch', from: 'plunger', to: 'corporate.top.lane', speed: 30, out: [0, 5],
+  id: 'launch', from: 'plunger', to: 'corporate.top.lane', speed: 30, out: [4.55, 3],
   points: [[PLUNGER[0], PLUNGER[1], zf(2)], ...climb(COLS.launch, 2), ...climb(COLS.launch, 1), [COLS.launch, TIER_Y[0]! + 1.9, zf(0)], [17.3, TIER_Y[0]! + 1.3, zf(0)], [16.4, TIER_Y[0]! + 1.05, zf(0)], [7.0, TIER_Y[0]! + 1.05, zf(0)], [5.8, TIER_Y[0]! + 1.3, zf(0)], [5.3, TIER_Y[0]! + 1.9, zf(0)], [5.3, TIER_Y[0]! + 2.7, zf(0)]]
 })
 for (let k = 0; k < 3; k++) {
@@ -278,7 +294,8 @@ export const table: Table = {
   segs, posts, models, bumpers, slings, targets, inserts, flippers, holds, rails, openings, displays, lamps, flats, sealed: ['corporate.beach'],
   log: [
     'The playfield of every tier lies between 3.25 and 16.75 balls, centred on the page. Left of it: the page border, a wide rail and the lift tube. Right of it: the launch lane and a rail that houses the feed tube.',
-    'Flippers: pivots at 6.53 and 13.47 balls, 8.8 balls down the tier, 25 degrees below level at rest and 25 above when up, 0.07 s for the stroke.',
+    'Flippers: pivots at 6.53 and 13.47 balls, 8.95 balls down the tier, 25 degrees below level at rest and 25 above when up, 0.07 s for the stroke. Each is a bat 3 balls long from the centre of its pivot to its far end, 0.8 balls thick round the pivot and 0.52 at the tip, and the ball meets that shape.',
+    'Slingshots stand between 5.55 and 7.45 balls down the tier, as low as the lane under them and the bat before them leave a ball its 1.25. The three windows of a tier are 1.24 balls across and lie at 7.1, 8.0 and 7.1 balls down, between the slingshots and over the flippers.',
     'Outlanes are 1.4 balls wide and end in a hole that leads through the cross rail into the tier exit. The lower corners are solid shoulders and carry the display, the houses and the card.',
     'Bumpers are 1.5 balls across, set 3.0 and 2.83 balls apart, so every gap between them clears 1.25 balls.',
     'The garage, the ladder and the highway stand above the floor on supports: a ball on the floor passes under them.',

@@ -225,7 +225,9 @@ export class LightRig {
       lamp.intensity = lampIntensity(l.power, EMITTER_BODY_PX)
       lamp.distance = l.reach
       lamp.shadow.camera.far = Math.max(8, l.reach)
-      lamp.shadow.autoUpdate = lamp.castShadow
+      const casts = lamp.castShadow && l.shadow
+      lamp.shadow.intensity = casts ? 1 : 0
+      lamp.shadow.autoUpdate = casts
     }
     for (let i = 0; i < this.pool; i++) {
       if (used.has(i)) continue

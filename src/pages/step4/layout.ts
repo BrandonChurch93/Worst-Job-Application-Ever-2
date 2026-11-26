@@ -71,8 +71,9 @@ export function makeLayout(): Step4Layout {
   const w = 288
   const submit = button('submit', SOCKET.x - w / 2, SOCKET.y - sizes.button / 2, w, 'copy:step4.submit', { part: 'shell' })
 
-  const labelBlock = block(TYPE.label.font, words('copy:step4.bossHealthLabel'), TYPE.label.px)
-  const trackH = 26
+  const healthType = { font: 'inter-600', px: 23 }
+  const labelBlock = block(healthType.font, words('copy:step4.bossHealthLabel'), healthType.px)
+  const trackH = 30
   const trackY = SUBLINE_Y - 4
   const health = row(
     'health',
@@ -80,7 +81,7 @@ export function makeLayout(): Step4Layout {
     trackY,
     24,
     [
-      (x, y) => text('health-label', 'copy:step4.bossHealthLabel', TYPE.label, x, y + (trackH - labelBlock.cap) / 2, { part: 'type' }),
+      (x, y) => text('health-label', 'copy:step4.bossHealthLabel', healthType, x, y + (trackH - labelBlock.cap) / 2, { part: 'type' }),
       (x, y) => node('health-track', 'progressRail', [x, y, RIGHT - x, trackH], { part: 'health-bar', shape: 'capsule', tone: 'pocket' })
     ],
     { states: ['fight'], part: 'health-bar' }

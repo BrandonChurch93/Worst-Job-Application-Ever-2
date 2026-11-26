@@ -108,18 +108,21 @@ const TUBE_FACE = 1.9
 
 export function collar(G: Geo, S: Screws, f: { m: THREE.Matrix4 }, o: { long?: number; out?: number; tone?: RGB; fin?: number; screws?: boolean } = {}): void {
   const from = G.vertices
-  const c = (o.long ?? TUBE.collar) / 2
-  const r = o.out ?? TUBE.collarOut
-  const tone = o.tone ?? TONE.alu
-  const outline: V2[] = [[TUBE.outer + 0.2, -c], [r - 2, -c], [r, -c + 2], [r, -3.4], [r - 1.6, -2.4], [r - 1.6, 2.4], [r, 3.4], [r, c - 2], [r - 2, c], [TUBE.outer + 0.2, c]]
-  G.f(o.fin ?? FIN.alu).lathe(outline, 0, 0, 20, (i) => (i === 4 ? shade(tone, 0.72) : i === 0 || i === 8 ? shade(tone, TUBE_FACE) : tone))
+  const slim = o.long === undefined
+  const c = (o.long ?? TUBE.ferrule) / 2
+  const r = o.out ?? TUBE.ferruleOut
+  const tone = o.tone ?? (slim ? TONE.chrome : TONE.alu)
+  const outline: V2[] = slim
+    ? [[TUBE.outer + 0.2, -c], [r - 1.2, -c], [r, -c + 1.2], [r, c - 1.2], [r - 1.2, c], [TUBE.outer + 0.2, c]]
+    : [[TUBE.outer + 0.2, -c], [r - 2, -c], [r, -c + 2], [r, -3.4], [r - 1.6, -2.4], [r - 1.6, 2.4], [r, 3.4], [r, c - 2], [r - 2, c], [TUBE.outer + 0.2, c]]
+  G.f(o.fin ?? (slim ? FIN.chrome : FIN.alu)).lathe(outline, 0, 0, 20, (i) => (slim ? tone : i === 4 ? shade(tone, 0.72) : i === 0 || i === 8 ? shade(tone, TUBE_FACE) : tone))
   G.move(from, f.m)
   if (o.screws === false) return
   for (const side of [-1, 1]) {
     const a = Math.PI / 2 + side * 0.5
     const dir = new THREE.Vector3(Math.cos(a), Math.sin(a), 0)
-    const p = dir.clone().multiplyScalar(r).add(new THREE.Vector3(0, 0, side * 6.5)).applyMatrix4(f.m)
-    S.add(p.x, p.y, p.z, 0.62, dir.transformDirection(f.m))
+    const p = dir.clone().multiplyScalar(r).add(new THREE.Vector3(0, 0, slim ? 0 : side * 6.5)).applyMatrix4(f.m)
+    S.add(p.x, p.y, p.z, slim ? 0.45 : 0.62, dir.transformDirection(f.m))
   }
 }
 
@@ -130,7 +133,7 @@ export function clamp(G: Geo, S: Screws, f: { at: THREE.Vector3; m: THREE.Matrix
   const r0 = TUBE.outer + 0.3
   const r1 = r0 + TUBE.strap
   const down = f.at.z - ground
-  G.f(FIN.steel).lathe([[r0, -w], [r1, -w], [r1, w], [r0, w]], 0, 0, 12, TONE.steel, 0, [0, Math.PI])
+  G.f(FIN.chrome).lathe([[r0, -w], [r1, -w], [r1, w], [r0, w]], 0, 0, 12, TONE.chrome, 0, [0, Math.PI])
   for (const side of [-1, 1]) {
     const x0 = side > 0 ? r0 : -r1
     const x1 = side > 0 ? r1 : -r0

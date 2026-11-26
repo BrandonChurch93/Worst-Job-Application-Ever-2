@@ -9,7 +9,7 @@ import { LENS, type RGB } from './colours'
 import { groupsOf } from './groups'
 
 // The lamps as things: the lenses of the general lighting in their sockets, the globes, and the bezels of the inserts. No plate lies under an insert: the kit puts no word there.
-const SIZE = { dome: 13, domeHigh: 6, ring: 20, screw: 3.1, window: [29, 18] as [number, number], globe: 21, core: 19 }
+const SIZE = { dome: 13, domeHigh: 6, ring: 20, screw: 3.1, window: [38, 25] as [number, number], globe: 21, core: 19 }
 const STEEL: RGB = [0.74, 0.76, 0.79]
 const BRASS: RGB = [0.83, 0.6, 0.27]
 const SOCKET: RGB = [0.035, 0.035, 0.04]
@@ -96,9 +96,9 @@ function arrowLens(colour: RGB): THREE.BufferGeometry[] {
     const q = Math.min(1, (x * x) / ((w * w) / 4) + (y * y) / ((h * h) / 4))
     return k(colour, 0.5 + (LENS.window - 0.5) * Math.pow(1 - q, 1.4))
   }, 0)
-  const a: Loop = [[8, 0], [1, 5], [1, 2], [-7, 2], [-7, -2], [1, -2], [1, -5]]
-  const head: Loop = [[8, 0], [1, 5], [1, -5]]
-  const tail: Loop = [[1, 2], [-7, 2], [-7, -2], [1, -2]]
+  const a: Loop = [[11, 0], [1.5, 7], [1.5, 2.8], [-9.5, 2.8], [-9.5, -2.8], [1.5, -2.8], [1.5, -7]]
+  const head: Loop = [[11, 0], [1.5, 7], [1.5, -7]]
+  const tail: Loop = [[1.5, 2.8], [-9.5, 2.8], [-9.5, -2.8], [1.5, -2.8]]
   const arrow = paint(new Solid().cap(head, 3.4).cap(tail, 3.4).band(a, 2.7, a, 3.4).done(), () => k(colour, 0.1), 0)
   return [lens, arrow]
 }
@@ -157,7 +157,7 @@ export function buildLamps(z: Zone, ctx: RealContext): Lamps {
     if (l.arrow) {
       const turn = Math.atan2(-l.arrow[1], l.arrow[0])
       for (const g of arrowLens(colourOf('general'))) lenses.push(put(g, p[0], p[1], 0, turn))
-      for (const g of arrowBezel(STEEL)) metals.push(put(g, p[0], p[1], 0, turn))
+      for (const g of arrowBezel(metal)) metals.push(put(g, p[0], p[1], 0, turn))
     } else {
       lenses.push(put(dome(colourOf(groups.some((g) => g.name === 'lanes') ? 'lanes' : 'windows')), p[0], p[1], 0))
       for (const g of socket(metal)) metals.push(put(g, p[0], p[1], 0))
