@@ -1,0 +1,35 @@
+{
+  "folder": "careers",
+  "pushed": "2026-11-26T00:58:10.774Z",
+  "commit": "abc75c64c91a5e92cbe1a4c3d76be3178b9354d2",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Still key-marketing-top-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T00:54:50.733Z",
+      "by": "careers",
+      "from": "out/work/stills/key-marketing-top-hd-draft.png"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Still key-marketing-top-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T00:55:24.776Z",
+      "by": "careers",
+      "from": "out/work/stills/key-marketing-top-hd-draft.png"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Key marketing-top: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-26T00:58:09.315Z",
+      "by": "careers",
+      "from": "out/work/compare/compare-marketing-top.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Careers first screen beside the approved image, draft tier, commit abc75c6",
+      "time": "2026-11-26T00:58:09.583Z",
+      "by": "careers",
+      "from": "out/work/compare/compare-marketing-top.jpg"
+    }
+  ]
+}
