@@ -92,7 +92,7 @@ export class App {
 
   // Called after every frame of the live site that is not the first page at rest: what the page on show and the pages after it are built from is fetched, and what a page left behind was built from is let go (`src/core/load.ts`).
   loadLater(): void {
-    if (this.staged && this.shown) showPage(liveFlow().map((e) => e.page), this.shown.frame.page, this.assets)
+    if (this.staged && this.shown) showPage(liveFlow().map((e) => e.page), this.shown.frame.page, this.assets, this.shown.frame.turn !== 0)
   }
 
   private staged = false

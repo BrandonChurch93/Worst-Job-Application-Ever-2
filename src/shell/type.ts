@@ -1,17 +1,9 @@
 import * as THREE from 'three'
-import { font, measure, registerFont, type BakedFont } from './metrics'
+import { font, loadFont, measure, type BakedFont } from './metrics'
 import { madeOf, words, type Made } from './words'
 
-export { font, measure, words }
+export { font, loadFont, measure, words }
 export type { BakedFont, Made }
-
-export async function loadFont(name: string): Promise<BakedFont> {
-  const res = await fetch(`./fonts/${name}.json`)
-  if (!res.ok) throw new Error(`The font file "${name}.json" did not load`)
-  const data = (await res.json()) as BakedFont
-  registerFont(name, data)
-  return data
-}
 
 const glyphCache = new Map<string, { position: Float32Array; index: Uint32Array }>()
 

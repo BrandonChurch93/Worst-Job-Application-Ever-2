@@ -81,26 +81,39 @@
     "levelDb": -18,
     "gainDb": 3.77,
     "channels": 1,
-    "loop": null
+    "loop": null,
+    "peak": {
+      "by": "ffmpeg alimiter, no make-up gain, its own level control off",
+      "boundDb": -1,
+      "limitDb": -1.14,
+      "attackMs": 5,
+      "releaseMs": 50,
+      "rounds": 2,
+      "truePeakBeforeDb": -0.4,
+      "truePeakAfterDb": -1.02,
+      "reductionDb": 0.62,
+      "lufsBefore": -18,
+      "lufsAfter": -18.02
+    }
   },
   "measured": {
     "seconds": 5.162,
-    "start": 0.002,
-    "end": 5.128,
-    "peakDb": -0.52,
-    "rmsDb": -20.65,
-    "lufs": -18,
-    "truePeakDb": -0.41,
-    "low": 0.534,
-    "mid": 0.291,
-    "high": 0.175,
-    "tailDb": -24.68,
+    "start": 0,
+    "end": 5.136,
+    "peakDb": -1.14,
+    "rmsDb": -20.69,
+    "lufs": -18.02,
+    "truePeakDb": -1.03,
+    "low": 0.538,
+    "mid": 0.292,
+    "high": 0.17,
+    "tailDb": -24.08,
     "hits": 2,
     "hitsAt": [
       {
         "start": 0.012,
-        "end": 0.942,
-        "peakDb": -0.52
+        "end": 0.944,
+        "peakDb": -1.14
       },
       {
         "start": 3.568,
@@ -154,5 +167,14 @@
   "fixture": false,
   "file": "line.live.idle.1.wav",
   "seconds": 5.162,
-  "sha256": "ce4a3fb12f5fcb1538fda25bc81f96f26ae0b71285e82600bbdc1e1da619f2aa"
+  "sha256": "5e42e1e41e816bab566770f66c5b722fc9278484258eb20e88f2c54aadce85e5",
+  "rekept": {
+    "when": "2026-11-26T17:46:32Z",
+    "why": "its levelled true peak was -0.4 dB, over the bound of -1 dB: the same take went through the chain again with the peak held",
+    "was": {
+      "sha256": "ce4a3fb12f5fcb1538fda25bc81f96f26ae0b71285e82600bbdc1e1da619f2aa",
+      "truePeakDb": -0.41,
+      "lufs": -18
+    }
+  }
 }

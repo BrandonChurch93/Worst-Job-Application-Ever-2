@@ -26,6 +26,7 @@ npm run sound -- --line live.hit:1 --file f     the same for a live line
 npm run sound -- --cue step --keep              run the chain on the last take and keep it
 npm run sound -- --cue step --keep --take 2 --listener answers.json --prompt "..." --cost 0.2
 npm run sound -- --pack                         build public/audio
+npm run sound -- --rekeep-peaks                 what holding the peak at audio.truePeakDb does to every kept line; --write keeps them again from their takes
 npm run sound -- --sheet                        draw the kept sounds on one picture
 npm run sound -- --check                        the sound checks, written to out/work/sound-checks.json
 npm run sound -- --browser                      the engine in a real browser, before and after a click
@@ -55,7 +56,7 @@ No sound is kept. `public/audio/index.json` lists nothing, the engine reports `a
 4. The room tone is not lowered under a line. The effects are, by `audio.duckDb`, over 0.08 s down and 0.3 s up.
 5. The narrator. A line never interrupts another. The gap `audio.liveNarratorMinGapSeconds` binds a live line on both sides. Lines of a beat keep `audio.lineGapSeconds` between them. A line of a beat may start up to 1.5 s late, a live line up to 0.4 s late: later than that it is dropped, never queued. A new beat gives up the lines of the beat before that have not started. The place in a list of live lines moves on only when a line is spoken.
 6. Kept sounds are 24 bit WAV at `audio.sampleRate`, written by the tool's own chain in plain arithmetic, with the level of the class in the file. Effects are mono, the room tone may stay stereo. The mix reads only those files and uses no outside program, which is why it gives the same bytes twice.
-7. What the site ships. Short sounds are FLAC, 16 bit mono, joined into one file `public/audio/sfx.bin` with their places in `public/audio/index.json`. Loops are FLAC files of their own. The narrator's lines are MP3, 64 kbit mono. FLAC, because MP3 adds padding at both ends, which would move a contact off its frame and put a gap in a loop.
+7. What the site ships. Short sounds are FLAC, 16 bit mono, joined into one file `public/audio/sfx.bin` with their places in `public/audio/index.json`. Loops are FLAC files of their own. The narrator's lines are MP3, 128 kbit mono (`PACK.lineKbps`): at 64 kbit a line came back from the MP3 up to 3 dB over the peak of its kept sound and over full scale, and the browser's decoder cut it flat. FLAC, because MP3 adds padding at both ends, which would move a contact off its frame and put a gap in a loop.
 8. The takes are counted in `audio/TAKES.json`, a text file that is committed. `audio/RECIPE.md` is written from it under the heading `## Takes`: what stands above that heading is kept as it is. Check A8 reads the same file. `--round N` files a take against a review round.
 9. `ASSETS.md` is not the sound builder's file. The tool writes the rows it needs to `audio/ASSETS-ROWS.md` for the Builder to copy. Check A5 fails for a kept sound until its row is in `ASSETS.md`.
 10. A cue with one variant always plays at its own pitch. A cue with variants steps them in order, with the list of offsets in cents `0, 35, -30, 20, -45, 10, -15` laid over them in order. Nothing is random.

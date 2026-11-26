@@ -7,6 +7,7 @@ import { spawnSync } from 'node:child_process'
 import { pathToFileURL } from 'node:url'
 import { createServer } from 'vite'
 import { args, at, config, readJson, writeJson } from './lib/paths.mjs'
+import { holdPeak, rekeepPeaks } from './lib/sound-peaks.mjs'
 
 export const sha = (bytes) => crypto.createHash('sha256').update(bytes).digest('hex')
 const rel = (p) => path.relative(at(), p)
@@ -319,6 +320,10 @@ export async function keepTake(a, P, c, M, quiet = false) {
     const id = t.ids[slots[i]]
     const out = M.dsp.chain(sound, { seconds: t.kind === 'line' ? 600 : t.seconds, cls: t.cls, loop: t.loop, from: p.from, to: p.to })
     if (out.record.loop && !out.record.loop.holds) problems.push(`the loop does not close: the step at its seam is ${out.record.loop.seamStepDb} dB over the usual step and the level there is ${out.record.loop.seamLevelDb} dB off`)
+    if (t.kind === 'line') {
+      const held = holdPeak(out.sound, c.audio.truePeakDb, M.dsp)
+      if (held.record) return { id, variant: slots[i], sound: held.sound, record: { ...out.record, peak: held.record } }
+    }
     return { id, variant: slots[i], ...out }
   }).filter((m) => m.id)
 
@@ -351,7 +356,7 @@ export async function keepTake(a, P, c, M, quiet = false) {
   saveLedger(P, ledger, c)
   writeAssetRows(P)
   if (!quiet) {
-    for (const m of made) console.log(`kept: ${m.id}, ${(m.sound.channels[0].length / sr).toFixed(3)} s, level ${m.record.levelDb} dB by ${m.record.levelMeasure}, gain ${m.record.gainDb} dB, fade in ${m.record.fadeInMs} ms, fade out ${m.record.fadeOutMs} ms, low cut ${m.record.lowCutHz} Hz${m.record.loop ? `, loop seam step ${m.record.loop.seamStepDb} dB` : ''}`)
+    for (const m of made) console.log(`kept: ${m.id}, ${(m.sound.channels[0].length / sr).toFixed(3)} s, level ${m.record.levelDb} dB by ${m.record.levelMeasure}, gain ${m.record.gainDb} dB, fade in ${m.record.fadeInMs} ms, fade out ${m.record.fadeOutMs} ms, low cut ${m.record.lowCutHz} Hz${m.record.loop ? `, loop seam step ${m.record.loop.seamStepDb} dB` : ''}${m.record.peak ? `, true peak held at ${m.record.peak.boundDb} dB: ${m.record.peak.reductionDb} dB off at the worst moment, ${m.record.peak.lufsAfter} LUFS after` : ''}`)
     if (forced && problems.length) console.log(`  forced over: ${problems.join('; ')}`)
     console.log(`  records: ${rel(P.kept)}/<id>.json. The rows for ASSETS.md are in ${rel(path.join(P.audio, 'ASSETS-ROWS.md'))}`)
   }
@@ -407,13 +412,16 @@ export function pack(P, c, M, quiet = false) {
   const records = keptRecords(P).filter((r) => fs.existsSync(path.join(P.kept, r.file)))
   const index = { version: 1, sampleRate: c.audio.sampleRate, pack: null, sfx: [], loops: [], lines: [], totalBytes: 0 }
   const chunks = []
+  const linePeaks = []
   let offset = 0
   for (const r of records) {
     const wav = path.join(P.kept, r.file)
     if (r.kind !== 'cue') {
-      const bytes = encode(wav, ['-ac', '1', '-c:a', 'libmp3lame', '-b:a', '64k', '-id3v2_version', '0', '-f', 'mp3'])
+      const bytes = encode(wav, ['-ac', '1', '-c:a', 'libmp3lame', '-b:a', `${M.levels.PACK.lineKbps}k`, '-id3v2_version', '0', '-f', 'mp3'])
       const file = `${r.id}.mp3`
       fs.writeFileSync(path.join(P.pub, file), bytes)
+      const decoded = decodeFile(path.join(P.pub, file), c.audio.sampleRate)
+      linePeaks.push({ id: r.id, db: M.levels.toDb(M.dsp.peak(decoded.channels[0])) })
       index.lines.push({ id: r.id, file, seconds: r.seconds, mime: 'audio/mpeg', bytes: bytes.length, sha256: sha(bytes) })
     } else if (r.loop) {
       const bytes = encode(wav, ['-c:a', 'flac', '-sample_fmt', 's16', '-compression_level', '8', '-f', 'flac'])
@@ -439,6 +447,10 @@ export function pack(P, c, M, quiet = false) {
   if (!quiet) {
     console.log(`packed: ${index.sfx.length} short sounds in one file, ${index.loops.length} loops, ${index.lines.length} narrator lines, ${mb.toFixed(2)} MB of ${c.audio.appMaxMb} MB, in ${rel(P.pub)}`)
     if (!records.length) console.log('pack: no sound is kept, so the index lists nothing and the site runs silent')
+    const over = linePeaks.filter((l) => l.db > 0).sort((x, y) => y.db - x.db)
+    const top = linePeaks.slice().sort((x, y) => y.db - x.db)[0]
+    if (top) console.log(`pack: the narrator lines at ${M.levels.PACK.lineKbps} kbit decode with their largest sample at ${top.db.toFixed(2)} dB (${top.id})`)
+    if (over.length) console.log(`pack: OVER FULL SCALE. ${over.length} packed lines decode over 0 dB, which a browser's decoder cuts flat: ${over.map((l) => `${l.id} ${l.db.toFixed(2)} dB`).join(', ')}`)
     if (mb > c.audio.appMaxMb) console.log(`pack: OVER THE LIMIT. The site's sound files are ${mb.toFixed(2)} MB and audio.appMaxMb is ${c.audio.appMaxMb}`)
   }
   return index
@@ -1120,7 +1132,7 @@ function status(P, c, M) {
   console.log(`sound: the pages emit ${e.count} events by name. ${e.unknown.length ? `With no cue, no stop, no line and not listed as silent in src/audio/cues.ts: ${e.unknown.join(', ')}` : 'Each has a cue, stops one, sets off a line or is listed as silent on purpose'}`)
   const quiet = (M.cues.silentEvents ?? []).filter((name) => !M.cues.cueOfEvent(name))
   if (quiet.length) console.log(`sound: with no sound of its own, on purpose: ${quiet.join(', ')}. The cut list carries each with no cue and the mix lays nothing for it`)
-  console.log('sound: --cue ID --file F files a take, --line BEAT:N --file F files a line, --keep keeps one, --pack builds what the site ships, --pack-check compares public/audio/ with the committed index, --sheet draws the kept sounds, --check runs the sound checks, --fixtures makes stand-ins to test with')
+  console.log('sound: --cue ID --file F files a take, --line BEAT:N --file F files a line, --keep keeps one, --pack builds what the site ships, --pack-check compares public/audio/ with the committed index, --rekeep-peaks shows what holding the peak does to every kept line and with --write keeps them again from their takes, --sheet draws the kept sounds, --check runs the sound checks, --fixtures makes stand-ins to test with')
 }
 
 async function main() {
@@ -1145,6 +1157,7 @@ async function main() {
         console.log(`site: ${JSON.stringify(s)}`)
       }
     }
+    else if (a['rekeep-peaks']) rekeepPeaks(a, P, c, M, decodeFile)
     else if (a.loops) {
       const { loopsRun } = await import('./lib/sound-loops.mjs')
       loopsRun(P.pub, c, decodeFile, M.levels)

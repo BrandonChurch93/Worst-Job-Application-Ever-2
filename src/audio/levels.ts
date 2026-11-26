@@ -92,6 +92,11 @@ export const LIVE = {
   wakeEvents: ['pointerup', 'touchend', 'click', 'keydown']
 }
 
+export const PACK = {
+  // The bit rate of a packed narrator line. At 64 the MP3 comes back up to 3 dB over the peak of its kept sound, over full scale, and a browser's decoder cuts that flat.
+  lineKbps: 128
+}
+
 export const MIX = {
   bitsPerSample: 24,
   // The limiter holds peaks this far under audio.truePeakDb so the measured true peak stays under it.
