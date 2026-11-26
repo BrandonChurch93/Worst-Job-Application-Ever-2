@@ -5,7 +5,7 @@ import { CursorView, cursorUnmade } from '../cursor/view'
 import { real } from '../real'
 import type { Emitter, PartMaker, RealContext } from '../real/types'
 import type { Frame } from '../stage/stage'
-import { rattleAt, SHIVER, shiverAt, shiverBase, shiverDelay } from '../stage/turn'
+import { rattleAt, SHIVER, shiverAt, shiverBase, shiverDelay, TURN } from '../stage/turn'
 import type { Shape, Tone } from '../stage/types'
 
 export const TONES: Record<Tone, number> = {
@@ -56,6 +56,7 @@ export class PageView {
   readonly scene = new THREE.Scene()
   private pivot = new THREE.Group()
   private sheet = new THREE.Group()
+  private stand = new THREE.Group()
   private reals = new Map<string, RealEntry>()
   private realGround: { object: THREE.Object3D; key: string } | null = null
   private models: CursorView[] = []
@@ -74,6 +75,8 @@ export class PageView {
   constructor() {
     this.scene.add(this.pivot)
     this.pivot.add(this.sheet)
+    this.stand.matrixAutoUpdate = false
+    this.scene.add(this.stand)
   }
 
   private tag(o: THREE.Object3D, part: string, order: number, extra: Record<string, unknown> = {}): void {
@@ -158,11 +161,18 @@ export class PageView {
     this.settle = f.settle ?? -1
     this.list = f.list
     const turning = Math.abs(f.turn) > 1e-6
+    // Tilted further than the knock goes, the fold of the page can come into view: what starts on the fold is then left out as well.
+    const tilted = Math.abs(f.turn) > TURN.knocks[0].size + 1e-9
     const top = turning ? f.scroll : 0
     const tall = turning ? 1080 : size.height
     this.pivot.position.set(0, -f.scroll, 0)
     this.sheet.position.set(0, f.scroll, 0)
-    this.pivot.rotation.x = f.turn
+    // The slab lies still in the scene and whoever draws it turns the camera, the light and the studio about its axis:
+    // every surface works out its grain, its heights and its shadows from where it lies, and those hold for a page that lies flat.
+    this.scene.userData.turn = { angle: f.turn, y: -f.scroll }
+    if (turning) this.stand.matrix.makeRotationX(-f.turn).setPosition(0, -f.scroll * (1 - Math.cos(f.turn)), -f.scroll * Math.sin(f.turn))
+    else this.stand.matrix.identity()
+    this.stand.matrixWorldNeedsUpdate = true
     this.pivot.updateMatrixWorld(true)
     this.lit = []
     const ctx = contextOf(f, size.width, top, tall, (e) => {
@@ -177,7 +187,7 @@ export class PageView {
     for (const s of f.list) {
       order++
       if (s.kind === 'well') continue
-      if (turning && !s.fixed && (s.y + s.h < top || s.y > top + tall)) continue
+      if (turning && !s.fixed && (s.y + s.h < top || s.y > top + tall || (tilted && s.y >= top + tall))) continue
       const hit = realKey(s, ctx)
       if (hit) {
         if (hit.key !== '') this.made(s, hit, order, ctx)
@@ -197,7 +207,7 @@ export class PageView {
     while (this.models.length < cursors.length) {
       const model = new CursorView()
       this.tag(model.root, 'cursor-body', ORDER.cursor + 4096 + this.models.length * 64)
-      this.scene.add(model.root)
+      this.stand.add(model.root)
       this.models.push(model)
     }
     this.models.forEach((m, i) => {

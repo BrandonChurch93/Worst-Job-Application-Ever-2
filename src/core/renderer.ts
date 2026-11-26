@@ -23,6 +23,19 @@ const QUALITY: { minKeyPx: number; pool: number; shadows: number }[] = [
 // The heights the shadow map is fitted to. Things outside them still throw and take shadows inside the page.
 const FIT_Z: [number, number] = [-40, 120]
 const MIN_DOME_SHADOW_PX = 1024
+// A light that grazes the turning slab: how far its shadows' bias may grow, and the slope of the light, in map texels of depth, above which it grows.
+const GRAZE = { most: 8, from: 7 }
+const AXIS_X = new THREE.Vector3(1, 0, 0)
+// The most, in radians, that the lights go round a slab whose face is turning toward the key: past it the page would stand near white for the frames of its way in.
+const TOWARD = (8 * Math.PI) / 180
+const lightTurn = (angle: number): number => (angle < 0 ? -TOWARD * Math.tanh(-angle / TOWARD) : angle)
+
+// What a page that is turning over says to whoever draws it: the angle of the slab about its long axis and where that axis lies.
+export interface SlabTurn { angle: number; y: number }
+export const slabTurn = (scene: THREE.Scene): SlabTurn | null => {
+  const t = scene.userData.turn as SlabTurn | undefined
+  return t && Math.abs(t.angle) > 1e-6 ? t : null
+}
 
 // How far the map leans so that the page's upward axis, seen from the light through `m`, runs along the map's columns.
 export function squareLean(m: THREE.Matrix4): number {
@@ -48,6 +61,7 @@ export class LightRig {
   private w = new THREE.Vector3()
   private up = new THREE.Vector3()
   private shear = new THREE.Matrix4()
+  private turn: SlabTurn | null = null
   level = 1
   emitters: Emitter[] = []
 
@@ -125,6 +139,20 @@ export class LightRig {
     this.bounds = b
   }
 
+  // The slab is drawn lying still, so while a page turns the lights go round it the other way: seen from the slab that is the same thing.
+  setTurn(turn: SlabTurn | null): void {
+    this.turn = turn
+  }
+
+  private round(v: THREE.Vector3, point: boolean): THREE.Vector3 {
+    const t = this.turn
+    if (!t) return v
+    if (point) v.y -= t.y
+    v.applyAxisAngle(AXIS_X, -lightTurn(t.angle))
+    if (point) v.y += t.y
+    return v
+  }
+
   // The lights the parts give off in this frame, in world units.
   setEmitters(list: Emitter[]): void {
     this.emitters = list
@@ -176,8 +204,10 @@ export class LightRig {
     const r = this.rect
     const cx = (r.minX + r.maxX) / 2
     const cy = (r.minY + r.maxY) / 2
-    const above = Math.max(0, b.maxZ) / dz
-    const below = Math.min(0, b.minZ) / dz
+    const turning = this.turn !== null
+    if (turning) square = false
+    const above = turning ? b.maxZ - b.minZ : Math.max(0, b.maxZ) / dz
+    const below = turning ? 0 : Math.min(0, b.minZ) / dz
     const reach = Math.hypot(r.maxX - r.minX, r.maxY - r.minY) + above + 200
     light.target.position.set(cx, cy, 0)
     light.position.set(cx + dx * reach, cy + dy * reach, dz * reach)
@@ -203,7 +233,7 @@ export class LightRig {
       maxX = Math.max(maxX, this.v.x)
       minY = Math.min(minY, this.v.y)
       maxY = Math.max(maxY, this.v.y)
-      this.v.set(i & 1 ? r.maxX : r.minX, i & 2 ? r.maxY : r.minY, 0).applyMatrix4(this.m)
+      this.v.set(i & 1 ? r.maxX : r.minX, i & 2 ? r.maxY : r.minY, turning ? (i & 4 ? b.maxZ : b.minZ) : 0).applyMatrix4(this.m)
       near = Math.min(near, -this.v.z)
       far = Math.max(far, -this.v.z)
     }
@@ -217,7 +247,7 @@ export class LightRig {
     cam.right = mx + side / 2
     cam.bottom = my - side / 2
     cam.top = my + side / 2
-    cam.near = Math.max(1, near - above - 4)
+    cam.near = Math.max(1, turning ? near - 4 : near - above - 4)
     cam.far = far - below + 4
     cam.updateProjectionMatrix()
     if (lean !== 0) {
@@ -228,7 +258,8 @@ export class LightRig {
     }
     const depth = cam.far - cam.near
     const coarse = Math.max(1, of.shadowMapPx / px)
-    light.shadow.bias = (-of.biasPx * coarse) / depth
+    const graze = turning ? Math.min(GRAZE.most, Math.max(1, Math.sqrt(Math.max(0, 1 - dz * dz)) / (Math.max(1e-6, Math.abs(dz)) * GRAZE.from))) : 1
+    light.shadow.bias = (-of.biasPx * coarse * graze) / depth
     light.shadow.normalBias = of.normalBiasPx * coarse
     light.shadow.radius = Math.floor((depth * tan) / texel) + (alone ? 0.5 : Math.min(0.998, Math.max(0, s.phase)))
   }
@@ -287,7 +318,7 @@ export class LightRig {
     const one = alone || hold
     const split = areaSplit(one ? 1 : s.count)
     const r = Math.tan(look.key.radius)
-    const d = this.v.copy(this.base).addScaledVector(this.axisU, s.light[0] * r * split.move).addScaledVector(this.axisV, s.light[1] * r * split.move).normalize()
+    const d = this.round(this.v.copy(this.base).addScaledVector(this.axisU, s.light[0] * r * split.move).addScaledVector(this.axisV, s.light[1] * r * split.move).normalize(), false)
     const [dx, dy, dz] = [d.x, d.y, d.z]
     this.seen(camera)
     this.key.color.setRGB(...look.key.colour)
@@ -296,12 +327,21 @@ export class LightRig {
     this.dome.color.setRGB(...look.dome.colour)
     const up = one ? 1 : s.dome[2]
     this.dome.intensity = (look.dome.intensity * this.level) / up
-    if (one) this.aim(this.dome, 0, 0, 1, domeSpread(1), look.dome, s, alone, hold)
-    else this.aim(this.dome, s.dome[0], s.dome[1], up, domeSpread(s.count), look.dome, s, alone)
+    if (!this.turn) {
+      if (one) this.aim(this.dome, 0, 0, 1, domeSpread(1), look.dome, s, alone, hold)
+      else this.aim(this.dome, s.dome[0], s.dome[1], up, domeSpread(s.count), look.dome, s, alone)
+    } else {
+      const f = this.round(one ? this.w.set(0, 0, 1) : this.w.set(s.dome[0], s.dome[1], up), false)
+      this.aim(this.dome, f.x, f.y, f.z, domeSpread(one ? 1 : s.count), look.dome, s, alone)
+    }
     const cx = (this.rect.minX + this.rect.maxX) / 2
     const cy = (this.rect.minY + this.rect.maxY) / 2
     const at = look.key.at
-    lightLaw.keyAt.value.set(cx + at[0], cy + at[1], at[2], at[0] * at[0] + at[1] * at[1] + at[2] * at[2])
+    if (!this.turn) lightLaw.keyAt.value.set(cx + at[0], cy + at[1], at[2], at[0] * at[0] + at[1] * at[1] + at[2] * at[2])
+    else {
+      const p = this.round(this.w.set(cx + at[0], cy + at[1], at[2]), true)
+      lightLaw.keyAt.value.set(p.x, p.y, p.z, at[0] * at[0] + at[1] * at[1] + at[2] * at[2])
+    }
     lightLaw.envDiffuse.value = look.envDiffuse
     lightLaw.keySpecular.value = look.keySpecular
     lightLaw.cap.value.set(look.glow.surfaceKnee, look.glow.surfaceMax)
@@ -350,6 +390,8 @@ export class Engine {
   private rest = new RestBlend()
   blendsRest = true
   private sampleBounds: SampleBounds | null = null
+  private stood = { position: new THREE.Vector3(), quaternion: new THREE.Quaternion() }
+  private swing = new THREE.Quaternion()
 
   constructor(canvas: HTMLCanvasElement, width: number, height: number, opts: { preserve: boolean; forceKind?: TargetKind; multisamples?: number }) {
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, depth: false, stencil: false, preserveDrawingBuffer: opts.preserve, powerPreference: 'high-performance' })
@@ -397,8 +439,21 @@ export class Engine {
     const r = this.renderer
     shot.pose?.(s.shutter)
     shot.camera.updateMatrixWorld()
-    lightLaw.viewInverse.value.copy(shot.camera.matrixWorld)
+    const turn = slabTurn(shot.scene)
+    shot.rig.setTurn(turn)
     shot.rig.place(s, shot.camera, alone, hold)
+    if (turn) {
+      const c = shot.camera
+      this.stood.position.copy(c.position)
+      this.stood.quaternion.copy(c.quaternion)
+      c.position.y -= turn.y
+      c.position.applyAxisAngle(AXIS_X, -turn.angle)
+      c.position.y += turn.y
+      c.quaternion.premultiply(this.swing.setFromAxisAngle(AXIS_X, -turn.angle))
+      c.updateMatrixWorld()
+      shot.scene.environmentRotation.x = -turn.angle
+    }
+    lightLaw.viewInverse.value.copy(shot.camera.matrixWorld)
     if (keep && view === 'beauty') {
       this.still.prepare(r, shot.scene, shot.rig.key, shot.list)
       this.keeps = true
@@ -417,6 +472,12 @@ export class Engine {
     r.render(shot.scene, shot.camera)
     this.sampleBounds?.apply(r, this.acc.sample)
     if (restore) restore()
+    if (turn) {
+      shot.camera.position.copy(this.stood.position)
+      shot.camera.quaternion.copy(this.stood.quaternion)
+      shot.camera.updateMatrixWorld()
+      shot.scene.environmentRotation.x = 0
+    }
     shot.camera.clearViewOffset()
     this.acc.add()
   }

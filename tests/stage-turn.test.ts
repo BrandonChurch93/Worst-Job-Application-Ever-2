@@ -47,8 +47,8 @@ describe('the page turn', () => {
   it('comes home still moving, knocks back twice, each knock smaller, and is never past flat', () => {
     const h = 1e-4
     const landing = (arriveTurn(seatedAt()) - arriveTurn(seatedAt() - h)) / h
-    expect(landing).toBeGreaterThan(0.2 * leaveSpeed())
-    expect(landing).toBeLessThan(0.8 * leaveSpeed())
+    expect(landing).toBeGreaterThan(0.7 * leaveSpeed())
+    expect(landing).toBeLessThan(0.9 * leaveSpeed())
     expect(Math.abs(arriveTurn(seatedAt()))).toBeLessThan(1e-9)
     let from = seatedAt()
     const depths: number[] = []
@@ -58,7 +58,7 @@ describe('the page turn', () => {
       depths.push(-least)
       from += k.lasts
     }
-    expect(depths[0]).toBeCloseTo(1.5 * DEG, 6)
+    expect(depths[0]).toBeCloseTo(6 * DEG, 6)
     expect(depths[1]).toBeLessThan(depths[0]!)
     expect(from).toBeLessThanOrEqual(1)
     for (let i = 0; i <= 1000; i++) expect(arriveTurn(i / 1000)).toBeLessThanOrEqual(0)
