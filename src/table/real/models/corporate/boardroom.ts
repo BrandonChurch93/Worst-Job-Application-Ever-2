@@ -9,9 +9,11 @@ import { FINISH, TONE, drop as free, fin, hex, matsOf, mesh, moved, place, shade
 
 const SEED = 20261125
 const SCALE = new THREE.Vector3(0.9, 0.9, 0.93)
-const WALNUT: RGB = [0.14, 0.055, 0.024]
-const LAMP = { r: 5.4, stem: 13, pool: 21, glow: 4 }
+const WALNUT: RGB = [0.085, 0.036, 0.017]
+const POOL: RGB = [0.105, 0.06, 0.036]
+const LAMP = { r: 5.4, stem: 13, pool: 19, glow: 3 }
 const HIDE = hex(0x0d0c0b)
+const SHEET: RGB = [0.2, 0.195, 0.17]
 const flatStreak = (g: Geo, x0: number, x1: number, y0: number, y1: number, zz: number, col: RGB): void => {
   g.face([[x0, y0, zz], [x1, y0, zz], [x1, y1, zz], [x0, y1, zz]], [0, 0, 1], [0, 1, 0], col)
 }
@@ -74,7 +76,7 @@ export function boardroomPools(G: Geo, z: Zone): void {
     for (const y of lampsAt(q.tl)) {
       const from = G.vertices
       const rings: V2[] = [[LAMP.pool, 0], [LAMP.pool * 0.72, 0.02], [LAMP.pool * 0.45, 0.04], [LAMP.pool * 0.2, 0.06], [0, 0.07]]
-      G.lathe(rings, 0, y, 18, WALNUT, ROOM.top + 0.2)
+      G.lathe(rings, 0, y, 18, POOL, ROOM.top + 0.2)
       G.map(from, (px, py) => {
         const r = Math.hypot(px, py - y) / LAMP.pool
         return [(FINISH.stone + 0.5) / 8, LAMP.glow * Math.max(0, 1 - r) ** 1.6]
@@ -182,6 +184,28 @@ export function buildBoardroom(z: Zone, _ctx: RealContext): THREE.Object3D {
         S.lathe([[4.2, 0], [4.2, 0.9], [1.1, 1.6], [1.1, LAMP.stem]], 0, y, 10, TONE.brass, ROOM.top + 0.1)
         S.lathe([[LAMP.r + 2.4, 0], [LAMP.r + 2.4, 0.8], [LAMP.r, 3.4], [2.4, 6], [0, 6.6]], 0, y, 14, (k) => (k === 2 ? TONE.gold : TONE.brass), ROOM.top + LAMP.stem)
       })
+    }
+  })
+  // What a meeting leaves at each place: a sheet or two, a dark pad and a pen, none quite square to the edge.
+  moved(D, place(cx, cy + ty, 0, rot), () => {
+    const at = new Random(SEED, 'boardroom.papers')
+    const T = ROOM.top + 0.16
+    const span = (tl * 2 - 22) / places
+    for (const s of [-1, 1]) {
+      for (let k = 0; k < places; k++) {
+        const y = -tl + 11 + span * (k + 0.5) + at.range(-2, 2)
+        const x = s * (tw - 9.5 + at.range(-1, 1))
+        moved(D, place(x, y, T, at.range(-0.3, 0.3)), () => {
+          fin(D, FINISH.matte, () => {
+            if (at.next() < 0.8) flatStreak(D, -3.4, 3.4, -4.8, 4.8, 0, shade(SHEET, at.range(0.85, 1.1)))
+            if (at.next() < 0.5) flatStreak(D, -2.2, 4.6, -3.6, 6, 0.06, shade(SHEET, at.range(0.8, 1)))
+          })
+          fin(D, FINISH.leather, () => {
+            if (at.next() < 0.6) D.box(-3 + s * 0.4, 3 + s * 0.4, 6.2, 14.4, 0, 0.7, HIDE, { bevel: 0.3 })
+          })
+          fin(D, FINISH.polished, () => flatStreak(D, 4.6, 5.3, -3 + at.range(-1, 1), 3.4, 0.2, TONE.brass))
+        })
+      }
     }
   })
   o.add(mesh(D, mats.solid, `boardroom.places.${z.id}`, { fine: true }))
