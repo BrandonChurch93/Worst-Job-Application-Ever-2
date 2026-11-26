@@ -1,35 +1,35 @@
 {
   "folder": "step2-dial",
-  "pushed": "2026-11-26T02:54:42.876Z",
-  "commit": "eb51f11c33fdcf05b8921ab201a6bb0e03f4737b",
+  "pushed": "2026-11-26T03:10:05.530Z",
+  "commit": "9f3a9d8b2a0517385f50f9d582be5c06b794d42a",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Dial tray at eb51f11: approved above, build below. Wall shade now reaches as far as the approved, rim satin, digits 22 px",
-      "time": "2026-11-26T02:54:41.243Z",
+      "caption": "Key step2-rest at 9f3a9d8, review tier: approved above, build below",
+      "time": "2026-11-26T03:10:03.713Z",
       "by": "step2-dial",
-      "from": "out/work/looks/files/20261126025441-dial-tray-close.jpg"
+      "from": "out/work/looks/files/20261126031003-step2-rest-approved-above-build-below.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Crank tray at eb51f11: approved above, build below. Prompt 8 px lower, clear of the shade",
-      "time": "2026-11-26T02:54:41.477Z",
+      "caption": "Key step2-dial at 9f3a9d8, review tier: approved above, build below",
+      "time": "2026-11-26T03:10:03.951Z",
       "by": "step2-dial",
-      "from": "out/work/looks/files/20261126025441-crank-tray.jpg"
+      "from": "out/work/looks/files/20261126031003-step2-dial-approved-above-build-below.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Finger wheel at 3x: approved left, build right",
-      "time": "2026-11-26T02:54:41.710Z",
+      "caption": "Key step2-crank at 9f3a9d8, review tier: approved above, build below",
+      "time": "2026-11-26T03:10:04.186Z",
       "by": "step2-dial",
-      "from": "out/work/looks/files/20261126025441-wheel.jpg"
+      "from": "out/work/looks/files/20261126031004-step2-crank-approved-above-build-below.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Tray corners at 3x: approved left, build right",
-      "time": "2026-11-26T02:54:41.941Z",
+      "caption": "Dial tray close at 9f3a9d8, review tier: approved above, build below",
+      "time": "2026-11-26T03:10:04.451Z",
       "by": "step2-dial",
-      "from": "out/work/looks/files/20261126025441-corner.jpg"
+      "from": "out/work/looks/files/20261126031004-dial-tray-close-approved-above-build-below.jpg"
     }
   ]
 }
