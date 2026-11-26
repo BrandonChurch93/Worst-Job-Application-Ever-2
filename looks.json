@@ -1,35 +1,35 @@
 {
   "folder": "machine-finish",
-  "pushed": "2026-11-26T11:32:39.314Z",
-  "commit": "f7360140c7b591bffa2746f0bf06db090f6dbc0a",
+  "pushed": "2026-11-26T11:44:26.045Z",
+  "commit": "c530339c7ecbe5a5c199484dcb9bc49e271b9317",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Contact sheet, the beat pinball.fired: 12 frames from 1:33.00 to 1:36.47, draft tier, preview",
-      "time": "2026-11-26T11:19:16.902Z",
+      "caption": "Key lobby-doors: approved on the left, this build on the right, draft tier, with crops of shape:hq.plate, shape:hq.doorway, cursor, shape:hold.corporate.revolving.post, shape:post.corporate.globe.right, shape:model.corporate.hq, shape:flat.corporate.carpet",
+      "time": "2026-11-26T11:37:52.044Z",
       "by": "machine-finish",
-      "from": "out/work/sheets/sheet-beat-pinball_fired-preview-draft.jpg"
+      "from": "out/work/compare/compare-lobby-doors.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Contact sheet, the beat pinball.drain: 12 frames from 1:44.00 to 1:48.97, draft tier, preview",
-      "time": "2026-11-26T11:20:35.143Z",
+      "caption": "Contact sheet, the beat pinball.reveal: 12 frames from 1:11.00 to 1:14.97, draft tier, preview",
+      "time": "2026-11-26T11:39:36.904Z",
       "by": "machine-finish",
-      "from": "out/work/sheets/sheet-beat-pinball_drain-preview-draft.jpg"
+      "from": "out/work/sheets/sheet-beat-pinball_reveal-preview-draft.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Key tier-street: approved on the left, this build on the right, draft tier, with crops of shape:model.street.firehouse, shape:model.street.police, shape:model.street.garage, shape:model.street.bank, cursor, shape:model.street.mom, shape:sling.street.sling.left.1+sling.street.sling.left.2+sling.street.sling.left.3, shape:flipper.street.flipper.left, shape:rail.highway.a.4",
-      "time": "2026-11-26T11:21:16.828Z",
+      "caption": "Contact sheet, the beat pinball.save: 12 frames from 1:41.00 to 1:43.97, draft tier, preview",
+      "time": "2026-11-26T11:41:30.646Z",
       "by": "machine-finish",
-      "from": "out/work/compare/compare-tier-street.jpg"
+      "from": "out/work/sheets/sheet-beat-pinball_save-preview-draft.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "tier-street beside the approved image: 'Background Check' in two lines clear of the spiral, every model sign in ink on its cream board",
-      "time": "2026-11-26T11:32:38.113Z",
+      "caption": "the reveal beat: the page's light goes down behind the tube, cut to the dark machine, the marquee first, then the tiers from the top, the whole machine held lit",
+      "time": "2026-11-26T11:44:24.867Z",
       "by": "machine-finish",
-      "from": "out/work/mf/q5-tier-street.jpg"
+      "from": "out/work/mf/q6-reveal.jpg"
     }
   ]
 }
