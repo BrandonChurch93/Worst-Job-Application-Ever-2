@@ -35,7 +35,7 @@ class Thing {
 
 function fire(target: Thing, type: string, init: Record<string, unknown> = {}): Fired {
   let stopped = false
-  const e: Fired = { clientX: 960, clientY: 540, key: '', code: '', ...init, type, target, stopPropagation: () => { stopped = true }, preventDefault: () => undefined }
+  const e: Fired = { clientX: 960, clientY: 540, key: '', code: '', ...init, type, target, prevented: false, stopPropagation: () => { stopped = true }, preventDefault: () => { e.prevented = true } }
   const path: Thing[] = []
   for (let t: Thing | null = target; t; t = t.parent) path.push(t)
   for (let i = path.length - 1; i > 0 && !stopped; i--) path[i]!.run(e, true)
@@ -63,7 +63,7 @@ function page(): Page {
   const live = { on: true }
   const touched = { n: 0 }
   const table = { on: true }
-  const visitor = listenToVisitor({ window, document, canvas, mouse, live: () => live.on, typing: () => false, touched: () => { touched.n++ }, flippers: () => table.on })
+  const visitor = listenToVisitor({ window, document, canvas, mouse, live: () => live.on, touched: () => { touched.n++ }, flippers: () => table.on })
   return { window, document, body, html, canvas, control, mouse, visitor, live, touched, table }
 }
 
@@ -216,6 +216,19 @@ describe('site pointer listeners: nothing sticks', () => {
     fire(p.control, 'keydown', { key: ' ', code: 'Space' })
     expect(p.visitor.held()).toEqual(none)
     expect(p.mouse.input().key).toBeUndefined()
+  })
+
+  it('Tab is the browser\'s own on every page: it is never held back and never typed, so the controls are reached from the page and from the picture', () => {
+    const p = page()
+    for (const from of [p.body, p.canvas, p.control]) {
+      for (const shiftKey of [false, true]) {
+        const e = fire(from, 'keydown', { key: 'Tab', code: 'Tab', shiftKey })
+        expect(e.prevented).toBe(false)
+        expect(p.mouse.input().key ?? null).toBe(null)
+      }
+    }
+    expect(fire(p.canvas, 'keydown', { key: ' ', code: 'Space' }).prevented).toBe(true)
+    expect(p.mouse.input().key).toBe(' ')
   })
 
   it('while the film plays nothing a visitor presses is held', () => {
