@@ -134,3 +134,11 @@ Draft still of `table-wide` at 05948a4: 40.0 s, 583 draw calls (638 at 02:24). A
 | tier-street | scene | 106 / 265364 |
 
 Draft stills hd at ba5aa10: table-wide 40.5 s, 583 calls; last-save 41.8 s, 523; tier-street 34.1 s, 476; rail-cam 32.6 s, 422.
+
+Review still at 4881cbf (`npm run still -- --key tier-street --format hd --tier review`): 67.6 s, 476 draw calls. Draft of the same key: 34.0 s.
+
+## Still least real at 03:25 UTC
+
+- The clear tubes against approved: the lane 1.5 balls wide at the left and the feed tube outside the right wall are the layout's.
+- The south ends of the side rails are as tall as the well is deep (3 balls); approved has a shallow frame.
+- The ramp hoops read near white in `rail-cam` and the wire is a mid steel, not yet the mirror of approved; the chrome caps and rings of the hardware read dark from the low front eye.
