@@ -8,7 +8,7 @@ import { drop, liftFor, liftOf } from './mats'
 import { tier } from './tier'
 import { title, titled } from './title'
 
-export const VERSION = 'frame-71'
+export const VERSION = 'frame-75'
 
 // The marquee is built with the skyline drawn by rule until its picture is loaded, and built again when it is.
 const board = whole('marquee', { get version() { return skyReady() ? `${VERSION}+picture` : VERSION }, build: marquee, pose: marqueePose, drop })

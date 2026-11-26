@@ -86,6 +86,12 @@ Draw calls of my folders: 99 before, 99 after. Triangles of my folders: 183228 b
 16. Title plate: dusk plum (0x2b2236) in a thin dark frame instead of near black in a bright frame.
 17. Street drop targets: navy enamel with a brass edge (see issue 16).
 
+18. Tier joints (`table-map` R3-2 issue 7): the chute between tiers is a transfer channel now: a dark pressed floor, two polished runners the ball rides on, dark side walls under a chrome top edge (`hardware/tier.ts` `chute`).
+19. Wire track: the chrome is helped by a tone that turns with the wire's face (`SHEEN` in `play/ramps.ts`, through a new optional argument of `Bag.add` in `play/g.ts`): a bright line along the top, darker sides, a little light from below. Tried at 0.3 to 1.8 (read as a white wire with a black outline, taken back) and kept at 0.6 to 1.4.
+20. Loader ring tones taken down toward the approved image: face 0x44474b, bowl near black (`CUP`), bright lip kept. The first collar under the ring is 18 px long.
+21. Marquee title, M4: MEASURED 11:33 UTC by `stillState` of `table-wide` at draft: "THE DAILY GRIND" contrast 27.1 against what lies under it (was 1.68; least 4.5).
+22. Agreed with other owners: told the street finisher where the receiver stands (end of rail `highway`, (14.45, 42.75) balls, radius 58.15 px, up to 110 px over the track line), no answer yet. Told the lamp finisher the mean of `table-wide` and the riser measures, no change asked.
+
 ## Measurements
 
 - MEASURED before: `npm test` 1461 of 1461, `npm run build` built, `npm run bots` all clear, 10:03 to 10:06 UTC.
@@ -93,3 +99,8 @@ Draw calls of my folders: 99 before, 99 after. Triangles of my folders: 183228 b
 - MEASURED: one draft still of `step3-result` 19.9 s (`npm run still -- --id step3-result --format hd --tier draft`).
 - MEASURED 10:49 UTC: mean of `table-wide` draft against the approved image 0.952 (approved 58.5, 55.8, 51.5; build 55.6, 52.8, 49.5; PIL `ImageStat.Stat(image).mean`, sum of the three channels).
 - MEASURED 10:48 UTC, before the last two tone edits: `npm test` 1464 of 1464 in 116 files, `npm run build` built, `npm run bots` all clear.
+- MEASURED 11:25 UTC: mean of `table-wide` draft 0.995 of the approved with cream wedges and polished navy walls; 1.019 at 11:36 UTC after merge 33 (same command as above).
+- MEASURED 11:25 UTC in `table-wide` draft (PIL mean of a box, luma): riser street to office 38.6 against street floor 41.0 to 63.9; riser office to corporate 27.5 against office floor 66.2; left wall 30.7, right wall 44.0. No riser or wall is over 1.2 times the floor beside it.
+- MEASURED 11:11 UTC: M3 at draft red on 3 of 10 keys: `rail-cam` 0.51, `youre-fired` 0.71, `tier-corporate` 0.78 (least 0.8).
+- MEASURED 11:31 UTC, before the title plate was read by the measure: M4 at draft red on "You're Fired" 1.3 and "Corporate HQ" 4.25 (the models' signs) and on the title 1.68; the title reads 27.1 since.
+- MEASURED 10:57 UTC: one review still of `step3-result` 56.4 s.
