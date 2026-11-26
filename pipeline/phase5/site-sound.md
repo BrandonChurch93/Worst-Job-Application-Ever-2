@@ -244,6 +244,19 @@ Tests in `tests/audio-rules.test.ts`: the mute over a line and a loop, the fallb
 
 A2. MEASURED on a quiet VM of 4 cores, `npm run sound -- --browser --site`: the control changed its state 2.17 s, 2.68 s and 3.01 s after the press, each time after exactly one drawn frame. With 8 busy loops beside it the page drew one frame in over 20 s and the control was not shown in that time. So it is the control and not the check's timing: `src/ui/interface.ts` writes the state and the icon only in the draw tick, and the engine mutes at the press. The file is `/root/site_controls`' and the fix is theirs (the state written at the press). The check now waits for the sounds to load before it reads "as found", and records how late each answer came and how many frames were drawn.
 
+## Step 3 of Phase 5, item by item (18:16Z, on main 38086db9 with this branch)
+
+| item of step 3 | state | measure |
+| --- | --- | --- |
+| `npm run sound -- --pack` | done, by the Builder (the sounds are not in the repo) | STATED by him: 6.66 MB of 14 MB, lines at 128 kbit. MEASURED here on his tar: `npm run sound -- --pack-check` pass, 38 files, the 34 lines decode under full scale, largest sample -1.12 dB |
+| the loops | done | MEASURED, `npm run sound -- --loops` on this pack: seam against the largest step inside, `boss-loop` -14.66 dB, `room-tone` -31.65 dB, `shredder` -17.44 dB; the hold music is cut dead at 2 s (+12.9 dB, the cut the kit asks for). A loop left running ends at `LIVE.loopMaxSeconds` 30 s |
+| the levels | done | MEASURED, `npm run sound -- --levels`: peak pass, largest true peak of the live output -1.49 dB with `LIVE.headroomDb` 1.5; voice over the bed 13.59 to 24.28 dB as heard, each over `audio.duckDb` 8 dB; keen -19.53 LUFS as heard, skipper -18.43 |
+| the narrator's rules for the live site | done | MEASURED, `npm run sound -- --visit all`: keen 125.62 s, 14 lines booked, 3 taken back or cut, 11 heard; clumsy 149.95 s, 12 heard; random 116.07 s, 4 skips, 6 heard; skipper 117.43 s, 5 skips, 4 of the film heard. Live lines asked for and heard: idle 5 and 3, skip 9 and 5, tugLost 2 and 1, hit 84 and 0, flipper 3 and 0, boss.verify 3 and 0, slowTyping 1 and 0; realKeyboard, boss.slow and watchFilm are never asked for by a bot. Tests: `tests/audio-live.test.ts`, `tests/audio-narrator.test.ts`, `tests/audio-visit.test.ts` |
+| the crank setting the volume | done | MEASURED, `npm run sound -- --visit keen`: volume 1 from 0.02 s, 0.1 at 43.92 s when the row opens, 0.2 at 44.95, 0.3 at 45.27, 0.4 at 45.6, 0.6 at 46.03, 0.9 at 46.52, 1 at 46.67 and after. The headroom is after it and does not move |
+| the sound checks | run, see the last report | `npm run sound -- --check` |
+
+Not heard by anyone: every number here is from a tool, none from an ear.
+
 ## What is not done, and what is not known
 
 - A6 and A9 wait for the mix; A10 is left as ruled.
