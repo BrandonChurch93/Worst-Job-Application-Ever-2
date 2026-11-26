@@ -52,7 +52,10 @@ export const LED = { most: 0.61, knee: 0.42, rate: 12.5, thrown: 0.12, longest: 
 export const HOVER = { reach: 70, follow: 30, clear: 20, fall: 14000, half: 0.5 }
 // The principles every move gets by itself: a pull back against the way it sets off, a stretch along the way while it travels, a squash where it stops.
 const MOVE = { off: 60, pull: 3, tip: 2.6, long: 0.3, per: 5200, land: 4.8 }
-const ARM = { rest: 40, strain: 13, shed: 0.3, snap: 0.035, lean: 0.35, back: 0.45 }
+// The arms: `grow` is the spring they sprout on, so the hands travel to what they grab over four to five frames of 60 and go a little past; `toward` is how far the body leans to the hands while they travel, before it leans back against them; `closed` is the grip from which the hands count as shut.
+const ARM = { rest: 40, strain: 13, shed: 0.3, snap: 0.035, lean: 0.35, back: 0.45, grow: { k: 1300, c: 47 }, toward: 0.3, closed: 0.999 }
+// The seconds over which the arrow is eased from where a page left it to the pointer, unless the page that gives it back names its own.
+const HANDBACK = 0.35
 // What the body can be drawn at: the springs may ask for more, the pose never does.
 // Leaning right is held short of 0.42, where the arrow would stand upright on its tail and stop reading as a cursor.
 const LIMIT = { short: 0.55, long: 1.4, left: 0.6, right: 0.34 }
@@ -174,7 +177,7 @@ interface State {
   drive: { x: number; y: number; z: number } | null
   handback: number
   shove: { x: number; y: number; t: number } | null
-  from: { x: number; y: number }
+  from: { x: number; y: number; over?: number }
   aimed: number | null
   // What the page asks of the body over its springs: an angle struck and held, a length pressed and held, a reaction held at its phase, a swing that dies away.
   struck: { turn: number; left: number } | null
@@ -336,13 +339,13 @@ export class CursorBody {
     s.drive = { x, y, z }
   }
 
-  release(): void {
+  release(over = HANDBACK): void {
     const s = this.s
     if (s.taken === null) return
     s.taken = null
     s.drive = null
     s.handback = 0
-    s.from = { x: s.x, y: s.y }
+    s.from = over === HANDBACK ? { x: s.x, y: s.y } : { x: s.x, y: s.y, over }
   }
 
   setArms(on: boolean, hands?: [Place, Place]): void {
@@ -456,7 +459,7 @@ export class CursorBody {
       ty = s.drive ? s.drive.y : s.y
       tz = s.drive ? s.drive.z : hover + s.ground
     } else if (s.handback < 1) {
-      s.handback = Math.min(1, s.handback + dt / 0.35)
+      s.handback = Math.min(1, s.handback + dt / (s.from.over ?? HANDBACK))
       const u = s.handback * s.handback * (3 - 2 * s.handback)
       tx = s.from.x + (target.x - s.from.x) * u
       ty = s.from.y + (target.y - s.from.y) * u
@@ -547,11 +550,12 @@ export class CursorBody {
       const pull = Math.max(0, Math.min(1, (far - ARM.rest) / ARM.strain))
       const was = s.strain
       s.strain += (pull - s.strain) * Math.min(1, dt * 18)
-      lean -= Math.max(-0.6, Math.min(0.6, Math.atan2(hx, Math.max(20, hy)) * (ARM.lean + ARM.back * s.strain)))
+      lean -= Math.max(-0.6, Math.min(0.6, Math.atan2(hx, Math.max(20, hy)) * ((ARM.lean + ARM.back * s.strain) * s.grip - ARM.toward * (1 - s.grip))))
       stretch += 0.2 * s.strain - Math.min(0.3, (Math.max(0, was - s.strain) / dt) * ARM.snap)
-      s.sproutV += (SPRING.sprout.k * (1 - s.sprout) - SPRING.sprout.c * s.sproutV) * dt
+      s.sproutV += (ARM.grow.k * (1 - s.sprout) - ARM.grow.c * s.sproutV) * dt
       s.sprout += s.sproutV * dt
       s.grip += ((s.sprout > 0.8 ? 1 : 0) - s.grip) * Math.min(1, dt * 30)
+      if (s.grip > ARM.closed) s.grip = 1
     } else if (s.shed === 0) {
       s.sprout = 0
       s.sproutV = 0
