@@ -25,7 +25,7 @@ export const WEAPON_GLOW = {
 
 export const WEAPON_EMIT = {
   dart: { colour: [1, 0.8, 0.52] as [number, number, number], power: 0.06, reach: 40 },
-  spark: { colour: [1, 0.8, 0.52] as [number, number, number], power: 0.5, reach: 150 },
+  spark: { colour: [1, 0.8, 0.52] as [number, number, number], power: 0.26, reach: 110 },
   muzzle: { colour: [1, 0.36, 0.12] as [number, number, number], power: 0.6, reach: 170 }
 }
 
@@ -243,7 +243,7 @@ export const bossWeapons: PartMaker | null = {
         star.visible = size > 1
         star.position.z = 2
         const halo = o.getObjectByName('halo')!
-        halo.scale.set(130 * hot + 4, 130 * hot + 4, 1)
+        halo.scale.set(84 * hot + 4, 84 * hot + 4, 1)
         for (let i = 0; i < FLECKS; i++) {
           const fleck = o.getObjectByName(`fleck-${i}`)!
           const a = hash01(n, i, seed + 1) * Math.PI * 2
