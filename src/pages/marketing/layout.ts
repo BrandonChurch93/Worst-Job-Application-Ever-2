@@ -32,7 +32,7 @@ export const T = {
   kicker: { font: 'inter-600', px: 20 },
   cardTitle: { font: 'inter-600', px: 30 },
   strong: { font: 'inter-600', px: 22 },
-  medalTitle: { font: 'inter-600', px: 28, lead: 36 },
+  medalTitle: { font: 'inter-600', px: 31, lead: 38 },
   medalFrom: { font: 'inter-400', px: 18, lead: 24 },
   quote: { font: 'inter-400', px: 20, lead: 30 },
   role: { font: 'inter-600', px: 20 },
@@ -89,7 +89,7 @@ function perkCard(i: number, x: number, y: number): LayoutNode {
 
 function medallion(i: number, cx: number, y: number): LayoutNode[] {
   const k = `copy:marketing.awards.items.${i}`
-  const title = { ...T.medalTitle, align: 'centre' as const, wrap: 196 }
+  const title = { ...T.medalTitle, align: 'centre' as const, wrap: 190 }
   const from = { ...T.medalFrom, align: 'centre' as const, wrap: 214 }
   const th = tall(title, `${k}.title`, title.wrap)
   const fh = tall(from, `${k}.from`, from.wrap)
@@ -123,7 +123,7 @@ function firstScreen(): LayoutNode[] {
   const buttonY = 424
   out.push(button('hero-cta', LEFT, buttonY, HERO_W, 'copy:marketing.hero.cta', { hero: true, part: 'apply-button' }))
   out.push(text('hero-under', 'copy:marketing.hero.underCta', TYPE.helper, LEFT, buttonY + sizes.heroButton + 28, type))
-  out.push(...medallion(0, RIGHT - MEDAL / 2, buttonY + sizes.heroButton - MEDAL))
+  out.push(...medallion(0, RIGHT - MEDAL / 2 - 52, buttonY + sizes.heroButton - MEDAL))
   const cards: Item[] = [0, 1, 2].map((i) => (x: number, y: number) => perkCard(i, x, y))
   out.push(row('perks-first', LEFT, 640, GAP, cards))
   out.push(tickerNode())

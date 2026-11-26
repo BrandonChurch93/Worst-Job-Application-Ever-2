@@ -78,6 +78,8 @@ export function leaf(long: number, wide: number, high: number): THREE.BufferGeom
   g.setAttribute('uv', new THREE.Float32BufferAttribute(pos.filter((_, i) => i % 3 !== 2), 2))
   g.setIndex(idx)
   g.computeVertexNormals()
+  const n = g.getAttribute('normal')
+  for (let i = 0; i < n.count; i++) if (Math.hypot(n.getX(i), n.getY(i), n.getZ(i)) < 0.5) n.setXYZ(i, 0, 0, 1)
   return g
 }
 

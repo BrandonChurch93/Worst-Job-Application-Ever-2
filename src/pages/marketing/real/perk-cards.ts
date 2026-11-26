@@ -49,6 +49,7 @@ const KY = look.key.direction[1] / keyFlat
 // One face of the slab, from the middle of its wall to the middle of its face. `d` is how far in from the edge a ring lies, `z` its height,
 // `lit` what the side toward the light shows there and `away` what the far side shows: the near bevel lies in the glass's own shade with a
 // bright line where it meets the face, the far bevel lets the light out and ends in a bright line at the very edge.
+// A ring further in than the corner's radius keeps its corners square, so no ring ever folds over itself.
 function face(s: Shape, half: number, flip: number): THREE.BufferGeometry {
   const k = Math.min(1, Math.min(s.w, s.h) / 90)
   const bevel = SLAB.bevel * k
@@ -67,7 +68,7 @@ function face(s: Shape, half: number, flip: number): THREE.BufferGeometry {
     { d: SLAB.round + bevel + 2.2, z: half, lit: 1, away: 1, lean: 0 }
   ]
   const lowest = Math.min(s.w, s.h) / 2
-  for (const f of [0.22, 0.45, 0.7, 0.92]) rings.push({ d: SLAB.round + bevel + 2.2 + f * (lowest - SLAB.round - bevel - 3), z: half, lit: 1, away: 1, lean: 0 })
+  for (const f of [0.3, 0.65]) rings.push({ d: SLAB.round + bevel + 2.2 + f * (lowest - SLAB.round - bevel - 3), z: half, lit: 1, away: 1, lean: 0 })
   const outline = outlineOf(s, SLAB.frame, 14)
   const n = outline.count
   const pos: number[] = []
@@ -76,6 +77,12 @@ function face(s: Shape, half: number, flip: number): THREE.BufferGeometry {
   const col: number[] = []
   const idx: number[] = []
   const span = Math.hypot(s.w / 2, s.h / 2)
+  let wide = 0
+  let tall = 0
+  for (let i = 0; i < n; i++) {
+    wide = Math.max(wide, outline.x[i]!)
+    tall = Math.max(tall, outline.y[i]!)
+  }
   const put = (x: number, y: number, z: number, nx: number, ny: number, nz: number, v: number): void => {
     const wash = 1 + G.wash * ((x * KX + flip * y * KY) / span)
     pos.push(x, y, z)
@@ -96,7 +103,9 @@ function face(s: Shape, half: number, flip: number): THREE.BufferGeometry {
       const v = side > 0 ? 1 + side * (ring.lit - 1) : 1 - side * (ring.away - 1)
       const out = (up / l) * ring.lean
       const rise = Math.sqrt(Math.max(0, 1 - out * out))
-      put(outline.x[i]! - ring.d * ox, outline.y[i]! - ring.d * oy, ring.z, ox * out, oy * out, rise, v)
+      const x = Math.max(-(wide - ring.d), Math.min(wide - ring.d, outline.x[i]! - ring.d * ox))
+      const y = Math.max(-(tall - ring.d), Math.min(tall - ring.d, outline.y[i]! - ring.d * oy))
+      put(x, y, ring.z, ox * out, oy * out, rise, v)
     }
   })
   for (let r = 0; r < rings.length - 1; r++) {

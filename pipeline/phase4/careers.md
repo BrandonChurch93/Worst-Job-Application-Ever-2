@@ -18,6 +18,17 @@ Branch `agent/careers`, from `origin/phase4-base`, with `origin/main` merged in.
 - The apply button's cap is built once at its resting height and a press moves it down in `pose`. Its key holds no height, so a press builds nothing.
 - Shapes whose shell control is already right for the page (rule, step rail, step buttons, the waiting field, resting cards) are handed to the shell's `controls` maker, so the careers page and the form pages are one family.
 
+- The perk cards have their own glass (`cardGlass()`): the shared `glassCard` of the form pages rendered a grey of about 174, 179, 179 where the approved card face is about 189, 194, 190 and greener. The light and shade of the ground edge (the dark near bevel, the bright line where it meets the face, the bright far edge) are vertex colours of the slab, so the resting and the turning card are the same solid and no texture is needed.
+- A ring of the slab further in than the corner's radius keeps square corners. Before that, the rings folded over themselves and the folded triangles cast a bow-tie of shadow on the turning face (seen in the sheet of `marketing.perks` at 2.53 s and 4.70 s).
+- The medallion is 356 px (the approved one measures about 351 px at 1920), its middle 52 px left of the right margin's medal place, as in the approved image. Its metal is its own (`medalFace()`, `medalMetal()`), darker than the shared satin aluminium, because the approved face is a mid grey of about 140 with one cone of light and the shared material gave about 205.
+- The title on a medal is 31 px on a 190 px measure, so the hero's breaks as in the approved image: "Excellence / in Synergy".
+- The acting keeps the film times of Phase 2. One word per beat: stroll "strolling", perks "reading, then caught out", ticker "pleased with itself", apply "takes a run at it".
+
+## Differences between the brief and the kit, told to the Builder
+
+- Ticker: the approved image shows a strip of glass with round ends lying on the page with the words in it. The brief asks for a window cut into the page with the tape running under glass, lit from inside. Built: the window (the brief), with the round ends and the glass of the approved strip.
+- Apply button: the cap is the shell's `controls` cap with the shared orange, as the brief asks. In the key still it reads about 175, 90, 60 where the approved cap reads about 213, 99, 41 (MEASURED by pixel reads at x 200, y 444 to 500 of both pictures). The orange is the shared material, not mine to change.
+
 ## Textures
 
 None of my own so far. Every surface uses the shared pictures of `materials()`.
