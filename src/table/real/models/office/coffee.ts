@@ -13,6 +13,7 @@ const C = {
   bronzeDark: hex(0x553a2a),
   steel: hex(0x9aa1a9),
   steelLight: hex(0xc3c9cf),
+  top: hex(0xa3a9af),
   chrome: hex(0xccd3da),
   slot: hex(0x121214),
   paper: hex(0xf2efe6),
@@ -33,7 +34,7 @@ const C = {
 
 const BRONZE: Surf = [0.3, 0.25, 0.9]
 const PLATE: Surf = [0.4, 0.55, 0.2]
-const LIFT = { body: 0.28, plate: 0.7, paper: 0.6 }
+const LIFT = { body: 0.28, plate: 0.4, sign: 0.7, paper: 0.6 }
 const HEAD = { x: 77, back: 62, deck: -10, lip: -34, low: 100, slope: 138, top: 154 }
 const SLOPE = Math.atan2(HEAD.top - HEAD.slope, HEAD.deck - HEAD.lip)
 
@@ -152,8 +153,8 @@ function draw(z: Zone, ctx: RealContext): { k: Kit; g: Kit; c: Kit } {
   k.box(0, HEAD.lip - 0.5, 108, 150, 1, 6, C.chrome, SURF.chrome, 0.4)
 
   k.lift = LIFT.plate
-  k.poly(rrect(144, 66, 6, 3), HEAD.top, 1.4, C.steelLight, PLATE, 0.6)
-  k.poly(rrect(30, 16, 3, 2).map((q) => [q[0] - 40, q[1] + 14] as V2), HEAD.top + 1.4, 0.8, shade(C.steelLight, 0.86), PLATE, 0.4)
+  k.poly(rrect(144, 66, 6, 3), HEAD.top, 1.4, C.top, SURF.brushed, 0.6)
+  k.poly(rrect(30, 16, 3, 2).map((q) => [q[0] - 40, q[1] + 14] as V2), HEAD.top + 1.4, 0.8, shade(C.top, 0.82), SURF.brushed, 0.4)
   k.lift = LIFT.body
   k.fine = true
   const rail = rrect(126, 48, 5, 3).map((q) => [q[0], q[1] + 27, HEAD.top + 8] as V3)
@@ -259,7 +260,7 @@ function draw(z: Zone, ctx: RealContext): { k: Kit; g: Kit; c: Kit } {
     const H = s.h + 12
     k.at(sx, sy2, s.z, 0, s.turn)
     k.box(0, 0, -4.4, W, H, 3.2, C.chrome, SURF.brushed, 1, 0, true)
-    k.lift = LIFT.plate
+    k.lift = LIFT.sign
     k.box(0, 0, -1.4, W - 3, H - 3, 0.7, C.face, SURF.satin, 0.3)
     k.lift = LIFT.body
     for (const q of [-1, 1]) k.cyl(q * (W / 2 - 4.6), 0, -1.3, 1.6, 0.9, C.chrome, SURF.chrome, 8, 0.3)

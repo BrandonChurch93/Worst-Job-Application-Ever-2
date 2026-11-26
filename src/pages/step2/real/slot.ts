@@ -15,7 +15,7 @@ export const SLOT_LOOK = {
   drum: { r: 62, crest: 50, w: 88, lip: 2.2, flat: 0.4, fall: 4.4 },
   line: { z: 53.1, r: 0.6, pin: 1.9, glow: 0.06 },
   sheen: { top: 0.06, streak: 0.034, order: 800001 },
-  lever: { rod: 4.6, pivotX: 11, pivotZ: 28, barrel: 9, barrelW: 19, collar: 4, foot: -2, head: 22, ferrule: 7, ferruleAt: 27 },
+  lever: { rod: 5.6, pivotX: 11, pivotZ: 28, barrel: 9, barrelW: 19, collar: 4, foot: -2, head: 22, ferrule: 7, ferruleAt: 27 },
   coin: { r: 13, t: 4, teeth: 64, most: 16, flight: 14, tilt: 1.05 },
   mouthFloor: 8.5,
   glassOrder: 800000
@@ -280,7 +280,10 @@ function arm(): THREE.Group {
     return out
   })
   const ferrule = mesh(f, materials().chrome)
-  root.add(rod, ferrule)
+  const swing = new THREE.Group()
+  swing.add(rod, ferrule)
+  root.add(swing)
+  root.userData.swing = swing
   root.userData.rod = rod
   root.userData.ferrule = ferrule
   return root
@@ -436,6 +439,8 @@ export const slot: PartMaker | null = {
     rise(o, s, kind === 'cabinet' ? cabinetHeight() : L.page[kind])
     if (kind !== 'arm') return
     const rod = o.userData.rod as THREE.Mesh
+    const swing = o.userData.swing as THREE.Group
+    swing.rotation.z = (s.v?.[0] ?? 1) < 0 ? Math.PI : 0
     const run = Math.max(1, s.h)
     const climb = L.lever.head - L.lever.foot
     rod.position.set(0, -run / 2, L.lever.foot)

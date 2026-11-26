@@ -1,0 +1,13 @@
+diff --git a/config/showcase.json b/config/showcase.json
+index 98306b08..d1117381 100644
+--- a/config/showcase.json
++++ b/config/showcase.json
+@@ -19,7 +19,7 @@
+     "flipperGapBalls": 1.5,
+     "laneBalls": 1.5,
+     "minClearanceBalls": 1.25,
+-    "spiralTurns": 3,
++    "spiralTurns": 2,
+     "dropTargetsPerBank": 5,
+     "insertsPerTier": 3,
+     "inserts": [

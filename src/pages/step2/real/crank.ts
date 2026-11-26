@@ -8,7 +8,7 @@ import { CRANK, ROWS } from '../layout'
 import { clamp01, fuse, lathe, mesh, moved, outline, picture, rise, round, smooth, srgb } from './slot-kit'
 
 export const CRANK_LOOK = {
-  full: { base: 26, hub: 22, arm: 10, grip: 24, meter: 20 }, pill: 6.5, pillRound: 2.4,
+  full: { base: 26, hub: 22, arm: 10, grip: 24, meter: 20 }, pill: 6.5, pillRound: 2.4, wallRings: 3, picture: [128, 512] as [number, number], rimTone: 0.4,
   plate: 8, rim: 3.6, screwAt: 38, screw: 4.8, washer: 25.5, neck: 20, eye: 3.4, bar: 0.8, end: 0.5, fillet: 9, cap: 16.5,
   grip: { cap: 0.95, round: 2.5, square: 2.5, taper: 0.9, seamAt: 9, seam: 0.07, collar: 0.05 },
   tie: { low: 0.82, gain: 1.7, second: 0.3, sharp: 3, axis: 2.5, capAxis: 2.2 },
@@ -16,7 +16,7 @@ export const CRANK_LOOK = {
 }
 const L = CRANK_LOOK
 
-let made: { glass: THREE.MeshPhysicalMaterial; lit: THREE.MeshPhysicalMaterial; washer: THREE.MeshPhysicalMaterial; bar: THREE.MeshPhysicalMaterial; turned: THREE.MeshPhysicalMaterial; textures: THREE.Texture[] } | null = null
+let made: { glass: THREE.MeshPhysicalMaterial; wall: THREE.MeshPhysicalMaterial; lit: THREE.MeshPhysicalMaterial; washer: THREE.MeshPhysicalMaterial; bar: THREE.MeshPhysicalMaterial; turned: THREE.MeshPhysicalMaterial; textures: THREE.Texture[] } | null = null
 const cache = new Map<string, THREE.BufferGeometry>()
 const shared = (key: string, build: () => THREE.BufferGeometry): THREE.BufferGeometry => {
   let g = cache.get(key)
@@ -39,7 +39,7 @@ function inPill(u: number, v: number): { depth: number; x: number; y: number } {
 function own(): NonNullable<typeof made> {
   if (made) return made
   // The unlit segment: tinted glass seen from above. Its alpha is how much of the ground is hidden: a bright line on the rim where the light comes from, a thin dark line inside it, a grey green core.
-  const off = picture(64, 256, true, (u, v) => {
+  const off = picture(L.picture[0], L.picture[1], true, (u, v) => {
     const p = inPill(u, v)
     const side = (p.x / 14) * 0.6 - (p.y / 48) * 0.55
     const edge = 1 - smooth(p.depth / 0.9)
@@ -59,6 +59,7 @@ function own(): NonNullable<typeof made> {
     return [1, 0.28 + 0.6 * t + 0.24 * rim, 0.02 + 0.72 * t * t + 0.08 * rim, 1]
   })
   const glass = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xf4f7f7), map: off, roughness: 0.06, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.03, specularIntensity: 1, envMapIntensity: 1.6, transparent: true }))
+  const wall = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xf4f7f7).multiply(new THREE.Color().setRGB(L.rimTone * 0.955, L.rimTone * 0.995, L.rimTone * 0.975, THREE.SRGBColorSpace)), roughness: 0.06, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.03, specularIntensity: 1, envMapIntensity: 1.6 }))
   const lit = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xd9772c), emissive: new THREE.Color(1, 1, 1), emissiveMap: glow, emissiveIntensity: 1.0, roughness: 0.4, metalness: 0, clearcoat: 0.35, clearcoatRoughness: 0.3, specularIntensity: 0.5 }))
   const washer = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x2a2826), roughness: 0.6, metalness: 0.4 }))
   const bar = studio(materials().aluminium.clone())
@@ -73,7 +74,7 @@ function own(): NonNullable<typeof made> {
   turned.normalScale = new THREE.Vector2(0.022, 0.022)
   turned.roughness = 0.3
   turned.vertexColors = true
-  made = { glass, lit, washer, bar, turned, textures: [off, glow] }
+  made = { glass, wall, lit, washer, bar, turned, textures: [off, glow] }
   return made
 }
 
@@ -250,19 +251,25 @@ function grip(): THREE.Group {
   return root
 }
 
+// A segment is two meshes. Its top carries the picture; its upright wall, where a picture seen from above has no room, is plain glass in the tone of the picture's rim.
 function segment(): THREE.Group {
   const H = L.pill
-  const g = shared('segment', () => {
-    const r = L.pillRound
-    const out = sweep(roundedRect(CRANK.segW, CRANK.segH, CRANK.segW / 2, 14), profile([[0.4, 0, true], [0, 0.4], [0, H - r], ...arc(0, H - r, r, r - 0.25, 7), [7, H - 0.1], [13.5, H]]))
+  const r = L.pillRound
+  const rings = (): ReturnType<typeof profile> => profile([[0.4, 0, true], [0, 0.4], [0, H - r], ...arc(0, H - r, r, r - 0.25, 7), [7, H - 0.1], [13.5, H]])
+  const plan = (): ReturnType<typeof roundedRect> => roundedRect(CRANK.segW, CRANK.segH, CRANK.segW / 2, 14)
+  const top = shared('segment', () => {
+    const out = sweep(plan(), rings().slice(L.wallRings - 1))
     const uv = out.getAttribute('uv')
     for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) / CRANK.segW + 0.5, uv.getY(i) / CRANK.segH + 0.5)
     return out
   })
+  const side = shared('segment-wall', () => sweep(plan(), rings().slice(0, L.wallRings), false))
   const root = new THREE.Group()
-  const body = mesh(g, own().glass)
-  root.add(body)
+  const body = mesh(top, own().glass)
+  const wall = mesh(side, own().wall)
+  root.add(body, wall)
   root.userData.body = body
+  root.userData.wall = wall
   return root
 }
 
@@ -327,6 +334,9 @@ export const crank: PartMaker | null = {
     body.position.z = (standOf(s, ctx) - s.z0) / o.scale.z
     const m = own()
     body.material = on ? m.lit : m.glass
+    const wall = o.userData.wall as THREE.Mesh
+    wall.material = on ? m.lit : m.wall
+    wall.position.z = body.position.z
     if (on && up > 0.5) lamp(s, ctx)
   }
 }
