@@ -7,8 +7,8 @@ import { Geo, type RGB, type V2, type V3 } from './geo'
 import { FINISH, TONE, drop as free, fin, matsOf, mesh, mix, screw } from './mats'
 
 const SEED = 20261125
-const MARBLE: RGB = [0.26, 0.34, 0.54]
-const VEIN: RGB = [0.03, 0.045, 0.08]
+const MARBLE: RGB = [0.36, 0.46, 0.78]
+const VEIN: RGB = [0.04, 0.06, 0.11]
 export const WEDGE = { under: 46, thick: 7, out: 6, bevel: 1.5 }
 
 const inside = (p: V2, t: V2[]): boolean => {

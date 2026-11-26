@@ -20,6 +20,7 @@ const ROOF = hex(0x6a707a)
 const BRIGHT = hex(0xbac4d4)
 const GLASS: RGB = [0.03, 0.13, 0.15]
 const CARPET: RGB = [0.07, 0.15, 0.19]
+const PILE = { step: 3, lean: 0.56 }
 const DESK: RGB = [0.5, 0.38, 0.24]
 const GLASS_PALE: RGB = [0.03, 0.06, 0.06]
 const GLASS_ROOF: RGB = [0.02, 0.09, 0.1]
@@ -317,11 +318,22 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
       }
       if (i > 0) {
         fin(G, FINISH.matte, () => {
-          level(G, shaft, h, zz - ROOM.slab, -1, warm(0.04))
+          level(G, shaft, h, zz - ROOM.slab, -1, warm(0.065))
           panels(G, shaft, h, zz - ROOM.slab - 0.5, (x, y) => 0.95 * zone(x, y))
         }, 1)
       }
     }
+    // A lit sill outside the front glass at every rail and transom: from above, the leaning front shows as rows of lit panes between the fins.
+    fin(G, FINISH.matte, () => {
+      for (let j = 0; j < FLOORS * 2; j++) {
+        const zz = pz1 + (j * fh) / 2 + 1.2
+        for (let i = 0; i < cols; i++) {
+          const x0 = shaft.x0 + ((shaft.x1 - shaft.x0) * i) / cols + 1.6
+          const x1 = shaft.x0 + ((shaft.x1 - shaft.x0) * (i + 1)) / cols - 1.6
+          flat(G, { x0, x1, y0: shaft.y0 - 2.6, y1: shaft.y0 - 0.2 }, zz, 1, lamp(dark.next() < 0.18 ? 0.12 : dark.range(0.35, 0.7)))
+        }
+      }
+    }, 1)
   }, S, G)
 
   // The glass: clear in the lobby, darker under the band where its shadow lies, blue green up the tower, and clear over the hall.
@@ -349,6 +361,15 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
         fin(C, FINISH.stone, () => flat(C, r, roof + 7, 1, shade(GLASS_ROOF, rnd.range(0.7, 1.3))), 2 * rnd.range(0.1, 0.2))
       }
     }
+    // What the lantern mirrors: soft streaks of the room's light across its panes.
+    fin(C, FINISH.stone, () => {
+      const lw = lantern.x1 - lantern.x0
+      const ld = lantern.y1 - lantern.y0
+      for (const [at, w] of [[0.08, 0.1], [0.24, 0.03], [0.55, 0.06]] as V2[]) {
+        const x = lantern.x0 + lw * at
+        C.face([[x, lantern.y0, roof + 7.3], [x + lw * w, lantern.y0, roof + 7.3], [x + lw * w + ld * 0.45, lantern.y1, roof + 7.3], [x + ld * 0.45, lantern.y1, roof + 7.3]], [0, 0, 1], [1, 0, 0], [1.5, 1.8, 1.85])
+      }
+    }, 2 * 0.05)
   }, S, W, C)
 
   // The roof: a steel coping, a walk of dark slabs, and the lantern of glass over the hall with its bars.
@@ -420,7 +441,13 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
     const c0 = localBalls(z, carpet.box[0], carpet.box[1])
     const c1 = localBalls(z, carpet.box[0] + carpet.box[2], carpet.box[1] + carpet.box[3])
     fin(S, FINISH.cloth, () => {
-      S.box(c0[0] + 5, c1[0] - 5, c1[1] + 5, c0[1], 0, 2.5, TONE.carpet)
+      S.box(c0[0] + 5, c1[0] - 5, c1[1] + 5, c0[1], 0, 2.2, TONE.carpet)
+      const rows = Math.max(2, Math.round((c1[0] - c0[0] - 10) / PILE.step))
+      for (let i = 0; i < rows; i++) {
+        const xa = c0[0] + 5 + ((c1[0] - c0[0] - 10) * i) / rows
+        const xb = c0[0] + 5 + ((c1[0] - c0[0] - 10) * (i + 1)) / rows
+        S.face([[xa, c1[1] + 5, 2.5], [xb, c1[1] + 5, 2.5], [xb, c0[1], 2.5], [xa, c0[1], 2.5]], [i % 2 ? PILE.lean : -PILE.lean, 0, 1], [0, 1, 0], shade(TONE.carpet, i % 2 ? 1 : 0.94))
+      }
       S.box(c0[0], c0[0] + 5, c1[1], c0[1], 0, 3, TONE.carpetEdge, { bevel: 0.8 })
       S.box(c1[0] - 5, c1[0], c1[1], c0[1], 0, 3, TONE.carpetEdge, { bevel: 0.8 })
       S.box(c0[0] + 5, c1[0] - 5, c1[1], c1[1] + 5, 0, 3, TONE.carpetEdge, { bevel: 0.8 })
