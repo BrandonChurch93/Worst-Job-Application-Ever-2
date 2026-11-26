@@ -309,8 +309,8 @@ const WISP_ACROSS = [0, 0.75, 1, 0.75, 0]
 let wispMaterial: THREE.MeshBasicMaterial | null = null
 
 export function wispPoint(u: number, t: number, w: number): [number, number, number, number] {
-  const sway = Math.sin(u * 5.6 + w * 2.3 - t * 1.1) * 24 * u + Math.sin(u * 13 + w - t * 1.9) * 11 * u * u
-  return [sway + u * 30, Math.pow(u, 1.4) * 190, u * 110, 7 + 36 * Math.pow(u, 0.8)]
+  const sway = Math.sin(u * 7.4 + w * 2.3 - t * 1.1) * 26 * Math.pow(u, 0.8) + Math.sin(u * 16 + w - t * 1.9) * 12 * u
+  return [sway + u * 22, Math.pow(u, 1.3) * 190, u * 110, 6 + 22 * Math.pow(u, 0.9)]
 }
 
 function smoke(): THREE.Object3D {
@@ -318,7 +318,7 @@ function smoke(): THREE.Object3D {
     puffMade = texture(puffPixels(), PUFF_PX, PUFF_PX, false)
     puffMade.wrapT = THREE.RepeatWrapping
   }
-  wispMaterial ??= new THREE.MeshBasicMaterial({ color: new THREE.Color(0.2, 0.2, 0.205), alphaMap: puffMade, vertexColors: true, transparent: true, depthWrite: false, toneMapped: false, side: THREE.DoubleSide })
+  wispMaterial ??= new THREE.MeshBasicMaterial({ color: new THREE.Color(0.12, 0.12, 0.125), alphaMap: puffMade, vertexColors: true, transparent: true, depthWrite: false, toneMapped: false, side: THREE.DoubleSide })
   const across = WISP_ACROSS.length
   const count = (WISP_N + 1) * across
   const g = new THREE.BufferGeometry()

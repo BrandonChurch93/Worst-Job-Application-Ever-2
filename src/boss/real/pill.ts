@@ -80,6 +80,7 @@ export function pillGeometry(): THREE.BufferGeometry {
   const line = stadium(CAP_W, r)
   const g = sweep(line, rings, true)
   const p = g.getAttribute('position')
+  const ridge: number[] = []
   for (let i = 0; i < p.count; i++) {
     const x = p.getX(i)
     const y = p.getY(i)
@@ -94,8 +95,11 @@ export function pillGeometry(): THREE.BufferGeometry {
     dz -= pull * 3
     const k = 1 - pull * 0.07
     p.setXYZ(i, x * k, y * k, Math.max(0, z + dz))
+    if (high > 0.985 && Math.abs(dz) < 0.02) ridge.push(i)
   }
   g.computeVertexNormals()
+  const n = g.getAttribute('normal')
+  for (const i of ridge) n.setXYZ(i, 0, 0, 1)
   made = g
   return g
 }

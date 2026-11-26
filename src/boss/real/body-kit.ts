@@ -164,7 +164,8 @@ export interface BossKit {
 let made: BossKit | null = null
 
 export const PLATE_TONE = { live: srgb(0x868a90), dead: srgb(0x6e7277) }
-export const FLANGE_TONE = { live: srgb(0x35373a), dead: srgb(0x74777b), rough: [0.55, 0.44] }
+export const FLANGE_TONE = { live: srgb(0x35373a), dead: srgb(0x2e3033), rough: [0.55, 0.6] }
+export const WORN = { trim: [srgb(0x9da1a6), srgb(0x7b7f84)], joint: [srgb(0x9a9ea3), srgb(0x777b80)], pin: [srgb(0xc9ccd0), srgb(0x8e9296)] }
 
 function lacquer(): THREE.MeshPhysicalMaterial {
   const m = materials().orange.clone()

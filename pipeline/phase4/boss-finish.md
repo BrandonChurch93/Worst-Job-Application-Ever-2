@@ -36,14 +36,16 @@ Closed in my eyes at the first look: R1-1 1, 2 (mostly), 6, 7, 16, 18. Motion an
 
 ## Looks by part (40 each this round, counted from the first still)
 
+Counted at 10:50.
+
 | part | looks | what they were |
 | --- | --- | --- |
-| boss-body | 8 | diagnosis compares 2, shield stills 4, `boss-fight` compares 2 |
-| boss-transform | 2 | diagnosis `boss-down` 1, sheet 1 |
-| boss-weapons | 3 | `boss-fight` compares |
+| boss-body | 18 | diagnosis compares 2, shield stills 4, `boss-fight` compares 7, one `review` still, leg compares 2, wreck compares 2 |
+| boss-transform | 13 | diagnosis `boss-down` 1, sheet `boss-stages` 4, `boss-down` compares 8 |
+| boss-weapons | 5 | `boss-fight` compares |
 | verify-card | 1 | diagnosis |
-| health-bar | 1 | diagnosis |
-| acting-boss | 0 | |
+| health-bar | 3 | diagnosis 1, track crops 2 |
+| acting-boss | 2 | `boss-down` stills for the sag |
 
 ## Decisions
 
@@ -56,3 +58,34 @@ Closed in my eyes at the first look: R1-1 1, 2 (mostly), 6, 7, 16, 18. Motion an
 | what | command | number |
 | --- | --- | --- |
 | `boss-fight` draft after shield and slabs | `npm run compare -- --key boss-fight --tier draft --format hd` | 651810 triangles, 476 draw calls, about 12 s |
+| `boss-fight` review | `npm run compare -- --key boss-fight --tier review --format hd` | 24.5 s, 652450 triangles |
+| gate at 10:21, 10:35, 10:39, 10:46 | `npm test`, `npm run build`, `npm run bots` | 115 files, 1461 of 1461; build ok; bots all clear |
+
+## More decisions
+
+- Shield resized to 92 by 244 (`SHIELD` in `src/boss/body.ts`) so its proportion is the approved one in both keys; the darts aim at its outward face.
+- The sheet `boss-stages` is drawn at 1920 by 1080 with the four stages at the approved stations (`STAGES` in `src/boss/body.ts`); Unfolding is the fight rig with its legs folded at the corners, no cannons and no shield.
+- Legs: links 80 long, so a standing leg is nearly straight and the rod telescopes for the rest; links lie face up.
+- Wreck: the frame halves break along a toothed line (`TEAR`), walls go dark, pins, screws and joints go dull with the plate (`WORN`).
+- Lying shield: more tint (`CLEAR_GLASS.lying` 0.5), a green bead in place of the pale one, wider crack lines (`CRACK`).
+- Fallen cap: lacquer with a clear coat, both ends burst open with a raised torn lip (`HOLES`, `LIP` in `pill.ts`), smoke that meanders.
+
+## Round 14 (R1-1, R3-1) by issue
+
+| issue | state at 10:50 |
+| --- | --- |
+| R1-1 1 severe, boss silhouette | legs straight and steel, barrels heavier with bores and collars, screws smaller and duller; face frame shape unchanged |
+| R1-1 2 severe, red tiles | three in the air in a loose rising group, all tilted one way; lane check still to look at |
+| R1-1 7 severe, stations | stages at the approved stations, sheet at 1920 by 1080 |
+| R1-1 8 severe, legs | Unfolding legs folded at the corners; boss legs straight steel |
+| R1-1 9 major, shield | tinted pane, bead, dark band; darts and flash on the outward face |
+| R1-1 10 major, cap, tiles, fill, channel | cap lacquer done; track graded; indent and fill still open |
+| R1-1 11, 15 major, socket | collar rolled and brighter; weathering and chips open |
+| R1-1 12 major, wreck | toothed breaks, dark walls, dull pins; glass slab with wider cracks |
+| R1-1 13 major, scorched cap and smoke | burst ends, soot, meandering smoke |
+| R1-1 14 major, layout of the wreck | halves spread on a wider diagonal, none stacked, socket clear |
+| R1-1 16 major, resting and breaking loose | open |
+| R3-1 1 major, torn ends | pits with a raised lip at both ends; wall thickness still thin |
+| R3-1 2 major, fallen shield | page seen through a green tint, wider bright cracks |
+| R3-1 3 minor, trail | open |
+

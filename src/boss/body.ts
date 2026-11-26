@@ -18,7 +18,7 @@ const SHIELD_OFF: [number, number] = [-246, 0]
 export const SIDE_OFF: [number, number][] = [[0, -112], [0, 112]]
 export const CANNON_FROM = [1, 2] as const
 export const BODY_Z = { side: 86, sideTop: 96, frame: 96, cap: 106, shield: 8, capTall: heights.button - heights.buttonSocket, hip: 83, cannonTall: 13, housing: 20 }
-export const LEG = { link: 90, wide: 20, foot: 44, knee: 38 }
+export const LEG = { link: 80, wide: 20, foot: 44, knee: 38, crouch: 0 }
 export const FRAME = { w: 372, h: 136, cut: 26, bedW: 300, bedH: 84, tall: 16 }
 export const SIDE = { w: 224, h: 100, lean: 36, tall: 12 }
 export const SHIELD = { w: 92, h: 244, tall: 24 }
@@ -58,7 +58,7 @@ export function fightRig(x: number, y: number, feet: { x: number; y: number; z: 
     cap: { x, y, rot: 0, lift: 1, down: 0 },
     plate: { x, y, rot: 0, k: 1, z: bob },
     sides: SIDE_OFF.map(([ox, oy]) => ({ x: x + ox, y: y + oy, rot: 0, k: 1, z: bob })),
-    legs: HIP_OFF.map(([hx, hy], i) => ({ hx: x + hx, hy: y + hy, fx: feet ? feet[i]!.x : x + FOOT_OFF[i]![0], fy: feet ? feet[i]!.y : y + FOOT_OFF[i]![1], k: 1, z: feet ? feet[i]!.z : 0 })),
+    legs: HIP_OFF.map(([hx, hy], i) => ({ hx: x + hx, hy: y + hy, fx: feet ? feet[i]!.x : x + FOOT_OFF[i]![0], fy: feet ? feet[i]!.y : y + FOOT_OFF[i]![1], k: 1, z: feet ? feet[i]!.z : 0, crouch: LEG.crouch })),
     cannons: CANNON_OFF.map(([ox, oy], i) => {
       const m = muzzleAt(x, y, i, more.aim)
       return { x: x + ox, y: y + oy, rot: m.rot, k: 1, z: bob, recoil: recoil[i]! }

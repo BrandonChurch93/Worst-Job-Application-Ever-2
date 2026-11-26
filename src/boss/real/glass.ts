@@ -203,7 +203,7 @@ export function bandGeometry(s: Shape, z: number): THREE.BufferGeometry {
 }
 
 export const CARD_GLASS = { colour: 0x9fb1ae, through: 0.86, perPx: 2.4 }
-export const CLEAR_GLASS = { colour: 0x8ea096, through: 0.74, up: 0.74, lying: 0.32, deep: 0xc0d0ca, edge: 0xc2cdc9, bead: 0xc9dad4, metal: 0.3 }
+export const CLEAR_GLASS = { colour: 0x8ea096, through: 0.74, up: 0.74, lying: 0.5, deep: 0xa6beb3, edge: 0xc2cdc9, bead: 0xa9c0b6, metal: 0.3 }
 
 let picture: THREE.Texture | null = null
 
@@ -251,10 +251,12 @@ export function glassKit(): GlassKit {
     crackLight: studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.96, 0.99, 0.97), emissive: new THREE.Color(0.22, 0.23, 0.22), roughness: 0.25, metalness: 0, specularIntensity: 1, vertexColors: true, transparent: true, opacity: 0.92, depthWrite: false })),
     crackDark: studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.08, 0.1, 0.095), roughness: 0.6, metalness: 0, specularIntensity: 0.2, vertexColors: true, transparent: true, opacity: 0.5, depthWrite: false })),
     band: studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(1, 1, 1), roughness: 0.5, metalness: 0, specularIntensity: 0.2, envMapIntensity: 0.2, vertexColors: true, transparent: true, depthWrite: false })),
-    crackSheet: studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.9, 0.95, 0.93), roughness: 0.2, metalness: 0, specularIntensity: 1, vertexColors: true, transparent: true, opacity: 0.3, depthWrite: false, side: THREE.DoubleSide }))
+    crackSheet: studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.9, 0.95, 0.93), roughness: 0.2, metalness: 0, specularIntensity: 1, vertexColors: true, transparent: true, opacity: 0.46, depthWrite: false, side: THREE.DoubleSide }))
   }
   return kit
 }
+
+export const CRACK = { main: 0.95, fine: 0.6 }
 
 export interface Fracture {
   light: THREE.BufferGeometry
@@ -331,7 +333,7 @@ export function fracture(lines: [number, number][][], thick: number, seed: numbe
       }
     }
   }
-  lines.forEach((line, n) => walk(line, n, n === 0 ? 0.42 : 0.3, true))
+  lines.forEach((line, n) => walk(line, n, n === 0 ? CRACK.main : CRACK.fine, true))
   const build = (pos: number[], col: number[], nor?: number[]): THREE.BufferGeometry => {
     const g = new THREE.BufferGeometry()
     g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))

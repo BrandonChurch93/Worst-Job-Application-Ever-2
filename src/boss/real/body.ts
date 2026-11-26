@@ -5,8 +5,9 @@ import { materials } from '../../shell/materials'
 import { controls } from '../../shell/real/controls'
 import { roundedRect, sweep, plateProfile } from '../../shell/solids'
 import { config } from '../../config'
+import { hash01 } from '../../core/random'
 import { BODY_Z, FRAME, LEG, SHADE, SHIELD, SIDE, SIDE_OFF, CAP_W, CAP_H, WRECK } from '../body'
-import { bossKit, cutPlate, joined, lathe, lying, mesh, moved, screw, FLANGE_TONE, PLATE_TONE } from './body-kit'
+import { bossKit, cutPlate, joined, lathe, lying, mesh, moved, screw, FLANGE_TONE, PLATE_TONE, WORN } from './body-kit'
 import { pillGeometry, PILL } from './pill'
 import { bandGeometry, clearTone, deepTone, fracture, glassKit, paneGeometry, rimGeometry, CLEAR_GLASS, RIM, SHIELD_PANE } from './glass'
 
@@ -84,11 +85,13 @@ function lipOutline(): [number, number][] {
 }
 
 const BREAK: [number, number, number, number] = [-12, 0, 16, 70]
+const TEAR = { step: 8.5, deep: 4.2 }
 
 function cut(points: [number, number][], keepLeft: boolean): [number, number][] {
   const [x0, y0, x1, y1] = BREAK
   const side = (p: [number, number]): number => ((p[0] - x0) * (y1 - y0) - (p[1] - y0) * (x1 - x0)) * (keepLeft ? -1 : 1)
   const out: [number, number][] = []
+  const torn: number[] = []
   points.forEach((p, i) => {
     const q = points[(i + 1) % points.length]!
     const a = side(p)
@@ -96,10 +99,30 @@ function cut(points: [number, number][], keepLeft: boolean): [number, number][] 
     if (a >= 0) out.push(p)
     if (a >= 0 !== c >= 0) {
       const t = a / (a - c)
+      torn.push(out.length)
       out.push([p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t])
     }
   })
-  return out
+  if (torn.length !== 2) return out
+  const l = Math.hypot(x1 - x0, y1 - y0)
+  const ux = (x1 - x0) / l
+  const uy = (y1 - y0) / l
+  const along = (p: [number, number]): number => (p[0] - x0) * ux + (p[1] - y0) * uy
+  const wrap = torn[0] === 0 && torn[1] === out.length - 1
+  const from = wrap ? out[torn[1]!]! : out[torn[0]!]!
+  const to = wrap ? out[torn[0]!]! : out[torn[1]!]!
+  const s0 = along(from)
+  const s1 = along(to)
+  const dir = s1 > s0 ? 1 : -1
+  const teeth: [number, number][] = []
+  for (let n = Math.ceil((Math.min(s0, s1) + 2) / TEAR.step); n * TEAR.step < Math.max(s0, s1) - 2; n++) {
+    const at = n * TEAR.step + (hash01(n, 3, 57) - 0.5) * TEAR.step * 0.5
+    const off = (n % 2 === 0 ? 1 : -1) * TEAR.deep * (0.35 + 0.65 * hash01(n, 4, 57))
+    teeth.push([x0 + ux * at - uy * off, y0 + uy * at + ux * off])
+  }
+  if (dir < 0) teeth.reverse()
+  if (wrap) return [...out, ...teeth]
+  return [...out.slice(0, torn[0]! + 1), ...teeth, ...out.slice(torn[1]!)]
 }
 
 export const CROWN = { wing: 0.0011, side: 0.0019 }
@@ -188,6 +211,13 @@ function poseFrame(o: THREE.Object3D, s: Shape): void {
   bossKit().plate.color.copy(PLATE_TONE.live).lerp(PLATE_TONE.dead, prog(s.v?.[1] ?? 0, 0.3, 1))
   bossKit().plateSide.color.copy(FLANGE_TONE.live).lerp(FLANGE_TONE.dead, prog(s.v?.[1] ?? 0, 0.3, 1))
   bossKit().plateSide.roughness = FLANGE_TONE.rough[0] + (FLANGE_TONE.rough[1] - FLANGE_TONE.rough[0]) * prog(s.v?.[1] ?? 0, 0.3, 1)
+  const dead = prog(s.v?.[1] ?? 0, 0.3, 1)
+  const kit = bossKit()
+  kit.trim.color.copy(WORN.trim[0]).lerp(WORN.trim[1], dead)
+  kit.joint.color.copy(WORN.joint[0]).lerp(WORN.joint[1], dead)
+  kit.pin.color.copy(WORN.pin[0]).lerp(WORN.pin[1], dead)
+  kit.joint.roughness = mix(0.26, 0.44, dead)
+  kit.pin.roughness = mix(0.2, 0.42, dead)
   const fold = (1 - k) * (Math.PI / 2)
   a!.rotation.set(-fold, 0, 0)
   b!.rotation.set(fold, 0, 0)
@@ -476,7 +506,7 @@ function poseLeg(o: THREE.Object3D, s: Shape): void {
   if (N.x * sx < 0) N.negate()
   N.multiplyScalar(mix(-1, 1, open))
   N.z += 0.16 * open * (1 - flat)
-  const crouch = v[7] ?? 0
+  const crouch = (v[7] ?? 0) * open * (1 - flat)
   if (crouch > 0) N.multiplyScalar(Math.cos(crouch)).setZ(Math.sin(crouch))
   N.addScaledVector(U, -N.dot(U)).normalize()
   K.copy(H).addScaledVector(U, reach / 2).addScaledVector(N, out)
