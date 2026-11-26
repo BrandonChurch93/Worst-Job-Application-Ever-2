@@ -12,6 +12,7 @@ import { BotDriver, type BotName } from './stage/bots'
 import { liveFlow, liveView, MouseDriver, Stage, type Frame } from './stage/stage'
 import type { CameraPose, Driver, Hint } from './stage/types'
 import { lessMotion, makeQualityPicker, messagesOf, mountInterface, mountProbe, mountTouchMessage, ready as controlsReady, touchOnly, type InterfaceApi, type Mounted, type ProbeRunner } from './ui/api'
+import { backingOf, type Backing } from './ui/backing'
 import { wallSeconds } from './ui/clock'
 import { listenToVisitor } from './ui/pointer'
 import { fitPicture } from './core/levelFit'
@@ -32,7 +33,6 @@ type Sound = ReturnType<typeof import('./audio/index').makeSound>
 const BOTS = ['keen', 'clumsy', 'random', 'skipper']
 const MODES = ['live', 'film', 'loop', 'capture', 'probe']
 const PLAY: PlayMode[] = ['live', 'film', 'loop']
-const ROW = { x0: 128, x1: 700, y1: 56 }
 const params = new URLSearchParams(location.search)
 const mode = params.get('mode') ?? (lessMotion() && !touchOnly() && !params.get('bot') ? 'film' : 'live')
 const canvas = document.getElementById('stage') as HTMLCanvasElement
@@ -344,19 +344,7 @@ function play(first: PlayMode): void {
     if ((PLAY as string[]).includes(m)) setMode(m as PlayMode, false)
   })
 
-  const backing = (): 'page' | 'light' | 'dark' => {
-    const f = shown
-    if (!f) return 'page'
-    if (f.view) return stage.page.unit === 'pinball' ? 'dark' : 'light'
-    let under: 'page' | 'light' | 'dark' = 'page'
-    for (const s of f.list) {
-      if (s.kind === 'well' || s.kind === 'anchor' || s.x >= ROW.x1 || s.x + s.w <= ROW.x0 || s.y >= f.scroll + ROW.y1 || s.y + s.h <= f.scroll) continue
-      if (s.w >= 1900 && s.z1 <= 0) continue
-      if (s.tone === 'dark') return 'dark'
-      under = 'light'
-    }
-    return under
-  }
+  const backing = (): Backing => backingOf(shown, stage.page.unit)
 
   let frameSeconds = 1 / 60
   const api: InterfaceApi = {
