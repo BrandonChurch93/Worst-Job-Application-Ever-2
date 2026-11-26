@@ -86,7 +86,7 @@ function letter(): LayoutNode {
   const body = text('letter-body', 'copy:step5.letter.body', T.letterBody, x, bodyY, { part: 'type', on })
   const closingY = bodyY + body.box[3]! + T.letterBody.lead
   const mark = markOf()
-  const stamp = text('letter-stamp', 'copy:step5.letter.stamp', T.mark, mark.cx, mark.cy - cap(T.mark) / 2, { part: 'type', on, tone: 'dark' })
+  const stamp = text('letter-stamp', 'copy:step5.letter.stamp', T.mark, mark.cx, mark.cy - cap(T.mark) / 2, { part: 'stamp', on, tone: 'dark' })
   return node('letter', 'paper', [LEFT, TOP, COLUMN, CONTENT_H], {
     part: 'letter', states: SHOWN,
     children: [
