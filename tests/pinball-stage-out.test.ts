@@ -4,7 +4,7 @@ import { pages } from '../src/pages'
 import { makePage } from '../src/pages/step3'
 import { filmFlow, filmOptions, ScriptDriver, Stage } from '../src/stage/stage'
 import type { CameraPose, Shape } from '../src/stage/types'
-import { BALL, LAST_Y, PAGE_H } from '../src/table/layout'
+import { BALL, LAST_Y, PAGE_H, floorZ } from '../src/table/layout'
 
 const OUT = ['table-wide', 'table-save']
 const far = (a: number[], b: number[]): number => Math.hypot(a[0]! - b[0]!, a[1]! - b[1]!, a[2]! - b[2]!)
@@ -24,6 +24,20 @@ describe('the two cameras that look in over the apron', () => {
       expect(page.camera(name, 0)?.omit, name).toBeUndefined()
     }
     expect(page.view()?.omit).toBeUndefined()
+  })
+
+  it('stands the apron slabs one slab high on the apron floor, as parts of the machine and not of the page', () => {
+    const page = makePage()
+    page.reset({ mode: 'live', variant: '', applicant: null, seed: config.seed })
+    const list: Shape[] = []
+    page.draw(list)
+    const floor = floorZ(2) * BALL
+    for (const id of ['apron-left', 'apron-right']) {
+      const slab = list.find((x) => x.id === id)!
+      expect([slab.z0, slab.z1]).toEqual([floor, floor + config.scale.heights.slab])
+      expect(slab.role).toBe('apronSlab')
+      expect(slab.tone).toBe('danger')
+    }
   })
 
   it('switches only on a cut of the film, and never touches what the page draws', () => {

@@ -67,9 +67,10 @@ function buildLayout(): LayoutNode {
     kids.push(text(`display.${name}.score`, 'runtime:score', { font: 'inter-600', px: 30, align: 'centre', wrap: px(d.box[2]) - 20 }, px(d.box[0] + d.box[2] / 2), px(d.box[1]) + 18, { part: 'displays', on: f + 31, tone: 'inkLight', states: [`score${k}`] }))
   }
   const ay = px(APRON_Y)
-  kids.push(node('apron-left', 'slab', [312, ay + 24, 520, 144], { part: 'table-frame' }))
-  kids.push(node('apron-right', 'slab', [1088, ay + 24, 520, 144], {
-    part: 'table-frame', children: [node('apron-card', 'apronCard', [1128, ay + 56, 440, 80], {
+  const sunk = { part: 'table-frame', tone: 'danger' as const, height: config.scale.heights.slab }
+  kids.push(node('apron-left', 'apronSlab', [312, ay + 24, 520, 144], sunk))
+  kids.push(node('apron-right', 'apronSlab', [1088, ay + 24, 520, 144], {
+    ...sunk, children: [node('apron-card', 'apronCard', [1128, ay + 56, 440, 80], {
       part: 'table-frame', floor: 16, height: 17, tone: 'paper', children: [centred('apron-card-words', 'copy:step3.table.apronCard', { font: 'inter-500', px: 18 }, 1348, ay + 96, { part: 'type', on: 18 })]
     })]
   }))
