@@ -2,20 +2,20 @@
 
 Both textures are made in code when the page first needs them. No file is stored.
 
-## soot (data texture, 128 x 128, RGBA)
+## soot (data texture, 512 x 128, RGBA)
 
 - Made by: `sootPixels()` in `src/boss/real/transform.ts`
-- From: nothing but numbers: `hash01` of `src/core/random.ts` and sines of the angle round the centre
-- Prompt or command: `sootPixels(128)`, wrapped in a `THREE.DataTexture` by `soot()` in the same file
-- Takes: 1
-- Why this one: a ragged blot, dense in the middle and broken toward its rim, reads as soot on plastic from straight above. 128 x 128 x 4 bytes = 0.0625 MB, 0.083 MB with its mip chain.
+- From: nothing but numbers: `hash01` of `src/core/random.ts`, blended between grid points at three sizes, and one sine along the short side of the cap
+- Prompt or command: `sootPixels(512, 128)`, wrapped in a `THREE.DataTexture` by `soot()` in the same file and laid over the cap as a skin of the cap's own geometry
+- Takes: 3 (a round blot on a flat disc, then a 256 x 64 skin whose noise showed as squares, then this one)
+- Why this one: black and closed at both ends where the cap burned, a ragged edge about a fifth of the way in, flecks beyond it and clean orange in the middle, as in `boss-down.png`. 512 x 128 x 4 bytes = 0.25 MB, 0.33 MB with its mip chain.
 - Date: 2026-11-26
 
 ## puff (data texture, 64 x 64, RGBA, used as an alpha map)
 
 - Made by: `puffPixels()` in `src/boss/real/transform.ts`
-- From: nothing but numbers: distance from the centre and `hash01`
+- From: nothing but numbers: `hash01` blended between grid points at two sizes, closed on itself from top to bottom
 - Prompt or command: `puffPixels(64)`, wrapped in a `THREE.DataTexture` by `smoke()` in the same file
-- Takes: 1
-- Why this one: the smoke is balls, and a ball seen from above needs a soft edge. 64 x 64 x 4 bytes = 0.0156 MB, 0.021 MB with its mip chain.
+- Takes: 2 (a round soft dot for smoke made of balls, which read as a chain of discs, then this one)
+- Why this one: each wisp is one ribbon that fades at its sides and its top; the streaks slide up along it with `ctx.time` so the smoke rises without a single ball. 64 x 64 x 4 bytes = 0.0156 MB, 0.021 MB with its mip chain.
 - Date: 2026-11-26

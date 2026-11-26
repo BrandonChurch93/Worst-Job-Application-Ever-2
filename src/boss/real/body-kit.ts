@@ -108,6 +108,8 @@ export interface BossKit {
   bore: THREE.MeshPhysicalMaterial
   bed: THREE.MeshPhysicalMaterial
   pin: THREE.MeshPhysicalMaterial
+  crack: THREE.MeshPhysicalMaterial
+  glass: THREE.MeshPhysicalMaterial
 }
 
 let made: BossKit | null = null
@@ -117,7 +119,9 @@ export function bossKit(): BossKit {
     housing: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x6d7074), roughness: 0.36, metalness: 0.9 })),
     bore: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x121212), roughness: 0.8, metalness: 0.2, specularIntensity: 0.3 })),
     bed: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x2a2b2d), roughness: 0.62, metalness: 0.55, specularIntensity: 0.5 })),
-    pin: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xc9ccd0), roughness: 0.2, metalness: 1 }))
+    pin: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xc9ccd0), roughness: 0.2, metalness: 1 })),
+    glass: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x8c9f97), roughness: 0.34, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.14, specularIntensity: 0.9, transparent: true, opacity: 0.86 })),
+    crack: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x3a1608), roughness: 0.85, metalness: 0, specularIntensity: 0.15, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 }))
   }
   return made
 }

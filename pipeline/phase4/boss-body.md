@@ -16,11 +16,20 @@ Owner: boss-body agent. Branch `agent/boss-body`. Parts: `boss-body`, `boss-tran
 - The frame is two halves on a hinge along the long axis of the cap. Closed, they hang under the cap like a shut book and come out of the socket with it; they swing open between 1.3 s and 1.8 s of the unfold. When the boss falls the two halves come apart: with the two side plates that makes the four plates of `boss-down.png`.
 - The two side plates are the liner of the socket: they start standing on edge inside the pit, rise out of it, turn flat and seat under the frame.
 - The cannons are the shared progress button (same geometry and materials as steps 1 and 2 on the rail) on a housing that rises under it, with a barrel that slides out from under the disc. The numeral is real type on its face.
-- The legs are two flat links on a vertical pin with a ball at the hip and at the ankle. Link length is fixed at 78 px; when a planted foot is further away than both links reach, a damper rod shows between knee and lower link. Folded, the knee lies under the frame.
+- The legs are two flat links on a vertical pin with a ball at the hip and at the ankle. Link length is fixed at 84 px; when a planted foot is further away than both links reach, a damper rod shows between knee and lower link. Folded, the knee lies under the frame.
 - The shield is a thick glass plate in an aluminium rim, on a hinge pin held by two telescoping arms to the left end of the frame. It is stowed flat under the frame, slides out, turns and then leans back.
-- `FOOT_OFF` moved from (218, 150) to a wider stance to match the approved image; `HIP_OFF` is now the corners of the frame. `fightRig` takes an optional sixth argument `{ aim, flash, hurt }`.
+- `FOOT_OFF` moved from (218, 150) to (236, 192), a wider stance to match the approved image; `HIP_OFF` is now the corners of the frame. `fightRig` takes an optional sixth argument `{ aim, flash, hurt }`.
 - The lip ring, the cracks and the ceramic chips of the socket are one object hung on a shape `rim-<socket id>`; the crack boxes stay in the draw list for the tests and are drawn by that object.
-- Soot on the cap and smoke are the only two textures, both made in code (see `assets-src/boss-body/RECIPE.md`).
+- Soot on the cap and smoke are the only two textures, both made in code (see `assets-src/boss-body/RECIPE.md`). The soot is a skin of the cap's own geometry, so it bends over the shoulders and the ends. Each wisp of smoke is one ribbon whose points are moved by `ctx.time` alone.
+- The glass of the shield is its own material (grey green, see-through at 0.86, clear coat), made in `src/boss/real/body-kit.ts` and passed through `studio()`. The arms show through it.
+- When the boss falls, the second half of the frame is thrown clear to the right so that nothing lies over the fallen cap; the lower side plate lands between the socket and the cap.
+
+## Agreed with the boss-fight agent
+
+- The mouth of each barrel stays at (x + CANNON_OFF[i][0] - 70, y), z 46, and the barrels stay level: their flash `muzzle-N` is drawn there. No aim.
+- Feet moved to (236, 192) from the centre; they read `FOOT_OFF`.
+- The shield stays centred at (x - 252, y). Darts from the left stop on the plane x - 288 while |dy| < 118 and fly at z 30 to 34; shield sparks sit at z 72.
+- They call `fightRig` with a sixth argument `{ flash: f.flash / 0.12, hurt: 1 - shown / 100 }`.
 
 ## Known weak points
 

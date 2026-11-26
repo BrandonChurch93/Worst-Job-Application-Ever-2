@@ -10,14 +10,14 @@ const sizes = config.scale.sizes
 
 export const CAP_W = 288
 export const CAP_H = sizes.button
-export const FOOT_OFF: [number, number][] = [[-214, -190], [214, -190], [-214, 190], [214, 190]]
+export const FOOT_OFF: [number, number][] = [[-236, -192], [236, -192], [-236, 192], [236, 192]]
 export const HIP_OFF: [number, number][] = [[-168, -50], [168, -50], [-168, 50], [168, 50]]
 export const CANNON_OFF: [number, number][] = [[-10, -94], [-10, 94]]
-const SHIELD_OFF: [number, number] = [-226, 0]
+const SHIELD_OFF: [number, number] = [-252, 0]
 const SIDE_OFF: [number, number][] = [[0, -100], [0, 100]]
 export const CANNON_FROM = [1, 2] as const
 export const BODY_Z = { side: 28, sideTop: 36, frame: 36, cap: 52, capTall: heights.button - heights.buttonSocket, hip: 46, cannonTall: 13, housing: 20 }
-export const LEG = { link: 78, wide: 18, foot: 40, knee: 30 }
+export const LEG = { link: 84, wide: 18, foot: 40, knee: 30 }
 export const FRAME = { w: 372, h: 136, cut: 26, bedW: 300, bedH: 84, tall: 10 }
 export const SIDE = { w: 224, h: 76, lean: 30, tall: 8 }
 export const SHIELD = { w: 108, h: 236, tall: 12 }
@@ -118,8 +118,8 @@ export function unfoldRig(u: number): Rig {
 
 const SCATTER = {
   plate: { x: 1296, y: 446, rot: 0.22 },
-  sides: [{ x: 600, y: 850, rot: -0.32 }, { x: 1716, y: 612, rot: 1.25 }],
-  legs: [{ x: 1064, y: 452, rot: 0.5 }, { x: 1622, y: 440, rot: -0.45 }, { x: 330, y: 930, rot: -0.3 }, { x: 1672, y: 832, rot: 0.9 }],
+  sides: [{ x: 600, y: 850, rot: -0.32 }, { x: 1262, y: 862, rot: 0.2 }],
+  legs: [{ x: 1064, y: 452, rot: 0.5 }, { x: 1622, y: 440, rot: -0.45 }, { x: 330, y: 930, rot: -0.3 }, { x: 1584, y: 800, rot: 0.9 }],
   cannons: [{ x: 1492, y: 408, rot: 2.9 }, { x: 870, y: 762, rot: 0.35 }],
   shield: { x: 1500, y: 978, rot: 1.48 }
 }
@@ -155,8 +155,6 @@ export function collapseRig(from: Rig, c: number): Rig {
 }
 
 export const collapseDone = (c: number): boolean => c >= COLLAPSE_SECONDS
-
-const SOOT: [number, number, number][] = [[-116, -2, 52], [112, 6, 56], [-52, 16, 30], [38, -14, 24]]
 
 export function drawRig(out: DrawList, rig: Rig, id = 'boss', pressed = 0): void {
   const body = 'boss-body'
@@ -199,7 +197,7 @@ export function drawRig(out: DrawList, rig: Rig, id = 'boss', pressed = 0): void
   const z0 = (cap.down > 0 ? mix(BODY_Z.cap, 0, cap.down) : mix(heights.buttonSocket, BODY_Z.cap, cap.lift)) + (cap.lift > 0 && cap.down <= 0 ? rig.plate.z : 0) - pressed * 0.4
   const z1 = z0 + BODY_Z.capTall
   const tilt = cap.down > 0 ? 0 : Math.sin(Math.PI * Math.min(1, cap.lift)) * 0.2
-  const top: Shape = { id: `${id}-cap`, part: body, kind: 'capsule', role: 'bossCap', x: cap.x - CAP_W / 2, y: cap.y - CAP_H / 2, w: CAP_W, h: CAP_H, z0, z1, tone: 'accent', rot: cap.rot, v: [rig.hurt, pressed] }
+  const top: Shape = { id: `${id}-cap`, part: body, kind: 'capsule', role: 'bossCap', x: cap.x - CAP_W / 2, y: cap.y - CAP_H / 2, w: CAP_W, h: CAP_H, z0, z1, tone: 'accent', rot: cap.rot, v: [rig.hurt, pressed, tilt] }
   const word = label(`${id}-cap-word`, body, 'copy:step4.submit', cap.x, cap.y, TYPE.button, z1, 'inkLight', cap.rot)
   if (tilt > 0.001) {
     top.turnX = tilt
@@ -207,11 +205,9 @@ export function drawRig(out: DrawList, rig: Rig, id = 'boss', pressed = 0): void
   }
   out.push(top, word)
   if (rig.hurt > 0.01) {
-    const c = Math.cos(cap.rot)
-    const s = Math.sin(cap.rot)
-    SOOT.forEach(([mx, my, d], i) => {
-      out.push({ id: `${id}-scorch-${i}`, part: 'boss-transform', kind: 'disc', role: 'bossScorch', x: cap.x + mx * c - my * s - d / 2, y: cap.y + mx * s + my * c - d / 2, w: d, h: d, z0: z1 - 2, z1: z1 + 0.4, tone: 'dark', rot: cap.rot + i * 1.7, v: [Math.min(1, rig.hurt), i] })
-    })
+    const soot: Shape = { id: `${id}-scorch`, part: 'boss-transform', kind: 'capsule', role: 'bossScorch', x: cap.x - CAP_W / 2, y: cap.y - CAP_H / 2, w: CAP_W, h: CAP_H, z0, z1: z1 + 0.3, tone: 'dark', rot: cap.rot, v: [Math.min(1, rig.hurt), tilt] }
+    if (tilt > 0.001) soot.turnX = tilt
+    out.push(soot)
   }
 }
 
@@ -308,14 +304,10 @@ export function drawRim(out: DrawList, x: number, y: number, cracked: number, id
 export function drawSmoke(out: DrawList, x: number, y: number, t: number, id = 'smoke'): void {
   const c = Math.cos(FALLEN.rot)
   const s = Math.sin(FALLEN.rot)
-  const from: [number, number][] = [[-112, -6], [106, 2]]
+  const from: [number, number][] = [[-116, -4], [110, 2]]
   from.forEach(([ox, oy], w) => {
-    for (let i = 0; i < 5; i++) {
-      const u = (t * 0.32 + i / 5 + w * 0.37) % 1
-      const d = 9 + u * 30
-      const px = x + ox * c - oy * s + Math.sin(u * 4.2 + w * 2 + i) * 9 * u + u * 26
-      const py = y + ox * s + oy * c - u * 120
-      out.push({ id: `${id}-${w}-${i}`, part: 'boss-transform', kind: 'ball', role: 'bossSmoke', x: px - d / 2, y: py - d / 2, w: d, h: d, z0: 22 + u * 90, z1: 22 + u * 90 + d, tone: 'light', v: [u] })
-    }
+    const px = x + ox * c - oy * s
+    const py = y + ox * s + oy * c
+    out.push({ id: `${id}-${w}`, part: 'boss-transform', kind: 'box', role: 'bossSmoke', x: px - 4, y: py - 4, w: 8, h: 8, z0: 20, z1: 28, tone: 'light', v: [t, w] })
   })
 }

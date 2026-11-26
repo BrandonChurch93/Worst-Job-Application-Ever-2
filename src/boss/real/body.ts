@@ -45,33 +45,47 @@ function wingOutline(): [number, number][] {
 
 const WING_SCREWS: [number, number][] = [[-170, 30], [170, 30], [-118, 56], [118, 56], [0, 56]]
 
+function bedOutline(): [number, number][] {
+  const r = FRAME.bedH / 2 + 3
+  const cx = FRAME.bedW / 2 - FRAME.bedH / 2
+  const pts: [number, number][] = [[-cx - r, 0.2]]
+  for (let i = 1; i < 10; i++) {
+    const a = Math.PI - (i / 10) * (Math.PI / 2)
+    pts.push([-cx + r * Math.cos(a), r * Math.sin(a)])
+  }
+  pts.push([-cx, r], [cx, r])
+  for (let i = 1; i < 10; i++) {
+    const a = Math.PI / 2 - (i / 10) * (Math.PI / 2)
+    pts.push([cx + r * Math.cos(a), r * Math.sin(a)])
+  }
+  pts.push([cx + r, 0.2])
+  return pts
+}
+
 function wing(flip: boolean): THREE.Group {
   const m = materials()
+  const k = bossKit()
   const g = new THREE.Group()
   const turnZ = flip ? Math.PI : 0
   g.add(mesh(geo(`wing:${flip}`, () => cutPlate(wingOutline(), FRAME.tall, 1.6).rotateZ(turnZ)), m.aluminium))
+  g.add(mesh(geo(`wingBed:${flip}`, () => cutPlate(bedOutline(), 4, 0.5).rotateZ(turnZ)), k.bed))
   g.add(mesh(geo(`wingScrews:${flip}`, () => joined([
     ...WING_SCREWS.map(([x, y], i) => moved(screw(4.2, 1.6, i + (flip ? 9 : 0)), x, y, FRAME.tall)),
     ...[-168, 168].map((x) => moved(lathe([[12, 0], [12, 2.2], [10.5, 3.4], [7.5, 3.4], [7.5, 1.2], [0, 1.2]], 40), x, 50, FRAME.tall))
   ]).rotateZ(turnZ)), m.steel))
+  const tail = mesh(geo(`tail:${flip}`, () => cutPlate(flip ? [[0, -34], [28, -20], [28, -0.3], [0, -0.3]] : [[0, 0.3], [28, 0.3], [28, 20], [0, 34]], 5, 1.1).translate(0, 0, 0.5)), m.aluminiumSatin)
+  g.add(tail)
+  g.userData.tail = tail
+  if (!flip) g.add(mesh(geo('knuckles', () => joined([-1, 1].flatMap((s) => [0, 1, 2].map((i) => moved(lying([[0, 0], [4.2, 0], [4.2, 9], [0, 9]], 20), s * 168 + 15 - i * 10.5, 0, FRAME.tall - 0.5))))), m.steel))
   return g
 }
 
 function frame(): THREE.Object3D {
-  const m = materials()
-  const k = bossKit()
   const root = new THREE.Group()
   const a = wing(false)
   const b = wing(true)
   root.add(a, b)
-  const bed = mesh(geo('bed', () => sweep(roundedRect(FRAME.bedW - 8, FRAME.bedH - 8, (FRAME.bedH - 8) / 2, 14), plateProfile(5, 1))), k.bed)
-  root.add(bed)
-  const knuckles = mesh(geo('knuckles', () => joined([-1, 1].flatMap((s) => [0, 1, 2].map((i) => moved(lying([[0, 0], [4.2, 0], [4.2, 9], [0, 9]], 20), s * 168 + 15 - i * 10.5, 0, FRAME.tall - 0.5))))), m.steel)
-  root.add(knuckles)
-  const tail = mesh(geo('tail', () => cutPlate([[0, -34], [26, -20], [26, 20], [0, 34]], 6, 1.2).translate(FRAME.w / 2 - 2, 0, 1)), m.aluminiumSatin)
-  root.add(tail)
   root.userData.wings = [a, b]
-  root.userData.fixed = [bed, knuckles, tail]
   return root
 }
 
@@ -81,12 +95,12 @@ function poseFrame(o: THREE.Object3D, s: Shape): void {
   const [a, b] = o.userData.wings as THREE.Group[]
   const fold = (1 - k) * (Math.PI / 2)
   a!.rotation.set(-fold, 0, split * 0.34)
-  b!.rotation.set(fold, 0, split * -0.5)
+  b!.rotation.set(fold, 0, split * -1.5)
   a!.position.set(split * -46, split * 62, 0)
-  b!.position.set(split * 38, split * -70, 0)
-  const tail = (o.userData.fixed as THREE.Mesh[])[2]!
-  tail.scale.x = Math.max(0.02, prog(k, 0.7, 1))
-  tail.position.set(split * 150, split * 20, 0)
+  b!.position.set(split * 524, split * -226, 0)
+  const out = mix(FRAME.w / 2 - 31, FRAME.w / 2 - 3, prog(k, 0.7, 1))
+  ;(a!.userData.tail as THREE.Mesh).position.x = out
+  ;(b!.userData.tail as THREE.Mesh).position.x = out
 }
 
 function side(i: number): THREE.Object3D {
@@ -146,7 +160,7 @@ function shield(): THREE.Object3D {
   const leaf = new THREE.Group()
   const w = SHIELD.w
   const h = SHIELD.h
-  leaf.add(mesh(geo('glass', () => sweep(roundedRect(w - 5, h - 5, 12, 10), plateProfile(SHIELD.tall, 5, 0, 10))), m.glassThick))
+  leaf.add(mesh(geo('glass', () => sweep(roundedRect(w - 5, h - 5, 12, 10), plateProfile(SHIELD.tall, 5, 0, 10))), k.glass))
   leaf.add(mesh(geo('glassBack', () => sweep(roundedRect(w - 5, h - 5, 12, 10), [{ inset: 0, z: 0, out: 0, up: 1 }]).rotateY(Math.PI)), m.glassThick))
   leaf.add(mesh(geo('glassRim', () => {
     const ring = roundedRect(w, h, 14.5, 10)
@@ -229,9 +243,9 @@ function poseShield(o: THREE.Object3D, s: Shape): void {
   const az = mix(BODY_Z.frame + 5 - BODY_Z.side, 5, flat)
   for (let i = 0; i < 2; i++) {
     const sy = i === 0 ? -1 : 1
-    const off = sy * 56
+    const off = sy * 34
     va.set(d.pin.position.x - Math.sin(swing) * off, d.pin.position.y + Math.cos(swing) * off, d.pin.position.z)
-    vb.set(ax, ay + sy * 30 * (1 - flat) + off * flat, az)
+    vb.set(ax, ay + off, az)
     vc.copy(vb).sub(va)
     const len = vc.length() || 1
     vc.divideScalar(len)
@@ -341,8 +355,43 @@ function poseLeg(o: THREE.Object3D, s: Shape): void {
 
 const Z = new THREE.Vector3(0, 0, 1)
 
+const CAP_CRACKS: [number, number][][] = [
+  [[-144, -6], [-126, -2], [-112, -9], [-96, -4], [-84, -12]],
+  [[-112, -9], [-104, 6], [-110, 18]],
+  [[144, 10], [128, 4], [116, 11], [100, 5], [92, 14], [78, 12]],
+  [[116, 11], [112, -6], [120, -20]],
+  [[-40, 36], [-36, 22], [-46, 12], [-42, 2]]
+]
+
+function capCracks(): THREE.BufferGeometry {
+  const pos: number[] = []
+  CAP_CRACKS.forEach((line) => {
+    for (let i = 0; i < line.length - 1; i++) {
+      const [x0, y0] = line[i]!
+      const [x1, y1] = line[i + 1]!
+      const l = Math.hypot(x1 - x0, y1 - y0) || 1
+      const w0 = 1.5 * (1 - i / line.length)
+      const w1 = 1.5 * (1 - (i + 1) / line.length)
+      const nx = -(y1 - y0) / l
+      const ny = (x1 - x0) / l
+      pos.push(x0 - nx * w0, y0 - ny * w0, 0, x1 - nx * w1, y1 - ny * w1, 0, x0 + nx * w0, y0 + ny * w0, 0, x0 + nx * w0, y0 + ny * w0, 0, x1 - nx * w1, y1 - ny * w1, 0, x1 + nx * w1, y1 + ny * w1, 0)
+    }
+  })
+  const g = new THREE.BufferGeometry()
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
+  const nor = new Float32Array(pos.length)
+  for (let i = 2; i < nor.length; i += 3) nor[i] = 1
+  g.setAttribute('normal', new THREE.BufferAttribute(nor, 3))
+  g.setAttribute('uv', new THREE.BufferAttribute(new Float32Array((pos.length / 3) * 2), 2))
+  return g
+}
+
 function cap(s: Shape, ctx: RealContext): THREE.Object3D {
   const root = new THREE.Group()
+  const cracks = mesh(geo('capCracks', capCracks), bossKit().crack, false, false)
+  cracks.position.z = BODY_Z.capTall - 0.75
+  root.add(cracks)
+  root.userData.cracks = cracks
   root.add(controls.make({ ...s, id: 'boss-cap-button', part: 'shell', kind: 'capsule', role: 'button', tone: 'accent', w: CAP_W, h: CAP_H, z0: 0, z1: BODY_Z.capTall, rot: 0, v: undefined }, ctx))
   return root
 }
@@ -376,6 +425,17 @@ export const bossBody: PartMaker = {
       case 'bossFrame': poseFrame(o, s); break
       case 'bossShield': poseShield(o, s); break
       case 'bossCannon': poseCannon(o, s); break
+      case 'bossCap': {
+        const t = s.v?.[2] ?? 0
+        o.position.y += BODY_Z.capTall * Math.sin(t)
+        o.position.z += BODY_Z.capTall * (1 - Math.cos(t))
+        const cracks = o.userData.cracks as THREE.Mesh
+        const all = cracks.geometry.getAttribute('position').count / 6
+        const n = Math.floor(all * prog(s.v?.[0] ?? 0, 0.5, 1))
+        cracks.visible = n > 0
+        cracks.geometry.setDrawRange(0, n * 6)
+        break
+      }
       default: break
     }
   }

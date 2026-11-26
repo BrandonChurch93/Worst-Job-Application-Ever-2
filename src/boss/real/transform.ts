@@ -5,53 +5,82 @@ import { hash01 } from '../../core/random'
 import { materials } from '../../shell/materials'
 import { profile, roundedRect, sweep } from '../../shell/solids'
 import { studio } from '../../post/studio'
-import { HOLE_H, HOLE_W, crackRuns } from '../body'
+import { BODY_Z, CAP_H, CAP_W, HOLE_H, HOLE_W, crackRuns } from '../body'
+import { controls } from '../../shell/real/controls'
+import type { RealContext } from '../../real/types'
 import { mesh } from './body-kit'
 
 const clamp = (t: number): number => Math.min(1, Math.max(0, t))
 const smooth = (t: number): number => { const u = clamp(t); return u * u * (3 - 2 * u) }
 
-export const SOOT_PX = 128
+export const SOOT_W = 512
+export const SOOT_H = 128
 export const PUFF_PX = 64
 
-// Soot seen from above: a ragged black blot, dense in the middle, breaking into flecks toward its rim. Alpha only.
-export function sootPixels(size = SOOT_PX): Uint8Array {
-  const data = new Uint8Array(size * size * 4)
-  for (let y = 0; y < size; y++) {
-    for (let x = 0; x < size; x++) {
-      const u = (x + 0.5) / size - 0.5
-      const v = (y + 0.5) / size - 0.5
-      const a = Math.atan2(v, u)
-      const lobe = 0.38 + 0.05 * Math.sin(a * 3 + 1.3) + 0.035 * Math.sin(a * 7 + 0.4) + 0.02 * Math.sin(a * 13 + 2.2)
-      const d = Math.hypot(u, v) / lobe
-      const coarse = hash01(Math.floor(x / 6), Math.floor(y / 6), 5)
-      const fine = hash01(x, y, 11)
-      let alpha = 1 - smooth((d - 0.35) / 0.65)
-      alpha *= 0.72 + 0.28 * coarse
-      if (d > 0.6) alpha *= fine > 0.35 + (d - 0.6) * 1.2 ? 1 : 0.25
-      const i = (y * size + x) * 4
-      const tone = 10 + Math.round(26 * smooth((d - 0.5) / 0.5) * (0.6 + 0.4 * coarse))
+// Soot over the whole cap seen from above: thick and black at both ends where it burned, thinning to flecks toward the middle. Colour and alpha.
+const cloud = (x: number, y: number, cell: number, seed: number): number => {
+  const gx = x / cell
+  const gy = y / cell
+  const ix = Math.floor(gx)
+  const iy = Math.floor(gy)
+  const fx = smooth(gx - ix)
+  const fy = smooth(gy - iy)
+  const a = hash01(ix, iy, seed)
+  const b = hash01(ix + 1, iy, seed)
+  const c = hash01(ix, iy + 1, seed)
+  const d = hash01(ix + 1, iy + 1, seed)
+  return a + (b - a) * fx + (c - a) * fy + (a - b - c + d) * fx * fy
+}
+
+export function sootPixels(w = SOOT_W, h = SOOT_H): Uint8Array {
+  const data = new Uint8Array(w * h * 4)
+  const k = w / 256
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const px = ((x + 0.5) / w - 0.5) * CAP_W
+      const py = ((y + 0.5) / h - 0.5) * CAP_H
+      const big = cloud(x, y, 22 * k, 5)
+      const mid = cloud(x, y, 8 * k, 7)
+      const fine = cloud(x, y, 2.5 * k, 11)
+      const edge = (px > 0 ? 92 : 84) + (big - 0.5) * 44 + (mid - 0.5) * 16 + 6 * Math.sin(py * 0.2 + (px > 0 ? 1.1 : 2.6))
+      let d = smooth((Math.abs(px) - edge) / 22)
+      const reach = smooth((Math.abs(px) - edge + 46) / 46)
+      d = Math.max(d, reach * smooth((fine * 0.6 + mid * 0.4 - 0.52) / 0.12) * 0.75)
+      const i = (y * w + x) * 4
+      const tone = 9 + Math.round(22 * (1 - clamp(d)) + 8 * fine)
       data[i] = tone + 6
       data[i + 1] = tone + 2
       data[i + 2] = tone
-      data[i + 3] = Math.round(255 * clamp(alpha) * 0.94)
+      data[i + 3] = Math.round(255 * clamp(d) * 0.97)
     }
   }
   return data
 }
 
-// A puff of smoke seen from above: thick in the middle, gone at the edge. Alpha only.
+// Smoke along a wisp: streaks that run with it and close on themselves top to bottom, so the picture can slide. Alpha only.
 export function puffPixels(size = PUFF_PX): Uint8Array {
   const data = new Uint8Array(size * size * 4)
+  const wrap = (x: number, y: number, cell: number, seed: number): number => {
+    const n = size / cell
+    const gy = y / cell
+    const iy = Math.floor(gy)
+    const fy = smooth(gy - iy)
+    const gx = x / (cell / 2)
+    const ix = Math.floor(gx)
+    const fx = smooth(gx - ix)
+    const at = (cx: number, cy: number): number => hash01(cx, ((cy % n) + n) % n, seed)
+    const top = at(ix, iy) + (at(ix + 1, iy) - at(ix, iy)) * fx
+    const low = at(ix, iy + 1) + (at(ix + 1, iy + 1) - at(ix, iy + 1)) * fx
+    return top + (low - top) * fy
+  }
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
-      const d = Math.hypot((x + 0.5) / size - 0.5, (y + 0.5) / size - 0.5) * 2
       const i = (y * size + x) * 4
-      const soft = Math.pow(clamp(1 - d), 1.6) * (0.85 + 0.15 * hash01(Math.floor(x / 4), Math.floor(y / 4), 23))
-      data[i] = 255
-      data[i + 1] = 255
-      data[i + 2] = 255
-      data[i + 3] = Math.round(255 * soft)
+      const v = 20 + Math.round(220 * clamp(0.5 + 0.5 * wrap(x, y, 32, 23) + 0.3 * (wrap(x, y, 8, 29) - 0.5)))
+      data[i] = v
+      data[i + 1] = v
+      data[i + 2] = v
+      data[i + 3] = 255
     }
   }
   return data
@@ -62,8 +91,8 @@ let puffMade: THREE.DataTexture | null = null
 let sootMaterial: THREE.MeshBasicMaterial | null = null
 let chipMaterial: THREE.MeshPhysicalMaterial | null = null
 
-function texture(pixels: Uint8Array, size: number, colour: boolean): THREE.DataTexture {
-  const t = new THREE.DataTexture(pixels, size, size, THREE.RGBAFormat)
+function texture(pixels: Uint8Array, w: number, h: number, colour: boolean): THREE.DataTexture {
+  const t = new THREE.DataTexture(pixels, w, h, THREE.RGBAFormat)
   if (colour) t.colorSpace = THREE.SRGBColorSpace
   t.magFilter = THREE.LinearFilter
   t.minFilter = THREE.LinearMipmapLinearFilter
@@ -73,7 +102,11 @@ function texture(pixels: Uint8Array, size: number, colour: boolean): THREE.DataT
 }
 
 const soot = (): THREE.MeshBasicMaterial => {
-  sootMade ??= texture(sootPixels(), SOOT_PX, true)
+  if (!sootMade) {
+    sootMade = texture(sootPixels(), SOOT_W, SOOT_H, true)
+    sootMade.repeat.set(1 / CAP_W, -1 / CAP_H)
+    sootMade.offset.set(0.5, 0.5)
+  }
   sootMaterial ??= new THREE.MeshBasicMaterial({ map: sootMade, transparent: true, depthWrite: false, toneMapped: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 })
   return sootMaterial
 }
@@ -189,29 +222,90 @@ function poseRim(o: THREE.Object3D, s: Shape): void {
   d.chips.instanceMatrix.needsUpdate = true
 }
 
-let plane: THREE.BufferGeometry | null = null
-let ball: THREE.BufferGeometry | null = null
-
-function scorch(): THREE.Object3D {
-  plane ??= new THREE.PlaneGeometry(1, 1)
+function scorch(s: Shape, ctx: RealContext): THREE.Object3D {
   const o = new THREE.Group()
-  o.add(mesh(plane, soot(), false, false))
+  const made = controls.make({ ...s, id: 'boss-cap-skin', part: 'shell', kind: 'capsule', role: 'button', tone: 'accent', w: CAP_W, h: CAP_H, z0: 0, z1: BODY_Z.capTall, rot: 0, v: undefined }, ctx)
+  let skin: THREE.BufferGeometry | null = null
+  made.traverse((c) => {
+    const m = c as THREE.Mesh
+    if (m.isMesh && !skin) skin = m.geometry
+  })
+  const m = mesh(skin ?? new THREE.PlaneGeometry(CAP_W, CAP_H), soot(), false, false)
+  m.scale.set(1.002, 1.006, 1.012)
+  o.add(m)
   return o
 }
 
+const WISP_N = 30
+const WISP_ACROSS = [0, 0.55, 1, 0.55, 0]
+let wispMaterial: THREE.MeshBasicMaterial | null = null
+
+export function wispPoint(u: number, t: number, w: number): [number, number, number, number] {
+  const sway = Math.sin(u * 5.1 + w * 2.3 - t * 1.1) * 18 * u + Math.sin(u * 11 + w - t * 1.9) * 4 * u
+  return [sway + u * 30, Math.pow(u, 1.4) * 180, u * 110, 7 + 34 * Math.pow(u, 0.8)]
+}
+
 function smoke(): THREE.Object3D {
-  if (!ball) {
-    ball = new THREE.SphereGeometry(0.5, 20, 14)
-    const p = ball.getAttribute('position')
-    const u = ball.getAttribute('uv')
-    for (let i = 0; i < p.count; i++) u.setXY(i, p.getX(i) + 0.5, p.getY(i) + 0.5)
+  if (!puffMade) {
+    puffMade = texture(puffPixels(), PUFF_PX, PUFF_PX, false)
+    puffMade.wrapT = THREE.RepeatWrapping
   }
-  puffMade ??= texture(puffPixels(), PUFF_PX, false)
-  const stuff = new THREE.MeshBasicMaterial({ color: new THREE.Color(0.2, 0.2, 0.21), alphaMap: puffMade, transparent: true, depthWrite: false, toneMapped: false, opacity: 0 })
+  wispMaterial ??= new THREE.MeshBasicMaterial({ color: new THREE.Color(0.14, 0.14, 0.145), alphaMap: puffMade, vertexColors: true, transparent: true, depthWrite: false, toneMapped: false, side: THREE.DoubleSide })
+  const across = WISP_ACROSS.length
+  const count = (WISP_N + 1) * across
+  const g = new THREE.BufferGeometry()
+  g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(count * 3), 3))
+  g.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(count * 2), 2))
+  const colour = new Float32Array(count * 4)
+  const index: number[] = []
+  for (let i = 0; i <= WISP_N; i++) {
+    const u = i / WISP_N
+    const along = 0.85 * smooth(u / 0.08) * Math.pow(1 - u, 1.1)
+    for (let j = 0; j < across; j++) {
+      const n = (i * across + j) * 4
+      colour[n] = 1
+      colour[n + 1] = 1
+      colour[n + 2] = 1
+      colour[n + 3] = along * WISP_ACROSS[j]!
+      if (i < WISP_N && j < across - 1) {
+        const a = i * across + j
+        index.push(a, a + 1, a + across, a + 1, a + across + 1, a + across)
+      }
+    }
+  }
+  g.setAttribute('color', new THREE.BufferAttribute(colour, 4))
+  g.setIndex(index)
+  const m = mesh(g, wispMaterial, false, false)
+  m.frustumCulled = false
   const o = new THREE.Group()
-  o.add(mesh(ball, stuff, false, false))
-  o.userData.stuff = stuff
+  o.add(m)
+  o.userData.wisp = g
   return o
+}
+
+function poseSmoke(o: THREE.Object3D, s: Shape): void {
+  const t = s.v?.[0] ?? 0
+  const w = s.v?.[1] ?? 0
+  const g = o.userData.wisp as THREE.BufferGeometry
+  const p = g.getAttribute('position') as THREE.BufferAttribute
+  const uv = g.getAttribute('uv') as THREE.BufferAttribute
+  const across = WISP_ACROSS.length
+  for (let i = 0; i <= WISP_N; i++) {
+    const u = i / WISP_N
+    const [x, y, z, wide] = wispPoint(u, t, w)
+    const [bx, by] = wispPoint(Math.min(1, u + 0.02), t, w)
+    const [ax, ay] = wispPoint(Math.max(0, u - 0.02), t, w)
+    const len = Math.hypot(bx - ax, by - ay) || 1
+    const nx = (by - ay) / len
+    const ny = -(bx - ax) / len
+    for (let j = 0; j < across; j++) {
+      const k = j / (across - 1) - 0.5
+      p.setXYZ(i * across + j, x + nx * wide * k, y + ny * wide * k, z)
+      uv.setXY(i * across + j, k + 0.5 + w * 0.31, u * 1.6 - t * 0.21 + w * 0.37)
+    }
+  }
+  p.needsUpdate = true
+  uv.needsUpdate = true
 }
 
 export const bossTransform: PartMaker = {
@@ -222,28 +316,22 @@ export const bossTransform: PartMaker = {
     if (s.id.includes('-crack-')) return ''
     return null
   },
-  make(s: Shape): THREE.Object3D {
+  make(s: Shape, ctx: RealContext): THREE.Object3D {
     if (s.role === 'bossRim') return rim()
-    if (s.role === 'bossScorch') return scorch()
+    if (s.role === 'bossScorch') return scorch(s, ctx)
     return smoke()
   },
   pose(o: THREE.Object3D, s: Shape): void {
     if (s.role === 'bossRim') poseRim(o, s)
     else if (s.role === 'bossScorch') {
-      const m = o.children[0] as THREE.Mesh
-      m.scale.set(s.w, s.h, 1)
-      m.position.z = s.z1 - s.z0
+      const t = s.v?.[1] ?? 0
+      o.position.y += BODY_Z.capTall * Math.sin(t)
+      o.position.z += BODY_Z.capTall * (1 - Math.cos(t))
       soot().opacity = clamp(s.v?.[0] ?? 1)
-    } else if (s.role === 'bossSmoke') {
-      const u = s.v?.[0] ?? 0
-      const m = o.children[0] as THREE.Mesh
-      m.scale.setScalar(s.w)
-      m.position.z = s.w / 2
-      ;(o.userData.stuff as THREE.MeshBasicMaterial).opacity = 0.55 * smooth(u / 0.12) * Math.pow(1 - u, 1.4)
-    }
+    } else if (s.role === 'bossSmoke') poseSmoke(o, s)
   },
   drop(o: THREE.Object3D): void {
-    const stuff = o.userData.stuff as THREE.Material | undefined
-    if (stuff) stuff.dispose()
+    const g = o.userData.wisp as THREE.BufferGeometry | undefined
+    if (g) g.dispose()
   }
 }
