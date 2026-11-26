@@ -33,7 +33,7 @@ const TAKES = 0.6
 export const EJECT = { firehouse: [1.4, 4] as V }
 const PULSE = { gap: Math.round(0.34 / DT), swell: Math.round(0.4 / DT), rest: Math.round(0.5 / DT), lead: Math.round(0.12 / DT) }
 const FLASHERS = new Set([...table.bumpers, ...table.slings, ...table.targets].map((x) => x.id))
-const SETTLE = { seconds: 0.28, land: 0.45, sink: 0, hop: 0.07 }
+const SETTLE = { seconds: 0.16, land: 0.45, sink: 0, hop: 0.07 }
 const CARPET = table.flats.find((f) => f.id === 'corporate.carpet')!.box
 
 const toBase64 = (bytes: Uint8Array): string => {
@@ -338,7 +338,8 @@ export class Machine {
     const b = this.balls[i]!
     if (b.steel) {
       this.say('steel-out', i, `${TIERS[k]}.gate`)
-      this.remove(i)
+      if (k < 2) this.ride(i, `chute.${TIERS[k]}`)
+      else this.remove(i)
       return
     }
     if (!this.gate[k]) {
@@ -360,7 +361,8 @@ export class Machine {
     const b = this.balls[i]!
     const r = railOf(b.rail)
     const id = b.rail
-    if (id === 'feed') {
+    if (b.steel && id.startsWith('chute.')) this.remove(i)
+    else if (id === 'feed') {
       this.hold(i, 'plunger', this.on['plunger'] ? 0.8 : FOREVER)
       this.say('at-plunger', i, 'plunger')
     } else if (id === 'drain') {
