@@ -3,7 +3,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import sharp from 'sharp'
 import { at, readJson } from './paths.mjs'
-import { openSession, readCanvas, stillFrom } from './capture.mjs'
+import { drawStill, openSession, readCanvas, stillFrom } from './capture.mjs'
 import { around, filmPlan, spread, stepOf, timeLabel } from './film-plan.mjs'
 import { cursorBox, cursorMiddle } from './image.mjs'
 import { actingWindow, cut, out, riskyType, strip, windowRound } from './pack-build.mjs'
@@ -446,11 +446,7 @@ export async function buildLook({ cfg, session, files, built, about, tier, log, 
     let png = file && fs.existsSync(file) ? fs.readFileSync(file) : null
     await use(hd)
     if (!png) {
-      await session.page.evaluate(async (s) => {
-        window.showcase.setDiagnostic('beauty')
-        await window.showcase.renderStill(s)
-      }, spec)
-      png = await readCanvas(session.page)
+      png = (await drawStill(session, spec)).png
       if (file) fs.writeFileSync(file, png)
       log(`still ${name}, ${tier} tier`)
     }

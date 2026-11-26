@@ -1,6 +1,6 @@
 // Draws the pictures of a pack: every file one PNG, no longer than critics.maxImageLongEdgePx on its long edge, with what it is written in a strip above the picture, never over it.
 import sharp from 'sharp'
-import { openSession, readCanvas, readPage, stillFrom } from './capture.mjs'
+import { drawStill, openSession, readCanvas, stillFrom } from './capture.mjs'
 import { timeLabel } from './film-plan.mjs'
 
 const GROUND = '#1b1b1d'
@@ -168,13 +168,7 @@ export async function buildPack(cfg, plan, { tier = 'draft', log = () => {}, cac
   const about = new Map()
   const problems = session.problems
   try {
-    const stillOf = async (spec, wholePage = false) => {
-      await session.page.evaluate(async (s) => {
-        window.showcase.setDiagnostic('beauty')
-        await window.showcase.renderStill(s)
-      }, spec)
-      return wholePage ? readPage(session) : readCanvas(session.page)
-    }
+    const stillOf = async (spec, wholePage = false) => (await drawStill(session, spec, 'beauty', { wholePage })).png
     const rest = new Map()
     const restOf = async (unit) => {
       if (!rest.has(unit)) rest.set(unit, await stillOf({ page: unit, camera: 'home', tier }))
