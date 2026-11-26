@@ -8,16 +8,21 @@ import { roundedRect } from '../../../shell/solids'
 import type { Shape } from '../../../stage/types'
 import { scaled } from './sheet'
 import type { LayoutNode } from '../../../copy'
-import { SLOT, buildLayout } from '../layout'
-import { clamp01, contact, fuse, lathe, loft, mesh, moved, noise, normalsFrom, rise, smooth, srgb, type LoftRing } from './slot-kit'
+import { SLOT, buildLayout, sheetScale } from '../layout'
+import { measure } from '../../../shell/metrics'
+import { dataOf, geometryOf, styles } from '../../../shell/real/type'
+import { words } from '../../../shell/words'
+import { clamp01, contact, fuse, lathe, loft, mesh, moved, noise, normalsFrom, rise, round, smooth, srgb, type LoftRing } from './slot-kit'
 
 export const SLOT_LOOK = {
   page: { cabinet: 46, knob: 28, payout: 14, mount: 30, arm: 12 },
+  pay: { r: 6, lip: 3.4, top: 14, floor: 3.2, foot: 1.2 },
   top: 58, corner: 16, window: 13, roundOver: 3, band: 12.4, step: 0.9, ledge: 2.4, chamfer: 4.6, chamferDrop: 3.6, gasket: 2.6, glass: 54.2, floor: 18,
-  drum: { r: 62, crest: 50, w: 94, lip: 3.4, flat: 0.4, dark: 0.56, full: 0.96 },
+  drum: { r: 62, crest: 50, w: 94, lip: 3.4, flat: 0.4, dark: 0.5, full: 0.985 },
   line: { z: 53.3, r: 0.85, pin: 1.9, glow: 0.1 },
   sheen: { top: 0.06, streak: 0.034, order: 800001 },
-  lever: { rod: 5.6, pivotX: 11, pivotZ: 28, barrel: 9, barrelW: 19, collar: 4, foot: -2, head: 22, ferrule: 7, ferruleAt: 27 },
+  lever: { rod: 7.4, pivotX: 11, pivotZ: 28, foot: -2, head: 22, ferrule: 7, ferruleAt: 25, bend: 15, stub: 26, socket: 14.5, socketIn: 3, socketOut: 10, ring: 12.2, ringW: 3.4, rodRough: 0.3 },
+  legend: { fit: 72, tall: 1.16, lift: 0.14, order: 799990, style: 'paper:ink' },
   coin: { r: 13, t: 4, teeth: 64, most: 16, flight: 14, tilt: 1.05 },
   frame: { colour: 0x7e8286, rough: 0.37, grain: 0.08, grainLong: 1200, grainWide: 150, fan: 0.34, fanAcross: 0.6, fanUp: 2.2 },
   bevel: { colour: 0x7c8084, rough: 0.34 },
@@ -56,6 +61,9 @@ interface Own {
   mouth: THREE.MeshPhysicalMaterial
   sheen: THREE.MeshBasicMaterial
   line: THREE.MeshPhysicalMaterial
+  socket: THREE.MeshPhysicalMaterial
+  copper: THREE.MeshPhysicalMaterial
+  ink: THREE.MeshPhysicalMaterial
   textures: THREE.Texture[]
 }
 
@@ -92,11 +100,15 @@ function own(): Own {
   if (made) return made
   const face = normalsFrom(256, 1.7, (u, v) => coinHeight(u, v, config.seed + 211))
   const m = materials()
-  const drum = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xe9e6de), roughness: 0.5, metalness: 0, clearcoat: 0.15, clearcoatRoughness: 0.3, specularIntensity: 0.3, vertexColors: true }))
+  const drum = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xf0ede5), roughness: 0.5, metalness: 0, clearcoat: 0.15, clearcoatRoughness: 0.3, specularIntensity: 0.3, vertexColors: true }))
   const glass = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x10161b), roughness: 0.05, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.03, specularIntensity: 1, envMapIntensity: L.glassEnv, transparent: true, opacity: 0.12, depthWrite: false }))
   const well = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x121211), roughness: 0.85, metalness: 0, specularIntensity: 0.3 }))
   const gold = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xd4a543), roughness: 0.6, metalness: 1, envMapIntensity: 1.1, normalMap: face, normalScale: new THREE.Vector2(2, 2) }))
-  const rod = studio(new THREE.MeshPhysicalMaterial({ color: m.chrome.color, roughness: 0.14, metalness: 1 }))
+  const rod = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xb9bdc2), roughness: L.lever.rodRough, metalness: 1 }))
+  const socket = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x3a3d41), roughness: 0.42, metalness: 1 }))
+  const copper = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xb4733f), roughness: 0.3, metalness: 1 }))
+  const fill = styles()[L.legend.style]!.fill
+  const ink = studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(fill[0], fill[1], fill[2]), roughness: 0.6, metalness: 0, specularIntensity: 0.15, vertexColors: true, transparent: true, depthWrite: false }))
   const frame = studio(m.aluminium.clone())
   frame.color = srgb(L.frame.colour)
   frame.roughness = L.frame.rough
@@ -115,7 +127,7 @@ function own(): Own {
   const line = studio(m.orange.clone())
   line.emissive = m.orange.color.clone()
   line.emissiveIntensity = L.line.glow
-  made = { drum, glass, well, gold, rod, frame, bevel, mouth, sheen, line, textures: [face] }
+  made = { drum, glass, well, gold, rod, frame, bevel, mouth, sheen, line, socket, copper, ink, textures: [face] }
   return made
 }
 
@@ -275,55 +287,122 @@ function knob(): THREE.Group {
   return root
 }
 
-function mount(): THREE.Group {
-  const m = materials()
-  const root = new THREE.Group()
-  const H = L.page.mount - 8
-  const block = shared('mount', () => {
-    const w = 50
-    const h = 20
-    const rings: LoftRing[] = [ring(w, h, 4, 0, 0, 1, 0), ring(w, h, 4, 0, H - 2, 1, 0)]
-    for (let i = 1; i <= 5; i++) {
-      const a = (i / 5) * (Math.PI / 2)
-      rings.push(ring(w, h, 4, 2 * (1 - Math.cos(a)), H - 2 + 2 * Math.sin(a), Math.cos(a), Math.sin(a)))
+// A round bar along a path that lies flat: the stub out of the socket, the bend, and the first of the rod.
+export function bentBar(r: number, bend: number, stub: number, around = 24, steps = 12): THREE.BufferGeometry {
+  const path: [number, number, number, number][] = [[-stub, 0, 1, 0], [-bend, 0, 1, 0]]
+  for (let i = 1; i <= steps; i++) {
+    const a = (i / steps) * (Math.PI / 2)
+    path.push([-bend + bend * Math.sin(a), bend - bend * Math.cos(a), Math.cos(a), Math.sin(a)])
+  }
+  const pos: number[] = []
+  const nor: number[] = []
+  const idx: number[] = []
+  path.forEach(([x, y, tx, ty], k) => {
+    for (let j = 0; j < around; j++) {
+      const a = (j / around) * Math.PI * 2
+      const nx = -ty * Math.cos(a)
+      const ny = tx * Math.cos(a)
+      const nz = Math.sin(a)
+      pos.push(x + r * nx, y + r * ny, r * nz)
+      nor.push(nx, ny, nz)
     }
-    return fanned(loft(rings, 1), Math.hypot(SLOT.w, SLOT.h) / 2)
+    if (k === 0) return
+    const p = (k - 1) * around
+    const q = k * around
+    for (let j = 0; j < around; j++) {
+      const n = (j + 1) % around
+      idx.push(p + j, q + j, p + n, p + n, q + j, q + n)
+    }
   })
-  const barrel = shared('barrel', () => {
-    const b = L.lever.barrel
-    const half = L.lever.barrelW / 2
-    const c = L.lever.collar
-    const g = lathe([[0, -half], [b + 0.2, -half, true], [b + 1.4, -half + 1.2, true], [b + 1.4, -half + c - 0.8, true], [b, -half + c, true], [b, half - c, true], [b + 1.4, half - c + 0.8, true], [b + 1.4, half - 1.2, true], [b + 0.2, half, true], [0, half]], 48)
+  const g = new THREE.BufferGeometry()
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
+  g.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3))
+  g.setAttribute('uv', new THREE.Float32BufferAttribute(new Float32Array((pos.length / 3) * 2), 2))
+  g.setIndex(idx)
+  return g
+}
+
+// The socket the lever turns in: a dark barrel out of the cabinet's side with a copper ring at its mouth.
+function mount(): THREE.Group {
+  const o = own()
+  const root = new THREE.Group()
+  const V = L.lever
+  const side = -(50 / 2 - 2)
+  const along = (g: THREE.BufferGeometry, x: number): THREE.BufferGeometry => {
     g.rotateY(Math.PI / 2)
-    return moved(g, L.lever.pivotX, 0, L.lever.pivotZ)
-  })
-  const heads = shared('mountHeads', () => fuse([-19, -8].map((x) => moved(lathe([[2.7, 0], [2.7, 0.7, true], [1.9, 1.25, true], [1.15, 1.3], [1.15, 0.5, true], [0, 0.5]], 20), x, 0, H))))
-  root.add(mesh(block, own().frame), mesh(barrel, m.chrome), mesh(heads, m.steel))
+    return moved(g, x, 0, V.pivotZ)
+  }
+  const barrel = shared('socket', () => along(lathe([[V.socket, -V.socketIn], [V.socket, V.socketOut - 1.4, true], ...round(V.socket, V.socketOut - 1.4, V.socket - 1.4, V.socketOut, 4), [V.ring, V.socketOut, true], [V.ring, V.socketOut - 0.6]], 40), side))
+  const ring = shared('socketRing', () => along(lathe([[V.ring, V.socketOut - 0.6], [V.ring, V.socketOut + V.ringW - 0.8, true], ...round(V.ring, V.socketOut + V.ringW - 0.8, V.ring - 0.8, V.socketOut + V.ringW, 3), [V.rod, V.socketOut + V.ringW]], 40), side))
+  root.add(mesh(barrel, o.socket), mesh(ring, o.copper))
   return root
 }
 
 function arm(): THREE.Group {
+  const o = own()
+  const V = L.lever
   const root = new THREE.Group()
   const g = shared('rod', () => {
-    const out = lathe([[L.lever.rod, 0], [L.lever.rod, 1]], 24)
+    const out = lathe([[V.rod, 0], [V.rod, 1]], 24)
     out.rotateX(-Math.PI / 2)
     return out
   })
-  const rod = mesh(g, own().rod)
+  const rod = mesh(g, o.rod)
+  const bent = mesh(shared('bent', () => bentBar(V.rod, V.bend, V.stub)), o.rod)
   const f = shared('ferrule', () => {
-    const r = L.lever.rod
-    const out = lathe([[r + 0.3, 0, true], [r + 1.9, 0.9, true], [r + 1.9, L.lever.ferrule - 0.9, true], [r + 0.3, L.lever.ferrule, true]], 28)
+    const r = V.rod
+    const out = lathe([[r + 0.3, 0, true], [r + 1.9, 0.9, true], [r + 1.9, V.ferrule - 0.9, true], [r + 0.3, V.ferrule, true]], 28)
     out.rotateX(-Math.PI / 2)
     return out
   })
   const ferrule = mesh(f, materials().chrome)
   const swing = new THREE.Group()
-  swing.add(rod, ferrule)
+  swing.add(rod, bent, ferrule)
   root.add(swing)
   root.userData.swing = swing
   root.userData.rod = rod
   root.userData.ferrule = ferrule
   return root
+}
+
+// A legend of a reel is printed on its drum: set as the page's own type, drawn taller where it fills its reel from side to side, and laid round the drum where it is away from the crest.
+function legend(s: Shape): THREE.Group {
+  const o = own()
+  const said = words(s.words!, s.text)
+  const type = { ...s.type!, px: s.type!.px / sheetScale(s.id) }
+  const g = geometryOf(dataOf({ ...s, type }, said, styles()[L.legend.style]!))
+  const wide = measure(type.font, said, type.px).width
+  if (wide > L.legend.fit) g.scale(1, L.legend.tall, 1)
+  const run = mesh(g, o.ink, false, false)
+  run.userData.order = L.legend.order
+  run.renderOrder = L.legend.order
+  const root = new THREE.Group()
+  root.add(run)
+  root.userData.run = run
+  return root
+}
+
+const REEL_OF = /^(.*)reel-(\d)-/
+
+function poseLegend(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
+  const run = o.userData.run as THREE.Mesh
+  const hit = REEL_OF.exec(s.id)
+  const reel = hit ? ctx.byId.get(`${hit[1]}slot-reel-${hit[2]}`) : undefined
+  const cab = hit ? ctx.byId.get(`${hit[1]}slot-cabinet`) : undefined
+  if (!reel || !cab) {
+    run.position.set(0, 0, L.legend.lift)
+    run.rotation.x = 0
+    return
+  }
+  const k = sheetScale(s.id)
+  const off = (s.y + s.h / 2 - (reel.y + reel.h / 2)) / k
+  const R = L.drum.r
+  const a = Math.max(-1.4, Math.min(1.4, off / R))
+  const up = (cab.z1 - cab.z0) / k / L.top
+  const crest = cab.z0 + (cab.z1 - cab.z0) * ((L.drum.crest - R * (1 - Math.cos(a))) / L.top)
+  run.position.set(0, off - R * Math.sin(a), (crest - s.z0) / k + L.legend.lift)
+  run.rotation.x = a
+  run.visible = up > 0.05
 }
 
 export function coinGeometry(): THREE.BufferGeometry {
@@ -374,6 +453,12 @@ function payout(): THREE.Group {
   coins.receiveShadow = true
   coins.frustumCulled = false
   coins.count = 0
+  const P = L.pay
+  const at = (inset: number, z: number, out: number, up: number): LoftRing => ({ o: roundedRect(SLOT.payW - inset * 2, SLOT.payH - inset * 2, Math.max(0.8, P.r - inset), 10), z, out, up })
+  const lip = shared('payLip', () => loft([at(0, 0, 1, 0), at(0, P.top - 1.2, 1, 0), at(0.35, P.top - 0.35, 0.7, 0.7), at(1.2, P.top, 0, 1), at(P.lip - 0.9, P.top, 0, 1), at(P.lip - 0.25, P.top - 0.5, -0.7, 0.7), at(P.lip, P.top - 1.4, -1, 0), at(P.lip, P.floor, -1, 0)]))
+  const bed = shared('payBed', () => loft([at(P.lip, P.floor, 0, 1)], 1))
+  const foot = shared('payFoot', () => contact(roundedRect(SLOT.payW + P.foot * 2, SLOT.payH + P.foot * 2, P.r + P.foot, 10), P.foot + 0.6))
+  body.add(mesh(foot, materials().gap, false), mesh(lip, o.frame), mesh(bed, o.mouth, false, true))
   root.add(body, coins)
   root.userData.body = body
   root.userData.coins = coins
@@ -422,10 +507,11 @@ function poseCoins(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   coins.instanceMatrix.needsUpdate = true
 }
 
-type Kind = 'cabinet' | 'knob' | 'payout' | 'mount' | 'arm'
+type Kind = 'cabinet' | 'knob' | 'payout' | 'mount' | 'arm' | 'legend'
 
 const kindOf = (s: Shape): Kind | '' | null => {
   const id = s.id
+  if (s.kind === 'text') return REEL_OF.test(id) && s.type && s.words ? 'legend' : null
   if (id.endsWith('slot-cabinet')) return 'cabinet'
   if (id.endsWith('slot-window') || /slot-reel-\d$/.test(id) || /coin-\d+$/.test(id)) return ''
   if (id.endsWith('slot-knob')) return 'knob'
@@ -437,14 +523,14 @@ const kindOf = (s: Shape): Kind | '' | null => {
 
 const plainSlot: PartMaker = {
   key(s) {
-    if (s.kind === 'text') return null
     const kind = kindOf(s)
     if (kind === null) return null
+    if (kind === 'legend') return `slot:legend:${s.words}:${s.type!.font}:${s.type!.px}:${s.w}:${s.h}`
     return kind === '' ? '' : `slot:${kind}`
   },
   make(s) {
     const kind = kindOf(s) as Kind
-    const o = kind === 'cabinet' ? cabinet() : kind === 'knob' ? knob() : kind === 'payout' ? payout() : kind === 'mount' ? mount() : arm()
+    const o = kind === 'cabinet' ? cabinet() : kind === 'knob' ? knob() : kind === 'payout' ? payout() : kind === 'mount' ? mount() : kind === 'legend' ? legend(s) : arm()
     o.userData.kind = kind
     return o
   },
@@ -458,21 +544,28 @@ const plainSlot: PartMaker = {
       poseCoins(o, s, ctx)
       return
     }
+    if (kind === 'legend') {
+      poseLegend(o, s, ctx)
+      return
+    }
     rise(o, s, kind === 'cabinet' ? cabinetHeight() : L.page[kind])
     if (kind !== 'arm') return
+    const V = L.lever
     const rod = o.userData.rod as THREE.Mesh
     const swing = o.userData.swing as THREE.Group
-    swing.rotation.z = (s.v?.[0] ?? 1) < 0 ? Math.PI : 0
-    const run = Math.max(1, s.h)
-    const climb = L.lever.head - L.lever.foot
-    rod.position.set(0, -run / 2, L.lever.foot)
-    rod.rotation.x = Math.atan2(climb, run)
+    const run = Math.max(1, s.h) * ((s.v?.[0] ?? 1) < 0 ? -1 : 1)
+    const climb = V.head - V.foot
     const long = Math.hypot(run, climb)
-    rod.scale.y = long
+    swing.position.set(0, -run / 2, V.foot)
+    swing.rotation.x = Math.atan2(climb, run)
+    rod.position.set(0, V.bend, 0)
+    rod.scale.y = Math.max(0.01, long - V.bend)
     const ferrule = o.userData.ferrule as THREE.Mesh
-    const back = Math.min(L.lever.ferruleAt, long - L.lever.ferrule)
-    ferrule.rotation.x = rod.rotation.x
-    ferrule.position.set(0, run / 2 - (run / long) * back, L.lever.head - (climb / long) * back)
+    ferrule.position.set(0, Math.max(V.bend, long - V.ferruleAt), 0)
+  },
+  drop(o) {
+    if (o.userData.kind !== 'legend') return
+    ;(o.userData.run as THREE.Mesh).geometry.dispose()
   }
 }
 
