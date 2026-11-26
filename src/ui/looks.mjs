@@ -1,4 +1,4 @@
-// The interface on the wired site, measured in a browser: node src/ui/looks.mjs [keys] [bar] [ink] [motion] [touch]. Asked for by name only: history, probe.
+// The interface on the wired site, measured in a browser: node src/ui/looks.mjs [keys] [dark] [bar] [ink] [motion] [touch]. Asked for by name only: history, probe.
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -52,6 +52,12 @@ const ring = (page) => page.evaluate(() => {
   const s = getComputedStyle(document.activeElement)
   return `${s.outlineStyle} ${s.outlineWidth} ${s.outlineColor}`
 })
+// A picture of the window is taken only after the page has drawn again: on a machine that draws slowly it would show the page of a moment ago.
+const drawn = (page, n = 3) => page.evaluate((count) => new Promise((done) => {
+  let left = count
+  const tick = () => (--left <= 0 ? done(true) : requestAnimationFrame(tick))
+  requestAnimationFrame(tick)
+}), n)
 const lum = (r, g, b) => {
   const f = (v) => {
     const c = v / 255
@@ -76,6 +82,7 @@ const inkOf = async (png, box) => {
 }
 const measure = async (page, name, wanted) => {
   await page.mouse.move(5, page.viewportSize().height - 5)
+  await drawn(page)
   await page.waitForTimeout(400)
   const png = await page.screenshot()
   fs.writeFileSync(path.join(out, `looks-ink-${name}.png`), png)
@@ -91,7 +98,7 @@ const measure = async (page, name, wanted) => {
   const low = Math.min(...found.map((f) => f.ratio))
   check(`ink ${name}: the row is ${wanted.row ?? 'strip'} on ${wanted.backing}, and every control's ink stands at least 4.5 to 1 against its ground`, s.backing === wanted.backing && (wanted.row ?? 'strip') === s.row && found.length > 0 && low >= 4.5, `${JSON.stringify(s)} ${found.map((f) => `${f.what} ${f.ratio} to 1 (ink ${f.ink}, ground ${f.ground})`).join('; ')}`)
 }
-const waitDark = (page) => page.waitForFunction(() => document.querySelector('#controls [data-mode]')?.dataset.backing === 'dark', null, { timeout: 240000 })
+const whenDark = (page) => page.waitForFunction(() => document.querySelector('#controls [data-mode]')?.dataset.backing === 'dark', null, { timeout: 900000 }).catch(() => {})
 
 if (wants('keys')) {
   const page = await open('')
@@ -123,14 +130,22 @@ if (wants('keys')) {
   check('keys, careers page and film: no error on the page', page.errors.length === 0, page.errors.slice(0, 3).join(' | '))
   await page.context().close()
 
-  const table = await open('?step=3&bot=keen')
-  await waitDark(table).catch(() => {})
+}
+
+// The dark table of step 3 is reached by a bot. The window is 1280 by 720, the smallest the row is drawn in the strip, so its type is at its least size.
+if (wants('dark')) {
+  const table = await open('?step=3&bot=keen&quality=low')
+  const t = process.hrtime.bigint()
+  await whenDark(table)
   const first = await tabs(table, 1)
   const dark = await ring(table)
+  await drawn(table)
+  await table.waitForTimeout(400)
   await table.screenshot({ path: path.join(out, 'looks-ring-table.png') })
-  check('keys, step 3: over the dark table the first control has a 2 px ring', (await state(table)).backing === 'dark' && dark.startsWith('solid 2px'), `${first[0]} ${dark} ${JSON.stringify(await state(table))}`)
+  check('keys, step 3: over the dark table the first control has a 2 px ring', (await state(table)).backing === 'dark' && dark.startsWith('solid 2px'), `${first[0]} ${dark} ${JSON.stringify(await state(table))} after ${Number((process.hrtime.bigint() - t) / 1000000000n)} s`)
+  await table.evaluate(() => document.activeElement.blur())
+  await measure(table, 'dark-capsule', { backing: 'dark' })
   await table.context().close()
-
 }
 
 if (wants('bar')) {
@@ -176,10 +191,6 @@ if (wants('ink')) {
   await page.waitForTimeout(2500)
   await measure(page, 'pale-capsule', { backing: 'light' })
   await page.context().close()
-  const table = await open('?step=3&bot=keen', big)
-  await waitDark(table).catch(() => {})
-  await measure(table, 'dark-capsule', { backing: 'dark' })
-  await table.context().close()
   const tall = await open('', { viewport: { width: 520, height: 900 } })
   await tall.waitForTimeout(2500)
   await measure(tall, 'above-the-picture', { backing: 'page', row: 'above' })
