@@ -1,35 +1,35 @@
 {
   "folder": "ball-finish",
-  "pushed": "2026-11-26T11:12:20.460Z",
-  "commit": "4236d0b77c9fdf3bab724c372c431d3416537f21",
+  "pushed": "2026-11-26T11:31:02.620Z",
+  "commit": "2579690c6df085bef9062ac1ac1a04a399173d7d",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Build above, approved below: the sheet ball, last-save and lobby-doors after the rim and window pass",
-      "time": "2026-11-26T10:58:26.990Z",
+      "caption": "Still key-last-save-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T11:24:26.623Z",
       "by": "ball-finish",
-      "from": "out/work/looks/ball-rim.jpg"
+      "from": "out/work/stills/key-last-save-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Still key-tier-corporate-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T11:03:55.447Z",
+      "caption": "Still key-last-save-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T11:25:58.174Z",
       "by": "ball-finish",
-      "from": "out/work/stills/key-tier-corporate-hd-draft.png"
+      "from": "out/work/stills/key-last-save-hd-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Build above, approved below: two sheet balls and lobby-doors, the wall with soft arcs and no tint",
-      "time": "2026-11-26T11:12:18.621Z",
+      "caption": "lobby-doors at 11:22 UTC on main's old key: build left, approved right. The glass is clearer and its rim darker; the shadow still falls lower left, before the new key",
+      "time": "2026-11-26T11:31:00.844Z",
       "by": "ball-finish",
-      "from": "out/work/looks/ball-arcs.jpg"
+      "from": "out/work/looks/ball-lobby.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "tier-corporate display: a long word stands whole, twice as tall, behind smoked glass",
-      "time": "2026-11-26T11:12:18.868Z",
+      "caption": "last-save, the display from the side: before above, after below. The dots no longer hide behind the mask",
+      "time": "2026-11-26T11:31:01.071Z",
       "by": "ball-finish",
-      "from": "out/work/looks/display-tall.jpg"
+      "from": "out/work/looks/display-side.jpg"
     }
   ]
 }
