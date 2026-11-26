@@ -7,10 +7,11 @@ import { button, buttonWidth, HEADER, LEFT, page, RIGHT, stepHead, TYPE } from '
 import { words } from '../../shell/words'
 import { basis, frame, homePose, mixPose, smooth, toWorld } from '../../stage/camera'
 import { TURN_HALF } from '../../stage/stage'
+import { ZONES } from '../../table/draw'
 import type { CameraPose, Collider, DrawList, GagInfo, Hint, PageContext, PageLogic, Pointer, Shape, SheetFrame, StepIo, TableState } from '../../stage/types'
 import take from '../../../cut/TABLE-TAKE.json'
 import { BOARD, boardAt, DOORS, fixedShapes, movingShapes } from '../../table/draw'
-import { APRON_Y, BALL, FLIP, LAST_Y, MARQUEE_Y, MID, MOUTH, OUTLET, PAGE_H, PORT, TH, TIERS, TIER_Y, floorZ, holdOf, railAt, railLength, railOf, table, tierAt } from '../../table/layout'
+import { APRON_Y, BALL, FLIP, LAST_Y, MARQUEE_Y, MID, MOUTH, OUTLET, PAGE_H, PORT, TH, TIERS, TIER_Y, floorZ, holdOf, railAt, railLength, railOf, solids, table, tierAt } from '../../table/layout'
 import { Machine, prepare as startPhysics, type MachineState, type TableEvent } from '../../table/physics'
 
 export const prepare = (): Promise<void> => startPhysics()
@@ -23,12 +24,12 @@ const beatAt = (id: string): { from: number; to: number } => beats.find((b) => b
 const px = (v: number): number => v * BALL
 
 export const T = {
-  arrive: 0.8, seal: 2.4, tube: 3.3, lightsDown: 4.0, powerOn: 5.2, atPlunger: 8.3, plunger: 9.4, onTable: 10.85, doorKick: 13.2, doorOpen: 14.1, lobbyEnd: 14.9, inboxOn: 17.9, inboxBy: 19.1,
+  arrive: 0.8, seal: 2.4, tube: 3.3, lightsDown: 4.0, powerOn: 5.2, atPlunger: 8.3, plunger: 9.4, onTable: 10.85, doorKick: 13.1, doorOpen: 14.1, lobbyEnd: 14.9, inboxOn: 17.9, inboxBy: 19.1,
   drops: [20.78, 20.88, 20.98], eject: 20.72, officeOpen: 24.6, officeBy: 25.2, firedBy: 27.2, scoopKick: 28.5, flapOn: 29.6, flapBy: 30.8, highwayEnd: 32.7, spiralEnd: 34.6, save: 35.6, streetOpen: 36.9, streetBy: 37.9,
   press: seconds - TURN_HALF - 0.5
 }
 const MODES: { at: number; tier: number; mode: number }[] = [
-  { at: 11, tier: 0, mode: 5 }, { at: 13.3, tier: 0, mode: 6 }, { at: 14.2, tier: 0, mode: 7 }, { at: 15, tier: 1, mode: 0 }, { at: 19, tier: 1, mode: 4 }, { at: 23, tier: 1, mode: 8 },
+  { at: 10.9, tier: 0, mode: 5 }, { at: 12.1, tier: 0, mode: 6 }, { at: 13.3, tier: 0, mode: 7 }, { at: 15, tier: 1, mode: 0 }, { at: 19, tier: 1, mode: 4 }, { at: 23, tier: 1, mode: 8 },
   { at: 26, tier: 2, mode: 3 }, { at: 29.5, tier: 2, mode: 1 }, { at: 34, tier: 2, mode: 2 }
 ]
 
@@ -110,16 +111,16 @@ const Y2 = TIER_Y[2]!
 const NAMED: Record<string, CameraPose> = {
   'tier-3': tierPose(0), 'tier-2': tierPose(1), 'tier-1': streetPose(),
   'table-wide': look('table-wide', [MID, APRON_Y + 16.41, 12.61], [MID, Y2 + 3.94, 1.96]),
-  'table-lobby': look('table-lobby', [MID + 1.2, Y0 + 7.0, -0.25], [MID + 0.14, Y0 + 4.23, 0.17]),
+  'table-lobby': look('table-lobby', [MID + 0.8, Y0 + 8.3, -0.45], [MID - 0.15, Y0 + 5.02, 0.19]),
   'table-replyall': look('table-replyall', [MID, Y1 + 16.35, 15.4], [MID, Y1 + 6.3, -2]),
-  'table-fired': look('table-fired', [7.25, Y2 + 7.68, 0.06], [4.8, Y2 + 3.75, -2.3]),
-  'table-save': look('table-save', [MID, Y2 + 13.4, 6.05], [MID, Y2 + 8.6, -2.26])
+  'table-fired': look('table-fired', [7.6, Y2 + 7.14, -0.2], [4.8, Y2 + 3.8, -2.2]),
+  'table-save': look('table-save', [MID, Y2 + 12.45, 7.5], [MID, Y2 + 8.95, -3])
 }
 const FILM: [number, string, number][] = [
-  [0, 'follow', 0], [4.2, 'table-wide', 0], [8.5, 'ride', 0], [10.6, 'tier-3', 0.6], [13.0, 'table-lobby', 0], [14.3, 'follow', 0], [19.5, 'table-replyall', 0], [22.2, 'follow', 0], [27.2, 'table-fired', 0], [28.8, 'follow', 0],
+  [0, 'follow', 0], [4.2, 'table-wide', 0], [8.5, 'ride', 0], [10.25, 'tier-3', 0.6], [13.0, 'table-lobby', 0], [14.3, 'follow', 0], [19.5, 'table-replyall', 0], [22.2, 'follow', 0], [27.2, 'table-fired', 0], [28.8, 'follow', 0],
   [31.15, 'rail', 0], [32.3, 'follow', 0.6], [34.3, 'table-save', 0], [36.6, 'follow', 0]
 ]
-const LENS: Record<string, number> = { 'table-wide': 5, 'table-lobby': 7, 'table-replyall': 12, 'table-fired': 10, 'table-save': 9, rail: 7, ride: 7 }
+const LENS: Record<string, number> = { 'table-wide': 5, 'table-lobby': 7, 'table-replyall': 12, 'table-fired': 10, 'table-save': 9, rail: 6, ride: 7 }
 const HARD: Record<string, number> = { bumper: 1, sling: 0.7, 'doors-slam': 1.3, 'scoop-kick': 0.8, plunger: 1, 'ball-hit': 0.6, 'drop-target': 0.5, 'mom-save': 1, 'ball-save': 0.8 }
 const SHAKE = { size: 0.006, decay: 0.09, hz: 23, most: 1.5, last: 0.5 }
 const SOFT = 0.4
@@ -152,6 +153,9 @@ export function makePage(): PageLogic {
     const z = px(floorZ(m.tier) + (m.base ?? 0) + m.h) + SIGN.lift + (b.h / 2) * SIGN.sin
     stood[`sign.${m.id}`] = { y: foot - (b.h / 2) * SIGN.cos - b.h / 2, z0: z, z1: z, turnX: SIGN.turn }
   }
+  const af = px(ZONES.find((z) => z.id === 'apron')!.z)
+  const slab = config.scale.heights.slab
+  for (const [id, z0, z1] of [['apron-left', 0, slab], ['apron-right', 0, slab], ['apron-card', slab, slab + 1], ['apron-card-words', slab + 2, slab + 2], ['drain-label', 7, 7]] as const) stood[id] = { z0: af + z0, z1: af + z1 }
   const hqType = { font: 'inter-600', px: 30, align: 'centre' as const }
   const hqBlock = block(hqType.font, words('copy:step3.table.buildings.hq', ''), hqType.px)
   const hqZ = px(floorZ(0) + DOORS.plate + DOORS.plateH / 2)
@@ -231,7 +235,7 @@ export function makePage(): PageLogic {
     }
     return out
   }
-  const railPose = (back = 1.9, up = 3.9, ahead = 1.0, lift = -1.0, wide = 0): CameraPose => {
+  const railPose = (back = 2.8, up = 2.5, ahead = 0.7, lift = 0, wide = 0): CameraPose => {
     const b = ball()
     let c = { x: b.x, y: b.y, z: b.z }
     let vx = b.vx
@@ -408,9 +412,9 @@ export function makePage(): PageLogic {
     const on = mc.on
     const towTo = (hold: string, speed = 16): void => {
       if (b.mode !== 'plane') return
-      const h = holdOf(hold)
+      const c = holdOf(hold).stand ?? holdOf(hold).c
       s.tows++
-      mc.tow(0, h.c[0], h.c[1], speed, `hold:${hold}`)
+      mc.tow(0, c[0], c[1], speed, `hold:${hold}`)
     }
     const towGate = (k: number): void => {
       if (b.mode !== 'plane' || b.tier !== k) return
@@ -450,7 +454,7 @@ export function makePage(): PageLogic {
     if (b.tier === 0 && b.mode === 'plane') {
       if (t >= T.doorKick - 0.3 && t < T.doorKick) towTo('corporate.revolving', 18)
       else if (t >= T.lobbyEnd) towGate(0)
-      else if (t < T.doorKick) shoot(MID, Y0 + 6.0, SHOT.door, PULL.door)
+      else if (t < T.doorKick) shoot(holdOf('corporate.revolving').stand![0], holdOf('corporate.revolving').stand![1], SHOT.door, PULL.door)
       else if (t >= T.doorOpen) mc.magnet = [MID, Y0 + 11.2, PULL.gate]
     }
     on['office.inbox'] = t >= T.inboxOn && t < T.eject
@@ -482,7 +486,7 @@ export function makePage(): PageLogic {
     on['street.firehouse'] = t < T.scoopKick + 0.3
     if (b.tier === 2 && b.mode === 'plane') {
       if (t < T.scoopKick) {
-        const c = holdOf('street.firehouse').c
+        const c = holdOf('street.firehouse').mouth!
         if (t >= T.firedBy) towTo('street.firehouse')
         else shoot(c[0], c[1], SHOT.scoop, PULL.scoop)
       } else if (t >= T.flapOn - SHOT.early && t < T.highwayEnd) {
@@ -697,7 +701,7 @@ export function makePage(): PageLogic {
       for (const p of table.posts) add(p.id, 'post', p.tier, [...p.c], { r: p.r })
       for (const b of table.bumpers) add(b.id, 'bumper', b.tier, [...b.c], { r: b.r })
       for (const g of table.slings) add(g.id, 'sling', g.tier, [...g.a, ...g.b, ...g.c], { closed: true })
-      for (const m of table.models) if (m.solid) add(m.id, 'model', m.tier, m.round ? [m.box[0] + m.box[2] / 2, m.box[1] + m.box[3] / 2] : corners(m.box), m.round ? { r: m.box[2] / 2 } : { closed: true })
+      for (const m of table.models) if (m.solid) solids(m).forEach((q, n) => add(n ? `${m.id}.${n + 1}` : m.id, 'model', m.tier, m.round ? [m.box[0] + m.box[2] / 2, m.box[1] + m.box[3] / 2] : corners(q), m.round ? { r: m.box[2] / 2 } : { closed: true }))
       for (const t of table.targets) if (t.kind !== 'drop' || !mc.down[t.index]) add(t.id, 'target', t.tier, corners(t.box), { closed: true })
       for (const f of table.flippers) {
         const a = (mc.flipperAngle(f.side) * Math.PI) / 180

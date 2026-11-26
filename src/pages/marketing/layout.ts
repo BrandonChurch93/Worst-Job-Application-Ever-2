@@ -19,8 +19,9 @@ export const CARD_H = 248
 export const CARD_R = 28
 export const MEDAL = 380
 export const MEDAL_H = 10
+const MEDAL_TWO = 84
 export const HERO_W = 460
-export const TICKER = { x: LEFT, y: 990, w: WIDTH, h: 58, floor: -2.4, tape: -2, pad: 28, gap: 64, edge: 5, clip: 18, thick: 12, r: 16 }
+export const TICKER = { x: LEFT, y: 990, w: WIDTH, h: 58, floor: -2.4, tape: -2, pad: 28, gap: 40, edge: 5, clip: 18, thick: 12, r: 16, solid: 80, ramp: 50 }
 export const FIRST_CARDS = 3
 const SECTION = 170
 const HEAD_TO_CONTENT = 140
@@ -37,7 +38,7 @@ export const T = {
   quote: { font: 'inter-400', px: 20, lead: 30 },
   role: { font: 'inter-600', px: 20 },
   answer: { font: 'inter-400', px: 20, lead: 30 },
-  tape: { font: 'inter-500', px: 20 }
+  tape: { font: 'inter-400', px: 20 }
 } satisfies Record<string, TypeSpec>
 
 const cap = (t: TypeSpec): number => block(t.font, 'X', t.px).cap
@@ -67,11 +68,11 @@ export const perkStates = (i: number): { shut: string; open: string } => ({ shut
 function perkCard(i: number, x: number, y: number): LayoutNode {
   const k = `copy:marketing.perks.items.${i}`
   const st = perkStates(i)
-  const pad = 32
+  const pad = 36
   const wrap = CARD_W - pad * 2
   const tCap = cap(T.cardTitle)
   const bCap = cap(TYPE.body)
-  const promiseY = y + 36 + tCap + 22
+  const promiseY = y + 46 + tCap + 30
   const ruleY = promiseY + bCap + 26
   const faceTop = y + (CARD_H - (tCap + 22 + bCap)) / 2
   return node(`perk-${i}`, 'card', [x, y, CARD_W, CARD_H], {
@@ -79,7 +80,7 @@ function perkCard(i: number, x: number, y: number): LayoutNode {
     children: [
       text(`perk-${i}-title`, `${k}.title`, T.cardTitle, x + pad, faceTop, { ...onCard, states: [st.shut] }),
       text(`perk-${i}-promise`, `${k}.promise`, { ...TYPE.body, wrap }, x + pad, faceTop + tCap + 22, { ...onCard, states: [st.shut] }),
-      text(`perk-${i}-title-open`, `${k}.title`, T.cardTitle, x + pad, y + 36, { ...onCard, states: [st.open] }),
+      text(`perk-${i}-title-open`, `${k}.title`, T.cardTitle, x + pad, y + 46, { ...onCard, states: [st.open] }),
       text(`perk-${i}-promise-open`, `${k}.promise`, { ...TYPE.body, wrap }, x + pad, promiseY, { ...onCard, states: [st.open] }),
       node(`perk-${i}-rule`, 'cardRule', [x + pad, ruleY, wrap, 2], { part: 'perk-cards', floor: heights.card, height: heights.card + 1, tone: 'metal', states: [st.open] }),
       text(`perk-${i}-fine`, `${k}.finePrint`, { ...TYPE.helper, wrap, lead: 26, ink: 'soft' }, x + pad, ruleY + 26, { ...onCard, states: [st.open] })
@@ -90,8 +91,8 @@ function perkCard(i: number, x: number, y: number): LayoutNode {
 function medallion(i: number, cx: number, y: number, under = 28): LayoutNode[] {
   const k = `copy:marketing.awards.items.${i}`
   const title = { ...T.medalTitle, align: 'centre' as const, wrap: 204 }
-  const from = { ...T.medalFrom, align: 'centre' as const, wrap: 232 }
   const th = tall(title, `${k}.title`, title.wrap)
+  const from = { ...T.medalFrom, align: 'centre' as const, wrap: th > MEDAL_TWO ? 170 : 232 }
   const fh = tall(from, `${k}.from`, from.wrap)
   const top = y + (MEDAL - (th + 22 + fh)) / 2
   const on = { part: 'type', on: MEDAL_H }

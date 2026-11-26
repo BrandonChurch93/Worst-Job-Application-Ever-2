@@ -12,7 +12,7 @@ Unit `boss`, page `step4`. Logic in `src/pages/step4/`, the boss in `src/boss/`,
 - Once the button has torn loose its socket is a hole, not a control (blockout round 2): a real opening in the page (`well`), a narrow lip 5 below the surface and a pit 150 deep in the darkest tone, so its floor lies in its own shadow. Nothing of it stands above the page. Eight thin cracks of uneven length run out from its rim, two or three bent pieces each, three of them forked.
 - The health bar sits where a subline would sit (step 4 has no subline in the copy): the label `copy:step4.bossHealthLabel` and a recessed track with a raised fill, the whole width of the content. It is a layout node with the state `fight`, so the layout check sees it.
 - `copy:step4.defeated` is centred under the fallen button, state `down`.
-- The three pop-ups stand in one column beside the card, on the card's top line, with even gaps, between the cursor's side of the page and the boss.
+- The three pop-ups stand in one column beside the card, on the card's top line, with even gaps, between the cursor's side of the page and the boss. Each is as wide as its own title needs. The top one ends at x 1340, above the shield; the two lower ones end at x 1240, clear of the shield's glass, and the last phase uses only those two.
 - The six error slabs, the three pop-ups with their buttons and the banner are layout nodes in an over layer (state `fight`), so every word is in the type register and the check sees their sizes. They are drawn by the fight where they are in play. The slab words are set at 26 px, the size of a button label, so they can be read in flight.
 
 ## The beats

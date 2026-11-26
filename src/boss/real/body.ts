@@ -5,7 +5,7 @@ import { materials } from '../../shell/materials'
 import { controls } from '../../shell/real/controls'
 import { roundedRect, sweep, plateProfile } from '../../shell/solids'
 import { config } from '../../config'
-import { BODY_Z, FRAME, LEG, SHIELD, SIDE, CAP_W, CAP_H } from '../body'
+import { BODY_Z, FRAME, LEG, SHADE, SHIELD, SIDE, SIDE_OFF, CAP_W, CAP_H } from '../body'
 import { bossKit, cutPlate, joined, lathe, lying, mesh, moved, screw } from './body-kit'
 
 const heights = config.scale.heights
@@ -188,7 +188,7 @@ function shield(): THREE.Object3D {
     const ring = roundedRect(w, h, 15, 12)
     const t = SHIELD.tall
     return sweep(ring, [{ inset: 7, z: 0, out: 0, up: -1 }, { inset: 0.8, z: 0, out: 0, up: -1 }, { inset: 0, z: 0.8, out: 1, up: 0 }, { inset: 0, z: t - 3, out: 1, up: 0 }, { inset: 0.9, z: t - 1.2, out: 0.8, up: 0.6 }, { inset: 2.8, z: t, out: 0.3, up: 0.95 }, { inset: 4.4, z: t, out: -0.3, up: 0.95 }, { inset: 6.4, z: t - 1.2, out: -0.6, up: 0.8 }], false)
-  }), k.glassEdge))
+  }), m.aluminiumEdge))
   const cracks = mesh(geo('glassCracks', () => {
     const pos: number[] = []
     const line = (x0: number, y0: number, x1: number, y1: number, wide: number): void => {
@@ -220,13 +220,13 @@ function shield(): THREE.Object3D {
   const pin = mesh(geo('shieldPin', () => lying([[0, 0], [3.4, 0], [3.4, 170], [0, 170]], 20).rotateZ(Math.PI / 2).translate(0, 85, 0)), k.pin, false)
   const tubes = [-1, 1].map((sy) => {
     const g = new THREE.Group()
-    g.add(mesh(geo('armTube', () => lying([[0, 0], [5, 0], [5, 50], [3.2, 50]], 20).rotateZ(Math.PI)), m.aluminiumSatin))
+    g.add(mesh(geo('armTube', () => lying([[0, 0], [5, 0], [5, 82], [3.2, 82]], 20).rotateZ(Math.PI)), m.aluminiumSatin))
     g.userData.sy = sy
     return g
   })
   const rods = [-1, 1].map((sy) => {
     const g = new THREE.Group()
-    g.add(mesh(geo('armRod', () => joined([lying([[0, 0], [3.1, 0], [3.1, 52], [0, 52]], 16).rotateZ(Math.PI), lathe([[6.5, -3], [6.5, 3], [0, 3]], 24).rotateX(Math.PI / 2)])), k.pin, false))
+    g.add(mesh(geo('armRod', () => joined([lying([[0, 0], [3.1, 0], [3.1, 82], [0, 82]], 16).rotateZ(Math.PI), lathe([[6.5, -3], [6.5, 3], [0, 3]], 24).rotateX(Math.PI / 2)])), k.pin, false))
     g.userData.sy = sy
     return g
   })
@@ -262,7 +262,7 @@ function poseShield(o: THREE.Object3D, s: Shape): void {
   d.pin.position.set(px + 6 * stand, py, low - 1 + 2 * stand)
   const ax = mix(s.v?.[3] ?? 40, -half + 60, flat)
   const ay = -(s.v?.[4] ?? 0) * (1 - flat)
-  const az = mix(BODY_Z.frame + 5 - BODY_Z.side, 5, flat)
+  const az = mix(BODY_Z.frame + 5 - BODY_Z.shield, 5, flat)
   for (let i = 0; i < 2; i++) {
     const sy = i === 0 ? -1 : 1
     const off = sy * 34
@@ -275,6 +275,8 @@ function poseShield(o: THREE.Object3D, s: Shape): void {
     const tube = d.tubes[i]!
     rod.position.copy(va)
     rod.quaternion.setFromUnitVectors(X, vc)
+    rod.scale.x = mix(1, 0.5, flat)
+    tube.scale.x = mix(1, 0.3, flat)
     tube.position.copy(vb)
     tube.quaternion.setFromUnitVectors(X, vc.negate())
     tube.visible = len > 20
@@ -290,7 +292,7 @@ function leg(): THREE.Object3D {
   const link = (): THREE.Mesh => mesh(geo('link', () => {
     const body = sweep(roundedRect(L + W, W, W / 2, 10), plateProfile(8, 2.2, 0, 4)).translate(L / 2, 0, -4)
     const under = sweep(roundedRect(L + W, W, W / 2, 10), [{ inset: 0, z: 0, out: 0, up: 1 }]).rotateX(Math.PI).translate(L / 2, 0, -4)
-    const slot = sweep(roundedRect(L - 56, 9, 4.5, 6), [{ inset: 0, z: 4, out: 0, up: 1 }, { inset: 1.6, z: 2.4, out: -0.7, up: 0.7 }, { inset: 1.6, z: 2.4, out: 0, up: 1 }]).translate(L / 2, 0, 0.03)
+    const slot = sweep(roundedRect(L - 52, 10, 5, 6), [{ inset: 0, z: 3.9, out: 1, up: 0 }, { inset: 0, z: 4.7, out: 0.7, up: 0.7 }, { inset: 1.3, z: 5.5, out: 0, up: 1 }]).translate(L / 2, 0, 0)
     return joined([body, under, slot])
   }), k.link)
   const upper = link()
@@ -352,7 +354,7 @@ function poseLeg(o: THREE.Object3D, s: Shape): void {
   N.set(-U.y, U.x, 0)
   if (N.lengthSq() < 1e-6) N.set(sx, 0, 0)
   N.normalize()
-  if (N.x * sx < 0) N.negate()
+  if (N.x < 0) N.negate()
   N.multiplyScalar(mix(-1, 1, open))
   N.z += 0.16 * open * (1 - flat)
   N.addScaledVector(U, -N.dot(U)).normalize()
@@ -384,7 +386,9 @@ const CAP_CRACKS: [number, number][][] = [
   [[-112, -9], [-104, 6], [-110, 18]],
   [[144, 10], [128, 4], [116, 11], [100, 5], [92, 14], [78, 12]],
   [[116, 11], [112, -6], [120, -20]],
-  [[-40, 36], [-36, 22], [-46, 12], [-42, 2]]
+  [[-34, 36], [-30, 25], [-38, 17], [-33, 8], [-40, 0], [-36, -8]],
+  [[-38, 17], [-50, 14], [-56, 20]],
+  [[58, -36], [54, -26], [61, -18], [56, -10]]
 ]
 
 function capCracks(): THREE.BufferGeometry {
@@ -420,6 +424,35 @@ function cap(s: Shape, ctx: RealContext): THREE.Object3D {
   return root
 }
 
+const SHADE_N = 28
+
+// The dark under the body: how far a point of the page is inside the body's outline seen from above, 0 to 1.
+export function shadeAt(px: number, py: number): number {
+  const box = (x: number, y: number, hw: number, hh: number): number => {
+    const dx = Math.abs(x) - hw
+    const dy = Math.abs(y) - hh
+    return Math.hypot(Math.max(dx, 0), Math.max(dy, 0)) + Math.min(Math.max(dx, dy), 0)
+  }
+  const d = Math.min(box(px, py, FRAME.w / 2, FRAME.h / 2), box(px, py, SIDE.w / 2 - 14, SIDE_OFF[1]![1] + SIDE.h / 2))
+  return 1 - smooth((d + 24) / SHADE.soft)
+}
+
+let shadeMaterial: THREE.MeshBasicMaterial | null = null
+
+function shade(): THREE.Object3D {
+  shadeMaterial ??= new THREE.MeshBasicMaterial({ color: new THREE.Color(0.02, 0.019, 0.018), vertexColors: true, transparent: true, depthWrite: false, toneMapped: false })
+  const o = new THREE.Group()
+  o.add(mesh(geo('shade', () => {
+    const g = new THREE.PlaneGeometry(SHADE.w, SHADE.h, SHADE_N, SHADE_N)
+    const p = g.getAttribute('position')
+    const colour = new Float32Array(p.count * 4)
+    for (let i = 0; i < p.count; i++) colour.set([1, 1, 1, shadeAt(p.getX(i), p.getY(i))], i * 4)
+    g.setAttribute('color', new THREE.BufferAttribute(colour, 4))
+    return g
+  }), shadeMaterial, false, false))
+  return o
+}
+
 export const bossBody: PartMaker = {
   key(s: Shape): string | null {
     if (s.kind === 'text') return null
@@ -430,6 +463,7 @@ export const bossBody: PartMaker = {
       case 'bossShield': return 'shield'
       case 'bossCannon': return 'cannon'
       case 'bossCap': return 'cap'
+      case 'bossShade': return 'shade'
       default: return null
     }
   },
@@ -440,6 +474,7 @@ export const bossBody: PartMaker = {
       case 'bossFrame': return frame()
       case 'bossShield': return shield()
       case 'bossCannon': return cannon(s, ctx)
+      case 'bossShade': return shade()
       default: return cap(s, ctx)
     }
   },
@@ -449,13 +484,14 @@ export const bossBody: PartMaker = {
       case 'bossFrame': poseFrame(o, s); break
       case 'bossShield': poseShield(o, s); break
       case 'bossCannon': poseCannon(o, s); break
+      case 'bossShade': if (shadeMaterial) shadeMaterial.opacity = 0.46 * clamp(s.v?.[0] ?? 0); break
       case 'bossCap': {
         const t = s.v?.[2] ?? 0
         o.position.y += BODY_Z.capTall * Math.sin(t)
         o.position.z += BODY_Z.capTall * (1 - Math.cos(t))
         const cracks = o.userData.cracks as THREE.Mesh
         const all = cracks.geometry.getAttribute('position').count / 6
-        const n = Math.floor(all * prog(s.v?.[0] ?? 0, 0.5, 1))
+        const n = Math.floor(all * prog(s.v?.[0] ?? 0, 0.8, 1))
         cracks.visible = n > 0
         cracks.geometry.setDrawRange(0, n * 6)
         break
