@@ -1,6 +1,9 @@
 import { BOXES, LAMPS } from './lamps'
 
-export const SQUASH = { cut: 0.6, thin: 0.35, wide: 0.25 }
+// The inner wall as it is drawn. The bore the arrow is fitted to is `RIN` in index.ts and lies outside it, so the wall reads thick and the arrow is never in it.
+export const WALL = 0.84
+// The glass is hard: struck, it keeps its round and gives by a hair. The blow is the arrow's to carry.
+export const SQUASH = { cut: 0, thin: 0.05, wide: 0.02 }
 
 // What every surface of the ball shares: the lamps as the ball sees them, the soft light from above, the dark surround.
 export const head = /* glsl */ `
@@ -28,19 +31,18 @@ vec3 softbox( vec3 d, float blur ) {
 	float y = dot( d, b ) / f;
 	float e = 0.03 + blur;
 	float m = ( 1.0 - smoothstep( 0.46 - e, 0.46 + e, abs( x ) ) ) * ( 1.0 - smoothstep( 0.29 - e, 0.29 + e, abs( y ) ) );
-	float bar = smoothstep( 0.018, 0.045 + blur, abs( x + 0.08 ) );
-	return uSoft * m * ( 0.25 + 0.75 * bar ) * ( 0.7 + 0.6 * smoothstep( - 0.29, 0.29, y ) );
+	return uSoft * m * ( 0.7 + 0.6 * smoothstep( - 0.29, 0.29, y ) );
 }
 
-// The one window of the room on the ball: a soft pane bent round the wall, on the side of the soft light as the eye sees it, cut by one bar. It stands at a set share of the radius, so it never lies over the middle.
+// The room's soft light on the ball: one feathered patch bent round the wall on the side of the light as the eye sees it, with no bar and no hard side. It stands at a set share of the radius, so it never lies over the middle.
 vec3 pane( vec3 Np, float rho, vec3 V, float side, float at, float deep, float wide, float blur ) {
 	vec3 S = normalize( uSoftDir );
 	vec3 U = normalize( S - V * dot( S, V ) + vec3( 1e-4, 2e-4, 0.0 ) ) * side;
 	float along = atan( dot( cross( U, Np ), V ), dot( U, Np ) );
-	float e = 0.012 + blur;
-	float m = ( 1.0 - smoothstep( deep - e, deep + e, abs( rho - at ) ) ) * ( 1.0 - smoothstep( wide - e * 3.0, wide + e * 3.0, abs( along ) ) );
-	float bar = smoothstep( 0.012, 0.03 + blur, abs( along + 0.07 ) );
-	return uSoft * m * ( 0.3 + 0.7 * bar ) * ( 0.7 + 0.6 * smoothstep( - deep, deep, rho - at ) );
+	float a = ( rho - at ) / ( deep + blur );
+	float b = along / ( wide + blur * 3.0 );
+	float m = exp( - a * a - b * b * b * b );
+	return uSoft * m * ( 0.8 + 0.2 * sin( along * 6.0 + rho * 11.0 ) );
 }
 
 vec3 surround( vec3 d ) {
@@ -152,7 +154,8 @@ varying vec3 vAxisY;
 varying vec3 vAxisZ;
 varying float vKind;
 varying vec2 vUv;
-#define RIN 0.875
+#define RIN ${WALL.toFixed(3)}
+uniform vec4 uPress;
 #define IOR 1.49
 
 vec3 seat( vec3 n, vec3 v, float under ) {
@@ -306,7 +309,7 @@ vec3 flecks( vec3 Np, vec3 C ) {
 	for ( int i = 0; i < LAMPS; i ++ ) {
 		vec3 to = normalize( vec3( uLampPos[ i ].xy - C.xy, 0.0 ) + vec3( 1e-4 ) );
 		float d = dot( to, Np );
-		g += uLampLit[ i ] * ( 1.0 - uLampCol[ i ].w ) * ( pow( max( - d, 0.0 ), 18.0 ) + 0.5 * pow( max( d, 0.0 ), 40.0 ) );
+		g += uLampLit[ i ] * ( 1.0 - uLampCol[ i ].w ) * ( pow( max( - d, 0.0 ), 12.0 ) + 0.35 * pow( max( d, 0.0 ), 24.0 ) );
 		g += uLampLit[ i ] * uLampCol[ i ].w * 0.6 * smoothstep( uR * 0.2, uR * 0.8, length( uLampPos[ i ].xy - C.xy ) ) * pow( max( d, 0.0 ), 8.0 );
 	}
 	return g / max( 1.0, dot( g, vec3( 0.2126, 0.7152, 0.0722 ) ) / 0.7 );
@@ -341,9 +344,8 @@ void paint() {
 	vec3 R = reflect( - V, N );
 	float F = 0.04 + 0.96 * pow( 1.0 - ndv, 5.0 );
 	vec3 Np = normalize( N - V * ndv + vec3( 1e-5 ) );
-	float band = smoothstep( RIN - 0.012, RIN + 0.012, rho );
+	float band = smoothstep( RIN - 0.03, RIN + 0.03, rho );
 	float rimward = smoothstep( 0.56, 0.78, rho );
-	vec3 soft = uSoft / max( 1.0, dot( uSoft, vec3( 0.2126, 0.7152, 0.0722 ) ) / 0.35 );
 	vec3 gather = flecks( Np, C );
 
 	vec3 from;
@@ -351,58 +353,55 @@ void paint() {
 	through( vP, - V, C, from, dir );
 	vec4 seen = floorAt( from, dir );
 	float known = mix( 0.5, 1.0, seen.a );
-	vec3 pic = mix( vec3( dot( seen.rgb, vec3( 0.2126, 0.7152, 0.0722 ) ) ) * vec3( 1.06, 1.0, 0.92 ), seen.rgb, 0.4 );
-	float deep = smoothstep( RIN, 0.985, rho );
-	float alpha = mix( mix( 0.72, 0.9, deep ) * known, 0.34, uTrue ) * mix( 0.7, 1.0, uArtOn ) * uBend * band;
-	vec3 col = ( pic * mix( 1.1, 0.4, deep ) + lampsIn( dir, from, 0.7 ) * 0.4 + gather * 0.9 + uHaze ) * alpha;
+	vec3 e1 = normalize( cross( V, vec3( 1.0, 0.0, 0.0 ) ) );
+	float th = atan( dot( Np, cross( V, e1 ) ), dot( Np, e1 ) );
+	vec3 S = normalize( uSoftDir );
+	float lightward = dot( Np, normalize( S - V * dot( S, V ) + vec3( 1e-4, 2e-4, 0.0 ) ) );
+	float uneven = 0.55 + 0.3 * sin( th * 2.0 + 0.6 ) + 0.15 * sin( th * 3.0 - 1.1 );
+	vec3 sky = uSoft * 3.0 / max( 1.0, dot( uSoft, vec3( 0.2126, 0.7152, 0.0722 ) ) * 3.0 / 0.9 );
+	sky = max( sky, vec3( 0.05, 0.05, 0.052 ) );
+	vec3 pic = mix( vec3( dot( seen.rgb, vec3( 0.2126, 0.7152, 0.0722 ) ) ) * vec3( 1.06, 1.0, 0.92 ), seen.rgb, 0.85 );
+	float deep = smoothstep( RIN, 0.99, rho );
+	float streak = 0.45 + 0.9 * pow( 0.5 + 0.5 * sin( th * 3.0 + rho * 13.0 + 0.8 * sin( th * 2.0 ) ), 3.0 );
+	float alpha = mix( mix( 0.5, 0.78, deep ) * known, 0.34, uTrue ) * mix( 0.7, 1.0, uArtOn ) * uBend * band;
+	vec3 col = ( pic * mix( 0.95, 0.4, deep ) * mix( 0.7, 1.2, uneven ) * streak + lampsIn( dir, from, 0.9 ) * 0.25 + gather * 0.35 + uHaze ) * alpha;
 
-	vec3 refl = pane( Np, rho, V, 1.0, 0.8, 0.052, 0.34, 0.0 ) * SOFT * 0.45;
+	float wall = band * ( 1.0 - smoothstep( 0.95, 0.995, rho ) );
+	col += wall * ( sky * uneven * ( 0.015 + 0.16 * pow( max( lightward, 0.0 ), 6.0 ) + 0.1 * pow( max( - lightward, 0.0 ), 8.0 ) ) + min( uFloor, vec3( 0.8 ) ) * 0.03 );
+	float fine = ( 1.0 - smoothstep( 0.0, 0.012, abs( rho - RIN - 0.022 ) ) ) * pow( max( lightward, 0.0 ), 2.0 ) + 0.6 * ( 1.0 - smoothstep( 0.0, 0.009, abs( rho - 0.955 ) ) ) * pow( max( - lightward, 0.0 ), 3.0 );
+	col += fine * ( sky * 0.3 + gather * 0.4 );
+	float veil = smoothstep( 0.42, RIN, rho ) * ( 1.0 - band );
+	col += veil * veil * ( sky * 0.015 * ( 0.4 + 0.6 * uneven ) + gather * 0.04 );
+	alpha = max( alpha, veil * veil * 0.05 );
+	float ring = ( 1.0 - smoothstep( 0.0, 0.035, abs( rho - RIN ) ) ) * pow( 0.5 + 0.5 * sin( th * 2.0 + 2.6 ), 2.0 );
+	col *= 1.0 - 0.22 * ring;
+	alpha = max( alpha, 0.26 * ring );
+
+	vec3 refl = pane( Np, rho, V, 1.0, 0.74, 0.05, 0.26, 0.0 ) * SOFT * 0.015;
+	refl += pane( Np, rho, V, 1.0, 0.9, 0.022, 0.13, 0.0 ) * SOFT * 0.4;
 	refl += floorAt( vP, R ).rgb * F * 0.9;
-	refl += lampsIn( R, vP, 0.55 ) * ( 0.3 + 0.9 * F ) * rimward;
+	refl += lampsIn( R, vP, 0.7 ) * ( 0.3 + 0.9 * F ) * rimward;
+	if ( uPress.w > 0.0 ) {
+		float struck = max( dot( normalize( vO ), uPress.xyz ), 0.0 );
+		refl += sky * uPress.w * ( 6.0 * pow( struck, 90.0 ) + 0.8 * pow( struck, 10.0 ) * band );
+	}
 	col += refl;
 	alpha = clamp( alpha + 0.012 + F * 0.6, 0.0, 1.0 );
 
-	float ring = 1.0 - smoothstep( 0.0, 0.011, abs( rho - RIN ) );
-	col *= 1.0 - 0.3 * ring;
-	alpha = max( alpha, 0.35 * ring );
-	float lip = 1.0 - smoothstep( 0.0, 0.018, abs( rho - RIN - 0.028 ) );
-	col += lip * ( gather * 0.6 + soft * 0.1 * ( 0.3 + 0.7 * max( dot( Np, normalize( vec3( uSoftDir.xy, 0.0 ) ) ), 0.0 ) ) + uFloor * 0.03 );
-
-	float brim = smoothstep( 0.92, 0.96, rho ) * ( 1.0 - smoothstep( 0.968, 0.985, rho ) );
-	vec3 S = normalize( uSoftDir );
-	float lightward = dot( Np, normalize( S - V * dot( S, V ) + vec3( 1e-4, 2e-4, 0.0 ) ) );
-	col += brim * ( min( uFloor, vec3( 0.8 ) ) * 0.05 + uSoft * SOFT * ( 0.16 * pow( max( lightward, 0.0 ), 4.0 ) + 0.05 * pow( max( - lightward, 0.0 ), 6.0 ) ) + max( soft * 0.06, vec3( 0.022, 0.025, 0.03 ) ) * ( 1.0 + 2.0 * max( lightward, 0.0 ) ) + gather * 0.6 );
-	float arc = ( 1.0 - smoothstep( 0.0, 0.014, abs( rho - 0.925 ) ) ) * pow( max( - lightward, 0.0 ), 3.0 );
-	col += arc * ( uSoft * SOFT * 0.22 + max( soft * 0.1, vec3( 0.02, 0.022, 0.026 ) ) + gather * 0.5 );
-	vec3 e1 = normalize( cross( V, vec3( 1.0, 0.0, 0.0 ) ) );
-	float th = atan( dot( Np, cross( V, e1 ) ), dot( Np, e1 ) );
-	float bright = ( 1.0 - smoothstep( 0.0, 0.017, abs( rho - 0.9 ) ) ) * pow( 0.5 + 0.5 * sin( th * 2.0 + 0.6 ), 3.0 );
-	bright += 0.8 * ( 1.0 - smoothstep( 0.0, 0.01, abs( rho - 0.95 ) ) ) * pow( 0.5 + 0.5 * sin( th * 3.0 - 1.1 ), 2.0 );
-	float dim = ( 1.0 - smoothstep( 0.0, 0.024, abs( rho - 0.862 ) ) ) * pow( 0.5 + 0.5 * sin( th * 2.0 + 2.6 ), 2.0 );
-	dim = max( dim, ( 1.0 - smoothstep( 0.0, 0.013, abs( rho - 0.927 ) ) ) * pow( 0.5 + 0.5 * sin( th * 3.0 + 1.0 ), 2.0 ) );
-	float rings = smoothstep( 0.3, 0.7, 0.5 + 0.5 * sin( rho * 150.0 + 1.6 * sin( th * 2.0 + 1.0 ) + 0.8 * sin( th * 5.0 ) ) );
-	float inRim = band * ( 1.0 - smoothstep( 0.955, 0.975, rho ) );
-	col *= mix( 1.0, mix( 0.35, 1.7, rings ), inRim );
-	float inner = smoothstep( 0.6, 0.76, rho ) * ( 1.0 - band );
-	float wave = rho * 64.0 + 2.2 * sin( th * 2.0 + 0.4 ) + sin( th * 3.0 + 2.0 );
-	float turn = 0.3 + 0.7 * ( 0.5 + 0.5 * sin( th * 2.0 + 2.0 ) );
-	col += inner * turn * pow( 0.5 + 0.5 * sin( wave ), 5.0 ) * ( max( soft * 0.26, vec3( 0.042, 0.04, 0.037 ) ) + min( uFloor, vec3( 0.8 ) ) * 0.04 + gather * 0.4 );
-	alpha = max( alpha, inner * ( 1.3 - turn ) * 0.45 * pow( 0.5 - 0.5 * sin( wave ), 4.0 ) );
-	col *= 1.0 - 0.6 * dim;
-	alpha = max( alpha, 0.55 * dim );
-	col += bright * ( max( soft * 0.6, vec3( 0.064, 0.062, 0.058 ) ) + min( uFloor, vec3( 0.8 ) ) * 0.04 + gather * 0.4 );
-	float thick = smoothstep( 0.8, 0.87, rho ) * ( 1.0 - smoothstep( 0.97, 0.996, rho ) );
-	col += ( lampsIn( reflect( - V, normalize( N - Np * 0.7 ) ), vP, 0.5 ) + lampsIn( reflect( - V, normalize( N + Np * 0.9 ) ), vP, 0.45 ) ) * 0.4 * thick;
-	float edge = smoothstep( 0.97, 0.996, rho );
-	col = mix( col, col * 0.16, edge * 0.9 );
-	alpha = mix( alpha, 0.92, edge * 0.9 );
+	float edge = smoothstep( 0.895, 0.94, rho ) * ( 1.0 - smoothstep( 0.95, 0.972, rho ) );
+	col = mix( col, col * 0.3 + surround( R ) * 0.5, edge * 0.7 );
+	alpha = mix( alpha, 0.75, edge * 0.7 );
+	float lip = smoothstep( 0.952, 0.974, rho ) * ( 1.0 - 0.5 * smoothstep( 0.985, 1.0, rho ) );
+	vec3 brim = sky * uneven * uneven * ( 0.1 + 0.9 * pow( max( lightward, 0.0 ), 2.0 ) + 0.45 * pow( max( - lightward, 0.0 ), 4.0 ) ) + gather * 1.0 + min( uFloor, vec3( 0.8 ) ) * 0.05;
+	col = mix( col, brim, lip * 0.85 );
+	alpha = mix( alpha, max( 0.5, min( 1.0, dot( brim, vec3( 0.2126, 0.7152, 0.0722 ) ) * 2.0 ) ), lip * 0.85 );
 
 	float glint;
 	float line = seamLine( glint );
 	vec3 Nb = normalize( N + vAxisY * 0.5 * sign( vO.y ) );
 	vec3 Rb = reflect( - V, Nb );
 	col += glint * 0.35 * ( softbox( Rb, 0.15 ) * SOFT * 0.14 + lampsIn( Rb, vP, 2.4 ) * 0.08 + uHaze * 2.0 + uFloor * 0.03 );
-	alpha = max( alpha, 0.1 * line );
+	alpha = max( alpha, 0.16 * line );
 
 	gl_FragColor = vec4( col, alpha );
 }
@@ -438,12 +437,11 @@ void paint() {
 	vec3 R = reflect( - V, N );
 	vec3 C = vec3( 0.0, 0.0, uR );
 	vec3 soft = uSoft / max( 1.0, dot( uSoft, vec3( 0.2126, 0.7152, 0.0722 ) ) / 0.35 );
-	vec3 col = pane( Np, rho, V, - 1.0, 0.62, 0.045, 0.2, 0.03 ) * SOFT * 0.03;
-	col += lampsBack( R, vP ) * ( 0.03 + 0.09 * smoothstep( 0.5, 0.8, rho ) + 0.5 * F );
+	vec3 col = pane( Np, rho, V, - 1.0, 0.6, 0.08, 0.3, 0.03 ) * SOFT * 0.015;
+	col += lampsBack( R, vP ) * ( 0.02 + 0.05 * smoothstep( 0.5, 0.8, rho ) + 0.4 * F );
 	col += surround( R ) * F * 0.5;
-	float alpha = F * 0.25 + 0.1 * ( 1.0 - uTrue );
-
 	float shut = step( uOpen, 0.002 ) * ( 1.0 - uTrue );
+	float alpha = F * 0.25 + 0.1 * ( 1.0 - uTrue ) + 0.3 * shut * ( 1.0 - smoothstep( 0.3, 0.86, rho ) );
 	vec3 oc = uEye - C;
 	float ob = dot( oc, - V );
 	vec3 P1 = uEye - V * ( - ob - sqrt( max( ob * ob - dot( oc, oc ) + uR * uR, 0.0 ) ) );
@@ -451,13 +449,13 @@ void paint() {
 	vec3 dir;
 	through( P1, - V, C, from, dir );
 	vec4 seen = floorAt( from, dir );
-	float lens = smoothstep( 0.55, 0.82, rho ) * ( 1.0 - smoothstep( RIN - 0.012, RIN + 0.012, rho ) );
-	float a = 0.9 * lens * mix( 0.5, 1.0, seen.a ) * mix( 0.7, 1.0, uArtOn ) * uBend * shut;
+	float lens = smoothstep( 0.66, 0.84, rho ) * ( 1.0 - smoothstep( RIN - 0.03, RIN + 0.03, rho ) );
+	float a = 0.4 * lens * mix( 0.5, 1.0, seen.a ) * mix( 0.7, 1.0, uArtOn ) * uBend * shut;
 	col += ( seen.rgb * 1.1 + lampsIn( dir, from, 0.8 ) * 0.2 ) * a;
 	alpha = max( alpha, a );
 
 	vec3 away = normalize( vec3( - uSoftDir.xy, 0.0 ) + vec3( 1e-4 ) );
-	float pool = smoothstep( 0.6, 0.84, rho ) * ( 1.0 - smoothstep( RIN - 0.012, RIN + 0.012, rho ) ) * pow( max( dot( Np, away ), 0.0 ), 2.0 );
+	float pool = smoothstep( 0.5, 0.8, rho ) * ( 1.0 - smoothstep( RIN - 0.03, RIN + 0.03, rho ) ) * pow( max( dot( Np, away ), 0.0 ), 2.0 );
 	col += ( soft * 0.16 + flecks( Np, C ) * 0.25 ) * pool * shut;
 
 	float glint;
@@ -514,11 +512,11 @@ void main() {
 	float ndv = clamp( dot( N, V ), 0.0, 1.0 );
 	vec3 R = reflect( - V, N );
 	float rim = pow( 1.0 - ndv, 2.0 );
-	vec3 col = softbox( R, 0.1 ) * SOFT * ( 0.08 + 0.25 * rim ) + lampsIn( R, vP, 2.2 ) * 0.12 + surround( R ) * rim;
+	vec3 col = softbox( R, 0.2 ) * SOFT * ( 0.04 + 0.14 * rim ) + lampsIn( R, vP, 2.2 ) * 0.04 + surround( R ) * rim;
 	vec3 through = vec3( 0.0 );
 	for ( int i = 0; i < LAMPS; i ++ ) through += uLampLit[ i ] * pow( max( dot( - normalize( uLampPos[ i ] - vP ), N ), 0.0 ), 3.0 );
-	col += through * 0.25 + uSoft * 0.2 * pow( max( dot( - normalize( uSoftDir ), N ), 0.0 ), 3.0 );
-	float alpha = 0.1 + 0.55 * rim;
+	col += through * 0.12 + uSoft * 0.12 * pow( max( dot( - normalize( uSoftDir ), N ), 0.0 ), 3.0 );
+	float alpha = 0.06 + 0.4 * rim;
 	gl_FragColor = vec4( col, alpha );
 }
 `
@@ -538,6 +536,7 @@ uniform vec3 uSpot[ 3 ];
 uniform float uR;
 uniform float uNear;
 uniform float uLift;
+uniform float uLoud;
 varying vec2 vXY;
 void main() {
 	float keep = 1.0;
@@ -546,25 +545,19 @@ void main() {
 		vec2 d = uShade[ i ].xy;
 		float k = uShade[ i ].z;
 		vec2 side = vec2( - d.y, d.x );
-		vec2 q = vXY - d * ( uR * 0.85 * k + uLift * k );
-		float along = dot( q, d ) / ( uR * 0.95 * sqrt( 1.0 + k * k ) );
-		float across = dot( q, side ) / ( uR * 0.9 );
+		vec2 q = vXY - d * ( uR * 0.9 * k + uLift * k );
+		float along = dot( q, d ) / ( uR * 1.25 * sqrt( 1.0 + k * k ) );
+		float across = dot( q, side ) / ( uR * 1.2 );
 		float e = along * along + across * across;
-		keep *= 1.0 - uShade[ i ].w * ( 1.0 - smoothstep( 0.42, 1.0, e ) ) * ( 1.0 - 0.55 * smoothstep( - 0.3, 1.0, along ) );
-		vec2 s = vXY - d * ( uR * ( 0.34 + 0.5 * min( k, 1.1 ) ) + uLift * k );
+		keep *= 1.0 - uShade[ i ].w * ( 1.0 - smoothstep( 0.12, 1.0, e ) ) * ( 1.0 - 0.4 * smoothstep( - 0.2, 1.0, along ) );
+		vec2 s = vXY - d * ( uR * ( 0.3 + 0.75 * min( k, 1.2 ) ) + uLift * k );
 		float sa = dot( s, d ) / uR;
 		float sc = dot( s, side ) / uR;
-		float core = 1.5 * exp( - ( sa * sa / 0.014 + sc * sc / 0.006 ) ) + 0.05 * exp( - ( sa * sa / 0.08 + sc * sc / 0.03 ) );
-		float ray = 0.07 * exp( - ( sa * sa / 0.08 + sc * sc / 0.0016 ) ) + 0.04 * exp( - ( sa * sa / 0.002 + sc * sc / 0.03 ) );
-		float da = ( sa + sc ) * 0.7071;
-		float db = ( sa - sc ) * 0.7071;
-		ray += 0.02 * ( exp( - ( da * da / 0.05 + db * db / 0.002 ) ) + exp( - ( db * db / 0.05 + da * da / 0.002 ) ) );
-		float ring = ( length( s ) / uR - 0.36 ) / 0.06;
-		float arc = 0.07 * exp( - ring * ring ) * pow( max( dot( normalize( s + vec2( 1e-4 ) ), d ), 0.0 ), 3.0 );
-		c += uSpot[ i ] * ( core + ray + arc );
+		c += uSpot[ i ] * ( 0.9 * exp( - ( sa * sa / 0.016 + sc * sc / 0.007 ) ) + 0.06 * exp( - ( sa * sa / 0.12 + sc * sc / 0.05 ) ) );
 	}
-	keep *= 1.0 - 0.62 * uNear * exp( - dot( vXY, vXY ) / ( uR * uR * 0.24 ) );
+	keep *= 1.0 - 0.7 * uNear * exp( - dot( vXY, vXY ) / ( uR * uR * 0.4 ) );
 	float fade = 1.0 - smoothstep( 0.8, 1.0, length( vXY ) / ( uR * 5.2 ) );
 	gl_FragColor = vec4( c * fade, ( 1.0 - keep ) * fade );
+	if ( uLoud > 0.5 ) gl_FragColor = vec4( 1.0 - keep, 0.2, keep, 1.0 ) * 0.8;
 }
 `

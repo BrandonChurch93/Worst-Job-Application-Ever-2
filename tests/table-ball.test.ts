@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
 import * as THREE from 'three'
-import { DROPS, ORDER, PART, PARTING, RIN, dropPlaces, hold, parts, rollAt, setGrade, shellGeometry, stateOf, type Grade } from '../src/table/real/ball'
+import { DROPS, ORDER, PART, PARTING, RIN, WALL, dropPlaces, hold, parts, rollAt, setGrade, shellGeometry, stateOf, type Grade } from '../src/table/real/ball'
 import { LAMPS, fall, lightAt } from '../src/table/real/ball/lamps'
 import { anchorId, fixedShapes } from '../src/table/draw'
 import { table } from '../src/table/layout'
@@ -72,7 +72,8 @@ describe('the clear ball', () => {
       }
       if (kind.getX(i) === 1) {
         expect(p.getY(i)).toBe(0)
-        expect(Math.hypot(p.getX(i), p.getZ(i))).toBeGreaterThanOrEqual(RIN - 1e-6)
+        expect(Math.hypot(p.getX(i), p.getZ(i))).toBeGreaterThanOrEqual(WALL - 1e-6)
+        expect(WALL).toBeLessThan(RIN)
       }
       if (kind.getX(i) === 2) expect(Math.abs(p.getY(i))).toBeLessThan(0.1)
     }

@@ -2,7 +2,7 @@ import { readFileSync, readdirSync } from 'node:fs'
 import { describe, expect, test } from 'vitest'
 import copy from '../content/copy.json'
 import { SCORE_H, SCORE_W, TEXT_DOWN, TEXT_UP, dot, glyph, hasGlyph, score, text } from '../src/table/real/displays/font'
-import { COLS, PACE, ROWS, ascii, compose, keyOf, lineWidth, modeSeconds, nameLines, scoreLeft, scrolled, setLine, twice, widthOf, type Show } from '../src/table/real/displays/screen'
+import { COLS, PACE, ROWS, ascii, compose, keyOf, modeSeconds, nameLines, pageAt, pagesOf, scoreLeft, setLine, twice, widthOf, type Show } from '../src/table/real/displays/screen'
 
 const modes = (copy as unknown as { step3: { table: { modes: { insert: string; display: string }[] } } }).step3.table.modes
 const grid = (show: Show): Uint8Array => {
@@ -89,24 +89,33 @@ describe('a mode', () => {
       expect(keyOf({ kind: 'mode', name: m.insert, line: m.display, t: 0 })).toBe(keyOf({ kind: 'mode', name: m.insert, line: m.display, t: PACE.hold - 0.01 }))
     }
   })
-  test('a line too long for the grid scrolls at an even pace and is never made smaller', () => {
+  test('a line too long for the grid is shown a page of whole words at a time, never cut and never a lone letter', () => {
     for (const m of modes) {
-      expect(lineWidth(m.display)).toBe(widthOf(m.display) * 2)
-      expect(lineWidth(m.display)).toBeGreaterThan(COLS)
+      const pages = pagesOf(m.display)
+      expect(pages.map((p) => p.words).join(' ')).toBe(m.display)
+      expect(pages.length).toBeGreaterThan(1)
+      expect(modeSeconds(m.display)).toBeCloseTo(PACE.hold + pages.length * PACE.page, 9)
+      pages.forEach((p, i) => {
+        expect(widthOf(p.words) * (p.big ? 2 : 1)).toBeLessThanOrEqual(COLS - 4)
+        if (!p.big) expect(p.words.includes(' ')).toBe(false)
+        const t = PACE.hold + (i + 0.5) * PACE.page
+        expect(pageAt(m.display, t)).toBe(i)
+        const d = grid({ kind: 'mode', name: m.insert, line: m.display, t })
+        expect(lit(d)).toBe(lit(Uint8Array.from((p.big ? twice(setLine(p.words)) : setLine(p.words)).at)))
+        const cols = columns(d)
+        expect(cols[0]).toBeGreaterThanOrEqual(2)
+        expect(cols[cols.length - 1]).toBeLessThanOrEqual(COLS - 3)
+        expect(Math.abs(cols[0]! - (COLS - 1 - cols[cols.length - 1]!))).toBeLessThanOrEqual(1)
+      })
       const end = modeSeconds(m.display)
-      expect(scrolled(end + 1e-6)).toBeGreaterThanOrEqual(COLS + lineWidth(m.display))
-      expect(lit(grid({ kind: 'mode', name: m.insert, line: m.display, t: end + 1e-6 }))).toBe(0)
-      expect(lit(grid({ kind: 'mode', name: m.insert, line: m.display, t: end - 0.5 }))).toBeGreaterThan(0)
+      expect(pageAt(m.display, end + 1)).toBe(pages.length - 1)
+      expect(lit(grid({ kind: 'mode', name: m.insert, line: m.display, t: end + 1 }))).toBeGreaterThan(0)
     }
-    const step = 1 / 60
-    const moves: number[] = []
-    for (let i = 0; i < 90; i++) moves.push(scrolled(PACE.hold + (i + 1) * step) - scrolled(PACE.hold + i * step))
-    expect(Math.max(...moves) - Math.min(...moves)).toBe(0)
-    expect(moves[0]).toBe(PACE.dotsPerSecond / 60)
-    expect(Number.isInteger(moves[0])).toBe(true)
-    const a = grid({ kind: 'mode', name: '', line: modes[0]!.display, t: PACE.hold + 2 })
-    const b = grid({ kind: 'mode', name: '', line: modes[0]!.display, t: PACE.hold + 2 + 10 / PACE.dotsPerSecond })
-    for (let y = 0; y < ROWS; y++) for (let x = 20; x < COLS - 1; x++) expect(b[y * COLS + x - 10]).toBe(a[y * COLS + x])
+    const line = modes[0]!.display
+    const key = (t: number): string => keyOf({ kind: 'mode', name: '', line, t })
+    expect(key(PACE.hold + 0.01)).toBe(key(PACE.hold + PACE.page - 0.01))
+    expect(key(PACE.hold + 0.01)).not.toBe(key(PACE.hold + PACE.page + 0.01))
+    expect(Number.isInteger(PACE.page * 60)).toBe(true)
   })
   test('text at twice the size has capitals of fourteen dots, never fewer', () => {
     const s = twice(setLine('E'))

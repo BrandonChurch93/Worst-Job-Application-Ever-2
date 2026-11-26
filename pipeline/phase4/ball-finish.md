@@ -45,6 +45,27 @@ Major:
 Minor:
 - R3-2 issue 6: the third ball "still almost round". Stands against R1-1 issue 2 and the approved image: settled below.
 
+## The one diagnosis of the grey arrow (10:16 UTC)
+
+SEEN in one run, `node assets-src/table/ball/diag.mjs --keys lobby-doors --variants noshell,loud,loudz --tier draft --box 783,480,600,600 --size 600 --noref`:
+
+- With the shells not drawn (`noshell`) the arrow is the same mid grey with the same heavy black side. So the grey is not the tint of the glass and not the droplets. It is the light that reaches the arrow inside the ball: my `sealed` lamp, whose level `INSIDE.most` 0.6 held the ivory face near sRGB 150 where approved is 175 to 225.
+- The black side is the arrow's own body, seen edge-on because of how the arrow is turned. Not mine: told `/root/machine_finisher` and `/root`.
+- With the shadow painted loud (`loud`, `loudz`) the shadow is drawn and is not hidden by the carpet. MEASURED on the stills with a pixel read: the carpet in it is sRGB 58 against 113 beside it. It was aimed by a rule of my own (`KEY_AWAY`, turned from the door in the lobby) and not by the tier's head lamps, so it fell where the frame does not show it.
+
+## Decisions (first pass, 10:20 to 10:50 UTC)
+
+1. The arrow's light: `INSIDE` now `{ key: 2.6, fill: 0.6, lamps: 0.12, face: 1.6, least: 0.85, most: 1.0 }`. The face reads ivory white in the sheet and at `lobby-doors`, `youre-fired`.
+2. The glass is painted without any ring that repeats: the concentric `rings`, the `inner` waves, the four thin arcs and the window with its bar are gone from `glsl.ts`. What is left is the bent floor in the wall, uneven round the angle, one feathered patch of the room's light with a short bright arc in the rim, one fine line on the inner wall on the lit side, a soft dark edge, and one reflection for each lamp.
+3. The wall is thicker: `RIN` 0.84 (was 0.875), now set in `glsl.ts` and passed on by `index.ts`. The arrow's limit in the tests is 40 px of 48, inside it.
+4. Drops: `DROPS` 22 (was 64), smaller, with less shine. That also takes 3360 triangles off the ball.
+5. The shadow follows the tier's head lamps: the decal reads `keyOf(zone).toward` from `src/table/real/lights/key.ts`, so it falls the way every other shadow of the tier falls. It is larger and softer, and it carries one warm highlight in the lamps' own colour; the two spots of the low lamps are gone, their shadows are kept faint. AGREED with `/root/lamp_finisher` (10:21 UTC): its hook keeps cutting the key light under the ball by `SHADOW.clear` 0.4 and drops its own spot (`SHADOW.spot` 0 on `agent/lamp-finish`), so there is one highlight and it is mine. Its key turns to `unit(0.3, 0.58, 0.95)` on all tiers this round; my decal follows on the merge. The decal never reads shorter than a slant of 1.2, because approved shows a long shadow.
+6. A hit: the glass stays round. `SQUASH` is `{ cut: 0, thin: 0.05, wide: 0.02 }` (was 0.6, 0.35, 0.25). The glass shows the hit only as a glint in the rim on the struck side. R3-2 issue 6 ("still almost round") is set aside: the approved sheet and R1-1 issue 2 stand against it. TOLD `/root/machine_finisher` at 10:27 UTC that the arrow must carry the blow and stay inside 0.84 of the radius.
+7. Displays: a line no longer runs through the grid dot by dot. It is shown a page at a time (`pagesOf`), each page whole words alone, centred, at twice the size where the words fit, and a word too long for that on a page of its own at its own size. A page stands `PACE.page` 0.9 s (54 frames of the film). No moment shows a lone letter or a cut word. `modeSeconds` and `scrollSeconds` keep their names, so `pick.ts` is untouched.
+
+8. The wall as drawn and the bore are two numbers: `WALL` 0.84 (in `glsl.ts`: the inner wall of the picture, the cut faces, the drops) and `RIN` 0.875 (the bore the arrow is fitted to, pinned by `tests/cursor-fit.test.ts` to `BORE.wall` in `src/cursor/model/`, which is not mine). The arrow never lies in the drawn wall: MEASURED by `/root/machine_finisher`, its furthest corner is 0.81 of the radius.
+9. Round 12's film issues that are mine (from `/root`, 10:33 UTC). R4-3 issues 5 and 6 (a pinched blob for two frames, a dark opening): SEEN after decision 6 in `node assets-src/table/ball/hit.mjs --frame 5013 --count 6 --step 1 --size 300`, film frames 5011 to 5016 across the bumper hit of 5010: the ball is a whole round sphere on each frame. R9-1 issues 1 and 3, R9-2 issue 6 (the arrow lost in the glass): the far wall now lays a dark ground behind the arrow (0.3 of the scene behind is taken away in the middle of the ball, none at the wall), the arrow's own light is up (decision 1), and the shell has a rim of light (the `lip` in `frontFragment`). The firmer black edge is the body's, not mine.
+
 ## Tuning looks, by part
 
-Counted from the first still. `clear-ball`: 4 at 10:12 UTC (sheet, `lobby-doors`, `youre-fired`, `last-save`, all `draft`). `displays`: 0.
+Counted from the first still, all `draft`. `clear-ball`: 4 by 10:12 UTC (sheet, `lobby-doors`, `youre-fired`, `last-save`); 7 (three diagnosis variants); 8 (sheet); 10 (`lobby-doors`, `youre-fired` compares); 13 (`youre-fired`, `lobby-doors`, `rail-cam` in one run); 14 (sheet); 15 at 10:35 (film frames 5011 to 5016). `displays`: 1 (`last-save` compare).
