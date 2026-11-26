@@ -17,9 +17,9 @@ const IVORY = look(0xe9e2cf, 0.4, 0, 0.6)
 const IVORY_EDGE = look(0xd8cfb8, 0.5, 0, 0.3)
 const MANILA = look(0xd9bf86, 0.62, 0, 0.15)
 const MANILA_EDGE = look(0xc4a86e, 0.7, 0, 0)
-const GREEN = look(0xb7ccb2, 0.45, 0, 0.5)
-const GREEN_EDGE = look(0x9ab596, 0.55, 0, 0.2)
-const STONE = look(0xeef0e6, 0.5, 0, 0.3)
+const NAVY = look(0x1d3157, 0.3, 0, 0.9)
+const NAVY_EDGE = look(0xb08a48, 0.3, 1, 0)
+const STONE = look(0xb9ae94, 0.5, 0, 0.3)
 const CREAM = look(0xe8dfca, 0.4, 0, 0.6)
 const BEAN = look(0x5b3520, 0.42, 0, 0.6)
 const BEAN_DARK = look(0x2d1a10, 0.6, 0, 0.2)
@@ -49,8 +49,8 @@ const rounded = (w: number, h0: number, h1: number, r: number): V2[] => {
 function plateGeometry(tier: string, wide: number): THREE.BufferGeometry {
   const b = new Bag()
   const face = PLATE.thick / 2
-  const body = tier === 'corporate' ? IVORY : tier === 'office' ? MANILA : GREEN
-  const edge = tier === 'corporate' ? IVORY_EDGE : tier === 'office' ? MANILA_EDGE : GREEN_EDGE
+  const body = tier === 'corporate' ? IVORY : tier === 'office' ? MANILA : NAVY
+  const edge = tier === 'corporate' ? IVORY_EDGE : tier === 'office' ? MANILA_EDGE : NAVY_EDGE
   b.add(prism(rounded(wide, -PLATE.below, PLATE.tall, 2.2), -face, face, 0.7, 2), body, STAND)
   b.add(prism(rounded(wide - 4, 3, PLATE.tall - 2, 1.6), face - 0.2, face + 0.35, 0), edge, STAND)
   b.add(prism(rounded(wide - 5.4, 3.7, PLATE.tall - 2.7, 1.2), face - 0.2, face + 0.5, 0), body, STAND)
@@ -196,7 +196,7 @@ export const spinnerTurn = (since: number): number => {
 }
 
 export const targets = whole('targets', {
-  version: 'play-targets-6',
+  version: 'play-targets-7',
   build(z) {
     const g = new THREE.Group()
     g.name = `play.targets.${z.id}`

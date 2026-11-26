@@ -35,6 +35,9 @@ Added after the list was sent:
 14. major, last screen, from the machine finisher at 10:16: the drain plaque on `step3-result` wants an edge, a recess, a metal frame like the other hardware and a contact shadow, with the tube seated in a fitting. True. Its left edge can not be lined up with the results panel in my folders: the drain rail and `OUTLET` are not mine to move.
 15. round 12 motion, from the Builder, before my own list: R4-3 issue 2, the bumper cap does not move on the frame of contact; R4-3 issue 3, the pocket left of the envelopes tray (the `office.inbox` scoop) stays inert; R4-4 issue 2, nothing is seen to move at the You're Fired seat; R4-4 issue 1 and R9-1 issue 3, the steel balls of the Coffee release read as copies of the clear ball.
 
+16. minor, `tier-street` R1-4 issue 17, from the Builder at 11:19 by way of the street finisher: "a row of pale green fence posts". They are the drop targets before the bank (`play/targets.ts`). True: pale green plates. Now navy enamel plates with a brass edge and a dimmer stone relief.
+17. M3, MEASURED 11:11 UTC at draft (`npm run measure -- --unit pinball --only M3 --tier draft --format hd`): 3 of 10 keys red, `rail-cam` 0.51, `youre-fired` 0.71, `tier-corporate` 0.78 against 0.8.
+
 ## Looks by part, this round (limit 40 each)
 
 One draft still of a key counts once for each of my parts judged in it.
@@ -75,6 +78,13 @@ Draw calls of my folders: 99 before, 99 after. Triangles of my folders: 183228 b
 9. Loader ring: one turned ring of 240 steps with a flange where the tube leaves; each collar and the tube throw their own tight shadow to the lower right.
 10. Drain plaque on the last screen: dark recessed plate, raised lip round the slot, three stepped shadow slabs under the plate. Its place is not changed.
 11. Orange stays `MACHINE_ORANGE`; the bats got a lacquer coat, a black band and a dark screw. The pale frames under the bats are gone.
+
+12. Plunger knob: a finish of its own (`FIN.amber`: no metal, a thin coat), and a tone that turns with the face (`Geo.tint`): paler to the lamps, deeper in the shade, so it reads as a bead of amber and not as a muddy mirror. The colour stays `MACHINE_ORANGE`.
+13. The near wedges that bring the rails down to the apron are enamelled cream on top like the rail lands; only their upright sides are navy. With them the mean of `table-wide` is 1.006 of the approved.
+14. Hoops of the wire track every 160 px instead of 288, and the wire at roughness 0.067: bright core, dark edge.
+15. The navy of the walls is polished (roughness 0.1 where the vertex tone is dark, in `aluOf`), so the walls show the lamp rows as small glints as the approved inner channel does; the enamel and the brushed lands keep their soft finish.
+16. Title plate: dusk plum (0x2b2236) in a thin dark frame instead of near black in a bright frame.
+17. Street drop targets: navy enamel with a brass edge (see issue 16).
 
 ## Measurements
 

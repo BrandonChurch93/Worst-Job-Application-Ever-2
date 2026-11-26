@@ -4,6 +4,7 @@ import { DROPS, ORDER, PART, PARTING, RIN, WALL, dropPlaces, hold, parts, rollAt
 import { LAMPS, fall, lightAt } from '../src/table/real/ball/lamps'
 import { anchorId, fixedShapes } from '../src/table/draw'
 import { table } from '../src/table/layout'
+import { keyOf } from '../src/table/real/lights/key'
 import { config } from '../src/config'
 import type { Shape } from '../src/stage/types'
 import type { RealContext } from '../src/real/types'
@@ -195,5 +196,22 @@ describe('the clear ball', () => {
     expect(a.map((d) => d.at.toArray())).toEqual(b.map((d) => d.at.toArray()))
     for (const d of a) expect(d.at.length()).toBeCloseTo(1, 6)
     expect(dropPlaces(config.seed + 1)[0]!.at.toArray()).not.toEqual(a[0]!.at.toArray())
+  })
+
+  test('the glass is lit from the side of the tier\'s head lamps, and its shadow falls the other way', () => {
+    const o = maker.make(office, ctx)
+    maker.pose!(o, office, ctx)
+    const key = keyOf('office')!
+    const front = meshesOf(o).find((m) => m.name === 'ball.front')!
+    const shadow = meshesOf(o).find((m) => m.name === 'ball.shadow')!
+    const from = (front.material as THREE.ShaderMaterial).uniforms.uSoftDir!.value as THREE.Vector3
+    const cast = ((shadow.material as THREE.ShaderMaterial).uniforms.uShade!.value as THREE.Vector4[])[0]!
+    expect(from.length()).toBeCloseTo(1, 6)
+    expect(from.z).toBeGreaterThan(0.3)
+    expect(from.x * key.toward[1] - from.y * key.toward[0]).toBeCloseTo(0, 6)
+    expect(from.x * key.toward[0] + from.y * key.toward[1]).toBeGreaterThan(0)
+    expect(cast.x * from.x + cast.y * from.y).toBeLessThan(0)
+    expect(cast.w).toBeGreaterThan(0)
+    maker.drop!(o)
   })
 })
