@@ -26,6 +26,7 @@ export const TRAY_R = 18
 export const TRAY = { sink: 0.5, joint: 0.3, jointDeep: 0.7, rim: 7, lean: 1.1, rimShade: 0.55, wallShade: 0.26, wallShadeTop: 0.12, wallFoot: 0.2, wallFootTop: 0.04, cool: 0.12, soakOver: 0.5,
   floor: { soak: 0.2, hold: 0.2, reach: 22, bounce: 0.05, bounceReach: 16, base: 1, side: 0.8 },
   soak: { soak: 0.62, hold: 1, reach: 15, bounce: 0.05, bounceReach: 20, base: 0.93, side: 0.8, cool: 0.14 } }
+export const COIN = { r: 13, wall: 17, clear: 0.3, fall: 2600, spring: 0.38, least: 150, hops: 2, rows: 2, roll: 150, pitch: 23, stack: 1.4 }
 export const SHIFT = TRAY_H + TRAY_GAP
 export const TRAY_Z = heights.machineTray
 export const TOP = heights.machineMinTop
