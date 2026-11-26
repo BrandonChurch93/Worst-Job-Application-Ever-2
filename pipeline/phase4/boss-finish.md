@@ -89,3 +89,24 @@ Counted at 10:50.
 | R3-1 2 major, fallen shield | page seen through a green tint, wider bright cracks |
 | R3-1 3 minor, trail | open |
 
+
+## Round 14 film issues (R4, R9), Builder's order
+
+Looks since 10:50, by part: acting-boss 2 + 8 (sheet `boss.slabs`, three motion sheets of the slabs, frame 7346, unfold, last stand, press) = 10; boss-body 18; boss-transform 16; boss-weapons 5; verify-card 1; health-bar 5.
+
+| item | what was changed | state |
+| --- | --- | --- |
+| 1 contact frame | a slab dives to the page over its last 150 px and stops dead with one hop (`FLY` in `src/boss/weapons.ts`); a hit holds the slab on the arrow for 0.05 s before the knock (`STRIKE`, `Fight.blow` in `src/boss/fight.ts`); a slab that reaches the card stops at its rim and bounces (`RIM_GAP`); a rested slab slides off the page by the shortest free way (`leave`, `LEAVE`), none fades | looked at in motion sheets, pushed in b50a91a4 |
+| 1 frame 7346 | the slab's type was not drawn while it left the muzzle (k below 0.98) and at the end of sinking; type is now drawn for the whole life of a slab, scaled with it while it emerges; a slab has no back face | looked at |
+| 2 arrow answers | unfold: the arrow stands at the button, is thrown back on the crack (recoil with the throw's direction, held shocked), runs for cover and cowers still; first slab: `rear` before it, dodge after; hit: thrown key `THROWN`; `boss.popups`: only the first dialog knocks, later ones get `fume`; the hit of `boss.popups` throws the arrow (`STRUCK`) and the `dustOff` shake runs whole | unfold looked at; hits to be looked at |
+| 3 `boss.verify` | one move that stops short (`SHORT`), a held pull back, the commit, the dip on the click, then a held pose below the card (`ANSWER`) clear of its edge | to be looked at |
+| 4 `boss.press` | the fallen button sinks 7 px in 2 frames under the tip, is held 1 frame and springs back with one overshoot (`PRESS`, `sunk`); the arrow's ground follows it | to be looked at close |
+| 5 `boss.lastStand` | phase 2 wander centred 60 px left of home so the boss is whole in the frame (`wander`); "really": `rear` with `shocked` as the banner lands, `doubleTake` at the bar's jump, then `angry` with `fume` | looked at (`last-a`) |
+| 6 red dash | the banner and a slab are not drawn below a least scale (`BANNER_LEAST`, `SLAB_LEAST`) | to be looked at |
+
+Decisions:
+
+- The press stays at 29.88 s: `tests/boss-closer-acting.test.ts` holds proud for 1.5 s after it and the sag for 1.1 s before it. The turn is the stage's, at unit seconds less `TURN_HALF` (31.5 s); the page keeps the pointer on the fallen button to 32 s and calls no cue after `act('proud')` at 30.3 s.
+- `SAG_AT` 1.66 to 1.57: the boss dies 0.08 s later now (27.32 s), the sag stays at 28.89 s.
+- The boss hides header stations 1 and 2 (`over`) once the cannons unfold: the discs are the cannons' then.
+- Sent to look_finisher (11:12): the arrow's contour beside "Invalid input" (R9-2 issue 4), R9-1 issue 6, and the glass of the card (R1-1 issues 10 and 15). No answer yet, nothing agreed.

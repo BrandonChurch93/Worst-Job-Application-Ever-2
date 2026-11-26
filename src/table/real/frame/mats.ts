@@ -62,7 +62,16 @@ export const aluOf = (z: Zone, name = 'alu'): THREE.MeshPhysicalMaterial => {
   const src = materials().aluminium
   const on = roomOf(z) !== undefined
   const m = steel(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: on ? 0.27 : 0.4, metalness: on ? 1 : 0.4, normalMap: src.normalMap ? fine(src.normalMap) : null, normalScale: new THREE.Vector2(on ? 0.08 : 0.15, on ? 0.08 : 0.15), anisotropy: 0.72, anisotropyRotation: Math.PI / 2 })), z, { ceiling: 0.7, panel: 0.95, wide: 0.3, horizon: 1.3, direct: 0.3, under: 0.9, wall: 0.35 }, roomOf(z))
-  if (!on) {
+  if (on) {
+    // The navy of the walls is polished: it shows the lamps of the lanes as small sharp glints, where the enamel and the brushed lands stay soft.
+    const room = m.onBeforeCompile
+    const key = m.customProgramCacheKey
+    m.onBeforeCompile = (shader, renderer) => {
+      room.call(m, shader, renderer)
+      shader.fragmentShader = shader.fragmentShader.replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\n#ifdef USE_COLOR\nroughnessFactor = mix( 0.1, roughnessFactor, smoothstep( 0.17, 0.3, dot( vColor.rgb, vec3( 0.3333 ) ) ) );\n#endif')
+    }
+    m.customProgramCacheKey = () => `${key.call(m)}|wjf-navy`
+  } else {
     const room = m.onBeforeCompile
     const key = m.customProgramCacheKey
     m.onBeforeCompile = (shader, renderer) => {
