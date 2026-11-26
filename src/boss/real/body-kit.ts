@@ -133,7 +133,7 @@ export function bossKit(): BossKit {
     glassCrack: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xf4f8f5), roughness: 0.3, metalness: 0, specularIntensity: 0.8, transparent: true, opacity: 0.8, depthWrite: false })),
     plate: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x6f7378), roughness: 0.38, metalness: 1 })),
     pocket: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x63666a), roughness: 0.5, metalness: 0.9 })),
-    link: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xc3c7ca), roughness: 0.3, metalness: 0.85 })),
+    link: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xc2c6c9), roughness: 0.45, metalness: 0.5 })),
     crack: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x3a1608), roughness: 0.85, metalness: 0, specularIntensity: 0.15, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 }))
   }
   return made

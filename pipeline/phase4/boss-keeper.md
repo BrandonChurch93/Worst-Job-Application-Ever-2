@@ -22,9 +22,9 @@ Counted by part, 40 each for this round. A look is one still rendered and looked
 
 | Part | Looks |
 | --- | --- |
-| boss-body | 14 |
+| boss-body | 21 |
 | boss-transform | 7 |
-| boss-weapons | 10 |
+| boss-weapons | 11 |
 | health-bar | 1 |
 | acting-boss | 3 |
 | verify-card | 0 |
@@ -56,3 +56,4 @@ MEASURED at 04:40 UTC after the change, same command, 1 m 30.9 s: M1 pass; M2 pa
 15. The collar of the pit is a satin grey of its own (0x9a9c9c, roughness 0.6) and the wall under it is lighter and rougher, so the wall reads as broken stone and only the floor is near black.
 16. The cursor is scorched twice by the script: at the power-down and again when the hot cap lands (1.2 s into the collapse, for 2.4 s), so the scorch is fresh at the key `boss-down` and gone before the unit ends, as `tests/boss.test.ts` asks.
 17. The sheet shows no captions: ruled by the Builder at 04:44 UTC, the words of the approved sheet are the picture's own and no key is added.
+18. The lower pair of legs read near black: the faces of their links lean about 30 degrees away from the key light, because a leg comes down 107 px from the hip to the foot. Each foot now carries a stem 52 px tall with the ball on its top (`ANKLE` in `src/boss/real/body.ts`), so a leg leans about half as much. The stem shrinks to nothing as the boss folds or falls flat. The links are a less mirror like metal (metalness 0.5, roughness 0.45).
