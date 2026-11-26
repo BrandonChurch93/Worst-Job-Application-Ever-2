@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { look } from '../../../post/look'
 import { studio } from '../../../post/studio'
 import type { PartMaker } from '../../../real/types'
 import { controls } from '../../../shell/real/controls'
@@ -8,7 +9,7 @@ import type { Shape } from '../../../stage/types'
 const q = (v: number): number => Math.round(v * 4) / 4
 const srgb = (hex: number) => new THREE.Color().setHex(hex, THREE.SRGBColorSpace)
 const RIM = { inset: 2.9, wide: 1.5, tall: 0.7 }
-const PILLOW = { round: 2.6, line: 1.3 }
+const PILLOW = { shoulder: 8, turn: 1.25 }
 const SHADE = { rings: [[-8, 0.2], [0, 0.2], [2, 0.13], [5, 0.07], [10, 0.03], [17, 0]] as [number, number][], dx: 4, dy: -5, colour: 0x2c3a36, full: 8 }
 
 let lineMade: THREE.MeshPhysicalMaterial | null = null
@@ -23,7 +24,7 @@ function line(): THREE.MeshPhysicalMaterial {
 }
 
 function pillow(): THREE.MeshPhysicalMaterial {
-  pillowMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xc3cdca), roughness: 0.3, metalness: 0, specularIntensity: 0.8, clearcoat: 0.8, clearcoatRoughness: 0.2 }))
+  pillowMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xc3cdca), roughness: 0.3, metalness: 0, specularIntensity: 0.8, clearcoat: 0.8, clearcoatRoughness: 0.2, vertexColors: true }))
   pillowMade.name = 'metrics-pillow'
   return pillowMade
 }
@@ -81,17 +82,29 @@ function panelOf(s: Shape, card: THREE.Object3D): THREE.Object3D {
   return root
 }
 
-// A readout is a pillow of the same glass standing on the panel, lighter than it, with its own line of light.
+// Glass turns the light round: the shoulder that faces the lamp shows the dark under it, the far shoulder gathers the light.
+function refracted(g: THREE.BufferGeometry): THREE.BufferGeometry {
+  const nor = g.getAttribute('normal')
+  const [lx, ly] = look.key.direction
+  const col = new Float32Array(nor.count * 3)
+  for (let i = 0; i < nor.count; i++) {
+    const l = Math.hypot(nor.getX(i), nor.getY(i), nor.getZ(i)) || 1
+    const tone = Math.max(0.3, 1 - PILLOW.turn * ((nor.getX(i) * lx + nor.getY(i) * ly) / l))
+    col.set([tone, tone, tone], i * 3)
+  }
+  g.setAttribute('color', new THREE.BufferAttribute(col, 3))
+  return g
+}
+
+// A readout is a pillow of the same glass standing on the panel, lighter than it, with a broad round shoulder and its own line of light.
 function readoutOf(s: Shape): THREE.Object3D {
   const h = s.z1 - s.z0
   const half = Math.min(s.w, s.h) / 2
-  const r = Math.min(PILLOW.round, h - 0.2)
+  const wide = Math.min(PILLOW.shoulder, half - 2)
   const root = new THREE.Group()
-  const body: ProfilePoint[] = [[0, 0, true], [0, h - r], ...arc(0, h - r - 0.5, r, r, 6).slice(1), [r + 5, h - 0.3], [Math.min(half - 1, r + 16), h - 0.05]]
-  root.add(solid(sweep(outlineOf(s, 0, 14), profile(body)), pillow(), true))
-  const at = r * 0.3
-  const bead: ProfilePoint[] = [[at, h - r * 0.75 - 0.5, true], [at + 0.2, h - 0.6], [at + PILLOW.line / 2, h - 0.3], [at + PILLOW.line, h - 0.5, true]]
-  root.add(solid(sweep(outlineOf(s, 0, 14), profile(bead), false), line(), false))
+  const top = h - 0.3
+  const body: ProfilePoint[] = [[0, 0, true], [0, 0.5], ...arc(0, 0.5, wide, top - 0.5, 9).slice(1), [Math.min(half - 1, wide + 10), top]]
+  root.add(solid(refracted(sweep(outlineOf(s, 0, 14), profile(body))), pillow(), false))
   return root
 }
 
