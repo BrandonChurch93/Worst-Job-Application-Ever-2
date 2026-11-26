@@ -27,7 +27,7 @@ function solidOf(z: Zone): THREE.MeshPhysicalMaterial {
   }
   m.customProgramCacheKey = () => 'wja-studio-play-solid-3'
   m.name = `play.solid.${z.id}`
-  return lit(steel(m, z, { ceiling: 0.07, panel: 0.7, wide: 0.22, horizon: 1.6, lamps: 1.6, sky: 0.7 }), z)
+  return lit(steel(m, z, { ceiling: 0.07, panel: 0.7, wide: 0.22, horizon: 1.6, lamps: 1.6, sky: 0.7, paint: 0.4 }), z)
 }
 
 // Clear plastic with no light passed through it: thin where it is seen straight on, bright where it turns away and at every edge.

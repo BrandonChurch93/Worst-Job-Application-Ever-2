@@ -196,7 +196,7 @@ export const spinnerTurn = (since: number): number => {
 }
 
 export const targets = whole('targets', {
-  version: 'play-targets-4',
+  version: 'play-targets-5',
   build(z) {
     const g = new THREE.Group()
     g.name = `play.targets.${z.id}`

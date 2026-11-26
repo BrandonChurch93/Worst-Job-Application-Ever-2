@@ -29,6 +29,7 @@ uniform float wjsShow;
 uniform float wjsUnder;
 uniform float wjsSky;
 uniform float wjsWall;
+uniform float wjsPaint;
 varying vec3 wjsAt;
 float wjsGlint( float across, float along, float up, float at, float rough ) {
 	float a = abs( across );
@@ -85,7 +86,7 @@ const BODY = /* glsl */ `
 	vec3 wjsN = normalize( ( wjaViewInverse * vec4( geometryNormal, 0.0 ) ).xyz );
 	float wjsStand = mix( wjsWall, 1.0, smoothstep( 0.12, 0.45, abs( wjsN.z ) ) );
 	reflectedLight.directSpecular *= ( wjsPanel.w > 0.0 ? wjsDirect : 1.0 ) * wjsStand;
-	reflectedLight.indirectSpecular = reflectedLight.indirectSpecular * wjsKeep + mix( material.specularColor, material.specularColorBlended * wjsShow, metalnessFactor ) * ( wjsRoom( wjsR, material.roughness ) + wjsLamps( wjsR, material.roughness ) ) * wjsLevel * wjsStand + material.specularColorBlended * metalnessFactor * wjsPolish( wjsR, roughnessFactor ) * wjsLevel;
+	reflectedLight.indirectSpecular = reflectedLight.indirectSpecular * wjsKeep + mix( material.specularColor * wjsPaint, material.specularColorBlended * wjsShow, metalnessFactor ) * ( wjsRoom( wjsR, material.roughness ) + wjsLamps( wjsR, material.roughness ) ) * wjsLevel * wjsStand + material.specularColorBlended * metalnessFactor * wjsPolish( wjsR, roughnessFactor ) * wjsLevel;
 }
 `
 
@@ -109,6 +110,8 @@ export interface SteelLook {
   sky?: number
   // How much of the room an upright face keeps: a tall wall beside the lamps is dark with a few hard glints, where a top or a chamfer shows the room whole.
   wall?: number
+  // How much of the room paint, plastic and rubber give back: a moulded colour keeps its colour under the lamps.
+  paint?: number
 }
 
 // `from` is the lit zone whose room a zone outside the lamps mirrors: the apron stands in the street's room.
@@ -135,9 +138,10 @@ export function steel<T extends THREE.MeshPhysicalMaterial>(m: T, own: Zone, o: 
     shader.uniforms.wjsUnder = { value: o.under ?? 0 }
     shader.uniforms.wjsSky = { value: o.sky ?? 0 }
     shader.uniforms.wjsWall = { value: o.wall ?? 1 }
+    shader.uniforms.wjsPaint = { value: o.paint ?? 1 }
     shader.vertexShader = 'varying vec3 wjsAt;\n' + shader.vertexShader.replace('#include <project_vertex>', 'wjsAt = transformed;\n#include <project_vertex>')
     shader.fragmentShader = PARS + shader.fragmentShader.replace(AT, BODY + AT)
   }
-  m.customProgramCacheKey = () => `${key.call(m)}|wjs17`
+  m.customProgramCacheKey = () => `${key.call(m)}|wjs18`
   return m
 }
