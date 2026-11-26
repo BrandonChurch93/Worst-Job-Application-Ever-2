@@ -12,6 +12,7 @@ import type { CameraPose, Collider, DrawList, GagInfo, Hint, PageContext, PageLo
 import take from '../../../cut/TABLE-TAKE.json'
 import { BOARD, boardAt, DOORS, fixedShapes, movingShapes } from '../../table/draw'
 import { APRON_Y, BALL, FLIP, FLIP_REACH, LAST_Y, MARQUEE_Y, MID, MOUTH, OUTLET, PAGE_H, PORT, TH, TIERS, TIER_Y, floorZ, holdOf, railAt, railLength, railOf, solids, table, tierAt } from '../../table/layout'
+import { drainWay } from '../../table/real/frame/loader'
 import { berth } from './director-arrow'
 import { Machine, prepare as startPhysics, type MachineState, type TableEvent } from '../../table/physics'
 
@@ -78,7 +79,7 @@ function buildLayout(): LayoutNode {
   const ly = px(LAST_Y)
   kids.push(node('outlet-port', 'port', [px(OUTLET.x - OUTLET.ring / 2), px(OUTLET.y - OUTLET.ring / 2), px(OUTLET.ring), px(OUTLET.ring)], { part: 'loader', shape: 'none' }))
   kids.push(node('result', 'card', [560, ly + 255, 816, 236], {
-    part: 'shell', states: ['result'], children: [
+    part: 'shell', r: CARD_R, states: ['result'], children: [
       text('result-title', 'copy:step3.result.title', TYPE.heading, 608, ly + 295, { part: 'type', on: 12 }),
       text('result-body', 'copy:step3.result.body', { ...TYPE.body, wrap: 720, lead: 34 }, 608, ly + 385, { part: 'type', on: 12 })
     ]
@@ -98,6 +99,15 @@ const flips = (take as unknown as { flips: [string, number, number][] }).flips
 const held = (side: string, time: number): boolean => flips.some((f) => f[0] === side && time >= f[1] && time < f[2])
 
 const STREET = 0.95
+// The corner of the result card: the radius of the site's other result cards, step 5's two panels.
+const CARD_R = 24
+// The rise of the result card and its button out of the page: its seconds, and the height they start from.
+const RISE = { seconds: 0.4, low: 3 }
+// How far along the rail `drain` the riser of the last screen stands, in balls: from there to the outlet port the ball is drawn in the tube that lies on the page.
+const RISER_S = ((): number => {
+  const p = railOf('drain').points
+  return Math.hypot(p[1]![0] - p[0]![0], p[1]![1] - p[0]![1]) + Math.hypot(p[2]![0] - p[1]![0], p[2]![1] - p[1]![1])
+})()
 const tierPose = (k: number): CameraPose => homePose(px(TIER_Y[k]!), px(floorZ(k)))
 const streetPose = (): CameraPose => {
   const f = px(floorZ(2))
@@ -194,6 +204,12 @@ export function makePage(): PageLogic {
   }
   const gagAt = (t: number): string => (beats.find((b) => t < b.to) ?? beats[beats.length - 1]!).id
   const ball = () => machine().balls[0]!
+  const seen3 = (): { x: number; y: number; z: number } => {
+    const b = ball()
+    if (b.mode !== 'rail' || b.rail !== 'drain' || b.s <= RISER_S) return b
+    const p = drainWay((b.s - RISER_S) / (railLength(railOf('drain')) - RISER_S))
+    return { x: p.x / BALL, y: p.y / BALL, z: (p.z - BALL / 2) / BALL }
+  }
   const powered = (): boolean => s.said.includes('wake')
   const drawn = (): number => {
     const b = ball()
@@ -620,8 +636,9 @@ export function makePage(): PageLogic {
 
   const face = (io: StepIo): void => {
     const b = ball()
+    const lies = seen3()
     const eye = (s.mode === 'film' ? cut(s.time) : follow()).eye
-    const c = toWorld(px(b.x), px(b.y), px(b.z) + BALL / 2)
+    const c = toWorld(px(lies.x), px(lies.y), px(lies.z) + BALL / 2)
     const d = Math.hypot(eye[0] - c[0], eye[1] - c[1], eye[2] - c[2]) || 1
     const e = [(eye[0] - c[0]) / d, (eye[1] - c[1]) / d, (eye[2] - c[2]) / d]
     const low = smooth(Math.max(0, Math.min(1, (FACE.over - e[2]!) / (FACE.over - FACE.low))))
@@ -668,7 +685,7 @@ export function makePage(): PageLogic {
     s.was = [pose.lean, pose.spin, pose.squash, 1, held ? 1 : 0]
     const at = berth(pose, pose.lean, pose.spin, pose.squash, n, s.face[3]!, s.time)
     io.cursor.turn({ x: n[0]!, y: n[1]!, z: n[2]!, back: at.back })
-    io.cursor.place(px(b.x), px(b.y), px(b.z) - 1)
+    io.cursor.place(px(lies.x), px(lies.y), px(lies.z) - 1)
   }
 
   const logic: PageLogic = {
@@ -822,6 +839,17 @@ export function makePage(): PageLogic {
       const mc = machine()
       const states = activeStates()
       const over: Record<string, Partial<Shape>> = s.pressed ? { ...stood, 'go-cap': { z1: config.scale.heights.button - config.scale.heights.keyTravel } } : { ...stood }
+      if (s.phase === 'result' && s.result < RISE.seconds) {
+        const u = smooth(s.result / RISE.seconds)
+        const card = RISE.low + (config.scale.heights.card - RISE.low) * u
+        const cap = RISE.low + (config.scale.heights.button - RISE.low) * u
+        over.result = { z1: card }
+        for (const id of ['result-title', 'result-body']) over[id] = { z0: card, z1: card }
+        if (!s.pressed) {
+          over['go-cap'] = { z1: cap }
+          over['go-label'] = { z0: cap, z1: cap }
+        }
+      }
       for (const m of MODES) {
         if (!states.includes(`mode${m.mode}`)) continue
         over[`display.${TIERS[m.tier]!}.${m.mode}`] = { v: [s.t - m.at] }
@@ -835,7 +863,8 @@ export function makePage(): PageLogic {
       const rings: Record<string, number> = { 'loader.ring': ago(s.took), 'outlet.ring': ago(s.home) }
       for (const shape of fixedShapes()) out.push(shape.id in rings ? { ...shape, v: [rings[shape.id]!] } : shape)
       const shell = s.phase === 'sealed' && s.home >= 0 ? [Math.max(0, 1 - s.opened / SHELL.open), 9, 0, 0, 0, 9] : [Math.min(1, ago(s.took) / SHELL.shut), Math.max(0, ago(s.took) - SHELL.shut), 0, s.blow[0]!, s.blow[1]!, Math.min(9, s.t - s.blow[2]!)]
-      for (const shape of movingShapes(mc, lit(), false, general(), drawn(), s.shut, website())) out.push(shape.id === 'ball.clear' ? { ...shape, v: shell } : shape)
+      const lies = seen3()
+      for (const shape of movingShapes(mc, lit(), false, general(), drawn(), s.shut, website())) out.push(shape.id === 'ball.clear' ? { ...shape, x: px(lies.x - 0.5), y: px(lies.y - 0.5), z0: px(lies.z), z1: px(lies.z) + BALL, v: shell } : shape)
       out.push(hqPlate)
     },
     scroll: () => s.scroll,
