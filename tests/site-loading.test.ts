@@ -307,6 +307,28 @@ describe('the code the first load carries', () => {
     expect(fs.readFileSync(path.join(root, 'src/table/physics.ts'), 'utf8')).toMatch(/await import\('@dimforge\/rapier2d-deterministic-compat'\)/)
   })
 
+  it('does what was asked of a page whose code was not in when the code arrives, and only the last thing asked', async () => {
+    vi.resetModules()
+    const { App } = await import('../src/app')
+    const fresh = await import('../src/pages')
+    expect(fresh.pagePrepared('step3')).toBe(false)
+    expect(fresh.pagePrepared('step2')).toBe(true)
+    const app = new App()
+    const done: string[] = []
+    expect(app.code('step2', () => done.push('step2'))).toBe(true)
+    expect(app.code('step3', () => done.push('first'))).toBe(false)
+    expect(app.code('step3', () => done.push('second'))).toBe(false)
+    expect(app.code(null)).toBe(false)
+    expect(done).toEqual([])
+    await fresh.preparePages()
+    await Promise.resolve()
+    expect(done).toEqual(['second'])
+    expect(app.code('step3')).toBe(true)
+    expect(app.code(null)).toBe(true)
+    expect(app.code('step3', () => done.push('third'))).toBe(true)
+    expect(done).toEqual(['second'])
+  })
+
   it('knows which pages start with code of their own, and starts each once', async () => {
     expect(Object.keys(pages).filter((id) => !pagePrepared(id))).toEqual([])
     await preparePages(['marketing'])
