@@ -1,35 +1,35 @@
 {
   "folder": "table-light",
-  "pushed": "2026-11-26T01:06:28.182Z",
-  "commit": "3f8e48c1f440aa6afd3b3e0fc036df528f632d2f",
+  "pushed": "2026-11-26T01:15:04.399Z",
+  "commit": "79c96afa9b33ec1d1fe93e03cc3102dfe7b435ad",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "tier-corporate at 3f8e48c, approved left, build right, page dusk 0.18: floors without chevrons, tighter lamp pools, no plates at inserts",
-      "time": "2026-11-26T01:06:26.442Z",
+      "caption": "tier-corporate at 79c96af, approved left, build right: night floors, pools on the lacquer, paler lit windows",
+      "time": "2026-11-26T01:15:02.658Z",
       "by": "table-light",
-      "from": "out/work/lights/n3-tier-corporate-pair.jpg"
+      "from": "out/work/lights/n8-tier-corporate-pair.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "tier-office at 3f8e48c, approved left, build right, page dusk 0.18: floors without chevrons, tighter lamp pools, no plates at inserts",
-      "time": "2026-11-26T01:06:26.683Z",
+      "caption": "tier-office at 79c96af, approved left, build right: night floors, pools on the lacquer, paler lit windows",
+      "time": "2026-11-26T01:15:02.885Z",
       "by": "table-light",
-      "from": "out/work/lights/n3-tier-office-pair.jpg"
+      "from": "out/work/lights/n8-tier-office-pair.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "tier-street at 3f8e48c, approved left, build right, page dusk 0.18: floors without chevrons, tighter lamp pools, no plates at inserts",
-      "time": "2026-11-26T01:06:26.908Z",
+      "caption": "tier-street at 79c96af, approved left, build right: night floors, pools on the lacquer, paler lit windows",
+      "time": "2026-11-26T01:15:03.128Z",
       "by": "table-light",
-      "from": "out/work/lights/n3-tier-street-pair.jpg"
+      "from": "out/work/lights/n8-tier-street-pair.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "table-wide at 3f8e48c, approved left, build right, page dusk 0.18: floors without chevrons, tighter lamp pools, no plates at inserts",
-      "time": "2026-11-26T01:06:27.144Z",
+      "caption": "table-wide at 79c96af, approved left, build right: night floors, pools on the lacquer, paler lit windows",
+      "time": "2026-11-26T01:15:03.356Z",
       "by": "table-light",
-      "from": "out/work/lights/n3-table-wide-pair.jpg"
+      "from": "out/work/lights/n8-table-wide-pair.jpg"
     }
   ]
 }
