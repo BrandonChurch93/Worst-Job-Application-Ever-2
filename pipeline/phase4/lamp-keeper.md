@@ -97,6 +97,9 @@ Round 11 (opened 05:42 UTC, 40 a part, 80), the same one list:
 | 05:48 | q4 | 2 | Office inside the tenth, `reply-all` |
 | 05:49 | q5 | 2 | lost: an edit of mine failed and the same state was rendered again |
 | 05:51 | q6 | 2 | inserts with a thinner well and a hot centre |
+| 05:59 | q7 | 1 | `tier-corporate` as it was, for the notes' paper |
+| 06:01 | q8 | 1 | low lamp before the notes at 0.12, paper divided by 2.45 |
+| 06:03 | q9 | 2 | the lamp at 0.2, and `youre-fired` |
 
 ## Diagnosis (04:00 to 04:25 UTC, 26 stills with a local switch on each term, counted in the list of looks)
 
@@ -203,7 +206,23 @@ The frame's owner saw them black in `tier-office` and `tier-street`. Cause: they
 
 ## Round 11, before its cards (05:43 to 05:52 UTC), MEASURED at draft
 
-The Builder's first line of 05:42 UTC names a paper over lane 1 at (2.4, 2.0, 0.62) as noted by me. It is in none of my notes and in none of my folders: the paper of the boardroom belongs to the Corporate owner, who lowered it to (2.4, 2.15, 1.0). Nothing changed here for it; said to the Builder in the next report.
+The Builder's first line of 05:42 UTC: the paper over 1 at (2.4, 2.0, 0.62). It is the Corporate owner's note in `pipeline/phase4/corporate-models.md`: the sheets on the three standing notes at the foot of the boardroom carry a colour over 1 because the hidden lamp gives them almost nothing, and the owner asked me for a factor. I read it wrongly at first as a thing of my own notes; done at 05:59 to 06:03 UTC as below.
+
+Cause, read in the hook and worked out: the boardroom lamp hangs 211 px up over the middle of the room. The notes stand 1.05 balls in front of it, 25 px up, and face away from it, so they get its bare 0.4 share at the far end of its reach: about 0.02 of the lamp.
+
+Change: one more hidden lamp of the same kind (`NOTES` in `groups.ts`), 0.75 ball in front of the notes on the side they face, 70 px up, reach 2 balls, power 0.2, colour `CORPORATE_WHITE`, following `general`. No fitting, no `ctx.light`, no draw call.
+
+MEASURED on `tier-corporate` at draft, the mean of the three sheets (x 322, y 396, w 92, h 30):
+
+| State | sRGB | Linear |
+| --- | --- | --- |
+| before: no lamp, paper (2.4, 2.0, 0.62) | (111, 99, 57) | (0.167, 0.131, 0.042) |
+| lamp 0.12, paper (0.98, 0.82, 0.25) | (101, 90, 50) | (0.135, 0.107, 0.033) |
+| lamp 0.2, paper (0.98, 0.82, 0.25) | (114, 103, 57) | (0.178, 0.140, 0.042) |
+
+So the factor is 2.45: with the lamp at 0.2 the paper divided by 2.45 comes out as it did (1.07 of before in red and green, the same in blue), and no colour of that folder is over 1. The floor before the notes does not change to the eye (the pit of `tier-corporate` is (65, 62, 59), 1.05 of approved). The paper is not my file: the one line is in `pipeline/phase4/lamp-keeper-NEEDS.patch` (`PAPER` in `src/table/real/models/corporate/notes.ts`). Until it is applied the sheets are lit 2.45 times as much as before with their old colour, so the lamp and the patch belong in the same merge. With the patch on, `tests/table-corporate.test.ts` and my two light tests pass (31 of 31).
+
+The marquee's title (the frame's owner, 05:52 UTC): near black in `table-wide`, seen again in the review still. Read, not rendered: it is drawn by the shell's type with its own material, which never passes `lit()`, so the `panel` group cannot touch it; a true light would take one of the six that are spent round the ball. Not mine and not done. The door is the frame's: a `text` shape goes to its part's maker first (`src/stage/CONTRACT.md`), and the run has part `marquee`. Told to the frame's owner.
 
 The lit inserts. Before: the lit glass filled the whole hole and read as a flat saturated disc. Now the atlas draws the glass at 0.82 of the hole at the foot of a dark well inside a thin metal trim, and the glow falls from a pale hot centre to dark at the glass edge (`assets-src/table/art/inserts.mjs`, `WELL`, 6 s to rebake). Seen in q6 on `tier-office` from above: a bulb under moulded glass, the well dark round it. In `rail-cam` no red insert is in the frame and nothing red is the largest bright thing.
 
@@ -217,4 +236,8 @@ The pits inside the tenth (pit region x 250, y 40, w 1420, h 990, against the wh
 Whole frames now: tier-office 1.04, reply-all 1.01, table-wide 0.86 (q3), lobby-doors 0.92 and rail-cam 0.97 (q1).
 
 What moved: Office print 1.7 to 1.35, Office rail lamps 0.8 to 0.6 with the wide ones times 1.5, Office shoulder lamps times 0.7, street print 1.35 to 1.2.
+
+Counts at ac3f758e (live low, MEASURED 05:56 UTC, `npm run build && npm run counts -- --key <k> --live low`): the same as at c475041e in every row of mine (table-lights 8, 8, 0, 8, 22662 on `table-wide`; 6, 6, 0, 6, 16204; 6, 6, 0, 6, 20166; 4, 4, 0, 4, 12916 on the tiers; tier-art 6, 6, 0, 6, 3534; 3, 3, 0, 3, 1180; 3, 3, 0, 3, 1180; 2, 2, 0, 2, 1178). Assets after the insert atlases were baked again: `public/assets/table/art` 8288329 bytes (7.90 MB of 9), `assets-full/table/art` 26326693 bytes, largest file 8543144 bytes.
+
+Point (e), `table-wide` at review (05:57 UTC, 70.5 s, 936517 triangles, 580 draw calls, invalid values 0), looked at under approved: whole frame (52, 49, 44) against (59, 56, 52), 0.87. The pit holds beside approved; what differs most is outside my part (the open cabinet end and the black side walls, the marquee's dark title).
 
