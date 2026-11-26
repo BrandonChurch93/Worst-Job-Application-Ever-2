@@ -16,7 +16,7 @@ export const PAGE_W = 1920
 export const SCREEN_H = 1080
 export const LEFT = grid.contentLeft
 export const RIGHT = grid.contentRight
-export const HEADER = { titleY: 59, progressY: 76, ruleY: 148, headingY: 202, sublineY: 258, contentY: 300 }
+export const HEADER = { titleY: 85, progressY: 99, ruleY: 162, headingY: 208, sublineY: 264, contentY: 306 }
 
 export const TYPE = {
   pageTitle: { font: 'inter-600', px: 47 },
