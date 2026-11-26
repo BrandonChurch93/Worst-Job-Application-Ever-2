@@ -93,7 +93,7 @@ function body(k: Kit, f: Frame): void {
   }
   k.poly(strip(2, L + 1, SIDE.shade), 0.05, 0.3, shade(C.plate, 0.36), SURF.brushed, 0)
   k.poly(strip(3, L - 3, SIDE.steel - 1), 0, 1.6, C.rubber, SURF.rubber, 0.3)
-  k.poly(strip(0, L, SIDE.steel), 1.4, 3.2, C.dark, SURF.brushed, 1.2)
+  k.poly(strip(0, L, SIDE.steel + 1.4), 1.4, 3.2, shade(C.red, 0.8), SURF.enamel, 1.4)
   k.poly(strip(4, L - 4, SIDE.steel - 2.6), 4.4, 0.5, C.chrome, SURF.chrome, 0.3)
   k.poly(strip(18, L - 30, -5), 4.9, 0.7, shade(C.dark, 0.8), SURF.brushed, 0.4)
   k.box(L - 15, 0, 4.4, 20, 20, 1.1, C.chrome, SURF.chrome, 0.4)
