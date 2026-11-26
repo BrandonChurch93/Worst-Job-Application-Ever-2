@@ -15,7 +15,7 @@ const skipAfter = Math.round(config.live.skipLinkAfterSeconds * stepHz)
 const armsBeat = beat(config.cursor.armsOnlyInBeat)
 // A click lands where the hero is. The page is told the hero's place on the step of the press, and the place it is told then eases back to the mouse over this many seconds, so a drag that starts with the click has no jump in it.
 export const CLICK_EASE_SECONDS = 0.12
-// A press made with the hero farther than this from the mouse, in page units, waits for the hero and is then told to the page at the mouse's place.
+// A press made with the hero farther than this from the mouse, in page units, waits for the hero. A press is always told to the page at the hero's place.
 export const CLICK_NEAR = 6
 // The longest a press waits for the hero, in seconds. Then the page is told it, and the release after it if the button is up by then.
 export const CLICK_WAIT_SECONDS = 0.25
@@ -225,7 +225,7 @@ export class Stage {
 
   private landed(pointer: Pointer, pressed: boolean): Pointer {
     const c = this.cursor
-    if (pressed && this.page.control === 'pointer' && !c.taken && !c.inAir && c.onPage && Math.hypot(c.x - pointer.x, c.y - pointer.y) <= CLICK_NEAR) this.lag = { x: c.x - pointer.x, y: c.y - pointer.y, left: 1 }
+    if (pressed && this.page.control === 'pointer' && !c.taken && !c.inAir && c.onPage) this.lag = { x: c.x - pointer.x, y: c.y - pointer.y, left: 1 }
     else if (this.lag.left > 0) this.lag.left = Math.max(0, this.lag.left - dt / CLICK_EASE_SECONDS)
     if (this.lag.left <= 0) return pointer
     return { ...pointer, x: pointer.x + this.lag.x * this.lag.left, y: pointer.y + this.lag.y * this.lag.left }

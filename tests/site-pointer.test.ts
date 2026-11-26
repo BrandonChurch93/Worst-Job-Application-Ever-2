@@ -244,15 +244,16 @@ describe('site pointer: a click lands where the mouse is, once the hero is there
     const b = boxOf(layout, 'hero-cta-cap')
     const on = { x: b.x + b.w / 2, y: b.y + b.h / 2 }
     for (const [move, hold] of [[0.2, 0.08], [0.08, 1 / stepHz], [0.08, 0.05], [0.08, 0.4], [0.35, 0.08]] as const) {
-      const told: { x: number; y: number; pressed: boolean; after: number }[] = []
+      const told: { x: number; y: number; pressed: boolean; after: number; hero: number }[] = []
       let calls = 0
+      let stage: Stage | null = null
       const probe = { ...pages }
       const make = pages.marketing!
       probe.marketing = () => {
         const page = make()
         const step = page.step.bind(page)
         page.step = (io) => {
-          if (io.pressed || io.released) told.push({ x: io.pointer.x, y: io.pointer.y, pressed: io.pressed, after: calls })
+          if (io.pressed || io.released) told.push({ x: io.pointer.x, y: io.pointer.y, pressed: io.pressed, after: calls, hero: stage ? Math.hypot(stage.cursor.x - io.pointer.x, stage.cursor.y - io.pointer.y) : NaN })
           calls++
           step(io)
         }
@@ -260,6 +261,7 @@ describe('site pointer: a click lands where the mouse is, once the hero is there
       }
       const m = new MouseDriver()
       const s = new Stage({ mode: 'live', flow: liveFlow(), pages: probe, driver: m })
+      stage = s
       settle(s, m, 1500, 800 + s.page.scroll())
       const from = { x: 1500, y: 800 + s.page.scroll() }
       const n = Math.max(1, Math.round(move * stepHz))
@@ -276,6 +278,7 @@ describe('site pointer: a click lands where the mouse is, once the hero is there
       expect(told.map((t) => (t.pressed ? 'press' : 'release'))).toEqual(['press', 'release'])
       expect(told[0]!.after / stepHz).toBeLessThanOrEqual(CLICK_WAIT_SECONDS)
       expect(told[1]!.after).toBeGreaterThan(told[0]!.after)
+      expect(told[0]!.hero).toBeLessThan(1e-6)
       expect(Math.hypot(told[0]!.x - on.x, told[0]!.y - on.y)).toBeLessThanOrEqual(CLICK_NEAR)
       expect(s.page.gag()).toBe('marketing.apply')
     }
