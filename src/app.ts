@@ -5,6 +5,7 @@ import { beat as beatOf, config, configProblems, fail, formatById, stepHz, tierS
 import { contentProblems, copy, narration, type LayoutNode } from './copy'
 import { eventCues } from './audio/cues'
 import { assetSet, type AssetSet } from './core/assets'
+import { pageReady, showPage, stageLoading } from './core/load'
 import { Engine, LightRig, type Shot } from './core/renderer'
 import type { TargetKind } from './core/accumulator'
 import { restPose, type CursorPose } from './cursor/body'
@@ -23,8 +24,10 @@ import { loadFont } from './shell/type'
 import type { QualityId } from './core/quality'
 import { homePose, project, toWorld } from './stage/camera'
 import { panelPlan, type PanelPlan } from './stage/panels'
-import { filmFlow, filmOptions, ScriptDriver, Stage, StillDriver, TURN_HALF, type Frame } from './stage/stage'
+import { filmFlow, filmOptions, liveFlow, ScriptDriver, Stage, StillDriver, TURN_HALF, type Frame } from './stage/stage'
+import { setTurnWait, WAIT_TAP_SECONDS } from './stage/turn'
 import type { CameraPose, PageLogic, Shape, Tone } from './stage/types'
+import { wallSeconds } from './ui/clock'
 
 export interface StillSpec { page: string; beat?: string; at?: number; scroll?: number; camera: string; tier: string; sheet?: string; panel?: number; interface?: boolean; touchOnly?: boolean; live?: string }
 
@@ -82,14 +85,12 @@ export class App {
     if (problems.length) fail(problems)
   }
 
-  // What a later page is built from, fetched after the first complete picture: a part is drawn by its stand-in until its pictures are in.
+  // Called after every frame of the live site that is not the first page at rest: what the page on show and the pages after it are built from is fetched, and what a page left behind was built from is let go (`src/core/load.ts`).
   loadLater(): void {
-    if (this.later) return
-    this.later = loadTable(this.assets)
-    this.later.catch((e: unknown) => console.error(e))
+    if (this.staged && this.shown) showPage(liveFlow().map((e) => e.page), this.shown.frame.page, this.assets)
   }
 
-  private later: Promise<void> | null = null
+  private staged = false
 
   async start(canvas: HTMLCanvasElement, o: { format: string; assets: string; capture: boolean; stepped?: boolean; forceKind?: TargetKind }): Promise<void> {
     this.format = formatById(o.format)
@@ -98,6 +99,11 @@ export class App {
     App.check()
     this.engine = new Engine(canvas, this.format.width, this.format.height, { preserve: o.capture, forceKind: o.forceKind, multisamples: o.capture ? 0 : LIVE_MULTISAMPLES })
     this.engine.beforeSample = (_shot, view) => (view === 'beauty' ? undefined : applyView(view, this.viewContext()))
+    this.staged = !o.capture && !o.stepped
+    if (this.staged) {
+      stageLoading(this.engine.renderer, wallSeconds)
+      setTurnWait({ ready: pageReady, steps: Math.round(config.live.loadWaitSeconds * stepHz), every: Math.round(WAIT_TAP_SECONDS * stepHz) })
+    }
     this.environment = studioEnvironment(this.engine.renderer)
     this.view.scene.environment = this.environment
     this.view.scene.environmentIntensity = look.envIntensity

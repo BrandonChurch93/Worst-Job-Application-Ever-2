@@ -6,6 +6,7 @@ import { narration, timedLines } from '../copy'
 import { assetSet } from '../core/assets'
 import { pages } from '../pages'
 import { look } from '../post/look'
+import { loadState, type LoadState } from '../core/load'
 import { standInsOf, TONES } from '../shell/view'
 import { plannedHeight, typeRegister, walk } from '../shell/layout'
 import { words } from '../shell/words'
@@ -17,7 +18,7 @@ export type { StillSpec, CursorState }
 
 export interface Showcase {
   ready: Promise<void>
-  info(): { fps: number; format: string; tier: string; assets: string; engineHash: string; pageHashes: Record<string, string>; standIns: { name: string; unit: string }[]; modules: Record<string, string[]>; counts: Record<string, { triangles: number; drawCalls: number; standingParts?: number }>; textureMb: Record<string, number>; textures: Record<string, TextureCount>; versions: Record<string, string> }
+  info(): { fps: number; format: string; tier: string; assets: string; engineHash: string; pageHashes: Record<string, string>; standIns: { name: string; unit: string }[]; modules: Record<string, string[]>; counts: Record<string, { triangles: number; drawCalls: number; standingParts?: number }>; textureMb: Record<string, number>; textures: Record<string, TextureCount>; versions: Record<string, string>; loading: LoadState }
   setFormat(id: string): Promise<void>
   setAssets(id: string): Promise<void>
   setDiagnostic(view: string): void
@@ -558,7 +559,7 @@ export function makeShowcase(app: App, ready: Promise<void>): Showcase {
         textures[unit] = memory.get(unit) ?? { mb: 0, counted: 0, held: 0, assetMb: 0, targetMb: 0, unseenMb: 0 }
         textureMb[unit] = textures[unit]!.mb
       }
-      return { fps, format: app.format.id, tier: app.tier, assets: app.assets, engineHash: build.engineHash, pageHashes: build.pageHashes, standIns: app.standIns(), modules: build.modules, counts, textureMb, textures, versions: { ...build.versions, target: app.engine.kind } }
+      return { fps, format: app.format.id, tier: app.tier, assets: app.assets, engineHash: build.engineHash, pageHashes: build.pageHashes, standIns: app.standIns(), modules: build.modules, counts, textureMb, textures, versions: { ...build.versions, target: app.engine.kind }, loading: loadState() }
     },
     async setFormat(id) {
       await ready
