@@ -1,6 +1,7 @@
 // A visitor's real mouse on the site, in a browser: node src/ui/hands.mjs
 // 1. Both mouse buttons on the table of step 3 (stepped site). 2. A press made while the arrow is still on its way (stepped site).
 // 3. The row of controls over the pages at two window sizes, and a real click on the film link (wired site). 4. The system cursor over the picture and over a control.
+// 5. Both mouse buttons in the band beside the picture on step 3 (stepped site). 6. A real click on the skip link once it is offered (wired site).
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -20,8 +21,8 @@ const check = (name, ok, detail = '') => {
   results.push({ name, ok: !!ok, detail })
   console.log(`${ok ? 'pass' : 'FAIL'}  ${name}${detail ? `: ${detail}` : ''}`)
 }
-const open = async (q, size, ready) => {
-  const ctx = await browser.newContext({ viewport: size })
+const open = async (q, size, ready, more = {}) => {
+  const ctx = await browser.newContext({ viewport: size, ...more })
   const page = await ctx.newPage()
   page.errors = []
   page.on('pageerror', (e) => page.errors.push(String(e)))
@@ -144,6 +145,98 @@ if (wants('row')) {
     check(`${size.width} by ${size.height}: no error on the page`, page.errors.length === 0, page.errors.slice(0, 3).join(' | '))
     await page.context().close()
   }
+}
+
+if (wants('band')) {
+  const page = await open('?clock=steps&step=3', { width: 1700, height: 720 }, stepped)
+  const r = await rect(page)
+  let t = await told(page)
+  for (let i = 0; i < 900 && !(t.hint && (t.hint.flipLeft || t.hint.flipRight)); i++) {
+    const c = toClient(r, t.hint ?? { x: 960, y: 540 + t.scroll }, t.scroll)
+    await page.mouse.move(c.x, c.y)
+    await advance(page, 0.1)
+    t = await told(page)
+  }
+  const beside = { x: Math.round(r.left / 2), y: 400 }
+  await page.mouse.move(beside.x, beside.y)
+  const under = await page.evaluate(([x, y]) => document.elementFromPoint(x, y).tagName, [beside.x, beside.y])
+  check('step 3: the mouse rests in the band beside the picture', r.left > 40 && under !== 'CANVAS', `the picture starts at ${Math.round(r.left)} px, the mouse is at ${beside.x}, ${beside.y} over ${under}`)
+  await advance(page, 0.3)
+  await save(page, 'hands-band-0-none')
+  await page.mouse.down({ button: 'left' })
+  await page.mouse.down({ button: 'right' })
+  await advance(page, 0.3)
+  await save(page, 'hands-band-1-both')
+  await page.screenshot({ path: path.join(out, 'hands-band-window.png') })
+  await page.mouse.up({ button: 'left' })
+  await page.mouse.up({ button: 'right' })
+  await advance(page, 0.3)
+  await save(page, 'hands-band-2-none')
+  check('step 3: no error on the page', page.errors.length === 0, page.errors.slice(0, 3).join(' | '))
+  await page.context().close()
+}
+
+if (wants('skip')) {
+  // The window is 1920 by 1080 CSS px. The software renderer of a test machine draws it too slowly at full size, so the device pixel ratio is 0.5 and the level is low: the layout and the mouse are the same.
+  const page = await open('?step=1&quality=low', { width: 1920, height: 1080 }, wired, { deviceScaleFactor: 0.5 })
+  const said = () => page.evaluate(() => document.querySelector('#controls [role="status"]')?.textContent ?? '')
+  const link = () => page.evaluate(() => {
+    const e = [...document.querySelectorAll('#controls button')].find((b) => !b.hidden && (b.getAttribute('aria-label') ?? b.textContent ?? '').startsWith('Skip'))
+    if (!e || !e.offsetParent) return null
+    const b = e.getBoundingClientRect()
+    return { what: e.getAttribute('aria-label') ?? e.textContent, box: [b.left, b.top, b.right, b.bottom].map(Math.round) }
+  })
+  const t0 = Date.now()
+  let l = null
+  while (!l && Date.now() - t0 < 420000) {
+    await page.waitForTimeout(500)
+    l = await link()
+  }
+  const waited = (Date.now() - t0) / 1000
+  check('step 1 at 1920 by 1080: the skip link is offered', !!l, l ? `"${l.what}" at ${l.box.join(', ')} after ${waited.toFixed(1)} s` : `not offered in ${waited.toFixed(0)} s`)
+  if (l) {
+    const order = []
+    for (let i = 0; i < 4; i++) {
+      await page.keyboard.press('Tab')
+      order.push(await page.evaluate(() => {
+        const a = document.activeElement
+        return a === document.body ? 'body' : `${a.tagName.toLowerCase()}:${a.getAttribute('aria-label') ?? a.textContent}`
+      }))
+      if (order.at(-1).startsWith('button:Skip')) {
+        const ring = await page.evaluate(() => {
+          const c = getComputedStyle(document.activeElement)
+          return `${c.outlineStyle} ${c.outlineWidth}`
+        })
+        await page.screenshot({ path: path.join(out, 'hands-skip-ring.png') })
+        check('step 1 at 1920 by 1080: the skip link has a 2 px ring under the keyboard', ring === 'solid 2px', ring)
+      }
+    }
+    check('step 1 at 1920 by 1080: Tab goes sound, film link, skip link, picture', order.length === 4 && order[0] === 'button:Sound' && order[1].startsWith('a:Watch') && order[2].startsWith('button:Skip') && order[3] === 'canvas:', order.join(' | '))
+    await page.evaluate(() => document.activeElement.blur())
+    const before = await said()
+    await page.screenshot({ path: path.join(out, 'hands-skip-before.png') })
+    const x = (l.box[0] + l.box[2]) / 2
+    const y = (l.box[1] + l.box[3]) / 2
+    await page.mouse.move(x, y)
+    const over = await page.evaluate(([px, py]) => {
+      const e = document.elementFromPoint(px, py).closest('a, button, canvas')
+      return `${e.tagName} "${e.getAttribute('aria-label') ?? e.textContent}" cursor ${getComputedStyle(e).cursor}`
+    }, [x, y])
+    await page.mouse.down()
+    await page.mouse.up()
+    const t1 = Date.now()
+    let after = before
+    while (Date.now() - t1 < 30000 && !/Step 2/.test(after)) {
+      await page.waitForTimeout(250)
+      after = await said()
+    }
+    await page.waitForTimeout(2500)
+    await page.screenshot({ path: path.join(out, 'hands-skip-after.png') })
+    const gone = await link()
+    check('step 1 at 1920 by 1080: a real click on the skip link itself reaches step 2', /Step 2/.test(after), `the mouse was over ${over} at ${Math.round(x)}, ${Math.round(y)}; the page said "${before.slice(0, 80)}" before and "${after.slice(0, 120)}" ${((Date.now() - t1) / 1000 - 2.5).toFixed(1)} s after; the link is ${gone ? 'still shown' : 'gone'}`)
+  }
+  check('step 1 at 1920 by 1080: no error on the page', page.errors.length === 0, page.errors.slice(0, 3).join(' | '))
+  await page.context().close()
 }
 
 await browser.close()

@@ -7,7 +7,8 @@ import { chooseEmitters, lampIntensity } from '../post/emitters'
 import { EMITTER_BODY_PX, lightLaw, shadowFilter } from '../post/studio'
 import type { Emitter } from '../real/types'
 import { quality, type QualityId } from './quality'
-import { levelPlan, restSample, type LevelPlan } from './levelPlan'
+import { levelPlan, REST_FRAMES, restSample, type LevelPlan } from './levelPlan'
+import { RestBlend, restShare } from './levelRest'
 import { StillShadows, type StillStats } from './levelShadows'
 
 // What the lamps must cover, in world units: the page and everything that stands on it.
@@ -322,6 +323,7 @@ export class Engine {
   private plan: LevelPlan | null = null
   private still = new StillShadows()
   private keeps = false
+  private rest = new RestBlend()
 
   constructor(canvas: HTMLCanvasElement, width: number, height: number, opts: { preserve: boolean; forceKind?: TargetKind; multisamples?: number }) {
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, depth: false, stencil: false, preserveDrawingBuffer: opts.preserve, powerPreference: 'high-performance' })
@@ -410,14 +412,19 @@ export class Engine {
     const mode = this.plan?.shadows ?? 'accumulated'
     const own = restart ? s : restSample(mode, s)
     if (!own) return
-    if (restart) this.acc.begin()
-    this.sample(shot, own, view, restart, mode !== 'accumulated', mode === 'baked')
-    this.present(frame, view, true)
+    const gathers = mode === 'accumulated'
+    if (restart) {
+      this.acc.begin()
+      this.rest.drop()
+    } else if (gathers && this.acc.samples === 1) this.rest.hold(this.renderer, this.acc.texture, this.acc.width, this.acc.height, this.kind)
+    this.sample(shot, own, view, restart, !gathers, mode === 'baked')
+    const share = gathers && this.rest.held ? restShare(this.acc.samples, REST_FRAMES.accumulated) : 1
+    this.present(frame, view, true, this.rest.blend(this.renderer, this.acc.texture, share))
   }
 
-  private present(frame: number, view: string, quick: boolean): void {
+  private present(frame: number, view: string, quick: boolean, picture: THREE.Texture = this.acc.texture): void {
     const depth = this.acc.depth
-    this.post.draw(this.renderer, this.acc.texture, frame, view !== 'beauty', this.kind === 'byte', this.lens && depth ? { ...this.lens, depth, quick } : null)
+    this.post.draw(this.renderer, picture, frame, view !== 'beauty', this.kind === 'byte', this.lens && depth ? { ...this.lens, depth, quick } : null)
   }
 
   // WebGL calls return before the picture is done. Reading a pixel back waits for it.
