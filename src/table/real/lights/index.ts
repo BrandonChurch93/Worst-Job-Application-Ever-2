@@ -4,7 +4,7 @@ import { zoneAt } from '../../draw'
 import { BALL } from '../../layout'
 import { whole, type Zone } from '../zone'
 import { FILL, FLASH } from './colours'
-import { groupsOf, LIT, spillsOf, type Group } from './groups'
+import { groupsOf, highOf, LIT, spillsOf, type Group } from './groups'
 import { buildLamps, type Lamps } from './lamps'
 import { levels, solo, soloed } from './levels'
 import { zoneLight } from './state'
@@ -12,8 +12,8 @@ import { zoneLight } from './state'
 export * as colours from './colours'
 export { groupsOf, levels, solo, soloed }
 
-// How near the clear ball a lamp must be to turn into a true light, with true shadows, and how much of the picture's light is left under it.
-const TRUE = { near: 2.4 * BALL, far: 5.2 * BALL, lampNear: 1.3 * BALL, lampFar: 3.0 * BALL, hole: 1.05 * BALL, cut: 0.8, singles: 4, lamps: 2 }
+// How near the clear ball a lamp must be to turn into a true light, and how much of the picture's light is left under it. `shadows` is how many of them throw a true shadow: each costs a drawing of every caster near it, six ways.
+const TRUE = { near: 2.4 * BALL, far: 5.2 * BALL, lampNear: 1.3 * BALL, lampFar: 3.0 * BALL, hole: 1.05 * BALL, cut: 0.8, singles: 4, lamps: 2, shadows: 0 }
 const FIELD_HEIGHT = 1 / (300 * 300)
 
 const ease = (a: number, b: number, x: number): number => {
@@ -49,7 +49,7 @@ function pose(o: THREE.Object3D, z: Zone, ctx: RealContext): void {
     wanted.sort((p, q) => q.share - p.share || p.g.index - q.g.index)
     wanted.length = Math.min(wanted.length, TRUE.singles)
   }
-  let shadows = 2
+  let shadows = TRUE.shadows
   for (const w of wanted) {
     share[w.g.index] = w.share
     const shadow = w.shadow && shadows > 0
@@ -95,6 +95,11 @@ function pose(o: THREE.Object3D, z: Zone, ctx: RealContext): void {
     const level = (L.byName[p.follows] ?? 0) * p.power
     u.wjlSpill.value[i]!.set(p.x, p.y, p.half, p.high)
     u.wjlSpillCol.value[i]!.set(p.colour[0] * level, p.colour[1] * level, p.colour[2] * level)
+  })
+  highOf(z).forEach((p, i) => {
+    const level = (L.byName[p.follows] ?? 0) * p.power
+    u.wjlHigh.value[i]!.set(p.x, p.y, p.z, p.reach)
+    u.wjlHighCol.value[i]!.set(p.colour[0] * level, p.colour[1] * level, p.colour[2] * level)
   })
   const fill = FILL[z.id]!
   const soft = 0.028 * L.general + FLASH.fill * L.flash
