@@ -26,6 +26,7 @@ npm run sound -- --line live.hit:1 --file f     the same for a live line
 npm run sound -- --cue step --keep              run the chain on the last take and keep it
 npm run sound -- --cue step --keep --take 2 --listener answers.json --prompt "..." --cost 0.2
 npm run sound -- --pack                         build public/audio
+npm run sound -- --rekeep-peaks                 what holding the peak at audio.truePeakDb does to every kept line; --write keeps them again from their takes
 npm run sound -- --sheet                        draw the kept sounds on one picture
 npm run sound -- --check                        the sound checks, written to out/work/sound-checks.json
 npm run sound -- --browser                      the engine in a real browser, before and after a click
