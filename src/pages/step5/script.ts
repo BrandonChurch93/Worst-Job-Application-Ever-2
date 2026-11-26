@@ -2,7 +2,7 @@ import type { Acting, Reaction } from '../../cursor/body'
 import type { Pointer } from '../../stage/types'
 import { AT, FILM } from './timeline'
 
-export interface Marks { start: { x: number; y: number }; spot: { x: number; y: number }; press: { x: number; y: number } }
+export interface Marks { start: { x: number; y: number }; spot: { x: number; y: number }; drop: { x: number; y: number }; press: { x: number; y: number } }
 
 interface Key { t: number; x: number; y: number }
 
@@ -10,6 +10,9 @@ export interface Cue { at: number; act?: Acting; react?: Reaction }
 
 // The hit of the stamp: it draws back and leans before it falls, the fall speeds up, the rubber gives, the block rocks and comes to rest, and paper dust leaves from under its edges.
 export const HIT = { windSeconds: 0.24, windRise: 30, windTilt: -0.13, fallPower: 2.6, over: 9, give: 1.5, giveSeconds: 0.06, rock: 0.03, rockSeconds: 0.11, rockRate: 50, landRock: 0.014, dustSeconds: 0.62, dustReach: 70 } as const
+
+// Struck flat, the cursor sticks to the rubber, is carried off under the block and falls from it to the right as the stamp is laid down: `right` and `down` from the stamp's rest.
+export const STUCK = { right: 96, down: 8, toss: 26 } as const
 
 // Set down, the stamp is laid on its side, grip away from the reader, a little off square: `turn` about its long axis, `rot` on the page.
 export const LIE = { turn: Math.PI / 2, rot: -0.17 } as const
@@ -39,9 +42,11 @@ function keys(m: Marks): Key[] {
     { t: PACE.left[1], x: s.x + PACE.back, y: s.y + 2 },
     { t: HOPE.walk[0], x: s.x + PACE.back, y: s.y + 2 },
     { t: HOPE.walk[1], x: m.spot.x, y: m.spot.y },
-    { t: stamped + 3.55, x: m.spot.x, y: m.spot.y },
-    { t: stamped + 3.9, x: m.spot.x + 18, y: m.spot.y + 40 },
-    { t: GIVE.walk[0], x: m.spot.x + 18, y: m.spot.y + 40 },
+    { t: AT.decide + AT.lift[1], x: m.spot.x, y: m.spot.y },
+    { t: AT.decide + AT.lower[1], x: m.drop.x, y: m.drop.y },
+    { t: stamped + 3.55, x: m.drop.x, y: m.drop.y },
+    { t: stamped + 3.9, x: m.drop.x - 14, y: m.drop.y + 30 },
+    { t: GIVE.walk[0], x: m.drop.x - 14, y: m.drop.y + 30 },
     { t: GIVE.walk[1], x: m.press.x, y: m.press.y },
     { t: 12, x: m.press.x, y: m.press.y }
   ]
