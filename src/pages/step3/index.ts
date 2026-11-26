@@ -10,6 +10,7 @@ import { TURN_HALF } from '../../stage/stage'
 import type { CameraPose, Collider, DrawList, GagInfo, Hint, PageContext, PageLogic, Pointer, Shape, SheetFrame, StepIo, TableState } from '../../stage/types'
 import take from '../../../cut/TABLE-TAKE.json'
 import { BOARD, boardAt, DOORS, fixedShapes, movingShapes } from '../../table/draw'
+import { ZONES } from '../../table/draw'
 import { APRON_Y, BALL, FLIP, LAST_Y, MARQUEE_Y, MID, OUTLET, PAGE_H, PORT, TH, TIERS, TIER_Y, floorZ, holdOf, railAt, railLength, railOf, table, tierAt } from '../../table/layout'
 import { Machine, prepare as startPhysics, type MachineState, type TableEvent } from '../../table/physics'
 
@@ -148,6 +149,9 @@ export function makePage(): PageLogic {
     const z = px(floorZ(m.tier) + (m.base ?? 0) + m.h) + SIGN.lift + (b.h / 2) * SIGN.sin
     stood[`sign.${m.id}`] = { y: foot - (b.h / 2) * SIGN.cos - b.h / 2, z0: z, z1: z, turnX: SIGN.turn }
   }
+  const af = px(ZONES.find((z) => z.id === 'apron')!.z)
+  const slab = config.scale.heights.slab
+  for (const [id, z0, z1] of [['apron-left', 0, slab], ['apron-right', 0, slab], ['apron-card', slab, slab + 1], ['apron-card-words', slab + 2, slab + 2], ['drain-label', 7, 7]] as const) stood[id] = { z0: af + z0, z1: af + z1 }
   const hqType = { font: 'inter-600', px: 30, align: 'centre' as const }
   const hqBlock = block(hqType.font, words('copy:step3.table.buildings.hq', ''), hqType.px)
   const hqZ = px(floorZ(0) + DOORS.plate + DOORS.plateH / 2)
