@@ -88,10 +88,10 @@ function buildLayout(): LayoutNode {
 
 interface State {
   mode: 'live' | 'film'; time: number; t: number; phase: 'wait' | 'pull' | 'sealed' | 'open' | 'result'; pull: number; said: string[]; drops: number; tows: number
-  scroll: number; floor: number; opened: number; result: number; pressed: boolean; hold: number; done: boolean; skipped: boolean; saved: boolean; score: number; shut: boolean; dim: number; struck: number
+  scroll: number; floor: number; opened: number; result: number; pressed: boolean; hold: number; done: boolean; skipped: boolean; saved: boolean; score: number; shut: boolean; dim: number; struck: number; face: number[]; hit: number[]
 }
 
-const fresh = (): State => ({ mode: 'live', time: 0, t: 0, phase: 'wait', pull: 0, said: [], drops: 0, tows: 0, scroll: 0, floor: 0, opened: 0, result: 0, pressed: false, hold: 0, done: false, skipped: false, saved: false, score: 0, shut: false, dim: 0, struck: -9 })
+const fresh = (): State => ({ mode: 'live', time: 0, t: 0, phase: 'wait', pull: 0, said: [], drops: 0, tows: 0, scroll: 0, floor: 0, opened: 0, result: 0, pressed: false, hold: 0, done: false, skipped: false, saved: false, score: 0, shut: false, dim: 0, struck: -9, face: [0, 0, 1, 0], hit: [0, 0] })
 
 const flips = (take as unknown as { flips: [string, number, number][] }).flips
 const held = (side: string, time: number): boolean => flips.some((f) => f[0] === side && time >= f[1] && time < f[2])
@@ -134,6 +134,7 @@ const LOW = 2.4
 const PULL = { door: 12, scoop: 30, near: 2.2, gate: 40 }
 const NEST = { sling: [3.3, 6.5], under: [0.5, 0.9], pour: [-10.6, 1.0, 0.3] }
 const SHOT = { door: 13, scoop: 21, nest: 17, save: 19, lob: 9, lean: 0.3, jets: 0.5, wide: 2.5, low: 7.5, early: 0.3, back: 1 }
+const FACE = { over: 0.766, low: 0.574, turn: 0.75, back: 13, press: 20, hit: 0.3, lag: 0.1, wall: 0.8, lens: 0.6 }
 const ACT = { bumper: 0.5, kick: 0.7, doors: 0.45, shock: 0.45, realise: 0.45, slow: 7, lead: 0.3 }
 
 export function makePage(): PageLogic {
@@ -523,6 +524,30 @@ export function makePage(): PageLogic {
     io.emit('ball-seal', port.x, port.y, true)
   }
 
+  const face = (io: StepIo): void => {
+    const b = ball()
+    const eye = (s.mode === 'film' ? cut(s.time) : follow()).eye
+    const c = toWorld(px(b.x), px(b.y), px(b.z) + BALL / 2)
+    const d = Math.hypot(eye[0] - c[0], eye[1] - c[1], eye[2] - c[2]) || 1
+    const e = [(eye[0] - c[0]) / d, (eye[1] - c[1]) / d, (eye[2] - c[2]) / d]
+    const low = smooth(Math.max(0, Math.min(1, (FACE.over - e[2]!) / (FACE.over - FACE.low))))
+    const k = FACE.turn * low
+    const want = [e[0]! * k, e[1]! * k, 1 - k + e[2]! * k, FACE.back * low]
+    const speed = Math.hypot(b.vx, b.vy)
+    if (s.struck === s.t) s.hit = speed > 0.01 ? [b.vx / speed, -b.vy / speed] : [0, 0]
+    const age = (s.t - s.struck) / FACE.hit
+    if (age >= 0 && age < 1 && low > 0) {
+      const w = (1 - age) * (1 - age) * low
+      const n = [s.hit[0]! * FACE.wall + e[0]! * FACE.lens, s.hit[1]! * FACE.wall + e[1]! * FACE.lens, e[2]! * FACE.lens, FACE.press]
+      for (let i = 0; i < 4; i++) want[i] = want[i]! * (1 - w) + n[i]! * w
+    }
+    const rate = Math.min(1, dt / FACE.lag)
+    for (let i = 0; i < 4; i++) s.face[i] = s.face[i]! + (want[i]! - s.face[i]!) * rate
+    const flatUp = low === 0 && s.face[3]! < 0.05
+    if (flatUp) s.face = [0, 0, 1, 0]
+    io.cursor.turn(flatUp ? null : { x: s.face[0]!, y: s.face[1]!, z: s.face[2]!, back: s.face[3]! })
+  }
+
   const logic: PageLogic = {
     id: 'step3', unit: 'pinball', width: 1920, height: PAGE_H, layout, gags, start,
     get control(): 'pointer' | 'flippers' { return s.phase === 'sealed' ? 'flippers' : 'pointer' },
@@ -561,6 +586,7 @@ export function makePage(): PageLogic {
         const b = ball()
         io.cursor.place(px(b.x), px(b.y), px(b.z))
         if (b.mode !== 'hold') io.cursor.knock(px(b.vx) * ACT.lead, px(b.vy) * ACT.lead)
+        face(io)
         if (b.mode === 'hold' && b.hold === 'outlet') {
           s.opened += dt
           if (s.opened >= 0.2) {
