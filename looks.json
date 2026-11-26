@@ -1,35 +1,35 @@
 {
   "folder": "table-runner",
-  "pushed": "2026-11-26T05:47:51.760Z",
-  "commit": "38fbc638ee0a813cb5d2dda355cccbb25b47a1f5",
+  "pushed": "2026-11-26T05:55:33.663Z",
+  "commit": "d27c4c49b4b5a4c56445b6cbf9e4b753646ef822",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-table-wide-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T05:27:10.140Z",
-      "by": "table-runner",
-      "from": "out/work/stills/key-table-wide-hd-draft.png"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "Key rail-cam: approved on the left, this build on the right, draft tier, with crops of cursor, shape:model.street.bank, shape:model.street.firehouse",
-      "time": "2026-11-26T05:43:47.122Z",
-      "by": "table-runner",
-      "from": "out/work/compare/compare-rail-cam.jpg"
-    },
-    {
-      "file": "look-3.jpg",
-      "caption": "Key rail-cam: approved on the left, this build on the right, draft tier, with crops of cursor, shape:rail.highway.b.1",
-      "time": "2026-11-26T05:45:20.724Z",
-      "by": "table-runner",
-      "from": "out/work/compare/compare-rail-cam.jpg"
-    },
-    {
-      "file": "look-4.jpg",
       "caption": "rail-cam draft beside approved, round 11 look 2: eye above and behind the ball, cursor rolled so the tip stands up right",
       "time": "2026-11-26T05:47:50.651Z",
       "by": "table-runner",
       "from": "out/work/report/r11-rail-cam-look2.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Key table-wide: approved on the left, this build on the right, draft tier, with crops of shape:marquee.back, shape:model.corporate.hq, shape:bumper.office.bumper.3, shape:model.street.firehouse, shape:model.street.garage, shape:flipper.street.flipper.left, apronCard, cursor, shape:plunger.knob",
+      "time": "2026-11-26T05:48:40.609Z",
+      "by": "table-runner",
+      "from": "out/work/compare/compare-table-wide.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Contact sheet, the beat pinball.highway: 12 frames from 1:36.50 to 1:40.97, draft tier, preview",
+      "time": "2026-11-26T05:51:33.995Z",
+      "by": "table-runner",
+      "from": "out/work/sheets/sheet-beat-pinball_highway-preview-draft.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "the highway beat in twelve frames, draft, round 11: the rail shot from above and behind the ball, the cursor's tip up right in all three of its frames",
+      "time": "2026-11-26T05:55:32.564Z",
+      "by": "table-runner",
+      "from": "out/work/report/r11-highway-sheet.jpg"
     }
   ]
 }
