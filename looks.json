@@ -1,35 +1,35 @@
 {
   "folder": "lamp-fix",
-  "pushed": "2026-11-26T09:03:43.115Z",
-  "commit": "0961d254a3ce05b3db593bd6fd9a6681436e2b27",
+  "pushed": "2026-11-26T09:18:41.267Z",
+  "commit": "b73180955f05cdd945e754bcd192a22ca6d068ef",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "tier-office, approved left, build right, on main 7f82c9cc: slate floor, small contact marks, head lamps from the upper right; frame and cup lids now pale",
-      "time": "2026-11-26T09:03:41.290Z",
-      "by": "lamp-fix",
-      "from": "out/work/lights/look-z1-tier-office.jpg"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "tier-street, approved left, build right, on main 7f82c9cc: navy lacquer with soft wear beside the ball's lines, warm lane lamps",
-      "time": "2026-11-26T09:03:41.554Z",
-      "by": "lamp-fix",
-      "from": "out/work/lights/look-z1-tier-street.jpg"
-    },
-    {
-      "file": "look-3.jpg",
       "caption": "table-wide, approved left, build right: no grey clouds on the Street floor; riser faces pale with the frame's aluminium, my light on them down to 0.015",
       "time": "2026-11-26T09:03:41.791Z",
       "by": "lamp-fix",
       "from": "out/work/lights/look-y2-table-wide.jpg"
     },
     {
-      "file": "look-4.jpg",
+      "file": "look-2.jpg",
       "caption": "reply-all, approved left, build right, on main 7f82c9cc: windows brightest in the middle",
       "time": "2026-11-26T09:03:42.031Z",
       "by": "lamp-fix",
       "from": "out/work/lights/look-z1-reply-all.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "tier-corporate, approved left, build right: deep navy marble between soft pools of the lane lamps and windows, dark share 34% against 36%",
+      "time": "2026-11-26T09:18:39.980Z",
+      "by": "lamp-fix",
+      "from": "out/work/lights/look-c5-tier-corporate.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "lobby-doors, approved left, build right: Corporate floor as dark lacquer along the floor",
+      "time": "2026-11-26T09:18:40.207Z",
+      "by": "lamp-fix",
+      "from": "out/work/lights/look-c5-lobby-doors.jpg"
     }
   ]
 }
