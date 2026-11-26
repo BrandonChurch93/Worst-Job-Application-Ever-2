@@ -368,7 +368,7 @@ export class Engine {
       if (i === 0) this.lastCounts = { triangles: this.renderer.info.render.triangles, drawCalls: this.renderer.info.render.calls }
       if (i % 2 === 1) await new Promise<void>((done) => setTimeout(done, 0))
     }
-    this.present(o.frame, o.diagnostic)
+    this.present(o.frame, o.diagnostic, false)
     this.settle()
   }
 
@@ -376,12 +376,12 @@ export class Engine {
   frame(shot: Shot, s: Sample, restart: boolean, frame: number, view: string): void {
     if (restart) this.acc.begin()
     this.sample(shot, s, view, restart)
-    this.present(frame, view)
+    this.present(frame, view, true)
   }
 
-  private present(frame: number, view: string): void {
+  private present(frame: number, view: string, quick: boolean): void {
     const depth = this.acc.depth
-    this.post.draw(this.renderer, this.acc.texture, frame, view !== 'beauty', this.kind === 'byte', this.lens && depth ? { ...this.lens, depth } : null)
+    this.post.draw(this.renderer, this.acc.texture, frame, view !== 'beauty', this.kind === 'byte', this.lens && depth ? { ...this.lens, depth, quick } : null)
   }
 
   // WebGL calls return before the picture is done. Reading a pixel back waits for it.

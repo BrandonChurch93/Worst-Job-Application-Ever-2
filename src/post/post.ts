@@ -123,16 +123,14 @@ void main() {
 
 // What the engine knows of the camera's lens for one picture: how far away each pixel is, the planes the depth is
 // stored between, the distance that is sharp, and the radius in pixels of the circle a thing endlessly far away is spread over.
-export interface LensView { depth: THREE.Texture; near: number; far: number; focus: number; reach: number }
+// `quick` asks for the lighter pass the live site can afford on every frame.
+export interface LensView { depth: THREE.Texture; near: number; far: number; focus: number; reach: number; quick: boolean }
 
 // The lens: what stands nearer or farther than the focus is spread over a circle that grows with its distance from it.
 // It works on the mean of the samples, in linear light and before the glow, so a bright lamp out of focus becomes a disc.
 // The first pass gathers, each pixel with a turn of its own; the second closes the fine noise that turn leaves.
-class Lens {
-  private quad = new Quad()
-  private gathered = linearTarget()
-  private closed = linearTarget()
-  private gather = fullscreen(
+const gatherPass = (taps: number, probes: number): THREE.RawShaderMaterial =>
+  fullscreen(
     /* glsl */ `
 uniform sampler2D tMean;
 uniform sampler2D tDepth;
@@ -143,8 +141,8 @@ uniform float focus;
 uniform float reach;
 uniform float most;
 uniform int frame;
-const int TAPS = 96;
-const int PROBES = 16;
+const int TAPS = ${taps};
+const int PROBES = ${probes};
 const float GOLDEN = 2.39996323;
 uint hash( uint x ) {
   x ^= x >> 16; x *= 0x7feb352dU; x ^= x >> 15; x *= 0x846ca68bU; x ^= x >> 16;
@@ -159,6 +157,10 @@ float depthAt( vec2 uv ) {
 }
 float circle( float depth ) {
   return min( most, reach * abs( depth - focus ) / max( depth, 0.0001 ) );
+}
+vec3 light( vec2 uv ) {
+  vec3 c = texture( tMean, uv ).rgb;
+  return clamp( mix( c, vec3( 0.0 ), isnan( c ) ), 0.0, 64.0 );
 }
 void main() {
   vec3 centre = texture( tMean, vUv ).rgb;
@@ -176,7 +178,7 @@ void main() {
     outColor = vec4( centre, 0.0 );
     return;
   }
-  vec3 sum = centre;
+  vec3 sum = light( vUv );
   float total = 1.0;
   float taken = 0.0;
   for ( int i = 0; i < TAPS; i ++ ) {
@@ -187,7 +189,7 @@ void main() {
     float c = circle( d );
     if ( d > here ) c = min( c, own * 2.0 );
     float m = smoothstep( r - 0.5, r + 0.5, c );
-    sum += mix( sum / total, min( texture( tMean, uv ).rgb, vec3( 64.0 ) ), m );
+    sum += mix( sum / total, light( uv ), m );
     total += 1.0;
     taken += m;
   }
@@ -195,6 +197,13 @@ void main() {
 }`,
     { tMean: { value: null }, tDepth: { value: null }, texel: { value: new THREE.Vector2() }, near: { value: 1 }, far: { value: 2 }, focus: { value: 1 }, reach: { value: 0 }, most: { value: 0 }, frame: { value: 0 } }
   )
+
+class Lens {
+  private quad = new Quad()
+  private gathered = linearTarget()
+  private closed = linearTarget()
+  private fine = gatherPass(look.lens.taps, look.lens.probes)
+  private quick: THREE.RawShaderMaterial | null = null
   private close = fullscreen(
     /* glsl */ `
 uniform sampler2D tLens;
@@ -225,7 +234,8 @@ void main() {
   draw(renderer: THREE.WebGLRenderer, mean: THREE.Texture, width: number, height: number, frame: number, lens: LensView): THREE.Texture {
     this.gathered.setSize(width, height)
     this.closed.setSize(width, height)
-    const g = this.gather.uniforms
+    const gather = lens.quick ? (this.quick ??= gatherPass(look.lens.liveTaps, look.lens.liveProbes)) : this.fine
+    const g = gather.uniforms
     g.tMean!.value = mean
     g.tDepth!.value = lens.depth
     ;(g.texel!.value as THREE.Vector2).set(1 / width, 1 / height)
@@ -235,7 +245,7 @@ void main() {
     g.reach!.value = lens.reach
     g.most!.value = look.lens.most * height
     g.frame!.value = frame
-    this.quad.draw(renderer, this.gather, this.gathered)
+    this.quad.draw(renderer, gather, this.gathered)
     const c = this.close.uniforms
     c.tLens!.value = this.gathered.texture
     ;(c.texel!.value as THREE.Vector2).set(1 / width, 1 / height)
