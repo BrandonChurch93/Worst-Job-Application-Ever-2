@@ -1,35 +1,35 @@
 {
   "folder": "frame-keeper",
-  "pushed": "2026-11-26T06:18:08.336Z",
-  "commit": "3254134b425452bbbd8ad70aaed1cdfb6944d34d",
+  "pushed": "2026-11-26T06:23:01.456Z",
+  "commit": "d97c5e43195008ac51b078eba453e7b0e0ffef85",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-table-wide-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-26T06:16:09.263Z",
-      "by": "frame-keeper",
-      "from": "out/work/stills/key-table-wide-hd-review.png"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "Still key-last-save-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T06:16:54.652Z",
-      "by": "frame-keeper",
-      "from": "out/work/stills/key-last-save-hd-draft.png"
-    },
-    {
-      "file": "look-3.jpg",
-      "caption": "Still key-tier-street-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T06:17:32.466Z",
-      "by": "frame-keeper",
-      "from": "out/work/stills/key-tier-street-hd-draft.png"
-    },
-    {
-      "file": "look-4.jpg",
       "caption": "table-wide at the review tier, approved above, ours below at b225b629",
       "time": "2026-11-26T06:18:06.988Z",
       "by": "frame-keeper",
       "from": "out/work/looks/files/20261126061806-cmp-table-wide-review-0617.png"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Still key-tier-corporate-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T06:19:17.302Z",
+      "by": "frame-keeper",
+      "from": "out/work/stills/key-tier-corporate-hd-draft.png"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Still key-table-wide-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T06:20:55.728Z",
+      "by": "frame-keeper",
+      "from": "out/work/stills/key-table-wide-hd-draft.png"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "table-wide near end, approved above, draft below at d97c5e43 with table_runner's move of the apron card to the left slab put in locally: the left slab ends under the card",
+      "time": "2026-11-26T06:23:00.275Z",
+      "by": "frame-keeper",
+      "from": "out/work/looks/files/20261126062300-cmp-apron-card-left.png"
     }
   ]
 }
