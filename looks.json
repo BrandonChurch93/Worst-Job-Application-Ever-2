@@ -1,35 +1,35 @@
 {
   "folder": "pinball-stage",
-  "pushed": "2026-11-26T02:07:20.145Z",
-  "commit": "5f8d3bb071d2b70bd258ba26cc301c2d9ddc333e",
+  "pushed": "2026-11-26T02:20:01.129Z",
+  "commit": "9be7574e5e5a9901b56e3c5b1c773deb448b883a",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key youre-fired: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-26T02:02:25.669Z",
+      "caption": "Key last-save: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-26T02:16:59.170Z",
       "by": "pinball-stage",
-      "from": "out/work/compare/compare-youre-fired.jpg"
+      "from": "out/work/compare/compare-last-save.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Key youre-fired: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-26T02:05:03.271Z",
+      "caption": "lobby-doors beside approved, on the director's 3edf15f: head on from the carpet, the door's post at the left, the ball clear of the wings",
+      "time": "2026-11-26T02:19:59.656Z",
       "by": "pinball-stage",
-      "from": "out/work/compare/compare-youre-fired.jpg"
+      "from": "out/work/c-lobby2.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "rail-cam beside approved, on the director's take (trial merge of 7125cd0): 3.0 behind and 2.2 above the ball, looking along the wire; the police station is behind the wire, the garage right; pushed numbers are 2.8 and 2.5",
-      "time": "2026-11-26T02:07:18.861Z",
+      "caption": "last-save beside approved, apron in its well: 72 degrees down, both flippers whole over the Street tier's near rail, the drain plate at the bottom centre",
+      "time": "2026-11-26T02:19:59.880Z",
       "by": "pinball-stage",
-      "from": "out/work/rep-rail-cam-b.jpg"
+      "from": "out/work/c-save2.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "youre-fired beside approved, on the director's take: 4.8 balls away, the firehouse takes 49% of the width, the most with the ball whole",
-      "time": "2026-11-26T02:07:19.091Z",
+      "caption": "table-wide beside approved with the apron in its well: the frame's marks hold, the apron and the Street's flippers lie under the near rail's line of sight",
+      "time": "2026-11-26T02:20:00.113Z",
       "by": "pinball-stage",
-      "from": "out/work/compare/compare-youre-fired.jpg"
+      "from": "out/work/c-wide3.jpg"
     }
   ]
 }
