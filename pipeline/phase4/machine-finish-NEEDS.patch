@@ -1,0 +1,13 @@
+diff --git a/config/showcase.json b/config/showcase.json
+index 5c2157da..87453ee1 100644
+--- a/config/showcase.json
++++ b/config/showcase.json
+@@ -307,7 +307,7 @@
+       "id": "tier-corporate",
+       "unit": "pinball",
+       "beat": "pinball.lobby",
+-      "at": 0.25,
++      "at": 0.4,
+       "camera": "tier-3",
+       "image": "references/approved/tier-corporate.png",
+       "settled": [

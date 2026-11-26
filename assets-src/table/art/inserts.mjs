@@ -84,21 +84,21 @@ function cell(look, kind, i) {
   return `<rect width="512" height="512" fill="#07080a"/>${set}<circle cx="256" cy="256" r="${edge}" fill="none" stroke="#040507" stroke-width="4" opacity="0.7"/>`
 }
 
-// The lens is frosted: no moulded rings, a pale milky body in the window's colour, and the picture in a fine dark line.
+// The lens is pale enamel-white plastic that takes its colour toward the rim, with one moulded ring near the edge and the picture in a fine dark line. Lit, most of its face is near white and the colour stands in the outer third.
 function glass(look, kind, i) {
   const c = look.colour
   const draw = ICONS[look.icon]
   if (kind === 'relief') return `<rect width="512" height="512" fill="#000"/><circle cx="256" cy="256" r="250" fill="#262626"/>${draw(pen('#9a9a9a'), 12, 'fill="#9a9a9a"', pen('#555555', 1), pen('#262626'))}`
   if (kind === 'lens') {
-    const milk = blend(c, '#c8c8c0', 0.35)
-    const ink = mix(c, '#06080c', 0.82)
-    const mid = mix(c, '#06080c', 0.42)
-    const rim = `<circle cx="256" cy="256" r="247" fill="none" stroke="${mix(c, '#ffffff', 0.35)}" stroke-width="3" opacity="0.4"/>`
-    return `<radialGradient id="l${i}" cx="256" cy="256" r="262" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${mix(milk, '#06080c', 0.42)}"/><stop offset="0.6" stop-color="${mix(milk, '#06080c', 0.6)}"/><stop offset="1" stop-color="${mix(milk, '#06080c', 0.82)}"/></radialGradient><rect width="512" height="512" fill="url(#l${i})"/>${rim}${draw(pen(ink, 0.85), 9, `fill="${ink}" opacity="0.85"`, pen(mid, 0.9), pen(mid))}`
+    const pale = blend(c, '#f2ede2', 0.74)
+    const ink = mix(c, '#06080c', 0.86)
+    const mid = mix(c, '#06080c', 0.5)
+    const rim = `<circle cx="256" cy="256" r="244" fill="none" stroke="${mix(c, '#ffffff', 0.5)}" stroke-width="4" opacity="0.55"/><circle cx="256" cy="256" r="232" fill="none" stroke="${mix(c, '#06080c', 0.35)}" stroke-width="2" opacity="0.5"/>`
+    return `<radialGradient id="l${i}" cx="256" cy="256" r="262" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${blend(c, '#f2ede2', 0.8)}"/><stop offset="0.42" stop-color="${blend(c, '#f2ede2', 0.5)}"/><stop offset="0.74" stop-color="${mix(c, '#06080c', 0.08)}"/><stop offset="0.93" stop-color="${mix(c, '#06080c', 0.36)}"/><stop offset="1" stop-color="${mix(c, '#06080c', 0.6)}"/></radialGradient><rect width="512" height="512" fill="url(#l${i})"/>${rim}${draw(pen(ink, 0.9), 10, `fill="${ink}" opacity="0.9"`, pen(mid, 0.9), pen(pale))}`
   }
-  const ink = mix(c, '#0a0c10', 0.78)
-  const lit = mix(c, '#ffffff', 0.5)
-  return `<radialGradient id="g${i}" cx="256" cy="256" r="262" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${mix(c, '#ffffff', 0.8)}"/><stop offset="0.14" stop-color="${mix(c, '#ffffff', 0.45)}"/><stop offset="0.34" stop-color="${mix(c, '#06080c', 0.2)}"/><stop offset="0.62" stop-color="${mix(c, '#06080c', 0.62)}"/><stop offset="1" stop-color="${mix(c, '#06080c', 0.88)}"/></radialGradient><rect width="512" height="512" fill="url(#g${i})"/>${draw(pen(ink, 0.94), 9, `fill="${ink}" opacity="0.94"`, pen(lit, 0.9), pen(lit))}`
+  const ink = mix(c, '#0a0c10', 0.84)
+  const lit = mix(c, '#ffffff', 0.7)
+  return `<radialGradient id="g${i}" cx="256" cy="256" r="262" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${mix(c, '#fff6e6', 0.93)}"/><stop offset="0.38" stop-color="${mix(c, '#fff6e6', 0.74)}"/><stop offset="0.7" stop-color="${mix(c, '#fff6e6', 0.26)}"/><stop offset="0.92" stop-color="${mix(c, '#06080c', 0.26)}"/><stop offset="1" stop-color="${mix(c, '#06080c', 0.58)}"/></radialGradient><rect width="512" height="512" fill="url(#g${i})"/>${draw(pen(ink, 0.95), 10, `fill="${ink}" opacity="0.95"`, pen(lit, 0.9), pen(lit))}`
 }
 
 export async function insertAtlases(inserts, dir, size) {

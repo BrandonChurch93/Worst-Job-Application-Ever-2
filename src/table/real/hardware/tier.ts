@@ -202,7 +202,33 @@ function gate(G: Geo, S: Screws, z: Zone): Gate {
   return { mesh: M, at: mid }
 }
 
-export interface Tier { G: Geo; F: Geo; S: Screws; B: Geo; slings: string[]; gate: Gate; tip: Geo | null; tipAt: V3 }
+export interface Tier { G: Geo; F: Geo; S: Screws; B: Geo; slings: string[]; kicks: string[]; gate: Gate; tip: Geo | null; tipAt: V3 }
+
+// The ejector of a seat: a steel slug in a housing at the back of the pocket. It gives way when a ball lands and shoots across the pocket toward the mouth when the ball is sent out.
+export const KICK = { reach: 0.92, back: 0.64, head: 15, rod: 6.5, high: 15, strike: 0.035, home: 0.1, give: 0.24, ring: 0.12 }
+// How far out the slug stands, 0 at rest and 1 at full reach, from the seconds since a ball landed and since it was sent out.
+export const kickOf = (sinceIn: number, sinceOut: number): number => {
+  const out = sinceOut < 0 ? 0 : sinceOut < KICK.strike ? 0.45 + 0.55 * (sinceOut / KICK.strike) : Math.exp(-(sinceOut - KICK.strike) / KICK.home) * (sinceOut > 0.8 ? 0 : 1)
+  const give = sinceIn < 0 || sinceIn > 0.6 ? 0 : -KICK.give * Math.exp(-7 * sinceIn) * Math.cos((2 * Math.PI * sinceIn) / KICK.ring)
+  return out + give
+}
+
+function ejector(G: Geo, B: Geo, S: Screws, c: V2, toward: V2, r: number, index: number): void {
+  const l = Math.hypot(toward[0] - c[0], toward[1] - c[1]) || 1
+  const d: V2 = [(toward[0] - c[0]) / l, (toward[1] - c[1]) / l]
+  const turn = Math.atan2(d[1], d[0])
+  const place = (along: number): THREE.Matrix4 => new THREE.Matrix4().makeRotationZ(turn).multiply(new THREE.Matrix4().makeRotationY(Math.PI / 2)).setPosition(c[0] + d[0] * along, c[1] + d[1] * along, KICK.high)
+  // The housing straddles the far rim of the pocket.
+  let from = G.vertices
+  G.f(FIN.zinc).box(-r - 22, -r + 6, -19, 19, 0.4, KICK.high + 13, shade(TONE.zinc, 0.5), { bevel: 2.2, top: shade(TONE.zinc, 0.72) })
+  G.f(FIN.dark).box(-r + 5.6, -r + 6.3, -9, 9, KICK.high - 8, KICK.high + 8, TONE.pocket)
+  G.move(from, new THREE.Matrix4().makeRotationZ(turn).setPosition(c[0], c[1], 0))
+  for (const side of [-1, 1]) S.add(c[0] - d[0] * (r + 8) - d[1] * side * 13, c[1] - d[1] * (r + 8) + d[0] * side * 13, KICK.high + 13, 0.75)
+  from = B.vertices
+  B.f(FIN.chrome).lathe([[KICK.rod, -r * 0.9], [KICK.rod, 0], [KICK.head - 2, 0], [KICK.head, 2], [KICK.head, 6], [KICK.head - 2.5, 8.5], [0, 9.4]], 0, 0, 14, (i) => (i === 0 ? TONE.steelDim : i === 5 ? TONE.rubberWorn : TONE.chrome))
+  B.move(from, place(-r * KICK.back))
+  B.morph(index, from, B.vertices, () => [d[0] * r * KICK.reach, d[1] * r * KICK.reach, 0])
+}
 
 // Everything the hardware has on one tier that stands still, with the parts that move kept apart.
 export function tier(z: Zone): Tier {
@@ -213,6 +239,7 @@ export function tier(z: Zone): Tier {
   const B = new Geo()
   const S = new Screws()
   const slings: string[] = []
+  const kicks: string[] = []
 
   for (const p of table.posts) {
     if (p.tier !== k || p.lamp) continue
@@ -276,6 +303,10 @@ export function tier(z: Zone): Tier {
     const c = flat(z, h.c)
     const r = (h.r + 0.08) * BALL
     pocket(G, (g) => circleLoop(c[0], c[1], r - 5.5 + g, 24), c, { back: h.kind === 'hatch' ? [0, -1] : [0, 1], high: 5.4 })
+    if (h.kind === 'scoop') {
+      ejector(F, B, S, c, flat(z, h.mouth ?? [h.c[0], h.c[1] + 0.45]), r, slings.length + kicks.length)
+      kicks.push(`model.${h.id}`)
+    }
     for (let i = 0; i < 3; i++) {
       const a = (h.kind === 'hatch' ? Math.PI / 2 : -Math.PI / 2) + (i - 1) * 1.25
       S.add(c[0] + (r + 9) * Math.cos(a), c[1] + (r + 9) * Math.sin(a), 0.4, 0.8)
@@ -301,5 +332,5 @@ export function tier(z: Zone): Tier {
     S.add(p[0] - 24, yb, 3, 0.75)
     S.add(p[0] + 24, yb, 3, 0.75)
   }
-  return { G, F, S, B, slings, gate: g, tip, tipAt }
+  return { G, F, S, B, slings, kicks, gate: g, tip, tipAt }
 }

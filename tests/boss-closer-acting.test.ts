@@ -63,9 +63,10 @@ describe('the acting of step 4 in the film', () => {
     expect(Math.max(...after.map((s) => s.health)) - low).toBeGreaterThan(100)
   })
 
-  it('stands at the key of the fallen button, sags after it and holds the relief for a second and a half after the press', () => {
-    expect(span(28.6, 29.05).every((s) => s.acting === 'plain')).toBe(true)
-    expect(held('exhausted', 29.05, 30.4)).toBeGreaterThanOrEqual(0.9)
+  it('sags at the key of the fallen button and holds the relief for a second and a half after the press', () => {
+    expect(span(27.6, 28.6).every((s) => s.acting !== 'exhausted')).toBe(true)
+    expect(span(28.95, 29.05).every((s) => s.acting === 'exhausted')).toBe(true)
+    expect(held('exhausted', 28.6, 30.4)).toBeGreaterThanOrEqual(1.1)
     expect(held('proud', 29.9, 32)).toBeGreaterThanOrEqual(1.5)
   })
 })
