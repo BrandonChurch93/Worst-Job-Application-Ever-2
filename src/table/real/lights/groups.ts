@@ -1,4 +1,4 @@
-import { BALL, COLS, MARQUEE_H, MARQUEE_Y, TIER_Y, TIERS, table, type Insert, type Model } from '../../layout'
+import { BALL, COLS, FLIP, MARQUEE_H, MARQUEE_Y, TIER_Y, TIERS, table, type Insert, type Model } from '../../layout'
 import { insertColour } from '../art/inserts'
 import { localBalls, zone as zoneNamed, zones, type Zone } from '../zone'
 import * as C from './colours'
@@ -76,13 +76,15 @@ function build(z: Zone): Group[] {
   const inserts = table.inserts.filter((n) => n.tier === k)
   // Under each sling plastic stands a lamp that lights the floor round it and the flipper before it.
   const slings: Source[] = table.slings.filter((s) => s.tier === k).map((s) => at((s.a[0] + s.b[0] + s.c[0]) / 3, (s.a[1] + s.b[1] + s.c[1]) / 3, 30, 0.95, 2.4, `sling.${s.id}`))
-  // A lamp over each bat, in the warm white of the tier's windows, so the flippers are the brightest things at the foot of a tier and keep their own colour.
-  const bats: Source[] = table.flippers.filter((f) => f.tier === k).map((f) => at(f.pivot[0] + (f.side === 'left' ? 0.85 : -0.85), f.pivot[1] + 0.25, 64, 0.9, 3))
+  // A lamp high over the middle of each bat, in the warm white of the tier's windows, so a flipper is lit evenly from pivot to tip and keeps its own colour.
+  const bats: Source[] = table.flippers.filter((f) => f.tier === k).map((f) => at(f.pivot[0] + (f.side === 'left' ? 1 : -1) * FLIP.length * 0.46, f.pivot[1] + FLIP.length * 0.2, 150, 2.1, 3.6))
   const insert = (n: Insert, i: number): void => add(`insert.${i + 1}`, 1, linear(insertColour(n)), [at(n.c[0], n.c[1], 28, 1.1, 3.0)], true)
+  // The elbow at the head of the lift stands two balls from the nearest lamp of its column: one more lamp there, under the cross rail.
+  const elbow: Source[] = k < 2 ? [at(COLS.lift, TIER_Y[k]! + 1.05, 70, 1.6, 2.6)] : []
   const d = table.displays[k]!
   const display = (): void => add('display', 0, C.DISPLAY_AMBER, [0.2, 0.5, 0.8].map((f) => at(d.box[0] + d.box[2] * f, d.box[1] + d.box[3] * 0.4, 34, 0.22, 2.4)))
   if (z.id === 'corporate') {
-    add('general', 2, C.CORPORATE_WHITE, both(rail, 1.45))
+    add('general', 2, C.CORPORATE_WHITE, [...both(rail, 1.45), ...elbow])
     add('lanes', 2, C.CORPORATE_GOLD, [...both(lane, 1.4), ...slings])
     inserts.forEach(insert)
     for (const p of table.posts) if (p.tier === k && p.lamp) add(p.id.slice(p.id.indexOf('.') + 1), 1, C.CORPORATE_GLOBE, [at(p.c[0], p.c[1], 46, 1.5, 5.2, `post.${p.id}`)], true)
@@ -99,7 +101,7 @@ function build(z: Zone): Group[] {
     add('flash', 0, C.CORPORATE_FLASH, [])
   } else if (z.id === 'office') {
     // The Office is a lit room: its lamps throw wide, so the floor between them is never dark.
-    add('general', 2, C.OFFICE_FLUORESCENT, both(rail, 0.8).map((s) => (s.z > 100 ? { ...s, power: s.power * 2.4 } : s)))
+    add('general', 2, C.OFFICE_FLUORESCENT, [...both(rail, 0.8).map((s) => (s.z > 100 ? { ...s, power: s.power * 2.4 } : s)), ...elbow])
     inserts.forEach(insert)
     table.bumpers.filter((b) => b.tier === k).forEach((b, i) => add(`bumper.${i + 1}`, 1, C.OFFICE_BUMPER, [at(b.c[0], b.c[1], 58, 1.1, 4.2, `bumper.${b.id}`)], true))
     const coffee = model('office.coffee')
