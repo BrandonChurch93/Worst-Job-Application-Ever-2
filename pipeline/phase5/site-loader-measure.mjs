@@ -67,10 +67,15 @@ page.on('pageerror', (e) => problems.push(String(e && e.message ? e.message : e)
 page.on('console', (m) => m.type() === 'error' && problems.push(m.text()))
 await page.addInitScript(() => {
   const w = window
-  w.__frames = { count: 0, last: 0, gaps: [] }
+  w.__frames = { count: 0, last: 0, gaps: [], said: '', says: [] }
   const tick = (t) => {
     const f = w.__frames
     if (f.last) f.gaps.push([t, t - f.last])
+    const said = document.querySelector('[role=status]')?.textContent ?? ''
+    if (said !== f.said) {
+      f.said = said
+      f.says.push([f.gaps.length - 1, said])
+    }
     f.last = t
     f.count++
     requestAnimationFrame(tick)
@@ -149,6 +154,22 @@ const rows = marks.map((m, i) => {
   return { page: m.page, fromSeconds: Number(m.wall.toFixed(1)), seconds: Number(((to ? to.wall : end.now / 1000) - m.wall).toFixed(1)), files: files.length, sentMb: Number((files.reduce((n, f) => n + f.sent, 0) / 1048576).toFixed(3)), frames: gaps.length, playSeconds: Number(gaps.reduce((n, g) => n + Math.min(100, g) / 1000, 0).toFixed(1)), medianFrameMs: Math.round(sorted[Math.floor(sorted.length / 2)] ?? 0), longestFrameMs: Math.round(sorted.at(-1) ?? 0), fetched: files.map((f) => f.file) }
 })
 for (const r of rows) console.log(`measure: ${name}: ${r.page.padEnd(9)} from ${String(r.fromSeconds).padStart(6)} s for ${String(r.seconds).padStart(6)} s: fetched ${r.files} files, ${r.sentMb} MB; ${r.frames} frames, ${r.playSeconds} s of play, median ${r.medianFrameMs} ms, longest ${r.longestFrameMs} ms`)
+// The frame a page arrived in: the gap that ended when the status line first named the page, which is the frame that drew it first. Then the longest of the three frames after it, and the median of all the page's later frames.
+const arrivals = []
+let named = ''
+for (const [index, said] of frames.says) {
+  let id = ''
+  for (const [pid, h] of headings) if (said.includes(h)) id = pid
+  if (!id || id === named) continue
+  named = id
+  arrivals.push({ page: id, index })
+}
+const turns = arrivals.map((x, i) => {
+  const to = arrivals[i + 1] ? arrivals[i + 1].index : frames.gaps.length
+  const later = frames.gaps.slice(x.index + 1, to).map(([, g]) => g).sort((p, q) => p - q)
+  return { page: x.page, arrivedMs: x.index >= 0 ? Math.round(frames.gaps[x.index][1]) : null, nextThreeMs: Math.round(Math.max(0, ...frames.gaps.slice(x.index + 1, Math.min(to, x.index + 4)).map(([, g]) => g))), medianMs: later.length ? Math.round(later[later.length >> 1]) : null, frames: later.length }
+})
+for (const r of turns) console.log(`measure: ${name}: ${r.page.padEnd(9)} arrived in a frame of ${r.arrivedMs} ms, the longest of the three after it ${r.nextThreeMs} ms, the median of its ${r.frames} later frames ${r.medianMs} ms`)
 const worst = [...frames.gaps].sort((x, y) => y[1] - x[1]).slice(0, 5).map(([t, g]) => ({ atSeconds: Number((t / 1000).toFixed(2)), ms: Math.round(g) }))
 console.log(`measure: ${name}: the five longest gaps between two frames: ${worst.map((w) => `${w.ms} ms at ${w.atSeconds} s`).join(', ')}`)
 if (problems.length) console.log(`measure: ${name}: errors on the page: ${[...new Set(problems)].slice(0, 5).join(' | ')}`)
@@ -173,5 +194,5 @@ const tiles = await Promise.all(pick.map(async (s, i) => {
 const sheet = at(typeof a.sheet === 'string' ? a.sheet : path.join('out', 'work', 'site-loader', `${name}.png`))
 fs.mkdirSync(path.dirname(sheet), { recursive: true })
 await sharp({ create: { width: cols * tw, height: rowsN * (th + label), channels: 3, background: '#0b0b0c' } }).composite(tiles.flat()).png().toFile(sheet)
-writeJson(path.join(outDir, `${name}.json`), { name, mbit, scale, bot, view: [vw, vh], firstPictureSeconds: firstPicture, firstLoad: { files: firstFiles.length, sentMb: firstFiles.reduce((n, f) => n + f.sent, 0) / 1048576, storedMb: firstFiles.reduce((n, f) => n + f.bytes, 0) / 1048576, list: firstFiles.map((f) => f.file) }, pages: rows, worst, finishedAtSeconds: finishedAt || null, problems: [...new Set(problems)], lastLoading: end.loading })
+writeJson(path.join(outDir, `${name}.json`), { name, turns, mbit, scale, bot, view: [vw, vh], firstPictureSeconds: firstPicture, firstLoad: { files: firstFiles.length, sentMb: firstFiles.reduce((n, f) => n + f.sent, 0) / 1048576, storedMb: firstFiles.reduce((n, f) => n + f.bytes, 0) / 1048576, list: firstFiles.map((f) => f.file) }, pages: rows, worst, finishedAtSeconds: finishedAt || null, problems: [...new Set(problems)], lastLoading: end.loading })
 console.log(`measure: ${name}: wrote ${path.relative(at(), sheet)} and ${name}.json${finishedAt ? `; the run was back on the careers page after ${finishedAt.toFixed(0)} s` : `; stopped at the limit of ${limit} s on ${was}`}`)
