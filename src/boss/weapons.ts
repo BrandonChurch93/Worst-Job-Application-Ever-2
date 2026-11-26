@@ -29,7 +29,7 @@ export const DART_Z = 17
 export const SPARK_Z = 30
 export const MUZZLE_Z = MUZZLE.z
 export const BANNER_Z = 64
-const BANNER_LEAST = 0.3
+const BANNER_LEAST = 0.6
 const SLAB_LEAST = 0.12
 
 export function drawWeapons(out: DrawList, f: Fight, plan: WeaponPlan): void {
@@ -91,7 +91,8 @@ export function drawWeapons(out: DrawList, f: Fight, plan: WeaponPlan): void {
     if (k >= 0.6) out.push(label('banner-up-words', part, plan.banner.key, f.x, y, plan.bannerType, z0 + heights.slab, 'inkLight'))
   }
   for (const m of f.flashes) {
-    out.push({ id: `muzzle-${m.n}`, part, kind: 'disc', x: m.x - 30, y: m.y - 30, w: 60, h: 60, z0: MUZZLE_Z, z1: MUZZLE_Z + 4, tone: 'light', rot: m.rot, v: [m.t / FLASH_SECONDS, m.n] })
+    const r = m.r ?? 30
+    out.push({ id: `muzzle-${m.n}`, part, kind: 'disc', x: m.x - r, y: m.y - r, w: r * 2, h: r * 2, z0: MUZZLE_Z, z1: MUZZLE_Z + 4, tone: 'light', rot: m.rot, v: [m.t / FLASH_SECONDS, m.n] })
   }
   for (const d of f.darts) {
     if (d.t < 0) continue
