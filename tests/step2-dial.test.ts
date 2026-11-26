@@ -306,6 +306,19 @@ describe('the rows as they are built', () => {
     }
   })
 
+  it('never leaves a reel\'s legend lying bare on the floor of a tray whose machine has sunk', () => {
+    let sunk = 0
+    for (let t = 13.2; t < 13.7; t += 0.02) {
+      const list = listAt(t)
+      const cabinet = list.find((s) => s.id === 'slot-cabinet')
+      const legends = list.filter((s) => s.id.startsWith('reel-'))
+      if (!cabinet || cabinet.z1 - cabinet.z0 > 2) continue
+      sunk++
+      expect(legends.length, `at ${t.toFixed(2)}`).toBe(0)
+    }
+    expect(sunk).toBeGreaterThan(0)
+  })
+
   it('builds a tray on its way open for the height it has', () => {
     const list = listAt(2.15)
     const tray = list.find((n) => n.id === 'phone-tray')

@@ -95,6 +95,9 @@ function rowParts(tree: LayoutNode, prefix: string): RowIds {
   return { ids }
 }
 
+// Under this share of its rise a machine is in the floor, and what is printed on it is out of sight with it.
+const SUNK = 0.05
+
 function machineParts(tree: LayoutNode, tray: string): { id: string; floor: number; top: number; text: boolean }[] {
   const out: { id: string; floor: number; top: number; text: boolean }[] = []
   for (const child of find(tree, tray).children ?? []) {
@@ -732,6 +735,7 @@ export function makePage(): PageLogic {
       const p = clamp(m.slot.p, 0, 1)
       Object.assign(over['slot-knob']!, { y: knob.y + SLOT.pull * p, ...(p > 0.002 ? { moved: true } : {}) })
       for (let r = 0; r < 3; r++) Object.assign(over[`slot-reel-${r}`]!, { v: [reelPos(m.slot, r)] })
+      if (L < SUNK) for (const part of parts[1]!) if (part.text) over[part.id] = null
     }
     if (i === 2) {
       const b = m.crank.b

@@ -20,7 +20,7 @@ export const FH = sizes.field
 export const ROW_Y = HEADER.contentY
 export const PITCH = 144
 export const TRAY_GAP = 12
-export const TRAY_H = 232
+export const TRAY_H = 250
 export const TRAY_R = 14
 // A tray's liner, in page pixels, and the shade its wall lays on its floor.
 export const TRAY = { sink: 0.5, joint: 0.9, jointDeep: 1.1, rim: 5.6, lean: 1.3, wallShade: 0.1, wallLit: 0.62, soakOver: 0.5,
@@ -57,14 +57,15 @@ export const dialTop = (lift: number): number => Math.max(DIAL_BODY.rest, DIAL_B
 // How far the numeral plate stands above the tray's floor under a wheel whose top stands at `top`: it never sinks into the floor.
 export const dialPlate = (top: number): number => Math.max(DIAL_BODY.plateLeast, top - DIAL_BODY.plate)
 
-const sy = trayY(1)
+const sy = trayY(1) + 9
+const sx = FX + PAD + 12
 export const SLOT = {
-  x: FX + PAD, y: sy + PAD, w: 336, h: 150,
+  x: sx, y: sy + PAD, w: 336, h: 150,
   reelW: 92, reelH: 106, reelGap: 12,
-  reelX: (r: number): number => FX + PAD + 18 + r * (92 + 12),
+  reelX: (r: number): number => sx + 18 + r * (92 + 12),
   reelY: sy + PAD + 22,
-  leverX: FX + PAD + 336 + 34, knobY: sy + PAD + 30, pull: 96, knob: 44,
-  payX: FX + PAD + 60, payY: sy + PAD + 150 + 8, payW: 216, payH: 22,
+  leverX: sx + 336 + 34, knobY: sy + PAD + 30, pull: 96, knob: 44,
+  payX: sx + 60, payY: sy + PAD + 150 + 8, payW: 216, payH: 22,
   strips: [Object.keys(legends.months).sort(), Object.keys(legends.days).sort(), Object.keys(legends.years).sort()] as string[][],
   names: ['months', 'days', 'years'] as const,
   film: ['07', '23', '1991']
@@ -132,10 +133,10 @@ function slotNodes(): LayoutNode[] {
   const cabinet = node('slot-cabinet', 'slotCabinet', [s.x, s.y, s.w, s.h], { part: 'slot', height: TOP + 20, floor: TRAY_Z, tone: 'metal', r: 12, mechanism: true, children: [window] })
   const knob = node('slot-knob', 'slotKnob', [s.leverX - s.knob / 2, s.knobY - s.knob / 2, s.knob, s.knob], { part: 'slot', shape: 'disc', height: TOP + 40, floor: TOP + 12, tone: 'accent', mechanism: true })
   const payout = node('slot-payout', 'slotPayout', [s.payX, s.payY, s.payW, s.payH], { part: 'slot', height: 6, floor: TRAY_Z, tone: 'dark', r: 6 })
-  const px = s.leverX + s.knob / 2 + 64
+  const px = s.leverX + s.knob / 2 + 52
   const wrap = FX + FW - PAD - px
   const b = block(TYPE.body.font, words('copy:step2.rows.birth.panel'), TYPE.body.px, wrap)
-  const prompt = text('slot-prompt', 'copy:step2.rows.birth.panel', { ...TYPE.body, wrap }, px, sy + (TRAY_H - b.height) / 2, { part: 'type', on: TRAY_Z, states: ['birth-panel'] })
+  const prompt = text('slot-prompt', 'copy:step2.rows.birth.panel', { ...TYPE.body, wrap }, px, trayY(1) + (TRAY_H - b.height) / 2, { part: 'type', on: TRAY_Z, states: ['birth-panel'] })
   return [cabinet, knob, payout, prompt]
 }
 
