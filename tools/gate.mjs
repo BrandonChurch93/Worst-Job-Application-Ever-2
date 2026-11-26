@@ -32,7 +32,9 @@ const walk = (dir, out = []) => {
   if (!fs.existsSync(dir)) return out
   for (const name of fs.readdirSync(dir).sort()) {
     const p = path.join(dir, name)
-    if (fs.statSync(p).isDirectory()) walk(p, out)
+    const st = fs.statSync(p, { throwIfNoEntry: false })
+    if (!st) continue
+    if (st.isDirectory()) walk(p, out)
     else out.push(p)
   }
   return out
