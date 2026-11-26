@@ -1,35 +1,35 @@
 {
   "folder": "office-models",
-  "pushed": "2026-11-26T04:51:56.413Z",
-  "commit": "ce8fa1978a320e17c8c9bac75dfe939327250ecf",
+  "pushed": "2026-11-26T05:16:12.040Z",
+  "commit": "6dfd0b87681ee48be88eb0cd53c430ee61dfa304",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-reply-all-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T04:47:36.182Z",
+      "caption": "Left stapler: approved image, then the build in tier-office and in reply-all (draft, 6dfd0b87). A steel edge and a shade band now set the arm off the plate",
+      "time": "2026-11-26T05:16:10.331Z",
       "by": "office-models",
-      "from": "out/work/stills/key-reply-all-hd-draft.png"
+      "from": "out/work/looks/files/20261126051610-stap-approved-now-4.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Still key-tier-office-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T04:48:18.753Z",
+      "caption": "The inbox in the beat pinball.replyAll from the home camera (draft): at 0.082 the heap at rest, at 0.098 mid hop, larger, turned and pushed aside",
+      "time": "2026-11-26T05:16:10.561Z",
       "by": "office-models",
-      "from": "out/work/stills/key-tier-office-hd-draft.png"
+      "from": "out/work/looks/files/20261126051610-hop-rest-mid.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Inbox and coffee machine in the runner's new box and under the lamp keeper's lamp: tier-office left, reply-all right, the lift down to 0.45",
-      "time": "2026-11-26T04:51:54.991Z",
+      "caption": "Coffee machine and inbox in tier-office and reply-all (draft, 6dfd0b87): the tray is full of envelopes to its walls",
+      "time": "2026-11-26T05:16:10.794Z",
       "by": "office-models",
-      "from": "out/work/looks/files/20261126045154-right-new-boxes.jpg"
+      "from": "out/work/looks/files/20261126051610-right-z6.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Cubicle farm three across and two deep in the runner's new box: tier-office left, reply-all right",
-      "time": "2026-11-26T04:51:55.223Z",
+      "caption": "tier-office, draft, 6dfd0b87 on main 02c2f3d9",
+      "time": "2026-11-26T05:16:11.027Z",
       "by": "office-models",
-      "from": "out/work/looks/files/20261126045155-cub-new-box.jpg"
+      "from": "out/work/looks/files/20261126051611-tier-z6.jpg"
     }
   ]
 }
