@@ -96,7 +96,7 @@ function pose(o: THREE.Object3D, z: Zone, ctx: RealContext): void {
   spillsOf(z).forEach((p, i) => {
     const level = (L.byName[p.follows] ?? 0) * p.power
     u.wjlSpill.value[i]!.set(p.x, p.y, p.half, p.high)
-    u.wjlSpillComb.value[i]!.set(p.pitch, p.phase)
+    u.wjlSpillComb.value[i]!.set(p.pitch, p.phase, p.side ? 1 : 0)
     u.wjlSpillCol.value[i]!.set(p.colour[0] * level, p.colour[1] * level, p.colour[2] * level)
   })
   highOf(z).forEach((p, i) => {

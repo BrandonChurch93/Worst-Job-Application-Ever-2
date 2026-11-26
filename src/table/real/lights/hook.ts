@@ -19,7 +19,7 @@ uniform vec3 wjlCol[ ${CHANNELS} ];
 uniform vec3 wjlFull[ ${CHANNELS} ];
 uniform vec4 wjlSpill[ ${SPILLS} ];
 uniform vec3 wjlSpillCol[ ${SPILLS} ];
-uniform vec2 wjlSpillComb[ ${SPILLS} ];
+uniform vec3 wjlSpillComb[ ${SPILLS} ];
 uniform vec4 wjlHigh[ ${HIGHS} ];
 uniform vec3 wjlHighCol[ ${HIGHS} ];
 uniform vec4 wjlAt[ ${CHANNELS} ];
@@ -56,13 +56,16 @@ const DEEP = { from: 0.12, to: 1.3 }
 const WET = 0.1
 
 // How bright the floor before a lit opening is with what the opening throws on it.
-const SPILL = 1.6
+const SPILL = 1.1
+
+// The image of a lit front in the lacquer: how sharp its edge is at the foot of the wall in pixels, how fast it blurs with the height it mirrors, and where the sill of the lowest windows stands as a share of the front's height.
+const MIRROR = { sharp: 3, blur: 0.2, sill: 0.14 }
 
 // The lacquer is a dark mirror too: it shows each lamp over it as a small bright spot where the eye's line, turned by the floor, meets the lamp. From straight above the spot lies under its lamp, from a low eye it runs out toward the eye.
 const GLINT = { level: 5.0, body: 13, low: 30 }
 
 // The shadows of the head lamps. A wall is asked a little outside its own foot, and a thing that stands is taken a little higher than it is, so nothing lies in its own shadow; `soft` is how many pixels of height the tip of a shadow fades over, `edge` how much of its depth its side does.
-export const SHADOW = { out: 12, slack: 6, lean: 0.35, soft: 10, edge: 0.5, ball: 0.07, steel: 0.92, clear: 0.4, spot: 0.9, spotAt: 0.1, gloss: 0.6, far: 0.22, near: 1.5 }
+export const SHADOW = { out: 12, slack: 6, lean: 0.35, soft: 10, edge: 0.5, ball: 0.07, steel: 0.92, clear: 0.4, spot: 0.9, spotAt: 0.1, gloss: 0.6, far: 0.22, near: 1.5, riser: 0.06, riserReach: 150 }
 
 // For each group: its picture at the fragment's place, a term for the fragment's height and for the way its surface faces the lamps, the group's colour and level.
 const body = /* glsl */ `
@@ -112,7 +115,7 @@ const body = /* glsl */ `
 	vec3 wjlBack = normalize( ( wjlViewInverse * vec4( geometryViewDir, 0.0 ) ).xyz );
 	vec3 wjlRay = vec3( - wjlBack.xy, max( wjlBack.z, 0.06 ) );
 	float wjlFace = 1.0 - clamp( wjlBack.z, 0.0, 1.0 );
-	float wjlMirror = wjlFlat * ( ${WET.toFixed(2)} + ${(1 - WET).toFixed(2)} * wjlFace * wjlFace * wjlFace ) * smoothstep( 0.02, 0.12, wjlBack.z );
+	float wjlMirror = wjlFlat * ( ${WET.toFixed(2)} + ${(1 - WET).toFixed(2)} * wjlFace * wjlFace ) * smoothstep( 0.02, 0.12, wjlBack.z );
 	if ( wjlMirror > 0.0 ) {
 		float wjlGrain = fract( 52.9829189 * fract( dot( gl_FragCoord.xy, vec2( 0.06711056, 0.00583715 ) ) ) );
 		for ( int t = 0; t < ${STREAK.taps}; t ++ ) {
@@ -145,17 +148,23 @@ const body = /* glsl */ `
 			}
 		}
 		vec2 wjlEye = wjlBack.xy / max( length( wjlBack.xy ), 0.001 );
-		float wjlLow = length( wjlBack.xy ) / max( wjlBack.z, 0.2 );
+		float wjlLow = length( wjlBack.xy ) / max( wjlBack.z, 0.05 );
 		for ( int k = 0; k < ${SPILLS}; k ++ ) {
 			vec4 sp = wjlSpill[ k ];
 			if ( sp.z <= 0.0 ) continue;
+			vec3 cb = wjlSpillComb[ k ];
+			vec2 wjlAlong = cb.z > 0.5 ? vec2( 0.0, 1.0 ) : vec2( 1.0, 0.0 );
+			vec2 wjlAcross = vec2( - wjlAlong.y, wjlAlong.x );
 			vec2 d = wjlP.xy - sp.xy;
-			float wjlFar = dot( d, wjlEye );
-			float wjlOut = dot( d, vec2( - wjlEye.y, wjlEye.x ) );
-			float wjlLong = sp.w * ( 0.5 + wjlLow );
-			vec2 cb = wjlSpillComb[ k ];
-			float wjlBars = cb.x > 0.0 ? pow( 0.5 + 0.5 * cos( 6.2831853 * ( wjlOut / cb.x + cb.y ) ), 3.0 ) : 1.0;
-			wjlSpilt += wjlSpillCol[ k ] * wjlBars * exp( - pow( wjlOut * wjlOut / ( sp.z * sp.z ), 2.0 ) ) * smoothstep( 0.0, 0.06 * sp.w, wjlFar ) * pow( 1.0 - smoothstep( 0.0, wjlLong, wjlFar ), 1.6 ) * ( 0.35 + 0.65 * wjlFace ) * wjlFlat;
+			float wjlTurn = dot( wjlEye, wjlAcross );
+			float wjlFar = dot( d, wjlAcross ) / ( abs( wjlTurn ) > 0.05 ? wjlTurn : 0.05 );
+			float wjlOn = dot( d, wjlAlong ) - wjlFar * dot( wjlEye, wjlAlong );
+			float wjlTall = wjlFar / max( wjlLow, 0.001 );
+			float wjlBlur = ${MIRROR.sharp.toFixed(1)} + ${MIRROR.blur.toFixed(2)} * wjlTall;
+			float wjlBars = cb.x > 0.0 ? pow( 0.5 + 0.5 * cos( 6.2831853 * ( wjlOn / cb.x + cb.y ) ), 2.0 ) : 1.0;
+			float wjlFoot = cb.x > 0.0 ? ${MIRROR.sill.toFixed(2)} * sp.w : 0.0;
+			float wjlBand = smoothstep( wjlFoot - wjlBlur, wjlFoot + wjlBlur, wjlTall ) * ( 1.0 - smoothstep( sp.w - 2.0 * wjlBlur, sp.w + 2.0 * wjlBlur, wjlTall ) );
+			wjlSpilt += wjlSpillCol[ k ] * wjlBars * wjlBand * ( 1.0 - smoothstep( sp.z - wjlBlur, sp.z + wjlBlur, abs( wjlOn ) ) ) * step( 0.0, wjlFar ) * smoothstep( 0.08, 0.3, abs( wjlTurn ) ) * ( 0.35 + 0.65 * wjlFace ) * wjlFlat;
 		}
 	}
 	for ( int i = 0; i < ${CHANNELS}; i ++ ) {
@@ -250,6 +259,7 @@ const body = /* glsl */ `
 		clearcoatSpecularDirect = mix( wjlCoat, clearcoatSpecularDirect, wjlShine * ${SHADOW.gloss.toFixed(2)} );
 		#endif
 	}
+	wjlField += wjlKeyCol * ${SHADOW.riser.toFixed(2)} * max( - wjlN.y, 0.0 ) * wjlWall * smoothstep( 0.5 * wjlSize.y - ${SHADOW.riserReach.toFixed(1)}, 0.5 * wjlSize.y - ${(SHADOW.riserReach * 0.4).toFixed(1)}, wjlP.y ) * wjlClear;
 	for ( int k = 0; k < ${HIGHS}; k ++ ) {
 		vec4 hi = wjlHigh[ k ];
 		if ( hi.w <= 0.0 ) continue;

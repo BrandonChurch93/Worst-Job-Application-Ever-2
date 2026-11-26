@@ -144,9 +144,9 @@ const made = new Map<string, Group[]>()
 
 // The light groups of a zone, in the order of their channels. A zone without lamps has none.
 // A lit front at the foot of a model, and its image in the wet floor before it: where it stands, half its width and its height in pixels, its colour, and the group whose level it follows. A front with a row of windows is mirrored as a row of bars, `pitch` pixels apart.
-export interface Spill { x: number; y: number; half: number; high: number; colour: RGB; follows: string; power: number; pitch: number; phase: number }
+export interface Spill { x: number; y: number; half: number; high: number; colour: RGB; follows: string; power: number; pitch: number; phase: number; side?: boolean }
 
-export const SPILLS = 4
+export const SPILLS = 7
 
 export function spillsOf(z: Zone): Spill[] {
   const front = (id: string, off: number, half: number, high: number, colour: RGB, follows: string, power: number, pitch = 0, phase = 0): Spill => {
@@ -154,8 +154,17 @@ export function spillsOf(z: Zone): Spill[] {
     const p = localBalls(z, centre(m)[0] + off, m.box[1] + m.box[3] + 0.05)
     return { x: p[0], y: p[1], half: half * BALL, high: high * BALL, colour, follows, power, pitch: pitch * BALL, phase }
   }
+  // The same for a wall that looks across the tier: `way` 1 is the model's right wall, -1 its left.
+  const side = (id: string, way: number, half: number, high: number, colour: RGB, follows: string, power: number, pitch = 0): Spill => {
+    const m = model(id)
+    const p = localBalls(z, way > 0 ? m.box[0] + m.box[2] + 0.05 : m.box[0] - 0.05, centre(m)[1])
+    return { x: p[0], y: p[1], half: half * BALL, high: high * BALL, colour, follows, power, pitch: pitch * BALL, phase: 0, side: true }
+  }
   if (z.id === 'street') {
     return [
+      side('street.firehouse', 1, 0.7, 1.1, C.STREET_WINDOW, 'windows', 0.5, 0.42),
+      side('street.police', -1, 0.7, 1.1, C.STREET_WINDOW, 'windows', 0.5, 0.42),
+      side('street.bank', 1, 0.5, 0.9, C.STREET_WINDOW, 'windows', 0.45, 0.21),
       front('street.firehouse', 0.55, 0.42, 1.5, C.STREET_RED, 'red', 1.6),
       front('street.firehouse', -0.62, 0.6, 1.1, C.STREET_WINDOW, 'windows', 0.55, 0.42),
       front('street.police', 0, 1.05, 1.1, C.STREET_WINDOW, 'windows', 0.55, 0.42),

@@ -73,6 +73,9 @@ Counted from the first still, by part. Limit 40 a part in this round.
 | 07:41 | lights | 4 | p1, pools down, head lamps up: tier-street, tier-corporate, tier-office, reply-all | 28, 11 |
 | 07:44 | art | 4 | p2, head lamps fall off across the tier, darker lens, wider seat: tier-street, tier-corporate, tier-office, reply-all | 28, 15 |
 | 07:49 | lights | 4 | p3, beacon light on the roofs, bluer Street: tier-street, youre-fired, rail-cam, table-wide | 32, 15 |
+| 07:55 | both | 4 | m1, light on the riser faces, walls that look across a tier mirrored: youre-fired, last-save (art), table-wide, lobby-doors (lights) | 34, 17 |
+| 07:58 | both | 3 | m2, a front's image in the lacquer worked out from the wall itself: youre-fired, lobby-doors (art), table-wide (lights) | 35, 19 |
+| 08:01 | both | 3 | m3, riser light and mirror down a step: youre-fired (art), table-wide (lights); one review still of reply-all for its time (lights) | 37, 20 |
 
 ## Decisions
 
@@ -90,6 +93,9 @@ Counted from the first still, by part. Limit 40 a part in this round.
 12. Inserts, second step: the lens is darker toward its rim and the glow falls off faster, so the middle is the bright part; the seat is 6 px wide so it is seen from the tier cameras; a window at rest glows at 0.3 instead of 0.42.
 13. Point 8, the beacons. The cover and the bulb in it are meshes of the Street's models (`src/table/real/models/street/index.ts`, `beaconLens`, `beaconReflector`). My half: each beacon has a lamp of its own 20 px over its roof (`BEACON` in `groups.ts`, with the high lamps, which went from 7 to 9), so its red or blue lies on the roof and the sign round it and follows the group `red` or `blue`. No mesh of mine is in the beacon, so no draw call is added. What the owner of the models must do is in Needs.
 14. The Street's ground is bluer (`#0a1c30`, `#12304a`) and its head lamps less orange, so the floor stays navy under them instead of going teal.
+15. The Builder's riser check. MEASURED on the `table-wide` draft with a mean of luminance over a box of the still (Python, PIL; boxes 820,545 to 1200,585 and 820,330 to 1200,355; the Street's floor 900,620 to 1150,700): before, the riser faces stood at 31.0 and 32.5 of 255 and the Street's floor at 44.4, so the risers were the darkest large shapes. The head lamps point away from the rail they hang under, so nothing of them reached it. Now a wall that looks down the tier within 150 px of the tier's head takes a share of the head lamps' light (`SHADOW.riser` 0.06 in `hook.ts`): the risers stand at 54.9 and 61.8 and the floor at 44.7. This is on the faces as they are on main at 08:00 UTC; when `/root/frame_fixer`'s aluminium is merged the number has to be measured again and `SHADOW.riser` taken down if the faces come out pale.
+16. Point 7, the floor as a mirror. The image of a lit front in the lacquer is now worked out from the wall itself: for a place on the floor the ray to the eye is mirrored and followed to the wall's plane, and where it meets the wall between the sill and the top, in a window's column, the floor shows the window's colour (`MIRROR` in `hook.ts`). So the image stands under its wall from every camera, with the wall's own slant, and is gone from straight above, as a mirror's is. Walls that look across a tier have images too: the firehouse's right wall, the police station's left, the bank's right (`side` in `spillsOf`, 4 images to 7). The image is a row of lit columns, not the drawn windows: a true mirror would cost the tier a second drawing of its models.
+17. The lacquer mirrors more at middle angles (the square of the angle term instead of the cube), so a lamp and a front show in it from the film's cameras and not only from along the floor.
 
 ## Needs
 

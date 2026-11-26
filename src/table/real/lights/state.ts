@@ -20,7 +20,7 @@ export interface ZoneLight {
     wjlFull: { value: THREE.Vector3[] }
     wjlSpill: { value: THREE.Vector4[] }
     wjlSpillCol: { value: THREE.Vector3[] }
-    wjlSpillComb: { value: THREE.Vector2[] }
+    wjlSpillComb: { value: THREE.Vector3[] }
     wjlHigh: { value: THREE.Vector4[] }
     wjlHighCol: { value: THREE.Vector3[] }
     wjlAt: { value: THREE.Vector4[] }
@@ -63,7 +63,7 @@ export function zoneLight(z: Zone): ZoneLight {
       wjlFull: { value: full },
       wjlSpill: { value: Array.from({ length: SPILLS }, () => new THREE.Vector4()) },
       wjlSpillCol: { value: Array.from({ length: SPILLS }, () => new THREE.Vector3()) },
-      wjlSpillComb: { value: Array.from({ length: SPILLS }, () => new THREE.Vector2()) },
+      wjlSpillComb: { value: Array.from({ length: SPILLS }, () => new THREE.Vector3()) },
       wjlHigh: { value: Array.from({ length: HIGHS }, () => new THREE.Vector4()) },
       wjlHighCol: { value: Array.from({ length: HIGHS }, () => new THREE.Vector3()) },
       wjlAt: { value: at },
