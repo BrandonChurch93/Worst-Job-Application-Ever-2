@@ -3,7 +3,7 @@ import type { RealContext } from '../../../real/types'
 import { BALL, OUTLET, PORT, railOf } from '../../layout'
 import { local, localBalls, type Zone } from '../zone'
 import { Geo, type V2, type V3 } from './geo'
-import { BREATH, TONE, aluOf, bowlOf, clearOf, hex, mesh } from './mats'
+import { BREATH, TONE, aluOf, clearOf, hex, mesh } from './mats'
 
 // The one clear tube of the machine. The feed tube is built to it here; the drain tube and the lift tube are to be built to the same.
 export const TUBE = { outer: 53, wall: 3.6, sides: 24, opacity: 0.05, collar: 22, collarOut: 58.5, ferrule: 9, ferruleOut: 56, collarStep: 5.1 * BALL, clampStep: 5.1 * BALL, clampWide: 5, strap: 2, bend: 1.1 * BALL }
@@ -13,7 +13,8 @@ const SHADE = { dx: 56, dy: -38, wide: 1, dark: 0.5, up: 0.5, ease: 70 }
 // The rim of light in the port: how dim and how bright it breathes, and how many seconds one breath takes.
 const GLOW = { low: 0.25, high: 0.95, seconds: 4.6 }
 const CUP: [number, number, number] = [0.03, 0.032, 0.036]
-const RIM: [number, number, number] = [2, 2, 2]
+// The colour a vertex of the rim of light carries: the tube's material knows it by its blue.
+const RIM: [number, number, number] = [1, 1, 0]
 const FACE = hex(0x8c9094)
 const EDGE = hex(0x6a6e72)
 const SOCKET = hex(0x3a3c40)
@@ -153,7 +154,7 @@ function clamp(A: Geo, f: { at: THREE.Vector3; m: THREE.Matrix4 }, ground: numbe
   }
 }
 
-function port(A: Geo, P: Geo, z: Zone, c: { x: number; y: number; ring: number; cup: number }, toward: number | null = null): void {
+function port(A: Geo, G: Geo | null, z: Zone, c: { x: number; y: number; ring: number; cup: number }, toward: number | null = null): void {
   const p = localBalls(z, c.x, c.y)
   const R = (c.ring / 2) * BALL
   const r = (c.cup / 2) * BALL
@@ -181,11 +182,11 @@ function port(A: Geo, P: Geo, z: Zone, c: { x: number; y: number; ring: number; 
   const side = (x: number, y: number): number => Math.pow(0.5 + 0.5 * Math.cos(Math.atan2(y - p[1], x - p[0]) - 1.75), 1.2)
   A.tint(first, (x, y, zz) => (zz < h - 8 ? 1 : 1.3 - 0.7 * side(x, y)))
   // Under the ring's lip a rim of light, then the plain dark bowl: lit from the upper left, so its lower right wall is the paler.
-  P.lathe([[r + RING.lip, h - 3], bowl[0]!], p[0], p[1], 72, RIM)
-  const dark = P.vertices
-  P.lathe(bowl, p[0], p[1], 72, CUP)
-  P.lathe([[r - RING.dish, RING.floor], [BALL * 0.5, RING.floor - 1.2], [0, RING.floor - 1.6]], p[0], p[1], 72, CUP)
-  P.tint(dark, (x, y) => 0.4 + 2.4 * side(x, y) * side(x, y))
+  if (G) G.lathe([[r + RING.lip, h - 3], bowl[0]!], p[0], p[1], 72, RIM)
+  const dark = A.vertices
+  A.lathe([[r + RING.lip, h - 3], ...bowl], p[0], p[1], 72, CUP)
+  A.lathe([[r - RING.dish, RING.floor], [BALL * 0.5, RING.floor - 1.2], [0, RING.floor - 1.6]], p[0], p[1], 72, CUP)
+  A.tint(dark, (x, y) => 0.4 + 2.4 * side(x, y) * side(x, y))
 }
 
 export function loader(z: Zone, _ctx: RealContext): THREE.Object3D {
@@ -193,7 +194,6 @@ export function loader(z: Zone, _ctx: RealContext): THREE.Object3D {
   o.name = `loader.${z.id}`
   const A = new Geo()
   const G = new Geo()
-  const P = new Geo()
   const whole = inZone(z)
   const { first, last } = whole
   let { path, from } = whole
@@ -203,12 +203,12 @@ export function loader(z: Zone, _ctx: RealContext): THREE.Object3D {
     const cut = (PORT.cup / 2) * BALL - RING.mouth
     const a = path[0]!
     const b = path[1]!
-    port(A, P, z, PORT, Math.atan2(b[1] - a[1], b[0] - a[0]))
+    port(A, G, z, PORT, Math.atan2(b[1] - a[1], b[0] - a[0]))
     path = trim(path, cut)
     from += cut
     seat = (PORT.ring / 2) * BALL - cut + RING.seatLong / 2 - 3
-  } else if (z.id === 'first') port(A, P, z, PORT)
-  if (z.id === 'last') port(A, P, z, OUTLET)
+  } else if (z.id === 'first') port(A, G, z, PORT)
+  if (z.id === 'last') port(A, null, z, OUTLET)
   if (path.length > 1) {
     G.pipe(path, TUBE.outer, TUBE.sides, [1, 1, 1])
     G.pipe(path, TUBE.outer - TUBE.wall, TUBE.sides, [1, 1, 1], true)
@@ -263,7 +263,6 @@ export function loader(z: Zone, _ctx: RealContext): THREE.Object3D {
     }
   }
   if (A.vertices > 0) o.add(mesh(A, aluOf(z), `loader.metal.${z.id}`, { cast: z.tier < 0 }))
-  if (P.vertices > 0) o.add(mesh(P, bowlOf(z), `loader.bowl.${z.id}`))
   if (G.vertices > 0) {
     const tube = mesh(G, clearOf(z, 'tube', TUBE.opacity), `loader.tube.${z.id}`)
     tube.renderOrder = 3
