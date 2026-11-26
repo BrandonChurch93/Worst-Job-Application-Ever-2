@@ -263,6 +263,7 @@ function rim(): THREE.Object3D {
   chips.castShadow = true
   chips.receiveShadow = true
   chips.frustumCulled = false
+  chips.userData.small = 'each'
   root.add(chips)
   root.userData.r = { cracks, chips, places: chipPlaces(), last: -1 }
   return root

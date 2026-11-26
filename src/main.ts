@@ -14,6 +14,8 @@ import type { CameraPose, Driver, Hint } from './stage/types'
 import { lessMotion, makeQualityPicker, mountInterface, mountProbe, mountTouchMessage, ready as controlsReady, touchOnly, type InterfaceApi, type Mounted, type ProbeRunner } from './ui/api'
 import { wallSeconds } from './ui/clock'
 import { listenToVisitor } from './ui/pointer'
+import { fitPicture } from './core/levelFit'
+import { levelIsFixedOf, startLevelOf } from './core/levelStart'
 
 declare global {
   interface Window { showcase: Showcase; liveRun?: { state(): LiveShot; advance(seconds: number, quiet?: boolean): LiveShot; told(): LiveTold } }
@@ -46,12 +48,8 @@ function stop(error: unknown): void {
   canvas.hidden = true
 }
 
-const startLevel = (): string => {
-  const asked = params.get('quality')
-  if (asked) return quality(asked) && asked
-  return config.live.defaultQuality === 'auto' ? qualityIds[0]! : config.live.defaultQuality
-}
-const levelIsFixed = (): boolean => params.get('quality') !== null || config.live.defaultQuality !== 'auto'
+const startLevel = (): string => startLevelOf(params.get('quality'), config.live.defaultQuality)
+const levelIsFixed = (): boolean => levelIsFixedOf(params.get('quality'), config.live.defaultQuality)
 
 async function start(): Promise<void> {
   if (!MODES.includes(mode)) throw new Error(`No mode called "${mode}"`)
@@ -81,17 +79,17 @@ async function start(): Promise<void> {
 }
 
 // The picture's size on the screen and in pixels, at one level of live.quality.
-function sizer(): { level(): string; set(level: string): void; fit(): void; changed(): boolean } {
+// `film` says whether the film's bar stands under the picture, which is then shown that much shorter.
+function sizer(film: () => boolean = () => false): { level(): string; set(level: string): void; fit(): void; changed(): boolean } {
   let level = startLevel()
   let dirty = true
+  let barred = false
   const fit = () => {
-    const ratio = Math.min(window.devicePixelRatio || 1, quality(level).pixelRatioCap)
-    const w = Math.min(window.innerWidth, (window.innerHeight * 16) / 9)
-    const h = (w * 9) / 16
-    canvas.style.width = `${w}px`
-    canvas.style.height = `${h}px`
-    const pw = Math.max(320, Math.min(1920, Math.round(w * ratio)))
-    app.engine.setSize(pw, Math.round((pw * 9) / 16))
+    barred = film()
+    const f = fitPicture(window.innerWidth, window.innerHeight, window.devicePixelRatio, quality(level).pixelRatioCap, barred)
+    canvas.style.width = `${f.cssWidth}px`
+    canvas.style.height = `${f.cssHeight}px`
+    app.engine.setSize(f.width, f.height)
     app.format = { id: 'live', width: app.engine.width, height: app.engine.height }
     dirty = true
   }
@@ -110,6 +108,7 @@ function sizer(): { level(): string; set(level: string): void; fit(): void; chan
     },
     fit,
     changed() {
+      if (film() !== barred) fit()
       const was = dirty
       dirty = false
       return was
@@ -173,7 +172,7 @@ function probe(): void {
 
 function play(first: PlayMode): void {
   let now: PlayMode = first
-  const size = sizer()
+  const size = sizer(() => now === 'film')
   const mouse = new MouseDriver()
   const rest = samples(64)
   const stepped = params.get('clock') === 'steps'

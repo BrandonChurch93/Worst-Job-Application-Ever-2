@@ -247,6 +247,7 @@ function dustOf(): THREE.Mesh {
   mesh.frustumCulled = false
   mesh.castShadow = false
   mesh.userData.motes = list
+  mesh.userData.small = list.length
   return mesh
 }
 
