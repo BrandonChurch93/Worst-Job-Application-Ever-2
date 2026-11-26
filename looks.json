@@ -1,0 +1,35 @@
+{
+  "folder": "step2-fix",
+  "pushed": "2026-11-26T07:23:58.024Z",
+  "commit": "9fe8b7fb9280570282e429680a700ca48e50cd29",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Sheet machines: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-26T07:23:40.330Z",
+      "by": "step2-fix",
+      "from": "out/work/compare/compare-machines.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Sheet machines, approved left, the build right: header, heading and three labelled columns",
+      "time": "2026-11-26T07:23:56.493Z",
+      "by": "step2-fix",
+      "from": "out/work/compare/compare-machines.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Key step2-crank, approved above, the build below: the percent in the field, the arrow on the grip",
+      "time": "2026-11-26T07:23:56.721Z",
+      "by": "step2-fix",
+      "from": "out/work/ap/cmp-crank.png"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Key step2-dial, approved above, the build below: pale inner disc, dark stop, arrow nearer the cap",
+      "time": "2026-11-26T07:23:56.953Z",
+      "by": "step2-fix",
+      "from": "out/work/ap/cmp-dial.png"
+    }
+  ]
+}
