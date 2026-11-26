@@ -1,35 +1,35 @@
 {
   "folder": "frame-finish",
-  "pushed": "2026-11-26T12:22:27.151Z",
-  "commit": "3286ac8116cc634e74802d7162fc28533d4fbc5f",
+  "pushed": "2026-11-26T12:41:46.590Z",
+  "commit": "68c9769bf13b2449e2c0f6a407b9147929b46215",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key tier-office: approved on the left, this build on the right, draft tier, with crops of shape:model.office.cubicles, shape:bumper.office.bumper.3, shape:model.office.coffee, shape:model.office.inbox, shape:sling.office.sling.left.1+sling.office.sling.left.2+sling.office.sling.left.3, shape:flipper.office.flipper.left, cursor, shape:insert.office.insert.1, shape:lift.elbow.office",
-      "time": "2026-11-26T12:19:05.574Z",
+      "caption": "Key reply-all: approved on the left, this build on the right, draft tier, with crops of shape:ball.steel.2, cursor, shape:model.office.inbox, shape:bumper.office.bumper.3, shape:model.office.cubicles, shape:model.office.coffee, shape:sling.office.sling.left.1+sling.office.sling.left.2+sling.office.sling.left.3, shape:flipper.office.flipper.left, shape:lift.elbow.office",
+      "time": "2026-11-26T12:41:25.414Z",
       "by": "frame-finish",
-      "from": "out/work/compare/compare-tier-office.jpg"
+      "from": "out/work/compare/compare-reply-all.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Key table-wide: approved on the left, this build on the right, draft tier, with crops of shape:marquee.back, shape:model.corporate.hq, shape:bumper.office.bumper.3, shape:model.street.firehouse, shape:model.street.garage, shape:flipper.street.flipper.left, apronCard, cursor, shape:plunger.knob",
-      "time": "2026-11-26T12:21:04.666Z",
+      "caption": "tier-office, the struck cup: left merge 36 at final (grey patch, clipped lid), right this build at draft (glow shell rocks with the lid, lid in its seat, deck 192 to 220)",
+      "time": "2026-11-26T12:41:45.104Z",
       "by": "frame-finish",
-      "from": "out/work/compare/compare-table-wide.jpg"
+      "from": "out/work/frame-finish/seventh-struck-cup.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "table-wide: approved left, build right (wider bright brushed cap on the rails, walls navy, mean 1.004 of approved)",
-      "time": "2026-11-26T12:22:25.777Z",
+      "caption": "loader-page crops, approved left, build right: brighter brushed ring, bowl shading dark to mid grey",
+      "time": "2026-11-26T12:41:45.326Z",
       "by": "frame-finish",
-      "from": "out/work/frame-finish/fifth-table-wide.jpg"
+      "from": "out/work/frame-finish/sixth-loader.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "tier-office: approved left, build right (bright cap at both sides; drawn at tone 2.1, pushed at 1.9)",
-      "time": "2026-11-26T12:22:26.016Z",
+      "caption": "table-wide, approved left, build right: bright rail cap on navy walls, front lands in the cap's tone at 0.8",
+      "time": "2026-11-26T12:41:45.554Z",
       "by": "frame-finish",
-      "from": "out/work/frame-finish/fifth-tier-office.jpg"
+      "from": "out/work/frame-finish/sixth-table-wide.jpg"
     }
   ]
 }
