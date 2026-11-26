@@ -33,6 +33,9 @@ let shown = ''
 let longestUpload = 0
 let longestDecode = 0
 let queue: Promise<void> = Promise.resolve()
+let turning = false
+// The longest a picture waits for a page turn to end before it goes on the card, in frames.
+const TURN_PATIENCE = 240
 
 // Call it at the top of a file, never inside `make`. Colour pictures are read as sRGB, data pictures as they are.
 export function picture(page: string, folder: string, file: string, o: { colour: boolean; repeat?: boolean }): Asked {
@@ -112,7 +115,7 @@ async function decode(e: Entry, bytes: ArrayBuffer, run: number): Promise<ImageB
   return bitmap
 }
 
-// On the live site one picture at a time is decoded and put on the card, each between two frames, so no frame carries more than one.
+// On the live site one picture at a time is decoded and put on the card, each between two frames, so no frame carries more than one. None goes on the card while a page is turning.
 function stage(e: Entry, bytes: ArrayBuffer, run: number): Promise<void> {
   if (!staged || !card) return decode(e, bytes, run).then(() => undefined)
   const to = card
@@ -121,6 +124,7 @@ function stage(e: Entry, bytes: ArrayBuffer, run: number): Promise<void> {
     const bitmap = await decode(e, bytes, run)
     if (!bitmap) return
     await nextFrame()
+    for (let i = 0; turning && i < TURN_PATIENCE; i++) await nextFrame()
     if (e.run !== run || !e.texture) return
     const t1 = clock?.() ?? 0
     to.initTexture(e.texture)
@@ -195,7 +199,8 @@ export function wanted(flow: readonly string[], page: string): string[] {
 }
 
 // Called for every frame of the live site with the page on show: starts what is wanted and lets go what is left.
-export function showPage(flow: readonly string[], page: string, set: AssetSet): void {
+export function showPage(flow: readonly string[], page: string, set: AssetSet, inTurn = false): void {
+  turning = inTurn
   if (!staged || page === shown) return
   shown = page
   const keep = new Set(wanted(flow, page))
@@ -236,6 +241,7 @@ export function resetLoading(): void {
   card = null
   clock = null
   shown = ''
+  turning = false
   longestUpload = 0
   longestDecode = 0
   queue = Promise.resolve()
