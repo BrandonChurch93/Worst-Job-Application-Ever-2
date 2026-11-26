@@ -96,7 +96,23 @@ export function faceGeometry(): THREE.BufferGeometry {
     uv[i * 2 + 1] = p.getY(i) / B.turned + 0.5
   }
   g.setAttribute('uv', new THREE.BufferAttribute(uv, 2))
+  g.setAttribute('color', new THREE.BufferAttribute(new Float32Array(p.count * 3).fill(1), 3))
   return g
+}
+
+// A turned face under one light shows a bow tie through its centre, and the bow tie stays with the light while the wheel turns under it.
+// The anisotropy of the shared metal gives its shape; this lays its depth into the face for the wheel's angle `turn`.
+export function fanFace(g: THREE.BufferGeometry, turn: number): void {
+  const p = g.getAttribute('position')
+  const c = g.getAttribute('color')
+  const [kx, ky] = look.key.direction
+  const axis = Math.atan2(ky, kx) + B.fanAxis
+  for (let i = 0; i < p.count; i++) {
+    const a = Math.atan2(p.getY(i), p.getX(i)) - turn - axis
+    const k = B.fanLow + B.fanGain * Math.pow(Math.cos(a) * Math.cos(a), B.fanSharp)
+    c.setXYZ(i, k, k, k)
+  }
+  c.needsUpdate = true
 }
 
 // The machined rim of the wheel.
@@ -262,6 +278,7 @@ function turnedFine(shared: THREE.MeshPhysicalMaterial): THREE.MeshPhysicalMater
   m.roughness = B.faceRough
   m.anisotropy = B.faceStretch
   m.color.multiplyScalar(B.faceLight)
+  m.vertexColors = true
   m.name = 'dial-face'
   return m
 }
@@ -336,7 +353,7 @@ function mesh(geometry: THREE.BufferGeometry, material: THREE.Material, cast = t
   return m
 }
 
-interface Kept { body: THREE.Group; wheel: THREE.Group; shades: THREE.InstancedMesh; hub: THREE.Mesh; stop: THREE.Mesh; plate: THREE.Mesh; cast: THREE.Mesh; seat: THREE.Mesh; glint: THREE.Mesh }
+interface Kept { body: THREE.Group; wheel: THREE.Group; face: THREE.Mesh; shades: THREE.InstancedMesh; hub: THREE.Mesh; stop: THREE.Mesh; plate: THREE.Mesh; cast: THREE.Mesh; seat: THREE.Mesh; glint: THREE.Mesh }
 const place = new THREE.Matrix4()
 
 export const dial: PartMaker = {
@@ -361,7 +378,8 @@ export const dial: PartMaker = {
     body.add(stop)
     const wheel = new THREE.Group()
     faceMaterial ??= turnedFine(m.aluminiumTurned)
-    wheel.add(mesh(g.face, faceMaterial))
+    const face = mesh(g.face, faceMaterial)
+    wheel.add(face)
     wheel.add(mesh(g.edges, housingMaterial))
     wheel.add(mesh(g.holes, m.aluminiumSatin))
     wheel.add(mesh(g.hubRing, m.gap, false))
@@ -387,7 +405,7 @@ export const dial: PartMaker = {
     cast.receiveShadow = false
     cast.position.z = B.castOver
     root.add(cast)
-    root.userData.dial = { body, wheel, shades, hub, stop, plate, cast, seat, glint } satisfies Kept
+    root.userData.dial = { body, wheel, face, shades, hub, stop, plate, cast, seat, glint } satisfies Kept
     return root
   },
   pose(o: THREE.Object3D, s: Shape, _ctx: RealContext): void {
@@ -414,6 +432,7 @@ export const dial: PartMaker = {
     kept.cast.scale.setScalar(small + (1 - small) * risen)
     const turn = s.v?.[0] ?? 0
     kept.wheel.rotation.z = -turn
+    fanFace(kept.face.geometry, turn)
     for (let k = 1; k <= 10; k++) {
       const a = DIAL.holeAngle(k) + turn
       place.makeTranslation(DIAL.ring * Math.cos(a), -DIAL.ring * Math.sin(a), 0)

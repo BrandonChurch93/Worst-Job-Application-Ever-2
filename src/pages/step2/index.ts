@@ -17,6 +17,9 @@ const DIGITS = config.live.step2.dialDigitsBeforeItGivesUp
 const TURNS = config.live.step2.crankTurnsBeforeItRunsAway
 const HEAL = config.cursor.damageHealSeconds * 0.85
 const hover = config.scale.heights.cursorHover
+// How the cursor comes to a thing: how far ahead it sees it, how fast the ground it stands on may rise, and how long its hand takes to close on a grip.
+const CLIMB = { ahead: 44, looks: 4, rise: 900 }
+const REACH = 0.09
 const heights = config.scale.heights
 const G = 2400
 const TAU = Math.PI * 2
@@ -52,6 +55,8 @@ interface State {
   finished: boolean
   skipping: boolean
   gripped: boolean
+  reach: { x: number; y: number; z: number; t: number }
+  climb: number
   marks: Marks
   rng: number[]
 }
@@ -70,7 +75,7 @@ const freshSlot = (): SlotState => ({ p: 0, pv: 0, grab: false, phase: 'rest', t
 const freshCrank = (): CrankState => ({ b: CRANK.rest, set: false, grab: false, total: 0, turns: 0, phase: 'rest', w: 0, level: 0, hit: false, hitAt: -1, peeled: false, t: 0, stuck: 0, sx: 0, sy: 0 })
 const fresh = (mode: 'live' | 'film'): State => ({
   mode, time: 0, open: -1, phase: 'closed', spring: [0, 0, 0], springV: [0, 0, 0], lift: 0, rowT: 0, endT: 0, idle: 0, done: [false, false, false], px: 0, py: 0,
-  dial: freshDial(), slot: freshSlot(), crank: freshCrank(), pressed: false, hold: 0, finished: false, skipping: false, gripped: false, marks: {}, rng: []
+  dial: freshDial(), slot: freshSlot(), crank: freshCrank(), pressed: false, hold: 0, finished: false, skipping: false, gripped: false, reach: { x: 0, y: 0, z: 0, t: 1 }, climb: 0, marks: {}, rng: []
 })
 
 export const phoneMask = (digits: string): string => words('data:step2.phone.prefix') + digits
@@ -492,10 +497,24 @@ export function makePage(): PageLogic {
     return top <= TRAY_Z ? 0 : Math.max(0, mix(TRAY_Z, top, smooth(s.lift)))
   }
 
+  const footing = (x: number, y: number): number => Math.max(topAt(x, y), topAt(x + 12, y + 18), topAt(x + 22, y + 34), topAt(x + 4, y + 34))
+
+  // The cursor sees a thing in its way before it stands on it: the ground it is told of is the highest within a few steps toward the pointer, and it rises at a pace, so it climbs and is not lifted in one step.
   function ground(io: StepIo): void {
     const x = io.cursor.x
     const y = io.cursor.y
-    io.cursor.setGround(Math.max(topAt(x, y), topAt(x + 12, y + 18), topAt(x + 22, y + 34), topAt(x + 4, y + 34)))
+    let top = footing(x, y)
+    const dx = io.pointer.x - x
+    const dy = io.pointer.y - y
+    const far = Math.hypot(dx, dy)
+    if (far > 1) {
+      for (let k = 1; k <= CLIMB.looks; k++) {
+        const d = Math.min(far, (CLIMB.ahead * k) / CLIMB.looks)
+        top = Math.max(top, footing(x + (dx / far) * d, y + (dy / far) * d))
+      }
+    }
+    s.climb = top > s.climb ? Math.min(top, s.climb + CLIMB.rise * dt) : top
+    io.cursor.setGround(s.climb)
   }
 
   function grip(io: StepIo): void {
@@ -505,8 +524,11 @@ export function makePage(): PageLogic {
     if (ready && s.open === 1 && s.slot.grab) at = { x: SLOT.leverX, y: knobY(s.slot.p), z: TOP + 40 }
     if (ready && s.open === 2 && s.crank.grab) at = { ...gripPlace(s.crank.b), z: TOP + 30 }
     if (at) {
+      if (!s.gripped) s.reach = { x: io.cursor.x - at.x, y: io.cursor.y - at.y, z: io.cursor.z - (at.z + hover), t: 0 }
+      s.reach.t = Math.min(1, s.reach.t + dt / REACH)
+      const left = (1 - s.reach.t) * (1 - s.reach.t)
       io.cursor.take('grip')
-      io.cursor.place(at.x, at.y, at.z + hover)
+      io.cursor.place(at.x + s.reach.x * left, at.y + s.reach.y * left, at.z + hover + s.reach.z * left)
       s.gripped = true
     } else if (s.gripped) {
       s.gripped = false
