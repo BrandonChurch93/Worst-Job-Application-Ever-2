@@ -14,7 +14,7 @@ import { HATCH, moms, type Moms } from './moms'
 import { police } from './police'
 import { roadSign, streetThings } from './things'
 
-const VERSION = 'street-models-28'
+const VERSION = 'street-models-29'
 
 // Everything the seven parts are built from in one zone, made once and shared: each part keeps the meshes that are its own.
 interface Street {
@@ -157,7 +157,7 @@ const fire = whole('model-firehouse', {
     door.position.x = (k.x0 as number) + Math.sin(ctx.time * 71) * 0.7 * d.shake
     const red = levels(ctx, z).byName.red ?? 0
     ;(k.lens as THREE.MeshPhysicalMaterial).emissiveIntensity = 0.35 + 1.5 * red
-    ;(k.glow as THREE.MeshStandardMaterial).emissiveIntensity = 0.3 + 3 * red
+    ;(k.glow as THREE.MeshStandardMaterial).emissiveIntensity = 0.6 + 2.7 * red
     ;(k.turn as THREE.Mesh).rotation.z = red > 0.6 ? ctx.time * 8.5 : 0.6
   }
 })
