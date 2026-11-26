@@ -1,35 +1,35 @@
 {
   "folder": "pinball-director",
-  "pushed": "2026-11-26T02:54:48.481Z",
-  "commit": "5588cb75bad865c0dcd76e82a55ab311b6daf79c",
+  "pushed": "2026-11-26T03:07:44.782Z",
+  "commit": "06ac1c4c55c1120b09d147175676c7f692405150",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "lobby-doors beside the approved image, draft: the ball below the doors with the cursor's face turned to the lens, the revolving door at the carpet's left border",
-      "time": "2026-11-26T02:54:46.705Z",
+      "caption": "Key youre-fired: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-26T03:03:39.797Z",
       "by": "pinball-director",
-      "from": "out/work/report/compare-lobby-doors.jpg"
+      "from": "out/work/compare/compare-youre-fired.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "tier-office beside the approved image, draft: the ball at the key, 1.5 from its approved place below the bumpers",
-      "time": "2026-11-26T02:54:46.945Z",
+      "caption": "Key table-wide: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-26T03:04:24.468Z",
       "by": "pinball-director",
-      "from": "out/work/report/compare-tier-office.jpg"
+      "from": "out/work/compare/compare-table-wide.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "rail-cam beside the approved image, draft: the ball on the highway wire; the cursor in it reads dark and is not upright to this camera",
-      "time": "2026-11-26T02:54:47.176Z",
+      "caption": "youre-fired beside the approved image, draft: the ball held in the firehouse doorway, the cursor's face to the lens but dark; the model's door is not yet widened round the hold",
+      "time": "2026-11-26T03:07:43.312Z",
       "by": "pinball-director",
-      "from": "out/work/report/compare-rail-cam.jpg"
+      "from": "out/work/report/compare-youre-fired.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "last-save beside the approved image, draft: the ball on the right flipper at the save",
-      "time": "2026-11-26T02:54:47.404Z",
+      "caption": "table-wide beside the approved image, draft: the whole layout; the garage spiral and the highway wire are larger than approved",
+      "time": "2026-11-26T03:07:43.548Z",
       "by": "pinball-director",
-      "from": "out/work/report/compare-last-save.jpg"
+      "from": "out/work/report/compare-table-wide.jpg"
     }
   ]
 }
