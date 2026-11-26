@@ -118,7 +118,7 @@ export function windowAt(b: Buckets, h: Hole, o: WindowLook): void {
   reveal(g, h, d, shade(o.wall, 0.62))
   const lum = o.glow ?? 1
   const warm = o.warm ?? 0.5
-  const pane: RGB = o.dark ? [0.02, 0.025, 0.03] : [lum, lum * (0.84 + 0.16 * warm), lum * (0.62 + 0.3 * warm)]
+  const pane: RGB = o.dark ? [0.02, 0.025, 0.03] : [lum * 0.8, lum * (0.62 + 0.12 * warm), lum * (0.36 + 0.24 * warm)]
   const lo: RGB = o.dark ? pane : shade(pane, 0.55)
   const { x, z, w } = h
   const t = z + h.h

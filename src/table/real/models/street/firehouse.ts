@@ -40,11 +40,11 @@ export interface Firehouse {
 // The mouth the ball is held in: as wide as the bay of the layout, a ball and a little high, with round upper corners in a stone frame.
 export const MOUTH = { h: 103, round: 16, jamb: 10, head: 10, reveal: 7 }
 // The door hangs in the head of the mouth: at rest its foot shows under the stone, on a held ball it is gone.
-export const DOOR = { h: 24, depth: 8.5, travel: 112 }
+export const DOOR = { h: 24, depth: 8.5, travel: 114 }
 
 // The floor of the engine bay: a deep oxide red.
 const BAY: RGB = [0.085, 0.017, 0.015]
-const STONE = rgb(0x87939f)
+const STONE = rgb(0x959da5)
 const DECK = TONE.deck
 
 export function firehouse(b: Buckets, z: Zone, ctx: RealContext): Firehouse {
@@ -188,7 +188,7 @@ export function firehouse(b: Buckets, z: Zone, ctx: RealContext): Firehouse {
     }
     bay.quad([a, d1, zc], [c, d1, zc], [c, d0 + 4, zc], [a, d0 + 4, zc], red(0.02))
     // Racks on the back wall, dark against it.
-    for (let k = 0; k < 3; k++) bay.box(a + 16 + k * 34, a + 40 + k * 34, d1 - 2.4, d1 - 0.2, 40, 45, red(0.0006), { skip: 'b', under: true })
+    for (let k = 0; k < 3; k++) bay.box(a + 16 + k * 34, a + 40 + k * 34, d1 - 2.4, d1 - 0.2, 70, 75, red(0.0006), { skip: 'b', under: true })
     bay.box(a + 22, c - 22, d0 + 8, d0 + 12, zc - 3.2, zc - 0.4, [0.5, 0.36, 0.3], { under: true, skip: 't' })
     bay.place(0, x0, yf, 0, 0)
   }
