@@ -39,6 +39,22 @@
    "where": "first two rows after the opening flash",
    "what": "The arrow holds a nearly ordinary pointer silhouette for several frames. The shadow change suggests motion, but the body gives little away about its reaction or intent until the dart.",
    "fix": "Give the arrival a visible settling bend, then hold a tentative lean toward the panel before releasing into the dart."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-04.png",
+   "where": "the whole sheet",
+   "what": "did not read: scared reads as deflated and uncertain: hanging back, a slump flat, a slow pull upright. Pale and stony, the lean back and the hiding behind the nearest field are not in the read.",
+   "fix": "Scared as the kit has it: the arrow gone pale and stiff, leaning back, behind the nearest field, held long enough to be seen.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-06.png",
+   "where": "the whole sheet",
+   "what": "did not read: angry reads as rigid and intent, almost unfazed: the orange tip and the smoke are seen and the body says nothing with them.",
+   "fix": "Anger in the body before the heat: squared up to the machine, a held lean in, and then the red tip and the steam.",
+   "by": "builder"
   }
  ],
  "reads": [
