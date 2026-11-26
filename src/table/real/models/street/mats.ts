@@ -51,6 +51,7 @@ vec2 wsCells( vec2 uv, vec2 size, float shift, float joint ) {
 }
 // The surface a face is moulded with: xyz the tone its paint is multiplied by, w its height for the relief. wsGloss is taken off the roughness.
 float wsGloss = 0.0;
+float wsCoat = 1.0;
 vec4 wsOver = vec4( 0.0 );
 vec4 wsSurface( vec3 face ) {
 	vec2 uv = face.xy;
@@ -112,6 +113,7 @@ vec4 wsSurface( vec3 face ) {
 	} else {
 		tone = vec3( 0.95 + 0.08 * grain );
 	}
+	if ( kind == 1.0 || kind == 2.0 || kind == 3.0 || kind == 4.0 || kind == 6.0 || kind == 9.0 ) wsCoat = 0.12;
 	if ( kind == 1.0 || kind == 2.0 || kind == 3.0 || kind == 5.0 || kind == 6.0 || kind == 10.0 ) {
 		float stain = wsNoise( uv * 0.05 + 3.7 ) * 0.6 + wsNoise( vec2( uv.x * 0.31, uv.y * 0.045 ) ) * 0.4;
 		float foot = smoothstep( -2.0, 24.0, uv.y + 9.0 * wsNoise( uv * 0.16 ) );
@@ -126,13 +128,14 @@ vec4 wsSurface( vec3 face ) {
 // The moulded and painted plastic of the models: one material for the zone, a colour for each vertex and a kind of surface for each face.
 export function paintOf(z: Zone): THREE.MeshPhysicalMaterial {
   const m = studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.6, metalness: 0, specularIntensity: 0.5, clearcoat: 0.22, clearcoatRoughness: 0.38 }))
-  over(m, 'wja-studio-street-paint-15', (shader) => {
+  over(m, 'wja-studio-street-paint-16', (shader) => {
     shader.vertexShader = 'attribute vec3 face;\nvarying vec3 vWsFace;\n' + shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n\tvWsFace = face;')
     shader.fragmentShader =
       'varying vec3 vWsFace;\n' +
       shader.fragmentShader
         .replace('void main() {', surface + '\nvoid main() {\n\tvec4 wsS = wsSurface( vWsFace );')
         .replace('#include <color_fragment>', '#include <color_fragment>\n\tdiffuseColor.rgb = mix( diffuseColor.rgb * wsS.xyz, wsOver.rgb, wsOver.a );')
+        .replace('#include <lights_physical_fragment>', '#include <lights_physical_fragment>\n\t#ifdef USE_CLEARCOAT\n\tmaterial.clearcoat *= wsCoat;\n\t#endif')
         .replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\n\troughnessFactor = clamp( roughnessFactor - wsGloss, 0.05, 1.0 );')
         .replace(
           '#include <normal_fragment_maps>',
