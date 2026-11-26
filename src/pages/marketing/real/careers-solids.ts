@@ -133,13 +133,14 @@ export function flange(r: number, lobes: number, deep: number, inner: number, ri
 }
 
 // The light a turned face gives back: two bright sectors along `axis` and two dull ones across it, laid into the disc as vertex colour.
-export function sheen(g: THREE.BufferGeometry, axis: number, depth: number): THREE.BufferGeometry {
+export function sheen(g: THREE.BufferGeometry, axis: number, depth: number, rim = 1, lean = 0): THREE.BufferGeometry {
   const p = g.getAttribute('position')
   const col = new Float32Array(p.count * 3)
   for (let i = 0; i < p.count; i++) {
     const x = p.getX(i)
     const y = p.getY(i)
-    const v = Math.hypot(x, y) < 0.5 ? 1 : 1 + depth * Math.cos(2 * (Math.atan2(y, x) - axis))
+    const turn = Math.atan2(y, x) - axis
+    const v = Math.hypot(x, y) < 0.5 ? 1 : Math.max(0.05, rim + depth * Math.cos(2 * turn) + lean * Math.cos(turn))
     col.set([v, v, v], i * 3)
   }
   g.setAttribute('color', new THREE.BufferAttribute(col, 3))

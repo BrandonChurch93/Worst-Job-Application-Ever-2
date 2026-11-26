@@ -5,8 +5,8 @@ Unit `decision`, page `step5`. Files: `layout.ts` (the page and its places), `ti
 ## What the page does
 
 1. `decision.wait` (0 to 2 s). One full width panel: "Processing your application...", "Current wait time:", a dark counter with "6-8 business months", "Your application is very important to us. Please hold." Event `hold-music` at 0.4 s. The cursor is nervous and paces under the panel.
-2. `decision.letter` (2 to 6 s). The counter spins to zeros (2.0 to 2.35 s), the panel sinks flush into the page, the letter drops on the left column (`letter-drop` and `paper-slide` at 2.8 s), the metrics panel rises on the right reading 00:00. The stamp comes in from above the top edge and lands at 4.3 s (`stamp`) on the letter and the cursor, which is flattened (`flatten`) and held under the block until the block has lifted (5.1 s). The block is carried to its rest place under the metrics panel.
-3. `decision.metrics` (6 to 10 s). The three readouts count up from 6.1 to 7.0 s, the button "Accept Rejection" and the link "Share Your Achievement" rise from 6.6 s and take a press from 7.0 s. The flat cursor peels up by itself (`peel-up` near 7.1 s, whole at 7.7 s). A press of the button emits `button-press`.
+2. `decision.letter` (2 to 6 s). The counter spins to zeros (2.0 to 2.35 s), the panel sinks flush into the page, the letter drops on the left column (`letter-drop` and `paper-slide` at 2.8 s), the metrics panel rises on the right reading 00:00. The stamp comes in from above the top edge and lands at 4.3 s (`stamp`) on the letter and the cursor, which is flattened (`flatten`) and held under the block while the block lifts and is carried to its rest place under the metrics panel. As the block is laid on its side there (5.85 s) the flat cursor falls from its rubber to the right of it.
+3. `decision.metrics` (6 to 10 s). The three readouts count up from 6.1 to 7.0 s, the button "Accept Rejection" and the link "Share Your Achievement" rise from 6.6 s and take a press from 7.0 s. The flat cursor, lying right of the stamp, peels up by itself (`peel-up` near 7.1 s, whole at 7.7 s). A press of the button emits `button-press`.
 4. `decision.reset`. The button stays down 0.45 s, then `done()` is true and the stage turns the page.
 
 ## Decisions
@@ -70,3 +70,5 @@ Every hold is a pointer that does not move, so the gag ends by itself in live mo
 ## Not done
 
 - The share line is not copied to the clipboard by this page.
+
+- After the hit the cursor is carried under the stamp and dropped to its right (`STUCK` in `script.ts`); the page holds it until the stamp is down (`AT.lower[1]`).
