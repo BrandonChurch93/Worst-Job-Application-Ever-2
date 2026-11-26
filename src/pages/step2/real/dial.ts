@@ -154,10 +154,18 @@ export function hubGeometry(): THREE.BufferGeometry {
 }
 
 // The floor of the seat the hub stands in: a dark ring a little under the wheel's face.
-// The pale disc in the middle of the wheel, a step proud of the turned face, and the dark seam round it.
+// The boss in the middle of the wheel, a step proud of the turned face and of the same metal, and the fine seam round it.
 export function innerGeometry(): { disc: THREE.BufferGeometry; seam: THREE.BufferGeometry } {
   const r = B.inner
   const disc = sweep(circle(r, 96), profile([[0, H - 0.2, true], [0, H + B.innerTall - 0.6, true], [0.7, H + B.innerTall, true]]))
+  const p = disc.getAttribute('position')
+  const uv = new Float32Array(p.count * 2)
+  for (let i = 0; i < p.count; i++) {
+    uv[i * 2] = p.getX(i) / B.turned + 0.5
+    uv[i * 2 + 1] = p.getY(i) / B.turned + 0.5
+  }
+  disc.setAttribute('uv', new THREE.BufferAttribute(uv, 2))
+  disc.setAttribute('color', new THREE.BufferAttribute(new Float32Array(p.count * 3).fill(1), 3))
   const seam = sweep(circle(r + B.innerSeam, 96), [flat(0, H + 0.06), flat(B.innerSeam + 0.6, H + 0.06)], false)
   return { disc, seam }
 }
@@ -406,7 +414,7 @@ const plainDial: PartMaker = {
     wheel.add(face)
     wheel.add(mesh(g.edges, housingMaterial))
     wheel.add(mesh(g.holes, m.aluminiumSatin))
-    wheel.add(mesh(g.inner, m.keycap, false))
+    wheel.add(mesh(g.inner, faceMaterial, false))
     wheel.add(mesh(g.seam, m.gap, false))
     const hubRing = mesh(g.hubRing, m.gap, false)
     hubRing.position.z = B.innerTall + B.hubSeatDeep - 0.1
