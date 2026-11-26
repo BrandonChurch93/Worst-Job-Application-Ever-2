@@ -1,0 +1,35 @@
+{
+  "folder": "office-models",
+  "pushed": "2026-11-26T04:02:58.072Z",
+  "commit": "f5de72528c254c4c4cde5ace9a8208082c96fb0b",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "tier-office beside the approved image: cream inbox with its chute, cubicle grid, red staplers, bronze coffee machine, loose paper in the right corner",
+      "time": "2026-11-26T04:02:56.288Z",
+      "by": "office-models",
+      "from": "out/work/looks/files/20261126040256-compare-tier-office.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "reply-all beside the approved image, draft",
+      "time": "2026-11-26T04:02:56.525Z",
+      "by": "office-models",
+      "from": "out/work/looks/files/20261126040256-compare-reply-all.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "reply-all before (1101091) and after the Office models",
+      "time": "2026-11-26T04:02:56.787Z",
+      "by": "office-models",
+      "from": "out/work/looks/files/20261126040256-before-after-reply.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "table-wide, draft, the Office from the player's end",
+      "time": "2026-11-26T04:02:57.022Z",
+      "by": "office-models",
+      "from": "out/work/looks/files/20261126040257-table-wide.jpg"
+    }
+  ]
+}
