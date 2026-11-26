@@ -38,6 +38,7 @@ Branch `agent/step2-keeper`. Parts: `rows`, `dial`, `slot`, `crank`, `acting-ste
 24. The slot's window has rounded corners (`SLOT_LOOK.window` 13, the rings inside the band shrink from it), the frame's own corner is 16, the drums are 97 px wide so the dark between them is a narrow gap as in the approved sheet, and a drum's tone holds a bright plateau and falls to dark only near the window's upper and lower edge (`drum.dark` 0.62, `drum.full` 0.88, in place of a power of the normal). The payline is 1.7 px thick (0.85 radius, the most the room between the legends and the glass allows). MEASURED down the middle drum of the sheet `machines`: approved 188 227 221 208 on the plateau; build before 166 203 214 200.
 25. The meter's segments have a corner of 12 on a width of 28 (the approved top is nearly a half circle), and a lit segment's core is less yellow. MEASURED across a lit segment of the crank key, the core: approved 255 214 150, build before 255 237 168, build now 255 218 137.
 26. A field's chevron turns with its tray (its tilt follows the tray's spring) and no longer flips in one frame. Found with a scan of every shape of the film at 60 frames a second for the largest change in one frame: the chevron's bars turned 1.4 rad in the frame at 1.90 s, 8.22 s and 14.02 s. The other large steps in that scan are meant: the crank's runaway (the grip moves 65.7 px a frame at 16.57 s), the dial's fling (a hole moves 32.7 px a frame at 5.5 s), the rows pushed down by the opening tray (32.9 px a frame at 1.95 s).
+27. The cursor is swung by the crank it turns (round 9, R9-1: "the arrow is a static pointer"). The cursor's own body takes its lean, bend and stretch from its speed, and `place()` sets that speed to nothing, so the page hands it the grip's speed with `knock()` after each `place()`; the hand-over fades over the last 1.5 turns so the cursor stands straight at the key. MEASURED from `cursor.pose()`: at 14.6 s squash 1.25 and lean -0.28 (before 0.96 and 0.03); at the key 15.2 s the place is the same to 0.001 px, squash 1.02 (before 1.05), lean -0.016 (before -0.0004). It leads the grip by one step of travel, at most about 10 px.
 
 ## Looks counted (at most 40 a part)
 
@@ -47,7 +48,7 @@ Branch `agent/step2-keeper`. Parts: `rows`, `dial`, `slot`, `crank`, `acting-ste
 | `rows` | 7 |
 | `crank` | 12 |
 | `slot` | 19 |
-| `acting-step2` | 33 |
+| `acting-step2` | 36 |
 
 The stills that `npm run measure` renders by itself are not counted.
 
