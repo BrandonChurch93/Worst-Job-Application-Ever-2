@@ -5,16 +5,16 @@ import { materials } from '../../../shell/materials'
 import { arc, profile, roundedRect, sweep } from '../../../shell/solids'
 import type { Shape } from '../../../stage/types'
 import { CRANK } from '../layout'
-import { fuse, lathe, mesh, moved, outline, picture, rise, round, smooth, srgb } from './slot-kit'
+import { clamp01, fuse, lathe, mesh, moved, outline, picture, rise, round, smooth, srgb } from './slot-kit'
 
 export const CRANK_LOOK = {
-  full: { base: 26, hub: 22, arm: 10, grip: 24, meter: 20 }, pill: 9.5, pillLit: 1.2,
-  plate: 8, rim: 2.6, screwAt: 38, screw: 4.8, washer: 25.5, neck: 20, eye: 23.6, bar: 10.5, end: 8, fillet: 8, cap: 22,
-  lamp: { colour: [1, 0.46, 0.12] as [number, number, number], power: 0.075, reach: 150, lift: 16, most: 4 }
+  full: { base: 26, hub: 22, arm: 10, grip: 24, meter: 20 }, pill: 12, pillRound: 2.4,
+  plate: 8, rim: 3.6, screwAt: 38, screw: 4.8, washer: 25.5, neck: 20, eye: 1.6, bar: 0.66, end: 0.5, fillet: 8, cap: 22,
+  lamp: { colour: [1, 0.46, 0.12] as [number, number, number], power: 0.12, reach: 170, lift: 14, most: 4 }
 }
 const L = CRANK_LOOK
 
-let made: { glass: THREE.MeshPhysicalMaterial; lit: THREE.MeshPhysicalMaterial; washer: THREE.MeshPhysicalMaterial; bar: THREE.MeshPhysicalMaterial; textures: THREE.Texture[] } | null = null
+let made: { glass: THREE.MeshPhysicalMaterial; lit: THREE.MeshPhysicalMaterial; washer: THREE.MeshPhysicalMaterial; bar: THREE.MeshPhysicalMaterial; turned: THREE.MeshPhysicalMaterial; textures: THREE.Texture[] } | null = null
 const cache = new Map<string, THREE.BufferGeometry>()
 const shared = (key: string, build: () => THREE.BufferGeometry): THREE.BufferGeometry => {
   let g = cache.get(key)
@@ -36,29 +36,40 @@ function inPill(u: number, v: number): { depth: number; x: number; y: number } {
 
 function own(): NonNullable<typeof made> {
   if (made) return made
-  // The unlit segment: clear glass seen from above, a light rim, a darker core, and the light it gathers on its lower right wall.
-  const off = picture(32, 128, true, (u, v) => {
+  // The unlit segment: clear glass seen from above. Its alpha is how much of the tray is hidden: a bright line round the rim, a thin dark line inside it, a nearly clear core.
+  const off = picture(64, 256, true, (u, v) => {
     const p = inPill(u, v)
-    const core = smooth((p.depth - 1.5) / 5)
-    const gather = smooth((p.x / 14) * 0.6 - (p.y / 48) * 0.5) * smooth((p.depth - 2) / 4) * (1 - smooth((p.depth - 6) / 6))
-    const k = 0.97 - 0.13 * core + 0.12 * gather
-    return [k * 0.965, k * 0.995, k, 1]
+    const side = (p.x / 14) * 0.6 - (p.y / 48) * 0.55
+    const edge = 1 - smooth(p.depth / 0.9)
+    const line = smooth((p.depth - 0.5) / 0.8) * (1 - smooth((p.depth - 2.1) / 1.1))
+    const dark = smooth((p.depth - 2.4) / 0.8) * (1 - smooth((p.depth - 3.6) / 1.4))
+    const gather = smooth(side) * smooth((p.depth - 3.2) / 1.5) * (1 - smooth((p.depth - 5.5) / 4))
+    const k = 0.93 + 0.07 * line - 0.3 * dark * (1 - 0.6 * smooth(side + 0.4)) - 0.22 * edge + 0.05 * gather
+    const a = 0.2 + 0.72 * line + 0.3 * edge + 0.2 * dark + 0.3 * gather
+    return [k * 0.975, k * 0.995, k, a]
   })
-  // The lit segment: yellow white along its centre line, orange at the rim.
-  const glow = picture(32, 128, true, (u, v) => {
+  // The lit segment: a pale orange core, a deeper orange ring, and a bright line at the rim.
+  const glow = picture(64, 256, true, (u, v) => {
     const p = inPill(u, v)
-    const t = Math.pow(smooth(p.depth / 11), 1.3) * (1 - 0.25 * smooth((Math.abs(p.y) - 26) / 20))
-    return [1, 0.36 + 0.5 * t, 0.04 + 0.5 * t * t, 1]
+    const t = Math.pow(smooth((p.depth - 2.5) / 8), 1.1) * (1 - 0.25 * smooth((Math.abs(p.y) - 26) / 18))
+    const rim = smooth((p.depth - 0.4) / 0.8) * (1 - smooth((p.depth - 1.8) / 1.2))
+    return [1, 0.3 + 0.42 * t + 0.24 * rim, 0.02 + 0.3 * t * t + 0.08 * rim, 1]
   })
-  const glass = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xe3e8e8), map: off, roughness: 0.14, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.05, specularIntensity: 1, envMapIntensity: 1.15 }))
-  const lit = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xd9772c), emissive: new THREE.Color(1, 1, 1), emissiveMap: glow, emissiveIntensity: 1.25, roughness: 0.2, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.06, specularIntensity: 1 }))
+  const glass = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xf4f7f7), map: off, roughness: 0.06, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.03, specularIntensity: 1, envMapIntensity: 1.6, transparent: true }))
+  const lit = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xd9772c), emissive: new THREE.Color(1, 1, 1), emissiveMap: glow, emissiveIntensity: 1.0, roughness: 0.4, metalness: 0, clearcoat: 0.35, clearcoatRoughness: 0.3, specularIntensity: 0.5 }))
   const washer = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x2a2826), roughness: 0.6, metalness: 0.4 }))
   const bar = studio(materials().aluminium.clone())
   bar.color = srgb(0x8f9398)
   bar.roughness = 0.36
   bar.normalScale = new THREE.Vector2(0.09, 0.09)
   bar.anisotropyRotation = 0
-  made = { glass, lit, washer, bar, textures: [off, glow] }
+  const shared = materials().aluminiumTurned
+  const turned = shared.clone()
+  turned.onBeforeCompile = shared.onBeforeCompile
+  turned.customProgramCacheKey = shared.customProgramCacheKey
+  turned.normalScale = new THREE.Vector2(0.022, 0.022)
+  turned.roughness = 0.3
+  made = { glass, lit, washer, bar, turned, textures: [off, glow] }
   return made
 }
 
@@ -98,7 +109,7 @@ function base(): THREE.Group {
   root.add(
     mesh(shared('wall', () => lathe([[R - 0.8, 0], [R, 0.8], [R, L.plate - L.rim * 0.8, true]], 96)), m.aluminiumSatin),
     mesh(shared('rim', () => lathe([[R, L.plate - L.rim * 0.8, true], ...round(R, L.plate - L.rim * 0.8, R - L.rim, L.plate, 4)], 96)), m.chrome),
-    mesh(shared('face', () => lathe([[R - L.rim, L.plate, true], [0, L.plate]], 96, (R - L.rim) * 2)), m.aluminiumTurned),
+    mesh(shared('face', () => lathe([[R - L.rim, L.plate, true], [0, L.plate]], 96, (R - L.rim) * 2)), o.turned),
     mesh(shared('heads', () => fuse(heads)), m.steel),
     mesh(shared('floors', () => fuse(floors)), o.washer, false, true)
   )
@@ -116,16 +127,16 @@ function hub(): THREE.Group {
     mesh(shared('washer', () => lathe([[L.washer, foot], [L.washer, foot + 1.6, true], [L.washer - 0.8, foot + 2.4, true], [L.neck, foot + 2.4]], 72)), o.washer),
     mesh(shared('neck', () => lathe([[L.neck, foot + 2.4], [L.neck, 8]], 72)), m.steel),
     mesh(shared('capSide', () => lathe([[L.cap, under - 1], [L.cap, top - 1.9, true], ...round(L.cap, top - 1.9, L.cap - 1.7, top - 0.3, 4)], 72)), m.chrome),
-    mesh(shared('capFace', () => lathe([[L.cap - 1.7, top - 0.3, true], [L.cap * 0.55, top - 0.08], [0, top]], 72, (L.cap - 1.7) * 2)), m.aluminiumTurned)
+    mesh(shared('capFace', () => lathe([[L.cap - 1.7, top - 0.3, true], [L.cap * 0.55, top - 0.08], [0, top]], 72, (L.cap - 1.7) * 2)), o.turned)
   )
   return root
 }
 
-function armOutline(): ReturnType<typeof outline> {
-  const half = CRANK.arm / 2
-  const R = L.eye
-  const hw = L.bar
-  const e = L.end
+function armOutline(len: number, wide: number): ReturnType<typeof outline> {
+  const half = (len - wide) / 2
+  const R = CRANK.hub / 2 + L.eye
+  const hw = wide * L.bar
+  const e = wide * L.end
   const f = L.fillet
   const xc = Math.sqrt((R + f) * (R + f) - (hw + f) * (hw + f))
   const th = Math.atan2(hw + f, xc)
@@ -153,9 +164,9 @@ function armOutline(): ReturnType<typeof outline> {
   return outline(pts)
 }
 
-function arm(): THREE.Group {
+function arm(s: Shape): THREE.Group {
   const H = L.full.arm
-  const g = shared('arm', () => sweep(armOutline(), profile([[0.7, 0, true], [0, 0.7], [0, H - 1.5], ...arc(0, H - 1.5, 1.5, 1.5, 4)])))
+  const g = shared(`arm:${s.w}:${s.h}`, () => sweep(armOutline(s.w, s.h), profile([[0.7, 0, true], [0, 0.7], [0, H - 1.5], ...arc(0, H - 1.5, 1.5, 1.5, 4)])))
   const root = new THREE.Group()
   root.add(mesh(g, own().bar))
   return root
@@ -210,7 +221,8 @@ function grip(): THREE.Group {
 function segment(): THREE.Group {
   const H = L.pill
   const g = shared('segment', () => {
-    const out = sweep(roundedRect(CRANK.segW, CRANK.segH, CRANK.segW / 2, 14), profile([[0.4, 0, true], [0, 0.4], [0, H - 5.5], ...arc(0, H - 5.5, 5, 5.1, 8), [9, H - 0.15], [13.5, H]]))
+    const r = L.pillRound
+    const out = sweep(roundedRect(CRANK.segW, CRANK.segH, CRANK.segW / 2, 14), profile([[0.4, 0, true], [0, 0.4], [0, H - r], ...arc(0, H - r, r, r - 0.25, 7), [7, H - 0.1], [13.5, H]]))
     const uv = out.getAttribute('uv')
     for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) / CRANK.segW + 0.5, uv.getY(i) / CRANK.segH + 0.5)
     return out
@@ -237,7 +249,7 @@ function lamp(s: Shape, ctx: RealContext): void {
     const bearer = Math.floor((from + to) / 2)
     if (bearer !== mine) continue
     const mid = (from + to) / 2 - mine
-    ctx.light({ x: s.x + s.w / 2 + mid * (CRANK.segW + CRANK.segGap), y: s.y + s.h / 2, z: s.z0 + L.pill + L.lamp.lift, colour: L.lamp.colour, power: L.lamp.power * (to - from + 1), reach: L.lamp.reach })
+    ctx.light({ x: s.x + s.w / 2 + mid * (CRANK.segW + CRANK.segGap), y: s.y + s.h / 2, z: s.z0 + L.pill * 1.3 + L.lamp.lift, colour: L.lamp.colour, power: L.lamp.power * (to - from + 1), reach: L.lamp.reach })
   }
 }
 
@@ -255,11 +267,11 @@ export const crank: PartMaker | null = {
   key(s) {
     if (s.kind === 'text') return null
     const kind = kindOf(s)
-    return kind ? `crank:${kind}` : null
+    return kind === 'arm' ? `crank:arm:${s.w}:${s.h}` : kind ? `crank:${kind}` : null
   },
   make(s) {
     const kind = kindOf(s)
-    const o = kind === 'base' ? base() : kind === 'hub' ? hub() : kind === 'arm' ? arm() : kind === 'grip' ? grip() : segment()
+    const o = kind === 'base' ? base() : kind === 'hub' ? hub() : kind === 'arm' ? arm(s) : kind === 'grip' ? grip() : segment()
     o.userData.kind = kind
     return o
   },
@@ -270,8 +282,9 @@ export const crank: PartMaker | null = {
       return
     }
     const on = s.tone === 'accent'
-    const up = rise(o, s, on ? L.full.meter + 6 : L.full.meter)
-    if (on) o.scale.z *= L.pillLit
+    const up = clamp01((s.z1 - s.z0) / L.full.meter)
+    o.scale.z = Math.max(0.001, (s.z1 - s.z0) / L.full.meter)
+    o.visible = up > 0.02
     const body = o.userData.body as THREE.Mesh
     const m = own()
     body.material = on ? m.lit : m.glass

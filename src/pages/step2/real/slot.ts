@@ -5,20 +5,38 @@ import type { PartMaker, RealContext } from '../../../real/types'
 import { materials } from '../../../shell/materials'
 import { roundedRect } from '../../../shell/solids'
 import type { Shape } from '../../../stage/types'
-import { SLOT } from '../layout'
+import type { LayoutNode } from '../../../copy'
+import { SLOT, buildLayout } from '../layout'
 import { clamp01, fuse, lathe, loft, mesh, moved, noise, normalsFrom, rise, smooth, srgb, type LoftRing } from './slot-kit'
 
 export const SLOT_LOOK = {
   page: { cabinet: 46, knob: 28, payout: 14, mount: 30, arm: 12 },
   top: 58, corner: 12, roundOver: 3, band: 11.2, chamfer: 4.2, chamferDrop: 3.4, gasket: 2.2, glass: 54.2, floor: 18,
   drum: { r: 62, crest: 50, w: 88, lip: 2.2, flat: 0.4 },
-  line: { z: 50.25, r: 0.5, pin: 1.7 },
+  line: { z: 50.4, r: 0.8, pin: 1.9, glow: 0.06 },
   sheen: { top: 0.11, streak: 0.06, order: 800001 },
   lever: { rod: 4.6, pivotX: 11, pivotZ: 28, barrel: 9, barrelW: 17, foot: -2, head: 22 },
   coin: { r: 13, t: 4, teeth: 64, most: 16, flight: 14, tilt: 1.05 },
   glassOrder: 800000
 }
 const L = SLOT_LOOK
+
+// The height the page gives the cabinet when it is fully up, read from the page's own layout.
+let cabinetFull = 0
+function cabinetHeight(): number {
+  if (cabinetFull > 0) return cabinetFull
+  const find = (n: LayoutNode): LayoutNode | null => {
+    if (n.id === 'slot-cabinet') return n
+    for (const c of n.children ?? []) {
+      const hit = find(c)
+      if (hit) return hit
+    }
+    return null
+  }
+  const n = find(buildLayout())
+  cabinetFull = n && n.height !== undefined && n.floor !== undefined ? n.height - n.floor : L.page.cabinet
+  return cabinetFull
+}
 
 interface Own {
   drum: THREE.MeshPhysicalMaterial
@@ -29,6 +47,7 @@ interface Own {
   frame: THREE.MeshPhysicalMaterial
   mouth: THREE.MeshPhysicalMaterial
   sheen: THREE.MeshBasicMaterial
+  line: THREE.MeshPhysicalMaterial
   textures: THREE.Texture[]
 }
 
@@ -71,7 +90,7 @@ function own(): Own {
   const gold = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xe6b955), roughness: 0.34, metalness: 1, normalMap: face, normalScale: new THREE.Vector2(1, 1) }))
   const rod = studio(new THREE.MeshPhysicalMaterial({ color: m.chrome.color, roughness: 0.2, metalness: 1 }))
   const frame = studio(m.aluminium.clone())
-  frame.color = srgb(0x8e9296)
+  frame.color = srgb(0x7f8387)
   frame.roughness = 0.4
   const brushing = m.aluminium.normalMap!.clone()
   brushing.repeat.set(1 / 300, 1 / 150)
@@ -80,7 +99,10 @@ function own(): Own {
   frame.normalScale = new THREE.Vector2(0.13, 0.13)
   const mouth = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x0e0e0d), roughness: 0.9, metalness: 0, specularIntensity: 0.2 }))
   const sheen = new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })
-  made = { drum, glass, well, gold, rod, frame, mouth, sheen, textures: [face] }
+  const line = studio(m.orange.clone())
+  line.emissive = m.orange.color.clone()
+  line.emissiveIntensity = L.line.glow
+  made = { drum, glass, well, gold, rod, frame, mouth, sheen, line, textures: [face] }
   return made
 }
 
@@ -131,7 +153,7 @@ function cabinet(): THREE.Group {
     const n = all.getAttribute('normal')
     const colour = new Float32Array(n.count * 3)
     for (let i = 0; i < n.count; i++) {
-      const k = 0.14 + 0.86 * Math.pow(clamp01(n.getZ(i)), 1.6)
+      const k = 0.1 + 0.9 * Math.pow(clamp01(n.getZ(i)), 2.3)
       colour[i * 3] = k
       colour[i * 3 + 1] = k
       colour[i * 3 + 2] = k
@@ -159,7 +181,7 @@ function cabinet(): THREE.Group {
   const sheen = mesh(shared('sheen', () => sheenGeometry(w - (inner + 0.6) * 2, h - (inner + 0.6) * 2, L.glass + 0.05)), o.sheen, false, false)
   sheen.userData.order = L.sheen.order
   sheen.renderOrder = L.sheen.order
-  root.add(mesh(body, o.frame), mesh(slope, m.chrome), mesh(well, o.well, false, false), mesh(drums, o.drum, false, true), mesh(line, m.orange, false, false), mesh(pins, m.steel, false, true), glass, sheen)
+  root.add(mesh(body, o.frame), mesh(slope, m.chrome), mesh(well, o.well, false, false), mesh(drums, o.drum, false, true), mesh(line, o.line, false, false), mesh(pins, m.steel, false, true), glass, sheen)
   return root
 }
 
@@ -400,7 +422,7 @@ export const slot: PartMaker | null = {
       poseCoins(o, s, ctx)
       return
     }
-    rise(o, s, L.page[kind])
+    rise(o, s, kind === 'cabinet' ? cabinetHeight() : L.page[kind])
     if (kind !== 'arm') return
     const rod = o.userData.rod as THREE.Mesh
     const run = Math.max(1, s.h)

@@ -7,10 +7,10 @@ Nothing here is a file. Every solid is built from numbers in `src/pages/step2/re
 | Picture | What it is | Made by | Size | Memory |
 | --- | --- | --- | --- | --- |
 | Coin face | A normal map: a raised rim, a ring of 28 beads, a five pointed star struck in the middle, and fine wear from two octaves of seeded noise | `coinHeight()` through `normalsFrom()` in `slot.ts`, seed `config.seed + 211` | 256 x 256, RGBA 8 bit | 0.25 MB, 0.33 MB with its smaller copies |
-| Meter segment, unlit | Colour: clear glass seen from above, a light rim, a darker core, a patch of gathered light on the lower right wall | `own()` in `crank.ts`, no seed, pure geometry of the pill | 32 x 128, RGBA 8 bit | 0.016 MB, 0.021 MB with its smaller copies |
-| Meter segment, lit | Emission: yellow white along the centre line, orange at the rim | `own()` in `crank.ts`, no seed | 32 x 128, RGBA 8 bit | 0.016 MB, 0.021 MB with its smaller copies |
+| Meter segment, unlit | Colour and alpha: clear glass seen from above, a bright line round the rim, a thin dark line inside it, a nearly clear core, a patch of gathered light on the lower right wall | `own()` in `crank.ts`, no seed, pure geometry of the pill | 64 x 256, RGBA 8 bit | 0.063 MB, 0.083 MB with its smaller copies |
+| Meter segment, lit | Emission: a pale orange core, a deeper orange ring, a bright line at the rim | `own()` in `crank.ts`, no seed | 64 x 256, RGBA 8 bit | 0.063 MB, 0.083 MB with its smaller copies |
 
-Total: 0.37 MB.
+Total: 0.50 MB with the smaller copies.
 
 Shared pictures that are read and not copied: the brushing of `materials().aluminium` (the cabinet's frame reads it at a finer repeat through a clone that shares the same image), the turned face of `materials().aluminiumTurned` (the crank's bezel and hub cap).
 
