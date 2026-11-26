@@ -1,35 +1,35 @@
 {
   "folder": "step2-slot",
-  "pushed": "2026-11-26T01:52:34.610Z",
-  "commit": "45cfd84861d25d87117be82675883ecc757deded",
+  "pushed": "2026-11-26T01:55:16.198Z",
+  "commit": "4d7102f0655bb2a8782c2453988b7a64b85c807e",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-step2-crank-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T01:49:47.912Z",
+      "caption": "Step 2 slot beat at 0.8, draft tier: ferrule where the rod enters the knob, polished rod",
+      "time": "2026-11-26T01:52:33.346Z",
       "by": "step2-slot",
-      "from": "out/work/stills/key-step2-crank-hd-draft.png"
+      "from": "out/work/looks/files/20261126015233-slot-0152.jpg"
     },
     {
       "file": "look-2.jpg",
       "caption": "Still step2-step2_slot-0p8-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T01:50:50.890Z",
+      "time": "2026-11-26T01:53:10.612Z",
       "by": "step2-slot",
       "from": "out/work/stills/step2-step2_slot-0p8-hd-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Crank key at draft tier, approved above, build below: chamfer line along the arm, stronger bow tie on bezel and cap",
-      "time": "2026-11-26T01:52:33.099Z",
+      "caption": "Still step2-step2_slot-0p8-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T01:53:39.777Z",
       "by": "step2-slot",
-      "from": "out/work/looks/files/20261126015233-crank-0152.jpg"
+      "from": "out/work/stills/step2-step2_slot-0p8-hd-draft.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Step 2 slot beat at 0.8, draft tier: ferrule where the rod enters the knob, polished rod",
-      "time": "2026-11-26T01:52:33.346Z",
+      "caption": "Coins of the slot beat at 0.8, draft tier, enlarged 3.6 times: satin gold, the coin that faces the light keeps its star and rim",
+      "time": "2026-11-26T01:55:15.072Z",
       "by": "step2-slot",
-      "from": "out/work/looks/files/20261126015233-slot-0152.jpg"
+      "from": "out/work/looks/files/20261126015515-coins-0158.jpg"
     }
   ]
 }
