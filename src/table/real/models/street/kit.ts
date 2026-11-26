@@ -13,7 +13,7 @@ export const TONE = {
   concrete: rgb(0x868c92),
   concreteDark: rgb(0x696d70),
   roof: rgb(0x66696b),
-  deck: rgb(0x77828d),
+  deck: rgb(0x848e98),
   deckDark: rgb(0x59626b),
   cap: rgb(0xc3c9cf),
   lime: rgb(0xd2cbb8),
@@ -124,8 +124,22 @@ export function windowAt(b: Buckets, h: Hole, o: WindowLook): void {
   const { x, z, w } = h
   const t = z + h.h
   // The pane is brighter at the top, where the lamp inside hangs.
-  b.glow.face([[x, d, z], [x + w, d, z], [x + w, d, (z + t) / 2], [x, d, (z + t) / 2]], lo, 0, [0, -1, 0])
-  b.glow.face([[x, d, (z + t) / 2], [x + w, d, (z + t) / 2], [x + w, d, t], [x, d, t]], pane, 0, [0, -1, 0])
+  if (o.dark) b.glow.face([[x, d, z], [x + w, d, z], [x + w, d, t], [x, d, t]], pane, 0, [0, -1, 0])
+  else {
+    // The lamp inside is seen through the pane: hot behind its upper middle, amber toward the frame.
+    const core: RGB = [lum * 1.3, lum * 1.04, lum * 0.6]
+    const nx = 6
+    const nz = 8
+    const at = (i: number, j: number): RGB => {
+      const r = Math.hypot((i / nx - 0.5) * 1.5, (j / nz - 0.6) * 1.3)
+      return mix(lo, core, Math.exp(-r * r * 7))
+    }
+    for (let i = 0; i < nx; i++) {
+      for (let j = 0; j < nz; j++) {
+        b.glow.blend([[x + (w * i) / nx, d, z + (h.h * j) / nz], [x + (w * (i + 1)) / nx, d, z + (h.h * j) / nz], [x + (w * (i + 1)) / nx, d, z + (h.h * (j + 1)) / nz], [x + (w * i) / nx, d, z + (h.h * (j + 1)) / nz]], [at(i, j), at(i + 1, j), at(i + 1, j + 1), at(i, j + 1)], [0, -1, 0])
+      }
+    }
+  }
   const f = 1.3
   const fy0 = d - 1.4
   g.box(x, x + f, fy0, d, z, t, o.frame, { skip: 'bl' })
@@ -200,6 +214,39 @@ export function roofDeck(g: Geo, x0: number, x1: number, y0: number, y1: number,
 }
 
 // A beacon: a chromed base on a roof, in the metal bucket. Its lens and its reflector are meshes of their own.
+// A roof light: a kerb, a lit pane seen from above and its glazing bars.
+export function roofLight(b: Buckets, x0: number, x1: number, y0: number, y1: number, deck: number, kerb: RGB, lum = 1): void {
+  const top = deck + 4.5
+  b.paint.box(x0, x1, y0, y1, deck, top, kerb, { bevel: 0.6 })
+  const ax = x0 + 2.2
+  const bx = x1 - 2.2
+  const ay = y0 + 2.2
+  const by = y1 - 2.2
+  const lo: RGB = [lum * 0.3, lum * 0.19, lum * 0.08]
+  const core: RGB = [lum * 1.15, lum * 0.9, lum * 0.5]
+  const nx = 8
+  const ny = 6
+  const at = (i: number, j: number): RGB => {
+    const r = Math.hypot((i / nx - 0.5) * 1.5, (j / ny - 0.5) * 1.5)
+    return mix(lo, core, Math.exp(-r * r * 6))
+  }
+  for (let i = 0; i < nx; i++) {
+    for (let j = 0; j < ny; j++) {
+      const u0 = ax + ((bx - ax) * i) / nx
+      const u1 = ax + ((bx - ax) * (i + 1)) / nx
+      const v0 = ay + ((by - ay) * j) / ny
+      const v1 = ay + ((by - ay) * (j + 1)) / ny
+      b.glow.blend([[u0, v0, top + 0.1], [u1, v0, top + 0.1], [u1, v1, top + 0.1], [u0, v1, top + 0.1]], [at(i, j), at(i + 1, j), at(i + 1, j + 1), at(i, j + 1)], [0, 0, 1])
+    }
+  }
+  const n = Math.max(2, Math.round((bx - ax) / 9))
+  for (let k = 0; k <= n; k++) {
+    const x = ax + ((bx - ax) * k) / n
+    b.metal.box(x - 0.45, x + 0.45, ay - 0.6, by + 0.6, top + 0.1, top + 1, TONE.iron)
+  }
+  for (const y of [ay, (ay + by) / 2, by]) b.metal.box(ax - 0.6, bx + 0.6, y - 0.45, y + 0.45, top + 0.1, top + 1, TONE.iron)
+}
+
 export function beaconBase(b: Buckets, x: number, y: number, z: number): void {
   b.metal.lathe([[0, 0], [31, 0], [31, 2.5], [28.6, 4.8], [28.6, 7.4], [26.4, 8.6], [0, 8.6]], x, y, 36, TONE.chrome, { base: z })
   b.metal.lathe([[2.2, 8], [2.2, 14], [0, 14]], x, y, 10, TONE.steel, { base: z })

@@ -1,0 +1,122 @@
+{
+ "critic": "R9",
+ "score": 6,
+ "pass": false,
+ "model": "gpt_6_2_sol",
+ "set": "A: one sheet across each of the four beats of the Decision page and five close sheets of the arrow acting",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-08.png",
+   "where": "row 1, frames 1–3, and the hold through row 4",
+   "what": "The arrow goes from nearly normal to fully occluded. The stamp has a readable hit and hold, but the arrow’s impact squash and pinned state are not visible at all in this crop.",
+   "fix": "Leave the arrow’s stem or one recognizable corner visible at the edge of the stamp, compress it distinctly at contact, and show it peel free or recoil on release."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "bottom row, as the stamp and its shadow move in",
+   "what": "The upright read pose barely changes as the threat arrives. The shadow foreshadows the hit, but the character does not visibly register it in time to create a distinct fear or surprise pose.",
+   "fix": "Have the arrow snap up toward the incoming shadow, then tuck its tip back and hold a brief braced silhouette before impact."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "rows 2–4, arrival on the home page and drift toward Apply for a Job",
+   "what": "The return to the start is clear from the page, not from the arrow. After a small landing change it travels left much like a pointer; there is no clearly held recognition or decision pose against the pale page.",
+   "fix": "Give the landing a readable flatten-and-settle, then pause with a clear directional lean toward Apply for a Job before the approach; retain edge contrast against the light background."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "bottom row, at Accept Rejection",
+   "what": "Two nearly identical poses at the button lead straight to the arrow lifting off as the page tilts. The contact does not visibly compress or resolve the hesitant approach, so the click reads mostly from the page change.",
+   "fix": "Hold a short lean back from the button, then give the press a visible tip-led stretch, contact squash, and release rebound."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-06.png",
+   "where": "rows 3–4, beneath the entering notice",
+   "what": "The attention shift is a small swivel into the default cursor stance. The pose is held, but it does not clearly differentiate recognizing the new notice from simply pointing up-left.",
+   "fix": "Contrast the waiting silhouette with a taller, sharper tip lift timed to the paper’s arrival, then settle into a deliberately held tilt toward it."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "the whole sheet",
+   "what": "did not read: the peel up is not in the read: the bent arrow reads as lingering by the stamp, dazed and reluctant, while the numbers count up. The walk to Accept Rejection and the press are read.",
+   "fix": "The arrow peeling itself up off the page as an action of its own, held, before the panel fills in.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "the whole sheet",
+   "what": "did not read: nervous reads as disheartened or impatient, with a short agitated waggle. The sweat, the tremble and the gulp are not in the read.",
+   "fix": "The beads of sweat, the small tremble and the gulp of Nervous, large enough in the sheet to be seen, on an arrow that holds its place.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-06.png",
+   "where": "the whole sheet",
+   "what": "did not read: shocked reads as waiting uneasily, then perking up and swivelling to look at the paper. The double take is not in the read.",
+   "fix": "The double take of Shocked: the stretch tall, then the snap back to upright, held.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "the whole sheet",
+   "what": "did not read: proud reads as curious and expectant, reaching up onto the notice to inspect it.",
+   "fix": "The puff up of Proud held first, then the dusting, on an arrow that stands clear of the letter.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-08.png",
+   "where": "the whole sheet",
+   "what": "did not read: scared reads as stunned or pinned: the stamp hides the arrow through the whole sheet, so the state is not seen at all.",
+   "fix": "Pale and stony, leaning back, before the stamp covers it; and under the stamp a tip or a corner of the arrow left in sight.",
+   "by": "builder"
+  }
+ ],
+ "reads": [
+  {
+   "file": "set-A-01.png",
+   "read": "Taken aback and impatient at the absurd wait; the arrow backs down off the timer, fidgets and settles underneath it."
+  },
+  {
+   "file": "set-A-02.png",
+   "read": "Briefly expectant when the timer hits zero, it approaches the Position Filled notice; the red stamp comes down over it, marks the notice REJECTED, and the arrow turns up beside the stamp looking battered."
+  },
+  {
+   "file": "set-A-03.png",
+   "read": "Dazed and reluctant after the rejection; the bent arrow lingers by the stamp while the numbers count up, then moves to Accept Rejection and springs away as the page starts to turn."
+  },
+  {
+   "file": "set-A-04.png",
+   "read": "Momentarily suspended or bewildered as the rejection screen flips back to the home page; it settles and drifts toward Apply for a Job, as if about to try again."
+  },
+  {
+   "file": "set-A-05.png",
+   "read": "Disheartened or impatient at the wait; the arrow pulls away from the glowing display, bobs down to the surface, and gives a short agitated waggle."
+  },
+  {
+   "file": "set-A-06.png",
+   "read": "Waiting uneasily, it perks up and swivels as a paper notice appears overhead, then holds looking up at the paper."
+  },
+  {
+   "file": "set-A-07.png",
+   "read": "Curious and expectant, it reaches up onto the notice to inspect it; a large red stamp looms overhead and is about to come down on it."
+  },
+  {
+   "file": "set-A-08.png",
+   "read": "Apparently stunned or pinned: the stamp comes down over the arrow and hides it, holds there, then moves away to start exposing the red imprint."
+  },
+  {
+   "file": "set-A-09.png",
+   "read": "Dazed and crumpled after the stamp hit; it wobbles in place, then trudges past the stamp toward the rejection button."
+  }
+ ]
+}

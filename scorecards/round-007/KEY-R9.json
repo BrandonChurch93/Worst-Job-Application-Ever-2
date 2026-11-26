@@ -1,0 +1,424 @@
+{
+  "role": "R9",
+  "round": 7,
+  "unit": "marketing",
+  "commit": "be1d14569b6f8c5ab0fa3612d60bb16d85f93930",
+  "tier": "final",
+  "engineHash": "cc2bd747b83999a7",
+  "sharedHash": "83acc506710c2995",
+  "pageHashes": {
+    "step1": "a8d57d044ecfea65",
+    "step2": "c4f0babb81717da5",
+    "marketing": "8f627e70205cb5b3",
+    "pinball": "be1ee040af5dd7b1",
+    "boss": "b390b7975ca13f67",
+    "decision": "adce718c8bb8c9ee"
+  },
+  "browser": "147.0.7727.15",
+  "files": {
+    "set-A-01.png": {
+      "set": "A",
+      "critic": "R9-1",
+      "kind": "plain-sheet",
+      "heading": "",
+      "unit": "marketing",
+      "beat": "marketing.stroll",
+      "hit": null,
+      "turn": null,
+      "frames": [
+        0,
+        10,
+        22,
+        32,
+        42,
+        54,
+        64,
+        76,
+        86,
+        96,
+        108,
+        118
+      ],
+      "format": "preview",
+      "tier": "review"
+    },
+    "set-A-02.png": {
+      "set": "A",
+      "critic": "R9-1",
+      "kind": "plain-sheet",
+      "heading": "",
+      "unit": "marketing",
+      "beat": "marketing.perks",
+      "hit": null,
+      "turn": null,
+      "frames": [
+        120,
+        152,
+        186,
+        218,
+        250,
+        282,
+        316,
+        348,
+        380,
+        412,
+        446,
+        478
+      ],
+      "format": "preview",
+      "tier": "review"
+    },
+    "set-A-03.png": {
+      "set": "A",
+      "critic": "R9-1",
+      "kind": "plain-sheet",
+      "heading": "",
+      "unit": "marketing",
+      "beat": "marketing.ticker",
+      "hit": null,
+      "turn": null,
+      "frames": [
+        480,
+        496,
+        512,
+        528,
+        544,
+        560,
+        578,
+        594,
+        610,
+        626,
+        642,
+        658
+      ],
+      "format": "preview",
+      "tier": "review"
+    },
+    "set-A-04.png": {
+      "set": "A",
+      "critic": "R9-1",
+      "kind": "plain-sheet",
+      "heading": "",
+      "unit": "marketing",
+      "beat": "marketing.apply",
+      "hit": null,
+      "turn": null,
+      "frames": [
+        660,
+        676,
+        692,
+        708,
+        724,
+        740,
+        758,
+        774,
+        790,
+        806,
+        822,
+        838
+      ],
+      "format": "preview",
+      "tier": "review"
+    },
+    "set-A-05.png": {
+      "set": "A",
+      "critic": "R9-1",
+      "kind": "acting-sheet",
+      "heading": "",
+      "unit": "marketing",
+      "state": "shocked",
+      "frames": [
+        154,
+        158,
+        164,
+        168,
+        172,
+        176,
+        182,
+        186,
+        190,
+        194,
+        200,
+        204
+      ],
+      "windows": [
+        [
+          392,
+          718,
+          461,
+          320
+        ],
+        [
+          392,
+          718,
+          461,
+          320
+        ],
+        [
+          392,
+          718,
+          461,
+          320
+        ],
+        [
+          392,
+          718,
+          461,
+          320
+        ],
+        [
+          392,
+          718,
+          461,
+          320
+        ],
+        [
+          392,
+          718,
+          461,
+          320
+        ],
+        [
+          392,
+          718,
+          461,
+          320
+        ],
+        [
+          392,
+          718,
+          461,
+          320
+        ],
+        [
+          392,
+          718,
+          461,
+          320
+        ],
+        [
+          392,
+          718,
+          461,
+          320
+        ],
+        [
+          392,
+          718,
+          461,
+          320
+        ],
+        [
+          392,
+          718,
+          461,
+          320
+        ]
+      ],
+      "windowFollowsTheArrow": false,
+      "shownAt": 1,
+      "format": "hd",
+      "tier": "review"
+    },
+    "set-A-06.png": {
+      "set": "A",
+      "critic": "R9-1",
+      "kind": "acting-sheet",
+      "heading": "",
+      "unit": "marketing",
+      "state": "proud",
+      "frames": [
+        454,
+        462,
+        468,
+        476,
+        484,
+        492,
+        498,
+        506,
+        514,
+        522,
+        528,
+        536
+      ],
+      "windows": [
+        [
+          1459,
+          628,
+          461,
+          320
+        ],
+        [
+          1459,
+          628,
+          461,
+          320
+        ],
+        [
+          1459,
+          628,
+          461,
+          320
+        ],
+        [
+          1459,
+          628,
+          461,
+          320
+        ],
+        [
+          1459,
+          628,
+          461,
+          320
+        ],
+        [
+          1459,
+          628,
+          461,
+          320
+        ],
+        [
+          1459,
+          628,
+          461,
+          320
+        ],
+        [
+          1459,
+          628,
+          461,
+          320
+        ],
+        [
+          1459,
+          628,
+          461,
+          320
+        ],
+        [
+          1459,
+          628,
+          461,
+          320
+        ],
+        [
+          1459,
+          628,
+          461,
+          320
+        ],
+        [
+          1459,
+          628,
+          461,
+          320
+        ]
+      ],
+      "windowFollowsTheArrow": false,
+      "shownAt": 1,
+      "format": "hd",
+      "tier": "review"
+    },
+    "set-A-07.png": {
+      "set": "A",
+      "critic": "R9-1",
+      "kind": "acting-sheet",
+      "heading": "",
+      "unit": "marketing",
+      "state": "confident",
+      "frames": [
+        534,
+        542,
+        552,
+        560,
+        568,
+        576,
+        586,
+        594,
+        602,
+        610,
+        620,
+        628
+      ],
+      "windows": [
+        [
+          1459,
+          562,
+          461,
+          320
+        ],
+        [
+          1459,
+          559,
+          461,
+          320
+        ],
+        [
+          1459,
+          506,
+          461,
+          320
+        ],
+        [
+          1459,
+          470,
+          461,
+          320
+        ],
+        [
+          1459,
+          466,
+          461,
+          320
+        ],
+        [
+          1372,
+          453,
+          461,
+          320
+        ],
+        [
+          1173,
+          429,
+          461,
+          320
+        ],
+        [
+          991,
+          407,
+          461,
+          320
+        ],
+        [
+          810,
+          386,
+          461,
+          320
+        ],
+        [
+          649,
+          366,
+          461,
+          320
+        ],
+        [
+          509,
+          350,
+          461,
+          320
+        ],
+        [
+          467,
+          344,
+          461,
+          320
+        ]
+      ],
+      "windowFollowsTheArrow": true,
+      "shownAt": 1,
+      "format": "hd",
+      "tier": "review"
+    }
+  }
+}

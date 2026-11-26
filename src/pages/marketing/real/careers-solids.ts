@@ -113,7 +113,7 @@ export function flange(r: number, lobes: number, deep: number, inner: number, ri
     for (let i = 0; i < n; i++) {
       const a = (i / n) * Math.PI * 2
       const lobe = 0.5 - 0.5 * Math.cos(a * lobes)
-      const edge = r - deep * (1 - Math.pow(lobe, 0.8))
+      const edge = r - deep * (1 - Math.pow(lobe, 0.88))
       const at = ring.t !== undefined ? edge + (inner - edge) * ring.t : edge - (ring.d ?? 0)
       pos.push(Math.cos(a) * at, Math.sin(a) * at, ring.z)
     }
@@ -127,6 +127,54 @@ export function flange(r: number, lobes: number, deep: number, inner: number, ri
   const g = new THREE.BufferGeometry()
   g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
   g.setAttribute('uv', new THREE.Float32BufferAttribute(pos.filter((_, i) => i % 3 !== 2), 2))
+  g.setIndex(idx)
+  g.computeVertexNormals()
+  return g
+}
+
+// A solid of turned metal lit from one side: brighter round the part of it that lies toward `toward`, duller round the far part.
+// Its picture lies across `across` px once, from the middle. Below the height `wall[0]` it is a wall, and leans by `wall[1]`.
+export function leaned(g: THREE.BufferGeometry, toward: number, amount: number, across: number, wall: [number, number] = [-1, 0]): THREE.BufferGeometry {
+  const p = g.getAttribute('position')
+  const col = new Float32Array(p.count * 3)
+  const uv = new Float32Array(p.count * 2)
+  for (let i = 0; i < p.count; i++) {
+    const x = p.getX(i)
+    const y = p.getY(i)
+    const v = 1 + (p.getZ(i) < wall[0] ? wall[1] : amount) * Math.cos(Math.atan2(y, x) - toward)
+    col.set([v, v, v], i * 3)
+    uv.set([x / across + 0.5, y / across + 0.5], i * 2)
+  }
+  g.setAttribute('color', new THREE.BufferAttribute(col, 3))
+  g.setAttribute('uv', new THREE.BufferAttribute(uv, 2))
+  return g
+}
+
+// The dark a lobed medal leaves on the page where its far edge meets it: a thin ring that follows the lobes, deepest under the edge,
+// only round the part that lies away from `toward`. `rings` are how far out from the edge, and how dark.
+export function contact(r: number, lobes: number, deep: number, toward: number, rings: [number, number][], turn: number): THREE.BufferGeometry {
+  const n = lobes * 20
+  const pos: number[] = []
+  const col: number[] = []
+  const idx: number[] = []
+  for (const [d, dark] of rings) {
+    for (let i = 0; i < n; i++) {
+      const a = (i / n) * Math.PI * 2
+      const lobe = 0.5 - 0.5 * Math.cos(a * lobes)
+      const at = r - deep * (1 - Math.pow(lobe, 0.88)) + d
+      pos.push(Math.cos(a) * at, Math.sin(a) * at, 0.08)
+      col.push(1, 1, 1, dark * Math.max(0, Math.min(1, -Math.cos(a - toward) * turn)))
+    }
+  }
+  for (let k = 0; k < rings.length - 1; k++) {
+    for (let i = 0; i < n; i++) {
+      const j = (i + 1) % n
+      idx.push(k * n + i, (k + 1) * n + i, k * n + j, k * n + j, (k + 1) * n + i, (k + 1) * n + j)
+    }
+  }
+  const g = new THREE.BufferGeometry()
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
+  g.setAttribute('color', new THREE.Float32BufferAttribute(col, 4))
   g.setIndex(idx)
   g.computeVertexNormals()
   return g

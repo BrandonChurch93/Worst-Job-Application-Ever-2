@@ -19,6 +19,7 @@ const PIT_CLEAR = 8
 const SHOCK = 0.8
 const TURN_SHARP = 5
 const tapeSpeed = 120
+const DOT_GROWS = 24
 const REJECTED_SETTLE = 1.7
 export const TRAVEL = heights.button - 4
 const WIND = 0.45
@@ -262,18 +263,47 @@ export function makePage(): PageLogic {
     })
   }
 
-  const leadOf = (items: { at: number; w: number }[]): number => {
-    const window = TICKER.w - TICKER.clip * 2
-    const room = window - (TICKER.solid + TICKER.ramp) * 2
+  const tapeWindow = TICKER.w - TICKER.clip * 2
+  const tapeRoom = tapeWindow - (TICKER.solid + TICKER.ramp) * 2
+
+  // How wide the whole items are that fit in the clear of the strip, counted from item `j`.
+  const fitFrom = (items: { at: number; w: number }[], length: number, j: number): number => {
     let end = 0
-    for (const item of items) {
-      if (item.at + item.w > room) break
-      end = item.at + item.w
+    for (let k = 0; k < items.length; k++) {
+      const item = items[(j + k) % items.length]!
+      const rel = mod(item.at - items[j]!.at, length)
+      if (k > 0 && rel === 0) break
+      if (rel + item.w > tapeRoom) break
+      end = rel + item.w
     }
-    return end > 0 ? (window - end) / 2 : TICKER.pad
+    return end
   }
-  const tapeLead = leadOf(tapeItems)
-  const afterLead = leadOf(afterItems)
+  const leadOf = (items: { at: number; w: number }[], length: number, j = 0): number => {
+    const end = fitFrom(items, length, j)
+    return end > 0 ? (tapeWindow - end) / 2 : TICKER.pad
+  }
+  const tapeLead = leadOf(tapeItems, tapeLength)
+  const afterLead = leadOf(afterItems, afterLength)
+
+  // The tape's speed is set so that the page at rest, before a second has passed, shows whole items in the middle of the strip too,
+  // as it does at the moment of the key: of the speeds that do that, the one nearest `tapeSpeed`. `restLead` is where those items begin.
+  const [tapeRate, restLead] = ((): [number, number] => {
+    let best: [number, number] = [tapeSpeed, tapeLead]
+    let off = tapeSpeed * 0.4
+    for (let j = 0; j < tapeItems.length; j++) {
+      const lead = leadOf(tapeItems, tapeLength, j)
+      const rate = mod(-(tapeItems[j]!.at - (lead - tapeLead)), tapeLength) / applyBeat.from
+      if (Math.abs(rate - tapeSpeed) < off) {
+        off = Math.abs(rate - tapeSpeed)
+        best = [rate, lead]
+      }
+    }
+    return best
+  })()
+  const ease = (t: number): number => {
+    const u = Math.max(0, Math.min(1, t))
+    return u * u * (3 - 2 * u)
+  }
 
   function ticker(out: DrawList): void {
     const left = TICKER.x + TICKER.clip
@@ -281,9 +311,11 @@ export function makePage(): PageLogic {
     out.push({ id: 'ticker-tape', part: 'ticker', kind: 'box', x: TICKER.x + TICKER.edge, y: TICKER.y + TICKER.edge, w: TICKER.w - TICKER.edge * 2, h: TICKER.h - TICKER.edge * 2, z0: TICKER.floor, z1: TICKER.tape, tone: 'paper' })
     const items = rejected() ? afterItems : tapeItems
     const length = rejected() ? afterLength : tapeLength
-    const tape = (rejected() ? s.time - REJECTED_SETTLE : s.time - applyBeat.from) * tapeSpeed
+    const tape = rejected() ? (s.time - REJECTED_SETTLE) * tapeSpeed : (s.time - applyBeat.from) * tapeRate
     const lead = rejected() ? afterLead : tapeLead
-    const frostTo = Math.max(TICKER.solid, lead - TICKER.gap)
+    const whole = rejected() ? afterLead : Math.round(restLead + (tapeLead - restLead) * ease(s.time / applyBeat.from))
+    const frostTo = Math.max(TICKER.solid, whole - TICKER.gap)
+    const clear = TICKER.clip + frostTo + TICKER.gap - 6
     out.push({ id: 'ticker-glass', part: 'ticker', kind: 'box', x: TICKER.x, y: TICKER.y, w: TICKER.w, h: TICKER.h, r: TICKER.r, z0: 0, z1: TICKER.thick, tone: 'glass', mechanism: true, v: [TICKER.clip + frostTo, TICKER.gap - 6] })
     for (const item of items) {
       let rel = mod(item.at - tape, length)
@@ -296,7 +328,8 @@ export function makePage(): PageLogic {
         else out.push({ ...run, x: x + item.w - 2, w: 2, type: { ...T.tape, align: 'right' } })
       }
       const dot = x + item.w + TICKER.gap / 2
-      if (dot - 3 > left && dot + 3 < right) out.push({ id: `${item.id}-dot`, part: 'ticker', kind: 'disc', x: dot - 2, y: TICKER.y + TICKER.h / 2 - 2, w: 4, h: 4, z0: TICKER.tape, z1: TICKER.tape + 0.6, tone: 'dark' })
+      const d = Math.round(Math.max(0, Math.min(1, (Math.min(dot - TICKER.x, TICKER.x + TICKER.w - dot) - clear) / DOT_GROWS)) * 8) / 2
+      if (d > 0) out.push({ id: `${item.id}-dot`, part: 'ticker', kind: 'disc', x: dot - d / 2, y: TICKER.y + TICKER.h / 2 - d / 2, w: d, h: d, z0: TICKER.tape, z1: TICKER.tape + 0.6, tone: 'dark' })
     }
   }
 

@@ -293,8 +293,71 @@ function glassSlab(s: Shape, thick: number): THREE.Object3D {
   const seal = mesh(shared(`perkSeal:${dims(s)}`, () => sealGeometry(s)), materials().ceramic, false)
   seal.name = 'seal'
   root.add(seal)
+  const trough = mesh(shared(`perkTrough:${dims(s)}`, () => troughGeometry(s)), troughMaterial(), false, false)
+  trough.name = 'trough'
+  root.add(trough)
   root.userData.glass = own
   return root
+}
+
+export const TROUGH = { colour: 0xe6e4df, steps: 28, clear: 7.5, rim: 0.98, dark: 0.46, low: 0.8, lit: 1 }
+
+let troughMade: THREE.MeshPhysicalMaterial | null = null
+
+const troughMaterial = (): THREE.MeshPhysicalMaterial =>
+  (troughMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(TROUGH.colour), roughness: 0.78, metalness: 0, specularIntensity: 0.35, vertexColors: true })))
+
+// The bed a card turns in: a round trough of the page's own ceramic, as deep as half the card is tall. Its light is laid into it, and its normals stand straight up so that the key adds none of its own:
+// the wall under the lip toward the light is in the lip's shade, the far wall takes the light, and the bottom lies between.
+export function troughGeometry(s: Shape): THREE.BufferGeometry {
+  const T = TROUGH
+  const half = s.h / 2
+  const deep = half + T.clear
+  const pos: number[] = []
+  const col: number[] = []
+  const idx: number[] = []
+  const shade = (t: number): number => {
+    const u = t / Math.PI
+    const fall = T.dark + (T.lit - T.dark) * smooth((u - 0.12) / 0.8)
+    const lip = Math.exp(-u / 0.04) * (T.rim - T.dark) + Math.exp(-(1 - u) / 0.04) * (T.rim - T.lit)
+    return fall + lip - (T.lit - T.low) * 0.5 * Math.sin(t) ** 2 * u
+  }
+  for (let i = 0; i <= T.steps; i++) {
+    const t = (i / T.steps) * Math.PI
+    const y = half * Math.cos(t)
+    const z = -0.4 - deep * Math.sin(t)
+    const v = shade(t)
+    for (const side of [-1, 1]) {
+      pos.push((side * s.w) / 2, y, z)
+      col.push(v, v, v)
+    }
+  }
+  for (let i = 0; i < T.steps; i++) {
+    const k = i * 2
+    idx.push(k, k + 2, k + 1, k + 1, k + 2, k + 3)
+  }
+  for (const side of [-1, 1]) {
+    const base = pos.length / 3
+    const x = side * (s.w / 2 - 1.5)
+    const end = side * KX > 0 ? T.dark : T.lit
+    pos.push(x, 0, -0.4)
+    col.push(end, end, end)
+    for (let i = 0; i <= T.steps; i++) {
+      const t = (i / T.steps) * Math.PI
+      pos.push(x, half * Math.cos(t), -0.4 - deep * Math.sin(t))
+      const v = end * 0.6 + shade(t) * 0.4
+      col.push(v, v, v)
+    }
+    for (let i = 0; i < T.steps; i++) {
+      idx.push(base, base + 1 + i, base + 2 + i, base, base + 2 + i, base + 1 + i)
+    }
+  }
+  const g = new THREE.BufferGeometry()
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
+  g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3))
+  g.setAttribute('normal', new THREE.Float32BufferAttribute(pos.map((_, i) => (i % 3 === 2 ? 1 : 0)), 3))
+  g.setIndex(idx)
+  return g
 }
 
 export const slabKey = (s: Shape): string => `restSlab:${dims(s)}:${q(s.z1 - s.z0)}`
@@ -341,6 +404,11 @@ export const perkCards: PartMaker | null = {
     own.color.copy(srgb(GLASS.colour)).multiplyScalar(even(turn))
     seal.rotation.x = -turn
     seal.position.set(0, 0, -s.z0).applyAxisAngle(AXIS, -turn)
+    const trough = o.getObjectByName('trough')
+    if (trough) {
+      trough.rotation.x = -turn
+      trough.position.copy(seal.position)
+    }
   },
   drop(o) {
     const own = o.userData.glass as THREE.MeshPhysicalMaterial | undefined

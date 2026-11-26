@@ -1,0 +1,180 @@
+{
+ "critic": "R2",
+ "pass": true,
+ "jurors": 5,
+ "judged": [
+  {
+   "file": "set-A-01.png",
+   "what": {
+    "still": {
+     "page": "decision",
+     "beat": "decision.metrics",
+     "at": 0.3,
+     "camera": "home",
+     "tier": "final"
+    }
+   },
+   "votes": [
+    {
+     "juror": "r8_juror_01",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 90,
+     "why": "the image is a flat game-UI screen (step counter, timer panel, \"Accept Rejection\" button, fake rubber-stamp skeuomorphism): clearly a joke web app or low-budget game interface, not photography or cinematic rendering",
+     "at": "05:00Z"
+    },
+    {
+     "juror": "r8_juror_02",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 98,
+     "why": "the visible on-screen cursor next to the stamp makes it read as an interactive web/app screen",
+     "at": "05:00Z"
+    },
+    {
+     "juror": "r8_juror_03",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 85,
+     "why": "The image is a web app UI: a step progress bar, buttons, a mouse cursor, and a \"Share Your Achievement\" link. It's a skeuomorphic browser interface, not a photo, film frame or product render.",
+     "at": "05:02Z"
+    },
+    {
+     "juror": "r8_juror_04",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 98,
+     "why": "The visible cursor and clickable progress/buttons make it look like a stylized interactive web-app screen.",
+     "at": "05:02Z"
+    },
+    {
+     "juror": "r8_juror_05",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 92,
+     "why": "the obvious web-app UI elements (step tracker, metrics panel, \"Accept Rejection\" button, and cursor) wrapped around simple 3D props",
+     "at": "05:02Z"
+    }
+   ],
+   "letters": "d d d d d"
+  },
+  {
+   "file": "set-A-02.png",
+   "what": {
+    "still": {
+     "page": "decision",
+     "camera": "home",
+     "tier": "final"
+    }
+   },
+   "votes": [
+    {
+     "juror": "r8_juror_06",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 94,
+     "why": "The decisive cue is the mouse cursor positioned below a full-screen, front-facing application interface.",
+     "at": "05:02Z"
+    },
+    {
+     "juror": "r8_juror_07",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 80,
+     "why": "It's a web UI screen (a joke job-application page with step buttons, flat UI text and a mouse cursor). It's styled to look skeuomorphic, with a glowing LED panel, metal buttons and paper texture, but it's clearly a web app interface and not a film, a photo or a product render.",
+     "at": "05:02Z"
+    },
+    {
+     "juror": "r8_juror_08",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 98,
+     "why": "The visible mouse pointer beneath the skeuomorphic application form makes it look like an interactive web/app screen.",
+     "at": "05:02Z"
+    },
+    {
+     "juror": "r8_juror_09",
+     "model": "kimi_k3",
+     "answer": "c",
+     "confidence": 82,
+     "why": "the clean, isolated skeuomorphic UI panel with polished but simple 3D materials looks most like an ordinary high-quality 3D render rather than a photograph, cinematic frame, or low-budget interactive app",
+     "at": "05:02Z"
+    },
+    {
+     "juror": "r8_juror_10",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 87,
+     "why": "the visible cursor and stepped progress controls make this read as an interactive app screen rather than a standalone render",
+     "at": "05:02Z"
+    }
+   ],
+   "letters": "d d d c d"
+  }
+ ],
+ "controls": [
+  {
+   "file": "set-A-03.png",
+   "what": {
+    "control": "decision",
+    "image": "references/approved/decision.png"
+   },
+   "votes": [
+    {
+     "juror": "r8_juror_11",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 50,
+     "why": "it's a UI screen for a joke web game or app (\"The Worst Job Application Ever\", step tracker, \"Accept Rejection\" button, cursor). The photoreal paper and stamp textures look like generated or skeuomorphic app art, not a real photo or a film or cinematic frame.",
+     "at": "05:03Z"
+    },
+    {
+     "juror": "r8_juror_12",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "c",
+     "confidence": 83,
+     "why": "The interface is staged as a polished 3D mockup, most clearly in the physical cursor casting a shadow onto the textured paper.",
+     "at": "05:03Z"
+    },
+    {
+     "juror": "r8_juror_13",
+     "model": "kimi_k3",
+     "answer": "c",
+     "confidence": 65,
+     "why": "The deciding factor was the impeccably smooth skeuomorphic materials (clay-like stamp, flawless plastic button, paper with uniform fiber texture) under soft, idealized studio lighting: the signature of a professional 3D illustration or stock-style render rather than a real photograph. It avoided (b) because the composition is a flat, static UI mockup with no cinematic framing or motion storytelling, and the overly clean perfection pushed it away from an ordinary real photo (a).",
+     "at": "05:03Z"
+    },
+    {
+     "juror": "r8_juror_14",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 86,
+     "why": "The strongest cue is that the whole image is an interactive results screen, with a 3D-styled \"Accept Rejection\" button and cursor.",
+     "at": "05:03Z"
+    },
+    {
+     "juror": "r8_juror_15",
+     "model": "claude_opus_5_5",
+     "answer": "c",
+     "confidence": 55,
+     "why": "It looks like a tactile, skeuomorphic UI mockup with clean studio lighting and photoreal materials (paper texture, glass panel, rubber stamp). That reads as a polished ordinary render or stock-style image, not film-grade cinematic work or a real photo. It's probably AI-generated. The web-app/game UI theme points toward (d), but the rendering quality is too high for a low-budget app.",
+     "at": "05:04Z"
+    }
+   ],
+   "letters": "d c c d c"
+  }
+ ],
+ "judgedShare": {
+  "votes": 10,
+  "aOrB": 0,
+  "share": 0.0
+ },
+ "controlShare": {
+  "votes": 5,
+  "aOrB": 0,
+  "share": 0.0
+ },
+ "rule": "R2 passes when the judged share is no lower than the control share minus quality.jury.maxShareGap (0.2)",
+ "note": "It passes by the rule: 0 of 10 on the judged pictures against 0 of 5 on the control, and the judged share is no lower than the control share less 0.2. What the rule does not see: no juror took any picture of the build for a photograph or a film frame; 9 of 10 chose (d) and one chose (c). The approved image drew two (d) and three (c), so the approved picture is more often taken for an ordinary render and the build's for a web demo, and almost every juror of both gave the same reason: the picture is laid out as a web page with a pointer on it. All 15 jurors answered and none was replaced.",
+ "replaced": 0
+}
