@@ -39,6 +39,8 @@ MEASURED at 04:40 UTC after the change, same command, 1 m 30.9 s: M1 pass; M2 pa
 
 MEASURED at 05:22 UTC on the tree of the second pass (brushed plates, the careers page's slab as the shield), same command, log `out/work/k/measure5.log`: M2 pass 0.0096 against 0.02 (238391 textured pixels in 4 stills); M3 pass 0.9182 against 0.8; 8 green, 0 red. On the way: 0.3313 with the careers page's picture at 1 texel to a page pixel on the block, 0.0274 with the picture finer but not on the block's wall.
 
+MEASURED at 06:30 UTC on the last tree (the card as glass, the darker wreck, the compact unfolding state), same command, log `out/work/k/measure14.log`: M2 pass 0.003 against 0.02 (705794 textured pixels in 4 stills); M3 pass 0.9438 against 0.8; M4 18 px and 4.63; 8 green, 0 red. Stills on this VM: `npm run still -- --key boss-fight --format hd --tier draft --force` 11.5 to 11.9 s, 677853 triangles, 473 draw calls; `--key boss-down` 11.9 s, 562687, 388; `--sheet boss-stages` 9.7 s, 664450, 503; `--key boss-fight --tier review` 23.68 s.
+
 ## Decisions
 
 1. The hull is cast metal, no brushing: the brushed streaks came from the normal map on a full metal, which is gone. Plate 0xb2b6ba, roughness 0.42.
@@ -77,3 +79,10 @@ MEASURED at 05:22 UTC on the tree of the second pass (brushed plates, the career
 34. Not done: the bright bezel round the resting button (round 10, R1-1 issue 13). At rest the socket is the shell's pocket; a collar there needs a wider pocket and a new shape in a state three measures read (M5, M6, M9), and there was no time to prove it green.
 35. The cracks of the fallen glass are finer (bright line 0.62 px half width, was 1.15; the dark line under it 0.8, was 1.1) and taper further to their ends: round 10 (R1-1 issue 11, R3-1 issue 2) reads them as lines of one width painted on. They are still lines on the face, not broken surfaces: see the least real list.
 36. The glass block is a fifth darker while it stands (`SHIELD_GLASS.up` 0.8, eased by `stand` in `poseShield`): leaning to the light it read pale mint beside approved's grey green, while the same glass lying in the wreck was right. Judged from one crop beside approved at `--key boss-fight`.
+37. The block's finer clone of the careers picture is made once and shared by the block and the card (`blockMade` in `src/boss/real/body-kit.ts`).
+
+## What still looks least real, at the end
+
+1. The fallen glass and the standing block: clear grey now, but no bright thin rim, and the cracks are lines on the face, not broken surfaces with offsets and glints.
+2. The fallen cap: the shell's button, flat topped with a printed scorch; approved's is a plump pill with charred blisters and chipped ends.
+3. The cannon discs and the resting button: no turned sheen on the discs, and no bright bezel round the button at rest in the sheet.

@@ -110,11 +110,15 @@ export const SHIELD_GLASS = { colour: 0x8c9895, through: 0.82, perPx: 2.4, up: 0
 export const glassTone = (): THREE.Color => srgb(SHIELD_GLASS.colour).multiplyScalar(1 / PICTURE.level)
 
 // The careers page's picture of the page under glass, laid finer: the block is seen closer than a card.
+let blockMade: THREE.Texture | null = null
+
 function blockPicture(): THREE.Texture {
-  const t = glassPicture().clone()
-  t.repeat.set(SHIELD_GLASS.perPx / PICTURE.size, SHIELD_GLASS.perPx / PICTURE.size)
-  t.needsUpdate = true
-  return t
+  if (!blockMade) {
+    blockMade = glassPicture().clone()
+    blockMade.repeat.set(SHIELD_GLASS.perPx / PICTURE.size, SHIELD_GLASS.perPx / PICTURE.size)
+    blockMade.needsUpdate = true
+  }
+  return blockMade
 }
 
 export const BRUSH = { w: 512, h: 128, perPx: 2.4, deep: 0.3, cells: 8 }
