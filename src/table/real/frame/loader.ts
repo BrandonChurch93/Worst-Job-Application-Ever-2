@@ -360,7 +360,7 @@ export function loader(z: Zone, _ctx: RealContext): THREE.Object3D {
       const lamp = Math.hypot(SHADE.dx, SHADE.dy)
       const row = (i: number): V3[] => {
         const q = path[i]!
-        const n = sideOf(i)
+        const n = z.top === 0 ? sideOf(1) : sideOf(i)
         if (bent) return CAST.map(([t]) => [q[0] + n[0] * TUBE.outer * 0.8 + (SHADE.dx / lamp) * TUBE.outer * (t - 0.8), q[1] + n[1] * TUBE.outer * 0.8 + (SHADE.dy / lamp) * TUBE.outer * (t - 0.8), SHADE.up] as V3)
         return CAST.map(([t]) => [q[0] + n[0] * TUBE.outer * t, q[1] + n[1] * TUBE.outer * t - (t - 0.8) * 5, SHADE.up] as V3)
       }

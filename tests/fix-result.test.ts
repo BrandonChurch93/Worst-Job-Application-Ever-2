@@ -43,8 +43,12 @@ describe('the way out on the last screen', () => {
     expect(RISER.flange).toBeGreaterThan(RISER.body)
   })
 
-  test('the apron draws no plate and no slot for the drain tube', () => {
+  test('the hardware draws the drain tube only under the page: no plate, no slot, nothing above the page on the last screen', () => {
     const d = drain(zoneOf(last))
-    expect(d.G.vertices + d.C.vertices).toBe(0)
+    for (const g of [d.G, d.C]) {
+      const at = g.done().getAttribute('position')
+      expect(at.count).toBeGreaterThan(0)
+      for (let i = 0; i < at.count; i++) expect(at.getZ(i)).toBeLessThan(0)
+    }
   })
 })

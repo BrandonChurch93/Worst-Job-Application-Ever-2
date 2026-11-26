@@ -1,8 +1,8 @@
 import * as THREE from 'three'
-import { APRON_Y, BALL, PLUNGER } from '../../layout'
+import { APRON_Y, BALL, PLUNGER, railOf } from '../../layout'
 import { localBalls, type Zone } from '../zone'
-import { Geo } from './geo'
-import { coil } from './kit'
+import { Geo, type V3 } from './geo'
+import { TUBE, coil, collar, frameAt, rounded, shells } from './kit'
 import { FIN, Screws, TONE, shade } from './mats'
 
 export const PLUNGE = { travel: 0.7 * BALL, knob: 0.32 * BALL, high: 30, housing: 0.92 * BALL, spring: 0.98 * BALL, shut: 0.29 * BALL, ring: 8, fade: 2, wave: 1.5, tip: 0.45 * BALL }
@@ -72,9 +72,20 @@ export function plunger(z: Zone): Geo {
   return G
 }
 
+// How many points of the drain's path the hardware draws: the straight run through the apron and the first bend, all of it under the page from the apron's edge on.
+const UNDER = 10
+
 export interface Drain { G: Geo; C: Geo; S: Screws }
 
-// The drain tube of the last screen is the loader's: it is built with the feed tube, in `frame/loader.ts`. The hardware draws nothing there.
-export function drain(_z: Zone): Drain {
-  return { G: new Geo(), C: new Geo(), S: new Screws() }
+// The clear tube the ball leaves by, as far as it shows in the drain of the apron: it dives under the page there and ends under the cap of the last screen's tube, which the loader builds with the feed tube in `frame/loader.ts`.
+export function drain(z: Zone): Drain {
+  const G = new Geo()
+  const C = new Geo()
+  const S = new Screws()
+  const pts = railOf('drain').points.slice(1).map((p) => localBalls(z, p[0], p[1], p[2] + 0.5) as V3)
+  const path = rounded(pts, TUBE.bend).slice(0, UNDER)
+  shells(C, path)
+  const e = frameAt(path, TUBE.ferrule / 2 + 0.5)
+  if (e) collar(G, S, e, { screws: false })
+  return { G, C, S }
 }
