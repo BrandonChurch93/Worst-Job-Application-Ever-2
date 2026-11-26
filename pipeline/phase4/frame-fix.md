@@ -36,7 +36,7 @@ Not mine, left: R1-1 issue 2 (light), 6, 7, 18 (models), 9 (crop), R3-1 issue 5 
 
 ## Looks, by part, from the first still
 
-Counted at 09:33 UTC. One still that shows several parts is counted on the part it was rendered for. The limit is 40 a part.
+Counted at 09:40 UTC. One still that shows several parts is counted on the part it was rendered for. The limit is 40 a part.
 
 | part | looks | what |
 | --- | --- | --- |
@@ -44,7 +44,7 @@ Counted at 09:33 UTC. One still that shows several parts is counted on the part 
 | marquee | 0 | seen in the table-wide stills, counted there |
 | table-hardware | 4 | table-wide stills for the spring, the tier block, the pocket and the lane guides |
 | lift | 0 | seen in the table-wide stills, counted there |
-| loader | 28 | 1 baseline compare, 17 loader-page draft stills, 1 review still, 4 page stills of the port's answer at 0.57 to 0.63 of pinball.seal, 5 loader-page stills for the soft rim and the collars |
+| loader | 29 | 1 baseline compare, 17 loader-page draft stills, 1 review still, 4 page stills of the port's answer at 0.57 to 0.63 of pinball.seal, 5 loader-page stills for the soft rim and the collars, 1 compare at be3c2b96 |
 | flippers | 8 | last-save stills, tier-office (2) and tier-corporate after the wire change |
 | bumpers | 4 | table-wide crops, 2 tier-office stills for the lids |
 | targets | 0 | |
@@ -145,6 +145,10 @@ All at 1e39deca unless said. Commands as written.
 
 ## The three least real things left, for the successor
 
-1. The cabinet reads as a deep pit: tall side walls and the two near wedges stand high over the street floor (keys `table-wide`, `last-save`). The steps are the layout's; within my files the next move is the wedges' and side walls' tone and a lower inner lip.
-2. The orange parts (bats, lift elbows and doors, plunger knob) read dull amber, not approved's bright moulded orange (keys `tier-corporate`, `tier-office`, `tier-street`, `table-wide`). `MACHINE_ORANGE` is fixed; the next move is the gloss and the rim light of `ORANGE_LOW` and of the lift's elbow material.
-3. The ramp's wires and trestles are still busier and greyer than approved's four clean chrome wires, and the spiral reads as a drum (keys `rail-cam`, `tier-street`, `table-wide`). After that: the bumper lids' deck is still flat next to approved's cups (`tier-office`) and the port's ring is flatter than approved's polished ring (`loader-page`).
+Ranked after looking at the three comparisons made at be3c2b96 (`compare-table-wide`, `compare-tier-office`, `compare-loader-page`).
+
+1. The cabinet reads as a deep pit: tall side walls and the two near wedges stand high over the street floor, where approved is a shallow tray with a thin bright rail (keys `table-wide`, `last-save`). The steps are the layout's; within my files the next move is the wedges' and side walls' tone and a lower inner lip.
+2. The bumper lids: in `table-wide` they read as open cream bowls and from straight above in `tier-office` as a flat disc with a thin rim, where approved has domed white lids with a sip hole on a lit copper drum. The rolled rim and groove are in but too small to carry the form; the deck needs a real dome and the drum needs to show under the lid.
+3. The port's ring is a flat grey disc round a black well with a thin pale line still at the lip, where approved is a polished turned ring over a deep bowl that shows its wall (key `loader-page`, page stills of `pinball.seal`).
+
+Next after these: the orange parts (bats, lift elbows and doors, plunger knob) read dull amber, not approved's bright moulded orange (keys `tier-corporate`, `tier-office`, `tier-street`; `MACHINE_ORANGE` is fixed, so the move is gloss and rim light). The ramp's wires and trestles are busier and greyer than approved's four clean chrome wires and the spiral reads as a drum (keys `rail-cam`, `tier-street`, `table-wide`).
