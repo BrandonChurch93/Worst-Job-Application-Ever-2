@@ -46,6 +46,34 @@ Not mine: R8-1 issue 7 and R8-2 issue 2 (the words on the display: `displays/`),
 6. Revolving door (R1-2 issue 10). The hold's centre moved from x 9.2 to 9.5 balls: the post stands 0.3 balls inside the carpet. It is not centred on the carpet: the ball is 1 ball wide on a carpet 1.6 wide and has to pass the post. MEASURED: events and track identical to main, no search spent.
 7. `tests/pinball.test.ts`, "continues exactly after load(save())": 60 s limit, nothing it checks changed.
 
+8. Bumper hits (round 11, frames 4878 to 5040). Kit, beat `pinball.coffee`: "`tier-2`, then ball height inside the cluster". New camera `table-nest`, eye `[MID, Y1 + 12.4, 0.5]`, target `[MID, Y1 + 6.4, -1.4]`, lens 40 degrees (the `rail` entry), a hard cut. It stands at the bats, half a ball over the floor, and looks up the tier at the three cups. The film holds `tier-2` from 14.3 s to 16.0 s (the drop from the chute) and `table-nest` from 16.0 s to 19.35 s, so all six bumper hits (16.51 to 18.91 s) are seen from ball height with the arrow about 60 px tall in the frame. MEASURED: `npm run take -- --check`, "hits within 0.15 s of a cut of the film: 0", 10 of 10 beats inside. Looked at: `npm run sheet -- --beat pinball.coffee --tier draft`.
+9. Film cut list after decisions 5 and 8: 0 follow, 4.1 `tube` (0.5 s move), 6.2 `table-wide`, 8.05 ride, 10.25 `tier-3` (0.6 s), 13.0 `table-lobby`, 14.3 follow, 16.0 `table-nest`, 19.35 `near-nest`, 20.95 `table-replyall`, 22.2 follow, 26.9 `table-fired`, 29.3 follow, 31.15 rail, 32.3 follow (0.6 s), 34.3 `table-save`, 34.8 `near-spent`, 35.45 `table-save`, 36.6 follow.
+10. 'Background Check' sign under the spiral ramp (R8-1 issue 6): not moved. MEASURED on the `tier-street` draft still: the sign runs along the front of the police station from x 14.35 to 16.7 balls, and the two rails of the highway cross its first 0.9 balls. To clear it the ramp would have to end 0.9 balls further left, and its end is fixed by the spiral it feeds (garage centre 15.2 less radius 0.75). The station cannot move right (it meets the lift column at 16.75) and the three tier cameras are ruled. The sign's place on the front is set in `src/table/real/models/street/index.ts` (not mine): it wants to sit on the right 1.4 balls of the front, or on the roof edge. Sent to the Builder.
+
+## Looks spent (draft unless said), by part
+
+| Part | Looks | What |
+|---|---|---|
+| Point 1, baseline | 6 | 3 compares, reveal sheet, result still, drain sheet |
+| Flippers at `tier-office` | 1 | compare |
+| `reply-all` camera | 3 draft, 1 review | compares |
+| Result screen | 2 | still, ids diagnostic |
+| Reveal, `tube` camera | 5 stills, 1 sheet | |
+| Way out | 1 | drain sheet |
+| Bumper hits, `table-nest` | 2 | coffee sheet before and after |
+| Places | 2 | `lobby-doors` and `tier-street` compares |
+
+Take searches: 25 of 31 used before this round, 0 spent in it. The edit of one flip's end in `cut/TABLE-TAKE.json` was by hand and is not a search; the one layout change (the door post) left the events and the track the same, so the three searches it buys are unspent.
+
+## Steel balls after the blast (round 11 R4-4 issues 1 and 3): found, not changed
+
+MEASURED from the event and track dump (`node out/work/mf/ev.mjs`): the clear ball leaves the blast at about -11 balls a second across and 6 rising to 14 balls a second down the table over 0.4 s, so it does curve and gain speed down the slope; the three steel balls leave the tier by the gate at 21.7, 22.2 and 22.7 s while the clear ball stays until 24.3 s. Any change to how they move is a physics change and moves the take.
+
+## Asked by the ball finisher (10:2x UTC), not yet done
+
+1. At a hit, the arrow thrown against the wall away from the thing struck, pressed for 0.05 s, staying within 0.84 of the radius (was 0.875).
+2. In stills where the turn is free, the arrow lying face to the camera.
+
 ## Moves of things a model stands on
 
 | Thing | Old | New | Told the Builder |
