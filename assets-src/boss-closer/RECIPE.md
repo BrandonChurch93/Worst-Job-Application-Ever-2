@@ -109,3 +109,12 @@ Every texture and built asset of the boss that this owner changed or added. All 
 - Takes: second (`0x2b1e17` read black beside the approved brown; `0x33231b` lies between the two that were looked at and was not looked at by itself).
 - Why this one: at the size of the key the cracks were hairlines of 1 to 2 px; the approved `boss-fight` shows them 3 to 4 px at the root and tapering.
 - Date: 2026-11-26.
+
+## frost in the verify card (geometry, no texture)
+
+- Made by: code, `frostGeometry(w, h)` and `frostStuff()` in `src/pages/step4/real/verify-card.ts`, the material passed through `studio()`.
+- From: nothing but numbers: `FROST` (a grid of 8 px cells over the card's face, 14 px in from its outline; two layers of value noise with cells of 84 and 31 px from `hash01` with the site's seed plus 211 and 212; where the noise is above its middle the vertex is white with alpha up to 0.07, below it a dark sea green `0.42, 0.5, 0.48` with alpha up to 0.06; the alpha falls to 0 over the last 30 px toward the edge). Vertex colours with alpha, no file, 0 MB. One mesh and one draw call a card; about 4100 triangles (82 by 25 cells for a card of 680 by 228 px, counted from the grid's numbers, not measured apart: the key's count rose from 645616 to 650700 over the same span in which main's change to the arrow came in).
+- Command: none.
+- Takes: second (pale at 0.085 showed as blobs right of the checkbox; 0.07 is the committed one and was not looked at by itself).
+- Why this one: the approved card is frosted, with soft clouds in the face; the build's face was one even tone and read as a sheet of plastic.
+- Date: 2026-11-26.

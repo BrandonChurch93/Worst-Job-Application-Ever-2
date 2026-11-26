@@ -171,3 +171,42 @@ On main with merge 30 (the shared look, 7f82c9cc), MEASURED 09:00 to 09:04 UTC:
 
 SEEN in both compares at 09:01 UTC: nothing of the boss reads worse on the shared look. The caps are glossier and a brighter orange (the seated cap now has the approved gloss), the health fill carries a line of light, the legs are brighter. Looks: boss-transform 38 (the two compares, also for the cracks at their committed colour).
 - Plates one step darker (R1-1 issue 13 and the `boss-fight` crop): `PLATE_TONE` live `0x6b6f75` (was `0x7b7f85`), dead `0x5d6166` (was `0x6c7076`) in `src/boss/real/body-kit.ts`. SEEN at 09:06 UTC in both compares: the live plates and the wreck's plates are nearer the approved dark steel; the legs stay brighter than approved. MEASURED 09:06 to 09:09 UTC on main at 7f82c9cc with this change: `npm test` 112 files, 1442 of 1442; `npm run build` ok; `npm run bots` all clear; `npm run measure -- --unit boss --tier review` 8 green, 0 red, M3 1.0325. Looks: boss-body 40 (the budget of this part is spent), boss-transform 39.
+
+## Fifth pass (09:11 UTC on)
+
+Builder at 09:11 and 09:13 UTC: the boss's second round is drawn from merge 32 (what is pushed by 09:50 UTC). The looks of boss-body and boss-transform are spent (40 of 40 each) and are not granted more; nothing in those two parts is changed from 09:13 UTC on, and nothing blind. Work goes to verify-card and boss-weapons.
+
+- Card's glass (R1-1 issue 2, R3-1 issue 1): a layer of frost in the face (`FROST` and `frostGeometry` in `src/pages/step4/real/verify-card.ts`): soft pale and dark clouds from two layers of value noise, drawn as vertex colours with alpha just over the glass. SEEN at 09:14 UTC in a crop of the `boss-fight` draft beside approved: the face is no longer one even tone; at pale 0.085 two blobs showed right of the checkbox, so the committed value is 0.07 (not looked at by itself). MEASURED: `boss-fight` draft 12.513 s, 650700 triangles, 475 draw calls (645616 and 474 at 09:00 UTC; main's change to the arrow, a3f57091, came in between, so the rise of 5084 is not the frost's alone; the frost's grid is 82 by 25 cells, about 4100 triangles, counted from its numbers).
+- Face of the card against approved, MEASURED in the two `boss-fight` pictures with a script (mean of a patch of the face): approved 164, 175, 172; build 157, 167, 163 before the frost. Not changed.
+- Health bar: SEEN at 09:16 UTC in a crop beside approved. The approved track runs from bright at its left end to dark at its right (mean grey 200 to 75 along it, MEASURED in `boss-down`); the build runs 151 to 99. Not changed.
+- Slabs at the key (R1-1 issue 10): not done. At 12.5 s two slabs have landed by the arrow and one has just left the mouth; the approved shows three in the air in a column right of centre. To match it the firing plan (`SLAB.first`, `SLAB.every` in `src/boss/plan.ts`) would have to change, which changes the live fight and the film's hits; not safe in the time left.
+- Looks: verify-card 11 (crops of the card 3), health-bar 4 (one crop of the bar), boss-weapons 19.
+
+On main with merge 31 (7e7ddb05), MEASURED 09:20 to 09:24 UTC:
+
+| what | command | number |
+| --- | --- | --- |
+| gate | `npm test`, `npm run build`, `npm run bots` | 115 files, 1461 of 1461; build ok; bots all clear |
+| measures | `npm run measure -- --unit boss --tier review` | 8 green, 0 red; M3 1.0333 |
+| `boss-fight` draft | `npm run compare -- --key boss-fight --tier draft --format hd` | 12.063 s, 651570 triangles, 475 draw calls |
+| `boss-down` draft | `npm run compare -- --key boss-down --tier draft --format hd` | 12.688 s, 542688 triangles, 384 draw calls |
+
+SEEN at 09:21 UTC in both compares and in a crop of the card beside approved (frost at its committed 0.07): the clouds in the face are soft and do not cover the words. Looks: verify-card 14.
+
+## End of the pass (09:27 UTC)
+
+MEASURED at 09:25 UTC: `npm run still -- --key boss-fight --format hd --tier review --force` 25.291 s, 651570 triangles, 475 draw calls. SEEN at 09:26 UTC, `npm run still -- --page boss --beat boss.press --at 0.2 --format hd --tier draft --force` (12.171 s): after the key the arrow is the folded white shape with a burnt tip and its smoke, left of the fallen button; it is seen on the paper.
+
+Looks of this round by part, at the end: verify-card 14, boss-body 40, boss-transform 40, boss-weapons 19, health-bar 4, acting-boss 32.
+
+What the two spent parts still need, with the numbers to try first (nothing of this was tried or looked at):
+
+- Shield's glass, standing (R1-1 issue 3, `boss-fight`): the approved pane is clear, see-through to the arm and the page, with a thin bright edge. The build's pane is pale and its ground edge is a grey band 12 px wide. Try first in `src/boss/real/glass.ts`: `RIM.shield` 12 to 6; `CLEAR_GLASS.edge` `0x727d7a` to `0xb9c6c2` with `metal` 0.7 to 0.2 (a bright thin line and no grey frame); `CLEAR_GLASS.through` 0.8 to 0.62 and `up` 0.8 to 0.65 (more of the arm and the page through it). Watch M3 of `npm run measure -- --unit boss --tier review` (1.0333 now).
+- Shield's glass, lying (`boss-down`): the approved shard is a long thick clear bar, about 3.4 wide to 1 tall; the build's is the whole pane, 216 by 108 (`SHIELD` in `src/boss/body.ts`), a pale tray. Try first: draw the fallen shield as the larger half of a pane broken across (a shape of about 216 by 64 with one broken end) and `CLEAR_GLASS.lying` 0.62 to 0.5.
+- Unfolding stage of the sheet (R1-1 issue 5, `boss-stages`): the approved plate hugs the button and the legs are short and bent close. The build draws the full plate (`FRAME.w` 372 against the cap's 288) with the legs folded to `STAGES.fold` 0.78 and reaching `STAGES.reach` 104. Try first in the sheet of `src/pages/step4/index.ts`: draw the stage from `unfoldRig` at a moment between `UNFOLD.plates[0]` 1.3 and `UNFOLD.legs[0]` 1.6 (about 1.7 s) in place of `fightRig` with folded legs, or set `half.plate.k` to about 0.82, `STAGES.reach` 104 to 62 and `STAGES.fold` 0.78 to 0.5.
+- Resting bezel (R1-1 issue 14): the approved is a bright polished ring about 10 px wide; the build's rim alone is thin and grey. Try first: the collar profile of `src/boss/real/transform.ts` drawn 1.6 times wider for `stage-0-socket` and in the shell's chrome.
+- Fallen cap (R3-1 issue 4): the burns still read partly as a print on the cap. Try first: cut the chips at the two burnt ends 3 to 4 px into the outline and double the height of the blisters (their present height was not read at the end of this pass, so no number is given for it).
+
+Tried at 09:28 UTC and taken back (no look spent): a wider clear space round the socket for landing slabs (`SOCKET_CLEAR` in `src/boss/fight.ts`, 168 by 78). At 200 by 150 and at 184 by 118 the slab lands sooner and is gone by the key, so `tests/boss-fight.test.ts` (three slabs at the key) fails with 2; at 176 by 100 it passes but moves the slab only 22 px. `src/boss/fight.ts` is as it was. To clear the socket at the key the slab's flight has to be re-timed with it (`SLAB.rest` or the moment of the third shot), which is the same work as R1-1 issue 10.
+
+Last count of looks (09:30 UTC): verify-card 15 (one more after the list above: a crop of the review still of `boss-fight` at 09:27 UTC, the card and the slabs at review tier), boss-body 40, boss-transform 40, boss-weapons 19, health-bar 4, acting-boss 32. End report sent to the Builder at 09:30 UTC.
