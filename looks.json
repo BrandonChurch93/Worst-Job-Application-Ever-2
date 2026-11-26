@@ -1,35 +1,35 @@
 {
   "folder": "table-frame",
-  "pushed": "2026-11-26T02:16:35.490Z",
-  "commit": "c65c00dd8f30868778fc00cf3fda51b7e2a30785",
+  "pushed": "2026-11-26T02:22:26.428Z",
+  "commit": "39fddc2bf7ff0e4eda57a80c49927146f7bbc61b",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-tier-street-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T02:14:42.822Z",
+      "caption": "Still key-table-wide-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T02:19:38.034Z",
       "by": "table-frame",
-      "from": "out/work/stills/key-tier-street-hd-draft.png"
+      "from": "out/work/stills/key-table-wide-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "table-wide beside approved, branch with the apron well open (director's 3edf15f, local test): pale rails, silver marquee foot, bats in view",
-      "time": "2026-11-26T02:16:33.946Z",
+      "caption": "Still key-tier-office-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T02:20:18.275Z",
       "by": "table-frame",
-      "from": "out/work/looks/files/20261126021633-wide-well.jpg"
+      "from": "out/work/stills/key-tier-office-hd-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "tier-street draft with the apron well open: pale plates, plaque, square drain slot, low end wall, orange knob on chrome spring",
-      "time": "2026-11-26T02:16:34.183Z",
+      "caption": "table-wide at 39fddc2 with the apron well applied locally: wide pale land on the left rail, lighter inner walls",
+      "time": "2026-11-26T02:22:24.981Z",
       "by": "table-frame",
-      "from": "out/work/looks/files/20261126021634-street-well.jpg"
+      "from": "out/work/looks/files/20261126022224-b27-table-wide.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "table-wide draft at 96a7b6c plus ramps: wire ramps thicker and bright chrome, slim ferrules on the tubes",
-      "time": "2026-11-26T02:16:34.413Z",
+      "caption": "tier-office crop, approved left, 39fddc2 right: bats with the shared orange 0xc74c00 read red under the tier lamps",
+      "time": "2026-11-26T02:22:25.211Z",
       "by": "table-frame",
-      "from": "out/work/looks/files/20261126021634-wide-ramps.jpg"
+      "from": "out/work/looks/files/20261126022225-crop-office-cmp.jpg"
     }
   ]
 }
