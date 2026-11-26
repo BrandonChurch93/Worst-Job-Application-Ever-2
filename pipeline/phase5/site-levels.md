@@ -104,11 +104,26 @@ MEASURED by reading the code and by counts: no live frame draws a transmission p
 
 ## Motion blur of small fast things (rule 3)
 
-Two sheets of twelve live frames each, level high, stepped clock: `scripts/streak-sheet.mjs` (not in the repo), step 1 under fire and the slot's coins. Looked at.
+CORRECTION (18:25Z). The two sheets I called "twelve live frames" (`scripts/streak-sheet.mjs`, not in the repo) were NOT frames of the running loop. They were twelve stills drawn through `renderStill` with `live: 'high'` in a capture session, 1/60 s apart. The stretch works on the travel since the frame before, so it may not have been in them at all. What I wrote from them about the coins is withdrawn. The caption of the look `motion-bits.png` says "twelve live frames" and is wrong in the same way.
 
-- Step 1 under fire: bolts are in the frames, small and dark, each with its own short tail. The tail is the page's own, not mine.
-- The slot's coins: coins are in the air in the frames. I could NOT see in the native crops that a coin is longer along its way than a coin at rest: the coins tumble and overlap, and I made no pair with the stretch off. So "the coins are stretched in a live frame" is STATED by the code and by `tests/site-levels-streak.test.ts` (the matrix of an instance is stretched along its travel), and UNKNOWN in the picture.
+The pair that replaces them, MEASURED 18:27 to 18:29Z: the live site itself, `?mode=live&format=hd&assets=full&clock=steps&bot=keen&quality=high&step=2`, window 960 by 540, stepped 1/60 s at a time with `liveRun.advance` (`scripts/coin-live.mjs`, not in the repo), twelve frames in a row, 488 to 499, while the slot pays out. Once with `STREAK.most` set to 1 in a build that was never committed (stretch off), once with the file as it is in the repo (stretch on).
+
+- Frame 488, the first frame drawn after quiet steps: the two are equal, 0 pixels differ. Frames 489 to 499: 1024 to 1414 pixels differ by more than 8 of 255, all inside x 506 to 829, y 338 to 412, where the coins are.
+- Looked at, native pixels shown 3 times larger: with the stretch off the three coins in the air on the right are round; with it on they are ovals, longer along their way. The heap of coins at the left looks the same in both. So the stretch IS seen in a live frame, on coins that fly alone. I did not tune it.
+- Step 1's bolts: in the earlier stills each bolt had its own short tail, the page's own. Not looked at again in frames of the loop.
 - The ball: not stretched (decision 12). The dart: carries its own tail, not looked at in a picture by me.
+
+## A screen of pixel ratio 2
+
+MEASURED 18:22Z, `scripts/dpr-probe.mjs` (not in the repo), live site, window 960 by 540 CSS px, device scale factor 2, bot keen, 5 s.
+
+| level | canvas | what was seen in the screenshot (1920 by 1080) |
+|---|---|---|
+| high | not measured at this size: the page did not get ready in the tool's time on this machine (software GL). At 480 by 270 CSS px the canvas was 960 by 540, ratio 2 | no picture |
+| medium | 1440 by 810 (cap 1.5) | the smallest type slightly soft |
+| low | 960 by 540 (cap 1) | the smallest type ("Est. time: 5 minutes ...") visibly soft and speckled |
+
+Frame times on this machine, which has no graphics card and says nothing about a visitor's: medium 3565 ms of script per drawn frame (median, 2 frames in 5 s), low 3450 ms between drawn frames (3 frames), high at the small window 4333 ms between drawn frames. The caps are the kit's (`live.quality.*.pixelRatioCap`), so what low looks like on a ratio 2 screen is the kit's number at work, not mine to change.
 
 ## Smallest type at `low` (rule 4, the part that was measured)
 
