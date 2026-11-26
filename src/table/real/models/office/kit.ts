@@ -477,7 +477,7 @@ const GRAIN_COLOUR = `
 `
 
 // How much of the lift the models take, all together: it comes down as the tier gets lamps of its own over them.
-export const FILL = 1
+export const FILL = 0.45
 
 const made = new Map<string, Mats>()
 

@@ -20,7 +20,9 @@ const C = {
 
 const MOULD: Surf = [0.56, 0, 0.12]
 // The tray: how thick its wall is, how round its corners and its lip, and where the bed of the heap lies as a share of its height.
-const TRAY = { wall: 14, round: 16, lip: 4.5, bed: 0.6 }
+const TRAY = { wall: 14, round: 16, lip: 4.5, bed: 0.6, foot: 0.2, step: 1.8 }
+// The card holder on the front wall: its width, its height and how high it sits as a share of the tray's height.
+const CARD = { w: 46, h: 22, z: 0.44 }
 // The chute on the side of the hold: how far it stands out, how wide its mouth is, and its steel frame.
 const CHUTE = { deep: 40, wide: 88, drop: 8, tall: 84, bar: 6, proud: 2.4, side: 8 }
 const LIFT = { mould: 0.42, paper: 0.52 }
@@ -117,10 +119,19 @@ function shell(k: Kit, p: Plan): void {
   const T = TRAY.wall
   const L = TRAY.lip
   const H = p.h
-  const prof: [number, number][] = [[0.8, 0], [0, 1.2], [0, H - L], [L * 0.3, H - L * 0.3], [L, H], [T - L, H], [T - L * 0.3, H - L * 0.3], [T, H - L], [T, p.bed + (H - L - p.bed) * 0.5], [T - 1.5, p.bed]]
-  const cols: RGB[] = [C.creamLow, C.cream, C.cream, C.cream, mix(C.cream, [1, 1, 1], 0.08), C.cream, C.creamIn, C.creamIn, shade(C.creamIn, 0.74)]
+  const F = H * TRAY.foot
+  const S = TRAY.step
+  const prof: [number, number][] = [[0.8, 0], [0, 1.2], [0, F], [S, F + S], [S, H - L], [S + L * 0.3, H - L * 0.3], [S + L, H], [T - L, H], [T - L * 0.3, H - L * 0.3], [T, H - L], [T, p.bed + (H - L - p.bed) * 0.5], [T - 1.5, p.bed]]
+  const cols: RGB[] = [C.creamLow, shade(C.cream, 0.94), C.cream, C.cream, C.cream, C.cream, mix(C.cream, [1, 1, 1], 0.08), C.cream, C.creamIn, C.creamIn, shade(C.creamIn, 0.74)]
   k.at(p.trayX, 0, 0)
   k.ring(points, out, prof, cols, MOULD)
+  const yf = -p.d / 2 + S
+  const zc = H * CARD.z
+  k.box(0, yf - 0.7, zc, CARD.w, 1.4, CARD.h, C.steel, SURF.brushed, 0.5)
+  const lift = k.lift
+  k.lift = LIFT.paper
+  k.flat([[-CARD.w / 2 + 3, yf - 1.45, zc + 3], [CARD.w / 2 - 3, yf - 1.45, zc + 3], [CARD.w / 2 - 3, yf - 1.45, zc + CARD.h - 3], [-CARD.w / 2 + 3, yf - 1.45, zc + CARD.h - 3]], [0, -1, 0], C.shadeWhite, SURF.paper)
+  k.lift = lift
   const inner = points.map((q, i) => [q[0] - out[i]![0] * T, q[1] - out[i]![1] * T] as [number, number])
   const tris = THREE.ShapeUtils.triangulateShape(inner.map((q) => new THREE.Vector2(q[0], q[1])), [])
   for (const t of tris) k.tri([inner[t[0]!]![0], inner[t[0]!]![1], p.bed], [inner[t[1]!]![0], inner[t[1]!]![1], p.bed], [inner[t[2]!]![0], inner[t[2]!]![1], p.bed], [0, 0, 1], [0, 0, 1], [0, 0, 1], shade(C.creamIn, 0.6), MOULD)

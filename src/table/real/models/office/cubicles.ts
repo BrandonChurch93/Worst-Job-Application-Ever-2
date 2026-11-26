@@ -48,7 +48,7 @@ const C = {
 
 const WALL = { t: 6.4, h: 54, base: 10 }
 const SCREEN_LEAN = 0.5
-const LIFT = { wall: 0.24, cap: 0.5, inside: 0.5, paper: 0.7 }
+const LIFT = { wall: 0.3, cap: 0.85, inside: 0.7, paper: 0.9 }
 // The shade the partitions lay on the carpet at their feet: how far it reaches in, and how dark it is against the wall.
 // The cell the furniture of one cubicle is drawn for; in a larger or smaller cell it grows or shrinks with it, within these bounds.
 const FIT = { w: 82.2, d: 66, least: 0.85, most: 1.3 }
