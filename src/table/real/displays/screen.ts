@@ -9,9 +9,9 @@ export const ROWS = 30
 const FPS = config.film.fps
 
 export const PACE = {
-  // A mode: the insert's name is held, then the line runs from right to left at an even pace, then the score is back.
+  // A mode: the insert's name is held, then the line is shown a page of whole words at a time, then the score is back.
   hold: 1.0,
-  dotsPerSecond: 2 * FPS,
+  page: 54 / FPS,
   // A numeral that changes rolls up into place in this time: two frames of the film.
   roll: 2 / FPS,
   // The hint: the left button, then the right, once a second between them.
@@ -29,7 +29,7 @@ export type Show =
   | { kind: 'mode'; name: string; line: string; t: number }
   | { kind: 'hint'; t: number }
 
-// A strip of dots, as wide as its words need and never narrower: what does not fit a display is scrolled, not shrunk.
+// A strip of dots, as wide as its words need and never narrower: what does not fit a display is paged, not shrunk and not cut.
 export interface Strip { w: number; h: number; at: Uint8Array }
 
 const strip = (w: number, h: number): Strip => ({ w, h, at: new Uint8Array(Math.max(1, w) * h) })
@@ -103,6 +103,13 @@ export function nameLines(name: string): { big: boolean; lines: string[] } {
   return { big: false, lines: wrap(name, COLS - 4).slice(0, most) }
 }
 
+// A word too long for twice the size keeps its width and is drawn twice as tall, so it fills the display from top to foot and is as bright as the pages beside it.
+export function tall(a: Strip): Strip {
+  const b = strip(a.w, a.h * 2)
+  for (let y = 0; y < a.h; y++) for (let x = 0; x < a.w; x++) if (a.at[y * a.w + x]! > 0) b.at[y * 2 * b.w + x] = b.at[(y * 2 + 1) * b.w + x] = 255
+  return b
+}
+
 const memo = new Map<string, Strip>()
 const big = (words: string): Strip => {
   let s = memo.get(words)
@@ -114,11 +121,39 @@ const big = (words: string): Strip => {
   return s
 }
 
-export const lineWidth = (line: string): number => widthOf(line) * 2
-export const scrollSeconds = (line: string): number => (COLS + lineWidth(line)) / PACE.dotsPerSecond
+// The pages of a line: each holds whole words alone. A page is one line at twice the size where its words fit, and a word too long for that stands on a page of its own, as wide as it is set and twice as tall.
+export interface Page { big: boolean; words: string }
+const pages = new Map<string, Page[]>()
+export function pagesOf(line: string): Page[] {
+  const known = pages.get(line)
+  if (known) return known
+  const out: Page[] = []
+  let now = ''
+  const fits = (w: string): boolean => widthOf(w) * 2 <= COLS - 4
+  for (const word of line.split(' ')) {
+    if (word === '') continue
+    const next = now === '' ? word : `${now} ${word}`
+    if (fits(next)) {
+      now = next
+      continue
+    }
+    if (now !== '') out.push({ big: true, words: now })
+    if (fits(word)) now = word
+    else {
+      out.push({ big: false, words: word })
+      now = ''
+    }
+  }
+  if (now !== '') out.push({ big: true, words: now })
+  if (pages.size > 64) pages.clear()
+  pages.set(line, out)
+  return out
+}
+
+export const scrollSeconds = (line: string): number => pagesOf(line).length * PACE.page
 export const modeSeconds = (line: string): number => PACE.hold + scrollSeconds(line)
-// How far the line has run, in whole dots, at a time since the mode was lit.
-export const scrolled = (t: number): number => Math.max(0, Math.floor((t - PACE.hold) * PACE.dotsPerSecond + 1e-6))
+// Which page of the line is up at a time since the mode was lit: the last one stays until the mode is over.
+export const pageAt = (line: string, t: number): number => Math.min(pagesOf(line).length - 1, Math.max(0, Math.floor((t - PACE.hold) / PACE.page + 1e-6)))
 
 function blit(out: Uint8Array, s: Strip, x0: number, y0: number, level = 255): void {
   const xa = Math.max(0, x0)
@@ -160,15 +195,18 @@ function drawScore(out: Uint8Array, digits: string, since: number, before: strin
 function drawMode(out: Uint8Array, name: string, line: string, t: number): void {
   if (t < PACE.hold) {
     const set = nameLines(name)
-    const strips = set.lines.map((l) => (set.big ? big(l) : setLine(l)))
+    const alone = !set.big && set.lines.length === 1
+    const strips = set.lines.map((l) => (set.big ? big(l) : alone ? tall(setLine(l)) : setLine(l)))
     const lead = set.big ? 0 : TEXT_UP + TEXT_DOWN + 1
-    const inked = set.big ? TEXT_UP * 2 : (strips.length - 1) * lead + TEXT_UP
+    const inked = set.big || alone ? TEXT_UP * 2 : (strips.length - 1) * lead + TEXT_UP
     const y0 = Math.max(0, Math.floor((ROWS - inked) / 2))
     strips.forEach((s, i) => blit(out, s, Math.floor((COLS - s.w) / 2), y0 + i * lead))
     return
   }
-  const s = big(line)
-  blit(out, s, COLS - scrolled(t), Math.floor((ROWS - TEXT_UP * 2) / 2) - 1)
+  const page = pagesOf(line)[pageAt(line, t)]
+  if (!page) return
+  const s = page.big ? big(page.words) : tall(setLine(page.words))
+  blit(out, s, Math.floor((COLS - s.w) / 2), Math.floor((ROWS - TEXT_UP * 2) / 2))
 }
 
 // The hint: a computer mouse seen from above, between the two flippers it works, each button and its flipper lit in turn.
@@ -239,7 +277,7 @@ export function keyOf(show: Show): string {
     const rolling = show.before !== null && show.since >= 0 && show.since < PACE.roll
     return `score|${show.digits}|${rolling ? `${show.before}|${Math.round((show.since / PACE.roll) * 8)}` : ''}`
   }
-  if (show.kind === 'mode') return show.t < PACE.hold ? `name|${show.name}` : `line|${show.line}|${scrolled(show.t)}`
+  if (show.kind === 'mode') return show.t < PACE.hold ? `name|${show.name}` : `line|${show.line}|${pageAt(show.line, show.t)}`
   const u = (((show.t % PACE.hintPeriod) + PACE.hintPeriod) % PACE.hintPeriod) / PACE.hintPeriod
   const half = PACE.hintLit / PACE.hintPeriod
   return `hint|${u < half ? 'L' : u >= 0.5 && u < 0.5 + half ? 'R' : '-'}`

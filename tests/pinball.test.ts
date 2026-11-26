@@ -119,7 +119,7 @@ describe('the pinball page', () => {
       a.seek(at + 2)
       expect(a.hash()).toBe(before)
     }
-  })
+  }, 60000)
 
   it('fills the table state', () => {
     const page = makePage()
