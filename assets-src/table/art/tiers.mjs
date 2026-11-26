@@ -292,14 +292,14 @@ export function corporate(D) {
   for (let v = door[1] - slab / 2; v > 0.3; v -= slab) filler.push(line([D.COLS.left, v], [D.COLS.right, v], pal.dark, 0.02, { opacity: 0.9 }), line([D.COLS.left, v + 0.022], [D.COLS.right, v + 0.022], pal.pale, 0.006, { opacity: 0.5 }))
   // The stone itself: the flecks of a dark polished granite, each smaller than a screw head.
   const fleckRand = rng(57)
-  const fleck = [pal.accent, pal.soft, pal.pale, pal.dark, pal.fine].map((col, i) => ({ col, d: '', w: [0.013, 0.017, 0.008, 0.015, 0.009][i], o: [0.7, 0.6, 0.6, 0.7, 0.5][i] }))
+  const fleck = [pal.accent, pal.soft, pal.pale, pal.dark, pal.fine].map((col, i) => ({ col, d: '', w: [0.013, 0.017, 0.008, 0.015, 0.009][i], o: [0.7, 0.6, 0.3, 0.7, 0.16][i] }))
   for (let i = 0; i < 60000; i++) {
     const q = [D.COLS.left + fleckRand() * (D.COLS.right - D.COLS.left), 0.3 + fleckRand() * (D.H - 0.3)]
     const k = [0, 0, 0, 1, 1, 1, 2, 3, 3, 4][Math.floor(fleckRand() * 10)]
     fleck[k].d += `M${f(q[0])} ${f(q[1])}h0.002`
   }
   const stone = fleck.map((q) => path(q.d, stroke(q.col, q.w, { opacity: q.o, 'stroke-linecap': 'round' })))
-  stone.push(veins(D, 83, pal.pale, 90))
+  stone.push(veins(D, 83, pal.pale, 60))
   const keep = keepOut(D)
   defs.push(el('mask', { id: 'keep-corporate', maskUnits: 'userSpaceOnUse', x: 0, y: 0, width: D.W, height: D.H }, rect(D.COLS.left, 0.3, D.COLS.right - D.COLS.left, D.H - 0.3, { fill: '#fff' }) + keep.join('')))
 
@@ -353,8 +353,8 @@ export function office(D, seed) {
   const low = D.bumpers.reduce((m, q) => (q.c[1] > m.c[1] ? q : m), D.bumpers[0])
   const band = [low.c[1] - 0.8, low.c[1] + 0.9]
   const tile = (C.right - D.MID - half) / 2
-  const cream = '#8e9488'
-  const cream2 = '#868c80'
+  const cream = '#a7aba4'
+  const cream2 = '#989c8b'
   const tan = '#7d7a62'
   // Broad tiles in two slate tones, chequered, and a pale walkway down the middle and across under the cups.
   const us = [D.MID - half - 2 * tile, D.MID - half - tile, D.MID + half, D.MID + half + tile]
@@ -371,8 +371,8 @@ export function office(D, seed) {
   walk.push(rect(D.MID - half, y0, 2 * half, D.H - y0, { fill: cream }), rect(C.left, band[0], C.right - C.left, band[1] - band[0], { fill: cream }))
   const onWalk = (q) => Math.abs(q[0] - D.MID) < half || (q[1] > band[0] && q[1] < band[1])
   const pileRand = rng(seed + 77)
-  const pile = [pal.soft, pal.accent, pal.under, pal.dark].map((col, i) => ({ col, d: '', w: [0.009, 0.006, 0.011, 0.007][i], o: [0.5, 0.5, 0.36, 0.3][i] }))
-  const speck = ['#9a9a86', '#c2c2b0', '#7c8074'].map((col, i) => ({ col, d: '', w: [0.011, 0.008, 0.013][i], o: 0.5 }))
+  const pile = [pal.soft, pal.accent, pal.under, pal.dark].map((col, i) => ({ col, d: '', w: [0.009, 0.006, 0.011, 0.007][i], o: [0.28, 0.24, 0.26, 0.22][i] }))
+  const speck = ['#9a9a86', '#c2c2b0', '#7c8074'].map((col, i) => ({ col, d: '', w: [0.011, 0.008, 0.013][i], o: 0.28 }))
   for (let i = 0; i < 52000; i++) {
     const q = [C.left + pileRand() * (C.right - C.left), y0 + pileRand() * (D.H - y0)]
     const a = pileRand() * 180
@@ -484,7 +484,7 @@ function veins(D, seed, col, count) {
       q = polar(q, 0.08 + rand() * 0.2, a)
       d += `L${f(q[0])} ${f(q[1])}`
     }
-    out.push(path(d, stroke(col, 0.004 + rand() * 0.006, { opacity: f(0.18 + rand() * 0.32), 'stroke-linejoin': 'round', 'stroke-linecap': 'round' })))
+    out.push(path(d, stroke(col, 0.004 + rand() * 0.006, { opacity: f(0.12 + rand() * 0.22), 'stroke-linejoin': 'round', 'stroke-linecap': 'round' })))
   }
   return out
 }
@@ -616,7 +616,7 @@ export function street(D, seed) {
   const stones = grit.map((q) => path(q.d, stroke(q.col, q.w, { opacity: q.o, 'stroke-linecap': 'round' })))
   const clipId = 'field-street'
   defs.push(el('clipPath', { id: clipId }, rect(C.left, 0.3, C.right - C.left, D.H - 0.3, { fill: '#000' })))
-  return { pal, defs, ground: [g({ mask: 'url(#keep-street)', opacity: 0.1 }, plots)], top: [lanes, g({ 'clip-path': `url(#${clipId})` }, [roads, stones, lots, holes, wear(D, seed + 9, '#a9c6cc', 150)]), local, answers, insertsPrint(D, pal)] }
+  return { pal, defs, ground: [g({ mask: 'url(#keep-street)', opacity: 0.26 }, plots)], top: [lanes, g({ 'clip-path': `url(#${clipId})` }, [roads, stones, lots, holes, wear(D, seed + 9, '#a9c6cc', 150)]), local, answers, insertsPrint(D, pal)] }
 }
 
 // The guide: the tier from straight above with every lane, wall, post, footprint, insert and flipper as plain lines.

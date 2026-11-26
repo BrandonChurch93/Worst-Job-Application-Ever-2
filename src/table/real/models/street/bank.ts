@@ -39,7 +39,7 @@ export function bank(b: Buckets, z: Zone, ctx: RealContext): void {
       for (const px of [3, width / 2 - 14, width / 2 + 10, width - 7]) g.box(px, px + 4, -1.4, 0, 0, entab - podium, shade(stone, 1.04), { skip: 'b' })
     }
     if (side !== 'front') return
-    for (const h of tall) windowAt(b, h, { frame: TONE.bronze, wall: stone, bars: [1, 4], glow: 1.25, warm: 0.1, depth: 3 })
+    for (const h of tall) windowAt(b, h, { frame: TONE.bronze, wall: stone, bars: [1, 4], glow: 1.7, warm: 0.3, depth: 4 })
     // The tall bronze doors in a stone frame, a lit transom over them, and the night deposit slot beside them.
     const d = 4
     const a = doors.x
@@ -61,7 +61,7 @@ export function bank(b: Buckets, z: Zone, ctx: RealContext): void {
     g.box(nx + 1.6, nx + 9.4, -0.9, -0.8, 19, 20.6, TONE.dark, { skip: 'b', under: true })
     b.metal.box(nx + 2, nx + 9, -1.5, -0.8, 15.5, 17.4, shade(TONE.bronze, 1.3), { skip: 'b', under: true, bevel: 0.3 })
     // A warm lamp in the ceiling of the porch, over the doors.
-    b.glow.box(mid - 4, mid + 4, -12, -7, entab - podium - 1.2, entab - podium, [1.5, 1.3, 0.95], { under: true, skip: 't' })
+    for (const lx of [width * 0.2, mid, width * 0.8]) b.glow.box(lx - 5, lx + 5, -13, -6, entab - podium - 1.4, entab - podium, [2.2, 1.8, 1.15], { under: true, skip: 't' })
   })
 
   // Four fluted columns: a base, a shaft that narrows, a plain capital.
@@ -93,6 +93,22 @@ export function bank(b: Buckets, z: Zone, ctx: RealContext): void {
   g.box(ex0 + 1, ex1 - 1, ey0 + 1, ey1 - 1, roofFoot, top - 3, stone, { kind: KIND.block, skip: 't' })
   roofDeck(g, ex0 + 7, ex1 - 7, ey0 + 7, ey1 - 7, deck)
   parapet(g, ex0 + 1, ex1 - 1, ey0 + 1, ey1 - 1, deck, top, 7, stone, shade(stone, 1.12), KIND.stucco)
+  // A plain pediment stands on the cornice over the columns.
+  {
+    const mx = (ex0 + ex1) / 2
+    const zf = roofFoot + 0.6
+    const zt = top - 1.5
+    const yF = ey0 - 1.2
+    const yB = ey0 + 1
+    g.face([[ex0 + 3, yF, zf], [ex1 - 3, yF, zf], [mx, yF, zt]], shade(stone, 0.86), KIND.stucco)
+    for (const sx of [-1, 1]) {
+      const foot = sx < 0 ? ex0 + 1 : ex1 - 1
+      const q: [number, number, number][] = [[foot, yF - 1.4, zf], [mx, yF - 1.4, zt + 1.6], [mx, yB, zt + 1.6], [foot, yB, zf]]
+      g.face(sx < 0 ? q : [...q].reverse(), shade(stone, 1.12))
+      const r: [number, number, number][] = [[foot, yF - 1.4, zf - 1.6], [mx, yF - 1.4, zt], [mx, yF - 1.4, zt + 1.6], [foot, yF - 1.4, zf]]
+      g.face(sx < 0 ? [...r].reverse() : r, shade(stone, 1.04))
+    }
+  }
   g.box(ex1 - 30, ex1 - 16, ey1 - 26, ey1 - 14, deck, deck + 4.5, TONE.stoneDark, { bevel: 0.8 })
   b.metal.lathe([[2.6, 0], [2.6, 6], [4, 7.2], [4, 8.4], [0, 9.6]], ex0 + 20, ey1 - 20, 12, TONE.alu, { base: deck })
   board(b, z, ctx, 'street.bank', deck)

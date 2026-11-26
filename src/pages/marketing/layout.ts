@@ -124,7 +124,7 @@ function firstScreen(): LayoutNode[] {
   out.push(text('hero-subline', 'copy:marketing.hero.subline', TYPE.subline, LEFT, sublineY, type))
   const buttonY = 424
   out.push(button('hero-cta', LEFT, buttonY, HERO_W, 'copy:marketing.hero.cta', { hero: true, part: 'apply-button' }))
-  out.push(text('hero-under', 'copy:marketing.hero.underCta', TYPE.helper, LEFT, buttonY + sizes.heroButton + 28, type))
+  out.push(text('hero-under', 'copy:marketing.hero.underCta', { ...TYPE.helper, ink: 'soft' }, LEFT, buttonY + sizes.heroButton + 28, type))
   out.push(...medallion(0, RIGHT - MEDAL / 2 - 44, buttonY + sizes.heroButton - MEDAL + 27, 16))
   const cards: Item[] = [0, 1, 2].map((i) => (x: number, y: number) => perkCard(i, x, y))
   out.push(row('perks-first', LEFT, 640, GAP, cards))

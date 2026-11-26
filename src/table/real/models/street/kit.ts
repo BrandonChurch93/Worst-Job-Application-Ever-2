@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import type { RealContext } from '../../../../real/types'
 import { BALL, table, type Model } from '../../../layout'
 import { localBalls, localOf, type Zone } from '../../zone'
+import { hash01 } from '../../../../core/random'
 import { Geo, KIND, mix, rgb, shade, type Buckets, type RGB, type V3 } from './geo'
 
 export const TONE = {
@@ -114,12 +115,17 @@ export interface WindowLook { depth?: number; frame: RGB; wall: RGB; sill?: RGB;
 
 // A window in a hole of a wall face: its reveal, a lit pane at the back, a frame with glazing bars, a sill and a lintel.
 export function windowAt(b: Buckets, h: Hole, o: WindowLook): void {
-  const d = o.depth ?? 3.5
+  const d = o.depth ?? 5.5
   const g = b.paint
-  reveal(g, h, d, shade(o.wall, 0.62))
-  const lum = o.glow ?? 1
-  const warm = o.warm ?? 0.5
-  const pane: RGB = o.dark ? [0.02, 0.025, 0.03] : [lum * 0.64, lum * (0.41 + 0.07 * warm), lum * (0.15 + 0.11 * warm)]
+  reveal(g, h, d, shade(o.wall, 0.5))
+  // No two rooms are lit alike: each has its own level and warmth, its lamp hangs where it hangs, and some have a blind part way down.
+  const u = (k: number): number => hash01(Math.round(h.x * 3 + h.w), Math.round(h.z * 3 + h.h), k)
+  const dim = !o.dark && u(6) < 0.17
+  const lum = (o.glow ?? 1) * (o.dark ? 1 : dim ? 0.1 : 0.5 + 0.8 * u(1) * u(1))
+  const warm = Math.min(1, Math.max(0, (o.warm ?? 0.5) + (u(2) - 0.5) * 0.5))
+  const lampX = 0.32 + 0.36 * u(3)
+  const blind = !dim && h.h > 12 && u(4) < 0.36 ? 2 + Math.floor(u(5) * 3) : 0
+  const pane: RGB = o.dark ? [0.02, 0.025, 0.03] : dim ? [0.03, 0.035, 0.046] : [lum * 0.64, lum * (0.41 + 0.07 * warm), lum * (0.15 + 0.11 * warm)]
   const lo: RGB = o.dark ? pane : shade(pane, 0.55)
   const { x, z, w } = h
   const t = z + h.h
@@ -127,33 +133,43 @@ export function windowAt(b: Buckets, h: Hole, o: WindowLook): void {
   if (o.dark) b.glow.face([[x, d, z], [x + w, d, z], [x + w, d, t], [x, d, t]], pane, 0, [0, -1, 0])
   else {
     // The lamp inside is seen through the pane: hot behind its upper middle, amber toward the frame.
-    const core: RGB = [lum * 1.3, lum * 1.04, lum * 0.6]
+    const core: RGB = dim ? [0.07, 0.07, 0.082] : [lum * 1.3, lum * 1.04, lum * 0.6]
     const nx = 6
     const nz = 8
     const at = (i: number, j: number): RGB => {
-      const r = Math.hypot((i / nx - 0.5) * 1.5, (j / nz - 0.6) * 1.3)
+      const r = Math.hypot((i / nx - lampX) * 1.5, (j / nz - 0.6) * 1.3)
       return mix(lo, core, Math.exp(-r * r * 7))
     }
+    const cloth: RGB = [lum * 0.4, lum * 0.32, lum * 0.2]
     for (let i = 0; i < nx; i++) {
       for (let j = 0; j < nz; j++) {
+        if (j >= nz - blind) {
+          const c0 = shade(cloth, 0.86 + (0.14 * (j - nz + blind)) / Math.max(1, blind))
+          b.glow.face([[x + (w * i) / nx, d, z + (h.h * j) / nz], [x + (w * (i + 1)) / nx, d, z + (h.h * j) / nz], [x + (w * (i + 1)) / nx, d, z + (h.h * (j + 1)) / nz], [x + (w * i) / nx, d, z + (h.h * (j + 1)) / nz]], c0, 0, [0, -1, 0])
+          continue
+        }
         b.glow.blend([[x + (w * i) / nx, d, z + (h.h * j) / nz], [x + (w * (i + 1)) / nx, d, z + (h.h * j) / nz], [x + (w * (i + 1)) / nx, d, z + (h.h * (j + 1)) / nz], [x + (w * i) / nx, d, z + (h.h * (j + 1)) / nz]], [at(i, j), at(i + 1, j), at(i + 1, j + 1), at(i, j + 1)], [0, -1, 0])
       }
     }
   }
-  const f = 1.3
-  const fy0 = d - 1.4
-  g.box(x, x + f, fy0, d, z, t, o.frame, { skip: 'bl' })
-  g.box(x + w - f, x + w, fy0, d, z, t, o.frame, { skip: 'br' })
-  g.box(x + f, x + w - f, fy0, d, z, z + f, o.frame, { skip: 'blr' })
-  g.box(x + f, x + w - f, fy0, d, t - f, t, o.frame, { skip: 'blrt', under: true })
+  // The frame and its glazing bars stand in front of the pane, so the light is seen behind them.
+  const f = 1.4
+  const gap = Math.min(1.7, d * 0.3)
+  const fy1 = d - gap
+  const fy0 = fy1 - Math.min(1.6, d * 0.4)
+  g.box(x, x + f, fy0, fy1, z, t, o.frame, { skip: 'l' })
+  g.box(x + w - f, x + w, fy0, fy1, z, t, o.frame, { skip: 'r' })
+  g.box(x + f, x + w - f, fy0, fy1, z, z + f, o.frame, { skip: 'lr' })
+  g.box(x + f, x + w - f, fy0, fy1, t - f, t, o.frame, { skip: 'lrt', under: true })
   const bars = o.bars ?? [2, 2]
+  const bw = w > 9 ? 0.75 : 0.55
   for (let i = 1; i < bars[0]; i++) {
     const bx = x + (w * i) / bars[0]
-    g.box(bx - 0.5, bx + 0.5, d - 0.9, d, z + f, t - f, o.frame, { skip: 'btu' })
+    g.box(bx - bw, bx + bw, fy0 + 0.3, fy1, z + f, t - f, o.frame, { skip: 'tu' })
   }
   for (let i = 1; i < bars[1]; i++) {
     const bz = z + (h.h * i) / bars[1]
-    g.box(x + f, x + w - f, d - 0.9, d, bz - 0.5, bz + 0.5, o.frame, { skip: 'blr', under: true })
+    g.box(x + f, x + w - f, fy0 + 0.3, fy1, bz - bw, bz + bw, o.frame, { skip: 'lr', under: true })
   }
   if (o.iron) {
     const n = Math.max(3, Math.round(w / 3.4))
@@ -185,7 +201,7 @@ export const band = (g: Geo, x0: number, x1: number, z0: number, z1: number, out
 export function parapet(g: Geo, x0: number, x1: number, y0: number, y1: number, deck: number, top: number, thick: number, wall: RGB, cap: RGB, kind: number): void {
   const over = 1.6
   const capH = 3
-  const inner = shade(wall, 0.8)
+  const inner = shade(wall, 0.56)
   g.quad([x0 + thick, y0 + thick, deck], [x0 + thick, y1 - thick, deck], [x0 + thick, y1 - thick, top - capH], [x0 + thick, y0 + thick, top - capH], inner, kind)
   g.quad([x1 - thick, y1 - thick, deck], [x1 - thick, y0 + thick, deck], [x1 - thick, y0 + thick, top - capH], [x1 - thick, y1 - thick, top - capH], inner, kind)
   g.quad([x1 - thick, y0 + thick, deck], [x0 + thick, y0 + thick, deck], [x0 + thick, y0 + thick, top - capH], [x1 - thick, y0 + thick, top - capH], inner, kind)
@@ -211,6 +227,71 @@ export function roofDeck(g: Geo, x0: number, x1: number, y0: number, y1: number,
     g.quad([x - 0.45, y0 + 3.5, deck + 0.06], [x + 0.45, y0 + 3.5, deck + 0.06], [x + 0.45, y1 - 3.5, deck + 0.06], [x - 0.45, y1 - 3.5, deck + 0.06], shade(felt, 0.6))
   }
   for (const [ax, bx, ay, by] of [[x0 + 1, x1 - 1, y0 + 1, y0 + 3.5], [x0 + 1, x1 - 1, y1 - 3.5, y1 - 1], [x0 + 1, x0 + 3.5, y0 + 3.5, y1 - 3.5], [x1 - 3.5, x1 - 1, y0 + 3.5, y1 - 3.5]] as const) g.quad([ax, ay, deck + 0.08], [bx, ay, deck + 0.08], [bx, by, deck + 0.08], [ax, by, deck + 0.08], shade(felt, 0.74))
+}
+
+// What a flat roof carries besides its deck: cross laps and patches in the felt, a lead upstand at the foot of the parapet, joints in the cap, two drains, a pipe on blocks along the back and a conduit down one side. `x0` to `y1` is the outside of the parapet, `thick` its thickness.
+export function roofWorks(b: Buckets, x0: number, x1: number, y0: number, y1: number, deck: number, top: number, thick: number, felt: RGB = TONE.deck, turn = 0): void {
+  const g = b.paint
+  const ix0 = x0 + thick
+  const ix1 = x1 - thick
+  const iy0 = y0 + thick
+  const iy1 = y1 - thick
+  const flat = (ax: number, bx: number, ay: number, by: number, z: number, col: RGB, kind = 0): void => {
+    g.quad([ax, ay, z], [bx, ay, z], [bx, by, z], [ax, by, z], col, kind)
+  }
+  const lap = 27
+  const n = Math.max(1, Math.round((ix1 - ix0) / lap))
+  for (let k = 0; k < n; k++) {
+    const a = ix0 + ((ix1 - ix0) * k) / n
+    const c = ix0 + ((ix1 - ix0) * (k + 1)) / n
+    for (let y = iy0 + 8 + ((k * 37 + turn * 11) % 46); y < iy1 - 6; y += 58) flat(a + 0.5, c - 0.5, y - 0.4, y + 0.4, deck + 0.07, shade(felt, 0.58))
+  }
+  const spots: [number, number, number, number, number][] = [[0.16, 0.7, 15, 11, 1.2], [0.62, 0.3, 12, 16, 0.74], [0.84, 0.74, 17, 10, 0.8], [0.34, 0.24, 10, 9, 1.16]]
+  spots.forEach(([u, v, w, d, tone], i) => {
+    const px = ix0 + (ix1 - ix0) * (turn % 2 === 0 ? u : 1 - u)
+    const py = iy0 + (iy1 - iy0) * v
+    flat(px - w / 2, px + w / 2, py - d / 2, py + d / 2, deck + 0.1 + i * 0.01, shade(felt, tone), KIND.tar)
+  })
+  // The upstand: the felt turned up the wall under a lead strip.
+  const lead = shade(felt, 1.3)
+  const up = 3.2
+  g.quad([ix0 + 0.12, iy0, deck], [ix0 + 0.12, iy1, deck], [ix0 + 0.12, iy1, deck + up], [ix0 + 0.12, iy0, deck + up], lead)
+  g.quad([ix1 - 0.12, iy1, deck], [ix1 - 0.12, iy0, deck], [ix1 - 0.12, iy0, deck + up], [ix1 - 0.12, iy1, deck + up], lead)
+  g.quad([ix1, iy0 + 0.12, deck], [ix0, iy0 + 0.12, deck], [ix0, iy0 + 0.12, deck + up], [ix1, iy0 + 0.12, deck + up], lead)
+  g.quad([ix0, iy1 - 0.12, deck], [ix1, iy1 - 0.12, deck], [ix1, iy1 - 0.12, deck + up], [ix0, iy1 - 0.12, deck + up], lead)
+  // Joints in the cap.
+  const dark: RGB = [0.1, 0.1, 0.1]
+  for (let x = x0 + 22; x < x1 - 10; x += 38) {
+    flat(x - 0.3, x + 0.3, y0 - 0.6, iy0 + 0.4, top + 0.05, dark)
+    flat(x + 11 - 0.3, x + 11 + 0.3, iy1 - 0.4, y1 + 0.6, top + 0.05, dark)
+  }
+  for (let y = iy0 + 20; y < iy1 - 10; y += 38) {
+    flat(x0 - 0.6, ix0 + 0.4, y - 0.3, y + 0.3, top + 0.05, dark)
+    flat(ix1 - 0.4, x1 + 0.6, y + 9 - 0.3, y + 9 + 0.3, top + 0.05, dark)
+  }
+  // Two drains.
+  for (const [dx, dy] of [[ix0 + 9, iy1 - 9], [ix1 - 9, iy0 + 9]] as const) {
+    flat(dx - 3, dx + 3, dy - 3, dy + 3, deck + 0.12, [0.03, 0.03, 0.035])
+    b.metal.box(dx - 3.6, dx + 3.6, dy - 3.6, dy - 3, deck, deck + 0.8, TONE.steel)
+    b.metal.box(dx - 3.6, dx + 3.6, dy + 3, dy + 3.6, deck, deck + 0.8, TONE.steel)
+    b.metal.box(dx - 3.6, dx - 3, dy - 3, dy + 3, deck, deck + 0.8, TONE.steel, { skip: 'fb' })
+    b.metal.box(dx + 3, dx + 3.6, dy - 3, dy + 3, deck, deck + 0.8, TONE.steel, { skip: 'fb' })
+    for (const off of [-1.2, 1.2]) b.metal.box(dx - 3, dx + 3, dy + off - 0.3, dy + off + 0.3, deck + 0.3, deck + 0.8, TONE.steel, { skip: 'lr' })
+  }
+  // A pipe on blocks along the back, turned up the parapet at one end.
+  const py = iy1 - 5.5
+  const pz = deck + 3.4
+  const pa = turn % 2 === 0 ? ix0 + 16 : ix1 - 16
+  const pb = turn % 2 === 0 ? ix1 - 10 : ix0 + 10
+  b.metal.rod([pa, py, pz], [pb, py, pz], 1.3, 8, TONE.steel)
+  b.metal.rod([pb, py, pz], [pb, py, top - 3.4], 1.3, 8, TONE.steel)
+  b.metal.rod([pa, py, pz], [pa, py - 12, pz], 1.3, 8, TONE.steel)
+  b.metal.rod([pa, py - 12, pz], [pa, py - 12, deck], 1.3, 8, TONE.steel)
+  for (let x = Math.min(pa, pb) + 12; x < Math.max(pa, pb) - 6; x += 34) g.box(x - 2.4, x + 2.4, py - 2.6, py + 2.6, deck, deck + 2.1, TONE.stoneDark, { bevel: 0.5 })
+  // A conduit down one side with a box at its end.
+  const cx = turn % 2 === 0 ? ix1 - 4.6 : ix0 + 4.6
+  b.metal.rod([cx, iy0 + 16, deck + 1], [cx, iy1 - 16, deck + 1], 0.7, 6, TONE.iron)
+  g.box(cx - 2.6, cx + 2.6, iy0 + 11, iy0 + 17, deck, deck + 3.4, TONE.stoneDark, { bevel: 0.5, kind: KIND.gloss })
 }
 
 // A mounting plate: brushed steel with a turned edge, screwed down at its corners and along its long sides. What stands on it is a part of the machine.
@@ -239,7 +320,9 @@ export function beaconBase(b: Buckets, x: number, y: number, z: number): void {
     ring.push([29.4 + 2.2 * Math.cos(a), 5.3 + 2.2 * Math.sin(a)])
   }
   ring.push([28.2, 7.8], [27.6, 9.4], [26.2, 10], [0, 10])
-  b.metal.lathe(ring, x, y, 72, TONE.chrome, { base: z, soft: true })
+  // Polished chrome shows the room in bands: the dark of the roof under its bead, a dark line at the horizon, the lamps over it.
+  const bands = [0.5, 0.6, 0.35, 1.1, 0.9, 0.3, 0.3, 0.45, 0.6, 0.14, 0.2, 1.2, 1.25, 0.8, 0.22, 1.2, 0.6]
+  b.metal.lathe(ring, x, y, 72, (k) => shade(TONE.chrome, bands[k] ?? 0.7), { base: z, soft: true })
   for (let i = 0; i < 4; i++) {
     const a = Math.PI / 4 + (i * Math.PI) / 2
     b.screws.push([x + Math.cos(a) * 30.6, y + Math.sin(a) * 30.6, z + 3.1, 1.2])

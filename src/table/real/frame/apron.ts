@@ -11,7 +11,7 @@ export const EDGE = { gap: 1.6, near: 44, low: 7, chamfer: 3, deck: 3, slot: [86
 const WALL: [number, number, number] = [0.085, 0.125, 0.235]
 // The outside of the near end faces the room, not the well: it stands as bright as the land on top of the rails.
 const FRONT = shade(hex(0xf4ecd9), 5)
-const BAND = shade(hex(0xf4ecd9), 2.1)
+const SLOPE = shade(hex(0xe6dfce), 0.4)
 // The slabs are cast a warm cream white.
 const CREAM = hex(0xf4ecd9)
 const CARD = { cover: 12, thick: 2.6, lift: 1.4 }
@@ -70,8 +70,8 @@ export function apron(z: Zone, ctx: RealContext): THREE.Object3D {
       const [a, b] = inner === 1 ? [X(0), x1] : [x0, X(20)]
       // The enamelled land of the rail runs on down the wedge to the near rail: only its upright sides are the navy of the walls.
       const m = inner === 1 ? xb + EDGE.land : xe - EDGE.shell
-      wedge(A, a, m, 0, BAND, inner === 0 ? WALL : TONE.aluDark, null)
-      wedge(A, m, b, 0, BAND, null, inner === 1 ? WALL : TONE.aluDark)
+      wedge(A, a, m, 0, SLOPE, inner === 0 ? WALL : TONE.aluDark, null)
+      wedge(A, m, b, 0, SLOPE, null, inner === 1 ? WALL : TONE.aluDark)
       A.face([[a, yT, 0], [b, yT, 0], [b, yT, H], [a, yT, H]], [0, 1, 0], [1, 0, 0], TONE.aluDark)
       const xm = inner === 1 ? a + EDGE.near / 2 : b - EDGE.near / 2
       for (const t of [0.3, 0.8]) screws.add(xm, y0 + (yT - y0) * t, heightAt(y0 + (yT - y0) * t), 0.7, x0 + t, new THREE.Vector3(...up))

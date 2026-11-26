@@ -6,7 +6,7 @@ import { CUES, path, PRESS_AT, TOUCH, TURN_AT, VISITS } from '../src/pages/marke
 import { filmFlow, filmOptions, ScriptDriver, Stage, TURN_HALF } from '../src/stage/stage'
 
 const film = (): Stage => new Stage({ mode: 'film', flow: filmFlow('marketing'), pages, driver: new ScriptDriver(), film: filmOptions('marketing') })
-const marks = { start: { x: 0, y: 0 }, corner: { x: 100, y: 100 }, cards: [{ x: 200, y: 200 }, { x: 300, y: 300 }, { x: 400, y: 400 }], lane: { x: 500, y: 500 }, medal: { x: 600, y: 600 }, stand: { x: 700, y: 700 }, perch: { x: 800, y: 800 }, press: { x: 900, y: 900 } }
+const marks = { start: { x: 0, y: 0 }, corner: { x: 100, y: 100 }, cards: [{ x: 200, y: 200 }, { x: 300, y: 300 }, { x: 400, y: 400 }], round: { x: 450, y: 450 }, lane: { x: 500, y: 500 }, medal: { x: 600, y: 600 }, stand: { x: 700, y: 700 }, perch: { x: 800, y: 800 }, press: { x: 900, y: 900 } }
 const LASTS = { anticipate: 0.35, jump: 0.5, startle: 0.42 } as Record<string, number>
 const SEEN = 6 / 60
 const KEY = config.film.beats.find((b) => b.id === 'marketing.apply')!.from

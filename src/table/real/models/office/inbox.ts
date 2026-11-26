@@ -89,7 +89,7 @@ function heap(k: Kit, r: Random, count: number, hx: number, hy: number, z0: numb
     const col = shade(mix(C.white, C.shadeWhite, r.next()), dim * (0.9 + 0.1 * (i / Math.max(1, count - 1))))
     const a = (i / count) * Math.PI * 2 + r.range(-0.5, 0.5)
     const out = Math.sqrt(r.range(0.05, 1))
-    const rot = r.pick([0, Math.PI, Math.PI / 2]) + r.range(-0.3, 0.3)
+    const rot = r.range(0, Math.PI * 2)
     k.at(Math.cos(a) * out * hx, Math.sin(a) * out * hy, z0 + ((z1 - z0) * i) / Math.max(1, count - 1), rot, r.range(-wild, wild), r.range(-wild, wild))
     envelope(k, w, d, col, r, r.next() < 0.82)
     const sx = Math.cos(rot) * SHADE.x + Math.sin(rot) * SHADE.y
@@ -224,9 +224,9 @@ export function buildInbox(z: Zone): THREE.Object3D {
   k.back()
   root.add(meshOf(k.done(), mats.solid, 'office.inbox.tray', { cast: true }))
 
-  const top = p.h - 9
+  const top = p.h - 6
   const groups: THREE.Object3D[] = []
-  for (const [name, count, z0, z1, wild, cast] of [['a', 7, 0, 10, 0.22, true], ['b', 6, 9, 19, 0.3, false]] as [string, number, number, number, number, boolean][]) {
+  for (const [name, count, z0, z1, wild, cast] of [['a', 9, 0, 11, 0.24, true], ['b', 8, 10, 21, 0.32, false]] as [string, number, number, number, number, boolean][]) {
     const g = new Kit()
     g.lift = LIFT.paper
     heap(g, r, count, hx + (name === 'b' ? -5 : 3), hy + (name === 'b' ? -5 : 3), z0, z1, wild)

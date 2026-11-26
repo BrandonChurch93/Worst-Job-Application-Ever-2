@@ -37,7 +37,7 @@ function discUv(g: THREE.BufferGeometry, d: number): THREE.BufferGeometry {
   return g
 }
 
-const RIM = 2.2
+const RIM = 3
 const SEAM = 1.1
 
 // The aluminium sleeve of a pocket: a thin flat rim at the surface and a wall that leans in, down to what lies in the pocket.
@@ -61,11 +61,12 @@ function bead(inset: number, z: number, across: number, fall: number, steps: num
 }
 
 const SOAK = 8.5
-const SOAK_HOLD = 2.5
-const SOAK_DEPTH = 0.32
+const SOAK_HOLD = 5.5
+const SOAK_DEPTH = 0.4
 const BOUNCE = 0.24
 const BOUNCE_REACH = 10
-const GLINT = 0.14
+const GLINT = 0.3
+const GLINT_REACH = 7
 const SOAK_RINGS = [0, 1.5, 3, 5, 7.5, 10.5, 14, 18, 23, 29, 36]
 
 // One ring of a sunk face: a rounded rectangle with extra points along its straight sides, the same count for every ring.
@@ -116,7 +117,7 @@ function sunkGlass(s: Shape, inset: number, depth: number): THREE.BufferGeometry
     }
     return near
   }
-  const shade = (x: number, y: number): number => 1 - SOAK_DEPTH * Math.exp(-Math.max(0, reach(x, y, 1) * slope - depth - SOAK_HOLD) / SOAK) + BOUNCE * Math.exp(-(reach(x, y, -1) * slope) / BOUNCE_REACH) + GLINT * Math.exp(-Math.max(0, reach(x, y, -1) - 1) / 1.6)
+  const shade = (x: number, y: number): number => 1 - SOAK_DEPTH * Math.exp(-Math.max(0, reach(x, y, 1) * slope - depth - SOAK_HOLD) / SOAK) + BOUNCE * Math.exp(-(reach(x, y, -1) * slope) / BOUNCE_REACH) + GLINT * Math.exp(-Math.max(0, reach(x, y, -1) - 1) / GLINT_REACH)
   const pos: number[] = []
   const col: number[] = []
   const idx: number[] = []

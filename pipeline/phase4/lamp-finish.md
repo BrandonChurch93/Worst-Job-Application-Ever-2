@@ -68,6 +68,17 @@ Counted from the first still, by part. Limit 40 a part in this round.
 | 11:19 | lights | 4 | a14, sheen along the floor, head lamps of Office and Street lower: table-wide, tier-office, youre-fired, reply-all | 32, 21 |
 | 11:22 | lights | 6 | h1, film frames before and after a hit: three round the first bumper hit (16.51 s, camera tier-2), three round the firehouse kick (29.01 s, camera tier-1) | 38, 21 |
 | 11:25 | art | 1 | a15, Office tiles greener: tier-office (taken back, see decisions) | 38, 22 |
+| 11:33 | lights | 2 | a16, on main 37c2e908 with the frame's navy walls: table-wide (0.99 of the approved), youre-fired (1.18) | 40, 22 |
+| 11:40 | art | 3 | b1, Street paving plainer to see, print 1.12: tier-street (1.00 of the approved), youre-fired (1.17), table-wide (0.99) | 40, 25 |
+| 11:43 | art | 2 | b2, Corporate print 0.92: tier-corporate (1.02), lobby-doors (1.00) | 40, 27 |
+| 11:48 | art | 2 | c1, Corporate flecks and veins calmer: tier-corporate (1.01), table-wide (0.99) | 40, 29 |
+| 11:51 | art | 1 | c2, Office stipple at about half its strength: tier-office (1.02) | 40, 30 |
+| 11:53 | art | 2 | c3, Office walkway paler: tier-office (1.03), table-wide (0.99) | 40, 32 |
+| 12:01 | art | 2 | d1, windows with a brass seat band inside their rim: tier-street (1.02), tier-corporate (1.00) | 40, 34 |
+| 12:02 | art | 1 | d2, the same windows from a low eye: reply-all (0.92) | 40, 35 |
+| 12:04 | art | 2 | d3, Office walkway cooler: tier-office (1.01), reply-all (0.92) | 40, 37 |
+| 12:06 | art | 1 | d4, the whole after the windows and the walkway: table-wide (1.04 at draft, the rise is the frame's pale front posts and apron) | 40, 38 |
+| 12:12 | art | 1 | e1, review still of tier-street beside the approved, for the end report and its time (76.3 s) | 40, 39 |
 
 ## Decisions
 
@@ -101,4 +112,14 @@ Counted from the first still, by part. Limit 40 a part in this round.
 - 11:24 `SPILL` 2.2 (was 1.5) and `SHEEN.pools` 0.8 (was 0): what a lit opening throws on the lacquer is stronger, and the haze round a lamp is brighter from a low eye than from above (R1-4 issue 4, R3-1 issue 4, R3-3 issue 5).
 - 11:26 Office tiles: a greener, deeper pair (`#3e6664`, `#365a59`) read more saturated than the approved (build 66,97,85 against approved 62,79,74 on a tile); taken back to `#496268`, `#40575d`, whose hue matches (76,93,89) and which is 18 percent brighter. I leave it brighter: the Office floor in `table-wide` is already darker than the approved, and the mean of `table-wide` is ruled.
 - Looks: lights stand at 38 of 40 at 11:26. The last two are kept for `table-wide` and one close key after the frame's navy walls are in main.
-
+- 11:37 /root: no more looks for the lights part; it goes forward as it is and nothing in it changes that needs a look. A look counts against the part whose files changed since the look before. So from here only `src/table/real/art/` and `assets-src/table/art/` change.
+- 11:33 SEEN in a16 (the last lights look): the stronger red before the bay does not show in `youre-fired`, the ball and the seat cover that floor from this camera. NOT DONE (R1-4 issue 4): the red and the lit windows mirrored in the floor before the firehouse. What I would have changed: `MIRROR` and `SPILL` in `lights/hook.ts` (a longer, brighter image of a lit front from a low eye) and a `front()` for the bay itself in `lights/groups.ts`. Both are the lights part.
+- 11:38 Street: the paving slabs are plain to see (`plots` at 0.26, were 0.1) and the print is darker (`COAT` street print 1.12, was 1.2): the approved floor is dark slabs, not one field with fine lines. MEASURED b1: `tier-street` 1.00 of the approved, dark share 18 percent against 20 (was 8).
+- 11:42 Corporate print 0.92 (was 1.0). MEASURED b2: `tier-corporate` 1.02 (was 1.10), dark share 33 percent against 36; `lobby-doors` 1.00.
+- `youre-fired` stays at 1.17: by blocks (`cells.mjs b1 youre-fired`) the bright blocks are the cream bank beside the firehouse and the ball (85 to 122 against 48 to 72), not the floor (44 against 54 and 32). The camera of this key and the models are not mine.
+- 11:48 Corporate: the pale flecks at 0.3 and the gold ones at 0.16 (were 0.6 and 0.5), 60 veins at 0.12 to 0.34 (were 90 at 0.18 to 0.5). Beside the approved floor the print read as a night sky of dots with white scratches; the approved marble is calm with a few faint veins. MEASURED c1: `tier-corporate` 1.01, `table-wide` 0.99.
+- 11:51 Office: stipple of the tiles at 0.22 to 0.28 and of the walkway at 0.28 (were 0.3 to 0.5 and 0.5), for R3-3 issue 5 (an even, heavy speckle that reads as bare carpet). The walkway is paler (`#a1a493`, was `#8e9488`): on the approved image it measures about 158,152,134 and mine stood near 125,123,100. MEASURED c3: `tier-office` 1.03 (dark share 3 percent against 10), `table-wide` 0.99.
+- 12:00 /root MEASURED merge 34 `table-wide` at the final tier: 1.032 of the approved, and asks that the whole is not raised further. Office bumper caps dark from that eye: their inner light is the glow mesh in `src/table/real/play/bumpers.ts` at my `BUMPER.rest` 0.36. NOT DONE: it is a lamp's value and the lights part is closed. I would have set `BUMPER.rest` to about 0.6. Told /root.
+- 12:01 Windows (R1-3 issues 21 and 22, concentric bezels): the lens picture carries a brass seat band from 0.89 of its radius to the rim, with a dark groove where the glass meets it; the band does not glow (`glow` is dark there) and stands up in `relief`. The glass and its picture are 8 percent smaller inside the same hole; the hole's place and size are the layout's and did not change. SEEN in d1 and d2: from above and from a low eye the window reads as a lens in a turned seat.
+- 12:04 Office walkway `#a7aba4` (cooler than `#a1a493`): from the low eye of `reply-all` it read tan beside the approved cream. SEEN in d3: little change, the warmth is the key light's. `reply-all` now measures 0.92 of the approved with the navy walls in (was 1.11 before them); the floor is not the dark part, the walls and the far tier are.
+- 12:13 End state. Lights 40 of 40 looks, art 39 of 40. MEASURED on 14ec4cc1: `npm test` 1472 of 1472, build, bots all clear (run on 7eb8be7e; the merge after it brought documents only). Counts (`npm run counts -- --key <k> --live low`): `table-wide` table-lights 8 calls 22662 triangles, tier-art 6 calls 3534, 198 draw calls; `tier-office` 6/20166 and 3/1180, 128; `tier-corporate` 6/16204 and 3/1180, 110; `tier-street` 4/12916 and 2/1178, 107. The numbers of my two folders are those of the start. Asset sets (`du -sb`): web 8193541 bytes (7.81 MiB, limit 9 MB), full 26175882 bytes. Stills of `tier-street` at hd: review 76.3 s, draft 40.0 s as the first of a session and 21 s after.
