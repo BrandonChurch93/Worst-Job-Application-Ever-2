@@ -10,29 +10,29 @@ import { hex, Kit, matsOf, meshOf, mix, rrect, screwGeometry, shade, SURF, type 
 import { staplerFine, staplerScrews } from './staplers'
 
 const C = {
-  slab: hex(0x8f8774),
-  carpet: hex(0x938d7f),
-  aisle: hex(0xa39d8d),
-  fabric: [hex(0xc9bea5), hex(0xbfb399), hex(0xd1c7b0)] as RGB[],
-  frame: hex(0x9a9c9e),
-  cap: hex(0xd3c9b2),
+  slab: hex(0xa59c86),
+  carpet: hex(0x5d5a55),
+  fabric: [hex(0xcdbfa2), hex(0xc4b698), hex(0xd3c6ab)] as RGB[],
+  frame: hex(0xb3ab98),
+  cap: hex(0xece3cc),
   kick: hex(0x55585c),
-  wood: hex(0xdcc096),
+  wood: hex(0xead7b2),
   woodEdge: hex(0xa5855c),
   steel: hex(0x7c8590),
   grey: hex(0x8b8f93),
   dark: hex(0x2b2c30),
-  screen: hex(0x0c0f14),
+  screen: [0.1, 0.17, 0.3] as RGB,
+  pane: [0.5, 0.56, 0.6] as RGB,
   key: hex(0xd9d3c2),
   keyBed: hex(0xb9b3a2),
   base: hex(0x8d9298),
   bezel: hex(0x3b3d42),
-  paper: hex(0xebe7dc),
+  paper: hex(0xf3f0e8),
   cork: hex(0xa98558),
   notes: [hex(0xe9d95a), hex(0x8fc7e8), hex(0xe58aa8), hex(0x9fd58a)] as RGB[],
   pin: hex(0xb3202a),
   mugs: [hex(0xe9e6dd), hex(0x27406b), hex(0x3f6b4c), hex(0xd9c24a), hex(0x2f7f86), hex(0x7b4a6e)] as RGB[],
-  seats: [hex(0x6a8fbf), hex(0x55a39c), hex(0xa06a98), hex(0x8aa868), hex(0x858d98), hex(0x5674b0)] as RGB[],
+  seats: [hex(0x9a9282), hex(0x8f8878), hex(0xa39a88), hex(0x8a8474), hex(0x969080), hex(0x9e9684)] as RGB[],
   lamps: [hex(0x2a2c30), hex(0x3d5a48), hex(0x2a2c30), hex(0x8a8d91), hex(0x27406b), hex(0x2a2c30)] as RGB[],
   cabinet: hex(0xc4c0ac),
   cooler: hex(0xdcdad2),
@@ -44,11 +44,11 @@ const C = {
   leaf: hex(0x7a9a66),
   dust: hex(0xa3ae9c),
   manila: hex(0xd3b073),
-  led: [0.95, 0.8, 0.3] as RGB
 }
 
-const WALL = { t: 5.4, h: 60, base: 4 }
-const AISLE = 26
+const WALL = { t: 6.4, h: 47, base: 10 }
+const SCREEN_LEAN = 0.5
+const LIFT = { wall: 0.5, inside: 0.6, paper: 0.75 }
 
 function wall(k: Kit, a: V2, b: V2, r: Random): void {
   const len = Math.hypot(b[0] - a[0], b[1] - a[1])
@@ -111,16 +111,18 @@ function chair(k: Kit, seat: RGB): void {
   k.back()
 }
 
-function monitor(k: Kit): V3 {
+function monitor(k: Kit, g: Kit): void {
   k.poly(rrect(13, 8.5, 2.5, 2), 0, 1.1, C.bezel, SURF.plastic, 0.5)
   k.box(0, 1.6, 1, 3, 1.6, 9, C.bezel, SURF.plastic, 0.5)
-  k.at(0, 0.4, 8.6, 0, -0.2)
-  k.box(0, 0, 0, 29, 2.2, 18.5, C.bezel, SURF.plastic, 0.7)
-  k.flat([[-13.3, -1.14, 1.5], [13.3, -1.14, 1.5], [13.3, -1.14, 17.3], [-13.3, -1.14, 17.3]], [0, -1, 0], C.screen, SURF.gloss)
+  k.at(0, 0.4, 8.6, 0, -SCREEN_LEAN)
+  g.at(0, 0.4, 8.6, 0, -SCREEN_LEAN)
+  k.box(0, 0, 0, 31, 2.2, 19.5, C.bezel, SURF.plastic, 0.7)
+  g.flat([[-14.3, -1.16, 1.3], [14.3, -1.16, 1.3], [14.3, -1.16, 18.3], [-14.3, -1.16, 18.3]], [0, -1, 0], C.screen, SURF.gloss)
+  g.flat([[-11, -1.22, 4], [3, -1.22, 4], [3, -1.22, 15.6], [-11, -1.22, 15.6]], [0, -1, 0], C.pane, SURF.gloss)
+  g.flat([[5.4, -1.22, 8], [12, -1.22, 8], [12, -1.22, 15.6], [5.4, -1.22, 15.6]], [0, -1, 0], shade(C.pane, 0.8), SURF.gloss)
   k.box(0, 1.6, 5, 12, 1.6, 9, shade(C.dark, 1.3), SURF.plastic, 0.6)
-  const led = k.where([11, -1.4, 0.8])
   k.back()
-  return led
+  g.back()
 }
 
 function keyboard(k: Kit): void {
@@ -153,11 +155,14 @@ function lamp(k: Kit, col: RGB): void {
 
 function papers(k: Kit, r: Random): void {
   const n = 2 + r.int(2)
+  const lift = k.lift
+  k.lift = LIFT.paper
   for (let i = 0; i < n; i++) k.box(r.range(-1.5, 1.5), r.range(-1, 1), i * 0.22, 9.5, 12.6, 0.25, shade(C.paper, r.range(0.93, 1)), SURF.paper, 0, r.range(-0.5, 0.5))
   k.box(r.range(-2, 2), r.range(-3, 3), n * 0.22, 4, 4, 0.2, r.pick(C.notes), SURF.paper, 0, r.range(-0.6, 0.6))
+  k.lift = lift
 }
 
-function cubicle(k: Kit, f: Kit, r: Random, n: number, w: number, d: number): V3 {
+function cubicle(k: Kit, f: Kit, g: Kit, r: Random, n: number, w: number, d: number): void {
   const x0 = -w / 2 + WALL.t / 2 + 1
   const y1 = d / 2 - WALL.t / 2 - 1
   const top = 26
@@ -175,9 +180,13 @@ function cubicle(k: Kit, f: Kit, r: Random, n: number, w: number, d: number): V3
   k.back()
 
   const dz = top + 2.4
-  k.at(x0 + 40 + r.range(-4, 4), y1 - 7.5, dz, r.range(-0.22, 0.22))
-  const led = monitor(k)
+  const mx = x0 + 40 + r.range(-4, 4)
+  const mr = r.range(-0.22, 0.22)
+  k.at(mx, y1 - 7.5, dz, mr)
+  g.at(mx, y1 - 7.5, dz, mr)
+  monitor(k, g)
   k.back()
+  g.back()
   f.at(x0 + 40 + r.range(-3, 3), y1 - 15.6, dz, r.range(-0.12, 0.12))
   keyboard(f)
   f.back()
@@ -203,23 +212,25 @@ function cubicle(k: Kit, f: Kit, r: Random, n: number, w: number, d: number): V3
   }
 
   const by = y1 - WALL.t / 2 + 0.3
-  f.box(x0 + 30, by - 1.4, 36, 34, 1.2, 17, C.frame, SURF.satin, 0.4)
-  f.box(x0 + 30, by - 2.2, 37, 32, 0.8, 15, C.cork, SURF.matte, 0)
+  f.box(x0 + 30, by - 1.4, 30, 34, 1.2, 15, C.frame, SURF.satin, 0.4)
+  f.box(x0 + 30, by - 2.2, 31, 32, 0.8, 13, C.cork, SURF.matte, 0)
   for (let i = 0; i < 4; i++) {
     const nx = x0 + 18.5 + i * 7.6 + r.range(-0.8, 0.8)
-    const nz = 39 + (i % 2) * 5.6 + r.range(-1, 1)
+    const nz = 32 + (i % 2) * 4.6 + r.range(-0.6, 0.6)
     f.at(nx, by - 2.75, nz, 0, 0, r.range(-0.2, 0.2))
     f.box(0, 0, 0, 5.4, 0.3, 5.4, C.notes[(i + n) % C.notes.length]!, SURF.paper, 0)
     f.back()
   }
-  f.at(x0 + 18.5, by - 2.9, 50.4, 0, Math.PI / 2)
+  f.at(x0 + 18.5, by - 2.9, 42.4, 0, Math.PI / 2)
   f.lathe(0, 0, 0, [[1.2, 0], [1.2, 0.6], [0.6, 0.9], [0.6, 2], [1.1, 2.4], [0, 2.6]], C.pin, SURF.gloss, 8)
   f.back()
 
   k.at(x0 + 41 + r.range(-4, 5), y1 - 39 + r.range(-4, 4), 0, r.range(0, Math.PI * 2))
   chair(k, C.seats[n % C.seats.length]!)
   k.back()
-  return led
+  f.lift = LIFT.paper
+  for (let i = 0; i < 2; i++) f.box(x0 + 30 + i * 22 + r.range(-3, 3), -d / 2 + 14 + r.range(-3, 6), 0.1 + i * 0.2, 9.5, 12.6, 0.25, shade(C.paper, r.range(0.94, 1)), SURF.paper, 0, r.range(0, 3))
+  f.lift = LIFT.inside
 }
 
 export interface Thing { id: string; at: [number, number]; r: number }
@@ -401,6 +412,9 @@ function leaf(k: Kit, x: number, y: number, z: number, a: number, len: number, w
   k.back()
 }
 
+// Six cubicles: three across where the box of the layout is wider than deep, two across where it is not.
+export const gridOf = (w: number, d: number): { cols: number; rows: number } => (w > d ? { cols: 3, rows: 2 } : { cols: 2, rows: 3 })
+
 export function cubicleScrews(z: Zone): [number, number, number][] {
   const b = boxOf(z, 'office.cubicles')
   const out: [number, number, number][] = []
@@ -423,45 +437,39 @@ export function buildCubicles(z: Zone, ctx: RealContext): THREE.Object3D {
   k.at(b.x, b.y, 0)
   f.at(b.x, b.y, 0)
   g.at(b.x, b.y, 0)
+  k.lift = LIFT.inside
+  f.lift = LIFT.inside
   k.poly(rrect(b.w - 1, b.d - 1, 5, 3), 0, WALL.base, C.slab, SURF.plastic, 1, C.carpet)
-  k.box(0, -4, WALL.base, AISLE - 2, b.d - 12, 0.3, C.aisle, SURF.fabric, 0)
   const hw = b.w / 2 - WALL.t / 2 - 1
   const hd = b.d / 2 - WALL.t / 2 - 1
-  const cw = hw - AISLE / 2
-  const cd = (2 * hd) / 3
-  wall(k, [-hw, hd], [hw, hd], r)
-  wall(k, [-hw, -hd], [-hw, hd], r)
-  wall(k, [hw, -hd], [hw, hd], r)
-  for (const s of [-1, 1]) {
-    wall(k, [s * hw, -hd], [s * (AISLE / 2), -hd], r)
-    for (const row of [1, 2]) wall(k, [s * hw, -hd + cd * row], [s * (AISLE / 2), -hd + cd * row], r)
-    for (const row of [0, 1, 2]) wall(k, [s * (AISLE / 2), -hd + cd * (row + 1)], [s * (AISLE / 2), -hd + cd * (row + 1) - 24], r)
-  }
+  const { cols, rows } = gridOf(b.w, b.d)
+  const cw = (2 * hw) / cols
+  const cd = (2 * hd) / rows
+  k.lift = LIFT.wall
+  for (let i = 0; i <= cols; i++) wall(k, [-hw + cw * i, -hd], [-hw + cw * i, hd], r)
+  for (let j = 0; j <= rows; j++) wall(k, [-hw, -hd + cd * j], [hw, -hd + cd * j], r)
+  k.lift = LIFT.inside
   let n = 0
-  let led: V3 | null = null
-  for (const s of [-1, 1]) for (const row of [0, 1, 2]) {
-    const cx = s * (AISLE / 2 + cw / 2)
-    const cy = -hd + cd * (row + 0.5)
-    k.at(cx, cy, WALL.base)
-    f.at(cx, cy, WALL.base)
-    if (s > 0) {
-      k.mirror()
-      f.mirror()
+  for (let i = 0; i < cols; i++) for (let j = 0; j < rows; j++) {
+    const cx = -hw + cw * (i + 0.5)
+    const cy = -hd + cd * (j + 0.5)
+    const flip = (i + j) % 2 === 1
+    for (const q of [k, f, g]) {
+      q.at(cx, cy, WALL.base)
+      if (flip) q.mirror()
     }
-    const at = cubicle(k, f, r, n, cw + WALL.t / 2, cd)
-    if (s > 0) {
-      k.back()
-      f.back()
+    cubicle(k, f, g, r, n, cw, cd)
+    for (const q of [k, f, g]) {
+      if (flip) q.back()
+      q.back()
     }
-    k.back()
-    f.back()
-    if (n === 4) led = at
     n++
   }
   k.back()
   f.back()
   g.back()
-  if (led) g.box(led[0], led[1], led[2] - 0.6, 1.8, 1, 1.2, C.led, SURF.gloss, 0)
+  k.lift = 0.3
+  f.lift = 0.3
 
   small(k, f, c, z, r)
 
@@ -471,7 +479,7 @@ export function buildCubicles(z: Zone, ctx: RealContext): THREE.Object3D {
   const clear = meshOf(c.done(), mats.clear, 'office.cubicles.bottles')
   clear.renderOrder = 2
   root.add(clear)
-  const glow = meshOf(g.done(), mats.glow, 'office.cubicles.led')
+  const glow = meshOf(g.done(), mats.glow, 'office.cubicles.screens')
   glow.userData.lightGroup = 'office.windows'
   root.add(glow)
 

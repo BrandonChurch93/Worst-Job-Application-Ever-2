@@ -7,7 +7,7 @@ import { localBalls, zone } from '../src/table/real/zone'
 import type { RealContext } from '../src/real/types'
 import { buildCoffee } from '../src/table/real/models/office/coffee'
 import { buildCubicles, things } from '../src/table/real/models/office/cubicles'
-import { boxOf, buildInbox, poseInbox } from '../src/table/real/models/office/inbox'
+import { boxOf, buildInbox, hopAt, poseInbox } from '../src/table/real/models/office/inbox'
 import { buildStaplers, openAt, PLATE, poseStaplers } from '../src/table/real/models/office/staplers'
 import { parts } from '../src/table/real/models/office'
 
@@ -82,7 +82,6 @@ describe('the models of the office', () => {
     for (const [id, o, over] of [['office.coffee', built.coffee, 0], ['office.inbox', built.inbox, 0]] as [string, THREE.Object3D, number][]) {
       const b = boxOf(z, id)
       for (const m of meshes(o)) {
-        if (m.name === 'office.inbox.tray' || m.name === 'office.inbox.loose') continue
         const box = boundsOf(m)
         expect(box.min.x).toBeGreaterThanOrEqual(b.x - b.w / 2 - 0.01)
         expect(box.max.x).toBeLessThanOrEqual(b.x + b.w / 2 + 0.01)
@@ -118,15 +117,24 @@ describe('the models of the office', () => {
     poseInbox(built.inbox, z, ctxOf([{ id: 'model.office.inbox', v: [0, 9, 9] }]))
   })
 
-  test('the inbox tips when it holds the ball and comes back level', () => {
-    const tray = meshes(built.inbox).find((m) => m.name === 'office.inbox.tray')!
-    poseInbox(built.inbox, z, ctxOf([{ id: 'model.office.inbox', v: [1, 2, 9] }]))
-    const held = Math.abs(tray.rotation.y)
-    expect(held).toBeGreaterThan(0.2)
-    poseInbox(built.inbox, z, ctxOf([{ id: 'model.office.inbox', v: [0, 9, 0.2] }]))
-    expect(Math.abs(tray.rotation.y)).toBeLessThan(held)
+  test('the envelopes jump when a ball goes in, lower when it is sent on, and lie still after', () => {
+    const heaps = meshes(built.inbox).filter((m) => m.name.startsWith('office.inbox.heap'))
+    expect(heaps.length).toBe(2)
     poseInbox(built.inbox, z, ctxOf([{ id: 'model.office.inbox', v: [0, 9, 9] }]))
-    expect(Math.abs(tray.rotation.y)).toBeLessThan(1e-6)
+    const rest = heaps.map((m) => m.position.z)
+    poseInbox(built.inbox, z, ctxOf([{ id: 'model.office.inbox', v: [1, 0.12, 9] }]))
+    const up = heaps.map((m, i) => m.position.z - rest[i]!)
+    for (const h of up) expect(h).toBeGreaterThan(2)
+    poseInbox(built.inbox, z, ctxOf([{ id: 'model.office.inbox', v: [0, 9, 0.12] }]))
+    heaps.forEach((m, i) => {
+      expect(m.position.z - rest[i]!).toBeGreaterThan(1)
+      expect(m.position.z - rest[i]!).toBeLessThan(up[i]!)
+    })
+    poseInbox(built.inbox, z, ctxOf([{ id: 'model.office.inbox', v: [0, 9, 9] }]))
+    heaps.forEach((m, i) => expect(m.position.z).toBeCloseTo(rest[i]!, 6))
+    expect(hopAt(9)).toBe(0)
+    expect(hopAt(0)).toBe(0)
+    for (let t = 0; t < 1.4; t += 0.01) expect(hopAt(t)).toBeLessThanOrEqual(1)
   })
 
   test('a stapler slams shut in three hundredths of a second and springs back in a quarter with one small overshoot', () => {
