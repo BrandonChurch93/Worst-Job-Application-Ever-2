@@ -167,3 +167,39 @@ After the second pass (MEASURED 12:05 to 12:08 UTC on the tree with merge 34 in 
 - What `final` takes away, from a `draft` and a `final` still of nearly the same tree (`node out/work/tmp/bands.mjs`): strong edges lose 44 percent of their energy, weak edges and texture 5 percent; pixels beside something bright lose 48 percent, beside mid tones 25 percent, in the dark 11 percent. By area the loss is even. So it is the hard edges of lit and bright things that the `final` tier softens. Told to the Builder at 12:15.
 - By area at `final` on 65ca2758 (`node out/work/tmp/region.mjs`), build against approved: roof 0.00148 against 0.00155, wedges 0.00101 against 0.00159, carpet 0.00028 against 0.00089, beach 0.00071 against 0.00083; outside my folders, frame left 0.00110 against 0.00223, frame right 0.00105 against 0.00335, top strip 0.00059 against 0.00188, bottom 0.00254 against 0.00435.
 
+## Fourth pass (12:21 to 12:30 UTC)
+
+- Tower front against the approved crop: heavier steel (mullions 4.4 px wide and 6 deep on the front, 2.6 on the sides, floor bands 6.4 high), brighter ceiling lamps (1.2 from 0.85) and desk lamps, so that the floors read as lit rooms behind a steel frame.
+- Revolving door: the clamps that hold the glass at the post are slimmer (3.8 high, 4.6 out from the post) with smaller screws; close to the doors they read as cubes before.
+- Looks: 12:24 and 12:25 `lobby-doors` (tower, door), 12:26 `tier-corporate` (tower), 12:21 `tier-corporate` at `final`. Counts by part now: hq 20, revolving door 2, wedges 12.
+- MEASURED 12:26 to 12:29 UTC: `npm test` 117 files, 1472 of 1472; build built; bots all clear. Counts: Corporate 21 calls and 75541 triangles, Office 16 and 32068, together 37 and 107609 against 37 and 110600; frame 198 of 300.
+- MEASURED fine detail by M3's formula at `draft`: `lobby-doors` 0.869, `tier-corporate` 0.862; band ratio 7.84. At `final` on 491ee42b (12:24): `tier-corporate` 0.587.
+- The Builder's word at 12:25: the `final` number is not to be chased with stronger grain; a mild sharpening of the finished picture is with `look_finisher`.
+
+## Fifth pass (12:30 to 12:36 UTC)
+
+From the Builder's comparison at 12:30 of the `final` still of bf173faf.
+
+- Carpet: a darker woven border (the first and last two rows of tufts at 0.42 of the field) and a sheen that grows toward the doors (0.82 of the field at the far end, 1.57 at the doors).
+- Atrium: the galleries under the glass roof brighter (0.8), the well and its foot lit, the gallery lamps at 1 to 1.5, the roof lights a step up, so that lit floors read through the glass roof.
+- Boardroom: a lighter walnut (0.125, 0.056, 0.026) so that the long table reads as wood beside the dark room. The table is not longer: its place and size come from the layout.
+- Looks: 12:30 `tier-corporate` (carpet, atrium, boardroom), 12:31 `lobby-doors` (carpet). Counts by part now: hq 22, boardroom 6.
+- MEASURED 12:32 to 12:34 UTC on the tree with main merged in (e7e68fbe) and these changes: `npm test` 119 files, 1479 of 1479; build built; bots all clear, keen reached every one of the 37 gags on every seed. Counts: Corporate 21 calls and 75541 triangles, Office 16 and 32068, together 37 and 107609 against 37 and 110600; frame 198 of 300.
+- MEASURED fine detail by M3's formula at `draft`: `tier-corporate` 0.855, `lobby-doors` 0.867; band letters 0.0118 on a plate of 0.4480, ratio 8.05.
+
+## Sixth pass (12:37 to 12:50 UTC)
+
+- Pushed a3af73bb at 12:37 after the whole chain ran again on the tree with main merged in (MEASURED 12:35 to 12:37: `npm test` 119 files, 1479 of 1479; build built; bots all clear; Corporate 21 calls and 75541 triangles, Office 16 and 32068; frame 198 of 300).
+- MEASURED at `final` on a3af73bb (12:41, 191.6 s, 464 calls, 586738 triangles): fine detail by M3's formula 0.627 of approved's on `tier-corporate` (0.587 on 491ee42b). By area, build against approved: roof 0.00188 against 0.00155, left wedge 0.00045 against 0.00068, right wedge 0.00058 against 0.00091, carpet 0.00029 against 0.00089, beach 0.00072 against 0.00083, boardroom 0.00025 against 0.00014.
+- From the Builder's comparison of `lobby-doors` at 12:38. The two globe lamps are posts of the lights, not in my folders: not touched, listed. The doorway: the glass of the two door leaves is a warm clear tint in place of the blue green of the lobby glass, the leaves' brass is darker so that the bright bead at the glass reads, the back wall of the hall is brighter (0.3, 0.55, 0.85) and the lift fronts a paler wood, so that a warm lit room shows through the doors.
+- Look: 12:42 `lobby-doors` (doorway). Count: hq 23.
+- MEASURED at `draft` after it: `lobby-doors` 0.887 by M3's formula (0.867 before), band ratio 8.05.
+
+- MEASURED 12:42 to 12:45 UTC on this tree: `npm test` 119 files, 1479 of 1479; build built; bots all clear, keen reached every one of the 37 gags on every seed. Counts: Corporate 21 calls and 75541 triangles, Office 16 and 32068, together 37 and 107609 against 37 and 110600; frame 198 of 300.
+
+## What still looks least real (end of the round)
+
+1. The doorway and its two globe lamps close up: the globes are small white balls on thin brass stems where approved's are large frosted globes on chrome bases (they are posts of the lights, outside my folders); the door leaves are plain brass frames round flat glass, without approved's reflections and depth.
+2. The tower's front close up: a grid of mullions over box desks and lit strips, where approved's is blue glass between bright mullions that mirrors the room. The band's letters are flat dark print on a steel plate where approved's are raised metal (the Builder's ruling for this round).
+3. From above: the carpet has a third of approved's fine detail at `final`, the boardroom is small beside approved's long table with a row of chairs (its size comes from the layout), and the stapler arm is a plain red paddle without approved's chrome jaw and hinge.
+

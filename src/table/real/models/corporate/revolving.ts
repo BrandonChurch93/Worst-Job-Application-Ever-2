@@ -50,11 +50,11 @@ export function buildRevolving(z: Zone, _ctx: RealContext): THREE.Object3D {
     moved(S, m, () => {
       fin(S, FINISH.polished, () => {
         for (const zc of [DOOR.foot + 16, top - 12]) {
-          S.box(R - 1, r0 + 6, -t - 1.5, t + 1.5, zc - 2.8, zc + 2.8, TONE.brass, { bevel: 0.9, bottom: true })
+          S.box(R - 1, r0 + 3.6, -t - 0.9, t + 0.9, zc - 1.9, zc + 1.9, TONE.brass, { bevel: 0.7, bottom: true })
         }
       })
     })
-    for (const zc of [DOOR.foot + 16, top - 12]) for (const s of [-1, 1]) moved(F, m.clone().multiply(place(r0 + 3.4, s * (t + 1.5), zc, 0, s > 0 ? -Math.PI / 2 : Math.PI / 2)), () => F.lathe([[1.7, 0], [1.7, 0.6], [0.8, 1]], 0, 0, 8, TONE.brassDark))
+    for (const zc of [DOOR.foot + 16, top - 12]) for (const s of [-1, 1]) moved(F, m.clone().multiply(place(r0 + 1.7, s * (t + 0.9), zc, 0, s > 0 ? -Math.PI / 2 : Math.PI / 2)), () => F.lathe([[1.1, 0], [1.1, 0.4], [0.5, 0.7]], 0, 0, 8, TONE.brassDark))
     // The slab: thick clear glass with round corners. Its faces are clear, the ground band round them catches the light, and its edge is bright.
     const from = C.vertices
     for (const s of [-1, 1]) {
