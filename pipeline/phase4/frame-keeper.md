@@ -118,3 +118,7 @@ Total in round 11: 5 (loader 1, table-frame 4).
 - `tier-corporate`, `tier-office`, `tier-street`: every row of mine has the draw calls of the first measure (hardware 13/16/19, frame 9/12/13, targets 7/11/8, flippers 5/7/6, bumpers 2/8/2, loader 4/3/2, lift 3/6/3, ramps -/3/5, marquee 4/1/-).
 - `table-wide`: loader 10 calls and 13966 triangles, was 8 and 9408. The same 10 comes out with the loader file of the push before (14004 triangles), so it is not this round's loader: main's 2a5a2c59 moved the wide camera to show the machine to its near end, and two more loader meshes are in view. Every other row of mine equal: hardware 21, frame 16, targets 15, flippers 12, bumpers 8, lift 8, ramps 5, marquee 4. Scene 201.
 - Triangles of my rows in `table-wide`: 187052 before, 189610 now (ramps fell with main's layout, loader rose with the camera).
+
+## Needs outside my folder
+
+- `pipeline/phase4/frame-keeper-NEEDS.patch` (05:55 UTC): `export` on `dataOf` and `geometryOf` in `src/shell/real/type.ts`. The marquee's title (`marquee-title`, part `marquee`) is set by the shell's type on a material that never passes `lit()`, so it is near black in the marquee zone where approved has pale letters. With the two exports my marquee maker can answer for that one run (the contract's line on `text` shapes) with the type's own letters from `content/copy.json` on a material of mine that glows with the `panel` group as the picture does. Not built: the patch is not in, and nothing of it is tested.
