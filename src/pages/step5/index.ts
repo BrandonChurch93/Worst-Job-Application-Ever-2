@@ -409,7 +409,7 @@ export function makePage(): PageLogic {
           const swing = Math.sin(2 * Math.PI * STUCK.swings * fall) * (1 - 0.6 * fall)
           const short = { x: drop.x - STUCK.skid, y: drop.y - STUCK.skid * 0.3 }
           const to: [number, number, number] = [
-            at.x + (short.x - at.x) * off + STUCK.sway * swing + STUCK.skid * skid,
+            at.x + (short.x - at.x) * off + STUCK.clear * off * (1 - fall) + STUCK.sway * swing + STUCK.skid * skid,
             at.y + (short.y - at.y) * off - STUCK.sway * 0.3 * Math.abs(swing) + STUCK.skid * 0.3 * skid,
             (from.z + STUCK.up * off) * (1 - fall) + STUCK.float * Math.abs(swing) * (1 - fall)
           ]

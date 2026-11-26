@@ -21,8 +21,8 @@ export const reboundAt = (age: number): number => (age <= HIT.reboundAt || age >
 export const hopAt = (age: number): number => (age <= 0 || age >= HIT.sheetSeconds ? 0 : Math.sin((Math.PI * age) / HIT.sheetSeconds))
 
 // Struck flat, the cursor sticks to the rubber with its tail out from under the block's edge, rises with the block and is carried off with it.
-// Over its place the block shakes once (`shakeX`, `shakeRot`); the cursor is thrown clear of it in the first `off` of the way and `up` a little, comes down swaying (`sway` px, `swings` times) until `fall`, skids `skid` px and lies flat: `right` of the block's edge and `down` from its middle. `heal` is the seconds it then lies flat, peels and fills. `shade` and `shadeDark` are its soft shade on the page while it is in the air.
-export const STUCK = { right: 79, down: 36, heal: 0.78, hang: 110, fall: 0.86, off: 0.18, up: 26, sway: 38, swings: 2.5, float: 10, skid: 18, shakeRot: 0.17, shakeX: 30, shade: 30, shadeDark: 0.62 } as const
+// Over its place the block shakes once (`shakeX`, `shakeRot`); the cursor is thrown `clear` of it in the first `off` of the way and `up` a little, comes down swaying (`sway` px, `swings` times) until `fall`, skids `skid` px and lies flat: `right` of the block's edge and `down` from its middle. `heal` is the seconds it then lies flat, peels and fills. `shade` and `shadeDark` are its soft shade on the page while it is in the air.
+export const STUCK = { right: 79, down: 36, heal: 0.78, hang: 110, fall: 0.86, off: 0.15, up: 26, clear: 64, sway: 38, swings: 2.5, float: 10, skid: 18, shakeRot: 0.17, shakeX: 30, shade: 30, shadeDark: 0.62 } as const
 
 // Set down, the stamp is laid on its side, grip away from the reader, a little off square: `turn` about its long axis, `rot` on the page.
 export const LIE = { turn: Math.PI / 2, rot: -0.17 } as const
