@@ -112,6 +112,12 @@ Mine by the Builder's list: R4-3 issue 1 (the capture reads as a swap), R4-2 iss
 - `lobby-doors` after the camera went to 12.4 degrees down (main ee84463c), SEEN 09:25 to 09:28 UTC: the ball stands over the carpet with the bright spot under it and NO dark shadow to be seen. Two tries (a floor of density at the doors, the decal higher over the pile) changed nothing in the picture and were taken out again. Cause UNKNOWN. This is the first of the three least real things left.
 - Counts, MEASURED 09:35 UTC on 49fac8a6 (`npm run build && npm run counts -- --key <key> --live low`): `table-wide` `clear-ball` 2 calls 18872 triangles, `displays` 8 calls 328, frame 201 calls 488464; `tier-office` `clear-ball` 3 calls 18874, `displays` 4 calls 164, frame 126 calls 320353. Mine are the same as at the start.
 
+## The three least real things left in my files (09:40 UTC)
+
+1. `lobby-doors`: no dark contact shadow on the carpet under the new camera, only the bright spot; approved has a dense shadow with the gathered light beside it. Cause not found.
+2. `rail-cam` and `youre-fired`: the wall of the glass is thinner than approved. Approved shows a wide band of bent streaks with warm lamp points in it; mine is a narrow band of even rings, and the wide pane highlight at the top is plainer than approved's.
+3. The sheet `clear-ball`, third panel, and the film at the coffee bumper (frames 5011 to 5013): the pressed ball reads as an ellipse with a cut side, not as approved's ball that keeps its roundness and is flat only where it touches; in the film the press shows from the frame after the contact, not on it.
+
 ## Tuning looks, by part
 
 Critic round 1 (to 08:15 UTC):
@@ -119,7 +125,7 @@ Critic round 1 (to 08:15 UTC):
 - `displays`: 1 of 40 (`table-wide` at `draft`, the main display beside approved: six amber numerals in a lit window, in place; nothing changed).
 
 Critic round 2 (from 08:15 UTC):
-- `clear-ball`: 39 at 09:36 UTC, all `draft`. One sheet of 12 film frames round the bumper hit, 12 rows of film frames at the ball's real size (`hit.mjs`: 5010 twice, 4158, 4164, 6352, 6346, 5009, 5011 four times, 5168), 20 key stills beside approved (`rail-cam` 5, `lobby-doors` 8, `youre-fired` 3, `tier-street` 2, `tier-office`, `reply-all`), 6 sheets of three panels.
+- `clear-ball`: 38 at 09:40 UTC, all `draft`. One sheet of 12 film frames round the bumper hit, 12 rows of film frames at the ball's real size (`hit.mjs`: 5010 twice, 4158, 4164, 6352, 6346, 5009, 5011 four times, 5168), 20 key stills beside approved (`rail-cam` 5, `lobby-doors` 8, `youre-fired` 3, `tier-street` 2, `tier-office`, `reply-all`), 5 sheets of three panels. A row of `hit.mjs` is counted as one look.
 - `displays`: 0.
 
 Time of one still on this VM, MEASURED by `assets-src/table/ball/diag.mjs` (it prints the seconds of each render): `draft` 17.7 to 47.6 s, `review` 56.3 to 84.0 s. One film frame at `draft` after the first: 16.6 to 17.4 s (`hit.mjs`).
