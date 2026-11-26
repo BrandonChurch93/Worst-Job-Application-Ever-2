@@ -1,35 +1,35 @@
 {
   "folder": "boss-body",
-  "pushed": "2026-11-26T01:27:42.596Z",
-  "commit": "07638108608e4f6771a5f4c2d13095e00127e487",
+  "pushed": "2026-11-26T02:24:03.097Z",
+  "commit": "4271e57da6f486a79d5cae6d6997cbd76cf040cf",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "The boss in the fight, approved image left, this build right (review tier, commit e57ef02)",
-      "time": "2026-11-26T01:27:40.665Z",
+      "caption": "Still boss-boss_slabs-0p64-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T02:23:27.893Z",
       "by": "boss-body",
-      "from": "out/work/looks/files/20261126012740-fight-boss-beside-approved.jpg"
+      "from": "out/work/stills/boss-boss_slabs-0p64-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "The fallen button, the pieces and the empty socket, approved image left, this build right (draft tier)",
-      "time": "2026-11-26T01:27:40.976Z",
+      "caption": "boss-fight key at review beside approved (left): clean cap, thicker legs, dark under the hull, barrels on the aim",
+      "time": "2026-11-26T02:24:01.558Z",
       "by": "boss-body",
-      "from": "out/work/looks/files/20261126012740-down-beside-approved.jpg"
+      "from": "out/work/looks/files/20261126022401-fight-boss-beside-approved-4.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "The four stages of the transformation as one sheet (draft tier)",
-      "time": "2026-11-26T01:27:41.261Z",
+      "caption": "boss-down at draft beside approved (left): charred ends, thinner wisps, solid plates",
+      "time": "2026-11-26T02:24:01.791Z",
       "by": "boss-body",
-      "from": "out/work/looks/files/20261126012741-stages.jpg"
+      "from": "out/work/looks/files/20261126022401-down-beside-approved-2.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Twelve frames across the unfolding, before the last restyle of barrels and shield",
-      "time": "2026-11-26T01:27:41.560Z",
+      "caption": "boss.slabs at 0.22, 0.36 and 0.64, draft: legs walking, barrels following the cursor",
+      "time": "2026-11-26T02:24:02.017Z",
       "by": "boss-body",
-      "from": "out/work/sheets/sheet-beat-boss_unfold-preview-draft.jpg"
+      "from": "out/work/looks/files/20261126022402-fight-three-moments.jpg"
     }
   ]
 }
