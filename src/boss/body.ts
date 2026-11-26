@@ -13,14 +13,14 @@ export const CAP_H = sizes.button
 export const FOOT_OFF: [number, number][] = [[-250, -205], [250, -205], [-250, 205], [250, 205]]
 export const HIP_OFF: [number, number][] = [[-168, -50], [168, -50], [-168, 50], [168, 50]]
 export const CANNON_OFF: [number, number][] = [[-10, -116], [-10, 116]]
-const SHIELD_OFF: [number, number] = [-252, 0]
+const SHIELD_OFF: [number, number] = [-276, 0]
 export const SIDE_OFF: [number, number][] = [[0, -112], [0, 112]]
 export const CANNON_FROM = [1, 2] as const
 export const BODY_Z = { side: 86, sideTop: 96, frame: 96, cap: 106, shield: 8, capTall: heights.button - heights.buttonSocket, hip: 118, cannonTall: 13, housing: 20 }
-export const LEG = { link: 98, wide: 20, foot: 44, knee: 38 }
+export const LEG = { link: 90, wide: 20, foot: 44, knee: 38 }
 export const FRAME = { w: 372, h: 136, cut: 26, bedW: 300, bedH: 84, tall: 16 }
 export const SIDE = { w: 224, h: 100, lean: 36, tall: 12 }
-export const SHIELD = { w: 108, h: 250, tall: 22 }
+export const SHIELD = { w: 108, h: 216, tall: 22 }
 export const SHADE = { w: 560, h: 500, off: 46, soft: 74 }
 
 export interface Spot { x: number; y: number; rot: number; k: number; z: number; flat?: number; turn?: number; recoil?: number }
@@ -148,7 +148,7 @@ export function collapseRig(from: Rig, c: number): Rig {
     sides: from.sides.map((s, i) => spot(s, SCATTER.sides[i]!)),
     legs: from.legs.map((l, i) => {
       const to = SCATTER.legs[i]!
-      const half = 70
+      const half = 58
       const cx = mix((l.hx + l.fx) / 2, to.x, e)
       const cy = mix((l.hy + l.fy) / 2, to.y, e) - hop * 40
       const a = mix(Math.atan2(l.fy - l.hy, l.fx - l.hx), to.rot, e)

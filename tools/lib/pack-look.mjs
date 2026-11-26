@@ -5,7 +5,7 @@ import sharp from 'sharp'
 import { at, readJson } from './paths.mjs'
 import { openSession, readCanvas, stillFrom } from './capture.mjs'
 import { around, filmPlan, spread, stepOf, timeLabel } from './film-plan.mjs'
-import { ARROW_BODY, cursorBox } from './image.mjs'
+import { cursorBox, cursorMiddle } from './image.mjs'
 import { actingWindow, cut, out, riskyType, strip, windowRound } from './pack-build.mjs'
 
 const GROUND = '#1b1b1d'
@@ -13,6 +13,13 @@ const GAP = 8
 const LANDS = /(^|-)(drop|land|slam)$/
 // A sheet at a hit gives half its frames to the approach, so what falls is seen falling.
 const HIT_LEAD = 2
+// Two hits this few frames apart are one moment, and one sheet shows both.
+const HIT_APART = 6
+// What lands on the page is larger than the arrow: its sheet shows this many windows' width, so its edge, its shadow and the way it comes are in the picture. A ball that drops is small.
+const LANDING_ROOM = 2
+const SMALL_LANDINGS = new Set(['ball-drop'])
+// A ball stands whole in its window with this much room round it, in its own widths.
+const BALL_ROOM = 2.4
 const ACTING_LEAST_SECONDS = 0.25
 const ACTING_SHOWN_SECONDS = 1.5
 const TURN_BEFORE = 6
@@ -32,11 +39,14 @@ const tileWidth = (edge, columns) => Math.floor((edge - GAP * (columns - 1)) / c
 
 // What the film says of a page, frame by frame: the hits, the page turn that ends it and the longest run of each acting state.
 export function factsOf(cfg, u, rows) {
-  const hits = []
+  const all = []
+  const named = {}
   for (const r of rows) {
-    if (r.events.some((e) => e.hitsCursor)) hits.push({ frame: r.frame, name: 'hit on the arrow' })
-    else for (const name of [...new Set(r.events.filter((e) => LANDS.test(e.name)).map((e) => e.name))]) hits.push({ frame: r.frame, name })
+    for (const e of r.events) if (!(e.name in named)) named[e.name] = r.frame
+    if (r.events.some((e) => e.hitsCursor)) all.push({ frame: r.frame, name: 'hit on the arrow' })
+    else for (const name of [...new Set(r.events.filter((e) => LANDS.test(e.name)).map((e) => e.name))]) all.push({ frame: r.frame, name })
   }
+  const hits = all.filter((h, i) => !all.slice(0, i).some((x) => x.name === h.name && h.frame - x.frame <= HIT_APART))
   const turn = rows.find((r) => r.events.some((e) => e.name === 'page-turn'))
   const runs = new Map()
   let run = null
@@ -53,12 +63,12 @@ export function factsOf(cfg, u, rows) {
     .map(([state, list]) => ({ state, ...[...list].sort((a, b) => b.last - b.first - (a.last - a.first) || a.first - b.first)[0] }))
     .filter((s) => s.last - s.first + 1 >= least)
     .sort((a, b) => a.first - b.first)
-  return { unit: u.id, hits, turn: turn ? turn.frame : null, states: states.map((s) => ({ state: s.state, first: s.first, last: s.last })) }
+  return { unit: u.id, hits, named, turn: turn ? turn.frame : null, states: states.map((s) => ({ state: s.state, first: s.first, last: s.last })) }
 }
 
 export async function lookFacts(cfg, unit, cache = null) {
   const u = filmPlan(cfg).units.find((x) => x.id === unit)
-  if (!u) return { unit, hits: [], turn: null, states: [] }
+  if (!u) return { unit, hits: [], named: {}, turn: null, states: [] }
   const file = cache ? path.join(cache, `facts-${unit}.json`) : null
   if (file && fs.existsSync(file)) return readJson(file)
   const session = await openSession({ format: cfg.formats.hd.id, assets: 'full' })
@@ -150,8 +160,10 @@ function motionGroups(cfg, unit, facts) {
   })
   const hits = facts.hits.map((h, i) => {
     const frames = around(h.frame, count, step, u.first, u.last, HIT_LEAD)
-    return { kind: 'hit-sheet', unit, hit: h.name, at: h.frame, frames, heading: `Consecutive frames at a hit, ${i + 1} of ${facts.hits.length}, the part of the picture round the hit at its real size: ${range(frames, fps)}` }
+    const room = h.name !== 'hit on the arrow' && !SMALL_LANDINGS.has(h.name) ? LANDING_ROOM : 1
+    return { kind: 'hit-sheet', unit, hit: h.name, at: h.frame, room, frames, heading: `Consecutive frames at a hit, ${i + 1} of ${facts.hits.length}, the part of the picture round the hit${SIZE}: ${range(frames, fps)}` }
   })
+  const own = unit === 'pinball' ? pinballMoments(cfg, plan, u, facts, count, step) : { moments: [], ways: [] }
   const start = facts.turn === null ? u.last - Math.round(fps / 2) : facts.turn
   const frames = spread(Math.max(0, start - TURN_BEFORE), Math.min(plan.frameCount - 1, start + TURN_AFTER), count, step)
   const turn = [{ kind: 'look-sheet', unit, turn: start, frames, heading: `The page turn that ends the page: ${range(frames, fps)}` }]
@@ -160,7 +172,43 @@ function motionGroups(cfg, unit, facts) {
     const landing = around(seat, count, step, start, plan.frameCount - 1)
     turn.push({ kind: 'hit-sheet', unit, hit: 'slab seats', at: seat, window: TURN_WINDOW, frames: landing, heading: `Consecutive frames as the turned slab seats at ${timeLabel(seat, fps)}, the top right of the picture at its real size: ${range(landing, fps)}` })
   }
-  return [{ id: 'beats', items: across }, { id: 'hits', items: hits }, { id: 'turn', items: turn }]
+  return [{ id: 'beats', items: [...across, ...own.ways] }, { id: 'hits', items: [...hits, ...own.moments] }, { id: 'turn', items: turn }]
+}
+
+// The words of a window's size, set when the sheet is built and the window is known.
+const SIZE = ' {size}'
+const sizeWords = (heading, k) => heading.replace(SIZE, k === 1 ? ' at its real size' : ` at ${Math.round(100 / k)}% of its real size`)
+
+// The frame of a key of the film: so far into its beat as its place in the list of keys says.
+const keyFrame = (cfg, plan, id) => {
+  const k = cfg.keys.find((x) => x.id === id)
+  const b = k && plan.beats.find((x) => x.id === k.beat)
+  return b ? Math.round(b.first + (b.last - b.first) * k.at) : null
+}
+
+// The machine's own sheets, after kit/07 (R4): the flipper save and the rail in consecutive frames, the way in and the way out.
+// A bumper hit and the doors strike the ball, so they are among the hits already.
+function pinballMoments(cfg, plan, u, facts, count, step) {
+  const fps = cfg.film.fps
+  const named = facts.named || {}
+  const shown = (frame) => facts.hits.some((h) => Math.abs(h.frame - frame) <= HIT_APART)
+  const moments = []
+  const moment = (frame) => {
+    if (frame === null || frame === undefined || shown(frame)) return
+    const frames = around(frame, count, step, u.first, u.last, HIT_LEAD)
+    moments.push({ kind: 'hit-sheet', unit: u.id, hit: 'moment', at: frame, room: 1, frames, heading: `Consecutive frames at one moment of the page, the part of the picture round the ball${SIZE}: ${range(frames, fps)}` })
+  }
+  moment(named['flipper-save'])
+  moment(keyFrame(cfg, plan, 'rail-cam'))
+  const ways = []
+  const way = (first, last, words) => {
+    if (first === undefined || last === undefined || last === null || last <= first) return
+    const frames = spread(Math.max(u.first, first), Math.min(plan.frameCount - 1, last), count, step)
+    ways.push({ kind: 'look-sheet', unit: u.id, way: words, frames, heading: `The way ${words}, frames spread across it: ${range(frames, fps)}` })
+  }
+  way(named['ball-seal'], keyFrame(cfg, plan, 'table-wide'), 'in')
+  way(named.drain, facts.turn, 'out')
+  return { moments, ways }
 }
 
 function pageGroups(cfg, unit) {
@@ -204,6 +252,13 @@ export const lookRoles = {
   R4: { critic: 'R4', section: 'R4 · Motion', groups: motionGroups, facts: true },
   R8: { critic: 'R8', section: 'R8 · The page', groups: pageGroups },
   R9: { critic: 'R9', section: 'R9 · Acting', groups: actingGroups, facts: true }
+}
+
+// The window of a hit sheet: the tile itself at the picture's real size, and a wider one in the tile's proportions for a thing that lands (`room` tiles across)
+// or for a ball that would not stand whole in the tile with room round it.
+export function hitWindow(room, ball, w, h, width, height) {
+  const k = Math.min(Math.max(1, room, (ball * BALL_ROOM) / h), width / w, height / h)
+  return [Math.round(w * k), Math.round(h * k)]
 }
 
 // A hit sheet carries a heading and a time under every tile: its tiles are as tall as the long edge leaves room for.
@@ -511,10 +566,11 @@ export async function buildLook({ cfg, session, files, built, about, tier, log, 
   const actW = tileWidth(edge, ACT.columns)
   for (const f of files.filter((x) => x.kind === 'acting-sheet')) {
     const places = await session.page.evaluate((frames) => frames.map((i) => window.showcase.filmState(i).cursor), f.frames)
-    const tall = Math.max(...places.map((c) => c.screenHeightPx))
+    const middles = places.map(cursorMiddle)
+    const tall = Math.max(...middles.map((m) => m[2]))
     const [winW, winH] = actingWindow(tall, actW, ACT.tileH, hd.width, hd.height)
-    const xs = places.map((c) => c.x + c.screenHeightPx * ARROW_BODY[0])
-    const ys = places.map((c) => c.y + c.screenHeightPx * ARROW_BODY[1])
+    const xs = middles.map((m) => m[0])
+    const ys = middles.map((m) => m[1])
     const still = Math.max(...xs) - Math.min(...xs) <= winW - tall * 2.4 && Math.max(...ys) - Math.min(...ys) <= winH - tall * 2.4
     const mid = [(Math.max(...xs) + Math.min(...xs)) / 2, (Math.max(...ys) + Math.min(...ys)) / 2]
     const tiles = []
@@ -536,13 +592,17 @@ export async function buildLook({ cfg, session, files, built, about, tier, log, 
     await use(hd)
     const s = await session.page.evaluate((i) => window.showcase.filmState(i), f.at)
     const e = s.events.find((x) => (f.hit === 'hit on the arrow' ? x.hitsCursor : x.name === f.hit))
-    const c = f.window ?? (e ? [e.x, e.y] : [s.cursor.x, s.cursor.y])
+    const middle = cursorMiddle(s.cursor)
+    const c = f.window ?? (e ? [e.x, e.y] : middle)
     const hitH = hitTileHeight(edge, f.frames.length)
-    const win = windowRound(point(c[0], c[1]), actW, hitH, hd.width, hd.height)
+    const [winW, winH] = hitWindow(f.room ?? 1, s.cursor.inBall ? middle[2] : 0, actW, hitH, hd.width, hd.height)
+    const win = windowRound(point(c[0], c[1]), winW, winH, hd.width, hd.height)
+    const k = winW / actW
+    f.heading = sizeWords(f.heading, k)
     const tiles = []
     for (const frame of f.frames) tiles.push({ png: await cut(await frameOf(frame, hd, filmTier), win), label: timeLabel(frame, fps) })
-    built.set(f.name, await sheetOf(tiles, { edge, columns: ACT.columns, tileW: actW, tileH: hitH, heading: f.heading }))
-    about.set(f.name, { unit: f.unit, hit: f.hit, at: f.at, frames: f.frames, window: win, format: hd.id, tier: filmTier })
+    built.set(f.name, await sheetOf(tiles, { edge, columns: ACT.columns, tileW: actW, tileH: hitH, heading: f.heading, exact: k === 1 }))
+    about.set(f.name, { unit: f.unit, hit: f.hit, at: f.at, frames: f.frames, window: win, shownAt: Math.round((1 / k) * 1000) / 1000, format: hd.id, tier: filmTier })
     log(`${f.name}: the ${f.hit} at frame ${f.at}`)
   }
 

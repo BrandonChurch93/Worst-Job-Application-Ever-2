@@ -1,0 +1,44 @@
+{
+ "critic": "R4",
+ "score": 6,
+ "pass": false,
+ "model": "kimi_k3",
+ "set": "B: seven sheets of consecutive frames at the slabs' drops and one at the hit on the arrow",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-B-08.png",
+   "where": "the burning cursor arrow and the 'Invalid input' slab, whole sheet",
+   "what": "the slab glides in and stops with a visible gap short of the cursor; the two never touch and neither reacts, the smoke plume above the arrow is frozen in the same shape across the last six frames, and it is not possible to tell what the hit was without a caption",
+   "fix": "let the arrow tip make contact with the slab on the hit frame, give both a reaction frame (slab shudder, arrow recoil), and animate the smoke so it drifts/billows between frames"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03.png",
+   "where": "the cracked slot, 'Session expired' slab seating",
+   "what": "cracks and debris are fully formed in the first frame and identical in every frame; on the frame the slab seats into the slot nothing reacts — no dust, no crack growth, no shake of slab or slot — so the hit has no force and the page never answers",
+   "fix": "have cracks and debris appear or grow on the contact frame, kick a few debris pieces, and give the slab and slot a one-to-two frame squash/settle on impact"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-05.png",
+   "where": "'Session expired' slab over the black slot",
+   "what": "the slab settles lying across the slot opening, visibly wider than it and straddling it instead of fitting in, while the surrounding cracks and debris stay static; the contact reads as a bar floating over a hole rather than a block landing in a depression",
+   "fix": "match the slab's footprint to the slot or sink it visibly into the depression with a tight contact shadow, and react the cracks/debris on the frame it lands"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-07.png",
+   "where": "the 'Invalid input' slab, frames 2:04.77 to 2:04.80",
+   "what": "the label vanishes in a single frame and the slab then flashes to a smaller blurred bar with no easing, reading as a pop or glitch rather than a deliberate exit at playback speed",
+   "fix": "spend three to five frames on the exit — let the text lift or fade as the slab sinks, with an ease and a short hold so the viewer can see what happened"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-01.png",
+   "where": "the 'Field cannot be blank' slab, also repeated in set-B-02, set-B-04 and set-B-06",
+   "what": "the slab slides in and stops dead in open page with no wind-up and no answer from the page on landing, and the hold after it stops is only about 0.2s — easing is good and weight is decent, but the landing has no consequence and the beat feels clipped",
+   "fix": "add a short anticipation or a slightly faster approach, a one-frame page answer at landing (deeper shadow snap or faint flex), and extend the hold to roughly half a second"
+  }
+ ]
+}

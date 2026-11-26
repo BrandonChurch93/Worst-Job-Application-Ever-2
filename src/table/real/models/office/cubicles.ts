@@ -12,17 +12,17 @@ import { staplerFine, staplerScrews } from './staplers'
 const C = {
   slab: hex(0xa59c86),
   carpet: hex(0x5d5a55),
-  fabric: [hex(0xa69b86), hex(0x9d927d), hex(0xada28d)] as RGB[],
+  fabric: [hex(0x9f9685), hex(0x968d7c), hex(0xa69d8c)] as RGB[],
   frame: hex(0xa39b89),
-  cap: hex(0xe6decb),
+  cap: hex(0xd9d2c0),
   kick: hex(0x55585c),
   wood: hex(0xead7b2),
   woodEdge: hex(0xa5855c),
   steel: hex(0x7c8590),
   grey: hex(0x8b8f93),
   dark: hex(0x2b2c30),
-  screen: [0.07, 0.11, 0.19] as RGB,
-  pane: [0.3, 0.34, 0.38] as RGB,
+  screen: [0.055, 0.085, 0.145] as RGB,
+  pane: [0.25, 0.28, 0.31] as RGB,
   key: hex(0xd9d3c2),
   keyBed: hex(0xb9b3a2),
   base: hex(0x8d9298),
@@ -46,9 +46,9 @@ const C = {
   manila: hex(0xd3b073),
 }
 
-const WALL = { t: 6.4, h: 54, base: 10 }
+const WALL = { t: 7.6, h: 54, base: 10 }
 const SCREEN_LEAN = 0.5
-const LIFT = { wall: 0.3, cap: 0.85, inside: 0.7, paper: 0.9 }
+const LIFT = { wall: 0.22, cap: 0.6, inside: 0.7, paper: 0.9 }
 // The shade the partitions lay on the carpet at their feet: how far it reaches in, and how dark it is against the wall.
 // The cell the furniture of one cubicle is drawn for; in a larger or smaller cell it grows or shrinks with it, within these bounds.
 const FIT = { w: 82.2, d: 66, least: 0.85, most: 1.3 }
@@ -275,12 +275,26 @@ export function loose(tier = 1): Loose[] {
   ]
 }
 
+// What has slid off the cabinet in the left lower corner, in balls: each is placed from the lower post of the left stapler's plate.
+export function spill(tier = 1): Loose[] {
+  const sling = table.slings.find((s) => s.tier === tier && s.side === 'left')!
+  const [sx, sy] = sling.b
+  return [
+    { id: 'sheet.d', kind: 'sheet', at: [sx - 0.85, sy + 1.67], r: 0.3, turn: -0.45 },
+    { id: 'sheet.e', kind: 'sheet', at: [sx - 0.2, sy + 1.9], r: 0.3, turn: 0.8 },
+    { id: 'folder.b', kind: 'folder', at: [sx - 0.07, sy + 2.47], r: 0.31, turn: -0.35 },
+    { id: 'envelope.c', kind: 'envelope', at: [sx - 0.39, sy + 3.11], r: 0.3, turn: 0.55 },
+    { id: 'clip.c', kind: 'clip', at: [sx - 1.1, sy + 2.2], r: 0.1, turn: -0.6 },
+    { id: 'clip.d', kind: 'clip', at: [sx + 0.15, sy + 1.75], r: 0.1, turn: 0.3 }
+  ]
+}
+
 function scattered(k: Kit, f: Kit, z: Zone, r: Random): void {
   const lift = k.lift
   k.lift = LIFT.paper
-  loose(z.tier).forEach((t, i) => {
+  for (const list of [loose(z.tier), spill(z.tier)]) list.forEach((t, i) => {
     const [x, y] = localBalls(z, t.at[0], t.at[1])
-    const zz = 0.2 + i * 0.45
+    const zz = 0.7 + i * 0.45
     if (t.kind === 'sheet') {
       k.at(x, y, zz, t.turn, r.range(-0.02, 0.02), r.range(-0.02, 0.02))
       k.box(0, 0, 0, 32, 44, 0.35, shade(C.paper, r.range(0.95, 1)), SURF.paper, 0.1)

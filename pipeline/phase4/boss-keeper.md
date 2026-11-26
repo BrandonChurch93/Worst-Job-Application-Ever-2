@@ -22,11 +22,11 @@ Counted by part, 40 each for this round. A look is one still rendered and looked
 
 | Part | Looks |
 | --- | --- |
-| boss-body | 21 |
-| boss-transform | 7 |
-| boss-weapons | 11 |
+| boss-body | 35 |
+| boss-transform | 16 |
+| boss-weapons | 15 |
 | health-bar | 1 |
-| acting-boss | 3 |
+| acting-boss | 5 |
 | verify-card | 0 |
 
 ## Measures
@@ -36,6 +36,8 @@ MEASURED at 04:19 UTC, `npm run measure -- --unit boss --tier review`, 1 m 28.6 
 M2: the texels view counts only meshes whose material holds a colour `map`. The soft pixels were the halo of each spark and muzzle and the pool under each dart, which stretched step 1's 64 px halo picture over up to 230 px. They are now fans of rings with the light in the corners of their faces (`glow()` in `boss-weapons.ts`), so no picture is stretched. MEASURED after the change, `npm run still -- --key boss-fight --format hd --tier draft --diag texels`: the only textured pixels left are the stars of the darts and the muzzle, all at full density. 
 
 MEASURED at 04:40 UTC after the change, same command, 1 m 30.9 s: M1 pass; M2 pass 0.0088 against 0.02 (24976 textured pixels in 4 stills); M3 pass 0.8779 against 0.8; M4 pass (18 px, 4.63); M5, M6, M7, M9 pass. 8 green, 0 red.
+
+MEASURED at 05:22 UTC on the tree of the second pass (brushed plates, the careers page's slab as the shield), same command, log `out/work/k/measure5.log`: M2 pass 0.0096 against 0.02 (238391 textured pixels in 4 stills); M3 pass 0.9182 against 0.8; 8 green, 0 red. On the way: 0.3313 with the careers page's picture at 1 texel to a page pixel on the block, 0.0274 with the picture finer but not on the block's wall.
 
 ## Decisions
 
@@ -57,3 +59,14 @@ MEASURED at 04:40 UTC after the change, same command, 1 m 30.9 s: M1 pass; M2 pa
 16. The cursor is scorched twice by the script: at the power-down and again when the hot cap lands (1.2 s into the collapse, for 2.4 s), so the scorch is fresh at the key `boss-down` and gone before the unit ends, as `tests/boss.test.ts` asks.
 17. The sheet shows no captions: ruled by the Builder at 04:44 UTC, the words of the approved sheet are the picture's own and no key is added.
 18. The lower pair of legs read near black: the faces of their links lean about 30 degrees away from the key light, because a leg comes down 107 px from the hip to the foot. Each foot now carries a stem 52 px tall with the ball on its top (`ANKLE` in `src/boss/real/body.ts`), so a leg leans about half as much. The stem shrinks to nothing as the boss folds or falls flat. The links are a less mirror like metal (metalness 0.5, roughness 0.45).
+19. Ruled by the Builder at 05:07 UTC: the hull is brushed. Decisions 1 and 13 are withdrawn. The plate is 0x7c8085, roughness 0.34, full metal, with a computed picture of fine straight lines along x as its colour map (`brushPixels()` in `src/boss/real/body-kit.ts`, 512 x 128 px, 0.33 MB with mips, 2.4 texels to a page pixel). Every plate is long along its own x, so the lines run along the long axis of each.
+20. Every cut plate shows its thickness: a chamfer 2.4 px wide in two facets on the top edge, which the key light turns into a bright line, and a darker solid 3 px wider under it that ends 3.4 px lower (`EDGE`, material `plateSide` 0x35373a). The top face's normals lean by a hair (`CROWN`), so the sheen fades across a plate.
+21. Wing halves are kept (ruling 2 left the choice to the comparison). The two halves of a wing now land in one heap, one lying on the other, at the places where the approved image holds a plate; with the two side plates the wreck shows four dark plate pieces. A half carries no bright lip and its bed is dark. A wrecked leg folds to 116 px between hip and foot (was 140).
+22. The legs' links are 90 px (were 98) so a leg is straighter, and the shield stands 24 px further out and is 216 px tall (was 250), so the knees of the left pair no longer cross it. The links are a shade darker (0xb2b6ba).
+23. The arrow aims along its shot: the script turns it to the line from its tip to the boss and 0.36 rad further up (`AIM_LIFT` in `src/pages/step4/index.ts`). MEASURED by a probe at the key (12.5 s): the cursor's own lean while it fires is 0.42 rad against 0.22 at rest and its spin lags by 0.03, so without the lift the arrow lay 0.24 rad below its shot, which is the flat arrow of the first report.
+24. The scorch is held to the end of the film unit, ruled by the Builder at 05:07 UTC. In the film the script scorches the cursor at the power-down (27.2 s) and again when the wreck has come to rest (29.2 s, the moment the cursor sags), each for the cursor's longest 3.4 s, so the state is on at the key (29.0 s) and still on when the unit ends (32 s). Live visitors keep the first scorch only, and the page still waits for a whole cursor before it is done. In the film the page is done 0.35 s after the press whatever the cursor's state, since the film turns the page by the clock. `tests/boss.test.ts`: the check "leaves the cursor whole from the collapse on and when the film turns the page" held the opposite of the ruling at 31.5 s; it now holds that the cursor is scorched at the key and at 31.5 s, that the page is done, and, unchanged, that nothing hits the cursor after the power-down. Decision 16 is withdrawn.
+25. The shield is the careers page's slab: `slabGeometry`, `SLAB` and `glassOptions` of `perk-cards.ts` are imported, so the shade of the ground edge and the bend near the rim are that page's. Its material is a grey of its own (0x808c89, 0.86 opaque) with the same picture laid finer (2.4 texels to a page pixel), and the picture also runs down the wall (`walled()`), because the block leans and its wall is seen: the careers page's 1 texel to a pixel failed measure M2 on the block (0.33 soft at `boss-fight`), and the wall alone left 0.027.
+26. The spark of a dart on the shield was hidden: the slab is now nearly opaque and writes depth, and the plan put the spark at 60 px, inside the glass. `SHIELD` in `src/boss/plan.ts` is now `half: 108` (the block's real half height, was 118, so a dart that passes the block's end goes on to the hull) and `z: 92` (on the outer face of the leaning block). The spark's star is larger and fades slower (`(60 + 70 sqrt(u)) (1 - u)^1.1`), nearer the burst of the approved image. MEASURED after it, `npm run measure -- --unit boss --tier review`: M2 0.0095, M3 0.9226, 8 green.
+27. The links of the legs are 0x9a9ea3 (were 0xc2c6c9): beside the darker hull the pale links read as another metal. The glass is 0x8c9895, 0.82 opaque. The smoke ring fades slower (`(1 - u)^0.8` at full strength).
+28. The plates' roughness is 0.4 (was 0.34): while the plates fly in `boss.unfold` the tighter highlight filled whole plates with near white (share of pixels at 250 or more on every channel 0.051 before, 0.005 after, one still of the unfold at 0.5). The hull in the two keys keeps its sheen.
+29. The pit: the collar is wider (`PIT.collar` 15, was 12) and lighter (0xb6b8b8), with a rolled lip, and the wall under it is darker (0x5a5550, was 0x7a746d) and steeper, so the hole reads as approved's bright ring round a black pit and not as a grey bowl. Judged from one crop beside approved's.

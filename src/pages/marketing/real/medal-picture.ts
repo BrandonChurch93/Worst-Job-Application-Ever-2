@@ -2,10 +2,11 @@ import * as THREE from 'three'
 import { config } from '../../../config'
 import { Random } from '../../../core/random'
 
-export const BRUSHED = { size: 512, level: 0.84, ring: 1, rings: 0.13, arcs: 2600, arc: 0.22, long: [0.05, 0.3] as [number, number], fine: 0.05 }
+export const BRUSHED = { size: 1024, level: 0.84, ring: 2.7, rings: 0.045, arcs: 900, arc: 0.15, dark: 0.45, wide: 2, long: [38, 300] as [number, number], stray: 190, fine: 0.05 }
 
 // A disc of metal brushed on a wheel, as what its colour is multiplied by: rings a hair wide, each of its own brightness,
-// and short bright and dark arcs laid over them, the single strokes of the brush that are seen one by one.
+// and bright and dark strokes laid over them, each `wide` texels wide and `long` texels long, round a middle that strays from the disc's
+// own by up to `stray` texels: the single strokes of the brush that are seen one by one, and that cross.
 export function brushedHeights(seed: number): Float32Array {
   const B = BRUSHED
   const rnd = new Random(seed, 'medal-picture')
@@ -21,17 +22,24 @@ export function brushedHeights(seed: number): Float32Array {
     out[y * n + x] = B.level + B.rings * 2 * (ring[i]! * (1 - f) + ring[i + 1]! * f) + B.fine * 2 * (rnd.next() - 0.5)
   }
   for (let k = 0; k < B.arcs; k++) {
-    const r = Math.sqrt(rnd.next()) * half * 0.62
-    const from = rnd.next() * Math.PI * 2
+    const px = rnd.next() * n
+    const py = rnd.next() * n
+    const off = rnd.next() * B.stray
+    const to = rnd.next() * Math.PI * 2
+    const cx = half + Math.cos(to) * off
+    const cy = half + Math.sin(to) * off
+    const r = Math.hypot(px - cx, py - cy)
+    if (r < 4) continue
+    const from = Math.atan2(py - cy, px - cx)
     const long = B.long[0] + (B.long[1] - B.long[0]) * rnd.next() ** 2
-    const strength = B.arc * (rnd.next() < 0.5 ? -1 : 1) * (0.4 + 0.6 * rnd.next())
-    const steps = Math.max(2, Math.ceil(long * r * 1.5))
+    const strength = B.arc * (rnd.next() < 0.5 ? -B.dark : 1) * (0.4 + 0.6 * rnd.next())
+    const steps = Math.max(2, Math.ceil(long / 0.75))
     for (let s = 0; s <= steps; s++) {
       const t = s / steps
-      const a = from + long * t
-      for (const wide of [0]) {
-        const x = Math.floor(half + Math.cos(a) * (r + wide))
-        const y = Math.floor(half + Math.sin(a) * (r + wide))
+      const a = from + (long * t) / r
+      for (let w = 0; w < B.wide; w++) {
+        const x = Math.floor(cx + Math.cos(a) * (r + w))
+        const y = Math.floor(cy + Math.sin(a) * (r + w))
         if (x < 0 || y < 0 || x >= n || y >= n) continue
         out[y * n + x] = out[y * n + x]! + strength * Math.sin(Math.PI * t)
       }
@@ -42,8 +50,8 @@ export function brushedHeights(seed: number): Float32Array {
 
 let made: THREE.DataTexture | null = null
 
-// `across` is the width of the disc the picture lies on, in page pixels: one texel is one page pixel, from the disc's middle.
-export function brushedPicture(across: number): THREE.DataTexture {
+// The picture lies across the whole medal once, rim and all: on a medal 380 px wide that is 2.7 texels to a page pixel.
+export function brushedPicture(): THREE.DataTexture {
   if (made) return made
   const B = BRUSHED
   const h = brushedHeights(config.seed)
@@ -60,8 +68,6 @@ export function brushedPicture(across: number): THREE.DataTexture {
   tex.generateMipmaps = true
   tex.anisotropy = 4
   tex.colorSpace = THREE.NoColorSpace
-  tex.repeat.set(across / B.size, across / B.size)
-  tex.offset.set((1 - across / B.size) / 2, (1 - across / B.size) / 2)
   tex.needsUpdate = true
   made = tex
   return tex

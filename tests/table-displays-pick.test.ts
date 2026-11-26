@@ -50,3 +50,60 @@ describe('what the four displays show', () => {
     expect(pick(ctx([other])).kind).toBe('blank')
   })
 })
+
+describe('a line that was cut', () => {
+  const FRAME = 1 / 60
+  const A = 0
+  const B = 6
+  const C = 8
+  const whole = (n: number): number => modeSeconds(modes[n]!.display)
+  const lit: [string, number, number][] = [['office', A, 0], ['corporate', B, 2], ['street', C, 2 + whole(B) + 1]]
+  const at = (time: number, ballY?: number): Shape[] => {
+    const list = [score('marquee-score', '042500'), score('display.corporate.score', '042500'), score('display.office.score', '042500'), score('display.street.score', '042500')]
+    for (const [tier, n, from] of lit) if (time >= from) list.push(mode(tier, n, [time - from]))
+    if (ballY !== undefined) list.push({ ...shape('ball.clear', ''), part: 'clear-ball', kind: 'ball', y: ballY } as unknown as Shape)
+    return list
+  }
+  const runs: { what: string; t0: number; t1: number; from: number }[] = []
+  const end = lit[2]![2] + whole(C) + whole(A) + 3
+  for (let f = 0; f * FRAME < end; f++) {
+    const got = pick(ctx(at(f * FRAME)))
+    const what = got.kind === 'mode' ? got.line : got.kind
+    const t = got.kind === 'mode' ? got.t : 0
+    const last = runs[runs.length - 1]
+    if (last && last.what === what && t >= last.t1) last.t1 = t
+    else runs.push({ what, t0: t, t1: t, from: f * FRAME })
+  }
+  const line = (n: number): string => modes[n]!.display
+
+  test('gives way to a mode on the frame it lights, and comes back when no newer mode is on', () => {
+    expect(runs.map((r) => r.what)).toEqual([line(A), line(B), line(A), line(C), line(A), 'score'])
+    for (const i of [0, 1, 3]) expect(runs[i]!.t0).toBeLessThan(FRAME + 1e-9)
+    expect(runs[1]!.from).toBeCloseTo(2, 6)
+    expect(runs[3]!.from).toBeCloseTo(lit[2]![2], 1)
+  })
+  test('is shown whole once, from the start of the line, however often it was cut', () => {
+    const ended = (i: number, n: number): boolean => runs[i]!.t1 > whole(n) - 2 * FRAME
+    expect(ended(0, A)).toBe(false)
+    expect(ended(1, B)).toBe(true)
+    expect(ended(2, A)).toBe(false)
+    expect(runs[2]!.t1).toBeCloseTo(PACE.hold + 1, 1)
+    expect(ended(3, C)).toBe(true)
+    expect(ended(4, A)).toBe(true)
+    for (const i of [2, 4]) {
+      expect(runs[i]!.t0).toBeGreaterThanOrEqual(PACE.hold)
+      expect(runs[i]!.t0).toBeLessThan(PACE.hold + FRAME + 1e-9)
+    }
+    expect(runs.filter((r, i) => r.what === line(A) && ended(i, A)).length).toBe(1)
+  })
+  test('lets the score back only when no line waits', () => {
+    expect(runs.filter((r) => r.what === 'score').length).toBe(1)
+    expect(runs[5]!.from).toBeCloseTo(lit[2]![2] + whole(C) + whole(A) - PACE.hold, 1)
+  })
+  test('is the same on all four displays at every step, wherever the ball is', () => {
+    for (let f = 0; f * FRAME < end; f += 7) {
+      const one = pick(ctx(at(f * FRAME)))
+      for (const y of [200, 2400, 5200, 9000]) expect(pick(ctx(at(f * FRAME, y)))).toEqual(one)
+    }
+  })
+})

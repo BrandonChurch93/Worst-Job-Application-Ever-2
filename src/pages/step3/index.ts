@@ -11,7 +11,7 @@ import { ZONES } from '../../table/draw'
 import type { CameraPose, Collider, DrawList, GagInfo, Hint, PageContext, PageLogic, Pointer, Shape, SheetFrame, StepIo, TableState } from '../../stage/types'
 import take from '../../../cut/TABLE-TAKE.json'
 import { BOARD, boardAt, DOORS, fixedShapes, movingShapes } from '../../table/draw'
-import { APRON_Y, BALL, FLIP, LAST_Y, MARQUEE_Y, MID, MOUTH, OUTLET, PAGE_H, PORT, TH, TIERS, TIER_Y, floorZ, holdOf, railAt, railLength, railOf, solids, table, tierAt } from '../../table/layout'
+import { APRON_Y, BALL, FLIP, FLIP_REACH, LAST_Y, MARQUEE_Y, MID, MOUTH, OUTLET, PAGE_H, PORT, TH, TIERS, TIER_Y, floorZ, holdOf, railAt, railLength, railOf, solids, table, tierAt } from '../../table/layout'
 import { Machine, prepare as startPhysics, type MachineState, type TableEvent } from '../../table/physics'
 
 export const prepare = (): Promise<void> => startPhysics()
@@ -45,7 +45,7 @@ function buildLayout(): LayoutNode {
   const my = px(MARQUEE_Y)
   kids.push(node('marquee', 'marquee', [312, my + 24, 1296, 336], {
     part: 'marquee', shape: 'none', children: [
-      text('marquee-title', 'copy:step3.table.title', { font: 'inter-display-600', px: 128, align: 'centre' }, 960, my + 70, { part: 'marquee', on: 41, tone: 'inkLight', states: ['on'] }),
+      text('marquee-title', 'copy:step3.table.title', { font: 'inter-400', px: 76, align: 'centre' }, 960, my + 62, { part: 'marquee', on: 41, tone: 'inkLight', states: ['on'] }),
       text('marquee-score', 'runtime:score', { font: 'inter-600', px: 44, align: 'centre', wrap: 420 }, 960, my + 250, { part: 'displays', on: 41, tone: 'inkLight', states: ['on'] })
     ]
   }))
@@ -136,7 +136,8 @@ const ASLEEP = 0.25
 const LOW = 2.4
 const PULL = { door: 12, scoop: 30, near: 2.2, gate: 40, key: 14 }
 const NEST = { sling: [3.3, 6.5], under: [0.5, 0.9], pour: [-10.6, 1.0, 0.3], key: [0.3, 1.2], wait: [0.45, 0.05] }
-const BACK = { ahead: 3, clear: 2.3, lift: 0.7, behind: 0.6, before: 2.2 }
+const ROLL = { tip: 2.09, rail: 0.7 }
+const BACK = { off: 2.9, clear: 3.1, lift: 0, behind: 0.6, before: 2.2, aim: 1.1 }
 const RIDE = { crest: 2.2, foot: 8.5, tip: 2 }
 const SHOT = { door: 13, scoop: 21, ramp: 21, nest: 17, save: 19, lob: 9, lean: 0.3, jets: 0.5, wide: 2.5, low: 7.5, early: 0.3, back: 1 }
 const FACE = { over: 0.94, low: 0.82, turn: 0.9, back: 13, press: 20, hit: 0.3, lag: 0.1, wall: 0.8, lens: 0.6 }
@@ -278,7 +279,8 @@ export function makePage(): PageLogic {
     const a = soft(r, Math.max(0, b.s - BACK.behind))
     const f = soft(r, Math.min(railLength(r), b.s + BACK.before))
     const d = Math.hypot(f.x - a.x, f.y - a.y) || 1
-    return { eye: toWorld(px(c.x + ((f.x - a.x) / d) * BACK.ahead), px(c.y + ((f.y - a.y) / d) * BACK.ahead), px(Math.max(c.z, soft(r, Math.min(railLength(r), b.s + BACK.ahead)).z) + BACK.clear)), target: toWorld(px(c.x), px(c.y), px(c.z + BACK.lift)), up: [0, 0, 1], fov: fov('rail') }
+    const u = [(f.x - a.x) / d, (f.y - a.y) / d]
+    return { eye: toWorld(px(c.x - u[0]! * BACK.off), px(c.y - u[1]! * BACK.off), px(c.z + BACK.clear)), target: toWorld(px(c.x + u[0]! * BACK.aim), px(c.y + u[1]! * BACK.aim), px(c.z + BACK.lift)), up: [0, 0, 1], fov: fov('rail') }
   }
   const follow = (): CameraPose => homePose(s.scroll, s.floor)
   const lens = (name: string, p: CameraPose | null): CameraPose | null => {
@@ -291,6 +293,11 @@ export function makePage(): PageLogic {
   }
   const named = (name: string): CameraPose | null => lens(name, name === 'follow' ? follow() : name === 'rail' ? backPose() : name === 'ride' ? ridePose() : NAMED[name] ?? null)
 
+  const shot = (time: number): string => {
+    let i = 0
+    while (i + 1 < FILM.length && time >= FILM[i + 1]![0]) i++
+    return FILM[i]![1]
+  }
   const cut = (time: number): CameraPose => {
     let i = 0
     while (i + 1 < FILM.length && time >= FILM[i + 1]![0]) i++
@@ -565,6 +572,13 @@ export function makePage(): PageLogic {
     const flatUp = low === 0 && s.face[3]! < 0.05
     if (flatUp) s.face = [0, 0, 1, 0]
     io.cursor.turn(flatUp ? null : { x: s.face[0]!, y: s.face[1]!, z: s.face[2]!, back: s.face[3]! })
+    const flat = Math.hypot(e[0]!, e[1]!)
+    if (s.mode === 'film' && shot(s.time) === 'rail' && b.mode === 'rail' && flat > 0.05) {
+      const tx = (-Math.cos(ROLL.rail) * e[0]! - Math.sin(ROLL.rail) * e[1]!) / flat
+      const ty = (-Math.cos(ROLL.rail) * e[1]! + Math.sin(ROLL.rail) * e[0]!) / flat
+      const turn = ROLL.tip - Math.atan2(ty, tx)
+      io.cursor.aim(turn - Math.PI * 2 * Math.floor((turn + Math.PI / 2) / (Math.PI * 2)))
+    } else io.cursor.aim(null)
   }
 
   const logic: PageLogic = {
@@ -759,7 +773,12 @@ export function makePage(): PageLogic {
       for (const f of table.flippers) {
         const a = (mc.flipperAngle(f.side) * Math.PI) / 180
         const dir = f.side === 'left' ? 1 : -1
-        add(f.id, 'flipper', f.tier, [...f.pivot, f.pivot[0] + dir * FLIP.length * Math.cos(a), f.pivot[1] + FLIP.length * Math.sin(a)], { r: FLIP.radius })
+        const d = [dir * Math.cos(a), Math.sin(a)]
+        const tip = [f.pivot[0] + d[0]! * FLIP_REACH, f.pivot[1] + d[1]! * FLIP_REACH]
+        const side = (c: number[], r: number, k: number): number[] => [c[0]! - d[1]! * r * k, c[1]! + d[0]! * r * k]
+        add(f.id, 'flipper', f.tier, [...side(f.pivot, FLIP.radius, -1), ...side(tip, FLIP.tip, -1), ...side(tip, FLIP.tip, 1), ...side(f.pivot, FLIP.radius, 1)], { closed: true })
+        add(`${f.id}.pivot`, 'flipper', f.tier, [...f.pivot], { r: FLIP.radius })
+        add(`${f.id}.tip`, 'flipper', f.tier, tip, { r: FLIP.tip })
       }
       for (const h of table.holds) add(h.id, 'hold', h.tier, [...h.c], { r: h.r })
       for (const o of table.openings) add(o.id, 'opening', o.tier, [...o.a, ...o.b])
@@ -780,7 +799,7 @@ export function makePage(): PageLogic {
         const bat = table.flippers.find((x) => x.tier === 1 && x.side === 'left')!.pivot
         const cup = table.bumpers.filter((x) => x.tier === 1).reduce((p, q) => (q.c[1] > p.c[1] ? q : p))
         const lean = (FLIP.rest * Math.PI) / 180
-        const rest = { x: bat[0] + 0.9 * Math.cos(lean) + (0.6 + FLIP.radius) * Math.sin(lean), y: bat[1] + 0.9 * Math.sin(lean) - (0.6 + FLIP.radius) * Math.cos(lean) }
+        const rest = { x: bat[0] + 0.9 * Math.cos(lean) + (0.46 + FLIP.radius) * Math.sin(lean), y: bat[1] + 0.9 * Math.sin(lean) - (0.46 + FLIP.radius) * Math.cos(lean) }
         const hit = { x: cup.c[0] + (cup.r + 0.45) * 0.26, y: cup.c[1] + (cup.r + 0.45) * 0.966 }
         const mid = { x: (rest.x + hit.x) / 2, y: (rest.y + hit.y) / 2 }
         const spots: { x: number; y: number; lift: number; pose: Partial<CursorPose> }[] = [
@@ -789,7 +808,7 @@ export function makePage(): PageLogic {
           { x: hit.x, y: hit.y, lift: 0, pose: { acting: 'shocked', damage: ['flattened'] } }
         ]
         spots.forEach((p, i) => list.push({ id: `sheet-ball-${i + 1}`, part: 'clear-ball', kind: 'ball', x: px(p.x - 0.5), y: px(p.y - 0.5), w: BALL, h: BALL, z0: f + px(p.lift), z1: f + px(p.lift) + BALL, tone: 'glass' }))
-        return { list, cursors: spots.map((p) => restPose(px(p.x), px(p.y), { z: f + px(p.lift), inBall: true, taken: true, ...p.pose })), view: { ...look('home', [mid.x + 1.92, mid.y + 6.1, 3.2], [mid.x, mid.y, -1.45]), focus: px(7.9), aperture: 15 } }
+        return { list, cursors: spots.map((p) => restPose(px(p.x), px(p.y), { z: f + px(p.lift), inBall: true, taken: true, ...p.pose })), view: { ...look('home', [mid.x + 1.63, mid.y + 7.36, 4.2], [mid.x - 0.02, mid.y + 0.41, -1.5]), focus: px(9.3), aperture: 15 } }
       }
       if (id !== 'table-map') return null
       const mc = machine()

@@ -1,0 +1,37 @@
+{
+ "critic": "R8",
+ "score": 8,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "A: the page at rest and the three keys, whole, and the smallest type at native size",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "the three closed fields in the right column",
+   "what": "The identical empty wells look like unpopulated dropdowns. They give no cue that each opens a different input, and the phone field does not read as somewhere to start entering a number.",
+   "fix": "Add quiet prompts such as Enter number, Select date, and Adjust volume. Keep the chevrons so the mechanisms are still a surprise when opened."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "the gap between the left-hand labels and the right-hand fields",
+   "what": "The rows align, but each label sits several hundred pixels from its field. With nothing inside the fields to confirm the pairing, the two sides read as separate blocks.",
+   "fix": "Narrow the label column or bring the fields and their trays left as a unit, keeping all three rows on the same grid."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "the completed date field above the volume control",
+   "what": "The message says corrections are not supported, but the same downward chevron used by the unopened fields still suggests the date can be changed.",
+   "fix": "If the date is locked, replace its chevron with a noninteractive status treatment. If it still opens, label the action as viewing rather than editing."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "the blank volume field above the crank and lit segments",
+   "what": "The recess looks properly attached to the field, but the field stays blank after the crank has made visible progress. The current volume can only be inferred by counting lights.",
+   "fix": "Show the live percentage in the focused field and keep the segments as supporting feedback."
+  }
+ ]
+}
