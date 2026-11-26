@@ -455,6 +455,7 @@ function payout(): THREE.Group {
   coins.receiveShadow = true
   coins.frustumCulled = false
   coins.count = 0
+  coins.userData.small = 'count'
   const P = L.pay
   bedMaterial ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(P.bed), roughness: P.rough, metalness: 0.5, name: 'slot-pay-bed' }))
   const at = (inset: number, z: number, out: number, up: number): LoftRing => ({ o: roundedRect(SLOT.payW - inset * 2, SLOT.payH - inset * 2, Math.max(0.8, P.r - inset), 10), z, out, up })

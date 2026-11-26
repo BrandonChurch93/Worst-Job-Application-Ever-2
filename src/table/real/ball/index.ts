@@ -307,6 +307,7 @@ function build(s: Shape): THREE.Group {
   const sweat = new THREE.InstancedMesh(k.drop.clone(), mat(dropFragment, dropVertex, THREE.DoubleSide), DROPS)
   sweat.name = 'ball.sweat'
   sweat.userData.fine = true
+  sweat.userData.small = 'each'
   const seeds = new Float32Array(DROPS)
   const m4 = new THREE.Matrix4()
   const q = new THREE.Quaternion()
