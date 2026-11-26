@@ -48,18 +48,18 @@ Folder: 18 calls, 31208 triangles. Whole frame: 207 draw calls against a limit o
 - The screws of the farm sit on the caps, where the partitions cross the long walls, not on the slab.
 - The stapler from straight above. The arm, the base and the plate were three reds that ran together. The arm is now 2.8 px narrower on each side than the steel base, so a steel edge shows on both sides of it, and the base lays a dark band on the plate (`SIDE`).
 
-## Counts after (MEASURED on ef524227)
+## Counts after (MEASURED on d27f182b, with main at b62bc72b)
 
 `npm run build && npm run counts -- --key table-wide --live low` (the rows are the same for `tier-office` and `reply-all`)
 
 | part | meshes | colour | shadow | calls | triangles |
 | --- | --- | --- | --- | --- | --- |
-| model-staplers | 3 | 3 | 3 | 6 | 7148 |
-| model-inbox | 3 | 3 | 2 | 5 | 3057 |
+| model-staplers | 3 | 3 | 3 | 6 | 7356 |
+| model-inbox | 3 | 3 | 2 | 5 | 3313 |
 | model-coffee-machine | 1 | 1 | 1 | 2 | 6628 |
-| model-cubicles | 3 | 3 | 0 | 3 | 11757 |
+| model-cubicles | 3 | 3 | 0 | 3 | 12297 |
 
-Folder: 16 calls, 28590 triangles. Whole frame: `table-wide` 192, `tier-office` 126, `reply-all` 140 draw calls against a limit of 300.
+Folder: 16 calls (18 before), 29594 triangles (31208 before). Whole frame: `table-wide` 192, `tier-office` 126, `reply-all` 140 draw calls against a limit of 300 (207, 144, 158 before).
 
 ## Answers
 
