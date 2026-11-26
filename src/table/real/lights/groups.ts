@@ -36,7 +36,7 @@ export interface Group {
 export const LIT = ['marquee', 'corporate', 'office', 'street']
 export const CHANNELS = 10
 // How high a lamp of the general lighting is taken to stand over its lens, and how wide its body is, in pixels.
-export const LAMP = { z: 44, body: 20, reach: 3.0 * BALL, power: 0.5, wideZ: 150, wideReach: 8 * BALL, widePower: 0.1 }
+export const LAMP = { z: 44, body: 20, reach: 3.9 * BALL, power: 0.62, wideZ: 150, wideReach: 8 * BALL, widePower: 0.17 }
 
 const linear = (c: { r: number; g: number; b: number }): RGB => [c.r, c.g, c.b]
 const centre = (m: Model): [number, number] => [m.box[0] + m.box[2] / 2, m.box[1] + m.box[3] / 2]
