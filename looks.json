@@ -1,35 +1,35 @@
 {
   "folder": "ball-fix",
-  "pushed": "2026-11-26T07:45:15.508Z",
-  "commit": "9e94b03466a03104f628e5abe850dbebef75fe5f",
+  "pushed": "2026-11-26T08:36:09.635Z",
+  "commit": "ac7a4f0b73fb8691929d91df22e42f01b600e102",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Sheet clear-ball: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-26T07:43:14.364Z",
-      "by": "ball-fix",
-      "from": "out/work/compare/compare-clear-ball.jpg"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "Clear ball at its real size, review tier: approved left, this build right. Top youre-fired, bottom reply-all (the cracked arrow there is the cursor state, not the glass)",
-      "time": "2026-11-26T07:45:14.014Z",
-      "by": "ball-fix",
-      "from": "out/work/ball-looks/ball-youre-fired-reply-all.jpg"
-    },
-    {
-      "file": "look-3.jpg",
-      "caption": "Clear ball at its real size, review tier: approved left, this build right. Top lobby-doors with the door shadow on the carpet, bottom rail-cam",
-      "time": "2026-11-26T07:45:14.242Z",
-      "by": "ball-fix",
-      "from": "out/work/ball-looks/ball-lobby-doors-rail-cam.jpg"
-    },
-    {
-      "file": "look-4.jpg",
       "caption": "Sheet clear-ball, draft tier: approved left, this build right. The panels and gutters are the page's",
       "time": "2026-11-26T07:45:14.495Z",
       "by": "ball-fix",
       "from": "out/work/ball-looks/ball-sheet.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Still key-table-wide-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T07:53:35.665Z",
+      "by": "ball-fix",
+      "from": "out/work/stills/key-table-wide-hd-draft.png"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Consecutive frames of the bumper hit: the event bumper at 1:23.50 in pinball.coffee, draft tier, preview",
+      "time": "2026-11-26T08:18:37.960Z",
+      "by": "ball-fix",
+      "from": "out/work/sheets/sheet-motion-bumper-preview-draft.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "The shell closing at the capture (top, film frames 4164 to 4176) and breaking open on the way out (bottom, 6346 to 6358), every second frame, ball at its real size, draft. Rendered on ball-fix ac7a4f0b merged with machine-runner c56cd02a in a scratch tree",
+      "time": "2026-11-26T08:36:08.363Z",
+      "by": "ball-fix",
+      "from": "out/work/ball-looks/ball-capture-way-out.jpg"
     }
   ]
 }
