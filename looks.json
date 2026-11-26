@@ -1,35 +1,35 @@
 {
   "folder": "careers",
-  "pushed": "2026-11-26T01:58:48.569Z",
-  "commit": "dddd82bb0db605a56ba77bab008c087ce25f1c64",
+  "pushed": "2026-11-26T02:25:19.022Z",
+  "commit": "c03aa82411816d83d168780d85eab5533c3f8506",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-marketing-top-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T01:57:04.043Z",
+      "caption": "marketing-top: approved above, draft tier below, commit c03aa82",
+      "time": "2026-11-26T02:25:17.285Z",
       "by": "careers",
-      "from": "out/work/stills/key-marketing-top-hd-draft.png"
+      "from": "out/work/looks/files/20261126022517-cmp-0235.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "marketing-top: approved above, draft tier below, commit dddd82b",
-      "time": "2026-11-26T01:58:47.067Z",
+      "caption": "medal and ticker strip: approved left and upper, mine right and lower, commit c03aa82",
+      "time": "2026-11-26T02:25:17.521Z",
       "by": "careers",
-      "from": "out/work/looks/files/20261126015847-cmp-0205.jpg"
+      "from": "out/work/looks/files/20261126022517-medal-strip-0235.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "perk cards and ticker strip: approved above, draft below, commit dddd82b",
-      "time": "2026-11-26T01:58:47.293Z",
+      "caption": "scroll 0.25 and 0.5. Kit: 'Awards. Aluminum medallions, each with the award, who gave it, and the fine print.' 'Testimonials. No portraits. Each is an employee badge with the photo blacked out and the name redacted with bars, the role, the quote and the bracketed note.'",
+      "time": "2026-11-26T02:25:17.798Z",
       "by": "careers",
-      "from": "out/work/looks/files/20261126015847-cards-0205.jpg"
+      "from": "out/work/looks/files/20261126022517-sections-0.25.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "card 0 mid turn at 0.06 and 0.088 of marketing.perks: the well in the page's ceramic",
-      "time": "2026-11-26T01:58:47.517Z",
+      "caption": "scroll 0.75 and 1: the five-step process, the questions, the final call to action, the footer. Kit: 'The big button. It has real travel.'",
+      "time": "2026-11-26T02:25:18.022Z",
       "by": "careers",
-      "from": "out/work/looks/files/20261126015847-turn-0205.jpg"
+      "from": "out/work/looks/files/20261126022518-sections-0.75.jpg"
     }
   ]
 }
