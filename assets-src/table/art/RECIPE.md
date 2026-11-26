@@ -38,7 +38,7 @@ Every picture here is made by one command: `node assets-src/table/art/make.mjs` 
 - From: `config.table.inserts`, in its order: cell `index % 3` across, `floor(index / 3)` down. The picture of a cell is chosen by the insert's `picture`
 - Prompt or command: `node assets-src/table/art/make.mjs --only inserts`
 - Takes: about 1 s
-- Why this one: the lens is the window unlit, dark in its own colour; the glow is what it emits when lit, brightest in the middle with the moulded picture dark against it; the relief is the picture alone as a low height, for the bump of the surface. The lens is frosted, with no moulded rings and the picture in a fine line. The glass is 0.97 of the window's width (`WELL` in `inserts.mjs`), with one fine dark line where it meets its metal seat, so a window is one lens flush with the floor and not a dial
+- Why this one: the lens is the window unlit, a pale enamel face in its own colour that deepens to the colour at the rim with a dark line where it meets the seat; the glow is what it emits when lit, near white in the middle and the colour at the rim, with the picture in a fine dark line against it; the relief is the picture alone as a low height, for the bump of the surface. The lens is frosted, with no moulded rings and the picture in a fine line. The glass is 0.97 of the window's width (`WELL` in `inserts.mjs`), with one fine dark line where it meets its metal seat, so a window is one lens flush with the floor and not a dial
 - Size: web 1152 square, full 2304 square
 - Date: 2026-11-26
 

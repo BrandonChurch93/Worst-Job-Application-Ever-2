@@ -5,7 +5,7 @@ import * as C from './colours'
 import type { RGB } from './colours'
 import { blockersOf } from './pictures'
 
-// The head lamps: one bar of warm spots under the cross rail at the head of each tier, right of the middle, aimed down the tier. They are the one light of a tier that comes from one side, so everything that stands throws one long soft shadow toward the foot and the left.
+// The head lamps: one bar of warm spots over the head of each tier, right of the middle, aimed steeply down the tier. They are the one light of a tier that comes from one side, so everything that stands throws one short soft shadow toward the foot and the left, about six tenths of its own height long.
 export interface Key {
   // Toward the lamps, in the zone's frame: x right, y up the page, z up.
   toward: [number, number, number]
@@ -19,14 +19,16 @@ const unit = (x: number, y: number, z: number): [number, number, number] => {
 }
 
 export const KEYS: Record<string, Key> = {
-  corporate: { toward: unit(0.56, 0.72, 0.38), colour: C.CORPORATE_KEY, power: 1.7 },
-  office: { toward: unit(0.56, 0.72, 0.42), colour: C.OFFICE_KEY, power: 1.8 },
-  street: { toward: unit(0.56, 0.72, 0.38), colour: C.STREET_KEY, power: 1.38 }
+  corporate: { toward: unit(0.3, 0.58, 0.95), colour: C.CORPORATE_KEY, power: 0.62 },
+  office: { toward: unit(0.3, 0.58, 0.95), colour: C.OFFICE_KEY, power: 0.76 },
+  street: { toward: unit(0.3, 0.58, 0.95), colour: C.STREET_KEY, power: 0.52 }
 }
 
 export const keyOf = (z: Zone | string): Key | null => KEYS[typeof z === 'string' ? z : z.id] ?? null
 
-export const SHADE = { texel: 4, spread: 0.07, rise: 0.05, blur: 1 }
+export const SHADE = { texel: 4, spread: 0.13, rise: 0.09, blur: 2 }
+// What stands closes off a share of the light over the floor round its foot: a tight dark line at the foot and a wide soft one, in texels of blur, and how tall a thing must be to count in full.
+export const CLOSE = { tall: 36, tight: 10, wide: 90, share: 0.55 }
 export const BALLS = 6
 export const BATS = 2
 export const BAT = { top: 44, pivot: FLIP.radius * BALL, tip: FLIP.tip * BALL }
@@ -38,6 +40,8 @@ export interface Shade {
   heights: Float32Array
   // For each of three places along the bar: below this height a point over the texel lies in shadow.
   under: Float32Array[]
+  // How much of the light from above is closed off at the floor of the texel by what stands round it, 0 to 1.
+  closed: Float32Array
   texture: THREE.DataTexture
 }
 
@@ -162,10 +166,17 @@ export function shadeOf(z: Zone): Shade {
       under.push(S)
     }
   } else for (let i = 0; i < 3; i++) under.push(new Float32Array(w * h))
+  const tight = new Float32Array(w * h)
+  for (let i = 0; i < w * h; i++) tight[i] = Math.min(1, heights[i]! / CLOSE.tall)
+  blur(tight, w, h, CLOSE.tight)
+  const wide = new Float32Array(tight)
+  blur(wide, w, h, CLOSE.wide - CLOSE.tight)
+  const closed = new Float32Array(w * h)
+  for (let i = 0; i < w * h; i++) closed[i] = Math.min(1, CLOSE.share * Math.min(1, 1.6 * tight[i]!) + (1 - CLOSE.share) * Math.min(1, 2.2 * wide[i]!))
   const data = new Uint16Array(w * h * 4)
   for (let i = 0; i < w * h; i++) {
     for (let c = 0; c < 3; c++) data[i * 4 + c] = THREE.DataUtils.toHalfFloat(under[c]![i]!)
-    data[i * 4 + 3] = THREE.DataUtils.toHalfFloat(heights[i]!)
+    data[i * 4 + 3] = THREE.DataUtils.toHalfFloat(closed[i]!)
   }
   const texture = new THREE.DataTexture(data, w, h, THREE.RGBAFormat, THREE.HalfFloatType)
   texture.name = `table-lights.${z.id}.key`
@@ -176,7 +187,7 @@ export function shadeOf(z: Zone): Shade {
   texture.wrapT = THREE.ClampToEdgeWrapping
   texture.generateMipmaps = false
   texture.needsUpdate = true
-  const out = { width: w, height: h, heights, under, texture }
+  const out = { width: w, height: h, heights, under, closed, texture }
   made.set(z.id, out)
   return out
 }

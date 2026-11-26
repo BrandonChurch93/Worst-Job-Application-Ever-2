@@ -38,7 +38,7 @@ uniform vec4 wjlBat[ ${BATS} ];
 const EDGE = (COLS.launchB - W / 2) * BALL
 
 // A lacquered floor is never a clean mirror: the fine scratches of play spread each lamp near it into a soft pool in the lamp's own colour, whatever the colour of the print under the lacquer.
-const HAZE = 0.042
+const HAZE = 0.15
 
 // Lacquer seen along the floor sends back more of the light on it than lacquer seen from above: the sheen of a waxed floor from across the room. Nothing is added straight down.
 const SHEEN = { coat: 0.03, pools: 0.0, worn: 0.2, from: 0.07, to: 0.24, veil: 0.4 }
@@ -64,8 +64,11 @@ const MIRROR = { sharp: 3, blur: 0.2, sill: 0.14 }
 // The lacquer is a dark mirror too: it shows each lamp over it as a small bright spot where the eye's line, turned by the floor, meets the lamp. From straight above the spot lies under its lamp, from a low eye it runs out toward the eye.
 const GLINT = { level: 5.0, body: 13, low: 30 }
 
+// The floor gives the head lamps' light back upward, warmed by the print and the lacquer: the undersides and the low sides of what stands on it take it, less with height.
+const BOUNCE = { level: 0.55, reach: 46, tint: [1.0, 0.74, 0.46] }
+
 // The shadows of the head lamps. A wall is asked a little outside its own foot, and a thing that stands is taken a little higher than it is, so nothing lies in its own shadow; `soft` is how many pixels of height the tip of a shadow fades over, `edge` how much of its depth its side does.
-export const SHADOW = { out: 12, slack: 6, lean: 0.35, soft: 10, edge: 0.5, ball: 0.07, steel: 0.92, clear: 0.4, spot: 0.9, spotAt: 0.1, gloss: 0.6, far: 0.22, near: 1.5, riser: 0.015, riserReach: 150, roof: 0.75, roofFrom: 60, roofTo: 100 }
+export const SHADOW = { out: 12, slack: 6, lean: 0.35, soft: 10, edge: 0.5, ball: 0.07, steel: 0.92, clear: 0.4, spot: 0, spotAt: 0.1, gloss: 0.6, far: 0.72, near: 1.12, riser: 0.015, riserReach: 150, roof: 0.75, roofFrom: 60, roofTo: 100, closed: 0.8 }
 
 // For each group: its picture at the fragment's place, a term for the fragment's height and for the way its surface faces the lamps, the group's colour and level.
 const body = /* glsl */ `
@@ -178,7 +181,7 @@ const body = /* glsl */ `
 		float amount = wjlPhi[ i ] * wjlInside * wjlClear;
 		if ( at.w < 0.5 ) {
 			wjlField += c * amount * ( 0.34 + 0.66 * max( wjlN.z, 0.0 ) ) / ( 1.0 + wjlUp * wjlUp * at.z );
-			wjlHaze += c * amount * smoothstep( 0.8, 2.6, amount );
+			wjlHaze += c * amount * smoothstep( 0.9, 3.2, amount );
 			continue;
 		}
 		vec3 from = at.xyz;
@@ -186,7 +189,7 @@ const body = /* glsl */ `
 			from = vec3( wjlP.xy + wjlToward * at.z * wjlRun, at.z + wjlUp * wjlTop );
 			amount *= wjlCut / ( 1.0 + wjlTop * wjlUp * wjlUp * ${(1 / (170 * 170)).toExponential(4)} );
 			amount = mix( amount, 0.6 * amount / ( 1.0 + 1.5 * amount ), max( wjlWall, smoothstep( 40.0, 100.0, wjlUp ) ) );
-			wjlHaze += c * amount * smoothstep( 0.8, 2.6, amount );
+			wjlHaze += c * amount * smoothstep( 0.9, 3.2, amount );
 		}
 		vec3 low = vec3( from.xy - wjlP.xy, at.z );
 		vec3 to = from - wjlP;
@@ -216,6 +219,7 @@ const body = /* glsl */ `
 			wjlOpen += 1.0 - smoothstep( 0.0, max( ${SHADOW.soft.toFixed(1)}, ${SHADOW.edge.toFixed(2)} * wjlS ), wjlS - wjlAtZ );
 		}
 		wjlOpen /= 3.0;
+		wjlOpen *= 1.0 - ${SHADOW.closed.toFixed(2)} * wjlUnder.a * ( 1.0 - smoothstep( 3.0, 14.0, wjlUp ) );
 		for ( int b = 0; b < ${BALLS}; b ++ ) {
 			vec4 ball = wjlBall[ b ];
 			if ( ball.w == 0.0 ) continue;
@@ -262,6 +266,7 @@ const body = /* glsl */ `
 		clearcoatSpecularDirect = mix( wjlCoat, clearcoatSpecularDirect, wjlShine * ${SHADOW.gloss.toFixed(2)} );
 		#endif
 	}
+	wjlField += wjlKeyLit * vec3( ${BOUNCE.tint.map((v) => v.toFixed(2)).join(', ')} ) * ${BOUNCE.level.toFixed(2)} * ( 0.5 - 0.5 * wjlN.z ) * exp( - wjlUp / ${BOUNCE.reach.toFixed(1)} ) * smoothstep( 1.0, 6.0, wjlUp );
 	wjlField += wjlKeyCol * ${SHADOW.riser.toFixed(2)} * max( - wjlN.y, 0.0 ) * wjlWall * smoothstep( 0.5 * wjlSize.y - ${SHADOW.riserReach.toFixed(1)}, 0.5 * wjlSize.y - ${(SHADOW.riserReach * 0.4).toFixed(1)}, wjlP.y ) * wjlClear;
 	for ( int k = 0; k < ${HIGHS}; k ++ ) {
 		vec4 hi = wjlHigh[ k ];

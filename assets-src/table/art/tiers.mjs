@@ -6,8 +6,8 @@ const arrow = () => ''
 
 export const PAL = {
   corporate: { base: '#081229', base2: '#0f2147', key: '#e3bd62', fine: '#c4a252', pale: '#ecd797', under: '#070f27', dark: '#040a1a', lane: '#060e22', accent: '#27468a', soft: '#1b3466' },
-  office: { base: '#3e5258', base2: '#33464c', key: '#8a9c9a', fine: '#6c8084', pale: '#b4bcb2', under: '#26373c', dark: '#162226', lane: '#26373c', accent: '#4d6268', soft: '#435860' },
-  street: { base: '#0a1c30', base2: '#12304a', key: '#c3ccc9', fine: '#5f858e', pale: '#dcdfd6', under: '#07182a', dark: '#040d17', lane: '#081b2c', accent: '#b89a38', soft: '#19425a', fan: '#4f757d', fan2: '#33575f' }
+  office: { base: '#496268', base2: '#40575d', key: '#a39468', fine: '#77856f', plain: true, pale: '#b4bcb2', under: '#26373c', dark: '#162226', lane: '#26373c', accent: '#4d6268', soft: '#435860' },
+  street: { base: '#0a1c30', base2: '#12304a', key: '#c3ccc9', fine: '#5f858e', pale: '#dcdfd6', under: '#07182a', dark: '#040d17', lane: '#081b2c', accent: '#b89a38', soft: '#19425a', fan: '#4f757d', fan2: '#33575f', plain: true }
 }
 
 // One tier of the layout in its own frame: u across, v down from the top of the tier, in balls.
@@ -178,8 +178,8 @@ export function common(D, pal) {
     const fan = pal.fan ?? pal.key
     const fan2 = pal.fan2 ?? pal.fine
     answers.push(arc(fl.pivot, L + 0.1, a0, a1, fan, 0.022), arc(fl.pivot, L + 0.17, a0, a1, fan2, 0.008))
-    answers.push(rays(fl.pivot, L - 1.25, L + 0.1, a0, a1, 9, fan2, 0.01))
-    answers.push(arc(fl.pivot, L - 1.25, a0, a1, fan2, 0.008), dot(fl.pivot, 0.4, pal.under), ring(fl.pivot, 0.36, pal.key, 0.025), ring(fl.pivot, 0.44, pal.fine, 0.008))
+    if (!pal.plain) answers.push(rays(fl.pivot, L - 1.25, L + 0.1, a0, a1, 9, fan2, 0.01), arc(fl.pivot, L - 1.25, a0, a1, fan2, 0.008))
+    answers.push(dot(fl.pivot, 0.4, pal.under), ring(fl.pivot, 0.36, pal.key, 0.025), ring(fl.pivot, 0.44, pal.fine, 0.008))
 
     const sl = D.slings.find((x) => x.side === side.id)
     const tri = [sl.a, sl.b, sl.c]
@@ -355,9 +355,9 @@ export function office(D, seed) {
   walk.push(rect(D.MID - half, y0, 2 * half, D.H - y0, { fill: cream }), rect(C.left, band[0], C.right - C.left, band[1] - band[0], { fill: cream }))
   const onWalk = (q) => Math.abs(q[0] - D.MID) < half || (q[1] > band[0] && q[1] < band[1])
   const pileRand = rng(seed + 77)
-  const pile = [pal.soft, pal.accent, pal.under, pal.dark].map((col, i) => ({ col, d: '', w: [0.016, 0.012, 0.018, 0.012][i], o: [0.5, 0.55, 0.4, 0.35][i] }))
-  const speck = ['#9a9a86', '#c9c9b8', '#7c8074'].map((col, i) => ({ col, d: '', w: [0.022, 0.018, 0.02][i], o: 0.55 }))
-  for (let i = 0; i < 14000; i++) {
+  const pile = [pal.soft, pal.accent, pal.under, pal.dark].map((col, i) => ({ col, d: '', w: [0.009, 0.006, 0.011, 0.007][i], o: [0.5, 0.5, 0.36, 0.3][i] }))
+  const speck = ['#9a9a86', '#c2c2b0', '#7c8074'].map((col, i) => ({ col, d: '', w: [0.011, 0.008, 0.013][i], o: 0.5 }))
+  for (let i = 0; i < 52000; i++) {
     const q = [C.left + pileRand() * (C.right - C.left), y0 + pileRand() * (D.H - y0)]
     const a = pileRand() * 180
     const k = Math.floor(pileRand() * 4)
