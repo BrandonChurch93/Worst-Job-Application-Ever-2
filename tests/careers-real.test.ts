@@ -114,7 +114,7 @@ describe('the real careers page', () => {
     expect(box.max.x - box.min.x).toBeGreaterThan(slab.w - 8)
   })
 
-  it('makes a button cap once and lowers it by the press, and lights the tape from inside its window', () => {
+  it('makes a button cap once and lowers it by the press, and the tape gives off its own light and asks for no lamp', () => {
     const s = film()
     const tops: number[] = []
     const keys = new Set<string>()
@@ -135,7 +135,12 @@ describe('the real careers page', () => {
     const tape = list.find((x) => x.id === 'ticker-tape')!
     const o = ticker!.make(tape, ctx)
     ticker!.pose?.(o, tape, ctx)
-    expect(asked.length).toBeGreaterThan(0)
-    for (const e of asked) expect(e.shadow ?? false).toBe(false)
+    let glow = 0
+    o.traverse((n) => {
+      const m = (n as THREE.Mesh).material as THREE.MeshPhysicalMaterial | undefined
+      if (m && m.emissiveIntensity > 0 && m.emissive.r > 0) glow++
+    })
+    expect(glow).toBe(1)
+    expect(asked.length).toBe(0)
   })
 })

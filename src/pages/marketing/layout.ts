@@ -90,7 +90,7 @@ function perkCard(i: number, x: number, y: number): LayoutNode {
 function medallion(i: number, cx: number, y: number): LayoutNode[] {
   const k = `copy:marketing.awards.items.${i}`
   const title = { ...T.medalTitle, align: 'centre' as const, wrap: 190 }
-  const from = { ...T.medalFrom, align: 'centre' as const, wrap: 184 }
+  const from = { ...T.medalFrom, align: 'centre' as const, wrap: 200 }
   const th = tall(title, `${k}.title`, title.wrap)
   const fh = tall(from, `${k}.from`, from.wrap)
   const top = y + (MEDAL - (th + 22 + fh)) / 2

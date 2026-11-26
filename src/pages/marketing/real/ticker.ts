@@ -6,16 +6,16 @@ import { arc, outlineOf, profile, sweep, type ProfilePoint } from '../../../shel
 import type { Shape } from '../../../stage/types'
 import { dims, mesh, q, shared, srgb } from './careers-solids'
 
-export const TICKER_LOOK = { bezel: 3.2, proud: 0.9, glass: 1.6, pane: 0.9, lamp: [1, 0.93, 0.82] as [number, number, number], power: 0.55, reach: 150, lamps: 4 }
+export const TICKER_LOOK = { bezel: 3.2, proud: 0.9, glass: 1.6, pane: 0.9, glow: 0.3 }
 
 let tapeMade: THREE.MeshPhysicalMaterial | null = null
 let paneMade: THREE.MeshPhysicalMaterial | null = null
 let dotMade: THREE.MeshPhysicalMaterial | null = null
 let wallMade: THREE.MeshPhysicalMaterial | null = null
 
-// The tape is thin paper with a lamp behind it: it gives off a little warm light of its own.
+// The tape is thin paper with a lamp behind it: it gives off a little warm light of its own, evenly along its length, as a light box does.
 const tape = (): THREE.MeshPhysicalMaterial =>
-  (tapeMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xefe9dc), roughness: 0.88, metalness: 0, specularIntensity: 0.2, emissive: srgb(0xf2e2c4), emissiveIntensity: 0.42 })))
+  (tapeMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xefe9dc), roughness: 0.88, metalness: 0, specularIntensity: 0.2, emissive: srgb(0xf2e2c4), emissiveIntensity: TICKER_LOOK.glow })))
 
 // The pane over the window: clear glass, seen only by what it reflects and by a faint green in its body.
 const pane = (): THREE.MeshPhysicalMaterial =>
@@ -62,10 +62,5 @@ export const ticker: PartMaker | null = {
     if (s.role === 'tickerWindow') return window(s)
     if (s.id === 'ticker-tape') return strip(s)
     return mesh(shared(`tickerDot:${q(s.w)}`, () => new THREE.CircleGeometry(s.w / 2 - 1, 24).translate(0, 0, 0.08)), dot(), false)
-  },
-  pose(_o, s, ctx) {
-    if (s.id !== 'ticker-tape') return
-    const L = TICKER_LOOK
-    for (let i = 0; i < L.lamps; i++) ctx.light({ x: s.x + (s.w * (i + 0.5)) / L.lamps, y: s.y + s.h / 2, z: s.z1 + 2.5, colour: L.lamp, power: L.power, reach: L.reach })
   }
 }
