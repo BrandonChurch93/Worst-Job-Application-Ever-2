@@ -1,6 +1,6 @@
 import { config } from '../../config'
 import { collapseRig, drawRig, drawSmoke, drawSocket, fightRig, restRig, unfoldRig, prog, bossPlaceAt, CANNON_FROM, type Rig } from '../../boss/body'
-import { clearSpot, newFight, stepFight, threat, type Arena, type Fight } from '../../boss/fight'
+import { clearSpot, newFight, SPARK_SECONDS, stepFight, threat, type Arena, type Fight } from '../../boss/fight'
 import { ARENA, COLLAPSE_SECONDS, DOUBT_SECONDS, FALLEN, GAG_MAX, HOME, SOCKET, UNFOLD, WAKE_AFTER_TICK } from '../../boss/plan'
 import { drawWeapons } from '../../boss/weapons'
 import { homePose } from '../../stage/camera'
@@ -9,6 +9,7 @@ import { SCREEN_H } from '../../shell/parts'
 import type { DrawList, GagInfo, Hint, Mode, PageContext, PageLogic, Pointer, Shape, SheetFrame, StepIo } from '../../stage/types'
 import { makeLayout } from './layout'
 import { makeScript } from './script'
+import { TICK_Z } from './real/verify-card'
 
 type StageName = 'verify' | 'unfold' | 'fight' | 'collapse' | 'press'
 
@@ -35,6 +36,12 @@ interface State {
 
 const heights = config.scale.heights
 const REALLY = [0.7, 1.5] as const
+const SEAT = 0.2
+const LIFT = 7
+const FILL_GAP = 3.4
+const FILL_TOP = 2.2
+const easeOut = (t: number): number => 1 - (1 - t) * (1 - t) * (1 - t)
+const easeIn = (t: number): number => t * t
 const PHASE_GAG = ['boss.slabs', 'boss.popups', 'boss.lastStand'] as const
 const SPOTS: [number, number][] = [[560, 800], [430, 640], [330, 900], [760, 900], [1150, 940], [1420, 950], [1690, 960]]
 
@@ -90,6 +97,7 @@ export function makePage(): PageLogic {
       s.fight.popups = []
       s.fight.darts = []
       s.fight.sparks = []
+      s.fight.flashes = []
     }
     io.emit('power-down', from.cap.x, from.cap.y, false)
     io.cursor.act('exhausted')
@@ -208,18 +216,21 @@ export function makePage(): PageLogic {
           if (u >= UNFOLD.cannons[0] + i * 0.18) over[`progress-${n}`] = null
         })
       }
-      if (s.ticked >= 0) over['verify-box'] = { tone: 'accent' }
+      if (s.ticked >= 0) over['verify-box'] = { tone: 'accent', v: [s.ticked] }
       const states = page.states()
-      const slide = s.stage === 'unfold' ? (1 - prog(s.t, UNFOLD.bar[0], UNFOLD.bar[1])) * -1760 : 0
-      if (slide !== 0) {
+      const u = s.stage === 'unfold' ? s.t : 9
+      const slide = (1 - easeOut(prog(u, UNFOLD.bar[0], UNFOLD.bar[1] - SEAT))) * -1760
+      const lift = (1 - easeIn(prog(u, UNFOLD.bar[1] - SEAT, UNFOLD.bar[1]))) * LIFT
+      if (lift > 0) {
         const label = L.tree.children!.find((c) => c.id === 'health')!.children![0]!
         over['health-label'] = { x: label.box[0]! + slide, moved: true }
-        over['health-track'] = { x: L.track.x + slide, moved: true }
+        over['health-track'] = slide !== 0 ? { x: L.track.x + slide, moved: true, pocket: false, v: [lift] } : { moved: true, v: [lift] }
       }
       const options: DrawOptions = { states, over }
       const first = out.length
       drawLayout(out, L.tree, options)
       const open = L.fold - shut()
+      for (let i = first; i < out.length; i++) if (out[i]!.id === 'verify-rule') out[i]!.v = [L.rule.w]
       if (open > 0 && states[0] === 'rest') {
         for (let i = first; i < out.length; i++) {
           const shape = out[i]!
@@ -231,37 +242,25 @@ export function makePage(): PageLogic {
             shape.moved = true
           }
         }
-        out.push({ id: 'verify-rule', part: 'verify-card', kind: 'box', x: L.rule.x, y: L.rule.y, w: L.rule.w * (open / L.fold), h: L.rule.h, z0: heights.card, z1: heights.card + heights.rule, tone: 'metal', moved: true })
+        out.push({ id: 'verify-rule', part: 'verify-card', kind: 'box', x: L.rule.x, y: L.rule.y, w: L.rule.w * (open / L.fold), h: L.rule.h, z0: heights.card, z1: heights.card + heights.rule, tone: 'metal', moved: true, v: [L.rule.w] })
       }
       if (s.ticked >= 0) {
         const b = L.checkbox
-        const z = heights.card + 4
-        const a = prog(s.ticked, 0.02, 0.12)
-        const c = prog(s.ticked, 0.12, 0.28)
-        const stroke = (id: string, x0: number, y0: number, x1: number, y1: number, k: number): void => {
-          if (k <= 0.01) return
-          const ex = x0 + (x1 - x0) * k
-          const ey = y0 + (y1 - y0) * k
-          const len = Math.hypot(ex - x0, ey - y0) + 5
-          out.push({ id, part: 'verify-card', kind: 'box', x: b.x + (x0 + ex) / 2 - len / 2, y: b.y + (y0 + ey) / 2 - 2.75, w: len, h: 5.5, z0: z, z1: z + 1, tone: 'inkLight', rot: Math.atan2(ey - y0, ex - x0), r: 2 })
-        }
-        stroke('verify-tick-a', 10, 23, 18.5, 31.5, a)
-        stroke('verify-tick-b', 18.5, 31.5, 34, 13, c)
+        const k = prog(s.ticked, 0.04, 0.3)
+        if (k > 0.01) out.push({ id: 'verify-tick', part: 'verify-card', kind: 'box', x: b.x, y: b.y, w: b.w, h: b.h, z0: TICK_Z, z1: TICK_Z + 0.7, tone: 'inkLight', v: [k, s.ticked] })
       }
-      if (states.includes('fight') && s.fight) {
-        const t = L.track
-        const w = Math.max(0, (t.w - 6) * (s.fight.shown / 100))
-        if (w >= t.h - 6) out.push({ id: 'health-fill', part: 'health-bar', kind: 'capsule', x: t.x + 3 + slide, y: t.y + 3, w, h: t.h - 6, z0: heights.progressRail, z1: 2.5, tone: 'accent' })
-      } else if (states.includes('fight')) {
-        const t = L.track
-        out.push({ id: 'health-fill', part: 'health-bar', kind: 'capsule', x: t.x + 3 + slide, y: t.y + 3, w: t.w - 6, h: t.h - 6, z0: heights.progressRail, z1: 2.5, tone: 'accent' })
+      const fillAt = (w: number): Shape => ({ id: 'health-fill', part: 'health-bar', kind: 'capsule', x: L.track.x + FILL_GAP + slide, y: L.track.y + FILL_GAP, w, h: L.track.h - FILL_GAP * 2, z0: heights.progressRail + lift, z1: FILL_TOP + lift, tone: 'accent', v: [L.track.w - FILL_GAP * 2], moved: lift > 0 })
+      if (states.includes('fight')) {
+        const full = L.track.w - FILL_GAP * 2
+        const w = s.fight ? Math.max(0, full * (s.fight.shown / 100)) : full
+        if (w >= L.track.h - FILL_GAP * 2) out.push(fillAt(w))
       }
       if (s.cracked && !s.inSocket) drawSocket(out, SOCKET.x, SOCKET.y, prog(s.stage === 'unfold' ? s.t : 9, UNFOLD.crack, UNFOLD.crack + 0.25), 'socket-open')
       const rig = rigNow()
       if (rig) drawRig(out, rig, 'boss', s.pressed >= 0 ? heights.keyTravel : 0)
       if (s.stage === 'fight' && s.fight) drawWeapons(out, s.fight, L.weapons)
       if (s.stage === 'collapse' && s.from) {
-        const sparks = [0, 1, 2, 3, 4, 5].map((i) => ({ n: 900 + i, x: s.from!.cap.x + [-120, 90, -30, 150, -160, 40][i]!, y: s.from!.cap.y + [-40, 50, 70, -60, 30, -80][i]!, t: s.t - i * 0.1 })).filter((k) => k.t >= 0 && k.t < 0.22)
+        const sparks = [0, 1, 2, 3, 4, 5].map((i) => ({ n: 900 + i, x: s.from!.cap.x + [-120, 90, -30, 150, -160, 40][i]!, y: s.from!.cap.y + [-40, 50, 70, -60, 30, -80][i]!, t: s.t - i * 0.1 })).filter((k) => k.t >= 0 && k.t < SPARK_SECONDS)
         if (sparks.length) drawWeapons(out, { ...newFight(), sparks }, L.weapons)
       }
       if ((s.stage === 'collapse' && s.t > 1.2) || (s.stage === 'press' && !s.inSocket)) drawSmoke(out, FALLEN.x, FALLEN.y, s.time)
