@@ -268,8 +268,14 @@ export function buildLadder(z: Zone, _ctx: RealContext): THREE.Object3D {
   const half = Math.abs(a0[1] - a1[1]) / 2 + WIRE.under + 6
   moved(S, place(a0[0] - 42, my, 0.7, 0, 0, -0.2), () => {
     fin(S, FINISH.brushed, () => {
-      S.box(0, 46, -half, half, 0, 1.7, shade(STEEL, 0.9), { bevel: 0.5, bottom: true, along: [1, 0, 0] })
-      for (const s of [-1, 1]) S.box(3, 44, s > 0 ? half - 1.6 : -half, s > 0 ? half : -half + 1.6, 1.7, 5.4, shade(STEEL, 0.9), { bevel: 0.5 })
+      S.slab([[0, -half - 7], [5, -half - 7], [46, -half], [46, half], [5, half + 7], [0, half + 7]], 0, 1.7, shade(STEEL, 0.62), { bevel: 0.5, bottom: true, along: [1, 0, 0] })
+      for (const s of [-1, 1]) S.slab(s > 0 ? [[5, half + 5.4], [44, half - 1.6], [44, half], [5, half + 7]] : [[5, -half - 7], [44, -half], [44, -half + 1.6], [5, -half - 5.4]], 1.7, 5.4, shade(STEEL, 0.9), { bevel: 0.5 })
+      // Pressed ribs across the flap, so that a ball grips on the way up.
+      for (let k = 0; k < 7; k++) {
+        const x = 7 + k * 5.4
+        const w = half + 3.4 - (x - 5) * (7 / 41)
+        S.box(x, x + 1.5, -w, w, 1.7, 2.3, shade(STEEL, k % 2 ? 1.15 : 0.95), { bevel: 0.4 })
+      }
     })
   })
   fin(S, FINISH.polished, () => {
