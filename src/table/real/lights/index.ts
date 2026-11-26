@@ -1,10 +1,11 @@
 import * as THREE from 'three'
 import type { PartMaker, RealContext } from '../../../real/types'
 import { zoneAt } from '../../draw'
-import { BALL } from '../../layout'
-import { whole, type Zone } from '../zone'
-import { FILL, FLASH } from './colours'
+import { BALL, FLIP_REACH, table } from '../../layout'
+import { localBalls, whole, type Zone } from '../zone'
+import { FILL, FLASH, POOL, SOFT } from './colours'
 import { groupsOf, highOf, LIT, spillsOf, type Group } from './groups'
+import { BALLS, keyOf } from './key'
 import { buildLamps, type Lamps } from './lamps'
 import { levels, solo, soloed } from './levels'
 import { zoneLight } from './state'
@@ -79,6 +80,7 @@ function pose(o: THREE.Object3D, z: Zone, ctx: RealContext): void {
       ctx.light({ x: src.x + 960, y: z.top + z.height / 2 - src.y, z: src.z + z.floor, colour: n.g.colour, power: src.power * L.general * part * TRUE.cut, reach: src.reach, shadow })
     })
   }
+  const pool = POOL[z.id] ?? 1
   for (let i = 0; i < u.wjlCol.value.length; i++) {
     const g = groups[i]
     if (!g) {
@@ -86,7 +88,7 @@ function pose(o: THREE.Object3D, z: Zone, ctx: RealContext): void {
       u.wjlFull.value[i]!.set(0, 0, 0)
       continue
     }
-    const level = L.groups[i]! * (1 - share[i]!)
+    const level = L.groups[i]! * (1 - share[i]!) * (g.name === 'flash' ? 1 : pool)
     u.wjlCol.value[i]!.set(g.colour[0] * level, g.colour[1] * level, g.colour[2] * level)
     u.wjlFull.value[i]!.set(g.colour[0] * L.groups[i]!, g.colour[1] * L.groups[i]!, g.colour[2] * L.groups[i]!)
     u.wjlAt.value[i]!.set(g.at[0], g.at[1], g.mode === 0 ? FIELD_HEIGHT : g.at[2], g.name === 'flash' ? 3 : g.mode)
@@ -94,7 +96,7 @@ function pose(o: THREE.Object3D, z: Zone, ctx: RealContext): void {
   spillsOf(z).forEach((p, i) => {
     const level = (L.byName[p.follows] ?? 0) * p.power
     u.wjlSpill.value[i]!.set(p.x, p.y, p.half, p.high)
-    u.wjlSpillComb.value[i]!.set(p.pitch, p.phase)
+    u.wjlSpillComb.value[i]!.set(p.pitch, p.phase, p.side ? 1 : 0)
     u.wjlSpillCol.value[i]!.set(p.colour[0] * level, p.colour[1] * level, p.colour[2] * level)
   })
   highOf(z).forEach((p, i) => {
@@ -102,8 +104,34 @@ function pose(o: THREE.Object3D, z: Zone, ctx: RealContext): void {
     u.wjlHigh.value[i]!.set(p.x, p.y, p.z, p.reach)
     u.wjlHighCol.value[i]!.set(p.colour[0] * level, p.colour[1] * level, p.colour[2] * level)
   })
+  const key = keyOf(z)
+  if (key) {
+    const level = soloed() !== null ? (soloed() === `${z.id}.key` ? 1 : 0) : L.general
+    u.wjlKeyDir.value.set(...key.toward)
+    u.wjlKeyCol.value.set(key.colour[0] * key.power * level, key.colour[1] * key.power * level, key.colour[2] * key.power * level)
+    const balls = u.wjlBall.value
+    let n = 0
+    for (let i = 0; i < BALLS + 4 && n < BALLS; i++) {
+      const s = ctx.byId.get(i === 0 ? 'ball.clear' : `ball.steel.${i}`)
+      if (!s || zoneAt(s.y + s.h / 2) !== z.id) continue
+      balls[n++]!.set(s.x + s.w / 2 - 960, z.top + z.height / 2 - (s.y + s.h / 2), (s.z0 ?? 0) + BALL / 2 - z.floor, i === 0 ? -BALL / 2 : BALL / 2)
+    }
+    for (; n < BALLS; n++) balls[n]!.set(0, 0, 0, 0)
+    const bats = u.wjlBat.value
+    let m = 0
+    for (const f of table.flippers) {
+      if (f.tier !== z.tier || m >= bats.length) continue
+      const a = ctx.byId.get(`flipper.${f.id}`)?.v?.[0]
+      if (a === undefined) continue
+      const dir = f.side === 'left' ? 1 : -1
+      const p = localBalls(z, f.pivot[0], f.pivot[1])
+      const q = localBalls(z, f.pivot[0] + dir * FLIP_REACH * Math.cos(a), f.pivot[1] + FLIP_REACH * Math.sin(a))
+      bats[m++]!.set(p[0], p[1], q[0], q[1])
+    }
+    for (; m < bats.length; m++) bats[m]!.set(0, 0, 0, 0)
+  }
   const fill = FILL[z.id]!
-  const soft = 0.028 * L.general + FLASH.fill * L.flash
+  const soft = (SOFT[z.id] ?? 0.028) * L.general + FLASH.fill * L.flash
   u.wjlFill.value.set(fill[0] * soft, fill[1] * soft, fill[2] * soft)
   u.wjlEnv.value = soloed() !== null ? 0.5 : L.general * (1 + FLASH.room * L.flash) + 0.2 * L.website
   if (!b) return

@@ -22,7 +22,7 @@ const SEED = config.seed
 // Where the corporate print is gold leaf, by rule: red above blue by more than `from`, full metal `over` further on.
 const FOIL = { from: 24, over: 50 }
 // How a painted base is used. Corporate: the marble is the floor itself. Office and street: only the light and dark of the painted material is laid over the drawn ground, so the tones stay those of the print.
-const PAINTED = { corporate: { as: 'base', brightness: 1.0, saturation: 1.18 }, office: { as: 'detail', gain: 1.5 }, street: { as: 'detail', gain: 2.6 } }
+const PAINTED = { corporate: { as: 'base', brightness: 1.0, saturation: 1.18 }, office: { as: 'detail', gain: 0.7 }, street: { as: 'detail', gain: 2.0 } }
 
 async function layout() {
   const server = await createServer({ root, configFile: at('vite.config.ts'), server: { middlewareMode: true, hmr: false, watch: null, ws: false }, appType: 'custom', logLevel: 'error', optimizeDeps: { noDiscovery: true, include: [] } })
@@ -93,7 +93,7 @@ function ground(id, w, h) {
 
 // Fine grain at the scale of the print: felt pile, asphalt grit, the tooth of ink on a board.
 function grain(id, size, cell) {
-  const amp = { corporate: 9, office: 30, street: 24 }[id]
+  const amp = { corporate: 9, office: 13, street: 20 }[id]
   const data = Buffer.alloc(size * size * 3)
   const n = size / cell
   for (let y = 0; y < size; y++) {
@@ -102,7 +102,6 @@ function grain(id, size, cell) {
       const cy = Math.floor(y / cell)
       let g = hash2(cx % n, cy % n, SEED + 21) - 0.5
       if (id === 'street' && hash2(cx % n, cy % n, SEED + 33) > 0.985) g = 1.4
-      if (id === 'office') g = g * 0.6 + (hash2(Math.floor(cx / 2) % (n / 2), cy % n, SEED + 41) - 0.5) * 0.5
       const v = Math.max(0, Math.min(255, Math.round(128 + g * amp * 2)))
       const i = (y * size + x) * 3
       data[i] = data[i + 1] = data[i + 2] = v
