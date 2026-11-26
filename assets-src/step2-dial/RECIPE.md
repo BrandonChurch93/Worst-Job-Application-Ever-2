@@ -23,8 +23,8 @@ Nothing here is a picture. No file is downloaded, none is generated and none is 
 ## Tray
 
 - Made by: `trayJoint()`, `trayLiner()`, `trayFloor()` and `trayWallShade()` in `src/pages/step2/real/rows.ts`
-- From: nothing. Numbers of `TRAY` and `TRAY_R` in `src/pages/step2/layout.ts`: a dark joint 0.9 px wide where the page parts, an aluminium rim 4.2 px wide, a wall that leans in by 0.7 px for each pixel of depth, a glass floor 8 px under the page.
+- From: nothing. Numbers of `TRAY` and `TRAY_R` in `src/pages/step2/layout.ts`: a dark joint 0.9 px wide where the page parts, an aluminium rim 5.6 px wide, a wall that leans in by 1.3 px for each pixel of depth, a glass floor 8 px under the page.
 - Prompt or command: none. The open tray's solids are built once and kept; a tray on its way open is built for its height and dropped after.
-- Takes: three. No texture: 0 px, 0 MB. The floor's shade under the wall on the light's side is vertex colour, worked out from the key's direction and the tray's depth (`TRAY.soak`, `TRAY.soakReach`, `TRAY.bounce`).
+- Takes: eight. No texture: 0 px, 0 MB. The floor's shade under the wall on the light's side is vertex colour, worked out from the key's direction and the tray's depth: once in the glass itself (`TRAY.floor`) and once as a copy of the floor multiplied over it and over the words on it (`TRAY.soak`), tuned against the column x 1500 of the approved `step2-dial`.
 - Why this one: the approved tray has a thin aluminium lip, bright along the lower right and dark along the upper left inside wall, and a floor that is darker in a band under the upper and left walls.
 - Date: 2026-11-26

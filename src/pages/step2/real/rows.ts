@@ -39,9 +39,9 @@ export function trayWallShade(s: Shape): THREE.BufferGeometry {
   const surface = -s.z0
   const top = surface - TRAY.sink
   const outline = outlineOf(s, 0, 12)
-  const from = TRAY.joint + TRAY.rim - 0.5
+  const from = TRAY.joint + TRAY.rim
   const foot = trayFoot(surface)
-  const steps: [number, number, number][] = [[from - 1.2, top + 0.05, 0], [from, top - 0.5, 0.75], [from + 0.9, top - 1.3, 1], [foot, 0.06, 1]]
+  const steps: [number, number, number][] = [[from - 0.9, top + 0.05, 0], [from + 0.2, top - 0.9, 0.6], [from + 1.4, top - 1.6, 1], [foot, 0.06, 1]]
   const g = sweep(outline, steps.map(([inset, z]) => ({ inset, z, out: 0, up: 1 })), false)
   const [lx, ly] = look.key.direction
   const l = Math.hypot(lx, ly) || 1
@@ -78,7 +78,7 @@ const RINGS = [0, 1.5, 3, 5, 7.5, 10.5, 14, 18, 23, 29, 36, 45, 56, 70]
 
 // The floor: frosted glass lying in the shade of the wall on the light's side. The shade is laid into the face as vertex colour, from the key's
 // direction and the tray's depth, the way a field's is, but deeper and longer: a tray is the deepest opening of the page.
-export function trayFloor(s: Shape): THREE.BufferGeometry {
+export function trayFloor(s: Shape, paint: { soak: number; hold: number; reach: number; bounce: number; bounceReach: number; base: number } = TRAY.floor): THREE.BufferGeometry {
   const depth = -s.z0
   const inset = trayFoot(depth) - 0.5
   const w = Math.max(1, s.w - inset * 2)
@@ -111,7 +111,7 @@ export function trayFloor(s: Shape): THREE.BufferGeometry {
     return near
   }
   const shade = (x: number, y: number): number =>
-    1 - TRAY.soak * Math.exp(-Math.max(0, reach(x, y, 1) * slope - depth * TRAY.soakHold) / TRAY.soakReach) + TRAY.bounce * Math.exp(-(reach(x, y, -1) * slope) / TRAY.bounceReach)
+    paint.base * (1 - paint.soak * Math.exp(-Math.max(0, reach(x, y, 1) * slope - depth * paint.hold) / paint.reach)) + paint.bounce * Math.exp(-(reach(x, y, -1) * slope) / paint.bounceReach)
   const pos: number[] = []
   const col: number[] = []
   const idx: number[] = []
@@ -139,11 +139,11 @@ export function trayFloor(s: Shape): THREE.BufferGeometry {
   return g
 }
 
-interface TrayKit { joint: THREE.BufferGeometry; liner: THREE.BufferGeometry; floor: THREE.BufferGeometry; shade: THREE.BufferGeometry }
+interface TrayKit { joint: THREE.BufferGeometry; liner: THREE.BufferGeometry; floor: THREE.BufferGeometry; shade: THREE.BufferGeometry; soak: THREE.BufferGeometry }
 let open: { key: string; kit: TrayKit } | null = null
 
 const trayKey = (s: Shape): string => `tray:${q(s.w)}x${q(s.h)}:${q(s.r ?? 0)}:${q(s.z0)}`
-const makeKit = (s: Shape): TrayKit => ({ joint: trayJoint(s), liner: trayLiner(s), floor: trayFloor(s), shade: trayWallShade(s) })
+const makeKit = (s: Shape): TrayKit => ({ joint: trayJoint(s), liner: trayLiner(s), floor: trayFloor(s), shade: trayWallShade(s), soak: trayFloor(s, TRAY.soak) })
 
 // Every tray of the page has the same plan when it is open, so the open tray's solids are built once and kept. A tray on its way open is built for its height and dropped after.
 function tray(s: Shape): THREE.Object3D {
@@ -156,17 +156,19 @@ function tray(s: Shape): THREE.Object3D {
     kit = open.kit
   } else kit = makeKit(s)
   const root = new THREE.Group()
-  const add = (g: THREE.BufferGeometry, material: THREE.Material, cast: boolean, receive: boolean): void => {
+  const add = (g: THREE.BufferGeometry, material: THREE.Material, cast: boolean, receive: boolean): THREE.Mesh => {
     const mesh = new THREE.Mesh(g, material)
     mesh.castShadow = cast
     mesh.receiveShadow = receive
     root.add(mesh)
+    return mesh
   }
   add(kit.joint, m.gap, false, true)
   add(kit.liner, m.aluminiumSatin, true, true)
   add(kit.floor, m.glassSunk, false, true)
   shadeMaterial ??= new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, blending: THREE.CustomBlending, blendSrc: THREE.DstColorFactor, blendDst: THREE.ZeroFactor, depthWrite: false, toneMapped: false, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -2 })
   add(kit.shade, shadeMaterial, false, false)
+  add(kit.soak, shadeMaterial, false, false).position.z = TRAY.soakOver
   root.userData.passing = !whole
   return root
 }
