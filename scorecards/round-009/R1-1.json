@@ -1,0 +1,107 @@
+{
+ "critic": "R1",
+ "score": 6,
+ "pass": false,
+ "model": "gpt_6_2_sol",
+ "set": "A: the keys `step2-rest` and `step2-dial`, whole and in native crops, and the sheet `machines`, each beside the approved image",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-A-05-b.png",
+   "where": "top of the sheet and the alignment of the three machine columns",
+   "what": "The entire title, progress rail, divider and step heading are missing, leaving a blank top band. The three labels and their controls sit farther left than in the target, most clearly in the center column.",
+   "fix": "Restore the title, rail, divider and step heading as context for the machine sheet, and bring the columns onto the target's left, center and right alignment without changing the configured part sizes or accordion behavior."
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-05-b.png",
+   "where": "right column, volume meter and crank",
+   "what": "The gray indicators stand proud like separate buttons and the four lit ones glow nearly white and cast a broad orange halo. The target meter reads as dark inset lenses with amber highlights. The crank has a bright flat arm pointing much farther sideways instead of a darker bent arm dropping steeply from its hub.",
+   "fix": "Seat the indicators in dark pockets, retain amber in the illuminated lens faces and confine their bloom. Darken the arm to brushed gunmetal, use the bent profile, and rotate it down so the orange grip sits below and to the right of the hub."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "center column, date machine face and crank assembly",
+   "what": "The roller chamber is square and dry-looking, with broad opaque bars and flat rectangular drum edges. The target has a rounded, dark glazing lip and more cylindrical, brighter rollers. A dark slot below the housing is absent from the target, and the side crank is a short straight drop with a visible mounting plate instead of the target's bent, offset handle.",
+   "fix": "Build up a rounded stepped bezel and glass reflection, narrow the drum gaps and shade the rollers as curved surfaces. Remove the exposed bottom slot from this view, and shape the crank around a socket with the target's offset bend and round glossy orange grip."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "left column, uncovered phone dial",
+   "what": "The bright continuous brushed face runs right up to the center cap. The target has a distinct pale inner disc with its own dark seam, a deeper outer stack and a dark flat finger stop rather than a bright little rounded rod.",
+   "fix": "Separate the pale inner disc from the brushed ring with a dark circular seam, push the lower outer ring toward gunmetal, and form the lower-right stop as a flatter, tapered metal tab."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "whole machine sheet, especially shadows under the two cranks and the page surface",
+   "what": "The parts have short, fuzzy shadows and fairly even highlights. The target is brighter and chalkier, with distinct upper-left metal glints and longer, more directional shadows under the protruding handles.",
+   "fix": "Keep the illumination clean but add stronger directional upper-left speculars, tight contact darkening and longer lower-right penumbrae for the protruding parts. Bring the page toward the target's brighter, chalkier tooth."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "header, form row stack and footer",
+   "what": "The title and progress row sit high, the divider is high, and the form rows begin a little too close to the intro and accumulate more upward drift by the last row. The footer baseline is also high. Supporting copy is a slightly muddier, warmer gray than the target.",
+   "fix": "Drop the header cluster and divider, add air after the intro and a little pitch between the closed rows, and lower the footer baseline. Move the supporting copy toward the target's cleaner charcoal."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03-b.png",
+   "where": "header, open phone row, two closed lower rows and footer",
+   "what": "The entire vertical rhythm is high, especially the title, active tray and final closed row. The tray instruction rises along with its tray, and the footer sits above the target baseline.",
+   "fix": "Lower the header cluster and open row, keep the caption centered within the tray, space the remaining rows farther down and lower the footer to its target baseline."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "closed fields, progress circles and rail, and bare surface crops",
+   "what": "The field bevels are thin gray outlines with gray rather than smoky green glass and weaker rounded metal highlights. The progress metal reads as concentric gray rings with printed numerals rather than the target's contrasting brushed metal, darker rail and stamped-looking numerals. The orange disc lacks the bright curved catchlight. The paper has more uniform fine texture and less visible tooth.",
+   "fix": "Give the wells a deep green-gray inner shoulder and distinct rounded highlight along the bottom and right. Use a darker satin rail, stronger uneven metal highlights and recessed shading around the numerals. Restore the orange disc's sharp upper-left curved highlight and introduce the target's subtle irregular paper tooth."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04-b.png",
+   "where": "active field, open tray, dial and progress row crops",
+   "what": "The active outline is thinner and more uniform, with less amber reflection on adjacent material. The tray reads as a square-walled gray recess with an abrupt pale strip along its bottom rather than continuous rounded glass and metal. Its dial has a brighter, harder outer ring, shallower-looking numeral wells, and a more diffuse orange cap highlight. The dial's dark lower-right shadow fades sooner than in the target. The progress rail and orange marker also lack the stronger dark-to-bright metal and plastic shaping shown in the target crop.",
+   "fix": "Give the active field a richer amber reflection and turn the tray walls and bottom bevel into a continuous smoky glass and brushed metal transition. Temper the dial rim's white rings, deepen the hole interiors, sharpen the cap's upper-left highlight and extend the dial's local cast shadow down-right. Darken the progress rail and put a clearer curved specular on the selected marker."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "bottom-right Continue control, also visible in the A-02 close-up",
+   "what": "The button reads as a dark raised key with a pronounced cast shadow and bold text, while the target reads as a muted gray control seated low in a softly lit socket with quiet text.",
+   "fix": "Lighten and flatten the face tonally, trade the broad outside shadow for a tight socket seam and light lower rim, and reduce the lettering's weight and contrast."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03-b.png",
+   "where": "bottom-right Continue control, also visible in the A-04 close-up",
+   "what": "The open state repeats the dark high-contrast button and bold label, losing the target's muted gray inactive appearance.",
+   "fix": "Use the quieter gray face, soft recessed perimeter, and regular-weight low-contrast lettering from the target's open state."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "arrow between the top two fields, also visible in the A-02 close-up",
+   "what": "The arrow points much more upright, touches the second field, and has a thicker contoured edge and a broader down-right smudge than the shorter, neater target shadow.",
+   "fix": "Keep its configured height, pivot it leftward, place it cleanly in the gap, and use a thinner dark perimeter with a tighter down-right shadow."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03-b.png",
+   "where": "arrow on the rotary dial, also visible in the A-04 close-up",
+   "what": "The arrow has moved from the lower-right shoulder of the orange center cap to the stop at the outer rim. Its upright, slightly rumpled face and uneven edge lose the clean faceted face in the target.",
+   "fix": "Put the tip back against the orange cap, tilt it leftward and use a cleaner pale facet with a crisp dark edge and compact shadow, without changing configured height."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "arrow below the dial and three labels above the machines",
+   "what": "The arrow is too far left and high and has a broad blur below the dark edge. The labels have a heavier, more prominent gray treatment than the smaller-looking dark type in the target.",
+   "fix": "Move the arrow lower and right relative to the dial, tighten its cast shadow without resizing it, and make the labels lighter in weight and darker in color."
+  }
+ ]
+}
