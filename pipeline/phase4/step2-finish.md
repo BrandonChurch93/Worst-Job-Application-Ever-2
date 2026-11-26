@@ -41,13 +41,13 @@ Closed since the judged commit, seen in the pictures:
 ## Looks, counted by part
 
 
-One look is one draft still, comparison or sheet. Counted to 11:02 UTC.
+One look is one draft still, comparison or sheet. Counted to 12:12 UTC. The limit is 40 for each part.
 
-- rows: 1 (`compare --key step2-rest`).
-- dial: 3 (`compare --key step2-dial` twice, the sheet `machines` once for the stop and the middle).
-- slot: 5 (the sheet `machines` three times, `still --page step2 --beat step2.slot --at 0.35` twice).
-- crank: 4 (`compare --key step2-crank` four times).
-- acting: 9 (the sheets of `step2.slot` and `step2.continue`, one still of the peel, six sheets of film frames cut round the arrow: the lever, the poses of the open and the dial, the landing and the blow, the press of Continue, the last reel with the first coin, the blow of the crank with the recovery after the coins).
+- rows: 1 (`compare --key step2-rest`). The tray's floor was judged in the crank's and the dial's stills and is counted there.
+- dial: 8 (`compare --key step2-dial` and draft stills of the key, the sheet `machines` for the stop and the middle).
+- slot: 10 (the sheet `machines`, `still --page step2 --beat step2.slot` at 0.35 and 0.62).
+- crank: 15 (`compare --key step2-crank` and draft stills of the key).
+- acting: 23 (sheets of film frames, whole or cut round the arrow: the lever, the open, the dial, the landing, the blow, Continue, the coins, the recovery, the snag of the dial, the warned arrow, the whip in the frames the beat sheet takes, the throw off the crank, the double take, the strut, the crank beat and the Continue beat in whole frames, the angry run, the refill before and after its move).
 
 ## Decisions
 
@@ -65,3 +65,20 @@ One look is one draft still, comparison or sheet. Counted to 11:02 UTC.
 12. The coins, R4-1 issue 1. The last reel reads 0.69 s after the lever (was 0.39 s), so the stop is one beat and the pay the next. At the stop the housing kicks down 3 px and comes back; the first three coins leave the payout mouth fast and aimed at the arrow, the rest burst as before. The event `coins` is the first coin on the arrow and stays at 11.96 s.
 13. The payout mouth is built: a satin steel trough with a dark bed under the cabinet, where the kit says the coins burst from the tray. The approved sheet shows no mouth; the kit's words are followed and the mouth is kept as small as a coin needs.
 14. Not mine and told to the Builder: the arrow's flight to the hand-off place while the page folds is the stage's lift, and the crazed flat body is the cursor's own look.
+15. The dial's return, R4-1 issue 3: where the whip ends the wheel is stopped dead for 0.05 s with the arrow on it and stretched, the latch bounces and dies, and the event `dial-fling` is the first stopped frame. The numbers dialled still register at the release.
+16. The lamps of the meter dip for 0.07 s at the blow of the crank, so the blow is in the machine and in the arrow at once.
+17. After the blow the arrow shrinks back from the crank when it sees it still turning, and goes to Continue in two parts with a stall between them.
+18. A lens of the meter stands in a narrow seat of two meshes (a lip of the lens's wall glass and a contact line). The line is the part's own soft grey through `studio()`, lighter than the shared gap, because beside the approved key the shared gap drew a black ring round every lens. `tests/step2-keeper.test.ts` held 2 meshes for a lens and now holds 4; the work changed what it holds.
+19. The crank's plate lays a soft shade on the tray down and to the right (`CRANK_LOOK.cast`), its face is darker, its screws are larger, the bar is brushed.
+20. The dial stands in a seat with a thin foot line and lays a longer shade (`DIAL_BODY.cast`, `castOut`, `castAway`); the cap is glossier.
+21. The crank's instruction stands where the approved key has it, in the tray's upper left.
+22. The payout tray is satin steel with a mid grey bed. The reels' numerals are heavy and narrow (three fused copies), and a drum is shaded deeper toward its edges.
+23. Two approved images disagree and I kept one: the key `step2-dial` shows turned steel up to the cap, the sheet `machines` shows a cream inner disc, and R1-1 issue 9 asks for the disc. See decision 5.
+24. Not changed, and why. R1-1 issue 11 asks for the counter's crank to hang below the machine: the knob's place is the layout's and the pull's path is the gag's. R1-2 issue 9 is the open field's header, drawn by the shell's controls, which are the shared look's.
+25. R9-1 issue 7, the whip as the event of the beat. The third number is taken at 3.8 s and wound in 0.42 s, so the whip runs from 4.22 s to 5.58 s (it ran from 4.81 s). Its speed is 5 rad/s plus 8.5 times the fourth power of the time, so it carries the arrow slowly at first: the beat sheet's frames at 4.17, 4.7 and 5.27 s have the arrow at 4, 11:30 and 2 o'clock on the wheel. The throw is from the top of the wheel to the left, 0.55 s in the air with two tumbles and a long body; it comes down 96 px short of its place, on its side, and skids the rest in 0.26 s. The event `dial-fling` stays at 5.58 s.
+26. R9-1 issue 8 and R9-2 issue 7, in the film only. 0.05 s after `crank-runaway` the crank throws the arrow off: 0.28 s in the air, one and a half tumbles, a skid of 0.1 s, to the far end of the meter. There it does the cursor's `doubleTake` from 15.62 s with turns of the body on top: toward the crank, away, toward it again, a stretch of 1.42, a snap to 0.7 at 16.21 s. The handle speeds up alone through all of it. The acting state stays `shocked` from 15.22 s to 16.24 s, the longest run of that state in the page, so the state's sheet is this one. `doubleTake` was at the dial's landing and is here now; `cower` is not used. In live mode the user's pointer is not taken from the crank.
+27. R9-1 issue 9. The flat arrow is laid down again at 19.73 s for 0.6 s (19.77 s until 12:10Z: the frame at 20.267 s then showed a body still flat), so it lies flat at 20.0 s, peels from 20.03 s, refills from 20.2 s, is half filled at 20.267 s and whole at 20.33 s; the press is at 20.42 s. The events `peel-up` (19.95 to 20.03 s) and `button-press` (20.3 to 20.42 s) moved and my test `tests/step2-dial-acting.test.ts` moved with them; the page turn at 20.5 s and the beat's length are the kit's. What the flat body looks like is the cursor's.
+28. R9-2 issue 6. Before the first field the arrow stands on end (turned 0.14), stretched 1.26, and goes in three hops of 14 px with a squash of 0.9 on each landing, from 1.03 s to 1.66 s. The squash and lean back before the walk are gone: they read as doubt.
+29. R9-2 issue 8. The arrow turns its tip to the crank's hub when it goes back in at 16.32 s. The heat of `angry` is the cursor's: I asked for heat 0.6 and the Builder refused it with a picture, because approved's glow covers the same half of the head; the yellow flecks are the shared look's item now. No patch is on this branch.
+30. The well of a tray, the Builder's look at merge 34: the floor's shade under the upper and left wall is deeper and shorter (soak 0.44 over 13 px, was 0.25 over 22 px), the floor is a little darker (1.13, was 1.16) and the far side is lighter (0.13 over 12 px). All three trays share it.
+

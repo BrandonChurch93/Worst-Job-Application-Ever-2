@@ -387,6 +387,7 @@ function makeScorch(s: Shape): THREE.Object3D {
   return root
 }
 
+const MUZZLE_WIDE = 60
 const full = (s: Shape, height: number, role: string): Shape => ({ ...s, z0: 0, z1: height, role, rot: 0 })
 
 const kindOf = (s: Shape): string => {
@@ -489,9 +490,13 @@ export const bossWeapons: PartMaker | null = {
       }
       case 'muzzle': {
         const u = Math.min(1, Math.max(0, v[0] ?? 0))
+        const big = s.w / MUZZLE_WIDE
+        o.scale.setScalar(big)
         const n = Math.round(v[1] ?? 0)
         const hot = (1 - u) * (1 - u)
-        const star = o.getObjectByName('star')!
+        const star = o.getObjectByName('star') as THREE.Mesh
+        const own = big < 1
+        star.material = own ? kit().glintMaterial : kit().muzzleMaterial
         const size = (60 + 110 * Math.sqrt(u)) * Math.pow(1 - u, 1.5)
         star.scale.set(size, size * 0.62, 1)
         star.position.set(2 + 26 * u, 0, 2)
@@ -500,19 +505,20 @@ export const bossWeapons: PartMaker | null = {
         const halo = o.getObjectByName('halo')!
         halo.scale.set(230 * hot + 4, 170 * hot + 4, 1)
         halo.position.set(0, 0, 1)
+        halo.visible = !own
         const smoke = o.getObjectByName('smoke')!
         smoke.scale.set(40 + 70 * u, 40 + 70 * u, 1)
         smoke.position.set(26 * u, 0, 1.5)
         smoke.rotation.z = hash01(n, 6, seed) * 6
-        smoke.visible = u > 0.1
+        smoke.visible = u > 0.1 && !own
         const ring = o.getObjectByName('ring') as THREE.Mesh
         const wide = RING.from + (RING.to - RING.from) * Math.sqrt(u)
         ring.scale.set(wide * RING.flat, wide, 1)
         ring.position.set(8 + RING.ahead * Math.sqrt(u), 0, RING.z)
         const ringStuff = ring.material as THREE.MeshBasicMaterial
         ringStuff.opacity = Math.min(1, u / 0.1) * Math.pow(1 - u, 0.8)
-        ring.visible = u > 0.04 && u < 0.98
-        ctx.light({ x: cx, y: cy, z: s.z1 + 6, colour: WEAPON_EMIT.muzzle.colour, power: WEAPON_EMIT.muzzle.power * hot, reach: WEAPON_EMIT.muzzle.reach })
+        ring.visible = u > 0.04 && u < 0.98 && !own
+        if (!own) ctx.light({ x: cx, y: cy, z: s.z1 + 6, colour: WEAPON_EMIT.muzzle.colour, power: WEAPON_EMIT.muzzle.power * hot, reach: WEAPON_EMIT.muzzle.reach })
         break
       }
       case 'slab': {
