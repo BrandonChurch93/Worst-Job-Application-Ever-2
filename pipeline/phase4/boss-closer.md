@@ -46,8 +46,42 @@ Major
 Minor
 - R1-1 19: wisps rise from mid cap, thin and even.
 
-## Looks by part (40 each this round)
+## Looks by part (40 each this round, counted from the first still; one render that shows two parts counts for both)
 
-| part | looks |
-| --- | --- |
-| diagnosis (all parts, before change) | 3 |
+| part | looks at 07:40 UTC | what they were |
+| --- | --- | --- |
+| diagnosis (all parts, before change) | 3 | the two keys and the sheet beside approved |
+| verify-card | 8 | `boss-fight` at draft 7, at review 1 |
+| boss-body | 14 | `boss-fight` 8, `boss-down` 6 |
+| boss-transform | 11 | `boss-down` 6, sheet `boss-stages` 5 |
+| boss-weapons | 2 | motion sheet `boss.popups` 1, `boss-fight` compare 1 |
+| health-bar | 1 | still of `boss.lastStand` at 0.22 |
+| acting-boss | 15 | motion sheets 6 (verify twice, popups, unfold, lastStand, press), stills of single moments 9 |
+
+## Decisions
+
+- Glass does not transmit by refraction, and why. Real transmission was tried in Phase 3 and declined: it drew the opaque scene a second time (7.3 s and 122 draw calls against 4.5 s and 84, STATED in `kit/PROGRESS.md`) and it hid the shadows that fall on the glass. The shared glass is therefore opaque with a computed picture of the page under it. For the verify card and the shield I use neither: both are alpha blended panes (card 0.86 through, shield 0.8) so the real page and the real arm are seen through them, with an opaque polished bead as the bright edge and vertex colours on the bevel. It costs no second pass. What it cannot do: bend what is behind it.
+- Why a paragraph showed under the verify card in `boss-fight`: `verify-fine-open` in `layout.ts` has `states: OPEN`, the three open states of the card, so it stayed through the fight. It is now taken out of the draw list once the state `fight` is on. At rest and while the card opens it is drawn as before. No test of copy use needed it (1395 of 1395 pass).
+- Arrow in `boss-fight`: `AIM_LIFT` 0.36 to 0.72, so the stem lies about 40 degrees up to the right as in the approved image and the tip is on the dart line.
+- Arrow in `boss-down`: the cursor has no chipped state (its damage states are burn, shredded, reassembled, flattened, scorched), so it is scorched, smoking and sagging (`exhausted`, called 1.45 s into the collapse). Its size is settled and small; the approved arrow is larger and is not to be matched in size.
+- Plates: tone `0x8e9296` alive and `0x9a9ea2` in the wreck, roughness 0.46, brushing 0.42 deep. Before, the wreck's plates were `0x4a4d51` and read as dark flat shapes with bright rivets.
+- Fallen cap: its own geometry (`src/boss/real/pill.ts`), 33 px tall against 18, a quarter ellipse in section, with blisters, a dent and three nicks. It is drawn in the shared orange. The live cap stays the shared button; the change of one for the other happens the moment the cap leaves the frame, at the same height (the pill is scaled to 18 px there and grows as it falls).
+- Acting, both modes unless said: pride for 1.2 s when the box is ticked; shocked from the crack, then scared from the moment the legs come out to the end of the unfold (the reactions `rear` and `cower` are gone from the unfold, they read as a slump); a kick back on every shot and a flinch on the first shot of a burst; a cower and a kick away when a pop-up lands; after a hit, buckled (`exhausted`) for 1.1 s; at the second phase, squared up (`proud`) for 0.8 s and only then `angry` with the fume; at Session expired, a double take and `shocked` held for 1.5 s in place of the hurt pose; at the last press a stamp, then `proud` from 0.42 s. Film only: the hover by the box from 1.25 s, the dart to the far edge of the card at 6.95 s and the stand there to 8.7 s, the loaded point at 9.45 s, the press at 29.88 s and `done` 1.5 s after it (live keeps 0.35 s).
+- The bar's jump back up: a piece `health-gain` lies on the end of the fill for 1.6 s after Session expired, the same orange with its own light, fading from 1.0 s.
+- `tests/boss-closer-acting.test.ts` is new: five checks of the held poses and of the bar's gain in the film.
+- Merge of `origin/main` at 07:34 UTC was pushed before the whole test run on the merged tree; the run after it was green (1395 of 1395, build, bots, 07:36 to 07:39 UTC). From here on the run comes before the push.
+
+## After the first pass (MEASURED, 07:34 to 07:40 UTC)
+
+| what | command | number |
+| --- | --- | --- |
+| tests | `npm test` | 103 files, 1395 of 1395, 72.8 s |
+| build | `npm run build` | exit 0 |
+| bots | `npm run bots` | all clear |
+| measures | `npm run measure -- --unit boss --tier review` | 8 green, 0 red; M3 0.8132 (least 0.8) |
+| `boss-fight` draft | `npm run compare -- --key boss-fight --tier draft --format hd` | 11.094 s, 642352 triangles, 472 draw calls |
+| `boss-fight` review | `npm run still -- --key boss-fight --format hd --tier review --force` | 23.055 s, 642352 triangles, 472 draw calls |
+| `boss-down` draft | `npm run compare -- --key boss-down --tier draft --format hd` | 11.534 s, 531478 triangles, 388 draw calls |
+| sheet `boss-stages` draft | `npm run compare -- --sheet boss-stages --tier draft --format hd` | 9.066 s, 651466 triangles, 500 draw calls |
+
+Textures: none added. STATED from the recipes: soot 512 x 128 (0.33 MB with mips), puff 64 x 64 (0.021 MB), brushing 512 x 128 (0.33 MB).
