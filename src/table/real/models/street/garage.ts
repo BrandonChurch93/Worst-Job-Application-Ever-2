@@ -190,10 +190,10 @@ export function garage(b: Buckets, z: Zone): void {
       }
     }
     // A strip lamp under the beam in each bay, lit, on the inner edge.
-    for (let k = 0; !thin && k + 3 < n; k += 6) {
-      const a = a0 + (k + 3) * step
+    for (let k = 0; !thin && k + 3 <= n; k += 3) {
+      const a = a0 + (k + 1.5) * step
       const m = b.glow.mark()
-      b.glow.box(Ri + 0.6, Ri + 2.6, -8, 8, z0 - 1.6, z0 - 0.2, [1.5, 1.4, 1.1], { under: true, skip: 't' })
+      b.glow.box(Ri + 0.5, Ri + 3.2, -12, 12, z0 - 3, z0 - 0.2, [1.5, 1.4, 1.1], { under: true, skip: 't' })
       b.glow.place(m, cx, cy, 0, a)
     }
   }

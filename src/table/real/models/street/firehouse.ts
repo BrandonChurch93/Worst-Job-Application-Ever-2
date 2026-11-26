@@ -165,7 +165,7 @@ export function firehouse(b: Buckets, z: Zone, ctx: RealContext): Firehouse {
     for (const fx of [fl - MOUTH.jamb - 1, fr - 0.5]) g.box(fx, fx + 4.5, -7, -3.4, 0, 12, TONE.yellow, { skip: 'b', bevel: 0.9, kind: KIND.gloss })
 
     // The bay behind the mouth: a dark floor let in level with the street, and the slot the door runs up in.
-    g.quad([fl, -3.4, 0.22], [fr, -3.4, 0.22], [fr, deep, 0.22], [fl, deep, 0.22], shade(BAY, 0.9), KIND.gloss)
+    g.quad([fl, -3.4, 0.22], [fr, -3.4, 0.22], [fr, deep, 0.22], [fl, deep, 0.22], shade(BAY, 0.5), KIND.gloss)
   })
 
   // What the red lamp of the bay lights: its walls, its back and its ceiling, brightest under the head where the lamp hangs.
@@ -176,20 +176,20 @@ export function firehouse(b: Buckets, z: Zone, ctx: RealContext): Firehouse {
     const d0 = MOUTH.reveal
     const d1 = deep
     const zc = MOUTH.h
-    const lv = [0.006, 0.014, 0.04, 0.1]
-    const zs = [0, zc * 0.3, zc * 0.62, zc * 0.86, zc]
+    const steps = 9
     const red = (k: number): RGB => [k, k * 0.7, k * 0.6]
-    for (let k = 0; k < 4; k++) {
-      const z0 = zs[k]!
-      const z1 = zs[k + 1]!
-      bay.quad([a, d0, z0], [a, d1, z0], [a, d1, z1], [a, d0, z1], red(lv[k]!))
-      bay.quad([c, d1, z0], [c, d0, z0], [c, d0, z1], [c, d1, z1], red(lv[k]!))
-      bay.quad([a, d1, z0], [c, d1, z0], [c, d1, z1], [a, d1, z1], red(lv[k]! * 0.4))
+    for (let k = 0; k < steps; k++) {
+      const z0 = (zc * k) / steps
+      const z1 = (zc * (k + 1)) / steps
+      const lv = 0.0012 + 0.04 * Math.pow((k + 0.5) / steps, 3.2)
+      bay.quad([a, d0, z0], [a, d1, z0], [a, d1, z1], [a, d0, z1], red(lv))
+      bay.quad([c, d1, z0], [c, d0, z0], [c, d0, z1], [c, d1, z1], red(lv))
+      bay.quad([a, d1, z0], [c, d1, z0], [c, d1, z1], [a, d1, z1], red(lv * 0.3))
     }
-    bay.quad([a, d1, zc], [c, d1, zc], [c, d0 + 4, zc], [a, d0 + 4, zc], red(0.1))
+    bay.quad([a, d1, zc], [c, d1, zc], [c, d0 + 4, zc], [a, d0 + 4, zc], red(0.02))
     // Racks on the back wall, dark against it.
-    for (let k = 0; k < 3; k++) bay.box(a + 16 + k * 34, a + 40 + k * 34, d1 - 2.4, d1 - 0.2, 40, 45, red(0.003), { skip: 'b', under: true })
-    bay.box(a + 22, c - 22, d0 + 8, d0 + 12, zc - 3.2, zc - 0.4, [0.8, 0.6, 0.5], { under: true, skip: 't' })
+    for (let k = 0; k < 3; k++) bay.box(a + 16 + k * 34, a + 40 + k * 34, d1 - 2.4, d1 - 0.2, 40, 45, red(0.0006), { skip: 'b', under: true })
+    bay.box(a + 22, c - 22, d0 + 8, d0 + 12, zc - 3.2, zc - 0.4, [0.5, 0.36, 0.3], { under: true, skip: 't' })
     bay.place(0, x0, yf, 0, 0)
   }
 

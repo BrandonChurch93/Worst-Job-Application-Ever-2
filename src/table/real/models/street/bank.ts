@@ -31,13 +31,15 @@ export function bank(b: Buckets, z: Zone, ctx: RealContext): void {
   const doors: Hole = { x: W / 2 - 11, z: 0, w: 22, h: doorH }
 
   walls(b, x0, x1, yf, yb, podium, (side, width) => {
-    const holes: Hole[] = side === 'front' ? [doors] : side === 'right' ? [{ x: 10, z: 12, w: 11, h: 40 }, { x: width / 2 - 5.5, z: 12, w: 11, h: 40 }, { x: width - 21, z: 12, w: 11, h: 40 }] : []
+    const tall: Hole[] = [{ x: 7, z: 6, w: 11, h: doorH - 6 }, { x: width - 18, z: 6, w: 11, h: doorH - 6 }]
+    const holes: Hole[] = side === 'front' ? [doors, ...tall] : side === 'right' ? [{ x: 10, z: 12, w: 11, h: 40 }, { x: width / 2 - 5.5, z: 12, w: 11, h: 40 }, { x: width - 21, z: 12, w: 11, h: 40 }] : []
     wallFace(g, 0, width, 0, entab - podium, holes, stone, KIND.block)
     if (side === 'right') {
       for (const h of holes) windowAt(b, h, { frame: TONE.bronze, wall: stone, sill: TONE.stone, bars: [1, 4], glow: 1, warm: 0.2, depth: 3 })
       for (const px of [3, width / 2 - 14, width / 2 + 10, width - 7]) g.box(px, px + 4, -1.4, 0, 0, entab - podium, shade(stone, 1.04), { skip: 'b' })
     }
     if (side !== 'front') return
+    for (const h of tall) windowAt(b, h, { frame: TONE.bronze, wall: stone, bars: [1, 4], glow: 1.25, warm: 0.1, depth: 3 })
     // The tall bronze doors in a stone frame, a lit transom over them, and the night deposit slot beside them.
     const d = 4
     const a = doors.x

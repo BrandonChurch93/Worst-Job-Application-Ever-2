@@ -60,7 +60,7 @@ vec4 wsSurface( vec3 face ) {
 	vec3 tone = vec3( 1.0 );
 	float h = 0.0;
 	if ( kind == 1.0 || kind == 10.0 ) {
-		vec2 c = wsCells( uv, vec2( 6.0, 2.5 ), 0.5, 0.5 );
+		vec2 c = wsCells( uv, kind == 1.0 ? vec2( 10.0, 4.2 ) : vec2( 6.0, 2.5 ), 0.5, kind == 1.0 ? 0.8 : 0.5 );
 		float burnt = step( 0.86, wsHash( vec2( c.y * 53.0, 11.0 ) ) );
 		if ( kind == 1.0 ) {
 			float lip = smoothstep( 0.52, 0.86, wsIn.y ) * ( 1.0 - c.x ) * wsFade;
@@ -126,7 +126,7 @@ vec4 wsSurface( vec3 face ) {
 // The moulded and painted plastic of the models: one material for the zone, a colour for each vertex and a kind of surface for each face.
 export function paintOf(z: Zone): THREE.MeshPhysicalMaterial {
   const m = studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.6, metalness: 0, specularIntensity: 0.5, clearcoat: 0.22, clearcoatRoughness: 0.38 }))
-  over(m, 'wja-studio-street-paint-11', (shader) => {
+  over(m, 'wja-studio-street-paint-12', (shader) => {
     shader.vertexShader = 'attribute vec3 face;\nvarying vec3 vWsFace;\n' + shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n\tvWsFace = face;')
     shader.fragmentShader =
       'varying vec3 vWsFace;\n' +
@@ -171,6 +171,13 @@ export function lensOf(z: Zone, name: string, colour: [number, number, number]):
     })
   )
   m.userData.lit = true
+  // The dome gathers its lamp: bright where the eye looks straight through it at the bulb, deep in colour toward its rim.
+  over(m, 'wja-studio-street-lens', (shader) => {
+    shader.fragmentShader = shader.fragmentShader.replace(
+      '#include <emissivemap_fragment>',
+      '#include <emissivemap_fragment>\n\t{\n\t\tfloat wsF = clamp( dot( normalize( vNormal ), normalize( vViewPosition ) ), 0.0, 1.0 );\n\t\tfloat wsL = max( totalEmissiveRadiance.r, max( totalEmissiveRadiance.g, totalEmissiveRadiance.b ) );\n\t\ttotalEmissiveRadiance = totalEmissiveRadiance * ( 0.16 + 2.6 * pow( wsF, 3.0 ) ) + vec3( 0.7 ) * wsL * pow( wsF, 9.0 );\n\t}'
+    )
+  })
   return named(lit(m, z), `street.lens.${name}.${z.id}`)
 }
 
