@@ -88,7 +88,7 @@ function own(): Own {
   const drum = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xe9e6de), roughness: 0.46, metalness: 0, clearcoat: 0.35, clearcoatRoughness: 0.3, specularIntensity: 0.5, vertexColors: true }))
   const glass = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x10161b), roughness: 0.05, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.03, specularIntensity: 1, envMapIntensity: 1.5, transparent: true, opacity: 0.12, depthWrite: false }))
   const well = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x1d1c1b), roughness: 0.8, metalness: 0, specularIntensity: 0.3 }))
-  const gold = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xecc163), roughness: 0.36, metalness: 1, envMapIntensity: 1.5, normalMap: face, normalScale: new THREE.Vector2(1, 1) }))
+  const gold = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xd4a543), roughness: 0.6, metalness: 1, envMapIntensity: 1.1, normalMap: face, normalScale: new THREE.Vector2(2, 2) }))
   const rod = studio(new THREE.MeshPhysicalMaterial({ color: m.chrome.color, roughness: 0.14, metalness: 1 }))
   const frame = studio(m.aluminium.clone())
   frame.color = srgb(0x6a6e72)
