@@ -30,15 +30,18 @@ uniform float wjsUnder;
 uniform float wjsSky;
 uniform float wjsWall;
 uniform float wjsPaint;
+uniform float wjsSpark;
+uniform float wjsThin;
 varying vec3 wjsAt;
 float wjsGlint( float across, float along, float up, float at, float rough ) {
 	float a = abs( across );
 	if ( a < 0.04 ) return 0.0;
 	float t = wjsRow.y / a;
 	float h = up * t - wjsRow.z;
-	float d = ( fract( ( at + along * t ) / wjsRow.x ) - 0.5 ) * wjsRow.x;
+	float p = ( at + along * t ) / wjsRow.x;
+	float d = ( fract( p ) - 0.5 ) * wjsRow.x;
 	float s = 6.0 + rough * 70.0;
-	return exp( - ( d * d + h * h ) / ( s * s ) ) / ( 1.0 + rough * rough * 40.0 );
+	return exp( - ( d * d + h * h ) / ( s * s ) ) / ( 1.0 + rough * rough * 40.0 ) * ( 1.0 - smoothstep( 0.2, 0.5, fwidth( p ) ) );
 }
 vec3 wjsLamps( vec3 R, float rough ) {
 	return mix( wjsLamp, vec3( 1.0 ), 0.35 ) * wjsRow.w * ( wjsGlint( R.x, R.y, R.z, wjsAt.y, rough ) + wjsGlint( R.y, R.x, R.z, wjsAt.x, rough ) );
@@ -69,13 +72,14 @@ vec3 wjsPolish( vec3 R, float rough ) {
 	float keep = ( 0.02 + rough * 0.25 ) / w;
 	float turn = atan( R.y, R.x );
 	float rings = exp( - ( R.z - 0.84 ) * ( R.z - 0.84 ) / ( w * w ) ) + 0.5 * exp( - ( R.z - 0.42 ) * ( R.z - 0.42 ) / ( w * w * 0.5 ) );
-	vec3 above = mix( wjsLamp, vec3( 1.0 ), 0.5 ) * ( 0.02 + rings * ( 0.6 + 0.4 * cos( turn * 2.0 + 0.6 ) ) * keep * keep * 2.6 / ( 1.0 + rough * 6.0 ) ) * smoothstep( -0.02, 0.1, R.z );
+	vec3 above = mix( wjsLamp, vec3( 1.0 ), 0.5 ) * ( 0.02 + ( rings * ( 0.6 + 0.4 * cos( turn * 2.0 + 0.6 ) ) * keep * keep + wjsThin * smoothstep( 0.44, 0.64, R.z ) ) * 2.6 / ( 1.0 + rough * 6.0 ) ) * smoothstep( -0.02, 0.1, R.z );
 	float side = 0.1 + 0.9 * smoothstep( -0.3, 0.3, R.x * 1.6 + 0.3 * sin( wjsAt.y * 0.031 ) );
 	vec3 field = mix( wjsLamp, vec3( 1.0 ), 0.4 ) * ( 0.08 + 0.07 * sin( wjsAt.y * 0.047 + R.x * 3.0 ) ) * side;
 	float az = atan( R.y, R.x );
 	float low = exp( - ( R.z + 0.34 ) * ( R.z + 0.34 ) / 0.006 );
-	field += ( vec3( 1.0, 0.22, 0.14 ) * pow( 0.5 + 0.5 * cos( az - 0.9 - wjsAt.y * 0.004 ), 40.0 ) + vec3( 0.2, 0.45, 1.0 ) * pow( 0.5 + 0.5 * cos( az + 2.1 + wjsAt.y * 0.003 ), 40.0 ) ) * 1.6 * low * keep;
-	field += wjsLamp * 2.4 * pow( 0.5 + 0.5 * cos( az * 7.0 + wjsAt.y * 0.013 ), 24.0 ) * exp( - ( R.z + 0.22 ) * ( R.z + 0.22 ) / 0.012 ) * keep;
+	field += ( vec3( 1.0, 0.22, 0.14 ) * pow( 0.5 + 0.5 * cos( az - 0.9 - wjsAt.y * 0.004 ), 40.0 ) + vec3( 0.2, 0.45, 1.0 ) * pow( 0.5 + 0.5 * cos( az + 2.1 + wjsAt.y * 0.003 ), 40.0 ) ) * 1.6 * low * keep * wjsSpark;
+	field += wjsLamp * 2.4 * pow( 0.5 + 0.5 * cos( az * 7.0 + wjsAt.y * 0.013 ), 24.0 ) * exp( - ( R.z + 0.22 ) * ( R.z + 0.22 ) / 0.012 ) * keep * wjsSpark;
+	field += mix( wjsLamp, vec3( 1.0 ), 0.6 ) * wjsThin * 2.0 * exp( - ( R.z + 0.26 ) * ( R.z + 0.26 ) / 0.004 ) * ( 0.55 + 0.45 * cos( az * 3.0 + 0.7 ) );
 	return on * ( above + field * smoothstep( 0.12, -0.3, R.z ) );
 }
 `
@@ -112,6 +116,10 @@ export interface SteelLook {
   wall?: number
   // How much of the room paint, plastic and rubber give back: a moulded colour keeps its colour under the lamps.
   paint?: number
+  // How much of the coloured sparks of the lanes polished chrome keeps beside the long white lines of the air over the table.
+  spark?: number
+  // How brightly a thin wire shows the lit air over the table and the lit lanes ahead of it as long white lines.
+  thin?: number
 }
 
 // `from` is the lit zone whose room a zone outside the lamps mirrors: the apron stands in the street's room.
@@ -139,9 +147,11 @@ export function steel<T extends THREE.MeshPhysicalMaterial>(m: T, own: Zone, o: 
     shader.uniforms.wjsSky = { value: o.sky ?? 0 }
     shader.uniforms.wjsWall = { value: o.wall ?? 1 }
     shader.uniforms.wjsPaint = { value: o.paint ?? 1 }
+    shader.uniforms.wjsSpark = { value: o.spark ?? 1 }
+    shader.uniforms.wjsThin = { value: o.thin ?? 0 }
     shader.vertexShader = 'varying vec3 wjsAt;\n' + shader.vertexShader.replace('#include <project_vertex>', 'wjsAt = transformed;\n#include <project_vertex>')
     shader.fragmentShader = PARS + shader.fragmentShader.replace(AT, BODY + AT)
   }
-  m.customProgramCacheKey = () => `${key.call(m)}|wjs27`
+  m.customProgramCacheKey = () => `${key.call(m)}|wjs33`
   return m
 }
