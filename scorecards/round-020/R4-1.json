@@ -1,0 +1,58 @@
+{
+ "critic": "R4",
+ "score": 6,
+ "pass": false,
+ "model": "gpt_6_2_sol",
+ "set": "A: motion on the live site under a visitor's input: the arrow walked across a page, a page turn, a hit on the arrow, control taken and given back, the arrow into the ball and a flipper's strike, consecutive frames",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-A-06.png",
+   "where": "33.27–33.40, tethered arrow and resume slot",
+   "what": "The arrow is fully tethered in one frame and already tumbling loose in the next. Nothing visibly hits it, and the slot and surrounding panel do not visibly react, so the beat reads as an unexplained detach rather than an impact.",
+   "fix": "Show the striker or release mechanism at contact, snap the tether and kick the arrow on the same frame, and give the slot and panel a brief recoil that stops sharply."
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-04.png",
+   "where": "10.65–10.72, light slab face and dark facets across the resume tray",
+   "what": "The slab face shows sweeping high-contrast moiré during the approach, and dark triangular facets run across the tray then disappear. The new page looks unstable just when it should lock into view.",
+   "fix": "Filter the surface texture and keep it locked to the slab across viewing angles; fix the tray geometry or shading so its face stays consistent through the turn."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "10.65–10.82, the end of the slab rotation",
+   "what": "The flip accelerates visibly through edge-on on the previous sheet, but the finish coasts to face-on with no distinct seating frame. There is a readable hold, but no sense the slab hit a stop.",
+   "fix": "Keep the straight camera axis and the existing hold, but let the slab meet a visible stop, with a short edge or socket reaction and a tighter final brake."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "24.87–24.97, Browse files button and small resume slot",
+   "what": "The upright slip becomes a folded shape and the arrow jumps down and right as the tether materializes. The takeover is legible afterward, but the contact that pulled the arrow out of the visitor's control is skipped.",
+   "fix": "Give the slot a short loaded pose, show the grab before the pull, and let the taut tether and arrow react together; show a small down-and-return stroke on the button if that click triggers it."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "36.43–36.80, below the reset message",
+   "what": "The arrow starts already outside the slot, sits still until 36.60, then makes a small move and stops. Without the caption it is unclear when the mechanism lets go or when the visitor has control again.",
+   "fix": "Include the release itself, then show the normal pointer pose and an unmistakable visitor-driven follow-through while the mechanism stays at rest."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-08.png",
+   "where": "1:30.23–1:30.47, circular socket",
+   "what": "The arrow snaps to the center and two transparent arcs close around it, but the sheet ends before the resulting ball leaves the socket or the flipper controls respond. The change of control is not readable without the caption.",
+   "fix": "Carry the shot through the ball's release into the tube and the flipper indicator or first input response, with a clear latch or seating beat where the shell closes."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-09.png",
+   "where": "1:46.10–1:46.20, clear ball above the green envelope lamp and right flipper tip",
+   "what": "The opening strike reads, but after the ball comes back to the raised tip it peels sideways in nearly level, closing steps rather than taking a distinct rebound or accelerating down the slope. No separate steel-ball run is shown, so its collision timing is unverified.",
+   "fix": "Preserve the quick initial kick, then make the second deflection and outgoing speed follow the actual tip or rail contact and slope. Supply a consecutive steel-ball run covering an impact and recovery."
+  }
+ ]
+}
