@@ -1,0 +1,35 @@
+{
+  "folder": "step2-slot",
+  "pushed": "2026-11-26T01:07:00.194Z",
+  "commit": "ffc24635cf0935ccab237a5fc11090ad7525f103",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Still sheet-machines-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T01:06:32.102Z",
+      "by": "step2-slot",
+      "from": "out/work/stills/sheet-machines-hd-review.png"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Crank key, review tier: approved image above, the build below. Glass meter segments, three lit, bezel, hub, arm, grip",
+      "time": "2026-11-26T01:06:58.627Z",
+      "by": "step2-slot",
+      "from": "out/work/looks/files/20261126010658-cmp-crank.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Machines sheet, review tier: approved image above, the build below. Slot machine with lever down, crank, meter with four lit",
+      "time": "2026-11-26T01:06:58.857Z",
+      "by": "step2-slot",
+      "from": "out/work/looks/files/20261126010658-cmp-machines.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Step 2 at step2.slot 0.8, review tier: cabinet, drums behind glass, lever, payout mouth, sixteen coins as one instanced mesh",
+      "time": "2026-11-26T01:06:59.084Z",
+      "by": "step2-slot",
+      "from": "out/work/looks/files/20261126010659-look-slot.jpg"
+    }
+  ]
+}
