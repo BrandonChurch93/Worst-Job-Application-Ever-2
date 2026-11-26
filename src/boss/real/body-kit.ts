@@ -185,7 +185,7 @@ export function bossKit(): BossKit {
     plate: studio(new THREE.MeshPhysicalMaterial({ color: PLATE_TONE.live.clone(), roughness: 0.46, metalness: 1, map: brushing(), anisotropy: 0.55, anisotropyRotation: Math.PI / 2 })),
     plateSide: studio(new THREE.MeshPhysicalMaterial({ color: FLANGE_TONE.live.clone(), roughness: FLANGE_TONE.rough[0], metalness: 0.88 })),
     pocket: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x63666a), roughness: 0.5, metalness: 0.9 })),
-    link: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x7d8187), roughness: 0.4, metalness: 0.92, map: brushing(), anisotropy: 0.5 })),
+    link: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x7d8187), roughness: 0.4, metalness: 0.92, anisotropy: 0.5 })),
     joint: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x9a9ea3), roughness: 0.26, metalness: 0.95 })),
     trim: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x9da1a6), roughness: 0.36, metalness: 0.9 })),
     crack: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x3a1608), roughness: 0.85, metalness: 0, specularIntensity: 0.15, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 }))
