@@ -1,0 +1,99 @@
+{
+ "critic": "R9",
+ "score": 6,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "B: one sheet of each acting state the page uses, plain, nervous, shocked, scared, confident, angry and exhausted, with no time and no word on it",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-B-02.png",
+   "where": "Left edge of the confirmed panel, rows 2 to 4",
+   "what": "The arrival settles into repeated copies of a mostly neutral cursor with its rear edge lost against the panel. The interface says success, but the silhouette does not show a distinct reaction to that success.",
+   "fix": "Settle the cursor just clear of the panel edge. Add a quick braking squash, a lifted or unfurled reaction pose, then hold that pose clearly."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03.png",
+   "where": "Arrow and first light streaks, rows 3 to 4",
+   "what": "The streaks start visually at the pointer tip, and the tiny alternating rotations could be aiming or tracking. There is no clearly held brace or recoil to establish that the arrow is under threat.",
+   "fix": "Stage the first streak approaching independently of the tip, then give the arrow a held lean away and a sharp compact flinch before it tries to recover."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-04.png",
+   "where": "First orange flash through the sustained fire, rows 1 to 4",
+   "what": "The orange point and smoke communicate damage more clearly than the body does. Several successive passes run against nearly the same mild tilt, with no distinct compression and rebound on the first hit.",
+   "fix": "Make the first contact snap the tip back and visibly compress the body along the impact axis. Follow it with one clear recoil pose and smaller reactions to later passes."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-05.png",
+   "where": "Drooping cursor beside Invalid input, rows 2 to 4",
+   "what": "The arrow collapses into a bright folded shape with almost no dark contour and a partly hidden point. It reads as limp, but it is briefly hard to recognize as the same cursor from silhouette alone.",
+   "fix": "Keep a continuous contrasting contour and a visible triangular point and single stem. Get the wilt from a sag along the original contour and a lowered tip angle."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-06.png",
+   "where": "Settling arrow, rows 2 to 4",
+   "what": "The color cools and there is a small wobble, but the hold is essentially the default pointer pose. Recovery is visible as an effect change more than a distinct emotional beat.",
+   "fix": "Hold the small, guarded recovery pose first, then let the tip rise and the shaft lengthen into a clearly different collected stance."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-07.png",
+   "where": "Falling panel and debris, rows 3 to 4",
+   "what": "The initial tumble has force, but once upright the cursor becomes nearly rigid while a large panel passes close by and hardware scatters. The later movement reads as a pointer glide rather than a response to those near misses.",
+   "fix": "Add a compact duck or side bend timed to the closest edge, with a stretched escape pose and a brief settling counter-tilt."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-08.png",
+   "where": "Submit contact and mid-sheet hold, rows 1 to 3",
+   "what": "The transition from a soft, folded contact shape to a rigid vertical hold loses the sensation of pressure. The unchanged tip position makes the cursor look parked on the button rather than visibly completing a press.",
+   "fix": "Preserve the recognizable outline during compression, put the tip and button travel on the same axis, and hold a loaded lean before the release sends the cursor away."
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-01.png",
+   "where": "Coil and takeoff, final four panels",
+   "what": "The pause reads, but the wind-up is mostly a tiny outline ripple and the departure relies more on translation than on stretch.",
+   "fix": "Make the pullback one notch wider and lower, then lengthen the cursor briefly along the path toward the checkbox."
+  }
+ ],
+ "reads": [
+  {
+   "file": "set-B-01.png",
+   "read": "Wary but curious; it stops short of the unchecked box, hesitates, then gathers itself and darts toward it."
+  },
+  {
+   "file": "set-B-02.png",
+   "read": "Tentatively relieved, or simply waiting; it rushes up to the already-confirmed panel and freezes against its left edge."
+  },
+  {
+   "file": "set-B-03.png",
+   "read": "Alert and uncertain; it swivels after leaving the confirmation panel as bright streaks start flashing past its point, though I cannot tell if it is firing or being fired at."
+  },
+  {
+   "file": "set-B-04.png",
+   "read": "Alarmed and hurt; the point flares orange and smokes as bright shots streak by, and the arrow rocks in place."
+  },
+  {
+   "file": "set-B-05.png",
+   "read": "Deflated and hurt; the red Invalid input warning appears and the scorched arrow goes limp beside it while more streaks pass."
+  },
+  {
+   "file": "set-B-06.png",
+   "read": "Shaken but recovering; its smoking point cools and it straightens, then stays still."
+  },
+  {
+   "file": "set-B-07.png",
+   "read": "Startled, then evasive; a mechanical linkage catches or swats the arrow, it tumbles loose, then gets clear as loose hardware swings or falls away."
+  },
+  {
+   "file": "set-B-08.png",
+   "read": "Strained and determined, then startled; it pushes into the burned end of Submit, holds there, then jerks away as the page goes dark."
+  }
+ ]
+}
