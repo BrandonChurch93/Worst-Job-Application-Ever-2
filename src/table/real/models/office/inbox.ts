@@ -20,10 +20,12 @@ const C = {
 
 const MOULD: Surf = [0.56, 0, 0.12]
 // The tray: how thick its wall is, how round its corners and its lip, and where the bed of the heap lies as a share of its height.
-const TRAY = { wall: 11, round: 13, lip: 4, bed: 0.64 }
+const TRAY = { wall: 14, round: 16, lip: 4.5, bed: 0.6 }
 // The chute on the side of the hold: how far it stands out, how wide its mouth is, and its steel frame.
 const CHUTE = { deep: 40, wide: 88, drop: 8, bar: 6, proud: 2.4, side: 8 }
-const LIFT = { mould: 0.42, paper: 0.62 }
+const LIFT = { mould: 0.42, paper: 0.52 }
+// The shade one envelope lays on what is under it: how far it reaches, and its colour.
+const SHADE = { x: 2.2, y: 3, col: [0.42, 0.39, 0.35] as RGB }
 const HOP = { a: 15, b: 22, lag: 0.07, out: 0.6 }
 
 export function boxOf(z: Zone, id: string): { x: number; y: number; w: number; d: number; h: number } {
@@ -82,8 +84,15 @@ function heap(k: Kit, r: Random, count: number, hx: number, hy: number, z0: numb
     const col = shade(mix(C.white, C.shadeWhite, r.next()), dim * (0.9 + 0.1 * (i / Math.max(1, count - 1))))
     const a = (i / count) * Math.PI * 2 + r.range(-0.5, 0.5)
     const out = Math.sqrt(r.range(0.05, 1))
-    k.at(Math.cos(a) * out * hx, Math.sin(a) * out * hy, z0 + ((z1 - z0) * i) / Math.max(1, count - 1), r.range(0, Math.PI * 2), r.range(-wild, wild), r.range(-wild, wild))
+    const rot = r.range(0, Math.PI * 2)
+    k.at(Math.cos(a) * out * hx, Math.sin(a) * out * hy, z0 + ((z1 - z0) * i) / Math.max(1, count - 1), rot, r.range(-wild, wild), r.range(-wild, wild))
     envelope(k, w, d, col, r, r.next() < 0.82)
+    const sx = Math.cos(rot) * SHADE.x + Math.sin(rot) * SHADE.y
+    const sy = -Math.sin(rot) * SHADE.x + Math.cos(rot) * SHADE.y
+    const lift = k.lift
+    k.lift = 0
+    k.flat([[sx - w / 2, sy - d / 2, -0.7], [sx + w / 2, sy - d / 2, -0.7], [sx + w / 2, sy + d / 2, -0.7], [sx - w / 2, sy + d / 2, -0.7]], [0, 0, 1], SHADE.col, SURF.matte)
+    k.lift = lift
     k.back()
   }
 }
@@ -107,13 +116,13 @@ function shell(k: Kit, p: Plan): void {
   const T = TRAY.wall
   const L = TRAY.lip
   const H = p.h
-  const prof: [number, number][] = [[0.8, 0], [0, 1.2], [0, H - L], [L * 0.3, H - L * 0.3], [L, H], [T - L, H], [T - L * 0.3, H - L * 0.3], [T, H - L], [T, p.bed]]
-  const cols: RGB[] = [C.creamLow, C.cream, C.cream, C.cream, mix(C.cream, [1, 1, 1], 0.08), C.cream, C.creamIn, C.creamIn]
+  const prof: [number, number][] = [[0.8, 0], [0, 1.2], [0, H - L], [L * 0.3, H - L * 0.3], [L, H], [T - L, H], [T - L * 0.3, H - L * 0.3], [T, H - L], [T, p.bed + (H - L - p.bed) * 0.5], [T - 1.5, p.bed]]
+  const cols: RGB[] = [C.creamLow, C.cream, C.cream, C.cream, mix(C.cream, [1, 1, 1], 0.08), C.cream, C.creamIn, C.creamIn, shade(C.creamIn, 0.74)]
   k.at(p.trayX, 0, 0)
   k.ring(points, out, prof, cols, MOULD)
   const inner = points.map((q, i) => [q[0] - out[i]![0] * T, q[1] - out[i]![1] * T] as [number, number])
   const tris = THREE.ShapeUtils.triangulateShape(inner.map((q) => new THREE.Vector2(q[0], q[1])), [])
-  for (const t of tris) k.tri([inner[t[0]!]![0], inner[t[0]!]![1], p.bed], [inner[t[1]!]![0], inner[t[1]!]![1], p.bed], [inner[t[2]!]![0], inner[t[2]!]![1], p.bed], [0, 0, 1], [0, 0, 1], [0, 0, 1], shade(C.creamIn, 0.8), MOULD)
+  for (const t of tris) k.tri([inner[t[0]!]![0], inner[t[0]!]![1], p.bed], [inner[t[1]!]![0], inner[t[1]!]![1], p.bed], [inner[t[2]!]![0], inner[t[2]!]![1], p.bed], [0, 0, 1], [0, 0, 1], [0, 0, 1], shade(C.creamIn, 0.6), MOULD)
   k.back()
 }
 
@@ -196,17 +205,17 @@ export function buildInbox(z: Zone): THREE.Object3D {
   k.box(p.side * (p.w / 2 - CHUTE.deep / 2), free * (p.d / 2 - 9), 0, CHUTE.deep - 6, 13, 2.4, shade(C.steel, 0.8), SURF.brushed, 0.8)
   k.lift = LIFT.paper
   k.at(p.trayX, 0, p.bed + 0.4)
-  heap(k, r, 9, hx, hy, 0, p.h - p.bed - 12, 0.12, 0.86)
+  heap(k, r, 9, hx, hy, 0, p.h - p.bed - 12, 0.12, 0.8)
   k.back()
   k.back()
   root.add(meshOf(k.done(), mats.solid, 'office.inbox.tray', { cast: true }))
 
   const top = p.h - 9
   const groups: THREE.Object3D[] = []
-  for (const [name, count, z0, z1, wild, cast] of [['a', 7, 0, 9, 0.22, true], ['b', 6, 8, 16, 0.3, false]] as [string, number, number, number, number, boolean][]) {
+  for (const [name, count, z0, z1, wild, cast] of [['a', 7, 0, 10, 0.22, true], ['b', 6, 9, 19, 0.3, false]] as [string, number, number, number, number, boolean][]) {
     const g = new Kit()
     g.lift = LIFT.paper
-    heap(g, r, count, hx + (name === 'b' ? -3 : 3), hy + (name === 'b' ? -3 : 3), z0, z1, wild)
+    heap(g, r, count, hx + (name === 'b' ? -5 : 3), hy + (name === 'b' ? -5 : 3), z0, z1, wild)
     const mesh = meshOf(g.done(), mats.solid, `office.inbox.heap.${name}`, { cast })
     mesh.position.set(p.x + p.trayX, p.y, top)
     root.add(mesh)

@@ -147,16 +147,16 @@ export class Kit {
     return this
   }
 
-  tri(a: V3, b: V3, c: V3, na: V3, nb: V3, nc: V3, col: RGB, surf: Surf): this {
+  tri(a: V3, b: V3, c: V3, na: V3, nb: V3, nc: V3, col: RGB, surf: Surf, colB: RGB = col, colC: RGB = col): this {
     const f = cross(sub(b, a), sub(c, a))
     const flip = (dot(f, [na[0] + nb[0] + nc[0], na[1] + nb[1] + nc[1], na[2] + nb[2] + nc[2]]) < 0) !== this.flip
     this.vert(a, na, col, surf)
     if (flip) {
-      this.vert(c, nc, col, surf)
-      this.vert(b, nb, col, surf)
+      this.vert(c, nc, colC, surf)
+      this.vert(b, nb, colB, surf)
     } else {
-      this.vert(b, nb, col, surf)
-      this.vert(c, nc, col, surf)
+      this.vert(b, nb, colB, surf)
+      this.vert(c, nc, colC, surf)
     }
     return this
   }
@@ -373,7 +373,7 @@ export class Kit {
   }
 
   // A skin over sections that each hold the same count of points, with smooth normals.
-  loft(sections: V3[][], col: RGB, surf: Surf, caps = true): this {
+  loft(sections: V3[][], col: RGB | ((row: number, k: number) => RGB), surf: Surf, caps = true): this {
     const rows = sections.length
     const cols = sections[0]!.length
     const pos: number[] = []
@@ -402,13 +402,19 @@ export class Kit {
     for (let i = 0; i < rows * cols; i++) sign += dot(sub(P(i), mid), [nor.getX(i), nor.getY(i), nor.getZ(i)])
     const sg = sign < 0 ? -1 : 1
     const Nn = (i: number): V3 => [nor.getX(i) * sg, nor.getY(i) * sg, nor.getZ(i) * sg]
-    for (let i = 0; i < idx.length; i += 3) this.tri(P(idx[i]!), P(idx[i + 1]!), P(idx[i + 2]!), Nn(idx[i]!), Nn(idx[i + 1]!), Nn(idx[i + 2]!), col, surf)
+    const flatCol = typeof col === 'function' ? col(0, 0) : col
+    const tint = typeof col === 'function' ? col : null
+    for (let i = 0; i < idx.length; i += 3) {
+      const [a, b, c] = [idx[i]!, idx[i + 1]!, idx[i + 2]!]
+      const at = (v: number): RGB => (tint ? tint(Math.floor(v / cols), v % cols) : flatCol)
+      this.tri(P(a), P(b), P(c), Nn(a), Nn(b), Nn(c), at(a), surf, at(b), at(c))
+    }
     if (caps) {
       for (const r of [0, rows - 1]) {
         const s = sections[r]!
         const other = sections[r === 0 ? 1 : rows - 2]!
         const n = unit(sub(s[0]!, other[0]!))
-        this.flat(s, n, col, surf)
+        this.flat(s, n, tint ? tint(r, 0) : flatCol, surf)
       }
     }
     g.dispose()
