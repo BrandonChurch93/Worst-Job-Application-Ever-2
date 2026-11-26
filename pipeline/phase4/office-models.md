@@ -84,4 +84,4 @@ Folder: 16 calls (18 before), 30703 triangles (31208 before). Whole frame, with 
 ## Looks
 
 - Before 05:42 UTC: about 37 render runs (stills, one sheet of the beat, three `review` stills), counted from my own log, not exact.
-- Since 05:42 UTC (round 11, 40 for the part): 1, the `draft` pair for the arm of the stapler.
+- Since 05:42 UTC (round 11, 40 for the part): 2. The `draft` pair for the arm of the stapler, and one `draft` still of `reply-all` with the body of the cubicles casting shadow: no difference to see beside the still without, so it does not cast and the draw call is saved.
