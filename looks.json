@@ -1,0 +1,35 @@
+{
+  "folder": "step2-finish",
+  "pushed": "2026-11-26T10:32:43.429Z",
+  "commit": "610aa396ff1c0cd3e16af404bb4ca2cc1dc7d9c8",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Sheet machines: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-26T10:30:49.666Z",
+      "by": "step2-finish",
+      "from": "out/work/compare/compare-machines.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "The slot machine on the sheet, approved left, build right: bent lever out of a socket, larger legends on the drums (draft tier, 610aa396)",
+      "time": "2026-11-26T10:32:41.623Z",
+      "by": "step2-finish",
+      "from": "out/work/looks/files/20261126103241-slot-sheet.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "The crank and meter at the key step2-crank, approved left, build right: thick lenses, pale lit cores, chevrons back on done rows (draft tier, 610aa396)",
+      "time": "2026-11-26T10:32:41.859Z",
+      "by": "step2-finish",
+      "from": "out/work/looks/files/20261126103241-crank-key.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "The dial on the sheet, approved left, build right: pale middle in a ring, wedge stop, lower satin cap (draft tier, 610aa396)",
+      "time": "2026-11-26T10:32:42.112Z",
+      "by": "step2-finish",
+      "from": "out/work/looks/files/20261126103242-dial-sheet.jpg"
+    }
+  ]
+}
