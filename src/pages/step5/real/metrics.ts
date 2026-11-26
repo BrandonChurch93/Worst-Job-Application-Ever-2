@@ -77,7 +77,7 @@ function lightBand(s: Shape, inset: number, rings: [number, number, number][], l
 }
 
 function shade(): THREE.MeshBasicMaterial {
-  shadeMade ??= new THREE.MeshBasicMaterial({ color: srgb(SHADE.colour), vertexColors: true, transparent: true, depthWrite: false })
+  shadeMade ??= new THREE.MeshBasicMaterial({ color: srgb(SHADE.colour), vertexColors: true, transparent: true, depthWrite: false, side: THREE.DoubleSide })
   shadeMade.name = 'metrics-shade'
   return shadeMade
 }
