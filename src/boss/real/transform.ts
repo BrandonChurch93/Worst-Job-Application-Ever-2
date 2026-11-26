@@ -215,7 +215,7 @@ function chipPlaces(): Chip[] {
     const ex = c * (half + r)
     const ey = s * r
     const far = 10 + hash01(i, 3, 43) ** 1.5 * 78
-    out.push({ fx: ex * 0.96, fy: ey * 0.9, tx: ex + c * far, ty: ey + s * far * 0.9, size: 2.6 + hash01(i, 4, 47) * 4.6, turn: hash01(i, 5, 53) * 6.283, tip: (hash01(i, 6, 59) - 0.5) * 0.9 })
+    out.push({ fx: ex * 0.96, fy: ey * 0.9, tx: ex + c * far, ty: ey + s * far * 0.9, size: 2.8 + hash01(i, 4, 47) ** 2 * 8.4, turn: hash01(i, 5, 53) * 6.283, tip: (hash01(i, 6, 59) - 0.5) * 0.9 })
   }
   return out
 }
@@ -223,21 +223,24 @@ function chipPlaces(): Chip[] {
 let wallMaterial: THREE.MeshPhysicalMaterial | null = null
 let floorMaterial: THREE.MeshPhysicalMaterial | null = null
 let collarMaterial: THREE.MeshPhysicalMaterial | null = null
-const pitStuff = (): { wall: THREE.MeshPhysicalMaterial; floor: THREE.MeshPhysicalMaterial; collar: THREE.MeshPhysicalMaterial } => {
+let lipMaterial: THREE.MeshPhysicalMaterial | null = null
+const pitStuff = (): { wall: THREE.MeshPhysicalMaterial; floor: THREE.MeshPhysicalMaterial; collar: THREE.MeshPhysicalMaterial; lip: THREE.MeshPhysicalMaterial } => {
   const grain = materials().ceramic.normalMap
   wallMaterial ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0x34312e, THREE.SRGBColorSpace), roughness: 0.96, metalness: 0, specularIntensity: 0.2, normalMap: grain, normalScale: new THREE.Vector2(0.3, 0.3) }))
   floorMaterial ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0x0d0c0c, THREE.SRGBColorSpace), roughness: 0.95, metalness: 0, specularIntensity: 0.1 }))
   if (!collarMaterial) {
     collarMaterial = materials().aluminiumSatin.clone()
-    collarMaterial.color.setHex(0xc2c5c7, THREE.SRGBColorSpace)
-    collarMaterial.roughness = 0.4
-    collarMaterial.metalness = 0.8
-    collarMaterial.envMapIntensity = 0.8
-    collarMaterial.normalMap = null
+    collarMaterial.color.setHex(0xbfc0be, THREE.SRGBColorSpace)
+    collarMaterial.roughness = 0.52
+    collarMaterial.metalness = 0.3
+    collarMaterial.envMapIntensity = 0.6
+    collarMaterial.normalMap = grain
+    collarMaterial.normalScale = new THREE.Vector2(0.1, 0.1)
     collarMaterial.roughnessMap = null
     studio(collarMaterial)
   }
-  return { wall: wallMaterial, floor: floorMaterial, collar: collarMaterial }
+  lipMaterial ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0x403d3a, THREE.SRGBColorSpace), roughness: 0.9, metalness: 0.2, specularIntensity: 0.3, normalMap: grain, normalScale: new THREE.Vector2(0.55, 0.55) }))
+  return { wall: wallMaterial, floor: floorMaterial, collar: collarMaterial, lip: lipMaterial }
 }
 
 export const PIT = { collar: 15, wallTo: 25, deep: -58 }
@@ -246,9 +249,10 @@ function rim(): THREE.Object3D {
   const m = materials()
   const root = new THREE.Group()
   const line = roundedRect(HOLE_W, HOLE_H, HOLE_H / 2, 22)
-  const ring = sweep(line, profile([[-6.2, 0, true], [-6.2, 0.5], [-5.6, 1.1], [-4.4, 1.7], [-2.6, 2.1], [0.4, 2.2], [2.6, 1.9], [3.8, 1.2], [4.6, 0.1], [7.2, -6.4], [8.6, -9.6], [PIT.collar, -12, true]]), false)
+  const ring = sweep(line, profile([[-5.4, 0, true], [-5.4, 0.7], [-4.9, 1.25], [-4, 1.5], [3.2, 1.5], [4.2, 1.2], [4.9, 0.4], [5.2, -0.8, true]]), false)
   const pit = pitStuff()
   root.add(mesh(ring, pit.collar, false, true))
+  root.add(mesh(sweep(line, profile([[5, -0.6, true], [6.4, -5.4], [8.6, -9.6], [PIT.collar, -12, true]]), false), pit.lip, false, true))
   const wall = sweep(line, profile([[PIT.collar - 0.4, -12, true], [PIT.collar + 3, -17], [PIT.collar + 7, -36], [PIT.wallTo, PIT.deep, true]]), false)
   root.add(mesh(wall, pit.wall, false, true))
   root.add(mesh(sweep(roundedRect(HOLE_W - PIT.wallTo * 2 + 2, HOLE_H - PIT.wallTo * 2 + 2, HOLE_H / 2 - PIT.wallTo + 1, 14), [{ inset: 0, z: PIT.deep, out: 0, up: 1 }], true), pit.floor, false, true))
