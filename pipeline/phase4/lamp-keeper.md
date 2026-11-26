@@ -106,6 +106,7 @@ Round 11 (opened 05:42 UTC, 40 a part, 80), the same one list:
 | 06:13 | q13 | 2 | merge 26 on main: the marquee's title in `table-wide`, the notes with the patch |
 | 06:16 | q14 | 2 | the insert dome under the ball's shadow plane |
 | 06:18 | q15 | 1 | `lobby-doors` with my true lights off, for the cursor in the ball |
+| | Sum of round 11 | 29 | of 80. Not in round 11's judged commit after d1af448c: the Builder's word of 06:14 UTC. |
 
 ## Diagnosis (04:00 to 04:25 UTC, 26 stills with a local switch on each term, counted in the list of looks)
 
@@ -258,4 +259,25 @@ Merge 26 (06:13 UTC, origin/main 8fdbc4b7 merged in, MEASURED at draft): the pat
 1. The ball casts no shadow on a lit insert. Cause as the ball's owner named it: the glass of an insert was a dome 4.5 px high, its middle at 5.35 px over the floor, and the ball's shadow lies on a plane 3.4 px up, so the middle of the glass hid it. Change: `WINDOW.dome` 4.5 to 1.6 in `src/table/real/art/index.ts`; the top of the glass is now at 2.45 px, under the shadow's plane. MEASURED by looking (q14, `tier-office` from above, the ball half over the green insert): before the insert under the ball was as bright as the rest of it, now the ball's shade lies on the glass and its bright point of gathered light shows on it. No flicker of surfaces seen in `reply-all` at its low angle. The art tests pass (17 of 17). A dome of 1.6 px over a glass 97 px across still turns the glints a little; from the keys I looked at I see no loss.
 
 2. The cursor in the ball white and flat in `lobby-doors`. MEASURED at draft, mean linear luminance of a box inside the arrow's face (x 1075, y 700, w 50, h 80): 0.897 as pushed; 0.705 with every true light of mine (`ctx.light`) at zero in a local trial, not kept. Approved is 0.33 to 0.37 by the ball's owner. So my lamps round the ball give about a fifth of it and the rest is not mine: the stage's own lights and the lamp inside the ball. With my true lights off the doors behind the ball go dark, so I did not lower them. The cursor's material is `sealed` in `src/cursor/` (frozen); a point light cannot be kept off one mesh from my folder. Left to the Builder: a factor on the scene's light in the sealed material.
+
+## At the end (06:25 UTC)
+
+`pipeline/phase4/lamp-keeper-NEEDS.patch` is removed: the Builder applied it in merge 26 and the line is on main.
+
+Counts at ecc7077d (MEASURED 06:22 UTC, `npm run build && npm run counts -- --key <k> --live low`; meshes, colour, shadow, calls, triangles):
+
+| Key | table-lights before | table-lights now | tier-art before | tier-art now |
+| --- | --- | --- | --- | --- |
+| table-wide | 8, 8, 0, 8, 25350 | 8, 8, 0, 8, 22662 | 6, 6, 0, 6, 3534 | 6, 6, 0, 6, 3534 |
+| tier-corporate | 6, 6, 0, 6, 17996 | 6, 6, 0, 6, 16204 | 3, 3, 0, 3, 1180 | 3, 3, 0, 3, 1180 |
+| tier-office | 6, 6, 0, 6, 22854 | 6, 6, 0, 6, 20166 | 3, 3, 0, 3, 1180 | 3, 3, 0, 3, 1180 |
+| tier-street | 4, 4, 0, 4, 14708 | 4, 4, 0, 4, 12916 | 2, 2, 0, 2, 1178 | 2, 2, 0, 2, 1178 |
+
+The whole `table-wide` frame: 201 draw calls of 300, 498350 triangles. Assets: `public/assets/table/art` 8288329 bytes (7.90 MB of 9), `assets-full/table/art` 26326693 bytes, largest file 8543144 bytes; the lights have no asset folder.
+
+The three things that still look least real, in my part:
+
+1. The floor mirrors the lamps but not the fronts of the models. In `youre-fired` approved has a wet black floor with the firehouse in it; the build has a matte teal floor, and the whole frame is 1.28 of approved.
+2. The lit inserts are deep now but still read as buttons more than moulded glass: full colour inside two rings, the red deeper than the approved pink, and in `lobby-doors` the blue one is a large pale blur in the foreground.
+3. The Office floor is greener and flatter than approved's cream and teal, and its rail windows are small white rectangles in dark rings where approved has warm slots mirrored in the steel.
 
