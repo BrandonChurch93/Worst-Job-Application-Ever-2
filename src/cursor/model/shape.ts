@@ -153,6 +153,45 @@ export function ring(t: number): [number, number][] {
   return out
 }
 
+// Round an inward corner the rings turn about a point outside the outline. Within that turn the distance in is the ring's own, so the face follows the rings and does not dip.
+const TURNS = OUTLINE.map((_, i) => {
+  const a = EDGES[(i + N - 1) % N]!
+  const b = EDGES[i]!
+  const c = CONVEX[i]! ? ([0, 0] as [number, number]) : miter(i, -RADII[i]! - GROW)
+  return { on: !CONVEX[i]!, cx: c[0], cy: c[1], r: RADII[i]!, ax: a.nx, ay: a.ny, bx: b.nx, by: b.ny, way: a.nx * b.ny - a.ny * b.nx }
+})
+function turned(i: number, x: number, y: number, d: number): number {
+  const t = TURNS[i]!
+  if (!t.on) return d
+  const wx = x - t.cx
+  const wy = y - t.cy
+  if ((t.ax * wy - t.ay * wx) * t.way < 0 || (wx * t.by - wy * t.bx) * t.way < 0) return d
+  return Math.hypot(wx, wy) - t.r
+}
+const SAYS: number[] = []
+// How far in a point is from each stretch of the outline as the rings count it. The two edges that meet at an inward corner are one stretch.
+function says(x: number, y: number): number {
+  let count = 0
+  let held = Infinity
+  for (let i = 0; i < N; i++) {
+    const e = EDGES[i]!
+    const s = Math.min(e.len, Math.max(0, (x - e.px) * e.dx + (y - e.py) * e.dy))
+    const near = Math.min(held, Math.hypot(x - e.px - e.dx * s, y - e.py - e.dy * s))
+    held = CONVEX[(i + 1) % N]! ? Infinity : near
+    if (held === Infinity) SAYS[count++] = turned(i, x, y, near + GROW)
+  }
+  return count
+}
+// How far in a point is as the rings count it: the distance inside, grown, and round an inward corner the ring's own.
+export function grown(x: number, y: number): number {
+  const d = inside(x, y)
+  if (d < 0) return d + GROW
+  const n = says(x, y)
+  let best = Infinity
+  for (let i = 0; i < n; i++) best = Math.min(best, SAYS[i]!)
+  return best
+}
+
 // How far a point is inside the outline, in outline units. Negative outside.
 export function inside(x: number, y: number): number {
   let best = Infinity
@@ -179,16 +218,13 @@ export function softInside(x: number, y: number): number {
   return -Math.log(sum) / SOFT
 }
 
-// The distance the dome is built on: the true one near the outline, and further in one that every edge has a say in, so no ridge runs down the stem or into a corner.
+// The distance the dome is built on: the true one near the outline, and further in one that every edge has a say in, so no ridge runs down the stem or into a corner. The two edges that meet at an inward corner have one say between them, so the face does not dip round it.
 export function domeInside(x: number, y: number): number {
-  const d = inside(x, y) + GROW
+  const d = grown(x, y)
   if (d <= BLEND.from) return d
+  const n = says(x, y)
   let sum = 0
-  for (let i = 0; i < N; i++) {
-    const e = EDGES[i]!
-    const s = Math.min(e.len, Math.max(0, (x - e.px) * e.dx + (y - e.py) * e.dy))
-    sum += Math.pow(Math.max(1e-3, Math.hypot(x - e.px - e.dx * s, y - e.py - e.dy * s) + GROW), -POWER)
-  }
+  for (let i = 0; i < n; i++) sum += Math.pow(Math.max(1e-3, SAYS[i]!), -POWER)
   const all = Math.pow(sum, -1 / POWER)
   return d + (all - d) * smooth01((d - BLEND.from) / BLEND.over)
 }
@@ -200,7 +236,7 @@ export function domeAt(x: number, y: number): number {
 
 // How high the top of the body stands over a point of the outline's plane.
 export function heightAt(x: number, y: number): number {
-  const d = inside(x, y) + GROW
+  const d = grown(x, y)
   if (d < ENAMEL_AT) return bandAt(d)
   return enamelAt(domeInside(x, y))
 }
@@ -320,7 +356,7 @@ export function solid(): Solid {
   for (let y = 0.4; y < 19; y += pitch * 0.866, line++) {
     for (let x0 = 0.2 + (line % 2) * pitch * 0.5; x0 < 12; x0 += pitch) {
       const x = x0 + (hash01(Math.round(x0 * 100), line, 7) - 0.5) * 0.08
-      const d = inside(x, y) + GROW
+      const d = grown(x, y)
       if (d < reach + 0.3) continue
       pts.push([x, y])
       names.push(xs.length / 3)
