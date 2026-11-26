@@ -80,7 +80,7 @@ export const CRANK = {
 export const ROW_TITLE = { font: 'inter-600', px: 26 }
 export const ROW_HELPER = { font: 'inter-400', px: 20 }
 export const REEL_TYPE = { font: 'inter-600', px: 34, align: 'centre' as const }
-export const DIAL_TYPE = { font: 'inter-600', px: 20, align: 'centre' as const }
+export const DIAL_TYPE = { font: 'inter-600', px: 22, align: 'centre' as const }
 
 export const reelId = (r: number, legend: string): string => `reel-${r}-${legend}`
 
