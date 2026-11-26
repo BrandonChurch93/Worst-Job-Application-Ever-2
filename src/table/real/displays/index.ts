@@ -161,7 +161,7 @@ const body = /* glsl */ `
 		wjdWide += wjdField( wjdG + d * 1.6 );
 		wjdWider += wjdField( wjdG + vec2( d.x * 0.9239 - d.y * 0.3827, d.x * 0.3827 + d.y * 0.9239 ) * 3.3 );
 	}
-	vec3 wjdHalo = ( wjdAmber * ( 0.1 * wjdTight + 0.015 * wjdWide + ( 0.011 + 0.012 * wjdFar ) * wjdWider ) + wjdAmber * vec3( 1.0, 0.6, 0.38 ) * 0.4 * wjdGlow( wjdG ) * wjdRows ) * wjdLight.x * ( 1.0 + 0.9 * wjdPass );
+	vec3 wjdHalo = ( wjdAmber * ( 0.13 * wjdTight + 0.02 * wjdWide + ( 0.011 + 0.012 * wjdFar ) * wjdWider ) + wjdAmber * vec3( 1.0, 0.6, 0.38 ) * 0.58 * wjdGlow( wjdG ) * wjdRows ) * wjdLight.x * ( 1.0 + 0.9 * wjdPass );
 	vec3 wjdCoarse = ( wjdAmber * 1.3 + wjdHot * 1.1 ) * wjdField( wjdQ ) * wjdLight.x * wjdSweep + wjdAmber * 0.006 * wjdLight.y * wjdRows;
 	totalEmissiveRadiance = mix( wjdNear, wjdCoarse, wjdFar ) + wjdHalo;
 }
