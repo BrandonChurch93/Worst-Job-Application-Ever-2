@@ -155,7 +155,7 @@ const BACK = { behind: 2.8, up: 3.6, aim: 2.4, lift: -0.8, lag: 0.4, lead: 1.93,
 const NEAR: Record<string, { off: [number, number, number]; mid: [number, number]; keep: number }> = { 'near-nest': { off: [0, 6, 15], mid: [11.3, Y1 + 6.9], keep: 0.6 }, 'near-spent': { off: [0, 3.4, 8.6], mid: [0, 0], keep: 1 } }
 const PAN = { lag: 0.25, in: 0.68, slow: 0.5 }
 const RIDE = { crest: 2.2, foot: 8.5, tip: 2 }
-const SHOT = { door: 13, scoop: 21, ramp: 21, nest: 17, save: 19, lob: 9, lean: 0.3, jets: 0.5, wide: 2.5, low: 7.5, early: 0.3, back: 1, cone: 0.7 }
+const SHOT = { door: 13, scoop: 21, ramp: 21, nest: 17, save: 19, lob: 9, lean: 0.3, jets: 0.5, wide: 2.5, low: 7.5, early: 0.3, back: 1, cone: 0.7, sink: 0.9, air: 1.4, inbox: [20.5, 1, 0.35, 0.85], fire: [21.2, 1, 0.1, 1.2], flap: [20, 0, 0, 0.5] }
 const FACE = { over: 0.94, low: 0.82, turn: 0.9, back: 5, press: 20, hit: 0.5, hold: 0.45, lag: 0.1, snap: 0.02, step: 0.03, wall: 0.6, lens: 0.8 }
 const SHEET = { along: 0.9, gap: 0.5, press: 0.6, side: 2.6, fly: [0.4, 7.4, 0.6], from: [0.18, 0.76, 0.624], far: 10.2, open: 15 }
 const LEAVE = { seconds: 0.55, in: 1.7, firm: 0.25, back: 5, settle: 0.12, up: 0.3 }
@@ -496,6 +496,16 @@ export function makePage(): PageLogic {
       s.tows++
       mc.tow(0, MID, TIER_Y[k]! + 11.0, 16, `gate:${k}`)
     }
+    const lob = (to: readonly number[], set: readonly number[], by: number, gate: string): number => {
+      if (!live) return 0
+      const flown = mc.since(`ball-save:${gate}.gate`)
+      if (t < by - set[2]!) mc.mark = [to[0]!, to[1]!, set[0]!, set[1]!]
+      if (flown < SHOT.air && t - flown < by - set[2]! && t < by + set[3]!) return 1
+      return t >= by - set[2]! - SHOT.sink && t < by - set[2]! && Math.hypot(to[0]! - b.x, to[1]! - b.y) > PULL.near ? 2 : 0
+    }
+    const sink = (): void => {
+      if (b.mode === 'plane') mc.magnet = [MID, TIER_Y[b.tier]! + 11.2, PULL.gate]
+    }
     const shoot = (x: number, y: number, speed: number, pull = 0): void => {
       const far = (x - MID) * (b.x - MID) > 0 && Math.abs(x - MID) > SHOT.wide && b.y > TIER_Y[b.tier]! + SHOT.low
       mc.shot = [x, y, far ? SHOT.lob : speed]
@@ -510,6 +520,7 @@ export function makePage(): PageLogic {
     mc.magnet = null
     mc.aim = null
     mc.shot = null
+    mc.mark = null
     if (b.mode === 'hold' && b.hold === 'loader' && t >= T.tube) {
       mc.release(0)
     }
@@ -534,11 +545,13 @@ export function makePage(): PageLogic {
       else if (t >= T.doorOpen) mc.magnet = [MID, Y0 + 11.2, PULL.gate]
     }
     on['office.inbox'] = t >= T.inboxOn && t < T.eject
+    const inbox = b.tier === 1 && t >= T.inboxOn - SHOT.back && t < T.eject ? lob(holdOf('office.inbox').c, SHOT.inbox, T.inboxBy, 'office') : 0
     if (b.tier === 1 && b.mode === 'plane') {
       if (t >= T.inboxOn && t < T.eject) {
         const c = holdOf('office.inbox').c
-        if (t >= T.inboxBy) towTo('office.inbox')
-        else shoot(c[0], c[1], SHOT.scoop, PULL.scoop)
+        if (t >= T.inboxBy && inbox !== 1) towTo('office.inbox')
+        else shoot(c[0], c[1], SHOT.scoop, inbox === 1 ? 0 : PULL.scoop)
+        if (inbox === 2) sink()
       } else if (t >= T.officeOpen - SHOT.back) {
         mc.aim = [MID, Y1 + MOUTH.v, lean]
         if (t >= T.officeBy) towGate(1)
@@ -547,8 +560,8 @@ export function makePage(): PageLogic {
         const low = table.bumpers.filter((m) => m.tier === 1)[2]!.c
         mc.shot = [low[0], low[1], SHOT.nest]
         if (!live && t >= T.officeKey - NEST.wait[0]! && t < T.officeKey + NEST.wait[1]!) mc.magnet = [low[0] + NEST.key[0]!, low[1] + NEST.key[1]!, PULL.key, PULL.near]
-        mc.aim = b.vy < 0 ? [b.x < MID ? MID - NEST.sling[0]! : MID + NEST.sling[0]!, Y1 + NEST.sling[1]!, lean] : [b.x < MID ? low[0] - NEST.under[0]! : low[0] + NEST.under[0]!, low[1] + NEST.under[1]!, lean]
-        if (b.y < table.bumpers.filter((m) => m.tier === 1)[0]!.c[1]) mc.aim = [b.x > MID ? MID - NEST.over[0]! : MID + NEST.over[0]!, Y1 + NEST.over[1]!, lean]
+        if (!live) mc.aim = b.vy < 0 ? [b.x < MID ? MID - NEST.sling[0]! : MID + NEST.sling[0]!, Y1 + NEST.sling[1]!, lean] : [b.x < MID ? low[0] - NEST.under[0]! : low[0] + NEST.under[0]!, low[1] + NEST.under[1]!, lean]
+        if (!live && b.y < table.bumpers.filter((m) => m.tier === 1)[0]!.c[1]) mc.aim = [b.x > MID ? MID - NEST.over[0]! : MID + NEST.over[0]!, Y1 + NEST.over[1]!, lean]
       }
     }
     if (b.mode === 'hold' && b.hold === 'office.inbox') b.wait = t >= T.eject ? 0 : 1e9
@@ -562,14 +575,17 @@ export function makePage(): PageLogic {
     }
     if (t >= T.officeBy + 2) for (let i = 1; i < mc.balls.length; i++) if (mc.balls[i]!.mode !== 'none') mc.remove(i)
     on['street.firehouse'] = t < T.scoopKick + 0.3
+    const street = b.tier !== 2 ? 0 : t < T.scoopKick ? lob(holdOf('street.firehouse').mouth!, SHOT.fire, T.firedBy, 'street') : t >= T.flapOn && t < T.highwayEnd ? lob(railOf('highway').points[0]!, SHOT.flap, T.flapBy, 'street') : 0
     if (b.tier === 2 && b.mode === 'plane') {
       if (t < T.scoopKick) {
         const c = holdOf('street.firehouse').mouth!
-        if (t >= T.firedBy) towTo('street.firehouse')
+        if (t >= T.firedBy && street !== 1) towTo('street.firehouse')
         else shoot(c[0], c[1], SHOT.scoop, PULL.scoop)
+        if (street === 2) sink()
       } else if (t < T.highwayEnd) {
         const p = railOf('highway').points[0]!
-        if (t >= T.flapBy) {
+        if (street === 2) sink()
+        if (t >= T.flapBy && street !== 1) {
           s.tows++
           mc.tow(0, p[0], p[1], 16, 'rail:highway')
         } else mc.shot = [p[0], p[1], SHOT.ramp]

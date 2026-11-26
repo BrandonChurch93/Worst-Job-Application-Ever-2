@@ -103,9 +103,22 @@ for (const r of log) {
   worst = Math.max(worst, run)
 }
 console.log(`steps on open floor above the bats under 6 balls/s and off a bat: ${slow}, longest run ${worst} steps`)
+if (has('slow')) {
+  let from = -1
+  log.forEach((r, k) => {
+    const creep = r.mode === 'plane' && !r.touch && Math.hypot(r.vx, r.vy) < 6 && r.v < 8
+    if (creep && from < 0) from = k
+    if ((!creep || k === log.length - 1) && from >= 0) {
+      const a = log[from]
+      const z = log[k - 1]
+      if (k - from >= 24) console.log(`slow ${a.t.toFixed(2)} s for ${k - from} steps  tier ${a.tier}  (${a.x.toFixed(1)}, ${a.v.toFixed(1)}) to (${z.x.toFixed(1)}, ${z.v.toFixed(1)})  speed ${Math.hypot(a.vx, a.vy).toFixed(1)} to ${Math.hypot(z.vx, z.vy).toFixed(1)}  pull ${log.slice(from, k).filter((q) => q.magnet).length} steps`)
+      from = -1
+    }
+  })
+}
 if (has('facts')) for (const f of facts) console.log(f)
-if (has('rows') && presses.length >= nth) {
-  const at = presses[nth - 1]
+if (has('rows') && (presses.length >= nth || has('at'))) {
+  const at = has('at') ? log.findIndex((r) => r.t >= Number(arg('at', 0))) : presses[nth - 1]
   console.log(`key press ${nth} at stage step ${log[at].step} (${log[at].t.toFixed(3)} s of the page), tier ${log[at].tier}`)
   console.log('step  key mode   x      v      vx      vy     speed  touch batL   batR   director and events')
   for (let k = Math.max(0, at - before); k < Math.min(log.length, at + after + 1); k++) {

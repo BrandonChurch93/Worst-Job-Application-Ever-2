@@ -132,4 +132,22 @@ describe('the ball off a visitor\'s flipper', () => {
       expect(s.events.some((e) => e.name === 'drain')).toBe(true)
     }
   })
+
+  it('has the ball save lob the ball to the scoops and to the ramp in live play: with the flippers never pressed no tow carries it to one of them', () => {
+    const tow = Machine.prototype.tow
+    const seen: string[] = []
+    Machine.prototype.tow = function (this: Machine, i: number, x: number, y: number, speed: number, then: string): void {
+      if (then === 'hold:office.inbox' || then === 'hold:street.firehouse' || then === 'rail:highway') seen.push(then)
+      tow.call(this, i, x, y, speed, then)
+    }
+    try {
+      const s = new Stage({ mode: 'live', flow: [{ page: 'step3' }, { page: 'step4' }], pages, driver: { name: 'bot', input: () => ({ x: 300, y: 900, down: false }) as Pointer }, seed: config.seed })
+      while (s.entryIndex === 0 && s.time < 80) s.advance(24)
+      expect(s.entryIndex).toBe(1)
+      expect(seen).toEqual([])
+      expect(s.gagsReached).toEqual(expect.arrayContaining(beats.map((b) => b.id)))
+    } finally {
+      Machine.prototype.tow = tow
+    }
+  })
 })

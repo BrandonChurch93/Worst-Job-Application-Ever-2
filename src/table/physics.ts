@@ -20,7 +20,7 @@ export interface BallState {
 export interface TableEvent { name: string; ball: number; id: string; x: number; y: number }
 export interface MachineState {
   snap: string; balls: BallState[]; flip: [number, number]; held: [boolean, boolean]; down: boolean[]; bank: number[]; cool: number[]; gate: boolean[]; on: Record<string, boolean>
-  mom: boolean; carpet?: boolean; live?: boolean; bounce?: [number, number]; saves: number; magnet: number[] | null; aim?: [number, number, number] | null; shot?: [number, number, number] | null; armed?: boolean[]; score: number; steps: number; last: Record<string, number>
+  mom: boolean; carpet?: boolean; live?: boolean; bounce?: [number, number]; mark?: [number, number, number, number] | null; saves: number; magnet: number[] | null; aim?: [number, number, number] | null; shot?: [number, number, number] | null; armed?: boolean[]; score: number; steps: number; last: Record<string, number>
 }
 
 const DEG = 0.017453292519943295
@@ -84,6 +84,7 @@ export class Machine {
   bounce: [number, number] = [0, 0]
   saves = 0
   magnet: number[] | null = null
+  mark: [number, number, number, number] | null = null
   aim: [number, number, number] | null = null
   shot: [number, number, number] | null = null
   armed: [boolean, boolean] = [false, false]
@@ -140,6 +141,7 @@ export class Machine {
     this.carpet = false
     this.live = false
     this.bounce = [0, 0]
+    this.mark = null
     this.saves = 0
     this.magnet = null
     this.aim = null
@@ -163,7 +165,7 @@ export class Machine {
   save(): MachineState {
     return {
       snap: toBase64(this.world.takeSnapshot()), balls: this.balls.map((b) => ({ ...b })), flip: [...this.flip], held: [...this.held], down: [...this.down], bank: [...this.bank], cool: [...this.cool], gate: [...this.gate],
-      on: { ...this.on }, mom: this.mom, carpet: this.carpet, ...(this.live ? { live: true, bounce: [...this.bounce] as [number, number] } : {}), saves: this.saves, magnet: this.magnet ? [...this.magnet] : null, aim: this.aim ? [...this.aim] : null, shot: this.shot ? [...this.shot] : null, armed: [...this.armed], score: this.score, steps: this.steps, last: { ...this.last }
+      on: { ...this.on }, mom: this.mom, carpet: this.carpet, ...(this.live ? { live: true, bounce: [...this.bounce] as [number, number], mark: this.mark ? [...this.mark] as [number, number, number, number] : null } : {}), saves: this.saves, magnet: this.magnet ? [...this.magnet] : null, aim: this.aim ? [...this.aim] : null, shot: this.shot ? [...this.shot] : null, armed: [...this.armed], score: this.score, steps: this.steps, last: { ...this.last }
     }
   }
 
@@ -183,6 +185,7 @@ export class Machine {
     this.carpet = s.carpet === true
     this.live = s.live === true
     this.bounce = s.bounce ? [...s.bounce] : [0, 0]
+    this.mark = s.mark ? [...s.mark] : null
     this.saves = s.saves
     this.magnet = s.magnet ? [...s.magnet] : null
     this.aim = s.aim ? [...s.aim] : null
@@ -314,7 +317,7 @@ export class Machine {
   }
 
   // Where a bumper or a slingshot throws the clear ball when the director has named a place: the arc that lands there at this speed, when that leaves the face within its cone. Otherwise nothing, and the face throws straight.
-  private aimed(i: number, nx: number, ny: number, speed: number): V | null {
+  private aimed(i: number, nx: number, ny: number, speed: number, high = false): V | null {
     const a = this.aim
     const b = this.balls[i]!
     if (!a || i !== 0) return null
@@ -325,7 +328,7 @@ export class Machine {
     const k = speed * speed + dy * GRAVITY
     const under = k * k - GRAVITY * GRAVITY * d2
     if (under < 0) return null
-    const time = Math.sqrt((k - Math.sqrt(under)) / (GRAVITY * GRAVITY * 0.5))
+    const time = Math.sqrt((high ? k + Math.sqrt(under) : k - Math.sqrt(under)) / (GRAVITY * GRAVITY * 0.5))
     const vx = dx / time
     const vy = dy / time - GRAVITY * time * 0.5
     return (vx * nx + vy * ny) / speed < a[2] ? null : [vx, vy]
@@ -356,6 +359,13 @@ export class Machine {
     if (!this.gate[k]) {
       this.saves++
       this.toPlane(i, MID, TIER_Y[k]! + 10.55, this.saves % 2 === 0 ? 1.2 : -1.2, -24)
+      if (this.live && i === 0 && this.mark) {
+        const keep = this.aim
+        this.aim = [this.mark[0], this.mark[1], -1]
+        const to = this.aimed(0, 0, -1, this.mark[2], this.mark[3] === 1)
+        this.aim = keep
+        if (to) this.kick(0, to[0], to[1])
+      }
       this.say('ball-save', i, `${TIERS[k]}.gate`)
       return
     }
@@ -482,7 +492,7 @@ export class Machine {
       const q = distSeg(b.x, b.y, s.a, s.c)
       const inward = s.side === 'left' ? 1 : -1
       if (q.d > R + 0.06 || q.nx * inward <= 0 || b.vx * q.nx + b.vy * q.ny > 1) continue
-      const to = this.aimed(i, q.nx, q.ny, KICK.sling)
+      const to = this.aimed(i, q.nx, q.ny, this.live ? Math.max(KICK.sling, speed * 0.9) : KICK.sling)
       this.kick(i, to ? to[0] : b.vx + q.nx * KICK.sling, to ? to[1] : b.vy + q.ny * KICK.sling)
       this.cool[c] = 0.15
       this.score += 500
