@@ -63,7 +63,9 @@ Decisions taken without asking, in the order they were met.
 - The pointer of the film waits at the stage's hand-off place (`HANDOFF` of `src/cursor/body.ts`) until the page has set the cursor down at 0.5 s, then walks to its place (`ARRIVE` in `script.ts`). A script whose pointer stands elsewhere at 0.5 s makes the cursor dash to it.
 - A tray starts to shut when the machine's lift is under `COVER` (`index.ts`), not when the machine has gone, so no tray stands empty.
 - The slot's lever: `slot-mount` is a bracket at the cabinet's side at `SLOT.pivotY`; `slot-arm` runs between the knob and the bracket and hands its maker `v: [1]` when the knob is over the bracket and `v: [-1]` when it hangs under it.
-- A meter segment is two meshes: the top carries the picture, the upright wall is plain glass. The picture is `CRANK_LOOK.picture` px.
+- A meter segment is two meshes: the top carries the picture, the upright wall is plain glass. The picture is `CRANK_LOOK.picture` px. Its solid is a rounded rectangle (`pillCorner`), and `inPill()` measures depth in that same shape.
+- The slot's frame is a flat band, a step, a shelf and a slope to the gasket (`SLOT_LOOK.band`, `step`, `ledge`, `chamfer`); the step and slope are `bevel`, a plain copy of the shared aluminium.
+- `HUB_ORANGE_LIFT` in `layout.ts` is a stand-in and goes when the shared orange is right.
 - The dial: the housing is a sloped bezel on a stepped base ring in a darker copy of the shared steel; each hole has a countersink (`holesGeometry`); the hub stands on a foot and carries one painted sheen toward the key (`glintGeometry`).
 - The tray's wall shade (`trayWallShade`) also runs over the rim on the light's side, and tints the shade a little cool (`TRAY.cool`).
 - The temper of the cursor ends after the stamp (`TEMPER.spent`): it is `plain` at the crank until the crank throws it.

@@ -39,6 +39,46 @@
    "where": "rows 3–4, beneath the entering notice",
    "what": "The attention shift is a small swivel into the default cursor stance. The pose is held, but it does not clearly differentiate recognizing the new notice from simply pointing up-left.",
    "fix": "Contrast the waiting silhouette with a taller, sharper tip lift timed to the paper’s arrival, then settle into a deliberately held tilt toward it."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "the whole sheet",
+   "what": "did not read: the peel up is not in the read: the bent arrow reads as lingering by the stamp, dazed and reluctant, while the numbers count up. The walk to Accept Rejection and the press are read.",
+   "fix": "The arrow peeling itself up off the page as an action of its own, held, before the panel fills in.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "the whole sheet",
+   "what": "did not read: nervous reads as disheartened or impatient, with a short agitated waggle. The sweat, the tremble and the gulp are not in the read.",
+   "fix": "The beads of sweat, the small tremble and the gulp of Nervous, large enough in the sheet to be seen, on an arrow that holds its place.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-06.png",
+   "where": "the whole sheet",
+   "what": "did not read: shocked reads as waiting uneasily, then perking up and swivelling to look at the paper. The double take is not in the read.",
+   "fix": "The double take of Shocked: the stretch tall, then the snap back to upright, held.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "the whole sheet",
+   "what": "did not read: proud reads as curious and expectant, reaching up onto the notice to inspect it.",
+   "fix": "The puff up of Proud held first, then the dusting, on an arrow that stands clear of the letter.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-08.png",
+   "where": "the whole sheet",
+   "what": "did not read: scared reads as stunned or pinned: the stamp hides the arrow through the whole sheet, so the state is not seen at all.",
+   "fix": "Pale and stony, leaning back, before the stamp covers it; and under the stamp a tip or a corner of the arrow left in sight.",
+   "by": "builder"
   }
  ],
  "reads": [

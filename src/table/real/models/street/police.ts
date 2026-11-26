@@ -2,7 +2,7 @@ import type { RealContext } from '../../../../real/types'
 import type { Zone } from '../../zone'
 import type { Buckets, V3 } from './geo'
 import { quoins, walls } from './firehouse'
-import { KIND, TONE, band, mix, beaconBase, board, parapet, reveal, roofDeck, shade, site, wallFace, windowAt, type Hole, type WindowLook } from './kit'
+import { KIND, TONE, band, mix, beaconBase, board, parapet, reveal, roofDeck, roofLight, shade, site, wallFace, windowAt, type Hole, type WindowLook } from './kit'
 
 export function police(b: Buckets, z: Zone, ctx: RealContext): { beacon: V3 } {
   const S = site(z, 'street.police')
@@ -106,6 +106,8 @@ export function police(b: Buckets, z: Zone, ctx: RealContext): { beacon: V3 } {
   for (const [vx, vy] of [[x1 - 22, yf + 42], [x0 + 24, yf + 38]] as const) b.metal.lathe([[3.4, 0], [3.4, 8], [5.2, 9.5], [5.2, 11], [0, 12.5]], vx, vy, 14, TONE.alu, { base: deck })
   for (const [px, py] of [[x0 + 9, yf + 9], [x1 - 9, yf + 9], [x1 - 9, yb - 9]] as const) b.screws.push([px, py, deck, 1.6])
 
+  roofLight(b, x0 + 38, x0 + 82, yf + 32, yf + 58, deck, TONE.blueDark)
+  roofLight(b, x1 - 82, x1 - 38, yf + 32, yf + 58, deck, TONE.blueDark)
   const beacon: V3 = [S.cx, S.yb - S.d * 0.3, deck]
   beaconBase(b, beacon[0], beacon[1], deck)
   board(b, z, ctx, 'street.police', deck)

@@ -6,7 +6,7 @@ import type { Shape } from '../../../stage/types'
 import { dims, mesh, q, shared, srgb } from './careers-solids'
 import { cardGlass, GLASS, glassOptions, groundEdge, SLAB, slabGeometry } from './perk-cards'
 
-export const TICKER_LOOK = { clear: 0.04, wedge: 4.4, caster: 2.6, dot: 0x3c4043, frost: -0.9, steps: 8 }
+export const TICKER_LOOK = { clear: 0.02, wedge: 4.4, caster: 2.6, dot: 0x3c4043, frost: -0.9, steps: 8 }
 
 let tapeMade: THREE.MeshPhysicalMaterial | null = null
 let paneMade: THREE.MeshPhysicalMaterial | null = null
@@ -18,7 +18,7 @@ const tape = (): THREE.MeshPhysicalMaterial => (tapeMade ??= studio(new THREE.Me
 
 // The polished top of the strip over the channel: clear, seen by what it reflects and by a little of the glass's own colour.
 const pane = (): THREE.MeshPhysicalMaterial =>
-  (paneMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(GLASS.colour), roughness: 0.3, metalness: 0, transparent: true, opacity: TICKER_LOOK.clear, clearcoat: 0.6, clearcoatRoughness: 0.22, specularIntensity: 0.6, depthWrite: false })))
+  (paneMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(GLASS.colour), roughness: 0.3, metalness: 0, transparent: true, opacity: TICKER_LOOK.clear, clearcoat: 0.04, clearcoatRoughness: 0.22, specularIntensity: 0.08, depthWrite: false })))
 
 // The ends of the strip are frosted through: the tape's own stuff over the words, thinning to nothing toward the middle, so a run comes out of the frost and goes back into it and is never cut by the strip's end.
 const frost = (): THREE.MeshPhysicalMaterial =>

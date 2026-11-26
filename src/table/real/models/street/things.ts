@@ -126,7 +126,7 @@ export function lamp(b: Buckets, x: number, y: number, turn: number, tall = 62):
 }
 
 export function hydrant(b: Buckets, x: number, y: number): void {
-  const red = TONE.red
+  const red = shade(TONE.red, 0.6)
   b.paint.lathe([[3.6, 0], [3.6, 1.2], [2.5, 1.8], [2.5, 8.2], [3.1, 8.6], [3.1, 9.6], [2.4, 10.6], [1.2, 11.6], [0, 11.8]], x, y, 16, red, { kind: KIND.gloss })
   b.paint.rod([x - 4.4, y, 6.2], [x + 4.4, y, 6.2], 1.25, 10, red, KIND.gloss)
   b.paint.rod([x, y - 4.2, 5.4], [x, y, 5.4], 1.5, 10, red, KIND.gloss)

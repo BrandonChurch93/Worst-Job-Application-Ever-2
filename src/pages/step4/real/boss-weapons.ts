@@ -335,7 +335,7 @@ function ringGeometry(): THREE.BufferGeometry {
       colour.push(1, 1, 1, alpha[j]! * thin)
       if (i < RING.parts && j < radii.length - 1) {
         const at = i * radii.length + j
-        index.push(at, at + radii.length, at + 1, at + 1, at + radii.length, at + radii.length + 1)
+        index.push(at, at + 1, at + radii.length, at + 1, at + radii.length + 1, at + radii.length)
       }
     })
   }
@@ -474,7 +474,7 @@ export const bossWeapons: PartMaker | null = {
         ring.scale.set(wide * RING.flat, wide, 1)
         ring.position.set(8 + RING.ahead * Math.sqrt(u), 0, RING.z)
         const ringStuff = ring.material as THREE.MeshBasicMaterial
-        ringStuff.opacity = 0.7 * Math.min(1, u / 0.12) * Math.pow(1 - u, 1.1)
+        ringStuff.opacity = 0.85 * Math.min(1, u / 0.12) * Math.pow(1 - u, 1.1)
         ring.visible = u > 0.04 && u < 0.98
         ctx.light({ x: cx, y: cy, z: s.z1 + 6, colour: WEAPON_EMIT.muzzle.colour, power: WEAPON_EMIT.muzzle.power * hot, reach: WEAPON_EMIT.muzzle.reach })
         break
