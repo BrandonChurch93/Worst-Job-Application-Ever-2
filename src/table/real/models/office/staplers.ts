@@ -5,12 +5,12 @@ import { localBalls, type Zone } from '../../zone'
 import { hex, Kit, matsOf, meshOf, shade, SURF, type V2, type V3 } from './kit'
 
 const C = {
-  red: hex(0x54151c),
-  plate: hex(0x4a1218),
-  steel: hex(0x6c7480),
-  chrome: hex(0x8a94a0),
+  red: hex(0xab2228),
+  plate: hex(0x7f191f),
+  steel: hex(0x9aa1aa),
+  chrome: hex(0xc9d0d8),
   rubber: hex(0x222223),
-  staple: hex(0x8f98a3),
+  staple: hex(0xb4bcc6),
   dark: hex(0x2c2d30)
 }
 
@@ -62,7 +62,8 @@ function plateOutline(f: Frame): V2[] {
   return out
 }
 
-const taper = (f: Frame, x: number): number => 18 - (5 * Math.max(0, Math.min(f.length, x))) / f.length
+const taper = (f: Frame, x: number): number => 21 - (5.5 * Math.max(0, Math.min(f.length, x))) / f.length
+const LIFT = 0.13
 
 function body(k: Kit, f: Frame): void {
   const L = f.length
@@ -119,11 +120,9 @@ function body(k: Kit, f: Frame): void {
 function arm(k: Kit, f: Frame): void {
   const L = f.length - PIN.x - 1
   const section = (x: number, grow: number, wide: number, tall: number, skirt: number): V3[] => {
-    const w = (taper(f, x + PIN.x) + 1.2) * wide * (0.6 + 0.4 * grow)
-    const h = 1 + (15.5 - (3.5 * Math.max(0, x)) / L) * tall * (0.45 + 0.55 * grow)
-    const s = h * 0.46
-    const t = w * 0.6
-    const half: V2[] = [[w, -skirt], [w, s - 1], [w - 0.7, s], [t + 0.9, h - 0.6], [t, h]]
+    const w = (taper(f, x + PIN.x) + 2.2) * wide * (0.6 + 0.4 * grow)
+    const h = 1 + (21 - (5 * Math.max(0, x)) / L) * tall * (0.45 + 0.55 * grow)
+    const half: V2[] = [[w - 0.8, -skirt], [w, -skirt + 1], [w, h * 0.52], [w * 0.975, h * 0.72], [w * 0.91, h * 0.88], [w * 0.8, h * 0.97], [w * 0.62, h]]
     const out: V3[] = half.map((q) => [x, -q[0], q[1]] as V3)
     for (let i = half.length - 1; i >= 0; i--) out.push([x, half[i]![0], half[i]![1]])
     return out
@@ -155,6 +154,7 @@ export function staplerScrews(z: Zone): [number, number, number][] {
 
 function bases(z: Zone): Kit {
   const k = new Kit()
+  k.lift = LIFT
   for (const g of slingsOf(z)) {
     const f = frameOf(z, g)
     const outline = plateOutline(f)
@@ -180,6 +180,7 @@ export function buildStaplers(z: Zone): THREE.Object3D {
   for (const g of slingsOf(z)) {
     const f = frameOf(z, g)
     const a = new Kit()
+    a.lift = LIFT
     arm(a, f)
     const mesh = meshOf(a.done(), mats.solid, `office.stapler.arm.${g.side}`, { cast: true })
     mesh.rotation.order = 'ZYX'

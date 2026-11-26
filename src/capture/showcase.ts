@@ -24,7 +24,7 @@ export interface Showcase {
   countParts(spec: StillSpec): Promise<PartCounts>
   pictureStats(): { invalidValues: number }
   typeRegister(page: string): { key: string; text: string; states: string[]; made: 'copy' | 'config' | 'runtime' }[]
-  stillState(spec: StillSpec): { layout: { id: string; kind: string; planned: number[]; drawn: number[]; screen: number[]; plannedHeight: number | null; height: number; mechanism: boolean; moved: boolean }[]; type: { key: string; text: string; box: number[]; screen: number[]; px: number; contrast: number; ink: number; ground: number; contrastFrom: ContrastFrom }[]; cursor: CursorState }
+  stillState(spec: StillSpec): { layout: { id: string; kind: string; planned: number[]; drawn: number[]; screen: number[]; plannedHeight: number | null; height: number; mechanism: boolean; moved: boolean }[]; type: { key: string; text: string; box: number[]; screen: number[]; px: number; contrast: number; ink: number; ground: number; contrastFrom: ContrastFrom }[]; shapes: { id: string; kind: string; part: string; screen: number[] }[]; cursor: CursorState }
   tableState(): TableState
   film(): { frameCount: number; units: { id: string; first: number; last: number }[]; beats: { id: string; first: number; last: number }[]; lines: { beat: string; first: number; last: number }[] }
   filmState(frameIndex: number): { unit: string; beat: string; camera: number[]; cursor: CursorState; events: { name: string; x: number; y: number; hitsCursor: boolean }[]; standIns: string[] }
@@ -614,7 +614,8 @@ export function makeShowcase(app: App, ready: Promise<void>): Showcase {
         const ground = toneGround(frame.list, s)
         return { ...run, contrast: ratio(ink, ground), ink, ground, contrastFrom: 'stand-in tones' as ContrastFrom }
       })
-      return { layout, type, cursor: app.cursorState(frame.cursor, pose) }
+      const shapes = frame.list.filter((s) => s.kind !== 'text' && s.kind !== 'well').map((s) => ({ id: s.id, kind: s.kind, part: s.part, screen: screenBox(pose, s.x, s.y, s.w, s.h, s.pocket ? s.z0 : s.z1) }))
+      return { layout, type, shapes, cursor: app.cursorState(frame.cursor, pose) }
     },
     tableState() {
       const table = app.pageOf('pinball').tableState?.()
