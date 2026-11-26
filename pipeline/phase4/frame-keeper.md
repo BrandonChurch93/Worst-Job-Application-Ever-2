@@ -61,10 +61,19 @@ One draft still shows several parts; each still is counted once, under the part 
 | 05:08 to 05:10 | last-save, tier-corporate | wire | 2 |
 | 05:10 to 05:20 | last-save 5, tier-office 1, rail-cam 1 | wire: which term makes it pale | 7 |
 | 05:21 to 05:27 | loader-page 2, table-wide 2 | loader ring and bowl, rail ends, marquee | 4 |
-| 05:41 to 05:44 | tier-corporate at draft, last-save at review (78 s, looked at) | lift tube, a review still | 2 |
-| 05:50 to 05:58 | tier-corporate 2, tier-street 1, tier-office 1 | lift tube from above | 4 |
+| 05:33 to 05:35 | tier-corporate at draft, last-save at review (78 s, looked at) | lift tube, a review still | 2 |
+| 05:36 to 05:40 | tier-corporate 2, tier-street 1, tier-office 1 | lift tube from above | 4 |
 
-Total at 05:58 UTC: 77 stills (the rows above summed). One still shows several parts, so the split by part is my reading of what each was rendered for, not a log: ramps about 24, frame about 19, loader 10, hardware 6, flippers 5, lift 11, marquee 3, bumpers 2, targets 1. No part is at 40.
+Total at 05:41 UTC, the end of this count: 77 stills (the rows above summed). One still shows several parts, so the split by part is my reading of what each was rendered for, not a log: ramps about 24, frame about 19, loader 10, hardware 6, flippers 5, lift 11, marquee 3, bumpers 2, targets 1. No part is at 40.
+
+The times in the table from 05:01 on are read back from the pushes (05:20, 05:28, 05:41 by `date -u`), not each off the clock.
+
+### Round 11 (from 05:42 UTC, 40 per part)
+
+| time UTC | key | for | count |
+| --- | --- | --- | --- |
+
+Total in round 11: 0.
 
 ## Decisions
 
@@ -101,7 +110,7 @@ Total at 05:58 UTC: 77 stills (the rows above summed). One still shows several p
 2. The highway's wire from a low eye (`last-save`): still a pale grey tube at draft size, where approved is a dark mirror with thin white lines. The hoops and trestles are right.
 3. The frame's lands from straight above: pale sheets with fine stripes and a row of dark screws, where approved is one slow gradient. The south ends of the side rails stand as tall brushed posts in `table-wide` (their height is the layout's).
 
-## Draw calls, MEASURED 05:35 UTC at f66fec4d (`npm run build && npm run counts -- --key <key> --live low`)
+## Draw calls, MEASURED about 05:30 UTC at f66fec4d (`npm run build && npm run counts -- --key <key> --live low`)
 
 - `tier-corporate`, `tier-office`, `tier-street`: every row of mine has the draw calls of the first measure (hardware 13/16/19, frame 9/12/13, targets 7/11/8, flippers 5/7/6, bumpers 2/8/2, loader 4/3/2, lift 3/6/3, ramps -/3/5, marquee 4/1/-).
 - `table-wide`: loader 10 calls and 13966 triangles, was 8 and 9408. The same 10 comes out with the loader file of the push before (14004 triangles), so it is not this round's loader: main's 2a5a2c59 moved the wide camera to show the machine to its near end, and two more loader meshes are in view. Every other row of mine equal: hardware 21, frame 16, targets 15, flippers 12, bumpers 8, lift 8, ramps 5, marquee 4. Scene 201.
