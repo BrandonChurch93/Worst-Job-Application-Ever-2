@@ -107,8 +107,8 @@ Looks added since 07:40 UTC, by part (first-pass counts above):
 | part | added | total | what they were |
 | --- | --- | --- | --- |
 | verify-card | 0 | 8 | |
-| boss-body | 12 | 26 | `boss-fight` compare 5, `boss-down` compare 7 |
+| boss-body | 11 | 25 | `boss-fight` compare 4, `boss-down` compare 7 |
 | boss-transform | 16 | 27 | `boss-down` compare 7, sheet `boss-stages` 8, beat sheet unfold 1 |
-| boss-weapons | 8 | 10 | `boss-fight` compare 5, beat sheet popups 1, motion sheets `slab-drop` 1 and `hit` 1 |
+| boss-weapons | 7 | 9 | `boss-fight` compare 4, beat sheet popups 1, motion sheets `slab-drop` 1 and `hit` 1 |
 | health-bar | 2 | 3 | beat sheet lastStand 2 |
 | acting-boss | 9 | 24 | beat sheets popups 1, lastStand 2, collapse 3, unfold 1, press 1, motion sheet `hit` 1 |
