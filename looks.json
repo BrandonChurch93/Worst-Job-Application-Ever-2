@@ -1,35 +1,35 @@
 {
   "folder": "machine-finish",
-  "pushed": "2026-11-26T12:13:16.367Z",
-  "commit": "7d159780de34a5ed040c8cf8ff50942a70124ac5",
+  "pushed": "2026-11-26T12:34:30.146Z",
+  "commit": "c3fa4737337dff7f10ea0cc3769dbaf2f8fa0cda",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key lobby-doors: approved on the left, this build on the right, draft tier, with crops of shape:hq.plate, shape:hq.doorway, cursor, shape:hold.corporate.revolving.post, shape:post.corporate.globe.right, shape:model.corporate.hq, shape:flat.corporate.carpet",
-      "time": "2026-11-26T12:08:02.686Z",
+      "caption": "Contact sheet, the beat pinball.save: 12 frames from 1:41.00 to 1:43.97, draft tier, preview",
+      "time": "2026-11-26T12:22:46.146Z",
       "by": "machine-finish",
-      "from": "out/work/compare/compare-lobby-doors.jpg"
+      "from": "out/work/sheets/sheet-beat-pinball_save-preview-draft.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Key rail-cam: approved on the left, this build on the right, draft tier, with crops of cursor, shape:model.street.bank, shape:model.street.firehouse",
-      "time": "2026-11-26T12:08:51.474Z",
+      "caption": "Contact sheet, the beat pinball.save: 12 frames from 1:41.00 to 1:43.97, draft tier, preview",
+      "time": "2026-11-26T12:24:46.728Z",
       "by": "machine-finish",
-      "from": "out/work/compare/compare-rail-cam.jpg"
+      "from": "out/work/sheets/sheet-beat-pinball_save-preview-draft.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Key rail-cam: approved on the left, this build on the right, draft tier, with crops of cursor, shape:model.street.bank, shape:model.street.firehouse",
-      "time": "2026-11-26T12:10:36.414Z",
+      "caption": "Contact sheet, the beat pinball.save: 12 frames from 1:41.00 to 1:43.97, draft tier, preview",
+      "time": "2026-11-26T12:28:52.163Z",
       "by": "machine-finish",
-      "from": "out/work/compare/compare-rail-cam.jpg"
+      "from": "out/work/sheets/sheet-beat-pinball_save-preview-draft.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "rail-cam beside the approved image: the ball whole and in the middle again at the key after the new take",
-      "time": "2026-11-26T12:13:15.224Z",
+      "caption": "Save beat sheet: the fall to the right flipper seen close through the new camera table-gap (34.65 to 35.35 s), then the catch at 35.62 s in table-save",
+      "time": "2026-11-26T12:34:29.029Z",
       "by": "machine-finish",
-      "from": "out/work/mf/q7-rail-cam.jpg"
+      "from": "out/work/mf/r5-save.jpg"
     }
   ]
 }
