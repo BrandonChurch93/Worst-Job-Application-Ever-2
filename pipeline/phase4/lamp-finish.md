@@ -71,6 +71,9 @@ Counted from the first still, by part. Limit 40 a part in this round.
 | 11:33 | lights | 2 | a16, on main 37c2e908 with the frame's navy walls: table-wide (0.99 of the approved), youre-fired (1.18) | 40, 22 |
 | 11:40 | art | 3 | b1, Street paving plainer to see, print 1.12: tier-street (1.00 of the approved), youre-fired (1.17), table-wide (0.99) | 40, 25 |
 | 11:43 | art | 2 | b2, Corporate print 0.92: tier-corporate (1.02), lobby-doors (1.00) | 40, 27 |
+| 11:48 | art | 2 | c1, Corporate flecks and veins calmer: tier-corporate (1.01), table-wide (0.99) | 40, 29 |
+| 11:51 | art | 1 | c2, Office stipple at about half its strength: tier-office (1.02) | 40, 30 |
+| 11:53 | art | 2 | c3, Office walkway paler: tier-office (1.03), table-wide (0.99) | 40, 32 |
 
 ## Decisions
 
@@ -109,4 +112,5 @@ Counted from the first still, by part. Limit 40 a part in this round.
 - 11:38 Street: the paving slabs are plain to see (`plots` at 0.26, were 0.1) and the print is darker (`COAT` street print 1.12, was 1.2): the approved floor is dark slabs, not one field with fine lines. MEASURED b1: `tier-street` 1.00 of the approved, dark share 18 percent against 20 (was 8).
 - 11:42 Corporate print 0.92 (was 1.0). MEASURED b2: `tier-corporate` 1.02 (was 1.10), dark share 33 percent against 36; `lobby-doors` 1.00.
 - `youre-fired` stays at 1.17: by blocks (`cells.mjs b1 youre-fired`) the bright blocks are the cream bank beside the firehouse and the ball (85 to 122 against 48 to 72), not the floor (44 against 54 and 32). The camera of this key and the models are not mine.
-
+- 11:48 Corporate: the pale flecks at 0.3 and the gold ones at 0.16 (were 0.6 and 0.5), 60 veins at 0.12 to 0.34 (were 90 at 0.18 to 0.5). Beside the approved floor the print read as a night sky of dots with white scratches; the approved marble is calm with a few faint veins. MEASURED c1: `tier-corporate` 1.01, `table-wide` 0.99.
+- 11:51 Office: stipple of the tiles at 0.22 to 0.28 and of the walkway at 0.28 (were 0.3 to 0.5 and 0.5), for R3-3 issue 5 (an even, heavy speckle that reads as bare carpet). The walkway is paler (`#a1a493`, was `#8e9488`): on the approved image it measures about 158,152,134 and mine stood near 125,123,100. MEASURED c3: `tier-office` 1.03 (dark share 3 percent against 10), `table-wide` 0.99.
