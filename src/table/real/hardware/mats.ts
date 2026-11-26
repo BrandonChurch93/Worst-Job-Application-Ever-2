@@ -144,8 +144,8 @@ const STREAK = /* glsl */ `
 	vec2 hwP = vec2( dot( hwR, hwX ), dot( hwR, cross( hwD, hwX ) ) ) / max( hwF, 0.001 );
 	float hwWin = step( 0.0, hwF ) * ( 1.0 - smoothstep( 0.3, 0.48, abs( hwP.x ) ) ) * ( 1.0 - smoothstep( 0.15, 0.31, abs( hwP.y ) ) );
 	float hwHalo = step( 0.0, hwF ) * ( 1.0 - smoothstep( 0.3, 0.95, length( hwP * vec2( 0.55, 1.0 ) ) ) );
-	float hwLine = gl_FrontFacing ? exp( - ( hwR.z - 0.84 ) * ( hwR.z - 0.84 ) / 0.004 ) : 0.0;
-	gl_FragColor.rgb += vec3( 0.8, 0.86, 0.88 ) * ( hwWin * 0.75 + hwHalo * 0.2 + hwLine * 0.45 * step( 0.5, hwEdgeGain ) );
+	float hwLine = gl_FrontFacing ? exp( - ( hwR.z - 0.84 ) * ( hwR.z - 0.84 ) / 0.0009 ) * ( 0.2 + 0.8 * smoothstep( -0.25, 0.3, hwR.x + 0.6 * hwR.y ) ) : 0.0;
+	gl_FragColor.rgb += vec3( 0.8, 0.86, 0.88 ) * ( hwWin * 0.75 + hwHalo * 0.08 + hwLine * 0.9 * step( 0.5, hwEdgeGain ) );
 }
 `
 
@@ -166,10 +166,10 @@ export const tubeOf = (z: Zone, base: number): THREE.MeshPhysicalMaterial => {
     shader.uniforms.hwEdgeGain = { value: z.id === 'last' ? EDGE.page : EDGE.table }
     shader.fragmentShader = 'uniform float hwEdgeGain;\n' + shader.fragmentShader.replace(
       '#include <tonemapping_fragment>',
-      'float hwEdge = pow( 1.0 - abs( dot( normalize( vViewPosition ), normalize( normal ) ) ), 1.9 );\ngl_FragColor.rgb *= mix( 1.0, hwEdgeGain, hwEdge );\n' + STREAK + 'gl_FragColor.a = clamp( diffuseColor.a + hwEdge * 0.55 + dot( gl_FragColor.rgb, vec3( 0.3333 ) ) * 0.22, 0.0, 1.0 );\n#include <tonemapping_fragment>'
+      'float hwEdge = pow( 1.0 - abs( dot( normalize( vViewPosition ), normalize( normal ) ) ), 1.9 );\ngl_FragColor.rgb *= mix( 1.0, hwEdgeGain, hwEdge );\n' + STREAK + 'gl_FragColor.a = clamp( diffuseColor.a + hwEdge * 0.55 + dot( gl_FragColor.rgb, vec3( 0.3333 ) ) * 0.13, 0.0, 1.0 );\n#include <tonemapping_fragment>'
     )
   }
-  m.customProgramCacheKey = () => 'wja-studio-hardware-clear-5'
+  m.customProgramCacheKey = () => 'wja-studio-hardware-clear-7'
   m = lit(m, z)
   m.name = `hardware.tube.${z.id}`
   clear.set(z.id, m)

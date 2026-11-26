@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import type { RealContext } from '../../../../real/types'
 import { table, type Sling } from '../../../layout'
 import { localBalls, type Zone } from '../../zone'
-import { hex, Kit, matsOf, meshOf, mix, shade, SURF, type RGB, type V2, type V3 } from './kit'
+import { hex, Kit, matsOf, meshOf, mix, shade, SURF, type RGB, type Surf, type V2, type V3 } from './kit'
 
 const C = {
   red: hex(0x8e161c),
@@ -65,6 +65,8 @@ function plateOutline(f: Frame): V2[] {
 
 const taper = (f: Frame, x: number): number => 21 - (5.5 * Math.max(0, Math.min(f.length, x))) / f.length
 const LIFT = 0.08
+// The enamel of the arm is smoother than the plate's, so the lamps draw a narrow highlight on its crown.
+const ARM: Surf = [0.17, 0, 1]
 // Across the stapler, in px beyond its taper: the top arm, the steel base that shows on both sides of it, and the shade the two lay on the plate.
 const SIDE = { arm: -1, steel: 1.8, shade: 4.8 }
 // The long highlight of the enamel, baked along the two shoulders of the arm: how much of it each ring of the section takes.
@@ -128,7 +130,7 @@ function arm(k: Kit, f: Frame): void {
   const section = (x: number, grow: number, wide: number, tall: number, skirt: number): V3[] => {
     const w = (taper(f, x + PIN.x) + SIDE.arm) * wide * (0.6 + 0.4 * grow)
     const h = 1 + (21 - (5 * Math.max(0, x)) / L) * tall * (0.45 + 0.55 * grow)
-    const half: V2[] = [[w - 0.8, -skirt], [w, -skirt + 1], [w, h * 0.5], [w * 0.975, h * 0.7], [w * 0.91, h * 0.86], [w * 0.8, h * 0.95], [w * 0.62, h], [w * 0.36, h * 1.035], [w * 0.12, h * 1.05]]
+    const half: V2[] = [[w - 0.8, -skirt], [w, -skirt + 1], [w, h * 0.5], [w * 0.975, h * 0.7], [w * 0.91, h * 0.86], [w * 0.8, h * 0.93], [w * 0.62, h * 0.99], [w * 0.36, h * 1.04], [w * 0.12, h * 1.065]]
     const out: V3[] = half.map((q) => [x, -q[0], q[1]] as V3)
     for (let i = half.length - 1; i >= 0; i--) out.push([x, half[i]![0], half[i]![1]])
     return out
@@ -144,7 +146,7 @@ function arm(k: Kit, f: Frame): void {
     const low = step < 2 ? 0.72 : 1
     return mix(shade(C.red, low), C.sheen, Math.min(0.85, sheen))
   }
-  k.loft(xs.map(([x, g]) => section(x, g, 1, 1, 5 * g)), tint, SURF.enamel)
+  k.loft(xs.map(([x, g]) => section(x, g, 1, 1, 5 * g)), tint, ARM)
   k.box(L - 9, 0, -6.2, 5, 13, 2.4, C.chrome, SURF.chrome, 0.3)
   for (const s of [-1, 1]) {
     const seam: V3[] = []
