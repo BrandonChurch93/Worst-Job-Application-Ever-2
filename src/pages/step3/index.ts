@@ -39,7 +39,7 @@ const centred = (id: string, key: string, type: { font: string; px: number; wrap
 
 function buildLayout(): LayoutNode {
   const kids: LayoutNode[] = [...stepHead(3)]
-  kids.push(text('intro', 'copy:transitions.step3', { ...TYPE.body, wrap: 760, lead: 34 }, LEFT, HEADER.contentY, { part: 'type' }))
+  kids.push(text('intro', 'copy:transitions.step3', { ...TYPE.body, wrap: 600, lead: 34 }, LEFT, HEADER.contentY, { part: 'type' }))
   kids.push(node('loader-port', 'port', [px(PORT.x - PORT.ring / 2), px(PORT.y - PORT.ring / 2), px(PORT.ring), px(PORT.ring)], { part: 'loader', shape: 'none' }))
   const my = px(MARQUEE_Y)
   kids.push(node('marquee', 'marquee', [312, my + 24, 1296, 336], {
@@ -123,7 +123,7 @@ const LENS: Record<string, number> = { 'table-wide': 8, 'table-lobby': 7, 'table
 const HARD: Record<string, number> = { bumper: 1, sling: 0.7, 'doors-slam': 1.3, 'scoop-kick': 0.8, plunger: 1, 'ball-hit': 0.6, 'drop-target': 0.5, 'mom-save': 1, 'ball-save': 0.8 }
 const SHAKE = { size: 0.006, decay: 0.09, hz: 23, most: 1.5, last: 0.5 }
 const SOFT = 0.4
-const NAME = 0.6
+const NAME = 1.5
 const TURN = 1.5707963267948966
 const SIGN = { turn: 0.5235987755982988, cos: 0.8660254037844387, sin: 0.5, inset: 8, lift: 6, back: ['corporate.beach'] }
 const WAKE = 0.35
@@ -557,7 +557,14 @@ export function makePage(): PageLogic {
     },
     draw(out: DrawList) {
       const mc = machine()
-      drawLayout(out, layout, { states: activeStates().map((x) => (MODES.some((m) => x === `mode${m.mode}` && s.t < m.at + NAME) ? `name${x.slice(4)}` : x)), runtime: { score: scoreText() }, over: s.pressed ? { ...stood, 'go-cap': { z1: config.scale.heights.button - config.scale.heights.keyTravel } } : stood })
+      const states = activeStates()
+      const over: Record<string, Partial<Shape>> = s.pressed ? { ...stood, 'go-cap': { z1: config.scale.heights.button - config.scale.heights.keyTravel } } : { ...stood }
+      for (const m of MODES) {
+        if (!states.includes(`mode${m.mode}`)) continue
+        over[`display.${TIERS[m.tier]!}.${m.mode}`] = { v: [s.t - m.at] }
+        if (s.t < m.at + NAME) states.push(`name${m.mode}`)
+      }
+      drawLayout(out, layout, { states, runtime: { score: scoreText() }, over })
       for (const shape of fixedShapes()) out.push(shape)
       for (const shape of movingShapes(mc, lit(), false, general(), drawn(), s.shut, website())) out.push(shape)
       out.push(hqPlate)
@@ -657,26 +664,26 @@ export function makePage(): PageLogic {
         const f = px(floorZ(1))
         const spots: { x: number; y: number; lift: number; pose: Partial<CursorPose> }[] = [
           { x: 7.68, y: Y1 + 8.84, lift: 0, pose: { acting: 'nervous' } },
-          { x: 8.3, y: Y1 + 5.6, lift: 0.7, pose: { acting: 'scared', lean: 0.3 } },
-          { x: MID + 1.3, y: Y1 + 5.95, lift: 0, pose: { acting: 'shocked', damage: ['flattened'] } }
+          { x: 8.735, y: Y1 + 7.86, lift: 0.7, pose: { acting: 'scared', lean: 0.3 } },
+          { x: 9.79, y: Y1 + 6.88, lift: 0, pose: { acting: 'shocked', damage: ['flattened'] } }
         ]
         spots.forEach((p, i) => list.push({ id: `sheet-ball-${i + 1}`, part: 'clear-ball', kind: 'ball', x: px(p.x - 0.5), y: px(p.y - 0.5), w: BALL, h: BALL, z0: f + px(p.lift), z1: f + px(p.lift) + BALL, tone: 'glass' }))
-        return { list, cursors: spots.map((p) => restPose(px(p.x), px(p.y), { z: f + px(p.lift), inBall: true, taken: true, ...p.pose })), view: frame({ x: px(6.6), y: px(Y1 + 4.7), w: px(6.4), h: px(5.2) }, 1, f, fov('sheet')) }
+        return { list, cursors: spots.map((p) => restPose(px(p.x), px(p.y), { z: f + px(p.lift), inBall: true, taken: true, ...p.pose })), view: { ...look('table-fired', [11.19, Y1 + 10.5, 1.17], [8.735, Y1 + 7.86, -1.4]), focus: px(4.46), aperture: LENS['table-fired']! } }
       }
       if (id !== 'table-map') return null
       const mc = machine()
       const list: DrawList = []
       drawLayout(list, layout, { states: ['play', 'on', 'mode5', 'mode0', 'mode3'], runtime: { score: scoreText() }, over: stood })
       for (const shape of fixedShapes()) list.push(shape)
-      const top = px(MARQUEE_Y - 0.3)
-      const tall = px(APRON_Y + 2.6 - MARQUEE_Y + 0.3)
+      const tall = (1920 * 1920) / 1080
+      const top = px(Y0 - 0.35)
       for (const shape of movingShapes(mc, table.inserts.map(() => true), true, [true, true, true], 0, false, DUSK)) list.push(shape)
       const inside = list.filter((x) => !x.id.startsWith('rail.') || (x.y >= top && x.y + x.h <= top + tall))
       list.length = 0
       for (const shape of inside) list.push(shape)
       const f = fov('table-map')
-      const c = toWorld(960, top + tall / 2, 0)
-      const need = Math.max(tall, (1920 * 1920) / 1080) / 0.96
+      const c = toWorld(px(MID), top + tall / 2, 0)
+      const need = tall
       return { list, cursors: [], view: { eye: [c[0], c[1], need / 2 / Math.tan((f * Math.PI) / 360)], target: c, fov: f }, width: 1080, height: 1920 }
     }
   }
