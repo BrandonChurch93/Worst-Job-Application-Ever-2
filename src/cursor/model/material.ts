@@ -36,8 +36,14 @@ if ( uShape.y > 0.0 ) {
 	wjaLamp.visible = true;
 	wjaLamp.direction = normalize( normalize( cross( vAcross, - vDown ) ) * uSealedFrom.w + ( viewMatrix * vec4( uSealedFrom.xyz, 0.0 ) ).xyz );
 	wjaLamp.color = uSealedLight * uShape.y;
-	RE_Direct( wjaLamp, geometryPosition, geometryNormal, geometryViewDir, geometryClearcoatNormal, material, reflectedLight );
-	reflectedLight.directDiffuse += uSealedFill * uShape.y * material.diffuseColor;
+	ReflectedLight wjaIn = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );
+	RE_Direct( wjaLamp, geometryPosition, geometryNormal, geometryViewDir, geometryClearcoatNormal, material, wjaIn );
+	wjaIn.directDiffuse += uSealedFill * uShape.y * material.diffuseColor;
+	float wjaHave = dot( reflectedLight.directDiffuse, vec3( 0.2126, 0.7152, 0.0722 ) );
+	float wjaWant = dot( wjaIn.directDiffuse, vec3( 0.2126, 0.7152, 0.0722 ) );
+	float wjaShare = clamp( 1.0 - wjaHave / max( wjaWant, 1e-4 ), 0.0, 1.0 );
+	reflectedLight.directDiffuse += wjaIn.directDiffuse * wjaShare;
+	reflectedLight.directSpecular += wjaIn.directSpecular * wjaShare;
 }
 `
 
