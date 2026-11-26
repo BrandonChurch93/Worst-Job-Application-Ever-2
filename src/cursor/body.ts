@@ -330,6 +330,10 @@ export class CursorBody {
   }
 
   aim(turn: number | null): void {
+    if (this.s.inBall && (turn === null) !== (this.s.aimed === null)) {
+      this.s.spin = turn === null ? 0 : turn - this.s.feel.lean
+      this.s.spinV = 0
+    }
     this.s.aimed = turn
   }
 
