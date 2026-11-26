@@ -28,6 +28,9 @@ Agent `pinball_stager`, branch `agent/pinball-stage`. Times UTC.
 - 01:20 `table-map`: the page's width fills the frame, tiers and apron, no marquee, displays on the score. The approved map is the three tier images joined inside a frame.
 - 01:35 With the engine's lens on: `table-save` 20 to 9, `rail` 16 to 7, `ride` 10 to 7 (the Builder's look at the first stills). `rail` is now steep (59 degrees down) so no wall crosses the top of the frame. `table-fired` moved in to 5.2 balls.
 
+- 01:55 The Builder's two issues. `table-wide` solved again from three marks of the approved image, with the lens angle back at 35 degrees (the far end of the frame is 32% of the width as approved; at 43 it was 28%). `table-lobby` moved from 62 degrees off the carpet's axis to 31, turned 21: head on is not to be had from a low eye, because the revolving door stands on the carpet in front of the ball (the kit puts it there). One glass edge of a wing crosses the ball.
+- 01:45 Film on the director's new take: the `rail` cut waits for `ramp-roll` (31.05) at 31.15; the move from `ride` to `tier-3` starts at 10.6 and is over before the first `sling` (11.25).
+
 ## Needs sent
 
 - `pipeline/phase4/pinball-stage-NEEDS.patch`: `cameras.table-wide.fovDeg` 35 to 43, `cameras.table-lobby.fovDeg` 35 to 56, `cameras.table-save.fovDeg` 62 to 40. Sent 00:55.
@@ -36,3 +39,4 @@ Agent `pinball_stager`, branch `agent/pinball-stage`. Times UTC.
 ## Told to other owners
 
 - The ball at the doors hold (MID, v 5.02) stands inside the sweep of the revolving door (MID, v 6.0, r 0.75): from the front the door wing crosses the ball.
+- 01:52 to the Builder: `cameras.table-wide.fovDeg` 43 back to 35 (`pinball-stage-NEEDS.patch`).

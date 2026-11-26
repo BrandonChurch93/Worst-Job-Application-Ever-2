@@ -109,8 +109,8 @@ const Y1 = TIER_Y[1]!
 const Y2 = TIER_Y[2]!
 const NAMED: Record<string, CameraPose> = {
   'tier-3': tierPose(0), 'tier-2': tierPose(1), 'tier-1': streetPose(),
-  'table-wide': look('table-wide', [MID + 0.35, APRON_Y + 12.4, 11.22], [MID + 0.35, APRON_Y - 9.24, 0.85]),
-  'table-lobby': look('table-lobby', [MID + 2.65, Y0 + 6.43, -0.35], [MID - 0.13, Y0 + 5.31, 0]),
+  'table-wide': look('table-wide', [MID, APRON_Y + 16.41, 12.61], [MID, Y2 + 3.94, 1.96]),
+  'table-lobby': look('table-lobby', [MID + 1.2, Y0 + 7.0, -0.25], [MID + 0.14, Y0 + 4.23, 0.17]),
   'table-replyall': look('table-replyall', [MID, Y1 + 16.35, 15.4], [MID, Y1 + 6.3, -2]),
   'table-fired': look('table-fired', [7.25, Y2 + 7.68, 0.06], [4.8, Y2 + 3.75, -2.3]),
   'table-save': look('table-save', [MID, Y2 + 13.4, 6.05], [MID, Y2 + 8.6, -2.26])
@@ -119,7 +119,7 @@ const FILM: [number, string, number][] = [
   [0, 'follow', 0], [4.2, 'table-wide', 0], [8.5, 'ride', 0], [10.6, 'tier-3', 0.6], [13.0, 'table-lobby', 0], [14.3, 'follow', 0], [19.5, 'table-replyall', 0], [22.2, 'follow', 0], [27.2, 'table-fired', 0], [28.8, 'follow', 0],
   [31.15, 'rail', 0], [32.3, 'follow', 0.6], [34.3, 'table-save', 0], [36.6, 'follow', 0]
 ]
-const LENS: Record<string, number> = { 'table-wide': 8, 'table-lobby': 7, 'table-replyall': 12, 'table-fired': 10, 'table-save': 9, rail: 7, ride: 7 }
+const LENS: Record<string, number> = { 'table-wide': 5, 'table-lobby': 7, 'table-replyall': 12, 'table-fired': 10, 'table-save': 9, rail: 7, ride: 7 }
 const HARD: Record<string, number> = { bumper: 1, sling: 0.7, 'doors-slam': 1.3, 'scoop-kick': 0.8, plunger: 1, 'ball-hit': 0.6, 'drop-target': 0.5, 'mom-save': 1, 'ball-save': 0.8 }
 const SHAKE = { size: 0.006, decay: 0.09, hz: 23, most: 1.5, last: 0.5 }
 const SOFT = 0.4
