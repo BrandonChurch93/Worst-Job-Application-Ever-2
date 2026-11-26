@@ -181,3 +181,14 @@ Builder at 09:11 and 09:13 UTC: the boss's second round is drawn from merge 32 (
 - Health bar: SEEN at 09:16 UTC in a crop beside approved. The approved track runs from bright at its left end to dark at its right (mean grey 200 to 75 along it, MEASURED in `boss-down`); the build runs 151 to 99. Not changed.
 - Slabs at the key (R1-1 issue 10): not done. At 12.5 s two slabs have landed by the arrow and one has just left the mouth; the approved shows three in the air in a column right of centre. To match it the firing plan (`SLAB.first`, `SLAB.every` in `src/boss/plan.ts`) would have to change, which changes the live fight and the film's hits; not safe in the time left.
 - Looks: verify-card 11 (crops of the card 3), health-bar 4 (one crop of the bar), boss-weapons 19.
+
+On main with merge 31 (7e7ddb05), MEASURED 09:20 to 09:24 UTC:
+
+| what | command | number |
+| --- | --- | --- |
+| gate | `npm test`, `npm run build`, `npm run bots` | 115 files, 1461 of 1461; build ok; bots all clear |
+| measures | `npm run measure -- --unit boss --tier review` | 8 green, 0 red; M3 1.0333 |
+| `boss-fight` draft | `npm run compare -- --key boss-fight --tier draft --format hd` | 12.063 s, 651570 triangles, 475 draw calls |
+| `boss-down` draft | `npm run compare -- --key boss-down --tier draft --format hd` | 12.688 s, 542688 triangles, 384 draw calls |
+
+SEEN at 09:21 UTC in both compares and in a crop of the card beside approved (frost at its committed 0.07): the clouds in the face are soft and do not cover the words. Looks: verify-card 14.
