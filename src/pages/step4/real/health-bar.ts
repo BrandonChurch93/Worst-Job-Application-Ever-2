@@ -7,7 +7,7 @@ import type { Shape } from '../../../stage/types'
 
 const q = (v: number): number => Math.round(v * 4) / 4
 
-export const HEALTH = { proud: 0.9, rim: 2.6, under: 1.5, wall: 0.8, shoulder: 3.4, crown: 0.3 }
+export const HEALTH = { proud: 0.6, rim: 2.2, under: 1.5, wall: 0.8, shoulder: 3.4, crown: 0.3, gutter: 2 }
 
 let floorMaterial: THREE.MeshPhysicalMaterial | null = null
 
@@ -15,8 +15,9 @@ let floorMaterial: THREE.MeshPhysicalMaterial | null = null
 function floor(): THREE.MeshPhysicalMaterial {
   if (!floorMaterial) {
     floorMaterial = studio(materials().railSatin.clone())
-    floorMaterial.color.setRGB(0.21, 0.222, 0.238)
+    floorMaterial.color.setRGB(0.15, 0.166, 0.168)
     floorMaterial.roughness = 0.42
+    floorMaterial.normalScale.set(0.09, 0.09)
   }
   return floorMaterial
 }
@@ -28,7 +29,7 @@ function mesh(g: THREE.BufferGeometry, m: THREE.Material, cast: boolean): THREE.
   return out
 }
 
-// The track is a tray: a polished rim that stands a hair proud of the page, rolls over and goes down to a brushed floor. It has an outer wall, so it is whole while it slides in above the page.
+// The track is a tray: a satin rim that stands a hair proud of the page, rolls over and goes down to a brushed floor that is a shallow gutter, so the light grades across it. It has an outer wall, so it is whole while it slides in above the page.
 function track(s: Shape): THREE.Object3D {
   const surface = -s.z0
   const top = surface + HEALTH.proud
@@ -43,8 +44,10 @@ function track(s: Shape): THREE.Object3D {
     [rim - 0.2, 0.5], [rim - 0.2, -0.4, true]
   ]
   const root = new THREE.Group()
-  root.add(mesh(sweep(outlineOf(s, 0, 16), profile(points), false), materials().chrome, true))
-  root.add(mesh(sweep(outlineOf(s, rim - 0.5, 16), [{ inset: 0, z: 0.05, out: 0, up: 1 }]), floor(), false))
+  root.add(mesh(sweep(outlineOf(s, 0, 16), profile(points), false), materials().aluminiumSatin, true))
+  const reach = s.h / 2 - (rim - 0.5)
+  const gutter: ProfilePoint[] = [0, 0.1, 0.2, 0.32, 0.46, 0.62, 0.8, 0.98].map((t, i): ProfilePoint => [reach * t, 0.05 + HEALTH.gutter * (1 - t) * (1 - t), i === 0])
+  root.add(mesh(sweep(outlineOf(s, rim - 0.5, 16), profile(gutter)), floor(), false))
   return root
 }
 

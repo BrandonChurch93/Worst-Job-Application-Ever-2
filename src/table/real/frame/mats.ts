@@ -11,6 +11,8 @@ export const hex = (h: number): RGB => {
   const c = new THREE.Color(h)
   return [c.r, c.g, c.b]
 }
+// The machine's orange, on the bats, the plunger's knob, the lift's doors and elbows: the colour that reads as the approved bats under the lamps of a tier.
+export const MACHINE_ORANGE = 0xc48004
 export const shade = (c: RGB, k: number): RGB => [c[0] * k, c[1] * k, c[2] * k]
 
 export const TONE = {
@@ -59,7 +61,7 @@ export const roomOf = (z: Zone): Zone | undefined => (LIT.includes(z.id) ? z : z
 export const aluOf = (z: Zone, name = 'alu'): THREE.MeshPhysicalMaterial => {
   const src = materials().aluminium
   const on = roomOf(z) !== undefined
-  return own(lit(steel(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: on ? 0.27 : 0.4, metalness: on ? 1 : 0.4, normalMap: src.normalMap ? fine(src.normalMap) : null, normalScale: new THREE.Vector2(on ? 0.24 : 0.15, on ? 0.24 : 0.15), anisotropy: 0.72, anisotropyRotation: Math.PI / 2 })), z, { ceiling: 3.6, panel: 1.2, wide: 0.4, horizon: 2, direct: 0.5 }, roomOf(z)), z), `frame.${name}.${z.id}`)
+  return own(lit(steel(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: on ? 0.27 : 0.4, metalness: on ? 1 : 0.4, normalMap: src.normalMap ? fine(src.normalMap) : null, normalScale: new THREE.Vector2(on ? 0.24 : 0.15, on ? 0.24 : 0.15), anisotropy: 0.72, anisotropyRotation: Math.PI / 2 })), z, { ceiling: 3.6, panel: 1.2, wide: 0.4, horizon: 2, direct: 0.5, under: 1.8 }, roomOf(z)), z), `frame.${name}.${z.id}`)
 }
 
 // A zone the lamps do not reach keeps its pale parts pale when the website's light goes down: its paint is lifted by the share of that light that is off.
