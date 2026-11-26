@@ -1,35 +1,35 @@
 {
   "folder": "step2-keeper",
-  "pushed": "2026-11-26T04:32:59.557Z",
-  "commit": "48bdb84593dbe018c642d994fa49ecd1fbc2248d",
+  "pushed": "2026-11-26T04:45:01.212Z",
+  "commit": "14bb13ec86b0e3da7b7e1c51bf3d79860b05e6fc",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "step2-dial at review beside the approved image: stepped housing, bright hub with a sheen, countersunk holes, tray walls in their own tone",
-      "time": "2026-11-26T04:32:57.619Z",
+      "caption": "Still sheet-machines-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T04:40:59.538Z",
       "by": "step2-keeper",
-      "from": "out/work/looks/files/20261126043257-compare-step2-dial.jpg"
+      "from": "out/work/stills/sheet-machines-hd-review.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "step2-crank at review beside the approved image: the cursor is calm at the grip, the meter picture is sharp (M2 0.0041)",
-      "time": "2026-11-26T04:32:57.853Z",
+      "caption": "Still step2-step2_slot-0p15-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T04:41:45.837Z",
       "by": "step2-keeper",
-      "from": "out/work/looks/files/20261126043257-compare-step2-crank.jpg"
+      "from": "out/work/stills/step2-step2_slot-0p15-hd-review.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "sheet machines at review, approved left, build right: the pulled lever hangs from a bracket at the cabinet side",
-      "time": "2026-11-26T04:32:58.080Z",
+      "caption": "Slot on the machines sheet at 14bb13ec: approved left, build right; frame thicker and stepped, calmer bevel",
+      "time": "2026-11-26T04:44:59.843Z",
       "by": "step2-keeper",
-      "from": "out/work/looks/files/20261126043258-compare-machines.jpg"
+      "from": "out/work/looks/files/20261126044459-slot-compare.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "step2-rest at review beside the approved image: rows, helper lines, wells",
-      "time": "2026-11-26T04:32:58.308Z",
+      "caption": "Dial key close at 14bb13ec: approved left, build right; softer cast shade, darker housing",
+      "time": "2026-11-26T04:45:00.078Z",
       "by": "step2-keeper",
-      "from": "out/work/looks/files/20261126043258-compare-step2-rest.jpg"
+      "from": "out/work/looks/files/20261126044500-dial-close.png"
     }
   ]
 }
