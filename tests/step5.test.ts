@@ -3,6 +3,7 @@ import { config, filmSeconds, stepHz } from '../src/config'
 import { copy } from '../src/copy'
 import { pages } from '../src/pages'
 import { clock, makePage, secondsOf, spun } from '../src/pages/step5'
+import { AT } from '../src/pages/step5/timeline'
 import { layoutProblems, typeRegister, walk } from '../src/shell/layout'
 import { hasWords, words } from '../src/shell/words'
 import { filmFlow, filmOptions, runBot, ScriptDriver, Stage, type Driver, type DriverView, type Pointer, type Shape } from '../src/stage/stage'
@@ -204,8 +205,8 @@ describe('step 5, the film', () => {
         last = s.step
       }
     }
-    expect(first / hz).toBeGreaterThanOrEqual(3.9)
-    expect(last / hz).toBeLessThanOrEqual(5.87)
+    expect(first / hz).toBeGreaterThanOrEqual(AT.decide + AT.loom)
+    expect(last / hz).toBeLessThanOrEqual(AT.decide + AT.fling[1] + 0.02)
     expect((last - first) / hz).toBeLessThan(config.live.controlTakenMaxSeconds)
   })
 
@@ -269,7 +270,7 @@ describe('step 5, the live site', () => {
   it('hands the cursor on whole, however early the button is pressed after the stamp', () => {
     const page = makePage()
     const cap = page.layout.children!.find((n) => n.id === 'accept')!.children![0]!.box
-    const spot = page.script(4.2)
+    const spot = page.script(AT.decide + AT.hang[1])
     const hasty: Driver = { name: 'bot', input: (v: DriverView): Pointer => (v.pageTime < 5.4 ? { x: spot.x, y: spot.y, down: false } : { x: cap[0]! + cap[2]! / 2, y: cap[1]! + cap[3]! / 2, down: Math.floor(v.step / 24) % 2 === 0 }) }
     const s = live(hasty)
     let longest = 0
@@ -285,7 +286,7 @@ describe('step 5, the live site', () => {
     expect(s.cursor.damaged).toBe(false)
     expect(longest / hz).toBeLessThanOrEqual(config.cursor.damageHealSeconds)
     const skipped = live(still(spot.x, spot.y))
-    skipped.advance(Math.round(4.4 * hz))
+    skipped.advance(Math.round((AT.decide + AT.slam[1] + 0.1) * hz))
     expect(skipped.cursor.damaged).toBe(true)
     skipped.page.skip()
     while (!skipped.page.done() && skipped.step < 30 * hz) skipped.advance(1)

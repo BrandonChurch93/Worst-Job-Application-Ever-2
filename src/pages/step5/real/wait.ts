@@ -23,7 +23,7 @@ let haloMade: THREE.MeshBasicMaterial | null = null
 let unlitMade: THREE.MeshBasicMaterial | null = null
 
 function face(): THREE.MeshPhysicalMaterial {
-  faceMade ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0x14171a, THREE.SRGBColorSpace), roughness: 0.3, metalness: 0, specularIntensity: 0.9, clearcoat: 1, clearcoatRoughness: 0.04 }))
+  faceMade ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0x14171a, THREE.SRGBColorSpace), roughness: 0.5, metalness: 0, specularIntensity: 0.7, clearcoat: 0.8, clearcoatRoughness: 0.34 }))
   faceMade.name = 'wait-display'
   return faceMade
 }

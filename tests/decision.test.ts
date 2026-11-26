@@ -57,8 +57,8 @@ describe('the letter', () => {
 })
 
 describe('the hit of the stamp', () => {
-  it('draws back inside the swoop, and its dust and its rock are over before the block lifts', () => {
-    expect(HIT.windSeconds).toBeLessThan(AT.swoop[1] - AT.swoop[0])
+  it('draws back inside the hang, and its dust and its rock are over before the block lifts', () => {
+    expect(HIT.windSeconds).toBeLessThan(AT.hang[1] - AT.hang[0])
     expect(HIT.dustSeconds).toBeLessThanOrEqual(AT.lift[1] - AT.slam[1])
     expect(HIT.rock * Math.exp(-(AT.lift[0] - AT.slam[1]) / HIT.rockSeconds)).toBeLessThan(0.002)
     expect(STAMP.high + HIT.windRise + STAMP.gripTop).toBeLessThan(320)
