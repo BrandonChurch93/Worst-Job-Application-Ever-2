@@ -28,16 +28,18 @@ Branch `agent/step2-keeper`. Parts: `rows`, `dial`, `slot`, `crank`, `acting-ste
 14. The shade band under the tray's upper wall: on the dial's key the build follows the approved image within a few levels down the column x=1560 (approved 44 73 59 62 61 83 107 124 134, build 78 61 29 52 55 79 106 122 138, every 6 px). The approved crank key holds a shorter band than the approved dial key for the same tray. The dial's key is the first on the brief's list, so the tray follows it; not changed.
 15. The sheet `machines` shows no header or heading. The Builder left it to me. The sheet's frame is 1240 px wide and the header's rule is laid out for 1920, so it would need its own layout of the shell's header; left out as not worth the time against the machines themselves.
 16. The crank's arm stays 96 px. The approved arm is longer in proportion (about 2.5 base radii against 1.9), but a longer arm would carry the grip over the prompt's line and the tray's upper wall on its turn.
+17. The dial's groove: the pale numeral plate showed as a bright line between the wheel and the bezel. A dark ring now lies in that groove on the plate (`grooveGeometry`, the shared gap material), and the wheel's rim is in the housing's darker steel, not the shared chrome. The approved dial holds a dark gap there.
+18. The crank's beat looked at in seven frames (15.26 s to 19.1 s): the crank throws the cursor, it comes back angry with steam, the meter fills, the result line stands in the field, the tray shuts over the sunk crank, Continue turns orange. From 16.95 s the cursor is `exhausted`, which the cursor draws as a pale crumpled body; that look is the cursor's own.
 
 ## Looks counted (at most 40 a part)
 
 | Part | Looks |
 | --- | --- |
-| `dial` | 11 |
+| `dial` | 13 |
 | `rows` | 4 |
 | `crank` | 5 |
 | `slot` | 9 |
-| `acting-step2` | 15 |
+| `acting-step2` | 22 |
 
 The stills that `npm run measure` renders by itself are not counted.
 

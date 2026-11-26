@@ -53,6 +53,7 @@ export const DIAL_BODY = {
   tall: TOP + 2 - TRAY_Z, rest: 1.6, plateLeast: 0.4, below: 2, plate: 6.6, bezel: 10, bezelDrop: 0.8, bezelChamfer: 2, bezelSlope: 0.9, wheel: 88.4, thick: 5.2, chamfer: 1, holeRim: 0.8, holeChamfer: 2.6,
   hub: 30, hubTall: 17, hubFlat: 0.02, hubCoat: 0.14, hubRough: 0.4, hubIor: 1.5, hubEnv: 0.3, hubFoot: 3, hubStep: 3.2, hubSeat: 3, hubSeatDeep: 1.8, turned: 256, cut: 0.012, faceRough: 0.17, faceStretch: 1, faceLight: 1.45,
   housingDark: 0.8, housingRough: 0.3, seat: 9, seatGap: 1.8, seatTall: 10, seatSlope: 1, stopIn: 71, stopOut: 109, stopWide: 12, stopClear: 3, stopTall: 8, stopFoot: 12,
+  grooveOver: 0.15, grooveUnder: 3,
   glint: 0.5, glintLong: 13, glintWide: 10, glintOut: 9, glintUp: 17.3,
   shade: 0.6, shadeReach: 0.78, cast: 0.72, castIn: 8, castOut: 36, castAway: 34, castOver: 0.2
 }
