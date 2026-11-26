@@ -36,9 +36,20 @@ const EDGE = hex(0x66696d)
 const SOCKET = hex(0x3a3c40)
 const LIP = hex(0xc9cdd1)
 
-// The middle line of the tube on the page, in page pixels, its corners rounded.
-function line(): V3[] {
-  const pts = railOf('feed').points.map((p) => new THREE.Vector3(p[0] * BALL, p[1] * BALL, p[2] * BALL + BALL / 2))
+// The riser: the turned cap the drain tube comes up through the page under, on the centre line under the apron's drain. Its body, its flange on the page, its height, how far the tube stands in it, and the step and the depth of the cut in its lid.
+export const RISER = { body: 71, flange: 86, foot: 5, high: 112, seat: 12, lid: 52, cut: 2.2, screws: 4, shade: 0.8 }
+
+// The points of the drain tube on the last screen, from the outlet port up to the riser, in page pixels: the rail's own places, lifted so that the tube lies on the page as the feed tube does.
+const drainPoints = (): THREE.Vector3[] => {
+  const r = railOf('drain').points
+  const at = (i: number, z: number): THREE.Vector3 => new THREE.Vector3(r[i]![0] * BALL, r[i]![1] * BALL, z)
+  return [at(4, r[4]![2] * BALL + BALL / 2), at(3, BALL / 2), at(2, BALL / 2)]
+}
+
+// The middle line of a tube on the page, in page pixels, its corners rounded. It stops `stop` short of its last point.
+function line(drain = false): V3[] {
+  const pts = drain ? drainPoints() : railOf('feed').points.map((p) => new THREE.Vector3(p[0] * BALL, p[1] * BALL, p[2] * BALL + BALL / 2))
+  const stop = drain ? RISER.body - RISER.seat : 0.62 * BALL
   const out: V3[] = []
   const push = (v: THREE.Vector3): void => {
     out.push([v.x, v.y, v.z])
@@ -58,7 +69,7 @@ function line(): V3[] {
   }
   const last = pts[pts.length - 1]!
   const before = pts[pts.length - 2]!
-  push(last.clone().add(before.clone().sub(last).setLength(0.62 * BALL)))
+  push(last.clone().add(before.clone().sub(last).setLength(stop)))
   // No length is longer than a quarter of a screen, so every zone the tube crosses has points of its own.
   const fine: V3[] = [out[0]!]
   for (let i = 1; i < out.length; i++) {
@@ -70,9 +81,25 @@ function line(): V3[] {
   return fine
 }
 
+// Where the middle of the drain tube is, in page pixels, a share of the way from the riser (0) to the middle of the outlet port (1): the page draws the ball there.
+export function drainWay(u: number): { x: number; y: number; z: number } {
+  const pts = drainPoints()
+  const way = [...line(true), [pts[2]!.x, pts[2]!.y, pts[2]!.z] as V3].reverse()
+  const at: number[] = [0]
+  for (let i = 1; i < way.length; i++) at.push(at[i - 1]! + Math.hypot(way[i]![0] - way[i - 1]![0], way[i]![1] - way[i - 1]![1]))
+  const s = Math.max(0, Math.min(1, u)) * at[at.length - 1]!
+  let i = 1
+  while (i < way.length - 1 && at[i]! < s) i++
+  const d = at[i]! - at[i - 1]!
+  const t = d > 0 ? (s - at[i - 1]!) / d : 0
+  const a = way[i - 1]!
+  const b = way[i]!
+  return { x: a[0] + (b[0] - a[0]) * t, y: a[1] + (b[1] - a[1]) * t, z: a[2] + (b[2] - a[2]) * t }
+}
+
 // The part of the line that lies in a zone, in the zone's frame, and how far along the whole line it starts.
 function inZone(z: Zone): { path: V3[]; from: number; first: boolean; last: boolean } {
-  const all = line()
+  const all = line(z.id === 'last')
   const path: V3[] = []
   let run = 0
   let from = -1
@@ -176,6 +203,42 @@ function clamp(A: Geo, f: { at: THREE.Vector3; m: THREE.Matrix4 }, ground: numbe
   }
 }
 
+// The soft shadow a round part lays on the page, toward the lower right, `far` of the tube's own throw away.
+function cast(G: Geo, x: number, y: number, R: number, far: number, core = R - 34): void {
+  const cx = x + SHADE.dx * far
+  const cy = y + SHADE.dy * far
+  const rings: [number, number][] = [[core, 1], [R, 1], [R + 14, 0.45], [R + 34, 0]]
+  for (let k = 1; k < rings.length; k++) {
+    for (let i = 0; i < 48; i++) {
+      const a0 = (i / 48) * Math.PI * 2
+      const a1 = ((i + 1) / 48) * Math.PI * 2
+      const at = (rr: number, a: number): V3 => [cx + rr * Math.cos(a), cy + rr * Math.sin(a), SHADE.up]
+      const c0: [number, number, number] = [0, rings[k - 1]![1] * SHADE.dark * 1.4, 0]
+      const c1: [number, number, number] = [0, rings[k]![1] * SHADE.dark * 1.4, 0]
+      G.shaded([at(rings[k - 1]![0], a0), at(rings[k]![0], a0), at(rings[k]![0], a1), at(rings[k - 1]![0], a1)], [0, 0, 1], [c0, c1, c1, c0])
+    }
+  }
+}
+
+// The riser, at a place in the zone's frame: a flange screwed to the page, a turned body the tube stands in, and a lid with one cut ring.
+function riser(A: Geo, G: Geo, x: number, y: number): void {
+  const from = A.vertices
+  const h = RISER.high
+  const b = RISER.body
+  const outline: V2[] = [[RISER.flange, 0], [RISER.flange, RISER.foot - 1.5], [RISER.flange - 1.5, RISER.foot], [b + 1.5, RISER.foot], [b, RISER.foot + 1.5], [b, h - 5], [b - 1.5, h - 1.6], [b - 4.5, h], [RISER.lid + 6, h], [RISER.lid + 4.6, h - RISER.cut], [RISER.lid + 1.4, h - RISER.cut], [RISER.lid, h], [0, h]]
+  A.lathe(outline, x, y, RING.turns, (i) => (i === 1 || i === 6 ? LIP : i === 8 || i === 10 ? EDGE : i === 9 ? SOCKET : FACE))
+  const side = (px: number, py: number): number => Math.pow(0.5 + 0.5 * Math.cos(Math.atan2(py - y, px - x) - 1.75), 1.2)
+  A.tint(from, (px, py, zz) => (zz < h - 8 ? (zz < RISER.foot + 1 ? 1.05 - 0.45 * side(px, py) : 0.5 + 0.45 * (1 - side(px, py))) : 1.3 - 0.7 * side(px, py)))
+  for (let i = 0; i < RISER.screws; i++) {
+    const a = ((i + 0.5) / RISER.screws) * Math.PI * 2
+    const sx = x + ((RISER.flange + b) / 2) * Math.cos(a)
+    const sy = y + ((RISER.flange + b) / 2) * Math.sin(a)
+    A.lathe([[3, 0], [2.8, 0.55], [2.3, 0.8], [1.4, 0.8]], sx, sy, 10, TONE.aluBright, RISER.foot)
+    A.lathe([[1.4, 0.8], [1.26, 0.06], [0, 0.06]], sx, sy, 6, SOCKET, RISER.foot)
+  }
+  cast(G, x, y, RISER.flange, RISER.shade, 0)
+}
+
 function port(A: Geo, G: Geo | null, z: Zone, c: { x: number; y: number; ring: number; cup: number }, toward: number | null = null): void {
   const p = localBalls(z, c.x, c.y)
   const R = (c.ring / 2) * BALL
@@ -218,22 +281,8 @@ function port(A: Geo, G: Geo | null, z: Zone, c: { x: number; y: number; ring: n
     // The light under the lip is not a drawn circle: it stands on the wall the lamp reaches, toward the lower right, and dies away round the ring.
     G.gain(lit0, (x, y) => 0.1 + 0.9 * Math.pow(1 - side(x, y), 1.6))
   }
-  if (G) {
-    // The ring's own soft shadow on the page, toward the lower right: drawn, so the port costs no drawing in the shadow pass.
-    const cx = p[0] + SHADE.dx * 0.5
-    const cy = p[1] + SHADE.dy * 0.5
-    const rings: [number, number][] = [[R - 34, 1], [R, 1], [R + 14, 0.45], [R + 34, 0]]
-    for (let k = 1; k < rings.length; k++) {
-      for (let i = 0; i < 48; i++) {
-        const a0 = (i / 48) * Math.PI * 2
-        const a1 = ((i + 1) / 48) * Math.PI * 2
-        const at = (rr: number, a: number): V3 => [cx + rr * Math.cos(a), cy + rr * Math.sin(a), SHADE.up]
-        const c0: [number, number, number] = [0, rings[k - 1]![1] * SHADE.dark * 1.4, 0]
-        const c1: [number, number, number] = [0, rings[k]![1] * SHADE.dark * 1.4, 0]
-        G.shaded([at(rings[k - 1]![0], a0), at(rings[k]![0], a0), at(rings[k]![0], a1), at(rings[k - 1]![0], a1)], [0, 0, 1], [c0, c1, c1, c0])
-      }
-    }
-  }
+  // The ring's own soft shadow on the page, toward the lower right: drawn, so the port costs no drawing in the shadow pass.
+  if (G) cast(G, p[0], p[1], R, 0.5)
   const dark = A.vertices
   A.lathe([[r + RING.lip, h - 3], ...bowl], p[0], p[1], 120, CUP)
   A.lathe([[r - RING.dish, RING.floor], [r - RING.dish - 16, RING.floor - 0.5], [BALL * 0.5, RING.floor - 1.2], [0, RING.floor - 1.6]], p[0], p[1], 120, CUP)
@@ -262,15 +311,16 @@ export function loader(z: Zone, _ctx: RealContext): THREE.Object3D {
   const run = (m: THREE.Mesh, r: [number, number]): { mesh: THREE.Mesh; from: number; rest: Float32Array } => ({ mesh: m, from: r[0], rest: (m.geometry.getAttribute('position').array as Float32Array).slice(r[0] * 3, r[1] * 3) })
   if (first && path.length > 1) {
     // The tube's mouth stands at the wall of the cup, so the ball is seen lying in the cup before it goes.
-    const cut = (PORT.cup / 2) * BALL - RING.mouth
+    const home = z.id === 'last' ? OUTLET : PORT
+    const cut = (home.cup / 2) * BALL - RING.mouth
     const a = path[0]!
     const b = path[1]!
-    ringed(PORT, () => port(A, G, z, PORT, Math.atan2(b[1] - a[1], b[0] - a[0])))
+    ringed(home, () => port(A, G, z, home, Math.atan2(b[1] - a[1], b[0] - a[0])))
     path = trim(path, cut)
     from += cut
-    seat = (PORT.ring / 2) * BALL - cut + RING.seatLong / 2 + 5
+    seat = (home.ring / 2) * BALL - cut + RING.seatLong / 2 + 5
   } else if (z.id === 'first') ringed(PORT, () => port(A, G, z, PORT))
-  if (z.id === 'last') ringed(OUTLET, () => port(A, G, z, OUTLET))
+  else if (z.id === 'last') ringed(OUTLET, () => port(A, G, z, OUTLET))
   if (path.length > 1) {
     G.pipe(path, TUBE.outer, TUBE.sides, [1, 1, 1])
     G.pipe(path, TUBE.outer - TUBE.wall, TUBE.sides, [1, 1, 1], true)
@@ -291,7 +341,7 @@ export function loader(z: Zone, _ctx: RealContext): THREE.Object3D {
     }
     for (let s = Math.ceil((from + 30 - step / 2) / step) * step + step / 2 - from; s < length - 20; s += TUBE.clampStep) {
       const f = frameAt(path, s)
-      if (f && f.flat && f.at.z - ground > 20 && f.at.z - ground < 90) clamp(A, f, ground)
+      if (f && f.flat && z.id !== 'last' && f.at.z - ground > 20 && f.at.z - ground < 90) clamp(A, f, ground)
     }
     if (z.tier < 0) {
       // Over the page the tube lays a soft shadow toward the lower right.
@@ -305,12 +355,16 @@ export function loader(z: Zone, _ctx: RealContext): THREE.Object3D {
         const n: [number, number] = [(b[1] - a[1]) / l, -(b[0] - a[0]) / l]
         return n[0] * SHADE.dx + n[1] * SHADE.dy < 0 ? [-n[0], -n[1]] : n
       }
+      // A tube that bends on the page throws its shadow one way, the lamp's, from its lower right edge on: rows laid square to the tube would cross inside the bend.
+      const bent = z.id === 'last'
+      const lamp = Math.hypot(SHADE.dx, SHADE.dy)
       const row = (i: number): V3[] => {
         const q = path[i]!
         const n = sideOf(i)
+        if (bent) return CAST.map(([t]) => [q[0] + n[0] * TUBE.outer * 0.8 + (SHADE.dx / lamp) * TUBE.outer * (t - 0.8), q[1] + n[1] * TUBE.outer * 0.8 + (SHADE.dy / lamp) * TUBE.outer * (t - 0.8), SHADE.up] as V3)
         return CAST.map(([t]) => [q[0] + n[0] * TUBE.outer * t, q[1] + n[1] * TUBE.outer * t - (t - 0.8) * 5, SHADE.up] as V3)
       }
-      const fade = (i: number): number => Math.min(1, Math.max(0, (at[i]! - start) / SHADE.ease))
+      const fade = (i: number): number => Math.min(1, Math.max(0, (at[i]! - start) / SHADE.ease), bent ? Math.max(0, (length - at[i]!) / SHADE.ease) : 1)
       for (let i = 1; i < path.length; i++) {
         if (at[i]! <= start || Math.max(path[i - 1]![2], path[i]![2]) > BALL * 0.75) continue
         const r0 = row(i - 1)
@@ -347,8 +401,15 @@ export function loader(z: Zone, _ctx: RealContext): THREE.Object3D {
       if (g) collar(A, g, 6, TUBE.outer + 3.2)
     }
     if (last) {
-      const f = frameAt(path, length - TUBE.collar / 2 - 0.5)
+      const f = frameAt(path, length - (z.id === 'last' ? RISER.seat + TUBE.ferrule / 2 + 1 : TUBE.collar / 2 + 0.5))
       if (f) collar(A, f)
+      if (f && z.id === 'last') {
+        shadows.push({ f, long: TUBE.ferrule, out: TUBE.ferruleOut })
+        const e = path[path.length - 1]!
+        const d = path[path.length - 2]!
+        const l = Math.hypot(e[0] - d[0], e[1] - d[1]) || 1
+        riser(A, G, e[0] + ((e[0] - d[0]) / l) * (RISER.body - RISER.seat), e[1] + ((e[1] - d[1]) / l) * (RISER.body - RISER.seat))
+      }
     }
   }
   if (A.vertices > 0) {
@@ -358,7 +419,7 @@ export function loader(z: Zone, _ctx: RealContext): THREE.Object3D {
     if (r) o.userData.ring = { x: r.x, y: r.y, at: 0, runs: [run(metal, r.a)] } satisfies Ring
   }
   if (G.vertices > 0) {
-    const tube = mesh(G, clearOf(z, 'tube', TUBE.opacity), path.length > 1 ? `loader.tube.${z.id}` : `loader.light.${z.id}`)
+    const tube = mesh(G, clearOf(z, 'tube', TUBE.opacity), path.length > 1 ? (z.id === 'last' ? 'loader.drain.last' : `loader.tube.${z.id}`) : `loader.light.${z.id}`)
     tube.renderOrder = 3
     o.add(tube)
     const r = ring as { a: [number, number]; g: [number, number]; x: number; y: number } | null
