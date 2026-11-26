@@ -1,15 +1,187 @@
-import type * as THREE from 'three'
+import * as THREE from 'three'
 import type { PartMaker, RealContext } from '../../../real/types'
 import type { Shape } from '../../../stage/types'
+import { look } from '../../../post/look'
+import { materials } from '../../../shell/materials'
 import { controls } from '../../../shell/real/controls'
+import { arc, outlineOf, profile, roundedRect, sweep, type ProfilePoint } from '../../../shell/solids'
+import { TRAY, TRAY_H } from '../layout'
 
-// A machine's tray is cut and lined the way a field is: a rolled lip, an aluminium sleeve and a floor of frosted glass in the shade of its own wall.
-const lined = (s: Shape): Shape => (s.role === 'machineTray' ? { ...s, role: 'field' } : s)
+const q = (v: number): number => Math.round(v * 4) / 4
+const isTray = (s: Shape): boolean => s.role === 'machineTray' && s.pocket === true
+
+// How far in from the tray's outline its floor begins: the dark joint, the rim and the wall that leans in under it.
+export const trayFoot = (depth: number): number => TRAY.joint + TRAY.rim + TRAY.lean * (depth - TRAY.sink)
+
+// The dark joint where the page was parted: a thin groove between the page's lip and the tray's liner.
+export function trayJoint(s: Shape): THREE.BufferGeometry {
+  const surface = -s.z0
+  const z = surface - TRAY.sink - TRAY.jointDeep
+  return sweep(outlineOf(s, 0, 12), [{ inset: -0.4, z, out: 0, up: 1 }, { inset: TRAY.joint + 0.3, z, out: 0, up: 1 }], false)
+}
+
+// The liner: a flat rim a hair under the page, rolled over into a wall that leans in down to the floor.
+export function trayLiner(s: Shape): THREE.BufferGeometry {
+  const surface = -s.z0
+  const top = surface - TRAY.sink
+  const j = TRAY.joint
+  const foot = trayFoot(surface)
+  const points: ProfilePoint[] = [
+    [j, top - TRAY.jointDeep - 0.3, true], [j, top - 0.5], ...arc(j, top - 0.5, 0.5, 0.5, 3).slice(1), [j + TRAY.rim - 1.6, top],
+    ...[1, 2, 3, 4, 5].map((i): ProfilePoint => [j + TRAY.rim - 1.6 + 1.6 * Math.sin((i / 5) * (Math.PI / 2)), top - 1.2 * (1 - Math.cos((i / 5) * (Math.PI / 2)))]),
+    [foot, 0, true], [foot, -0.4, true]
+  ]
+  return sweep(outlineOf(s, 0, 12), profile(points), false)
+}
+
+// The wall on the light's side sees neither the key nor much of the room: its shade is painted over the liner, strongest where the wall faces away from the key.
+export function trayWallShade(s: Shape): THREE.BufferGeometry {
+  const surface = -s.z0
+  const top = surface - TRAY.sink
+  const outline = outlineOf(s, 0, 12)
+  const from = TRAY.joint + TRAY.rim - 0.5
+  const foot = trayFoot(surface)
+  const steps: [number, number, number][] = [[from - 1.2, top + 0.05, 0], [from, top - 0.5, 0.75], [from + 0.9, top - 1.3, 1], [foot, 0.06, 1]]
+  const g = sweep(outline, steps.map(([inset, z]) => ({ inset, z, out: 0, up: 1 })), false)
+  const [lx, ly] = look.key.direction
+  const l = Math.hypot(lx, ly) || 1
+  const n = outline.count
+  const colour = new Float32Array(steps.length * n * 3)
+  steps.forEach(([, , share], k) => {
+    for (let i = 0; i < n; i++) {
+      const toward = Math.max(0, (outline.nx[i]! * lx + outline.ny[i]! * ly) / l)
+      const v = 1 - TRAY.wallShade * share * Math.pow(toward, 0.6)
+      colour.set([v, v, v], (k * n + i) * 3)
+    }
+  })
+  g.setAttribute('color', new THREE.BufferAttribute(colour, 3))
+  return g
+}
+
+let shadeMaterial: THREE.MeshBasicMaterial | null = null
+
+function denseRing(w: number, h: number, r: number, perCorner: number, along: number, across: number): [number, number][] {
+  const o = roundedRect(w, h, r, perCorner)
+  const n = perCorner + 1
+  const out: [number, number][] = []
+  for (let c = 0; c < 4; c++) {
+    for (let i = 0; i < n; i++) out.push([o.x[c * n + i]!, o.y[c * n + i]!])
+    const from = c * n + n - 1
+    const to = ((c + 1) % 4) * n
+    const steps = c % 2 === 0 ? along : across
+    for (let k = 1; k < steps; k++) out.push([o.x[from]! + ((o.x[to]! - o.x[from]!) * k) / steps, o.y[from]! + ((o.y[to]! - o.y[from]!) * k) / steps])
+  }
+  return out
+}
+
+const RINGS = [0, 1.5, 3, 5, 7.5, 10.5, 14, 18, 23, 29, 36, 45, 56, 70]
+
+// The floor: frosted glass lying in the shade of the wall on the light's side. The shade is laid into the face as vertex colour, from the key's
+// direction and the tray's depth, the way a field's is, but deeper and longer: a tray is the deepest opening of the page.
+export function trayFloor(s: Shape): THREE.BufferGeometry {
+  const depth = -s.z0
+  const inset = trayFoot(depth) - 0.5
+  const w = Math.max(1, s.w - inset * 2)
+  const h = Math.max(1, s.h - inset * 2)
+  const r = Math.max(0.6, Math.min((s.r ?? 0) - inset, w / 2, h / 2))
+  const half = Math.min(w, h) / 2
+  const insets = [...RINGS.filter((v) => v < half - 2), Math.max(0, half - 0.4)]
+  const along = Math.max(1, Math.ceil(w / 28))
+  const across = Math.max(1, Math.ceil(h / 28))
+  const rings = insets.map((v) => denseRing(w - v * 2, h - v * 2, Math.min(Math.max(0.6, r - v), half - v), 8, along, across))
+  const n = rings[0]!.length
+  const [lx, ly, lz] = look.key.direction
+  const flat = Math.hypot(lx, ly) || 1
+  const dx = lx / flat
+  const dy = ly / flat
+  const slope = lz / flat
+  const outside = (x: number, y: number): boolean => {
+    const qx = Math.abs(x) - (w / 2 - r)
+    const qy = Math.abs(y) - (h / 2 - r)
+    return Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) + Math.min(Math.max(qx, qy), 0) - r > 0
+  }
+  const reach = (x: number, y: number, sign: number): number => {
+    let near = 0
+    let far = w + h
+    for (let k = 0; k < 14; k++) {
+      const mid = (near + far) / 2
+      if (outside(x + sign * dx * mid, y + sign * dy * mid)) far = mid
+      else near = mid
+    }
+    return near
+  }
+  const shade = (x: number, y: number): number =>
+    1 - TRAY.soak * Math.exp(-Math.max(0, reach(x, y, 1) * slope - depth * TRAY.soakHold) / TRAY.soakReach) + TRAY.bounce * Math.exp(-(reach(x, y, -1) * slope) / TRAY.bounceReach)
+  const pos: number[] = []
+  const col: number[] = []
+  const idx: number[] = []
+  const put = (x: number, y: number): void => {
+    const v = shade(x, y)
+    pos.push(x, y, 0)
+    col.push(v, v, v)
+  }
+  for (const ring of rings) for (const [x, y] of ring) put(x, y)
+  put(0, 0)
+  for (let k = 0; k < rings.length - 1; k++) {
+    for (let i = 0; i < n; i++) {
+      const j = (i + 1) % n
+      idx.push(k * n + i, k * n + j, (k + 1) * n + i, k * n + j, (k + 1) * n + j, (k + 1) * n + i)
+    }
+  }
+  const last = (rings.length - 1) * n
+  for (let i = 0; i < n; i++) idx.push(rings.length * n, last + i, last + ((i + 1) % n))
+  const g = new THREE.BufferGeometry()
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
+  g.setAttribute('normal', new THREE.Float32BufferAttribute(pos.map((_, i) => (i % 3 === 2 ? 1 : 0)), 3))
+  g.setAttribute('uv', new THREE.Float32BufferAttribute(pos.filter((_, i) => i % 3 !== 2), 2))
+  g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3))
+  g.setIndex(idx)
+  return g
+}
+
+interface TrayKit { joint: THREE.BufferGeometry; liner: THREE.BufferGeometry; floor: THREE.BufferGeometry; shade: THREE.BufferGeometry }
+let open: { key: string; kit: TrayKit } | null = null
+
+const trayKey = (s: Shape): string => `tray:${q(s.w)}x${q(s.h)}:${q(s.r ?? 0)}:${q(s.z0)}`
+const makeKit = (s: Shape): TrayKit => ({ joint: trayJoint(s), liner: trayLiner(s), floor: trayFloor(s), shade: trayWallShade(s) })
+
+// Every tray of the page has the same plan when it is open, so the open tray's solids are built once and kept. A tray on its way open is built for its height and dropped after.
+function tray(s: Shape): THREE.Object3D {
+  const m = materials()
+  const whole = s.h >= TRAY_H
+  const key = trayKey(s)
+  let kit: TrayKit
+  if (whole) {
+    if (!open || open.key !== key) open = { key, kit: makeKit(s) }
+    kit = open.kit
+  } else kit = makeKit(s)
+  const root = new THREE.Group()
+  const add = (g: THREE.BufferGeometry, material: THREE.Material, cast: boolean, receive: boolean): void => {
+    const mesh = new THREE.Mesh(g, material)
+    mesh.castShadow = cast
+    mesh.receiveShadow = receive
+    root.add(mesh)
+  }
+  add(kit.joint, m.gap, false, true)
+  add(kit.liner, m.aluminiumSatin, true, true)
+  add(kit.floor, m.glassSunk, false, true)
+  shadeMaterial ??= new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, blending: THREE.CustomBlending, blendSrc: THREE.DstColorFactor, blendDst: THREE.ZeroFactor, depthWrite: false, toneMapped: false, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -2 })
+  add(kit.shade, shadeMaterial, false, false)
+  root.userData.passing = !whole
+  return root
+}
 
 export const rows: PartMaker = {
-  key: (s: Shape, ctx: RealContext): string | null => controls.key(lined(s), ctx),
-  make: (s: Shape, ctx: RealContext): THREE.Object3D => controls.make(lined(s), ctx),
+  key: (s: Shape, ctx: RealContext): string | null => (isTray(s) ? trayKey(s) : controls.key(s, ctx)),
+  make: (s: Shape, ctx: RealContext): THREE.Object3D => (isTray(s) ? tray(s) : controls.make(s, ctx)),
   pose(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
-    controls.pose?.(o, lined(s), ctx)
+    if (!isTray(s)) controls.pose?.(o, s, ctx)
+  },
+  drop(o: THREE.Object3D): void {
+    if (o.userData.passing !== true) return
+    o.traverse((c) => {
+      const mesh = c as THREE.Mesh
+      if (mesh.isMesh) mesh.geometry.dispose()
+    })
   }
 }

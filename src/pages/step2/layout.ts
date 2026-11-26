@@ -22,6 +22,8 @@ export const PITCH = 144
 export const TRAY_GAP = 12
 export const TRAY_H = 232
 export const TRAY_R = 14
+// A tray's liner, in page pixels, and the shade its wall lays on its floor.
+export const TRAY = { sink: 0.5, joint: 0.9, jointDeep: 1.1, rim: 4.2, lean: 0.7, soak: 0.52, soakHold: 0.2, soakReach: 20, bounce: 0.16, bounceReach: 9, wallShade: 0.62 }
 export const SHIFT = TRAY_H + TRAY_GAP
 export const TRAY_Z = heights.machineTray
 export const TOP = heights.machineMinTop
@@ -35,7 +37,7 @@ const DEG = Math.PI / 180
 
 export const DIAL = {
   r: 100, ring: 66, hole: 15, stop: 30 * DEG, first: -30 * DEG, pitch: 30 * DEG,
-  cx: FX + PAD + 100, cy: trayY(0) + TRAY_H / 2,
+  cx: FX + PAD + 136, cy: trayY(0) + TRAY_H / 2,
   holeAngle: (k: number): number => -30 * DEG - 30 * DEG * (k - 1),
   travel: (k: number): number => 60 * DEG + 30 * DEG * (k - 1),
   digit: (k: number): string => String(k % 10)
@@ -43,13 +45,15 @@ export const DIAL = {
 
 // The dial's body, in page pixels: how tall it stands on the tray's floor, how much of it shows before it has risen, and its turned steps.
 export const DIAL_BODY = {
-  tall: TOP + 2 - TRAY_Z, rest: 7.4, below: 2, plate: 6.2, bezel: 9, bezelDrop: 2, wheel: 89.2, thick: 4.8, chamfer: 1, holeRim: 0.4, holeChamfer: 2,
+  tall: TOP + 2 - TRAY_Z, rest: 1.6, plateLeast: 0.4, below: 2, plate: 6.2, bezel: 9, bezelDrop: 2, wheel: 89.2, thick: 4.8, chamfer: 1, holeRim: 0.4, holeChamfer: 2,
   hub: 30, hubTall: 14, seat: 5, seatGap: 1.8, stopIn: 71, stopOut: 109, stopWide: 12, stopClear: 3, stopTall: 8, stopFoot: 12,
   shade: 0.46, shadeReach: 0.78
 }
 
-// How far the top of the dial's wheel stands above the tray's floor when the machine has risen by `lift` (0 to 1).
+// How far the top of the dial's wheel stands above the tray's floor when the machine has risen by `lift` (0 to 1). Before it rises it lies in the tray's floor, its wheel under the floor of a field, its hub and its stop drawn down into it.
 export const dialTop = (lift: number): number => Math.max(DIAL_BODY.rest, DIAL_BODY.tall * lift)
+// How far the numeral plate stands above the tray's floor under a wheel whose top stands at `top`: it never sinks into the floor.
+export const dialPlate = (top: number): number => Math.max(DIAL_BODY.plateLeast, top - DIAL_BODY.plate)
 
 const sy = trayY(1)
 export const SLOT = {
@@ -66,7 +70,7 @@ export const SLOT = {
 
 const cy = trayY(2)
 export const CRANK = {
-  hx: FX + PAD + 55, hy: cy + 146, rest: -0.75, arm: 96, gripW: 60, gripH: 28, base: 110, hub: 44,
+  hx: FX + PAD + 55, hy: cy + 146, rest: -0.75, arm: 96, armW: 24, gripW: 84, gripH: 40, tip: 126, base: 110, hub: 44,
   segW: 28, segH: 96, segGap: 13, segX: FX + PAD + 55 + 227, segY: cy + 146 - 48
 }
 
@@ -121,7 +125,7 @@ function slotNodes(): LayoutNode[] {
     reels.push(node(`slot-reel-${r}`, 'slotReel', [s.reelX(r), s.reelY, s.reelW, s.reelH], { part: 'slot', height: TOP + 14, floor: TOP + 10, tone: 'paper', r: 6, children: marks }))
   }
   const window = node('slot-window', 'slotWindow', [s.x + 10, s.y + 14, s.w - 20, s.h - 28], { part: 'slot', height: TOP + 10, floor: TOP + 8, tone: 'dark', r: 8, children: reels })
-  const cabinet = node('slot-cabinet', 'slotCabinet', [s.x, s.y, s.w, s.h], { part: 'slot', height: TOP + 8, floor: TRAY_Z, tone: 'metal', r: 12, mechanism: true, children: [window] })
+  const cabinet = node('slot-cabinet', 'slotCabinet', [s.x, s.y, s.w, s.h], { part: 'slot', height: TOP + 20, floor: TRAY_Z, tone: 'metal', r: 12, mechanism: true, children: [window] })
   const knob = node('slot-knob', 'slotKnob', [s.leverX - s.knob / 2, s.knobY - s.knob / 2, s.knob, s.knob], { part: 'slot', shape: 'disc', height: TOP + 40, floor: TOP + 12, tone: 'accent', mechanism: true })
   const payout = node('slot-payout', 'slotPayout', [s.payX, s.payY, s.payW, s.payH], { part: 'slot', height: 6, floor: TRAY_Z, tone: 'dark', r: 6 })
   const px = s.leverX + s.knob / 2 + 64
@@ -139,7 +143,7 @@ function crankNodes(): LayoutNode[] {
   const ay = c.hy + (c.arm / 2) * Math.sin(c.rest)
   const gx = c.hx + c.arm * Math.cos(c.rest)
   const gy = c.hy + c.arm * Math.sin(c.rest)
-  const arm = node('crank-arm', 'crankArm', [ax - (c.arm + 16) / 2, ay - 8, c.arm + 16, 16], { part: 'crank', shape: 'capsule', height: TOP + 6, floor: TOP - 4, tone: 'metal', mechanism: true, over: true })
+  const arm = node('crank-arm', 'crankArm', [ax - (c.arm + c.armW) / 2, ay - c.armW / 2, c.arm + c.armW, c.armW], { part: 'crank', shape: 'capsule', height: TOP + 6, floor: TOP - 4, tone: 'metal', mechanism: true, over: true })
   const hub = node('crank-hub', 'crankHub', [c.hx - c.hub / 2, c.hy - c.hub / 2, c.hub, c.hub], { part: 'crank', shape: 'disc', height: TOP + 10, floor: 18, tone: 'raised', mechanism: true, over: true })
   const grip = node('crank-grip', 'crankGrip', [gx - c.gripW / 2, gy - c.gripH / 2, c.gripW, c.gripH], { part: 'crank', shape: 'capsule', height: TOP + 30, floor: TOP + 6, tone: 'accent', mechanism: true, over: true })
   const segs: LayoutNode[] = []

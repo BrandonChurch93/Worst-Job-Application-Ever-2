@@ -4,7 +4,7 @@ import type { Shape } from '../../../stage/types'
 import { look } from '../../../post/look'
 import { materials } from '../../../shell/materials'
 import { arc, circle, merge, profile, roundedRect, sweep, type ProfilePoint, type Ring } from '../../../shell/solids'
-import { DIAL, DIAL_BODY } from '../layout'
+import { DIAL, DIAL_BODY, dialPlate } from '../layout'
 
 const B = DIAL_BODY
 const H = B.tall
@@ -206,7 +206,7 @@ function mesh(geometry: THREE.BufferGeometry, material: THREE.Material, cast = t
   return m
 }
 
-interface Kept { body: THREE.Group; wheel: THREE.Group; shades: THREE.InstancedMesh }
+interface Kept { body: THREE.Group; wheel: THREE.Group; shades: THREE.InstancedMesh; hub: THREE.Mesh; stop: THREE.Mesh; plate: THREE.Mesh }
 const place = new THREE.Matrix4()
 
 export const dial: PartMaker = {
@@ -222,13 +222,16 @@ export const dial: PartMaker = {
     root.add(mesh(g.gap, m.gap, false))
     const body = new THREE.Group()
     body.add(mesh(g.housing, m.aluminiumEdge))
-    body.add(mesh(g.plate, m.keycap, false))
-    body.add(mesh(g.stop, m.aluminiumSatin))
+    const plate = mesh(g.plate, m.keycap, false)
+    body.add(plate)
+    const stop = mesh(g.stop, m.aluminium)
+    body.add(stop)
     const wheel = new THREE.Group()
     wheel.add(mesh(g.face, m.aluminiumTurned))
     wheel.add(mesh(g.edges, m.aluminiumEdge))
     wheel.add(mesh(g.hubRing, m.gap, false))
-    wheel.add(mesh(g.hub, m.orange))
+    const hub = mesh(g.hub, m.orange)
+    wheel.add(hub)
     body.add(wheel)
     shadeMaterial ??= new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, blending: THREE.CustomBlending, blendSrc: THREE.DstColorFactor, blendDst: THREE.ZeroFactor, depthWrite: false, toneMapped: false })
     const shades = new THREE.InstancedMesh(g.shade, shadeMaterial, 10)
@@ -236,12 +239,19 @@ export const dial: PartMaker = {
     shades.frustumCulled = false
     body.add(shades)
     root.add(body)
-    root.userData.dial = { body, wheel, shades } satisfies Kept
+    root.userData.dial = { body, wheel, shades, hub, stop, plate } satisfies Kept
     return root
   },
   pose(o: THREE.Object3D, s: Shape, _ctx: RealContext): void {
     const kept = o.userData.dial as Kept
-    kept.body.position.z = Math.max(B.rest, s.z1 - s.z0) - H
+    const top = Math.max(B.rest, s.z1 - s.z0)
+    const low = 1 - Math.min(1, Math.max(0, (top - B.rest) / (H - B.rest)))
+    kept.body.position.z = top - H
+    const up = dialPlate(top) - (top - B.plate)
+    kept.plate.position.z = up
+    kept.shades.position.z = H - B.plate + 0.12 + up
+    kept.hub.position.z = -B.hubTall * low
+    kept.stop.position.z = -(B.stopClear + B.stopTall + 0.5) * low
     const turn = s.v?.[0] ?? 0
     kept.wheel.rotation.z = -turn
     for (let k = 1; k <= 10; k++) {
