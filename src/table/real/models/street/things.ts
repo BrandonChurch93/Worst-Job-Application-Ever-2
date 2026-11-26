@@ -74,7 +74,7 @@ export function roadSign(z: Zone, s: Sling): { geo: Geo; rivets: V3[] } {
   for (let i = 0; i < edge.length; i++) {
     const p = edge[i]!
     const q = edge[(i + 1) % edge.length]!
-    g.rod([p[0], p[1], z1 - 0.2], [q[0], q[1], z1 - 0.2], 1.25, 6, TONE.alu, KIND.gloss, false)
+    g.rod([p[0], p[1], z1 - 0.1], [q[0], q[1], z1 - 0.1], 1.7, 8, rgb(0xe4e7ea), KIND.gloss, false)
   }
   // A black line inside the edge, then the chevrons, each two arms that meet at a point toward the middle of the table.
   const inner = grown(tri, PLATE.out - 4, PLATE.corner - 4)

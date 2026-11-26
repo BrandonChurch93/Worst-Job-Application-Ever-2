@@ -14,14 +14,15 @@ export function police(b: Buckets, z: Zone, ctx: RealContext): { beacon: V3 } {
   const yb = S.yb - i
   const top = S.h
   const deck = top - 10
+  const k0 = top / 144
   const plinth = 15
-  const storey = 66
+  const storey = 66 * k0
 
   g.box(S.x0, S.x1, S.yf, S.yb, 0, 3, TONE.stoneDark, { bevel: 1 })
   for (const sx of [S.x0 + 1.6, S.x1 - 1.6]) b.screws.push([sx, S.yf + 1.6, 3, 1.1])
 
   const W0 = x1 - x0
-  const entry: Hole = { x: W0 / 2 - 23, z: 3, w: 46, h: 61 }
+  const entry: Hole = { x: W0 / 2 - 23 * k0, z: 3, w: 46 * k0, h: 61 * k0 }
   const up: WindowLook = { frame: TONE.white, wall: TONE.blue, sill: TONE.stonePale, lintel: TONE.stonePale, bars: [2, 3] }
   const low: WindowLook = { frame: TONE.iron, wall: TONE.blue, sill: TONE.stonePale, lintel: TONE.stonePale, bars: [2, 2], iron: true, warm: 0.3 }
   let n = 0
@@ -31,13 +32,13 @@ export function police(b: Buckets, z: Zone, ctx: RealContext): { beacon: V3 } {
     const upper: Hole[] = []
     const lower: Hole[] = []
     if (side === 'front') {
-      for (const k of [0, 1, 3, 4]) upper.push({ x: 20 + k * 44.5, z: 84, w: 16, h: 30 })
-      upper.push({ x: W / 2 - 9, z: 86, w: 18, h: 28 })
-      for (const x of [18, 54, W - 34, W - 70]) lower.push({ x, z: 30, w: 16, h: 24 })
+      for (const k of [0, 1, 3, 4]) upper.push({ x: 20 + k * 44.5, z: 84 * k0, w: 16, h: 30 * k0 })
+      upper.push({ x: W / 2 - 9, z: 86 * k0, w: 18, h: 28 * k0 })
+      for (const x of [18, 54, W - 34, W - 70]) lower.push({ x, z: 30 * k0, w: 16, h: 24 * k0 })
     } else if (side !== 'back') {
       for (let k = 0; k < 3; k++) {
-        upper.push({ x: 18 + k * 43, z: 84, w: 16, h: 30 })
-        lower.push({ x: 18 + k * 43, z: 30, w: 16, h: 24 })
+        upper.push({ x: 18 + k * 43, z: 84 * k0, w: 16, h: 30 * k0 })
+        lower.push({ x: 18 + k * 43, z: 30 * k0, w: 16, h: 24 * k0 })
       }
     }
     wallFace(g, 0, W, 3, plinth, side === 'front' ? [entry] : [], TONE.stone, KIND.block)
@@ -82,13 +83,14 @@ export function police(b: Buckets, z: Zone, ctx: RealContext): { beacon: V3 } {
     b.glow.lathe([[0, -9.6], [2.6, -8.8], [4.3, -6.6], [4.8, -4.2], [4.2, -2], [2.4, -0.4], [0, 0]], mid, -6.5, 16, [0.75, 1.05, 1.9], { base: zt - 4.2 })
   })
 
-  g.quad([x0 + 5, yf + 5, deck], [x1 - 5, yf + 5, deck], [x1 - 5, yb - 5, deck], [x0 + 5, yb - 5, deck], TONE.roof, KIND.tar)
+  g.quad([x0 + 5, yf + 5, deck], [x1 - 5, yf + 5, deck], [x1 - 5, yb - 5, deck], [x0 + 5, yb - 5, deck], TONE.deck, KIND.concrete)
+  for (const [ax, bx, ay, by] of [[x0 + 6, x1 - 6, yf + 6, yf + 8.5], [x0 + 6, x1 - 6, yb - 8.5, yb - 6], [x0 + 6, x0 + 8.5, yf + 8.5, yb - 8.5], [x1 - 8.5, x1 - 6, yf + 8.5, yb - 8.5]] as const) g.quad([ax, ay, deck + 0.08], [bx, ay, deck + 0.08], [bx, by, deck + 0.08], [ax, by, deck + 0.08], TONE.deckDark)
   parapet(g, x0, x1, yf, yb, deck, top, 6, TONE.blue, TONE.stonePale, KIND.brick)
 
   // On the roof: a stair house with a door, a radio mast, a cooling unit and two vents.
   const sx0 = x0 + 12
   const sy1 = yb - 10
-  g.box(sx0, sx0 + 38, sy1 - 30, sy1, deck, deck + 24, TONE.blue, { kind: KIND.painted, top: TONE.roof, topKind: KIND.tar })
+  g.box(sx0, sx0 + 38, sy1 - 30, sy1, deck, deck + 24, TONE.blue, { kind: KIND.painted, top: TONE.deckDark, topKind: KIND.concrete })
   g.box(sx0 - 1.5, sx0 + 39.5, sy1 - 31.5, sy1 + 1.5, deck + 24, deck + 26.5, TONE.stonePale, { under: true, bevel: 0.8 })
   g.box(sx0 + 39, sx0 + 39.8, sy1 - 22, sy1 - 10, deck, deck + 18, TONE.iron, { skip: 'l', kind: KIND.gloss })
   const mx = sx0 + 19
