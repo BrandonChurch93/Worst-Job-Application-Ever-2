@@ -183,10 +183,11 @@ export function highOf(z: Zone): High[] {
   if (z.id !== 'street') return []
   // The fittings of the garage, by the rule of the owner of the street's models: arms half a ball outside its wall on the diagonals, three 22 px under the rim and the rest at four tenths of its height.
   const g = model('street.garage')
-  const x0 = g.box[0] - 0.5
-  const x1 = g.box[0] + g.box[2] + 0.5
-  const y0 = g.box[1] - 0.5
-  const y1 = g.box[1] + g.box[3] + 0.5
+  const out = (g.box[2] / 2 + 0.5) * Math.SQRT1_2
+  const x0 = g.box[0] + g.box[2] / 2 - out
+  const x1 = g.box[0] + g.box[2] / 2 + out
+  const y0 = g.box[1] + g.box[3] / 2 - out
+  const y1 = g.box[1] + g.box[3] / 2 + out
   const base = g.base ?? 0
   const lamp = (u: number, v: number, zPx: number, power: number, reachBalls: number): High => {
     const p = localBalls(z, u, v)
