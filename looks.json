@@ -1,0 +1,35 @@
+{
+  "folder": "shared-look",
+  "pushed": "2026-11-26T07:21:13.978Z",
+  "commit": "7f1f50b80cc4be7ceaa07bb99d48f5873d7fcfca",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "The one orange after the first pass: the current progress cap, the hero button and the waiting Continue, approved left, before middle, after right",
+      "time": "2026-11-26T07:21:11.505Z",
+      "by": "shared-look",
+      "from": "out/work/looks/files/20261126072111-A-orange-approved-before-after.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Where the header lies on step 2: approved left, the build right, before above and after below",
+      "time": "2026-11-26T07:21:12.014Z",
+      "by": "shared-look",
+      "from": "out/work/looks/files/20261126072112-B-header-approved-before-then-approved-after.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Step 2 at rest: approved above, before in the middle, after the first pass below",
+      "time": "2026-11-26T07:21:12.278Z",
+      "by": "shared-look",
+      "from": "out/work/looks/files/20261126072112-step2-rest.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "The careers page: approved above, before in the middle, after the first pass below",
+      "time": "2026-11-26T07:21:12.584Z",
+      "by": "shared-look",
+      "from": "out/work/looks/files/20261126072112-marketing-top.jpg"
+    }
+  ]
+}
