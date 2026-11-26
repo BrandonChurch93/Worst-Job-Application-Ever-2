@@ -22,7 +22,7 @@ Counted by part, 40 each for this round. A look is one still rendered and looked
 
 | Part | Looks |
 | --- | --- |
-| boss-body | 37 |
+| boss-body | 38 |
 | boss-transform | 19 |
 | boss-weapons | 15 |
 | health-bar | 1 |
@@ -75,3 +75,4 @@ MEASURED at 05:22 UTC on the tree of the second pass (brushed plates, the career
 32. The sheet's Unfolding state: the feet are drawn at 0.62 of their reach from the hips with the legs at 0.7 open, and the side plates 64 px from the middle (was 78), so the state reads as approved's compact plate with short bent legs and not as the whole boss without its guns (round 10, R1-1 issue 4). Only the sheet changes; the film's unfold is as it was.
 33. Not solved: in the sheet's Breaking loose state a dark hairline runs level across the tilted cap (round 10, R1-1 issue 15). MEASURED by two stills: it lies on the upper edge of the open hole's inner well and does not move when the cap is lifted further (`cap.lift` 0.5 and 0.64 give the same line), so it is not the cap cutting a surface of mine. UNKNOWN what draws it; the wells are cut by the shell's view. Left as it was.
 34. Not done: the bright bezel round the resting button (round 10, R1-1 issue 13). At rest the socket is the shell's pocket; a collar there needs a wider pocket and a new shape in a state three measures read (M5, M6, M9), and there was no time to prove it green.
+35. The cracks of the fallen glass are finer (bright line 0.62 px half width, was 1.15; the dark line under it 0.8, was 1.1) and taper further to their ends: round 10 (R1-1 issue 11, R3-1 issue 2) reads them as lines of one width painted on. They are still lines on the face, not broken surfaces: see the least real list.

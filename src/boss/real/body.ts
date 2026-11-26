@@ -279,7 +279,7 @@ function crackLines(lines: [number, number][][], wide: number, z: number, dx = 0
       const [x0, y0] = line[i]!
       const [x1, y1] = line[i + 1]!
       const l = Math.hypot(x1 - x0, y1 - y0) || 1
-      const taper = (j: number): number => wide * (0.35 + 0.65 * Math.sin((Math.PI * (j + 0.5 * (n % 2))) / line.length))
+      const taper = (j: number): number => wide * (0.2 + 0.8 * Math.sin((Math.PI * (j + 0.5 * (n % 2))) / line.length))
       const w0 = taper(i)
       const w1 = taper(i + 1)
       const nx = -(y1 - y0) / l
@@ -319,8 +319,8 @@ function shield(): THREE.Object3D {
   const slab = { kind: 'box', w: w + 2 * SLAB.frame, h: h + 2 * SLAB.frame, r: 18 + SLAB.frame } as Shape
   leaf.add(mesh(geo('glass', () => walled(slabGeometry(slab, t)).translate(0, 0, t / 2)), k.glass))
   const cracks = new THREE.Group()
-  cracks.add(mesh(geo('glassCracksDeep', () => crackLines(GLASS_CRACKS, 1.1, 1.6, 3.2, -2.6)), k.bed, false, false))
-  cracks.add(mesh(geo('glassCracks', () => crackLines(GLASS_CRACKS, 1.15, t + 0.12)), k.glassCrack, false, false))
+  cracks.add(mesh(geo('glassCracksDeep', () => crackLines(GLASS_CRACKS, 0.8, 1.6, 3.2, -2.6)), k.bed, false, false))
+  cracks.add(mesh(geo('glassCracks', () => crackLines(GLASS_CRACKS, 0.62, t + 0.12)), k.glassCrack, false, false))
   leaf.add(cracks)
   const pin = mesh(geo('shieldPin', () => joined([-1, 1].map((e) => new THREE.BoxGeometry(11, 18, 9).translate(0, e * 34, 2)))), m.aluminiumSatin, false)
   const tubes = [-1, 1].map((sy) => {
