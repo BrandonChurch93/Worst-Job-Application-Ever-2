@@ -112,7 +112,11 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
     root.dataset.row = r.top >= h + ROW_ROOM ? 'above' : 'over'
   }
   place()
-  listen('resize', place)
+  // The picture may get its new size in a listener that runs after this one: look again once all of them have run.
+  listen('resize', () => {
+    place()
+    window.setTimeout(place, 0)
+  })
   const watch = typeof ResizeObserver === 'function' ? new ResizeObserver(place) : null
   watch?.observe(api.canvas)
 
@@ -120,7 +124,11 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
   const film = el('a', css.link, live)
   film.href = '?mode=film'
   draw(film, word('watchFilm'), TYPE)
-  press(film, () => api.watchFilm())
+  press(film, () => {
+    api.watchFilm()
+    showMode()
+    showFilm()
+  })
   const skip = el('button', css.link, live)
   skip.type = 'button'
   draw(skip, word('skip'), TYPE)
@@ -162,7 +170,10 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
     showPlaying(f.playing())
   }
   press(play, toggle)
-  press(back, () => api.backToSite())
+  press(back, () => {
+    api.backToSite()
+    showMode()
+  })
   surface.addEventListener('click', toggle)
   let dragging = false
   position.addEventListener('pointerdown', () => { dragging = true })
@@ -254,23 +265,50 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
     wake()
   }
 
+  // Both are called at the press as well as once a frame: on a machine that draws slowly the bar must not wait for the next picture.
+  function showMode(): void {
+    const m = api.mode()
+    if (m === mode) return
+    mode = m
+    root.dataset.mode = m
+    if (m !== 'live' && menu.open()) menu.toggle()
+    api.canvas.classList.toggle(css.fitted!, m === 'film')
+    place()
+    if (m === 'film') wake()
+  }
+  function showFilm(): void {
+    const f = api.film
+    if (!!f !== hasFilm) {
+      hasFilm = !!f
+      root.dataset.film = String(hasFilm)
+      if (f) position.max = String(f.seconds)
+    }
+    if (!f || mode !== 'film') return
+    const now = f.playing()
+    showPlaying(now)
+    const t = f.time()
+    const begun = now || t > 0
+    if (begun !== started) {
+      started = begun
+      root.dataset.started = String(begun)
+    }
+    const label = `${clockText(t)} / ${clockText(f.seconds)}`
+    if (label !== shownTime) {
+      shownTime = label
+      draw(time, label, TYPE, { tabular: true })
+    }
+    const value = Math.round(t * 10) / 10
+    if (!dragging && value !== shownValue) {
+      shownValue = value
+      position.value = String(value)
+    }
+  }
+
   return {
     update() {
-      const m = api.mode()
-      const f = api.film
-      if (m !== mode) {
-        mode = m
-        root.dataset.mode = m
-        if (m !== 'live' && menu.open()) menu.toggle()
-        api.canvas.classList.toggle(css.fitted!, m === 'film')
-        place()
-        if (m === 'film') wake()
-      }
-      if (!!f !== hasFilm) {
-        hasFilm = !!f
-        root.dataset.film = String(hasFilm)
-        if (f) position.max = String(f.seconds)
-      }
+      showMode()
+      const m = mode
+      showFilm()
       if (m === 'live') {
         liveSound.update()
         const below = api.backing ? api.backing() : 'page'
@@ -294,29 +332,7 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
           }
         }
         menu.update()
-      } else if (m === 'film') {
-        barSound.update()
-        if (f) {
-          const now = f.playing()
-          showPlaying(now)
-          const t = f.time()
-          const begun = now || t > 0
-          if (begun !== started) {
-            started = begun
-            root.dataset.started = String(begun)
-          }
-          const label = `${clockText(t)} / ${clockText(f.seconds)}`
-          if (label !== shownTime) {
-            shownTime = label
-            draw(time, label, TYPE, { tabular: true })
-          }
-          const value = Math.round(t * 10) / 10
-          if (!dragging && value !== shownValue) {
-            shownValue = value
-            position.value = String(value)
-          }
-        }
-      }
+      } else if (m === 'film') barSound.update()
       const h = api.heading()
       if (h !== heading) {
         heading = h
