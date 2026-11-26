@@ -7,7 +7,7 @@ import { materials } from '../../../shell/materials'
 import type { Shape } from '../../../stage/types'
 import { PAPER, SLOT } from '../layout'
 import { INK, stock } from './paperStock'
-import { CASSETTE as C, GAP, HOOD, K, RAISE, TRAVEL, UNIT, chuteAngle, chuteOf, chuteReach, hoodUnder, openOf, panelsOf, riseOf, smooth } from './shredderShape'
+import { CASSETTE as C, GAP, HOOD, K, RAISE, TRAVEL, UNIT, chuteAngle, chuteOf, chuteReach, hoodUnder, housingY, openOf, panelsOf, riseOf, smooth } from './shredderShape'
 
 const srgb = (hex: number) => new THREE.Color().setHex(hex, THREE.SRGBColorSpace)
 
@@ -419,6 +419,9 @@ function makeCassette(): THREE.Group {
   return root
 }
 
+// A contact throws the unit: for each page pixel of it, how far the cassette dips into its well, how far the two panels are knocked apart and how far the chute swings.
+const THROWN = { dip: 1.6, panels: 0.5, chute: 0.02 }
+
 function poseCassette(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const rig = o.userData.rig as Cassette
   o.position.set(SLOT.cx - 960, 540 - SLOT.cy, 0)
@@ -426,7 +429,8 @@ function poseCassette(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const open = openOf(s)
   const rise = riseOf(open)
   const p = panelsOf(open)
-  rig.lift.position.z = RAISE - TRAVEL * (1 - rise)
+  const thrown = s.y - housingY
+  rig.lift.position.z = RAISE - TRAVEL * (1 - rise) - thrown * THROWN.dip
   rig.lift.visible = p > 0.5
   rig.seat.visible = rig.lift.visible
   for (const e of rig.ears) {
@@ -437,10 +441,10 @@ function poseCassette(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   rig.north.rotation.x = turn
   rig.south.rotation.x = -turn
   const c = chuteOf(open)
-  rig.chute.rotation.x = chuteAngle(c)
+  rig.chute.rotation.x = chuteAngle(c) + thrown * THROWN.chute
   rig.reach.rotation.x = chuteReach(c) / HOOD.r
   const up = (PANEL.thick + 0.5) * smooth(p / PANEL.lift)
-  const slide = (SLOT.h / 2 + PANEL.clear) * smooth((p - PANEL.lift * 0.7) / (1 - PANEL.lift * 0.7))
+  const slide = (SLOT.h / 2 + PANEL.clear) * smooth((p - PANEL.lift * 0.7) / (1 - PANEL.lift * 0.7)) + thrown * THROWN.panels
   rig.panelN.position.set(0, slide, up)
   rig.panelS.position.set(0, -slide, up)
 }
