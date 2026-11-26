@@ -1,35 +1,35 @@
 {
   "folder": "lamp-fix",
-  "pushed": "2026-11-26T09:28:22.979Z",
-  "commit": "bd91577aea39aebc5b9b91dbeee92df56c44af09",
+  "pushed": "2026-11-26T09:32:13.430Z",
+  "commit": "7a4de2eff26db2adde169c82d111c93fd0f610c6",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "tier-corporate, approved left, build right: deep navy marble between soft pools of the lane lamps and windows, dark share 34% against 36%",
-      "time": "2026-11-26T09:18:39.980Z",
-      "by": "lamp-fix",
-      "from": "out/work/lights/look-c5-tier-corporate.jpg"
-    },
-    {
-      "file": "look-2.jpg",
       "caption": "lobby-doors, approved left, build right: Corporate floor as dark lacquer along the floor",
       "time": "2026-11-26T09:18:40.207Z",
       "by": "lamp-fix",
       "from": "out/work/lights/look-c5-lobby-doors.jpg"
     },
     {
-      "file": "look-3.jpg",
+      "file": "look-2.jpg",
       "caption": "reply-all, approved left, build right, on main 7e7ddb05: a warm pool beside each sling, windows brightest in the middle",
       "time": "2026-11-26T09:28:21.735Z",
       "by": "lamp-fix",
       "from": "out/work/lights/look-f1-reply-all.jpg"
     },
     {
-      "file": "look-4.jpg",
+      "file": "look-3.jpg",
       "caption": "tier-corporate, approved left, build right, on main 7e7ddb05: deep navy between soft pools, pools beside the slings",
       "time": "2026-11-26T09:28:21.971Z",
       "by": "lamp-fix",
       "from": "out/work/lights/look-f1-tier-corporate.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "tier-office, approved left, build right, last tree of lamp-fix: pools beside the slings, floor a step deeper between them",
+      "time": "2026-11-26T09:32:12.219Z",
+      "by": "lamp-fix",
+      "from": "out/work/lights/look-g1-tier-office.jpg"
     }
   ]
 }
