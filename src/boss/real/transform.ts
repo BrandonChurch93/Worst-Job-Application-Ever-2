@@ -9,6 +9,7 @@ import { BODY_Z, CAP_H, CAP_W, HOLE_H, HOLE_W, crackRuns } from '../body'
 import { controls } from '../../shell/real/controls'
 import type { RealContext } from '../../real/types'
 import { mesh } from './body-kit'
+import { pillGeometry, PILL } from './pill'
 
 const clamp = (t: number): number => Math.min(1, Math.max(0, t))
 const smooth = (t: number): number => { const u = clamp(t); return u * u * (3 - 2 * u) }
@@ -134,6 +135,13 @@ const soot = (): THREE.MeshBasicMaterial => {
   }
   sootMaterial ??= new THREE.MeshBasicMaterial({ map: sootMade, transparent: true, depthWrite: false, toneMapped: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 })
   return sootMaterial
+}
+
+let charMaterial: THREE.MeshPhysicalMaterial | null = null
+const charStuff = (): THREE.MeshPhysicalMaterial => {
+  soot()
+  charMaterial ??= studio(new THREE.MeshPhysicalMaterial({ map: sootMade, transparent: true, depthWrite: false, roughness: 0.86, metalness: 0, specularIntensity: 0.35, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 }))
+  return charMaterial
 }
 
 const chipStuff = (): THREE.MeshPhysicalMaterial => {
@@ -283,6 +291,11 @@ function scorch(s: Shape, ctx: RealContext): THREE.Object3D {
   const m = mesh(skin ?? new THREE.PlaneGeometry(CAP_W, CAP_H), soot(), false, false)
   m.scale.set(1.002, 1.006, 1.012)
   o.add(m)
+  const pill = mesh(pillGeometry(), charStuff(), false, false)
+  pill.visible = false
+  o.add(pill)
+  o.userData.skin = m
+  o.userData.pill = pill
   return o
 }
 
@@ -378,6 +391,12 @@ export const bossTransform: PartMaker = {
       o.position.y += BODY_Z.capTall * Math.sin(t)
       o.position.z += BODY_Z.capTall * (1 - Math.cos(t))
       soot().opacity = smooth(((s.v?.[0] ?? 1) - 0.8) / 0.2)
+      charStuff().opacity = soot().opacity
+      const down = s.v?.[2] ?? 0
+      const pill = o.userData.pill as THREE.Mesh
+      pill.visible = down > 0
+      ;(o.userData.skin as THREE.Mesh).visible = down <= 0
+      pill.scale.set(1.002, 1.006, ((s.z1 - s.z0 - 0.3) / PILL.tall) * 1.012)
     } else if (s.role === 'bossSmoke') poseSmoke(o, s)
   },
   drop(o: THREE.Object3D): void {

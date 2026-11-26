@@ -104,7 +104,7 @@ export function lying(points: [number, number][], segments = 32): THREE.BufferGe
   return lathe(points, segments).rotateY(-Math.PI / 2)
 }
 
-export const BRUSH = { w: 512, h: 128, perPx: 2.4, deep: 0.3, cells: 8 }
+export const BRUSH = { w: 512, h: 128, perPx: 2.4, deep: 0.42, cells: 8 }
 
 // Fine straight brushing along x, as a grey that the plate's colour is multiplied by: every row its own tone, drifting slowly along its length, and a few sharper scratches.
 export function brushPixels(seed = 5): Uint8Array {
@@ -160,7 +160,7 @@ export interface BossKit {
 
 let made: BossKit | null = null
 
-export const PLATE_TONE = { live: srgb(0x7c8085), dead: srgb(0x4a4d51) }
+export const PLATE_TONE = { live: srgb(0x8e9296), dead: srgb(0x9a9ea2) }
 
 export function bossKit(): BossKit {
   made ??= {
@@ -168,7 +168,7 @@ export function bossKit(): BossKit {
     bore: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x121212), roughness: 0.8, metalness: 0.2, specularIntensity: 0.3 })),
     bed: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x1f2022), roughness: 0.62, metalness: 0.55, specularIntensity: 0.5 })),
     pin: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xc9ccd0), roughness: 0.2, metalness: 1 })),
-    plate: studio(new THREE.MeshPhysicalMaterial({ color: PLATE_TONE.live.clone(), roughness: 0.4, metalness: 1, map: brushing(), anisotropy: 0.55, anisotropyRotation: Math.PI / 2 })),
+    plate: studio(new THREE.MeshPhysicalMaterial({ color: PLATE_TONE.live.clone(), roughness: 0.46, metalness: 1, map: brushing(), anisotropy: 0.55, anisotropyRotation: Math.PI / 2 })),
     plateSide: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x35373a), roughness: 0.55, metalness: 0.9 })),
     pocket: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x63666a), roughness: 0.5, metalness: 0.9 })),
     link: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x9a9ea3), roughness: 0.45, metalness: 0.5 })),

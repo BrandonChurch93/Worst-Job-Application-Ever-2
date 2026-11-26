@@ -7,6 +7,7 @@ import { roundedRect, sweep, plateProfile } from '../../shell/solids'
 import { config } from '../../config'
 import { BODY_Z, FRAME, LEG, SHADE, SHIELD, SIDE, SIDE_OFF, CAP_W, CAP_H, WRECK } from '../body'
 import { bossKit, cutPlate, joined, lathe, lying, mesh, moved, screw, PLATE_TONE } from './body-kit'
+import { pillGeometry, PILL } from './pill'
 import { clearTone, fracture, glassKit, paneGeometry, rimGeometry, CLEAR_GLASS, RIM, SHIELD_PANE } from './glass'
 
 const heights = config.scale.heights
@@ -523,7 +524,13 @@ function cap(s: Shape, ctx: RealContext): THREE.Object3D {
   cracks.position.z = BODY_Z.capTall - 0.75
   root.add(cracks)
   root.userData.cracks = cracks
-  root.add(controls.make({ ...s, id: 'boss-cap-button', part: 'shell', kind: 'capsule', role: 'button', tone: 'accent', w: CAP_W, h: CAP_H, z0: 0, z1: BODY_Z.capTall, rot: 0, v: undefined }, ctx))
+  const flat = controls.make({ ...s, id: 'boss-cap-button', part: 'shell', kind: 'capsule', role: 'button', tone: 'accent', w: CAP_W, h: CAP_H, z0: 0, z1: BODY_Z.capTall, rot: 0, v: undefined }, ctx)
+  root.add(flat)
+  const pill = mesh(pillGeometry(), materials().orange)
+  pill.visible = false
+  root.add(pill)
+  root.userData.flat = flat
+  root.userData.pill = pill
   return root
 }
 
@@ -592,10 +599,16 @@ export const bossBody: PartMaker = {
         const t = s.v?.[2] ?? 0
         o.position.y += BODY_Z.capTall * Math.sin(t)
         o.position.z += BODY_Z.capTall * (1 - Math.cos(t))
+        const down = s.v?.[3] ?? 0
+        const pill = o.userData.pill as THREE.Mesh
+        pill.visible = down > 0
+        ;(o.userData.flat as THREE.Object3D).visible = down <= 0
+        pill.scale.z = (s.z1 - s.z0) / PILL.tall
         const cracks = o.userData.cracks as THREE.Mesh
+        cracks.position.z = s.z1 - s.z0 - 0.75
         const all = cracks.geometry.getAttribute('position').count / 6
         const n = Math.floor(all * prog(s.v?.[0] ?? 0, 0.8, 1))
-        cracks.visible = n > 0
+        cracks.visible = n > 0 && down <= 0
         cracks.geometry.setDrawRange(0, n * 6)
         break
       }

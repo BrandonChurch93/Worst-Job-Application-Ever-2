@@ -10,6 +10,7 @@ const sizes = config.scale.sizes
 
 export const CAP_W = 288
 export const CAP_H = sizes.button
+export const PILL_TALL = 33
 export const FOOT_OFF: [number, number][] = [[-250, -205], [250, -205], [-250, 205], [250, 205]]
 export const HIP_OFF: [number, number][] = [[-168, -50], [168, -50], [-168, 50], [168, 50]]
 export const CANNON_OFF: [number, number][] = [[-10, -116], [-10, 116]]
@@ -206,9 +207,10 @@ export function drawRig(out: DrawList, rig: Rig, id = 'boss', pressed = 0): void
     out.push(label(`${id}-cannon-${i}-numeral`, body, `data:numerals.${CANNON_FROM[i]!}`, c.x, c.y, TYPE.numeral, z1, 'ink', c.rot))
   })
   const z0 = (cap.down > 0 ? mix(BODY_Z.cap, 0, cap.down) : mix(heights.buttonSocket, BODY_Z.cap, cap.lift)) + (cap.lift > 0 && cap.down <= 0 ? rig.plate.z : 0) - pressed * 0.4
-  const z1 = z0 + BODY_Z.capTall
+  const fell = cap.down * cap.down * (3 - 2 * cap.down)
+  const z1 = z0 + mix(BODY_Z.capTall, PILL_TALL, fell)
   const tilt = cap.down > 0 ? 0 : Math.sin(Math.PI * Math.min(1, cap.lift)) * 0.2
-  const top: Shape = { id: `${id}-cap`, part: body, kind: 'capsule', role: 'bossCap', x: cap.x - CAP_W / 2, y: cap.y - CAP_H / 2, w: CAP_W, h: CAP_H, z0, z1, tone: 'accent', rot: cap.rot, v: [rig.hurt, pressed, tilt] }
+  const top: Shape = { id: `${id}-cap`, part: body, kind: 'capsule', role: 'bossCap', x: cap.x - CAP_W / 2, y: cap.y - CAP_H / 2, w: CAP_W, h: CAP_H, z0, z1, tone: 'accent', rot: cap.rot, v: [rig.hurt, pressed, tilt, cap.down] }
   const word = label(`${id}-cap-word`, body, 'copy:step4.submit', cap.x, cap.y, TYPE.button, z1, 'inkLight', cap.rot)
   if (tilt > 0.001) {
     top.turnX = tilt
@@ -216,7 +218,7 @@ export function drawRig(out: DrawList, rig: Rig, id = 'boss', pressed = 0): void
   }
   out.push(top, word)
   if (rig.hurt > 0.8) {
-    const soot: Shape = { id: `${id}-scorch`, part: 'boss-transform', kind: 'capsule', role: 'bossScorch', x: cap.x - CAP_W / 2, y: cap.y - CAP_H / 2, w: CAP_W, h: CAP_H, z0, z1: z1 + 0.3, tone: 'dark', rot: cap.rot, v: [Math.min(1, rig.hurt), tilt] }
+    const soot: Shape = { id: `${id}-scorch`, part: 'boss-transform', kind: 'capsule', role: 'bossScorch', x: cap.x - CAP_W / 2, y: cap.y - CAP_H / 2, w: CAP_W, h: CAP_H, z0, z1: z1 + 0.3, tone: 'dark', rot: cap.rot, v: [Math.min(1, rig.hurt), tilt, cap.down] }
     if (tilt > 0.001) soot.turnX = tilt
     out.push(soot)
   }
