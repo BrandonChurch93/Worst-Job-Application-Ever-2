@@ -128,6 +128,22 @@ Not built: the cards (`glassCard`). Their bevel is drawn by the `slabbed` shader
 
 Looks used on C: shell 2 (step2-rest at review, two settings).
 
+## D. The arrow's body
+
+The flattened arrow. MEASURED by looking (`npm run -s still -- --page step2 --beat step2.continue --at 0.6 --format hd --tier review`, and `--sheet cursor-damage`): on Continue the pressed arrow had a grey rim, no black contour and a lumpy grey face, where the approved sheet `cursor-damage` shows the flattened arrow with a thin black contour all the way round, a wavy outline and a crazed white face. Cause, read in `src/cursor/model/deform.ts`: `FLAT.over` 0.24 pushed the white face out over its own black rim, and `FLAT.cornerMost` 0.24 rounded the point away.
+
+Built: `FLAT.over` 0.24 to 0 (the face stays inside its rim, so the contour is black in every pressed pose), `FLAT.cornerMost` 0.24 to 0.1 (the point stays a point), `FLAT.wave` 0.14 to 0.1 and `FLAT.lump` 1.3 to 0.7 (the outline still waves and the face still lumps, as approved, but less, so at the film's size it reads as an arrow pressed thin and not as a lump). The crazing was already in the finish and is kept.
+
+The angry arrow (the Builder's item, 11:56Z): the bright yellow flecks in the hot part were the `vein` term of the heat block in `src/cursor/model/material.ts`, a thresholded noise added at 1.5. It is now added at 0.1, so the glow is the smooth run of red, orange and pale yellow the approved sheet has. The heat's reach, the laser's hole and its own `spark` and `fleck` are not touched.
+
+Not built, and why:
+
+- The thinner black side at low cameras (ball_finisher). The side's height is `TOP` 2.3 and `CROWN` 1.76 in `shape.ts`. A lower body moves the shadow of every page and the room the body has in the ball (`tests/cursor-fit.test.ts`), and wants a before and an after of `lobby-doors`, `youre-fired` and `rail-cam`. There was no time left for six review stills and a second round. UNKNOWN whether 2.3 to 1.9 would hold.
+- The exhausted arrow's contour (boss_finisher). MEASURED by looking at `references/approved/cursor-acting.png`: the approved Exhausted arrow is melted white with no black contour at all, and the build's follows it. The evidence does not hold, so nothing is changed.
+- The outline's shimmer while still (film frames 6370 to 6392). Not looked at: it wants film frames, not stills.
+
+Looks used on D: cursor-body 5 (Continue at review twice, the sheet `cursor-damage` at review, `step2-crank` at review, the sheet `cursor-acting` at draft).
+
 ## Looks counted (tuning looks; baseline and three-panel pictures not counted)
 
 | Part | Used | Of |
@@ -135,5 +151,5 @@ Looks used on C: shell 2 (step2-rest at review, two settings).
 | shell | 10 | 40 |
 | type | 2 | 40 |
 | light-engine | 0 | 40 |
-| cursor-body | 0 | 40 |
+| cursor-body | 5 | 40 |
 
