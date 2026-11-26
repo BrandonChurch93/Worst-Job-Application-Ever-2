@@ -146,11 +146,19 @@ The measure (`out/work/shared-look/stroke.cjs <png> x y w h`): one line of type;
 - Helper and subline: the build is heavier on every page that has one, but that is two pages, not three. Not changed. Said for the pages' owners: the quiet voice is drawn about a tenth heavier than approved, and on step 2 the approved helper's ink is darker than ours (linear luminance 0.03 against 0.10).
 - M4: no size changed.
 
+## Item H: the hairlines past the round ends of a pocket
+
+MEASURED on `boss-down` at review, the SUBMIT bar's pocket, the green of row 260 from x 240 to 252 (the row above the lip, left of where the round end turns): 190 against the page's 232, a grey hairline that ran the whole top edge and past the round end to the left; the same along the bottom edge to the right. A draft still does not show it; review's samples do.
+
+The cause, found by two trials in the measuring tree (the collar left out: the row goes black; the page's overlap raised from 0.25 to 1.5 px: the line goes): `collar` in `solids.ts` throws each point of the hole outward from the centre to the tile's edge. Round a long capsule every point lands on the left or the right edge, none on the top, and where the side changed the code added one corner only. So half of the strip along the top and half along the bottom was never drawn: a wedge up to 0.5 px open to the dark backing, of which the page's overlap hid 0.25.
+
+Built: `collar` adds every corner between the two sides. MEASURED after: the same row reads 224 to 236. `tests/shared-look-collar.test.ts` holds that the collar's area is the tile's less the hole's for a long capsule, a tall one, a field and a disc (the long capsule was 724 square px short before). `ground.ts` is not changed. Triangles on `boss-down` at review: 565227 before, 565767 after.
+
 ## Looks counted (tuning looks; baseline and three-panel pictures not counted)
 
 | Part | Used | Of |
 | --- | --- | --- |
-| shell | 25 | 40 |
+| shell | 26 | 40 |
 | type | 3 | 40 |
 | light-engine | 3 | 40 |
 | cursor-body | 8 | 40 |
