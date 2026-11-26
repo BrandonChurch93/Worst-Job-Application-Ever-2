@@ -139,7 +139,7 @@ Lengths in balls, page coordinates, z up from the page surface. `look(name, eye,
 ## Sheets
 
 - `table-map`: straight above, 1080 x 1920, the page's full width across the frame (20 balls), from 0.35 balls above Tier 3 down into the apron. The marquee is not in it: the approved map is the three tiers and the apron inside the frame.
-- `clear-ball`: three panels (`panels`, gutter 21), each its own tall picture with its own camera 10.2 balls from its ball, 39 degrees down, lens of `home`. Left: at rest on the Street tier's left flipper, `nervous`, sweat 1 on the shell. Middle: in flight 0.6 balls over the Street floor, `scared`. Right: pressed on the Office tier's lowest white cup at `cup.r + 0.5`, `scared` with `recoil`, the shell told a hit of strength 1 toward the cup. The sheet's own `list`, `cursors` and `view` are the first panel's, as the one-picture fallback.
+- `clear-ball`: three panels (`panels`, gutter 21), each its own tall picture with its own camera 10.2 balls from its ball, 39 degrees down, lens of `home`. Left: at rest on the Street tier's left flipper, `nervous`, sweat 1 on the shell. Middle: in flight 0.6 balls over the Street floor, `scared`. Right: pressed on the Office tier's lowest white cup at `cup.r + 0.5`, `scared` with `recoil`, the shell told a hit of strength 0.6 toward the cup. The sheet's own `list`, `cursors` and `view` are the first panel's, as the one-picture fallback.
 
 ## Open
 
