@@ -1,7 +1,8 @@
 # Status pictures
 
-Time: 2026-11-26T22:44Z. Phase 5, status 120.
+Time: 2026-11-26T23:29Z. Phase 5, status 122.
 
-1. `01-three-design-points-the-critics-raise-again-your.jpg`: Top: the careers page, where the approved image shows the fine print on every card and the kit hides it until the arrow touches a card. Middle: step 2 at rest, three empty fields in both. Bottom: the approved sheet of the Submit button's four stages, and step 4 at rest on the live site. The pictures on the right are round 21's, at the high level. Looked at by the Builder.
-2. `02-control-taken-on-step-1-the-sheet-round-21-s-mot.jpg`: Twelve steps in a row of a visitor's run, 0:30.87 to 0:31.23: the shredder bites the resume and the arrow's arms are there in one frame, with no reach. The critic's words: the cord appears in one frame, already looped round the arrow. Below the bar; in the polish round. Looked at by the Builder.
-3. `03-the-page-turn-into-step-1-its-last-twelve-frames.jpg`: The second of two sheets of one run, 0:10.63 to 0:11.00: the slab comes face on and settles on a long soft tail. The critic's words: no landing beat, nothing on the page answers when it seats. Below the bar; in the polish round. Looked at by the Builder.
+1. `01-the-sound-control-as-a-button-before-left-after-.jpg`: The row of controls a visitor has on the live site, cut from a 1920 by 1080 window at real size, in four states. Left as merged, right with the ring. Looked at by the Builder.
+2. `02-a-visitor-s-flipper-stroke-on-the-live-site-roun.jpg`: Twelve frames in a row, 1:52.25 to 1:52.62, the motion critic's own sheet. Left: the ball leaves the bat slowly and hangs by the green lamp. Right: the bat meets the ball at 1:52.35 and the ball is past the blue lamp three frames later. The drift that follows the slingshot is not mended yet. Looked at by the Builder.
+3. `03-the-step-row-while-the-page-turns-in-to-step-1-f.jpg`: Above: balls 2 to 5 of the step row are near black for five frames and bright in the next. Below, on the page turn helper's branch: steel in every frame. In both, the arrow's shadow lies apart from it: open. Looked at by the Builder.
+4. `04-the-page-seats-on-step-1-on-the-live-site-high-l.jpg`: Eight frames in a row round the contact, the upper half of the picture at a quarter of real size. Right: the page is flat at +0, its lines stand higher at +1 (the jolt), and the dark gap at the upper edge opens at +3 to +5 (the knock). Small at this size, and so not yet called mended. Looked at by the Builder.
